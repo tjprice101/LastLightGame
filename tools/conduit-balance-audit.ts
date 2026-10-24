@@ -129,12 +129,12 @@ export function runStasisBattle(initial: BattleState, shieldFirst: boolean) {
   const trace: { round: number; actor: string; action: string; hp: number[]; shields: number[] }[] = [];
   let blockedHits = 0;
   function collect(events: BattleEvent[]) {
-    for (const event of events) if (event.message.includes('[Stasis Reliquary]') && event.kind === 'damage' && event.amount === 0)
+    for (const event of events) if (event.message.includes('[Stasis Reliquary]') && event.kind === 'status')
       blockedHits++;
     for (const unit of state.allies) {
       const n = gear(unit).numbers;
-      if (n.stasisProtected !== undefined && !(protectedTurns[unit.id] ?? []).includes(n.stasisProtected))
-        (protectedTurns[unit.id] ??= []).push(n.stasisProtected);
+      if (n.stasisPenalty !== undefined && !(protectedTurns[unit.id] ?? []).includes(n.stasisPenalty - 1))
+        (protectedTurns[unit.id] ??= []).push(n.stasisPenalty - 1);
       if (n.stasisPenalty !== undefined && !(penaltyTurns[unit.id] ?? []).includes(n.stasisPenalty))
         (penaltyTurns[unit.id] ??= []).push(n.stasisPenalty);
     }
@@ -173,7 +173,7 @@ export function stasisPacketProbe(level: number) {
     conduitIncoming(state, enemy, owner, 100, false, false, events);
     conduitIncoming(state, enemy, owner, 100, false, false, events);
     results.push({ round, hpLoss: before - owner.hp, shield: owner.shield,
-      protected: gear(owner).numbers.stasisProtected === round,
+      protected: gear(owner).numbers.stasisPenalty === round + 1,
       penalty: gear(owner).numbers.stasisPenalty === round,
       messages: events.map(event => event.message) });
   }

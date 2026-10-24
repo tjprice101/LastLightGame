@@ -1,5 +1,39 @@
 # Combat specification
 
+## Glassroot, Stasis and bounded field status cards (D-390)
+
+Glassroot Gimbal grants +5% [Skill Power] per complete **450** maximum
+[Health], including equipment and live Health auras. The coefficient still
+upgrades to +7.5% at +5; the threshold stays450 and conversion remains uncapped.
+Recomputing an aura must not compound Skill Power or heal existing HP.
+
+Stasis Reliquary rolls only when an enemy direct hit breaks a positive
+[Shield] **and has spillover into Health**. Its chance at +0..+5 is
+**10/12/14/16/18/20%**, using the existing seeded combat stream. A success
+blocks only that hit's remaining Health damage, including intercepted native
+Cover hits. Later hits are not protected. Only a success schedules the
+following Enemy Turn's fixed +25% enemy attack damage penalty and protection
+cooldown. Failed rolls, unshielded hits and exact Shield coverage never schedule
+the penalty; ineligible hits do not consume a Stasis RNG draw.
+
+Combat rules10 supersede rules9. Existing mismatched encounter snapshots use
+the normal safe restart with frozen equipment/investments and saved rewards.
+There is no account migration, refund, equipment removal or load-time write.
+
+Field cards keep HP and Gauge outside a bounded40px status tray (23-40px,
+based on the available row height on desktop). Stasis has
+short field badges; native descriptions and forecasts appear only in the
+Battle menu. Long status/value lines truncate visually rather than expanding
+the formation; long names use one ellipsized line without reducing font size.
+A field hint points to the full Battle menu reference, which
+retains all live values, prose and clocks without this height limit. Existing
+impact snapshots and update hooks remain intact. Crit sizing is unchanged.
+
+Validate numerical thresholds, every upgrade's proc boundary, success/failure,
+later hits, next-turn clocks, exact Shield absorption, Cover/Pale interactions,
+serialization and rules restart. Validate three-member field layouts with long
+Quarry/Stasis/status text at mobile and short desktop heights.
+
 ## Critical popup size revision (D-388)
 
 Owner finds D-386 too small. Critical/Elemental Crit numbers now use28-40px,
@@ -12,7 +46,7 @@ This supersedes D-386's22-34px numbers/12px labels, not its clustered loot.
 
 ## Stasis status readability (D-387)
 
-Stasis Reliquary's active protection explicitly prevents further damage this
+Historical wording before D-390: Stasis Reliquary's active protection explicitly prevents further damage this
 [Enemy Turn]. Its penalty says the wearer takes25% more damage from enemy
 [Attack Actions] this [Enemy Turn], with [Shield] break protection on cooldown.
 This describes existing mechanics; damage, clocks and authority stay unchanged.
@@ -173,7 +207,7 @@ are not rebalanced in this batch.
   upgrades and baseline stats survive Settings/Training/Continue/authority saves.
 - Losing an aura source removes its bonus. Maximum Health changes clamp current
   Health but never heal or revive; explicit initial/full-stage resets remain.
-  Glassroot counts complete200 final maximum Health without repeated growth.
+  Glassroot counts complete450 final maximum Health without repeated growth (D-390).
   Menus show personal permanent stats, including Master bonuses; live squad
   auras and conditional modifiers are battle-only.
 - Clearwater counts every other frozen Oceanic Squad Member, including defeated
@@ -275,7 +309,7 @@ once, rounding once. Conduit grants expressed as percentages use that
 recipient's maximum capacity before Gain. Capacity increases never fill Gauge.
 
 D-382 clarifications for the replacement equipment:
-- Glassroot uses complete200 maximum Health steps after equipment bonuses,
+- Glassroot uses complete450 maximum Health steps after equipment bonuses (D-390),
   with no conversion cap. Heartcase's conditional Health adds against the
   pre-equipment base; Gauge/cooldown/recovery alone determine personal Last
   Flare availability, not spent/turn restrictions. Funeral bypasses its
@@ -286,9 +320,9 @@ D-382 clarifications for the replacement equipment:
   Only its positive bonus upgrades. Rejected actions/Normals do not roll.
 - Pale protects only the Shield-covered part of incoming damage, including
   redirected enemy damage; unshielded spillover is normal damage. Stasis
-  blocks breaking-hit spillover and subsequent damage that Enemy Turn,
-  including routed hits. The following Enemy Turn takes25% more enemy
-  attack damage and cannot trigger protection; the next turn may trigger.
+  rolls10%-20% to block only the breaking hit's spillover, including routed
+  hits (D-390). After success, the following Enemy Turn takes25% more enemy
+  attack damage and cannot trigger protection; the next turn may roll again.
   It never prevents a player's action. Copied runtime badges show both clocks.
 - World-Eater's125% bonus is debuff potency only, including Burn, Weaken and
   Aurora seals, never direct damage, healing or Shields. Existing Weaken50%/

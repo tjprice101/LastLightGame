@@ -209,7 +209,7 @@ describe('native identities and state widgets', () => {
     expect(summary).not.toContain('Up to 3 charges');
   });
 
-  it('renders actual readout and forecasts in field and reference; no widgets for empty state', () => {
+  it('renders live values on field, full descriptions/forecasts in reference; no widgets for empty state', () => {
     const state = createBattle(1);
     const actor = state.allies[0];
     actor.kit = resolveFighter('ember', { level: 0, evolution: 1 });
@@ -219,8 +219,8 @@ describe('native identities and state widgets', () => {
     for (const compact of [true, false]) {
       const html = unitReadout(actor, compact, state.allies, state.round, state);
       expect(html).toContain('Goblin: 2 phases');
-      expect(html).toContain('&lt;stored&gt;');
-      expect(html).toContain('due phase 3');
+      expect(html.includes('&lt;stored&gt;')).toBe(!compact);
+      expect(html.includes('due phase 3')).toBe(!compact);
       expect(html).not.toContain('charges');
     }
     actor.hp = 0;
@@ -239,7 +239,9 @@ describe('native identities and state widgets', () => {
     const field = unitReadout(actor, true, state.allies, state.round, state);
     expect(field).toContain('Combo: 0 / 3 · No edge');
     expect(field).not.toContain('Alternate Gold and Crimson');
-    expect(field).toContain('Tizu: player turn 2.');
+    expect(field).not.toContain('Tizu: player turn 2.');
+    expect(field).toContain('Seed: 50%');
+    expect(unitReadout(actor, false, state.allies, state.round, state)).toContain('Tizu: player turn 2.');
     expect(unitReadout(actor, false, state.allies, state.round, state)).toContain('Alternate Gold and Crimson');
   });
 

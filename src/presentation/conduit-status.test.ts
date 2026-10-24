@@ -7,10 +7,10 @@ import { nativeBalance } from '../content/native-balance';
 describe('accessible Conduit control and protection readouts', () => {
   it('explains Stasis protection and its damage-taken penalty on the correct turns', () => {
     const unit = createSession('ember').state.allies[0];
-    unit.conduitRuntime = { numbers: { stasisProtected: 2, stasisPenalty: 3 }, owners: {} };
+    unit.conduitRuntime = { numbers: { stasisPenalty: 3 }, owners: {} };
     const snapshot = conduitStatusSnapshot(unit);
     const protectedTurn = conduitStatuses(snapshot, 2);
-    expect(protectedTurn).toContain('Prevents all further damage this [Enemy Turn].');
+    expect(protectedTurn).toContain('Spillover blocked. Next [Enemy Turn]');
     expect(protectedTurn).not.toContain('Take 25% more damage');
     const penaltyTurn = conduitStatuses(snapshot, 3);
     expect(penaltyTurn).toContain('Take 25% more damage from enemy [Attack Actions] this [Enemy Turn].');
@@ -83,7 +83,8 @@ describe('accessible Conduit control and protection readouts', () => {
     const readout = unitReadout(unit, true, state.allies, state.round, state);
     expect(readout).toContain('Seed');
     expect(readout).toContain(`${nativeBalance.flora.seed * 100}%`);
-    expect(readout).toContain('player turn 2');
+    expect(readout).not.toContain('player turn 2');
+    expect(unitReadout(unit, false, state.allies, state.round, state)).toContain('player turn 2');
     expect(readout).not.toContain('Botanic Renewal');
     expect(readout).not.toContain('charges');
     expect(unitReadout(unit)).not.toContain('Next offensive skill: +10%');

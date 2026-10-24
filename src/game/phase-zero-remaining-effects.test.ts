@@ -291,10 +291,10 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
   it('glassroot-gimbal converts maximum Health to Power regardless of Shield, not Normal damage', () => {
     const state = fixture('glassroot-gimbal', level), owner = state.allies[0];
     applyConduitBuffs(owner.stats, owner.conduits, state.conduitUpgrades);
-    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + 5 * benefit(.05, level));
+    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + 2 * benefit(.05, level));
     expect(prepareConduitAction(state, owner, 'light', 0, false).skillPower).toBe(1);
     owner.shield = 1;
-    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + 5 * benefit(.05, level));
+    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + 2 * benefit(.05, level));
   });
 
   it('lifeline-flywheel counts actual HP plus Shield damage, not overkill', () => {
@@ -449,20 +449,22 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
     expect(conduitActionCost(owner, 'skill1', state, 100)).toBe(100);
   });
 
-  it('stasis-reliquary blocks Shield-break spillover and subsequent hits, then applies one penalty turn', () => {
+  it('stasis-reliquary can block only Shield-break spillover, then applies one penalty turn', () => {
     const state = fixture('stasis-reliquary', level), [owner] = state.allies;
     const enemy = state.enemies[0];
     owner.shield = 50;
+    state.seed = 1;
     for (let i = 0; i < 3; i++) conduitIncoming(state, enemy, owner, 100, false, true, [], 'skill1');
-    expect(owner.hp).toBe(level === null ? 750 : 1000);
+    expect(owner.hp).toBe(level === null ? 750 : 800);
     state.round++;
     owner.shield = 50;
     conduitIncoming(state, enemy, owner, 100, false, true, [], 'skill1');
-    expect(owner.hp).toBe(level === null ? 700 : 925);
+    expect(owner.hp).toBe(level === null ? 700 : 725);
     state.round++;
     owner.shield = 50;
+    state.seed = 1;
     conduitIncoming(state, enemy, owner, 100, false, true, [], 'skill1');
-    expect(owner.hp).toBe(level === null ? 650 : 925);
+    expect(owner.hp).toBe(level === null ? 650 : 725);
   });
 
   it('verdict-caliper heals once per critical Attack Action without requiring other allies to act', () => {

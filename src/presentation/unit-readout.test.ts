@@ -4,6 +4,24 @@ import { unitReadout } from './unit-readout';
 import { nativeBalance } from '../content/native-balance';
 
 describe('field readouts', () => {
+  it('bounds field status details after HP/Gauge while preserving the complete Battle menu reference', () => {
+    const state = createBattle(7, ['rosetta', 'tide', 'sprout']);
+    const unit = state.allies[0];
+    state.enemies[0].name = 'White Pyre Hierophant with a very long target name';
+    unit.native = { quarry: { target: state.enemies[0].id, round: state.round, contributors: [unit.id] } };
+    unit.conduitRuntime = { numbers: { stasisPenalty: state.round }, owners: {} };
+    const compact = unitReadout(unit, true, state.allies, state.round, state);
+    const full = unitReadout(unit, false, state.allies, state.round, state);
+    expect(compact).toContain('class="unit-field-statuses"');
+    expect(compact.indexOf('class="unit-gauge"')).toBeLessThan(compact.indexOf('class="unit-field-statuses"'));
+    expect(compact).toContain('[Stasis]: +25% damage taken · cooldown');
+    expect(compact).toContain('Quarry: White Pyre Hierophant');
+    expect(compact).not.toContain('<small>1 distinct contributors this turn.</small>');
+    expect(compact).toContain('Battle menu: full details');
+    expect(full).not.toContain('unit-field-statuses');
+    expect(full).toContain('Take 25% more damage from enemy [Attack Actions]');
+    expect(full).toContain('<small>1 distinct contributors this turn.</small>');
+  });
   it('shows native state without retired shared intrinsic stack counters', () => {
     const state = createBattle(7, ['ember', 'tide', 'sprout']);
     state.allies[0].pilot = { ember: 3 };

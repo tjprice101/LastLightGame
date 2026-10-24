@@ -65,11 +65,11 @@ describe('D-382 replacement interactions', () => {
     expect(high.gaugeGain).toBeCloseTo(1 + .07 * m);
   });
 
-  it.each([199, 200, 399, 400, 20000, 1000000])('Glassroot uses complete 200 maximum Health steps at %i', health => {
+  it.each([224, 225, 449, 450, 20000, 1000000])('Glassroot uses complete 450 maximum Health steps at %i', health => {
     const stats = { ...resolveFighter('ember').stats, health };
     applyConduitBuffs(stats, slots('glassroot-gimbal', 'vigil-core'));
     expect(stats.health).toBe(health * 2);
-    expect(stats.skillPower).toBeCloseTo(1 + Math.floor(health * 2 / 200) * .05);
+    expect(stats.skillPower).toBeCloseTo(1 + Math.floor(health * 2 / 450) * .05);
   });
 
   it('does not globally cap stacked Skill Duration, but retains status-specific Weaken limits', () => {
@@ -138,7 +138,7 @@ describe('D-382 replacement interactions', () => {
     owner.shatter = 0;
     refreshConduitStats(state);
     expect(owner.stats.health).toBe(2200);
-    expect(owner.stats.skillPower).toBeCloseTo(1.55);
+    expect(owner.stats.skillPower).toBeCloseTo(1.2);
     expect(owner.hp).toBe(2000);
     owner.hp = 1500;
     owner.shatter = 100;
@@ -150,7 +150,7 @@ describe('D-382 replacement interactions', () => {
     owner.shatter = 0;
     refreshConduitStats(state);
     expect(owner.hp).toBe(1500);
-    expect(owner.stats.skillPower).toBeCloseTo(1.55);
+    expect(owner.stats.skillPower).toBeCloseTo(1.2);
     state.phase = 'cleared';
     const continued = nextWave(state).state;
     expect(continued.allies[0].hp).toBeLessThanOrEqual(1500);
@@ -218,15 +218,56 @@ describe('D-382 replacement interactions', () => {
   it('Stasis protection survives serialization, does not prevent next-turn actions, and has a visible penalty clock', () => {
     const state = fixture(['stasis-reliquary']);
     state.allies[0].shield = 1;
+    state.seed = 1;
     conduitIncoming(state, state.enemies[0], state.allies[0], 100, false, false, []);
-    expect(conduitStatusReadout(state.allies[0], 1)).toContain('Prevents all further damage');
+    expect(conduitStatusReadout(state.allies[0], 1)).toContain('Spillover blocked');
     const restored: BattleState = JSON.parse(JSON.stringify(state));
-    conduitIncoming(restored, restored.enemies[1], restored.allies[0], 100000, true, true, []);
-    expect(restored.allies[0].hp).toBe(1000);
+    conduitIncoming(restored, restored.enemies[1], restored.allies[0], 100, true, true, []);
+    expect(restored.allies[0].hp).toBe(900);
     const next = endTurn(restored).state;
     expect(next.round).toBe(2);
     expect(actionUnavailable(next, next.allies[0], 'light')).toBeNull();
     expect(conduitStatusReadout(next.allies[0], 2)).toContain('Take 25% more damage from enemy [Attack Actions]');
+  });
+
+  it.each([0, 1, 2, 3, 4, 5])('Stasis +%i uses exactly the upgraded chance and rolls only for eligible spillover', level => {
+    const chance = .1 + level * .02;
+    for (const succeeds of [true, false]) {
+      const state = fixture(['stasis-reliquary'], level);
+      let seed = 1;
+      for (; seed < 1_000_000; seed++) {
+        let next = seed;
+        next ^= next << 13; next ^= next >>> 17; next ^= next << 5;
+        const value = (next >>> 0) / 0x100000000;
+        if (succeeds ? value >= chance - .0001 && value < chance : value >= chance && value < chance + .0001) break;
+      }
+      expect(seed).toBeLessThan(1_000_000);
+      state.seed = seed;
+      const owner = state.allies[0];
+      owner.shield = 50;
+      conduitIncoming(state, state.enemies[0], owner, 100, false, false, []);
+      expect(owner.hp).toBe(succeeds ? 1000 : 950);
+      expect(gear(owner).numbers.stasisPenalty).toBe(succeeds ? state.round + 1 : undefined);
+      const rolledSeed = state.seed;
+      conduitIncoming(state, state.enemies[0], owner, 100, false, false, []);
+      expect(owner.hp).toBe(succeeds ? 900 : 850);
+      expect(state.seed).toBe(rolledSeed);
+      state.round++;
+      owner.shield = 50;
+      conduitIncoming(state, state.enemies[0], owner, 100, false, false, []);
+      if (succeeds) {
+        expect(owner.hp).toBe(825);
+        expect(state.seed).toBe(rolledSeed);
+      }
+    }
+    for (const damage of [49, 50]) {
+      const state = fixture(['stasis-reliquary'], level);
+      state.seed = 1;
+      state.allies[0].shield = 50;
+      conduitIncoming(state, state.enemies[0], state.allies[0], damage, false, false, []);
+      expect(state.seed).toBe(1);
+      expect(gear(state.allies[0]).numbers.stasisPenalty).toBeUndefined();
+    }
   });
 
   it('Pale and Stasis also protect the wearer when intercepting native Cover damage', () => {
@@ -234,11 +275,12 @@ describe('D-382 replacement interactions', () => {
     const [owner, recipient] = state.allies;
     owner.native = { cover: { targets: [recipient.id], fraction: .5, throughPhase: 1 } };
     owner.shield = 50;
+    state.seed = 1;
     conduitIncoming(state, state.enemies[0], recipient, 400, false, false, []);
     expect(owner.hp).toBe(1000);
     expect(owner.shield).toBe(0);
     conduitIncoming(state, state.enemies[1], recipient, 400, false, false, []);
-    expect(owner.hp).toBe(1000);
+    expect(owner.hp).toBe(850);
   });
 });
 

@@ -2,6 +2,12 @@
 
 ## Scope and conclusion
 
+**Historical rules9 evidence:** D-390 subsequently changes Glassroot's threshold
+from200 to450 Health and replaces Stasis's whole-turn protection with a10%-20%
+hit-only spillover roll. Preserve the results below as measured at the original
+audit commit. Current tools/tests use rules10; rerunning them is a new experiment,
+not reproduction of these frozen numbers. See [current contract](combat.md#glassroot-stasis-and-bounded-field-status-cards-d-390).
+
 This audit changes **no gameplay, equipment effects, stats, save rules or production
 flags**. It adds reproducible offline tools and tests. The current source has
 `phaseZeroStatsReady = true`; the combat runtime uses **rules9** and the current

@@ -4,6 +4,7 @@ import type { ConduitId } from '../content/conduits';
 import { conduitRedesign, redesignStep, redesignValue } from '../content/conduit-redesign';
 import { phaseZeroGaugeOffer, phaseZeroPercentageGaugeOffer, phaseZeroSkillCost, phaseZeroStatBase, phaseZeroUpgradeMagnitude } from '../content/phase-zero-conduit-stats';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
+import { stasisChancePercent } from '../content/phase-zero-conduit-upgrades';
 import { damageOverTimeLevelMultiplier } from '../content/native-balance';
 import type { MasterConduitId } from '../content/master-conduits';
 import type { BattleEvent, BattleState, Combatant } from './battle';
@@ -16,7 +17,7 @@ import { hasNativeIdentity, nativeAbsorbedHit, nativeDirectHpLoss, nativeIncomin
 import { prepareCalamiticAction, afterCalamiticAction, calamiticSiegeBonus, deferCalamiticDamage,
   bankCalamiticDamage, calamiticSkillDefenseIgnore, calamiticSkillPowerBonus, calamiticSkillEfficiencyBonus } from './calamitic-conduits';
 
-export const conduitRulesVersion = phaseZeroStatsReady ? 9 : 4;
+export const conduitRulesVersion = phaseZeroStatsReady ? 10 : 4;
 export interface ConduitShieldLayer {
   amount: number;
   owner: string;
@@ -152,8 +153,8 @@ export function refreshConduitStats(state: BattleState, initial = false): void {
         (stat === 'skillPower' || stat === 'gaugeGain' ? 1 : 0);
     unit.stats.skillEfficiency = Math.min(.5, unit.stats.skillEfficiency ?? 0);
     if (equipped(unit, 'glassroot-gimbal')) {
-      unit.stats.skillPower = (unit.stats.skillPower ?? 1) + (Math.floor(unit.stats.health / 200) -
-        Math.floor(base.health / 200)) * magnitude(state, 'glassroot-gimbal', .05);
+      unit.stats.skillPower = (unit.stats.skillPower ?? 1) + (Math.floor(unit.stats.health / 450) -
+        Math.floor(base.health / 450)) * magnitude(state, 'glassroot-gimbal', .05);
     }
     unit.shatter = Math.min(unit.shatter, unit.stats.shatterCapacity);
     unit.hp = initial && unit.hp > 0 ? unit.stats.health : Math.min(unit.hp, unit.stats.health);
@@ -1813,22 +1814,18 @@ function absorbEnemyDamage(state: BattleState, target: Combatant, amount: number
   const absorbed = consumeShield(target, covered * (1 - reduction));
   let loss = Math.max(0, amount - covered);
   const n = gear(target).numbers;
-  if (phaseZeroStatsReady && shieldBefore > 0 && target.shield <= 0 &&
-      equipped(target, 'stasis-reliquary') && n.stasisPenalty !== state.round) {
-    n.stasisProtected = state.round;
+  if (phaseZeroStatsReady && shieldBefore > 0 && target.shield <= 0 && loss > 0 &&
+      equipped(target, 'stasis-reliquary') && n.stasisPenalty !== state.round &&
+      roll(state) < stasisChancePercent(state.conduitUpgrades?.['stasis-reliquary'] ?? 0) / 100) {
     n.stasisPenalty = state.round + 1;
     loss = 0;
-    emit(events, 'status', target, target, 1, `${target.name}'s [Stasis Reliquary] prevents damage for this [Enemy Turn]; next [Enemy Turn] takes 25% more attack damage.`);
+    emit(events, 'status', target, target, 1, `${target.name}'s [Stasis Reliquary] prevents this hit's [Shield] spillover; next [Enemy Turn], take 25% more damage from enemy [Attack Actions].`);
   }
   return { absorbed, loss, covered };
 }
 export function conduitIncoming(state: BattleState, enemy: Combatant, target: Combatant, damage: number, critical: boolean,
   scheduled: boolean, events: BattleEvent[], action: ActionId = scheduled ? 'skill1' : 'light'): void {
   const n = gear(target).numbers;
-  if (phaseZeroStatsReady && n.stasisProtected === state.round) {
-    emit(events, 'damage', enemy, target, 0, `${target.name}'s [Stasis Reliquary] prevents further damage this [Enemy Turn].`);
-    return;
-  }
   if (!scheduled && n.windveil && n.windveilRound !== state.round - 1) {
     delete n.windveil; n.windveilRound = state.round;
     emit(events, 'status', target, target, 0, `${target.name}'s Windveil avoids the Normal Attack.`);
@@ -1974,7 +1971,6 @@ function allyFell(state: BattleState, fallen: Combatant, events: BattleEvent[]):
 }
 function routedDamage(state: BattleState, enemy: Combatant, target: Combatant, amount: number, events: BattleEvent[], nativeRedirect = false): void {
   const n = gear(target).numbers;
-  if (phaseZeroStatsReady && n.stasisProtected === state.round) return;
   if (phaseZeroStatsReady && n.stasisPenalty === state.round) amount = Math.round(amount * 1.25);
   const { loss: remaining } = absorbEnemyDamage(state, target, amount, events);
   const loss = Math.min(target.hp, remaining);

@@ -49,7 +49,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--calamity-components')) {
+  if (process.argv.includes('--glassroot-stasis')) {
+    await smokeGlassrootStasis(client, created.user.id, username);
+  } else if (process.argv.includes('--calamity-components')) {
     await smokeCalamityComponents(client, created.user.id, username);
   } else if (process.argv.includes('--omnic-refresh')) {
     await smokeOmnicRefresh(client, created.user.id, username);
@@ -375,7 +377,7 @@ try {
 }
 
 async function smokePhaseZero(client, userId, username) {
-  assert.equal(conduitRulesVersion, 9, 'The production bundle must activate rules9');
+  assert.equal(conduitRulesVersion, 10, 'The production bundle must activate rules10');
   const id = 'calamitic-causality-funeral-engine';
   const entropy = { seed: () => 7321, uuid: () => randomUUID(), random: () => .9 };
   let game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
@@ -405,7 +407,7 @@ async function smokePhaseZero(client, userId, username) {
     return result.data;
   }
   const initial = await invoke({ kind: 'read' }, 0);
-  assert.equal(initial.session.state.conduitRulesVersion, 9);
+  assert.equal(initial.session.state.conduitRulesVersion, 10);
   assert.equal(initial.session.state.allies[0].stats.skillPower, 1);
   assert.equal(initial.session.state.allies[0].stats.skillEfficiency, .5);
   const operation = { kind: 'act', runId: initial.session.runId, actorId: 'ember', action: 'skill1',
@@ -424,13 +426,74 @@ async function smokePhaseZero(client, userId, username) {
   const quit = await invoke({ kind: 'quit', runId: resolved.session.runId }, resolved.revision);
   const fresh = await invoke({ kind: 'enter', activity: { kind: 'training' } }, quit.revision);
   assert.equal(fresh.session.state.allies[0].stats.skillPower, 1, 'A fresh entry uses current menu gear');
-  assert.equal(fresh.session.state.conduitRulesVersion, 9);
+  assert.equal(fresh.session.state.conduitRulesVersion, 10);
   assert.equal((await invoke({ kind: 'quit', runId: fresh.session.runId }, fresh.revision)).session, null);
-  console.log('Hosted Phase 0 smoke passed: rules9, frozen Funeral +5 Efficiency cap, exact direct-damage parity and25 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.');
+  console.log('Hosted Phase 0 smoke passed: rules10, frozen Funeral +5 Efficiency cap, exact direct-damage parity and25 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.');
+}
+
+async function smokeGlassrootStasis(firstClient, firstId, firstUsername) {
+  assert.equal(conduitRulesVersion, 10);
+  let index = 0;
+  for (const level of [0, 5]) for (const success of [true, false]) {
+    let client = firstClient, userId = firstId, username = firstUsername;
+    if (index++) {
+      username = `st_${randomUUID().replaceAll('-', '').slice(0, 10)}`;
+      const password = randomUUID() + randomUUID(), email = `${username}@example.invalid`;
+      const made = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { username } });
+      assert.equal(made.error, null);
+      userId = made.data.user.id; ids.push(userId);
+      client = createClient(url, clientKey, { auth: { persistSession: false } });
+      assert.equal((await client.auth.signInWithPassword({ email, password })).error, null);
+    }
+    const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
+    let game = freshGame(username);
+    game.starterId = 'ember';
+    game.account.characters = { ember: { level: 105, evolution: 6 } };
+    game.account.squad = ['ember'];
+    game.account.conduits = { 'glassroot-gimbal': 1, 'stasis-reliquary': 1 };
+    game.account.conduitUpgrades = { 'glassroot-gimbal': level, 'stasis-reliquary': level };
+    game.account.conduitEquipment = { ember: ['glassroot-gimbal', 'stasis-reliquary', ...Array(6).fill(null)] };
+    game = resolveOperation(game, { kind: 'enter', activity: { kind: 'training' } }, entropy).game;
+    const state = game.run.session.state, owner = state.allies[0], runId = game.run.session.runId;
+    assert.ok(Math.abs(owner.stats.skillPower - (1 + Math.floor(owner.stats.health / 450) * .05 * (1 + level * .1))) < 1e-8);
+    owner.shield = 1;
+    for (const enemy of state.enemies) { enemy.stats.damage = 1000; enemy.stats.crit = 0; }
+    const operation = { kind: 'endTurn', runId };
+    let seed = 1;
+    for (; seed < 10000; seed++) {
+      state.seed = seed;
+      const probe = resolveOperation(game, operation, entropy).response.result;
+      if (probe.events.some(event => event.kind === 'status' && event.message.includes('[Stasis Reliquary]')) === success) break;
+    }
+    assert.ok(seed < 10000, 'Find the requested seeded activation outcome');
+    assert.ok(ids.includes(userId), 'Only disposable identities may receive fixtures');
+    assert.equal((await admin.rpc('load_game_account', { p_user: userId, p_initial: game })).error, null);
+    let revision = 0;
+    async function invoke(op, requestId = randomUUID()) {
+      const actual = await client.functions.invoke('game-operation', { body: { operation: op, expectedRevision: revision, requestId } });
+      assert.equal(actual.error, null, `Hosted ${op.kind} succeeds`);
+      return actual.data;
+    }
+    for (let turn = 0; turn < 2; turn++) {
+      const expected = resolveOperation(game, operation, entropy), requestId = randomUUID();
+      const actual = await invoke(operation, requestId);
+      assert.deepEqual(actual.result, JSON.parse(JSON.stringify(expected.response.result)));
+      assert.deepEqual(actual.session.state, JSON.parse(JSON.stringify(expected.response.session.state)));
+      assert.deepEqual(await invoke(operation, requestId), actual);
+      if (turn === 0) {
+        assert.equal(actual.result.events.some(event => event.kind === 'status' && event.message.includes('[Stasis Reliquary]')), success);
+        assert.ok(actual.session.state.allies[0].hp < owner.hp, 'Later hits still deal Health damage after a proc');
+        assert.equal(actual.session.state.allies[0].conduitRuntime.numbers.stasisPenalty, success ? 2 : undefined);
+      }
+      revision = actual.revision; game = expected.game;
+      assert.deepEqual((await invoke({ kind: 'read' })).session.state, actual.session.state);
+    }
+  }
+  console.log('Hosted Glassroot/Stasis smoke passed: rules10, 450-Health stat parity, +0/+5 seeded success/failure, later-hit damage, penalty turn, exact local/server events/snapshots, persisted reads and idempotent retries. Disposable identities only.');
 }
 
 async function smokeConduitRework(firstClient, firstId, firstUsername) {
-  assert.equal(conduitRulesVersion, 9);
+  assert.equal(conduitRulesVersion, 10);
   const replacements = [
     'bastion-lock', 'crosspin-governor', 'fieldbrace-coupler', 'fracture-reservoir', 'parallax-relay',
     'precision-escapement', 'prism-splinter-socket', 'reserve-torque-crank', 'siegebound-drive', 'vigil-core',
@@ -504,11 +567,11 @@ async function smokeConduitRework(firstClient, firstId, firstUsername) {
       game = expected.game;
     }
   }
-  console.log('Hosted Conduit rework smoke passed: all45 replacements at +0/+5 across four disposable squads, rules9 static/runtime parity, healing/Shield/Last Flare/enemy-phase results, persisted snapshots and idempotent retries. No owner accounts modified.');
+  console.log('Hosted Conduit rework smoke passed: all45 replacements at +0/+5 across four disposable squads, rules10 static/runtime parity, healing/Shield/Last Flare/enemy-phase results, persisted snapshots and idempotent retries. No owner accounts modified.');
 }
 
 async function smokeOmnicRefresh(firstClient, firstId, firstUsername) {
-  assert.equal(conduitRulesVersion, 9);
+  assert.equal(conduitRulesVersion, 10);
   const source = readFileSync(new URL('../src/content/phase-zero-conduit-catalog.ts', import.meta.url), 'utf8');
   const catalog = JSON.parse(source.slice(source.indexOf('= {') + 2, source.lastIndexOf('};') + 1));
   const ordinary = Object.entries(catalog).filter(([id, entry]) => entry.rarity === 'Omnic' && !id.startsWith('master-'));

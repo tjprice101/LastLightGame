@@ -1,5 +1,37 @@
 # Current state and handoff
 
+## Glassroot/Stasis balance and bounded field cards (D-390)
+
+- Glassroot converts complete450 maximum Health steps; +5% coefficient still
+  upgrades to7.5%, includes equipment/live auras and remains uncapped.
+- Stasis rolls10/12/14/16/18/20% at +0..+5 on eligible enemy Shield-break
+  spillover only. Success blocks only that hit's remaining HP damage; later
+  hits still hurt. Only success schedules the next Enemy Turn's fixed25%
+  attack damage penalty and protection cooldown. Exact absorption, no Shield
+  and cooldown hits consume no Stasis draw. Native Cover/Pale remain supported.
+- Rules10 invalidate older encounter snapshots through the established frozen
+  safe-restart path, preserving account holdings and saved rewards.
+- Field HP/Gauge stay outside a40px status tray (23-40px on desktop). Long
+  names use one ellipsized line without shrinking type. Native descriptions/forecasts
+  remain in the Battle menu; long field values truncate, Stasis has short badges,
+  and a field hint points to full details. Crit sizing remains20-24px labels.
+- Authoritative catalog/compatibility regenerated. D-388 audit stays historical;
+  audit tooling now measures hit-only procs, not whole-turn immunity.
+- Validation:6496 tests passed across207 files; final focused readout/mechanics
+  run85/85 passed. Production build and strict authority/audit TypeScript passed.
+- Hosted rules10 deployed; `node tools/smoke_server_game.mjs --glassroot-stasis`
+  passed450-Health parity, +0/+5 seeded success/failure, later-hit damage,
+  penalty turn, exact client/server state/events, persistence and retries.
+  Disposable identities and cascading records were removed.
+- Short desktop windows use tighter field-only spacing without smaller type;
+  mobile full-detail hints remain single-line. Real three-member BattleView with
+  long Quarry/Stasis badges passed actual320x720,390x844,1280x720 and1280x540:
+  all three nameplates fit the arena, HP/Gauge remain visible, no horizontal
+  overflow. Full menu text is covered by the readout regression tests.
+- `node tools/smoke_server_game.mjs --phase-zero` also passed hosted rules10
+  damage/Burn parity, frozen gear, idempotent action and checkpoint persistence.
+  Client publishes through the normal verified Deploy Last Light workflow.
+
 ## Machines Calamity chest rewards (D-389)
 
 - Owner confirms Machines-only chest change: guaranteed components3000-6000/

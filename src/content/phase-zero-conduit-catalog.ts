@@ -101,7 +101,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Glassroot Gimbal",
     "rarity": "Rare",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "Gain +5% [Skill Power] per complete 200 maximum [Health], including equipment bonuses. No cap."
+    "ability": "Gain +5% [Skill Power] per complete 450 maximum [Health], including equipment bonuses. No cap."
   },
   "hammerbalance-link": {
     "name": "Hammerbalance Link",
@@ -233,7 +233,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Stasis Reliquary",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "When enemy damage breaks your [Shield], prevent the breaking hit's remaining damage and all further damage to you that [Enemy Turn]. During the next [Enemy Turn], take 25% more enemy attack damage and cannot activate this protection. Protection becomes available again on the following [Enemy Turn]."
+    "ability": "When an enemy hit breaks your [Shield] with damage remaining, gain a 10% chance to prevent only that hit's remaining [Health] damage. Later hits are not blocked. After a successful activation, during the next [Enemy Turn], take 25% more damage from enemy [Attack Actions] and cannot activate this protection. The activation chance increases by 2 percentage points per upgrade, up to 20% at +5."
   },
   "verdict-caliper": {
     "name": "Verdict Caliper",

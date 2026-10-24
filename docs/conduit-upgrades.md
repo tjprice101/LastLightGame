@@ -1,12 +1,16 @@
 # Conduit upgrades and Broken Mechanical Components
 
-## Current effect scaling (D-368 / D-382 / D-383)
+## Current effect scaling (D-368 / D-382 / D-383 / D-390)
 
 All90 ordinary entries use the [approved catalog](conduit-catalog.txt).
 Beneficial percentages increase10% of their base per saved level, reaching
 150% of base at+5. Penalties, trigger thresholds, proc odds, durations and
-extra-action counts stay fixed. For Nullsong, positive75% becomes112.5%;
-the negative75% and50/50 roll stay fixed. Glassroot's per200 Health coefficient
+extra-action counts stay fixed, except Stasis's explicitly approved chance.
+Stasis grows10/12/14/16/18/20% at +0..+5; a successful Shield-breaking hit
+blocks only its own Health spillover, then schedules the unchanged next-turn
+25% damage-taken penalty and cooldown. Failed rolls do not schedule either.
+For Nullsong, positive75% becomes112.5%;
+the negative75% and50/50 roll stay fixed. Glassroot's per450 Health coefficient
 upgrades; its complete-Health-step calculation is uncapped. Masters never
 upgrade. Skill Duration no longer has a global equipment cap; per-status
 safety caps and Skill Efficiency50%/1-or70-Gauge floors remain.

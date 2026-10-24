@@ -106,14 +106,14 @@ describe('D-383 complete Omnic and Master refresh', () => {
     recipient.conduits = slots('glassroot-gimbal');
     applyConduitBuffs(recipient.stats, recipient.conduits);
     initializeConduits(state);
-    expect(recipient.stats.skillPower).toBeCloseTo(1.35);
+    expect(recipient.stats.skillPower).toBeCloseTo(1.15);
     recipient.hp = 100;
     source.hp = 0;
     refreshConduitStats(state);
-    expect(recipient.stats.skillPower).toBeCloseTo(1.25);
+    expect(recipient.stats.skillPower).toBeCloseTo(1.1);
     source.hp = 1;
     refreshConduitStats(state);
-    expect(recipient.stats.skillPower).toBeCloseTo(1.35);
+    expect(recipient.stats.skillPower).toBeCloseTo(1.15);
     expect(recipient.hp).toBe(100);
   });
 

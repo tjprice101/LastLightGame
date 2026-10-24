@@ -141,7 +141,7 @@ export function applyPhaseZeroStaticBonuses(
   result.skillDuration = Math.floor(result.skillDuration);
   result.skillEfficiency = Math.min(.5, result.skillEfficiency);
   if (equipment.includes('glassroot-gimbal'))
-    result.skillPower += Math.floor(result.health / 200) *
+    result.skillPower += Math.floor(result.health / 450) *
       phaseZeroUpgradeMagnitude(.05, levels['glassroot-gimbal'] ?? 0);
   return result;
 }

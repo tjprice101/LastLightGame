@@ -48,13 +48,17 @@ describe('read-only exhaustive Conduit audit integrity', () => {
     expect(state).toEqual(copy);
     expect(measureBattle(state, 'native', { rounds: 0, decisions: 0 }).result.outcome).toBe('timeout');
   });
-  it('reproduces fixed Stasis alternating protection/cooldown across eight turns at both upgrade endpoints', () => {
+  it('measures seeded Stasis spillover rolls rather than historical whole-turn immunity', () => {
     const base = stasisPacketProbe(0), maximum = stasisPacketProbe(5);
-    expect(base).toEqual(maximum);
-    expect(base.map(turn => turn.protected)).toEqual([true, false, true, false, true, false, true, false]);
-    expect(base.map(turn => turn.penalty)).toEqual([false, true, false, true, false, true, false, true]);
-    expect(base.filter(turn => turn.protected).every(turn => turn.hpLoss === 0)).toBe(true);
-    expect(base.filter(turn => turn.penalty).every(turn => turn.hpLoss === 249)).toBe(true);
+    expect(base[0].protected).toBe(false);
+    expect(maximum[0].protected).toBe(true);
+    for (const turns of [base, maximum]) {
+      expect(turns.filter(turn => turn.protected).every(turn => turn.hpLoss === 100)).toBe(true);
+      expect(turns.filter(turn => turn.penalty).every(turn => turn.hpLoss === 249)).toBe(true);
+      expect(turns.filter(turn => !turn.protected && !turn.penalty).every(turn => turn.hpLoss === 199)).toBe(true);
+      for (let index = 1; index < turns.length; index++)
+        expect(turns[index].penalty).toBe(turns[index - 1].protected);
+    }
   });
   it('keeps matched multi-piece synergy controls identical except for Stasis', () => {
     const extra = ['granite-hourglass', 'verdict-caliper', 'fieldbrace-coupler', 'immortal-vessel'] as const;
@@ -83,6 +87,6 @@ describe('read-only exhaustive Conduit audit integrity', () => {
     expect(replay.on.final.round).toBe(3);
     expect(replay.on.final.enemies[0].hp).toBe(0);
     expect(replay.on.packets.flatMap(packet => packet.events).find(event => event.nativeKind === 'revenge')!.amount)
-      .toBe(2_074_432);
+      .toBe(2_543_631);
   });
 });

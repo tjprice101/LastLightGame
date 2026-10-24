@@ -7,7 +7,7 @@ The release gate is enabled for coordinated client/authority publication (D-370/
 - Roster: **138/138** entries, **726** passing baseline/equipment/upgrade scenarios.
 - Ordinary-slot entries: 90, each with an absent baseline and all six +0..+5 upgrade levels.
 - Named Masters: 48, each with a concrete equipped and absent numerical behavior scenario.
-- Full regression: **6438 tests / 205 files passed**; zero failed or pending.
+- Full regression: **6496 tests / 207 files passed**; zero failed or pending.
 - Description parity: all 138 defaults against the complete owner-authored catalog; all 90 ordinary entries at +0..+5; Masters reject upgrades.
 - Separate interaction tests cover generated Master Shield provenance, manual native packets, stored-packet scaling, duplicate auras, additive stat pools and Defense caps.
 - UI and authority suites additionally exercise target-dependent costs, frozen equipment and Throne controls.
@@ -15,7 +15,7 @@ The release gate is enabled for coordinated client/authority publication (D-370/
 - D-383 additionally checks all93 Omnic/Master personal and squad stat packages, fixed Master/ordinary additive pools, duplicate living-source stacking, Health clamping, revival, Glassroot, Training snapshots, focused Last Flare, every-two-impact Quarry payouts, native-only Phoenix healing and Seed settlement parity after persistent JSON key reordering.
 - Passing tests do not establish subjective usefulness or mathematically exhaustive balance across every possible squad.
 
-Evidence source SHA-256 (LF-normalized): `c5a7c9cff997ea6d2610129c7b50355c9fdb7844fe29c00e26f290ca952eb3db`.
+Evidence source SHA-256 (LF-normalized): `1384a92001ecef2a84fd583deb6ba69f8dd379a88ea7c91f1204432e2d5ab54e`.
 Regenerate only from a complete passing full-suite JSON report:
 
 ```powershell
@@ -61,7 +61,7 @@ node tools\build_phase_zero_behavior_matrix.mjs "<passing-report.json>"
 | 35 | Pale Bulwark Diadem | `pale-bulwark-diadem` | Absent; +0..+5 | [Pale protects only its wearer Shields without the retired outgoing Power aura](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 36 | Siege Cantilever | `siege-cantilever` | Absent; +0..+5 | [siege-cantilever boosts all-enemy damaging skills, not single-target skills](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 37 | Starvein Conductor | `starvein-conductor` | Absent; +0..+5 | [starvein-conductor rewards a diverse frozen Squad without spending Health or adding Skill Power](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 38 | Stasis Reliquary | `stasis-reliquary` | Absent; +0..+5 | [stasis-reliquary blocks Shield-break spillover and subsequent hits, then applies one penalty turn](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 38 | Stasis Reliquary | `stasis-reliquary` | Absent; +0..+5 | [stasis-reliquary can block only Shield-break spillover, then applies one penalty turn](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 39 | Verdict Caliper | `verdict-caliper` | Absent; +0..+5 | [verdict-caliper heals once per critical Attack Action without requiring other allies to act](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 40 | Worldbreaker Drive | `worldbreaker-drive` | Absent; +0..+5 | [worldbreaker-drive changes Last Flare Power only, not other skills or a retired AoE override](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 41 | Abyssal Clearwater Parliament | `clearwater-manifold` | Absent; +0..+5 | [clearwater-manifold counts other Oceanic Squad Members even when defeated, without transferring Shields](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |

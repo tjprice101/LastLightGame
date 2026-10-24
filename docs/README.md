@@ -5,6 +5,10 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Post-refresh battle measurements
 
+**Glassroot/Stasis follow-up (D-390):** [450-Health steps,10%-20% hit-only
+Shield-spillover protection and bounded field status cards](combat.md#glassroot-stasis-and-bounded-field-status-cards-d-390).
+Combat rules10; the audit below describes the previous rules9 balance.
+
 **Machines chest rewards (D-389):** [unowned-only Conduits and tier component
 guarantees/conversions](calamity-mode.md#machines-chest-ownership-and-component-guarantees-d-389).
 Other Calamity activities and normal Machines drops are unchanged.
@@ -12,7 +16,8 @@ Other Calamity activities and normal Machines drops are unchanged.
 **Read-only Conduit audit (D-388):** [all138 IDs,94,680 matched pairs and
 ranked measured synergies](conduit-balance-audit-2026-10-23.md).
 Glassroot/Health scaling, Razor Revenge burst, duplicate auras and Stasis/
-Granite recurrence merit owner review. No Conduit balance changes made.
+Granite recurrence were reviewed. This is historical pre-D-390 evidence, not
+a current post-nerf measurement.
 
 **Current presentation (D-388):** [larger critical numbers/labels](combat.md#critical-popup-size-revision-d-388)
 supersede D-386 sizes. [Calamity opening results](calamity-mode.md#opened-chest-loot-presentation-d-388)

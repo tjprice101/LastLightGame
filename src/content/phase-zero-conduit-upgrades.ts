@@ -34,6 +34,10 @@ export const phaseZeroUpgradePercentages: Readonly<Record<string, readonly numbe
   'calamitic-world-eater-orrery': [0],
 };
 
+export function stasisChancePercent(level: number): number {
+  return 10 + level * 2;
+}
+
 export function phaseZeroUpgradedAbility(id: string, level = 0): string | undefined {
   const ability = approvedConduitAbility(id);
   if (ability === undefined) return undefined;
@@ -45,6 +49,7 @@ export function phaseZeroUpgradedAbility(id: string, level = 0): string | undefi
   }
   const positions = phaseZeroUpgradePercentages[id];
   if (!positions) throw new Error(`Missing Phase 0 upgrade policy: ${id}.`);
+  if (id === 'stasis-reliquary') return ability.replace('10%', `${stasisChancePercent(level)}%`);
   let index = 0;
   return ability.replace(/([+-]?\d+(?:\.\d+)?)%/g, (text, amount: string) => {
     if (!positions.includes(index++)) return text;

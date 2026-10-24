@@ -8,11 +8,17 @@ export function conduitStatusSnapshot(unit: Combatant): NonNullable<Combatant['c
 }
 
 export function conduitStatuses(snapshot: ReturnType<typeof conduitStatusSnapshot>, round: number,
-  owners: readonly Pick<Combatant, 'id' | 'name' | 'hp' | 'conduitRuntime' | 'masterConduit' | 'conduits'>[] = []): string {
+  owners: readonly Pick<Combatant, 'id' | 'name' | 'hp' | 'conduitRuntime' | 'masterConduit' | 'conduits'>[] = [], compact = false): string {
   const n = snapshot.numbers;
-  const labels: { id: string; text: string }[] = [];
-  const add = (id: string, text: string): void => { labels.push({ id, text }); };
+  const labels: { id: string; text: string; short: string }[] = [];
+  const add = (id: string, text: string, short = text): void => { labels.push({ id, text, short }); };
   const owner = (id: string) => owners.find(unit => unit.id === id && unit.hp > 0);
+  if (n.stasisPenalty === round + 1)
+    add('stasis-pending', '[Stasis Reliquary]: Spillover blocked. Next [Enemy Turn]: take 25% more damage from enemy [Attack Actions]; protection is on cooldown.',
+      '[Stasis]: +25% damage taken next turn');
+  if (n.stasisPenalty === round)
+    add('stasis-penalty', '[Stasis Reliquary]: Take 25% more damage from enemy [Attack Actions] this [Enemy Turn]. [Shield] break protection is on cooldown.',
+      '[Stasis]: +25% damage taken · cooldown');
   if (n.calamiticOrrery) add('calamitic-orrery', `World-Eater reserve: ${formatStat(n.calamiticOrrery)} force · Defense releases it.`);
   if (n.calamiticDebt) add('calamitic-debt', `Funeral debt: ${formatStat(n.calamiticDebt)} HP · paid before enemy phase ${n.calamiticDebtDue}.`);
   if (n.calamiticThroneArmed === round) add('calamitic-throne', 'Borrowed tomorrow: one Normal Attack or ordinary skill available; using it costs next turn.');
@@ -24,10 +30,6 @@ export function conduitStatuses(snapshot: ReturnType<typeof conduitStatusSnapsho
   if (n.silence) add('silence', 'Silence: next scheduled enemy skill becomes a Normal Attack.');
   if (n.stasisSkip && n.stasisSkip >= round) add('stasis-skip',
     n.stasisSkip === round ? 'Stasis: cannot act this turn.' : `Stasis: cannot act on turn ${n.stasisSkip}.`);
-  if (n.stasisProtected === round)
-    add('stasis-protection', '[Stasis Reliquary]: Prevents all further damage this [Enemy Turn].');
-  if (n.stasisPenalty === round)
-    add('stasis-penalty', '[Stasis Reliquary]: Take 25% more damage from enemy [Attack Actions] this [Enemy Turn]. [Shield] break protection is on cooldown.');
   if (snapshot.owners.accord) add('accord', `Accord: one lethal direct hit prevented; shield follows · ${owner(snapshot.owners.accord)?.name ?? snapshot.owners.accord}.`);
   if (n.quietFeather) add('quiet-feather', 'Quiet Feather: next legal Skill 1 costs no Elemental Gauge; no extra action or recovery bypass.');
   const guardian = owner(snapshot.owners.guardian);
@@ -43,9 +45,9 @@ export function conduitStatuses(snapshot: ReturnType<typeof conduitStatusSnapsho
   if (link && (link.conduitRuntime?.numbers.linkThrough ?? -1) >= round) add('link', `Linked Gauge income · ${link.name}.`);
   const plates = snapshot.layers?.filter(layer => layer.plate && layer.amount > 0) ?? [];
   if (plates.length) add('plates', `Shield plates: ${plates.length} · ${formatStat(plates.reduce((sum, layer) => sum + layer.amount, 0))} shield.`);
-  return labels.map(({ id, text }) => `<span class="battle-status-badge" data-conduit-status="${id}">${escapeDialogText(text)}</span>`).join('');
+  return labels.map(({ id, text, short }) => `<span class="battle-status-badge" data-conduit-status="${id}"${compact ? ` title="${escapeDialogText(text)}"` : ''}>${escapeDialogText(compact ? short : text)}</span>`).join('');
 }
 
-export function conduitStatusReadout(unit: Combatant, round: number, owners: readonly Combatant[] = []): string {
-  return `<span class="unit-conduit-statuses">${conduitStatuses(conduitStatusSnapshot(unit), round, owners)}</span>`;
+export function conduitStatusReadout(unit: Combatant, round: number, owners: readonly Combatant[] = [], compact = false): string {
+  return `<span class="unit-conduit-statuses">${conduitStatuses(conduitStatusSnapshot(unit), round, owners, compact)}</span>`;
 }

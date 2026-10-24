@@ -334,7 +334,7 @@ var approvedConduitCatalog = {
     "name": "Glassroot Gimbal",
     "rarity": "Rare",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "Gain +5% [Skill Power] per complete 200 maximum [Health], including equipment bonuses. No cap."
+    "ability": "Gain +5% [Skill Power] per complete 450 maximum [Health], including equipment bonuses. No cap."
   },
   "hammerbalance-link": {
     "name": "Hammerbalance Link",
@@ -466,7 +466,7 @@ var approvedConduitCatalog = {
     "name": "Stasis Reliquary",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "When enemy damage breaks your [Shield], prevent the breaking hit's remaining damage and all further damage to you that [Enemy Turn]. During the next [Enemy Turn], take 25% more enemy attack damage and cannot activate this protection. Protection becomes available again on the following [Enemy Turn]."
+    "ability": "When an enemy hit breaks your [Shield] with damage remaining, gain a 10% chance to prevent only that hit's remaining [Health] damage. Later hits are not blocked. After a successful activation, during the next [Enemy Turn], take 25% more damage from enemy [Attack Actions] and cannot activate this protection. The activation chance increases by 2 percentage points per upgrade, up to 20% at +5."
   },
   "verdict-caliper": {
     "name": "Verdict Caliper",
@@ -1166,6 +1166,9 @@ var phaseZeroUpgradePercentages = {
   "calamitic-throne-borrowed-tomorrows": [0, 1],
   "calamitic-world-eater-orrery": [0]
 };
+function stasisChancePercent(level) {
+  return 10 + level * 2;
+}
 function phaseZeroUpgradedAbility(id, level = 0) {
   const ability2 = approvedConduitAbility(id);
   if (ability2 === void 0) return void 0;
@@ -1177,6 +1180,7 @@ function phaseZeroUpgradedAbility(id, level = 0) {
   }
   const positions = phaseZeroUpgradePercentages[id];
   if (!positions) throw new Error(`Missing Phase 0 upgrade policy: ${id}.`);
+  if (id === "stasis-reliquary") return ability2.replace("10%", `${stasisChancePercent(level)}%`);
   let index = 0;
   return ability2.replace(/([+-]?\d+(?:\.\d+)?)%/g, (text2, amount) => {
     if (!positions.includes(index++)) return text2;
@@ -4338,7 +4342,7 @@ function applyPhaseZeroStaticBonuses(base, slots, upgrades = {}, master2) {
   result.skillDuration = Math.floor(result.skillDuration);
   result.skillEfficiency = Math.min(0.5, result.skillEfficiency);
   if (equipment.includes("glassroot-gimbal"))
-    result.skillPower += Math.floor(result.health / 200) * phaseZeroUpgradeMagnitude(0.05, levels["glassroot-gimbal"] ?? 0);
+    result.skillPower += Math.floor(result.health / 450) * phaseZeroUpgradeMagnitude(0.05, levels["glassroot-gimbal"] ?? 0);
   return result;
 }
 
@@ -7395,7 +7399,7 @@ function nativeCleanup(state) {
 }
 
 // src/game/conduit-runtime.ts
-var conduitRulesVersion = phaseZeroStatsReady ? 9 : 4;
+var conduitRulesVersion = phaseZeroStatsReady ? 10 : 4;
 function gear(unit) {
   return unit.conduitRuntime ??= { numbers: {}, owners: {} };
 }
@@ -7478,7 +7482,7 @@ function refreshConduitStats(state, initial = false) {
       if (!(stat in pool)) unit.stats[stat] = base[stat] ?? (stat === "skillPower" || stat === "gaugeGain" ? 1 : 0);
     unit.stats.skillEfficiency = Math.min(0.5, unit.stats.skillEfficiency ?? 0);
     if (equipped(unit, "glassroot-gimbal")) {
-      unit.stats.skillPower = (unit.stats.skillPower ?? 1) + (Math.floor(unit.stats.health / 200) - Math.floor(base.health / 200)) * magnitude(state, "glassroot-gimbal", 0.05);
+      unit.stats.skillPower = (unit.stats.skillPower ?? 1) + (Math.floor(unit.stats.health / 450) - Math.floor(base.health / 450)) * magnitude(state, "glassroot-gimbal", 0.05);
     }
     unit.shatter = Math.min(unit.shatter, unit.stats.shatterCapacity);
     unit.hp = initial && unit.hp > 0 ? unit.stats.health : Math.min(unit.hp, unit.stats.health);
@@ -9255,20 +9259,15 @@ function absorbEnemyDamage(state, target, amount, events) {
   const absorbed = consumeShield(target, covered * (1 - reduction));
   let loss = Math.max(0, amount - covered);
   const n = gear(target).numbers;
-  if (phaseZeroStatsReady && shieldBefore > 0 && target.shield <= 0 && equipped(target, "stasis-reliquary") && n.stasisPenalty !== state.round) {
-    n.stasisProtected = state.round;
+  if (phaseZeroStatsReady && shieldBefore > 0 && target.shield <= 0 && loss > 0 && equipped(target, "stasis-reliquary") && n.stasisPenalty !== state.round && roll(state) < stasisChancePercent(state.conduitUpgrades?.["stasis-reliquary"] ?? 0) / 100) {
     n.stasisPenalty = state.round + 1;
     loss = 0;
-    emit(events, "status", target, target, 1, `${target.name}'s [Stasis Reliquary] prevents damage for this [Enemy Turn]; next [Enemy Turn] takes 25% more attack damage.`);
+    emit(events, "status", target, target, 1, `${target.name}'s [Stasis Reliquary] prevents this hit's [Shield] spillover; next [Enemy Turn], take 25% more damage from enemy [Attack Actions].`);
   }
   return { absorbed, loss, covered };
 }
 function conduitIncoming(state, enemy, target, damage, critical, scheduled, events, action = scheduled ? "skill1" : "light") {
   const n = gear(target).numbers;
-  if (phaseZeroStatsReady && n.stasisProtected === state.round) {
-    emit(events, "damage", enemy, target, 0, `${target.name}'s [Stasis Reliquary] prevents further damage this [Enemy Turn].`);
-    return;
-  }
   if (!scheduled && n.windveil && n.windveilRound !== state.round - 1) {
     delete n.windveil;
     n.windveilRound = state.round;
@@ -9429,7 +9428,6 @@ function allyFell(state, fallen, events) {
 }
 function routedDamage(state, enemy, target, amount, events, nativeRedirect = false) {
   const n = gear(target).numbers;
-  if (phaseZeroStatsReady && n.stasisProtected === state.round) return;
   if (phaseZeroStatsReady && n.stasisPenalty === state.round) amount = Math.round(amount * 1.25);
   const { loss: remaining } = absorbEnemyDamage(state, target, amount, events);
   const loss = Math.min(target.hp, remaining);
