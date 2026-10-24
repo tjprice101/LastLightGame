@@ -17,6 +17,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
   Reflect.deleteProperty(HTMLDialogElement.prototype, 'close');
+  Reflect.deleteProperty(HTMLDialogElement.prototype, 'showModal');
 });
 
 const progress = { level: 105, evolution: 6 };
@@ -24,6 +25,9 @@ function mount(session = createSession('ember', progress), authority?: BattleAut
   vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }));
   Object.defineProperty(HTMLDialogElement.prototype, 'close', {
     configurable: true, value: function (this: HTMLDialogElement) { this.open = false; },
+  });
+  Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+    configurable: true, value: function (this: HTMLDialogElement) { this.open = true; },
   });
   session.entrancePending = false;
   const host = document.createElement('div');
@@ -39,7 +43,7 @@ describe('reference-style shared battle HUD', () => {
     { mode: 'machines', stage: 35 }, { mode: 'treasury', stage: 25 },
     { mode: 'sanctuary', stage: 25 }, { mode: 'roses', stage: 35 },
     { character: 'nerithe', stage: 10 }, { activity: 'machines', tier: 3 },
-  ] as const)('uses one bottom readout per ally and visible modifiers in %j', activity => {
+  ] as const)('uses slim stats controls, hidden impact readouts and visible modifiers in %j', activity => {
     const f = mount(createSession('ember', progress, activity, {
       ids: ['ember', 'tide', 'sprout'], progress: { ember: progress, tide: progress, sprout: progress },
     }));
@@ -55,10 +59,11 @@ describe('reference-style shared battle HUD', () => {
       expect(f.host.querySelector('[data-action="defend"]')).toBeNull();
       for (const unit of f.session.state.allies) {
         const card = f.host.querySelector(`[data-squad-member="${unit.id}"]`)!;
-        expect(card.getAttribute('data-button-surface')).toBe('art');
+        expect(card.querySelector('[data-view-stats]')?.getAttribute('data-button-surface')).toBe('text');
+        expect(card.querySelector('[hidden]')).not.toBeNull();
         expect(card.querySelector('.unit-health')?.textContent).toBe(`HP ${formatStat(unit.hp)} / ${formatStat(unit.stats.health)}`);
         expect(card.querySelector('.unit-gauge')).not.toBeNull();
-        expect(card.querySelector('img')?.getAttribute('src')).toContain('/characters/');
+        expect(card.querySelector('.battle-card-portrait')).toBeNull();
       }
       for (const button of Array.from(f.host.querySelectorAll<HTMLButtonElement>('.battle-field-actions [data-action]'))) {
         const action = button.dataset.action as 'light' | 'skill1' | 'skill2' | 'ultimate';
@@ -70,7 +75,7 @@ describe('reference-style shared battle HUD', () => {
     } finally { f.view.destroy(); }
   });
 
-  it('keeps unavailable cards readable but disabled, without changing formation slots or silently changing the actor', () => {
+  it('lets spent/recovering/defeated members be inspected without changing the actor or formation', () => {
     const session = createSession('ember', progress, undefined, {
       ids: ['ember', 'tide', 'sprout'], progress: { ember: progress, tide: progress, sprout: progress },
     });
@@ -78,24 +83,27 @@ describe('reference-style shared battle HUD', () => {
     session.state.allies[2].recoverThrough = session.state.round;
     const f = mount(session);
     try {
-      const selected = f.host.querySelector('[data-squad-member="ember"]');
       for (const id of ['tide', 'sprout']) {
-        const card = f.host.querySelector<HTMLButtonElement>(`[data-squad-member="${id}"]`)!;
-        expect(card.disabled).toBe(true);
-        card.click();
-        expect(f.host.querySelector('[data-squad-member="ember"]')).toBe(selected);
-        expect(selected?.getAttribute('aria-pressed')).toBe('true');
+        const button = f.host.querySelector<HTMLButtonElement>(`[data-view-stats="${id}"]`)!;
+        expect(button.disabled).toBe(false);
+        button.focus();
+        button.click();
+        expect(document.querySelector<HTMLDialogElement>('.battle-stats-dialog')?.open).toBe(true);
+        expect(f.host.querySelector('[data-unit="ember"]')?.getAttribute('aria-pressed')).toBe('true');
+        document.querySelector<HTMLButtonElement>('[data-close-stats]')!.click();
+        expect(document.activeElement).toBe(button);
       }
       session.state.allies[1].hp = 0;
       Reflect.apply(Reflect.get(f.view, 'render'), f.view, []);
       expect(Array.from(f.host.querySelectorAll('.allies [data-unit]')).map(unit => unit.getAttribute('data-unit')))
         .toEqual(['ember', 'tide', 'sprout']);
       expect(f.host.querySelector('.allies')?.getAttribute('style')).toContain('--combatant-count:3');
-      expect(f.host.querySelector('[data-squad-member="tide"]')?.textContent).toContain('Defeated');
+      f.host.querySelector<HTMLButtonElement>('[data-view-stats="tide"]')!.click();
+      expect(document.querySelector('.battle-stats-dialog')?.textContent).toContain('Defeated');
     } finally { f.view.destroy(); }
   });
 
-  it('selects a captured squad card and sends exactly one action through the existing online authority', async () => {
+  it('still selects a captured field sprite and sends exactly one action through the existing online authority', async () => {
     const copy = createCreatureCopy('infusion:heavens:0');
     const session = createSession('ember', progress, undefined, {
       ids: ['ember', copy.instanceId], progress: { ember: progress }, captures: [copy],
@@ -104,14 +112,52 @@ describe('reference-style shared battle HUD', () => {
     const authority: BattleAuthority = { action, endTurn: vi.fn(), nextStage: vi.fn(), nextWave: vi.fn(), retry: vi.fn() };
     const f = mount(session, authority);
     try {
-      f.host.querySelector<HTMLButtonElement>(`[data-squad-member="${copy.instanceId}"]`)!.click();
-      const selected = f.host.querySelector(`[data-squad-member="${copy.instanceId}"]`)!;
+      f.host.querySelector<HTMLButtonElement>(`[data-unit="${copy.instanceId}"]`)!.click();
+      const selected = f.host.querySelector(`[data-unit="${copy.instanceId}"]`)!;
       expect(selected.getAttribute('aria-pressed')).toBe('true');
       expect(selected.querySelector('img')?.getAttribute('src')).toContain('/enemies/');
       expect(document.activeElement).toBe(selected);
       f.host.querySelector<HTMLButtonElement>('.battle-field-actions [data-action="light"]')!.click();
       expect(action).toHaveBeenCalledExactlyOnceWith(copy.instanceId, 'light', session.state.enemies[0].id);
       await vi.waitFor(() => expect(f.host.getAttribute('aria-busy')).toBe('false'));
+    } finally { f.view.destroy(); }
+  });
+
+  it('shows current full statuses and only the inspected character marks, refreshes on reopen, and cleans up on destruction', () => {
+    const session = createSession('rosetta', progress, undefined, {
+      ids: ['rosetta', 'crinso'], progress: { rosetta: progress, crinso: progress },
+    });
+    const ally = session.state.allies[0];
+    const enemy = session.state.enemies[0];
+    ally.native = { quarry: { target: enemy.id, round: session.state.round, contributors: [] } };
+    ally.conduitRuntime = { numbers: { stasisPenalty: session.state.round + 1 }, owners: {} };
+    enemy.conduitMarks = { [ally.id]: 1, crinso: 2 };
+    ally.weakened = 1;
+    ally.weakenFraction = .2;
+    const f = mount(session);
+    try {
+      const before = structuredClone(session.state);
+      const button = f.host.querySelector<HTMLButtonElement>('[data-view-stats="rosetta"]')!;
+      button.focus();
+      button.click();
+      const dialog = document.querySelector<HTMLDialogElement>('.battle-stats-dialog')!;
+      expect(dialog.textContent).toContain('Stasis Reliquary');
+      expect(dialog.textContent).toContain('Spillover blocked');
+      expect(dialog.textContent).toContain('Weaken -20%');
+      expect(dialog.textContent).toContain(enemy.name);
+      expect(dialog.textContent).toContain('Quarry');
+      expect(dialog.textContent).toContain('Fracture Mark 1/2');
+      expect(dialog.textContent).not.toContain('Fracture Mark 2/2');
+      expect(session.state).toEqual(before);
+      dialog.dispatchEvent(new Event('cancel', { cancelable: true }));
+      expect(document.querySelector('.battle-stats-dialog')).toBeNull();
+      expect(document.activeElement).toBe(button);
+      ally.hp -= 25;
+      button.click();
+      expect(document.querySelector('.battle-stats-dialog .unit-health')?.textContent)
+        .toBe(`HP ${formatStat(ally.hp)} / ${formatStat(ally.stats.health)}`);
+      f.view.destroy();
+      expect(document.querySelector('.battle-stats-dialog')).toBeNull();
     } finally { f.view.destroy(); }
   });
 

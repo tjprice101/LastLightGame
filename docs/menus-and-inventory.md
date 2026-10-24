@@ -1,5 +1,28 @@
 # Menus and inventory
 
+## Slim battle stats bar (D-396)
+
+Owner confirms replacing each bottom portrait/readout card with a slim
+`View [name] Stats` button, retaining the four visible actions. These buttons
+inspect only: acting-member selection stays on field sprites, selection
+shortcuts and the Battle menu. Spent, recovering and defeated members remain
+inspectable; playback/entry still locks stats buttons.
+
+Use the shared game-styled modal with Close/Escape, focus return and disposal
+cleanup. Show current HP/Gauge, resolved stat labels/units, buffs/debuffs,
+native state/forecasts and full Conduit messages (including Stasis). List living
+enemies with effects owned by that member only: native marks, Fracture Marks,
+Burn and Weaken retain actual provenance/clocks. Reopen reads current battle
+state, never a saved account or parsed combat message. Inspection changes no
+selection, actions, RNG, wallet or combat.
+
+Footer uses a single row of four actions, with stats buttons alongside on
+desktop and above on narrow screens. Hide former card contents from layout
+and accessibility; keep the internal impact snapshot patch nodes so playback
+still updates health/buffs/native state in order. No sprite offsets, sizes,
+arena sizing, scenery or toolbar changes. Full combat reference remains in
+the Battle menu. This supersedes D-392/D-393's visible portrait/readout cards.
+
 ## Sprite-only positioning correction (D-395)
 
 Owner rejects D-394's arena expansion: it pushed enemy readouts and the action

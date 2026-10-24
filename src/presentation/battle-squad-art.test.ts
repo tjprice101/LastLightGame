@@ -36,7 +36,12 @@ describe('shared artwork-led battle sizing', () => {
     expect(css).toContain('.battle-side .battle-unit:only-child { grid-column: 1 / -1; grid-row: 1 / 3; }');
     expect(css).toContain('.battle-unit .battle-art { pointer-events: none; }');
     expect(css).toContain('.battle-feedback { grid-template-columns: minmax(0, 1fr); justify-content: stretch;');
-    expect(css).toContain('.battle-squad-card .unit-field-statuses { display: block; height: 24px; min-height: 24px; max-height: 24px; }');
+    expect(css).toContain('.battle-squad-card > [hidden] { display: none !important; }');
+  });
+  it('uses a slim stats button per member and a single row of four actions instead of portrait cards', () => {
+    expect(css).toContain('[data-view-stats] { width: 100%; min-width: 0; min-height: 44px;');
+    expect(css).toContain('.battle-dock-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));');
+    expect(css).not.toContain('.battle-squad-card { display: block; padding: .3rem; min-height: 7.5rem; }');
   });
   it('moves only the two rear allied sprites without expanding the arena or pushing the dock off-screen', () => {
     expect(css).toContain('.allies.formation-trio .battle-unit:first-child .battle-art { translate: 0 -1.75rem; }');

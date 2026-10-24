@@ -9,6 +9,11 @@ status readouts now belong to bottom selection cards, superseding D-390's
 allied field-card placement. Enemy HP remains on the field; selected enemy
 modifiers remain visible above it. Damage/healing/Shield event snapshots
 patch the cards at impact without moving floating numbers or VFX off sprites.
+The current [D-396 slim stats bar](menus-and-inventory.md#slim-battle-stats-bar-d-396)
+supersedes visible allied cards: inspection dialogs own HP/Gauge, full statuses,
+Conduit text and attributed enemy marks. Internal impact readout nodes remain
+hidden, preserving event-order presentation; floating numbers stay on sprites.
+Stats inspection is read-only and does not select an acting member.
 
 Only the four existing actions are shown. Combat rules10, action costs,
 cooldowns, Gauge, RNG, authority/persistence, enemy balance, results and

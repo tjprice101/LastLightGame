@@ -177,23 +177,14 @@ html body .battle-screen #battle-root .enemies .enemy-scaling { display: none; }
 html body .battle-screen #battle-root .battle-selected-target .enemy-scaling { font-size: .65rem; line-height: 1.3; }
 html body .battle-screen #battle-root .enemies .unit-status-reference { display: none; }
 html body .battle-screen #battle-root .battle-feedback { grid-template-columns: minmax(0, 1fr); justify-content: stretch; padding: .5rem; background: #131314f5; }
-html body .battle-screen #battle-root .battle-command-dock { display: grid; grid-template-columns: minmax(0, 1fr) minmax(16rem, 24%); gap: .6rem; width: 100%; min-width: 0; }
+html body .battle-screen #battle-root .battle-command-dock { display: grid; grid-template-columns: minmax(0, 1fr) minmax(24rem, 50%); align-items: center; gap: .6rem; width: 100%; min-width: 0; }
 html body .battle-screen #battle-root .battle-squad-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: .5rem; min-width: 0; }
-html body .battle-screen #battle-root .battle-squad-card { position: relative; display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); align-items: center; gap: .4rem; min-width: 0; min-height: 7rem; padding: .45rem; border: 1px solid #414147; border-radius: .7rem; background: #1a1a1ce8; color: #f4f4f5; text-align: left; }
-html body .battle-screen #battle-root .battle-squad-card.selected-member { border-color: var(--element); box-shadow: inset 0 0 0 1px var(--element); background: color-mix(in srgb, var(--element) 10%, #131314); }
-html body .battle-screen #battle-root .battle-card-portrait { display: grid; place-items: center; width: 3.5rem; height: 5rem; border-radius: .4rem; background: #0b0b0c80; }
-html body .battle-screen #battle-root .battle-card-portrait img { width: 100%; height: 100%; object-fit: contain; }
-html body .battle-screen #battle-root .battle-card-state { position: absolute; top: .2rem; right: .4rem; font-size: .6rem; color: #bcbcc2; }
-html body .battle-screen #battle-root .battle-squad-card .unit-nameplate { width: 100%; min-width: 0; padding-top: .45rem; }
-html body .battle-screen #battle-root .battle-squad-card .unit-name { border: 0; padding: .15rem 0; background: none; font-size: .75rem; }
-html body .battle-screen #battle-root .battle-squad-card .unit-readout { border: 0; padding: 0; background: none; gap: .15rem; }
-html body .battle-screen #battle-root .battle-squad-card .health-track > span { background: var(--element); }
-html body .battle-screen #battle-root .battle-squad-card .shatter-track { margin-top: .2rem; }
-html body .battle-screen #battle-root .battle-squad-card .unit-field-statuses { display: block; height: 24px; min-height: 24px; max-height: 24px; }
-html body .battle-screen #battle-root .battle-squad-card .unit-status-reference { display: none; }
+html body .battle-screen #battle-root .battle-squad-card { min-width: 0; }
+html body .battle-screen #battle-root [data-view-stats] { width: 100%; min-width: 0; min-height: 44px; padding: .4rem .6rem; border: 1px solid var(--battle-border); border-radius: .6rem; color: #f4f4f5; font-size: .75rem; overflow-wrap: anywhere; }
+html body .battle-screen #battle-root .battle-squad-card > [hidden] { display: none !important; }
 html body .battle-screen #battle-root .battle-field-actions { display: flex; flex-direction: column; justify-content: center; gap: .3rem; min-width: 0; margin: 0; }
-html body .battle-screen #battle-root .battle-action-actor { display: block; font-size: .65rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-html body .battle-screen #battle-root .battle-dock-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem; }
+html body .battle-screen #battle-root .battle-action-actor { display: none; }
+html body .battle-screen #battle-root .battle-dock-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .35rem; }
 html body .battle-screen #battle-root .battle-dock-action { display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; gap: .2rem; min-height: 56px; min-width: 0; padding: .5rem .6rem; border: 1px solid var(--battle-border); border-radius: .6rem; background: #1a1a1c; color: #f4f4f5; text-align: left; line-height: 1.3; }
 html body .battle-screen #battle-root .battle-dock-action strong { font-size: .75rem; line-height: 1.15; }
 html body .battle-screen #battle-root .battle-dock-action span { font-size: .65rem; line-height: 1.15; }
@@ -201,10 +192,9 @@ html body .battle-screen #battle-root .battle-dock-action small { overflow: hidd
 html body .battle-screen #battle-root .battle-dock-action > :is(strong, span, small) { min-width: 0; max-width: 100%; justify-self: stretch; }
 html body .battle-screen #battle-root .battle-dock-action:disabled { opacity: .75; color: #a9a9ae; cursor: not-allowed; }
 html body .battle-screen #battle-root .battle-dock-action:not(:disabled):hover { border-color: var(--ui-accent, #f4f4f5); background-color: #242427; }
-html body .battle-screen #battle-root .battle-squad-card:disabled:not(.fallen) { opacity: 1; cursor: default; }
-html body .battle-screen #battle-root .battle-squad-card:not(:disabled):hover { border-color: var(--element); }
+html body .battle-screen #battle-root [data-view-stats]:not(:disabled):hover { border-color: var(--ui-accent, #f4f4f5); }
 html body .battle-screen #battle-root .battle-selected-target { border-color: var(--battle-border); }
-html body .battle-screen #battle-root .battle-dock-action:focus-visible, html body .battle-screen #battle-root .battle-squad-card:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+html body .battle-screen #battle-root .battle-dock-action:focus-visible, html body .battle-screen #battle-root [data-view-stats]:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 html body .battle-screen #battle-root .battle-footer-summary { display: block; height: 0; }
 html body .battle-screen #battle-root #battle-announcement { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); }
 html body .battle-screen #battle-root .battle-footer-target { display: none; }
@@ -251,13 +241,14 @@ html body .battle-screen #battle-root .battle-footer-target { display: none; }
   html body .battle-screen #battle-root .enemies .unit-nameplate { left: 0; width: 100%; }
   html body .battle-screen #battle-root .enemies .unit-name { font-size: .62rem; }
   html body .battle-screen #battle-root .battle-squad-cards { gap: .25rem; }
-  html body .battle-screen #battle-root .battle-squad-card { display: block; padding: .3rem; min-height: 7.5rem; }
-  html body .battle-screen #battle-root .battle-card-portrait { position: absolute; top: .2rem; left: .25rem; width: 1.5rem; height: 1.8rem; }
-  html body .battle-screen #battle-root .battle-card-state { top: .4rem; right: .25rem; font-size: .55rem; }
-  html body .battle-screen #battle-root .battle-squad-card .unit-nameplate { padding-top: 1.65rem; }
-  html body .battle-screen #battle-root .battle-squad-card .unit-name { font-size: .65rem; }
-  html body .battle-screen #battle-root .battle-squad-card .unit-field-statuses { display: none; }
+  html body .battle-screen #battle-root [data-view-stats] { font-size: .7rem; line-height: 1.2; }
   html body .battle-screen #battle-root .battle-dock-action { padding: .25rem; }
   html body .battle-screen #battle-root .battle-dock-action strong { font-size: .65rem; }
   html body .battle-screen #battle-root .battle-feedback { padding: .35rem; }
 }
+.battle-stats-dialog section { margin-top: 1rem; }
+.battle-stats-values { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: .6rem; }
+.battle-stats-values dd { margin: .2rem 0 0; overflow-wrap: anywhere; }
+.battle-stats-dialog :is(.battle-status-badge, .native-state-row, .native-forecast, .unit-health, .unit-gauge, .unit-stats) { display: block; margin-block: .4rem; overflow-wrap: anywhere; white-space: normal; }
+.battle-stats-dialog .status-icon { width: 24px; height: 24px; object-fit: contain; vertical-align: middle; }
+.battle-stats-dialog .native-state-row small { display: block; }

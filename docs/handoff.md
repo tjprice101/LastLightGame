@@ -1,5 +1,32 @@
 # Current state and handoff
 
+## Slim battle stats bar (D-396)
+
+- Owner confirms slim `View [name] Stats` buttons replacing portrait cards;
+  four actions stay visible and actor selection remains separate. Stats
+  buttons open shared game-styled dialogs with current HP/Gauge/stats,
+  buffs/debuffs/native state, full Conduit messages and owned enemy effects.
+- Native markers and Fracture/Burn/Weaken use actual source IDs. Other
+  characters' marks are not attributed to the inspected member. Spent/
+  recovering/defeated members are inspectable, but busy playback blocks opening.
+  Close/Escape restore focus; destroy/rerender dispose the modal.
+- Cards' internal readout patch nodes remain hidden for ordered playback;
+  no visible portrait/name/HP/Gauge/status walls. Actions form one row; narrow
+  screens put stats buttons above it. Sprite offsets, dimensions, arena,
+  toolbar, combat/authority/RNG/economy/saves are unchanged.
+- Validate HUD dialog/selection/provenance/refresh/disposal and health impact
+  regressions, full suite/build, plus actual desktop/phone footer height and
+  modal overflow/focus. Current implementation supersedes visible HUD cards.
+- Full local suite:6521 tests/208 files pass; production build/typecheck
+  passes with existing chunk-size warning. Desktop footer measured84px,
+  down from172px; phone footer also reduced, with all actions visible.
+  Stats dialogs fit desktop/phone viewports without horizontal overflow;
+  Stasis full text, owner-only Quarry details, unchanged actor and focus
+  restoration verified against production styles using memory-only fixtures.
+  Final six-file focused run passes65/65; final production styles checked
+  for squads1/2/3 at1280x720,390x844,320x720. Footers are84/128/158px for
+  three-member squads; every action stays on-screen and Escape restores focus.
+
 ## Restoring fixed-screen battle UI (D-395)
 
 - Owner rejects D-394's expanded arena/scrolling because it hides the bottom

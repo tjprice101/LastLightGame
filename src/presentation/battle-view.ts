@@ -1,5 +1,5 @@
 import { actionIds, describeFighter, enemies, formatStat, isActionId, shatterGauge, type ActionId } from '../content/combat';
-import { escapeDialogText, gameConfirm, gameDialogPending } from './game-dialog';
+import { createGameDialog, escapeDialogText, gameConfirm, gameDialogPending } from './game-dialog';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { actAndAdvanceTurn, advanceUnavailableTurns, teamCanAct, combatantCanAct, actionUnavailable, actionGaugeCost, createBattle, createCalamityBattle, createDungeonBattle, createInfusionBattle, createWarBattle, createStoryBattle, endTurn, nextStage, nextWave, withMasterLoadouts, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
 import { calamityEncounter, isCalamityActivityId, isCalamityTier, type CalamityActivityId, type CalamityTier } from '../content/calamity';
@@ -29,7 +29,8 @@ import { unitFacingAttributes } from './unit-facing';
 import { gestureGuide, updateGestureGuide } from './gesture-guide';
 import { unitReadout } from './unit-readout';
 import { healthAfterEvent, healthSnapshot, impactEvents, attackEffectTargets } from './battle-health';
-import { enemyDebuffs } from './battle-status';
+import { enemyDebuffs, enemyStatusReadout } from './battle-status';
+import { debuffSnapshot } from '../game/battle-debuffs';
 import { activityTransitionPending, transitionActivity, waitForActivityTransition } from './activity-transition';
 import { entranceFrames } from './battle-entrance';
 import { infusionEncounter } from '../content/infusions';
@@ -53,11 +54,12 @@ import { allyBuffs } from './ally-buffs';
 import { BattleVFXRunner } from '../vfx/battle-vfx-runner';
 import { conduitRestartNotice, restartHistoricalConduitSession } from './conduit-compatibility';
 import { createAllyTargetPicker, nativeActionHint, nativeIdentityReference, nativeMarkerReadout, nativeStateReadout, needsAllyTarget } from './native-kit-presentation';
-import type { NativeView } from '../game/native-kits';
+import { nativeMarkers, type NativeView } from '../game/native-kits';
 import { bracketReferences } from './reference-text';
 import { readableEffect } from './effect-copy';
 import { enemyStrengthModifiers } from './enemy-strength';
 import { characterRole } from './character-role';
+import { normalizeStats, phaseZeroStatKeys, phaseZeroStatLabels, statDisplayUnit } from '../content/phase-zero-stats';
 
 export interface BattleSession { state: BattleState; log: string[]; runId: string; progress: CharacterProgress; teamProgress?: Partial<Record<StarterId, CharacterProgress>>; stageEvents: BattleEvent[]; entrancePending?: boolean; resultsVisible?: boolean }
 export interface BattleAuthorityResponse { session: BattleSession; result?: BattleResult }
@@ -208,6 +210,7 @@ export class BattleView {
 
   destroy(): void {
     this.disposed = true;
+    this.closeStats?.();
     this.allyPicker?.cancel();
     this.allyPicker = null;
     this.clearErrorTimers();
@@ -701,16 +704,54 @@ export class BattleView {
   }
 
   private squadCard(unit: Combatant): string {
-    const { art, color } = definition(unit);
-    const selected = unit.id === this.actorId;
-    const status = unit.hp <= 0 ? 'Defeated' : unit.recoverThrough >= this.session.state.round ? 'Recovering' : unit.spent ? 'Action used' : selected ? 'Acting' : 'Ready';
-    const unavailable = this.busy || unit.hp <= 0 || (this.session.state.phase === 'player' && !combatantCanAct(this.session.state, unit, this.targetId));
-    return `<button type="button" class="battle-squad-card${selected ? ' selected-member' : ''}${unit.hp <= 0 ? ' fallen' : ''}" data-squad-member="${unit.id}" data-button-surface="art" aria-pressed="${selected}" aria-label="${escapeDialogText(unit.name)} · ${status}" style="--element:${color}" ${unavailable ? 'disabled' : ''}>
-      <span class="battle-card-portrait" aria-hidden="true">${art ? `<img src="${assetUrl(`${unit.captured ? 'enemies' : 'characters'}/${art}.png`)}" alt="" ${unitFacingAttributes(art, 'ally')} width="96" height="96">` : ''}</span>
-      <span class="battle-card-state">${status}</span>${this.nameplate(unit)}</button>`;
+    const name = isStarterId(unit.definitionId) && !unit.captured ? getStarter(unit.definitionId).name : unit.name;
+    return `<div class="battle-squad-card" data-squad-member="${unit.id}">
+      <button type="button" data-view-stats="${unit.id}" data-button-surface="text" aria-haspopup="dialog" ${this.busy ? 'disabled' : ''}>View ${escapeDialogText(name)} Stats</button>
+      <div hidden aria-hidden="true">${this.nameplate(unit)}</div></div>`;
+  }
+
+  private closeStats: (() => void) | null = null;
+
+  private showStats(unit: Combatant): void {
+    const state = this.session.state;
+    const { dialog, dispose } = createGameDialog(`${unit.name} Stats`);
+    const close = (): void => { this.closeStats = null; dispose(); };
+    this.closeStats = close;
+    dialog.classList.add('battle-stats-dialog');
+    const marks = state.enemies.filter(enemy => enemy.hp > 0).map(enemy => {
+      const native = nativeMarkers(state, enemy).filter(mark => mark.owner === unit.id);
+      const snapshot = debuffSnapshot(enemy);
+      const effects = {
+        ...snapshot,
+        burn: enemy.burn.sourceId === unit.id ? snapshot.burn : undefined,
+        weakened: enemy.weakenSourceId === unit.id ? snapshot.weakened : 0,
+        marks: snapshot.marks?.filter(mark => mark.bearerId === unit.id),
+      };
+      if (!native.length && !effects.burn && !effects.weakened && !effects.marks?.length) return '';
+      return `<li><strong>${escapeDialogText(enemy.name)}</strong>${native.map(mark => `<p>${escapeDialogText(`${mark.label}: ${mark.value}`)}</p>`).join('')}${enemyDebuffs(effects, state.allies)}</li>`;
+    }).join('');
+    const resolved = normalizeStats(unit.stats);
+    const stats = phaseZeroStatKeys.filter(key => !['health', 'defense', 'shatterCapacity'].includes(key)).map(key => {
+      const suffix = statDisplayUnit(key);
+      return `<div><dt>${phaseZeroStatLabels[key]}</dt><dd>${formatStat(resolved[key] * (suffix === '%' ? 100 : 1))}${suffix}</dd></div>`;
+    }).join('');
+    dialog.innerHTML = `<h2>${escapeDialogText(unit.name)} Stats</h2>${elementLabel(unit.element)}
+      <p>${unit.hp <= 0 ? 'Defeated' : unit.recoverThrough >= state.round ? 'Recovering' : unit.spent ? 'Action used' : 'Ready'}</p>
+      <dl class="battle-stats-values">${stats}</dl>
+      <section><h3>Current status</h3>${unitReadout(unit, false, state.allies, state.round, state)}${enemyStatusReadout(unit, state.allies)}</section>
+      <section><h3>Marked enemies</h3>${marks ? `<ul>${marks}</ul>` : '<p>No marked enemies.</p>'}</section>
+      <div class="game-dialog-actions"><button type="button" data-close-stats autofocus>Close</button></div>`;
+    dialog.querySelector('[data-close-stats]')?.addEventListener('click', close);
+    dialog.addEventListener('cancel', event => { event.preventDefault(); close(); });
+    dialog.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); close(); }
+    });
+    dialog.addEventListener('close', () => { if (this.closeStats === close) close(); });
+    try { dialog.showModal(); } catch (error) { close(); throw error; }
   }
 
   private render(): void {
+    this.closeStats?.();
     this.clearErrorTimers();
     this.dragging = false;
     const state = this.session.state;
@@ -759,7 +800,7 @@ export class BattleView {
       ${results}
       <p id="battle-error" role="alert" aria-atomic="true" class="status"></p>
       ${this.session.log.at(-1) === conduitRestartNotice ? `<p class="battle-compatibility-notice" role="status">${conduitRestartNotice}</p>` : ''}
-      <div class="battle-command-dock"><div class="battle-squad-cards" role="group" aria-label="Squad status and selection">${state.allies.map(unit => this.squadCard(unit)).join('')}</div>
+      <div class="battle-command-dock"><div class="battle-squad-cards" role="group" aria-label="Squad stats">${state.allies.map(unit => this.squadCard(unit)).join('')}</div>
       <section class="battle-field-actions" aria-label="${escapeDialogText(actor.name)} actions"><strong class="battle-action-actor">${actor.name}</strong><div class="battle-dock-actions">${actionIds.map(action => this.actionButton(state, actor, action, true)).join('')}</div></section></div>
       <div class="battle-footer-summary"><p id="battle-announcement" role="status">${complete ? state.calamity ? 'Calamity tier cleared. Your chest is saved in Inventory. Enter the next unlocked tier from Play.' : `All ${stages} stages cleared. Return to Play to replay unlocked stages.` : state.phase === 'cleared' ? (dungeon ? 'Stage cleared. Continue with full health; Elemental Gauge carries over.' : 'Wave cleared. Continue when ready; recovery and health carry over.') : state.phase === 'defeat' ? 'Your squad has fallen. Retry when ready; earned rewards are kept.' : 'Select a target. Drag an ally: ↑ Last Flare · ← Skill 1 · → Skill 2 · ↓ Normal. Right-click: Normal Attack.'}</p>
       <span class="battle-footer-target"><strong>${actor.name}</strong><small>Target: ${state.enemies.find((enemy) => enemy.id === this.targetId)?.name ?? 'None'}</small></span></div>
@@ -927,14 +968,14 @@ export class BattleView {
         this.host.querySelector<HTMLButtonElement>(`[data-unit="${id}"]`)?.focus();
       });
     });
-    this.host.querySelectorAll<HTMLButtonElement>('[data-squad-member]').forEach(button => {
+    this.host.querySelectorAll<HTMLButtonElement>('[data-view-stats]').forEach(button => {
       button.addEventListener('click', () => {
-        if (activityTransitionPending() || this.busy || this.dragging || gameDialogPending()) return;
-        const id = button.dataset.squadMember;
-        if (!id) throw new Error('Squad member ID is missing.');
-        this.actorId = id;
-        this.render();
-        this.host.querySelector<HTMLButtonElement>(`[data-squad-member="${this.actorId}"]`)?.focus({ preventScroll: true });
+        if (activityTransitionPending() || this.busy || this.disposed || this.dragging || gameDialogPending()) return;
+        const unit = this.session.state.allies.find(ally => ally.id === button.dataset.viewStats);
+        if (!unit) throw new Error('Squad stats member is missing.');
+        try { this.showStats(unit); } catch (error) {
+          this.error(error instanceof Error ? error.message : 'Could not open character stats.');
+        }
       });
     });
     this.host.querySelectorAll<HTMLButtonElement>('[data-action]').forEach((button) => {
