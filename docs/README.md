@@ -3,6 +3,9 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**Battle restoration (D-395):** [sprite-only correction](menus-and-inventory.md#sprite-only-positioning-correction-d-395)
+restores the fixed-screen HUD; only the two rear allied sprites move.
+
 **Battle correction (D-394):** [full artwork clearance and nonduplicated enemy details](menus-and-inventory.md#artwork-clearance-and-nonduplicated-enemy-details-d-394)
 replace center-only spacing checks with actual rear portrait clearance.
 

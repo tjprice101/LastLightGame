@@ -38,13 +38,12 @@ describe('shared artwork-led battle sizing', () => {
     expect(css).toContain('.battle-feedback { grid-template-columns: minmax(0, 1fr); justify-content: stretch;');
     expect(css).toContain('.battle-squad-card .unit-field-statuses { display: block; height: 24px; min-height: 24px; max-height: 24px; }');
   });
-  it('reserves two complete artwork heights for rear members rather than only separating button centers', () => {
-    expect(css).toContain('#battle-root { grid-template-rows: auto minmax(max-content, 1fr) auto; }');
-    expect(css).toContain('.battle-arena { container-type: inline-size; height: auto; }');
-    expect(css).toContain('min-height: calc(var(--battle-art-base) * 1.14 * var(--combatant-count) + 1rem)');
-    expect(css).toContain('.battle-side:has(> .battle-unit:nth-child(2)) { min-height: calc(var(--battle-art-base) * 2.28 + 1rem); }');
-    expect(css).toContain('padding-block: 0; grid-template-columns: repeat(2, minmax(0, 1fr))');
-    expect(css).not.toContain('padding-block: calc(var(--battle-art-base) * .15)');
+  it('moves only the two rear allied sprites without expanding the arena or pushing the dock off-screen', () => {
+    expect(css).toContain('.allies.formation-trio .battle-unit:first-child .battle-art { translate: 0 -1.5rem; }');
+    expect(css).toContain('.allies.formation-trio .battle-unit:last-child .battle-art { translate: 0 1.5rem; }');
+    expect(css).not.toContain('minmax(max-content, 1fr)');
+    expect(css).not.toContain('container-type: inline-size');
+    expect(css).not.toContain('min-height: calc(var(--battle-art-base)');
   });
   it('separates all sprite silhouettes from bright and dark scenery without replacing state filters', () => {
     expect(css).toContain('#battle-root .battle-sprite img { filter: drop-shadow(0 1px 1px #080b10) drop-shadow(0 0 2px #ffffffd9) drop-shadow(0 2px 6px #080b10b3); }');

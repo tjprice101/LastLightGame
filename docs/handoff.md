@@ -1,5 +1,25 @@
 # Current state and handoff
 
+## Restoring fixed-screen battle UI (D-395)
+
+- Owner rejects D-394's expanded arena/scrolling because it hides the bottom
+  controls. Removed all new intrinsic arena sizing/containment/minimum-height
+  rules and restored D-393 formation padding. No new shell/layout changes.
+- Only desktop trio rear allied artwork moves: first24px up, third24px down.
+  Hit-target slots, front ally, enemies, portrait sizes, toolbar and dock
+  retain previous layout. Phones unchanged. Enemy identity deduplication stays.
+- Regression rejects arena expansion and checks sprite-only translations.
+  Focused HUD/toolbar/art tests:32/32. Build/typecheck passes (initial EBUSY
+  from preview asset lock resolved by stopping preview and rerunning build).
+  Browser validation specifically checks on-screen footer/actions and visible
+  subject spacing, not transparent square-image overlap. At1920x1080,
+  1620x900,1280x720,390x844,320x720, the entire footer and all four actions
+  stay on-screen, with shell height equal to viewport height. The supplied
+  Razor/Rosetta/Crinso Omnic squad has separated visible rear subjects and
+  its lower subject stays above the dock in all five checks.
+- D-394 arena-expansion contract is superseded. Combat, saves and rewards
+  remain unchanged.
+
 ## Rear artwork clearance and duplicate target details (D-394)
 
 - Owner screenshots identify duplicate enemy name/element and overlap between
