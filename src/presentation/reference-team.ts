@@ -76,7 +76,7 @@ function captureGrid(account: Account): string {
       const progress = capturedProgress(copy);
       const sale = isSellableCreatureMode(getCreature(copy.creatureId).mode) ? creatureSaleOffer(account, copy.instanceId) : null;
       return `<article class="ref-collection-card"><button class="ref-card-art" data-team-capture-detail="${copy.instanceId}" aria-label="Open ${member.name}, copy ${index + 1}">${member.art}</button><div class="ref-card-caption"><b>${member.name}</b><small>★${progress.tier + 1} · ${member.element} · Lv.${progress.level} · Copy ${index + 1}</small>${position >= 0 ? `<span class="ref-chip ref-white">${position === 0 ? 'Leader' : 'In squad'}</span>` : ''}<button class="ref-chip ${protection.locked ? 'ref-white' : ''}" data-character-lock="${copy.instanceId}" data-lock-value="${!protection.locked}" aria-pressed="${protection.locked}">${protection.locked ? 'Locked' : 'Lock'}</button>
-        ${sale ? information(`quick-sale-${copy.instanceId}`, `${member.name} · Copy ${index + 1}`, `<p>Sell this exact captured copy. Choose one payout when options are offered. Sale is permanent.</p>${saleControls(sale, copy.instanceId, 'Sell')}`, 'Quick Sell') : ''}</div></article>`;
+        ${sale ? information(`quick-sale-${copy.instanceId}`, `${member.name} · Copy ${index + 1}`, `<p>Sales are permanent.</p>${saleControls(sale, copy.instanceId, 'Sell')}`, 'Quick Sell') : ''}</div></article>`;
     }).join('')}</div></div>` : '<div class="ref-empty"><b>No captured Elemental-Devourers yet</b><p>Defeat eligible enemies in Heaven, Abyss, Crownfall Treasury, Rosethorn Sanctuary or Passion of Crimson Roses.</p><button class="ref-button ref-outline" data-page="gameplay">Go to Play</button></div>'}
     <p id="character-lock-result" role="status"></p></section>`;
 }
@@ -110,7 +110,7 @@ function captureDetail(account: Account, id: string, tab = 'overview'): string {
       <div class="ref-character-header-actions">
         ${squad[0] === id ? '<span class="ref-chip ref-white">Squad leader</span>' : squad.includes(id) ? `<button class="ref-chip" data-make-leader="${id}">♛ Make leader</button>` : '<button class="ref-chip" data-team-view="formation">Add to squad</button>'}
         <button class="ref-chip" data-character-lock="${id}" data-lock-value="${!protection.locked}" aria-pressed="${protection.locked}">${protection.locked ? 'Unlock' : 'Lock'} copy</button>
-        ${information(`capture-lore-${id}`, creature.name, `<p>${creatureLore(creature)}</p><p>This is a captured copy in your squad. Its origin remains Rise's creation; capture does not change its element or retained kit.</p>`, 'Lore')}</div></div>
+        ${information(`capture-lore-${id}`, creature.name, `<p>${creatureLore(creature)}</p>`, 'Lore')}</div></div>
     </header>
     <nav class="ref-character-submenus" aria-label="Elemental-Devourer sub-menus">${[['overview', 'Stats & Skills'], ['upgrade-1', 'Level'], ['sale', 'Sale']].map(([key, label]) => `<button type="button" data-capture-tab="${key}" aria-pressed="${tab === key}" aria-controls="capture-panel-${key}">${label}</button>`).join('')}<button type="button" data-open-loadout>Conduits</button></nav>
     <section class="hub-detail ref-character-panels" aria-label="Elemental-Devourer details and upgrades"><div class="character-detail-content ref-organized-detail${tab === 'upgrade-1' ? ' ref-growth-detail' : ''}">

@@ -90,11 +90,10 @@ export function calamityLoot(activity: CalamityActivityId, tier: CalamityTier): 
   const weight = rows.reduce((sum, row) => sum + row.weight, 0);
   return `${calamityChestIcon(tier)}<p>${escapeDialogText(chest.name)}</p><h3>Guaranteed contents</h3>
     ${calamityChestContents(activity, tier)}
-    <p>Each random reward is chosen separately from this table. The same reward can appear more than once, except Conduits.</p>
-    ${chest.componentRange ? `<p>Conduit rolls keep their rarity chances and select equally among unowned names of that rarity, excluding names already awarded in this chest. Listed Conduit chances assume none are owned. If that rarity is fully owned, receive ${chest.componentRange.min.toLocaleString('en-US')}-${chest.componentRange.max.toLocaleString('en-US')} extra Broken Mechanical Components instead. Random component bonuses are additional to the guaranteed payout.</p>` : ''}
+    <p>Random rewards roll separately and can repeat, except Conduits.</p>
+    ${chest.componentRange ? `<ul><li>Conduits are chosen equally from unowned names in the rolled rarity. No duplicates within a chest.</li><li>Rarity chances stay fixed; listed per-Conduit chances assume none are owned.</li><li>Fully owned rarity: ${chest.componentRange.min.toLocaleString('en-US')}-${chest.componentRange.max.toLocaleString('en-US')} extra Broken Mechanical Components instead.</li><li>Component bonuses add to the guaranteed amount.</li></ul>` : ''}
     <table><thead><tr><th>Reward</th><th>Chance per reward</th><th>Quantity</th></tr></thead><tbody>${rows.map(row =>
-    `<tr><td>${escapeDialogText(row.label)}</td><td>${Number((row.weight / weight * 100).toFixed(6))}%</td><td>${row.min}-${row.max}</td></tr>`).join('')}</tbody></table>
-    <p>Open in Inventory to receive these rewards. Opening uses one chest.</p>`;
+    `<tr><td>${escapeDialogText(row.label)}</td><td>${Number((row.weight / weight * 100).toFixed(6))}%</td><td>${row.min}-${row.max}</td></tr>`).join('')}</tbody></table>`;
 }
 
 function calamityChestContents(activity: CalamityActivityId, tier: CalamityTier): string {
@@ -116,7 +115,7 @@ export function calamitySection(activity: CalamityActivityId, account: Account |
   return `<section class="calamity-section" data-calamity-tiers="${activity}" aria-label="${escapeDialogText(definition.name)} Calamity">
     <div class="calamity-heading"><div><h3>${escapeDialogText(definition.name)} · Calamity</h3>
       <p>Free entry. One sealed tier chest per victory.</p></div>
-      ${information(`${prefix}-rules`, 'Calamity rules', '<p>Defeat one boss to earn one chest. Open it in Inventory to receive its contents. The boss drops nothing else. Entry is free, and losing costs nothing.</p>', 'Calamity rules')}</div>
+      ${information(`${prefix}-rules`, 'Calamity rules', '<p>One boss, one chest, no other drops. Open the chest in Inventory. Entry and retries are free.</p>', 'Calamity rules')}</div>
     <div class="calamity-tier-tabs" role="tablist" aria-label="Calamity tier">
       ${([1, 2, 3] as const).map(tier => `<button type="button" role="tab" id="${prefix}-${tier}-tab" data-calamity-choice="${tier}"
         aria-controls="${prefix}-${tier}-panel" aria-selected="${tier === 1}" tabindex="${tier === 1 ? 0 : -1}">

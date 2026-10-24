@@ -23,7 +23,6 @@ import { information } from './information';
 import { getSummonBanner } from '../content/summon-banners';
 import { bannerShowcase } from './banner-showcase';
 import { statChange, statDirection } from './stat-change';
-import { machineRules } from '../content/machines';
 import { characterRoster } from './roster';
 import { storyEncounter, storyRules } from '../content/story';
 import { unlockedStoryStage } from '../game/account';
@@ -294,14 +293,14 @@ function acceptedFodderValues(mode: string): string {
 
 export function characterInformation(): string {
   return information('character-information', 'Character information', `<h3>Levels and evolution</h3>
-    <p>Element-Bearer level caps: ${Array.from({ length: characterGrowth.forms }, (_, index) => characterLevelCap(index + 1)).join(' / ')}. Evolving requires max level and keeps it. Max Level previews affordable levels, total cost and stat changes before you confirm.</p>
+    <p>Level caps by form: ${Array.from({ length: characterGrowth.forms }, (_, index) => characterLevelCap(index + 1)).join(' / ')}. Evolving requires max level and keeps it.</p>
     <p>Each level costs Common materials plus one of each higher rarity unlocked at the destination level: ${levelingMaterialTiers.map(tier => `${tier.rarity} at ${tier.destination}+`).join(', ')}. Materials match the member's element (Rosethorn for Rosetta, Thornia, Crinso and Roselius); late-form specialty costs are extra.</p>
     <p>Core growth: 1 + 0.15 &times; level + 1.5 &times; (evolution - 1); Defense uses core growth^0.7. Ability potency grows with level and evolution. Gauge gains, costs, cooldowns and durations don't scale, except through Conduits.</p>
-    <h3>Evolution fodder</h3><p>Late evolutions consume Elemental-Devourers worth 3 (Evo.3→4), 8 (Evo.4→5) and 15 (Evo.5→6) Evolution Value. Each copy is worth its form, 1-6, so weaker copies can be combined; you can't exceed the requirement. Copies come from the element's infusion mode; Rosetta, Thornia and Crinso use Roselius. Consumption is permanent.</p>
+    <h3>Evolution fodder</h3><ul><li>Evo.3→4: 3 Evolution Value. Evo.4→5: 8. Evo.5→6: 15.</li><li>Each Elemental-Devourer is worth its form number (1-6). Combine copies to meet the exact total.</li><li>Use copies from the matching infusion mode; Rosetta, Thornia and Crinso use Roselius. Selected copies are consumed permanently.</li></ul>
     <h3>Rose event growth</h3><p>Rosetta, Thornia and Crinso use Rosethorn materials instead of elemental and specialty materials: Seed for levels, plus Soul at Evo.5–6 and for late evolutions with Roselius. Roselius are capturable at Lv.120 or below, join at up to Lv.60 and sell for their form's material.</p>
-    <h3>Captured Elemental-Devourers</h3><p>Level independently to 60 and never evolve; captures above 60 join at 60. They keep their form and skills: Skill 1 and Skill 2 have no cooldown, a retained Last Flare uses its interval as a cooldown, and missing slots stay empty. Stats use ordinary growth, no boss bonuses.</p>
+    <h3>Captured Elemental-Devourers</h3><p>Keep their form and skills, cap at Lv.60 and never evolve. Boss stat bonuses are not retained.</p><p>Skill 1 and Skill 2 have no cooldown. A retained Last Flare uses its enemy interval as a cooldown. Missing skills stay unavailable.</p>
     <h3>Protection and sales</h3><p>Locked, squad and Conduit-equipped copies can't be sold or consumed. Sales are permanent; prices depend on form, not level.</p>
-    <h3>Conduits</h3><p>One copy unlocks a Conduit for every Element-Bearer; each name equips once per member and is never consumed. Eight ordinary slots, up to four matching-element Omnic, plus one Master slot for that Element-Bearer's own fixed, non-upgradable Masters. Rare and Legendary drop in Awaken the Machines, Omnic from stage ${machineRules.omnicStage}; banners add a separate Legendary bonus. Changes apply to the next run.</p>`);
+    <h3>Conduits</h3><p>Unlock once, equip across your squad. No duplicate names on the same member.</p><ul><li>Eight ordinary slots; at most four Omnic, matching the wearer's element.</li><li>One Master slot, restricted to that Element-Bearer's Masters. Masters cannot be upgraded.</li><li>Equipment changes apply to the next run.</li></ul>`);
 }
 
 export function characterDetail(starter: Starter, selectedTab: string, account: Account | null = emptyAccount(), organized = false): string {

@@ -533,7 +533,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
       archives(loaded), ...roseCharacters.map((character) => characterHub(character, 'overview', loaded))].join('');
     expect(html).toContain('data-infusion="roses"');
     expect(html).toContain('No captures above Lv.120');
-    expect(html).toContain('Current highest tier: 6-star');
+    expect(html).toContain('6-star guaranteed within');
     expect(html).toContain('6-star · 1.1%');
     expect(html).not.toContain('5-star tier: 1%');
     for (const id of ['rosetta', 'thornia', 'crinso']) expect(html).toContain(`data-banner-entry="${id}" data-entry-stars="6"`);

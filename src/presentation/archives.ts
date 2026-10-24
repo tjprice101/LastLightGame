@@ -116,11 +116,9 @@ function conduitArchive(account: Account | null): string {
 }
 
 export function archives(account: Account | null, selected: ArchiveGallery = 'characters'): string {
-  return `<section class="archives"><header class="archive-toolbar"><div><h2>Collections</h2><p>Browse forms, Conduits and enemy discoveries.</p></div>${information('collections-information', 'Collections', `<h3>Character</h3><p>Reached Element-Bearer forms and owned captured forms show in color; others are silhouettes. Current forms show saved equipped stats; other forms preview Lv.0 without Conduits. Stars and form rarity are separate. Previews don't grant ownership.</p>
-    <h3>Conduits</h3><p>Owned Conduits show in color with their effects and counts; unowned ones are silhouettes.</p>
-    <h3>Elemental-Devourer and Machine discovery</h3><p>Elemental-Devourers are Rise's creations. Machines are destroyed prototypes from her collaboration with Let, not her faction.</p><p>Encountering reveals identity, element and lore; defeating reveals stage loot. View Loot lists stage amounts and rates; View Details shows a Conduit's effects and lore.
-    Quantities vary uniformly; final bosses multiply them by 5. Rarity rolls are independent, with no pity.
-    Heaven, Abyss, Treasury and Sanctuary have a 50% capture chance per kill; Crimson Roses also has 50% at enemy Lv.120 or below. Story, Training and elemental dungeons have none. Captures keep form and skills, up to Lv.60, and sell at fixed prices by form.</p>
+  return `<section class="archives"><header class="archive-toolbar"><div><h2>Collections</h2><p>Browse forms, Conduits and enemy discoveries.</p></div>${information('collections-information', 'Collections', `<h3>Forms and stats</h3><p>Color marks reached Element-Bearer forms, owned captured forms and owned Conduits. Everything else stays silhouetted.</p><p>Your current forms show equipped stats. Other forms preview Lv.0 without Conduits. Stars and form rarity are separate.</p>
+    <h3>Enemy discovery</h3><p>Encounter an enemy to reveal its identity and lore; defeat it to reveal its loot table.</p><p>Loot quantities are equally likely within each range. Rarity rolls are independent, with no pity. Final bosses give 5x currency, materials and components, not 5x drop chances.</p>
+    <h3>Captures</h3><p>50% per kill in Heaven, Abyss, Treasury and Sanctuary. Crimson Roses has the same chance up to enemy Lv.120. No captures in Story, Training or elemental dungeons.</p><p>Captures keep their form and skills, cap at Lv.60 and sell by form, not level.</p>
     `)}</header>
     <nav class="archive-navigation" aria-label="Archive galleries">${galleries.map((gallery) =>
       `<button class="archive-gallery-button" data-archive-gallery="${gallery.id}" aria-controls="archive-${gallery.id}" aria-pressed="${selected === gallery.id}"><strong>${gallery.name}</strong><small>${gallery.subtitle}</small></button>`).join('')}</nav>

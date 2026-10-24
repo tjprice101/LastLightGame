@@ -1,5 +1,30 @@
 # Menus and inventory
 
+## Concise player explanations (D-391)
+
+Help describes the rule or exception, not the controls already on screen.
+Do not repeat a visible price, currency, Owned state or button instruction in
+the same panel's explanatory prose. Use short sentences and lists for distinct
+restrictions. Keep canonical bracketed terms, exact effects/rates, eligibility,
+permanent-sale warnings and next-run equipment behavior.
+
+Store help reads "Unlock once, equip across your squad." Common purchases
+explain that extra copies give no benefit; Calamitic purchases retain universal
+element compatibility and ordinary-slot/no-rarity-limit rules. Prices,
+single-purchase enforcement and equipment validation are unchanged.
+
+The same pass covers Character progression/equipment, Inventory/material
+details, Collections, Conduit upgrades, Focus Loot, Machines/Master help,
+Calamity chest help, summon guarantees, Settings and captured-copy panels.
+Repeated acquisition rules stay in Inventory/Gameplay rather than Character;
+full ability effects, authored lore and numerical reward tables remain intact.
+Multi-pull help describes parity with single pulls, not transaction internals.
+No mechanics, economy, account writes, routes or dialog behavior change.
+
+Validate `menu-information.test.ts` (purchase help at most30 words; shared
+Character/Inventory/Upgrade paragraphs at most65 words), existing Store,
+Upgrade, summon, Focus Loot, Calamity and Information-topic tests, then build.
+
 ## Collapsed Conduit lore (D-358)
 
 Conduit descriptions keep ability effects and equipment restrictions visible.

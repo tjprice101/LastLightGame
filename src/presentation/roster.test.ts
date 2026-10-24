@@ -78,7 +78,7 @@ describe('roster, squad and summon screens', () => {
     const dialog = html.slice(dialogStart, html.indexOf('</dialog>', dialogStart));
     expect(dialog).toContain('<table');
     expect(html.replace(dialog, '')).not.toContain('<table');
-    expect(dialog).toContain('Each banner keeps its own counters');
+    expect(dialog).toContain('Counters are separate per banner');
   });
   it('offers a real roster including each captured UUID and keeps draft assignments distinct', () => {
     const id = 'capture:00000000-0000-4000-8000-000000000001';

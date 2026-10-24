@@ -3,6 +3,10 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**Player copy (D-391):** [concise menu and activity explanations](menus-and-inventory.md#concise-player-explanations-d-391)
+remove repeated controls and technical filler while retaining key restrictions,
+exact effects, rates and bracketed terminology.
+
 ## Post-refresh battle measurements
 
 **Glassroot/Stasis follow-up (D-390):** [450-Health steps,10%-20% hit-only

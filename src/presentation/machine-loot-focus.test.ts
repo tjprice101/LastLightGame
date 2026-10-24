@@ -27,7 +27,7 @@ describe('Machines Focus Loot screen', () => {
       expect(button.disabled).toBe(entry.id === owned.id);
       expect(host.querySelector(`[id="focus-details-${entry.id}"]`)?.textContent).toContain(entry.name);
     }
-    expect(host.textContent).toContain('Master Conduits cannot be focused');
+    expect(host.textContent).toContain('Masters cannot be focused');
     expect(account).toEqual(before);
     const ids = Array.from(host.querySelectorAll('[id]')).map(node => node.id);
     expect(new Set(ids).size).toBe(ids.length);

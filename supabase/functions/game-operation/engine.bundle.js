@@ -2924,7 +2924,7 @@ var masterChest = {
   art: "master-conduits/grand-master-chest.png",
   description: "Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward."
 };
-var masterRulesText = `The stage ${machineStageCount} final boss has a 1% chance to drop a Cosmic Grand Master Chest; each Calamity EX+Omnipotent chest holds two. Open one in Inventory to choose an unowned Omnic Master, even for an Element-Bearer you don't own yet. A Master equips only to its named Element-Bearer, in its own slot, and cannot be upgraded. Chests stay unopened once you own all 48.`;
+var masterRulesText = `Cosmic Grand Master Chest: 1% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 48.`;
 function master(character, slot, name, design) {
   return {
     id: `master-${character}-${slot}`,
@@ -3319,11 +3319,10 @@ function bannerConduitBonus(random) {
   return rollTier(bannerPool, machineRules.bannerBonusChance, random);
 }
 var machineRulesText = `<p>${machineOrigin}</p>
-  <p>${machineRules.stages} stages, Lv.10-120, a boss every fifth stage. Each enemy drops Prismatica and can drop an unowned Conduit: Rare 8% and Legendary 3.5% on every stage; Omnic 1% on stage ${machineRules.omnicStage} and every stage afterward.</p>
-  <p>Each rarity rolls separately; without a focus, its unowned names are equally likely (${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary, ${machinePools.Omnic.length} Omnic). A fully owned rarity drops nothing. Common Conduits are sold in the Store.</p>
-  <p>Focus Loot selects one unowned Conduit per Rare, Legendary and Omnic tier. The next successful drop of that tier awards your selection without changing its rate or stage gate. Obtaining a selected Conduit from any source clears only its focus. Master Conduits cannot be focused.</p>
-  <p>${machineComponentRulesText} No captures, evolution materials or Null-Prismatica.</p>
-  <p>One copy unlocks a Conduit for every Element-Bearer; components upgrade it to +5. Each Element-Bearer has eight slots, up to four matching-element Omnic.</p>
+  <p>${machineRules.stages} stages, Lv.10-120. Bosses every fifth stage.</p>
+  <ul><li>Rare: 8% per enemy.</li><li>Legendary: 3.5% per enemy.</li><li>Omnic: 1% per enemy from stage ${machineRules.omnicStage}.</li></ul>
+  <p>Rarities roll independently. Each roll chooses an unowned Conduit equally; a completed rarity drops nothing. Focus Loot replaces the random choice with your selection, without changing the odds. Getting that Conduit clears its focus.</p>
+  <p>Enemies also drop Prismatica. ${machineComponentRulesText} No captures, evolution materials or Null-Prismatica.</p>
   <p>${masterRulesText}</p>`;
 
 // src/content/flagships.ts

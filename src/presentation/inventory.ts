@@ -41,11 +41,11 @@ function materialMetadata(id: string): string {
 
 function inventoryInformation(): string {
   return information('inventory-information', 'Inventory', informationTopics('inventory-help', [
-    { id: 'holdings', title: 'Finding items', summary: 'Search, filters and quantities', content: '<p>Search by name or filter by type, rarity and element; Clear resets. Counts show distinct item types, not quantities. No element lists items shared by several elements.</p>' },
-    { id: 'materials', title: 'Materials', summary: 'Sources and banner bundles', content: '<p>Earned in Story, elemental dungeons, Heaven, Abyss and Passion of Crimson Roses.</p><p>Summons give Common, Uncommon or Rare material bundles instead of Devourers: all six elements on Standard, Rosethorn materials on Roses. Duplicate Element-Bearers become larger Rare bundles. Level and Evolution show exact costs.</p>' },
-    { id: 'conduits', title: 'Conduits', summary: 'Acquisition and equipment', content: '<p>Common Conduits are sold in the Store; higher tiers drop in Awaken the Machines, and banners can add a Legendary bonus.</p><p>One copy unlocks a Conduit for every Element-Bearer; equipping never consumes it. Up to four ordinary Omnic Conduits, matching the wearer\'s element. Broken Mechanical Components fund upgrades.</p>' },
+    { id: 'holdings', title: 'Finding items', summary: 'Counts and shared items', content: '<p>Counts show distinct item types, not total quantities. No element includes items shared by several elements.</p>' },
+    { id: 'materials', title: 'Materials', summary: 'Sources and banner bundles', content: '<p>Earned in Story, elemental dungeons, Heaven, Abyss and Passion of Crimson Roses.</p><p>Summon bundles contain Common, Uncommon or Rare materials: one random element on Standard, Rosethorn on Roses. Duplicate Element-Bearers give larger Rare bundles.</p>' },
+    { id: 'conduits', title: 'Conduits', summary: 'Where to get them', content: '<p>Common: Conduit Store. Rare, Legendary and Omnic: Awaken the Machines. Summons can also award a Legendary bonus.</p><p>Unlock once, equip across your squad. Upgrade with Broken Mechanical Components.</p>' },
     { id: 'conduit-terms', title: 'Conduit terms', summary: 'Words used in Conduit effects', content: `<dl class="conduit-glossary">${conduitGlossary.map(entry => `<dt>${entry.term}</dt><dd>${entry.definition}</dd>`).join('')}</dl>` },
-    { id: 'masters', title: 'Masters & chests', summary: 'Opening chests and choosing a Master', content: '<p>The stage ' + machineStageCount + ' Machines boss has a 1% Cosmic Grand Master Chest chance; each Calamity EX+3 chest holds two. View Loot shows a Calamity chest\'s contents.</p><p>Opening a Master chest lets you choose one unowned Omnic Master, even for an Element-Bearer you don\'t own yet. Masters equip only to their named Element-Bearer, in their own slot, and cannot be upgraded. Extra chests stay unopened once you own all 48.</p>' },
+    { id: 'masters', title: 'Masters & chests', summary: 'Sources and selection', content: '<p>Cosmic Grand Master Chests: 1% from the stage ' + machineStageCount + ' Machines boss; two guaranteed in each Calamity EX+3 chest.</p><p>Choose any unowned Master, even for an unowned Element-Bearer. Masters are character-specific and cannot be upgraded. Chests stay unopened once you own all 48.</p>' },
   ]));
 }
 export function isInventoryTab(value: unknown): value is InventoryTab {
@@ -58,15 +58,15 @@ function materialDescription(id: string): string {
     return 'A specialty weapon material. Weapon upgrading is unavailable, so it is not spent.';
   }
   if (id.endsWith('-level') && specialtyMaterials.some(material => material.id === id)) {
-    return 'Levels matching Element-Bearers in Legendary and Omnic forms. Level shows the amount.';
+    return 'Levels matching Element-Bearers in Legendary and Omnic forms.';
   }
   if (id.endsWith('-evolution') && specialtyMaterials.some(material => material.id === id)) {
-    return 'Evolves matching Element-Bearers into late forms. Evolution shows the amount.';
+    return 'Evolves matching Element-Bearers into late forms.';
   }
   if (roseMaterials.some(material => material.id === id)) {
-    return 'Levels and evolves Rosetta, Thornia and Crinso. Their Level and Evolution previews show amounts.';
+    return 'Levels and evolves Rosetta, Thornia and Crinso.';
   }
-  return 'Levels and evolves matching Element-Bearers. Level and Evolution show the tier and amount.';
+  return 'Levels and evolves matching Element-Bearers.';
 }
 
 export function inventoryView(account: Account | null, selected: InventoryTab = 'materials', sections: Readonly<InventorySections> = defaultInventorySections, filters: Readonly<InventoryFilters> = defaultInventoryFilters): string {

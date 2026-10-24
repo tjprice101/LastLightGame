@@ -1,5 +1,28 @@
 # Current state and handoff
 
+## Concise player descriptions (D-391)
+
+- Owner reports redundant, convoluted Store help and requests the same cleanup
+  across the game. Purchase help now leads with "Unlock once, equip across your
+  squad"; visible costs/buttons/Owned states are not re-explained.
+- Shortened Character, Inventory/material, Collections, Upgrade, Focus Loot,
+  Machines/Master, Calamity, summon, Settings and captured-copy help. Distinct
+  rules use short sentences/lists; retained exact effects, loot tables, upgrade
+  costs, guarantees, restrictions, permanent-sale warnings and bracketed terms.
+- No combat/reward/save/navigation changes. Authored lore remains unchanged;
+  redundant captured-copy commentary removed from its Lore dialog.
+- Added word-count and retained-restriction regressions. `npx vitest run
+  --maxWorkers=2` passed6498 tests/207 files; `npm run build` passed typecheck
+  and production build (existing chunk-size warning only).
+- Browser checked the actual Calamitic purchase dialog at390x844 and1280x720:
+  two sentences, no horizontal overflow, height201px/151px, closing restores
+  focus to Information. Fixture used only an in-memory account.
+- `node tools/bundle_server_game.mjs` regenerated help strings only in the
+  authority bundle. Hosted rules10 deployed; `node tools/smoke_server_game.mjs
+  --phase-zero` passed exact damage/Burn parity, frozen gear, idempotency and
+  persistence; disposable identities and cascading records removed.
+- Client publishes through the normal verified Deploy Last Light workflow.
+
 ## Glassroot/Stasis balance and bounded field cards (D-390)
 
 - Glassroot converts complete450 maximum Health steps; +5% coefficient still

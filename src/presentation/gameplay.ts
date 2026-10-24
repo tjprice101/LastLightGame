@@ -79,7 +79,7 @@ function gameplayInformation(): string {
     { id: 'origins', title: 'Let and Rise', summary: 'Infinity, Nothingness and the search for the creators', content: worldLore() },
     { id: 'start', title: 'Unlocks', summary: 'Activity level requirements', content: `<p>Story is open from the start. Other activities unlock by your highest-level Element-Bearer, in the squad or not. Captures don't count.</p>
       <ul><li>Awaken the Machines: Lv.10 and Emberwake March cleared</li><li>Elemental dungeons: Lv.30</li><li>Evolution infusion: Lv.50</li><li>Currency farms: Lv.60</li><li>Crimson Roses: Lv.75</li><li>Elemental War: Lv.85</li></ul>` },
-    { id: 'enemy-strength', title: 'Enemy strength', summary: 'Levels, boss stats and special attacks', content: '<p>Enemy level sets base stats in every activity; bosses have more HP, Attack and Defense. Red marks a stat above a standard enemy of that level, blue marks one below.</p><p>Shields, healing, multi-hits and special attacks add difficulty without changing level. Calamity lists them per boss.</p>' },
+    { id: 'enemy-strength', title: 'Enemy strength', summary: 'Reading the stat comparison', content: '<p>Red stats are above a standard enemy of the same level; blue stats are below. Boss abilities can add difficulty beyond these numbers.</p>' },
     { id: 'story', title: 'Story', summary: `Six regions, ${storyRules.stages} stages`, content: `<p>${storyPurpose}</p><p>${storyRulesText}</p>` },
     { id: 'training', title: 'Training', summary: 'Endless battles for Prismatica', content: `<p>Endless waves with your saved squad, starting at wave 1. Enemies cap at Lv.120.</p>
       <p>Prismatica per kill: 5-10 at Lv.1 to 15-30 at Lv.120. No materials, captures or Null-Prismatica.</p>` },
@@ -89,7 +89,7 @@ function gameplayInformation(): string {
       <p>Only each activity's three unique materials drop: weapon materials from Lv.50, evolution and leveling materials from Lv.75. No elemental materials.</p>
       <p>Null-Prismatica from Lv.80: 8% for 1, 1.5% for 2, 0.5% for 3, rising to 10%, 10% and 5% at Lv.120. The stage ${infusionModeStageCount} boss gives 5, 10 or 15 at the same chances.</p>
       <p>50% capture chance per enemy. Captures keep their form and skills, up to Lv.60.</p>
-      <ul>${infusionModes.map((mode) => `<li><strong>${mode.name}</strong>: ${elementLabel(infusionEnemyElements[mode.id])} enemies. Unique materials support these progression affinities: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</li>`).join('')}</ul>` },
+      <ul>${infusionModes.map((mode) => `<li><strong>${mode.name}</strong>: ${elementLabel(infusionEnemyElements[mode.id])} enemies. Materials support: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</li>`).join('')}</ul>` },
     { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages, Lv.65-120, six fixed forms and a boss every fifth stage. Final bosses give 5x currency. No materials or clear bonus.</p>
       <p>50% capture chance per enemy. Captures keep their form and skills, up to Lv.60. Sell copies in Team; locked, squad and Conduit-equipped copies are protected.</p>
       <h4>Crownfall Treasury</h4><p>${treasuryPrismaticaText} No Null-Prismatica.
@@ -100,8 +100,7 @@ function gameplayInformation(): string {
     { id: 'roses', title: 'Passion of Crimson Roses', summary: 'Rosethorn materials', content: roseEventRules },
     { id: 'machines', title: 'Awaken the Machines', summary: 'Conduits, components and Masters', content: machineRulesText },
     { id: 'war', title: 'Elemental War', summary: 'Defeat challengers for a chance to recruit them', content: `<p>${warLore}</p><p>${warRulesText}</p>` },
-    { id: 'continuing', title: 'Between battles', summary: 'Health, Elemental Gauge and leaving a run', content: `<p>Choose Continue when ready. Staged activities restore HP and keep Elemental Gauge; Training carries HP, Elemental Gauge and recovery between waves.</p>
-      <p>Settings pauses the run; quitting ends it.</p>` },
+    { id: 'continuing', title: 'Between battles', summary: 'What carries over', content: `<ul><li>Staged activities: HP restores; Elemental Gauge carries over.</li><li>Training: HP, Elemental Gauge and recovery carry over.</li><li>Settings keeps your run. Quitting ends it, but keeps earned rewards.</li></ul>` },
   ]);
 }
 
@@ -120,7 +119,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       <article class="activity-card training-card">
         <header class="training-hero"><img src="${assetUrl('backgrounds/grassy-field.png')}" alt="" width="1456" height="816"><div><p class="eyebrow">Practice · Endless battles</p><h3>Training · Grassy Field</h3></div></header>
         <div class="training-details">${activityFacts('Endless waves', '1-120', 'Prismatica')}
-          <div class="training-summary"><p>${trainingLore}</p><p>Start at wave 1 with your saved squad. Continue at your own pace; HP and Elemental Gauge carry into the next wave.</p>${itemShowcase([{ id: 'fractalis' }], 'Rewards')}</div>
+          <div class="training-summary"><p>${trainingLore}</p><p>Each run starts at wave 1. HP and Elemental Gauge carry between waves.</p>${itemShowcase([{ id: 'fractalis' }], 'Rewards')}</div>
           <div><h4>First wave</h4>${enemyStrength({ level: 1, boss: false, stats: enemyCombatStats(1, false) })}</div>
           <footer class="training-entry"><p class="quiet">Rewards save after each defeat. Leaving ends the run.</p><button class="primary-button" data-page="battle">Enter Training</button></footer>
         </div></article></section>

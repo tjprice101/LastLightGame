@@ -26,10 +26,9 @@ function focusChoices(account: Account | null, selected: MachineFocusRarity = 'R
 
 export function machineLootFocus(account: Account | null): string {
   return information('machine-loot-focus', 'Focus Loot', `
-    <p>Choose one unowned Conduit per rarity. The next Machines drop of that rarity awards your choice.
-    Rates stay Rare 8% and Legendary 3.5% on every stage; Omnic 1% on stage ${machineRules.omnicStage} and every stage afterward.
-    Obtaining the chosen Conduit from any source clears only that rarity's focus and restores its general unowned pool.
-    Master Conduits cannot be focused.</p>
+    <p>Your next drop in each focused rarity awards your choice. Focus changes the reward, not the drop rate.</p>
+    <p>Rare 8% &middot; Legendary 3.5% &middot; Omnic 1% from stage ${machineRules.omnicStage}.</p>
+    <p>Obtaining your choice from any source clears that rarity's focus. Masters cannot be focused.</p>
     ${!account ? '<p role="alert">Loot focus unavailable. Check the save error.</p>' : ''}
     <div class="machine-focus-body">${focusChoices(account)}</div>
     <p class="machine-focus-status" role="status"></p>`, 'Focus Loot');

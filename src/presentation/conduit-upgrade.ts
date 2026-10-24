@@ -68,7 +68,7 @@ function renderConduitUpgradeMenu(account: Account | null, selected: string | un
   const entries = ownedEntries(account);
   const costInformation = Object.entries(conduitUpgradeRarityMultipliers).map(([rarity, multiplier]) =>
     `<p>${rarity}: ${conduitUpgradeCosts.map((cost) => cost * multiplier).join(' / ')} components for +1 through +5.</p>`).join('')
-    + '<p>Max Level buys every affordable upgrade up to +5 and shows the total cost and final effect, penalties included, before saving.</p>';
+    + '<p>Max Level previews the highest affordable upgrade and its total cost.</p>';
   return `<section class="conduit-upgrade-menu ref-screen ref-conduit-upgrade" data-upgrade-owned="${escapeAttribute(JSON.stringify(entries))}" data-upgrade-components="${account?.mechanicalComponents ?? 0}">
     <nav class="ref-market-tabs"><button aria-current="page">Conduit Upgrade</button><button data-page="conduit-store">Conduit Store →</button></nav>
     <aside class="ref-panel ref-upgrade-owned"><header class="ref-panel-heading">Owned · ${owned.length}</header>
@@ -95,7 +95,7 @@ function renderConduitUpgradeMenu(account: Account | null, selected: string | un
       ${cost !== null && !affordable ? '<p class="quiet">Not enough Broken Mechanical Components.</p>' : ''}<button class="ref-link" data-page="gameplay" data-machine-activity>Earn components →</button></footer></aside></section>`;
     })() : `<section class="ref-panel ref-empty"><p ${account ? '' : 'role="alert"'}>${account ? 'No owned Conduits to upgrade.' : 'Conduit upgrades unavailable. Resolve the save error.'}</p><button class="ref-link" data-page="conduit-store">Open Conduit Store →</button></section>`}
     <div class="ref-upgrade-information">
-    ${information('conduit-upgrade-information', 'Conduit upgrades', `<p>Each Conduit upgrades to +5 account-wide; copies aren't consumed. ${phaseZeroStatsReady ? 'Each level adds 10% of each scalable base benefit, 1.5x at +5. Penalties, thresholds, costs, fixed caps and whole-turn Duration stay fixed.' : "Each level adds 50% of its base stat modifiers, 3.5x at +5. Legendary penalties grow too; Omnic special mechanics don't."} Critical Rate above 100% makes every hit crit, and each extra point is the chance of an Elemental Crit (1.5x critical damage).</p><p>Costs, in Broken Mechanical Components, rise with rarity:</p>${costInformation}<p>${machineComponentRulesText}</p><p>Values include drawbacks. Active battles keep the levels they started with.</p>`)}
+    ${information('conduit-upgrade-information', 'Conduit upgrades', `<p>Upgrades apply account-wide, up to +5. No copies consumed.</p><p>${phaseZeroStatsReady ? 'Each level adds 10% of the base benefit; +5 gives 1.5x. Penalties, thresholds, costs, fixed caps and whole-turn Duration do not scale.' : "Each level adds 50% of base stat modifiers; +5 gives 3.5x. Legendary penalties grow too; Omnic special mechanics stay fixed."}</p><h3>Component costs</h3>${costInformation}<p>${machineComponentRulesText}</p><p>Upgrade changes apply to the next run.</p>`)}
     <p id="conduit-upgrade-result" role="status" tabindex="-1"></p>
   </div></section>`;
 }

@@ -268,7 +268,7 @@ describe('Calamity presentation', () => {
       expect(document.body.textContent).toContain(`Prismatica${chest.fractalis.toLocaleString('en-US')}`);
       expect(document.body.textContent).toContain(`Null-Prismatica${chest.lycalis}`);
       expect(document.body.textContent).toContain(`Random rewards${chest.bundles}`);
-      expect(html).toContain('Each random reward is chosen separately');
+      expect(html).toContain('Random rewards roll separately and can repeat, except Conduits');
       for (const row of calamityLootTable(activity.id)) {
         expect(html).toContain(row.label);
         const totalWeight = calamityLootTable(activity.id).reduce((total, entry) => total + entry.weight, 0);

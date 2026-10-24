@@ -257,7 +257,7 @@ describe('game-specific hub layouts', () => {
     expect(equipment).toContain('Master Conduit');
     expect(equipment.match(/data-conduit-slot=/g)).toHaveLength(8);
     expect(equipment).not.toContain('<h2>Materials</h2>');
-    expect(characterInformation()).toContain('each name equips once per member');
+    expect(characterInformation()).toContain('No duplicate names on the same member');
     expect(equipment).not.toContain('data-information="equipment-information"');
     expect(homeHub(starter, false)).not.toContain('data-character-tab="equipment"');
   });
