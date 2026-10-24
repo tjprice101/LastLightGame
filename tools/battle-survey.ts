@@ -1,5 +1,5 @@
 import { elements, infusionStageCount, storyStageLayout, type InfusionModeId } from '../src/content/activities';
-import { calamityActivities, type CalamityActivityId, type CalamityTier } from '../src/content/calamity';
+import { calamityActivities, calamityTierScaling, type CalamityActivityId, type CalamityTier } from '../src/content/calamity';
 import { type ActionId } from '../src/content/combat';
 import { validateConduitElement, validateConduitSlots, type ConduitId, type ConduitLoadouts,
   type ConduitSlots, type ConduitUpgrades } from '../src/content/conduits';
@@ -134,7 +134,8 @@ export function measureBattle(initial: BattleState, policy: Policy = 'native',
       const result = endTurn(state); state = result.state; collect(result.events);
     } else {
       const native = benchmarkPriorities(state, actor);
-      const priorities: ActionId[] = policy === 'flare-first' ? ['ultimate', ...native] : native;
+      const priorities: ActionId[] = [...(policy === 'flare-first' ? ['ultimate' as const, ...native] : native),
+        'skill1', 'skill2', 'light', 'ultimate'];
       const choice = priorities.map(action => ({ action, target: benchmarkTarget(state, actor, action) }))
         .find(({ action, target }) => !actionUnavailable(state, actor, action, target));
       if (!choice) throw new Error(`Survey pilot has no legal choice for ${actor.id}.`);
@@ -303,7 +304,7 @@ export function makeLevelProbe(enemyLevel: number, roster: readonly StarterId[],
   if (!levelSweepLevels.some(level => level === enemyLevel) || pattern === 'standard' && enemyLevel > 140)
     throw new Error('Unsupported level-sweep probe.');
   const encounter: Encounter = pattern === 'standard' ? { kind: 'infusion', mode: enemyLevel > 120 ? 'roses' : 'machines', stage: 35 } :
-    { kind: 'calamity', activity: pattern, tier: enemyLevel === 185 ? 3 : enemyLevel === 160 ? 2 : 1 };
+    { kind: 'calamity', activity: pattern, tier: enemyLevel === calamityTierScaling[3].level ? 3 : enemyLevel === calamityTierScaling[2].level ? 2 : 1 };
   const state = makeBattle(encounter, roster, 105, build, seed, override);
   if (state.enemies[0].level === enemyLevel) return state;
   const enemy = state.enemies[0];
@@ -324,7 +325,8 @@ export function runLevelSweep(emit: (row: SurveyRow) => void): number {
   let count = 0;
   function sample(category: string, squad: string, roster: StarterId[], build: Build, enemyLevel: number,
     pattern: CalamityActivityId | 'standard', override: MasterLoadouts = {}, master: SurveyRow['master'] = 'default') {
-    const native = pattern === 'standard' ? [120, 140].includes(enemyLevel) : [145, 160, 185].includes(enemyLevel);
+    const native = pattern === 'standard' ? [120, 140].includes(enemyLevel) :
+      Object.values(calamityTierScaling).some(tier => tier.level === enemyLevel);
     for (const seed of surveySeeds) {
       const initial = makeLevelProbe(enemyLevel, roster, build, seed, pattern, override);
       const { result } = measureBattle(initial);

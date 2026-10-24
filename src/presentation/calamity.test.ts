@@ -47,6 +47,8 @@ describe('Calamity presentation', () => {
     const check = (index: number): void => {
       expect(panels.filter(panel => !panel.hidden)).toEqual([panels[index]]);
       tabs.forEach((tab, current) => {
+        expect(tab.textContent).toContain(`Lv.${[145, 160, 170][current]}`);
+        expect(panels[current].textContent).toContain(`Lv.${[145, 160, 170][current]}`);
         expect(tab.getAttribute('aria-selected')).toBe(String(current === index));
         expect(tab.tabIndex).toBe(current === index ? 0 : -1);
         expect(tab.getAttribute('aria-controls')).toBe(panels[current].id);

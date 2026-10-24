@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { freshGame, publicGame, resolveOperation, validateRequest, type DurableGame } from '../../supabase/functions/game-operation/engine';
-import { calamityActivities, calamityChest, calamityChestId } from '../content/calamity';
+import { calamityActivities, calamityChest, calamityChestId, calamityEncounter } from '../content/calamity';
 import { calamityBossArt } from '../content/calamity-art';
 import { calamiticConduits, calamiticTokenPrice } from '../content/calamitic-conduits';
 import { activityAccess } from '../game/activity-access';
@@ -20,6 +20,19 @@ function ready() {
 }
 
 describe('authoritative Calamity operations', () => {
+  it.each(calamityActivities)('$id uses the same tuned stats for server entry and retry at all three tiers', ({ id }) => {
+    for (const tier of [1, 2, 3] as const) {
+      const entered = op(ready(), { kind: 'enter', activity: { kind: 'calamity', activity: id, tier } }).game;
+      const expected = calamityEncounter(id, tier);
+      expect(entered.run!.session.state.enemies[0]).toMatchObject({
+        level: [145, 160, 170][tier - 1], hp: expected.stats.health, stats: expected.stats,
+      });
+      const resumed = op(entered, { kind: 'read' }).game;
+      expect(resumed.run).toEqual(entered.run);
+      const retried = op(entered, { kind: 'retry', runId: entered.run!.session.runId }).game;
+      expect(retried.run!.session.state.enemies).toEqual(entered.run!.session.state.enemies);
+    }
+  });
   it.each([1, 2, 3] as const)('honors Machines tier %i guaranteed components and fully-owned conversions authoritatively', tier => {
     const game = ready();
     const id = calamityChestId('machines', tier);

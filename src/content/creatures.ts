@@ -10,7 +10,7 @@ import { fractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from './loot-
 import { storyEncounter, storyCreature, storyRules, storyLoot, storyBossBonus } from './story';
 import { devourerHabitats, elementEmotions, machineOrigin } from './world-lore';
 import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
-import { calamityActivities, calamityChest, isCalamityTier, type CalamityActivityId } from './calamity';
+import { calamityActivities, calamityChest, calamityTierScaling, isCalamityTier, type CalamityActivityId } from './calamity';
 import { calamityBossArt } from './calamity-art';
 
 export interface Creature {
@@ -76,7 +76,7 @@ export function getCreature(id: string): Creature {
 
 export function creatureLore(creature: Creature): string {
   getCreature(creature.id);
-  const calamity = creature.calamity ? ` It guards ${creature.area}, where red and white elemental energy clashes against black and white material forms. One identity appears at levels 145, 160 and 185; no capture or recruitment is possible.` : '';
+  const calamity = creature.calamity ? ` It guards ${creature.area}, where red and white elemental energy clashes against black and white material forms. One identity appears at levels ${calamityTierScaling[1].level}, ${calamityTierScaling[2].level} and ${calamityTierScaling[3].level}; no capture or recruitment is possible.` : '';
   if (creature.mode === 'machines' || creature.calamity === 'machines') return `${creature.name} is one of those surviving wrecks. ${machineOrigin}${calamity}`;
   const inheritance = `${creature.name} is an Elemental-Devourer of Rise's creation, seeking her soul with stolen ${getElement(creature.element).name}: ${elementEmotions[creature.element]}.`;
   if (creature.calamity) return `${inheritance}${calamity}`;

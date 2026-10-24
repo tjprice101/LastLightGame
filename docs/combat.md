@@ -1,5 +1,16 @@
 # Combat specification
 
+## Calamity tier adjustments (D-398)
+
+All12 activities now use level145/160/170 for EX+1/2/3. After the shared boss
+curve, multiply Health/Attack/Defense by1.03/0.98/1 respectively and round.
+The shared growth curve, critical profile and all non-Calamity enemies remain
+unchanged. Earlier145/160/185 tables below describe their historical shared
+curve, not current adjusted Calamity encounters.
+[Current exact stats and simulation evidence](calamity-mode.md#isolated-stats-and-measured-difficulty)
+cover20,736 baseline/candidate/actual fights, unchanged legal Conduit builds,
+all12 EX3 boss clears, and the retained difficulty ordering.
+
 ## Shared battle presentation (D-392)
 
 The [shared HUD contract](menus-and-inventory.md#shared-battle-hud-d-392)
@@ -193,7 +204,8 @@ Elemental-Devourers keep their separate unchanged player-growth curve.
 |185:EX+3|1,223,765|40,047|8,204|3,059,413|50,059|10,938|
 
 These are shared numerical probes; not every level/type is a playable stage.
-Calamity uses only the boss columns at145/160/185. Boss patterns/Conduits can
+Historically, Calamity used only the boss columns at145/160/185. D-398 now
+uses145/160/170 with explicit tier adjustments. Boss patterns/Conduits can
 apply their authored battle modifiers after these base stats.
 
 Rules8 uses the existing encounter compatibility restart for older snapshots,
@@ -619,7 +631,8 @@ HP uses S=.45/R=.026, Attack .25/.024, Defense .30/.020. Ordinary openings are
 83/22/4 and boss openings207.5/27.5/(16/3), rounded only at the final boundary.
 The shifted exponential retains opening values and readable early steps;
 increments compound continuously, with no knots/plateaus at25,120 or140.
-Calamity uses its actual145/160/185 levels, not small multipliers on140.
+Calamity originally used actual145/160/185 levels, not multipliers on140.
+D-398 supersedes those tiers with145/160/170 and explicit stat adjustments.
 
 | Level | Ordinary HP / Attack / Defense | Boss HP / Attack / Defense |
 | --- | --- | --- |

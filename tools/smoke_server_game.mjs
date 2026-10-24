@@ -49,7 +49,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--glassroot-stasis')) {
+  if (process.argv.includes('--calamity-tuning')) {
+    await smokeCalamityTuning(client, created.user.id, username);
+  } else if (process.argv.includes('--glassroot-stasis')) {
     await smokeGlassrootStasis(client, created.user.id, username);
   } else if (process.argv.includes('--calamity-components')) {
     await smokeCalamityComponents(client, created.user.id, username);
@@ -672,6 +674,53 @@ async function smokeOmnicRefresh(firstClient, firstId, firstUsername) {
   console.log(`Hosted Omnic refresh passed: all45 ordinary Omnics at +0/+5 and all48 fixed Masters across ${fixtures.length} disposable fixtures, exact Normal/Last Flare/enemy-phase authority parity, frozen investments after menu unequips, idempotent retries and persistent checkpoints.`);
 }
 
+async function smokeCalamityTuning(client, userId, username) {
+  const activities = ['treasury', 'sanctuary', 'heavens', 'abyss', 'machines', 'roses',
+    'infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic'];
+  const stats = [[145, 527682, 14798, 3095], [160, 983112, 22532, 4794], [170, 1567959, 31407, 6756]];
+  const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
+  const game = freshGame(username);
+  game.starterId = 'ember';
+  game.account.characters = { ember: { level: 105, evolution: 6 } };
+  game.account.squad = ['ember'];
+  game.account.normalFinalClears = Object.fromEntries(activities.map(id => [id, true]));
+  game.account.calamityClears = Object.fromEntries(activities.map(id => [id, 2]));
+  assert.ok(ids.includes(userId), 'Only disposable identities may receive fixtures');
+  const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+  assert.equal(seeded.error, null);
+  async function invoke(operation, revision, requestId = randomUUID()) {
+    await new Promise(resolve => setTimeout(resolve, 600));
+    const result = await client.functions.invoke('game-operation', {
+      body: { operation, expectedRevision: revision, requestId },
+    });
+    if (result.error) throw new Error(`Hosted Calamity tuning ${operation.kind} failed (${result.error.context?.status ?? 'transport'}).`);
+    return result.data;
+  }
+  let response = await invoke({ kind: 'read' }, 0);
+  for (const activity of activities) for (const tier of [1, 2, 3]) {
+    const operation = { kind: 'enter', activity: { kind: 'calamity', activity, tier } };
+    const revision = response.revision, requestId = randomUUID();
+    response = await invoke(operation, revision, requestId);
+    assert.deepEqual(await invoke(operation, revision, requestId), response);
+    const enemy = response.session.state.enemies[0];
+    assert.deepEqual([enemy.level, enemy.hp, enemy.stats.damage, enemy.stats.defense], stats[tier - 1]);
+    const expected = resolveOperation(game, operation, entropy).game.run.session.state.enemies[0];
+    assert.deepEqual(enemy.stats, expected.stats);
+    assert.deepEqual(enemy.enemySkills, expected.enemySkills);
+    const read = await invoke({ kind: 'read' }, response.revision);
+    assert.deepEqual(read.session, response.session);
+    const retried = await invoke({ kind: 'retry', runId: response.session.runId }, response.revision);
+    assert.deepEqual(retried.session.state.enemies[0].stats, enemy.stats);
+    assert.equal(retried.session.state.enemies[0].level, enemy.level);
+    response = await invoke({ kind: 'quit', runId: retried.session.runId }, retried.revision);
+    assert.equal(response.session, null);
+    assert.equal(response.account.fractalis, 0);
+    assert.equal(response.account.lycalis, 0);
+    assert.deepEqual(response.account.calamityChests ?? {}, {});
+  }
+  console.log('Hosted Calamity tuning passed: all36 encounters at145/160/170, exact scaled Health/Attack/Defense and local/server skill parity, fresh entry/retry, persisted reads and idempotent entry; no rewards granted. Disposable identity only.');
+}
+
 async function smokeNativeCalamity(client, userId, username) {
   const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
   let game = freshGame(username);
@@ -700,10 +749,10 @@ async function smokeNativeCalamity(client, userId, username) {
   }
   let response = await invoke({ kind: 'read' }, 0);
   assert.equal(response.session.state.conduitRulesVersion, conduitRulesVersion);
-  assert.equal(response.session.state.enemies[0].level, 185);
-  assert.equal(response.session.state.enemies[0].stats.health, 3059413);
-  assert.equal(response.session.state.enemies[0].stats.damage, 50059);
-  assert.equal(response.session.state.enemies[0].stats.defense, 10938);
+  assert.equal(response.session.state.enemies[0].level, 170);
+  assert.equal(response.session.state.enemies[0].stats.health, 1567959);
+  assert.equal(response.session.state.enemies[0].stats.damage, 31407);
+  assert.equal(response.session.state.enemies[0].stats.defense, 6756);
   const runId = response.session.runId;
   for (const [actorId, action, targetId] of [
     ['tide', 'skill2', 'disciple'], ['disciple', 'skill1', 'ember'],
@@ -741,9 +790,9 @@ async function smokeNativeCalamity(client, userId, username) {
   assert.equal(quit.session, null);
   const entered = await invoke({ kind: 'enter', activity: { kind: 'calamity', activity: 'treasury', tier: 1 } }, quit.revision);
   assert.equal(entered.session.state.enemies[0].art, 'calamity-boss-treasury');
-  assert.equal(entered.session.state.enemies[0].stats.health, 512313);
-  assert.equal(entered.session.state.enemies[0].stats.damage, 14367);
-  assert.equal(entered.session.state.enemies[0].stats.defense, 3005);
+  assert.equal(entered.session.state.enemies[0].stats.health, 527682);
+  assert.equal(entered.session.state.enemies[0].stats.damage, 14798);
+  assert.equal(entered.session.state.enemies[0].stats.defense, 3095);
   const leave = await invoke({ kind: 'quit', runId: entered.session.runId }, entered.revision);
   assert.equal(leave.session, null);
   const rose = await invoke({ kind: 'enter', activity: { kind: 'calamity', activity: 'roses', tier: 1 } }, leave.revision);
@@ -764,7 +813,7 @@ async function smokeNativeCalamity(client, userId, username) {
     exited = await invoke({ kind: 'quit', runId: normal.session.runId }, normal.revision);
     assert.equal(exited.session, null);
   }
-  console.log(`Hosted native/Calamity smoke passed: rules${conduitRulesVersion}, explicit Tizu/Disciple recipients, Lv185 EX3 chest-only fixture victory, atomic opening with two Master chests, idempotent action/opening, persisted holdings and freshly spawned exact120/140/145/185 resistance stats and artwork.`);
+  console.log(`Hosted native/Calamity smoke passed: rules${conduitRulesVersion}, explicit Tizu/Disciple recipients, Lv170 EX3 chest-only fixture victory, atomic opening with two Master chests, idempotent action/opening, persisted holdings and freshly spawned exact120/140/145/170 stats and artwork.`);
 }
 
 async function smokeCalamityComponents(client, userId, username) {

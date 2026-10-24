@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { enemyCombatStats, enemyExponentialRates, enemyGrowth, enemyResistanceRamp, enemyStat, enemyStrengthMultiplier } from './stat-growth';
-import { calamityActivities, calamityEncounter } from './calamity';
+import { calamityActivities, calamityEncounter, calamityTierScaling } from './calamity';
 import { resolveFighter } from './combat';
 import { dungeonEncounter, playableDungeons } from './dungeons';
 import { capturedEnemyStats, infusionEncounter } from './infusions';
@@ -10,7 +10,7 @@ import { starters } from './starters';
 import { benchmarkTarget } from '../game/native-benchmark-pilot';
 
 describe('accelerating enemy stat curves', () => {
-  it('preserves the opening curve and compounds resistance after80 through185 without plateaus or Calamity multipliers', () => {
+  it('preserves the shared curve through185 and applies Calamity adjustments only at the encounter boundary', () => {
     for (const boss of [false, true]) {
       const opening = enemyCombatStats(1, boss);
       expect(enemyStrengthMultiplier).toBe(1.05);
@@ -46,7 +46,10 @@ describe('accelerating enemy stat curves', () => {
     }
     for (const { id } of calamityActivities) for (const tier of [1, 2, 3] as const) {
       const encounter = calamityEncounter(id, tier);
-      expect(encounter.stats).toEqual(enemyCombatStats(encounter.level, true));
+      const expected = enemyCombatStats(encounter.level, true);
+      for (const stat of ['health', 'damage', 'defense'] as const)
+        expected[stat] = Math.round(expected[stat] * calamityTierScaling[tier].statMultiplier);
+      expect(encounter.stats).toEqual(expected);
     }
     for (const value of [0, -1, 186, NaN, Infinity, 1.5]) expect(() => enemyCombatStats(value, false)).toThrow();
   });
@@ -97,6 +100,7 @@ describe('accelerating enemy stat curves', () => {
     [140, 424325, 12589, 2620],
     [145, 512313, 14367, 3005],
     [160, 1003175, 22992, 4892],
+    [170, 1567959, 31407, 6756],
     [185, 3059413, 50059, 10938],
   ])('locks exact Lv%s boss stats with one final rounding step', (level, health, damage, defense) => {
     expect(enemyCombatStats(level, true)).toMatchObject({ health, damage, defense });

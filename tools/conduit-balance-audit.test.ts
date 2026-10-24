@@ -41,7 +41,7 @@ describe('read-only exhaustive Conduit audit integrity', () => {
   it('uses real level105 allies and unchanged native enemies and distinguishes timeouts', () => {
     const state = auditBattle('stasis-reliquary', 'tide', 5, 'supported', true, auditEncounters[5], 1729);
     expect(state.allies.map(unit => unit.level)).toEqual([105, 105, 105]);
-    expect(state.enemies[0].level).toBe(185);
+    expect(state.enemies[0].level).toBe(170);
     const copy = structuredClone(state);
     const first = measureBattle(state);
     expect(measureBattle(state)).toEqual(first);
@@ -83,10 +83,10 @@ describe('read-only exhaustive Conduit audit integrity', () => {
       off: { outcome: string } };
     expect(replay.on.outcome).toBe('win');
     expect(replay.off.outcome).toBe('defeat');
-    expect(replay.on.initial.enemies[0].hp).toBe(3_059_413);
+    expect(replay.on.initial.enemies[0].hp).toBe(1_567_959);
     expect(replay.on.final.round).toBe(3);
     expect(replay.on.final.enemies[0].hp).toBe(0);
     expect(replay.on.packets.flatMap(packet => packet.events).find(event => event.nativeKind === 'revenge')!.amount)
-      .toBe(2_543_631);
+      .toBe(822_483);
   });
 });

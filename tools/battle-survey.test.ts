@@ -3,7 +3,7 @@ import { validateConduitElement, validateConduitSlots } from '../src/content/con
 import { getStarter, starters } from '../src/content/starters';
 import { createStoryBattle } from '../src/game/battle';
 import { enemyCombatStats } from '../src/content/stat-growth';
-import { calamityActivities } from '../src/content/calamity';
+import { calamityActivities, calamityTierScaling, calamityEncounter } from '../src/content/calamity';
 import { enemyAbilityMultiplier, enemySkills } from '../src/content/enemy-skills';
 import { describeSurvey, enemyWhatIf, levelSweepLevels, loadout, makeBattle, makeLevelProbe, measureBattle, progressAt, surveyLimits } from './battle-survey';
 
@@ -70,17 +70,21 @@ describe('offline battle survey integrity', () => {
     for (const level of levelSweepLevels) {
       const state = makeLevelProbe(level, ['ember', 'tide', 'sprout'], 'master5', 1729, 'machines');
       expect(state.enemies[0].level).toBe(level);
-      expect(state.enemies[0].stats).toEqual(enemyCombatStats(level, true));
+      const nativeTier = ([1, 2, 3] as const).find(tier => calamityTierScaling[tier].level === level);
+      expect(state.enemies[0].stats).toEqual(nativeTier
+        ? calamityEncounter('machines', nativeTier).stats : enemyCombatStats(level, true));
       expect(state.enemies[0].hp).toBe(state.enemies[0].stats.health);
       expect(state.allies.map(unit => unit.level)).toEqual([105, 105, 105]);
     }
     expect(() => makeLevelProbe(190, ['ember'], 'bare', 1729, 'machines')).toThrow();
     expect(() => makeLevelProbe(150, ['ember'], 'bare', 1729, 'standard')).toThrow();
   });
-  it('exactly reproduces all36 native Calamity encounters at145/160/185', () => {
+  it('reproduces all36 native Calamity encounters with their explicit tier adjustments', () => {
     for (const { id } of calamityActivities) for (const tier of [1, 2, 3] as const) {
       const actual = makeBattle({ kind: 'calamity', activity: id, tier }, ['ember', 'tide', 'sprout'], 105, 'master5', 1729);
-      expect(makeLevelProbe([145, 160, 185][tier - 1], ['ember', 'tide', 'sprout'], 'master5', 1729, id)).toEqual(actual);
+      const { level } = calamityTierScaling[tier];
+      const probe = makeLevelProbe(level, ['ember', 'tide', 'sprout'], 'master5', 1729, id);
+      expect(probe).toEqual(actual);
     }
   });
   it('rebuilds standard boss level-dependent skills while preserving the native120 control', () => {

@@ -37,7 +37,7 @@ describe('isolated Calamity definitions and rewards', () => {
     const state = createCalamityBattle(activity, tier, 1729, 'ember', progress.ember);
     expect(state.enemies).toHaveLength(1);
     expect(state.enemies[0]).toMatchObject({ name: calamityActivities.find(entry => entry.id === activity)!.boss,
-      level: [145, 160, 185][tier - 1], boss: true });
+      level: [145, 160, 170][tier - 1], boss: true });
     expect(state.enemies[0].art).toBe(calamityBossArt[activity]);
     expect(state.enemies[0].creatureId).toBe(`calamity:${activity}`);
     expect(creatureLoot(getCreature(`calamity:${activity}`), tier)).toEqual([
@@ -207,11 +207,11 @@ describe('Calamity visible boss patterns', () => {
 });
 
 describe('Calamity seeded difficulty benchmarks', () => {
-  it.each(tiers)('measures four-Omnic candidate squads and intentional difficulty walls at EX+%s', tier => {
+  it.each(tiers)('measures four-Omnic candidate squads under the tuned EX+%s curve', tier => {
     const expectedWins = {
-      1: { starters: [36, 31, 36], mixed: [32, 32, 36] },
-      2: { starters: [20, 2, 20], mixed: [2, 0, 19] },
-      3: { starters: [0, 0, 0], mixed: [0, 0, 0] },
+      1: { starters: [36, 30, 36], mixed: [31, 30, 36] },
+      2: { starters: [20, 2, 20], mixed: [2, 0, 21] },
+      3: { starters: [2, 0, 4], mixed: [0, 0, 1] },
     } as const;
     const roster = ['rosetta', 'thornia', 'sprout'] as const satisfies readonly StarterId[];
     const progress = Object.fromEntries(roster.map(id => [id, { level: 105, evolution: 6 }]));

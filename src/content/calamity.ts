@@ -7,6 +7,11 @@ import { roseMaterials } from './roses';
 
 export type CalamityActivityId = ElementId | 'treasury' | 'sanctuary' | 'heavens' | 'abyss' | 'machines' | 'roses';
 export type CalamityTier = 1 | 2 | 3;
+export const calamityTierScaling = {
+  1: { level: 145, statMultiplier: 1.03 },
+  2: { level: 160, statMultiplier: .98 },
+  3: { level: 170, statMultiplier: 1 },
+} as const satisfies Record<CalamityTier, { level: number; statMultiplier: number }>;
 export const calamityActivities = [
   { id: 'treasury', name: 'Crownfall Treasury', boss: 'Crown of the Ruined Vault', element: 'tranquilitic' },
   { id: 'sanctuary', name: 'Rosethorn Sanctuary', boss: 'White Pyre Hierophant', element: 'tranquilitic' },
@@ -195,8 +200,10 @@ export const calamityPatterns: Record<CalamityActivityId, CalamityPattern> = {
 export function calamityEncounter(activity: CalamityActivityId, tier: CalamityTier) {
   const definition = calamityActivity(activity);
   if (!isCalamityTier(tier)) throw new Error('Invalid Calamity tier.');
-  const level = [145, 160, 185][tier - 1];
+  const { level, statMultiplier } = calamityTierScaling[tier];
   const stats: Stats = enemyCombatStats(level, true);
+  for (const stat of ['health', 'damage', 'defense'] as const)
+    stats[stat] = Math.round(stats[stat] * statMultiplier);
   const pattern = calamityPatterns[activity];
   const skills: EnemySkill[] = [
     { name: pattern.strike, multiplier: pattern.multiplier, every: pattern.every, action: 'skill1' },

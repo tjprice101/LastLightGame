@@ -1,5 +1,17 @@
 # Authoritative game operation
 
+## Calamity tier tuning (D-398)
+
+Rules10 remains current. All36 Calamity entry/retry paths use shared
+level145/160/170 definitions, with1.03x/0.98x/1x Health/Attack/Defense.
+Existing encounters stay frozen on read; no forced restart, migration or
+reward changes. Regenerate/type-check/deploy the bundle with the client.
+`node tools\smoke_server_game.mjs --calamity-tuning` checks exact stats and
+skills for all36 hosted encounters, entry/retry, persistent reads and
+idempotent entry using only a disposable fixture identity.
+[Balance evidence](../../../docs/calamity-mode.md#isolated-stats-and-measured-difficulty).
+Earlier185 and unadjusted145 values below are historical.
+
 ## Accepted EX+1 approach (D-385)
 
 Current rules9 strengthens only actual levels81-144 with the shared smooth

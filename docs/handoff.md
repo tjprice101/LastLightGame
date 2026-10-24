@@ -1,5 +1,43 @@
 # Current state and handoff
 
+## Measured Calamity tier tuning (D-398)
+
+- All12 activities: EX1 remains145 with1.03x Health/Attack/Defense; EX2
+  remains160 with0.98x; EX3 becomes170 with the native boss curve. Exact
+  adjusted HP/Attack/Defense:527682/14798/3095;983112/22532/4794;
+  1567959/31407/6756. Every EX3 stat remains above EX2. Critical stats,
+  patterns, player/Conduit effects, gates, RNG and rewards are unchanged.
+- Shared definitions drive entry/retry, warnings, Collections and strength
+  comparisons. Existing sessions retain frozen enemy state on read/Settings;
+  fresh entry/retry takes the tuning. No global rules bump or account writes.
+- Reusable `tools/calamity-balance.ts` and runner measure eight squads/all16
+  bearers, six legal gear profiles, all36 encounters, three seeds and two
+  rotations on strong builds.20,736 completed baseline/candidate/actual fights;
+  every actual result exactly matches the candidate. Includes Glassroot/
+  Stasis+5, all four-Omnic restrictions, Masters and Calamitic combinations.
+- Actual matrix wins: EX1 1376/2304; EX2 647/2304; EX3 253/2304, with2/1/8
+  separate timeouts. Old185 EX3 won28/2304. Current EX3 clears cover all12
+  bosses and five squad compositions; Bliss/Razor/Aurora with Glassroot/
+  Stasis/Masters clears all12 across all3 seeds without Calamitics. Bare
+  teams lose every tier; no claim of universal or exhaustively optimal wins.
+- Simulation pilot now falls back to other legal skills for Calamitic extra
+  actions instead of aborting when its preferred Normal/Last Flare is blocked.
+  Added legal-build, exact-scaling, all-boss multi-seed victory and authority
+  entry/retry regressions; updated historical benchmark expectations to the
+  approved new curve. Existing level-sweep tooling recognizes170 as native.
+- [Current contract and reproduction](calamity-mode.md#calamity-tier-tuning-d-398).
+  Final focused run:302 tests/7 files pass. Full local suite:6551 tests/
+  209 files pass. Client production build/typecheck, authority rebundle and
+  `npx --yes deno check supabase\functions\game-operation\index.ts` pass.
+- Matching authority deployed with `npx supabase functions deploy
+  game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`.
+  Hosted `node tools\smoke_server_game.mjs --calamity-tuning` verifies all36
+  real entry/retry definitions, exact stat/skill parity, read persistence
+  and idempotent entry; grants no rewards. Disposable identity/records removed.
+  Initial unpaced smoke hit the normal120-operation/minute limiter; added
+  600ms request pacing and reran successfully without changing the limiter.
+  Pages publication is verified separately in the completion report.
+
 ## Concise Conduit descriptions (D-397)
 
 - Audited all138 current abilities; tightened21 descriptions at the source

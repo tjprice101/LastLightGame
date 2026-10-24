@@ -9,6 +9,9 @@ replace portrait cards with compact inspection buttons; four actions remain.
 **Conduit copy (D-397):** [description policy](conduits.md#description-copy-d-397)
 removes redundant upgrade explanations and global-rule boilerplate.
 
+**Calamity tuning (D-398):** [tier adjustments and measured clearability](calamity-mode.md#calamity-tier-tuning-d-398)
+strengthen EX+1 by3%, ease EX+2 by2%, and move every EX+3 boss to level170.
+
 **Battle restoration (D-395):** [sprite-only correction](menus-and-inventory.md#sprite-only-positioning-correction-d-395)
 restores the fixed-screen HUD; only the two rear allied sprites move.
 
