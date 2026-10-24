@@ -14,6 +14,10 @@ Only the four existing actions are shown. Combat rules10, action costs,
 cooldowns, Gauge, RNG, authority/persistence, enemy balance, results and
 cut-ins are unchanged. Existing artwork scale metadata and sizing limits are
 retained; the new dock does not shrink sprites to its reduced field height.
+[D-393 spacing/control polish](menus-and-inventory.md#battle-spacing-and-shared-control-polish-d-393)
+fixes formation anchors, reserves status height, separates the target heading,
+and aligns the dock's styling/tab order with the rest of the game. Sprite
+padding no longer steals adjacent hit targets. No combat rules change.
 
 ## Glassroot, Stasis and bounded field status cards (D-390)
 

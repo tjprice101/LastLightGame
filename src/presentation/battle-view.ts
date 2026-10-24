@@ -704,7 +704,8 @@ export class BattleView {
     const { art, color } = definition(unit);
     const selected = unit.id === this.actorId;
     const status = unit.hp <= 0 ? 'Defeated' : unit.recoverThrough >= this.session.state.round ? 'Recovering' : unit.spent ? 'Action used' : selected ? 'Acting' : 'Ready';
-    return `<button type="button" class="battle-squad-card${selected ? ' selected-member' : ''}${unit.hp <= 0 ? ' fallen' : ''}" data-squad-member="${unit.id}" aria-pressed="${selected}" aria-label="${escapeDialogText(unit.name)} · ${status}" style="--element:${color}" ${unit.hp <= 0 ? 'disabled' : ''}>
+    const unavailable = this.busy || unit.hp <= 0 || (this.session.state.phase === 'player' && !combatantCanAct(this.session.state, unit, this.targetId));
+    return `<button type="button" class="battle-squad-card${selected ? ' selected-member' : ''}${unit.hp <= 0 ? ' fallen' : ''}" data-squad-member="${unit.id}" data-button-surface="art" aria-pressed="${selected}" aria-label="${escapeDialogText(unit.name)} · ${status}" style="--element:${color}" ${unavailable ? 'disabled' : ''}>
       <span class="battle-card-portrait" aria-hidden="true">${art ? `<img src="${assetUrl(`${unit.captured ? 'enemies' : 'characters'}/${art}.png`)}" alt="" ${unitFacingAttributes(art, 'ally')} width="96" height="96">` : ''}</span>
       <span class="battle-card-state">${status}</span>${this.nameplate(unit)}</button>`;
   }
@@ -803,6 +804,11 @@ export class BattleView {
       }
     }
     if (toolbar) {
+      toolbar.querySelector('#open-battle-menu')?.remove();
+      const menuButton = this.host.querySelector('#open-battle-menu');
+      if (menuButton) toolbar.append(menuButton);
+      const leave = toolbar.querySelector('[data-menu-back]');
+      if (leave) toolbar.append(leave);
       toolbar.querySelectorAll<HTMLButtonElement>('button').forEach(button => {
         button.disabled = !!this.busy && !button.hasAttribute('data-battle-speed-choice');
       });
@@ -1035,7 +1041,7 @@ export class BattleView {
     const reason = actionUnavailable(state, actor, action, this.targetId);
     if (compact) {
       const label = action === 'light' ? 'Normal Attack' : action === 'skill1' ? 'Skill 1' : action === 'skill2' ? 'Skill 2' : 'Last Flare';
-      return `<button type="button" data-action="${action}" class="battle-dock-action" title="${escapeDialogText(`${name}${reason ? ` · ${reason}` : ''}`)}" ${reason || this.busy ? 'disabled' : ''}>
+      return `<button type="button" data-action="${action}" data-button-surface="text" class="battle-dock-action" title="${escapeDialogText(`${name}${reason ? ` · ${reason}` : ''}`)}" ${reason || this.busy ? 'disabled' : ''}>
         <strong>${label}</strong><span>${action === 'light' ? `+${shatterGauge.gains.light} Gauge` : `${actionGaugeCost(actor, action, state, this.targetId)} Gauge`}</span>${reason || action !== 'light' ? `<small>${reason ?? name}</small>` : ''}</button>`;
     }
     return `<button data-action="${action}" class="battle-action" ${reason ? 'disabled' : ''}>

@@ -52,6 +52,7 @@ describe('reference-style shared battle HUD', () => {
       expect(f.host.querySelector('[data-action="defend"]')).toBeNull();
       for (const unit of f.session.state.allies) {
         const card = f.host.querySelector(`[data-squad-member="${unit.id}"]`)!;
+        expect(card.getAttribute('data-button-surface')).toBe('art');
         expect(card.querySelector('.unit-health')?.textContent).toBe(`HP ${formatStat(unit.hp)} / ${formatStat(unit.stats.health)}`);
         expect(card.querySelector('.unit-gauge')).not.toBeNull();
         expect(card.querySelector('img')?.getAttribute('src')).toContain('/characters/');
@@ -59,9 +60,35 @@ describe('reference-style shared battle HUD', () => {
       for (const button of Array.from(f.host.querySelectorAll<HTMLButtonElement>('.battle-field-actions [data-action]'))) {
         const action = button.dataset.action as 'light' | 'skill1' | 'skill2' | 'ultimate';
         expect(button.disabled).toBe(actionUnavailable(f.session.state, f.session.state.allies[0], action, f.session.state.enemies[0].id) !== null);
+        expect(button.dataset.buttonSurface).toBe('text');
       }
       expect(f.host.querySelector('#battle-menu .battle-unit-intel')).not.toBeNull();
       expect(f.host.querySelector('#battle-announcement')?.getAttribute('role')).toBe('status');
+    } finally { f.view.destroy(); }
+  });
+
+  it('keeps unavailable cards readable but disabled, without changing formation slots or silently changing the actor', () => {
+    const session = createSession('ember', progress, undefined, {
+      ids: ['ember', 'tide', 'sprout'], progress: { ember: progress, tide: progress, sprout: progress },
+    });
+    session.state.allies[1].spent = true;
+    session.state.allies[2].recoverThrough = session.state.round;
+    const f = mount(session);
+    try {
+      const selected = f.host.querySelector('[data-squad-member="ember"]');
+      for (const id of ['tide', 'sprout']) {
+        const card = f.host.querySelector<HTMLButtonElement>(`[data-squad-member="${id}"]`)!;
+        expect(card.disabled).toBe(true);
+        card.click();
+        expect(f.host.querySelector('[data-squad-member="ember"]')).toBe(selected);
+        expect(selected?.getAttribute('aria-pressed')).toBe('true');
+      }
+      session.state.allies[1].hp = 0;
+      Reflect.apply(Reflect.get(f.view, 'render'), f.view, []);
+      expect(Array.from(f.host.querySelectorAll('.allies [data-unit]')).map(unit => unit.getAttribute('data-unit')))
+        .toEqual(['ember', 'tide', 'sprout']);
+      expect(f.host.querySelector('.allies')?.getAttribute('style')).toContain('--combatant-count:3');
+      expect(f.host.querySelector('[data-squad-member="tide"]')?.textContent).toContain('Defeated');
     } finally { f.view.destroy(); }
   });
 

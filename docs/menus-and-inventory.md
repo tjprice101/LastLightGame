@@ -1,5 +1,39 @@
 # Menus and inventory
 
+## Battle spacing and shared control polish (D-393)
+
+Use mirrored, fixed desktop formation anchors for one-, two- and three-member
+sides. Pairs occupy the same outer top/bottom anchors as trios; the middle
+trio member occupies the inward column and solo members are centered. Remove
+legacy per-member translations. Defeated units retain their slots, and bottom
+cards reserve a24px desktop status tray so applying/removing statuses cannot
+move the formation. Phones retain evenly spaced single-column sides.
+
+The selected-target/modifier heading occupies a real arena grid row, not an
+overlay on combatants. At heights600px or less on non-phone-width screens,
+the battle shell scrolls a minimum720px layout rather than crushing sprites
+and hit targets. Preserve artwork size/facing; artwork ignores pointer hits
+so overflowing transparent sprite padding cannot intercept another member's
+button or gesture.
+
+The dock fills the available row, with equal-width cards for the actual squad
+size. Actions explicitly use the game's shared leader-accent gradient/text
+surface, Georgia type, neutral border/surface, visible focus and hover/disabled
+states. Artwork-backed squad cards explicitly opt out of generic text-button
+restyling. Dock actions are at least56px tall; header targets remain44px.
+Actual Gauge values and full ability/rejection text remain accessible.
+
+Toolbar DOM/tab order matches its visual order: speed, Settings, Menu, Leave.
+Retain existing speed/Settings/Leave elements and handlers through renders;
+replace only the view-owned Menu button, without duplicates. Spent/recovering/
+defeated cards cannot silently select a fallback actor; unavailable living
+cards remain readable. Combat/authority, results, rewards and saves are unchanged.
+
+Validate HUD, toolbar, chrome, squad sizing/gesture and shortcut regressions,
+then full suite/build. Measure equal formation spacing, unchanged positions
+after defeat, sprite-center hit targets, full-width dock and contained labels
+for squads1/2/3 at320x720,390x844,1280x720,1280x540 and844x390.
+
 ## Shared battle HUD (D-392)
 
 Every playable mode uses the same reference-inspired hierarchy, with Last

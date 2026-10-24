@@ -1,5 +1,34 @@
 # Current state and handoff
 
+## Battle spacing and shared controls (D-393)
+
+- Owner requests consistent spacing, game-matching buttons/UI and correct
+  wiring. Removed inherited alternate-member translations; desktop pairs/
+  trios now share mirrored outer anchors, solo is centered. Phone columns
+  remain evenly spaced. Defeated units keep their slots.
+- Target/modifier heading owns its grid row instead of overlapping units.
+  At non-phone widths and heights<=600px, scroll a minimum720px shell.
+  Sprite size/facing remain unchanged; decorative sprite padding no longer
+  intercepts another member's hit target. Desktop card statuses reserve24px,
+  avoiding formation shifts when native/buff rows disappear on defeat.
+- Dock fills its row and distributes cards across actual squad count.
+  Actions use explicit shared text-button surfaces/leader gradients and
+  matching neutral borders/radii,56px minimum height, focus/hover/disabled
+  feedback. Portrait cards explicitly retain artwork styling.
+- Speed/Settings/Menu/Leave now match DOM/tab and visual order. Retained
+  utilities keep listeners; rerenders replace only view-owned Menu without
+  duplicates. Unavailable spent/recovering/dead cards are disabled rather
+  than appearing to select another actor; living unavailable stats stay legible.
+- `npx vitest run --maxWorkers=2` passed6518 tests/208 files.
+  Focused six-file HUD/toolbar/chrome/sizing/gestures/shortcuts passed62/62;
+  build/typecheck passed (existing chunk warning). Final tray reservation
+  is additionally covered by sizing regression and release CI.
+- Browser geometry checks at actual320x720,390x844,1280x720,1280x540,
+  844x390, squads1/2/3: equal spacing, same centers after defeat, full-width
+  dock, no horizontal overflow and actions>=56px. Tested three-enemy Training
+  sprite-center hit targets on phone/desktop/short desktop; all correct.
+  Memory-only fixtures; no account writes. No engine/authority changes.
+
 ## Shared reference-style battle HUD (D-392)
 
 - Owner confirms all playable activities, bottom-only allied HP/Gauge cards,

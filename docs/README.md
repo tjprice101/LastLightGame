@@ -3,6 +3,9 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**Battle polish (D-393):** [consistent formation spacing and shared controls](menus-and-inventory.md#battle-spacing-and-shared-control-polish-d-393),
+stable slots/status height, full-width dock and matching visual/keyboard order.
+
 **Battle HUD (D-392):** [shared reference-inspired layout](menus-and-inventory.md#shared-battle-hud-d-392)
 across every activity: bottom allied HP/Gauge cards, four visible actions,
 selected enemy modifiers and retained artwork scale, scenery and combat.

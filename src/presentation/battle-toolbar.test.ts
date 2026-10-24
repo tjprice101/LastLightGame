@@ -49,6 +49,28 @@ function fixture(authority?: BattleAuthority) {
 }
 
 describe('retained battle toolbar controls', () => {
+  it('keeps DOM/tab order aligned with speed, Settings, Menu, Leave through repeated renders', () => {
+    const f = fixture();
+    const settingsClick = vi.fn();
+    const leaveClick = vi.fn();
+    f.settings.addEventListener('click', settingsClick);
+    f.leave.addEventListener('click', leaveClick);
+    try {
+      for (let pass = 0; pass < 3; pass++) {
+        const buttons = Array.from(f.toolbar.querySelectorAll('button'));
+        expect(buttons.map(button => button.textContent)).toEqual(['1x', '2x', '3x', 'Settings', 'Menu', 'Leave']);
+        expect(f.host.querySelectorAll('#open-battle-menu')).toHaveLength(1);
+        expect(f.host.querySelector('#open-settings')).toBe(f.settings);
+        expect(f.host.querySelector('[data-menu-back]')).toBe(f.leave);
+        f.settings.click();
+        f.leave.click();
+        Reflect.apply(Reflect.get(f.view, 'render'), f.view, []);
+      }
+      expect(settingsClick).toHaveBeenCalledTimes(3);
+      expect(leaveClick).toHaveBeenCalledTimes(3);
+    } finally { f.view.destroy(); }
+  });
+
   it('announces errors without locking play, fades after three seconds and clears the message', () => {
     vi.useFakeTimers();
     const f = fixture();

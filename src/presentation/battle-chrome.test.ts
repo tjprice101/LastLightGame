@@ -31,7 +31,7 @@ describe('shared battle chrome', () => {
   it('moves the existing toolbar into the header on every render without replacing its controls', () => {
     const appended: object[] = [];
     let removed = 0;
-    const toolbar = { remove: () => { removed++; }, querySelectorAll: () => [] };
+    const toolbar = { remove: () => { removed++; }, querySelectorAll: () => [], querySelector: () => null };
     const slot = { append: (node: object) => { appended.push(node); } };
     const menu = { addEventListener: () => {}, close: () => {}, showModal: () => {} };
     const host = { innerHTML: '', parentElement: { closest: () => ({ querySelector: () => toolbar }) },
