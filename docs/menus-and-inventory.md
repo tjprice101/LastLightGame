@@ -5,7 +5,8 @@
 Owner rejects D-394's arena expansion: it pushed enemy readouts and the action
 dock below the viewport. Restore D-393's fixed-screen arena, containment and
 formation sizing. Only the two rear allied sprites in desktop trios move:
-the upper sprite24px up, the lower sprite24px down. Button slots, enemy
+the upper sprite28px up, the lower sprite28px down (owner's small follow-up
+adds4px per sprite). Button slots, enemy
 positions, sprite sizes, header, cards and dock remain unchanged. Phones
 retain their prior layout. Keep the nonduplicated enemy identity fix.
 Validate visible subject bounds (PNG padding is not subject overlap), and

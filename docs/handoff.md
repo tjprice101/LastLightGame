@@ -5,7 +5,8 @@
 - Owner rejects D-394's expanded arena/scrolling because it hides the bottom
   controls. Removed all new intrinsic arena sizing/containment/minimum-height
   rules and restored D-393 formation padding. No new shell/layout changes.
-- Only desktop trio rear allied artwork moves: first24px up, third24px down.
+- Only desktop trio rear allied artwork moves: first28px up, third28px down
+  after the owner's small follow-up adds4px per sprite (8px extra separation).
   Hit-target slots, front ally, enemies, portrait sizes, toolbar and dock
   retain previous layout. Phones unchanged. Enemy identity deduplication stays.
 - Regression rejects arena expansion and checks sprite-only translations.

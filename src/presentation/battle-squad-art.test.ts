@@ -39,8 +39,8 @@ describe('shared artwork-led battle sizing', () => {
     expect(css).toContain('.battle-squad-card .unit-field-statuses { display: block; height: 24px; min-height: 24px; max-height: 24px; }');
   });
   it('moves only the two rear allied sprites without expanding the arena or pushing the dock off-screen', () => {
-    expect(css).toContain('.allies.formation-trio .battle-unit:first-child .battle-art { translate: 0 -1.5rem; }');
-    expect(css).toContain('.allies.formation-trio .battle-unit:last-child .battle-art { translate: 0 1.5rem; }');
+    expect(css).toContain('.allies.formation-trio .battle-unit:first-child .battle-art { translate: 0 -1.75rem; }');
+    expect(css).toContain('.allies.formation-trio .battle-unit:last-child .battle-art { translate: 0 1.75rem; }');
     expect(css).not.toContain('minmax(max-content, 1fr)');
     expect(css).not.toContain('container-type: inline-size');
     expect(css).not.toContain('min-height: calc(var(--battle-art-base)');
