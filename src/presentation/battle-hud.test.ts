@@ -49,6 +49,9 @@ describe('reference-style shared battle HUD', () => {
       expect(f.host.querySelectorAll('.allies .battle-art')).toHaveLength(3);
       expect(f.host.querySelectorAll('.battle-field-actions [data-action]')).toHaveLength(4);
       expect(f.host.querySelector('.battle-selected-target [data-enemy-scaling]')).not.toBeNull();
+      expect(f.host.querySelector('.battle-selected-target .element-label')).toBeNull();
+      expect(f.host.querySelector('.battle-selected-target')?.textContent).not.toContain(f.session.state.enemies[0].name);
+      expect(f.host.querySelector('.enemies .unit-name')?.textContent).toContain(f.session.state.enemies[0].name);
       expect(f.host.querySelector('[data-action="defend"]')).toBeNull();
       for (const unit of f.session.state.allies) {
         const card = f.host.querySelector(`[data-squad-member="${unit.id}"]`)!;

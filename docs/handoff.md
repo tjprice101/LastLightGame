@@ -1,5 +1,28 @@
 # Current state and handoff
 
+## Rear artwork clearance and duplicate target details (D-394)
+
+- Owner screenshots identify duplicate enemy name/element and overlap between
+  the two rear allies. Corner panel now contains strength modifiers only;
+  field nameplates retain names/levels/elements/HP and selection highlights.
+- D-393 checked equal slot centers, not full artwork clearance. Desktop sides
+  now reserve two complete maximum compressed artwork heights plus a gap
+  (one for solos); stacked tablets reserve one per member. Inherited desktop
+  vertical side padding is removed. Arena uses
+  intrinsic block sizing and inline-size containment; shell scrolls when
+  needed instead of shrinking portraits or overlapping rear allies.
+- Existing sprite size formulas, mirrored positions, defeated slots, phone
+  layout and combat/authority/saves/rewards are unchanged.
+- Validation: focused HUD/toolbar/chrome/art/gestures/shortcuts tests pass63/63
+  and production build passes; release CI runs full suite. Browser checks measure
+  actual artwork rectangles using Omnic Rosetta/Infernis/Crinso at1920x1080,
+  1280x720,1280x540,844x390,760x720,390x844,320x720.
+  All21 squad/viewport combinations pass non-overlap, nonduplication, stable
+  defeat positions and no horizontal overflow. Rear artwork envelopes have
+  at least11px clearance; the animated image bounds also remain separate in
+  the checked1280x720 Calamity EX+3 fixture. Menu open/cancel/focus restoration
+  and footer scrolling verified. No account writes.
+
 ## Battle spacing and shared controls (D-393)
 
 - Owner requests consistent spacing, game-matching buttons/UI and correct

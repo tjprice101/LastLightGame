@@ -3,6 +3,9 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**Battle correction (D-394):** [full artwork clearance and nonduplicated enemy details](menus-and-inventory.md#artwork-clearance-and-nonduplicated-enemy-details-d-394)
+replace center-only spacing checks with actual rear portrait clearance.
+
 **Battle polish (D-393):** [consistent formation spacing and shared controls](menus-and-inventory.md#battle-spacing-and-shared-control-polish-d-393),
 stable slots/status height, full-width dock and matching visual/keyboard order.
 

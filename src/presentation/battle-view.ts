@@ -738,6 +738,8 @@ export class BattleView {
     const complete = !!dungeon && dungeon.stage === stages && state.phase === 'cleared';
     const results = this.session.resultsVisible !== false ? battleResults(state, this.session.stageEvents) : '';
     const target = state.enemies.find(enemy => enemy.id === this.targetId);
+    const targetModifiers = target && target.level !== null
+      ? enemyStrengthModifiers({ level: target.level, boss: target.boss === true, stats: target.stats }) : '';
     const turnLabel = this.session.entrancePending ? 'Entering encounter' : complete ? 'Activity complete' : state.phase === 'player' ? 'Player turn' : state.phase === 'cleared' ? 'Encounter cleared' : 'Squad defeated';
     const toolbar = this.host.parentElement?.closest('.battle-screen')?.querySelector('.battle-toolbar');
     toolbar?.remove();
@@ -749,7 +751,7 @@ export class BattleView {
       <div class="battle-header-actions"><span data-battle-toolbar-slot></span><button id="open-battle-menu" class="battle-chrome-button" aria-label="Battle menu" aria-haspopup="dialog" aria-controls="battle-menu">Menu</button>
       ${state.phase !== 'player' ? `<button data-result-show class="battle-turn-button">${state.phase === 'cleared' ? 'View victory' : 'View results'}</button>` : ''}</div></div>
       <div class="battle-arena" style="--battle-rows:${Math.max(state.allies.length, state.enemies.length)}">
-      <div class="battle-field-heading"><aside class="battle-selected-target" aria-label="Selected target">${target ? `<small>Target</small><strong>${target.name}</strong>${elementLabel(target.element)}${target.level !== null ? enemyStrengthModifiers({ level: target.level, boss: target.boss === true, stats: target.stats }) : ''}` : '<strong>No living target</strong>'}</aside><span class="battle-turn-label">${turnLabel} &middot; Turn ${state.round}</span></div>
+      <div class="battle-field-heading"><aside class="battle-selected-target" aria-label="Selected enemy modifiers">${target ? targetModifiers : '<strong>No living target</strong>'}</aside><span class="battle-turn-label">${turnLabel} &middot; Turn ${state.round}</span></div>
       <canvas class="battle-vfx-canvas" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;"></canvas>
       <div class="battle-side enemies${state.enemies.length === 3 ? ' formation-trio' : ''}" style="--enemy-count:${state.enemies.length};--combatant-count:${state.enemies.length}" role="group" aria-label="Enemies on the left">${state.enemies.map((unit) => this.unit(unit)).join('')}</div>
       <div class="battle-side allies ${state.allies.length === 1 ? 'solo' : 'squad'}${state.allies.length === 3 ? ' formation-trio' : ''}" style="--combatant-count:${state.allies.length}" role="group" aria-label="Your squad on the right">${state.allies.map((unit) => this.unit(unit)).join('')}</div></div>

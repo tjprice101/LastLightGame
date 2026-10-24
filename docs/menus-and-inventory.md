@@ -1,5 +1,22 @@
 # Menus and inventory
 
+## Artwork clearance and nonduplicated enemy details (D-394)
+
+Enemy name, level and element appear only in the field nameplate, not again
+in the corner panel. That panel contains only the selected enemy's strength
+modifiers; selection highlights and full Battle menu references remain.
+
+Desktop formation height must accommodate complete artwork, not merely equal
+button-center spacing. Reserve two full maximum-size artwork heights plus a
+gap for pairs/trios, one for solos. The maximum compressed scale is1.135
+(`.82 + .18 * 1.75`); reserve1.14 per row. Remove inherited vertical side
+padding that previously consumed the gap. Use intrinsic arena block sizing
+with inline-size containment and scroll when full-size art cannot fit.
+Stacked tablet formations reserve one complete artwork height per member.
+Keep mirrored anchors, defeated slots, existing sprite size formulas and
+phone layout. D-393's spacing measurements alone were insufficient: also
+measure actual rear artwork rectangle clearance, including at1920x1080.
+
 ## Battle spacing and shared control polish (D-393)
 
 Use mirrored, fixed desktop formation anchors for one-, two- and three-member
