@@ -3,6 +3,10 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**Battle HUD (D-392):** [shared reference-inspired layout](menus-and-inventory.md#shared-battle-hud-d-392)
+across every activity: bottom allied HP/Gauge cards, four visible actions,
+selected enemy modifiers and retained artwork scale, scenery and combat.
+
 **Player copy (D-391):** [concise menu and activity explanations](menus-and-inventory.md#concise-player-explanations-d-391)
 remove repeated controls and technical filler while retaining key restrictions,
 exact effects, rates and bracketed terminology.

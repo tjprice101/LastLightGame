@@ -91,7 +91,7 @@ describe('actual allied effects beside HP', () => {
     const target = document.createElement('div');
     target.innerHTML = unitReadout(unit, true, [unit], 1);
     const view = Object.create(BattleView.prototype);
-    Object.assign(view, { session: { state: { allies: [unit], round: 1 } },
+    Object.assign(view, { host: { querySelector: () => target }, session: { state: { allies: [unit], round: 1 } },
       displayedBuffs: new Map([[unit.id, buffSnapshot(unit)]]) });
     const update = Reflect.get(BattleView.prototype, 'updateBuffs');
     const event = { kind: 'shield', target: unit.id, amount: 25 };

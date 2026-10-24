@@ -1,5 +1,39 @@
 # Menus and inventory
 
+## Shared battle HUD (D-392)
+
+Every playable mode uses the same reference-inspired hierarchy, with Last
+Light's existing scenery, Georgia typography, neutral surfaces and elemental
+accents. The header contains activity, stage/wave progress, animation speed,
+Settings, Menu and Leave. The selected target and its actual enemy stat
+modifiers sit above the field beside the turn cue.
+
+Enemies remain left, allies right. The field retains existing artwork,
+facing, scale metadata, VFX, gestures and enemy HP readouts. Allied HP/Gauge
+readouts move to bottom portrait cards rather than appearing twice. Selecting
+a card chooses the actor; both the cards and field retain selected-member
+feedback. Native/buff changes and HP impacts update the bottom readout while
+floating numbers and effects stay anchored to the field sprite.
+
+The command dock always exposes Normal Attack, Skill 1, Skill 2 and Last
+Flare, with actual Gauge gains/costs, availability and named ability/rejection
+details. There is no new Defense action. The Battle menu retains full kits,
+statuses, forecasts and End turn. On phones, cards/actions stack below the
+field; Settings/Leave use their existing icons with accessible text retained.
+Very short landscape windows scroll the battle shell instead of collapsing
+the formation into an unusable strip.
+Short status trays cannot expand the formation; full details remain in Menu.
+
+Preserve existing toolbar nodes/listeners through renders, Settings' frozen
+run, busy locks, ally-target selection, authority commands, rewards, results,
+focus restoration, reduced motion and cut-ins. The dock changes presentation
+only: no combat rules bump, account writes, new shortcuts or save migration.
+
+Validate `battle-hud.test.ts`, chrome, shortcuts, impact, toolbar, squad
+gestures/art tests, the full suite and production build. Check three-member
+formations, long exact values and enemy modifiers at320x720,390x844,
+1280x720 and1280x540, including retained sprite dimensions and44px controls.
+
 ## Concise player explanations (D-391)
 
 Help describes the rule or exception, not the controls already on screen.

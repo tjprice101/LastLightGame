@@ -1,5 +1,5 @@
 import { actionIds, describeFighter, enemies, formatStat, isActionId, shatterGauge, type ActionId } from '../content/combat';
-import { gameConfirm, gameDialogPending } from './game-dialog';
+import { escapeDialogText, gameConfirm, gameDialogPending } from './game-dialog';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { actAndAdvanceTurn, advanceUnavailableTurns, teamCanAct, combatantCanAct, actionUnavailable, actionGaugeCost, createBattle, createCalamityBattle, createDungeonBattle, createInfusionBattle, createWarBattle, createStoryBattle, endTurn, nextStage, nextWave, withMasterLoadouts, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
 import { calamityEncounter, isCalamityActivityId, isCalamityTier, type CalamityActivityId, type CalamityTier } from '../content/calamity';
@@ -30,7 +30,6 @@ import { gestureGuide, updateGestureGuide } from './gesture-guide';
 import { unitReadout } from './unit-readout';
 import { healthAfterEvent, healthSnapshot, impactEvents, attackEffectTargets } from './battle-health';
 import { enemyDebuffs } from './battle-status';
-import { characterRole } from './character-role';
 import { activityTransitionPending, transitionActivity, waitForActivityTransition } from './activity-transition';
 import { entranceFrames } from './battle-entrance';
 import { infusionEncounter } from '../content/infusions';
@@ -57,6 +56,8 @@ import { createAllyTargetPicker, nativeActionHint, nativeIdentityReference, nati
 import type { NativeView } from '../game/native-kits';
 import { bracketReferences } from './reference-text';
 import { readableEffect } from './effect-copy';
+import { enemyStrengthModifiers } from './enemy-strength';
+import { characterRole } from './character-role';
 
 export interface BattleSession { state: BattleState; log: string[]; runId: string; progress: CharacterProgress; teamProgress?: Partial<Record<StarterId, CharacterProgress>>; stageEvents: BattleEvent[]; entrancePending?: boolean; resultsVisible?: boolean }
 export interface BattleAuthorityResponse { session: BattleSession; result?: BattleResult }
@@ -471,6 +472,8 @@ export class BattleView {
   }
 
   private showTurnCue(message: string): void {
+    const label = this.host.querySelector('.battle-turn-label');
+    if (label) label.textContent = message;
     this.host.querySelector('.battle-turn-cue')?.remove();
     const cue = document.createElement('div');
     cue.className = 'battle-turn-cue';
@@ -602,8 +605,9 @@ export class BattleView {
         const next = healthAfterEvent(hp, unit.stats.health, entry);
         this.displayedHealth.set(entry.target, next);
         this.updateBuffs(target, entry, next > 0);
-        const bar = target.querySelector<HTMLElement>('.health-track > span');
-        const label = target.querySelector('.unit-health');
+        const readout = unit.side === 'ally' ? this.host.querySelector(`[data-squad-member="${unit.id}"]`) ?? target : target;
+        const bar = readout.querySelector<HTMLElement>('.health-track > span');
+        const label = readout.querySelector('.unit-health');
         if (!bar || !label) throw new Error('Animated health readout is missing.');
         bar.style.width = `${next / unit.stats.health * 100}%`;
         label.textContent = `HP ${formatStat(next)} / ${formatStat(unit.stats.health)}`;
@@ -647,7 +651,7 @@ export class BattleView {
       allies: base.allies.map(unit => ({ ...unit, hp: hp(unit), native: view.units[unit.id] })),
       enemies: base.enemies.map(unit => ({ ...unit, hp: hp(unit) })) };
     for (const unit of [...state.allies, ...state.enemies]) {
-      const card = this.host.querySelector(`[data-unit="${unit.id}"]`);
+      const card = this.host.querySelector(unit.side === 'ally' ? `[data-squad-member="${unit.id}"]` : `[data-unit="${unit.id}"]`);
       if (!card) continue;
       const slot = card.querySelector('.native-kit-slot');
       if (slot) slot.innerHTML = nativeStateReadout(state, unit, true);
@@ -659,7 +663,8 @@ export class BattleView {
   private updateBuffs(target: Element, entry: BattleEvent, alive = true): void {
     if (!this.session.state.allies.some(unit => unit.id === entry.target) &&
       !(this.session.state.calamity && this.session.state.enemies.some(unit => unit.id === entry.target))) return;
-    const readout = target.querySelector('.unit-active-buffs');
+    const card = this.host.querySelector(`[data-squad-member="${entry.target}"]`) ?? target;
+    const readout = card.querySelector('.unit-active-buffs');
     const before = this.displayedBuffs.get(entry.target);
     if (!readout || !before) return;
     const next = entry.buffs ?? {
@@ -682,13 +687,26 @@ export class BattleView {
     const selected = unit.side === 'ally' ? unit.id === this.actorId : unit.id === this.targetId;
     const ultimateReady = unit.side === 'ally' && actionUnavailable(this.session.state, unit, 'ultimate', this.targetId) === null;
     return `<button class="battle-unit ${selected ? 'selected-unit' : ''} ${unit.hp <= 0 ? 'fallen' : ''} ${ultimateReady ? 'ultimate-ready' : ''}"
-      data-unit="${unit.id}" data-side="${unit.side}" aria-pressed="${selected}" style="--element:${color};--unit-scale:${battleArtScale(this.session.state, unit)}" ${unit.hp <= 0 ? 'disabled' : ''}>
+      data-unit="${unit.id}" data-side="${unit.side}" aria-label="${escapeDialogText(unit.name)}" aria-pressed="${selected}" style="--element:${color};--unit-scale:${battleArtScale(this.session.state, unit)}" ${unit.hp <= 0 ? 'disabled' : ''}>
       <span class="battle-art">
       <span class="battle-sprite"><span class="unit-idle">${art ? `<img ${unit.definitionId.startsWith('calamity:') ? 'class="calamity-boss-contrast"' : ''} src="${assetUrl(`${isStarterId(unit.definitionId) && !unit.captured ? 'characters' : 'enemies'}/${art}.png`)}" alt="${unit.name}" ${unitFacingAttributes(art, unit.side)} width="960" height="960" />`
         : '<span class="pending-enemy-art" aria-hidden="true"><span></span></span>'}</span></span>
-      </span><span class="unit-nameplate"><span class="unit-name">${unit.name}${unit.level !== null ? ` · Lv. ${unit.level}` : ''}${unit.side === 'ally' && isStarterId(unit.definitionId) ? characterRole(unit.definitionId) : ''}${unit.side === 'enemy' ? elementLabel(unit.element) : ''}</span><span class="unit-readout"><span class="health-track"><span style="width:${unit.hp / unit.stats.health * 100}%"></span></span>
-      ${unitReadout(unit, true, this.session.state.allies, this.session.state.round, this.session.state)}</span></span>
+      </span>${unit.side === 'enemy' ? this.nameplate(unit) : ''}
     </button>`;
+  }
+
+  private nameplate(unit: Combatant): string {
+    return `<span class="unit-nameplate"><span class="unit-name" title="${escapeDialogText(unit.name)}">${unit.name}${unit.level !== null ? ` · Lv. ${unit.level}` : ''}${unit.side === 'enemy' ? elementLabel(unit.element) : ''}</span><span class="unit-readout"><span class="health-track"><span style="width:${unit.hp / unit.stats.health * 100}%"></span></span>
+      ${unitReadout(unit, true, this.session.state.allies, this.session.state.round, this.session.state)}</span></span>`;
+  }
+
+  private squadCard(unit: Combatant): string {
+    const { art, color } = definition(unit);
+    const selected = unit.id === this.actorId;
+    const status = unit.hp <= 0 ? 'Defeated' : unit.recoverThrough >= this.session.state.round ? 'Recovering' : unit.spent ? 'Action used' : selected ? 'Acting' : 'Ready';
+    return `<button type="button" class="battle-squad-card${selected ? ' selected-member' : ''}${unit.hp <= 0 ? ' fallen' : ''}" data-squad-member="${unit.id}" aria-pressed="${selected}" aria-label="${escapeDialogText(unit.name)} · ${status}" style="--element:${color}" ${unit.hp <= 0 ? 'disabled' : ''}>
+      <span class="battle-card-portrait" aria-hidden="true">${art ? `<img src="${assetUrl(`${unit.captured ? 'enemies' : 'characters'}/${art}.png`)}" alt="" ${unitFacingAttributes(art, 'ally')} width="96" height="96">` : ''}</span>
+      <span class="battle-card-state">${status}</span>${this.nameplate(unit)}</button>`;
   }
 
   private render(): void {
@@ -718,23 +736,28 @@ export class BattleView {
     const stages = state.calamity ? 1 : state.story ? storyRules.stages : state.war ? warStageCount : state.infusion ? infusionStageCount(state.infusion.mode) : dungeonStageCount;
     const complete = !!dungeon && dungeon.stage === stages && state.phase === 'cleared';
     const results = this.session.resultsVisible !== false ? battleResults(state, this.session.stageEvents) : '';
+    const target = state.enemies.find(enemy => enemy.id === this.targetId);
+    const turnLabel = this.session.entrancePending ? 'Entering encounter' : complete ? 'Activity complete' : state.phase === 'player' ? 'Player turn' : state.phase === 'cleared' ? 'Encounter cleared' : 'Squad defeated';
     const toolbar = this.host.parentElement?.closest('.battle-screen')?.querySelector('.battle-toolbar');
     toolbar?.remove();
     this.host.innerHTML = `${dungeon && !dungeon.background
       ? `<div class="battle-scenery pending-dungeon-scenery" style="--element:${dungeon.color}" aria-hidden="true"></div>`
       : `<img class="battle-scenery${state.calamity ? ' calamity-scenery' : ''}" src="${assetUrl(`backgrounds/${dungeon?.background ?? 'grassy-field.png'}`)}" alt="${dungeon?.name ?? 'Grassy field'} battle scenery" width="1456" height="816" />`}
       <div class="battle-top"><div class="battle-heading"><span class="eyebrow">${state.calamity ? `CALAMITY · EX+${state.calamity.tier}` : state.story ? 'STORY CAMPAIGN' : state.war ? 'ELEMENTAL WAR' : state.infusion?.mode === 'machines' ? 'MACHINE TRIAL' : state.infusion?.mode === 'roses' ? 'EVENT' : state.infusion && isCurrencyMode(state.infusion.mode) ? 'CURRENCY FARM' : state.infusion ? 'INFUSION TRIAL' : dungeon ? 'ELEMENTAL DUNGEON' : state.allies.length === 1 ? 'SOLO TRAINING' : 'SQUAD TRAINING'}</span><h1 tabindex="-1">${dungeon?.name ?? 'Training'}</h1></div>
-      <span class="battle-progress">${dungeon ? 'Stage' : 'Wave'} ${state.wave}${dungeon ? ` / ${stages}` : ''} &middot; Turn ${state.round} &middot; ${this.session.entrancePending ? 'Entering encounter' : complete ? 'Activity complete' : state.phase === 'player' ? 'Player turn' : state.phase === 'cleared' ? 'Encounter cleared' : 'Squad defeated'}</span>
-      <div class="battle-header-actions"><span data-battle-toolbar-slot></span><button id="open-battle-menu" class="battle-chrome-button" aria-haspopup="dialog" aria-controls="battle-menu">Battle menu</button>
+      <div class="battle-progress"><span>${dungeon ? 'Stage' : 'Wave'} ${state.wave}${dungeon ? ` / ${stages}` : ''}</span>${dungeon ? `<meter min="0" max="${stages}" value="${state.wave}" aria-label="Activity stage progress">${state.wave} / ${stages}</meter>` : ''}</div>
+      <div class="battle-header-actions"><span data-battle-toolbar-slot></span><button id="open-battle-menu" class="battle-chrome-button" aria-label="Battle menu" aria-haspopup="dialog" aria-controls="battle-menu">Menu</button>
       ${state.phase !== 'player' ? `<button data-result-show class="battle-turn-button">${state.phase === 'cleared' ? 'View victory' : 'View results'}</button>` : ''}</div></div>
       <div class="battle-arena" style="--battle-rows:${Math.max(state.allies.length, state.enemies.length)}">
+      <div class="battle-field-heading"><aside class="battle-selected-target" aria-label="Selected target">${target ? `<small>Target</small><strong>${target.name}</strong>${elementLabel(target.element)}${target.level !== null ? enemyStrengthModifiers({ level: target.level, boss: target.boss === true, stats: target.stats }) : ''}` : '<strong>No living target</strong>'}</aside><span class="battle-turn-label">${turnLabel} &middot; Turn ${state.round}</span></div>
       <canvas class="battle-vfx-canvas" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;"></canvas>
-      <div class="battle-side enemies" style="--enemy-count:${state.enemies.length}" role="group" aria-label="Enemies on the left">${state.enemies.map((unit) => this.unit(unit)).join('')}</div>
-      <div class="battle-side allies ${state.allies.length === 1 ? 'solo' : 'squad'}" role="group" aria-label="Your squad on the right">${state.allies.map((unit) => this.unit(unit)).join('')}</div></div>
+      <div class="battle-side enemies${state.enemies.length === 3 ? ' formation-trio' : ''}" style="--enemy-count:${state.enemies.length};--combatant-count:${state.enemies.length}" role="group" aria-label="Enemies on the left">${state.enemies.map((unit) => this.unit(unit)).join('')}</div>
+      <div class="battle-side allies ${state.allies.length === 1 ? 'solo' : 'squad'}${state.allies.length === 3 ? ' formation-trio' : ''}" style="--combatant-count:${state.allies.length}" role="group" aria-label="Your squad on the right">${state.allies.map((unit) => this.unit(unit)).join('')}</div></div>
       <footer class="battle-feedback">
       ${results}
       <p id="battle-error" role="alert" aria-atomic="true" class="status"></p>
       ${this.session.log.at(-1) === conduitRestartNotice ? `<p class="battle-compatibility-notice" role="status">${conduitRestartNotice}</p>` : ''}
+      <div class="battle-command-dock"><div class="battle-squad-cards" role="group" aria-label="Squad status and selection">${state.allies.map(unit => this.squadCard(unit)).join('')}</div>
+      <section class="battle-field-actions" aria-label="${escapeDialogText(actor.name)} actions"><strong class="battle-action-actor">${actor.name}</strong><div class="battle-dock-actions">${actionIds.map(action => this.actionButton(state, actor, action, true)).join('')}</div></section></div>
       <div class="battle-footer-summary"><p id="battle-announcement" role="status">${complete ? state.calamity ? 'Calamity tier cleared. Your chest is saved in Inventory. Enter the next unlocked tier from Play.' : `All ${stages} stages cleared. Return to Play to replay unlocked stages.` : state.phase === 'cleared' ? (dungeon ? 'Stage cleared. Continue with full health; Elemental Gauge carries over.' : 'Wave cleared. Continue when ready; recovery and health carry over.') : state.phase === 'defeat' ? 'Your squad has fallen. Retry when ready; earned rewards are kept.' : 'Select a target. Drag an ally: ↑ Last Flare · ← Skill 1 · → Skill 2 · ↓ Normal. Right-click: Normal Attack.'}</p>
       <span class="battle-footer-target"><strong>${actor.name}</strong><small>Target: ${state.enemies.find((enemy) => enemy.id === this.targetId)?.name ?? 'None'}</small></span></div>
       </footer>
@@ -746,7 +769,7 @@ export class BattleView {
       <div class="battle-context-actions">${actionIds.map((action) => this.actionButton(state, actor, action)).join('')}</div>
       ${state.phase === 'player' ? '<button id="end-battle-turn" class="battle-chrome-button">Pass remaining actions</button>' : ''}</section>
       <section class="battle-unit-intel"><h3>Combatants</h3>${[...state.allies, ...state.enemies].map((unit) =>
-        `<article><strong>${unit.name}${unit.level !== null ? ` · Lv.${unit.level}` : ''}</strong>${nativeIdentityReference(unit)}${elementLabel(unit.element)}        ${unit.side === 'ally' && isStarterId(unit.definitionId) ? characterRating(unit.definitionId, unit.evolution) : unit.captured ? capturedRating(unit.captured.creatureId) : ''}${unitReadout(unit, false, state.allies, state.round, state)}${unit.attackBoost && unit.attackBoost.throughRound >= state.round ? `<small>Outgoing attack damage +${formatStat(unit.attackBoost.fraction * 100)}% through turn ${unit.attackBoost.throughRound}</small>` : ''}${unit.conduits?.some((id) => id !== null) ? `<small>Conduits: ${unit.conduits.filter((id) => id !== null).map((id) => getConduit(id).name).join(', ')}</small>` : ''}<small>${unit.hp <= 0 ? 'Defeated' : unit.recoverThrough >= state.round ? 'Recovering after Last Flare' : unit.spent ? 'Action used' : 'Ready'}</small></article>`).join('')}</section>
+        `<article><strong>${unit.name}${unit.level !== null ? ` · Lv.${unit.level}` : ''}</strong>${unit.side === 'ally' && !unit.captured && isStarterId(unit.definitionId) ? characterRole(unit.definitionId) : ''}${nativeIdentityReference(unit)}${elementLabel(unit.element)}        ${unit.side === 'ally' && isStarterId(unit.definitionId) ? characterRating(unit.definitionId, unit.evolution) : unit.captured ? capturedRating(unit.captured.creatureId) : ''}${unitReadout(unit, false, state.allies, state.round, state)}${unit.attackBoost && unit.attackBoost.throughRound >= state.round ? `<small>Outgoing attack damage +${formatStat(unit.attackBoost.fraction * 100)}% through turn ${unit.attackBoost.throughRound}</small>` : ''}${unit.conduits?.some((id) => id !== null) ? `<small>Conduits: ${unit.conduits.filter((id) => id !== null).map((id) => getConduit(id).name).join(', ')}</small>` : ''}<small>${unit.hp <= 0 ? 'Defeated' : unit.recoverThrough >= state.round ? 'Recovering after Last Flare' : unit.spent ? 'Action used' : 'Ready'}</small></article>`).join('')}</section>
       ${bracketReferences(`<section class="battle-help"><h3>Abilities and battle rules</h3>
       ${state.calamity ? `<p>${calamityEncounter(state.calamity.activity, state.calamity.tier).description}</p>${calamityCadence(state.calamity.activity, state.round)}<p>Victory earns one chest. Open it in Inventory. Choose another tier from Play.</p>` : ''}
       <button id="restart-battle" data-result-restart class="text-button">${state.calamity ? 'Replay tier' : dungeon ? 'Replay stage' : 'Restart Training'}</button>
@@ -896,6 +919,16 @@ export class BattleView {
         this.host.querySelector<HTMLButtonElement>(`[data-unit="${id}"]`)?.focus();
       });
     });
+    this.host.querySelectorAll<HTMLButtonElement>('[data-squad-member]').forEach(button => {
+      button.addEventListener('click', () => {
+        if (activityTransitionPending() || this.busy || this.dragging || gameDialogPending()) return;
+        const id = button.dataset.squadMember;
+        if (!id) throw new Error('Squad member ID is missing.');
+        this.actorId = id;
+        this.render();
+        this.host.querySelector<HTMLButtonElement>(`[data-squad-member="${this.actorId}"]`)?.focus({ preventScroll: true });
+      });
+    });
     this.host.querySelectorAll<HTMLButtonElement>('[data-action]').forEach((button) => {
       button.addEventListener('click', () => {
         if (!isActionId(button.dataset.action)) throw new Error('Unknown battle action.');
@@ -994,12 +1027,17 @@ export class BattleView {
     }));
   }
 
-  private actionButton(state: BattleState, actor: Combatant, action: ActionId): string {
+  private actionButton(state: BattleState, actor: Combatant, action: ActionId, compact = false): string {
     if (!actor.kit) throw new Error('Ally combat kit is missing.');
     const kit = !actor.captured && isStarterId(actor.definitionId) ? describeFighter(actor.definitionId, actor.kit) : actor.kit;
     const ability = action === 'light' ? null : kit.abilities[action];
     const name = action === 'light' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name;
     const reason = actionUnavailable(state, actor, action, this.targetId);
+    if (compact) {
+      const label = action === 'light' ? 'Normal Attack' : action === 'skill1' ? 'Skill 1' : action === 'skill2' ? 'Skill 2' : 'Last Flare';
+      return `<button type="button" data-action="${action}" class="battle-dock-action" title="${escapeDialogText(`${name}${reason ? ` · ${reason}` : ''}`)}" ${reason || this.busy ? 'disabled' : ''}>
+        <strong>${label}</strong><span>${action === 'light' ? `+${shatterGauge.gains.light} Gauge` : `${actionGaugeCost(actor, action, state, this.targetId)} Gauge`}</span>${reason || action !== 'light' ? `<small>${reason ?? name}</small>` : ''}</button>`;
+    }
     return `<button data-action="${action}" class="battle-action" ${reason ? 'disabled' : ''}>
       <span class="battle-action-heading">${isStarterId(actor.definitionId) ? abilityIcon(actor.definitionId, action) : ''}<strong>${name}</strong></span>
       ${ability ? abilityStatuses(ability.strength, actor.kit.nativeIdentity && !actor.captured ? actor.definitionId : undefined, action === 'light' ? undefined : action) : ''}

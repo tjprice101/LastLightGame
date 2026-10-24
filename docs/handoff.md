@@ -1,5 +1,42 @@
 # Current state and handoff
 
+## Shared reference-style battle HUD (D-392)
+
+- Owner confirms all playable activities, bottom-only allied HP/Gauge cards,
+  visible actions/enemy modifiers, reference header controls and responsive
+  phones. Explicitly preserves current artwork sizing and the four existing
+  actions; no Defense mechanic is added.
+- Shared BattleView now uses activity/progress header, selected-target
+  modifiers/turn cue, left enemies/right allies, bottom portrait selection
+  cards and Normal Attack/Skill1/Skill2/Last Flare dock. Desktop trios stagger
+  in two columns; phones stack vertically above cards/actions. Short landscape
+  shells scroll instead of collapsing the formation.
+- Retains original sprite scale metadata and limits; phone arena inline
+  padding preserves measured102.88px enemy/101.23px allied art at390x844.
+  Desktop equivalent art is269.13px/264.86px at1280x720 (within1% of the
+  prior267.13px/262.89px measurement), without shrinking for the new dock.
+- HP/healing/Shield and native/buff snapshots patch bottom cards at impact.
+  Floating numbers/VFX remain on sprites. Enemy targeting, ally-target picker,
+  authority dispatch, busy locks, gestures, toolbar listeners, Settings' run,
+  results, cut-ins, reduced motion and account/reward rules are unchanged.
+  Role medals/full kits/statuses remain in the Battle menu.
+- Validation: `npx vitest run --maxWorkers=2` passed6514/208 files before the
+  final native-snapshot/turn-cue regression; the final focused nine-file HUD,
+  buffs, role, targeting, Gauge, chrome, shortcuts, toolbar and sizing run
+  passed102/102. `npm run build` passed typecheck/build (existing chunk warning).
+  Final Deploy Last Light CI runs the complete updated suite.
+- Browser DOM/geometry checks used real BattleView with production CSS order
+  at320x720,390x844,1280x720,1280x540 and844x390: no horizontal overflow,
+  four48px-or-larger actions,44px header controls, visible exact HP/Gauge,
+  three-enemy/solo and two-enemy/three-member formations, target changes,
+  Menu close/focus restoration and short-landscape scrolling. Maximum-safe
+  HP values and live Calamity EX+3 modifiers fit at320x720 without truncation
+  or horizontal overflow. All fixtures were memory-only, without account writes.
+- Screenshot capture resets this browser's emulated viewport; desktop checks
+  therefore use actual DOM geometry rather than treating cropped screenshots
+  as reliable desktop evidence. No new art/engine work or owner decision is
+  pending. Client-only release; authority remains combat rules10.
+
 ## Machines loot-note follow-up (D-391)
 
 - Owner flags the verbose per-rarity paragraphs below Machines loot tables.

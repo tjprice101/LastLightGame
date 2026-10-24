@@ -62,11 +62,11 @@ describe('shared battle chrome', () => {
     for (const session of sessions) {
       const html = markup(session);
       for (const enemy of session.state.enemies) {
-        expect(html).toContain(`<span class="unit-name">${enemy.name} · Lv. ${enemy.level}${elementLabel(enemy.element)}</span>`);
+        expect(html).toContain(`>${enemy.name} · Lv. ${enemy.level}${elementLabel(enemy.element)}</span>`);
         const intel = html.slice(html.indexOf('class="battle-unit-intel"'));
         expect(intel).toContain(elementLabel(enemy.element));
       }
-      expect(html).toContain('<span class="unit-name">Eternal Heavenflame Sovereign, Infernis · Lv. 105');
+      expect(html).toContain('>Eternal Heavenflame Sovereign, Infernis · Lv. 105');
       expect(html).not.toContain('Lv. null');
     }
   });
@@ -89,8 +89,9 @@ describe('shared battle chrome', () => {
     expect(field).toContain('class="battle-footer-summary"');
     expect(field).toContain('id="battle-announcement" role="status"');
     expect(field).not.toContain('battle-command-bar');
-    expect(field).not.toContain('battle-field-actions');
-    expect(html.match(/data-action=/g)).toHaveLength(4);
+    expect(field).toContain('battle-field-actions');
+    expect(field.match(/data-action=/g)).toHaveLength(4);
+    expect(html.match(/data-action=/g)).toHaveLength(8);
     expect(html).toContain('class="unit-nameplate"');
     expect(html).toContain('aria-labelledby="battle-menu-heading"');
     expect(html).toContain('Pass remaining actions');

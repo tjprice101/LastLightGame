@@ -79,9 +79,12 @@ describe('Phase 0 battle action controls', () => {
       expect(skill.dataset.available).toBe('true');
       expect(skill.textContent).toContain('22 Elemental Gauge');
       host.querySelector<HTMLButtonElement>('#open-battle-menu')!.click();
-      const button = host.querySelector<HTMLButtonElement>('[data-action="skill1"]')!;
+      const button = host.querySelector<HTMLButtonElement>('#battle-menu [data-action="skill1"]')!;
       expect(button.disabled).toBe(false);
       expect(button.textContent).toContain('Costs 22 Elemental Gauge');
+      const dockButton = host.querySelector<HTMLButtonElement>('.battle-field-actions [data-action="skill1"]')!;
+      expect(dockButton.disabled).toBe(false);
+      expect(dockButton.textContent).toContain('22 Gauge');
       expect(session.state).toEqual(before);
     } finally { view.destroy(); }
   });

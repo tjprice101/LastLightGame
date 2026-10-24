@@ -11,12 +11,16 @@ afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
   Reflect.deleteProperty(HTMLDialogElement.prototype, 'close');
+  Reflect.deleteProperty(Element.prototype, 'animate');
 });
 
 function fixture(online = false) {
   vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }));
   Object.defineProperty(HTMLDialogElement.prototype, 'close', {
     configurable: true, value: function (this: HTMLDialogElement) { this.open = false; },
+  });
+  Object.defineProperty(Element.prototype, 'animate', {
+    configurable: true, value: () => ({ finished: Promise.resolve(), playbackRate: 1, cancel: vi.fn() }),
   });
   const session = createSession('ember', { level: 10, evolution: 1 }, undefined, {
     ids: ['ember', 'tide'], progress: { ember: { level: 10, evolution: 1 }, tide: { level: 10, evolution: 1 } },
@@ -61,7 +65,8 @@ describe('Normal Attack secondary-click shortcut', () => {
     try {
       expect(f.host.querySelector('#battle-announcement')!.textContent).toContain('Right-click: Normal Attack');
       expect(f.host.querySelector('#battle-announcement')!.textContent).not.toContain('Defense');
-      expect(f.host.querySelector('[data-action="light"]')!.textContent).toContain('Down or right-click');
+      expect(f.host.querySelector('#battle-menu [data-action="light"]')!.textContent).toContain('Down or right-click');
+      expect(f.host.querySelector('.battle-field-actions [data-action="light"]')!.textContent).toContain('Normal Attack');
       expect(f.host.querySelector('[data-action="defend"]')).toBeNull();
     } finally { f.view.destroy(); }
   });

@@ -1,5 +1,20 @@
 # Combat specification
 
+## Shared battle presentation (D-392)
+
+The [shared HUD contract](menus-and-inventory.md#shared-battle-hud-d-392)
+applies to Story, Training, elemental dungeons, infusions, currency farms,
+Machines, Roses, Elemental War and Calamity. Allied HP/Gauge and bounded
+status readouts now belong to bottom selection cards, superseding D-390's
+allied field-card placement. Enemy HP remains on the field; selected enemy
+modifiers remain visible above it. Damage/healing/Shield event snapshots
+patch the cards at impact without moving floating numbers or VFX off sprites.
+
+Only the four existing actions are shown. Combat rules10, action costs,
+cooldowns, Gauge, RNG, authority/persistence, enemy balance, results and
+cut-ins are unchanged. Existing artwork scale metadata and sizing limits are
+retained; the new dock does not shrink sprites to its reduced field height.
+
 ## Glassroot, Stasis and bounded field status cards (D-390)
 
 Glassroot Gimbal grants +5% [Skill Power] per complete **450** maximum
