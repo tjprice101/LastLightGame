@@ -100,7 +100,7 @@ describe('native ally targeting', () => {
       expect(document.querySelector<HTMLDialogElement>('.native-ally-picker')?.open).toBe(true);
       expect(f.authority.action).not.toHaveBeenCalled();
       expect(document.querySelector('.native-ally-picker')?.textContent).toContain('Enemy target is unchanged');
-      expect(f.host.querySelector('#battle-menu [data-action="' + action + '"]')?.textContent).toContain('Choose');
+      expect(f.host.querySelector('[data-action="' + action + '"]')?.textContent).toContain('Choose');
       f.pick('ember');
       await vi.waitFor(() => expect(f.authority.action).toHaveBeenCalledExactlyOnceWith(id, action, 'ember'));
       expect(f.commit).not.toHaveBeenCalled();

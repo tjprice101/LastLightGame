@@ -3,8 +3,9 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
-**Slim battle bar (D-396):** [per-member stats dialogs](menus-and-inventory.md#slim-battle-stats-bar-d-396)
-replace portrait cards with compact inspection buttons; four actions remain.
+**Current battle screen (D-399):** [original layout restored](menus-and-inventory.md#original-battle-screen-restored-d-399)
+from before the reference redesign, keeping stage progress. Allied readouts
+return to the field; gestures and Battle menu actions remain.
 
 **Conduit copy (D-397):** [description policy](conduits.md#description-copy-d-397)
 removes redundant upgrade explanations and global-rule boilerplate.
@@ -12,18 +13,9 @@ removes redundant upgrade explanations and global-rule boilerplate.
 **Calamity tuning (D-398):** [tier adjustments and measured clearability](calamity-mode.md#calamity-tier-tuning-d-398)
 strengthen EX+1 by3%, ease EX+2 by2%, and move every EX+3 boss to level170.
 
-**Battle restoration (D-395):** [sprite-only correction](menus-and-inventory.md#sprite-only-positioning-correction-d-395)
-restores the fixed-screen HUD; only the two rear allied sprites move.
-
-**Battle correction (D-394):** [full artwork clearance and nonduplicated enemy details](menus-and-inventory.md#artwork-clearance-and-nonduplicated-enemy-details-d-394)
-replace center-only spacing checks with actual rear portrait clearance.
-
-**Battle polish (D-393):** [consistent formation spacing and shared controls](menus-and-inventory.md#battle-spacing-and-shared-control-polish-d-393),
-stable slots/status height, full-width dock and matching visual/keyboard order.
-
-**Battle HUD (D-392):** [shared reference-inspired layout](menus-and-inventory.md#shared-battle-hud-d-392)
-across every activity: bottom allied HP/Gauge cards, four visible actions,
-selected enemy modifiers and retained artwork scale, scenery and combat.
+**Historical battle redesign (D-392–D-396):**
+[reference HUD and follow-up changes](menus-and-inventory.md#shared-battle-hud-d-392)
+are superseded by D-399.
 
 **Player copy (D-391):** [concise menu and activity explanations](menus-and-inventory.md#concise-player-explanations-d-391)
 remove repeated controls and technical filler while retaining key restrictions,

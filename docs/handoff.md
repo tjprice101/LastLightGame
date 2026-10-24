@@ -1,5 +1,32 @@
 # Current state and handoff
 
+## Original battle screen restored (D-399)
+
+- Owner reverses the screenshot-driven battle redesign. Restored only the
+  shared renderer/layout and directly related tests to the pre-D-392 baseline
+  (`fae6893`), retaining the activity stage progress meter. Original allied
+  field HP/Gauge/status readouts, formations, sprite offsets, header/toolbar,
+  target summary and compact feedback footer return.
+- Removed bottom Stats controls/dialogs, separate target banner and visible
+  action dock. Field gestures, Normal Attack secondary-click, Battle menu,
+  actor/target selection and keyboard selection remain. The proposed red-star
+  notification/basic-footer redesign was canceled before implementation.
+- Preserved earlier bounded status/readability fixes and impact-time HP,
+  Shield/buff/native patching. Conduit copy (D-397), Calamity tuning (D-398),
+  artwork, VFX, mechanics, rewards, authority and saves are unchanged.
+- [Current layout contract](menus-and-inventory.md#original-battle-screen-restored-d-399).
+  Full `npx vitest run --maxWorkers=2 --reporter=dot`:6541 tests/209 files
+  pass. `npm run build` and final `npx tsc --noEmit` pass; existing chunk-size
+  warning only. Initial new impact test needed the existing DOM animation
+  stub; corrected and reran both the focused file and complete suite.
+- Browser in-memory fixture with the real shared renderer/game styles:
+  1920x1080,1280x720,390x844 and320x720 have no horizontal overflow; allied
+  readouts, footer and Menu stay inside the viewport. Stage35 meter remains;
+  Battle menu opens with three actor selectors and four correctly gated
+  actions. No wallet funding or reward writes. Client-only publication;
+  no authority redeployment needed. Live publication is verified separately
+  in the completion report.
+
 ## Measured Calamity tier tuning (D-398)
 
 - All12 activities: EX1 remains145 with1.03x Health/Attack/Defense; EX2

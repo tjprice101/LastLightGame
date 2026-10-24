@@ -1,6 +1,31 @@
 # Menus and inventory
 
+## Original battle screen restored (D-399)
+
+Owner reverses the screenshot-inspired redesign. Restore the shared battle
+screen from before D-392: original formations and sprite offsets, allied
+HP/Gauge/status readouts beside their artwork, original header/toolbar and
+compact feedback footer. Remove the bottom cards/Stats controls, separate
+target banner and always-visible action dock. Actions remain available through
+field gestures, Normal Attack secondary-click and the Battle menu; actor/target
+selection and keyboard selection remain unchanged.
+
+Retain the activity stage progress meter alongside the original stage/wave,
+turn and phase text. Training has no invented finite stage limit. All modes
+continue to share the same renderer, existing scenery, palette, artwork scale
+and facing. Keep bounded status trays, full Battle menu references, actual
+impact-time HP/Shield/buff/native updates, results and toolbar listeners.
+No new red-star notifications or alternate footer are implemented.
+
+This supersedes D-392 through D-396's presentation changes, not the earlier
+status/readability fixes, later Conduit description cleanup or Calamity tuning.
+No combat, reward, authority, account or save changes. Validate shared HUD,
+toolbar, chrome, gestures, shortcuts, readout/impact and native targeting tests,
+then full suite/build and desktop/mobile browser geometry.
+
 ## Slim battle stats bar (D-396)
+
+Historical; superseded by D-399.
 
 Owner confirms replacing each bottom portrait/readout card with a slim
 `View [name] Stats` button, retaining the four visible actions. These buttons

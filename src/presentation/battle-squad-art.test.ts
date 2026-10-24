@@ -12,43 +12,17 @@ describe('shared artwork-led battle sizing', () => {
     expect(css).not.toMatch(/\.allies\.(?:solo|squad) \.battle-art/);
     expect(css).not.toMatch(/\.battle-unit:only-child \.battle-art/);
     expect(css).not.toContain('margin-block: -5cqh');
-    const baselines = [...css.matchAll(/--battle-art-base: ([^;}]+)/g)].map(match => match[1]);
-    expect(baselines.slice(-2)).toEqual([
-      'min(330px, calc(1.25 * (100dvh - 126px) / var(--battle-rows, 3)), 19cqw)',
-      'min(140px, calc(88cqw / var(--battle-rows, 3) / 1.2), calc(.22 * (100dvh - 164px)))',
-    ]);
   });
 
   it('preserves artwork size ratios on phones instead of replacing them with fixed caps', () => {
     expect(css).toContain('--battle-art-base: min(140px, calc(88cqw / var(--battle-rows, 3) / 1.2), 22cqh)');
     expect(css).toContain('.battle-art { max-width: 100%; }');
     expect(css).not.toMatch(/\.battle-art \{ width: min\(100%, \d+dvh\)/);
-    expect(css).toContain('.battle-dock-action > :is(strong, span, small) { min-width: 0; max-width: 100%; justify-self: stretch; }');
   });
   it('keeps full readouts reachable in cramped landscape arenas rather than painting over the footer', () => {
-    expect(css).toContain('@media (max-height: 600px) and (min-width: 541px)');
-    expect(css).toContain('.battle-screen { overflow-y: auto; }');
-    expect(css).toContain('#battle-root { min-height: 720px; flex-shrink: 0; }');
-  });
-  it('uses mirrored stable formation anchors and lets buttons, not overflowing artwork, own hit targets', () => {
-    expect(css).toContain('.battle-side.allies .battle-unit:nth-child(2), html body .battle-screen #battle-root .battle-side.enemies .battle-unit:nth-child(2) { translate: none; }');
-    expect(css).toContain('.battle-side.allies .battle-unit { grid-column: 2; }');
-    expect(css).toContain('.battle-side .battle-unit:only-child { grid-column: 1 / -1; grid-row: 1 / 3; }');
-    expect(css).toContain('.battle-unit .battle-art { pointer-events: none; }');
-    expect(css).toContain('.battle-feedback { grid-template-columns: minmax(0, 1fr); justify-content: stretch;');
-    expect(css).toContain('.battle-squad-card > [hidden] { display: none !important; }');
-  });
-  it('uses a slim stats button per member and a single row of four actions instead of portrait cards', () => {
-    expect(css).toContain('[data-view-stats] { width: 100%; min-width: 0; min-height: 44px;');
-    expect(css).toContain('.battle-dock-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));');
-    expect(css).not.toContain('.battle-squad-card { display: block; padding: .3rem; min-height: 7.5rem; }');
-  });
-  it('moves only the two rear allied sprites without expanding the arena or pushing the dock off-screen', () => {
-    expect(css).toContain('.allies.formation-trio .battle-unit:first-child .battle-art { translate: 0 -1.75rem; }');
-    expect(css).toContain('.allies.formation-trio .battle-unit:last-child .battle-art { translate: 0 1.75rem; }');
-    expect(css).not.toContain('minmax(max-content, 1fr)');
-    expect(css).not.toContain('container-type: inline-size');
-    expect(css).not.toContain('min-height: calc(var(--battle-art-base)');
+    expect(css).toContain('@media (max-height: 540px) and (min-width: 541px)');
+    expect(css).toContain('.battle-arena { overflow-y: auto; overflow-x: hidden; }');
+    expect(css).toContain('.battle-side { height: auto; max-height: none; }');
   });
   it('separates all sprite silhouettes from bright and dark scenery without replacing state filters', () => {
     expect(css).toContain('#battle-root .battle-sprite img { filter: drop-shadow(0 1px 1px #080b10) drop-shadow(0 0 2px #ffffffd9) drop-shadow(0 2px 6px #080b10b3); }');
