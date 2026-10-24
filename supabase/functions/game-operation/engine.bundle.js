@@ -2906,7 +2906,7 @@ function machineComponentDrop(stage) {
     minimum: quantity,
     maximum: quantity,
     chance: mechanicalComponents.firstChance + (mechanicalComponents.finalChance - mechanicalComponents.firstChance) * progress,
-    note: "Guaranteed per defeated machine; the final boss multiplies the base stage quantity by 5. Used only for Conduit upgrades."
+    note: "Components upgrade Conduits. Final-boss amounts already include the 5x bonus."
   };
 }
 var machineComponentRulesText = `Every Machine drops Broken Mechanical Components: ${mechanicalComponents.firstQuantity} at stage 1, rising to ${mechanicalComponents.finalQuantity} at stage ${infusionStageCount("machines")}; the final boss drops ${mechanicalComponents.finalQuantity * 5}.`;
@@ -3287,7 +3287,7 @@ function machineConduitLoot(stage, owned = {}, focus = {}) {
       minimum: 1,
       maximum: 1,
       chance: (owned[conduit.id] ?? 0) > 0 || !remaining ? 0 : focused ? conduit.id === focused ? chance : 0 : chance / remaining,
-      note: `Independent ${rarity} tier roll, then ${focused ? "award the focused Conduit" : "equal choice among unowned Conduits in that tier"}. Owned names have 0% chance; a complete tier awards no Conduit or replacement. Bosses use the same odds.`
+      note: "Each rarity rolls separately. Conduit drops are unowned only: your focus, or an equal random choice. Fully owned rarities drop nothing. Bosses have the same Conduit odds."
     }));
   });
 }

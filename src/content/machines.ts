@@ -55,7 +55,7 @@ export function machineConduitLoot(stage: number, owned: Partial<Record<ConduitI
     const focused = selected && !(owned[selected] ?? 0) ? selected : undefined;
     return pool.map((conduit) => ({ id: conduit.id, minimum: 1, maximum: 1,
       chance: (owned[conduit.id] ?? 0) > 0 || !remaining ? 0 : focused ? conduit.id === focused ? chance : 0 : chance / remaining,
-      note: `Independent ${rarity} tier roll, then ${focused ? 'award the focused Conduit' : 'equal choice among unowned Conduits in that tier'}. Owned names have 0% chance; a complete tier awards no Conduit or replacement. Bosses use the same odds.` }));
+      note: 'Each rarity rolls separately. Conduit drops are unowned only: your focus, or an equal random choice. Fully owned rarities drop nothing. Bosses have the same Conduit odds.' }));
   });
 }
 

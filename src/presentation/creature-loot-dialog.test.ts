@@ -60,13 +60,33 @@ describe('enemy loot dialogs and Conduit details', () => {
         const row = rows.find(row => row.textContent?.includes(`${conduit.name} · Rare`))!;
         expect(row.children[2].textContent).toBe(conduit.id === 'duplex-heart' ? '8%' : '0%');
       }
-      expect(dialog.textContent).toContain('a complete tier awards no Conduit or replacement');
+      expect(dialog.textContent).toContain('Fully owned rarities drop nothing');
     };
     check();
     const select = dialog.querySelector<HTMLSelectElement>('[data-loot-stage]')!;
     select.value = '5';
     select.dispatchEvent(new Event('change', { bubbles: true }));
     check();
+  });
+  it('shows one concise Conduit note across all rarities, including mixed focused and random drops', () => {
+    const account = emptyAccount();
+    account.creatures = { 'infusion:machines:5': { defeated: true } };
+    account.machineLootFocus = { Omnic: conduits.find(conduit => conduit.rarity === 'Omnic')!.id };
+    const host = document.createElement('main');
+    host.innerHTML = creatureGlossary(account);
+    bindCreatureGlossary(host, account.conduitUpgrades, account.conduits, account.machineLootFocus);
+    const stage = host.querySelector<HTMLSelectElement>('[data-loot-stage="infusion:machines:5"]')!;
+    stage.value = '35';
+    stage.dispatchEvent(new Event('change', { bubbles: true }));
+    const notes = host.querySelector('[id="creature-loot-infusion:machines:5"] .loot-roll-notes')!;
+    expect(notes.querySelectorAll('p')).toHaveLength(3);
+    const text = notes.textContent!.replace(/[[\]]/g, '');
+    expect(text.match(/Each rarity rolls separately/g)).toHaveLength(1);
+    expect(text).toContain('your focus, or an equal random choice');
+    expect(text).toContain('Fully owned rarities drop nothing');
+    expect(text).toContain('Final-boss amounts already include the 5x bonus');
+    expect(text).toContain('Choose an unowned Master in Inventory');
+    expect(text.trim().split(/\s+/).length).toBeLessThanOrEqual(60);
   });
   it('puts a View Loot button on every enemy, preserving encountered/undiscovered loot gates', () => {
     const { host, account, before } = mount();
@@ -154,7 +174,7 @@ describe('enemy loot dialogs and Conduit details', () => {
     const rows = Array.from(loot.querySelectorAll('tbody > tr')).filter(row => row.querySelector('[data-information]'));
     expect(rows.length).toBeGreaterThan(1);
     for (const row of rows) expect(row.querySelector('td > small')).toBeNull();
-    expect(loot.querySelector('.loot-roll-notes')?.textContent).toContain('Independent Rare tier roll');
+    expect(loot.querySelector('.loot-roll-notes')?.textContent).toContain('Each rarity rolls separately');
   });
 
   it('shares complete upgrade-aware effect/lore information with the Conduit Archive', () => {

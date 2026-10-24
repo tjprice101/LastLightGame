@@ -21,6 +21,13 @@ full ability effects, authored lore and numerical reward tables remain intact.
 Multi-pull help describes parity with single pulls, not transaction internals.
 No mechanics, economy, account writes, routes or dialog behavior change.
 
+Machines loot tables share one Conduit note across all rarities, including
+mixed focused/random pools. Component notes omit the guarantee already shown
+as100%; final-boss amounts explicitly include5x. Master chest notes retain only
+the final-boss restriction and Inventory choice. Do not repeat the same
+ownership/selection rules once per rarity. Validate the three-note/60-word
+final-boss limit in `creature-loot-dialog.test.ts`.
+
 Validate `menu-information.test.ts` (purchase help at most30 words; shared
 Character/Inventory/Upgrade paragraphs at most65 words), existing Store,
 Upgrade, summon, Focus Loot, Calamity and Information-topic tests, then build.

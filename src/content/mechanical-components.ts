@@ -20,7 +20,7 @@ export function machineComponentDrop(stage: number) {
     bossLootMultiplier({ infusion: { mode: 'machines', stage } });
   return { id: mechanicalComponents.id, minimum: quantity, maximum: quantity,
     chance: mechanicalComponents.firstChance + (mechanicalComponents.finalChance - mechanicalComponents.firstChance) * progress,
-    note: 'Guaranteed per defeated machine; the final boss multiplies the base stage quantity by 5. Used only for Conduit upgrades.' };
+    note: 'Components upgrade Conduits. Final-boss amounts already include the 5x bonus.' };
 }
 
 export const machineComponentRulesText = `Every Machine drops Broken Mechanical Components: ${mechanicalComponents.firstQuantity} at stage 1, rising to ${mechanicalComponents.finalQuantity} at stage ${infusionStageCount('machines')}; the final boss drops ${mechanicalComponents.finalQuantity * 5}.`;

@@ -111,7 +111,7 @@ export function creatureLoot(creature: Creature, stage?: number, ownedConduits?:
   if (creature.mode === 'treasury') return loot;
   if (creature.mode === 'machines' && stage !== undefined) return [...loot, machineComponentDrop(stage), ...machineConduitLoot(stage, ownedConduits, focus),
     ...(stage === masterChest.stage ? [{ id: masterChest.id, minimum: 1, maximum: 1, chance: masterChest.chance,
-      note: 'Final boss only. Open in Inventory to choose one unowned character-specific Omnic Master Conduit.' }] : [])];
+      note: 'Final boss only. Choose an unowned Master in Inventory.' }] : [])];
   if (creature.dungeonElement && stage !== undefined) {
     loot.push(...materialLoot(creature.dungeonElement, stage));
   } else if (creature.mode && stage !== undefined) {

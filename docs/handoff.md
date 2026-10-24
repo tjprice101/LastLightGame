@@ -1,5 +1,19 @@
 # Current state and handoff
 
+## Machines loot-note follow-up (D-391)
+
+- Owner flags the verbose per-rarity paragraphs below Machines loot tables.
+  All rarities now share one deduplicated note: independent rolls, unowned-only,
+  focus or equal random choice, completed-tier behavior and unchanged boss odds.
+- Components explain only their use and that displayed final-boss amounts
+  already include5x. Master chests retain final-boss-only and Inventory choice.
+  Numeric tables, focus behavior, ownership and rewards are unchanged.
+- Added final-boss mixed-focus regression: three notes, at most60 words.
+  `npx vitest run src/presentation/creature-loot-dialog.test.ts
+  src/presentation/machine-loot-focus.test.ts src/content/creatures.test.ts
+  --maxWorkers=2` passed20/20. `npm run build` passed; authority bundle
+  regenerated with note strings only. Client uses Deploy Last Light CI.
+
 ## Concise player descriptions (D-391)
 
 - Owner reports redundant, convoluted Store help and requests the same cleanup
