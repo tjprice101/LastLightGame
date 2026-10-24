@@ -1,5 +1,24 @@
 # Current state and handoff
 
+## Concise Conduit descriptions (D-397)
+
+- Audited all138 current abilities; tightened21 descriptions at the source
+  and regenerated shared runtime copy/compatibility matrix. Stasis now shows
+  only the displayed level's chance, single-hit spillover protection and
+  next-Enemy-Turn penalty/cooldown, not its upgrade formula. Removed repeated
+  global stat explanations, redundant passive labels and implementation terms.
+- Master reference footers name the actual eligible bearer and retain the
+  non-upgradeable restriction, without generic trigger/limit boilerplate.
+  Effect-specific caps, timing, source and stacking rules remain.
+- No mechanics, values, upgrade policy, acquisition, authority or save changes.
+  Compared all138 percentage sequences against the prior catalog; identical
+  except for removal of Stasis's repeated20% maximum explanation.
+- Validation: catalog regeneration succeeded; six focused catalog/runtime/
+  presentation files pass979 tests. Added all-level Stasis current-value,
+  penalty/cooldown and catalog-wide boilerplate regressions. Production
+  build/typecheck passes with the existing chunk-size warning. Release CI
+  and hosted publication are verified separately in the completion report.
+
 ## Slim battle stats bar (D-396)
 
 - Owner confirms slim `View [name] Stats` buttons replacing portrait cards;

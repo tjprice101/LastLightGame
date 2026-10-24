@@ -64,6 +64,23 @@ describe('approved ability upgrade presentation', () => {
     expect(phaseZeroUpgradedAbility('stasis-reliquary', 5)).toContain('25% more');
   });
 
+  it('shows only the current Stasis chance while retaining its penalty and protection cooldown', () => {
+    for (let level = 0; level <= 5; level++) {
+      const ability = phaseZeroUpgradedAbility('stasis-reliquary', level)!;
+      expect(ability).toContain(`${10 + level * 2}% chance`);
+      expect(ability).toContain('that hit\'s remaining [Health] damage');
+      expect(ability).toContain('25% more damage');
+      expect(ability).toContain('cannot activate that turn');
+      expect(ability).not.toMatch(/per upgrade|at \+5|Later hits/);
+      expect([...ability.matchAll(/\d+%/g)].map(match => match[0])).toEqual([`${10 + level * 2}%`, '25%']);
+    }
+  });
+
+  it('keeps shared stat explanations and upgrade formulas out of all 138 ability descriptions', () => {
+    for (const [id, entry] of Object.entries(approvedConduitCatalog))
+      expect(entry.ability, id).not.toMatch(/per upgrade|scaled once by|cost caps and floors still apply|Passive(?: Ability)?:|frozen \[Squad\]/);
+  });
+
   it.each([-1, .5, 6, NaN, Infinity])('rejects invalid upgrade %s', level => {
     expect(() => phaseZeroUpgradedAbility('bastion-lock', level)).toThrow('integer from 0 to 5');
   });

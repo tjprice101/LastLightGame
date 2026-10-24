@@ -40,6 +40,10 @@ Upgraded values must preserve these mechanics and be verified separately.
 Masters have fixed abilities and cannot be upgraded.
 Named Masters keep their bearer's kit identity; they do not give that kit to others.
 Existing names, rarities, elements and named-bearer assignments are preserved.
+Player-facing descriptions show current values, not upgrade formulas or repeated
+global stat rules. Preserve effect-specific triggers, recipients, limits and costs.
+Stasis Reliquary's chance is 10% at +0, rising 2 percentage points per upgrade
+to 20% at +5; its description shows only the chance at the displayed level.
 
 PHASE 0 - STAT CONTRACT
 Existing Health, Defense, Direct Attack, Critical Rate, Critical Damage
@@ -223,7 +227,7 @@ Ability (Default Value): +8% [Skill Efficiency], +8% [Skill Power] and +8% [Crit
 Name: Duplex Heart
 Rarity: Rare
 Element: Botanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Casting a healing [Skill] that restores another ally's [Health] also restores 5% of your maximum [Health] to you. Once per cast.
+Ability (Default Value): When your healing [Skill] restores another ally's [Health], heal yourself for 5% of your maximum [Health], once per cast.
 
 Name: Falcon Sight
 Rarity: Rare
@@ -233,7 +237,7 @@ Ability (Default Value): +25% [Critical Rate] and +45% [Health].
 Name: Glassroot Gimbal
 Rarity: Rare
 Element: Botanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Gain +5% [Skill Power] per complete 450 maximum [Health], including equipment bonuses. No cap.
+Ability (Default Value): Gain +5% [Skill Power] per complete 450 maximum [Health].
 
 Name: Hammerbalance Link
 Rarity: Rare
@@ -243,7 +247,7 @@ Ability (Default Value): +85% [Direct Attack] and +15% [Critical Damage Multipli
 Name: Lifeline Flywheel
 Rarity: Rare
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): After each [Attack Action] or [Skill], restore [Health] equal to 10% of its actual [Direct Damage] to enemy [Health] and [Shields]. Once per activation; excludes periodic and generated damage.
+Ability (Default Value): After each [Attack Action] or [Skill], heal for 10% of its total [Direct Damage] to enemy [Health] and [Shields].
 
 Name: Opal Indexer
 Rarity: Rare
@@ -307,7 +311,7 @@ Ability (Default Value): At the start of your next [Player Turn], gain a [Shield
 Name: Horizon Heartcase
 Rarity: Legendary
 Element: Oceanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Your [Last Flare] gains +35% [Critical Damage Multiplier] and +10% [Critical Rate]. While your [Last Flare] is unavailable because of your [Elemental Gauge], [Cooldown] or [Recovery], gain +20% [Health] and +10% [Defense]. Having already acted does not activate this bonus.
+Ability (Default Value): Your [Last Flare] gains +35% [Critical Damage Multiplier] and +10% [Critical Rate]. Gain +20% [Health] and +10% [Defense] while it is blocked by insufficient [Elemental Gauge], [Cooldown] or [Recovery].
 
 Name: Immortal Vessel
 Rarity: Legendary
@@ -332,7 +336,7 @@ Ability (Default Value): Each [Skill] cast has a 50% chance to gain +75% [Skill 
 Name: Pale Bulwark Diadem
 Rarity: Legendary
 Element: Tranquilitic (suggested thematic element; gameplay: universal)
-Ability (Default Value): [Shields] on you gain 50% [Damage Reduction]. Only the absorbed portion benefits; any damage beyond the protected [Shield] damages [Health] normally.
+Ability (Default Value): [Shields] on you gain 50% [Damage Reduction], without reducing damage that spills over to [Health].
 
 Name: Siege Cantilever
 Rarity: Legendary
@@ -347,12 +351,12 @@ Ability (Default Value): If every [Squad Member] has a different [Element], gain
 Name: Stasis Reliquary
 Rarity: Legendary
 Element: Tranquilitic (suggested thematic element; gameplay: universal)
-Ability (Default Value): When an enemy hit breaks your [Shield] with damage remaining, gain a 10% chance to prevent only that hit's remaining [Health] damage. Later hits are not blocked. After a successful activation, during the next [Enemy Turn], take 25% more damage from enemy [Attack Actions] and cannot activate this protection. The activation chance increases by 2 percentage points per upgrade, up to 20% at +5.
+Ability (Default Value): When an enemy hit breaks your [Shield], 10% chance to block that hit's remaining [Health] damage. If triggered, take 25% more damage from enemy [Attack Actions] during the next [Enemy Turn], and this protection cannot activate that turn.
 
 Name: Verdict Caliper
 Rarity: Legendary
 Element: Tranquilitic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Each [Attack Action] that critically hits restores 25% of your maximum [Health], once per activation regardless of targets or impacts.
+Ability (Default Value): A critical [Attack Action] heals you for 25% of your maximum [Health], once per action.
 
 Name: Worldbreaker Drive
 Rarity: Legendary
@@ -366,7 +370,7 @@ OMNIC (93)
 Name: Abyssal Clearwater Parliament
 Rarity: Omnic
 Element: Oceanic (actual gameplay element)
-Ability (Default Value): For each other [Oceanic] [Squad Member] in your frozen [Squad], gain +35% [Skill Power]. Defeated members still count; captured Elemental-Devourers qualify.
+Ability (Default Value): Gain +35% [Skill Power] per other [Oceanic] [Squad Member], including defeated members.
 
 Name: Abyssal Shelter Observatory
 Rarity: Omnic (Master)
@@ -416,7 +420,7 @@ Ability (Default Value): Infernis' [Last Flare] now targets one enemy and gains 
 Name: Concord Planet Thoughtforge
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Disciple only)
-Ability (Default Value): An ally who consumes Disciple's Resolve gives each other living ally [Elemental Gauge] equal to 10% of that recipient's own maximum capacity.
+Ability (Default Value): Consuming Disciple's Resolve grants each other living ally 10% [Elemental Gauge].
 
 Name: Crimson Beauty Pyre Requiem
 Rarity: Omnic (Master)
@@ -436,7 +440,7 @@ Ability (Default Value): After your [Attack Action] fails to critically hit, eac
 Name: Deep Foundation Planetpress
 Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Orvella only)
-Ability (Default Value): Foundation absorption stores healing equal to 40% of the durability spent. At the next [Player Turn], divide it among injured allies, up to 12% of each recipient's maximum [Health]. Passive Ability: Orvella and [Squad Members] gain +55% [Health] and +35% [Skill Power].
+Ability (Default Value): Foundation absorption stores healing equal to 40% of the durability spent. At the next [Player Turn], divide it among injured allies, up to 12% of each recipient's maximum [Health]. All [Squad Members] gain +55% [Health] and +35% [Skill Power].
 
 Name: Duality Planet Flamewheel
 Rarity: Omnic (Master)
@@ -451,7 +455,7 @@ Ability (Default Value): Your [Skills] ignore 35% of a Weakened enemy's [Defense
 Name: Eclipse Planet Watchtower
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Razor only)
-Ability (Default Value): When Eclipse Bastion creates Razor's [Shield], each other living ally gains a [Shield] worth 40% of that amount, capped at 45% of their own maximum HP, for one [Enemy Turn]. Passive: All [Squad Members], including Razor, gain +55% [Health] and +35% [Skill Efficiency].
+Ability (Default Value): When Eclipse Bastion creates Razor's [Shield], each other living ally gains a [Shield] worth 40% of that amount, capped at 45% of their own maximum HP, for one [Enemy Turn]. All [Squad Members] gain +55% [Health] and +35% [Skill Efficiency].
 
 Name: Ember Coronation Iris
 Rarity: Omnic
@@ -486,7 +490,7 @@ Ability (Default Value): Enemies carrying Aurora's Seal have 25% less [Defense].
 Name: Firstlight Concordance
 Rarity: Omnic
 Element: Tranquilitic (actual gameplay element)
-Ability (Default Value): Your entire [Squad] (including this character) gains +50% [Elemental Gauge Gain] and +40% [Defense]. This character gains an additional +35% [Health] and +45% [Skill Power].
+Ability (Default Value): All [Squad Members] gain +50% [Elemental Gauge Gain] and +40% [Defense]. You also gain +35% [Health] and +45% [Skill Power].
 
 Name: Folded Ocean Planetarium
 Rarity: Omnic (Master)
@@ -511,22 +515,22 @@ Ability (Default Value): Golden Thorn Volley grants each other ally +35% [Skill 
 Name: Griffin Turbine
 Rarity: Omnic
 Element: Atmospheric (actual gameplay element)
-Ability (Default Value): Each [Normal Attack] grants every other living ally 10% of their own maximum [Elemental Gauge Capacity], scaled once by their [Elemental Gauge Gain]. +99% [Direct Attack].
+Ability (Default Value): Each [Normal Attack] grants every other living ally 10% [Elemental Gauge]. +99% [Direct Attack].
 
 Name: Helios Pyre Cathedral
 Rarity: Omnic (Master)
 Element: Infernic (named bearer's actual element; Master for Infernis only)
-Ability (Default Value): After Infernis's [Burn] damages enemies during an [Enemy Turn], heal the most injured ally for 25% of that total [Health] damage, capped at 12% of their maximum [Health]. Passive: All [Squad Members], including Infernis, gain +60% [Health] and +20% [Defense]. Infernis gains +55% [Skill Power].
+Ability (Default Value): After Infernis's [Burn] damages enemies during an [Enemy Turn], heal the most injured ally for 25% of that total [Health] damage, capped at 12% of their maximum [Health]. All [Squad Members] gain +60% [Health] and +20% [Defense]. Infernis gains +55% [Skill Power].
 
 Name: Horizon Cyclone Orrery
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Atmoso only)
-Ability (Default Value): Cyclone release grants every living ally a [Shield] equal to 30% of its total [Health] damage for one [Enemy Turn]. Passive: All [Squad Members] gain +55% [Health] and +45% [Defense].
+Ability (Default Value): Cyclone release grants every living ally a [Shield] equal to 30% of its total [Health] damage for one [Enemy Turn]. All [Squad Members] gain +55% [Health] and +45% [Defense].
 
 Name: Infinite Thunderwheel Arsenal
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Elise only)
-Ability (Default Value): Enemies holding Elise's Shuriken have 15% less [Defense] per lodged Shuriken. The reduction ends after the Shuriken are recalled. Elise gains +55% [Skill Power], +45% [Health], and +35% [Defense].
+Ability (Default Value): Enemies holding Elise's Shuriken have 15% less [Defense] per lodged Shuriken. Elise gains +55% [Skill Power], +45% [Health], and +35% [Defense].
 
 Name: Keystone Sovereign Counterweight
 Rarity: Omnic (Master)
@@ -581,7 +585,7 @@ Ability (Default Value): Tidal Shelter gains +50% [Skill Power]. Its recipient's
 Name: Ouroboros Core
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): +40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] for 2 [Enemy Turns]. Passive: All [Squad Members] gain +55% [Health].
+Ability (Default Value): +40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] for 2 [Enemy Turns]. All [Squad Members] gain +55% [Health].
 
 Name: Paradox Spindle
 Rarity: Omnic
@@ -596,7 +600,7 @@ Ability (Default Value): While any enemy carries [Burn], all living [Squad Membe
 Name: Phoenix Reactor
 Rarity: Omnic
 Element: Infernic (actual gameplay element)
-Ability (Default Value): Once per Battle, revive at 35% maximum [Health] and 0 Gauge when defeated. Other living allies gain a [Shield] worth 15% of their own maximum [Health] for one [Enemy Turn]. Passive: All [Squad Members] gain +55% [Health].
+Ability (Default Value): Once per Battle, revive at 35% maximum [Health] and 0 Gauge when defeated. Other living allies gain a [Shield] worth 15% of their own maximum [Health] for one [Enemy Turn]. All [Squad Members] gain +55% [Health].
 
 Name: Phoenix Temper Dominion
 Rarity: Omnic
@@ -636,7 +640,7 @@ Ability (Default Value): While Shielded, gain +50% [Critical Damage Multiplier].
 Name: Ruinselect Fracture Parliament
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): Gain +55% [Skill Power] and +20% [Defense] for each defeated [Squad Member] in your frozen [Squad]. Lose that member's bonus when they revive.
+Ability (Default Value): Gain +55% [Skill Power] and +20% [Defense] per currently defeated [Squad Member].
 
 Name: Secondbeat Rupture Throne
 Rarity: Omnic
@@ -646,7 +650,7 @@ Ability (Default Value): After another ally damages an enemy, your next damaging
 Name: Seraph Mirror
 Rarity: Omnic
 Element: Tranquilitic (actual gameplay element)
-Ability (Default Value): Your first critical [Attack Action] each [Player Turn] heals every living ally for 6% of their own maximum [Health]. Passive: All [Squad Members] gain +65% [Health].
+Ability (Default Value): Your first critical [Attack Action] each [Player Turn] heals every living ally for 6% of their own maximum [Health]. All [Squad Members] gain +65% [Health].
 
 Name: Shadow Rose Sovereign Foundry
 Rarity: Omnic (Master)
@@ -840,7 +844,7 @@ Ability (Default Value): Your [Attack Actions] gain +250% [Critical Rate] and +1
 Name: Causality Funeral Engine
 Rarity: Calamitic
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +100% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]. Normal [Elemental Gauge] cost caps and floors still apply.
+Ability (Default Value): +100% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage].
 
 Name: Horizon-Cleaving Godpress
 Rarity: Calamitic

@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { conduitEffect, getConduit, type ConduitSlots } from '../content/conduits';
 import { masterConduits } from '../content/master-conduits';
+import { getStarter } from '../content/starters';
 import { masterReference } from './master-conduits';
 import { createSession, BattleView } from './battle-view';
 import { referencedEffect as readableEffect } from './effect-copy';
@@ -30,7 +31,8 @@ describe('Conduit rules stay on Conduit screens', () => {
     for (const master of masterConduits) {
       const html = masterReference(master.id);
       expect(html).toContain(readableEffect(master.effect));
-      expect(html).toContain('Triggers and limits as stated above');
+      expect(html).toContain(`${getStarter(master.character).name} only · Cannot be upgraded`);
+      expect(html).not.toContain('Triggers and limits as stated above');
       expect(html).not.toContain('Recurs on qualifying native outcomes');
     }
   });

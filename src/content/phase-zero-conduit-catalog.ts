@@ -89,7 +89,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Duplex Heart",
     "rarity": "Rare",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "Casting a healing [Skill] that restores another ally's [Health] also restores 5% of your maximum [Health] to you. Once per cast."
+    "ability": "When your healing [Skill] restores another ally's [Health], heal yourself for 5% of your maximum [Health], once per cast."
   },
   "falcon-sight": {
     "name": "Falcon Sight",
@@ -101,7 +101,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Glassroot Gimbal",
     "rarity": "Rare",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "Gain +5% [Skill Power] per complete 450 maximum [Health], including equipment bonuses. No cap."
+    "ability": "Gain +5% [Skill Power] per complete 450 maximum [Health]."
   },
   "hammerbalance-link": {
     "name": "Hammerbalance Link",
@@ -113,7 +113,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Lifeline Flywheel",
     "rarity": "Rare",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "After each [Attack Action] or [Skill], restore [Health] equal to 10% of its actual [Direct Damage] to enemy [Health] and [Shields]. Once per activation; excludes periodic and generated damage."
+    "ability": "After each [Attack Action] or [Skill], heal for 10% of its total [Direct Damage] to enemy [Health] and [Shields]."
   },
   "opal-indexer": {
     "name": "Opal Indexer",
@@ -185,7 +185,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Horizon Heartcase",
     "rarity": "Legendary",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "Your [Last Flare] gains +35% [Critical Damage Multiplier] and +10% [Critical Rate]. While your [Last Flare] is unavailable because of your [Elemental Gauge], [Cooldown] or [Recovery], gain +20% [Health] and +10% [Defense]. Having already acted does not activate this bonus."
+    "ability": "Your [Last Flare] gains +35% [Critical Damage Multiplier] and +10% [Critical Rate]. Gain +20% [Health] and +10% [Defense] while it is blocked by insufficient [Elemental Gauge], [Cooldown] or [Recovery]."
   },
   "immortal-vessel": {
     "name": "Immortal Vessel",
@@ -215,7 +215,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Pale Bulwark Diadem",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "[Shields] on you gain 50% [Damage Reduction]. Only the absorbed portion benefits; any damage beyond the protected [Shield] damages [Health] normally."
+    "ability": "[Shields] on you gain 50% [Damage Reduction], without reducing damage that spills over to [Health]."
   },
   "siege-cantilever": {
     "name": "Siege Cantilever",
@@ -233,13 +233,13 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Stasis Reliquary",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "When an enemy hit breaks your [Shield] with damage remaining, gain a 10% chance to prevent only that hit's remaining [Health] damage. Later hits are not blocked. After a successful activation, during the next [Enemy Turn], take 25% more damage from enemy [Attack Actions] and cannot activate this protection. The activation chance increases by 2 percentage points per upgrade, up to 20% at +5."
+    "ability": "When an enemy hit breaks your [Shield], 10% chance to block that hit's remaining [Health] damage. If triggered, take 25% more damage from enemy [Attack Actions] during the next [Enemy Turn], and this protection cannot activate that turn."
   },
   "verdict-caliper": {
     "name": "Verdict Caliper",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "Each [Attack Action] that critically hits restores 25% of your maximum [Health], once per activation regardless of targets or impacts."
+    "ability": "A critical [Attack Action] heals you for 25% of your maximum [Health], once per action."
   },
   "worldbreaker-drive": {
     "name": "Worldbreaker Drive",
@@ -251,7 +251,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Abyssal Clearwater Parliament",
     "rarity": "Omnic",
     "element": "Oceanic (actual gameplay element)",
-    "ability": "For each other [Oceanic] [Squad Member] in your frozen [Squad], gain +35% [Skill Power]. Defeated members still count; captured Elemental-Devourers qualify."
+    "ability": "Gain +35% [Skill Power] per other [Oceanic] [Squad Member], including defeated members."
   },
   "master-tide-1": {
     "name": "Abyssal Shelter Observatory",
@@ -311,7 +311,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Concord Planet Thoughtforge",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Disciple only)",
-    "ability": "An ally who consumes Disciple's Resolve gives each other living ally [Elemental Gauge] equal to 10% of that recipient's own maximum capacity."
+    "ability": "Consuming Disciple's Resolve grants each other living ally 10% [Elemental Gauge]."
   },
   "master-crinso-3": {
     "name": "Crimson Beauty Pyre Requiem",
@@ -335,7 +335,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Deep Foundation Planetpress",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Orvella only)",
-    "ability": "Foundation absorption stores healing equal to 40% of the durability spent. At the next [Player Turn], divide it among injured allies, up to 12% of each recipient's maximum [Health]. Passive Ability: Orvella and [Squad Members] gain +55% [Health] and +35% [Skill Power]."
+    "ability": "Foundation absorption stores healing equal to 40% of the durability spent. At the next [Player Turn], divide it among injured allies, up to 12% of each recipient's maximum [Health]. All [Squad Members] gain +55% [Health] and +35% [Skill Power]."
   },
   "master-crinso-2": {
     "name": "Duality Planet Flamewheel",
@@ -353,7 +353,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Eclipse Planet Watchtower",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Razor only)",
-    "ability": "When Eclipse Bastion creates Razor's [Shield], each other living ally gains a [Shield] worth 40% of that amount, capped at 45% of their own maximum HP, for one [Enemy Turn]. Passive: All [Squad Members], including Razor, gain +55% [Health] and +35% [Skill Efficiency]."
+    "ability": "When Eclipse Bastion creates Razor's [Shield], each other living ally gains a [Shield] worth 40% of that amount, capped at 45% of their own maximum HP, for one [Enemy Turn]. All [Squad Members] gain +55% [Health] and +35% [Skill Efficiency]."
   },
   "flare-focusing-iris": {
     "name": "Ember Coronation Iris",
@@ -395,7 +395,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Firstlight Concordance",
     "rarity": "Omnic",
     "element": "Tranquilitic (actual gameplay element)",
-    "ability": "Your entire [Squad] (including this character) gains +50% [Elemental Gauge Gain] and +40% [Defense]. This character gains an additional +35% [Health] and +45% [Skill Power]."
+    "ability": "All [Squad Members] gain +50% [Elemental Gauge Gain] and +40% [Defense]. You also gain +35% [Health] and +45% [Skill Power]."
   },
   "master-nerithe-2": {
     "name": "Folded Ocean Planetarium",
@@ -425,25 +425,25 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Griffin Turbine",
     "rarity": "Omnic",
     "element": "Atmospheric (actual gameplay element)",
-    "ability": "Each [Normal Attack] grants every other living ally 10% of their own maximum [Elemental Gauge Capacity], scaled once by their [Elemental Gauge Gain]. +99% [Direct Attack]."
+    "ability": "Each [Normal Attack] grants every other living ally 10% [Elemental Gauge]. +99% [Direct Attack]."
   },
   "master-ember-1": {
     "name": "Helios Pyre Cathedral",
     "rarity": "Omnic (Master)",
     "element": "Infernic (named bearer's actual element; Master for Infernis only)",
-    "ability": "After Infernis's [Burn] damages enemies during an [Enemy Turn], heal the most injured ally for 25% of that total [Health] damage, capped at 12% of their maximum [Health]. Passive: All [Squad Members], including Infernis, gain +60% [Health] and +20% [Defense]. Infernis gains +55% [Skill Power]."
+    "ability": "After Infernis's [Burn] damages enemies during an [Enemy Turn], heal the most injured ally for 25% of that total [Health] damage, capped at 12% of their maximum [Health]. All [Squad Members] gain +60% [Health] and +20% [Defense]. Infernis gains +55% [Skill Power]."
   },
   "master-atmoso-2": {
     "name": "Horizon Cyclone Orrery",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Atmoso only)",
-    "ability": "Cyclone release grants every living ally a [Shield] equal to 30% of its total [Health] damage for one [Enemy Turn]. Passive: All [Squad Members] gain +55% [Health] and +45% [Defense]."
+    "ability": "Cyclone release grants every living ally a [Shield] equal to 30% of its total [Health] damage for one [Enemy Turn]. All [Squad Members] gain +55% [Health] and +45% [Defense]."
   },
   "master-elise-1": {
     "name": "Infinite Thunderwheel Arsenal",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Elise only)",
-    "ability": "Enemies holding Elise's Shuriken have 15% less [Defense] per lodged Shuriken. The reduction ends after the Shuriken are recalled. Elise gains +55% [Skill Power], +45% [Health], and +35% [Defense]."
+    "ability": "Enemies holding Elise's Shuriken have 15% less [Defense] per lodged Shuriken. Elise gains +55% [Skill Power], +45% [Health], and +35% [Defense]."
   },
   "master-orvella-3": {
     "name": "Keystone Sovereign Counterweight",
@@ -509,7 +509,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Ouroboros Core",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "+40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] for 2 [Enemy Turns]. Passive: All [Squad Members] gain +55% [Health]."
+    "ability": "+40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] for 2 [Enemy Turns]. All [Squad Members] gain +55% [Health]."
   },
   "chaotic-paradox-spindle": {
     "name": "Paradox Spindle",
@@ -527,7 +527,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Phoenix Reactor",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
-    "ability": "Once per Battle, revive at 35% maximum [Health] and 0 Gauge when defeated. Other living allies gain a [Shield] worth 15% of their own maximum [Health] for one [Enemy Turn]. Passive: All [Squad Members] gain +55% [Health]."
+    "ability": "Once per Battle, revive at 35% maximum [Health] and 0 Gauge when defeated. Other living allies gain a [Shield] worth 15% of their own maximum [Health] for one [Enemy Turn]. All [Squad Members] gain +55% [Health]."
   },
   "tempered-strike-link": {
     "name": "Phoenix Temper Dominion",
@@ -575,7 +575,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Ruinselect Fracture Parliament",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "Gain +55% [Skill Power] and +20% [Defense] for each defeated [Squad Member] in your frozen [Squad]. Lose that member's bonus when they revive."
+    "ability": "Gain +55% [Skill Power] and +20% [Defense] per currently defeated [Squad Member]."
   },
   "secondbeat-rack": {
     "name": "Secondbeat Rupture Throne",
@@ -587,7 +587,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Seraph Mirror",
     "rarity": "Omnic",
     "element": "Tranquilitic (actual gameplay element)",
-    "ability": "Your first critical [Attack Action] each [Player Turn] heals every living ally for 6% of their own maximum [Health]. Passive: All [Squad Members] gain +65% [Health]."
+    "ability": "Your first critical [Attack Action] each [Player Turn] heals every living ally for 6% of their own maximum [Health]. All [Squad Members] gain +65% [Health]."
   },
   "master-thornia-3": {
     "name": "Shadow Rose Sovereign Foundry",
@@ -815,7 +815,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Causality Funeral Engine",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "+100% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]. Normal [Elemental Gauge] cost caps and floors still apply."
+    "ability": "+100% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]."
   },
   "calamitic-horizon-cleaving-godpress": {
     "name": "Horizon-Cleaving Godpress",

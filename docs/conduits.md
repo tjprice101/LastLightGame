@@ -1,5 +1,28 @@
 # Conduits and Conduit Store
 
+## Description copy (D-397)
+
+All138 current ordinary/Master abilities were audited;21 descriptions were
+tightened in the [authoritative catalog](conduit-catalog.txt). Show current
+values, triggers and meaningful limits, not upgrade formulas, repeated global
+stat rules, implementation terms such as "frozen Squad", or redundant passive
+labels. Leave already concise entries alone.
+
+Stasis shows only its current10-20% chance, single-hit Shield spillover
+protection, next-Enemy-Turn25% damage penalty and cooldown. Its unchanged
+2-percentage-point upgrade progression belongs in the contract, not appended
+to each level's ability. Master reference footers name the eligible bearer
+and state that upgrading is unavailable, without restating that triggers and
+limits are in the description.
+
+Preserve specific caps, stacking/refresh rules, ownership, timings and
+exceptions. No mechanics, stat values, upgrades, costs, eligibility or saves
+change. Regenerate the shared catalog and compatibility matrix with
+`node tools/build_phase_zero_conduit_catalog.mjs`; validate
+`phase-zero-conduit-upgrades.test.ts`, `conduit-rules.test.ts`, Conduit runtime,
+upgrade catalog and keyword tests, then build. Shared effect APIs propagate
+the same copy to equipment, Collections, Stores and upgrade previews.
+
 **Current D-383 refresh:** all45 ordinary Omnics and48 Masters use the
 [current catalog](conduit-catalog.txt):55 owner-supplied baselines and38
 unique completions retaining their native/elemental mechanics with stronger,

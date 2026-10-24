@@ -6,6 +6,9 @@ It is intended to make features easy to locate, extend, and hand off.
 **Slim battle bar (D-396):** [per-member stats dialogs](menus-and-inventory.md#slim-battle-stats-bar-d-396)
 replace portrait cards with compact inspection buttons; four actions remain.
 
+**Conduit copy (D-397):** [description policy](conduits.md#description-copy-d-397)
+removes redundant upgrade explanations and global-rule boilerplate.
+
 **Battle restoration (D-395):** [sprite-only correction](menus-and-inventory.md#sprite-only-positioning-correction-d-395)
 restores the fixed-screen HUD; only the two rear allied sprites move.
 
