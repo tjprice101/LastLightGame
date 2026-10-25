@@ -3,6 +3,9 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**Instant navigation (D-406):** [page changes without loading screens](menus-and-inventory.md#instant-navigation-d-406)
+remove fade/artwork waits; only real pending setup receives delayed corner status.
+
 **Chest presentation (D-405):** [Machine's Master Chest and large reward artwork](menus-and-inventory.md#chest-presentation-d-405)
 documents the renamed choice chest, actual PNG drops, larger chest receipts
 and explicit Inventory Open button. Acquisition and saved IDs are unchanged.

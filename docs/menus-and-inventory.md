@@ -1,5 +1,17 @@
 # Menus and inventory
 
+## Instant navigation (D-406)
+
+Page changes render immediately without a black loading curtain, fade delays,
+artwork decode waits or minimum loading time. Images load independently with
+existing fallback/retry controls. Only destination setup that genuinely remains
+pending after300ms shows a small corner status, not a loading screen. It disappears
+as soon as setup completes. Duplicate navigation and input stay guarded during
+real setup; errors propagate and the prior inert state is restored. Destination
+heading focus, history, saved state and battle entrance/action locks remain.
+This supersedes D-046/D-281/D-328's artificial navigation waits.
+Validate `activity-transition.test.ts` and `battle-entrance.test.ts`.
+
 ## Chest presentation (D-405)
 
 The former Cosmic Grand Master Chest is now **Machine's Master Chest**.
@@ -2558,21 +2570,15 @@ Both device and game reduced-motion preferences disable all idle pulses.
 Full character stats remain available in these menus; the battle field displays
 only HP, Defense and Elemental Gauge for allies, and HP/Defense for enemies.
 
-Changing sanctuary destinations, entering a dungeon/Adventure, or opening a
-character shortcut from Home uses a black loading curtain with a small
-bottom-right **Loading!** track. Content renders behind it. D-328 gives only
-visible, on-screen artwork a1500ms decode budget, excluding hidden tabs,
-closed dialogs and offscreen lists. Slow images continue loading after reveal;
-they cannot turn a successful navigation into an "Artwork loading timed out"
-error. Real failures are logged and have per-image Retry controls. Input is
-inert until the curtain clears and destination heading regains focus.
-Under D-281, fade to black and reveal each take800ms with ease-in-out rather
-than the former220ms. D-328 changes artwork readiness to the bounded policy above;
-reduced motion still skips the fades. Music changes use a separate1.6-second
+Changing sanctuary destinations, entering an activity or opening a Home shortcut
+uses [instant navigation](#instant-navigation-d-406), superseding the former
+black curtain,800ms fades and1500ms artwork decode budget. Real asynchronous
+setup retains guarded input and delayed corner status, with no minimum duration.
+Artwork failures retain per-image Retry controls. Music changes use a separate1.6-second
 crossfade, independent of battle animation speed; see the [Music contract](../Music/README.md).
 Same-page taps, character tab updates, and gameplay category filters do not fade.
 Unavailable activities remain unavailable and do not pretend to load a fight.
-Reduced motion uses a short static loading indicator. See the
+Reduced motion adds no navigation delay. See the
 [encounter entrance contract](free-battle.md#activity-loading-and-encounter-entrance).
 
 ### Character screen organization

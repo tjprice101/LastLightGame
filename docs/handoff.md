@@ -1,5 +1,29 @@
 # Current state and handoff
 
+## Instant destination navigation (D-406)
+
+- Owner requests no unnecessary loading screens and immediate button-driven
+  page swaps. Shared destination setup now runs synchronously before returning;
+  removed800ms fades,1500ms artwork decode waits, fake progress and minimum
+  loading time. Slow/failed artwork never gates page navigation; existing
+  image loading/fallback/retry handles it independently.
+- Only genuine asynchronous setup pending after300ms gets a small corner
+  Loading status, never a full-screen curtain. It disappears immediately on
+  completion/failure. Preserve prior inert state, duplicate/reentrant navigation
+  guard, error propagation and destination-heading focus. Existing battle
+  entrance presentation/action locks, authority requests, music, saves and
+  rewards are unchanged. No server bundle/deploy or rules increment needed.
+- Validation: `npx vitest run src\presentation\activity-transition.test.ts
+  src\presentation\battle-entrance.test.ts src\presentation\calamity.test.ts
+  src\presentation\conduit-compatibility.test.ts --maxWorkers=2 --reporter=dot`
+  passes97 tests/4 files. `npm run build` (including TypeScript) and
+  `git diff --check` pass; existing large-chunk advisory remains.
+- Browser in-memory check (no account/storage changes): synchronous destination
+  render,2.2ms completion, no curtain despite unfinished image; genuine350ms
+  wait shows only106x45.6px corner status on400x925 viewport, removed on finish.
+  Preview returned to title. Current specifications/index/decision log updated;
+  no remaining requested functionality or owner decisions.
+
 ## Chest artwork, name and explicit opening (D-405)
 
 - Owner requests Machine's Master Chest as the new display name, actual PNG
