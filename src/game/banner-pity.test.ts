@@ -123,7 +123,7 @@ describe('single per-banner 80-pull pity', () => {
     const html = summonHub(loaded);
     expect(html).toContain('199 / 80');
     expect(html).not.toContain('499 /');
-    expect(html).toContain('50/50 tier chance');
+    expect(html).toContain('50 / 50 tier chance');
     for (const bannerPity of [null, [], { unknown: zero }, { standard: { highestStar: 200, unownedHighestStar: 0 } }]) {
       expect(() => validateAccount({ ...account, bannerPity })).toThrow();
     }
