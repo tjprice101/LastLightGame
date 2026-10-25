@@ -467,7 +467,6 @@ export class BattleView {
     const heading = this.host.querySelector<HTMLElement>('#battle-result-heading');
     if (!heading) return;
     heading.focus({ preventScroll: true });
-    heading.closest('.battle-results')?.scrollIntoView({ block: 'end', behavior: 'instant' });
   }
 
   private showTurnCue(message: string): void {
@@ -911,6 +910,14 @@ export class BattleView {
       this.host.querySelector<HTMLButtonElement>('[data-result-show]')?.focus({ preventScroll: true });
       this.host.querySelector<HTMLElement>('h1')?.scrollIntoView({ block: 'start', behavior: 'instant' });
     });
+    const resultDialog = this.host.querySelector<HTMLDialogElement>('.battle-results');
+    if (resultDialog) {
+      resultDialog.addEventListener('cancel', event => {
+        event.preventDefault();
+        this.host.querySelector<HTMLButtonElement>('[data-result-dismiss]')?.click();
+      });
+      resultDialog.showModal();
+    }
     this.host.querySelector('[data-result-show]')?.addEventListener('click', () => {
       this.session.resultsVisible = true;
       this.render();
@@ -1000,14 +1007,15 @@ export class BattleView {
     const ability = action === 'light' ? null : kit.abilities[action];
     const name = action === 'light' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name;
     const reason = actionUnavailable(state, actor, action, this.targetId);
-    return `<button data-action="${action}" class="battle-action" ${reason ? 'disabled' : ''}>
+    return `<article class="battle-action-card"><button data-action="${action}" class="battle-action" ${reason ? 'disabled' : ''}>
       <span class="battle-action-heading">${isStarterId(actor.definitionId) ? abilityIcon(actor.definitionId, action) : ''}<strong>${name}</strong></span>
+      ${needsAllyTarget(actor, action) ? '<span>Choose an ally</span>' : ''}
+      ${action === 'light' ? `<span>Down or right-click · +${shatterGauge.gains[action]} Elemental Gauge</span>` : `<span>${action === 'ultimate' ? 'Up' : action === 'skill1' ? 'Left' : 'Right'} · Costs ${actionGaugeCost(actor, action, state, this.targetId)} Elemental Gauge${action === 'ultimate' && ability?.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</span>`}
+      <small>${reason ?? 'Ready'}</small></button>
       ${ability ? abilityStatuses(ability.strength, actor.kit.nativeIdentity && !actor.captured ? actor.definitionId : undefined, action === 'light' ? undefined : action) : ''}
-      ${nativeActionHint(state, actor, action, this.targetId) ? `<span class="battle-ally-target">${nativeActionHint(state, actor, action, this.targetId)}</span>` : ''}
-      ${ability && actor.kit.nativeIdentity ? `<span>${readableEffect(ability.description)}</span>` : ''}
-      ${action === 'light' ? `<span>Down or right-click · +${shatterGauge.gains[action]} Elemental Gauge</span>` : `<span>${action === 'ultimate' ? 'Up' : action === 'skill1' ? 'Left' : 'Right'}</span>`}
-      ${ability ? `<span>Costs ${actionGaugeCost(actor, action, state, this.targetId)} Elemental Gauge${action === 'ultimate' && ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</span>` : ''}
-      <small>${reason ?? 'Ready'}</small></button>`;
+      ${nativeActionHint(state, actor, action, this.targetId) ? `<p class="battle-ally-target">${nativeActionHint(state, actor, action, this.targetId)}</p>` : ''}
+      ${ability && actor.kit.nativeIdentity ? `<p>${readableEffect(ability.description)}</p>` : ''}
+      </article>`;
   }
 
 }

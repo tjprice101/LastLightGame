@@ -76,31 +76,35 @@ export function OnlineAccountDialog({ onClose, onPlay }: { onClose: () => void; 
     await enter();
   });
 
-  return <Dialog id="online-account" title="Online account" subtitle="Sign in, create an account or recover access." onClose={onClose} busy={busy}>
-    {!username ? <>
-      <div className="ll-account-tabs" role="group" aria-label="Account action">
-        {(['login', 'register', 'recover'] as const).map(action => <Button key={action} tone="quiet" disabled={busy} aria-pressed={mode === action} onClick={() => setMode(action)}>
-          {action === 'login' ? 'Sign in' : action === 'register' ? 'Create account' : 'Recover'}</Button>)}
-      </div>
-      <form className="ll-account-form" onSubmit={submit}>
-        <fieldset disabled={busy} className="ll-fields">
-          <label className="ll-field">Username<input name="username" autoComplete="username" minLength={3} maxLength={16} pattern="[A-Za-z0-9_]{3,16}" required /></label>
-          {mode !== 'recover' && <label className="ll-field">Password<input name="password" type="password" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} minLength={mode === 'register' ? 12 : undefined} maxLength={128} required /></label>}
-          {mode === 'register' && <label className="ll-field">Email<input name="email" type="email" autoComplete="email" maxLength={254} required /></label>}
-        </fieldset>
-        <Button tone="primary" type="submit" disabled={busy}>{busy ? 'Please wait…' : mode === 'login' ? 'Sign in' : mode === 'register' ? 'Create account' : 'Send recovery email'}<Icon name="arrow" /></Button>
-      </form>
-    </> : <>
-      <div className="ll-account-actions">{onPlay && status.error && !resetPassword && <Button tone="primary" disabled={busy} onClick={play}>Retry connection<Icon name="arrow" /></Button>}
+  return <Dialog id="online-account" title="Online account" subtitle="Sign in, create an account or recover access." onClose={onClose} busy={busy}
+    actions={<><Status {...status} /><div className="ll-account-actions">
+      {!username && <Button tone="primary" type="submit" form="account-auth" disabled={busy}>{busy ? 'Please wait…' : mode === 'login' ? 'Sign in' : mode === 'register' ? 'Create account' : 'Send recovery email'}<Icon name="arrow" /></Button>}
+      {username && <>
+        {onPlay && status.error && !resetPassword && <Button tone="primary" disabled={busy} onClick={play}>Retry connection<Icon name="arrow" /></Button>}
         <Button disabled={busy} onClick={() => void run(async () => {
           const { error } = await onlineClient().auth.signOut();
           if (error) throw new Error('Sign-out failed. Please try again.');
           setResetPassword(false);
           await refresh();
           if (alive.current) setStatus({ message: 'Signed out.', error: false });
-        })}>Sign out</Button></div>
-    </>}
-    {resetPassword && <form className="ll-account-form ll-password-reset" onSubmit={event => {
+        })}>Sign out</Button>
+      </>}
+      {resetPassword && <Button tone="primary" type="submit" form="account-password-reset" disabled={busy}>Save new password</Button>}
+    </div></>}>
+    {!username ? <>
+      <div className="ll-account-tabs" role="group" aria-label="Account action">
+        {(['login', 'register', 'recover'] as const).map(action => <Button key={action} tone="quiet" disabled={busy} aria-pressed={mode === action} onClick={() => setMode(action)}>
+          {action === 'login' ? 'Sign in' : action === 'register' ? 'Create account' : 'Recover'}</Button>)}
+      </div>
+      <form id="account-auth" className="ll-account-form" onSubmit={submit}>
+        <fieldset disabled={busy} className="ll-fields">
+          <label className="ll-field">Username<input name="username" autoComplete="username" minLength={3} maxLength={16} pattern="[A-Za-z0-9_]{3,16}" required /></label>
+          {mode !== 'recover' && <label className="ll-field">Password<input name="password" type="password" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} minLength={mode === 'register' ? 12 : undefined} maxLength={128} required /></label>}
+          {mode === 'register' && <label className="ll-field">Email<input name="email" type="email" autoComplete="email" maxLength={254} required /></label>}
+        </fieldset>
+      </form>
+    </> : null}
+    {resetPassword && <form id="account-password-reset" className="ll-account-form ll-password-reset" onSubmit={event => {
       event.preventDefault();
       const form = event.currentTarget;
       const password = String(new FormData(form).get('new-password') ?? '');
@@ -113,7 +117,6 @@ export function OnlineAccountDialog({ onClose, onPlay }: { onClose: () => void; 
         else setStatus({ message: 'Your password has been updated.', error: false });
       });
     }}><label className="ll-field">New password<input name="new-password" type="password" autoComplete="new-password" minLength={12} maxLength={128} disabled={busy} required /></label>
-      <Button tone="primary" type="submit" disabled={busy}>Save new password</Button></form>}
-    <Status {...status} />
+      </form>}
   </Dialog>;
 }

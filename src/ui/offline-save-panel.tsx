@@ -76,20 +76,20 @@ export function OfflineSavePanel({ onChanged, compact = false, onSaveOnline }: {
       }).finally(() => { picker.value = ''; });
     }} />
     <Status {...status} />
-    {filesOpen && <Dialog id="offline-file-tools" title="Offline save files" onClose={() => setFilesOpen(false)}>
-      <p>File backups affect only this browser&apos;s offline progress. They never replace an existing online account.</p>
-      <div className="ll-save-actions"><Button disabled={!hasBrowserSave} onClick={() => { setFilesOpen(false); void run(() => {
+    {filesOpen && <Dialog id="offline-file-tools" title="Offline save files" onClose={() => setFilesOpen(false)}
+      actions={<div className="ll-save-actions"><Button disabled={!hasBrowserSave} onClick={() => { setFilesOpen(false); void run(() => {
         exportOfflineSave(); setStatus({ message: 'Backup download requested. Keep the file somewhere safe.', error: false });
-      }); }}>Export Save File</Button><Button onClick={() => { setFilesOpen(false); input.current!.click(); }}>Load Save File</Button></div>
+      }); }}>Export Save File</Button><Button onClick={() => { setFilesOpen(false); input.current!.click(); }}>Load Save File</Button></div>}>
+      <p>File backups affect only this browser&apos;s offline progress. They never replace an existing online account.</p>
     </Dialog>}
-    {codeOpen && <Dialog id="offline-save-code" title="Load offline save code" onClose={() => { if (!busy) setCodeOpen(false); }} busy={busy}>
-      <p>This replaces only this browser&apos;s offline save, never your online account. Save codes are editable backups, not rewards.</p>
-      <label className="ll-field">Save code<textarea aria-label="Offline save code" value={code} onChange={event => setCode(event.currentTarget.value)} rows={5} disabled={busy} /></label>
-      <Button disabled={busy} onClick={() => void run(async () => {
+    {codeOpen && <Dialog id="offline-save-code" title="Load offline save code" onClose={() => { if (!busy) setCodeOpen(false); }} busy={busy}
+      actions={<Button disabled={busy} onClick={() => void run(async () => {
         const save = readSaveCode(code);
         setCodeOpen(false);
         await load(save);
-      })}>Review and load</Button>
+      })}>Review and load</Button>}>
+      <p>This replaces only this browser&apos;s offline save, never your online account. Save codes are editable backups, not rewards.</p>
+      <label className="ll-field">Save code<textarea aria-label="Offline save code" value={code} onChange={event => setCode(event.currentTarget.value)} rows={5} disabled={busy} /></label>
       <Status {...status} />
     </Dialog>}
   </Panel>;

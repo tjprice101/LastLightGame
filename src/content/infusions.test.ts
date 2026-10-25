@@ -216,7 +216,7 @@ describe('playable Heaven and Abyss', () => {
     Object.assign(view, { bindings: defaultBindings, host: { innerHTML: '',
       querySelectorAll: (selector: string) => selector === '[data-result-restart]'
         ? [{ addEventListener: (_: string, callback: () => Promise<void>) => listeners.set(selector, callback) }] : [],
-      querySelector: (selector: string) => ({ addEventListener: (_: string, callback: () => Promise<void>) => listeners.set(selector, callback) }) } });
+      querySelector: (selector: string) => ({ addEventListener: (_: string, callback: () => Promise<void>) => listeners.set(selector, callback), showModal: vi.fn() }) } });
     Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
     const replay = listeners.get('[data-result-restart]');
     if (!replay) throw new Error('Replay listener missing.');

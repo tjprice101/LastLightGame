@@ -78,7 +78,7 @@ async function chooseFriends(friends: readonly SocialPeerDisplay[], group: boole
   dialog.innerHTML = `<h2>${escape(title)}</h2>${friends.length ? `<form method="dialog">
     ${group ? '<label>Group name<input name="name" maxlength="48" required autocomplete="off"></label>' : ''}
     <fieldset class="chat-friend-choices"><legend>${group ? 'Invite friends (up to 9)' : 'Friend'}</legend>${friends.map(friend => `<label><input type="${group ? 'checkbox' : 'radio'}" name="friends" value="${escape(friend.userId)}" ${group ? '' : 'required'}>${avatar(friend)}<span>${escape(friend.displayName)}<small>@${escape(friend.username)}</small></span></label>`).join('')}</fieldset>
-    <p role="alert" data-choice-error></p><div class="game-dialog-actions"><button value="cancel" formnovalidate>Cancel</button><button value="choose">${group ? 'Create and invite' : 'Choose friend'}</button></div></form>` : '<p>No eligible friends. Add a friend first.</p><form method="dialog"><button value="cancel">Back</button></form>'}`;
+    <p role="alert" data-choice-error></p><div class="game-dialog-actions"><button value="cancel" formnovalidate>Cancel</button><button value="choose">${group ? 'Create and invite' : 'Choose friend'}</button></div></form>` : '<p>No eligible friends. Add a friend first.</p><form method="dialog" class="game-dialog-actions"><button value="cancel">Back</button></form>'}`;
   try {
     return await new Promise((resolve, reject) => {
       const cancel = () => { resolve(null); dialog.close(); };
@@ -287,7 +287,7 @@ export function bindFriendChat(host: HTMLElement, state: ChatUiState, friends: (
       }
       if (action === 'blocked') {
         const { dialog, dispose } = createGameDialog('Blocked players');
-        dialog.innerHTML = `<h2>Blocked players</h2><p>Blocked players cannot message you or send new friend requests.</p>${view?.blocked.map(member => `<p>${escape(member.displayName)} <button data-chat-unblock="${escape(member.userId)}">Unblock</button></p>`).join('') || '<p>No blocked players.</p>'}<form method="dialog"><button>Back</button></form>`;
+        dialog.innerHTML = `<h2>Blocked players</h2><p>Blocked players cannot message you or send new friend requests.</p>${view?.blocked.map(member => `<p>${escape(member.displayName)} <button data-chat-unblock="${escape(member.userId)}">Unblock</button></p>`).join('') || '<p>No blocked players.</p>'}<form method="dialog" class="game-dialog-actions"><button>Back</button></form>`;
         const userId = await new Promise<string | null>((resolve, reject) => {
           const cancel = () => { resolve(null); dialog.close(); };
           dialog.addEventListener('close', () => resolve(null), { once: true });

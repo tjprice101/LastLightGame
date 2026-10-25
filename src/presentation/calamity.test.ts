@@ -34,6 +34,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
   Reflect.deleteProperty(HTMLElement.prototype, 'scrollIntoView');
   Reflect.deleteProperty(HTMLDialogElement.prototype, 'close');
+  Reflect.deleteProperty(HTMLDialogElement.prototype, 'showModal');
 });
 
 describe('Calamity presentation', () => {
@@ -362,6 +363,7 @@ describe('Calamity presentation', () => {
     vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }));
     Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { configurable: true, value: vi.fn() });
     Object.defineProperty(HTMLDialogElement.prototype, 'close', { configurable: true, value: vi.fn() });
+    Object.defineProperty(HTMLDialogElement.prototype, 'showModal', { configurable: true, value: function (this: HTMLDialogElement) { this.open = true; } });
     const session = createSession('ember', { level: 105, evolution: 6 }, { activity: 'infernic', tier: 3 });
     delete session.state.enemies[0].art;
     session.state.phase = 'cleared';

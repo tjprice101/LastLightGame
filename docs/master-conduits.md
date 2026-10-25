@@ -1,11 +1,24 @@
 # Character Master Conduits (D-201)
 
+## Full-screen choice and reveal (D-411)
+
+The [shared full-screen overlay contract](menus-and-inventory.md#full-screen-paged-overlays-d-411)
+now owns chest selection and saved-reward presentation. The Element-Bearer
+selector stays available above the paged Master cards; Cancel/Choose and page
+navigation remain fixed below. All48 exact effects and future-character choices
+remain available. Long effect text can continue on another page without clipping
+the selectable identity/artwork. Selection itself spends nothing; the subsequent
+confirmation and atomic opening are unchanged. No modal scrolling remains.
+The D-408 Let/Rise flavor and pending replacement art prompt are retained.
+
 ## Compact opening and collaboration flavor (D-408)
+
+Historical window sizing; superseded by D-411's full-screen composition.
 
 The saved Master reveal uses a bounded200px artwork/stage area (26dvh on
 short screens), rather than a400px stage around a160px icon. Only Master
 reveals receive this sizing; large chest drops/receipts and other reward
-presentations remain unchanged. Full effect text, scrolling, Skip/Continue,
+presentations remained unchanged. Full effect text, scrolling, Skip/Continue,
 Escape, reduced motion and atomic saved ownership retain existing behavior.
 
 Opening flavor: “Let shaped its workings; Rise bound their power. A mechanism

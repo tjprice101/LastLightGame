@@ -23,6 +23,28 @@ afterEach(() => {
 });
 
 describe('React Master chest choice', () => {
+  it('chooses a future Element-Bearer through a nested game dialog without spending or losing the parent', async () => {
+    const account = { ...emptyAccount(), masterChests: 1 };
+    const before = structuredClone(account);
+    let result!: Promise<MasterConduitId | null>;
+    await act(async () => { result = chooseMasterConduit(account); });
+    const opener = document.querySelector<HTMLButtonElement>('[aria-controls="master-bearer-picker"]')!;
+    opener.focus();
+    await act(async () => opener.click());
+    const picker = document.querySelector<HTMLDialogElement>('#master-bearer-picker')!;
+    expect(document.querySelectorAll('dialog[open]')).toHaveLength(2);
+    expect(picker.textContent).toContain('do not yet own');
+    const choice = Array.from(picker.querySelectorAll('button')).find(button => button.querySelector('strong')?.textContent === 'Razor')!;
+    await act(async () => choice.click());
+    expect(document.querySelector('#master-bearer-picker')).toBeNull();
+    expect(document.querySelector('select')?.value).toBe('razor');
+    expect(document.querySelectorAll('.ll-master-option')).toHaveLength(3);
+    expect(document.activeElement).toBe(opener);
+    expect(account).toEqual(before);
+    await act(async () => { document.querySelector('dialog')!.dispatchEvent(new Event('cancel', { cancelable: true })); });
+    expect(await result).toBeNull();
+  });
+
   it('shows the canonical bold element and theme for every future-character Master option without saving', async () => {
     const account = { ...emptyAccount(), masterChests: 1 };
     const before = structuredClone(account);
@@ -38,7 +60,7 @@ describe('React Master chest choice', () => {
         expect(card.dataset.conduitElement).toBe(starter.elementId);
         expect(card.style.getPropertyValue('--conduit-element-accent')).toBe(elementAccents[starter.elementId]);
         expect(card.querySelector('strong.conduit-element-label')?.textContent).toBe(getElement(starter.elementId).name);
-        expect(card.textContent).toContain('Omnic Master');
+        expect(card.closest('article')?.textContent).toContain('Omnic Master');
       });
     }
     await act(async () => { document.querySelector('dialog')!.dispatchEvent(new Event('cancel', { cancelable: true })); });

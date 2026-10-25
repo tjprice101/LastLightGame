@@ -3,6 +3,11 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**Full-screen overlays (D-411):** [paged, non-scrolling modal screens](menus-and-inventory.md#full-screen-paged-overlays-d-411)
+replace compact windows and side drawers, including confirmations, Settings,
+Information, rewards and nested selectors. Fixed headings/actions and
+Previous/Next preserve readable content, forms, focus and saved outcomes.
+
 **All-level Rose captures (D-410):** [all35 event stages](crimson-roses.md#captures-at-every-event-level-d-410)
 now drop playable copies at the existing50% chance, including the final boss.
 Copies join at Lv.60 with their defeated form and skills; the former source

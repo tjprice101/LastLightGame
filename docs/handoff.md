@@ -1,5 +1,47 @@
 # Current state and handoff
 
+## Full-screen paged overlays (D-411)
+
+- Owner confirms every modal, including small confirmations and nested choices,
+  should fill the viewport and never scroll. Previous/Next handles overflow;
+  headings and primary actions remain fixed. Ordinary pages keep scrolling.
+  [Current contract](menus-and-inventory.md#full-screen-paged-overlays-d-411)
+  supersedes compact dialogs/drawers and D-408's Master window, not its flavor.
+- Shared native-dialog controller uses original DOM/form controls with responsive
+  column pages, no cloned inputs or transaction changes. Covers static/dynamic
+  and nested dialogs, resets filtered content, follows selected options/focus,
+  removes off-page Tab stops, recalculates for resize/reveal/art and restores
+  page scrolling on close. React owns explicit body/footer containers.
+- Master choices keep their bearer selector and actions fixed; identity/art
+  buttons are separate from full flowing rules. Battle action references use
+  the same separation. Settings/account/friend actions preserve form ownership.
+  Victory/defeat receipts now use native dialogs with existing dismiss/reopen,
+  retry/continue/quit behavior and unchanged saved totals.
+- Browser checks cover all48 Master rules at320px/390px/short landscape/desktop,
+  large Machines pools, rates tables, Settings, squad selection, long battle
+  logs, victory rewards, confirmations, profile-picture filters and saved chest
+  reveals. Text-fragment bounds and inner-scroll checks found and corrected
+  short-screen card overflow and table-line descender clipping. Revealed art
+  stays hidden before reveal; no user-account/storage changes are used.
+- Final browser rerun:192 selected-Master cases (all48 choices at320x569,
+  390x844,844x390 and1280x900) have no clipped text fragments or offscreen
+  footer buttons. Nested bearer selection retains the parent and restores focus;
+  closing the last dialog restores page scrolling. Invalid native form fields
+  reveal their page at all four sizes without losing values or submit ownership.
+- Validation: `npm test -- --maxWorkers=1 --reporter=dot` passed6610 tests/
+  213 files. After the additional invalid-field regression,
+  `npx vitest run src/presentation/overlay-pages.test.ts
+  src/ui/master-choice-dialog.test.tsx src/presentation/battle-exit.test.ts
+  src/presentation/calamity.test.ts src/content/infusions.test.ts
+  --maxWorkers=1 --reporter=dot` passed105 tests/5 files;
+  `npx tsc --noEmit`, `npm run build` and `git diff --check` pass.
+  Initial result-dialog test fixture/API gaps and action nullability are fixed.
+  Build retains only the existing large-chunk advisory. Standing Pages workflow
+  reruns the complete committed suite and configured production build before
+  publishing; hosted commit verification is recorded separately.
+- No gameplay/authority/save changes or replacement art are part of this task.
+  No authority deployment or owner decision is needed.
+
 ## All-level Roselius captures (D-410)
 
 - Owner removes the Rose source-enemy120 ceiling: every stage1-35 and all

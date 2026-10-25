@@ -1,5 +1,53 @@
 # Menus and inventory
 
+## Full-screen paged overlays (D-411)
+
+Every game modal, including small confirmations and nested selection panels,
+occupies the full viewport. Content never uses an internal scrollbar. Fixed
+headings and primary actions frame a responsive reading/selection area; overflow
+uses **Previous / Page N of M / Next** controls. Ordinary game pages retain
+their existing scrolling. This supersedes earlier compact-dialog, side-drawer
+and contained modal-scrolling contracts, including the D-408 Master window.
+
+The shared `presentation/overlay-pages.ts` controller covers every open native
+dialog, including Information/topics, Settings, stage/Conduit selectors, Detailed
+Loot, squad/profile-picture choices, friends, update prompts, confirmations and
+reward reveals. Battle victory/defeat receipts now use native dialogs too, keeping
+View battlefield, reopen, Retry/Replay/Continue/Quit and saved totals unchanged.
+Noninteractive combat effects and brief status notices are not modal screens.
+
+Native column fragmentation paginates the original content, rather than copying
+forms or hiding excess data. Lists, table rows and text continue on later pages;
+normal text stays readable at16px, and controls retain at least44px targets.
+Desktop uses two reading columns (three for Master options); phones use one.
+Short landscape screens place paging and action controls beside each other.
+Resize, content reveal, filters, loaded art and viewport changes recalculate
+pages. The selected option opens on its own page. Off-page controls leave the
+Tab order; keyboard focus, native Escape/cancel and nested parent-page state
+remain intact. Closing the last modal restores ordinary page scrolling.
+Submitting a form reveals its first invalid field, even if browser validation
+does not emit a new focus event; later invalid fields never override that page.
+
+React declares its own heading/content/footer containers, so the paginator never
+reparents React-owned controls. Master choices retain all48 exact effects and
+future-character eligibility, with a persistent Element-Bearer selector and
+Cancel/Choose actions. Selectable identity/artwork is separate from flowing effect
+text, allowing long rules to continue without clipping a giant button. Battle
+action cards similarly separate their activation button from full references.
+Settings, account and friend forms keep their original controls, values,
+validation and submit ownership when their main buttons move to the fixed footer.
+
+Reveals retain hidden artwork until reveal, Skip/Continue, reduced motion, artwork
+errors and existing save-before-animation behavior. No mechanics, rewards, RNG,
+account writes, loading screens or artwork substitutions are added.
+
+Validate `overlay-pages.test.ts`, React opening/Master tests, game-dialog,
+selection-panel, Information/topics, stage-loot, reward-screen, profile-picture,
+friends, native targeting and battle-result/chrome tests. Browser validation must
+check actual text-fragment bounds, no inner scroll containers, fixed controls,
+all48 Master effects, a large Machines pool/rates table, short landscape and
+320px phones, nested loot/focus, reveal visibility and no account writes.
+
 ## Compact holdings and unified categories (D-407)
 
 Inventory has two expandable sections: **Resources & Items** holds materials,

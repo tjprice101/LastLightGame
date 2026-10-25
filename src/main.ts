@@ -94,6 +94,7 @@ import { bindCaptureTabs, referenceTeam, type ReferenceTeamView } from './presen
 import './presentation/reference-layout.css';
 import './presentation/leader-theme.css';
 import './presentation/button-style.css';
+import { installOverlayPages } from './presentation/overlay-pages';
 import { installButtonStyle } from './presentation/button-style';
 import { applyLeaderTheme, leaderElement } from './presentation/leader-theme';
 import { mountTitle, mountPlayerInfo, mountStarterSelection, unmountTitle, type OnlineSaveRequest } from './ui/mount';
@@ -128,6 +129,8 @@ bindInformation(app);
 bindSelectionPanels(app);
 bindStageLoot(app, () => account);
 installButtonStyle(document.body);
+const stopOverlayPages = installOverlayPages();
+import.meta.hot?.dispose(stopOverlayPages);
 let characterCategory: TeamArea = 'squad';
 let teamView: ReferenceTeamView = 'detail';
 let teamElement = '';

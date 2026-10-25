@@ -95,7 +95,7 @@ export function createAllyTargetPicker(state: BattleState, actor: Combatant, act
     <p>Enemy target is unchanged. Choose a recipient to commit this action, or cancel without spending Gauge or a turn.</p>
     <form method="dialog"><div class="native-ally-choices">${candidates.map(ally =>
       `<button type="submit" class="text-button" value="${escapeDialogText(ally.id)}"><strong>${escapeDialogText(ally.name)}</strong><span>HP ${formatStat(ally.hp)} / ${formatStat(ally.stats.health)}${ally.id === actor.id ? ' · Self' : ''}</span></button>`).join('')}</div>
-    <button type="submit" class="text-button" value="" autofocus>Cancel</button></form>`;
+    <div class="game-dialog-actions"><button type="submit" class="text-button" value="" autofocus>Cancel</button></div></form>`;
   let finish: (id: string | null) => void = () => {};
   const result = new Promise<string | null>((resolve, reject) => {
     let settled = false;
