@@ -1,5 +1,11 @@
 # Calamity Mode (D-308 / D-315)
 
+**D-416 presentation pilot:** activity and Inventory chest View Loot share
+[polished bounded loot dialogs](menus-and-inventory.md#calamity-chest-loot-presentation-d-416):
+one font, explicit guarantee/random headings, exact tabular rates/quantities,
+larger chest identity and restrained accent trims. Rewards and other screens
+are unchanged.
+
 **D-415 validation boundary:** native kit criticals change seeded outcomes but
 not Calamity stats or rewards. Current648-encounter results and the limitations
 of older global measurements are in

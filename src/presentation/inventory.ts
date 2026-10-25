@@ -83,7 +83,7 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
     return `<li class="inventory-item" data-inventory-chest="${id}" ${itemMetadata(chest.name, 'chests')}>
       <div class="inventory-item-art">${calamityChestIcon(tier)}</div>
       <strong>${escapeDialogText(chest.name)}</strong><span class="inventory-quantity">Owned ${count}</span>
-      <div class="inventory-item-actions">${information(`inventory-${id}-loot`, chest.name, calamityLoot(activity, tier), 'View Loot')}
+      <div class="inventory-item-actions">${information(`inventory-${id}-loot`, 'Calamity chest · View Loot', calamityLoot(activity, tier), 'View Loot')}
       <button type="button" class="primary-button" data-open-calamity-chest="${id}">Open</button></div></li>`;
   }).join('') + ((account?.masterChests ?? 0) > 0 ? `<li class="inventory-item" data-inventory-chest="${masterChest.id}" ${itemMetadata(masterChest.name, 'chests')}>
     <div class="inventory-item-art">${masterChestIcon()}</div>

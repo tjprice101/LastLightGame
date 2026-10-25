@@ -1,5 +1,29 @@
 # Menus and inventory
 
+## Calamity chest loot presentation (D-416)
+
+Only Calamity chest **View Loot** dialogs receive this visual pilot, consistently
+from activity selection and Inventory. The short dialog header identifies the
+view; a larger chest-art hero names the exact activity/chest and EX tier.
+Two framed sections distinguish guaranteed contents from the random pool,
+with explicit selection counts, semantic row/column headers, exact percentages
+and comma-grouped quantities. Machines retains its full Conduit pool and
+visible selection/duplicate-conversion explanation.
+
+Typography uses the shared Georgia stack throughout, with controlled heading
+sizes and normal letter spacing. Neutral charcoal panels, restrained
+leader-accent trims and subtle separators replace the unstructured oversized
+heading/list/table. Desktop uses horizontal columns; phones stack without
+horizontal overflow. The bounded dialog grows to content rather than forcing
+full-screen height; long pools/short viewports retain necessary vertical
+scrolling with a sticky header and accessible44px Close. Native Escape,
+focus restoration, reduced motion and existing keyword formatting remain.
+
+No other information dialogs, opening/reward animations, loot probabilities,
+quantities, save transactions or account data change. Do not spread this theme
+to other screens without owner review. Validate Calamity/Inventory/information
+tests and browser-check all36 activity/tier combinations at desktop/mobile sizes.
+
 **Current reference corrections:** D-412 uses
 [one80-pull banner meter](summoning-and-economy.md#single80-pull-pity-d-412);
 older dual-counter UI descriptions below are historical. D-415 shares canonical

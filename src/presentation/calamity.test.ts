@@ -38,6 +38,20 @@ afterEach(() => {
 });
 
 describe('Calamity presentation', () => {
+  it.each(calamityActivities)('organizes all $id loot previews into labeled guarantees and random rewards', activity => {
+    for (const tier of [1, 2, 3] as const) {
+      document.body.innerHTML = calamityLoot(activity.id, tier);
+      expect(document.querySelector('.calamity-loot-hero h3')?.textContent).toBe(calamityChest(activity.id, tier).name);
+      expect(document.querySelector('.calamity-loot-hero')?.textContent).toContain(`EX+${tier}`);
+      expect(document.querySelectorAll('.calamity-loot-panel')).toHaveLength(2);
+      expect(document.querySelector('[aria-label="Guaranteed contents"] h4')?.textContent).toBe('Guaranteed contents');
+      expect(document.querySelector('[aria-label="Random reward pool"] h4')?.textContent).toBe('Random reward pool');
+      expect(document.querySelectorAll('thead th[scope="col"]')).toHaveLength(3);
+      expect(document.querySelectorAll('tbody th[scope="row"]')).toHaveLength(calamityLootTable(activity.id).length);
+      expect(document.querySelector('caption')?.textContent).toBe('Chance and quantity for each random reward');
+      expect(document.querySelectorAll('.calamity-loot-rules')).toHaveLength(activity.id === 'machines' ? 1 : 0);
+    }
+  });
   it.each(calamityActivities)('keeps one $id tier visible and preserves independent difficulty and stage choices', activity => {
     const account = emptyAccount();
     const before = structuredClone(account);
@@ -277,7 +291,7 @@ describe('Calamity presentation', () => {
         expect(html).toContain(row.label);
         const totalWeight = calamityLootTable(activity.id).reduce((total, entry) => total + entry.weight, 0);
         expect(html).toContain(`<td>${Number((row.weight / totalWeight * 100).toFixed(6))}%</td>`);
-        expect(html).toContain(`${row.min}-${row.max}`);
+        expect(html).toContain(`${row.min.toLocaleString('en-US')}-${row.max.toLocaleString('en-US')}`);
       }
       expect(html).not.toContain('<th>Weight</th>');
       const reward = rollCalamityChest(activity.id, tier, () => .1);

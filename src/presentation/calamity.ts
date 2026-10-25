@@ -97,12 +97,27 @@ export function calamityLoot(activity: CalamityActivityId, tier: CalamityTier): 
   const chest = calamityChest(activity, tier);
   const rows = calamityLootTable(activity);
   const weight = rows.reduce((sum, row) => sum + row.weight, 0);
-  return `${calamityChestIcon(tier)}<p>${escapeDialogText(chest.name)}</p><h3>Guaranteed contents</h3>
-    ${calamityChestContents(activity, tier)}
-    <p>Random rewards roll separately and can repeat, except Conduits.</p>
-    ${chest.componentRange ? `<ul><li>Conduits are chosen equally from unowned names in the rolled rarity. No duplicates within a chest.</li><li>Rarity chances stay fixed; listed per-Conduit chances assume none are owned.</li><li>Fully owned rarity: ${chest.componentRange.min.toLocaleString('en-US')}-${chest.componentRange.max.toLocaleString('en-US')} extra Broken Mechanical Components instead.</li><li>Component bonuses add to the guaranteed amount.</li></ul>` : ''}
-    <table><thead><tr><th>Reward</th><th>Chance per reward</th><th>Quantity</th></tr></thead><tbody>${rows.map(row =>
-    `<tr><td>${escapeDialogText(row.label)}</td><td>${Number((row.weight / weight * 100).toFixed(6))}%</td><td>${row.min}-${row.max}</td></tr>`).join('')}</tbody></table>`;
+  return `<div class="calamity-loot">
+    <div class="calamity-loot-hero">${calamityChestIcon(tier)}<div>
+      <p class="calamity-loot-eyebrow">Calamity rewards / EX+${tier}</p>
+      <h3>${escapeDialogText(chest.name)}</h3>
+      <p>Every chest includes guaranteed contents and ${chest.bundles} additional random rewards.</p>
+    </div></div>
+    <div class="calamity-loot-columns">
+      <section class="calamity-loot-panel calamity-loot-guarantees" aria-label="Guaranteed contents">
+        <header><p class="calamity-loot-eyebrow">Included in every chest</p><h4>Guaranteed contents</h4></header>
+        ${calamityChestContents(activity, tier)}
+      </section>
+      <section class="calamity-loot-panel calamity-loot-random" aria-label="Random reward pool">
+        <header><p class="calamity-loot-eyebrow">${chest.bundles} independent selections</p><h4>Random reward pool</h4></header>
+        <p>Random rewards roll separately and can repeat, except Conduits.</p>
+        <table><caption>Chance and quantity for each random reward</caption>
+          <thead><tr><th scope="col">Reward</th><th scope="col">Chance per reward</th><th scope="col">Quantity</th></tr></thead><tbody>${rows.map(row =>
+          `<tr><th scope="row">${escapeDialogText(row.label)}</th><td>${Number((row.weight / weight * 100).toFixed(6))}%</td><td>${row.min.toLocaleString('en-US')}-${row.max.toLocaleString('en-US')}</td></tr>`).join('')}</tbody></table>
+        ${chest.componentRange ? `<aside class="calamity-loot-rules"><h5>Conduit selection &amp; duplicate conversion</h5><ul><li>Conduits are chosen equally from unowned names in the rolled rarity. No duplicates within a chest.</li><li>Rarity chances stay fixed; listed per-Conduit chances assume none are owned.</li><li>Fully owned rarity: ${chest.componentRange.min.toLocaleString('en-US')}-${chest.componentRange.max.toLocaleString('en-US')} extra Broken Mechanical Components instead.</li><li>Component bonuses add to the guaranteed amount.</li></ul></aside>` : ''}
+      </section>
+    </div>
+  </div>`;
 }
 
 function calamityChestContents(activity: CalamityActivityId, tier: CalamityTier): string {
@@ -152,7 +167,7 @@ export function calamitySection(activity: CalamityActivityId, account: Account |
         <footer class="calamity-tier-actions">
         <button class="primary-button" data-calamity="${activity}" data-calamity-tier="${tier}" ${access?.unlocked ? '' : 'disabled'}>Enter EX+${tier}</button>
         <p class="activity-unlock-hint">${access?.unlocked ? '' : account ? escapeDialogText(access!.requirement) : 'Resolve the save error before entering.'}</p>
-        ${information(`calamity-${activity}-${tier}-loot`, `${chest.name} · View Loot`, calamityLoot(activity, tier), 'View Loot')}</footer></div></article>`;
+        ${information(`calamity-${activity}-${tier}-loot`, 'Calamity chest · View Loot', calamityLoot(activity, tier), 'View Loot')}</footer></div></article>`;
     }).join('')}</div></section>`;
 }
 

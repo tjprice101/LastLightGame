@@ -1,5 +1,8 @@
 # Documentation hub
 
+**D-416:** [Calamity chest View Loot visual pilot](menus-and-inventory.md#calamity-chest-loot-presentation-d-416)
+is scoped to activity/Inventory loot previews; no global theme rollout.
+
 **D-415:** [complete Conduit/Master description audit](conduits.md#complete-description-and-keyword-audit-d-415),
 [all-kit critical and trap rules](combat.md#all-character-kit-damage-can-crit-d-415),
 and [current benchmark limitations/results](enemy-benchmark-calibration.md#rules13-critical-damage-remeasurement-d-415).

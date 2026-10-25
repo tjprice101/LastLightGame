@@ -1,5 +1,25 @@
 # Current state and handoff
 
+## Calamity View Loot visual pilot (D-416)
+
+- Shared activity/Inventory preview now has a compact title, chest/tier hero,
+  guaranteed/random section headers, restrained accent trims and consistent
+  Georgia typography. Desktop uses two panels, phones stack, and exact
+  percentage/quantity tables include semantic headers and comma grouping.
+- Scoped through `.calamity-loot`; other modals and opening animations are
+  untouched. Long Machines pools keep necessary vertical scrolling/sticky Close,
+  with visible conversion rules and no hidden reward data.
+- Browser layout checks cover144 activity/tier/viewport combinations:
+  no horizontal overflow, dialog/Close within viewport and consistent font
+  families. Preview uses disposable DOM only, with no save/account writes.
+- Validation: `npm test -- src\presentation\calamity.test.ts
+  src\presentation\inventory.test.ts src\presentation\menu-information.test.ts
+  --maxWorkers=1 --reporter=dot` passed96 tests/3 files; `npm run build`
+  passed TypeScript/Vite (existing large-chunk warning). Browser Escape handler
+  and focus restoration passed; preview DOM was removed. Reward tables,
+  transactions, authority bundle and combat stay unchanged.
+- Owner review is required before applying this visual treatment elsewhere.
+
 ## Conduit descriptions, native criticals and trap provenance (D-415)
 
 - Completed: reviewed all138 live descriptions (90 ordinary,48 Masters);
