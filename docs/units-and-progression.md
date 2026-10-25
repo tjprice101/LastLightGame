@@ -1,5 +1,11 @@
 # Units and progression
 
+**Read-only D-401 measurements:** [roster capability audit](roster-capability-audit.md)
+compares legal progression and developed-account builds at seven checkpoints
+through105, including cumulative real upgrade costs and acquisition limits.
+Its zero-pressure damage/healing/shield windows are not enemy-clear guarantees
+or approval to change these progression rules.
+
 **D-368/D-370 activated Phase 0:** retain existing growth for Health,
 Defense, Direct Attack, Critical Rate, Critical Damage Multiplier and Elemental
 Gauge Capacity. Add base Skill Power100%, Skill Duration0 additional turns,
