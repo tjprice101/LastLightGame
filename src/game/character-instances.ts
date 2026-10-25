@@ -6,7 +6,7 @@ import { enemySkills, type EnemySkill } from '../content/enemy-skills';
 import { applyConduitBuffs, formatStat, type FighterDefinition, type ResolvedFighterDefinition } from '../content/combat';
 import { normalizeStats } from '../content/phase-zero-stats';
 import { validateConduitElement, type ConduitSlots, type ConduitUpgrades } from '../content/conduits';
-import { roseDuplicateMinimumLevel, roseCaptureMaximumLevel } from '../content/roses';
+import { roseDuplicateMinimumLevel } from '../content/roses';
 import { levelingMaterials } from '../content/progression';
 
 export interface CapturedCharacter {
@@ -78,7 +78,6 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
           !('capturedStage' in entry) || typeof entry.capturedStage !== 'number' || !creature.stages.includes(entry.capturedStage) ||
           !('skills' in entry) || !Array.isArray(entry.skills)) throw new Error('Invalid captured Elemental-Devourer progression.');
       const expected = infusionEncounter(creature.mode, entry.capturedStage);
-      if (creature.mode === 'roses' && !copy.acquisition && expected.level > roseCaptureMaximumLevel) throw new Error('Roselius above level 120 cannot be captured.');
       if (copy.acquisition === 'calamity-chest' && (entry.level !== capturedLevelCap || entry.capturedStage !== creature.stages[0])) throw new Error('Invalid Calamity chest Elemental-Devourer progression.');
       const candidates = [expected.abilityMultiplier, expected.legacyAbilityMultiplier]
         .map(multiplier => enemySkills(expected.level, expected.boss, expected.ability, multiplier));
@@ -92,7 +91,6 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
       copy.capturedStage = entry.capturedStage;
       copy.skills = valid;
     } else if ('skills' in entry || 'capturedStage' in entry || 'acquisition' in entry) throw new Error('Incomplete captured Elemental-Devourer progression.');
-    if (creature.mode === 'roses' && copy.level === undefined && infusionEncounter(creature.mode, creature.stages[0]).level > roseCaptureMaximumLevel) throw new Error('Roselius above level 120 requires banner duplicate provenance.');
     return copy;
   });
 }
@@ -165,7 +163,7 @@ export function createCreatureCopy(creatureId: string, stage?: number, level?: n
   if (!creature.stages.includes(capturedStage)) throw new Error('Elemental-Devourer form does not occur at this stage.');
   const encounter = infusionEncounter(creature.mode, capturedStage);
   return validateCapturedCharacters([{ instanceId: `capture:${crypto.randomUUID()}`, creatureId, locked: false,
-    level: level ?? encounter.level, capturedStage,
+    level: level ?? Math.min(capturedLevelCap, encounter.level), capturedStage,
     ...(acquisition ? { acquisition } : {}),
     skills: enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier) }])[0];
 }

@@ -1,5 +1,14 @@
 # Dungeons and captured enemies
 
+## Rose captures at every level (D-410)
+
+All35 Rose stages, including the Lv.140 final boss, use the existing separate
+50% capture chance. Every dropped Roselius joins at Lv.60, retaining its
+actual defeated form, source stage and skills. This removes the D-408 source
+Lv.120 ceiling; no banner/chest provenance is needed for ordinary late captures.
+Other activities' eligibility and the playable60 cap remain unchanged.
+Per-kill rewards/copies save atomically and receipts still prevent double grants.
+
 ## Guaranteed Calamity Roselius (D-409)
 
 Soar/Delve/Roses Calamity chests award1/2/3 Omnic Roselius at tiers1/2/3,
@@ -14,9 +23,8 @@ with their usual locks/squad/equipment protections.
 
 Runtime stage/seed and persistence checks confirm the existing separate50%
 capture chance for Heaven, Abyss, Crownfall Treasury, Rosethorn Sanctuary and
-Passion of Crimson Roses. Duplicate copies are allowed. Roses require the
-defeated enemy to be Lv.120 or lower: current stages1-23 qualify,24-35 do not.
-The player's level does not lift this source-enemy ceiling. Captured copies
+Passion of Crimson Roses. Duplicate copies are allowed. D-410 now permits all
+Rose source levels, superseding the former120 ceiling. Captured copies
 still cap at60 while retaining source form/stage/skills.
 
 Training, Story, elemental dungeons, Machines, Elemental War and Calamity do

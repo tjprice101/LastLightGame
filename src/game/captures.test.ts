@@ -99,8 +99,8 @@ describe('50% capture rewards and retained fixed-form Elemental-Devourers', () =
           expect(reward, `${mode} stage ${stage}`).toBeDefined();
           const enemyLevel = state.enemies[0].level;
           if (enemyLevel === null) throw new Error('Staged enemy level is missing.');
-          const eligible = mode !== 'roses' || enemyLevel <= 120;
-          expect(!!reward.capture, `${mode} stage ${stage} seed ${captureSeed}`).toBe(eligible && captureSeed === 5000);
+          expect(!!reward.capture, `${mode} stage ${stage} seed ${captureSeed}`).toBe(captureSeed === 5000);
+          if (reward.capture) expect(reward.capture.level).toBe(Math.min(60, enemyLevel));
           const comparison = structuredClone(state);
           comparison.captureSeed = captureSeed === 5000 ? 10000 : 5000;
           const other = endTurn(comparison);

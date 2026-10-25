@@ -10,8 +10,8 @@ None is an additional direct enemy drop. This supersedes D-295's inclusion of
 first-clear annotations and sale values in enemy tables.
 
 Capture rows show the exact form and separate50% chance, including duplicates.
-Heaven, Abyss, Treasury, Sanctuary and Roses are eligible; Roselius above
-Lv.120 are not. The high-level Rose table explicitly explains that ceiling.
+Heaven, Abyss, Treasury, Sanctuary and Roses are eligible. Under D-410 all
+Rose levels qualify; copies join at Lv.60 with their actual form and skills.
 The same shared eligibility/chance drives runtime captures and stage previews.
 No odds, eligibility, RNG order, persistence or discovery gates changed.
 

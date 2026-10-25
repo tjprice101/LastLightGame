@@ -26,6 +26,25 @@ function started() { return op(freshGame('tester'), { kind: 'bootstrap', starter
 function rich() { const game = started(); game.account.fractalis = 1000000; game.account.lycalis = 1000; return game; }
 
 describe('server authoritative game engine', () => {
+  it.each([24, 29, 35])('saves late Rose stage %i captures at Lv.60 with the actual form and kit', stage => {
+    const game = rich();
+    game.account.characters.ember = { level: 105, evolution: 6 };
+    game.account.storyCompleted = storyRules.stages;
+    game.account.infusionStages = { roses: 35 };
+    const entered = op(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'roses', stage } }).game;
+    const state = entered.run!.session.state;
+    state.captureSeed = 5000;
+    state.allies[0].shatter = 100;
+    state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
+    const enemy = structuredClone(state.enemies[0]);
+    const resolved = op(entered, { kind: 'act', runId: entered.run!.session.runId,
+      actorId: 'ember', action: 'skill2', targetId: enemy.id });
+    const response = validateGameResponse(resolved.response);
+    const copy = response.account.capturedCharacters?.find(copy => copy.creatureId === enemy.creatureId);
+    expect(copy).toMatchObject({ level: 60, capturedStage: stage, skills: enemy.enemySkills });
+    expect(copy?.acquisition).toBeUndefined();
+    expect(op(resolved.game, { kind: 'read' }).game.account.capturedCharacters).toEqual(response.account.capturedCharacters);
+  });
   it.each([
     { id: 'ember' as const, mode: 'heavens', forms: [4, 4, 4, 3] },
     { id: 'ember' as const, mode: 'heavens', forms: Array<number>(15).fill(1) },

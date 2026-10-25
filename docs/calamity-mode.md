@@ -14,7 +14,7 @@ with form6's Stage29 retained kit and validated `calamity-chest` provenance.
 No auto-equipping or squad changes. These are additional fixed contents;
 currencies, tokens, material bundles and RNG draws/order remain unchanged.
 All other activities award no copies; Calamity bosses still drop only a
-sealed chest. Ordinary Rose capture eligibility remains source Lv.120 or lower.
+sealed chest. D-410 separately permits ordinary Rose captures at every source level.
 
 Existing unopened chests use these contents on opening. Consumption, copy
 UUIDs, currency/material rewards and chest RNG save together once. Denied

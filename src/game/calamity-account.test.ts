@@ -142,8 +142,8 @@ describe('Calamity account transactions', () => {
     expect(() => openCalamityChest(saved, id, 2)).toThrow('count changed');
   });
 
-  it('validates chest provenance without allowing ordinary high-level Rose captures or forged forms', () => {
-    expect(() => createCreatureCopy('infusion:roses:5', 29, 60)).toThrow('cannot be captured');
+  it('validates chest provenance independently of ordinary Rose captures and rejects forged forms', () => {
+    expect(createCreatureCopy('infusion:roses:5', 29, 60)).toMatchObject({ level: 60, capturedStage: 29 });
     const copy = createCreatureCopy('infusion:roses:5', 29, 60, 'calamity-chest');
     expect(validateCapturedCharacters([copy])).toEqual([copy]);
     for (const change of [{ level: 59 }, { capturedStage: 30 }, { creatureId: 'infusion:roses:4' }, { acquisition: 'other' }]) {

@@ -24,7 +24,7 @@ describe('saved Elemental-Devourer discoveries and glossary', () => {
         const encounter = infusionEncounter(mode, stage);
         const creature = getCreature(`infusion:${mode}:${encounter.tier}`);
         const captures = creatureLoot(creature, stage).filter(drop => drop.id.startsWith('capture:'));
-        const eligible = mode !== 'machines' && (mode !== 'roses' || encounter.level <= 120);
+        const eligible = mode !== 'machines';
         expect(captures).toHaveLength(eligible ? 1 : 0);
         if (eligible) expect(captures[0]).toMatchObject({ id: `capture:${creature.id}`, minimum: 1, maximum: 1, chance: .5 });
       }

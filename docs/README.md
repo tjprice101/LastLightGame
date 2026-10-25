@@ -3,6 +3,11 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**All-level Rose captures (D-410):** [all35 event stages](crimson-roses.md#captures-at-every-event-level-d-410)
+now drop playable copies at the existing50% chance, including the final boss.
+Copies join at Lv.60 with their defeated form and skills; the former source
+Lv.120 restriction is removed.
+
 **Conduit copy and chest guarantees (D-409):**
 [activity-specific Calamity contents](calamity-mode.md#activity-specific-chest-guarantees-d-409)
 restrict Master Chests to Machines and add1/2/3 Lv.60 Omnic Roselius to

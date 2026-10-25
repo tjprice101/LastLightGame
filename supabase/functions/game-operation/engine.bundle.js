@@ -4710,11 +4710,10 @@ var roseMaterials = materialRarities.map((rarity, tier) => ({
 }));
 var roseSaleQuantities = [1, 2, 3, 4, 5, 6];
 var roseMaterialUnlocks = materialRarities.map((rarity) => Math.max(80, materialDropLevel(rarity)));
-var roseCaptureMaximumLevel = 120;
 var roseFormStages = [1, 6, 11, 16, 22, 29];
 function roseCaptureAllowed(level) {
   if (!Number.isInteger(level) || level < 80 || level > 140) throw new Error("Roselius enemy level must be from 80 to 140.");
-  return level <= roseCaptureMaximumLevel;
+  return true;
 }
 function roseDuplicateMinimumLevel(creatureId) {
   return creatureId === "infusion:treasury:5" ? 50 : creatureId === "infusion:roses:5" ? 80 : void 0;
@@ -6039,7 +6038,6 @@ function validateCapturedCharacters(value2) {
     if ("level" in entry) {
       if (!Number.isInteger(entry.level) || typeof entry.level !== "number" || entry.level < 1 || entry.level > 120 || !("capturedStage" in entry) || typeof entry.capturedStage !== "number" || !creature.stages.includes(entry.capturedStage) || !("skills" in entry) || !Array.isArray(entry.skills)) throw new Error("Invalid captured Elemental-Devourer progression.");
       const expected = infusionEncounter(creature.mode, entry.capturedStage);
-      if (creature.mode === "roses" && !copy.acquisition && expected.level > roseCaptureMaximumLevel) throw new Error("Roselius above level 120 cannot be captured.");
       if (copy.acquisition === "calamity-chest" && (entry.level !== capturedLevelCap || entry.capturedStage !== creature.stages[0])) throw new Error("Invalid Calamity chest Elemental-Devourer progression.");
       const candidates = [expected.abilityMultiplier, expected.legacyAbilityMultiplier].map((multiplier) => enemySkills(expected.level, expected.boss, expected.ability, multiplier));
       const retained = entry.skills;
@@ -6049,7 +6047,6 @@ function validateCapturedCharacters(value2) {
       copy.capturedStage = entry.capturedStage;
       copy.skills = valid;
     } else if ("skills" in entry || "capturedStage" in entry || "acquisition" in entry) throw new Error("Incomplete captured Elemental-Devourer progression.");
-    if (creature.mode === "roses" && copy.level === void 0 && infusionEncounter(creature.mode, creature.stages[0]).level > roseCaptureMaximumLevel) throw new Error("Roselius above level 120 requires banner duplicate provenance.");
     return copy;
   });
 }
@@ -6130,7 +6127,7 @@ function createCreatureCopy(creatureId, stage, level, acquisition) {
     instanceId: `capture:${crypto.randomUUID()}`,
     creatureId,
     locked: false,
-    level: level ?? encounter2.level,
+    level: level ?? Math.min(capturedLevelCap, encounter2.level),
     capturedStage,
     ...acquisition ? { acquisition } : {},
     skills: enemySkills(encounter2.level, encounter2.boss, encounter2.ability, encounter2.abilityMultiplier)
@@ -11465,10 +11462,10 @@ function saveAccountRewards(storage, result, runId) {
     if (reward.capture) {
       const creature = getCreature(reward.capture.creatureId);
       const stage = result.state.infusion?.stage;
-      if (!creature.mode || creature.mode === "machines" || !stage || creature.mode !== result.state.infusion?.mode || enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== Math.min(capturedLevelCap, enemy.level) || enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? "legacy").level || creature.mode === "roses" && enemy.level > roseCaptureMaximumLevel) {
+      if (!creature.mode || creature.mode === "machines" || !stage || creature.mode !== result.state.infusion?.mode || enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== Math.min(capturedLevelCap, enemy.level) || enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? "legacy").level) {
         throw new Error("Invalid captured enemy reward.");
       }
-      const copy = createCreatureCopy(creature.id, stage, enemy.level);
+      const copy = createCreatureCopy(creature.id, stage, reward.capture.level);
       account.capturedCharacters = validateCapturedCharacters([...account.capturedCharacters ?? [], copy]);
     }
     rewardedEnemies.add(enemy.id);

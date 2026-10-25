@@ -5,7 +5,6 @@ import { type Account } from '../game/account';
 import { assetUrl } from './portrait';
 import { currencyIcon } from './currency-icon';
 import { elementLabel } from './element-label';
-import { infusionEncounter } from '../content/infusions';
 import { getConduit, isConduitId, type ConduitUpgrades } from '../content/conduits';
 import { conduitIcon, conduitDetails } from './conduit-store';
 import { conduitElement } from './conduit-element';
@@ -37,7 +36,7 @@ function lootTable(id: string, stage?: number, upgrades?: ConduitUpgrades): stri
         <strong>${currency === 'fractalis' ? 'Prismatica' : currency === 'lycalis' ? 'Null-Prismatica' : conduit ? `${conduit.name} · ${conduit.rarity}` : materialName(drop.id)}</strong>${conduit ? conduitElement(conduit.id) : ''}        ${drop.note && creature.story ? `<small>${drop.note}</small>` : ''}
         ${conduit ? information(`loot-conduit-${id}-${conduit.id}`, conduit.name, conduitDetails(conduit.id, upgrades?.[conduit.id]), 'View Details') : ''}</td>
         <td>${drop.minimum}-${drop.maximum}</td><td>${formatStat(drop.chance * 100)}%</td></tr>`;
-    }).join('')}</tbody></table>${creature.mode === 'roses' && stage !== undefined && infusionEncounter('roses', stage).level > 120 ? '<p>Roselius above Lv.120 cannot drop playable copies.</p>' : ''}${rollNotes.length ? `<section class="loot-roll-notes" aria-label="Drop roll rules">${rollNotes.map(note => `<p>${note}</p>`).join('')}</section>` : ''}`;
+    }).join('')}</tbody></table>${rollNotes.length ? `<section class="loot-roll-notes" aria-label="Drop roll rules">${rollNotes.map(note => `<p>${note}</p>`).join('')}</section>` : ''}`;
 }
 
 export function creatureGlossary(account: Account | null): string {

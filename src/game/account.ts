@@ -19,7 +19,7 @@ import { infusionEncounter, infusionLoot, infusionElements, creatureSaleOptions 
 import { standardBanner, resolveBannerPull, validateBannerPity, type StandardBannerEntry, type BannerPity } from '../content/standard-banner';
 import { bannerDuplicateMaterials, type BannerMaterialReward } from '../content/banner-materials';
 import { getSummonBanner, isSummonBannerId, type SummonBannerId } from '../content/summon-banners';
-import { roseMaterials, roseCaptureMaximumLevel } from '../content/roses';
+import { roseMaterials } from '../content/roses';
 import { exchangeProduct, isExchangeQuantity } from '../content/material-exchange';
 import { isWarCharacter, warEncounter, warLoot, warStageCount, type WarCharacterId } from '../content/elemental-war';
 import { canonicalElement, isLegacyElement } from '../content/element-migration';
@@ -954,11 +954,10 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       const stage = result.state.infusion?.stage;
       if (!creature.mode || creature.mode === 'machines' || !stage || creature.mode !== result.state.infusion?.mode ||
           enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== Math.min(capturedLevelCap, enemy.level) ||
-          enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? 'legacy').level ||
-          (creature.mode === 'roses' && enemy.level > roseCaptureMaximumLevel)) {
+          enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? 'legacy').level) {
         throw new Error('Invalid captured enemy reward.');
       }
-      const copy = createCreatureCopy(creature.id, stage, enemy.level);
+      const copy = createCreatureCopy(creature.id, stage, reward.capture.level);
       account.capturedCharacters = validateCapturedCharacters([...(account.capturedCharacters ?? []), copy]);
     }
     rewardedEnemies.add(enemy.id);

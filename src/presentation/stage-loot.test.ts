@@ -57,7 +57,7 @@ describe('stage loot previews', () => {
   it('lists captures, recruitment, stage-clear and first-clear rewards where they apply, without rates', () => {
     expect(stageLoot({ kind: 'infusion', mode: 'heavens' }, 1, null).entries.some((entry) => entry.group === 'capture')).toBe(true);
     expect(stageLoot({ kind: 'infusion', mode: 'machines' }, 1, null).entries.some((entry) => entry.group === 'capture')).toBe(false);
-    expect(stageLoot({ kind: 'infusion', mode: 'roses' }, 35, null).entries.some((entry) => entry.group === 'capture')).toBe(false);
+    expect(stageLoot({ kind: 'infusion', mode: 'roses' }, 35, null).entries.some((entry) => entry.group === 'capture')).toBe(true);
     const war = stageLoot({ kind: 'war', character: 'nerithe' }, warStageCount, null);
     expect(war.entries.find((entry) => entry.group === 'recruit')?.id).toBe('nerithe');
     expect(stageLoot({ kind: 'war', character: 'nerithe' }, 1, null).entries.some((entry) => entry.group === 'recruit')).toBe(false);

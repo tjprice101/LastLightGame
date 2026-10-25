@@ -1,5 +1,14 @@
 # Passion of Crimson Roses and Roses Under Sunny Skies
 
+## Captures at every event level (D-410)
+
+All35 Rose stages, including Lv.121-140 enemies and the final boss, have the
+existing separate50% playable-copy chance. Copies join at Lv.60, retaining
+the defeated form, source stage and skills. D-410 removes the former source
+Lv.120 restriction; it does not raise playable levels or change other loot.
+No banner/chest provenance is required for ordinary late-form captures.
+Atomic per-kill saving, duplicate UUIDs and receipt deduplication remain.
+
 ## Banner material rewards (D-214)
 
 New Roses draws award Seed/Bud/Bloom of Rosethorn instead of Roselius, with
@@ -77,8 +86,8 @@ approved playable implementation alongside Midjourney packs:
   female Luminous Roselius angel forms. Bosses every fifth stage.
 - Six total materials: Seed, Bud, Bloom, Crest, Heart and Soul of Rosethorn,
   Common through Omnic. These are a new chain, not renamed Sanctuary materials.
-- Captures can fight or sell for their form's material. **Only defeated enemies
-  at levels120 or below can be captured.** D-305 caps owned levels at60, retaining source form and skills.
+- Captures can fight or sell for their form's material. **All event enemy
+  levels are capturable.** Owned levels cap at60, retaining source form and skills.
 - Special banner follows the approved existing10 cost and independent200/500
   highest-star pity. All three EBs share1.1% equally (1.1% /3 each); the first three Roselius
   forms split98.9% with50:30:17 weights.
@@ -96,9 +105,8 @@ schedule is authored. No timers, automatic gifts, paid draws or backend added.
 ## Implemented encounters and first-pass tuning
 
 Stage level is `round(80 + (stage-1)*60/34)`. Ordinary stages have two enemies;
-every fifth stage has one boss. Form thresholds below deliberately allow
-Legendary fodder captures before the capture ceiling; Omnic mission enemies
-are never capturable, but banner duplicates provide an explicit final-form copy.
+every fifth stage has one boss. All six forms, including Omnic mission enemies,
+can be captured under D-410.
 
 | Form | Stages | Creature | Rarity | Sale |
 | --- | --- | --- | --- | --- |
@@ -110,8 +118,7 @@ are never capturable, but banner duplicates provide an explicit final-form copy.
 |6 |29-35 |The Garden Beyond Eternity, Roselius |Omnic |6 Soul |
 
 Stable creature IDs are `infusion:roses:0` through `infusion:roses:5`.
-Stage23 is Lv.119 (last capturable stage); Stage24 is Lv.121. The rule itself
-is inclusive120, not a stage-number approximation.
+Stage23 is Lv.119; Stage24 is Lv.121. Both and all later stages are capturable.
 
 Growth uses [stat-growth](../src/content/stat-growth.ts). At/below120 all
 existing curves remain identical. The event explicitly opts into a140 maximum:

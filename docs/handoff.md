@@ -1,5 +1,33 @@
 # Current state and handoff
 
+## All-level Roselius captures (D-410)
+
+- Owner removes the Rose source-enemy120 ceiling: every stage1-35 and all
+  six forms, including Lv.140 final boss, now have the unchanged separate50%
+  copy chance. Copies join at60 with actual defeated form/stage/skills.
+  Other activities' eligibility and RNG draw order are unchanged.
+- Removed source-level rejection from reward/copy validation, clamped copy
+  construction defaults and saved actual capped reward level. No special
+  provenance for ordinary captures. Banner/chest provenance stays validated.
+  Existing copies/receipts persist; no migration/load writes/retroactive grants.
+- Loot tables and stage previews publish late-form captures; event header and
+  capture notes explain Lv.60 rather than the retired restriction. Updated
+  current specs/index/decision log; no other mechanics or artwork changes.
+- `npx vitest run src\game\captures.test.ts src\game\crimson-roses.test.ts
+  src\game\calamity-account.test.ts src\content\creatures.test.ts
+  src\presentation\creature-loot-dialog.test.ts src\presentation\stage-loot.test.ts
+  src\game\captured-level-cap.test.ts src\online\server-game.test.ts
+  --maxWorkers=1 --reporter=dot` passes363 tests/8 files. Includes all35
+  stages, direct/Burn rewards, exact60 cap, source skills/form, idempotent
+  persistence, rejected forged rewards and online stages24/29/35.
+- `npm run build`, `npx tsc --noEmit`,
+  `node tools\bundle_server_game.mjs`,
+  `npx --yes deno check supabase\functions\game-operation\index.ts` and
+  `git diff --check` pass; existing large-chunk advisory remains. Matching
+  authority deployed with `npx supabase functions deploy game-operation
+  --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`.
+  No outstanding implementation or owner decisions.
+
 ## Concise Conduit effects and activity-specific chest rewards (D-409)
 
 - Owner identifies redundant negative Skill Power copy; audited138 current

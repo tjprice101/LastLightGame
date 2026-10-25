@@ -95,8 +95,8 @@ describe('Passion of Crimson Roses integration', () => {
     for (const stage of [0, 36, 1.5, NaN]) expect(() => infusionEncounter('roses', stage)).toThrow();
   });
 
-  it.each([119, 120, 121, 140])('enforces the exact capture ceiling at Lv.%i', (level) => {
-    expect(roseCaptureAllowed(level)).toBe(level <= 120);
+  it.each([80, 119, 120, 121, 140])('allows Roselius captures at Lv.%i', (level) => {
+    expect(roseCaptureAllowed(level)).toBe(true);
   });
 
   it('Crinso maintains a direct single-target edge combo in the Rose event without authoring Burn', () => {
@@ -182,9 +182,16 @@ describe('Passion of Crimson Roses integration', () => {
           expect(amount).toBeGreaterThanOrEqual(drop!.minimum);
           expect(amount).toBeLessThanOrEqual(drop!.maximum);
         }
-        if (encounter.level > 120) expect(reward.capture).toBeUndefined();
+        if (reward.capture) expect(reward.capture.level).toBe(60);
       }
-      expect(saved.capturedCharacters?.length ?? 0).toBe(encounter.level <= 120 ? rewards.filter((event) => event.capture).length : 0);
+      expect(saved.capturedCharacters?.length ?? 0).toBe(rewards.filter((event) => event.capture).length);
+      expect(saved.capturedCharacters?.length).toBeGreaterThan(0);
+      for (const copy of saved.capturedCharacters ?? []) {
+        expect(copy.level).toBe(60);
+        expect(copy.creatureId).toBe(`infusion:roses:${encounter.tier}`);
+        expect(copy.capturedStage).toBe(stage);
+        expect(copy.skills).toEqual(result.state.enemies[0].enemySkills);
+      }
       expect(saved.infusionStages.roses).toBe(Math.min(35, stage + 1));
       const raw = store.saved.getItem(ACCOUNT_KEY);
       saveAccountRewards(store.saved, result, `stage-${stage}`);
@@ -246,7 +253,7 @@ describe('Passion of Crimson Roses integration', () => {
     store.fail();
     expect(() => saveAccountRewards(store.saved, defeat(23), 'fail')).toThrow('Storage unavailable');
     expect(store.saved.getItem(ACCOUNT_KEY)).toBe(raw);
-    expect(() => createCreatureCopy('infusion:roses:5')).toThrow();
+    expect(createCreatureCopy('infusion:roses:5')).toMatchObject({ level: 60, capturedStage: 29 });
     const duplicate = createCreatureCopy('infusion:roses:5', undefined, 80, 'banner-duplicate');
     expect(() => validateCapturedCharacters([{ ...duplicate, acquisition: undefined }])).toThrow();
     expect(() => validateCapturedCharacters([{ ...duplicate, level: 59 }])).toThrow();
@@ -532,7 +539,8 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     const html = [roseEvent(loaded), gameplayHub(loaded), summonHub(loaded, 'roses'), characterCopyManagement(loaded, 'creatures'),
       archives(loaded), ...roseCharacters.map((character) => characterHub(character, 'overview', loaded))].join('');
     expect(html).toContain('data-infusion="roses"');
-    expect(html).toContain('No captures above Lv.120');
+    expect(html).toContain('50% captures · Copies join at Lv.60');
+    expect(html).not.toContain('No captures above Lv.120');
     expect(html).toContain('6-star guaranteed within');
     expect(html).toContain('6-star · 1.1%');
     expect(html).not.toContain('5-star tier: 1%');

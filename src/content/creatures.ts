@@ -104,7 +104,7 @@ export function creatureLoot(creature: Creature, stage?: number, ownedConduits?:
   const loot: CreatureLoot[] = [{ id: 'fractalis', ...bossLootRange(creature.mode === 'treasury' ? treasuryFractalisDrop(level) : fractalisDrop(level, creature.mode === 'roses' ? 140 : 120), multiplier) }];
   if (creature.mode && enemyCaptureAllowed(creature.mode, level)) loot.push({
     id: `capture:${creature.id}`, minimum: 1, maximum: 1, chance: enemyCaptureChance,
-    note: `A separate 50% chance per defeated enemy to obtain one playable copy of this exact form. Duplicates are allowed.${creature.mode === 'roses' ? ' Roselius above Lv.120 cannot be captured.' : ''}`,
+    note: 'A separate 50% chance per defeated enemy to obtain one playable copy of this exact form. Copies join at a maximum of Lv.60 and retain their form and skills. Duplicates are allowed.',
   });
   if (creature.mode === 'treasury') return loot;
   if (creature.mode === 'machines' && stage !== undefined) return [...loot, machineComponentDrop(stage), ...machineConduitLoot(stage, ownedConduits, focus),

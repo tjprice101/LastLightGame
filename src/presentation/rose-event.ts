@@ -25,7 +25,7 @@ export function roseEvent(account: Account | null, showInformation = true): stri
     ${activityBanner('Passion of Crimson Roses', 'banners/roses-banner.png', 'Passion of Crimson Roses: a rose-filled garden beneath sunny skies.')}
     <p class="eyebrow">TRANQUILITIC · EVENT</p>
     <p>${devourerHabitats.roses}</p><p>35 stages · Enemy levels 80-140</p>
-    <p>Latest unlocked: Stage ${stage} · Lv.${encounter.level}${encounter.level > 120 ? ' · No captures above Lv.120' : ' · 50% captures'}</p>
+    <p>Latest unlocked: Stage ${stage} · Lv.${encounter.level} · 50% captures · Copies join at Lv.60</p>
     <p>${infusionLoot('roses', stage).specialties.map((drop) => `${roseMaterials.find((material) => material.id === drop.id)?.name}: ${drop.minimum}-${drop.maximum} · ${bannerPercent(drop.chance)}`).join(' · ')}</p>`, `
     ${itemShowcase([{ id: 'fractalis' }, ...roseMaterials.map((material) => ({ id: material.id }))], 'Rewards across stages')}
     <button class="text-button" data-page="summon" data-rose-banner>Roses Under Sunny Skies &rarr;</button>

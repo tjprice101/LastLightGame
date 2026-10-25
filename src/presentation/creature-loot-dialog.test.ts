@@ -52,8 +52,9 @@ describe('enemy loot dialogs and Conduit details', () => {
     const stage = rose.querySelector<HTMLSelectElement>('[data-loot-stage]')!;
     stage.value = stage.options[stage.options.length - 1].value;
     stage.dispatchEvent(new Event('change'));
-    expect(rose.querySelector('.glossary-loot')!.textContent).toContain('above Lv.120 cannot drop playable copies');
-    expect(rose.querySelector('.glossary-loot')!.textContent).not.toContain('Playable copy');
+    expect(rose.querySelector('.glossary-loot')!.textContent).toContain('Playable copy');
+    expect(rose.querySelector('.glossary-loot')!.textContent).toContain('maximum of Lv.60');
+    expect(rose.querySelector('.glossary-loot')!.textContent).not.toContain('cannot drop playable copies');
     const heavens = host.querySelector('[data-creature="infusion:heavens:0"] .glossary-loot')!;
     expect(heavens.textContent).toContain('Playable copy');
     expect(heavens.textContent).toContain('50%');
