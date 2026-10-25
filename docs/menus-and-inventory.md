@@ -1,5 +1,15 @@
 # Menus and inventory
 
+## Omnic elemental identity (D-403)
+
+Omnic Conduits now show a bold, element-colored name badge and a matching
+gradient/border, separate from their existing prismatic rarity badge.
+[Shared Conduit presentation](conduits.md#omnic-element-presentation-d-403)
+covers every holding, equipment, reference and reward surface, including
+personal Masters. Inventory keeps rarity/element in one row so existing
+subgrid alignment and Details controls do not shift into adjacent cards.
+Other rarities, artwork, transactions and equipment rules are unchanged.
+
 ## Original battle screen restored (D-399)
 
 Owner reverses the screenshot-inspired redesign. Restore the shared battle

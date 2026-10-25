@@ -4,6 +4,7 @@ import { conduitIcon, conduitRarity } from './conduit-store';
 import { escapeDialogText } from './game-dialog';
 import { type RewardPresentation } from './reward-screen';
 import { referencedEffect } from './effect-copy';
+import { elementAccents } from '../content/dungeon-art';
 
 export function conduitReward(id: ConduitId, account: Account, title: string, receipt: string): RewardPresentation {
   const conduit = getConduit(id);
@@ -11,7 +12,7 @@ export function conduitReward(id: ConduitId, account: Account, title: string, re
   if (owned < 1) throw new Error('Saved Conduit reward is not owned.');
   const level = account.conduitUpgrades?.[id] ?? 0;
   return {
-    title, name: conduit.name, accent: '#ffffff', animationLabel: 'Ancient mechanism restored',
+    title, name: conduit.name, accent: conduit.rarity === 'Omnic' && conduit.element ? elementAccents[conduit.element] : '#ffffff', animationLabel: 'Ancient mechanism restored',
     art: `<span class="conduit-reward-art">${conduitIcon(id, level)}</span>`,
     details: `${conduitRarity(id)}<p>Upgrade +${level} · Owned ${owned}</p>
       <p>${referencedEffect(escapeDialogText(conduitEffect(conduit, level)))}</p><p>${escapeDialogText(receipt)}</p><p>Account-wide unlock · Not auto-equipped</p>`,

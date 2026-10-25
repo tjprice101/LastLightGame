@@ -4,6 +4,7 @@ import type { Account } from '../game/account';
 import { conduitDetails, conduitIcon } from './conduit-store';
 import { information } from './information';
 import './machine-loot-focus.css';
+import { conduitElement, omnicTheme } from './conduit-element';
 
 function focusChoices(account: Account | null, selected: MachineFocusRarity = 'Rare'): string {
   return `<nav class="machine-focus-tabs" aria-label="Focus rarity">${machineFocusRarities.map(rarity =>
@@ -16,7 +17,7 @@ function focusChoices(account: Account | null, selected: MachineFocusRarity = 'R
         <button type="button" data-clear-loot-focus="${rarity}" ${!account || !active ? 'disabled' : ''}>Clear ${rarity} focus</button>
         <ul class="machine-focus-grid">${conduits.filter(entry => entry.rarity === rarity).map(entry => {
           const owned = (account?.conduits?.[entry.id] ?? 0) > 0;
-          return `<li>${conduitIcon(entry.id, account?.conduitUpgrades?.[entry.id])}<h4>${entry.name}</h4>
+          return `<li ${omnicTheme(entry.id)}>${conduitIcon(entry.id, account?.conduitUpgrades?.[entry.id])}<h4>${entry.name}</h4>${conduitElement(entry.id)}
             ${information(`focus-details-${entry.id}`, entry.name, conduitDetails(entry.id, account?.conduitUpgrades?.[entry.id]), 'Details')}
             <button type="button" data-focus-conduit="${entry.id}" data-focus-rarity="${rarity}" aria-pressed="${entry.id === active?.id}"
               ${!account || owned || entry.id === active?.id ? 'disabled' : ''}>${owned ? 'Owned' : entry.id === active?.id ? 'Focused' : 'Focus'}</button></li>`;

@@ -12,6 +12,7 @@ import { characterName } from '../content/character-art';
 import { masterChest } from '../content/master-conduits';
 import { calamityChest, parseCalamityChestId } from '../content/calamity';
 import { calamityChestArt } from '../content/calamity-art';
+import { createConduitElement } from './conduit-element';
 
 export function lootMotion(random: () => number = Math.random) {
   return { size: .75 + lootRoll(random) * .6, scatter: (lootRoll(random) - .5) * 14,
@@ -110,6 +111,12 @@ export function lootBurst(event: BattleEvent, random: () => number = Math.random
     quantity.textContent = `+${item.amount}`;
     drop.title = `${item.name} +${item.amount}`;
     drop.append(quantity);
+    if (item.id.startsWith('conduit:')) {
+      const id = item.id.slice('conduit:'.length);
+      if (!isConduitId(id)) throw new Error('Unknown Conduit in loot presentation.');
+      const badge = createConduitElement(id);
+      if (badge) drop.append(badge);
+    }
     burst.append(drop);
   });
   return burst;

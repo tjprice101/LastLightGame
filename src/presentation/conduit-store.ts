@@ -9,6 +9,7 @@ import { isBannerConduitEligible } from '../content/machines';
 import { referencedEffect as readableEffect } from './effect-copy';
 import { escapeDialogText } from './game-dialog';
 import { calamiticLockMessage, calamiticStoreUnlocked, calamiticTokenPrice, isCalamiticConduitId } from '../content/calamitic-conduits';
+import { conduitElement, omnicTheme } from './conduit-element';
 
 export function conduitLore(...paragraphs: string[]): string {
   return `<details class="conduit-lore-disclosure"><summary>Lore</summary>${paragraphs.map(text => `<p class="conduit-lore">${escapeDialogText(text)}</p>`).join('')}</details>`;
@@ -26,19 +27,19 @@ export function conduitDetails(id: ConduitId, level = 0, revealArt = true): stri
 export function conduitIcon(id: ConduitId, level = 0): string {
   const conduit = getConduit(id);
   validateConduitUpgradeLevel(level);
-  return `<span class="conduit-icon-frame" role="img" aria-label="${conduit.name} · Upgrade +${level} of 5" data-conduit-upgrade="${level}">${conduit.art ? `<img draggable="false" class="conduit-icon" src="${assetUrl(`conduits/${conduit.art}.png`)}" alt="" aria-hidden="true" width="256" height="256" loading="lazy">`
+  return `<span class="conduit-icon-frame" ${omnicTheme(id)} role="img" aria-label="${conduit.name} · Upgrade +${level} of 5" data-conduit-upgrade="${level}">${conduit.art ? `<img draggable="false" class="conduit-icon" src="${assetUrl(`conduits/${conduit.art}.png`)}" alt="" aria-hidden="true" width="256" height="256" loading="lazy">`
     : '<span class="conduit-icon conduit-art-pending">Artwork pending</span>'}${conduitUpgradeMeter(level)}</span>`;
 }
 export function conduitRarity(id: ConduitId): string {
   const rarity = getConduit(id).rarity;
-  return `<span class="rarity-badge conduit-rarity conduit-${rarity.toLowerCase()}">${rarity}</span>`;
+  return `<span class="rarity-badge conduit-rarity conduit-${rarity.toLowerCase()}">${rarity}</span>${conduitElement(id)}`;
 }
 export function conduitInventory(account: Account | null): string {
   return `<section class="inventory-section"><div class="conduit-section-heading"><h2>Conduits</h2></div>
     ${!account ? '<p role="alert">Conduit inventory unavailable. Check the save error.</p>' :
       conduits.some((conduit) => (account.conduits?.[conduit.id] ?? 0) > 0)
         ? `<ul class="conduit-owned-list">${conduits.filter((conduit) => (account.conduits?.[conduit.id] ?? 0) > 0).map((conduit) =>
-          `<li>${conduitIcon(conduit.id, account.conduitUpgrades?.[conduit.id])}<div><strong>${conduit.name}</strong>${conduitRarity(conduit.id)}<small>${readableEffect(conduitEffect(conduit, account.conduitUpgrades?.[conduit.id]))}</small></div><span>Owned ${account.conduits?.[conduit.id]}</span></li>`).join('')}</ul>`
+          `<li ${omnicTheme(conduit.id)}>${conduitIcon(conduit.id, account.conduitUpgrades?.[conduit.id])}<div><strong>${conduit.name}</strong>${conduitRarity(conduit.id)}<small>${readableEffect(conduitEffect(conduit, account.conduitUpgrades?.[conduit.id]))}</small></div><span>Owned ${account.conduits?.[conduit.id]}</span></li>`).join('')}</ul>`
         : '<p>No Conduits owned yet.</p>'}
     </section>`;
 }

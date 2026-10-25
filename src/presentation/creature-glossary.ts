@@ -10,6 +10,7 @@ import { creatureSaleValue, creatureSaleOptions } from '../content/infusions';
 import { isCurrencyMode } from '../content/activities';
 import { getConduit, isConduitId, type ConduitUpgrades } from '../content/conduits';
 import { conduitIcon, conduitDetails } from './conduit-store';
+import { conduitElement } from './conduit-element';
 import { mechanicalComponents } from '../content/mechanical-components';
 import { mechanicalComponentIcon } from './mechanical-component-icon';
 import { masterChest } from '../content/master-conduits';
@@ -36,7 +37,7 @@ function lootTable(id: string, stage?: number, upgrades?: ConduitUpgrades): stri
       if (drop.id === mechanicalComponents.id) return `<tr><td>${mechanicalComponentIcon()} <strong>${mechanicalComponents.name}</strong></td><td>${drop.minimum}-${drop.maximum}</td><td>${formatStat(drop.chance * 100)}%</td></tr>`;
       const art = currency || conduit ? undefined : materialArt(drop.id);
       return `<tr><td>${currency ? currencyIcon(currency) : conduit ? conduitIcon(conduit.id, upgrades?.[conduit.id]) : art ? `<img draggable="false" src="${assetUrl(`materials/${art}.png`)}" alt="" width="28" height="28">` : ''}
-        <strong>${currency === 'fractalis' ? 'Prismatica' : currency === 'lycalis' ? 'Null-Prismatica' : conduit ? `${conduit.name} · ${conduit.rarity}` : materialName(drop.id)}</strong>        ${drop.note && creature.story ? `<small>${drop.note}</small>` : ''}
+        <strong>${currency === 'fractalis' ? 'Prismatica' : currency === 'lycalis' ? 'Null-Prismatica' : conduit ? `${conduit.name} · ${conduit.rarity}` : materialName(drop.id)}</strong>${conduit ? conduitElement(conduit.id) : ''}        ${drop.note && creature.story ? `<small>${drop.note}</small>` : ''}
         ${conduit ? information(`loot-conduit-${id}-${conduit.id}`, conduit.name, conduitDetails(conduit.id, upgrades?.[conduit.id]), 'View Details') : ''}</td>
         <td>${drop.minimum}-${drop.maximum}</td><td>${formatStat(drop.chance * 100)}%</td></tr>`;
     }).join('')}</tbody></table>${creature.calamity && isCalamityTier(stage) ? `<section class="calamity-chest-contents"><p>${calamityEncounter(creature.calamity, stage).description}</p>${calamityLoot(creature.calamity, stage)}</section>` : ''}    ${rollNotes.length ? `<section class="loot-roll-notes" aria-label="Drop roll rules">${rollNotes.map(note => `<p>${note}</p>`).join('')}</section>` : ''}${sale ? itemShowcase([{ id: 'fractalis', amount: sale.fractalis }, ...(sale.lycalis ? [{ id: 'lycalis', amount: sale.lycalis }] : [])], 'Sale value') : ''}${choices ? itemShowcase(choices.flatMap((option) => option.lycalis ? [{ id: 'lycalis', amount: option.lycalis }] : Object.entries(option.materials).map(([key, amount]) => ({ id: key, amount }))), 'Sale value \u00b7 choose one') : ''}`;

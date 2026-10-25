@@ -20,6 +20,7 @@ import { ownedCompanion, capturedRating } from './owned-companion';
 import { capturedProgress, capturedLevelCost, capturedLevelCap, resolveCapturedFighter } from '../game/character-instances';
 import { conduits, getConduit, conduitEffect, conduitEquipReason, conduitSlotCount, type ConduitSlots } from '../content/conduits';
 import { conduitIcon } from './conduit-store';
+import { conduitElement } from './conduit-element';
 import { itemShowcase } from './item-showcase';
 import { bannerPercent, bannerPityLimits, validateBannerPity, type BannerOutcome } from '../content/standard-banner';
 import { summonBanners, getSummonBanner, type SummonBannerId } from '../content/summon-banners';
@@ -60,7 +61,7 @@ export function characterCopyManagement(account: Account | null, category: 'all'
         <button class="text-button" type="button" data-max-level="${copy.instanceId}">Max Level</button>
         ${cost ? itemShowcase([{ id: 'fractalis', amount: cost.fractalis }, ...Object.entries(cost.materials).map(([id, amount]) => ({ id, amount }))], 'Level cost') : ''}
         ${sale ? saleControls(sale, copy.instanceId, `Sell copy · ${saleLabel(sale)}`) : ''}
-        <section class="captured-equipment"><h4>Conduits</h4><button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button><p>Omnic: matching combat element only; at most four equipped.</p>${slots.map((equipped, slot) => `<label>${equipped ? conduitIcon(equipped, account.conduitUpgrades?.[equipped]) : ''}Slot ${slot + 1}<select data-capture-conduit="${copy.instanceId}" data-capture-slot="${slot}"><option value="">Empty</option>${conduits.filter((conduit) => (account.conduits?.[conduit.id] ?? 0) > 0).map((conduit) => {
+        <section class="captured-equipment"><h4>Conduits</h4><button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button><p>Omnic: matching combat element only; at most four equipped.</p>${slots.map((equipped, slot) => `<label>${equipped ? conduitIcon(equipped, account.conduitUpgrades?.[equipped]) + conduitElement(equipped) : ''}Slot ${slot + 1}<select data-capture-conduit="${copy.instanceId}" data-capture-slot="${slot}"><option value="">Empty</option>${conduits.filter((conduit) => (account.conduits?.[conduit.id] ?? 0) > 0).map((conduit) => {
           const reason = conduitEquipReason(conduit, creature.element, slots, slot);
           return `<option value="${conduit.id}" ${equipped === conduit.id ? 'selected' : ''} ${reason ? 'disabled' : ''}>${conduit.name} · ${conduit.rarity} · +${account.conduitUpgrades?.[conduit.id] ?? 0}${reason ? ` · ${reason}` : ''}</option>`;
         }).join('')}</select>${equipped ? `<span>${referencedEffect(conduitEffect(getConduit(equipped), account.conduitUpgrades?.[equipped]))}</span>` : ''}</label>`).join('')}</section>

@@ -17,6 +17,8 @@ import { mechanicalComponentIcon } from './mechanical-component-icon';
 import { masterChestIcon } from './master-conduits';
 import { escapeDialogText } from './game-dialog';
 import './stage-loot.css';
+import { conduitIcon } from './conduit-store';
+import { conduitElement, omnicTheme } from './conduit-element';
 
 export type StageLootSource =
   | { kind: 'story' }
@@ -67,8 +69,7 @@ function itemIcon(id: string, account: Account | null): string {
   if (id === mechanicalComponents.id) return mechanicalComponentIcon();
   if (id === masterChest.id) return masterChestIcon();
   if (isConduitId(id)) {
-    const art = getConduit(id).art;
-    return art ? `<img draggable="false" src="${assetUrl(`conduits/${art}.png`)}" alt="" width="80" height="80" loading="lazy">` : '<span class="item-showcase-pending">Artwork pending</span>';
+    return conduitIcon(id, account?.conduitUpgrades?.[id]);
   }
   const art = materialArt(id);
   return art ? `<img draggable="false" src="${assetUrl(`materials/${art}.png`)}" alt="" width="80" height="80">` : '<span class="item-showcase-pending">Artwork pending</span>';
@@ -157,8 +158,8 @@ export function stageLoot(source: StageLootSource, stage: number, account: Accou
 }
 
 function entryCard(entry: LootEntry): string {
-  return `<li class="stage-loot-item" data-stage-loot-item="${escapeDialogText(entry.id)}">
-    <span class="stage-loot-art">${entry.icon}</span><strong>${escapeDialogText(entry.name)}</strong></li>`;
+  return `<li class="stage-loot-item" ${isConduitId(entry.id) ? omnicTheme(entry.id) : ''} data-stage-loot-item="${escapeDialogText(entry.id)}">
+    <span class="stage-loot-art">${entry.icon}</span><strong>${escapeDialogText(entry.name)}</strong>${isConduitId(entry.id) ? conduitElement(entry.id) : ''}</li>`;
 }
 
 export function stageLootContent(source: StageLootSource, stage: number, account: Account | null): string {

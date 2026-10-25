@@ -4,6 +4,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { chooseMasterConduit } from './master-choice-dialog';
 import { emptyAccount } from '../game/account';
 import { masterConduits, type MasterConduitId } from '../content/master-conduits';
+import { starters } from '../content/starters';
+import { getElement } from '../content/activities';
+import { elementAccents } from '../content/dungeon-art';
 
 beforeEach(() => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
@@ -20,6 +23,30 @@ afterEach(() => {
 });
 
 describe('React Master chest choice', () => {
+  it('shows the canonical bold element and theme for every future-character Master option without saving', async () => {
+    const account = { ...emptyAccount(), masterChests: 1 };
+    const before = structuredClone(account);
+    const write = vi.spyOn(Storage.prototype, 'setItem');
+    let result!: Promise<MasterConduitId | null>;
+    await act(async () => { result = chooseMasterConduit(account); });
+    const select = document.querySelector('select')!;
+    for (const starter of starters) {
+      await act(async () => { select.value = starter.id; select.dispatchEvent(new Event('change', { bubbles: true })); });
+      const cards = document.querySelectorAll<HTMLElement>('.ll-master-option');
+      expect(cards).toHaveLength(3);
+      cards.forEach(card => {
+        expect(card.dataset.conduitElement).toBe(starter.elementId);
+        expect(card.style.getPropertyValue('--conduit-element-accent')).toBe(elementAccents[starter.elementId]);
+        expect(card.querySelector('strong.conduit-element-label')?.textContent).toBe(getElement(starter.elementId).name);
+        expect(card.textContent).toContain('Omnic Master');
+      });
+    }
+    await act(async () => { document.querySelector('dialog')!.dispatchEvent(new Event('cancel', { cancelable: true })); });
+    expect(await result).toBeNull();
+    expect(write).not.toHaveBeenCalled();
+    expect(account).toEqual(before);
+  });
+
   it('allows a future-character choice with exact rules, then cleans up and restores focus without saving', async () => {
     const account = { ...emptyAccount(), masterChests: 2, masterConduits: { 'master-ember-1': 1 } };
     const write = vi.spyOn(Storage.prototype, 'setItem');

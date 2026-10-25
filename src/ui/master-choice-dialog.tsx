@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import { masterConduits, masterChest, type MasterConduitId } from '../content/master-conduits';
@@ -7,6 +7,9 @@ import type { Account } from '../game/account';
 import { Button, Dialog, Status } from './components';
 import { assetUrl } from '../presentation/portrait';
 import '../styles/ui.css';
+import { getElement } from '../content/activities';
+import { elementAccents } from '../content/dungeon-art';
+import '../presentation/conduit-element.css';
 
 export function MasterChoiceDialog({ account, onChoose, onClose }: {
   account: Account; onChoose: (id: MasterConduitId) => void; onClose: () => void;
@@ -14,6 +17,10 @@ export function MasterChoiceDialog({ account, onChoose, onClose }: {
   const [character, setCharacter] = useState<StarterId>(starters[0].id);
   const [selected, setSelected] = useState<MasterConduitId | null>(null);
   const entry = masterConduits.find(entry => entry.id === selected);
+  const element = getStarter(character).elementId;
+  const elementStyle: CSSProperties & { '--conduit-element-accent': string } = {
+    '--conduit-element-accent': elementAccents[element],
+  };
   return <Dialog id="master-choice" title={masterChest.name} subtitle={`Owned ${account.masterChests ?? 0} · Choose one unowned Master. You may choose for a future Element-Bearer.`} onClose={onClose}>
     <label className="ll-field">Element-Bearer<select value={character} onChange={event => {
       const choice = starters.find(starter => starter.id === event.target.value);
@@ -23,8 +30,9 @@ export function MasterChoiceDialog({ account, onChoose, onClose }: {
     <div className="ll-master-options" role="group" aria-label={`${getStarter(character).name} Masters`}>
       {masterConduits.filter(entry => entry.character === character).map(entry => <Button key={entry.id}
         disabled={account.masterConduits?.[entry.id] === 1} aria-pressed={selected === entry.id}
-        className="ll-master-option" onClick={() => setSelected(entry.id)}>
-        <img className="ll-master-art" draggable={false} src={assetUrl(entry.art)} alt="" width={256} height={256} /><strong>{entry.name}</strong>
+        className="ll-master-option" data-conduit-element={element} style={elementStyle} onClick={() => setSelected(entry.id)}>
+        <img className="ll-master-art master-element-art" draggable={false} src={assetUrl(entry.art)} alt="" width={256} height={256} /><strong>{entry.name}</strong>
+        <strong className="conduit-element-label" data-conduit-element={element}>{getElement(element).name}</strong>
         <small>Omnic Master{account.masterConduits?.[entry.id] === 1 ? ' · Owned' : ''}</small><span>{entry.effect}</span>
       </Button>)}
     </div>

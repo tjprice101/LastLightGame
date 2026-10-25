@@ -1,5 +1,28 @@
 # Conduits and Conduit Store
 
+## Omnic element presentation (D-403)
+
+All45 ordinary Omnics identify their canonical gameplay element in a bold,
+element-colored badge, with a matching gradient and border on their artwork
+frame and catalog/holding cards. Keep the existing prismatic **Omnic** rarity
+badge separate: rarity and element are different information. Reuse the shared
+element names and `elementAccents`; never infer affinity from legacy asset IDs.
+
+Shared presentation covers Inventory and details, Collections and details,
+ordinary/captured equipment and selection panels, upgrades, Machines focus,
+stage/enemy loot references, floating drops, battle results/references and
+saved acquisition/chest rewards. All48 personal Omnic Masters use their named
+Element-Bearer's canonical element for their frame and bold identification.
+Unopened choice chests stay generic; other rarities retain their existing style.
+
+Keep labels outside compact artwork frames and away from upgrade meters.
+Inventory groups rarity/element in one identity row, preserving its subgrid;
+all existing controls, focus/selected states, artwork bytes, silhouettes,
+deployment-base URLs and upgrade indicators remain. Presentation only: no
+eligibility, slot limits, acquisition odds, mechanics, RNG or account writes.
+Validate `conduit-element.test.ts` and the shared Conduit/Inventory/Collections/
+loadout/selection/loot/reward presentation suites, then `npm run build`.
+
 ## Description copy (D-397)
 
 All138 current ordinary/Master abilities were audited;21 descriptions were

@@ -14,6 +14,7 @@ import './calamity.css';
 import { enemyStrength } from './enemy-strength';
 import { currencyIcon } from './currency-icon';
 import { conduitIcon } from './conduit-store';
+import { conduitElement } from './conduit-element';
 import { masterChestIcon } from './master-conduits';
 
 export function activityDifficulty(activity: CalamityActivityId, normal: string, account: Account | null): string {
@@ -194,7 +195,7 @@ export function calamityOpeningReward(id: string, reward: ReturnType<typeof open
     }),
     ...Object.entries(reward.conduits).map(([conduit, amount]) => {
       if (!isConduitId(conduit)) throw new Error('Unknown Conduit in chest receipt.');
-      return { label: `${amount} ${getConduit(conduit).name}`, art: conduitIcon(conduit) };
+      return { label: `${amount} ${getConduit(conduit).name}`, art: conduitIcon(conduit), badge: conduitElement(conduit) };
     }),
     ...(reward.mechanicalComponents ? [{ label: `${reward.mechanicalComponents} Broken Mechanical Components`, art: currencyIcon('mechanical-components') }] : []),
     ...(reward.masterChests ? [{ label: `${reward.masterChests} Cosmic Grand Master Chests`, art: masterChestIcon() }] : []),
@@ -202,7 +203,7 @@ export function calamityOpeningReward(id: string, reward: ReturnType<typeof open
   ];
   return { title: 'Calamity chest opened', name: chest.name,
     art: `<ul class="summon-ten-grid calamity-reward-grid" aria-label="Received loot">${items.map(item =>
-      `<li class="summon-ten-result"><div class="summon-ten-art">${item.art}</div><b>${escapeDialogText(item.label)}</b></li>`).join('')}</ul>`,
+      `<li class="summon-ten-result"><div class="summon-ten-art">${item.art}</div><b>${escapeDialogText(item.label)}</b>${'badge' in item ? item.badge : ''}</li>`).join('')}</ul>`,
     details: '<p>Rewards added to Inventory.</p>',
     accent: '#ed4545', animationLabel: 'Opening chest…', savedLabel: 'Rewards saved' };
 }

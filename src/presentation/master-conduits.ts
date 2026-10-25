@@ -6,10 +6,12 @@ import type { Account } from '../game/account';
 import { escapeDialogText } from './game-dialog';
 import type { RewardPresentation } from './reward-screen';
 import { conduitLore } from './conduit-store';
+import { conduitElementLabel, conduitElementTheme } from './conduit-element';
 
 export function masterConduitIcon(id: MasterConduitId): string {
   const entry = getMasterConduit(id);
-  return `<img class="master-art" draggable="false" src="${assetUrl(entry.art)}" alt="${escapeDialogText(entry.name)}" width="256" height="256">`;
+  const element = getStarter(entry.character).elementId;
+  return `<img class="master-art master-element-art" ${conduitElementTheme(element)} draggable="false" src="${assetUrl(entry.art)}" alt="${escapeDialogText(entry.name)}" width="256" height="256">`;
 }
 export function masterChestIcon(): string {
   return `<img class="master-art master-chest-art" draggable="false" src="${assetUrl(masterChest.art)}" alt="${masterChest.name}" width="256" height="256">`;
@@ -17,7 +19,7 @@ export function masterChestIcon(): string {
 export function masterReference(id?: MasterConduitId | null): string {
   if (!id) return '';
   const entry = getMasterConduit(id);
-  return `<section class="master-reference"><h3>Master · ${entry.name}</h3><p>${referencedEffect(entry.effect)}</p><small>${getStarter(entry.character).name} only · Cannot be upgraded</small>${conduitLore(entry.lore)}</section>`;
+  return `<section class="master-reference"><h3>Master · ${entry.name}</h3>${conduitElementLabel(getStarter(entry.character).elementId)}<p>${referencedEffect(entry.effect)}</p><small>${getStarter(entry.character).name} only · Cannot be upgraded</small>${conduitLore(entry.lore)}</section>`;
 }
 export function masterEquipment(character: string, account: Account | null): string {
   if (!isStarterId(character)) return '<div class="ref-master-slot"><strong>Master slot</strong><p>Character Masters are for their named Element-Bearer only.</p></div>';
@@ -33,6 +35,6 @@ export function masterReward(id: MasterConduitId, account: Account): RewardPrese
   if (account.masterConduits?.[id] !== 1) throw new Error('Saved Master reward is not owned.');
   const entry = getMasterConduit(id);
   return { title: 'Master Conduit unlocked', name: entry.name, art: masterConduitIcon(id),
-    details: `<p>Omnic Master · ${getStarter(entry.character).name}</p><p>${referencedEffect(escapeDialogText(entry.effect))}</p><p>One chest opened. Not auto-equipped. Equip in Team.</p>`,
+    details: `${conduitElementLabel(getStarter(entry.character).elementId)}<p>Omnic Master · ${getStarter(entry.character).name}</p><p>${referencedEffect(escapeDialogText(entry.effect))}</p><p>One chest opened. Not auto-equipped. Equip in Team.</p>`,
     accent: getStarter(entry.character).color, animationLabel: 'Planetary locks released' };
 }

@@ -9,6 +9,7 @@ import { equippedSquad, ownedProgress, type Account } from '../game/account';
 import { resolveCapturedFighter } from '../game/character-instances';
 import { getCreature } from '../content/creatures';
 import { conduitIcon, conduitLore } from './conduit-store';
+import { conduitElement, conduitElementLabel, omnicTheme } from './conduit-element';
 import { masterConduitIcon, masterEquipment } from './master-conduits';
 import { statDirection } from './stat-change';
 import { escapeDialogText, gameChoose } from './game-dialog';
@@ -196,7 +197,7 @@ export function bindConduitLoadout(host: HTMLElement): void {
         const restrictions = conduit.rarity === 'Omnic' ? 'Matching combat element required. Maximum 4 Omnic Conduits in ordinary slots.' : '';
         void gameChoose(`${detail} ${rule ?? ''} ${restrictions}`, [{ value: 'close', label: 'Close', primary: true }], 'close', {
           title: conduit.name,
-          messageHtml: `<div class="loadout-detail"><div class="loadout-detail-art">${conduitIcon(conduit.id, level)}</div><p>${escapeDialogText(detail)}</p><h3>Conduit Ability</h3><p>${escapeDialogText(rule)}</p>${restrictions ? `<p>${escapeDialogText(restrictions)}</p>` : ''}${conduitLore(conduit.lore)}</div>`,
+          messageHtml: `<div class="loadout-detail"><div class="loadout-detail-art">${conduitIcon(conduit.id, level)}</div>${conduitElement(conduit.id)}<p>${escapeDialogText(detail)}</p><h3>Conduit Ability</h3><p>${escapeDialogText(rule)}</p>${restrictions ? `<p>${escapeDialogText(restrictions)}</p>` : ''}${conduitLore(conduit.lore)}</div>`,
         });
       } else if (isMasterConduitId(id)) {
         const master = getMasterConduit(id);
@@ -276,7 +277,7 @@ function masterRow(owner: string, account: Account | null): string {
   const choices = masterConduits.filter(master => master.character === owner && account?.masterConduits?.[master.id] === 1);
   return `<section class="ref-master-slot loadout-master" aria-label="Master slot">
     <span class="loadout-master-art">${current ? masterConduitIcon(current) : '<span class="loadout-master-empty" aria-hidden="true">M</span>'}</span>
-    <span class="loadout-master-text"><small class="loadout-eyebrow">Master slot</small><b>${entry ? entry.name : 'No Master equipped'}</b>
+    <span class="loadout-master-text"><small class="loadout-eyebrow">Master slot</small><b>${entry ? entry.name : 'No Master equipped'}</b>${entry ? conduitElementLabel(getStarter(owner).elementId) : ''}
       <small>${entry ? 'Always active · Omnic Master' : choices.length ? `${choices.length} owned for ${getStarter(owner).name}` : 'Found in Cosmic Grand Master Chests'}</small></span>
     <span class="loadout-master-select"><label for="master-${owner}" class="ref-sr-only">Master Conduit · ${getStarter(owner).name}</label><select id="master-${owner}" data-master-equipment="${owner}" ${!account ? 'disabled' : ''}>
       <option value="">No Master equipped</option>${choices.map(master => `<option value="${master.id}" ${master.id === current ? 'selected' : ''}>${master.name} · Omnic Master</option>`).join('')}</select></span>
@@ -301,7 +302,7 @@ function slotCard(owner: string, captured: boolean, element: ElementId, slots: C
   const next = level < conduitUpgradeCap ? `next level ${referencedEffect(conduitEffect(conduit, level + 1))}` : 'Maximum';
   return `<article class="ref-equipment-slot loadout-slot" data-loadout-slot="${index}" data-loadout-slot-name="${conduit.name}" style="--loadout-accent:${conduitColor(conduit)}">
     <div class="loadout-slot-main"><span class="loadout-slot-art">${conduitIcon(conduit.id, level)}</span><div class="loadout-slot-controls">${target}<button type="button" class="loadout-rule-button" data-loadout-rule="${conduit.id}" data-loadout-detail-level="${level}" aria-label="${conduit.name} details">Details</button></div></div>
-    <span class="loadout-slot-body"><b class="loadout-slot-name">${conduit.name}</b>
+    <span class="loadout-slot-body"><b class="loadout-slot-name">${conduit.name}</b>${conduitElement(conduit.id)}
       <small class="loadout-level" title="Level ${level} of ${conduitUpgradeCap} · ${next}">${conduit.rarity} · Lv ${level} / ${conduitUpgradeCap}<span class="ref-sr-only"> · Level ${level} of ${conduitUpgradeCap} · ${next}</span></small></span>
     <div class="loadout-actions"><button type="button" class="ref-chip" data-page="conduit-upgrade" data-upgrade-target="${conduit.id}">Upgrade</button>
       <button type="button" class="ref-chip" data-loadout-unequip="${index}" data-loadout-owner="${owner}" ${!account ? 'disabled' : ''}>Remove</button></div>
@@ -324,8 +325,8 @@ function ownedList(owner: string, element: ElementId, slots: ConduitSlots, accou
       const equipped = slots.includes(conduit.id);
       const reasons = artifactSlots.map((_, index) => conduitEquipReason(conduit, element, slots, index) ?? '');
       const reason = equipped ? null : firstEmpty < 0 ? 'All slots full' : reasons[firstEmpty] || null;
-      return `<article class="loadout-owned-row${equipped ? ' is-equipped' : ''}" data-loadout-conduit="${conduit.id}" data-loadout-name="${conduit.name}" data-loadout-rarity="${conduit.rarity}" data-loadout-level="${level}" data-loadout-order="${order}" data-loadout-reasons="${reasons.join('|')}"${order >= conduitLoadoutPageSize ? ' hidden' : ''}><span class="loadout-owned-art">${conduitIcon(conduit.id, level)}</span>
-        <span class="loadout-owned-text"><b>${conduit.name}</b><small>${conduit.rarity} · Lv ${level} / ${conduitUpgradeCap}</small>${equipped ? '<small>Equipped on this character</small>' : `<small class="loadout-reason" data-loadout-reason${reason ? '' : ' hidden'}>${reason ?? ''}</small>`}</span>
+      return `<article class="loadout-owned-row${equipped ? ' is-equipped' : ''}" ${omnicTheme(conduit.id)} data-loadout-conduit="${conduit.id}" data-loadout-name="${conduit.name}" data-loadout-rarity="${conduit.rarity}" data-loadout-level="${level}" data-loadout-order="${order}" data-loadout-reasons="${reasons.join('|')}"${order >= conduitLoadoutPageSize ? ' hidden' : ''}><span class="loadout-owned-art">${conduitIcon(conduit.id, level)}</span>
+        <span class="loadout-owned-text"><b>${conduit.name}</b><small>${conduit.rarity} · Lv ${level} / ${conduitUpgradeCap}</small>${conduitElement(conduit.id)}${equipped ? '<small>Equipped on this character</small>' : `<small class="loadout-reason" data-loadout-reason${reason ? '' : ' hidden'}>${reason ?? ''}</small>`}</span>
         <button type="button" class="loadout-rule-button" data-loadout-rule="${conduit.id}" data-loadout-detail-level="${level}" aria-label="${conduit.name} details">Details</button>
         ${equipped ? '<span class="ref-chip ref-white">Equipped</span>'
           : `<button type="button" class="ref-chip" data-loadout-equip="${conduit.id}" data-loadout-owner="${owner}" data-loadout-target="${firstEmpty}" ${reason || !account ? 'disabled' : ''}${!account ? ' data-loadout-locked' : ''}>Equip</button>`}</article>`;
@@ -385,7 +386,7 @@ export function conduitSummary(owner: string, account: Account | null): string {
   return `<section class="character-category loadout-summary"><h3><span>Conduits · ${equipped.length} of ${conduitSlotCount}</span><button type="button" class="ref-link" data-open-loadout>Full view</button></h3>
     ${equipped.length ? `<div class="loadout-summary-list">${equipped.map((conduit) => {
       const level = account?.conduitUpgrades?.[conduit.id] ?? 0;
-      return `<div class="loadout-summary-row"><span class="loadout-summary-art">${conduitIcon(conduit.id, level)}</span><span>${conduit.name}</span><strong>${conduitBuffLine(conduit, level)}</strong></div>`;
+      return `<div class="loadout-summary-row"><span class="loadout-summary-art">${conduitIcon(conduit.id, level)}</span><span>${conduit.name}${conduitElement(conduit.id)}</span><strong>${conduitBuffLine(conduit, level)}</strong></div>`;
     }).join('')}</div>` : '<p class="quiet">No Conduits equipped.</p>'}
     <button type="button" class="loadout-open" data-open-loadout>Open full Conduit view →</button></section>`;
 }

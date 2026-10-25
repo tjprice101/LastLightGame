@@ -2,6 +2,7 @@ import { conduits, getConduit, isConduitId, conduitEffect, conduitUpgradeCap, co
 import { upgradeConduit, conduitMaxLevelPlan, upgradeConduitToMaximum, type ConduitMaxLevelPlan, type Account } from '../game/account';
 import { type ProfileStorage } from '../game/profile';
 import { conduitIcon, conduitRarity } from './conduit-store';
+import { conduitElement, omnicTheme } from './conduit-element';
 import { mechanicalComponentIcon } from './mechanical-component-icon';
 import { information } from './information';
 import './conduit-upgrade.css';
@@ -42,7 +43,7 @@ function catalogPage(entries: OwnedEntry[], components: number, selected: string
   const start = state.page * pageSize;
   return `<div class="ref-upgrade-catalog-grid" aria-label="Owned Conduits to upgrade">${filtered.slice(start, start + pageSize).map(entry => {
     const conduit = getConduit(entry.id);
-    return `<button type="button" class="ref-member-row ${entry.id === selected ? 'is-selected' : ''}" aria-pressed="${entry.id === selected}" data-select-upgrade-conduit="${entry.id}"><span class="ref-thumb">${conduitIcon(entry.id, entry.level)}</span><span><b>${conduit.name}</b><small>${conduit.rarity} · +${entry.level} / ${conduitUpgradeCap}</small><small>Owned ${entry.copies}</small></span></button>`;
+    return `<button type="button" class="ref-member-row ${entry.id === selected ? 'is-selected' : ''}" ${omnicTheme(entry.id)} aria-pressed="${entry.id === selected}" data-select-upgrade-conduit="${entry.id}"><span class="ref-thumb">${conduitIcon(entry.id, entry.level)}</span><span><b>${conduit.name}</b><small>${conduit.rarity} · +${entry.level} / ${conduitUpgradeCap}</small>${conduitElement(entry.id)}<small>Owned ${entry.copies}</small></span></button>`;
   }).join('') || '<p class="ref-upgrade-no-matches">No matching owned Conduits. Adjust your filters.</p>'}</div>
     <nav class="ref-upgrade-pagination" aria-label="Owned Conduit pages"><button type="button" data-upgrade-page="-1" aria-label="Previous owned Conduit page" ${state.page === 0 ? 'disabled' : ''}>←</button><span role="status">${filtered.length ? `${start + 1}–${Math.min(start + pageSize, filtered.length)} of ${filtered.length}` : '0 of 0'} · Page ${state.page + 1} / ${pages}</span><button type="button" data-upgrade-page="1" aria-label="Next owned Conduit page" ${state.page + 1 === pages ? 'disabled' : ''}>→</button></nav>`;
 }

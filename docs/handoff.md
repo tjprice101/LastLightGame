@@ -1,5 +1,36 @@
 # Current state and handoff
 
+## Omnic elemental identity (D-403)
+
+- All45 ordinary Omnics use bold canonical element badges and shared palette
+  gradients/borders, while the prismatic Omnic rarity badge remains separate.
+  Covers Inventory/details, Collections/details, equipment and captured
+  equipment, selection panels, upgrade catalog/details, Machines focus,
+  stage/enemy loot, battle loadout/results, floating rewards and saved
+  acquisition/Calamity-chest reveals. All48 personal Masters identify their
+  named bearer's element, including the React chest-choice dialog and its
+  future-character choices; unopened choice chests remain generic.
+- Reusable `conduit-element.ts`/CSS own presentation, using current element
+  metadata rather than legacy art prefixes. Labels stay outside tiny icons
+  and upgrade meters; Inventory identity badges share one subgrid row.
+  Selected upgrade rows retain a white inset cue. Artwork bytes, ownership
+  silhouettes, controls, upgrades, eligibility, odds, mechanics and saves
+  are unchanged. [Contract](conduits.md#omnic-element-presentation-d-403).
+- Eight new catalog/surface/chooser tests; final focused validation:
+  `npx vitest run` with14 selected presentation/UI files, `--maxWorkers=2
+  --reporter=dot`:184 tests pass. Full `npx vitest run --maxWorkers=2
+  --reporter=dot`:6559 tests/211 files pass. `npm run build` passes
+  (includes TypeScript; existing chunk-size warning only), and
+  `git -c core.safecrlf=false diff --check` passes.
+- Browser fixtures use only in-memory holdings, never save grants.
+  Inventory checks verify all six bold names, canonical colors and matching
+  card gradients/borders. Loadout/upgrade checks at CSS widths320/400/1280
+  show no horizontal overflow or clipped badges and preserve the selected
+  upgrade inset. The React Master chooser also passes at320, including
+  selected styling and cancellation. No authority rebundle/deployment is
+  needed: no shared mechanics or server modules changed. Client publication
+  is verified in the completion report.
+
 ## Linear Machines drops and50% final Master Chest (D-402)
 
 - Shared `machineConduitChance` uses unrounded linear interpolation from5%

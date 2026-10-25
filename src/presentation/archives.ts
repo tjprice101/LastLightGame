@@ -13,6 +13,7 @@ import { capturedRating } from './owned-companion';
 import { characterRating } from './character-rating';
 import { characterRole } from './character-role';
 import { conduitIcon, conduitRarity, conduitDetails, conduitLore } from './conduit-store';
+import { conduitElementLabel, conduitElementTheme, omnicTheme } from './conduit-element';
 import { calamiticStoreUnlocked } from '../content/calamitic-conduits';
 import { creatureGlossary } from './creature-glossary';
 import { elementLabel } from './element-label';
@@ -101,17 +102,17 @@ function conduitArchive(account: Account | null): string {
       <button class="text-button" data-reset-conduit-filters>Reset filters</button>
     </div><div class="archive-results-toolbar"><p data-conduit-filter-result role="status">${total} / ${total} Conduits shown</p>
     <div class="ref-archive-manage"><button class="text-button" data-page="conduit-store">Conduit Store &rarr;</button><button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button></div></div>
-    <div class="archive-grid">${shown.map((conduit) => `<article class="archive-card ${(account?.conduits?.[conduit.id] ?? 0) > 0 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-conduit="${conduit.id}" data-filter-rarity="${conduit.rarity}" data-filter-ownership="${ownership((account?.conduits?.[conduit.id] ?? 0) > 0)}">
+    <div class="archive-grid">${shown.map((conduit) => `<article class="archive-card ${(account?.conduits?.[conduit.id] ?? 0) > 0 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-conduit="${conduit.id}" data-filter-rarity="${conduit.rarity}" data-filter-ownership="${ownership((account?.conduits?.[conduit.id] ?? 0) > 0)}" ${omnicTheme(conduit.id)}>
       <div class="archive-mechanism">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div>
       <h3>${conduit.name}</h3>${conduitRarity(conduit.id)}
       <p class="archive-ownership">${account ? `Owned ${account.conduits?.[conduit.id] ?? 0}` : 'Ownership unavailable'}</p>
       <p class="archive-effect">${readableEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]))}</p>
       ${information(`archive-conduit-${conduit.id}`, conduit.name, conduitDetails(conduit.id, account?.conduitUpgrades?.[conduit.id], (account?.conduits?.[conduit.id] ?? 0) > 0), 'Details')}
-    </article>`).join('')}${masterConduits.map(entry => `<article class="archive-card ${account?.masterConduits?.[entry.id] === 1 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-master="${entry.id}" data-filter-rarity="Master" data-filter-ownership="${ownership(account?.masterConduits?.[entry.id] === 1)}">
+    </article>`).join('')}${masterConduits.map(entry => `<article class="archive-card ${account?.masterConduits?.[entry.id] === 1 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" ${conduitElementTheme(getStarter(entry.character).elementId)} data-archive-master="${entry.id}" data-filter-rarity="Master" data-filter-ownership="${ownership(account?.masterConduits?.[entry.id] === 1)}">
       <div class="archive-mechanism">${masterConduitIcon(entry.id)}</div><h3>${entry.name}</h3>
-      <p>Omnic Master · ${getStarter(entry.character).name}</p><p class="archive-ownership">${account ? account.masterConduits?.[entry.id] === 1 ? 'Owned' : 'Not owned' : 'Ownership unavailable'}</p>
+      <p>Omnic Master · ${getStarter(entry.character).name}</p>${conduitElementLabel(getStarter(entry.character).elementId)}<p class="archive-ownership">${account ? account.masterConduits?.[entry.id] === 1 ? 'Owned' : 'Not owned' : 'Ownership unavailable'}</p>
       <p class="archive-effect">${readableEffect(entry.effect)}</p><p>Choose from a Cosmic Grand Master Chest. Final Machines boss: ${masterChest.chance * 100}% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Named bearer enhancement; no upgrades.</p>
-      ${information(`archive-master-${entry.id}`, entry.name, `${conduitLore(entry.lore)}<p>${readableEffect(entry.effect)}</p>`, 'Details')}
+      ${information(`archive-master-${entry.id}`, entry.name, `${conduitElementLabel(getStarter(entry.character).elementId)}${conduitLore(entry.lore)}<p>${readableEffect(entry.effect)}</p>`, 'Details')}
     </article>`).join('')}</div>`;
 }
 

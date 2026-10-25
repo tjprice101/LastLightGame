@@ -7,6 +7,7 @@ import { isConduitId } from '../content/conduits';
 import { mechanicalComponentIcon } from './mechanical-component-icon';
 import { warStageCount } from '../content/elemental-war';
 import { storyEncounter, storyRules } from '../content/story';
+import { conduitElement } from './conduit-element';
 
 export function encounterRewards(events: readonly BattleEvent[]) {
   const totals = new Map<string, ReturnType<typeof lootItems>[number]>();
@@ -45,7 +46,7 @@ export function battleResults(state: BattleState, events: readonly BattleEvent[]
         const conduitId = item.id.startsWith('conduit:') ? item.id.slice('conduit:'.length) : null;
         return `<li style="--reward-color:${item.color}">${isConduitId(conduitId) ? conduitIcon(conduitId, item.upgradeLevel) : item.id === 'mechanical-components' ? mechanicalComponentIcon() : lootArt(item)
         ? `<img src="${lootArt(item)}" alt="" width="40" height="40">` : '<span class="result-reward-token" aria-hidden="true">+</span>'}
-        <span>${item.name}</span><strong>+${formatStat(item.amount)}</strong></li>`;
+        <span>${item.name}${isConduitId(conduitId) ? conduitElement(conduitId) : ''}</span><strong>+${formatStat(item.amount)}</strong></li>`;
       }).join('')}</ul>`
         : '<p class="quiet">No enemy rewards earned in this encounter.</p>'}
       </div>

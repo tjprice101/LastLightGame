@@ -16,6 +16,7 @@ import { currencyIcon } from './currency-icon';
 import { inventoryView, type InventoryTab, type InventorySections, type InventoryFilters } from './inventory';
 import { conduits, conduitEquipReason, conduitSlotCount, conduitEffect, type ConduitSlots, type ConduitUpgrades } from '../content/conduits';
 import { conduitIcon } from './conduit-store';
+import { conduitElement } from './conduit-element';
 import { capturedProgress, resolveCapturedFighter, type CapturedCharacter } from '../game/character-instances';
 import { creatures } from '../content/creatures';
 import { capturedRating } from './owned-companion';
@@ -187,7 +188,7 @@ function equipment(starter: Starter, account: Account | null, compact = false): 
     <section class="character-category"><h3>Conduit slots</h3><div class="artifact-grid">${artifactSlots.map((slot, index) => {
       const selected = slots[index];
       const conduit = conduits.find((entry) => entry.id === selected);
-      return `<div class="artifact-slot conduit-equipment-slot">${conduit ? conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id]) : ''}<label for="conduit-slot-${index}">Conduit ${slot}</label>
+      return `<div class="artifact-slot conduit-equipment-slot">${conduit ? conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id]) + conduitElement(conduit.id) : ''}<label for="conduit-slot-${index}">Conduit ${slot}</label>
         <select id="conduit-slot-${index}" data-conduit-slot="${index}" ${!account ? 'disabled' : ''}><option value="">Empty</option>
         ${conduits.filter((entry) => (account?.conduits?.[entry.id] ?? 0) > 0).map((entry) => {
           const reason = conduitEquipReason(entry, starter.elementId, slots, index);

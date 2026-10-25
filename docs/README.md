@@ -3,6 +3,11 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**Omnic identity (D-403):** [elemental Conduit presentation](conduits.md#omnic-element-presentation-d-403)
+adds bold canonical element badges and matching gradients/borders across
+ordinary Omnics and personal Masters, separate from Omnic rarity styling.
+Presentation only; no acquisition, combat or save changes.
+
 **Roster capabilities (D-401):** [levels0-105 paper audit](roster-capability-audit.md)
 covers all16 Element-Bearers,696 solo/duo/trio configurations, six legal
 gear/play profiles, damage/healing/shielding, defensive packet capacity and

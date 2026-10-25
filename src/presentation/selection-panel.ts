@@ -88,6 +88,11 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
             art.querySelector('img')?.setAttribute('alt', '');
             choice.classList.add('selection-option-with-art');
             choice.append(art);
+            text.insertAdjacentHTML('beforeend', conduitElementLabel(getStarter(getMasterConduit(option.value).character).elementId));
+          }
+          if ((select.hasAttribute('data-conduit-slot') || select.hasAttribute('data-capture-conduit')) && isConduitId(option.value)) {
+            const badge = createConduitElement(option.value);
+            if (badge) text.append(badge);
           }
           if (select.hasAttribute('data-profile-icon-picker') && isStarterId(option.value)) {
             const art = document.createElement('span');
@@ -162,8 +167,10 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
     controls.clear();
   };
 }
-import { isMasterConduitId } from '../content/master-conduits';
+import { getMasterConduit, isMasterConduitId } from '../content/master-conduits';
 import { masterConduitIcon } from './master-conduits';
 import { getStarter, isStarterId } from '../content/starters';
 import { portrait } from './portrait';
 import { stageLootButton, stageLootSourceOf } from './stage-loot';
+import { conduitElementLabel, createConduitElement } from './conduit-element';
+import { isConduitId } from '../content/conduits';
