@@ -1,5 +1,35 @@
 # Current state and handoff
 
+## Machines drop rates and baseline loot pools (D-400)
+
+- Owner confirms two-percentage-point increases for Machines only:
+  Legendary3.5%->5.5%, Omnic1%->3%. Rare stays8%, Omnic still starts26,
+  and the0.5% banner bonus and Calamity chest contents are unchanged.
+  Cosmic Grand Master Chest's shared enemy-drop chance is now5%; its only
+  ordinary source remains the final stage35 Machines boss.
+- Collections' initial/stage-changed View Loot tables ignore ownership and
+  focus, showing full-pool per-name baseline rates. Stage-picker pools also
+  retain every baseline eligible name. Actual unowned-only/focused rewards,
+  automatic focus clearing, atomic saves and independent RNG remain intact.
+  Updated shared rate copy across activity/help, battle, focus, Inventory
+  and Collections. [Current contract](awaken-the-machines.md#current-drop-rates-and-baseline-loot-tables-d-400).
+- Nine focused files pass110 tests; full
+  `npx vitest run --maxWorkers=2 --reporter=dot` passes6542 tests/209 files.
+  Initial full run found one old aggregate-rate assertion; updated its
+  expected13.5%/16.5% summed independent chances and reran successfully.
+  `npm run build` and final `npx tsc --noEmit` pass with the existing
+  bundle-size warning. `node tools\bundle_server_game.mjs` and
+  `npx --yes deno check supabase\functions\game-operation\index.ts` pass.
+- Matching reward authority deployed with `npx supabase functions deploy
+  game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`.
+  `node tools\smoke_server_game.mjs --machines-layout` passes local/hosted
+  event/account parity and retries for stages1/25/26/27/35, plus legacy
+  migrations. Seed645 exercises Legendary5.0637%/Omnic1.0080% rolls;
+  seed500 exercises Master3.0987%, proving the increased intervals on the
+  host. Off-stage/gated drops stay absent. Disposable users and cascading
+  records removed; owner accounts untouched. No rules bump/run restart or
+  retroactive rewards. Client publication is verified in the final report.
+
 ## Original battle screen restored (D-399)
 
 - Owner reverses the screenshot-driven battle redesign. Restored only the

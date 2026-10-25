@@ -158,7 +158,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       ${activityBanner('Awaken the Machines', 'banners/machines-banner.png', 'Awaken the Machines: a destroyed prototype from Let and Rise\'s collaboration awakens in an element-scorched wasteland.')}
       <p>${machineOrigin}</p>
       ${activityFacts(`${machineRules.stages} stages`, '10-120', 'Prismatica · Broken Mechanical Components · Conduits')}
-      <p>Rare 8% and Legendary 3.5% on every stage · Omnic 1% on stage ${machineRules.omnicStage} and every stage afterward</p>
+      <p>Rare ${machineRules.rareChance * 100}% and Legendary ${machineRules.legendaryChance * 100}% on every stage · Omnic ${machineRules.omnicChance * 100}% on stage ${machineRules.omnicStage} and every stage afterward</p>
       <p>Unowned Conduits only. A completed rarity awards no Conduit or replacement reward.</p>`, `
       ${itemShowcase([{ id: 'mechanical-components' }], 'Conduit upgrade currency')}
       <button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button>

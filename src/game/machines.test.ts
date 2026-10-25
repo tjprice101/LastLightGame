@@ -73,9 +73,9 @@ describe('machine content and exact probabilities', () => {
     const remaining = rare.slice(-2);
     const owned = Object.fromEntries(rare.slice(0, -2).map(c => [c.id, 2]));
     const before = structuredClone(owned);
-    expect(machineConduitDrops(machineRules.omnicStage, sequence(.08, .035, .01), owned)).toEqual({});
+    expect(machineConduitDrops(machineRules.omnicStage, sequence(.08, .055, .03), owned)).toEqual({});
     for (const [index, conduit] of remaining.entries()) {
-      expect(machineConduitDrops(machineRules.omnicStage, sequence(.079999, (index + .5) / 2, .035, .01), owned)).toEqual({ [conduit.id]: 1 });
+      expect(machineConduitDrops(machineRules.omnicStage, sequence(.079999, (index + .5) / 2, .055, .03), owned)).toEqual({ [conduit.id]: 1 });
     }
     const loot = machineConduitLoot(machineRules.omnicStage, owned);
     for (const conduit of rare) expect(loot.find(drop => drop.id === conduit.id)?.chance).toBe(
@@ -92,7 +92,7 @@ describe('machine content and exact probabilities', () => {
     expect(machineConduitLoot(machineRules.omnicStage, owned).every(drop => drop.chance === 0)).toBe(true);
     delete owned['worldbreaker-drive'];
     expect(machineConduitDrops(machineRules.omnicStage, sequence(0, .5, 0, .5, 0, .5), owned)).toEqual({ 'worldbreaker-drive': 1 });
-    expect(machineConduitLoot(machineRules.omnicStage, owned).find(drop => drop.id === 'worldbreaker-drive')?.chance).toBe(.035);
+    expect(machineConduitLoot(machineRules.omnicStage, owned).find(drop => drop.id === 'worldbreaker-drive')?.chance).toBe(.055);
     expect(bannerConduitBonus(sequence(0, 0))).toBe('worldbreaker-drive');
   });
   it('authors the exact catalog and distinct stats/penalties/elements without selling drops', () => {
@@ -136,22 +136,22 @@ describe('machine content and exact probabilities', () => {
     for (const stage of [0, machineRules.stages + 1, NaN, 1.5]) expect(() => machineConduitDrops(stage, () => 0)).toThrow();
   });
   it('checks exact independent tier boundaries, excludes Omnic below 26 and chooses equal entries', () => {
-    expect(machineConduitDrops(machineRules.omnicStage - 1, sequence(.08, .035))).toEqual({});
-    expect(machineConduitDrops(machineRules.omnicStage, sequence(.08, .035, .01))).toEqual({});
+    expect(machineConduitDrops(machineRules.omnicStage - 1, sequence(.08, .055))).toEqual({});
+    expect(machineConduitDrops(machineRules.omnicStage, sequence(.08, .055, .03))).toEqual({});
     const rarePool = conduits.filter((c) => c.rarity === 'Rare');
     const legendaryPool = conduits.filter((c) => c.rarity === 'Legendary');
     const omnicPool = conduits.filter((c) => c.rarity === 'Omnic');
     for (let index = 0; index < rarePool.length; index++) {
       const drops = machineConduitDrops(machineRules.omnicStage, sequence(.079999, (index + .5) / rarePool.length,
-        .035, .01));
+        .055, .03));
       expect(Object.keys(drops)).toEqual([rarePool[index].id]);
     }
     for (let index = 0; index < legendaryPool.length; index++) {
-      expect(machineConduitDrops(machineRules.omnicStage, sequence(.08, .034999, (index + .5) / legendaryPool.length, .01)))
+      expect(machineConduitDrops(machineRules.omnicStage, sequence(.08, .054999, (index + .5) / legendaryPool.length, .03)))
         .toEqual({ [legendaryPool[index].id]: 1 });
     }
     for (let index = 0; index < omnicPool.length; index++) {
-      expect(machineConduitDrops(machineRules.omnicStage, sequence(.08, .035, .009999, (index + .5) / omnicPool.length))).toEqual({ [omnicPool[index].id]: 1 });
+      expect(machineConduitDrops(machineRules.omnicStage, sequence(.08, .055, .029999, (index + .5) / omnicPool.length))).toEqual({ [omnicPool[index].id]: 1 });
     }
     expect(Object.keys(machineConduitDrops(machineRules.stages, () => 0))).toHaveLength(3);
     expect(bannerConduitBonus(() => .005)).toBeUndefined();
@@ -169,7 +169,7 @@ describe('machine content and exact probabilities', () => {
       const pool = machineConduitLoot(stage);
       expect(pool).toHaveLength(stage < machineRules.omnicStage ? 30 : 75);
       expect(pool.some((drop) => conduits.find((conduit) => conduit.id === drop.id)?.rarity === 'Common')).toBe(false);
-      for (const [rarity, chance] of [['Rare', .08], ['Legendary', .035], ['Omnic', stage < machineRules.omnicStage ? 0 : .01]] as const) {
+      for (const [rarity, chance] of [['Rare', .08], ['Legendary', .055], ['Omnic', stage < machineRules.omnicStage ? 0 : .03]] as const) {
         expect(pool.filter((drop) => conduits.find((c) => c.id === drop.id)?.rarity === rarity).reduce((sum, entry) => sum + entry.chance, 0)).toBeCloseTo(chance, 12);
       }
       const published = creatureLoot(getCreature(`infusion:machines:${encounter.tier}`), stage).slice(1);
@@ -346,7 +346,7 @@ describe('machine rewards and atomic saves', () => {
     const markup = gameplayHub(loadAccount(saved));
     expect(markup).toContain(`<dd>${machineRules.stages} stages</dd>`);
     expect(markup).toContain('<dd>10-120</dd>');
-    expect(markup).toContain(`Omnic 1% on stage ${machineRules.omnicStage} and every stage afterward`);
+    expect(markup).toContain(`Omnic 3% on stage ${machineRules.omnicStage} and every stage afterward`);
     expect(plain(markup)).toContain('Every Machine drops Broken Mechanical Components: 3 at stage 1');
     expect(markup).toContain(`rising to 125 at stage ${machineRules.stages}`);
     expect(markup).toContain('the final boss drops 625.');

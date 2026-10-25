@@ -2919,12 +2919,12 @@ function rollMachineComponents(stage, random) {
 var masterChest = {
   id: "grand-master-chest",
   name: "Cosmic Grand Master Chest",
-  chance: 0.01,
+  chance: 0.05,
   stage: machineStageCount,
   art: "master-conduits/grand-master-chest.png",
   description: "Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward."
 };
-var masterRulesText = `Cosmic Grand Master Chest: 1% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 48.`;
+var masterRulesText = `Cosmic Grand Master Chest: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 48.`;
 function master(character, slot, name, design) {
   return {
     id: `master-${character}-${slot}`,
@@ -3243,7 +3243,7 @@ function masterChestDrops(stage, boss, random) {
 }
 
 // src/content/machines.ts
-var machineRules = { stages: infusionStageCount("machines"), omnicStage: Math.floor(56 * infusionStageCount("machines") / previousMachineStageCount), rareChance: 0.08, legendaryChance: 0.035, omnicChance: 0.01, bannerBonusChance: 5e-3 };
+var machineRules = { stages: infusionStageCount("machines"), omnicStage: Math.floor(56 * infusionStageCount("machines") / previousMachineStageCount), rareChance: 0.08, legendaryChance: 0.055, omnicChance: 0.03, bannerBonusChance: 5e-3 };
 var machinePools = {
   Rare: conduits.filter((conduit) => conduit.rarity === "Rare"),
   Legendary: conduits.filter((conduit) => conduit.rarity === "Legendary"),
@@ -3287,7 +3287,7 @@ function machineConduitLoot(stage, owned = {}, focus = {}) {
       minimum: 1,
       maximum: 1,
       chance: (owned[conduit.id] ?? 0) > 0 || !remaining ? 0 : focused ? conduit.id === focused ? chance : 0 : chance / remaining,
-      note: "Each rarity rolls separately. Conduit drops are unowned only: your focus, or an equal random choice. Fully owned rarities drop nothing. Bosses have the same Conduit odds."
+      note: "Baseline rates ignore ownership and focus. Each rarity rolls separately. Actual drops are unowned only: your focus, or an equal random choice. Fully owned rarities drop nothing."
     }));
   });
 }
@@ -3320,7 +3320,7 @@ function bannerConduitBonus(random) {
 }
 var machineRulesText = `<p>${machineOrigin}</p>
   <p>${machineRules.stages} stages, Lv.10-120. Bosses every fifth stage.</p>
-  <ul><li>Rare: 8% per enemy.</li><li>Legendary: 3.5% per enemy.</li><li>Omnic: 1% per enemy from stage ${machineRules.omnicStage}.</li></ul>
+  <ul><li>Rare: ${machineRules.rareChance * 100}% per enemy.</li><li>Legendary: ${machineRules.legendaryChance * 100}% per enemy.</li><li>Omnic: ${machineRules.omnicChance * 100}% per enemy from stage ${machineRules.omnicStage}.</li></ul>
   <p>Rarities roll independently. Each roll chooses an unowned Conduit equally; a completed rarity drops nothing. Focus Loot replaces the random choice with your selection, without changing the odds. Getting that Conduit clears its focus.</p>
   <p>Enemies also drop Prismatica. ${machineComponentRulesText} No captures, evolution materials or Null-Prismatica.</p>
   <p>${masterRulesText}</p>`;

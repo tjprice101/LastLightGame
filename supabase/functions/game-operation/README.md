@@ -1,5 +1,17 @@
 # Authoritative game operation
 
+## Machines drop rates (D-400)
+
+Shared enemy reward rules now use Rare8%, Legendary5.5%, Omnic3% (stage26+),
+and a5% Cosmic Grand Master Chest chance on the final stage35 boss only.
+Banner bonuses, Calamity chest contents, independent RNG draws and unowned/
+focus handling are unchanged. No rules-version bump or run restart is needed;
+future kills use the updated shared rates and saved receipts never reroll.
+Regenerate/type-check/deploy with the client. Hosted
+`node tools\smoke_server_game.mjs --machines-layout` now uses deterministic
+rolls in the increased Legendary/Omnic/Master intervals, checking actual
+rewards, gates, account persistence and receipt retries on disposable users.
+
 ## Calamity tier tuning (D-398)
 
 Rules10 remains current. All36 Calamity entry/retry paths use shared

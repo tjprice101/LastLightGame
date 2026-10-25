@@ -3,6 +3,10 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**Machines drops (D-400):** [current rates and baseline loot tables](awaken-the-machines.md#current-drop-rates-and-baseline-loot-tables-d-400)
+set Legendary5.5%, Omnic3% and final-boss Master Chest5%; reference pools
+ignore ownership/focus while actual rewards retain both rules.
+
 **Current battle screen (D-399):** [original layout restored](menus-and-inventory.md#original-battle-screen-restored-d-399)
 from before the reference redesign, keeping stage progress. Allied readouts
 return to the field; gestures and Battle menu actions remain.

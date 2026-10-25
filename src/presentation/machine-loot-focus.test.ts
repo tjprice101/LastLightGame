@@ -6,6 +6,7 @@ import { machineFocusRarities } from '../content/machines';
 import { emptyAccount } from '../game/account';
 import { bindInformation } from './information';
 import { creatureGlossary, bindCreatureGlossary } from './creature-glossary';
+import { formatStat } from '../content/combat';
 
 afterEach(() => { document.body.replaceChildren(); vi.restoreAllMocks(); });
 function mount(account = emptyAccount()) {
@@ -88,7 +89,7 @@ describe('Machines Focus Loot screen', () => {
     expect(host.querySelector('[role="alert"]')?.textContent).toContain('unavailable');
     expect(Array.from(host.querySelectorAll<HTMLButtonElement>('[data-focus-conduit], [data-clear-loot-focus]')).every(button => button.disabled)).toBe(true);
   });
-  it('shows focused per-name chances in Collections on initial render and stage changes', () => {
+  it('keeps baseline per-name chances in Collections despite focus on render and stage changes', () => {
     const account = emptyAccount();
     const entry = conduits.find(entry => entry.rarity === 'Rare')!;
     account.machineLootFocus = { Rare: entry.id };
@@ -96,12 +97,12 @@ describe('Machines Focus Loot screen', () => {
     const host = document.createElement('main');
     host.innerHTML = creatureGlossary(account);
     document.body.append(host);
-    bindCreatureGlossary(host, undefined, undefined, account.machineLootFocus);
+    bindCreatureGlossary(host);
     const check = () => {
       const rows = Array.from(host.querySelectorAll('tbody tr'));
       for (const conduit of conduits.filter(entry => entry.rarity === 'Rare')) {
         const row = rows.find(row => row.textContent?.includes(`${conduit.name} · Rare`))!;
-        expect(row.children[2].textContent).toBe(conduit.id === entry.id ? '8%' : '0%');
+        expect(row.children[2].textContent).toBe(`${formatStat(8 / conduits.filter(entry => entry.rarity === 'Rare').length)}%`);
       }
     };
     check();

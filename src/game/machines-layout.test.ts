@@ -40,13 +40,13 @@ describe('35-stage Machines layout and v9 migration', () => {
     expect(machineComponentDrop(1).minimum).toBe(3);
     expect(machineComponentDrop(35).minimum).toBe(625);
   });
-  it('retains tier odds on every applicable stage, including every stage after26', () => {
+  it('uses the updated tier odds on every applicable stage, including every stage after26', () => {
     expect(machineRules.omnicStage).toBe(26);
     for (let stage = 1; stage <= 35; stage++) {
       const drops = machineConduitDrops(stage, () => 0);
       expect(Object.keys(drops)).toHaveLength(stage >= 26 ? 3 : 2);
       const table = machineConduitLoot(stage);
-      expect(table.reduce((sum, drop) => sum + drop.chance, 0)).toBeCloseTo(stage >= 26 ? .125 : .115, 12);
+      expect(table.reduce((sum, drop) => sum + drop.chance, 0)).toBeCloseTo(stage >= 26 ? .165 : .135, 12);
     }
   });
   it.each([7, 8])('remaps every v%i saved stage using floor(stage/75*35), never on read or twice', version => {

@@ -46,14 +46,14 @@ describe('saved one-shot Machines Focus Loot', () => {
         if (getConduit(id).rarity !== rarity) expect(drops[id]).toBe(1);
       }
       const table = machineConduitLoot(machineRules.omnicStage, {}, selected).filter(drop => getConduit(drop.id).rarity === rarity);
-      const chance = rarity === 'Rare' ? .08 : rarity === 'Legendary' ? .035 : .01;
+      const chance = rarity === 'Rare' ? .08 : rarity === 'Legendary' ? .055 : .03;
       expect(table.reduce((sum, drop) => sum + drop.chance, 0)).toBe(chance);
       expect(table.filter(drop => drop.chance > 0).map(drop => drop.id)).toEqual([conduit.id]);
     }
   });
   it('retains exact rarity boundaries and Omnic gate with all three focuses', () => {
-    expect(machineConduitDrops(machineRules.omnicStage, sequence([.08, .035, .01]), {}, focus)).toEqual({});
-    expect(machineConduitDrops(machineRules.omnicStage, sequence([.079999, .9, .034999, .9, .009999, .9]), {}, focus))
+    expect(machineConduitDrops(machineRules.omnicStage, sequence([.08, .055, .03]), {}, focus)).toEqual({});
+    expect(machineConduitDrops(machineRules.omnicStage, sequence([.079999, .9, .054999, .9, .029999, .9]), {}, focus))
       .toEqual(Object.fromEntries(Object.values(focus).map(id => [id, 1])));
     expect(machineConduitDrops(machineRules.omnicStage - 1, sequence([0, .9, 0, .9]), {}, focus))
       .toEqual({ [focus.Rare!]: 1, [focus.Legendary!]: 1 });

@@ -823,7 +823,7 @@ function renderMenu(firstArrival = false): void {
       showError(`${saved ? 'Your Master is saved, but its presentation could not complete. Check Inventory.' : 'The chest was not opened.'} ${errorMessage(error)}`);
     } finally { masterOpening = false; }
   });
-  bindCreatureGlossary(app, account?.conduitUpgrades, account?.conduits, account?.machineLootFocus);
+  bindCreatureGlossary(app, account?.conduitUpgrades);
   bindArchives(app);
   bindSquadPreview(app, account);
   bindSummonRates(app);

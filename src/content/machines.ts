@@ -6,7 +6,7 @@ import { masterRulesText } from './master-conduits';
 import { machineOrigin } from './world-lore';
 
 /** D-380: floor the former stage56/75 threshold onto the 35-stage layout. */
-export const machineRules = { stages: infusionStageCount('machines'), omnicStage: Math.floor(56 * infusionStageCount('machines') / previousMachineStageCount), rareChance: .08, legendaryChance: .035, omnicChance: .01, bannerBonusChance: .005 } as const;
+export const machineRules = { stages: infusionStageCount('machines'), omnicStage: Math.floor(56 * infusionStageCount('machines') / previousMachineStageCount), rareChance: .08, legendaryChance: .055, omnicChance: .03, bannerBonusChance: .005 } as const;
 const machinePools = {
   Rare: conduits.filter((conduit) => conduit.rarity === 'Rare'),
   Legendary: conduits.filter((conduit) => conduit.rarity === 'Legendary'),
@@ -55,7 +55,7 @@ export function machineConduitLoot(stage: number, owned: Partial<Record<ConduitI
     const focused = selected && !(owned[selected] ?? 0) ? selected : undefined;
     return pool.map((conduit) => ({ id: conduit.id, minimum: 1, maximum: 1,
       chance: (owned[conduit.id] ?? 0) > 0 || !remaining ? 0 : focused ? conduit.id === focused ? chance : 0 : chance / remaining,
-      note: 'Each rarity rolls separately. Conduit drops are unowned only: your focus, or an equal random choice. Fully owned rarities drop nothing. Bosses have the same Conduit odds.' }));
+      note: 'Baseline rates ignore ownership and focus. Each rarity rolls separately. Actual drops are unowned only: your focus, or an equal random choice. Fully owned rarities drop nothing.' }));
   });
 }
 
@@ -89,7 +89,7 @@ export function bannerConduitBonus(random: () => number): ConduitId | undefined 
 
 export const machineRulesText = `<p>${machineOrigin}</p>
   <p>${machineRules.stages} stages, Lv.10-120. Bosses every fifth stage.</p>
-  <ul><li>Rare: 8% per enemy.</li><li>Legendary: 3.5% per enemy.</li><li>Omnic: 1% per enemy from stage ${machineRules.omnicStage}.</li></ul>
+  <ul><li>Rare: ${machineRules.rareChance * 100}% per enemy.</li><li>Legendary: ${machineRules.legendaryChance * 100}% per enemy.</li><li>Omnic: ${machineRules.omnicChance * 100}% per enemy from stage ${machineRules.omnicStage}.</li></ul>
   <p>Rarities roll independently. Each roll chooses an unowned Conduit equally; a completed rarity drops nothing. Focus Loot replaces the random choice with your selection, without changing the odds. Getting that Conduit clears its focus.</p>
   <p>Enemies also drop Prismatica. ${machineComponentRulesText} No captures, evolution materials or Null-Prismatica.</p>
   <p>${masterRulesText}</p>`;

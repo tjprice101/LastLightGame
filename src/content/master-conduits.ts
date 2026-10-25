@@ -7,11 +7,11 @@ import { redesignEffect } from './conduit-redesign';
 
 export const masterChest = {
   id: 'grand-master-chest', name: 'Cosmic Grand Master Chest',
-  chance: .01, stage: machineStageCount, art: 'master-conduits/grand-master-chest.png',
+  chance: .05, stage: machineStageCount, art: 'master-conduits/grand-master-chest.png',
   description: 'Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward.',
 } as const;
 export const astralReserveArt = 'master-conduits/astral-reserve.png';
-export const masterRulesText = `Cosmic Grand Master Chest: 1% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 48.`;
+export const masterRulesText = `Cosmic Grand Master Chest: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 48.`;
 
 function redesignedMasterRule(): OmnicRule { return { trigger: 'activation', outcomes: [] }; }
 function master(character: StarterId, slot: 1 | 2 | 3, name: string, design: string) {

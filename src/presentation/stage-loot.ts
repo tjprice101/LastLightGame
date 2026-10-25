@@ -90,7 +90,7 @@ function dropGroup(id: string): LootGroup {
   return 'material';
 }
 
-/** Only items that can actually drop here (zero-chance entries, such as owned Conduits, are left out). */
+/** List the enemy's baseline pool, independent of ownership and focus. */
 function dropEntries(drops: readonly CreatureLoot[], account: Account | null, group?: LootGroup): LootEntry[] {
   return drops.filter((drop) => drop.chance > 0 && drop.maximum > 0)
     .map((drop) => ({ id: drop.id, group: group ?? dropGroup(drop.id), icon: itemIcon(drop.id, account), name: itemName(drop.id) }));
@@ -148,7 +148,7 @@ export function stageLoot(source: StageLootSource, stage: number, account: Accou
   }
   const encounter = infusionEncounter(source.mode, stage);
   const creature = creatureAt(stage, (entry) => entry.mode === source.mode);
-  const entries = dropEntries(creatureLoot(creature, stage, account?.conduits), account);
+  const entries = dropEntries(creatureLoot(creature, stage), account);
   if (source.mode !== 'machines' && (source.mode !== 'roses' || roseCaptureAllowed(encounter.level))) {
     entries.push({ id: creature.id, group: 'capture', name: encounter.enemy.name,
       icon: `<img draggable="false" src="${assetUrl(`enemies/${encounter.enemy.art}.png`)}" alt="" width="80" height="80">` });

@@ -1070,8 +1070,10 @@ async function smokeMachinesLayout(firstClient, firstId, firstUsername) {
     } else {
       game = resolveOperation(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage: test.stage } }, entropy).game;
       game.run.session.state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
-      game.run.session.state.conduitSeed = 0;
-      game.run.session.state.masterChestSeed = 0;
+      // Tier rolls: Rare .0401, Legendary .0506 and Omnic .01008.
+      // Master roll .03099 verifies the newly increased intervals on the host.
+      game.run.session.state.conduitSeed = 645;
+      game.run.session.state.masterChestSeed = 500;
     }
     assert.ok(ids.includes(userId));
     assert.equal((await admin.rpc('load_game_account', { p_user: userId, p_initial: game })).error, null);
@@ -1109,7 +1111,7 @@ async function smokeMachinesLayout(firstClient, firstId, firstUsername) {
       assert.deepEqual(await invoke(operation, read.revision, id), actual);
     }
   }
-  console.log('Hosted Machines layout passed: v8 stages1/35/56/75 migrate once to1/16/26/35; holdings/focus/final-clear access preserved. Stages1/25/26/27/35 retain exact reward/level endpoints, Omnic26 onward and final-only Master chest. Local/hosted parity and retries passed; disposable identities only.');
+  console.log('Hosted Machines layout/rates passed: v8 migration, holdings/focus/final-clear access preserved. Stages1/25/26/27/35 verify Legendary rolls above3.5%, Omnic rolls above1% from26 onward, and final-only Master roll above1% with the new5.5%/3%/5% rates. Local/hosted reward/account parity and retries passed; disposable identities only.');
 }
 
 async function smokeFocusLoot(client, userId, username) {

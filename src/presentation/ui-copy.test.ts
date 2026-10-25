@@ -119,7 +119,7 @@ describe('visible UI copy', () => {
     const gameplay = gameplayHub(account);
     expect(primary(gameplay)).not.toContain(machineComponentRulesText);
     expect(plain(gameplay)).toContain(plain(machineComponentRulesText));
-    expect(primary(gameplay)).toContain(`Rare 8% and Legendary 3.5% on every stage \u00b7 Omnic 1% on stage ${machineRules.omnicStage} and every stage afterward`);
+    expect(primary(gameplay)).toContain(`Rare 8% and Legendary 5.5% on every stage \u00b7 Omnic 3% on stage ${machineRules.omnicStage} and every stage afterward`);
     expect(primary(gameplay)).not.toContain('no battles or rewards yet');
     expect(primary(squadHub(account))).not.toContain('Save to apply changes.');
     expect(primary(squadHub(account))).toContain('Save squad');

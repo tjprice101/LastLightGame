@@ -66,17 +66,17 @@ describe('replacement Omnic catalog, acquisition and stable identity', () => {
     }
   });
 
-  it('rolls each of45 Omnics at1%/45 from stage26 onward without changing lower totals or roll counts', () => {
+  it('rolls each of45 Omnics at3%/45 from stage26 onward with the current tier totals and roll counts', () => {
     const pool = conduits.filter((entry) => entry.rarity === 'Omnic');
     for (const [index, entry] of pool.entries()) {
-      const values = [.08, .035, 0, (index + .5) / pool.length];
+      const values = [.08, .055, 0, (index + .5) / pool.length];
       const random = vi.fn(() => values.shift()!);
       expect(machineConduitDrops(machineRules.omnicStage, random)).toEqual({ [entry.id]: 1 });
       expect(random).toHaveBeenCalledTimes(4);
-      expect(machineConduitLoot(machineRules.omnicStage).find((drop) => drop.id === entry.id)?.chance).toBeCloseTo(.01 / 45, 12);
+      expect(machineConduitLoot(machineRules.omnicStage).find((drop) => drop.id === entry.id)?.chance).toBeCloseTo(.03 / 45, 12);
       expect(machineConduitLoot(machineRules.omnicStage - 1).some((drop) => drop.id === entry.id)).toBe(false);
     }
-    for (const [rarity, chance] of [['Rare', .08], ['Legendary', .035], ['Omnic', .01]] as const) {
+    for (const [rarity, chance] of [['Rare', .08], ['Legendary', .055], ['Omnic', .03]] as const) {
       expect(machineConduitLoot(machineRules.omnicStage).filter((drop) => getConduit(drop.id).rarity === rarity).reduce((sum, drop) => sum + drop.chance, 0)).toBeCloseTo(chance);
     }
     const below = vi.fn(() => .99);

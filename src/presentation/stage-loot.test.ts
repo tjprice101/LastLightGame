@@ -7,6 +7,8 @@ import { storyRules } from '../content/story';
 import { creatures, creatureLoot } from '../content/creatures';
 import { bindStageLoot, parseStageLootSource, stageLoot, stageLootButton, stageLootContent } from './stage-loot';
 import { bindSelectionPanels } from './selection-panel';
+import { emptyAccount } from '../game/account';
+import { conduits } from '../content/conduits';
 
 if (!HTMLDialogElement.prototype.showModal) {
   HTMLDialogElement.prototype.showModal = function showModal(this: HTMLDialogElement) { this.open = true; };
@@ -17,6 +19,19 @@ const modes = [...infusionModes, ...currencyModes, ...eventModes, ...machineMode
 
 describe('stage loot previews', () => {
   afterEach(() => { document.body.replaceChildren(); });
+
+  it('keeps the baseline Machines pool visible even when every name is owned or a tier is focused', () => {
+    const account = emptyAccount();
+    const source = { kind: 'infusion', mode: 'machines' } as const;
+    const baseline = stageLoot(source, 35, null);
+    account.machineLootFocus = { Legendary: 'worldbreaker-drive' };
+    expect(stageLoot(source, 35, account)).toEqual(baseline);
+    account.conduits = Object.fromEntries(conduits.map(conduit => [conduit.id, 1]));
+    delete account.machineLootFocus;
+    expect(stageLoot(source, 35, account)).toEqual(baseline);
+    expect(stageLoot(source, 25, account).entries.some(entry => entry.group === 'conduit-omnic')).toBe(false);
+    expect(stageLoot(source, 26, account).entries.filter(entry => entry.group === 'conduit-omnic')).toHaveLength(45);
+  });
 
   it('previews every stage of every staged activity from the live drop tables', () => {
     for (const element of elements.map((entry) => entry.id).filter(isPlayableDungeon)) {

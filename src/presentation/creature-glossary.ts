@@ -17,11 +17,11 @@ import { information } from './information';
 import { calamityChest, calamityEncounter, isCalamityTier, parseCalamityChestId } from '../content/calamity';
 import { calamityLoot, calamityChestIcon } from './calamity';
 
-function lootTable(id: string, stage?: number, upgrades?: ConduitUpgrades, ownedConduits?: Account['conduits'], focus?: Account['machineLootFocus']): string {
+function lootTable(id: string, stage?: number, upgrades?: ConduitUpgrades): string {
   const creature = getCreature(id);
   const sale = creature.mode && isCurrencyMode(creature.mode) ? creatureSaleValue(creature.mode, Number(creature.id.split(':').at(-1))) : null;
   const choices = creature.mode === 'heavens' || creature.mode === 'abyss' ? creatureSaleOptions(creature.mode, Number(creature.id.split(':').at(-1))) : null;
-  const drops = creatureLoot(creature, stage, ownedConduits, focus);
+  const drops = creatureLoot(creature, stage);
   const rollNotes = [...new Set(drops.flatMap(drop => drop.note && !creature.story ? [drop.note] : []))];
   return `<table><caption>Per-enemy loot at ${creature.id.startsWith('calamity:') ? `EX+${stage}` : creature.stages.length ? `Stage ${stage}` : `Enemy level ${stage ?? 1}`}</caption>
     <colgroup><col class="loot-drop-column"><col><col></colgroup>
@@ -65,13 +65,13 @@ export function creatureGlossary(account: Account | null): string {
         ${discovery?.defeated ? information(`creature-loot-${creature.id}`, `${creature.name} · Loot`, `<section class="creature-loot"><h3>Drop pool and chances</h3>
           <p>Drop chances are per enemy at the selected stage. Only drops marked 100% are guaranteed.</p>
           <label>${creature.calamity ? 'EX tier' : creature.stages.length ? 'Stage' : 'Enemy level'} <select data-loot-stage="${creature.id}">${(creature.stages.length ? creature.stages : Array.from({ length: 120 }, (_, index) => index + 1)).map((value) => `<option value="${value}">${creature.calamity && isCalamityTier(value) ? `EX+${value} · Lv.${calamityEncounter(creature.calamity, value).level}` : value}</option>`).join('')}</select></label>
-          <div class="glossary-loot">${lootTable(creature.id, stage, account.conduitUpgrades, account.conduits, account.machineLootFocus)}</div></section>`, 'View Loot')
+          <div class="glossary-loot">${lootTable(creature.id, stage, account.conduitUpgrades)}</div></section>`, 'View Loot')
           : '<button type="button" class="text-button" disabled>View Loot</button><p class="quiet">Defeat this enemy to reveal its loot.</p>'}
       </article>`;
     }).join('')}</div>`;
 }
 
-export function bindCreatureGlossary(host: HTMLElement, upgrades?: ConduitUpgrades, ownedConduits?: Account['conduits'], focus?: Account['machineLootFocus']): void {
+export function bindCreatureGlossary(host: HTMLElement, upgrades?: ConduitUpgrades): void {
   host.querySelector<HTMLSelectElement>('#glossary-area')?.addEventListener('change', (event) => {
     const select = event.currentTarget;
     if (!(select instanceof HTMLSelectElement)) throw new Error('Glossary activity selector is missing.');
@@ -82,7 +82,7 @@ export function bindCreatureGlossary(host: HTMLElement, upgrades?: ConduitUpgrad
       const id = select.dataset.lootStage;
       const target = select.closest('article')?.querySelector('.glossary-loot');
       if (!id || !target) throw new Error('Glossary loot panel is missing.');
-      target.innerHTML = lootTable(id, Number(select.value), upgrades, ownedConduits, focus);
+      target.innerHTML = lootTable(id, Number(select.value), upgrades);
     });
   });
 }

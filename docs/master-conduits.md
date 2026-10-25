@@ -19,7 +19,7 @@ They are separate from the90 ordinary-slot Conduits and never enter ordinary
 machine tier rolls, banners, the Store or Conduit upgrades.
 
 The final Awaken the Machines boss, **stage35 / Lv.120**, independently has
-a **1% chance** to drop one **Cosmic Grand Master Chest**. Repeat final clears
+a **5% chance** (D-400) to drop one **Cosmic Grand Master Chest**. Repeat final clears
 are eligible. This remains the only ordinary direct enemy drop. Under D-315,
 opening any [Calamity EX+Omnipotent chest](calamity-mode.md) additionally grants
 exactly two Cosmic Grand Master Chests, including when all48 Masters are owned.
@@ -201,7 +201,7 @@ node tools\smoke_server_game.mjs --masters
 node tools\smoke_server_game.mjs
 ```
 
-Tests cover the exact 1% boundary/no off-stage entropy, all 48 rules, separate
+Tests cover the exact 5% boundary/no off-stage entropy, all 48 rules, separate
 ordinary pools, real activation, one-write reward/opening failure paths,
 future-character choices, save files, equipment snapshots and server Retry.
 D-264 also covers all48 rules repeating within one round with legacy stamps,

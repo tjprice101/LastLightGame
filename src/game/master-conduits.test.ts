@@ -63,21 +63,21 @@ describe('character Masters and chest contracts', () => {
       expect(entry.effect).not.toContain('->');
     }
   });
-  it('rolls exactly below 1%, only final boss, without consuming entropy elsewhere', () => {
+  it('rolls exactly below 5%, only final boss, without consuming entropy elsewhere', () => {
     for (const stage of [1, 5, machineRules.omnicStage, machineRules.stages - 5, machineRules.stages - 1]) {
       const random = vi.fn(() => 0);
       expect(masterChestDrops(stage, true, random)).toBe(0);
       expect(random).not.toHaveBeenCalled();
     }
     expect(masterChestDrops(machineRules.stages, false, () => { throw new Error('Unexpected RNG'); })).toBe(0);
-    expect(masterChestDrops(machineRules.stages, true, () => .009999999)).toBe(1);
-    expect(masterChestDrops(machineRules.stages, true, () => .01)).toBe(0);
+    expect(masterChestDrops(machineRules.stages, true, () => .049999999)).toBe(1);
+    expect(masterChestDrops(machineRules.stages, true, () => .05)).toBe(0);
     for (const invalid of [-1, 1, NaN, Infinity]) expect(() => masterChestDrops(machineRules.stages, true, () => invalid)).toThrow();
   });
   it('exposes chest loot only at the actual final Machines boss stage', () => {
     expect(creatureLoot(getCreature('infusion:machines:5'), machineRules.stages - 1).some(drop => drop.id === 'grand-master-chest')).toBe(false);
     expect(creatureLoot(getCreature('infusion:machines:5'), machineRules.stages).find(drop => drop.id === 'grand-master-chest'))
-      .toMatchObject({ chance: .01, minimum: 1, maximum: 1 });
+      .toMatchObject({ chance: .05, minimum: 1, maximum: 1 });
   });
   it('loads legacy accounts without writes or granting anything', () => {
     const saved = storage();

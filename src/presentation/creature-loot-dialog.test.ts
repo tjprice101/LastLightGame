@@ -45,20 +45,20 @@ function mount(allDefeated = false) {
 }
 
 describe('enemy loot dialogs and Conduit details', () => {
-  it('shows account-specific owned/unowned chances on initial display and stage changes', () => {
+  it('shows baseline chances regardless of ownership on initial display and stage changes', () => {
     const account = emptyAccount();
     account.conduits = Object.fromEntries(conduits.filter(c => c.rarity === 'Rare' && c.id !== 'duplex-heart').map(c => [c.id, 2]));
     account.creatures = { 'infusion:machines:0': { defeated: true } };
     const host = document.createElement('main');
     host.innerHTML = creatureGlossary(account);
     document.body.append(host);
-    bindCreatureGlossary(host, account.conduitUpgrades, account.conduits);
+    bindCreatureGlossary(host, account.conduitUpgrades);
     const dialog = document.getElementById('creature-loot-infusion:machines:0')!;
     const check = () => {
       const rows = Array.from(dialog.querySelectorAll('tbody tr'));
       for (const conduit of conduits.filter(c => c.rarity === 'Rare')) {
         const row = rows.find(row => row.textContent?.includes(`${conduit.name} · Rare`))!;
-        expect(row.children[2].textContent).toBe(conduit.id === 'duplex-heart' ? '8%' : '0%');
+        expect(row.children[2].textContent).toBe(`${formatStat(8 / conduits.filter(c => c.rarity === 'Rare').length)}%`);
       }
       expect(dialog.textContent).toContain('Fully owned rarities drop nothing');
     };
@@ -74,7 +74,7 @@ describe('enemy loot dialogs and Conduit details', () => {
     account.machineLootFocus = { Omnic: conduits.find(conduit => conduit.rarity === 'Omnic')!.id };
     const host = document.createElement('main');
     host.innerHTML = creatureGlossary(account);
-    bindCreatureGlossary(host, account.conduitUpgrades, account.conduits, account.machineLootFocus);
+    bindCreatureGlossary(host, account.conduitUpgrades);
     const stage = host.querySelector<HTMLSelectElement>('[data-loot-stage="infusion:machines:5"]')!;
     stage.value = '35';
     stage.dispatchEvent(new Event('change', { bubbles: true }));
@@ -84,6 +84,7 @@ describe('enemy loot dialogs and Conduit details', () => {
     expect(text.match(/Each rarity rolls separately/g)).toHaveLength(1);
     expect(text).toContain('your focus, or an equal random choice');
     expect(text).toContain('Fully owned rarities drop nothing');
+    expect(text).toContain('Baseline rates ignore ownership and focus');
     expect(text).toContain('Final-boss amounts already include the 5x bonus');
     expect(text).toContain('Choose an unowned Master in Inventory');
     expect(text.trim().split(/\s+/).length).toBeLessThanOrEqual(60);

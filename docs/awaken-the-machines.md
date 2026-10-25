@@ -1,5 +1,27 @@
 # Awaken the Machines and expanded Conduits
 
+## Current drop rates and baseline loot tables (D-400)
+
+Per-enemy independent Conduit rolls are **Rare8%, Legendary5.5%, Omnic3%**.
+Legendary and Omnic each gain two percentage points; Rare and the0.5% banner
+bonus are unchanged. Omnic still starts at stage26; boss/ordinary Conduit
+odds match. The final stage35 boss independently drops one Cosmic Grand
+Master Chest at **5%**, replacing1%. Guaranteed Calamity chest contents and
+all other activities' drops are unchanged.
+
+Collections' View Loot always shows the enemy's baseline per-name rate:
+the tier chance divided by its full pool, ignoring ownership and Focus Loot
+on initial render and stage changes. Stage-picker loot lists likewise keep
+the complete baseline pool. These are reference tables, not personalized
+forecasts. Actual rewards still honor unowned-only selection and Focus Loot;
+owned tiers drop nothing, focus clears only on acquisition, and RNG stream
+draw counts, atomic rewards and receipt deduplication remain unchanged.
+
+This supersedes earlier rate and account-specific table statements below,
+not their35-stage layout, migration, unlock or focus-persistence contracts.
+Client and shared authority must be deployed together after tests, build,
+authority rebundle/type-check and hosted reward parity checks.
+
 ## Current35-stage layout (D-380)
 
 Machines has **35 stages**, still starting at enemy Lv.10 and ending at
