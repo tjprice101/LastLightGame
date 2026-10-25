@@ -27,6 +27,11 @@ See the [UI contract](menus-and-inventory.md#readable-activity-banners-and-uncli
 
 ## Current consolidation (D-173)
 
+Historical consolidation only: D-313 and subsequent native identity work
+supersede the resource-removal direction below. Current playable kits are
+defined in [native identities](character-identity-redesign.md); D-415 makes
+all their damage critical-eligible. D-414 above owns current recruitment.
+
 Owner chooses Rose-only signatures rather than preserving bespoke War counters.
 Retire Nerithe's Charted Current and Orvella's Foundation; their base kits and
 Nerithe's fixed5 extra Normal-only Gauge stay. Vaelor participates in shared

@@ -1,5 +1,12 @@
 # Passion of Crimson Roses and Roses Under Sunny Skies
 
+**Current banner rule (D-412):** Roses uses one80-pull pity and unchanged
+duplicate conversion, with its actual six-star-only roster. Older80/150 or
+200/500 statements below are historical. See
+[exact current rules](summoning-and-economy.md#single80-pull-pity-d-412).
+Current native kits and critical eligibility are in
+[native identities](character-identity-redesign.md) and [combat](combat.md).
+
 ## Captures at every event level (D-410)
 
 All35 Rose stages, including Lv.121-140 enemies and the final boss, have the

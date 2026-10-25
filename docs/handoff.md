@@ -40,9 +40,16 @@
   [enemy calibration](enemy-benchmark-calibration.md#rules13-critical-damage-remeasurement-d-415).
   Full global roster rankings were not remeasured and are explicitly historical
   under the new critical rules; do not claim an updated global ceiling.
-- Publication gate: client and authority use rules13; verify Pages success and
-  matching hosted version before reporting the client live. No further owner
-  design decision is needed for this request.
+- Release verified: client and authority use rules13. Commit
+  `7ff38a0daa564914f71299b28de3b564e3403034` is pushed/live; workflow
+  `40241710900` passed all212 test files, production build and Pages. Hosted
+  `version.json` matched that exact commit. No further owner decision is needed.
+- Follow-up documentation sanity check reconciles the public README, stale
+  banner cross-references and legacy specification headings with D-412/D-415.
+  Historical decisions remain historical, not current mechanic declarations.
+  Checked788 relative file links across12 edited Markdown files; corrected one
+  stale Menu stylesheet link. `git diff --check` passed. Documentation-only:
+  no gameplay, accounts or balance changes; no additional gameplay test run.
 
 ## Guaranteed Elemental War recruitment (D-414)
 
@@ -8248,7 +8255,8 @@ Verified incoming originals moved out of root only after successful archival.
 `Valor Activity Banner.png` is mapped to Vaelor, not a character rename.
 
 Nerithe is a6-star Aquatic tactical attacker with six forms and a free,
-independently unlocked ten-stage trial90-140. The same final-only1% recruitment,
+independently unlocked ten-stage trial90-140. D-414 supersedes the original1%
+recruitment with a guaranteed final-stage award; the same
 100 Null-Prismatica owned-result conversion, atomic receipt/unlock/currency
 transaction and separate RNG apply. No summon-pool additions or auto-grants.
 Normal Attack gains fixed5 extra Gauge from her snapshot passive, only for
@@ -8424,7 +8432,7 @@ trials:10 sequential stages, Lv90-140, six forms, one human boss per encounter.
 Saved mixed squads, gear/copy snapshots, individual Gauge, Continue/replay,
 named skills/cut-ins and final-stage controls use existing run patterns.
 Separate RNG streams resolve guaranteed Prismatica, optional Null-Prismatica
-and final-stage1% recruitment. Currency, Lv0/Evo1 unequipped acquisition or
+and final-stage recruitment (guaranteed under D-414, originally1%). Currency, Lv0/Evo1 unequipped acquisition or
 100 Null-Prismatica owned-result conversion, unlocks and receipt save atomically.
 No materials, creature captures, extra clear rewards, summon-pool changes or
 recruitment pity. Boss defeats do not reveal playable Archive forms.

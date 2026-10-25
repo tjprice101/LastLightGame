@@ -1,6 +1,13 @@
 # Conduit redesign: approved roster and runtime (D-313)
 
-**Current D-383:** [the owner catalog](conduit-catalog.txt) refreshes all45
+**Current D-415:** this document preserves historical redesign tables, including
+retired no-crit effects. They are not live ability definitions. Use the
+[138-entry catalog](conduit-catalog.txt), [description audit](conduits.md#complete-description-and-keyword-audit-d-415)
+and [rules13 combat contract](combat.md#all-character-kit-damage-can-crit-d-415).
+All character-kit damage is critical-eligible; Cinder and Rosegarden follow
+the owner-confirmed written designs.
+
+**Historical D-383 rollout:** [the owner catalog](conduit-catalog.txt) refreshes all45
 ordinary Omnics and48 Masters, preserving the previous45 D-382
 Common/Rare/Legendary/Calamitic replacements. Omnic/Master squad auras stack
 per living wearer; the global equipment Skill Duration cap remains removed.

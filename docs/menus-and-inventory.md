@@ -1,5 +1,11 @@
 # Menus and inventory
 
+**Current reference corrections:** D-412 uses
+[one80-pull banner meter](summoning-and-economy.md#single80-pull-pity-d-412);
+older dual-counter UI descriptions below are historical. D-415 shares canonical
+bracketed Conduit effects with Master choices, including `[Health]`, complete
+ability names and native resources; it does not change modal sizing/animations.
+
 ## Targeted modal sizing (D-413)
 
 Owner withdraws the global D-411 redesign. Restore pre-D-411 victory/results,
@@ -2263,7 +2269,7 @@ unchanged.
 Rendering/binding lives in [inventory.ts](../src/presentation/inventory.ts) and
 [sanctuary.ts](../src/presentation/sanctuary.ts), with scoped
 [Inventory](../src/presentation/inventory.css) and
-[Menu](../src/presentation/sanctuary-menu.css) styles. Obsolete global Inventory
+[Menu](../src/sanctuary-reference.css) styles. Obsolete global Inventory
 container rules were removed rather than layering competing layouts.
 
 Validation: `npm test -- src\presentation\inventory.test.ts src\presentation\hub.test.ts src\presentation\sanctuary.test.ts src\presentation\conduit-store.test.ts src\presentation\menu-information.test.ts src\presentation\menu-history.test.ts src\presentation\currency-icon.test.ts`,

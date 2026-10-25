@@ -88,9 +88,10 @@ An owned Element-Bearer converts to15 Rare materials: one equally selected
 Standard element, or Bloom of Rosethorn on Roses. No Epic/Legendary/Omnic
 materials, creature copies, sale step or automatic equipping from new draws.
 
-Cost10 Null-Prismatica, independent80/150 pity and additional0.5% Legendary
-Conduit bonus remain. Material results advance both pity counters; character
-results keep existing highest-tier/new-ownership resets and all-owned behavior.
+Cost10 Null-Prismatica and additional0.5% Legendary Conduit bonus remain.
+D-412 uses one80-pull counter per banner: material results advance it; any
+5/6-star character result resets it. Unowned-tier selection and exhausted-tier
+fallback follow the current rules above.
 Duplicate Standard draws use one extra independent summon roll to select the
 element; Roses duplicates need no family roll. Combat/reward/capture RNG stays
 untouched. Main reward, cost, pity and bonus save once, with overflow/write
@@ -346,7 +347,10 @@ The saved result is announced as text; no reward art enters the rate table.
 Pity is approved as below. No multi-draw, featured pool or payments
 have been approved. There are no extra banner placeholders.
 
-## Independent banner pity
+## Historical independent banner pity (superseded by D-412)
+
+The following is retained implementation history, not current draw behavior.
+Use [single80-pull pity](#single80-pull-pity-d-412) for all live banners.
 
 Owner approved D-208's two independent per-banner counters, counting completed draws
 since the last qualifying result:

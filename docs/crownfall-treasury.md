@@ -1,5 +1,10 @@
 # Crownfall Treasury / Phase9
 
+**Current banner rule (D-412):** the Phase9 banner activation below is history.
+All live banners use [one80-pull pity](summoning-and-economy.md#single80-pull-pity-d-412);
+new draws award materials rather than captured copies. Historical saved copies
+and receipts remain intact. Treasury mission captures/sales are separate.
+
 ## Approved and implemented
 
 Luminous Prismatica currency farm with25 stages, starting hostile level65 and

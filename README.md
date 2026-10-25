@@ -9,17 +9,28 @@ Use the [documentation index](docs/README.md) and
 The original prototype overview below is a superseded historical snapshot,
 not the current feature checklist.
 
+- D-415: all character-kit damage can critically hit, and Thorn Traps use
+  explicit empowerment rather than damage thresholds. All138 Conduit/Master
+  descriptions were audited;66 were clarified. See the
+  [combat contract](docs/combat.md#all-character-kit-damage-can-crit-d-415)
+  and [description audit](docs/conduits.md#complete-description-and-keyword-audit-d-415).
+- D-412/D-414: all banners use one80-pull pity, and Elemental War final stages
+  guarantee their own Element-Bearer. See [summoning](docs/summoning-and-economy.md#single80-pull-pity-d-412)
+  and [War recruitment](docs/elemental-war.md#guaranteed-final-stage-recruitment-d-414).
 - D-404: the [non-Calamitic character report](docs/roster-capability-audit.md)
   and [global benchmark declaration](docs/enemy-benchmark-calibration.md)
-  are the current performance/difficulty reference. Personal Masters remain
+  define the calibration method, but their full-roster numerical rankings
+  predate D-415 and have not been remeasured. Current bounded648-encounter
+  Calamity results are documented separately there. Personal Masters remain
   eligible; early hostile stats are preserved and late combat/Calamity use
   measured non-Calamitic preparation rather than historical ceiling teams.
 
-- D-129/D-131/D-132: evolution-matched style references, upgraded character
-  prompt construction and enemy references with complete silhouette containment.
+- D-155/D-159: character prompts retain evolution-matched references at150;
+  production enemy prompts are reference-free. Complete silhouette containment
+  and character-specific palette locks remain required.
 - D-133: visible currencies are **Prismatica** and **Null-Prismatica**;
-  legacy save/asset IDs and economics remain unchanged. Bright/dark crystal
-  prompts use Evo.3, but replacement currency images are still pending.
+  legacy save/asset IDs and economics remain unchanged. D-167 installs the
+  delivered currency replacements; non-portrait prompts use no style references.
 - D-134:60 new portraits for the ten non-starter Element-Bearers are installed,
   background-removed and shared across menus, galleries, banners and battles.
   New originals and previous portraits are preserved with verified hashes.

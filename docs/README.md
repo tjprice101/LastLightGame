@@ -4,6 +4,10 @@
 [all-kit critical and trap rules](combat.md#all-character-kit-damage-can-crit-d-415),
 and [current benchmark limitations/results](enemy-benchmark-calibration.md#rules13-critical-damage-remeasurement-d-415).
 
+Current banner guarantees use [one80-pull pity](summoning-and-economy.md#single80-pull-pity-d-412);
+all older80/150 and200/500 descriptions below are historical. D-415 release
+`7ff38a0` passed full regression/build/Pages and matches the hosted client.
+
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 

@@ -1,5 +1,16 @@
 # Development roadmap
 
+## Current maintenance baseline
+
+D-415 is released: all-kit critical damage, explicit trap empowerment and the
+complete138-description audit are implemented. D-412 single80-pull pity and
+D-414 guaranteed War final-stage recruitment supersede the original phase
+tables below. Those tables record delivery history, not current tuning.
+Use the [handoff](handoff.md), [combat contract](combat.md) and
+[summoning rules](summoning-and-economy.md#single80-pull-pity-d-412).
+The full-roster capability report still awaits post-D-415 remeasurement;
+bounded Calamity results are current, not a substitute for that full audit.
+
 ## Active owner-requested expansion phases
 
 Implement and verify one phase at a time. Ask about each blocking design choice

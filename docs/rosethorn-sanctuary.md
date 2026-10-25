@@ -1,5 +1,10 @@
 # Rosethorn Sanctuary
 
+**Current banner rule (D-412):** all live banners use
+[one80-pull pity](summoning-and-economy.md#single80-pull-pity-d-412).
+Banner material rewards supersede older creature-result/duplicate descriptions
+below; mission captures and existing saved copies are separate and unchanged.
+
 ## Direction and balance
 
 Phase10's Tranquilitic Null-Prismatica farm. Owner selected the name and **25 stages,
