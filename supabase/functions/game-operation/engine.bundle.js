@@ -6193,7 +6193,7 @@ function warLoot(stage) {
   return {
     fractalis: bossLootRange({ minimum: Math.round(1500 + 3500 * t * t), maximum: Math.round(2500 + 5500 * t * t) }, multiplier),
     lycalis: { chance: 0.3 + 0.3 * t, quantity: Math.round(1 + 4 * t) * multiplier },
-    recruitmentChance: stage === warStageCount ? 0.01 : 0
+    recruitmentChance: stage === warStageCount ? 1 : 0
   };
 }
 function rollWarRewards(stage, currencyRandom, premiumRandom, recruitmentRandom) {

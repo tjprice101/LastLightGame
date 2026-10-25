@@ -91,7 +91,7 @@ describe('Elemental War', () => {
     }
   });
 
-  it('enforces exact currency ranges, independent premium and final-only1% boundaries', () => {
+  it('enforces exact currency ranges, independent premium and final-only guaranteed recruitment', () => {
     expect(warLoot(1)).toMatchObject({ fractalis: { minimum: 1500, maximum: 2500 }, lycalis: { chance: .3, quantity: 1 } });
     expect(warLoot(10)).toMatchObject({ fractalis: { minimum: 25000, maximum: 40000 }, lycalis: { chance: .6, quantity: 25 } });
     const recruitment = vi.fn(() => 0);
@@ -100,7 +100,14 @@ describe('Elemental War', () => {
     }
     expect(recruitment).not.toHaveBeenCalled();
     expect(rollWarRewards(10, () => 0, () => .6, () => .009999)).toEqual({ amount: 25000, lycalis: 0, recruitment: true });
-    expect(rollWarRewards(10, () => .999999, () => .599999, () => .01)).toEqual({ amount: 40000, lycalis: 25, recruitment: false });
+    expect(rollWarRewards(10, () => .999999, () => .599999, () => .999999)).toEqual({ amount: 40000, lycalis: 25, recruitment: true });
+    expect(warLoot(10).recruitmentChance).toBe(1);
+    for (const roll of [0, .01, .5, .999999]) {
+      expect(rollWarRewards(10, () => 0, () => .99, () => roll).recruitment).toBe(true);
+    }
+    for (const invalid of [-1, 1, NaN, Infinity]) {
+      expect(() => rollWarRewards(10, () => 0, () => 0, () => invalid)).toThrow();
+    }
     for (const invalid of [-1, 1, NaN, Infinity]) expect(() => rollWarRewards(10, () => invalid, () => 0, () => 0)).toThrow();
     const source = createWarBattle('vaelor', 10, 20, 'ember', { level: 105, evolution: 6 });
     source.enemies[0].hp = 1;
@@ -113,6 +120,17 @@ describe('Elemental War', () => {
     expect(second.state.rewardSeed).toBe(first.state.rewardSeed);
     expect(second.state.lycalisSeed).toBe(first.state.lycalisSeed);
     expect(second.events.filter((event) => event.kind !== 'reward')).toEqual(first.events.filter((event) => event.kind !== 'reward'));
+  });
+
+  it.each(elementalWars.map(({ character }) => character))('guarantees the correct final-stage recruit for %s', character => {
+    for (const burn of [false, true]) {
+      const { saved } = storage();
+      const result = defeat(character, 10, burn);
+      expect(result.events.find(event => event.kind === 'reward')?.recruitment).toBe(character);
+      expect(saveAccountRewards(saved, result, `war-${character}-${burn}`).characters[character])
+        .toEqual({ level: 0, evolution: 1, weaponRank: 0 });
+      expect(saved.setItem).toHaveBeenCalledTimes(1);
+    }
   });
 
   it.each([false, true])('saves recruitment, both currencies and receipt once; burn=%s', (burn) => {

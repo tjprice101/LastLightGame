@@ -1,5 +1,19 @@
 # Current state and handoff
 
+## Guaranteed Elemental War recruitment (D-414)
+
+- Each stage10 clear guarantees its own Nerithe/Orvella/Vaelor at Lv.0/Evo.1,
+  unequipped; owned results retain100 Null-Prismatica conversion on replay.
+  Stages1-9 never recruit; currencies, unlocks and receipt atomicity unchanged.
+- Shared reward table, activity copy and authority bundle must ship together.
+  Validation: `npm test -- src\game\elemental-war.test.ts
+  src\presentation\stage-loot.test.ts src\online\server-game.test.ts
+  src\presentation\ui-copy.test.ts` passed120 tests/4 files;
+  `npm run build` passed type-check and production build (existing chunk warning).
+- D-412/D-413 release verified live at
+  `f4f45feb849badde908ae5457ccdef1cce38fcbb`:6596 tests/212 files passed,
+  production build and Pages deployment passed; hosted version matches.
+
 ## Mode-owned rewards, single pity and targeted modal correction (D-412/D-413)
 
 - Owner explicitly withdraws D-411's global full-screen/paged layout. Original

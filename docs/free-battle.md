@@ -63,9 +63,11 @@ Examples:
 | War10 |25,000-40,000 Prismatica;60% chance of25 Null-Prismatica |
 
 Conduit/chest counts remain one per successful roll. Their chances, capture
-chances/counts, War recruitment1%, owned-recruit conversion100 Null-Prismatica
+chances/counts, owned-recruit conversion100 Null-Prismatica
 and separate one-time Story regional bonuses are unchanged. Live Collections
 loot tables, Gameplay Information and Battle menu explain the same rule.
+
+D-414 separately makes War final-stage recruitment guaranteed on every clear.
 
 Shared implementation: [classifier/range helper](../src/content/final-boss-loot.ts),
 [reward engine](../src/game/battle.ts), [atomic validator](../src/game/account.ts).

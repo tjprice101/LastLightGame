@@ -98,7 +98,7 @@ It does not change ownership, progression, combat or persistent save identities.
 
 - D-145/D-152/D-156: Elemental War was design-first; Nerithe, Orvella and Vaelor are now
   implemented playable6-star Element-Bearers with their own trials. Each character-themed
-  activity has10 stages90-140, six forms and1% final-boss base-form EB recruitment.
+  activity has10 stages90-140, six forms and guaranteed final-boss base-form EB recruitment (D-414).
   Guaranteed Prismatica, separate chance of Null-Prismatica, no other loot;
   successful owned recruitment converts to existing currency. Activity-header
   banners only, not summon banners. Two female/one male original designs

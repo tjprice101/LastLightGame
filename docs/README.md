@@ -3,6 +3,10 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**Guaranteed War recruitment (D-414):** [each Elemental War final stage](elemental-war.md#guaranteed-final-stage-recruitment-d-414)
+now guarantees its own Element-Bearer; already-owned results retain100
+Null-Prismatica conversion. Earlier stages never recruit.
+
 **Targeted modal correction (D-413):** [only the Master choice panel is widened](menus-and-inventory.md#targeted-modal-sizing-d-413),
 with three desktop columns and bounded scrolling. Existing small modals,
 mission/results screens and opening/upgrade animations are restored.
@@ -965,7 +969,7 @@ Decision-critical data stays visible; detailed rules remain in Help/Information.
 
 **Elemental War (D-152/D-156): all three challengers playable.** Approved6-star
 Nerithe/Orvella/Vaelor have supplied six-form art and16 action/ability icons; three free
-ten-stage trials run Lv.90-140, with final-only1% base-form recruitment or
+ten-stage trials run Lv.90-140, with guaranteed final-stage base-form recruitment or
 100 Null-Prismatica duplicate conversion. Independent currencies, unlocks and
 receipt save atomically. Existing squad/gear/Gauge/progression and summon pools
 are preserved. All three headers/arenas are installed; family header, standalone

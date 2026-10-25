@@ -83,7 +83,7 @@ All roster combinations below are conditional on ownership. For a fresh account 
 - A named5-star Standard bearer has1% divided across six names:0.1667% natural rate (mean600 pulls without pity). A named6-star Standard bearer has0.1% divided across four:0.025% natural (mean4000 without pity). Highest-tier pity changes those means drastically; the no-pity numbers must NOT be used as real six-star expected cost.
 - Current pity is80 highest-star /150 unowned-highest-star. From a fresh roster, at most600 Standard pulls guarantee all four highest6-stars, at most450 Rose pulls all three highest Roses (ignoring other income/availability). No target5-star guarantee: unlucky tails remain. Costs are10 Null-Prismatica per pull.
 - Do not equate lower stars with easier targeted acquisition: a specific five-star lacks the highest-tier ownership guarantee. A five-star-only lineup can still be harder to finish than a lucky/pity-built six-star lineup. The free chosen starter is the only guaranteed no-pull bearer.
-- Rose natural character tier1.1% split three:0.3667% per name. War recruitment1% per final clear, no pity: mean100 /median69 /90th percentile230 eligible clears per name. Those are acquisition odds only, not simulated battle wins.
+- Rose natural character tier1.1% split three:0.3667% per name. D-414 makes War recruitment guaranteed on the first eligible final clear per name; repeat clears grant100 Null-Prismatica. These are acquisition rules only, not simulated battle wins.
 - No paid spending, session length, income-per-hour, capture fodder grind or activity clear feasibility is invented here.
 
 ### Gear acquisition bills for leading Lv.105 configurations
@@ -126,9 +126,9 @@ Counts deduplicate account-wide ordinary names. Per-tier means are focused eligi
 | Disciple | Conditional ally instructor | Standard 2.5/10,000 pulls |
 | Elise | Two-shuriken placement duelist | Standard 16.7/10,000 pulls |
 | Razor | Wounds-powered revenge duelist | Standard 2.5/10,000 pulls |
-| Nerithe | Survey and precision-pierce attacker | War final recruitment:1% per eligible clear; highest account Lv.85 gate |
-| Orvella | Finite-durability team architect | War final recruitment:1% per eligible clear; highest account Lv.85 gate |
-| Vaelor | Deterministic three-beat burst attacker | War final recruitment:1% per eligible clear; highest account Lv.85 gate |
+| Nerithe | Survey and precision-pierce attacker | War final recruitment: guaranteed per eligible clear; highest account Lv.85 gate |
+| Orvella | Finite-durability team architect | War final recruitment: guaranteed per eligible clear; highest account Lv.85 gate |
+| Vaelor | Deterministic three-beat burst attacker | War final recruitment: guaranteed per eligible clear; highest account Lv.85 gate |
 
 ## Exact cumulative leveling/evolution spending
 

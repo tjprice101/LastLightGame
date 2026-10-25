@@ -1,5 +1,13 @@
 # Elemental War
 
+## Guaranteed final-stage recruitment (D-414)
+
+Every stage10 victory guarantees its own Element-Bearer: Nerithe, Orvella or
+Vaelor, at Lv.0/Evo.1 and unequipped. An already-owned result converts to
+100 Null-Prismatica on every clear/replay. Stages1-9 never recruit.
+Currency rolls, stage unlocks and atomic receipt persistence remain unchanged;
+there are no retroactive grants. This supersedes the former1% recruitment rule.
+
 ## Consistent hostile difficulty (D-289)
 
 Trial enemies use the same complete hostile stats and level-based skill
@@ -55,7 +63,7 @@ Normal Attack/Defense icons remain pending; no missing PNG URLs or substitutions
 - Each sub-mode pits the squad against one new Element-Bearer across that
   character's six evolution forms, distributed over **10 stages**.
 - Stage1 begins at **Lv.90**; stage10 ends at **Lv.140**.
-- Defeating the final, highest boss grants a **1% chance** to acquire that
+- Defeating the final, highest boss grants a **100% chance** to acquire that
   Element-Bearer's **base form as a playable character**.
 - Every boss victory grants Prismatica; Null-Prismatica has a separate chance,
   as selected by the owner. No materials, creatures, Conduits, components,
@@ -192,7 +200,7 @@ Stages are not six phases in a single encounter.
 | 7 | 123 | Evo.4 | Epic | None |
 | 8 | 129 | Evo.4 | Epic | None |
 | 9 | 134 | Evo.5 | Legendary | None |
-| 10 | 140 | Evo.6 | Omnic | Independent1% base-form recruitment |
+| 10 | 140 | Evo.6 | Omnic | Guaranteed base-form recruitment |
 
 Approved entry: saved1-3-member squad, sequential per-sub-mode unlocks, no entry
 currency fee, stage10 replayable. Continue remains manual. Bosses should reuse
@@ -216,10 +224,10 @@ With `t = (stage - 1) / 9`:
 - Independent Null-Prismatica chance `0.30 + 0.30*t`.
   A success grants `round(1 + 4*t)`.
   Stage1:30% for1; stage10:60% for25 after the5x boost.
-- Final boss alone separately rolls `0.01` recruitment, regardless of currency
-  outcomes. No recruitment pity; the chance never rises after failed attempts.
-- Approved owned-result conversion: **100 Null-Prismatica**, only on a successful
- 1% roll, instead of another character/copy.
+- Final boss alone guarantees recruitment, regardless of currency outcomes.
+  No recruitment pity is needed.
+- Approved owned-result conversion: **100 Null-Prismatica** on every final clear
+  when already owned, instead of another character/copy.
 - No first-clear bonus, bonus currency roll, materials, captures of creatures,
   Conduits, BMC, tokens, equipment or auto-equip.
 
@@ -315,7 +323,7 @@ shared exporters, untouched full-bleed scenery and conflict preflight. Intake:
 
 `npm test -- src\game\elemental-war.test.ts` tests all30 implemented boundaries,
 all six forms,
-both currencies and exact1% RNG boundary (`roll < .01`), no recruitment
+both currencies and guaranteed recruitment across valid RNG boundaries, no recruitment
 on stages1-9, every failure/retry/receipt/owned-result path, atomic overflow,
 legacy ownership, saved squads/gear/Gauge and Archive unlock behavior.
 Injected RNG tests must verify actual outcomes, not approximate sampling rates.

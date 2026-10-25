@@ -9,7 +9,7 @@ import { warStageCount } from './activities';
 
 export { isWarCharacter, type WarCharacterId } from './war-characters';
 export { warStageCount } from './activities';
-export const warRulesText = 'Ten free stages, Lv.90-140, one boss each. Prismatica: 1,500-2,500, rising to 25,000-40,000 at the final boss. Null-Prismatica: 30% chance of 1, rising to 60% of 25. The final boss gives 5x currency on every clear and a 1% chance to recruit its Element-Bearer at Lv.0, Evo.1; an owned result becomes 100 Null-Prismatica. No pity, materials or captures. HP resets between stages; Gauge carries over.';
+export const warRulesText = 'Ten free stages, Lv.90-140, one boss each. Prismatica: 1,500-2,500, rising to 25,000-40,000 at the final boss. Null-Prismatica: 30% chance of 1, rising to 60% of 25. Every final boss clear gives 5x currency and guarantees recruitment at Lv.0, Evo.1 of its Element-Bearer; an owned result becomes 100 Null-Prismatica. No pity, materials or captures. HP resets between stages; Gauge carries over.';
 export const elementalWars = [
   { character: 'nerithe', name: 'The Sea Without a Shore', element: 'oceanic' },
   { character: 'orvella', name: 'The Throne Beneath the World', element: 'botanic' },
@@ -40,7 +40,7 @@ export function warLoot(stage: number) {
   const multiplier = bossLootMultiplier({ war: { stage } });
   return { fractalis: bossLootRange({ minimum: Math.round(1500 + 3500 * t * t), maximum: Math.round(2500 + 5500 * t * t) }, multiplier),
     lycalis: { chance: .3 + .3 * t, quantity: Math.round(1 + 4 * t) * multiplier },
-    recruitmentChance: stage === warStageCount ? .01 : 0 };
+    recruitmentChance: stage === warStageCount ? 1 : 0 };
 }
 
 export function rollWarRewards(stage: number, currencyRandom: () => number, premiumRandom: () => number,
