@@ -379,7 +379,7 @@ try {
 }
 
 async function smokePhaseZero(client, userId, username) {
-  assert.equal(conduitRulesVersion, 10, 'The production bundle must activate rules10');
+  assert.equal(conduitRulesVersion, 11, 'The production bundle must activate rules11');
   const id = 'calamitic-causality-funeral-engine';
   const entropy = { seed: () => 7321, uuid: () => randomUUID(), random: () => .9 };
   let game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
@@ -430,7 +430,7 @@ async function smokePhaseZero(client, userId, username) {
   assert.equal(fresh.session.state.allies[0].stats.skillPower, 1, 'A fresh entry uses current menu gear');
   assert.equal(fresh.session.state.conduitRulesVersion, 10);
   assert.equal((await invoke({ kind: 'quit', runId: fresh.session.runId }, fresh.revision)).session, null);
-  console.log('Hosted Phase 0 smoke passed: rules10, frozen Funeral +5 Efficiency cap, exact direct-damage parity and25 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.');
+  console.log('Hosted Phase 0 smoke passed: rules11, frozen Funeral +5 Efficiency cap, exact direct-damage parity and25 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.');
 }
 
 async function smokeGlassrootStasis(firstClient, firstId, firstUsername) {
@@ -491,7 +491,7 @@ async function smokeGlassrootStasis(firstClient, firstId, firstUsername) {
       assert.deepEqual((await invoke({ kind: 'read' })).session.state, actual.session.state);
     }
   }
-  console.log('Hosted Glassroot/Stasis smoke passed: rules10, 450-Health stat parity, +0/+5 seeded success/failure, later-hit damage, penalty turn, exact local/server events/snapshots, persisted reads and idempotent retries. Disposable identities only.');
+  console.log('Hosted Glassroot/Stasis smoke passed: rules11, 450-Health stat parity, +0/+5 seeded success/failure, later-hit damage, penalty turn, exact local/server events/snapshots, persisted reads and idempotent retries. Disposable identities only.');
 }
 
 async function smokeConduitRework(firstClient, firstId, firstUsername) {
@@ -569,7 +569,7 @@ async function smokeConduitRework(firstClient, firstId, firstUsername) {
       game = expected.game;
     }
   }
-  console.log('Hosted Conduit rework smoke passed: all45 replacements at +0/+5 across four disposable squads, rules10 static/runtime parity, healing/Shield/Last Flare/enemy-phase results, persisted snapshots and idempotent retries. No owner accounts modified.');
+  console.log('Hosted Conduit rework smoke passed: all45 replacements at +0/+5 across four disposable squads, rules11 static/runtime parity, healing/Shield/Last Flare/enemy-phase results, persisted snapshots and idempotent retries. No owner accounts modified.');
 }
 
 async function smokeOmnicRefresh(firstClient, firstId, firstUsername) {
@@ -677,7 +677,7 @@ async function smokeOmnicRefresh(firstClient, firstId, firstUsername) {
 async function smokeCalamityTuning(client, userId, username) {
   const activities = ['treasury', 'sanctuary', 'heavens', 'abyss', 'machines', 'roses',
     'infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic'];
-  const stats = [[145, 527682, 14798, 3095], [160, 983112, 22532, 4794], [170, 1567959, 31407, 6756]];
+  const stats = [[145, 791524, 11839, 2785], [160, 1474668, 15772, 4195], [170, 2351938, 18844, 5743]];
   const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
   const game = freshGame(username);
   game.starterId = 'ember';
@@ -750,9 +750,9 @@ async function smokeNativeCalamity(client, userId, username) {
   let response = await invoke({ kind: 'read' }, 0);
   assert.equal(response.session.state.conduitRulesVersion, conduitRulesVersion);
   assert.equal(response.session.state.enemies[0].level, 170);
-  assert.equal(response.session.state.enemies[0].stats.health, 1567959);
-  assert.equal(response.session.state.enemies[0].stats.damage, 31407);
-  assert.equal(response.session.state.enemies[0].stats.defense, 6756);
+  assert.equal(response.session.state.enemies[0].stats.health, 2351938);
+  assert.equal(response.session.state.enemies[0].stats.damage, 18844);
+  assert.equal(response.session.state.enemies[0].stats.defense, 5743);
   const runId = response.session.runId;
   for (const [actorId, action, targetId] of [
     ['tide', 'skill2', 'disciple'], ['disciple', 'skill1', 'ember'],
@@ -790,9 +790,9 @@ async function smokeNativeCalamity(client, userId, username) {
   assert.equal(quit.session, null);
   const entered = await invoke({ kind: 'enter', activity: { kind: 'calamity', activity: 'treasury', tier: 1 } }, quit.revision);
   assert.equal(entered.session.state.enemies[0].art, 'calamity-boss-treasury');
-  assert.equal(entered.session.state.enemies[0].stats.health, 527682);
-  assert.equal(entered.session.state.enemies[0].stats.damage, 14798);
-  assert.equal(entered.session.state.enemies[0].stats.defense, 3095);
+  assert.equal(entered.session.state.enemies[0].stats.health, 791524);
+  assert.equal(entered.session.state.enemies[0].stats.damage, 11839);
+  assert.equal(entered.session.state.enemies[0].stats.defense, 2785);
   const leave = await invoke({ kind: 'quit', runId: entered.session.runId }, entered.revision);
   assert.equal(leave.session, null);
   const rose = await invoke({ kind: 'enter', activity: { kind: 'calamity', activity: 'roses', tier: 1 } }, leave.revision);
@@ -801,7 +801,7 @@ async function smokeNativeCalamity(client, userId, username) {
   let exited = await invoke({ kind: 'quit', runId: rose.session.runId }, rose.revision);
   assert.equal(exited.session, null);
   for (const [mode, level, health, damage, defense] of [
-    ['machines', 120, 248758, 8652, 1774], ['roses', 140, 424325, 12589, 2620],
+    ['machines', 120, 348261, 7787, 1685], ['roses', 140, 636488, 10323, 2358],
   ]) {
     const normal = await invoke({ kind: 'enter', activity: { kind: 'infusion', mode, stage: 35 } }, exited.revision);
     const enemy = normal.session.state.enemies[0];

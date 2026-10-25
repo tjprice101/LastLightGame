@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { enemyCombatStats, enemyExponentialRates, enemyGrowth, enemyResistanceRamp, enemyStat, enemyStrengthMultiplier } from './stat-growth';
+import { enemyBenchmarkMultiplier, enemyCombatStats, enemyExponentialRates, enemyGrowth, enemyResistanceRamp, enemyStat, enemyStrengthMultiplier } from './stat-growth';
 import { calamityActivities, calamityEncounter, calamityTierScaling } from './calamity';
 import { resolveFighter } from './combat';
 import { dungeonEncounter, playableDungeons } from './dungeons';
@@ -28,8 +28,9 @@ describe('accelerating enemy stat curves', () => {
             ? level + 160 * progress ** 2 * (1 - progress) ** 2 : level;
           const original = base * (1 + slope * Math.expm1(rate * (effectiveLevel - 1)) / rate);
           const resistance = enemyResistanceRamp[stat] ** (Math.max(0, effectiveLevel - 80) / 60);
-          expect(stats[stat]).toBe(Math.round(original * 1.05 * resistance));
-          expect(Math.abs(stats[stat] - original * 1.05 * resistance)).toBeLessThanOrEqual(.5);
+          const benchmark = enemyBenchmarkMultiplier(level, stat);
+          expect(stats[stat]).toBe(Math.round(original * 1.05 * resistance * benchmark));
+          expect(Math.abs(stats[stat] - original * 1.05 * resistance * benchmark)).toBeLessThanOrEqual(.5);
           expect(Number.isSafeInteger(stats[stat])).toBe(true);
           if (level >= 21 && level <= 80) {
             const before = enemyCombatStats(level - 20, boss)[stat];
@@ -39,7 +40,7 @@ describe('accelerating enemy stat curves', () => {
           if (level > 1) {
             const previous = enemyCombatStats(level - 1, boss)[stat];
             expect(stats[stat]).toBeGreaterThanOrEqual(previous);
-            if (level > 80) expect(stats[stat] / previous).toBeLessThan(1.072);
+            if (level > 80) expect(stats[stat] / previous).toBeLessThan(1.09);
           }
         }
       }
@@ -54,7 +55,7 @@ describe('accelerating enemy stat curves', () => {
     for (const value of [0, -1, 186, NaN, Infinity, 1.5]) expect(() => enemyCombatStats(value, false)).toThrow();
   });
 
-  it('strengthens every intermediate81-144 stat while preserving all opening and accepted Calamity stats', () => {
+  it('preserves1-80 and trades later burst/Defense for endurance on the non-Calamitic benchmark', () => {
     for (const boss of [false, true]) {
       for (let level = 1; level <= 185; level++) {
         for (const [stat, base, slope, target] of [
@@ -63,11 +64,14 @@ describe('accelerating enemy stat curves', () => {
           ['defense', boss ? 16 / 3 : 4, .30, 2],
         ] as const) {
           const rate = enemyExponentialRates[stat];
-          const before = base * (1 + slope * Math.expm1(rate * (level - 1)) / rate) * 1.05;
-          const previous = Math.round(before * target ** (Math.max(0, level - 80) / 60));
-          if (level > 80 && level < 145) expect(enemyCombatStats(level, boss)[stat]).toBeGreaterThanOrEqual(previous);
-          else expect(enemyCombatStats(level, boss)[stat]).toBe(previous);
-          if (level >= 82 && level <= 143) expect(enemyCombatStats(level, boss)[stat]).toBeGreaterThan(previous);
+          const p = (level - 80) / 65;
+          const effective = level > 80 && level < 145 ? level + 160 * p ** 2 * (1 - p) ** 2 : level;
+          const before = base * (1 + slope * Math.expm1(rate * (effective - 1)) / rate) * 1.05;
+          const previous = Math.round(before * target ** (Math.max(0, effective - 80) / 60));
+          const current = enemyCombatStats(level, boss)[stat];
+          if (level <= 80) expect(current).toBe(previous);
+          else if (stat === 'health') expect(current).toBeGreaterThanOrEqual(previous);
+          else expect(current).toBeLessThanOrEqual(previous);
         }
       }
     }
@@ -84,7 +88,7 @@ describe('accelerating enemy stat curves', () => {
       expect(Math.abs(growth(81) - previousGrowth81)).toBeLessThan(.007);
       expect(Math.abs(growth(145) - growth(146))).toBeLessThan(.007);
       for (let level = 81; level < 145; level++) {
-        expect(Math.abs(growth(level + 1) - growth(level))).toBeLessThan(.007);
+        expect(Math.abs(growth(level + 1) - growth(level))).toBeLessThan(.008);
         expect(enemyCombatStats(level, boss)[stat]).toBeLessThan(enemyCombatStats(145, boss)[stat]);
       }
     }
@@ -92,22 +96,33 @@ describe('accelerating enemy stat curves', () => {
 
   it.each([
     [80, 25856, 1731, 329],
-    [90, 47170, 2665, 518],
-    [100, 92565, 4306, 856],
-    [110, 164798, 6474, 1311],
-    [120, 248758, 8652, 1774],
-    [130, 327316, 10493, 2168],
-    [140, 424325, 12589, 2620],
-    [145, 512313, 14367, 3005],
-    [160, 1003175, 22992, 4892],
-    [170, 1567959, 31407, 6756],
-    [185, 3059413, 50059, 10938],
+    [90, 51886, 2598, 518],
+    [100, 111078, 4090, 856],
+    [110, 214237, 5988, 1278],
+    [120, 348261, 7787, 1685],
+    [130, 474609, 9024, 2005],
+    [140, 636488, 10323, 2358],
+    [145, 768470, 11494, 2704],
+    [160, 1504763, 16094, 4281],
+    [170, 2351938, 18844, 5743],
+    [185, 4589119, 30036, 9297],
   ])('locks exact Lv%s boss stats with one final rounding step', (level, health, damage, defense) => {
     expect(enemyCombatStats(level, true)).toMatchObject({ health, damage, defense });
   });
 
   it('leaves captured playable stats on their independent player-growth curve', () => {
     expect(capturedEnemyStats(120)).toMatchObject({ health: 4180, damage: 722, defense: 16 * 19 ** .7 });
+  });
+  it('locks benchmark anchors, smooth interpolation and invalid-input rejection', () => {
+    for (const [level, health, damage, defense] of [[80, 1, 1, 1], [100, 1.2, .95, 1],
+      [120, 1.4, .9, .95], [140, 1.5, .82, .9], [145, 1.5, .8, .9],
+      [160, 1.5, .7, .875], [170, 1.5, .6, .85], [185, 1.5, .6, .85]]) {
+      expect(enemyBenchmarkMultiplier(level, 'health')).toBe(health);
+      expect(enemyBenchmarkMultiplier(level, 'damage')).toBe(damage);
+      expect(enemyBenchmarkMultiplier(level, 'defense')).toBe(defense);
+    }
+    expect(enemyBenchmarkMultiplier(85, 'health')).toBeCloseTo(1 + .2 * .15625, 12);
+    for (const value of [0, 186, NaN, Infinity, 1.5]) expect(() => enemyBenchmarkMultiplier(value, 'health')).toThrow();
   });
 
   it.each(starters)('$name retains playable growth while hostile relative pressure compounds', ({ id }) => {

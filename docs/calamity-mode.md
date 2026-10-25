@@ -1,5 +1,26 @@
 # Calamity Mode (D-308 / D-315)
 
+## Non-Calamitic endgame benchmark (D-404)
+
+Current difficulty follows the [global benchmark declaration](enemy-benchmark-calibration.md)
+and [canonical character report](roster-capability-audit.md), with personal
+Masters but **no Calamitic Conduits** in calibration. EX+1/2/3 keep their
+145/160/170 levels,1.03/.98/1 multipliers, skills, gates and rewards.
+The new shared endurance/burst curve supersedes the D-398 absolute stats.
+Exact adjusted Health/Attack/Defense:
+
+| Tier | Level | Health | Attack | Defense |
+|---|---:|---:|---:|---:|
+| EX+1 |145|791524|11839|2785|
+| EX+2 |160|1474668|15772|4195|
+| EX+3 |170|2351938|18844|5743|
+
+Every EX+3 boss must have at least two distinct optimized non-Calamitic
+team/rotation solutions winning all three calibration seeds. This is not a
+promise for every team, nor a claim of optimal human play. Rules11 restarts
+historical active encounters with original loadouts and saved rewards retained,
+superseding D-398's no-restart policy for this global rules change.
+
 ## Calamity tier tuning (D-398)
 
 Owner confirms all12 activities and level170 for every EX+3 encounter, with

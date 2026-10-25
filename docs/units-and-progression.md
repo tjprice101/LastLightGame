@@ -1,5 +1,14 @@
 # Units and progression
 
+**Canonical performance reference (D-404):** use the
+[non-Calamitic capability audit](roster-capability-audit.md) together with the
+[global benchmark declaration](enemy-benchmark-calibration.md). Personal
+Masters remain eligible; historical Calamitic-inclusive ceilings are not
+enemy targets. Conditional P10/median/P90 roster distributions are modeled,
+not ownership telemetry. Only one chosen starter is free; level does not
+grant recruits, gear, upgrades or Masters. This tuning changes no character
+growth, capture cap, progression costs, gates or rewards.
+
 **Read-only D-401 measurements:** [roster capability audit](roster-capability-audit.md)
 compares legal progression and developed-account builds at seven checkpoints
 through105, including cumulative real upgrade costs and acquisition limits.

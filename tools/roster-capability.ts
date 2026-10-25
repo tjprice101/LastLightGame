@@ -39,13 +39,15 @@ export function maximumProgress(level: number): CharacterProgress {
 
 export function auditGear(roster: readonly StarterId[], profile: AuditProfile): AuditGear {
   const build = profile === 'floor' ? 'bare' : profile === 'unlucky' || profile === 'planned' ? 'common0'
-    : profile === 'farmed' ? 'mixed0' : profile === 'lucky' ? 'master5' : 'calamitic5';
+    : profile === 'farmed' ? 'mixed0' : 'master5';
   const gear = loadout(roster, build);
   if (profile === 'lucky') for (const id of Object.keys(gear.upgrades) as ConduitId[]) gear.upgrades[id] = 0;
   return gear;
 }
 
 export function validateAuditGear(roster: readonly StarterId[], gear: AuditGear): void {
+  if (Object.values(gear.equipment).some(slots => slots?.some(id => id && getConduit(id).rarity === 'Calamitic')))
+    throw new Error('Canonical capability benchmarks exclude Calamitic Conduits.');
   for (const id of roster) {
     validateConduitElement(validateConduitSlots(gear.equipment[id]), getStarter(id).elementId);
     const master = gear.masters[id];
@@ -243,8 +245,8 @@ export function screenMasters(id: StarterId, level: number, profile: 'lucky' | '
     const gear = auditGear([id], profile);
     if (variant === 'glassroot') gear.equipment[id] = ['immortal-vessel', 'horizon-heartcase', 'glassroot-gimbal',
       'stasis-reliquary', ...gear.equipment[id]!.slice(4)];
-    if (variant === 'hybrid') gear.equipment[id] = gear.equipment[id]!.map((piece, index) =>
-      index === 1 ? 'immortal-vessel' : index === 2 ? 'glassroot-gimbal' : piece);
+    if (variant === 'hybrid') gear.equipment[id] = ['citadel-spine', 'immortal-vessel', 'glassroot-gimbal',
+      'stasis-reliquary', ...gear.equipment[id]!.slice(4)];
     for (const piece of gear.equipment[id]!) if (piece) gear.upgrades[piece] = profile === 'ceiling' ? 5 : 0;
     gear.masters[id] = master.id;
     validateAuditGear([id], gear);

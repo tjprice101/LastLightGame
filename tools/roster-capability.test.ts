@@ -88,9 +88,14 @@ describe('opponent-free roster capability audit', () => {
     expect(burst.mean).toBeGreaterThan(0);
     expect(burst.maximum).toBeGreaterThanOrEqual(burst.mean);
     const budget = gearBudget(auditGear(['bliss', 'razor'], 'ceiling'));
-    expect(budget.calamiticTokens).toBe(400);
+    expect(budget.calamiticTokens).toBe(0);
     expect(budget.components).toBeGreaterThan(0);
     expect(budget.masters).toBe(2);
+  });
+  it('rejects Calamitic equipment rather than silently admitting it into canonical benchmarks', () => {
+    const gear = auditGear(['ember'], 'ceiling');
+    gear.equipment.ember![0] = 'calamitic-cathedral-final-equation';
+    expect(() => validateAuditGear(['ember'], gear)).toThrow('exclude Calamitic');
   });
   it('does not count a favorable Stasis proc as reliable one-hit capacity', () => {
     const gear = auditGear(['tide'], 'planned');

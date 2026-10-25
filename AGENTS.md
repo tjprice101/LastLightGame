@@ -8,6 +8,23 @@ changes, deploy the matching authority when shared server behavior changes, and
 verify the hosted client/release. Report failures honestly; do not claim a
 release is live based only on local tests or a successful push.
 
+## Global character and enemy benchmarks (D-404)
+
+Use [the non-Calamitic roster report](docs/roster-capability-audit.md) and
+[the global benchmark declaration](docs/enemy-benchmark-calibration.md) as the
+current character-performance and enemy-difficulty reference. Personal Masters
+remain eligible; historical Calamitic-inclusive ceilings are not tuning targets.
+Model ordinary progression distributions and access honestly: only one starter
+is free; a tested trio is conditional on ownership, not an observed average
+account. Do not balance ordinary enemies against the strongest paper outlier.
+Preserve authored levels/gates/rewards, player/captured growth and gear effects.
+Current hostile factors preserve1-80, lengthen late fights and reduce burst;
+EX+3 remains170 and requires optimized non-Calamitic synergy. Rules11 restarts
+historical encounters with frozen loadouts and saved rewards retained. Rerun
+paper and actual pressured-encounter checks when changing relevant mechanics;
+zero-Defense DPR, healing, shield creation and packet survival are separate
+experiments, not interchangeable clear-rate estimates.
+
 ## Gradient buttons, off-center labels (D-206)
 
 button-style.ts tags flat buttons (text/icon/tile/filled; art and battle units

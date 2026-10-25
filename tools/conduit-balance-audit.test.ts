@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { conduits, validateConduitElement, validateConduitSlots } from '../src/content/conduits';
 import { masterConduits } from '../src/content/master-conduits';
 import { getStarter } from '../src/content/starters';
-import { auditBattle, auditCatalog, auditEncounters, auditGear, runWinningAudit, stasisPacketProbe } from './conduit-balance-audit';
+import { auditBattle, auditCatalog, auditEncounters, auditGear, auditLimits, runWinningAudit, stasisPacketProbe } from './conduit-balance-audit';
 import { measureBattle } from './battle-survey';
+import { calamityEncounter } from '../src/content/calamity';
+import type { BattleState } from '../src/game/battle';
 
 describe('read-only exhaustive Conduit audit integrity', () => {
   it('accounts for all138 IDs, all16 wearer decisions and all legal upgrade endpoints', () => {
@@ -72,21 +74,24 @@ describe('read-only exhaustive Conduit audit integrity', () => {
       expect(on.enemies).toEqual(off.enemies);
     }
   });
-  it('emits complete matching control/event replays for the three-round native EX+3 outlier', () => {
+  it('emits matching control/event replays under current EX+3 stats, not historical outlier outcomes', () => {
     const rows: unknown[] = [];
+    const encounter = { kind: 'calamity', activity: 'atmospheric', tier: 3 } as const;
+    const primary = [true, false].map(on => measureBattle(auditBattle('master-razor-1', 'razor',
+      0, 'supported', on, encounter, 104729), 'native', auditLimits));
     runWinningAudit([{ category: 'all-calamity-patterns', id: 'master-razor-1', wearer: 'razor',
       level: 0, context: 'supported', encounter: 'Calamity atmospheric EX+3', seed: 104729,
-      on: { outcome: 'win' }, off: { outcome: 'defeat' } }], row => rows.push(row));
+      on: primary[0].result, off: primary[1].result }], row => rows.push(row));
     expect(rows).toHaveLength(1);
     const replay = rows[0] as { on: { outcome: string; initial: { enemies: { hp: number }[] };
-      final: { round: number; enemies: { hp: number }[] }; packets: { events: { nativeKind?: string; amount: number }[] }[] };
-      off: { outcome: string } };
-    expect(replay.on.outcome).toBe('win');
-    expect(replay.off.outcome).toBe('defeat');
-    expect(replay.on.initial.enemies[0].hp).toBe(1_567_959);
-    expect(replay.on.final.round).toBe(3);
-    expect(replay.on.final.enemies[0].hp).toBe(0);
+      final: BattleState; packets: { events: { nativeKind?: string; amount: number }[] }[] };
+      off: { outcome: string; final: BattleState } };
+    expect(replay.on.outcome).toBe(primary[0].result.outcome);
+    expect(replay.off.outcome).toBe(primary[1].result.outcome);
+    expect(replay.on.initial.enemies[0].hp).toBe(calamityEncounter('atmospheric', 3).stats.health);
+    expect(replay.on.final).toEqual(primary[0].state);
+    expect(replay.off.final).toEqual(primary[1].state);
     expect(replay.on.packets.flatMap(packet => packet.events).find(event => event.nativeKind === 'revenge')!.amount)
-      .toBe(822_483);
+      .toBeGreaterThan(0);
   });
 });

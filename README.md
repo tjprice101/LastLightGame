@@ -9,6 +9,12 @@ Use the [documentation index](docs/README.md) and
 The original prototype overview below is a superseded historical snapshot,
 not the current feature checklist.
 
+- D-404: the [non-Calamitic character report](docs/roster-capability-audit.md)
+  and [global benchmark declaration](docs/enemy-benchmark-calibration.md)
+  are the current performance/difficulty reference. Personal Masters remain
+  eligible; early hostile stats are preserved and late combat/Calamity use
+  measured non-Calamitic preparation rather than historical ceiling teams.
+
 - D-129/D-131/D-132: evolution-matched style references, upgraded character
   prompt construction and enemy references with complete silhouette containment.
 - D-133: visible currencies are **Prismatica** and **Null-Prismatica**;

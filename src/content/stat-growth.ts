@@ -6,16 +6,37 @@ export const enemyExponentialRates = { health: .026, damage: .024, defense: .020
 export const enemyStrengthMultiplier = 1.05;
 export const enemyResistanceRamp = { startingLevel: 80, span: 60, health: 3, damage: 1.5, defense: 2 } as const;
 export const enemyCalamityApproach = { startingLevel: 80, endingLevel: 145, maximumAdvance: 10 } as const;
+/** D-404: longer late fights, less burst; no Calamitic gear in calibration. */
+export const enemyBenchmarkAnchors = [
+  { level: 80, health: 1, damage: 1, defense: 1 },
+  { level: 100, health: 1.2, damage: .95, defense: 1 },
+  { level: 120, health: 1.4, damage: .9, defense: .95 },
+  { level: 140, health: 1.5, damage: .82, defense: .9 },
+  { level: 145, health: 1.5, damage: .8, defense: .9 },
+  { level: 160, health: 1.5, damage: .7, defense: .875 },
+  { level: 170, health: 1.5, damage: .6, defense: .85 },
+  { level: 185, health: 1.5, damage: .6, defense: .85 },
+] as const;
+export function enemyBenchmarkMultiplier(level: number, stat: keyof typeof enemyExponentialRates): number {
+  if (!Number.isInteger(level) || level < 1 || level > 185) throw new Error('Enemy benchmark level must be from 1 to 185.');
+  if (level <= enemyBenchmarkAnchors[0].level) return 1;
+  const index = enemyBenchmarkAnchors.findIndex(anchor => anchor.level >= level);
+  const before = enemyBenchmarkAnchors[index - 1], after = enemyBenchmarkAnchors[index];
+  const progress = (level - before.level) / (after.level - before.level);
+  const blend = progress * progress * (3 - 2 * progress);
+  return before[stat] + (after[stat] - before[stat]) * blend;
+}
 function hostileStat(base: number, initialRate: number, stat: keyof typeof enemyExponentialRates, level: number): number {
+  const benchmark = enemyBenchmarkMultiplier(level, stat);
   if (level > enemyCalamityApproach.startingLevel && level < enemyCalamityApproach.endingLevel) {
     const progress = (level - enemyCalamityApproach.startingLevel) /
       (enemyCalamityApproach.endingLevel - enemyCalamityApproach.startingLevel);
-    // Zero value and slope at both anchors preserve the accepted EX+1 curve.
+    // Keep the historical approach separate from the benchmark adjustment.
     level += enemyCalamityApproach.maximumAdvance * 16 * progress ** 2 * (1 - progress) ** 2;
   }
   const rate = enemyExponentialRates[stat];
   const resistance = enemyResistanceRamp[stat] ** (Math.max(0, level - enemyResistanceRamp.startingLevel) / enemyResistanceRamp.span);
-  return Math.round(base * (1 + initialRate * Math.expm1(rate * (level - 1)) / rate) * enemyStrengthMultiplier * resistance);
+  return Math.round(base * (1 + initialRate * Math.expm1(rate * (level - 1)) / rate) * enemyStrengthMultiplier * resistance * benchmark);
 }
 export const enemyGrowth = { maximumLevel: 120, maximumHostileLevel: 185,
   health: hostileStat(83, .45, 'health', 120),

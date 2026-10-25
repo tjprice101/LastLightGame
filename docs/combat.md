@@ -1,5 +1,29 @@
 # Combat specification
 
+## Non-Calamitic global calibration (D-404)
+
+The [canonical capability audit](roster-capability-audit.md) excludes Calamitic
+Conduits but retains personal Masters. Its
+[global usage declaration and native-encounter calibration](enemy-benchmark-calibration.md)
+own modeled progression bands, acquisition limitations, exact185-level stats,
+paired before/after results and repeatable EX+3 solutions. Zero-Defense paper
+DPR is not an enemy-clear estimate; there is no telemetry establishing an
+actual average account.
+
+Keep levels1-80 unchanged. Later hostile stats use smoothstep-interpolated
+Health/Attack/Defense factors on the unrounded D-385 curve before its single
+rounding step. Anchors:80=1/1/1;100=1.2/.95/1;120=1.4/.9/.95;
+140=1.5/.82/.9;145=1.5/.8/.9;160=1.5/.7/.875;
+170-185=1.5/.6/.85. This lengthens late fights while lowering burst and
+Defense requirements. Absolute stats remain monotonic; post80 step growth
+stays below9%, with bounded smooth approach changes.
+Playable/captured growth, abilities, gear effects, authored encounter levels,
+gates and rewards are unchanged. Calamity tier multipliers remain1.03/.98/1.
+Combat rules11 uses the existing client/server historical-run restart path;
+frozen squad/equipment and already-saved rewards remain intact.
+
+The D-398/D-385 exact stats and pre-D-404 measurements below are historical.
+
 ## Calamity tier adjustments (D-398)
 
 All12 activities now use level145/160/170 for EX+1/2/3. After the shared boss

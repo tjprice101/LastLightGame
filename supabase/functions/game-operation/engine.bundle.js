@@ -4624,14 +4624,34 @@ var enemyExponentialRates = { health: 0.026, damage: 0.024, defense: 0.02 };
 var enemyStrengthMultiplier = 1.05;
 var enemyResistanceRamp = { startingLevel: 80, span: 60, health: 3, damage: 1.5, defense: 2 };
 var enemyCalamityApproach = { startingLevel: 80, endingLevel: 145, maximumAdvance: 10 };
+var enemyBenchmarkAnchors = [
+  { level: 80, health: 1, damage: 1, defense: 1 },
+  { level: 100, health: 1.2, damage: 0.95, defense: 1 },
+  { level: 120, health: 1.4, damage: 0.9, defense: 0.95 },
+  { level: 140, health: 1.5, damage: 0.82, defense: 0.9 },
+  { level: 145, health: 1.5, damage: 0.8, defense: 0.9 },
+  { level: 160, health: 1.5, damage: 0.7, defense: 0.875 },
+  { level: 170, health: 1.5, damage: 0.6, defense: 0.85 },
+  { level: 185, health: 1.5, damage: 0.6, defense: 0.85 }
+];
+function enemyBenchmarkMultiplier(level, stat) {
+  if (!Number.isInteger(level) || level < 1 || level > 185) throw new Error("Enemy benchmark level must be from 1 to 185.");
+  if (level <= enemyBenchmarkAnchors[0].level) return 1;
+  const index = enemyBenchmarkAnchors.findIndex((anchor) => anchor.level >= level);
+  const before = enemyBenchmarkAnchors[index - 1], after = enemyBenchmarkAnchors[index];
+  const progress = (level - before.level) / (after.level - before.level);
+  const blend = progress * progress * (3 - 2 * progress);
+  return before[stat] + (after[stat] - before[stat]) * blend;
+}
 function hostileStat(base, initialRate, stat, level) {
+  const benchmark = enemyBenchmarkMultiplier(level, stat);
   if (level > enemyCalamityApproach.startingLevel && level < enemyCalamityApproach.endingLevel) {
     const progress = (level - enemyCalamityApproach.startingLevel) / (enemyCalamityApproach.endingLevel - enemyCalamityApproach.startingLevel);
     level += enemyCalamityApproach.maximumAdvance * 16 * progress ** 2 * (1 - progress) ** 2;
   }
   const rate = enemyExponentialRates[stat];
   const resistance = enemyResistanceRamp[stat] ** (Math.max(0, level - enemyResistanceRamp.startingLevel) / enemyResistanceRamp.span);
-  return Math.round(base * (1 + initialRate * Math.expm1(rate * (level - 1)) / rate) * enemyStrengthMultiplier * resistance);
+  return Math.round(base * (1 + initialRate * Math.expm1(rate * (level - 1)) / rate) * enemyStrengthMultiplier * resistance * benchmark);
 }
 var enemyGrowth = {
   maximumLevel: 120,
@@ -7418,7 +7438,7 @@ function nativeCleanup(state) {
 }
 
 // src/game/conduit-runtime.ts
-var conduitRulesVersion = phaseZeroStatsReady ? 10 : 4;
+var conduitRulesVersion = phaseZeroStatsReady ? 11 : 4;
 function gear(unit) {
   return unit.conduitRuntime ??= { numbers: {}, owners: {} };
 }

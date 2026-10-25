@@ -22,17 +22,17 @@ function ready(roster: StarterId[]) {
 }
 
 describe('native identity authoritative parity and restart', () => {
-  it('rebuilds a rules8 late Training encounter with stronger enemies and unchanged frozen allies/holdings', () => {
+  it.each([8, 9, 10])('rebuilds a rules%s late Training encounter with current enemies and unchanged frozen allies/holdings', version => {
     const game = ready(['ember', 'tide']);
     const session = game.run!.session;
-    session.state.conduitRulesVersion = 8;
+    session.state.conduitRulesVersion = version;
     session.state.wave = 120;
     const before = structuredClone(game);
     const result = op(game, { kind: 'read' });
     expect(result.game.account).toEqual(before.account);
     const restored = result.game.run!.session;
     expect(restored.state.wave).toBe(120);
-    expect(restored.state.conduitRulesVersion).toBe(10);
+    expect(restored.state.conduitRulesVersion).toBe(11);
     for (const enemy of restored.state.enemies) {
       expect(enemy.level).toBe(120);
       expect(enemy.stats).toEqual(enemyCombatStats(120, false));
@@ -80,7 +80,7 @@ describe('native identity authoritative parity and restart', () => {
     expect(game).toEqual(before);
   });
 
-  it.each([2, 3, 7, 8].flatMap(version => (['read', 'checkpoint', 'act'] as const).map(kind => ({ version, kind }))))(
+  it.each([2, 3, 7, 8, 9, 10].flatMap(version => (['read', 'checkpoint', 'act'] as const).map(kind => ({ version, kind }))))(
     'restarts version$version through $kind without applying stale commands or replacing frozen squad', ({ version, kind }) => {
     const game = ready(['crinso', 'tide']);
     const runId = game.run!.session.runId;

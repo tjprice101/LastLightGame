@@ -76,7 +76,7 @@ describe('hostile progression balance', () => {
     for (let level = 90; level < 120; level++) {
       const before = enemyCombatStats(level, false);
       const after = enemyCombatStats(level + 1, false);
-      for (const stat of ['health', 'damage', 'defense'] as const) expect(after[stat] / before[stat]).toBeLessThan(1.072);
+      for (const stat of ['health', 'damage', 'defense'] as const) expect(after[stat] / before[stat]).toBeLessThan(1.09);
     }
     const plain = resolveFighter('ember', lateProgress.ember);
     const built = resolveFighter('ember', lateProgress.ember, [...lateSlots], lateUpgrades);

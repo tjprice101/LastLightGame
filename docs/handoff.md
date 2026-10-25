@@ -1,5 +1,66 @@
 # Current state and handoff
 
+## Canonical non-Calamitic benchmarks and hostile balance (D-404)
+
+- Owner confirms all activities, modeled ordinary progression rather than the
+  strongest sampled team, personal Masters retained, Calamitic Conduits excluded,
+  practical endgame preparation and optimized EX+3, with unchanged authored
+  levels/gates/rewards. [Canonical paper report](roster-capability-audit.md)
+  and [global usage declaration / pressured calibration](enemy-benchmark-calibration.md)
+  supersede D-401's Calamitic-inclusive ceiling and D-398/D-385 absolute stats.
+  AGENTS.md/index/specs link these as the current performance reference.
+- Exhaustive rerun:175,392 main measurements,58,464 aggregates,672 solo records,
+  all16 bearers/every solo-duo-trio/seven checkpoints/six profiles;1344 legal
+  Master/package candidates and180 additional90-cycle checks. Every equipped
+  Calamitic is rejected, not silently filtered. Personal Masters remain.
+  Current Machines50% chest and linear rarity acquisition costs replace the
+  old report's odds. Only one starter is free; conditional roster percentiles
+  and preparation bands are explicitly NOT observed average accounts.
+- Strongest sampled non-Calamitic105 trio is Rosetta/Bliss/Disciple:
+  16,754,038.8 DPR in the18-cycle metric,17,329,910 in the90-cycle check.
+  It remains a systemic scaling-review candidate, not an ordinary enemy target.
+  Firstlight/Glassroot/Vessel removals lose92.2%/90%/58.6% respectively;
+  overlapping marginal effects cannot be summed. No character/Conduit nerfs.
+- Shared hostile factors preserve1-80 exactly, increase late endurance and
+  reduce burst/Defense requirements, smoothstep-interpolated before one rounding
+  step. Absolute stats remain monotonic through185. Calamity remains145/160/170
+  with1.03/.98/1 multipliers and all native patterns/gates/rewards unchanged.
+  Rules11 restarts historical encounters using existing offline/online
+  compatibility, preserving frozen loadouts and saved rewards; no account
+  migration, grants, new RNG or player/captured growth changes.
+- Matched current/old native encounters:12,348 each, all current stages and
+  Training1-120, six conditional five-star trios/three seeds; old stats are
+  reconstructed exactly with the SAME balanced pilot. Every standard band
+  exceeds95% wins;1-80 outcomes/rounds/HP match exactly. Every Story stage is
+  additionally tested with each single starter/Common0/three seeds (1080).
+  The tool avoids Tizu wasting all Gauge on healthy shield-only Flares;
+  this is simulation policy only, not a kit change. Training>120 is rejected.
+- Fixed practical Master builds win EX+1/2/3:193/86/37 before,197/139/114
+  after, out of216 each. Mean rounds become10.1/15.3/13.6 (includes losses/
+  timeouts).1296 optimized Calamity fights cover two rotations and prove
+  at least two distinct repeatable teams per EX+3 boss.405 starter/capture
+  access controls disclose that Common fillers do not solve late content.
+- Reproduction: `node tools\run_roster_capability.mjs <new.jsonl>
+  docs\roster-capability-audit.md`; `node tools\run_progression_balance.mjs
+  <new.jsonl> baseline|verify|optimized|access` (one mode per invocation);
+  `tools/render_progression_balance.mjs` validates source-matched paired keys,
+  coverage, finite values, progression guardrails and boss repeatability before
+  generating the companion. Raw evidence is retained in the session files;
+  both reports identify their separate bundled-source hashes.
+- Verification: `npx vitest run --maxWorkers=2 --reporter=dot` passes6576
+  tests/212 files. Initial full run exposed one historical outlier replay
+  fixture; updated it to compare both current full replay states against their
+  independently measured controls, rather than assert obsolete three-round
+  wins/damage. Rules9/10 restart cases are explicit. `npm run build`,
+  `npx tsc --noEmit`, strict standalone new-tool TypeScript check,
+  `node tools\bundle_server_game.mjs` and `npx --yes deno check
+  supabase\functions\game-operation\index.ts` pass; existing chunk-size warning
+  only. Matching authority/client publication and hosted parity are reported
+  in the completion report.
+- Limits: no ownership telemetry, account-hour/economy model, exhaustive
+  rotations/gear search or whole-run attrition simulation. Shared scaling
+  outliers remain flagged, not secretly nerfed. No owner decision is blocking.
+
 ## Omnic elemental identity (D-403)
 
 - All45 ordinary Omnics use bold canonical element badges and shared palette

@@ -18,7 +18,7 @@ import { initializeConduits } from '../src/game/conduit-runtime';
 export const surveySeeds = [1, 1729, 12345, 54321, 104729, 65537, 314159, 271828, 8675309, 4294967295];
 export const surveyLimits = { rounds: 100, decisions: 1800 } as const;
 export type Build = 'bare' | 'common0' | 'mixed0' | 'mixed5' | 'omnic0' | 'omnic5' | 'master5' | 'calamitic5';
-export type Policy = 'native' | 'flare-first';
+export type Policy = 'native' | 'flare-first' | 'balanced';
 export type Encounter =
   | { kind: 'story'; stage: number }
   | { kind: 'dungeon'; element: PlayableDungeon; stage: number }
@@ -133,7 +133,9 @@ export function measureBattle(initial: BattleState, policy: Policy = 'native',
     if (!actor) {
       const result = endTurn(state); state = result.state; collect(result.events);
     } else {
-      const native = benchmarkPriorities(state, actor);
+      const native = policy === 'balanced' && actor.definitionId === 'tide'
+        ? (actor.hp < actor.stats.health * .5 ? ['ultimate', 'skill1', 'light'] : ['skill1', 'light']) as ActionId[]
+        : benchmarkPriorities(state, actor);
       const priorities: ActionId[] = [...(policy === 'flare-first' ? ['ultimate' as const, ...native] : native),
         'skill1', 'skill2', 'light', 'ultimate'];
       const choice = priorities.map(action => ({ action, target: benchmarkTarget(state, actor, action) }))
