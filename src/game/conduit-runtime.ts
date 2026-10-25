@@ -8,7 +8,7 @@ import { stasisChancePercent } from '../content/phase-zero-conduit-upgrades';
 import { damageOverTimeLevelMultiplier } from '../content/native-balance';
 import type { MasterConduitId } from '../content/master-conduits';
 import type { BattleEvent, BattleState, Combatant } from './battle';
-import { roll } from './battle';
+import { roll, rollCritical, elementalCritFactor } from './battle';
 import { buffSnapshot } from './battle-buffs';
 import { debuffSnapshot } from './battle-debuffs';
 import { pilotAuthoredShieldAbsorbed, pilotEffectiveHeal } from './kit-pilots';
@@ -17,7 +17,7 @@ import { hasNativeIdentity, nativeAbsorbedHit, nativeDirectHpLoss, nativeIncomin
 import { prepareCalamiticAction, afterCalamiticAction, calamiticSiegeBonus, deferCalamiticDamage,
   bankCalamiticDamage, calamiticSkillDefenseIgnore, calamiticSkillPowerBonus, calamiticSkillEfficiencyBonus } from './calamitic-conduits';
 
-export const conduitRulesVersion = phaseZeroStatsReady ? 12 : 4;
+export const conduitRulesVersion = phaseZeroStatsReady ? 13 : 4;
 export interface ConduitShieldLayer {
   amount: number;
   owner: string;
@@ -932,6 +932,22 @@ export function conduitHitModifiers(state: BattleState, actor: Combatant, target
       ? criticalDamageBonus * (criticalBase / actor.stats.critMultiplier) : 0 } : {}),
     ...(critical && equipped(actor, 'master-elise-1') && !phaseZeroStatsReady ? { critMultiplier: 1.5 } : {}) };
 }
+export function conduitCriticalHit(state: BattleState, actor: Combatant, target: Combatant,
+  ctx: ConduitActivation, criticalBonus = 0) {
+  const rolled = rollCritical(state, actor.stats.crit + criticalBonus + ctx.criticalBonus +
+    conduitCriticalBonus(state, actor, target, ctx.action));
+  const critical = !ctx.forbidden && (ctx.guaranteed || rolled.critical);
+  const elemental = critical && rolled.elemental;
+  const modifiers = conduitHitModifiers(state, actor, target, ctx, critical);
+  const criticalMultiplier = (modifiers.critMultiplier ?? actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1) *
+    (critical && ctx.action !== 'light' && equipped(actor, 'judgment-lens') && !phaseZeroStatsReady
+      ? 1 + value(state, actor, 'judgment-lens', .4, .8) : 1) *
+    (critical && ctx.guaranteed && equipped(actor, 'falcon-sight') && !phaseZeroStatsReady
+      ? 1 + value(state, actor, 'falcon-sight', .1, .2) : 1)) *
+    (1 + (modifiers.criticalDamageBonus ?? 0));
+  return { critical, elemental, modifiers, criticalMultiplier };
+}
+
 export function resetConduitBurnStreak(owner: Combatant, target: Combatant): void {
   const n = gear(target).numbers;
   n[`cinder:${owner.id}`] = 0; n[`extensions:${owner.id}`] = 0;
@@ -1449,7 +1465,7 @@ export function finishConduitAction(state: BattleState, owner: Combatant, ctx: C
         if (ctx.spent[seen]) continue;
         ctx.spent[seen] = 1;
         gear(enemy).numbers[key] = Math.min(magnitude(state, 'infernic-cinder-testament', .6),
-          (gear(enemy).numbers[key] ?? 0) + magnitude(state, 'infernic-cinder-testament', .15));
+          (gear(enemy).numbers[key] ?? 0) + magnitude(state, 'infernic-cinder-testament', .2));
       }
     }
   }
@@ -1552,7 +1568,7 @@ export function finishConduitAction(state: BattleState, owner: Combatant, ctx: C
       } else if (!phaseZeroStatsReady && killed && owner.recoverThrough < state.round) owner.spent = false;
       break;
     case 'master-rosetta-2':
-      if (phaseZeroStatsReady && hasNativeIdentity(owner) && ctx.action === 'ultimate') {
+      if (phaseZeroStatsReady && hasNativeIdentity(owner) && ctx.action === 'skill2') {
         const quarry = owner.native?.quarry;
         if (quarry?.round === state.round) for (const ally of alive(state).filter(ally =>
           quarry.contributors.includes(ally.id))) {

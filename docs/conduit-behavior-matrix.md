@@ -2,20 +2,21 @@
 
 This is executed numerical behavior evidence, not a count of source references or nonempty ability strings.
 The approved ability contract remains [conduit-catalog.txt](conduit-catalog.txt).
-The release gate is enabled for coordinated client/authority publication (D-370/D-382/D-383, rules7). This report certifies tested behavior, not hosted deployment or balance quality.
+The release gate is enabled for coordinated client/authority publication (D-415, rules13). This report certifies tested behavior, not hosted deployment or balance quality.
 
 - Roster: **138/138** entries, **726** passing baseline/equipment/upgrade scenarios.
 - Ordinary-slot entries: 90, each with an absent baseline and all six +0..+5 upgrade levels.
 - Named Masters: 48, each with a concrete equipped and absent numerical behavior scenario.
-- Full regression: **6496 tests / 207 files passed**; zero failed or pending.
+- Full regression: **6617 tests / 212 files passed**; zero failed or pending.
 - Description parity: all 138 defaults against the complete owner-authored catalog; all 90 ordinary entries at +0..+5; Masters reject upgrades.
 - Separate interaction tests cover generated Master Shield provenance, manual native packets, stored-packet scaling, duplicate auras, additive stat pools and Defense caps.
 - UI and authority suites additionally exercise target-dependent costs, frozen equipment and Throne controls.
 - D-382 regressions cover all45 replacements, complete-Health conversion thresholds, cast-level seeded randomness, conditional Health, sole-owner Shield provenance, routed protection and persisted Stasis clocks.
 - D-383 additionally checks all93 Omnic/Master personal and squad stat packages, fixed Master/ordinary additive pools, duplicate living-source stacking, Health clamping, revival, Glassroot, Training snapshots, focused Last Flare, every-two-impact Quarry payouts, native-only Phoenix healing and Seed settlement parity after persistent JSON key reordering.
+- D-415 additionally checks canonical descriptions and Master selector formatting, native critical damage, explicit trap empowerment/refresh, Cinder20% stacking and Rosegarden Skill2 activation with a Last Flare negative case.
 - Passing tests do not establish subjective usefulness or mathematically exhaustive balance across every possible squad.
 
-Evidence source SHA-256 (LF-normalized): `1384a92001ecef2a84fd583deb6ba69f8dd379a88ea7c91f1204432e2d5ab54e`.
+Evidence source SHA-256 (LF-normalized): `1cc98274b2af207e53b590986dcf4f369ba40be5ed0783800d33e741fcd57d81`.
 Regenerate only from a complete passing full-suite JSON report:
 
 ```powershell

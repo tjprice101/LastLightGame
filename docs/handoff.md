@@ -1,11 +1,57 @@
 # Current state and handoff
 
+## Conduit descriptions, native criticals and trap provenance (D-415)
+
+- Completed: reviewed all138 live descriptions (90 ordinary,48 Masters);
+  rewrote66 for clear triggers/recipients/amounts/clocks. Health, complete skill
+  names and native keywords share canonical brackets. Master choice React text
+  now uses the same formatter; no modal/layout/animation changes.
+- Thornia's ordinary trap no longer appears empowered solely because Skill
+  Power raises its coefficient. Genuine empowerment survives Skill1 refresh,
+  including its Master interaction. All character-kit damage now rolls crits,
+  including Burn, detonations, Cyclones, recalls, Wounds, traps and demolition;
+  Elemental Crit overflow applies. Conduit-generated procs remain unchanged.
+  No extra actions/Gauge, double potency scaling or recursive procs are added.
+- Owner selects written behavior for two discovered mismatches: Cinder adds20%
+  per other-ally damaging Skill capped60%, and Virtuous Planet Rosegarden
+  triggers on Crimson Skyfall/Skill2 rather than Last Flare. Other Conduit
+  effects/stats and all90 ordinary percentage orders remain intact.
+- Rules13 preserves saved accounts/receipts and uses the established historical
+  encounter refresh path with frozen investments. Authority bundle regenerated,
+  deployed with `npx supabase functions deploy game-operation --project-ref
+  ohtfgwomdfteaxubndww --no-verify-jwt`.
+- Verified: `npm test -- --maxWorkers=1 --reporter=dot --reporter=json
+  --outputFile.json=<session>\files\d415-full-final.json` passed6617 tests/
+  212 files with zero failures/pending; `npm run build` passed TypeScript/Vite
+  (existing chunk warning). Corrected captured-Burn fixture additionally passed
+  `npm test -- src\game\native-kits.test.ts --maxWorkers=1 --reporter=dot`
+  (41 tests). Earlier focused15-file run passed878 tests.
+- Generated numerical behavior evidence from that passing full report:
+  `node tools\build_phase_zero_behavior_matrix.mjs <passing-report.json>`
+  certified138 entries/726 concrete equipped/absent/upgrade scenarios.
+  Catalog regeneration,66-description count, ordinary percentage-position
+  comparison and `git diff --check` passed.
+- Hosted `node tools\smoke_server_game.mjs --phase-zero` passed rules13,
+  frozen Funeral+5 cap, exact direct/turn client-authority parity, stored25
+  Burn critically hitting for50, unchanged holdings, retry deduplication,
+  checkpoint and fresh-entry gear. Disposable identities/records were removed.
+- Measurement boundary:648 seeded Calamity encounters were rerun without
+  changing enemy curves. Exact current counts live in
+  [enemy calibration](enemy-benchmark-calibration.md#rules13-critical-damage-remeasurement-d-415).
+  Full global roster rankings were not remeasured and are explicitly historical
+  under the new critical rules; do not claim an updated global ceiling.
+- Publication gate: client and authority use rules13; verify Pages success and
+  matching hosted version before reporting the client live. No further owner
+  design decision is needed for this request.
+
 ## Guaranteed Elemental War recruitment (D-414)
 
 - Each stage10 clear guarantees its own Nerithe/Orvella/Vaelor at Lv.0/Evo.1,
   unequipped; owned results retain100 Null-Prismatica conversion on replay.
   Stages1-9 never recruit; currencies, unlocks and receipt atomicity unchanged.
 - Shared reward table, activity copy and authority bundle must ship together.
+  D-414 release `202d93e86732efe5da705d16ee025461aca5e24b` passed6599 tests/
+  212 files, build and Pages; hosted version matched.
   Validation: `npm test -- src\game\final-boss-loot.test.ts src\game\elemental-war.test.ts
   src\presentation\stage-loot.test.ts src\online\server-game.test.ts
   src\presentation\ui-copy.test.ts` passed152 tests/5 files;

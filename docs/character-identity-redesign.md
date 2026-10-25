@@ -20,6 +20,12 @@ precedence.
 
 ## Current tuning and implementation
 
+**D-415:** native ongoing/triggered damage can critically hit, including Burn,
+detonations, Cyclones, recalled blades, Wounds, traps and Foundation strikes.
+Thorn Trap type follows its authored empowered flag, not scaled damage.
+[Exact resolution and compatibility rules](combat.md#all-character-kit-damage-can-crit-d-415)
+supersede earlier no-critical/no-RNG statements.
+
 **D-378 Last Flare tuning:** owner selects3x damage and1.5x other potency.
 This multiplies the previously live Last Flare values, not Normal Attack or
 Skill1/2. Damage includes Burn/traps, recalled blades, a released Cyclone and
@@ -130,7 +136,7 @@ Unless individually reviewed and approved otherwise:
   attacks through existing Defense/Weaken/critical resolution. Direct damage
   rounds only at the existing outcome boundary.
 - HP-fraction healing/shields do not receive another HP-growth multiplier.
-  Fixed Attack-based native follow-ups are Defense-mitigated, cannot crit and
+  Fixed Attack-based native follow-ups are Defense-mitigated, can crit and
   generate no Gauge. Damage-over-time uses existing Burn bypass rules.
 - First-pass percentages/thresholds below are fixed with level; scaling is through
   A/H/R. Do not also apply old generic potency growth unless explicitly retuned
@@ -138,8 +144,8 @@ Unless individually reviewed and approved otherwise:
 - Timed effects specify enemy phases or player turns. Count durations at the
   named phase boundary, not once per hit. "Next player turn" means the next
   global player-turn start, not the next click by that actor.
-- No random passive procs are proposed. Existing direct critical rolls remain;
-  proposed follow-ups do not add rolls or advance unrelated RNG.
+- No random passive procs are proposed. D-415 adds per-packet combat critical
+  rolls to native follow-ups without advancing unrelated reward RNG.
 
 ## Identity map
 
@@ -264,7 +270,7 @@ Existing ability names are retained where their visual/weapon identity still fit
   both end held, regardless of survival. No area damage baseline.
 - **Play:** spread blades across enemies or concentrate them for convergence.
   Setup persists without duration but competes with Gauge and immediate damage.
-  Recall strikes are nonrecursive and use no additional critical rolls.
+  Recall strikes are nonrecursive and each rolls its own critical outcome.
 
 ### 6. Bliss - opening dancer / closing dancer
 
@@ -599,7 +605,7 @@ historical-encounter restart and measured tuning. Publication remains separate.
   one action per turn and Last Flare recovery unchanged; no free Gauge/action
   loops. Missing captured skills and captured level60 stay unchanged.
 - **Exact outcomes:** caps, phase boundaries, owner identity, spend-before-payoff,
-  no RNG on fixed effects, no recursive native/equipment trigger chains and
+  independent critical rolls on native damage, no recursive native/equipment trigger chains and
   no duplicated death rewards.
 - **Balance:** measure rounds, effective damage/healing/absorption and seeded
   win rates on the same progression/equipment budget. High rarity is not an

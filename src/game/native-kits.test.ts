@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { act, createBattle, endTurn, damageAmount, nextWave, type BattleState, type Combatant } from './battle';
+import { act, createBattle, endTurn, damageAmount, nextWave, roll, elementalCritFactor, type BattleEvent, type BattleState, type Combatant } from './battle';
 import { nativeAllocateFoundation, nativeForecast, nativeIncomingMultiplier, nativeRouteDamage, nativeDirectHpLoss,
-  nativeAbsorbedHit, nativeReadout } from './native-kits';
+  nativeAbsorbedHit, nativeReadout, nativeMarkers, nativeBurnPhase, nativeEnemyCompleted, nativePhaseEnd } from './native-kits';
 import { nativeShield } from './conduit-runtime';
 import { nativeBalance } from '../content/native-balance';
 
@@ -106,17 +106,18 @@ describe('sixteen native identities without equipment', () => {
     expect(state.allies[0].native?.cyclone).toBeUndefined();
   });
 
-  it('Elise concentrated blades add one convergence strike and no extra RNG rolls', () => {
+  it('Elise concentrated blades add one convergence strike and roll one critical outcome per strike', () => {
     let state = encounter('elise');
     state = use(state, 'elise', 'skill1').state;
     state = use(state, 'elise', 'skill1').state;
-    const seed = state.seed;
+    const expected = structuredClone(state);
+    for (let hit = 0; hit < 3; hit++) roll(expected);
     const recall = use(state, 'elise', 'skill2');
     expect(recall.events.filter(event => event.nativeKind === 'recall').map(event => event.amount)).toEqual([
       damageAmount(100, .9, 0, false), damageAmount(100, .9, 0, false), damageAmount(100, .6, 0, false),
     ]);
     expect(recall.events.filter(event => event.nativeKind === 'recall').every(event => !event.critical)).toBe(true);
-    expect(recall.state.seed).toBe(seed);
+    expect(recall.state.seed).toBe(expected.seed);
     expect(recall.state.allies[0].native?.blades).toEqual([null, null]);
     const fallback = use(recall.state, 'elise', 'skill2');
     expect(fallback.events.find(event => event.kind === 'damage')?.amount).toBe(damageAmount(100, 1.4 * nativeBalance.skillDamageScale, 0, false));
@@ -202,7 +203,7 @@ describe('sixteen native identities without equipment', () => {
     expect(nativeIncomingMultiplier(state, state.enemies[0], state.allies[0], 'ultimate', [])).toBe(.25);
   });
 
-  it('Razor banks all actual direct HP loss and spends every Wound as fixed noncritical revenge', () => {
+  it('Razor banks all actual direct HP loss and spends every Wound on revenge', () => {
     const state = encounter('razor');
     nativeDirectHpLoss(state, state.allies[0], 500, []);
     expect(state.allies[0].native?.wounds).toBe(500);
@@ -256,7 +257,20 @@ describe('sixteen native identities without equipment', () => {
   it('Thornia stronger empowered traps survive ordinary refreshes', () => {
     let state = use(encounter('thornia'), 'thornia', 'ultimate').state;
     state = use(state, 'thornia', 'skill1').state;
-    expect(state.allies[0].native?.traps?.[state.enemies[0].id]).toMatchObject({ charges: 3, coefficient: 2.7 });
+    expect(state.allies[0].native?.traps?.[state.enemies[0].id]).toMatchObject({ charges: 3, coefficient: 2.7, empowered: true });
+    expect(nativeMarkers(state, state.enemies[0]).find(marker => marker.id === 'trap')?.label).toBe('Empowered Thorn Trap');
+  });
+
+  it('Thornia Skill1 stays a normal trap even when Skill Power raises its coefficient above empowered base damage', () => {
+    const initial = encounter('thornia');
+    initial.allies[0].stats.skillPower = 5;
+    const state = use(initial, 'thornia', 'skill1').state;
+    const trap = state.allies[0].native?.traps?.[state.enemies[0].id];
+    expect(trap).toMatchObject({ charges: 3, coefficient: 3, empowered: false });
+    expect(nativeMarkers(state, state.enemies[0]).find(marker => marker.id === 'trap'))
+      .toMatchObject({ label: 'Thorn Trap', icon: 'native-thornia-trap' });
+    expect(nativeReadout(state, state.allies[0]).find(row => row.label === 'Thorn Trap')?.icons)
+      .toEqual(['native-thornia-trap']);
   });
 
   it('Crinso alternates four edges for Combo3, repeats reset, and never authors Burn', () => {
@@ -352,5 +366,70 @@ describe('sixteen native identities without equipment', () => {
     const before = structuredClone(state);
     expect(() => act(state, 'disciple', 'skill1', 'unknown')).toThrow();
     expect(state).toEqual(before);
+  });
+});
+
+describe('critical hits from every native damage path', () => {
+  const cases = [
+    { character: 'ember', kind: 'detonation', action: 'skill2' },
+    { character: 'elise', kind: 'recall', action: 'skill2' },
+    { character: 'razor', kind: 'revenge', action: 'skill1' },
+    { character: 'orvella', kind: 'demolition', action: 'ultimate' },
+    { character: 'thornia', kind: 'trap', action: 'skill2' },
+    { character: 'atmoso', kind: 'cyclone', action: 'skill1' },
+    { character: 'ember', kind: 'burn' },
+    { character: 'thornia', kind: 'retaliation' },
+    { character: 'atmoso', kind: 'delayed-cyclone' },
+  ] as const;
+
+  function run(entry: typeof cases[number], rate: number) {
+    const state = encounter(entry.character);
+    const owner = state.allies[0], enemy = state.enemies[0];
+    owner.stats.crit = rate;
+    owner.stats.critMultiplier = 2;
+    owner.native = {
+      burns: { [enemy.id]: { damage: 40, turns: 3 } },
+      blades: [enemy.id, enemy.id], wounds: 40,
+      foundation: { durability: 40, maximum: 40, throughPhase: state.round + 2 },
+      traps: { [enemy.id]: { charges: 3, coefficient: .6, throughPhase: state.round + 2 } },
+      cyclone: { gusts: 2, phases: 1, contributors: {}, skillPower: 1 },
+    };
+    enemy.burn = { damage: 40, turns: 3, sourceId: owner.id, origin: 'native' };
+    const events: BattleEvent[] = [];
+    if ('action' in entry) return use(state, owner.id, entry.action).events.filter(event => event.nativeKind === entry.kind);
+    if (entry.kind === 'burn') nativeBurnPhase(state, enemy, events);
+    if (entry.kind === 'retaliation') nativeEnemyCompleted(state, enemy, true, events);
+    if (entry.kind === 'delayed-cyclone') nativePhaseEnd(state, events);
+    return events.filter(event => event.kind === 'damage' && event.origin === 'native');
+  }
+
+  it.each(cases)('$kind uses its owner’s Critical Rate, multiplier and Elemental Crit overflow', entry => {
+    const normal = run(entry, 0);
+    expect(normal.length).toBeGreaterThan(0);
+    expect(normal.every(event => !event.critical)).toBe(true);
+    for (const rate of [1, 2]) {
+      const critical = run(entry, rate);
+      expect(critical).toHaveLength(normal.length);
+      critical.forEach((event, index) => {
+        expect(event.critical).toBe(true);
+        expect(event.elementalCritical).toBe(rate === 2);
+        expect(event.amount).toBe(Math.round(normal[index].amount * 2 * (rate === 2 ? elementalCritFactor : 1)));
+      });
+      expect(run(entry, rate)).toEqual(critical);
+    }
+  });
+
+  it('critically hits with captured-kit Burn but does not make Conduit Burn critical', () => {
+    for (const origin of ['native', 'conduit'] as const) {
+      const state = encounter('ember');
+      const source = state.allies[0], enemy = state.enemies[0];
+      source.captured = { instanceId: 'capture:native-burn', creatureId: 'infusion:roses:0', locked: false };
+      source.stats.crit = 1;
+      source.stats.critMultiplier = 2;
+      enemy.burn = { damage: 40, turns: 2, sourceId: source.id, origin };
+      const result = endTurn(state);
+      const tick = result.events.find(event => event.kind === 'damage' && event.periodic && event.source === source.id);
+      expect(tick).toMatchObject({ amount: origin === 'native' ? 80 : 40, critical: origin === 'native', origin });
+    }
   });
 });

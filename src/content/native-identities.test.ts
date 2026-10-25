@@ -54,12 +54,16 @@ describe('approved sixteen native identities', () => {
     expect(nativeIdentities.crinso.abilities.ultimate.description).toContain('ignores 45% of the target’s Defense');
     expect(nativeIdentities.rosetta.abilities.skill2.description).toContain(`${25 * scale}% for each other ally who hit it this player turn.`);
     expect(nativeIdentities.vaelor.abilities.ultimate.description).toContain(`${Number((340 * flareScale).toFixed(2))}% on [Crescendo]`);
-    expect(nativeIdentities.elise.abilities.skill2.description).toContain('90% of [Elise]’s Attack and cannot critically hit');
+    expect(nativeIdentities.elise.abilities.skill2.description).toContain('90% of [Elise]’s Attack.');
     expect(nativeIdentities.elise.abilities.skill2.description).toContain('one extra 60% strike');
     expect(nativeIdentities.elise.abilities.skill2.description).toContain(`${140 * scale}% direct damage`);
     expect(nativeIdentities.ember.abilities.skill1.description).toContain('[Burn] dealing 25% of [Infernis]’s Attack');
-    expect(nativeIdentities.atmoso.abilities.skill2.description).toContain('70% of [Atmoso]’s Attack plus 30% per [Gust] and cannot critically hit');
-    expect(nativeIdentities.thornia.abilities.ultimate.description).toContain('deal 270% of [Thornia]’s Attack and cannot critically hit');
+    expect(nativeIdentities.atmoso.abilities.skill2.description).toContain('70% of [Atmoso]’s Attack plus 30% per [Gust].');
+    expect(nativeIdentities.thornia.abilities.ultimate.description).toContain('deal 270% of [Thornia]’s Attack.');
+    for (const identity of Object.values(nativeIdentities)) {
+      expect([identity.passive.description, ...Object.values(identity.abilities).map(ability => ability.description)].join(' '))
+        .not.toMatch(/cannot critical|unable to critical|non.?critical/i);
+    }
   });
 
   it.each(nativeIdentityIds)('%s replaces every old native slot and passive without mutating stat growth', id => {

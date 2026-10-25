@@ -1,5 +1,26 @@
 # Character Master Conduits (D-201)
 
+## Exact, shared ability descriptions (D-415)
+
+All48 fixed Masters are included in the
+[complete138-entry audit](conduits.md#complete-description-and-keyword-audit-d-415).
+The choice selector, equipment, Collections and saved reveal use the shared
+canonical keyword formatter; the selector no longer bypasses it. Health,
+native resources and complete skill names remain bracketed in plain React
+text, without HTML injection or nested brackets.
+
+Thousand-Rose Planetary Aegis now explains that each enemy's first empowered
+trap trigger per Enemy Turn Shields the living allies that enemy hit.
+Normal traps never qualify merely because Skill Power raises their damage.
+Refreshing a genuine empowered trap with Gilded Thorn Guard retains its actual
+empowered state and Master interaction.
+
+The owner explicitly chooses the written Virtuous Planet Rosegarden design:
+Crimson Skyfall against Quarry heals that turn's living contributors for8%
+maximum Health and grants contributors other than Rosetta20% Skill Efficiency
+for their next Skill. Her Last Flare no longer incorrectly triggers this
+Master; its own native healing remains. No other Master effects/stats change.
+
 ## Wide bounded selection (D-413)
 
 Only the selection panel receives the

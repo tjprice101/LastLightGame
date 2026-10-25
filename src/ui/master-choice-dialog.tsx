@@ -6,6 +6,7 @@ import { starters, getStarter, type StarterId } from '../content/starters';
 import type { Account } from '../game/account';
 import { Button, Dialog, Status } from './components';
 import { assetUrl } from '../presentation/portrait';
+import { referencedEffect } from '../presentation/effect-copy';
 import '../styles/ui.css';
 import { getElement } from '../content/activities';
 import { elementAccents } from '../content/dungeon-art';
@@ -35,7 +36,7 @@ export function MasterChoiceDialog({ account, onChoose, onClose }: {
         className="ll-master-option" data-conduit-element={element} style={elementStyle} onClick={() => setSelected(entry.id)}>
         <img className="ll-master-art master-element-art" draggable={false} src={assetUrl(entry.art)} alt="" width={256} height={256} /><strong>{entry.name}</strong>
         <strong className="conduit-element-label" data-conduit-element={element}>{getElement(element).name}</strong>
-        <small>Omnic Master{account.masterConduits?.[entry.id] === 1 ? ' · Owned' : ''}</small><span>{entry.effect}</span>
+        <small>Omnic Master{account.masterConduits?.[entry.id] === 1 ? ' · Owned' : ''}</small><span>{referencedEffect(entry.effect, false)}</span>
       </Button>)}
     </div>
     <footer className="ll-master-footer">

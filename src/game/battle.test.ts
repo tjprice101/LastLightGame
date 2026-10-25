@@ -206,7 +206,8 @@ describe('Elemental Gauge', () => {
       expect(result.state.enemies[0].burn).toEqual({ damage: burn, turns: 3, sourceId: 'ember', origin: 'native' });
       expect(result.state.allies[0].readyRound.skill1).toBe(state.round);
       expect(result.state.allies[0].shatter).toBe(89);
-      expect(endTurn(result.state).events.find((entry) => entry.kind === 'damage' && entry.source === 'ember')?.amount).toBe(Math.round(burn));
+      expect(endTurn(result.state).events.find((entry) => entry.kind === 'damage' && entry.source === 'ember'))
+        .toMatchObject({ amount: Math.round(burn * actor.stats.critMultiplier), critical: true });
       expect(damageAmount(100, 1, 0, true, 2.1)).toBe(210);
       expect(() => damageAmount(100, 1, 0, true, NaN)).toThrow('Invalid damage');
     });

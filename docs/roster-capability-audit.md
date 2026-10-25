@@ -1,5 +1,14 @@
 # Roster capability audit: levels 0-105
 
+> **D-415 measurement boundary:** the numerical report below predates critical
+> eligibility for native Burn and triggered kit damage, plus the corrected
+> Cinder Testament/Rosegarden effects. Its methods, non-Calamitic equipment
+> constraints and acquisition declarations remain useful; its numerical
+> rankings/output are historical, not a newly verified current ceiling or
+> clear recommendation. The complete roster report has not been remeasured
+> under rules13. Current bounded seeded Calamity results are recorded in
+> [enemy benchmark calibration](enemy-benchmark-calibration.md#rules13-critical-damage-remeasurement-d-415).: levels 0-105
+
 Canonical non-Calamitic character capability reference (D-404). Personal Omnic Masters are included. Laboratory capabilities inform enemy calibration, but are not themselves clear rates or observed player averages.
 
 Use with the [global benchmark declaration and enemy calibration](enemy-benchmark-calibration.md), which supplies modeled P10/median/P90 progression bands, actual pressured encounters, access limitations and current hostile stat tables. Historical Calamitic-inclusive ceilings are not the tuning target.

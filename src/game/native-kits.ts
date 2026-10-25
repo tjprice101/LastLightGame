@@ -1,5 +1,5 @@
 import { type ActionId } from '../content/combat';
-import { damageAmount, type BattleEvent, type BattleState, type Combatant } from './battle';
+import { damageAmount, rollCritical, elementalCritFactor, type BattleEvent, type BattleState, type Combatant } from './battle';
 import { scheduledEnemySkill } from '../content/enemy-skills';
 import { debuffSnapshot } from './battle-debuffs';
 import { nativeBalance } from '../content/native-balance';
@@ -7,7 +7,7 @@ import { phaseZeroStatsReady } from '../content/phase-zero-stats';
 import { calamiticSkillDefenseIgnore, calamiticSkillShieldBypass } from './calamitic-conduits';
 import type { StatusArtId } from '../content/status-art';
 import { applyConduitBurn, applyConduitWeaken, nativeGauge, nativeHeal, nativeShield,
-  conduitBurnTick, afterConduitBurn, conduitActionTraits, conduitHitModifiers, recordConduitHit,
+  conduitBurnTick, afterConduitBurn, conduitActionTraits, conduitCriticalHit, recordConduitHit,
   timedConduitShield, gear, grantToken, equipped, value, nativeTargetDefense,
   generatedShield, generatedStrike, generatedHeal, generatedGaugePercent, finishNativeHealing, effectiveDefense, resetConduitBurnStreak, refreshConduitStats } from './conduit-runtime';
 
@@ -63,10 +63,15 @@ export function attachNativeView(state: BattleState, event: BattleEvent | undefi
 function fixed(state: BattleState, owner: Combatant, target: Combatant, power: number, kind: NativeDamageKind, events: BattleEvent[],
   bypass = false, activation?: Parameters<typeof applyConduitBurn>[4], stored = true): number {
   if (owner.hp <= 0 || target.hp <= 0 || power <= 0) return 0;
+  const hit = activation ? conduitCriticalHit(state, owner, target, activation) : undefined;
+  const rolled = hit ?? rollCritical(state, owner.stats.crit);
+  const { critical, elemental } = rolled;
+  const criticalMultiplier = hit?.criticalMultiplier ??
+    owner.stats.critMultiplier * (elemental ? elementalCritFactor : 1);
   let attack = kind === 'revenge' || kind === 'demolition' ? power : owner.stats.damage;
   let ignore = activation ? calamiticSkillDefenseIgnore(state, owner, activation.action) : 0;
-  if (phaseZeroStatsReady && activation) {
-    const modifiers = conduitHitModifiers(state, owner, target, activation, false);
+  if (phaseZeroStatsReady && activation && hit) {
+    const modifiers = hit.modifiers;
     ignore = modifiers.pierce;
     if (!stored) {
       power *= (activation.skillPower + modifiers.skillPowerBonus) * (1 + modifiers.bonus) *
@@ -76,21 +81,22 @@ function fixed(state: BattleState, owner: Combatant, target: Combatant, power: n
     }
   }
   const flareDamage = activation?.action === 'ultimate' ? nativeBalance.lastFlare.damage : 1;
-  const damage = bypass ? Math.round(power * flareDamage) : damageAmount(attack, power / attack * flareDamage,
-    nativeTargetDefense(state, target) * (1 - ignore), false);
+  const damage = bypass ? Math.round(power * flareDamage * (critical ? criticalMultiplier : 1))
+    : damageAmount(attack, power / attack * flareDamage,
+      nativeTargetDefense(state, target) * (1 - ignore), critical, criticalMultiplier);
   const shieldBypass = !bypass && activation ? calamiticSkillShieldBypass(state, owner, activation.action) : 0;
   const absorbed = Math.min(target.shield, damage - Math.floor(damage * shieldBypass));
   target.shield -= absorbed;
   const loss = Math.min(target.hp, damage - absorbed);
   target.hp -= loss;
   if (phaseZeroStatsReady && activation) {
-    recordConduitHit(activation, target, loss, false, 1, Math.max(0, damage - loss - absorbed), loss + absorbed);
+    recordConduitHit(activation, target, loss, critical, criticalMultiplier, Math.max(0, damage - loss - absorbed), loss + absorbed);
     nativePrimaryHit(state, owner, target, loss > 0 || absorbed > 0, events);
   }
-  events.push({ kind: 'damage', source: owner.id, target: target.id, amount: loss, critical: false,
+  events.push({ kind: 'damage', source: owner.id, target: target.id, amount: loss, critical, elementalCritical: elemental,
     origin: 'native', nativeKind: kind, periodic: kind === 'burn', shieldRemaining: target.shield, shieldAbsorbed: absorbed,
     debuffs: debuffSnapshot(target),
-    message: `${owner.name}: ${kind} deals ${loss} damage to ${target.name}${absorbed ? ` (${absorbed} shield absorbed)` : ''}.` });
+    message: `${owner.name}: ${kind} deals ${loss} damage to ${target.name}${elemental ? ' (Elemental Crit)' : critical ? ' (critical)' : ''}${absorbed ? ` (${absorbed} shield absorbed)` : ''}.` });
   return loss;
 }
 
@@ -444,7 +450,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
           traps[enemy.id] = { charges: 3, coefficient: Math.max(traps[enemy.id]?.coefficient ?? 0,
             (action === 'ultimate' ? .9 * flareDamage : .6) * (phaseZeroStatsReady ? activation.skillPower : 1)),
           throughPhase: state.round + 2 + activation.skillDuration,
-          ...(phaseZeroStatsReady ? { empowered: action === 'ultimate' } : {}) };
+          ...(phaseZeroStatsReady ? { empowered: action === 'ultimate' || traps[enemy.id]?.empowered === true } : {}) };
           status(events, owner, enemy, `${enemy.name}: 3 Thorn trap charges through enemy phase ${traps[enemy.id].throughPhase}.`);
         }
       }
@@ -924,7 +930,7 @@ export function nativeMarkers(state: BattleState, unit: Combatant): NativeMarker
     } else {
       const trap = memory.traps?.[unit.id];
       if (trap && trap.charges > 0) {
-        const empowered = trap.coefficient >= .9;
+        const empowered = trap.empowered === true;
         markers.push({ id: 'trap', owner: owner.id, label: empowered ? 'Empowered Thorn Trap' : 'Thorn Trap',
           value: `${trap.charges} charge${trap.charges === 1 ? '' : 's'} · through enemy phase ${trap.throughPhase}`,
           icon: empowered ? 'native-thornia-empowered-trap' : 'native-thornia-trap' });
@@ -994,9 +1000,9 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
   for (const [id, pending] of Object.entries(memory.seeds ?? {})) add(pending.fraction >= nativeBalance.flora.empoweredSeed ? 'Empowered Seed' : 'Seed', `${pending.fraction * 100}%`,
     `${state.allies.find(ally => ally.id === id)?.name}: player turn ${pending.dueRound}.`,
     [pending.fraction >= nativeBalance.flora.empoweredSeed ? 'native-flora-empowered-seed' : 'native-flora-seed']);
-  for (const [id, trap] of Object.entries(memory.traps ?? {})) add(trap.coefficient >= .9 ? 'Empowered Thorn Trap' : 'Thorn Trap', `${trap.charges} charges`,
+  for (const [id, trap] of Object.entries(memory.traps ?? {})) add(trap.empowered ? 'Empowered Thorn Trap' : 'Thorn Trap', `${trap.charges} charges`,
     `${state.enemies.find(enemy => enemy.id === id)?.name}; through phase ${trap.throughPhase}.`,
-    [trap.coefficient >= .9 ? 'native-thornia-empowered-trap' : 'native-thornia-trap']);
+    [trap.empowered ? 'native-thornia-empowered-trap' : 'native-thornia-trap']);
   for (const [id, seal] of Object.entries(memory.seals ?? {})) add('Seal', `${seal.fraction * 100}%`,
     `${state.enemies.find(enemy => enemy.id === id)?.name}; through phase ${seal.throughPhase}.`, ['native-aurora-seal']);
   return rows;

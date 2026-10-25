@@ -298,9 +298,11 @@ const checks: Record<MasterConduitId, Check> = {
   'master-rosetta-2': (state, equipped) => {
     wound(state);
     state.allies[0].native = { quarry: { target: state.enemies[0].id, round: 1, contributors: [state.allies[1].id] } };
-    const result = cast(state, 'ultimate');
-    // Rosetta becomes the second contributor: native 15% heal plus the independent Master heal.
-    expect(result.allies[1].hp).toBe(equipped ? 330 : 250);
+    const flare = cast(state, 'ultimate');
+    expect(flare.allies[1].hp).toBe(250);
+    expect(cost(flare)).toBe(100);
+    const result = cast(state, 'skill2');
+    expect(result.allies[1].hp).toBe(equipped ? 180 : 100);
     expect(result.allies[2].hp).toBe(100);
     expect(cost(result)).toBe(equipped ? 80 : 100);
   },
@@ -320,7 +322,18 @@ const checks: Record<MasterConduitId, Check> = {
     expect(nativeTargetDefense(result, result.enemies[0])).toBe(100);
   },
   'master-thornia-2': (state, equipped) => {
-    const result = cast(state, 'ultimate');
+    const ordinary = cast(state, 'skill1');
+    const ordinaryEnemy = ordinary.enemies[0], ordinaryRecipient = ordinary.allies[1];
+    nativeEnemyCompleted(ordinary, ordinaryEnemy, true, [{ kind: 'damage', source: ordinaryEnemy.id,
+      target: ordinaryRecipient.id, amount: 1, critical: false, message: 'hit' }]);
+    expect(ordinaryRecipient.shield).toBe(0);
+    const empowered = cast(state, 'ultimate');
+    const owner = empowered.allies[0];
+    owner.spent = false;
+    owner.recoverThrough = 0;
+    owner.shatter = owner.stats.shatterCapacity;
+    gear(owner).numbers.actions = 0;
+    const result = cast(empowered, 'skill1');
     const enemy = result.enemies[0], recipient = result.allies[1];
     const events: BattleEvent[] = [{ kind: 'damage', source: enemy.id, target: recipient.id, amount: 1, critical: false, message: 'hit' }];
     nativeEnemyCompleted(result, enemy, true, events);

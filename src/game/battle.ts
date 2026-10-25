@@ -29,7 +29,7 @@ import { storyEncounter, storyCreature, storyDrops, storyRules } from '../conten
 import { bossLootMultiplier, bossLootRange } from '../content/final-boss-loot';
 import { calamityEncounter, calamityPatterns, calamityChest, type CalamityActivityId, type CalamityTier } from '../content/calamity';
 import { initializeConduits, refreshConduitStats, equipped, gear, value, effectiveDefense, nativeTargetDefense, afterConduitImpact, conduitActionCost, conduitActionBlocked, recoveryNormal,
-  prepareConduitAction, conduitHitModifiers, conduitCriticalBonus, recordConduitHit, finishConduitAction, applyConduitBurn, applyConduitWeaken,
+  prepareConduitAction, conduitCriticalHit, recordConduitHit, finishConduitAction, applyConduitBurn, applyConduitWeaken,
   nativeHeal, nativeShield, nativeGauge, supportEffect, conduitTurnStart, conduitIncoming, conduitBurnTick, afterConduitBurn,
   conduitDeaths, forcedConduitTarget, conduitSuppressSkill, expireNativeShields, type ConduitRuntimeState, type ConduitActivation } from './conduit-runtime';
 import { calamiticActionReason, calamiticExtraActionAvailable, calamiticNoLastFlareRecovery,
@@ -640,15 +640,8 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
         nativeAll ? selected.filter(enemy => enemy.id === targetId) : selected;
       for (const target of targets) {
         if (target.hp <= 0) continue;
-        const rolled = rollCritical(state, actor.stats.crit + criticalBonus + activation.criticalBonus +
-          conduitCriticalBonus(state, actor, target, action));
-        const critical = !activation.forbidden && (activation.guaranteed || rolled.critical);
-        const elemental = critical && rolled.elemental;
-        const modifiers = conduitHitModifiers(state, actor, target, activation, critical);
-        const criticalMultiplier = (modifiers.critMultiplier ?? actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1) *
-          (critical && action !== 'light' && equipped(actor, 'judgment-lens') && !phaseZeroStatsReady ? 1 + value(state, actor, 'judgment-lens', .4, .8) : 1) *
-          (critical && activation.guaranteed && equipped(actor, 'falcon-sight') && !phaseZeroStatsReady ? 1 + value(state, actor, 'falcon-sight', .1, .2) : 1)) *
-          (1 + (modifiers.criticalDamageBonus ?? 0));
+        const { critical, elemental, modifiers, criticalMultiplier } =
+          conduitCriticalHit(state, actor, target, activation, criticalBonus);
         const boost = !phaseZeroStatsReady && actor.attackBoost && actor.attackBoost.throughRound >= state.round ? 1 + actor.attackBoost.fraction : 1;
         const offered = damageAmount(modifiers.attack, coefficient * activation.scale *
           (activation.skillPower + modifiers.skillPowerBonus) * boost *
@@ -697,15 +690,8 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
     if (actor.hp <= actor.stats.health / 2) multiplier *= 1 + definition.passive.damageBonus;
     if (!phaseZeroStatsReady && actor.attackBoost && actor.attackBoost.throughRound >= state.round) multiplier *= 1 + actor.attackBoost.fraction;
     for (const target of targets) {
-      const rolled = rollCritical(state, actor.stats.crit + (strength?.critBonus ?? 0) + activation.criticalBonus +
-        conduitCriticalBonus(state, actor, target, action));
-      const critical = !activation.forbidden && (activation.guaranteed || rolled.critical);
-      const elemental = critical && rolled.elemental;
-      const modifiers = conduitHitModifiers(state, actor, target, activation, critical);
-      const criticalMultiplier = (modifiers.critMultiplier ?? actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1) *
-        (critical && action !== 'light' && equipped(actor, 'judgment-lens') && !phaseZeroStatsReady ? 1 + value(state, actor, 'judgment-lens', .4, .8) : 1) *
-        (critical && activation.guaranteed && equipped(actor, 'falcon-sight') && !phaseZeroStatsReady ? 1 + value(state, actor, 'falcon-sight', .1, .2) : 1)) *
-        (1 + (modifiers.criticalDamageBonus ?? 0));
+      const { critical, elemental, modifiers, criticalMultiplier } =
+        conduitCriticalHit(state, actor, target, activation, strength?.critBonus ?? 0);
       const priorShield = target.shield;
       const priorBurnTurns = target.burn.turns;
       const secondaryCleave = action === 'skill2' && equipped(actor, 'master-thornia-2') && target.id !== targetId;
@@ -815,7 +801,11 @@ export function endTurn(previous: BattleState): BattleResult {
       const source = state.allies.find((unit) => unit.id === (enemy.burn.sourceId ?? 'ember'));
       if (!source) throw new Error('Burn source is missing.');
       const priorHp = enemy.hp;
-      hurt(enemy, conduitBurnTick(state, source, enemy), source, events, false, true);
+      const kitBurn = enemy.burn.origin !== 'conduit';
+      const rolled = kitBurn ? rollCritical(state, source.stats.crit) : { critical: false, elemental: false };
+      const damage = conduitBurnTick(state, source, enemy) *
+        (rolled.critical ? source.stats.critMultiplier * (rolled.elemental ? elementalCritFactor : 1) : 1);
+      hurt(enemy, Math.round(damage), source, events, rolled.critical, true, 0, rolled.elemental);
       events[events.length - 1].origin = enemy.burn.origin === 'conduit' ? 'conduit' : 'native';
       if (enemy.burn.origin !== 'conduit') pilotBurnDamage(state, source, priorHp - enemy.hp, events);
       afterConduitBurn(state, source, enemy, priorHp - enemy.hp, events);

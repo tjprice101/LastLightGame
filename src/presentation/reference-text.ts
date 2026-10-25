@@ -16,6 +16,7 @@ const aliases: Record<string, string> = {
   Treasury: 'Crownfall Treasury', 'Crimson Roses': 'Passion of Crimson Roses',
   'Normal Attacks': 'Normal Attack', Gauge: 'Elemental Gauge', "Machine's Master Chests": "Machine's Master Chest",
   'All-enemy': 'Global',
+  HP: 'Health',
 };
 
 const fixedNames = ['Roselius', 'Prismatica', 'Null-Prismatica', 'Broken Mechanical Components', "Machine's Master Chest",
@@ -32,6 +33,7 @@ const fixedNames = ['Roselius', 'Prismatica', 'Null-Prismatica', 'Broken Mechani
   'Accord', 'Seed', 'Seeds', 'Empowered Seed', 'Empowered Seeds', 'Gust', 'Gusts', 'Cyclone',
   'Foundation', 'Combo', 'Wounds', 'Cover', 'Seal', 'Seals', 'Sealed', 'Shuriken', 'Survey',
   'Quarry', 'Instruction', 'Instructions', 'Strike', 'Shelter', 'Resolve',
+  'Thorn Traps', 'Empowered Thorn Traps',
   'Opening', 'Closing', 'Tune', 'Crescendo', 'Rise', 'Trap', 'Traps', 'Thorn Trap', 'Empowered Thorn Trap'];
 
 let matcher: { pattern: RegExp; names: Map<string, string>; elementIds: Map<string, (typeof elements)[number]['id']> } | null = null;
@@ -45,7 +47,11 @@ function referenceMatcher(): { pattern: RegExp; names: Map<string, string>; elem
   starters.forEach(starter => add(starter.name));
   for (const fighter of Object.values(fighters)) {
     add(fighter.passive?.name);
-    for (const ability of Object.values(fighter.abilities)) add(ability.name);
+    for (const ability of Object.values(fighter.abilities)) {
+      add(ability.name);
+      if (ability.name.startsWith('Last Flare: '))
+        names.set(ability.name.slice('Last Flare: '.length).toLowerCase(), ability.name);
+    }
   }
   conduits.forEach(conduit => add(conduit.name));
   masterConduits.forEach(master => add(master.name));
@@ -90,7 +96,8 @@ export function bracketReferences(html: string, elementMedals = true): string {
     // Existing element medals in prose read as [Element] too.
     if (elementLabelDepth && skipped.length === 1 && text && elementIds.has(text.trim())) return text.replace(text.trim(), `[${text.trim()}]`);
     if (skipped.length || !text) return text ?? '';
-    const normalized = text.replace(/\[([^[\]]+)\]/g, (bracketed: string, term: string) => {
+    const normalized = text.replace(/\[Maximum HP\]|\bmaximum HP\b/gi, 'maximum [Health]')
+      .replace(/\[([^[\]]+)\]/g, (bracketed: string, term: string) => {
       const canonical = names.get(term.toLowerCase());
       return canonical ? `[${canonical}]` : bracketed;
     });

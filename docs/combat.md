@@ -1,5 +1,38 @@
 # Combat specification
 
+## All character-kit damage can crit (D-415)
+
+Owner explicitly includes ongoing and triggered native damage, not just direct
+ability impacts. Burn ticks, Burn detonations, Cyclone releases, recalled
+Shuriken/convergence, Wounds strikes, Thorn Trap retaliation/charge spends and
+Foundation demolition now roll Critical Rate and apply Critical Damage
+Multiplier, including existing Elemental Crit overflow. Captured-kit Burn uses
+the same critical eligibility. Direct attacks keep their existing resolution.
+
+Every damage packet rolls its own outcome on the combat RNG; a critical
+application does not pre-multiply stored Burn or other delayed potency.
+Delayed packets use their living owner's critical stats when they resolve.
+Immediate follow-ups share their activation's applicable bonuses through the
+same critical-hit helper as direct impacts. Stored Skill Power/potency still
+scales once; Defense, bypass, Shields, actual Health damage and rounding
+remain in their existing order. Skill/action-specific equipment conditions
+remain scoped to those actions.
+
+These packets do not become extra Attack Actions or earn extra Gauge,
+Instructions or recursive Conduit procs. Conduit-generated damage remains
+under its existing non-critical rules. Native resource gains, costs,
+cooldowns, recovery, rewards and independent reward RNG are unchanged.
+The added combat critical rolls intentionally change subsequent seeded combat
+outcomes. Rules13 restarts historical frozen encounters through the existing
+compatibility path, preserving frozen investments and saved rewards.
+
+Thorn Trap type is the authored `empowered` flag, not a damage threshold.
+Skill Power cannot turn Gilded Thorn Guard's ordinary trap into an empowered
+one. Refreshing an existing empowered trap preserves its type and damage.
+The [description audit](conduits.md#complete-description-and-keyword-audit-d-415)
+also fixes owner-confirmed Cinder Testament and Rosegarden implementation
+mismatches; no hostile stat curves are changed.
+
 ## Non-Calamitic global calibration (D-404)
 
 The [canonical capability audit](roster-capability-audit.md) excludes Calamitic
@@ -23,6 +56,8 @@ Combat rules11 uses the existing client/server historical-run restart path;
 frozen squad/equipment and already-saved rewards remain intact.
 
 The D-398/D-385 exact stats and pre-D-404 measurements below are historical.
+D-404 performance tables also predate D-415 critical eligibility; see the
+[current measurement boundary](enemy-benchmark-calibration.md#rules13-critical-damage-remeasurement-d-415).
 
 ## Calamity tier adjustments (D-398)
 
@@ -495,8 +530,8 @@ another living ally exists; solo Cover explicitly offers self. The selected
 enemy is independent and unchanged. Confirmed recipients are revalidated before
 any action state mutates; disposal closes the picker and restores focus safely.
 
-Native primary direct impacts aggregate equipment triggers once. Fixed native
-follow-ups carry typed provenance and cannot crit, earn Gauge, consume another
+Native primary direct impacts aggregate equipment triggers once. Native
+follow-ups can critically hit under D-415, but cannot earn Gauge, consume another
 Instruction or recursively activate equipment actions. Cover routes its share
 once with25% reduction, without a second Defense/redirect/Foundation/Wounds
 pass. Finite Foundation absorbs20% of remaining direct damage before personal

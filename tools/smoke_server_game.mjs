@@ -381,7 +381,7 @@ try {
 }
 
 async function smokePhaseZero(client, userId, username) {
-  assert.equal(conduitRulesVersion, 12, 'The production bundle must activate rules12');
+  assert.equal(conduitRulesVersion, 13, 'The production bundle must activate rules13');
   const id = 'calamitic-causality-funeral-engine';
   const entropy = { seed: () => 7321, uuid: () => randomUUID(), random: () => .9 };
   let game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
@@ -393,7 +393,8 @@ async function smokePhaseZero(client, userId, username) {
   game = resolveOperation(game, { kind: 'enter', activity: { kind: 'training' } }, entropy).game;
   const state = game.run.session.state;
   state.allies[0].stats.damage = 100;
-  state.allies[0].stats.crit = 0;
+  state.allies[0].stats.crit = 1;
+  state.allies[0].stats.critMultiplier = 2;
   state.allies[0].shatter = 100;
   for (const enemy of state.enemies) {
     enemy.stats.health = enemy.hp = 10000;
@@ -411,7 +412,7 @@ async function smokePhaseZero(client, userId, username) {
     return result.data;
   }
   const initial = await invoke({ kind: 'read' }, 0);
-  assert.equal(initial.session.state.conduitRulesVersion, 10);
+  assert.equal(initial.session.state.conduitRulesVersion, conduitRulesVersion);
   assert.equal(initial.session.state.allies[0].stats.skillPower, 1);
   assert.equal(initial.session.state.allies[0].stats.skillEfficiency, .5);
   const operation = { kind: 'act', runId: initial.session.runId, actorId: 'ember', action: 'skill1',
@@ -424,15 +425,27 @@ async function smokePhaseZero(client, userId, username) {
   assert.equal(resolved.session.state.allies[0].conduits[0], id);
   assert.deepEqual(resolved.account, initial.account);
   assert.deepEqual(await invoke(operation, initial.revision, requestId), resolved);
-  const checkpoint = await invoke({ kind: 'checkpoint' }, resolved.revision);
-  assert.deepEqual(checkpoint.session, resolved.session);
-  assert.deepEqual(checkpoint.account, resolved.account);
-  const quit = await invoke({ kind: 'quit', runId: resolved.session.runId }, resolved.revision);
+  const endOperation = { kind: 'endTurn', runId: resolved.session.runId };
+  const endId = randomUUID();
+  const ended = await invoke(endOperation, resolved.revision, endId);
+  const expectedEnd = resolveOperation(expected.game, endOperation, entropy);
+  assert.deepEqual(ended.result, JSON.parse(JSON.stringify(expectedEnd.response.result)));
+  const ticks = ended.result.events.filter(event =>
+    event.kind === 'damage' && event.source === 'ember' && event.nativeKind === 'burn');
+  assert.ok(ticks.length > 0);
+  assert.ok(ticks.every(event => event.amount === 50 && event.critical && !event.elementalCritical),
+    'Native Burn critically hits at exactly twice its stored 25 damage');
+  assert.deepEqual(ended.account, initial.account);
+  assert.deepEqual(await invoke(endOperation, resolved.revision, endId), ended);
+  const checkpoint = await invoke({ kind: 'checkpoint' }, ended.revision);
+  assert.deepEqual(checkpoint.session, ended.session);
+  assert.deepEqual(checkpoint.account, ended.account);
+  const quit = await invoke({ kind: 'quit', runId: ended.session.runId }, ended.revision);
   const fresh = await invoke({ kind: 'enter', activity: { kind: 'training' } }, quit.revision);
   assert.equal(fresh.session.state.allies[0].stats.skillPower, 1, 'A fresh entry uses current menu gear');
-  assert.equal(fresh.session.state.conduitRulesVersion, 10);
+  assert.equal(fresh.session.state.conduitRulesVersion, conduitRulesVersion);
   assert.equal((await invoke({ kind: 'quit', runId: fresh.session.runId }, fresh.revision)).session, null);
-  console.log(`Hosted Phase 0 smoke passed: rules${conduitRulesVersion}, frozen Funeral +5 Efficiency cap, exact direct-damage parity and25 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.`);
+  console.log(`Hosted Phase 0 smoke passed: rules${conduitRulesVersion}, frozen Funeral +5 Efficiency cap, exact direct-damage parity, stored25 Burn critically hitting for50, unchanged holdings, idempotent action/turn, checkpoint persistence and fresh-entry gear.`);
 }
 
 async function smokeGlassrootStasis(firstClient, firstId, firstUsername) {
@@ -819,7 +832,7 @@ async function smokeNativeCalamity(client, userId, username) {
 }
 
 async function smokeRewardCorrections(client, userId, username) {
-  assert.equal(conduitRulesVersion, 12);
+  assert.equal(conduitRulesVersion, 13);
   const game = freshGame(username);
   game.starterId = 'ember';
   game.account.characters = { ember: { level: 0, evolution: 1 } };
@@ -873,7 +886,7 @@ async function smokeRewardCorrections(client, userId, username) {
     assert.deepEqual(await invoke(operation, requestId), actual);
     revision = actual.revision;
   }
-  console.log('Hosted reward corrections passed: rules12,15 mode-owned chest openings/30 unique Lv60 copies, specialty-only materials, both80-pull guarantees, exact persisted receipts and idempotent UUID/recruit retries. Disposable identity only.');
+  console.log(`Hosted reward corrections passed: rules${conduitRulesVersion},15 mode-owned chest openings/30 unique Lv60 copies, specialty-only materials, both80-pull guarantees, exact persisted receipts and idempotent UUID/recruit retries. Disposable identity only.`);
 }
 
 async function smokeCalamityComponents(client, userId, username) {

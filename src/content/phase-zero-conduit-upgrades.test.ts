@@ -69,9 +69,9 @@ describe('approved ability upgrade presentation', () => {
     for (let level = 0; level <= 5; level++) {
       const ability = phaseZeroUpgradedAbility('stasis-reliquary', level)!;
       expect(ability).toContain(`${10 + level * 2}% chance`);
-      expect(ability).toContain('that hit\'s remaining [Health] damage');
+      expect(ability).toContain('damage left over from that hit');
       expect(ability).toContain('25% more damage');
-      expect(ability).toContain('cannot activate that turn');
+      expect(ability).toContain('unavailable that turn');
       expect(ability).not.toMatch(/per upgrade|at \+5|Later hits/);
       expect([...ability.matchAll(/\d+%/g)].map(match => match[0])).toEqual([`${10 + level * 2}%`, '25%']);
     }

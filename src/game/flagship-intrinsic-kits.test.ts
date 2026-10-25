@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { resolveFighter } from '../content/combat';
 import { nativeIdentityIds } from '../content/native-identities';
 import { nativeBalance } from '../content/native-balance';
-import { act, createBattle, damageAmount, endTurn, nextWave, type BattleState } from './battle';
+import { act, createBattle, damageAmount, endTurn, nextWave, roll, type BattleState } from './battle';
 import { nativeForecast, nativeIncomingMultiplier, nativeRouteDamage } from './native-kits';
 
 function encounter(...roster: string[]): BattleState {
@@ -43,7 +43,8 @@ describe('distinct flagship native identities', () => {
     expect(state.allies[0].native?.cyclone?.gusts).toBe(2);
     state.allies[0].stats.crit = 1;
     const release = use(state, 'atmoso', 'skill1');
-    expect(release.events.filter(event => event.nativeKind === 'cyclone').map(event => event.amount)).toEqual([130, 130]);
+    const expected = Math.round(130 * state.allies[0].stats.critMultiplier);
+    expect(release.events.filter(event => event.nativeKind === 'cyclone').map(event => event.amount)).toEqual([expected, expected]);
     expect(release.state.allies[0].native?.cyclone).toBeUndefined();
     expect(release.state.allies[0].pilot).toBeUndefined();
   });
@@ -59,17 +60,18 @@ describe('distinct flagship native identities', () => {
     expect(second.events.filter(event => event.nativeKind === 'cyclone').map(event => event.amount)).toEqual([70, 70]);
   });
 
-  it('Elise uses two persistent placements and one noncritical convergence strike, with no recall RNG', () => {
+  it('Elise uses two persistent placements and one convergence strike', () => {
     let state = use(encounter('elise'), 'elise', 'skill1').state;
     state = use(state, 'elise', 'skill1').state;
     expect(state.allies[0].native?.blades).toEqual([state.enemies[0].id, state.enemies[0].id]);
     const noBlade = use(state, 'elise', 'skill1');
     expect(noBlade.events.find(event => event.kind === 'damage')?.amount).toBe(140 * nativeBalance.skillDamageScale);
-    const beforeSeed = state.seed;
+    const expected = structuredClone(state);
+    for (let hit = 0; hit < 3; hit++) roll(expected);
     const recall = use(state, 'elise', 'skill2');
     expect(recall.events.filter(event => event.nativeKind === 'recall').map(event => event.amount)).toEqual([90, 90, 60]);
     expect(recall.events.every(event => !event.critical)).toBe(true);
-    expect(recall.state.seed).toBe(beforeSeed);
+    expect(recall.state.seed).toBe(expected.seed);
     expect(recall.state.allies[0].native?.blades).toEqual([null, null]);
   });
 

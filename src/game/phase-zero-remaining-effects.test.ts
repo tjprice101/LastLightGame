@@ -507,6 +507,8 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
       recordConduitHit(ctx, target, 1, false, 1);
       recordConduitHit(ctx, target, 1, false, 1);
       finishConduitAction(state, ally, ctx, []);
+      expect(conduitBurnTick(state, owner, target)).toBe(Math.round(100 *
+        (1 + Math.min(benefit(.6, level), benefit(.2, level) * (i + 1)))));
     }
     expect(conduitBurnTick(state, owner, target)).toBe(Math.round(100 * (1 + benefit(.6, level))));
     burn();

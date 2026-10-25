@@ -67,7 +67,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     },
     abilities: {
       skill1: ability('Razor Gale', '180% direct damage to one enemy. If a [Cyclone] exists, it releases immediately on all living enemies and ends.', 1.8),
-      skill2: ability('Cyclone Weave', 'Release any existing [Cyclone], then create a new [Cyclone] with 0 [Gust] lasting two enemy phases. When the second enemy phase ends, it releases on all living enemies. A [Cyclone] release deals 70% of [Atmoso]’s Attack plus 30% per [Gust] and cannot critically hit. [Gust] never carries over to a new [Cyclone]. [Atmoso] must be alive for a release.', undefined, 'all-enemies'),
+      skill2: ability('Cyclone Weave', 'Release any existing [Cyclone], then create a new [Cyclone] with 0 [Gust] lasting two enemy phases. When the second enemy phase ends, it releases on all living enemies. A [Cyclone] release deals 70% of [Atmoso]’s Attack plus 30% per [Gust]. [Gust] never carries over to a new [Cyclone]. [Atmoso] must be alive for a release.', undefined, 'all-enemies'),
       ultimate: ability('Last Flare: Sky Without End', 'Release any active [Cyclone] at its current [Gust] count for three times its normal release damage, then deal 200% direct damage to all enemies.', 2, 'all-enemies'),
     },
   },
@@ -80,7 +80,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     },
     abilities: {
       skill1: ability('Voltstar Cut', 'Throw one held [Shuriken] for 110% direct damage to the selected enemy; it lodges in that enemy. With no [Shuriken] held, deal 140% direct damage instead and neither [Shuriken] moves. Both [Shuriken] can lodge in the same enemy.', 1.1),
-      skill2: ability('Crosscurrent Volley', 'Recall every lodged [Shuriken]: each strikes its enemy for 90% of [Elise]’s Attack and cannot critically hit. If both were in the same enemy, it takes one extra 60% strike. If both [Shuriken] are already held, deal 140% direct damage to the selected enemy instead. Recalled strikes generate no Gauge.', 1.4),
+      skill2: ability('Crosscurrent Volley', 'Recall every lodged [Shuriken]: each strikes its enemy for 90% of [Elise]’s Attack. If both were in the same enemy, it takes one extra 60% strike. If both [Shuriken] are already held, deal 140% direct damage to the selected enemy instead. Recalled strikes generate no Gauge.', 1.4),
       ultimate: ability('Last Flare: Infinite Thunderwheel', 'Recall every lodged [Shuriken] with 270% strikes and a 180% same-enemy strike, then deal 260% direct damage to the selected enemy. Both [Shuriken] return to [Elise] afterward.', 2.6),
     },
   },
@@ -144,9 +144,9 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
       description: 'HP [Razor] loses to direct enemy hits is stored as [Wounds]. Damage absorbed by shields, damage redirected to him, [Burn], HP he pays himself and Conduit effects add no [Wounds]. Healing does not remove [Wounds].',
     },
     abilities: {
-      skill1: ability('Nightcleave', '160% direct damage to one enemy, then spend all [Wounds] for an extra strike that uses the spent amount as its Attack, is reduced by Defense and cannot critically hit. With no [Wounds], only the first hit occurs.', 1.6),
+      skill1: ability('Nightcleave', '160% direct damage to one enemy, then spend all [Wounds] for an extra strike that uses the spent amount as its Attack, reduced by Defense. With no [Wounds], only the first hit occurs.', 1.6),
       skill2: ability('Eclipse Bastion', '[Razor] takes 30% less direct damage during the next enemy phase. If he lost HP to direct hits during that phase, he then gains a shield equal to that HP through the following enemy phase.'),
-      ultimate: ability('Last Flare: Unbroken Midnight', '220% direct damage to one enemy, then spend all [Wounds] for an extra strike dealing three times the damage of a strike using twice the spent amount as its Attack, reduced by Defense and unable to critically hit.', 2.2),
+      ultimate: ability('Last Flare: Unbroken Midnight', '220% direct damage to one enemy, then spend all [Wounds] for an extra strike dealing three times the damage of a strike using twice the spent amount as its Attack, reduced by Defense.', 2.2),
     },
   },
   rosetta: {
@@ -167,12 +167,12 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     playLoop: '[Thornia] places a [Thorn Trap] that strikes an enemy whenever it attacks; [Shadow Rose Cleave] can spend a charge for immediate damage.',
     passive: {
       name: 'Forbidden Garden',
-      description: 'Each enemy can hold one [Thorn Trap] from [Thornia], with up to three charges. When that enemy finishes an action that deals direct damage to any ally, one charge is spent for a strike of 60% of [Thornia]’s Attack that cannot critically hit. This happens once per enemy action, however many allies it hits. Damage absorbed by shields still counts; actions that deal no damage do not.',
+      description: 'Each enemy can hold one [Thorn Trap] from [Thornia], with up to three charges. When that enemy finishes an action that deals direct damage to any ally, one charge is spent for a strike of 60% of [Thornia]’s Attack. This happens once per enemy action, however many allies it hits. Damage absorbed by shields still counts; actions that deal no damage do not.',
     },
     abilities: {
       skill1: ability('Gilded Thorn Guard', 'Place a [Thorn Trap] with three charges on the selected enemy for three enemy phases. Recasting resets it to three charges and three enemy phases and never adds more. Recasting on an [Empowered Thorn Trap] keeps it empowered.'),
-      skill2: ability('Shadow Rose Cleave', '170% direct damage to one enemy. If it has a [Thorn Trap], spend one charge for an extra strike of 80% of [Thornia]’s Attack that cannot critically hit.', 1.7),
-      ultimate: ability('Last Flare: Thousand-Rose Dominion', '140% direct damage to all enemies, then place an [Empowered Thorn Trap] with three charges on each survivor for three enemy phases. Its strikes deal 270% of [Thornia]’s Attack and cannot critically hit.', 1.4, 'all-enemies'),
+      skill2: ability('Shadow Rose Cleave', '170% direct damage to one enemy. If it has a [Thorn Trap], spend one charge for an extra strike of 80% of [Thornia]’s Attack.', 1.7),
+      ultimate: ability('Last Flare: Thousand-Rose Dominion', '140% direct damage to all enemies, then place an [Empowered Thorn Trap] with three charges on each survivor for three enemy phases. Its strikes deal 270% of [Thornia]’s Attack.', 1.4, 'all-enemies'),
     },
   },
   crinso: {
@@ -211,7 +211,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     abilities: {
       skill1: ability('Keystone Reversal', '140% direct damage to one enemy, then repair the [Foundation] by 8% of [Orvella]’s maximum HP. With no [Foundation], deal 180% direct damage instead. Never creates a [Foundation].', 1.4),
       skill2: ability('Raise the Faultline', 'Create a [Foundation] with durability equal to 30% of [Orvella]’s maximum HP for three enemy phases. Recasting replaces it at full durability; it never stacks.', undefined, 'all-allies'),
-      ultimate: ability('Worldweight Citadel', '200% direct damage to all enemies. An existing [Foundation] is used up for an extra strike on each enemy that uses its remaining durability as Attack, is reduced by Defense and cannot critically hit.', 2, 'all-enemies'),
+      ultimate: ability('Worldweight Citadel', '200% direct damage to all enemies. An existing [Foundation] is used up for an extra strike on each enemy that uses its remaining durability as Attack, reduced by Defense.', 2, 'all-enemies'),
     },
   },
   vaelor: {

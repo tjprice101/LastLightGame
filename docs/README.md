@@ -1,5 +1,9 @@
 # Documentation hub
 
+**D-415:** [complete Conduit/Master description audit](conduits.md#complete-description-and-keyword-audit-d-415),
+[all-kit critical and trap rules](combat.md#all-character-kit-damage-can-crit-d-415),
+and [current benchmark limitations/results](enemy-benchmark-calibration.md#rules13-critical-damage-remeasurement-d-415).
+
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 

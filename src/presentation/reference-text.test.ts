@@ -5,6 +5,12 @@ import { phaseZeroStatLabels } from '../content/phase-zero-stats';
 import { conduitGlossary } from '../content/conduit-glossary';
 
 describe('bracketed reference formatting', () => {
+  it('canonicalizes legacy Health names, full ability names and plural traps without nesting', () => {
+    const input = "HP, [HP], maximum HP, [Maximum HP], Empowered Thorn Traps and Dawnfire.";
+    const expected = '[Health], [Health], maximum [Health], maximum [Health], [Empowered Thorn Traps] and [Last Flare: Dawnfire].';
+    expect(bracketReferences(input, false)).toBe(expected);
+    expect(bracketReferences(expected, false)).toBe(expected);
+  });
   it('brackets full names in prose while leaving headings, labels, buttons and attributes plain', () => {
     const html = bracketReferences('<h3>Prismatica</h3><p data-name="Prismatica">Spend Prismatica in Heaven with Crinso\'s Golden Edge.</p><button>Story</button><strong>Calamity</strong>');
     expect(html).toBe('<h3>Prismatica</h3><p data-name="Prismatica">Spend [Prismatica] in [Soar to Heaven] with [Crinso]\'s [Golden Edge].</p><button>Story</button><strong>Calamity</strong>');

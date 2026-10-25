@@ -1,5 +1,10 @@
 # Calamity Mode (D-308 / D-315)
 
+**D-415 validation boundary:** native kit criticals change seeded outcomes but
+not Calamity stats or rewards. Current648-encounter results and the limitations
+of older global measurements are in
+[rules13 remeasurement](enemy-benchmark-calibration.md#rules13-critical-damage-remeasurement-d-415).
+
 ## Mode-owned rewards (D-412)
 
 Each capture-enabled activity's chests guarantee1/2/3 of **its own highest

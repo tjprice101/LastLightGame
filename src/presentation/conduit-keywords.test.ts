@@ -9,10 +9,11 @@ import { masterReference } from './master-conduits';
 import { emptyAccount } from '../game/account';
 import { inventoryView } from './inventory';
 
-const unbracketedKeyword = /\b(?:Global|All-enemy|Skills?|Skill Power|Skill Duration|Skill Efficiency|Health|Defense|Direct Attack|Critical Rate|Critical Damage Multiplier|Elemental Gauge(?: Capacity| Gain)?|Shields?|Shielded|Attack Actions?|Direct Damage|Bonus Strikes?|Enemy Turns?|Player Turns?|Burn|Weaken|Recovery)\b/i;
+const unbracketedKeyword = /\b(?:HP|Global|All-enemy|Skills?|Skill Power|Skill Duration|Skill Efficiency|Health|Defense|Direct Attack|Critical Rate|Critical Damage Multiplier|Elemental Gauge(?: Capacity| Gain)?|Shields?|Shielded|Attack Actions?|Direct Damage|Bonus Strikes?|Enemy Turns?|Player Turns?|Burn|Weaken|Recovery|Empowered Thorn Traps?|Thorn Traps?|Seeds?|Gusts?|Cyclone|Foundation|Combo|Wounds|Cover|Seals?|Shuriken|Survey|Quarry|Instruction|Strike|Shelter|Resolve|Opening|Closing|Tune|Crescendo|Accord)\b/i;
 function expectKeywords(html: string): void {
   const host = document.createElement('div');
   host.innerHTML = html;
+  expect(host.textContent).not.toMatch(/\bHP\b|\[\[/);
   expect(host.textContent?.replace(/\[[^\]]+\]/g, '')).not.toMatch(unbracketedKeyword);
   for (const match of (host.textContent ?? '').matchAll(/\[([^[\]]+)\]/g)) {
     expect(referencedEffect(match[0], false)).toBe(match[0]);

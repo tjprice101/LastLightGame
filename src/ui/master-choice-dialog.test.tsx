@@ -7,6 +7,7 @@ import { masterConduits, type MasterConduitId } from '../content/master-conduits
 import { starters } from '../content/starters';
 import { getElement } from '../content/activities';
 import { elementAccents } from '../content/dungeon-art';
+import { referencedEffect } from '../presentation/effect-copy';
 
 beforeEach(() => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
@@ -34,11 +35,14 @@ describe('React Master chest choice', () => {
       await act(async () => { select.value = starter.id; select.dispatchEvent(new Event('change', { bubbles: true })); });
       const cards = document.querySelectorAll<HTMLElement>('.ll-master-option');
       expect(cards).toHaveLength(3);
-      cards.forEach(card => {
+      cards.forEach((card, index) => {
         expect(card.dataset.conduitElement).toBe(starter.elementId);
         expect(card.style.getPropertyValue('--conduit-element-accent')).toBe(elementAccents[starter.elementId]);
         expect(card.querySelector('strong.conduit-element-label')?.textContent).toBe(getElement(starter.elementId).name);
         expect(card.textContent).toContain('Omnic Master');
+        const entry = masterConduits.filter(entry => entry.character === starter.id)[index];
+        expect(card.querySelector('span')?.textContent).toBe(referencedEffect(entry.effect, false));
+        expect(card.querySelector('span')?.textContent).not.toMatch(/\bHP\b|\[\[/);
       });
     }
     await act(async () => { document.querySelector('dialog')!.dispatchEvent(new Event('cancel', { cancelable: true })); });

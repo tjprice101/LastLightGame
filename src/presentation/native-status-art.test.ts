@@ -62,7 +62,8 @@ describe('delivered native identity status art', () => {
     verify(rosetta, ['native-rosetta-quarry']);
     for (const [coefficient, icon] of [[.6, 'native-thornia-trap'], [.9, 'native-thornia-empowered-trap']] as const) {
       const thornia = fixture('thornia');
-      thornia.allies[0].native!.traps = { [thornia.enemies[0].id]: { coefficient, charges: 3, throughPhase: 3 } };
+      thornia.allies[0].native!.traps = { [thornia.enemies[0].id]: { coefficient, charges: 3, throughPhase: 3,
+        empowered: icon === 'native-thornia-empowered-trap' } };
       verify(thornia, [icon]);
     }
     for (const edge of ['gold', 'crimson'] as const)

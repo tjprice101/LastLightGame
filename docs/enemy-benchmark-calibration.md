@@ -1,5 +1,36 @@
 # Global character benchmarks and enemy calibration (D-404)
 
+## Rules13 critical-damage remeasurement (D-415)
+
+The global audit and D-404 before/after measurements below predate native
+critical Burn, triggered kit damage and the owner-confirmed Cinder/Rosegarden
+corrections. They remain historical calibration evidence, not newly certified
+rules13 rankings. No hostile level/tier factors changed in D-415, and the
+complete non-Calamitic roster audit has not been rerun. Do not infer current
+global DPR, average-player performance or arbitrary team success from those
+older numbers.
+
+The existing bounded Calamity regression was rerun:648 encounters across
+12 activities, three seeds, two squads, three builds and EX+1/2/3. Each cell
+below is wins out of36; all remaining outcomes are defeats, with zero timeouts.
+These existing candidate builds are not a claim to optimize every character
+or to represent the global audit's full equipment profiles.
+
+| Squad / build | EX+1 | EX+2 | EX+3 |
+| --- | --- | --- | --- |
+| Starters / old mixed |36|33|24|
+| Starters / four Omnics +0 |36|17|3|
+| Starters / four Omnics +5 |36|36|35|
+| Mixed / old mixed |36|10|0|
+| Mixed / four Omnics +0 |35|8|0|
+| Mixed / four Omnics +5 |36|36|30|
+
+Added combat rolls alter later enemy/ally critical outcomes, so individual
+seeded wins need not increase even though native critical eligibility expands.
+Exact counts remain regression assertions, not relaxed ranges. Reproduce with
+`$env:CALAMITY_DIFFICULTY_REPORT='1'; npm test -- src\game\calamity.test.ts --maxWorkers=1`.
+See [combat rules](combat.md#all-character-kit-damage-can-crit-d-415).
+
 ## Usage declaration
 
 The [non-Calamitic roster capability audit](roster-capability-audit.md) is the canonical paper-performance reference; this document is its pressured-encounter calibration companion. Together they supersede Calamitic-inclusive historical ceilings as enemy-tuning targets. Personal Masters remain eligible. Calamitic Conduits remain usable in the game but are excluded from every benchmark here.

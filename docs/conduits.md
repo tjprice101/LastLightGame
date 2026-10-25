@@ -1,5 +1,40 @@
 # Conduits and Conduit Store
 
+## Complete description and keyword audit (D-415)
+
+All138 live abilities (90 ordinary-slot Conduits and48 named Masters) were
+reviewed against their stat packages, triggers, recipients, clocks and upgrade
+policies in the [authoritative catalog](conduit-catalog.txt). Short stat-only
+entries remain short. Complex effects now state who acts, who receives the
+benefit, its amount and its meaningful limit, without implementation jargon
+or redundant comparisons to the unmodified skill.
+
+- Shared prose uses `[Health]`, never `[HP]`; `maximum HP` becomes
+  `maximum [Health]`. Native resources, complete ability names, turns, stats,
+  damage types and targets use the same canonical bracket formatter.
+- The React Master selector previously printed raw effects. It now uses the
+  same text-only formatter as the HTML references. Inventory, equipment,
+  Store, Collections, upgrades, battle references and saved rewards share it.
+- The Shield glossary no longer falsely promises universal automatic
+  overhealing Shields or universal non-stacking. Pale Bulwark now explicitly
+  describes reduced Shield consumption and unchanged spillover.
+- Sky Sovereign specifies Skill1/2, matching its actual trigger. Stillplume
+  explicitly states the Closing healing amount. Thousand-Rose Aegis identifies
+  the enemy's first empowered-trap trigger and each protected recipient.
+- Owner resolves two discovered implementation mismatches in favor of the
+  written design: Cinder Testament adds20% Burn damage per other-ally damaging
+  Skill (not15%), capped60%; Virtuous Planet Rosegarden triggers on Crimson
+  Skyfall against Quarry (not Last Flare). No other Conduit balance changes.
+
+All90 ordinary percentage orders and +0..+5 policies remain intact, including
+Causality's50+2-per-upgrade exception, fixed penalties and caps. Masters remain
+fixed. Regenerate with `node tools\build_phase_zero_conduit_catalog.mjs`.
+Validation includes every ordinary effect at six upgrades, every Master,
+all48 React selection cards, canonicalization idempotence and numerical
+equipped/absent scenarios in the [behavior matrix](conduit-behavior-matrix.md).
+Rules13 coordinates the [native critical-hit change](combat.md#all-character-kit-damage-can-crit-d-415)
+with authority; saved holdings and reward receipts are unchanged.
+
 ## Omnic element presentation (D-403)
 
 All45 ordinary Omnics identify their canonical gameplay element in a bold,

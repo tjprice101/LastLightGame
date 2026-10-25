@@ -1,12 +1,18 @@
 # Intrinsic character kit rework (D-163 / D-170 / D-172)
 
+**D-415 current correction:** all character-kit damage can critically hit,
+including ongoing Burn and triggered strikes. Thornia's Skill1 creates a normal
+trap regardless of Skill Power; only actual empowered placement/refresh carries
+the empowered type. [Exact combat and RNG contract](combat.md#all-character-kit-damage-can-crit-d-415).
+Historical non-critical follow-up restrictions are superseded.
+
 **D-316 current contract:** all16 native kits are replaced locally by the
 approved [distinct character identities](character-identity-redesign.md).
 Infernis Burn/detonation and Crinso alternating edges are separate; delayed
 Seeds, blade placement, order/Beat timing, interception, Instructions, forecasts,
 Quarry, traps, Survey and finite Foundation replace shared charge loops.
 The historical rules below are retained as design history, not active bonuses.
-See the [133-item compatibility audit](character-conduit-compatibility.md) for
+See the [138-item compatibility audit](character-conduit-compatibility.md) for
 equipment adaptations; client/server publication remains separate.
 
 ## Charge and passive readability
