@@ -29,7 +29,7 @@ export function masterEquipment(character: string, account: Account | null): str
     ${current ? masterConduitIcon(current) : ''}
     <select id="master-${character}" data-master-equipment="${character}" ${!account ? 'disabled' : ''}>
       <option value="">No Master equipped</option>${choices.map(entry => `<option value="${entry.id}" ${entry.id === current ? 'selected' : ''}>${entry.name} · Omnic Master</option>`).join('')}</select>
-    ${masterReference(current)}<p>One character-specific Master, separate from eight ordinary slots. Find choice chests on the final Machines boss (${masterChest.chance * 100}%) or open any Calamity EX+3 chest for two guaranteed choice chests.</p></section>`;
+    ${masterReference(current)}<p>One character-specific Master, separate from eight ordinary slots. Find choice chests on the final Machines boss (${masterChest.chance * 100}%) or open a Machines Calamity EX+3 chest for two guaranteed choice chests.</p></section>`;
 }
 export function masterReward(id: MasterConduitId, account: Account): RewardPresentation {
   if (account.masterConduits?.[id] !== 1) throw new Error('Saved Master reward is not owned.');

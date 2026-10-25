@@ -520,7 +520,7 @@ var approvedConduitCatalog = {
     "name": "Briar Constellation Loom",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Flora only)",
-    "ability": "Briar Shot plants a Seed on every living ally instead of only the most injured. Seeds planted by Briar Shot gain +45% [Skill Power]."
+    "ability": "Briar Shot plants a Seed on every living ally. Seeds planted by Briar Shot gain +45% [Skill Power]."
   },
   "master-vaelor-3": {
     "name": "Broken Sky Imperial Metronome",
@@ -754,7 +754,7 @@ var approvedConduitCatalog = {
     "name": "Phoenix Lifeforge",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
-    "ability": "While any enemy carries [Burn], all living [Squad Members] gain +150% [Direct Attack]. Each [Burn] tick from a character ability that deals [Health] damage heals every living [Squad Member] for 8% of their own maximum [Health]. Copied and Conduit-generated ticks do not trigger this healing. +55% [Skill Power] and +40% [Elemental Gauge Capacity]."
+    "ability": "While any enemy carries [Burn], all living [Squad Members] gain +150% [Direct Attack]. Each [Burn] tick from a character ability that deals [Health] damage heals every living [Squad Member] for 8% of their own maximum [Health]. +55% [Skill Power] and +40% [Elemental Gauge Capacity]."
   },
   "infernic-phoenix-reactor": {
     "name": "Phoenix Reactor",
@@ -772,7 +772,7 @@ var approvedConduitCatalog = {
     "name": "Prismseal Astral Judiciary",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Aurora only)",
-    "ability": "Final Dawn Verdict protects against all enemy [Skills], not only ultimates. After each protected [Enemy Turn], all living allies gain 8% [Elemental Gauge]. +25% [Defense] and +65% [Skill Power]."
+    "ability": "Final Dawn Verdict protects against all enemy [Skills]. After each protected [Enemy Turn], all living allies gain 8% [Elemental Gauge]. +25% [Defense] and +65% [Skill Power]."
   },
   "infernic-pyre-census": {
     "name": "Pyre Census Requiem",
@@ -886,7 +886,7 @@ var approvedConduitCatalog = {
     "name": "Stillplume Planetary Ballet",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Bliss only)",
-    "ability": "Opening Warfeather Cut grants the other allies +25% [Critical Rate] for their next [Attack Action]. Closing Warfeather Cut heals every other living ally instead of only the most injured. +85% [Direct Attack] and +25% [Critical Rate]."
+    "ability": "Opening Warfeather Cut grants the other allies +25% [Critical Rate] for their next [Attack Action]. Closing Warfeather Cut heals every other living ally. +85% [Direct Attack] and +25% [Critical Rate]."
   },
   "master-elise-3": {
     "name": "Storm Empress Execution Clock",
@@ -934,7 +934,7 @@ var approvedConduitCatalog = {
     "name": "Thunder Choir Planetary Fugue",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Vaelor only)",
-    "ability": "On Rise, Resonance Cascade grants its [Direct Damage] buff to every living ally instead of only Vaelor. Allies also gain +20% [Elemental Gauge Gain] for the same duration. +90% [Direct Attack] and +30% [Skill Efficiency]."
+    "ability": "On Rise, Resonance Cascade grants its [Direct Damage] buff to every living ally. Allies also gain +20% [Elemental Gauge Gain] for the same duration. +90% [Direct Attack] and +30% [Skill Efficiency]."
   },
   "voltaic-thunderbird-coil": {
     "name": "Thunderbird Coil",
@@ -1066,7 +1066,7 @@ var approvedConduitCatalog = {
     "name": "World-Eater's Orrery",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "+3 turns [Skill Duration]. [Debuffs] applied by your [Skills], including [Burn] damage and [Weaken] strength, gain +125% [Skill Power]. This bonus does not increase the skill's [Direct Damage], healing or [Shields]."
+    "ability": "+3 turns [Skill Duration]. [Debuffs] applied by your [Skills] gain +125% [Skill Power]."
   }
 };
 function approvedConduitAbility(id) {
@@ -5638,7 +5638,8 @@ function calamityChest(activity, tier) {
     lycalis: [50, 70, 100][tier - 1],
     calamiticTokens: [1, 3, 8][tier - 1],
     bundles: [3, 5, 7][tier - 1],
-    masterChests: tier === 3 ? 2 : 0,
+    masterChests: activity === "machines" && tier === 3 ? 2 : 0,
+    roseliusCopies: activity === "heavens" || activity === "abyss" || activity === "roses" ? tier : 0,
     componentRange: activity === "machines" ? { min: [3e3, 5e3, 1e4][tier - 1], max: [6e3, 8e3, 12e3][tier - 1] } : null
   };
 }
@@ -5724,7 +5725,8 @@ function rollCalamityChest(activity, tier, roll2, owned = {}) {
     masterChests: chest.masterChests,
     materials: {},
     conduits: {},
-    mechanicalComponents: 0
+    mechanicalComponents: 0,
+    roseliusCopies: chest.roseliusCopies
   };
   const table = calamityLootTable(activity);
   const random = () => {
@@ -6031,13 +6033,14 @@ function validateCapturedCharacters(value2) {
     seen.add(entry.instanceId);
     const copy = { instanceId: entry.instanceId, creatureId: entry.creatureId, locked: entry.locked };
     if ("acquisition" in entry) {
-      if (entry.acquisition !== "banner-duplicate" || roseDuplicateMinimumLevel(creature.id) === void 0) throw new Error("Invalid Elemental-Devourer acquisition source.");
+      if (!(entry.acquisition === "banner-duplicate" && roseDuplicateMinimumLevel(creature.id) !== void 0) && !(entry.acquisition === "calamity-chest" && creature.id === "infusion:roses:5")) throw new Error("Invalid Elemental-Devourer acquisition source.");
       copy.acquisition = entry.acquisition;
     }
     if ("level" in entry) {
       if (!Number.isInteger(entry.level) || typeof entry.level !== "number" || entry.level < 1 || entry.level > 120 || !("capturedStage" in entry) || typeof entry.capturedStage !== "number" || !creature.stages.includes(entry.capturedStage) || !("skills" in entry) || !Array.isArray(entry.skills)) throw new Error("Invalid captured Elemental-Devourer progression.");
       const expected = infusionEncounter(creature.mode, entry.capturedStage);
-      if (creature.mode === "roses" && copy.acquisition !== "banner-duplicate" && expected.level > roseCaptureMaximumLevel) throw new Error("Roselius above level 120 cannot be captured.");
+      if (creature.mode === "roses" && !copy.acquisition && expected.level > roseCaptureMaximumLevel) throw new Error("Roselius above level 120 cannot be captured.");
+      if (copy.acquisition === "calamity-chest" && (entry.level !== capturedLevelCap || entry.capturedStage !== creature.stages[0])) throw new Error("Invalid Calamity chest Elemental-Devourer progression.");
       const candidates = [expected.abilityMultiplier, expected.legacyAbilityMultiplier].map((multiplier) => enemySkills(expected.level, expected.boss, expected.ability, multiplier));
       const retained = entry.skills;
       const valid = candidates.find((skills) => retained.length === skills.length && retained.every((skill, index) => typeof skill === "object" && skill !== null && skill.name === skills[index].name && skill.multiplier === skills[index].multiplier && skill.every === skills[index].every && skill.action === skills[index].action));
@@ -11143,6 +11146,10 @@ function openCalamityChest(storage, id, expectedCount) {
   account.mechanicalComponents = add(account.mechanicalComponents ?? 0, reward.mechanicalComponents);
   account.calamiticTokens = add(account.calamiticTokens ?? 0, reward.calamiticTokens);
   account.masterChests = add(account.masterChests ?? 0, reward.masterChests);
+  if (reward.roseliusCopies) {
+    const copies = Array.from({ length: reward.roseliusCopies }, () => createCreatureCopy("infusion:roses:5", void 0, capturedLevelCap, "calamity-chest"));
+    account.capturedCharacters = [...account.capturedCharacters ?? [], ...copies];
+  }
   account.calamityChests = { ...account.calamityChests, [id]: available - 1 };
   account.calamitySeed = seed2;
   const saved = saveAccount(storage, account);
@@ -12153,7 +12160,8 @@ function resolveOperation(previous, operation, entropy) {
           conduits: reward.conduits,
           mechanicalComponents: reward.mechanicalComponents,
           calamiticTokens: reward.calamiticTokens,
-          masterChests: reward.masterChests
+          masterChests: reward.masterChests,
+          roseliusCopies: reward.roseliusCopies
         };
         break;
       }

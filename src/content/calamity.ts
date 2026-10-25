@@ -52,7 +52,8 @@ export function calamityChest(activity: CalamityActivityId, tier: CalamityTier) 
   const title = ['Slayer', 'Master', 'Omnipotent'][tier - 1];
   return { id, name: `${calamityActivity(activity).name} EX+${title} Chest`,
     fractalis: [100_000, 250_000, 500_000][tier - 1], lycalis: [50, 70, 100][tier - 1],
-    calamiticTokens: [1, 3, 8][tier - 1], bundles: [3, 5, 7][tier - 1], masterChests: tier === 3 ? 2 : 0,
+    calamiticTokens: [1, 3, 8][tier - 1], bundles: [3, 5, 7][tier - 1], masterChests: activity === 'machines' && tier === 3 ? 2 : 0,
+    roseliusCopies: activity === 'heavens' || activity === 'abyss' || activity === 'roses' ? tier : 0,
     componentRange: activity === 'machines' ? { min: [3_000, 5_000, 10_000][tier - 1], max: [6_000, 8_000, 12_000][tier - 1] } : null };
 }
 
@@ -117,13 +118,14 @@ export interface CalamityOpening {
   mechanicalComponents: number;
   calamiticTokens: number;
   masterChests: number;
+  roseliusCopies?: number;
 }
 export function rollCalamityChest(activity: CalamityActivityId, tier: CalamityTier, roll: () => number,
   owned: Readonly<Partial<Record<ConduitId, number>>> = {}): CalamityOpening {
   const chest = calamityChest(activity, tier);
   const reward: CalamityOpening = { id: chest.id, name: chest.name, fractalis: chest.fractalis,
     lycalis: chest.lycalis, calamiticTokens: chest.calamiticTokens, masterChests: chest.masterChests,
-    materials: {}, conduits: {}, mechanicalComponents: 0 };
+    materials: {}, conduits: {}, mechanicalComponents: 0, roseliusCopies: chest.roseliusCopies };
   const table = calamityLootTable(activity);
   const random = () => {
     const value = roll();

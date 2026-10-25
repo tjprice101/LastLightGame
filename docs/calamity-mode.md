@@ -1,5 +1,30 @@
 # Calamity Mode (D-308 / D-315)
 
+## Activity-specific chest guarantees (D-409)
+
+Machine's Master Chests now come only from the normal final Awaken the
+Machines boss (unchanged50% independent drop) and the **Machines EX+3 chest**
+(exactly two). Other Calamity chests no longer award them. Previously owned
+Master Chests are preserved. This supersedes the all-EX+3 guarantee in D-315.
+
+Soar to Heaven, Delve into the Abyss and Passion of Crimson Roses chests each
+guarantee **1 / 2 / 3 Omnic Roselius copies** at EX+1 / EX+2 / EX+3.
+Every copy is a distinct unlocked playable Elemental-Devourer at Lv.60,
+with form6's Stage29 retained kit and validated `calamity-chest` provenance.
+No auto-equipping or squad changes. These are additional fixed contents;
+currencies, tokens, material bundles and RNG draws/order remain unchanged.
+All other activities award no copies; Calamity bosses still drop only a
+sealed chest. Ordinary Rose capture eligibility remains source Lv.120 or lower.
+
+Existing unopened chests use these contents on opening. Consumption, copy
+UUIDs, currency/material rewards and chest RNG save together once. Denied
+writes/overflow preserve all state. Online ambiguous retries return the saved
+receipt and identical copy UUIDs, without a second grant. Historical cached
+receipts without the new copy-count field remain readable as saved outcomes,
+not rerolled under today's rules. No load writes or retroactive awards.
+Loot previews, tier panels and opening receipts display the exact guarantees
+and actual Roselius artwork; client and matching authority deploy together.
+
 ## Chest artwork and current name (D-405)
 
 Master choice chests are now **Machine's Master Chests**; older Cosmic Grand

@@ -287,7 +287,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Briar Constellation Loom",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Flora only)",
-    "ability": "Briar Shot plants a Seed on every living ally instead of only the most injured. Seeds planted by Briar Shot gain +45% [Skill Power]."
+    "ability": "Briar Shot plants a Seed on every living ally. Seeds planted by Briar Shot gain +45% [Skill Power]."
   },
   "master-vaelor-3": {
     "name": "Broken Sky Imperial Metronome",
@@ -521,7 +521,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Phoenix Lifeforge",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
-    "ability": "While any enemy carries [Burn], all living [Squad Members] gain +150% [Direct Attack]. Each [Burn] tick from a character ability that deals [Health] damage heals every living [Squad Member] for 8% of their own maximum [Health]. Copied and Conduit-generated ticks do not trigger this healing. +55% [Skill Power] and +40% [Elemental Gauge Capacity]."
+    "ability": "While any enemy carries [Burn], all living [Squad Members] gain +150% [Direct Attack]. Each [Burn] tick from a character ability that deals [Health] damage heals every living [Squad Member] for 8% of their own maximum [Health]. +55% [Skill Power] and +40% [Elemental Gauge Capacity]."
   },
   "infernic-phoenix-reactor": {
     "name": "Phoenix Reactor",
@@ -539,7 +539,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Prismseal Astral Judiciary",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Aurora only)",
-    "ability": "Final Dawn Verdict protects against all enemy [Skills], not only ultimates. After each protected [Enemy Turn], all living allies gain 8% [Elemental Gauge]. +25% [Defense] and +65% [Skill Power]."
+    "ability": "Final Dawn Verdict protects against all enemy [Skills]. After each protected [Enemy Turn], all living allies gain 8% [Elemental Gauge]. +25% [Defense] and +65% [Skill Power]."
   },
   "infernic-pyre-census": {
     "name": "Pyre Census Requiem",
@@ -653,7 +653,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Stillplume Planetary Ballet",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Bliss only)",
-    "ability": "Opening Warfeather Cut grants the other allies +25% [Critical Rate] for their next [Attack Action]. Closing Warfeather Cut heals every other living ally instead of only the most injured. +85% [Direct Attack] and +25% [Critical Rate]."
+    "ability": "Opening Warfeather Cut grants the other allies +25% [Critical Rate] for their next [Attack Action]. Closing Warfeather Cut heals every other living ally. +85% [Direct Attack] and +25% [Critical Rate]."
   },
   "master-elise-3": {
     "name": "Storm Empress Execution Clock",
@@ -701,7 +701,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Thunder Choir Planetary Fugue",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Vaelor only)",
-    "ability": "On Rise, Resonance Cascade grants its [Direct Damage] buff to every living ally instead of only Vaelor. Allies also gain +20% [Elemental Gauge Gain] for the same duration. +90% [Direct Attack] and +30% [Skill Efficiency]."
+    "ability": "On Rise, Resonance Cascade grants its [Direct Damage] buff to every living ally. Allies also gain +20% [Elemental Gauge Gain] for the same duration. +90% [Direct Attack] and +30% [Skill Efficiency]."
   },
   "voltaic-thunderbird-coil": {
     "name": "Thunderbird Coil",
@@ -833,7 +833,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "World-Eater's Orrery",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "+3 turns [Skill Duration]. [Debuffs] applied by your [Skills], including [Burn] damage and [Weaken] strength, gain +125% [Skill Power]. This bonus does not increase the skill's [Direct Damage], healing or [Shields]."
+    "ability": "+3 turns [Skill Duration]. [Debuffs] applied by your [Skills] gain +125% [Skill Power]."
   }
 };
 

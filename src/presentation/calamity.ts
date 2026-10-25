@@ -16,6 +16,14 @@ import { currencyIcon } from './currency-icon';
 import { conduitIcon } from './conduit-store';
 import { conduitElement } from './conduit-element';
 import { masterChestIcon } from './master-conduits';
+import { getCreature } from '../content/creatures';
+
+function roseliusReward() {
+  const creature = getCreature('infusion:roses:5');
+  return { name: `${creature.name} · Omnic · Lv.60`, art: creature.art
+    ? `<img src="${assetUrl(`enemies/${creature.art}.png`)}" alt="" width="80" height="80">`
+    : '<span class="art-pending">Artwork pending</span>' };
+}
 
 export function activityDifficulty(activity: CalamityActivityId, normal: string, account: Account | null): string {
   const name = calamityActivities.find(entry => entry.id === activity)?.name;
@@ -104,6 +112,7 @@ function calamityChestContents(activity: CalamityActivityId, tier: CalamityTier)
     <li><span>Null-Prismatica</span><strong>${chest.lycalis}</strong></li>
     <li><span class="currency-reward">${currencyIcon('calamitic-tokens')}Calamitic Tokens</span><strong>${chest.calamiticTokens}</strong></li>
     ${chest.masterChests ? `<li><span>Machine's Master Chests</span><strong>${chest.masterChests}</strong></li>` : ''}
+    ${chest.roseliusCopies ? `<li><span>${escapeDialogText(roseliusReward().name)}</span><strong>${chest.roseliusCopies}</strong></li>` : ''}
     ${chest.componentRange ? `<li><span>Broken Mechanical Components</span><strong>${chest.componentRange.min.toLocaleString('en-US')}-${chest.componentRange.max.toLocaleString('en-US')}</strong></li>` : ''}
     <li><span>Random rewards</span><strong>${chest.bundles}</strong></li>
   </ul>`;
@@ -199,6 +208,7 @@ export function calamityOpeningReward(id: string, reward: ReturnType<typeof open
     }),
     ...(reward.mechanicalComponents ? [{ label: `${reward.mechanicalComponents} Broken Mechanical Components`, art: currencyIcon('mechanical-components') }] : []),
     ...(reward.masterChests ? [{ label: `${reward.masterChests} Machine's Master Chests`, art: masterChestIcon(), chest: true }] : []),
+    ...(reward.roseliusCopies ? [{ label: `${reward.roseliusCopies} ${roseliusReward().name}`, art: roseliusReward().art }] : []),
     ...(reward.calamiticTokens ? [{ label: `${reward.calamiticTokens} Calamitic Tokens`, art: currencyIcon('calamitic-tokens') }] : []),
   ];
   return { title: 'Calamity chest opened', name: chest.name,

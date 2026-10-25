@@ -3,6 +3,12 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**Conduit copy and chest guarantees (D-409):**
+[activity-specific Calamity contents](calamity-mode.md#activity-specific-chest-guarantees-d-409)
+restrict Master Chests to Machines and add1/2/3 Lv.60 Omnic Roselius to
+Soar/Delve/Roses chests. The [138-entry catalog](conduit-catalog.txt) removes
+redundant exclusions/comparisons while preserving effect-specific limits.
+
 **Enemy drops and Master reveal (D-408):**
 [direct-only enemy tables](archives-and-elements.md#direct-enemy-drops-only-d-408)
 now include eligible50% playable copies, not mission bonuses/sales/chest

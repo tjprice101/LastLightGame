@@ -38,11 +38,14 @@ machine tier rolls, banners, the Store or Conduit upgrades.
 
 The final Awaken the Machines boss, **stage35 / Lv.120**, independently has
 a **50% chance** (D-402) to drop one **Machine's Master Chest**. Repeat final clears
-are eligible. This remains the only ordinary direct enemy drop. Under D-315,
-opening any [Calamity EX+Omnipotent chest](calamity-mode.md) additionally grants
+are eligible. This remains the only ordinary direct enemy drop. Under D-409,
+opening the **Machines** [Calamity EX+Omnipotent chest](calamity-mode.md) additionally grants
 exactly two Machine's Master Chests, including when all48 Masters are owned.
 Calamity bosses themselves drop only their activity/tier chest. Separate RNG
 streams preserve combat and all existing reward streams.
+
+D-409 restricts the two-chest guarantee to Machines EX+3; other activities
+no longer provide Master Chests. Existing owned chests remain unchanged.
 
 Use the visible **Open** button beside the decorative chest artwork in Inventory,
 choose an unowned Master, then confirm. D-405 renames the former Cosmic Grand

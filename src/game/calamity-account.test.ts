@@ -8,6 +8,7 @@ import { calamiticConduits, calamiticLockMessage, calamiticTokenPrice } from '..
 import { ACCOUNT_KEY, calamityUnlockedTier, emptyAccount, loadAccount, openCalamityChest, purchaseConduit, saveAccount, saveAccountRewards, validateAccount, type Account } from './account';
 import { act, createCalamityBattle, createDungeonBattle, createInfusionBattle, type BattleEvent, type BattleResult } from './battle';
 import { SAVE_KEY, type ProfileStorage } from './profile';
+import { createCreatureCopy, resolveCapturedFighter, validateCapturedCharacters } from './character-instances';
 
 function storage() {
   const values = new Map([[SAVE_KEY, '{"version":1,"starterId":"ember"}']]);
@@ -103,12 +104,52 @@ describe('Calamity account transactions', () => {
       expect(opened.account.materials).toEqual(opened.reward.materials);
       expect(opened.account.conduits ?? {}).toEqual(opened.reward.conduits);
       expect(opened.account.masterChests).toBe(opened.reward.masterChests);
+      const copies = opened.account.capturedCharacters ?? [];
+      const expectedCopies = ['heavens', 'abyss', 'roses'].includes(activity) ? tier : 0;
+      expect(copies).toHaveLength(expectedCopies);
+      expect(new Set(copies.map(copy => copy.instanceId)).size).toBe(expectedCopies);
+      for (const copy of copies) {
+        expect(copy).toMatchObject({ creatureId: 'infusion:roses:5', level: 60,
+          capturedStage: 29, locked: false, acquisition: 'calamity-chest' });
+        expect(resolveCapturedFighter(copy).stats.health).toBeGreaterThan(0);
+      }
       expect(opened.account.calamitySeed).toBeGreaterThan(0);
       expect(opened.reward.calamiticTokens).toBe([1, 3, 8][tier - 1]);
       expect(opened.account.calamiticTokens).toBe([1, 3, 8][tier - 1]);
       expect(writes()).toBe(after + 1);
     },
   );
+
+  it.each(['heavens', 'abyss', 'roses'] as const)('%s copy rewards preserve existing copies and roll back on denied writes', activity => {
+    const { saved, deny, allow, writes } = storage();
+    const account = prepared(saved, activity, 3);
+    const id = calamityChestId(activity, 3);
+    const existing = createCreatureCopy('infusion:roses:0');
+    account.capturedCharacters = [existing];
+    account.calamityChests = { [id]: 2 };
+    saveAccount(saved, account);
+    const raw = saved.getItem(ACCOUNT_KEY);
+    const before = writes();
+    deny();
+    expect(() => openCalamityChest(saved, id, 2)).toThrow('denied');
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
+    expect(writes()).toBe(before);
+    allow();
+    const opened = openCalamityChest(saved, id, 2);
+    expect(opened.account.capturedCharacters?.[0]).toEqual(existing);
+    expect(opened.account.capturedCharacters).toHaveLength(4);
+    expect(writes()).toBe(before + 1);
+    expect(() => openCalamityChest(saved, id, 2)).toThrow('count changed');
+  });
+
+  it('validates chest provenance without allowing ordinary high-level Rose captures or forged forms', () => {
+    expect(() => createCreatureCopy('infusion:roses:5', 29, 60)).toThrow('cannot be captured');
+    const copy = createCreatureCopy('infusion:roses:5', 29, 60, 'calamity-chest');
+    expect(validateCapturedCharacters([copy])).toEqual([copy]);
+    for (const change of [{ level: 59 }, { capturedStage: 30 }, { creatureId: 'infusion:roses:4' }, { acquisition: 'other' }]) {
+      expect(() => validateCapturedCharacters([{ ...copy, ...change }])).toThrow();
+    }
+  });
 
   it.each([
     { calamityChests: [] }, { calamityChests: { invalid: 1 } },

@@ -16,7 +16,7 @@ export interface CapturedCharacter {
   level?: number;
   capturedStage?: number;
   skills?: EnemySkill[];
-  acquisition?: 'banner-duplicate';
+  acquisition?: 'banner-duplicate' | 'calamity-chest';
 }
 export type CharacterLocks = Partial<Record<StarterId, boolean>>;
 export const capturedLevelCap = 60;
@@ -69,7 +69,8 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
     seen.add(entry.instanceId);
     const copy: CapturedCharacter = { instanceId: entry.instanceId, creatureId: entry.creatureId, locked: entry.locked };
     if ('acquisition' in entry) {
-      if (entry.acquisition !== 'banner-duplicate' || roseDuplicateMinimumLevel(creature.id) === undefined) throw new Error('Invalid Elemental-Devourer acquisition source.');
+      if (!(entry.acquisition === 'banner-duplicate' && roseDuplicateMinimumLevel(creature.id) !== undefined) &&
+          !(entry.acquisition === 'calamity-chest' && creature.id === 'infusion:roses:5')) throw new Error('Invalid Elemental-Devourer acquisition source.');
       copy.acquisition = entry.acquisition;
     }
     if ('level' in entry) {
@@ -77,7 +78,8 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
           !('capturedStage' in entry) || typeof entry.capturedStage !== 'number' || !creature.stages.includes(entry.capturedStage) ||
           !('skills' in entry) || !Array.isArray(entry.skills)) throw new Error('Invalid captured Elemental-Devourer progression.');
       const expected = infusionEncounter(creature.mode, entry.capturedStage);
-      if (creature.mode === 'roses' && copy.acquisition !== 'banner-duplicate' && expected.level > roseCaptureMaximumLevel) throw new Error('Roselius above level 120 cannot be captured.');
+      if (creature.mode === 'roses' && !copy.acquisition && expected.level > roseCaptureMaximumLevel) throw new Error('Roselius above level 120 cannot be captured.');
+      if (copy.acquisition === 'calamity-chest' && (entry.level !== capturedLevelCap || entry.capturedStage !== creature.stages[0])) throw new Error('Invalid Calamity chest Elemental-Devourer progression.');
       const candidates = [expected.abilityMultiplier, expected.legacyAbilityMultiplier]
         .map(multiplier => enemySkills(expected.level, expected.boss, expected.ability, multiplier));
       const retained = entry.skills;
@@ -156,7 +158,7 @@ export function appendCapturedCharacter(copies: readonly CapturedCharacter[], cr
   return validateCapturedCharacters([...copies, { instanceId, creatureId, locked: false }]);
 }
 
-export function createCreatureCopy(creatureId: string, stage?: number, level?: number, acquisition?: 'banner-duplicate'): CapturedCharacter {
+export function createCreatureCopy(creatureId: string, stage?: number, level?: number, acquisition?: CapturedCharacter['acquisition']): CapturedCharacter {
   const creature = getCreature(creatureId);
   if (!creature.mode) throw new Error('Elemental-Devourer ownership requires a playable game mode.');
   const capturedStage = stage ?? creature.stages[0];

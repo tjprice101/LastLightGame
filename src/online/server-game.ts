@@ -138,11 +138,18 @@ function validCalamityOpening(value: unknown): boolean {
     const reward = value;
     const rows = calamityLootTable(activity);
     const fields = ['id', 'name', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'calamiticTokens', 'masterChests'];
+    // Pre-D-409 idempotent receipts retain their saved contents, not the current guarantees.
+    const historical = !('roseliusCopies' in reward);
+    if ('roseliusCopies' in reward) {
+      if (reward.roseliusCopies !== chest.roseliusCopies) return false;
+      fields.push('roseliusCopies');
+    }
     if (Object.keys(reward).length !== fields.length || Object.keys(reward).some(key => !fields.includes(key)) ||
       !['fractalis', 'lycalis', 'mechanicalComponents', 'calamiticTokens', 'masterChests'].every(key => safeCount(reward[key])) ||
       reward.name !== chest.name ||
       reward.calamiticTokens !== chest.calamiticTokens ||
-      reward.masterChests !== chest.masterChests || !object(reward.materials) || !object(reward.conduits)) return false;
+      (reward.masterChests !== chest.masterChests && !(historical && reward.masterChests === 2 && tier === 3)) ||
+      !object(reward.materials) || !object(reward.conduits)) return false;
     for (const [field, kind, base] of [['fractalis', 'fractalis', chest.fractalis], ['lycalis', 'lycalis', chest.lycalis], ['mechanicalComponents', 'components', 0]] as const) {
       const maximum = field === 'mechanicalComponents' && chest.componentRange
         ? chest.componentRange.max * (chest.bundles + 1)

@@ -1,5 +1,44 @@
 # Current state and handoff
 
+## Concise Conduit effects and activity-specific chest rewards (D-409)
+
+- Owner identifies redundant negative Skill Power copy; audited138 current
+  effects and shortened six entries: World-Eater's Orrery, Briar Constellation
+  Loom, Phoenix Lifeforge, Prismseal Astral Judiciary, Stillplume Planetary
+  Ballet and Thunder Choir Planetary Fugue. Removed redundant exclusions/examples
+  and comparisons with the unmodified kit. Actual effects, caps, timing,
+  penalties and non-stacking limits are unchanged. Catalog/generated ability
+  text/compatibility table agree via
+  `node tools\build_phase_zero_conduit_catalog.mjs`.
+- Owner clarification: normal final Machines boss retains50% Master Chest;
+  only Machines EX+3 additionally awards two. Other Calamity chests award
+  none. Existing held Master Chests remain; no clawbacks.
+- Soar/Delve/Roses chests guarantee1/2/3 Omnic Roselius at EX+1/2/3, each
+  unlocked Lv.60 with distinct UUID, form6 Stage29 skills and explicit
+  validated `calamity-chest` provenance. No other copies/activities qualify.
+  Normal source-enemy capture restrictions remain. Copies, all other contents,
+  consumption and independent seed commit once. Existing unopened chests use
+  current guarantees; old cached receipts remain readable without re-grants.
+- Shared authority forwards/validates the exact new copy-count field; legacy
+  receipts may omit it and retain historical Master rewards. Tests cover all
+  36 activity/tier cases, saved/usable copies, malformed provenance, denied
+  writes, unchanged random draw counts, and HTTP retry with identical UUIDs.
+  Panels/chest loot/opening receipts and equipment help use the new sources.
+- `npm test -- --maxWorkers=1 --reporter=dot` passes6594 tests/212 files.
+  Initial focused run found four obsolete table/art expectations, corrected
+  before the clean full run. `npm run build` (including TypeScript),
+  `node tools\bundle_server_game.mjs`,
+  `npx --yes deno check supabase\functions\game-operation\index.ts` and
+  `git diff --check` pass; existing large-chunk advisory remains.
+- Browser in-memory preview verifies Soar EX+3 shows three named Omnic Lv.60
+  Roselius with loaded actual artwork, no Master Chests, Machines EX+3 retains
+  its Master guarantee, and no audited redundant clauses remain in runtime
+  text. No account/storage changes; restored title and stopped preview.
+  Matching authority deployed with `npx supabase functions deploy
+  game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`.
+  Current specs/index/decision log updated. No owner decisions or requested
+  functionality remain outstanding.
+
 ## Direct enemy loot, capture audit and Master reveal (D-408)
 
 - Eligible enemies retain separate50% playable-copy drops: Heaven/Abyss/

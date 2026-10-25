@@ -581,6 +581,11 @@ export function openCalamityChest(storage: ProfileStorage, id: string, expectedC
   account.mechanicalComponents = add(account.mechanicalComponents ?? 0, reward.mechanicalComponents);
   account.calamiticTokens = add(account.calamiticTokens ?? 0, reward.calamiticTokens);
   account.masterChests = add(account.masterChests ?? 0, reward.masterChests);
+  if (reward.roseliusCopies) {
+    const copies = Array.from({ length: reward.roseliusCopies }, () =>
+      createCreatureCopy('infusion:roses:5', undefined, capturedLevelCap, 'calamity-chest'));
+    account.capturedCharacters = [...(account.capturedCharacters ?? []), ...copies];
+  }
   account.calamityChests = { ...account.calamityChests, [id]: available - 1 };
   account.calamitySeed = seed;
   const saved = saveAccount(storage, account);

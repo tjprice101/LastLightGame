@@ -16,6 +16,7 @@ import { lootArt, lootItems } from './battle-loot';
 import { unitFacing } from './unit-facing';
 import { portraitCutin } from './battle-cutin';
 import { assetUrl } from './portrait';
+import { getCreature } from '../content/creatures';
 
 const confirmation = vi.hoisted(() => vi.fn(async () => false));
 vi.mock('./game-dialog', async importOriginal => ({ ...await importOriginal<typeof import('./game-dialog')>(),
@@ -292,7 +293,12 @@ describe('Calamity presentation', () => {
         Number(reward.fractalis > 0) + Number(reward.lycalis > 0)
         + Object.keys(reward.materials).length + Object.keys(reward.conduits).length
         + Number(reward.mechanicalComponents > 0) + Number(reward.masterChests > 0)
-        + Number(reward.calamiticTokens > 0));
+        + Number(reward.calamiticTokens > 0) + Number((reward.roseliusCopies ?? 0) > 0));
+      if (reward.roseliusCopies) {
+        expect(document.body.textContent).toContain(`${reward.roseliusCopies} `);
+        expect(document.body.textContent).toContain('Omnic · Lv.60');
+        expect(document.querySelector(`img[src="${assetUrl(`enemies/${getCreature('infusion:roses:5').art}.png`)}"]`)).not.toBeNull();
+      }
       expect(reveal.savedLabel).toBe('Rewards saved');
     }
   });

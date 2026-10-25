@@ -35,6 +35,12 @@ const metadata = [
 ];
 
 describe('approved Phase 0 catalog contract (not runtime effect verification)', () => {
+  it('states effects without redundant exclusions or comparisons with the unmodified ability', () => {
+    for (const entry of entries) {
+      expect(entry.ability).not.toMatch(/This bonus does not|Copied and Conduit-generated ticks do not|instead of only|not only ultimates/);
+    }
+    expect(entries.find(entry => entry.name === 'Breach Pendulum')?.ability).toContain('Multiple copies do not stack');
+  });
   it('contains every entry exactly once in rarity/name order', () => {
     expect(entries).toHaveLength(138);
     expect(metadata).toHaveLength(138);
@@ -84,7 +90,7 @@ describe('approved Phase 0 catalog contract (not runtime effect verification)', 
     );
     expect(catalog).toContain('Combined reduction cap: 50%; round the final cost up once.');
     expect(ability("World-Eater's Orrery")).toBe(
-      '+3 turns [Skill Duration]. [Debuffs] applied by your [Skills], including [Burn] damage and [Weaken] strength, gain +125% [Skill Power]. This bonus does not increase the skill\'s [Direct Damage], healing or [Shields].',
+      '+3 turns [Skill Duration]. [Debuffs] applied by your [Skills] gain +125% [Skill Power].',
     );
     expect(ability('Throne of Borrowed Tomorrows')).toContain(
       'Each character can receive this extra action once per [Player Turn].',

@@ -12,10 +12,10 @@ const executable = ts.transpileModule(source.replace(/^import .*;\r?$/gm, ''),
   { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText;
 const requestId = '00000000-0000-4000-8000-000000000001';
 const chestId = calamityChestId('treasury', 3);
-function harness(kind: 'chest' | 'purchase' = 'chest') {
+function harness(kind: 'chest' | 'purchase' = 'chest', ownedChestId = chestId) {
   const entropy = { seed: () => 7321, random: () => .9, uuid: () => crypto.randomUUID() };
   const game = engine.resolveOperation(engine.freshGame('tester'), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
-  game.account.calamityChests = { [chestId]: 2 };
+  game.account.calamityChests = { [ownedChestId]: 2 };
   if (kind === 'purchase') {
     game.account.calamityClears = { infernic: 1 };
     game.account.calamiticTokens = 125;
@@ -48,7 +48,7 @@ function harness(kind: 'chest' | 'purchase' = 'chest') {
   const Deno = { env: { get: () => 'configured' }, serve: (callback: typeof handler) => { handler = callback; } };
   new Function('Deno', 'createClient', ...Object.keys(engine), executable)(Deno, () => admin, ...Object.values(engine));
   const send = (operation: GameOperation = kind === 'chest'
-    ? { kind: 'openCalamityChest', id: chestId, expectedCount: 2 }
+    ? { kind: 'openCalamityChest', id: ownedChestId, expectedCount: 2 }
     : { kind: 'purchaseConduit', id: calamiticConduits[0].id }, revision = 7, id = requestId) =>
     handler(new Request('http://localhost/game-operation', { method: 'POST',
       headers: { authorization: 'Bearer test-session', 'content-type': 'application/json' },
@@ -57,13 +57,28 @@ function harness(kind: 'chest' | 'purchase' = 'chest') {
 }
 
 describe('Calamity HTTP persistence and retries', () => {
+  it('replays the same Roselius copies and UUIDs after an ambiguous opening response', async () => {
+    const id = calamityChestId('roses', 3);
+    const h = harness('chest', id);
+    const firstResponse = await h.send();
+    expect(firstResponse.status).toBe(200);
+    const first = validateGameResponse(await firstResponse.json());
+    expect(first.calamityOpening?.roseliusCopies).toBe(3);
+    expect(first.account.capturedCharacters).toHaveLength(3);
+    expect(first.account.calamityChests?.[id]).toBe(1);
+    const retry = await h.send();
+    expect(retry.status).toBe(200);
+    expect(await retry.json()).toEqual(first);
+    expect(h.stored().state.account.capturedCharacters).toEqual(first.account.capturedCharacters);
+    expect(h.rpc.mock.calls.filter(([name]) => name === 'commit_game_operation')).toHaveLength(1);
+  });
   it('returns the same saved receipt on ambiguous transport retry without consuming or rolling twice', async () => {
     const h = harness();
     const response = await h.send();
     expect(response.status).toBe(200);
     const first = validateGameResponse(await response.json());
     expect(first.account.calamityChests?.[chestId]).toBe(1);
-    expect(first.account.masterChests).toBe(2);
+    expect(first.account.masterChests).toBe(0);
     expect(first.calamityOpening?.id).toBe(chestId);
     expect(first.calamityOpening?.calamiticTokens).toBe(8);
     const seed = h.stored().state.account.calamitySeed;

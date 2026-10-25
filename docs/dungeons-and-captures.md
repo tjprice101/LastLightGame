@@ -1,5 +1,15 @@
 # Dungeons and captured enemies
 
+## Guaranteed Calamity Roselius (D-409)
+
+Soar/Delve/Roses Calamity chests award1/2/3 Omnic Roselius at tiers1/2/3,
+each a distinct unlocked Lv.60 copy with form6's Stage29 kit. Explicit
+`calamity-chest` acquisition allows only this form/stage and exact level;
+it does not expand ordinary capture eligibility or reuse banner provenance.
+The copies work in existing Team, Archive, equipment, fodder and sale paths,
+with their usual locks/squad/equipment protections.
+[Atomic opening and retry contract](calamity-mode.md#activity-specific-chest-guarantees-d-409).
+
 ## Capture audit and visible eligibility (D-408)
 
 Runtime stage/seed and persistence checks confirm the existing separate50%

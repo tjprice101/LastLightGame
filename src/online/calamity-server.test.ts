@@ -20,6 +20,16 @@ function ready() {
 }
 
 describe('authoritative Calamity operations', () => {
+  it('reads historical cached opening receipts without rerolling or granting new rewards', () => {
+    const game = ready();
+    const id = calamityChestId('heavens', 3);
+    game.account.calamityChests = { [id]: 1 };
+    const opened = op(game, { kind: 'openCalamityChest', id, expectedCount: 1 });
+    const historical = structuredClone(opened.response);
+    delete historical.calamityOpening!.roseliusCopies;
+    historical.calamityOpening!.masterChests = 2;
+    expect(validateGameResponse(historical)).toEqual(historical);
+  });
   it.each(calamityActivities)('$id uses the same tuned stats for server entry and retry at all three tiers', ({ id }) => {
     for (const tier of [1, 2, 3] as const) {
       const entered = op(ready(), { kind: 'enter', activity: { kind: 'calamity', activity: id, tier } }).game;
@@ -125,11 +135,11 @@ describe('authoritative Calamity operations', () => {
     expect(opened.game.account.calamityChests?.[id]).toBe(1);
     const reward = opened.response.calamityOpening!;
     expect(reward.id).toBe(id);
-    expect(reward.masterChests).toBe(2);
+    expect(reward.masterChests).toBe(0);
     expect(opened.game.account.fractalis).toBe(reward.fractalis);
     expect(reward.fractalis).toBeGreaterThan(calamityChest('treasury', 3).fractalis);
     expect(validateGameResponse(opened.response).calamityOpening).toEqual(reward);
-    expect(Object.keys(reward).sort()).toEqual(['id', 'name', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'calamiticTokens', 'masterChests'].sort());
+    expect(Object.keys(reward).sort()).toEqual(['id', 'name', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'calamiticTokens', 'masterChests', 'roseliusCopies'].sort());
     expect(reward.calamiticTokens).toBe(8);
     expect(() => op(opened.game, { kind: 'openCalamityChest', id, expectedCount: 2 })).toThrow('count changed');
     expect(() => validateGameResponse({ ...opened.response, calamityOpening: { ...reward, bundles: 7 } })).toThrow('incomplete');
@@ -148,8 +158,23 @@ describe('authoritative Calamity operations', () => {
       const opened = op(game, { kind: 'openCalamityChest', id, expectedCount: 1 });
       const response = validateGameResponse(opened.response);
       expect(response.calamityOpening?.id).toBe(id);
-      expect(response.calamityOpening?.masterChests).toBe(tier === 3 ? 2 : 0);
+      expect(response.calamityOpening?.masterChests).toBe(definition.id === 'machines' && tier === 3 ? 2 : 0);
       expect(response.calamityOpening?.calamiticTokens).toBe([1, 3, 8][tier - 1]);
+      const copies = ['heavens', 'abyss', 'roses'].includes(definition.id) ? tier : 0;
+      expect(response.calamityOpening?.roseliusCopies).toBe(copies);
+      expect(response.account.capturedCharacters ?? []).toHaveLength(copies);
+      expect(new Set((response.account.capturedCharacters ?? []).map(copy => copy.instanceId)).size).toBe(copies);
+      for (const copy of response.account.capturedCharacters ?? []) {
+        expect(copy).toMatchObject({ creatureId: 'infusion:roses:5', level: 60, acquisition: 'calamity-chest' });
+      }
+      expect(() => validateGameResponse({ ...response, calamityOpening: {
+        ...response.calamityOpening!, roseliusCopies: copies + 1,
+      } })).toThrow('incomplete');
+      if (definition.id !== 'machines' && tier === 3) {
+        expect(() => validateGameResponse({ ...response, calamityOpening: {
+          ...response.calamityOpening!, masterChests: 2,
+        } })).toThrow('incomplete');
+      }
       expect(response.account.calamityChests?.[id]).toBe(0);
       expect(response.account.calamitySeed).not.toBe(seed);
     }

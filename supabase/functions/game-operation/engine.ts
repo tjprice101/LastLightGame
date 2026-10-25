@@ -440,7 +440,8 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
         const reward = openCalamityChest(storage, operation.id, operation.expectedCount).reward;
         calamityOpening = { id: reward.id, name: reward.name, fractalis: reward.fractalis, lycalis: reward.lycalis,
           materials: reward.materials, conduits: reward.conduits, mechanicalComponents: reward.mechanicalComponents,
-          calamiticTokens: reward.calamiticTokens, masterChests: reward.masterChests };
+          calamiticTokens: reward.calamiticTokens, masterChests: reward.masterChests,
+          roseliusCopies: reward.roseliusCopies };
         break;
       }
       case 'equipMasterConduit': equipMasterConduit(storage, operation.character, operation.conduit); break;
