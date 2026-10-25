@@ -5,7 +5,7 @@ import { fractalisDrop, storyEnemyFractalisDrop, treasuryFractalisDrop, rollDrop
 import { dungeonEncounter, materialDrops, type PlayableDungeon } from '../content/dungeons';
 import { elementSources } from '../content/element-migration';
 import { materialName } from '../content/dungeon-art';
-import { infusionEncounter, infusionDrops, capturedEnemyStats } from '../content/infusions';
+import { infusionEncounter, infusionDrops, capturedEnemyStats, enemyCaptureAllowed, enemyCaptureChance } from '../content/infusions';
 import { dungeonStageCount, infusionStageCount, type InfusionModeId, type ElementId } from '../content/activities';
 import { enemyGrowth, enemyCombatStats } from '../content/stat-growth';
 import { enemyAbilityMultiplier, enemySkills, scheduledEnemySkill, type EnemySkill } from '../content/enemy-skills';
@@ -13,7 +13,6 @@ import { getConduit, isConduitId, validateConduitUpgrades, type ConduitId, type 
 import { rollMachineComponents } from '../content/mechanical-components';
 import { machineConduitDrops, isMachineFocusRarity, type MachineLootFocus } from '../content/machines';
 import { capturedProgress, capturedLevelCap, resolveCapturedFighter, type CapturedCharacter } from './character-instances';
-import { roseCaptureAllowed } from '../content/roses';
 import { getCreature } from '../content/creatures';
 import { elementAccents } from '../content/dungeon-art';
 import { characterName } from '../content/character-art';
@@ -561,7 +560,7 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
       seed ^= seed >>> 17;
       seed ^= seed << 5;
       state.captureSeed = seed >>> 0;
-      if ((state.infusion.mode !== 'roses' || roseCaptureAllowed(enemy.level)) && captureSucceeds(state.captureSeed / 0x100000000)) capture = { creatureId: enemy.creatureId, level: Math.min(capturedLevelCap, enemy.level) };
+      if (enemyCaptureAllowed(state.infusion.mode, enemy.level) && captureSucceeds(state.captureSeed / 0x100000000)) capture = { creatureId: enemy.creatureId, level: Math.min(capturedLevelCap, enemy.level) };
       if (state.infusion.mode !== 'treasury' && state.infusion.mode !== 'roses') lycalis = rollStagedLycalis(state.infusion.mode, enemy.level, () => {
         let premiumSeed = state.lycalisSeed ?? (((previous.seed ^ 0x9e3779b9) >>> 0) || 1);
         premiumSeed ^= premiumSeed << 13;
@@ -586,7 +585,7 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
 
 export function captureSucceeds(value: number): boolean {
   if (!Number.isFinite(value) || value < 0 || value >= 1) throw new Error('Capture roll must be in [0, 1).');
-  return value < .5;
+  return value < enemyCaptureChance;
 }
 
 export function act(previous: BattleState, actorId: string, action: ActionId, targetId: string): BattleResult {

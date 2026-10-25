@@ -5,9 +5,9 @@ import type { ConduitId } from './conduits';
 import { masterChest } from './master-conduits';
 import { machineComponentDrop } from './mechanical-components';
 import { dungeonEncounter, dungeonVariants, materialLoot } from './dungeons';
-import { infusionEncounter, infusionLoot, infusionElements } from './infusions';
+import { infusionEncounter, infusionLoot, infusionElements, enemyCaptureAllowed, enemyCaptureChance } from './infusions';
 import { fractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from './loot-random';
-import { storyEncounter, storyCreature, storyRules, storyLoot, storyBossBonus } from './story';
+import { storyEncounter, storyCreature, storyRules, storyLoot } from './story';
 import { devourerHabitats, elementEmotions, machineOrigin } from './world-lore';
 import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
 import { calamityActivities, calamityChest, calamityTierScaling, isCalamityTier, type CalamityActivityId } from './calamity';
@@ -94,13 +94,7 @@ export function creatureLoot(creature: Creature, stage?: number, ownedConduits?:
       note: 'Exactly one chest per victory. Open later in Inventory. No ordinary rewards, captures or 5x multiplier.' }];
   }
   if (creature.story && stage !== undefined) {
-    const loot: CreatureLoot[] = storyLoot(stage);
-    if (storyEncounter(stage).boss) {
-      const bonus = storyBossBonus(stage);
-      loot.push({ id: 'fractalis', minimum: bonus.fractalis, maximum: bonus.fractalis, chance: 1, note: 'Account first clear only; not a replay drop.' },
-        { id: 'lycalis', minimum: bonus.lycalis, maximum: bonus.lycalis, chance: 1, note: 'Account first clear only; not a replay drop.' });
-    }
-    return loot;
+    return storyLoot(stage);
   }
   if (!creature.stages.length && stage !== undefined && (!Number.isInteger(stage) || stage < 1 || stage > 120)) throw new Error('Choose a Training enemy level from 1 to 120.');
   const level = creature.dungeonElement && stage !== undefined ? dungeonEncounter(creature.dungeonElement, stage).level
@@ -108,6 +102,10 @@ export function creatureLoot(creature: Creature, stage?: number, ownedConduits?:
   const multiplier = bossLootMultiplier(creature.dungeonElement && stage !== undefined ? { dungeon: { stage } }
     : creature.mode && stage !== undefined ? { infusion: { mode: creature.mode, stage } } : {});
   const loot: CreatureLoot[] = [{ id: 'fractalis', ...bossLootRange(creature.mode === 'treasury' ? treasuryFractalisDrop(level) : fractalisDrop(level, creature.mode === 'roses' ? 140 : 120), multiplier) }];
+  if (creature.mode && enemyCaptureAllowed(creature.mode, level)) loot.push({
+    id: `capture:${creature.id}`, minimum: 1, maximum: 1, chance: enemyCaptureChance,
+    note: `A separate 50% chance per defeated enemy to obtain one playable copy of this exact form. Duplicates are allowed.${creature.mode === 'roses' ? ' Roselius above Lv.120 cannot be captured.' : ''}`,
+  });
   if (creature.mode === 'treasury') return loot;
   if (creature.mode === 'machines' && stage !== undefined) return [...loot, machineComponentDrop(stage), ...machineConduitLoot(stage, ownedConduits, focus),
     ...(stage === masterChest.stage ? [{ id: masterChest.id, minimum: 1, maximum: 1, chance: masterChest.chance,
@@ -119,7 +117,7 @@ export function creatureLoot(creature: Creature, stage?: number, ownedConduits?:
     const odds = creature.mode === 'roses' ? [] : stagedLycalisOdds(creature.mode, level, stage);
     loot.push(...odds.filter((outcome) => outcome.amount > 0).map((outcome) => ({
       id: 'lycalis', minimum: outcome.amount, maximum: outcome.amount, chance: outcome.chance,
-      note: `One independent Null-Prismatica roll per kill; outcomes are mutually exclusive. No Null-Prismatica: ${formatStat(odds[0].chance * 100)}%. Ordinary enemies and bosses use the same odds.`,
+      note: `Each defeated enemy has one chance to award Null-Prismatica, separate from its other drops. The rows are alternative amounts, not extra rolls: at most one amount is awarded (mutually exclusive). Chance of none: ${formatStat(odds[0].chance * 100)}%. Ordinary enemies and bosses use the same odds.`,
     })));
     loot.push(...pool.specialties);
     const eligibleElements = infusionElements(creature.mode);

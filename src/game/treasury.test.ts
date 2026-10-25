@@ -53,7 +53,11 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
       expect(infusionDrops('treasury', stage, random)).toEqual({});
       expect(random).not.toHaveBeenCalled();
       const range = bossLootRange(treasuryFractalisDrop(encounter.level), stage === 25 ? 5 : 1);
-      expect(creatureLoot(getCreature(`infusion:treasury:${encounter.tier}`), stage)).toEqual([{ id: 'fractalis', ...range }]);
+      const drops = creatureLoot(getCreature(`infusion:treasury:${encounter.tier}`), stage);
+      expect(drops.filter(drop => !drop.id.startsWith('capture:'))).toEqual([{ id: 'fractalis', ...range }]);
+      expect(drops.find(drop => drop.id.startsWith('capture:'))).toMatchObject({
+        id: `capture:infusion:treasury:${encounter.tier}`, minimum: 1, maximum: 1, chance: .5,
+      });
       for (const burn of [false, true]) {
         const result = defeat(stage, burn);
         const rewards = result.events.filter((event) => event.kind === 'reward');

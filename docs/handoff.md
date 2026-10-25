@@ -1,5 +1,39 @@
 # Current state and handoff
 
+## Direct enemy loot, capture audit and Master reveal (D-408)
+
+- Eligible enemies retain separate50% playable-copy drops: Heaven/Abyss/
+  Treasury/Sanctuary/Roses. Rose source enemies above120 do not qualify
+  (stages24-35); resulting copies still cap60. Shared eligibility/chance now
+  drives runtime and published exact-form capture rows, including duplicates.
+  No probability/RNG order, rewards, save migration or account changes.
+- Enemy View Loot excludes Story first-clear bonuses, sale proceeds and
+  Calamity chest-opening contents. Their proper mission/management/chest
+  surfaces retain them. Null-Prismatica copy now explains alternative amounts
+  from one independent outcome per defeated enemy, not extra row rolls.
+- Master reward stage/art is200px (26dvh on short screens), with a matching
+  wrapper override and Let/Rise shaping/binding flavor before/after reveal.
+  Existing large chest drops/receipts remain. Browser in-memory fixtures at
+  320/400/1280px:200px stage/art,9.6px art-to-label gap,44px Continue and no
+  horizontal overflow. No storage/account writes; preview restored afterward.
+- Section49 replacement prompt specifies white/pearl/gold luxury and rainbow
+  prismatic metal accents. `python tools\build_master_conduit_art.py --chest-only`
+  preserves the other49 blocks. `python -m unittest discover -s tools -p
+  test_master_conduit_art.py -k MasterChestReplacement` passes2 tests.
+  Installed artwork is unchanged; reviewed replacement delivery remains.
+- `npm test -- --maxWorkers=1 --reporter=dot` passes6587 tests/212 files.
+  Includes capture kernel, all35 Rose stages, Treasury/Sanctuary, parity,
+  direct-only tables, currency, stage previews and reward presentation.
+  Initial parallel run exposed an obsolete Treasury table expectation and
+  two Collections timeouts; expectation corrected and all14 isolated
+  Treasury/Collections tests pass before the clean full rerun.
+- `npm run build` includes TypeScript and passes with the existing
+  large-chunk advisory. `node tools\bundle_server_game.mjs` and
+  `npx --yes deno check supabase\functions\game-operation\index.ts` pass.
+  Matching authority deployed with `npx supabase functions deploy
+  game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`.
+  Specs/index/decision log updated; only replacement artwork delivery remains.
+
 ## Compact Inventory and corrected categories (D-407)
 
 - Owner supplies tall narrow Master/chest screenshot and requests compact,

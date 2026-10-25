@@ -46,6 +46,26 @@ function mount(allDefeated = false) {
 }
 
 describe('enemy loot dialogs and Conduit details', () => {
+  it('explains capture eligibility and alternative currency amounts without mission or sale rewards', () => {
+    const { host } = mount(true);
+    const rose = host.querySelector('[data-creature="infusion:roses:5"]')!;
+    const stage = rose.querySelector<HTMLSelectElement>('[data-loot-stage]')!;
+    stage.value = stage.options[stage.options.length - 1].value;
+    stage.dispatchEvent(new Event('change'));
+    expect(rose.querySelector('.glossary-loot')!.textContent).toContain('above Lv.120 cannot drop playable copies');
+    expect(rose.querySelector('.glossary-loot')!.textContent).not.toContain('Playable copy');
+    const heavens = host.querySelector('[data-creature="infusion:heavens:0"] .glossary-loot')!;
+    expect(heavens.textContent).toContain('Playable copy');
+    expect(heavens.textContent).toContain('50%');
+    const sanctuary = host.querySelector('[data-creature="infusion:sanctuary:0"] .glossary-loot')!;
+    expect(sanctuary.textContent).toContain('rows are alternative amounts, not extra rolls');
+    expect(sanctuary.textContent).toContain('at most one amount');
+    expect(host.querySelector('[aria-label^="Sale value"]')).toBeNull();
+    expect(host.querySelector('.calamity-chest-contents')).toBeNull();
+    for (const table of Array.from(host.querySelectorAll('.glossary-loot'))) {
+      expect(table.textContent).not.toContain('Account first clear');
+    }
+  }, 20000);
   it('shows baseline chances regardless of ownership on initial display and stage changes', () => {
     const account = emptyAccount();
     account.conduits = Object.fromEntries(conduits.filter(c => c.rarity === 'Rare' && c.id !== 'duplex-heart').map(c => [c.id, 2]));
@@ -127,7 +147,7 @@ describe('enemy loot dialogs and Conduit details', () => {
         const rows = dialog.querySelectorAll('.glossary-loot > table > tbody > tr');
         expect(rows).toHaveLength(expected.length);
         expected.forEach((drop, index) => {
-          expect(rows[index].children[1].textContent).toBe(drop.minimum === 1 && drop.id === 'grand-master-chest' ? '1' : `${drop.minimum}-${drop.maximum}`);
+          expect(rows[index].children[1].textContent).toBe(drop.minimum === 1 && (drop.id === 'grand-master-chest' || drop.id.startsWith('capture:')) ? '1' : `${drop.minimum}-${drop.maximum}`);
           expect(rows[index].children[2].textContent).toBe(`${formatStat(drop.chance * 100)}%`);
           if (isConduitId(drop.id)) {
             const button = rows[index].querySelector<HTMLButtonElement>('[data-information]')!;

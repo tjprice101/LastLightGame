@@ -1,5 +1,21 @@
 # Art and asset workflow
 
+## Machine's Master Chest replacement prompt (D-408)
+
+[Master Conduits section49](../Art/conduits/Master%20Conduits.md#49-machines-master-chest)
+now specifies a sealed luxurious white/pearl-and-gold coffer, intricate
+mechanical filigree and rainbow-prismatic metal accents inspired by Let/Rise's
+collaboration. Keep compact anime/cel rendering, non-emissive painted facets,
+70% ensemble/15% clear outer margins and solid green key through gaps.
+No planetary locks, text or reference flags.
+
+Reproduce this bounded replacement with
+`python tools\build_master_conduit_art.py --chest-only`; validate with
+`python -m unittest discover -s tools -p test_master_conduit_art.py -k MasterChestReplacement`.
+It leaves all48 historical Master prompts and the emblem intact. No new PNG,
+source overwrite, URL revision or runtime artwork replacement is part of
+this prompt-only change; reviewed owner delivery is still needed.
+
 ## Compressed AVIF runtime art (D-341)
 
 Every `public/assets/**/*.png` has an AVIF sibling (`name.avif`, sharp q90,

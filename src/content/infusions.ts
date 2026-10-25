@@ -5,12 +5,17 @@ import { phaseZeroStatDefaults, type ResolvedStats } from './phase-zero-stats';
 import { rollDrop, scaledDrop, type ScaledDrop } from './loot-random';
 import { capturedGrowth, enemyCombatStats, playableGrowth } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
-import { roseMaterials, roseSaleQuantities, roseFormStages } from './roses';
+import { roseMaterials, roseSaleQuantities, roseFormStages, roseCaptureAllowed } from './roses';
 import { materialRangesAtLevel, materialRarities, type MaterialRarity } from './material-drops';
 import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
 
 export function isInfusionMode(value: unknown): value is InfusionModeId {
   return [...infusionModes, ...currencyModes, ...eventModes, ...machineModes].some((entry) => entry.id === value);
+}
+export const enemyCaptureChance = .5;
+export function enemyCaptureAllowed(mode: InfusionModeId, level: number): boolean {
+  if (!isInfusionMode(mode) || !Number.isInteger(level) || level < 1) throw new Error('Invalid capture encounter.');
+  return mode !== 'machines' && (mode !== 'roses' || roseCaptureAllowed(level));
 }
 export function infusionElements(mode: InfusionModeId) {
   if (!isInfusionMode(mode)) throw new Error('Unknown infusion mode.');

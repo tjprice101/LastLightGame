@@ -419,7 +419,9 @@ describe('Calamity presentation', () => {
     select.value = '3';
     select.dispatchEvent(new Event('change'));
     expect(card.querySelector('.glossary-loot')!.textContent).toContain(calamityChest('treasury', 3).name);
-    expect(card.querySelector('.glossary-loot')!.textContent).toContain("Machine's Master Chests2");
+    expect(card.querySelector('.glossary-loot')!.textContent).not.toContain("Machine's Master Chests");
+    expect(card.querySelector('.calamity-chest-contents')).toBeNull();
+    expect(card.querySelectorAll('.glossary-loot tbody tr')).toHaveLength(1);
     expect(document.querySelector('[data-creature="calamity:machines"]')!.textContent).toContain('Undiscovered Calamity boss');
     expect(document.querySelector<HTMLImageElement>('[data-creature="calamity:roses"] .glossary-art img')!.src).toContain('enemies/calamity-boss-roses.png?v=');
     expect(document.querySelector('[data-creature="calamity:roses"] .glossary-art img')!.classList.contains('calamity-boss-contrast')).toBe(false);

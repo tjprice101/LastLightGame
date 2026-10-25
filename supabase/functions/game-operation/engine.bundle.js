@@ -4743,6 +4743,11 @@ function materialRangesAtLevel(level) {
 function isInfusionMode(value2) {
   return [...infusionModes, ...currencyModes, ...eventModes, ...machineModes].some((entry) => entry.id === value2);
 }
+var enemyCaptureChance = 0.5;
+function enemyCaptureAllowed(mode, level) {
+  if (!isInfusionMode(mode) || !Number.isInteger(level) || level < 1) throw new Error("Invalid capture encounter.");
+  return mode !== "machines" && (mode !== "roses" || roseCaptureAllowed(level));
+}
 function infusionElements(mode) {
   if (!isInfusionMode(mode)) throw new Error("Unknown infusion mode.");
   return elements.filter((element) => element.infusion === mode);
@@ -10012,7 +10017,7 @@ function awardDefeats(previous, state, events) {
       seed2 ^= seed2 >>> 17;
       seed2 ^= seed2 << 5;
       state.captureSeed = seed2 >>> 0;
-      if ((state.infusion.mode !== "roses" || roseCaptureAllowed(enemy.level)) && captureSucceeds(state.captureSeed / 4294967296)) capture = { creatureId: enemy.creatureId, level: Math.min(capturedLevelCap, enemy.level) };
+      if (enemyCaptureAllowed(state.infusion.mode, enemy.level) && captureSucceeds(state.captureSeed / 4294967296)) capture = { creatureId: enemy.creatureId, level: Math.min(capturedLevelCap, enemy.level) };
       if (state.infusion.mode !== "treasury" && state.infusion.mode !== "roses") lycalis = rollStagedLycalis(state.infusion.mode, enemy.level, () => {
         let premiumSeed = state.lycalisSeed ?? ((previous.seed ^ 2654435769) >>> 0 || 1);
         premiumSeed ^= premiumSeed << 13;
@@ -10041,7 +10046,7 @@ function awardDefeats(previous, state, events) {
 }
 function captureSucceeds(value2) {
   if (!Number.isFinite(value2) || value2 < 0 || value2 >= 1) throw new Error("Capture roll must be in [0, 1).");
-  return value2 < 0.5;
+  return value2 < enemyCaptureChance;
 }
 function act(previous, actorId, action, targetId) {
   if (!isActionId(action)) throw new Error("Unknown combat action.");

@@ -3,6 +3,13 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**Enemy drops and Master reveal (D-408):**
+[direct-only enemy tables](archives-and-elements.md#direct-enemy-drops-only-d-408)
+now include eligible50% playable copies, not mission bonuses/sales/chest
+contents. [Capture audit](dungeons-and-captures.md#capture-audit-and-visible-eligibility-d-408)
+explains the Rose ceiling; [compact Master opening and replacement prompt](master-conduits.md#compact-opening-and-collaboration-flavor-d-408)
+document Let/Rise flavor and white/gold prismatic chest art direction.
+
 **Compact Inventory (D-407):** [unified holdings categories](menus-and-inventory.md#compact-holdings-and-unified-categories-d-407)
 puts Masters with Conduits and all chests in Resources & Items, using compact
 horizontal artwork cards instead of stretched columns.

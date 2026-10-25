@@ -1,5 +1,23 @@
 # Character Master Conduits (D-201)
 
+## Compact opening and collaboration flavor (D-408)
+
+The saved Master reveal uses a bounded200px artwork/stage area (26dvh on
+short screens), rather than a400px stage around a160px icon. Only Master
+reveals receive this sizing; large chest drops/receipts and other reward
+presentations remain unchanged. Full effect text, scrolling, Skip/Continue,
+Escape, reduced motion and atomic saved ownership retain existing behavior.
+
+Opening flavor: “Let shaped its workings; Rise bound their power. A mechanism
+of their shared age awakens.” After reveal: “Forged in Let and Rise's shared
+age. Awakened for your journey. Master saved.”
+
+[Section49 of the art pack](../Art/conduits/Master%20Conduits.md#49-machines-master-chest)
+requests an intricate pearl-white/gold luxury chest with rainbow-prismatic
+metal accents and shaping/binding clasps, not planetary locks. This is a
+replacement prompt only; installed artwork/sources remain unchanged pending
+reviewed delivery.
+
 **Current D-383 mechanics:** all48
 [approved Master transformations](character-conduit-compatibility.md)
 have refreshed personal/squad stat packages and exact native mechanics in

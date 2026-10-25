@@ -4,10 +4,8 @@ import { formatStat } from '../content/combat';
 import { type Account } from '../game/account';
 import { assetUrl } from './portrait';
 import { currencyIcon } from './currency-icon';
-import { itemShowcase } from './item-showcase';
 import { elementLabel } from './element-label';
-import { creatureSaleValue, creatureSaleOptions } from '../content/infusions';
-import { isCurrencyMode } from '../content/activities';
+import { infusionEncounter } from '../content/infusions';
 import { getConduit, isConduitId, type ConduitUpgrades } from '../content/conduits';
 import { conduitIcon, conduitDetails } from './conduit-store';
 import { conduitElement } from './conduit-element';
@@ -16,12 +14,10 @@ import { mechanicalComponentIcon } from './mechanical-component-icon';
 import { masterChest } from '../content/master-conduits';
 import { information } from './information';
 import { calamityChest, calamityEncounter, isCalamityTier, parseCalamityChestId } from '../content/calamity';
-import { calamityLoot, calamityChestIcon } from './calamity';
+import { calamityChestIcon } from './calamity';
 
 function lootTable(id: string, stage?: number, upgrades?: ConduitUpgrades): string {
   const creature = getCreature(id);
-  const sale = creature.mode && isCurrencyMode(creature.mode) ? creatureSaleValue(creature.mode, Number(creature.id.split(':').at(-1))) : null;
-  const choices = creature.mode === 'heavens' || creature.mode === 'abyss' ? creatureSaleOptions(creature.mode, Number(creature.id.split(':').at(-1))) : null;
   const drops = creatureLoot(creature, stage);
   const rollNotes = [...new Set(drops.flatMap(drop => drop.note && !creature.story ? [drop.note] : []))];
   return `<table><caption>Per-enemy loot at ${creature.id.startsWith('calamity:') ? `EX+${stage}` : creature.stages.length ? `Stage ${stage}` : `Enemy level ${stage ?? 1}`}</caption>
@@ -29,6 +25,7 @@ function lootTable(id: string, stage?: number, upgrades?: ConduitUpgrades): stri
     <thead><tr><th scope="col">Drop</th><th scope="col">Amount</th><th scope="col">Chance</th></tr></thead><tbody>${drops.map((drop) => {
       const currency = drop.id === 'fractalis' || drop.id === 'lycalis' ? drop.id : null;
       const conduit = isConduitId(drop.id) ? getConduit(drop.id) : null;
+      if (drop.id.startsWith('capture:')) return `<tr><td><strong>${creature.name} · Playable copy</strong></td><td>1</td><td>${formatStat(drop.chance * 100)}%</td></tr>`;
       if (drop.id.startsWith('calamity:')) {
         const { activity, tier } = parseCalamityChestId(drop.id);
         return `<tr><td>${calamityChestIcon(tier)}<strong>${calamityChest(activity, tier).name}</strong><small>Sealed chest · Open in Inventory</small></td><td>${drop.minimum}-${drop.maximum}</td><td>${formatStat(drop.chance * 100)}%</td></tr>`;
@@ -40,7 +37,7 @@ function lootTable(id: string, stage?: number, upgrades?: ConduitUpgrades): stri
         <strong>${currency === 'fractalis' ? 'Prismatica' : currency === 'lycalis' ? 'Null-Prismatica' : conduit ? `${conduit.name} · ${conduit.rarity}` : materialName(drop.id)}</strong>${conduit ? conduitElement(conduit.id) : ''}        ${drop.note && creature.story ? `<small>${drop.note}</small>` : ''}
         ${conduit ? information(`loot-conduit-${id}-${conduit.id}`, conduit.name, conduitDetails(conduit.id, upgrades?.[conduit.id]), 'View Details') : ''}</td>
         <td>${drop.minimum}-${drop.maximum}</td><td>${formatStat(drop.chance * 100)}%</td></tr>`;
-    }).join('')}</tbody></table>${creature.calamity && isCalamityTier(stage) ? `<section class="calamity-chest-contents"><p>${calamityEncounter(creature.calamity, stage).description}</p>${calamityLoot(creature.calamity, stage)}</section>` : ''}    ${rollNotes.length ? `<section class="loot-roll-notes" aria-label="Drop roll rules">${rollNotes.map(note => `<p>${note}</p>`).join('')}</section>` : ''}${sale ? itemShowcase([{ id: 'fractalis', amount: sale.fractalis }, ...(sale.lycalis ? [{ id: 'lycalis', amount: sale.lycalis }] : [])], 'Sale value') : ''}${choices ? itemShowcase(choices.flatMap((option) => option.lycalis ? [{ id: 'lycalis', amount: option.lycalis }] : Object.entries(option.materials).map(([key, amount]) => ({ id: key, amount }))), 'Sale value \u00b7 choose one') : ''}`;
+    }).join('')}</tbody></table>${creature.mode === 'roses' && stage !== undefined && infusionEncounter('roses', stage).level > 120 ? '<p>Roselius above Lv.120 cannot drop playable copies.</p>' : ''}${rollNotes.length ? `<section class="loot-roll-notes" aria-label="Drop roll rules">${rollNotes.map(note => `<p>${note}</p>`).join('')}</section>` : ''}`;
 }
 
 export function creatureGlossary(account: Account | null): string {

@@ -217,7 +217,7 @@ describe('Passion of Crimson Roses integration', () => {
         : [[25, 30], [16, 20], [12, 15], [8, 10], [5, 6], [2, 3]];
       expect(infusionLoot('roses', stage).specialties.map(drop => [drop.minimum, drop.maximum, drop.chance]))
         .toEqual(ranges.map(([minimum, maximum]) => [minimum * (stage === 35 ? 5 : 1), maximum * (stage === 35 ? 5 : 1), 1]));
-      expect(creatureLoot(creature, stage)).toEqual([{ id: 'fractalis', ...bossLootRange(fractalisDrop(encounter.level, 140), stage === 35 ? 5 : 1) },
+      expect(creatureLoot(creature, stage).filter(drop => !drop.id.startsWith('capture:'))).toEqual([{ id: 'fractalis', ...bossLootRange(fractalisDrop(encounter.level, 140), stage === 35 ? 5 : 1) },
         ...infusionLoot('roses', stage).specialties]);
     }
     expect(infusionDrops('roses', 35, () => 0)).toEqual(Object.fromEntries(final.map(drop => [drop.id, drop.minimum])));

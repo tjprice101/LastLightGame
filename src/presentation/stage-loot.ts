@@ -1,10 +1,9 @@
-import { creatures, creatureLoot, type CreatureLoot } from '../content/creatures';
+import { creatures, creatureLoot, getCreature, type CreatureLoot } from '../content/creatures';
 import { elements, type ElementId, type InfusionModeId } from '../content/activities';
 import { isPlayableDungeon, dungeonEncounter } from '../content/dungeons';
 import { infusionEncounter, isInfusionMode } from '../content/infusions';
 import { elementalWars, isWarCharacter, warEncounter, warLoot, type WarCharacterId } from '../content/elemental-war';
 import { storyBossBonus, storyCompletionReward, storyReplayReward, storyEncounter, storyLoot, storyRules } from '../content/story';
-import { roseCaptureAllowed } from '../content/roses';
 import { materialArt, materialName } from '../content/dungeon-art';
 import { getConduit, isConduitId } from '../content/conduits';
 import { mechanicalComponents } from '../content/mechanical-components';
@@ -65,6 +64,10 @@ export function parseStageLootSource(value: string | undefined): StageLootSource
 }
 
 function itemIcon(id: string, account: Account | null): string {
+  if (id.startsWith('capture:')) {
+    const creature = getCreature(id.slice('capture:'.length));
+    return creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${creature.art}.png`)}" alt="" width="80" height="80">` : '<span class="item-showcase-pending">Artwork pending</span>';
+  }
   if (id === 'fractalis' || id === 'lycalis') return currencyIcon(id);
   if (id === mechanicalComponents.id) return mechanicalComponentIcon();
   if (id === masterChest.id) return masterChestIcon();
@@ -76,6 +79,7 @@ function itemIcon(id: string, account: Account | null): string {
 }
 
 function itemName(id: string): string {
+  if (id.startsWith('capture:')) return getCreature(id.slice('capture:'.length)).name;
   if (id === 'fractalis') return 'Prismatica';
   if (id === 'lycalis') return 'Null-Prismatica';
   if (id === mechanicalComponents.id) return mechanicalComponents.name;
@@ -85,6 +89,7 @@ function itemName(id: string): string {
 }
 
 function dropGroup(id: string): LootGroup {
+  if (id.startsWith('capture:')) return 'capture';
   if (id === 'fractalis' || id === 'lycalis') return 'currency';
   if (isConduitId(id)) return `conduit-${getConduit(id).rarity.toLowerCase()}` as LootGroup;
   if (id === mechanicalComponents.id || id === masterChest.id) return 'item';
@@ -150,10 +155,6 @@ export function stageLoot(source: StageLootSource, stage: number, account: Accou
   const encounter = infusionEncounter(source.mode, stage);
   const creature = creatureAt(stage, (entry) => entry.mode === source.mode);
   const entries = dropEntries(creatureLoot(creature, stage), account);
-  if (source.mode !== 'machines' && (source.mode !== 'roses' || roseCaptureAllowed(encounter.level))) {
-    entries.push({ id: creature.id, group: 'capture', name: encounter.enemy.name,
-      icon: `<img draggable="false" src="${assetUrl(`enemies/${encounter.enemy.art}.png`)}" alt="" width="80" height="80">` });
-  }
   return { title: `${encounter.name} · Stage ${stage}`, level: encounter.level, boss: encounter.boss, entries: unique(entries) };
 }
 

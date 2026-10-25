@@ -1,5 +1,20 @@
 # Dungeons and captured enemies
 
+## Capture audit and visible eligibility (D-408)
+
+Runtime stage/seed and persistence checks confirm the existing separate50%
+capture chance for Heaven, Abyss, Crownfall Treasury, Rosethorn Sanctuary and
+Passion of Crimson Roses. Duplicate copies are allowed. Roses require the
+defeated enemy to be Lv.120 or lower: current stages1-23 qualify,24-35 do not.
+The player's level does not lift this source-enemy ceiling. Captured copies
+still cap at60 while retaining source form/stage/skills.
+
+Training, Story, elemental dungeons, Machines, Elemental War and Calamity do
+not drop playable enemy copies. No capture regression or probability change
+was found; exact-form capture rows now appear in eligible enemy loot tables.
+The same helper publishes stage previews and gates the existing capture
+transaction, without new RNG draws or load/save changes.
+
 **D-373 supersedes D-372:** Soar to Heaven and Delve into the Abyss award only
 their three unique materials, with no elemental-material bonuses. Unique-item
 unlocks, rates and quantities, currencies and captures stay unchanged.

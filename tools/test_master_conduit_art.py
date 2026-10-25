@@ -4,7 +4,34 @@ import unittest
 
 from build_master_conduit_art import (
     CHARACTERS, OUTPUT, PALETTES, ROOT, catalogue, document, palette_design,
+    chest_section, replace_chest_section,
 )
+
+class MasterChestReplacementTests(unittest.TestCase):
+    def test_replacement_palette_and_cutout_contract(self):
+        text = chest_section()
+        self.assertIn("Machine's Master Chest", text)
+        self.assertIn("pearl-white", text)
+        self.assertIn("gold filigree", text)
+        self.assertIn("rainbow-prismatic metal accents", text)
+        self.assertIn("Let and Rise", text)
+        self.assertIn("visibly locked not open", text)
+        self.assertIn("at least 15% continuous outer clearance", text)
+        self.assertIn("no glows or glowing visual effects", text)
+        self.assertNotIn("--sref", text)
+        self.assertNotIn("--sw", text)
+        block = re.search(r"```text\n(.*?)\n```", text, re.S).group(1)
+        self.assertLess(len(block.split(" --ar ")[0].split()), 380)
+
+    def test_chest_only_reproduction_preserves_other_sections(self):
+        text = OUTPUT.read_text(encoding="utf-8")
+        self.assertEqual(replace_chest_section(text), text)
+        self.assertEqual(len(re.findall(r"```text\n", text)), 50)
+        marked = text.replace("## 49. Machine's Master Chest", "## 49. Old chest", 1)
+        self.assertEqual(replace_chest_section(marked).split("## 49.")[0],
+                         text.split("## 49.")[0])
+        with self.assertRaises(ValueError):
+            replace_chest_section("# Missing chest section")
 
 
 class MasterConduitArtTests(unittest.TestCase):

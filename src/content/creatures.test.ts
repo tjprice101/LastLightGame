@@ -7,7 +7,9 @@ import { playableDungeons, materialLoot } from './dungeons';
 import { creatureGlossary } from '../presentation/creature-glossary';
 import { sanctuaryHeader, isMenuPage } from '../presentation/sanctuary';
 import { starters } from './starters';
-import { elements, infusionModeStageCount } from './activities';
+import { elements, infusionModeStageCount, infusionStageCount } from './activities';
+import { infusionEncounter } from './infusions';
+import { storyLoot, storyRules } from './story';
 import { nextWave, nextStage } from '../game/battle';
 
 function storage(): ProfileStorage {
@@ -16,6 +18,28 @@ function storage(): ProfileStorage {
 }
 
 describe('saved Elemental-Devourer discoveries and glossary', () => {
+  it('publishes exactly the capture-eligible forms at every stage, including Rose level limits', () => {
+    for (const mode of ['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines'] as const) {
+      for (let stage = 1; stage <= infusionStageCount(mode); stage++) {
+        const encounter = infusionEncounter(mode, stage);
+        const creature = getCreature(`infusion:${mode}:${encounter.tier}`);
+        const captures = creatureLoot(creature, stage).filter(drop => drop.id.startsWith('capture:'));
+        const eligible = mode !== 'machines' && (mode !== 'roses' || encounter.level <= 120);
+        expect(captures).toHaveLength(eligible ? 1 : 0);
+        if (eligible) expect(captures[0]).toMatchObject({ id: `capture:${creature.id}`, minimum: 1, maximum: 1, chance: .5 });
+      }
+    }
+    for (const creature of creatures.filter(entry => !entry.mode)) {
+      expect(creatureLoot(creature, creature.stages[0] ?? 1).some(drop => drop.id.startsWith('capture:'))).toBe(false);
+    }
+  });
+  it('keeps Story mission bonuses out of the enemy drop table', () => {
+    for (const stage of [1, storyRules.regionStages, storyRules.stages]) {
+      const creature = creatures.find(entry => entry.story && entry.stages.includes(stage))!;
+      expect(creatureLoot(creature, stage)).toEqual(storyLoot(stage));
+      expect(creatureLoot(creature, stage).some(drop => drop.note?.includes('first clear'))).toBe(false);
+    }
+  });
   it('assigns confirmed combat elements to every enemy and preserves them across runs', () => {
     const adventure = createBattle();
     expect(adventure.enemies.map((enemy) => enemy.element)).toEqual(['botanic', 'infernic', 'botanic']);

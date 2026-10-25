@@ -33,9 +33,14 @@ function wallet(): Account {
 }
 
 describe('Omnic element presentation (D-403)', () => {
-  it('omits the removed planetary opening copy from saved Master rewards', () => {
+  it('uses a compact Master reveal with Let and Rise flavor instead of planetary locks', () => {
     const account = wallet();
-    expect(masterReward(masterConduits[0].id, account).animationLabel).toBe('');
+    const reward = masterReward(masterConduits[0].id, account);
+    expect(reward.art).toContain('class="master-reward-art"');
+    expect(reward.animationLabel).toContain('Let');
+    expect(reward.animationLabel).toContain('Rise');
+    expect(reward.savedLabel).toContain('shared age');
+    expect(reward.animationLabel).not.toMatch(/planet/i);
   });
   it('uses the canonical element and shared palette for all 45 Omnics, not legacy asset names', () => {
     expect(omnics).toHaveLength(45);

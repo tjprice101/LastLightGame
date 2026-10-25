@@ -47,7 +47,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
       expect(infusionDrops('sanctuary', stage, random)).toEqual({});
       expect(random).not.toHaveBeenCalled();
       const odds = sanctuaryLycalisOdds(encounter.level).map(drop => ({ ...drop, amount: drop.amount * (stage === 25 ? 5 : 1) }));
-      expect(creatureLoot(getCreature(`infusion:sanctuary:${encounter.tier}`), stage)).toEqual([
+      expect(creatureLoot(getCreature(`infusion:sanctuary:${encounter.tier}`), stage).filter(drop => !drop.id.startsWith('capture:'))).toEqual([
         { id: 'fractalis', ...fractalisDrop(encounter.level), ...(stage === 25 ? { minimum: 75, maximum: 150, quantityMultiplier: 5 } : {}) },
         { id: 'lycalis', minimum: odds[1].amount, maximum: odds[1].amount, chance: odds[1].chance, note: expect.any(String) },
       ]);
@@ -259,11 +259,11 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     expect(gameplayHub(account)).toContain('the final boss gives 25 guaranteed.');
     expect(characterCopyManagement(account)).toContain('30,000 Prismatica + 30 Null-Prismatica');
     const glossary = creatureGlossary(account);
-    expect(glossary).toContain('aria-label="Sale value"');
+    expect(glossary).not.toContain('aria-label="Sale value"');
     expect(glossary).toContain('currencies/fractalis.png');
     expect(glossary).toContain('currencies/lycalis.png');
-    expect(glossary).toContain('<strong>30,000</strong>');
-    expect(glossary).toContain('<strong>30</strong>');
+    expect(glossary).toContain('Playable copy');
+    expect(glossary).toContain('separate 50% chance');
     expect(archives(account).match(/data-archive-character=/g)).toHaveLength(126);
     const html = summonHub(account);
     expect(html.match(/data-banner-entry=/g)).toHaveLength(28);

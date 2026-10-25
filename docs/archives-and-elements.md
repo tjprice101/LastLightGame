@@ -1,5 +1,25 @@
 # Archives and enemy elements
 
+## Direct enemy drops only (D-408)
+
+Enemy **View Loot** lists only rewards from defeating that enemy: its actual
+currencies, materials, components, Conduits, sealed chest and eligible playable
+copy. Story first-clear bonuses belong to mission previews/results; sale
+proceeds belong to copy management; chest contents belong to chest View Loot.
+None is an additional direct enemy drop. This supersedes D-295's inclusion of
+first-clear annotations and sale values in enemy tables.
+
+Capture rows show the exact form and separate50% chance, including duplicates.
+Heaven, Abyss, Treasury, Sanctuary and Roses are eligible; Roselius above
+Lv.120 are not. The high-level Rose table explicitly explains that ceiling.
+The same shared eligibility/chance drives runtime captures and stage previews.
+No odds, eligibility, RNG order, persistence or discovery gates changed.
+
+Null-Prismatica rows are alternative amounts from one outcome per enemy,
+independent of other drops: at most one listed amount is awarded, or none.
+The table states the none chance; rows are not extra rolls. Final-boss quantity
+multipliers remain reflected in real direct drops.
+
 ## Shared enemy artwork containment (D-296)
 
 Owner reports late Machine silhouettes overlapping card names/descriptions.
