@@ -42,6 +42,7 @@ describe('approved ability upgrade presentation', () => {
       expect(actualNumbers).toHaveLength(baseNumbers.length);
       baseNumbers.forEach((value, index) => expect(actualNumbers[index], `${entry.id} percentage ${index}`)
         .toBeCloseTo(entry.id === 'stasis-reliquary' && index === 0 ? 10 + 2 * level
+          : entry.id === 'calamitic-causality-funeral-engine' && index === 0 ? 50 + 2 * level
           : value * (expectedIndices.includes(index) ? 1 + level * .1 : 1), 8));
       expect(actual.replace(/([+-]?\d+(?:\.\d+)?)%/g, '%')).toBe(base.replace(/([+-]?\d+(?:\.\d+)?)%/g, '%'));
       expect(conduitEffect(entry, level)).toBe(actual);

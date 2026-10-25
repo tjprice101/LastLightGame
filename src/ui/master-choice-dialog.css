@@ -1,0 +1,55 @@
+html body #master-choice.ll-dialog {
+  width: min(1120px, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 24px;
+}
+html body #master-choice .ll-dialog-heading { flex: none; margin-bottom: 16px; }
+html body #master-choice .ll-dialog-heading h2 { font-size: clamp(24px, 3vw, 32px); }
+html body #master-choice .ll-dialog-heading p { margin-block: 8px 0; }
+html body #master-choice .ll-kicker { display: none; }
+html body #master-choice .ll-master-layout { display: flex; flex-direction: column; min-height: 0; gap: 16px; }
+html body #master-choice .ll-field { flex: none; margin: 0; display: flex; align-items: center; gap: 16px; }
+html body #master-choice .ll-field select { flex: 1; min-width: 0; min-height: 44px; }
+html body #master-choice .ll-master-options {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  min-height: 0;
+  margin: 0;
+  padding: 2px 8px 4px 2px;
+}
+html body #master-choice .ll-master-option { width: 100%; min-width: 0; padding: 16px; box-sizing: border-box; }
+html body #master-choice .ll-master-option > * { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+html body #master-choice .ll-master-option::before,
+html body #master-choice .ll-master-option::after { content: none; }
+html body #master-choice .ll-master-art { width: 112px; height: 112px; justify-self: center; }
+html body #master-choice .ll-master-option > span:last-child { font-size: 16px; line-height: 1.6; }
+html body #master-choice .ll-master-footer { flex: none; border-top: 1px solid #ffffff26; padding-top: 12px; }
+html body #master-choice .ll-status { margin: 0 0 12px; padding: 0; background: none; text-align: center; }
+html body #master-choice .ll-account-actions { margin: 0; justify-content: center; }
+@media (max-width: 800px) {
+  html body #master-choice.ll-dialog { padding: 16px; }
+  html body #master-choice .ll-master-options { grid-template-columns: 1fr; }
+  html body #master-choice .ll-master-option { grid-template-columns: 80px minmax(0, 1fr); gap: 8px 16px; }
+  html body #master-choice .ll-master-art { grid-row: span 3; width: 80px; height: 80px; }
+  html body #master-choice .ll-master-option > span:last-child { grid-column: 1 / -1; }
+  html body #master-choice .ll-field { flex-wrap: wrap; gap: 8px; }
+}
+@media (max-height: 550px) {
+  html body #master-choice.ll-dialog { padding: 12px 16px; }
+  html body #master-choice .ll-dialog-heading { margin-bottom: 8px; }
+  html body #master-choice .ll-dialog-heading > div > p { display: none; }
+  html body #master-choice .ll-master-layout { gap: 8px; }
+  html body #master-choice .ll-master-footer { display: flex; align-items: center; gap: 16px; padding-top: 8px; }
+  html body #master-choice .ll-status { flex: 1; margin: 0; text-align: left; }
+  html body #master-choice .ll-account-actions { flex: none; }
+}
+@media (max-width: 380px) {
+  html body #master-choice .ll-master-option { grid-template-columns: 1fr; }
+  html body #master-choice .ll-master-art { grid-row: auto; }
+}

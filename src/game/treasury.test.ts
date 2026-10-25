@@ -149,11 +149,11 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     expect(duplicate.account.characters.ember).toEqual(account.characters.ember);
     expect(duplicate.account.squad).toEqual(['ember']);
     expect(duplicate.account.lycalis).toBe(90);
-    expect(duplicate.account.bannerPity?.standard).toEqual({ highestStar: 1, unownedHighestStar: 1 });
+    expect(duplicate.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 0 });
     const newEB = summonCharacter(saved, () => .002);
     expect(newEB.entry.id).toBe('tide');
     expect(newEB.account.characters.tide).toEqual({ level: 0, evolution: 1, weaponRank: 0 });
-    expect(newEB.account.bannerPity?.standard).toEqual({ highestStar: 2, unownedHighestStar: 2 });
+    expect(newEB.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 0 });
     const pool = standardBannerPool();
     for (const entry of pool.filter((entry) => entry.kind === 'material')) {
       const index = pool.indexOf(entry);
@@ -166,13 +166,13 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
       expect(second.account.capturedCharacters).toBeUndefined();
     }
   });
-  it('commits pity guarantees/reward/cost in one write, including500 all-owned conversion and failed retry', () => {
+  it('commits80-pull guarantees/reward/cost in one write, including all-owned conversion and failed retry', () => {
     for (const allOwned of [false, true]) {
       const saved = funded();
       const account = loadAccount(saved);
-      if (allOwned) account.characters = { ember: { level: 0, evolution: 1 },
-        aurora: { level: 0, evolution: 1 }, bliss: { level: 0, evolution: 1 },
-        disciple: { level: 0, evolution: 1 }, razor: { level: 0, evolution: 1 } };
+      if (allOwned) for (const entry of standardBannerPool()) {
+        if (entry.kind === 'character') account.characters[entry.id] = { level: 0, evolution: 1 };
+      }
       account.bannerPity = { standard: { highestStar: 199, unownedHighestStar: 499 } };
       saveAccount(saved, account);
       const before = saved.getItem(ACCOUNT_KEY);
@@ -183,7 +183,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
       saved.setItem = original;
       const write = vi.spyOn(saved, 'setItem');
       const result = summonCharacter(saved, () => 0);
-      expect(result.guarantee).toBe(allOwned ? 'all-owned-highest-star' : 'unowned-highest-star');
+      expect(result.guarantee).toBe(allOwned ? 'all-owned-character' : 'unowned-character');
       expect(result.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 0 });
       expect(result.account.lycalis).toBe(90);
       expect(result.copy).toBeUndefined();

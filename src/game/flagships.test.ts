@@ -94,8 +94,7 @@ describe('playable flagship roster', () => {
     expect(result.account.squad).toEqual(['ember']);
     expect(result.account.conduitEquipment).toBeUndefined();
     expect(result.account.lycalis).toBe(90);
-    expect(result.account.bannerPity?.standard).toEqual(character.stars === 6
-      ? { highestStar: 0, unownedHighestStar: 0 } : { highestStar: 13, unownedHighestStar: 26 });
+    expect(result.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 0 });
     const duplicate = summonCharacter(saved, roll);
     expect(duplicate.duplicate).toBe(true);
     expect(duplicate.copy).toBeUndefined();

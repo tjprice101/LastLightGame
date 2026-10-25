@@ -1,6 +1,30 @@
 # Menus and inventory
 
+## Targeted modal sizing (D-413)
+
+Owner withdraws the global D-411 redesign. Restore pre-D-411 victory/results,
+mission selectors, squad picker, Information, confirmations, Settings, account,
+friend and reward dialogs. Level/evolution, banner, chest-opening and other
+celebration/reveal animations retain their original presentation. Small content
+belongs in a small modal, not an empty full-screen shell. No global pagination
+controller or forced full-screen stylesheet remains.
+
+Only **Master chest selection** is redesigned: a bounded panel up to1120px wide,
+three readable columns on desktop, a single column on phones, fixed heading,
+bearer selection and Cancel/Choose actions, and a scrollable choices area.
+The panel fits the viewport without forcing full-screen or excessive empty
+height. Long effect text, all48 choices, owned states, exact elemental styling,
+future-character eligibility, focus, Escape and atomic confirmation remain.
+The opening animation is separate and unchanged.
+
+Validate Master-choice/opening, game-dialog, selection-panel, reward-screen,
+roster and battle-results tests. Browser checks cover every Master/selected
+footer at320px/390px, short landscape and desktop; confirm only the option list
+scrolls and the other dialogs/animations use their previous layouts.
+
 ## Full-screen paged overlays (D-411)
+
+Historical and withdrawn by D-413 above; not the current UI contract.
 
 Every game modal, including small confirmations and nested selection panels,
 occupies the full viewport. Content never uses an internal scrollbar. Fixed

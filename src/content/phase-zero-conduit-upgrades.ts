@@ -52,7 +52,9 @@ export function phaseZeroUpgradedAbility(id: string, level = 0): string | undefi
   if (id === 'stasis-reliquary') return ability.replace('10%', `${stasisChancePercent(level)}%`);
   let index = 0;
   return ability.replace(/([+-]?\d+(?:\.\d+)?)%/g, (text, amount: string) => {
-    if (!positions.includes(index++)) return text;
+    const position = index++;
+    if (!positions.includes(position)) return text;
+    if (id === 'calamitic-causality-funeral-engine' && position === 0) return `+${50 + level * 2}%`;
     const upgraded = Number((Number(amount) * (1 + level * .1)).toFixed(8));
     return `${amount.startsWith('+') ? '+' : ''}${upgraded}%`;
   });

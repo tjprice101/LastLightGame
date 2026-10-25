@@ -245,7 +245,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
       expect(result.copy).toBeUndefined();
       expect(result.materials).toEqual({ id: entry.id, amount: entry.amount });
       expect(result.account.lycalis).toBe(10);
-      expect(result.account.bannerPity?.standard).toEqual({ highestStar: 1, unownedHighestStar: 1 });
+      expect(result.account.bannerPity?.standard).toEqual({ highestStar: 1, unownedHighestStar: 0 });
       expect(result.account.materials[entry.id]).toBe(entry.amount);
     }
   });

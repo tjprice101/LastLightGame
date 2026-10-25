@@ -73,6 +73,8 @@ matrix; do not regenerate this document with the retired redesign generator.
   conditions, proc odds, durations and action counts remain fixed. Skill
   Efficiency retains its50% cap and1/70 Gauge floors; Skill Duration has no
   global equipment cap, but individual status safety limits remain.
+- D-412 exception: Causality Funeral Engine's Skill Efficiency starts at50%
+  and gains2 percentage points per upgrade (60% at+5), not10% of base.
 - D-383 refreshes all45 ordinary Omnics and48 Masters; the previous45 D-382
   replacements are unchanged. Unconditional Direct Damage wording in this
   batch means the Direct Attack stat; action-specific damage stays scoped.

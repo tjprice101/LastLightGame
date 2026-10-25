@@ -78,7 +78,9 @@ export function summonReward(result: SummonResult, bannerId: SummonBannerId): Re
   reward.tier = summonRevealTier(drawStars(result));
   reward.details += `<p>${escapeDialogText(banner.name)} · ${banner.cost} Null-Prismatica spent</p>`;
   if (result.guarantee !== 'none') {
-    const guarantee = result.guarantee === 'highest-star' ? 'Highest-star character'
+    const guarantee = result.guarantee === 'unowned-character' ? 'Unowned Element-Bearer'
+      : result.guarantee === 'all-owned-character' ? 'Element-Bearer · All already owned'
+      : result.guarantee === 'highest-star' ? 'Highest-star character'
       : result.guarantee === 'unowned-highest-star' ? 'Unowned highest-star character'
         : result.guarantee === 'all-owned-highest-star' ? 'Highest-star character · All already owned' : null;
     if (!guarantee) throw new Error('Unknown summon guarantee.');

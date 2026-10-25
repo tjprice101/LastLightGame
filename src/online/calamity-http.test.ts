@@ -63,7 +63,7 @@ describe('Calamity HTTP persistence and retries', () => {
     const firstResponse = await h.send();
     expect(firstResponse.status).toBe(200);
     const first = validateGameResponse(await firstResponse.json());
-    expect(first.calamityOpening?.roseliusCopies).toBe(3);
+    expect(first.calamityOpening?.devourerCopies).toEqual({ creatureId: 'infusion:roses:5', amount: 3 });
     expect(first.account.capturedCharacters).toHaveLength(3);
     expect(first.account.calamityChests?.[id]).toBe(1);
     const retry = await h.send();

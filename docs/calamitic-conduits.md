@@ -1,5 +1,17 @@
 # Calamitic Conduits (D-324 / current D-382)
 
+## Causality efficiency correction (D-412)
+
+Causality Funeral Engine grants **+50% [Skill Efficiency]**, gaining exactly
+**+2 percentage points per upgrade**:50/52/54/56/58/60% at+0 through+5.
+Other Last Flare cooldown/recovery/direct-damage effects and their upgrades
+remain unchanged. The existing global50% effective Skill Efficiency cap is
+unchanged; extra points can offset efficiency penalties, not bypass that cap.
+Catalog, displayed upgraded rules and actual stat resolution share these values.
+Rules12 refreshes older active encounters using the existing snapshot-preserving
+compatibility restart; saved rewards, account gear and progression remain.
+Validate phase-zero-conduit-runtime and authority/compatibility tests.
+
 ## Confirmed scope
 
 Calamitic is an equipment rarity above Omnic, not a new material tier,
@@ -53,7 +65,7 @@ wearer effects, not Cathedral's former squad aura or Orrery's former healing.
 | Stable ID | Creation | Complete effect |
 | --- | --- | --- |
 | `calamitic-world-eater-orrery` | World-Eater's Orrery | +3 [Skill Duration]; +125% ->187.5% [Skill Power] for [Debuff] potency only, including [Burn], [Weaken] and Aurora seals. No direct damage/healing/[Shield] bonus or former generated healing. Individual status safety caps remain. |
-| `calamitic-causality-funeral-engine` | Causality Funeral Engine | +100% ->150% [Skill Efficiency]; [Last Flare] has no cooldown or recovery and gains +125% ->187.5% damage. Efficiency still caps at50% reduction; [Skill 1]/[Skill 2] cost at least1 [Elemental Gauge], [Last Flare] at least70. One ordinary action remains spent. |
+| `calamitic-causality-funeral-engine` | Causality Funeral Engine | +50% ->60% [Skill Efficiency], +2 points per upgrade; [Last Flare] has no cooldown or recovery and gains +125% ->187.5% damage. Efficiency still caps at50% reduction; [Skill 1]/[Skill 2] cost at least1 [Elemental Gauge], [Last Flare] at least70. One ordinary action remains spent. |
 | `calamitic-horizon-cleaving-godpress` | Horizon-Cleaving Godpress | Damaging [Skills] ignore55% ->82.5% enemy [Defense], subject to the existing combined75% skill-ignore cap; +75% ->112.5% [Defense]. No [Shield] bypass. |
 | `calamitic-throne-borrowed-tomorrows` | Throne of Borrowed Tomorrows | Activating [Last Flare] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] that [Player Turn]. Each ally receives this at most once per turn; allies in [Last Flare] recovery are ineligible. Missing actions, cooldowns and Gauge costs still apply. +45% ->67.5% [Health] and [Defense]. |
 | `calamitic-cathedral-final-equation` | Cathedral of the Final Equation | Wearer's [Attack Actions] gain +250% ->375% [Critical Rate] and +120% ->180% [Critical Damage Multiplier]; +65% ->97.5% [Skill Efficiency], subject to existing caps/floors. No squad-wide benefit. |

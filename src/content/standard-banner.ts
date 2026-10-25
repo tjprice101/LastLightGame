@@ -3,7 +3,7 @@ import { bannerMaterialDefinition, bannerMaterialPool } from './banner-materials
 import { lootRoll } from './loot-random';
 import { isWarCharacter } from './war-characters';
 
-export const bannerPityLimits = { highestStar: 80, unownedHighestStar: 150 } as const;
+export const bannerPityLimits = { pulls: 80 } as const;
 const savedBannerPityBounds = { highestStar: 200, unownedHighestStar: 500 } as const;
 export const bannerCharacterTierRates = { 5: .01, 6: .001 } as const;
 export interface BannerPity { highestStar: number; unownedHighestStar: number }
@@ -23,7 +23,7 @@ export function validateBannerPity(value: unknown): BannerPity {
 
 export function resolveBannerPull<T extends BannerOutcome>(
   pool: readonly T[], ownedCharacters: readonly string[], counters: BannerPity, random: () => number,
-): { entry: T; pity: BannerPity; guarantee: 'none' | 'highest-star' | 'unowned-highest-star' | 'all-owned-highest-star' } {
+): { entry: T; pity: BannerPity; guarantee: 'none' | 'unowned-character' | 'all-owned-character' } {
   const pity = validateBannerPity(counters);
   if (!pool.length || new Set(pool.map((entry) => entry.id)).size !== pool.length ||
       pool.some((entry) => !entry.id || !['character', 'creature', 'material'].includes(entry.kind) ||
@@ -40,23 +40,20 @@ export function resolveBannerPull<T extends BannerOutcome>(
       throw new Error('Invalid banner material outcome.');
     }
   }
-  const highestStars = Math.max(...pool.map((entry) => entry.stars));
-  const highest = pool.filter((entry) => entry.kind === 'character' && entry.stars === highestStars);
-  if (!highest.length) throw new Error('Banner pity requires a highest-star character tier.');
-  const unowned = highest.filter((entry) => !ownedCharacters.includes(entry.id));
-  let eligible: readonly T[] = pool;
-  let guarantee: 'none' | 'highest-star' | 'unowned-highest-star' | 'all-owned-highest-star' = 'none';
-  if (pity.unownedHighestStar + 1 >= bannerPityLimits.unownedHighestStar) {
-    eligible = unowned.length ? unowned : highest;
-    guarantee = unowned.length ? 'unowned-highest-star' : 'all-owned-highest-star';
-  } else if (pity.highestStar + 1 >= bannerPityLimits.highestStar) {
-    eligible = highest;
-    guarantee = 'highest-star';
-  }
+  const characters = pool.filter(entry => entry.kind === 'character' && (entry.stars === 5 || entry.stars === 6));
+  if (!characters.length) throw new Error('Banner pity requires a five-star or six-star character tier.');
+  const unowned = characters.filter(entry => !ownedCharacters.includes(entry.id));
+  const guaranteed = pity.highestStar + 1 >= bannerPityLimits.pulls;
+  const guarantee = !guaranteed ? 'none' : unowned.length ? 'unowned-character' : 'all-owned-character';
   const roll = lootRoll(random);
   let entry: T;
   if (guarantee !== 'none') {
-    entry = eligible[Math.floor(roll * eligible.length)];
+    const eligible = unowned.length ? unowned : characters;
+    const five = eligible.filter(entry => entry.stars === 5);
+    const six = eligible.filter(entry => entry.stars === 6);
+    const tier = five.length && six.length ? (roll < .5 ? five : six) : five.length ? five : six;
+    const withinTier = five.length && six.length ? (roll < .5 ? roll * 2 : (roll - .5) * 2) : roll;
+    entry = tier[Math.floor(withinTier * tier.length)];
   } else {
     let cumulative = 0;
     entry = pool[pool.length - 1];
@@ -65,11 +62,10 @@ export function resolveBannerPull<T extends BannerOutcome>(
       if (roll < cumulative) { entry = candidate; break; }
     }
   }
-  const highestResult = entry.kind === 'character' && entry.stars === highestStars;
-  const newHighest = highestResult && !ownedCharacters.includes(entry.id);
+  const characterResult = entry.kind === 'character' && (entry.stars === 5 || entry.stars === 6);
   return { entry, guarantee, pity: {
-    highestStar: highestResult ? 0 : pity.highestStar + 1,
-    unownedHighestStar: newHighest || guarantee === 'all-owned-highest-star' ? 0 : pity.unownedHighestStar + 1,
+    highestStar: characterResult ? 0 : pity.highestStar + 1,
+    unownedHighestStar: 0,
   } };
 }
 

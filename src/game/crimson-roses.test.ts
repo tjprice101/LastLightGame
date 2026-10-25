@@ -371,18 +371,18 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
       expect(natural.entry.id).toBe(id);
       expect(natural.pity).toEqual({ highestStar: 0, unownedHighestStar: 0 });
       const duplicate = resolveBannerPull(pool, [id], { highestStar: 3, unownedHighestStar: 4 }, () => (index + .5) * .011 / 3);
-      expect(duplicate.pity).toEqual({ highestStar: 0, unownedHighestStar: 5 });
+      expect(duplicate.pity).toEqual({ highestStar: 0, unownedHighestStar: 0 });
     }
-    expect(resolveBannerPull(pool, [], { highestStar: 199, unownedHighestStar: 499 }, () => .9).guarantee).toBe('unowned-highest-star');
+    expect(resolveBannerPull(pool, [], { highestStar: 199, unownedHighestStar: 499 }, () => .9).guarantee).toBe('unowned-character');
     for (const [index, id] of ['thornia', 'crinso'].entries()) {
       expect(resolveBannerPull(pool, ['rosetta'], { highestStar: 199, unownedHighestStar: 499 }, () => (index + .5) / 2).entry.id).toBe(id);
     }
     const all = resolveBannerPull(pool, ['rosetta', 'thornia', 'crinso'], { highestStar: 199, unownedHighestStar: 499 }, () => .9);
-    expect(all.guarantee).toBe('all-owned-highest-star');
+    expect(all.guarantee).toBe('all-owned-character');
     expect(all.pity).toEqual({ highestStar: 0, unownedHighestStar: 0 });
     const lower = resolveBannerPull(pool, [], { highestStar: 3, unownedHighestStar: 4 }, () => .5);
     expect(lower.entry.kind).toBe('material');
-    expect(lower.pity).toEqual({ highestStar: 4, unownedHighestStar: 5 });
+    expect(lower.pity).toEqual({ highestStar: 4, unownedHighestStar: 0 });
     const store = storage();
     const account = funded();
     account.characters.rosetta = { level: 30, evolution: 2 };
@@ -541,7 +541,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     expect(html).toContain('data-infusion="roses"');
     expect(html).toContain('50% captures · Copies join at Lv.60');
     expect(html).not.toContain('No captures above Lv.120');
-    expect(html).toContain('6-star guaranteed within');
+    expect(html).toContain('80 pulls per banner');
     expect(html).toContain('6-star · 1.1%');
     expect(html).not.toContain('5-star tier: 1%');
     for (const id of ['rosetta', 'thornia', 'crinso']) expect(html).toContain(`data-banner-entry="${id}" data-entry-stars="6"`);

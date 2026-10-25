@@ -49,7 +49,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--calamity-tuning')) {
+  if (process.argv.includes('--reward-corrections')) {
+    await smokeRewardCorrections(client, created.user.id, username);
+  } else if (process.argv.includes('--calamity-tuning')) {
     await smokeCalamityTuning(client, created.user.id, username);
   } else if (process.argv.includes('--glassroot-stasis')) {
     await smokeGlassrootStasis(client, created.user.id, username);
@@ -379,7 +381,7 @@ try {
 }
 
 async function smokePhaseZero(client, userId, username) {
-  assert.equal(conduitRulesVersion, 11, 'The production bundle must activate rules11');
+  assert.equal(conduitRulesVersion, 12, 'The production bundle must activate rules12');
   const id = 'calamitic-causality-funeral-engine';
   const entropy = { seed: () => 7321, uuid: () => randomUUID(), random: () => .9 };
   let game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
@@ -430,7 +432,7 @@ async function smokePhaseZero(client, userId, username) {
   assert.equal(fresh.session.state.allies[0].stats.skillPower, 1, 'A fresh entry uses current menu gear');
   assert.equal(fresh.session.state.conduitRulesVersion, 10);
   assert.equal((await invoke({ kind: 'quit', runId: fresh.session.runId }, fresh.revision)).session, null);
-  console.log('Hosted Phase 0 smoke passed: rules11, frozen Funeral +5 Efficiency cap, exact direct-damage parity and25 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.');
+  console.log(`Hosted Phase 0 smoke passed: rules${conduitRulesVersion}, frozen Funeral +5 Efficiency cap, exact direct-damage parity and25 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.`);
 }
 
 async function smokeGlassrootStasis(firstClient, firstId, firstUsername) {
@@ -814,6 +816,64 @@ async function smokeNativeCalamity(client, userId, username) {
     assert.equal(exited.session, null);
   }
   console.log(`Hosted native/Calamity smoke passed: rules${conduitRulesVersion}, explicit Tizu/Disciple recipients, Lv170 EX3 chest-only fixture victory, atomic opening with two Master chests, idempotent action/opening, persisted holdings and freshly spawned exact120/140/145/170 stats and artwork.`);
+}
+
+async function smokeRewardCorrections(client, userId, username) {
+  assert.equal(conduitRulesVersion, 12);
+  const game = freshGame(username);
+  game.starterId = 'ember';
+  game.account.characters = { ember: { level: 0, evolution: 1 } };
+  game.account.squad = ['ember'];
+  game.account.lycalis = 100;
+  game.account.bannerPity = {
+    standard: { highestStar: 79, unownedHighestStar: 149 },
+    roses: { highestStar: 79, unownedHighestStar: 149 },
+  };
+  const modes = ['heavens', 'abyss', 'roses', 'treasury', 'sanctuary'];
+  game.account.calamityChests = Object.fromEntries(modes.flatMap(mode =>
+    [1, 2, 3].map(tier => [`calamity:${mode}:${tier}`, 1])));
+  assert.ok(ids.includes(userId), 'Only disposable identities may receive fixtures');
+  const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+  assert.equal(seeded.error, null);
+  let revision = 0, totalCopies = 0;
+  async function invoke(operation, requestId = randomUUID()) {
+    const result = await client.functions.invoke('game-operation', {
+      body: { operation, expectedRevision: revision, requestId },
+    });
+    assert.equal(result.error, null, `Hosted ${operation.kind} succeeds`);
+    return result.data;
+  }
+  for (const mode of modes) for (const tier of [1, 2, 3]) {
+    const operation = { kind: 'openCalamityChest', id: `calamity:${mode}:${tier}`, expectedCount: 1 };
+    const requestId = randomUUID();
+    const actual = await invoke(operation, requestId);
+    assert.deepEqual(actual.calamityOpening.devourerCopies, { creatureId: `infusion:${mode}:5`, amount: tier });
+    assert.ok(Object.keys(actual.calamityOpening.materials).every(id =>
+      mode === 'heavens' || mode === 'abyss' ? [`${mode}-evolution`, `${mode}-level`].includes(id)
+        : mode === 'roses' ? id.startsWith('rosethorn-') : false));
+    totalCopies += tier;
+    assert.equal(actual.account.capturedCharacters.length, totalCopies);
+    for (const copy of actual.account.capturedCharacters.slice(-tier)) {
+      assert.equal(copy.creatureId, `infusion:${mode}:5`);
+      assert.equal(copy.level, 60);
+      assert.equal(copy.acquisition, 'calamity-chest');
+    }
+    assert.deepEqual(await invoke(operation, requestId), actual, 'Retry preserves UUIDs and rewards');
+    revision = actual.revision;
+    assert.deepEqual((await invoke({ kind: 'read' })).account, actual.account);
+  }
+  for (const bannerId of ['standard', 'roses']) {
+    const operation = { kind: 'summon', bannerId }, requestId = randomUUID();
+    const actual = await invoke(operation, requestId);
+    assert.equal(actual.summon.guarantee, 'unowned-character');
+    assert.equal(actual.summon.duplicate, false);
+    assert.ok([5, 6].includes(actual.summon.entry.stars));
+    if (bannerId === 'roses') assert.ok(['rosetta', 'thornia', 'crinso'].includes(actual.summon.entry.id));
+    assert.deepEqual(actual.account.bannerPity[bannerId], { highestStar: 0, unownedHighestStar: 0 });
+    assert.deepEqual(await invoke(operation, requestId), actual);
+    revision = actual.revision;
+  }
+  console.log('Hosted reward corrections passed: rules12,15 mode-owned chest openings/30 unique Lv60 copies, specialty-only materials, both80-pull guarantees, exact persisted receipts and idempotent UUID/recruit retries. Disposable identity only.');
 }
 
 async function smokeCalamityComponents(client, userId, username) {

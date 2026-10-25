@@ -1,9 +1,10 @@
-import { elements, materialRarities, type ElementId } from './activities';
+import { materialRarities, type ElementId } from './activities';
 import { conduits, type ConduitId } from './conduits';
 import type { Stats } from './combat';
 import type { EnemySkill } from './enemy-skills';
 import { enemyCombatStats } from './stat-growth';
 import { roseMaterials } from './roses';
+import { enemyCaptureAllowed, isInfusionMode } from './infusions';
 
 export type CalamityActivityId = ElementId | 'treasury' | 'sanctuary' | 'heavens' | 'abyss' | 'machines' | 'roses';
 export type CalamityTier = 1 | 2 | 3;
@@ -53,7 +54,8 @@ export function calamityChest(activity: CalamityActivityId, tier: CalamityTier) 
   return { id, name: `${calamityActivity(activity).name} EX+${title} Chest`,
     fractalis: [100_000, 250_000, 500_000][tier - 1], lycalis: [50, 70, 100][tier - 1],
     calamiticTokens: [1, 3, 8][tier - 1], bundles: [3, 5, 7][tier - 1], masterChests: activity === 'machines' && tier === 3 ? 2 : 0,
-    roseliusCopies: activity === 'heavens' || activity === 'abyss' || activity === 'roses' ? tier : 0,
+    devourerCopies: isInfusionMode(activity) && enemyCaptureAllowed(activity, 120)
+      ? { creatureId: `infusion:${activity}:5`, amount: tier } : null,
     componentRange: activity === 'machines' ? { min: [3_000, 5_000, 10_000][tier - 1], max: [6_000, 8_000, 12_000][tier - 1] } : null };
 }
 
@@ -91,17 +93,11 @@ export function calamityLootTable(activity: CalamityActivityId): CalamityLootRow
   ];
   if (activity === 'roses') return materialRows(roseMaterials);
   if (activity === 'heavens' || activity === 'abyss') {
-    const pool = elements.filter(element => element.infusion === activity);
     return [
       { label: activity === 'heavens' ? 'Crown of the Scarlet Oath' : 'Heart of the Shattered Void',
-        id: `${activity}-evolution`, kind: 'material', weight: 35, min: 5, max: 10 },
+        id: `${activity}-evolution`, kind: 'material', weight: 50, min: 5, max: 10 },
       { label: activity === 'heavens' ? 'Chalice of the Undying Dawn' : 'Hourglass of Endless Wrath',
-        id: `${activity}-level`, kind: 'material', weight: 35, min: 10, max: 20 },
-      ...pool.flatMap(element => (['Epic', 'Legendary', 'Omnic'] as const).map((rarity, index) => ({
-        label: `${element.name} ${rarity} Material`, id: `${element.id}-${rarity.toLowerCase()}`,
-        kind: 'material' as const, weight: [15, 10, 5][index] / pool.length,
-        min: [10, 6, 3][index], max: [20, 12, 6][index],
-      }))),
+        id: `${activity}-level`, kind: 'material', weight: 50, min: 10, max: 20 },
     ];
   }
   return materialRows(materialRarities.map(rarity => ({
@@ -119,13 +115,14 @@ export interface CalamityOpening {
   calamiticTokens: number;
   masterChests: number;
   roseliusCopies?: number;
+  devourerCopies?: { creatureId: string; amount: number } | null;
 }
 export function rollCalamityChest(activity: CalamityActivityId, tier: CalamityTier, roll: () => number,
   owned: Readonly<Partial<Record<ConduitId, number>>> = {}): CalamityOpening {
   const chest = calamityChest(activity, tier);
   const reward: CalamityOpening = { id: chest.id, name: chest.name, fractalis: chest.fractalis,
     lycalis: chest.lycalis, calamiticTokens: chest.calamiticTokens, masterChests: chest.masterChests,
-    materials: {}, conduits: {}, mechanicalComponents: 0, roseliusCopies: chest.roseliusCopies };
+    materials: {}, conduits: {}, mechanicalComponents: 0, devourerCopies: chest.devourerCopies };
   const table = calamityLootTable(activity);
   const random = () => {
     const value = roll();

@@ -1,6 +1,35 @@
 # Calamity Mode (D-308 / D-315)
 
+## Mode-owned rewards (D-412)
+
+Each capture-enabled activity's chests guarantee1/2/3 of **its own highest
+droppable form** at EX+1/2/3: Treasury gives Omnic Gleamstone, Sanctuary gives
+Omnic Rosethorn Wisp, Soar gives Omnic Dawnthorn, Delve gives Omnic Wraththorn,
+and Roses gives Omnic Roselius. Each is a distinct unlocked Lv.60 copy with
+that form's first authored stage/retained skills and validated chest provenance.
+Elemental Dungeons and Machines have no capturable enemies and award no copies.
+This supersedes D-409's erroneous Roselius distribution outside Roses.
+
+Materials stay activity-specific: Soar/Delve keep only their own unique
+evolution/level specialties (equal bundle weights), never elemental materials.
+Their ordinary/legacy stage drops already contain only their own specialties;
+regression coverage verifies every stage. Rose chests retain Rosethorn materials.
+Elemental Dungeon chests retain their matching elemental materials. No material
+holdings or previously awarded copies are removed. Master Chests remain
+Machines-final-boss / Machines EX+3 only.
+
+Existing unopened chests use corrected contents on opening. All currencies,
+tokens, bundles, copies/UUIDs, chest consumption and independent seed save once.
+UI tier previews and saved receipts share exact mode identities/artwork.
+Historical cached receipts (including Roselius or former elemental bundles)
+remain readable as saved outcomes; ambiguous retries never reroll or grant
+replacement copies. No retroactive compensation or load writes.
+Validate all36 openings, copy provenance, denied-write rollback, strict response
+validation and HTTP idempotency with the matching shared authority bundle.
+
 ## Activity-specific chest guarantees (D-409)
+
+Historical copy identities are superseded by D-412 above.
 
 Machine's Master Chests now come only from the normal final Awaken the
 Machines boss (unchanged50% independent drop) and the **Machines EX+3 chest**

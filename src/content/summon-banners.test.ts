@@ -23,7 +23,7 @@ describe('summon banner selection', () => {
     expect(html).toContain('data-summon-banner="standard" aria-current="page"');
     expect(html).toContain('data-banner="standard"');
     expect(html).toContain('14 / 80');
-    expect(html).toContain('25 / 150');
+    expect(html).not.toContain('25 / 150');
     expect(html.match(/data-banner-entry=/g)).toHaveLength(28);
     expect(html).not.toContain('Event Banner');
     expect(account).toEqual(before);
@@ -57,7 +57,7 @@ describe('summon banner selection', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     const result = summonCharacter(saved, random, 'standard');
     expect(result.account.lycalis).toBe(10);
-    expect(result.account.bannerPity?.standard).toEqual({ highestStar: 1, unownedHighestStar: 1 });
+    expect(result.account.bannerPity?.standard).toEqual({ highestStar: 1, unownedHighestStar: 0 });
     expect(saved.setItem).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,6 +1,17 @@
 # Character Master Conduits (D-201)
 
+## Wide bounded selection (D-413)
+
+Only the selection panel receives the
+[targeted wider layout](menus-and-inventory.md#targeted-modal-sizing-d-413):
+three desktop choices side by side, responsive single-column list, fixed
+heading/bearer/footer controls and bounded list scrolling. All48 effects and
+future-character choices remain. No pagination or nested bearer modal.
+Opening/reveal animation and the D-408 collaboration flavor remain unchanged.
+
 ## Full-screen choice and reveal (D-411)
+
+Historical; withdrawn by D-413 above, including the global reveal restyling.
 
 The [shared full-screen overlay contract](menus-and-inventory.md#full-screen-paged-overlays-d-411)
 now owns chest selection and saved-reward presentation. The Element-Bearer
@@ -13,7 +24,7 @@ The D-408 Let/Rise flavor and pending replacement art prompt are retained.
 
 ## Compact opening and collaboration flavor (D-408)
 
-Historical window sizing; superseded by D-411's full-screen composition.
+Current reveal sizing restored by D-413; selection sizing is documented above.
 
 The saved Master reveal uses a bounded200px artwork/stage area (26dvh on
 short screens), rather than a400px stage around a160px icon. Only Master

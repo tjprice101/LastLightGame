@@ -4,7 +4,7 @@ import { isStarterId } from '../content/starters';
 import type { BattleSession } from './battle-view';
 import { isCalamityActivityId, isCalamityTier } from '../content/calamity';
 
-export const conduitRestartNotice = 'Combat rules updated, including exponential enemy growth. This encounter restarted at the current stage with your original squad and equipment. All previously saved rewards are kept.';
+export const conduitRestartNotice = 'Combat rules updated. This encounter restarted at the current stage with your original squad and equipment. All previously saved rewards are kept.';
 
 /** Use the existing wave spawner without carrying its turn changes into the restarted encounter. */
 export function atTrainingWave(state: BattleState, wave: number): BattleState {

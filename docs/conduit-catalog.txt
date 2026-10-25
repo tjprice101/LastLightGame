@@ -847,7 +847,7 @@ Ability (Default Value): Your [Attack Actions] gain +250% [Critical Rate] and +1
 Name: Causality Funeral Engine
 Rarity: Calamitic
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +100% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage].
+Ability (Default Value): +50% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage].
 
 Name: Horizon-Cleaving Godpress
 Rarity: Calamitic

@@ -70,7 +70,7 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
     const copy: CapturedCharacter = { instanceId: entry.instanceId, creatureId: entry.creatureId, locked: entry.locked };
     if ('acquisition' in entry) {
       if (!(entry.acquisition === 'banner-duplicate' && roseDuplicateMinimumLevel(creature.id) !== undefined) &&
-          !(entry.acquisition === 'calamity-chest' && creature.id === 'infusion:roses:5')) throw new Error('Invalid Elemental-Devourer acquisition source.');
+          !(entry.acquisition === 'calamity-chest' && creature.id === `infusion:${creature.mode}:5`)) throw new Error('Invalid Elemental-Devourer acquisition source.');
       copy.acquisition = entry.acquisition;
     }
     if ('level' in entry) {

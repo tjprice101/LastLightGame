@@ -64,7 +64,7 @@ describe('material-only non-character banner rewards', () => {
           expect(result.account.capturedCharacters).toEqual(account.capturedCharacters);
           expect(result.account.characters).toEqual(account.characters);
           expect(result.account.lycalis).toBe(90);
-          expect(result.account.bannerPity?.[bannerId]).toEqual({ highestStar: 1, unownedHighestStar: 1 });
+          expect(result.account.bannerPity?.[bannerId]).toEqual({ highestStar: 1, unownedHighestStar: 0 });
           expect(storage.setItem).toHaveBeenCalledTimes(1);
           expect(random).toHaveBeenCalledTimes(2);
           expect(loadAccount(storage)).toEqual(result.account);
@@ -87,7 +87,7 @@ describe('material-only non-character banner rewards', () => {
     expect(result.materials).toEqual({ id, amount: 15 });
     expect(result.account.materials[id]).toBe(15);
     expect(result.duplicate).toBe(true);
-    expect(result.guarantee).toBe('all-owned-highest-star');
+    expect(result.guarantee).toBe('all-owned-character');
     expect(result.account.bannerPity?.[bannerId]).toEqual({ highestStar: 0, unownedHighestStar: 0 });
     expect(result.bonusConduit).toBeDefined();
     expect(result.account.capturedCharacters).toEqual(account.capturedCharacters);

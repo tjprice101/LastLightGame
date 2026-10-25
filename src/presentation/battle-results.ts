@@ -34,10 +34,10 @@ export function battleResults(state: BattleState, events: readonly BattleEvent[]
   const total = (kind: BattleEvent['kind'], outgoing: boolean): number => events
     .filter((event) => event.kind === kind && allies.has(event.source) === outgoing)
     .reduce((sum, event) => sum + event.amount, 0);
-  return `<dialog class="battle-results ${victory ? 'result-victory' : 'result-defeat'}" aria-labelledby="battle-result-heading" aria-describedby="battle-result-note">
-    <header class="battle-result-title"><div><p class="eyebrow">${state.calamity ? `Calamity EX+${state.calamity.tier}` : `${staged ? 'Stage' : 'Wave'} ${state.wave}`} ${victory ? 'cleared' : 'ended'}${victory && complete ? state.calamity ? ' · Tier complete' : ' · Activity complete' : ''}</p>
+  return `<section class="battle-results ${victory ? 'result-victory' : 'result-defeat'}" aria-labelledby="battle-result-heading" aria-describedby="battle-result-note">
+    <div class="battle-result-title"><div><p class="eyebrow">${state.calamity ? `Calamity EX+${state.calamity.tier}` : `${staged ? 'Stage' : 'Wave'} ${state.wave}`} ${victory ? 'cleared' : 'ended'}${victory && complete ? state.calamity ? ' · Tier complete' : ' · Activity complete' : ''}</p>
       <h2 id="battle-result-heading" tabindex="-1">${victory ? 'Victory!' : 'Defeat'}</h2></div>
-      <button class="text-button" data-result-dismiss>View battlefield</button></header>
+      <button class="text-button" data-result-dismiss>View battlefield</button></div>
     <p id="battle-result-note">${victory ? 'Rewards saved.' : 'Your squad has fallen. You keep rewards from defeated enemies.'}
       ${victory ? state.calamity ? 'This Calamity tier is complete. Open your saved chest in Inventory. Replay this tier or return to Play to enter an unlocked tier.' : complete ? 'All stages completed. Replay this stage or return to Gameplay.' : staged ? 'Continue with full HP; Elemental Gauge carries into the next stage. Replay starts this stage with fresh HP and Gauge; earned rewards are kept.' : 'Health, Gauge and recovery carry into the next wave.' : ''}</p>
     ${victory && state.story && storyEncounter(state.story.storyStage).boss ? `<p class="story-conclusion">${storyEncounter(state.story.storyStage).conclusion}</p>` : ''}
@@ -58,5 +58,5 @@ export function battleResults(state: BattleState, events: readonly BattleEvent[]
       ${victory && staged ? `<button class="text-button" data-result-restart>Replay ${state.calamity ? 'tier' : 'stage'}</button>` : ''}
       ${!victory ? `<button class="primary-button" data-result-restart>${state.calamity ? 'Retry tier' : staged ? 'Retry stage' : 'Restart Training'}</button>` : ''}
       <button class="${complete && victory ? 'primary-button' : 'text-button'}" data-result-quit>${complete && victory ? 'Return to Gameplay' : 'Quit · Keep rewards'}</button></div>
-  </dialog>`;
+  </section>`;
 }

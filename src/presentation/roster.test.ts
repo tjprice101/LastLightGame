@@ -72,13 +72,13 @@ describe('roster, squad and summon screens', () => {
     expect(html).toContain('class="summon-rates"');
     expect(html).toContain('data-rate-stars="all"');
     expect(html).toContain('data-rate-stars="6"');
-    expect(html).toContain('aria-label="Highest-star pity progress"');
-    expect(html).toContain('aria-label="Unowned highest-star pity progress"');
+    expect(html).toContain('aria-label="80-pull pity progress"');
+    expect(html).not.toContain('aria-label="Unowned highest-star pity progress"');
     const dialogStart = html.indexOf('<dialog class="information-modal" id="summon-information"');
     const dialog = html.slice(dialogStart, html.indexOf('</dialog>', dialogStart));
     expect(dialog).toContain('<table');
     expect(html.replace(dialog, '')).not.toContain('<table');
-    expect(dialog).toContain('Counters are separate per banner');
+    expect(dialog).toContain('80 pulls per banner');
   });
   it('offers a real roster including each captured UUID and keeps draft assignments distinct', () => {
     const id = 'capture:00000000-0000-4000-8000-000000000001';
@@ -111,9 +111,9 @@ describe('roster, squad and summon screens', () => {
     const before = structuredClone(wallet);
     const html = summonHub(wallet);
     expect(html).toContain('199 / 80');
-    expect(html).toContain('499 / 150');
+    expect(html).not.toContain('499 / 150');
     expect(html).toContain('max="80" value="80"');
-    expect(html).toContain('max="150" value="150"');
+    expect(html).not.toContain('max="150" value="150"');
     expect(html.match(/data-banner-entry=/g)).toHaveLength(standardBannerPool().length);
     for (const outcome of standardBannerPool()) {
       expect(html).toContain(`data-banner-entry="${outcome.id}" data-entry-stars="${outcome.stars}"`);

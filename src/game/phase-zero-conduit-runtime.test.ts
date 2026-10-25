@@ -12,8 +12,8 @@ import { conduitActionCost, effectiveDefense, generatedGauge, initializeConduits
 import { calamiticShieldBypass } from './calamitic-conduits';
 import { nativeAction, nativeAfterAction, nativeEnemyCompleted, nativeIncomingMultiplier, nativePhaseEnd,
   nativeRouteDamage, nativeTurnStart } from './native-kits';
-import { phaseZeroSkillCost } from '../content/phase-zero-conduit-stats';
-import { conduits, conduitEffect, type Conduit } from '../content/conduits';
+import { applyPhaseZeroStaticBonuses, phaseZeroSkillCost } from '../content/phase-zero-conduit-stats';
+import { conduits, conduitEffect, type Conduit, type ConduitSlots } from '../content/conduits';
 import { conduitHitModifiers } from './conduit-runtime';
 import { nativeTargetDefense } from './conduit-runtime';
 import { nativeBalance } from '../content/native-balance';
@@ -41,6 +41,19 @@ const firstDamage = (state: BattleState) =>
     .find(event => event.kind === 'damage' && event.source === state.allies[0].id)?.amount ?? 0;
 
 describe('Phase 0 shared runtime math', () => {
+  it('Causality grants50 efficiency points plus2 per upgrade in both rules text and actual stats', () => {
+    const id = 'calamitic-causality-funeral-engine';
+    const base = { health: 1000, damage: 100, defense: 100, crit: 0, critMultiplier: 1.5,
+      shatterCapacity: 200, skillPower: 1, skillDuration: 0, skillEfficiency: -.3, gaugeGain: 1 };
+    for (let level = 0; level <= 5; level++) {
+      const slots: ConduitSlots = [id, null, null, null, null, null, null, null];
+      const result = applyPhaseZeroStaticBonuses(base, slots, { [id]: level });
+      expect(result.skillEfficiency).toBeCloseTo(.2 + level * .02);
+      const effect = conduitEffect(conduits.find(entry => entry.id === id)!, level);
+      expect(effect).toContain(`+${50 + 2 * level}% [Skill Efficiency]`);
+      expect(effect).toContain(`+${125 * (1 + level * .1)}% [Direct Damage]`);
+    }
+  });
   it('uses the approved default effect text for every one of the 138 entries', () => {
     const entries = [...conduits, ...masterConduits];
     expect(entries).toHaveLength(138);

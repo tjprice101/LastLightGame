@@ -105,12 +105,12 @@ describe('Calamity account transactions', () => {
       expect(opened.account.conduits ?? {}).toEqual(opened.reward.conduits);
       expect(opened.account.masterChests).toBe(opened.reward.masterChests);
       const copies = opened.account.capturedCharacters ?? [];
-      const expectedCopies = ['heavens', 'abyss', 'roses'].includes(activity) ? tier : 0;
+      const expectedCopies = ['treasury', 'sanctuary', 'heavens', 'abyss', 'roses'].includes(activity) ? tier : 0;
       expect(copies).toHaveLength(expectedCopies);
       expect(new Set(copies.map(copy => copy.instanceId)).size).toBe(expectedCopies);
       for (const copy of copies) {
-        expect(copy).toMatchObject({ creatureId: 'infusion:roses:5', level: 60,
-          capturedStage: 29, locked: false, acquisition: 'calamity-chest' });
+        expect(copy).toMatchObject({ creatureId: `infusion:${activity}:5`, level: 60,
+          locked: false, acquisition: 'calamity-chest' });
         expect(resolveCapturedFighter(copy).stats.health).toBeGreaterThan(0);
       }
       expect(opened.account.calamitySeed).toBeGreaterThan(0);

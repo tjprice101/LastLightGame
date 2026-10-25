@@ -21,6 +21,8 @@ matrix; do not regenerate this document with the retired redesign generator.
   conditions, proc odds, durations and action counts remain fixed. Skill
   Efficiency retains its50% cap and1/70 Gauge floors; Skill Duration has no
   global equipment cap, but individual status safety limits remain.
+- D-412 exception: Causality Funeral Engine's Skill Efficiency starts at50%
+  and gains2 percentage points per upgrade (60% at+5), not10% of base.
 - D-383 refreshes all45 ordinary Omnics and48 Masters; the previous45 D-382
   replacements are unchanged. Unconditional Direct Damage wording in this
   batch means the Direct Attack stat; action-specific damage stays scoped.
@@ -174,7 +176,7 @@ legacy-gate tests are not the current ability contract.
 | `master-sprout-1` | Worldseed Mercy Foundry | Omnic (Master) / Botanic (named bearer's actual element; Master for Flora only) | Flora's Seeds grant their recipients +25% [Skill Power] for their next [Skill] when harvested or when they mature. Empowered Seeds also grant +15% [Skill Efficiency]. +65% [Skill Power] and +50% [Elemental Gauge Capacity]. |
 | `efflorescent-worldtree-heart` | Worldtree Heart | Omnic / Botanic (actual gameplay element) | Your [Skills] turn 60% of overhealing into a [Shield] for the recipient, capped at 20% of their maximum HP, lasting two [Enemy Turns]. Replaces the previous [Shield] from this Conduit. +140% [Health] and +35% [Skill Power]. |
 | `calamitic-cathedral-final-equation` | Cathedral of the Final Equation | Calamitic / Chaotic (suggested thematic element; gameplay: universal) | Your [Attack Actions] gain +250% [Critical Rate] and +120% [Critical Damage Multiplier]. +65% [Skill Efficiency]. |
-| `calamitic-causality-funeral-engine` | Causality Funeral Engine | Calamitic / Chaotic (suggested thematic element; gameplay: universal) | +100% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]. |
+| `calamitic-causality-funeral-engine` | Causality Funeral Engine | Calamitic / Chaotic (suggested thematic element; gameplay: universal) | +50% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]. |
 | `calamitic-horizon-cleaving-godpress` | Horizon-Cleaving Godpress | Calamitic / Chaotic (suggested thematic element; gameplay: universal) | Your damaging [Skills] ignore 55% of enemy [Defense]. +75% [Defense]. |
 | `calamitic-throne-borrowed-tomorrows` | Throne of Borrowed Tomorrows | Calamitic / Chaotic (suggested thematic element; gameplay: universal) | Your [Last Flare] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] this [Player Turn]. Each character can receive this extra action once per [Player Turn]. Allies in [Last Flare] [Recovery] are ineligible. +45% [Health] and +45% [Defense]. |
 | `calamitic-world-eater-orrery` | World-Eater's Orrery | Calamitic / Chaotic (suggested thematic element; gameplay: universal) | +3 turns [Skill Duration]. [Debuffs] applied by your [Skills] gain +125% [Skill Power]. |

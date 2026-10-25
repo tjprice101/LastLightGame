@@ -32,7 +32,7 @@ describe('native identity authoritative parity and restart', () => {
     expect(result.game.account).toEqual(before.account);
     const restored = result.game.run!.session;
     expect(restored.state.wave).toBe(120);
-    expect(restored.state.conduitRulesVersion).toBe(11);
+    expect(restored.state.conduitRulesVersion).toBe(12);
     for (const enemy of restored.state.enemies) {
       expect(enemy.level).toBe(120);
       expect(enemy.stats).toEqual(enemyCombatStats(120, false));

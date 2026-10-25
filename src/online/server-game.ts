@@ -8,7 +8,7 @@ import { isStarterId, type StarterId } from '../content/starters';
 import type { ActionId } from '../content/combat';
 import type { ConduitId } from '../content/conduits';
 import type { MachineFocusRarity } from '../content/machines';
-import type { ElementId, InfusionModeId } from '../content/activities';
+import { elements, type ElementId, type InfusionModeId } from '../content/activities';
 import type { WarCharacterId } from '../content/elemental-war';
 import type { SummonBannerId } from '../content/summon-banners';
 import { bannerMaterialDefinition, bannerDuplicateMaterialAmount } from '../content/banner-materials';
@@ -138,17 +138,23 @@ function validCalamityOpening(value: unknown): boolean {
     const reward = value;
     const rows = calamityLootTable(activity);
     const fields = ['id', 'name', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'calamiticTokens', 'masterChests'];
-    // Pre-D-409 idempotent receipts retain their saved contents, not the current guarantees.
-    const historical = !('roseliusCopies' in reward);
+    // Historical idempotent receipts retain their saved contents, not new rewards.
+    const historical = !('devourerCopies' in reward);
+    if (!historical) {
+      const copies = reward.devourerCopies;
+      if (chest.devourerCopies ? !object(copies) || Object.keys(copies).length !== 2 ||
+        copies.creatureId !== chest.devourerCopies.creatureId || copies.amount !== chest.devourerCopies.amount : copies !== null) return false;
+      fields.push('devourerCopies');
+    }
     if ('roseliusCopies' in reward) {
-      if (reward.roseliusCopies !== chest.roseliusCopies) return false;
+      if (!historical || reward.roseliusCopies !== (['heavens', 'abyss', 'roses'].includes(activity) ? tier : 0)) return false;
       fields.push('roseliusCopies');
     }
     if (Object.keys(reward).length !== fields.length || Object.keys(reward).some(key => !fields.includes(key)) ||
       !['fractalis', 'lycalis', 'mechanicalComponents', 'calamiticTokens', 'masterChests'].every(key => safeCount(reward[key])) ||
       reward.name !== chest.name ||
       reward.calamiticTokens !== chest.calamiticTokens ||
-      (reward.masterChests !== chest.masterChests && !(historical && reward.masterChests === 2 && tier === 3)) ||
+      (reward.masterChests !== chest.masterChests && !(historical && !('roseliusCopies' in reward) && reward.masterChests === 2 && tier === 3)) ||
       !object(reward.materials) || !object(reward.conduits)) return false;
     for (const [field, kind, base] of [['fractalis', 'fractalis', chest.fractalis], ['lycalis', 'lycalis', chest.lycalis], ['mechanicalComponents', 'components', 0]] as const) {
       const maximum = field === 'mechanicalComponents' && chest.componentRange
@@ -158,7 +164,10 @@ function validCalamityOpening(value: unknown): boolean {
     }
     for (const [id, count] of Object.entries(reward.materials)) {
       materialName(id);
-      const row = rows.find(row => row.kind === 'material' && row.id === id);
+      const legacyMaterial = historical && (activity === 'heavens' || activity === 'abyss') &&
+        elements.some(element => element.infusion === activity && ['epic', 'legendary', 'omnic'].some(rarity => id === `${element.id}-${rarity}`));
+      const row = rows.find(row => row.kind === 'material' && row.id === id) ??
+        (legacyMaterial ? { max: id.endsWith('-epic') ? 20 : id.endsWith('-legendary') ? 12 : 6 } : undefined);
       if (!row || !safeCount(count) || count === 0 || (count as number) > row.max * chest.bundles) return false;
     }
     return Object.entries(reward.conduits).every(([id, count]) => isConduitId(id) && safeCount(count) && count !== 0 &&

@@ -86,7 +86,7 @@ describe('approved Phase 0 catalog contract (not runtime effect verification)', 
       'Your [Attack Actions] gain +250% [Critical Rate] and +120% [Critical Damage Multiplier]. +65% [Skill Efficiency].',
     );
     expect(ability('Causality Funeral Engine')).toBe(
-      '+100% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage].',
+      '+50% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage].',
     );
     expect(catalog).toContain('Combined reduction cap: 50%; round the final cost up once.');
     expect(ability("World-Eater's Orrery")).toBe(

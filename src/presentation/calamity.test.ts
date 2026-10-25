@@ -294,11 +294,11 @@ describe('Calamity presentation', () => {
         Number(reward.fractalis > 0) + Number(reward.lycalis > 0)
         + Object.keys(reward.materials).length + Object.keys(reward.conduits).length
         + Number(reward.mechanicalComponents > 0) + Number(reward.masterChests > 0)
-        + Number(reward.calamiticTokens > 0) + Number((reward.roseliusCopies ?? 0) > 0));
-      if (reward.roseliusCopies) {
-        expect(document.body.textContent).toContain(`${reward.roseliusCopies} `);
+        + Number(reward.calamiticTokens > 0) + Number(!!reward.devourerCopies));
+      if (reward.devourerCopies) {
+        expect(document.body.textContent).toContain(`${reward.devourerCopies.amount} `);
         expect(document.body.textContent).toContain('Omnic · Lv.60');
-        expect(document.querySelector(`img[src="${assetUrl(`enemies/${getCreature('infusion:roses:5').art}.png`)}"]`)).not.toBeNull();
+        expect(document.querySelector(`img[src="${assetUrl(`enemies/${getCreature(reward.devourerCopies.creatureId).art}.png`)}"]`)).not.toBeNull();
       }
       expect(reveal.savedLabel).toBe('Rewards saved');
     }

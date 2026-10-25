@@ -43,7 +43,7 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(draw.account.characters.ember).toEqual(original.characters.ember);
     expect(draw.materials).toEqual({ id: 'infernic-rare', amount: 15 });
     expect(draw.copy).toBeUndefined();
-    expect(draw.account.bannerPity?.standard).toEqual({ highestStar: 1, unownedHighestStar: 1 });
+    expect(draw.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 0 });
     const bought = purchaseConduit(saved, 'vigil-core');
     expect(bought.fractalis).toBe(sold.fractalis - 1000);
     const retained = farmed.capturedCharacters![0];
@@ -69,31 +69,30 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
   });
 
-  it('enforces actual80 / 150 saved pull milestones while sales/reloads never reset pity', () => {
+  it('enforces consecutive80-pull milestones while sales/reloads never reset pity', () => {
     const saved = storage();
     const account = loadAccount(saved);
     account.lycalis = 5000;
     account.characters.aurora = { level: 0, evolution: 1, weaponRank: 0 };
     saveAccount(saved, account);
-    for (let pull = 1; pull <= 150; pull++) {
+    for (let pull = 1; pull <= 160; pull++) {
+      const before = loadAccount(saved);
       const result = summonCharacter(saved, () => 0.02);
-      if (pull === 80) {
-        expect(result.guarantee).toBe('highest-star');
-        expect(result.duplicate).toBe(true);
-        expect(result.materials).toEqual({ id: 'infernic-rare', amount: 15 });
+      if (pull % 80 === 0) {
+        expect(result.guarantee).toBe('unowned-character');
+        expect(result.duplicate).toBe(false);
+        expect(result.entry.kind).toBe('character');
+        expect(result.entry.stars).toBe(5);
+        expect(Object.keys(before.characters)).not.toContain(result.entry.id);
+        expect(result.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 0 });
         const sold = loadAccount(saved);
         expect(sold.bannerPity).toEqual(result.account.bannerPity);
         expect(sold.lycalis).toBe(5000 - pull * 10);
-      } else if (pull === 150) {
-        expect(result.guarantee).toBe('unowned-highest-star');
-        expect(result.entry.id).toBe('bliss');
-        expect(result.account.characters.bliss).toEqual({ level: 0, evolution: 1, weaponRank: 0 });
-        expect(result.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 0 });
       } else {
         expect(result.guarantee).toBe('none');
         expect(result.entry.kind).toBe('material');
         expect(result.account.bannerPity?.standard)
-          .toEqual({ highestStar: pull % 80, unownedHighestStar: pull });
+          .toEqual({ highestStar: pull % 80, unownedHighestStar: 0 });
       }
       expect(loadAccount(saved).lycalis).toBe(5000 - pull * 10);
     }

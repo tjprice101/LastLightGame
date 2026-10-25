@@ -3,27 +3,33 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
-**Full-screen overlays (D-411):** [paged, non-scrolling modal screens](menus-and-inventory.md#full-screen-paged-overlays-d-411)
-replace compact windows and side drawers, including confirmations, Settings,
-Information, rewards and nested selectors. Fixed headings/actions and
-Previous/Next preserve readable content, forms, focus and saved outcomes.
+**Targeted modal correction (D-413):** [only the Master choice panel is widened](menus-and-inventory.md#targeted-modal-sizing-d-413),
+with three desktop columns and bounded scrolling. Existing small modals,
+mission/results screens and opening/upgrade animations are restored.
+D-411's global full-screen pagination is withdrawn.
+
+**Reward corrections (D-412):** [one80-pull pity](summoning-and-economy.md#single80-pull-pity-d-412)
+uses unowned5/6-star tiers50/50 with fallback and natural-recruit resets.
+[Calamity chests](calamity-mode.md#mode-owned-rewards-d-412) keep each activity's
+own materials and highest-form devourers. Causality grants50 efficiency points,
+plus2 per upgrade; existing efficiency cap and other effects remain.
 
 **All-level Rose captures (D-410):** [all35 event stages](crimson-roses.md#captures-at-every-event-level-d-410)
 now drop playable copies at the existing50% chance, including the final boss.
 Copies join at Lv.60 with their defeated form and skills; the former source
 Lv.120 restriction is removed.
 
-**Conduit copy and chest guarantees (D-409):**
+**Conduit copy and chest guarantees (D-409, reward species superseded by D-412):**
 [activity-specific Calamity contents](calamity-mode.md#activity-specific-chest-guarantees-d-409)
-restrict Master Chests to Machines and add1/2/3 Lv.60 Omnic Roselius to
-Soar/Delve/Roses chests. The [138-entry catalog](conduit-catalog.txt) removes
+restrict Master Chests to Machines. Its shared Roselius reward is historical;
+D-412 now uses each mode's own highest form. The [138-entry catalog](conduit-catalog.txt) removes
 redundant exclusions/comparisons while preserving effect-specific limits.
 
 **Enemy drops and Master reveal (D-408):**
 [direct-only enemy tables](archives-and-elements.md#direct-enemy-drops-only-d-408)
 now include eligible50% playable copies, not mission bonuses/sales/chest
 contents. [Capture audit](dungeons-and-captures.md#capture-audit-and-visible-eligibility-d-408)
-explains the Rose ceiling; [compact Master opening and replacement prompt](master-conduits.md#compact-opening-and-collaboration-flavor-d-408)
+records the former Rose ceiling, removed by D-410; [compact Master opening and replacement prompt](master-conduits.md#compact-opening-and-collaboration-flavor-d-408)
 document Let/Rise flavor and white/gold prismatic chest art direction.
 
 **Compact Inventory (D-407):** [unified holdings categories](menus-and-inventory.md#compact-holdings-and-unified-categories-d-407)

@@ -27,8 +27,8 @@ export function Status({ message, error = false }: { message: string; error?: bo
   return <p className={`ll-status${error ? ' ll-status--error' : ''}`} role={error ? 'alert' : 'status'} aria-live="polite">{message}</p>;
 }
 
-export function Dialog({ id, title, subtitle, onClose, children, tools, actions, busy = false }: {
-  id: string; title: string; subtitle?: string; onClose: () => void; children: ReactNode; tools?: ReactNode; actions?: ReactNode; busy?: boolean;
+export function Dialog({ id, title, subtitle, onClose, children, busy = false }: {
+  id: string; title: string; subtitle?: string; onClose: () => void; children: ReactNode; busy?: boolean;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const close = useRef(onClose);
@@ -44,12 +44,10 @@ export function Dialog({ id, title, subtitle, onClose, children, tools, actions,
       if (previous instanceof HTMLElement && previous.isConnected) previous.focus({ preventScroll: true });
     };
   }, []);
-  return <dialog ref={ref} id={id} className="ll-ui ll-dialog" data-overlay-layout aria-labelledby={`${id}-heading`} aria-busy={busy}
+  return <dialog ref={ref} id={id} className="ll-ui ll-dialog" aria-labelledby={`${id}-heading`} aria-busy={busy}
     onCancel={event => { event.preventDefault(); close.current(); }}>
-    <header className="ll-dialog-heading" data-overlay-heading><div className="overlay-title-bar"><h2 id={`${id}-heading`}>{title}</h2>
-      <Button tone="quiet" className="ll-close" aria-label={`Close ${title}`} onClick={onClose}><Icon name="close" /></Button></div>
-      {tools && <div className="overlay-tools">{tools}</div>}</header>
-    <div data-overlay-body><div data-overlay-flow>{subtitle && <p className="ll-dialog-intro">{subtitle}</p>}{children}</div></div>
-    <footer data-overlay-footer><div data-overlay-actions>{actions}</div></footer>
+    <header className="ll-dialog-heading"><div><p className="ll-kicker">LAST LIGHT</p><h2 id={`${id}-heading`}>{title}</h2>{subtitle && <p>{subtitle}</p>}</div>
+      <Button tone="quiet" className="ll-close" aria-label={`Close ${title}`} onClick={onClose}><Icon name="close" /></Button></header>
+    {children}
   </dialog>;
 }

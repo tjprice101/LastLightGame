@@ -1048,7 +1048,7 @@ var approvedConduitCatalog = {
     "name": "Causality Funeral Engine",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "+100% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]."
+    "ability": "+50% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]."
   },
   "calamitic-horizon-cleaving-godpress": {
     "name": "Horizon-Cleaving Godpress",
@@ -1183,7 +1183,9 @@ function phaseZeroUpgradedAbility(id, level = 0) {
   if (id === "stasis-reliquary") return ability2.replace("10%", `${stasisChancePercent(level)}%`);
   let index = 0;
   return ability2.replace(/([+-]?\d+(?:\.\d+)?)%/g, (text2, amount) => {
-    if (!positions.includes(index++)) return text2;
+    const position = index++;
+    if (!positions.includes(position)) return text2;
+    if (id === "calamitic-causality-funeral-engine" && position === 0) return `+${50 + level * 2}%`;
     const upgraded = Number((Number(amount) * (1 + level * 0.1)).toFixed(8));
     return `${amount.startsWith("+") ? "+" : ""}${upgraded}%`;
   });
@@ -4279,7 +4281,7 @@ var phaseZeroStaticBonuses = {
     { stat: "skillDuration", amount: 1, additive: true }
   ],
   "wardglass-transformer": [{ stat: "critMultiplier", amount: 0.35 }, { stat: "defense", amount: -0.35 }],
-  "calamitic-causality-funeral-engine": [{ stat: "skillEfficiency", amount: 1, additive: true }],
+  "calamitic-causality-funeral-engine": [{ stat: "skillEfficiency", amount: 0.5, additive: true }],
   "calamitic-cathedral-final-equation": [{ stat: "skillEfficiency", amount: 0.65, additive: true }],
   "calamitic-horizon-cleaving-godpress": [{ stat: "defense", amount: 0.75 }],
   "calamitic-throne-borrowed-tomorrows": [{ stat: "health", amount: 0.45 }, { stat: "defense", amount: 0.45 }],
@@ -4337,7 +4339,7 @@ function applyPhaseZeroStaticBonuses(base, slots, upgrades = {}, master2) {
     if (id === null) continue;
     const bonuses = id in phaseZeroStaticBonuses ? phaseZeroStaticBonuses[id] : [];
     for (const bonus of bonuses) {
-      const amount = bonus.stat === "skillDuration" ? bonus.amount : phaseZeroUpgradeMagnitude(bonus.amount, levels[id] ?? 0);
+      const amount = id === "calamitic-causality-funeral-engine" && bonus.stat === "skillEfficiency" ? 0.5 + 0.02 * (levels[id] ?? 0) : bonus.stat === "skillDuration" ? bonus.amount : phaseZeroUpgradeMagnitude(bonus.amount, levels[id] ?? 0);
       const pool = bonus.additive ? additive : percent;
       pool[bonus.stat] = (pool[bonus.stat] ?? 0) + amount;
     }
@@ -5638,7 +5640,7 @@ function calamityChest(activity, tier) {
     calamiticTokens: [1, 3, 8][tier - 1],
     bundles: [3, 5, 7][tier - 1],
     masterChests: activity === "machines" && tier === 3 ? 2 : 0,
-    roseliusCopies: activity === "heavens" || activity === "abyss" || activity === "roses" ? tier : 0,
+    devourerCopies: isInfusionMode(activity) && enemyCaptureAllowed(activity, 120) ? { creatureId: `infusion:${activity}:5`, amount: tier } : null,
     componentRange: activity === "machines" ? { min: [3e3, 5e3, 1e4][tier - 1], max: [6e3, 8e3, 12e3][tier - 1] } : null
   };
 }
@@ -5680,13 +5682,12 @@ function calamityLootTable(activity) {
   ];
   if (activity === "roses") return materialRows(roseMaterials);
   if (activity === "heavens" || activity === "abyss") {
-    const pool = elements.filter((element) => element.infusion === activity);
     return [
       {
         label: activity === "heavens" ? "Crown of the Scarlet Oath" : "Heart of the Shattered Void",
         id: `${activity}-evolution`,
         kind: "material",
-        weight: 35,
+        weight: 50,
         min: 5,
         max: 10
       },
@@ -5694,18 +5695,10 @@ function calamityLootTable(activity) {
         label: activity === "heavens" ? "Chalice of the Undying Dawn" : "Hourglass of Endless Wrath",
         id: `${activity}-level`,
         kind: "material",
-        weight: 35,
+        weight: 50,
         min: 10,
         max: 20
-      },
-      ...pool.flatMap((element) => ["Epic", "Legendary", "Omnic"].map((rarity, index) => ({
-        label: `${element.name} ${rarity} Material`,
-        id: `${element.id}-${rarity.toLowerCase()}`,
-        kind: "material",
-        weight: [15, 10, 5][index] / pool.length,
-        min: [10, 6, 3][index],
-        max: [20, 12, 6][index]
-      })))
+      }
     ];
   }
   return materialRows(materialRarities.map((rarity) => ({
@@ -5725,7 +5718,7 @@ function rollCalamityChest(activity, tier, roll2, owned = {}) {
     materials: {},
     conduits: {},
     mechanicalComponents: 0,
-    roseliusCopies: chest.roseliusCopies
+    devourerCopies: chest.devourerCopies
   };
   const table = calamityLootTable(activity);
   const random = () => {
@@ -6032,7 +6025,7 @@ function validateCapturedCharacters(value2) {
     seen.add(entry.instanceId);
     const copy = { instanceId: entry.instanceId, creatureId: entry.creatureId, locked: entry.locked };
     if ("acquisition" in entry) {
-      if (!(entry.acquisition === "banner-duplicate" && roseDuplicateMinimumLevel(creature.id) !== void 0) && !(entry.acquisition === "calamity-chest" && creature.id === "infusion:roses:5")) throw new Error("Invalid Elemental-Devourer acquisition source.");
+      if (!(entry.acquisition === "banner-duplicate" && roseDuplicateMinimumLevel(creature.id) !== void 0) && !(entry.acquisition === "calamity-chest" && creature.id === `infusion:${creature.mode}:5`)) throw new Error("Invalid Elemental-Devourer acquisition source.");
       copy.acquisition = entry.acquisition;
     }
     if ("level" in entry) {
@@ -7443,7 +7436,7 @@ function nativeCleanup(state) {
 }
 
 // src/game/conduit-runtime.ts
-var conduitRulesVersion = phaseZeroStatsReady ? 11 : 4;
+var conduitRulesVersion = phaseZeroStatsReady ? 12 : 4;
 function gear(unit) {
   return unit.conduitRuntime ??= { numbers: {}, owners: {} };
 }
@@ -10500,7 +10493,7 @@ function bannerDuplicateMaterials(event2, random) {
 }
 
 // src/content/standard-banner.ts
-var bannerPityLimits = { highestStar: 80, unownedHighestStar: 150 };
+var bannerPityLimits = { pulls: 80 };
 var savedBannerPityBounds = { highestStar: 200, unownedHighestStar: 500 };
 var bannerCharacterTierRates = { 5: 0.01, 6: 1e-3 };
 function validateBannerPity(value2) {
@@ -10521,23 +10514,20 @@ function resolveBannerPull(pool, ownedCharacters2, counters, random) {
       throw new Error("Invalid banner material outcome.");
     }
   }
-  const highestStars = Math.max(...pool.map((entry2) => entry2.stars));
-  const highest = pool.filter((entry2) => entry2.kind === "character" && entry2.stars === highestStars);
-  if (!highest.length) throw new Error("Banner pity requires a highest-star character tier.");
-  const unowned = highest.filter((entry2) => !ownedCharacters2.includes(entry2.id));
-  let eligible = pool;
-  let guarantee = "none";
-  if (pity.unownedHighestStar + 1 >= bannerPityLimits.unownedHighestStar) {
-    eligible = unowned.length ? unowned : highest;
-    guarantee = unowned.length ? "unowned-highest-star" : "all-owned-highest-star";
-  } else if (pity.highestStar + 1 >= bannerPityLimits.highestStar) {
-    eligible = highest;
-    guarantee = "highest-star";
-  }
+  const characters = pool.filter((entry2) => entry2.kind === "character" && (entry2.stars === 5 || entry2.stars === 6));
+  if (!characters.length) throw new Error("Banner pity requires a five-star or six-star character tier.");
+  const unowned = characters.filter((entry2) => !ownedCharacters2.includes(entry2.id));
+  const guaranteed = pity.highestStar + 1 >= bannerPityLimits.pulls;
+  const guarantee = !guaranteed ? "none" : unowned.length ? "unowned-character" : "all-owned-character";
   const roll2 = lootRoll(random);
   let entry;
   if (guarantee !== "none") {
-    entry = eligible[Math.floor(roll2 * eligible.length)];
+    const eligible = unowned.length ? unowned : characters;
+    const five = eligible.filter((entry2) => entry2.stars === 5);
+    const six = eligible.filter((entry2) => entry2.stars === 6);
+    const tier = five.length && six.length ? roll2 < 0.5 ? five : six : five.length ? five : six;
+    const withinTier = five.length && six.length ? roll2 < 0.5 ? roll2 * 2 : (roll2 - 0.5) * 2 : roll2;
+    entry = tier[Math.floor(withinTier * tier.length)];
   } else {
     let cumulative = 0;
     entry = pool[pool.length - 1];
@@ -10549,11 +10539,10 @@ function resolveBannerPull(pool, ownedCharacters2, counters, random) {
       }
     }
   }
-  const highestResult = entry.kind === "character" && entry.stars === highestStars;
-  const newHighest = highestResult && !ownedCharacters2.includes(entry.id);
+  const characterResult = entry.kind === "character" && (entry.stars === 5 || entry.stars === 6);
   return { entry, guarantee, pity: {
-    highestStar: highestResult ? 0 : pity.highestStar + 1,
-    unownedHighestStar: newHighest || guarantee === "all-owned-highest-star" ? 0 : pity.unownedHighestStar + 1
+    highestStar: characterResult ? 0 : pity.highestStar + 1,
+    unownedHighestStar: 0
   } };
 }
 var standardBannerArtwork = {
@@ -11143,8 +11132,9 @@ function openCalamityChest(storage, id, expectedCount) {
   account.mechanicalComponents = add(account.mechanicalComponents ?? 0, reward.mechanicalComponents);
   account.calamiticTokens = add(account.calamiticTokens ?? 0, reward.calamiticTokens);
   account.masterChests = add(account.masterChests ?? 0, reward.masterChests);
-  if (reward.roseliusCopies) {
-    const copies = Array.from({ length: reward.roseliusCopies }, () => createCreatureCopy("infusion:roses:5", void 0, capturedLevelCap, "calamity-chest"));
+  if (reward.devourerCopies) {
+    const { creatureId, amount } = reward.devourerCopies;
+    const copies = Array.from({ length: amount }, () => createCreatureCopy(creatureId, void 0, capturedLevelCap, "calamity-chest"));
     account.capturedCharacters = [...account.capturedCharacters ?? [], ...copies];
   }
   account.calamityChests = { ...account.calamityChests, [id]: available - 1 };
@@ -11709,7 +11699,7 @@ function validateSaveFile(value2) {
 }
 
 // src/presentation/conduit-compatibility.ts
-var conduitRestartNotice = "Combat rules updated, including exponential enemy growth. This encounter restarted at the current stage with your original squad and equipment. All previously saved rewards are kept.";
+var conduitRestartNotice = "Combat rules updated. This encounter restarted at the current stage with your original squad and equipment. All previously saved rewards are kept.";
 function atTrainingWave(state, wave) {
   if (wave <= 1) return state;
   const spawned = nextWave({ ...structuredClone(state), wave: wave - 1, phase: "cleared" });
@@ -12158,7 +12148,7 @@ function resolveOperation(previous, operation, entropy) {
           mechanicalComponents: reward.mechanicalComponents,
           calamiticTokens: reward.calamiticTokens,
           masterChests: reward.masterChests,
-          roseliusCopies: reward.roseliusCopies
+          devourerCopies: reward.devourerCopies
         };
         break;
       }

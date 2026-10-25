@@ -1,5 +1,28 @@
 # Summoning and economy
 
+## Single80-pull pity (D-412)
+
+Every banner has one independent counter and guarantees an Element-Bearer on
+pull80. Any natural5-star or6-star recruit, new or duplicate, resets it.
+At the guarantee, choose an unowned5-star or unowned6-star at50/50, then equally
+within that tier. If a tier has no unowned entries, use the other tier; if every
+character is owned, use the same tier rule with all banner characters and
+the unchanged duplicate conversion. A single-tier banner uses its actual tier:
+Roses cannot award Standard characters. Natural rates/costs/material outcomes,
+the separate0.5% Conduit bonus and ten-pull atomicity remain unchanged.
+
+The resolver uses exactly one random value for tier and equal-within-tier
+selection, preserving the number/order of summon RNG draws. Existing saved
+`highestStar` is the active counter; an overdue value guarantees the next pull.
+Legacy `unownedHighestStar` remains readable but is retired, ignored for
+guarantees/UI and saved as0 after a successful draw. No load writes, counter
+addition, retroactive grant or account migration. Failed/overflowing operations
+retain raw wallet, currency and pity. This supersedes every80/150 or200/500
+dual-pity/reset statement below. UI shows one80-pull meter and exact fallback.
+
+Validate banner-pity, banner-materials, summon-banners, both real banners,
+integrated-economy and authoritative summon/ten-pull tests.
+
 ## Readable reward reveals and contained art (D-241)
 
 Keep D-230's gold/prismatic anticipation and tier-specific result borders,

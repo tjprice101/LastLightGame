@@ -15,7 +15,6 @@ afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
   Reflect.deleteProperty(HTMLDialogElement.prototype, 'close');
-  Reflect.deleteProperty(HTMLDialogElement.prototype, 'showModal');
   Reflect.deleteProperty(HTMLElement.prototype, 'scrollIntoView');
 });
 
@@ -24,9 +23,6 @@ function fixture(phase: 'cleared' | 'defeat', exit: () => Promise<void>, online:
   Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { configurable: true, value: vi.fn() });
   Object.defineProperty(HTMLDialogElement.prototype, 'close', {
     configurable: true, value: function (this: HTMLDialogElement) { this.open = false; },
-  });
-  Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
-    configurable: true, value: function (this: HTMLDialogElement) { this.open = true; },
   });
   const session = createSession('ember', undefined, staged === 'machines' ? { mode: 'machines', stage: 35 } : staged ? { storyStage: 25 } : undefined);
   session.entrancePending = false;
@@ -40,7 +36,6 @@ function fixture(phase: 'cleared' | 'defeat', exit: () => Promise<void>, online:
   } : undefined;
   const commit = vi.fn();
   const view = new BattleView(host, session, { nextAlly: 'KeyC', nextTarget: 'KeyT' }, commit, exit, authority);
-  expect(host.querySelector<HTMLDialogElement>('.battle-results')?.open).toBe(true);
   return { session, host, view, commit, unexpected };
 }
 

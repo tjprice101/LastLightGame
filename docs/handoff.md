@@ -1,6 +1,52 @@
 # Current state and handoff
 
+## Mode-owned rewards, single pity and targeted modal correction (D-412/D-413)
+
+- Owner explicitly withdraws D-411's global full-screen/paged layout. Original
+  small dialogs, mission/results, squad picker, Settings/account/friends and
+  reward/upgrade/summon presentations are restored. Only Master selection has a
+  wider bounded panel, three desktop choices, responsive list and fixed controls.
+  All opening/evolution/level animations remain original. Global pagination
+  code/CSS/tests are removed, not left dormant.
+- Causality Funeral Engine grants50 Skill Efficiency points plus2 per upgrade,
+  with unchanged global50% effective cap and other effects/upgrades.
+  Rules12 compatibility refresh preserves frozen investments and saved rewards.
+- Soar/Delve EX chests contain only mode-owned specialties, never elemental
+  Crests/Hearts/Souls. Ordinary/legacy stages already meet that rule and retain
+  their unique materials. Rose keeps Rosethorn, elemental dungeons their element.
+  Chest copies are activity-specific highest forms: Gleamstone/Wisp/Dawnthorn/
+  Wraththorn/Roselius in Treasury/Sanctuary/Soar/Delve/Roses,1/2/3 at60.
+  No copies from non-capturable modes, no removed holdings or retroactive grants.
+- All banners use one80-pull counter; any natural5/6 recruit resets it. Guarantee
+  tiers are50/50 among unowned entries, fallback to the other tier if exhausted,
+  ordinary duplicate conversion when all owned. Existing active counter remains;
+  retired second counter is ignored and zeroed only on successful draw.
+  One resolver RNG roll, unchanged natural odds/cost/bonus/ten-pull atomicity.
+- Client previews/reveals, persistence/provenance, strict response validation and
+  authority serializer share the new identities. Historical cached receipts
+  remain readable without rerolling or replacement; failed operations preserve
+  accounts. Matching authority bundle/deployment is required.
+- Browser:192 Master-selected states at320x569/390x844/844x390/1280x900
+  fit fixed controls, have no horizontal list overflow or outer-dialog scroll.
+- Validation: `npm test -- --maxWorkers=1 --reporter=dot` ran6596 tests/
+  212 files;6588 passed and eight stale contract/copy assertions failed.
+  After correction, `npx vitest run src/content/phase-zero-conduit-upgrades.test.ts
+  src/content/phase-zero-contract.test.ts src/game/rosethorn-sanctuary.test.ts
+  src/presentation/ui-copy.test.ts --maxWorkers=1 --reporter=dot` passed893.
+  The final four-file server/compatibility selector passed130, including
+  historical D-409 receipt support and current wrong-species/material rejection.
+  `npm run build` and `git diff --check` passed.
+- Matching authority deployed using `npx supabase functions deploy game-operation
+  --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`.
+  `node tools/smoke_server_game.mjs --reward-corrections` passed live:
+  all15 capture-mode/tier openings,30 unique Lv60 mode-owned copies, specialty-only
+  materials, both80-pull guarantees, persisted receipts and idempotent retries.
+  Disposable identity and cascading records removed; no owner account modified.
+  Final committed CI/publication verification remains pending.
+
 ## Full-screen paged overlays (D-411)
+
+Historical rollout, withdrawn by D-413 above.
 
 - Owner confirms every modal, including small confirmations and nested choices,
   should fill the viewport and never scroll. Previous/Next handles overflow;

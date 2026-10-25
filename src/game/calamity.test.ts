@@ -64,14 +64,15 @@ describe('isolated Calamity definitions and rewards', () => {
     let calls = 0;
     const reward = rollCalamityChest(activity, tier, () => { calls++; return 0; });
     expect(Object.keys(reward).sort()).toEqual([
-      'calamiticTokens', 'conduits', 'fractalis', 'id', 'lycalis', 'masterChests', 'materials', 'mechanicalComponents', 'name', 'roseliusCopies',
-    ]);
+      'calamiticTokens', 'conduits', 'fractalis', 'id', 'lycalis', 'masterChests', 'materials', 'mechanicalComponents', 'name', 'devourerCopies',
+    ].sort());
     const chest = calamityChest(activity, tier);
     expect(calls).toBe(chest.bundles * 2 + Number(activity === 'machines'));
     if (activity === 'machines') expect(reward.mechanicalComponents).toBe(chest.componentRange!.min + chest.bundles * 100);
     else expect(reward.mechanicalComponents).toBe(0);
     expect(reward.masterChests).toBe(activity === 'machines' && tier === 3 ? 2 : 0);
-    expect(reward.roseliusCopies).toBe(['heavens', 'abyss', 'roses'].includes(activity) ? tier : 0);
+    expect(reward.devourerCopies).toEqual(['treasury', 'sanctuary', 'heavens', 'abyss', 'roses'].includes(activity)
+      ? { creatureId: `infusion:${activity}:5`, amount: tier } : null);
     expect(reward.calamiticTokens).toBe([1, 3, 8][tier - 1]);
     expect(reward.fractalis).toBe(chest.fractalis + (activity === 'treasury' ? chest.bundles * 25_000 : 0));
     expect(reward.lycalis).toBe(chest.lycalis + (activity === 'sanctuary' ? chest.bundles * 5 : 0));
@@ -138,7 +139,7 @@ describe('isolated Calamity definitions and rewards', () => {
         expect(row.id ?? '').not.toContain('weapon');
         expect(row.id ?? '').not.toContain('master-');
         if (id === 'heavens' || id === 'abyss') {
-          const prefixes = id === 'heavens' ? ['heavens', 'infernic', 'oceanic', 'atmospheric', 'botanic'] : ['abyss', 'tranquilitic', 'chaotic'];
+          const prefixes = [id];
           expect(prefixes.some(prefix => row.id?.startsWith(prefix))).toBe(true);
         } else if (['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic'].includes(id)) {
           expect(row.id?.startsWith(`${id}-`)).toBe(true);

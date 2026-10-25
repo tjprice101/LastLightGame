@@ -52,7 +52,7 @@ export const phaseZeroStaticBonuses = {
   'resonance-crucible': [{ stat: 'defense', amount: .75 }, { stat: 'health', amount: .5 },
     { stat: 'skillDuration', amount: 1, additive: true }],
   'wardglass-transformer': [{ stat: 'critMultiplier', amount: .35 }, { stat: 'defense', amount: -.35 }],
-  'calamitic-causality-funeral-engine': [{ stat: 'skillEfficiency', amount: 1, additive: true }],
+  'calamitic-causality-funeral-engine': [{ stat: 'skillEfficiency', amount: .5, additive: true }],
   'calamitic-cathedral-final-equation': [{ stat: 'skillEfficiency', amount: .65, additive: true }],
   'calamitic-horizon-cleaving-godpress': [{ stat: 'defense', amount: .75 }],
   'calamitic-throne-borrowed-tomorrows': [{ stat: 'health', amount: .45 }, { stat: 'defense', amount: .45 }],
@@ -123,7 +123,8 @@ export function applyPhaseZeroStaticBonuses(
     const bonuses: readonly StaticBonus[] = id in phaseZeroStaticBonuses
       ? phaseZeroStaticBonuses[id as keyof typeof phaseZeroStaticBonuses] : [];
     for (const bonus of bonuses) {
-      const amount = bonus.stat === 'skillDuration' ? bonus.amount :
+      const amount = id === 'calamitic-causality-funeral-engine' && bonus.stat === 'skillEfficiency' ? .5 + .02 * (levels[id] ?? 0) :
+        bonus.stat === 'skillDuration' ? bonus.amount :
         phaseZeroUpgradeMagnitude(bonus.amount, levels[id] ?? 0);
       const pool = bonus.additive ? additive : percent;
       pool[bonus.stat] = (pool[bonus.stat] ?? 0) + amount;
