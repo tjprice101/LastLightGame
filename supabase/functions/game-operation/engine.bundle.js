@@ -2919,7 +2919,7 @@ function rollMachineComponents(stage, random) {
 var masterChest = {
   id: "grand-master-chest",
   name: "Cosmic Grand Master Chest",
-  chance: 0.05,
+  chance: 0.5,
   stage: machineStageCount,
   art: "master-conduits/grand-master-chest.png",
   description: "Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward."
@@ -3243,13 +3243,29 @@ function masterChestDrops(stage, boss, random) {
 }
 
 // src/content/machines.ts
-var machineRules = { stages: infusionStageCount("machines"), omnicStage: Math.floor(56 * infusionStageCount("machines") / previousMachineStageCount), rareChance: 0.08, legendaryChance: 0.055, omnicChance: 0.03, bannerBonusChance: 5e-3 };
+var machineRules = {
+  stages: infusionStageCount("machines"),
+  omnicStage: Math.floor(56 * infusionStageCount("machines") / previousMachineStageCount),
+  startingChance: 0.05,
+  rareChance: 0.35,
+  legendaryChance: 0.2,
+  omnicChance: 0.15,
+  bannerBonusChance: 5e-3
+};
 var machinePools = {
   Rare: conduits.filter((conduit) => conduit.rarity === "Rare"),
   Legendary: conduits.filter((conduit) => conduit.rarity === "Legendary"),
   Omnic: conduits.filter((conduit) => conduit.rarity === "Omnic")
 };
 var machineFocusRarities = ["Rare", "Legendary", "Omnic"];
+function machineConduitChance(stage, rarity) {
+  validateMachineStage(stage);
+  const firstStage = rarity === "Omnic" ? machineRules.omnicStage : 1;
+  if (stage < firstStage) return 0;
+  const maximum = rarity === "Rare" ? machineRules.rareChance : rarity === "Legendary" ? machineRules.legendaryChance : machineRules.omnicChance;
+  return machineRules.startingChance + (maximum - machineRules.startingChance) * (stage - firstStage) / (machineRules.stages - firstStage);
+}
+var machineDropRatesText = `Rare 5%-35% and Legendary 5%-20% from stage 1; Omnic 5%-15% from stage ${machineRules.omnicStage}. Each rate grows linearly to stage ${machineRules.stages}.`;
 function isMachineFocusRarity(value2) {
   return machineFocusRarities.some((rarity) => rarity === value2);
 }
@@ -3279,7 +3295,7 @@ function machineConduitLoot(stage, owned = {}, focus = {}) {
   return ["Rare", "Legendary", "Omnic"].filter((rarity) => rarity !== "Omnic" || stage >= machineRules.omnicStage).flatMap((rarity) => {
     const pool = machinePools[rarity];
     const remaining = pool.filter((conduit) => !(owned[conduit.id] ?? 0)).length;
-    const chance = rarity === "Rare" ? machineRules.rareChance : rarity === "Legendary" ? machineRules.legendaryChance : machineRules.omnicChance;
+    const chance = machineConduitChance(stage, rarity);
     const selected = focus[rarity];
     const focused = selected && !(owned[selected] ?? 0) ? selected : void 0;
     return pool.map((conduit) => ({
@@ -3300,16 +3316,13 @@ function machineConduitDrops(stage, random, owned = {}, focus = {}) {
   validateMachineStage(stage);
   validateMachineLootFocus(focus);
   const drops = {};
-  for (const [pool, chance] of [
-    [machinePools.Rare, machineRules.rareChance],
-    [machinePools.Legendary, machineRules.legendaryChance],
-    [machinePools.Omnic, stage >= machineRules.omnicStage ? machineRules.omnicChance : 0]
-  ]) {
+  for (const rarity of machineFocusRarities) {
+    const pool = machinePools[rarity], chance = machineConduitChance(stage, rarity);
     if (!chance) continue;
     const id = rollTier(pool.filter((conduit) => !(owned[conduit.id] ?? 0)), chance, random);
     if (id) {
-      const rarity = getConduit(id).rarity;
-      const selected = isMachineFocusRarity(rarity) ? focus[rarity] : void 0;
+      const rarity2 = getConduit(id).rarity;
+      const selected = isMachineFocusRarity(rarity2) ? focus[rarity2] : void 0;
       drops[selected && !(owned[selected] ?? 0) ? selected : id] = 1;
     }
   }
@@ -3320,8 +3333,8 @@ function bannerConduitBonus(random) {
 }
 var machineRulesText = `<p>${machineOrigin}</p>
   <p>${machineRules.stages} stages, Lv.10-120. Bosses every fifth stage.</p>
-  <ul><li>Rare: ${machineRules.rareChance * 100}% per enemy.</li><li>Legendary: ${machineRules.legendaryChance * 100}% per enemy.</li><li>Omnic: ${machineRules.omnicChance * 100}% per enemy from stage ${machineRules.omnicStage}.</li></ul>
-  <p>Rarities roll independently. Each roll chooses an unowned Conduit equally; a completed rarity drops nothing. Focus Loot replaces the random choice with your selection, without changing the odds. Getting that Conduit clears its focus.</p>
+  <p>${machineDropRatesText}</p>
+  <p>Rarities roll independently, so one enemy can drop multiple Conduits. Each roll chooses an unowned Conduit equally; a completed rarity drops nothing. Focus Loot replaces the random choice with your selection, without changing the odds. Getting that Conduit clears its focus.</p>
   <p>Enemies also drop Prismatica. ${machineComponentRulesText} No captures, evolution materials or Null-Prismatica.</p>
   <p>${masterRulesText}</p>`;
 

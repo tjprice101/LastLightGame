@@ -43,7 +43,7 @@ import { characterRating } from './character-rating';
 import { getConduit, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
 import { type CapturedCharacter } from '../game/character-instances';
 import { capturedRating } from './owned-companion';
-import { machineRules } from '../content/machines';
+import { machineRules, machineDropRatesText } from '../content/machines';
 import { warEncounter, warStageCount, warRulesText, type WarCharacterId } from '../content/elemental-war';
 import { basicActionName } from '../content/combat';
 import { storyEncounter, storyRules, storyRulesText } from '../content/story';
@@ -83,7 +83,7 @@ export function createSession(starterId: StarterId, progress: CharacterProgress 
       : createDungeonBattle(dungeon.element, dungeon.stage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures, upgrades) : createBattle(seed, ids, teamProgress, equipment, team?.captures, upgrades), team?.masters),
     runId: crypto.randomUUID(), progress: { ...progress }, teamProgress, stageEvents: [], entrancePending: true,
     log: [dungeon && 'activity' in dungeon ? `Calamity EX+${dungeon.tier} ready. ${calamityEncounter(dungeon.activity, dungeon.tier).description} Victory grants one sealed chest; open it in Inventory.`
-      : dungeon && 'mode' in dungeon && dungeon.mode === 'machines' ? `Awaken the Machines ready. ${machineRules.stages} stages. Independent per-kill Conduit rolls: Rare ${machineRules.rareChance * 100}% and Legendary ${machineRules.legendaryChance * 100}% on every stage; Omnic ${machineRules.omnicChance * 100}% on stage ${machineRules.omnicStage} and every stage afterward. Broken Mechanical Components quantity increases by stage. Ordinary Prismatica; no captures, evolution materials or Null-Prismatica.`
+      : dungeon && 'mode' in dungeon && dungeon.mode === 'machines' ? `Awaken the Machines ready. ${machineRules.stages} stages. ${machineDropRatesText} Independent rarity rolls allow multiple Conduits per kill. Broken Mechanical Components quantity increases by stage. Ordinary Prismatica; no captures, evolution materials or Null-Prismatica.`
       : dungeon && 'mode' in dungeon && dungeon.mode === 'treasury' ? 'Crownfall Treasury ready. Defeats grant Prismatica and roll 50% capture chance; no material or Null-Prismatica drops.'
       : dungeon && 'mode' in dungeon && dungeon.mode === 'sanctuary' ? 'Rosethorn Sanctuary ready. Defeats grant ordinary Prismatica, independently roll Null-Prismatica and 50% capture chance; no materials.'
       : dungeon && 'mode' in dungeon && dungeon.mode === 'roses' ? 'Passion of Crimson Roses ready. Rosethorn materials and Prismatica per kill; 50% captures only at enemy levels 120 or below. No Null-Prismatica or clear bonus.'

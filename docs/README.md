@@ -3,9 +3,16 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
-**Machines drops (D-400):** [current rates and baseline loot tables](awaken-the-machines.md#current-drop-rates-and-baseline-loot-tables-d-400)
-set Legendary5.5%, Omnic3% and final-boss Master Chest5%; reference pools
-ignore ownership/focus while actual rewards retain both rules.
+**Roster capabilities (D-401):** [levels0-105 paper audit](roster-capability-audit.md)
+covers all16 Element-Bearers,696 solo/duo/trio configurations, six legal
+gear/play profiles, damage/healing/shielding, defensive packet capacity and
+acquisition costs.175,392 main measurements plus longer-run item-removal
+checks; no enemy-matchup simulation or balance changes.
+
+**Machines drops (D-402):** [linear stage rates](awaken-the-machines.md#linear-stage-drop-rates-d-402)
+start each rarity at5% on its first eligible stage and reach Rare35%,
+Legendary20%, Omnic15% at35. Final-boss Master Chest50%; independent
+rarity rolls permit multiple drops. Reference pools still ignore ownership/focus.
 
 **Current battle screen (D-399):** [original layout restored](menus-and-inventory.md#original-battle-screen-restored-d-399)
 from before the reference redesign, keeping stage progress. Allied readouts

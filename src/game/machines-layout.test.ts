@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { infusionEncounter } from '../content/infusions';
 import { machineComponentDrop } from '../content/mechanical-components';
 import { creatureLoot, getCreature } from '../content/creatures';
-import { machineConduitDrops, machineConduitLoot, machineRules } from '../content/machines';
+import { machineConduitDrops, machineConduitLoot, machineConduitChance, machineRules } from '../content/machines';
 import { machineStageCount, migratePreviousMachineStage } from '../content/activities';
 import { fractalisDrop } from '../content/loot-random';
 import { masterChestDrops } from '../content/master-conduits';
@@ -45,9 +45,32 @@ describe('35-stage Machines layout and v9 migration', () => {
     for (let stage = 1; stage <= 35; stage++) {
       const drops = machineConduitDrops(stage, () => 0);
       expect(Object.keys(drops)).toHaveLength(stage >= 26 ? 3 : 2);
+      const boundaries = [machineConduitChance(stage, 'Rare'), machineConduitChance(stage, 'Legendary'),
+        ...(stage >= 26 ? [machineConduitChance(stage, 'Omnic')] : [])];
+      expect(machineConduitDrops(stage, () => boundaries.shift()!)).toEqual({});
       const table = machineConduitLoot(stage);
-      expect(table.reduce((sum, drop) => sum + drop.chance, 0)).toBeCloseTo(stage >= 26 ? .165 : .135, 12);
+      const expected = .10 + .45 * (stage - 1) / 34 + (stage >= 26 ? .05 + .10 * (stage - 26) / 9 : 0);
+      expect(table.reduce((sum, drop) => sum + drop.chance, 0)).toBeCloseTo(expected, 12);
+      for (const rarity of ['Rare', 'Legendary', 'Omnic'] as const) {
+        const first = rarity === 'Omnic' ? 26 : 1;
+        const end = rarity === 'Rare' ? .35 : rarity === 'Legendary' ? .20 : .15;
+        const chance = stage < first ? 0 : .05 + (end - .05) * (stage - first) / (35 - first);
+        expect(machineConduitChance(stage, rarity)).toBeCloseTo(chance, 14);
+        if (stage >= first) {
+          const rolls = ['Rare', 'Legendary', 'Omnic'].filter(tier => tier !== 'Omnic' || stage >= 26)
+            .flatMap(tier => tier === rarity ? [chance - 1e-12, .5] : [.99]);
+          expect(Object.keys(machineConduitDrops(stage, () => rolls.shift()!))).toHaveLength(1);
+        }
+      }
     }
+    expect(machineConduitChance(1, 'Rare')).toBe(.05);
+    expect(machineConduitChance(1, 'Legendary')).toBe(.05);
+    expect(machineConduitChance(25, 'Omnic')).toBe(0);
+    expect(machineConduitChance(26, 'Omnic')).toBe(.05);
+    expect(machineConduitChance(35, 'Rare')).toBe(.35);
+    expect(machineConduitChance(35, 'Legendary')).toBe(.20);
+    expect(machineConduitChance(35, 'Omnic')).toBe(.15);
+    for (const stage of [0, 36, 1.5, NaN]) expect(() => machineConduitChance(stage, 'Rare')).toThrow();
   });
   it.each([7, 8])('remaps every v%i saved stage using floor(stage/75*35), never on read or twice', version => {
     for (let stage = 1; stage <= 75; stage++) {

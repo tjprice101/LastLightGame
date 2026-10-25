@@ -1071,9 +1071,10 @@ async function smokeMachinesLayout(firstClient, firstId, firstUsername) {
       game = resolveOperation(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage: test.stage } }, entropy).game;
       game.run.session.state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
       // Tier rolls: Rare .0401, Legendary .0506 and Omnic .01008.
-      // Master roll .03099 verifies the newly increased intervals on the host.
+      // Stage1 Legendary .0506 misses 5%; later stages award it.
+      // Master roll .30619 verifies the new 50% interval on the host.
       game.run.session.state.conduitSeed = 645;
-      game.run.session.state.masterChestSeed = 500;
+      game.run.session.state.masterChestSeed = 4864;
     }
     assert.ok(ids.includes(userId));
     assert.equal((await admin.rpc('load_game_account', { p_user: userId, p_initial: game })).error, null);
@@ -1103,7 +1104,8 @@ async function smokeMachinesLayout(firstClient, firstId, firstUsername) {
       assert.deepEqual(actual.result, JSON.parse(JSON.stringify(expected.result)));
       assert.deepEqual(actual.account, expected.account);
       const reward = actual.result.events.find(event => event.kind === 'reward');
-      assert.equal(reward.conduits[focus.Rare], 1); assert.equal(reward.conduits[focus.Legendary], 1);
+      assert.equal(reward.conduits[focus.Rare], 1);
+      assert.equal(reward.conduits[focus.Legendary], test.stage === 1 ? undefined : 1);
       assert.equal(reward.conduits[focus.Omnic], test.stage >= 26 ? 1 : undefined);
       assert.equal(reward.mechanicalComponents, Math.round(3 + 122 * (test.stage - 1) / 34) * (test.stage === 35 ? 5 : 1));
       assert.equal(reward.masterChests, test.stage === 35 ? 1 : undefined);
@@ -1111,7 +1113,7 @@ async function smokeMachinesLayout(firstClient, firstId, firstUsername) {
       assert.deepEqual(await invoke(operation, read.revision, id), actual);
     }
   }
-  console.log('Hosted Machines layout/rates passed: v8 migration, holdings/focus/final-clear access preserved. Stages1/25/26/27/35 verify Legendary rolls above3.5%, Omnic rolls above1% from26 onward, and final-only Master roll above1% with the new5.5%/3%/5% rates. Local/hosted reward/account parity and retries passed; disposable identities only.');
+  console.log('Hosted Machines layout/rates passed: v8 migration, holdings/focus/final-clear access preserved. Stages1/25/26/27/35 verify stage1 Legendary failure then later success, Omnic gate26, simultaneous rarity rewards and final-only Master success at30.619% under the new50% rate. Local/hosted reward/account parity and retries passed; disposable identities only.');
 }
 
 async function smokeFocusLoot(client, userId, username) {

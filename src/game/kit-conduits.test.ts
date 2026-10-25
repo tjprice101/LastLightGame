@@ -66,17 +66,17 @@ describe('replacement Omnic catalog, acquisition and stable identity', () => {
     }
   });
 
-  it('rolls each of45 Omnics at3%/45 from stage26 onward with the current tier totals and roll counts', () => {
+  it('rolls each of45 Omnics at5%/45 at stage26 with independent tier rolls', () => {
     const pool = conduits.filter((entry) => entry.rarity === 'Omnic');
     for (const [index, entry] of pool.entries()) {
-      const values = [.08, .055, 0, (index + .5) / pool.length];
+      const values = [.99, .99, 0, (index + .5) / pool.length];
       const random = vi.fn(() => values.shift()!);
       expect(machineConduitDrops(machineRules.omnicStage, random)).toEqual({ [entry.id]: 1 });
       expect(random).toHaveBeenCalledTimes(4);
-      expect(machineConduitLoot(machineRules.omnicStage).find((drop) => drop.id === entry.id)?.chance).toBeCloseTo(.03 / 45, 12);
+      expect(machineConduitLoot(machineRules.omnicStage).find((drop) => drop.id === entry.id)?.chance).toBeCloseTo(.05 / 45, 12);
       expect(machineConduitLoot(machineRules.omnicStage - 1).some((drop) => drop.id === entry.id)).toBe(false);
     }
-    for (const [rarity, chance] of [['Rare', .08], ['Legendary', .055], ['Omnic', .03]] as const) {
+    for (const [rarity, chance] of [['Rare', .05 + .30 * 25 / 34], ['Legendary', .05 + .15 * 25 / 34], ['Omnic', .05]] as const) {
       expect(machineConduitLoot(machineRules.omnicStage).filter((drop) => getConduit(drop.id).rarity === rarity).reduce((sum, drop) => sum + drop.chance, 0)).toBeCloseTo(chance);
     }
     const below = vi.fn(() => .99);
@@ -103,6 +103,7 @@ describe('replacement Omnic catalog, acquisition and stable identity', () => {
 
   it('saves actual Omnic machine awards once, preserving raw wallets on overflow and denied writes', () => {
     const state = createInfusionBattle('machines', machineRules.stages, 1729, 'ember', { level: 0, evolution: 1 });
+    state.masterChestSeed = 12345;
     state.enemies[0].hp = 1;
     const result = act(state, 'ember', 'light', state.enemies[0].id);
     const reward = result.events.find((entry) => entry.kind === 'reward')!;

@@ -19,7 +19,7 @@ They are separate from the90 ordinary-slot Conduits and never enter ordinary
 machine tier rolls, banners, the Store or Conduit upgrades.
 
 The final Awaken the Machines boss, **stage35 / Lv.120**, independently has
-a **5% chance** (D-400) to drop one **Cosmic Grand Master Chest**. Repeat final clears
+a **50% chance** (D-402) to drop one **Cosmic Grand Master Chest**. Repeat final clears
 are eligible. This remains the only ordinary direct enemy drop. Under D-315,
 opening any [Calamity EX+Omnipotent chest](calamity-mode.md) additionally grants
 exactly two Cosmic Grand Master Chests, including when all48 Masters are owned.

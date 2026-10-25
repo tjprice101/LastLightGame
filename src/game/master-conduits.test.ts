@@ -63,21 +63,21 @@ describe('character Masters and chest contracts', () => {
       expect(entry.effect).not.toContain('->');
     }
   });
-  it('rolls exactly below 5%, only final boss, without consuming entropy elsewhere', () => {
+  it('rolls exactly below 50%, only final boss, without consuming entropy elsewhere', () => {
     for (const stage of [1, 5, machineRules.omnicStage, machineRules.stages - 5, machineRules.stages - 1]) {
       const random = vi.fn(() => 0);
       expect(masterChestDrops(stage, true, random)).toBe(0);
       expect(random).not.toHaveBeenCalled();
     }
     expect(masterChestDrops(machineRules.stages, false, () => { throw new Error('Unexpected RNG'); })).toBe(0);
-    expect(masterChestDrops(machineRules.stages, true, () => .049999999)).toBe(1);
-    expect(masterChestDrops(machineRules.stages, true, () => .05)).toBe(0);
+    expect(masterChestDrops(machineRules.stages, true, () => .499999999)).toBe(1);
+    expect(masterChestDrops(machineRules.stages, true, () => .5)).toBe(0);
     for (const invalid of [-1, 1, NaN, Infinity]) expect(() => masterChestDrops(machineRules.stages, true, () => invalid)).toThrow();
   });
   it('exposes chest loot only at the actual final Machines boss stage', () => {
     expect(creatureLoot(getCreature('infusion:machines:5'), machineRules.stages - 1).some(drop => drop.id === 'grand-master-chest')).toBe(false);
     expect(creatureLoot(getCreature('infusion:machines:5'), machineRules.stages).find(drop => drop.id === 'grand-master-chest'))
-      .toMatchObject({ chance: .05, minimum: 1, maximum: 1 });
+      .toMatchObject({ chance: .5, minimum: 1, maximum: 1 });
   });
   it('loads legacy accounts without writes or granting anything', () => {
     const saved = storage();
@@ -171,6 +171,25 @@ describe('character Masters and chest contracts', () => {
     for (const key of ['seed', 'rewardSeed', 'conduitSeed', 'componentSeed'] as const) expect(a.state[key]).toBe(b.state[key]);
     expect(a.events.find(event => event.kind === 'reward')?.masterChests).toBe(1);
     expect(b.events.find(event => event.kind === 'reward')?.masterChests).toBeUndefined();
+  });
+  it('awards all three rarity drops and the 50% chest together in one atomic final-boss receipt', () => {
+    const saved = storage({ infusionStages: { machines: machineRules.stages } });
+    const state = createInfusionBattle('machines', 35, 1729, 'ember', { level: 0, evolution: 1 });
+    state.enemies[0].hp = 1;
+    state.allies[0].stats.damage = 1e12;
+    state.conduitSeed = 645;
+    state.masterChestSeed = 4864;
+    const result = act(state, 'ember', 'light', state.enemies[0].id);
+    const reward = result.events.find(event => event.kind === 'reward')!;
+    expect(Object.keys(reward.conduits ?? {})).toHaveLength(3);
+    expect(reward.masterChests).toBe(1);
+    const write = vi.spyOn(saved, 'setItem');
+    const account = saveAccountRewards(saved, result, 'all-four-drops');
+    expect(account.conduits).toEqual(reward.conduits);
+    expect(account.masterChests).toBe(3);
+    expect(write).toHaveBeenCalledOnce();
+    expect(saveAccountRewards(saved, result, 'all-four-drops')).toEqual(account);
+    expect(write).toHaveBeenCalledOnce();
   });
 });
 

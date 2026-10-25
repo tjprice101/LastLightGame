@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { conduits, getConduit, type ConduitId } from '../content/conduits';
-import { machineConduitDrops, machineConduitLoot, machineFocusRarities, machineRules, validateMachineLootFocus, type MachineLootFocus } from '../content/machines';
+import { machineConduitDrops, machineConduitLoot, machineConduitChance, machineFocusRarities, machineRules, validateMachineLootFocus, type MachineLootFocus } from '../content/machines';
 import { act, createInfusionBattle, nextStage } from './battle';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, setMachineLootFocus, summonCharacter, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
@@ -46,14 +46,15 @@ describe('saved one-shot Machines Focus Loot', () => {
         if (getConduit(id).rarity !== rarity) expect(drops[id]).toBe(1);
       }
       const table = machineConduitLoot(machineRules.omnicStage, {}, selected).filter(drop => getConduit(drop.id).rarity === rarity);
-      const chance = rarity === 'Rare' ? .08 : rarity === 'Legendary' ? .055 : .03;
+      const chance = machineConduitChance(machineRules.omnicStage, rarity);
       expect(table.reduce((sum, drop) => sum + drop.chance, 0)).toBe(chance);
       expect(table.filter(drop => drop.chance > 0).map(drop => drop.id)).toEqual([conduit.id]);
     }
   });
   it('retains exact rarity boundaries and Omnic gate with all three focuses', () => {
-    expect(machineConduitDrops(machineRules.omnicStage, sequence([.08, .055, .03]), {}, focus)).toEqual({});
-    expect(machineConduitDrops(machineRules.omnicStage, sequence([.079999, .9, .054999, .9, .029999, .9]), {}, focus))
+    const rare = machineConduitChance(26, 'Rare'), legendary = machineConduitChance(26, 'Legendary');
+    expect(machineConduitDrops(26, sequence([rare, legendary, .05]), {}, focus)).toEqual({});
+    expect(machineConduitDrops(26, sequence([rare - 1e-9, .9, legendary - 1e-9, .9, .05 - 1e-9, .9]), {}, focus))
       .toEqual(Object.fromEntries(Object.values(focus).map(id => [id, 1])));
     expect(machineConduitDrops(machineRules.omnicStage - 1, sequence([0, .9, 0, .9]), {}, focus))
       .toEqual({ [focus.Rare!]: 1, [focus.Legendary!]: 1 });

@@ -1,8 +1,44 @@
 # Awaken the Machines and expanded Conduits
 
+## Linear stage drop rates (D-402)
+
+Each eligible rarity rolls independently for every defeated Machine:
+
+| Rarity | First eligible stage | Starting chance | Stage35 chance |
+|---|---:|---:|---:|
+| Rare | 1 | 5% | 35% |
+| Legendary | 1 | 5% | 20% |
+| Omnic | 26 | 5% | 15% |
+
+For stage `s`, use `0.05 + (finalChance - 0.05) *
+(s - firstStage) / (35 - firstStage)`, without rounding intermediate rates.
+Omnic is unavailable before26. Bosses and ordinary enemies use the same
+stage-dependent rarity chances. One kill can award one Conduit of each
+eligible rarity together; there is no shared one-Conduit cap.
+
+The final stage35 boss independently rolls **50%** for one Cosmic Grand
+Master Chest. Earlier bosses and non-boss enemies cannot drop it. This is
+separate from all three ordinary rarity rolls, so the final boss can award
+three Conduits and a Master Chest together. Calamity chest contents and the
+0.5% banner bonus remain unchanged.
+
+The same stage-rate helper drives actual rewards and baseline loot tables.
+Baseline per-name rates divide the current stage's rarity chance by its
+full pool, still ignoring ownership/focus. Actual rewards retain unowned-only
+selection, saved focus, no completed-tier compensation, independent RNG
+streams/draw counts and atomic, receipt-deduplicated persistence.
+No migration, retroactive reward or combat-rule restart is introduced.
+
+Supersedes D-400's fixed rarity/chest rates below. Validate all35 stages,
+exact first/final endpoints and roll boundaries, gate25/26, independent
+multi-rarity kills, final-only chest source, focus/ownership and UI table
+parity. Rebundle/type-check the shared authority and run
+`node tools\smoke_server_game.mjs --machines-layout` before coordinated release.
+
 ## Current drop rates and baseline loot tables (D-400)
 
-Per-enemy independent Conduit rolls are **Rare8%, Legendary5.5%, Omnic3%**.
+Historical D-400 rates, superseded by D-402 above:
+per-enemy independent Conduit rolls are **Rare8%, Legendary5.5%, Omnic3%**.
 Legendary and Omnic each gain two percentage points; Rare and the0.5% banner
 bonus are unchanged. Omnic still starts at stage26; boss/ordinary Conduit
 odds match. The final stage35 boss independently drops one Cosmic Grand

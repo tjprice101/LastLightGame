@@ -1,5 +1,81 @@
 # Current state and handoff
 
+## Linear Machines drops and50% final Master Chest (D-402)
+
+- Shared `machineConduitChance` uses unrounded linear interpolation from5%
+  to Rare35%/Legendary20% across stages1-35 and Omnic5%->15% across26-35;
+  Omnic remains unavailable through25. Both actual rolls and loot tables
+  use this helper. The final35 boss independently drops a Master Chest50%.
+- Rarity rolls stay independent: a kill can award all three Conduits plus
+  the eligible chest. Unowned-only pools, saved focus, full-pool baseline
+  references, completed-tier behavior, RNG streams/draw counts, receipts,
+  atomic saves, banner0.5% and Calamity contents remain unchanged.
+  Shared activity/help, battle and focus copy describes the linear rates.
+  [Current contract](awaken-the-machines.md#linear-stage-drop-rates-d-402).
+- Nine focused files pass124 tests; type-check passes. Regression coverage
+  checks every stage, exact first/final endpoints, acquisition boundaries,
+  source restrictions, simultaneous rewards, focus/save behavior and displayed
+  stage-dependent baseline chances. The D-401 capability report's combat
+  results remain valid but its acquisition costs describe pre-D-402 rates.
+  Full `npx vitest run --maxWorkers=2 --reporter=dot`:6551 tests/210 files
+  pass. Full-run failures exposed older fixtures unintentionally obtaining
+  chests or repeated owned Conduits under the new odds; gave those isolated
+  component/access fixtures explicit non-dropping seeds, preserving all
+  production validation. Final threshold/chest focused rerun:34 tests pass.
+- `npm run build`, `npx tsc --noEmit`, authority rebundle and
+  `npx --yes deno check supabase\functions\game-operation\index.ts` pass;
+  existing client chunk-size warning only. Matching function deployed.
+  Hosted `node tools\smoke_server_game.mjs --machines-layout` verifies local/
+  hosted event/account parity at1/25/26/27/35, stage1 Legendary failure and
+  later success, simultaneous rarity rewards and final Master roll30.619%
+  succeeding under50%, plus idempotent retries and legacy layout handling.
+  Disposable identities/cascading records removed; no owner accounts touched.
+  No account migration, reward backfill or rules bump. Client publication
+  is verified in the completion report.
+
+## Opponent-free roster capability audit (D-401)
+
+- Owner requests on-paper capabilities through105, explicitly without enemy
+  levels/boss matchups. [Detailed report](roster-capability-audit.md) covers
+  all16 Element-Bearers at0/20/40/60/80/100/105,16 solos/120 duos/560 trios,
+  six equipment/play profiles, legal minimum evolution and separately labeled
+  developed-account ceilings. One chosen starter is free; roster/gear access
+  is never inferred from a tested character's level.
+- `tools/roster-capability.ts` uses real actions and exported production phase
+  hooks with one zero-Defense measuring target and no hostile actions, incoming
+  Gauge, damage-fed resources or rewards. Damage output, artificial healing
+  headroom, shield creation, precharged action burst and conservative
+  post-Defense packet survival are separate experiments, not additive scores.
+  Defensive probes screen each legal single action and do not credit a lucky
+  Stasis save. Incoming-only mechanics remain outside the offensive rankings.
+- Full matrix completes175,392 seeded measurements,58,464 unique aggregate
+  keys and672 character/build/checkpoint records; all metrics finite, no
+  exhausted units or action-loop guard failures. All48 personal Masters and
+  three ceiling packages produce1344 screened candidates. Main runs use18
+  cycles/three seeds;200 additional90-cycle/ten-seed runs check selected
+  Lv.105 leaders and controlled item removal. Some loops ramp beyond18 cycles;
+  the report explicitly distinguishes finite windows from steady-state claims.
+- Selected Rosetta/Crinso/Disciple ceiling trio measures67,152,728.9 late-window
+  DPR,73,868,001.8 in the longer check, identical across its ten crit seeds.
+  Removing Glassroot from all wearers loses90.3%; removing Rosetta's selected
+  Master loses86.5%; removing Cathedral loses66.6%. These are overlapping
+  marginal effects, not independent percentages to sum. Package needs200
+  Calamitic tokens, account-wide upgraded names and three chosen Masters,
+  plus recruitment/progression. Flag shared scaling/Gauge feedback for review,
+  not an approved character nerf or proof of enemy-clear/invulnerability.
+- Runner: `node tools\run_roster_capability.mjs <new-results.jsonl>
+  docs\roster-capability-audit.md`. Exclusive output creation preserves prior
+  evidence; `--render` regenerates from a complete source-hash-matching JSONL
+  and recomputes longer checks. Incomplete evidence is explicitly rejected.
+  Main source base is `55ae0e63b60d28ed865a628e1d3edb3643a6ffbf`.
+- `npx vitest run tools\roster-capability.test.ts --maxWorkers=2
+  --reporter=dot`:8 tests pass. `npx tsc --noEmit`, runner syntax check and
+  `npm run build` pass (existing chunk-size warning only). Full raw-key,
+  finite-metric and rendered-table validation is performed separately.
+  No runtime, authority, saves or accounts changed; no deployment required.
+  Enemy-pressure tests, exhaustive rotations/all equipment combinations,
+  captured units and any balance changes remain outside this approved scope.
+
 ## Machines drop rates and baseline loot pools (D-400)
 
 - Owner confirms two-percentage-point increases for Machines only:

@@ -9,6 +9,7 @@ import { conduits, getConduit, conduitEffect, isConduitId } from '../content/con
 import { formatStat } from '../content/combat';
 import { referencedEffect as readableEffect } from './effect-copy';
 import { bracketReferences } from './reference-text';
+import { machineConduitChance } from '../content/machines';
 
 const showModalDescriptor = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, 'showModal');
 const closeDescriptor = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, 'close');
@@ -54,19 +55,19 @@ describe('enemy loot dialogs and Conduit details', () => {
     document.body.append(host);
     bindCreatureGlossary(host, account.conduitUpgrades);
     const dialog = document.getElementById('creature-loot-infusion:machines:0')!;
-    const check = () => {
+    const check = (stage: number) => {
       const rows = Array.from(dialog.querySelectorAll('tbody tr'));
       for (const conduit of conduits.filter(c => c.rarity === 'Rare')) {
         const row = rows.find(row => row.textContent?.includes(`${conduit.name} · Rare`))!;
-        expect(row.children[2].textContent).toBe(`${formatStat(8 / conduits.filter(c => c.rarity === 'Rare').length)}%`);
+        expect(row.children[2].textContent).toBe(`${formatStat(100 * machineConduitChance(stage, 'Rare') / conduits.filter(c => c.rarity === 'Rare').length)}%`);
       }
       expect(dialog.textContent).toContain('Fully owned rarities drop nothing');
     };
-    check();
+    check(1);
     const select = dialog.querySelector<HTMLSelectElement>('[data-loot-stage]')!;
     select.value = '5';
     select.dispatchEvent(new Event('change', { bubbles: true }));
-    check();
+    check(5);
   });
   it('shows one concise Conduit note across all rarities, including mixed focused and random drops', () => {
     const account = emptyAccount();

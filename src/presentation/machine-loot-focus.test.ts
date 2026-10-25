@@ -98,16 +98,16 @@ describe('Machines Focus Loot screen', () => {
     host.innerHTML = creatureGlossary(account);
     document.body.append(host);
     bindCreatureGlossary(host);
-    const check = () => {
+    const check = (chance: number) => {
       const rows = Array.from(host.querySelectorAll('tbody tr'));
       for (const conduit of conduits.filter(entry => entry.rarity === 'Rare')) {
         const row = rows.find(row => row.textContent?.includes(`${conduit.name} · Rare`))!;
-        expect(row.children[2].textContent).toBe(`${formatStat(8 / conduits.filter(entry => entry.rarity === 'Rare').length)}%`);
+        expect(row.children[2].textContent).toBe(`${formatStat(chance * 100 / conduits.filter(entry => entry.rarity === 'Rare').length)}%`);
       }
     };
-    check();
+    check(.05);
     const select = host.querySelector<HTMLSelectElement>('[data-loot-stage]')!;
     select.value = '5'; select.dispatchEvent(new Event('change', { bubbles: true }));
-    check();
+    check(.05 + .30 * 4 / 34);
   });
 });

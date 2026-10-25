@@ -14,7 +14,7 @@ import { elementLabel } from './element-label';
 import { information, informationTopics } from './information';
 import { itemShowcase } from './item-showcase';
 import { roseEvent, roseEventRules } from './rose-event';
-import { machineRules, machineRulesText } from '../content/machines';
+import { machineRules, machineRulesText, machineDropRatesText } from '../content/machines';
 import { machineLootFocus } from './machine-loot-focus';
 import { activityBanner } from './activity-banner';
 import { activityLayout } from './activity-layout';
@@ -158,7 +158,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       ${activityBanner('Awaken the Machines', 'banners/machines-banner.png', 'Awaken the Machines: a destroyed prototype from Let and Rise\'s collaboration awakens in an element-scorched wasteland.')}
       <p>${machineOrigin}</p>
       ${activityFacts(`${machineRules.stages} stages`, '10-120', 'Prismatica · Broken Mechanical Components · Conduits')}
-      <p>Rare ${machineRules.rareChance * 100}% and Legendary ${machineRules.legendaryChance * 100}% on every stage · Omnic ${machineRules.omnicChance * 100}% on stage ${machineRules.omnicStage} and every stage afterward</p>
+      <p>${machineDropRatesText}</p>
       <p>Unowned Conduits only. A completed rarity awards no Conduit or replacement reward.</p>`, `
       ${itemShowcase([{ id: 'mechanical-components' }], 'Conduit upgrade currency')}
       <button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button>

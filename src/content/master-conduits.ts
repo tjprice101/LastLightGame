@@ -7,7 +7,7 @@ import { redesignEffect } from './conduit-redesign';
 
 export const masterChest = {
   id: 'grand-master-chest', name: 'Cosmic Grand Master Chest',
-  chance: .05, stage: machineStageCount, art: 'master-conduits/grand-master-chest.png',
+  chance: .50, stage: machineStageCount, art: 'master-conduits/grand-master-chest.png',
   description: 'Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward.',
 } as const;
 export const astralReserveArt = 'master-conduits/astral-reserve.png';

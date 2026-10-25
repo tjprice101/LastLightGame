@@ -261,6 +261,7 @@ describe('Calamity account transactions', () => {
     state.enemies[0].hp = 1;
     state.allies[0].stats.damage = 1e12;
     state.allies[0].stats.crit = 0;
+    state.masterChestSeed = 12345;
     const result = act(state, 'ember', 'light', state.enemies[0].id);
     expect(result.state.phase).toBe('cleared');
     const account = saveAccountRewards(saved, result, `normal-${id}`);

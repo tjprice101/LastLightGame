@@ -34,6 +34,8 @@ function kill(stage = 1, componentSeed = 1) {
   const state = createInfusionBattle('machines', stage, 1729, 'ember', { level: 0, evolution: 1 });
   for (const enemy of state.enemies) { enemy.hp = 1; enemy.stats.defense = 0; }
   state.componentSeed = componentSeed;
+  state.masterChestSeed = 12345;
+  state.conduitSeed = 12345;
   return act(state, 'ember', 'light', state.enemies[0].id);
 }
 
@@ -101,6 +103,8 @@ describe('component progression and isolated rewards', () => {
       const state = createInfusionBattle('machines', stage, 1729, 'ember', { level: 0, evolution: 1 });
       state.allies[0].shatter = 100;
       state.componentSeed = 0x80000000;
+      state.masterChestSeed = 12345;
+      state.conduitSeed = 12345;
       state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
       const result = act(state, 'ember', 'skill2', state.enemies[0].id);
       const rewards = result.events.filter(event => event.kind === 'reward');

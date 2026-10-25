@@ -1,5 +1,5 @@
 import { conduits, isConduitId, type ConduitId } from '../content/conduits';
-import { isMachineFocusRarity, machineFocusRarities, machineRules, type MachineFocusRarity } from '../content/machines';
+import { isMachineFocusRarity, machineFocusRarities, machineDropRatesText, type MachineFocusRarity } from '../content/machines';
 import type { Account } from '../game/account';
 import { conduitDetails, conduitIcon } from './conduit-store';
 import { information } from './information';
@@ -27,7 +27,7 @@ function focusChoices(account: Account | null, selected: MachineFocusRarity = 'R
 export function machineLootFocus(account: Account | null): string {
   return information('machine-loot-focus', 'Focus Loot', `
     <p>Your next drop in each focused rarity awards your choice. Focus changes the reward, not the drop rate.</p>
-    <p>Rare ${machineRules.rareChance * 100}% &middot; Legendary ${machineRules.legendaryChance * 100}% &middot; Omnic ${machineRules.omnicChance * 100}% from stage ${machineRules.omnicStage}.</p>
+    <p>${machineDropRatesText} Independent rolls allow multiple Conduits per enemy.</p>
     <p>Obtaining your choice from any source clears that rarity's focus. Masters cannot be focused.</p>
     ${!account ? '<p role="alert">Loot focus unavailable. Check the save error.</p>' : ''}
     <div class="machine-focus-body">${focusChoices(account)}</div>
