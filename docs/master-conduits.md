@@ -45,7 +45,8 @@ Masters have fixed kit effects and listed personal/squad stats, never upgrade-sc
 be upgraded, sold or purchased.
 
 Team equipment exposes the actual slot and exact effect. Inventory lists
-owned Masters; Collections lists all 48 with ownership. Character and Battle
+owned Masters alongside ordinary Conduits; all choice/Calamity chests belong
+to Resources & Items (D-407). Collections lists all 48 with ownership. Character and Battle
 references show the equipped effect. The final creature's loot reference
 publishes the actual chest chance.
 

@@ -1,5 +1,23 @@
 # Menus and inventory
 
+## Compact holdings and unified categories (D-407)
+
+Inventory has two expandable sections: **Resources & Items** holds materials,
+components, Machine's Master Chests and every Calamity chest; **Conduits** holds
+ordinary and personal Master Conduits together. Section counts include every
+distinct positive owned type in that section. Conduits filtering includes Masters;
+the Master-only and Chests filters remain available. Expansion/filter history is
+transient; no holdings or save formats change.
+
+Cards use a compact80px artwork column beside the name, identity, exact quantity
+and44px Details/Open controls. Independent content-height cards replace subgrids
+that stretched mixed chest/Master rows into narrow towers. Each section spans
+the available width with responsive card columns; long names wrap naturally,
+and elemental badges retain bold themed borders without splitting their words.
+This changes Inventory only, not the enlarged battle/reward chest artwork.
+Validate `inventory.test.ts`, `calamity.test.ts`, `conduit-element.test.ts` and
+desktop/320px browser layouts with long names and maximum-safe quantities.
+
 ## Instant navigation (D-406)
 
 Page changes render immediately without a black loading curtain, fade delays,
@@ -468,7 +486,7 @@ See [founding canon](world-lore.md) for the full narrative and boundaries.
 
 ## Collapsible holdings and item Details (D-268)
 
-Master Conduits & Chests, Materials and ordinary Conduits are independent native
+Under D-407, Resources & Items and all Conduits are independent native
 disclosures with44px summary controls and Expand/Collapse affordances. All start
 open; closing one never hides another. Expansion state is transient and restored
 through menu history and refreshes, not written to the account. Returning to
@@ -491,11 +509,12 @@ descriptions. Lists still use natural page scrolling, never squeezed/nested pane
 Collections Information contains gallery rules only, not a roster-wide
 Element-Bearer biography list. Individual combat-kit references remain available.
 
-Machine's Master Chests appear only as positive owned stacks in the Master
-inventory grid, with normal item artwork/name/count rows, not a dedicated
-full-width chest panel or separate labeled action button. Select the chest
-artwork to choose a Master using the existing confirmation and atomic opening
-flow. All-owned accounts retain their chest tile with opening disabled.
+Machine's Master Chests appear only as positive owned stacks in Resources & Items,
+with compact artwork/name/count cards, not a dedicated full-width chest panel.
+Use the explicit Open button (D-405) to choose a Master with the existing
+confirmation and atomic opening flow. All-owned accounts retain their chest
+tile with opening disabled. Calamity chests share this section and Open control;
+Master Conduits themselves appear with ordinary Conduits.
 Drop rules and detailed chest rules remain in Inventory Information.
 Inventory holdings contain no destination shortcut buttons: no Store, Upgrade,
 Equip in Team or empty-state dungeon/store links. Use the shared navigation

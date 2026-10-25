@@ -326,7 +326,7 @@ describe('Calamity presentation', () => {
     document.body.innerHTML = inventoryView(account);
     bindInventory(document.body, vi.fn());
     expect(document.querySelectorAll('[data-open-calamity-chest]')).toHaveLength(1);
-    expect(document.querySelector('[data-open-calamity-chest]')!.textContent).toBe('Open one chest');
+    expect(document.querySelector('[data-open-calamity-chest]')!.textContent).toBe('Open');
     expect(document.body.textContent).toContain('Owned 2');
     expect(document.querySelector<HTMLImageElement>('[data-inventory-chest] img')!.src).toContain('items/calamity-chest-omnipotent.png?v=');
     const type = document.querySelector<HTMLSelectElement>('[data-inventory-filter="type"]')!;

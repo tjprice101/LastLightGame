@@ -3,6 +3,10 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**Compact Inventory (D-407):** [unified holdings categories](menus-and-inventory.md#compact-holdings-and-unified-categories-d-407)
+puts Masters with Conduits and all chests in Resources & Items, using compact
+horizontal artwork cards instead of stretched columns.
+
 **Instant navigation (D-406):** [page changes without loading screens](menus-and-inventory.md#instant-navigation-d-406)
 remove fade/artwork waits; only real pending setup receives delayed corner status.
 

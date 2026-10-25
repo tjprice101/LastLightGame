@@ -1,5 +1,35 @@
 # Current state and handoff
 
+## Compact Inventory and corrected categories (D-407)
+
+- Owner supplies tall narrow Master/chest screenshot and requests compact,
+  attractive icons/cards, Masters with other Conduits and all chests with
+  resources/items. Removed separate Master/chest disclosure: Resources & Items
+  now contains materials/components/all Master and Calamity chests; Conduits
+  combines ordinary/personal Masters. Counts include distinct positive types.
+- Replaced mixed-card subgrids (which shared multiple oversized text rows)
+  with independent compact horizontal cards:80px art beside content, naturally
+  wrapping full names, unchanged bold elemental badges/gradients and44px
+  controls. Full-width sections use responsive columns. Chest Details/View Loot
+  and explicit Open share an action row; confirmation/atomic opening unchanged.
+  Battle/reward chest sizing from D-405 is intentionally unaffected.
+- Conduits filter includes Masters, Master-only/Chests filters remain. Two
+  transient collapse states and filter history are preserved; no wallet writes,
+  new assets, mechanics, RNG, server behavior or save-format migration.
+  Missing accounts still report Currency/Resource/Conduit errors, not fake zeros.
+- Validation: `npx vitest run src\presentation\inventory.test.ts
+  src\presentation\calamity.test.ts src\presentation\conduit-element.test.ts
+  src\presentation\menu-history.test.ts src\presentation\menu-information.test.ts
+  --maxWorkers=2 --reporter=dot` passes99 tests/5 files. `npm run build`
+  (TypeScript included), standalone `npx tsc --noEmit` and
+  `git diff --check` pass; existing large-chunk advisory remains.
+- Browser in-memory fixtures with long chest/Master names and maximum-safe
+  quantities:320/390/1280/1800px all have no overflowing cards or horizontal
+  page overflow. Artwork stays80px; tallest sampled card197.1px, smallest
+  action target44px. Correct4 resource/item and5 combined Conduit stacks.
+  No account/storage changes. Current specs/index/decision log updated;
+  no remaining requested work or owner decisions.
+
 ## Instant destination navigation (D-406)
 
 - Owner requests no unnecessary loading screens and immediate button-driven

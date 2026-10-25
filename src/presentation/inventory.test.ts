@@ -12,19 +12,24 @@ import { referencedEffect } from './effect-copy';
 afterEach(() => document.body.replaceChildren());
 
 describe('reference Inventory layout', () => {
-  it('shows an owned chest as a normal Master inventory tile without a dedicated action panel', () => {
+  it('groups chests with items and Master Conduits with ordinary Conduits', () => {
     const account = emptyAccount();
     account.masterChests = 1;
     account.masterConduits = { [masterConduits[0].id]: 1 };
     account.materials = { 'rosethorn-rare': 15 };
     account.conduits = { 'vigil-core': 1 };
+    account.calamityChests = { 'calamity:machines:3': 2 };
     const before = structuredClone(account);
     const html = inventoryView(account);
-    expect(html).toContain('class="inventory-panel ref-panel inventory-masters"');
-    expect(html).toContain('Master Conduits &amp; Chests · 1 / 48');
+    expect(html).not.toContain('inventory-masters');
+    expect(html).toContain('Resources &amp; Items · 3');
+    expect(html).toContain('Conduits · 2');
     expect(html).toContain(`data-inventory-chest="${masterChest.id}"`);
     document.body.innerHTML = html;
     const chest = document.querySelector(`[data-inventory-chest="${masterChest.id}"]`)!;
+    expect(chest.closest('[data-inventory-section]')?.getAttribute('data-inventory-section')).toBe('materials');
+    expect(document.querySelector('[data-open-calamity-chest]')?.closest('[data-inventory-section]')?.getAttribute('data-inventory-section')).toBe('materials');
+    expect(document.querySelector('[data-inventory-master]')?.closest('[data-inventory-section]')?.getAttribute('data-inventory-section')).toBe('conduits');
     expect(chest.querySelector('.inventory-item-art')!.tagName).toBe('DIV');
     expect(chest.querySelector('[data-open-master-chest]')!.textContent).toBe('Open');
     expect(chest.querySelector('[data-open-master-chest] img')).toBeNull();
@@ -45,6 +50,29 @@ describe('reference Inventory layout', () => {
     expect(html).toContain(`aria-label="Open ${masterChest.name} · Choose a Master" disabled`);
     expect(html).toContain('Extra chests stay unopened once you own every Master.');
     expect(html).toContain(`Owned ${Number.MAX_SAFE_INTEGER}`);
+  });
+  it('shows Master-only holdings in Conduits and includes Masters in the Conduits filter', () => {
+    const account = emptyAccount();
+    account.masterConduits = { [masterConduits[0].id]: 1 };
+    account.masterChests = 1;
+    const host = document.createElement('main');
+    host.innerHTML = inventoryView(account);
+    bindInventory(host, vi.fn());
+    const conduitsPanel = host.querySelector<HTMLElement>('[data-inventory-section="conduits"]')!;
+    expect(conduitsPanel.querySelector('[data-inventory-master]')).not.toBeNull();
+    expect(conduitsPanel.querySelector('.inventory-empty')).toBeNull();
+    const filter = host.querySelector<HTMLSelectElement>('[data-inventory-filter="type"]')!;
+    for (const type of ['conduits', 'masters']) {
+      filter.value = type;
+      filter.dispatchEvent(new Event('change'));
+      expect(conduitsPanel.hidden).toBe(false);
+      expect(host.querySelector<HTMLElement>('[data-inventory-master]')!.hidden).toBe(false);
+      expect(host.querySelector<HTMLElement>('[data-inventory-section="materials"]')!.hidden).toBe(true);
+    }
+    filter.value = 'chests';
+    filter.dispatchEvent(new Event('change'));
+    expect(conduitsPanel.hidden).toBe(true);
+    expect(host.querySelector<HTMLElement>('[data-inventory-chest]')!.hidden).toBe(false);
   });
   it('renders both holdings panels simultaneously with currency art and decorative empty slots', () => {
     const html = inventoryView(emptyAccount());
@@ -68,7 +96,7 @@ describe('reference Inventory layout', () => {
     account.conduits = { 'vigil-core': 3, 'bastion-lock': 0 };
     const before = structuredClone(account);
     const html = inventoryView(account, 'conduits');
-    expect(html).toContain('Resources · 2');
+    expect(html).toContain('Resources &amp; Items · 2');
     expect(html).toContain('Conduits · 1');
     expect(html.match(/data-inventory-material=/g)).toHaveLength(2);
     expect(html.match(/data-inventory-conduit=/g)).toHaveLength(1);
@@ -87,13 +115,13 @@ describe('reference Inventory layout', () => {
   });
   it('distinguishes unavailable saves from empty holdings without displaying fake zero balances', () => {
     const html = inventoryView(null);
-    expect(html.match(/role="alert"/g)).toHaveLength(4);
+    expect(html.match(/role="alert"/g)).toHaveLength(3);
     for (const type of ['Currency', 'Resource', 'Conduit']) expect(html).toContain(`${type} inventory unavailable`);
     expect(html).not.toContain('No resources yet');
     expect(html).not.toContain('No Conduits owned yet');
     expect(html).not.toContain('inventory-empty-slots');
     expect(html).not.toContain('data-page=');
-    expect(html).toContain('Resources · Unavailable');
+    expect(html).toContain('Resources &amp; Items · Unavailable');
     expect(isInventoryTab('materials')).toBe(true);
     expect(isInventoryTab('conduits')).toBe(true);
     for (const input of ['currency', null, undefined]) expect(isInventoryTab(input)).toBe(false);
@@ -103,7 +131,7 @@ describe('reference Inventory layout', () => {
     account.conduits = { 'vigil-core': 1 };
     const before = structuredClone(account);
     const host = document.createElement('div');
-    host.innerHTML = inventoryView(account, 'materials', { masters: false, materials: true, conduits: false });
+    host.innerHTML = inventoryView(account, 'materials', { materials: true, conduits: false });
     const changed = vi.fn();
     const selected = vi.fn();
     bindInventory(host, selected, changed);
@@ -112,15 +140,15 @@ describe('reference Inventory layout', () => {
     panel.open = true;
     panel.dispatchEvent(new Event('toggle'));
     expect(selected).toHaveBeenCalledWith('conduits');
-    expect(changed).toHaveBeenLastCalledWith({ masters: false, materials: true, conduits: true });
+    expect(changed).toHaveBeenLastCalledWith({ materials: true, conduits: true });
     panel.open = false;
     panel.dispatchEvent(new Event('toggle'));
-    expect(inventorySections(host)).toEqual({ masters: false, materials: true, conduits: false });
+    expect(inventorySections(host)).toEqual({ materials: true, conduits: false });
     expect(panel.querySelector('[data-inventory-conduit]')).toBe(item);
     const restored = document.createElement('div');
     restored.innerHTML = inventoryView(account, 'conduits', inventorySections(host));
     expect(inventorySections(restored)).toEqual(inventorySections(host));
-    expect(host.querySelectorAll('details > summary')).toHaveLength(3);
+    expect(host.querySelectorAll('[data-inventory-section] > summary')).toHaveLength(2);
     expect(account).toEqual(before);
   });
 
@@ -222,7 +250,7 @@ describe('reference Inventory layout', () => {
     account.materials = { 'infernic-common': 5 };
     const filters = { query: '"><img src=x>', type: 'materials', rarity: 'Common', element: 'infernic' };
     const host = document.createElement('main');
-    host.innerHTML = inventoryView(account, 'materials', { masters: true, materials: false, conduits: true }, filters);
+    host.innerHTML = inventoryView(account, 'materials', { materials: false, conduits: true }, filters);
     bindInventory(host, vi.fn());
     expect(inventoryFilters(host)).toEqual(filters);
     expect(host.querySelector('img[src="x"]')).toBeNull();
@@ -234,7 +262,7 @@ describe('reference Inventory layout', () => {
     expect(inventorySections(restored).materials).toBe(false);
     host.innerHTML = inventoryView(null, 'materials', undefined, filters);
     bindInventory(host, vi.fn());
-    expect(host.querySelectorAll('[role="alert"]')).toHaveLength(4);
+    expect(host.querySelectorAll('[role="alert"]')).toHaveLength(3);
     expect(host.querySelector<HTMLInputElement>('[data-inventory-query]')!.disabled).toBe(true);
     expect(host.querySelector('[data-inventory-results]')?.hasAttribute('hidden')).toBe(true);
   });
@@ -256,7 +284,7 @@ describe('reference Inventory layout', () => {
     host.innerHTML = inventoryView(account);
     const resources = host.querySelector('#inventory-panel-materials')!;
     const card = resources.querySelector('[data-inventory-resource="mechanical-components"]')!;
-    expect(resources.querySelector('summary')!.textContent).toBe('Resources · 1');
+    expect(resources.querySelector('summary')!.textContent).toBe('Resources & Items · 1');
     expect(card.closest('.inventory-item-grid')).not.toBeNull();
     expect(card.querySelector('.inventory-item-art > img')?.getAttribute('src')).toContain('currencies/mechanical-components.png');
     expect(card.querySelector('.inventory-quantity')!.textContent).toBe(`Owned ${Number.MAX_SAFE_INTEGER}`);

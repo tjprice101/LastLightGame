@@ -257,7 +257,7 @@ html body .sanctuary-shell .ref-inventory .inventory-currency { display: flex; f
 html body .sanctuary-shell .ref-inventory .inventory-currency > .currency-icon { flex: 0 0 3rem; width: 3rem; height: 3rem; }
 .ref-inventory .inventory-currency strong { font-size: clamp(1.5rem, 2.8vw, 2.8rem); }
 html body .sanctuary-shell .ref-inventory .inventory-panel { padding: .95rem; margin: 0; height: auto; min-height: 0; overflow: visible; }
-html body .sanctuary-shell .ref-inventory .inventory-masters { grid-column: 1 / -1; }
+html body .sanctuary-shell .ref-inventory .inventory-panel { grid-column: 1 / -1; }
 html body .sanctuary-shell .ref-inventory .ref-scroll { flex: none; overflow: visible; }
 html body .sanctuary-shell .ref-inventory .ref-panel-heading { flex-wrap: wrap; }
 html body .sanctuary-shell .ref-inventory .ref-panel-heading > span { display: flex; flex-wrap: wrap; gap: .4rem; }
@@ -269,7 +269,6 @@ html body .sanctuary-shell .ref-inventory .inventory-item-art :is(img, .conduit-
 .ref-inventory .inventory-quantity { font-size: .7rem; }
 html body .sanctuary-shell .ref-inventory .inventory-empty-slots { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .5rem; max-width: 30rem; }
 html body .sanctuary-shell .ref-inventory .inventory-empty-slots i { max-height: 64px; }
-html body .sanctuary-shell .ref-inventory .inventory-masters > .inventory-item { align-items: start; text-align: left; }
 .ref-component-count { display: flex; align-items: center; gap: .4rem; font-size: .7rem; color: #a9a9ae; }
 .ref-component-count img { width: 1.5rem; height: 1.5rem; object-fit: contain; }
 html body .sanctuary-shell .ref-conduit-store { grid-template-columns: 11rem minmax(0, 1fr) 18.5rem; grid-template-rows: auto minmax(0, 1fr); }
@@ -797,11 +796,18 @@ html body .sanctuary-shell .ref-product-grid > .ref-product[data-store-conduit] 
 html body .sanctuary-shell .ref-product-grid > .ref-product > :is(b, small, .ref-chip) { margin: 0; }
 html body .sanctuary-shell .ref-product-grid > .ref-product > .ref-chip { align-self: start; }
 html body .sanctuary-shell .inventory-item-grid > .inventory-item {
-  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: subgrid;
-  grid-row: span 4; align-items: start; justify-items: center;
+  display: grid; grid-template-columns: 80px minmax(0, 1fr); grid-template-rows: auto;
+  grid-row: auto; align-items: start; justify-items: start; align-content: start;
+  gap: .4rem .75rem; padding: .8rem; text-align: left;
 }
-html body .sanctuary-shell .inventory-item-grid > .inventory-item[data-inventory-conduit],
-html body .sanctuary-shell .inventory-masters .inventory-item-grid > .inventory-item { grid-row: span 5; }
+html body .sanctuary-shell .ref-inventory .inventory-item-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap: .75rem; align-items: start; }
+html body .sanctuary-shell .inventory-item-grid > .inventory-item > .inventory-item-art { grid-column: 1; grid-row: 1 / span 4; width: 80px; height: 80px; }
+html body .sanctuary-shell .inventory-item-grid > .inventory-item > :not(.inventory-item-art):not(dialog) { grid-column: 2; }
+html body .sanctuary-shell .inventory-item-grid .conduit-identity-badges { justify-content: flex-start; gap: .25rem; }
+html body .sanctuary-shell .inventory-item-grid .conduit-element-label { margin: 0; font-size: .75rem; word-break: normal; overflow-wrap: normal; }
+html body .sanctuary-shell .inventory-item-grid .inventory-item-actions { display: flex; flex-wrap: wrap; gap: .4rem; width: 100%; }
+html body .sanctuary-shell .inventory-item-grid .inventory-item :is([data-information], [data-open-master-chest], [data-open-calamity-chest]) { min-height: 44px; padding: .5rem .65rem; font-size: .8rem; margin: 0; }
+html body .sanctuary-shell .inventory-item-grid .inventory-item-actions > button { flex: 1 1 auto; width: auto; }
 html body .sanctuary-shell .inventory-item-grid > .inventory-item > :is(strong, small, p, .inventory-quantity) { margin: 0; }
 html body .sanctuary-shell .ref-inventory .inventory-panel > summary { min-height: 44px; margin: 0; }
 html body .sanctuary-shell .ref-inventory .inventory-panel:not([open]) > summary { border-bottom: 0; padding-bottom: 0; }
