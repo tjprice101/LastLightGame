@@ -71,7 +71,7 @@ describe('repeatable final-boss 5x quantity contract', () => {
       expect(reward.masterChests).toBe(1);
     }
     expect(reward.capture).toBeUndefined();
-    expect(reward.recruitment).toBeUndefined();
+    expect(reward.recruitment).toBe(state.war?.character);
     if (state.war || state.infusion?.mode === 'sanctuary') expect(reward.lycalis).toBe(25);
     if (state.infusion?.mode === 'heavens' || state.infusion?.mode === 'abyss') expect(reward.lycalis).toBe(15);
     if (!state.war) {
