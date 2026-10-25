@@ -19,14 +19,18 @@ They are separate from the90 ordinary-slot Conduits and never enter ordinary
 machine tier rolls, banners, the Store or Conduit upgrades.
 
 The final Awaken the Machines boss, **stage35 / Lv.120**, independently has
-a **50% chance** (D-402) to drop one **Cosmic Grand Master Chest**. Repeat final clears
+a **50% chance** (D-402) to drop one **Machine's Master Chest**. Repeat final clears
 are eligible. This remains the only ordinary direct enemy drop. Under D-315,
 opening any [Calamity EX+Omnipotent chest](calamity-mode.md) additionally grants
-exactly two Cosmic Grand Master Chests, including when all48 Masters are owned.
+exactly two Machine's Master Chests, including when all48 Masters are owned.
 Calamity bosses themselves drop only their activity/tier chest. Separate RNG
 streams preserve combat and all existing reward streams.
 
-Open a chest from Inventory, choose an unowned Master, then confirm. The owner
+Use the visible **Open** button beside the decorative chest artwork in Inventory,
+choose an unowned Master, then confirm. D-405 renames the former Cosmic Grand
+Master Chest without changing `grand-master-chest` or saved holdings; drop/result
+art uses its actual PNG and larger chest-specific sizing. The Master opening
+omits the old planetary-lock message. The owner
 approves choices for any named Element-Bearer, including one not yet owned.
 This unlocks the Master, not the character, and never auto-equips it. Already
 owned choices are disabled and rejected by transactions. If all 48 are owned,

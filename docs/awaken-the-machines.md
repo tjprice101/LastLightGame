@@ -16,8 +16,8 @@ Omnic is unavailable before26. Bosses and ordinary enemies use the same
 stage-dependent rarity chances. One kill can award one Conduit of each
 eligible rarity together; there is no shared one-Conduit cap.
 
-The final stage35 boss independently rolls **50%** for one Cosmic Grand
-Master Chest. Earlier bosses and non-boss enemies cannot drop it. This is
+The final stage35 boss independently rolls **50%** for one Machine's
+Master Chest (renamed from Cosmic Grand Master Chest in D-405). Earlier bosses and non-boss enemies cannot drop it. This is
 separate from all three ordinary rarity rolls, so the final boss can award
 three Conduits and a Master Chest together. Calamity chest contents and the
 0.5% banner bonus remain unchanged.

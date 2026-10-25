@@ -23,8 +23,11 @@ describe('reference Inventory layout', () => {
     expect(html).toContain('class="inventory-panel ref-panel inventory-masters"');
     expect(html).toContain('Master Conduits &amp; Chests · 1 / 48');
     expect(html).toContain(`data-inventory-chest="${masterChest.id}"`);
-    expect(html).toContain('class="inventory-item-art inventory-chest-control" data-open-master-chest');
-    expect(html).not.toContain('Open chest · Choose a Master</button>');
+    document.body.innerHTML = html;
+    const chest = document.querySelector(`[data-inventory-chest="${masterChest.id}"]`)!;
+    expect(chest.querySelector('.inventory-item-art')!.tagName).toBe('DIV');
+    expect(chest.querySelector('[data-open-master-chest]')!.textContent).toBe('Open');
+    expect(chest.querySelector('[data-open-master-chest] img')).toBeNull();
     expect(html).toContain(masterConduits[0].name);
     expect(html).toContain('data-inventory-material="rosethorn-rare"');
     expect(html).toContain('data-inventory-conduit="vigil-core"');
@@ -39,7 +42,7 @@ describe('reference Inventory layout', () => {
     account.masterChests = Number.MAX_SAFE_INTEGER;
     account.masterConduits = Object.fromEntries(masterConduits.map(entry => [entry.id, 1]));
     const html = inventoryView(account);
-    expect(html).toContain('aria-label="Open Cosmic Grand Master Chest · Choose a Master" disabled');
+    expect(html).toContain(`aria-label="Open ${masterChest.name} · Choose a Master" disabled`);
     expect(html).toContain('Extra chests stay unopened once you own every Master.');
     expect(html).toContain(`Owned ${Number.MAX_SAFE_INTEGER}`);
   });

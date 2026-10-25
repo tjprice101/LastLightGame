@@ -13,18 +13,25 @@ import { masterChest } from '../content/master-conduits';
 import { calamityChest, parseCalamityChestId } from '../content/calamity';
 import { calamityChestArt } from '../content/calamity-art';
 import { createConduitElement } from './conduit-element';
+import { pngFallback } from './image-format';
+
+export function isChestLoot(id: string): boolean {
+  return id === masterChest.id || id.startsWith('calamity:');
+}
 
 export function lootMotion(random: () => number = Math.random) {
   return { size: .75 + lootRoll(random) * .6, scatter: (lootRoll(random) - .5) * 14,
     height: (lootRoll(random) - .5) * 24, duration: 850 + Math.floor(lootRoll(random) * 1000) };
 }
 
-export function lootLayout(count: number, viewportWidth: number, viewportHeight = innerHeight) {
-  const columns = Math.min(count, Math.ceil(Math.sqrt(count)), Math.max(1, Math.floor((viewportWidth - 104) / 82) + 1));
+export function lootLayout(count: number, viewportWidth: number, viewportHeight = innerHeight, large = false) {
+  const columnGap = large ? 152 : 82;
+  const radius = large ? 80 : 52;
+  const columns = Math.min(count, Math.ceil(Math.sqrt(count)), Math.max(1, Math.floor((viewportWidth - radius * 2) / columnGap) + 1));
   const rows = Math.ceil(count / columns);
-  const rowGap = Math.min(100, Math.max(0, viewportHeight - 272) / Math.max(1, rows - 1));
-  return { columns, spread: (columns - 1) * 41 + 52,
-    rowGap, bottom: (rows - 1) * rowGap + 76, top: 196 };
+  const rowGap = Math.min(large ? 152 : 100, Math.max(0, viewportHeight - 196 - radius - 24) / Math.max(1, rows - 1));
+  return { columns, columnGap, spread: (columns - 1) * columnGap / 2 + radius,
+    rowGap, bottom: (rows - 1) * rowGap + radius + 24, top: 196 };
 }
 
 export interface LootItem { id: string; name: string; amount: number; art?: string; color: string; upgradeLevel?: number }
@@ -64,6 +71,7 @@ export function lootArt(item: { id: string; art?: string }): string | undefined 
   return item.id === 'fractalis' ? currencyArt('fractalis')
     : item.id === 'lycalis' ? currencyArt('lycalis')
     : item.id === mechanicalComponents.id ? currencyArt('mechanical-components')
+    : item.id === masterChest.id ? pngFallback(assetUrl(masterChest.art)) ?? assetUrl(masterChest.art)
     : item.id.startsWith('calamity:') ? assetUrl(`items/${calamityChestArt[parseCalamityChestId(item.id).tier]}.png`)
     : item.art ? assetUrl(`${item.id.startsWith('recruitment:') ? 'characters' : item.id.startsWith('conduit:') ? 'conduits' : item.id.startsWith('capture:') ? 'enemies' : 'materials'}/${item.art}.png`) : undefined;
 }
@@ -74,18 +82,20 @@ export function lootBurst(event: BattleEvent, random: () => number = Math.random
   burst.setAttribute('role', 'status');
   burst.setAttribute('aria-label', `Collected ${lootItems(event).map((item) => `${item.amount} ${item.name}`).join(', ')}`);
   const items = lootItems(event);
-  const layout = lootLayout(items.length, innerWidth);
+  const large = items.some(item => isChestLoot(item.id));
+  burst.dataset.largeLoot = String(large);
+  const layout = lootLayout(items.length, innerWidth, innerHeight, large);
   items.forEach((item, index) => {
     const motion = lootMotion(random);
     const drop = document.createElement('span');
-    drop.className = `loot-drop${item.id.startsWith('conduit:') ? ' loot-conduit' : ''}`;
+    drop.className = `loot-drop${item.id.startsWith('conduit:') ? ' loot-conduit' : ''}${isChestLoot(item.id) ? ' loot-chest' : ''}`;
     drop.dataset.lootId = item.id;
     drop.style.setProperty('--loot-color', item.color);
     const rowCount = Math.min(layout.columns, items.length - Math.floor(index / layout.columns) * layout.columns);
-    drop.style.setProperty('--loot-x', `${(index % layout.columns - (rowCount - 1) / 2) * 82 + motion.scatter}px`);
+    drop.style.setProperty('--loot-x', `${(index % layout.columns - (rowCount - 1) / 2) * layout.columnGap + motion.scatter}px`);
     const stagger = items.length > 1 ? (index % 2 ? 18 : -18) : 0;
     drop.style.setProperty('--loot-y', `${Math.floor(index / layout.columns) * layout.rowGap + stagger + motion.height}px`);
-    drop.style.setProperty('--loot-size', String(motion.size * 1.5));
+    drop.style.setProperty('--loot-size', String(motion.size * (isChestLoot(item.id) ? 1 : 1.5)));
     drop.dataset.pickupDuration = String(motion.duration);
     const beam = document.createElement('span');
     beam.className = 'loot-beam';

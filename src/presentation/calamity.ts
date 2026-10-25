@@ -103,7 +103,7 @@ function calamityChestContents(activity: CalamityActivityId, tier: CalamityTier)
     <li><span>Prismatica</span><strong>${chest.fractalis.toLocaleString('en-US')}</strong></li>
     <li><span>Null-Prismatica</span><strong>${chest.lycalis}</strong></li>
     <li><span class="currency-reward">${currencyIcon('calamitic-tokens')}Calamitic Tokens</span><strong>${chest.calamiticTokens}</strong></li>
-    ${chest.masterChests ? `<li><span>Cosmic Grand Master Chests</span><strong>${chest.masterChests}</strong></li>` : ''}
+    ${chest.masterChests ? `<li><span>Machine's Master Chests</span><strong>${chest.masterChests}</strong></li>` : ''}
     ${chest.componentRange ? `<li><span>Broken Mechanical Components</span><strong>${chest.componentRange.min.toLocaleString('en-US')}-${chest.componentRange.max.toLocaleString('en-US')}</strong></li>` : ''}
     <li><span>Random rewards</span><strong>${chest.bundles}</strong></li>
   </ul>`;
@@ -184,7 +184,7 @@ export function calamityCadence(activity: CalamityActivityId, round: number): st
 export function calamityOpeningReward(id: string, reward: ReturnType<typeof openCalamityChest>['reward']): RewardPresentation {
   const { activity, tier } = parseCalamityChestId(id);
   const chest = calamityChest(activity, tier);
-  const items: { label: string; art: string }[] = [
+  const items: { label: string; art: string; chest?: boolean; badge?: string }[] = [
     ...(reward.fractalis ? [{ label: `${reward.fractalis} Prismatica`, art: currencyIcon('fractalis') }] : []),
     ...(reward.lycalis ? [{ label: `${reward.lycalis} Null-Prismatica`, art: currencyIcon('lycalis') }] : []),
     ...Object.entries(reward.materials).map(([material, amount]) => {
@@ -198,12 +198,12 @@ export function calamityOpeningReward(id: string, reward: ReturnType<typeof open
       return { label: `${amount} ${getConduit(conduit).name}`, art: conduitIcon(conduit), badge: conduitElement(conduit) };
     }),
     ...(reward.mechanicalComponents ? [{ label: `${reward.mechanicalComponents} Broken Mechanical Components`, art: currencyIcon('mechanical-components') }] : []),
-    ...(reward.masterChests ? [{ label: `${reward.masterChests} Cosmic Grand Master Chests`, art: masterChestIcon() }] : []),
+    ...(reward.masterChests ? [{ label: `${reward.masterChests} Machine's Master Chests`, art: masterChestIcon(), chest: true }] : []),
     ...(reward.calamiticTokens ? [{ label: `${reward.calamiticTokens} Calamitic Tokens`, art: currencyIcon('calamitic-tokens') }] : []),
   ];
   return { title: 'Calamity chest opened', name: chest.name,
     art: `<ul class="summon-ten-grid calamity-reward-grid" aria-label="Received loot">${items.map(item =>
-      `<li class="summon-ten-result"><div class="summon-ten-art">${item.art}</div><b>${escapeDialogText(item.label)}</b>${'badge' in item ? item.badge : ''}</li>`).join('')}</ul>`,
+      `<li class="summon-ten-result${item.chest ? ' chest-reward-result' : ''}"><div class="summon-ten-art">${item.art}</div><b>${escapeDialogText(item.label)}</b>${item.badge ?? ''}</li>`).join('')}</ul>`,
     details: '<p>Rewards added to Inventory.</p>',
     accent: '#ed4545', animationLabel: 'Opening chest…', savedLabel: 'Rewards saved' };
 }

@@ -1,5 +1,38 @@
 # Current state and handoff
 
+## Chest artwork, name and explicit opening (D-405)
+
+- Owner requests Machine's Master Chest as the new display name, actual PNG
+  when dropped, substantially larger Calamity/endgame reward chests, removal
+  of planetary-lock reveal copy and a visible Inventory Open button.
+- Shared loot resolver now returns the revisioned Master PNG instead of a
+  text token. Chest drops use96px art and wider152px grid spacing; their
+  cosmetic scaling is separate from ordinary36px drops. BattleView clamps
+  the same chest-aware footprint. Ordinary rewards retain existing scaling.
+- Victory receipts give Master/Calamity chests dedicated full-width rows
+  with up to240x200px artwork and contained scrolling. Calamity openings
+  similarly enlarge awarded Master chests, never the consumed chest.
+  Inventory image is decorative; Open retains the existing selection,
+  confirmation, all-owned guard and focus hook. Planetary reveal text removed.
+- Stable chest IDs, holdings, art sources,50% final Machines chance, Calamity
+  contents, atomic transactions and combat rules11 are unchanged. Related
+  Master equipment help now reads its current chance from canonical content
+  rather than the stale1% literal. Current specifications/index updated;
+  historical names/decisions remain provenance.
+- Initial seven-file regression run:147 tests passed, `npx tsc --noEmit`
+  passed. `npm run build`, `node tools\bundle_server_game.mjs` and
+  `npx --yes deno check supabase\functions\game-operation\index.ts` passed;
+  build retains its existing large-chunk advisory. Full
+  `npx vitest run --maxWorkers=2 --reporter=dot` passes6583 tests/212 files.
+  `git diff --check` passes.
+- Browser in-memory fixture (no account/storage writes):400px layout has
+  no horizontal overflow, chest receipt art240x200px, opening art232x192px,
+  sampled field art100.8px and Open49.6px high with no image inside it.
+  PNG/AVIF chest assets load. Viewport-bound cluster tests cover320/390/1280.
+  An isolated320px browser receipt also has no horizontal overflow,233x200px
+  chest art, contained reward scrolling and44px Continue/Quit controls.
+  No remaining requested mechanics or owner decisions.
+
 ## Canonical non-Calamitic benchmarks and hostile balance (D-404)
 
 - Owner confirms all activities, modeled ordinary progression rather than the

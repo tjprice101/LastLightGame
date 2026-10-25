@@ -1,5 +1,22 @@
 # Menus and inventory
 
+## Chest presentation (D-405)
+
+The former Cosmic Grand Master Chest is now **Machine's Master Chest**.
+Inventory keeps its image decorative and provides a separate visible **Open**
+button using the existing choice/confirmation flow and all-owned restriction.
+Master drops/results resolve the revisioned PNG, not a text token. Master and
+Calamity chest drops use96px artwork with wider cluster spacing; victory receipts
+give chests dedicated full-width rows with artwork up to240 by200px. Ordinary
+loot keeps its existing size. Calamity opening receipts similarly enlarge awarded
+Master chests, not the consumed Calamity chest. The Master reveal no longer says
+"Planetary locks released." Saved rewards, focus/Skip/Continue/reduced motion,
+drop odds and account IDs are unchanged.
+
+Validate chest cases in `battle-loot.test.ts`, `battle-results.test.ts`,
+`inventory.test.ts`, `calamity.test.ts` and `conduit-element.test.ts`, plus browser
+desktop/mobile artwork loading, button targets and contained receipt scrolling.
+
 ## Omnic elemental identity (D-403)
 
 Omnic Conduits now show a bold, element-colored name badge and a matching
@@ -462,7 +479,7 @@ descriptions. Lists still use natural page scrolling, never squeezed/nested pane
 Collections Information contains gallery rules only, not a roster-wide
 Element-Bearer biography list. Individual combat-kit references remain available.
 
-Cosmic Grand Master Chests appear only as positive owned stacks in the Master
+Machine's Master Chests appear only as positive owned stacks in the Master
 inventory grid, with normal item artwork/name/count rows, not a dedicated
 full-width chest panel or separate labeled action button. Select the chest
 artwork to choose a Master using the existing confirmation and atomic opening

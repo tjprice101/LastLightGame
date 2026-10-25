@@ -108,7 +108,7 @@ describe('character Masters and chest contracts', () => {
     expect(() => equipMasterConduit(saved, 'sprout', 'master-sprout-1')).toThrow('owned Element-Bearer');
     expect(() => equipConduit(saved, 'ember', 0, 'master-ember-1' as never)).toThrow('owned Conduit');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
-    expect(() => openMasterChest(storage({ masterChests: 0 }), 'master-ember-1')).toThrow('No Cosmic');
+    expect(() => openMasterChest(storage({ masterChests: 0 }), 'master-ember-1')).toThrow("No Machine's Master Chest");
     expect(() => validateAccount({ ...loadAccount(saved), masterChests: Number.MAX_SAFE_INTEGER + 1 })).toThrow('chest count');
     expect(() => validateAccount({ ...loadAccount(saved), masterConduits: { 'master-ember-1': 2 } })).toThrow('unlock');
     expect(() => validateAccount({ ...loadAccount(saved), masterEquipment: { 'capture:fake': 'master-ember-1' } })).toThrow('owned Element-Bearer');

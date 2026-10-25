@@ -12,6 +12,16 @@ const reward = (source: string, amount: number, materials: Record<string, number
 });
 
 describe('encounter result overlays', () => {
+  it('shows saved Master and Calamity chests as dedicated large-art rewards', () => {
+    const state = createBattle(1);
+    state.phase = 'cleared';
+    const event = { ...reward('boss', 0), masterChests: 1, calamityChest: 'calamity:machines:3' };
+    const html = battleResults(state, [event]);
+    expect(html.match(/class="result-chest-reward"/g)).toHaveLength(2);
+    expect(html).toContain("Machine's Master Chest");
+    expect(html).toContain('grand-master-chest.png?v=');
+    expect(html).not.toContain('result-reward-token');
+  });
   it('aggregates all actual per-kill rewards once, independently of truncated logs and without mutating events', () => {
     const events = [reward('one', 7, { 'infernic-common': 2 }), reward('two', 9, { 'infernic-common': 1, 'heavens-weapon': 4 })];
     const before = structuredClone(events);

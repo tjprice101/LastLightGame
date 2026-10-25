@@ -811,7 +811,7 @@ function renderMenu(firstArrival = false): void {
       const id = await chooseMasterConduit(currentAccount());
       if (!id) return;
       const master = getMasterConduit(id);
-      if (!await gameConfirm(`Open one Cosmic Grand Master Chest for ${master.name}? ${master.effect} It will be unlocked, not equipped.`, { title: 'Open Master chest', confirmLabel: 'Open chest' })) return;
+      if (!await gameConfirm(`Open one Machine's Master Chest for ${master.name}? ${master.effect} It will be unlocked, not equipped.`, { title: 'Open Master chest', confirmLabel: 'Open chest' })) return;
       account = playMode === 'online' ? (await performOnline({ kind: 'openMasterChest', id })).account : openMasterChest(gameStorage, id);
       saved = true;
       const reward = masterReward(id, account);

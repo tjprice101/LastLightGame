@@ -226,8 +226,8 @@ describe('Calamity presentation', () => {
       expect(rewards).toContain(`Random rewards${chest.bundles}`);
       if (chest.componentRange) expect(rewards).toContain(
         `Broken Mechanical Components${chest.componentRange.min.toLocaleString('en-US')}-${chest.componentRange.max.toLocaleString('en-US')}`);
-      expect(rewards.filter(row => row?.includes('Cosmic Grand Master Chests'))).toEqual(
-        chest.masterChests ? [`Cosmic Grand Master Chests${chest.masterChests}`] : []);
+      expect(rewards.filter(row => row?.includes("Machine's Master Chests"))).toEqual(
+        chest.masterChests ? [`Machine's Master Chests${chest.masterChests}`] : []);
       expect(card.querySelector('.calamity-tier-actions [data-calamity]')).not.toBeNull();
     }
     tabs[0].click();
@@ -308,11 +308,13 @@ describe('Calamity presentation', () => {
     expect(labels).toHaveLength(7);
     expect(labels).toContain('1 Stasis Reliquary');
     expect(labels).toContain('23 Broken Mechanical Components');
-    expect(labels).toContain('2 Cosmic Grand Master Chests');
+    expect(labels).toContain("2 Machine's Master Chests");
     expect(labels).toContain('50 Calamitic Tokens');
     expect(document.querySelectorAll('img')).toHaveLength(7);
     expect(document.querySelector('img[src*="calamity-chest-"]')).toBeNull();
     expect(document.querySelector('img[src*="master-chest"]')).not.toBeNull();
+    expect(document.querySelectorAll('.chest-reward-result')).toHaveLength(1);
+    expect(document.querySelector('.chest-reward-result img[src*="master-chest"]')).not.toBeNull();
     expect(reward).toEqual(before);
   });
 
@@ -417,7 +419,7 @@ describe('Calamity presentation', () => {
     select.value = '3';
     select.dispatchEvent(new Event('change'));
     expect(card.querySelector('.glossary-loot')!.textContent).toContain(calamityChest('treasury', 3).name);
-    expect(card.querySelector('.glossary-loot')!.textContent).toContain('Cosmic Grand Master Chests2');
+    expect(card.querySelector('.glossary-loot')!.textContent).toContain("Machine's Master Chests2");
     expect(document.querySelector('[data-creature="calamity:machines"]')!.textContent).toContain('Undiscovered Calamity boss');
     expect(document.querySelector<HTMLImageElement>('[data-creature="calamity:roses"] .glossary-art img')!.src).toContain('enemies/calamity-boss-roses.png?v=');
     expect(document.querySelector('[data-creature="calamity:roses"] .glossary-art img')!.classList.contains('calamity-boss-contrast')).toBe(false);

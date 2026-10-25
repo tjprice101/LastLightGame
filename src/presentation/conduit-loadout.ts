@@ -278,7 +278,7 @@ function masterRow(owner: string, account: Account | null): string {
   return `<section class="ref-master-slot loadout-master" aria-label="Master slot">
     <span class="loadout-master-art">${current ? masterConduitIcon(current) : '<span class="loadout-master-empty" aria-hidden="true">M</span>'}</span>
     <span class="loadout-master-text"><small class="loadout-eyebrow">Master slot</small><b>${entry ? entry.name : 'No Master equipped'}</b>${entry ? conduitElementLabel(getStarter(owner).elementId) : ''}
-      <small>${entry ? 'Always active · Omnic Master' : choices.length ? `${choices.length} owned for ${getStarter(owner).name}` : 'Found in Cosmic Grand Master Chests'}</small></span>
+      <small>${entry ? 'Always active · Omnic Master' : choices.length ? `${choices.length} owned for ${getStarter(owner).name}` : "Found in Machine's Master Chests"}</small></span>
     <span class="loadout-master-select"><label for="master-${owner}" class="ref-sr-only">Master Conduit · ${getStarter(owner).name}</label><select id="master-${owner}" data-master-equipment="${owner}" ${!account ? 'disabled' : ''}>
       <option value="">No Master equipped</option>${choices.map(master => `<option value="${master.id}" ${master.id === current ? 'selected' : ''}>${master.name} · Omnic Master</option>`).join('')}</select></span>
     ${entry ? `<button type="button" class="loadout-rule-button" data-loadout-master-rule="${entry.id}" aria-label="${escapeDialogText(entry.name)} rule details">Details</button>` : ''}</section>`;

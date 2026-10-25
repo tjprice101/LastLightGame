@@ -33,6 +33,10 @@ function wallet(): Account {
 }
 
 describe('Omnic element presentation (D-403)', () => {
+  it('omits the removed planetary opening copy from saved Master rewards', () => {
+    const account = wallet();
+    expect(masterReward(masterConduits[0].id, account).animationLabel).toBe('');
+  });
   it('uses the canonical element and shared palette for all 45 Omnics, not legacy asset names', () => {
     expect(omnics).toHaveLength(45);
     for (const entry of omnics) {

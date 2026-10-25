@@ -111,7 +111,7 @@ function conduitArchive(account: Account | null): string {
     </article>`).join('')}${masterConduits.map(entry => `<article class="archive-card ${account?.masterConduits?.[entry.id] === 1 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" ${conduitElementTheme(getStarter(entry.character).elementId)} data-archive-master="${entry.id}" data-filter-rarity="Master" data-filter-ownership="${ownership(account?.masterConduits?.[entry.id] === 1)}">
       <div class="archive-mechanism">${masterConduitIcon(entry.id)}</div><h3>${entry.name}</h3>
       <p>Omnic Master · ${getStarter(entry.character).name}</p>${conduitElementLabel(getStarter(entry.character).elementId)}<p class="archive-ownership">${account ? account.masterConduits?.[entry.id] === 1 ? 'Owned' : 'Not owned' : 'Ownership unavailable'}</p>
-      <p class="archive-effect">${readableEffect(entry.effect)}</p><p>Choose from a Cosmic Grand Master Chest. Final Machines boss: ${masterChest.chance * 100}% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Named bearer enhancement; no upgrades.</p>
+      <p class="archive-effect">${readableEffect(entry.effect)}</p><p>Choose from a ${masterChest.name}. Final Machines boss: ${masterChest.chance * 100}% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Named bearer enhancement; no upgrades.</p>
       ${information(`archive-master-${entry.id}`, entry.name, `${conduitElementLabel(getStarter(entry.character).elementId)}${conduitLore(entry.lore)}<p>${readableEffect(entry.effect)}</p>`, 'Details')}
     </article>`).join('')}</div>`;
 }

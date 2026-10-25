@@ -29,12 +29,12 @@ export function masterEquipment(character: string, account: Account | null): str
     ${current ? masterConduitIcon(current) : ''}
     <select id="master-${character}" data-master-equipment="${character}" ${!account ? 'disabled' : ''}>
       <option value="">No Master equipped</option>${choices.map(entry => `<option value="${entry.id}" ${entry.id === current ? 'selected' : ''}>${entry.name} · Omnic Master</option>`).join('')}</select>
-    ${masterReference(current)}<p>One character-specific Master, separate from eight ordinary slots. Find choice chests on the final Machines boss (1%) or open any Calamity EX+3 chest for two guaranteed choice chests.</p></section>`;
+    ${masterReference(current)}<p>One character-specific Master, separate from eight ordinary slots. Find choice chests on the final Machines boss (${masterChest.chance * 100}%) or open any Calamity EX+3 chest for two guaranteed choice chests.</p></section>`;
 }
 export function masterReward(id: MasterConduitId, account: Account): RewardPresentation {
   if (account.masterConduits?.[id] !== 1) throw new Error('Saved Master reward is not owned.');
   const entry = getMasterConduit(id);
   return { title: 'Master Conduit unlocked', name: entry.name, art: masterConduitIcon(id),
     details: `${conduitElementLabel(getStarter(entry.character).elementId)}<p>Omnic Master · ${getStarter(entry.character).name}</p><p>${referencedEffect(escapeDialogText(entry.effect))}</p><p>One chest opened. Not auto-equipped. Equip in Team.</p>`,
-    accent: getStarter(entry.character).color, animationLabel: 'Planetary locks released' };
+    accent: getStarter(entry.character).color, animationLabel: '' };
 }

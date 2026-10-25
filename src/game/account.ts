@@ -523,7 +523,7 @@ export function openMasterChest(storage: ProfileStorage, id: MasterConduitId): A
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before opening a Master chest.');
   if (!isMasterConduitId(id)) throw new Error('Choose a valid Master Conduit.');
   const account = loadAccount(storage);
-  if ((account.masterChests ?? 0) < 1) throw new Error('No Cosmic Grand Master Chest is available.');
+  if ((account.masterChests ?? 0) < 1) throw new Error("No Machine's Master Chest is available.");
   if ((account.masterConduits?.[id] ?? 0) > 0) throw new Error('This Master Conduit is already owned. Choose an unowned Master.');
   account.masterChests = (account.masterChests ?? 0) - 1;
   account.masterConduits = { ...account.masterConduits, [id]: 1 };

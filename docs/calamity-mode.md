@@ -1,5 +1,14 @@
 # Calamity Mode (D-308 / D-315)
 
+## Chest artwork and current name (D-405)
+
+Master choice chests are now **Machine's Master Chests**; older Cosmic Grand
+wording below names the same stable item. Calamity victory chests have large
+dedicated receipt rows (up to240 by200px) and96px field drops with chest-aware
+spacing. Opening receipts enlarge awarded Master chests without showing the
+consumed Calamity chest as loot. See [chest presentation](menus-and-inventory.md#chest-presentation-d-405).
+All tier contents, rates and saved transactions are unchanged.
+
 ## Non-Calamitic endgame benchmark (D-404)
 
 Current difficulty follows the [global benchmark declaration](enemy-benchmark-calibration.md)

@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { lootBurst, lootItems, lootLayout, lootMotion } from './battle-loot';
+import { lootArt, lootBurst, lootItems, lootLayout, lootMotion } from './battle-loot';
+import { masterChest } from '../content/master-conduits';
+import { setAvifPreferred } from './image-format';
 import { BattleView } from './battle-view';
 import { act, createDungeonBattle, createInfusionBattle, type BattleEvent } from '../game/battle';
 import { conduits, conduitColor } from '../content/conduits';
@@ -41,6 +43,25 @@ const reward: BattleEvent = { kind: 'reward', source: 'enemy', target: '', amoun
   critical: false, message: 'Loot', materials: { 'heavens-weapon': 2, 'oceanic-epic': 1, 'chaotic-omnic': 1 } };
 
 describe('enemy-death loot presentation', () => {
+  it('uses the revisioned Master chest PNG and a large chest drop instead of a text token', () => {
+    documentFixture();
+    setAvifPreferred(true);
+    const event = { ...reward, amount: 0, materials: {}, masterChests: 1 };
+    const item = lootItems(event)[0];
+    expect(item.name).toBe(masterChest.name);
+    expect(lootArt(item)).toMatch(/assets\/master-conduits\/grand-master-chest\.png\?v=[0-9a-f]{16}$/);
+    const burst = lootBurst(event);
+    const drop = fixtureDrop(burst.children[0]);
+    expect(drop.className).toBe('loot-drop loot-chest');
+    expect(drop.children.some(child => child.src.includes('grand-master-chest.png'))).toBe(true);
+    expect(drop.children.some(child => child.className === 'loot-token')).toBe(false);
+    setAvifPreferred(false);
+  });
+  it('gives actual Calamity reward chests the large chest-drop treatment', () => {
+    documentFixture();
+    const burst = lootBurst({ ...reward, amount: 0, materials: {}, calamityChest: 'calamity:machines:3' });
+    expect(fixtureDrop(burst.children[0]).className).toBe('loot-drop loot-chest');
+  });
   it('shows an actual Machine Conduit award as a named radiant-beam drop beside its other rewards', () => {
     documentFixture();
     const state = createInfusionBattle('machines', 1, 1729, 'ember', { level: 105, evolution: 6 });
@@ -77,7 +98,7 @@ describe('enemy-death loot presentation', () => {
     });
   });
 
-  it('enlarges every drop, including captured creatures and recruitment, by exactly 50%', () => {
+  it('preserves ordinary drop scaling while large chest artwork uses its own footprint', () => {
     documentFixture();
     const event: BattleEvent = { ...reward, lycalis: 3, mechanicalComponents: 125, masterChests: 1,
       conduits: { 'aegis-capacitor': 1 }, capture: { creatureId: 'infusion:treasury:0', level: 65 },
@@ -87,12 +108,26 @@ describe('enemy-death loot presentation', () => {
       const burst = lootBurst(event, () => random);
       const scale = lootMotion(() => random).size * 1.5;
       Array.from(burst.children).forEach(drop =>
-        expect(fixtureDrop(drop).style.getPropertyValue('--loot-size')).toBe(String(scale)));
+        expect(fixtureDrop(drop).style.getPropertyValue('--loot-size')).toBe(String(
+          fixtureDrop(drop).dataset.lootId === masterChest.id ? lootMotion(() => random).size : scale)));
       const captured = fixtureDrop(Array.from(burst.children).find(drop => fixtureDrop(drop).dataset.lootId.startsWith('capture:')));
       expect(captured.children[1].src).toContain('assets/enemies/');
       expect(captured.children[0].className).toBe('loot-beam');
     }
     expect(event).toEqual(before);
+  });
+  it.each([320, 390, 1280])('reserves room for large simultaneous chest drops at %ipx', width => {
+    documentFixture();
+    vi.stubGlobal('innerWidth', width);
+    const burst = lootBurst({ ...reward, masterChests: 1 }, () => .5);
+    const layout = lootLayout(burst.childElementCount, width, 800, true);
+    expect(burst.dataset.largeLoot).toBe('true');
+    expect(layout.spread * 2).toBeLessThanOrEqual(width);
+    expect(layout.columnGap).toBe(152);
+    expect(layout.top + layout.bottom).toBeLessThanOrEqual(800);
+    for (const drop of Array.from(burst.children).map(fixtureDrop)) {
+      expect(Math.abs(parseFloat(drop.style.getPropertyValue('--loot-x'))) + 80).toBeLessThanOrEqual(width / 2);
+    }
   });
 
   it.each([320, 390, 1280])('spreads loot in a compact viewport-bounded cluster at %ipx', width => {

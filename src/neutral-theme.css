@@ -168,6 +168,8 @@ html[data-motion="reduced"] .activity-loading-track > span { transition: none; }
 .battle-loot { position: fixed; z-index: 9; width: 0; height: 0; pointer-events: none; }
 .loot-drop { position: absolute; left: var(--loot-x); top: var(--loot-y); width: 36px; height: 36px; translate: -50% -50%; scale: var(--loot-size, 1); color: #fff; text-align: center; }
 .loot-drop img { position: relative; width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 0 7px var(--loot-color)); }
+.loot-drop.loot-chest { width: 96px; height: 96px; }
+.loot-drop.loot-chest img { width: 96px; height: 96px; }
 .loot-beam { position: absolute; bottom: 12px; left: 12px; width: 12px; height: 90px; background: linear-gradient(transparent, var(--loot-color)); box-shadow: 0 8px 12px var(--loot-color); opacity: .85; border-radius: 50% 50% 0 0; }
 .loot-conduit .loot-beam { background: linear-gradient(transparent, var(--loot-color) 70%, #fff); box-shadow: 0 0 12px var(--loot-color), 0 8px 18px var(--loot-color); }
 .loot-conduit .loot-beam::after { content: ""; position: absolute; width: 42px; height: 12px; bottom: -3px; left: -15px; border-radius: 50%; background: radial-gradient(ellipse, #fff 10%, var(--loot-color) 40%, transparent 75%); }

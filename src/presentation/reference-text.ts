@@ -14,11 +14,11 @@ import { elementLabel } from './element-label';
 const aliases: Record<string, string> = {
   Heaven: 'Soar to Heaven', Abyss: 'Delve into the Abyss',
   Treasury: 'Crownfall Treasury', 'Crimson Roses': 'Passion of Crimson Roses',
-  'Normal Attacks': 'Normal Attack', Gauge: 'Elemental Gauge', 'Cosmic Grand Master Chests': 'Cosmic Grand Master Chest',
+  'Normal Attacks': 'Normal Attack', Gauge: 'Elemental Gauge', "Machine's Master Chests": "Machine's Master Chest",
   'All-enemy': 'Global',
 };
 
-const fixedNames = ['Roselius', 'Prismatica', 'Null-Prismatica', 'Broken Mechanical Components', 'Cosmic Grand Master Chest',
+const fixedNames = ['Roselius', 'Prismatica', 'Null-Prismatica', 'Broken Mechanical Components', "Machine's Master Chest",
   'Calamitic Tokens', 'Story', 'Training', 'Calamity', 'Elemental War', 'Awaken the Machines', 'Passion of Crimson Roses',
   'Elemental Gauge', 'Normal Attack', 'Skill 1', 'Skill 2', 'Last Flare', 'Burn', 'Weaken',
   ...Object.values(phaseZeroStatLabels), ...conduitGlossary.map(entry => entry.term),

@@ -512,7 +512,7 @@ export class BattleView {
       if (!art) throw new Error('Defeated enemy artwork is missing.');
       const bounds = art.getBoundingClientRect();
       const burst = lootBurst(entry);
-      const layout = lootLayout(burst.childElementCount, innerWidth);
+      const layout = lootLayout(burst.childElementCount, innerWidth, innerHeight, burst.dataset.largeLoot === 'true');
       burst.style.left = `${Math.max(Math.min(layout.spread, innerWidth / 2), Math.min(innerWidth - layout.spread, bounds.x + bounds.width / 2))}px`;
       burst.style.top = `${Math.max(Math.min(layout.top, innerHeight / 2), Math.min(innerHeight - layout.bottom, bounds.y + bounds.height * .8))}px`;
       try {
