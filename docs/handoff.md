@@ -1,5 +1,25 @@
 # Current state and handoff
 
+## War reward scale and Master silhouette correction (D-420)
+
+- New Nerithe/Orvella/Vaelor recruitment rows now share the existing full-width
+  chest layout and240x200 contain-fitted image slot; other reward rows and
+  duplicate conversions remain compact. Shared saved-result shimmer remains.
+- Locked Master image background/border previously made the brightness filter
+  render a black rectangle. Remove only those locked-image surfaces, preserving
+  transparent authored silhouette, outline and owned elemental trim.
+- No gameplay/authority/account/art changes. Focused result/archive tests and
+  responsive browser measurements validate both scoped presentation changes.
+- `npm test -- src\presentation\battle-results.test.ts
+  src\presentation\archives.test.ts src\presentation\archives-controls.test.ts
+  --maxWorkers=1 --reporter=dot` passed24 tests/3 files.
+  `npm run build` passed TypeScript/Vite (existing large-chunk warning only).
+- Disposable browser fixture at320/390/1280 CSS pixels measured equal chest/
+  recruitment art slots:190x200,240x200,240x200 respectively, with no horizontal
+  overflow. Owned Master computed filter stays none; locked Master keeps its
+  black/outline filter with no background and transparent border. Both retained
+  Master PNGs decoded at256px; fixture used no real account writes.
+
 ## Duplicate-safe independent banner pity (D-419)
 
 - Owner confirms natural duplicate5-stars and6-stars must not reset pity.

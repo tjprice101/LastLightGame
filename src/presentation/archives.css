@@ -58,6 +58,10 @@ html body .sanctuary-shell .archive-filters .archive-search input:focus-visible 
 .archive-conduit-locked .archive-mechanism .master-art {
   filter: brightness(0) drop-shadow(0 0 1px #ffffffb3) drop-shadow(0 0 8px #ffffff26);
 }
+.archive-conduit-locked .archive-mechanism .master-art {
+  background: none;
+  border-color: transparent;
+}
 .archive-ownership { color: #d8c49a; }
 .archive-stats { display: flex; flex-wrap: wrap; gap: 16px; }
 .archive-stats dt { font-size: .75rem; opacity: .7; }

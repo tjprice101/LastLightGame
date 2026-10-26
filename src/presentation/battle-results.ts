@@ -60,7 +60,7 @@ export function battleResults(state: BattleState, events: readonly BattleEvent[]
     <div class="battle-result-rewards"><h3>Rewards earned this ${staged ? 'stage' : 'wave'}</h3>
       ${rewards.length ? `<ul>${rewards.map((item) => {
         const conduitId = item.id.startsWith('conduit:') ? item.id.slice('conduit:'.length) : null;
-        return `<li${item.rarity ? ` data-rarity="${item.rarity}"` : ''}${isChestLoot(item.id) ? ' class="result-chest-reward"' : ''} style="--reward-color:${item.color}">${isConduitId(conduitId) ? conduitIcon(conduitId, item.upgradeLevel) : item.id === 'mechanical-components' ? mechanicalComponentIcon() : lootArt(item)
+        return `<li${item.rarity ? ` data-rarity="${item.rarity}"` : ''}${isChestLoot(item.id) ? ' class="result-chest-reward"' : item.id.startsWith('recruitment:') ? ' class="result-recruitment-reward"' : ''} style="--reward-color:${item.color}">${isConduitId(conduitId) ? conduitIcon(conduitId, item.upgradeLevel) : item.id === 'mechanical-components' ? mechanicalComponentIcon() : lootArt(item)
         ? `<img src="${lootArt(item)}" alt="" width="40" height="40">` : '<span class="result-reward-token" aria-hidden="true">+</span>'}
         <span>${item.name}${isConduitId(conduitId) ? conduitElement(conduitId) : ''}</span><strong>+${formatStat(item.amount)}</strong></li>`;
       }).join('')}</ul>`

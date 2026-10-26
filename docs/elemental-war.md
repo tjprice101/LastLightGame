@@ -1,5 +1,16 @@
 # Elemental War
 
+## Prominent saved recruitment art (D-420)
+
+New Element-Bearer rewards in the victory sheet use the same full-width reward
+row and contain-fitted240px by200px art slot as saved Calamity/Master chests,
+instead of the ordinary40px item icon. Narrow layouts wrap the identity/count
+below the complete portrait without horizontal overflow. Currency/material rows
+and already-owned100 Null-Prismatica conversions remain compact. Existing
+finite rarity feedback, saved receipts and result controls are unchanged.
+Validate all three new recruitment results and duplicate conversions in
+`src/presentation/battle-results.test.ts`, plus browser checks at320/390/1280px.
+
 ## Guaranteed final-stage recruitment (D-414)
 
 Every stage10 victory guarantees its own Element-Bearer: Nerithe, Orvella or

@@ -24,6 +24,10 @@ all older80/150 and200/500 descriptions below are historical. D-415 release
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+**Reward art and Collection silhouettes (D-420):** [new War recruits](elemental-war.md#prominent-saved-recruitment-art-d-420)
+share chest-scale victory art. [Unowned Masters](archives-and-elements.md#master-silhouettes-retain-artwork-transparency-d-420)
+retain actual transparent silhouettes instead of filtered background rectangles.
+
 **Guaranteed War recruitment (D-414):** [each Elemental War final stage](elemental-war.md#guaranteed-final-stage-recruitment-d-414)
 now guarantees its own Element-Bearer; already-owned results retain100
 Null-Prismatica conversion. Earlier stages never recruit.

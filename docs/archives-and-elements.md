@@ -1,5 +1,15 @@
 # Archives and enemy elements
 
+## Master silhouettes retain artwork transparency (D-420)
+
+Unowned Master Conduits keep their actual artwork silhouette, like other
+unowned Collection entries. The locked image removes its own opaque elemental
+background/border before the existing black silhouette/soft outline filter;
+otherwise that filter turns the background into a solid black rectangle.
+Owned Masters retain full-color art and elemental trim; card identity/effects,
+ownership gates, holdings and other surfaces are unchanged. Validate all48
+Master cards, owned/unowned/null-account rendering and computed browser styles.
+
 ## Direct enemy drops only (D-408)
 
 Enemy **View Loot** lists only rewards from defeating that enemy: its actual

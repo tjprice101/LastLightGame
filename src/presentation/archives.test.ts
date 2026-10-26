@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { archives } from './archives';
 import { emptyAccount } from '../game/account';
 import { conduits } from '../content/conduits';
@@ -120,6 +121,13 @@ describe('unified Archives', () => {
     const html = archives({ ...emptyAccount(), masterConduits: { 'master-ember-1': 1 } }, 'conduits');
     expect(html.match(/archive-conduit-revealed/g)).toHaveLength(1);
     expect(html.match(/class="archive-card archive-conduit-locked"/g)).toHaveLength(conduits.filter(entry => entry.rarity !== 'Calamitic').length + 47);
+    const css = readFileSync(new URL('./archives.css', import.meta.url), 'utf8');
+    expect(css).toMatch(/\.archive-conduit-locked \.archive-mechanism \.master-art\s*\{\s*background: none;\s*border-color: transparent;/);
+    for (const entry of masterConduits) {
+      const card = html.match(new RegExp(`<article class="archive-card ([^"]+)"[^>]*data-archive-master="${entry.id}"[\\s\\S]*?<\\/article>`))?.[0];
+      expect(card).toContain(entry.id === 'master-ember-1' ? 'archive-conduit-revealed' : 'archive-conduit-locked');
+      expect(card).toContain('class="master-art master-element-art"');
+    }
   });
 
   it('retains discovery locks and explicitly reports unavailable saves', () => {

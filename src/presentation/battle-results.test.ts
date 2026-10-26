@@ -12,6 +12,20 @@ const reward = (source: string, amount: number, materials: Record<string, number
 });
 
 describe('encounter result overlays', () => {
+  it.each(['nerithe', 'orvella', 'vaelor'] as const)('gives new %s recruits chest-scale art while duplicate currency stays compact', character => {
+    const state = createWarBattle(character, 10, 1, 'ember', { level: 105, evolution: 6 });
+    state.phase = 'cleared';
+    const event: BattleEvent = { ...reward('boss', 30100), lycalis: 25, recruitment: character, recruitmentOutcome: 'new' };
+    const html = battleResults(state, [event]);
+    expect(html.match(/class="result-recruitment-reward"/g)).toHaveLength(1);
+    expect(html).toContain('Element-Bearer');
+    expect(html).toContain('+30100');
+    expect(html).toContain('data-rarity="Common" class="result-recruitment-reward"');
+    expect(html).not.toContain('class="result-chest-reward"');
+    const duplicate = battleResults(state, [{ ...event, recruitmentOutcome: 'duplicate' }]);
+    expect(duplicate).not.toContain('result-recruitment-reward');
+    expect(duplicate).toContain('+125');
+  });
   it('shows saved Master and Calamity chests as dedicated large-art rewards', () => {
     const state = createBattle(1);
     state.phase = 'cleared';
