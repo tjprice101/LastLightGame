@@ -26,6 +26,10 @@
   `npx supabase functions deploy game-operation --project-ref
   ohtfgwomdfteaxubndww --no-verify-jwt`. Full publication CI and hosted SHA
   verification remain release gates. Combat rules remain13.
+- Initial full CI passed6665/6666 tests across215 files; its sole failure was
+  Treasury's historical expectation that a natural duplicate resets pity.
+  Corrected that expectation to1; its following new-recruit reset assertion
+  remains0. No production behavior changes beyond the validated resolver.
 
 ## Multi-select sales and durable animation policy (D-418)
 

@@ -149,7 +149,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     expect(duplicate.account.characters.ember).toEqual(account.characters.ember);
     expect(duplicate.account.squad).toEqual(['ember']);
     expect(duplicate.account.lycalis).toBe(90);
-    expect(duplicate.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 0 });
+    expect(duplicate.account.bannerPity?.standard).toEqual({ highestStar: 1, unownedHighestStar: 0 });
     const newEB = summonCharacter(saved, () => .002);
     expect(newEB.entry.id).toBe('tide');
     expect(newEB.account.characters.tide).toEqual({ level: 0, evolution: 1, weaponRank: 0 });
