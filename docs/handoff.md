@@ -1,5 +1,32 @@
 # Current state and handoff
 
+## Duplicate-safe independent banner pity (D-419)
+
+- Owner confirms natural duplicate5-stars and6-stars must not reset pity.
+  They advance that banner's active counter, just like material results.
+  Newly owned recruits reset it. Each banner remains fully independent;
+  summoning on one leaves the other's saved counters untouched.
+- Owner explicitly chooses cycle restart after the guaranteed duplicate when
+  every character in that banner is already owned. Unowned50/50-tier selection,
+  fallback, conversions, odds, cost, RNG order and sequential ten-pull atomicity
+  remain unchanged. No save schema, load writes or retroactive pity rewrite.
+- Shared resolver serves offline and authoritative draws; player-facing Rates
+  & Information and the economy specification explain the same transitions.
+- Owner-requested one-account base Elise correction was applied through a
+  locked, idempotent authoritative update with one revision increment.
+  Verified Lv.0/Evo.1/weapon-rank0 persisted; every other state field was
+  unchanged, including currencies, pity, equipment, squad and frozen run.
+- `npm test -- src\game\banner-pity.test.ts src\game\banner-materials.test.ts
+  src\game\crimson-roses.test.ts src\game\integrated-economy.test.ts
+  src\content\summon-banners.test.ts src\presentation\roster.test.ts
+  src\online\server-game.test.ts --maxWorkers=1 --reporter=dot` passed215
+  tests/7 files. `npm run build` passed TypeScript/Vite (existing large-chunk
+  warning only); `git diff --check` passed. Matching authority regenerated
+  with `node tools\bundle_server_game.mjs` and deployed successfully using
+  `npx supabase functions deploy game-operation --project-ref
+  ohtfgwomdfteaxubndww --no-verify-jwt`. Full publication CI and hosted SHA
+  verification remain release gates. Combat rules remain13.
+
 ## Multi-select sales and durable animation policy (D-418)
 
 - Captured collection has Multi-select sell, protected-safe Select available,
@@ -215,7 +242,8 @@
   Chest copies are activity-specific highest forms: Gleamstone/Wisp/Dawnthorn/
   Wraththorn/Roselius in Treasury/Sanctuary/Soar/Delve/Roses,1/2/3 at60.
   No copies from non-capturable modes, no removed holdings or retroactive grants.
-- All banners use one80-pull counter; any natural5/6 recruit resets it. Guarantee
+- All banners use one independent80-pull counter each; D-419 corrects resets:
+  natural duplicates advance progress, new recruits/completed guarantees reset it. Guarantee
   tiers are50/50 among unowned entries, fallback to the other tier if exhausted,
   ordinary duplicate conversion when all owned. Existing active counter remains;
   retired second counter is ignored and zeroed only on successful draw.

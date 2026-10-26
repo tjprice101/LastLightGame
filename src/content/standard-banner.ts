@@ -62,9 +62,10 @@ export function resolveBannerPull<T extends BannerOutcome>(
       if (roll < cumulative) { entry = candidate; break; }
     }
   }
-  const characterResult = entry.kind === 'character' && (entry.stars === 5 || entry.stars === 6);
+  const newCharacter = entry.kind === 'character' && (entry.stars === 5 || entry.stars === 6) &&
+    !ownedCharacters.includes(entry.id);
   return { entry, guarantee, pity: {
-    highestStar: characterResult ? 0 : pity.highestStar + 1,
+    highestStar: newCharacter || guarantee !== 'none' ? 0 : pity.highestStar + 1,
     unownedHighestStar: 0,
   } };
 }

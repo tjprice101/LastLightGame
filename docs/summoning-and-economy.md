@@ -11,10 +11,37 @@ the grid's highest rarity. Skip and explicit in-game reduced motion reveal
 immediately without an additional burst/delay. Costs, odds, pity, receipt
 contents, duplicate conversions and atomic save ordering are unchanged.
 
+## Duplicate-safe per-banner pity (D-419)
+
+Each banner has its own independent80-pull counter. A draw updates only that
+banner's progress; switching banners, reloading or visiting menus never moves
+or resets either counter. Natural duplicate5-star **and**6-star results advance
+the selected banner's counter exactly like material results, retaining the
+usual duplicate material conversion. Only a newly owned5/6-star recruit resets
+it before the guarantee.
+
+On pull80, the existing unowned-tier guarantee resolves normally. If every
+character in that banner is already owned, its guaranteed duplicate retains
+the usual conversion and **restarts that banner's80-pull cycle**. This explicit
+all-owned guarantee exception does not apply to natural duplicates.
+Ten-pulls carry these transitions sequentially and save once; online authority
+and offline play share the same resolver. No natural-rate, cost, RNG-order,
+duplicate-reward, save-schema or retrospective pity reconstruction change.
+This corrects D-412's natural-duplicate reset rule below.
+
+Validation: `npm test -- src\game\banner-pity.test.ts
+src\game\banner-materials.test.ts src\game\crimson-roses.test.ts
+src\game\integrated-economy.test.ts src\content\summon-banners.test.ts
+src\presentation\roster.test.ts src\online\server-game.test.ts --maxWorkers=1
+--reporter=dot` covers both duplicate tiers, separate banner counters, exact80th
+guarantees, new recruits, all-owned cycle restart, sequential ten-pulls,
+unchanged conversions and denied/overflowing writes.
+
 ## Single80-pull pity (D-412)
 
 Every banner has one independent counter and guarantees an Element-Bearer on
-pull80. Any natural5-star or6-star recruit, new or duplicate, resets it.
+pull80. D-419 above corrects resets: new recruits reset it, natural duplicates
+advance it, and an all-owned guaranteed duplicate restarts its cycle.
 At the guarantee, choose an unowned5-star or unowned6-star at50/50, then equally
 within that tier. If a tier has no unowned entries, use the other tier; if every
 character is owned, use the same tier rule with all banner characters and
@@ -100,8 +127,9 @@ Standard element, or Bloom of Rosethorn on Roses. No Epic/Legendary/Omnic
 materials, creature copies, sale step or automatic equipping from new draws.
 
 Cost10 Null-Prismatica and additional0.5% Legendary Conduit bonus remain.
-D-412 uses one80-pull counter per banner: material results advance it; any
-5/6-star character result resets it. Unowned-tier selection and exhausted-tier
+D-412/D-419 use one independent80-pull counter per banner: material results and
+natural5/6-star duplicates advance it; new recruits and completed guarantees
+reset it. Unowned-tier selection and exhausted-tier
 fallback follow the current rules above.
 Duplicate Standard draws use one extra independent summon roll to select the
 element; Roses duplicates need no family roll. Combat/reward/capture RNG stays

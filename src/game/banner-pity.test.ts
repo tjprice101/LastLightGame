@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { bannerCharacterTierRates, resolveBannerPull, standardBannerPool, validateBannerPity, type BannerOutcome } from '../content/standard-banner';
-import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, summonCharacter, validateAccount } from './account';
+import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, summonCharacter, summonCharacters, validateAccount } from './account';
+import { getSummonBanner } from '../content/summon-banners';
 import { summonHub } from '../presentation/roster';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 
@@ -59,13 +60,63 @@ describe('single per-banner 80-pull pity', () => {
     expect(resolveBannerPull(sample, owned, due, () => .5)).toMatchObject({ entry: { id: 'six-a' }, guarantee: 'all-owned-character', pity: zero });
   });
 
-  it('resets on every natural five/six-star result, new or duplicate', () => {
+  it('resets on new natural five/six-stars but advances on either duplicate tier', () => {
     for (const roll of [0, .005, .01, .0105]) for (const owned of [[], ['five-a', 'five-b', 'six-a', 'six-b']]) {
       const result = resolveBannerPull(sample, owned, { highestStar: 40, unownedHighestStar: 100 }, () => roll);
       expect(result.entry.kind).toBe('character');
       expect(result.guarantee).toBe('none');
-      expect(result.pity).toEqual(zero);
+      expect(result.pity).toEqual(owned.length ? { highestStar: 41, unownedHighestStar: 0 } : zero);
     }
+  });
+
+  it.each([['standard', 5], ['standard', 6], ['roses', 6]] as const)(
+    'advances %s pity on a natural duplicate %i-star without changing the other banner',
+    (bannerId, stars) => {
+      const values = new Map([[SAVE_KEY, '{"version":1,"starterId":"ember"}']]);
+      const storage: ProfileStorage = { getItem: key => values.get(key) ?? null,
+        setItem: (key, value) => { values.set(key, value); }, removeItem: key => { values.delete(key); } };
+      const account = emptyAccount();
+      account.lycalis = 100;
+      account.bannerPity = { standard: { highestStar: 40, unownedHighestStar: 0 },
+        roses: { highestStar: 60, unownedHighestStar: 0 } };
+      const entries = getSummonBanner(bannerId).pool();
+      const index = entries.findIndex(entry => entry.kind === 'character' && entry.stars === stars);
+      const entry = entries[index];
+      if (entry.kind !== 'character') throw new Error('Character fixture missing.');
+      account.characters[entry.id] = { level: 0, evolution: 1, weaponRank: 0 };
+      saveAccount(storage, account);
+      const roll = entries.slice(0, index).reduce((total, entry) => total + entry.chance, 0) + entry.chance / 2;
+      const result = summonCharacter(storage, () => roll, bannerId);
+      const other = bannerId === 'standard' ? 'roses' : 'standard';
+      expect(result.duplicate).toBe(true);
+      expect(result.entry.id).toBe(entry.id);
+      expect(result.account.bannerPity?.[bannerId]?.highestStar).toBe(account.bannerPity[bannerId]!.highestStar + 1);
+      expect(result.account.bannerPity?.[other]).toEqual(account.bannerPity[other]);
+      expect(loadAccount(storage).bannerPity).toEqual(result.account.bannerPity);
+      const html = summonHub(result.account, bannerId);
+      expect(html).toContain('independent 80-pull counter');
+      expect(html).toContain('Natural duplicates advance it instead');
+    },
+  );
+
+  it('carries duplicate progress through a ten-pull and resets only at its unowned guarantee', () => {
+    const values = new Map([[SAVE_KEY, '{"version":1,"starterId":"ember"}']]);
+    const storage: ProfileStorage = { getItem: key => values.get(key) ?? null,
+      setItem: vi.fn((key, value) => { values.set(key, value); }), removeItem: key => { values.delete(key); } };
+    const account = emptyAccount();
+    account.lycalis = 100;
+    account.characters.ember = { level: 0, evolution: 1, weaponRank: 0 };
+    account.bannerPity = { standard: { highestStar: 75, unownedHighestStar: 0 },
+      roses: { highestStar: 79, unownedHighestStar: 0 } };
+    saveAccount(storage, account);
+    vi.mocked(storage.setItem).mockClear();
+    const result = summonCharacters(storage, () => 0);
+    expect(result.draws.slice(0, 4).every(draw => draw.duplicate && draw.guarantee === 'none')).toBe(true);
+    expect(result.draws[4]).toMatchObject({ duplicate: false, guarantee: 'unowned-character' });
+    expect(result.draws.slice(5).every(draw => draw.duplicate && draw.guarantee === 'none')).toBe(true);
+    expect(result.account.bannerPity?.standard).toEqual({ highestStar: 5, unownedHighestStar: 0 });
+    expect(result.account.bannerPity?.roses).toEqual(account.bannerPity.roses);
+    expect(storage.setItem).toHaveBeenCalledTimes(1);
   });
 
   it('preserves legacy progress on read, honors overdue active counters, and retires the second guarantee', () => {

@@ -43,7 +43,7 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(draw.account.characters.ember).toEqual(original.characters.ember);
     expect(draw.materials).toEqual({ id: 'infernic-rare', amount: 15 });
     expect(draw.copy).toBeUndefined();
-    expect(draw.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 0 });
+    expect(draw.account.bannerPity?.standard).toEqual({ highestStar: 1, unownedHighestStar: 0 });
     const bought = purchaseConduit(saved, 'vigil-core');
     expect(bought.fractalis).toBe(sold.fractalis - 1000);
     const retained = farmed.capturedCharacters![0];

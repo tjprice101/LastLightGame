@@ -10548,9 +10548,9 @@ function resolveBannerPull(pool, ownedCharacters2, counters, random) {
       }
     }
   }
-  const characterResult = entry.kind === "character" && (entry.stars === 5 || entry.stars === 6);
+  const newCharacter = entry.kind === "character" && (entry.stars === 5 || entry.stars === 6) && !ownedCharacters2.includes(entry.id);
   return { entry, guarantee, pity: {
-    highestStar: characterResult ? 0 : pity.highestStar + 1,
+    highestStar: newCharacter || guarantee !== "none" ? 0 : pity.highestStar + 1,
     unownedHighestStar: 0
   } };
 }

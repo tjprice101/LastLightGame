@@ -363,7 +363,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     expect(second.account.characters[character.id]).toEqual(first.account.characters[character.id]);
   });
 
-  it('targets all three six-stars equally for 200 / 500 guarantees and preserves independent pity on rejected/failed draws', () => {
+  it('targets all three six-stars equally for overdue guarantees and preserves independent pity on rejected/failed draws', () => {
     const pool = roseBannerPool();
     for (const [index, id] of ['rosetta', 'thornia', 'crinso'].entries()) {
       expect(resolveBannerPull(pool, [], { highestStar: 199, unownedHighestStar: 20 }, () => (index + .5) / 3).entry.id).toBe(id);
@@ -371,7 +371,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
       expect(natural.entry.id).toBe(id);
       expect(natural.pity).toEqual({ highestStar: 0, unownedHighestStar: 0 });
       const duplicate = resolveBannerPull(pool, [id], { highestStar: 3, unownedHighestStar: 4 }, () => (index + .5) * .011 / 3);
-      expect(duplicate.pity).toEqual({ highestStar: 0, unownedHighestStar: 0 });
+      expect(duplicate.pity).toEqual({ highestStar: 4, unownedHighestStar: 0 });
     }
     expect(resolveBannerPull(pool, [], { highestStar: 199, unownedHighestStar: 499 }, () => .9).guarantee).toBe('unowned-character');
     for (const [index, id] of ['thornia', 'crinso'].entries()) {
@@ -541,7 +541,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     expect(html).toContain('data-infusion="roses"');
     expect(html).toContain('50% captures · Copies join at Lv.60');
     expect(html).not.toContain('No captures above Lv.120');
-    expect(html).toContain('80 pulls per banner');
+    expect(html).toContain('independent 80-pull counter');
     expect(html).toContain('6-star · 1.1%');
     expect(html).not.toContain('5-star tier: 1%');
     for (const id of ['rosetta', 'thornia', 'crinso']) expect(html).toContain(`data-banner-entry="${id}" data-entry-stars="6"`);

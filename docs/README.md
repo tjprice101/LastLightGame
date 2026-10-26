@@ -33,8 +33,9 @@ with three desktop columns and bounded scrolling. Existing small modals,
 mission/results screens and opening/upgrade animations are restored.
 D-411's global full-screen pagination is withdrawn.
 
-**Reward corrections (D-412):** [one80-pull pity](summoning-and-economy.md#single80-pull-pity-d-412)
-uses unowned5/6-star tiers50/50 with fallback and natural-recruit resets.
+**Reward corrections (D-412/D-419):** [independent80-pull pity per banner](summoning-and-economy.md#duplicate-safe-per-banner-pity-d-419)
+uses unowned5/6-star tiers50/50 with fallback. Natural duplicates advance pity;
+new recruits reset it. An all-owned guaranteed duplicate restarts its cycle.
 [Calamity chests](calamity-mode.md#mode-owned-rewards-d-412) keep each activity's
 own materials and highest-form devourers. Causality grants50 efficiency points,
 plus2 per upgrade; existing efficiency cap and other effects remain.

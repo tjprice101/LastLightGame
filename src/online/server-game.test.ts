@@ -435,8 +435,31 @@ describe('server authoritative game engine', () => {
     expect(duplicate.response.summon?.copy).toBeUndefined();
     expect(validateGameResponse(duplicate.response)).toEqual(duplicate.response);
     expect(owned.account.bannerPity?.[bannerId]?.highestStar).toBe(79);
+    expect(duplicate.game.account.bannerPity?.[bannerId]?.highestStar).toBe(0);
   });
-  it('honors 80/150 pity and imported overdue progress through authoritative draws', () => {
+  it.each([['standard', 5], ['standard', 6], ['roses', 6]] as const)(
+    'preserves %s pity on duplicate %i-stars and keeps the other banner independent',
+    (bannerId, stars) => {
+      const game = rich();
+      const entries = getSummonBanner(bannerId).pool();
+      const index = entries.findIndex(entry => entry.kind === 'character' && entry.stars === stars);
+      const entry = entries[index];
+      if (entry.kind !== 'character') throw new Error('Character fixture missing.');
+      game.account.characters[entry.id] = { level: 0, evolution: 1, weaponRank: 0 };
+      game.account.bannerPity = { standard: { highestStar: 40, unownedHighestStar: 0 },
+        roses: { highestStar: 60, unownedHighestStar: 0 } };
+      const roll = entries.slice(0, index).reduce((total, entry) => total + entry.chance, 0) + entry.chance / 2;
+      const result = resolveOperation(game, { kind: 'summon', bannerId }, { ...entropy, random: () => roll });
+      expect(result.response.summon?.duplicate).toBe(true);
+      expect(result.response.summon?.materials?.amount).toBe(15);
+      expect(result.game.account.bannerPity?.[bannerId]?.highestStar).toBe(game.account.bannerPity[bannerId]!.highestStar + 1);
+      const other = bannerId === 'standard' ? 'roses' : 'standard';
+      expect(result.game.account.bannerPity?.[other]).toEqual(game.account.bannerPity[other]);
+      expect(validateGameResponse(result.response)).toEqual(result.response);
+      expect(game.account.bannerPity[bannerId]!.highestStar).toBe(bannerId === 'standard' ? 40 : 60);
+    },
+  );
+  it('honors per-banner 80-pull pity and imported overdue progress through authoritative draws', () => {
     for (const [bannerId, highestStar, unownedHighestStar] of [
       ['standard', 79, 100], ['roses', 79, 100],
       ['standard', 79, 149], ['roses', 199, 499],

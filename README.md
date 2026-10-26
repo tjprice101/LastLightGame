@@ -21,8 +21,10 @@ not the current feature checklist.
   descriptions were audited;66 were clarified. See the
   [combat contract](docs/combat.md#all-character-kit-damage-can-crit-d-415)
   and [description audit](docs/conduits.md#complete-description-and-keyword-audit-d-415).
-- D-412/D-414: all banners use one80-pull pity, and Elemental War final stages
-  guarantee their own Element-Bearer. See [summoning](docs/summoning-and-economy.md#single80-pull-pity-d-412)
+- D-412/D-414/D-419: each banner has its own independent80-pull pity.
+  Natural5/6-star duplicates advance it; new recruits and completed guarantees
+  reset it. Elemental War final stages guarantee their own Element-Bearer.
+  See [summoning](docs/summoning-and-economy.md#duplicate-safe-per-banner-pity-d-419)
   and [War recruitment](docs/elemental-war.md#guaranteed-final-stage-recruitment-d-414).
 - D-404: the [non-Calamitic character report](docs/roster-capability-audit.md)
   and [global benchmark declaration](docs/enemy-benchmark-calibration.md)
