@@ -25,6 +25,14 @@ Decorative effects are pointer-transparent, finite (about1.15seconds;
 1.8seconds for labeled feedback) and cleaned on replacement, navigation,
 dialog disposal or timeout. No combat/reward RNG is consumed.
 
+The impact ring is a true circle, not the target's rounded rectangular border.
+It expands from15% to125% over850ms; ring diameter and radial spark travel
+fit the target's shorter dimension so short equipment cards do not clip the
+burst. Twelve primary sparks are followed by16 smaller staggered dots/star
+twinkles across the target. Calamitic retains circular expansion alongside
+its crimson/white/black pulse. Validate motion at multiple timeline positions,
+not from a single still image.
+
 The explicit in-game Reduce motion setting suppresses movement/sparkles,
 retaining a temporary static outline and applicable text. Device preferences
 do not independently suppress animation, preserving D-187. Existing reveal

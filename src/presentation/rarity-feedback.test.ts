@@ -44,12 +44,29 @@ describe('shared rarity feedback', () => {
     rarityFeedback(host, rarity);
     expect(host.querySelector('.rarity-feedback')?.getAttribute('data-rarity')).toBe(rarity);
     expect(host.querySelectorAll('.rarity-feedback-spark')).toHaveLength(12);
+    expect(host.querySelectorAll('.rarity-feedback-mote')).toHaveLength(16);
     expect(host.querySelector('.rarity-feedback')?.getAttribute('aria-hidden')).toBe('true');
     expect(random).not.toHaveBeenCalled();
     vi.advanceTimersByTime(1150);
     expect(host.childElementCount).toBe(0);
     expect(host.classList.contains('rarity-feedback-host')).toBe(false);
     expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('fits a circular expanding impact and radial sparks to the shorter card dimension', () => {
+    const host = target();
+    vi.spyOn(host, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, 0, 360, 80));
+    rarityFeedback(host, 'Calamitic', 'Conduit equipped');
+    const effect = host.querySelector<HTMLElement>('.rarity-feedback')!;
+    expect(parseFloat(effect.style.getPropertyValue('--impact-size'))).toBeCloseTo(57.6);
+    expect(effect.style.getPropertyValue('--spark-distance')).toBe('32px');
+    expect(effect.querySelectorAll('[aria-hidden="true"]')).toHaveLength(30);
+    const css = readFileSync(join(process.cwd(), 'src', 'presentation', 'rarity-feedback.css'), 'utf8');
+    expect(css).toContain('width: var(--impact-size); height: var(--impact-size);');
+    expect(css).toContain('border-radius: 50%');
+    expect(css).toContain('scale(.15)');
+    expect(css).toContain('scale(1.25)');
+    expect(css).toContain('animation: rarity-ring 850ms cubic-bezier(.2,.7,.3,1) both, rarity-calamitic-pulse');
   });
 
   it('keeps actual material, Conduit and captured-form rarities, without inventing specialty rarity', () => {

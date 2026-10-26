@@ -1,5 +1,27 @@
 # Current state and handoff
 
+## Circular impact and secondary sparkles (D-417 follow-up)
+
+- Owner identifies missing motion details from the reference: expanding circular
+  impact and minor sparks/sparkles. Replaced the inherited card-shaped ring
+  with a centered true circle (15% to125% scale/850ms); size and radial travel
+  fit the shorter target dimension, avoiding the former fixed90px clipping.
+- Retain12 primary rays and add16 deterministic staggered dot/star twinkles,
+  finishing within the existing1150ms cleanup window. Calamitic expansion and
+  pulse coexist. Rarity colors, save-first hooks, artwork, mechanics, explicit
+  Reduce motion, pointer transparency and disposal remain unchanged.
+- `npm test -- src\presentation\rarity-feedback.test.ts
+  src\presentation\settings.test.ts src\presentation\reward-screen.test.ts
+  src\presentation\conduit-loadout.test.ts
+  src\presentation\upgrade-celebration.test.ts --maxWorkers=1 --reporter=dot`
+  passed79 tests/5 files. `npm run build` passed TypeScript/Vite with the
+  existing large-chunk warning.
+- Browser sampled0/120/300/650/900ms on Rare280x80, Omnic180x220 and
+  Calamitic120x120 targets: all15 sampled rings had equal width/height;
+  dimensions grew over time, all12 primary sparks appeared by120ms,
+  and16 minor sparkles remained visible at650ms. Effects remained
+  pointer-transparent. Disposable DOM removed; no save/account writes.
+
 ## Shared rarity shimmers and success feedback (D-417)
 
 - Owner approves Epic violet/amethyst and presentation-only coverage for
