@@ -1,7 +1,13 @@
-import { elements, materialRarities, type ElementId } from './activities';
+import { elements, elementalMaterials, materialRarities, type ElementId } from './activities';
 import { specialtyMaterials } from './infusions';
 import { roseMaterials } from './roses';
 import { elementAssetIds, type LegacyElementId } from './element-migration';
+import { type Rarity } from './rarity';
+
+export function materialRarity(id: string): Rarity | undefined {
+  return elementalMaterials.find(material => material.id === id)?.rarity ??
+    roseMaterials.find(material => material.id === id)?.rarity;
+}
 
 export const elementAccents: Record<ElementId, string> = {
   infernic: '#fa8d63', oceanic: '#76c8f4', botanic: '#93d7a2',

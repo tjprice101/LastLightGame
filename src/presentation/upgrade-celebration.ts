@@ -1,7 +1,9 @@
 import { type Starter } from '../content/starters';
 import { type CharacterProgress } from '../content/progression';
-import { reducedMotion } from './settings';
 import { characterName } from '../content/character-art';
+import { evolutionRarity } from '../content/progression';
+import { rarityColors } from '../content/rarity';
+import { rarityFeedback, rarityMotionReduced } from './rarity-feedback';
 
 export type UpgradeKind = 'level' | 'evolve';
 const active = new WeakMap<HTMLElement, () => void>();
@@ -18,13 +20,19 @@ export function celebrateUpgrade(host: HTMLElement, starter: Starter, kind: Upgr
   if (!portrait) throw new Error('Character portrait is missing for upgrade celebration.');
   active.get(portrait)?.();
   const celebration = document.createElement('span');
-  celebration.className = `upgrade-celebration celebration-${kind}${reducedMotion() ? ' celebration-reduced' : ''}`;
-  celebration.style.setProperty('--element', starter.color);
+  celebration.className = `upgrade-celebration celebration-${kind}${rarityMotionReduced() ? ' celebration-reduced' : ''}`;
+  const rarity = evolutionRarity(progress.evolution);
+  celebration.style.setProperty('--element', rarityColors[rarity]);
   celebration.innerHTML = upgradeCelebration(starter, kind, progress);
   portrait.append(celebration);
+  const clearShimmer = rarityFeedback(celebration, rarity);
   portrait.classList.add(`celebrating-${kind}`);
+  const updateMotion = (): void => { celebration.classList.toggle('celebration-reduced', rarityMotionReduced()); };
+  window.addEventListener('last-light-motion-change', updateMotion);
   const cleanup = (): void => {
     clearTimeout(timer);
+    window.removeEventListener('last-light-motion-change', updateMotion);
+    clearShimmer();
     celebration.remove();
     portrait.classList.remove('celebrating-level', 'celebrating-evolve');
     active.delete(portrait);

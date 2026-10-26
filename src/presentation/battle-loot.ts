@@ -1,5 +1,5 @@
 import { type BattleEvent } from '../game/battle';
-import { materialArt, materialName } from '../content/dungeon-art';
+import { materialArt, materialName, materialRarity } from '../content/dungeon-art';
 import { assetUrl } from './portrait';
 import { lootRoll } from '../content/loot-random';
 import { currencyArt } from './currency-icon';
@@ -14,6 +14,8 @@ import { calamityChest, parseCalamityChestId } from '../content/calamity';
 import { calamityChestArt } from '../content/calamity-art';
 import { createConduitElement } from './conduit-element';
 import { pngFallback } from './image-format';
+import { rarityColors, type Rarity } from '../content/rarity';
+import { capturedRarity } from './owned-companion';
 
 export function isChestLoot(id: string): boolean {
   return id === masterChest.id || id.startsWith('calamity:');
@@ -34,7 +36,7 @@ export function lootLayout(count: number, viewportWidth: number, viewportHeight 
     rowGap, bottom: (rows - 1) * rowGap + radius + 24, top: 196 };
 }
 
-export interface LootItem { id: string; name: string; amount: number; art?: string; color: string; upgradeLevel?: number }
+export interface LootItem { id: string; name: string; amount: number; art?: string; color: string; upgradeLevel?: number; rarity?: Rarity }
 export function lootItems(event: BattleEvent): LootItem[] {
   if (event.kind !== 'reward') throw new Error('Loot presentation requires a reward event.');
   const calamity = event.calamityChest ? parseCalamityChestId(event.calamityChest) : null;
@@ -45,25 +47,24 @@ export function lootItems(event: BattleEvent): LootItem[] {
         amount: (event.lycalis ?? 0) + (event.recruitmentOutcome === 'duplicate' ? 100 : 0), art: undefined, color: '#ffffff' }] : []),
     ...(event.recruitment && event.recruitmentOutcome === 'new' ? [{
       id: `recruitment:${event.recruitment}`, name: `${characterName(event.recruitment)} · Element-Bearer`,
-      amount: 1, art: getStarter(event.recruitment).art, color: '#ffffff',
+      amount: 1, art: getStarter(event.recruitment).art, color: rarityColors.Common, rarity: 'Common' as const,
     }] : []),
     ...(event.mechanicalComponents ? [{ id: mechanicalComponents.id, name: mechanicalComponents.name, amount: event.mechanicalComponents, color: '#ffffff' }] : []),
-    ...(event.masterChests ? [{ id: masterChest.id, name: masterChest.name, amount: event.masterChests, color: '#ded0ff' }] : []),
-    ...(calamity ? [{ id: event.calamityChest!, name: calamityChest(calamity.activity, calamity.tier).name, amount: 1, color: '#ed4545' }] : []),
+    ...(event.masterChests ? [{ id: masterChest.id, name: masterChest.name, amount: event.masterChests, color: rarityColors.Omnic, rarity: 'Omnic' as const }] : []),
+    ...(calamity ? [{ id: event.calamityChest!, name: calamityChest(calamity.activity, calamity.tier).name, amount: 1, color: rarityColors.Calamitic, rarity: 'Calamitic' as const }] : []),
     ...Object.entries(event.conduits ?? {}).map(([id, amount]) => {
       if (!isConduitId(id)) throw new Error('Unknown Conduit in loot receipt.');
       const conduit = getConduit(id);
-      return { id: `conduit:${id}`, name: `${conduit.name} · ${conduit.rarity} Conduit`, amount, art: conduit.art ?? undefined, color: conduitColor(conduit), upgradeLevel: event.conduitUpgrades?.[id] ?? 0 };
+      return { id: `conduit:${id}`, name: `${conduit.name} · ${conduit.rarity} Conduit`, amount, art: conduit.art ?? undefined, color: conduitColor(conduit), rarity: conduit.rarity, upgradeLevel: event.conduitUpgrades?.[id] ?? 0 };
     }),
-    ...Object.entries(event.materials ?? {}).map(([id, amount]) => ({
-      id, name: materialName(id), amount, art: materialArt(id),
-      color: id.startsWith('heavens-') ? '#ff7474' : id.startsWith('abyss-') ? '#ff70dd'
-        : id.endsWith('-omnic') ? '#ff85d9' : id.endsWith('-legendary') ? '#ffd473'
-          : id.endsWith('-epic') ? '#c898ff' : id.endsWith('-rare') ? '#79caff'
-            : id.endsWith('-uncommon') ? '#9ee899' : '#ffffff',
-    })),
+    ...Object.entries(event.materials ?? {}).map(([id, amount]) => {
+      const rarity = materialRarity(id);
+      return { id, name: materialName(id), amount, art: materialArt(id),
+        rarity, color: rarity ? rarityColors[rarity] : '#ffffff' };
+    }),
     ...(event.capture ? [{ id: `capture:${event.capture.creatureId}`, name: `${getCreature(event.capture.creatureId).name} Elemental-Devourer`,
-      amount: 1, art: getCreature(event.capture.creatureId).art, color: '#f3df9b' }] : []),
+      amount: 1, art: getCreature(event.capture.creatureId).art, rarity: capturedRarity(event.capture.creatureId),
+      color: rarityColors[capturedRarity(event.capture.creatureId)] }] : []),
   ].filter(item => item.amount > 0);
 }
 
@@ -90,6 +91,7 @@ export function lootBurst(event: BattleEvent, random: () => number = Math.random
     const drop = document.createElement('span');
     drop.className = `loot-drop${item.id.startsWith('conduit:') ? ' loot-conduit' : ''}${isChestLoot(item.id) ? ' loot-chest' : ''}`;
     drop.dataset.lootId = item.id;
+    if (item.rarity) drop.dataset.rarity = item.rarity;
     drop.style.setProperty('--loot-color', item.color);
     const rowCount = Math.min(layout.columns, items.length - Math.floor(index / layout.columns) * layout.columns);
     drop.style.setProperty('--loot-x', `${(index % layout.columns - (rowCount - 1) / 2) * layout.columnGap + motion.scatter}px`);

@@ -41,6 +41,7 @@ import { uiIcon } from './presentation/ui-icon';
 import { currencyIcon } from './presentation/currency-icon';
 import { applyBattleSpeed, battleSpeeds, loadBattleSpeed, parseBattleSpeed, saveBattleSpeed, type BattleSpeed } from './presentation/battle-speed';
 import { celebrateUpgrade } from './presentation/upgrade-celebration';
+import { rarityFeedback } from './presentation/rarity-feedback';
 import { presentUpgrade } from './presentation/upgrade-result';
 import { activityTransitionPending, transitionActivity } from './presentation/activity-transition';
 import { checkForUpdate } from './presentation/update-check';
@@ -1515,7 +1516,13 @@ app.addEventListener('click', async event => {
   if (button.hasAttribute('data-store-rarity')) storeRarity = button.dataset.storeRarity ?? '';
   else if (button.dataset.storeConduit) storeConduit = id;
   else upgradeConduitSelection = id;
-  try { refreshConduitMenu(); }
+  try {
+    refreshConduitMenu();
+    if (id && isConduitId(id)) {
+      const target = app.querySelector<HTMLElement>('.ref-store-hero, .conduit-upgrade-hero');
+      if (target) rarityFeedback(target, getConduit(id).rarity);
+    }
+  }
   catch (error) { console.error('Conduit selection failed', error); showError(errorMessage(error)); }
 });
 
@@ -1622,6 +1629,10 @@ app.addEventListener('change', async event => {
     const id = isMasterConduitId(select.value) ? select.value : null;
     account = playMode === 'online' ? (await performOnline({ kind: 'equipMasterConduit', character, conduit: id })).account : equipMasterConduit(gameStorage, character, id);
     refreshLoadout(character);
+    if (id) {
+      const target = app.querySelector<HTMLElement>('.ref-master-slot');
+      if (target) rarityFeedback(target, 'Omnic', 'Master equipped');
+    }
   } catch (error) {
     console.error('Master equipment rejected', error);
     if (account && isStarterId(character)) refreshLoadout(character);
@@ -2016,6 +2027,10 @@ app.addEventListener('change', async (event) => {
     const slot = Number(select.dataset.captureSlot);
     account = playMode === 'online' ? (await performOnline({ kind: 'equipConduit', character: id, slot, conduit })).account : equipConduit(gameStorage, id, slot, conduit);
     refreshLoadout(id);
+    if (conduit) {
+      const target = app.querySelector<HTMLElement>(`[data-loadout-slot="${slot}"]`) ?? app.querySelector<HTMLElement>('.captured-equipment');
+      if (target) rarityFeedback(target, getConduit(conduit).rarity, 'Conduit equipped');
+    }
   } catch (error) {
     console.error('Captured equipment rejected', error);
     if (id) refreshLoadout(id); else renderMenu();
@@ -2033,6 +2048,10 @@ app.addEventListener('change', async (event) => {
     const slot = Number(control.dataset.conduitSlot);
     account = playMode === 'online' ? (await performOnline({ kind: 'equipConduit', character: selectedCharacter, slot, conduit: id })).account : equipConduit(gameStorage, selectedCharacter, slot, id);
     refreshLoadout(selectedCharacter);
+    if (id && isConduitId(id)) {
+      const target = app.querySelector<HTMLElement>(`[data-loadout-slot="${slot}"]`) ?? app.querySelector<HTMLElement>('.conduit-loadout');
+      if (target) rarityFeedback(target, getConduit(id).rarity, 'Conduit equipped');
+    }
     const status = app.querySelector('#conduit-equipment-result');
     if (!status) throw new Error('Conduit equipment status is missing.');
     status.textContent = `${id === null ? 'Conduit removed' : `${getConduit(id).name} equipped`}.`;
@@ -2100,6 +2119,10 @@ app.addEventListener('click', async (event) => {
     refreshLoadout(owner);
     const status = app.querySelector('#conduit-equipment-result');
     if (status) status.textContent = conduit ? `${getConduit(conduit).name} equipped in slot ${slot + 1}.` : `Slot ${slot + 1} cleared.`;
+    if (conduit && isConduitId(conduit)) {
+      const target = app.querySelector<HTMLElement>(`[data-loadout-slot="${slot}"]`);
+      if (target) rarityFeedback(target, getConduit(conduit).rarity, 'Conduit equipped');
+    }
     app.querySelector<HTMLElement>(`[data-loadout-slot="${slot}"]`)?.querySelector<HTMLButtonElement>('button')?.focus({ preventScroll: true });
   } catch (error) {
     console.error('Conduit loadout change rejected', error);

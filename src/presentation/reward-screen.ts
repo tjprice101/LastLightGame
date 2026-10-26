@@ -1,5 +1,6 @@
 import { createGameDialog, escapeDialogText } from './game-dialog';
-import { reducedMotion } from './settings';
+import { rarityFeedback, clearRarityFeedback, rarityMotionReduced } from './rarity-feedback';
+import { type Rarity, rarityColors, isRarity } from '../content/rarity';
 
 export interface RewardPresentation {
   title: string;
@@ -11,6 +12,8 @@ export interface RewardPresentation {
   savedLabel?: string;
   /** Highest summon star tier, used only for the pull screen's colour and animation. */
   tier?: SummonRevealTier;
+  /** Actual awarded rarity; summon star-tier anticipation remains independent. */
+  rarity?: Rarity;
 }
 
 export type SummonRevealTier = 'five-star' | 'six-star';
@@ -49,6 +52,10 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
   const { dialog, dispose } = createGameDialog(reward.title);
   dialog.classList.add('reward-screen');
   dialog.style.setProperty('--reward-accent', reward.accent);
+  if (reward.rarity) {
+    dialog.setAttribute('data-rarity', reward.rarity);
+    if (!reward.tier) dialog.style.setProperty('--reward-accent', rarityColors[reward.rarity]);
+  }
   if (reward.tier) dialog.setAttribute('data-reward-tier', reward.tier);
   dialog.innerHTML = rewardScreenMarkup(reward);
   const portal = dialog.querySelector<HTMLElement>('.reward-portal');
@@ -79,7 +86,13 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
     dialog.setAttribute('aria-busy', 'false');
     close.focus({ preventScroll: true });
     dialog.setAttribute('data-reward-revealed', 'true');
-    if (animateArt && !reducedMotion()) {
+    if (animateArt && !rarityMotionReduced()) {
+      const cards = art.querySelectorAll<HTMLElement>('.summon-ten-result[data-rarity]');
+      if (cards.length) cards.forEach((card, index) => {
+        const rarity = card.dataset.rarity;
+        if (index < 12 && isRarity(rarity)) rarityFeedback(card, rarity);
+      });
+      else if (reward.rarity) rarityFeedback(art, reward.rarity);
       artAnimation = reward.tier
         ? art.animate([{ opacity: 0, transform: 'scale(.96)', filter: 'brightness(1.15)' },
           { opacity: 1, transform: 'scale(1)', filter: 'brightness(1)', offset: .55 },
@@ -98,7 +111,7 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
     artError.textContent = 'Reward artwork could not load. Your reward is saved; reload to retry the artwork.';
   }, true);
   let motionQuery: MediaQueryList | undefined;
-  const motionChanged = (): void => { if (reducedMotion()) reveal(); };
+  const motionChanged = (): void => { if (rarityMotionReduced()) { reveal(); artAnimation?.cancel(); flashAnimation?.cancel(); } };
   try {
     motionQuery = matchMedia('(prefers-reduced-motion: reduce)');
     motionQuery.addEventListener('change', motionChanged);
@@ -126,7 +139,7 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
       try {
         dialog.showModal();
         dialog.setAttribute('aria-busy', 'true');
-        if (reducedMotion()) reveal();
+        if (rarityMotionReduced()) reveal();
         else {
           animation = portal.animate(reward.tier === 'six-star' ? [
             { transform: 'rotate(45deg) scale(.3)', opacity: 0 },
@@ -151,6 +164,7 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
     animation?.cancel();
     artAnimation?.cancel();
     flashAnimation?.cancel();
+    clearRarityFeedback(dialog);
     dispose();
   }
 }

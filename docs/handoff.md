@@ -1,5 +1,49 @@
 # Current state and handoff
 
+## Shared rarity shimmers and success feedback (D-417)
+
+- Owner approves Epic violet/amethyst and presentation-only coverage for
+  equipment/item selections, victories, summon/chest rewards and existing
+  upgrade celebrations. Palette: bronze/silver/gold/violet/orange/white rainbow/
+  black-white-crimson for Common through Calamitic.
+- Shared deterministic12-spark helper has finite sheen/ring/pop-up, idempotent
+  restart/disposal, pointer transparency and static reduced-motion feedback
+  for explicit in-game Reduce motion (D-187). No artwork/asset URLs, gameplay RNG, mechanics,
+  transactions, odds or account schemas change; combat remains rules13.
+- Equip feedback follows successful persistence only. Accepted Store/upgrade,
+  occupied-slot and Master choices shimmer without false saved claims.
+  Victory feedback runs once per result state; defeat/reopening do not replay.
+  Mixed ten-pull/chest rewards use each item's actual rarity (up to12 effects).
+  Star-tier anticipation remains golden/prismatic independently of Common
+  base Element-Bearers; captured forms use validated authored rarity.
+- Existing Skip/Escape/Continue/focus and immediate reduced-motion reveals
+  remain. Shared palette covers badges, Conduit frames, Inventory trims and
+  loot/reward colors without removing elemental mats/labels.
+- Validation: `npm test -- src\presentation\rarity-feedback.test.ts
+  src\presentation\calamity.test.ts src\presentation\battle-loot.test.ts
+  src\presentation\settings.test.ts src\online\server-game.test.ts
+  --maxWorkers=1 --reporter=dot` passed209 tests/5 files. Additional final
+  loadout/summon/result/helper selection passed64 tests/4 files; motion/infusion
+  regression selection passed39 tests/3 files. `npm run build` passed TypeScript/
+  Vite with only the existing large-chunk warning.
+- Browser disposable-DOM checks covered28 rarity/card-width combinations
+  (320/390/768/1280px): exact palette/badge borders, Georgia pop-up text,
+  pointer transparency and bounded overlays passed. Mixed Common effects did
+  not inherit Omnic sparkles; explicit reduced motion hid sparks and retained
+  a non-animated ring. No account writes; temporary DOM/server cleaned up.
+- Regenerating `node tools\bundle_server_game.mjs` produces no authority diff:
+  the pure palette is tree-shaken from server mechanics. No authority deploy
+  or combat-rules bump is needed.
+- Final frozen-source full regression:
+  `npm test -- --maxWorkers=1 --reporter=dot --reporter=json
+  --outputFile.json=<session>\files\d417-full-verified.json` passed6645 tests/
+  213 files with zero failures/pending. Initial broad run caught the explicit
+  D-187 motion-policy regression and two legacy fake-DOM paths, all corrected.
+  A subsequent in-flight run crossed the material-helper import move; the
+  final unmodified-source run above is the complete passing evidence.
+  `git diff --check` passed. Publication follows this validated snapshot;
+  no further owner decision is required.
+
 ## Calamity View Loot visual pilot (D-416)
 
 - Shared activity/Inventory preview now has a compact title, chest/tier hero,

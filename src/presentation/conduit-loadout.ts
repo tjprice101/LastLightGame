@@ -16,6 +16,8 @@ import { escapeDialogText, gameChoose } from './game-dialog';
 import { phaseZeroStatLabels, phaseZeroStatsReady } from '../content/phase-zero-stats';
 import { phaseZeroStaticBonuses, phaseZeroUpgradeMagnitude } from '../content/phase-zero-conduit-stats';
 import { referencedEffect } from './effect-copy';
+import { rarityFeedback } from './rarity-feedback';
+import { isRarity } from '../content/rarity';
 
 const statLabels: Record<ConduitBuff['stat'], string> = {
   ...phaseZeroStatLabels,
@@ -222,6 +224,9 @@ export function bindConduitLoadout(host: HTMLElement): void {
       const slot = Number(data.loadoutSelectSlot);
       if (!loadout || !Number.isInteger(slot) || slot < 0 || slot >= conduitSlotCount) return;
       view.target = { owner: loadout.dataset.characterEquipment ?? '', slot, signature: loadout.dataset.loadoutSignature ?? '' };
+      const card = loadout.querySelector<HTMLElement>(`[data-loadout-slot="${slot}"]`);
+      const equipped = card?.querySelector<HTMLElement>('[data-rarity]')?.dataset.rarity;
+      if (card && isRarity(equipped)) rarityFeedback(card, equipped);
     }
     applyLoadoutView(host);
   });

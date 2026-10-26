@@ -1,5 +1,14 @@
 # Art and asset workflow
 
+## Rarity UI/effect palette (D-417)
+
+[Shared rarity accents](menus-and-inventory.md#shared-rarity-accents-and-feedback-d-417)
+apply only to interface trims/badges and finite presentation effects. They
+never recolor, filter, regenerate or revise any installed artwork/source.
+Preserve elemental backgrounds/labels, portrait facing, authored ability VFX
+and every existing asset URL/byte. Omnic rainbow and Calamitic crimson/white/
+black sheen are runtime decoration, not new generation instructions.
+
 ## Machine's Master Chest replacement prompt (D-408)
 
 [Master Conduits section49](../Art/conduits/Master%20Conduits.md#49-machines-master-chest)

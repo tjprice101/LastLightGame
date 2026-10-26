@@ -8,6 +8,22 @@ import { mechanicalComponentIcon } from './mechanical-component-icon';
 import { warStageCount } from '../content/elemental-war';
 import { storyEncounter, storyRules } from '../content/story';
 import { conduitElement } from './conduit-element';
+import { rarityFeedback } from './rarity-feedback';
+import { isRarity } from '../content/rarity';
+
+const celebrated = new WeakSet<BattleState>();
+
+export function celebrateBattleResults(host: HTMLElement, state: BattleState): void {
+  const sheet = host.querySelector<HTMLElement>('.result-victory');
+  if (!sheet || celebrated.has(state)) return;
+  celebrated.add(state);
+  const title = sheet.querySelector<HTMLElement>('.battle-result-title');
+  if (title) rarityFeedback(title, 'Omnic');
+  sheet.querySelectorAll<HTMLElement>('.battle-result-rewards li[data-rarity]').forEach((item, index) => {
+    const rarity = item.dataset.rarity;
+    if (index < 12 && isRarity(rarity)) rarityFeedback(item, rarity);
+  });
+}
 
 export function encounterRewards(events: readonly BattleEvent[]) {
   const totals = new Map<string, ReturnType<typeof lootItems>[number]>();
@@ -44,7 +60,7 @@ export function battleResults(state: BattleState, events: readonly BattleEvent[]
     <div class="battle-result-rewards"><h3>Rewards earned this ${staged ? 'stage' : 'wave'}</h3>
       ${rewards.length ? `<ul>${rewards.map((item) => {
         const conduitId = item.id.startsWith('conduit:') ? item.id.slice('conduit:'.length) : null;
-        return `<li${isChestLoot(item.id) ? ' class="result-chest-reward"' : ''} style="--reward-color:${item.color}">${isConduitId(conduitId) ? conduitIcon(conduitId, item.upgradeLevel) : item.id === 'mechanical-components' ? mechanicalComponentIcon() : lootArt(item)
+        return `<li${item.rarity ? ` data-rarity="${item.rarity}"` : ''}${isChestLoot(item.id) ? ' class="result-chest-reward"' : ''} style="--reward-color:${item.color}">${isConduitId(conduitId) ? conduitIcon(conduitId, item.upgradeLevel) : item.id === 'mechanical-components' ? mechanicalComponentIcon() : lootArt(item)
         ? `<img src="${lootArt(item)}" alt="" width="40" height="40">` : '<span class="result-reward-token" aria-hidden="true">+</span>'}
         <span>${item.name}${isConduitId(conduitId) ? conduitElement(conduitId) : ''}</span><strong>+${formatStat(item.amount)}</strong></li>`;
       }).join('')}</ul>`

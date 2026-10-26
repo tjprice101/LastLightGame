@@ -7,12 +7,18 @@ import { characterRating, starBadge } from './character-rating';
 import { materialRarities, getElement } from '../content/activities';
 import { elementAccents } from '../content/dungeon-art';
 import { characterName } from '../content/character-art';
+import { evolutionRarity } from '../content/progression';
 
-export function capturedRating(creatureId: string): string {
+export function capturedRarity(creatureId: string) {
   const creature = getCreature(creatureId);
   const tier = Number(creatureId.split(':').at(-1));
   if (!creature.mode || !Number.isInteger(tier) || tier < 0 || tier > 5) throw new Error('Invalid captured Elemental-Devourer form.');
-  const rarity = materialRarities[tier];
+  return materialRarities[tier];
+}
+
+export function capturedRating(creatureId: string): string {
+  const rarity = capturedRarity(creatureId);
+  const tier = materialRarities.indexOf(rarity);
   return `<span class="character-rating">${starBadge(tier + 1, 'creature')}<span class="rarity-badge rarity-${rarity.toLowerCase()}" role="img" aria-label="${rarity} rarity"><span class="rarity-medallion" aria-hidden="true"><span>${tier + 1}</span></span><span class="rarity-label" aria-hidden="true">${rarity}</span></span></span>`;
 }
 export function ownedCompanion(account: Account, id: string) {
@@ -22,7 +28,7 @@ export function ownedCompanion(account: Account, id: string) {
     const progress = ownedProgress(account, id);
     const name = characterName(id, progress.evolution);
     return { name, label: name, color: starter.color, element: starter.element, level: progress.level, art: portrait(starter, progress.evolution),
-      rating: characterRating(id, progress.evolution), progress: `Lv.${progress.level} · Evo.${progress.evolution}` };
+      rarity: evolutionRarity(progress.evolution), rating: characterRating(id, progress.evolution), progress: `Lv.${progress.level} · Evo.${progress.evolution}` };
   }
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
   if (!copy) throw new Error('Choose an owned captured copy.');
@@ -32,5 +38,5 @@ export function ownedCompanion(account: Account, id: string) {
   const element = getElement(creature.element);
   return { name: creature.name, label: `${creature.name} · Copy ${index}`, color: elementAccents[creature.element], element: element.name, level,
     art: creature.art ? `<img src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${creature.name}" width="960" height="960">` : '<span>Artwork pending</span>',
-    rating: capturedRating(creature.id), progress: `Lv.${level} · Copy ${index}` };
+    rarity: capturedRarity(creature.id), rating: capturedRating(creature.id), progress: `Lv.${level} · Copy ${index}` };
 }

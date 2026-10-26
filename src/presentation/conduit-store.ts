@@ -10,6 +10,7 @@ import { referencedEffect as readableEffect } from './effect-copy';
 import { escapeDialogText } from './game-dialog';
 import { calamiticLockMessage, calamiticStoreUnlocked, calamiticTokenPrice, isCalamiticConduitId } from '../content/calamitic-conduits';
 import { conduitElement, omnicTheme } from './conduit-element';
+import './rarity-feedback.css';
 
 export function conduitLore(...paragraphs: string[]): string {
   return `<details class="conduit-lore-disclosure"><summary>Lore</summary>${paragraphs.map(text => `<p class="conduit-lore">${escapeDialogText(text)}</p>`).join('')}</details>`;
@@ -27,7 +28,7 @@ export function conduitDetails(id: ConduitId, level = 0, revealArt = true): stri
 export function conduitIcon(id: ConduitId, level = 0): string {
   const conduit = getConduit(id);
   validateConduitUpgradeLevel(level);
-  return `<span class="conduit-icon-frame" ${omnicTheme(id)} role="img" aria-label="${conduit.name} · Upgrade +${level} of 5" data-conduit-upgrade="${level}">${conduit.art ? `<img draggable="false" class="conduit-icon" src="${assetUrl(`conduits/${conduit.art}.png`)}" alt="" aria-hidden="true" width="256" height="256" loading="lazy">`
+  return `<span class="conduit-icon-frame" data-rarity="${conduit.rarity}" ${omnicTheme(id)} role="img" aria-label="${conduit.name} · Upgrade +${level} of 5" data-conduit-upgrade="${level}">${conduit.art ? `<img draggable="false" class="conduit-icon" src="${assetUrl(`conduits/${conduit.art}.png`)}" alt="" aria-hidden="true" width="256" height="256" loading="lazy">`
     : '<span class="conduit-icon conduit-art-pending">Artwork pending</span>'}${conduitUpgradeMeter(level)}</span>`;
 }
 export function conduitRarity(id: ConduitId): string {

@@ -1,5 +1,16 @@
 # Summoning and economy
 
+## Rarity reveal feedback (D-417)
+
+Saved summon and chest rewards share [finite rarity feedback](menus-and-inventory.md#shared-rarity-accents-and-feedback-d-417).
+Five-/six-star golden/prismatic anticipation stays independent from awarded
+rarity: a newly recruited Element-Bearer is Common/Evo.1 even at six stars;
+duplicate material conversions show the actual awarded Rare materials.
+Mixed ten-pull/chest cards shimmer in their own rarity rather than inheriting
+the grid's highest rarity. Skip and explicit in-game reduced motion reveal
+immediately without an additional burst/delay. Costs, odds, pity, receipt
+contents, duplicate conversions and atomic save ordering are unchanged.
+
 ## Single80-pull pity (D-412)
 
 Every banner has one independent counter and guarantees an Element-Bearer on

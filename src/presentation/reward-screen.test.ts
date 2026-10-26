@@ -14,6 +14,7 @@ function fixture() {
     focus = vi.fn();
     animation = { cancel: vi.fn(), onfinish: undefined as (() => void) | undefined };
     animate = vi.fn(() => this.animation);
+    querySelectorAll() { return []; }
   }
   const selectors = ['.reward-portal', '.reward-art', '.reward-details', '.reward-animation-label',
     '[data-skip-reward]', '[data-close-reward]', '.reward-art-error', '.reward-flash'];

@@ -11,7 +11,8 @@ import { dungeonEncounter, type PlayableDungeon } from '../content/dungeons';
 import { commands, type Bindings, type Command } from '../game/hotkeys';
 import { attackFlair, attackPose } from './battle-effects';
 import './battle-cinematic.css';
-import { battleResults } from './battle-results';
+import { battleResults, celebrateBattleResults } from './battle-results';
+import { clearRarityFeedback } from './rarity-feedback';
 import './battle-results.css';
 import { portraitCue, portraitCutin } from './battle-cutin';
 import './battle-cutin.css';
@@ -206,6 +207,7 @@ export class BattleView {
   }
 
   destroy(): void {
+    clearRarityFeedback(this.host);
     this.disposed = true;
     this.allyPicker?.cancel();
     this.allyPicker = null;
@@ -692,6 +694,7 @@ export class BattleView {
   }
 
   private render(): void {
+    clearRarityFeedback(this.host);
     this.clearErrorTimers();
     this.dragging = false;
     const state = this.session.state;
@@ -768,6 +771,7 @@ export class BattleView {
       ${state.calamity ? '' : `<p class="quiet">${finalBossLootText}</p>`}
       </section>`)}
       <section class="battle-log"><h3>Battle log (${this.session.log.length} recent events)</h3><ol>${this.session.log.map((line) => `<li>${line}</li>`).join('')}</ol></section></div></dialog>`;
+    if (results) celebrateBattleResults(this.host, this.session.state);
     this.vfxRunner?.destroy();
     this.vfxRunner = null;
     const vfxCanvas = this.host.querySelector<HTMLCanvasElement>('.battle-vfx-canvas');

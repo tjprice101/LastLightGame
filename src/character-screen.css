@@ -88,7 +88,7 @@
 .celebration-evolve .upgrade-aura-ring { border-style: double; border-width: 5px; animation-duration: 1600ms; }
 .upgrade-spark { position: absolute; left: 50%; top: 50%; width: 5px; height: 12px; border-radius: 50%; background: var(--element); box-shadow: 0 0 8px var(--element); opacity: 0; animation: upgrade-spark 900ms ease-out var(--delay) both; }
 .celebration-evolve .upgrade-spark { width: 6px; height: 16px; animation-duration: 1600ms; }
-.upgrade-celebration-label { position: absolute; left: 50%; bottom: 4%; translate: -50% 0; display: grid; gap: 3px; width: max-content; max-width: 95%; text-align: center; font: 11px/1.3 Arial, sans-serif; text-shadow: 0 1px 4px #000b, 0 0 12px #0009; animation: upgrade-label 1800ms ease-out both; }
+.upgrade-celebration-label { position: absolute; left: 50%; bottom: 4%; translate: -50% 0; display: grid; gap: 3px; width: max-content; max-width: 95%; text-align: center; font: 600 11px/1.3 var(--ui-font); text-shadow: 0 1px 4px #000b, 0 0 12px #0009; animation: upgrade-label 1800ms ease-out both; }
 .upgrade-celebration-label strong { color: var(--element); font: 600 20px/1.2 Georgia, serif; }
 .celebration-evolve .upgrade-celebration-label { animation-duration: 2400ms; }
 .sanctuary-shell .hub-showcase .hub-portrait.celebrating-level > .character-idle > img { animation: upgrade-portrait-level 900ms ease-out; }

@@ -59,6 +59,7 @@ export function upgradeResult(before: Account, after: Account, id: string, kind:
     title: kind === 'evolve' ? 'Evolution complete' : 'Level up!',
     name: current.label,
     accent: current.color,
+    rarity: current.rarity,
     animationLabel: kind === 'evolve' ? 'A new form awakens' : 'Growing stronger',
     savedLabel: 'Upgrade saved',
     art: `<div class="upgrade-result-portrait">${current.art}</div>`,

@@ -12,6 +12,7 @@ import { getElement } from '../content/activities';
 import { elementAccents } from '../content/dungeon-art';
 import '../presentation/conduit-element.css';
 import './master-choice-dialog.css';
+import { rarityFeedback } from '../presentation/rarity-feedback';
 
 export function MasterChoiceDialog({ account, onChoose, onClose }: {
   account: Account; onChoose: (id: MasterConduitId) => void; onClose: () => void;
@@ -33,7 +34,10 @@ export function MasterChoiceDialog({ account, onChoose, onClose }: {
     <div className="ll-master-options" role="group" aria-label={`${getStarter(character).name} Masters`}>
       {masterConduits.filter(entry => entry.character === character).map(entry => <Button key={entry.id}
         disabled={account.masterConduits?.[entry.id] === 1} aria-pressed={selected === entry.id}
-        className="ll-master-option" data-conduit-element={element} style={elementStyle} onClick={() => setSelected(entry.id)}>
+        className="ll-master-option" data-rarity="Omnic" data-conduit-element={element} style={elementStyle} onClick={event => {
+          if (selected !== entry.id) rarityFeedback(event.currentTarget, 'Omnic');
+          setSelected(entry.id);
+        }}>
         <img className="ll-master-art master-element-art" draggable={false} src={assetUrl(entry.art)} alt="" width={256} height={256} /><strong>{entry.name}</strong>
         <strong className="conduit-element-label" data-conduit-element={element}>{getElement(element).name}</strong>
         <small>Omnic Master{account.masterConduits?.[entry.id] === 1 ? ' · Owned' : ''}</small><span>{referencedEffect(entry.effect, false)}</span>

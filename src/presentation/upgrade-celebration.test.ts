@@ -13,6 +13,7 @@ afterEach(() => {
 
 function fixture() {
   vi.useFakeTimers();
+  vi.stubGlobal('window', new EventTarget());
   const classes = new Set<string>();
   const overlays: { className: string; innerHTML: string; removed: boolean }[] = [];
   const portrait = {

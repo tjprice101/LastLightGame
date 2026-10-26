@@ -9,6 +9,10 @@ Use the [documentation index](docs/README.md) and
 The original prototype overview below is a superseded historical snapshot,
 not the current feature checklist.
 
+- D-417: [shared rarity colors and finite shimmer feedback](docs/menus-and-inventory.md#shared-rarity-accents-and-feedback-d-417)
+  now cover successful equipment changes, item choices, victory rewards,
+  summon/chest reveals and existing upgrade celebrations. Artwork and mechanics
+  remain unchanged; explicit Reduce motion retains static feedback.
 - D-415: all character-kit damage can critically hit, and Thorn Traps use
   explicit empowerment rather than damage thresholds. All138 Conduit/Master
   descriptions were audited;66 were clarified. See the

@@ -1,6 +1,7 @@
 import { getStarter, type StarterId } from '../content/starters';
 import { evolutionRarity } from '../content/progression';
 import './character-rating.css';
+import './rarity-feedback.css';
 
 export function starBadge(stars: number, subject: 'character' | 'creature' = 'character'): string {
   if (!Number.isInteger(stars) || stars < 1 || stars > 6) throw new Error('Character stars must be an integer from 1 to 6.');

@@ -4,7 +4,7 @@ import { type Account, type openCalamityChest } from '../game/account';
 import { activityAccess, assertActivityAccess } from '../game/activity-access';
 import { information } from './information';
 import { escapeDialogText, gameConfirm, gameDialogPending } from './game-dialog';
-import { materialArt, materialName } from '../content/dungeon-art';
+import { materialArt, materialName, materialRarity } from '../content/dungeon-art';
 import { getConduit, isConduitId } from '../content/conduits';
 import { type RewardPresentation } from './reward-screen';
 import { calamityBossArt, calamityChestArt, calamityArenaArt } from '../content/calamity-art';
@@ -17,6 +17,7 @@ import { conduitIcon } from './conduit-store';
 import { conduitElement } from './conduit-element';
 import { masterChestIcon } from './master-conduits';
 import { getCreature } from '../content/creatures';
+import { type Rarity } from '../content/rarity';
 
 function devourerReward(creatureId: string) {
   const creature = getCreature(creatureId);
@@ -208,28 +209,28 @@ export function calamityCadence(activity: CalamityActivityId, round: number): st
 export function calamityOpeningReward(id: string, reward: ReturnType<typeof openCalamityChest>['reward']): RewardPresentation {
   const { activity, tier } = parseCalamityChestId(id);
   const chest = calamityChest(activity, tier);
-  const items: { label: string; art: string; chest?: boolean; badge?: string }[] = [
+  const items: { label: string; art: string; chest?: boolean; badge?: string; rarity?: Rarity }[] = [
     ...(reward.fractalis ? [{ label: `${reward.fractalis} Prismatica`, art: currencyIcon('fractalis') }] : []),
     ...(reward.lycalis ? [{ label: `${reward.lycalis} Null-Prismatica`, art: currencyIcon('lycalis') }] : []),
     ...Object.entries(reward.materials).map(([material, amount]) => {
       const art = materialArt(material);
-      return { label: `${amount} ${materialName(material)}`, art: art
+      return { label: `${amount} ${materialName(material)}`, rarity: materialRarity(material), art: art
         ? `<img src="${assetUrl(`materials/${art}.png`)}" alt="" width="80" height="80">`
         : '<span class="art-pending">Artwork pending</span>' };
     }),
     ...Object.entries(reward.conduits).map(([conduit, amount]) => {
       if (!isConduitId(conduit)) throw new Error('Unknown Conduit in chest receipt.');
-      return { label: `${amount} ${getConduit(conduit).name}`, art: conduitIcon(conduit), badge: conduitElement(conduit) };
+      return { label: `${amount} ${getConduit(conduit).name}`, rarity: getConduit(conduit).rarity, art: conduitIcon(conduit), badge: conduitElement(conduit) };
     }),
     ...(reward.mechanicalComponents ? [{ label: `${reward.mechanicalComponents} Broken Mechanical Components`, art: currencyIcon('mechanical-components') }] : []),
-    ...(reward.masterChests ? [{ label: `${reward.masterChests} Machine's Master Chests`, art: masterChestIcon(), chest: true }] : []),
-    ...(reward.devourerCopies ? [{ label: `${reward.devourerCopies.amount} ${devourerReward(reward.devourerCopies.creatureId).name}`, art: devourerReward(reward.devourerCopies.creatureId).art }]
-      : reward.roseliusCopies ? [{ label: `${reward.roseliusCopies} ${devourerReward('infusion:roses:5').name}`, art: devourerReward('infusion:roses:5').art }] : []),
-    ...(reward.calamiticTokens ? [{ label: `${reward.calamiticTokens} Calamitic Tokens`, art: currencyIcon('calamitic-tokens') }] : []),
+    ...(reward.masterChests ? [{ label: `${reward.masterChests} Machine's Master Chests`, rarity: 'Omnic' as const, art: masterChestIcon(), chest: true }] : []),
+    ...(reward.devourerCopies ? [{ label: `${reward.devourerCopies.amount} ${devourerReward(reward.devourerCopies.creatureId).name}`, rarity: 'Omnic' as const, art: devourerReward(reward.devourerCopies.creatureId).art }]
+      : reward.roseliusCopies ? [{ label: `${reward.roseliusCopies} ${devourerReward('infusion:roses:5').name}`, rarity: 'Omnic' as const, art: devourerReward('infusion:roses:5').art }] : []),
+    ...(reward.calamiticTokens ? [{ label: `${reward.calamiticTokens} Calamitic Tokens`, rarity: 'Calamitic' as const, art: currencyIcon('calamitic-tokens') }] : []),
   ];
   return { title: 'Calamity chest opened', name: chest.name,
     art: `<ul class="summon-ten-grid calamity-reward-grid" aria-label="Received loot">${items.map(item =>
-      `<li class="summon-ten-result${item.chest ? ' chest-reward-result' : ''}"><div class="summon-ten-art">${item.art}</div><b>${escapeDialogText(item.label)}</b>${item.badge ?? ''}</li>`).join('')}</ul>`,
+      `<li${item.rarity ? ` data-rarity="${item.rarity}"` : ''} class="summon-ten-result${item.chest ? ' chest-reward-result' : ''}"><div class="summon-ten-art">${item.art}</div><b>${escapeDialogText(item.label)}</b>${item.badge ?? ''}</li>`).join('')}</ul>`,
     details: '<p>Rewards added to Inventory.</p>',
-    accent: '#ed4545', animationLabel: 'Opening chest…', savedLabel: 'Rewards saved' };
+    rarity: 'Calamitic', accent: '#ed4545', animationLabel: 'Opening chest…', savedLabel: 'Rewards saved' };
 }

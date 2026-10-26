@@ -1,5 +1,10 @@
 # Documentation hub
 
+**D-417:** [shared rarity palette and shimmer feedback](menus-and-inventory.md#shared-rarity-accents-and-feedback-d-417)
+cover equipment/item choices, victory rewards, summons/chests and existing
+upgrade celebrations. [Star-tier anticipation stays separate](summoning-and-economy.md#rarity-reveal-feedback-d-417);
+artwork, mechanics and saved outcomes are unchanged.
+
 **D-416:** [Calamity chest View Loot visual pilot](menus-and-inventory.md#calamity-chest-loot-presentation-d-416)
 is scoped to activity/Inventory loot previews; no global theme rollout.
 

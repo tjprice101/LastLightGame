@@ -1,5 +1,38 @@
 # Menus and inventory
 
+## Shared rarity accents and feedback (D-417)
+
+Rarity UI uses one palette: Common bronze, Uncommon silver, Rare gold,
+Epic violet/amethyst, Legendary orange, Omnic white with rainbow sparkles,
+and Calamitic black/white/crimson. Shared badges, Conduit frames, Inventory
+trims and reward rows use these colors without filtering/recoloring artwork.
+Elemental mats/labels retain their own identity; character star value is not
+form rarity.
+
+Successful Conduit/Master equips get a brief local sheen, ring, deterministic
+sparkle burst and success pop-up **after** the saved transaction succeeds.
+Accepted occupied-slot, Store/upgrade item and Master-choice selections use
+the same effect without claiming a purchase/equip. Unequipping, cancellations
+and rejected operations do not play acquisition success. Existing level/
+evolution celebrations and saved reward reveals also use the actual form/item
+rarity. No modal sizing/theme rollout is implied by these effects.
+
+Victory titles and up to12 rarity-bearing reward rows shimmer once per
+encounter result state, not on defeat or reopening the same result. Mixed
+ten-pull/chest grids use each awarded item's own rarity, capped at12 effects;
+currencies/specialty materials without an authored rarity stay neutral.
+Decorative effects are pointer-transparent, finite (about1.15seconds;
+1.8seconds for labeled feedback) and cleaned on replacement, navigation,
+dialog disposal or timeout. No combat/reward RNG is consumed.
+
+The explicit in-game Reduce motion setting suppresses movement/sparkles,
+retaining a temporary static outline and applicable text. Device preferences
+do not independently suppress animation, preserving D-187. Existing reveal
+Skip/Escape/Continue/focus and save-before-animation behavior remain intact;
+skipped/reduced-motion reward reveals add no extra burst or delay.
+Validate `rarity-feedback.test.ts` alongside existing equipment, Inventory,
+reward, summon, upgrade and battle-result tests, plus production build.
+
 ## Calamity chest loot presentation (D-416)
 
 Only Calamity chest **View Loot** dialogs receive this visual pilot, consistently

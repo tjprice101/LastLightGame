@@ -207,8 +207,8 @@ describe('enemy-death loot presentation', () => {
     const items = lootItems(reward);
     expect(items.map((item) => item.amount)).toEqual([7, 2, 1, 1]);
     expect(items[1].art).toBe('heavens-dawnsteel-of-judgment');
-    expect(items[2].color).toBe('#c898ff');
-    expect(items[3].color).toBe('#ff85d9');
+    expect(items[2].color).toBe('#c8a2f0');
+    expect(items[3].color).toBe('#f5f3ff');
     const burst = lootBurst(reward);
     const currencyDrop = burst.children[0];
     if (!(currencyDrop instanceof Node)) throw new Error('Loot fixture node is missing.');

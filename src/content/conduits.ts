@@ -1,4 +1,5 @@
 import { type ElementId } from './activities';
+import { rarityColors } from './rarity';
 import { kitConduitDesigns, convertedKitConduitIds } from './kit-conduits';
 import { conduitOrigin } from './world-lore';
 import { redesignEffect } from './conduit-redesign';
@@ -192,8 +193,7 @@ export function conduitEffect(conduit: Conduit, level = 0): string {
   return isCalamiticConduitId(conduit.id) ? calamiticEffect(conduit.id, level) : redesignEffect(conduit.id, level);
 }
 export function conduitColor(conduit: Conduit): string {
-  return conduit.rarity === 'Calamitic' ? '#ff1744' : conduit.rarity === 'Common' ? '#c39874' : conduit.rarity === 'Rare' ? '#c7cbd1' :
-    conduit.rarity === 'Legendary' ? '#f1f0e9' : '#ded0ff';
+  return rarityColors[conduit.rarity];
 }
 export function conduitEquipReason(conduit: Conduit, element: ElementId, slots: ConduitSlots, slot: number): string | null {
   if (conduit.element && conduit.element !== element) return 'Element mismatch';

@@ -29,7 +29,7 @@ export interface InventoryFilters { query: string; type: string; rarity: string;
 export const defaultInventoryFilters: Readonly<InventoryFilters> = { query: '', type: '', rarity: '', element: '' };
 
 function itemMetadata(name: string, type: string, rarity = '', element = ''): string {
-  return `data-inventory-entry data-item-name="${escapeDialogText(name)}" data-item-type="${type}" data-item-rarity="${rarity}" data-item-elements="${element}"`;
+  return `data-inventory-entry data-item-name="${escapeDialogText(name)}" data-item-type="${type}" data-item-rarity="${rarity}"${rarity ? ` data-rarity="${rarity}"` : ''} data-item-elements="${element}"`;
 }
 
 function materialMetadata(id: string): string {

@@ -1,0 +1,44 @@
+:root {
+  --rarity-common: #c39874;
+  --rarity-uncommon: #c7cbd1;
+  --rarity-rare: #ebc45c;
+  --rarity-epic: #c8a2f0;
+  --rarity-legendary: #ffab63;
+  --rarity-omnic: #f5f3ff;
+  --rarity-calamitic: #f04a65;
+}
+html body :is([data-rarity="Common"], .rarity-common, .conduit-common) { --rarity-color: var(--rarity-common); }
+html body :is([data-rarity="Uncommon"], .rarity-uncommon) { --rarity-color: var(--rarity-uncommon); }
+html body :is([data-rarity="Rare"], .rarity-rare, .conduit-rare) { --rarity-color: var(--rarity-rare); }
+html body :is([data-rarity="Epic"], .rarity-epic) { --rarity-color: var(--rarity-epic); }
+html body :is([data-rarity="Legendary"], .rarity-legendary, .conduit-legendary) { --rarity-color: var(--rarity-legendary); }
+html body :is([data-rarity="Omnic"], .rarity-omnic, .conduit-omnic) { --rarity-color: var(--rarity-omnic); }
+html body :is([data-rarity="Calamitic"], .conduit-calamitic) { --rarity-color: var(--rarity-calamitic); }
+html body :is(.rarity-badge, .conduit-rarity) { --rarity-metal: var(--rarity-color, #c7cbd1); color: var(--rarity-metal); border-color: var(--rarity-metal); }
+html body :is(#app, dialog) :is(.rarity-badge, .conduit-rarity) { color: var(--rarity-metal); border-color: var(--rarity-metal); }
+html body .conduit-icon-frame[data-rarity] { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rarity-color) 50%, transparent); }
+html body .inventory-item[data-rarity] { border-color: color-mix(in srgb, var(--rarity-color) 45%, #333339); }
+html body .summon-ten-result[data-rarity] { border-color: var(--rarity-color); }
+html body [data-rarity="Omnic"] { --rarity-sheen: linear-gradient(110deg, transparent 15%, #f8b9dd70 28%, #ffeaa380 38%, #b6f3dc80 46%, #fff 50%, #b5e7ff90 55%, #d4c0ff80 65%, transparent 80%); }
+html body [data-rarity="Calamitic"] { --rarity-sheen: linear-gradient(110deg, transparent 15%, #08080b 30%, #fff9 43%, #fff 50%, #dc254b 57%, #0a0a0d 70%, transparent 85%); }
+:where(.rarity-feedback-host) { position: relative; }
+.rarity-feedback { --rarity-sheen: initial; position: absolute; inset: 0; border-radius: inherit; z-index: 5; pointer-events: none; overflow: clip; color: var(--rarity-color); contain: layout paint; }
+.rarity-feedback-sweep { position: absolute; inset: 0; border-radius: inherit; background: var(--rarity-sheen, linear-gradient(110deg, transparent 20%, color-mix(in srgb, var(--rarity-color) 60%, transparent) 40%, #ffffffba 50%, transparent 75%)); transform: translateX(-120%); animation: rarity-sweep 950ms ease-out both; }
+.rarity-feedback-ring { position: absolute; inset: 8%; border: 1px solid currentColor; border-radius: inherit; box-shadow: inset 0 0 16px color-mix(in srgb, currentColor 25%, transparent), 0 0 18px color-mix(in srgb, currentColor 30%, transparent); animation: rarity-ring 1000ms ease-out both; }
+.rarity-feedback-spark { position: absolute; left: 50%; top: 50%; width: 5px; height: 13px; background: currentColor; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); filter: drop-shadow(0 0 4px currentColor); animation: rarity-spark 850ms ease-out var(--spark-delay) both; }
+.rarity-feedback[data-rarity="Omnic"] > .rarity-feedback-spark:nth-child(3n) { color: #ffe7a6; }
+.rarity-feedback[data-rarity="Omnic"] > .rarity-feedback-spark:nth-child(3n + 1) { color: #b8eaff; }
+.rarity-feedback[data-rarity="Calamitic"] > .rarity-feedback-ring { animation: rarity-calamitic-pulse 1100ms ease-out both; }
+.rarity-feedback[data-rarity="Calamitic"] > .rarity-feedback-spark:nth-child(even) { color: #fff; }
+.rarity-feedback-label { position: absolute; left: 8px; right: 8px; bottom: 8px; padding: 8px 12px; border: 1px solid var(--rarity-color); border-radius: 9px; background: #121216ed; color: #fff; text-align: center; font: 700 .9rem/1.4 var(--ui-font); overflow-wrap: anywhere; text-shadow: 0 1px 3px #000; animation: rarity-label 1800ms ease-out both; }
+@keyframes rarity-sweep { to { transform: translateX(120%); } }
+@keyframes rarity-ring { 0% { opacity: 0; transform: scale(.65); } 25% { opacity: .8; } 100% { opacity: 0; transform: scale(1.08); } }
+@keyframes rarity-spark { 0% { opacity: 0; transform: rotate(var(--spark-angle)) translateY(0) scale(.3); } 25% { opacity: 1; } 100% { opacity: 0; transform: rotate(var(--spark-angle)) translateY(-90px) scale(.2); } }
+@keyframes rarity-calamitic-pulse { 0%, 100% { opacity: 0; } 30% { opacity: .7; border-color: #fff; } 60% { opacity: .3; border-color: #101014; } 80% { opacity: .6; border-color: var(--rarity-calamitic); } }
+@keyframes rarity-label { 0% { opacity: 0; transform: translateY(8px) scale(.97); } 18%, 78% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-4px); } }
+.rarity-feedback-reduced > :not(.rarity-feedback-label) { display: none; }
+.rarity-feedback.rarity-feedback-reduced > .rarity-feedback-ring { display: block; animation: none; opacity: .4; box-shadow: none; }
+.rarity-feedback-reduced .rarity-feedback-label { animation: none; }
+html[data-motion="reduced"] .rarity-feedback > :not(.rarity-feedback-label) { display: none; }
+html[data-motion="reduced"] .rarity-feedback > .rarity-feedback-ring { display: block; animation: none; opacity: .4; box-shadow: none; }
+html[data-motion="reduced"] .rarity-feedback-label { animation: none; }
