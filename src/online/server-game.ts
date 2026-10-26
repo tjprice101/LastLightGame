@@ -80,6 +80,7 @@ export type GameOperation =
   | { kind: 'summon'; bannerId: SummonBannerId }
   | { kind: 'summonTen'; bannerId: SummonBannerId }
   | { kind: 'sellCurrencyCreature'; id: string; saleOption?: string }
+  | { kind: 'sellCurrencyCreatures'; selections: { id: string; saleOption: string }[] }
   | { kind: 'purchaseConduit'; id: ConduitId }
   | { kind: 'setMachineLootFocus'; rarity: MachineFocusRarity; id: ConduitId | null }
   | { kind: 'equipConduit'; character: string; slot: number; conduit: ConduitId | null }

@@ -73,7 +73,13 @@ import { unlockedStoryStage } from './game/account';
 import { roseEvent } from './presentation/rose-event';
 import { isMenuPage, sanctuaryHeader, sanctuaryContext, sanctuaryDock, sanctuaryDestination, type MenuPage, type TeamArea } from './presentation/sanctuary';
 import { MenuHistory } from './presentation/menu-history';
-import { gameChoose, gameConfirm, gameDialogPending } from './presentation/game-dialog';
+import { gameChoose, gameConfirm, gameDialogPending, escapeDialogText } from './presentation/game-dialog';
+import { bindCreatureBulkSale } from './presentation/creature-bulk-sale';
+import { creatureBatchSaleOffer, sellCurrencyCreatures } from './game/account';
+import { saleItems } from './presentation/creature-sale';
+import { itemShowcase } from './presentation/item-showcase';
+import { capturedRarity } from './presentation/owned-companion';
+import { rarities, type Rarity } from './content/rarity';
 import { exchangeCategory, exchangeProduct, exchangeProducts, isExchangeQuantity, eventMaterialWarning, eventMaterialWarningHidden, hideEventMaterialWarning } from './content/material-exchange';
 import { presentReward } from './presentation/reward-screen';
 import { summonReward, summonTenReward } from './presentation/summon-presentation';
@@ -1116,6 +1122,46 @@ function renderMenu(firstArrival = false): void {
     });
   });
   const squadForm = app.querySelector<HTMLFormElement>('#squad-form');
+  if (account) bindCreatureBulkSale(app, account, async selections => {
+    if (gameDialogPending()) return;
+    let saved = false;
+    try {
+      const current = currentAccount();
+      const offer = creatureBatchSaleOffer(current, selections);
+      const payout = saleLabel(offer);
+      const choices = offer.offers.map(entry => {
+        const index = (current.capturedCharacters ?? []).findIndex(copy => copy.instanceId === entry.copy.instanceId) + 1;
+        return `<li><b>${escapeDialogText(getCreature(entry.copy.creatureId).name)} · Copy ${index}</b><span>${escapeDialogText(saleLabel(entry))}</span></li>`;
+      }).join('');
+      const choice = await gameChoose(`Sell ${selections.length} copies?`, [
+        { value: 'cancel', label: 'Cancel' }, { value: 'sell', label: `Sell ${selections.length} copies`, primary: true },
+      ] as const, 'cancel', { title: 'Review Elemental-Devourer sale',
+        messageHtml: `<p>Permanently remove these ${selections.length} copies? This cannot be undone.</p><ul class="creature-bulk-review">${choices}</ul>${itemShowcase(saleItems(offer), 'Total sale value')}` });
+      if (choice !== 'sell') return;
+      account = playMode === 'online'
+        ? (await performOnline({ kind: 'sellCurrencyCreatures', selections })).account
+        : sellCurrencyCreatures(gameStorage, selections);
+      saved = true;
+      if (selections.some(selection => selection.id === selectedCapture)) selectedCapture = undefined;
+      renderMenu();
+      const rarity = offer.offers.reduce<Rarity>((best, entry) => {
+        const next = capturedRarity(entry.copy.creatureId);
+        return rarities.indexOf(next) > rarities.indexOf(best) ? next : best;
+      }, 'Common');
+      await presentReward({ title: 'Sale complete', name: `${selections.length} Elemental-Devourers sold`,
+        art: itemShowcase(saleItems(offer), 'Received'), details: `<p>${escapeDialogText(payout)} added to Inventory.</p>`,
+        rarity, accent: '#fff', animationLabel: 'Releasing elemental echoes', savedLabel: 'Sale saved' });
+      app.querySelector<HTMLButtonElement>('[data-bulk-sale-toggle]')?.focus({ preventScroll: true });
+    } catch (cause) {
+      console.error('Multi-select Elemental-Devourer sale failed', cause);
+      showError(`${saved ? 'The sale was saved, but its presentation could not finish.'
+        : playMode === 'online' && onlinePending ? 'The sale is awaiting confirmation. Retry the pending operation before selling again.'
+          : 'The sale was not completed.'} ${errorMessage(cause)}`);
+    }
+  }, cause => {
+    console.error('Multi-select sale selection failed', cause);
+    showError(`Sale selection could not be updated. ${errorMessage(cause)}`);
+  });
   app.querySelectorAll<HTMLButtonElement>('[data-sell-creature]').forEach((button) => button.addEventListener('click', async () => {
     try {
       const id = button.dataset.sellCreature;

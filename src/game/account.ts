@@ -460,17 +460,47 @@ export function sellTreasuryCreature(storage: ProfileStorage, id: string): Accou
   treasurySaleOffer(loadAccount(storage), id);
   return sellCurrencyCreature(storage, id);
 }
+export interface CreatureSaleSelection { id: string; saleOption?: string }
+
+export function creatureBatchSaleOffer(account: Account, selections: readonly CreatureSaleSelection[]) {
+  if (!Array.isArray(selections) || !selections.length) throw new Error('Choose at least one Elemental-Devourer to sell.');
+  const ids = new Set<string>();
+  const offers = selections.map(selection => {
+    if (!selection || typeof selection.id !== 'string' || !selection.id || ids.has(selection.id)) throw new Error('Choose each owned copy only once.');
+    if (selection.saleOption !== undefined && typeof selection.saleOption !== 'string') throw new Error('Choose a valid sale payout.');
+    ids.add(selection.id);
+    const offer = creatureSaleOffer(account, selection.id, selection.saleOption);
+    if (offer.reasons.length) throw new Error(`Elemental-Devourer cannot be sold: ${offer.reasons.join(', ')}.`);
+    return offer;
+  });
+  const payout = { fractalis: 0, lycalis: 0, materials: {} as Record<string, number> };
+  for (const offer of offers) {
+    payout.fractalis += offer.fractalis;
+    payout.lycalis += offer.lycalis;
+    for (const [material, amount] of Object.entries(offer.materials)) payout.materials[material] = (payout.materials[material] ?? 0) + amount;
+  }
+  if (![payout.fractalis, payout.lycalis, ...Object.values(payout.materials),
+    account.fractalis + payout.fractalis, account.lycalis + payout.lycalis,
+    ...Object.entries(payout.materials).map(([id, amount]) => (account.materials[id] ?? 0) + amount)].every(Number.isSafeInteger)) {
+    throw new Error('Currency or material capacity reached.');
+  }
+  return { offers, ...payout };
+}
+
 export function sellCurrencyCreature(storage: ProfileStorage, id: string, optionId?: string): Account {
+  return sellCurrencyCreatures(storage, [{ id, saleOption: optionId }]);
+}
+
+export function sellCurrencyCreatures(storage: ProfileStorage, selections: readonly CreatureSaleSelection[]): Account {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before selling Elemental-Devourers.');
   const account = loadAccount(storage);
-  const offer = creatureSaleOffer(account, id, optionId);
-  if (offer.reasons.length) throw new Error(`Elemental-Devourer cannot be sold: ${offer.reasons.join(', ')}.`);
+  const offer = creatureBatchSaleOffer(account, selections);
   account.fractalis += offer.fractalis;
   account.lycalis += offer.lycalis;
   for (const [material, amount] of Object.entries(offer.materials)) account.materials[material] = (account.materials[material] ?? 0) + amount;
-  if (![account.fractalis, account.lycalis, ...Object.keys(offer.materials).map((material) => account.materials[material])].every(Number.isSafeInteger)) throw new Error('Currency or material capacity reached.');
-  account.capturedCharacters = account.capturedCharacters?.filter((copy) => copy.instanceId !== id);
-  if (account.conduitEquipment) delete account.conduitEquipment[id];
+  const ids = new Set(selections.map(selection => selection.id));
+  account.capturedCharacters = account.capturedCharacters?.filter((copy) => !ids.has(copy.instanceId));
+  if (account.conduitEquipment) for (const id of ids) delete account.conduitEquipment[id];
   return saveAccount(storage, account);
 }
 export function ownedProgress(account: Account, id: StarterId): CharacterProgress {

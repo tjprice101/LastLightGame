@@ -1,5 +1,19 @@
 # Last Light: AI agent entry point
 
+## Animation and feedback are core UI requirements (D-418)
+
+For future game/UI work, polished motion and feedback are acceptance criteria,
+not optional finishing touches where an action warrants them. Reuse shared
+rarity-feedback/reward/upgrade foundations for accepted selections, saved
+successes and celebrations: sheen, expanding circular impact, minor sparkles
+and concise text where useful. Preserve rarity/element/star identities and
+artwork. Never celebrate a failed/cancelled operation or animate before its
+save succeeds. Keep effects finite, pointer-transparent and disposable, with
+static accessible feedback under explicit in-game Reduce motion (D-187).
+Preserve Skip, dismissal, focus and immediate controls; no added gameplay RNG
+or artificial transaction delays. Validate the motion over time, not only
+with a still image. See docs/menus-and-inventory.md.
+
 ## Default publication workflow
 
 Owner requests push and deployment by default after completed, validated changes.

@@ -1,5 +1,46 @@
 # Menus and inventory
 
+## Multi-select Elemental-Devourer sales (D-418)
+
+Team > Captured Elemental-Devourers has **Multi-select sell**. It reveals
+checkboxes, Select available, Clear selection and Review sale. Clicking a
+copy's portrait also toggles it while selection mode is active. Locked,
+squad-assigned and Conduit-equipped copies remain visible but unavailable,
+with the protection reason. Selections are transient and reset when leaving/
+rerendering the collection; cancelling selection clears them.
+
+Every selected Heaven/Abyss copy has its own payout selector: choose
+Null-Prismatica or one of that mode's three materials independently, including
+different choices for otherwise identical copies. Treasury/Sanctuary/Rose
+copies retain their authored fixed payouts. The live summary aggregates exact
+currency/material quantities; Review lists each copy and its payout plus the
+combined item-art totals. Nothing is sold until explicit confirmation.
+
+Offline and online share one batch transaction: reread all UUIDs, payout
+options and protections, reject duplicates/missing copies/overflow, then save
+all removals and rewards together once. Any invalid copy rejects the whole
+batch; persistence failure retains raw holdings. Existing single sales share
+this path. Online uses the normal revision/request-ID retry protocol.
+
+Selected copies get their actual rarity's circular impact/sheens/sparkles.
+The saved sale opens the shared reward receipt with the exact totals and
+finite celebration; no sale-success animation precedes persistence.
+Explicit Reduce motion, Skip/Escape/Continue, focus restoration and disposal
+remain. A post-save presentation error must say the sale was saved.
+
+## Motion is a standing design requirement (D-418)
+
+Future applicable game/UI work must include polished action feedback as a
+core acceptance criterion, not a deferred cosmetic extra. Reuse shared
+selection, rarity, circular-impact/sparkle, reward and upgrade foundations
+instead of isolated effects. Match the action and rarity without obscuring
+controls or recoloring artwork; avoid celebrating cancellations/failures.
+Keep effects finite, disposable, pointer-transparent and deterministic,
+with static accessible feedback under explicit Reduce motion. Preserve
+save-before-animation, Skip, focus and immediate controls. Test animation
+timelines and interactions, not just a still image. This requirement is also
+recorded in the project's agent entry point.
+
 ## Shared rarity accents and feedback (D-417)
 
 Rarity UI uses one palette: Common bronze, Uncommon silver, Rare gold,

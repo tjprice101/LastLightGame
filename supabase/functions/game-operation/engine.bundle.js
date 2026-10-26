@@ -11028,17 +11028,48 @@ function creatureSaleOffer(account, id, optionId) {
   const { id: option, ...payout } = chosen;
   return { copy, ...payout, option, options, reasons };
 }
+function creatureBatchSaleOffer(account, selections) {
+  if (!Array.isArray(selections) || !selections.length) throw new Error("Choose at least one Elemental-Devourer to sell.");
+  const ids = /* @__PURE__ */ new Set();
+  const offers = selections.map((selection) => {
+    if (!selection || typeof selection.id !== "string" || !selection.id || ids.has(selection.id)) throw new Error("Choose each owned copy only once.");
+    if (selection.saleOption !== void 0 && typeof selection.saleOption !== "string") throw new Error("Choose a valid sale payout.");
+    ids.add(selection.id);
+    const offer = creatureSaleOffer(account, selection.id, selection.saleOption);
+    if (offer.reasons.length) throw new Error(`Elemental-Devourer cannot be sold: ${offer.reasons.join(", ")}.`);
+    return offer;
+  });
+  const payout = { fractalis: 0, lycalis: 0, materials: {} };
+  for (const offer of offers) {
+    payout.fractalis += offer.fractalis;
+    payout.lycalis += offer.lycalis;
+    for (const [material, amount] of Object.entries(offer.materials)) payout.materials[material] = (payout.materials[material] ?? 0) + amount;
+  }
+  if (![
+    payout.fractalis,
+    payout.lycalis,
+    ...Object.values(payout.materials),
+    account.fractalis + payout.fractalis,
+    account.lycalis + payout.lycalis,
+    ...Object.entries(payout.materials).map(([id, amount]) => (account.materials[id] ?? 0) + amount)
+  ].every(Number.isSafeInteger)) {
+    throw new Error("Currency or material capacity reached.");
+  }
+  return { offers, ...payout };
+}
 function sellCurrencyCreature(storage, id, optionId) {
+  return sellCurrencyCreatures(storage, [{ id, saleOption: optionId }]);
+}
+function sellCurrencyCreatures(storage, selections) {
   if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before selling Elemental-Devourers.");
   const account = loadAccount(storage);
-  const offer = creatureSaleOffer(account, id, optionId);
-  if (offer.reasons.length) throw new Error(`Elemental-Devourer cannot be sold: ${offer.reasons.join(", ")}.`);
+  const offer = creatureBatchSaleOffer(account, selections);
   account.fractalis += offer.fractalis;
   account.lycalis += offer.lycalis;
   for (const [material, amount] of Object.entries(offer.materials)) account.materials[material] = (account.materials[material] ?? 0) + amount;
-  if (![account.fractalis, account.lycalis, ...Object.keys(offer.materials).map((material) => account.materials[material])].every(Number.isSafeInteger)) throw new Error("Currency or material capacity reached.");
-  account.capturedCharacters = account.capturedCharacters?.filter((copy) => copy.instanceId !== id);
-  if (account.conduitEquipment) delete account.conduitEquipment[id];
+  const ids = new Set(selections.map((selection) => selection.id));
+  account.capturedCharacters = account.capturedCharacters?.filter((copy) => !ids.has(copy.instanceId));
+  if (account.conduitEquipment) for (const id of ids) delete account.conduitEquipment[id];
   return saveAccount(storage, account);
 }
 function ownedProgress(account, id) {
@@ -11802,6 +11833,7 @@ var operationKeys = {
   summon: ["bannerId"],
   summonTen: ["bannerId"],
   sellCurrencyCreature: ["id", "saleOption"],
+  sellCurrencyCreatures: ["selections"],
   purchaseConduit: ["id"],
   setMachineLootFocus: ["rarity", "id"],
   equipConduit: ["character", "slot", "conduit"],
@@ -11833,6 +11865,15 @@ function validateRequest(value2) {
   integer(value2.expectedRevision);
   if (!record2(value2.operation) || typeof value2.operation.kind !== "string" || !Object.hasOwn(operationKeys, value2.operation.kind)) throw new Error("Unknown game operation.");
   const op = value2.operation;
+  if (op.kind === "sellCurrencyCreatures") {
+    if (!Array.isArray(op.selections) || !op.selections.length) throw new Error("Choose at least one Elemental-Devourer to sell.");
+    for (const selection of op.selections) {
+      if (!record2(selection)) throw new Error("Invalid sale selection.");
+      keys(selection, ["id", "saleOption"]);
+      text(selection.id);
+      text(selection.saleOption);
+    }
+  }
   if (op.kind === "importSave") validateSaveFile(op.save);
   keys(op, ["kind", ...operationKeys[op.kind]]);
   if (operationKeys[op.kind].some((key) => key !== "fodderIds" && key !== "saleOption" && !(op.kind === "friendRequest" && (key === "username" || key === "friendCode")) && !(key in op))) throw new Error("Missing operation field.");
@@ -12129,6 +12170,9 @@ function resolveOperation(previous, operation, entropy) {
         break;
       case "sellCurrencyCreature":
         sellCurrencyCreature(storage, operation.id, operation.saleOption);
+        break;
+      case "sellCurrencyCreatures":
+        sellCurrencyCreatures(storage, operation.selections);
         break;
       case "purchaseConduit":
         purchaseConduit(storage, operation.id);

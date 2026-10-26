@@ -16,6 +16,7 @@ import { information } from './information';
 import { currencyIcon } from './currency-icon';
 import { elementLabel } from './element-label';
 import { statPreview } from './stat-preview';
+import { bulkSaleControls, bulkSaleCopy } from './creature-bulk-sale';
 
 export type ReferenceTeamView = 'detail' | 'bearers' | 'creatures' | 'capture' | 'formation' | 'conduits' | 'capture-conduits';
 export interface ReferenceTeamState {
@@ -69,14 +70,14 @@ function bearerGrid(account: Account, state: ReferenceTeamState): string {
 function captureGrid(account: Account): string {
   const copies = account.capturedCharacters ?? [];
   return `<section class="ref-panel ref-team-collection"><header class="ref-panel-heading">Captured Elemental-Devourers · ${copies.length}<span>Lock the ones you want to keep. Storage has no limit.</span></header>
-    ${copies.length ? `<div class="ref-scroll"><div class="ref-capture-grid">${copies.map((copy, index) => {
+    ${copies.length ? `${bulkSaleControls()}<div class="ref-scroll"><div class="ref-capture-grid">${copies.map((copy, index) => {
       const member = ownedCompanion(account, copy.instanceId);
       const protection = characterProtection(account, copy.instanceId);
       const position = equippedSquad(account).indexOf(copy.instanceId);
       const progress = capturedProgress(copy);
       const sale = isSellableCreatureMode(getCreature(copy.creatureId).mode) ? creatureSaleOffer(account, copy.instanceId) : null;
       return `<article class="ref-collection-card"><button class="ref-card-art" data-team-capture-detail="${copy.instanceId}" aria-label="Open ${member.name}, copy ${index + 1}">${member.art}</button><div class="ref-card-caption"><b>${member.name}</b><small>★${progress.tier + 1} · ${member.element} · Lv.${progress.level} · Copy ${index + 1}</small>${position >= 0 ? `<span class="ref-chip ref-white">${position === 0 ? 'Leader' : 'In squad'}</span>` : ''}<button class="ref-chip ${protection.locked ? 'ref-white' : ''}" data-character-lock="${copy.instanceId}" data-lock-value="${!protection.locked}" aria-pressed="${protection.locked}">${protection.locked ? 'Locked' : 'Lock'}</button>
-        ${sale ? information(`quick-sale-${copy.instanceId}`, `${member.name} · Copy ${index + 1}`, `<p>Sales are permanent.</p>${saleControls(sale, copy.instanceId, 'Sell')}`, 'Quick Sell') : ''}</div></article>`;
+        ${sale ? information(`quick-sale-${copy.instanceId}`, `${member.name} · Copy ${index + 1}`, `<p>Sales are permanent.</p>${saleControls(sale, copy.instanceId, 'Sell')}`, 'Quick Sell') : ''}</div>${sale ? bulkSaleCopy(account, copy.instanceId) : ''}</article>`;
     }).join('')}</div></div>` : '<div class="ref-empty"><b>No captured Elemental-Devourers yet</b><p>Defeat eligible enemies in Heaven, Abyss, Crownfall Treasury, Rosethorn Sanctuary or Passion of Crimson Roses.</p><button class="ref-button ref-outline" data-page="gameplay">Go to Play</button></div>'}
     <p id="character-lock-result" role="status"></p></section>`;
 }

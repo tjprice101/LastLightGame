@@ -1,5 +1,48 @@
 # Current state and handoff
 
+## Multi-select sales and durable animation policy (D-418)
+
+- Captured collection has Multi-select sell, protected-safe Select available,
+  Clear, per-copy checkboxes/portrait toggles and live totals. Owner explicitly
+  chooses a separate payout selector for every Heaven/Abyss copy. Fixed
+  Treasury/Sanctuary/Rose payouts remain unchanged. Selections reset on
+  navigation/rerender; cancellation never removes copies.
+- Review names every exact copy/payout and total item-art rewards. Shared
+  batch helper validates all UUIDs/options/protections/overflow before one
+  write; single sales delegate to it. New online operation uses existing
+  revision/request deduplication. No save schema, price, odds or combat change.
+- Rarity shimmer/impact/sparkles mark accepted selections; post-save receipt
+  celebrates the actual payout. Error wording distinguishes a failed sale
+  from saved-sale presentation failure. Explicit Reduce motion and existing
+  Skip/focus/dismissal semantics remain.
+- AGENTS.md and the menu contract now make applicable polished motion/feedback
+  an essential future design/validation criterion, not optional polish.
+- Focused command: `npm test -- src\game\creature-bulk-sale.test.ts
+  src\presentation\creature-bulk-sale.test.ts src\online\server-game.test.ts
+  src\game\heaven-abyss-sale.test.ts src\game\treasury.test.ts
+  src\game\rosethorn-sanctuary.test.ts src\game\crimson-roses.test.ts
+  src\presentation\reference-ui.test.ts --maxWorkers=1 --reporter=dot`
+  passed238 tests/8 files on final source. `npm run build` passed TypeScript/Vite with only the
+  existing chunk-size warning. Authority regenerated with
+  `node tools\bundle_server_game.mjs`; deployed successfully using
+  `npx supabase functions deploy game-operation --project-ref
+  ohtfgwomdfteaxubndww --no-verify-jwt`. Combat rules remain13.
+- Full serialized regression `npm test -- --maxWorkers=1 --reporter=dot
+  --reporter=json --outputFile.json=<session>\files\d418-bulk-full.json`
+  passed6658 tests/215 files. Subsequent browser-driven portrait event correction
+  adds one regression (included in final238-test focused run); final publication
+  CI runs the complete updated suite.
+- Browser disposable collection verified independently selected Heaven/Abyss
+  payouts and protected-copy exclusions, repeated portrait toggles
+  (true/false/true), and exact submitted UUIDs/options. At actual CSS viewports
+  320/390/768/1280px, collection/toolbar/selectors had no horizontal overflow
+  and action targets exceeded44px. Shared sale receipt displayed exact totals,
+  Georgia typography and immediate Continue under Reduce motion, then disposed.
+  No real account writes; disposable DOM/server cleaned up.
+- AGENTS.md customization is scoped to this game and updates its existing
+  entry point, without adding competing global instructions. Publication
+  follows the validated source; no owner decision remains open.
+
 ## Circular impact and secondary sparkles (D-417 follow-up)
 
 - Owner identifies missing motion details from the reference: expanding circular

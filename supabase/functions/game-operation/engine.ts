@@ -1,7 +1,7 @@
 import {
   ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, validateAccount, equippedSquad, ownedCharacters,
   ownedCharacterInstances, ownedProgress, setSquad, setCharacterLock, summonCharacter, summonCharacters, multiSummonCount,
-  purchaseExchangeMaterial, type SummonDraw, sellCurrencyCreature,
+  purchaseExchangeMaterial, type SummonDraw, sellCurrencyCreature, sellCurrencyCreatures,
   purchaseConduit, setMachineLootFocus, equipConduit, unequipAllConduits, openMasterChest, openCalamityChest, equipMasterConduit, upgradeConduit, upgradeConduitToMaximum, upgradeCharacter, levelCapturedCharacter,
   levelCharacterToMaximum, saveAccountRewards, unlockedStage, unlockedInfusionStage,
   unlockedWarStage, unlockedStoryStage, type Account,
@@ -108,7 +108,7 @@ const operationKeys: Record<GameOperation['kind'], string[]> = {
   friendRequest: ['username', 'friendCode'], acceptFriendRequest: ['userId'], declineFriendRequest: ['userId'],
   cancelFriendRequest: ['userId'], removeFriend: ['userId'],
   read: [], checkpoint: [], bootstrap: ['starterId'], importSave: ['save'], setSquad: ['ids'], setCharacterLock: ['id', 'locked'],
-  summon: ['bannerId'], summonTen: ['bannerId'], sellCurrencyCreature: ['id', 'saleOption'], purchaseConduit: ['id'],
+  summon: ['bannerId'], summonTen: ['bannerId'], sellCurrencyCreature: ['id', 'saleOption'], sellCurrencyCreatures: ['selections'], purchaseConduit: ['id'],
   setMachineLootFocus: ['rarity', 'id'],
   equipConduit: ['character', 'slot', 'conduit'], upgradeConduit: ['id', 'expectedLevel'],
   maxConduit: ['expected'],
@@ -131,6 +131,15 @@ export function validateRequest(value: unknown): GameRequest {
   if (!record(value.operation) || typeof value.operation.kind !== 'string' ||
       !Object.hasOwn(operationKeys, value.operation.kind)) throw new Error('Unknown game operation.');
   const op = value.operation;
+  if (op.kind === 'sellCurrencyCreatures') {
+    if (!Array.isArray(op.selections) || !op.selections.length) throw new Error('Choose at least one Elemental-Devourer to sell.');
+    for (const selection of op.selections) {
+      if (!record(selection)) throw new Error('Invalid sale selection.');
+      keys(selection, ['id', 'saleOption']);
+      text(selection.id);
+      text(selection.saleOption);
+    }
+  }
   if (op.kind === 'importSave') validateSaveFile(op.save);
   keys(op, ['kind', ...operationKeys[op.kind as GameOperation['kind']]]);
   if (operationKeys[op.kind as GameOperation['kind']].some(key => key !== 'fodderIds' && key !== 'saleOption' &&
@@ -431,6 +440,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
         if (!Number.isSafeInteger(game.profile.totalDraws)) throw new Error('Draw count overflow.');
         break;
       case 'sellCurrencyCreature': sellCurrencyCreature(storage, operation.id, operation.saleOption); break;
+      case 'sellCurrencyCreatures': sellCurrencyCreatures(storage, operation.selections); break;
       case 'purchaseConduit': purchaseConduit(storage, operation.id); break;
       case 'setMachineLootFocus': setMachineLootFocus(storage, operation.rarity, operation.id); break;
       case 'equipConduit': equipConduit(storage, operation.character, operation.slot, operation.conduit); break;

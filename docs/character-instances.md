@@ -1,5 +1,16 @@
 # Character instances and protection
 
+## Atomic multi-select sales (D-418)
+
+The captured collection supports [multi-select selling](menus-and-inventory.md#multi-select-elemental-devourer-sales-d-418)
+with an independent payout choice for every Heaven/Abyss copy, fixed authored
+payouts for other sellable modes, exact aggregate review and explicit permanent
+sale confirmation. Batch validation rereads every UUID/lock/squad/equipment/
+payout before a single write. Duplicate IDs, missing/protected copies,
+overflow or failed persistence cannot cause a partial sale. Online and offline
+share the same transaction; single-copy sales delegate to it. No price,
+capture eligibility, copy level, inventory cap or save schema changes.
+
 Captured Elemental-Devourer Team details now share the compact Element-Bearer
 layout, with Stats & Skills, Level, Sale and Conduits sub-menus. Level includes
 an exact seven-stat next-level preview and owned/required resources; Sale keeps

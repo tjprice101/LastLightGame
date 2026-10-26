@@ -9,6 +9,9 @@ Use the [documentation index](docs/README.md) and
 The original prototype overview below is a superseded historical snapshot,
 not the current feature checklist.
 
+- D-418: [multi-select Elemental-Devourer selling](docs/menus-and-inventory.md#multi-select-elemental-devourer-sales-d-418)
+  supports per-copy payouts, exact confirmation totals and protected atomic
+  sales. Polished applicable motion/feedback is now a standing UI requirement.
 - D-417: [shared rarity colors and finite shimmer feedback](docs/menus-and-inventory.md#shared-rarity-accents-and-feedback-d-417)
   now cover successful equipment changes, item choices, victory rewards,
   summon/chest reveals and existing upgrade celebrations. Artwork and mechanics

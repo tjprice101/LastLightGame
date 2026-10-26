@@ -1,5 +1,10 @@
 # Documentation hub
 
+**D-418:** [multi-select Elemental-Devourer sales](menus-and-inventory.md#multi-select-elemental-devourer-sales-d-418)
+use individually chosen payouts, exact review and one protected atomic
+transaction. [Polished motion/feedback is a standing design requirement](menus-and-inventory.md#motion-is-a-standing-design-requirement-d-418)
+for future applicable game/UI work, also recorded in the project agent rules.
+
 **D-417:** [shared rarity palette and shimmer feedback](menus-and-inventory.md#shared-rarity-accents-and-feedback-d-417)
 cover equipment/item choices, victory rewards, summons/chests and existing
 upgrade celebrations. [Star-tier anticipation stays separate](summoning-and-economy.md#rarity-reveal-feedback-d-417);

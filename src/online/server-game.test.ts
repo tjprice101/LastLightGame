@@ -26,6 +26,31 @@ function started() { return op(freshGame('tester'), { kind: 'bootstrap', starter
 function rich() { const game = started(); game.account.fractalis = 1000000; game.account.lycalis = 1000; return game; }
 
 describe('server authoritative game engine', () => {
+  it('validates and atomically applies mixed per-copy bulk sales without accepting duplicate/protected copies', () => {
+    const game = started();
+    const copies = ['heavens:2', 'abyss:1', 'treasury:0'].map(id => createCreatureCopy(`infusion:${id}`));
+    game.account.capturedCharacters = copies;
+    const operation: GameOperation = { kind: 'sellCurrencyCreatures', selections: [
+      { id: copies[0].instanceId, saleOption: 'heavens-level' },
+      { id: copies[1].instanceId, saleOption: 'lycalis' },
+    ] };
+    validateRequest({ requestId: crypto.randomUUID(), expectedRevision: 0, operation });
+    const before = structuredClone(game);
+    const result = op(game, operation).game;
+    expect(game).toEqual(before);
+    expect(result.account.capturedCharacters).toEqual([copies[2]]);
+    expect(result.account.materials['heavens-level']).toBe(3);
+    expect(result.account.lycalis).toBe(game.account.lycalis + 2);
+    const protectedGame = structuredClone(game);
+    protectedGame.account.capturedCharacters![1].locked = true;
+    expect(() => op(protectedGame, operation)).toThrow('Locked');
+    expect(protectedGame.account.capturedCharacters).toHaveLength(3);
+    expect(() => op(game, { kind: 'sellCurrencyCreatures', selections: [operation.selections[0], operation.selections[0]] })).toThrow('only once');
+    for (const selections of [[], [{ id: copies[0].instanceId }], [{ id: copies[0].instanceId, saleOption: 'lycalis', amount: 999 }]]) {
+      expect(() => validateRequest({ requestId: crypto.randomUUID(), expectedRevision: 0,
+        operation: { kind: 'sellCurrencyCreatures', selections } })).toThrow();
+    }
+  });
   it.each([24, 29, 35])('saves late Rose stage %i captures at Lv.60 with the actual form and kit', stage => {
     const game = rich();
     game.account.characters.ember = { level: 105, evolution: 6 };
