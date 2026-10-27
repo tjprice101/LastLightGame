@@ -238,9 +238,9 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
   const missing = count - options.reduce((sum, entry) => sum + (entry.eligible ? entry.value : 0), 0);
   const accepted = requirement?.infusion ? acceptedFodderValues(requirement.infusion) : '';
   const shown = options.filter((entry) => entry.creature.mode === requirement?.infusion);
-  const expandedSelection = organized && count > 0;
   const selection = count ? `<fieldset class="evolution-fodder" data-selection-state="incomplete" style="--element:${starter.color}"><legend>Elemental-Devourers to consume · ${count} Evolution Value</legend>
-    <p>Choose captured Elemental-Devourers from [${modeName}] adding up to ${count} Evolution Value. Each is worth its form: ${accepted}. Any mix works, such as one stronger Elemental-Devourer or several weaker ones.</p>
+    <p>Choose captured Elemental-Devourers from [${modeName}] adding up to ${count} Evolution Value. Each copy contributes its form number (1–6); any exact mix works.</p>
+    ${information(`evolution-values-${starter.id}`, 'Evolution Values', `<p>Each captured Elemental-Devourer contributes its form number: ${accepted}.</p><p>Combine copies from [${modeName}] to reach exactly ${count} Evolution Value. Chosen copies are permanently consumed only after a confirmed evolution.</p>`, 'View form values')}
     <div class="evolution-fodder-progress"><meter data-fodder-progress min="0" max="${count}" value="0" aria-label="Chosen Evolution Value"></meter>
     <p data-fodder-status data-eligible-count="${eligibleCount}" role="status">0 / ${count} value chosen · ${eligibleCount} available</p></div>
     <p class="evolution-fodder-warning">Chosen Elemental-Devourers are permanently consumed when you confirm the evolution.</p>
@@ -265,10 +265,10 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
     ${organized ? '</div>' : ''}</section><section class="character-category upgrade-payment"><h3>Required resources${organized ? ' <small class="resource-key">Owned / Required</small>' : ''}</h3>${organized ? '' : '<p class="resource-key">Owned / Required</p>'}
     <ul class="upgrade-resources">${resources.map((resource) => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${resource.name}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>
     ${evolve && !account.firstFracture ? `<p class="currency-reward">${currencyIcon('lycalis')}<span>First Fracture reward: +10 Null-Prismatica.</span></p>` : ''}
-    ${expandedSelection ? '</section></div>' : ''}${selection}${organized ? `<div class="ref-growth-action${evolve ? ' ref-evolution-action' : ''}">` : ''}<button class="primary-button" data-upgrade="${evolve ? 'evolve' : 'level'}" data-fodder-value-required="${count}" data-upgrade-blocked="${!!reason}" ${reason || count ? 'disabled' : ''}>${evolve ? 'Evolve' : 'Level up'}</button>
+    ${organized ? '' : selection}${organized ? `<div class="ref-growth-action${evolve ? ' ref-evolution-action' : ''}">` : ''}<button class="primary-button" data-upgrade="${evolve ? 'evolve' : 'level'}" data-fodder-value-required="${count}" data-upgrade-blocked="${!!reason}" ${reason || count ? 'disabled' : ''}>${evolve ? 'Evolve' : 'Level up'}</button>
     ${!evolve ? `<button class="text-button" type="button" data-max-level="${starter.id}">Max Level</button>` : ''}
     <p class="quiet">${reason}</p>${organized ? '</div>' : ''}
-    ${result ? '<p id="upgrade-result" role="status"></p>' : ''}${expandedSelection ? '' : '</section></div>'}`;
+    ${organized ? selection : ''}${result ? '<p id="upgrade-result" role="status"></p>' : ''}</section></div>`;
 }
 
 export function updateEvolutionSelection(host: HTMLElement): void {

@@ -70,6 +70,11 @@ describe('Max Level plans and transactions', () => {
     expect(maxLevelPreview(account, 'ember').html).toContain('Level 0 &rarr; 30 · Cap 30');
     expect(maxLevelPreview(account, 'ember').html.match(/<span><small>/g)).toHaveLength(10);
     expect(maxLevelPreview(account, 'ember').html).toContain('stat-change--increase');
+    const html = maxLevelPreview(account, 'ember').html;
+    expect(html).toContain('class="max-level-workspace"');
+    expect(html).toContain('class="max-level-cost"');
+    expect(html).toContain('class="max-level-stats"');
+    expect(html).toContain('class="max-level-actions"');
   });
   it.each([
     [25, 100, 1, 12, 1], [26, 100, 2, 26, 2],

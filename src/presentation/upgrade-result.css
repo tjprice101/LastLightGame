@@ -37,12 +37,45 @@ html body .reward-screen .upgrade-result-identity .character-rating { margin: 0;
 .upgrade-result-unchanged li:not(:last-child)::after { content: '\00b7' / ''; margin-left: .6rem; color: #55555b; }
 
 .reward-details:not([hidden]) .upgrade-result-stat { animation: upgrade-stat-reveal 400ms ease-out both; animation-delay: var(--stat-delay); }
+html body .reward-screen:has(.upgrade-result-portrait) { width: min(1120px, calc(100vw - 32px)); padding: clamp(18px, 2.5vw, 28px); }
+html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .reward-content { display: grid; grid-template-columns: minmax(0, .65fr) minmax(0, 1.5fr); align-items: center; gap: 12px 24px; padding-bottom: 12px; }
+html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .reward-content > h2 { grid-column: 1 / -1; }
+html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .reward-stage { grid-column: 1; grid-row: 2; height: min(290px, 36dvh); }
+html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .reward-art { height: 100%; }
+html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .reward-details { grid-column: 2; grid-row: 2 / 4; min-width: 0; }
+html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .reward-animation-label { grid-column: 1; grid-row: 3; }
+html body .reward-screen:has(.upgrade-result-portrait) .upgrade-result-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @keyframes upgrade-stat-reveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 600px) {
+  html body .reward-screen:has(.upgrade-result-portrait) { padding: 16px; }
+  html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .reward-content { grid-template-columns: 90px minmax(0, 1fr); gap: 6px 12px; padding-bottom: 4px; }
+  html body .reward-screen:has(.upgrade-result-portrait) .reward-content > h2 { margin-bottom: 0; }
+  html body .reward-screen:has(.upgrade-result-portrait) .reward-details > h4 { margin-top: 6px; }
+  html body .reward-screen:has(.upgrade-result-portrait) .game-dialog-actions { margin-top: 8px; padding-top: 8px; }
+  html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .reward-details { display: contents; }
+  html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .reward-details > h3 { grid-column: 1 / -1; grid-row: 2; }
+  html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .upgrade-result-identity { grid-column: 2; grid-row: 3; }
+  html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .reward-details > h4 { grid-column: 1 / -1; grid-row: 4; }
+  html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .upgrade-result-stats { grid-column: 1 / -1; grid-row: 5; }
+  html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .upgrade-result-unchanged { grid-column: 1 / -1; grid-row: 6; }
+  html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .reward-animation-label { grid-column: 1 / -1; grid-row: 7; }
+  html body .reward-screen:has(.upgrade-result-portrait) .upgrade-result-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html body .reward-screen[data-reward-revealed]:has(.upgrade-result-portrait) .reward-stage { grid-row: 3; height: 110px; }
+  html body .reward-screen:has(.upgrade-result-portrait) .upgrade-result-identity { gap: .3rem; }
+  html body .reward-screen:has(.upgrade-result-portrait) .upgrade-result-unchanged { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .3rem; }
+  html body .reward-screen:has(.upgrade-result-portrait) .upgrade-result-unchanged > span { grid-column: auto; }
+  html body .reward-screen:has(.upgrade-result-portrait) .upgrade-result-level { padding: .2rem .5rem; font-size: .85rem; }
+  html body .reward-screen:has(.upgrade-result-portrait) .upgrade-result-unchanged li { white-space: normal; overflow-wrap: anywhere; }
+  html body .reward-screen:has(.upgrade-result-portrait) .upgrade-result-unchanged li::after { content: none; }
   .upgrade-result-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .4rem; }
   .upgrade-result-stat { padding: .45rem .55rem; grid-template-areas: "label" "value" "delta"; grid-template-columns: minmax(0, 1fr); }
   .upgrade-result-stat > span { justify-self: start; }
   .upgrade-result-stat strong { font-size: .85rem; }
+  html body .reward-screen:has(.upgrade-result-portrait) .upgrade-result-stat { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "label label" "value delta"; gap: .25rem; }
+  html body .reward-screen:has(.upgrade-result-portrait) .upgrade-result-stat small { font-size: .75rem; line-height: 1.3; }
+  html body .reward-screen:has(.upgrade-result-portrait) .upgrade-result-stat > span { padding: .05rem .2rem; font-size: .7rem; }
+  html body .reward-screen:has(.upgrade-result-portrait) .upgrade-result-stat strong { font-size: .8rem; }
+  html body .reward-screen:has(.upgrade-result-portrait) .upgrade-result-unchanged { font-size: .75rem; line-height: 1.35; }
   .reward-screen:has(.upgrade-result-portrait) .reward-stage,
   .reward-screen:has(.upgrade-result-portrait) .reward-art { height: min(170px, 21dvh); }
   .reward-screen:has(.upgrade-result-portrait) .reward-halo { width: min(170px, 21dvh); height: min(170px, 21dvh); }

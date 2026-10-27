@@ -1,5 +1,39 @@
 # Current state and handoff
 
+## Connected leveling and evolution layouts (D-421)
+
+- Max Level now has a bounded1120px desktop workspace: cost art on the left,
+  ten exact stat deltas on the right, clear confirmation below. Mobile uses
+  compact cost rows, two stat columns and wrapped footer without clipping.
+- Saved upgrade results use portrait/stat columns on desktop and a compact
+  mobile grid, retaining original pre-reveal art, stat reveal, rarity feedback,
+  reduced motion and immediate Continue. Other reward screens are unchanged.
+- Evolution picker moved inside the payment section with resources and action,
+  beside rather than below the full stat preview. Payment appears first on
+  narrow screens; form values remain accessible via existing Information
+  foundation. Selection meter/protections/exact values/consumption unchanged.
+- No gameplay, account, save, authority or asset changes. Desktop/phone fixtures
+  are disposable and do not write real accounts.
+- Final focused command `npm test -- src\presentation\upgrade-reference.test.ts
+  src\presentation\upgrade-result.test.ts src\game\max-level.test.ts
+  src\game\leveling-materials.test.ts src\presentation\phase-zero-readouts.test.ts
+  src\presentation\reference-ui.test.ts --maxWorkers=1 --reporter=dot` passed145
+  tests/6 files. Tests retain real exact-value selection/protection, stale-save
+  guards, captured-copy identity and unchanged transaction behavior.
+- Browser Lv.45-to60 Max Level and saved-result fixtures measured zero outer/
+  inner scroll overflow at1367x769,1024x769,862x769 and390x844.
+  At390x844 the dialog heights were771px and796px. Late Evo.6 Lv.90-to105
+  preview with eight cost items also fits1367x769 without a scrollbar, using
+  compact cost rows. All ten stats/exact quantities remain present.
+- Evolution resources/action/picker share the payment section; desktop action
+  is above the picker rather than after a long copy list. The list retains a
+  300px maximum with protected copies visible. Explicit form-value Information
+  preserves all source identities without the former long inline paragraph.
+- Final `npm run build` passed TypeScript/Vite (existing large-chunk warning
+  only), and `git diff --check` passed. Full publication CI/hosted SHA remain
+  release gates; no authority deployment is needed. Browser fixtures and the
+  temporary preview server were removed/stopped.
+
 ## War reward scale and Master silhouette correction (D-420)
 
 - New Nerithe/Orvella/Vaelor recruitment rows now share the existing full-width

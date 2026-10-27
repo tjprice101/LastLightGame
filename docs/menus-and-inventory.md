@@ -1,5 +1,34 @@
 # Menus and inventory
 
+## Connected growth layouts (D-421)
+
+Max Level uses a bounded1120px-wide dialog with total costs beside the full
+ten-stat comparison, then a clearly separated confirmation footer. Compact
+item rows and a two-column stat grid retain exact values on phones. Grow the
+dialog horizontally before making its content scroll; do not hide overflow
+or remove stats/costs to manufacture a fit. The verified Lv.45-to60 example
+fits1367x769,1024x769 and390x844 without a dialog scrollbar. Smaller/shorter
+viewports and unusually long values retain accessible scrolling when needed.
+
+Saved level-up/evolution results keep their existing art reveal, finite rarity
+feedback and stat animation. After reveal, desktop art and full stat results
+sit side by side; narrow screens use compact portrait/identity and stat rows.
+Continue stays outside the content region. This is scoped to upgrade receipts,
+not summon/chest animations, small information dialogs or global modal sizing.
+
+Evolution groups required resources, its Evolve action, and the Devourer picker
+in the same payment column beside the form/stat preview. On narrow screens the
+payment/selection column comes first. The exact-value meter, consumption warning
+and unavailable/protected copies remain visible. Long copy collections retain
+a bounded scrollable list; the page no longer forces the picker below the
+entire stat column. Form-by-form values remain in View form values, with the
+short1–6 rule inline. No new automatic selections or consumption.
+
+Validate upgrade-reference, upgrade-result, max-level, leveling-materials,
+phase-zero-readouts and reference-ui tests, then measure actual computed layouts
+at desktop/phone widths. Preserve all exact costs, before/after stats, guards,
+single-write transactions, cancel/error/focus and explicit Reduce motion.
+
 ## Multi-select Elemental-Devourer sales (D-418)
 
 Team > Captured Elemental-Devourers has **Multi-select sell**. It reveals

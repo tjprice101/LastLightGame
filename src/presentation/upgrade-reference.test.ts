@@ -59,7 +59,7 @@ describe('reference Team upgrade presentation', () => {
       expect(host.querySelector('.ref-character-identity .element-emblem')).not.toBeNull();
     }
   });
-  it('gives evolution copies a full-width picker with exact eligibility and live selection progress', () => {
+  it('groups evolution copies with required resources and actions while preserving live selection progress', () => {
     const account = emptyAccount();
     account.characters.rosetta = { level: 60, evolution: 3 };
     account.fractalis = 100000;
@@ -73,8 +73,11 @@ describe('reference Team upgrade presentation', () => {
     const host = document.createElement('main');
     host.innerHTML = referenceTeam(account, { view: 'detail', selected: 'rosetta', tab: 'upgrade-0', element: '', sort: 'level' });
     const picker = host.querySelector<HTMLElement>('.evolution-fodder')!;
-    expect(picker.parentElement?.classList.contains('ref-evolution-detail')).toBe(true);
-    expect(picker.closest('.upgrade-payment')).toBeNull();
+    expect(picker.parentElement?.classList.contains('upgrade-payment')).toBe(true);
+    expect(picker.closest('.upgrade-payment')?.querySelector('.upgrade-resources')).not.toBeNull();
+    expect(picker.closest('.upgrade-payment')?.querySelector('[data-upgrade="evolve"]')).not.toBeNull();
+    expect(picker.previousElementSibling?.classList.contains('ref-evolution-action')).toBe(true);
+    expect(picker.querySelector('[data-information]')?.textContent).toBe('View form values');
     expect(host.querySelectorAll('[data-evolution-fodder]')).toHaveLength(3);
     const checkboxes = Array.from(host.querySelectorAll<HTMLInputElement>('[data-evolution-fodder]'));
     expect(checkboxes.map(input => input.dataset.evolutionFodder)).toEqual([

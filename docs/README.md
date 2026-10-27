@@ -1,5 +1,9 @@
 # Documentation hub
 
+**D-421:** [connected growth layouts](menus-and-inventory.md#connected-growth-layouts-d-421)
+widen Max Level and saved upgrade results, and group evolution costs/actions/
+Devourer selection beside the stat preview. No progression or save changes.
+
 **D-418:** [multi-select Elemental-Devourer sales](menus-and-inventory.md#multi-select-elemental-devourer-sales-d-418)
 use individually chosen payouts, exact review and one protected atomic
 transaction. [Polished motion/feedback is a standing design requirement](menus-and-inventory.md#motion-is-a-standing-design-requirement-d-418)

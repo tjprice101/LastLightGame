@@ -1,5 +1,10 @@
 # Units and progression
 
+**D-421 presentation:** [connected growth layouts](menus-and-inventory.md#connected-growth-layouts-d-421)
+place Max Level costs beside stats and evolution resources/actions beside its
+Devourer selection, with responsive saved-upgrade receipts. Costs, stat math,
+caps, eligibility, protections and atomic upgrade transactions are unchanged.
+
 **Canonical performance reference (D-404):** use the
 [non-Calamitic capability audit](roster-capability-audit.md) together with the
 [global benchmark declaration](enemy-benchmark-calibration.md). Personal
