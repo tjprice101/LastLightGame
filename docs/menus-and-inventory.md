@@ -1,5 +1,33 @@
 # Menus and inventory
 
+## Evolution workspace fit and paged copies (D-422)
+
+The owner's follow-up corrects D-421: grouping the picker beside stats was
+not enough, because the complete screen still overflowed. Evolution now uses
+the available width without the redundant squad/collection sidebar; the Team
+area navigation remains available. Its compact desktop identity, submenus,
+resource row and Evolve action leave room for the complete stat/form preview
+and copy picker. Other character tabs and small dialogs retain their layouts.
+
+The picker displays one real copy per page with Previous/Next and Copy N / total,
+not a nested scrolling list. Checked copies remain selected on other pages,
+contribute to the exact-value meter, and reach the existing confirmation/
+transaction together. Protected copies remain visible but disabled. Boundary
+navigation restores focus to an enabled paging button. No automatic selection,
+account writes, consumption changes or new success animations occur on paging.
+Missing-value guidance stays inline; detailed form/protection rules remain in
+View form values. Exact costs, all ten stats and consumption warning remain.
+
+Validate the complete sanctuary shell, including main header and Team tabs,
+not an isolated upgrade panel. Fifteen disposable browser cases covered
+Evo.3/4/5, protected-only and empty holdings at1467x708,1367x769 and1024x769:
+zero vertical/horizontal page overflow and no copy-list scrollbar. Fourteen
+additional page/selection checks covered all seven copy pages at1467x708 and
+1024x769, including ready/excess totals. At390x844, payment remains first with
+no horizontal or nested list overflow; mobile/short/zoomed screens may still
+scroll the page to retain readable exact information rather than clip it.
+Run upgrade-reference, reference-ui and evolution-fodder tests plus the build.
+
 ## Connected growth layouts (D-421)
 
 Max Level uses a bounded1120px-wide dialog with total costs beside the full
@@ -19,10 +47,10 @@ not summon/chest animations, small information dialogs or global modal sizing.
 Evolution groups required resources, its Evolve action, and the Devourer picker
 in the same payment column beside the form/stat preview. On narrow screens the
 payment/selection column comes first. The exact-value meter, consumption warning
-and unavailable/protected copies remain visible. Long copy collections retain
-a bounded scrollable list; the page no longer forces the picker below the
-entire stat column. Form-by-form values remain in View form values, with the
-short1–6 rule inline. No new automatic selections or consumption.
+and unavailable/protected copies remain visible. D-422 above supersedes the
+original bounded-scroll picker with pagination and verifies full-shell fit.
+Form-by-form values remain in View form values. No new automatic selections
+or consumption.
 
 Validate upgrade-reference, upgrade-result, max-level, leveling-materials,
 phase-zero-readouts and reference-ui tests, then measure actual computed layouts

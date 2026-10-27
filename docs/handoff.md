@@ -1,5 +1,33 @@
 # Current state and handoff
 
+## Full evolution workspace correction (D-422)
+
+- Owner reports evolution still requires scrolling after D-421. Its isolated
+  panel checks did not verify full-screen fit; that gap is corrected here.
+- Evolution uses a focused full-width workspace, compact desktop header and
+  resources, with exact stats/form on the left and payment/selection on the
+  right. Redundant squad sidebar is omitted only while viewing evolution;
+  persistent Team areas still provide collection/squad navigation.
+- One-copy pages replace the long nested scrolling list. Previous/Next preserve
+  checked inputs across pages, exact selection totals and existing transaction
+  collection. Protected copies remain disabled. Boundary focus is retained.
+  Full form/protection information stays in the existing small Information
+  dialog; missing-value warning remains inline.
+- Browser verification included real main header, dock and Team tabs. All15
+  cases at1467x708,1367x769,1024x769 had zero page/list overflow: Evo.3/4/5
+  plus protected-only and empty holdings. All14 further page/selection checks
+  fit1467x708 and1024x769. Delegated main handlers retained two checked copies
+  across pages (one hidden), reported3/3 and enabled Evolve. No real accounts
+  were modified. At390x844, payment comes first, no horizontal/nested list
+  overflow; readable page scrolling remains available for constrained screens.
+- `npm test -- src\presentation\upgrade-reference.test.ts
+  src\presentation\reference-ui.test.ts src\game\evolution-fodder.test.ts
+  --maxWorkers=1 --reporter=dot`:103 passed/3 files.
+  `npm run build`: TypeScript/Vite passed (existing large-chunk warning).
+  `git diff --check`: passed. CI and hosted SHA are publication gates.
+- No gameplay/save/authority/art changes or new dependencies. D-421 Max Level
+  and saved-result layout/animations remain unchanged.
+
 ## Connected leveling and evolution layouts (D-421)
 
 - Max Level now has a bounded1120px desktop workspace: cost art on the left,
@@ -25,10 +53,9 @@
   At390x844 the dialog heights were771px and796px. Late Evo.6 Lv.90-to105
   preview with eight cost items also fits1367x769 without a scrollbar, using
   compact cost rows. All ten stats/exact quantities remain present.
-- Evolution resources/action/picker share the payment section; desktop action
-  is above the picker rather than after a long copy list. The list retains a
-  300px maximum with protected copies visible. Explicit form-value Information
-  preserves all source identities without the former long inline paragraph.
+- Evolution resources/action/picker initially shared the payment section with
+  a300px scrolling list. The owner's follow-up showed full-shell overflow;
+  D-422 above supersedes that picker and validates the whole screen.
 - Final `npm run build` passed TypeScript/Vite (existing large-chunk warning
   only), and `git diff --check` passed. Full publication CI/hosted SHA remain
   release gates; no authority deployment is needed. Browser fixtures and the

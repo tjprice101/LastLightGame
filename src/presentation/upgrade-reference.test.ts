@@ -9,7 +9,7 @@ import { createCreatureCopy, capturedProgress, capturedLevelCost, resolveCapture
 import { getCreature } from '../content/creatures';
 import { statChange } from './stat-change';
 import { saleControls } from './creature-sale';
-import { updateCharacterTab, updateEvolutionSelection } from './hub';
+import { updateCharacterTab, updateEvolutionSelection, changeEvolutionPage } from './hub';
 import { celebrateUpgrade } from './upgrade-celebration';
 import { presentUpgrade } from './upgrade-result';
 import { presentReward } from './reward-screen';
@@ -84,9 +84,9 @@ describe('reference Team upgrade presentation', () => {
       first.instanceId, second.instanceId, locked.instanceId,
     ]);
     expect(checkboxes.map(input => input.disabled)).toEqual([false, false, true]);
-    expect(picker.textContent).not.toMatch(/Copy \d|Form \d/);
+    expect(picker.querySelector('.evolution-fodder-list')?.textContent).not.toMatch(/Copy \d|Form \d/);
     expect(picker.querySelector('legend')?.textContent).toBe('Elemental-Devourers to consume \u00b7 3 Evolution Value');
-    expect(picker.querySelector('p')?.textContent).toContain('adding up to 3 Evolution Value');
+    expect(picker.querySelector('p')?.textContent).toContain('Choose exactly 3 Evolution Value');
     expect(picker.textContent).toContain('Locked');
     expect(picker.textContent).toContain('permanently consumed');
     const button = host.querySelector<HTMLButtonElement>('[data-upgrade="evolve"]')!;
@@ -120,6 +120,49 @@ describe('reference Team upgrade presentation', () => {
     expect(meter.value).toBe(0);
     expect(account).toEqual(before);
     expect(() => updateEvolutionSelection(document.createElement('div'))).toThrow('controls are missing');
+  });
+
+  it('pages evolution copies without scrolling or losing selections on hidden pages', () => {
+    const account = emptyAccount();
+    account.characters.rosetta = { level: 60, evolution: 3 };
+    account.fractalis = 100000;
+    account.materials = { 'rosethorn-uncommon': 100, 'rosethorn-rare': 100 };
+    account.capturedCharacters = [
+      createCreatureCopy('infusion:roses:0'),
+      createCreatureCopy('infusion:roses:1'),
+      { ...createCreatureCopy('infusion:roses:2'), locked: true },
+    ];
+    const before = structuredClone(account);
+    const host = document.createElement('main');
+    host.innerHTML = referenceTeam(account, { view: 'detail', selected: 'rosetta', tab: 'upgrade-0', element: '', sort: 'level' });
+    document.body.append(host);
+    const cards = Array.from(host.querySelectorAll<HTMLElement>('.evolution-fodder-copy'));
+    const inputs = Array.from(host.querySelectorAll<HTMLInputElement>('[data-evolution-fodder]'));
+    const previous = host.querySelector<HTMLButtonElement>('[data-fodder-page="-1"]')!;
+    const next = host.querySelector<HTMLButtonElement>('[data-fodder-page="1"]')!;
+    expect(cards.map(card => card.hidden)).toEqual([false, true, true]);
+    expect(previous.disabled).toBe(true);
+    inputs[0].checked = true;
+    changeEvolutionPage(host, 1);
+    expect(cards.map(card => card.hidden)).toEqual([true, false, true]);
+    inputs[1].checked = true;
+    updateEvolutionSelection(host);
+    expect(host.querySelector<HTMLButtonElement>('[data-upgrade="evolve"]')!.disabled).toBe(false);
+    expect(host.querySelector('[data-fodder-status]')?.textContent).toContain('3 / 3 value chosen');
+    next.focus();
+    changeEvolutionPage(host, 1);
+    expect(document.activeElement).toBe(previous);
+    expect(next.disabled).toBe(true);
+    expect(inputs[2].disabled).toBe(true);
+    expect(host.querySelector('[data-fodder-page-status]')?.textContent).toBe('Copy 3 / 3');
+    changeEvolutionPage(host, 1);
+    changeEvolutionPage(host, -1);
+    changeEvolutionPage(host, -1);
+    expect(inputs.map(input => input.checked)).toEqual([true, true, false]);
+    expect(cards.map(card => card.hidden)).toEqual([false, true, true]);
+    expect(account).toEqual(before);
+    expect(() => changeEvolutionPage(host, 2)).toThrow('invalid');
+    expect(() => changeEvolutionPage(document.createElement('div'), 1)).toThrow('missing');
   });
 
   it('explains insufficient eligible copies without hiding protected copies', () => {

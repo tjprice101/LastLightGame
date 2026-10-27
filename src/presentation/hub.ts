@@ -239,17 +239,17 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
   const accepted = requirement?.infusion ? acceptedFodderValues(requirement.infusion) : '';
   const shown = options.filter((entry) => entry.creature.mode === requirement?.infusion);
   const selection = count ? `<fieldset class="evolution-fodder" data-selection-state="incomplete" style="--element:${starter.color}"><legend>Elemental-Devourers to consume · ${count} Evolution Value</legend>
-    <p>Choose captured Elemental-Devourers from [${modeName}] adding up to ${count} Evolution Value. Each copy contributes its form number (1–6); any exact mix works.</p>
-    ${information(`evolution-values-${starter.id}`, 'Evolution Values', `<p>Each captured Elemental-Devourer contributes its form number: ${accepted}.</p><p>Combine copies from [${modeName}] to reach exactly ${count} Evolution Value. Chosen copies are permanently consumed only after a confirmed evolution.</p>`, 'View form values')}
+    ${missing > 0 ? `<p class="evolution-fodder-empty">You need ${missing} more Evolution Value. Capture more in [${modeName}].</p>` : `<p>Choose exactly ${count} Evolution Value · [${modeName}] · Copy value = form (1–6).</p>`}
+    ${information(`evolution-values-${starter.id}`, 'Evolution Values', `<p>Each captured Elemental-Devourer contributes its form number: ${accepted}.</p><p>Combine copies from [${modeName}] to reach exactly ${count} Evolution Value. Chosen copies are permanently consumed only after a confirmed evolution.</p><p>Locked, squad and Conduit-equipped Elemental-Devourers can't be used until they are unlocked, removed from your squad and have their Conduits unequipped.</p>`, 'View form values')}
     <div class="evolution-fodder-progress"><meter data-fodder-progress min="0" max="${count}" value="0" aria-label="Chosen Evolution Value"></meter>
     <p data-fodder-status data-eligible-count="${eligibleCount}" role="status">0 / ${count} value chosen · ${eligibleCount} available</p></div>
     <p class="evolution-fodder-warning">Chosen Elemental-Devourers are permanently consumed when you confirm the evolution.</p>
-    ${missing > 0 ? `<p class="evolution-fodder-empty">You need ${missing} more Evolution Value. Capture more in [${modeName}]. Locked, squad and Conduit-equipped Elemental-Devourers can't be used until they are unlocked, removed from your squad and have their Conduits unequipped.</p>` : ''}
-    <div class="evolution-fodder-list">${shown.length ? [...shown].sort((a, b) => Number(b.eligible) - Number(a.eligible)).map(({ copy, creature, reasons, eligible, value }) =>
-      `<label class="evolution-fodder-copy"><input type="checkbox" data-evolution-fodder="${copy.instanceId}" data-fodder-value="${value}" ${!eligible ? 'disabled' : ''}>
+    <div class="evolution-fodder-list" data-fodder-page-index="0">${shown.length ? [...shown].sort((a, b) => Number(b.eligible) - Number(a.eligible)).map(({ copy, creature, reasons, eligible, value }, index) =>
+      `<label class="evolution-fodder-copy" ${index ? 'hidden' : ''}><input type="checkbox" data-evolution-fodder="${copy.instanceId}" data-fodder-value="${value}" ${!eligible ? 'disabled' : ''}>
       ${creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${creature.name}" width="96" height="96">` : ''}
       <span class="evolution-fodder-info"><strong>${creature.name}</strong><small>Lv.${capturedProgress(copy).level} · Value ${value}</small>${capturedRating(creature.id)}<small class="evolution-fodder-reason">${eligible ? 'Available' : reasons.join(' · ')}</small>
       <span class="evolution-fodder-state">${eligible ? '<span class="fodder-unselected">Choose</span><span class="fodder-selected">Chosen</span>' : 'Unavailable'}</span></span></label>`).join('') : `<p>No Elemental-Devourers from [${modeName}] captured yet.</p>`}</div>
+    ${shown.length ? `<nav class="evolution-fodder-pages" aria-label="Evolution copy pages"><button type="button" class="text-button" data-fodder-page="-1" aria-label="Previous evolution copy" disabled>Previous</button><span data-fodder-page-status role="status">Copy 1 / ${shown.length}</span><button type="button" class="text-button" data-fodder-page="1" aria-label="Next evolution copy" ${shown.length === 1 ? 'disabled' : ''}>Next</button></nav>` : ''}
     </fieldset>` : '';
   if (compact) return `<p class="ref-growth-summary">${evolve ? `Evo.${current.evolution} → ${next.evolution} · Level cap ${characterLevelCap(next.evolution)}` : `Lv.${current.level} → ${next.level} · Cap ${cap}`}</p>
     <p class="ref-growth-cost">${currencyIcon('fractalis')}${cost.fractalis} Prismatica</p>
@@ -283,6 +283,29 @@ export function updateEvolutionSelection(host: HTMLElement): void {
   progress.value = Math.min(total, required);
   fieldset.dataset.selectionState = surplus ? 'excess' : ready ? 'complete' : 'incomplete';
   status.textContent = `${total} / ${required} value chosen · ${status.dataset.eligibleCount} available${surplus ? ' · Remove extra Elemental-Devourers' : ready ? ' · Ready to evolve' : ''}`;
+}
+
+export function changeEvolutionPage(host: HTMLElement, direction: number): void {
+  const list = host.querySelector<HTMLElement>('[data-fodder-page-index]');
+  const status = host.querySelector<HTMLElement>('[data-fodder-page-status]');
+  const previous = host.querySelector<HTMLButtonElement>('[data-fodder-page="-1"]');
+  const next = host.querySelector<HTMLButtonElement>('[data-fodder-page="1"]');
+  if (!list || !status || !previous || !next || ![-1, 1].includes(direction)) {
+    throw new Error('Evolution copy page controls are missing or invalid.');
+  }
+  const copies = Array.from(list.querySelectorAll<HTMLElement>('.evolution-fodder-copy'));
+  const current = Number(list.dataset.fodderPageIndex);
+  if (!Number.isInteger(current) || current < 0 || current >= copies.length) {
+    throw new Error('Invalid evolution copy page.');
+  }
+  const page = Math.max(0, Math.min(copies.length - 1, current + direction));
+  list.dataset.fodderPageIndex = String(page);
+  copies.forEach((copy, index) => { copy.hidden = index !== page; });
+  previous.disabled = page === 0;
+  next.disabled = page === copies.length - 1;
+  status.textContent = `Copy ${page + 1} / ${copies.length}`;
+  if (document.activeElement === previous && previous.disabled) next.focus({ preventScroll: true });
+  else if (document.activeElement === next && next.disabled) previous.focus({ preventScroll: true });
 }
 
 function acceptedFodderValues(mode: string): string {

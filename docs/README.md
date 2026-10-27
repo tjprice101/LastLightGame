@@ -1,5 +1,9 @@
 # Documentation hub
 
+**D-422:** [full evolution workspace correction](menus-and-inventory.md#evolution-workspace-fit-and-paged-copies-d-422)
+replaces the scrolling copy list with selection-preserving pages and verifies
+the complete desktop shell, not just its upgrade panel.
+
 **D-421:** [connected growth layouts](menus-and-inventory.md#connected-growth-layouts-d-421)
 widen Max Level and saved upgrade results, and group evolution costs/actions/
 Devourer selection beside the stat preview. No progression or save changes.
