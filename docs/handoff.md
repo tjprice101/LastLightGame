@@ -31,7 +31,9 @@
   migration, persisted reads and idempotent retries. An initial assertion
   assumed JSON key order; corrected the test, not the reward rules. All
   disposable identities and cascading records were removed; no real grants.
-- Client CI/Pages and hosted SHA are the remaining publication gates.
+- Code release `edf1e1ced7fa17914e2bb5eaeb742499b61f2f62` passed client
+  CI/Pages workflow40451627924; hosted `version.json` matched that exact SHA.
+  Authority/client publication and hosted reward verification are complete.
 
 ## Available-height evolution workspace (D-424)
 
