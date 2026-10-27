@@ -1,5 +1,9 @@
 # Documentation hub
 
+**D-424:** [available-height evolution workspace](menus-and-inventory.md#available-height-evolution-workspace-d-424)
+fills usable desktop height, expands the Devourer grid and reserves enough
+navigation width for unbroken labels, retaining the sidebar and controls.
+
 **D-423:** [evolution sidebar and scrollable copy grid](menus-and-inventory.md#evolution-sidebar-and-scrollable-copy-grid-d-423)
 restores the left-hand bar and replaces D-422 pagination with a bounded,
 responsive selection grid and shared rarity feedback. Full-shell verification

@@ -1,5 +1,24 @@
 # Current state and handoff
 
+## Available-height evolution workspace (D-424)
+
+- Owner requests filling unused screen space and stopping squashed submenu
+  labels. Reserve256px for whole-label navigation; desktop1200x700+ uses
+  remaining content height for aligned stat/payment panels and flexible copy
+  grid. Sidebar/selection/feedback/protections/transactions unchanged.
+- 25 full-shell browser checks at1823x800,1467x708,1367x769,1024x769,390x844:
+  Evo.3/4/5, empty holdings and unclaimed First Fracture. No desktop outer
+  vertical/horizontal overflow, navigation text overflow or grid escaping
+  payment. Mobile has no horizontal overflow; natural page scrolling remains.
+  At1467x769 panel bottoms753 match the16px content inset; copy grid261px.
+  At1823x800 grid292px. All desktop submenu buttons126px wide, labels intact.
+- `npm test -- src\presentation\upgrade-reference.test.ts
+  src\presentation\reference-ui.test.ts --maxWorkers=1 --reporter=dot`:
+  87 passed/2 files. `npm run build`: TypeScript/Vite passed (existing chunk
+  warning). `git diff --check`: passed. CI/hosted SHA remain publication gates.
+- CSS/docs only, no dependencies/art/save/authority changes; disposable
+  fixtures do not modify real accounts.
+
 ## Restored evolution sidebar and scrolling grid (D-423)
 
 - Owner likes the compact workspace but explicitly wants the left-hand bar

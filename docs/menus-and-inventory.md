@@ -1,5 +1,24 @@
 # Menus and inventory
 
+## Available-height evolution workspace (D-424)
+
+Owner requests using the remaining screen space rather than compressing the
+workspace and navigation. Desktop evolution now reserves256px for its four
+submenus, retaining whole button labels and44px targets. At widths1200px+
+and heights700px+, the Team workspace fills the remaining content area:
+stat/payment panels stretch together and the Devourer region takes the
+remaining payment height, rather than a fixed small viewport. Costs, action,
+selection total and warning stay outside that region. The sidebar, rarity
+feedback and transactions are unchanged. Narrow/short screens retain the
+existing bounded-grid/page-scrolling fallback; no content is clipped to fit.
+
+Twenty-five full-shell checks covered1823x800,1467x708,1367x769,1024x769 and
+390x844 with Evo.3/4/5, empty holdings and unclaimed First Fracture. Desktop
+cases had no outer vertical/horizontal overflow or clipped navigation labels;
+mobile had no horizontal overflow. At1467x769 both panels end16px above the
+content bottom, with a261px copy grid. At1823x800 the grid is292px tall.
+Run upgrade-reference/reference-ui and build; verify actual viewport geometry.
+
 ## Evolution sidebar and scrollable copy grid (D-423)
 
 Owner prefers retaining the left-hand character/squad/collection bar and
