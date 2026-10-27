@@ -9,7 +9,7 @@ import { createCreatureCopy, capturedProgress, capturedLevelCost, resolveCapture
 import { getCreature } from '../content/creatures';
 import { statChange } from './stat-change';
 import { saleControls } from './creature-sale';
-import { updateCharacterTab, updateEvolutionSelection, changeEvolutionPage } from './hub';
+import { updateCharacterTab, updateEvolutionSelection } from './hub';
 import { celebrateUpgrade } from './upgrade-celebration';
 import { presentUpgrade } from './upgrade-result';
 import { presentReward } from './reward-screen';
@@ -122,7 +122,7 @@ describe('reference Team upgrade presentation', () => {
     expect(() => updateEvolutionSelection(document.createElement('div'))).toThrow('controls are missing');
   });
 
-  it('pages evolution copies without scrolling or losing selections on hidden pages', () => {
+  it('renders every copy in a named scrollable region while retaining selection and protection', () => {
     const account = emptyAccount();
     account.characters.rosetta = { level: 60, evolution: 3 };
     account.fractalis = 100000;
@@ -138,31 +138,26 @@ describe('reference Team upgrade presentation', () => {
     document.body.append(host);
     const cards = Array.from(host.querySelectorAll<HTMLElement>('.evolution-fodder-copy'));
     const inputs = Array.from(host.querySelectorAll<HTMLInputElement>('[data-evolution-fodder]'));
-    const previous = host.querySelector<HTMLButtonElement>('[data-fodder-page="-1"]')!;
-    const next = host.querySelector<HTMLButtonElement>('[data-fodder-page="1"]')!;
-    expect(cards.map(card => card.hidden)).toEqual([false, true, true]);
-    expect(previous.disabled).toBe(true);
+    const grid = host.querySelector<HTMLElement>('.evolution-fodder-list')!;
+    expect(grid.getAttribute('role')).toBe('region');
+    expect(grid.getAttribute('aria-label')).toBe('Evolution Devourer copies');
+    expect(grid.tabIndex).toBe(0);
+    expect(host.querySelector('.ref-team-sidebar')).not.toBeNull();
+    expect(host.querySelector('[data-fodder-page]')).toBeNull();
+    expect(cards.map(card => card.hidden)).toEqual([false, false, false]);
+    expect(cards.map(card => card.dataset.rarity)).toEqual(['Common', 'Uncommon', 'Rare']);
     inputs[0].checked = true;
-    changeEvolutionPage(host, 1);
-    expect(cards.map(card => card.hidden)).toEqual([true, false, true]);
+    grid.scrollTop = 500;
     inputs[1].checked = true;
     updateEvolutionSelection(host);
     expect(host.querySelector<HTMLButtonElement>('[data-upgrade="evolve"]')!.disabled).toBe(false);
     expect(host.querySelector('[data-fodder-status]')?.textContent).toContain('3 / 3 value chosen');
-    next.focus();
-    changeEvolutionPage(host, 1);
-    expect(document.activeElement).toBe(previous);
-    expect(next.disabled).toBe(true);
     expect(inputs[2].disabled).toBe(true);
-    expect(host.querySelector('[data-fodder-page-status]')?.textContent).toBe('Copy 3 / 3');
-    changeEvolutionPage(host, 1);
-    changeEvolutionPage(host, -1);
-    changeEvolutionPage(host, -1);
+    grid.focus();
+    expect(document.activeElement).toBe(grid);
+    grid.scrollTop = 0;
     expect(inputs.map(input => input.checked)).toEqual([true, true, false]);
-    expect(cards.map(card => card.hidden)).toEqual([false, true, true]);
     expect(account).toEqual(before);
-    expect(() => changeEvolutionPage(host, 2)).toThrow('invalid');
-    expect(() => changeEvolutionPage(document.createElement('div'), 1)).toThrow('missing');
   });
 
   it('explains insufficient eligible copies without hiding protected copies', () => {

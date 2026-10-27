@@ -1,8 +1,9 @@
 # Documentation hub
 
-**D-422:** [full evolution workspace correction](menus-and-inventory.md#evolution-workspace-fit-and-paged-copies-d-422)
-replaces the scrolling copy list with selection-preserving pages and verifies
-the complete desktop shell, not just its upgrade panel.
+**D-423:** [evolution sidebar and scrollable copy grid](menus-and-inventory.md#evolution-sidebar-and-scrollable-copy-grid-d-423)
+restores the left-hand bar and replaces D-422 pagination with a bounded,
+responsive selection grid and shared rarity feedback. Full-shell verification
+keeps desktop costs, meter and Evolve outside the scrolling region.
 
 **D-421:** [connected growth layouts](menus-and-inventory.md#connected-growth-layouts-d-421)
 widen Max Level and saved upgrade results, and group evolution costs/actions/

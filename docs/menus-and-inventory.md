@@ -1,8 +1,36 @@
 # Menus and inventory
 
+## Evolution sidebar and scrollable copy grid (D-423)
+
+Owner prefers retaining the left-hand character/squad/collection bar and
+browsing several Devourers together. Restore that bar and replace D-422's
+one-copy pages with a responsive, bounded scrolling card grid. Only the copy
+region scrolls on the verified desktop sizes; resources, exact selection
+meter, consumption warning and Evolve stay outside it. Cards retain full names,
+real art, level/value, star/rarity badges, explicit protection reasons and
+checkboxes. Rarity trims and accepted-selection shimmer/ring/sparks reuse the
+shared palette/feedback; checked styling and textual Chosen remain persistent.
+No reward/save celebration occurs simply for selecting a copy.
+
+The named grid region is keyboard-focusable and retains selections while
+scrolling; unavailable copies remain visible and disabled. Exact-value gates,
+confirmed consumption and account transactions are unchanged. Remove the
+obsolete pager helper, markup and event branch rather than retaining two modes.
+
+Twenty complete-shell cases cover Evo.3/4/5 with30 mixed-form copies,
+protected-only and empty holdings at1467x708,1367x769,1024x769 and1823x800.
+All retain the sidebar without outer vertical/horizontal overflow. The grid
+scrolls through all copies; cards reflow to the available width. At390x844,
+payment remains first with no horizontal overflow; normal mobile page
+scrolling remains available. Run upgrade-reference, reference-ui,
+evolution-fodder and rarity-feedback tests, build, and check full-shell geometry
+after entrance animations finish. D-422's hidden-sidebar/pagination policy
+below is historical and superseded.
+
 ## Evolution workspace fit and paged copies (D-422)
 
-The owner's follow-up corrects D-421: grouping the picker beside stats was
+Historical implementation, superseded by D-423 above. The owner's follow-up
+corrected D-421: grouping the picker beside stats was
 not enough, because the complete screen still overflowed. Evolution now uses
 the available width without the redundant squad/collection sidebar; the Team
 area navigation remains available. Its compact desktop identity, submenus,

@@ -244,12 +244,11 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
     <div class="evolution-fodder-progress"><meter data-fodder-progress min="0" max="${count}" value="0" aria-label="Chosen Evolution Value"></meter>
     <p data-fodder-status data-eligible-count="${eligibleCount}" role="status">0 / ${count} value chosen · ${eligibleCount} available</p></div>
     <p class="evolution-fodder-warning">Chosen Elemental-Devourers are permanently consumed when you confirm the evolution.</p>
-    <div class="evolution-fodder-list" data-fodder-page-index="0">${shown.length ? [...shown].sort((a, b) => Number(b.eligible) - Number(a.eligible)).map(({ copy, creature, reasons, eligible, value }, index) =>
-      `<label class="evolution-fodder-copy" ${index ? 'hidden' : ''}><input type="checkbox" data-evolution-fodder="${copy.instanceId}" data-fodder-value="${value}" ${!eligible ? 'disabled' : ''}>
+    <div class="evolution-fodder-list" role="region" aria-label="Evolution Devourer copies" tabindex="0">${shown.length ? [...shown].sort((a, b) => Number(b.eligible) - Number(a.eligible)).map(({ copy, creature, reasons, eligible, value }) =>
+      `<label class="evolution-fodder-copy" data-rarity="${evolutionRarity(value)}"><input type="checkbox" data-evolution-fodder="${copy.instanceId}" data-fodder-value="${value}" ${!eligible ? 'disabled' : ''}>
       ${creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${creature.name}" width="96" height="96">` : ''}
-      <span class="evolution-fodder-info"><strong>${creature.name}</strong><small>Lv.${capturedProgress(copy).level} · Value ${value}</small>${capturedRating(creature.id)}<small class="evolution-fodder-reason">${eligible ? 'Available' : reasons.join(' · ')}</small>
+      <span class="evolution-fodder-info"><strong>${creature.name}</strong><small>Lv.${capturedProgress(copy).level} · Value ${value}</small>${capturedRating(creature.id)}<small class="evolution-fodder-reason">${eligible ? '' : reasons.join(' · ')}</small>
       <span class="evolution-fodder-state">${eligible ? '<span class="fodder-unselected">Choose</span><span class="fodder-selected">Chosen</span>' : 'Unavailable'}</span></span></label>`).join('') : `<p>No Elemental-Devourers from [${modeName}] captured yet.</p>`}</div>
-    ${shown.length ? `<nav class="evolution-fodder-pages" aria-label="Evolution copy pages"><button type="button" class="text-button" data-fodder-page="-1" aria-label="Previous evolution copy" disabled>Previous</button><span data-fodder-page-status role="status">Copy 1 / ${shown.length}</span><button type="button" class="text-button" data-fodder-page="1" aria-label="Next evolution copy" ${shown.length === 1 ? 'disabled' : ''}>Next</button></nav>` : ''}
     </fieldset>` : '';
   if (compact) return `<p class="ref-growth-summary">${evolve ? `Evo.${current.evolution} → ${next.evolution} · Level cap ${characterLevelCap(next.evolution)}` : `Lv.${current.level} → ${next.level} · Cap ${cap}`}</p>
     <p class="ref-growth-cost">${currencyIcon('fractalis')}${cost.fractalis} Prismatica</p>
@@ -283,29 +282,6 @@ export function updateEvolutionSelection(host: HTMLElement): void {
   progress.value = Math.min(total, required);
   fieldset.dataset.selectionState = surplus ? 'excess' : ready ? 'complete' : 'incomplete';
   status.textContent = `${total} / ${required} value chosen · ${status.dataset.eligibleCount} available${surplus ? ' · Remove extra Elemental-Devourers' : ready ? ' · Ready to evolve' : ''}`;
-}
-
-export function changeEvolutionPage(host: HTMLElement, direction: number): void {
-  const list = host.querySelector<HTMLElement>('[data-fodder-page-index]');
-  const status = host.querySelector<HTMLElement>('[data-fodder-page-status]');
-  const previous = host.querySelector<HTMLButtonElement>('[data-fodder-page="-1"]');
-  const next = host.querySelector<HTMLButtonElement>('[data-fodder-page="1"]');
-  if (!list || !status || !previous || !next || ![-1, 1].includes(direction)) {
-    throw new Error('Evolution copy page controls are missing or invalid.');
-  }
-  const copies = Array.from(list.querySelectorAll<HTMLElement>('.evolution-fodder-copy'));
-  const current = Number(list.dataset.fodderPageIndex);
-  if (!Number.isInteger(current) || current < 0 || current >= copies.length) {
-    throw new Error('Invalid evolution copy page.');
-  }
-  const page = Math.max(0, Math.min(copies.length - 1, current + direction));
-  list.dataset.fodderPageIndex = String(page);
-  copies.forEach((copy, index) => { copy.hidden = index !== page; });
-  previous.disabled = page === 0;
-  next.disabled = page === copies.length - 1;
-  status.textContent = `Copy ${page + 1} / ${copies.length}`;
-  if (document.activeElement === previous && previous.disabled) next.focus({ preventScroll: true });
-  else if (document.activeElement === next && next.disabled) previous.focus({ preventScroll: true });
 }
 
 function acceptedFodderValues(mode: string): string {

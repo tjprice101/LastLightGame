@@ -1,6 +1,37 @@
 # Current state and handoff
 
+## Restored evolution sidebar and scrolling grid (D-423)
+
+- Owner likes the compact workspace but explicitly wants the left-hand bar
+  retained and Devourers shown in an aesthetic scrollable grid. Restore the
+  sidebar; remove one-copy pagination, its helper and main event branch.
+- Responsive card grid retains real artwork/full names/level/value, rarity/
+  stars, protected-copy reasons and checkboxes. Rarity top trims and shared
+  finite selection shimmer/ring/sparks accompany accepted checks; Chosen and
+  exact meter remain persistent. No mechanics/save/authority changes.
+- Keep costs/Evolve, selection total and permanent-consumption warning outside
+  the bounded scrolling grid. Named keyboard-focusable region retains checked
+  inputs through scrolling; no automatic selections or consumption.
+- Browser:20 full-shell cases passed at1467x708,1367x769,1024x769,1823x800,
+  covering Evo.3/4/5 with30 copies, protected-only and empty holdings. Sidebar
+  visible; zero outer vertical/horizontal overflow after finite entrance
+  animations.390x844 has no horizontal grid/page overflow and payment first;
+  mobile retains natural page scrolling. No real account writes.
+- Actual delegated selection retained two copies after scrolling2152px,
+  reported3/3, enabled Evolve, and rejected a disabled final copy. Shared
+  ring transform/opacity changed at200/700ms with12 sparks; clock-driven
+  cleanup removed the effect after2s. Existing reduced-motion foundation stays.
+- `npm test -- src\presentation\upgrade-reference.test.ts
+  src\presentation\reference-ui.test.ts src\game\evolution-fodder.test.ts
+  src\presentation\rarity-feedback.test.ts --maxWorkers=1 --reporter=dot`:
+  120 passed/4 files. `npm run build`: TypeScript/Vite passed (existing
+  large-chunk warning). CI/hosted SHA remain publication gates.
+- This supersedes D-422's sidebar removal and copy-page policy below, not the
+  compact growth workspace, Max Level or saved upgrade animations.
+
 ## Full evolution workspace correction (D-422)
+
+Historical: sidebar removal and pagination superseded by D-423 above.
 
 - Owner reports evolution still requires scrolling after D-421. Its isolated
   panel checks did not verify full-screen fit; that gap is corrected here.

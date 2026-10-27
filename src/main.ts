@@ -53,7 +53,7 @@ import { commands, defaultBindings, loadBindings, saveBindings, validateBindings
 import { BattleView, createSession, type BattleSession, type BattleAuthority, type BattleAuthorityResponse } from './presentation/battle-view';
 import { restartHistoricalConduitSession } from './presentation/conduit-compatibility';
 import { assertActivityAccess } from './game/activity-access';
-import { characterHub, characterInformation, homeHub, inventoryHub, isCharacterTab, updateCharacterTab, updateEvolutionSelection, changeEvolutionPage } from './presentation/hub';
+import { characterHub, characterInformation, homeHub, inventoryHub, isCharacterTab, updateCharacterTab, updateEvolutionSelection } from './presentation/hub';
 import { bindInventory, defaultInventorySections, defaultInventoryFilters, inventorySections, inventoryFilters, type InventoryFilters, type InventorySections, type InventoryTab } from './presentation/inventory';
 import { loadAccount, ownedProgress, equippedSquad, ownedCharacters, setSquad, summonCharacter, summonCharacters, multiSummonCount, purchaseExchangeMaterial, saveAccountRewards, unlockedStage, unlockedInfusionStage, upgradeCharacter, evolutionFodderOptions, creatureSaleOffer, sellCurrencyCreature, type Account, type SummonDraw } from './game/account';
 import { getCreature } from './content/creatures';
@@ -1934,6 +1934,10 @@ app.addEventListener('change', (event) => {
   if (!(event.target instanceof HTMLInputElement) || !event.target.matches('[data-evolution-fodder]')) return;
   try {
     updateEvolutionSelection(app);
+    const card = event.target.closest<HTMLElement>('.evolution-fodder-copy');
+    if (card && event.target.checked && !event.target.disabled) {
+      rarityFeedback(card, evolutionRarity(Number(event.target.dataset.fodderValue)));
+    }
   } catch (error) {
     console.error('Evolution selection unavailable', error);
     showError('Evolution selection unavailable. Reopen the evolution screen.');
@@ -1963,13 +1967,10 @@ app.addEventListener('click', async (event) => {
   const capture = event.target.closest<HTMLButtonElement>('[data-owned-capture]');
   const max = event.target.closest<HTMLButtonElement>('[data-max-level]');
   const confirmMax = event.target.closest<HTMLButtonElement>('[data-confirm-max-level]');
-  const fodderPage = event.target.closest<HTMLButtonElement>('[data-fodder-page]');
-  if (!category && !capture && !max && !confirmMax && !fodderPage) return;
+  if (!category && !capture && !max && !confirmMax) return;
   let saved = false;
   try {
-    if (fodderPage) {
-      changeEvolutionPage(app, Number(fodderPage.dataset.fodderPage));
-    } else if (category) {
+    if (category) {
       const value = category.dataset.characterCategory;
       if (value !== 'squad' && value !== 'bearers' && value !== 'creatures') throw new Error('Unknown Team area.');
       characterCategory = value;
