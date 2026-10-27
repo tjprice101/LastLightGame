@@ -1,5 +1,17 @@
 # Character instances and protection
 
+## Historical Soar/Delve copies on the15-stage layout (D-425)
+
+Walletv10 preserves all owned25-stage Heaven/Abyss copies with an optional,
+strictly validated `infusionLayout:25` marker. Source stage, exact retained
+skills, playable level, identity, locks, squad and equipment are unchanged;
+old source stages are provenance, not selectable new activity stages.
+Metadata-free historical copies keep their previous first-form stage/skill
+defaults. Pre-v7 copies still pass through the existing35->25 D-346 migration
+first. New captures use the current15-stage layout without a marker.
+Read normalization never writes; only a successful ordinary transaction saves
+the new version. [Reward/layout contract](dungeons-and-captures.md#material-reward-rebalance-and15-stage-infusion-d-425). and protection
+
 ## Atomic multi-select sales (D-418)
 
 The captured collection supports [multi-select selling](menus-and-inventory.md#multi-select-elemental-devourer-sales-d-418)

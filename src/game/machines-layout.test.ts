@@ -85,8 +85,8 @@ describe('35-stage Machines layout and v9 migration', () => {
       const loaded = loadAccount(saved);
       expect(writes).not.toHaveBeenCalled();
       expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
-      expect(loaded.infusionStages).toEqual({ machines: Math.max(1, Math.floor(stage * 35 / 75)), heavens: 12 });
-      expect(loaded).toMatchObject({ version: 9, fractalis: 123, lycalis: 45, mechanicalComponents: 99,
+      expect(loaded.infusionStages).toEqual({ machines: Math.max(1, Math.floor(stage * 35 / 75)), heavens: 8 });
+      expect(loaded).toMatchObject({ version: 10, fractalis: 123, lycalis: 45, mechanicalComponents: 99,
         masterChests: 2, conduits: source.conduits, machineLootFocus: source.machineLootFocus,
         normalFinalClears: source.normalFinalClears, calamityClears: source.calamityClears });
       saveAccount(saved, loaded);
@@ -111,7 +111,7 @@ describe('35-stage Machines layout and v9 migration', () => {
     const write = vi.spyOn(saved, 'setItem').mockImplementationOnce(() => { throw new Error('Storage denied'); });
     expect(() => setMachineLootFocus(saved, 'Rare', 'duplex-heart')).toThrow('denied');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
-    expect(setMachineLootFocus(saved, 'Rare', 'duplex-heart')).toMatchObject({ version: 9,
+    expect(setMachineLootFocus(saved, 'Rare', 'duplex-heart')).toMatchObject({ version: 10,
       infusionStages: { machines: 26 }, machineLootFocus: { Rare: 'duplex-heart' } });
     expect(loadAccount(saved).infusionStages.machines).toBe(26);
     expect(write).toHaveBeenCalledTimes(2);

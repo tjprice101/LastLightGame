@@ -1,0 +1,240 @@
+LAST LIGHT - ELEMENTAL DUNGEONS, SOAR AND DELVE DROP RATES
+Snapshot: October 27, 2026 - D-425 reward rebalance
+
+Current implemented drop rates, including ordinary stages, final bosses and
+EX+ Calamity chests.
+
+1. ELEMENTAL DUNGEONS
+====================
+
+The same rules apply to all six dungeons. Materials match the dungeon's element.
+
+Every unlocked material rarity drops at 100% per defeated enemy. The random
+part is the quantity, not whether it drops.
+
+BASE RANGES BEFORE THE NEW STAGE REDUCTION:
+Stages | Common Seed | Uncommon Bloom | Rare Shard | Epic Crest | Legendary Heart | Omnic Soul
+1-5    | 8-10        | 2-3            | --         | --         | --              | --
+6-11   | 12-15       | 5-6            | 2-3        | --         | --              | --
+12-18  | 16-20       | 8-10           | 5-6        | 2-3        | --              | --
+19-24  | 20-25       | 12-15          | 8-10       | 5-6        | 2-3             | --
+25-34  | 25-30       | 16-20          | 12-15      | 8-10       | 5-6             | 2-3
+35     | 125-150     | 80-100         | 60-75      | 40-50      | 25-30           | 10-15
+
+Actual materials retain 90% at Stage 1, decreasing linearly to 30% at Stage 35:
+retained = 0.9 - 0.6 * (stage - 1) / 34.
+Round each BASE endpoint times retained, with a minimum of 1.
+The Stage 35 BASE row already includes its final-boss boost.
+Every integer inside the resulting inclusive range can drop.
+
+ACTUAL PER-STAGE QUANTITIES AFTER REDUCTION:
+Stage | Common Seed | Uncommon Bloom | Rare Shard | Epic Crest | Legendary Heart | Omnic Soul
+1     | 7-9         | 2-3            | --         | --         | --              | --
+2     | 7-9         | 2-3            | --         | --         | --              | --
+3     | 7-9         | 2-3            | --         | --         | --              | --
+4     | 7-8         | 2-3            | --         | --         | --              | --
+5     | 7-8         | 2-2            | --         | --         | --              | --
+6     | 10-12       | 4-5            | 2-2        | --         | --              | --
+7     | 10-12       | 4-5            | 2-2        | --         | --              | --
+8     | 9-12        | 4-5            | 2-2        | --         | --              | --
+9     | 9-11        | 4-5            | 2-2        | --         | --              | --
+10    | 9-11        | 4-4            | 1-2        | --         | --              | --
+11    | 9-11        | 4-4            | 1-2        | --         | --              | --
+12    | 11-14       | 6-7            | 4-4        | 1-2        | --              | --
+13    | 11-14       | 6-7            | 3-4        | 1-2        | --              | --
+14    | 11-13       | 5-7            | 3-4        | 1-2        | --              | --
+15    | 10-13       | 5-7            | 3-4        | 1-2        | --              | --
+16    | 10-13       | 5-6            | 3-4        | 1-2        | --              | --
+17    | 10-12       | 5-6            | 3-4        | 1-2        | --              | --
+18    | 10-12       | 5-6            | 3-4        | 1-2        | --              | --
+19    | 12-15       | 7-9            | 5-6        | 3-3        | 1-2             | --
+20    | 11-14       | 7-8            | 5-6        | 3-3        | 1-2             | --
+21    | 11-14       | 7-8            | 4-5        | 3-3        | 1-2             | --
+22    | 11-13       | 6-8            | 4-5        | 3-3        | 1-2             | --
+23    | 10-13       | 6-8            | 4-5        | 3-3        | 1-2             | --
+24    | 10-12       | 6-7            | 4-5        | 2-3        | 1-1             | --
+25    | 12-14       | 8-10           | 6-7        | 4-5        | 2-3             | 1-1
+26    | 11-14       | 7-9            | 6-7        | 4-5        | 2-3             | 1-1
+27    | 11-13       | 7-9            | 5-7        | 4-4        | 2-3             | 1-1
+28    | 11-13       | 7-8            | 5-6        | 3-4        | 2-3             | 1-1
+29    | 10-12       | 6-8            | 5-6        | 3-4        | 2-2             | 1-1
+30    | 10-12       | 6-8            | 5-6        | 3-4        | 2-2             | 1-1
+31    | 9-11        | 6-7            | 4-6        | 3-4        | 2-2             | 1-1
+32    | 9-11        | 6-7            | 4-5        | 3-4        | 2-2             | 1-1
+33    | 8-10        | 5-7            | 4-5        | 3-3        | 2-2             | 1-1
+34    | 8-10        | 5-6            | 4-5        | 3-3        | 2-2             | 1-1
+35    | 38-45       | 24-30          | 18-23      | 12-15      | 8-9             | 3-5
+
+The base rarity unlock brackets remain unchanged. Tiny stacks may not show
+the exact percentage reduction because quantities must be whole units.
+
+Other ordinary dungeon drops:
+
+Reward                         | Chance | Quantity
+Prismatica                     | 100%   | Scales with enemy level; 5-10 at Stage 1
+Final-boss Prismatica          | 100%   | 75-150, in multiples of 5
+Null-Prismatica                | 0%     | None
+Captured Elemental-Devourers    | 0%     | None
+Conduits / Master Chests        | 0%     | None
+
+Intermediate bosses do not receive the final boss's 5x reward multiplier.
+
+2. SOAR TO HEAVEN AND DELVE INTO THE ABYSS
+=========================================
+
+Both have 15 ordinary stages, with enemies ranging from Lv.50 to Lv.120.
+The same normalized level-anchor curve is compressed across 15 stages.
+Bosses occur at stages 5, 10 and 15.
+
+SPECIALTY MATERIALS
+-------------------
+
+Both used specialties drop independently at 100% per defeated enemy.
+
+Mode  | Material                      | First available     | Ordinary quantity
+Soar  | Crown of the Scarlet Oath     | Stage 1 - Lv.50     | 1-2 initially
+Soar  | Chalice of the Undying Dawn   | Stage 1 - Lv.50     | 1-2 initially
+Delve | Heart of the Shattered Void   | Stage 1 - Lv.50     | 1-2 initially
+Delve | Hourglass of Endless Wrath    | Stage 1 - Lv.50     | 1-2 initially
+
+Dawnsteel of Judgment and Voidfang of Ruin no longer drop. Existing holdings
+and legacy weapon bonuses are preserved.
+
+Quantity progression for each unlocked specialty:
+
+Stage | Enemy level | Quantity per specialty
+1     | 50          | 1-2
+2     | 53          | 2-4
+3     | 56          | 2-5
+4     | 59          | 3-7
+5     | 62          | 4-8
+6     | 65          | 5-10
+7     | 69          | 5-11
+8     | 73          | 6-13
+9     | 77          | 7-14
+10    | 81          | 7-16
+11    | 86          | 8-17
+12    | 95          | 9-19
+13    | 103         | 10-20
+14    | 112         | 10-22
+15    | 120         | 11-23
+
+Each endpoint grows linearly with stage progress and is rounded:
+minimum = round(1 + 10 * (stage - 1) / 14)
+maximum = round(2 + 21 * (stage - 1) / 14).
+The final boss does NOT apply another material multiplier.
+
+Elemental Seeds, Blooms, Shards, Crests, Hearts and Souls: 0% throughout both
+modes, including their EX+ chests. Their named specialty materials above are
+separate items.
+
+ELEMENTAL-DEVOURERS
+-------------------
+
+Mode  | Capture reward                         | Chance per defeated enemy
+Soar  | The defeated Dawnthorn Slime form      | 50%
+Delve | The defeated Wraththorn Slime form     | 50%
+
+The encountered form progresses as follows:
+
+Stages | Form
+1-3    | Common
+4-5    | Uncommon
+6-8    | Rare
+9-10   | Epic
+11-13  | Legendary
+14-15  | Omnic
+
+Captures join at up to Lv.60. Final bosses retain the 50% capture chance.
+The 5x multiplier does not multiply captures.
+
+PRISMATICA
+-----------
+
+- 100% per defeated enemy.
+- Starts at 6-12 at Lv.50.
+- Scales with enemy level.
+- Stage 15's final boss gives 75-150, in multiples of 5.
+
+NULL-PRISMATICA
+---------------
+
+Below Lv.80, the chance is 0%. From Lv.80 onward, these probabilities
+interpolate linearly with enemy level:
+
+Outcome       | Lv.80 reference  | Lv.100 reference  | Lv.120 final boss - Stage 15
+Nothing       | 90%              | 82.5%             | 75%
+Small payout  | 1 at 8%          | 1 at 9%           | 5 at 10%
+Medium payout | 2 at 1.5%        | 2 at 5.75%        | 10 at 10%
+Large payout  | 3 at 0.5%        | 3 at 2.75%        | 15 at 5%
+
+The final-boss quantities already include 5x. Its overall chance of receiving
+any Null-Prismatica is 25%.
+The level references illustrate the unchanged interpolation; the new actual
+stage levels are listed above. Premium drops first become possible at
+Stage 10 (Lv.81).
+
+3. EX+ CALAMITY BOSSES AND CHESTS
+================================
+
+A defeated Calamity boss drops exactly one corresponding chest at 100%.
+It replaces ordinary kill loot: no additional ordinary currency, material
+or capture rolls occur.
+
+GUARANTEED CONTENTS WHEN OPENING THE CHEST
+-----------------------------------------
+
+These base rewards apply to both Elemental Dungeon and Soar/Delve chests:
+
+Guaranteed reward   | EX+ Slayer | EX+ Master | EX+ Omnipotent
+Prismatica          | 100,000    | 250,000    | 500,000
+Null-Prismatica     | 50         | 70         | 100
+Calamitic Tokens    | 1          | 3          | 8
+Random loot rolls   | 3          | 5          | 7
+
+Soar/Delve chests additionally guarantee their own mode's highest-form Devourer:
+
+Chest        | Soar: Omnic Dawnthorn | Delve: Omnic Wraththorn
+Slayer       | 1 copy                | 1 copy
+Master       | 2 copies              | 2 copies
+Omnipotent   | 3 copies              | 3 copies
+
+ELEMENTAL DUNGEON CHEST: EACH RANDOM LOOT ROLL
+---------------------------------------------
+
+Each roll selects one material category belonging to that dungeon's element:
+
+Material          | Chance per roll | Quantity
+Common Seed       | 10%             | 30-60
+Uncommon Bloom    | 15%             | 20-40
+Rare Shard        | 25%             | 15-30
+Epic Crest        | 25%             | 10-20
+Legendary Heart   | 15%             | 6-12
+Omnic Soul        | 10%             | 3-6
+
+SOAR/DELVE CHEST: EACH RANDOM LOOT ROLL
+--------------------------------------
+
+Mode  | Material                      | Chance per roll | Quantity
+Soar  | Crown of the Scarlet Oath     | 50%             | 5-10
+Soar  | Chalice of the Undying Dawn   | 50%             | 10-20
+Delve | Heart of the Shattered Void   | 50%             | 5-10
+Delve | Hourglass of Endless Wrath    | 50%             | 10-20
+
+These chests do not roll weapon specialties or elemental materials.
+Repeated rolls can select the same item, and their quantities accumulate.
+Calamity chest contents do not receive the ordinary final-boss 5x multiplier.
+
+SOURCES
+========
+
+Checked against the current runtime tables and reward resolution:
+
+src\content\dungeons.ts
+src\content\material-drops.ts
+src\content\activities.ts
+src\content\infusions.ts
+src\content\loot-random.ts
+src\content\final-boss-loot.ts
+src\content\calamity.ts
+src\game\battle.ts

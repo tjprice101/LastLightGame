@@ -2,7 +2,7 @@ import { elements, infusionModes, currencyModes, eventModes, machineModes, isCur
 import { machineEnemies } from './machines';
 import { type Stats } from './combat';
 import { phaseZeroStatDefaults, type ResolvedStats } from './phase-zero-stats';
-import { rollDrop, scaledDrop, type ScaledDrop } from './loot-random';
+import { rollDrop, type ScaledDrop } from './loot-random';
 import { capturedGrowth, enemyCombatStats, playableGrowth } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
 import { roseMaterials, roseSaleQuantities, roseFormStages, roseCaptureAllowed } from './roses';
@@ -143,7 +143,9 @@ const infusionAnchorStages = 35;
 export type InfusionSchedule = 'legacy' | 'caps';
 /** Samples the original 35-stage anchor curve proportionally across the current stage count (D-346). */
 export function infusionEnemyLevel(stage: number): number {
-  const stages = infusionModeStageCount;
+  return infusionLevelForLayout(stage, infusionModeStageCount);
+}
+function infusionLevelForLayout(stage: number, stages: number): number {
   if (!Number.isInteger(stage) || stage < 1 || stage > stages) throw new Error('Invalid infusion stage.');
   return anchorLevel(1 + (stage - 1) * (infusionAnchorStages - 1) / (stages - 1));
 }
@@ -159,14 +161,15 @@ function anchorLevel(position: number): number {
   const [end, endLevel] = infusionLevelAnchors[nextIndex];
   return Math.round(level + (position - start) / (end - start) * (endLevel - level));
 }
-export function infusionEncounter(mode: InfusionModeId, stage: number, schedule: InfusionSchedule = 'caps') {
-  const stages = infusionStageCount(mode);
+export function infusionEncounter(mode: InfusionModeId, stage: number, schedule: InfusionSchedule = 'caps', layout?: 25) {
+  if (layout !== undefined && (layout !== 25 || (mode !== 'heavens' && mode !== 'abyss'))) throw new Error('Invalid historical infusion layout.');
+  const stages = layout ?? infusionStageCount(mode);
   if (!isInfusionMode(mode) || !Number.isInteger(stage) || stage < 1 || stage > stages) throw new Error(`Infusion stage must be an integer from 1 to ${stages}.`);
   const tier = mode === 'roses' ? roseFormStages.filter((first) => stage >= first).length - 1 : Math.min(5, Math.floor((stage - 1) * 6 / stages));
   const definition = [...infusionModes, ...currencyModes, ...eventModes, ...machineModes].find((entry) => entry.id === mode);
   if (!definition) throw new Error('Unknown staged Elemental-Devourer mode.');
   const startingLevel = definition.startingLevel;
-  const level = mode === 'heavens' || mode === 'abyss' ? schedule === 'legacy' ? Math.round(80 + (stage - 1) * 40 / (stages - 1)) : infusionEnemyLevel(stage)
+  const level = mode === 'heavens' || mode === 'abyss' ? schedule === 'legacy' ? Math.round(80 + (stage - 1) * 40 / (stages - 1)) : infusionLevelForLayout(stage, stages)
     : Math.round(startingLevel + (stage - 1) * ((mode === 'roses' ? 140 : 120) - startingLevel) / (stages - 1));
   const boss = stage % 5 === 0;
   const stats = mode === 'treasury' ? treasuryEnemyStats(level, boss)
@@ -179,9 +182,8 @@ export function infusionEncounter(mode: InfusionModeId, stage: number, schedule:
     legacyAbilityMultiplier: 1.2 + (stage - 1) / (stages - 1) * (mode === 'roses' ? .65 : 24 * .016) };
 }
 export const specialtyDropTable = [
-  { purpose: 'weapon', level: 50, quantity: 3 },
-  { purpose: 'evolution', level: 75, quantity: 3 },
-  { purpose: 'level', level: 75, quantity: 3 },
+  { purpose: 'evolution', level: 50 },
+  { purpose: 'level', level: 50 },
 ] as const;
 export function infusionLoot(mode: InfusionModeId, stage: number, schedule: InfusionSchedule = 'caps'): {
   specialties: (ScaledDrop & { id: string })[];
@@ -196,11 +198,9 @@ export function infusionLoot(mode: InfusionModeId, stage: number, schedule: Infu
       return range ? [bossLootRange({ id: material.id, minimum: range[0], maximum: range[1], chance: 1 }, multiplier)] : [];
     }), bonuses: [],
   };
-  const specialties = specialtyDropTable.flatMap((entry) => {
-    const unlock = schedule === 'legacy' ? entry.purpose === 'weapon' ? 80 : entry.purpose === 'evolution' ? 93 : 100 : entry.level;
-    const drop = scaledDrop(level, schedule === 'legacy' ? 80 : 50, unlock, 1, 1, entry.quantity);
-    return drop ? [bossLootRange({ id: `${mode}-${entry.purpose}`, ...drop }, multiplier)] : [];
-  });
+  const progress = (stage - 1) / (infusionModeStageCount - 1);
+  const specialties = specialtyDropTable.map(entry => ({ id: `${mode}-${entry.purpose}`,
+    minimum: Math.round(1 + 10 * progress), maximum: Math.round(2 + 21 * progress), chance: 1 }));
   return { specialties, bonuses: [] };
 }
 

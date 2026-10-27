@@ -24,8 +24,13 @@ export const elementalMaterials = elements.flatMap((element) => materialRarities
   name: `${element.name} ${rarity} Material`,
 })));
 export const dungeonStageCount = 35;
-/** Soar to Heaven / Delve into the Abyss use 25 stages (D-346); wallets before v7 recorded 35. */
-export const infusionModeStageCount = 25;
+/** D-425: wallets v7-v9 recorded25 stages; pre-v7 generally recorded35. */
+export const infusionModeStageCount = 15;
+export const previousInfusionStageCount = 25;
+export function migratePreviousInfusionStage(stage: number): number {
+  if (!Number.isSafeInteger(stage) || stage < 1 || stage > previousInfusionStageCount) throw new Error('Invalid saved infusion stage.');
+  return 1 + Math.ceil((stage - 1) * (infusionModeStageCount - 1) / (previousInfusionStageCount - 1));
+}
 /** D-380: 35 stages; v7-v8 wallets recorded 75, and pre-v7 wallets recorded 100. */
 export const machineStageCount = 35;
 export const previousMachineStageCount = 75;
@@ -41,7 +46,7 @@ export function isResizedActivity(mode: string): mode is ResizedActivityId {
 /** Maps a pre-v7 saved unlocked stage onto the shorter layout; partial progress rounds up so no clear is lost, final stays final. */
 export function migrateLegacyActivityStage(mode: ResizedActivityId, stage: number): number {
   const legacy = legacyActivityStageCounts[mode];
-  const current = mode === 'machines' ? previousMachineStageCount : infusionModeStageCount;
+  const current = mode === 'machines' ? previousMachineStageCount : previousInfusionStageCount;
   if (!Number.isSafeInteger(stage) || stage < 1 || stage > legacy) throw new Error('Invalid saved infusion stage.');
   return 1 + Math.ceil((stage - 1) * (current - 1) / (legacy - 1));
 }

@@ -201,7 +201,7 @@ describe('Passion of Crimson Roses integration', () => {
     }
   });
 
-  it('matches guaranteed dungeon rarity brackets and quantities at the same enemy level', () => {
+  it('preserves original Rose quantities while only dungeons receive the material taper', () => {
     const first = infusionLoot('roses', 1).specialties;
     expect(first.map(drop => drop.id)).toEqual(roseMaterials.slice(0, 5).map(material => material.id));
     expect(first.map(drop => [drop.minimum, drop.maximum, drop.chance]))
@@ -215,7 +215,10 @@ describe('Passion of Crimson Roses integration', () => {
       const level = Math.round(38 + (stage - 1) * 82 / 34);
       const ranges = materialRangesAtLevel(level);
       expect(materialLoot('infernic', stage).map(drop => [drop.minimum, drop.maximum, drop.chance]))
-        .toEqual(Object.values(ranges).map(range => [range[0] * (stage === 35 ? 5 : 1), range[1] * (stage === 35 ? 5 : 1), 1]));
+        .toEqual(Object.values(ranges).map(range => {
+          const scale = (stage === 35 ? 5 : 1) * (.9 - .6 * (stage - 1) / 34);
+          return [Math.max(1, Math.round(range[0] * scale)), Math.max(1, Math.round(range[1] * scale)), 1];
+        }));
     }
     for (let stage = 1; stage <= 35; stage++) {
       const encounter = infusionEncounter('roses', stage);

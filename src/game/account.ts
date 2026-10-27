@@ -1,4 +1,4 @@
-import { elementalMaterials, dungeonStageCount, elementalEnemyLevel, infusionStageCount, isCurrencyMode, evolutionRequirement, isResizedActivity, migrateLegacyActivityStage, migratePreviousMachineStage, previousMachineStageCount, type ElementId, type ResizedActivityId } from '../content/activities';
+import { elementalMaterials, dungeonStageCount, elementalEnemyLevel, infusionStageCount, isCurrencyMode, evolutionRequirement, isResizedActivity, migrateLegacyActivityStage, migratePreviousMachineStage, previousMachineStageCount, migratePreviousInfusionStage, previousInfusionStageCount, type ElementId, type ResizedActivityId } from '../content/activities';
 import { fractalisDrop, storyEnemyFractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from '../content/loot-random';
 import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, characterEvolutionRequirement, fractureRules, characterLevelCost, type CharacterProgress, type UpgradeCost } from '../content/progression';
 import { isInfusionMode, specialtyMaterials } from '../content/infusions';
@@ -14,7 +14,7 @@ import { machineComponentDrop } from '../content/mechanical-components';
 import { bannerConduitBonus, machineConduitLoot, validateMachineLootFocus, isMachineFocusRarity,
   type MachineLootFocus, type MachineFocusRarity } from '../content/machines';
 import { isMasterConduitId, masterChest, validateMasterCharacter, type MasterConduitId, type MasterLoadouts } from '../content/master-conduits';
-import { validateCapturedCharacters, migrateLegacyCapturedCopies, validateCharacterLocks, capturedProgress, capturedLevelCost, capturedLevelCap, createCreatureCopy, type CapturedCharacter, type CharacterLocks } from './character-instances';
+import { validateCapturedCharacters, migrateLegacyCapturedCopies, preservePreviousInfusionCopies, validateCharacterLocks, capturedProgress, capturedLevelCost, capturedLevelCap, createCreatureCopy, type CapturedCharacter, type CharacterLocks } from './character-instances';
 import { infusionEncounter, infusionLoot, infusionElements, creatureSaleOptions } from '../content/infusions';
 import { standardBanner, resolveBannerPull, validateBannerPity, type StandardBannerEntry, type BannerPity } from '../content/standard-banner';
 import { bannerDuplicateMaterials, type BannerMaterialReward } from '../content/banner-materials';
@@ -30,7 +30,7 @@ import { calamiticLockMessage, calamiticStoreUnlocked, calamiticTokenPrice, isCa
 
 export const ACCOUNT_KEY = 'last-light.wallet';
 export interface Account {
-  version: 9;
+  version: 10;
   fractalis: number;
   lycalis: number;
   bannerPity?: Partial<Record<SummonBannerId, BannerPity>>;
@@ -61,7 +61,7 @@ export interface Account {
   creatures: Record<string, { defeated: boolean }>;
 }
 export function emptyAccount(): Account {
-  return { version: 9, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
+  return { version: 10, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
 function count(value: unknown): value is number {
   return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
@@ -88,7 +88,7 @@ function hasHistoricalBossReceipt(receipts: readonly string[], boss: string): bo
     uuid.test(receipt.slice(0, 36)) && receipt.slice(36) === `:${boss}`);
 }
 export function validateAccount(value: unknown): Account {
-  if (!record(value) || (value.version !== 2 && value.version !== 3 && value.version !== 4 && value.version !== 5 && value.version !== 6 && value.version !== 7 && value.version !== 8 && value.version !== 9) || !count(value.fractalis) || !count(value.lycalis) ||
+  if (!record(value) || (value.version !== 2 && value.version !== 3 && value.version !== 4 && value.version !== 5 && value.version !== 6 && value.version !== 7 && value.version !== 8 && value.version !== 9 && value.version !== 10) || !count(value.fractalis) || !count(value.lycalis) ||
       !record(value.materials) || !record(value.characters) || !record(value.dungeonStages) ||
       typeof value.firstFracture !== 'boolean' || !Array.isArray(value.receipts) ||
       !value.receipts.every((receipt) => typeof receipt === 'string') || new Set(value.receipts).size !== value.receipts.length) {
@@ -224,7 +224,10 @@ export function validateAccount(value: unknown): Account {
     characterGrowthFactor(entry);
     account.characters[id] = entry;
   }
-  if (value.capturedCharacters !== undefined) account.capturedCharacters = validateCapturedCharacters(value.version < 7 ? migrateLegacyCapturedCopies(value.capturedCharacters) : value.capturedCharacters);
+  if (value.capturedCharacters !== undefined) {
+    const copies = value.version < 7 ? migrateLegacyCapturedCopies(value.capturedCharacters) : value.capturedCharacters;
+    account.capturedCharacters = validateCapturedCharacters(value.version < 10 ? preservePreviousInfusionCopies(copies) : copies);
+  }
   if (value.characterLocks !== undefined) account.characterLocks = validateCharacterLocks(value.characterLocks, account.characters);
   if (value.squad !== undefined) {
     if (!Array.isArray(value.squad) || value.squad.length < 1 || value.squad.length > 3 ||
@@ -275,9 +278,16 @@ export function validateAccount(value: unknown): Account {
       // D-346: v2 Heaven/Abyss already used 25 stages; v3-v6 used 35 Heaven/Abyss and 100 Machines stages.
       const resized = value.version < 7 && isResizedActivity(id) && !(value.version === 2 && id !== 'machines');
       const previousMachines = id === 'machines' && value.version < 9;
-      if (!resized && stage > (previousMachines ? previousMachineStageCount : infusionStageCount(id))) throw new Error('Invalid saved infusion stage.');
+      const previousInfusion = (id === 'heavens' || id === 'abyss') && value.version < 10;
+      if (!resized && stage > (previousMachines ? previousMachineStageCount : previousInfusion ? previousInfusionStageCount : infusionStageCount(id))) throw new Error('Invalid saved infusion stage.');
       const migrated = resized ? migrateLegacyActivityStage(id as ResizedActivityId, stage) : stage;
-      account.infusionStages[id] = previousMachines ? migratePreviousMachineStage(migrated) : migrated;
+      account.infusionStages[id] = previousMachines ? migratePreviousMachineStage(migrated)
+        : previousInfusion ? migratePreviousInfusionStage(migrated) : migrated;
+      if (previousInfusion) {
+        const final = resized ? 35 : previousInfusionStageCount;
+        if (stage === final && hasHistoricalBossReceipt(account.receipts, `infusion-${id}-${final}-0`))
+          account.normalFinalClears = { ...account.normalFinalClears, [id]: true };
+      }
       if (previousMachines) {
         const final = value.version < 7 ? 100 : previousMachineStageCount;
         const boss = `infusion-machines-${final}-0`;
@@ -954,11 +964,15 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     for (const [id, amount] of Object.entries(reward.materials ?? {})) {
       if (result.state.infusion && (isCurrencyMode(result.state.infusion.mode) || result.state.infusion.mode === 'machines')) throw new Error('This activity does not drop materials.');
       if (!count(amount) || !isMaterial(id)) throw new Error('Invalid enemy material drop.');
+      if (result.state.dungeon) {
+        const drop = materialLoot(result.state.dungeon.element, result.state.dungeon.stage).find(entry => entry.id === id);
+        if (!drop || amount < drop.minimum || amount > drop.maximum) throw new Error('Invalid Elemental Dungeon material drop.');
+      }
       if (result.state.infusion?.mode === 'heavens' || result.state.infusion?.mode === 'abyss') {
         const activity = result.state.infusion;
         const drop = infusionLoot(activity.mode, activity.stage, activity.schedule ?? 'legacy').specialties.find(entry => entry.id === id);
         if (!drop || amount < drop.minimum || amount > drop.maximum || amount % (drop.quantityMultiplier ?? 1) !== 0) {
-          throw new Error('Soar to Heaven and Delve into the Abyss only drop their three unique materials within the current floor ranges.');
+          throw new Error('Soar to Heaven and Delve into the Abyss only drop their two used specialty materials within the current floor ranges.');
         }
       }
       if (result.state.infusion?.mode === 'roses') {
@@ -974,7 +988,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
               .map(element => ({ ...drop, id: `${element.id}-${drop.rarity}` })))];
           })() : [];
         const drop = pool.find(drop => drop.id === id);
-        if (!drop || amount < drop.minimum || amount > drop.maximum || amount % multiplier !== 0) {
+        if (!drop || amount < drop.minimum || amount > drop.maximum || amount % (drop.quantityMultiplier ?? 1) !== 0) {
           throw new Error('Invalid final-boss material drop.');
         }
       }

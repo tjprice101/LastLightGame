@@ -101,7 +101,7 @@ describe('automatic enemy turn after the final available action', () => {
     expect(result.state.dungeon?.stage).toBe(5);
     const materials = result.events.find((event) => event.kind === 'reward')?.materials ?? {};
     expect(Object.keys(materials)).toEqual(['botanic-common', 'botanic-uncommon']);
-    expect(materials['botanic-common']).toBeGreaterThanOrEqual(8);
-    expect(materials['botanic-common']).toBeLessThanOrEqual(10);
+    expect(materials['botanic-common']).toBeGreaterThanOrEqual(7);
+    expect(materials['botanic-common']).toBeLessThanOrEqual(9);
   });
 });

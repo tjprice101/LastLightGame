@@ -1,5 +1,44 @@
 # Dungeons and captured enemies
 
+## Material reward rebalance and15-stage infusion (D-425)
+
+Elemental Dungeons remain35 stages/Lv.38-120. Every unlocked material rarity
+still drops at100%; only quantities change. Apply the retained fraction
+`0.9 - 0.6*(stage-1)/34` to each previous range endpoint, including the final
+boss's5x base quantity, then round each endpoint and enforce minimum1.
+Stage1 gives Seed7-9/Bloom2-3. Stage35 gives Seed38-45/Bloom24-30/
+Shard18-23/Crest12-15/Heart8-9/Soul3-5, inclusive integer draws.
+The rounding means tiny stacks cannot represent an exact percentage reduction.
+Unlocks, encounter levels/stats and all other activities' materials are unchanged.
+
+Soar to Heaven and Delve into the Abyss now have15 stages. Normalize the same
+original35-stage level anchors onto15 stages: `position=1+(stage-1)*34/14`;
+enemy levels remain50-120, with bosses5/10/15 and all six authored forms.
+Both used specialties drop at100% from Stage1: Crown/Chalice in Soar and
+Heart/Hourglass in Delve. Their inclusive ranges are
+`round(1+10*(stage-1)/14)` through `round(2+21*(stage-1)/14)`:
+Stage1=1-2, Stage14=10-22, Stage15=11-23 each.
+There is **no extra final-boss material multiplier**. Weapon specialties no
+longer drop; existing holdings, stable IDs, sale paths and old weapon bonuses remain.
+
+Prismatica, Null-Prismatica odds/amounts by actual level,50% captures,
+EX+ entry/chest tables and other activities are unchanged. Final infusion
+Prismatica remains75-150; premium0/5/10/15 retains75/10/10/5% chances.
+Walletv10 maps older unlocked stages proportionally, rounding up, once:
+v2/v7-v9 use25->15; v3-v6 chain35->25->15. Genuine final-boss receipts
+preserve EX+ access; merely unlocking the last stage does not grant a clear.
+Existing25-stage copies retain exact source stages/skills/levels/UUIDs/locks/
+equipment via validated `infusionLayout:25`; metadata-free historical copies
+retain their previous first-stage defaults. Prior35-stage copies retain the
+established D-346 normalization before this preservation. Reads never write;
+the first successful transaction savesv10, and failures preserve raw holdings.
+Old online Soar/Delve runs end safely with all persisted rewards retained;
+unrelated runs preserve their frozen historical captured-copy provenance.
+
+The [requested drop-rate export](../Drop%20Rates%20-%20Elemental%20Dungeons,%20Soar%20and%20Delve.txt)
+lists the current per-stage quantities. This section supersedes earlier
+Soar/Delve stage counts, weapon-drop rules and material multipliers below.
+
 ## Rose captures at every level (D-410)
 
 All35 Rose stages, including the Lv.140 final boss, use the existing separate
@@ -33,9 +72,8 @@ was found; exact-form capture rows now appear in eligible enemy loot tables.
 The same helper publishes stage previews and gates the existing capture
 transaction, without new RNG draws or load/save changes.
 
-**D-373 supersedes D-372:** Soar to Heaven and Delve into the Abyss award only
-their three unique materials, with no elemental-material bonuses. Unique-item
-unlocks, rates and quantities, currencies and captures stay unchanged.
+**D-425 supersedes D-373's three-material rule:** Soar and Delve award only
+their two used specialties, with no elemental-material bonuses or weapon drops.
 Previously owned materials and elemental dungeon drops are preserved.
 Crimson Roses uses the dungeon guaranteed level/quantity brackets for all
 six Rosethorn tiers. Reward generation, validation and discovery tables agree.
@@ -46,9 +84,9 @@ read-only and persist on the next successful save. Enemy levels, capture
 chances/eligibility, rewards and Element-Bearer levels are unchanged.
 [Compatibility and active-run rules](character-instances.md#level-60-ceiling-d-305).
 
-**D-294 final-boss loot:** dungeon35 and Heaven/Abyss35 multiply their
-existing currency/material quantities by5 on every clear/replay. Successful
-final stacks are15-30 and Prismatica75-150. Heaven/Abyss premium outcomes
+**D-294/D-425 final-boss loot:** dungeon35 includes5x base material quantities
+before its70% reduction; Heaven/Abyss15 uses11-23 specialties without another
+material boost. Both retain Prismatica75-150. Heaven/Abyss premium outcomes
 become0/5/10/15 at the unchanged75/10/10/5% chances. Capture chance50%,
 one-copy count and captured level/form/kit are unchanged. Earlier bosses use
 ordinary stage payouts. [Shared contract](free-battle.md#repeatable-final-boss-loot-d-294).

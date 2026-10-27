@@ -1,5 +1,11 @@
 # Training (formerly Adventure)
 
+**D-425 material exception:** [current reward contract](dungeons-and-captures.md#material-reward-rebalance-and15-stage-infusion-d-425)
+retains final currencies but tapers Elemental Dungeon materials10%->70% after
+the base final boost, and gives15-stage Soar/Delve specialties1-2->11-23
+without another final material boost. Historical35-stage infusion and
+unqualified5x-material statements below do not override this exception.
+
 ## Victory-stage replay and online loot parity (D-301)
 
 Every staged victory sheet offers **Replay stage**, alongside Continue where
@@ -37,13 +43,16 @@ victory replay/idempotency using only disposable accounts.
 
 Owner approves **5x existing currency, material and component quantities** on
 every terminal-boss kill, including replays. Story applies this separately to
-each region's boss at25/50/75/100/125/150. Other endpoints are dungeon35,
-Heaven/Abyss35, Treasury/Sanctuary25, Roses35, Machines100 and each War mode10.
+each region's boss. Current endpoints include dungeon35,
+Heaven/Abyss15, Treasury/Sanctuary25, Roses35, Machines35 and each War mode10.
+**D-425 exception:** dungeon material endpoints are reduced after the base
+boost; Soar/Delve specialties use their linear11-23 final range without5x.
 Endless Training has no terminal boss and remains unchanged.
 
 The original quantity is sampled first, then multiplied by5. This preserves
 the original chance decisions, quantity distribution and number/order of RNG
-draws; boosted ranges contain multiples of5 rather than every integer.
+draws; boosted ranges contain multiples of5 rather than every integer,
+except the D-425 material ranges, which contain every integer.
 Earlier bosses/ordinary enemies retain their existing quantities.
 No new clear transaction, retroactive grant or second reward roll.
 Account validation uses the same terminal ranges and quantity lattice;
@@ -54,8 +63,8 @@ Examples:
 
 | Final encounter | Payout |
 | --- | --- |
-| Material dungeon35 |75-150 Prismatica;15-30 per successful material roll |
-| Heaven/Abyss35 |75-150 Prismatica;15-30 specialty/bonus stacks; premium0/5/10/15 at75/10/10/5% |
+| Material dungeon35 |75-150 Prismatica; Seed38-45/Bloom24-30/Shard18-23/Crest12-15/Heart8-9/Soul3-5 |
+| Heaven/Abyss15 |75-150 Prismatica;11-23 per used specialty; premium0/5/10/15 at75/10/10/5% |
 | Treasury25 |24,300-48,600 Prismatica |
 | Sanctuary25 |75-150 Prismatica;25 Null-Prismatica guaranteed (D-361) |
 | Roses35 |90-180 Prismatica;15-30 per successful Rosethorn roll |

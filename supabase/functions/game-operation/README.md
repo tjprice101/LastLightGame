@@ -1,5 +1,23 @@
 # Authoritative game operation
 
+## Dungeon materials and15-stage Soar/Delve (D-425)
+
+Regenerate/type-check/deploy the shared engine together with the client.
+Walletv10 maps older infusion unlocks once/read-only and preserves exact
+25-stage captured-copy provenance via `infusionLayout:25`. Obsolete Soar/
+Delve encounters are discarded with all previously persisted rewards kept;
+unrelated frozen runs retain their captured-copy markers. No SQL schema
+change, new income, grants or load-time writes.
+
+Dungeon materials taper10%->70%, after the final base boost. Soar/Delve
+specialties use the15-stage linear1-2->11-23 curve, with no weapon drops
+or additional final material boost. Currencies/captures/EX+ stay unchanged.
+`node tools\smoke_server_game.mjs --infusion-rebalance` checks15 disposable
+hosted fixtures: all six dungeon finals, opening rewards, both infusion
+curves/endpoints, old holdings, wallet/capture/final-clear compatibility,
+persisted reads, local/authority parity and idempotent retries.
+[Full contract](../../../docs/dungeons-and-captures.md#material-reward-rebalance-and15-stage-infusion-d-425).
+
 ## Machines drop rates (D-400)
 
 Shared enemy reward rules now use Rare8%, Legendary5.5%, Omnic3% (stage26+),

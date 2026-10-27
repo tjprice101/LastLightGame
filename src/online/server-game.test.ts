@@ -609,7 +609,7 @@ describe('server authoritative game engine', () => {
     expect(legacy).toEqual(before);
     expect(read.game.run).toBeNull();
     expect(read.response.session).toBeNull();
-    expect(read.response.account.version).toBe(9);
+    expect(read.response.account.version).toBe(10);
     expect(publicGame(legacy, 3).session).toBeNull();
   });
   it('discards a saved Story run from a pre-v6 account and converts its Story count', () => {
@@ -623,7 +623,7 @@ describe('server authoritative game engine', () => {
     expect(legacy).toEqual(before);
     expect(response.game.run).toBeNull();
     expect(response.response.session).toBeNull();
-    expect(response.response.account.version).toBe(9);
+    expect(response.response.account.version).toBe(10);
     expect(response.response.account.storyCompleted).toBe(24);
     expect(storyCompletedOf(legacy)).toBe(24);
     expect(publicGame(legacy, 3).session).toBeNull();

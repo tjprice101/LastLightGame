@@ -17,6 +17,7 @@ export interface CapturedCharacter {
   capturedStage?: number;
   skills?: EnemySkill[];
   acquisition?: 'banner-duplicate' | 'calamity-chest';
+  infusionLayout?: 25;
 }
 export type CharacterLocks = Partial<Record<StarterId, boolean>>;
 export const capturedLevelCap = 60;
@@ -47,11 +48,23 @@ export function migrateLegacyCapturedCopies(value: unknown): unknown {
     const savedLevel = (entry as unknown as { level: number }).level;
     const oldLevel = legacyInfusionEnemyLevel(oldStage);
     const oldBoss = oldStage % 5 === 0;
-    const ranked = creature.stages.map((stage) => infusionEncounter(mode, stage))
+    const ranked = Array.from({ length: 25 }, (_, index) => index + 1).map(stage => infusionEncounter(mode, stage, 'caps', 25))
+      .filter(encounter => `infusion:${mode}:${encounter.tier}` === creature.id)
       .sort((a, b) => Number(b.boss === oldBoss) - Number(a.boss === oldBoss) || Math.abs(a.level - oldLevel) - Math.abs(b.level - oldLevel));
     const encounter = ranked.find((option) => Math.min(capturedLevelCap, option.level) <= savedLevel) ?? ranked[0];
     return { ...entry, capturedStage: encounter.stage, level: Math.max(savedLevel, Math.min(capturedLevelCap, encounter.level)),
       skills: enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier) };
+  });
+}
+
+/** Retain historical stages and exact skills instead of rebuilding already-owned copies on a shorter curve. */
+export function preservePreviousInfusionCopies(value: unknown): unknown {
+  if (!Array.isArray(value)) return value;
+  return value.map((entry: unknown) => {
+    if (typeof entry !== 'object' || entry === null || !('creatureId' in entry) ||
+      typeof entry.creatureId !== 'string') return entry;
+    const mode = getCreature(entry.creatureId).mode;
+    return mode === 'heavens' || mode === 'abyss' ? { ...entry, infusionLayout: 25 } : entry;
   });
 }
 
@@ -68,6 +81,10 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
     if (!creature.mode || creature.mode === 'machines') throw new Error('This Elemental-Devourer is not eligible for captured-character ownership.');
     seen.add(entry.instanceId);
     const copy: CapturedCharacter = { instanceId: entry.instanceId, creatureId: entry.creatureId, locked: entry.locked };
+    if ('infusionLayout' in entry) {
+      if (entry.infusionLayout !== 25 || (creature.mode !== 'heavens' && creature.mode !== 'abyss')) throw new Error('Invalid captured infusion layout.');
+      copy.infusionLayout = 25;
+    }
     if ('acquisition' in entry) {
       if (!(entry.acquisition === 'banner-duplicate' && roseDuplicateMinimumLevel(creature.id) !== undefined) &&
           !(entry.acquisition === 'calamity-chest' && creature.id === `infusion:${creature.mode}:5`)) throw new Error('Invalid Elemental-Devourer acquisition source.');
@@ -75,10 +92,12 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
     }
     if ('level' in entry) {
       if (!Number.isInteger(entry.level) || typeof entry.level !== 'number' || entry.level < 1 || entry.level > 120 ||
-          !('capturedStage' in entry) || typeof entry.capturedStage !== 'number' || !creature.stages.includes(entry.capturedStage) ||
+          !('capturedStage' in entry) || typeof entry.capturedStage !== 'number' ||
           !('skills' in entry) || !Array.isArray(entry.skills)) throw new Error('Invalid captured Elemental-Devourer progression.');
-      const expected = infusionEncounter(creature.mode, entry.capturedStage);
-      if (copy.acquisition === 'calamity-chest' && (entry.level !== capturedLevelCap || entry.capturedStage !== creature.stages[0])) throw new Error('Invalid Calamity chest Elemental-Devourer progression.');
+      const expected = infusionEncounter(creature.mode, entry.capturedStage, 'caps', copy.infusionLayout);
+      if (`infusion:${creature.mode}:${expected.tier}` !== creature.id) throw new Error('Invalid captured Elemental-Devourer form.');
+      const firstStage = copy.infusionLayout ? 1 + Math.ceil(expected.tier * copy.infusionLayout / 6) : creature.stages[0];
+      if (copy.acquisition === 'calamity-chest' && (entry.level !== capturedLevelCap || entry.capturedStage !== firstStage)) throw new Error('Invalid Calamity chest Elemental-Devourer progression.');
       const candidates = [expected.abilityMultiplier, expected.legacyAbilityMultiplier]
         .map(multiplier => enemySkills(expected.level, expected.boss, expected.ability, multiplier));
       const retained = entry.skills;
@@ -98,8 +117,9 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
 export function capturedProgress(copy: CapturedCharacter) {
   const creature = getCreature(copy.creatureId);
   if (!creature.mode || creature.mode === 'machines') throw new Error('Captured Elemental-Devourer mode is missing or non-capturable.');
-  const stage = copy.capturedStage ?? creature.stages[0];
-  const encounter = infusionEncounter(creature.mode, stage);
+  const tier = infusionEncounter(creature.mode, creature.stages[0]).tier;
+  const stage = copy.capturedStage ?? (copy.infusionLayout ? 1 + Math.ceil(tier * copy.infusionLayout / 6) : creature.stages[0]);
+  const encounter = infusionEncounter(creature.mode, stage, 'caps', copy.infusionLayout);
   // Metadata-free copies predate retained levels; keep their original 35-stage first-form level (D-346).
   const legacyLevel = creature.mode === 'heavens' || creature.mode === 'abyss' ? Math.round(80 + Math.ceil(encounter.tier * 35 / 6) * 40 / 34) : encounter.level;
   return { level: Math.min(capturedLevelCap, copy.level ?? legacyLevel), stage, tier: encounter.tier,

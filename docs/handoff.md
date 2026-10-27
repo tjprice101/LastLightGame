@@ -1,5 +1,38 @@
 # Current state and handoff
 
+## Material reward rebalance and15-stage Soar/Delve (D-425)
+
+- Owner explicitly selects material-only reductions: dungeon taper10%->70%,
+  whole-number endpoints/minimum1; Soar/Delve25->15 with the same normalized
+  Lv.50-120 curve and both used specialties1-2->11-23, no extra final
+  material boost. Stage14 is10-22 after independent endpoint rounding.
+- Currency curves/odds/final boosts,50% captures, EX+ chests, enemy stats at
+  actual levels, upgrade costs and all unrelated modes remain unchanged.
+  Weapon specialties stop dropping; all old holdings/ranks remain.
+- Walletv10 chains historical layouts once/read-only. Exact25-stage captured
+  source stages/skills/levels/identity/protections survive using validated
+  provenance, including metadata-free defaults. Genuine historical final
+  receipts preserve EX+ access. Old Soar/Delve runs end safely, retaining
+  saved rewards; unrelated frozen captured-copy runs remain compatible.
+- Live Gameplay/Battle/Collections use shared current tables. Updated specs,
+  compatibility/economy/progression references and the requested root
+  `Drop Rates - Elemental Dungeons, Soar and Delve.txt`; its35 dungeon rows
+  are generated from runtime, and all15 infusion levels/ranges were checked.
+- Validation: `npm test -- --maxWorkers=2 --reporter=json` passed
+  **6,682 tests/216 files** (12 new exhaustive compatibility/reward tests).
+  `npm run build`, `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json` passed.
+  Existing Vite chunk-size and jsdom canvas warnings remain.
+- Matching authority deployed with
+  `npx supabase functions deploy game-operation --project-ref ohtfgwomdfteaxubndww --use-api`.
+  `node tools\smoke_server_game.mjs --infusion-rebalance` passed15 hosted
+  cases covering all six dungeon finals, opening rewards, both linear
+  curves/endpoints, currencies, old holdings, v9 stage/copy/final-clear
+  migration, persisted reads and idempotent retries. An initial assertion
+  assumed JSON key order; corrected the test, not the reward rules. All
+  disposable identities and cascading records were removed; no real grants.
+- Client CI/Pages and hosted SHA are the remaining publication gates.
+
 ## Available-height evolution workspace (D-424)
 
 - Owner requests filling unused screen space and stopping squashed submenu

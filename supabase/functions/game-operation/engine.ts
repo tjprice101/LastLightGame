@@ -10,7 +10,7 @@ import { SAVE_KEY, type ProfileStorage } from '../../../src/game/profile';
 import { createBattle, createCalamityBattle, createStoryBattle, createDungeonBattle, createInfusionBattle, createWarBattle,
   actAndAdvanceTurn, endTurn, advanceUnavailableTurns, nextStage, nextWave, actionUnavailable,
   withMasterLoadouts, capCapturedBattleLevels, type BattleResult } from '../../../src/game/battle';
-import { validateCapturedCharacters } from '../../../src/game/character-instances';
+import { validateCapturedCharacters, preservePreviousInfusionCopies } from '../../../src/game/character-instances';
 import type { MasterLoadouts } from '../../../src/content/master-conduits';
 import { isStarterId, type StarterId } from '../../../src/content/starters';
 import { isActionId } from '../../../src/content/combat';
@@ -314,14 +314,24 @@ class VirtualStorage implements ProfileStorage {
 function isLegacyStoryRun(game: DurableGame): boolean {
   const version = (game.account as { version?: unknown }).version;
   return typeof version === 'number' && !!game.run && (version < 8 ||
-    version < 9 && game.run.activity.kind === 'infusion' && game.run.activity.mode === 'machines');
+    version < 9 && game.run.activity.kind === 'infusion' && game.run.activity.mode === 'machines' ||
+    version < 10 && game.run.activity.kind === 'infusion' && (game.run.activity.mode === 'heavens' || game.run.activity.mode === 'abyss'));
+}
+function preserveHistoricalRunCopies(game: DurableGame): void {
+  if ((game.account as { version: number }).version >= 10 || !game.run) return;
+  game.run.captures = validateCapturedCharacters(preservePreviousInfusionCopies(game.run.captures));
+  for (const unit of game.run.session.state.allies) {
+    if (unit.captured) unit.captured = validateCapturedCharacters(preservePreviousInfusionCopies([unit.captured]))[0];
+  }
 }
 /** Story clears on the current layout, converting a stored pre-v6 count without writing. */
 export function storyCompletedOf(game: DurableGame): number {
   return validateAccount(game.account).storyCompleted ?? 0;
 }
 export function publicGame(stored: DurableGame, revision: number): GameResponse {
-  const game = isLegacyStoryRun(stored) ? { ...stored, run: null } : stored;
+  const game = structuredClone(stored);
+  if (isLegacyStoryRun(game)) game.run = null;
+  preserveHistoricalRunCopies(game);
   const account = validateAccount(game.account);
   if (game.run) validateRunActivity(game.run);
   const session = game.run ? structuredClone(game.run.session) : null;
@@ -382,6 +392,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
   validateRequest({ requestId: '00000000-0000-4000-8000-000000000001', expectedRevision: 0, operation });
   const game = structuredClone(previous);
   if (isLegacyStoryRun(game)) game.run = null;
+  preserveHistoricalRunCopies(game);
   game.account = validateAccount(game.account);
   if (game.run) {
     validateRunActivity(game.run);

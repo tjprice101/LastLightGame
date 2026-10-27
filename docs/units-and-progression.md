@@ -1,5 +1,11 @@
 # Units and progression
 
+**D-425 acquisition only:** [dungeon/infusion material rewards](dungeons-and-captures.md#material-reward-rebalance-and15-stage-infusion-d-425)
+are reduced/rebalanced; leveling/evolution costs and protections do not change.
+Soar/Delve now have15 stages and both used specialties from Stage1; they no
+longer award disabled weapon-upgrade materials. Existing weapon holdings/ranks
+and their bonuses remain intact. Historical captured kits retain provenance.
+
 **D-421 presentation:** [connected growth layouts](menus-and-inventory.md#connected-growth-layouts-d-421)
 place Max Level costs beside stats and evolution resources/actions beside its
 Devourer selection, with responsive saved-upgrade receipts. Costs, stat math,

@@ -1,7 +1,7 @@
 import { dungeonStageCount, infusionStageCount, storyStageLayout, warStageCount, type InfusionModeId } from './activities';
 
 export const finalBossLootMultiplier = 5;
-export const finalBossLootText = 'Final bosses give 5x currency, material and component quantities on every clear. Drop, capture and recruitment chances, Conduits, chests and one-time Story bonuses are not multiplied. Calamity bosses give one unmultiplied chest instead.';
+export const finalBossLootText = 'Final bosses give 5x currency and component quantities on every clear. Elemental Dungeon materials include their stage-based reduction after the final-boss boost; Soar and Delve specialties grow linearly to 11-23 each with no extra final-boss boost. Other material quantities receive 5x. Drop, capture and recruitment chances, Conduits, chests and one-time Story bonuses are not multiplied. Calamity bosses give one unmultiplied chest instead.';
 
 export function bossLootMultiplier(activity: {
   story?: { storyStage: number };

@@ -199,13 +199,13 @@ describe('atomic Story progression and first-clear rewards', () => {
       const raw = fixture.saved.getItem(ACCOUNT_KEY);
       const writes = fixture.writes();
       const loaded = loadAccount(fixture.saved);
-      expect(loaded).toMatchObject({ version: 9, storyCompleted: converted,
+      expect(loaded).toMatchObject({ version: 10, storyCompleted: converted,
         fractalis: 1000 + legacy * storyCompletionReward.fractalis, lycalis: 7 + legacy * storyCompletionReward.lycalis });
       expect(loadAccount(fixture.saved)).toEqual(loaded);
       expect(fixture.writes()).toBe(writes);
       expect(fixture.saved.getItem(ACCOUNT_KEY)).toBe(raw);
       const saved = saveAccount(fixture.saved, loaded);
-      expect(JSON.parse(fixture.saved.getItem(ACCOUNT_KEY)!)).toMatchObject({ version: 9, storyCompleted: converted });
+      expect(JSON.parse(fixture.saved.getItem(ACCOUNT_KEY)!)).toMatchObject({ version: 10, storyCompleted: converted });
       expect(saved.fractalis).toBe(loaded.fractalis);
       expect(loadAccount(fixture.saved)).toMatchObject({ fractalis: loaded.fractalis, lycalis: loaded.lycalis, storyCompleted: converted });
     });
@@ -224,7 +224,7 @@ describe('atomic Story progression and first-clear rewards', () => {
       const writes = fixture.writes();
       const loaded = loadAccount(fixture.saved);
       const credited = converted - previous;
-      expect(loaded).toMatchObject({ version: 9, storyCompleted: converted,
+      expect(loaded).toMatchObject({ version: 10, storyCompleted: converted,
         fractalis: 500 + credited * storyCompletionReward.fractalis, lycalis: 3 + credited * storyCompletionReward.lycalis });
       expect(fixture.writes()).toBe(writes);
       expect(fixture.saved.getItem(ACCOUNT_KEY)).toBe(raw);

@@ -1,5 +1,15 @@
 # Summoning and economy
 
+## Material acquisition and walletv10 (D-425)
+
+[Current dungeon/infusion rewards](dungeons-and-captures.md#material-reward-rebalance-and15-stage-infusion-d-425)
+reduce only material yields and shorten Soar/Delve to15 stages. All currency
+curves/odds, captures, EX+ chests, prices, summon rates/pity and upgrade costs
+remain unchanged. Existing weapon specialties remain owned but no longer drop.
+Walletv10 migrates prior infusion unlocks once, read-only, preserves exact
+25-stage captured-copy provenance and saves only on the next successful
+ordinary transaction. Failed writes preserve the original raw wallet.
+
 ## Rarity reveal feedback (D-417)
 
 Saved summon and chest rewards share [finite rarity feedback](menus-and-inventory.md#shared-rarity-accents-and-feedback-d-417).

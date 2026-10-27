@@ -1,5 +1,11 @@
 # Documentation hub
 
+**D-425:** [material reward rebalance and15-stage Soar/Delve](dungeons-and-captures.md#material-reward-rebalance-and15-stage-infusion-d-425)
+tapers dungeon materials10-70%, uses two linear specialty rewards1-2->11-23,
+and preserves currencies/captures/EX+, old holdings and retained capture kits.
+The [plain-text drop-rate export](../Drop%20Rates%20-%20Elemental%20Dungeons,%20Soar%20and%20Delve.txt)
+contains current per-stage quantities. Walletv10 and matching authority are required.
+
 **D-424:** [available-height evolution workspace](menus-and-inventory.md#available-height-evolution-workspace-d-424)
 fills usable desktop height, expands the Devourer grid and reserves enough
 navigation width for unbroken labels, retaining the sidebar and controls.

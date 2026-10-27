@@ -164,7 +164,7 @@ describe('hostile progression balance', () => {
       for (const initial of [
         createDungeonBattle('infernic', 1, seed, 'ember', first, team, progress(first), commonEquipment),
         createDungeonBattle('infernic', rareStage, seed, 'ember', rare, team, progress(rare), commonEquipment),
-        createInfusionBattle('abyss', 13, seed, 'ember', infusion, team, progress(infusion), commonEquipment),
+        createInfusionBattle('abyss', 8, seed, 'ember', infusion, team, progress(infusion), commonEquipment),
       ]) {
         const result = playSquad(initial);
         if (initial.infusion) {

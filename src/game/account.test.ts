@@ -56,16 +56,16 @@ describe('persistent progression transactions', () => {
     const raw = JSON.stringify(legacy);
     saved.setItem(ACCOUNT_KEY, raw);
     const migrated = loadAccount(saved);
-    expect(migrated.version).toBe(9);
+    expect(migrated.version).toBe(10);
     expect(migrated.dungeonStages).toEqual({ infernic: 1, oceanic: 12, atmospheric: 35, tranquilitic: 35 });
-    expect(migrated.infusionStages).toEqual({ heavens: 13, abyss: 25 });
+    expect(migrated.infusionStages).toEqual({ heavens: 8, abyss: 15 });
     for (const field of ['fractalis', 'lycalis', 'firstFracture', 'materials', 'characters', 'creatures', 'receipts'] as const) {
       expect(migrated[field]).toEqual(legacy[field]);
     }
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     saveAccount(saved, migrated);
     expect(loadAccount(saved)).toEqual(migrated);
-    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(9);
+    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(10);
     expect(validateAccount({ ...legacy, infusionStages: { heavens: 1 } }).infusionStages).toEqual({ heavens: 1 });
   });
   it('migrates v6 resized activity unlocks read-only and persists v9 in the first transaction', () => {
@@ -78,22 +78,22 @@ describe('persistent progression transactions', () => {
     const write = saved.setItem;
     saved.setItem = (key, value) => { writes++; write(key, value); };
     const loaded = loadAccount(saved);
-    expect(loaded.version).toBe(9);
-    expect(loaded.infusionStages).toEqual({ heavens: 25, abyss: 13, machines: 35 });
+    expect(loaded.version).toBe(10);
+    expect(loaded.infusionStages).toEqual({ heavens: 15, abyss: 8, machines: 35 });
     expect(writes).toBe(0);
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     const upgraded = upgradeCharacter(saved, 'ember', 'level', { level: 0, evolution: 1 });
     expect(writes).toBe(1);
     expect(upgraded.characters.ember).toMatchObject({ level: 1, evolution: 1 });
-    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!)).toMatchObject({ version: 9, infusionStages: loaded.infusionStages });
+    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!)).toMatchObject({ version: 10, infusionStages: loaded.infusionStages });
     expect(loadAccount(saved)).toEqual(upgraded);
     expect(writes).toBe(1);
   });
-  it('keeps a v2 Heaven unlock on its original 25-stage layout without a load write', () => {
+  it('converts a v2 Heaven unlock from its original25-stage layout without a load write', () => {
     const saved = storage();
     const raw = JSON.stringify({ ...emptyAccount(), version: 2, infusionStages: { heavens: 18 } });
     saved.setItem(ACCOUNT_KEY, raw);
-    expect(loadAccount(saved).infusionStages).toEqual({ heavens: 18 });
+    expect(loadAccount(saved).infusionStages).toEqual({ heavens: 11 });
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
   });
   it('re-homes a v6 Heaven stage-30 capture onto the same current form without lowering its level', () => {
@@ -109,9 +109,9 @@ describe('persistent progression transactions', () => {
     const migrated = loaded.capturedCharacters![0];
     expect(migrated).toMatchObject({ instanceId: copy.instanceId, creatureId: copy.creatureId, locked: true });
     expect(migrated.level).toBeGreaterThanOrEqual(copy.level);
-    expect(creature.stages).toContain(migrated.capturedStage);
-    expect(migrated.capturedStage).toBeLessThanOrEqual(infusionStageCount('heavens'));
-    const encounter = infusionEncounter('heavens', migrated.capturedStage!);
+    expect(migrated.infusionLayout).toBe(25);
+    const encounter = infusionEncounter('heavens', migrated.capturedStage!, 'caps', 25);
+    expect(encounter.tier).toBe(4);
     expect(encounter.boss).toBe(true);
     expect(migrated.skills).toEqual(enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier));
     expect(validateAccount(loaded)).toEqual(loaded);
@@ -140,8 +140,8 @@ describe('persistent progression transactions', () => {
     expect(result.state.phase).toBe('cleared');
     const account = saveAccountRewards(saved, result, `run-${element}`);
     expect(account.materials).toEqual({
-      [`${element}-common`]: 125, [`${element}-uncommon`]: 80, [`${element}-rare`]: 60,
-      [`${element}-epic`]: 40, [`${element}-legendary`]: 25, [`${element}-omnic`]: 10,
+      [`${element}-common`]: 38, [`${element}-uncommon`]: 24, [`${element}-rare`]: 18,
+      [`${element}-epic`]: 12, [`${element}-legendary`]: 8, [`${element}-omnic`]: 3,
     });
     expect(account.fractalis).toBe(75);
     expect(unlockedStage(loadAccount(saved), element)).toBe(35);

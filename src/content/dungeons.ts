@@ -3,10 +3,10 @@ import { dungeonArt, legacyDungeonArt, elementAccents } from './dungeon-art';
 import { type Stats } from './combat';
 import { legacyDungeonEnemies, legacyDungeonStrikes, type DungeonEnemy } from './dungeon-enemies';
 import { elementSources, type LegacyElementId } from './element-migration';
-import { rollDrop } from './loot-random';
+import { rollDrop, type ScaledDrop } from './loot-random';
 import { enemyCombatStats } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
-import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
+import { bossLootMultiplier } from './final-boss-loot';
 import { materialLevelBrackets, materialRarities, type MaterialRarity } from './material-drops';
 export { materialRarities, type MaterialRarity } from './material-drops';
 
@@ -58,13 +58,16 @@ export function materialBracket(stage: number) {
   return [...materialBrackets].reverse().find(bracket => stage >= bracket.firstStage)!;
 }
 
-export function materialLoot(element: ElementId, stage: number) {
+export function materialLoot(element: ElementId, stage: number): (ScaledDrop & { id: string })[] {
   getElement(element);
   const { ranges } = materialBracket(stage);
   const multiplier = bossLootMultiplier({ dungeon: { stage } });
   return materialRarities.flatMap(rarity => {
     const range = ranges[rarity];
-    return range ? [bossLootRange({ id: `${element}-${rarity}`, minimum: range[0], maximum: range[1], chance: 1 }, multiplier)] : [];
+    if (!range) return [];
+    const retained = .9 - .6 * (stage - 1) / (elementalDungeonRules.stages - 1);
+    return [{ id: `${element}-${rarity}`, minimum: Math.max(1, Math.round(range[0] * multiplier * retained)),
+      maximum: Math.max(1, Math.round(range[1] * multiplier * retained)), chance: 1 }];
   });
 }
 

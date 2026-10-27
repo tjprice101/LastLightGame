@@ -43,7 +43,7 @@ describe('playable Heaven and Abyss', () => {
         expect(infusionLoot(mode, stage, schedule).bonuses).toEqual([]);
         for (const roll of [0, .5, .999999]) {
           expect(Object.keys(infusionDrops(mode, stage, () => roll, schedule))
-            .every(id => [`${mode}-weapon`, `${mode}-evolution`, `${mode}-level`].includes(id))).toBe(true);
+            .every(id => [`${mode}-evolution`, `${mode}-level`].includes(id))).toBe(true);
         }
       }
       const creature = creatures.find(entry => entry.mode === mode && entry.stages.includes(stage))!;
@@ -67,7 +67,7 @@ describe('playable Heaven and Abyss', () => {
         const forged = structuredClone(result);
         const reward = forged.events.find(event => event.kind === 'reward')!;
         reward.materials = { ...reward.materials, [`infernic-${rarity}`]: stage === stageCount ? 15 : 3 };
-        expect(() => saveAccountRewards(saved, forged, `${mode}-forged-${stage}-${rarity}`)).toThrow('only drop their three unique materials');
+        expect(() => saveAccountRewards(saved, forged, `${mode}-forged-${stage}-${rarity}`)).toThrow('only drop their two used specialty materials');
         expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
       }
       saveAccountRewards(saved, result, `${mode}-valid-${stage}`);
@@ -130,10 +130,10 @@ describe('playable Heaven and Abyss', () => {
     }
     for (const mode of ['heavens', 'abyss'] as const) {
       expect(infusionDrops(mode, stageCount, draws([0, 0, 0]))).toEqual({
-        [`${mode}-weapon`]: 15, [`${mode}-evolution`]: 15, [`${mode}-level`]: 15,
+        [`${mode}-evolution`]: 11, [`${mode}-level`]: 11,
       });
       expect(infusionDrops(mode, stageCount, draws([.999999, .999999, .999999]))).toEqual({
-        [`${mode}-weapon`]: 30, [`${mode}-evolution`]: 30, [`${mode}-level`]: 30,
+        [`${mode}-evolution`]: 23, [`${mode}-level`]: 23,
       });
     }
     for (const bad of [-1, 1, NaN, Infinity]) expect(() => infusionDrops('abyss', stageCount, () => bad)).toThrow('[0, 1)');
@@ -158,7 +158,9 @@ describe('playable Heaven and Abyss', () => {
     const result = act(state, 'ember', 'ultimate', state.enemies[0].id);
     expect(result.state.phase).toBe('cleared');
     const first = saveAccountRewards(saved, result, mode);
-    expect(first.materials[`${mode}-weapon`]).toBe(2);
+    expect(first.materials[`${mode}-weapon`]).toBeUndefined();
+    expect(first.materials[`${mode}-evolution`]).toBeGreaterThanOrEqual(2);
+    expect(first.materials[`${mode}-level`]).toBeGreaterThanOrEqual(2);
     expect(unlockedInfusionStage(loadAccount(saved), mode)).toBe(2);
     expect(unlockedInfusionStage(first, mode === 'heavens' ? 'abyss' : 'heavens')).toBe(1);
     expect(saveAccountRewards(saved, result, mode)).toEqual(first);

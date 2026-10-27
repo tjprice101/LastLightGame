@@ -66,13 +66,13 @@ describe('highest-owned Element-Bearer activity access', () => {
 
   it('makes evolution fodder and specialties available before each progression cap', () => {
     for (const mode of ['heavens', 'abyss'] as const) {
-      for (const [stage, tier, level] of [[9, 1, 64], [13, 2, 73], [17, 3, 83]]) {
+      for (const [stage, tier, level] of [[5, 1, 62], [8, 2, 73], [9, 3, 77]]) {
         expect(infusionEncounter(mode, stage)).toMatchObject({ tier, level, boss: stage % 5 === 0 });
       }
       expect(infusionEncounter(mode, 1).level).toBe(50);
       expect(infusionEncounter(mode, infusionStageCount(mode)).level).toBe(120);
       expect(infusionLoot(mode, 14).specialties.map(drop => drop.id))
-        .toEqual([`${mode}-weapon`, `${mode}-evolution`, `${mode}-level`]);
+        .toEqual([`${mode}-evolution`, `${mode}-level`]);
     }
   });
 
@@ -96,11 +96,11 @@ describe('highest-owned Element-Bearer activity access', () => {
     game.account.characters.ember = { level: 0, evolution: 1 };
     game = resolveOperation(game, { kind: 'continue', runId }, entropy).game;
     expect(game.run!.session.state.infusion?.schedule).toBe('legacy');
-    expect(game.run!.session.state.enemies[0].level).toBe(82);
+    expect(game.run!.session.state.enemies[0].level).toBe(83);
     expect(game.run!.session.state.allies[0].level).toBe(50);
     game.run!.session.state.phase = 'defeat';
     game = resolveOperation(game, { kind: 'retry', runId }, entropy).game;
-    expect(game.run!.session.state.enemies[0].level).toBe(82);
+    expect(game.run!.session.state.enemies[0].level).toBe(83);
     expect(game.run!.session.state.allies[0].level).toBe(50);
   });
 });

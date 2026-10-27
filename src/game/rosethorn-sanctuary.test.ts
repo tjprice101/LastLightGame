@@ -131,7 +131,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     }
     expect(() => validateAccount({ ...account, infusionStages: { sanctuary: 26 } })).toThrow();
     expect(validateAccount({ ...account, version: 2, infusionStages: { sanctuary: 25, treasury: 25, heavens: 25 } }).infusionStages)
-      .toEqual({ sanctuary: 25, treasury: 25, heavens: 25 });
+      .toEqual({ sanctuary: 25, treasury: 25, heavens: 15 });
     expect(battleResults(result.state, result.events)).toContain('Activity complete');
     expect(() => nextStage(result.state, {})).toThrow('complete');
   });

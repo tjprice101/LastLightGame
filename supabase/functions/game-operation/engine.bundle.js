@@ -20,7 +20,12 @@ var elementalMaterials = elements.flatMap((element) => materialRarities.map((rar
   name: `${element.name} ${rarity} Material`
 })));
 var dungeonStageCount = 35;
-var infusionModeStageCount = 25;
+var infusionModeStageCount = 15;
+var previousInfusionStageCount = 25;
+function migratePreviousInfusionStage(stage) {
+  if (!Number.isSafeInteger(stage) || stage < 1 || stage > previousInfusionStageCount) throw new Error("Invalid saved infusion stage.");
+  return 1 + Math.ceil((stage - 1) * (infusionModeStageCount - 1) / (previousInfusionStageCount - 1));
+}
 var machineStageCount = 35;
 var previousMachineStageCount = 75;
 function migratePreviousMachineStage(stage) {
@@ -33,7 +38,7 @@ function isResizedActivity(mode) {
 }
 function migrateLegacyActivityStage(mode, stage) {
   const legacy = legacyActivityStageCounts[mode];
-  const current = mode === "machines" ? previousMachineStageCount : infusionModeStageCount;
+  const current = mode === "machines" ? previousMachineStageCount : previousInfusionStageCount;
   if (!Number.isSafeInteger(stage) || stage < 1 || stage > legacy) throw new Error("Invalid saved infusion stage.");
   return 1 + Math.ceil((stage - 1) * (current - 1) / (legacy - 1));
 }
@@ -159,15 +164,6 @@ function rollLycalisOdds(odds, random) {
     if (roll2 < cumulative) return outcome.amount;
   }
   return odds[odds.length - 1].amount;
-}
-function scaledDrop(level, startingLevel, unlockLevel, startingChance, finalChance, finalQuantity, maximumLevel = 120) {
-  if (!Number.isInteger(maximumLevel) || maximumLevel < 120 || maximumLevel > 140) throw new Error("Invalid loot maximum level.");
-  if (!Number.isInteger(startingLevel) || startingLevel < 1 || startingLevel >= 120 || !Number.isInteger(level) || level < startingLevel || level > maximumLevel || !Number.isInteger(unlockLevel) || unlockLevel < startingLevel || unlockLevel > maximumLevel || !Number.isFinite(startingChance) || !Number.isFinite(finalChance) || startingChance <= 0 || finalChance < startingChance || finalChance > 1 || !Number.isSafeInteger(finalQuantity * 2) || finalQuantity < 1 || !Number.isInteger(finalQuantity)) throw new Error("Invalid scaled loot configuration.");
-  if (level < unlockLevel) return void 0;
-  const growth = ((level - startingLevel) / (maximumLevel - startingLevel)) ** 2;
-  const minimum = 1 + Math.floor((finalQuantity - 1) * growth);
-  const chanceGrowth = unlockLevel === maximumLevel ? 1 : ((level - unlockLevel) / (maximumLevel - unlockLevel)) ** 1.4;
-  return { minimum, maximum: minimum * 2, chance: startingChance + (finalChance - startingChance) * chanceGrowth };
 }
 function rollDrop(drop, random) {
   const multiplier = drop.quantityMultiplier ?? 1;
@@ -4872,8 +4868,7 @@ function capturedEnemyStats(level, maximumLevel = 120) {
 }
 var infusionLevelAnchors = [[1, 50], [13, 65], [19, 75], [25, 85], [35, 120]];
 var infusionAnchorStages = 35;
-function infusionEnemyLevel(stage) {
-  const stages = infusionModeStageCount;
+function infusionLevelForLayout(stage, stages) {
   if (!Number.isInteger(stage) || stage < 1 || stage > stages) throw new Error("Invalid infusion stage.");
   return anchorLevel(1 + (stage - 1) * (infusionAnchorStages - 1) / (stages - 1));
 }
@@ -4888,14 +4883,15 @@ function anchorLevel(position) {
   const [end, endLevel] = infusionLevelAnchors[nextIndex];
   return Math.round(level + (position - start) / (end - start) * (endLevel - level));
 }
-function infusionEncounter(mode, stage, schedule = "caps") {
-  const stages = infusionStageCount(mode);
+function infusionEncounter(mode, stage, schedule = "caps", layout) {
+  if (layout !== void 0 && (layout !== 25 || mode !== "heavens" && mode !== "abyss")) throw new Error("Invalid historical infusion layout.");
+  const stages = layout ?? infusionStageCount(mode);
   if (!isInfusionMode(mode) || !Number.isInteger(stage) || stage < 1 || stage > stages) throw new Error(`Infusion stage must be an integer from 1 to ${stages}.`);
   const tier = mode === "roses" ? roseFormStages.filter((first) => stage >= first).length - 1 : Math.min(5, Math.floor((stage - 1) * 6 / stages));
   const definition = [...infusionModes, ...currencyModes, ...eventModes, ...machineModes].find((entry) => entry.id === mode);
   if (!definition) throw new Error("Unknown staged Elemental-Devourer mode.");
   const startingLevel = definition.startingLevel;
-  const level = mode === "heavens" || mode === "abyss" ? schedule === "legacy" ? Math.round(80 + (stage - 1) * 40 / (stages - 1)) : infusionEnemyLevel(stage) : Math.round(startingLevel + (stage - 1) * ((mode === "roses" ? 140 : 120) - startingLevel) / (stages - 1));
+  const level = mode === "heavens" || mode === "abyss" ? schedule === "legacy" ? Math.round(80 + (stage - 1) * 40 / (stages - 1)) : infusionLevelForLayout(stage, stages) : Math.round(startingLevel + (stage - 1) * ((mode === "roses" ? 140 : 120) - startingLevel) / (stages - 1));
   const boss = stage % 5 === 0;
   const stats = mode === "treasury" ? treasuryEnemyStats(level, boss) : mode === "sanctuary" ? sanctuaryEnemyStats(level, boss) : mode === "roses" ? roseEnemyStats(level, boss) : mode === "machines" ? creatureEnemyStats(level, boss) : infusionEnemyStats(level, boss);
   const [name, art] = infusionEnemies[mode][tier];
@@ -4916,9 +4912,8 @@ function infusionEncounter(mode, stage, schedule = "caps") {
   };
 }
 var specialtyDropTable = [
-  { purpose: "weapon", level: 50, quantity: 3 },
-  { purpose: "evolution", level: 75, quantity: 3 },
-  { purpose: "level", level: 75, quantity: 3 }
+  { purpose: "evolution", level: 50 },
+  { purpose: "level", level: 50 }
 ];
 function infusionLoot(mode, stage, schedule = "caps") {
   const { level } = infusionEncounter(mode, stage, schedule);
@@ -4931,11 +4926,13 @@ function infusionLoot(mode, stage, schedule = "caps") {
     }),
     bonuses: []
   };
-  const specialties = specialtyDropTable.flatMap((entry) => {
-    const unlock = schedule === "legacy" ? entry.purpose === "weapon" ? 80 : entry.purpose === "evolution" ? 93 : 100 : entry.level;
-    const drop = scaledDrop(level, schedule === "legacy" ? 80 : 50, unlock, 1, 1, entry.quantity);
-    return drop ? [bossLootRange({ id: `${mode}-${entry.purpose}`, ...drop }, multiplier)] : [];
-  });
+  const progress = (stage - 1) / (infusionModeStageCount - 1);
+  const specialties = specialtyDropTable.map((entry) => ({
+    id: `${mode}-${entry.purpose}`,
+    minimum: Math.round(1 + 10 * progress),
+    maximum: Math.round(2 + 21 * progress),
+    chance: 1
+  }));
   return { specialties, bonuses: [] };
 }
 function infusionDrops(mode, stage, random, schedule = "caps") {
@@ -5402,7 +5399,14 @@ function materialLoot(element, stage) {
   const multiplier = bossLootMultiplier({ dungeon: { stage } });
   return materialRarities2.flatMap((rarity) => {
     const range2 = ranges[rarity];
-    return range2 ? [bossLootRange({ id: `${element}-${rarity}`, minimum: range2[0], maximum: range2[1], chance: 1 }, multiplier)] : [];
+    if (!range2) return [];
+    const retained = 0.9 - 0.6 * (stage - 1) / (elementalDungeonRules.stages - 1);
+    return [{
+      id: `${element}-${rarity}`,
+      minimum: Math.max(1, Math.round(range2[0] * multiplier * retained)),
+      maximum: Math.max(1, Math.round(range2[1] * multiplier * retained)),
+      chance: 1
+    }];
   });
 }
 function materialDrops(element, stage, random) {
@@ -6003,7 +6007,7 @@ function migrateLegacyCapturedCopies(value2) {
     const savedLevel = entry.level;
     const oldLevel = legacyInfusionEnemyLevel(oldStage);
     const oldBoss = oldStage % 5 === 0;
-    const ranked = creature.stages.map((stage) => infusionEncounter(mode, stage)).sort((a, b) => Number(b.boss === oldBoss) - Number(a.boss === oldBoss) || Math.abs(a.level - oldLevel) - Math.abs(b.level - oldLevel));
+    const ranked = Array.from({ length: 25 }, (_, index) => index + 1).map((stage) => infusionEncounter(mode, stage, "caps", 25)).filter((encounter3) => `infusion:${mode}:${encounter3.tier}` === creature.id).sort((a, b) => Number(b.boss === oldBoss) - Number(a.boss === oldBoss) || Math.abs(a.level - oldLevel) - Math.abs(b.level - oldLevel));
     const encounter2 = ranked.find((option) => Math.min(capturedLevelCap, option.level) <= savedLevel) ?? ranked[0];
     return {
       ...entry,
@@ -6011,6 +6015,14 @@ function migrateLegacyCapturedCopies(value2) {
       level: Math.max(savedLevel, Math.min(capturedLevelCap, encounter2.level)),
       skills: enemySkills(encounter2.level, encounter2.boss, encounter2.ability, encounter2.abilityMultiplier)
     };
+  });
+}
+function preservePreviousInfusionCopies(value2) {
+  if (!Array.isArray(value2)) return value2;
+  return value2.map((entry) => {
+    if (typeof entry !== "object" || entry === null || !("creatureId" in entry) || typeof entry.creatureId !== "string") return entry;
+    const mode = getCreature(entry.creatureId).mode;
+    return mode === "heavens" || mode === "abyss" ? { ...entry, infusionLayout: 25 } : entry;
   });
 }
 function validateCapturedCharacters(value2) {
@@ -6024,14 +6036,20 @@ function validateCapturedCharacters(value2) {
     if (!creature.mode || creature.mode === "machines") throw new Error("This Elemental-Devourer is not eligible for captured-character ownership.");
     seen.add(entry.instanceId);
     const copy = { instanceId: entry.instanceId, creatureId: entry.creatureId, locked: entry.locked };
+    if ("infusionLayout" in entry) {
+      if (entry.infusionLayout !== 25 || creature.mode !== "heavens" && creature.mode !== "abyss") throw new Error("Invalid captured infusion layout.");
+      copy.infusionLayout = 25;
+    }
     if ("acquisition" in entry) {
       if (!(entry.acquisition === "banner-duplicate" && roseDuplicateMinimumLevel(creature.id) !== void 0) && !(entry.acquisition === "calamity-chest" && creature.id === `infusion:${creature.mode}:5`)) throw new Error("Invalid Elemental-Devourer acquisition source.");
       copy.acquisition = entry.acquisition;
     }
     if ("level" in entry) {
-      if (!Number.isInteger(entry.level) || typeof entry.level !== "number" || entry.level < 1 || entry.level > 120 || !("capturedStage" in entry) || typeof entry.capturedStage !== "number" || !creature.stages.includes(entry.capturedStage) || !("skills" in entry) || !Array.isArray(entry.skills)) throw new Error("Invalid captured Elemental-Devourer progression.");
-      const expected = infusionEncounter(creature.mode, entry.capturedStage);
-      if (copy.acquisition === "calamity-chest" && (entry.level !== capturedLevelCap || entry.capturedStage !== creature.stages[0])) throw new Error("Invalid Calamity chest Elemental-Devourer progression.");
+      if (!Number.isInteger(entry.level) || typeof entry.level !== "number" || entry.level < 1 || entry.level > 120 || !("capturedStage" in entry) || typeof entry.capturedStage !== "number" || !("skills" in entry) || !Array.isArray(entry.skills)) throw new Error("Invalid captured Elemental-Devourer progression.");
+      const expected = infusionEncounter(creature.mode, entry.capturedStage, "caps", copy.infusionLayout);
+      if (`infusion:${creature.mode}:${expected.tier}` !== creature.id) throw new Error("Invalid captured Elemental-Devourer form.");
+      const firstStage = copy.infusionLayout ? 1 + Math.ceil(expected.tier * copy.infusionLayout / 6) : creature.stages[0];
+      if (copy.acquisition === "calamity-chest" && (entry.level !== capturedLevelCap || entry.capturedStage !== firstStage)) throw new Error("Invalid Calamity chest Elemental-Devourer progression.");
       const candidates = [expected.abilityMultiplier, expected.legacyAbilityMultiplier].map((multiplier) => enemySkills(expected.level, expected.boss, expected.ability, multiplier));
       const retained = entry.skills;
       const valid = candidates.find((skills) => retained.length === skills.length && retained.every((skill, index) => typeof skill === "object" && skill !== null && skill.name === skills[index].name && skill.multiplier === skills[index].multiplier && skill.every === skills[index].every && skill.action === skills[index].action));
@@ -6046,8 +6064,9 @@ function validateCapturedCharacters(value2) {
 function capturedProgress(copy) {
   const creature = getCreature(copy.creatureId);
   if (!creature.mode || creature.mode === "machines") throw new Error("Captured Elemental-Devourer mode is missing or non-capturable.");
-  const stage = copy.capturedStage ?? creature.stages[0];
-  const encounter2 = infusionEncounter(creature.mode, stage);
+  const tier = infusionEncounter(creature.mode, creature.stages[0]).tier;
+  const stage = copy.capturedStage ?? (copy.infusionLayout ? 1 + Math.ceil(tier * copy.infusionLayout / 6) : creature.stages[0]);
+  const encounter2 = infusionEncounter(creature.mode, stage, "caps", copy.infusionLayout);
   const legacyLevel = creature.mode === "heavens" || creature.mode === "abyss" ? Math.round(80 + Math.ceil(encounter2.tier * 35 / 6) * 40 / 34) : encounter2.level;
   return {
     level: Math.min(capturedLevelCap, copy.level ?? legacyLevel),
@@ -10658,7 +10677,7 @@ function isExchangeQuantity(value2) {
 // src/game/account.ts
 var ACCOUNT_KEY = "last-light.wallet";
 function emptyAccount() {
-  return { version: 9, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
+  return { version: 10, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
 function count(value2) {
   return typeof value2 === "number" && Number.isSafeInteger(value2) && value2 >= 0;
@@ -10683,7 +10702,7 @@ function hasHistoricalBossReceipt(receipts, boss) {
   return receipts.some((receipt) => receipt.length === 37 + boss.length && uuid2.test(receipt.slice(0, 36)) && receipt.slice(36) === `:${boss}`);
 }
 function validateAccount(value2) {
-  if (!record(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 && value2.version !== 7 && value2.version !== 8 && value2.version !== 9 || !count(value2.fractalis) || !count(value2.lycalis) || !record(value2.materials) || !record(value2.characters) || !record(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
+  if (!record(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 && value2.version !== 7 && value2.version !== 8 && value2.version !== 9 && value2.version !== 10 || !count(value2.fractalis) || !count(value2.lycalis) || !record(value2.materials) || !record(value2.characters) || !record(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
     throw new Error("The local progression save is invalid or unsupported. It has not been overwritten.");
   }
   const account = emptyAccount();
@@ -10815,7 +10834,10 @@ function validateAccount(value2) {
     characterGrowthFactor(entry);
     account.characters[id] = entry;
   }
-  if (value2.capturedCharacters !== void 0) account.capturedCharacters = validateCapturedCharacters(value2.version < 7 ? migrateLegacyCapturedCopies(value2.capturedCharacters) : value2.capturedCharacters);
+  if (value2.capturedCharacters !== void 0) {
+    const copies = value2.version < 7 ? migrateLegacyCapturedCopies(value2.capturedCharacters) : value2.capturedCharacters;
+    account.capturedCharacters = validateCapturedCharacters(value2.version < 10 ? preservePreviousInfusionCopies(copies) : copies);
+  }
   if (value2.characterLocks !== void 0) account.characterLocks = validateCharacterLocks(value2.characterLocks, account.characters);
   if (value2.squad !== void 0) {
     if (!Array.isArray(value2.squad) || value2.squad.length < 1 || value2.squad.length > 3 || new Set(value2.squad).size !== value2.squad.length || !value2.squad.every((id) => typeof id === "string" && ownedCharacterInstances(account).includes(id))) {
@@ -10863,9 +10885,15 @@ function validateAccount(value2) {
       if (!isInfusionMode(id) || !count(stage) || stage < 1) throw new Error("Invalid saved infusion stage.");
       const resized = value2.version < 7 && isResizedActivity(id) && !(value2.version === 2 && id !== "machines");
       const previousMachines = id === "machines" && value2.version < 9;
-      if (!resized && stage > (previousMachines ? previousMachineStageCount : infusionStageCount(id))) throw new Error("Invalid saved infusion stage.");
+      const previousInfusion = (id === "heavens" || id === "abyss") && value2.version < 10;
+      if (!resized && stage > (previousMachines ? previousMachineStageCount : previousInfusion ? previousInfusionStageCount : infusionStageCount(id))) throw new Error("Invalid saved infusion stage.");
       const migrated = resized ? migrateLegacyActivityStage(id, stage) : stage;
-      account.infusionStages[id] = previousMachines ? migratePreviousMachineStage(migrated) : migrated;
+      account.infusionStages[id] = previousMachines ? migratePreviousMachineStage(migrated) : previousInfusion ? migratePreviousInfusionStage(migrated) : migrated;
+      if (previousInfusion) {
+        const final = resized ? 35 : previousInfusionStageCount;
+        if (stage === final && hasHistoricalBossReceipt(account.receipts, `infusion-${id}-${final}-0`))
+          account.normalFinalClears = { ...account.normalFinalClears, [id]: true };
+      }
       if (previousMachines) {
         const final = value2.version < 7 ? 100 : previousMachineStageCount;
         const boss = `infusion-machines-${final}-0`;
@@ -11465,11 +11493,15 @@ function saveAccountRewards(storage, result, runId) {
     for (const [id, amount] of Object.entries(reward.materials ?? {})) {
       if (result.state.infusion && (isCurrencyMode(result.state.infusion.mode) || result.state.infusion.mode === "machines")) throw new Error("This activity does not drop materials.");
       if (!count(amount) || !isMaterial(id)) throw new Error("Invalid enemy material drop.");
+      if (result.state.dungeon) {
+        const drop = materialLoot(result.state.dungeon.element, result.state.dungeon.stage).find((entry) => entry.id === id);
+        if (!drop || amount < drop.minimum || amount > drop.maximum) throw new Error("Invalid Elemental Dungeon material drop.");
+      }
       if (result.state.infusion?.mode === "heavens" || result.state.infusion?.mode === "abyss") {
         const activity = result.state.infusion;
         const drop = infusionLoot(activity.mode, activity.stage, activity.schedule ?? "legacy").specialties.find((entry) => entry.id === id);
         if (!drop || amount < drop.minimum || amount > drop.maximum || amount % (drop.quantityMultiplier ?? 1) !== 0) {
-          throw new Error("Soar to Heaven and Delve into the Abyss only drop their three unique materials within the current floor ranges.");
+          throw new Error("Soar to Heaven and Delve into the Abyss only drop their two used specialty materials within the current floor ranges.");
         }
       }
       if (result.state.infusion?.mode === "roses") {
@@ -11483,7 +11515,7 @@ function saveAccountRewards(storage, result, runId) {
           return [...loot.specialties, ...loot.bonuses.flatMap((drop2) => infusionElements(activity.mode).map((element) => ({ ...drop2, id: `${element.id}-${drop2.rarity}` })))];
         })() : [];
         const drop = pool.find((drop2) => drop2.id === id);
-        if (!drop || amount < drop.minimum || amount > drop.maximum || amount % multiplier !== 0) {
+        if (!drop || amount < drop.minimum || amount > drop.maximum || amount % (drop.quantityMultiplier ?? 1) !== 0) {
           throw new Error("Invalid final-boss material drop.");
         }
       }
@@ -12043,13 +12075,22 @@ var VirtualStorage = class {
 };
 function isLegacyStoryRun(game) {
   const version = game.account.version;
-  return typeof version === "number" && !!game.run && (version < 8 || version < 9 && game.run.activity.kind === "infusion" && game.run.activity.mode === "machines");
+  return typeof version === "number" && !!game.run && (version < 8 || version < 9 && game.run.activity.kind === "infusion" && game.run.activity.mode === "machines" || version < 10 && game.run.activity.kind === "infusion" && (game.run.activity.mode === "heavens" || game.run.activity.mode === "abyss"));
+}
+function preserveHistoricalRunCopies(game) {
+  if (game.account.version >= 10 || !game.run) return;
+  game.run.captures = validateCapturedCharacters(preservePreviousInfusionCopies(game.run.captures));
+  for (const unit of game.run.session.state.allies) {
+    if (unit.captured) unit.captured = validateCapturedCharacters(preservePreviousInfusionCopies([unit.captured]))[0];
+  }
 }
 function storyCompletedOf(game) {
   return validateAccount(game.account).storyCompleted ?? 0;
 }
 function publicGame(stored, revision) {
-  const game = isLegacyStoryRun(stored) ? { ...stored, run: null } : stored;
+  const game = structuredClone(stored);
+  if (isLegacyStoryRun(game)) game.run = null;
+  preserveHistoricalRunCopies(game);
   const account = validateAccount(game.account);
   if (game.run) validateRunActivity(game.run);
   const session = game.run ? structuredClone(game.run.session) : null;
@@ -12109,6 +12150,7 @@ function resolveOperation(previous, operation, entropy) {
   validateRequest({ requestId: "00000000-0000-4000-8000-000000000001", expectedRevision: 0, operation });
   const game = structuredClone(previous);
   if (isLegacyStoryRun(game)) game.run = null;
+  preserveHistoricalRunCopies(game);
   game.account = validateAccount(game.account);
   if (game.run) {
     validateRunActivity(game.run);

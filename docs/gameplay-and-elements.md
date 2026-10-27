@@ -1,5 +1,14 @@
 # Gameplay, elements and farming framework
 
+## Current material rewards and infusion layout (D-425)
+
+[D-425](dungeons-and-captures.md#material-reward-rebalance-and15-stage-infusion-d-425)
+is authoritative over historical counts/rewards below: dungeons remain35 stages,
+with material-only reduction10%->70%; Soar/Delve have15 stages, preserving the
+normalized Lv.50-120 curve and giving both used specialties1-2->11-23 each.
+Weapon drops stop; currencies, captures, EX+ and owned holdings remain unchanged.
+Walletv10 preserves historical unlocks and captured-copy kits read-only.
+
 **Status:**150-stage Story, retained endless Training and all six elemental
 material dungeons are playable.
 The [D-160 migration](six-element-rework.md#implemented-elemental-migration-contract)
@@ -58,7 +67,7 @@ elemental damage bonuses, resistances, or revised battle balance.
 
 ## Material dungeon stages
 
-- Exactly **35 stages** per elemental dungeon and per infusion mode.
+- Exactly **35 stages** per elemental dungeon; Soar/Delve use15 (D-425).
 - Start at enemy **level 38**, the midpoint of Evo2's30-45 range.
 - Linear growth reaches the same **level 120 endpoint at Stage 35**.
 - Formula: `round(38 + (stage-1)*82/34)`.
@@ -178,11 +187,12 @@ are remapped and merged on read without saving; other stable IDs remain unchange
 Drops are guaranteed and grow by floor bracket; higher rarities appear on later
 floors in smaller stacks than ordinary materials.
 
-Drops per defeated dungeon enemy (including burn kills), D-338/D-357. Every material
-listed for a floor is guaranteed; each bracket adds the next rarity and raises
-every lower stack. D-357 rule: an enemy of level X drops what a level X-5
+Drops per defeated dungeon enemy (including burn kills), D-338/D-357/D-425.
+Every unlocked rarity is guaranteed; each bracket adds the next rarity.
+The table below gives **base ranges before D-425's stage-dependent reduction**.
+D-357 rule: an enemy of level X drops what a level X-5
 Element-Bearer needs, so Uncommon/Rare/Epic/Legendary/Omnic open at enemy
-Lv35/50/65/80/95 (`materialDropLevel` in activities.ts). Quantities are inclusive per-kill ranges:
+Lv35/50/65/80/95 (`materialDropLevel` in activities.ts).
 
 | Floors (enemy level) | Seed | Bloom | Shard | Crest | Heart | Soul |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -192,13 +202,15 @@ Lv35/50/65/80/95 (`materialDropLevel` in activities.ts). Quantities are inclusiv
 | 19-24 (Lv81-93) | 20-25 | 12-15 | 8-10 | 5-6 | 2-3 | - |
 | 25-35 (Lv96-120) | 25-30 | 16-20 | 12-15 | 8-10 | 5-6 | 2-3 |
 
-The floor35 final boss multiplies these by5 (D-294): 125-150/80-100/60-75/
-40-50/25-30/10-15. The table lives in `materialBrackets` in
+Apply `max(1,round(baseEndpoint * boost * (0.9-0.6*(stage-1)/34)))`,
+where boost is5 only at Stage35, otherwise1. Actual Stage35 ranges are
+38-45/24-30/18-23/12-15/8-9/3-5. The base table lives in `materialBrackets` in
 [dungeons.ts](../src/content/dungeons.ts); it replaces the earlier chance-based
 level-gated curve.
 
-Earlier bosses use the ordinary per-enemy table. Final boss35 gets the explicit
-5x quantity multiplier on every clear/replay, with no extra roll or pity.
+Earlier bosses use the ordinary stage taper. Final boss35 includes the5x
+base boost before reduction, with no extra roll or pity. All resulting integers
+within a range are possible, not just multiples of5.
 Prismatica per enemy scales from 5-10 at Lv1 to 15-30 at Lv120 in every mode:
 `minimum = 5 + floor(10*((L-1)/119)^2)`, maximum = twice minimum.
 Adventure remains endless, with loot/stats capped at enemy Lv120.
@@ -264,10 +276,10 @@ unseen entries are black silhouettes, seen entries show color/name, defeated
 entries reveal real loot pools and chances. Activity filter and stage selector
 show only the creature's stage band. Evolution forms have separate stable IDs.
 Legacy saves begin with no recorded discoveries; earlier fights are not inferred.
-Soar/Delve discovery loot lists only each activity's three unique materials
-and its existing currencies (D-373). No elemental-material bonuses remain.
+Soar/Delve discovery loot lists only each activity's two used specialties
+and its existing currencies (D-425). No weapon or elemental-material drops remain.
 Crimson Roses lists every unlocked Rosethorn material at100%, using the
-same enemy-level brackets and quantity ranges as elemental dungeons.
+original untapered enemy-level brackets, unaffected by D-425.
 Adventure uses an enemy-level selector; staged encounters show their actual floor loot.
 This is a drop reference, not capture/pity or a second source of rewards.
 
@@ -279,7 +291,7 @@ This is a drop reference, not capture/pity or a second source of rewards.
   New art direction: black Wraththorn Slime evolving into a cosmic wrath
   final form, The Night Without End, with white/deep-purple/hot-pink thorns;
   replaces the old royal-wisp concept.
-- D-192: each has **35 stages**, starts at enemy **level50** and requires an
+- D-425/D-192: each has **15 stages**, starts at enemy **level50** and requires an
   owned Element-Bearer at Lv.50. New
   [mode art packs](../Art/creatures/gamemodes/README.md) author six visual forms per mode
   (base plus five evolutions), now supplied and wired into live encounters.
@@ -290,7 +302,8 @@ This is a drop reference, not capture/pity or a second source of rewards.
   **1/50,13/65,19/75,25/85,35/120**, rounding once to whole levels.
   The owner approves this correction so evolution fodder is accessible before
   the Lv.60/75/90 character caps block progression.
-  Forms occupy stages1-6/7-12/13-18/19-24/25-30/31-35.
+  Normalize the original35-stage anchors with `position=1+(stage-1)*34/14`.
+  Forms occupy stages1-3/4-5/6-8/9-10/11-13/14-15.
   Two ordinary enemies, one stronger boss every fifth stage.
   Stats use [D-288's hostile curve](combat.md#progressive-build-reliance-d-288).
   At Lv120:9,000 ordinaryHP/35,000 bossHP,1,200/3,000 Attack
@@ -311,22 +324,21 @@ This is a drop reference, not capture/pity or a second source of rewards.
   Owner clarified that the leveling material applies **throughout Evolution5/6**
   (caps90/105), not just character levels above80. Heaven uses blade/crown/chalice
   objects; Abyss uses claw/fracture-orb/hourglass objects.
-- D-373: both modes drop only their three unique materials, never elemental
+- D-425: both modes drop only their two used specialties, never weapon or elemental
   materials of any rarity. Affinity groups still route progression recipes,
   not bonus loot. This supersedes the narrower D-372 Crest-only removal.
-- Per defeat: guaranteed weapon material from Lv50/Stage1; evolution and
-  leveling materials from Lv75/Stage19. The quantity curve starts at50;
-  final specialty stacks are15-30 after D-294's5x quantity boost.
-  Unique-item quantity scaling and guaranteed rates are unchanged, including
-  Crown of the Scarlet Oath. Existing owned materials and elemental dungeon
-  drops are unchanged. Current and legacy schedules exclude all elemental
+- Per defeat: guaranteed evolution and leveling specialties from Stage1.
+  Minimum=`round(1+10*(stage-1)/14)`, maximum=`round(2+21*(stage-1)/14)`.
+  Stage1 gives1-2 each, Stage14 gives10-22 and Stage15 gives11-23, without
+  an additional final-boss material boost. Existing weapon holdings remain.
+  Current and legacy schedules exclude all elemental
   bonuses. Final Prismatica is75-150. Captures are50% per kill (D-377),
   ordinary enemies and bosses alike; no guaranteed rare pool or pity.
   Enemy-death stacks vary visually from75-135% size, with randomized scatter and
   independent850-1849ms automatic pickup. Reduced motion keeps a static650ms
   receipt. Cosmetic rolls never alter awarded quantities or persistence.
 - Stage1 starts unlocked independently in each mode. Saved clears unlock the
-  successor through35; final stage offers replay, never36. Entry/replay
+  successor through15; final stage offers replay, never16. Entry/replay
   resets health, Gauge and cooldowns; Continue refreshes health/cooldowns but
   carries Gauge within the current run. Rewards save before presentation and
   remain on defeat/exit; active encounters are not restored after reload.

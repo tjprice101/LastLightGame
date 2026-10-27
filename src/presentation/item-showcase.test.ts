@@ -44,8 +44,10 @@ describe('activity item artwork', () => {
     expect(dungeons).toContain('aquatic-soul.png');
     expect(dungeons).not.toContain('currencies/lycalis.png');
     const infusion = group('infusion', 'currency');
-    expect(infusion).toContain('heavens-dawnsteel-of-judgment.png');
-    expect(infusion).toContain('abyss-voidfang-of-ruin.png');
+    expect(infusion).not.toContain('heavens-dawnsteel-of-judgment.png');
+    expect(infusion).not.toContain('abyss-voidfang-of-ruin.png');
+    expect(infusion).toContain('data-showcase-item="heavens-evolution"');
+    expect(infusion).toContain('data-showcase-item="abyss-evolution"');
     const farms = group('currency', 'story');
     const treasury = farms.slice(0, farms.indexOf('assets/banners/sanctuary-banner.png'));
     expect(treasury).toContain('currencies/fractalis.png');

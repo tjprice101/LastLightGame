@@ -56,13 +56,13 @@ describe('repeatable final-boss 5x quantity contract', () => {
       : 5 * (state.story ? storyFractalisDrop(level) : state.infusion?.mode === 'treasury'
         ? treasuryFractalisDrop(level) : fractalisDrop(level, state.infusion?.mode === 'roses' ? 140 : 120)).minimum;
     expect(reward.amount).toBe(expectedCurrency);
-    for (const quantity of Object.values(reward.materials ?? {})) {
+    for (const quantity of Object.values(!state.dungeon && state.infusion?.mode !== 'heavens' && state.infusion?.mode !== 'abyss' ? reward.materials ?? {} : {})) {
       expect(quantity % 5).toBe(0);
       expect(quantity).toBeGreaterThanOrEqual(5);
     }
-    if (state.dungeon) expect(Object.values(reward.materials!)).toEqual([125, 80, 60, 40, 25, 10]);
+    if (state.dungeon) expect(Object.values(reward.materials!)).toEqual([38, 24, 18, 12, 8, 3]);
     if (state.infusion?.mode === 'heavens' || state.infusion?.mode === 'abyss') {
-      expect(Object.values(reward.materials!)).toEqual(Array(Object.keys(reward.materials!).length).fill(15));
+      expect(Object.values(reward.materials!)).toEqual([11, 11]);
     }
     if (state.infusion?.mode === 'roses') expect(Object.values(reward.materials!)).toEqual([125, 80, 60, 40, 25, 10]);
     if (state.infusion?.mode === 'machines') {
@@ -159,7 +159,7 @@ describe('repeatable final-boss 5x quantity contract', () => {
     currency.events.find(event => event.kind === 'reward')!.amount++;
     expect(() => saveAccountRewards(saved, currency, 'bad-currency')).toThrow('Prismatica');
     const materials = structuredClone(dungeon);
-    materials.events.find(event => event.kind === 'reward')!.materials!['infernic-common']++;
+    materials.events.find(event => event.kind === 'reward')!.materials!['infernic-common'] = 46;
     expect(() => saveAccountRewards(saved, materials, 'bad-material')).toThrow('material');
     const premium = clear(createInfusionBattle('sanctuary', 25, 1729, 'ember', progress));
     premium.events.find(event => event.kind === 'reward')!.lycalis = 5;
