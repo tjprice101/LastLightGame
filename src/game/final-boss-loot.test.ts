@@ -56,7 +56,7 @@ describe('repeatable final-boss 5x quantity contract', () => {
       : 5 * (state.story ? storyFractalisDrop(level) : state.infusion?.mode === 'treasury'
         ? treasuryFractalisDrop(level) : fractalisDrop(level, state.infusion?.mode === 'roses' ? 140 : 120)).minimum;
     expect(reward.amount).toBe(expectedCurrency);
-    for (const quantity of Object.values(!state.dungeon && state.infusion?.mode !== 'heavens' && state.infusion?.mode !== 'abyss' ? reward.materials ?? {} : {})) {
+    for (const quantity of Object.values(!state.dungeon && !['heavens', 'abyss', 'roses'].includes(state.infusion?.mode ?? '') ? reward.materials ?? {} : {})) {
       expect(quantity % 5).toBe(0);
       expect(quantity).toBeGreaterThanOrEqual(5);
     }
@@ -64,7 +64,7 @@ describe('repeatable final-boss 5x quantity contract', () => {
     if (state.infusion?.mode === 'heavens' || state.infusion?.mode === 'abyss') {
       expect(Object.values(reward.materials!)).toEqual([11, 11]);
     }
-    if (state.infusion?.mode === 'roses') expect(Object.values(reward.materials!)).toEqual([125, 80, 60, 40, 25, 10]);
+    if (state.infusion?.mode === 'roses') expect(Object.values(reward.materials!)).toEqual([8, 5, 4, 2, 2, 1]);
     if (state.infusion?.mode === 'machines') {
       expect(reward.mechanicalComponents).toBe(625);
       expect(Object.values(reward.conduits!)).toEqual([1, 1, 1]);

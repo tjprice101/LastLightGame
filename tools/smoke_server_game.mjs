@@ -1125,6 +1125,7 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
       .map(element => ({ activity: { kind: 'dungeon', element, stage: 35 } })),
     ...['heavens', 'abyss'].flatMap(mode => [1, 14, 15].map(stage =>
       ({ activity: { kind: 'infusion', mode, stage } }))),
+    ...[1, 9, 10, 19, 34, 35].map(stage => ({ activity: { kind: 'infusion', mode: 'roses', stage } })),
     ...['heavens', 'abyss'].map(mode => ({ activity: { kind: 'infusion', mode, stage: 15 }, legacy: true })),
   ];
   for (const [index, test] of cases.entries()) {
@@ -1142,7 +1143,7 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
     game.starterId = 'ember';
     game.account.characters = { ember: { level: 105, evolution: 6 } };
     game.account.squad = ['ember']; game.account.storyCompleted = 120;
-    game.account.infusionStages = { heavens: 15, abyss: 15 };
+    game.account.infusionStages = { heavens: 15, abyss: 15, roses: 35 };
     game.account.dungeonStages = Object.fromEntries(['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic'].map(element => [element, 35]));
     game.account.materials = { 'heavens-weapon': 19, 'abyss-weapon': 23 };
     game = resolveOperation(game, { kind: 'enter', activity: test.activity }, entropy).game;
@@ -1207,6 +1208,23 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
               [`${test.activity.element}-${rarity}`, finals[index][0]])), reward.materials);
             assert.equal(reward.amount, 15);
           }
+        } else if (test.activity.mode === 'roses') {
+          const stage = test.activity.stage;
+          const rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic'];
+          const finals = [[8, 9], [5, 6], [4, 5], [2, 3], [2, 2], [1, 2]];
+          assert.deepEqual(Object.keys(reward.materials).sort(), rarities.filter((_, tier) => tier < 5 || stage >= 10)
+            .map(rarity => `rosethorn-${rarity}`).sort());
+          rarities.forEach((rarity, tier) => {
+            const first = tier === 5 ? 10 : 1;
+            if (stage < first) return;
+            const p = (stage - first) / (35 - first), amount = reward.materials[`rosethorn-${rarity}`];
+            assert.ok(amount >= Math.round(1 + (finals[tier][0] - 1) * p) &&
+              amount <= Math.round(2 + (finals[tier][1] - 2) * p));
+          });
+          if (stage === 35) {
+            assert.deepEqual(Object.fromEntries(rarities.map((rarity, tier) => [`rosethorn-${rarity}`, finals[tier][0]])), reward.materials);
+            assert.equal(reward.amount, 90);
+          }
         } else if (test.activity.kind === 'infusion') {
           const progress = (test.activity.stage - 1) / 14;
           assert.deepEqual(Object.keys(reward.materials).sort(), [`${test.activity.mode}-evolution`, `${test.activity.mode}-level`].sort());
@@ -1223,7 +1241,7 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
       assert.deepEqual((await invoke({ kind: 'read' }, actual.revision)).account, actual.account);
     }
   }
-  console.log(`Hosted D-426 passed${cases.length} cases: linear dungeon materials/currency at opening/unlock/penultimate stages and all six finals with no bonus; unchanged15-stage Soar/Delve, retained holdings, v9 compatibility, local/authority parity, saved reads and idempotent retries. Disposable identities only.`);
+  console.log(`Hosted D-427 passed${cases.length} cases: shared low linear dungeon/Rose materials, retained Rose unlocks and final currency boost, dungeon currency without boss bonus, unchanged15-stage Soar/Delve, old holdings/compatibility, local/authority parity, saved reads and idempotent retries. Disposable identities only.`);
 }
 
 async function smokeMachinesLayout(firstClient, firstId, firstUsername) {
@@ -1549,7 +1567,7 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly 
       : activity.kind === 'dungeon' ? activity.stage === 35 : activity.stage === (['heavens', 'abyss'].includes(activity.mode) ? 15 : ['treasury', 'sanctuary'].includes(activity.mode) ? 25 : 35);
     if (final) {
       assert.equal((rewards[0].amount - (rewards[0].storyBonus?.fractalis ?? 0)) % 5, 0);
-      if (activity.kind !== 'dungeon' && !['heavens', 'abyss'].includes(activity.mode))
+      if (activity.kind !== 'dungeon' && !['heavens', 'abyss', 'roses'].includes(activity.mode))
         for (const quantity of Object.values(rewards[0].materials ?? {})) assert.equal(quantity % 5, 0);
     }
     if (activity.kind === 'story') {

@@ -4719,6 +4719,24 @@ function roseDuplicateMinimumLevel(creatureId) {
 
 // src/content/material-drops.ts
 var materialRarities2 = ["common", "uncommon", "rare", "epic", "legendary", "omnic"];
+var linearMaterialFinalRanges = {
+  common: [8, 9],
+  uncommon: [5, 6],
+  rare: [4, 5],
+  epic: [2, 3],
+  legendary: [2, 2],
+  omnic: [1, 2]
+};
+function linearMaterialRange(rarity, stage, firstStage, lastStage) {
+  if (!Number.isInteger(stage) || !Number.isInteger(firstStage) || !Number.isInteger(lastStage) || firstStage < 1 || firstStage >= lastStage || stage < firstStage || stage > lastStage) throw new Error("Invalid linear material stage.");
+  const [minimum, maximum] = linearMaterialFinalRanges[rarity];
+  const progress = (stage - firstStage) / (lastStage - firstStage);
+  return {
+    minimum: Math.round(1 + (minimum - 1) * progress),
+    maximum: Math.round(2 + (maximum - 2) * progress),
+    chance: 1
+  };
+}
 var bracketRanges = [
   { common: [4, 5] },
   { common: [8, 10], uncommon: [2, 3] },
@@ -4731,10 +4749,6 @@ var materialLevelBrackets = bracketRanges.map((ranges, index) => ({
   level: materialDropLevel(materialRarities[index]),
   ranges
 }));
-function materialRangesAtLevel(level) {
-  if (!Number.isInteger(level) || level < 1 || level > 140) throw new Error("Material drop level must be from 1 to 140.");
-  return [...materialLevelBrackets].reverse().find((bracket) => level >= bracket.level).ranges;
-}
 
 // src/content/infusions.ts
 function isInfusionMode(value2) {
@@ -4911,18 +4925,25 @@ function infusionEncounter(mode, stage, schedule = "caps", layout) {
     legacyAbilityMultiplier: 1.2 + (stage - 1) / (stages - 1) * (mode === "roses" ? 0.65 : 24 * 0.016)
   };
 }
+var roseMaterialFirstStages = roseMaterialUnlocks.map((level) => Array.from(
+  { length: infusionStageCount("roses") },
+  (_, index) => index + 1
+).find((stage) => infusionEncounter("roses", stage).level >= level));
 var specialtyDropTable = [
   { purpose: "evolution", level: 50 },
   { purpose: "level", level: 50 }
 ];
 function infusionLoot(mode, stage, schedule = "caps") {
-  const { level } = infusionEncounter(mode, stage, schedule);
-  const multiplier = bossLootMultiplier({ infusion: { mode, stage } });
+  infusionEncounter(mode, stage, schedule);
   if (isCurrencyMode(mode) || mode === "machines") return { specialties: [], bonuses: [] };
   if (mode === "roses") return {
     specialties: roseMaterials.flatMap((material, tier) => {
-      const range2 = materialRangesAtLevel(level)[materialRarities2[tier]];
-      return range2 ? [bossLootRange({ id: material.id, minimum: range2[0], maximum: range2[1], chance: 1 }, multiplier)] : [];
+      const stages = infusionStageCount("roses");
+      const firstStage = roseMaterialFirstStages[tier];
+      return stage < firstStage ? [] : [{
+        id: material.id,
+        ...linearMaterialRange(materialRarities2[tier], stage, firstStage, stages)
+      }];
     }),
     bonuses: []
   };
@@ -5395,24 +5416,9 @@ function materialLoot(element, stage) {
   return materialRarities2.flatMap((rarity) => {
     const firstStage = materialBrackets.find((bracket) => bracket.ranges[rarity] !== void 0).firstStage;
     if (stage < firstStage) return [];
-    const [minimum, maximum] = dungeonMaterialFinalRanges[rarity];
-    const progress = (stage - firstStage) / (elementalDungeonRules.stages - firstStage);
-    return [{
-      id: `${element}-${rarity}`,
-      minimum: Math.round(1 + (minimum - 1) * progress),
-      maximum: Math.round(2 + (maximum - 2) * progress),
-      chance: 1
-    }];
+    return [{ id: `${element}-${rarity}`, ...linearMaterialRange(rarity, stage, firstStage, elementalDungeonRules.stages) }];
   });
 }
-var dungeonMaterialFinalRanges = {
-  common: [8, 9],
-  uncommon: [5, 6],
-  rare: [4, 5],
-  epic: [2, 3],
-  legendary: [2, 2],
-  omnic: [1, 2]
-};
 function dungeonFractalisDrop(stage) {
   elementalEnemyLevel(stage);
   const progress = (stage - 1) / (elementalDungeonRules.stages - 1);
@@ -11515,7 +11521,7 @@ function saveAccountRewards(storage, result, runId) {
       }
       if (result.state.infusion?.mode === "roses") {
         const drop = infusionLoot("roses", result.state.infusion.stage).specialties.find((entry) => entry.id === id);
-        if (!drop || amount < drop.minimum || amount > drop.maximum || amount % multiplier !== 0) throw new Error("Invalid Rosethorn material drop.");
+        if (!drop || amount < drop.minimum || amount > drop.maximum || amount % (drop.quantityMultiplier ?? 1) !== 0) throw new Error("Invalid Rosethorn material drop.");
       } else if (roseMaterials.some((material) => material.id === id)) throw new Error("Rosethorn materials only drop in Passion of Crimson Roses.");
       if (multiplier > 1) {
         const activity = result.state.infusion;

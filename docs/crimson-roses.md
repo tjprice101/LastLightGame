@@ -142,13 +142,15 @@ First-pass numbers are editable developer tuning, not a production-balance claim
 
 ## Per-kill rewards
 
-No Null-Prismatica and no separate stage-clear award. Earlier boss/ordinary
-reward tables match; D-294 multiplies stage35's currency/material quantities
-by5 on every clear/replay without altering rare-drop or capture chances.
+### Linear Rose materials (D-427)
+
+No Null-Prismatica and no separate stage-clear award. Ordinary and boss
+material rewards share one linear curve, with no final material multiplier.
+D-427 supersedes D-294's material boost and the historical level brackets.
 Prismatica uses the existing quadratic quantity curve extended to140 only here:
 9-18 at80,15-30 at120, base18-36 at140; final stage35 pays90-180.
-Every unlocked material is guaranteed (D-373), using the same level brackets
-and inclusive quantity ranges as elemental dungeons.
+Every unlocked material is guaranteed (D-373). Each starts at1-2 when
+unlocked, using the same low final endpoints as Elemental Dungeons.
 
 | Material | Stable ID | First available enemy level in this activity | Chance |
 | --- | --- | --- | --- |
@@ -162,21 +164,26 @@ and inclusive quantity ranges as elemental dungeons.
 D-357: unlocks follow the X-5 rule (`max(80, materialDropLevel)`), so every
 tier through Heart is available from the first Lv80 stage.
 
-| Enemy level / stages | Seed | Bud | Bloom | Crest | Heart | Soul |
+| Stage | Seed | Bud | Bloom | Crest | Heart | Soul |
 | --- | --- | --- | --- | --- | --- | --- |
-|80-94 /1-9 |20-25 |12-15 |8-10 |5-6 |2-3 |- |
-|95-140 /10-34 |25-30 |16-20 |12-15 |8-10 |5-6 |2-3 |
-|Final boss /35 |125-150 |80-100 |60-75 |40-50 |25-30 |10-15 |
+|1 |1-2 |1-2 |1-2 |1-2 |1-2 |- |
+|10 |3-4 |2-3 |2-3 |1-2 |1-2 |1-2 |
+|Final boss /35 |8-9 |5-6 |4-5 |2-3 |2 |1-2 |
 
-The highest dungeon bracket stays capped above95, including event levels
-above120. Earlier bosses use ordinary quantities. The final boss retains
-D-294's5x multiplier. [infusionLoot](../src/content/infusions.ts)
+For each tier, `p=(stage-firstStage)/(35-firstStage)` with firstStage1
+through Heart and10 for Soul. Minimum is `round(1+(finalMin-1)*p)`;
+maximum is `round(2+(finalMax-2)*p)`. Sample each inclusive integer range
+uniformly. No material boss bonus; final Prismatica alone retains5x.
+Existing35 stages, enemy levels/stats, material unlocks, captures, summons,
+Devourer sales, upgrade costs, owned holdings and EX+ chests are unchanged.
+No wallet migration, load writes, run restart or retroactive rewards.
+[infusionLoot](../src/content/infusions.ts)
 is authoritative for battles, stage previews and defeated Creature loot.
-Capture uses independent50% RNG (D-377), gated before acquisition by
-actual defeated level. No premium RNG is consumed.
+Capture uses independent50% RNG at every event level (D-410), with playable
+copies capped60 and source skills retained. No premium RNG is consumed.
 
 `saveAccountRewards` verifies source mode/form/stage/defeat/level and valid
-material IDs/quantities including guaranteed Seed, rejects premium/high-level
+material IDs/quantities including guaranteed Seed, rejects premium/forged
 captures, and commits balances/materials/captures/discovery/receipt/unlocks in
 one write. Replay of a committed receipt grants nothing.
 

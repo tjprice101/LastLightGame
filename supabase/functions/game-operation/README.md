@@ -1,5 +1,16 @@
 # Authoritative game operation
 
+## Linear Rose materials (D-427)
+
+Rose event kills now share the low linear dungeon material endpoints, starting
+each tier at1-2 on existing unlocks (five at Stage1; Soul at10). No material
+boss boost. Rose Prismatica including final5x, captures, summons, sales and EX+
+are unchanged. No migration/version bump or run restart. Regenerate and deploy
+the shared bundle with the client. `node tools\smoke_server_game.mjs
+--infusion-rebalance` passes26 disposable hosted fixtures including Rose
+Stages1/9/10/19/34/35, exact final quantities/currency, local/authority parity,
+saved reads and idempotent retries, alongside existing dungeon/infusion cases.
+
 ## Linear dungeon materials and currency (D-426)
 
 Elemental Dungeon materials and Prismatica now use rounded linear stage

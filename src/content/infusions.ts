@@ -5,9 +5,8 @@ import { phaseZeroStatDefaults, type ResolvedStats } from './phase-zero-stats';
 import { rollDrop, type ScaledDrop } from './loot-random';
 import { capturedGrowth, enemyCombatStats, playableGrowth } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
-import { roseMaterials, roseSaleQuantities, roseFormStages, roseCaptureAllowed } from './roses';
-import { materialRangesAtLevel, materialRarities, type MaterialRarity } from './material-drops';
-import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
+import { roseMaterials, roseSaleQuantities, roseFormStages, roseCaptureAllowed, roseMaterialUnlocks } from './roses';
+import { linearMaterialRange, materialRarities, type MaterialRarity } from './material-drops';
 
 export function isInfusionMode(value: unknown): value is InfusionModeId {
   return [...infusionModes, ...currencyModes, ...eventModes, ...machineModes].some((entry) => entry.id === value);
@@ -181,6 +180,10 @@ export function infusionEncounter(mode: InfusionModeId, stage: number, schedule:
     abilityMultiplier: enemyAbilityMultiplier(level),
     legacyAbilityMultiplier: 1.2 + (stage - 1) / (stages - 1) * (mode === 'roses' ? .65 : 24 * .016) };
 }
+const roseMaterialFirstStages = roseMaterialUnlocks.map(level => Array.from(
+  { length: infusionStageCount('roses') }, (_, index) => index + 1)
+  .find(stage => infusionEncounter('roses', stage).level >= level)!);
+
 export const specialtyDropTable = [
   { purpose: 'evolution', level: 50 },
   { purpose: 'level', level: 50 },
@@ -189,13 +192,14 @@ export function infusionLoot(mode: InfusionModeId, stage: number, schedule: Infu
   specialties: (ScaledDrop & { id: string })[];
   bonuses: (ScaledDrop & { rarity: MaterialRarity })[];
 } {
-  const { level } = infusionEncounter(mode, stage, schedule);
-  const multiplier = bossLootMultiplier({ infusion: { mode, stage } });
+  infusionEncounter(mode, stage, schedule);
   if (isCurrencyMode(mode) || mode === 'machines') return { specialties: [], bonuses: [] };
   if (mode === 'roses') return {
     specialties: roseMaterials.flatMap((material, tier) => {
-      const range = materialRangesAtLevel(level)[materialRarities[tier]];
-      return range ? [bossLootRange({ id: material.id, minimum: range[0], maximum: range[1], chance: 1 }, multiplier)] : [];
+      const stages = infusionStageCount('roses');
+      const firstStage = roseMaterialFirstStages[tier];
+      return stage < firstStage ? [] : [{ id: material.id,
+        ...linearMaterialRange(materialRarities[tier], stage, firstStage, stages) }];
     }), bonuses: [],
   };
   const progress = (stage - 1) / (infusionModeStageCount - 1);

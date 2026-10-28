@@ -75,7 +75,7 @@ function activityFacts(stages: string, levels: string, drops: string): string {
 
 function gameplayInformation(): string {
   return informationTopics('gameplay-information', [
-    { id: 'final-loot', title: 'Final-boss loot', summary: '5x quantities on every final clear', content: `<p>${finalBossLootText}</p><p>Applies at Story's six regional bosses (stages ${storyBossStages.slice(0, -1).join(', ')} and ${storyBossStages[storyBossStages.length - 1]}) and at the last stage of every other staged activity.</p>` },
+    { id: 'final-loot', title: 'Final-boss loot', summary: 'Final rewards and linear-material exceptions', content: `<p>${finalBossLootText}</p><p>Story's six regional bosses are stages ${storyBossStages.slice(0, -1).join(', ')} and ${storyBossStages[storyBossStages.length - 1]}. Other staged activities use their final stage, with the dungeon and linear-material exceptions above.</p>` },
     { id: 'origins', title: 'Let and Rise', summary: 'Infinity, Nothingness and the search for the creators', content: worldLore() },
     { id: 'start', title: 'Unlocks', summary: 'Activity level requirements', content: `<p>Story is open from the start. Other activities unlock by your highest-level Element-Bearer, in the squad or not. Captures don't count.</p>
       <ul><li>Awaken the Machines: Lv.10 and Emberwake March cleared</li><li>Elemental dungeons: Lv.30</li><li>Evolution infusion: Lv.50</li><li>Currency farms: Lv.60</li><li>Crimson Roses: Lv.75</li><li>Elemental War: Lv.85</li></ul>` },

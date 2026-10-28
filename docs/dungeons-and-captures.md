@@ -112,8 +112,10 @@ transaction, without new RNG draws or load/save changes.
 **D-425 supersedes D-373's three-material rule:** Soar and Delve award only
 their two used specialties, with no elemental-material bonuses or weapon drops.
 Previously owned materials and elemental dungeon drops are preserved.
-Crimson Roses uses the dungeon guaranteed level/quantity brackets for all
-six Rosethorn tiers. Reward generation, validation and discovery tables agree.
+Crimson Roses uses the same low linear endpoints as dungeons (D-427), retaining
+five tiers from Stage1 and Soul from Stage10. Each starts1-2 at unlock; no
+material boss boost. Rose currency, captures and EX+ remain unchanged.
+[Exact Rose ranges](crimson-roses.md#linear-rose-materials-d-427).
 
 **D-305:** all owned captured Elemental-Devourers cap at60. Higher-level
 captures join at60, retaining form/stage/skills; existing copies normalize

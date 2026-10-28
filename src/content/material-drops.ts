@@ -3,6 +3,19 @@ import { materialDropLevel, materialRarities as rarityNames } from './activities
 export const materialRarities = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic'] as const;
 export type MaterialRarity = (typeof materialRarities)[number];
 
+export const linearMaterialFinalRanges: Readonly<Record<MaterialRarity, readonly [number, number]>> = {
+  common: [8, 9], uncommon: [5, 6], rare: [4, 5], epic: [2, 3], legendary: [2, 2], omnic: [1, 2],
+};
+
+export function linearMaterialRange(rarity: MaterialRarity, stage: number, firstStage: number, lastStage: number) {
+  if (!Number.isInteger(stage) || !Number.isInteger(firstStage) || !Number.isInteger(lastStage) ||
+      firstStage < 1 || firstStage >= lastStage || stage < firstStage || stage > lastStage) throw new Error('Invalid linear material stage.');
+  const [minimum, maximum] = linearMaterialFinalRanges[rarity];
+  const progress = (stage - firstStage) / (lastStage - firstStage);
+  return { minimum: Math.round(1 + (minimum - 1) * progress),
+    maximum: Math.round(2 + (maximum - 2) * progress), chance: 1 };
+}
+
 const bracketRanges: readonly Partial<Record<MaterialRarity, readonly [number, number]>>[] = [
   { common: [4, 5] },
   { common: [8, 10], uncommon: [2, 3] },

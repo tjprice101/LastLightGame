@@ -1,5 +1,5 @@
 LAST LIGHT - ELEMENTAL DUNGEONS, SOAR AND DELVE DROP RATES
-Snapshot: October 27, 2026 - D-426 linear dungeon rewards
+Snapshot: October 27, 2026 - D-427 linear dungeon and Rose materials
 
 Current implemented drop rates, including ordinary stages, final bosses and
 EX+ Calamity chests.
@@ -237,3 +237,49 @@ src\content\loot-random.ts
 src\content\final-boss-loot.ts
 src\content\calamity.ts
 src\game\battle.ts
+
+ROSE EVENT MATERIAL ADDENDUM (D-427)
+===================================
+Passion of Crimson Roses: 35 stages, unchanged enemy levels and stats.
+Guaranteed per defeated enemy. Each starts at 1-2 when unlocked.
+First five tiers unlock at Stage 1; Soul unlocks at Stage 10 (Lv.95).
+Each range endpoint grows linearly from its unlock to Stage 35, rounded.
+No material boss bonus. Rose Prismatica remains unchanged, including
+90-180 in multiples of 5 at Stage 35. Captures, summons, sales and EX+ unchanged.
+
+Stage | Seed | Bud | Bloom | Crest | Heart | Soul
+1 | 1-2 | 1-2 | 1-2 | 1-2 | 1-2 | -
+2 | 1-2 | 1-2 | 1-2 | 1-2 | 1-2 | -
+3 | 1-2 | 1-2 | 1-2 | 1-2 | 1-2 | -
+4 | 2-3 | 1-2 | 1-2 | 1-2 | 1-2 | -
+5 | 2-3 | 1-2 | 1-2 | 1-2 | 1-2 | -
+6 | 2-3 | 2-3 | 1-2 | 1-2 | 1-2 | -
+7 | 2-3 | 2-3 | 2-3 | 1-2 | 1-2 | -
+8 | 2-3 | 2-3 | 2-3 | 1-2 | 1-2 | -
+9 | 3-4 | 2-3 | 2-3 | 1-2 | 1-2 | -
+10 | 3-4 | 2-3 | 2-3 | 1-2 | 1-2 | 1-2
+11 | 3-4 | 2-3 | 2-3 | 1-2 | 1-2 | 1-2
+12 | 3-4 | 2-3 | 2-3 | 1-2 | 1-2 | 1-2
+13 | 3-4 | 2-3 | 2-3 | 1-2 | 1-2 | 1-2
+14 | 4-5 | 3-4 | 2-3 | 1-2 | 1-2 | 1-2
+15 | 4-5 | 3-4 | 2-3 | 1-2 | 1-2 | 1-2
+16 | 4-5 | 3-4 | 2-3 | 1-2 | 1-2 | 1-2
+17 | 4-5 | 3-4 | 2-3 | 1-2 | 1-2 | 1-2
+18 | 5-6 | 3-4 | 3-4 | 2-3 | 2 | 1-2
+19 | 5-6 | 3-4 | 3-4 | 2-3 | 2 | 1-2
+20 | 5-6 | 3-4 | 3-4 | 2-3 | 2 | 1-2
+21 | 5-6 | 3-4 | 3-4 | 2-3 | 2 | 1-2
+22 | 5-6 | 3-4 | 3-4 | 2-3 | 2 | 1-2
+23 | 6-7 | 4-5 | 3-4 | 2-3 | 2 | 1-2
+24 | 6-7 | 4-5 | 3-4 | 2-3 | 2 | 1-2
+25 | 6-7 | 4-5 | 3-4 | 2-3 | 2 | 1-2
+26 | 6-7 | 4-5 | 3-4 | 2-3 | 2 | 1-2
+27 | 6-7 | 4-5 | 3-4 | 2-3 | 2 | 1-2
+28 | 7-8 | 4-5 | 3-4 | 2-3 | 2 | 1-2
+29 | 7-8 | 4-5 | 3-4 | 2-3 | 2 | 1-2
+30 | 7-8 | 4-5 | 4-5 | 2-3 | 2 | 1-2
+31 | 7-8 | 5-6 | 4-5 | 2-3 | 2 | 1-2
+32 | 7-8 | 5-6 | 4-5 | 2-3 | 2 | 1-2
+33 | 8-9 | 5-6 | 4-5 | 2-3 | 2 | 1-2
+34 | 8-9 | 5-6 | 4-5 | 2-3 | 2 | 1-2
+35 | 8-9 | 5-6 | 4-5 | 2-3 | 2 | 1-2

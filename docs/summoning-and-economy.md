@@ -1,5 +1,10 @@
 # Summoning and economy
 
+**D-427 material acquisition only:** [Rose event materials](crimson-roses.md#linear-rose-materials-d-427)
+now use low linear1-2 starts and dungeon final endpoints, preserving Rose
+unlocks. Currency including final5x, banner bundles/duplicates, sales and EX+
+are unchanged.
+
 **D-426 dungeon correction:** [linear dungeon materials and Prismatica](dungeons-and-captures.md#linear-elemental-dungeon-rewards-d-426)
 supersede D-425's dungeon taper and currency preservation. Materials start1-2
 per rarity unlock; Prismatica grows5-10->15-30 by stage, without any final

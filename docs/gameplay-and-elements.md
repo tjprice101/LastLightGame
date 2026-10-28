@@ -287,8 +287,9 @@ show only the creature's stage band. Evolution forms have separate stable IDs.
 Legacy saves begin with no recorded discoveries; earlier fights are not inferred.
 Soar/Delve discovery loot lists only each activity's two used specialties
 and its existing currencies (D-425). No weapon or elemental-material drops remain.
-Crimson Roses lists every unlocked Rosethorn material at100%, using the
-original untapered enemy-level brackets, unaffected by D-425.
+Crimson Roses lists every unlocked Rosethorn material at100%, growing linearly
+from1-2 to the same low dungeon endpoints (D-427). Existing Rose unlocks remain:
+first five tiers at Stage1, Soul at10. No material boss boost; currency unchanged.
 Adventure uses an enemy-level selector; staged encounters show their actual floor loot.
 This is a drop reference, not capture/pity or a second source of rewards.
 

@@ -6,7 +6,7 @@ import { elementSources, type LegacyElementId } from './element-migration';
 import { rollDrop, type ScaledDrop } from './loot-random';
 import { enemyCombatStats } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
-import { materialLevelBrackets, materialRarities, type MaterialRarity } from './material-drops';
+import { materialLevelBrackets, materialRarities, linearMaterialRange, type MaterialRarity } from './material-drops';
 export { materialRarities, type MaterialRarity } from './material-drops';
 
 export const playableDungeons = elements.map((element) => element.id);
@@ -63,16 +63,9 @@ export function materialLoot(element: ElementId, stage: number): (ScaledDrop & {
   return materialRarities.flatMap(rarity => {
     const firstStage = materialBrackets.find(bracket => bracket.ranges[rarity] !== undefined)!.firstStage;
     if (stage < firstStage) return [];
-    const [minimum, maximum] = dungeonMaterialFinalRanges[rarity];
-    const progress = (stage - firstStage) / (elementalDungeonRules.stages - firstStage);
-    return [{ id: `${element}-${rarity}`, minimum: Math.round(1 + (minimum - 1) * progress),
-      maximum: Math.round(2 + (maximum - 2) * progress), chance: 1 }];
+    return [{ id: `${element}-${rarity}`, ...linearMaterialRange(rarity, stage, firstStage, elementalDungeonRules.stages) }];
   });
 }
-
-export const dungeonMaterialFinalRanges: Readonly<Record<MaterialRarity, readonly [number, number]>> = {
-  common: [8, 9], uncommon: [5, 6], rare: [4, 5], epic: [2, 3], legendary: [2, 2], omnic: [1, 2],
-};
 
 export function dungeonFractalisDrop(stage: number): ScaledDrop {
   elementalEnemyLevel(stage);

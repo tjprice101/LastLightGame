@@ -977,7 +977,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       }
       if (result.state.infusion?.mode === 'roses') {
         const drop = infusionLoot('roses', result.state.infusion.stage).specialties.find((entry) => entry.id === id);
-        if (!drop || amount < drop.minimum || amount > drop.maximum || amount % multiplier !== 0) throw new Error('Invalid Rosethorn material drop.');
+        if (!drop || amount < drop.minimum || amount > drop.maximum || amount % (drop.quantityMultiplier ?? 1) !== 0) throw new Error('Invalid Rosethorn material drop.');
       } else if (roseMaterials.some((material) => material.id === id)) throw new Error('Rosethorn materials only drop in Passion of Crimson Roses.');
       if (multiplier > 1) {
         const activity = result.state.infusion;

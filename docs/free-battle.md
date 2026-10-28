@@ -47,12 +47,14 @@ each region's boss. Current endpoints include dungeon35,
 Heaven/Abyss15, Treasury/Sanctuary25, Roses35, Machines35 and each War mode10.
 **D-426 exception:** Elemental Dungeons have no boss multiplier for any reward.
 Soar/Delve specialties use their linear11-23 final range without5x.
+**D-427:** Rose materials use the same low linear dungeon endpoints without5x,
+retaining Rose unlocks and the final Prismatica boost.
 Endless Training has no terminal boss and remains unchanged.
 
 The original quantity is sampled first, then multiplied by5. This preserves
 the original chance decisions, quantity distribution and number/order of RNG
 draws; boosted ranges contain multiples of5 rather than every integer,
-except the D-425 material ranges, which contain every integer.
+except the D-425/D-426/D-427 linear material ranges, which contain every integer.
 Earlier bosses/ordinary enemies retain their existing quantities.
 No new clear transaction, retroactive grant or second reward roll.
 Account validation uses the same terminal ranges and quantity lattice;
@@ -67,7 +69,7 @@ Examples:
 | Heaven/Abyss15 |75-150 Prismatica;11-23 per used specialty; premium0/5/10/15 at75/10/10/5% |
 | Treasury25 |24,300-48,600 Prismatica |
 | Sanctuary25 |75-150 Prismatica;25 Null-Prismatica guaranteed (D-361) |
-| Roses35 |90-180 Prismatica;15-30 per successful Rosethorn roll |
+| Roses35 |90-180 Prismatica; Seed8-9/Bud5-6/Bloom4-5/Crest2-3/Heart2/Soul1-2 guaranteed |
 | Machines100 |75-150 Prismatica; guaranteed625 Broken Mechanical Components |
 | War10 |25,000-40,000 Prismatica;60% chance of25 Null-Prismatica |
 

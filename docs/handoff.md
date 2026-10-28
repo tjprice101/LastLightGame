@@ -1,5 +1,34 @@
 # Current state and handoff
 
+## Linear Rose materials with preserved unlocks/currency (D-427)
+
+- Owner confirms the same low material endpoints as D-426, preserving Rose
+  unlocks (Seed through Heart Stage1; Soul Stage10) and all Rose Prismatica.
+  Each tier grows linearly from1-2 at unlock to Seed8-9/Bud5-6/Bloom4-5/
+  Crest2-3/Heart2/Soul1-2 at35. No material boss multiplier.
+- Shared typed curve serves dungeon/Rose kills, Collections and previews.
+  Atomic validation accepts the actual material ranges rather than requiring
+  multiples5 at Rose35; currency still validates its unchanged5x lattice.
+  All35 stages, enemy stats/levels, captures, summons, Devourer sales, EX+,
+  costs and existing holdings are unchanged. No wallet/rules bump, migration,
+  load writes, run restart, retroactive grants or new RNG draws.
+- Updated Gameplay/Battle rules, relevant system/economy/progression specs,
+  decision/index, authority notes and the requested text export (35 Rose rows).
+- `npm test -- --maxWorkers=2 --reporter=json`: **6,684 passed/216 files**.
+  Covers every Rose stage's exact curve, preserved unlocks/currency, monotonic
+  endpoints, actual Burn kills, Collections, atomic saves, forgery rejection
+  and deduplication, alongside existing dungeon/infusion compatibility.
+  `npm run build`, `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`,
+  `node --check tools\smoke_server_game.mjs` and `git diff --check` passed.
+  Existing Vite chunk/jsdom canvas warnings remain.
+- Matching authority deployed; `node tools\smoke_server_game.mjs
+  --infusion-rebalance` passed26 hosted fixtures including Rose1/9/10/19/34/35,
+  exact final materials/Prismatica, local/authority parity, persistence and
+  idempotent retries. Disposable identities/cascading data removed; no real
+  accounts changed or resources granted.
+- Client publication requires successful CI/Pages and hosted build-SHA match.
+
 ## Linear Elemental Dungeon rewards with no boss boost (D-426)
 
 - Owner rejects the D-425 taper/final spike and confirms1-2 starts for each
@@ -28,7 +57,8 @@
   stages, all six finals, unchanged Soar/Delve, old holdings/migration,
   local/authority parity, persistence and idempotent retries. All disposable
   identities/cascading data removed. No real account grants.
-- Client publication requires successful CI/Pages and hosted build-SHA match.
+- Published `39932d304e14355240670ecf3fbba0341732b654`; CI/Pages40610272474
+  succeeded and hosted version SHA matched.
 
 ## Material reward rebalance and15-stage Soar/Delve (D-425)
 

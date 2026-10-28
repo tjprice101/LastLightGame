@@ -1,5 +1,10 @@
 # Documentation hub
 
+**D-427:** [linear Rose materials](crimson-roses.md#linear-rose-materials-d-427)
+share the dungeon1-2 starts and low final endpoints without a material boss
+bonus. Preserve Rose unlocks (five tiers Stage1; Soul Stage10), Prismatica
+including final5x, captures, summons, sales and EX+.
+
 **D-426:** [linear Elemental Dungeon rewards](dungeons-and-captures.md#linear-elemental-dungeon-rewards-d-426)
 start every material at1-2 on its unchanged unlock stage and grow to the
 confirmed low endpoints. Prismatica grows5-10->15-30. No dungeon boss gets

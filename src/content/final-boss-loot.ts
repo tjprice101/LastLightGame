@@ -1,7 +1,7 @@
 import { infusionStageCount, storyStageLayout, warStageCount, type InfusionModeId } from './activities';
 
 export const finalBossLootMultiplier = 5;
-export const finalBossLootText = 'Elemental Dungeon materials and Prismatica grow linearly by stage with no final-boss bonus. Other final bosses give 5x currency and component quantities on every clear. Soar and Delve specialties grow linearly to 11-23 each with no extra final-boss boost; other material quantities receive 5x. Drop, capture and recruitment chances, Conduits, chests and one-time Story bonuses are not multiplied. Calamity bosses give one unmultiplied chest instead.';
+export const finalBossLootText = 'Elemental Dungeon materials and Prismatica grow linearly by stage with no final-boss bonus. Rose materials use the same low linear ranges without a material boss bonus; Rose Prismatica keeps its existing final-boss boost. Other final bosses give 5x currency and component quantities on every clear. Soar and Delve specialties grow linearly to 11-23 each with no extra final-boss boost. Drop, capture and recruitment chances, Conduits, chests and one-time Story bonuses are not multiplied. Calamity bosses give one unmultiplied chest instead.';
 
 export function bossLootMultiplier(activity: {
   story?: { storyStage: number };

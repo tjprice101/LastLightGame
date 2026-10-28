@@ -200,13 +200,13 @@ describe('Passion of Crimson Roses integration', () => {
     }
   });
 
-  it('preserves original Rose quantities independently of linear dungeon rewards', () => {
+  it('shares linear dungeon material endpoints while retaining Rose unlocks and currency', () => {
     const first = infusionLoot('roses', 1).specialties;
     expect(first.map(drop => drop.id)).toEqual(roseMaterials.slice(0, 5).map(material => material.id));
     expect(first.map(drop => [drop.minimum, drop.maximum, drop.chance]))
-      .toEqual([[20, 25, 1], [12, 15, 1], [8, 10, 1], [5, 6, 1], [2, 3, 1]]);
+      .toEqual(Array.from({ length: 5 }, () => [1, 2, 1]));
     const final = infusionLoot('roses', 35).specialties;
-    expect(final.map((drop) => [drop.minimum, drop.maximum])).toEqual([[125, 150], [80, 100], [60, 75], [40, 50], [25, 30], [10, 15]]);
+    expect(final.map((drop) => [drop.minimum, drop.maximum])).toEqual([[8, 9], [5, 6], [4, 5], [2, 3], [2, 2], [1, 2]]);
     expect(final.map((drop) => drop.chance)).toEqual([1, 1, 1, 1, 1, 1]);
     expect(infusionLoot('roses', 9).specialties).toHaveLength(5);
     expect(infusionLoot('roses', 10).specialties).toHaveLength(6);
@@ -215,15 +215,65 @@ describe('Passion of Crimson Roses integration', () => {
     for (let stage = 1; stage <= 35; stage++) {
       const encounter = infusionEncounter('roses', stage);
       const creature = getCreature(`infusion:roses:${encounter.tier}`);
-      const ranges = encounter.level < 95 ? [[20, 25], [12, 15], [8, 10], [5, 6], [2, 3]]
-        : [[25, 30], [16, 20], [12, 15], [8, 10], [5, 6], [2, 3]];
+      const ranges = [[8, 9], [5, 6], [4, 5], [2, 3], [2, 2], [1, 2]]
+        .flatMap(([minimum, maximum], tier) => {
+          const firstStage = tier === 5 ? 10 : 1;
+          if (stage < firstStage) return [];
+          const progress = (stage - firstStage) / (35 - firstStage);
+          return [[Math.round(1 + (minimum - 1) * progress), Math.round(2 + (maximum - 2) * progress)]];
+        });
       expect(infusionLoot('roses', stage).specialties.map(drop => [drop.minimum, drop.maximum, drop.chance]))
-        .toEqual(ranges.map(([minimum, maximum]) => [minimum * (stage === 35 ? 5 : 1), maximum * (stage === 35 ? 5 : 1), 1]));
+        .toEqual(ranges.map(([minimum, maximum]) => [minimum, maximum, 1]));
+      if (stage > 1) {
+        const previous = infusionLoot('roses', stage - 1).specialties;
+        previous.forEach((drop, tier) => {
+          const current = infusionLoot('roses', stage).specialties[tier];
+          expect(current.minimum - drop.minimum).toBeGreaterThanOrEqual(0);
+          expect(current.maximum - drop.maximum).toBeGreaterThanOrEqual(0);
+          expect(current.minimum - drop.minimum).toBeLessThanOrEqual(1);
+          expect(current.maximum - drop.maximum).toBeLessThanOrEqual(1);
+        });
+      }
       expect(creatureLoot(creature, stage).filter(drop => !drop.id.startsWith('capture:'))).toEqual([{ id: 'fractalis', ...bossLootRange(fractalisDrop(encounter.level, 140), stage === 35 ? 5 : 1) },
         ...infusionLoot('roses', stage).specialties]);
     }
     expect(infusionDrops('roses', 35, () => 0)).toEqual(Object.fromEntries(final.map(drop => [drop.id, drop.minimum])));
     expect(infusionDrops('roses', 35, () => .999999)).toEqual(Object.fromEntries(final.map(drop => [drop.id, drop.maximum])));
+  });
+
+  it('saves current linear materials once at every stage, including Burn kills and unboosted final quantities', () => {
+    for (let stage = 1; stage <= 35; stage++) {
+      const store = storage();
+      const result = defeat(stage, true);
+      expect(result.state.phase).toBe('cleared');
+      const rewards = result.events.filter(event => event.kind === 'reward');
+      expect(rewards).toHaveLength(result.state.enemies.length);
+      const pool = infusionLoot('roses', stage).specialties;
+      for (const reward of rewards) {
+        expect(Object.keys(reward.materials!)).toEqual(pool.map(drop => drop.id));
+        for (const drop of pool) {
+          expect(reward.materials![drop.id]).toBeGreaterThanOrEqual(drop.minimum);
+          expect(reward.materials![drop.id]).toBeLessThanOrEqual(drop.maximum);
+        }
+      }
+      const raw = store.saved.getItem(ACCOUNT_KEY);
+      const forged = structuredClone(result);
+      forged.events.find(event => event.kind === 'reward')!.materials!['rosethorn-common'] = pool[0].maximum + 1;
+      expect(() => saveAccountRewards(store.saved, forged, 'invalid')).toThrow('Rosethorn');
+      expect(store.saved.getItem(ACCOUNT_KEY)).toBe(raw);
+      const saved = saveAccountRewards(store.saved, result, `rose-linear-${stage}`);
+      expect(saved.fractalis).toBe(rewards.reduce((sum, reward) => sum + reward.amount!, 0));
+      for (const drop of pool) expect(saved.materials[drop.id])
+        .toBe(rewards.reduce((sum, reward) => sum + reward.materials![drop.id], 0));
+      expect(saveAccountRewards(store.saved, result, `rose-linear-${stage}`)).toEqual(saved);
+      expect(store.writes()).toBe(1);
+      if (stage === 35) {
+        expect(rewards[0].amount).toBeGreaterThanOrEqual(90);
+        expect(rewards[0].amount).toBeLessThanOrEqual(180);
+        expect(rewards[0].amount! % 5).toBe(0);
+        expect(saved.materials['rosethorn-legendary']).toBe(2);
+      }
+    }
   });
 
   it('rejects forged event captures, premium/material payouts, living/wrong-stage sources and failed writes atomically', () => {

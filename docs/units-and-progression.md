@@ -1,5 +1,9 @@
 # Units and progression
 
+**D-427 acquisition only:** [Rose event material quantities](crimson-roses.md#linear-rose-materials-d-427)
+now share low linear dungeon endpoints. Recipes, costs, unlocks, owned holdings,
+summons, Devourer sales and EX+ are unchanged.
+
 **D-425/D-426 acquisition only:** [dungeon/infusion material rewards](dungeons-and-captures.md#linear-elemental-dungeon-rewards-d-426)
 are reduced/rebalanced; leveling/evolution costs and protections do not change.
 Soar/Delve now have15 stages and both used specialties from Stage1; they no
