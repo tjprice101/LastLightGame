@@ -1,6 +1,6 @@
 # Units and progression
 
-**D-425 acquisition only:** [dungeon/infusion material rewards](dungeons-and-captures.md#material-reward-rebalance-and15-stage-infusion-d-425)
+**D-425/D-426 acquisition only:** [dungeon/infusion material rewards](dungeons-and-captures.md#linear-elemental-dungeon-rewards-d-426)
 are reduced/rebalanced; leveling/evolution costs and protections do not change.
 Soar/Delve now have15 stages and both used specialties from Stage1; they no
 longer award disabled weapon-upgrade materials. Existing weapon holdings/ranks

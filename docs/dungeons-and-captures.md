@@ -1,6 +1,43 @@
 # Dungeons and captured enemies
 
+## Linear Elemental Dungeon rewards (D-426)
+
+Owner supersedes D-425's dungeon taper and final5x spike. Every unlocked
+material still drops at100% per enemy, but its minimum/maximum grow linearly
+from1-2 at its existing unlock stage to these Stage35 endpoints:
+
+| Material | First stage | Stage35 range |
+| --- | --- | --- |
+| Seed | 1 | 8-9 |
+| Bloom | 1 | 5-6 |
+| Shard | 6 | 4-5 |
+| Crest | 12 | 2-3 |
+| Heart | 19 | 2 |
+| Soul | 25 | 1-2 |
+
+For unlock stage `u`, final endpoints `a,b` and current stage `s`, use
+`p=(s-u)/(35-u)`, minimum=`round(1+(a-1)*p)`,
+maximum=`round(2+(b-2)*p)`. Whole-number rounding permits plateaus but never
+decreases. Soul stays1-2; Heart's maximum stays2 as its minimum reaches2.
+Every integer within each inclusive range is equally likely.
+
+Dungeon Prismatica also grows linearly by stage: minimum=`round(5+10*(s-1)/34)`,
+maximum=`round(10+20*(s-1)/34)`, giving5-10 at Stage1 and15-30 at35.
+**No ordinary or final dungeon boss applies any extra reward multiplier.**
+The common final-boss helper returns1 for Elemental Dungeons. Generation,
+Collections, battle/UI references and atomic reward validation share these
+same tables, including resumed encounters' future kills.
+
+All35 stages, enemy levels/stats, material unlocks, chances, owned holdings
+and save version10 remain unchanged. No migration, retroactive grants or
+run restart is needed. Soar/Delve retain D-425's15 stages/two specialties;
+all other modes and EX+ Calamity chests remain unchanged. The plain-text
+export includes all35 current material and Prismatica ranges.
+
 ## Material reward rebalance and15-stage infusion (D-425)
+
+Historical dungeon taper/reward endpoints below are superseded by D-426;
+the15-stage Soar/Delve and wallet/copy compatibility contract remains current.
 
 Elemental Dungeons remain35 stages/Lv.38-120. Every unlocked material rarity
 still drops at100%; only quantities change. Apply the retained fraction
@@ -84,9 +121,10 @@ read-only and persist on the next successful save. Enemy levels, capture
 chances/eligibility, rewards and Element-Bearer levels are unchanged.
 [Compatibility and active-run rules](character-instances.md#level-60-ceiling-d-305).
 
-**D-294/D-425 final-boss loot:** dungeon35 includes5x base material quantities
-before its70% reduction; Heaven/Abyss15 uses11-23 specialties without another
-material boost. Both retain Prismatica75-150. Heaven/Abyss premium outcomes
+**D-294/D-425/D-426 final-boss loot:** dungeon35 uses linear material
+endpoints and Prismatica15-30, without any extra multiplier.
+Heaven/Abyss15 uses11-23 specialties without another material boost and
+retains Prismatica75-150. Heaven/Abyss premium outcomes
 become0/5/10/15 at the unchanged75/10/10/5% chances. Capture chance50%,
 one-copy count and captured level/form/kit are unchanged. Earlier bosses use
 ordinary stage payouts. [Shared contract](free-battle.md#repeatable-final-boss-loot-d-294).

@@ -1120,6 +1120,7 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
   const entropy = { seed: () => 1729, random: () => .5, uuid: () => randomUUID() };
   const cases = [
     { activity: { kind: 'dungeon', element: 'infernic', stage: 1 } },
+    ...[6, 12, 19, 25, 34].map(stage => ({ activity: { kind: 'dungeon', element: 'infernic', stage } })),
     ...['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic']
       .map(element => ({ activity: { kind: 'dungeon', element, stage: 35 } })),
     ...['heavens', 'abyss'].flatMap(mode => [1, 14, 15].map(stage =>
@@ -1186,10 +1187,26 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
       const rewards = actual.result.events.filter(event => event.kind === 'reward');
       assert.ok(rewards.length > 0);
       for (const reward of rewards) {
-        if (test.activity.kind === 'dungeon' && test.activity.stage === 35) {
-          assert.deepEqual(Object.fromEntries(['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic']
-            .map((rarity, index) => [`${test.activity.element}-${rarity}`, [38, 24, 18, 12, 8, 3][index]])), reward.materials);
-          assert.equal(reward.amount, 75);
+        if (test.activity.kind === 'dungeon') {
+          const stage = test.activity.stage, minimum = Math.round(5 + 10 * (stage - 1) / 34),
+            maximum = Math.round(10 + 20 * (stage - 1) / 34);
+          assert.ok(reward.amount >= minimum && reward.amount <= maximum);
+          const unlocks = [1, 1, 6, 12, 19, 25], finals = [[8, 9], [5, 6], [4, 5], [2, 3], [2, 2], [1, 2]];
+          const rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic'];
+          assert.deepEqual(Object.keys(reward.materials).sort(), rarities.filter((_, i) => stage >= unlocks[i])
+            .map(rarity => `${test.activity.element}-${rarity}`).sort());
+          rarities.forEach((rarity, index) => {
+            if (stage < unlocks[index]) return;
+            const progress = (stage - unlocks[index]) / (35 - unlocks[index]);
+            const amount = reward.materials[`${test.activity.element}-${rarity}`];
+            assert.ok(amount >= Math.round(1 + (finals[index][0] - 1) * progress) &&
+              amount <= Math.round(2 + (finals[index][1] - 2) * progress));
+          });
+          if (stage === 35) {
+            assert.deepEqual(Object.fromEntries(rarities.map((rarity, index) =>
+              [`${test.activity.element}-${rarity}`, finals[index][0]])), reward.materials);
+            assert.equal(reward.amount, 15);
+          }
         } else if (test.activity.kind === 'infusion') {
           const progress = (test.activity.stage - 1) / 14;
           assert.deepEqual(Object.keys(reward.materials).sort(), [`${test.activity.mode}-evolution`, `${test.activity.mode}-level`].sort());
@@ -1206,7 +1223,7 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
       assert.deepEqual((await invoke({ kind: 'read' }, actual.revision)).account, actual.account);
     }
   }
-  console.log('Hosted D-425 passed15 cases: six dungeon final rewards, opening rewards, both15-stage infusion curves/endpoints, unchanged final currencies, retained weapon holdings, v9 stage/copy/final-clear migration, saved reads and idempotent retries. Disposable identities only.');
+  console.log(`Hosted D-426 passed${cases.length} cases: linear dungeon materials/currency at opening/unlock/penultimate stages and all six finals with no bonus; unchanged15-stage Soar/Delve, retained holdings, v9 compatibility, local/authority parity, saved reads and idempotent retries. Disposable identities only.`);
 }
 
 async function smokeMachinesLayout(firstClient, firstId, firstUsername) {

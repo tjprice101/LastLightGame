@@ -4,7 +4,7 @@ import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, chara
 import { isInfusionMode, specialtyMaterials } from '../content/infusions';
 import { type InfusionModeId } from '../content/activities';
 import { getStarter, isStarterId, starters, type StarterId } from '../content/starters';
-import { isPlayableDungeon, playableDungeons, materialLoot, dungeonVariants, type PlayableDungeon } from '../content/dungeons';
+import { isPlayableDungeon, playableDungeons, materialLoot, dungeonVariants, dungeonFractalisDrop, type PlayableDungeon } from '../content/dungeons';
 import { loadProfile, type ProfileStorage } from './profile';
 import { type BattleResult } from './battle';
 import { materialName } from '../content/dungeon-art';
@@ -916,7 +916,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       continue;
     }
     if (reward.recruitment !== undefined || reward.recruitmentOutcome !== undefined) throw new Error('Recruitment requires Elemental War.');
-    const range = bossLootRange(result.state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, result.state.infusion?.mode === 'roses' ? 140 : 120), multiplier);
+    const range = bossLootRange(result.state.dungeon ? dungeonFractalisDrop(result.state.dungeon.stage) : result.state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, result.state.infusion?.mode === 'roses' ? 140 : 120), multiplier);
     if (result.state.infusion && (isCurrencyMode(result.state.infusion.mode) || result.state.infusion.mode === 'roses' || result.state.infusion.mode === 'machines') &&
         (enemy.hp > 0 || !enemy.creatureId || getCreature(enemy.creatureId).mode !== result.state.infusion.mode ||
           !getCreature(enemy.creatureId).stages.includes(result.state.infusion.stage) ||

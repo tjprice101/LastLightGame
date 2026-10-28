@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { bossLootRange } from '../content/final-boss-loot';
 import { materialLoot } from '../content/dungeons';
-import { materialRangesAtLevel } from '../content/material-drops';
 import { eventModes, infusionStageCount } from '../content/activities';
 import { capturedEnemyStats, infusionEncounter, infusionDrops, infusionLoot, roseEnemyStats } from '../content/infusions';
 import { enemyCombatStats } from '../content/stat-growth';
@@ -201,7 +200,7 @@ describe('Passion of Crimson Roses integration', () => {
     }
   });
 
-  it('preserves original Rose quantities while only dungeons receive the material taper', () => {
+  it('preserves original Rose quantities independently of linear dungeon rewards', () => {
     const first = infusionLoot('roses', 1).specialties;
     expect(first.map(drop => drop.id)).toEqual(roseMaterials.slice(0, 5).map(material => material.id));
     expect(first.map(drop => [drop.minimum, drop.maximum, drop.chance]))
@@ -211,15 +210,8 @@ describe('Passion of Crimson Roses integration', () => {
     expect(final.map((drop) => drop.chance)).toEqual([1, 1, 1, 1, 1, 1]);
     expect(infusionLoot('roses', 9).specialties).toHaveLength(5);
     expect(infusionLoot('roses', 10).specialties).toHaveLength(6);
-    for (let stage = 1; stage <= 35; stage++) {
-      const level = Math.round(38 + (stage - 1) * 82 / 34);
-      const ranges = materialRangesAtLevel(level);
-      expect(materialLoot('infernic', stage).map(drop => [drop.minimum, drop.maximum, drop.chance]))
-        .toEqual(Object.values(ranges).map(range => {
-          const scale = (stage === 35 ? 5 : 1) * (.9 - .6 * (stage - 1) / 34);
-          return [Math.max(1, Math.round(range[0] * scale)), Math.max(1, Math.round(range[1] * scale)), 1];
-        }));
-    }
+    expect(materialLoot('infernic', 35).map(drop => [drop.minimum, drop.maximum]))
+      .toEqual([[8, 9], [5, 6], [4, 5], [2, 3], [2, 2], [1, 2]]);
     for (let stage = 1; stage <= 35; stage++) {
       const encounter = infusionEncounter('roses', stage);
       const creature = getCreature(`infusion:roses:${encounter.tier}`);

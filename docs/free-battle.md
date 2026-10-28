@@ -1,10 +1,10 @@
 # Training (formerly Adventure)
 
-**D-425 material exception:** [current reward contract](dungeons-and-captures.md#material-reward-rebalance-and15-stage-infusion-d-425)
-retains final currencies but tapers Elemental Dungeon materials10%->70% after
-the base final boost, and gives15-stage Soar/Delve specialties1-2->11-23
-without another final material boost. Historical35-stage infusion and
-unqualified5x-material statements below do not override this exception.
+**D-426 dungeon exception:** [current dungeon reward contract](dungeons-and-captures.md#linear-elemental-dungeon-rewards-d-426)
+uses linear materials from1-2 per unlock and linear Prismatica5-10->15-30,
+without any dungeon boss multiplier. D-425's15-stage Soar/Delve specialties
+remain1-2->11-23 without an extra material boost. Historical35-stage infusion
+and unqualified5x statements below do not override these exceptions.
 
 ## Victory-stage replay and online loot parity (D-301)
 
@@ -45,8 +45,8 @@ Owner approves **5x existing currency, material and component quantities** on
 every terminal-boss kill, including replays. Story applies this separately to
 each region's boss. Current endpoints include dungeon35,
 Heaven/Abyss15, Treasury/Sanctuary25, Roses35, Machines35 and each War mode10.
-**D-425 exception:** dungeon material endpoints are reduced after the base
-boost; Soar/Delve specialties use their linear11-23 final range without5x.
+**D-426 exception:** Elemental Dungeons have no boss multiplier for any reward.
+Soar/Delve specialties use their linear11-23 final range without5x.
 Endless Training has no terminal boss and remains unchanged.
 
 The original quantity is sampled first, then multiplied by5. This preserves
@@ -63,7 +63,7 @@ Examples:
 
 | Final encounter | Payout |
 | --- | --- |
-| Material dungeon35 |75-150 Prismatica; Seed38-45/Bloom24-30/Shard18-23/Crest12-15/Heart8-9/Soul3-5 |
+| Material dungeon35 |15-30 Prismatica; Seed8-9/Bloom5-6/Shard4-5/Crest2-3/Heart2/Soul1-2 |
 | Heaven/Abyss15 |75-150 Prismatica;11-23 per used specialty; premium0/5/10/15 at75/10/10/5% |
 | Treasury25 |24,300-48,600 Prismatica |
 | Sanctuary25 |75-150 Prismatica;25 Null-Prismatica guaranteed (D-361) |

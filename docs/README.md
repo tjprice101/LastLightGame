@@ -1,7 +1,12 @@
 # Documentation hub
 
+**D-426:** [linear Elemental Dungeon rewards](dungeons-and-captures.md#linear-elemental-dungeon-rewards-d-426)
+start every material at1-2 on its unchanged unlock stage and grow to the
+confirmed low endpoints. Prismatica grows5-10->15-30. No dungeon boss gets
+an extra multiplier. Supersedes only D-425's dungeon taper/final boost.
+
 **D-425:** [material reward rebalance and15-stage Soar/Delve](dungeons-and-captures.md#material-reward-rebalance-and15-stage-infusion-d-425)
-tapers dungeon materials10-70%, uses two linear specialty rewards1-2->11-23,
+originally tapered dungeon materials (superseded by D-426), uses two linear specialty rewards1-2->11-23,
 and preserves currencies/captures/EX+, old holdings and retained capture kits.
 The [plain-text drop-rate export](../Drop%20Rates%20-%20Elemental%20Dungeons,%20Soar%20and%20Delve.txt)
 contains current per-stage quantities. Walletv10 and matching authority are required.

@@ -1,5 +1,18 @@
 # Authoritative game operation
 
+## Linear dungeon materials and currency (D-426)
+
+Elemental Dungeon materials and Prismatica now use rounded linear stage
+curves with no boss multiplier. Each material starts1-2 on its unchanged
+unlock stage, ending Seed8-9/Bloom5-6/Shard4-5/Crest2-3/Heart2/Soul1-2.
+Prismatica grows5-10->15-30. This supersedes D-425's dungeon taper and
+currency boost; Soar/Delve, other modes and EX+ remain unchanged.
+No wallet/rules version bump, migration, grants or encounter restart.
+Regenerate/type-check/deploy the shared authority with the client.
+`node tools\smoke_server_game.mjs --infusion-rebalance` now checks20 hosted
+fixtures, including every dungeon unlock boundary, penultimate stage and
+all six finals, unchanged Soar/Delve and historical compatibility.
+
 ## Dungeon materials and15-stage Soar/Delve (D-425)
 
 Regenerate/type-check/deploy the shared engine together with the client.

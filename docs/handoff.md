@@ -1,6 +1,38 @@
 # Current state and handoff
 
+## Linear Elemental Dungeon rewards with no boss boost (D-426)
+
+- Owner rejects the D-425 taper/final spike and confirms1-2 starts for each
+  material on its existing unlock stage. Rounded linear endpoints at35:
+  Seed8-9/Bloom5-6/Shard4-5/Crest2-3/Heart2/Soul1-2. No decreasing ranges.
+- Dungeon Prismatica also becomes stage-linear5-10->15-30, without5x.
+  Shared boss multiplier returns1 for every dungeon stage; actual kills,
+  Collections, atomic validation and Gameplay/Battle references agree.
+- Unchanged35 stages/enemy levels/stats/unlock gates/100% material chances;
+  Soar/Delve, other modes, EX+ and owned holdings unchanged. Walletv10 stays;
+  no migration, load writes, run restart, retroactive grants or new RNG draws.
+  Future kills in resumed runs use current shared reward rules.
+- Updated current system/economy/progression docs, decision/index and tagged
+  root drop-rate text. All35 material and Prismatica rows generated from
+  runtime; existing infusion/EX+ sections preserved.
+- `npm test -- --maxWorkers=2 --reporter=json`: **6,683 passed/216 files**.
+  Exact all-stage formulas, monotonic endpoints/no spike, unlock starts,
+  every dungeon's actual Burn kills/Collections/atomic saves/deduplication,
+  forged payouts and unchanged Rose/infusion behavior covered.
+  `npm run build`, `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`,
+  `node --check tools\smoke_server_game.mjs` and `git diff --check` passed.
+  Existing Vite chunk/jsdom canvas warnings remain.
+- Matching authority deployed; `node tools\smoke_server_game.mjs
+  --infusion-rebalance` passed20 hosted fixtures: opening/unlock/penultimate
+  stages, all six finals, unchanged Soar/Delve, old holdings/migration,
+  local/authority parity, persistence and idempotent retries. All disposable
+  identities/cascading data removed. No real account grants.
+- Client publication requires successful CI/Pages and hosted build-SHA match.
+
 ## Material reward rebalance and15-stage Soar/Delve (D-425)
+
+Dungeon taper/final-boost rules below are historical, superseded by D-426.
 
 - Owner explicitly selects material-only reductions: dungeon taper10%->70%,
   whole-number endpoints/minimum1; Soar/Delve25->15 with the same normalized

@@ -45,14 +45,14 @@ describe('repeatable final-boss 5x quantity contract', () => {
     const state = create();
     expect(state.enemies).toHaveLength(1);
     expect(state.enemies[0].boss).toBe(true);
-    expect(bossLootMultiplier(state)).toBe(5);
+    expect(bossLootMultiplier(state)).toBe(state.dungeon ? 1 : 5);
     const result = clear(state);
     expect(result.state.phase).toBe('cleared');
     const rewards = result.events.filter(event => event.kind === 'reward');
     expect(rewards).toHaveLength(1);
     const reward = rewards[0];
     const level = state.enemies[0].level!;
-    const expectedCurrency = state.war ? warLoot(state.war.stage).fractalis.minimum
+    const expectedCurrency = state.dungeon ? 15 : state.war ? warLoot(state.war.stage).fractalis.minimum
       : 5 * (state.story ? storyFractalisDrop(level) : state.infusion?.mode === 'treasury'
         ? treasuryFractalisDrop(level) : fractalisDrop(level, state.infusion?.mode === 'roses' ? 140 : 120)).minimum;
     expect(reward.amount).toBe(expectedCurrency);
@@ -60,7 +60,7 @@ describe('repeatable final-boss 5x quantity contract', () => {
       expect(quantity % 5).toBe(0);
       expect(quantity).toBeGreaterThanOrEqual(5);
     }
-    if (state.dungeon) expect(Object.values(reward.materials!)).toEqual([38, 24, 18, 12, 8, 3]);
+    if (state.dungeon) expect(Object.values(reward.materials!)).toEqual([8, 5, 4, 2, 2, 1]);
     if (state.infusion?.mode === 'heavens' || state.infusion?.mode === 'abyss') {
       expect(Object.values(reward.materials!)).toEqual([11, 11]);
     }
@@ -156,7 +156,7 @@ describe('repeatable final-boss 5x quantity contract', () => {
     const dungeon = clear(createDungeonBattle('infernic', 35, 1729, 'ember', progress));
     const reward = dungeon.events.find(event => event.kind === 'reward')!;
     const currency = structuredClone(dungeon);
-    currency.events.find(event => event.kind === 'reward')!.amount++;
+    currency.events.find(event => event.kind === 'reward')!.amount = 31;
     expect(() => saveAccountRewards(saved, currency, 'bad-currency')).toThrow('Prismatica');
     const materials = structuredClone(dungeon);
     materials.events.find(event => event.kind === 'reward')!.materials!['infernic-common'] = 46;
@@ -166,7 +166,7 @@ describe('repeatable final-boss 5x quantity contract', () => {
     expect(() => saveAccountRewards(saved, premium, 'bad-premium')).toThrow('Null-Prismatica');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     expect(loadAccount(saved).receipts).toHaveLength(0);
-    expect(reward.amount).toBe(75);
+    expect(reward.amount).toBe(15);
   });
 
   it('preserves the complete wallet on boosted reward overflow or denied persistence', () => {

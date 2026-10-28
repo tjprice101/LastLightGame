@@ -115,7 +115,7 @@ function evolutionRequirement(elementId, from) {
 var finalBossLootMultiplier = 5;
 function bossLootMultiplier(activity, boss = true) {
   if (!boss) return 1;
-  const final = activity.story ? activity.story.storyStage >= storyStageLayout.regionStages && activity.story.storyStage <= storyStageLayout.stages && activity.story.storyStage % storyStageLayout.regionStages === 0 : activity.dungeon ? activity.dungeon.stage === dungeonStageCount : activity.infusion ? activity.infusion.stage === infusionStageCount(activity.infusion.mode) : activity.war ? activity.war.stage === warStageCount : false;
+  const final = activity.story ? activity.story.storyStage >= storyStageLayout.regionStages && activity.story.storyStage <= storyStageLayout.stages && activity.story.storyStage % storyStageLayout.regionStages === 0 : activity.dungeon ? false : activity.infusion ? activity.infusion.stage === infusionStageCount(activity.infusion.mode) : activity.war ? activity.war.stage === warStageCount : false;
   return final ? finalBossLootMultiplier : 1;
 }
 function bossLootRange(drop, multiplier) {
@@ -5389,25 +5389,34 @@ var materialBrackets = materialLevelBrackets.map(({ level, ranges }) => {
   const firstStage = Array.from({ length: elementalDungeonRules.stages }, (_, stage) => stage + 1).find((stage) => elementalEnemyLevel(stage) >= level) ?? 1;
   return { level, firstStage, ranges };
 });
-function materialBracket(stage) {
-  elementalEnemyLevel(stage);
-  return [...materialBrackets].reverse().find((bracket) => stage >= bracket.firstStage);
-}
 function materialLoot(element, stage) {
   getElement(element);
-  const { ranges } = materialBracket(stage);
-  const multiplier = bossLootMultiplier({ dungeon: { stage } });
+  elementalEnemyLevel(stage);
   return materialRarities2.flatMap((rarity) => {
-    const range2 = ranges[rarity];
-    if (!range2) return [];
-    const retained = 0.9 - 0.6 * (stage - 1) / (elementalDungeonRules.stages - 1);
+    const firstStage = materialBrackets.find((bracket) => bracket.ranges[rarity] !== void 0).firstStage;
+    if (stage < firstStage) return [];
+    const [minimum, maximum] = dungeonMaterialFinalRanges[rarity];
+    const progress = (stage - firstStage) / (elementalDungeonRules.stages - firstStage);
     return [{
       id: `${element}-${rarity}`,
-      minimum: Math.max(1, Math.round(range2[0] * multiplier * retained)),
-      maximum: Math.max(1, Math.round(range2[1] * multiplier * retained)),
+      minimum: Math.round(1 + (minimum - 1) * progress),
+      maximum: Math.round(2 + (maximum - 2) * progress),
       chance: 1
     }];
   });
+}
+var dungeonMaterialFinalRanges = {
+  common: [8, 9],
+  uncommon: [5, 6],
+  rare: [4, 5],
+  epic: [2, 3],
+  legendary: [2, 2],
+  omnic: [1, 2]
+};
+function dungeonFractalisDrop(stage) {
+  elementalEnemyLevel(stage);
+  const progress = (stage - 1) / (elementalDungeonRules.stages - 1);
+  return { minimum: Math.round(5 + 10 * progress), maximum: Math.round(10 + 20 * progress), chance: 1 };
 }
 function materialDrops(element, stage, random) {
   const drops = {};
@@ -9999,7 +10008,7 @@ function awardDefeats(previous, state, events) {
       continue;
     }
     const amount = rollDrop(bossLootRange(
-      state.story ? storyEnemyFractalisDrop(enemy.level, enemy.boss === true) : state.infusion?.mode === "treasury" ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, state.infusion?.mode === "roses" ? 140 : 120),
+      state.dungeon ? dungeonFractalisDrop(state.dungeon.stage) : state.story ? storyEnemyFractalisDrop(enemy.level, enemy.boss === true) : state.infusion?.mode === "treasury" ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, state.infusion?.mode === "roses" ? 140 : 120),
       bossLootMultiplier(state, enemy.boss === true)
     ), rewardRoll);
     if (amount === void 0) throw new Error("Guaranteed Prismatica reward did not drop.");
@@ -11453,7 +11462,7 @@ function saveAccountRewards(storage, result, runId) {
       continue;
     }
     if (reward.recruitment !== void 0 || reward.recruitmentOutcome !== void 0) throw new Error("Recruitment requires Elemental War.");
-    const range2 = bossLootRange(result.state.infusion?.mode === "treasury" ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, result.state.infusion?.mode === "roses" ? 140 : 120), multiplier);
+    const range2 = bossLootRange(result.state.dungeon ? dungeonFractalisDrop(result.state.dungeon.stage) : result.state.infusion?.mode === "treasury" ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, result.state.infusion?.mode === "roses" ? 140 : 120), multiplier);
     if (result.state.infusion && (isCurrencyMode(result.state.infusion.mode) || result.state.infusion.mode === "roses" || result.state.infusion.mode === "machines") && (enemy.hp > 0 || !enemy.creatureId || getCreature(enemy.creatureId).mode !== result.state.infusion.mode || !getCreature(enemy.creatureId).stages.includes(result.state.infusion.stage) || enemy.level !== infusionEncounter(result.state.infusion.mode, result.state.infusion.stage, result.state.infusion.schedule ?? "legacy").level)) throw new Error("Invalid currency-farm reward source.");
     if (!count(reward.amount) || reward.amount < range2.minimum || reward.amount > range2.maximum || reward.amount % multiplier !== 0) throw new Error("Invalid enemy Prismatica drop.");
     account.fractalis += reward.amount;

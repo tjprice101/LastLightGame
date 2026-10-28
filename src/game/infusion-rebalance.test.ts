@@ -1,10 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 import { dungeonStageCount, elements, infusionModeStageCount, migratePreviousInfusionStage } from '../content/activities';
-import { materialLoot } from '../content/dungeons';
-import { materialRangesAtLevel } from '../content/material-drops';
+import { materialLoot, dungeonFractalisDrop, materialBrackets } from '../content/dungeons';
 import { infusionEncounter, infusionLoot } from '../content/infusions';
 import { enemySkills } from '../content/enemy-skills';
-import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, setMachineLootFocus, validateAccount } from './account';
+import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, setMachineLootFocus, validateAccount } from './account';
+import { createDungeonBattle, endTurn } from './battle';
+import { creatureLoot, getCreature } from '../content/creatures';
 import { capturedProgress, resolveCapturedFighter } from './character-instances';
 import { freshGame, publicGame, resolveOperation } from '../../supabase/functions/game-operation/engine';
 import { SAVE_KEY, type ProfileStorage } from './profile';
@@ -24,23 +25,34 @@ function historicalCopy(mode: typeof modes[number], stage: number) {
 }
 
 describe('D-425 material rewards and historical compatibility', () => {
-  it('tapers actual dungeon ranges from10% to70% without changing unlocks or final currencies', () => {
+  it('grows all dungeon materials and Prismatica linearly with no final-boss boost', () => {
+    const endpoints = [[8, 9], [5, 6], [4, 5], [2, 3], [2, 2], [1, 2]];
+    const unlocks = [1, 1, 6, 12, 19, 25];
+    expect(materialBrackets.map(bracket => bracket.firstStage)).toEqual(unlocks);
     for (const element of elements) for (let stage = 1; stage <= dungeonStageCount; stage++) {
-      const base = materialRangesAtLevel(Math.round(38 + (stage - 1) * 82 / 34));
       const drops = materialLoot(element.id, stage);
-      expect(drops).toHaveLength(Object.keys(base).length);
-      for (const drop of drops) {
-        const rarity = drop.id.slice(element.id.length + 1) as keyof typeof base;
-        const range = base[rarity]!;
-        const retained = .9 - .6 * (stage - 1) / 34;
-        const boost = stage === 35 ? 5 : 1;
-        expect(drop).toMatchObject({ chance: 1, minimum: Math.max(1, Math.round(range[0] * boost * retained)),
-          maximum: Math.max(1, Math.round(range[1] * boost * retained)) });
+      expect(drops).toHaveLength(unlocks.filter(first => stage >= first).length);
+      drops.forEach((drop, index) => {
+        const progress = (stage - unlocks[index]) / (35 - unlocks[index]);
+        const [minimum, maximum] = endpoints[index];
+        expect(drop).toMatchObject({ chance: 1, minimum: Math.round(1 + (minimum - 1) * progress),
+          maximum: Math.round(2 + (maximum - 2) * progress) });
         expect(drop.quantityMultiplier).toBeUndefined();
-      }
+        if (stage === unlocks[index]) expect([drop.minimum, drop.maximum]).toEqual([1, 2]);
+        if (stage > unlocks[index]) {
+          const previous = materialLoot(element.id, stage - 1)[index];
+          expect(drop.minimum - previous.minimum).toBeGreaterThanOrEqual(0);
+          expect(drop.maximum - previous.maximum).toBeGreaterThanOrEqual(0);
+          expect(drop.minimum - previous.minimum).toBeLessThanOrEqual(1);
+          expect(drop.maximum - previous.maximum).toBeLessThanOrEqual(1);
+        }
+      });
+      expect(dungeonFractalisDrop(stage)).toEqual({ chance: 1,
+        minimum: Math.round(5 + 10 * (stage - 1) / 34), maximum: Math.round(10 + 20 * (stage - 1) / 34) });
     }
     expect(materialLoot('infernic', 35).map(drop => [drop.minimum, drop.maximum]))
-      .toEqual([[38, 45], [24, 30], [18, 23], [12, 15], [8, 9], [3, 5]]);
+      .toEqual(endpoints);
+    for (const stage of [0, 36, 1.5, NaN, Infinity]) expect(() => dungeonFractalisDrop(stage)).toThrow();
   });
   it.each(modes)('%s has15 stages, the same normalized level curve, and exactly two linear specialties', mode => {
     expect(infusionModeStageCount).toBe(15);
@@ -57,6 +69,42 @@ describe('D-425 material rewards and historical compatibility', () => {
           ['evolution', 'level'].map(purpose => ({ id: `${mode}-${purpose}`, chance: 1,
             minimum: Math.round(1 + 10 * progress), maximum: Math.round(2 + 21 * progress) })) });
       }
+    }
+  });
+  it('uses identical linear ranges in actual kills, Collections and atomic saves at every dungeon stage', () => {
+    for (const element of elements) for (let stage = 1; stage <= 35; stage++) {
+      const state = createDungeonBattle(element.id, stage, 1729, 'ember', { level: 105, evolution: 6 });
+      state.enemies.forEach(enemy => { enemy.hp = 1; enemy.burn = { damage: 1, turns: 1 }; });
+      const result = endTurn(state);
+      const saved = storage(JSON.stringify(emptyAccount()));
+      const before = saved.getItem(ACCOUNT_KEY);
+      const rewards = result.events.filter(event => event.kind === 'reward');
+      expect(rewards).toHaveLength(state.enemies.length);
+      const forged = structuredClone(result);
+      forged.events.find(event => event.kind === 'reward')!.amount = dungeonFractalisDrop(stage).maximum + 1;
+      expect(() => saveAccountRewards(saved, forged, 'bad-currency')).toThrow('Prismatica');
+      expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
+      const badMaterials = structuredClone(result);
+      badMaterials.events.find(event => event.kind === 'reward')!.materials![`${element.id}-common`] =
+        materialLoot(element.id, stage)[0].maximum + 1;
+      expect(() => saveAccountRewards(saved, badMaterials, 'bad-material')).toThrow('material');
+      expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
+      for (const reward of rewards) {
+        expect(reward.amount).toBeGreaterThanOrEqual(dungeonFractalisDrop(stage).minimum);
+        expect(reward.amount).toBeLessThanOrEqual(dungeonFractalisDrop(stage).maximum);
+        for (const drop of materialLoot(element.id, stage)) {
+          expect(reward.materials![drop.id]).toBeGreaterThanOrEqual(drop.minimum);
+          expect(reward.materials![drop.id]).toBeLessThanOrEqual(drop.maximum);
+        }
+      }
+      const loot = creatureLoot(getCreature(state.enemies[0].creatureId!), stage);
+      expect(loot.find(drop => drop.id === 'fractalis')).toMatchObject(dungeonFractalisDrop(stage));
+      for (const drop of materialLoot(element.id, stage)) expect(loot.find(entry => entry.id === drop.id)).toEqual(drop);
+      const write = vi.spyOn(saved, 'setItem');
+      const account = saveAccountRewards(saved, result, 'linear');
+      expect(account.fractalis).toBe(rewards.reduce((sum, reward) => sum + reward.amount!, 0));
+      expect(saveAccountRewards(saved, result, 'linear')).toEqual(account);
+      expect(write).toHaveBeenCalledOnce();
     }
   });
   it.each(modes)('%s migrates all historical stages read-only once, retaining genuine final-clear eligibility', mode => {

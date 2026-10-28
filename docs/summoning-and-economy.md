@@ -1,9 +1,16 @@
 # Summoning and economy
 
+**D-426 dungeon correction:** [linear dungeon materials and Prismatica](dungeons-and-captures.md#linear-elemental-dungeon-rewards-d-426)
+supersede D-425's dungeon taper and currency preservation. Materials start1-2
+per rarity unlock; Prismatica grows5-10->15-30 by stage, without any final
+boss boost. Soar/Delve, other modes, EX+ and saved holdings stay unchanged.
+
 ## Material acquisition and walletv10 (D-425)
 
 [Current dungeon/infusion rewards](dungeons-and-captures.md#material-reward-rebalance-and15-stage-infusion-d-425)
-reduce only material yields and shorten Soar/Delve to15 stages. All currency
+originally reduced only material yields and shortened Soar/Delve to15 stages.
+The D-426 dungeon correction above now supersedes that mode's currency rule.
+All other currency
 curves/odds, captures, EX+ chests, prices, summon rates/pity and upgrade costs
 remain unchanged. Existing weapon specialties remain owned but no longer drop.
 Walletv10 migrates prior infusion unlocks once, read-only, preserves exact

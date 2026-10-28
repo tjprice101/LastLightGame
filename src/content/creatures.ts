@@ -4,7 +4,7 @@ import { machineConduitLoot, type MachineLootFocus } from './machines';
 import type { ConduitId } from './conduits';
 import { masterChest } from './master-conduits';
 import { machineComponentDrop } from './mechanical-components';
-import { dungeonEncounter, dungeonVariants, materialLoot } from './dungeons';
+import { dungeonEncounter, dungeonVariants, materialLoot, dungeonFractalisDrop } from './dungeons';
 import { infusionEncounter, infusionLoot, infusionElements, enemyCaptureAllowed, enemyCaptureChance } from './infusions';
 import { fractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from './loot-random';
 import { storyEncounter, storyCreature, storyRules, storyLoot } from './story';
@@ -101,7 +101,7 @@ export function creatureLoot(creature: Creature, stage?: number, ownedConduits?:
     : creature.mode && stage !== undefined ? infusionEncounter(creature.mode, stage).level : stage ?? 1;
   const multiplier = bossLootMultiplier(creature.dungeonElement && stage !== undefined ? { dungeon: { stage } }
     : creature.mode && stage !== undefined ? { infusion: { mode: creature.mode, stage } } : {});
-  const loot: CreatureLoot[] = [{ id: 'fractalis', ...bossLootRange(creature.mode === 'treasury' ? treasuryFractalisDrop(level) : fractalisDrop(level, creature.mode === 'roses' ? 140 : 120), multiplier) }];
+  const loot: CreatureLoot[] = [{ id: 'fractalis', ...bossLootRange(creature.dungeonElement && stage !== undefined ? dungeonFractalisDrop(stage) : creature.mode === 'treasury' ? treasuryFractalisDrop(level) : fractalisDrop(level, creature.mode === 'roses' ? 140 : 120), multiplier) }];
   if (creature.mode && enemyCaptureAllowed(creature.mode, level)) loot.push({
     id: `capture:${creature.id}`, minimum: 1, maximum: 1, chance: enemyCaptureChance,
     note: 'A separate 50% chance per defeated enemy to obtain one playable copy of this exact form. Copies join at a maximum of Lv.60 and retain their form and skills. Duplicates are allowed.',

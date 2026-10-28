@@ -2,9 +2,15 @@
 
 ## Current material rewards and infusion layout (D-425)
 
+[D-426](dungeons-and-captures.md#linear-elemental-dungeon-rewards-d-426)
+supersedes the dungeon taper: materials start1-2 per rarity unlock and grow
+linearly to Seed8-9/Bloom5-6/Shard4-5/Crest2-3/Heart2/Soul1-2.
+Dungeon Prismatica grows linearly5-10->15-30, with no boss multiplier.
+Soar/Delve and EX+ remain unchanged.
+
 [D-425](dungeons-and-captures.md#material-reward-rebalance-and15-stage-infusion-d-425)
-is authoritative over historical counts/rewards below: dungeons remain35 stages,
-with material-only reduction10%->70%; Soar/Delve have15 stages, preserving the
+still owns infusion layout and compatibility: dungeons remain35 stages;
+Soar/Delve have15 stages, preserving the
 normalized Lv.50-120 curve and giving both used specialties1-2->11-23 each.
 Weapon drops stop; currencies, captures, EX+ and owned holdings remain unchanged.
 Walletv10 preserves historical unlocks and captured-copy kits read-only.
@@ -202,15 +208,18 @@ Lv35/50/65/80/95 (`materialDropLevel` in activities.ts).
 | 19-24 (Lv81-93) | 20-25 | 12-15 | 8-10 | 5-6 | 2-3 | - |
 | 25-35 (Lv96-120) | 25-30 | 16-20 | 12-15 | 8-10 | 5-6 | 2-3 |
 
-Apply `max(1,round(baseEndpoint * boost * (0.9-0.6*(stage-1)/34)))`,
-where boost is5 only at Stage35, otherwise1. Actual Stage35 ranges are
-38-45/24-30/18-23/12-15/8-9/3-5. The base table lives in `materialBrackets` in
+The table above is historical base-bracket provenance, not current quantities.
+D-426 uses `p=(stage-unlockStage)/(35-unlockStage)`, minimum
+`round(1+(finalMinimum-1)*p)`, maximum`round(2+(finalMaximum-2)*p)`.
+Actual Stage35 ranges are8-9/5-6/4-5/2-3/2/1-2, with no final boost.
+The unlock table lives in `materialBrackets` in
 [dungeons.ts](../src/content/dungeons.ts); it replaces the earlier chance-based
 level-gated curve.
 
-Earlier bosses use the ordinary stage taper. Final boss35 includes the5x
-base boost before reduction, with no extra roll or pity. All resulting integers
-within a range are possible, not just multiples of5.
+All bosses use the same linear stage curve with no extra roll, multiplier or
+pity. All resulting integers within a range are possible.
+Dungeon Prismatica is stage-linear5-10->15-30 (D-426); the shared level-based
+currency curve below still applies to Training and appropriate other modes.
 Prismatica per enemy scales from 5-10 at Lv1 to 15-30 at Lv120 in every mode:
 `minimum = 5 + floor(10*((L-1)/119)^2)`, maximum = twice minimum.
 Adventure remains endless, with loot/stats capped at enemy Lv120.

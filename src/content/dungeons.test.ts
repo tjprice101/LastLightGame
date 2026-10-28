@@ -47,8 +47,8 @@ describe('elemental material dungeons', () => {
   });
   it.each(playableDungeons)('%s grants only its own materials; final bosses reject unbuilt solo clears', (element) => {
     expect(materialDrops(element, 35, () => 0)).toEqual({
-      [`${element}-common`]: 38, [`${element}-uncommon`]: 24, [`${element}-rare`]: 18,
-      [`${element}-epic`]: 12, [`${element}-legendary`]: 8, [`${element}-omnic`]: 3,
+      [`${element}-common`]: 8, [`${element}-uncommon`]: 5, [`${element}-rare`]: 4,
+      [`${element}-epic`]: 2, [`${element}-legendary`]: 2, [`${element}-omnic`]: 1,
     });
     for (const stage of [1, 35]) {
       let state = createDungeonBattle(element, stage, 1729, 'ember', stage === 1 ? { level: 38, evolution: 2 } : { level: 105, evolution: 6 });
@@ -57,11 +57,11 @@ describe('elemental material dungeons', () => {
     }
   });
   it('guarantees every unlocked rarity and adds the next rarity each bracket', () => {
-    expect(materialDrops('infernic', 1, () => 0)).toEqual({ 'infernic-common': 7, 'infernic-uncommon': 2 });
-    expect(materialDrops('infernic', 5, () => .99)).toEqual({ 'infernic-common': 8, 'infernic-uncommon': 2 });
-    expect(materialDrops('infernic', 6, () => 0)).toEqual({ 'infernic-common': 10, 'infernic-uncommon': 4, 'infernic-rare': 2 });
-    expect(materialDrops('infernic', 34, () => .99)).toEqual({ 'infernic-common': 10, 'infernic-uncommon': 6,
-      'infernic-rare': 5, 'infernic-epic': 3, 'infernic-legendary': 2, 'infernic-omnic': 1 });
+    expect(materialDrops('infernic', 1, () => 0)).toEqual({ 'infernic-common': 1, 'infernic-uncommon': 1 });
+    expect(materialDrops('infernic', 5, () => .99)).toEqual({ 'infernic-common': 3, 'infernic-uncommon': 2 });
+    expect(materialDrops('infernic', 6, () => 0)).toEqual({ 'infernic-common': 2, 'infernic-uncommon': 2, 'infernic-rare': 1 });
+    expect(materialDrops('infernic', 34, () => .99)).toEqual({ 'infernic-common': 9, 'infernic-uncommon': 6,
+      'infernic-rare': 5, 'infernic-epic': 3, 'infernic-legendary': 2, 'infernic-omnic': 2 });
     materialBrackets.forEach((bracket, index) => {
       expect(Object.keys(bracket.ranges)).toEqual(materialRarities.slice(0, index + 1));
       expect(bracket.level).toBe(materialDropLevel(elementRarities[index]));
@@ -105,8 +105,8 @@ describe('elemental material dungeons', () => {
     expect(encounter.stats).toEqual(enemyCombatStats(120, true));
     expect(materialBrackets.map((bracket) => bracket.firstStage)).toEqual([1, 1, 6, 12, 19, 25]);
     expect(materialDrops('infernic', 35, () => 0)).toEqual({
-      'infernic-common': 38, 'infernic-uncommon': 24, 'infernic-rare': 18,
-      'infernic-epic': 12, 'infernic-legendary': 8, 'infernic-omnic': 3,
+      'infernic-common': 8, 'infernic-uncommon': 5, 'infernic-rare': 4,
+      'infernic-epic': 2, 'infernic-legendary': 2, 'infernic-omnic': 1,
     });
   });
   it('uses stronger periodic enemy abilities', () => {
