@@ -59,11 +59,11 @@ describe('repeatable final-boss rewards with smooth Prismatica and retained item
       expect(quantity % 5).toBe(0);
       expect(quantity).toBeGreaterThanOrEqual(5);
     }
-    if (state.dungeon) expect(Object.values(reward.materials!)).toEqual([8, 5, 4, 2, 2, 1]);
+    if (state.dungeon) expect(Object.values(reward.materials!)).toEqual([10, 7, 6, 4, 3, 2]);
     if (state.infusion?.mode === 'heavens' || state.infusion?.mode === 'abyss') {
-      expect(Object.values(reward.materials!)).toEqual([11, 11]);
+      expect(Object.values(reward.materials!)).toEqual([7, 8]);
     }
-    if (state.infusion?.mode === 'roses') expect(Object.values(reward.materials!)).toEqual([8, 5, 4, 2, 2, 1]);
+    if (state.infusion?.mode === 'roses') expect(Object.values(reward.materials!)).toEqual([10, 7, 6, 4, 3, 2]);
     if (state.infusion?.mode === 'machines') {
       expect(reward.mechanicalComponents).toBe(625);
       expect(Object.values(reward.conduits!)).toEqual([1, 1, 1]);

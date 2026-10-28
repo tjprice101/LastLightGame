@@ -1,5 +1,54 @@
 # Current state and handoff
 
+## Coordinated farming rewards and later material costs (D-429/D-430/D-431)
+
+- Owner approves modest rounded linear material growth, allowing adjacent-stage
+  plateaus rather than requiring a full extra item every stage. Dungeon/Rose
+  final per-enemy ranges are Common10-12/Uncommon7-8/Rare6-7/Epic4-5/
+  Legendary3-4/Omnic2-3, from1-2 at each preserved unlock. No material boss
+  multiplier. Soar/Delve remain15 stages with evolution1-2->7-8 and
+  leveling1-2->8-10; no disabled weapon materials.
+- Matching Calamity evolution rows give fixed9 per selected random bundle.
+  Owner explicitly confirms this floor after learning the old range was5-10:
+  it overrides, and is not literally, a25% reduction. Selection remains50%;
+  evolution is not guaranteed. Other chest rows/guarantees remain unchanged.
+- Owner explicitly approves doubling only Element-Bearer material quantities
+  for level destinations61-105 and Evo.4->5/5->6, including existing non-Rose
+  specialties. Rose uses doubled own-family recipes without specialties.
+  Early levels/first three evolutions, captured Devourer costs, Prismatica,
+  caps, skills, fodder, existing progression and inventory remain unchanged.
+  Existing holdings buy fewer future late upgrades; no retroactive charges,
+  conversion, refund, migration or load writes. Walletv10/rules13 stay.
+- Full Lv.0->105 plus all evolutions now needs430/155/165/160/80/30 rarity
+  materials, plus30 evolution/60 leveling specialties for non-Roses;
+  Prismatica stays21,480. About40 final-rate kills' expected Common yield
+  covers full progression (late-only about30), and about7 Soar/Delve kills'
+  expected leveling-specialty yield. These are yield equivalents, not
+  guaranteed kills or measured minutes. Ordinary stages have2 enemies,
+  bosses1; final-stage replay is not automatically best per clear.
+- Shared content/cost helpers drive kills, Collections, previews, single/Max
+  Level/evolution transactions and authority. Updated relevant specs,
+  decision/index, UI rules and requested root text export. Preserved D-428
+  Prismatica, premium, captures, summons, sales, unrelated EX+ and RNG draws.
+- `npm test -- --maxWorkers=2 --testTimeout=15000 --reporter=json`:
+  **6,700 passed/217 files**. Previous default-timeout run passed6,699 with
+  one unrelated Inventory timing failure; its isolated rerun passed14/14.
+  No timeout/configuration change was committed. Exact all-roster costs,
+  unlocks/monotonic material curves, actual reward saves, forged ranges,
+  deduplication, single/Max Level/evolution, captured costs and denied writes
+  remain covered.
+- `npm run build`, `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`,
+  `node --check tools\smoke_server_game.mjs` and `git diff --check` passed.
+  Existing Vite chunk/jsdom canvas warnings remain.
+- Matching authority deployed. Hosted `--infusion-rebalance` passed54 cases
+  plus six Soar/Delve chest openings, local/server parity, persistence and
+  idempotent retries. `--evolution` passed exact Infernis5->6 material/fodder
+  consumption; `--rose-progression` passed all three Rose4->5 and75->76
+  upgrades with exact costs, persistence and retries. All disposable identities
+  and cascading records removed; no owner accounts modified/resources granted.
+- Client publication requires successful CI/Pages and hosted build-SHA match.
+
 ## Smooth Prismatica growth without currency boss spikes (D-428)
 
 - Owner approves stronger ordinary per-kill Prismatica and smooth linear
@@ -35,7 +84,8 @@
   levels1/60/120, old holdings/compatibility, local/server parity, saved reads
   and idempotent retries. Disposable identities/cascading data removed.
   No owner accounts changed or resources granted.
-- Client publication requires successful CI/Pages and hosted build-SHA match.
+- Published `66f91127dcbdd72846122e1fc09aebf90c743de2`; CI/Pages40617430111
+  succeeded and hosted version SHA matched.
 
 ## Linear Rose materials with preserved unlocks/currency (D-427)
 

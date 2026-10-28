@@ -1,5 +1,44 @@
 # Units and progression
 
+## Later Element-Bearer material costs (D-431)
+
+Owner explicitly approves coordinated costs with D-430's modest rewards:
+level destinations1-60 and first three evolutions unchanged; material quantities
+double for destinations61-105 and Evo.4->5/Evo.5->6. Includes existing specialty
+surcharges only where already required: non-Rose late leveling1->2, evolution
+5->10 and10->20. Rose equivalents double their own Rosethorn rarity materials
+without gaining specialties. Prismatica, caps, skills, fodder quantities/form
+rules and captured Devourer leveling costs remain unchanged. The shared
+`levelingMaterials` base helper stays unscaled for captured copies; Element-Bearer
+cost wrappers apply the multiplier once, including Rose replacement recipes.
+
+| Full Lv.0->105 plus all evolutions | Previous | Current |
+| --- | --- | --- |
+| Common |280 |430 |
+| Uncommon |110 |155 |
+| Rare |95 |165 |
+| Epic |80 |160 |
+| Legendary |40 |80 |
+| Omnic |15 |30 |
+| Non-Rose evolution specialty |15 |30 |
+| Non-Rose leveling specialty |30 |60 |
+| Prismatica |21,480 |21,480 |
+
+Existing levels/evolutions/inventories are preserved; no retroactive charges,
+refunds or conversion. Existing holdings intentionally buy fewer future late
+upgrades. No wallet/rules bump/load writes. Shared costs drive single upgrades,
+Max Level previews/confirmation/transactions, Rose substitutions and authority.
+Rejected/stale/unaffordable/overflow/denied writes retain the complete account.
+Use existing saved-result UI/VFX without extra writes or reward rerolls.
+
+With D-430 final mean drops, Common is the full-character bottleneck at about
+40 kills' expected yield (late progression alone about30). Non-Rose leveling
+specialties need about7 kills' yield, earning evolution specialties alongside.
+These are material-yield equivalents, not guaranteed kill counts or measured
+minutes: ordinary stages have2 enemies, bosses1; currency, access and fodder
+remain independent. Final-stage replays are not automatically best per clear.
+Do not claim measured playtime or guaranteed grind duration.
+
 **D-427 acquisition only:** [Rose event material quantities](crimson-roses.md#linear-rose-materials-d-427)
 now share low linear dungeon endpoints. Recipes, costs, unlocks, owned holdings,
 summons, Devourer sales and EX+ are unchanged.

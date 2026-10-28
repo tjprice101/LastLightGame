@@ -531,3 +531,18 @@ Inventory loot, one atomic EX+3 opening and narrow/desktop saved-reward reveal
 containment without modifying real storage. That placeholder-era verification
 is historical; [current intake/release verification](handoff.md) supersedes it.
 All18 images in the Calamity set are now installed.
+## Soar/Delve evolution roll floor (D-429)
+
+Soar/Delve evolution-only chest rows are now fixed9 per selected roll.
+The owner's25%-reduction request with nearest-integer rounding/minimum9 was
+clarified against the actual old5-10 row:75% rounds4-8, then both endpoints
+hit9. Owner explicitly approves fixed9 despite it increasing lower rolls.
+Do not describe this as an achieved25% reduction; the floor takes precedence.
+
+Existing50% evolution/50% leveling selection and3/5/7 random rolls remain.
+Only selected evolution rolls award9; evolution is not guaranteed in a chest.
+Leveling stays10-20 per selected roll. Guaranteed currencies, tokens, Devourer
+copies, other modes/rows and chest opening RNG/persistence/VFX are unchanged.
+Existing unopened chests use the current table; no retroactive balance changes.
+The9 floor exceeds Soar/Delve's new ordinary evolution maximum8.
+See [ordinary evolution curve](dungeons-and-captures.md#reduced-soardelve-evolution-specialties-d-429).

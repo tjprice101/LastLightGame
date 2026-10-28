@@ -1,5 +1,12 @@
 # Passion of Crimson Roses and Roses Under Sunny Skies
 
+**D-430/D-431:** [current material curve](dungeons-and-captures.md#modest-material-staircase-d-430)
+ends Seed10-12/Bud7-8/Bloom6-7/Crest4-5/Heart3-4/Soul2-3, retaining
+existing unlocks. [Late cost multiplier](units-and-progression.md#later-element-bearer-material-costs-d-431)
+doubles only later Rosethorn material quantities; no specialty surcharge.
+Earlier material ranges/recipe quantities below are superseded. No capture,
+banner/sale, Prismatica, fodder, Calamity or existing-progress changes.
+
 **D-428 Prismatica override:** per-enemy Prismatica grows linearly from9-18
 at Stage1 to750-1,500 at35, without a boss multiplier. Supersedes the older
 quadratic90-180/final5x currency statements below. D-427 materials/unlocks,

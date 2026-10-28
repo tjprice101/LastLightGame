@@ -1,5 +1,5 @@
 LAST LIGHT - ELEMENTAL DUNGEONS, SOAR AND DELVE DROP RATES
-Snapshot: October 27, 2026 - D-428 smooth Prismatica across activities
+Snapshot: October 27, 2026 - D-429/D-430/D-431 coordinated material rewards and costs
 
 Current implemented drop rates, including ordinary stages, final bosses and
 EX+ Calamity chests.
@@ -13,18 +13,18 @@ at 1-2 when it unlocks and grows linearly to its confirmed Stage 35 range.
 Whole-number rounding creates plateaus, never decreasing quantities.
 
 Material | Unlock stage | Stage 35 quantity
-Seed     | 1            | 8-9
-Bloom    | 1            | 5-6
-Shard    | 6            | 4-5
-Crest    | 12           | 2-3
-Heart    | 19           | 2
-Soul     | 25           | 1-2
+Seed | 1 | 10-12
+Bloom | 1 | 7-8
+Shard | 6 | 6-7
+Crest | 12 | 4-5
+Heart | 19 | 3-4
+Soul | 25 | 2-3
 
 For current stage s, unlock stage u and final endpoints a,b:
 p = (s-u)/(35-u)
 minimum = round(1+(a-1)*p)
 maximum = round(2+(b-2)*p)
-Soul stays 1-2. Every integer in each inclusive range is equally likely.
+Every integer in each inclusive range is equally likely.
 
 Prismatica drops at 100% and also grows linearly across stages:
 minimum = round(5+295*(s-1)/34)
@@ -36,41 +36,41 @@ The 35-stage enemy level/stat curve and material unlock stages are unchanged.
 
 ACTUAL PER-ENEMY QUANTITIES:
 Stage | Common Seed | Uncommon Bloom | Rare Shard | Epic Crest | Legendary Heart | Omnic Soul | Prismatica
-1     | 1-2         | 1-2            | --         | --         | --              | --         | 5-10
-2     | 1-2         | 1-2            | --         | --         | --              | --         | 14-27
-3     | 1-2         | 1-2            | --         | --         | --              | --         | 22-45
-4     | 2-3         | 1-2            | --         | --         | --              | --         | 31-62
-5     | 2-3         | 1-2            | --         | --         | --              | --         | 40-79
-6     | 2-3         | 2-3            | 1-2        | --         | --              | --         | 48-97
-7     | 2-3         | 2-3            | 1-2        | --         | --              | --         | 57-114
-8     | 2-3         | 2-3            | 1-2        | --         | --              | --         | 66-131
-9     | 3-4         | 2-3            | 1-2        | --         | --              | --         | 74-149
-10    | 3-4         | 2-3            | 1-2        | --         | --              | --         | 83-166
-11    | 3-4         | 2-3            | 2-3        | --         | --              | --         | 92-184
-12    | 3-4         | 2-3            | 2-3        | 1-2        | --              | --         | 100-201
-13    | 3-4         | 2-3            | 2-3        | 1-2        | --              | --         | 109-218
-14    | 4-5         | 3-4            | 2-3        | 1-2        | --              | --         | 118-236
-15    | 4-5         | 3-4            | 2-3        | 1-2        | --              | --         | 126-253
-16    | 4-5         | 3-4            | 2-3        | 1-2        | --              | --         | 135-270
-17    | 4-5         | 3-4            | 2-3        | 1-2        | --              | --         | 144-288
-18    | 5-6         | 3-4            | 2-3        | 1-2        | --              | --         | 153-305
-19    | 5-6         | 3-4            | 2-3        | 1-2        | 1-2             | --         | 161-322
-20    | 5-6         | 3-4            | 2-3        | 1-2        | 1-2             | --         | 170-340
-21    | 5-6         | 3-4            | 3-4        | 1-2        | 1-2             | --         | 179-357
-22    | 5-6         | 3-4            | 3-4        | 1-2        | 1-2             | --         | 187-374
-23    | 6-7         | 4-5            | 3-4        | 1-2        | 1-2             | --         | 196-392
-24    | 6-7         | 4-5            | 3-4        | 2-3        | 1-2             | --         | 205-409
-25    | 6-7         | 4-5            | 3-4        | 2-3        | 1-2             | 1-2        | 213-426
-26    | 6-7         | 4-5            | 3-4        | 2-3        | 1-2             | 1-2        | 222-444
-27    | 6-7         | 4-5            | 3-4        | 2-3        | 2-2             | 1-2        | 231-461
-28    | 7-8         | 4-5            | 3-4        | 2-3        | 2-2             | 1-2        | 239-479
-29    | 7-8         | 4-5            | 3-4        | 2-3        | 2-2             | 1-2        | 248-496
-30    | 7-8         | 4-5            | 3-4        | 2-3        | 2-2             | 1-2        | 257-513
-31    | 7-8         | 5-6            | 4-5        | 2-3        | 2-2             | 1-2        | 265-531
-32    | 7-8         | 5-6            | 4-5        | 2-3        | 2-2             | 1-2        | 274-548
-33    | 8-9         | 5-6            | 4-5        | 2-3        | 2-2             | 1-2        | 283-565
-34    | 8-9         | 5-6            | 4-5        | 2-3        | 2-2             | 1-2        | 291-583
-35    | 8-9         | 5-6            | 4-5        | 2-3        | 2-2             | 1-2        | 300-600
+1 | 1-2 | 1-2 | -- | -- | -- | -- | 5-10
+2 | 1-2 | 1-2 | -- | -- | -- | -- | 14-27
+3 | 2-3 | 1-2 | -- | -- | -- | -- | 22-45
+4 | 2-3 | 2-3 | -- | -- | -- | -- | 31-62
+5 | 2-3 | 2-3 | -- | -- | -- | -- | 40-79
+6 | 2-3 | 2-3 | 1-2 | -- | -- | -- | 48-97
+7 | 3-4 | 2-3 | 1-2 | -- | -- | -- | 57-114
+8 | 3-4 | 2-3 | 1-2 | -- | -- | -- | 66-131
+9 | 3-4 | 2-3 | 2-3 | -- | -- | -- | 74-149
+10 | 3-5 | 3-4 | 2-3 | -- | -- | -- | 83-166
+11 | 4-5 | 3-4 | 2-3 | -- | -- | -- | 92-184
+12 | 4-5 | 3-4 | 2-3 | 1-2 | -- | -- | 100-201
+13 | 4-6 | 3-4 | 2-3 | 1-2 | -- | -- | 109-218
+14 | 4-6 | 3-4 | 2-3 | 1-2 | -- | -- | 118-236
+15 | 5-6 | 3-4 | 3-4 | 1-2 | -- | -- | 126-253
+16 | 5-6 | 4-5 | 3-4 | 2-3 | -- | -- | 135-270
+17 | 5-7 | 4-5 | 3-4 | 2-3 | -- | -- | 144-288
+18 | 6-7 | 4-5 | 3-4 | 2-3 | -- | -- | 153-305
+19 | 6-7 | 4-5 | 3-4 | 2-3 | 1-2 | -- | 161-322
+20 | 6-8 | 4-5 | 3-4 | 2-3 | 1-2 | -- | 170-340
+21 | 6-8 | 5-6 | 4-5 | 2-3 | 1-2 | -- | 179-357
+22 | 7-8 | 5-6 | 4-5 | 2-3 | 1-2 | -- | 187-374
+23 | 7-8 | 5-6 | 4-5 | 2-3 | 2-3 | -- | 196-392
+24 | 7-9 | 5-6 | 4-5 | 3-4 | 2-3 | -- | 205-409
+25 | 7-9 | 5-6 | 4-5 | 3-4 | 2-3 | 1-2 | 213-426
+26 | 8-9 | 5-6 | 4-5 | 3-4 | 2-3 | 1-2 | 222-444
+27 | 8-10 | 6-7 | 5-6 | 3-4 | 2-3 | 1-2 | 231-461
+28 | 8-10 | 6-7 | 5-6 | 3-4 | 2-3 | 1-2 | 239-479
+29 | 8-10 | 6-7 | 5-6 | 3-4 | 2-3 | 1-2 | 248-496
+30 | 9-11 | 6-7 | 5-6 | 3-4 | 2-3 | 2-3 | 257-513
+31 | 9-11 | 6-7 | 5-6 | 3-4 | 3-4 | 2-3 | 265-531
+32 | 9-11 | 6-7 | 5-6 | 4-5 | 3-4 | 2-3 | 274-548
+33 | 9-11 | 7-8 | 6-7 | 4-5 | 3-4 | 2-3 | 283-565
+34 | 10-12 | 7-8 | 6-7 | 4-5 | 3-4 | 2-3 | 291-583
+35 | 10-12 | 7-8 | 6-7 | 4-5 | 3-4 | 2-3 | 300-600
 Other ordinary dungeon drops:
 Null-Prismatica: 0%.
 Captured Elemental-Devourers: 0%.
@@ -98,29 +98,29 @@ Delve | Hourglass of Endless Wrath    | Stage 1 - Lv.50     | 1-2 initially
 Dawnsteel of Judgment and Voidfang of Ruin no longer drop. Existing holdings
 and legacy weapon bonuses are preserved.
 
-Quantity progression for each unlocked specialty:
+Quantity progression (both specialties guaranteed from Stage 1):
 
-Stage | Enemy level | Quantity per specialty
-1     | 50          | 1-2
-2     | 53          | 2-4
-3     | 56          | 2-5
-4     | 59          | 3-7
-5     | 62          | 4-8
-6     | 65          | 5-10
-7     | 69          | 5-11
-8     | 73          | 6-13
-9     | 77          | 7-14
-10    | 81          | 7-16
-11    | 86          | 8-17
-12    | 95          | 9-19
-13    | 103         | 10-20
-14    | 112         | 10-22
-15    | 120         | 11-23
+Stage | Enemy level | Evolution specialty | Leveling specialty
+1 | 50 | 1-2 | 1-2
+2 | 53 | 1-2 | 2-3
+3 | 56 | 2-3 | 2-3
+4 | 59 | 2-3 | 3-4
+5 | 62 | 3-4 | 3-4
+6 | 65 | 3-4 | 4-5
+7 | 69 | 4-5 | 4-5
+8 | 73 | 4-5 | 5-6
+9 | 77 | 4-5 | 5-7
+10 | 81 | 5-6 | 6-7
+11 | 86 | 5-6 | 6-8
+12 | 95 | 6-7 | 7-8
+13 | 103 | 6-7 | 7-9
+14 | 112 | 7-8 | 8-9
+15 | 120 | 7-8 | 8-10
 
-Each endpoint grows linearly with stage progress and is rounded:
-minimum = round(1 + 10 * (stage - 1) / 14)
-maximum = round(2 + 21 * (stage - 1) / 14).
-The final boss does NOT apply another material multiplier.
+Each endpoint grows linearly and is rounded; p=(stage-1)/14.
+Evolution: minimum=round(1+6*p), maximum=round(2+6*p).
+Leveling: minimum=round(1+7*p), maximum=round(2+8*p).
+No final-boss material multiplier.
 
 Elemental Seeds, Blooms, Shards, Crests, Hearts and Souls: 0% throughout both
 modes, including their EX+ chests. Their named specialty materials above are
@@ -216,11 +216,16 @@ SOAR/DELVE CHEST: EACH RANDOM LOOT ROLL
 --------------------------------------
 
 Mode  | Material                      | Chance per roll | Quantity
-Soar  | Crown of the Scarlet Oath     | 50%             | 5-10
+Soar  | Crown of the Scarlet Oath     | 50%             | 9
 Soar  | Chalice of the Undying Dawn   | 50%             | 10-20
-Delve | Heart of the Shattered Void   | 50%             | 5-10
+Delve | Heart of the Shattered Void   | 50%             | 9
 Delve | Hourglass of Endless Wrath    | 50%             | 10-20
 
+D-429: evolution is fixed 9 per selected roll, above the base maximum of 8.
+The approved minimum overrides the requested 25% reduction: the old 5-10
+row would round to 4-8 before that floor, so this is not a literal reduction.
+Evolution is not guaranteed: all random rolls may select leveling instead.
+Other rewards and selection chances are unchanged.
 These chests do not roll weapon specialties or elemental materials.
 Repeated rolls can select the same item, and their quantities accumulate.
 Calamity chest contents do not receive the ordinary final-boss 5x multiplier.
@@ -252,39 +257,39 @@ Captures, summons, sales and EX+ unchanged.
 Stage | Seed | Bud | Bloom | Crest | Heart | Soul
 1 | 1-2 | 1-2 | 1-2 | 1-2 | 1-2 | -
 2 | 1-2 | 1-2 | 1-2 | 1-2 | 1-2 | -
-3 | 1-2 | 1-2 | 1-2 | 1-2 | 1-2 | -
-4 | 2-3 | 1-2 | 1-2 | 1-2 | 1-2 | -
-5 | 2-3 | 1-2 | 1-2 | 1-2 | 1-2 | -
-6 | 2-3 | 2-3 | 1-2 | 1-2 | 1-2 | -
-7 | 2-3 | 2-3 | 2-3 | 1-2 | 1-2 | -
-8 | 2-3 | 2-3 | 2-3 | 1-2 | 1-2 | -
-9 | 3-4 | 2-3 | 2-3 | 1-2 | 1-2 | -
-10 | 3-4 | 2-3 | 2-3 | 1-2 | 1-2 | 1-2
-11 | 3-4 | 2-3 | 2-3 | 1-2 | 1-2 | 1-2
-12 | 3-4 | 2-3 | 2-3 | 1-2 | 1-2 | 1-2
-13 | 3-4 | 2-3 | 2-3 | 1-2 | 1-2 | 1-2
-14 | 4-5 | 3-4 | 2-3 | 1-2 | 1-2 | 1-2
-15 | 4-5 | 3-4 | 2-3 | 1-2 | 1-2 | 1-2
-16 | 4-5 | 3-4 | 2-3 | 1-2 | 1-2 | 1-2
-17 | 4-5 | 3-4 | 2-3 | 1-2 | 1-2 | 1-2
-18 | 5-6 | 3-4 | 3-4 | 2-3 | 2 | 1-2
-19 | 5-6 | 3-4 | 3-4 | 2-3 | 2 | 1-2
-20 | 5-6 | 3-4 | 3-4 | 2-3 | 2 | 1-2
-21 | 5-6 | 3-4 | 3-4 | 2-3 | 2 | 1-2
-22 | 5-6 | 3-4 | 3-4 | 2-3 | 2 | 1-2
-23 | 6-7 | 4-5 | 3-4 | 2-3 | 2 | 1-2
-24 | 6-7 | 4-5 | 3-4 | 2-3 | 2 | 1-2
-25 | 6-7 | 4-5 | 3-4 | 2-3 | 2 | 1-2
-26 | 6-7 | 4-5 | 3-4 | 2-3 | 2 | 1-2
-27 | 6-7 | 4-5 | 3-4 | 2-3 | 2 | 1-2
-28 | 7-8 | 4-5 | 3-4 | 2-3 | 2 | 1-2
-29 | 7-8 | 4-5 | 3-4 | 2-3 | 2 | 1-2
-30 | 7-8 | 4-5 | 4-5 | 2-3 | 2 | 1-2
-31 | 7-8 | 5-6 | 4-5 | 2-3 | 2 | 1-2
-32 | 7-8 | 5-6 | 4-5 | 2-3 | 2 | 1-2
-33 | 8-9 | 5-6 | 4-5 | 2-3 | 2 | 1-2
-34 | 8-9 | 5-6 | 4-5 | 2-3 | 2 | 1-2
-35 | 8-9 | 5-6 | 4-5 | 2-3 | 2 | 1-2
+3 | 2-3 | 1-2 | 1-2 | 1-2 | 1-2 | -
+4 | 2-3 | 2-3 | 1-2 | 1-2 | 1-2 | -
+5 | 2-3 | 2-3 | 2-3 | 1-2 | 1-2 | -
+6 | 2-3 | 2-3 | 2-3 | 1-2 | 1-2 | -
+7 | 3-4 | 2-3 | 2-3 | 2-3 | 1-2 | -
+8 | 3-4 | 2-3 | 2-3 | 2-3 | 1-2 | -
+9 | 3-4 | 2-3 | 2-3 | 2-3 | 1-2 | -
+10 | 3-5 | 3-4 | 2-3 | 2-3 | 2-3 | 1-2
+11 | 4-5 | 3-4 | 2-3 | 2-3 | 2-3 | 1-2
+12 | 4-5 | 3-4 | 3-4 | 2-3 | 2-3 | 1-2
+13 | 4-6 | 3-4 | 3-4 | 2-3 | 2-3 | 1-2
+14 | 4-6 | 3-4 | 3-4 | 2-3 | 2-3 | 1-2
+15 | 5-6 | 3-4 | 3-4 | 2-3 | 2-3 | 1-2
+16 | 5-6 | 4-5 | 3-4 | 2-3 | 2-3 | 1-2
+17 | 5-7 | 4-5 | 3-4 | 2-3 | 2-3 | 1-2
+18 | 6-7 | 4-5 | 4-5 | 3-4 | 2-3 | 1-2
+19 | 6-7 | 4-5 | 4-5 | 3-4 | 2-3 | 1-2
+20 | 6-8 | 4-5 | 4-5 | 3-4 | 2-3 | 1-2
+21 | 6-8 | 5-6 | 4-5 | 3-4 | 2-3 | 1-2
+22 | 7-8 | 5-6 | 4-5 | 3-4 | 2-3 | 1-2
+23 | 7-8 | 5-6 | 4-5 | 3-4 | 2-3 | 2-3
+24 | 7-9 | 5-6 | 4-5 | 3-4 | 2-3 | 2-3
+25 | 7-9 | 5-6 | 5-6 | 3-4 | 2-3 | 2-3
+26 | 8-9 | 5-6 | 5-6 | 3-4 | 2-3 | 2-3
+27 | 8-10 | 6-7 | 5-6 | 3-4 | 3-4 | 2-3
+28 | 8-10 | 6-7 | 5-6 | 3-4 | 3-4 | 2-3
+29 | 8-10 | 6-7 | 5-6 | 3-4 | 3-4 | 2-3
+30 | 9-11 | 6-7 | 5-6 | 4-5 | 3-4 | 2-3
+31 | 9-11 | 6-7 | 5-6 | 4-5 | 3-4 | 2-3
+32 | 9-11 | 6-7 | 6-7 | 4-5 | 3-4 | 2-3
+33 | 9-11 | 7-8 | 6-7 | 4-5 | 3-4 | 2-3
+34 | 10-12 | 7-8 | 6-7 | 4-5 | 3-4 | 2-3
+35 | 10-12 | 7-8 | 6-7 | 4-5 | 3-4 | 2-3
 
 D-428 PRISMATICA SUMMARY - ALL ORDINARY ACTIVITIES
 ================================================
@@ -304,3 +309,15 @@ Round each endpoint of opening+(final-opening)*(position-1)/(last-1).
 All quantities are uniformly sampled inclusive whole integers. No Prismatica
 boss multiplier. Material/premium/component rules, EX+ chests and Story clear
 awards/one-time regional bonuses remain unchanged. No retroactive grants.
+
+D-431 LATER ELEMENT-BEARER MATERIAL COSTS
+========================================
+Material quantities double for level destinations 61-105 and evolutions 4->5
+and 5->6, including existing non-Rose specialties. Rose uses its own materials
+without gaining specialties. Levels 1-60 and earlier evolutions are unchanged.
+Prismatica costs, Devourer-fodder rules and captured leveling costs unchanged.
+Full Lv.0->105 plus all evolutions: Common430 / Uncommon155 / Rare165 /
+Epic160 / Legendary80 / Omnic30; non-Rose evolution30 and leveling60.
+Prismatica total stays21,480. Existing progress and inventories preserved; no
+retroactive charges. Existing holdings buy fewer future late upgrades.
+Adjacent-stage reward plateaus are intentional whole-number rounding.

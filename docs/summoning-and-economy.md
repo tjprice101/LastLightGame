@@ -1,5 +1,11 @@
 # Summoning and economy
 
+**D-429/D-430/D-431 material balance:** [current material curves](dungeons-and-captures.md#modest-material-staircase-d-430)
+and [later Element-Bearer costs](units-and-progression.md#later-element-bearer-material-costs-d-431)
+supersede older material endpoints/cost claims below. Existing inventories and
+progress stay; only future late upgrades cost more. Prismatica, premium, sales,
+fodder and unrelated rewards unchanged. Soar/Delve chest evolution rolls fixed9.
+
 ## Smooth Prismatica growth across activities (D-428)
 
 This supersedes earlier per-kill Prismatica curves and all Prismatica boss

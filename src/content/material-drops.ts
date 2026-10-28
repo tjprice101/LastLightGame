@@ -4,7 +4,7 @@ export const materialRarities = ['common', 'uncommon', 'rare', 'epic', 'legendar
 export type MaterialRarity = (typeof materialRarities)[number];
 
 export const linearMaterialFinalRanges: Readonly<Record<MaterialRarity, readonly [number, number]>> = {
-  common: [8, 9], uncommon: [5, 6], rare: [4, 5], epic: [2, 3], legendary: [2, 2], omnic: [1, 2],
+  common: [10, 12], uncommon: [7, 8], rare: [6, 7], epic: [4, 5], legendary: [3, 4], omnic: [2, 3],
 };
 
 export function linearMaterialRange(rarity: MaterialRarity, stage: number, firstStage: number, lastStage: number) {

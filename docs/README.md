@@ -1,5 +1,16 @@
 # Documentation hub
 
+**D-430/D-431:** [modest material staircase](dungeons-and-captures.md#modest-material-staircase-d-430)
+and [coordinated later costs](units-and-progression.md#later-element-bearer-material-costs-d-431)
+use slightly higher dungeon/Rose endpoints, Soar/Delve7-8 evolution /8-10
+leveling, and double only later Element-Bearer material costs. Early/captured
+costs, Prismatica and existing progress remain. Adjacent-stage plateaus allowed.
+
+**D-429:** [Soar/Delve evolution specialties](dungeons-and-captures.md#reduced-soardelve-evolution-specialties-d-429)
+grow1-2->7-8 (D-430 sets leveling1-2->8-10). Matching Calamity evolution rolls
+are fixed9, explicitly confirmed after discovering the previous5-10 range.
+This floor overrides the requested25% reduction; other chest rewards stay.
+
 **D-428:** [smooth Prismatica growth](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428)
 raises ordinary activity endpoints and removes Prismatica boss multipliers.
 Treasury/War remain the high-income modes. Story remains120 stages. Materials,

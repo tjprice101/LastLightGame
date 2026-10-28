@@ -28,6 +28,23 @@ function play(initial: BattleState) {
   return playNativeBenchmark(initial);
 }
 describe('isolated Calamity definitions and rewards', () => {
+  it('keeps Soar/Delve evolution rolls fixed at9 above the base maximum8, without changing leveling or chest guarantees', () => {
+    for (const mode of ['heavens', 'abyss'] as const) {
+      expect(calamityLootTable(mode).map(row => [row.id, row.weight, row.min, row.max]))
+        .toEqual([[`${mode}-evolution`, 50, 9, 9], [`${mode}-level`, 50, 10, 20]]);
+      for (const tier of tiers) for (const quantityRoll of [0, .5, 1 - Number.EPSILON]) {
+        let calls = 0;
+        const reward = rollCalamityChest(mode, tier, () => calls++ % 2 === 0 ? 0 : quantityRoll);
+        const chest = calamityChest(mode, tier);
+        expect(reward.materials).toEqual({ [`${mode}-evolution`]: chest.bundles * 9 });
+        expect(calls).toBe(chest.bundles * 2);
+        expect(reward).toMatchObject({ fractalis: chest.fractalis, lycalis: chest.lycalis,
+          calamiticTokens: chest.calamiticTokens, devourerCopies: chest.devourerCopies });
+        const leveling = rollCalamityChest(mode, tier, () => .999999);
+        expect(leveling.materials).toEqual({ [`${mode}-level`]: chest.bundles * 20 });
+      }
+    }
+  });
   it('has exactly twelve distinct identities and thirty-six distinct chests', () => {
     expect(calamityActivities).toHaveLength(12);
     expect(new Set(calamityActivities.map(activity => activity.boss)).size).toBe(12);

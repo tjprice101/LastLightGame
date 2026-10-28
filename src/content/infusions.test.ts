@@ -130,10 +130,10 @@ describe('playable Heaven and Abyss', () => {
     }
     for (const mode of ['heavens', 'abyss'] as const) {
       expect(infusionDrops(mode, stageCount, draws([0, 0, 0]))).toEqual({
-        [`${mode}-evolution`]: 11, [`${mode}-level`]: 11,
+        [`${mode}-evolution`]: 7, [`${mode}-level`]: 8,
       });
       expect(infusionDrops(mode, stageCount, draws([.999999, .999999, .999999]))).toEqual({
-        [`${mode}-evolution`]: 23, [`${mode}-level`]: 23,
+        [`${mode}-evolution`]: 8, [`${mode}-level`]: 10,
       });
     }
     for (const bad of [-1, 1, NaN, Infinity]) expect(() => infusionDrops('abyss', stageCount, () => bad)).toThrow('[0, 1)');
@@ -240,7 +240,7 @@ describe('playable Heaven and Abyss', () => {
     const saved = storage();
     const account = emptyAccount();
     account.fractalis = 10000;
-    account.materials = { 'heavens-weapon': 275, 'abyss-weapon': 275, 'infernic-common': 100, 'infernic-rare': 25, 'infernic-epic': 10, 'heavens-evolution': 5 };
+    account.materials = { 'heavens-weapon': 275, 'abyss-weapon': 275, 'infernic-common': 100, 'infernic-rare': 50, 'infernic-epic': 20, 'heavens-evolution': 10 };
     for (let rank = 1; rank <= 10; rank++) {
       account.characters.ember = { level: 0, evolution: 1, weaponRank: rank };
       saveAccount(saved, account);
@@ -278,9 +278,9 @@ describe('playable Heaven and Abyss', () => {
   it('maps spending by all ten affinities, including leveling below 80 throughout Evo5 / 6', () => {
     for (const element of elements) {
       expect(weaponCost(element.id, { level: 0, evolution: 1 }).materials).toEqual({ [specialtyId(element.id, 'weapon')]: 5 });
-      expect(evolutionCost(element.id, { level: 75, evolution: 4 }).materials[specialtyId(element.id, 'evolution')]).toBe(5);
-      expect(evolutionCost(element.id, { level: 90, evolution: 5 }).materials[specialtyId(element.id, 'evolution')]).toBe(10);
-      for (const evolution of [5, 6]) expect(levelCost(element.id, { level: 75, evolution }).materials[specialtyId(element.id, 'level')]).toBe(1);
+      expect(evolutionCost(element.id, { level: 75, evolution: 4 }).materials[specialtyId(element.id, 'evolution')]).toBe(10);
+      expect(evolutionCost(element.id, { level: 90, evolution: 5 }).materials[specialtyId(element.id, 'evolution')]).toBe(20);
+      for (const evolution of [5, 6]) expect(levelCost(element.id, { level: 75, evolution }).materials[specialtyId(element.id, 'level')]).toBe(2);
       expect(levelCost(element.id, { level: 74, evolution: 4 }).materials[specialtyId(element.id, 'level')]).toBeUndefined();
     }
   });

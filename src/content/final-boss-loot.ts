@@ -1,7 +1,7 @@
 import { infusionStageCount, storyStageLayout, warStageCount, type InfusionModeId } from './activities';
 
 export const finalBossLootMultiplier = 5;
-export const finalBossLootText = 'Prismatica grows linearly across each activity with no boss multiplier. Elemental Dungeon and Rose materials use low linear ranges without a material boss bonus; Soar and Delve specialties grow linearly to 11-23 each. Existing final-boss Null-Prismatica, Story materials and Machine components keep their quantity boosts. Drop, capture and recruitment chances, Conduits, chests and one-time Story bonuses are not multiplied. Calamity bosses give one unmultiplied chest instead.';
+export const finalBossLootText = 'Prismatica grows linearly across each activity with no boss multiplier. Elemental Dungeon and Rose materials use low linear ranges without a material boss bonus; Soar and Delve evolution specialties grow linearly to 7-8 and leveling specialties to 8-10. Existing final-boss Null-Prismatica, Story materials and Machine components keep their quantity boosts. Drop, capture and recruitment chances, Conduits, chests and one-time Story bonuses are not multiplied. Calamity bosses give one unmultiplied chest instead.';
 
 export function bossLootMultiplier(activity: {
   story?: { storyStage: number };

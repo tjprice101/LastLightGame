@@ -204,7 +204,8 @@ export function infusionLoot(mode: InfusionModeId, stage: number, schedule: Infu
   };
   const progress = (stage - 1) / (infusionModeStageCount - 1);
   const specialties = specialtyDropTable.map(entry => ({ id: `${mode}-${entry.purpose}`,
-    minimum: Math.round(1 + 10 * progress), maximum: Math.round(2 + 21 * progress), chance: 1 }));
+    minimum: Math.round(1 + (entry.purpose === 'evolution' ? 6 : 7) * progress),
+    maximum: Math.round(2 + (entry.purpose === 'evolution' ? 6 : 8) * progress), chance: 1 }));
   return { specialties, bonuses: [] };
 }
 

@@ -1,5 +1,25 @@
 # Authoritative game operation
 
+## Coordinated materials and later costs (D-429/D-430/D-431)
+
+Regenerate/type-check/deploy the shared bundle with the client. Dungeon/Rose
+final materials10-12/7-8/6-7/4-5/3-4/2-3 retain unlocks; Soar/Delve
+evolution7-8 and leveling8-10. Matching Calamity evolution rows fixed9;
+other chest contents unchanged. Selected9 is an owner-confirmed floor,
+not a literal25% reduction from historical5-10.
+
+Element-Bearer material costs double at level destinations61+ and final two
+evolutions, including applicable specialties. Rose retains no specialties;
+captured/early costs, Prismatica and fodder remain. No wallet/rules bump,
+migration, load writes or retroactive charges. Existing holdings intentionally
+buy fewer future late upgrades; current curves apply to future rewards/openings.
+See [exact cost scope](../../../docs/units-and-progression.md#later-element-bearer-material-costs-d-431).
+
+Hosted verification: `--infusion-rebalance` covers all activity currency/
+material curves plus six Soar/Delve chest openings, persistence and retries;
+`--evolution` and `--rose-progression` verify exact new material consumption
+without changing fodder/currency, alongside existing local Max Level tests.
+
 ## Smooth Prismatica across ordinary activities (D-428)
 
 [Current endpoints and scope](../../../docs/summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428)

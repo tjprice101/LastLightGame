@@ -30,7 +30,7 @@ describe('plentiful loot quantities', () => {
       for (const drop of materialLoot(element.id, stage)) {
         expect(drop.chance).toBe(1);
         expect(drop.minimum).toBeGreaterThanOrEqual(1);
-        expect(drop.maximum).toBeLessThanOrEqual(9);
+        expect(drop.maximum).toBeLessThanOrEqual(12);
       }
     }
     for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= infusionModeStageCount; stage++) {
@@ -42,7 +42,7 @@ describe('plentiful loot quantities', () => {
       }
     }
     expect(materialLoot('infernic', 1)[0]).toMatchObject({ minimum: 1, maximum: 2 });
-    expect(materialLoot('infernic', 25)[0]).toMatchObject({ minimum: 6, maximum: 7 });
+    expect(materialLoot('infernic', 25)[0]).toMatchObject({ minimum: 7, maximum: 9 });
     for (let level = 1; level <= 120; level++) expect(fractalisDrop(level).maximum).toBeLessThanOrEqual(600);
   });
   it('uses independent integer draws from base to double base without adding locked items', () => {
@@ -69,7 +69,7 @@ describe('plentiful loot quantities', () => {
       expect(rarities).toEqual(materialRarities.slice(0, rarities.length));
     }
     const final = materialLoot('infernic', 35);
-    expect(final.map(({ minimum, maximum }) => [minimum, maximum])).toEqual([[8, 9], [5, 6], [4, 5], [2, 3], [2, 2], [1, 2]]);
+    expect(final.map(({ minimum, maximum }) => [minimum, maximum])).toEqual([[10, 12], [7, 8], [6, 7], [4, 5], [3, 4], [2, 3]]);
   });
 
   it('keeps specialty and any-element rarity gates at all Heaven and Abyss stages', () => {
@@ -89,9 +89,10 @@ describe('plentiful loot quantities', () => {
     expect(fractalisDrop(120)).toEqual({ minimum: 300, maximum: 600, chance: 1 });
     for (const mode of ['heavens', 'abyss'] as const) {
       const pool = infusionLoot(mode, infusionModeStageCount);
-      for (const drop of [...pool.specialties, ...pool.bonuses]) {
-        expect([drop.minimum, drop.maximum]).toEqual([11, 23]);
+      for (const drop of pool.specialties) {
+        expect([drop.minimum, drop.maximum]).toEqual(drop.id.endsWith('-evolution') ? [7, 8] : [8, 10]);
       }
+      expect(pool.bonuses).toEqual([]);
     }
     for (let level = 2; level <= 120; level++) expect(fractalisDrop(level).minimum).toBeGreaterThanOrEqual(fractalisDrop(level - 1).minimum);
     for (const level of [0, 121, 1.5, NaN]) expect(() => fractalisDrop(level)).toThrow();

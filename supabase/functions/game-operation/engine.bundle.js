@@ -4721,12 +4721,12 @@ function roseDuplicateMinimumLevel(creatureId) {
 // src/content/material-drops.ts
 var materialRarities2 = ["common", "uncommon", "rare", "epic", "legendary", "omnic"];
 var linearMaterialFinalRanges = {
-  common: [8, 9],
-  uncommon: [5, 6],
-  rare: [4, 5],
-  epic: [2, 3],
-  legendary: [2, 2],
-  omnic: [1, 2]
+  common: [10, 12],
+  uncommon: [7, 8],
+  rare: [6, 7],
+  epic: [4, 5],
+  legendary: [3, 4],
+  omnic: [2, 3]
 };
 function linearMaterialRange(rarity, stage, firstStage, lastStage) {
   if (!Number.isInteger(stage) || !Number.isInteger(firstStage) || !Number.isInteger(lastStage) || firstStage < 1 || firstStage >= lastStage || stage < firstStage || stage > lastStage) throw new Error("Invalid linear material stage.");
@@ -4951,8 +4951,8 @@ function infusionLoot(mode, stage, schedule = "caps") {
   const progress = (stage - 1) / (infusionModeStageCount - 1);
   const specialties = specialtyDropTable.map((entry) => ({
     id: `${mode}-${entry.purpose}`,
-    minimum: Math.round(1 + 10 * progress),
-    maximum: Math.round(2 + 21 * progress),
+    minimum: Math.round(1 + (entry.purpose === "evolution" ? 6 : 7) * progress),
+    maximum: Math.round(2 + (entry.purpose === "evolution" ? 6 : 8) * progress),
     chance: 1
   }));
   return { specialties, bonuses: [] };
@@ -4979,6 +4979,12 @@ var fractureRules = {
   lycalisReward: 10
 };
 var weaponRules = { maximumRank: 10, attackPerRank: 0.02 };
+function lateMaterialCost(cost, late) {
+  return late ? {
+    fractalis: cost.fractalis,
+    materials: Object.fromEntries(Object.entries(cost.materials).map(([id, amount]) => [id, amount * 2]))
+  } : cost;
+}
 var evolutionBalance = [
   { fractalis: 300, amounts: [15] },
   { fractalis: 600, amounts: [25, 10] },
@@ -5008,10 +5014,10 @@ function levelCost(element, progress) {
   characterGrowthFactor(progress);
   if (progress.level === characterLevelCap(progress.evolution)) throw new Error("Reach the next evolution to raise the level cap.");
   const destination = progress.level + 1;
-  return { fractalis: 10 + 2 * destination, materials: {
+  return lateMaterialCost({ fractalis: 10 + 2 * destination, materials: {
     ...levelingMaterials(element, destination),
     ...progress.evolution >= 5 ? { [specialtyId(element, "level")]: 1 } : {}
-  } };
+  } }, destination >= 61);
 }
 function evolutionCost(element, progress) {
   getElement(element);
@@ -5019,13 +5025,13 @@ function evolutionCost(element, progress) {
   if (progress.evolution === characterGrowth.forms) throw new Error("This character has reached its final evolution.");
   const recipe = evolutionRecipes[progress.evolution - 1];
   const balance = evolutionBalance[progress.evolution - 1];
-  return {
+  return lateMaterialCost({
     fractalis: balance.fractalis,
     materials: {
       ...Object.fromEntries(recipe.rarities.map((rarity, index) => [`${element}-${rarity.toLowerCase()}`, balance.amounts[index]])),
       ...progress.evolution >= 4 ? { [specialtyId(element, "evolution")]: progress.evolution === 4 ? 5 : 10 } : {}
     }
-  };
+  }, progress.evolution >= 4);
 }
 function characterLevelCap(evolution) {
   if (!Number.isInteger(evolution) || evolution < 1 || evolution > characterGrowth.forms) {
@@ -5036,19 +5042,22 @@ function characterLevelCap(evolution) {
 function characterLevelCost(id, progress) {
   const cost = levelCost(getStarter(id).elementId, progress);
   if (!isRoseCharacter(id)) return cost;
-  return { fractalis: cost.fractalis, materials: levelingMaterials("rosethorn", progress.level + 1) };
+  return lateMaterialCost(
+    { fractalis: cost.fractalis, materials: levelingMaterials("rosethorn", progress.level + 1) },
+    progress.level + 1 >= 61
+  );
 }
 function characterEvolutionCost(id, progress) {
   const cost = evolutionCost(getStarter(id).elementId, progress);
   if (!isRoseCharacter(id)) return cost;
   const recipe = evolutionRecipes[progress.evolution - 1];
   const balance = evolutionBalance[progress.evolution - 1];
-  return { fractalis: cost.fractalis, materials: {
+  return lateMaterialCost({ fractalis: cost.fractalis, materials: {
     ...Object.fromEntries(recipe.rarities.map((rarity, index) => [
       roseMaterials[materialRarities.indexOf(rarity)].id,
       balance.amounts[index]
     ]))
-  } };
+  } }, progress.evolution >= 4);
 }
 function characterEvolutionRequirement(id, evolution) {
   const requirement = evolutionRequirement(getStarter(id).elementId, evolution);
@@ -5703,8 +5712,8 @@ function calamityLootTable(activity) {
         id: `${activity}-evolution`,
         kind: "material",
         weight: 50,
-        min: 5,
-        max: 10
+        min: 9,
+        max: 9
       },
       {
         label: activity === "heavens" ? "Chalice of the Undying Dawn" : "Hourglass of Endless Wrath",

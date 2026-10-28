@@ -47,12 +47,12 @@ describe('six-form character artwork', () => {
   it.each(openingStarters)('$name has the exact Evo.6 recipe and cumulative late leveling materials', (starter) => {
     expect(evolutionCost(starter.elementId, { level: 90, evolution: 5 })).toEqual({
       fractalis: 4800,
-      materials: { [`${starter.elementId}-epic`]: 25, [`${starter.elementId}-legendary`]: 10, 'heavens-evolution': 10 },
+      materials: { [`${starter.elementId}-epic`]: 50, [`${starter.elementId}-legendary`]: 20, 'heavens-evolution': 20 },
     });
     expect(levelCost(starter.elementId, { level: 90, evolution: 6 })).toEqual({
-      fractalis: 192, materials: { [`${starter.elementId}-common`]: 4, [`${starter.elementId}-uncommon`]: 1,
-        [`${starter.elementId}-rare`]: 1, [`${starter.elementId}-epic`]: 1,
-        [`${starter.elementId}-legendary`]: 1, [`${starter.elementId}-omnic`]: 1, 'heavens-level': 1 },
+      fractalis: 192, materials: { [`${starter.elementId}-common`]: 8, [`${starter.elementId}-uncommon`]: 2,
+        [`${starter.elementId}-rare`]: 2, [`${starter.elementId}-epic`]: 2,
+        [`${starter.elementId}-legendary`]: 2, [`${starter.elementId}-omnic`]: 2, 'heavens-level': 2 },
     });
     expect(characterHub(starter, 'upgrade-0', { ...emptyAccount(), characters: { [starter.id]: { level: 90, evolution: 5 } } })).toContain('NEXT');
   });

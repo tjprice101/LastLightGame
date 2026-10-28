@@ -205,16 +205,16 @@ describe('Passion of Crimson Roses integration', () => {
     expect(first.map(drop => [drop.minimum, drop.maximum, drop.chance]))
       .toEqual(Array.from({ length: 5 }, () => [1, 2, 1]));
     const final = infusionLoot('roses', 35).specialties;
-    expect(final.map((drop) => [drop.minimum, drop.maximum])).toEqual([[8, 9], [5, 6], [4, 5], [2, 3], [2, 2], [1, 2]]);
+    expect(final.map((drop) => [drop.minimum, drop.maximum])).toEqual([[10, 12], [7, 8], [6, 7], [4, 5], [3, 4], [2, 3]]);
     expect(final.map((drop) => drop.chance)).toEqual([1, 1, 1, 1, 1, 1]);
     expect(infusionLoot('roses', 9).specialties).toHaveLength(5);
     expect(infusionLoot('roses', 10).specialties).toHaveLength(6);
     expect(materialLoot('infernic', 35).map(drop => [drop.minimum, drop.maximum]))
-      .toEqual([[8, 9], [5, 6], [4, 5], [2, 3], [2, 2], [1, 2]]);
+      .toEqual([[10, 12], [7, 8], [6, 7], [4, 5], [3, 4], [2, 3]]);
     for (let stage = 1; stage <= 35; stage++) {
       const encounter = infusionEncounter('roses', stage);
       const creature = getCreature(`infusion:roses:${encounter.tier}`);
-      const ranges = [[8, 9], [5, 6], [4, 5], [2, 3], [2, 2], [1, 2]]
+      const ranges = [[10, 12], [7, 8], [6, 7], [4, 5], [3, 4], [2, 3]]
         .flatMap(([minimum, maximum], tier) => {
           const firstStage = tier === 5 ? 10 : 1;
           if (stage < firstStage) return [];
@@ -269,7 +269,7 @@ describe('Passion of Crimson Roses integration', () => {
       if (stage === 35) {
         expect(rewards[0].amount).toBeGreaterThanOrEqual(750);
         expect(rewards[0].amount).toBeLessThanOrEqual(1500);
-        expect(saved.materials['rosethorn-legendary']).toBe(2);
+        expect(saved.materials['rosethorn-legendary']).toBeGreaterThanOrEqual(3);
       }
     }
   });
@@ -488,8 +488,8 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     for (const evolution of [4, 5]) {
       const progress = { level: characterLevelCap(evolution), evolution };
       const cost: UpgradeCost = evolution === 4
-        ? { fractalis: 2400, materials: { 'rosethorn-rare': 25, 'rosethorn-epic': 10 } }
-        : { fractalis: 4800, materials: { 'rosethorn-epic': 25, 'rosethorn-legendary': 10 } };
+        ? { fractalis: 2400, materials: { 'rosethorn-rare': 50, 'rosethorn-epic': 20 } }
+        : { fractalis: 4800, materials: { 'rosethorn-epic': 50, 'rosethorn-legendary': 20 } };
       expect(characterEvolutionCost(character.id, progress)).toEqual(cost);
       const account = funded();
       account.characters[character.id] = progress;

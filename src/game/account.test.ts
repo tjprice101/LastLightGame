@@ -140,8 +140,8 @@ describe('persistent progression transactions', () => {
     expect(result.state.phase).toBe('cleared');
     const account = saveAccountRewards(saved, result, `run-${element}`);
     expect(account.materials).toEqual({
-      [`${element}-common`]: 8, [`${element}-uncommon`]: 5, [`${element}-rare`]: 4,
-      [`${element}-epic`]: 2, [`${element}-legendary`]: 2, [`${element}-omnic`]: 1,
+      [`${element}-common`]: 10, [`${element}-uncommon`]: 7, [`${element}-rare`]: 6,
+      [`${element}-epic`]: 4, [`${element}-legendary`]: 3, [`${element}-omnic`]: 2,
     });
     expect(account.fractalis).toBe(300);
     expect(unlockedStage(loadAccount(saved), element)).toBe(35);
@@ -199,7 +199,7 @@ describe('persistent progression transactions', () => {
       }
     }
     expect(totalCost).toBe(21480);
-    expect(spent).toEqual({ 'infernic-common': 280, 'infernic-uncommon': 110, 'infernic-rare': 95, 'infernic-epic': 80, 'infernic-legendary': 40, 'infernic-omnic': 15, 'heavens-evolution': 15, 'heavens-level': 30 });
+    expect(spent).toEqual({ 'infernic-common': 430, 'infernic-uncommon': 155, 'infernic-rare': 165, 'infernic-epic': 160, 'infernic-legendary': 80, 'infernic-omnic': 30, 'heavens-evolution': 30, 'heavens-level': 60 });
     expect(account.fractalis).toBe(100000 - totalCost);
     expect(account.characters.ember).toEqual({ level: 105, evolution: 6 });
     expect(account.capturedCharacters).toHaveLength(0);

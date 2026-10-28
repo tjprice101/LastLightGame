@@ -50,6 +50,7 @@ describe('cumulative higher-rarity leveling materials', () => {
           const specialty = ['infernic', 'oceanic', 'atmospheric', 'botanic'].includes(character.elementId) ? 'heavens-level' : 'abyss-level';
           materials[specialty] = (materials[specialty] ?? 0) + 1;
         }
+        if (level >= 60) for (const id of Object.keys(materials)) materials[id] *= 2;
         expect(characterLevelCost(character.id, progress)).toEqual({ fractalis: 10 + 2 * (level + 1), materials });
       }
     }
@@ -95,11 +96,11 @@ describe('cumulative higher-rarity leveling materials', () => {
     const after = transact();
     expect(store.writes()).toBe(beforeWrites + 1);
     expect(after.fractalis).toBe(808);
-    expect(after.materials[`${family}-common`]).toBe(6);
+    expect(after.materials[`${family}-common`]).toBe(2);
     for (const rarity of materialRarities.slice(1)) {
-      expect(after.materials[`${family}-${rarity.toLowerCase()}`]).toBe(9);
+      expect(after.materials[`${family}-${rarity.toLowerCase()}`]).toBe(8);
     }
-    expect(after.materials['heavens-level']).toBe(kind === 'ember' ? 9 : 10);
+    expect(after.materials['heavens-level']).toBe(kind === 'ember' ? 8 : 10);
   });
 
   it.each([31, 46, 61, 76, 91])('Max Level stops exactly before destination %i if its new rarity is missing', destination => {
@@ -128,7 +129,8 @@ describe('cumulative higher-rarity leveling materials', () => {
     const account = emptyAccount();
     account.characters.ember = { level: 90, evolution: 6 };
     account.fractalis = 1000;
-    account.materials = { ...expectedMaterials('infernic', 91, 5), 'heavens-level': 1 };
+    account.materials = { ...Object.fromEntries(Object.entries(expectedMaterials('infernic', 91, 5))
+      .map(([id, amount]) => [id, amount * 2])), 'heavens-level': 2 };
     saveAccount(store.saved, account);
     const raw = store.saved.getItem(ACCOUNT_KEY);
     const writes = store.writes();

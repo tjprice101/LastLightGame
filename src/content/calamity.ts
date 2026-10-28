@@ -95,7 +95,7 @@ export function calamityLootTable(activity: CalamityActivityId): CalamityLootRow
   if (activity === 'heavens' || activity === 'abyss') {
     return [
       { label: activity === 'heavens' ? 'Crown of the Scarlet Oath' : 'Heart of the Shattered Void',
-        id: `${activity}-evolution`, kind: 'material', weight: 50, min: 5, max: 10 },
+        id: `${activity}-evolution`, kind: 'material', weight: 50, min: 9, max: 9 },
       { label: activity === 'heavens' ? 'Chalice of the Undying Dawn' : 'Hourglass of Endless Wrath',
         id: `${activity}-level`, kind: 'material', weight: 50, min: 10, max: 20 },
     ];

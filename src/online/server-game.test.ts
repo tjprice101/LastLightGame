@@ -149,8 +149,8 @@ describe('server authoritative game engine', () => {
       const progress = { level: characterLevelCap(evolution), evolution };
       game.account.characters[id] = progress;
       game.account.materials = evolution === 4
-        ? { 'rosethorn-rare': 25, 'rosethorn-epic': 10 }
-        : { 'rosethorn-epic': 25, 'rosethorn-legendary': 10 };
+        ? { 'rosethorn-rare': 50, 'rosethorn-epic': 20 }
+        : { 'rosethorn-epic': 50, 'rosethorn-legendary': 20 };
       game.account.capturedCharacters = Array.from({ length: evolution - 2 }, () => createCreatureCopy('infusion:roses:4'));
       const operation: GameOperation = { kind: 'upgradeCharacter', id, upgradeKind: 'evolve', expected: progress,
         fodderIds: game.account.capturedCharacters.map(copy => copy.instanceId) };
@@ -222,8 +222,8 @@ describe('server authoritative game engine', () => {
     const game = rich();
     const progress = { level: 75, evolution: 5 };
     game.account.characters[id] = progress;
-    game.account.materials = { 'rosethorn-common': 3, 'rosethorn-uncommon': 1, 'rosethorn-rare': 1,
-      'rosethorn-epic': 1, 'rosethorn-legendary': 1 };
+    game.account.materials = { 'rosethorn-common': 6, 'rosethorn-uncommon': 2, 'rosethorn-rare': 2,
+      'rosethorn-epic': 2, 'rosethorn-legendary': 2 };
     const before = structuredClone(game);
     const single = op(game, { kind: 'upgradeCharacter', id, upgradeKind: 'level', expected: progress }).game;
     const expected = maxLevelPlan(game.account, id);

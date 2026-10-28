@@ -1,5 +1,10 @@
 # Training (formerly Adventure)
 
+**D-429/D-430 materials:** [current staircase ranges](dungeons-and-captures.md#modest-material-staircase-d-430)
+supersede older material endpoints below. Dungeons/Roses end10-12/7-8/
+6-7/4-5/3-4/2-3; Soar/Delve evolution7-8 and leveling8-10.
+Prismatica, other rewards and Training are unchanged by this material pass.
+
 **D-428 currency override:** [current Prismatica curves](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428)
 grow linearly without boss multipliers across ordinary activities. Training
 grows5-10->300-600 by Lv.1-120; enemy level remains capped120. Supersedes

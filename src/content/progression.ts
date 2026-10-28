@@ -34,6 +34,10 @@ export function weaponCost(element: ElementId, progress: CharacterProgress): Upg
 }
 
 export interface UpgradeCost { fractalis: number; materials: Record<string, number> }
+function lateMaterialCost(cost: UpgradeCost, late: boolean): UpgradeCost {
+  return late ? { fractalis: cost.fractalis,
+    materials: Object.fromEntries(Object.entries(cost.materials).map(([id, amount]) => [id, amount * 2])) } : cost;
+}
 export const evolutionBalance = [
   { fractalis: 300, amounts: [15] },
   { fractalis: 600, amounts: [25, 10] },
@@ -67,8 +71,8 @@ export function levelCost(element: ElementId, progress: CharacterProgress): Upgr
   characterGrowthFactor(progress);
   if (progress.level === characterLevelCap(progress.evolution)) throw new Error('Reach the next evolution to raise the level cap.');
   const destination = progress.level + 1;
-  return { fractalis: 10 + 2 * destination, materials: { ...levelingMaterials(element, destination),
-    ...(progress.evolution >= 5 ? { [specialtyId(element, 'level')]: 1 } : {}) } };
+  return lateMaterialCost({ fractalis: 10 + 2 * destination, materials: { ...levelingMaterials(element, destination),
+    ...(progress.evolution >= 5 ? { [specialtyId(element, 'level')]: 1 } : {}) } }, destination >= 61);
 }
 
 export function evolutionCost(element: ElementId, progress: CharacterProgress): UpgradeCost {
@@ -77,13 +81,13 @@ export function evolutionCost(element: ElementId, progress: CharacterProgress): 
   if (progress.evolution === characterGrowth.forms) throw new Error('This character has reached its final evolution.');
   const recipe = evolutionRecipes[progress.evolution - 1];
   const balance = evolutionBalance[progress.evolution - 1];
-  return {
+  return lateMaterialCost({
     fractalis: balance.fractalis,
     materials: {
       ...Object.fromEntries(recipe.rarities.map((rarity, index) => [`${element}-${rarity.toLowerCase()}`, balance.amounts[index]])),
       ...(progress.evolution >= 4 ? { [specialtyId(element, 'evolution')]: progress.evolution === 4 ? 5 : 10 } : {}),
     },
-  };
+  }, progress.evolution >= 4);
 }
 
 export function characterLevelCap(evolution: number): number {
@@ -97,7 +101,8 @@ export function characterLevelCap(evolution: number): number {
 export function characterLevelCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
   const cost = levelCost(getStarter(id).elementId, progress);
   if (!isRoseCharacter(id)) return cost;
-  return { fractalis: cost.fractalis, materials: levelingMaterials('rosethorn', progress.level + 1) };
+  return lateMaterialCost({ fractalis: cost.fractalis, materials: levelingMaterials('rosethorn', progress.level + 1) },
+    progress.level + 1 >= 61);
 }
 
 export function characterEvolutionCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
@@ -105,11 +110,11 @@ export function characterEvolutionCost(id: StarterId, progress: CharacterProgres
   if (!isRoseCharacter(id)) return cost;
   const recipe = evolutionRecipes[progress.evolution - 1];
   const balance = evolutionBalance[progress.evolution - 1];
-  return { fractalis: cost.fractalis, materials: {
+  return lateMaterialCost({ fractalis: cost.fractalis, materials: {
     ...Object.fromEntries(recipe.rarities.map((rarity, index) => [
       roseMaterials[materialRarities.indexOf(rarity)].id, balance.amounts[index],
     ])),
-  } };
+  } }, progress.evolution >= 4);
 }
 
 export function characterEvolutionRequirement(id: StarterId, evolution: number) {

@@ -1158,6 +1158,9 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
       state.wave = test.level;
       state.enemies.forEach(enemy => { enemy.level = test.level; });
     }
+    if (['heavens', 'abyss'].includes(test.activity.mode)) {
+      game.account.calamityChests = Object.fromEntries([1, 2, 3].map(tier => [`calamity:${test.activity.mode}:${tier}`, 1]));
+    }
     state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
     state.allies[0].shatter = 100;
     state.rewardSeed = 0; state.lycalisSeed = 15500; state.captureSeed = 0x80000000;
@@ -1214,7 +1217,7 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
           const stage = test.activity.stage, minimum = Math.round(5 + 295 * (stage - 1) / 34),
             maximum = Math.round(10 + 590 * (stage - 1) / 34);
           assert.ok(reward.amount >= minimum && reward.amount <= maximum);
-          const unlocks = [1, 1, 6, 12, 19, 25], finals = [[8, 9], [5, 6], [4, 5], [2, 3], [2, 2], [1, 2]];
+          const unlocks = [1, 1, 6, 12, 19, 25], finals = [[10, 12], [7, 8], [6, 7], [4, 5], [3, 4], [2, 3]];
           const rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic'];
           assert.deepEqual(Object.keys(reward.materials).sort(), rarities.filter((_, i) => stage >= unlocks[i])
             .map(rarity => `${test.activity.element}-${rarity}`).sort());
@@ -1233,7 +1236,7 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
         } else if (test.activity.mode === 'roses') {
           const stage = test.activity.stage;
           const rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic'];
-          const finals = [[8, 9], [5, 6], [4, 5], [2, 3], [2, 2], [1, 2]];
+          const finals = [[10, 12], [7, 8], [6, 7], [4, 5], [3, 4], [2, 3]];
           assert.deepEqual(Object.keys(reward.materials).sort(), rarities.filter((_, tier) => tier < 5 || stage >= 10)
             .map(rarity => `rosethorn-${rarity}`).sort());
           rarities.forEach((rarity, tier) => {
@@ -1250,9 +1253,14 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
         } else if (test.activity.kind === 'infusion' && ['heavens', 'abyss'].includes(test.activity.mode)) {
           const progress = (test.activity.stage - 1) / 14;
           assert.deepEqual(Object.keys(reward.materials).sort(), [`${test.activity.mode}-evolution`, `${test.activity.mode}-level`].sort());
-          for (const amount of Object.values(reward.materials)) assert.ok(amount >= Math.round(1 + 10 * progress) && amount <= Math.round(2 + 21 * progress));
+          for (const [id, amount] of Object.entries(reward.materials)) {
+            const evolution = id.endsWith('-evolution');
+            assert.ok(amount >= Math.round(1 + (evolution ? 6 : 7) * progress) &&
+              amount <= Math.round(2 + (evolution ? 6 : 8) * progress));
+          }
           if (test.activity.stage === 15) {
-            assert.deepEqual(Object.values(reward.materials), [11, 11]);
+            assert.equal(reward.materials[`${test.activity.mode}-evolution`], 7);
+            assert.equal(reward.materials[`${test.activity.mode}-level`], 8);
             assert.equal(reward.amount, 500); assert.equal(reward.lycalis, 15);
           }
         }
@@ -1261,9 +1269,26 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
       assert.equal(actual.account.materials['abyss-weapon'], 23);
       assert.deepEqual(await invoke(operation, read.revision, id), actual);
       assert.deepEqual((await invoke({ kind: 'read' }, actual.revision)).account, actual.account);
+      if (['heavens', 'abyss'].includes(test.activity.mode) && test.activity.stage === 15) {
+        let current = actual;
+        const mode = test.activity.mode;
+        for (const tier of [1, 2, 3]) {
+          const opening = { kind: 'openCalamityChest', id: `calamity:${mode}:${tier}`, expectedCount: 1 };
+          const requestId = randomUUID(), before = current.account.materials[`${mode}-evolution`] ?? 0;
+          current = await invoke(opening, current.revision, requestId);
+          const evolution = current.calamityOpening.materials[`${mode}-evolution`] ?? 0;
+          assert.equal(evolution % 9, 0);
+          assert.ok(evolution <= [3, 5, 7][tier - 1] * 9);
+          assert.equal(current.calamityOpening.fractalis, [100000, 250000, 500000][tier - 1]);
+          assert.equal(current.calamityOpening.lycalis, [50, 70, 100][tier - 1]);
+          assert.equal(current.account.materials[`${mode}-evolution`] ?? 0, before + evolution);
+          assert.deepEqual(await invoke(opening, current.revision - 1, requestId), current);
+          assert.deepEqual((await invoke({ kind: 'read' }, current.revision)).account, current.account);
+        }
+      }
     }
   }
-  console.log(`Hosted D-428 passed${cases.length} cases: smooth approved Prismatica curves across all ordinary activities without currency boss boosts; unchanged low material curves, premium rewards, old holdings/compatibility, local/authority parity, saved reads and idempotent retries. Disposable identities only.`);
+  console.log(`Hosted D-429/D-430 passed ${cases.length} cases and six Soar/Delve chest openings: evolution1-2 to7-8, leveling1-2 to8-10, fixed9 per selected chest evolution roll, unchanged Prismatica/premium, old holdings/compatibility, local/authority parity, saved reads and idempotent retries. Disposable identities only.`);
 }
 
 async function smokeMachinesLayout(firstClient, firstId, firstUsername) {
@@ -1698,7 +1723,7 @@ async function smokeEvolutionFodder(client, userId, username) {
   game.account.firstFracture = true;
   game.account.squad = ['ember'];
   game.account.fractalis = 10000;
-  game.account.materials = { 'infernic-epic': 25, 'infernic-legendary': 10, 'heavens-evolution': 10 };
+  game.account.materials = { 'infernic-epic': 50, 'infernic-legendary': 20, 'heavens-evolution': 20 };
   game.account.capturedCharacters = [4, 4, 4, 3].map(form => ({
     instanceId: `capture:${randomUUID()}`, creatureId: `infusion:heavens:${form - 1}`, locked: false,
   }));
@@ -1737,8 +1762,8 @@ async function smokeRoseProgression(client, userId, username) {
   game.account.squad = ['rosetta', 'thornia', 'crinso'];
   game.account.firstFracture = true;
   game.account.fractalis = 10000;
-  game.account.materials = { 'rosethorn-common': 9, 'rosethorn-uncommon': 3,
-    'rosethorn-rare': 78, 'rosethorn-epic': 33, 'rosethorn-legendary': 3 };
+  game.account.materials = { 'rosethorn-common': 18, 'rosethorn-uncommon': 6,
+    'rosethorn-rare': 156, 'rosethorn-epic': 66, 'rosethorn-legendary': 6 };
   game.account.capturedCharacters = Array.from({ length: 6 }, () => ({
     instanceId: `capture:${randomUUID()}`, creatureId: 'infusion:roses:3', locked: false,
   }));

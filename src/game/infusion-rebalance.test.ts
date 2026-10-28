@@ -4,7 +4,7 @@ import { materialLoot, dungeonFractalisDrop, materialBrackets } from '../content
 import { infusionEncounter, infusionLoot } from '../content/infusions';
 import { enemySkills } from '../content/enemy-skills';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, setMachineLootFocus, validateAccount } from './account';
-import { createDungeonBattle, endTurn } from './battle';
+import { createDungeonBattle, createInfusionBattle, endTurn } from './battle';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { capturedProgress, resolveCapturedFighter } from './character-instances';
 import { freshGame, publicGame, resolveOperation } from '../../supabase/functions/game-operation/engine';
@@ -26,7 +26,7 @@ function historicalCopy(mode: typeof modes[number], stage: number) {
 
 describe('D-425 material rewards and historical compatibility', () => {
   it('grows all dungeon materials and Prismatica linearly with no final-boss boost', () => {
-    const endpoints = [[8, 9], [5, 6], [4, 5], [2, 3], [2, 2], [1, 2]];
+    const endpoints = [[10, 12], [7, 8], [6, 7], [4, 5], [3, 4], [2, 3]];
     const unlocks = [1, 1, 6, 12, 19, 25];
     expect(materialBrackets.map(bracket => bracket.firstStage)).toEqual(unlocks);
     for (const element of elements) for (let stage = 1; stage <= dungeonStageCount; stage++) {
@@ -67,8 +67,39 @@ describe('D-425 material rewards and historical compatibility', () => {
       for (const schedule of ['caps', 'legacy'] as const) {
         expect(infusionLoot(mode, stage, schedule)).toMatchObject({ bonuses: [], specialties:
           ['evolution', 'level'].map(purpose => ({ id: `${mode}-${purpose}`, chance: 1,
-            minimum: Math.round(1 + 10 * progress), maximum: Math.round(2 + 21 * progress) })) });
+            minimum: Math.round(1 + (purpose === 'evolution' ? 6 : 7) * progress),
+            maximum: Math.round(2 + (purpose === 'evolution' ? 6 : 8) * progress) })) });
       }
+    }
+  });
+  it.each(modes)('%s saves both specialty curves at all15 stages and rejects excess evolution rewards atomically', mode => {
+    for (let stage = 1; stage <= 15; stage++) {
+      const state = createInfusionBattle(mode, stage, 1729, 'ember', { level: 105, evolution: 6 });
+      state.enemies.forEach(enemy => { enemy.hp = 1; enemy.burn = { damage: 1, turns: 1 }; });
+      const result = endTurn(state), saved = storage(JSON.stringify(emptyAccount()));
+      const drops = infusionLoot(mode, stage).specialties;
+      const progress = (stage - 1) / 14;
+      expect(drops.map(drop => [drop.minimum, drop.maximum])).toEqual([
+        [Math.round(1 + 6 * progress), Math.round(2 + 6 * progress)],
+        [Math.round(1 + 7 * progress), Math.round(2 + 8 * progress)],
+      ]);
+      const creature = getCreature(state.enemies[0].creatureId!);
+      for (const drop of drops) expect(creatureLoot(creature, stage).find(entry => entry.id === drop.id)).toEqual(drop);
+      const forged = structuredClone(result), raw = saved.getItem(ACCOUNT_KEY);
+      forged.events.find(event => event.kind === 'reward')!.materials![`${mode}-evolution`] = drops[0].maximum + 1;
+      expect(() => saveAccountRewards(saved, forged, 'forged')).toThrow('specialty');
+      expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
+      const rewards = result.events.filter(event => event.kind === 'reward');
+      for (const reward of rewards) for (const drop of drops) {
+        expect(reward.materials![drop.id]).toBeGreaterThanOrEqual(drop.minimum);
+        expect(reward.materials![drop.id]).toBeLessThanOrEqual(drop.maximum);
+      }
+      const write = vi.spyOn(saved, 'setItem');
+      const account = saveAccountRewards(saved, result, `${mode}-${stage}`);
+      for (const drop of drops) expect(account.materials[drop.id])
+        .toBe(rewards.reduce((sum, reward) => sum + reward.materials![drop.id], 0));
+      expect(saveAccountRewards(saved, result, `${mode}-${stage}`)).toEqual(account);
+      expect(write).toHaveBeenCalledOnce();
     }
   });
   it('uses identical linear ranges in actual kills, Collections and atomic saves at every dungeon stage', () => {

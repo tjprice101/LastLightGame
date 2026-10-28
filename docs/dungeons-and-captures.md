@@ -1,5 +1,49 @@
 # Dungeons and captured enemies
 
+## Modest material staircase (D-430)
+
+Owner approves adjacent-stage plateaus instead of guaranteed+1 every stage.
+Each material's independently rounded min/max grows from1-2 on its unchanged
+unlock stage to these endpoints at35: Common10-12, Uncommon7-8, Rare6-7,
+Epic4-5, Legendary3-4, Omnic2-3. Shared dungeon/Rose curve:
+`p=(stage-firstStage)/(35-firstStage)`, minimum=`round(1+(finalMin-1)*p)`,
+maximum=`round(2+(finalMax-2)*p)`. Dungeon unlocks1/1/6/12/19/25; Rose
+unlocks1/1/1/1/1/10. Rounded plateaus are intentional, not an early hard cap.
+All100% rates, source IDs, unlocks, enemy levels and RNG draws remain unchanged.
+
+Soar/Delve evolution stays1-2->7-8 (D-429); leveling now grows1-2->8-10,
+using min=`round(1+7*p)`, max=`round(2+8*p)`, `p=(stage-1)/14`.
+No material boss multipliers. Calamity evolution stays fixed9 per selected
+roll; leveling chest rows stay10-20. Other chest contents and Prismatica remain.
+This supersedes earlier endpoints below, including D-429's leveling preservation.
+No migrations/load writes/retroactive grants; future rewards use current tables.
+See [coordinated later costs](units-and-progression.md#later-element-bearer-material-costs-d-431).
+
+## Reduced Soar/Delve evolution specialties (D-429)
+
+Only Crown of the Scarlet Oath (`heavens-evolution`) and Heart of the Shattered
+Void (`abyss-evolution`) change. Both remain guaranteed from Stage1, growing
+linearly1-2->7-8 through Stage15: `p=(stage-1)/14`,
+minimum=`round(1+6*p)`, maximum=`round(2+6*p)`. No final material multiplier.
+Leveling specialties retain1-2->11-23; all Prismatica, premium/capture rules,
+enemy levels/stats, material costs, sales and existing holdings are unchanged.
+
+Matching Soar/Delve Calamity evolution rows now award exactly9 per selected
+roll, with their existing50% selection weight and3/5/7 chest rolls. The owner
+initially requests25% reduction rounded with minimum9, then explicitly confirms
+fixed9 after inspection reveals the old row was only5-10 (rounded75% would
+be4-8 before the minimum). This floor overrides reduction: it is NOT a25%
+decrease from the previous distribution. Each selected evolution roll exceeds
+the new base maximum8; a chest may still select no evolution rolls.
+Leveling rows stay10-20, other chest contents/chances/guarantees unchanged.
+[Chest contract](calamity-mode.md#soardelve-evolution-roll-floor-d-429).
+
+Shared loot tables serve kills, Collections, View Loot and atomic transactions.
+No wallet/rules bump, migration, load writes, run restart or retroactive change;
+future drops/openings, including already owned unopened chests, use current rules.
+Validate all15 stages/direct and Burn rewards, exact chest row weights/quantities,
+unchanged leveling/currency, atomic forgery rejection/dedup and full suite/build.
+
 **D-428 currency override:** [current Prismatica curves](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428)
 are stage-linear: dungeons5-10->300-600, Soar/Delve6-12->500-1,000,
 without Prismatica boss boosts. Earlier currency endpoints/boost statements
