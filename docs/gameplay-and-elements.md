@@ -1,5 +1,10 @@
 # Gameplay, elements and farming framework
 
+**D-428 currency override:** all ordinary activities use the
+[approved smooth Prismatica curves](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428)
+without currency boss multipliers. This supersedes older Prismatica tables/
+boost prose below. Materials, Null-Prismatica, components and EX+ are unchanged.
+
 ## Current material rewards and infusion layout (D-425)
 
 [D-426](dungeons-and-captures.md#linear-elemental-dungeon-rewards-d-426)

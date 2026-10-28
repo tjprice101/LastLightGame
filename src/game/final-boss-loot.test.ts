@@ -2,8 +2,9 @@ import { describe, expect, it, vi } from 'vitest';
 import { bossLootMultiplier, bossLootRange } from '../content/final-boss-loot';
 import { infusionStageCount, type InfusionModeId } from '../content/activities';
 import { playableDungeons } from '../content/dungeons';
-import { elementalWars, warLoot, warStageCount } from '../content/elemental-war';
-import { fractalisDrop, storyFractalisDrop, treasuryFractalisDrop, rollDrop, rollStagedLycalis, stagedLycalisOdds } from '../content/loot-random';
+import { elementalWars, warStageCount } from '../content/elemental-war';
+import { rollDrop, rollStagedLycalis, stagedLycalisOdds } from '../content/loot-random';
+import { activityPrismaticaDrop } from '../content/prismatica';
 import { storyBossBonus, storyCompletionReward, storyRegions, storyRules } from '../content/story';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { act, createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, type BattleState } from './battle';
@@ -40,8 +41,8 @@ function storage(storyCompleted: number = storyRules.stages, fractalis = 0) {
   return saved;
 }
 
-describe('repeatable final-boss 5x quantity contract', () => {
-  it.each(cases)('awards exact boosted quantities, saves once and matches live loot for $name', ({ create }) => {
+describe('repeatable final-boss rewards with smooth Prismatica and retained item boosts', () => {
+  it.each(cases)('awards exact currency/item quantities, saves once and matches live loot for $name', ({ create }) => {
     const state = create();
     expect(state.enemies).toHaveLength(1);
     expect(state.enemies[0].boss).toBe(true);
@@ -52,9 +53,7 @@ describe('repeatable final-boss 5x quantity contract', () => {
     expect(rewards).toHaveLength(1);
     const reward = rewards[0];
     const level = state.enemies[0].level!;
-    const expectedCurrency = state.dungeon ? 15 : state.war ? warLoot(state.war.stage).fractalis.minimum
-      : 5 * (state.story ? storyFractalisDrop(level) : state.infusion?.mode === 'treasury'
-        ? treasuryFractalisDrop(level) : fractalisDrop(level, state.infusion?.mode === 'roses' ? 140 : 120)).minimum;
+    const expectedCurrency = activityPrismaticaDrop(state, level).minimum;
     expect(reward.amount).toBe(expectedCurrency);
     for (const quantity of Object.values(!state.dungeon && !['heavens', 'abyss', 'roses'].includes(state.infusion?.mode ?? '') ? reward.materials ?? {} : {})) {
       expect(quantity % 5).toBe(0);
@@ -166,7 +165,7 @@ describe('repeatable final-boss 5x quantity contract', () => {
     expect(() => saveAccountRewards(saved, premium, 'bad-premium')).toThrow('Null-Prismatica');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     expect(loadAccount(saved).receipts).toHaveLength(0);
-    expect(reward.amount).toBe(15);
+    expect(reward.amount).toBe(300);
   });
 
   it('preserves the complete wallet on boosted reward overflow or denied persistence', () => {

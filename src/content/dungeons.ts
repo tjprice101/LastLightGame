@@ -1,4 +1,5 @@
 import { elements, elementalEnemyLevel, elementalDungeonRules, getElement, type ElementId } from './activities';
+import { activityPrismaticaDrop } from './prismatica';
 import { dungeonArt, legacyDungeonArt, elementAccents } from './dungeon-art';
 import { type Stats } from './combat';
 import { legacyDungeonEnemies, legacyDungeonStrikes, type DungeonEnemy } from './dungeon-enemies';
@@ -68,9 +69,7 @@ export function materialLoot(element: ElementId, stage: number): (ScaledDrop & {
 }
 
 export function dungeonFractalisDrop(stage: number): ScaledDrop {
-  elementalEnemyLevel(stage);
-  const progress = (stage - 1) / (elementalDungeonRules.stages - 1);
-  return { minimum: Math.round(5 + 10 * progress), maximum: Math.round(10 + 20 * progress), chance: 1 };
+  return activityPrismaticaDrop({ dungeon: { stage } }, elementalEnemyLevel(stage));
 }
 
 export function materialDrops(element: ElementId, stage: number, random: () => number): Record<string, number> {

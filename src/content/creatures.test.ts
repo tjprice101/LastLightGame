@@ -66,7 +66,7 @@ describe('saved Elemental-Devourer discoveries and glossary', () => {
       }
     }
     for (const creature of creatures) expect(elements.some((element) => element.id === creature.element)).toBe(true);
-    expect(creatureLoot(getCreature('adventure:imp'), 120)).toEqual([{ id: 'fractalis', minimum: 15, maximum: 30, chance: 1 }]);
+    expect(creatureLoot(getCreature('adventure:imp'), 120)).toEqual([{ id: 'fractalis', minimum: 300, maximum: 600, chance: 1 }]);
   });
 
   it('catalogs every Adventure enemy and every authored dungeon/infusion form with stable identities', () => {
@@ -171,7 +171,7 @@ describe('saved Elemental-Devourer discoveries and glossary', () => {
         expect(elements.find((element) => drop.id.startsWith(`${element.id}-`))?.infusion).toBe(creature.mode);
       }
     }
-    expect(creatureLoot(getCreature('adventure:goblin'), 120)[0]).toEqual({ id: 'fractalis', minimum: 15, maximum: 30, chance: 1 });
+    expect(creatureLoot(getCreature('adventure:goblin'), 120)[0]).toEqual({ id: 'fractalis', minimum: 300, maximum: 600, chance: 1 });
     expect(() => creatureLoot(getCreature('infusion:heavens:5'), 1)).toThrow('Choose a stage');
   });
 });

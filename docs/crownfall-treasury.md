@@ -1,5 +1,11 @@
 # Crownfall Treasury / Phase9
 
+**D-428 Prismatica override:** each enemy pays a rounded stage-linear range
+from133-266 at Stage1 to30,000-60,000 at25, with no boss multiplier. Supersedes
+earlier quadratic/Story-line multipliers and currency tables below. Captures,
+sales, other rewards and EX+ are unchanged.
+[Shared contract](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428).
+
 **Current banner rule (D-412):** the Phase9 banner activation below is history.
 All live banners use [one80-pull pity](summoning-and-economy.md#single80-pull-pity-d-412);
 new draws award materials rather than captured copies. Historical saved copies

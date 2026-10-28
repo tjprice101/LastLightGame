@@ -1,5 +1,11 @@
 # Documentation hub
 
+**D-428:** [smooth Prismatica growth](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428)
+raises ordinary activity endpoints and removes Prismatica boss multipliers.
+Treasury/War remain the high-income modes. Story remains120 stages. Materials,
+Null-Prismatica, components, EX+ and Story clear/one-time bonuses stay unchanged.
+Supersedes earlier Prismatica curves and boost statements below.
+
 **D-427:** [linear Rose materials](crimson-roses.md#linear-rose-materials-d-427)
 share the dungeon1-2 starts and low final endpoints without a material boss
 bonus. Preserve Rose unlocks (five tiers Stage1; Soul Stage10), Prismatica

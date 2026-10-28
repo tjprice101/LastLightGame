@@ -1,10 +1,11 @@
 import { elementalMaterials, dungeonStageCount, elementalEnemyLevel, infusionStageCount, isCurrencyMode, evolutionRequirement, isResizedActivity, migrateLegacyActivityStage, migratePreviousMachineStage, previousMachineStageCount, migratePreviousInfusionStage, previousInfusionStageCount, type ElementId, type ResizedActivityId } from '../content/activities';
-import { fractalisDrop, storyEnemyFractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from '../content/loot-random';
+import { stagedLycalisOdds } from '../content/loot-random';
+import { activityPrismaticaDrop } from '../content/prismatica';
 import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, characterEvolutionRequirement, fractureRules, characterLevelCost, type CharacterProgress, type UpgradeCost } from '../content/progression';
 import { isInfusionMode, specialtyMaterials } from '../content/infusions';
 import { type InfusionModeId } from '../content/activities';
 import { getStarter, isStarterId, starters, type StarterId } from '../content/starters';
-import { isPlayableDungeon, playableDungeons, materialLoot, dungeonVariants, dungeonFractalisDrop, type PlayableDungeon } from '../content/dungeons';
+import { isPlayableDungeon, playableDungeons, materialLoot, dungeonVariants, type PlayableDungeon } from '../content/dungeons';
 import { loadProfile, type ProfileStorage } from './profile';
 import { type BattleResult } from './battle';
 import { materialName } from '../content/dungeon-art';
@@ -24,7 +25,7 @@ import { exchangeProduct, isExchangeQuantity } from '../content/material-exchang
 import { isWarCharacter, warEncounter, warLoot, warStageCount, type WarCharacterId } from '../content/elemental-war';
 import { canonicalElement, isLegacyElement } from '../content/element-migration';
 import { storyEncounter, storyCreature, storyRules, storyBossBonus, storyMaterialLoot, storyCompletionReward, storyClearReward, migrateLegacyStoryCompleted, migratePreviousStoryCompleted } from '../content/story';
-import { bossLootMultiplier, bossLootRange } from '../content/final-boss-loot';
+import { bossLootMultiplier } from '../content/final-boss-loot';
 import { calamityChest, calamityChestId, calamityEncounter, isCalamityActivityId, isCalamityTier, parseCalamityChestId, rollCalamityChest, type CalamityActivityId } from '../content/calamity';
 import { calamiticLockMessage, calamiticStoreUnlocked, calamiticTokenPrice, isCalamiticConduitId } from '../content/calamitic-conduits';
 
@@ -861,12 +862,12 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     if (story) {
       const stage = story.storyStage;
       const encounter = storyEncounter(stage);
-      const range = bossLootRange(storyEnemyFractalisDrop(encounter.level, enemy.boss === true), multiplier);
+      const range = activityPrismaticaDrop(result.state, enemy.level);
       const materialPool = storyMaterialLoot(stage);
       if (enemy.hp > 0 || reward.capture !== undefined || reward.conduits !== undefined ||
           reward.mechanicalComponents !== undefined || reward.lycalis !== undefined || reward.storyBonus !== undefined ||
           reward.recruitment !== undefined || reward.recruitmentOutcome !== undefined ||
-          !count(reward.amount) || reward.amount < range.minimum || reward.amount > range.maximum || reward.amount % multiplier !== 0 ||
+          !count(reward.amount) || reward.amount < range.minimum || reward.amount > range.maximum ||
           !record(reward.materials) || !count(reward.materials[`${encounter.element}-common`])) {
         throw new Error('Invalid Story reward.');
       }
@@ -897,7 +898,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
           enemy.level !== encounter.level || enemy.element !== encounter.element || enemy.evolution !== encounter.evolution || !enemy.boss ||
           enemy.creatureId || reward.capture !== undefined || reward.materials !== undefined ||
           reward.conduits !== undefined || reward.mechanicalComponents !== undefined ||
-          !count(reward.amount) || reward.amount < loot.fractalis.minimum || reward.amount > loot.fractalis.maximum || reward.amount % multiplier !== 0 ||
+          !count(reward.amount) || reward.amount < loot.fractalis.minimum || reward.amount > loot.fractalis.maximum ||
           (reward.lycalis !== undefined && reward.lycalis !== loot.lycalis.quantity) ||
           reward.recruitmentOutcome !== undefined ||
           (reward.recruitment !== undefined && (stage !== warStageCount || reward.recruitment !== character))) {
@@ -916,12 +917,12 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       continue;
     }
     if (reward.recruitment !== undefined || reward.recruitmentOutcome !== undefined) throw new Error('Recruitment requires Elemental War.');
-    const range = bossLootRange(result.state.dungeon ? dungeonFractalisDrop(result.state.dungeon.stage) : result.state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, result.state.infusion?.mode === 'roses' ? 140 : 120), multiplier);
+    const range = activityPrismaticaDrop(result.state, enemy.level);
     if (result.state.infusion && (isCurrencyMode(result.state.infusion.mode) || result.state.infusion.mode === 'roses' || result.state.infusion.mode === 'machines') &&
         (enemy.hp > 0 || !enemy.creatureId || getCreature(enemy.creatureId).mode !== result.state.infusion.mode ||
           !getCreature(enemy.creatureId).stages.includes(result.state.infusion.stage) ||
           enemy.level !== infusionEncounter(result.state.infusion.mode, result.state.infusion.stage, result.state.infusion.schedule ?? 'legacy').level)) throw new Error('Invalid currency-farm reward source.');
-    if (!count(reward.amount) || reward.amount < range.minimum || reward.amount > range.maximum || reward.amount % multiplier !== 0) throw new Error('Invalid enemy Prismatica drop.');
+    if (!count(reward.amount) || reward.amount < range.minimum || reward.amount > range.maximum) throw new Error('Invalid enemy Prismatica drop.');
     account.fractalis += reward.amount;
     if (result.state.infusion?.mode === 'machines' && reward.mechanicalComponents === undefined) {
       throw new Error('Awaken the Machines rewards require Broken Mechanical Components.');

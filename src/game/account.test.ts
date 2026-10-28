@@ -143,7 +143,7 @@ describe('persistent progression transactions', () => {
       [`${element}-common`]: 8, [`${element}-uncommon`]: 5, [`${element}-rare`]: 4,
       [`${element}-epic`]: 2, [`${element}-legendary`]: 2, [`${element}-omnic`]: 1,
     });
-    expect(account.fractalis).toBe(15);
+    expect(account.fractalis).toBe(300);
     expect(unlockedStage(loadAccount(saved), element)).toBe(35);
     expect(saveAccountRewards(saved, result, `run-${element}`)).toEqual(account);
     for (const other of playableDungeons.filter((id) => id !== element)) expect(unlockedStage(account, other)).toBe(1);

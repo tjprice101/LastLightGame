@@ -1,5 +1,42 @@
 # Current state and handoff
 
+## Smooth Prismatica growth without currency boss spikes (D-428)
+
+- Owner approves stronger ordinary per-kill Prismatica and smooth linear
+  progression, with no Prismatica boss multiplier. Preserved openings and
+  exact final endpoints are in the [economy contract](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428):
+  dungeon/Training/Sanctuary300-600; Soar/Delve/Machines500-1,000;
+  Roses/Story750-1,500; Treasury30,000-60,000; War30,000-45,000.
+  Story remains120 stages, explicitly confirmed after correcting the initial
+  proposal's historical150-stage reference.
+- Shared typed stage-based curves (Training by level) drive actual kills,
+  Collections, War tables and atomic validation. Currency accepts all integers
+  in range instead of final multiples5. Existing non-Prismatica boosts remain.
+  No material/unlock, Null-Prismatica, component, capture/recruitment, EX+,
+  Story clear award/one-time bonus, cost, sale, summon or balance changes.
+  Walletv10/rules13 stay; no migrations, load writes, run restart, new RNG
+  draws or retroactive grants. Future kills use the updated shared curve.
+- Gameplay/Battle/Collections rules, relevant system specs, economy contract,
+  index/decision, authority notes and requested text export updated. Exported
+  dungeon currency rows and all-activity endpoint summary generated from runtime.
+- `npm test -- --maxWorkers=2 --reporter=json`: **6,696 passed/217 files**.
+  New exhaustive currency test covers every stage in each ordinary mode and
+  all Training levels, actual Burn kills/Collections/atomic saves/dedup,
+  malformed positions, forged payouts and legal nonmultiple5 final rewards.
+  Existing premium/components/materials/EX+/Story bonuses/denied/overflow suites
+  passed. Final focused currency run: **19 passed/2 files**.
+- `npm run build`, `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`,
+  `node --check tools\smoke_server_game.mjs` and `git diff --check` passed.
+  Existing Vite chunk/jsdom canvas warnings remain.
+- Matching authority deployed; `node tools\smoke_server_game.mjs
+  --infusion-rebalance` passed54 hosted fixtures including opening/mid/final
+  stages of all modes, Story regional boundaries, each War mode and Training
+  levels1/60/120, old holdings/compatibility, local/server parity, saved reads
+  and idempotent retries. Disposable identities/cascading data removed.
+  No owner accounts changed or resources granted.
+- Client publication requires successful CI/Pages and hosted build-SHA match.
+
 ## Linear Rose materials with preserved unlocks/currency (D-427)
 
 - Owner confirms the same low material endpoints as D-426, preserving Rose
@@ -27,7 +64,8 @@
   exact final materials/Prismatica, local/authority parity, persistence and
   idempotent retries. Disposable identities/cascading data removed; no real
   accounts changed or resources granted.
-- Client publication requires successful CI/Pages and hosted build-SHA match.
+- Published `456f1540cd768af561ac19e31179808608dbb591`; CI/Pages40611743655
+  succeeded and hosted version SHA matched.
 
 ## Linear Elemental Dungeon rewards with no boss boost (D-426)
 

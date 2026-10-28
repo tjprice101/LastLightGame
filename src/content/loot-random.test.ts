@@ -1,37 +1,26 @@
 import { describe, expect, it } from 'vitest';
-import { plentifulDrops, fractalisDrop, scaledDrop, storyEnemyFractalisDrop, storyFractalisDrop, treasuryFractalisDrop } from './loot-random';
+import { plentifulDrops, fractalisDrop, scaledDrop } from './loot-random';
+import { activityPrismaticaDrop } from './prismatica';
 import { storyEncounter, storyLoot, storyRules } from './story';
 import { materialBracket, materialDrops, materialLoot, materialRarities } from './dungeons';
 import { infusionDrops, infusionLoot } from './infusions';
 import { elementalEnemyLevel, elements, infusionModeStageCount } from './activities';
-import { bossLootRange, bossLootMultiplier } from './final-boss-loot';
 
-describe('Story and Treasury Prismatica (D-225)', () => {
-  it('gives Story a constant per-level step, so Prismatica rises linearly across all stages', () => {
-    for (let level = 1; level < 120; level += 1) {
-      expect(storyFractalisDrop(level + 1).minimum - storyFractalisDrop(level).minimum).toBe(2);
-      expect(storyFractalisDrop(level).maximum).toBe(storyFractalisDrop(level).minimum * 2);
-    }
-    expect(storyFractalisDrop(1)).toEqual({ minimum: 5, maximum: 10, chance: 1 });
-    expect(storyFractalisDrop(55)).toEqual({ minimum: 113, maximum: 226, chance: 1 });
-    for (const level of [0, 121, 1.5, NaN]) expect(() => storyFractalisDrop(level)).toThrow();
+describe('Story and Treasury Prismatica (D-428)', () => {
+  it('uses the same smooth stage-based Story range in live loot', () => {
     for (let stage = 1; stage <= storyRules.stages; stage += 1) {
       const encounter = storyEncounter(stage);
-      const range = bossLootRange(storyEnemyFractalisDrop(encounter.level, encounter.boss), bossLootMultiplier({ story: { storyStage: stage } }));
+      const range = activityPrismaticaDrop({ story: { storyStage: stage } }, encounter.level);
       expect(storyLoot(stage).find((drop) => drop.id === 'fractalis')).toMatchObject(range);
     }
   });
 
-  it('matches the Story line at Treasury entry, then climbs strictly faster to 20x', () => {
-    expect(treasuryFractalisDrop(65)).toEqual(storyFractalisDrop(65));
-    let previousStep = 0;
-    for (let level = 66; level <= 120; level += 1) {
-      const step = treasuryFractalisDrop(level).minimum - treasuryFractalisDrop(level - 1).minimum;
-      expect(step).toBeGreaterThan(previousStep);
-      expect(treasuryFractalisDrop(level).minimum).toBeGreaterThan(storyFractalisDrop(level).minimum);
-      previousStep = step;
+  it('grows Treasury linearly by stage without an extra final multiplier', () => {
+    for (let stage = 1; stage <= 25; stage++) {
+      expect(activityPrismaticaDrop({ infusion: { mode: 'treasury', stage } }, 65))
+        .toEqual({ minimum: Math.round(133 + 29867 * (stage - 1) / 24),
+          maximum: Math.round(266 + 59734 * (stage - 1) / 24), chance: 1 });
     }
-    expect(treasuryFractalisDrop(120).minimum).toBe(storyFractalisDrop(120).minimum * 20);
   });
 });
 
@@ -54,7 +43,7 @@ describe('plentiful loot quantities', () => {
     }
     expect(materialLoot('infernic', 1)[0]).toMatchObject({ minimum: 1, maximum: 2 });
     expect(materialLoot('infernic', 25)[0]).toMatchObject({ minimum: 6, maximum: 7 });
-    for (let level = 1; level <= 120; level++) expect(fractalisDrop(level).maximum).toBeLessThanOrEqual(30);
+    for (let level = 1; level <= 120; level++) expect(fractalisDrop(level).maximum).toBeLessThanOrEqual(600);
   });
   it('uses independent integer draws from base to double base without adding locked items', () => {
     const draws = [0, .999999, .5];
@@ -97,7 +86,7 @@ describe('plentiful loot quantities', () => {
 
   it('scales currency in every mode, preserves opening drops, and validates configuration', () => {
     expect(fractalisDrop(1)).toEqual({ minimum: 5, maximum: 10, chance: 1 });
-    expect(fractalisDrop(120)).toEqual({ minimum: 15, maximum: 30, chance: 1 });
+    expect(fractalisDrop(120)).toEqual({ minimum: 300, maximum: 600, chance: 1 });
     for (const mode of ['heavens', 'abyss'] as const) {
       const pool = infusionLoot(mode, infusionModeStageCount);
       for (const drop of [...pool.specialties, ...pool.bonuses]) {

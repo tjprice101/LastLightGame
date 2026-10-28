@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { currencyModes, infusionStageCount } from '../content/activities';
 import { enemyGrowth } from '../content/stat-growth';
 import { capturedEnemyStats, infusionEncounter, infusionEnemies, infusionDrops, sanctuaryEnemyStats, sanctuarySalePrices, treasurySalePrices } from '../content/infusions';
-import { sanctuaryLycalisOdds, infusionLycalisOdds, rollStagedLycalis, fractalisDrop } from '../content/loot-random';
+import { sanctuaryLycalisOdds, infusionLycalisOdds, rollStagedLycalis } from '../content/loot-random';
+import { activityPrismaticaDrop } from '../content/prismatica';
 import { getCreature, creatureLoot } from '../content/creatures';
 import { standardBannerPool } from '../content/standard-banner';
 import { conduits } from '../content/conduits';
@@ -48,7 +49,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
       expect(random).not.toHaveBeenCalled();
       const odds = sanctuaryLycalisOdds(encounter.level).map(drop => ({ ...drop, amount: drop.amount * (stage === 25 ? 5 : 1) }));
       expect(creatureLoot(getCreature(`infusion:sanctuary:${encounter.tier}`), stage).filter(drop => !drop.id.startsWith('capture:'))).toEqual([
-        { id: 'fractalis', ...fractalisDrop(encounter.level), ...(stage === 25 ? { minimum: 75, maximum: 150, quantityMultiplier: 5 } : {}) },
+        { id: 'fractalis', ...activityPrismaticaDrop({ infusion: { mode: 'sanctuary', stage } }, encounter.level) },
         { id: 'lycalis', minimum: odds[1].amount, maximum: odds[1].amount, chance: odds[1].chance, note: expect.any(String) },
       ]);
       for (const burn of [false, true]) {

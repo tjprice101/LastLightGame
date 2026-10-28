@@ -3,7 +3,8 @@ import { type Stats } from './combat';
 import { elementAccents } from './dungeon-art';
 import { storyStageLayout } from './activities';
 import { enemyCombatStats } from './stat-growth';
-import { rollDrop, storyEnemyFractalisDrop } from './loot-random';
+import { rollDrop } from './loot-random';
+import { activityPrismaticaDrop } from './prismatica';
 import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
 import { storyRegionArt } from './story-art';
 import { enemyAbilityMultiplier } from './enemy-skills';
@@ -103,10 +104,9 @@ export function storyDrops(stage: number, random: () => number): Record<string, 
   }));
 }
 
-export const storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common and Uncommon materials of their region; no captures. Prismatica per kill rises from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x Prismatica (base 5-10 to 113-226) and materials on every clear, plus a one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
+export const storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common and Uncommon materials of their region; no captures. Prismatica per kill grows linearly from 8-16 at Stage 1 to 750-1,500 at Stage ${storyRules.stages}, with no regional-boss multiplier. Regional bosses keep 5x materials on every clear and their one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
 
 export function storyLoot(stage: number) {
   const encounter = storyEncounter(stage);
-  return [bossLootRange({ id: 'fractalis', ...storyEnemyFractalisDrop(encounter.level, encounter.boss) },
-    bossLootMultiplier({ story: { storyStage: stage } })), ...storyMaterialLoot(stage)];
+  return [{ id: 'fractalis', ...activityPrismaticaDrop({ story: { storyStage: stage } }, encounter.level) }, ...storyMaterialLoot(stage)];
 }

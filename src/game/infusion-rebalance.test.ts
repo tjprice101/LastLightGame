@@ -48,7 +48,7 @@ describe('D-425 material rewards and historical compatibility', () => {
         }
       });
       expect(dungeonFractalisDrop(stage)).toEqual({ chance: 1,
-        minimum: Math.round(5 + 10 * (stage - 1) / 34), maximum: Math.round(10 + 20 * (stage - 1) / 34) });
+        minimum: Math.round(5 + 295 * (stage - 1) / 34), maximum: Math.round(10 + 590 * (stage - 1) / 34) });
     }
     expect(materialLoot('infernic', 35).map(drop => [drop.minimum, drop.maximum]))
       .toEqual(endpoints);

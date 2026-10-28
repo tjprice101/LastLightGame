@@ -1,5 +1,10 @@
 # Training (formerly Adventure)
 
+**D-428 currency override:** [current Prismatica curves](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428)
+grow linearly without boss multipliers across ordinary activities. Training
+grows5-10->300-600 by Lv.1-120; enemy level remains capped120. Supersedes
+earlier Prismatica endpoints/5x examples below, not non-Prismatica boosts or EX+.
+
 **D-426 dungeon exception:** [current dungeon reward contract](dungeons-and-captures.md#linear-elemental-dungeon-rewards-d-426)
 uses linear materials from1-2 per unlock and linear Prismatica5-10->15-30,
 without any dungeon boss multiplier. D-425's15-stage Soar/Delve specialties

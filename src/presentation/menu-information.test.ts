@@ -58,7 +58,7 @@ describe('shared menu information', () => {
     expect(plain(html)).toContain('data-information="gameplay-information"');
     expect(plain(html)).toContain('guaranteed 1 per enemy at Stage 1 (Lv.65)');
     expect(plain(html)).toContain('the final boss gives 25 guaranteed.');
-    expect(plain(html)).toContain('stage 25 final boss gives 24,300-48,600');
+    expect(plain(html)).toContain('30,000-60,000 at Stage 25');
     expect(plain(html)).toContain('Staged activities: Health restores; Elemental Gauge carries over.');
     const disclosures = html.match(/<details\b[^>]*>/g) ?? [];
     expect(disclosures.filter(tag => tag !== '<details class="conduit-lore-disclosure">')).toEqual(['<details class="story-prologue">']);

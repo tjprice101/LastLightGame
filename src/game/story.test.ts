@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { elements, storyStageLayout } from '../content/activities';
-import { storyEnemyFractalisDrop, storyFractalisDrop } from '../content/loot-random';
+import { activityPrismaticaDrop } from '../content/prismatica';
 import { migrateLegacyStoryCompleted, migratePreviousStoryCompleted, storyBossBonus, storyCompletionReward, storyReplayReward, storyRules, storyCreature, storyDrops, storyEncounter, storyLoot, storyMaterialLoot, storyRegions } from '../content/story';
 import { creatures, creatureLoot, getCreature } from '../content/creatures';
 import { dungeonEncounter } from '../content/dungeons';
@@ -260,16 +260,13 @@ describe('atomic Story progression and first-clear rewards', () => {
     expect(replayed.storyCompleted).toBe(1);
   });
 
-  it('pays ordinary Story enemies 1.5x Prismatica while bosses keep the base line', () => {
-    for (const level of [1, 10, 33, 55]) {
-      const base = storyFractalisDrop(level);
-      const ordinary = storyEnemyFractalisDrop(level, false);
-      expect(ordinary.minimum).toBe(Math.round(base.minimum * 1.5));
-      expect(ordinary.maximum).toBe(ordinary.minimum * 2);
-      expect(storyEnemyFractalisDrop(level, true)).toEqual(base);
+  it('pays one smooth stage-based Prismatica curve without regional boss spikes', () => {
+    for (let stage = 1; stage <= storyRules.stages; stage++) {
+      expect(storyLoot(stage)[0]).toEqual({ id: 'fractalis',
+        ...activityPrismaticaDrop({ story: { storyStage: stage } }, storyEncounter(stage).level) });
     }
-    expect(storyEnemyFractalisDrop(1, false)).toMatchObject({ minimum: 8, maximum: 16 });
     expect(storyLoot(1)[0]).toMatchObject({ minimum: 8, maximum: 16 });
+    expect(storyLoot(storyRules.stages)[0]).toMatchObject({ minimum: 750, maximum: 1500 });
   });
 
   it('commits partial per-kill rewards immediately but unlocks only after every enemy reward is saved', () => {

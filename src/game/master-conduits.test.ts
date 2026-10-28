@@ -139,12 +139,12 @@ describe('character Masters and chest contracts', () => {
     const saved = storage({ infusionStages: { machines: machineRules.stages } });
     const state = createInfusionBattle('machines', machineRules.stages, 1, 'ember', { level: 0, evolution: 1 });
     state.enemies[0].hp = 0; state.phase = 'cleared';
-    const reward: BattleEvent = { kind: 'reward', source: state.enemies[0].id, target: '', amount: 75, critical: false, message: 'Saved kill', masterChests: 1, mechanicalComponents: 625 };
+    const reward: BattleEvent = { kind: 'reward', source: state.enemies[0].id, target: '', amount: 501, critical: false, message: 'Saved kill', masterChests: 1, mechanicalComponents: 625 };
     const write = vi.spyOn(saved, 'setItem');
     const account = saveAccountRewards(saved, { state, events: [reward] }, 'master-run');
     expect(write).toHaveBeenCalledOnce();
     expect(account.masterChests).toBe(3);
-    expect(account.fractalis).toBe(75);
+    expect(account.fractalis).toBe(501);
     expect(lootItems(reward).find(item => item.id === 'grand-master-chest')?.amount).toBe(1);
     expect(encounterRewards([reward, reward]).find(item => item.id === 'grand-master-chest')?.amount).toBe(1);
     saveAccountRewards(saved, { state, events: [reward] }, 'master-run');

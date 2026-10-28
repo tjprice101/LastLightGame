@@ -1,8 +1,9 @@
 import { actionIds, enemies, formatStat, resolveFighter, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats, type FighterDefinition } from '../content/combat';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { type CharacterProgress } from '../content/progression';
-import { fractalisDrop, storyEnemyFractalisDrop, treasuryFractalisDrop, rollDrop, rollStagedLycalis } from '../content/loot-random';
-import { dungeonEncounter, materialDrops, dungeonFractalisDrop, type PlayableDungeon } from '../content/dungeons';
+import { rollDrop, rollStagedLycalis } from '../content/loot-random';
+import { activityPrismaticaDrop } from '../content/prismatica';
+import { dungeonEncounter, materialDrops, type PlayableDungeon } from '../content/dungeons';
 import { elementSources } from '../content/element-migration';
 import { materialName } from '../content/dungeon-art';
 import { infusionEncounter, infusionDrops, capturedEnemyStats, enemyCaptureAllowed, enemyCaptureChance } from '../content/infusions';
@@ -26,7 +27,6 @@ import { pilotAfterDirectActivation, pilotAuthoredShieldAbsorbed, pilotBurnDamag
 import type { OmnicMemory, ConduitMechanic } from './kit-conduits';
 import { masterChestDrops, validateMasterCharacter, type MasterConduitId, type MasterLoadouts } from '../content/master-conduits';
 import { storyEncounter, storyCreature, storyDrops, storyRules } from '../content/story';
-import { bossLootMultiplier, bossLootRange } from '../content/final-boss-loot';
 import { calamityEncounter, calamityPatterns, calamityChest, type CalamityActivityId, type CalamityTier } from '../content/calamity';
 import { initializeConduits, refreshConduitStats, equipped, gear, value, effectiveDefense, nativeTargetDefense, afterConduitImpact, conduitActionCost, conduitActionBlocked, recoveryNormal,
   prepareConduitAction, conduitCriticalHit, recordConduitHit, finishConduitAction, applyConduitBurn, applyConduitWeaken,
@@ -515,8 +515,7 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
         message: `${enemy.name} dropped ${reward.amount} Prismatica${reward.lycalis ? ` and ${reward.lycalis} Null-Prismatica` : ''}.` });
       continue;
     }
-    const amount = rollDrop(bossLootRange(state.dungeon ? dungeonFractalisDrop(state.dungeon.stage) : state.story ? storyEnemyFractalisDrop(enemy.level, enemy.boss === true) : state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, state.infusion?.mode === 'roses' ? 140 : 120),
-      bossLootMultiplier(state, enemy.boss === true)), rewardRoll);
+    const amount = rollDrop(activityPrismaticaDrop(state, enemy.level), rewardRoll);
     if (amount === undefined) throw new Error('Guaranteed Prismatica reward did not drop.');
     const materials = state.story ? storyDrops(state.story.storyStage, rewardRoll)
       : state.infusion ? infusionDrops(state.infusion.mode, state.infusion.stage, rewardRoll, state.infusion.schedule ?? 'legacy')

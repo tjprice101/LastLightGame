@@ -1,3 +1,7 @@
+import { type InfusionModeId } from './activities';
+import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
+import { activityPrismaticaDrop } from './prismatica';
+
 export function lootRoll(random: () => number): number {
   const value = random();
   if (!Number.isFinite(value) || value < 0 || value >= 1) throw new Error('Loot roll must be in [0, 1).');
@@ -86,46 +90,8 @@ export function rollDrop(drop: ScaledDrop, random: () => number): number | undef
   return (drop.minimum / multiplier + Math.floor(lootRoll(random) * ((drop.maximum - drop.minimum) / multiplier + 1))) * multiplier;
 }
 
-export function fractalisDrop(level: number, maximumLevel = 120): ScaledDrop {
-  if (!Number.isInteger(maximumLevel) || maximumLevel < 120 || maximumLevel > 140 ||
-      !Number.isInteger(level) || level < 1 || level > maximumLevel) throw new Error(`Prismatica drops require an enemy level from 1 to ${maximumLevel}.`);
-  const minimum = 5 + Math.floor(10 * ((level - 1) / 119) ** 2);
-  return { minimum, maximum: minimum * 2, chance: 1 };
+export function fractalisDrop(level: number): ScaledDrop {
+  return activityPrismaticaDrop({}, level);
 }
 
-/** Story per-kill Prismatica rises in a straight line: minimum = base + perLevel * (level - 1), maximum double. */
-export const storyPrismaticaLine = { base: 5, perLevel: 2 } as const;
-/** Crownfall Treasury pays the Story line for the same enemy level times a multiplier from 1x (Lv.65) to finalMultiplier (Lv.120). */
-export const treasuryPrismaticaBoost = { startingLevel: 65, maximumLevel: 120, finalMultiplier: 20 } as const;
-
-export function storyFractalisDrop(level: number): ScaledDrop {
-  if (!Number.isInteger(level) || level < 1 || level > 120) throw new Error('Story Prismatica requires an enemy level from 1 to 120.');
-  const minimum = storyPrismaticaLine.base + storyPrismaticaLine.perLevel * (level - 1);
-  return { minimum, maximum: minimum * 2, chance: 1 };
-}
-
-/** Ordinary Story enemies pay 1.5x the Story line (D-340); regional bosses keep the base line before their 5x final-boss multiplier. */
-export const storyEnemyPrismaticaBoost = 1.5;
-export function storyEnemyFractalisDrop(level: number, boss: boolean): ScaledDrop {
-  const drop = storyFractalisDrop(level);
-  if (boss) return drop;
-  const minimum = Math.round(drop.minimum * storyEnemyPrismaticaBoost);
-  return { minimum, maximum: minimum * 2, chance: 1 };
-}
-
-export function treasuryPrismaticaMultiplier(level: number): number {
-  const { startingLevel, maximumLevel, finalMultiplier } = treasuryPrismaticaBoost;
-  if (!Number.isInteger(level) || level < startingLevel || level > maximumLevel) throw new Error('Treasury drops require an enemy level from 65 to 120.');
-  return 1 + (finalMultiplier - 1) * ((level - startingLevel) / (maximumLevel - startingLevel)) ** 2;
-}
-
-export function treasuryFractalisDrop(level: number): ScaledDrop {
-  const multiplier = treasuryPrismaticaMultiplier(level);
-  const minimum = Math.round(storyFractalisDrop(level).minimum * multiplier);
-  return { minimum, maximum: minimum * 2, chance: 1 };
-}
-import { type InfusionModeId } from './activities';
-import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
-
-const range = (drop: ScaledDrop) => `${drop.minimum.toLocaleString('en-US')}-${drop.maximum.toLocaleString('en-US')}`;
-export const treasuryPrismaticaText = `Prismatica per enemy: ${range(treasuryFractalisDrop(65))} at Lv.65 to ${range(treasuryFractalisDrop(120))} at Lv.120; the stage 25 final boss gives ${range(bossLootRange(treasuryFractalisDrop(120), 5))}.`;
+export const treasuryPrismaticaText = 'Prismatica per enemy grows linearly from 133-266 at Stage 1 to 30,000-60,000 at Stage 25, without a final-boss multiplier.';

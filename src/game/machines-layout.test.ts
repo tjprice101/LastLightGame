@@ -4,7 +4,7 @@ import { machineComponentDrop } from '../content/mechanical-components';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { machineConduitDrops, machineConduitLoot, machineConduitChance, machineRules } from '../content/machines';
 import { machineStageCount, migratePreviousMachineStage } from '../content/activities';
-import { fractalisDrop } from '../content/loot-random';
+import { activityPrismaticaDrop } from '../content/prismatica';
 import { masterChestDrops } from '../content/master-conduits';
 import { ACCOUNT_KEY, calamityUnlockedTier, emptyAccount, loadAccount, saveAccount, setMachineLootFocus, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
@@ -30,9 +30,9 @@ describe('35-stage Machines layout and v9 migration', () => {
       const components = Math.round(3 + (stage - 1) * 122 / 34) * (stage === 35 ? 5 : 1);
       expect(machineComponentDrop(stage)).toMatchObject({ chance: 1, minimum: components, maximum: components });
       const currency = creatureLoot(getCreature(`infusion:machines:${encounter.tier}`), stage).find(drop => drop.id === 'fractalis')!;
-      const range = fractalisDrop(level);
-      expect(currency.minimum).toBe(range.minimum * (stage === 35 ? 5 : 1));
-      expect(currency.maximum).toBe(range.maximum * (stage === 35 ? 5 : 1));
+      const range = activityPrismaticaDrop({ infusion: { mode: 'machines', stage } }, level);
+      expect(currency.minimum).toBe(range.minimum);
+      expect(currency.maximum).toBe(range.maximum);
       expect(masterChestDrops(stage, encounter.boss, () => 0)).toBe(stage === 35 ? 1 : 0);
     }
     expect(infusionEncounter('machines', 1).level).toBe(10);

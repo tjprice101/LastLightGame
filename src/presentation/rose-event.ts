@@ -12,7 +12,7 @@ import { activityDifficulty } from './calamity';
 
 export const roseEventRules = `<p>${devourerHabitats.roses}</p><p>35 stages, Lv.80-140: two enemies per stage, a boss every fifth stage. No expiry until an end date is announced.</p>
     <p>Enemies at every event level have a 50% capture chance. Captures keep their form and skills, up to Lv.60, and cannot evolve.</p>
-    <p>Each enemy drops Prismatica and every unlocked Rosethorn material. Each material starts at 1-2 when unlocked and grows linearly to the same low endpoints as Elemental Dungeons: Seed 8-9, Bud 5-6, Bloom 4-5, Crest 2-3, Heart 2 and Soul 1-2. Seed through Heart drop from Stage 1; Soul from Lv.95 (Stage 10). No material boss bonus or Null-Prismatica. The stage 35 boss keeps 5x Prismatica on every clear.</p>
+    <p>Each enemy drops Prismatica and every unlocked Rosethorn material. Each material starts at 1-2 when unlocked and grows linearly to the same low endpoints as Elemental Dungeons: Seed 8-9, Bud 5-6, Bloom 4-5, Crest 2-3, Heart 2 and Soul 1-2. Seed through Heart drop from Stage 1; Soul from Lv.95 (Stage 10). No material boss bonus or Null-Prismatica. Prismatica grows linearly from 9-18 at Stage 1 to 750-1,500 at Stage 35, without a boss multiplier.</p>
     <p>Sell a copy for its form's material: ${roseMaterials.map((material, index) => `${roseSaleQuantities[index]} ${material.name}`).join(', ')}. Locked, squad and Conduit-equipped copies are protected.</p>
     <p>Rosetta, Thornia and Crinso level and evolve with these materials. Late evolutions also consume Roselius worth 3, 8, then 15 Evolution Value (each copy is worth its form, 1-6); you choose the copies. Evolving requires max level.</p>`;
 

@@ -1,5 +1,11 @@
 # Rosethorn Sanctuary
 
+**D-428 Prismatica override:** each enemy pays a rounded stage-linear range
+from7-14 at Stage1 to300-600 at25, with no Prismatica boss multiplier.
+Supersedes older Prismatica ranges/boost statements below. Null-Prismatica
+including final25, captures, sales and EX+ are unchanged.
+[Shared contract](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428).
+
 **Current banner rule (D-412):** all live banners use
 [one80-pull pity](summoning-and-economy.md#single80-pull-pity-d-412).
 Banner material rewards supersede older creature-result/duplicate descriptions

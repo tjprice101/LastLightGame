@@ -1,5 +1,10 @@
 # Dungeons and captured enemies
 
+**D-428 currency override:** [current Prismatica curves](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428)
+are stage-linear: dungeons5-10->300-600, Soar/Delve6-12->500-1,000,
+without Prismatica boss boosts. Earlier currency endpoints/boost statements
+below are historical; materials, captures, premium rewards and EX+ are unchanged.
+
 ## Linear Elemental Dungeon rewards (D-426)
 
 Owner supersedes D-425's dungeon taper and final5x spike. Every unlocked

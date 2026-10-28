@@ -126,6 +126,38 @@ function bossLootRange(drop, multiplier) {
   return { ...drop, minimum: drop.minimum * multiplier, maximum: drop.maximum * multiplier, quantityMultiplier: multiplier };
 }
 
+// src/content/prismatica.ts
+function linearPrismaticaDrop(position, last, opening, final) {
+  if (!Number.isInteger(position) || !Number.isInteger(last) || last < 2 || position < 1 || position > last) {
+    throw new Error("Invalid Prismatica progression position.");
+  }
+  const progress = (position - 1) / (last - 1);
+  return {
+    minimum: Math.round(opening[0] + (final[0] - opening[0]) * progress),
+    maximum: Math.round(opening[1] + (final[1] - opening[1]) * progress),
+    chance: 1
+  };
+}
+function activityPrismaticaDrop(activity, enemyLevel) {
+  if (activity.story) return linearPrismaticaDrop(activity.story.storyStage, storyStageLayout.stages, [8, 16], [750, 1500]);
+  if (activity.dungeon) return linearPrismaticaDrop(activity.dungeon.stage, dungeonStageCount, [5, 10], [300, 600]);
+  if (activity.war) return linearPrismaticaDrop(activity.war.stage, warStageCount, [1500, 2500], [3e4, 45e3]);
+  if (activity.infusion) {
+    const { mode, stage } = activity.infusion;
+    const endpoints = {
+      heavens: { opening: [6, 12], final: [500, 1e3] },
+      abyss: { opening: [6, 12], final: [500, 1e3] },
+      treasury: { opening: [133, 266], final: [3e4, 6e4] },
+      sanctuary: { opening: [7, 14], final: [300, 600] },
+      roses: { opening: [9, 18], final: [750, 1500] },
+      machines: { opening: [5, 10], final: [500, 1e3] }
+    };
+    const range = endpoints[mode];
+    return linearPrismaticaDrop(stage, infusionStageCount(mode), range.opening, range.final);
+  }
+  return linearPrismaticaDrop(enemyLevel, 120, [5, 10], [300, 600]);
+}
+
 // src/content/loot-random.ts
 function lootRoll(random) {
   const value2 = random();
@@ -171,37 +203,6 @@ function rollDrop(drop, random) {
   if (drop.chance < 1 && lootRoll(random) >= drop.chance) return void 0;
   return (drop.minimum / multiplier + Math.floor(lootRoll(random) * ((drop.maximum - drop.minimum) / multiplier + 1))) * multiplier;
 }
-function fractalisDrop(level, maximumLevel = 120) {
-  if (!Number.isInteger(maximumLevel) || maximumLevel < 120 || maximumLevel > 140 || !Number.isInteger(level) || level < 1 || level > maximumLevel) throw new Error(`Prismatica drops require an enemy level from 1 to ${maximumLevel}.`);
-  const minimum = 5 + Math.floor(10 * ((level - 1) / 119) ** 2);
-  return { minimum, maximum: minimum * 2, chance: 1 };
-}
-var storyPrismaticaLine = { base: 5, perLevel: 2 };
-var treasuryPrismaticaBoost = { startingLevel: 65, maximumLevel: 120, finalMultiplier: 20 };
-function storyFractalisDrop(level) {
-  if (!Number.isInteger(level) || level < 1 || level > 120) throw new Error("Story Prismatica requires an enemy level from 1 to 120.");
-  const minimum = storyPrismaticaLine.base + storyPrismaticaLine.perLevel * (level - 1);
-  return { minimum, maximum: minimum * 2, chance: 1 };
-}
-var storyEnemyPrismaticaBoost = 1.5;
-function storyEnemyFractalisDrop(level, boss) {
-  const drop = storyFractalisDrop(level);
-  if (boss) return drop;
-  const minimum = Math.round(drop.minimum * storyEnemyPrismaticaBoost);
-  return { minimum, maximum: minimum * 2, chance: 1 };
-}
-function treasuryPrismaticaMultiplier(level) {
-  const { startingLevel, maximumLevel, finalMultiplier } = treasuryPrismaticaBoost;
-  if (!Number.isInteger(level) || level < startingLevel || level > maximumLevel) throw new Error("Treasury drops require an enemy level from 65 to 120.");
-  return 1 + (finalMultiplier - 1) * ((level - startingLevel) / (maximumLevel - startingLevel)) ** 2;
-}
-function treasuryFractalisDrop(level) {
-  const multiplier = treasuryPrismaticaMultiplier(level);
-  const minimum = Math.round(storyFractalisDrop(level).minimum * multiplier);
-  return { minimum, maximum: minimum * 2, chance: 1 };
-}
-var range = (drop) => `${drop.minimum.toLocaleString("en-US")}-${drop.maximum.toLocaleString("en-US")}`;
-var treasuryPrismaticaText = `Prismatica per enemy: ${range(treasuryFractalisDrop(65))} at Lv.65 to ${range(treasuryFractalisDrop(120))} at Lv.120; the stage 25 final boss gives ${range(bossLootRange(treasuryFractalisDrop(120), 5))}.`;
 
 // src/content/phase-zero-stats.ts
 var phaseZeroStatsReady = true;
@@ -2244,8 +2245,8 @@ function redesignEffect(id, level = 0) {
   return design.description.replace(
     /([+-]?\d+(?:\.\d+)?)(%?)\s*->\s*([+-]?\d+(?:\.\d+)?)(%?)/g,
     (_match, first, leftUnit, _last, rightUnit) => {
-      const range2 = design.ranges[index++];
-      const amount = range2.step ? redesignStep(level, range2.base, range2.maximum) : redesignValue(level, range2.base, range2.maximum);
+      const range = design.ranges[index++];
+      const amount = range.step ? redesignStep(level, range.base, range.maximum) : redesignValue(level, range.base, range.maximum);
       return (first.startsWith("+") && amount >= 0 ? "+" : "") + Number(amount.toFixed(8)).toString() + (leftUnit || rightUnit);
     }
   );
@@ -5419,11 +5420,6 @@ function materialLoot(element, stage) {
     return [{ id: `${element}-${rarity}`, ...linearMaterialRange(rarity, stage, firstStage, elementalDungeonRules.stages) }];
   });
 }
-function dungeonFractalisDrop(stage) {
-  elementalEnemyLevel(stage);
-  const progress = (stage - 1) / (elementalDungeonRules.stages - 1);
-  return { minimum: Math.round(5 + 10 * progress), maximum: Math.round(10 + 20 * progress), chance: 1 };
-}
 function materialDrops(element, stage, random) {
   const drops = {};
   for (const entry of materialLoot(element, stage)) {
@@ -5604,7 +5600,7 @@ function storyDrops(stage, random) {
     return amount === void 0 ? [] : [[drop.id, amount]];
   }));
 }
-var storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common and Uncommon materials of their region; no captures. Prismatica per kill rises from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x Prismatica (base 5-10 to 113-226) and materials on every clear, plus a one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
+var storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common and Uncommon materials of their region; no captures. Prismatica per kill grows linearly from 8-16 at Stage 1 to 750-1,500 at Stage ${storyRules.stages}, with no regional-boss multiplier. Regional bosses keep 5x materials on every clear and their one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
 
 // src/content/calamity.ts
 var calamityTierScaling = {
@@ -6225,7 +6221,7 @@ function warLoot(stage) {
   const t = (stage - 1) / 9;
   const multiplier = bossLootMultiplier({ war: { stage } });
   return {
-    fractalis: bossLootRange({ minimum: Math.round(1500 + 3500 * t * t), maximum: Math.round(2500 + 5500 * t * t) }, multiplier),
+    fractalis: activityPrismaticaDrop({ war: { stage } }, 140),
     lycalis: { chance: 0.3 + 0.3 * t, quantity: Math.round(1 + 4 * t) * multiplier },
     recruitmentChance: stage === warStageCount ? 1 : 0
   };
@@ -7484,15 +7480,15 @@ function equipped(unit, id) {
   return unit.conduits?.some((slot) => slot === id) === true || !unit.captured && unit.masterConduit === id;
 }
 function value(state, unit, id, base, maximum) {
-  const range2 = conduitRedesign[id]?.ranges.find((range3) => Math.abs(range3.base - base) < 1e-9 && Math.abs(range3.maximum - maximum) < 1e-9 || Math.abs(range3.base / 100 - base) < 1e-9 && Math.abs(range3.maximum / 100 - maximum) < 1e-9);
-  if (!range2) throw new Error(`Unregistered coefficient for ${id} on ${unit.id}: ${base} -> ${maximum}.`);
-  const scale = Math.abs(range2.base - base) < 1e-9 ? 1 : 0.01;
-  return redesignValue(state.conduitUpgrades?.[id] ?? 0, range2.base, range2.maximum) * scale;
+  const range = conduitRedesign[id]?.ranges.find((range2) => Math.abs(range2.base - base) < 1e-9 && Math.abs(range2.maximum - maximum) < 1e-9 || Math.abs(range2.base / 100 - base) < 1e-9 && Math.abs(range2.maximum / 100 - maximum) < 1e-9);
+  if (!range) throw new Error(`Unregistered coefficient for ${id} on ${unit.id}: ${base} -> ${maximum}.`);
+  const scale = Math.abs(range.base - base) < 1e-9 ? 1 : 0.01;
+  return redesignValue(state.conduitUpgrades?.[id] ?? 0, range.base, range.maximum) * scale;
 }
 function step(state, id, base, maximum) {
-  const range2 = conduitRedesign[id]?.ranges.find((range3) => range3.step && range3.base === base && range3.maximum === maximum);
-  if (!range2) throw new Error(`Unregistered stepped coefficient for ${id}: ${base} -> ${maximum}.`);
-  return redesignStep(state.conduitUpgrades?.[id] ?? 0, range2.base, range2.maximum);
+  const range = conduitRedesign[id]?.ranges.find((range2) => range2.step && range2.base === base && range2.maximum === maximum);
+  if (!range) throw new Error(`Unregistered stepped coefficient for ${id}: ${base} -> ${maximum}.`);
+  return redesignStep(state.conduitUpgrades?.[id] ?? 0, range.base, range.maximum);
 }
 function alive(state) {
   return state.allies.filter((unit) => unit.hp > 0);
@@ -10013,10 +10009,7 @@ function awardDefeats(previous, state, events) {
       });
       continue;
     }
-    const amount = rollDrop(bossLootRange(
-      state.dungeon ? dungeonFractalisDrop(state.dungeon.stage) : state.story ? storyEnemyFractalisDrop(enemy.level, enemy.boss === true) : state.infusion?.mode === "treasury" ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, state.infusion?.mode === "roses" ? 140 : 120),
-      bossLootMultiplier(state, enemy.boss === true)
-    ), rewardRoll);
+    const amount = rollDrop(activityPrismaticaDrop(state, enemy.level), rewardRoll);
     if (amount === void 0) throw new Error("Guaranteed Prismatica reward did not drop.");
     const materials = state.story ? storyDrops(state.story.storyStage, rewardRoll) : state.infusion ? infusionDrops(state.infusion.mode, state.infusion.stage, rewardRoll, state.infusion.schedule ?? "legacy") : state.dungeon ? materialDrops(state.dungeon.element, state.dungeon.stage, rewardRoll) : void 0;
     const materialText = materials ? Object.entries(materials).map(([id, quantity]) => `${quantity} ${materialName(id)}`).join(", ") : "";
@@ -11426,9 +11419,9 @@ function saveAccountRewards(storage, result, runId) {
     if (story) {
       const stage = story.storyStage;
       const encounter2 = storyEncounter(stage);
-      const range3 = bossLootRange(storyEnemyFractalisDrop(encounter2.level, enemy.boss === true), multiplier);
+      const range2 = activityPrismaticaDrop(result.state, enemy.level);
       const materialPool = storyMaterialLoot(stage);
-      if (enemy.hp > 0 || reward.capture !== void 0 || reward.conduits !== void 0 || reward.mechanicalComponents !== void 0 || reward.lycalis !== void 0 || reward.storyBonus !== void 0 || reward.recruitment !== void 0 || reward.recruitmentOutcome !== void 0 || !count(reward.amount) || reward.amount < range3.minimum || reward.amount > range3.maximum || reward.amount % multiplier !== 0 || !record(reward.materials) || !count(reward.materials[`${encounter2.element}-common`])) {
+      if (enemy.hp > 0 || reward.capture !== void 0 || reward.conduits !== void 0 || reward.mechanicalComponents !== void 0 || reward.lycalis !== void 0 || reward.storyBonus !== void 0 || reward.recruitment !== void 0 || reward.recruitmentOutcome !== void 0 || !count(reward.amount) || reward.amount < range2.minimum || reward.amount > range2.maximum || !record(reward.materials) || !count(reward.materials[`${encounter2.element}-common`])) {
         throw new Error("Invalid Story reward.");
       }
       for (const [id, amount] of Object.entries(reward.materials)) {
@@ -11452,7 +11445,7 @@ function saveAccountRewards(storage, result, runId) {
       const { character, stage } = result.state.war;
       const encounter2 = warEncounter(character, stage);
       const loot = warLoot(stage);
-      if (result.state.dungeon || result.state.infusion || result.state.enemies.length !== 1 || stage > unlockedWarStage(account, character) || result.state.wave !== stage || result.state.phase !== "cleared" || enemy.hp > 0 || enemy.definitionId !== character || enemy.id !== `war-${character}-${stage}` || enemy.level !== encounter2.level || enemy.element !== encounter2.element || enemy.evolution !== encounter2.evolution || !enemy.boss || enemy.creatureId || reward.capture !== void 0 || reward.materials !== void 0 || reward.conduits !== void 0 || reward.mechanicalComponents !== void 0 || !count(reward.amount) || reward.amount < loot.fractalis.minimum || reward.amount > loot.fractalis.maximum || reward.amount % multiplier !== 0 || reward.lycalis !== void 0 && reward.lycalis !== loot.lycalis.quantity || reward.recruitmentOutcome !== void 0 || reward.recruitment !== void 0 && (stage !== warStageCount || reward.recruitment !== character)) {
+      if (result.state.dungeon || result.state.infusion || result.state.enemies.length !== 1 || stage > unlockedWarStage(account, character) || result.state.wave !== stage || result.state.phase !== "cleared" || enemy.hp > 0 || enemy.definitionId !== character || enemy.id !== `war-${character}-${stage}` || enemy.level !== encounter2.level || enemy.element !== encounter2.element || enemy.evolution !== encounter2.evolution || !enemy.boss || enemy.creatureId || reward.capture !== void 0 || reward.materials !== void 0 || reward.conduits !== void 0 || reward.mechanicalComponents !== void 0 || !count(reward.amount) || reward.amount < loot.fractalis.minimum || reward.amount > loot.fractalis.maximum || reward.lycalis !== void 0 && reward.lycalis !== loot.lycalis.quantity || reward.recruitmentOutcome !== void 0 || reward.recruitment !== void 0 && (stage !== warStageCount || reward.recruitment !== character)) {
         throw new Error("Invalid Elemental War reward.");
       }
       account.fractalis += reward.amount;
@@ -11468,9 +11461,9 @@ function saveAccountRewards(storage, result, runId) {
       continue;
     }
     if (reward.recruitment !== void 0 || reward.recruitmentOutcome !== void 0) throw new Error("Recruitment requires Elemental War.");
-    const range2 = bossLootRange(result.state.dungeon ? dungeonFractalisDrop(result.state.dungeon.stage) : result.state.infusion?.mode === "treasury" ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, result.state.infusion?.mode === "roses" ? 140 : 120), multiplier);
+    const range = activityPrismaticaDrop(result.state, enemy.level);
     if (result.state.infusion && (isCurrencyMode(result.state.infusion.mode) || result.state.infusion.mode === "roses" || result.state.infusion.mode === "machines") && (enemy.hp > 0 || !enemy.creatureId || getCreature(enemy.creatureId).mode !== result.state.infusion.mode || !getCreature(enemy.creatureId).stages.includes(result.state.infusion.stage) || enemy.level !== infusionEncounter(result.state.infusion.mode, result.state.infusion.stage, result.state.infusion.schedule ?? "legacy").level)) throw new Error("Invalid currency-farm reward source.");
-    if (!count(reward.amount) || reward.amount < range2.minimum || reward.amount > range2.maximum || reward.amount % multiplier !== 0) throw new Error("Invalid enemy Prismatica drop.");
+    if (!count(reward.amount) || reward.amount < range.minimum || reward.amount > range.maximum) throw new Error("Invalid enemy Prismatica drop.");
     account.fractalis += reward.amount;
     if (result.state.infusion?.mode === "machines" && reward.mechanicalComponents === void 0) {
       throw new Error("Awaken the Machines rewards require Broken Mechanical Components.");

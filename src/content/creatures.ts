@@ -4,12 +4,12 @@ import { machineConduitLoot, type MachineLootFocus } from './machines';
 import type { ConduitId } from './conduits';
 import { masterChest } from './master-conduits';
 import { machineComponentDrop } from './mechanical-components';
-import { dungeonEncounter, dungeonVariants, materialLoot, dungeonFractalisDrop } from './dungeons';
+import { dungeonEncounter, dungeonVariants, materialLoot } from './dungeons';
 import { infusionEncounter, infusionLoot, infusionElements, enemyCaptureAllowed, enemyCaptureChance } from './infusions';
-import { fractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from './loot-random';
+import { stagedLycalisOdds } from './loot-random';
+import { activityPrismaticaDrop } from './prismatica';
 import { storyEncounter, storyCreature, storyRules, storyLoot } from './story';
 import { devourerHabitats, elementEmotions, machineOrigin } from './world-lore';
-import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
 import { calamityActivities, calamityChest, calamityTierScaling, isCalamityTier, type CalamityActivityId } from './calamity';
 import { calamityBossArt } from './calamity-art';
 
@@ -99,9 +99,9 @@ export function creatureLoot(creature: Creature, stage?: number, ownedConduits?:
   if (!creature.stages.length && stage !== undefined && (!Number.isInteger(stage) || stage < 1 || stage > 120)) throw new Error('Choose a Training enemy level from 1 to 120.');
   const level = creature.dungeonElement && stage !== undefined ? dungeonEncounter(creature.dungeonElement, stage).level
     : creature.mode && stage !== undefined ? infusionEncounter(creature.mode, stage).level : stage ?? 1;
-  const multiplier = bossLootMultiplier(creature.dungeonElement && stage !== undefined ? { dungeon: { stage } }
-    : creature.mode && stage !== undefined ? { infusion: { mode: creature.mode, stage } } : {});
-  const loot: CreatureLoot[] = [{ id: 'fractalis', ...bossLootRange(creature.dungeonElement && stage !== undefined ? dungeonFractalisDrop(stage) : creature.mode === 'treasury' ? treasuryFractalisDrop(level) : fractalisDrop(level, creature.mode === 'roses' ? 140 : 120), multiplier) }];
+  const loot: CreatureLoot[] = [{ id: 'fractalis', ...activityPrismaticaDrop(
+    creature.dungeonElement && stage !== undefined ? { dungeon: { stage } }
+      : creature.mode && stage !== undefined ? { infusion: { mode: creature.mode, stage } } : {}, level) }];
   if (creature.mode && enemyCaptureAllowed(creature.mode, level)) loot.push({
     id: `capture:${creature.id}`, minimum: 1, maximum: 1, chance: enemyCaptureChance,
     note: 'A separate 50% chance per defeated enemy to obtain one playable copy of this exact form. Copies join at a maximum of Lv.60 and retain their form and skills. Duplicates are allowed.',

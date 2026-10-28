@@ -1,5 +1,11 @@
 # Awaken the Machines and expanded Conduits
 
+**D-428 Prismatica override:** each enemy pays a rounded stage-linear range
+from5-10 at Stage1 to500-1,000 at35, with no Prismatica boss multiplier.
+Supersedes older Prismatica ranges/boost prose below. Components including
+final625, Conduits, Master chests and EX+ are unchanged.
+[Shared contract](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428).
+
 ## Linear stage drop rates (D-402)
 
 Each eligible rarity rolls independently for every defeated Machine:

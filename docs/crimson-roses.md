@@ -1,5 +1,11 @@
 # Passion of Crimson Roses and Roses Under Sunny Skies
 
+**D-428 Prismatica override:** per-enemy Prismatica grows linearly from9-18
+at Stage1 to750-1,500 at35, without a boss multiplier. Supersedes the older
+quadratic90-180/final5x currency statements below. D-427 materials/unlocks,
+captures, summons, sales and EX+ remain unchanged.
+[Shared contract](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428).
+
 **Current banner rule (D-412):** Roses uses one80-pull pity and unchanged
 duplicate conversion, with its actual six-star-only roster. Older80/150 or
 200/500 statements below are historical. See

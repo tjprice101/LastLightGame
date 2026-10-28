@@ -1,5 +1,11 @@
 # Elemental War
 
+**D-428 Prismatica override:** per-boss Prismatica now grows linearly from
+1,500-2,500 at Stage1 to30,000-45,000 at10, with no currency boss multiplier.
+Supersedes earlier Prismatica curves/5x statements below. Null-Prismatica,
+recruitment, duplicate conversion and EX+ remain unchanged.
+[Shared contract](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428).
+
 ## Prominent saved recruitment art (D-420)
 
 New Element-Bearer rewards in the victory sheet use the same full-width reward

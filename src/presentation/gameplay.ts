@@ -82,19 +82,19 @@ function gameplayInformation(): string {
     { id: 'enemy-strength', title: 'Enemy strength', summary: 'Reading the stat comparison', content: '<p>Red stats are above a standard enemy of the same level; blue stats are below. Boss abilities can add difficulty beyond these numbers.</p>' },
     { id: 'story', title: 'Story', summary: `Six regions, ${storyRules.stages} stages`, content: `<p>${storyPurpose}</p><p>${storyRulesText}</p>` },
     { id: 'training', title: 'Training', summary: 'Endless battles for Prismatica', content: `<p>Endless waves with your saved squad, starting at wave 1. Enemies cap at Lv.120.</p>
-      <p>Prismatica per kill: 5-10 at Lv.1 to 15-30 at Lv.120. No materials, captures or Null-Prismatica.</p>` },
-    { id: 'dungeons', title: 'Elemental dungeons', summary: 'Upgrade materials by element', content: `<p>${elementalDungeonRules.stages} stages, Lv.${elementalDungeonRules.startingLevel}-${elementalEnemyLevel(elementalDungeonRules.maximumLevelStage)}. Every unlocked material rarity is guaranteed. Each material starts at 1-2 when unlocked and grows linearly to its final range. Prismatica grows linearly from 5-10 to 15-30. No final-boss reward multiplier. No captures or Null-Prismatica.</p>
+      <p>Prismatica per kill: 5-10 at Lv.1 to 300-600 at Lv.120. No materials, captures or Null-Prismatica.</p>` },
+    { id: 'dungeons', title: 'Elemental dungeons', summary: 'Upgrade materials by element', content: `<p>${elementalDungeonRules.stages} stages, Lv.${elementalDungeonRules.startingLevel}-${elementalEnemyLevel(elementalDungeonRules.maximumLevelStage)}. Every unlocked material rarity is guaranteed. Each material starts at 1-2 when unlocked and grows linearly to its final range. Prismatica grows linearly from 5-10 to 300-600. No final-boss reward multiplier. No captures or Null-Prismatica.</p>
       <p>Collections lists exact drop tables for defeated Elemental-Devourers.</p>` },
     { id: 'infusion', title: 'Evolution infusion', summary: 'Evolution materials from Heaven and Abyss', content: `<p>${infusionModeStageCount} stages, Lv.50-120. Form 3 from Lv.${infusionFormLevel(2)}, Form 4 from Lv.${infusionFormLevel(3)}, Form 5 from Lv.${infusionFormLevel(4)}.</p>
       <p>15 stages retain the Lv.50-120 enemy curve. Both used specialties drop from Stage 1: evolution and leveling materials, each growing linearly from 1-2 to 11-23 at the final boss without an extra material multiplier. No weapon or elemental materials drop.</p>
       <p>Null-Prismatica from Lv.80: 8% for 1, 1.5% for 2, 0.5% for 3, rising to 10%, 10% and 5% at Lv.120. The stage ${infusionModeStageCount} boss gives 5, 10 or 15 at the same chances.</p>
       <p>50% capture chance per enemy. Captures keep their form and skills, up to Lv.60.</p>
       <ul>${infusionModes.map((mode) => `<li><strong>${mode.name}</strong>: ${elementLabel(infusionEnemyElements[mode.id])} enemies. Materials support: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</li>`).join('')}</ul>` },
-    { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages, Lv.65-120, six fixed forms and a boss every fifth stage. Final bosses give 5x currency. No materials or clear bonus.</p>
+    { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages, Lv.65-120, six fixed forms and a boss every fifth stage. Prismatica grows linearly without boss multipliers; final Null-Prismatica boosts remain. No materials or clear bonus.</p>
       <p>50% capture chance per enemy. Captures keep their form and skills, up to Lv.60. Sell copies in Team; locked, squad and Conduit-equipped copies are protected.</p>
       <h4>Crownfall Treasury</h4><p>${treasuryPrismaticaText} No Null-Prismatica.
       Sales, Common to Omnic: ${treasurySalePrices.map((price) => price.toLocaleString('en-US')).join(' / ')} Prismatica.</p>
-      <h4>Rosethorn Sanctuary</h4><p>Prismatica per enemy: 7-14 at Lv.65 to 15-30 at Lv.120.
+      <h4>Rosethorn Sanctuary</h4><p>Prismatica per enemy: 7-14 at Stage 1 to 300-600 at Stage 25.
       Null-Prismatica: guaranteed 1 per enemy at Stage 1 (Lv.65), rising to 5 at Lv.120; the final boss gives 25 guaranteed.
       Sales, Common to Omnic: ${sanctuarySalePrices.map((price) => `${price.fractalis.toLocaleString('en-US')} Prismatica + ${price.lycalis} Null-Prismatica`).join(' / ')}.</p>` },
     { id: 'roses', title: 'Passion of Crimson Roses', summary: 'Rosethorn materials', content: roseEventRules },

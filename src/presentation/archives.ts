@@ -118,7 +118,7 @@ function conduitArchive(account: Account | null): string {
 
 export function archives(account: Account | null, selected: ArchiveGallery = 'characters'): string {
   return `<section class="archives"><header class="archive-toolbar"><div><h2>Collections</h2><p>Browse forms, Conduits and enemy discoveries.</p></div>${information('collections-information', 'Collections', `<h3>Forms and stats</h3><p>Color marks reached Element-Bearer forms, owned captured forms and owned Conduits. Everything else stays silhouetted.</p><p>Your current forms show equipped stats. Other forms preview Lv.0 without Conduits. Stars and form rarity are separate.</p>
-    <h3>Enemy discovery</h3><p>Encounter an enemy to reveal its identity and lore; defeat it to reveal its loot table.</p><p>Loot quantities are equally likely within each range. Rarity rolls are independent, with no pity. Final bosses give 5x currency, materials and components, not 5x drop chances.</p>
+    <h3>Enemy discovery</h3><p>Encounter an enemy to reveal its identity and lore; defeat it to reveal its loot table.</p><p>Loot quantities are equally likely within each range. Rarity rolls are independent, with no pity. Prismatica grows linearly without boss multipliers. Existing final-boss Null-Prismatica, Story materials and Machine components keep their boosts; drop chances are not multiplied.</p>
     <h3>Captures</h3><p>50% per kill in Heaven, Abyss, Treasury and Sanctuary. Crimson Roses has the same chance up to enemy Lv.120. No captures in Story, Training or elemental dungeons.</p><p>Captures keep their form and skills, cap at Lv.60 and sell by form, not level.</p>
     `)}</header>
     <nav class="archive-navigation" aria-label="Archive galleries">${galleries.map((gallery) =>

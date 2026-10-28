@@ -1,5 +1,50 @@
 # Summoning and economy
 
+## Smooth Prismatica growth across activities (D-428)
+
+This supersedes earlier per-kill Prismatica curves and all Prismatica boss
+multipliers, including D-426/D-427's currency endpoints/preservation clauses.
+Every defeated enemy guarantees one uniformly sampled inclusive integer range.
+Let `p=(position-1)/(last-1)`; independently round each endpoint of
+`opening+(final-opening)*p`. There is no separate boss multiplier or extra roll.
+
+| Activity | Opening per enemy | Final per enemy | Progression |
+| --- | --- | --- | --- |
+| Elemental Dungeons |5-10 |300-600 |Stages1-35 |
+| Soar / Delve |6-12 |500-1,000 |Stages1-15 |
+| Rosethorn Sanctuary |7-14 |300-600 |Stages1-25 |
+| Passion of Crimson Roses |9-18 |750-1,500 |Stages1-35 |
+| Awaken the Machines |5-10 |500-1,000 |Stages1-35 |
+| Crownfall Treasury |133-266 |30,000-60,000 |Stages1-25 |
+| Elemental War (each) |1,500-2,500 |30,000-45,000 |Stages1-10 |
+| Story |8-16 |750-1,500 |Current Stages1-120 |
+| Endless Training |5-10 |300-600 |Enemy Lv.1-120; enemy level remains capped120 |
+
+Story remains120 stages, explicitly confirmed after correcting the proposal's
+historical150-stage reference. Regional bosses use the same uninterrupted
+campaign curve. Replays use identical per-kill ranges.
+
+Only ordinary battle-earned Prismatica changes. Materials/unlocks, components,
+Null-Prismatica (including final boosts), captures, recruitment, EX+ chests,
+Story stage-clear awards and one-time regional bonuses, prices, costs, summons,
+sales, balances and receipts are unchanged. Existing non-Prismatica boss boosts
+remain. No wallet/rules version bump, migration, load writes, run restart or
+retroactive grants; future kills in retained runs use current shared tables.
+
+[Shared currency curves](../src/content/prismatica.ts) serve actual combat,
+Collections, War tables and atomic reward validation. Currency validation no
+longer requires multiples5, while material/premium/component validation retains
+its own existing rules. Rejected, overflowing or denied writes retain the wallet.
+Presentation still uses actual saved reward events and existing VFX, not rerolls.
+
+Validation: `npm test -- src\game\prismatica.test.ts` checks every stage of all
+activity curves and every Training level, actual kills, Collections, atomic
+persistence, forgery rejection, interior nonmultiple5 rewards and receipt dedup.
+Run full tests/client build, bundle/type-check matching authority, then
+`node tools\smoke_server_game.mjs --infusion-rebalance` for disposable hosted
+local/server parity, persistence and idempotent retries. Existing EX+/premium/
+Story bonus/overflow tests remain required.
+
 **D-427 material acquisition only:** [Rose event materials](crimson-roses.md#linear-rose-materials-d-427)
 now use low linear1-2 starts and dungeon final endpoints, preserving Rose
 unlocks. Currency including final5x, banner bundles/duplicates, sales and EX+

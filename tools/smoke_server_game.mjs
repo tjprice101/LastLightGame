@@ -1126,6 +1126,11 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
     ...['heavens', 'abyss'].flatMap(mode => [1, 14, 15].map(stage =>
       ({ activity: { kind: 'infusion', mode, stage } }))),
     ...[1, 9, 10, 19, 34, 35].map(stage => ({ activity: { kind: 'infusion', mode: 'roses', stage } })),
+    ...['treasury', 'sanctuary', 'machines'].flatMap(mode => [1, mode === 'machines' ? 18 : 13, mode === 'machines' ? 35 : 25]
+      .map(stage => ({ activity: { kind: 'infusion', mode, stage } }))),
+    ...[1, 19, 20, 21, 60, 119, 120].map(stage => ({ activity: { kind: 'story', stage } })),
+    ...['nerithe', 'orvella', 'vaelor'].flatMap(character => [1, 5, 10].map(stage => ({ activity: { kind: 'war', character, stage } }))),
+    ...[1, 60, 120].map(level => ({ activity: { kind: 'training' }, level })),
     ...['heavens', 'abyss'].map(mode => ({ activity: { kind: 'infusion', mode, stage: 15 }, legacy: true })),
   ];
   for (const [index, test] of cases.entries()) {
@@ -1143,11 +1148,16 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
     game.starterId = 'ember';
     game.account.characters = { ember: { level: 105, evolution: 6 } };
     game.account.squad = ['ember']; game.account.storyCompleted = 120;
-    game.account.infusionStages = { heavens: 15, abyss: 15, roses: 35 };
+    game.account.infusionStages = { heavens: 15, abyss: 15, roses: 35, treasury: 25, sanctuary: 25, machines: 35 };
+    game.account.warStages = { nerithe: 10, orvella: 10, vaelor: 10 };
     game.account.dungeonStages = Object.fromEntries(['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic'].map(element => [element, 35]));
     game.account.materials = { 'heavens-weapon': 19, 'abyss-weapon': 23 };
     game = resolveOperation(game, { kind: 'enter', activity: test.activity }, entropy).game;
     const state = game.run.session.state;
+    if (test.level) {
+      state.wave = test.level;
+      state.enemies.forEach(enemy => { enemy.level = test.level; });
+    }
     state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
     state.allies[0].shatter = 100;
     state.rewardSeed = 0; state.lycalisSeed = 15500; state.captureSeed = 0x80000000;
@@ -1188,9 +1198,21 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
       const rewards = actual.result.events.filter(event => event.kind === 'reward');
       assert.ok(rewards.length > 0);
       for (const reward of rewards) {
+        const activity = test.activity;
+        const endpoints = activity.kind === 'dungeon' ? [5, 10, 300, 600, 35]
+          : activity.kind === 'story' ? [8, 16, 750, 1500, 120]
+          : activity.kind === 'war' ? [1500, 2500, 30000, 45000, 10]
+          : activity.kind === 'training' ? [5, 10, 300, 600, 120]
+          : { heavens: [6, 12, 500, 1000, 15], abyss: [6, 12, 500, 1000, 15],
+            roses: [9, 18, 750, 1500, 35], treasury: [133, 266, 30000, 60000, 25],
+            sanctuary: [7, 14, 300, 600, 25], machines: [5, 10, 500, 1000, 35] }[activity.mode];
+        const p = ((test.level ?? activity.stage) - 1) / (endpoints[4] - 1);
+        const amount = reward.amount - (activity.kind === 'story' && reward === rewards.at(-1) ? 150 : 0);
+        assert.ok(amount >= Math.round(endpoints[0] + (endpoints[2] - endpoints[0]) * p));
+        assert.ok(amount <= Math.round(endpoints[1] + (endpoints[3] - endpoints[1]) * p));
         if (test.activity.kind === 'dungeon') {
-          const stage = test.activity.stage, minimum = Math.round(5 + 10 * (stage - 1) / 34),
-            maximum = Math.round(10 + 20 * (stage - 1) / 34);
+          const stage = test.activity.stage, minimum = Math.round(5 + 295 * (stage - 1) / 34),
+            maximum = Math.round(10 + 590 * (stage - 1) / 34);
           assert.ok(reward.amount >= minimum && reward.amount <= maximum);
           const unlocks = [1, 1, 6, 12, 19, 25], finals = [[8, 9], [5, 6], [4, 5], [2, 3], [2, 2], [1, 2]];
           const rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic'];
@@ -1206,7 +1228,7 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
           if (stage === 35) {
             assert.deepEqual(Object.fromEntries(rarities.map((rarity, index) =>
               [`${test.activity.element}-${rarity}`, finals[index][0]])), reward.materials);
-            assert.equal(reward.amount, 15);
+            assert.equal(reward.amount, 300);
           }
         } else if (test.activity.mode === 'roses') {
           const stage = test.activity.stage;
@@ -1223,15 +1245,15 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
           });
           if (stage === 35) {
             assert.deepEqual(Object.fromEntries(rarities.map((rarity, tier) => [`rosethorn-${rarity}`, finals[tier][0]])), reward.materials);
-            assert.equal(reward.amount, 90);
+            assert.equal(reward.amount, 750);
           }
-        } else if (test.activity.kind === 'infusion') {
+        } else if (test.activity.kind === 'infusion' && ['heavens', 'abyss'].includes(test.activity.mode)) {
           const progress = (test.activity.stage - 1) / 14;
           assert.deepEqual(Object.keys(reward.materials).sort(), [`${test.activity.mode}-evolution`, `${test.activity.mode}-level`].sort());
           for (const amount of Object.values(reward.materials)) assert.ok(amount >= Math.round(1 + 10 * progress) && amount <= Math.round(2 + 21 * progress));
           if (test.activity.stage === 15) {
             assert.deepEqual(Object.values(reward.materials), [11, 11]);
-            assert.equal(reward.amount, 75); assert.equal(reward.lycalis, 15);
+            assert.equal(reward.amount, 500); assert.equal(reward.lycalis, 15);
           }
         }
       }
@@ -1241,7 +1263,7 @@ async function smokeInfusionRebalance(firstClient, firstId, firstUsername) {
       assert.deepEqual((await invoke({ kind: 'read' }, actual.revision)).account, actual.account);
     }
   }
-  console.log(`Hosted D-427 passed${cases.length} cases: shared low linear dungeon/Rose materials, retained Rose unlocks and final currency boost, dungeon currency without boss bonus, unchanged15-stage Soar/Delve, old holdings/compatibility, local/authority parity, saved reads and idempotent retries. Disposable identities only.`);
+  console.log(`Hosted D-428 passed${cases.length} cases: smooth approved Prismatica curves across all ordinary activities without currency boss boosts; unchanged low material curves, premium rewards, old holdings/compatibility, local/authority parity, saved reads and idempotent retries. Disposable identities only.`);
 }
 
 async function smokeMachinesLayout(firstClient, firstId, firstUsername) {
@@ -1566,7 +1588,6 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly 
     const final = activity.kind === 'story' ? activity.stage % 20 === 0 : activity.kind === 'war' ? activity.stage === 10
       : activity.kind === 'dungeon' ? activity.stage === 35 : activity.stage === (['heavens', 'abyss'].includes(activity.mode) ? 15 : ['treasury', 'sanctuary'].includes(activity.mode) ? 25 : 35);
     if (final) {
-      assert.equal((rewards[0].amount - (rewards[0].storyBonus?.fractalis ?? 0)) % 5, 0);
       if (activity.kind !== 'dungeon' && !['heavens', 'abyss', 'roses'].includes(activity.mode))
         for (const quantity of Object.values(rewards[0].materials ?? {})) assert.equal(quantity % 5, 0);
     }
@@ -1579,8 +1600,8 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly 
       assert.equal(rewards[0].masterChests, 1);
       assert.deepEqual(Object.values(rewards[0].conduits), [1, 1, 1]);
     }
-    if (activity.mode === 'treasury' && final) assert.equal(rewards[0].amount, 24300);
-    if (activity.kind === 'war') assert.equal(rewards[0].amount, 25000);
+    if (activity.mode === 'treasury' && final) assert.equal(rewards[0].amount, 30000);
+    if (activity.kind === 'war') assert.equal(rewards[0].amount, 30000);
     if ((activity.mode === 'sanctuary' || activity.kind === 'war') && final) assert.equal(rewards[0].lycalis, 25);
     for (const key of ['fractalis', 'lycalis', 'materials', 'mechanicalComponents', 'conduits', 'masterChests', 'storyCompleted', 'receipts']) {
       assert.deepEqual(actual.account[key], expected.account[key], `${activity.kind} ${key}`);

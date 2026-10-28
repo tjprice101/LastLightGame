@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { bossLootRange } from '../content/final-boss-loot';
 import { infusionEncounter, infusionEnemies, infusionLoot, infusionDrops, treasurySalePrices } from '../content/infusions';
-import { treasuryFractalisDrop } from '../content/loot-random';
+import { activityPrismaticaDrop } from '../content/prismatica';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { standardBannerPool } from '../content/standard-banner';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, sellTreasuryCreature, treasurySaleOffer,
@@ -52,7 +51,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
       const random = vi.fn(() => 0);
       expect(infusionDrops('treasury', stage, random)).toEqual({});
       expect(random).not.toHaveBeenCalled();
-      const range = bossLootRange(treasuryFractalisDrop(encounter.level), stage === 25 ? 5 : 1);
+      const range = activityPrismaticaDrop({ infusion: { mode: 'treasury', stage } }, encounter.level);
       const drops = creatureLoot(getCreature(`infusion:treasury:${encounter.tier}`), stage);
       expect(drops.filter(drop => !drop.id.startsWith('capture:'))).toEqual([{ id: 'fractalis', ...range }]);
       expect(drops.find(drop => drop.id.startsWith('capture:'))).toMatchObject({
@@ -72,9 +71,9 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
       }
     }
     expect(starts).toEqual([1, 6, 10, 14, 18, 22]);
-    expect(treasuryFractalisDrop(65)).toEqual({ minimum: 133, maximum: 266, chance: 1 });
-    expect(treasuryFractalisDrop(120)).toEqual({ minimum: 4860, maximum: 9720, chance: 1 });
-    for (const level of [64, 121, 65.5, NaN]) expect(() => treasuryFractalisDrop(level)).toThrow();
+    expect(activityPrismaticaDrop({ infusion: { mode: 'treasury', stage: 1 } }, 65)).toEqual({ minimum: 133, maximum: 266, chance: 1 });
+    expect(activityPrismaticaDrop({ infusion: { mode: 'treasury', stage: 25 } }, 120)).toEqual({ minimum: 30000, maximum: 60000, chance: 1 });
+    for (const stage of [0, 26, 1.5, NaN]) expect(() => activityPrismaticaDrop({ infusion: { mode: 'treasury', stage } }, 65)).toThrow();
     for (const stage of [0, 26, NaN, 1.5]) expect(() => infusionEncounter('treasury', stage)).toThrow();
   });
   it('saves actual capture metadata/currency/unlocks together, rejects forged sources and stops at 25', () => {
@@ -133,7 +132,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     expect(view.host.innerHTML).not.toContain('enemies/undefined');
     const account = emptyAccount();
     expect(gameplayHub(account)).toContain('data-infusion="treasury"');
-    expect(gameplayHub(account)).toContain('stage 25 final boss gives 24,300-48,600');
+    expect(gameplayHub(account)).toContain('30,000-60,000 at Stage 25');
     expect(gameplayHub(account)).toContain('assets/banners/treasury-banner.png');
     expect(archives(account).match(/data-archive-character=/g)).toHaveLength(126);
   });

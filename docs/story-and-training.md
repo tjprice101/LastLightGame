@@ -1,5 +1,12 @@
 # Story campaign and endless Training (D-160/D-164)
 
+**D-428 Prismatica override:** Story stays120 stages; per-enemy Prismatica
+grows linearly8-16->750-1,500 by stage without regional-boss spikes.
+Training grows5-10->300-600 by enemy Lv.1-120 and holds at the enemy cap.
+Supersedes older per-kill currency formulas below. Story stage-clear awards,
+one-time regional bonuses, materials, other rewards and EX+ are unchanged.
+[Shared contract](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428).
+
 **D-347 layout (supersedes D-340's 18/108 and the 25/150 numbers below):** each
 region has **20 stages (120 total)**, with the same Lv.1-55 curve spread across
 them (`storyStageLayout`); regional bosses are stages 20/40/60/80/100/120 and

@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from 'vitest';
-import { bossLootRange } from '../content/final-boss-loot';
 import { materialLoot } from '../content/dungeons';
 import { eventModes, infusionStageCount } from '../content/activities';
 import { capturedEnemyStats, infusionEncounter, infusionDrops, infusionLoot, roseEnemyStats } from '../content/infusions';
@@ -14,7 +13,7 @@ import { resolveFighter, shatterGauge } from '../content/combat';
 import { characterLevelCap, characterLevelCost, characterEvolutionCost, characterGrowthFactor, type UpgradeCost } from '../content/progression';
 import { materialArt, materialName } from '../content/dungeon-art';
 import { creatureLoot, getCreature } from '../content/creatures';
-import { fractalisDrop } from '../content/loot-random';
+import { activityPrismaticaDrop } from '../content/prismatica';
 import { createBattle, createInfusionBattle, act, endTurn, nextStage, withMasterLoadouts } from './battle';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, summonCharacter, sellCurrencyCreature,
   creatureSaleOffer, setSquad, evolutionFodderOptions, upgradeCharacter, maxLevelPlan, levelCharacterToMaximum } from './account';
@@ -162,7 +161,7 @@ describe('Passion of Crimson Roses integration', () => {
       const result = defeat(stage, burn);
       const rewards = result.events.filter((event) => event.kind === 'reward');
       expect(rewards).toHaveLength(encounter.boss ? 1 : 2);
-      const range = bossLootRange(fractalisDrop(encounter.level, 140), stage === 35 ? 5 : 1);
+      const range = activityPrismaticaDrop({ infusion: { mode: 'roses', stage } }, encounter.level);
       const store = storage();
       saveAccount(store.saved, funded());
       store.reset();
@@ -200,7 +199,7 @@ describe('Passion of Crimson Roses integration', () => {
     }
   });
 
-  it('shares linear dungeon material endpoints while retaining Rose unlocks and currency', () => {
+  it('shares linear dungeon material endpoints while retaining Rose unlocks and growing currency', () => {
     const first = infusionLoot('roses', 1).specialties;
     expect(first.map(drop => drop.id)).toEqual(roseMaterials.slice(0, 5).map(material => material.id));
     expect(first.map(drop => [drop.minimum, drop.maximum, drop.chance]))
@@ -234,7 +233,7 @@ describe('Passion of Crimson Roses integration', () => {
           expect(current.maximum - drop.maximum).toBeLessThanOrEqual(1);
         });
       }
-      expect(creatureLoot(creature, stage).filter(drop => !drop.id.startsWith('capture:'))).toEqual([{ id: 'fractalis', ...bossLootRange(fractalisDrop(encounter.level, 140), stage === 35 ? 5 : 1) },
+      expect(creatureLoot(creature, stage).filter(drop => !drop.id.startsWith('capture:'))).toEqual([{ id: 'fractalis', ...activityPrismaticaDrop({ infusion: { mode: 'roses', stage } }, encounter.level) },
         ...infusionLoot('roses', stage).specialties]);
     }
     expect(infusionDrops('roses', 35, () => 0)).toEqual(Object.fromEntries(final.map(drop => [drop.id, drop.minimum])));
@@ -268,9 +267,8 @@ describe('Passion of Crimson Roses integration', () => {
       expect(saveAccountRewards(store.saved, result, `rose-linear-${stage}`)).toEqual(saved);
       expect(store.writes()).toBe(1);
       if (stage === 35) {
-        expect(rewards[0].amount).toBeGreaterThanOrEqual(90);
-        expect(rewards[0].amount).toBeLessThanOrEqual(180);
-        expect(rewards[0].amount! % 5).toBe(0);
+        expect(rewards[0].amount).toBeGreaterThanOrEqual(750);
+        expect(rewards[0].amount).toBeLessThanOrEqual(1500);
         expect(saved.materials['rosethorn-legendary']).toBe(2);
       }
     }

@@ -1,5 +1,21 @@
 # Authoritative game operation
 
+## Smooth Prismatica across ordinary activities (D-428)
+
+[Current endpoints and scope](../../../docs/summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428)
+supersede older Prismatica curves/5x statements below. Shared stage-linear
+curves (Training by level) serve kills, Collections and atomic validation;
+War uses the same helper. No Prismatica boss multiplier or multiples5 rule.
+Existing non-Prismatica boosts, EX+, Story clear awards/one-time bonuses and
+wallet/rules versions are unchanged. Future kills in retained runs use the
+current curve; no account migration or grants.
+
+Regenerate/type-check/deploy the bundle with the client. `node
+tools\smoke_server_game.mjs --infusion-rebalance` passes54 disposable hosted
+fixtures: early/mid/final stages in all activities, Story regional boundaries,
+all War modes, Training levels1/60/120, old holdings/compatibility, exact
+local/server parity, saved reads and idempotent retries. Fixtures are removed.
+
 ## Linear Rose materials (D-427)
 
 Rose event kills now share the low linear dungeon material endpoints, starting
