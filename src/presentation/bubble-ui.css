@@ -621,12 +621,6 @@ html body #app .sanctuary-shell .conduit-loadout :is(.loadout-target-cue, .loado
 .cine-storm i:nth-child(2) { animation-delay: calc(var(--t) * var(--peak) * .18); width: 60vmin; height: 60vmin; border-style: dotted; }
 .cine-storm i:nth-child(3) { animation-delay: calc(var(--t) * var(--peak) * .36); width: 72vmin; height: 72vmin; }
 
-/* Black-and-white EQUIPPED ribbon on Conduits worn by this character */
-html body #app .sanctuary-shell .conduit-loadout :is(.loadout-owned-row.is-equipped > .loadout-owned-art, .loadout-slot:not(.is-empty) .loadout-slot-art):not(#_) { position: relative !important; overflow: hidden !important; border-radius: 14px; }
-html body #app .sanctuary-shell .conduit-loadout :is(.loadout-owned-row.is-equipped > .loadout-owned-art, .loadout-slot:not(.is-empty) .loadout-slot-art):not(#_)::after { content: 'EQUIPPED' / ''; position: absolute; left: -40%; right: -40%; bottom: 14%; z-index: 3; rotate: -16deg; display: block; padding: 1px 0; text-align: center; font: 800 .5rem/1.45 var(--ui-font, Georgia, serif); letter-spacing: .24em; color: #fff; text-shadow: 0 1px 1px #000; background: linear-gradient(100deg, #000 38%, #4a4a4a 50%, #000 62%) 0 0 / 300% 100%; border-block: 1px solid #fff; box-shadow: 0 2px 8px #000c; pointer-events: none; animation: equip-ribbon-sheen 3.4s linear infinite; }
-html body #app .sanctuary-shell .conduit-loadout .loadout-slot:not(.is-empty) .loadout-slot-art:not(#_)::after { font-size: .56rem; }
-html[data-motion="reduced"] body #app .sanctuary-shell .conduit-loadout :is(.loadout-owned-art, .loadout-slot-art)::after { animation: none !important; }
-
 @keyframes fx-band { 0% { opacity: 0; scale: .1 1; } 20% { opacity: 1; scale: 1.04 1; } 75% { opacity: 1; scale: 1 1; } 100% { opacity: 0; scale: 1 .6; } }
 @keyframes cine-bolt-flicker { 0% { opacity: 0; } 5% { opacity: 1; } 14% { opacity: .2; } 22% { opacity: 1; } 44% { opacity: .85; } 56% { opacity: .1; } 64% { opacity: .7; } 100% { opacity: 0; } }
 @keyframes cine-bolt-draw { to { stroke-dashoffset: 0; } }
@@ -642,7 +636,6 @@ html[data-motion="reduced"] body #app .sanctuary-shell .conduit-loadout :is(.loa
   70% { translate: -50% -53%; }
   100% { opacity: 1; translate: -50% -50%; scale: 1; rotate: 0deg; filter: brightness(1) drop-shadow(0 0 16px #e8203f99); }
 }
-@keyframes equip-ribbon-sheen { from { background-position: 100% 0; } to { background-position: -50% 0; } }
 
 /* ---------- Close buttons: fixed hit box (polish) ---------- */
 /* Hover never moves or scales a close X, so its target always sits exactly under the visible circle. */

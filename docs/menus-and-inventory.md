@@ -29,7 +29,7 @@
   (`rarityPalette`: Calamitic black/white/crimson with SVG lightning, Omnic
   prismatic, otherwise rarity/element accent); Calamity chests rattle and burst
   with crimson/white lightning. Equipping a Conduit shows a palette-matched
-  EQUIPPED banner and equipped icons carry a black/white EQUIPPED ribbon. Close
+  EQUIPPED banner (no ribbon on the icons; owner removed it). Close
   X buttons are fixed 44px circles that never move on hover. Presentation only.
 ## Standalone bubble UI mock-up (D-432)
 
