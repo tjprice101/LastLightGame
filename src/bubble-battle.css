@@ -1,0 +1,93 @@
+/* Bubble chrome over the live battle (D-432). Only surfaces/borders/type change; arena scale, unit placement,
+   readout content, toolbar order and the Battle menu structure stay exactly as the live battle renders them. */
+body.bubble-battle { --gel: color-mix(in srgb, var(--ui-accent, #f4f4f5) 34%, #0b1020); --gel-edge: color-mix(in srgb, var(--ui-accent, #f4f4f5) 62%, #ffffff40); }
+
+body.bubble-battle :is(.battle-chrome-button, .battle-turn-button, .battle-speed-buttons button, .primary-button, .text-button, .drawer-close, .battle-actor-picker button) {
+  position: relative; overflow: hidden; border: 1px solid var(--gel-edge) !important; border-radius: 999px !important;
+  background: radial-gradient(120% 90% at 30% 0%, #ffffff3a, transparent 46%), linear-gradient(180deg, color-mix(in srgb, var(--gel) 90%, #fff 10%), color-mix(in srgb, var(--gel) 70%, #000 30%)) !important;
+  color: #fff !important; font-family: Georgia, 'Times New Roman', serif !important; font-weight: 700; letter-spacing: .02em;
+  box-shadow: inset 0 1px 0 #ffffff66, inset 0 -6px 12px #0006, 0 6px 18px color-mix(in srgb, var(--ui-accent, #fff) 26%, transparent);
+  transition: transform .25s cubic-bezier(.34, 1.56, .64, 1), box-shadow .25s ease, filter .25s ease;
+}
+body.bubble-battle :is(.battle-chrome-button, .battle-turn-button, .primary-button, .text-button, .battle-speed-buttons button):hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.03); filter: brightness(1.12);
+  box-shadow: inset 0 1px 0 #ffffff80, inset 0 -6px 12px #0006, 0 10px 26px color-mix(in srgb, var(--ui-accent, #fff) 42%, transparent);
+}
+body.bubble-battle .primary-button { background: radial-gradient(120% 90% at 30% 0%, #ffffff66, transparent 48%), linear-gradient(180deg, color-mix(in srgb, var(--ui-accent) 85%, #fff 15%), color-mix(in srgb, var(--ui-accent) 55%, #000 45%)) !important; color: #08090d !important; text-shadow: 0 1px 0 #ffffff70; }
+body.bubble-battle .battle-speed-buttons button[aria-pressed='true'] { background: radial-gradient(120% 90% at 30% 0%, #ffffff70, transparent 50%), var(--ui-accent) !important; color: #08090d !important; }
+body.bubble-battle .battle-toolbar { border-radius: 999px; border: 1px solid var(--gel-edge); background: linear-gradient(180deg, #ffffff14, #0000), color-mix(in srgb, #0b0e16 80%, var(--ui-accent) 20%) !important; backdrop-filter: blur(14px); box-shadow: 0 10px 30px #0007, inset 0 1px 0 #ffffff30; }
+body.bubble-battle .battle-heading :is(h1, .eyebrow), body.bubble-battle .battle-progress { font-family: Georgia, 'Times New Roman', serif; }
+body.bubble-battle .battle-heading h1 { background: linear-gradient(180deg, #fff, color-mix(in srgb, var(--ui-accent) 55%, #fff)); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: none; filter: drop-shadow(0 2px 10px color-mix(in srgb, var(--ui-accent) 50%, transparent)); }
+body.bubble-battle .battle-heading .eyebrow { letter-spacing: .24em; font-variant: small-caps; color: color-mix(in srgb, var(--ui-accent) 70%, #fff); }
+body.bubble-battle .unit-nameplate { border-radius: 18px !important; border: 1px solid color-mix(in srgb, var(--unit-element, var(--ui-accent)) 45%, #ffffff30) !important;
+  background: linear-gradient(180deg, #ffffff16, #0000 40%), #0b0e16d9 !important; box-shadow: 0 8px 22px #0008, inset 0 1px 0 #ffffff2a; backdrop-filter: blur(10px); }
+body.bubble-battle .health-track { border-radius: 999px; overflow: hidden; box-shadow: inset 0 1px 3px #000a; }
+body.bubble-battle .health-track > span { border-radius: inherit; background-image: linear-gradient(180deg, #ffffff60, transparent 55%) !important; }
+body.bubble-battle :is(.battle-menu, .settings-drawer) { border-radius: 28px !important; border: 1px solid var(--gel-edge) !important; background: radial-gradient(90% 60% at 20% 0%, color-mix(in srgb, var(--ui-accent) 18%, transparent), transparent 60%), #0b0e16f2 !important; box-shadow: 0 30px 80px #000c, inset 0 1px 0 #ffffff30; }
+body.bubble-battle .battle-footer-summary { border-radius: 999px; border: 1px solid #ffffff22; background: #0b0e16b8; backdrop-filter: blur(10px); }
+
+/* Live results sheet, polished: cinematic title, glory rays, reward cards that pop and count up. */
+body.bubble-battle .battle-screen .battle-results { border-radius: 30px !important; border: 1px solid var(--gel-edge) !important; overflow: hidden;
+  background: radial-gradient(80% 60% at 50% 0%, color-mix(in srgb, var(--ui-accent) 24%, transparent), transparent 70%), linear-gradient(180deg, #121726f2, #090b12f5) !important;
+  box-shadow: 0 30px 90px #000d, 0 0 60px color-mix(in srgb, var(--ui-accent) 22%, transparent), inset 0 1px 0 #ffffff38; }
+.victory-cinematic > :not(.victory-glory) { position: relative; z-index: 1; }
+.victory-glory { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+.victory-rays { position: absolute; left: 50%; top: 64px; width: 900px; height: 900px; translate: -50% -50%; opacity: .32;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--ui-accent) 70%, #fff) 0 5deg, transparent 5deg 18deg);
+  mask: radial-gradient(circle, #000 0 18%, transparent 62%); animation: victory-spin 26s linear infinite; }
+.victory-ring { position: absolute; left: 50%; top: 64px; width: 120px; height: 120px; translate: -50% -50%; border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--ui-accent) 70%, #fff); box-shadow: 0 0 30px var(--ui-accent); opacity: 0; animation: victory-ring 1.6s .15s cubic-bezier(.2, .7, .2, 1) forwards; }
+.victory-ring.late { animation-delay: .5s; }
+.victory-glory i { position: absolute; left: 50%; top: 64px; width: 7px; height: 7px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px var(--ui-accent), 0 0 3px #fff;
+  opacity: 0; animation: victory-spark 1.5s calc(.2s + var(--i) * .035s) ease-out forwards; }
+.victory-cinematic .battle-result-title h2 { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(44px, 7vw, 76px) !important; letter-spacing: .12em; text-transform: uppercase; font-weight: 700;
+  background: linear-gradient(180deg, #fff 10%, #ffe6aa 45%, color-mix(in srgb, var(--ui-accent) 70%, #ffd27a) 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--ui-accent) 55%, transparent)) drop-shadow(0 3px 0 #0008); animation: victory-title 1s cubic-bezier(.18, 1.4, .4, 1) both; }
+.victory-cinematic .battle-result-title .eyebrow { letter-spacing: .26em; font-variant: small-caps; color: color-mix(in srgb, var(--ui-accent) 65%, #fff); }
+.victory-stage { margin: -4px 0 6px; font: italic 600 14px/1.4 Georgia, 'Times New Roman', serif; color: #e6e7ee; letter-spacing: .04em; }
+.victory-callouts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; padding: 0; list-style: none; }
+.victory-callouts li { padding: 7px 14px; border-radius: 999px; font: 700 12px/1.3 Georgia, 'Times New Roman', serif; border: 1px solid #ffffff40;
+  background: radial-gradient(120% 90% at 30% 0%, #ffffff30, transparent 50%), #ffffff10; animation: victory-pop .6s calc(.6s + var(--n, 0) * .1s) cubic-bezier(.34, 1.56, .64, 1) both; }
+.victory-callouts .callout-region { border-color: #ffd27a; color: #ffe6aa; box-shadow: 0 0 18px #ffd27a40; }
+.victory-callouts .callout-first { border-color: color-mix(in srgb, var(--ui-accent) 70%, #fff); }
+.victory-callouts .callout-capture { border-color: #b8f5c8; color: #d9ffe3; }
+.victory-callouts .callout-discovery { border-color: #a9c9ff; color: #dce8ff; }
+.victory-cinematic .battle-result-rewards h3 { font: 700 13px/1.3 Georgia, 'Times New Roman', serif; letter-spacing: .2em; text-transform: uppercase; color: color-mix(in srgb, var(--ui-accent) 60%, #fff); }
+.victory-cinematic .battle-result-rewards li { border-radius: 18px; background: radial-gradient(120% 100% at 20% 0%, color-mix(in srgb, var(--reward-color) 22%, transparent), transparent 60%), #ffffff08;
+  box-shadow: inset 0 1px 0 #ffffff22; animation: victory-pop .55s calc(.45s + var(--i, 0) * .11s) cubic-bezier(.34, 1.56, .64, 1) both; }
+.victory-cinematic .battle-result-rewards li img { filter: drop-shadow(0 0 8px color-mix(in srgb, var(--reward-color) 60%, transparent)); animation: victory-icon 2.8s calc(var(--i, 0) * .2s) ease-in-out infinite; }
+.victory-cinematic .battle-result-rewards strong { font: 700 15px/1 Georgia, 'Times New Roman', serif; font-variant-numeric: tabular-nums; text-shadow: 0 0 10px color-mix(in srgb, var(--reward-color) 60%, transparent); }
+.victory-cinematic .battle-result-actions { animation: victory-pop .5s 1.2s both; }
+@keyframes victory-spin { to { rotate: 360deg; } }
+@keyframes victory-ring { 0% { opacity: .9; scale: .2; } 100% { opacity: 0; scale: 7; } }
+@keyframes victory-spark { 0% { opacity: 1; transform: rotate(var(--a)) translateX(0); } 100% { opacity: 0; transform: rotate(var(--a)) translateX(260px) scale(.3); } }
+@keyframes victory-title { 0% { opacity: 0; scale: 1.8; letter-spacing: .5em; } 100% { opacity: 1; scale: 1; } }
+@keyframes victory-pop { 0% { opacity: 0; transform: translateY(14px) scale(.85); } 100% { opacity: 1; transform: none; } }
+@keyframes victory-icon { 50% { transform: translateY(-3px) scale(1.06); } }
+html[data-motion='reduced'] :is(.victory-rays, .victory-ring, .victory-glory i, .victory-cinematic *, body.bubble-battle *) { animation: none !important; transition: none !important; }
+html[data-motion='reduced'] .victory-ring, html[data-motion='reduced'] .victory-glory i { display: none; }
+:root[data-motion="reduced"] :is(.victory-rays, .victory-ring, .victory-glory i, .victory-cinematic *) { animation: none !important; }
+
+/* The frame is the viewport: the battlefield never scrolls, matching the live full-screen battle. */
+html:has(body.bubble-battle), body.bubble-battle { overflow: hidden; height: 100%; }
+body.bubble-battle .battle-screen .battle-results :is(p, .battle-result-stats, .battle-result-rewards span) { letter-spacing: .01em; }
+body.bubble-battle :is(.battle-chrome-button, .battle-turn-button, .battle-speed-buttons button, [data-result-show], #open-battle-menu) { white-space: nowrap; }
+body.bubble-battle .victory-callouts li, body.bubble-battle .battle-result-rewards strong { letter-spacing: .03em; }
+body.bubble-battle :is(#open-battle-menu, [data-result-show]) { flex: 0 0 auto; min-width: max-content; }
+body.bubble-battle .battle-toolbar { gap: 4px; padding: 3px; }
+body.bubble-battle .battle-toolbar .battle-chrome-button { padding-inline: 12px; }
+
+/* Battle menu interior: glass bubble panels and action cards (D-433). Structure and content unchanged. */
+body.bubble-battle .battle-menu :is(.battle-combat-menu, .battle-unit-intel, .battle-help, .battle-log) { border-radius: 24px !important; border: 1px solid #ffffff1f !important;
+  background: radial-gradient(100% 60% at 15% 0%, color-mix(in srgb, var(--ui-accent) 10%, transparent), transparent 65%), #ffffff07 !important; box-shadow: inset 0 1px 0 #ffffff1c; }
+body.bubble-battle .battle-menu :is(.actor-info, .enemy-skill-guide) { border-radius: 18px !important; border-color: #ffffff1a !important; background: #ffffff06 !important; }
+body.bubble-battle .battle-menu .battle-action { border-radius: 20px !important; border: 1px solid color-mix(in srgb, var(--ui-accent) 30%, #ffffff1f) !important;
+  background: radial-gradient(120% 80% at 25% 0%, #ffffff18, transparent 55%), #ffffff08 !important; box-shadow: inset 0 1px 0 #ffffff26;
+  transition: transform .25s cubic-bezier(.34, 1.56, .64, 1), box-shadow .25s ease, border-color .25s ease; }
+body.bubble-battle .battle-menu .battle-action:hover:not(:disabled) { transform: translateY(-2px); border-color: color-mix(in srgb, var(--ui-accent) 70%, #fff) !important;
+  box-shadow: inset 0 1px 0 #ffffff40, 0 10px 24px color-mix(in srgb, var(--ui-accent) 30%, transparent); }
+body.bubble-battle .battle-menu :is(.battle-combat-menu, .battle-unit-intel, .battle-help) { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--ui-accent) 60%, transparent) transparent; }
+
+/* Victory sheet stays up: no View battlefield / View victory toggle (owner D-433) */
+body.bubble-battle .battle-results [data-result-dismiss],
+body.bubble-battle [data-result-show] { display: none !important; }

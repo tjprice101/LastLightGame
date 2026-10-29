@@ -1,5 +1,50 @@
 # Current state and handoff
 
+## Live bubble UI overhaul (D-433)
+
+- The approved D-432 style now drives the live game through a last-installed
+  presentation layer: `src/presentation/bubble-ui.css` and `bubble-ui.ts`
+  (MutationObservers add bubble structure without renaming IDs/hooks).
+- Owner choices: mock-up navigation (no dock/top bar), Home orbit of 9 bubbles
+  plus Continue-story card and squad rail; Help/Collections/Settings/Profile as
+  top-right glass circles; Back falls back to Home; Team orbit layout; grouped
+  Play board; lists scroll inside their panels; centered gel button labels;
+  opening/title/starter/account screens restyled; mock-up cinematics play
+  alongside the retained portrait upgrade aura (celebrateUpgrade).
+- Battle: `src/bubble-battle.css` (shared with the preview) is imported live and
+  gated by `body.bubble-battle`, toggled while `.battle-screen` exists. Chrome,
+  Battle menu panels and victory sheet only; field art scale, formation and
+  placement unchanged. The View battlefield/View victory toggle is hidden in bubble
+  battle mode (owner choice). Victory adds rays/rings/sparks and integer count-up that
+  is skipped under reduced motion and always ends on the exact saved text.
+- No mechanics, rewards, RNG, saves, copy or element accents changed. Motion
+  gating uses `html[data-motion="reduced"]`/`bubbleMotionAllowed()`.
+## Standalone bubble UI mock-up (D-432)
+
+- Owner requested a live-faithful bubble UI mock-up of all screens to evaluate
+  a possible overhaul; production UI, accounts and saves are untouched. Files
+  (uncommitted, pending owner review): `bubble-preview.html`,
+  `src/bubble-preview.ts`/`.css`/`.test.ts`, `src/bubble-preview-model.ts`,
+  `vite.config.ts` entry. Contract:
+  [menus-and-inventory.md](menus-and-inventory.md#standalone-bubble-ui-mock-up-d-432).
+- Real account rules run against a private in-memory example account; live
+  wording/lore, grouped Play categories, illustrated loot pools, Stores tabs; no
+  Menu button or leader pill (Settings gear only, bottom-right). Shared effect layer (ambient orbits/twinkles, staggered pop
+  entrances, glyph click bursts, transaction celebrations, sheens/pulses) is
+  applied equally to every route and respects reduced motion.
+- `npm test -- src\bubble-preview.test.ts src\presentation\leader-theme.test.ts --maxWorkers=2`:
+  **51 passed/2 files**; `npx tsc --noEmit -p .` clean; `npm run build` passed
+  (existing large-chunk warning). Browser: evolution and summon cinematics
+  frame-checked, summon rewards verified, 18 routes free of horizontal overflow
+  at 390x844, desktop routes fit 1309x818.
+- Later additions: live battle/results frame (`bubble-battle.html`,
+  `src/bubble-battle-session.ts`, `src/bubble-battle.ts`/`.css`), viewport-fit
+  pages, restored live character/activity information, skippable cinematics,
+  gel buttons/stylized Georgia. The test click helper skips cinematics like a
+  player tap.
+- Dev URLs: `http://127.0.0.1:5173/LastLightGame/bubble-preview.html` and
+  `/LastLightGame/bubble-battle.html`.
+
 ## Coordinated farming rewards and later material costs (D-429/D-430/D-431)
 
 - Owner approves modest rounded linear material growth, allowing adjacent-stage

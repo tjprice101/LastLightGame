@@ -1,5 +1,100 @@
 # Menus and inventory
 
+## Live bubble UI overhaul (D-433)
+
+- The approved D-432 style now drives the live game through a last-installed
+  presentation layer: `src/presentation/bubble-ui.css` and `bubble-ui.ts`
+  (MutationObservers add bubble structure without renaming IDs/hooks).
+- Owner choices: mock-up navigation (no dock/top bar), Home orbit of 9 bubbles
+  plus Continue-story card and squad rail; Help/Collections/Settings/Profile as
+  top-right glass circles; Back falls back to Home; Team orbit layout; grouped
+  Play board; lists scroll inside their panels; centered gel button labels;
+  opening/title/starter/account screens restyled; mock-up cinematics play
+  alongside the retained portrait upgrade aura (celebrateUpgrade).
+- Battle: `src/bubble-battle.css` (shared with the preview) is imported live and
+  gated by `body.bubble-battle`, toggled while `.battle-screen` exists. Chrome,
+  Battle menu panels and victory sheet only; field art scale, formation and
+  placement unchanged. The View battlefield/View victory toggle is hidden in bubble
+  battle mode (owner choice). Victory adds rays/rings/sparks and integer count-up that
+  is skipped under reduced motion and always ends on the exact saved text.
+- No mechanics, rewards, RNG, saves, copy or element accents changed. Motion
+  gating uses `html[data-motion="reduced"]`/`bubbleMotionAllowed()`.
+## Standalone bubble UI mock-up (D-432)
+
+Owner requests an interactive bubble-style mock-up of every screen, using their
+local HTML reference and bubble-character screenshot, to judge a possible UI
+overhaul. Later direction: no sidebars or persistent top navigation; character
+art is the focal point with surrounding option bubbles, a click-origin camera
+zoom into details and Back to the art; it must display and behave like the live
+game (battles aside), use live wording/story/thematics and feel alive. This is
+**not** approval to replace production layouts or change gameplay.
+
+Open [bubble-preview.html](../bubble-preview.html) through Vite: `npm run dev`,
+then `/LastLightGame/bubble-preview.html`. Forty routes cover opening/account/
+starter, Home, Team/rosters/Squad, stats/abilities/lore, growth/Max/evolution,
+Conduits/loadouts/restoration, Play (eight grouped category bubbles), Story/
+activities/events/Calamity/loot focus, Summon, Inventory/chests/sale, Stores
+(Conduit Store and Material Exchange), Collections/archives, profile/friends/
+settings/help, battle/results/acquisition. There is no Menu button and no
+leader pill: Home bubbles, context Back and a single bottom-right Settings gear
+handle navigation, and Settings holds the leader picker plus Profile, Friends,
+Information and Events. The entry is built by Vite but not linked from the game.
+
+`src/bubble-preview-model.ts` holds a private in-memory example account and
+Map-backed `ProfileStorage`, so the real `game/account.ts` rules run unchanged:
+leveling/Max Level/evolution, squad, equipment, purchases, exchange, Conduit
+upgrades, summons, sales, chests, Machine focus and locks. Real stats, banner
+rates/pity, Story/activity stages and illustrated loot pools come from shared
+content. Nothing reads or writes a real account; Settings > Reset restores the
+example account. Player-facing text uses live terminology and Let/Rise lore; the
+only build disclosure sits in Settings.
+
+Shared living-interface layer, identical on every screen:
+- Persistent ambient layer (never rebuilt on navigation): three aurora
+  currents, twelve depth-layered drifting bubbles, swimming sparks, two dashed
+  orbit rings with ring stars and sixteen twinkling glyph sparkles.
+- Navigation pops every heading, bubble, category bubble, panel, card, stage,
+  loot row, tab, primary action and stat cell in with a staggered springy
+  scale/blur entrance; state refreshes do not replay it.
+- Every click emits ripple rings, particle and glyph sparkle bursts and a brief
+  accent flash on the control; bubble zooms add a portal.
+- Completed transactions (growth, equip, squad/formation, purchase, exchange,
+  upgrade, sale, focus, profile, leader, message) show a glowing banner,
+  shockwave and multi-point glyph bursts; summons/chests/results burst on reveal.
+- Primary actions pulse with an idle sheen; cards/stages/rows shimmer on hover;
+  item art bobs; bubbles float, squash and glow.
+The current leader's canonical element accent tints all of it. Artwork is never
+recolored; unowned forms stay silhouetted and missing art uses named pending
+tiles. In-app reduced motion/sparkle settings and OS reduced motion disable the
+effects (WAAPI effects are gated in script, CSS by the reduce-motion rules).
+
+Later owner direction (restore live identity/information, polish, cinematics):
+- **Battle/Victory:** `bubble-battle.html` (`src/bubble-battle-session.ts`,
+  `bubble-battle.ts`/`.css`) embeds the real `BattleView` and live results sheet
+  in an iframe against a private copy of the example account, keeping the live
+  field scale, formation and placement with bubble chrome only.
+- **Viewport fit:** headings stay fixed and `fitPage` wraps the rest in
+  `.page-body`; desktop routes fit one screen and only long lists scroll inside
+  their own panels. Mobile stacks with no horizontal overflow.
+- **Restored live information:** "Prefix, Name" titles, Details/stats, ability
+  icons with costs/counters, Conduit effect text in equipment slots, Max Level
+  and evolution stat deltas, the Evolution Value copy picker, stage bubbles with
+  levels/boss crowns/clear checks, activity cards with real reward icons, and
+  the Enter action on the activity scenery card.
+- **Cinematics** (tap to skip, skipped under reduced motion): level/Max Level,
+  evolution (old form, flash, new form, tier by form), summon portal (prismatic
+  for six-star, gold for five-star results), Conduit purchase/upgrade, Master
+  claim and Calamity chest. The celebration banner follows. Summon results use
+  live banner RNG and show material bundles, Devourer copies and new
+  Element-Bearers with a staggered flip reveal and five/six-star highlights.
+- **Style:** glossy gel pills and tool circles, gradient Georgia headings and
+  small-caps glowing eyebrows (Georgia only).
+
+Validate `npm test -- src\bubble-preview.test.ts src\presentation\leader-theme.test.ts`
+and `npm run build`; browser-check routes with reduced motion **off** (leaving
+emulated reduced motion on hides every animation). Owner review is required
+before any live rollout.
+
 ## Available-height evolution workspace (D-424)
 
 Owner requests using the remaining screen space rather than compressing the

@@ -115,7 +115,10 @@ describe('replacement reference screen structures', () => {
     expect(html).not.toContain('ref-home-slot');
     expect(html).not.toContain('data-team-view="formation"');
     expect(html).not.toContain('home-banner');
-    expect(html).not.toContain('data-page="summon"');
+    expect(html).not.toContain('ref-stat-strip');
+    expect(html.match(/class="hub-bubble /g)).toHaveLength(9);
+    for (const page of ['story', 'gameplay', 'summon', 'events', 'stores', 'inventory', 'collections', 'profile', 'team']) expect(html).toContain(`data-page="${page}" style=`);
+    expect(html).toContain('data-page="squad"');
     expect(wallet).toEqual(before);
   });
 
@@ -137,7 +140,7 @@ describe('replacement reference screen structures', () => {
     const before = structuredClone(wallet);
     const encounter = storyEncounter(Math.min(storyRules.stages, completed + 1));
     const html = referenceHome(getStarter('tide'), wallet);
-    const card = html.slice(html.indexOf('<button class="ref-panel ref-home-story"'), html.indexOf('<div class="ref-home-shops"'));
+    const card = html.slice(html.indexOf('<button class="ref-panel ref-home-story"'), html.indexOf('</section>'));
     expect(card).toContain(`src="${assetUrl(`backgrounds/${encounter.background}`)}"`);
     expect(card).toContain('class="ref-home-story-arena"');
     expect(card).toContain('alt="" draggable="false"');

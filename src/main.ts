@@ -71,7 +71,7 @@ import { storyCampaign, bindStoryNavigation } from './presentation/story';
 import { storyEncounter, storyRules } from './content/story';
 import { unlockedStoryStage } from './game/account';
 import { roseEvent } from './presentation/rose-event';
-import { isMenuPage, sanctuaryHeader, sanctuaryContext, sanctuaryDock, sanctuaryDestination, type MenuPage, type TeamArea } from './presentation/sanctuary';
+import { isMenuPage, sanctuaryHeader, sanctuaryContext, sanctuaryDestination, type MenuPage, type TeamArea } from './presentation/sanctuary';
 import { MenuHistory } from './presentation/menu-history';
 import { gameChoose, gameConfirm, gameDialogPending, escapeDialogText } from './presentation/game-dialog';
 import { bindCreatureBulkSale } from './presentation/creature-bulk-sale';
@@ -109,6 +109,8 @@ import { DebugProfileStorage, bindDebugPhrase } from './game/debug-profile';
 import './presentation/debug-profile.css';
 import './presentation/conduit-loadout.css';
 import './presentation/status-toast.css';
+import './presentation/bubble-ui.css';
+import { installBubbleUi } from './presentation/bubble-ui';
 import { saleLabel } from './presentation/creature-sale';
 import { applyConduitSearch, bindConduitLoadout, refreshConduitLoadout, resetConduitLoadoutView } from './presentation/conduit-loadout';
 import { BackgroundMusic, battleMusic, defaultMusicPreferences, loadMusicPreferences, saveMusicPreferences } from './presentation/music';
@@ -135,6 +137,7 @@ bindInformation(app);
 bindSelectionPanels(app);
 bindStageLoot(app, () => account);
 installButtonStyle(document.body);
+installBubbleUi(app);
 let characterCategory: TeamArea = 'squad';
 let teamView: ReferenceTeamView = 'detail';
 let teamElement = '';
@@ -396,10 +399,10 @@ function visitMenu(page: MenuPage): void {
 async function backMenu(): Promise<void> {
   if (activityTransitionPending()) return;
   await transitionActivity(async () => {
-    const fallback: MenuSnapshot | undefined = menuPage === 'battle' ? {
-      ...menuSnapshot(), page: 'gameplay', hash: '', gallery: undefined,
+    const fallback: MenuSnapshot = {
+      ...menuSnapshot(), page: menuPage === 'battle' ? 'gameplay' : 'home', hash: '', gallery: undefined,
       activities: [], difficulties: [], calamityTiers: [], controls: [], panels: [], scroll: 0,
-    } : undefined;
+    };
     if (menuPage === 'battle' && playMode === 'online' && battleSession) await performOnline({ kind: 'quit', runId: battleSession.runId });
     const previous = menuHistory.back(fallback);
     battleSession = null;

@@ -5,6 +5,8 @@
  */
 const BUTTON_SELECTOR = 'button, a[class], [role="button"]';
 const TEXT_BUTTON_MAX_HEIGHT = 72;
+/* Bubble controls (D-433) own their gel/orb surfaces and are never retagged. */
+const OWN_SURFACE = '.hub-bubble, .bubble-mini-member, .bubble-back, .ref-home-art';
 
 export type ButtonKind = 'text' | 'icon' | 'tile' | 'filled' | 'art';
 
@@ -39,7 +41,7 @@ export function installButtonStyle(root: HTMLElement = document.body): () => voi
   const scan = (): void => {
     frame = 0;
     root.querySelectorAll<HTMLElement>(BUTTON_SELECTOR).forEach((element) => {
-      if (!element.closest('.battle-unit, .battle-field, .battle-units')) tag(element);
+      if (!element.closest('.battle-unit, .battle-field, .battle-units') && !element.matches(OWN_SURFACE)) tag(element);
     });
   };
   const schedule = (): void => {

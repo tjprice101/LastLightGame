@@ -157,7 +157,7 @@ describe('unified Archives', () => {
     expect(sanctuaryHeader('glossary', 0)).toContain('Archives');
     expect(isMenuPage('collections')).toBe(true);
     expect(sanctuaryContext('archives')).toBe('');
-    expect(sanctuaryHeader('archives', 0)).not.toContain('data-menu-back');
+    expect(sanctuaryHeader('archives', 0).match(/data-menu-back/g)).toHaveLength(1);
     expect(archives(emptyAccount(), 'conduits')).not.toContain('Recovered ancient-war mechanism');
     expect(sanctuaryHeader('home', 0)).toContain('data-page="collections"');
     expect(sanctuaryContext('inventory') + inventoryHub()).not.toContain('data-page="archives"');

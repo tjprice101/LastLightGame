@@ -15,6 +15,11 @@ import { materialArt, materialName } from '../content/dungeon-art';
 import { assetUrl } from './portrait';
 import { bannerMaterialDefinition, bannerDuplicateMaterialAmount } from '../content/banner-materials';
 import { rarities, type Rarity } from '../content/rarity';
+import { type CinematicTier } from './bubble-ui';
+
+function summonTier(stars: number): CinematicTier {
+  return stars >= 6 ? 'prismatic' : stars === 5 ? 'gold' : 'normal';
+}
 
 export type SummonResult = ReturnType<typeof summonCharacter>;
 
@@ -29,6 +34,7 @@ export function summonTenReward(account: SummonResult['account'], draws: readonl
     reward.rarity && rarities.indexOf(reward.rarity) > rarities.indexOf(best) ? reward.rarity : best, 'Common');
   return {
     tier, rarity,
+    cinematic: { kind: 'summon', eyebrow: banner.name, title: '10-Pull', subtitle: `${multiSummonCount} draws`, tier: summonTier(Math.max(...draws.map(drawStars))) },
     title: '10-Pull summoned', name: `${multiSummonCount} results`,
     art: `<ol class="summon-ten-grid">${rewards.map(({ draw, reward }) => `<li data-rarity="${reward.rarity ?? 'Common'}" class="summon-ten-result${draw.entry.kind === 'character' && !draw.duplicate ? ' is-character' : ''}${summonRevealTier(drawStars(draw)) ? ` is-${summonRevealTier(drawStars(draw))}` : ''}">
       <div class="summon-ten-art">${reward.art}</div><b>${escapeDialogText(reward.name)}</b><small>${escapeDialogText(reward.title)}${draw.guarantee !== 'none' ? ' · Pity' : ''}${draw.bonusConduit ? ' · Bonus Conduit' : ''}</small></li>`).join('')}</ol>`,
@@ -79,6 +85,7 @@ export function summonReward(result: SummonResult, bannerId: SummonBannerId): Re
       details: `${characterRating(character.id, 1)}${elementLabel(character.elementId)}<p>New Element-Bearer · Lv.0 · Evo.1</p>` };
   }
   reward.tier = summonRevealTier(drawStars(result));
+  reward.cinematic = { kind: 'summon', eyebrow: banner.name, title: 'Summon', subtitle: '1 draw', tier: summonTier(drawStars(result)) };
   reward.details += `<p>${escapeDialogText(banner.name)} · ${banner.cost} Null-Prismatica spent</p>`;
   if (result.guarantee !== 'none') {
     const guarantee = result.guarantee === 'unowned-character' ? 'Unowned Element-Bearer'

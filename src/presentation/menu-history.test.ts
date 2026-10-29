@@ -18,7 +18,7 @@ describe('menu traversal history', () => {
   it('wires toolbar and result exits to the same server-owning Back flow with a resume fallback', () => {
     const main = readFileSync(new URL('../main.ts', import.meta.url), 'utf8');
     const back = main.slice(main.indexOf('async function backMenu('), main.indexOf('\ntry {', main.indexOf('async function backMenu(')));
-    expect(back).toContain("page: 'gameplay'");
+    expect(back).toContain("page: menuPage === 'battle' ? 'gameplay' : 'home'");
     expect(back).toContain('menuHistory.back(fallback)');
     expect(back).toContain("await performOnline({ kind: 'quit', runId: battleSession.runId })");
     expect(main).toContain("try { await backMenu(); }");

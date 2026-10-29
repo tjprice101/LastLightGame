@@ -74,6 +74,6 @@ describe('Conduit Store and discovery routes', () => {
     expect(characterHub(starters[0], 'equipment')).toContain('data-page="conduit-store"');
     expect(characterHub(starters[0], 'equipment')).not.toContain('Artifact');
     expect(sanctuaryContext('conduit-store')).toBe('');
-    expect(sanctuaryHeader('conduit-store', 0)).not.toContain('data-menu-back');
+    expect(sanctuaryHeader('conduit-store', 0).match(/data-menu-back/g)).toHaveLength(1);
   });
 });

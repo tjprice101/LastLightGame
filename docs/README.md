@@ -1,5 +1,11 @@
 # Documentation hub
 
+**D-432 mock-up only:** [standalone bubble UI mock-up](menus-and-inventory.md#standalone-bubble-ui-mock-up-d-432)
+offers a40-screen interactive gallery with glossy floating controls, existing
+artwork, CSS sparkles/motion and leader-element accents. No top navigation bar,
+live account access or production layout replacement. Run Vite and open
+`/LastLightGame/bubble-preview.html`.
+
 **D-430/D-431:** [modest material staircase](dungeons-and-captures.md#modest-material-staircase-d-430)
 and [coordinated later costs](units-and-progression.md#later-element-bearer-material-costs-d-431)
 use slightly higher dungeon/Rose endpoints, Soar/Delve7-8 evolution /8-10

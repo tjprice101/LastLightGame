@@ -3,6 +3,7 @@ import { calamityActivities, calamityChest, calamityEncounter, calamityLootTable
 import { type Account, type openCalamityChest } from '../game/account';
 import { activityAccess, assertActivityAccess } from '../game/activity-access';
 import { information } from './information';
+import { imageSource } from './bubble-ui';
 import { escapeDialogText, gameConfirm, gameDialogPending } from './game-dialog';
 import { materialArt, materialName, materialRarity } from '../content/dungeon-art';
 import { getConduit, isConduitId } from '../content/conduits';
@@ -228,7 +229,9 @@ export function calamityOpeningReward(id: string, reward: ReturnType<typeof open
       : reward.roseliusCopies ? [{ label: `${reward.roseliusCopies} ${devourerReward('infusion:roses:5').name}`, rarity: 'Omnic' as const, art: devourerReward('infusion:roses:5').art }] : []),
     ...(reward.calamiticTokens ? [{ label: `${reward.calamiticTokens} Calamitic Tokens`, rarity: 'Calamitic' as const, art: currencyIcon('calamitic-tokens') }] : []),
   ];
-  return { title: 'Calamity chest opened', name: chest.name,
+  return { cinematic: { kind: 'chest', eyebrow: 'Calamity chest', title: chest.name, subtitle: `${items.length} reward${items.length === 1 ? '' : 's'}`, art: imageSource(calamityChestIcon(tier)), tier: 'prismatic' },
+    celebration: 'Rewards saved',
+    title: 'Calamity chest opened', name: chest.name,
     art: `<ul class="summon-ten-grid calamity-reward-grid" aria-label="Received loot">${items.map(item =>
       `<li${item.rarity ? ` data-rarity="${item.rarity}"` : ''} class="summon-ten-result${item.chest ? ' chest-reward-result' : ''}"><div class="summon-ten-art">${item.art}</div><b>${escapeDialogText(item.label)}</b>${item.badge ?? ''}</li>`).join('')}</ul>`,
     details: '<p>Rewards added to Inventory.</p>',

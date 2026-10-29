@@ -8,6 +8,7 @@ import { presentReward, type RewardPresentation } from './reward-screen';
 import { statChange, statDirection } from './stat-change';
 import { type UpgradeKind } from './upgrade-celebration';
 import './upgrade-result.css';
+import { evolutionTier, imageSource, rarityTier } from './bubble-ui';
 import { phaseZeroStatsReady, statDisplayUnit, type ResolvedStats } from '../content/phase-zero-stats';
 import { displayStatKeys, displayStatLabels } from './stat-preview';
 
@@ -55,7 +56,18 @@ export function upgradeResult(before: Account, after: Account, id: string, kind:
   const levelChange = `Level ${previous.level} → ${current.level}`;
   const evolutionChange = kind === 'evolve' && isStarterId(id)
     ? ` · Evolution ${ownedProgress(before, id).evolution} → ${ownedProgress(after, id).evolution}` : '';
+  const evolved = kind === 'evolve' && isStarterId(id);
+  const fromForm = evolved ? ownedProgress(before, id).evolution : 0;
+  const toForm = evolved ? ownedProgress(after, id).evolution : 0;
   return {
+    cinematic: evolved ? {
+      kind: 'evolution', eyebrow: `Form ${fromForm} \u2192 ${toForm}`, title: 'Evolution', subtitle: current.label,
+      fromArt: imageSource(previous.art), art: imageSource(current.art), tier: evolutionTier(toForm),
+    } : {
+      kind: 'level', eyebrow: 'Level up', title: `Lv.${previous.level} \u2192 ${current.level}`, subtitle: current.label,
+      art: imageSource(current.art), tier: rarityTier(current.rarity),
+    },
+    celebration: evolved ? 'Evolution complete' : 'Growth complete',
     title: kind === 'evolve' ? 'Evolution complete' : 'Level up!',
     name: current.label,
     accent: current.color,

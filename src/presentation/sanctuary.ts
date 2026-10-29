@@ -13,15 +13,6 @@ export function sanctuaryDestination(page: MenuPage): MenuPage {
   return page === 'character' || page === 'squad' ? 'team' : page;
 }
 
-export function sanctuaryDock(page: MenuPage): string {
-  if (page === 'battle') return '';
-  const active = page === 'story' || page === 'events' ? 'gameplay' : sanctuaryDestination(page);
-  return `<nav class="sanctuary-dock" aria-label="Main destinations">${([
-    ['home', 'Home', 'home'], ['team', 'Team', 'squad'],
-    ['summon', 'Summon', 'summon'], ['gameplay', 'Play', 'gameplay'],
-  ] as const).map(([destination, label, icon]) => `<button type="button" data-page="${destination}" ${active === destination ? 'aria-current="page"' : ''}>${uiIcon(icon)}<span>${label}</span></button>`).join('')}</nav>`;
-}
-
 export function isMenuPage(value: unknown): value is MenuPage {
   return sanctuaryPages.some((page) => page === value);
 }
@@ -42,10 +33,11 @@ const headings: Record<MenuPage, readonly [string, string]> = {
 
 export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycalis: number | null = null): string {
   const [eyebrow, title] = headings[sanctuaryDestination(page)];
-  return `<header class="sanctuary-header">
-    <div class="sanctuary-brand"><span class="brand-mark"><span>L · L</span></span>
-      <div><strong>Last Light</strong></div></div>
-    ${sanctuaryDock(page)}<h1 class="ref-sr-only" tabindex="-1">${title}</h1>
+  const leading = page === 'home'
+    ? '<span class="bubble-title-mark" aria-hidden="true"><i></i>Last Light</span>'
+    : `<button type="button" class="text-button bubble-back" data-menu-back aria-label="Back"><span class="bubble-back-orb">${uiIcon('back')}</span><span>Back</span></button>`;
+  return `<header class="sanctuary-header" data-eyebrow="${eyebrow}">
+    ${leading}<h1 class="ref-sr-only" tabindex="-1">${title}</h1>
     <div class="sanctuary-wallet"><div class="currency-strip" aria-label="Currencies">${currencies.map((currency) =>
       `<button type="button" data-page="inventory" aria-label="View ${currency.name} in Inventory">${currencyIcon(currency.id)}<strong><span id="${currency.id}-balance">${(currency.id === 'fractalis' ? fractalis : lycalis) ?? 'Unavailable'}</span><small>${currency.name}</small></strong></button>`).join('')}</div>
       <button type="button" class="text-button sanctuary-help-trigger" data-information="sanctuary-help" aria-label="Help for ${title}" aria-haspopup="dialog" aria-controls="sanctuary-help">?</button>

@@ -27,6 +27,8 @@ export default defineConfig({
         main: 'index.html',
         animationPreview: 'animation-preview.html',
         vfxPreview: 'vfx-preview.html',
+        bubblePreview: 'bubble-preview.html',
+        bubbleBattle: 'bubble-battle.html',
       },
     },
   },

@@ -1,6 +1,7 @@
 import { createGameDialog, escapeDialogText } from './game-dialog';
 import { rarityFeedback, clearRarityFeedback, rarityMotionReduced } from './rarity-feedback';
 import { type Rarity, rarityColors, isRarity } from '../content/rarity';
+import { bubbleMotionAllowed, celebrate, cinematic, type CinematicSpec } from './bubble-ui';
 
 export interface RewardPresentation {
   title: string;
@@ -14,6 +15,10 @@ export interface RewardPresentation {
   tier?: SummonRevealTier;
   /** Actual awarded rarity; summon star-tier anticipation remains independent. */
   rarity?: Rarity;
+  /** D-433 full-screen cinematic played after saving, before this receipt opens. */
+  cinematic?: CinematicSpec;
+  /** D-433 celebratory pop-up shown after the receipt is dismissed. */
+  celebration?: string;
 }
 
 export type SummonRevealTier = 'five-star' | 'six-star';
@@ -49,6 +54,8 @@ export function rewardScreenMarkup(reward: RewardPresentation): string {
 }
 
 export async function presentReward(reward: RewardPresentation): Promise<void> {
+  const cinematicPlayed = Boolean(reward.cinematic) && bubbleMotionAllowed();
+  if (reward.cinematic) await cinematic(reward.cinematic);
   const { dialog, dispose } = createGameDialog(reward.title);
   dialog.classList.add('reward-screen');
   dialog.style.setProperty('--reward-accent', reward.accent);
@@ -140,6 +147,7 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
         dialog.showModal();
         dialog.setAttribute('aria-busy', 'true');
         if (rarityMotionReduced()) reveal();
+        else if (cinematicPlayed) reveal(true);
         else {
           animation = portal.animate(reward.tier === 'six-star' ? [
             { transform: 'rotate(45deg) scale(.3)', opacity: 0 },
@@ -167,4 +175,5 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
     clearRarityFeedback(dialog);
     dispose();
   }
+  if (reward.celebration) celebrate(reward.celebration);
 }
