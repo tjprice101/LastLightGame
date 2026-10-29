@@ -563,7 +563,8 @@ html body #app .sanctuary-shell .ref-conduit-page :is(.ref-character-panels, .ch
 html body #app .sanctuary-shell .conduit-loadout .loadout-layout:not(#_) { align-items: start !important; gap: 14px !important; }
 html body #app .sanctuary-shell .conduit-loadout :is(.loadout-slots, .loadout-owned):not(#_) { height: auto !important; max-height: none !important; overflow: visible !important; gap: 10px !important; }
 html body #app .sanctuary-shell .conduit-loadout .loadout-master:not(#_) { min-height: 0 !important; padding: 8px 14px !important; }
-html body #app .sanctuary-shell .conduit-loadout .loadout-master-art:not(#_) { width: 64px !important; height: 64px !important; min-height: 0 !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-master-art:not(#_) { flex: 0 0 auto; display: grid !important; place-items: center !important; width: 80px !important; height: 80px !important; min-height: 0 !important; padding: 4px !important; box-sizing: border-box; overflow: hidden; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-master-art .master-art:not(#_) { width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100% !important; margin: 0 !important; object-fit: contain !important; object-position: center !important; }
 html body #app .sanctuary-shell .conduit-loadout .loadout-grid:not(#_) { gap: 10px !important; }
 html body #app .sanctuary-shell .conduit-loadout .loadout-slot:not(#_) { min-height: 0 !important; height: auto !important; padding: 8px 8px 10px !important; gap: 4px !important; }
 html body #app .sanctuary-shell .conduit-loadout .loadout-slot:not(#_) .loadout-slot-plus { height: 72px !important; min-height: 0 !important; }
