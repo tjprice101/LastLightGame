@@ -248,15 +248,12 @@ html body .sanctuary-shell .hub-bubble strong { font-size: .92rem; font-weight: 
 html body .sanctuary-shell .hub-bubble small { font-size: .64rem; line-height: 1.2; color: #c5c6ce; max-width: 92%; }
 html body .sanctuary-shell .hub-bubble-symbol { display: grid; place-items: center; color: color-mix(in srgb, var(--accent) 55%, #fff); filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent) 50%, transparent)); }
 html body .sanctuary-shell .hub-bubble-symbol .ui-icon { width: 26px; height: 26px; }
-html body .sanctuary-shell .hub-slot-0 { left: 50%; top: 8%; }
-html body .sanctuary-shell .hub-slot-1 { left: 73%; top: 12%; }
-html body .sanctuary-shell .hub-slot-2 { left: 89%; top: 31%; }
-html body .sanctuary-shell .hub-slot-3 { left: 93%; top: 56%; }
-html body .sanctuary-shell .hub-slot-4 { left: 85%; top: 81%; }
-html body .sanctuary-shell .hub-slot-5 { left: 15%; top: 81%; }
-html body .sanctuary-shell .hub-slot-6 { left: 7%; top: 56%; }
-html body .sanctuary-shell .hub-slot-7 { left: 11%; top: 31%; }
-html body .sanctuary-shell .hub-slot-8 { left: 27%; top: 12%; }
+html body .sanctuary-shell .hub-slot-0 { left: 84%; top: 20%; }
+html body .sanctuary-shell .hub-slot-1 { left: 91%; top: 50%; }
+html body .sanctuary-shell .hub-slot-2 { left: 84%; top: 80%; }
+html body .sanctuary-shell .hub-slot-3 { left: 16%; top: 80%; }
+html body .sanctuary-shell .hub-slot-4 { left: 9%; top: 50%; }
+html body .sanctuary-shell .hub-slot-5 { left: 16%; top: 20%; }
 
 html body .sanctuary-shell .bubble-squad-rail { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; animation: bubble-rise .9s .15s cubic-bezier(.2,1,.3,1) both; }
 html body .sanctuary-shell .bubble-rail-label { font-variant: small-caps; letter-spacing: .24em; font-size: .8rem; font-weight: 700; color: color-mix(in srgb, var(--accent) 60%, #b9bcc6); margin-right: 6px; }
@@ -362,58 +359,6 @@ html[data-motion="reduced"] body #app .sanctuary-shell .ref-bearer-detail[data-o
   html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .ref-character-panels { position: relative !important; inset: auto !important; order: 3; overflow: visible !important; }
 }
 
-/* D-433 Play board: grouped activity bubbles zoom into the existing live activity detail. */
-html body #app .sanctuary-shell .gameplay-hub > .bubble-play-board { display: none; }
-html body #app .sanctuary-shell .gameplay-hub[data-zoom="closed"] { display: block !important; }
-html body #app .sanctuary-shell .gameplay-hub[data-zoom="closed"] > :is(.ref-activity-sidebar, .activity-group) { display: none !important; }
-html body #app .sanctuary-shell .gameplay-hub[data-zoom="closed"] > .bubble-play-board {
-  display: grid; height: calc(100dvh - 146px); min-height: 520px; gap: 18px 22px;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.9fr) minmax(0, 1fr);
-  grid-template-rows: repeat(3, minmax(0, 1fr));
-  grid-template-areas: "story progression practice" "story progression earn-currency" "story progression events";
-}
-html body #app .sanctuary-shell .bubble-play-group { display: flex; flex-direction: column; gap: 8px; min-height: 0; min-width: 0; animation: bubble-rise .6s cubic-bezier(.2,1,.3,1) backwards; }
-html body #app .sanctuary-shell .bubble-play-group[data-section="story"] { grid-area: story; animation-delay: .05s; }
-html body #app .sanctuary-shell .bubble-play-group[data-section="progression"] { grid-area: progression; animation-delay: .12s; }
-html body #app .sanctuary-shell .bubble-play-group[data-section="practice"] { grid-area: practice; animation-delay: .18s; }
-html body #app .sanctuary-shell .bubble-play-group[data-section="earn-currency"] { grid-area: earn-currency; animation-delay: .24s; }
-html body #app .sanctuary-shell .bubble-play-group[data-section="events"] { grid-area: events; animation-delay: .3s; }
-html body #app .sanctuary-shell .bubble-play-group > h2 { margin: 0 0 0 14px !important; font-size: .76rem !important; letter-spacing: .2em; font-variant: small-caps; text-transform: lowercase; color: color-mix(in srgb, var(--accent) 55%, #fff) !important; }
-html body #app .sanctuary-shell .bubble-play-cards { flex: 1; min-height: 0; display: grid; gap: 14px; grid-auto-rows: minmax(0, 1fr); }
-html body #app .sanctuary-shell .bubble-play-group[data-section="progression"] .bubble-play-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-html body #app .sanctuary-shell .gameplay-hub .bubble-play-card {
-  --delay: 0s; position: relative; isolation: isolate; overflow: hidden; display: flex !important; align-items: flex-end; justify-content: center;
-  min-height: 0 !important; height: 100% !important; width: 100% !important; padding: 0 !important; margin: 0 !important; border-radius: 30px !important; text-align: center !important;
-  border: 1px solid color-mix(in srgb, var(--accent) 26%, #ffffff22) !important; background: #10131a !important; color: #f4f1ec !important;
-  box-shadow: inset 0 1px 2px #ffffff55, 0 18px 40px #0008, 0 0 24px color-mix(in srgb, var(--accent) 8%, transparent) !important;
-  animation: bubble-float 8s var(--delay) ease-in-out infinite; transition: scale .55s cubic-bezier(.34,1.56,.64,1), border-color .3s, box-shadow .3s; cursor: pointer;
-}
-html body #app .sanctuary-shell .gameplay-hub .bubble-play-card::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit;
-  background: radial-gradient(ellipse at 26% 8%, #ffffff40, transparent 28%), linear-gradient(180deg, transparent 30%, #0b0d12cc 72%, #07090df2) !important; }
-html body #app .sanctuary-shell .gameplay-hub .bubble-play-card::after { content: ""; position: absolute; inset: -40%; z-index: 2; pointer-events: none; background: linear-gradient(115deg, transparent 42%, #ffffff2e 50%, transparent 58%); translate: -70% 0; transition: translate 1.1s cubic-bezier(.2,.8,.3,1); }
-html body #app .sanctuary-shell .gameplay-hub .bubble-play-card:is(:hover, :focus-visible) { scale: 1.035; border-color: var(--accent) !important; box-shadow: inset 0 1px 3px #ffffff88, 0 22px 50px #000a, 0 0 42px color-mix(in srgb, var(--accent) 34%, transparent) !important; }
-html body #app .sanctuary-shell .gameplay-hub .bubble-play-card:is(:hover, :focus-visible)::after { translate: 70% 0; }
-html body #app .sanctuary-shell .bubble-play-art { position: absolute; inset: 0; z-index: 0; }
-html body #app .sanctuary-shell .bubble-play-art img { width: 100%; height: 100%; object-fit: cover; transition: scale 1.2s cubic-bezier(.2,.8,.3,1); }
-html body #app .sanctuary-shell .bubble-play-card:hover .bubble-play-art img { scale: 1.08; }
-html body #app .sanctuary-shell .bubble-play-copy { position: relative; z-index: 3; display: grid; justify-items: center; gap: 3px; padding: 14px 16px 16px; width: 100%; }
-html body #app .sanctuary-shell .bubble-play-copy strong { font-size: clamp(1.02rem, 1.25vw, 1.4rem); line-height: 1.12; text-shadow: 0 2px 10px #000; }
-html body #app .sanctuary-shell .bubble-play-group[data-section="story"] .bubble-play-copy strong { font-size: clamp(1.6rem, 2.4vw, 2.4rem); }
-html body #app .sanctuary-shell .bubble-play-copy small { font-size: .78rem; opacity: .86; line-height: 1.3; }
-html body #app .sanctuary-shell .bubble-play-copy em { font-style: normal; font-size: .72rem; padding: 2px 10px; border-radius: 99px; border: 1px solid color-mix(in srgb, var(--accent) 40%, #fff3); background: #0008; }
-html body #app .sanctuary-shell .bubble-play-loot { display: flex; gap: 4px; margin-top: 3px; }
-html body #app .sanctuary-shell .bubble-play-loot img { width: 26px; height: 26px; object-fit: contain; border-radius: 50%; padding: 2px; background: radial-gradient(circle at 30% 25%, #ffffff30, #0009 70%); border: 1px solid #ffffff22; }
-
-html body #app .sanctuary-shell .gameplay-hub[data-zoom="open"] > .bubble-play-board { display: none !important; }
-html body #app .sanctuary-shell .gameplay-hub .ref-activity-sidebar > .bubble-zoom-back { display: inline-flex !important; align-items: center; gap: 8px; min-height: 44px; margin: 0 0 8px !important; padding: 8px 18px; border-radius: 99px; font-weight: 700; align-self: flex-start; }
-html body #app .sanctuary-shell .gameplay-hub[data-zoom-animate] > :is(.ref-activity-sidebar, .activity-group:not([hidden])) { transform-origin: var(--zoom-x, 50%) var(--zoom-y, 50%); animation: bubble-zoom-in .55s cubic-bezier(.2,1.1,.3,1) both; }
-html[data-motion="reduced"] body #app .sanctuary-shell :is(.bubble-play-group, .gameplay-hub .bubble-play-card, .gameplay-hub > *) { animation: none !important; }
-html[data-motion="reduced"] body #app .sanctuary-shell .gameplay-hub .bubble-play-card::after { display: none; }
-@media (max-width: 960px) {
-  html body #app .sanctuary-shell .gameplay-hub[data-zoom="closed"] > .bubble-play-board { height: auto; min-height: 0; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "story" "progression" "practice" "earn-currency" "events"; }
-  html body #app .sanctuary-shell .bubble-play-cards { grid-auto-rows: 150px; }
-  html body #app .sanctuary-shell .bubble-play-group[data-section="story"] .bubble-play-cards { grid-auto-rows: 210px; }
-}
 html body #app .sanctuary-shell .ref-story-region-heading { flex-wrap: nowrap !important; align-items: center !important; gap: 8px !important; }
 html body #app .sanctuary-shell .ref-story-region-heading > span { white-space: nowrap; }
 html body #app .sanctuary-shell .ref-story-region-heading > button { flex: none; white-space: nowrap; min-height: 36px !important; padding: 4px 14px !important; font-size: .82rem; text-decoration: none !important; }
@@ -423,36 +368,42 @@ html body #app .sanctuary-shell .ref-map-node > span { box-shadow: inset 0 1px 1
 html body #app .sanctuary-shell .ref-map-node:is(:hover, :focus-visible) > span { transform: scale(1.12); }
 html body #app .sanctuary-shell .ref-story-region-heading > span { letter-spacing: .08em !important; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 
-/* ---------- D-433 Inventory / Collections: fit the viewport, lists scroll inside their panel ---------- */
+/* ---------- D-433 Inventory / Collections: one page scroll, no cramped nested panes ---------- */
+html body #app .sanctuary-shell .ref-inventory { position: relative; display: flex !important; flex-direction: column !important; align-items: stretch !important; width: 100% !important; gap: 12px !important; height: auto !important; overflow: visible !important; }
+html body #app .sanctuary-shell .ref-inventory > * { flex: none; width: 100% !important; max-width: none !important; align-self: stretch !important; }
+html body #app .sanctuary-shell .ref-inventory details.inventory-panel { height: auto !important; max-height: none !important; overflow: visible !important; }
+html body #app .sanctuary-shell .ref-inventory details.inventory-panel > .ref-scroll,
+html body #app .sanctuary-shell .ref-inventory .ref-scroll { height: auto !important; max-height: none !important; overflow: visible !important; padding-right: 0 !important; }
+html body #app .sanctuary-shell .ref-inventory :is(.inventory-grid, .ref-item-grid, .inventory-items) { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)) !important; grid-auto-rows: auto !important; gap: 12px !important; align-items: stretch !important; }
+html body #app .sanctuary-shell .ref-inventory .inventory-item { height: auto !important; min-height: 0 !important; overflow: hidden; }
+html body #app .sanctuary-shell .inventory-tools { align-items: end !important; }
+html body #app .sanctuary-shell .inventory-tools label { gap: 4px !important; }
+html body #app .sanctuary-shell .inventory-results { margin: 0 !important; }
 @media (min-width: 961px) {
-  html body #app .sanctuary-shell .sanctuary-content:has(> .ref-inventory, > .archives) { overflow: hidden !important; }
-  html body #app .sanctuary-shell .ref-inventory { display: flex !important; flex-direction: column !important; align-items: stretch !important; width: 100% !important; gap: 10px !important; height: calc(100dvh - 146px) !important; min-height: 0 !important; overflow: hidden !important; }
-  html body #app .sanctuary-shell .ref-inventory > * { flex: none; width: 100% !important; max-width: none !important; align-self: stretch !important; }
-  html body #app .sanctuary-shell .ref-inventory > .inventory-introduction { width: auto !important; }
-  html body #app .sanctuary-shell .ref-inventory > .inventory-introduction { position: absolute; right: 0; top: -2px; z-index: 2; }
-  html body #app .sanctuary-shell .ref-inventory { position: relative; }
+  html body #app .sanctuary-shell .ref-inventory > .inventory-introduction { width: auto !important; position: absolute; right: 0; top: -2px; z-index: 2; }
   html body #app .sanctuary-shell .inventory-currencies { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; padding-right: 150px; }
   html body #app .sanctuary-shell .inventory-currency { flex: 1 1 0 !important; min-width: 0 !important; min-height: 0 !important; padding: 8px 18px !important; border-radius: 999px !important; display: flex !important; align-items: center !important; gap: 12px !important; }
   html body #app .sanctuary-shell .inventory-currency img { width: 38px !important; height: 38px !important; }
   html body #app .sanctuary-shell .inventory-currency strong { font-size: 1.35rem !important; line-height: 1.1 !important; white-space: nowrap; overflow-wrap: normal !important; word-break: normal !important; }
-  html body #app .sanctuary-shell .inventory-tools { align-items: end !important; }
-  html body #app .sanctuary-shell .inventory-tools label { gap: 4px !important; }
-  html body #app .sanctuary-shell .inventory-results { margin: 0 !important; }
-  html body #app .sanctuary-shell .ref-inventory > details.inventory-panel[open] { flex: 1 1 0 !important; min-height: 140px !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; }
-  html body #app .sanctuary-shell .ref-inventory > details.inventory-panel[open] { container-type: size; }
-  html body #app .sanctuary-shell .ref-inventory > details.inventory-panel[open] > .ref-scroll { height: calc(100cqh - 52px) !important; min-height: 0 !important; max-height: none !important; overflow-y: auto !important; overscroll-behavior: contain; padding-right: 6px; }
-
-  html body #app .sanctuary-shell .archives { display: flex !important; flex-direction: column !important; gap: 10px !important; height: calc(100dvh - 146px) !important; min-height: 0 !important; overflow: hidden !important; }
-  html body #app .sanctuary-shell .archives > * { flex: none; }
-  html body #app .sanctuary-shell .archives { align-items: stretch !important; }
-  html body #app .sanctuary-shell .archive-panel > :not(.archive-grid, .glossary-grid) { width: 100% !important; }
-  html body #app .sanctuary-shell .archives > .archive-panel:not([hidden]) { flex: 1 1 0 !important; min-height: 0 !important; display: flex !important; flex-direction: column !important; align-items: stretch !important; gap: 10px !important; overflow: hidden !important; height: auto !important; }
-  html body #app .sanctuary-shell .archive-panel > * { flex: none; grid-column: auto !important; grid-row: auto !important; }
-  html body #app .sanctuary-shell .archive-panel > :is(.archive-grid, .glossary-grid) { flex: 1 1 0 !important; min-height: 0 !important; overflow-y: auto !important; overscroll-behavior: contain; align-content: start !important; padding: 4px 6px 12px 2px; }
-  html body #app .sanctuary-shell :is(.archive-grid, .glossary-grid) { grid-template-rows: none !important; grid-auto-rows: max-content !important; }
-  html body #app .sanctuary-shell .archive-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)) !important; gap: 12px !important; }
 }
 
+html body #app .sanctuary-shell .archives { display: flex !important; flex-direction: column !important; align-items: stretch !important; gap: 12px !important; height: auto !important; overflow: visible !important; }
+html body #app .sanctuary-shell .archives > * { flex: none; }
+html body #app .sanctuary-shell .archives > .archive-panel:not([hidden]) { display: flex !important; flex-direction: column !important; align-items: stretch !important; gap: 12px !important; height: auto !important; overflow: visible !important; }
+html body #app .sanctuary-shell .archive-panel > * { flex: none; width: 100% !important; grid-column: auto !important; grid-row: auto !important; }
+html body #app .sanctuary-shell .archive-panel > :is(.archive-grid, .glossary-grid) { height: auto !important; max-height: none !important; overflow: visible !important; align-content: start !important; padding: 2px 0 24px !important; }
+html body #app .sanctuary-shell :is(.archive-grid, .glossary-grid) { grid-template-rows: none !important; grid-auto-rows: auto !important; }
+/* Mock-up archive cards: art first, one compact identity block, kit as a small pill */
+html body #app .sanctuary-shell .archive-grid { grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)) !important; gap: 14px !important; }
+html body #app .sanctuary-shell .archive-grid > .archive-card:not(#_) { display: flex !important; flex-direction: column !important; align-items: center !important; gap: 6px !important; height: auto !important; min-height: 0 !important; padding: 10px 10px 12px !important; text-align: center !important; border-radius: 26px !important; background: radial-gradient(80% 55% at 50% 30%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%), linear-gradient(165deg, #ffffff10, #ffffff03 55%, #0000002a), #0e1016c8 !important; border: 1px solid color-mix(in srgb, var(--accent) 16%, #ffffff14) !important; box-shadow: inset 0 1px #ffffff14, 0 14px 30px #0005 !important; transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s, border-color .3s !important; }
+html body #app .sanctuary-shell .archive-grid > .archive-card:not(#_):hover { transform: translateY(-4px) scale(1.02); border-color: color-mix(in srgb, var(--accent) 45%, #ffffff22) !important; box-shadow: inset 0 1px #ffffff22, 0 0 26px var(--bubble-faint, #ffffff14), 0 18px 34px #0006 !important; }
+html body #app .sanctuary-shell .archive-card .archive-portrait { width: 100% !important; height: 148px !important; min-height: 0 !important; margin: 0 !important; display: grid !important; place-items: center !important; border-radius: 20px; background: radial-gradient(closest-side, #ffffff10, transparent) !important; }
+html body #app .sanctuary-shell .archive-card .archive-portrait :is(img, .character-idle) { max-width: 100% !important; max-height: 148px !important; width: auto !important; height: auto !important; object-fit: contain !important; }
+html body #app .sanctuary-shell .archive-card > h3 { margin: 2px 0 0 !important; font-size: .86rem !important; line-height: 1.25 !important; min-height: 2.5em; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+html body #app .sanctuary-shell .archive-card > .element-label { font-size: .76rem !important; justify-content: center !important; }
+html body #app .sanctuary-shell .archive-card > .character-rating { display: flex !important; flex-wrap: wrap !important; align-items: center !important; justify-content: center !important; gap: 4px 6px !important; transform: scale(.82); margin: -6px 0 !important; }
+html body #app .sanctuary-shell .archive-card > .archive-ownership { margin: 0 !important; font-size: .74rem !important; opacity: .75; }
+html body #app .sanctuary-shell .archive-card > button.text-button:not(#_) { min-height: 44px !important; padding: 0 18px !important; font-size: .8rem !important; width: auto !important; margin-top: auto !important; }
 /* ---------- D-433 selection triggers (Stage / filter pickers) ---------- */
 html body :is(#app, .game-dialog, .settings-drawer) .selection-trigger { display: inline-flex !important; align-items: center !important; justify-content: space-between !important; gap: 10px !important; min-height: 44px !important; padding: 0 16px 0 18px !important; border-radius: 99px !important; border: 1px solid color-mix(in srgb, var(--accent) 34%, #ffffff1c) !important; background: radial-gradient(120% 140% at 30% 0%, #ffffff1c, transparent 55%), linear-gradient(180deg, color-mix(in srgb, var(--accent) 16%, #1b1d24), #101219) !important; box-shadow: inset 0 1px #ffffff26, inset 0 -6px 12px #0005, 0 6px 18px #0005 !important; color: #f3f1ea !important; font-weight: 700 !important; font-variant-numeric: tabular-nums; transition: transform .25s cubic-bezier(.3,1.6,.5,1), box-shadow .3s, border-color .3s !important; }
 html body :is(#app, .game-dialog, .settings-drawer) .selection-trigger::after { content: "▾" / "" !important; display: inline-block !important; color: var(--accent) !important; font-size: .85em; opacity: .9; }
@@ -575,3 +526,129 @@ html body .game-dialog .game-destructive:not(:disabled):not(#_) { background: ra
   html body .sanctuary-shell .currency-strip:not(#_) > button { flex: 1 1 0; min-width: 0; border-radius: 99px !important; }
   html body .sanctuary-shell .currency-strip:not(#_) > button :is(strong, span) { white-space: nowrap; overflow-wrap: normal; word-break: keep-all; }
 }
+
+/* Team orbit identity: compact card below the art, never covering it */
+@media (min-width: 961px) {
+  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-portrait:not(#_) { height: 72% !important; top: 0 !important; }
+  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity:not(#_) { width: min(480px, 46%) !important; gap: 2px !important; padding: 8px 18px 10px !important; border-radius: 22px; bottom: 6px !important; background: radial-gradient(ellipse at 50% -40%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%), linear-gradient(160deg, #1a1d24a6, #0d1016bf) !important; }
+  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity:not(#_) > p { font-size: .66rem !important; letter-spacing: .1em; }
+  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity:not(#_) h2 { font-size: clamp(1.35rem, 1.9vw, 1.9rem) !important; }
+  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity:not(#_) :is(.ref-tags, .ref-character-header-actions) { gap: 4px !important; font-size: .8rem; }
+  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity:not(#_) .ref-character-progress { grid-template-columns: repeat(2, minmax(0, 170px)) !important; gap: 2px 16px !important; font-size: .76rem; }
+  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity:not(#_) .ref-character-header-actions :is(button, .ref-chip, span) { min-height: 36px; }
+}
+
+/* Stats & Skills: mock-up glass ability cards and stat bubbles */
+html body #app .sanctuary-shell .ref-character-overview .hub-stats:not(#_) { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important; gap: 10px !important; }
+html body #app .sanctuary-shell .ref-character-overview .hub-stats:not(#_) > div { display: grid; gap: 2px; align-content: center; min-height: 64px; padding: 10px 14px !important; border-radius: 20px !important; border: 1px solid color-mix(in srgb, var(--accent) 16%, #ffffff14) !important; background: radial-gradient(circle at 18% 0%, #ffffff12, transparent 60%), linear-gradient(160deg, #20232bb3, #0f1218cc) !important; box-shadow: inset 0 1px #ffffff1a, 0 8px 20px #0006; }
+html body #app .sanctuary-shell .ref-character-overview .hub-stats:not(#_) > div small { font-size: .62rem !important; letter-spacing: .1em; text-transform: uppercase; color: color-mix(in srgb, var(--accent) 45%, #c9cbd3) !important; }
+html body #app .sanctuary-shell .ref-character-overview .hub-stats:not(#_) > div strong { font-size: 1.15rem !important; color: #f4f1ec; }
+html body #app .sanctuary-shell .ref-ability-buttons:not(#_) { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important; gap: 12px !important; }
+html body #app .sanctuary-shell .ref-ability-buttons:not(#_) > button[data-information] { display: grid !important; grid-template-columns: 64px minmax(0, 1fr) !important; align-items: start !important; justify-items: start; gap: 14px !important; width: 100% !important; min-height: 0 !important; height: auto !important; padding: 16px 18px !important; text-align: left !important; white-space: normal !important; border-radius: 26px !important; border: 1px solid color-mix(in srgb, var(--accent) 18%, #ffffff16) !important; background: radial-gradient(ellipse at 10% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%), linear-gradient(160deg, #20232bcc, #0f1218e0) !important; box-shadow: inset 0 1px #ffffff22, 0 12px 28px #0007 !important; color: #f4f1ec !important; transition: border-color .2s, transform .25s cubic-bezier(.2,1,.3,1), box-shadow .25s !important; }
+html body #app .sanctuary-shell .ref-ability-buttons:not(#_) > button[data-information]:hover { border-color: color-mix(in srgb, var(--accent) 55%, transparent) !important; transform: translateY(-3px); box-shadow: inset 0 1px #ffffff2a, 0 16px 34px #000a, 0 0 22px color-mix(in srgb, var(--accent) 22%, transparent) !important; }
+html body #app .sanctuary-shell .ref-ability-buttons:not(#_) > button[data-information] > .ability-icon { width: 64px !important; height: 64px !important; padding: 6px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--accent) 30%, #ffffff1a); background: radial-gradient(circle at 30% 20%, #ffffff1c, #ffffff04); object-fit: contain; animation: bubble-glow-breathe 6s ease-in-out infinite; }
+html body #app .sanctuary-shell .ref-ability-buttons:not(#_) > button[data-information] > span { display: grid !important; gap: 5px; min-width: 0; text-align: left !important; }
+html body #app .sanctuary-shell .ref-ability-buttons:not(#_) > button[data-information] > span > small { order: -1; font-size: .6rem !important; letter-spacing: .14em; text-transform: uppercase; color: color-mix(in srgb, var(--accent) 60%, #fff) !important; }
+html body #app .sanctuary-shell .ref-ability-buttons:not(#_) > button[data-information] > span > strong { font-size: 1.05rem !important; line-height: 1.25; }
+html body #app .sanctuary-shell .ref-ability-buttons .bubble-skill-summary { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: .78rem; font-weight: 500; line-height: 1.5; color: #c9cbd3; }
+html body #app .sanctuary-shell .ref-ability-buttons .bubble-skill-cost { font-size: .7rem; color: #ffd98c; }
+html[data-motion="reduced"] body #app .sanctuary-shell .ref-ability-buttons > button[data-information] > .ability-icon { animation: none !important; }
+html body #app .sanctuary-shell .ref-ability-buttons:not(#_) > button[data-information]::before { display: none !important; }
+html body #app .sanctuary-shell .ref-character-overview .hub-stats:not(#_) > div > * { text-align: left !important; justify-self: start !important; }
+
+/* Conduit loadout: everything (slots, bonuses, list, pager) visible; never clipped by the Team height lock */
+html body #app .sanctuary-shell .ref-team.ref-conduit-page:not(#_) { height: auto !important; min-height: calc(100dvh - 146px) !important; overflow: visible !important; }
+html body #app .sanctuary-shell .ref-conduit-page > .ref-loadout-page:not(#_) { height: auto !important; max-height: none !important; overflow: visible !important; }
+html body #app .sanctuary-shell .ref-conduit-page :is(.ref-character-panels, .character-detail-content, .ref-equipment-workspace):not(#_) { height: auto !important; max-height: none !important; overflow: visible !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-layout:not(#_) { align-items: start !important; gap: 14px !important; }
+html body #app .sanctuary-shell .conduit-loadout :is(.loadout-slots, .loadout-owned):not(#_) { height: auto !important; max-height: none !important; overflow: visible !important; gap: 10px !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-master:not(#_) { min-height: 0 !important; padding: 8px 14px !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-master-art:not(#_) { width: 64px !important; height: 64px !important; min-height: 0 !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-grid:not(#_) { gap: 10px !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-slot:not(#_) { min-height: 0 !important; height: auto !important; padding: 8px 8px 10px !important; gap: 4px !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-slot:not(#_) .loadout-slot-plus { height: 72px !important; min-height: 0 !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-slot:not(#_) :is(.loadout-slot-art, .loadout-slot-plus) img { max-height: 72px !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-tools:not(#_) { align-items: center !important; gap: 8px !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-tools:not(#_) label { height: auto !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-filters:not(#_) { gap: 6px !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-owned-list:not(#_) { height: auto !important; max-height: none !important; overflow: visible !important; gap: 8px !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-owned-row:not(#_) { min-height: 0 !important; padding: 8px 10px !important; border-radius: 18px; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-pager:not(#_) { position: relative; z-index: 1; display: flex !important; justify-content: space-between !important; align-items: center !important; gap: 10px; margin-top: 4px; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-pager:not(#_) button { min-height: 44px !important; padding: 8px 18px !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-owned-row:not(#_) { grid-template-columns: 56px minmax(0, 1fr) auto auto !important; grid-template-areas: none !important; grid-template-rows: auto !important; align-items: center !important; column-gap: 10px !important; row-gap: 0 !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-owned-row:not(#_) > * { grid-row: 1 !important; grid-area: auto !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-owned-row:not(#_) > .loadout-owned-art { width: 56px !important; height: 56px !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-owned-row:not(#_) > button { min-height: 40px !important; height: 40px !important; padding: 0 14px !important; align-self: center !important; }
+html body #app .sanctuary-shell .conduit-loadout :is(.loadout-target-cue, .loadout-search-status):not(#_) { margin: 0 !important; }
+
+/* ---------- Palette-matched celebrations (owner request): banners and cinematics use the obtained thing's colours ---------- */
+.fx-scope { position: fixed; inset: 0; pointer-events: none; z-index: 903; overflow: hidden; }
+.fx-banner { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.fx-banner > span { display: block; max-width: 92vw; overflow: visible; white-space: normal; text-align: center; }
+.fx-banner > small { display: block; max-width: 86vw; overflow: visible; white-space: normal; text-align: center; font-size: .48em; letter-spacing: .18em; color: color-mix(in srgb, var(--accent) 35%, #fff); text-shadow: 0 0 10px var(--accent), 0 2px 6px #000; }
+.fx-banner:has(> small)::before { content: ''; position: absolute; left: 50%; top: 50%; z-index: -1; width: min(86vw, 760px); height: 128%; translate: -50% -50%; border-radius: 99px; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 22%, #05070ccc) 18%, #05070ce6 50%, color-mix(in srgb, var(--accent) 22%, #05070ccc) 82%, transparent); border-block: 1px solid color-mix(in srgb, var(--accent) 55%, transparent); box-shadow: 0 0 40px color-mix(in srgb, var(--accent) 30%, transparent); animation: fx-band 1.6s cubic-bezier(.2,.9,.3,1) both; }
+.fx-banner { overflow: visible; isolation: isolate; }
+.fx-prismatic .fx-banner > span { color: transparent; background: linear-gradient(100deg, #ffd1e8, #fff6c8, #c8ffe8, #c8ecff, #e2d1ff, #ffd1e8); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; text-shadow: none; filter: drop-shadow(0 0 10px var(--accent)) drop-shadow(0 0 26px color-mix(in srgb, var(--accent) 60%, transparent)); animation: cine-sheen 2s linear infinite; }
+.fx-calamitic .fx-banner { color: #fff; text-shadow: 0 0 2px #000, 0 0 12px #ff1f45, 0 0 34px #e8203f, 0 0 70px #8a0014; }
+.fx-calamitic .fx-banner > small { color: #ffd6dc; }
+.fx-calamitic .fx-banner:has(> small)::before { background: linear-gradient(90deg, transparent, #000000d9 14%, #0a0002f2 50%, #000000d9 86%, transparent); border-block: 1px solid #fff; box-shadow: 0 0 0 1px #e8203f88, 0 0 46px #e8203f66; }
+.fx-calamitic .fx-wave { border-color: #fff; box-shadow: 0 0 40px #e8203f, inset 0 0 40px #e8203f88; }
+.fx-calamitic .fx-glyph { text-shadow: 0 0 6px #fff, 0 0 16px #ff1f45, 0 0 30px #e8203f; }
+.fx-bolts { position: fixed; left: 50%; top: 40%; width: min(90vmin, 900px); aspect-ratio: 1; translate: -50% -50%; mix-blend-mode: screen; }
+.fx-bolts svg { width: 100%; height: 100%; overflow: visible; }
+
+/* Lightning shared by Calamitic banners and cinematics */
+.cine-bolts { position: absolute; left: 50%; top: 44%; width: min(150vmin, 1500px); height: min(150vmin, 1500px); translate: -50% -50%; overflow: visible; mix-blend-mode: screen; }
+:is(.cine-bolts, .fx-bolts svg) g { opacity: 0; animation: cine-bolt-flicker 760ms var(--d) linear both; }
+:is(.cine-bolts, .fx-bolts svg) path { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: cine-bolt-draw 150ms var(--d) ease-out both; }
+:is(.cine-bolts, .fx-bolts svg) .bolt-glow { stroke: #ff1f45; stroke-width: 3.4; filter: drop-shadow(0 0 1.5px #ff2a4d) drop-shadow(0 0 4px #c80024); }
+:is(.cine-bolts, .fx-bolts svg) .bolt-core { stroke: #fff; stroke-width: .9; }
+
+/* Calamitic cinematic: black, white and crimson; electricity bursts out of the chest */
+.cine.cine-calamitic { --c1: #e8203f; --c2: #ffffff; --text-at: .44; }
+.cine-calamitic .cine-veil { background: radial-gradient(circle at 50% 44%, #3a0009e6 0%, #0b0002f2 34%, #000 72%); }
+.cine-calamitic .cine-rays { background: repeating-conic-gradient(from 0deg, #ffffffa8 0deg 1.5deg, transparent 1.5deg 11deg, #e8203fb8 11deg 14deg, transparent 14deg 24deg); }
+.cine-calamitic .cine-rings i { border-color: #fff; box-shadow: 0 0 34px #e8203f, inset 0 0 30px #e8203f; }
+.cine-calamitic .cine-rings i:nth-child(2) { border-color: #e8203f; }
+.cine-calamitic .cine-art::before { background: radial-gradient(circle, #ff1f4580, #e8203f30 46%, transparent 72%); }
+.cine-calamitic .cine-flash { background: radial-gradient(circle at 50% 44%, #fff 0%, #ffd6dc 14%, #e8203f 34%, transparent 72%); animation-name: cine-flash-calamity; }
+.cine.cine-calamitic .cine-text h2 { background: linear-gradient(180deg, #fff 18%, #ffd6dc 52%, #e8203f 100%); background-size: 100% 100%; -webkit-background-clip: text; background-clip: text; animation: none; filter: drop-shadow(0 0 2px #000) drop-shadow(0 0 16px #e8203fcc) drop-shadow(0 4px 2px #000); }
+.cine-calamitic .cine-text p { color: #ff5a73; text-shadow: 0 0 12px #e8203f; }
+.cine-calamitic .cine-orb { background: radial-gradient(circle at 36% 30%, #fff, #ffd6dc 16%, #e8203f 46%, #1a0005 82%); box-shadow: 0 0 60px #e8203f, 0 0 140px #e8203f88, inset 0 -12px 30px #000a; }
+.cine-calamitic.cine-chest .cine-to { animation: cine-chest-calamity var(--t) cubic-bezier(.3,.8,.3,1) both; }
+.cine-storm { left: 50%; top: 44%; width: 0; height: 0; }
+.cine-storm i { position: absolute; left: 0; top: 0; width: 48vmin; height: 48vmin; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, transparent 36%, #e8203f50 50%, #ffffff26 54%, transparent 66%); border: 1px dashed #ffffff40; opacity: 0; animation: cine-storm-charge calc(var(--t) * var(--peak)) cubic-bezier(.5,0,.8,.6) both; }
+.cine-storm i:nth-child(2) { animation-delay: calc(var(--t) * var(--peak) * .18); width: 60vmin; height: 60vmin; border-style: dotted; }
+.cine-storm i:nth-child(3) { animation-delay: calc(var(--t) * var(--peak) * .36); width: 72vmin; height: 72vmin; }
+
+/* Black-and-white EQUIPPED ribbon on Conduits worn by this character */
+html body #app .sanctuary-shell .conduit-loadout :is(.loadout-owned-row.is-equipped > .loadout-owned-art, .loadout-slot:not(.is-empty) .loadout-slot-art):not(#_) { position: relative !important; overflow: hidden !important; border-radius: 14px; }
+html body #app .sanctuary-shell .conduit-loadout :is(.loadout-owned-row.is-equipped > .loadout-owned-art, .loadout-slot:not(.is-empty) .loadout-slot-art):not(#_)::after { content: 'EQUIPPED' / ''; position: absolute; left: -40%; right: -40%; bottom: 14%; z-index: 3; rotate: -16deg; display: block; padding: 1px 0; text-align: center; font: 800 .5rem/1.45 var(--ui-font, Georgia, serif); letter-spacing: .24em; color: #fff; text-shadow: 0 1px 1px #000; background: linear-gradient(100deg, #000 38%, #4a4a4a 50%, #000 62%) 0 0 / 300% 100%; border-block: 1px solid #fff; box-shadow: 0 2px 8px #000c; pointer-events: none; animation: equip-ribbon-sheen 3.4s linear infinite; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-slot:not(.is-empty) .loadout-slot-art:not(#_)::after { font-size: .56rem; }
+html[data-motion="reduced"] body #app .sanctuary-shell .conduit-loadout :is(.loadout-owned-art, .loadout-slot-art)::after { animation: none !important; }
+
+@keyframes fx-band { 0% { opacity: 0; scale: .1 1; } 20% { opacity: 1; scale: 1.04 1; } 75% { opacity: 1; scale: 1 1; } 100% { opacity: 0; scale: 1 .6; } }
+@keyframes cine-bolt-flicker { 0% { opacity: 0; } 5% { opacity: 1; } 14% { opacity: .2; } 22% { opacity: 1; } 44% { opacity: .85; } 56% { opacity: .1; } 64% { opacity: .7; } 100% { opacity: 0; } }
+@keyframes cine-bolt-draw { to { stroke-dashoffset: 0; } }
+@keyframes cine-flash-calamity { 0%, 38% { opacity: 0; } 40% { opacity: 1; } 43% { opacity: .15; } 46% { opacity: .9; } 50% { opacity: .1; } 53% { opacity: .55; } 62%, 71% { opacity: 0; } 72% { opacity: .5; } 75%, 100% { opacity: 0; } }
+@keyframes cine-storm-charge { 0% { opacity: 0; scale: 1.9; rotate: 0deg; } 40% { opacity: .9; } 100% { opacity: 1; scale: .35; rotate: 160deg; } }
+@keyframes cine-chest-calamity {
+  0% { opacity: 0; scale: .4; rotate: 0deg; filter: brightness(.6); }
+  9% { opacity: 1; scale: 1; rotate: 0deg; }
+  14% { rotate: -2deg; } 18% { rotate: 2deg; } 22% { rotate: -3deg; } 25% { rotate: 3deg; }
+  28% { rotate: -4deg; scale: 1.03; } 30.5% { rotate: 4deg; } 33% { rotate: -6deg; scale: 1.06; } 35% { rotate: 6deg; } 37% { rotate: -7deg; filter: brightness(1.3) drop-shadow(0 0 18px #e8203f); } 39% { rotate: 7deg; }
+  40% { rotate: 0deg; scale: 1.3; filter: brightness(2.4) drop-shadow(0 0 40px #fff) drop-shadow(0 0 70px #e8203f); }
+  47% { scale: 1; filter: brightness(1.15) drop-shadow(0 0 24px #e8203f); }
+  70% { translate: -50% -53%; }
+  100% { opacity: 1; translate: -50% -50%; scale: 1; rotate: 0deg; filter: brightness(1) drop-shadow(0 0 16px #e8203f99); }
+}
+@keyframes equip-ribbon-sheen { from { background-position: 100% 0; } to { background-position: -50% 0; } }
+
+/* ---------- Close buttons: fixed hit box (polish) ---------- */
+/* Hover never moves or scales a close X, so its target always sits exactly under the visible circle. */
+html body :is(.information-modal, .settings-drawer, .selection-modal, .game-dialog, .battle-menu, #battle-root) .drawer-close:not(#_), html body .ll-ui .ll-close:not(#_) {
+  position: relative; z-index: 2; flex: 0 0 44px !important; width: 44px !important; height: 44px !important; min-width: 44px !important; min-height: 44px !important;
+  padding: 0 !important; margin-block: 0 !important; display: grid !important; place-items: center !important; border-radius: 50% !important;
+  font: 400 24px/1 'Segoe UI', system-ui, sans-serif !important; letter-spacing: 0 !important; text-indent: 0 !important; transform: none !important; translate: none !important; scale: none !important; }
+html body :is(.information-modal, .settings-drawer, .selection-modal, .game-dialog, .battle-menu, #battle-root) .drawer-close:not(#_):is(:hover, :active), html body .ll-ui .ll-close:not(#_):is(:hover, :active) { transform: none !important; filter: brightness(1.18); }
+html body :is(.information-modal, .settings-drawer, .selection-modal, .game-dialog) .drawer-heading > :not(.drawer-close) { min-width: 0; }

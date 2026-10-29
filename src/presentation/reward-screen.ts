@@ -1,7 +1,7 @@
 import { createGameDialog, escapeDialogText } from './game-dialog';
 import { rarityFeedback, clearRarityFeedback, rarityMotionReduced } from './rarity-feedback';
 import { type Rarity, rarityColors, isRarity } from '../content/rarity';
-import { bubbleMotionAllowed, celebrate, cinematic, type CinematicSpec } from './bubble-ui';
+import { bubbleMotionAllowed, celebrate, cinematic, rarityPalette, type CinematicSpec } from './bubble-ui';
 
 export interface RewardPresentation {
   title: string;
@@ -175,5 +175,5 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
     clearRarityFeedback(dialog);
     dispose();
   }
-  if (reward.celebration) celebrate(reward.celebration);
+  if (reward.celebration) celebrate(reward.celebration, reward.cinematic?.palette ?? (reward.rarity ? rarityPalette(reward.rarity, reward.accent) : { accent: reward.accent }));
 }

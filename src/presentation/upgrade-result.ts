@@ -62,10 +62,10 @@ export function upgradeResult(before: Account, after: Account, id: string, kind:
   return {
     cinematic: evolved ? {
       kind: 'evolution', eyebrow: `Form ${fromForm} \u2192 ${toForm}`, title: 'Evolution', subtitle: current.label,
-      fromArt: imageSource(previous.art), art: imageSource(current.art), tier: evolutionTier(toForm),
+      fromArt: imageSource(previous.art), art: imageSource(current.art), tier: evolutionTier(toForm), palette: { accent: current.color },
     } : {
       kind: 'level', eyebrow: 'Level up', title: `Lv.${previous.level} \u2192 ${current.level}`, subtitle: current.label,
-      art: imageSource(current.art), tier: rarityTier(current.rarity),
+      art: imageSource(current.art), tier: rarityTier(current.rarity), palette: { accent: current.color },
     },
     celebration: evolved ? 'Evolution complete' : 'Growth complete',
     title: kind === 'evolve' ? 'Evolution complete' : 'Level up!',

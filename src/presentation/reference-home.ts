@@ -11,17 +11,14 @@ import { assetUrl, portrait } from './portrait';
 
 type HubIcon = Parameters<typeof uiIcon>[0];
 /* Home orbit (D-433): every main destination as a floating bubble around the leader. */
-function hubBubbles(account: Account): readonly (readonly [string, string, string, HubIcon])[] {
-  const completed = account.storyCompleted ?? 0;
+/* Story stays on the Continue card, Events under Play and Profile in the header (owner request). */
+function hubBubbles(): readonly (readonly [string, string, string, HubIcon])[] {
   return [
-    ['story', 'Story', `${completed} / ${storyRules.stages} stages`, 'story'],
     ['gameplay', 'Play', 'Activities & dungeons', 'gameplay'],
     ['summon', 'Summon', 'Banners & pity', 'summon'],
-    ['events', 'Events', 'Limited activities', 'events'],
     ['stores', 'Stores', 'Market & Conduits', 'weapon'],
     ['inventory', 'Inventory', 'Materials & Conduits', 'inventory'],
     ['collections', 'Collections', 'Archives & discoveries', 'overview'],
-    ['profile', 'Profile', 'Player & friends', 'character'],
     ['team', 'Team', 'Squad & Element-Bearers', 'squad'],
   ];
 }
@@ -60,7 +57,7 @@ export function referenceHome(starter: Starter, account: Account | null): string
         <div class="ref-home-identity"><p>${prefix} &middot; ${member.element}${isStarterId(id) ? ` &middot; ${starter.weapon}` : ''}</p><h2>${displayName}</h2>
           <div class="ref-tags"><span class="ref-stars" aria-label="${stars}-star ${copy ? 'Elemental-Devourer' : 'Element-Bearer'}">${'&#9733;'.repeat(stars)}</span>${isStarterId(id) ? `<span class="ref-chip">${starter.role}</span>` : ''}<span class="ref-chip">${rarity}</span><span class="ref-chip">Lv.${member.level}${progress ? ` &middot; Evo.${progress.evolution}` : ''}</span></div></div>
       </div>
-      ${hubBubbles(account).map(([page, label, detail, icon], index) => `<button type="button" class="hub-bubble hub-slot-${index}" data-page="${page}" style="--delay:${(index * -.77).toFixed(2)}s"><span class="hub-bubble-symbol">${uiIcon(icon)}</span><strong>${label}</strong><small>${detail}</small></button>`).join('')}
+      ${hubBubbles().map(([page, label, detail, icon], index) => `<button type="button" class="hub-bubble hub-slot-${index}" data-page="${page}" style="--delay:${(index * -.77).toFixed(2)}s"><span class="hub-bubble-symbol">${uiIcon(icon)}</span><strong>${label}</strong><small>${detail}</small></button>`).join('')}
     </section>
     ${squadRail(account)}
   </div>`;

@@ -5,7 +5,7 @@ import { escapeDialogText } from './game-dialog';
 import { type RewardPresentation } from './reward-screen';
 import { referencedEffect } from './effect-copy';
 import { elementAccents } from '../content/dungeon-art';
-import { imageSource, rarityTier } from './bubble-ui';
+import { imageSource, rarityPalette, rarityTier } from './bubble-ui';
 
 export function conduitReward(id: ConduitId, account: Account, title: string, receipt: string): RewardPresentation {
   const conduit = getConduit(id);
@@ -14,7 +14,8 @@ export function conduitReward(id: ConduitId, account: Account, title: string, re
   const level = account.conduitUpgrades?.[id] ?? 0;
   const art = conduitIcon(id, level);
   return {
-    cinematic: { kind: 'conduit', eyebrow: `${conduit.rarity} Conduit`, title: conduit.name, subtitle: title, art: imageSource(art), tier: rarityTier(conduit.rarity) },
+    cinematic: { kind: 'conduit', eyebrow: `${conduit.rarity} Conduit`, title: conduit.name, subtitle: title, art: imageSource(art), tier: rarityTier(conduit.rarity),
+      palette: conduit.rarity === 'Omnic' && conduit.element ? { accent: elementAccents[conduit.element], theme: 'prismatic' } : rarityPalette(conduit.rarity) },
     celebration: title,
     title, name: conduit.name, rarity: conduit.rarity, accent: conduit.rarity === 'Omnic' && conduit.element ? elementAccents[conduit.element] : '#ffffff', animationLabel: 'Ancient mechanism restored',
     art: `<span class="conduit-reward-art">${art}</span>`,

@@ -5,6 +5,7 @@
  * effect is skipped under reduced motion (setting or OS).
  */
 import { reducedMotion } from './settings';
+import { isRarity, rarityColors } from '../content/rarity';
 import '../bubble-battle.css';
 
 const glyphs = ['\u2726', '\u2727', '\u2736', '\u273A', '\u00B7'];
@@ -79,22 +80,82 @@ function pressFeedback(target: HTMLElement, event: MouseEvent): void {
   ], { duration: 600, easing: 'ease-out' });
 }
 
+/** Colour theme of the thing obtained: Calamitic is black/white/crimson, Omnic prismatic. */
+export type FxTheme = 'calamitic' | 'prismatic';
+export interface FxPalette { accent?: string; theme?: FxTheme }
+
+const calamiticCrimson = '#e8203f';
+
+export function rarityPalette(rarity: string | undefined, fallback?: string): FxPalette {
+  if (rarity === 'Calamitic') return { accent: calamiticCrimson, theme: 'calamitic' };
+  if (rarity === 'Omnic') return { accent: '#c9b3ff', theme: 'prismatic' };
+  return { accent: isRarity(rarity) ? rarityColors[rarity] : fallback };
+}
+
+function applyPalette(element: HTMLElement, palette: FxPalette | undefined): void {
+  if (palette?.accent) { element.style.setProperty('--accent', palette.accent); element.style.setProperty('--ui-accent', palette.accent); }
+  if (palette?.theme) element.classList.add(`fx-${palette.theme}`);
+}
+
+/** Jagged lightning bolts radiating from the centre of a -100..100 SVG box. */
+function lightningMarkup(waves: readonly { count: number; delay: number }[]): string {
+  const jag = (angle: number, from: number, to: number, steps: number, spread: number): [number, number][] => {
+    const points: [number, number][] = [];
+    for (let step = 0; step <= steps; step++) {
+      const radius = from + (to - from) * step / steps;
+      const offset = step === 0 ? 0 : (Math.random() - .5) * spread;
+      const a = angle + offset / Math.max(radius, 1);
+      points.push([Math.cos(a) * radius, Math.sin(a) * radius]);
+    }
+    return points;
+  };
+  const path = (points: readonly [number, number][]) => `M${points.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join('L')}`;
+  return `<svg class="cine-bolts" viewBox="-100 -100 200 200" aria-hidden="true">${waves.map(({ count, delay }, wave) =>
+    Array.from({ length: count }, (_, index) => {
+      const angle = (index / count) * Math.PI * 2 + wave * .4 + (Math.random() - .5) * .35;
+      const length = 52 + Math.random() * 46 - wave * 8;
+      const main = jag(angle, 9, length, 7, 16);
+      const fork = main[3 + (index % 3)];
+      const branchAngle = Math.atan2(fork[1], fork[0]) + (index % 2 ? .55 : -.55);
+      const start = Math.hypot(fork[0], fork[1]);
+      const branch = jag(branchAngle, start, start + 14 + Math.random() * 16, 3, 9);
+      const d = `${path(main)} ${path(branch)}`;
+      return `<g style="--d:${delay + index * 23 + Math.round(Math.random() * 60)}ms"><path class="bolt-glow" pathLength="1" d="${d}"/><path class="bolt-core" pathLength="1" d="${d}"/></g>`;
+    }).join('')).join('')}</svg>`;
+}
+
 /** Large centered text pop-up with shockwave and sparkles; purely decorative. */
-export function celebrate(message: string): void {
+export function celebrate(message: string, options: FxPalette & { subtitle?: string } = {}): void {
   if (!bubbleMotionAllowed()) return;
-  const host = layer();
+  const scope = document.createElement('div');
+  scope.className = 'fx-scope';
+  applyPalette(scope, options);
+  layer().append(scope);
   const banner = document.createElement('div');
   banner.className = 'fx-banner';
-  banner.textContent = `${glyphs[0]} ${message.replace(/\.$/, '')} ${glyphs[0]}`;
-  host.append(banner);
+  const title = document.createElement('span');
+  title.textContent = `${glyphs[0]} ${message.replace(/\.$/, '')} ${glyphs[0]}`;
+  banner.append(title);
+  if (options.subtitle) {
+    const subtitle = document.createElement('small');
+    subtitle.textContent = options.subtitle;
+    banner.append(subtitle);
+  }
+  scope.append(banner);
   const ring = document.createElement('div');
   ring.className = 'fx-wave';
   ring.style.left = `${innerWidth / 2}px`; ring.style.top = `${innerHeight * .42}px`;
-  host.append(ring);
-  window.setTimeout(() => { banner.remove(); ring.remove(); }, 2400);
-  glyphBurst(innerWidth / 2, innerHeight * .42, 26, Math.min(innerWidth, 900) * .38, null, 60);
-  window.setTimeout(() => glyphBurst(innerWidth * .3, innerHeight * .5, 10, 140, null, 80), 180);
-  window.setTimeout(() => glyphBurst(innerWidth * .7, innerHeight * .5, 10, 140, null, 80), 300);
+  scope.append(ring);
+  if (options.theme === 'calamitic') {
+    const bolts = document.createElement('div');
+    bolts.className = 'fx-bolts';
+    bolts.innerHTML = lightningMarkup([{ count: 8, delay: 60 }]);
+    scope.append(bolts);
+  }
+  window.setTimeout(() => scope.remove(), 2400);
+  glyphBurst(innerWidth / 2, innerHeight * .42, 26, Math.min(innerWidth, 900) * .38, scope, 60);
+  window.setTimeout(() => glyphBurst(innerWidth * .3, innerHeight * .5, 10, 140, scope, 80), 180);
+  window.setTimeout(() => glyphBurst(innerWidth * .7, innerHeight * .5, 10, 140, scope, 80), 300);
 }
 
 export type CinematicKind = 'level' | 'evolution' | 'summon' | 'conduit' | 'chest';
@@ -103,6 +164,8 @@ export interface CinematicSpec {
   kind: CinematicKind; eyebrow: string; title: string; subtitle?: string;
   /** Full image URLs; never request missing artwork. */
   art?: string; fromArt?: string; tier?: CinematicTier;
+  /** Colours of the thing obtained; overrides the generic tier colours. */
+  palette?: FxPalette;
 }
 const cinematicDuration: Record<CinematicKind, number> = { level: 2100, evolution: 3300, summon: 2900, conduit: 2200, chest: 2500 };
 
@@ -132,13 +195,24 @@ export function cinematic(spec: CinematicSpec): Promise<void> {
   if (!bubbleMotionAllowed()) return Promise.resolve();
   return new Promise(resolve => {
     const scene = document.createElement('div');
-    scene.className = `cine cine-${spec.kind} cine-${spec.tier ?? 'normal'}`;
+    const calamitic = spec.palette?.theme === 'calamitic';
+    scene.className = `cine cine-${spec.kind} cine-${spec.tier ?? 'normal'}${calamitic ? ' cine-calamitic' : ''}`;
     scene.setAttribute('role', 'presentation');
-    const duration = cinematicDuration[spec.kind];
+    applyPalette(scene, spec.palette);
+    if (spec.palette?.accent && !calamitic) {
+      scene.style.setProperty('--c1', spec.palette.accent);
+      scene.style.setProperty('--c2', `color-mix(in srgb, ${spec.palette.accent} 40%, #fff)`);
+    }
+    const duration = cinematicDuration[spec.kind] + (calamitic && spec.kind === 'chest' ? 1100 : 0);
     scene.style.setProperty('--cine-duration', `${duration}ms`);
     const art = (url: string | undefined, cls: string) => url ? `<div class="cine-art ${cls}"><img src="${escapeText(url)}" alt="" draggable="false" /></div>` : '';
+    const peakAt = (spec.kind === 'evolution' ? .46 : spec.kind === 'summon' ? .55 : calamitic && spec.kind === 'chest' ? .4 : .3) * duration;
+    scene.style.setProperty('--peak', String(peakAt / duration));
+    const storm = calamitic ? `<div class="cine-storm"><i></i><i></i><i></i></div>${lightningMarkup(spec.kind === 'chest'
+      ? [{ count: 14, delay: Math.round(peakAt) }, { count: 9, delay: Math.round(peakAt + 520) }, { count: 9, delay: Math.round(peakAt + 1100) }]
+      : [{ count: 10, delay: Math.round(peakAt) }])}` : '';
     scene.innerHTML = `<div class="cine-veil"></div><div class="cine-rays"></div><div class="cine-columns">${'<i></i>'.repeat(9)}</div>
-      <div class="cine-rings"><i></i><i></i><i></i></div>${spec.kind === 'summon' ? '<div class="cine-orb"><i></i></div>' : ''}
+      <div class="cine-rings"><i></i><i></i><i></i></div>${spec.kind === 'summon' ? '<div class="cine-orb"><i></i></div>' : ''}${storm}
       ${art(spec.fromArt, 'cine-from')}${art(spec.art, 'cine-to')}
       <div class="cine-flash"></div><div class="cine-text"><p>${escapeText(spec.eyebrow)}</p><h2>${escapeText(spec.title)}</h2>${spec.subtitle ? `<small>${escapeText(spec.subtitle)}</small>` : ''}</div><span class="cine-skip">Tap to skip</span>`;
     document.body.append(scene);
@@ -161,11 +235,11 @@ export function cinematic(spec: CinematicSpec): Promise<void> {
     };
     scene.addEventListener('click', finish);
     document.addEventListener('keydown', key);
-    const peak = spec.kind === 'evolution' ? .46 : spec.kind === 'summon' ? .55 : .3;
     const burstAt = (delay: number, count: number, reach: number) => timers.push(window.setTimeout(() =>
       glyphBurst(innerWidth / 2, innerHeight * .44, count, reach, scene, 40), delay));
-    burstAt(duration * peak, 34, Math.min(innerWidth, 1000) * .42);
-    burstAt(duration * peak + 220, 16, 220);
+    burstAt(peakAt, 34, Math.min(innerWidth, 1000) * .42);
+    burstAt(peakAt + 220, 16, 220);
+    if (calamitic && spec.kind === 'chest') { burstAt(peakAt + 560, 22, 320); burstAt(peakAt + 1140, 22, 360); }
     timers.push(window.setTimeout(finish, duration));
   });
 }
@@ -246,105 +320,6 @@ function orbitTeamDetail(app: HTMLElement): void {
   });
 }
 
-let playGroup = '';
-
-function activeGroupId(hub: HTMLElement): string {
-  const id = location.hash.slice(1);
-  return id && hub.querySelector(`.activity-group#${CSS.escape(id)}`) ? id : '';
-}
-
-function setPlayZoom(hub: HTMLElement, group: string): void {
-  hub.dataset.zoom = group ? 'open' : 'closed';
-  const board = hub.querySelector<HTMLElement>('.bubble-play-board');
-  if (board) board.inert = Boolean(group);
-  hub.querySelectorAll<HTMLElement>(':scope > .ref-activity-sidebar, :scope > .activity-group').forEach(element => { element.inert = !group; });
-  playGroup = group;
-}
-
-/** Bubble card art: the group's own banner/scenery, never another activity's image. */
-function groupArt(group: HTMLElement): string {
-  const image = group.querySelector<HTMLImageElement>('.ref-world-map-canvas, img.dungeon-banner, .activity-banner img, img.training-hero, .training-hero img, img');
-  return image?.currentSrc || image?.getAttribute('src') || '';
-}
-
-function boardCard(link: HTMLAnchorElement, group: HTMLElement, index: number): HTMLButtonElement {
-  const card = document.createElement('button');
-  card.type = 'button';
-  card.className = 'bubble-play-card';
-  card.dataset.playGroup = group.id;
-  card.style.setProperty('--delay', `${-index * 1.3}s`);
-  const art = groupArt(group);
-  const choices = group.querySelectorAll('[data-activity-choice]').length;
-  const name = link.querySelector('strong')?.textContent?.trim() ?? group.querySelector('h2')?.textContent?.trim() ?? '';
-  const detail = link.querySelector('small')?.textContent?.trim() ?? '';
-  const loot = choices > 1 ? [] : Array.from(group.querySelectorAll<HTMLImageElement>('.item-showcase img')).slice(0, 5);
-  card.innerHTML = `${art ? `<span class="bubble-play-art" aria-hidden="true"><img src="${escapeText(art)}" alt="" loading="lazy" decoding="async"></span>` : ''}
-    <span class="bubble-play-copy"><strong>${escapeText(name)}</strong><small>${escapeText(detail)}</small>
-    ${choices > 1 ? `<em>${choices} activities</em>` : ''}
-    ${loot.length ? `<span class="bubble-play-loot" aria-hidden="true">${loot.map(image => `<img src="${escapeText(image.getAttribute('src') ?? '')}" alt="">`).join('')}</span>` : ''}</span>`;
-  card.setAttribute('aria-label', `${name}. ${detail}${choices > 1 ? `. ${choices} activities` : ''}`);
-  card.addEventListener('click', () => {
-    const rect = card.getBoundingClientRect();
-    if (bubbleMotionAllowed()) {
-      const portal = document.createElement('div');
-      portal.className = 'bubble-portal';
-      portal.setAttribute('aria-hidden', 'true');
-      portal.style.left = `${rect.left + rect.width / 2}px`;
-      portal.style.top = `${rect.top + rect.height / 2}px`;
-      layer().append(portal);
-      window.setTimeout(() => portal.remove(), 700);
-    }
-    const hub = card.closest<HTMLElement>('.gameplay-hub');
-    if (!hub) return;
-    hub.style.setProperty('--zoom-x', `${rect.left + rect.width / 2 - hub.getBoundingClientRect().left}px`);
-    hub.style.setProperty('--zoom-y', `${rect.top + rect.height / 2 - hub.getBoundingClientRect().top}px`);
-    hub.dataset.zoomAnimate = '';
-    link.click();
-    setPlayZoom(hub, group.id);
-  });
-  return card;
-}
-
-/** D-433 Play board: live activity categories as grouped bubble cards that zoom into the existing detail. */
-function bubblePlayBoard(app: HTMLElement): void {
-  app.querySelectorAll<HTMLElement>('.gameplay-hub:not([data-board])').forEach(hub => {
-    hub.dataset.board = '';
-    const board = document.createElement('nav');
-    board.className = 'bubble-play-board';
-    board.setAttribute('aria-label', 'Activities');
-    hub.querySelectorAll<HTMLElement>('.ref-activity-section').forEach(section => {
-      const heading = section.querySelector('h3')?.textContent?.trim() ?? '';
-      const group = document.createElement('section');
-      group.className = 'bubble-play-group';
-      group.dataset.section = heading.toLowerCase().replace(/[^a-z]+/g, '-');
-      group.innerHTML = `<h2>${escapeText(heading)}</h2><div class="bubble-play-cards"></div>`;
-      const cards = group.querySelector('.bubble-play-cards')!;
-      section.querySelectorAll<HTMLAnchorElement>('a[href^="#gameplay-"]').forEach(link => {
-        const target = hub.querySelector<HTMLElement>(`.activity-group${link.hash}`);
-        if (target) cards.append(boardCard(link, target, board.querySelectorAll('.bubble-play-card').length + cards.children.length));
-      });
-      if (cards.children.length) board.append(group);
-    });
-    const back = document.createElement('button');
-    back.type = 'button';
-    back.className = 'bubble-zoom-back';
-    back.innerHTML = '<span aria-hidden="true">&larr;</span> All activities';
-    back.setAttribute('aria-label', 'Back to all activities');
-    back.addEventListener('click', () => {
-      const previous = playGroup;
-      history.replaceState(null, '', `${location.pathname}${location.search}`);
-      delete hub.dataset.zoomAnimate;
-      setPlayZoom(hub, '');
-      hub.querySelector<HTMLElement>(`.bubble-play-card[data-play-group="${CSS.escape(previous)}"]`)?.focus({ preventScroll: true });
-    });
-    hub.prepend(board);
-    (hub.querySelector('.ref-activity-sidebar') ?? hub).prepend(back);
-    const group = activeGroupId(hub);
-    if (group !== playGroup || !group) delete hub.dataset.zoomAnimate;
-    setPlayZoom(hub, group);
-  });
-}
-
 export function installBubbleUi(app: HTMLElement): void {
   if (installed) return;
   installed = true;
@@ -361,7 +336,7 @@ export function installBubbleUi(app: HTMLElement): void {
   });
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape' || document.querySelector('dialog[open], .cine')) return;
-    const open = app.querySelector<HTMLElement>('.ref-bearer-detail[data-zoom="open"], .gameplay-hub[data-zoom="open"]');
+    const open = app.querySelector<HTMLElement>('.ref-bearer-detail[data-zoom="open"]');
     if (!open) return;
     event.preventDefault();
     event.stopImmediatePropagation();
@@ -369,7 +344,6 @@ export function installBubbleUi(app: HTMLElement): void {
   }, true);
   const observer = new MutationObserver(() => {
     orbitTeamDetail(app);
-    bubblePlayBoard(app);
     const identity = screenIdentity(app);
     if (identity === lastScreen) return;
     lastScreen = identity;
@@ -380,8 +354,39 @@ export function installBubbleUi(app: HTMLElement): void {
     const battle = Boolean(app.querySelector('.battle-screen'));
     document.body.classList.toggle('bubble-battle', battle);
     if (battle) enhanceVictory(app);
+    else enhanceSkillCards(app);
   });
   battleObserver.observe(app, { childList: true, subtree: true });
+}
+
+function plainSummary(text: string): string {
+  return text.replace(/\[([^\]]+)\]/g, '$1').replace(/\s+/g, ' ').trim();
+}
+
+/** Mock-up skill cards: echo each ability's own dialog effect and cost text inside its (unchanged) details button. */
+function enhanceSkillCards(app: HTMLElement): void {
+  app.querySelectorAll<HTMLButtonElement>('.ref-ability-buttons > button[data-information]:not([data-bubble-skill])').forEach(button => {
+    button.dataset.bubbleSkill = '';
+    const article = document.getElementById(button.dataset.information ?? '')?.querySelector('article');
+    if (!article) return;
+    const paragraphs = Array.from(article.querySelectorAll<HTMLElement>(':scope > p'));
+    const effect = paragraphs.find(p => !p.className);
+    const cost = article.querySelector<HTMLElement>(':scope > .hub-cost') ?? paragraphs.filter(p => !p.className).at(-1);
+    const copy = button.querySelector('span');
+    if (!copy || !effect) return;
+    const summary = document.createElement('span');
+    summary.className = 'bubble-skill-summary';
+    summary.setAttribute('aria-hidden', 'true');
+    summary.textContent = plainSummary(effect.textContent ?? '');
+    copy.append(summary);
+    if (cost && cost !== effect) {
+      const costLine = document.createElement('span');
+      costLine.className = 'bubble-skill-cost';
+      costLine.setAttribute('aria-hidden', 'true');
+      costLine.textContent = plainSummary(cost.textContent ?? '');
+      copy.append(costLine);
+    }
+  });
 }
 
 /** Presentation-only glory layered onto the live victory sheet; every amount and label stays the live markup's. */

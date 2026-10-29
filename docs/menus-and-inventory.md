@@ -19,6 +19,18 @@
   is skipped under reduced motion and always ends on the exact saved text.
 - No mechanics, rewards, RNG, saves, copy or element accents changed. Motion
   gating uses `html[data-motion="reduced"]`/`bubbleMotionAllowed()`.
+- Polish follow-up (owner feedback): Home now shows 6 bubbles (Play, Summon,
+  Stores, Inventory, Collections, Team); Story/Events/Profile bubbles removed
+  (Story stays as the Continue card, Profile/Collections stay top-right) and no
+  bubble sits under the header. Play opens the sidebar activity menu directly
+  (Play board removed). Collections/Inventory use one page scroll; Conduit page
+  fits pager/Total Bonuses; Stats & Skills show per-skill glass cards; compact
+  Team identity card. Celebrations/cinematics match the obtained item's palette
+  (`rarityPalette`: Calamitic black/white/crimson with SVG lightning, Omnic
+  prismatic, otherwise rarity/element accent); Calamity chests rattle and burst
+  with crimson/white lightning. Equipping a Conduit shows a palette-matched
+  EQUIPPED banner and equipped icons carry a black/white EQUIPPED ribbon. Close
+  X buttons are fixed 44px circles that never move on hover. Presentation only.
 ## Standalone bubble UI mock-up (D-432)
 
 Owner requests an interactive bubble-style mock-up of every screen, using their

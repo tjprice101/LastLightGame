@@ -110,7 +110,7 @@ import './presentation/debug-profile.css';
 import './presentation/conduit-loadout.css';
 import './presentation/status-toast.css';
 import './presentation/bubble-ui.css';
-import { installBubbleUi } from './presentation/bubble-ui';
+import { celebrate, installBubbleUi, rarityPalette } from './presentation/bubble-ui';
 import { saleLabel } from './presentation/creature-sale';
 import { applyConduitSearch, bindConduitLoadout, refreshConduitLoadout, resetConduitLoadoutView } from './presentation/conduit-loadout';
 import { BackgroundMusic, battleMusic, defaultMusicPreferences, loadMusicPreferences, saveMusicPreferences } from './presentation/music';
@@ -1681,6 +1681,7 @@ app.addEventListener('change', async event => {
     if (id) {
       const target = app.querySelector<HTMLElement>('.ref-master-slot');
       if (target) rarityFeedback(target, 'Omnic', 'Master equipped');
+      equipBanner(getMasterConduit(id).name, 'Omnic', true);
     }
   } catch (error) {
     console.error('Master equipment rejected', error);
@@ -2057,6 +2058,11 @@ app.addEventListener('click', async (event) => {
 });
 
 /** Refreshes the open Conduit loadout in place; falls back to a full render only when no loadout is on screen. */
+/** Big equip banner in the Conduit's own palette, after the change has saved. */
+function equipBanner(name: string, rarity: string, master = false): void {
+  celebrate(master ? 'Master equipped' : 'Equipped', { ...rarityPalette(rarity), subtitle: name });
+}
+
 function refreshLoadout(owner: string): void {
   if (account) {
     const starter = isStarterId(owner);
@@ -2083,6 +2089,7 @@ app.addEventListener('change', async (event) => {
     if (conduit) {
       const target = app.querySelector<HTMLElement>(`[data-loadout-slot="${slot}"]`) ?? app.querySelector<HTMLElement>('.captured-equipment');
       if (target) rarityFeedback(target, getConduit(conduit).rarity, 'Conduit equipped');
+      equipBanner(getConduit(conduit).name, getConduit(conduit).rarity);
     }
   } catch (error) {
     console.error('Captured equipment rejected', error);
@@ -2104,6 +2111,7 @@ app.addEventListener('change', async (event) => {
     if (id && isConduitId(id)) {
       const target = app.querySelector<HTMLElement>(`[data-loadout-slot="${slot}"]`) ?? app.querySelector<HTMLElement>('.conduit-loadout');
       if (target) rarityFeedback(target, getConduit(id).rarity, 'Conduit equipped');
+      equipBanner(getConduit(id).name, getConduit(id).rarity);
     }
     const status = app.querySelector('#conduit-equipment-result');
     if (!status) throw new Error('Conduit equipment status is missing.');
@@ -2175,6 +2183,7 @@ app.addEventListener('click', async (event) => {
     if (conduit && isConduitId(conduit)) {
       const target = app.querySelector<HTMLElement>(`[data-loadout-slot="${slot}"]`);
       if (target) rarityFeedback(target, getConduit(conduit).rarity, 'Conduit equipped');
+      equipBanner(getConduit(conduit).name, getConduit(conduit).rarity);
     }
     app.querySelector<HTMLElement>(`[data-loadout-slot="${slot}"]`)?.querySelector<HTMLButtonElement>('button')?.focus({ preventScroll: true });
   } catch (error) {

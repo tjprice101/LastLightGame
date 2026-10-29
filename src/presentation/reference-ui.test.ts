@@ -116,8 +116,10 @@ describe('replacement reference screen structures', () => {
     expect(html).not.toContain('data-team-view="formation"');
     expect(html).not.toContain('home-banner');
     expect(html).not.toContain('ref-stat-strip');
-    expect(html.match(/class="hub-bubble /g)).toHaveLength(9);
-    for (const page of ['story', 'gameplay', 'summon', 'events', 'stores', 'inventory', 'collections', 'profile', 'team']) expect(html).toContain(`data-page="${page}" style=`);
+    expect(html.match(/class="hub-bubble /g)).toHaveLength(6);
+    for (const page of ['gameplay', 'summon', 'stores', 'inventory', 'collections', 'team']) expect(html).toContain(`data-page="${page}" style=`);
+    for (const page of ['events', 'profile']) expect(html).not.toContain(`data-page="${page}" style=`);
+    expect(html).toContain('ref-home-story" data-page="story"');
     expect(html).toContain('data-page="squad"');
     expect(wallet).toEqual(before);
   });
