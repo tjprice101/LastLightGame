@@ -341,7 +341,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Duality Planet Flamewheel",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Crinso only)",
-    "ability": "Using [Golden Edge] immediately after [Crimson Rupture] grants the living ally with the lowest [Health] percentage a [Shield] worth 12% of their maximum [Health] for one [Enemy Turn]. Crinso gains +55% [Defense] and +45% [Skill Efficiency]."
+    "ability": "Using [Golden Edge] immediately after [Crimson Rupture] grants the living ally with the lowest [Health] percentage a [Shield] worth 12% of their maximum [Health] that lasts until broken. Crinso gains +55% [Defense] and +45% [Skill Efficiency]."
   },
   "ominous-eclipse-mantle": {
     "name": "Eclipse Mantle",
@@ -353,7 +353,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Eclipse Planet Watchtower",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Razor only)",
-    "ability": "When [Eclipse Bastion] creates Razor's [Shield], each other living ally gains a [Shield] worth 40% of that amount for one [Enemy Turn], capped at 45% of their own maximum [Health]. All [Squad Members] gain +55% [Health] and +35% [Skill Efficiency]."
+    "ability": "When [Eclipse Bastion] creates Razor's [Shield], each other living ally gains a [Shield] worth 40% of that amount that lasts until broken, capped at 45% of their own maximum [Health]. All [Squad Members] gain +55% [Health] and +35% [Skill Efficiency]."
   },
   "flare-focusing-iris": {
     "name": "Ember Coronation Iris",
@@ -389,7 +389,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Final Dawn Tribunal",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Aurora only)",
-    "ability": "Enemies carrying Aurora's [Seal] have 25% less [Defense]. When an enemy consumes that [Seal] by using a [Skill], grant the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] for one [Enemy Turn]. All [Squad Members] gain +75% [Health] and +65% [Defense]."
+    "ability": "Enemies carrying Aurora's [Seal] have 25% less [Defense]. When an enemy consumes that [Seal] by using a [Skill], grant the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] that lasts until broken. All [Squad Members] gain +75% [Health] and +65% [Defense]."
   },
   "firstlight-cam": {
     "name": "Firstlight Concordance",
@@ -437,7 +437,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Horizon Cyclone Orrery",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Atmoso only)",
-    "ability": "When Atmoso's [Cyclone] releases, each living ally gains a [Shield] equal to 30% of the total enemy [Health] it removed, lasting one [Enemy Turn]. All [Squad Members] gain +55% [Health] and +45% [Defense]."
+    "ability": "When Atmoso's [Cyclone] releases, each living ally gains a [Shield] equal to 30% of the total enemy [Health] it removed that lasts until broken. All [Squad Members] gain +55% [Health] and +45% [Defense]."
   },
   "master-elise-1": {
     "name": "Infinite Thunderwheel Arsenal",
@@ -473,7 +473,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Leviathan Ward Loom",
     "rarity": "Omnic",
     "element": "Oceanic (actual gameplay element)",
-    "ability": "Living allies, including yourself, holding any [Shield] gain +30% [Skill Power] for healing and [Shield]-generating [Skills] while you are alive. Your [Skill]-created [Shields] last +1 [Enemy Turn]. +55% [Defense] and +55% [Skill Power]."
+    "ability": "Living allies, including yourself, holding any [Shield] gain +30% [Skill Power] for healing and [Shield]-generating [Skills] while you are alive. +55% [Defense] and +55% [Skill Power]."
   },
   "master-bruno-1": {
     "name": "Living Worldwall Atlas",
@@ -509,7 +509,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Ouroboros Core",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "+40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] for 2 [Enemy Turns]. All [Squad Members] gain +55% [Health]."
+    "ability": "+40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] that lasts until broken. All [Squad Members] gain +55% [Health]."
   },
   "chaotic-paradox-spindle": {
     "name": "Paradox Spindle",
@@ -527,7 +527,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Phoenix Reactor",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
-    "ability": "Once per [Battle], when defeated, revive at 35% maximum [Health] and 0 [Elemental Gauge]. On revival, each other living ally gains a [Shield] worth 15% of their own maximum [Health] for one [Enemy Turn]. All [Squad Members] gain +55% [Health]."
+    "ability": "Once per [Battle], when defeated, revive at 35% maximum [Health] and 0 [Elemental Gauge]. On revival, each other living ally gains a [Shield] worth 15% of their own maximum [Health] that lasts until broken. All [Squad Members] gain +55% [Health]."
   },
   "tempered-strike-link": {
     "name": "Phoenix Temper Dominion",
@@ -599,7 +599,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Shared Tide Lifesea Engine",
     "rarity": "Omnic",
     "element": "Oceanic (actual gameplay element)",
-    "ability": "[Shield] [Skills] targeting only one ally also grant the most injured different ally a [Shield] worth 50% of the original amount for the same duration. +65% [Health] and +30% [Skill Efficiency]."
+    "ability": "[Shield] [Skills] targeting only one ally also grant the most injured different ally a [Shield] worth 50% of the original amount that lasts until broken. +65% [Health] and +30% [Skill Efficiency]."
   },
   "master-nerithe-1": {
     "name": "Shoreless Meridian Worldchart",
@@ -677,13 +677,13 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Tempest Shelter Sovereign",
     "rarity": "Omnic",
     "element": "Atmospheric (actual gameplay element)",
-    "ability": "Your first critical [Skill] each [Player Turn] grants the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] for one [Enemy Turn]. +85% [Defense] and +30% [Critical Rate]."
+    "ability": "Your first critical [Skill] each [Player Turn] grants the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] that lasts until broken. +85% [Defense] and +30% [Critical Rate]."
   },
   "master-thornia-2": {
     "name": "Thousand-Rose Planetary Aegis",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Thornia only)",
-    "ability": "The first time each enemy triggers Thornia's [Empowered Thorn Trap] during an [Enemy Turn], grant each living ally hit by that enemy a [Shield] worth 12% of their own maximum [Health] for one [Enemy Turn]. Thornia gains +90% [Health] and +60% [Defense]."
+    "ability": "The first time each enemy triggers Thornia's [Empowered Thorn Trap] during an [Enemy Turn], grant each living ally hit by that enemy a [Shield] worth 12% of their own maximum [Health] that lasts until broken. Thornia gains +90% [Health] and +60% [Defense]."
   },
   "master-bliss-1": {
     "name": "Thousandfeather Zenith Loom",

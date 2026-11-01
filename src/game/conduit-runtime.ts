@@ -326,7 +326,7 @@ export function generatedShield(owner: Combatant, target: Combatant | undefined,
   return amount;
 }
 export function timedConduitShield(state: BattleState, owner: Combatant, target: Combatant, offer: number,
-  id: ConduitId | MasterConduitId, throughPhase: number, events: BattleEvent[], replace = false): void {
+  id: ConduitId | MasterConduitId, _throughPhase: number, events: BattleEvent[], replace = false): void {
   const list = layers(target);
   if (replace) for (const layer of list) if (layer.conduit === id && layer.owner === owner.id) {
     target.shield -= layer.amount;
@@ -336,27 +336,12 @@ export function timedConduitShield(state: BattleState, owner: Combatant, target:
   if (gained > 0) {
     const layer = list[list.length - 1];
     layer.conduit = id;
-    layer.expiresAfterPhase = throughPhase;
   }
 }
-export function expireNativeShields(state: BattleState, events: BattleEvent[]): void {
-  for (const target of [...state.allies, ...state.enemies]) {
-    const list = layers(target);
-    const expiredByOwner = new Map<string, number>();
-    for (const layer of list) {
-      if ((!layer.native && !phaseZeroStatsReady) || layer.expiresAfterPhase === undefined || layer.expiresAfterPhase > state.round) continue;
-      expiredByOwner.set(layer.owner, (expiredByOwner.get(layer.owner) ?? 0) + layer.amount);
-      target.shield -= layer.amount;
-      layer.amount = 0;
-    }
-    if (!expiredByOwner.size) continue;
-    gear(target).layers = list.filter(layer => layer.amount > 0);
-    for (const [id, amount] of expiredByOwner) {
-      if (amount <= 0) continue;
-      const owner = state.allies.find(ally => ally.id === id) ?? target;
-      emit(events, 'status', owner, target, amount, `${target.name} loses ${Math.round(amount)} expired Shield.`, true);
-    }
-  }
+// D-434: every shield lasts until broken; this only clears timers held by older run snapshots.
+export function expireNativeShields(state: BattleState, _events: BattleEvent[]): void {
+  for (const target of [...state.allies, ...state.enemies])
+    for (const layer of target.conduitRuntime?.layers ?? []) delete layer.expiresAfterPhase;
 }
 function consumeShield(unit: Combatant, amount: number): { absorbed: number; native: Map<string, number>; broken: Set<string> } {
   const list = layers(unit);
@@ -1094,7 +1079,7 @@ export function finishNativeHealing(state: BattleState, owner: Combatant, ctx: N
     }
   }
 }
-export interface NativeShieldOptions { throughPhase?: number; firstReduction?: number; skillPower?: number; activation?: ConduitActivation }
+export interface NativeShieldOptions { throughPhase?: number; firstReduction?: number; skillPower?: number; activation?: ConduitActivation; stack?: boolean }
 export function nativeShield(state: BattleState, owner: Combatant, target: Combatant, offer: number, events: BattleEvent[],
   options: NativeShieldOptions = {}): number {
   if (target.hp <= 0) return 0;
@@ -1113,14 +1098,10 @@ export function nativeShield(state: BattleState, owner: Combatant, target: Comba
   const finalOffer = offer * (plate ? .5 : 1);
   const list = layers(target);
   const existing = target.shield - (plate ? list.filter(layer => layer.plate).reduce((sum, layer) => sum + layer.amount, 0) : 0);
-  const gained = Math.max(0, finalOffer - existing);
+  // D-434: every shield lasts until broken; skill/Last Flare shields also stack on repeat casts.
+  const gained = options.stack ? Math.max(0, finalOffer) : Math.max(0, finalOffer - existing);
   const owned = list.filter(layer => layer.native && layer.owner === owner.id && layer.amount > 0);
-  const throughPhase = phaseZeroStatsReady && equipped(owner, 'ward-stitch-spool')
-    ? (options.throughPhase ?? state.round) + 1 : options.throughPhase;
-  for (const layer of owned) {
-    if (throughPhase !== undefined && layer.expiresAfterPhase !== undefined)
-      layer.expiresAfterPhase = phaseZeroStatsReady ? throughPhase : Math.max(layer.expiresAfterPhase, throughPhase);
-  }
+  const throughPhase = options.throughPhase;
   if (options.firstReduction !== undefined && owned.length) {
     for (const layer of owned) delete layer.firstReduction;
     owned[0].firstReduction = options.firstReduction;
@@ -1128,7 +1109,6 @@ export function nativeShield(state: BattleState, owner: Combatant, target: Comba
   if (gained > 0) {
     options.activation?.shieldRecipients.push(target.id);
     list.push({ amount: gained, owner: owner.id, native: true,
-      ...(throughPhase !== undefined ? { expiresAfterPhase: throughPhase } : {}),
       ...(options.firstReduction !== undefined && !owned.length ? { firstReduction: options.firstReduction } : {}) });
     target.shield += gained;
     target.pilot ??= {}; target.pilot.authoredShieldSourceId = owner.id;

@@ -116,14 +116,14 @@ describe('native and equipment compatibility', () => {
     }
   });
 
-  it('refreshes a stronger owned shield clock and first-hit ward without stacking the reduction', () => {
+  it('preserves a stronger owned shield until broken and refreshes its first-hit ward without stacking the reduction', () => {
     const state = encounter(['tide', 'ember']);
     const [owner, target] = state.allies;
     const events: BattleEvent[] = [];
     nativeShield(state, owner, target, 500, events, { throughPhase: 1, firstReduction: .3 });
     nativeShield(state, owner, target, 300, events, { throughPhase: 2, firstReduction: .3 });
     expect(target.shield).toBe(500);
-    expect(target.conduitRuntime?.layers?.[0].expiresAfterPhase).toBe(2);
+    expect(target.conduitRuntime?.layers?.[0]).not.toHaveProperty('expiresAfterPhase');
     conduitIncoming(state, state.enemies[0], target, 100, false, false, events);
     expect(target.shield).toBe(430);
     delete state.enemies[0].native;

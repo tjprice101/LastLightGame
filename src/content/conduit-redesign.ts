@@ -874,7 +874,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-tide-2": {
-    "description": "[Tidal Shelter] gives the selected ally three times its [Shield] amount for one Enemy Turn instead of shielding the team.",
+    "description": "[Tidal Shelter] gives the selected ally three times its [Shield] amount instead of shielding the team.",
     "ranges": []
   },
   "master-tide-3": {

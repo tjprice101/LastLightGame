@@ -559,7 +559,7 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
       prepareConduitAction(state, owner, 'skill1', 25, false), false).skillPowerBonus).toBe(0);
   });
 
-  it('Shared Tide copies a single-target skill Shield at its scaled size and same expiry, with no damage-network sharing', () => {
+  it('Shared Tide copies a single-target skill Shield at its scaled size until broken, with no damage-network sharing', () => {
     const state = setup('oceanic-shared-tide-pump', level, ['tide', 'ember', 'sprout']);
     const [owner, target, injured] = state.allies;
     injured.hp = 100;
@@ -569,8 +569,10 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     conduitIncoming(state, state.enemies[0], target, 150, false, false, []);
     expect(injured.shield).toBe(Math.round(100 * scaling(.5, level)));
     expect(target.hp).toBe(950);
+    state.round += 3;
     expireNativeShields(state, []);
-    expect(injured.shield).toBe(0);
+    expect(injured.shield).toBe(Math.round(100 * scaling(.5, level)));
+    expect(injured.conduitRuntime?.layers?.every(layer => !('expiresAfterPhase' in layer)) ?? true).toBe(true);
   });
 
   it('Skythread selects Gauge percentage, refreshes one ordinary-skill discount and does not discount Last Flare', () => {
@@ -633,7 +635,7 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     expect(conduitActionCost(ally, 'ultimate', state, 100)).toBe(100);
   });
 
-  it('Pressurecrest grants one timed injured-ally Shield per turn, never the retired dodge', () => {
+  it('Pressurecrest grants one injured-ally Shield per turn that lasts until broken, never the retired dodge', () => {
     const state = setup('pressurecrest-governor', level);
     const ally = state.allies[1];
     ally.hp = 100;
@@ -646,8 +648,10 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     state.round++;
     finishHit(state, 'skill1', true);
     expect(ally.shield).toBe(shield);
+    state.round += 3;
     expireNativeShields(state, []);
-    expect(ally.shield).toBe(0);
+    expect(ally.shield).toBe(shield);
+    expect(ally.conduitRuntime?.layers?.every(layer => !('expiresAfterPhase' in layer)) ?? true).toBe(true);
     expect(gear(state.allies[0]).numbers.windveil).toBeUndefined();
   });
 
@@ -704,7 +708,7 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     expect(effectiveDefense(state, recipient)).toBe(100);
   });
 
-  it('Worldtree creates a capped timed replacement Shield, not an accumulating heal reserve or generic overheal Shield', () => {
+  it('Worldtree creates a capped replacement Shield that lasts until broken, not an accumulating heal reserve or generic overheal Shield', () => {
     const state = setup('efflorescent-worldtree-heart', level);
     const [owner, recipient] = state.allies;
     const ctx = prepareConduitAction(state, owner, 'skill1', 25, false);
@@ -713,11 +717,12 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     nativeHeal(state, owner, recipient, 100, [], true, ctx);
     expect(recipient.shield).toBe(Math.round(100 * scaling(.6, level)));
     expect(gear(recipient).numbers[`seed:${owner.id}`]).toBeUndefined();
-    state.round++;
+    state.round += 3;
     expireNativeShields(state, []);
-    expect(recipient.shield).toBe(0);
+    expect(recipient.shield).toBe(Math.round(100 * scaling(.6, level)));
+    expect(recipient.conduitRuntime?.layers?.every(layer => !('expiresAfterPhase' in layer)) ?? true).toBe(true);
     generatedHeal(owner, recipient, 1000, [], state);
-    expect(recipient.shield).toBe(0);
+    expect(recipient.shield).toBe(Math.round(100 * scaling(.6, level)));
   });
 
   it('Godpress ignores Defense for skills without bypassing Shields or changing Normal damage', () => {

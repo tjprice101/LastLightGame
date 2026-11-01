@@ -63,7 +63,7 @@ export const warFighters: Record<WarCharacterId, FighterDefinition> = {
     passive: { name: 'Load-Bearing Will', description: '+10 defense, already included in effective defense.', damageBonus: 0, defenseBonus: 10, healFraction: 0 },
     abilities: {
       skill1: { name: 'Keystone Reversal', description: '160% damage to one enemy; weaken its next two enemy-phase attacks by 25%.', cooldown: 0, strength: { damageMultiplier: 1.6, weakenFraction: .25 } },
-      skill2: { name: 'Raise the Faultline', description: 'Give every living ally 40 shield; refreshes rather than stacks.', cooldown: 0, targets: 'all-allies', strength: { shield: 40 } },
+      skill2: { name: 'Raise the Faultline', description: 'Give every living ally 40 shield; lasts until broken and stacks.', cooldown: 0, targets: 'all-allies', strength: { shield: 40 } },
       ultimate: { name: 'Worldweight Citadel', description: '260% damage to all enemies and 65 shield to living allies. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.6, shield: 65 } },
     },
   },

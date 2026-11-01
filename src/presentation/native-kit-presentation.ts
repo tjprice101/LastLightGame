@@ -76,7 +76,7 @@ export function nativeActionHint(state: BattleState, actor: Combatant, action: A
       || actor.definitionId === 'aurora' && action === 'ultimate' ? 'Through next two enemy phases'
     : actor.definitionId === 'disciple' ? 'Next native action; ends by next player-turn end'
     : actor.definitionId === 'aurora' ? 'Next special within three enemy phases'
-    : actor.definitionId === 'razor' && action === 'skill2' ? 'Guard next enemy phase; shield following phase'
+    : actor.definitionId === 'razor' && action === 'skill2' ? 'Guard next enemy phase; then a stacking shield'
     : actor.definitionId === 'thornia' && action !== 'skill2' ? 'Trap: three enemy phases'
     : actor.definitionId === 'orvella' && action === 'skill2' ? 'Three enemy phases'
     : 'Immediate';

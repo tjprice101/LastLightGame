@@ -56,13 +56,13 @@ describe('distinct no-equipment starter identities', () => {
     expect(refreshed.state.allies[0].native?.burns?.[state.enemies[0].id]).toEqual({ damage: 135, turns: 3 });
   });
 
-  it('Tizu requires a living ally target and grants only that recipient the tuned short barrier', () => {
+  it('Tizu requires a living ally target and grants only that recipient a barrier that lasts until broken', () => {
     const state = encounter('tide', 'ember');
     expect(() => use(state, 'tide', 'skill2')).toThrow('living ally');
     const result = use(state, 'tide', 'skill2', 'ember');
     expect(result.state.allies.map(unit => unit.shield)).toEqual([0, 1000 * nativeBalance.tizu.shelter]);
     expect(result.state.allies[0].shatter).toBe(60);
-    expect(endTurn(result.state).state.allies[1].shield).toBe(0);
+    expect(endTurn(result.state).state.allies[1].shield).toBe(1000 * nativeBalance.tizu.shelter);
     expect(result.state.allies[0].pilot).toBeUndefined();
   });
 
@@ -77,15 +77,16 @@ describe('distinct no-equipment starter identities', () => {
     expect(repeated.events.find(event => event.kind === 'damage')?.amount).toBe(150 * nativeBalance.skillDamageScale);
   });
 
-  it('Ocean Memory is a non-damaging two-phase team barrier with mandatory recovery', () => {
+  it('Ocean Memory is a non-damaging team barrier that lasts until broken, with mandatory recovery', () => {
     const state = encounter('tide', 'ember');
     const result = use(state, 'tide', 'ultimate');
     expect(result.events.filter(event => event.kind === 'damage')).toHaveLength(0);
     expect(result.state.allies.map(unit => unit.shield)).toEqual([1000 * nativeBalance.tizu.oceanMemory, 1000 * nativeBalance.tizu.oceanMemory]);
     expect(result.state.allies[0].recoverThrough).toBe(state.round + 1);
     expect(result.state.allies[1].conduitRuntime?.layers).toContainEqual(expect.objectContaining({
-      owner: 'tide', native: true, firstReduction: .3 * 1.5, expiresAfterPhase: state.round + 1,
+      owner: 'tide', native: true, firstReduction: .3 * 1.5,
     }));
+    expect(result.state.allies[1].conduitRuntime?.layers?.every(layer => layer.expiresAfterPhase === undefined)).toBe(true);
   });
 
   it('Flora has no automatic passive healing: empty harvest plants, then delivers at next player turn', () => {

@@ -41,13 +41,16 @@ describe('sixteen native identities without equipment', () => {
     expect(phase.events.find(event => event.nativeKind === 'burn')?.amount).toBe(135);
   });
 
-  it('Tizu explicitly shields one selected ally and expires it after the phase, with a non-damaging ultimate', () => {
+  it('Tizu explicitly shields one selected ally until broken, stacking on recast, with a non-damaging ultimate', () => {
     const state = encounter('tide', 'ember');
     expect(() => use(state, 'tide', 'skill2')).toThrow('living ally');
     const shield = use(state, 'tide', 'skill2', 'ember');
     expect(shield.state.allies.map(unit => unit.shield)).toEqual([0, 1000 * nativeBalance.tizu.shelter]);
     expect(state.allies[1].shield).toBe(0);
-    expect(endTurn(shield.state).state.allies[1].shield).toBe(0);
+    const after = endTurn(shield.state).state;
+    expect(after.allies[1].shield).toBe(1000 * nativeBalance.tizu.shelter);
+    after.allies[0].shatter = after.allies[0].stats.shatterCapacity;
+    expect(use(after, 'tide', 'skill2', 'ember').state.allies[1].shield).toBe(2000 * nativeBalance.tizu.shelter);
     const ultimate = use(state, 'tide', 'ultimate');
     expect(ultimate.events.filter(event => event.kind === 'damage')).toHaveLength(0);
     expect(ultimate.state.allies.map(unit => unit.shield)).toEqual([1000 * nativeBalance.tizu.oceanMemory, 1000 * nativeBalance.tizu.oceanMemory]);

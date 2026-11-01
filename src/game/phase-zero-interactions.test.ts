@@ -206,7 +206,7 @@ describe('generated Master Shield provenance', () => {
     { master: 'master-crinso-2', character: 'crinso', action: 'skill1', amount: 120,
       setup: state => { state.allies[0].native = { edge: 'crimson', combo: 0 }; state.allies[1].hp = 100; } },
   ];
-  it.each(cases)('$master follow-up cannot trigger source-Shield stats, extra Shields, reflection or native Gauge', entry => {
+  it.each(cases)('$master follow-up Shield lasts until broken without source-Shield stats, extra Shields, reflection or native Gauge', entry => {
     const state = fixture([entry.character, 'tide', 'ember']), [owner] = state.allies;
     owner.masterConduit = entry.master;
     owner.stats.skillPower = 2;
@@ -227,7 +227,9 @@ describe('generated Master Shield provenance', () => {
     conduitIncoming(result, result.enemies[1], recipient, 1, false, false, []);
     expect(result.allies[0].shatter).toBe(gauge);
     expect(result.enemies[1].hp).toBe(enemyHp);
+    result.round += 3;
     expireNativeShields(result, []);
-    expect(recipient.shield).toBe(0);
+    expect(recipient.shield).toBe(entry.amount - 1);
+    expect(recipient.conduitRuntime?.layers?.every(layer => !('expiresAfterPhase' in layer))).toBe(true);
   });
 });

@@ -43,14 +43,14 @@ describe('Last Flare roster-wide potency', () => {
     expect(state.allies[0].shatter).toBe(100);
   });
 
-  it('raises Tizu shielding and first-hit protection by 1.5, keeping the two-phase clock', () => {
+  it('raises Tizu shielding and first-hit protection by 1.5, lasting until broken', () => {
     const state = fixture('tide');
     const result = act(state, 'tide', 'ultimate', state.enemies[0].id);
     for (const ally of result.state.allies) {
       expect(ally.shield).toBe(525);
       const layer = ally.conduitRuntime?.layers?.find(layer => layer.owner === 'tide');
       expect(layer?.firstReduction).toBeCloseTo(.45);
-      expect(layer?.expiresAfterPhase).toBe(2);
+      expect(layer?.expiresAfterPhase).toBeUndefined();
     }
   });
 

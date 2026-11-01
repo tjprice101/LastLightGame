@@ -419,12 +419,12 @@ describe('starter abilities and passives', () => {
     state = endTurn(state).state;
     expect(state.enemies[0].weakened).toBe(0);
   });
-  it('Tidal Shelter protects the selected ally; Ocean Memory shields the team without damage', () => {
+  it('Tidal Shelter stacks on the selected ally; Ocean Memory stacks team shields without damage', () => {
     const state = controlled();
     state.allies[0].shield = 30;
-    expect(use(state, 'tide', 'skill2').allies.map((unit) => unit.shield)).toEqual([220 * nativeBalance.tizu.shelter, 0, 0]);
+    expect(use(state, 'tide', 'skill2').allies.map((unit) => unit.shield)).toEqual([30 + 220 * nativeBalance.tizu.shelter, 0, 0]);
     const ultimate = use(state, 'tide', 'ultimate');
-    expect(ultimate.allies.map((unit) => unit.shield)).toEqual(state.allies.map(unit => unit.stats.health * nativeBalance.tizu.oceanMemory));
+    expect(ultimate.allies.map((unit) => unit.shield)).toEqual(state.allies.map(unit => unit.shield + unit.stats.health * nativeBalance.tizu.oceanMemory));
     expect(ultimate.enemies.map((unit) => unit.hp)).toEqual([2000, 2000, 2000]);
   });
   it('Undertow reduces outgoing damage by 25% with the same Defense mitigation', () => {

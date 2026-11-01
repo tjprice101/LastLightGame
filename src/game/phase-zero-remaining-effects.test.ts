@@ -129,20 +129,24 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
     expect(ally.hp).toBe(100);
   });
 
-  it('ward-stitch-spool buffs support skills only while a source Shield remains and adds one fixed Enemy Turn', () => {
+  it('ward-stitch-spool buffs support skills only while a source Shield remains and preserves it until broken', () => {
     const state = fixture('ward-stitch-spool', level, ['tide', 'sprout', 'ember']), [owner, ally] = state.allies;
     nativeShield(state, owner, ally, 100, [], { throughPhase: 1 });
     expect(prepareConduitAction(state, ally, 'skill2', 40, false).skillPower).toBeCloseTo(1 + benefit(.3, level));
     expect(prepareConduitAction(state, state.allies[2], 'skill1', 25, false).skillPower).toBe(1);
     expireNativeShields(state, []);
-    expect(ally.shield).toBe(level === null ? 0 : 100);
-    state.round++;
+    expect(ally.shield).toBe(100);
+    state.round += 3;
     expireNativeShields(state, []);
+    expect(ally.shield).toBe(100);
+    expect(ally.conduitRuntime?.layers?.[0]).not.toHaveProperty('expiresAfterPhase');
+    expect(prepareConduitAction(state, ally, 'skill2', 40, false).skillPower).toBeCloseTo(1 + benefit(.3, level));
+    conduitIncoming(state, state.enemies[0], ally, 100, false, false, []);
     expect(ally.shield).toBe(0);
     expect(prepareConduitAction(state, ally, 'skill2', 40, false).skillPower).toBe(1);
   });
 
-  it('infernic-phoenix-reactor revives once with upgraded HP and a finite generated squad Shield', () => {
+  it('infernic-phoenix-reactor revives once with upgraded HP and a generated squad Shield that lasts until broken', () => {
     const state = fixture('infernic-phoenix-reactor', level), [owner, ally] = state.allies;
     conduitIncoming(state, state.enemies[0], owner, 2000, false, false, []);
     const health = 1000 * (1 + benefit(.55, level));
@@ -152,8 +156,10 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
     expect(ally.conduitRuntime?.layers?.every(layer => !layer.native) ?? true).toBe(true);
     conduitIncoming(state, state.enemies[0], owner, 2000, false, false, []);
     expect(owner.hp).toBe(0);
+    state.round += 3;
     expireNativeShields(state, []);
-    expect(ally.shield).toBe(0);
+    expect(ally.shield).toBe(Math.round(health * benefit(.15, level)));
+    expect(ally.conduitRuntime?.layers?.every(layer => !('expiresAfterPhase' in layer)) ?? true).toBe(true);
   });
 
   it('pulse-trigger-pawl grants percentage Gauge once per critical skill turn, not per target or Normal', () => {
@@ -169,16 +175,17 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
     expect(ally.shatter).toBe(2 * Math.round(200 * benefit(.08, level)));
   });
 
-  it('chaotic-ouroboros-core creates upgraded generated Shields for two fixed Enemy Turns after Last Flare', () => {
+  it('chaotic-ouroboros-core creates upgraded generated Shields after Last Flare that last until broken', () => {
     const state = fixture('chaotic-ouroboros-core', level);
     hit(state, 'ultimate');
     const shield = Math.round(1000 * (1 + benefit(.55, level)) * benefit(.1, level));
     expect(state.allies.map(ally => ally.shield)).toEqual(Array(3).fill(shield));
     expireNativeShields(state, []);
     expect(state.allies[1].shield).toBe(shield);
-    state.round++;
+    state.round += 3;
     expireNativeShields(state, []);
-    expect(state.allies[1].shield).toBe(0);
+    expect(state.allies.map(ally => ally.shield)).toEqual(Array(3).fill(shield));
+    expect(state.allies.every(ally => ally.conduitRuntime?.layers?.every(layer => !('expiresAfterPhase' in layer)) ?? true)).toBe(true);
   });
 
   it('worldbreaker-drive changes Last Flare Power only, not other skills or a retired AoE override', () => {

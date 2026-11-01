@@ -1,5 +1,13 @@
 # Last Light: AI agent entry point
 
+## Shields last until broken (D-434)
+
+Every Shield (Skill, Last Flare, passive, Conduit) lasts until broken, never
+expiring by phase/turn. Skill and Last Flare Shields stack additively on
+repeat casts, uncapped (owner choice). Conduit/passive sizing and refresh rules,
+absorption order, Burn bypass, pierce and first-hit reduction unchanged.
+Calamity benchmark records accepted stalls. See docs/combat.md (D-434).
+
 ## Animation and feedback are core UI requirements (D-418)
 
 For future game/UI work, polished motion and feedback are acceptance criteria,

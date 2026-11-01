@@ -52,7 +52,7 @@ export const kitPilotDescriptions: Record<KitPilot, {
   ward: {
     passive: `While you are alive, shields from your own abilities grant one charge of ${elementalEffectFamilies.ward.label} when they absorb a direct enemy hit. Charges have no limit. Save these charges to strengthen Undertow Thrust's Weaken or Last Flare's team shield.`,
     skill1: `Spends all ${elementalEffectFamilies.ward.label} charges for +5 percentage points Weaken per charge.`,
-    ultimate: `Spends all ${elementalEffectFamilies.ward.label} charges to increase this ability's team shield by 5% of your maximum Health per charge. Each ally keeps the higher of their remaining shield and this new amount.`,
+    ultimate: `Spends all ${elementalEffectFamilies.ward.label} charges to increase this ability's team shield by 5% of your maximum Health per charge. The shield lasts until broken and adds to any shield the ally already has.`,
     resource: { label: elementalEffectFamilies.ward.label, key: 'ward', summary: 'Gain a charge each time your ability shield absorbs a direct enemy hit while you are alive. Skill 1 spends them to strengthen Weaken; Last Flare spends them for a larger team shield.', detail: `${elementalEffectFamilies.ward.label}: Skill 1 +5 percentage points Weaken per charge or Last Flare adds a shield worth 5% of caster maximum Health per charge.`, effect: sharedNativeEffects.ward },
   },
   bloom: {
@@ -72,7 +72,7 @@ export const kitPilotDescriptions: Record<KitPilot, {
   'thorn-aegis': {
     passive: 'While Thornia is alive, shields from her abilities grant one Thorn Aegis charge when they absorb a direct enemy hit. Charges have no limit. Conduit shields do not count.',
     skill2: 'Spends all Thorn Aegis for +5 percentage points Weaken each.',
-    ultimate: 'Spends all Thorn Aegis to add shield points equal to 5% of your maximum Health per charge, before this ability\'s shield modifiers. Each ally keeps the higher of their remaining shield and this new amount.',
+    ultimate: 'Spends all Thorn Aegis to add shield points equal to 5% of your maximum Health per charge, before this ability\'s shield modifiers. The shield lasts until broken and adds to any shield the ally already has.',
     resource: { label: 'Thorn Aegis', key: 'thornAegis', summary: 'Gain a charge each time Thornia\'s ability shield absorbs a direct enemy hit while she is alive. Skill 2 spends them for stronger Weaken; Last Flare spends them for a larger team shield. Conduit shields do not earn charges.', detail: 'Thorn Aegis: Skill 2 +5 percentage points Weaken each or Last Flare adds 5% caster maximum Health shield each.', effect: { family: 'ward', kind: 'shield-absorption', origin: 'rose', source: 'living-self-authored-shield' } },
   },
   'rose-duality': {

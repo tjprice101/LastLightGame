@@ -228,9 +228,9 @@ describe('Calamity visible boss patterns', () => {
 describe('Calamity seeded difficulty benchmarks', () => {
   it.each(tiers)('measures four-Omnic candidate squads under the tuned EX+%s curve', tier => {
     const expectedWins = {
-      1: { starters: [36, 36, 36], mixed: [36, 35, 36] },
-      2: { starters: [33, 17, 36], mixed: [10, 8, 36] },
-      3: { starters: [24, 3, 35], mixed: [0, 0, 30] },
+      1: { starters: [[36, 0], [36, 0], [36, 0]], mixed: [[36, 0], [35, 0], [36, 0]] },
+      2: { starters: [[34, 2], [24, 5], [36, 0]], mixed: [[10, 0], [8, 0], [36, 0]] },
+      3: { starters: [[30, 5], [8, 0], [35, 0]], mixed: [[0, 0], [0, 0], [30, 0]] },
     } as const;
     const roster = ['rosetta', 'thornia', 'sprout'] as const satisfies readonly StarterId[];
     const progress = Object.fromEntries(roster.map(id => [id, { level: 105, evolution: 6 }]));
@@ -279,13 +279,13 @@ describe('Calamity seeded difficulty benchmarks', () => {
           timeouts: results.filter(result => result.phase === 'player').length };
         if (process.env.CALAMITY_DIFFICULTY_REPORT === '1') process.stdout.write(JSON.stringify({ ...summary, results }) + '\n');
         expect(results).toHaveLength(36);
-        if (build === 'four-omnic-0') expect(summary.timeouts).toBe(0);
         expect(results.every(result => result.rounds > 0 && Number.isFinite(result.bossRemaining))).toBe(true);
-        const wins = expectedWins[tier][squad.name][['old-mixed', 'four-omnic-0', 'four-omnic-5'].indexOf(build)];
-        expect.soft(summary, `EX+${tier} ${squad.name} ${build}`).toMatchObject({ wins, defeats: 36 - wins, timeouts: 0 });
+        // D-434: shields last until broken, so an unkillable squad facing a self-sustaining boss can stall (timeout).
+        const [wins, timeouts] = expectedWins[tier][squad.name][['old-mixed', 'four-omnic-0', 'four-omnic-5'].indexOf(build)];
+        expect.soft(summary, `EX+${tier} ${squad.name} ${build}`).toMatchObject({ wins, defeats: 36 - wins - timeouts, timeouts });
       }
     }
-  }, 60_000);
+  }, 180_000);
   it('rejects an undeveloped solo starter at every tier', () => {
     for (const tier of tiers) {
       const result = play(createCalamityBattle('treasury', tier, 1729, 'ember', { level: 0, evolution: 1 }));

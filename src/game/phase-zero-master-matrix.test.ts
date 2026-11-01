@@ -122,8 +122,10 @@ const checks: Record<MasterConduitId, Check> = {
     const shield = equipped ? Math.min(150, Math.round(state.enemies.length * 125 * .3)) : 0;
     expect(result.allies.map(ally => ally.shield)).toEqual([shield, shield, shield]);
     expect(shieldLayers(result).every(layer => !layer.native)).toBe(true);
+    result.round += 3;
     expireNativeShields(result, []);
-    expect(result.allies[1].shield).toBe(0);
+    expect(result.allies[1].shield).toBe(shield);
+    expect(shieldLayers(result).every(layer => !('expiresAfterPhase' in layer))).toBe(true);
   },
   'master-atmoso-3': (state, equipped) => {
     state.allies[0].native = { cyclone: { gusts: 0, phases: 2, contributors: {} } };
@@ -363,8 +365,10 @@ const checks: Record<MasterConduitId, Check> = {
     const result = cast(state, 'skill1');
     expect(result.allies[1].shield).toBe(equipped ? 120 : 0);
     expect(shieldLayers(result).every(layer => !layer.native)).toBe(true);
+    result.round += 3;
     expireNativeShields(result, []);
-    expect(result.allies[1].shield).toBe(0);
+    expect(result.allies[1].shield).toBe(equipped ? 120 : 0);
+    expect(shieldLayers(result).every(layer => !('expiresAfterPhase' in layer))).toBe(true);
   },
   'master-crinso-3': (state, equipped) => {
     wound(state);
@@ -469,7 +473,9 @@ describe('48-entry Master behavior matrix', () => {
     expect(Object.keys(checks).sort()).toEqual(masterConduits.map(entry => entry.id).sort());
   });
   for (const entry of masterConduits) describe(entry.id, () => {
-    it.each([false, true])('checks equipped=%s against its absent baseline', equipped => {
+    it.each([false, true])(['master-atmoso-2', 'master-crinso-2'].includes(entry.id)
+      ? 'checks equipped=%s Shields that last until broken against its absent baseline'
+      : 'checks equipped=%s against its absent baseline', equipped => {
       const roster = [entry.character, ...(['ember', 'tide', 'sprout'] as const)
         .filter(id => id !== entry.character).slice(0, 2)];
       const state = createBattle(1729, roster);

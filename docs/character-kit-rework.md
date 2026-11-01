@@ -1,5 +1,10 @@
 # Intrinsic character kit rework (D-163 / D-170 / D-172)
 
+**D-434 current correction:** every Shield lasts until broken; Skill and Last
+Flare Shields stack on repeat casts with no cap. Older shield clocks,
+"refresh; does not stack" and "expires after enemy phase" text below is
+historical. [Contract](combat.md#shields-last-until-broken-d-434).
+
 **D-415 current correction:** all character-kit damage can critically hit,
 including ongoing Burn and triggered strikes. Thornia's Skill1 creates a normal
 trap regardless of Skill Power; only actual empowered placement/refresh carries

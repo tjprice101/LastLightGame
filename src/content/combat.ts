@@ -75,7 +75,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     passive: { name: 'Stillwater Guard', description: '+8 defense, already included in displayed effective defense.', damageBonus: 0, defenseBonus: 8, healFraction: 0 },
     abilities: {
       skill1: { name: 'Undertow Thrust', description: `150% damage to one enemy; reduce its next two enemy-phase attacks by 25%. ${kitPilotDescriptions.ward.skill1!}`, cooldown: 0, strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
-      skill2: { name: 'Tidal Shelter', description: 'Give every living ally 25 shield (refresh to at least 25; does not stack).', cooldown: 0, strength: { shield: 25 } },
+      skill2: { name: 'Tidal Shelter', description: 'Give every living ally 25 shield (lasts until broken; stacks).', cooldown: 0, strength: { shield: 25 } },
       ultimate: { name: 'Last Flare: Ocean Memory', description: `220% damage to all enemies and 35 shield for allies. Recover next turn. ${kitPilotDescriptions.ward.ultimate!}`, cooldown: 0, strength: { damageMultiplier: 2.2, shield: 35 } },
     },
   },
@@ -104,7 +104,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     stats: { health: 280, defense: 17, damage: 31, crit: .1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: 'Forbidden Garden', description: '+9 defense, included in effective defense.', damageBonus: 0, defenseBonus: 9, healFraction: 0 },
     abilities: {
-      skill1: { name: 'Gilded Thorn Guard', description: 'Give every living ally 30 shield (refresh; does not stack).', cooldown: 0, targets: 'all-allies', strength: { shield: 30 } },
+      skill1: { name: 'Gilded Thorn Guard', description: 'Give every living ally 30 shield (lasts until broken; stacks).', cooldown: 0, targets: 'all-allies', strength: { shield: 30 } },
       skill2: { name: 'Shadow Rose Cleave', description: '180% damage to one enemy; weaken by 20% for two enemy phases.', cooldown: 0, strength: { damageMultiplier: 1.8, weakenFraction: .2 } },
       ultimate: { name: 'Last Flare: Thousand-Rose Dominion', description: '240% damage to all enemies and 40 shield for allies. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.4, shield: 40 } },
     },
@@ -250,7 +250,7 @@ export function describeFighter(id: StarterId, snapshot: FighterDefinition): Fig
     },
     bliss: {
       skill1: `Spends all ${elementalEffectFamilies.bloom.label} charges for +8% outgoing damage per charge.`,
-      ultimate: `Spends all ${elementalEffectFamilies.bloom.label} charges to add a shield worth 5% of this caster's maximum Health per charge; refreshes rather than stacks.`,
+      ultimate: `Spends all ${elementalEffectFamilies.bloom.label} charges to add a shield worth 5% of this caster's maximum Health per charge; the shield lasts until broken and stacks.`,
     },
     atmoso: {
       skill1: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge.`,
@@ -271,7 +271,7 @@ export function describeFighter(id: StarterId, snapshot: FighterDefinition): Fig
   for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
     const ability = kit.abilities[action];
     if (ability.strength.shield !== undefined || (id === 'bliss' && action === 'ultimate')) {
-      ability.description += ' Shield: absorbs damage before HP; persists until depleted; refreshes to the higher amount.';
+      ability.description += ' Shield: absorbs damage before HP; lasts until broken; recasting stacks another shield on top.';
     }
     if (ability.strength.weakenFraction !== undefined) {
       ability.description += ' Weaken: outgoing attack damage reduction; Defense unchanged.';

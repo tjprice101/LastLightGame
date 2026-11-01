@@ -452,7 +452,7 @@ Ability (Default Value): Store 40% of the durability absorbed by [Foundation] as
 Name: Duality Planet Flamewheel
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Crinso only)
-Ability (Default Value): Using [Golden Edge] immediately after [Crimson Rupture] grants the living ally with the lowest [Health] percentage a [Shield] worth 12% of their maximum [Health] for one [Enemy Turn]. Crinso gains +55% [Defense] and +45% [Skill Efficiency].
+Ability (Default Value): Using [Golden Edge] immediately after [Crimson Rupture] grants the living ally with the lowest [Health] percentage a [Shield] worth 12% of their maximum [Health] that lasts until broken. Crinso gains +55% [Defense] and +45% [Skill Efficiency].
 
 Name: Eclipse Mantle
 Rarity: Omnic
@@ -462,7 +462,7 @@ Ability (Default Value): Your [Skills] ignore 35% of a Weakened enemy's [Defense
 Name: Eclipse Planet Watchtower
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Razor only)
-Ability (Default Value): When [Eclipse Bastion] creates Razor's [Shield], each other living ally gains a [Shield] worth 40% of that amount for one [Enemy Turn], capped at 45% of their own maximum [Health]. All [Squad Members] gain +55% [Health] and +35% [Skill Efficiency].
+Ability (Default Value): When [Eclipse Bastion] creates Razor's [Shield], each other living ally gains a [Shield] worth 40% of that amount that lasts until broken, capped at 45% of their own maximum [Health]. All [Squad Members] gain +55% [Health] and +35% [Skill Efficiency].
 
 Name: Ember Coronation Iris
 Rarity: Omnic
@@ -492,7 +492,7 @@ Ability (Default Value): [Last Chord of the Sky] grants each other living ally +
 Name: Final Dawn Tribunal
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Aurora only)
-Ability (Default Value): Enemies carrying Aurora's [Seal] have 25% less [Defense]. When an enemy consumes that [Seal] by using a [Skill], grant the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] for one [Enemy Turn]. All [Squad Members] gain +75% [Health] and +65% [Defense].
+Ability (Default Value): Enemies carrying Aurora's [Seal] have 25% less [Defense]. When an enemy consumes that [Seal] by using a [Skill], grant the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] that lasts until broken. All [Squad Members] gain +75% [Health] and +65% [Defense].
 
 Name: Firstlight Concordance
 Rarity: Omnic
@@ -532,7 +532,7 @@ Ability (Default Value): After Infernis's [Burn] damages enemies during an [Enem
 Name: Horizon Cyclone Orrery
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Atmoso only)
-Ability (Default Value): When Atmoso's [Cyclone] releases, each living ally gains a [Shield] equal to 30% of the total enemy [Health] it removed, lasting one [Enemy Turn]. All [Squad Members] gain +55% [Health] and +45% [Defense].
+Ability (Default Value): When Atmoso's [Cyclone] releases, each living ally gains a [Shield] equal to 30% of the total enemy [Health] it removed that lasts until broken. All [Squad Members] gain +55% [Health] and +45% [Defense].
 
 Name: Infinite Thunderwheel Arsenal
 Rarity: Omnic (Master)
@@ -562,7 +562,7 @@ Ability (Default Value): Whenever a [Shield] absorbs an enemy attack, its recipi
 Name: Leviathan Ward Loom
 Rarity: Omnic
 Element: Oceanic (actual gameplay element)
-Ability (Default Value): Living allies, including yourself, holding any [Shield] gain +30% [Skill Power] for healing and [Shield]-generating [Skills] while you are alive. Your [Skill]-created [Shields] last +1 [Enemy Turn]. +55% [Defense] and +55% [Skill Power].
+Ability (Default Value): Living allies, including yourself, holding any [Shield] gain +30% [Skill Power] for healing and [Shield]-generating [Skills] while you are alive. +55% [Defense] and +55% [Skill Power].
 
 Name: Living Worldwall Atlas
 Rarity: Omnic (Master)
@@ -592,7 +592,7 @@ Ability (Default Value): [Tidal Shelter] gains +50% [Skill Power]. While its [Sh
 Name: Ouroboros Core
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): +40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] for 2 [Enemy Turns]. All [Squad Members] gain +55% [Health].
+Ability (Default Value): +40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] that lasts until broken. All [Squad Members] gain +55% [Health].
 
 Name: Paradox Spindle
 Rarity: Omnic
@@ -607,7 +607,7 @@ Ability (Default Value): While any enemy carries [Burn], all living [Squad Membe
 Name: Phoenix Reactor
 Rarity: Omnic
 Element: Infernic (actual gameplay element)
-Ability (Default Value): Once per [Battle], when defeated, revive at 35% maximum [Health] and 0 [Elemental Gauge]. On revival, each other living ally gains a [Shield] worth 15% of their own maximum [Health] for one [Enemy Turn]. All [Squad Members] gain +55% [Health].
+Ability (Default Value): Once per [Battle], when defeated, revive at 35% maximum [Health] and 0 [Elemental Gauge]. On revival, each other living ally gains a [Shield] worth 15% of their own maximum [Health] that lasts until broken. All [Squad Members] gain +55% [Health].
 
 Name: Phoenix Temper Dominion
 Rarity: Omnic
@@ -667,7 +667,7 @@ Ability (Default Value): Enemies carrying Thornia's [Thorn Trap] deal 15% less [
 Name: Shared Tide Lifesea Engine
 Rarity: Omnic
 Element: Oceanic (actual gameplay element)
-Ability (Default Value): [Shield] [Skills] targeting only one ally also grant the most injured different ally a [Shield] worth 50% of the original amount for the same duration. +65% [Health] and +30% [Skill Efficiency].
+Ability (Default Value): [Shield] [Skills] targeting only one ally also grant the most injured different ally a [Shield] worth 50% of the original amount that lasts until broken. +65% [Health] and +30% [Skill Efficiency].
 
 Name: Shoreless Meridian Worldchart
 Rarity: Omnic (Master)
@@ -732,12 +732,12 @@ Ability (Default Value): Every third critical [Attack Action] you perform grants
 Name: Tempest Shelter Sovereign
 Rarity: Omnic
 Element: Atmospheric (actual gameplay element)
-Ability (Default Value): Your first critical [Skill] each [Player Turn] grants the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] for one [Enemy Turn]. +85% [Defense] and +30% [Critical Rate].
+Ability (Default Value): Your first critical [Skill] each [Player Turn] grants the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] that lasts until broken. +85% [Defense] and +30% [Critical Rate].
 
 Name: Thousand-Rose Planetary Aegis
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Thornia only)
-Ability (Default Value): The first time each enemy triggers Thornia's [Empowered Thorn Trap] during an [Enemy Turn], grant each living ally hit by that enemy a [Shield] worth 12% of their own maximum [Health] for one [Enemy Turn]. Thornia gains +90% [Health] and +60% [Defense].
+Ability (Default Value): The first time each enemy triggers Thornia's [Empowered Thorn Trap] during an [Enemy Turn], grant each living ally hit by that enemy a [Shield] worth 12% of their own maximum [Health] that lasts until broken. Thornia gains +90% [Health] and +60% [Defense].
 
 Name: Thousandfeather Zenith Loom
 Rarity: Omnic (Master)

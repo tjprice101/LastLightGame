@@ -1056,3 +1056,28 @@ original single roll decides a normal crit. Above 100% the hit always crits and
 one extra seeded roll with chance (rate - 100%), capped at 100%, upgrades it to
 an Elemental Crit: the critical multiplier is multiplied by 1.5. Elemental Crits
 show a rainbow ELEMENTAL CRIT damage number. Enemy crits are unchanged.
+
+## Shields last until broken (D-434)
+
+Current contract; supersedes every earlier Shield clock, expiry, refresh-only
+and "does not stack" statement in this and other documents.
+
+- Every Shield (Skill, Last Flare, native passive, Conduit-generated) lasts
+  until damage breaks it. No Shield expires at the end of a phase or turn.
+- Skill and Last Flare Shields stack: each cast adds a new layer on top of
+  whatever the recipient already holds (`nativeShield(..., { stack: true })`
+  and authored `strength.shield` via `shieldTeam`). There is no cap.
+- Conduit and passive Shields keep their existing amount, cap and
+  refresh/replace rules; they simply never expire. Enemy barrier refreshes
+  (`shieldEvery`) are unchanged.
+- `expireNativeShields` only deletes `expiresAfterPhase` from older run
+  snapshots; it never removes Shield amount.
+- Ward Stitch Spool keeps its Skill Power bonus; its former +1 Enemy Turn
+  duration clause no longer exists.
+- Unchanged: absorption order (plates last), Burn bypass, pierce, guard,
+  first-hit reduction (still one non-stacking reduction per owner), Tizu's
+  absorption Gauge, Razor Wounds, RNG, rewards, saves.
+- Benchmark impact (`calamity.test.ts`): starter squads win more EX+2/EX+3
+  runs, and some runs now stall: the squad cannot be killed but cannot
+  out-damage the boss's healing/barriers. Owner accepted this explicitly.
+  The snapshot table records wins and stalls separately.

@@ -34,15 +34,15 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   tide: {
     role: 'Precise barrier protector',
-    playLoop: '[Tizu] places a short-lived shield on one chosen ally before the next enemy attack.',
+    playLoop: '[Tizu] places a stacking shield on one chosen ally before the next enemy attack.',
     passive: {
       name: 'Stillwater Guard',
       description: 'When a shield from [Tizu]’s abilities fully absorbs an enemy’s direct hit so that no HP is lost, the shielded ally gains 8 [Elemental Gauge].',
     },
     abilities: {
       skill1: { ...ability('Undertow Thrust', '150% direct damage to one enemy and apply 25% [Weaken] for the next enemy phase. [Weaken] reduces the direct damage that enemy deals.', 1.5), strength: { damageMultiplier: 1.5, weakenFraction: .25 } },
-      skill2: ability('Tidal Shelter', `Choose one living ally. It gains a shield worth ${nativeBalance.tizu.shelter * 100}% of its maximum HP until the next enemy phase ends. Recasting replaces the shield.`, undefined, 'one-ally'),
-      ultimate: ability('Last Flare: Ocean Memory', `All living allies gain a shield worth ${nativeBalance.tizu.oceanMemory * 100}% of their maximum HP until the second enemy phase ends. The first direct hit each ally takes while this shield remains is reduced by 45% before the shield absorbs it.`, undefined, 'all-allies'),
+      skill2: ability('Tidal Shelter', `Choose one living ally. It gains a shield worth ${nativeBalance.tizu.shelter * 100}% of its maximum HP. The shield lasts until broken; recasting adds another shield on top.`, undefined, 'one-ally'),
+      ultimate: ability('Last Flare: Ocean Memory', `All living allies gain a shield worth ${nativeBalance.tizu.oceanMemory * 100}% of their maximum HP that lasts until broken and stacks with existing shields. The first direct hit each ally takes while this shield remains is reduced by 45% before the shield absorbs it.`, undefined, 'all-allies'),
     },
   },
   sprout: {
@@ -93,7 +93,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     },
     abilities: {
       skill1: ability('Warfeather Cut', '170% direct damage to one enemy. [Opening]: +25 percentage points Critical Rate for this attack. [Closing]: heal the most injured other living ally for 6% of its maximum HP. [Passing]: no bonus.', 1.7),
-      skill2: ability('Quietstorm Flourish', '120% direct damage to all enemies. [Opening]: living allies deal 10% more direct damage until this player turn ends. [Closing]: all living allies gain a shield worth 6% of their maximum HP until the next enemy phase ends. [Passing]: no bonus.', 1.2, 'all-enemies'),
+      skill2: ability('Quietstorm Flourish', '120% direct damage to all enemies. [Opening]: living allies deal 10% more direct damage until this player turn ends. [Closing]: all living allies gain a stacking shield worth 6% of their maximum HP that lasts until broken. [Passing]: no bonus.', 1.2, 'all-enemies'),
       ultimate: ability('Last Flare: Thousandfeather Stillness', '250% direct damage to all enemies. [Opening]: +45 percentage points Critical Rate for this attack. [Closing]: heal other living allies for 15% of their maximum HP. [Passing]: no bonus.', 2.5, 'all-enemies'),
     },
   },
@@ -107,7 +107,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     abilities: {
       skill1: ability('Seismic Hammerfall', '190% direct damage to one enemy.', 1.9),
       skill2: ability('Citadel Mantle', 'Place [Cover] on another living ally until the next enemy phase ends: 50% of the direct damage it takes, after Defense, is redirected to [Bruno]. Only one ally can hold this [Cover]; recasting moves it. If [Bruno] is the only living ally, he instead takes 20% less direct damage for that phase. Redirected damage cannot be redirected again.', undefined, 'one-ally', true),
-      ultimate: ability('Last Flare: Worldwall Ascendant', 'Place [Cover] on every other living ally for two enemy phases, redirecting 60% of each direct hit to [Bruno]; this replaces single-ally [Cover]. [Bruno] gains a shield worth 30% of his maximum HP for the same duration.', undefined, 'all-allies'),
+      ultimate: ability('Last Flare: Worldwall Ascendant', 'Place [Cover] on every other living ally for two enemy phases, redirecting 60% of each direct hit to [Bruno]; this replaces single-ally [Cover]. [Bruno] gains a shield worth 30% of his maximum HP that lasts until broken and stacks.', undefined, 'all-allies'),
     },
   },
   disciple: {
@@ -145,7 +145,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     },
     abilities: {
       skill1: ability('Nightcleave', '160% direct damage to one enemy, then spend all [Wounds] for an extra strike that uses the spent amount as its Attack, reduced by Defense. With no [Wounds], only the first hit occurs.', 1.6),
-      skill2: ability('Eclipse Bastion', '[Razor] takes 30% less direct damage during the next enemy phase. If he lost HP to direct hits during that phase, he then gains a shield equal to that HP through the following enemy phase.'),
+      skill2: ability('Eclipse Bastion', '[Razor] takes 30% less direct damage during the next enemy phase. If he lost HP to direct hits during that phase, he then gains a stacking shield equal to that HP that lasts until broken.'),
       ultimate: ability('Last Flare: Unbroken Midnight', '220% direct damage to one enemy, then spend all [Wounds] for an extra strike dealing three times the damage of a strike using twice the spent amount as its Attack, reduced by Defense.', 2.2),
     },
   },

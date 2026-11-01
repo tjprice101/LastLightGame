@@ -467,7 +467,7 @@ function shieldTeam(state: BattleState, source: Combatant, amount: number, event
   const selected = concentrated ? [...recipients].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health).slice(0, 1) : recipients;
   for (const ally of selected) {
     if (authored) { nativeShield(state, source, ally, amount * (concentrated ? 3 : 1), events,
-      activation ? { skillPower: activation.skillPower, activation } : {}); continue; }
+      activation ? { skillPower: activation.skillPower, activation, stack: true } : { stack: true }); continue; }
     const gained = Math.max(0, amount - ally.shield);
     if (gained > 0) {
       delete ally.pilot?.authoredShieldSourceId;

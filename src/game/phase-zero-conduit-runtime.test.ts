@@ -136,12 +136,12 @@ describe('Phase 0 shared runtime math', () => {
     expect(effectiveDefense(state, recipient)).toBe(100);
   });
 
-  it('extends Ward Stitch Shields and grants their holders upgraded healing/Shield Skill Power', () => {
+  it('keeps Ward Stitch Shields until broken and grants their holders upgraded healing/Shield Skill Power', () => {
     const state = fixture(['sprout', 'tide', 'ember']);
     const [owner, recipient] = state.allies;
     owner.conduits = ['ward-stitch-spool', null, null, null, null, null, null, null];
     nativeShield(state, owner, recipient, 100, [], { throughPhase: state.round });
-    expect(recipient.conduitRuntime?.layers?.[0].expiresAfterPhase).toBe(state.round + 1);
+    expect(recipient.conduitRuntime?.layers?.[0]).not.toHaveProperty('expiresAfterPhase');
     expect(prepareConduitAction(state, recipient, 'skill2', 40, false).skillPower).toBe(1.3);
     state.conduitUpgrades = { 'ward-stitch-spool': 1 };
     expect(prepareConduitAction(state, recipient, 'skill2', 40, false).skillPower).toBe(1.33);
@@ -309,7 +309,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(second.shatter).toBe(36);
   });
 
-  it('shields allies for 30% of Atmoso Cyclone actual HP damage without the retired Health cap', () => {
+  it('shields allies until broken for 30% of Atmoso Cyclone actual HP damage without the retired Health cap', () => {
     const state = fixture(['atmoso', 'tide', 'sprout']);
     const [owner, first, second] = state.allies;
     owner.masterConduit = 'master-atmoso-2';
@@ -319,7 +319,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(first.shield).toBe(1800);
     expect(second.shield).toBe(1800);
     expect(owner.shield).toBe(1800);
-    expect(owner.conduitRuntime?.layers?.[0].expiresAfterPhase).toBe(state.round);
+    expect(owner.conduitRuntime?.layers?.[0]).not.toHaveProperty('expiresAfterPhase');
   });
 
   it('caps Leviathan Gauge at 15% per recipient during one Enemy Turn', () => {
@@ -733,7 +733,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(conduitHitModifiers(state, ally, state.enemies[1], next, false).skillPowerBonus).toBe(0);
   });
 
-  it('applies Thornia trap Defense reduction and the first-trigger ally Shield', () => {
+  it('applies Thornia trap Defense reduction and the first-trigger ally Shield that lasts until broken', () => {
     const defenseState = fixture(['thornia', 'tide', 'sprout']);
     const [owner] = defenseState.allies;
     owner.masterConduit = 'master-thornia-1';
@@ -755,7 +755,7 @@ describe('Phase 0 shared runtime math', () => {
       amount: 10, critical: false, message: 'test attack' };
     nativeEnemyCompleted(shieldState, enemy, true, [attack]);
     expect(recipient.shield).toBe(120);
-    expect(recipient.conduitRuntime?.layers?.[0].expiresAfterPhase).toBe(shieldState.round);
+    expect(recipient.conduitRuntime?.layers?.[0]).not.toHaveProperty('expiresAfterPhase');
   });
 
   it('reduces trapped enemies’ Direct Damage to other allies and powers Thornia’s next skill', () => {
@@ -771,7 +771,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(prepareConduitAction(state, thornia, 'skill1', 25, false).skillPower).toBe(1.65);
   });
 
-  it('shares Razor Bastion Shields and applies Master Wound spend payoffs', () => {
+  it('shares Razor Bastion Shields that last until broken and applies Master Wound spend payoffs', () => {
     const bastionState = fixture(['razor', 'tide', 'sprout']);
     const [owner, ally] = bastionState.allies;
     owner.masterConduit = 'master-razor-2';
@@ -779,7 +779,7 @@ describe('Phase 0 shared runtime math', () => {
     nativePhaseEnd(bastionState, []);
     expect(owner.shield).toBe(120);
     expect(ally.shield).toBe(48);
-    expect(ally.conduitRuntime?.layers?.[0].expiresAfterPhase).toBe(bastionState.round);
+    expect(ally.conduitRuntime?.layers?.[0]).not.toHaveProperty('expiresAfterPhase');
 
     const healState = fixture(['razor', 'tide', 'sprout']);
     const [razor, first, second] = healState.allies;
@@ -850,7 +850,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(next.criticalDamageBonus).toBe(.4);
   });
 
-  it('revives Phoenix Reactor at 35% and shields other living allies for one enemy turn', () => {
+  it('revives Phoenix Reactor at 35% and shields other living allies until broken', () => {
     const state = fixture();
     const [owner, first, second] = state.allies;
     owner.conduits = ['infernic-phoenix-reactor', null, null, null, null, null, null, null];
@@ -860,7 +860,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(owner.shatter).toBe(0);
     expect(first.shield).toBe(233);
     expect(second.shield).toBe(233);
-    expect(first.conduitRuntime?.layers?.[0].expiresAfterPhase).toBe(state.round);
+    expect(first.conduitRuntime?.layers?.[0]).not.toHaveProperty('expiresAfterPhase');
   });
 
   it('grants Disciple Resolve Gauge to the other allies when consumed', () => {

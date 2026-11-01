@@ -101,7 +101,7 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     passive: { name: 'Faultbound Resolve', description: '+9 defense, included in effective defense.', damageBonus: 0, defenseBonus: 9, healFraction: 0 },
     abilities: {
       skill1: { name: 'Seismic Hammerfall', description: '155% damage to one enemy; weaken by 20% for two enemy phases.', cooldown: 0, strength: { damageMultiplier: 1.55, weakenFraction: .2 } },
-      skill2: { name: 'Citadel Mantle', description: 'Give every living ally 32 shield (refresh; does not stack).', cooldown: 0, targets: 'all-allies', strength: { shield: 32 } },
+      skill2: { name: 'Citadel Mantle', description: 'Give every living ally 32 shield (lasts until broken; stacks).', cooldown: 0, targets: 'all-allies', strength: { shield: 32 } },
       ultimate: { name: 'Last Flare: Worldwall Ascendant', description: '230% damage to every living enemy and 45 shield for allies. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.3, shield: 45 } },
     },
   },
@@ -110,8 +110,8 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     passive: { name: 'Shared Mindflame', description: '+15% outgoing damage at or below 50% health.', damageBonus: .15, defenseBonus: 0, healFraction: 0 },
     abilities: {
       skill1: { name: 'Thoughtspark Benediction', description: '150% damage to one enemy; increase living allies\' outgoing attack damage by 20% this and next player turn (refresh; does not stack).', cooldown: 0, strength: { damageMultiplier: 1.5, attackBoostFraction: .2 } },
-      skill2: { name: 'Concord of Chaos', description: 'Increase living allies\' outgoing attack damage by 30% this and next player turn and give 20 shield (refresh; does not stack).', cooldown: 0, targets: 'all-allies', strength: { attackBoostFraction: .3, shield: 20 } },
-      ultimate: { name: 'Last Flare: Unbound Mindcrown', description: 'Increase living allies\' outgoing attack damage by 40% this and next player turn and give 40 shield (refresh; does not stack). Recover next turn.', cooldown: 0, targets: 'all-allies', strength: { attackBoostFraction: .4, shield: 40 } },
+      skill2: { name: 'Concord of Chaos', description: 'Increase living allies\' outgoing attack damage by 30% this and next player turn and give 20 shield (lasts until broken; stacks).', cooldown: 0, targets: 'all-allies', strength: { attackBoostFraction: .3, shield: 20 } },
+      ultimate: { name: 'Last Flare: Unbound Mindcrown', description: 'Increase living allies\' outgoing attack damage by 40% this and next player turn and give 40 shield (lasts until broken; stacks). Recover next turn.', cooldown: 0, targets: 'all-allies', strength: { attackBoostFraction: .4, shield: 40 } },
     },
   },
   elise: {
@@ -129,7 +129,7 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     passive: { name: 'Unbroken Night', description: '+10 defense, included in effective defense.', damageBonus: 0, defenseBonus: 10, healFraction: 0 },
     abilities: {
       skill1: { name: 'Nightcleave', description: '165% damage to one enemy; weaken by 25% for two enemy phases.', cooldown: 0, strength: { damageMultiplier: 1.65, weakenFraction: .25 } },
-      skill2: { name: 'Eclipse Bastion', description: 'Give every living ally 35 shield (refresh; does not stack).', cooldown: 0, targets: 'all-allies', strength: { shield: 35 } },
+      skill2: { name: 'Eclipse Bastion', description: 'Give every living ally 35 shield (lasts until broken; stacks).', cooldown: 0, targets: 'all-allies', strength: { shield: 35 } },
       ultimate: { name: 'Last Flare: Unbroken Midnight', description: '240% damage to every living enemy and 50 shield for allies. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.4, shield: 50 } },
     },
   },

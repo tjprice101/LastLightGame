@@ -1,5 +1,20 @@
 # Current state and handoff
 
+## Shields last until broken (D-434)
+
+- Every Shield now lasts until broken; Skill and Last Flare Shields stack with
+  no cap (owner choice). Conduit/passive Shields keep their size/refresh rules
+  but never expire. Ward Stitch Spool's +1 Enemy Turn clause is removed.
+- Code: `nativeShield` `stack` option and no expiry (`conduit-runtime.ts`),
+  `timedConduitShield` sets no timer, `expireNativeShields` only clears legacy
+  snapshot timers; native kit/`shieldTeam` skill calls pass `stack: true`.
+  Ability, Conduit and `docs/conduit-catalog.txt` text updated.
+- Tests: Tizu/battle/Last Flare/phase-zero Conduit suites assert persistence
+  and stacking; the Calamity benchmark table now records wins and stalls.
+- Open item: Ward Stitch Spool lost its duration bonus; the owner may want a
+  replacement effect. Stalled Calamity runs (unkillable squad vs. self-
+  sustaining boss) are accepted. See [combat.md](combat.md#shields-last-until-broken-d-434).
+
 ## Live bubble UI overhaul (D-433)
 
 - The approved D-432 style now drives the live game through a last-installed

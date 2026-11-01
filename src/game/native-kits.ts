@@ -183,9 +183,9 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
   const other = allies.filter(unit => unit.id !== owner.id);
   const acted = other.filter(unit => unit.spent).length;
   const posture = acted === 0 ? 'opening' : acted === other.length ? 'closing' : 'passing';
-  const shield = (recipient: Combatant, fraction: number, phases: number, firstReduction = 0) =>
+  const shield = (recipient: Combatant, fraction: number, firstReduction = 0) =>
     nativeShield(state, owner, recipient, recipient.stats.health * fraction, events,
-      { throughPhase: state.round + phases - 1 + activation.skillDuration, firstReduction, skillPower: activation.skillPower, activation });
+      { firstReduction, skillPower: activation.skillPower, activation, stack: true });
   const burn = (recipient: Combatant, fraction: number) => {
     const burns = memory.burns ??= {};
     const previous = burns[recipient.id];
@@ -232,8 +232,8 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
         if (target?.hp) applyConduitWeaken(state, owner, target, .25, events, action, 1, activation);
       }
       if (action === 'skill2' && ally) shield(ally,
-        nativeBalance.tizu.shelter * (!phaseZeroStatsReady && equipped(owner, 'master-tide-2') ? 3 : 1), 1);
-      if (action === 'ultimate') for (const recipient of allies) shield(recipient, nativeBalance.tizu.oceanMemory, 2, .3 * flareSupport);
+        nativeBalance.tizu.shelter * (!phaseZeroStatsReady && equipped(owner, 'master-tide-2') ? 3 : 1));
+      if (action === 'ultimate') for (const recipient of allies) shield(recipient, nativeBalance.tizu.oceanMemory, .3 * flareSupport);
       break;
     case 'sprout':
       if (action === 'skill1') {
@@ -329,7 +329,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
               throughRound: state.round + activation.skillDuration, sourceId: owner.id, origin: 'native' };
         }
         if (posture === 'closing' || phaseZeroStatsReady && equipped(owner, 'master-bliss-1'))
-          for (const recipient of allies) shield(recipient, .06, 1);
+          for (const recipient of allies) shield(recipient, .06);
         if (activation.healExtra > 0) for (const recipient of other)
           nativeHeal(state, owner, recipient, 0, events, true, activation);
       }
@@ -364,7 +364,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
           : Math.max(owner.stats.health * .2,
             phaseZeroStatsReady || equipped(owner, 'master-bruno-2') ? effectiveDefense(state, owner) * 2 : 0);
         nativeShield(state, owner, owner, shield * flareSupport, events,
-          { throughPhase: state.round + 1 + activation.skillDuration, skillPower: activation.skillPower, activation });
+          { skillPower: activation.skillPower, activation, stack: true });
       }
       break;
     case 'disciple': {
@@ -804,8 +804,8 @@ export function nativePhaseEnd(state: BattleState, events: BattleEvent[]): void 
       if (memory.bastion.loss > 0) {
         const shield = memory.bastion.loss;
         const created = nativeShield(state, owner, owner, shield, events, {
-          throughPhase: state.round + 1 + (phaseZeroStatsReady ? memory.bastion.skillDuration ?? 0 : 0),
           ...(phaseZeroStatsReady ? { skillPower: memory.bastion.skillPower ?? 1 } : {}),
+          stack: true,
         });
         if (phaseZeroStatsReady && equipped(owner, 'master-razor-2')) for (const ally of living(state).filter(unit => unit.id !== owner.id)) {
           const offer = Math.min(created * .4, ally.stats.health * .45);
@@ -964,10 +964,11 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
       'Changes with the other living squad members who have acted this player turn.', [`native-bliss-${posture}`], true);
   }
   for (const recipient of state.allies) {
-    const shields = recipient.conduitRuntime?.layers?.filter(layer => layer.native && layer.owner === unit.id &&
-      layer.amount > 0 && layer.expiresAfterPhase !== undefined) ?? [];
-    for (const layer of shields) add('Shield', `${Math.round(layer.amount)}`,
-      `${recipient.name}; expires after enemy phase ${layer.expiresAfterPhase}${layer.firstReduction ? '; first-hit reduction ready' : ''}.`, ['ward']);
+    const shields = recipient.conduitRuntime?.layers?.filter(layer => layer.native && layer.owner === unit.id && layer.amount > 0) ?? [];
+    if (!shields.length) continue;
+    const total = shields.reduce((sum, layer) => sum + layer.amount, 0);
+    add('Shield', `${Math.round(total)}`,
+      `${recipient.name}; lasts until broken${shields.length > 1 ? ` (${shields.length} stacked)` : ''}${shields.some(layer => layer.firstReduction) ? '; first-hit reduction ready' : ''}.`, ['ward']);
   }
   if (memory.cyclone) add('Cyclone', `${memory.cyclone.gusts} Gusts`, `${memory.cyclone.phases} enemy phases until release.`, ['native-atmoso-cyclone']);
   if (unit.definitionId === 'elise') {
