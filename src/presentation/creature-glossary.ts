@@ -53,7 +53,7 @@ export function creatureGlossary(account: Account | null): string {
       const name = discovery ? creature.name : `Undiscovered ${kind}`;
       const stage = creature.stages[0] ?? 1;
       return `<article class="glossary-card ${discovery ? 'discovered' : 'undiscovered'}" data-creature="${creature.id}" data-area="${creature.area}">
-        <div class="glossary-art">${creature.art ? `<img ${creature.calamity && discovery ? 'class="calamity-boss-contrast"' : ''} draggable="false" src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${name}" width="220" height="220">`
+        <div class="glossary-art">${creature.art ? `<img ${creature.calamity && discovery ? 'class="calamity-boss-contrast"' : ''} draggable="false" src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${name}" width="220" height="220"${creature.calamity ? ' loading="eager"' : ''}>`
           : creature.calamity ? `<span class="calamity-placeholder">${name} · Artwork pending</span>` : `<svg viewBox="0 0 100 100" aria-label="${kind} artwork not supplied" role="img"><path d="M15 70Q0 40 25 35L20 10 40 25Q55 15 65 25L85 10 80 40Q100 65 80 80Q45 100 15 70Z" fill="currentColor"/></svg>`}</div>
         <h2>${name}</h2>${discovery ? elementLabel(creature.element) : '<span class="quiet">Element undiscovered</span>'}<p>${creature.area}${creature.calamity ? ' · EX+1-EX+3 · Not capturable' : creature.stages.length ? ` · Stages ${stage}-${creature.stages.at(-1)}` : ''}</p>
         ${discovery ? `<strong>${discovery.defeated ? 'Defeated' : 'Encountered'}</strong>` : ''}

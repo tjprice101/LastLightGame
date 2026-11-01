@@ -33,13 +33,12 @@ function wallet(): Account {
 }
 
 describe('Omnic element presentation (D-403)', () => {
-  it('uses a compact Master reveal with Let and Rise flavor instead of planetary locks', () => {
+  it('uses a compact Master reveal with a saved result and equipment guidance', () => {
     const account = wallet();
     const reward = masterReward(masterConduits[0].id, account);
     expect(reward.art).toContain('class="master-reward-art"');
-    expect(reward.animationLabel).toContain('Let');
-    expect(reward.animationLabel).toContain('Rise');
-    expect(reward.savedLabel).toContain('shared age');
+    expect(reward.animationLabel).toBe('Revealing your Master Conduit');
+    expect(reward.savedLabel).toBe('Master Conduit saved. Equip it in Team.');
     expect(reward.animationLabel).not.toMatch(/planet/i);
   });
   it('uses the canonical element and shared palette for all 45 Omnics, not legacy asset names', () => {

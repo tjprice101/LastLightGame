@@ -129,7 +129,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
         ${activityDifficulty(element.id, activityLayout(`
         ${activityBanner(element.dungeon, dungeonArt[element.id] ? `banners/${dungeonArt[element.id]?.slug}.png` : null, `${element.dungeon} banner`, true)}
         <p class="eyebrow">${element.name} · ${elementEmotions[element.id]}</p>
-        <p>Rise's Elemental-Devourers search these ruins with the same ${element.name} power that Let gave his Element-Bearers.</p>
+        <p>Defeat ${element.name} enemies for materials used to level and evolve matching Element-Bearers.</p>
         ${activityFacts(`${elementalDungeonRules.stages} stages`, `${elementalDungeonRules.startingLevel}-${elementalDungeonRules.maximumLevel}`, 'Prismatica · Materials')}`, `
         ${itemShowcase([{ id: 'fractalis' }, ...materialRarities.map((rarity) => ({ id: `${element.id}-${rarity.toLowerCase()}` }))], 'Rewards across stages')}
         ${dungeonEntry(element.id, account)}`), account)}</article>`).join('')}</div></section>

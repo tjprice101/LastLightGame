@@ -59,12 +59,12 @@ describe('Collections controls', () => {
     f.select('stars', '5');
     expect(f.visible()).toHaveLength(1);
     expect(f.visible()[0].dataset.archiveCharacter).toBe('ember');
-    expect(f.host.querySelector('[data-character-filter-result]')?.textContent).toBe('1 / 126 forms shown');
+    expect(f.host.querySelector('[data-character-filter-result]')?.textContent).toBe('1 / 96 forms shown');
     f.select('discovery', 'locked');
     expect(f.visible()).toHaveLength(0);
     expect(f.host.querySelector('[data-character-filter-result]')?.textContent).toBe('No forms match these filters.');
     f.host.querySelector<HTMLButtonElement>('[data-reset-character-filters]')!.click();
-    expect(f.visible()).toHaveLength(126);
+    expect(f.visible()).toHaveLength(96);
     expect(Array.from(f.host.querySelectorAll('#archive-characters .archive-filters .selection-trigger')).map(button => button.textContent))
       .toEqual(['All elements', 'All rarities', 'All characters', 'All forms', 'All stars']);
     expect(f.account).toEqual(f.before);
@@ -180,10 +180,9 @@ describe('Collections controls', () => {
     expect(f.account).toEqual(f.before);
   }, 30_000);
 
-  it('keeps unowned captured portraits locked independently of enemy discovery', () => {
+  it('lists only Element-Bearer forms, never captured Elemental-Devourers', () => {
     const f = fixture();
-    const portrait = f.host.querySelector('[data-archive-character="infusion:heavens:0"] .archive-portrait');
-    expect(portrait?.classList.contains('unreached-character-art')).toBe(true);
+    expect(f.host.querySelector('[data-archive-character^="infusion:"]')).toBeNull();
     expect(f.host.querySelector('[data-archive-character="ember"] .archive-portrait')?.classList.contains('unreached-character-art')).toBe(false);
   });
 });

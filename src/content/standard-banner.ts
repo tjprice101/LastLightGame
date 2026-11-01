@@ -72,7 +72,7 @@ export function resolveBannerPull<T extends BannerOutcome>(
 
 const standardBannerArtwork: { path: string | null; aspectRatio: '16:9'; direction: 'Omnic'; alt: string } = {
   path: 'banners/summon-standard.png', aspectRatio: '16:9', direction: 'Omnic',
-  alt: 'Standard Banner: a transcendent elemental sanctuary uniting fire, water, nature, Heaven, Abyss, Crownfall Treasury and Rosethorn Sanctuary.',
+  alt: 'Standard Banner artwork: an elemental sanctuary with fire, water, plants and slime creatures.',
 };
 
 export const standardBanner = {

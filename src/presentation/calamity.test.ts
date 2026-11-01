@@ -314,7 +314,8 @@ describe('Calamity presentation', () => {
         expect(document.body.textContent).toContain('Omnic · Lv.60');
         expect(document.querySelector(`img[src="${assetUrl(`enemies/${getCreature(reward.devourerCopies.creatureId).art}.png`)}"]`)).not.toBeNull();
       }
-      expect(reveal.savedLabel).toBe('Rewards saved');
+      expect(reveal.savedLabel).toBe('');
+      expect(reveal.celebration).toBeUndefined();
     }
   });
 

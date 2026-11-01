@@ -76,8 +76,13 @@ function fixture(id: StarterId, action: ActionId = 'skill2', solo = false, offli
   const commit = vi.fn();
   const view = new BattleView(host, session, { nextAlly: 'KeyC', nextTarget: 'KeyT' }, commit, undefined, offline ? undefined : authority);
   const open = () => {
-    host.querySelector<HTMLButtonElement>('#open-battle-menu')!.click();
-    host.querySelector<HTMLButtonElement>(`[data-action="${action}"]`)!.click();
+    const button = host.querySelector<HTMLButtonElement>(`[data-unit="${id}"]`)!;
+    button.setPointerCapture = vi.fn();
+    button.hasPointerCapture = () => true;
+    button.releasePointerCapture = vi.fn();
+    const [dx, dy] = action === 'skill1' ? [-60, 0] : action === 'skill2' ? [60, 0] : action === 'ultimate' ? [0, -60] : [0, 60];
+    pointer(button, 'pointerdown', 100);
+    pointer(button, 'pointerup', 100 + dx, 100 + dy);
   };
   const pick = (targetId: string) => document.querySelector<HTMLButtonElement>(`.native-ally-picker button[value="${targetId}"]`)!.click();
   return { session, host, view, authority, commit, open, pick };
@@ -92,7 +97,7 @@ function pointer(button: HTMLElement, type: string, x: number, y = 100) {
 describe('native ally targeting', () => {
   it.each([
     ['tide', 'skill2'], ['bruno', 'skill2'], ['disciple', 'skill1'], ['disciple', 'skill2'],
-  ] as const)('requires a recipient before %s %s dispatches from Battle menu', async (id, action) => {
+  ] as const)('requires a recipient before %s %s dispatches from a gesture', async (id, action) => {
     const f = fixture(id, action);
     try {
       const enemyTarget = f.host.querySelector('.battle-footer-target small')!.textContent;
@@ -100,7 +105,6 @@ describe('native ally targeting', () => {
       expect(document.querySelector<HTMLDialogElement>('.native-ally-picker')?.open).toBe(true);
       expect(f.authority.action).not.toHaveBeenCalled();
       expect(document.querySelector('.native-ally-picker')?.textContent).toContain('Enemy target is unchanged');
-      expect(f.host.querySelector('[data-action="' + action + '"]')?.textContent).toContain('Choose');
       f.pick('ember');
       await vi.waitFor(() => expect(f.authority.action).toHaveBeenCalledExactlyOnceWith(id, action, 'ember'));
       expect(f.commit).not.toHaveBeenCalled();
@@ -159,7 +163,7 @@ describe('native ally targeting', () => {
       expect(document.querySelector('.native-ally-picker')).not.toBeNull();
       pointer(button, 'pointerdown', 100);
       expect(f.host.querySelector('.gesture-choice')).toBeNull();
-      f.host.querySelector<HTMLButtonElement>('[data-action="light"]')!.click();
+      button.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true }));
       expect(f.authority.action).not.toHaveBeenCalled();
       f.pick('sprout');
       await vi.waitFor(() => expect(f.authority.action).toHaveBeenCalledExactlyOnceWith('disciple', 'skill1', 'sprout'));

@@ -7,7 +7,7 @@ export const roseBannerCharacterChance = .011;
 export const roseBanner = {
   id: 'roses', name: 'Roses Under Sunny Skies', cost: 10, available: true,
   artwork: { path: 'banners/summon-roses.png', aspectRatio: '16:9', direction: 'Omnic',
-    alt: 'Roses Under Sunny Skies: crimson roses and golden thorns unfurl beneath a radiant sky.' },
+    alt: 'Roses Under Sunny Skies banner artwork: crimson roses and golden thorns beneath a bright sky.' },
 } as const;
 
 export function roseBannerPool(): StandardBannerEntry[] {

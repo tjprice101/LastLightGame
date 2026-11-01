@@ -54,6 +54,7 @@ describe('one-minute autosave', () => {
     vi.useFakeTimers();
     document.body.innerHTML = '<p id="status" role="alert">Save error</p>';
     showAutosaveNotice();
+    expect(document.querySelector('.autosave-notice')?.textContent).toBe('Progress saved.');
     expect(document.querySelector('.autosave-notice')?.getAttribute('role')).toBe('status');
     expect(autosaveNoticeDuration).toBeLessThanOrEqual(2000);
     await vi.advanceTimersByTimeAsync(autosaveNoticeDuration - 1);

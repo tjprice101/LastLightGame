@@ -169,8 +169,7 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(characterCopyManagement(sold)).not.toContain(`data-captured-copy="${copy.instanceId}"`);
     const gallery = archives(sold);
     const form = gallery.match(/<article[^>]*data-archive-character="infusion:sanctuary:0"[\s\S]*?<\/article>/)?.[0];
-    expect(form).toBeDefined();
-    expect(form).toContain('archive-form-locked');
+    expect(form).toBeUndefined();
     expect(sold.characters).toEqual(account.characters);
   });
 

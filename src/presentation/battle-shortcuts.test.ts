@@ -61,8 +61,7 @@ describe('Normal Attack secondary-click shortcut', () => {
     try {
       expect(f.host.querySelector('#battle-announcement')!.textContent).toContain('Right-click: Normal Attack');
       expect(f.host.querySelector('#battle-announcement')!.textContent).not.toContain('Defense');
-      expect(f.host.querySelector('[data-action="light"]')!.textContent).toContain('Down or right-click');
-      expect(f.host.querySelector('[data-action="defend"]')).toBeNull();
+      expect(f.host.querySelector('[data-action]')).toBeNull();
     } finally { f.view.destroy(); }
   });
 

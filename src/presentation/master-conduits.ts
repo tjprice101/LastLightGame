@@ -41,6 +41,6 @@ export function masterReward(id: MasterConduitId, account: Account): RewardPrese
     title: 'Master Conduit unlocked', name: entry.name, rarity: 'Omnic', art: `<div class="master-reward-art">${masterConduitIcon(id)}</div>`,
     details: `${conduitElementLabel(getStarter(entry.character).elementId)}<p>Omnic Master · ${getStarter(entry.character).name}</p><p>${referencedEffect(escapeDialogText(entry.effect))}</p><p>One chest opened. Not auto-equipped. Equip in Team.</p>`,
     accent: getStarter(entry.character).color,
-    animationLabel: "Let shaped its workings; Rise bound their power. A mechanism of their shared age awakens.",
-    savedLabel: "Forged in Let and Rise's shared age. Awakened for your journey. Master saved." };
+    animationLabel: "Revealing your Master Conduit",
+    savedLabel: "Master Conduit saved. Equip it in Team." };
 }

@@ -22,8 +22,7 @@ describe('shared battle chrome', () => {
     session.state.allies[0].kit!.abilities.skill1.description = 'Consumes all Blooms.';
     const before = structuredClone(session);
     const html = markup(session);
-    expect(html).toContain(nativeIdentities.sprout.playLoop);
-    expect(html).toContain(nativeIdentities.sprout.abilities.skill1.description);
+    expect(html).toContain('data-status-unit="sprout"');
     expect(html).not.toContain('Consumes all Blooms.');
     expect(html).not.toContain('Botanic Renewal charges');
     expect(session).toEqual(before);
@@ -49,9 +48,10 @@ describe('shared battle chrome', () => {
     const html = markup(session);
     expect(html).toContain('allies squad');
     expect(html).toContain('SQUAD TRAINING');
-    for (const id of ['tide', 'sprout', 'ember']) expect(html).toContain(`data-actor="${id}"`);
+    for (const id of ['tide', 'sprout', 'ember']) expect(html).toContain(`data-status-unit="${id}"`);
+    expect(html).not.toContain('data-actor=');
     session.state.allies.find((ally) => ally.id === 'ember')!.spent = true;
-    expect(markup(session)).toContain('data-actor="tide" aria-pressed="true"');
+    expect(markup(session)).toContain('Acted this turn');
   });
   it('shows enemy levels and elements on field nameplates and in reference menus across all modes', () => {
     const sessions = [
@@ -63,7 +63,7 @@ describe('shared battle chrome', () => {
       const html = markup(session);
       for (const enemy of session.state.enemies) {
         expect(html).toContain(`<span class="unit-name">${enemy.name} · Lv. ${enemy.level}${elementLabel(enemy.element)}</span>`);
-        const intel = html.slice(html.indexOf('class="battle-unit-intel"'));
+        const intel = html.slice(html.indexOf('class="battle-utilities"'));
         expect(intel).toContain(elementLabel(enemy.element));
       }
       expect(html).toContain('<span class="unit-name">Eternal Heavenflame Sovereign, Infernis · Lv. 105');
@@ -76,7 +76,7 @@ describe('shared battle chrome', () => {
     expect(html).toContain('SOLO TRAINING');
     expect(html).toContain('class="battle-progress"');
     expect(html).toContain('Wave 1');
-    expect(html).toContain('id="end-battle-turn"');
+    expect(html).not.toContain('id="end-battle-turn"');
     expect(html).toContain('class="unit-readout"');
     expect(html).toContain('class="unit-health"');
     expect(html).not.toContain('class="battle-hud"');
@@ -90,15 +90,14 @@ describe('shared battle chrome', () => {
     expect(field).toContain('id="battle-announcement" role="status"');
     expect(field).not.toContain('battle-command-bar');
     expect(field).not.toContain('battle-field-actions');
-    expect(html.match(/data-action=/g)).toHaveLength(4);
+    expect(html).not.toContain('data-action=');
     expect(html).toContain('class="unit-nameplate"');
     expect(html).toContain('aria-labelledby="battle-menu-heading"');
-    expect(html).toContain('Pass remaining actions');
-    expect(html).toContain('class="battle-unit-intel"');
-    expect(html).toContain('saved rewards');
+    expect(html).not.toContain('Pass remaining actions');
+    expect(html).toContain('class="battle-status-side"');
     expect(html).not.toContain('saved locally');
   });
-  it('keeps the Battle menu grid to its four section panels', () => {
+  it('keeps the Battle menu grid to its squad and enemy status panels', () => {
     for (const session of [createSession('ember', progress), createSession('ember', progress, { storyStage: storyRules.stages })]) {
       const html = markup(session);
       const menu = html.slice(html.indexOf('class="battle-utilities"'), html.indexOf('</dialog>'));
@@ -110,7 +109,7 @@ describe('shared battle chrome', () => {
         if (depth === 0) direct.push(`${tag}${/class="([^"]*)"/.exec(attrs)?.[1] ? `.${/class="([^"]*)"/.exec(attrs)![1]}` : ''}`);
         depth++;
       }
-      expect(direct).toEqual(['section.battle-combat-menu', 'section.battle-unit-intel', 'section.battle-help', 'section.battle-log']);
+      expect(direct).toEqual(['section.battle-status-side', 'section.battle-status-side']);
     }
   });
   it('shows the final Story stage with delivered regional art, narrative and final-stage controls', () => {
@@ -124,7 +123,6 @@ describe('shared battle chrome', () => {
     expect(html).not.toContain('pending-dungeon-scenery');
     expect(html).not.toContain('pending-enemy-art');
     expect(html).not.toContain('backgrounds/grassy-field');
-    expect(html).toContain(`Six regions of ${storyRules.regionStages} stages`);
     session.state.phase = 'cleared';
     html = markup(session);
     expect(html).not.toContain('data-result-continue');

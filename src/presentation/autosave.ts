@@ -8,7 +8,7 @@ export function showAutosaveNotice(): void {
   const notice = document.createElement('div');
   notice.className = 'autosave-notice';
   notice.setAttribute('role', 'status');
-  notice.textContent = 'Your light endures. Progress saved.';
+  notice.textContent = 'Progress saved.';
   document.body.append(notice);
   window.setTimeout(() => notice.remove(), autosaveNoticeDuration);
 }

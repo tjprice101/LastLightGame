@@ -10,7 +10,7 @@ describe('shared settings drawer', () => {
     expect(html).toContain('72%</output>');
     expect(html).toContain('id="music-muted" type="checkbox" checked');
     expect(html).toContain('aria-describedby="music-description"');
-    expect(html).toContain('Activities without delivered tracks stay silent');
+    expect(html).toContain('Activities without music tracks are silent');
   });
   it('groups presentation, motion and selection keys with an accessible close control', () => {
     const html = settingsPanel('system', defaultBindings, 1);
@@ -26,7 +26,7 @@ describe('shared settings drawer', () => {
     expect(html).toContain('aria-describedby="speed-description"');
     expect(html).toContain('aria-describedby="motion-description"');
     expect(html).toContain('Full animations');
-    expect(html).toContain('Only Reduce motion disables them');
+    expect(html).toContain('Choose Reduce motion to disable animated effects');
     expect(html).not.toContain('Follow device preferences');
     for (const [command] of commands) {
       expect(html).toContain(`label for="key-${command}"`);

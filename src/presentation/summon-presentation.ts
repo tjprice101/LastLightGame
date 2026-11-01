@@ -38,7 +38,7 @@ export function summonTenReward(account: SummonResult['account'], draws: readonl
     title: '10-Pull summoned', name: `${multiSummonCount} results`,
     art: `<ol class="summon-ten-grid">${rewards.map(({ draw, reward }) => `<li data-rarity="${reward.rarity ?? 'Common'}" class="summon-ten-result${draw.entry.kind === 'character' && !draw.duplicate ? ' is-character' : ''}${summonRevealTier(drawStars(draw)) ? ` is-${summonRevealTier(drawStars(draw))}` : ''}">
       <div class="summon-ten-art">${reward.art}</div><b>${escapeDialogText(reward.name)}</b><small>${escapeDialogText(reward.title)}${draw.guarantee !== 'none' ? ' · Pity' : ''}${draw.bonusConduit ? ' · Bonus Conduit' : ''}</small></li>`).join('')}</ol>`,
-    accent: '#f4f4f5', animationLabel: 'Calling through the Light',
+    accent: '#f4f4f5', animationLabel: 'Revealing your summon results',
     details: `<p>${characters ? `${characters} new Element-Bearer${characters === 1 ? '' : 's'}` : 'No new Element-Bearers'}${bonuses ? ` · ${bonuses} bonus Conduit${bonuses === 1 ? '' : 's'} (not auto-equipped)` : ''}</p>
       <p>${escapeDialogText(banner.name)} · ${banner.cost * multiSummonCount} Null-Prismatica spent</p>`,
     savedLabel: 'All ten rewards saved',
@@ -66,7 +66,7 @@ export function summonReward(result: SummonResult, bannerId: SummonBannerId): Re
     reward = { title: result.duplicate ? 'Duplicate converted' : 'Materials summoned', rarity: tier.rarity,
       name: `${materials.amount} ${materialName(materials.id)}`,
       art: materialArt(materials.id) ? `<img src="${assetUrl(`materials/${materialArt(materials.id)}.png`)}" alt="${escapeDialogText(materialName(materials.id))}" width="256" height="256">`
-        : '<span class="art-pending">Material artwork pending</span>', accent: '#f4f4f5', animationLabel: 'Calling through the Light',
+        : '<span class="art-pending">Material artwork pending</span>', accent: '#f4f4f5', animationLabel: 'Revealing your summon results',
       details: `<p>${tier.rarity} material bundle · ${materials.amount} received</p>${result.duplicate && isStarterId(entry.id) ? `<p>${escapeDialogText(characterName(entry.id))} is already owned. Received Rare materials instead.</p>` : ''}` };
   } else if (result.copy) {
     if (result.duplicate && (entry.kind !== 'character' || !isStarterId(entry.id))) throw new Error('Converted Element-Bearer definition is missing.');
@@ -75,13 +75,13 @@ export function summonReward(result: SummonResult, bannerId: SummonBannerId): Re
     const member = ownedCompanion(result.account, result.copy.instanceId);
     const creature = getCreature(result.copy.creatureId);
     reward = { title: result.duplicate ? 'Duplicate converted' : 'Elemental-Devourer summoned', name: member.name, rarity: capturedRarity(creature.id),
-      art: member.art, accent: member.color, animationLabel: 'Calling through the Light',
+      art: member.art, accent: member.color, animationLabel: 'Revealing your summon results',
       details: `${member.rating}${elementLabel(creature.element)}<p>Captured Elemental-Devourer · Lv.${member.level}</p>${conversion}` };
   } else {
     if (entry.kind !== 'character' || !isStarterId(entry.id)) throw new Error('Summoned Element-Bearer definition is missing.');
     const character = getStarter(entry.id);
     reward = { title: 'Element-Bearer summoned', name: characterName(character.id, 1),
-      art: portrait(character, 1), rarity: 'Common', accent: character.color, animationLabel: 'Calling through the Light',
+      art: portrait(character, 1), rarity: 'Common', accent: character.color, animationLabel: 'Revealing your summon results',
       details: `${characterRating(character.id, 1)}${elementLabel(character.elementId)}<p>New Element-Bearer · Lv.0 · Evo.1</p>` };
   }
   reward.tier = summonRevealTier(drawStars(result));

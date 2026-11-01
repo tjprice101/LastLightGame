@@ -9,7 +9,6 @@ import { referencedEffect as readableEffect } from './effect-copy';
 import { ownedProgress, type Account } from '../game/account';
 import { portrait, assetUrl } from './portrait';
 import { creatures } from '../content/creatures';
-import { capturedRating } from './owned-companion';
 import { characterRating } from './character-rating';
 import { characterRole } from './character-role';
 import { conduitIcon, conduitRarity, conduitDetails, conduitLore } from './conduit-store';
@@ -26,14 +25,13 @@ import { getStarter } from '../content/starters';
 
 const galleries = [
   { id: 'characters', name: 'Character Archive', subtitle: 'Element-Bearers · Forms · Combat kits' },
-  { id: 'conduits', name: 'Conduit Archive', subtitle: 'Ancient mechanisms · Effects · Ownership' },
+  { id: 'conduits', name: 'Conduit Archive', subtitle: 'Conduit effects · Ownership' },
   { id: 'creatures', name: 'Elemental-Devourer &amp; Machine Glossary', subtitle: 'Discoveries · Elements · Enemy loot' },
 ] as const;
 export type ArchiveGallery = (typeof galleries)[number]['id'];
 
 function characterArchive(account: Account | null): string {
-  const capturedForms = creatures.filter((creature) => creature.mode && creature.mode !== 'machines');
-  const total = starters.length * 6 + capturedForms.length;
+  const total = starters.length * 6;
   return `<div class="archive-filters" role="group" aria-label="Character archive filters">
       <label>Element<select data-character-filter="element"><option value="">All elements</option>${elements.map((element) => `<option value="${element.id}">${element.name}</option>`).join('')}</select></label>
       <label>Rarity<select data-character-filter="rarity"><option value="">All rarities</option>${materialRarities.map((rarity) => `<option>${rarity}</option>`).join('')}</select></label>
@@ -68,16 +66,6 @@ function characterArchive(account: Account | null): string {
           ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => `<p><strong>${kit.abilities[action].name}</strong>${abilityStatuses(kit.abilities[action].strength, starter.id, action)}<br>${readableEffect(kit.abilities[action].description)}</p>`).join('')}`, 'Combat kit')}
       </article>`;
       });
-    }).join('')}${capturedForms.map((creature) => {
-      const copies = account?.capturedCharacters?.filter((copy) => copy.creatureId === creature.id) ?? [];
-      const tier = Number(creature.id.split(':').at(-1));
-      const owned = copies.length > 0;
-      return `<article class="archive-card ${owned ? 'archive-form-revealed' : 'archive-form-locked'}" data-archive-character="${creature.id}" data-form="${tier + 1}" data-filter-element="${creature.element}" data-filter-rarity="${materialRarities[tier]}" data-filter-ownership="${!account ? 'unavailable' : owned ? 'owned' : 'unowned'}" data-filter-discovery="${!account ? 'unavailable' : owned ? 'revealed' : 'locked'}"       data-filter-stars="${tier + 1}">
-        <div class="archive-portrait${owned ? '' : ' unreached-character-art'}">${creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${creature.name}" width="960" height="960">` : '<span>Artwork pending</span>'}</div>
-        <h3>${creature.name}</h3>${elementLabel(creature.element)}${capturedRating(creature.id)}
-        <p class="archive-ownership">${!account ? 'Ownership unavailable' : owned ? `Owned copies ${copies.length}` : 'Not owned'}</p>
-        <p>${creature.area} · Stages ${creature.stages[0]}-${creature.stages.at(-1)}</p>
-      </article>`;
     }).join('')}</div>`;
 }
 
@@ -117,7 +105,7 @@ function conduitArchive(account: Account | null): string {
 }
 
 export function archives(account: Account | null, selected: ArchiveGallery = 'characters'): string {
-  return `<section class="archives"><header class="archive-toolbar"><div><h2>Collections</h2><p>Browse forms, Conduits and enemy discoveries.</p></div>${information('collections-information', 'Collections', `<h3>Forms and stats</h3><p>Color marks reached Element-Bearer forms, owned captured forms and owned Conduits. Everything else stays silhouetted.</p><p>Your current forms show equipped stats. Other forms preview Lv.0 without Conduits. Stars and form rarity are separate.</p>
+  return `<section class="archives"><header class="archive-toolbar"><div><h2>Collections</h2><p>Browse forms, Conduits and enemy discoveries.</p></div>${information('collections-information', 'Collections', `<h3>Forms and stats</h3><p>Color marks reached Element-Bearer forms and owned Conduits. Everything else stays silhouetted.</p><p>Your current forms show equipped stats. Other forms preview Lv.0 without Conduits. Stars and form rarity are separate.</p>
     <h3>Enemy discovery</h3><p>Encounter an enemy to reveal its identity and lore; defeat it to reveal its loot table.</p><p>Loot quantities are equally likely within each range. Rarity rolls are independent, with no pity. Prismatica grows linearly without boss multipliers. Existing final-boss Null-Prismatica, Story materials and Machine components keep their boosts; drop chances are not multiplied.</p>
     <h3>Captures</h3><p>50% per kill in Heaven, Abyss, Treasury and Sanctuary. Crimson Roses has the same chance up to enemy Lv.120. No captures in Story, Training or elemental dungeons.</p><p>Captures keep their form and skills, cap at Lv.60 and sell by form, not level.</p>
     `)}</header>

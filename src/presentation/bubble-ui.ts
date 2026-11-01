@@ -27,10 +27,10 @@ function layer(): HTMLElement {
 }
 
 export function bubbleBackdrop(): string {
-  return `<div class="bubble-glow"></div><div class="bubble-current current-two"></div><div class="bubble-current current-three"></div>${Array.from({ length: 12 }, (_, i) =>
-    `<span class="bubble-drift depth-${i % 3}" style="--x:${(i * 19 + 4) % 97}%;--y:${(i * 31 + 18) % 95}%;--size:${25 + i * 13}px;--delay:${i * -2.7}s;--duration:${19 + i % 5 * 4}s"></span>`).join('')}${Array.from({ length: 36 }, (_, i) =>
+  return `<div class="bubble-glow"></div><div class="bubble-current current-two"></div><div class="bubble-current current-three"></div>${Array.from({ length: 8 }, (_, i) =>
+    `<span class="bubble-drift depth-${i % 3}" style="--x:${(i * 19 + 4) % 97}%;--y:${(i * 31 + 18) % 95}%;--size:${25 + i * 13}px;--delay:${i * -2.7}s;--duration:${19 + i % 5 * 4}s"></span>`).join('')}${Array.from({ length: 18 }, (_, i) =>
     `<i class="bubble-spark" style="--x:${(i * 37 + 7) % 97}%;--y:${(i * 23 + 13) % 95}%;--delay:${i * -.43}s;--size:${i % 5 === 0 ? 6 : 2}px"></i>`).join('')}
-    <span class="bubble-orbit orbit-a"><b>${glyphs[0]}</b></span><span class="bubble-orbit orbit-b"><b>${glyphs[1]}</b></span>${Array.from({ length: 16 }, (_, i) =>
+    <span class="bubble-orbit orbit-a"><b>${glyphs[0]}</b></span><span class="bubble-orbit orbit-b"><b>${glyphs[1]}</b></span>${Array.from({ length: 8 }, (_, i) =>
     `<b class="bubble-twinkle" style="--x:${(i * 29 + 11) % 96}%;--y:${(i * 41 + 7) % 92}%;--delay:${i * -.83}s;--duration:${3.2 + i % 4 * .9}s;--size:${.55 + i % 3 * .3}rem">${glyphs[i % 4]}</b>`).join('')}`;
 }
 
@@ -71,13 +71,14 @@ function pressFeedback(target: HTMLElement, event: MouseEvent): void {
   host.append(burst);
   burst.addEventListener('animationend', animation => { if (animation.target === burst) burst.remove(); });
   window.setTimeout(() => burst.remove(), 1200);
-  const major = target.matches('.home-bubble, [data-bubble-primary], .primary-button, [data-button-surface="tile"]');
+  const major = target.matches('.hub-bubble, .home-bubble, [data-bubble-primary], .primary-button, [data-button-surface="tile"]');
   glyphBurst(x, y, major ? 12 : 6, major ? 80 : 60, target.closest('dialog[open]'));
   target.animate([
-    { filter: 'brightness(1)' },
-    { filter: 'brightness(1.4) drop-shadow(0 0 14px var(--ui-accent))', offset: .3 },
-    { filter: 'brightness(1)' },
-  ], { duration: 600, easing: 'ease-out' });
+    { transform: 'scale(1)' },
+    { transform: 'scale(.95)', offset: .25 },
+    { transform: 'scale(1.03)', offset: .6 },
+    { transform: 'scale(1)' },
+  ], { duration: 420, easing: 'ease-out', composite: 'add' });
 }
 
 /** Colour theme of the thing obtained: Calamitic is black/white/crimson, Omnic prismatic. */
@@ -248,15 +249,49 @@ const entranceTargets = ['.bubble-page-heading', '.home-bubble', '.home-story', 
   '.inventory-card', '.item-tile', '.conduit-card', '.store-card', '.archive-card', '.story-stage', '.banner-card', '.summon-banner', '.reward-card',
   '.section-navigation > button', '.team-member', '.roster-card', '.friend-row', '.profile-card'].join(',');
 
+// Compositor-only (transform/opacity) and capped so large grids never stall the first frames.
 function popEntrances(root: ParentNode): void {
   if (!bubbleMotionAllowed()) return;
-  Array.from(root.querySelectorAll<HTMLElement>(entranceTargets)).slice(0, 80).forEach((element, index) => {
+  Array.from(root.querySelectorAll<HTMLElement>(entranceTargets)).filter(element => element.offsetParent !== null).slice(0, 36).forEach((element, index) => {
     element.animate([
-      { opacity: 0, transform: 'translateY(18px) scale(.6)', filter: 'blur(4px)' },
-      { opacity: 1, transform: 'translateY(-2px) scale(1.04)', filter: 'blur(0)', offset: .6 },
-      { opacity: 1, transform: 'none', filter: 'blur(0)' },
-    ], { duration: 600, delay: Math.min(index * 30, 850), easing: 'cubic-bezier(.2,1.25,.4,1)', fill: 'backwards' });
+      { opacity: 0, transform: 'translateY(14px) scale(.82)' },
+      { opacity: 1, transform: 'translateY(-1px) scale(1.02)', offset: .65 },
+      { opacity: 1, transform: 'none' },
+    ], { duration: 520, delay: Math.min(index * 28, 560), easing: 'cubic-bezier(.2,1.2,.4,1)', fill: 'backwards' });
   });
+}
+
+let screenZoom: { x: number; y: number; at: number; accent: string } | null = null;
+
+/** Home bubbles zoom into their destination: a portal bursts from the bubble and the new screen grows from it. */
+function homeZoomStart(target: HTMLElement): void {
+  if (!bubbleMotionAllowed()) return;
+  const rect = target.getBoundingClientRect();
+  const x = rect.left + rect.width / 2, y = rect.top + rect.height / 2;
+  const accent = getComputedStyle(target).getPropertyValue('--accent').trim() || getComputedStyle(target).getPropertyValue('--ui-accent').trim();
+  screenZoom = { x, y, at: performance.now(), accent };
+  const portal = document.createElement('div');
+  portal.className = 'bubble-portal';
+  portal.setAttribute('aria-hidden', 'true');
+  portal.style.left = `${x}px`; portal.style.top = `${y}px`;
+  if (accent) portal.style.setProperty('--accent', accent);
+  layer().append(portal);
+  window.setTimeout(() => portal.remove(), 700);
+}
+
+function homeZoomEnter(app: HTMLElement): void {
+  const zoom = screenZoom;
+  screenZoom = null;
+  if (!zoom || performance.now() - zoom.at > 900 || !bubbleMotionAllowed()) return;
+  const screen = app.querySelector<HTMLElement>('[data-menu-screen]') ?? app.firstElementChild as HTMLElement | null;
+  if (!screen) return;
+  const rect = screen.getBoundingClientRect();
+  screen.style.transformOrigin = `${zoom.x - rect.left}px ${zoom.y - rect.top}px`;
+  screen.animate([
+    { opacity: 0, transform: 'scale(.4)' },
+    { opacity: 1, offset: .55 },
+    { opacity: 1, transform: 'none' },
+  ], { duration: 560, easing: 'cubic-bezier(.2,1.05,.3,1)' }).addEventListener('finish', () => { screen.style.transformOrigin = ''; }, { once: true });
 }
 
 /** Screen identity used to pop entrances only on navigation, not on in-page re-renders. */
@@ -334,6 +369,11 @@ export function installBubbleUi(app: HTMLElement): void {
     if (!target || target.matches(':disabled') || target.closest('.cine, .battle-field, .battle-units, #battle-root .battle-unit')) return;
     pressFeedback(target, event);
   });
+  // Capture phase: record the zoom origin before the app re-renders the destination.
+  document.addEventListener('click', event => {
+    const target = event.target instanceof Element ? event.target.closest<HTMLElement>('.bubble-home-orbit > button, button.ref-home-story') : null;
+    if (target && !target.matches(':disabled')) homeZoomStart(target);
+  }, true);
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape' || document.querySelector('dialog[open], .cine')) return;
     const open = app.querySelector<HTMLElement>('.ref-bearer-detail[data-zoom="open"]');
@@ -347,6 +387,7 @@ export function installBubbleUi(app: HTMLElement): void {
     const identity = screenIdentity(app);
     if (identity === lastScreen) return;
     lastScreen = identity;
+    homeZoomEnter(app);
     popEntrances(app);
   });
   observer.observe(app, { childList: true });

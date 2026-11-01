@@ -88,6 +88,7 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
     art.hidden = false;
     details.hidden = false;
     label.textContent = reward.savedLabel ?? 'Reward saved';
+    label.hidden = !label.textContent;
     skip.hidden = true;
     close.hidden = false;
     dialog.setAttribute('aria-busy', 'false');

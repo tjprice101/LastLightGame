@@ -49,12 +49,8 @@ describe('Phase 0 battle action controls', () => {
     afterCalamiticAction(session.state, owner, 'ultimate', []);
     const view = new BattleView(host, session, { nextAlly: 'KeyC', nextTarget: 'KeyT' }, () => {});
     try {
-      host.querySelector<HTMLButtonElement>('#open-battle-menu')!.click();
-      const picker = host.querySelector<HTMLButtonElement>(`[data-actor="${recipient.id}"]`)!;
-      expect(picker.disabled).toBe(false);
-      picker.click();
-      expect(host.querySelector<HTMLButtonElement>('[data-action="skill1"]')!.disabled).toBe(false);
-      expect(host.querySelector<HTMLButtonElement>('[data-action="light"]')!.disabled).toBe(true);
+      host.querySelector<HTMLButtonElement>(`[data-unit="${recipient.id}"]`)!.click();
+      expect(host.querySelector('.battle-footer-target strong')?.textContent).toBe(recipient.name);
       const guide = document.createElement('div');
       guide.innerHTML = gestureGuide(session.state, recipient, session.state.enemies[0].id);
       expect(guide.querySelector('[data-gesture-action="skill1"]')?.getAttribute('data-available')).toBe('true');
@@ -62,7 +58,7 @@ describe('Phase 0 battle action controls', () => {
     } finally { view.destroy(); }
   });
 
-  it('shows the same target-dependent Gauge cost and availability in gesture and menu controls without mutating state', () => {
+  it('shows the same target-dependent Gauge cost and availability in gesture controls without mutating state', () => {
     const { session, host } = fixture();
     const [actor, tizu] = session.state.allies;
     tizu.conduits = ['aquatic-undertide-chronometer', null, null, null, null, null, null, null];
@@ -78,10 +74,6 @@ describe('Phase 0 battle action controls', () => {
       const skill = guide.querySelector<HTMLElement>('[data-gesture-action="skill1"]')!;
       expect(skill.dataset.available).toBe('true');
       expect(skill.textContent).toContain('22 Elemental Gauge');
-      host.querySelector<HTMLButtonElement>('#open-battle-menu')!.click();
-      const button = host.querySelector<HTMLButtonElement>('[data-action="skill1"]')!;
-      expect(button.disabled).toBe(false);
-      expect(button.textContent).toContain('Costs 22 Elemental Gauge');
       expect(session.state).toEqual(before);
     } finally { view.destroy(); }
   });

@@ -126,24 +126,24 @@ export function homeHub(starter: Starter, firstArrival: boolean, account: Accoun
   return `<div class="hub-heading"><p class="eyebrow">THE SANCTUARY</p><h1 tabindex="-1">Home</h1></div>
     <div class="home-hub" style="--element:${capturedLeader?.color ?? starter.color}">
       <button type="button" class="mono-story-launch" data-page="story"><span class="mono-panel-heading">Story · ${completed} / ${storyRules.stages}</span>
-        <strong>${completed === storyRules.stages ? 'All beacons restored' : 'Continue story'}</strong><span>${nextStory.name} · Stage ${nextStory.regionStage} · Lv.${nextStory.level}</span><span class="mono-arrow" aria-hidden="true">&rarr;</span></button>
+        <strong>${completed === storyRules.stages ? 'Story complete' : 'Continue story'}</strong><span>${nextStory.name} · Stage ${nextStory.regionStage} · Lv.${nextStory.level}</span><span class="mono-arrow" aria-hidden="true">&rarr;</span></button>
       <aside class="home-destinations" aria-label="Home shortcuts">
         <div class="home-banner-promotion"><button class="home-banner home-summon-banner" data-page="summon" ${banner.artwork.path ? `style="--banner-art:url('${assetUrl(banner.artwork.path)}')"` : ''}>
           <small>${banner.name}</small><strong>Summon</strong><span>${currencyIcon('lycalis')} Single draw · ${banner.cost} Null-Prismatica</span></button>
           ${bannerShowcase(banner.id)}</div>
         <div class="home-banner-promotion"><button class="home-banner home-summon-banner home-special-banner" data-page="summon" data-rose-banner ${specialBanner.artwork.path ? `style="--banner-art:url('${assetUrl(specialBanner.artwork.path)}')"` : ''}>
-          <small>Limited</small><strong>${specialBanner.name}</strong><span>Special Limited Time Banner!</span></button>
+          <small>Limited</small><strong>${specialBanner.name}</strong><span>View rewards, rates and pity</span></button>
           ${bannerShowcase(specialBanner.id)}</div>
       </aside>
       <section class="hub-showcase ${firstArrival ? 'first-arrival' : ''}" aria-label="${capturedLeader ? 'Your captured Elemental-Devourer' : 'Your saved Element-Bearer'}">
         <div class="hub-portrait">${capturedLeader?.art ?? portrait(starter, progress?.evolution)}${firstArrival ? elementalReveal(starter) : ''}</div>
         <div class="sanctuary-identity-plate"><p class="element-pill">${capturedLeader ? `${capturedLeader.element} · Captured Elemental-Devourer` : `${starter.element} · ${starter.weapon}`}</p>
         <h2 aria-label="${displayName}">${identity} ${capturedLeader ? '' : characterRole(starter.id)}</h2>${capturedLeader?.rating ?? characterRating(starter.id, progress?.evolution)}
-        ${capturedLeader ? '' : `<p class="home-vow">${starter.title}</p>`}
+        ${capturedLeader ? '' : `<p class="home-vow">Level, evolve and equip Conduits in Team.</p>`}
         <p class="upgrade-progress">${capturedLeader?.progress ?? `Lv.${progress?.level ?? 0} · Evo.${progress?.evolution ?? 1}`}</p>
         <div class="mono-leader-stats">${([['Health', leaderStats.health], [phaseZeroStatsReady ? 'Direct Attack' : 'Attack', leaderStats.damage], ['Defense', leaderStats.defense]] as const).map(([label, value]) => `<div><small>${label}</small><strong>${formatStat(value)}</strong></div>`).join('')}</div>
         <button type="button" class="text-button home-character-link" data-page="team" data-team-area="${capturedLeader ? 'creatures' : 'bearers'}" ${capturedLeader ? `data-team-capture="${squad[0]}"` : `data-team-character="${starter.id}"`}>View ${capturedLeader ? 'creature' : 'character'} &rarr;</button>
-        ${firstArrival ? `<p class="bond-message">${starter.lore.awakening}</p>` : ''}</div>
+        ${firstArrival ? `<p class="bond-message">Your starter is ready. Open Story to begin.</p>` : ''}</div>
         ${information('home-information', 'Character information',
           stats(capturedCopy ?? starter, progress, false, account?.conduitEquipment?.[capturedCopy?.instanceId ?? starter.id], account?.conduitUpgrades) +
           (capturedLeader ? `<p>${capturedLeader.progress} · Level cap 60</p><p>Cannot evolve.</p>` :
@@ -161,7 +161,7 @@ export function homeHub(starter: Starter, firstArrival: boolean, account: Accoun
           }).join('')}
         </div>
       </aside>
-      <div class="mono-home-stores"><button type="button" data-page="stores"><span class="mono-panel-heading">Market</span><strong>Exchange · Cosmetics · Conduits</strong><small>Spend your currencies</small><span aria-hidden="true">&rarr;</span></button>
+      <div class="mono-home-stores"><button type="button" data-page="stores"><span class="mono-panel-heading">Market</span><strong>Exchange · Cosmetics · Conduits</strong><small>Buy materials, profile frames and Conduits</small><span aria-hidden="true">&rarr;</span></button>
         <button type="button" data-page="inventory"><span class="mono-panel-heading">Inventory</span><strong>${account ? `${account.fractalis} Prismatica` : 'Balance unavailable'}</strong><small>${Object.values(account?.materials ?? {}).filter((amount) => amount > 0).length} materials · ${Object.values(account?.conduits ?? {}).filter((amount) => amount > 0).length} Conduits</small><span aria-hidden="true">&rarr;</span></button></div>
     </div>`;
 }

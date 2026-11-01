@@ -239,9 +239,9 @@ describe('50% capture rewards and retained fixed-form Elemental-Devourers', () =
     expect(item.amount).toBe(1);
     expect(lootArt(item)).toContain('enemies/abyss-wraththorn-slime.png');
     const html = archives(account);
-    expect(html).toContain('Owned copies 2');
-    expect(html).toContain('data-filter-stars="6"');
-    expect(html.match(/data-archive-character=/g)).toHaveLength(126);
+    expect(html).not.toContain('Owned copies');
+    expect(html).not.toContain('data-archive-character="infusion:');
+    expect(html.match(/data-archive-character=/g)).toHaveLength(96);
   });
   it('retains boss ultimates with their exact damage, cooldown and recovery', () => {
     const captured = copy(5, true);

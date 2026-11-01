@@ -91,3 +91,34 @@ body.bubble-battle .battle-menu :is(.battle-combat-menu, .battle-unit-intel, .ba
 /* Victory sheet stays up: no View battlefield / View victory toggle (owner D-433) */
 body.bubble-battle .battle-results [data-result-dismiss],
 body.bubble-battle [data-result-show] { display: none !important; }
+
+/* Info-only Battle status menu: squad and enemy status cards (no actions). */
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-utilities { display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; grid-template-rows: minmax(0, 1fr) !important; gap: 14px !important; padding: 14px 0 0 !important; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-side { display: flex; flex-direction: column; min-height: 0; margin: 0; padding: 14px !important; overflow: auto; border-radius: 24px !important; border: 1px solid #ffffff1f !important; background: linear-gradient(160deg, #ffffff0a, #ffffff03) !important; scrollbar-width: thin; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-side h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; font: 700 .95rem/1.2 var(--ui-font); letter-spacing: .06em; text-transform: uppercase; color: #f4f4f5; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu [data-status-side="enemy"] h3 { color: #ffb4b4; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; align-content: start; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-card { display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 12px 14px; border-radius: 18px; border: 1px solid #ffffff1c; background: #121318; box-shadow: inset 0 1px 0 #ffffff12; font: 500 .78rem/1.45 var(--ui-font); color: #d8d8de; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-card.is-defeated { opacity: .5; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-card > header { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-card > header strong { flex: 1 1 auto; min-width: 0; font: 700 .92rem/1.25 var(--ui-font); color: #fff; overflow-wrap: anywhere; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-card > header > span:not([class]) { font-weight: 700; color: #b9b9c2; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-condition { margin: 0; padding: 4px 10px; align-self: flex-start; border-radius: 999px; background: #ffffff10; color: #e9e9ee; font: 600 .72rem/1.4 var(--ui-font); }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-readout { display: flex; flex-direction: column; gap: 5px; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-readout > span, html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-readout small { display: block; margin: 0; overflow-wrap: anywhere; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-readout .unit-health { font-weight: 700; color: #fff; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-readout :is(.unit-active-buffs, .unit-statuses, .native-kit-slot):empty { display: none; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-note { color: #9be7a5; font-weight: 600; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu { height: fit-content !important; max-height: min(88vh, 860px) !important; inset-block: 0 !important; margin-block: auto !important; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu[open] { display: flex !important; flex-direction: column !important; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-utilities { flex: 0 1 auto !important; min-height: 0 !important; overflow: auto !important; grid-template-rows: auto !important; align-items: start !important; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-side { overflow: visible; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-readout { display: grid !important; grid-template-columns: 1fr auto; gap: 6px 10px !important; align-items: center; text-align: left !important; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-readout > * { grid-column: 1 / -1; justify-self: stretch; text-align: left !important; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-readout > .unit-health { grid-column: 1; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-readout > .unit-health + * { grid-column: 2; justify-self: end; color: #b9b9c2; font-weight: 700; }
+html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-readout meter { width: 100%; height: 8px; display: block !important; }
+@media (max-width: 760px) {
+  html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-utilities { display: flex !important; flex-direction: column !important; }
+  html body .battle-screen #battle-root .battle-menu.battle-status-menu .battle-status-side { overflow: visible; }
+}

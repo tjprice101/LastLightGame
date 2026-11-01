@@ -52,7 +52,7 @@ describe('online Material Exchange and Cosmetic Store', () => {
     expect(onlineProfile(emptyAccount(), null)).toContain('<ll-player-save-data>');
     const cosmetics = onlineStores(account, null, 'cosmetics');
     expect(cosmetics).toContain('data-online-perk');
-    expect(cosmetics).toContain('Everything else in the game works without an account.');
+    expect(cosmetics).toContain('Sign in to buy or equip a frame. Frames have no gameplay effects.');
     expect(cosmetics).not.toContain('purchase materials');
   });
 

@@ -265,7 +265,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     expect(glossary).toContain('currencies/lycalis.png');
     expect(glossary).toContain('Playable copy');
     expect(glossary).toContain('separate 50% chance');
-    expect(archives(account).match(/data-archive-character=/g)).toHaveLength(126);
+    expect(archives(account).match(/data-archive-character=/g)).toHaveLength(96);
     const html = summonHub(account);
     expect(html.match(/data-banner-entry=/g)).toHaveLength(28);
     const table = [...html.matchAll(/<table[\s\S]*?<\/table>/g)].map(match => match[0]).join('');
@@ -279,8 +279,6 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
     expect(view.host.innerHTML).toContain('Stage 25 / 25');
     expect(view.host.innerHTML).toContain('CURRENCY FARM');
-    expect(view.host.innerHTML).toContain('5 at Lv.120');
-    expect(view.host.innerHTML).toContain('25 guaranteed');
     expect(view.host.innerHTML).toContain('assets/backgrounds/sanctuary-arena.png');
     expect(view.host.innerHTML).toContain('assets/enemies/the-flame-beyond-eternity-rosethorn-wisp.png');
     expect(view.host.innerHTML).not.toContain('enemies/undefined');

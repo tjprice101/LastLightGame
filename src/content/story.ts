@@ -35,24 +35,24 @@ export function migratePreviousStoryCompleted(completed: number): number {
 export const storyRegions: readonly {
   element: ElementId; name: string; introduction: string; enemies: readonly string[]; boss: string; conclusion: string;
 }[] = [
-  { element: 'infernic', name: 'Emberwake March', introduction: 'The search for Let\'s soul begins among cooling cinders. Rise\'s seekers wield the same Infernic Wrath. Restore the first beacon to reopen the road.',
+  { element: 'infernic', name: 'Emberwake March', introduction: 'Restore the first beacon in the Infernic region to open the road to Glasswater Reach.',
     enemies: ['Cinderling', 'Ashback Boar', 'Coalcrest Moth', 'Furnace Jackal'], boss: 'Kilnheart Warden',
-    conclusion: 'The first beacon burns again. Let\'s soul remains unfound; the road leads onward toward Oceanic Sadness.' },
-  { element: 'oceanic', name: 'Glasswater Reach', introduction: 'Oceanic Sadness echoes across the broken causeways of Glasswater. Follow the submerged bells toward the second beacon while Rise\'s seekers scour the same shores.',
+    conclusion: 'Emberwake March cleared. The first beacon is restored; Glasswater Reach is now open.' },
+  { element: 'oceanic', name: 'Glasswater Reach', introduction: 'Cross the Oceanic causeways and restore the second beacon to reach Stormspan Heights.',
     enemies: ['Tideglass Crab', 'Foamfin Drake', 'Pearlshell Turtle', 'Current Ray'], boss: 'Deepbell Leviathan',
-    conclusion: 'The bells ring above the water. The search continues beyond these grieving shores, toward Atmospheric Calm.' },
-  { element: 'atmospheric', name: 'Stormspan Heights', introduction: 'Let named Atmospheric for Calm, even where its winds become a storm. Reconnect the sky bridges as Rise\'s Elemental-Devourers search the floating ridges.',
+    conclusion: 'Glasswater Reach cleared. The second beacon is restored; Stormspan Heights is now open.' },
+  { element: 'atmospheric', name: 'Stormspan Heights', introduction: 'Cross the Atmospheric sky bridges and restore the third beacon to reach Rootstone Wilds.',
     enemies: ['Cloudhorn Ram', 'Staticwing Kite', 'Gusttail Lynx', 'Thundercoil Serpent'], boss: 'Tempest Crown Roc',
-    conclusion: 'The sky paths steady without deciding the creators\' contest. Below, Botanic Joy and Life point toward the next road.' },
-  { element: 'botanic', name: 'Rootstone Wilds', introduction: 'Botanic carries Let\'s Joy and Life. Trace the living paths through sealed roads; Rise\'s seekers have stolen this power too and roam the buried garden.',
+    conclusion: 'Stormspan Heights cleared. The third beacon is restored; Rootstone Wilds is now open.' },
+  { element: 'botanic', name: 'Rootstone Wilds', introduction: 'Follow the Botanic garden paths and restore the fourth beacon to reach Stillhalo Vale.',
     enemies: ['Mossplate Beetle', 'Briarback Stag', 'Loamjaw Mole', 'Fernmantle Basilisk'], boss: 'Heartwood Colossus',
-    conclusion: 'The garden opens its gates. Neither creator\'s soul is here; a quiet procession leads toward Tranquilitic Peace.' },
-  { element: 'tranquilitic', name: 'Stillhalo Vale', introduction: 'Tranquilitic Peace rests over abandoned sanctuaries. Gather the scattered vows to restore the fifth beacon, remembering that Rise\'s creations can wield Peace as well.',
+    conclusion: 'Rootstone Wilds cleared. The fourth beacon is restored; Stillhalo Vale is now open.' },
+  { element: 'tranquilitic', name: 'Stillhalo Vale', introduction: 'Restore the fifth beacon in the Tranquilitic sanctuaries to reach Riftbound Frontier.',
     enemies: ['Ivoryveil Moth', 'Dewhalo Hart', 'Vowcrest Crane', 'Opalward Lion'], boss: 'Serene Oathkeeper',
-    conclusion: 'The vows become a guiding chorus. The search leads to the final route, where Chaotic Death and Destruction have fractured the frontier.' },
-  { element: 'chaotic', name: 'Riftbound Frontier', introduction: 'Let named Chaotic for Death and Destruction; it is not exclusive to Rise or her Nothingness. Cross the fractures and confront her seekers at the final beacon.',
+    conclusion: 'Stillhalo Vale cleared. The fifth beacon is restored; Riftbound Frontier is now open.' },
+  { element: 'chaotic', name: 'Riftbound Frontier', introduction: 'Cross the Chaotic fractures and defeat Fracture Sovereign to restore the final beacon.',
     enemies: ['Riftfang Hound', 'Splinterhide Lizard', 'Voidcrest Raven', 'Faultcoil Wyrm'], boss: 'Fracture Sovereign',
-    conclusion: 'Six beacons answer one another and the roads reopen. Neither Let\'s nor Rise\'s soul has been found. Both factions continue their search beyond the frontier.' },
+    conclusion: 'All six regions cleared and their beacons restored. Neither Let\'s nor Rise\'s soul has been found.' },
 ];
 
 export function storyEncounter(stage: number) {

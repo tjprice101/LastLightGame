@@ -36,6 +36,36 @@ const plain = (text?: string | null): string => (text ?? '').replace(/\[([^[\]]+
 const textContent = (markup: string) => markup.replace(/<[^>]*>/g, ' ');
 
 describe('visible UI copy', () => {
+  it('replaces mood text with rewards, saved results and usable screen guidance', () => {
+    const account = emptyAccount();
+    account.characters.ember = { level: 0, evolution: 1 };
+    account.squad = ['ember'];
+    const home = homeHub(openingStarters[0], false, account);
+    expect(home).toContain('View rewards, rates and pity');
+    expect(home).toContain('Buy materials, profile frames and Conduits');
+    const text = plain(textContent(gameplayHub(account)));
+    for (const phrase of ['practice with your saved squad and earn Prismatica',
+      'Defeat Infernic enemies for materials', 'Captured copies can also be sold for Prismatica',
+      'Challenge fellow Element-Bearers for a chance to recruit them']) expect(text).toContain(phrase);
+    expect(text).not.toMatch(/grieving shores|same low endpoints|not a third creator|not a found creator|unfinished search/);
+    expect(plain(inventoryView(account))).toContain('filter shows items shared by several');
+  });
+  it('gives each menu useful Help instead of one generic browsing paragraph', () => {
+    for (const [page, phrase] of [
+      ['home', 'Choose a destination around your leader'],
+      ['team', 'cannot be sold or consumed'],
+      ['inventory', 'Open chests here; equip Conduits in Team'],
+      ['collections', 'defeat them to reveal loot'],
+      ['stores', 'Buy materials in Material Exchange'],
+      ['conduit-store', 'compare its current and maximum effects'],
+      ['conduit-upgrade', 'Spend Broken Mechanical Components'],
+      ['profile', 'View Story progress, collection totals'],
+      ['battle', 'Training starts at wave 1'],
+    ] as const) {
+      expect(plain(sanctuaryHeader(page, 0, 0))).toContain(phrase);
+      expect(sanctuaryHeader(page, 0, 0)).not.toContain('viewing never spends anything');
+    }
+  });
   it('uses player-facing language in activity, loot, Inventory and summon descriptions', () => {
     const account = emptyAccount();
     for (const html of [gameplayHub(account), roseEvent(account), inventoryView(account), summonHub(account)]) {

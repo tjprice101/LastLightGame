@@ -31,6 +31,21 @@
   with crimson/white lightning. Equipping a Conduit shows a palette-matched
   EQUIPPED banner (no ribbon on the icons; owner removed it). Close
   X buttons are fixed 44px circles that never move on hover. Presentation only.
+- Bug-fix round (owner list): Inventory tabs (Materials/Conduits) sit under the
+  search/filters with uniform fixed-size tiles; squad-picker names no longer
+  cover art; Calamity chest results drop the "Rewards saved" line and every
+  reward icon is a uniform 56px; Home bubbles zoom on click; Character Archive
+  lists Element-Bearer forms only (Elemental-Devourers stay in the Glossary);
+  undiscovered glossary silhouettes get a light rim and Calamity art loads
+  eagerly (pure-black silhouettes were invisible on the dark cards); every
+  enemy has unique lore (`src/content/enemy-lore.ts`: six-form lines share one
+  line, the 12 Calamity bosses share an intro plus a unique line). The Battle
+  menu is now an info-only "Battle status" dialog: per-unit cards with HP, DEF,
+  Gauge, Last Flare readiness, buffs/debuffs/stacks and turns left; no actions,
+  Pass, rules or log (actions are gestures on the field; Restart/Replay live on
+  the results sheet only). Perf: fewer ambient particles, no backdrop blur on
+  floating bubbles, outline-only button pulse and blur-free entrances. Copy
+  audit replaced vague/flowery UI text with concrete information.
 ## Standalone bubble UI mock-up (D-432)
 
 Owner requests an interactive bubble-style mock-up of every screen, using their

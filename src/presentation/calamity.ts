@@ -230,10 +230,9 @@ export function calamityOpeningReward(id: string, reward: ReturnType<typeof open
     ...(reward.calamiticTokens ? [{ label: `${reward.calamiticTokens} Calamitic Tokens`, rarity: 'Calamitic' as const, art: currencyIcon('calamitic-tokens') }] : []),
   ];
   return { cinematic: { kind: 'chest', eyebrow: 'Calamity chest', title: chest.name, subtitle: `${items.length} reward${items.length === 1 ? '' : 's'}`, art: imageSource(calamityChestIcon(tier)), tier: 'prismatic', palette: rarityPalette('Calamitic') },
-    celebration: 'Rewards saved',
     title: 'Calamity chest opened', name: chest.name,
     art: `<ul class="summon-ten-grid calamity-reward-grid" aria-label="Received loot">${items.map(item =>
       `<li${item.rarity ? ` data-rarity="${item.rarity}"` : ''} class="summon-ten-result${item.chest ? ' chest-reward-result' : ''}"><div class="summon-ten-art">${item.art}</div><b>${escapeDialogText(item.label)}</b>${item.badge ?? ''}</li>`).join('')}</ul>`,
     details: '<p>Rewards added to Inventory.</p>',
-    rarity: 'Calamitic', accent: '#ed4545', animationLabel: 'Opening chest…', savedLabel: 'Rewards saved' };
+    rarity: 'Calamitic', accent: '#ed4545', animationLabel: 'Opening chest…', savedLabel: '' };
 }

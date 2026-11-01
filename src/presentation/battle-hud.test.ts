@@ -41,7 +41,7 @@ describe('restored pre-reference battle screen', () => {
     { mode: 'machines', stage: 35 }, { mode: 'treasury', stage: 25 },
     { mode: 'sanctuary', stage: 25 }, { mode: 'roses', stage: 35 },
     { character: 'nerithe', stage: 10 }, { activity: 'machines', tier: 3 },
-  ] as const)('restores field readouts and menu actions while keeping stage progress in %j', activity => {
+  ] as const)('restores field readouts and an info-only status menu while keeping stage progress in %j', activity => {
     const f = mount(createSession('ember', progress, activity, {
       ids: ['ember', 'tide', 'sprout'], progress: { ember: progress, tide: progress, sprout: progress },
     }));
@@ -51,9 +51,9 @@ describe('restored pre-reference battle screen', () => {
       expect(f.host.querySelector('.battle-command-dock')).toBeNull();
       expect(f.host.querySelector('[data-view-stats]')).toBeNull();
       expect(f.host.querySelector('.battle-field-actions')).toBeNull();
-      expect(f.host.querySelectorAll('[data-action]')).toHaveLength(4);
-      expect(f.host.querySelectorAll('#battle-menu [data-action]')).toHaveLength(4);
-      expect(f.host.querySelector('[data-action="defend"]')).toBeNull();
+      expect(f.host.querySelectorAll('[data-action]')).toHaveLength(0);
+      expect(f.host.querySelectorAll('#battle-menu [data-status-unit]')).toHaveLength(f.session.state.allies.length + f.session.state.enemies.length);
+      expect(f.host.querySelector('#battle-menu button:not(#close-battle-menu)')).toBeNull();
       expect(f.host.querySelector('.battle-progress')?.textContent).toContain('Turn 1');
       const meter = f.host.querySelector<HTMLMeterElement>('[aria-label="Activity stage progress"]');
       if (activity) {

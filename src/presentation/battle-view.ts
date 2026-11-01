@@ -1,9 +1,9 @@
-import { actionIds, describeFighter, enemies, formatStat, isActionId, shatterGauge, type ActionId } from '../content/combat';
+import { describeFighter, enemies, formatStat, type ActionId } from '../content/combat';
 import { gameConfirm, gameDialogPending } from './game-dialog';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
-import { actAndAdvanceTurn, advanceUnavailableTurns, teamCanAct, combatantCanAct, actionUnavailable, actionGaugeCost, createBattle, createCalamityBattle, createDungeonBattle, createInfusionBattle, createWarBattle, createStoryBattle, endTurn, nextStage, nextWave, withMasterLoadouts, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
+import { actAndAdvanceTurn, advanceUnavailableTurns, teamCanAct, combatantCanAct, actionUnavailable, createBattle, createCalamityBattle, createDungeonBattle, createInfusionBattle, createWarBattle, createStoryBattle, endTurn, nextStage, nextWave, withMasterLoadouts, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
 import { calamityEncounter, isCalamityActivityId, isCalamityTier, type CalamityActivityId, type CalamityTier } from '../content/calamity';
-import { confirmCalamity, calamityCadence } from './calamity';
+import { confirmCalamity } from './calamity';
 import { calamityBossArt, calamityArenaArt } from '../content/calamity-art';
 import type { MasterLoadouts } from '../content/master-conduits';
 import { type CharacterProgress } from '../content/progression';
@@ -21,10 +21,9 @@ import './battle-focus.css';
 import { assetUrl } from './portrait';
 import { reducedMotion } from './settings';
 import { battleSpeed } from './battle-speed';
-import { abilityIcon } from './ability-icon';
 import { dragAction } from './battle-gesture';
 import { characterArt } from '../content/character-art';
-import { elementalDungeonRules, dungeonStageCount, infusionStageCount, isCurrencyMode } from '../content/activities';
+import { dungeonStageCount, infusionStageCount, isCurrencyMode } from '../content/activities';
 import { elementLabel } from './element-label';
 import { unitFacingAttributes } from './unit-facing';
 import { gestureGuide, updateGestureGuide } from './gesture-guide';
@@ -35,29 +34,21 @@ import { characterRole } from './character-role';
 import { activityTransitionPending, transitionActivity, waitForActivityTransition } from './activity-transition';
 import { entranceFrames } from './battle-entrance';
 import { infusionEncounter } from '../content/infusions';
-import { treasuryPrismaticaText } from '../content/loot-random';
 import { battleArtScale } from './battle-scale';
 import { lootBurst, lootLayout } from './battle-loot';
-import { finalBossLootText } from '../content/final-boss-loot';
 import { type InfusionModeId } from '../content/activities';
-import { characterRating } from './character-rating';
-import { getConduit, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
+import { type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
 import { type CapturedCharacter } from '../game/character-instances';
-import { capturedRating } from './owned-companion';
 import { machineRules, machineDropRatesText } from '../content/machines';
 import { warEncounter, warStageCount, warRulesText, type WarCharacterId } from '../content/elemental-war';
-import { basicActionName } from '../content/combat';
 import { storyEncounter, storyRules, storyRulesText } from '../content/story';
 import './battle-mono.css';
-import { abilityStatuses, kitResource } from './ability-status';
 import { buffSnapshot, type BattleBuffSnapshot } from '../game/battle-buffs';
 import { allyBuffs } from './ally-buffs';
 import { BattleVFXRunner } from '../vfx/battle-vfx-runner';
 import { conduitRestartNotice, restartHistoricalConduitSession } from './conduit-compatibility';
-import { createAllyTargetPicker, nativeActionHint, nativeIdentityReference, nativeMarkerReadout, nativeStateReadout, needsAllyTarget } from './native-kit-presentation';
+import { createAllyTargetPicker, nativeMarkerReadout, nativeStateReadout, needsAllyTarget } from './native-kit-presentation';
 import type { NativeView } from '../game/native-kits';
-import { bracketReferences } from './reference-text';
-import { readableEffect } from './effect-copy';
 
 export interface BattleSession { state: BattleState; log: string[]; runId: string; progress: CharacterProgress; teamProgress?: Partial<Record<StarterId, CharacterProgress>>; stageEvents: BattleEvent[]; entrancePending?: boolean; resultsVisible?: boolean }
 export interface BattleAuthorityResponse { session: BattleSession; result?: BattleResult }
@@ -741,36 +732,9 @@ export class BattleView {
       <div class="battle-footer-summary"><p id="battle-announcement" role="status">${complete ? state.calamity ? 'Calamity tier cleared. Your chest is saved in Inventory. Enter the next unlocked tier from Play.' : `All ${stages} stages cleared. Return to Play to replay unlocked stages.` : state.phase === 'cleared' ? (dungeon ? 'Stage cleared. Continue with full health; Elemental Gauge carries over.' : 'Wave cleared. Continue when ready; recovery and health carry over.') : state.phase === 'defeat' ? 'Your squad has fallen. Retry when ready; earned rewards are kept.' : 'Select a target. Drag an ally: ↑ Last Flare · ← Skill 1 · → Skill 2 · ↓ Normal. Right-click: Normal Attack.'}</p>
       <span class="battle-footer-target"><strong>${actor.name}</strong><small>Target: ${state.enemies.find((enemy) => enemy.id === this.targetId)?.name ?? 'None'}</small></span></div>
       </footer>
-      <dialog id="battle-menu" class="battle-menu" aria-labelledby="battle-menu-heading">
-      <header class="drawer-heading"><div><p class="eyebrow">TACTICS · REFERENCE</p><h2 id="battle-menu-heading">Battle menu</h2></div><button id="close-battle-menu" class="drawer-close" aria-label="Close battle menu">&times;</button></header>
-      <div class="battle-utilities">
-      <section class="battle-combat-menu"><h3>Actions · ${actor.name}</h3>${nativeIdentityReference(actor)}<p class="quiet">Enemy target: ${state.enemies.find(enemy => enemy.id === this.targetId)?.name ?? 'None'}. Ally-targeted actions open a separate living-ally selector before commitment; cancel spends nothing. Turns advance automatically when no teammate can act.</p>
-      <div class="battle-actor-picker" role="group" aria-label="Choose acting squad member">${state.allies.map((ally) => `<button class="text-button" data-actor="${ally.id}" aria-pressed="${ally.id === this.actorId}" title="${ally.name}" ${this.busy || !combatantCanAct(state, ally, this.targetId) ? 'disabled' : ''}>${isStarterId(ally.definitionId) ? getStarter(ally.definitionId).name : ally.name}${ally.hp <= 0 ? ' · defeated' : !combatantCanAct(state, ally, this.targetId) ? ' · unavailable' : ''}</button>`).join('')}</div>
-      <div class="battle-context-actions">${actionIds.map((action) => this.actionButton(state, actor, action)).join('')}</div>
-      ${state.phase === 'player' ? '<button id="end-battle-turn" class="battle-chrome-button">Pass remaining actions</button>' : ''}</section>
-      <section class="battle-unit-intel"><h3>Combatants</h3>${[...state.allies, ...state.enemies].map((unit) =>
-        `<article><strong>${unit.name}${unit.level !== null ? ` · Lv.${unit.level}` : ''}</strong>${nativeIdentityReference(unit)}${elementLabel(unit.element)}        ${unit.side === 'ally' && isStarterId(unit.definitionId) ? characterRating(unit.definitionId, unit.evolution) : unit.captured ? capturedRating(unit.captured.creatureId) : ''}${unitReadout(unit, false, state.allies, state.round, state)}${unit.attackBoost && unit.attackBoost.throughRound >= state.round ? `<small>Outgoing attack damage +${formatStat(unit.attackBoost.fraction * 100)}% through turn ${unit.attackBoost.throughRound}</small>` : ''}${unit.conduits?.some((id) => id !== null) ? `<small>Conduits: ${unit.conduits.filter((id) => id !== null).map((id) => getConduit(id).name).join(', ')}</small>` : ''}<small>${unit.hp <= 0 ? 'Defeated' : unit.recoverThrough >= state.round ? 'Recovering after Last Flare' : unit.spent ? 'Action used' : 'Ready'}</small></article>`).join('')}</section>
-      ${bracketReferences(`<section class="battle-help"><h3>Abilities and battle rules</h3>
-      ${state.calamity ? `<p>${calamityEncounter(state.calamity.activity, state.calamity.tier).description}</p>${calamityCadence(state.calamity.activity, state.round)}<p>Victory earns one chest. Open it in Inventory. Choose another tier from Play.</p>` : ''}
-      <button id="restart-battle" data-result-restart class="text-button">${state.calamity ? 'Replay tier' : dungeon ? 'Replay stage' : 'Restart Training'}</button>
-      <div class="actor-info"><strong>${actor.name}</strong><span class="passive-summary">${isStarterId(actor.definitionId) ? abilityIcon(actor.definitionId, 'passive') : ''}<span>Passive: ${kit.passive.name} &mdash; ${readableEffect(kit.passive.description)}</span></span>${kitResource(kit, isStarterId(actor.definitionId) ? actor.definitionId : undefined)}</div>
-      <section class="enemy-skill-guide"><h3>Enemy skills and timing</h3>${state.enemies.map((enemy) => `<p><strong>${enemy.name} · Lv.${enemy.level}${enemy.boss ? ' · Boss' : ''}</strong></p><ul>${(enemy.enemySkills ?? []).map((skill) =>
-        `<li>${skill.name}${skill.action === 'ultimate' ? ' (Ultimate)' : ''}: ${formatStat(skill.multiplier * 100)}% Attack, every ${skill.every} turns${state.round % skill.every === 0 ? ' · Due this turn' : ''}.</li>`).join('')}</ul>`).join('')}
-        <p class="quiet">One attack per enemy turn. The second skill takes priority on overlapping schedules; boss ultimates take highest priority. Normal attacks on other turns.</p></section>
-      ${actionIds.map((action) => `<p><strong>${action === 'light' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name}:</strong> ${action === 'light' ? '100% damage; +20 Elemental Gauge.' : `${abilityStatuses(kit.abilities[action].strength, actor.kit?.nativeIdentity && !actor.captured ? actor.definitionId : undefined, action)}${readableEffect(kit.abilities[action].description)}`}</p>`).join('')}
-      <p class="quiet">Drag at least 32 pixels and release to act; return to the start to cancel. A white shimmer means Last Flare is ready (steady glow with reduced motion). The Battle menu has accessible action buttons.</p>
-      <p class="quiet">Each living character acts once per turn; only Last Flare forces a recovery turn.
-        Elemental Gauge starts at ${shatterGauge.starting}; attacks build it and each incoming hit adds ${shatterGauge.incomingHit}, even through shields.
-        Enemy turns run automatically when no ally can act. Passing forfeits unused actions.</p>
-      ${state.story ? `<p class="quiet">${storyRulesText}</p><p>${storyEncounter(state.story.storyStage).introduction}</p>` : state.war ? `<p class="quiet">${warRulesText}</p>` : ''}
-      <div ${state.calamity || state.story || state.war ? 'hidden' : ''}>
-      <p class="quiet">${state.infusion?.mode === 'roses' ? '35 stages, Lv.80-140. Guaranteed Rosethorn materials start at 1-2 when unlocked and grow linearly to Seed 10-12, Bud 7-8, Bloom 6-7, Crest 4-5, Heart 3-4 and Soul 2-3. Seed through Heart drop from Stage 1; Soul from Lv.95 (Stage 10). Boss every fifth stage; no material boss bonus. Prismatica grows linearly from 9-18 to 750-1,500 without a boss multiplier. 50% captures at every event level. No Null-Prismatica or clear bonus.' : state.infusion?.mode === 'sanctuary' ? '25 stages, Lv.65-120. Null-Prismatica: guaranteed 1 per enemy at Stage 1 (Lv.65), rising to 5 at Lv.120; the final boss gives 25 guaranteed. Prismatica, 50% captures, no materials. Boss every fifth stage; earlier bosses use ordinary payouts. Copies sell for both currencies by form.' : state.infusion?.mode === 'treasury' ? `25 stages, Lv.65-120. ${treasuryPrismaticaText} 50% captures; no materials or Null-Prismatica. Boss every fifth stage. Copies sell by form.` : state.infusion ? `${infusionStageCount(state.infusion.mode)} stages, Lv.${infusionEncounter(state.infusion.mode, 1).level}-${infusionEncounter(state.infusion.mode, infusionStageCount(state.infusion.mode)).level}. Both used specialties drop from Stage 1: evolution grows linearly from 1-2 to 7-8 and leveling from 1-2 to 8-10 at the final boss without an extra material boost. No weapon or elemental materials drop. Boss every fifth stage. 50% capture chance per enemy.` : dungeon ? `${elementalDungeonRules.stages} stages, Lv.${elementalDungeonRules.startingLevel}-${elementalDungeonRules.maximumLevel}. Boss every fifth stage. Every unlocked material rarity is guaranteed. Each material starts at 1-2 when unlocked and grows linearly. Prismatica grows from 5-10 to 300-600. No final-boss reward multiplier.` : 'Enemy level follows the wave up to Lv.120; stats grow faster at higher levels.'}
-        Captures cap at Lv.60, keeping form and skills. HP resets between stages; Gauge carries over.
-        ${state.story ? 'Story Prismatica grows linearly by stage, without boss multipliers' : state.infusion?.mode === 'treasury' ? 'Treasury Prismatica grows linearly from 133-266 to 30,000-60,000' : state.infusion?.mode === 'roses' ? 'Rose Prismatica grows linearly from 9-18 to 750-1,500 without a boss multiplier' : 'Prismatica grows linearly by activity stage, or by enemy level in Training, without boss multipliers'}. ${state.dungeon ? 'Every material shown for this floor is guaranteed.' : state.infusion ? '' : 'Material stacks grow to 3-6 per drop.'} Quitting ends the run; ${dungeon ? 'cleared stages replay from Play' : 're-entering starts at wave 1'}.
-        Settings keeps the run. ${this.authority ? 'Signing back in restores the server-saved run.' : 'Reloading resets battle progress, not saved rewards.'}</p></div>
-      ${state.calamity ? '' : `<p class="quiet">${finalBossLootText}</p>`}
-      </section>`)}
-      <section class="battle-log"><h3>Battle log (${this.session.log.length} recent events)</h3><ol>${this.session.log.map((line) => `<li>${line}</li>`).join('')}</ol></section></div></dialog>`;
+      <dialog id="battle-menu" class="battle-menu battle-status-menu" aria-labelledby="battle-menu-heading">
+      <header class="drawer-heading"><div><p class="eyebrow">Turn ${state.round} &middot; Status</p><h2 id="battle-menu-heading">Battle status</h2></div><button id="close-battle-menu" class="drawer-close" aria-label="Close battle status">&times;</button></header>
+      <div class="battle-utilities">${(['ally', 'enemy'] as const).map((side) => `<section class="battle-status-side" data-status-side="${side}"><h3>${side === 'ally' ? 'Your squad' : 'Enemies'}</h3><div class="battle-status-grid">${(side === 'ally' ? state.allies : state.enemies).map((unit) => this.statusCard(state, unit)).join('')}</div></section>`).join('')}</div></dialog>`;
     if (results) celebrateBattleResults(this.host, this.session.state);
     this.vfxRunner?.destroy();
     this.vfxRunner = null;
@@ -800,20 +764,6 @@ export class BattleView {
     });
     this.host.querySelector('#close-battle-menu')?.addEventListener('click', closeMenu);
     menu.addEventListener('cancel', (event) => { event.preventDefault(); closeMenu(); });
-    this.host.querySelectorAll<HTMLButtonElement>('[data-actor]').forEach((button) => {
-      button.addEventListener('click', () => {
-        if (this.busy || button.disabled || gameDialogPending()) return;
-        this.actorId = button.dataset.actor ?? '';
-        const open = menu.open;
-        this.render();
-        if (open) {
-          const nextMenu = this.host.querySelector<HTMLDialogElement>('#battle-menu');
-          if (!nextMenu) throw new Error('Battle menu dialog is missing.');
-          nextMenu.showModal();
-          nextMenu.querySelector<HTMLButtonElement>(`[data-actor="${this.actorId}"]`)?.focus();
-        }
-      });
-    });
     this.host.querySelectorAll<HTMLButtonElement>('[data-unit]').forEach((button) => {
       let gesture: { pointerId: number; x: number; y: number } | null = null;
       let guide: HTMLSpanElement | null = null;
@@ -900,14 +850,6 @@ export class BattleView {
         this.host.querySelector<HTMLButtonElement>(`[data-unit="${id}"]`)?.focus();
       });
     });
-    this.host.querySelectorAll<HTMLButtonElement>('[data-action]').forEach((button) => {
-      button.addEventListener('click', () => {
-        if (!isActionId(button.dataset.action)) throw new Error('Unknown battle action.');
-        menu.close();
-        this.command(button.dataset.action);
-      });
-    });
-    this.host.querySelector('#end-battle-turn')?.addEventListener('click', () => { menu.close(); this.command('endTurn'); });
     this.host.querySelector('[data-result-continue]')?.addEventListener('click', () => this.command('endTurn'));
     this.host.querySelector('[data-result-dismiss]')?.addEventListener('click', () => {
       this.session.resultsVisible = false;
@@ -998,20 +940,19 @@ export class BattleView {
     }));
   }
 
-  private actionButton(state: BattleState, actor: Combatant, action: ActionId): string {
-    if (!actor.kit) throw new Error('Ally combat kit is missing.');
-    const kit = !actor.captured && isStarterId(actor.definitionId) ? describeFighter(actor.definitionId, actor.kit) : actor.kit;
-    const ability = action === 'light' ? null : kit.abilities[action];
-    const name = action === 'light' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name;
-    const reason = actionUnavailable(state, actor, action, this.targetId);
-    return `<button data-action="${action}" class="battle-action" ${reason ? 'disabled' : ''}>
-      <span class="battle-action-heading">${isStarterId(actor.definitionId) ? abilityIcon(actor.definitionId, action) : ''}<strong>${name}</strong></span>
-      ${ability ? abilityStatuses(ability.strength, actor.kit.nativeIdentity && !actor.captured ? actor.definitionId : undefined, action === 'light' ? undefined : action) : ''}
-      ${nativeActionHint(state, actor, action, this.targetId) ? `<span class="battle-ally-target">${nativeActionHint(state, actor, action, this.targetId)}</span>` : ''}
-      ${ability && actor.kit.nativeIdentity ? `<span>${readableEffect(ability.description)}</span>` : ''}
-      ${action === 'light' ? `<span>Down or right-click · +${shatterGauge.gains[action]} Elemental Gauge</span>` : `<span>${action === 'ultimate' ? 'Up' : action === 'skill1' ? 'Left' : 'Right'}</span>`}
-      ${ability ? `<span>Costs ${actionGaugeCost(actor, action, state, this.targetId)} Elemental Gauge${action === 'ultimate' && ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</span>` : ''}
-      <small>${reason ?? 'Ready'}</small></button>`;
+  private statusCard(state: BattleState, unit: Combatant): string {
+    const ally = unit.side === 'ally';
+    const condition = unit.hp <= 0 ? 'Defeated'
+      : !ally ? (unit.boss ? 'Boss' : 'Active')
+      : unit.recoverThrough >= state.round ? `Recovering through turn ${unit.recoverThrough}`
+      : unit.spent ? 'Acted this turn' : 'Ready to act';
+    const flare = ally && unit.hp > 0 && unit.kit ? actionUnavailable(state, unit, 'ultimate', this.targetId) : null;
+    const boost = unit.attackBoost && unit.attackBoost.throughRound >= state.round
+      ? `<small class="battle-status-note">Attack damage +${formatStat(unit.attackBoost.fraction * 100)}% &middot; ${unit.attackBoost.throughRound - state.round + 1} turn${unit.attackBoost.throughRound - state.round ? 's' : ''} left</small>` : '';
+    return `<article class="battle-status-card${unit.hp <= 0 ? ' is-defeated' : ''}" data-status-unit="${unit.id}">
+      <header><strong>${unit.name}</strong><span>${unit.level !== null ? `Lv.${unit.level}` : ''}</span>${elementLabel(unit.element)}</header>
+      <p class="battle-status-condition">${condition}${ally && unit.hp > 0 && unit.kit ? ` &middot; Last Flare ${flare ? 'not ready' : 'ready'}` : ''}</p>
+      <div class="battle-status-readout">${unitReadout(unit, false, state.allies, state.round, state)}${boost}</div></article>`;
   }
 
 }

@@ -105,9 +105,9 @@ document.getElementById('preview-entrance')?.addEventListener('click', () => run
 document.getElementById('preview-play')?.addEventListener('click', () => run(() => {
   rebuild(false);
   if (!isActionId(action.value)) throw new Error('Invalid preview action.');
-  const button = battleHost.querySelector<HTMLButtonElement>(`[data-action="${action.value}"]`);
-  if (!button || button.disabled) throw new Error('This ability is unavailable.');
-  button.click();
+  if (!view) throw new Error('Preview battle is not ready.');
+  // The Battle menu is info-only; drive the same command path a gesture uses.
+  Reflect.apply(Reflect.get(view, 'command') as (action: string) => void, view, [action.value]);
 }));
 window.addEventListener('pagehide', () => view?.destroy(), { once: true });
 run(() => rebuild(false));

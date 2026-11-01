@@ -17,7 +17,7 @@ export function conduitReward(id: ConduitId, account: Account, title: string, re
     cinematic: { kind: 'conduit', eyebrow: `${conduit.rarity} Conduit`, title: conduit.name, subtitle: title, art: imageSource(art), tier: rarityTier(conduit.rarity),
       palette: conduit.rarity === 'Omnic' && conduit.element ? { accent: elementAccents[conduit.element], theme: 'prismatic' } : rarityPalette(conduit.rarity) },
     celebration: title,
-    title, name: conduit.name, rarity: conduit.rarity, accent: conduit.rarity === 'Omnic' && conduit.element ? elementAccents[conduit.element] : '#ffffff', animationLabel: 'Ancient mechanism restored',
+    title, name: conduit.name, rarity: conduit.rarity, accent: conduit.rarity === 'Omnic' && conduit.element ? elementAccents[conduit.element] : '#ffffff', animationLabel: 'Conduit unlocked',
     art: `<span class="conduit-reward-art">${art}</span>`,
     details: `${conduitRarity(id)}<p>Upgrade +${level} · Owned ${owned}</p>
       <p>${referencedEffect(escapeDialogText(conduitEffect(conduit, level)))}</p><p>${escapeDialogText(receipt)}</p><p>Account-wide unlock · Not auto-equipped</p>`,

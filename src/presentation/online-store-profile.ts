@@ -135,7 +135,7 @@ export function materialExchange(account: Account | null, selected: string, navi
 
 export function onlineStores(account: Account | null, profile: OnlineProfileDisplay | null, tab: 'materials' | 'cosmetics', selectedMaterial = 'infernic', selectedFrame = 'default'): string {
   const online = profile !== null;
-  const notice = online ? '' : '<p role="status" data-online-perk>Profile frames decorate your online profile, which friends see. Sign in to an online account to buy or equip them. Everything else in the game works without an account.</p>';
+  const notice = online ? '' : '<p role="status" data-online-perk>Profile frames are visible to friends on your online profile. Sign in to buy or equip a frame. Frames have no gameplay effects.</p>';
   const navigation = `<nav class="online-store-tabs" aria-label="Stores">
     <button data-store-tab="materials" aria-pressed="${tab === 'materials'}">Material Exchange</button>
     <button data-store-tab="cosmetics" aria-pressed="${tab === 'cosmetics'}">Cosmetic Store</button>

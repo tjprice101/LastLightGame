@@ -32,3 +32,4 @@
 .creature-loot .glossary-loot .conduit-details-art .conduit-icon-frame { width: 120px; height: 120px; }
 .glossary-loot .conduit-details-art img { width: 120px; height: 120px; }
 .loot-roll-notes { margin-top: 1rem; }
+.glossary-card.undiscovered .glossary-art img { filter: brightness(0) drop-shadow(0 0 1px rgb(255 255 255 / .55)) drop-shadow(0 0 6px rgb(255 255 255 / .18)); }

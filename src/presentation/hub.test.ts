@@ -49,7 +49,7 @@ describe('game-specific hub layouts', () => {
     expect(html).toContain('class="home-banner home-summon-banner home-special-banner"');
     expect(html).toContain('data-page="summon" data-rose-banner');
     expect(html).toContain('banners/summon-roses.png');
-    expect(html).toContain('<strong>Roses Under Sunny Skies</strong><span>Special Limited Time Banner!</span>');
+    expect(html).toContain('<strong>Roses Under Sunny Skies</strong><span>View rewards, rates and pity</span>');
     expect(html).not.toContain('home-event-banner');
     expect(html).not.toContain('35 stages · Lv.80-140');
     expect(html).toContain('class="home-squad" aria-label="Current squad"');
@@ -109,7 +109,7 @@ describe('game-specific hub layouts', () => {
     const inventory = characterHub(starters[0], 'equipment');
     expect(inventory.match(/data-conduit-slot=/g)).toHaveLength(8);
     expect(inventory).toContain('Master Conduit');
-    expect(homeHub(starters[0], true)).toContain(starters[0].lore.awakening);
+    expect(homeHub(starters[0], true)).toContain('Your starter is ready. Open Story to begin.');
   });
   it.each(starters)('$name uses icons in existing shortcuts without an extra ability strip', (starter) => {
     for (const html of [characterHub(starter, 'overview')]) {

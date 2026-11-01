@@ -42,7 +42,7 @@ function materialMetadata(id: string): string {
 
 function inventoryInformation(): string {
   return information('inventory-information', 'Inventory', informationTopics('inventory-help', [
-    { id: 'holdings', title: 'Finding items', summary: 'Counts and shared items', content: '<p>Counts show distinct item types, not total quantities. No element includes items shared by several elements.</p>' },
+    { id: 'holdings', title: 'Finding items', summary: 'Counts and shared items', content: '<p>Counts show distinct item types, not total quantities. The "No element" filter shows items shared by several elements.</p>' },
     { id: 'materials', title: 'Materials', summary: 'Sources and banner bundles', content: '<p>Earned in Story, elemental dungeons, Heaven, Abyss and Passion of Crimson Roses.</p><p>Summon bundles contain Common, Uncommon or Rare materials: one random element on Standard, Rosethorn on Roses. Duplicate Element-Bearers give larger Rare bundles.</p>' },
     { id: 'conduits', title: 'Conduits', summary: 'Where to get them', content: '<p>Common: Conduit Store. Rare, Legendary and Omnic: Awaken the Machines. Summons can also award a Legendary bonus.</p><p>Unlock once, equip across your squad. Upgrade with Broken Mechanical Components.</p>' },
     { id: 'conduit-terms', title: 'Conduit terms', summary: 'Words used in Conduit effects', content: `<dl class="conduit-glossary">${conduitGlossary.map(entry => `<dt>${entry.term}</dt><dd>${entry.definition}</dd>`).join('')}</dl>` },
@@ -113,8 +113,12 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
       <button type="button" class="text-button" data-inventory-clear ${!account ? 'disabled' : ''}>Clear</button>
     </div>
     <p class="inventory-results" data-inventory-results role="status" ${!account ? 'hidden' : ''}></p>
-    <details class="inventory-panel ref-panel" id="inventory-panel-materials" data-inventory-section="materials" ${sections.materials ? 'open' : ''}>
-    <summary class="ref-panel-heading">Resources &amp; Items · ${account ? resourceCount : 'Unavailable'}</summary><div class="ref-scroll">
+    <div class="inventory-tabs" role="tablist" aria-label="Inventory sections">${([
+      ['materials', 'Resources &amp; Items', account ? resourceCount : 'Unavailable'],
+      ['conduits', 'Conduits', account ? ownedConduits.length + ownedMasters.length : 'Unavailable'],
+    ] as const).map(([tab, label, count]) => `<button type="button" role="tab" id="inventory-tab-${tab}" class="inventory-tab" data-inventory-tab="${tab}" aria-controls="inventory-panel-${tab}" aria-selected="${selected === tab}" tabindex="${selected === tab ? 0 : -1}">${label} · ${count}</button>`).join('')}</div>
+    <section class="inventory-panel ref-panel" id="inventory-panel-materials" role="tabpanel" aria-labelledby="inventory-tab-materials" data-inventory-section="materials" ${selected === 'materials' ? '' : 'hidden'}>
+    <div class="ref-scroll">
     ${!account ? '<p role="alert">Resource inventory unavailable. Check the save error.</p>' : resourceCount
       ? `<ul class="inventory-item-grid">${chestItems}${components > 0 ? `<li class="inventory-item" data-inventory-resource="${mechanicalComponents.id}" ${itemMetadata(mechanicalComponents.name, 'components')}>
         <div class="inventory-item-art">${mechanicalComponentIcon()}</div><strong>${mechanicalComponents.name}</strong><span class="inventory-quantity">Owned ${components}</span>
@@ -123,24 +127,23 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
         return `<li class="inventory-item" data-inventory-material="${id}" ${materialMetadata(id)}><div class="inventory-item-art">${art ? `<img src="${assetUrl(`materials/${art}.png`)}" alt="" aria-hidden="true" width="256" height="256" loading="lazy">` : '<span>Artwork pending</span>'}</div>
           <strong>${materialName(id)}</strong><span class="inventory-quantity">Owned ${amount}</span>
           ${information(`inventory-${id}-details`, materialName(id), `<p>Owned ${amount}</p><p>${materialDescription(id)}</p>`, 'Details')}</li>`;
-      }).join('')}</ul>` : empty('materials')}</div></details>
-    <details class="inventory-panel ref-panel" id="inventory-panel-conduits" data-inventory-section="conduits" ${sections.conduits ? 'open' : ''}>
-    <summary class="ref-panel-heading">Conduits · ${account ? ownedConduits.length + ownedMasters.length : 'Unavailable'}</summary>
+      }).join('')}</ul>` : empty('materials')}</div></section>
+    <section class="inventory-panel ref-panel" id="inventory-panel-conduits" role="tabpanel" aria-labelledby="inventory-tab-conduits" data-inventory-section="conduits" ${selected === 'conduits' ? '' : 'hidden'}>
     <div class="ref-scroll">
     ${!account ? '<p role="alert">Conduit inventory unavailable. Check the save error.</p>' : ownedConduits.length + ownedMasters.length
       ? `<ul class="inventory-item-grid">${ownedConduits.map((conduit) => `<li class="inventory-item" ${omnicTheme(conduit.id)} data-inventory-conduit="${conduit.id}" ${itemMetadata(conduit.name, 'conduits', conduit.rarity, conduit.element ?? '')}>
         <div class="inventory-item-art">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div><strong>${conduit.name}</strong><span class="conduit-identity-badges">${conduitRarity(conduit.id)}</span><span class="inventory-quantity">Owned ${account?.conduits?.[conduit.id]}</span>
         ${information(`inventory-${conduit.id}-details`, conduit.name, `<div class="inventory-detail-art">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div>${conduitElement(conduit.id)}<p>${conduit.rarity} Conduit · Upgrade +${account?.conduitUpgrades?.[conduit.id] ?? 0} of 5</p><h3>Effect</h3><p>${referencedEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]))}</p><p>Shown values include the saved upgrade level.</p><h3>Background</h3><p>${conduit.lore}</p><p>Owned ${account?.conduits?.[conduit.id]}. Equipping does not consume a copy; manage equipment in Team.</p>`, 'Details')}</li>`).join('')}${masterItems}</ul>`
-      : empty('conduits')}</div></details>
+      : empty('conduits')}</div></section>
   </section>`;
 }
 
 export function inventorySections(host: HTMLElement): InventorySections {
   const state = { ...defaultInventorySections };
-  host.querySelectorAll<HTMLDetailsElement>('[data-inventory-section]').forEach(panel => {
+  host.querySelectorAll<HTMLElement>('[data-inventory-section]').forEach(panel => {
     const section = panel.dataset.inventorySection;
     if (!isInventoryTab(section)) throw new Error('Unknown Inventory category.');
-    state[section] = panel.open;
+    state[section] = !panel.hidden;
   });
   return state;
 }
@@ -159,6 +162,22 @@ export function inventoryFilters(host: HTMLElement): InventoryFilters {
 
 export function bindInventory(host: HTMLElement, onSelect: (tab: InventoryTab) => void, onToggle?: (state: InventorySections) => void, onFilter?: (state: InventoryFilters) => void): void {
   if (!host.querySelector('.inventory-hub')) return;
+  const tabs = Array.from(host.querySelectorAll<HTMLButtonElement>('[data-inventory-tab]'));
+  const select = (tab: InventoryTab, focus = false): void => {
+    for (const button of tabs) {
+      const active = button.dataset.inventoryTab === tab;
+      button.setAttribute('aria-selected', String(active));
+      button.tabIndex = active ? 0 : -1;
+      if (active && focus) button.focus({ preventScroll: true });
+    }
+    host.querySelectorAll<HTMLElement>('[data-inventory-section]').forEach(panel => { panel.hidden = panel.dataset.inventorySection !== tab; });
+    onSelect(tab);
+    onToggle?.(inventorySections(host));
+  };
+  const current = (): InventoryTab => {
+    const tab = tabs.find(button => button.getAttribute('aria-selected') === 'true')?.dataset.inventoryTab;
+    return isInventoryTab(tab) ? tab : 'materials';
+  };
   const update = (): void => {
     const state = inventoryFilters(host);
     const query = state.query.trim().toLowerCase();
@@ -171,10 +190,13 @@ export function bindInventory(host: HTMLElement, onSelect: (tab: InventoryTab) =
         && (!state.rarity || (state.rarity === 'none' ? !data.itemRarity : data.itemRarity === state.rarity))
         && (!state.element || (state.element === 'none' ? !data.itemElements : data.itemElements?.split(' ').includes(state.element))));
     }
-    host.querySelectorAll<HTMLElement>('[data-inventory-section]').forEach(panel => {
-      panel.hidden = active && !panel.querySelector('[role="alert"]')
-        && !Array.from(panel.querySelectorAll<HTMLElement>('[data-inventory-entry]')).some(item => !item.hidden);
-    });
+    const visibleIn = (tab: InventoryTab): number => Array.from(host.querySelectorAll<HTMLElement>(`[data-inventory-section="${tab}"] [data-inventory-entry]`)).filter(item => !item.hidden).length;
+    const wanted: InventoryTab | null = state.type === 'conduits' || state.type === 'masters' ? 'conduits' : state.type ? 'materials' : null;
+    if (wanted && wanted !== current()) select(wanted);
+    else if (active && !visibleIn(current())) {
+      const other: InventoryTab = current() === 'materials' ? 'conduits' : 'materials';
+      if (visibleIn(other)) select(other);
+    }
     const count = items.filter(item => !item.hidden).length;
     const result = host.querySelector<HTMLElement>('[data-inventory-results]');
     if (!result) throw new Error('Inventory results status is missing.');
@@ -192,12 +214,17 @@ export function bindInventory(host: HTMLElement, onSelect: (tab: InventoryTab) =
     query.focus({ preventScroll: true });
   });
   update();
-  host.querySelectorAll<HTMLDetailsElement>('[data-inventory-section]').forEach(panel => {
-    panel.addEventListener('toggle', () => {
-      const section = panel.dataset.inventorySection;
-      if (!isInventoryTab(section)) throw new Error('Unknown Inventory category.');
-      if (panel.open && isInventoryTab(section)) onSelect(section);
-      onToggle?.(inventorySections(host));
+  tabs.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      const tab = button.dataset.inventoryTab;
+      if (!isInventoryTab(tab)) throw new Error('Unknown Inventory category.');
+      if (tab !== current()) select(tab);
+    });
+    button.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+      event.preventDefault();
+      const tab = tabs[(index + (event.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length].dataset.inventoryTab;
+      if (isInventoryTab(tab)) select(tab, true);
     });
   });
 }
