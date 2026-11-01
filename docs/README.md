@@ -1,5 +1,9 @@
 # Documentation hub
 
+**D-435 approved design, not implemented:** [Phase 0: Everything Calamity](calamitic-characters.md)
+covers the three 7-star Calamitic Element-Bearers, Gates of Oblivion, Calamitic
+Ascension and nine new Calamitic Conduits.
+
 **D-432 mock-up only:** [standalone bubble UI mock-up](menus-and-inventory.md#standalone-bubble-ui-mock-up-d-432)
 offers a40-screen interactive gallery with glossy floating controls, existing
 artwork, CSS sparkles/motion and leader-element accents. No top navigation bar,
