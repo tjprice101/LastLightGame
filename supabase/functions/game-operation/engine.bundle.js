@@ -571,7 +571,7 @@ var approvedConduitCatalog = {
     "name": "Duality Planet Flamewheel",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Crinso only)",
-    "ability": "Using [Golden Edge] immediately after [Crimson Rupture] grants the living ally with the lowest [Health] percentage a [Shield] worth 12% of their maximum [Health] for one [Enemy Turn]. Crinso gains +55% [Defense] and +45% [Skill Efficiency]."
+    "ability": "Using [Golden Edge] immediately after [Crimson Rupture] grants the living ally with the lowest [Health] percentage a [Shield] worth 12% of their maximum [Health] that lasts until broken. Crinso gains +55% [Defense] and +45% [Skill Efficiency]."
   },
   "ominous-eclipse-mantle": {
     "name": "Eclipse Mantle",
@@ -583,7 +583,7 @@ var approvedConduitCatalog = {
     "name": "Eclipse Planet Watchtower",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Razor only)",
-    "ability": "When [Eclipse Bastion] creates Razor's [Shield], each other living ally gains a [Shield] worth 40% of that amount for one [Enemy Turn], capped at 45% of their own maximum [Health]. All [Squad Members] gain +55% [Health] and +35% [Skill Efficiency]."
+    "ability": "When [Eclipse Bastion] creates Razor's [Shield], each other living ally gains a [Shield] worth 40% of that amount that lasts until broken, capped at 45% of their own maximum [Health]. All [Squad Members] gain +55% [Health] and +35% [Skill Efficiency]."
   },
   "flare-focusing-iris": {
     "name": "Ember Coronation Iris",
@@ -619,7 +619,7 @@ var approvedConduitCatalog = {
     "name": "Final Dawn Tribunal",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Aurora only)",
-    "ability": "Enemies carrying Aurora's [Seal] have 25% less [Defense]. When an enemy consumes that [Seal] by using a [Skill], grant the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] for one [Enemy Turn]. All [Squad Members] gain +75% [Health] and +65% [Defense]."
+    "ability": "Enemies carrying Aurora's [Seal] have 25% less [Defense]. When an enemy consumes that [Seal] by using a [Skill], grant the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] that lasts until broken. All [Squad Members] gain +75% [Health] and +65% [Defense]."
   },
   "firstlight-cam": {
     "name": "Firstlight Concordance",
@@ -667,7 +667,7 @@ var approvedConduitCatalog = {
     "name": "Horizon Cyclone Orrery",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Atmoso only)",
-    "ability": "When Atmoso's [Cyclone] releases, each living ally gains a [Shield] equal to 30% of the total enemy [Health] it removed, lasting one [Enemy Turn]. All [Squad Members] gain +55% [Health] and +45% [Defense]."
+    "ability": "When Atmoso's [Cyclone] releases, each living ally gains a [Shield] equal to 30% of the total enemy [Health] it removed that lasts until broken. All [Squad Members] gain +55% [Health] and +45% [Defense]."
   },
   "master-elise-1": {
     "name": "Infinite Thunderwheel Arsenal",
@@ -703,7 +703,7 @@ var approvedConduitCatalog = {
     "name": "Leviathan Ward Loom",
     "rarity": "Omnic",
     "element": "Oceanic (actual gameplay element)",
-    "ability": "Living allies, including yourself, holding any [Shield] gain +30% [Skill Power] for healing and [Shield]-generating [Skills] while you are alive. Your [Skill]-created [Shields] last +1 [Enemy Turn]. +55% [Defense] and +55% [Skill Power]."
+    "ability": "Living allies, including yourself, holding any [Shield] gain +30% [Skill Power] for healing and [Shield]-generating [Skills] while you are alive. +55% [Defense] and +55% [Skill Power]."
   },
   "master-bruno-1": {
     "name": "Living Worldwall Atlas",
@@ -739,7 +739,7 @@ var approvedConduitCatalog = {
     "name": "Ouroboros Core",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "+40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] for 2 [Enemy Turns]. All [Squad Members] gain +55% [Health]."
+    "ability": "+40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] that lasts until broken. All [Squad Members] gain +55% [Health]."
   },
   "chaotic-paradox-spindle": {
     "name": "Paradox Spindle",
@@ -757,7 +757,7 @@ var approvedConduitCatalog = {
     "name": "Phoenix Reactor",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
-    "ability": "Once per [Battle], when defeated, revive at 35% maximum [Health] and 0 [Elemental Gauge]. On revival, each other living ally gains a [Shield] worth 15% of their own maximum [Health] for one [Enemy Turn]. All [Squad Members] gain +55% [Health]."
+    "ability": "Once per [Battle], when defeated, revive at 35% maximum [Health] and 0 [Elemental Gauge]. On revival, each other living ally gains a [Shield] worth 15% of their own maximum [Health] that lasts until broken. All [Squad Members] gain +55% [Health]."
   },
   "tempered-strike-link": {
     "name": "Phoenix Temper Dominion",
@@ -829,7 +829,7 @@ var approvedConduitCatalog = {
     "name": "Shared Tide Lifesea Engine",
     "rarity": "Omnic",
     "element": "Oceanic (actual gameplay element)",
-    "ability": "[Shield] [Skills] targeting only one ally also grant the most injured different ally a [Shield] worth 50% of the original amount for the same duration. +65% [Health] and +30% [Skill Efficiency]."
+    "ability": "[Shield] [Skills] targeting only one ally also grant the most injured different ally a [Shield] worth 50% of the original amount that lasts until broken. +65% [Health] and +30% [Skill Efficiency]."
   },
   "master-nerithe-1": {
     "name": "Shoreless Meridian Worldchart",
@@ -907,13 +907,13 @@ var approvedConduitCatalog = {
     "name": "Tempest Shelter Sovereign",
     "rarity": "Omnic",
     "element": "Atmospheric (actual gameplay element)",
-    "ability": "Your first critical [Skill] each [Player Turn] grants the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] for one [Enemy Turn]. +85% [Defense] and +30% [Critical Rate]."
+    "ability": "Your first critical [Skill] each [Player Turn] grants the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] that lasts until broken. +85% [Defense] and +30% [Critical Rate]."
   },
   "master-thornia-2": {
     "name": "Thousand-Rose Planetary Aegis",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Thornia only)",
-    "ability": "The first time each enemy triggers Thornia's [Empowered Thorn Trap] during an [Enemy Turn], grant each living ally hit by that enemy a [Shield] worth 12% of their own maximum [Health] for one [Enemy Turn]. Thornia gains +90% [Health] and +60% [Defense]."
+    "ability": "The first time each enemy triggers Thornia's [Empowered Thorn Trap] during an [Enemy Turn], grant each living ally hit by that enemy a [Shield] worth 12% of their own maximum [Health] that lasts until broken. Thornia gains +90% [Health] and +60% [Defense]."
   },
   "master-bliss-1": {
     "name": "Thousandfeather Zenith Loom",
@@ -2046,7 +2046,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-tide-2": {
-    "description": "[Tidal Shelter] gives the selected ally three times its [Shield] amount for one Enemy Turn instead of shielding the team.",
+    "description": "[Tidal Shelter] gives the selected ally three times its [Shield] amount instead of shielding the team.",
     "ranges": []
   },
   "master-tide-3": {
@@ -2559,8 +2559,8 @@ var convertedKitConduitIds = new Set(kitConduitDesigns.map((entry) => entry.id))
 
 // src/content/world-lore.ts
 var machineOrigin = "The Machines are destroyed prototypes from the time Let and Rise worked together. Their damaged mechanisms still awaken amid the ruins of that collaboration; they are not Elemental-Devourers created by Rise.";
-var conduitOrigin = "A Conduit is a surviving mechanism from the age of Let and Rise's collaboration, salvaged and restored for the present search. Elemental Light is the name used for the elemental energy within these devices, not a third creator or a recovered creator's soul.";
-var masterOrigin = "Master Conduits are restored mechanisms from Let and Rise's shared prototype work, attuned to a named Element-Bearer. Their power supports that bearer's search for Let's soul; owning one does not recover the soul or decide the contest.";
+var conduitOrigin = "Conduits are mechanisms salvaged from the time Let and Rise created worlds together. They use elemental energy called Elemental Light.";
+var masterOrigin = "Master Conduits come from Let and Rise's shared prototype work. Each is designed for a named Element-Bearer.";
 
 // src/content/calamitic-conduits.ts
 var calamiticTokenPrice = 100;
@@ -3487,7 +3487,7 @@ var flagshipFighters = {
     passive: { name: "Faultbound Resolve", description: "+9 defense, included in effective defense.", damageBonus: 0, defenseBonus: 9, healFraction: 0 },
     abilities: {
       skill1: { name: "Seismic Hammerfall", description: "155% damage to one enemy; weaken by 20% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.55, weakenFraction: 0.2 } },
-      skill2: { name: "Citadel Mantle", description: "Give every living ally 32 shield (refresh; does not stack).", cooldown: 0, targets: "all-allies", strength: { shield: 32 } },
+      skill2: { name: "Citadel Mantle", description: "Give every living ally 32 shield (lasts until broken; stacks).", cooldown: 0, targets: "all-allies", strength: { shield: 32 } },
       ultimate: { name: "Last Flare: Worldwall Ascendant", description: "230% damage to every living enemy and 45 shield for allies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.3, shield: 45 } }
     }
   },
@@ -3496,8 +3496,8 @@ var flagshipFighters = {
     passive: { name: "Shared Mindflame", description: "+15% outgoing damage at or below 50% health.", damageBonus: 0.15, defenseBonus: 0, healFraction: 0 },
     abilities: {
       skill1: { name: "Thoughtspark Benediction", description: "150% damage to one enemy; increase living allies' outgoing attack damage by 20% this and next player turn (refresh; does not stack).", cooldown: 0, strength: { damageMultiplier: 1.5, attackBoostFraction: 0.2 } },
-      skill2: { name: "Concord of Chaos", description: "Increase living allies' outgoing attack damage by 30% this and next player turn and give 20 shield (refresh; does not stack).", cooldown: 0, targets: "all-allies", strength: { attackBoostFraction: 0.3, shield: 20 } },
-      ultimate: { name: "Last Flare: Unbound Mindcrown", description: "Increase living allies' outgoing attack damage by 40% this and next player turn and give 40 shield (refresh; does not stack). Recover next turn.", cooldown: 0, targets: "all-allies", strength: { attackBoostFraction: 0.4, shield: 40 } }
+      skill2: { name: "Concord of Chaos", description: "Increase living allies' outgoing attack damage by 30% this and next player turn and give 20 shield (lasts until broken; stacks).", cooldown: 0, targets: "all-allies", strength: { attackBoostFraction: 0.3, shield: 20 } },
+      ultimate: { name: "Last Flare: Unbound Mindcrown", description: "Increase living allies' outgoing attack damage by 40% this and next player turn and give 40 shield (lasts until broken; stacks). Recover next turn.", cooldown: 0, targets: "all-allies", strength: { attackBoostFraction: 0.4, shield: 40 } }
     }
   },
   elise: {
@@ -3515,7 +3515,7 @@ var flagshipFighters = {
     passive: { name: "Unbroken Night", description: "+10 defense, included in effective defense.", damageBonus: 0, defenseBonus: 10, healFraction: 0 },
     abilities: {
       skill1: { name: "Nightcleave", description: "165% damage to one enemy; weaken by 25% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.65, weakenFraction: 0.25 } },
-      skill2: { name: "Eclipse Bastion", description: "Give every living ally 35 shield (refresh; does not stack).", cooldown: 0, targets: "all-allies", strength: { shield: 35 } },
+      skill2: { name: "Eclipse Bastion", description: "Give every living ally 35 shield (lasts until broken; stacks).", cooldown: 0, targets: "all-allies", strength: { shield: 35 } },
       ultimate: { name: "Last Flare: Unbroken Midnight", description: "240% damage to every living enemy and 50 shield for allies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.4, shield: 50 } }
     }
   }
@@ -3637,7 +3637,7 @@ var warFighters = {
     passive: { name: "Load-Bearing Will", description: "+10 defense, already included in effective defense.", damageBonus: 0, defenseBonus: 10, healFraction: 0 },
     abilities: {
       skill1: { name: "Keystone Reversal", description: "160% damage to one enemy; weaken its next two enemy-phase attacks by 25%.", cooldown: 0, strength: { damageMultiplier: 1.6, weakenFraction: 0.25 } },
-      skill2: { name: "Raise the Faultline", description: "Give every living ally 40 shield; refreshes rather than stacks.", cooldown: 0, targets: "all-allies", strength: { shield: 40 } },
+      skill2: { name: "Raise the Faultline", description: "Give every living ally 40 shield; lasts until broken and stacks.", cooldown: 0, targets: "all-allies", strength: { shield: 40 } },
       ultimate: { name: "Worldweight Citadel", description: "260% damage to all enemies and 65 shield to living allies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.6, shield: 65 } }
     }
   },
@@ -3821,7 +3821,7 @@ var kitPilotDescriptions = {
   ward: {
     passive: `While you are alive, shields from your own abilities grant one charge of ${elementalEffectFamilies.ward.label} when they absorb a direct enemy hit. Charges have no limit. Save these charges to strengthen Undertow Thrust's Weaken or Last Flare's team shield.`,
     skill1: `Spends all ${elementalEffectFamilies.ward.label} charges for +5 percentage points Weaken per charge.`,
-    ultimate: `Spends all ${elementalEffectFamilies.ward.label} charges to increase this ability's team shield by 5% of your maximum Health per charge. Each ally keeps the higher of their remaining shield and this new amount.`,
+    ultimate: `Spends all ${elementalEffectFamilies.ward.label} charges to increase this ability's team shield by 5% of your maximum Health per charge. The shield lasts until broken and adds to any shield the ally already has.`,
     resource: { label: elementalEffectFamilies.ward.label, key: "ward", summary: "Gain a charge each time your ability shield absorbs a direct enemy hit while you are alive. Skill 1 spends them to strengthen Weaken; Last Flare spends them for a larger team shield.", detail: `${elementalEffectFamilies.ward.label}: Skill 1 +5 percentage points Weaken per charge or Last Flare adds a shield worth 5% of caster maximum Health per charge.`, effect: sharedNativeEffects.ward }
   },
   bloom: {
@@ -3841,7 +3841,7 @@ var kitPilotDescriptions = {
   "thorn-aegis": {
     passive: "While Thornia is alive, shields from her abilities grant one Thorn Aegis charge when they absorb a direct enemy hit. Charges have no limit. Conduit shields do not count.",
     skill2: "Spends all Thorn Aegis for +5 percentage points Weaken each.",
-    ultimate: "Spends all Thorn Aegis to add shield points equal to 5% of your maximum Health per charge, before this ability's shield modifiers. Each ally keeps the higher of their remaining shield and this new amount.",
+    ultimate: "Spends all Thorn Aegis to add shield points equal to 5% of your maximum Health per charge, before this ability's shield modifiers. The shield lasts until broken and adds to any shield the ally already has.",
     resource: { label: "Thorn Aegis", key: "thornAegis", summary: "Gain a charge each time Thornia's ability shield absorbs a direct enemy hit while she is alive. Skill 2 spends them for stronger Weaken; Last Flare spends them for a larger team shield. Conduit shields do not earn charges.", detail: "Thorn Aegis: Skill 2 +5 percentage points Weaken each or Last Flare adds 5% caster maximum Health shield each.", effect: { family: "ward", kind: "shield-absorption", origin: "rose", source: "living-self-authored-shield" } }
   },
   "rose-duality": {
@@ -3892,15 +3892,15 @@ var nativeIdentities = {
   },
   tide: {
     role: "Precise barrier protector",
-    playLoop: "[Tizu] places a short-lived shield on one chosen ally before the next enemy attack.",
+    playLoop: "[Tizu] places a stacking shield on one chosen ally before the next enemy attack.",
     passive: {
       name: "Stillwater Guard",
       description: "When a shield from [Tizu]\u2019s abilities fully absorbs an enemy\u2019s direct hit so that no HP is lost, the shielded ally gains 8 [Elemental Gauge]."
     },
     abilities: {
       skill1: { ...ability("Undertow Thrust", "150% direct damage to one enemy and apply 25% [Weaken] for the next enemy phase. [Weaken] reduces the direct damage that enemy deals.", 1.5), strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
-      skill2: ability("Tidal Shelter", `Choose one living ally. It gains a shield worth ${nativeBalance.tizu.shelter * 100}% of its maximum HP until the next enemy phase ends. Recasting replaces the shield.`, void 0, "one-ally"),
-      ultimate: ability("Last Flare: Ocean Memory", `All living allies gain a shield worth ${nativeBalance.tizu.oceanMemory * 100}% of their maximum HP until the second enemy phase ends. The first direct hit each ally takes while this shield remains is reduced by 45% before the shield absorbs it.`, void 0, "all-allies")
+      skill2: ability("Tidal Shelter", `Choose one living ally. It gains a shield worth ${nativeBalance.tizu.shelter * 100}% of its maximum HP. The shield lasts until broken; recasting adds another shield on top.`, void 0, "one-ally"),
+      ultimate: ability("Last Flare: Ocean Memory", `All living allies gain a shield worth ${nativeBalance.tizu.oceanMemory * 100}% of their maximum HP that lasts until broken and stacks with existing shields. The first direct hit each ally takes while this shield remains is reduced by 45% before the shield absorbs it.`, void 0, "all-allies")
     }
   },
   sprout: {
@@ -3951,7 +3951,7 @@ var nativeIdentities = {
     },
     abilities: {
       skill1: ability("Warfeather Cut", "170% direct damage to one enemy. [Opening]: +25 percentage points Critical Rate for this attack. [Closing]: heal the most injured other living ally for 6% of its maximum HP. [Passing]: no bonus.", 1.7),
-      skill2: ability("Quietstorm Flourish", "120% direct damage to all enemies. [Opening]: living allies deal 10% more direct damage until this player turn ends. [Closing]: all living allies gain a shield worth 6% of their maximum HP until the next enemy phase ends. [Passing]: no bonus.", 1.2, "all-enemies"),
+      skill2: ability("Quietstorm Flourish", "120% direct damage to all enemies. [Opening]: living allies deal 10% more direct damage until this player turn ends. [Closing]: all living allies gain a stacking shield worth 6% of their maximum HP that lasts until broken. [Passing]: no bonus.", 1.2, "all-enemies"),
       ultimate: ability("Last Flare: Thousandfeather Stillness", "250% direct damage to all enemies. [Opening]: +45 percentage points Critical Rate for this attack. [Closing]: heal other living allies for 15% of their maximum HP. [Passing]: no bonus.", 2.5, "all-enemies")
     }
   },
@@ -3965,7 +3965,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability("Seismic Hammerfall", "190% direct damage to one enemy.", 1.9),
       skill2: ability("Citadel Mantle", "Place [Cover] on another living ally until the next enemy phase ends: 50% of the direct damage it takes, after Defense, is redirected to [Bruno]. Only one ally can hold this [Cover]; recasting moves it. If [Bruno] is the only living ally, he instead takes 20% less direct damage for that phase. Redirected damage cannot be redirected again.", void 0, "one-ally", true),
-      ultimate: ability("Last Flare: Worldwall Ascendant", "Place [Cover] on every other living ally for two enemy phases, redirecting 60% of each direct hit to [Bruno]; this replaces single-ally [Cover]. [Bruno] gains a shield worth 30% of his maximum HP for the same duration.", void 0, "all-allies")
+      ultimate: ability("Last Flare: Worldwall Ascendant", "Place [Cover] on every other living ally for two enemy phases, redirecting 60% of each direct hit to [Bruno]; this replaces single-ally [Cover]. [Bruno] gains a shield worth 30% of his maximum HP that lasts until broken and stacks.", void 0, "all-allies")
     }
   },
   disciple: {
@@ -4003,7 +4003,7 @@ var nativeIdentities = {
     },
     abilities: {
       skill1: ability("Nightcleave", "160% direct damage to one enemy, then spend all [Wounds] for an extra strike that uses the spent amount as its Attack, reduced by Defense. With no [Wounds], only the first hit occurs.", 1.6),
-      skill2: ability("Eclipse Bastion", "[Razor] takes 30% less direct damage during the next enemy phase. If he lost HP to direct hits during that phase, he then gains a shield equal to that HP through the following enemy phase."),
+      skill2: ability("Eclipse Bastion", "[Razor] takes 30% less direct damage during the next enemy phase. If he lost HP to direct hits during that phase, he then gains a stacking shield equal to that HP that lasts until broken."),
       ultimate: ability("Last Flare: Unbroken Midnight", "220% direct damage to one enemy, then spend all [Wounds] for an extra strike dealing three times the damage of a strike using twice the spent amount as its Attack, reduced by Defense.", 2.2)
     }
   },
@@ -4388,7 +4388,7 @@ var fighters = {
     passive: { name: "Stillwater Guard", description: "+8 defense, already included in displayed effective defense.", damageBonus: 0, defenseBonus: 8, healFraction: 0 },
     abilities: {
       skill1: { name: "Undertow Thrust", description: `150% damage to one enemy; reduce its next two enemy-phase attacks by 25%. ${kitPilotDescriptions.ward.skill1}`, cooldown: 0, strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
-      skill2: { name: "Tidal Shelter", description: "Give every living ally 25 shield (refresh to at least 25; does not stack).", cooldown: 0, strength: { shield: 25 } },
+      skill2: { name: "Tidal Shelter", description: "Give every living ally 25 shield (lasts until broken; stacks).", cooldown: 0, strength: { shield: 25 } },
       ultimate: { name: "Last Flare: Ocean Memory", description: `220% damage to all enemies and 35 shield for allies. Recover next turn. ${kitPilotDescriptions.ward.ultimate}`, cooldown: 0, strength: { damageMultiplier: 2.2, shield: 35 } }
     }
   },
@@ -4417,7 +4417,7 @@ var fighters = {
     stats: { health: 280, defense: 17, damage: 31, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: "Forbidden Garden", description: "+9 defense, included in effective defense.", damageBonus: 0, defenseBonus: 9, healFraction: 0 },
     abilities: {
-      skill1: { name: "Gilded Thorn Guard", description: "Give every living ally 30 shield (refresh; does not stack).", cooldown: 0, targets: "all-allies", strength: { shield: 30 } },
+      skill1: { name: "Gilded Thorn Guard", description: "Give every living ally 30 shield (lasts until broken; stacks).", cooldown: 0, targets: "all-allies", strength: { shield: 30 } },
       skill2: { name: "Shadow Rose Cleave", description: "180% damage to one enemy; weaken by 20% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.8, weakenFraction: 0.2 } },
       ultimate: { name: "Last Flare: Thousand-Rose Dominion", description: "240% damage to all enemies and 40 shield for allies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.4, shield: 40 } }
     }
@@ -4553,7 +4553,7 @@ function describeFighter(id, snapshot) {
     },
     bliss: {
       skill1: `Spends all ${elementalEffectFamilies.bloom.label} charges for +8% outgoing damage per charge.`,
-      ultimate: `Spends all ${elementalEffectFamilies.bloom.label} charges to add a shield worth 5% of this caster's maximum Health per charge; refreshes rather than stacks.`
+      ultimate: `Spends all ${elementalEffectFamilies.bloom.label} charges to add a shield worth 5% of this caster's maximum Health per charge; the shield lasts until broken and stacks.`
     },
     atmoso: {
       skill1: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge.`,
@@ -4574,7 +4574,7 @@ function describeFighter(id, snapshot) {
   for (const action of ["skill1", "skill2", "ultimate"]) {
     const ability2 = kit.abilities[action];
     if (ability2.strength.shield !== void 0 || id === "bliss" && action === "ultimate") {
-      ability2.description += " Shield: absorbs damage before HP; persists until depleted; refreshes to the higher amount.";
+      ability2.description += " Shield: absorbs damage before HP; lasts until broken; recasting stacks another shield on top.";
     }
     if (ability2.strength.weakenFraction !== void 0) {
       ability2.description += " Weaken: outgoing attack damage reduction; Defense unchanged.";
@@ -5508,50 +5508,50 @@ var storyRegions = [
   {
     element: "infernic",
     name: "Emberwake March",
-    introduction: "The search for Let's soul begins among cooling cinders. Rise's seekers wield the same Infernic Wrath. Restore the first beacon to reopen the road.",
+    introduction: "Restore the first beacon in the Infernic region to open the road to Glasswater Reach.",
     enemies: ["Cinderling", "Ashback Boar", "Coalcrest Moth", "Furnace Jackal"],
     boss: "Kilnheart Warden",
-    conclusion: "The first beacon burns again. Let's soul remains unfound; the road leads onward toward Oceanic Sadness."
+    conclusion: "Emberwake March cleared. The first beacon is restored; Glasswater Reach is now open."
   },
   {
     element: "oceanic",
     name: "Glasswater Reach",
-    introduction: "Oceanic Sadness echoes across the broken causeways of Glasswater. Follow the submerged bells toward the second beacon while Rise's seekers scour the same shores.",
+    introduction: "Cross the Oceanic causeways and restore the second beacon to reach Stormspan Heights.",
     enemies: ["Tideglass Crab", "Foamfin Drake", "Pearlshell Turtle", "Current Ray"],
     boss: "Deepbell Leviathan",
-    conclusion: "The bells ring above the water. The search continues beyond these grieving shores, toward Atmospheric Calm."
+    conclusion: "Glasswater Reach cleared. The second beacon is restored; Stormspan Heights is now open."
   },
   {
     element: "atmospheric",
     name: "Stormspan Heights",
-    introduction: "Let named Atmospheric for Calm, even where its winds become a storm. Reconnect the sky bridges as Rise's Elemental-Devourers search the floating ridges.",
+    introduction: "Cross the Atmospheric sky bridges and restore the third beacon to reach Rootstone Wilds.",
     enemies: ["Cloudhorn Ram", "Staticwing Kite", "Gusttail Lynx", "Thundercoil Serpent"],
     boss: "Tempest Crown Roc",
-    conclusion: "The sky paths steady without deciding the creators' contest. Below, Botanic Joy and Life point toward the next road."
+    conclusion: "Stormspan Heights cleared. The third beacon is restored; Rootstone Wilds is now open."
   },
   {
     element: "botanic",
     name: "Rootstone Wilds",
-    introduction: "Botanic carries Let's Joy and Life. Trace the living paths through sealed roads; Rise's seekers have stolen this power too and roam the buried garden.",
+    introduction: "Follow the Botanic garden paths and restore the fourth beacon to reach Stillhalo Vale.",
     enemies: ["Mossplate Beetle", "Briarback Stag", "Loamjaw Mole", "Fernmantle Basilisk"],
     boss: "Heartwood Colossus",
-    conclusion: "The garden opens its gates. Neither creator's soul is here; a quiet procession leads toward Tranquilitic Peace."
+    conclusion: "Rootstone Wilds cleared. The fourth beacon is restored; Stillhalo Vale is now open."
   },
   {
     element: "tranquilitic",
     name: "Stillhalo Vale",
-    introduction: "Tranquilitic Peace rests over abandoned sanctuaries. Gather the scattered vows to restore the fifth beacon, remembering that Rise's creations can wield Peace as well.",
+    introduction: "Restore the fifth beacon in the Tranquilitic sanctuaries to reach Riftbound Frontier.",
     enemies: ["Ivoryveil Moth", "Dewhalo Hart", "Vowcrest Crane", "Opalward Lion"],
     boss: "Serene Oathkeeper",
-    conclusion: "The vows become a guiding chorus. The search leads to the final route, where Chaotic Death and Destruction have fractured the frontier."
+    conclusion: "Stillhalo Vale cleared. The fifth beacon is restored; Riftbound Frontier is now open."
   },
   {
     element: "chaotic",
     name: "Riftbound Frontier",
-    introduction: "Let named Chaotic for Death and Destruction; it is not exclusive to Rise or her Nothingness. Cross the fractures and confront her seekers at the final beacon.",
+    introduction: "Cross the Chaotic fractures and defeat Fracture Sovereign to restore the final beacon.",
     enemies: ["Riftfang Hound", "Splinterhide Lizard", "Voidcrest Raven", "Faultcoil Wyrm"],
     boss: "Fracture Sovereign",
-    conclusion: "Six beacons answer one another and the roads reopen. Neither Let's nor Rise's soul has been found. Both factions continue their search beyond the frontier."
+    conclusion: "All six regions cleared and their beacons restored. Neither Let's nor Rise's soul has been found."
   }
 ];
 function storyEncounter(stage) {
@@ -6724,13 +6724,13 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
   const other = allies.filter((unit) => unit.id !== owner.id);
   const acted = other.filter((unit) => unit.spent).length;
   const posture = acted === 0 ? "opening" : acted === other.length ? "closing" : "passing";
-  const shield = (recipient, fraction, phases, firstReduction = 0) => nativeShield(
+  const shield = (recipient, fraction, firstReduction = 0) => nativeShield(
     state,
     owner,
     recipient,
     recipient.stats.health * fraction,
     events,
-    { throughPhase: state.round + phases - 1 + activation.skillDuration, firstReduction, skillPower: activation.skillPower, activation }
+    { firstReduction, skillPower: activation.skillPower, activation, stack: true }
   );
   const burn = (recipient, fraction) => {
     const burns = memory.burns ??= {};
@@ -6784,10 +6784,9 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       }
       if (action === "skill2" && ally) shield(
         ally,
-        nativeBalance.tizu.shelter * (!phaseZeroStatsReady && equipped(owner, "master-tide-2") ? 3 : 1),
-        1
+        nativeBalance.tizu.shelter * (!phaseZeroStatsReady && equipped(owner, "master-tide-2") ? 3 : 1)
       );
-      if (action === "ultimate") for (const recipient of allies) shield(recipient, nativeBalance.tizu.oceanMemory, 2, 0.3 * flareSupport);
+      if (action === "ultimate") for (const recipient of allies) shield(recipient, nativeBalance.tizu.oceanMemory, 0.3 * flareSupport);
       break;
     case "sprout":
       if (action === "skill1") {
@@ -6904,7 +6903,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
             };
         }
         if (posture === "closing" || phaseZeroStatsReady && equipped(owner, "master-bliss-1"))
-          for (const recipient of allies) shield(recipient, 0.06, 1);
+          for (const recipient of allies) shield(recipient, 0.06);
         if (activation.healExtra > 0) for (const recipient of other)
           nativeHeal(state, owner, recipient, 0, events, true, activation);
       }
@@ -6947,7 +6946,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
           owner,
           shield2 * flareSupport,
           events,
-          { throughPhase: state.round + 1 + activation.skillDuration, skillPower: activation.skillPower, activation }
+          { skillPower: activation.skillPower, activation, stack: true }
         );
       }
       break;
@@ -7404,8 +7403,8 @@ function nativePhaseEnd(state, events) {
       if (memory.bastion.loss > 0) {
         const shield = memory.bastion.loss;
         const created = nativeShield(state, owner, owner, shield, events, {
-          throughPhase: state.round + 1 + (phaseZeroStatsReady ? memory.bastion.skillDuration ?? 0 : 0),
-          ...phaseZeroStatsReady ? { skillPower: memory.bastion.skillPower ?? 1 } : {}
+          ...phaseZeroStatsReady ? { skillPower: memory.bastion.skillPower ?? 1 } : {},
+          stack: true
         });
         if (phaseZeroStatsReady && equipped(owner, "master-razor-2")) for (const ally of living(state).filter((unit) => unit.id !== owner.id)) {
           const offer = Math.min(created * 0.4, ally.stats.health * 0.45);
@@ -7736,7 +7735,7 @@ function generatedShield(owner, target, offer, events, additive = false, _cap = 
   emit(events, "shield", owner, target, amount, `${owner.name}'s Conduit shields ${target.name} for ${amount}.`);
   return amount;
 }
-function timedConduitShield(state, owner, target, offer, id, throughPhase, events, replace = false) {
+function timedConduitShield(state, owner, target, offer, id, _throughPhase, events, replace = false) {
   const list = layers(target);
   if (replace) {
     for (const layer of list) if (layer.conduit === id && layer.owner === owner.id) {
@@ -7748,27 +7747,11 @@ function timedConduitShield(state, owner, target, offer, id, throughPhase, event
   if (gained > 0) {
     const layer = list[list.length - 1];
     layer.conduit = id;
-    layer.expiresAfterPhase = throughPhase;
   }
 }
-function expireNativeShields(state, events) {
-  for (const target of [...state.allies, ...state.enemies]) {
-    const list = layers(target);
-    const expiredByOwner = /* @__PURE__ */ new Map();
-    for (const layer of list) {
-      if (!layer.native && !phaseZeroStatsReady || layer.expiresAfterPhase === void 0 || layer.expiresAfterPhase > state.round) continue;
-      expiredByOwner.set(layer.owner, (expiredByOwner.get(layer.owner) ?? 0) + layer.amount);
-      target.shield -= layer.amount;
-      layer.amount = 0;
-    }
-    if (!expiredByOwner.size) continue;
-    gear(target).layers = list.filter((layer) => layer.amount > 0);
-    for (const [id, amount] of expiredByOwner) {
-      if (amount <= 0) continue;
-      const owner = state.allies.find((ally) => ally.id === id) ?? target;
-      emit(events, "status", owner, target, amount, `${target.name} loses ${Math.round(amount)} expired Shield.`, true);
-    }
-  }
+function expireNativeShields(state, _events) {
+  for (const target of [...state.allies, ...state.enemies])
+    for (const layer of target.conduitRuntime?.layers ?? []) delete layer.expiresAfterPhase;
 }
 function consumeShield(unit, amount) {
   const list = layers(unit);
@@ -8541,13 +8524,9 @@ function nativeShield(state, owner, target, offer, events, options = {}) {
   const finalOffer = offer * (plate ? 0.5 : 1);
   const list = layers(target);
   const existing = target.shield - (plate ? list.filter((layer) => layer.plate).reduce((sum, layer) => sum + layer.amount, 0) : 0);
-  const gained = Math.max(0, finalOffer - existing);
+  const gained = options.stack ? Math.max(0, finalOffer) : Math.max(0, finalOffer - existing);
   const owned = list.filter((layer) => layer.native && layer.owner === owner.id && layer.amount > 0);
-  const throughPhase = phaseZeroStatsReady && equipped(owner, "ward-stitch-spool") ? (options.throughPhase ?? state.round) + 1 : options.throughPhase;
-  for (const layer of owned) {
-    if (throughPhase !== void 0 && layer.expiresAfterPhase !== void 0)
-      layer.expiresAfterPhase = phaseZeroStatsReady ? throughPhase : Math.max(layer.expiresAfterPhase, throughPhase);
-  }
+  const throughPhase = options.throughPhase;
   if (options.firstReduction !== void 0 && owned.length) {
     for (const layer of owned) delete layer.firstReduction;
     owned[0].firstReduction = options.firstReduction;
@@ -8558,7 +8537,6 @@ function nativeShield(state, owner, target, offer, events, options = {}) {
       amount: gained,
       owner: owner.id,
       native: true,
-      ...throughPhase !== void 0 ? { expiresAfterPhase: throughPhase } : {},
       ...options.firstReduction !== void 0 && !owned.length ? { firstReduction: options.firstReduction } : {}
     });
     target.shield += gained;
@@ -9952,7 +9930,7 @@ function shieldTeam(state, source, amount, events, authored = true, activation) 
         ally,
         amount * (concentrated ? 3 : 1),
         events,
-        activation ? { skillPower: activation.skillPower, activation } : {}
+        activation ? { skillPower: activation.skillPower, activation, stack: true } : { stack: true }
       );
       continue;
     }
@@ -10594,7 +10572,7 @@ var standardBannerArtwork = {
   path: "banners/summon-standard.png",
   aspectRatio: "16:9",
   direction: "Omnic",
-  alt: "Standard Banner: a transcendent elemental sanctuary uniting fire, water, nature, Heaven, Abyss, Crownfall Treasury and Rosethorn Sanctuary."
+  alt: "Standard Banner artwork: an elemental sanctuary with fire, water, plants and slime creatures."
 };
 var standardBanner = {
   id: "standard",
@@ -10631,7 +10609,7 @@ var roseBanner = {
     path: "banners/summon-roses.png",
     aspectRatio: "16:9",
     direction: "Omnic",
-    alt: "Roses Under Sunny Skies: crimson roses and golden thorns unfurl beneath a radiant sky."
+    alt: "Roses Under Sunny Skies banner artwork: crimson roses and golden thorns beneath a bright sky."
   }
 };
 function roseBannerPool() {
