@@ -411,7 +411,7 @@ function squad(): string {
     <div class="action-row">${button('Your Conduits', 'loadouts')}<button class="pill primary" data-action="formation">Save formation ${uiIcon('squad')}</button></div>`;
 }
 function detailShell(content: string): string {
-  const person = selectedMember(), cap = state.capture ? capturedLevelCap : characterLevelCap(person.progress.evolution);
+  const person = selectedMember(), cap = state.capture ? capturedLevelCap : characterLevelCap(person.progress.evolution, state.selected, 'ascension' in person.progress && person.progress.ascension?.stats === true);
   const starter = isStarterId(person.id) ? getStarter(person.id) : null;
   return `${heading()}<div class="focus-workspace"><section class="focus-context glass">
     <div class="focus-art">${image(person.art, person.fullName)}</div>
@@ -446,13 +446,13 @@ function skills(): string {
         `${shatterGauge.costs[key]} Gauge${kit.abilities[key].cooldown ? ` / ${kit.abilities[key].cooldown}-turn cooldown` : ''}`)).join('')}</div>`);
   }
   const icons = abilityIcons[state.selected];
-  return detailShell(`<div class="skill-grid">${abilityCard('passive', 'Passive', image(`abilities/${icons.passive}`), kit.passive.name, kit.passive.description, kitResource(kit, state.selected), 'Automatic while alive / no Gauge')}
-    ${(['skill1', 'skill2', 'ultimate'] as const).map((key, i) => abilityCard(key, ['Skill 1', 'Skill 2', 'Last Flare'][i], image(`abilities/${icons[key]}`), kit.abilities[key].name, kit.abilities[key].description,
+  return detailShell(`<div class="skill-grid">${abilityCard('passive', 'Passive', icons.passive ? image(`abilities/${icons.passive}`) : uiIcon('summon'), kit.passive.name, kit.passive.description, kitResource(kit, state.selected), 'Automatic while alive / no Gauge')}
+    ${(['skill1', 'skill2', 'ultimate'] as const).map((key, i) => abilityCard(key, ['Skill 1', 'Skill 2', 'Last Flare'][i], icons[key] ? image(`abilities/${icons[key]}`) : uiIcon('summon'), kit.abilities[key].name, kit.abilities[key].description,
       abilityStatuses(kit.abilities[key].strength, state.selected, key),
       `${shatterGauge.costs[key]} Elemental Gauge${kit.abilities[key].cooldown ? ` / ${kit.abilities[key].cooldown}-turn cooldown` : ''}${key === 'ultimate' ? ' / Recover next turn' : ''}`)).join('')}</div>`);
 }
 function growth(): string {
-  const person = selectedMember(), cap = state.capture ? capturedLevelCap : characterLevelCap(person.progress.evolution);
+  const person = selectedMember(), cap = state.capture ? capturedLevelCap : characterLevelCap(person.progress.evolution, state.selected, 'ascension' in person.progress && person.progress.ascension?.stats === true);
   return detailShell(`<div class="growth-options">${bubble('Level up', 'One step at a time', 'level', 'level', 0)}
     ${bubble('Max Level', 'Affordable levels', 'max', 'overview', 1)}${state.capture ? '' : bubble('Evolution', 'Next form', 'evolution', 'evolution', 2)}</div>
     ${glass('Growth', `<div class="spread"><h2>Level ${person.progress.level}</h2><span>Level cap ${cap}</span></div>${meter(person.progress.level / cap * 100, 'Level progress')}<p>${state.capture ? 'Fixed form. Leveling preserves retained abilities.' : 'Reach the current level cap to evolve. Level is preserved; costs and Evolution Value are reviewed before confirmation.'}</p>`)}`);
@@ -466,7 +466,7 @@ function costRows(cost: UpgradeCost): string {
 }
 function upgrade(mode: 'level' | 'max' | 'evolution'): string {
   const person = selectedMember(), evo = mode === 'evolution', progress = person.progress;
-  const cap = state.capture ? capturedLevelCap : characterLevelCap(progress.evolution);
+  const cap = state.capture ? capturedLevelCap : characterLevelCap(progress.evolution, state.selected, 'ascension' in progress && progress.ascension?.stats === true);
   if (evo && (state.capture || progress.evolution === 6)) return detailShell(glass('Evolution', `<p>${state.capture ? 'Captured Elemental-Devourers cannot evolve.' : 'Final form reached.'}</p>${button('Growth', 'growth')}`));
   const plan = maxLevelPlan(account(), selectedId());
   const copy = account().capturedCharacters?.find(entry => entry.instanceId === state.capture);
@@ -791,6 +791,7 @@ function battleTitle(): string {
   if (!destination) return 'Training';
   if ('storyStage' in destination) { const encounter = storyEncounter(destination.storyStage); return `Story · ${encounter.name} · Stage ${destination.storyStage}`; }
   if ('tier' in destination) return `${selectedActivity} · Calamity EX+${destination.tier}`;
+  if ('oblivionStage' in destination) return `Gates of Oblivion · Floor ${destination.oblivionStage}`;
   return `${selectedActivity} · Stage ${destination.stage}`;
 }
 function battle(results = false): string {
@@ -1170,7 +1171,7 @@ root.addEventListener('click', event => perform(() => {
       const person = selectedMember(), kit = person.fighter;
       const ability = key === 'passive' ? kit.passive : kit.abilities[key];
       const statuses = key === 'passive' ? (state.capture ? '' : kitResource(kit, state.selected)) : abilityStatuses(kit.abilities[key].strength, state.capture ? undefined : state.selected, key);
-      dialog(esc(ability.name), `<div class="ability-demo">${state.capture ? uiIcon('summon') : image(`abilities/${abilityIcons[state.selected][key]}`)}</div>${statuses}<p>${readableEffect(ability.description)}</p>
+      dialog(esc(ability.name), `<div class="ability-demo">${state.capture ? uiIcon('summon') : abilityIcons[state.selected][key] ? image(`abilities/${abilityIcons[state.selected][key]}`) : uiIcon('summon')}</div>${statuses}<p>${readableEffect(ability.description)}</p>
         <div class="tags">${tag(key === 'passive' ? 'Automatic while alive / no Gauge' : `${shatterGauge.costs[key]} Elemental Gauge`)}${tag(person.element)}
         ${key === 'ultimate' && !state.capture ? tag('Recover next player turn') : ''}</div><button class="pill primary" data-action="close">Return</button>`);
       break;

@@ -1,8 +1,12 @@
-# Phase 0: Everything Calamity (D-435) — APPROVED DESIGN, NOT IMPLEMENTED
+# Phase 0: Everything Calamity (D-435)
 
-Status: owner answered four question rounds on 2026-11-01. This is the
-confirmed design contract. **No runtime code, saves or art exist yet.** The
-owner may still rewrite parts of the phase; update this file first.
+Status: D-435 Sections 1-3 are implemented: Calamitic progression/acquisition,
+Gates of Oblivion, saved-victory Shard drops, Ascension and ability Imbues. Cost
+quantities remain a developer proposal pending owner review. Native battle kits
+and presentation are implemented. The nine new Calamitic Conduits and delivered
+art remain pending. Art prompts are generated, but no Calamitic art has been
+delivered or installed. This document remains the approved design contract;
+update it first if the owner revises the phase.
 
 ## Confirmed by the owner
 
@@ -93,6 +97,8 @@ multiple times and the Direct Attack buff refreshes.
 
 ## Art direction (Midjourney-ready wording)
 
+[Pending reproducible art pack](../Art/characters/Calamitic%20Element-Bearers.md): 53 prompts for portraits, abilities/statuses, materials, Rise-blessed emblem and nine Conduits; no artwork delivered.
+
 Shared clause for every form:
 
 > compact chibi anime proportions, 2.5–3 heads tall, crisp cel shading,
@@ -123,9 +129,11 @@ spread with 25/20/14/8/3/2% margins.
 - Element-Bearers today cap at 30/45/60/75/90/105 across their six forms.
 - Calamitic Element-Bearers use 30/45/60/75/90 for Uncommon through Omnic
   and **110** at their Calamitic form.
-- **Calamitic Ascension** (below) instantly raises a character to **Lv.115**:
-  - an ordinary Element-Bearer goes from Omnic Lv.105 to 115;
-  - a Calamitic Element-Bearer goes from Calamitic Lv.110 to 115.
+- **Calamitic Ascension** (below) raises the level cap to **Lv.115**:
+  - ordinary Element-****** can then level from Omnic Lv.105 through 115;
+  - Calamitic Element-****** can then level from Calamitic Lv.110 through 115.
+  Each added level uses the normal late-level cost formula; Calamitic Element-******
+  continue to use their Calamity chain and Fragment of Rise.
 
 ## Acquisition
 
@@ -135,23 +143,46 @@ spread with 25/20/14/8/3/2% margins.
   (Uncommon, Lv.0).
 - **Stop rolling once owned:** an owned character is never re-rolled and
   gives no duplicate conversion.
-- The roll needs its own seeded RNG, so existing chest, combat and reward
-  rolls are unchanged. It is saved in the same write as the victory.
+- Implemented with a dedicated `calamityRecruitmentSeed`; existing chest,
+  combat and reward RNG streams are unchanged. A new copy and chest/clear
+  receipt are saved in one atomic victory write. Failed writes grant neither,
+  and an idempotent retry cannot award twice. The saved reward event is annotated
+  only after persistence, then shown with the shared Calamitic rarity feedback.
 
-## Evolution materials
+## Materials and progression costs (D-435 Section 1)
 
-Every evolution costs the character's normal elemental Prismatica and
-material recipe, **plus both** new chest materials:
+All ten materials are registered, strictly validated on load/save, visible in
+Inventory and loot, and art-pending with named neutral tiles (no missing PNGs
+or image URLs): Seed / Bud / Bloom / Crest / Heart / Soul of Calamity
+(Common → Omnic), Fragment of Rise, Feather of the Severed Dawn, Splinter of
+the Unmade Night, and Shard of Calamity (awarded on saved Calamity victories for Ascension).
+Feather is sourced from Soar to Heaven Calamity chests; Splinter is sourced
+from Delve into the Abyss Calamity chests. These materials are not exchangeable.
 
-| Source | Material | EX+1 / EX+2 / EX+3 chest |
-|---|---|---|
-| Soar to Heaven Calamity chests | Feather of the Severed Dawn | 1 / 2 / 3 |
-| Delve into the Abyss Calamity chests | Splinter of the Unmade Night | 1 / 2 / 3 |
+Every Calamitic level costs the usual Prismatica formula, but uses the Calamity
+chain in place of its elemental chain. Common quantity remains `ceil(destination
+level / 30)`; each higher rarity unlocks at the standard destination threshold.
+Destinations Lv.91–110 also cost one Fragment of Rise. Material costs at
+destinations Lv.61+ follow the existing late-cost doubling; Prismatica is not
+doubled.
 
-- The Omnic → Calamitic step also requires **Fragment of Rise**.
-- Per-evolution amounts are developer tuning, still to be proposed.
-- Chest specialty reduction: the owner states this has already happened, so
-  there is no further 55% cut.
+Calamitic evolution costs retain the normal elemental Prismatica and material
+recipe, plus both chest materials and one Calamity-chain material. The following
+quantities are the **developer proposal currently implemented for review**;
+late-step material doubling follows the existing rule (Evo.4→5 and Evo.5→6):
+
+| Evolution | Added Calamity material | Feather | Splinter | Effective late-step additions |
+|---|---|---:|---:|---|
+| Evo.1→2 | Bloom of Calamity ×5 | 1 | 1 | unchanged |
+| Evo.2→3 | Crest of Calamity ×5 | 2 | 2 | unchanged |
+| Evo.3→4 | Heart of Calamity ×5 | 3 | 3 | unchanged |
+| Evo.4→5 | Soul of Calamity ×5 | 5 | 5 | Soul ×10, Feather ×10, Splinter ×10 |
+| Evo.5→6 | Fragment of Rise ×5 | 8 | 8 | Fragment ×10, Feather ×16, Splinter ×16 |
+
+The Heaven and Abyss chests add fixed Feather / Splinter stacks of **1 / 2 / 3**
+at EX+1/2/3 respectively. These additions do not consume random draws; all
+existing randomized contents and their order remain unchanged. No further 55%
+chest-material reduction is applied.
 
 ## Gates of Oblivion
 
@@ -182,10 +213,10 @@ material recipe, **plus both** new chest materials:
 - Calamitic characters at Calamitic Lv.110.
 
 **Steps**, all on the same Calamitic Ascension screen:
-1. **Ascend** (25 Shards): all stats +50%, and the character jumps to Lv.115.
+1. **Ascend** (25 Shards): all stats +50% and raises the level cap to Lv.115; added levels still require their normal level-up costs.
 2. **Imbue** Skill 1, Skill 2 and Last Flare separately, 25 Shards each. Each
    needs step 1 first and gives that ability +50% base Skill Power and
-   +5% Skill Efficiency. The existing 50% Skill Efficiency cap still applies.
+   +5 percentage points Skill Efficiency. The existing 50% Skill Efficiency cap still applies.
 
 Full cost: 100 Shards per character.
 
@@ -193,6 +224,34 @@ Full cost: 100 Shards per character.
 ", Rise-blessed" (example: "Infernis, Rise-blessed"). An ornate, mechanical
 Calamity crown-burst emblem sits beside their Element Medal. The emblem art is
 prompt-only until delivered.
+
+### Calamitic Ascension implementation (D-435 Section 3)
+
+- Calamity EX+1/EX+2/EX+3 saved boss victories roll 5%/8%/12% for 2 to 4 Shards
+  using an independent `calamityShardSeed`. Balance, seed, chest, clear and
+  receipt are committed atomically; the result receives its Shard annotation
+  only after persistence, so the shared loot reveal never presents a failed save.
+- Optional per-Element-Bearer Ascension progress is strictly validated and
+  defaults absent on old saves without a read-time write. Captured Elemental-
+  Devourers cannot ascend. The 25-Shard Ascend step requires the final evolution
+  and unascended cap (Lv.105 ordinary, Lv.110 Calamitic), increases all resolved
+  stats by 50%, and raises the cap to Lv.115 without skipping the newly paid
+  levels. Lv.106-115 / Lv.111-115 use normal late-level costs; Calamitic
+  leveling keeps the Calamity chain and Fragment of Rise.
+- Skill 1, Skill 2 and Last Flare Imbues each cost 25 Shards after Ascend. Their
+  +50% base Skill Power and +5 percentage-point Skill Efficiency apply only to
+  that action; the global 50% Skill Efficiency cap remains in force.
+- The Character evolution area opens a styled four-step panel; each confirmed
+  step rereads current state, validates ordering/ownership/funds, deducts Shards
+  and saves once. Online uses the authoritative `ascendCharacter` operation.
+  The finite black/white/crimson celebration and accessible static reduced-motion
+  feedback run only after successful persistence. `Rise-blessed` names and a
+  CSS/SVG crown-burst badge appear on owned surfaces and battle snapshots; no
+  emblem PNG URL is referenced.
+- Regression coverage: `src/game/calamitic-ascension.test.ts` checks eligibility,
+  costs/order, paid level caps, stat/action effects, efficiency cap, shard odds
+  and RNG separation, atomic failures, server request/reward validation and
+  Rise-blessed names. See the handoff for exact validation outcomes.
 
 ## New Calamitic Conduits
 
@@ -215,13 +274,25 @@ prompt-only until delivered.
 | 8 | Throne of the Lone Apostate | If this Element-Bearer is the only member of the squad: +250% Defense, +250% Health, +125% Skill Power |
 | 9 | Worldbreaker Cannonade | This character's damaging Skills that hit all enemies gain +250% Skill Power |
 
-## Still to decide before implementation
+## Follow-up answers
 
-- Exact per-evolution amounts of Feather, Splinter and Fragment of Rise, and
-  the Gates chain leveling costs.
-- Where Shards are delivered: inside the sealed chest, like Tokens, or
-  directly at victory.
-- Durations for item 7's buffs, and whether item 6's bonus stacks with Weaken.
-- Gates enemy identities and the full art prompt list: 18 character portraits,
-  ability icons, Gates enemies/arena, 3 materials, Fragment of Rise, Shard,
-  Rise-blessed emblem and 9 Conduits.
+- **Shards of Calamity** are granted directly at victory, separately from the
+  sealed chest, and saved in the same write as the chest.
+- **Choir-Array of Branded Stars:** the +50% Skill Power lasts until the end of
+  the current turn. The trigger can fire at most 4 times per encounter.
+- **Evolution amounts:** developer proposes Feather, Splinter and Fragment of
+  Rise amounts in line with Soar/Delve costs; the owner will review them.
+- The owner asked for implementation in sections, with questions along the way.
+
+### Gates of Oblivion roster (owner-approved)
+
+- Elemental Dungeon structure: 10 single-form original Rise constructs across 25 floors, Lv.125->170, boss every 5th floor: Shardling Acolyte, Glassbound Sentry, Oblivion Lantern-Wraith, Fracture Hound, Unmade Choir Drone, Crimson Gearwyrm, Husk-Seraph of Rise, Annihilation Colossus Fragment, Fatebreaker Warden, Gatekeeper of Oblivion (final boss, floor 25).
+- Mixed combat elements: each enemy gets one of the six elements.
+- Each enemy has a named Calamity-style skill; floors 20+ add a second skill.
+- Drops: Prismatica plus the Calamity chain (Seed/Bud floor 1, Bloom 4, Crest 9, Heart 14, Soul 19), level-scaled stacks like dungeons.
+- Fragment of Rise: floors 20-25, about 10% per enemy; boss floors guarantee 1.
+- No captures and no Null-Prismatica. Unlocks when the account owns any Calamitic Element-Bearer.
+
+### Gates of Oblivion implementation (D-435 Section 2)
+
+The activity is live as a 25-floor Calamitic-owned progression mode. `src/content/gates-of-oblivion.ts` defines the approved ten construct roster, mixed element assignments, unique lore and named skills, floor curve, and runtime loot table. It reuses shared enemy-stat growth, dungeon material ranges and Prismatica rules. Fragment rolls use their own persisted encounter stream; per-kill rewards, discovery and receipts commit atomically. Wallets without `oblivionStage` begin at Floor 1 without a read-time write. No art, capture or premium-currency assets or rewards are wired. Full behavior and validation are documented in [Gates of Oblivion](gates-of-oblivion.md). Calamitic Ascension/Shards are implemented in Section 3; the nine new Conduits remain pending.

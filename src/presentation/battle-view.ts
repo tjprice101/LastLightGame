@@ -1,7 +1,7 @@
 import { describeFighter, enemies, formatStat, type ActionId } from '../content/combat';
 import { gameConfirm, gameDialogPending } from './game-dialog';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
-import { actAndAdvanceTurn, advanceUnavailableTurns, teamCanAct, combatantCanAct, actionUnavailable, createBattle, createCalamityBattle, createDungeonBattle, createInfusionBattle, createWarBattle, createStoryBattle, endTurn, nextStage, nextWave, withMasterLoadouts, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
+import { actAndAdvanceTurn, advanceUnavailableTurns, teamCanAct, combatantCanAct, actionUnavailable, createBattle, createCalamityBattle, createDungeonBattle, createOblivionBattle, createInfusionBattle, createWarBattle, createStoryBattle, endTurn, nextStage, nextWave, withMasterLoadouts, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
 import { calamityEncounter, isCalamityActivityId, isCalamityTier, type CalamityActivityId, type CalamityTier } from '../content/calamity';
 import { confirmCalamity } from './calamity';
 import { calamityBossArt, calamityArenaArt } from '../content/calamity-art';
@@ -59,7 +59,7 @@ export interface BattleAuthority {
   nextWave(): Promise<BattleAuthorityResponse>;
   retry(): Promise<BattleAuthorityResponse>;
 }
-export function createSession(starterId: StarterId, progress: CharacterProgress = { level: 0, evolution: 1 }, dungeon?: { activity: CalamityActivityId; tier: CalamityTier } | { element: PlayableDungeon; stage: number } | { mode: InfusionModeId; stage: number } | { character: WarCharacterId; stage: number } | { storyStage: number },
+export function createSession(starterId: StarterId, progress: CharacterProgress = { level: 0, evolution: 1 }, dungeon?: { activity: CalamityActivityId; tier: CalamityTier } | { element: PlayableDungeon; stage: number } | { mode: InfusionModeId; stage: number } | { character: WarCharacterId; stage: number } | { storyStage: number } | { oblivionStage: number },
   team?: { ids: readonly string[]; progress: Partial<Record<StarterId, CharacterProgress>>; equipment?: ConduitLoadouts; captures?: readonly CapturedCharacter[]; upgrades?: ConduitUpgrades; masters?: MasterLoadouts }): BattleSession {
   const seed = crypto.getRandomValues(new Uint32Array(1))[0] || 1;
   const ids = team?.ids ?? [starterId];
@@ -72,6 +72,7 @@ export function createSession(starterId: StarterId, progress: CharacterProgress 
       : 'storyStage' in dungeon ? createStoryBattle(dungeon.storyStage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures, upgrades)
       : 'character' in dungeon ? createWarBattle(dungeon.character, dungeon.stage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures, upgrades)
       : 'mode' in dungeon ? createInfusionBattle(dungeon.mode, dungeon.stage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures, upgrades)
+      : 'oblivionStage' in dungeon ? createOblivionBattle(dungeon.oblivionStage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures, upgrades)
       : createDungeonBattle(dungeon.element, dungeon.stage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures, upgrades) : createBattle(seed, ids, teamProgress, equipment, team?.captures, upgrades), team?.masters),
     runId: crypto.randomUUID(), progress: { ...progress }, teamProgress, stageEvents: [], entrancePending: true,
     log: [dungeon && 'activity' in dungeon ? `Calamity EX+${dungeon.tier} ready. ${calamityEncounter(dungeon.activity, dungeon.tier).description} Victory grants one sealed chest; open it in Inventory.`
@@ -81,6 +82,7 @@ export function createSession(starterId: StarterId, progress: CharacterProgress 
       : dungeon && 'mode' in dungeon && dungeon.mode === 'roses' ? 'Passion of Crimson Roses ready. Rosethorn materials and Prismatica per kill; 50% captures only at enemy levels 120 or below. No Null-Prismatica or clear bonus.'
       : dungeon && 'character' in dungeon ? `Elemental War ready. ${warRulesText}`
       : dungeon && 'storyStage' in dungeon ? `Story ready. ${storyRulesText}`
+      : dungeon && 'oblivionStage' in dungeon ? 'Gates of Oblivion ready. Calamitic materials and late-floor Fragment of Rise drops save after each defeat; no captures or Null-Prismatica.'
       : dungeon ? 'Dungeon ready. Defeated enemies grant level-scaled Prismatica and materials.' : 'Squad Training ready at wave 1. Prismatica drops increase with enemy level.'],
   };
 }

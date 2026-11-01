@@ -21,13 +21,17 @@ import { standardBanner, resolveBannerPull, validateBannerPity, type StandardBan
 import { bannerDuplicateMaterials, type BannerMaterialReward } from '../content/banner-materials';
 import { getSummonBanner, isSummonBannerId, type SummonBannerId } from '../content/summon-banners';
 import { roseMaterials } from '../content/roses';
+import { isCalamiticMaterialId } from '../content/calamitic-materials';
+import { calamiticCharacterByTier, calamiticCharacterChance, isCalamiticCharacter } from '../content/calamitic-characters';
+import type { CalamiticCharacterId } from '../content/calamitic-characters';
 import { exchangeProduct, isExchangeQuantity } from '../content/material-exchange';
 import { isWarCharacter, warEncounter, warLoot, warStageCount, type WarCharacterId } from '../content/elemental-war';
 import { canonicalElement, isLegacyElement } from '../content/element-migration';
 import { storyEncounter, storyCreature, storyRules, storyBossBonus, storyMaterialLoot, storyCompletionReward, storyClearReward, migrateLegacyStoryCompleted, migratePreviousStoryCompleted } from '../content/story';
 import { bossLootMultiplier } from '../content/final-boss-loot';
-import { calamityChest, calamityChestId, calamityEncounter, isCalamityActivityId, isCalamityTier, parseCalamityChestId, rollCalamityChest, type CalamityActivityId } from '../content/calamity';
+import { calamityChest, calamityChestId, calamityEncounter, isCalamityActivityId, isCalamityTier, parseCalamityChestId, rollCalamityChest, type CalamityActivityId, type CalamityTier } from '../content/calamity';
 import { calamiticLockMessage, calamiticStoreUnlocked, calamiticTokenPrice, isCalamiticConduitId } from '../content/calamitic-conduits';
+import { gatesOfOblivionRules, isOblivionStage, oblivionEncounter, oblivionMaterialLoot } from '../content/gates-of-oblivion';
 
 export const ACCOUNT_KEY = 'last-light.wallet';
 export interface Account {
@@ -51,12 +55,15 @@ export interface Account {
   calamityClears?: Partial<Record<CalamityActivityId, number>>;
   normalFinalClears?: Partial<Record<CalamityActivityId, boolean>>;
   calamitySeed?: number;
+  calamityRecruitmentSeed?: number;
+  calamityShardSeed?: number;
   masterConduits?: Partial<Record<MasterConduitId, number>>;
   masterEquipment?: MasterLoadouts;
   firstFracture: boolean;
   dungeonStages: Partial<Record<PlayableDungeon, number>>;
   infusionStages: Partial<Record<InfusionModeId, number>>;
   warStages?: Partial<Record<WarCharacterId, number>>;
+  oblivionStage?: number;
   storyCompleted?: number;
   receipts: string[];
   creatures: Record<string, { defeated: boolean }>;
@@ -101,6 +108,14 @@ export function validateAccount(value: unknown): Account {
   if (value.calamiticTokens !== undefined) {
     if (!count(value.calamiticTokens)) throw new Error('Invalid saved Calamitic Token balance.');
     account.calamiticTokens = value.calamiticTokens;
+  }
+  if (value.calamityRecruitmentSeed !== undefined) {
+    if (!count(value.calamityRecruitmentSeed) || value.calamityRecruitmentSeed > 0xffffffff) throw new Error('Invalid Calamity recruitment seed.');
+    account.calamityRecruitmentSeed = value.calamityRecruitmentSeed;
+  }
+  if (value.calamityShardSeed !== undefined) {
+    if (!count(value.calamityShardSeed) || value.calamityShardSeed < 1 || value.calamityShardSeed > 0xffffffff) throw new Error('Invalid Calamity Shard seed.');
+    account.calamityShardSeed = value.calamityShardSeed;
   }
   if (value.calamityChests !== undefined) {
     if (!record(value.calamityChests)) throw new Error('Invalid saved Calamity chest inventory.');
@@ -181,6 +196,10 @@ export function validateAccount(value: unknown): Account {
       if (!count(account.fractalis) || !count(account.lycalis)) throw new Error('Story completion grant exceeds the supported balance. The save has not been overwritten.');
     }
   }
+  if (value.oblivionStage !== undefined) {
+    if (!isOblivionStage(value.oblivionStage)) throw new Error('Invalid saved Gates of Oblivion progress.');
+    account.oblivionStage = value.oblivionStage;
+  }
   if (value.warStages !== undefined) {
     if (!record(value.warStages)) throw new Error('Invalid saved Elemental War progress.');
     account.warStages = {};
@@ -220,9 +239,19 @@ export function validateAccount(value: unknown): Account {
       throw new Error('Invalid saved character progress.');
     }
     if (progress.weaponRank !== undefined && typeof progress.weaponRank !== 'number') throw new Error('Invalid saved weapon rank.');
+    if (progress.ascension !== undefined) {
+      if (!record(progress.ascension) || Object.keys(progress.ascension).length === 0 ||
+          Object.keys(progress.ascension).some(key => !['stats', 'skill1', 'skill2', 'lastFlare'].includes(key)) ||
+          Object.values(progress.ascension).some(flag => flag !== true) ||
+          ((progress.ascension.skill1 === true || progress.ascension.skill2 === true || progress.ascension.lastFlare === true) && progress.ascension.stats !== true) ||
+          (progress.ascension.stats === true && (progress.evolution !== 6 || progress.level < characterLevelCap(6, id)))) {
+        throw new Error('Invalid saved Calamitic Ascension state.');
+      }
+    }
     const entry: CharacterProgress = { level: progress.level, evolution: progress.evolution,
-      ...(progress.weaponRank !== undefined ? { weaponRank: progress.weaponRank } : {}) };
-    characterGrowthFactor(entry);
+      ...(progress.weaponRank !== undefined ? { weaponRank: progress.weaponRank } : {}),
+      ...(progress.ascension !== undefined ? { ascension: { ...progress.ascension } } : {}) };
+    characterGrowthFactor(entry, id);
     account.characters[id] = entry;
   }
   if (value.capturedCharacters !== undefined) {
@@ -718,7 +747,7 @@ export function setMachineLootFocus(storage: ProfileStorage, rarity: MachineFocu
 }
 function isMaterial(id: string): boolean {
   return elementalMaterials.some((material) => material.id === id) || specialtyMaterials.some((material) => material.id === id) ||
-    roseMaterials.some((material) => material.id === id);
+    roseMaterials.some((material) => material.id === id) || isCalamiticMaterialId(id);
 }
 export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: 'level' | 'evolve' | 'weapon', expected: CharacterProgress, fodderIds: readonly string[] = []): Account {
   if (kind === 'weapon') throw new Error('Weapon upgrades are unavailable. Existing weapon bonuses are preserved.');
@@ -727,10 +756,10 @@ export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: '
   const account = loadAccount(storage);
   if (account.characters[id] === undefined) throw new Error('Choose your Owned Element-Bearer to upgrade.');
   const current = ownedProgress(account, id);
-  if (current.level !== expected.level || current.evolution !== expected.evolution || (current.weaponRank ?? 0) !== (expected.weaponRank ?? 0)) throw new Error('Character progress changed. Reopen this tab before upgrading.');
+  if (!sameCharacterProgress(current, expected)) throw new Error('Character progress changed. Reopen this tab before upgrading.');
   const element = getStarter(id).elementId;
   const cost = kind === 'level' ? characterLevelCost(id, current) : characterEvolutionCost(id, current);
-  if (kind === 'evolve' && current.level !== characterLevelCap(current.evolution)) throw new Error('Reach this form level cap before evolving.');
+  if (kind === 'evolve' && current.level !== characterLevelCap(current.evolution, id)) throw new Error('Reach this form level cap before evolving.');
   const requiredValue = kind === 'evolve' ? characterEvolutionRequirement(id, current.evolution).fodderValue : 0;
   if (new Set(fodderIds).size !== fodderIds.length) throw new Error('Choose each captured Elemental-Devourer only once.');
   if (!requiredValue && fodderIds.length) throw new Error('This upgrade does not consume Elemental-Devourers.');
@@ -764,12 +793,60 @@ export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: '
   }
   return saveAccount(storage, account);
 }
+export type CalamiticAscensionStep = 'stats' | 'skill1' | 'skill2' | 'lastFlare';
+export const calamiticAscensionCost = 25;
+export function canAscendCharacter(id: StarterId, progress: CharacterProgress, step: CalamiticAscensionStep): boolean {
+  const ascension = progress.ascension ?? {};
+  if (step === 'stats') return !ascension.stats && progress.evolution === 6 && progress.level === characterLevelCap(6, id);
+  return ascension.stats === true && !ascension[step];
+}
+function sameCharacterProgress(left: CharacterProgress, right: CharacterProgress): boolean {
+  return left.level === right.level && left.evolution === right.evolution && (left.weaponRank ?? 0) === (right.weaponRank ?? 0) &&
+    ['stats', 'skill1', 'skill2', 'lastFlare'].every(key => left.ascension?.[key as keyof NonNullable<CharacterProgress['ascension']>] ===
+      right.ascension?.[key as keyof NonNullable<CharacterProgress['ascension']>]);
+}
+export function ascendCharacter(storage: ProfileStorage, id: StarterId, step: CalamiticAscensionStep, expected: CharacterProgress): Account {
+  if (!loadProfile(storage)) throw new Error('Choose an owned Element-Bearer for Calamitic Ascension.');
+  if (!['stats', 'skill1', 'skill2', 'lastFlare'].includes(step)) throw new Error('Unknown Calamitic Ascension step.');
+  const account = loadAccount(storage);
+  const current = account.characters[id];
+  if (!current) throw new Error('Choose an owned Element-Bearer for Calamitic Ascension.');
+  if (!sameCharacterProgress(current, expected)) throw new Error('Character progress changed. Reopen Calamitic Ascension before continuing.');
+  if (!canAscendCharacter(id, current, step)) {
+    if (step === 'stats' && current.evolution !== 6) throw new Error('Reach the final form before Calamitic Ascension.');
+    if (step === 'stats') throw new Error('Reach the final level before Calamitic Ascension.');
+    if (!current.ascension?.stats) throw new Error('Stat Ascension is required before Imbuing an ability.');
+    throw new Error('This Calamitic Ascension step is already complete.');
+  }
+  if ((account.materials['shard-of-calamity'] ?? 0) < calamiticAscensionCost) throw new Error('Not enough Shards of Calamity.');
+  account.materials['shard-of-calamity'] -= calamiticAscensionCost;
+  const ascension = { ...current.ascension, [step]: true };
+  account.characters[id] = { ...current, ascension };
+  return saveAccount(storage, account);
+}
+export function rollCalamityShards(tier: CalamityTier, initialSeed?: number): { seed: number; amount?: number } {
+  const chances: Record<CalamityTier, number> = { 1: .05, 2: .08, 3: .12 };
+  let seed = initialSeed ?? 0x6a09e667;
+  const roll = (): number => {
+    seed >>>= 0;
+    if (!seed) seed = 1;
+    seed ^= seed << 13; seed >>>= 0;
+    seed ^= seed >>> 17; seed >>>= 0;
+    seed ^= seed << 5; seed >>>= 0;
+    if (!seed) seed = 1;
+    return seed / 0x100000000;
+  };
+  if (roll() >= chances[tier]) return { seed };
+  const amount = 2 + Math.floor(roll() * 3);
+  return { seed, amount };
+}
+
 export function saveAccountRewards(storage: ProfileStorage, result: BattleResult, runId: string): Account {
   const account = loadAccount(storage);
   if (result.state.calamity !== undefined) {
     const activity = result.state.calamity;
     if (!record(activity) || !isCalamityActivityId(activity.activity) || !isCalamityTier(activity.tier) ||
-        result.state.dungeon || result.state.infusion || result.state.story || result.state.war ||
+        result.state.dungeon || result.state.infusion || result.state.story || result.state.war || result.state.oblivion ||
         !['player', 'cleared', 'defeat'].includes(result.state.phase) || result.state.wave !== 1 || result.state.enemies.length !== 1 ||
         activity.tier > calamityUnlockedTier(account, activity.activity)) {
       throw new Error('Invalid or locked Calamity encounter.');
@@ -787,7 +864,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     getCreature(boss.creatureId);
     if (rewards.length === 0 && result.state.phase !== 'cleared' && boss.hp > 0) {
       if (result.events.some((event) => event.calamityChest !== undefined || event.capture !== undefined ||
-          event.recruitment !== undefined || event.recruitmentOutcome !== undefined)) throw new Error('Invalid Calamity reward payload.');
+          event.recruitment !== undefined || event.recruitmentOutcome !== undefined || event.calamiticRecruitment !== undefined)) throw new Error('Invalid Calamity reward payload.');
       if (account.creatures[boss.creatureId]) return account;
       account.creatures[boss.creatureId] = { defeated: false };
       return saveAccount(storage, account);
@@ -796,22 +873,69 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
         reward.source !== boss.id || reward.target !== boss.id || reward.amount !== 0 ||
         reward.critical !== false || reward.calamityChest !== id ||
         Object.entries(reward).some(([key, value]) => value !== undefined &&
-          !['kind', 'source', 'target', 'amount', 'critical', 'message', 'calamityChest'].includes(key)) ||
-        result.events.some((event) => event !== reward && event.calamityChest !== undefined)) {
+          !['kind', 'source', 'target', 'amount', 'critical', 'message', 'calamityChest', 'calamiticRecruitment', 'calamityShards'].includes(key)) ||
+        result.events.some((event) => event !== reward && (event.calamityChest !== undefined || event.calamityShards !== undefined))) {
       throw new Error('Invalid Calamity chest reward.');
     }
     const receipt = `${runId}:${boss.id}`;
+    const awardedCharacter = calamiticCharacterByTier[activity.tier];
+    if (reward.calamiticRecruitment !== undefined && reward.calamiticRecruitment !== awardedCharacter) {
+      throw new Error('Invalid Calamitic recruitment reward.');
+    }
+    if (reward.calamityShards !== undefined) throw new Error('Calamity Shards are assigned only when the victory is saved.');
     if (account.receipts.includes(receipt)) return account;
+    if (reward.calamiticRecruitment !== undefined) throw new Error('Calamitic recruitment is assigned only when the victory is saved.');
     const amount = (account.calamityChests?.[id] ?? 0) + 1;
     if (!count(amount)) throw new Error('Calamity chest inventory capacity reached.');
     account.calamityChests = { ...account.calamityChests, [id]: amount };
     account.calamityClears = { ...account.calamityClears,
       [activity.activity]: Math.max(account.calamityClears?.[activity.activity] ?? 0, activity.tier) };
     account.creatures[boss.creatureId] = { defeated: true };
+    let recruitmentAward: CalamiticCharacterId | undefined;
+    const shardRoll = rollCalamityShards(activity.tier, account.calamityShardSeed);
+    account.calamityShardSeed = shardRoll.seed;
+    if (shardRoll.amount) {
+      const totalShards = (account.materials['shard-of-calamity'] ?? 0) + shardRoll.amount;
+      if (!count(totalShards)) throw new Error('Calamity Shard inventory capacity reached.');
+      account.materials['shard-of-calamity'] = totalShards;
+    }
+    if (!account.characters[awardedCharacter]) {
+      let seed = (account.calamityRecruitmentSeed ?? 0x243f6a88) >>> 0;
+      if (seed === 0) seed = 1;
+      seed ^= seed << 13;
+      seed ^= seed >>> 17;
+      seed ^= seed << 5;
+      seed >>>= 0;
+      if (seed / 0x100000000 < calamiticCharacterChance) {
+        recruitmentAward = awardedCharacter;
+        account.characters[awardedCharacter] = { level: 0, evolution: 1, weaponRank: 0 };
+      }
+      account.calamityRecruitmentSeed = seed || 1;
+    }
     account.receipts.push(receipt);
-    return saveAccount(storage, account);
+    const saved = saveAccount(storage, account);
+    if (recruitmentAward) reward.calamiticRecruitment = recruitmentAward;
+    if (shardRoll.amount) reward.calamityShards = shardRoll.amount;
+    return saved;
   }
   if (result.events.some((event) => event.calamityChest !== undefined)) throw new Error('Calamity chests require a Calamity encounter.');
+  const oblivion = result.state.oblivion;
+  if (oblivion !== undefined) {
+    if (!record(oblivion) || Object.keys(oblivion).length !== 1 || !isOblivionStage(oblivion.stage) ||
+        result.state.dungeon || result.state.infusion || result.state.story || result.state.war || result.state.calamity ||
+        result.state.wave !== oblivion.stage || !['player', 'cleared', 'defeat'].includes(result.state.phase) ||
+        !Object.keys(account.characters).some(isCalamiticCharacter) || oblivion.stage > unlockedOblivionStage(account)) {
+      throw new Error('Invalid or locked Gates of Oblivion encounter.');
+    }
+    const encounter = oblivionEncounter(oblivion.stage);
+    if (result.state.enemies.length !== (encounter.boss ? 1 : 2) || result.state.enemies.some((enemy, index) =>
+        !enemy || enemy.side !== 'enemy' || enemy.id !== `oblivion-${oblivion.stage}-${index}` ||
+        enemy.definitionId !== encounter.construct.id || enemy.creatureId !== encounter.construct.id ||
+        enemy.name !== encounter.construct.name || enemy.level !== encounter.level || enemy.element !== encounter.construct.element ||
+        enemy.boss !== encounter.boss || !Number.isFinite(enemy.hp))) {
+      throw new Error('Invalid Gates of Oblivion enemy source.');
+    }
+  }
   let changed = false;
   const rewardedEnemies = new Set<string>();
   const recruitments: { reward: BattleResult['events'][number]; character: WarCharacterId; outcome: 'new' | 'duplicate' }[] = [];
@@ -821,7 +945,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
   const story = result.state.story;
   if (story) {
     const encounter = storyEncounter(story.storyStage);
-    if (result.state.dungeon || result.state.infusion || result.state.war || result.state.wave !== story.storyStage ||
+    if (result.state.dungeon || result.state.infusion || result.state.war || result.state.oblivion || result.state.wave !== story.storyStage ||
         story.storyStage > unlockedStoryStage(account) ||
         result.state.enemies.length !== (encounter.boss ? 1 : 2) ||
         result.state.enemies.some((enemy, index) => enemy.id !== `story-${story.storyStage}-${index}` ||
@@ -843,10 +967,44 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
   for (const reward of result.events.filter((event) => event.kind === 'reward')) {
     if ('calamiticTokens' in reward) throw new Error('Calamitic Tokens only come from opening Calamity chests.');
     const receipt = `${runId}:${reward.source}`;
-    if (account.receipts.includes(receipt)) continue;
+    if (account.receipts.includes(receipt) && !oblivion) continue;
     const enemy = result.state.enemies.find((unit) => unit.id === reward.source);
     if (!enemy || enemy.level === null) throw new Error('Enemy reward source is missing.');
     const multiplier = bossLootMultiplier(result.state, enemy.boss === true);
+    if (oblivion) {
+      const stage = oblivion.stage;
+      const expectedCurrency = activityPrismaticaDrop({ oblivion: { stage } }, enemy.level);
+      const expectedMaterials = oblivionMaterialLoot(stage);
+      const allowedKeys = ['kind', 'source', 'target', 'amount', 'critical', 'message', 'materials'];
+      if (enemy.hp > 0 || reward.source !== enemy.id || reward.target !== '' || reward.critical !== false ||
+          !count(reward.amount) || reward.amount < expectedCurrency.minimum || reward.amount > expectedCurrency.maximum ||
+          Object.entries(reward).some(([key, value]) => value !== undefined && !allowedKeys.includes(key)) ||
+          !record(reward.materials)) throw new Error('Invalid Gates of Oblivion reward.');
+      const fragment = reward.materials['fragment-of-rise'];
+      const expectedIds = new Set(expectedMaterials.map(drop => drop.id));
+      for (const drop of expectedMaterials) {
+        const amount = reward.materials[drop.id];
+        if (!count(amount) || amount < drop.minimum || amount > drop.maximum) throw new Error('Invalid Gates of Oblivion material drop.');
+      }
+      if (stage < gatesOfOblivionRules.fragmentUnlockStage ? fragment !== undefined
+          : enemy.boss ? fragment !== 1
+          : fragment !== undefined && fragment !== 1) throw new Error('Invalid Fragment of Rise drop.');
+      const allowedMaterials = new Set([...expectedIds, ...(stage >= gatesOfOblivionRules.fragmentUnlockStage ? ['fragment-of-rise'] : [])]);
+      if (Object.keys(reward.materials).some(id => !allowedMaterials.has(id))) throw new Error('Invalid Gates of Oblivion material source.');
+      const receipt = `${runId}:${enemy.id}`;
+      if (account.receipts.includes(receipt)) continue;
+      account.fractalis += reward.amount;
+      if (!count(account.fractalis)) throw new Error('Prismatica balance exceeds the supported maximum.');
+      for (const [id, amount] of Object.entries(reward.materials)) {
+        const total = (account.materials[id] ?? 0) + amount;
+        if (!count(total)) throw new Error(`Material balance exceeds the supported maximum: ${id}.`);
+        account.materials[id] = total;
+      }
+      account.receipts.push(receipt);
+      rewardedEnemies.add(enemy.id);
+      changed = true;
+      continue;
+    }
     if (reward.masterChests !== undefined) {
       const activity = result.state.infusion;
       if (reward.masterChests !== 1 || activity?.mode !== 'machines' || activity.stage !== masterChest.stage ||
@@ -1012,6 +1170,14 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
   }
 
   const dungeon = result.state.dungeon;
+  if (oblivion && result.state.phase === 'cleared') {
+    if (result.state.enemies.some(enemy => enemy.hp > 0 ||
+        !rewardedEnemies.has(enemy.id) && !account.receipts.includes(`${runId}:${enemy.id}`))) {
+      throw new Error('Gates of Oblivion floor clear requires saved rewards for every defeated enemy.');
+    }
+    const unlocked = Math.min(gatesOfOblivionRules.stages, oblivion.stage + 1);
+    if (unlockedOblivionStage(account) < unlocked) { account.oblivionStage = unlocked; changed = true; }
+  }
   if (dungeon && result.state.phase === 'cleared') {
     const unlocked = Math.min(dungeonStageCount, dungeon.stage + 1);
     if ((account.dungeonStages[dungeon.element] ?? 1) < unlocked) {
@@ -1109,6 +1275,14 @@ export function unlockedStoryStage(account: Account): number {
   return Math.min(storyRules.stages, (account.storyCompleted ?? 0) + 1);
 }
 
+export function hasCalamiticElementBearer(account: Account): boolean {
+  return Object.keys(account.characters).some(isCalamiticCharacter);
+}
+
+export function unlockedOblivionStage(account: Account): number {
+  return account.oblivionStage ?? 1;
+}
+
 export function unlockedStage(account: Account, dungeon: PlayableDungeon): number {
   if (!playableDungeons.includes(dungeon)) throw new Error('Dungeon is not playable.');
   return account.dungeonStages[dungeon] ?? 1;
@@ -1147,7 +1321,7 @@ export function maxLevelPlan(account: Account, id: string): MaxLevelPlan {
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
   const current = starter ? ownedProgress(account, starter.id) : copy ? capturedProgress(copy) : null;
   if (!current) throw new Error('Character progress is missing.');
-  const cap = starter ? characterLevelCap(ownedProgress(account, starter.id).evolution) : capturedLevelCap;
+  const cap = starter ? characterLevelCap(ownedProgress(account, starter.id).evolution, starter.id, ownedProgress(account, starter.id).ascension?.stats === true) : capturedLevelCap;
   const cost: UpgradeCost = { fractalis: 0, materials: {} };
   let targetLevel = current.level;
   while (targetLevel < cap) {

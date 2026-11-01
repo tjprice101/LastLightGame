@@ -469,6 +469,11 @@ const checks: Record<MasterConduitId, Check> = {
 };
 
 describe('48-entry Master behavior matrix', () => {
+  it('has no Masters for the three Calamitic Element-Bearers', () => {
+    for (const id of ['ozriel', 'ilvaris', 'kaelith'])
+      expect(masterConduits.filter(entry => (entry.character as string) === id)).toEqual([]);
+    expect(masterConduits).toHaveLength(48);
+  });
   it('has exactly one concrete behavior scenario per installed Master', () => {
     expect(Object.keys(checks).sort()).toEqual(masterConduits.map(entry => entry.id).sort());
   });

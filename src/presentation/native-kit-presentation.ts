@@ -29,7 +29,7 @@ export function nativeStateReadout(state: BattleState, unit: Combatant, compact 
 /** Badges for native effects other squad members placed on this unit; the container is always present so playback can patch it. */
 export function nativeMarkerReadout(state: BattleState, unit: Combatant): string {
   return `<span class="native-markers">${nativeMarkers(state, unit).map(marker =>
-    `<span class="battle-status-badge" data-native-marker="${marker.id}" data-native-owner="${escapeDialogText(marker.owner)}">${statusIcon(marker.icon)}${escapeDialogText(`${marker.label} · ${marker.value}`)}</span>`).join('')}</span>`;
+    `<span class="battle-status-badge" data-native-marker="${marker.id}" data-native-owner="${escapeDialogText(marker.owner)}">${marker.icon ? statusIcon(marker.icon) : ''}${escapeDialogText(`${marker.label} · ${marker.value}`)}</span>`).join('')}</span>`;
 }
 
 export function needsAllyTarget(actor: Combatant, action: ActionId): boolean {

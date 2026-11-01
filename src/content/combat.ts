@@ -4,6 +4,7 @@ import { getConduit, conduitBuffs, validateConduitSlots, validateConduitElement,
 import { type ElementId } from './activities';
 import { flagshipFighters } from './flagships';
 import { warFighters, warActionNames, isWarCharacter } from './war-characters';
+import { calamiticFighters, calamiticActionNames, isCalamiticCharacter } from './calamitic-characters';
 import { kitPilotDescriptions, type KitPilot } from './kit-pilots';
 import { elementalEffectFamilies } from './elemental-effects';
 import { nativeIdentities } from './native-identities';
@@ -14,7 +15,7 @@ import { validateMasterCharacter, type MasterConduitId } from './master-conduits
 export const actionIds = ['light', 'skill1', 'skill2', 'ultimate'] as const;
 export type ActionId = (typeof actionIds)[number];
 export function basicActionName(id: string, action: 'light'): string {
-  return isWarCharacter(id) ? warActionNames[id][action] : 'Normal Attack';
+  return isWarCharacter(id) ? warActionNames[id][action] : isCalamiticCharacter(id) ? calamiticActionNames[id][action] : 'Normal Attack';
 }
 export const shatterGauge = {
   maximum: 100,
@@ -53,12 +54,14 @@ export interface FighterDefinition {
   passive: { name: string; description: string; damageBonus: number; defenseBonus: number; healFraction: number; lightGaugeBonus?: number };
   abilities: Record<'skill1' | 'skill2' | 'ultimate', Ability>;
   unavailableActions?: ('skill1' | 'skill2' | 'ultimate')[];
+  ascension?: CharacterProgress['ascension'];
 }
 export type ResolvedFighterDefinition = Omit<FighterDefinition, 'stats'> & { stats: ResolvedStats };
 
 export const fighters: Record<StarterId, FighterDefinition> = {
   ...flagshipFighters,
   ...warFighters,
+  ...calamiticFighters,
   ember: {
     pilot: 'ember',
     stats: { health: 220, defense: 10, damage: 38, crit: 0.15, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 8 },
@@ -125,6 +128,9 @@ for (const id of Object.keys(fighters) as StarterId[]) {
   const identity = nativeIdentities[id];
   const kit = fighters[id];
   kit.stats = normalizeStats(kit.stats);
+  if (identity.selfStats?.health) kit.stats.health *= 1 + identity.selfStats.health;
+  if (identity.selfStats?.defense) kit.stats.defense *= 1 + identity.selfStats.defense;
+  if (identity.selfStats?.skillPower) kit.stats.skillPower = (kit.stats.skillPower ?? 1) + identity.selfStats.skillPower;
   delete kit.pilot;
   kit.nativeIdentity = true;
   kit.passive = {
@@ -152,8 +158,9 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
   if (master) validateMasterCharacter(master, id);
   const base = fighters[id];
   if (!base) throw new Error('Unknown fighter definition.');
-  const factor = progress ? characterGrowthFactor(progress) : 1;
-  const potency = progress ? characterPotencyFactor(progress) : 1;
+  const factor = progress ? characterGrowthFactor(progress, id) : 1;
+  const ascended = progress?.ascension?.stats === true;
+  const potency = progress ? characterPotencyFactor(progress, id) : 1;
   const kit = structuredClone(base);
   for (const key of ['health', 'damage', 'elementalDamage'] as const) {
     kit.stats[key] = base.stats[key] * factor;
@@ -163,6 +170,11 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
   kit.stats.crit = Math.min(1, base.stats.crit * potency);
   kit.stats.critMultiplier = base.stats.critMultiplier * potency;
   kit.stats.shatterCapacity = base.stats.shatterCapacity * potency;
+  if (ascended) for (const key of Object.keys(kit.stats) as (keyof typeof kit.stats)[]) {
+    const value = kit.stats[key];
+    if (typeof value === 'number') kit.stats[key] = value * 1.5;
+  }
+  if (progress?.ascension) kit.ascension = structuredClone(progress.ascension);
   kit.passive.defenseBonus *= factor ** .7;
   kit.passive.damageBonus = base.passive.damageBonus * potency;
   kit.passive.healFraction = base.passive.healFraction * potency;

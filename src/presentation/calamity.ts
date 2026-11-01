@@ -19,6 +19,8 @@ import { conduitElement } from './conduit-element';
 import { masterChestIcon } from './master-conduits';
 import { getCreature } from '../content/creatures';
 import { type Rarity } from '../content/rarity';
+import { calamiticCharacterByTier } from '../content/calamitic-characters';
+import { getStarter } from '../content/starters';
 
 function devourerReward(creatureId: string) {
   const creature = getCreature(creatureId);
@@ -131,6 +133,7 @@ function calamityChestContents(activity: CalamityActivityId, tier: CalamityTier)
     ${chest.masterChests ? `<li><span>Machine's Master Chests</span><strong>${chest.masterChests}</strong></li>` : ''}
     ${chest.devourerCopies ? `<li><span>${escapeDialogText(devourerReward(chest.devourerCopies.creatureId).name)}</span><strong>${chest.devourerCopies.amount}</strong></li>` : ''}
     ${chest.componentRange ? `<li><span>Broken Mechanical Components</span><strong>${chest.componentRange.min.toLocaleString('en-US')}-${chest.componentRange.max.toLocaleString('en-US')}</strong></li>` : ''}
+    ${Object.entries(chest.guaranteedMaterials).map(([id, amount]) => `<li><span>${escapeDialogText(materialName(id))}</span><strong>${amount}</strong></li>`).join('')}
     <li><span>Random rewards</span><strong>${chest.bundles}</strong></li>
   </ul>`;
 }
@@ -141,8 +144,8 @@ export function calamitySection(activity: CalamityActivityId, account: Account |
   const prefix = `calamity-${activity}`;
   return `<section class="calamity-section" data-calamity-tiers="${activity}" aria-label="${escapeDialogText(definition.name)} Calamity">
     <div class="calamity-heading"><div><h3>${escapeDialogText(definition.name)} · Calamity</h3>
-      <p>Free entry. One sealed tier chest per victory.</p></div>
-      ${information(`${prefix}-rules`, 'Calamity rules', '<p>One boss, one chest, no other drops. Open the chest in Inventory. Entry and retries are free.</p>', 'Calamity rules')}</div>
+      <p>Free entry. One sealed tier chest and one independent recruitment roll per victory.</p></div>
+      ${information(`${prefix}-rules`, 'Calamity rules', '<p>Each victory saves one chest and independently rolls a 10% chance to recruit its EX-tier Element-Bearer at Evo.1 Lv.0 if not already owned. No duplicate conversion. Open the chest in Inventory. Entry and retries are free.</p>', 'Calamity rules')}</div>
     <div class="calamity-tier-tabs" role="tablist" aria-label="Calamity tier">
       ${([1, 2, 3] as const).map(tier => `<button type="button" role="tab" id="${prefix}-${tier}-tab" data-calamity-choice="${tier}"
         aria-controls="${prefix}-${tier}-panel" aria-selected="${tier === 1}" tabindex="${tier === 1 ? 0 : -1}">
@@ -165,7 +168,7 @@ export function calamitySection(activity: CalamityActivityId, account: Account |
           ${information(`${prefix}-${tier}-mechanics`, `${escapeDialogText(encounter.name)} · Boss abilities`, `<p>${escapeDialogText(encounter.description)}</p>`, 'Boss abilities')}</div>
         <section class="calamity-tier-reward" aria-label="Victory reward">
           <div class="calamity-chest-heading">${calamityChestIcon(tier)}<div><h5>Victory reward</h5><p>1 ${escapeDialogText(chest.name.replace(`${definition.name} `, ''))}</p><small>Open in Inventory.</small></div></div>
-          ${calamityChestContents(activity, tier)}</section>
+          ${calamityChestContents(activity, tier)}<p class="calamity-recruitment-chance">Each saved victory has a 10% chance to recruit ${escapeDialogText(getStarter(calamiticCharacterByTier[tier]).name)} at Evo.1 Lv.0 if not already owned.</p></section>
         <footer class="calamity-tier-actions">
         <button class="primary-button" data-calamity="${activity}" data-calamity-tier="${tier}" ${access?.unlocked ? '' : 'disabled'}>Enter EX+${tier}</button>
         <p class="activity-unlock-hint">${access?.unlocked ? '' : account ? escapeDialogText(access!.requirement) : 'Resolve the save error before entering.'}</p>

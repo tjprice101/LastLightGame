@@ -1,5 +1,6 @@
 import { flagshipCharacters } from './flagships';
 import { warCharacters } from './war-characters';
+import { calamiticCharacters } from './calamitic-characters';
 
 export const openingStarters = [
   {
@@ -84,7 +85,7 @@ export const roseCharacters = [
     lore: { origin: 'The paths between twin roses', story: 'On the paths between twin roses, Crinso learned that tending a garden sometimes means protecting what lives and sometimes accepting what must end. His small double-edged dagger became one rose-centered sword, golden fire and crimson lightning held in a single grip. Chaotic bears Death and Destruction, not a promise of cruelty. Let made Element-Bearers in his image; Rise’s Elemental-Devourers broke convention to steal their elements. Both sides hunt their creators’ souls, still separate and unfound, and Crinso will not call the contest settled before either is found. He follows the trail of Let’s soul while guarding the people caught between factions.', vow: 'I choose what grows beyond the storm.', awakening: 'Two petals unfold around one resolve; neither soul has returned.' },
   },
 ] as const;
-export const starters = [...openingStarters, ...roseCharacters, ...flagshipCharacters, ...warCharacters] as const;
+export const starters = [...openingStarters, ...roseCharacters, ...flagshipCharacters, ...warCharacters, ...calamiticCharacters] as const;
 export type Starter = (typeof starters)[number];
 export type StarterId = Starter['id'];
 export type RoseCharacterId = (typeof roseCharacters)[number]['id'];

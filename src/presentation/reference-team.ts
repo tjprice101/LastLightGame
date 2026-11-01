@@ -1,7 +1,7 @@
 import { elements, isCurrencyMode } from '../content/activities';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { characterName } from '../content/character-art';
-import { characterLevelCap, evolutionRarity } from '../content/progression';
+import { characterLevelCap, characterRarity, evolutionRarity } from '../content/progression';
 import { formatStat, shatterGauge } from '../content/combat';
 import { ownedCharacters, ownedProgress, equippedSquad, characterProtection, creatureSaleOffer, isSellableCreatureMode, type Account } from '../game/account';
 import { saleControls } from './creature-sale';
@@ -189,11 +189,11 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
     const progress = ownedProgress(account, state.selected);
     const squad = equippedSquad(account);
     const title = characterName(state.selected, progress.evolution).split(', ')[0];
-    const cap = characterLevelCap(progress.evolution);
+    const cap = characterLevelCap(progress.evolution, state.selected);
     content = `<section class="ref-team-detail ref-bearer-detail">
       <header class="ref-panel ref-character-header hub-showcase"><div class="ref-character-portrait hub-portrait">${portrait(starter, progress.evolution)}</div>
         <div class="ref-character-identity"><p data-reference-prefix>${title} · ${starter.weapon}</p><h2 data-reference-name>${starter.name}</h2>
-          <div class="ref-tags">${elementLabel(starter.elementId)}<span class="ref-stars" aria-label="${starter.stars}-star Element-Bearer">${'★'.repeat(starter.stars)}</span><span class="ref-chip">${starter.role}</span><span class="ref-chip" data-reference-rarity>${evolutionRarity(progress.evolution)}</span></div>
+          <div class="ref-tags">${elementLabel(starter.elementId)}<span class="ref-stars" aria-label="${starter.stars}-star Element-Bearer">${'★'.repeat(starter.stars)}</span><span class="ref-chip">${starter.role}</span><span class="ref-chip" data-reference-rarity data-rarity="${characterRarity(starter.id, progress.evolution)}">${characterRarity(starter.id, progress.evolution)}</span></div>
           <div class="ref-character-progress"><div>Level <span data-reference-level>${formatStat(progress.level)} / ${cap}</span><div class="ref-bar"><i style="width:${progress.level / cap * 100}%"></i></div></div>
           <div><span data-reference-evolution>Evolution ${progress.evolution} / 6</span><div class="ref-pips">${Array.from({ length: 6 }, (_, index) => `<i class="${index < progress.evolution ? 'is-filled' : ''}"></i>`).join('')}</div></div></div>
           <span data-owned-progress class="ref-sr-only">Lv.${progress.level} · Evo.${progress.evolution}</span>

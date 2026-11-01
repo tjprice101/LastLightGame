@@ -3,12 +3,14 @@ import { conduits, conduitUpgradeCap, validateConduitElement, validateConduitSlo
 import { masterConduits, type MasterConduitId, type MasterLoadouts } from '../src/content/master-conduits';
 import { calamityActivities } from '../src/content/calamity';
 import { starters, getStarter, type StarterId } from '../src/content/starters';
+import { isCalamiticCharacter } from '../src/content/calamitic-characters';
 import { createInfusionBattle, createWarBattle, createCalamityBattle, withMasterLoadouts,
   actAndAdvanceTurn, actionUnavailable, endTurn, type BattleState, type BattleEvent } from '../src/game/battle';
 import { benchmarkPriorities, benchmarkTarget } from '../src/game/native-benchmark-pilot';
 import { conduitIncoming, gear, nativeShield } from '../src/game/conduit-runtime';
 import { loadout, progressAt, measureBattle, encounterLabel, type Encounter, type Outcome } from './battle-survey';
 import type { ActionId } from '../src/content/combat';
+const benchmarkStarters = starters.filter(unit => !isCalamiticCharacter(unit.id));
 
 export const auditSeeds = [1729, 54321, 104729];
 export const auditLimits = { rounds: 100, decisions: 1800 };
@@ -22,12 +24,12 @@ export type AuditId = ConduitId | MasterConduitId;
 export type Context = 'isolated' | 'supported';
 export const auditCatalog = [
   ...conduits.map(piece => ({ id: piece.id as AuditId, name: piece.name, rarity: piece.rarity,
-    eligible: starters.filter(unit => !piece.element || piece.element === unit.elementId).map(unit => unit.id),
-    skipped: starters.filter(unit => piece.element && piece.element !== unit.elementId)
+    eligible: benchmarkStarters.filter(unit => !piece.element || piece.element === unit.elementId).map(unit => unit.id),
+    skipped: benchmarkStarters.filter(unit => piece.element && piece.element !== unit.elementId)
       .map(unit => ({ character: unit.id, reason: `Requires ${piece.element}; wearer is ${unit.elementId}` })),
     levels: [0, conduitUpgradeCap] })),
   ...masterConduits.map(piece => ({ id: piece.id as AuditId, name: piece.name, rarity: 'Master',
-    eligible: [piece.character], skipped: starters.filter(unit => unit.id !== piece.character)
+    eligible: [piece.character], skipped: benchmarkStarters.filter(unit => unit.id !== piece.character)
       .map(unit => ({ character: unit.id, reason: `Named Master requires ${piece.character}` })), levels: [0] })),
 ];
 

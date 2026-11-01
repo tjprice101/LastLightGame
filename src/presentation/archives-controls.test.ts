@@ -59,12 +59,12 @@ describe('Collections controls', () => {
     f.select('stars', '5');
     expect(f.visible()).toHaveLength(1);
     expect(f.visible()[0].dataset.archiveCharacter).toBe('ember');
-    expect(f.host.querySelector('[data-character-filter-result]')?.textContent).toBe('1 / 96 forms shown');
+    expect(f.host.querySelector('[data-character-filter-result]')?.textContent).toBe('1 / 114 forms shown');
     f.select('discovery', 'locked');
     expect(f.visible()).toHaveLength(0);
     expect(f.host.querySelector('[data-character-filter-result]')?.textContent).toBe('No forms match these filters.');
     f.host.querySelector<HTMLButtonElement>('[data-reset-character-filters]')!.click();
-    expect(f.visible()).toHaveLength(96);
+    expect(f.visible()).toHaveLength(114);
     expect(Array.from(f.host.querySelectorAll('#archive-characters .archive-filters .selection-trigger')).map(button => button.textContent))
       .toEqual(['All elements', 'All rarities', 'All characters', 'All forms', 'All stars']);
     expect(f.account).toEqual(f.before);

@@ -4,6 +4,8 @@ import type { Stats } from './combat';
 import type { EnemySkill } from './enemy-skills';
 import { enemyCombatStats } from './stat-growth';
 import { roseMaterials } from './roses';
+import { calamiticCharacterByTier } from './calamitic-characters';
+import { getStarter } from './starters';
 import { enemyCaptureAllowed, isInfusionMode } from './infusions';
 
 export type CalamityActivityId = ElementId | 'treasury' | 'sanctuary' | 'heavens' | 'abyss' | 'machines' | 'roses';
@@ -51,12 +53,15 @@ export function parseCalamityChestId(id: string): { activity: CalamityActivityId
 export function calamityChest(activity: CalamityActivityId, tier: CalamityTier) {
   const id = calamityChestId(activity, tier);
   const title = ['Slayer', 'Master', 'Omnipotent'][tier - 1];
+  const guaranteedMaterials: Record<string, number> = activity === 'heavens' ? { 'feather-severed-dawn': tier }
+    : activity === 'abyss' ? { 'splinter-unmade-night': tier } : {};
   return { id, name: `${calamityActivity(activity).name} EX+${title} Chest`,
     fractalis: [100_000, 250_000, 500_000][tier - 1], lycalis: [50, 70, 100][tier - 1],
     calamiticTokens: [1, 3, 8][tier - 1], bundles: [3, 5, 7][tier - 1], masterChests: activity === 'machines' && tier === 3 ? 2 : 0,
     devourerCopies: isInfusionMode(activity) && enemyCaptureAllowed(activity, 120)
       ? { creatureId: `infusion:${activity}:5`, amount: tier } : null,
-    componentRange: activity === 'machines' ? { min: [3_000, 5_000, 10_000][tier - 1], max: [6_000, 8_000, 12_000][tier - 1] } : null };
+    componentRange: activity === 'machines' ? { min: [3_000, 5_000, 10_000][tier - 1], max: [6_000, 8_000, 12_000][tier - 1] } : null,
+    guaranteedMaterials };
 }
 
 export interface CalamityLootRow {
@@ -116,13 +121,15 @@ export interface CalamityOpening {
   masterChests: number;
   roseliusCopies?: number;
   devourerCopies?: { creatureId: string; amount: number } | null;
+  calamiticMaterialVersion?: 1;
 }
 export function rollCalamityChest(activity: CalamityActivityId, tier: CalamityTier, roll: () => number,
   owned: Readonly<Partial<Record<ConduitId, number>>> = {}): CalamityOpening {
   const chest = calamityChest(activity, tier);
   const reward: CalamityOpening = { id: chest.id, name: chest.name, fractalis: chest.fractalis,
     lycalis: chest.lycalis, calamiticTokens: chest.calamiticTokens, masterChests: chest.masterChests,
-    materials: {}, conduits: {}, mechanicalComponents: 0, devourerCopies: chest.devourerCopies };
+    materials: { ...chest.guaranteedMaterials }, conduits: {}, mechanicalComponents: 0, devourerCopies: chest.devourerCopies,
+    calamiticMaterialVersion: 1 };
   const table = calamityLootTable(activity);
   const random = () => {
     const value = roll();
@@ -212,5 +219,6 @@ export function calamityEncounter(activity: CalamityActivityId, tier: CalamityTi
 }
 export function calamityWarning(activity: CalamityActivityId, tier: CalamityTier): string {
   const encounter = calamityEncounter(activity, tier);
-  return `${encounter.name} - Calamity EX+${tier}, Lv.${encounter.level}. Victory earns one ${calamityChest(activity, tier).name}. No other drops or captures. Entry is free, and losing costs nothing. ${encounter.description}`;
+  const bearer = getStarter(calamiticCharacterByTier[tier]);
+  return `${encounter.name} - Calamity EX+${tier}, Lv.${encounter.level}. Victory earns one ${calamityChest(activity, tier).name} and has an independent 10% chance to recruit ${bearer.name} at Evo.1 Lv.0 if not already owned. No other random drops or captures. Entry is free, and losing costs nothing. ${encounter.description}`;
 }

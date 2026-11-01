@@ -36,12 +36,16 @@ describe('isolated Calamity definitions and rewards', () => {
         let calls = 0;
         const reward = rollCalamityChest(mode, tier, () => calls++ % 2 === 0 ? 0 : quantityRoll);
         const chest = calamityChest(mode, tier);
-        expect(reward.materials).toEqual({ [`${mode}-evolution`]: chest.bundles * 9 });
+        expect(reward.materials).toEqual({ [`${mode}-evolution`]: chest.bundles * 9,
+          [mode === 'heavens' ? 'feather-severed-dawn' : 'splinter-unmade-night']: tier });
         expect(calls).toBe(chest.bundles * 2);
         expect(reward).toMatchObject({ fractalis: chest.fractalis, lycalis: chest.lycalis,
           calamiticTokens: chest.calamiticTokens, devourerCopies: chest.devourerCopies });
         const leveling = rollCalamityChest(mode, tier, () => .999999);
-        expect(leveling.materials).toEqual({ [`${mode}-level`]: chest.bundles * 20 });
+        expect(leveling.materials).toEqual({ [`${mode}-level`]: chest.bundles * 20,
+          [mode === 'heavens' ? 'feather-severed-dawn' : 'splinter-unmade-night']: tier });
+        expect(reward.calamiticMaterialVersion).toBe(1);
+        expect(leveling.calamiticMaterialVersion).toBe(1);
       }
     }
   });
@@ -81,7 +85,7 @@ describe('isolated Calamity definitions and rewards', () => {
     let calls = 0;
     const reward = rollCalamityChest(activity, tier, () => { calls++; return 0; });
     expect(Object.keys(reward).sort()).toEqual([
-      'calamiticTokens', 'conduits', 'fractalis', 'id', 'lycalis', 'masterChests', 'materials', 'mechanicalComponents', 'name', 'devourerCopies',
+      'calamiticMaterialVersion', 'calamiticTokens', 'conduits', 'fractalis', 'id', 'lycalis', 'masterChests', 'materials', 'mechanicalComponents', 'name', 'devourerCopies',
     ].sort());
     const chest = calamityChest(activity, tier);
     expect(calls).toBe(chest.bundles * 2 + Number(activity === 'machines'));
@@ -112,7 +116,9 @@ describe('isolated Calamity definitions and rewards', () => {
             return (call - Number(id === 'machines')) % 2 === 0 ? (offset + row.weight / 2) / 100 : quantity;
           });
           const expected = (quantity === 0 ? row.min : row.max) * 3;
-          if (row.kind === 'material') expect(reward.materials).toEqual({ [row.id!]: expected });
+          if (row.kind === 'material') expect(reward.materials).toEqual({
+            ...(id === 'heavens' ? { 'feather-severed-dawn': 1 } : id === 'abyss' ? { 'splinter-unmade-night': 1 } : {}),
+            [row.id!]: expected });
           if (row.kind === 'fractalis') expect(reward.fractalis).toBe(100_000 + expected);
           if (row.kind === 'lycalis') expect(reward.lycalis).toBe(50 + expected);
           if (row.kind === 'components') expect(reward.mechanicalComponents).toBe(expected + (quantity === 0 ? 3_000 : 6_000));
@@ -170,7 +176,8 @@ describe('isolated Calamity definitions and rewards', () => {
     }
     expect(() => calamityEncounter('machines', 4 as CalamityTier)).toThrow();
     expect(() => enemyCombatStats(186, true)).toThrow();
-    expect(() => enemyAbilityMultiplier(185)).toThrow();
+    expect(enemyAbilityMultiplier(185)).toBeCloseTo(1.936);
+    expect(() => enemyAbilityMultiplier(186)).toThrow();
     expect(characterLevelCap(6)).toBe(105);
   });
 });

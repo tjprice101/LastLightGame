@@ -1,22 +1,29 @@
-import { calamityUnlockedTier, type Account } from './account';
+import { calamityUnlockedTier, hasCalamiticElementBearer, unlockedOblivionStage, type Account } from './account';
 import { isCalamityActivityId, isCalamityTier } from '../content/calamity';
 import type { Activity } from '../online/server-game';
 import { starters } from '../content/starters';
 import { storyRules } from '../content/story';
 import { characterGrowthFactor } from '../content/progression';
+import { gatesOfOblivionRules, isOblivionStage } from '../content/gates-of-oblivion';
 
 export function highestBearerLevel(account: Account): number {
   let highest = 0;
   for (const { id } of starters) {
     const progress = account.characters[id];
     if (!progress) continue;
-    characterGrowthFactor(progress);
+    characterGrowthFactor(progress, id);
     highest = Math.max(highest, progress.level);
   }
   return highest;
 }
 
 export function activityAccess(account: Account, activity: Activity) {
+  if (activity.kind === 'oblivion') {
+    const owned = hasCalamiticElementBearer(account);
+    const stageUnlocked = isOblivionStage(activity.stage) && activity.stage <= unlockedOblivionStage(account);
+    return { unlocked: owned && stageUnlocked, minimumLevel: 0, level: highestBearerLevel(account),
+      requirement: !owned ? 'Own any Calamitic Element-Bearer' : `Clear Gates of Oblivion Floor ${activity.stage - 1}` };
+  }
   if (activity.kind === 'calamity') {
     const valid = isCalamityActivityId(activity.activity) && isCalamityTier(activity.tier);
     const highestTier = valid ? calamityUnlockedTier(account, activity.activity) : 0;
@@ -37,6 +44,9 @@ export function activityAccess(account: Account, activity: Activity) {
 }
 
 export function assertActivityAccess(account: Account, activity: Activity): void {
+  if (activity.kind === 'oblivion' && !isOblivionStage(activity.stage)) {
+    throw new Error(`Gates of Oblivion floor must be an integer from 1 to ${gatesOfOblivionRules.stages}.`);
+  }
   const access = activityAccess(account, activity);
   if (!access.unlocked) throw new Error(`Activity locked. Requires ${access.requirement}. Your highest Element-Bearer is Lv.${access.level}.`);
 }

@@ -7,6 +7,8 @@ import { infusionEncounter, specialtyMaterials } from '../content/infusions';
 import { masterConduits } from '../content/master-conduits';
 import { characterGrowth, characterLevelCap } from '../content/progression';
 import { roseMaterials } from '../content/roses';
+import { calamiticMaterials } from '../content/calamitic-materials';
+import { isCalamiticCharacter } from '../content/calamitic-characters';
 import { starters } from '../content/starters';
 import { storyRules } from '../content/story';
 import { ACCOUNT_KEY, emptyAccount, validateAccount, type Account } from './account';
@@ -21,9 +23,9 @@ export function createDebugAccount(): Account {
   account.lycalis = 1_000_000_000;
   account.mechanicalComponents = 1_000_000_000;
   account.masterChests = 100;
-  account.materials = Object.fromEntries([...elementalMaterials, ...specialtyMaterials, ...roseMaterials].map(material => [material.id, 1_000_000]));
-  account.characters = Object.fromEntries(starters.map(starter => [starter.id, {
-    level: characterLevelCap(characterGrowth.forms), evolution: characterGrowth.forms,
+  account.materials = Object.fromEntries([...elementalMaterials, ...specialtyMaterials, ...roseMaterials, ...calamiticMaterials].map(material => [material.id, 1_000_000]));
+  account.characters = Object.fromEntries(starters.filter(starter => !isCalamiticCharacter(starter.id)).map(starter => [starter.id, {
+    level: characterLevelCap(characterGrowth.forms, starter.id), evolution: characterGrowth.forms,
   }]));
   account.squad = ['ember', 'tide', 'sprout'];
   account.conduits = Object.fromEntries(conduits.map(conduit => [conduit.id, 1]));

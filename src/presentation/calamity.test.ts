@@ -232,7 +232,7 @@ describe('Calamity presentation', () => {
     expect(tabs[1].getAttribute('aria-controls')).toBe(calamity.id);
     expect(calamity.querySelector('[data-infusion], [data-dungeon]')).toBeNull();
     expect(calamity.querySelector<HTMLButtonElement>('[data-calamity-tier="1"]')!.disabled).toBe(false);
-    expect(calamity.textContent).toContain('One sealed tier chest per victory');
+    expect(calamity.textContent).toContain('One sealed tier chest and one independent recruitment roll per victory');
     for (const tier of [1, 2, 3] as const) {
       const chest = calamityChest(activity.id, tier);
       const card = calamity.querySelector(`[data-calamity-tier="${tier}"]`)!.closest('.calamity-tier')!;

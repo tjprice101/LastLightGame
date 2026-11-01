@@ -4,6 +4,7 @@ import { abilityStatuses, kitResource, nativeAbilityStatuses } from './ability-s
 import { statusArt } from '../content/status-art';
 import { starters } from '../content/starters';
 import { nativeIdentities } from '../content/native-identities';
+import { isCalamiticCharacter } from '../content/calamitic-characters';
 
 describe('typed ability status labels', () => {
   it('refreshes stale online snapshot copy without changing frozen strengths or writing back to combat state', () => {
@@ -43,7 +44,8 @@ describe('typed ability status labels', () => {
     for (const starter of starters) {
       const kit = resolveFighter(starter.id);
       const text = JSON.stringify(kit);
-      expect(text).not.toMatch(/Consumes all|stacks? of|per stack|authored ordinary|Conduit Ember Seals/);
+      expect(text).not.toMatch(/Consumes all|authored ordinary|Conduit Ember Seals/);
+      if (!isCalamiticCharacter(starter.id)) expect(text).not.toMatch(/stacks? of|per stack/);
       for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
         const ability = kit.abilities[action];
         expect(ability.description).not.toContain('?');
@@ -54,6 +56,14 @@ describe('typed ability status labels', () => {
     expect(resolveFighter('tide').abilities.skill1.description).toContain('25% [Weaken]');
     expect(resolveFighter('tide').abilities.skill1.description).toContain('for the next enemy phase');
     expect(resolveFighter('tide').abilities.skill1.description.split(/\s+/).length).toBeLessThanOrEqual(65);
+  });
+  it('shows owner-authored Calamitic stacks as text without inventing status art', () => {
+    for (const id of ['ozriel', 'ilvaris', 'kaelith'] as const) {
+      const html = kitResource(resolveFighter(id), id);
+      expect(html).toContain('data-native-status="text"');
+      expect(html).not.toContain('<img');
+    }
+    expect(resolveFighter('ilvaris').abilities.skill1.description).toContain('per stack, up to 5');
   });
   it('retains exact actions without generic resource or recovery instructions', () => {
     for (const starter of starters) {

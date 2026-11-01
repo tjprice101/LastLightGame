@@ -6,6 +6,9 @@ import { characterGrowthFactor, characterPotencyFactor } from './progression';
 import { starters, type StarterId } from './starters';
 
 const coefficients: Record<StarterId, readonly (number | undefined)[]> = {
+  ozriel: [2.4, undefined, 4.55],
+  ilvaris: [2.25, undefined, 4.4],
+  kaelith: [4.56, 3.65, 3.6],
   ember: [1.6, 1.1, 2],
   tide: [1.5, undefined, undefined],
   sprout: [1.4, undefined, undefined],
@@ -25,12 +28,12 @@ const coefficients: Record<StarterId, readonly (number | undefined)[]> = {
 };
 const actions = ['skill1', 'skill2', 'ultimate'] as const;
 
-describe('approved sixteen native identities', () => {
+describe('approved native identities', () => {
   it('covers exactly the stable playable roster with distinct roles and play loops', () => {
     expect([...nativeIdentityIds].sort()).toEqual(starters.map(starter => starter.id).sort());
-    expect(nativeIdentityIds).toHaveLength(16);
-    expect(new Set(nativeIdentityIds.map(id => nativeIdentities[id].role)).size).toBe(16);
-    expect(new Set(nativeIdentityIds.map(id => nativeIdentities[id].playLoop)).size).toBe(16);
+    expect(nativeIdentityIds).toHaveLength(starters.length);
+    expect(new Set(nativeIdentityIds.map(id => nativeIdentities[id].role)).size).toBe(starters.length);
+    expect(new Set(nativeIdentityIds.map(id => nativeIdentities[id].playLoop)).size).toBe(starters.length);
   });
 
   it('describes the shared tuned HP fractions and preserves stronger pending Seed rules', () => {
@@ -88,11 +91,11 @@ describe('approved sixteen native identities', () => {
     for (const [index, action] of actions.entries()) {
       expect(grown.abilities[action].cooldown).toBe(0);
       const coefficient = coefficients[id][index];
-      const scale = nativeBalance.skillDamageScale * (action === 'ultimate' ? nativeBalance.lastFlare.damage : 1);
+      const scale = nativeIdentities[id].selfStats ? 1 : nativeBalance.skillDamageScale * (action === 'ultimate' ? nativeBalance.lastFlare.damage : 1);
       expect(grown.abilities[action].strength.damageMultiplier).toBe(coefficient === undefined ? undefined : coefficient * scale);
       expect(grown.abilities[action].strength).toEqual(base.abilities[action].strength);
       expect(grown.abilities[action].strength).toEqual(nativeIdentities[id].abilities[action].strength);
-      const expectedStrength = coefficients[id][index] === undefined
+      const expectedStrength = nativeIdentities[id].selfStats ? nativeIdentities[id].abilities[action].strength : coefficients[id][index] === undefined
         ? {}
         : { damageMultiplier: coefficients[id][index]! * scale, ...(id === 'tide' && action === 'skill1' ? { weakenFraction: .25 } : {}) };
       expect(grown.abilities[action].strength).toEqual(expectedStrength);

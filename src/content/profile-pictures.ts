@@ -1,9 +1,11 @@
 import { starters, isStarterId, type StarterId } from './starters';
 import { characterName } from './character-art';
 import { ownedCharacters, ownedProgress, type Account } from '../game/account';
+import { isCalamiticCharacter, type CalamiticCharacterId } from './calamitic-characters';
 
-export type ProfilePictureId = `profile:${StarterId}:${'base' | 'omnic'}`;
-export const profilePictures = starters.flatMap(character => (['base', 'omnic'] as const).map(form => ({
+export type ProfilePictureCharacterId = Exclude<StarterId, CalamiticCharacterId>;
+export type ProfilePictureId = `profile:${ProfilePictureCharacterId}:${'base' | 'omnic'}`;
+export const profilePictures = starters.filter(character => !isCalamiticCharacter(character.id)).flatMap(character => (['base', 'omnic'] as const).map(form => ({
   id: `profile:${character.id}:${form}` as ProfilePictureId,
   characterId: character.id,
   form,
@@ -24,5 +26,5 @@ export function profilePictureUnlocked(account: Account, id: ProfilePictureId): 
 }
 
 export function canonicalProfilePicture(value: string): ProfilePictureId | 'neutral' {
-  return isProfilePictureId(value) ? value : isStarterId(value) ? `profile:${value}:base` : 'neutral';
+  return isProfilePictureId(value) ? value : isStarterId(value) && !isCalamiticCharacter(value) ? `profile:${value}:base` : 'neutral';
 }

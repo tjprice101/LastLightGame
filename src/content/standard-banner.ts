@@ -2,6 +2,7 @@ import { starters, isRoseCharacter, type StarterId } from './starters';
 import { bannerMaterialDefinition, bannerMaterialPool } from './banner-materials';
 import { lootRoll } from './loot-random';
 import { isWarCharacter } from './war-characters';
+import { isCalamiticCharacter } from './calamitic-characters';
 
 export const bannerPityLimits = { pulls: 80 } as const;
 const savedBannerPityBounds = { highestStar: 200, unownedHighestStar: 500 } as const;
@@ -87,7 +88,8 @@ export type StandardBannerEntry =
   | { kind: 'creature'; id: string; stars: 1 | 2 | 3; chance: number };
 
 export function standardBannerPool(): StandardBannerEntry[] {
-  const characters = starters.filter((character) => !isRoseCharacter(character.id) && !isWarCharacter(character.id));
+  const characters = starters.filter((character): character is Extract<typeof character, { stars: 5 | 6 }> =>
+    character.stars !== 7 && !isRoseCharacter(character.id) && !isWarCharacter(character.id) && !isCalamiticCharacter(character.id));
   const characterChance = ([5, 6] as const).reduce((total, stars) =>
     total + (characters.some((character) => character.stars === stars) ? bannerCharacterTierRates[stars] : 0), 0);
   const remaining = 1 - characterChance;

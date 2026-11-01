@@ -9,11 +9,13 @@ import { characterLevelCap, type CharacterProgress } from '../src/content/progre
 import { enemyCalamityApproach, enemyCombatStats, enemyResistanceRamp, enemyStrengthMultiplier } from '../src/content/stat-growth';
 import { enemyAbilityMultiplier, enemySkills } from '../src/content/enemy-skills';
 import { getStarter, starters, type StarterId } from '../src/content/starters';
+import { isCalamiticCharacter } from '../src/content/calamitic-characters';
 import { actAndAdvanceTurn, actionUnavailable, createBattle, createCalamityBattle, createDungeonBattle,
   createInfusionBattle, createStoryBattle, createWarBattle, endTurn, nextWave, withMasterLoadouts,
   type BattleEvent, type BattleState } from '../src/game/battle';
 import { benchmarkPriorities, benchmarkTarget } from '../src/game/native-benchmark-pilot';
 import { initializeConduits } from '../src/game/conduit-runtime';
+const benchmarkStarters = starters.filter(character => !isCalamiticCharacter(character.id));
 
 export const surveySeeds = [1, 1729, 12345, 54321, 104729, 65537, 314159, 271828, 8675309, 4294967295];
 export const surveyLimits = { rounds: 100, decisions: 1800 } as const;
@@ -219,7 +221,7 @@ export function runSurvey(emit: (row: SurveyRow) => void): number {
     { kind: 'war', character: 'vaelor', stage: 10 },
     ...([1, 2, 3] as const).map(tier => ({ kind: 'calamity' as const, activity: 'machines' as const, tier })),
   ];
-  for (const character of starters) {
+  for (const character of benchmarkStarters) {
     const roster: StarterId[] = [character.id, ...balanced.filter(id => id !== character.id)].slice(0, 3);
     for (const master of [null, ...masterConduits.filter(entry => entry.character === character.id).map(entry => entry.id)]) {
       for (const policy of ['native', 'flare-first'] as const) for (const encounter of probes)
@@ -347,7 +349,7 @@ export function runLevelSweep(emit: (row: SurveyRow) => void): number {
           sample('level-sweep-standard', squad.name, squad.roster, build, enemyLevel, 'standard');
       }
     }
-    for (const character of starters) {
+    for (const character of benchmarkStarters) {
       const roster: StarterId[] = [character.id, ...balanced.filter(id => id !== character.id)].slice(0, 3);
       for (const master of [null, ...masterConduits.filter(entry => entry.character === character.id).map(entry => entry.id)])
         sample('level-sweep-character', character.name, roster, 'master5', enemyLevel, 'machines',
@@ -377,7 +379,7 @@ export function describeSurvey() {
     levelSweep: { levels: levelSweepLevels, characterLevel: 105, policies: ['native'],
       methodology: 'Controlled single-boss level probes use exact shared boss stats and unchanged authored Calamity patterns at each requested level. Standard boss probes use Machines through120 and Roses at130/140, rebuilding level-dependent scheduled skills. Standard120/140 and Calamity145/160/185 are unchanged native encounter controls; all other level/pattern combinations are synthetic offline probes, not playable stages.' },
     builds: Object.fromEntries((['bare', 'common0', 'mixed0', 'mixed5', 'omnic0', 'omnic5', 'master5', 'calamitic5'] as const)
-      .map(build => [build, loadout(starters.map(character => character.id), build)])),
+      .map(build => [build, loadout(benchmarkStarters.map(character => character.id), build)])),
     progression: 'Minimum legal evolution for each sampled level; level105 is evolution6. Weapon rank0.',
     methodology: 'Fresh full-Health entries with natural opening Gauge except continuous Training (real nextWave carries Health/Gauge/recovery). No enemy stats or character stats altered. Native pilot and separate flare-first sensitivity policy; neither is an optimal-play proof. Damage is emitted effective HP damage, healing is emitted healing, Shields are created amounts, not absorbed mitigation.',
   };

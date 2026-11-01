@@ -30,6 +30,8 @@ No original, runtime image, recorded source path or recorded hash was rewritten.
 
 ## Characters
 
+- [Calamitic Element-Bearers Phase 0](characters/Calamitic%20Element-Bearers.md): 53 pending prompts across portraits, abilities/statuses, materials, Rise-blessed emblem and nine Conduits; reproducible with `python tools\build_calamitic_art.py`.
+
 - [32 Element-Bearer profile portraits](characters/Element-Bearer%20Profile%20Pictures.md):
   one acquisition and one Omnic portrait for each of16 bearers. New1:1
   generation prompts plus32 installed delivered portraits;31 reviewed element

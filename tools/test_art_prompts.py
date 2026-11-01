@@ -859,7 +859,10 @@ class ArtPromptTests(unittest.TestCase):
                 if "--sref" in body:
                     profile_portrait = path == art_path("characters", "Element-Bearer Profile Pictures.md", root=ROOT)
                     self.assertIn("--ar 1:1" if profile_portrait else "--ar 4:3", body)
-                    weight = 10 if path == art_path("experiments", "Enemy Style Pilot.md", root=ROOT) and index <= 3 else 150
+                    if path == art_path("characters", "Calamitic Element-Bearers.md", root=ROOT):
+                        weight = 400
+                    else:
+                        weight = 10 if path == art_path("experiments", "Enemy Style Pilot.md", root=ROOT) and index <= 3 else 150
                     self.assertRegex(body, rf" --sref https://\S+ --sw {weight}$")
                 else:
                     self.assertNotIn("--sref", body)

@@ -1,0 +1,32 @@
+# Gates of Oblivion (D-435 Section 2)
+
+Gates of Oblivion is implemented as a Calamitic-gated, 25-floor progression activity. It is not a Calamity EX+ encounter. A profile must own Ozriel, Ilvaris, or Kaelith before Floor 1 can be entered. The activity remains visible while locked, with the ownership requirement shown in Play. Only the next uncleared floor is available. The gate is checked by the client, the server session-entry path, and the per-kill reward transaction.
+
+## Floors and encounters
+
+Enemy levels are rounded linearly from Lv.125 on Floor 1 to Lv.170 on Floor 25. The activity reuses `enemyCombatStats` and the shared hostile benchmark curve, including its late-level extension; it introduces no separate stat curve. One construct identity advances across floors in the same tiered pattern as the existing dungeons. Ordinary floors spawn two copies of that construct; floors 5, 10, 15, 20, and 25 spawn one boss.
+
+| Construct | Combat element | Calamity-style skill |
+|---|---|---|
+| Shardling Acolyte | Infernic | Calamity Seed: Shardfall |
+| Glassbound Sentry | Tranquilitic | Calamity Pane: Stillward |
+| Oblivion Lantern-Wraith | Atmospheric | Calamity Lantern: Last Signal |
+| Fracture Hound | Chaotic | Calamity Maw: Faultline Pursuit |
+| Unmade Choir Drone | Oceanic | Calamity Chorus: Drowned Measure |
+| Crimson Gearwyrm | Botanic | Calamity Coil: Red Harvest |
+| Husk-Seraph of Rise | Tranquilitic | Calamity Wing: Empty Benediction |
+| Annihilation Colossus Fragment | Infernic | Calamity Fist: Final Measure |
+| Fatebreaker Warden | Chaotic | Calamity Edict: Thread Severance |
+| Gatekeeper of Oblivion (Floor 25) | Oceanic | Calamity Lock: Oblivion’s Verdict |
+
+The constructs have stable `oblivion:*` discovery IDs, unique authored lore, and no art URLs. Their Collection entries use neutral pending-art visuals. The Character Archive is unchanged. Every enemy has its authored named skill; floors 20-25 add an authored second skill via the shared `enemy-skills.ts` schedule.
+
+## Rewards and saves
+
+Each kill grants Prismatica on the dungeon-style 5-10 to 300-600 floor curve, with no boss multiplier. Calamity materials use the shared linear material-stack structure: Seed and Bud unlock on Floor 1, Bloom on 4, Crest on 9, Heart on 14, and Soul on 19. Each begins at 1-2 on its unlock floor and grows to its rarity’s shared dungeon endpoint by Floor 25.
+
+Fragment of Rise unlocks on Floor 20: non-boss kills have a separate 10% roll for one; each boss kill on floors 20 and 25 guarantees one. The fragment RNG is independent from combat and ordinary reward/material rolls. There are no captures, Null-Prismatica, activity clears, or EX+ rewards. Each enemy’s Prismatica, material, discovery, and receipt updates are validated and saved atomically per kill. Completing a floor advances the optional wallet `oblivionStage` field; old wallets read as Floor 1 without a load-time write.
+
+## Validation
+
+Validation completed: `npx tsc --noEmit -p .` passed; `npx vitest run src/game/gates-of-oblivion.test.ts src/game/account.test.ts src/game/activity-access.test.ts src/game/battle.test.ts src/game/final-boss-loot.test.ts src/game/loot-table-parity.test.ts src/content/dungeons.test.ts src/online/server-game.test.ts --testTimeout=60000` passed (8 files, 301 tests); `node tools\bundle_server_game.mjs` passed; `npx tsc --project supabase\functions\game-operation\tsconfig.json` passed; and `npm run build` passed. The build reports the existing large-chunk advisory. Do not deploy as part of this phase.

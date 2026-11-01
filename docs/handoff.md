@@ -1,5 +1,87 @@
 # Current state and handoff
 
+## Calamitic characters and progression (D-435 Sections 1-3)
+
+- Progression/economy: Calamitic six-form rarity ladder, Lv.30/45/60/75/90/110
+  caps, Lv.115 ascended-cap support, ten registered Calamitic materials,
+  character-aware leveling/evolution recipes and Calamitic inventory grouping.
+  The evolution quantities are a developer proposal implemented pending owner
+  review; they are not recorded as approved balance.
+- Rewards: independent saved `calamityRecruitmentSeed` offers the EX-tier-mapped
+  character at 10% only while unowned; character/chest/receipt save atomically,
+  and the result event is annotated only after persistence. Soar/Delve chests
+  add fixed Feather/Splinter stacks without consuming or reordering existing
+  random draws. Victory results use neutral pending-art rows and shared
+  Calamitic rarity feedback after the successful save.
+- Native kits/presentation are also implemented in the concurrent D-435 batch.
+  The prompts are generated; actual Calamitic art is pending owner delivery. No missing-image URLs are wired.
+  Gates of Oblivion is implemented in D-435 Section 2 below. Section 3 Shard
+  victories and Ascension are implemented; the nine new Conduits remain pending.
+- Validation: `npx tsc --noEmit -p .`; `node tools\bundle_server_game.mjs`;
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`.
+  The 16-file Calamitic/progression/account/inventory/banner/archive/server
+  Vitest batch passed 566/566. Native kits: `npx vitest run
+  src/game/calamitic-kits.test.ts src/content/native-identities.test.ts
+  src/presentation/battle-effects.test.ts src/presentation/profile-picture.test.ts
+  src/game/phase-zero-master-matrix.test.ts src/game/native-kits.test.ts
+  --testTimeout=60000` passed 227/227. No deployment or commit.
+- Open: owner review of provisional Calamitic leveling/evolution cost amounts.
+
+## Gates of Oblivion (D-435 Section 2)
+
+- Implemented 25 sequential floors, Lv.125-170, boss every fifth floor, ten
+  single-form Rise constructs and six mixed elements. Floored identity progression
+  follows the dungeon tier pattern; the Gatekeeper is the Floor 25 boss.
+- Calamitic ownership is enforced in Play, activity access, server entry/continue,
+  and reward saving. Optional `oblivionStage` defaults to Floor 1 without read-time
+  writes; only successful clears unlock the next floor.
+- Runtime Collections lore and loot cover Prismatica, Calamity Seed/Bud/Bloom/
+  Crest/Heart/Soul, and the late Fragment of Rise. Fragments roll on an independent
+  RNG stream at 10% per non-boss kill from Floor 20; boss kills on Floor 20+
+  guarantee one. No captures, Null-Prismatica or EX+ rewards. No art URLs are added.
+- Validation: full `npx vitest run --testTimeout=200000` passed, 6,862/6,862
+  across 223 files; `npx tsc --noEmit -p .`, `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`, and
+  `npm run build` passed. Build emitted the large-chunk advisory. Lore now appends
+  Rise's origin/element canon to each construct while preserving its authored
+  entry; regression coverage explicitly includes the new activity, story-origin
+  rules and Lv.185 enemy ability boundary. No deploy, push or commit was performed.
+  Open balance decisions remain the Section 1 developer-proposed leveling/evolution
+  cost amounts.
+- See [gates-of-oblivion.md](gates-of-oblivion.md).
+
+## Calamitic Ascension (D-435 Section 3)
+
+- Saved Calamity boss victories independently roll 5%/8%/12% for EX+1/2/3,
+  granting 2 to 4 Shards of Calamity. A dedicated optional `calamityShardSeed`
+  keeps the stream separate; Shards, chest, clear receipt and seed save in one
+  atomic victory write, and the loot event is annotated only after save success.
+- Optional `CharacterProgress.ascension` records Stat Ascension and three
+  per-ability Imbues. Strict validation rejects malformed, out-of-order, or
+  impossible progress without load-time writes. Captured copies are ineligible.
+  Stat Ascension requires Evo.6 and the normal maximum (105 / Calamitic 110),
+  adds +50% to all resolved stats and unlocks Lv.115. Added levels remain paid
+  through existing late-level formulas; Calamitic leveling retains its Calamity
+  chain and Fragment of Rise. Each ability Imbue costs 25 Shards after stats and
+  adds +50% base Skill Power / +5 percentage points Skill Efficiency only to
+  that action; the 50% efficiency cap remains.
+- Character evolution UI lists all four steps in an in-game panel, uses a
+  reread/validate/deduct/set atomic transaction, and supports the online
+  `ascendCharacter` authority operation. A finite black/white/crimson celebration
+  and reduced-motion static status occur only after a saved transaction. Owned
+  names gain `, Rise-blessed`; a CSS/SVG crown-burst badge has no PNG URL. Battle
+  snapshots retain the ascended stats, name and action state.
+- Validation: `npx tsc --noEmit -p .`, `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`,
+  and `npm run build` passed; Vite reported its large-chunk advisory. A focused
+  12-file regression batch including Ascension, account, progression, combat,
+  authority-facing, character UI, loot and celebration tests passed 493/493.
+  A wider 5-file batch passed 239/241; its two failures were the profile-picture
+  catalog count assertion (`src/online/server-game.test.ts`) and the hostile
+  ability-multiplier boundary assertion (`src/game/calamity.test.ts`). No commit,
+  push or deployment.
+- See [Calamitic Ascension contract](calamitic-characters.md#calamitic-ascension).
+
 ## Shields last until broken (D-434)
 
 - Every Shield now lasts until broken; Skill and Last Flare Shields stack with

@@ -31,7 +31,8 @@ describe('React Master chest choice', () => {
     let result!: Promise<MasterConduitId | null>;
     await act(async () => { result = chooseMasterConduit(account); });
     const select = document.querySelector('select')!;
-    for (const starter of starters) {
+    expect(Array.from(select.options).some(option => ['ozriel', 'ilvaris', 'kaelith'].includes(option.value))).toBe(false);
+    for (const starter of starters.filter(starter => masterConduits.some(entry => entry.character === starter.id))) {
       await act(async () => { select.value = starter.id; select.dispatchEvent(new Event('change', { bubbles: true })); });
       const cards = document.querySelectorAll<HTMLElement>('.ll-master-option');
       expect(cards).toHaveLength(3);

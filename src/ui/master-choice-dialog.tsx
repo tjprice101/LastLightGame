@@ -13,11 +13,12 @@ import { elementAccents } from '../content/dungeon-art';
 import '../presentation/conduit-element.css';
 import './master-choice-dialog.css';
 import { rarityFeedback } from '../presentation/rarity-feedback';
+const masterCharacters = starters.filter(starter => masterConduits.some(entry => entry.character === starter.id));
 
 export function MasterChoiceDialog({ account, onChoose, onClose }: {
   account: Account; onChoose: (id: MasterConduitId) => void; onClose: () => void;
 }) {
-  const [character, setCharacter] = useState<StarterId>(starters[0].id);
+  const [character, setCharacter] = useState<StarterId>(masterCharacters[0].id);
   const [selected, setSelected] = useState<MasterConduitId | null>(null);
   const entry = masterConduits.find(entry => entry.id === selected);
   const element = getStarter(character).elementId;
@@ -30,7 +31,7 @@ export function MasterChoiceDialog({ account, onChoose, onClose }: {
       const choice = starters.find(starter => starter.id === event.target.value);
       if (!choice) throw new Error('Unknown Master character selection.');
       setCharacter(choice.id); setSelected(null);
-    }}>{starters.map(starter => <option key={starter.id} value={starter.id}>{starter.name}{account.characters[starter.id] ? '' : ' · Not yet owned'}</option>)}</select></label>
+    }}>{masterCharacters.map(starter => <option key={starter.id} value={starter.id}>{starter.name}{account.characters[starter.id] ? '' : ' · Not yet owned'}</option>)}</select></label>
     <div className="ll-master-options" role="group" aria-label={`${getStarter(character).name} Masters`}>
       {masterConduits.filter(entry => entry.character === character).map(entry => <Button key={entry.id}
         disabled={account.masterConduits?.[entry.id] === 1} aria-pressed={selected === entry.id}

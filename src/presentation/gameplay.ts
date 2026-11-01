@@ -7,7 +7,7 @@ function infusionFormLevel(tier: number): number {
 import { assetUrl } from './portrait';
 import { dungeonArt, elementAccents } from '../content/dungeon-art';
 import { dungeonEncounter, isPlayableDungeon } from '../content/dungeons';
-import { emptyAccount, unlockedStage, unlockedWarStage, ownedCharacters, type Account } from '../game/account';
+import { emptyAccount, unlockedStage, unlockedWarStage, unlockedOblivionStage, ownedCharacters, type Account } from '../game/account';
 import { treasuryPrismaticaText } from '../content/loot-random';
 import { infusionEnemyElements, treasurySalePrices, sanctuarySalePrices, specialtyMaterials, infusionEncounter } from '../content/infusions';
 import { elementLabel } from './element-label';
@@ -31,6 +31,17 @@ import { worldLore } from './world-lore';
 import { activityDifficulty } from './calamity';
 import { enemyStrength } from './enemy-strength';
 import { enemyCombatStats } from '../content/stat-growth';
+import { gatesOfOblivionRules, oblivionEncounter, oblivionMaterialIds } from '../content/gates-of-oblivion';
+
+function oblivionEntry(account: Account | null): string {
+  if (!account) return '<button disabled>Gates of Oblivion unavailable: resolve the save error</button>';
+  const stage = unlockedOblivionStage(account);
+  const access = activityAccess(account, { kind: 'oblivion', stage });
+  return `${enemyStrength(oblivionEncounter(stage))}<footer class="activity-entry"><label class="dungeon-stage-label">Floor
+    <select data-oblivion-stage aria-label="Gates of Oblivion floor">${Array.from({ length: stage }, (_, index) => `<option value="${index + 1}" ${index + 1 === stage ? 'selected' : ''}>${index + 1}</option>`).join('')}</select></label>
+    <button class="primary-button" data-oblivion ${access.unlocked ? '' : 'disabled'}>${access.unlocked ? 'Enter floor' : 'Locked'}</button>
+    ${access.unlocked ? '' : `<p class="activity-unlock-hint">Unlocks when you ${access.requirement}.</p>`}</footer>`;
+}
 
 function dungeonEntry(element: (typeof elements)[number]['id'], account: Account | null): string {
   if (!isPlayableDungeon(element)) throw new Error('Unknown elemental dungeon.');
@@ -50,6 +61,7 @@ const activityCategories = [
   ['infusion', 'Evolution infusion', 'Unlock Lv.50 · Heaven & Abyss', 'evolution'],
   ['currency', 'Currency farms', 'Unlock Lv.60 · Currencies', 'inventory'],
   ['machines', 'Awaken the Machines', 'Unlock Lv.10 + first region · Conduits', 'inventory'],
+  ['oblivion', 'Gates of Oblivion', 'Calamitic Element-Bearer required · Calamity materials', 'gameplay'],
   ['war', 'Elemental War', 'Unlock Lv.85 · Rival challengers', 'gameplay'],
   ['events', 'Events', 'Unlock Lv.75 · Crimson Roses', 'events'],
 ] as const;
@@ -57,7 +69,7 @@ const activityCategories = [
 const activitySections = [
   ['Story', ['story']],
   ['Practice', ['adventure']],
-  ['Progression', ['dungeons', 'infusion', 'machines', 'war']],
+  ['Progression', ['dungeons', 'infusion', 'machines', 'oblivion', 'war']],
   ['Earn currency', ['currency']],
   ['Events', ['events']],
 ] as const;
@@ -78,7 +90,7 @@ function gameplayInformation(): string {
     { id: 'final-loot', title: 'Final-boss loot', summary: 'Final rewards and linear-material exceptions', content: `<p>${finalBossLootText}</p><p>Story's six regional bosses are stages ${storyBossStages.slice(0, -1).join(', ')} and ${storyBossStages[storyBossStages.length - 1]}. Other staged activities use their final stage, with the dungeon and linear-material exceptions above.</p>` },
     { id: 'origins', title: 'Let and Rise', summary: 'Infinity, Nothingness and the search for the creators', content: worldLore() },
     { id: 'start', title: 'Unlocks', summary: 'Activity level requirements', content: `<p>Story is open from the start. Other activities unlock by your highest-level Element-Bearer, in the squad or not. Captures don't count.</p>
-      <ul><li>Awaken the Machines: Lv.10 and Emberwake March cleared</li><li>Elemental dungeons: Lv.30</li><li>Evolution infusion: Lv.50</li><li>Currency farms: Lv.60</li><li>Crimson Roses: Lv.75</li><li>Elemental War: Lv.85</li></ul>` },
+      <ul><li>Awaken the Machines: Lv.10 and Emberwake March cleared</li><li>Elemental dungeons: Lv.30</li><li>Evolution infusion: Lv.50</li><li>Currency farms: Lv.60</li><li>Crimson Roses: Lv.75</li><li>Elemental War: Lv.85</li><li>Gates of Oblivion: own any Calamitic Element-Bearer</li></ul>` },
     { id: 'enemy-strength', title: 'Enemy strength', summary: 'Reading the stat comparison', content: '<p>Red stats are above a standard enemy of the same level; blue stats are below. Boss abilities can add difficulty beyond these numbers.</p>' },
     { id: 'story', title: 'Story', summary: `Six regions, ${storyRules.stages} stages`, content: `<p>${storyPurpose}</p><p>${storyRulesText}</p>` },
     { id: 'training', title: 'Training', summary: 'Endless battles for Prismatica', content: `<p>Endless waves with your saved squad, starting at wave 1. Enemies cap at Lv.120.</p>
@@ -164,6 +176,14 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       <button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button>
       ${machineLootFocus(account)}
       ${infusionEntry({ id: 'machines', name: 'Awaken the Machines' }, account)}`), account)}
+      </article></section>
+    <section class="activity-group" id="gameplay-oblivion"><h2>Gates of Oblivion</h2><article class="activity-card">
+      ${activityLayout(`${activityBanner('Gates of Oblivion', null, 'Gates of Oblivion activity banner', true)}
+      <p class="eyebrow">D-435 · Rise constructs</p>
+      <p>Ten original Rise constructs guard 25 floors. Their neutral placeholders remain until artwork is delivered.</p>
+      ${activityFacts(`${gatesOfOblivionRules.stages} floors · Boss every 5th`, `${gatesOfOblivionRules.startingLevel}-${gatesOfOblivionRules.maximumLevel}`, 'Prismatica · Calamity materials · Fragment of Rise')}`, `
+      ${itemShowcase([{ id: 'fractalis' }, ...oblivionMaterialIds.map(id => ({ id })), { id: 'fragment-of-rise' }], 'Gates of Oblivion rewards')}
+      ${oblivionEntry(account)}`)}
       </article></section>
     <section class="activity-group" id="gameplay-war"><h2>Elemental War</h2>
       ${activityPicker(elementalWars)}

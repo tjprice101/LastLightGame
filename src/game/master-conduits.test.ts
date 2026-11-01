@@ -40,17 +40,18 @@ function masterState(id: MasterConduitId) {
 }
 
 describe('character Masters and chest contracts', () => {
-  it('has exactly three unique Omnic Masters for every Element-Bearer, outside the ordinary catalog', () => {
-    expect(masterConduits).toHaveLength(starters.length * 3);
+  it('has exactly three unique Omnic Masters for each eligible Element-Bearer, outside the ordinary catalog', () => {
+    expect(masterConduits).toHaveLength(48);
     expect(new Set(masterConduits.map(entry => entry.id)).size).toBe(48);
     expect(new Set(masterConduits.map(entry => entry.name)).size).toBe(48);
-    for (const character of starters) expect(masterConduits.filter(entry => entry.character === character.id)).toHaveLength(3);
+    for (const character of starters.filter(character => !['ozriel', 'ilvaris', 'kaelith'].includes(character.id))) expect(masterConduits.filter(entry => entry.character === character.id)).toHaveLength(3);
+    for (const id of ['ozriel', 'ilvaris', 'kaelith']) expect(masterConduits.some(entry => entry.character === id)).toBe(false);
     expect(masterConduits.every(entry => entry.rarity === 'Omnic' && entry.art === `master-conduits/${entry.id}.png`)).toBe(true);
     expect(conduits).toHaveLength(90);
   });
-  it('gives every Master a distinct complete effect within each character', () => {
+  it('gives every Master a distinct complete effect within each eligible character', () => {
     expect(new Set(masterConduits.map(entry => entry.effect)).size).toBe(48);
-    for (const character of starters) {
+    for (const character of starters.filter(character => !['ozriel', 'ilvaris', 'kaelith'].includes(character.id))) {
       const own = masterConduits.filter(entry => entry.character === character.id);
       expect(new Set(own.map(entry => entry.effect)).size).toBe(3);
     }

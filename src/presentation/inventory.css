@@ -37,6 +37,8 @@
 .inventory-panel { min-width: 0; padding: 28px; border: 1px solid #ffffff26; border-radius: 20px; background: #171717b8; }
 .inventory-panel[hidden] { display: none; }
 .inventory-item-grid, .inventory-empty-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 140px), 1fr)); gap: 14px; padding: 0; margin: 0; list-style: none; }
+.inventory-group-heading { grid-column: 1 / -1; margin: 8px 0 0; padding: 8px 10px; border-bottom: 1px solid #ffffff30; color: #f4f4f6; font: 700 .9rem/1.3 var(--ui-font); text-align: left; }
+.inventory-group-heading[data-rarity="Calamitic"] { border-color: #a80f2d; background: linear-gradient(100deg, #09090c, #fff2 42%, #7d0b24aa 74%, #09090c); }
 .inventory-item { display: flex; flex-direction: column; align-items: center; gap: 10px; min-width: 0; padding: 14px; border: 1px solid #ffffff26; border-radius: 14px; background: #ffffff04; text-align: center; }
 .inventory-item-art { display: grid; place-items: center; width: 100%; aspect-ratio: 1; }
 .inventory-item-art img, .inventory-item-art .conduit-icon { width: 100%; height: 100%; max-width: 160px; max-height: 160px; object-fit: contain; }

@@ -2,6 +2,7 @@ import { dungeonStageCount, infusionStageCount, storyStageLayout, warStageCount,
 
 type CurrencyActivity = {
   dungeon?: { stage: number };
+  oblivion?: { stage: number };
   infusion?: { mode: InfusionModeId; stage: number };
   story?: { storyStage: number };
   war?: { stage: number };
@@ -20,6 +21,7 @@ export function linearPrismaticaDrop(position: number, last: number,
 export function activityPrismaticaDrop(activity: CurrencyActivity, enemyLevel: number) {
   if (activity.story) return linearPrismaticaDrop(activity.story.storyStage, storyStageLayout.stages, [8, 16], [750, 1500]);
   if (activity.dungeon) return linearPrismaticaDrop(activity.dungeon.stage, dungeonStageCount, [5, 10], [300, 600]);
+  if (activity.oblivion) return linearPrismaticaDrop(activity.oblivion.stage, 25, [5, 10], [300, 600]);
   if (activity.war) return linearPrismaticaDrop(activity.war.stage, warStageCount, [1500, 2500], [30000, 45000]);
   if (activity.infusion) {
     const { mode, stage } = activity.infusion;

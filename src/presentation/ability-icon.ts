@@ -13,6 +13,9 @@ export const infernisIcons = {
 
 export const abilityIcons = {
   ...flagshipAbilityIcons,
+  ozriel: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  ilvaris: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  kaelith: { passive: '', skill1: '', skill2: '', ultimate: '' },
   nerithe: { passive: 'nerithe-passive', skill1: 'nerithe-skill1',
     skill2: 'nerithe-skill2', ultimate: 'nerithe-ultimate' },
   orvella: { passive: 'orvella-passive', light: 'orvella-light', skill1: 'orvella-skill1',

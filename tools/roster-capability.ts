@@ -12,6 +12,7 @@ import { loadout, progressAt } from './battle-survey';
 import { standardBannerPool } from '../src/content/standard-banner';
 import { roseBannerPool } from '../src/content/rose-banner';
 import { nativeIdentities } from '../src/content/native-identities';
+const benchmarkStarters = starters.filter(unit => !['ozriel', 'ilvaris', 'kaelith'].includes(unit.id));
 
 export const auditLevels = [0, 20, 40, 60, 80, 100, 105] as const;
 export const auditProfiles = ['floor', 'unlucky', 'planned', 'farmed', 'lucky', 'ceiling'] as const;
@@ -175,7 +176,7 @@ export function measureCapability(initial: BattleState, profile: AuditProfile, m
 }
 
 export function rosterCombinations(): StarterId[][] {
-  const ids = starters.map(unit => unit.id);
+  const ids = benchmarkStarters.map(unit => unit.id);
   const teams: StarterId[][] = [];
   for (let i = 0; i < ids.length; i++) {
     teams.push([ids[i]]);
@@ -260,7 +261,7 @@ export function screenMasters(id: StarterId, level: number, profile: 'lucky' | '
   return { best: results[0], candidates: results };
 }
 
-export const auditRoster = starters.map(unit => ({ id: unit.id, name: unit.name, element: unit.elementId,
+export const auditRoster = benchmarkStarters.map(unit => ({ id: unit.id, name: unit.name, element: unit.elementId,
   role: nativeIdentities[unit.id].role, loop: nativeIdentities[unit.id].playLoop,
   naturalPullChance: [...standardBannerPool(), ...roseBannerPool()].find(entry => entry.kind === 'character' && entry.id === unit.id)?.chance ?? 0,
   stars: unit.stars, native: resolveFighter(unit.id).nativeIdentity }));

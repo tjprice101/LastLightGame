@@ -30,7 +30,7 @@ describe('gated Phase 0 stat foundation', () => {
     const original = structuredClone(fighters[starter.id]);
     for (const progress of [{ level: 0, evolution: 1 }, { level: 30, evolution: 2 }, { level: 105, evolution: 6 }]) {
       const stats = resolveFighter(starter.id, progress).stats;
-      expect(stats).toMatchObject(phaseZeroStatDefaults);
+      expect(stats).toMatchObject(starter.id === 'kaelith' ? { ...phaseZeroStatDefaults, skillPower: 1.75 } : phaseZeroStatDefaults);
       const growth = characterGrowthFactor(progress);
       const potency = characterPotencyFactor(progress);
       expect(stats.health).toBeCloseTo(original.stats.health * growth);

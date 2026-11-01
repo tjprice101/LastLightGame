@@ -2,9 +2,9 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { starters } from '../content/starters';
-import { characterArt } from '../content/character-art';
+import { characterArt, characterName } from '../content/character-art';
 import { characterArtRevisions } from '../content/character-art-revisions';
-import { assetUrl, portraitAttributes } from './portrait';
+import { assetUrl, portrait, portraitAttributes } from './portrait';
 import { archives } from './archives';
 import { emptyAccount } from '../game/account';
 import { characterDetail, characterHub, homeHub } from './hub';
@@ -15,10 +15,30 @@ import { BattleView } from './battle-view';
 import { createBattle } from '../game/battle';
 
 describe('current character artwork across revealed and locked surfaces', () => {
-  it.each(starters)('$name uses byte-derived revisions for every form and silhouette', (starter) => {
+  it.each(starters)('$name uses byte-derived revisions only for shipped forms and keeps pending art neutral', (starter) => {
     const locked = archives(emptyAccount());
     for (let evolution = 1; evolution <= 6; evolution++) {
       const form = characterArt(starter.id, evolution);
+      expect(portrait(starter, evolution, true)).toContain(`alt="${characterName(starter.id, evolution, true)},`);
+      if (!form.available) {
+        expect(characterArtRevisions[form.art]).toBeUndefined();
+        expect(portraitAttributes(starter, evolution).src).toContain('data:image/svg+xml,');
+        expect(portraitAttributes(starter, evolution).alt).toContain('artwork pending');
+        const account = { ...emptyAccount(), characters: { [starter.id]: { level: 0, evolution } }, squad: [starter.id] };
+        const pendingSurfaces = [homeHub(starter, false, account), characterHub(starter, 'overview', account),
+          ownedCompanion(account, starter.id).art, squadHub(account), archives(account)];
+        for (const html of pendingSurfaces) expect(html).not.toContain(`characters/${form.art}.png`);
+        const state = createBattle(1, [starter.id], account.characters);
+        const view = Object.create(BattleView.prototype);
+        Object.assign(view, { session: { state } });
+        const field = Reflect.apply(Reflect.get(BattleView.prototype, 'unit'), view, [state.allies[0]]);
+        expect(field).not.toContain(`characters/${form.art}.png`);
+        if (evolution < 6) {
+          const next = characterArt(starter.id, evolution + 1);
+          expect(characterDetail(starter, 'upgrade-0', account)).not.toContain(`characters/${next.art}.png`);
+        }
+        continue;
+      }
       const revision = createHash('sha256')
         .update(readFileSync(`public/assets/characters/${form.art}.png`)).digest('hex').slice(0, 16);
       expect(characterArtRevisions[form.art]).toBe(revision);

@@ -14,6 +14,7 @@ import { masterChestIcon, masterConduitIcon } from './master-conduits';
 import { getStarter } from '../content/starters';
 import { specialtyMaterials } from '../content/infusions';
 import { roseMaterials } from '../content/roses';
+import { calamiticMaterials, isCalamiticMaterialId } from '../content/calamitic-materials';
 import { elementalMaterials, elements, materialRarities, machineStageCount } from '../content/activities';
 import { escapeDialogText } from './game-dialog';
 import { mechanicalComponents, machineComponentRulesText } from '../content/mechanical-components';
@@ -33,10 +34,11 @@ function itemMetadata(name: string, type: string, rarity = '', element = ''): st
 }
 
 function materialMetadata(id: string): string {
+  const calamitic = calamiticMaterials.find(entry => entry.id === id);
   const ordinary = elementalMaterials.find(entry => entry.id === id);
   const rose = roseMaterials.find(entry => entry.id === id);
   const specialty = specialtyMaterials.find(entry => entry.id === id);
-  return itemMetadata(materialName(id), 'materials', ordinary?.rarity ?? rose?.rarity ?? '',
+  return itemMetadata(materialName(id), calamitic ? 'calamitic' : 'materials', calamitic?.rarity ?? ordinary?.rarity ?? rose?.rarity ?? '',
     ordinary?.elementId ?? (specialty ? elements.filter(element => id.startsWith(`${element.infusion}-`)).map(element => element.id).join(' ') : ''));
 }
 
@@ -64,6 +66,10 @@ function materialDescription(id: string): string {
   if (id.endsWith('-evolution') && specialtyMaterials.some(material => material.id === id)) {
     return 'Evolves matching Element-Bearers into late forms.';
   }
+  if (isCalamiticMaterialId(id)) {
+    const source = calamiticMaterials.find(material => material.id === id)?.source;
+    return source ? `Calamitic progression material. Source: ${source}.` : 'Calamitic progression material.';
+  }
   if (roseMaterials.some(material => material.id === id)) {
     return 'Levels and evolves Rosetta, Thornia and Crinso.';
   }
@@ -90,6 +96,14 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
     <strong>${masterChest.name}</strong><span class="inventory-quantity">Owned ${account?.masterChests}</span>
     <div class="inventory-item-actions">${information('inventory-chest-details', masterChest.name, `<div class="inventory-detail-art">${masterChestIcon()}</div><p>Open to choose one unowned Omnic Master; it isn't equipped automatically.</p><p>Final Awaken the Machines boss: ${masterChest.chance * 100}% per defeat. Each Calamity EX+3 chest: two. Extra chests stay unopened once you own every Master.</p>`, 'Details')}
     <button type="button" class="primary-button" data-open-master-chest aria-label="Open ${masterChest.name} · Choose a Master" ${ownedMasters.length === masterConduits.length ? 'disabled' : ''}>Open</button></div></li>` : '');
+  const ordinaryMaterials = materials.filter(([id]) => !isCalamiticMaterialId(id));
+  const calamiticMaterialItems = materials.filter(([id]) => isCalamiticMaterialId(id));
+  const renderMaterials = (items: typeof materials) => items.map(([id, amount]) => {
+    const art = materialArt(id);
+    return `<li class="inventory-item" data-inventory-material="${id}" ${materialMetadata(id)}><div class="inventory-item-art">${art ? `<img src="${assetUrl(`materials/${art}.png`)}" alt="" aria-hidden="true" width="256" height="256" loading="lazy">` : '<span>Artwork pending</span>'}</div>
+      <strong>${materialName(id)}</strong><span class="inventory-quantity">Owned ${amount}</span>
+      ${information(`inventory-${id}-details`, materialName(id), `<p>Owned ${amount}</p><p>${materialDescription(id)}</p>`, 'Details')}</li>`;
+  }).join('');
   const masterItems = ownedMasters.map(entry => `<li class="inventory-item" ${conduitElementTheme(getStarter(entry.character).elementId)} data-inventory-master="${entry.id}" ${itemMetadata(`${entry.name} ${getStarter(entry.character).name}`, 'masters', entry.rarity, getStarter(entry.character).elementId)}><div class="inventory-item-art">${masterConduitIcon(entry.id)}</div><strong>${entry.name}</strong>
     <span class="conduit-identity-badges"><small>Omnic Master · ${getStarter(entry.character).name}</small>${conduitElementLabel(getStarter(entry.character).elementId)}</span><span class="inventory-quantity">Owned 1</span>
     ${information(`inventory-${entry.id}-details`, entry.name, `<div class="inventory-detail-art">${masterConduitIcon(entry.id)}</div>${conduitElementLabel(getStarter(entry.character).elementId)}<p>Omnic Master for ${getStarter(entry.character).name}.</p><h3>Effect</h3><p>${referencedEffect(entry.effect)}</p><p>Always active while equipped to its named Element-Bearer. No upgrades; generated Conduit effects cannot trigger it. Existing caps, skill costs and recovery still apply.</p><h3>Origin</h3><p>${entry.lore}</p>`, 'Details')}</li>`).join('');
@@ -106,7 +120,7 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
     <div class="inventory-tools" role="search" aria-label="Find owned items">
       <label class="inventory-search">Search items<input type="search" data-inventory-query placeholder="Search item names" value="${escapeDialogText(filters.query)}" ${!account ? 'disabled' : ''}></label>
       ${([
-        ['type', 'Item type', [['', 'All types'], ['materials', 'Materials'], ['conduits', 'Conduits'], ['masters', 'Master Conduits'], ['chests', 'Chests'], ['components', 'Components']]],
+        ['type', 'Item type', [['', 'All types'], ['materials', 'Materials'], ['calamitic', 'Calamitic materials'], ['conduits', 'Conduits'], ['masters', 'Master Conduits'], ['chests', 'Chests'], ['components', 'Components']]],
         ['rarity', 'Rarity', [['', 'All rarities'], ...materialRarities.map(rarity => [rarity, rarity]), ['Calamitic', 'Calamitic'], ['none', 'No rarity']]],
         ['element', 'Element', [['', 'All elements'], ...elements.map(element => [element.id, element.name]), ['none', 'No element']]],
       ] as const).map(([key, label, options]) => `<label>${label}<select data-inventory-filter="${key}" ${!account ? 'disabled' : ''}>${options.map(([value, text]) => `<option value="${value}" ${filters[key] === value ? 'selected' : ''}>${text}</option>`).join('')}</select></label>`).join('')}
@@ -122,12 +136,7 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
     ${!account ? '<p role="alert">Resource inventory unavailable. Check the save error.</p>' : resourceCount
       ? `<ul class="inventory-item-grid">${chestItems}${components > 0 ? `<li class="inventory-item" data-inventory-resource="${mechanicalComponents.id}" ${itemMetadata(mechanicalComponents.name, 'components')}>
         <div class="inventory-item-art">${mechanicalComponentIcon()}</div><strong>${mechanicalComponents.name}</strong><span class="inventory-quantity">Owned ${components}</span>
-        ${information('inventory-components-details', mechanicalComponents.name, `<div class="inventory-detail-art">${mechanicalComponentIcon()}</div><p>Owned ${components}</p><h3>Use</h3><p>Upgrades ordinary Conduits up to +5; Conduit Upgrade shows costs. Masters can't be upgraded.</p><h3>Source</h3><p>${machineComponentRulesText}</p>`, 'Details')}</li>` : ''}${materials.map(([id, amount]) => {
-        const art = materialArt(id);
-        return `<li class="inventory-item" data-inventory-material="${id}" ${materialMetadata(id)}><div class="inventory-item-art">${art ? `<img src="${assetUrl(`materials/${art}.png`)}" alt="" aria-hidden="true" width="256" height="256" loading="lazy">` : '<span>Artwork pending</span>'}</div>
-          <strong>${materialName(id)}</strong><span class="inventory-quantity">Owned ${amount}</span>
-          ${information(`inventory-${id}-details`, materialName(id), `<p>Owned ${amount}</p><p>${materialDescription(id)}</p>`, 'Details')}</li>`;
-      }).join('')}</ul>` : empty('materials')}</div></section>
+        ${information('inventory-components-details', mechanicalComponents.name, `<div class="inventory-detail-art">${mechanicalComponentIcon()}</div><p>Owned ${components}</p><h3>Use</h3><p>Upgrades ordinary Conduits up to +5; Conduit Upgrade shows costs. Masters can't be upgraded.</p><h3>Source</h3><p>${machineComponentRulesText}</p>`, 'Details')}</li>` : ''}${ordinaryMaterials.length ? `<li class="inventory-group-heading" aria-hidden="true">Materials</li>${renderMaterials(ordinaryMaterials)}` : ''}${calamiticMaterialItems.length ? `<li class="inventory-group-heading calamitic-material-group" data-rarity="Calamitic">Calamitic Materials</li>${renderMaterials(calamiticMaterialItems)}` : ''}</ul>` : empty('materials')}</div></section>
     <section class="inventory-panel ref-panel" id="inventory-panel-conduits" role="tabpanel" aria-labelledby="inventory-tab-conduits" data-inventory-section="conduits" ${selected === 'conduits' ? '' : 'hidden'}>
     <div class="ref-scroll">
     ${!account ? '<p role="alert">Conduit inventory unavailable. Check the save error.</p>' : ownedConduits.length + ownedMasters.length

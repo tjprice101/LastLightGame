@@ -40,7 +40,7 @@ import { characterName } from './content/character-art';
 import { uiIcon } from './presentation/ui-icon';
 import { currencyIcon } from './presentation/currency-icon';
 import { applyBattleSpeed, battleSpeeds, loadBattleSpeed, parseBattleSpeed, saveBattleSpeed, type BattleSpeed } from './presentation/battle-speed';
-import { celebrateUpgrade } from './presentation/upgrade-celebration';
+import { celebrateUpgrade, celebrateAscension } from './presentation/upgrade-celebration';
 import { rarityFeedback } from './presentation/rarity-feedback';
 import { presentUpgrade } from './presentation/upgrade-result';
 import { activityTransitionPending, transitionActivity } from './presentation/activity-transition';
@@ -55,7 +55,7 @@ import { restartHistoricalConduitSession } from './presentation/conduit-compatib
 import { assertActivityAccess } from './game/activity-access';
 import { characterHub, characterInformation, homeHub, inventoryHub, isCharacterTab, updateCharacterTab, updateEvolutionSelection } from './presentation/hub';
 import { bindInventory, defaultInventorySections, defaultInventoryFilters, inventorySections, inventoryFilters, type InventoryFilters, type InventorySections, type InventoryTab } from './presentation/inventory';
-import { loadAccount, ownedProgress, equippedSquad, ownedCharacters, setSquad, summonCharacter, summonCharacters, multiSummonCount, purchaseExchangeMaterial, saveAccountRewards, unlockedStage, unlockedInfusionStage, upgradeCharacter, evolutionFodderOptions, creatureSaleOffer, sellCurrencyCreature, type Account, type SummonDraw } from './game/account';
+import { loadAccount, ownedProgress, equippedSquad, ownedCharacters, setSquad, summonCharacter, summonCharacters, multiSummonCount, purchaseExchangeMaterial, saveAccountRewards, unlockedStage, unlockedInfusionStage, unlockedOblivionStage, upgradeCharacter, evolutionFodderOptions, creatureSaleOffer, sellCurrencyCreature, type Account, type SummonDraw, ascendCharacter, canAscendCharacter, calamiticAscensionCost, type CalamiticAscensionStep } from './game/account';
 import { getCreature } from './content/creatures';
 import { getSummonBanner, isSummonBannerId, type SummonBannerId } from './content/summon-banners';
 import { isInfusionMode } from './content/infusions';
@@ -444,7 +444,7 @@ async function backMenu(): Promise<void> {
         saved.attributes.every(([name, value]) => candidate.getAttribute(name) === value));
       if (!control || !Array.from(control.options).some((option) => option.value === saved.value && !option.disabled)) continue;
       control.value = saved.value;
-      if (control.matches('[data-character-filter], #glossary-area, [data-loot-stage], #squad-form select, [data-dungeon-stage], [data-infusion-stage], [data-war-stage]')) control.dispatchEvent(new Event('change', { bubbles: true }));
+      if (control.matches('[data-character-filter], #glossary-area, [data-loot-stage], #squad-form select, [data-dungeon-stage], [data-oblivion-stage], [data-infusion-stage], [data-war-stage]')) control.dispatchEvent(new Event('change', { bubbles: true }));
     }
     for (const saved of previous.panels) {
       const panel = app.querySelector<HTMLElement>(`[data-menu-scroll="${saved.key}"], .activity-group[id="${saved.key}"]`);
@@ -965,6 +965,24 @@ function renderMenu(firstArrival = false): void {
       renderMenu();
     });
   }, () => activityTransitionPending() || onlineBusy || onlinePending !== null, error => showError(errorMessage(error)));
+  app.querySelectorAll<HTMLButtonElement>('[data-oblivion]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      try {
+        const stageControl = app.querySelector<HTMLSelectElement>('[data-oblivion-stage]');
+        if (!stageControl) throw new Error('Gates of Oblivion floor selector is missing.');
+        const stage = Number(stageControl.value);
+        const current = currentAccount();
+        if (!Number.isInteger(stage) || stage < 1 || stage > unlockedOblivionStage(current)) throw new Error('Complete the earlier Gates of Oblivion floors first.');
+        assertActivityAccess(current, { kind: 'oblivion', stage });
+        await transitionActivity(async () => {
+          account = current;
+          await enterBattle({ kind: 'oblivion', stage }, { oblivionStage: stage });
+          visitMenu('battle');
+          renderMenu();
+        });
+      } catch (error) { showError(errorMessage(error)); }
+    });
+  });
   app.querySelectorAll<HTMLButtonElement>('[data-war]').forEach((button) => {
     button.addEventListener('click', async () => {
       try {
@@ -1875,6 +1893,59 @@ app.addEventListener('submit', async event => {
 
 app.addEventListener('click', async (event) => {
   if (!(event.target instanceof Element)) return;
+  const button = event.target.closest<HTMLButtonElement>('[data-calamitic-ascension]');
+  if (!button || button.disabled || menuPage !== 'team' || characterCategory !== 'bearers') return;
+  let saved = false;
+  try {
+    if (!journey.profile || !account) throw new Error('Character progression is unavailable.');
+    const id = button.dataset.calamiticAscension;
+    if (!isStarterId(id)) throw new Error('Choose an owned Element-Bearer.');
+    const starter = getStarter(id);
+    const expected = ownedProgress(account, id);
+    const steps: { id: CalamiticAscensionStep; name: string; effect: string }[] = [
+      { id: 'stats', name: 'Ascend', effect: 'All stats increase by 50% and your level cap becomes 115.' },
+      { id: 'skill1', name: 'Imbue Skill 1', effect: '+50% base Skill Power and +5 percentage points Skill Efficiency for Skill 1 only.' },
+      { id: 'skill2', name: 'Imbue Skill 2', effect: '+50% base Skill Power and +5 percentage points Skill Efficiency for Skill 2 only.' },
+      { id: 'lastFlare', name: 'Imbue Last Flare', effect: '+50% base Skill Power and +5 percentage points Skill Efficiency for Last Flare only.' },
+    ];
+    const shards = account.materials['shard-of-calamity'] ?? 0;
+    const rows = steps.map(step => {
+      const complete = expected.ascension?.[step.id] === true;
+      const eligible = canAscendCharacter(id, expected, step.id);
+      const state = complete ? 'Complete' : eligible ? 'Ready' : step.id === 'stats' ?
+        `Requires final form at Lv.${id === 'kaelith' || id === 'ozriel' || id === 'ilvaris' ? 110 : 105}` : 'Requires Ascend first';
+      return { ...step, complete, eligible, state };
+    });
+    const selected = await gameChoose('', [
+      ...rows.filter(row => row.eligible).map(row => ({ value: row.id, label: `${row.name} \u00b7 ${calamiticAscensionCost} Shards`, primary: true })),
+      { value: 'cancel', label: 'Close' },
+    ], 'cancel', { title: 'Calamitic Ascension', messageHtml: `<p>Shards of Calamity: <strong>${shards}</strong></p><div class="ascension-dialog-steps">${rows.map(row =>
+      `<article><h3>${escapeDialogText(row.name)} \u00b7 ${row.complete ? 'Complete' : `${calamiticAscensionCost} Shards`}</h3><p>${escapeDialogText(row.effect)}</p><small>${escapeDialogText(row.state)}</small></article>`).join('')}</div>` });
+    if (selected === 'cancel') return;
+    const step = selected as CalamiticAscensionStep;
+    const selectedRow = rows.find(row => row.id === step);
+    if (!selectedRow?.eligible) throw new Error('This Ascension step is not currently available.');
+    if (shards < calamiticAscensionCost) throw new Error(`Not enough Shards of Calamity. ${selectedRow.name} costs ${calamiticAscensionCost}.`);
+    if (!await gameConfirm(`${selectedRow.name} for ${calamiticAscensionCost} Shards of Calamity? ${selectedRow.effect}`, {
+      title: 'Confirm Calamitic Ascension', confirmLabel: selectedRow.name,
+    })) return;
+    account = playMode === 'online'
+      ? (await performOnline({ kind: 'ascendCharacter', id, step, expected })).account
+      : ascendCharacter(gameStorage, id, step, expected);
+    saved = true;
+    updateCharacterTab(app, starter, characterTab, account);
+    const updated = ownedProgress(account, id);
+    celebrateAscension(app, starter, step, updated);
+    const status = app.querySelector<HTMLElement>('[data-ascension-result]');
+    if (status) status.textContent = `${characterName(id, updated.evolution, true)} \u00b7 ${selectedRow.name} saved.`;
+  } catch (error) {
+    console.error('Calamitic Ascension rejected', error);
+    showError(`${saved ? 'Ascension is saved, but its presentation could not complete.' : 'Ascension was not completed.'} ${errorMessage(error)}`);
+  }
+});
+
+app.addEventListener('click', async (event) => {
+  if (!(event.target instanceof Element)) return;
   const button = event.target.closest<HTMLButtonElement>('[data-upgrade]');
   if (!button || button.disabled || menuPage !== 'team' || characterCategory !== 'bearers') return;
   let saved = false;
@@ -1893,7 +1964,7 @@ app.addEventListener('click', async (event) => {
       if (!option) throw new Error('Selected captured Elemental-Devourer is missing.');
       return `[${option.creature.name}] · Lv.${option.copy.level ?? capturedProgress(option.copy).level}`;
     });
-    if (!await gameConfirm(`${kind === 'level' ? 'Level up' : 'Evolve'} [${characterName(starter.id, expected.evolution)}] for ${cost.fractalis} [Prismatica] and ${materials}?${consumed.length ? `\n\nThese Elemental-Devourers will be permanently consumed:\n${consumed.join('\n')}\n\nThis cannot be undone.` : ''}`, { title: kind === 'level' ? 'Level up' : 'Evolution', confirmLabel: kind === 'level' ? 'Level up' : 'Evolve', danger: consumed.length > 0 })) return;
+    if (!await gameConfirm(`${kind === 'level' ? 'Level up' : 'Evolve'} [${characterName(starter.id, expected.evolution, expected.ascension?.stats === true)}] for ${cost.fractalis} [Prismatica] and ${materials}?${consumed.length ? `\n\nThese Elemental-Devourers will be permanently consumed:\n${consumed.join('\n')}\n\nThis cannot be undone.` : ''}`, { title: kind === 'level' ? 'Level up' : 'Evolution', confirmLabel: kind === 'level' ? 'Level up' : 'Evolve', danger: consumed.length > 0 })) return;
     const currency = app.querySelector('#fractalis-balance');
     const premium = app.querySelector('#lycalis-balance');
     if (!currency || !premium) throw new Error('Currency display is missing.');
@@ -1909,11 +1980,11 @@ app.addEventListener('click', async (event) => {
     const rosterButton = app.querySelector(`[data-owned-character="${starter.id}"]`);
     const rosterLevel = rosterButton?.querySelector('span > small');
     const rosterName = rosterButton?.querySelector('span > strong');
-    if (rosterName) rosterName.textContent = characterName(starter.id, progress.evolution);
+    if (rosterName) rosterName.textContent = characterName(starter.id, progress.evolution, progress.ascension?.stats === true);
     if (rosterLevel) rosterLevel.textContent = `Lv.${progress.level} · Evo.${progress.evolution}`;
     const rosterPortrait = rosterButton?.querySelector('img');
     if (rosterPortrait) {
-      const art = portraitAttributes(starter, progress.evolution);
+      const art = portraitAttributes(starter, progress.evolution, progress.ascension?.stats === true);
       rosterPortrait.src = art.src;
       rosterPortrait.alt = art.alt;
       const facing = characterFacing(starter.id, progress.evolution);
@@ -1925,8 +1996,8 @@ app.addEventListener('click', async (event) => {
     if (fodderIds.length) renderMenu();
     celebrateUpgrade(app, starter, kind, ownedProgress(updatedAccount, starter.id));
     const result = app.querySelector('#upgrade-result');
-    if (result) result.textContent = `${characterName(starter.id, progress.evolution)} ${kind === 'level' ? 'leveled up' : 'evolved'}.`;
-    else showError(`${characterName(starter.id, progress.evolution)} ${kind === 'level' ? 'leveled up' : 'evolved'}.`);
+    if (result) result.textContent = `${characterName(starter.id, progress.evolution, progress.ascension?.stats === true)} ${kind === 'level' ? 'leveled up' : 'evolved'}.`;
+    else showError(`${characterName(starter.id, progress.evolution, progress.ascension?.stats === true)} ${kind === 'level' ? 'leveled up' : 'evolved'}.`);
     await presentUpgrade(before, updatedAccount, starter.id, kind);
   } catch (error) {
     console.error('Character upgrade rejected', error);
@@ -2068,7 +2139,7 @@ function refreshLoadout(owner: string): void {
     const starter = isStarterId(owner);
     const copy = starter ? undefined : account.capturedCharacters?.find(entry => entry.instanceId === owner);
     const creature = copy ? getCreature(copy.creatureId) : undefined;
-    const name = starter ? characterName(owner, ownedProgress(account, owner).evolution) : creature?.name ?? '';
+    const name = starter ? characterName(owner, ownedProgress(account, owner).evolution, ownedProgress(account, owner).ascension?.stats === true) : creature?.name ?? '';
     const element = starter ? getStarter(owner).elementId : creature?.element;
     if (element && refreshConduitLoadout(app, owner, name, element, account)) return;
   }

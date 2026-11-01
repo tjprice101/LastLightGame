@@ -25,8 +25,10 @@ normalized Lv.50-120 curve and giving both used specialties1-2->11-23 each.
 Weapon drops stop; currencies, captures, EX+ and owned holdings remain unchanged.
 Walletv10 preserves historical unlocks and captured-copy kits read-only.
 
-**Status:**150-stage Story, retained endless Training and all six elemental
-material dungeons are playable.
+**Status:**150-stage Story, retained endless Training, all six elemental
+material dungeons and the Calamitic-gated Gates of Oblivion are playable.
+See [D-435 Section 2](gates-of-oblivion.md) for its 25 floors, late enemy
+levels, Calamity-material loot and independent Fragment of Rise stream.
 The [D-160 migration](six-element-rework.md#implemented-elemental-migration-contract)
 replaces ten types with six, preserves all original enemy families/discoveries,
 merges materials/unlocks safely in walletv4 and starts dungeons atLv38.

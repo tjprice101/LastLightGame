@@ -4,6 +4,7 @@ import { type CharacterProgress } from '../content/progression';
 import { rollDrop, rollStagedLycalis } from '../content/loot-random';
 import { activityPrismaticaDrop } from '../content/prismatica';
 import { dungeonEncounter, materialDrops, type PlayableDungeon } from '../content/dungeons';
+import { oblivionEncounter, oblivionMaterialDrops, oblivionFragmentDrop, gatesOfOblivionRules } from '../content/gates-of-oblivion';
 import { elementSources } from '../content/element-migration';
 import { materialName } from '../content/dungeon-art';
 import { infusionEncounter, infusionDrops, capturedEnemyStats, enemyCaptureAllowed, enemyCaptureChance } from '../content/infusions';
@@ -98,6 +99,7 @@ export interface BattleState {
   phase: 'player' | 'cleared' | 'defeat';
   seed: number;
   rewardSeed: number;
+  oblivionSeed?: number;
   captureSeed?: number;
   lycalisSeed?: number;
   conduitSeed?: number;
@@ -111,6 +113,7 @@ export interface BattleState {
   allies: Combatant[];
   enemies: Combatant[];
   dungeon?: { element: PlayableDungeon; stage: number };
+  oblivion?: { stage: number };
   infusion?: { mode: InfusionModeId; stage: number; schedule?: 'legacy' | 'caps' };
   war?: { character: WarCharacterId; stage: number };
   story?: { storyStage: number };
@@ -143,6 +146,8 @@ export interface BattleEvent {
   calamityChest?: string;
   recruitment?: WarCharacterId;
   recruitmentOutcome?: 'new' | 'duplicate';
+  calamiticRecruitment?: 'ozriel' | 'ilvaris' | 'kaelith';
+  calamityShards?: number;
   storyBonus?: { fractalis: number; lycalis: number };
   conduitUpgrades?: ConduitUpgrades;
   elementalEffect?: ElementalEffectTag;
@@ -271,7 +276,7 @@ export function createBattle(seed = 1729, roster: readonly string[] = ['ember'],
       }
       const starter = getStarter(id);
       const kit = resolveFighter(id, progress[id], equipment[id], snapshot);
-      const unit = combatant(starter.id, starter.id, characterName(id, progress[id]?.evolution), 'ally', kit.stats, starter.elementId);
+      const unit = combatant(starter.id, starter.id, characterName(id, progress[id]?.evolution, progress[id]?.ascension?.stats === true), 'ally', kit.stats, starter.elementId);
       unit.kit = kit;
       if (id === 'vaelor') unit.native = { beat: 0, beatRound: 1 };
       unit.level = progress[id]?.level ?? null;
@@ -308,6 +313,29 @@ export function createDungeonBattle(element: PlayableDungeon, stage: number, see
     unit.color = selected.color;
     unit.boss = selected.boss;
     unit.enemySkills = enemySkills(selected.level, selected.boss, selected.ability, selected.abilityMultiplier);
+    return unit;
+  });
+  initializeConduits(state);
+  return state;
+}
+
+export function createOblivionBattle(stage: number, seed: number, starter: StarterId, progress: CharacterProgress,
+  roster: readonly string[] = [starter], teamProgress: Partial<Record<StarterId, CharacterProgress>> = { [starter]: progress }, equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = [], upgrades: ConduitUpgrades = {}): BattleState {
+  const encounter = oblivionEncounter(stage);
+  const state = createBattle(seed, roster, teamProgress, equipment, captures, upgrades);
+  state.wave = stage;
+  state.oblivion = { stage };
+  state.oblivionSeed = ((seed ^ 0x6d2b79f5) >>> 0) || 1;
+  state.enemies = Array.from({ length: encounter.boss ? 1 : 2 }, (_, index) => {
+    const unit = combatant(`oblivion-${stage}-${index}`, encounter.construct.id, encounter.construct.name, 'enemy', encounter.stats, encounter.construct.element);
+    unit.level = encounter.level;
+    unit.creatureId = encounter.construct.id;
+    unit.color = elementAccents[encounter.construct.element];
+    unit.boss = encounter.boss;
+    const skills = enemySkills(encounter.level, encounter.boss, encounter.construct.skill, encounter.abilityMultiplier);
+    const secondSkill = skills[1];
+    unit.enemySkills = stage >= gatesOfOblivionRules.fragmentUnlockStage && secondSkill
+      ? [skills[0], { ...secondSkill, name: encounter.construct.secondSkill }] : [skills[0]];
     return unit;
   });
   initializeConduits(state);
@@ -488,6 +516,21 @@ function checkOutcome(state: BattleState): void {
   else if (!state.enemies.some((unit) => unit.hp > 0)) state.phase = 'cleared';
 }
 
+export function rollOblivionFragment(state: BattleState, boss: boolean): number | undefined {
+  if (!state.oblivion) throw new Error('Fragment rolls require a Gates of Oblivion encounter.');
+  const drop = oblivionFragmentDrop(state.oblivion.stage, boss);
+  if (!drop) return undefined;
+  if (boss) return 1;
+  return rollDrop(drop, () => {
+    let seed = state.oblivionSeed ?? (((state.rewardSeed ^ 0x6d2b79f5) >>> 0) || 1);
+    seed ^= seed << 13;
+    seed ^= seed >>> 17;
+    seed ^= seed << 5;
+    state.oblivionSeed = seed >>> 0 || 1;
+    return state.oblivionSeed / 0x100000000;
+  });
+}
+
 function awardDefeats(previous: BattleState, state: BattleState, events: BattleEvent[]): void {
   for (const enemy of state.enemies) {
     if (enemy.hp > 0 || !previous.enemies.some((unit) => unit.id === enemy.id && unit.hp > 0)) continue;
@@ -517,9 +560,14 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
     }
     const amount = rollDrop(activityPrismaticaDrop(state, enemy.level), rewardRoll);
     if (amount === undefined) throw new Error('Guaranteed Prismatica reward did not drop.');
-    const materials = state.story ? storyDrops(state.story.storyStage, rewardRoll)
+    const materials = state.oblivion ? oblivionMaterialDrops(state.oblivion.stage, rewardRoll)
+      : state.story ? storyDrops(state.story.storyStage, rewardRoll)
       : state.infusion ? infusionDrops(state.infusion.mode, state.infusion.stage, rewardRoll, state.infusion.schedule ?? 'legacy')
       : state.dungeon ? materialDrops(state.dungeon.element, state.dungeon.stage, rewardRoll) : undefined;
+    if (state.oblivion) {
+      const fragment = rollOblivionFragment(state, enemy.boss === true);
+      if (fragment !== undefined) materials!['fragment-of-rise'] = fragment;
+    }
     const materialText = materials ? Object.entries(materials).map(([id, quantity]) => `${quantity} ${materialName(id)}`).join(', ') : '';
     let capture: BattleEvent['capture'];
     let lycalis = 0;
@@ -904,11 +952,11 @@ export function advanceUnavailableTurns(previous: BattleState): BattleResult {
 }
 
 export function nextStage(previous: BattleState, progress: CharacterProgress | Partial<Record<StarterId, CharacterProgress>>): BattleResult {
-  const destination = previous.story ?? previous.war ?? previous.infusion ?? previous.dungeon;
+  const destination = previous.story ?? previous.war ?? previous.infusion ?? previous.dungeon ?? previous.oblivion;
   if (!destination) throw new Error('Only staged battles can advance to the next stage.');
   if (previous.phase !== 'cleared') throw new Error('Clear this stage before advancing.');
-  if (previous.wave >= (previous.story ? storyRules.stages : previous.war ? warStageCount : previous.infusion ? infusionStageCount(previous.infusion.mode) : dungeonStageCount)) {
-    throw new Error(`${previous.war ? 'Activity' : 'Dungeon'} complete. Return to Gameplay to replay a stage.`);
+  if (previous.wave >= (previous.story ? storyRules.stages : previous.war ? warStageCount : previous.infusion ? infusionStageCount(previous.infusion.mode) : previous.oblivion ? gatesOfOblivionRules.stages : dungeonStageCount)) {
+    throw new Error(`${previous.oblivion ? 'Gates of Oblivion' : previous.war ? 'Activity' : 'Dungeon'} complete. Return to Gameplay to replay a stage.`);
   }
   const starter = previous.allies.find((ally) => !ally.captured)?.definitionId ?? 'ember';
   if (!isStarterId(starter)) throw new Error('Dungeon starter is missing.');
@@ -924,13 +972,13 @@ export function nextStage(previous: BattleState, progress: CharacterProgress | P
     if (ally.conduits) equipment[ally.id] = [...ally.conduits];
   }
   const captures = previous.allies.flatMap((ally) => ally.captured ? [ally.captured] : []);
-  const state = 'storyStage' in destination
-    ? createStoryBattle(destination.storyStage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, previous.encounterSeed)
-    : 'character' in destination
-    ? createWarBattle(destination.character, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades)
-    : 'mode' in destination
-    ? createInfusionBattle(destination.mode, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, destination.schedule ?? 'legacy')
-    : createDungeonBattle(destination.element, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, previous.encounterSeed);
+  const state = previous.oblivion
+    ? createOblivionBattle(previous.oblivion.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades)
+    : previous.story ? createStoryBattle(previous.story.storyStage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, previous.encounterSeed)
+    : previous.war ? createWarBattle(previous.war.character, previous.war.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades)
+    : previous.infusion ? createInfusionBattle(previous.infusion.mode, previous.infusion.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, previous.infusion.schedule ?? 'legacy')
+    : previous.dungeon ? createDungeonBattle(previous.dungeon.element, previous.dungeon.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, previous.encounterSeed)
+    : (() => { throw new Error('Only staged battles can advance to the next stage.'); })();
   for (const ally of state.allies) {
     const prior = previous.allies.find(unit => unit.id === ally.id);
     if (prior?.masterConduit) ally.masterConduit = prior.masterConduit;
@@ -944,6 +992,7 @@ export function nextStage(previous: BattleState, progress: CharacterProgress | P
         (equipped(ally, 'twinpulse-bellows') ? ally.stats.shatterCapacity * value(state, ally, 'twinpulse-bellows', .15, .35) : 0),
       ally.stats.shatterCapacity);
   }
+  if (previous.oblivionSeed !== undefined) state.oblivionSeed = previous.oblivionSeed;
   if (previous.conduitSeed !== undefined) state.conduitSeed = previous.conduitSeed;
   if (previous.machineConduits !== undefined) state.machineConduits = { ...previous.machineConduits };
   if (previous.machineLootFocus !== undefined) state.machineLootFocus = { ...previous.machineLootFocus };
@@ -961,7 +1010,7 @@ export function nextStage(previous: BattleState, progress: CharacterProgress | P
 
 export function nextWave(previous: BattleState): BattleResult {
   if (previous.calamity) throw new Error('Calamity has one boss. Return to the activity or replay this challenge.');
-  if (previous.story || previous.dungeon || previous.infusion || previous.war) throw new Error('Staged activities must be started as separate encounters.');
+  if (previous.story || previous.dungeon || previous.infusion || previous.war || previous.oblivion) throw new Error('Staged activities must be started as separate encounters.');
   if (previous.phase !== 'cleared') throw new Error('Defeat this wave before advancing.');
   const state = structuredClone(previous);
   const events: BattleEvent[] = [];

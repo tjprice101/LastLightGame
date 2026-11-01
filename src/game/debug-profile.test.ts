@@ -35,10 +35,11 @@ function savedStorage() {
 describe('isolated development profile', () => {
   it('unlocks every authored gameplay catalog with valid maximum progress and abundant resources', () => {
     const account = createDebugAccount();
-    expect(Object.keys(account.characters)).toHaveLength(starters.length);
-    for (const starter of starters) expect(account.characters[starter.id]).toEqual({
+    expect(Object.keys(account.characters)).toHaveLength(starters.length - 3);
+    for (const starter of starters.filter(starter => !['ozriel', 'ilvaris', 'kaelith'].includes(starter.id))) expect(account.characters[starter.id]).toEqual({
       level: characterLevelCap(characterGrowth.forms), evolution: characterGrowth.forms,
     });
+    for (const id of ['ozriel', 'ilvaris', 'kaelith']) expect(account.characters[id as keyof typeof account.characters]).toBeUndefined();
     for (const conduit of conduits) {
       expect(account.conduits?.[conduit.id]).toBe(1);
       expect(account.conduitUpgrades?.[conduit.id]).toBe(conduitUpgradeCap);

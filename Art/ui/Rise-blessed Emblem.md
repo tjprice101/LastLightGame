@@ -1,0 +1,21 @@
+# Rise-blessed Emblem
+
+One reference-free mechanical Calamity crown-burst badge.
+
+**All artwork pending owner delivery.** These are copy-ready original designs, not installed assets. Names, titles, rarity and mechanics are metadata outside image prose. Black/white primary and secondary colors, sharp saturated sparkling crimson accents; pearlescent prismatic sheen means bounded faceting, never extra hues. The green key is exempt from subject palette exclusions. Only portraits use the exact evolution-matched character references at --sw 400 for this owner-requested pack; historical packs remain unchanged.
+
+### Rise-blessed crown-burst
+
+Filename: `rise-blessed-emblem.png`
+Target runtime asset ID: `rise-blessed-emblem` (pending delivery; not an installed URL).
+Target export: `public/assets/ui/rise-blessed-emblem.png` after reviewed intake.
+
+```text
+one ornate mechanical crown-burst emblem, five white crown teeth on a black segmented ring, one central crimson fracture diamond with six broad white-and-crimson burst wedges, bold mechanical silhouette for a small badge beside an elemental medal, no lettering, complete artwork fully inside the canvas, every weapon ornament and elemental-effect tip visible, square standalone face-free collectible icon, one cohesive readable symbol, occupies two thirds of the square, original compact gacha JRPG chibi anime renderer, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors, continuous clear solid-background safety margin on all four sides and corners, nothing touches or crosses the frame edges, pull back the whole ensemble uniformly without simplifying armor equipment or powers, at least 15 percent empty margin on every side and corner, strict subject palette lock: ONLY black white pearlescent ivory and sharp saturated sparkling crimson gradients on armor fabric wings weapons gems and powers, remap ALL style-reference colors to this palette, prismatic and opal describe faceting not extra hues, no contrasting subject colors, preserve shading and detail, subject ONLY not the key background, plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, elemental powers rendered as opaque solid-color lines ribbons rings and shapes with crisp hard edges, non-emissive painted highlights --ar 1:1 --niji 6 --s 100 --q 1 --no gold, blue, navy, cyan, turquoise, teal, purple, violet, lavender, orange, yellow, bronze, brown, magenta, flames, fire, text, letters, words, numbers, runes, logo, watermark, interface, card border, cropping, photorealism, 3d render, gritty texture, realistic anatomy, scenery, horizon, ground plane, motion blur, background gradient, textured background, background vignette, background color spill, glow, glowing effects, light bloom, soft aura, haze, light spill, nose, mouth, eyebrows, facial markings, multiple characters, character, creature, face, hands, portrait
+```
+
+## Export and intake
+
+Portraits: transparent 960px canvas. Icons/items/emblem/Conduits: transparent 256px canvas, up to 224px reviewed content; emblem must read at small badge size beside an Element Medal. Preserve original PNG bytes under Art/source after delivery; record hashes, source-specific keys, enclosed gaps and facing under Art/provenance. Supplied alpha is authoritative; never key it again. No runtime background removal or missing-image URLs. Review dark/light backgrounds, thumbnail clarity, all tips and corners, opaque powers and per-form architecture before installation. Passing prompt tests is not visual approval or a guarantee that a signed reference URL remains available.
+
+Regenerate: `python tools\build_calamitic_art.py`. Validate: `python -m unittest discover -s tools -p test_calamitic_art.py`; global: `python -m unittest discover -s tools -p "test_*.py"`.

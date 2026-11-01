@@ -178,3 +178,14 @@ html[data-motion="reduced"] .upgrade-celebration-label, html[data-motion="reduce
 }
 :root[data-motion="reduced"] .evolution-fodder-copy { transition: none; }
 body.reduced-motion .evolution-fodder-copy { transition: none; }
+
+.calamitic-ascension-entry { border: 1px solid #a80f2d80; background: linear-gradient(135deg, #09090c, #fff 24%, #17171b 36%, #580a1d 68%, #09090c); }
+.calamitic-ascension-entry > h3 { color: #fff; text-shadow: 0 0 8px #a80f2d; }
+.celebration-ascension .upgrade-aura-ring { border-color: #fff; box-shadow: 0 0 18px #a80f2d, inset 0 0 14px #fff; animation-duration: 1800ms; }
+.celebration-ascension .upgrade-spark { background: linear-gradient(#fff, #a80f2d); box-shadow: 0 0 10px #a80f2d, 0 0 4px #fff; animation-duration: 1200ms; }
+.celebration-ascension .upgrade-celebration-label { animation-duration: 2200ms; }
+.celebration-ascension .upgrade-celebration-label strong { color: #fff; text-shadow: 0 0 8px #a80f2d; }
+.sanctuary-shell .hub-showcase .hub-portrait.celebrating-ascension > .character-idle > img { animation: upgrade-portrait-evolve 1800ms ease-in-out; }
+.celebration-ascension.celebration-reduced .upgrade-aura { display: none; }
+html[data-motion="reduced"] .celebration-ascension .upgrade-aura { display: none; }
+html[data-motion="reduced"] .celebration-ascension .upgrade-celebration-label { animation: none; }

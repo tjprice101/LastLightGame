@@ -3,12 +3,13 @@ import { artifactSlots, currencies, fractureRules, characterLevelCap, characterG
   characterEvolutionCost, evolutionCost, characterLevelCost, levelingMaterials, evolutionBalance } from './progression';
 import { evolutionRecipes } from './activities';
 import { availableStarters, starters, isRoseCharacter, roseCharacters } from './starters';
+import { isCalamiticCharacter } from './calamitic-characters';
 import { loadMotion, saveMotion, SETTINGS_KEY } from '../presentation/settings';
 import { SAVE_KEY, type ProfileStorage } from '../game/profile';
 
 describe('confirmed game foundation', () => {
   it('doubles late Element-Bearer materials exactly once, keeps currency and verifies full-progression totals', () => {
-    for (const starter of starters) {
+    for (const starter of starters.filter(starter => !isCalamiticCharacter(starter.id))) {
       const totals: Record<string, number> = {};
       let currency = 0, level = 0;
       const family = isRoseCharacter(starter.id) ? 'rosethorn' : starter.elementId;
@@ -42,7 +43,7 @@ describe('confirmed game foundation', () => {
     }
   });
   it('preserves ordinary recipes and uses their base rarity format with Rosethorn for Roses', () => {
-    for (const starter of starters.filter(starter => !isRoseCharacter(starter.id))) {
+    for (const starter of starters.filter(starter => !isRoseCharacter(starter.id) && !isCalamiticCharacter(starter.id))) {
       for (let evolution = 1; evolution <= 5; evolution++) {
         const progress = { level: characterLevelCap(evolution), evolution };
         expect(characterEvolutionCost(starter.id, progress)).toEqual(evolutionCost(starter.elementId, progress));
@@ -86,7 +87,7 @@ describe('confirmed game foundation', () => {
     });
     expect(upgradePaths[0].detail).toContain('Preserve your level');
     expect(upgradePaths[0].detail).toContain('150% of base');
-    expect([1, 2, 3, 4, 5, 6].map(characterLevelCap)).toEqual([30, 45, 60, 75, 90, 105]);
+    expect([1, 2, 3, 4, 5, 6].map(evolution => characterLevelCap(evolution))).toEqual([30, 45, 60, 75, 90, 105]);
     expect(characterGrowthFactor({ level: 0, evolution: 1 })).toBe(1);
     expect(characterGrowthFactor({ level: 30, evolution: 2 })).toBe(7);
     expect(characterGrowthFactor({ level: 90, evolution: 5 })).toBe(20.5);

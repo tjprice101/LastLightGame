@@ -13,6 +13,7 @@ import { elementEmotions, machineOrigin } from './world-lore';
 import { calamityBossLore, calamityIntro, enemyLineLore, enemyLore } from './enemy-lore';
 import { calamityActivities, calamityChest, calamityTierScaling, isCalamityTier, type CalamityActivityId } from './calamity';
 import { calamityBossArt } from './calamity-art';
+import { gatesOfOblivionRules, oblivionConstructAtStage, oblivionEncounter, oblivionLoot } from './gates-of-oblivion';
 
 export interface Creature {
   id: string;
@@ -24,6 +25,8 @@ export interface Creature {
   mode?: InfusionModeId;
   story?: true;
   calamity?: CalamityActivityId;
+  oblivion?: true;
+  lore?: string;
   stages: number[];
 }
 
@@ -61,6 +64,14 @@ function catalog(): Creature[] {
         area: encounter.name, element: encounter.enemy.element, mode, stages: [stage] });
     }
   }
+  for (let stage = 1; stage <= gatesOfOblivionRules.stages; stage++) {
+    const construct = oblivionConstructAtStage(stage);
+    const id = construct.id;
+    const existing = result.find(creature => creature.id === id);
+    if (existing) { if (!existing.stages.includes(stage)) existing.stages.push(stage); }
+    else result.push({ id, name: construct.name, area: gatesOfOblivionRules.name, element: construct.element,
+      oblivion: true, lore: construct.lore, stages: [stage] });
+  }
   for (const activity of calamityActivities) {
     result.push({ id: `calamity:${activity.id}`, name: activity.boss, area: `${activity.name} · Calamity`,
       art: calamityBossArt[activity.id], element: activity.element, calamity: activity.id, stages: [1, 2, 3] });
@@ -78,6 +89,7 @@ export function getCreature(id: string): Creature {
 export function creatureLore(creature: Creature): string {
   getCreature(creature.id);
   const stolen = `${getElement(creature.element).name} ${elementEmotions[creature.element]}`;
+  if (creature.oblivion) return `${creature.name}: ${creature.lore!} Like every Elemental-Devourer, it is Rise's creation, seeking her soul with stolen ${stolen}.`;
   if (creature.calamity) {
     const unique = calamityBossLore[creature.calamity];
     if (!unique?.includes(creature.name)) throw new Error(`Missing authored Calamity lore for ${creature.id}.`);
@@ -100,6 +112,10 @@ export interface CreatureLoot { id: string; minimum: number; maximum: number; ch
 export function creatureLoot(creature: Creature, stage?: number, ownedConduits?: Partial<Record<ConduitId, number>>, focus?: MachineLootFocus): CreatureLoot[] {
   getCreature(creature.id);
   if (creature.stages.length && (stage === undefined || !creature.stages.includes(stage))) throw new Error('Choose a stage where this Elemental-Devourer appears.');
+  if (creature.oblivion) {
+    if (stage === undefined) throw new Error('Choose a Gates of Oblivion floor.');
+    return oblivionLoot(stage, oblivionEncounter(stage).boss);
+  }
   if (creature.calamity) {
     if (!isCalamityTier(stage)) throw new Error('Choose a Calamity EX tier.');
     return [{ id: calamityChest(creature.calamity, stage).id, minimum: 1, maximum: 1, chance: 1,

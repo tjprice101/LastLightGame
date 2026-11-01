@@ -1,12 +1,14 @@
 import { elements, elementalMaterials, materialRarities, type ElementId } from './activities';
 import { specialtyMaterials } from './infusions';
 import { roseMaterials } from './roses';
+import { calamiticMaterials } from './calamitic-materials';
 import { elementAssetIds, type LegacyElementId } from './element-migration';
 import { type Rarity } from './rarity';
 
 export function materialRarity(id: string): Rarity | undefined {
   return elementalMaterials.find(material => material.id === id)?.rarity ??
-    roseMaterials.find(material => material.id === id)?.rarity;
+    roseMaterials.find(material => material.id === id)?.rarity ??
+    calamiticMaterials.find(material => material.id === id)?.rarity;
 }
 
 export const elementAccents: Record<ElementId, string> = {
@@ -153,6 +155,7 @@ export const materialArtNames = ['Seed', 'Bloom', 'Shard', 'Crest', 'Heart', 'So
 export function materialArt(id: string): string | undefined {
   materialName(id);
   if (roseMaterials.some((material) => material.id === id)) return id;
+  if (calamiticMaterials.some((material) => material.id === id)) return undefined;
   const specialty = specialtyMaterials.find((entry) => entry.id === id);
   if (specialty) return specialty.art;
   const [elementId, rarity] = id.split('-');
@@ -162,6 +165,8 @@ export function materialArt(id: string): string | undefined {
 }
 
 export function materialName(id: string): string {
+  const calamitic = calamiticMaterials.find((material) => material.id === id);
+  if (calamitic) return calamitic.name;
   const rose = roseMaterials.find((material) => material.id === id);
   if (rose) return rose.name;
   const specialty = specialtyMaterials.find((entry) => entry.id === id);

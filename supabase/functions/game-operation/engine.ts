@@ -2,12 +2,12 @@ import {
   ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, validateAccount, equippedSquad, ownedCharacters,
   ownedCharacterInstances, ownedProgress, setSquad, setCharacterLock, summonCharacter, summonCharacters, multiSummonCount,
   purchaseExchangeMaterial, type SummonDraw, sellCurrencyCreature, sellCurrencyCreatures,
-  purchaseConduit, setMachineLootFocus, equipConduit, unequipAllConduits, openMasterChest, openCalamityChest, equipMasterConduit, upgradeConduit, upgradeConduitToMaximum, upgradeCharacter, levelCapturedCharacter,
+  purchaseConduit, setMachineLootFocus, equipConduit, unequipAllConduits, openMasterChest, openCalamityChest, equipMasterConduit, upgradeConduit, upgradeConduitToMaximum, upgradeCharacter, ascendCharacter, levelCapturedCharacter,
   levelCharacterToMaximum, saveAccountRewards, unlockedStage, unlockedInfusionStage,
-  unlockedWarStage, unlockedStoryStage, type Account,
+  unlockedWarStage, unlockedStoryStage, unlockedOblivionStage, type Account,
 } from '../../../src/game/account';
 import { SAVE_KEY, type ProfileStorage } from '../../../src/game/profile';
-import { createBattle, createCalamityBattle, createStoryBattle, createDungeonBattle, createInfusionBattle, createWarBattle,
+import { createBattle, createCalamityBattle, createStoryBattle, createDungeonBattle, createOblivionBattle, createInfusionBattle, createWarBattle,
   actAndAdvanceTurn, endTurn, advanceUnavailableTurns, nextStage, nextWave, actionUnavailable,
   withMasterLoadouts, capCapturedBattleLevels, type BattleResult } from '../../../src/game/battle';
 import { validateCapturedCharacters, preservePreviousInfusionCopies } from '../../../src/game/character-instances';
@@ -18,6 +18,7 @@ import { elements } from '../../../src/content/activities';
 import { isPlayableDungeon } from '../../../src/content/dungeons';
 import { isInfusionMode } from '../../../src/content/infusions';
 import { storyRules } from '../../../src/content/story';
+import { isOblivionStage } from '../../../src/content/gates-of-oblivion';
 import { isWarCharacter } from '../../../src/content/elemental-war';
 import { isCalamityActivityId, isCalamityTier, parseCalamityChestId } from '../../../src/content/calamity';
 import type { Activity, GameOperation, GameRequest, GameResponse, OnlineProfile, ProfileFrame,
@@ -115,7 +116,7 @@ const operationKeys: Record<GameOperation['kind'], string[]> = {
   unequipAllConduits: ['character'],
   openMasterChest: ['id'], equipMasterConduit: ['character', 'conduit'],
   openCalamityChest: ['id', 'expectedCount'],
-  upgradeCharacter: ['id', 'upgradeKind', 'expected', 'fodderIds'], levelCaptured: ['id', 'expectedLevel'],
+  upgradeCharacter: ['id', 'upgradeKind', 'expected', 'fodderIds'], ascendCharacter: ['id', 'step', 'expected'], levelCaptured: ['id', 'expectedLevel'],
   levelMax: ['id', 'expected'], purchaseMaterial: ['element', 'quantity'], purchaseFrame: ['frame'],
   updateProfile: ['displayName', 'bio', 'icon', 'frame'], enter: ['activity'],
   act: ['runId', 'actorId', 'action', 'targetId'], endTurn: ['runId'], continue: ['runId'],
@@ -161,12 +162,16 @@ export function validateRequest(value: unknown): GameRequest {
     const maximum = field === 'fodderIds' ? 15 : 3;
     if (!Array.isArray(op[field]) || op[field].length > maximum || !op[field].every(id => typeof id === 'string' && id.length > 0 && id.length <= 100)) throw new Error('Invalid character IDs.');
   }
-  if (op.kind === 'upgradeCharacter') {
+  if (op.kind === 'upgradeCharacter' || op.kind === 'ascendCharacter') {
     if (!record(op.expected)) throw new Error('Invalid expected progress.');
-    keys(op.expected, ['level', 'evolution', 'weaponRank']);
+    keys(op.expected, ['level', 'evolution', 'weaponRank', 'ascension']);
     integer(op.expected.level); integer(op.expected.evolution);
     if ('weaponRank' in op.expected) integer(op.expected.weaponRank);
+    if ('ascension' in op.expected && (!record(op.expected.ascension) ||
+        Object.keys(op.expected.ascension).some(key => !['stats', 'skill1', 'skill2', 'lastFlare'].includes(key)) ||
+        Object.values(op.expected.ascension).some(flag => typeof flag !== 'boolean'))) throw new Error('Invalid expected Ascension state.');
   }
+  if (op.kind === 'ascendCharacter' && !['stats', 'skill1', 'skill2', 'lastFlare'].includes(String(op.step))) throw new Error('Invalid Calamitic Ascension step');
   if (op.kind === 'maxConduit') {
     if (!record(op.expected)) throw new Error('Invalid Conduit Max Level preview.');
     keys(op.expected, ['id', 'currentLevel', 'targetLevel', 'cost']);
@@ -184,12 +189,12 @@ export function validateRequest(value: unknown): GameRequest {
     for (const amount of Object.values(op.expected.cost.materials)) integer(amount);
   }
   if (op.kind === 'enter') {
-    if (!record(op.activity) || !['training', 'story', 'dungeon', 'infusion', 'war', 'calamity'].includes(String(op.activity.kind))) throw new Error('Invalid activity.');
+    if (!record(op.activity) || !['training', 'story', 'dungeon', 'oblivion', 'infusion', 'war', 'calamity'].includes(String(op.activity.kind))) throw new Error('Invalid activity.');
     if (op.activity.kind === 'calamity') {
       keys(op.activity, ['kind', 'activity', 'tier']);
       if (!isCalamityActivityId(op.activity.activity) || !isCalamityTier(op.activity.tier)) throw new Error('Invalid Calamity activity or tier.');
     } else {
-    keys(op.activity, op.activity.kind === 'training' ? ['kind'] : op.activity.kind === 'story' ? ['kind', 'stage'] :
+    keys(op.activity, op.activity.kind === 'training' ? ['kind'] : op.activity.kind === 'story' || op.activity.kind === 'oblivion' ? ['kind', 'stage'] :
       ['kind', 'stage', op.activity.kind === 'dungeon' ? 'element' : op.activity.kind === 'infusion' ? 'mode' : 'character']);
     if (op.activity.kind !== 'training') integer(op.activity.stage);
     }
@@ -349,13 +354,21 @@ function validateRunActivity(run: DurableRun): void {
   validateRequest({ requestId: '00000000-0000-4000-8000-000000000001', expectedRevision: 0,
     operation: { kind: 'enter', activity: run.activity } });
   const calamity = run.session.state.calamity;
+  const oblivion = run.session.state.oblivion;
+  if (run.activity.kind === 'oblivion') {
+    if (!isOblivionStage(run.activity.stage) || !oblivion || !isOblivionStage(oblivion.stage) ||
+        run.activity.stage !== oblivion.stage || run.session.state.wave !== oblivion.stage ||
+        run.session.state.dungeon || run.session.state.infusion || run.session.state.story || run.session.state.war || calamity) {
+      throw new Error('Unsupported saved Gates of Oblivion encounter.');
+    }
+  } else if (oblivion !== undefined) throw new Error('Unsupported saved Gates of Oblivion encounter.');
   if (run.activity.kind === 'calamity') {
     if (!record(calamity) || !isCalamityActivityId(calamity.activity) || !isCalamityTier(calamity.tier) ||
       calamity.activity !== run.activity.activity || calamity.tier !== run.activity.tier) throw new Error('Unsupported saved Calamity encounter.');
   } else if (calamity !== undefined) throw new Error('Unsupported saved Calamity encounter.');
 }
 function gate(account: Account, activity: Activity, entering = true): void {
-  if (entering) assertActivityAccess(account, activity);
+  if (entering || activity.kind === 'oblivion') assertActivityAccess(account, activity);
   if (activity.kind === 'calamity') {
     assertActivityAccess(account, activity);
     return;
@@ -363,6 +376,7 @@ function gate(account: Account, activity: Activity, entering = true): void {
   if (activity.kind === 'training') return;
   if (!Number.isInteger(activity.stage) || activity.stage < 1) throw new Error('Invalid stage.');
   const maximum = activity.kind === 'story' ? unlockedStoryStage(account) :
+    activity.kind === 'oblivion' ? unlockedOblivionStage(account) :
     activity.kind === 'dungeon' && isPlayableDungeon(activity.element) ? unlockedStage(account, activity.element) :
     activity.kind === 'infusion' && isInfusionMode(activity.mode) ? unlockedInfusionStage(account, activity.mode) :
     activity.kind === 'war' && isWarCharacter(activity.character) ? unlockedWarStage(account, activity.character) : 0;
@@ -380,6 +394,7 @@ function encounter(game: DurableGame, run: DurableRun, seed: number, trainingWav
     a.kind === 'calamity' ? createCalamityBattle(a.activity, a.tier, ...args) :
     a.kind === 'story' ? createStoryBattle(a.stage, ...args) :
     a.kind === 'dungeon' ? createDungeonBattle(a.element, a.stage, ...args) :
+    a.kind === 'oblivion' ? createOblivionBattle(a.stage, ...args) :
     a.kind === 'infusion' ? createInfusionBattle(a.mode, a.stage, ...args, s.state ? s.state.infusion?.schedule ?? 'legacy' : 'caps') : createWarBattle(a.character, a.stage, ...args), masters);
   if (state.infusion?.mode === 'machines') {
     state.machineConduits = { ...game.account.conduits };
@@ -462,7 +477,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
         calamityOpening = { id: reward.id, name: reward.name, fractalis: reward.fractalis, lycalis: reward.lycalis,
           materials: reward.materials, conduits: reward.conduits, mechanicalComponents: reward.mechanicalComponents,
           calamiticTokens: reward.calamiticTokens, masterChests: reward.masterChests,
-          devourerCopies: reward.devourerCopies };
+          devourerCopies: reward.devourerCopies, calamiticMaterialVersion: reward.calamiticMaterialVersion };
         break;
       }
       case 'equipMasterConduit': equipMasterConduit(storage, operation.character, operation.conduit); break;
@@ -471,6 +486,9 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
       case 'upgradeCharacter':
         if (!isStarterId(operation.id) || !ownedCharacters(game.account).includes(operation.id)) throw new Error('Choose an owned Element-Bearer.');
         upgradeCharacter(storage, operation.id, operation.upgradeKind, operation.expected, operation.fodderIds); break;
+      case 'ascendCharacter':
+        if (!isStarterId(operation.id) || !ownedCharacters(game.account).includes(operation.id)) throw new Error('Choose an owned Element-Bearer.');
+        ascendCharacter(storage, operation.id, operation.step, operation.expected); break;
       case 'levelCaptured': levelCapturedCharacter(storage, operation.id, operation.expectedLevel); break;
       case 'levelMax': levelCharacterToMaximum(storage, operation.expected); break;
       case 'purchaseMaterial':
@@ -531,7 +549,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
         } else if (operation.kind === 'continue') {
           if (state.calamity || run.activity.kind === 'calamity') throw new Error('Calamity ends after one boss. Enter the next tier from Play.');
           if (state.phase !== 'cleared') throw new Error('Clear the encounter before continuing.');
-          result = state.dungeon || state.infusion || state.war || state.story
+          result = state.dungeon || state.infusion || state.war || state.story || state.oblivion
             ? nextStage(state, run.session.teamProgress) : nextWave(state);
           if (run.activity.kind !== 'training') run.activity.stage++;
           gate(game.account, run.activity, false);

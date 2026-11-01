@@ -7,6 +7,7 @@ import { resolveCapturedFighter, createCreatureCopy, capturedProgress } from './
 import { capturedEnemyStats, infusionEncounter } from '../content/infusions';
 import type { ConduitLoadouts } from '../content/conduits';
 import { starters } from '../content/starters';
+import { isCalamiticCharacter } from '../content/calamitic-characters';
 import { playableDungeons } from '../content/dungeons';
 import { storyEncounter, storyRules } from '../content/story';
 import { enemyAbilityMultiplier, enemySkills } from '../content/enemy-skills';
@@ -54,7 +55,7 @@ describe('hostile progression balance', () => {
     }
   });
 
-  it.each(starters)('$name cannot trivialize Lv.19 standard or Story enemies with a critical Normal Attack', ({ id }) => {
+  it.each(starters.filter(starter => !isCalamiticCharacter(starter.id)))('$name cannot trivialize Lv.19 standard or Story enemies with a critical Normal Attack', ({ id }) => {
     const fighter = resolveFighter(id, { level: 19, evolution: 1 });
     const story = Array.from({ length: storyRules.stages }, (_, index) => storyEncounter(index + 1))
       .find(encounter => encounter.level === 19 && !encounter.boss)!;
@@ -211,7 +212,7 @@ describe('hostile progression balance', () => {
     }
   });
 
-  it.each(starters)('$name struggles against enemies ten levels above its legal evolution across progression', ({ id }) => {
+  it.each(starters.filter(starter => !isCalamiticCharacter(starter.id)))('$name struggles against enemies ten levels above its legal evolution across progression', ({ id }) => {
     for (const level of [19, 30, 45, 60, 75, 90, 105]) {
       const evolution = Array.from({ length: 6 }, (_, index) => index + 1).find(form => characterLevelCap(form) >= level)!;
       const fighter = resolveFighter(id, { level, evolution });

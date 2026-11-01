@@ -17,7 +17,7 @@ const expectedIdentity = [
   ['razor', 'Razor', 6, 'Tank', 'Chaotic', 'Night sword', '#bc9bef'],
   ['nerithe', 'Nerithe', 6, 'Attacker', 'Oceanic', 'Surveyor trident', '#54c9d4'],
   ['orvella', 'Orvella', 6, 'Tank', 'Botanic', 'Crystal mace', '#d2b59a'],
-  ['vaelor', 'Vaelor', 6, 'Attacker', 'Atmospheric', 'Resonance blade', '#e6d177'],
+  ['vaelor', 'Vaelor', 6, 'Attacker', 'Atmospheric', 'Resonance blade', '#e6d177'], ['ozriel', 'Ozriel', 7, 'Tank', 'Tranquilitic', 'Cathedral tower shield and glass halberd', '#e8e4ec'], ['ilvaris', 'Ilvaris', 7, 'Support', 'Atmospheric', 'Glass halo-lyre', '#f2eef4'], ['kaelith', 'Kaelith', 7, 'Attacker', 'Chaotic', 'Shatterglass greatscythe', '#f3f0f1'],
 ] as const;
 
 const elementalThemes: Record<string, readonly string[]> = {
@@ -30,7 +30,7 @@ const elementalThemes: Record<string, readonly string[]> = {
 };
 
 describe('character lore revision', () => {
-  it('keeps all sixteen stable character identities and gameplay-facing metadata', () => {
+  it('keeps all nineteen stable character identities and gameplay-facing metadata', () => {
     expect(starters.map(({ id }) => id)).toEqual(expectedIdentity.map(([id]) => id));
     for (const [id, name, stars, role, element, weapon, color] of expectedIdentity) {
       expect(starters.find((character) => character.id === id)).toMatchObject({
@@ -48,12 +48,13 @@ describe('character lore revision', () => {
 
   it.each(starters)('$name remains an Element-Bearer in an unresolved soul-seeking world', (character) => {
     const { description, title, lore } = character;
-    expect(description).toMatch(/^An? \w+ Element-Bearer shaped in Let’s image/i);
+    expect(description).toMatch(/^An? \w+ Element-Bearer (?:shaped )?in Let.{2} image/i);
     expect(title.trim()).not.toBe('');
     for (const value of Object.values(lore)) expect(value.trim()).not.toBe('');
     expect(lore.story).toMatch(/Let/);
     expect(lore.story).toMatch(/Rise/);
-    expect(lore.story).toMatch(/Elemental-Devourers/);
+    const devourerTerm = ['ozriel', 'ilvaris', 'kaelith'].includes(character.id) ? /Devourers/ : /Elemental-Devourers/;
+    expect(lore.story).toMatch(devourerTerm);
     expect(lore.story).toMatch(/soul/i);
     expect(lore.story).toMatch(/neither|no one|no side|no faction|no victor|contest has no winner|still unfound|unreunited|separate and unfound|both remain unfound/i);
   });

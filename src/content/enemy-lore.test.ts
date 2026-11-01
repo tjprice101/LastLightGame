@@ -4,13 +4,23 @@ import { calamityBossLore, calamityIntro, enemyLineLore, enemyLore } from './ene
 import { calamityTierScaling } from './calamity';
 
 const intro = calamityIntro([calamityTierScaling[1].level, calamityTierScaling[2].level, calamityTierScaling[3].level]);
-const individual = creatures.filter(creature => !creature.mode && !creature.calamity);
+const individual = creatures.filter(creature => !creature.mode && !creature.calamity && !creature.oblivion);
 
 describe('authored enemy bestiary lore', () => {
   it('authors every individual enemy, with no unused entries', () => {
     expect(individual).toHaveLength(115);
     for (const creature of individual) expect(enemyLore[creature.id], creature.id).toContain(creature.name);
     expect(Object.keys(enemyLore).sort()).toEqual(individual.map(creature => creature.id).sort());
+  });
+
+  it('authors unique origin lore for all ten Gates of Oblivion constructs', () => {
+    const oblivion = creatures.filter(creature => creature.oblivion);
+    expect(oblivion).toHaveLength(10);
+    expect(new Set(oblivion.map(creatureLore)).size).toBe(10);
+    for (const creature of oblivion) {
+      expect(creatureLore(creature), creature.id).toContain(creature.name);
+      expect(creatureLore(creature), creature.id).toContain("Rise's creation, seeking her soul");
+    }
   });
 
   it('keeps every lore string unique except within the six declared lines', () => {

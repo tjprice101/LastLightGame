@@ -49,6 +49,13 @@ export function lootItems(event: BattleEvent): LootItem[] {
       id: `recruitment:${event.recruitment}`, name: `${characterName(event.recruitment)} · Element-Bearer`,
       amount: 1, art: getStarter(event.recruitment).art, color: rarityColors.Common, rarity: 'Common' as const,
     }] : []),
+    ...(event.calamiticRecruitment ? [{
+      id: `calamitic-recruitment:${event.calamiticRecruitment}`,
+      name: `${characterName(event.calamiticRecruitment)} \u00b7 Calamitic Element-Bearer`,
+      amount: 1, color: rarityColors.Calamitic, rarity: 'Calamitic' as const,
+    }] : []),
+    ...(event.calamityShards ? [{ id: 'shard-of-calamity', name: materialName('shard-of-calamity'), amount: event.calamityShards,
+      art: materialArt('shard-of-calamity'), color: rarityColors.Calamitic, rarity: 'Calamitic' as const }] : []),
     ...(event.mechanicalComponents ? [{ id: mechanicalComponents.id, name: mechanicalComponents.name, amount: event.mechanicalComponents, color: '#ffffff' }] : []),
     ...(event.masterChests ? [{ id: masterChest.id, name: masterChest.name, amount: event.masterChests, color: rarityColors.Omnic, rarity: 'Omnic' as const }] : []),
     ...(calamity ? [{ id: event.calamityChest!, name: calamityChest(calamity.activity, calamity.tier).name, amount: 1, color: rarityColors.Calamitic, rarity: 'Calamitic' as const }] : []),

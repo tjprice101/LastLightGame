@@ -48,18 +48,20 @@ REPLACEMENTS = {
 }
 
 
-def palette_clause(name):
-    colors, _, _ = PALETTES[name]
+def palette_clause(name, *, palette=None):
+    colors, _, _ = PALETTES[name] if palette is None else palette
+    extras = " plus white black gold and platinum" if palette is None else ""
     return (
-        f"strict subject palette lock: ONLY {colors} gradients plus white black gold and platinum "
+        f"strict subject palette lock: ONLY {colors} gradients{extras} "
         "on armor fabric wings weapons gems and powers, remap ALL style-reference colors to this "
         "palette, prismatic and opal describe faceting not extra hues, no contrasting subject "
         "colors, preserve shading and detail, subject ONLY not the key background"
     )
 
 
-def apply_palette(prompt, name):
-    if name not in PALETTES:
+def apply_palette(prompt, name, *, palette=None, reference_weight=REFERENCE_WEIGHT):
+    """Optional bounded palettes/weights leave historical character packs unchanged."""
+    if palette is None and name not in PALETTES:
         raise ValueError(f"Unknown character palette: {name}")
     if not re.search(r"--ar (?:4:3|1:1|3:2)\b", prompt):
         raise ValueError("Palette policy is for character cutouts, never scenery.")
@@ -69,14 +71,14 @@ def apply_palette(prompt, name):
     if key is None:
         raise ValueError(f"Missing solid key clause for {name}.")
     if "strict subject palette lock:" in prompt:
-        if palette_clause(name) not in prompt:
+        if palette_clause(name, palette=palette) not in prompt:
             raise ValueError(f"Conflicting pre-existing palette clause for {name}.")
         prompt = prompt.replace(f"{key.group(1)} subject accents, ", "")
         if " --sref " in prompt:
-            prompt = re.sub(r" --sw \d+$", f" --sw {REFERENCE_WEIGHT}", prompt)
+            prompt = re.sub(r" --sw \d+$", f" --sw {reference_weight}", prompt)
         return prompt
-    prompt = prompt[:key.start()] + ", " + palette_clause(name) + prompt[key.start():]
-    _, exclusions, fire = PALETTES[name]
+    prompt = prompt[:key.start()] + ", " + palette_clause(name, palette=palette) + prompt[key.start():]
+    _, exclusions, fire = PALETTES[name] if palette is None else palette
     if not fire and fire is not None:
         exclusions += ", flames, fire"
     # Excluding the chroma key itself fights the mandatory background instruction.
@@ -89,7 +91,7 @@ def apply_palette(prompt, name):
         raise ValueError("Expected exactly one negative clause.")
     prompt = prompt.replace(" --no ", f" --no {exclusions}, ", 1)
     if reference is not None:
-        reference = re.sub(r" --sw \d+$", f" --sw {REFERENCE_WEIGHT}", reference)
+        reference = re.sub(r" --sw \d+$", f" --sw {reference_weight}", reference)
         prompt += " --sref " + reference
     return prompt
 

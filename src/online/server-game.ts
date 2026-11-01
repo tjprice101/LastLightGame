@@ -1,5 +1,6 @@
 import type { Account, MaxLevelPlan, ConduitMaxLevelPlan, summonCharacter, SummonDraw } from '../game/account';
 import { calamityChest, calamityLootTable, isCalamityActivityId, isCalamityTier, parseCalamityChestId, type CalamityActivityId, type CalamityTier, type CalamityOpening } from '../content/calamity';
+import { calamiticCharacterByTier } from '../content/calamitic-characters';
 import { isConduitId } from '../content/conduits';
 import { materialName } from '../content/dungeon-art';
 import type { BattleState, BattleEvent, BattleResult } from '../game/battle';
@@ -17,6 +18,7 @@ import { validateAccount } from '../game/account';
 import type { SaveFile } from '../game/save-file';
 import type { MasterConduitId } from '../content/master-conduits';
 import { isProfilePictureId, profilePictureUnlocked, type ProfilePictureId } from '../content/profile-pictures';
+import { isOblivionStage } from '../content/gates-of-oblivion';
 
 export type ProfileFrame = 'default' | 'thin-outline' | 'double-outline' | 'corner-brackets';
 /** Legacy 'neutral'/StarterId icons stay loadable; new choices use the 32 ProfilePictureId values. */
@@ -56,6 +58,7 @@ export interface FriendProfileResponse { userId: string; account: Account; profi
 export type Activity = { kind: 'training' } | { kind: 'story'; stage: number } |
   { kind: 'calamity'; activity: CalamityActivityId; tier: CalamityTier } |
   { kind: 'dungeon'; element: ElementId; stage: number } |
+  { kind: 'oblivion'; stage: number } |
   { kind: 'infusion'; mode: InfusionModeId; stage: number } |
   { kind: 'war'; character: WarCharacterId; stage: number };
 export interface ServerBattleSession {
@@ -91,6 +94,7 @@ export type GameOperation =
   | { kind: 'upgradeConduit'; id: ConduitId; expectedLevel: number }
   | { kind: 'maxConduit'; expected: ConduitMaxLevelPlan }
   | { kind: 'upgradeCharacter'; id: StarterId; upgradeKind: 'level' | 'evolve' | 'weapon'; expected: CharacterProgress; fodderIds?: string[] }
+  | { kind: 'ascendCharacter'; id: StarterId; step: 'stats' | 'skill1' | 'skill2' | 'lastFlare'; expected: CharacterProgress }
   | { kind: 'levelCaptured'; id: string; expectedLevel: number }
   | { kind: 'levelMax'; id: string; expected: MaxLevelPlan }
   | { kind: 'purchaseMaterial'; element: string; quantity: 1 | 5 | 10 }
@@ -139,6 +143,9 @@ function validCalamityOpening(value: unknown): boolean {
     const reward = value;
     const rows = calamityLootTable(activity);
     const fields = ['id', 'name', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'calamiticTokens', 'masterChests'];
+    const currentCalamiticMaterials = reward.calamiticMaterialVersion === 1;
+    if ('calamiticMaterialVersion' in reward && !currentCalamiticMaterials) return false;
+    if (currentCalamiticMaterials) fields.push('calamiticMaterialVersion');
     // Historical idempotent receipts retain their saved contents, not new rewards.
     const historical = !('devourerCopies' in reward);
     if (!historical) {
@@ -163,8 +170,15 @@ function validCalamityOpening(value: unknown): boolean {
         : Math.max(0, ...rows.filter(row => row.kind === kind).map(row => row.max)) * chest.bundles;
       if ((reward[field] as number) < base || (reward[field] as number) > base + maximum) return false;
     }
-    for (const [id, count] of Object.entries(reward.materials)) {
+    const rewardMaterials = reward.materials as Record<string, unknown>;
+    if (currentCalamiticMaterials && Object.entries(chest.guaranteedMaterials).some(([id, amount]) => rewardMaterials[id] !== amount)) return false;
+    for (const [id, count] of Object.entries(rewardMaterials)) {
       materialName(id);
+      const guaranteed = chest.guaranteedMaterials[id];
+      if (guaranteed !== undefined) {
+        if (!currentCalamiticMaterials || count !== guaranteed) return false;
+        continue;
+      }
       const legacyMaterial = historical && (activity === 'heavens' || activity === 'abyss') &&
         elements.some(element => element.infusion === activity && ['epic', 'legendary', 'omnic'].some(rarity => id === `${element.id}-${rarity}`));
       const row = rows.find(row => row.kind === 'material' && row.id === id) ??
@@ -218,6 +232,8 @@ function battleState(value: unknown): boolean {
   return object(value) && ['player', 'cleared', 'defeat'].includes(String(value.phase)) &&
     (value.calamity === undefined || object(value.calamity) &&
       Object.keys(value.calamity).length === 2 && isCalamityActivityId(value.calamity.activity) && isCalamityTier(value.calamity.tier)) &&
+    (value.oblivion === undefined || object(value.oblivion) && Object.keys(value.oblivion).length === 1 &&
+      isOblivionStage(value.oblivion.stage) && !value.dungeon && !value.infusion && !value.story && !value.war && !value.calamity) &&
     safeCount(value.wave) && safeCount(value.round) && typeof value.seed === 'number' &&
     Array.isArray(value.allies) && value.allies.length > 0 && value.allies.length <= 3 &&
     Array.isArray(value.enemies) && value.enemies.length > 0 &&
@@ -233,11 +249,13 @@ function battleEvents(value: unknown): boolean {
     !('calamiticTokens' in event) &&
     (event.calamityChest === undefined || validCalamityRewardEvent(event)));
 }
-function validCalamityRewardEvent(event: Record<string, unknown>): boolean {
+export function validCalamityRewardEvent(event: Record<string, unknown>): boolean {
   try {
     if (event.kind !== 'reward' || event.amount !== 0 || typeof event.calamityChest !== 'string' ||
       ['capture', 'recruitment', 'materials', 'conduits', 'lycalis', 'mechanicalComponents', 'masterChests', 'calamiticTokens'].some(key => key in event)) return false;
-    parseCalamityChestId(event.calamityChest);
+    const { tier } = parseCalamityChestId(event.calamityChest);
+    if (event.calamiticRecruitment !== undefined && event.calamiticRecruitment !== calamiticCharacterByTier[tier]) return false;
+    if (event.calamityShards !== undefined && (!Number.isSafeInteger(event.calamityShards) || Number(event.calamityShards) < 2 || Number(event.calamityShards) > 4)) return false;
     return true;
   } catch { return false; }
 }

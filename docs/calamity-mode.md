@@ -38,6 +38,18 @@ replacement copies. No retroactive compensation or load writes.
 Validate all36 openings, copy provenance, denied-write rollback, strict response
 validation and HTTP idempotency with the matching shared authority bundle.
 
+## Calamitic Element-Bearer progression and D-435 Section 1
+
+Calamitic Element-Bearers use the six-form Uncommon→Calamitic rarity ladder and
+cap at Lv.30/45/60/75/90/110. A saved victory at each EX tier independently
+rolls 10% for its tier-mapped character (EX+1 Ozriel, EX+2 Ilvaris, EX+3 Kaelith)
+if not already owned. Recruitment has its own persisted RNG stream and commits
+with the chest in the same atomic write; denied saves and duplicate retries do
+not award. Heaven and Abyss chests additionally guarantee 1/2/3 Feather of the
+Severed Dawn / Splinter of the Unmade Night by tier, with no change to existing
+random draws. See [D-435](calamitic-characters.md#materials-and-progression-costs-d-435-section-1)
+for provisional progression costs and the complete material contract.
+
 ## Activity-specific chest guarantees (D-409)
 
 Historical copy identities are superseded by D-412 above.

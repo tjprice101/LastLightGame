@@ -1,6 +1,6 @@
-import { type Starter, isStarterId } from '../content/starters';
+import { type Starter, isStarterId, type StarterId } from '../content/starters';
 import { characterName } from '../content/character-art';
-import { evolutionRarity } from '../content/progression';
+import { characterRarity, evolutionRarity } from '../content/progression';
 import { storyEncounter, storyRegions, storyRules } from '../content/story';
 import { equippedSquad, ownedProgress, unlockedStoryStage, type Account } from '../game/account';
 import { capturedProgress } from '../game/character-instances';
@@ -44,7 +44,7 @@ export function referenceHome(starter: Starter, account: Account | null): string
   const displayName = isStarterId(id) ? starter.name : member.name;
   const prefix = isStarterId(id) ? characterName(id, progress?.evolution).split(', ')[0] : 'Captured Elemental-Devourer';
   const stars = copy ? capturedProgress(copy).tier + 1 : starter.stars;
-  const rarity = evolutionRarity(copy ? capturedProgress(copy).tier + 1 : progress?.evolution ?? 1);
+  const rarity = copy ? evolutionRarity(capturedProgress(copy).tier + 1) : characterRarity(id as StarterId, progress?.evolution ?? 1);
   const storyPercent = Math.round(completed / storyRules.stages * 100);
   return `<div class="ref-screen ref-home bubble-home">
     <section class="bubble-home-intro">
@@ -55,7 +55,7 @@ export function referenceHome(starter: Starter, account: Account | null): string
         <span class="bubble-orbit-star one" aria-hidden="true">&#10022;</span><span class="bubble-orbit-star two" aria-hidden="true">&#10023;</span>
         <button class="ref-home-art" ${isStarterId(id) ? `data-team-detail="${id}"` : `data-team-capture-detail="${id}"`} aria-label="Open ${member.name}">${isStarterId(id) ? portrait(starter, progress?.evolution) : member.art}</button>
         <div class="ref-home-identity"><p>${prefix} &middot; ${member.element}${isStarterId(id) ? ` &middot; ${starter.weapon}` : ''}</p><h2>${displayName}</h2>
-          <div class="ref-tags"><span class="ref-stars" aria-label="${stars}-star ${copy ? 'Elemental-Devourer' : 'Element-Bearer'}">${'&#9733;'.repeat(stars)}</span>${isStarterId(id) ? `<span class="ref-chip">${starter.role}</span>` : ''}<span class="ref-chip">${rarity}</span><span class="ref-chip">Lv.${member.level}${progress ? ` &middot; Evo.${progress.evolution}` : ''}</span></div></div>
+          <div class="ref-tags"><span class="ref-stars" aria-label="${stars}-star ${copy ? 'Elemental-Devourer' : 'Element-Bearer'}">${'&#9733;'.repeat(stars)}</span>${isStarterId(id) ? `<span class="ref-chip">${starter.role}</span>` : ''}<span class="ref-chip" data-rarity="${rarity}">${rarity}</span><span class="ref-chip">Lv.${member.level}${progress ? ` &middot; Evo.${progress.evolution}` : ''}</span></div></div>
       </div>
       ${hubBubbles().map(([page, label, detail, icon], index) => `<button type="button" class="hub-bubble hub-slot-${index}" data-page="${page}" style="--delay:${(index * -.77).toFixed(2)}s"><span class="hub-bubble-symbol">${uiIcon(icon)}</span><strong>${label}</strong><small>${detail}</small></button>`).join('')}
     </section>

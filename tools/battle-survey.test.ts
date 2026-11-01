@@ -1,17 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { validateConduitElement, validateConduitSlots } from '../src/content/conduits';
 import { getStarter, starters } from '../src/content/starters';
+import { isCalamiticCharacter } from '../src/content/calamitic-characters';
 import { createStoryBattle } from '../src/game/battle';
 import { enemyCombatStats } from '../src/content/stat-growth';
 import { calamityActivities, calamityTierScaling, calamityEncounter } from '../src/content/calamity';
 import { enemyAbilityMultiplier, enemySkills } from '../src/content/enemy-skills';
 import { describeSurvey, enemyWhatIf, levelSweepLevels, loadout, makeBattle, makeLevelProbe, measureBattle, progressAt, surveyLimits } from './battle-survey';
+const benchmarkStarters = starters.filter(character => !isCalamiticCharacter(character.id));
 
 describe('offline battle survey integrity', () => {
   it('constructs legal eight-slot, matching-element loadouts for all16 characters and every build', () => {
     const metadata = describeSurvey();
-    expect(starters).toHaveLength(16);
-    for (const gear of Object.values(metadata.builds)) for (const character of starters) {
+    expect(benchmarkStarters).toHaveLength(16);
+    for (const gear of Object.values(metadata.builds)) for (const character of benchmarkStarters) {
       const slots = gear.equipment[character.id]!;
       expect(validateConduitSlots(slots)).toEqual(slots);
       expect(() => validateConduitElement(slots, getStarter(character.id).elementId)).not.toThrow();

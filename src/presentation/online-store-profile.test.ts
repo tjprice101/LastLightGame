@@ -4,6 +4,7 @@ import { emptyAccount } from '../game/account';
 import { storyRules } from '../content/story';
 import { bindProfileEditor, friendPresence, onlineProfile, onlineStores, profileFrames, refreshFriendPresence, refreshProfileTracking, type OnlineProfileDisplay } from './online-store-profile';
 import { starters } from '../content/starters';
+import { profilePictures } from '../content/profile-pictures';
 
 afterEach(() => { document.body.replaceChildren(); vi.restoreAllMocks(); });
 
@@ -113,7 +114,7 @@ describe('online profile presentation', () => {
     account.squad = ['ember'];
     document.body.innerHTML = onlineProfile(account, profile);
     const picker = document.querySelector<HTMLSelectElement>('[data-profile-icon-picker]')!;
-    expect(picker.options).toHaveLength(starters.length + 1);
+    expect(picker.options).toHaveLength(new Set(profilePictures.map(picture => picture.characterId)).size + 1);
     const save = vi.fn().mockResolvedValue(undefined), error = vi.fn();
     bindProfileEditor(document.body, save, error);
     picker.value = 'profile:ember:base';
@@ -137,8 +138,8 @@ describe('online profile presentation', () => {
     for (const region of ['Emberwake March', 'Glasswater Reach', 'Stormspan Heights', 'Rootstone Wilds', 'Stillhalo Vale', 'Riftbound Frontier']) expect(html).toContain(region);
     expect(html).toContain(`${26 - storyRules.regionStages}/${storyRules.regionStages}`);
     expect(html).toContain('max="90"');
-    expect(html).toContain('max="126"');
-    expect(html).toContain('3/126');
+    expect(html).toContain('max="144"');
+    expect(html).toContain('3/144');
     expect(html).toContain('<span>Standard</span><b>12/200</b><b>24/500</b>');
     expect(html).toContain('<span>Roses</span><b>8/200</b><b>9/500</b>');
     expect(html).toContain('14 h 22 m');
@@ -164,7 +165,7 @@ describe('online profile presentation', () => {
     const html = onlineProfile(account, { ...profile, totalDraws: 17, icon: 'ember' });
     expect(html).toContain(`50 / ${storyRules.stages}`);
     expect(html).toContain('2 / 6');
-    expect(html).toContain('<h2>Element-Bearers</h2><p><strong>1</strong><span> / 16</span>');
+    expect(html).toContain('<h2>Element-Bearers</h2><p><strong>1</strong><span> / 19</span>');
     expect(html).toContain('<span>Conduit types</span><progress value="1" max="90"');
     expect(html).toContain('<dt>Total summons</dt><dd>17</dd>');
     expect(html).toContain('characters/infernis');

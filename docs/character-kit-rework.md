@@ -20,6 +20,45 @@ The historical rules below are retained as design history, not active bonuses.
 See the [138-item compatibility audit](character-conduit-compatibility.md) for
 equipment adaptations; client/server publication remains separate.
 
+## Calamitic native identities (D-435)
+
+The three owner-authored [Calamitic kits](calamitic-characters.md) now use the
+same native identity/action/memory/readout foundation as the existing roster.
+Their approved coefficients are already tuned: they do **not** receive the
+historical roster's `nativeBalance` damage/Last Flare uplift, but do receive the
+existing Skill Power, critical, Defense, equipment and support-effect systems.
+
+- **Ozriel:** own HP/Defense multiply by1.65 before gear. `nativeRefusal` keeps
+  each living squad member at1HP once per encounter on a lethal hit while
+  Ozriel lives, including intercepted damage; it never revives. Pane applies
+ 50% Weaken for two enemy phases. Cathedral/Last Flare add90/140 base Shield
+  via `nativeShield` with `stack: true`, scaled by Skill Power, until broken.
+- **Ilvaris:** own HP multiplies by3 and Defense by2. Unwritten Verse builds
+  owner-specific Fate-seared Mark to5 stacks and refreshes two enemy phases.
+  Each stack increases squad-sourced damage by10%; Severed Prophecy separately
+  multiplies marked-target damage by1.45, including periodic/generated damage.
+  Hymn heals each living ally on every cast and refreshes two player turns of
+ +45% Critical Damage/+50% Skill Power; its own previous Hymn never amplifies
+  the replacement buff. Last Flare heals50% maxHP and grants10% Gauge capacity.
+- **Kaelith:** +75 percentage points Skill Power, +5 points skill critical
+  chance using existing rolls. Direct hits add Fault (cap3), each increasing
+  squad damage by10%. Glass Meridian uses the pre-hit Fault count for+20%
+  damage each, then clears that target's Faults (including its own hit).
+  Shatterfall/Last Flare hit every living enemy; Last Flare does not spend Fault.
+
+Every Last Flare retains next-turn Recover. Mark/Fault provenance belongs to
+its source and remains on a living enemy after that source falls; Mark still
+expires on schedule. Refusal/Hymn/Mark/Fault memory resets per encounter.
+Native snapshots expose text-only statuses in the existing field/reference
+readouts. Character/passive icons and profile artwork remain pending; no new
+asset paths/hashes or Calamitic Master Conduits are introduced. Existing VFX
+signatures/motions cover the three six-form kits up to Lv.110.
+
+Validate with `npx vitest run src/game/calamitic-kits.test.ts
+src/content/native-identities.test.ts src/presentation/battle-effects.test.ts
+src/presentation/profile-picture.test.ts src/game/phase-zero-master-matrix.test.ts
+src/game/native-kits.test.ts --testTimeout=60000` and `npx tsc --noEmit -p .`.
+
 ## Charge and passive readability
 
 Character, Collections and Battle references put the actual passive first,

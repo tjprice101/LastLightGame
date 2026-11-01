@@ -141,6 +141,7 @@ function linearPrismaticaDrop(position, last, opening, final) {
 function activityPrismaticaDrop(activity, enemyLevel) {
   if (activity.story) return linearPrismaticaDrop(activity.story.storyStage, storyStageLayout.stages, [8, 16], [750, 1500]);
   if (activity.dungeon) return linearPrismaticaDrop(activity.dungeon.stage, dungeonStageCount, [5, 10], [300, 600]);
+  if (activity.oblivion) return linearPrismaticaDrop(activity.oblivion.stage, 25, [5, 10], [300, 600]);
   if (activity.war) return linearPrismaticaDrop(activity.war.stage, warStageCount, [1500, 2500], [3e4, 45e3]);
   if (activity.infusion) {
     const { mode, stage } = activity.infusion;
@@ -3653,6 +3654,132 @@ var warFighters = {
   }
 };
 
+// src/content/calamitic-characters.ts
+var calamiticCharacters = [
+  {
+    id: "ozriel",
+    stars: 7,
+    name: "Ozriel",
+    role: "Tank",
+    art: "ozriel",
+    title: "The wall that refuses the ending",
+    element: "Tranquilitic",
+    elementId: "tranquilitic",
+    weapon: "Cathedral tower shield and glass halberd",
+    color: "#e8e4ec",
+    description: "A Tranquilitic Element-Bearer in Let\u2019s image, Ozriel holds a cathedral tower shield against Rise\u2019s calamity and refuses every ending written for his squad.",
+    lore: {
+      origin: "The shattered cathedral at the edge of Rise\u2019s first calamity",
+      story: "Ozriel was the last warden of a glass cathedral when Rise\u2019s first calamity reached it. The windows broke inward; he did not. Tranquilitic gave him Peace that is chosen, not granted: the stillness of someone who has decided where the line is. Let made Element-Bearers in his image, and Ozriel kept that shape while the calamity tried to rewrite it. Rise\u2019s Elemental-Devourers still hunt the same elements, and neither creator\u2019s soul has been found. Ozriel stands in front of whoever the calamity chooses next.",
+      vow: "The world ends when I allow it. Not before.",
+      awakening: "A single pane holds. The calamity has not finished trying."
+    }
+  },
+  {
+    id: "ilvaris",
+    stars: 7,
+    name: "Ilvaris",
+    role: "Support",
+    art: "ilvaris",
+    title: "The choir that sings a different tomorrow",
+    element: "Atmospheric",
+    elementId: "atmospheric",
+    weapon: "Glass halo-lyre",
+    color: "#f2eef4",
+    description: "An Atmospheric Element-Bearer in Let\u2019s image, Ilvaris sears fate onto her enemies with a glass halo-lyre and strengthens every squad member who strikes them.",
+    lore: {
+      origin: "The choir vault above the broken heavens",
+      story: "Ilvaris sang in a choir vault that had already heard the end of the world, a prophecy Rise\u2019s calamity was built to fulfil. She broke from the verse mid-hymn. Atmospheric carries Calm, and in her it became the calm of someone who knows a prophecy is only a song no one has answered. Let made Element-Bearers in his image; Rise made the Devourers and the calamities that follow them. Neither creator\u2019s soul has been found. Ilvaris marks what the calamity sends and makes sure her squad answers it.",
+      vow: "Prophecy is only a song no one has answered yet.",
+      awakening: "The first unsung note breaks the verse."
+    }
+  },
+  {
+    id: "kaelith",
+    stars: 7,
+    name: "Kaelith",
+    role: "Attacker",
+    art: "kaelith",
+    title: "The blade that cuts the thread of fate",
+    element: "Chaotic",
+    elementId: "chaotic",
+    weapon: "Shatterglass greatscythe",
+    color: "#f3f0f1",
+    description: "A Chaotic Element-Bearer in Let\u2019s image, Kaelith cracks reality around her enemies with a shatterglass greatscythe and cuts through the faults she leaves.",
+    lore: {
+      origin: "The fault lines Rise\u2019s calamity left in the sky",
+      story: "Where Rise\u2019s calamity split the sky, the cracks stayed. Kaelith walked into one and came back carrying a scythe of fractured glass. Chaotic holds Death and Destruction, and she uses both against the ending Rise wrote for everyone else. Let made Element-Bearers in his image; Rise\u2019s Devourers stole the same elements, and neither side has found its creator\u2019s soul. Kaelith does not wait for fate to arrive. She finds where it is weakest and cuts.",
+      vow: "Whatever was written for us, I\u2019ll unwrite it.",
+      awakening: "A hairline fracture runs through what was supposed to happen."
+    }
+  }
+];
+function isCalamiticCharacter(value2) {
+  return calamiticCharacters.some((character) => character.id === value2);
+}
+var calamiticCharacterByTier = { 1: "ozriel", 2: "ilvaris", 3: "kaelith" };
+var calamiticCharacterChance = 0.1;
+var calamiticEvolutionTitles = {
+  ozriel: [
+    "Unbroken Pane",
+    "Warden of the Glass Nave",
+    "Bastion of Refused Endings",
+    "Seraph of the Shattered Cathedral",
+    "Sovereign of the Unfallen Wall",
+    "The Ending That Was Denied"
+  ],
+  ilvaris: [
+    "First Unsung Note",
+    "Cantor of Cracked Heavens",
+    "Choir-Seraph of the Glass Vault",
+    "Herald of the Unwritten Hymn",
+    "Sovereign of the Severed Prophecy",
+    "The Song That Defied Fate"
+  ],
+  kaelith: [
+    "Hairline Fracture",
+    "Glass-Edged Herald",
+    "Reaper of Written Endings",
+    "Seraph of the Broken Thread",
+    "Sovereign of Shattered Fate",
+    "The Fate That Was Never Written"
+  ]
+};
+var calamiticActionNames = {
+  ozriel: { light: "Halberd Verdict" },
+  ilvaris: { light: "Struck Chord" },
+  kaelith: { light: "Fault Reap" }
+};
+var calamiticFighters = {
+  ozriel: {
+    stats: { health: 345, defense: 24, damage: 34, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
+    passive: { name: "Refusal", description: "+65% Defense and +65% Health. Once per encounter for each squad member, a hit that would defeat them leaves them at 1 HP instead, only while Ozriel is alive; never revives a defeated unit.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: "Pane of Absolution", description: "240% damage to one enemy; Weaken it by 50% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 2.4, weakenFraction: 0.5 } },
+      skill2: { name: "Cathedral of Shards", description: "Give every living ally 90 Shield; lasts until broken and stacks. Shield: absorbs damage before HP; higher amount shields stack.", cooldown: 0, targets: "all-allies", strength: { shield: 90 } },
+      ultimate: { name: "The World Refuses", description: "455% damage to all enemies and 140 Shield to living allies; lasts until broken and stacks. Shield: absorbs damage before HP; higher amount shields stack. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 4.55, shield: 140 } }
+    }
+  },
+  ilvaris: {
+    stats: { health: 265, defense: 16, damage: 40, crit: 0.15, shatterCapacity: 100, critMultiplier: 1.55, elementalDamage: 5 },
+    passive: { name: "Severed Prophecy", description: "+200% Health and +100% Defense. Squad members deal +45% more damage to enemies carrying a Fate-seared Mark.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: "Unwritten Verse", description: "225% damage to one enemy and one Fate-seared Mark stack for two enemy phases: +10% damage taken per stack, up to 5. Recasting adds a stack and refreshes the duration.", cooldown: 0, strength: { damageMultiplier: 2.25 } },
+      skill2: { name: "Hymn of Broken Glass", description: "Heal every living ally 35% of max Health; +45% Critical Damage multiplier and +50% Skill Power for two turns. Each cast heals again and refreshes, never stacks, the buff.", cooldown: 0, targets: "all-allies", strength: { healing: 0.35 } },
+      ultimate: { name: "Tomorrow, Unwritten", description: "440% damage to all enemies; heal all allies 50% of max Health and give them 10% Elemental Gauge. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 4.4, healing: 0.5 } }
+    }
+  },
+  kaelith: {
+    stats: { health: 240, defense: 13, damage: 50, crit: 0.22, shatterCapacity: 100, critMultiplier: 1.7, elementalDamage: 10 },
+    passive: { name: "Reality Fault", description: "+75% Skill Power and +5% Skill Critical Rate. Direct hits add 1 Fault (cap 3); each Fault makes that enemy take +10% damage from the squad.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: "Shatterfall", description: "456% damage to all enemies and 1 Fault on each.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 4.56 } },
+      skill2: { name: "Glass Meridian", description: "365% damage to one enemy; consumes its Faults for +20% damage each.", cooldown: 0, strength: { damageMultiplier: 3.65 } },
+      ultimate: { name: "Denial of Fate", description: "360% damage to all enemies. Faults are kept. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3.6 } }
+    }
+  }
+};
+
 // src/content/starters.ts
 var openingStarters = [
   {
@@ -3757,7 +3884,7 @@ var roseCharacters = [
     lore: { origin: "The paths between twin roses", story: "On the paths between twin roses, Crinso learned that tending a garden sometimes means protecting what lives and sometimes accepting what must end. His small double-edged dagger became one rose-centered sword, golden fire and crimson lightning held in a single grip. Chaotic bears Death and Destruction, not a promise of cruelty. Let made Element-Bearers in his image; Rise\u2019s Elemental-Devourers broke convention to steal their elements. Both sides hunt their creators\u2019 souls, still separate and unfound, and Crinso will not call the contest settled before either is found. He follows the trail of Let\u2019s soul while guarding the people caught between factions.", vow: "I choose what grows beyond the storm.", awakening: "Two petals unfold around one resolve; neither soul has returned." }
   }
 ];
-var starters = [...openingStarters, ...roseCharacters, ...flagshipCharacters, ...warCharacters];
+var starters = [...openingStarters, ...roseCharacters, ...flagshipCharacters, ...warCharacters, ...calamiticCharacters];
 var availableStarters = openingStarters;
 function isRoseCharacter(id) {
   return roseCharacters.some((character) => character.id === id);
@@ -3876,7 +4003,37 @@ function ability(name, description, damageMultiplier, targets, excludeSelf) {
     ...excludeSelf ? { excludeSelf } : {}
   };
 }
+function calamiticIdentity(id, role, playLoop, selfStats) {
+  const kit = calamiticFighters[id];
+  const abilities = structuredClone(kit.abilities);
+  abilities.ultimate.description = abilities.ultimate.description.replace(" Recover next turn.", "");
+  return {
+    role,
+    playLoop,
+    selfStats,
+    passive: { name: kit.passive.name, description: kit.passive.description },
+    abilities
+  };
+}
 var nativeIdentities = {
+  ozriel: calamiticIdentity(
+    "ozriel",
+    "Refusal and stacking-shield tank",
+    "[Ozriel] protects every living squad member with stacking shields and one [Refusal] per encounter while he lives.",
+    { health: 0.65, defense: 0.65 }
+  ),
+  ilvaris: calamiticIdentity(
+    "ilvaris",
+    "Fate-marking recovery support",
+    "[Ilvaris] builds [Fate-seared Mark] to five stacks and refreshes [Hymn of Broken Glass] while healing the squad.",
+    { health: 2, defense: 1 }
+  ),
+  kaelith: calamiticIdentity(
+    "kaelith",
+    "Fault-building shatterglass attacker",
+    "[Kaelith] builds three [Fault] stacks through direct hits; [Glass Meridian] spends them for a stronger strike.",
+    { skillPower: 0.75 }
+  ),
   ember: {
     role: "Persistent fire specialist",
     playLoop: "[Infernis] applies [Burn] that lasts across enemy phases; [Flame Arc] can deal its remaining damage at once.",
@@ -4087,6 +4244,9 @@ var nativeIdentities = {
   }
 };
 var directDescriptionCoefficients = {
+  ozriel: [[240], [], [455]],
+  ilvaris: [[225], [], [440]],
+  kaelith: [[456], [365], [360]],
   ember: [[160], [110], [200]],
   tide: [[150], [], []],
   sprout: [[140], [], []],
@@ -4107,7 +4267,7 @@ var directDescriptionCoefficients = {
 for (const id of Object.keys(nativeIdentities)) {
   for (const [index, action] of ["skill1", "skill2", "ultimate"].entries()) {
     const definition = nativeIdentities[id].abilities[action];
-    const scale = nativeBalance.skillDamageScale * (action === "ultimate" ? nativeBalance.lastFlare.damage : 1);
+    const scale = isCalamiticCharacter(id) ? 1 : nativeBalance.skillDamageScale * (action === "ultimate" ? nativeBalance.lastFlare.damage : 1);
     if (definition.strength.damageMultiplier !== void 0) definition.strength.damageMultiplier *= scale;
     const coefficients = directDescriptionCoefficients[id][index];
     definition.description = definition.description.replace(/(\d+(?:\.\d+)?)%/g, (text2, amount) => coefficients.includes(Number(amount)) ? `${Number((Number(amount) * scale).toFixed(2))}%` : text2);
@@ -4360,7 +4520,7 @@ function applyPhaseZeroStaticBonuses(base, slots, upgrades = {}, master2) {
 // src/content/combat.ts
 var actionIds = ["light", "skill1", "skill2", "ultimate"];
 function basicActionName(id, action) {
-  return isWarCharacter(id) ? warActionNames[id][action] : "Normal Attack";
+  return isWarCharacter(id) ? warActionNames[id][action] : isCalamiticCharacter(id) ? calamiticActionNames[id][action] : "Normal Attack";
 }
 var shatterGauge = {
   maximum: 100,
@@ -4372,6 +4532,7 @@ var shatterGauge = {
 var fighters = {
   ...flagshipFighters,
   ...warFighters,
+  ...calamiticFighters,
   ember: {
     pilot: "ember",
     stats: { health: 220, defense: 10, damage: 38, crit: 0.15, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 8 },
@@ -4437,6 +4598,9 @@ for (const id of Object.keys(fighters)) {
   const identity = nativeIdentities[id];
   const kit = fighters[id];
   kit.stats = normalizeStats(kit.stats);
+  if (identity.selfStats?.health) kit.stats.health *= 1 + identity.selfStats.health;
+  if (identity.selfStats?.defense) kit.stats.defense *= 1 + identity.selfStats.defense;
+  if (identity.selfStats?.skillPower) kit.stats.skillPower = (kit.stats.skillPower ?? 1) + identity.selfStats.skillPower;
   delete kit.pilot;
   kit.nativeIdentity = true;
   kit.passive = {
@@ -4461,8 +4625,9 @@ function resolveFighter(id, progress, equipment, upgrades, master2) {
   if (master2) validateMasterCharacter(master2, id);
   const base = fighters[id];
   if (!base) throw new Error("Unknown fighter definition.");
-  const factor = progress ? characterGrowthFactor(progress) : 1;
-  const potency = progress ? characterPotencyFactor(progress) : 1;
+  const factor = progress ? characterGrowthFactor(progress, id) : 1;
+  const ascended = progress?.ascension?.stats === true;
+  const potency = progress ? characterPotencyFactor(progress, id) : 1;
   const kit = structuredClone(base);
   for (const key of ["health", "damage", "elementalDamage"]) {
     kit.stats[key] = base.stats[key] * factor;
@@ -4472,6 +4637,11 @@ function resolveFighter(id, progress, equipment, upgrades, master2) {
   kit.stats.crit = Math.min(1, base.stats.crit * potency);
   kit.stats.critMultiplier = base.stats.critMultiplier * potency;
   kit.stats.shatterCapacity = base.stats.shatterCapacity * potency;
+  if (ascended) for (const key of Object.keys(kit.stats)) {
+    const value2 = kit.stats[key];
+    if (typeof value2 === "number") kit.stats[key] = value2 * 1.5;
+  }
+  if (progress?.ascension) kit.ascension = structuredClone(progress.ascension);
   kit.passive.defenseBonus *= factor ** 0.7;
   kit.passive.damageBonus = base.passive.damageBonus * potency;
   kit.passive.healFraction = base.passive.healFraction * potency;
@@ -4679,7 +4849,7 @@ function enemyCombatStats(level, boss) {
 
 // src/content/enemy-skills.ts
 function enemyAbilityMultiplier(level) {
-  if (!Number.isInteger(level) || level < 1 || level > 140) throw new Error("Enemy level must be from 1 to 140.");
+  if (!Number.isInteger(level) || level < 1 || level > 185) throw new Error("Enemy level must be from 1 to 185.");
   return 1.2 + (level - 1) * 4e-3;
 }
 function enemySkills(level, boss, strike, multiplier) {
@@ -5009,19 +5179,19 @@ function levelingMaterials(element, destination) {
     ...Object.fromEntries(levelingMaterialTiers.filter((tier) => destination >= tier.destination).map((tier) => [`${element}-${tier.rarity.toLowerCase()}`, 1]))
   };
 }
-function levelCost(element, progress) {
+function levelCost(element, progress, id) {
   getElement(element);
-  characterGrowthFactor(progress);
-  if (progress.level === characterLevelCap(progress.evolution)) throw new Error("Reach the next evolution to raise the level cap.");
+  characterGrowthFactor(progress, id);
+  if (progress.level === characterLevelCap(progress.evolution, id, progress.ascension?.stats === true)) throw new Error("Reach the next evolution to raise the level cap.");
   const destination = progress.level + 1;
   return lateMaterialCost({ fractalis: 10 + 2 * destination, materials: {
     ...levelingMaterials(element, destination),
     ...progress.evolution >= 5 ? { [specialtyId(element, "level")]: 1 } : {}
   } }, destination >= 61);
 }
-function evolutionCost(element, progress) {
+function evolutionCost(element, progress, id) {
   getElement(element);
-  characterGrowthFactor(progress);
+  characterGrowthFactor(progress, id);
   if (progress.evolution === characterGrowth.forms) throw new Error("This character has reached its final evolution.");
   const recipe = evolutionRecipes[progress.evolution - 1];
   const balance = evolutionBalance[progress.evolution - 1];
@@ -5033,14 +5203,25 @@ function evolutionCost(element, progress) {
     }
   }, progress.evolution >= 4);
 }
-function characterLevelCap(evolution) {
+function characterLevelCap(evolution, id, ascended = false) {
   if (!Number.isInteger(evolution) || evolution < 1 || evolution > characterGrowth.forms) {
     throw new Error(`Character evolution must be an integer from 1 to ${characterGrowth.forms}.`);
   }
+  if (ascended) return 115;
+  if (id && isCalamiticCharacter(id) && evolution === 6) return 110;
   return characterGrowth.firstLevelCap + (evolution - 1) * characterGrowth.levelsPerEvolution;
 }
 function characterLevelCost(id, progress) {
-  const cost = levelCost(getStarter(id).elementId, progress);
+  const cost = levelCost(getStarter(id).elementId, progress, id);
+  if (isCalamiticCharacter(id)) {
+    const destination = progress.level + 1;
+    const chain = {
+      "calamity-common": Math.ceil(destination / 30),
+      ...Object.fromEntries(levelingMaterialTiers.filter((tier) => destination >= tier.destination).map((tier) => [`calamity-${tier.rarity.toLowerCase()}`, 1])),
+      ...destination >= 91 ? { "fragment-of-rise": 1 } : {}
+    };
+    return lateMaterialCost({ fractalis: cost.fractalis, materials: chain }, destination >= 61);
+  }
   if (!isRoseCharacter(id)) return cost;
   return lateMaterialCost(
     { fractalis: cost.fractalis, materials: levelingMaterials("rosethorn", progress.level + 1) },
@@ -5048,7 +5229,19 @@ function characterLevelCost(id, progress) {
   );
 }
 function characterEvolutionCost(id, progress) {
-  const cost = evolutionCost(getStarter(id).elementId, progress);
+  const cost = evolutionCost(getStarter(id).elementId, progress, id);
+  if (isCalamiticCharacter(id)) {
+    const recipes = ["calamity-rare", "calamity-epic", "calamity-legendary", "calamity-omnic", "fragment-of-rise"];
+    const amount = [5, 5, 5, 5, 5][progress.evolution - 1];
+    const chestAmount = [1, 2, 3, 5, 8][progress.evolution - 1];
+    const materials = {
+      ...cost.materials,
+      [recipes[progress.evolution - 1]]: amount,
+      "feather-severed-dawn": chestAmount,
+      "splinter-unmade-night": chestAmount
+    };
+    return lateMaterialCost({ fractalis: cost.fractalis, materials }, progress.evolution >= 4);
+  }
   if (!isRoseCharacter(id)) return cost;
   const recipe = evolutionRecipes[progress.evolution - 1];
   const balance = evolutionBalance[progress.evolution - 1];
@@ -5063,17 +5256,35 @@ function characterEvolutionRequirement(id, evolution) {
   const requirement = evolutionRequirement(getStarter(id).elementId, evolution);
   return { ...requirement, infusion: isRoseCharacter(id) ? "roses" : requirement.infusion };
 }
-function characterGrowthFactor(progress) {
+function characterGrowthFactor(progress, id) {
   if (!Number.isInteger(progress.weaponRank ?? 0) || (progress.weaponRank ?? 0) < 0 || (progress.weaponRank ?? 0) > weaponRules.maximumRank) throw new Error("Invalid weapon rank.");
-  const cap = characterLevelCap(progress.evolution);
+  const cap = characterLevelCap(progress.evolution, id, progress.ascension?.stats === true);
   if (!Number.isInteger(progress.level) || progress.level < 0 || progress.level > cap) {
     throw new Error(`Character level must be an integer from 0 to ${cap}.`);
   }
   return 1 + progress.level * characterGrowth.perLevel + (progress.evolution - 1) * characterGrowth.perEvolution;
 }
-function characterPotencyFactor(progress) {
-  characterGrowthFactor(progress);
+function characterPotencyFactor(progress, id) {
+  characterGrowthFactor(progress, id);
   return 1 + progress.level * 3e-3 + (progress.evolution - 1) * 0.05;
+}
+
+// src/content/calamitic-materials.ts
+var materialCatalog = [
+  { id: "calamity-common", name: "Seed of Calamity", rarity: "Common" },
+  { id: "calamity-uncommon", name: "Bud of Calamity", rarity: "Uncommon" },
+  { id: "calamity-rare", name: "Bloom of Calamity", rarity: "Rare" },
+  { id: "calamity-epic", name: "Crest of Calamity", rarity: "Epic" },
+  { id: "calamity-legendary", name: "Heart of Calamity", rarity: "Legendary" },
+  { id: "calamity-omnic", name: "Soul of Calamity", rarity: "Omnic" },
+  { id: "fragment-of-rise", name: "Fragment of Rise", rarity: "Calamitic" },
+  { id: "feather-severed-dawn", name: "Feather of the Severed Dawn", rarity: "Calamitic", source: "Soar to Heaven Calamity chests" },
+  { id: "splinter-unmade-night", name: "Splinter of the Unmade Night", rarity: "Calamitic", source: "Delve into the Abyss Calamity chests" },
+  { id: "shard-of-calamity", name: "Shard of Calamity", rarity: "Calamitic" }
+];
+var calamiticMaterials = materialCatalog;
+function isCalamiticMaterialId(id) {
+  return calamiticMaterials.some((material) => material.id === id);
 }
 
 // src/content/element-migration.ts
@@ -5274,6 +5485,8 @@ var dungeonArt = Object.fromEntries(
 );
 var materialArtNames = ["Seed", "Bloom", "Shard", "Crest", "Heart", "Soul"];
 function materialName(id) {
+  const calamitic = calamiticMaterials.find((material) => material.id === id);
+  if (calamitic) return calamitic.name;
   const rose = roseMaterials.find((material) => material.id === id);
   if (rose) return rose.name;
   const specialty = specialtyMaterials.find((entry) => entry.id === id);
@@ -5448,6 +5661,83 @@ function loadProfile(storage) {
     throw new Error("This local save is invalid or uses an unsupported version.");
   }
   return { version: 1, starterId: data.starterId };
+}
+
+// src/content/gates-of-oblivion.ts
+var gatesOfOblivionRules = {
+  id: "oblivion",
+  name: "Gates of Oblivion",
+  stages: 25,
+  startingLevel: 125,
+  maximumLevel: 170,
+  fragmentUnlockStage: 20,
+  fragmentChance: 0.1
+};
+var oblivionConstructs = [
+  { id: "oblivion:shardling-acolyte", name: "Shardling Acolyte", element: "infernic", skill: "Calamity Seed: Shardfall", secondSkill: "Cinder of the First Break", lore: "Shardling Acolytes collect splinters from Rise\u2019s first failed gate and fit them into a single cutting edge. Their ledger records which breach each shard came from." },
+  { id: "oblivion:glassbound-sentry", name: "Glassbound Sentry", element: "tranquilitic", skill: "Calamity Pane: Stillward", secondSkill: "The Window That Will Not Close", lore: "The Glassbound Sentry stands at sealed archways and replace any cracked pane before the next watch. Their glass bears the names of the rooms Rise ordered them to keep empty." },
+  { id: "oblivion:oblivion-lantern-wraith", name: "Oblivion Lantern-Wraith", element: "atmospheric", skill: "Calamity Lantern: Last Signal", secondSkill: "Wind Across the Unlit Hall", lore: "The Oblivion Lantern-Wraith carries a lamp that marks a route back from the gate. The light points toward the last place its missing patrol reported, not toward the way out." },
+  { id: "oblivion:fracture-hound", name: "Fracture Hound", element: "chaotic", skill: "Calamity Maw: Faultline Pursuit", secondSkill: "The Crack Beneath the Trail", lore: "Fracture Hounds follow stress lines through stone instead of scent. Their tracks end wherever the floor has split, even when the quarry escaped above ground." },
+  { id: "oblivion:unmade-choir-drone", name: "Unmade Choir Drone", element: "oceanic", skill: "Calamity Chorus: Drowned Measure", secondSkill: "A Note Below the Floodline", lore: "Choir Drones keep time for a song whose score was erased before its final measure. Their water-filled resonators still sound the missing beat at every crossing." },
+  { id: "oblivion:crimson-gearwyrm", name: "Crimson Gearwyrm", element: "botanic", skill: "Calamity Coil: Red Harvest", secondSkill: "Thorns Between the Teeth", lore: "Crimson Gearwyrms wind living roots through their turning joints to stop the machinery from seizing. The roots are cut back after each patrol and grow in again by morning." },
+  { id: "oblivion:husk-seraph-of-rise", name: "Husk-Seraph of Rise", element: "tranquilitic", skill: "Calamity Wing: Empty Benediction", secondSkill: "The Feather That Remembers", lore: "Husk-Seraphs carry blank nameplates where Rise\u2019s attendants once recorded their posts. Each still visits the same abandoned station at the start of its watch." },
+  { id: "oblivion:annihilation-colossus-fragment", name: "Annihilation Colossus Fragment", element: "infernic", skill: "Calamity Fist: Final Measure", secondSkill: "A City in One Footstep", lore: "This Colossus fragment was cut from a larger construct after it blocked a passage by standing across it. Its engraved route map stops at the wall it was built to demolish." },
+  { id: "oblivion:fatebreaker-warden", name: "Fatebreaker Warden", element: "chaotic", skill: "Calamity Edict: Thread Severance", secondSkill: "No Record of the Next Step", lore: "Fatebreaker Wardens carry a register of predicted arrivals and strike through every entry that proves wrong. The newest page is always left blank for the challenger." },
+  { id: "oblivion:gatekeeper-of-oblivion", name: "Gatekeeper of Oblivion", element: "oceanic", skill: "Calamity Lock: Oblivion\u2019s Verdict", secondSkill: "The Gate Beyond the Last Key", lore: "The Gatekeeper has kept the final threshold closed through every recorded shift. Its key is fused into the lock, and the hinge pins have never moved." }
+];
+var oblivionMaterialRarities = ["common", "uncommon", "rare", "epic", "legendary", "omnic"];
+var oblivionMaterialUnlockFloors = [1, 1, 4, 9, 14, 19];
+var oblivionMaterialIds = ["calamity-common", "calamity-uncommon", "calamity-rare", "calamity-epic", "calamity-legendary", "calamity-omnic"];
+function isOblivionStage(value2) {
+  return Number.isInteger(value2) && value2 >= 1 && value2 <= gatesOfOblivionRules.stages;
+}
+function oblivionEnemyLevel(stage) {
+  if (!isOblivionStage(stage)) throw new Error(`Gates of Oblivion floor must be an integer from 1 to ${gatesOfOblivionRules.stages}.`);
+  return Math.round(gatesOfOblivionRules.startingLevel + (stage - 1) * (gatesOfOblivionRules.maximumLevel - gatesOfOblivionRules.startingLevel) / (gatesOfOblivionRules.stages - 1));
+}
+function oblivionConstructAtStage(stage) {
+  if (!isOblivionStage(stage)) throw new Error(`Gates of Oblivion floor must be an integer from 1 to ${gatesOfOblivionRules.stages}.`);
+  if (stage === gatesOfOblivionRules.stages) return oblivionConstructs[oblivionConstructs.length - 1];
+  const index = Math.min(
+    oblivionConstructs.length - 2,
+    Math.floor((stage - 1) * (oblivionConstructs.length - 1) / (gatesOfOblivionRules.stages - 1))
+  );
+  return oblivionConstructs[index];
+}
+function oblivionEncounter(stage) {
+  const construct = oblivionConstructAtStage(stage);
+  const level = oblivionEnemyLevel(stage);
+  const boss = stage % 5 === 0;
+  return {
+    name: gatesOfOblivionRules.name,
+    stage,
+    level,
+    boss,
+    construct,
+    stats: enemyCombatStats(level, boss),
+    abilityMultiplier: enemyAbilityMultiplier(level)
+  };
+}
+function oblivionMaterialLoot(stage) {
+  if (!isOblivionStage(stage)) throw new Error("Invalid Gates of Oblivion floor.");
+  return oblivionMaterialRarities.flatMap((rarity, index) => {
+    const firstStage = oblivionMaterialUnlockFloors[index];
+    if (stage < firstStage) return [];
+    return [{ id: oblivionMaterialIds[index], ...linearMaterialRange(rarity, stage, firstStage, gatesOfOblivionRules.stages) }];
+  });
+}
+function oblivionFragmentDrop(stage, boss = oblivionEncounter(stage).boss) {
+  if (!isOblivionStage(stage)) throw new Error("Invalid Gates of Oblivion floor.");
+  if (stage < gatesOfOblivionRules.fragmentUnlockStage) return void 0;
+  return { minimum: 1, maximum: 1, chance: boss ? 1 : gatesOfOblivionRules.fragmentChance };
+}
+function oblivionMaterialDrops(stage, random) {
+  const drops = {};
+  for (const entry of oblivionMaterialLoot(stage)) {
+    const amount = rollDrop(entry, random);
+    if (amount !== void 0) drops[entry.id] = amount;
+  }
+  return drops;
 }
 
 // src/content/story-art.ts
@@ -5656,6 +5946,7 @@ function parseCalamityChestId(id) {
 function calamityChest(activity, tier) {
   const id = calamityChestId(activity, tier);
   const title = ["Slayer", "Master", "Omnipotent"][tier - 1];
+  const guaranteedMaterials = activity === "heavens" ? { "feather-severed-dawn": tier } : activity === "abyss" ? { "splinter-unmade-night": tier } : {};
   return {
     id,
     name: `${calamityActivity(activity).name} EX+${title} Chest`,
@@ -5665,7 +5956,8 @@ function calamityChest(activity, tier) {
     bundles: [3, 5, 7][tier - 1],
     masterChests: activity === "machines" && tier === 3 ? 2 : 0,
     devourerCopies: isInfusionMode(activity) && enemyCaptureAllowed(activity, 120) ? { creatureId: `infusion:${activity}:5`, amount: tier } : null,
-    componentRange: activity === "machines" ? { min: [3e3, 5e3, 1e4][tier - 1], max: [6e3, 8e3, 12e3][tier - 1] } : null
+    componentRange: activity === "machines" ? { min: [3e3, 5e3, 1e4][tier - 1], max: [6e3, 8e3, 12e3][tier - 1] } : null,
+    guaranteedMaterials
   };
 }
 function materialRows(ids) {
@@ -5739,10 +6031,11 @@ function rollCalamityChest(activity, tier, roll2, owned = {}) {
     lycalis: chest.lycalis,
     calamiticTokens: chest.calamiticTokens,
     masterChests: chest.masterChests,
-    materials: {},
+    materials: { ...chest.guaranteedMaterials },
     conduits: {},
     mechanicalComponents: 0,
-    devourerCopies: chest.devourerCopies
+    devourerCopies: chest.devourerCopies,
+    calamiticMaterialVersion: 1
   };
   const table = calamityLootTable(activity);
   const random = () => {
@@ -5987,6 +6280,22 @@ function catalog() {
       });
     }
   }
+  for (let stage = 1; stage <= gatesOfOblivionRules.stages; stage++) {
+    const construct = oblivionConstructAtStage(stage);
+    const id = construct.id;
+    const existing = result.find((creature) => creature.id === id);
+    if (existing) {
+      if (!existing.stages.includes(stage)) existing.stages.push(stage);
+    } else result.push({
+      id,
+      name: construct.name,
+      area: gatesOfOblivionRules.name,
+      element: construct.element,
+      oblivion: true,
+      lore: construct.lore,
+      stages: [stage]
+    });
+  }
   for (const activity of calamityActivities) {
     result.push({
       id: `calamity:${activity.id}`,
@@ -6170,6 +6479,7 @@ function createCreatureCopy(creatureId, stage, level, acquisition) {
 var evolutionTitles = {
   ...flagshipEvolutionTitles,
   ...warEvolutionTitles,
+  ...calamiticEvolutionTitles,
   ember: ["Beginner", "Embersteel Knight", "Phoenixflame Templar", "Prismatic Dawn Ascendant", "Seraph of the Heavenly Pyre", "Eternal Heavenflame Sovereign"],
   tide: ["Beginner", "Pearlcurrent Guard", "Tidalcrest Paladin", "Prismatic Wave Ascendant", "Seraph of the Celestial Tide", "Eternal Heavenwater Sovereign"],
   sprout: ["Beginner", "Leaflight Warden", "Bloomcrest Paladin", "Prismatic Garden Ascendant", "Seraph of the Heavenly Bloom", "Eternal Heavenbloom Sovereign"],
@@ -6178,16 +6488,17 @@ var evolutionTitles = {
   crinso: ["Rosebound Page", "Duality Initiate", "Crimson-Gold Knight", "Storm of the Twin Rose", "Sovereign of Beautiful Ruin", "The Rose Beyond Duality"]
 };
 function characterArt(id, evolution = 1) {
-  characterLevelCap(evolution);
+  characterLevelCap(evolution, id);
   const starter = getStarter(id);
   return {
     art: evolution === 1 ? starter.art : `${starter.art}-evo-${evolution}`,
     title: evolutionTitles[id][evolution - 1],
-    available: true
+    // D-435 Calamitic portraits are prompt-only until delivered.
+    available: !isCalamiticCharacter(id)
   };
 }
-function characterName(id, evolution = 1) {
-  return `${characterArt(id, evolution).title}, ${getStarter(id).name}`;
+function characterName(id, evolution = 1, riseBlessed = false) {
+  return `${characterArt(id, evolution).title}, ${getStarter(id).name}${riseBlessed ? ", Rise-blessed" : ""}`;
 }
 
 // src/content/elemental-war.ts
@@ -6568,7 +6879,7 @@ var living = (state) => state.allies.filter((unit) => unit.hp > 0);
 var foes = (state) => state.enemies.filter((unit) => unit.hp > 0);
 var hasNativeIdentity = (unit) => !unit.captured && unit.kit?.nativeIdentity === true;
 var nativeMemory = (unit) => unit.native ??= {};
-function status3(events, owner, target, message, amount = 0) {
+function status3(state, events, owner, target, message, amount = 0) {
   events.push({
     kind: "status",
     source: owner.id,
@@ -6579,6 +6890,7 @@ function status3(events, owner, target, message, amount = 0) {
     message,
     ...target.side === "enemy" ? { debuffs: debuffSnapshot(target) } : {}
   });
+  attachNativeView(state, events[events.length - 1]);
 }
 function attachNativeView(state, event2) {
   if (!event2 || !state.allies.some(hasNativeIdentity)) return;
@@ -6604,9 +6916,10 @@ function fixed(state, owner, target, power2, kind, events, bypass = false, activ
     }
   }
   const flareDamage = activation?.action === "ultimate" ? nativeBalance.lastFlare.damage : 1;
-  const damage = bypass ? Math.round(power2 * flareDamage * (critical ? criticalMultiplier : 1)) : damageAmount(
+  const taken = kind === "burn" || phaseZeroStatsReady && activation && !stored ? 1 : nativeDamageTakenMultiplier(state, owner, target);
+  const damage = bypass ? Math.round(power2 * flareDamage * taken * (critical ? criticalMultiplier : 1)) : damageAmount(
     attack,
-    power2 / attack * flareDamage,
+    power2 / attack * flareDamage * taken,
     nativeTargetDefense(state, target) * (1 - ignore),
     critical,
     criticalMultiplier
@@ -6649,7 +6962,7 @@ function seed(state, owner, target, fraction, events, activation, empowered = fa
     dueRound: state.round + 1,
     ...phaseZeroStatsReady && empowered ? { empowered: true } : {}
   };
-  status3(events, owner, target, `${target.name} holds a ${fraction * 100}% Seed for the next player turn.`);
+  status3(state, events, owner, target, `${target.name} holds a ${fraction * 100}% Seed for the next player turn.`);
 }
 function seedPayoff(state, owner, target, empowered) {
   if (!phaseZeroStatsReady || !equipped(owner, "master-sprout-1")) return;
@@ -6708,15 +7021,38 @@ function nativeSupportMultiplier(state, owner) {
   const instruction = owner.native?.instruction;
   return instruction && instruction.throughRound >= state.round && living(state).some((unit) => unit.id === instruction.owner) && instruction.kind !== "strike" ? 1 + (phaseZeroStatsReady ? instruction.supportBonus ?? 0.35 : 0.35) : 1;
 }
+function nativeDamageTakenMultiplier(state, source, target) {
+  if (source.side !== "ally" || target.side !== "enemy") return 1;
+  let multiplier = 1;
+  for (const owner of state.allies.filter(hasNativeIdentity)) {
+    const mark = owner.native?.fateMarks?.[target.id];
+    if (mark && mark.throughPhase >= state.round) multiplier *= (1 + 0.1 * mark.stacks) * 1.45;
+    const faults = owner.native?.faults?.[target.id] ?? 0;
+    multiplier *= 1 + 0.1 * faults;
+  }
+  return multiplier;
+}
+function nativeHymn(unit, round) {
+  return unit.native?.hymn && unit.native.hymn.throughRound >= round ? unit.native.hymn : void 0;
+}
+function nativeRefusal(state, target, loss, events) {
+  if (target.side !== "ally" || target.hp <= 0 || loss < target.hp) return loss;
+  const owner = living(state).find((unit) => hasNativeIdentity(unit) && unit.definitionId === "ozriel" && !unit.native?.refusalUsed?.includes(target.id));
+  if (!owner) return loss;
+  (nativeMemory(owner).refusalUsed ??= []).push(target.id);
+  status3(state, events, owner, target, `${target.name}: Refusal used; remains at 1 HP (once per encounter).`);
+  return Math.max(0, target.hp - 1);
+}
 function nativeAction(state, owner, action, targetId, events, direct, activation) {
   const memory = nativeMemory(owner);
   const target = state.enemies.find((enemy) => enemy.id === targetId && enemy.hp > 0);
   const ally = state.allies.find((unit) => unit.id === targetId && unit.hp > 0);
-  const flareDamage = action === "ultimate" ? nativeBalance.lastFlare.damage : 1;
+  const calamitic = isCalamiticCharacter(owner.definitionId);
+  const flareDamage = action === "ultimate" && !calamitic ? nativeBalance.lastFlare.damage : 1;
   const flareSupport = action === "ultimate" ? nativeBalance.lastFlare.support : 1;
   const hit = (coefficient, all = false, pierce = 0, crit = 0, chosen = target) => direct(
     all ? foes(state) : chosen ? [chosen] : [],
-    coefficient * (action === "light" ? 1 : nativeBalance.skillDamageScale) * flareDamage,
+    coefficient * (action === "light" || calamitic ? 1 : nativeBalance.skillDamageScale) * flareDamage,
     Math.min(1, pierce * flareSupport),
     Math.min(1, crit * flareSupport)
   );
@@ -6742,7 +7078,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
     };
     recipient.burn = { ...burns[recipient.id], sourceId: owner.id, origin: "native" };
     resetConduitBurnStreak(owner, recipient);
-    status3(events, owner, recipient, `${recipient.name}: Infernis Burn, ${burns[recipient.id].damage} per phase for ${burns[recipient.id].turns} phases.`);
+    status3(state, events, owner, recipient, `${recipient.name}: Infernis Burn, ${burns[recipient.id].damage} per phase for ${burns[recipient.id].turns} phases.`);
   };
   if (action === "light") {
     hit(1);
@@ -6752,6 +7088,64 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
     return;
   }
   switch (owner.definitionId) {
+    case "ozriel":
+      if (action === "skill1") {
+        hit(2.4);
+        if (target?.hp) applyConduitWeaken(state, owner, target, 0.5, events, action, 2, activation);
+      }
+      if (action === "ultimate") hit(4.55, true);
+      if (action === "skill2" || action === "ultimate") for (const recipient of allies)
+        nativeShield(
+          state,
+          owner,
+          recipient,
+          action === "skill2" ? 90 : 140,
+          events,
+          { skillPower: activation.skillPower, activation, stack: true }
+        );
+      break;
+    case "ilvaris": {
+      if (action === "skill1") {
+        hit(2.25);
+        if (target?.hp) {
+          const marks = memory.fateMarks ??= {};
+          const prior = marks[target.id];
+          marks[target.id] = {
+            stacks: Math.min(5, (prior && prior.throughPhase >= state.round ? prior.stacks : 0) + 1),
+            throughPhase: state.round + 1 + activation.skillDuration
+          };
+          status3(state, events, owner, target, `${target.name}: Fate-seared Mark ${marks[target.id].stacks}/5; through enemy phase ${marks[target.id].throughPhase}.`);
+        }
+      }
+      if (action === "ultimate") hit(4.4, true);
+      if (action === "skill2" || action === "ultimate") {
+        const power2 = activation.skillPower - (nativeHymn(owner, state.round)?.skillPower ?? 0) + (activation.supportPowerBonus ?? 0);
+        for (const recipient of allies) {
+          nativeHeal(state, owner, recipient, recipient.stats.health * (action === "skill2" ? 0.35 : 0.5), events, true, activation);
+          if (action === "skill2") {
+            nativeMemory(recipient).hymn = {
+              owner: owner.id,
+              throughRound: state.round + 1 + activation.skillDuration,
+              criticalDamage: 0.45 * power2,
+              skillPower: 0.5 * power2
+            };
+            status3(state, events, owner, recipient, `${recipient.name}: Hymn of Broken Glass; Critical Damage +${45 * power2}%, Skill Power +${50 * power2}%; refresh, through player turn ${recipient.native.hymn.throughRound}.`);
+          } else generatedGaugePercent(owner, recipient, 0.1, events, state);
+        }
+        finishNativeHealing(state, owner, activation, events);
+      }
+      break;
+    }
+    case "kaelith":
+      if (action === "skill1") hit(4.56, true);
+      if (action === "skill2" && target) {
+        const spent = memory.faults?.[target.id] ?? 0;
+        hit(3.65 * (1 + 0.2 * spent));
+        if (memory.faults) delete memory.faults[target.id];
+        status3(state, events, owner, target, `${target.name}: Glass Meridian consumes ${spent} Faults; Fault 0/3.`);
+      }
+      if (action === "ultimate") hit(3.6, true);
+      break;
     case "ember":
       if (action === "skill1") {
         hit(1.6);
@@ -6964,7 +7358,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
             supportBonus: 0.35 * flareSupport * activation.skillPower
           } : {}
         };
-        status3(events, owner, recipient, `${recipient.name} receives ${action === "skill1" ? "Strike" : action === "skill2" ? "Shelter" : "Resolve"} Instruction.`);
+        status3(state, events, owner, recipient, `${recipient.name} receives ${action === "skill1" ? "Strike" : action === "skill2" ? "Shelter" : "Resolve"} Instruction.`);
       }
       break;
     }
@@ -6980,7 +7374,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
             ),
             throughPhase: state.round + 2 + activation.skillDuration
           };
-          status3(events, owner, enemy, `${enemy.name} sealed through enemy phase ${seals[enemy.id].throughPhase}.`);
+          status3(state, events, owner, enemy, `${enemy.name} sealed through enemy phase ${seals[enemy.id].throughPhase}.`);
         }
       } else {
         memory.ultimateWardThrough = state.round + 1 + activation.skillDuration;
@@ -7062,7 +7456,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
             throughPhase: state.round + 2 + activation.skillDuration,
             ...phaseZeroStatsReady ? { empowered: action === "ultimate" || traps[enemy.id]?.empowered === true } : {}
           };
-          status3(events, owner, enemy, `${enemy.name}: 3 Thorn trap charges through enemy phase ${traps[enemy.id].throughPhase}.`);
+          status3(state, events, owner, enemy, `${enemy.name}: 3 Thorn trap charges through enemy phase ${traps[enemy.id].throughPhase}.`);
         }
       }
       break;
@@ -7187,13 +7581,18 @@ function nativeAfterAction(state, owner, action, priorInstruction, events) {
         numbers.crosswindGaugeBonus = 0.3;
         numbers.crosswindGaugeThrough = state.round + 1;
       }
-      status3(events, caster, caster, `Cyclone holds ${field.gusts} Gusts.`);
+      status3(state, events, caster, caster, `Cyclone holds ${field.gusts} Gusts.`);
     }
   }
   nativeCleanup(state);
 }
 function nativePrimaryHit(state, attacker, target, effective, events, hits = 1) {
   if (!effective) return;
+  if (hasNativeIdentity(attacker) && attacker.definitionId === "kaelith" && target.side === "enemy" && target.hp > 0) {
+    const faults = nativeMemory(attacker).faults ??= {};
+    faults[target.id] = Math.min(3, (faults[target.id] ?? 0) + hits);
+    status3(state, events, attacker, target, `${target.name}: Fault ${faults[target.id]}/3 (+${faults[target.id] * 10}% squad damage).`);
+  }
   for (const owner of living(state).filter(hasNativeIdentity)) {
     const quarry = owner.native?.quarry;
     if (!quarry || quarry.target !== target.id) continue;
@@ -7256,7 +7655,7 @@ function nativeIncomingMultiplier(state, enemy, target, action, events) {
             }
           }
           delete owner.native.seals[enemy.id];
-          status3(events, owner, enemy, `${enemy.name}'s Seal is consumed by its special.`);
+          status3(state, events, owner, enemy, `${enemy.name}'s Seal is consumed by its special.`);
         }
       }
       if ((action === "ultimate" || phaseZeroStatsReady && equipped(owner, "master-aurora-2")) && (owner.native?.ultimateWardThrough ?? 0) >= state.round) {
@@ -7292,7 +7691,7 @@ function nativeRouteDamage(state, enemy, target, amount, events, redirect) {
       numbers.foundationHealBank = (numbers.foundationHealBank ?? 0) + absorbed * 0.4;
       numbers.foundationHealDueRound ??= state.round + 1;
     }
-    status3(events, owner, target, `Foundation absorbs ${absorbed}; ${foundation.durability} durability remains.`, absorbed);
+    status3(state, events, owner, target, `Foundation absorbs ${absorbed}; ${foundation.durability} durability remains.`, absorbed);
     if (foundation.durability <= 0) delete owner.native.foundation;
   }
   return remaining;
@@ -7302,7 +7701,7 @@ function nativeDirectHpLoss(state, target, loss, events) {
     const memory = nativeMemory(target);
     memory.wounds = (memory.wounds ?? 0) + loss;
     if (memory.bastion?.throughPhase === state.round) memory.bastion.loss += loss;
-    status3(events, target, target, `${target.name} banks ${memory.wounds} Wounds.`, memory.wounds);
+    status3(state, events, target, target, `${target.name} banks ${memory.wounds} Wounds.`, memory.wounds);
   }
 }
 function nativeAbsorbedHit(state, target, nativeOwners, loss, events) {
@@ -7383,6 +7782,8 @@ function nativeBurnPhase(state, enemy, events) {
   }
 }
 function nativePhaseEnd(state, events) {
+  for (const owner of state.allies) for (const [id, mark] of Object.entries(owner.native?.fateMarks ?? {}))
+    if (mark.throughPhase <= state.round) delete owner.native.fateMarks[id];
   refreshConduitStats(state);
   if (phaseZeroStatsReady) {
     const owner = living(state).find((unit) => equipped(unit, "master-aurora-2") && (unit.native?.ultimateWardThrough ?? 0) >= state.round);
@@ -7455,6 +7856,7 @@ function nativeTurnStart(state, events) {
     }
     finishNativeHealing(state, owner, healing, events);
   }
+  for (const ally of state.allies) if (ally.native?.hymn && ally.native.hymn.throughRound < state.round) delete ally.native.hymn;
   for (const ally of state.allies) if (ally.native?.instruction && ally.native.instruction.throughRound < state.round) delete ally.native.instruction;
 }
 function nativeCleanup(state) {
@@ -7465,8 +7867,16 @@ function nativeCleanup(state) {
   }
   for (const ally of state.allies) {
     if (!ally.native) continue;
+    for (const key of ["fateMarks", "faults"])
+      for (const id of Object.keys(ally.native[key] ?? {})) if (!live.has(id)) delete ally.native[key][id];
     if (ally.hp <= 0) {
-      delete ally.native;
+      const { fateMarks, faults, refusalUsed } = ally.native;
+      ally.native = {
+        ...fateMarks ? { fateMarks } : {},
+        ...faults ? { faults } : {},
+        ...refusalUsed ? { refusalUsed } : {}
+      };
+      if (!fateMarks && !faults && !refusalUsed) delete ally.native;
       continue;
     }
     if (ally.native.instruction && !living(state).some((owner) => owner.id === ally.native?.instruction?.owner))
@@ -7777,7 +8187,7 @@ function payShield(unit, amount) {
 }
 function generatedStrike(state, owner, target, offer, events, mitigated = true) {
   if (!target || target.hp <= 0 || offer <= 0) return 0;
-  const damage = Math.max(1, Math.round(mitigated ? offer : offer * owner.stats.damage / Math.max(1, owner.stats.damage + effectiveDefense(state, target))));
+  const damage = Math.max(1, Math.round((mitigated ? offer : offer * owner.stats.damage / Math.max(1, owner.stats.damage + effectiveDefense(state, target))) * nativeDamageTakenMultiplier(state, owner, target)));
   const absorbed = consumeShield(target, damage).absorbed;
   const loss = Math.min(target.hp, damage - absorbed);
   target.hp -= loss;
@@ -7914,6 +8324,7 @@ function conduitActionCost(actor, action, state, base, targetId) {
     return base === 0 ? 0 : Math.max(1, base - discount);
   }
   let efficiency = actor.stats.skillEfficiency ?? 0;
+  if (action === "skill1" && actor.kit?.ascension?.skill1 || action === "skill2" && actor.kit?.ascension?.skill2 || action === "ultimate" && actor.kit?.ascension?.lastFlare) efficiency += 0.05;
   if (equipped(actor, "starvein-conductor") && diverseSquad(state))
     efficiency += magnitude(state, "starvein-conductor", 0.35);
   if (equipped(actor, "execution-orrery") && action === "skill2")
@@ -7961,7 +8372,7 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
     all: nativeAll,
     nativeAll,
     scale: 1,
-    skillPower: phaseZeroStatsReady && action !== "light" ? (actor.stats.skillPower ?? 1) + calamiticSkillPowerBonus(state) : 1,
+    skillPower: phaseZeroStatsReady && action !== "light" ? (actor.stats.skillPower ?? 1) + calamiticSkillPowerBonus(state) + (action === "skill1" && actor.kit?.ascension?.skill1 || action === "skill2" && actor.kit?.ascension?.skill2 || action === "ultimate" && actor.kit?.ascension?.lastFlare ? 0.5 : 0) : 1,
     skillDuration: phaseZeroStatsReady ? Math.floor(actor.stats.skillDuration ?? 0) : 0,
     criticalDamageBonus: 0,
     impacts: 1,
@@ -8189,6 +8600,7 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
     ctx.bonus += n.goldImprint ?? 0;
     delete n.goldImprint;
   }
+  if (action !== "light") ctx.skillPower += nativeHymn(actor, state.round)?.skillPower ?? 0;
   ctx.skillPower = Math.max(0, ctx.skillPower);
   return ctx;
 }
@@ -8204,7 +8616,7 @@ function conduitCriticalBonus(state, actor, target, action = "light") {
 function conduitHitModifiers(state, actor, target, ctx, critical) {
   let bonus = ctx.bonus + calamiticSiegeBonus(state, actor, target);
   let pierce = 0;
-  let criticalDamageBonus = ctx.criticalDamageBonus;
+  let criticalDamageBonus = ctx.criticalDamageBonus + (nativeHymn(actor, state.round)?.criticalDamage ?? 0);
   let skillPowerBonus = 0;
   const action = ctx.action;
   if (phaseZeroStatsReady && action !== "light") skillPowerBonus += ctx.spent.starveinPower ?? 0;
@@ -8342,11 +8754,13 @@ function conduitHitModifiers(state, actor, target, ctx, critical) {
   };
 }
 function conduitCriticalHit(state, actor, target, ctx, criticalBonus = 0) {
-  const rolled = rollCritical(state, actor.stats.crit + criticalBonus + ctx.criticalBonus + conduitCriticalBonus(state, actor, target, ctx.action));
+  const rolled = rollCritical(state, actor.stats.crit + criticalBonus + ctx.criticalBonus + (hasNativeIdentity(actor) && actor.definitionId === "kaelith" && ctx.action !== "light" ? 0.05 : 0) + conduitCriticalBonus(state, actor, target, ctx.action));
   const critical = !ctx.forbidden && (ctx.guaranteed || rolled.critical);
   const elemental = critical && rolled.elemental;
   const modifiers = conduitHitModifiers(state, actor, target, ctx, critical);
   const criticalMultiplier = (modifiers.critMultiplier ?? actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1) * (critical && ctx.action !== "light" && equipped(actor, "judgment-lens") && !phaseZeroStatsReady ? 1 + value(state, actor, "judgment-lens", 0.4, 0.8) : 1) * (critical && ctx.guaranteed && equipped(actor, "falcon-sight") && !phaseZeroStatsReady ? 1 + value(state, actor, "falcon-sight", 0.1, 0.2) : 1)) * (1 + (modifiers.criticalDamageBonus ?? 0));
+  const taken = nativeDamageTakenMultiplier(state, actor, target);
+  if (taken !== 1) modifiers.bonus = (1 + modifiers.bonus) * taken - 1;
   return { critical, elemental, modifiers, criticalMultiplier };
 }
 function resetConduitBurnStreak(owner, target) {
@@ -9170,6 +9584,7 @@ function revive(state, owner, target, fraction, events) {
   emit(events, "heal", owner, target, target.hp, `${target.name} is revived by a Conduit at ${target.hp} HP.`);
 }
 function rescue(state, target, loss, events, direct) {
+  loss = direct ? nativeRefusal(state, target, loss, events) : loss;
   if (loss < target.hp) return loss;
   const n = gear(target).numbers;
   if (phaseZeroStatsReady && n.rescueUsed) return loss;
@@ -9217,13 +9632,14 @@ function afterConduitHpLoss(state, target, events) {
   }
 }
 function conduitBurnTick(state, owner, target) {
-  if (target.burn.origin === "conduit") return target.burn.damage;
+  const taken = nativeDamageTakenMultiplier(state, owner, target);
+  if (target.burn.origin === "conduit") return target.burn.damage * taken;
   const n = gear(target).numbers;
-  if (phaseZeroStatsReady) return Math.round(target.burn.damage * (1 + (n[`cinderPower:${owner.id}`] ?? 0)));
+  if (phaseZeroStatsReady) return Math.round(target.burn.damage * (1 + (n[`cinderPower:${owner.id}`] ?? 0)) * taken);
   const cinderKey = `cinder:${owner.id}`, imprint = `imprint:${owner.id}`;
   let bonus = 0;
   if (equipped(owner, "infernic-cinder-testament")) bonus += (n[cinderKey] ?? 0) * value(state, owner, "infernic-cinder-testament", 0.2, 0.4);
-  return Math.round(target.burn.damage * (1 + bonus) * (n[imprint] ?? 1));
+  return Math.round(target.burn.damage * (1 + bonus) * (n[imprint] ?? 1) * taken);
 }
 function afterConduitBurn(state, owner, target, damage, events) {
   if (target.burn.origin !== "conduit") delete gear(target).numbers[`imprint:${owner.id}`];
@@ -9498,7 +9914,7 @@ function routedDamage(state, enemy, target, amount, events, nativeRedirect = fal
   const n = gear(target).numbers;
   if (phaseZeroStatsReady && n.stasisPenalty === state.round) amount = Math.round(amount * 1.25);
   const { loss: remaining } = absorbEnemyDamage(state, target, amount, events);
-  const loss = Math.min(target.hp, remaining);
+  const loss = Math.min(target.hp, nativeRefusal(state, target, remaining, events));
   const wasStanding = target.hp > 0;
   target.hp -= loss;
   emit(events, "damage", enemy, target, loss, `${target.name} intercepts ${Math.round(amount)} damage (Conduit routing).`);
@@ -9732,7 +10148,7 @@ function createBattle(seed2 = 1729, roster = ["ember"], progress = {}, equipment
       }
       const starter = getStarter(id);
       const kit = resolveFighter(id, progress[id], equipment[id], snapshot);
-      const unit = combatant(starter.id, starter.id, characterName(id, progress[id]?.evolution), "ally", kit.stats, starter.elementId);
+      const unit = combatant(starter.id, starter.id, characterName(id, progress[id]?.evolution, progress[id]?.ascension?.stats === true), "ally", kit.stats, starter.elementId);
       unit.kit = kit;
       if (id === "vaelor") unit.native = { beat: 0, beatRound: 1 };
       unit.level = progress[id]?.level ?? null;
@@ -9767,6 +10183,26 @@ function createDungeonBattle(element, stage, seed2, starter, progress, roster = 
     unit.color = selected.color;
     unit.boss = selected.boss;
     unit.enemySkills = enemySkills(selected.level, selected.boss, selected.ability, selected.abilityMultiplier);
+    return unit;
+  });
+  initializeConduits(state);
+  return state;
+}
+function createOblivionBattle(stage, seed2, starter, progress, roster = [starter], teamProgress = { [starter]: progress }, equipment = {}, captures = [], upgrades = {}) {
+  const encounter2 = oblivionEncounter(stage);
+  const state = createBattle(seed2, roster, teamProgress, equipment, captures, upgrades);
+  state.wave = stage;
+  state.oblivion = { stage };
+  state.oblivionSeed = (seed2 ^ 1831565813) >>> 0 || 1;
+  state.enemies = Array.from({ length: encounter2.boss ? 1 : 2 }, (_, index) => {
+    const unit = combatant(`oblivion-${stage}-${index}`, encounter2.construct.id, encounter2.construct.name, "enemy", encounter2.stats, encounter2.construct.element);
+    unit.level = encounter2.level;
+    unit.creatureId = encounter2.construct.id;
+    unit.color = elementAccents[encounter2.construct.element];
+    unit.boss = encounter2.boss;
+    const skills = enemySkills(encounter2.level, encounter2.boss, encounter2.construct.skill, encounter2.abilityMultiplier);
+    const secondSkill = skills[1];
+    unit.enemySkills = stage >= gatesOfOblivionRules.fragmentUnlockStage && secondSkill ? [skills[0], { ...secondSkill, name: encounter2.construct.secondSkill }] : [skills[0]];
     return unit;
   });
   initializeConduits(state);
@@ -9952,6 +10388,20 @@ function checkOutcome(state) {
   if (!state.allies.some((unit) => unit.hp > 0)) state.phase = "defeat";
   else if (!state.enemies.some((unit) => unit.hp > 0)) state.phase = "cleared";
 }
+function rollOblivionFragment(state, boss) {
+  if (!state.oblivion) throw new Error("Fragment rolls require a Gates of Oblivion encounter.");
+  const drop = oblivionFragmentDrop(state.oblivion.stage, boss);
+  if (!drop) return void 0;
+  if (boss) return 1;
+  return rollDrop(drop, () => {
+    let seed2 = state.oblivionSeed ?? ((state.rewardSeed ^ 1831565813) >>> 0 || 1);
+    seed2 ^= seed2 << 13;
+    seed2 ^= seed2 >>> 17;
+    seed2 ^= seed2 << 5;
+    state.oblivionSeed = seed2 >>> 0 || 1;
+    return state.oblivionSeed / 4294967296;
+  });
+}
 function awardDefeats(previous, state, events) {
   for (const enemy of state.enemies) {
     if (enemy.hp > 0 || !previous.enemies.some((unit) => unit.id === enemy.id && unit.hp > 0)) continue;
@@ -9998,7 +10448,11 @@ function awardDefeats(previous, state, events) {
     }
     const amount = rollDrop(activityPrismaticaDrop(state, enemy.level), rewardRoll);
     if (amount === void 0) throw new Error("Guaranteed Prismatica reward did not drop.");
-    const materials = state.story ? storyDrops(state.story.storyStage, rewardRoll) : state.infusion ? infusionDrops(state.infusion.mode, state.infusion.stage, rewardRoll, state.infusion.schedule ?? "legacy") : state.dungeon ? materialDrops(state.dungeon.element, state.dungeon.stage, rewardRoll) : void 0;
+    const materials = state.oblivion ? oblivionMaterialDrops(state.oblivion.stage, rewardRoll) : state.story ? storyDrops(state.story.storyStage, rewardRoll) : state.infusion ? infusionDrops(state.infusion.mode, state.infusion.stage, rewardRoll, state.infusion.schedule ?? "legacy") : state.dungeon ? materialDrops(state.dungeon.element, state.dungeon.stage, rewardRoll) : void 0;
+    if (state.oblivion) {
+      const fragment = rollOblivionFragment(state, enemy.boss === true);
+      if (fragment !== void 0) materials["fragment-of-rise"] = fragment;
+    }
     const materialText = materials ? Object.entries(materials).map(([id, quantity]) => `${quantity} ${materialName(id)}`).join(", ") : "";
     let capture;
     let lycalis = 0;
@@ -10396,11 +10850,11 @@ function advanceUnavailableTurns(previous) {
   return { state, events };
 }
 function nextStage(previous, progress) {
-  const destination = previous.story ?? previous.war ?? previous.infusion ?? previous.dungeon;
+  const destination = previous.story ?? previous.war ?? previous.infusion ?? previous.dungeon ?? previous.oblivion;
   if (!destination) throw new Error("Only staged battles can advance to the next stage.");
   if (previous.phase !== "cleared") throw new Error("Clear this stage before advancing.");
-  if (previous.wave >= (previous.story ? storyRules.stages : previous.war ? warStageCount : previous.infusion ? infusionStageCount(previous.infusion.mode) : dungeonStageCount)) {
-    throw new Error(`${previous.war ? "Activity" : "Dungeon"} complete. Return to Gameplay to replay a stage.`);
+  if (previous.wave >= (previous.story ? storyRules.stages : previous.war ? warStageCount : previous.infusion ? infusionStageCount(previous.infusion.mode) : previous.oblivion ? gatesOfOblivionRules.stages : dungeonStageCount)) {
+    throw new Error(`${previous.oblivion ? "Gates of Oblivion" : previous.war ? "Activity" : "Dungeon"} complete. Return to Gameplay to replay a stage.`);
   }
   const starter = previous.allies.find((ally) => !ally.captured)?.definitionId ?? "ember";
   if (!isStarterId(starter)) throw new Error("Dungeon starter is missing.");
@@ -10416,7 +10870,9 @@ function nextStage(previous, progress) {
     if (ally.conduits) equipment[ally.id] = [...ally.conduits];
   }
   const captures = previous.allies.flatMap((ally) => ally.captured ? [ally.captured] : []);
-  const state = "storyStage" in destination ? createStoryBattle(destination.storyStage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, previous.encounterSeed) : "character" in destination ? createWarBattle(destination.character, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades) : "mode" in destination ? createInfusionBattle(destination.mode, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, destination.schedule ?? "legacy") : createDungeonBattle(destination.element, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, previous.encounterSeed);
+  const state = previous.oblivion ? createOblivionBattle(previous.oblivion.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades) : previous.story ? createStoryBattle(previous.story.storyStage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, previous.encounterSeed) : previous.war ? createWarBattle(previous.war.character, previous.war.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades) : previous.infusion ? createInfusionBattle(previous.infusion.mode, previous.infusion.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, previous.infusion.schedule ?? "legacy") : previous.dungeon ? createDungeonBattle(previous.dungeon.element, previous.dungeon.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, previous.encounterSeed) : (() => {
+    throw new Error("Only staged battles can advance to the next stage.");
+  })();
   for (const ally of state.allies) {
     const prior = previous.allies.find((unit) => unit.id === ally.id);
     if (prior?.masterConduit) ally.masterConduit = prior.masterConduit;
@@ -10430,6 +10886,7 @@ function nextStage(previous, progress) {
       ally.stats.shatterCapacity
     );
   }
+  if (previous.oblivionSeed !== void 0) state.oblivionSeed = previous.oblivionSeed;
   if (previous.conduitSeed !== void 0) state.conduitSeed = previous.conduitSeed;
   if (previous.machineConduits !== void 0) state.machineConduits = { ...previous.machineConduits };
   if (previous.machineLootFocus !== void 0) state.machineLootFocus = { ...previous.machineLootFocus };
@@ -10452,7 +10909,7 @@ function nextStage(previous, progress) {
 }
 function nextWave(previous) {
   if (previous.calamity) throw new Error("Calamity has one boss. Return to the activity or replay this challenge.");
-  if (previous.story || previous.dungeon || previous.infusion || previous.war) throw new Error("Staged activities must be started as separate encounters.");
+  if (previous.story || previous.dungeon || previous.infusion || previous.war || previous.oblivion) throw new Error("Staged activities must be started as separate encounters.");
   if (previous.phase !== "cleared") throw new Error("Defeat this wave before advancing.");
   const state = structuredClone(previous);
   const events = [];
@@ -10582,7 +11039,7 @@ var standardBanner = {
   artwork: standardBannerArtwork
 };
 function standardBannerPool() {
-  const characters = starters.filter((character) => !isRoseCharacter(character.id) && !isWarCharacter(character.id));
+  const characters = starters.filter((character) => character.stars !== 7 && !isRoseCharacter(character.id) && !isWarCharacter(character.id) && !isCalamiticCharacter(character.id));
   const characterChance = [5, 6].reduce((total, stars) => total + (characters.some((character) => character.stars === stars) ? bannerCharacterTierRates[stars] : 0), 0);
   const remaining = 1 - characterChance;
   const pool = characters.map((character) => ({
@@ -10707,6 +11164,14 @@ function validateAccount(value2) {
     if (!count(value2.calamiticTokens)) throw new Error("Invalid saved Calamitic Token balance.");
     account.calamiticTokens = value2.calamiticTokens;
   }
+  if (value2.calamityRecruitmentSeed !== void 0) {
+    if (!count(value2.calamityRecruitmentSeed) || value2.calamityRecruitmentSeed > 4294967295) throw new Error("Invalid Calamity recruitment seed.");
+    account.calamityRecruitmentSeed = value2.calamityRecruitmentSeed;
+  }
+  if (value2.calamityShardSeed !== void 0) {
+    if (!count(value2.calamityShardSeed) || value2.calamityShardSeed < 1 || value2.calamityShardSeed > 4294967295) throw new Error("Invalid Calamity Shard seed.");
+    account.calamityShardSeed = value2.calamityShardSeed;
+  }
   if (value2.calamityChests !== void 0) {
     if (!record(value2.calamityChests)) throw new Error("Invalid saved Calamity chest inventory.");
     account.calamityChests = {};
@@ -10782,6 +11247,10 @@ function validateAccount(value2) {
       if (!count(account.fractalis) || !count(account.lycalis)) throw new Error("Story completion grant exceeds the supported balance. The save has not been overwritten.");
     }
   }
+  if (value2.oblivionStage !== void 0) {
+    if (!isOblivionStage(value2.oblivionStage)) throw new Error("Invalid saved Gates of Oblivion progress.");
+    account.oblivionStage = value2.oblivionStage;
+  }
   if (value2.warStages !== void 0) {
     if (!record(value2.warStages)) throw new Error("Invalid saved Elemental War progress.");
     account.warStages = {};
@@ -10821,12 +11290,18 @@ function validateAccount(value2) {
       throw new Error("Invalid saved character progress.");
     }
     if (progress.weaponRank !== void 0 && typeof progress.weaponRank !== "number") throw new Error("Invalid saved weapon rank.");
+    if (progress.ascension !== void 0) {
+      if (!record(progress.ascension) || Object.keys(progress.ascension).length === 0 || Object.keys(progress.ascension).some((key) => !["stats", "skill1", "skill2", "lastFlare"].includes(key)) || Object.values(progress.ascension).some((flag) => flag !== true) || (progress.ascension.skill1 === true || progress.ascension.skill2 === true || progress.ascension.lastFlare === true) && progress.ascension.stats !== true || progress.ascension.stats === true && (progress.evolution !== 6 || progress.level < characterLevelCap(6, id))) {
+        throw new Error("Invalid saved Calamitic Ascension state.");
+      }
+    }
     const entry = {
       level: progress.level,
       evolution: progress.evolution,
-      ...progress.weaponRank !== void 0 ? { weaponRank: progress.weaponRank } : {}
+      ...progress.weaponRank !== void 0 ? { weaponRank: progress.weaponRank } : {},
+      ...progress.ascension !== void 0 ? { ascension: { ...progress.ascension } } : {}
     };
-    characterGrowthFactor(entry);
+    characterGrowthFactor(entry, id);
     account.characters[id] = entry;
   }
   if (value2.capturedCharacters !== void 0) {
@@ -11280,7 +11755,7 @@ function setMachineLootFocus(storage, rarity, id) {
   return saveAccount(storage, account);
 }
 function isMaterial(id) {
-  return elementalMaterials.some((material) => material.id === id) || specialtyMaterials.some((material) => material.id === id) || roseMaterials.some((material) => material.id === id);
+  return elementalMaterials.some((material) => material.id === id) || specialtyMaterials.some((material) => material.id === id) || roseMaterials.some((material) => material.id === id) || isCalamiticMaterialId(id);
 }
 function upgradeCharacter(storage, id, kind, expected, fodderIds = []) {
   if (kind === "weapon") throw new Error("Weapon upgrades are unavailable. Existing weapon bonuses are preserved.");
@@ -11289,10 +11764,10 @@ function upgradeCharacter(storage, id, kind, expected, fodderIds = []) {
   const account = loadAccount(storage);
   if (account.characters[id] === void 0) throw new Error("Choose your Owned Element-Bearer to upgrade.");
   const current = ownedProgress(account, id);
-  if (current.level !== expected.level || current.evolution !== expected.evolution || (current.weaponRank ?? 0) !== (expected.weaponRank ?? 0)) throw new Error("Character progress changed. Reopen this tab before upgrading.");
+  if (!sameCharacterProgress(current, expected)) throw new Error("Character progress changed. Reopen this tab before upgrading.");
   const element = getStarter(id).elementId;
   const cost = kind === "level" ? characterLevelCost(id, current) : characterEvolutionCost(id, current);
-  if (kind === "evolve" && current.level !== characterLevelCap(current.evolution)) throw new Error("Reach this form level cap before evolving.");
+  if (kind === "evolve" && current.level !== characterLevelCap(current.evolution, id)) throw new Error("Reach this form level cap before evolving.");
   const requiredValue = kind === "evolve" ? characterEvolutionRequirement(id, current.evolution).fodderValue : 0;
   if (new Set(fodderIds).size !== fodderIds.length) throw new Error("Choose each captured Elemental-Devourer only once.");
   if (!requiredValue && fodderIds.length) throw new Error("This upgrade does not consume Elemental-Devourers.");
@@ -11326,11 +11801,58 @@ function upgradeCharacter(storage, id, kind, expected, fodderIds = []) {
   }
   return saveAccount(storage, account);
 }
+var calamiticAscensionCost = 25;
+function canAscendCharacter(id, progress, step2) {
+  const ascension = progress.ascension ?? {};
+  if (step2 === "stats") return !ascension.stats && progress.evolution === 6 && progress.level === characterLevelCap(6, id);
+  return ascension.stats === true && !ascension[step2];
+}
+function sameCharacterProgress(left, right) {
+  return left.level === right.level && left.evolution === right.evolution && (left.weaponRank ?? 0) === (right.weaponRank ?? 0) && ["stats", "skill1", "skill2", "lastFlare"].every((key) => left.ascension?.[key] === right.ascension?.[key]);
+}
+function ascendCharacter(storage, id, step2, expected) {
+  if (!loadProfile(storage)) throw new Error("Choose an owned Element-Bearer for Calamitic Ascension.");
+  if (!["stats", "skill1", "skill2", "lastFlare"].includes(step2)) throw new Error("Unknown Calamitic Ascension step.");
+  const account = loadAccount(storage);
+  const current = account.characters[id];
+  if (!current) throw new Error("Choose an owned Element-Bearer for Calamitic Ascension.");
+  if (!sameCharacterProgress(current, expected)) throw new Error("Character progress changed. Reopen Calamitic Ascension before continuing.");
+  if (!canAscendCharacter(id, current, step2)) {
+    if (step2 === "stats" && current.evolution !== 6) throw new Error("Reach the final form before Calamitic Ascension.");
+    if (step2 === "stats") throw new Error("Reach the final level before Calamitic Ascension.");
+    if (!current.ascension?.stats) throw new Error("Stat Ascension is required before Imbuing an ability.");
+    throw new Error("This Calamitic Ascension step is already complete.");
+  }
+  if ((account.materials["shard-of-calamity"] ?? 0) < calamiticAscensionCost) throw new Error("Not enough Shards of Calamity.");
+  account.materials["shard-of-calamity"] -= calamiticAscensionCost;
+  const ascension = { ...current.ascension, [step2]: true };
+  account.characters[id] = { ...current, ascension };
+  return saveAccount(storage, account);
+}
+function rollCalamityShards(tier, initialSeed) {
+  const chances = { 1: 0.05, 2: 0.08, 3: 0.12 };
+  let seed2 = initialSeed ?? 1779033703;
+  const roll2 = () => {
+    seed2 >>>= 0;
+    if (!seed2) seed2 = 1;
+    seed2 ^= seed2 << 13;
+    seed2 >>>= 0;
+    seed2 ^= seed2 >>> 17;
+    seed2 >>>= 0;
+    seed2 ^= seed2 << 5;
+    seed2 >>>= 0;
+    if (!seed2) seed2 = 1;
+    return seed2 / 4294967296;
+  };
+  if (roll2() >= chances[tier]) return { seed: seed2 };
+  const amount = 2 + Math.floor(roll2() * 3);
+  return { seed: seed2, amount };
+}
 function saveAccountRewards(storage, result, runId) {
   const account = loadAccount(storage);
   if (result.state.calamity !== void 0) {
     const activity = result.state.calamity;
-    if (!record(activity) || !isCalamityActivityId(activity.activity) || !isCalamityTier(activity.tier) || result.state.dungeon || result.state.infusion || result.state.story || result.state.war || !["player", "cleared", "defeat"].includes(result.state.phase) || result.state.wave !== 1 || result.state.enemies.length !== 1 || activity.tier > calamityUnlockedTier(account, activity.activity)) {
+    if (!record(activity) || !isCalamityActivityId(activity.activity) || !isCalamityTier(activity.tier) || result.state.dungeon || result.state.infusion || result.state.story || result.state.war || result.state.oblivion || !["player", "cleared", "defeat"].includes(result.state.phase) || result.state.wave !== 1 || result.state.enemies.length !== 1 || activity.tier > calamityUnlockedTier(account, activity.activity)) {
       throw new Error("Invalid or locked Calamity encounter.");
     }
     const boss = result.state.enemies[0];
@@ -11343,16 +11865,22 @@ function saveAccountRewards(storage, result, runId) {
     }
     getCreature(boss.creatureId);
     if (rewards.length === 0 && result.state.phase !== "cleared" && boss.hp > 0) {
-      if (result.events.some((event2) => event2.calamityChest !== void 0 || event2.capture !== void 0 || event2.recruitment !== void 0 || event2.recruitmentOutcome !== void 0)) throw new Error("Invalid Calamity reward payload.");
+      if (result.events.some((event2) => event2.calamityChest !== void 0 || event2.capture !== void 0 || event2.recruitment !== void 0 || event2.recruitmentOutcome !== void 0 || event2.calamiticRecruitment !== void 0)) throw new Error("Invalid Calamity reward payload.");
       if (account.creatures[boss.creatureId]) return account;
       account.creatures[boss.creatureId] = { defeated: false };
       return saveAccount(storage, account);
     }
-    if (result.state.phase !== "cleared" || boss.hp > 0 || rewards.length !== 1 || reward.source !== boss.id || reward.target !== boss.id || reward.amount !== 0 || reward.critical !== false || reward.calamityChest !== id || Object.entries(reward).some(([key, value2]) => value2 !== void 0 && !["kind", "source", "target", "amount", "critical", "message", "calamityChest"].includes(key)) || result.events.some((event2) => event2 !== reward && event2.calamityChest !== void 0)) {
+    if (result.state.phase !== "cleared" || boss.hp > 0 || rewards.length !== 1 || reward.source !== boss.id || reward.target !== boss.id || reward.amount !== 0 || reward.critical !== false || reward.calamityChest !== id || Object.entries(reward).some(([key, value2]) => value2 !== void 0 && !["kind", "source", "target", "amount", "critical", "message", "calamityChest", "calamiticRecruitment", "calamityShards"].includes(key)) || result.events.some((event2) => event2 !== reward && (event2.calamityChest !== void 0 || event2.calamityShards !== void 0))) {
       throw new Error("Invalid Calamity chest reward.");
     }
     const receipt = `${runId}:${boss.id}`;
+    const awardedCharacter = calamiticCharacterByTier[activity.tier];
+    if (reward.calamiticRecruitment !== void 0 && reward.calamiticRecruitment !== awardedCharacter) {
+      throw new Error("Invalid Calamitic recruitment reward.");
+    }
+    if (reward.calamityShards !== void 0) throw new Error("Calamity Shards are assigned only when the victory is saved.");
     if (account.receipts.includes(receipt)) return account;
+    if (reward.calamiticRecruitment !== void 0) throw new Error("Calamitic recruitment is assigned only when the victory is saved.");
     const amount = (account.calamityChests?.[id] ?? 0) + 1;
     if (!count(amount)) throw new Error("Calamity chest inventory capacity reached.");
     account.calamityChests = { ...account.calamityChests, [id]: amount };
@@ -11361,10 +11889,44 @@ function saveAccountRewards(storage, result, runId) {
       [activity.activity]: Math.max(account.calamityClears?.[activity.activity] ?? 0, activity.tier)
     };
     account.creatures[boss.creatureId] = { defeated: true };
+    let recruitmentAward;
+    const shardRoll = rollCalamityShards(activity.tier, account.calamityShardSeed);
+    account.calamityShardSeed = shardRoll.seed;
+    if (shardRoll.amount) {
+      const totalShards = (account.materials["shard-of-calamity"] ?? 0) + shardRoll.amount;
+      if (!count(totalShards)) throw new Error("Calamity Shard inventory capacity reached.");
+      account.materials["shard-of-calamity"] = totalShards;
+    }
+    if (!account.characters[awardedCharacter]) {
+      let seed2 = (account.calamityRecruitmentSeed ?? 608135816) >>> 0;
+      if (seed2 === 0) seed2 = 1;
+      seed2 ^= seed2 << 13;
+      seed2 ^= seed2 >>> 17;
+      seed2 ^= seed2 << 5;
+      seed2 >>>= 0;
+      if (seed2 / 4294967296 < calamiticCharacterChance) {
+        recruitmentAward = awardedCharacter;
+        account.characters[awardedCharacter] = { level: 0, evolution: 1, weaponRank: 0 };
+      }
+      account.calamityRecruitmentSeed = seed2 || 1;
+    }
     account.receipts.push(receipt);
-    return saveAccount(storage, account);
+    const saved2 = saveAccount(storage, account);
+    if (recruitmentAward) reward.calamiticRecruitment = recruitmentAward;
+    if (shardRoll.amount) reward.calamityShards = shardRoll.amount;
+    return saved2;
   }
   if (result.events.some((event2) => event2.calamityChest !== void 0)) throw new Error("Calamity chests require a Calamity encounter.");
+  const oblivion = result.state.oblivion;
+  if (oblivion !== void 0) {
+    if (!record(oblivion) || Object.keys(oblivion).length !== 1 || !isOblivionStage(oblivion.stage) || result.state.dungeon || result.state.infusion || result.state.story || result.state.war || result.state.calamity || result.state.wave !== oblivion.stage || !["player", "cleared", "defeat"].includes(result.state.phase) || !Object.keys(account.characters).some(isCalamiticCharacter) || oblivion.stage > unlockedOblivionStage(account)) {
+      throw new Error("Invalid or locked Gates of Oblivion encounter.");
+    }
+    const encounter2 = oblivionEncounter(oblivion.stage);
+    if (result.state.enemies.length !== (encounter2.boss ? 1 : 2) || result.state.enemies.some((enemy, index) => !enemy || enemy.side !== "enemy" || enemy.id !== `oblivion-${oblivion.stage}-${index}` || enemy.definitionId !== encounter2.construct.id || enemy.creatureId !== encounter2.construct.id || enemy.name !== encounter2.construct.name || enemy.level !== encounter2.level || enemy.element !== encounter2.construct.element || enemy.boss !== encounter2.boss || !Number.isFinite(enemy.hp))) {
+      throw new Error("Invalid Gates of Oblivion enemy source.");
+    }
+  }
   let changed = false;
   const rewardedEnemies = /* @__PURE__ */ new Set();
   const recruitments = [];
@@ -11374,7 +11936,7 @@ function saveAccountRewards(storage, result, runId) {
   const story = result.state.story;
   if (story) {
     const encounter2 = storyEncounter(story.storyStage);
-    if (result.state.dungeon || result.state.infusion || result.state.war || result.state.wave !== story.storyStage || story.storyStage > unlockedStoryStage(account) || result.state.enemies.length !== (encounter2.boss ? 1 : 2) || result.state.enemies.some((enemy, index) => enemy.id !== `story-${story.storyStage}-${index}` || enemy.level !== encounter2.level || enemy.element !== encounter2.element || enemy.boss !== encounter2.boss || !Array.from({ length: encounter2.boss ? 1 : 4 }, (_, identity) => storyCreature(story.storyStage, identity).id).includes(enemy.creatureId ?? ""))) {
+    if (result.state.dungeon || result.state.infusion || result.state.war || result.state.oblivion || result.state.wave !== story.storyStage || story.storyStage > unlockedStoryStage(account) || result.state.enemies.length !== (encounter2.boss ? 1 : 2) || result.state.enemies.some((enemy, index) => enemy.id !== `story-${story.storyStage}-${index}` || enemy.level !== encounter2.level || enemy.element !== encounter2.element || enemy.boss !== encounter2.boss || !Array.from({ length: encounter2.boss ? 1 : 4 }, (_, identity) => storyCreature(story.storyStage, identity).id).includes(enemy.creatureId ?? ""))) {
       throw new Error("Invalid or locked Story encounter.");
     }
   }
@@ -11391,10 +11953,39 @@ function saveAccountRewards(storage, result, runId) {
   for (const reward of result.events.filter((event2) => event2.kind === "reward")) {
     if ("calamiticTokens" in reward) throw new Error("Calamitic Tokens only come from opening Calamity chests.");
     const receipt = `${runId}:${reward.source}`;
-    if (account.receipts.includes(receipt)) continue;
+    if (account.receipts.includes(receipt) && !oblivion) continue;
     const enemy = result.state.enemies.find((unit) => unit.id === reward.source);
     if (!enemy || enemy.level === null) throw new Error("Enemy reward source is missing.");
     const multiplier = bossLootMultiplier(result.state, enemy.boss === true);
+    if (oblivion) {
+      const stage = oblivion.stage;
+      const expectedCurrency = activityPrismaticaDrop({ oblivion: { stage } }, enemy.level);
+      const expectedMaterials = oblivionMaterialLoot(stage);
+      const allowedKeys = ["kind", "source", "target", "amount", "critical", "message", "materials"];
+      if (enemy.hp > 0 || reward.source !== enemy.id || reward.target !== "" || reward.critical !== false || !count(reward.amount) || reward.amount < expectedCurrency.minimum || reward.amount > expectedCurrency.maximum || Object.entries(reward).some(([key, value2]) => value2 !== void 0 && !allowedKeys.includes(key)) || !record(reward.materials)) throw new Error("Invalid Gates of Oblivion reward.");
+      const fragment = reward.materials["fragment-of-rise"];
+      const expectedIds = new Set(expectedMaterials.map((drop) => drop.id));
+      for (const drop of expectedMaterials) {
+        const amount = reward.materials[drop.id];
+        if (!count(amount) || amount < drop.minimum || amount > drop.maximum) throw new Error("Invalid Gates of Oblivion material drop.");
+      }
+      if (stage < gatesOfOblivionRules.fragmentUnlockStage ? fragment !== void 0 : enemy.boss ? fragment !== 1 : fragment !== void 0 && fragment !== 1) throw new Error("Invalid Fragment of Rise drop.");
+      const allowedMaterials = /* @__PURE__ */ new Set([...expectedIds, ...stage >= gatesOfOblivionRules.fragmentUnlockStage ? ["fragment-of-rise"] : []]);
+      if (Object.keys(reward.materials).some((id) => !allowedMaterials.has(id))) throw new Error("Invalid Gates of Oblivion material source.");
+      const receipt2 = `${runId}:${enemy.id}`;
+      if (account.receipts.includes(receipt2)) continue;
+      account.fractalis += reward.amount;
+      if (!count(account.fractalis)) throw new Error("Prismatica balance exceeds the supported maximum.");
+      for (const [id, amount] of Object.entries(reward.materials)) {
+        const total = (account.materials[id] ?? 0) + amount;
+        if (!count(total)) throw new Error(`Material balance exceeds the supported maximum: ${id}.`);
+        account.materials[id] = total;
+      }
+      account.receipts.push(receipt2);
+      rewardedEnemies.add(enemy.id);
+      changed = true;
+      continue;
+    }
     if (reward.masterChests !== void 0) {
       const activity = result.state.infusion;
       if (reward.masterChests !== 1 || activity?.mode !== "machines" || activity.stage !== masterChest.stage || result.state.wave !== masterChest.stage || unlockedInfusionStage(account, "machines") < masterChest.stage || result.state.phase !== "cleared" || result.state.enemies.length !== 1 || enemy.id !== `infusion-machines-${masterChest.stage}-0` || !enemy.boss || enemy.hp > 0 || enemy.creatureId !== "infusion:machines:5" || enemy.level !== 120 || result.state.story || result.state.dungeon || result.state.war) {
@@ -11530,6 +12121,16 @@ function saveAccountRewards(storage, result, runId) {
     changed = true;
   }
   const dungeon = result.state.dungeon;
+  if (oblivion && result.state.phase === "cleared") {
+    if (result.state.enemies.some((enemy) => enemy.hp > 0 || !rewardedEnemies.has(enemy.id) && !account.receipts.includes(`${runId}:${enemy.id}`))) {
+      throw new Error("Gates of Oblivion floor clear requires saved rewards for every defeated enemy.");
+    }
+    const unlocked = Math.min(gatesOfOblivionRules.stages, oblivion.stage + 1);
+    if (unlockedOblivionStage(account) < unlocked) {
+      account.oblivionStage = unlocked;
+      changed = true;
+    }
+  }
   if (dungeon && result.state.phase === "cleared") {
     const unlocked = Math.min(dungeonStageCount, dungeon.stage + 1);
     if ((account.dungeonStages[dungeon.element] ?? 1) < unlocked) {
@@ -11613,6 +12214,12 @@ function unlockedWarStage(account, character) {
 function unlockedStoryStage(account) {
   return Math.min(storyRules.stages, (account.storyCompleted ?? 0) + 1);
 }
+function hasCalamiticElementBearer(account) {
+  return Object.keys(account.characters).some(isCalamiticCharacter);
+}
+function unlockedOblivionStage(account) {
+  return account.oblivionStage ?? 1;
+}
 function unlockedStage(account, dungeon) {
   if (!playableDungeons.includes(dungeon)) throw new Error("Dungeon is not playable.");
   return account.dungeonStages[dungeon] ?? 1;
@@ -11640,7 +12247,7 @@ function maxLevelPlan(account, id) {
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
   const current = starter ? ownedProgress(account, starter.id) : copy ? capturedProgress(copy) : null;
   if (!current) throw new Error("Character progress is missing.");
-  const cap = starter ? characterLevelCap(ownedProgress(account, starter.id).evolution) : capturedLevelCap;
+  const cap = starter ? characterLevelCap(ownedProgress(account, starter.id).evolution, starter.id, ownedProgress(account, starter.id).ascension?.stats === true) : capturedLevelCap;
   const cost = { fractalis: 0, materials: {} };
   let targetLevel = current.level;
   while (targetLevel < cap) {
@@ -11702,7 +12309,7 @@ function redactFriendAccount(value2) {
 }
 
 // src/content/profile-pictures.ts
-var profilePictures = starters.flatMap((character) => ["base", "omnic"].map((form) => ({
+var profilePictures = starters.filter((character) => !isCalamiticCharacter(character.id)).flatMap((character) => ["base", "omnic"].map((form) => ({
   id: `profile:${character.id}:${form}`,
   characterId: character.id,
   form,
@@ -11725,12 +12332,22 @@ function highestBearerLevel(account) {
   for (const { id } of starters) {
     const progress = account.characters[id];
     if (!progress) continue;
-    characterGrowthFactor(progress);
+    characterGrowthFactor(progress, id);
     highest = Math.max(highest, progress.level);
   }
   return highest;
 }
 function activityAccess(account, activity) {
+  if (activity.kind === "oblivion") {
+    const owned = hasCalamiticElementBearer(account);
+    const stageUnlocked = isOblivionStage(activity.stage) && activity.stage <= unlockedOblivionStage(account);
+    return {
+      unlocked: owned && stageUnlocked,
+      minimumLevel: 0,
+      level: highestBearerLevel(account),
+      requirement: !owned ? "Own any Calamitic Element-Bearer" : `Clear Gates of Oblivion Floor ${activity.stage - 1}`
+    };
+  }
   if (activity.kind === "calamity") {
     const valid = isCalamityActivityId(activity.activity) && isCalamityTier(activity.tier);
     const highestTier = valid ? calamityUnlockedTier(account, activity.activity) : 0;
@@ -11746,6 +12363,9 @@ function activityAccess(account, activity) {
   return { unlocked: level >= minimumLevel && regionCleared, minimumLevel, level, requirement };
 }
 function assertActivityAccess(account, activity) {
+  if (activity.kind === "oblivion" && !isOblivionStage(activity.stage)) {
+    throw new Error(`Gates of Oblivion floor must be an integer from 1 to ${gatesOfOblivionRules.stages}.`);
+  }
   const access = activityAccess(account, activity);
   if (!access.unlocked) throw new Error(`Activity locked. Requires ${access.requirement}. Your highest Element-Bearer is Lv.${access.level}.`);
 }
@@ -11871,6 +12491,7 @@ var operationKeys = {
   equipMasterConduit: ["character", "conduit"],
   openCalamityChest: ["id", "expectedCount"],
   upgradeCharacter: ["id", "upgradeKind", "expected", "fodderIds"],
+  ascendCharacter: ["id", "step", "expected"],
   levelCaptured: ["id", "expectedLevel"],
   levelMax: ["id", "expected"],
   purchaseMaterial: ["element", "quantity"],
@@ -11921,13 +12542,15 @@ function validateRequest(value2) {
     const maximum = field === "fodderIds" ? 15 : 3;
     if (!Array.isArray(op[field]) || op[field].length > maximum || !op[field].every((id) => typeof id === "string" && id.length > 0 && id.length <= 100)) throw new Error("Invalid character IDs.");
   }
-  if (op.kind === "upgradeCharacter") {
+  if (op.kind === "upgradeCharacter" || op.kind === "ascendCharacter") {
     if (!record2(op.expected)) throw new Error("Invalid expected progress.");
-    keys(op.expected, ["level", "evolution", "weaponRank"]);
+    keys(op.expected, ["level", "evolution", "weaponRank", "ascension"]);
     integer(op.expected.level);
     integer(op.expected.evolution);
     if ("weaponRank" in op.expected) integer(op.expected.weaponRank);
+    if ("ascension" in op.expected && (!record2(op.expected.ascension) || Object.keys(op.expected.ascension).some((key) => !["stats", "skill1", "skill2", "lastFlare"].includes(key)) || Object.values(op.expected.ascension).some((flag) => typeof flag !== "boolean"))) throw new Error("Invalid expected Ascension state.");
   }
+  if (op.kind === "ascendCharacter" && !["stats", "skill1", "skill2", "lastFlare"].includes(String(op.step))) throw new Error("Invalid Calamitic Ascension step");
   if (op.kind === "maxConduit") {
     if (!record2(op.expected)) throw new Error("Invalid Conduit Max Level preview.");
     keys(op.expected, ["id", "currentLevel", "targetLevel", "cost"]);
@@ -11945,12 +12568,12 @@ function validateRequest(value2) {
     for (const amount of Object.values(op.expected.cost.materials)) integer(amount);
   }
   if (op.kind === "enter") {
-    if (!record2(op.activity) || !["training", "story", "dungeon", "infusion", "war", "calamity"].includes(String(op.activity.kind))) throw new Error("Invalid activity.");
+    if (!record2(op.activity) || !["training", "story", "dungeon", "oblivion", "infusion", "war", "calamity"].includes(String(op.activity.kind))) throw new Error("Invalid activity.");
     if (op.activity.kind === "calamity") {
       keys(op.activity, ["kind", "activity", "tier"]);
       if (!isCalamityActivityId(op.activity.activity) || !isCalamityTier(op.activity.tier)) throw new Error("Invalid Calamity activity or tier.");
     } else {
-      keys(op.activity, op.activity.kind === "training" ? ["kind"] : op.activity.kind === "story" ? ["kind", "stage"] : ["kind", "stage", op.activity.kind === "dungeon" ? "element" : op.activity.kind === "infusion" ? "mode" : "character"]);
+      keys(op.activity, op.activity.kind === "training" ? ["kind"] : op.activity.kind === "story" || op.activity.kind === "oblivion" ? ["kind", "stage"] : ["kind", "stage", op.activity.kind === "dungeon" ? "element" : op.activity.kind === "infusion" ? "mode" : "character"]);
       if (op.activity.kind !== "training") integer(op.activity.stage);
     }
   }
@@ -12112,19 +12735,25 @@ function validateRunActivity(run) {
     operation: { kind: "enter", activity: run.activity }
   });
   const calamity = run.session.state.calamity;
+  const oblivion = run.session.state.oblivion;
+  if (run.activity.kind === "oblivion") {
+    if (!isOblivionStage(run.activity.stage) || !oblivion || !isOblivionStage(oblivion.stage) || run.activity.stage !== oblivion.stage || run.session.state.wave !== oblivion.stage || run.session.state.dungeon || run.session.state.infusion || run.session.state.story || run.session.state.war || calamity) {
+      throw new Error("Unsupported saved Gates of Oblivion encounter.");
+    }
+  } else if (oblivion !== void 0) throw new Error("Unsupported saved Gates of Oblivion encounter.");
   if (run.activity.kind === "calamity") {
     if (!record2(calamity) || !isCalamityActivityId(calamity.activity) || !isCalamityTier(calamity.tier) || calamity.activity !== run.activity.activity || calamity.tier !== run.activity.tier) throw new Error("Unsupported saved Calamity encounter.");
   } else if (calamity !== void 0) throw new Error("Unsupported saved Calamity encounter.");
 }
 function gate(account, activity, entering = true) {
-  if (entering) assertActivityAccess(account, activity);
+  if (entering || activity.kind === "oblivion") assertActivityAccess(account, activity);
   if (activity.kind === "calamity") {
     assertActivityAccess(account, activity);
     return;
   }
   if (activity.kind === "training") return;
   if (!Number.isInteger(activity.stage) || activity.stage < 1) throw new Error("Invalid stage.");
-  const maximum = activity.kind === "story" ? unlockedStoryStage(account) : activity.kind === "dungeon" && isPlayableDungeon(activity.element) ? unlockedStage(account, activity.element) : activity.kind === "infusion" && isInfusionMode(activity.mode) ? unlockedInfusionStage(account, activity.mode) : activity.kind === "war" && isWarCharacter(activity.character) ? unlockedWarStage(account, activity.character) : 0;
+  const maximum = activity.kind === "story" ? unlockedStoryStage(account) : activity.kind === "oblivion" ? unlockedOblivionStage(account) : activity.kind === "dungeon" && isPlayableDungeon(activity.element) ? unlockedStage(account, activity.element) : activity.kind === "infusion" && isInfusionMode(activity.mode) ? unlockedInfusionStage(account, activity.mode) : activity.kind === "war" && isWarCharacter(activity.character) ? unlockedWarStage(account, activity.character) : 0;
   if (activity.stage > maximum) throw new Error("Activity stage is locked or unavailable.");
 }
 function encounter(game, run, seed2, trainingWave = 1) {
@@ -12134,7 +12763,7 @@ function encounter(game, run, seed2, trainingWave = 1) {
   const masters = run.masters ?? Object.fromEntries((s.state?.allies ?? []).filter((unit) => unit.masterConduit).map((unit) => [unit.definitionId, unit.masterConduit]));
   const args = [seed2, game.starterId, s.progress, run.roster, teamProgress, run.equipment, run.captures, run.upgrades];
   const a = run.activity;
-  const state = withMasterLoadouts(a.kind === "training" ? atTrainingWave(createBattle(seed2, run.roster, teamProgress, run.equipment, run.captures, run.upgrades), trainingWave) : a.kind === "calamity" ? createCalamityBattle(a.activity, a.tier, ...args) : a.kind === "story" ? createStoryBattle(a.stage, ...args) : a.kind === "dungeon" ? createDungeonBattle(a.element, a.stage, ...args) : a.kind === "infusion" ? createInfusionBattle(a.mode, a.stage, ...args, s.state ? s.state.infusion?.schedule ?? "legacy" : "caps") : createWarBattle(a.character, a.stage, ...args), masters);
+  const state = withMasterLoadouts(a.kind === "training" ? atTrainingWave(createBattle(seed2, run.roster, teamProgress, run.equipment, run.captures, run.upgrades), trainingWave) : a.kind === "calamity" ? createCalamityBattle(a.activity, a.tier, ...args) : a.kind === "story" ? createStoryBattle(a.stage, ...args) : a.kind === "dungeon" ? createDungeonBattle(a.element, a.stage, ...args) : a.kind === "oblivion" ? createOblivionBattle(a.stage, ...args) : a.kind === "infusion" ? createInfusionBattle(a.mode, a.stage, ...args, s.state ? s.state.infusion?.schedule ?? "legacy" : "caps") : createWarBattle(a.character, a.stage, ...args), masters);
   if (state.infusion?.mode === "machines") {
     state.machineConduits = { ...game.account.conduits };
     state.machineLootFocus = { ...game.account.machineLootFocus };
@@ -12238,7 +12867,8 @@ function resolveOperation(previous, operation, entropy) {
           mechanicalComponents: reward.mechanicalComponents,
           calamiticTokens: reward.calamiticTokens,
           masterChests: reward.masterChests,
-          devourerCopies: reward.devourerCopies
+          devourerCopies: reward.devourerCopies,
+          calamiticMaterialVersion: reward.calamiticMaterialVersion
         };
         break;
       }
@@ -12254,6 +12884,10 @@ function resolveOperation(previous, operation, entropy) {
       case "upgradeCharacter":
         if (!isStarterId(operation.id) || !ownedCharacters(game.account).includes(operation.id)) throw new Error("Choose an owned Element-Bearer.");
         upgradeCharacter(storage, operation.id, operation.upgradeKind, operation.expected, operation.fodderIds);
+        break;
+      case "ascendCharacter":
+        if (!isStarterId(operation.id) || !ownedCharacters(game.account).includes(operation.id)) throw new Error("Choose an owned Element-Bearer.");
+        ascendCharacter(storage, operation.id, operation.step, operation.expected);
         break;
       case "levelCaptured":
         levelCapturedCharacter(storage, operation.id, operation.expectedLevel);
@@ -12337,7 +12971,7 @@ function resolveOperation(previous, operation, entropy) {
         } else if (operation.kind === "continue") {
           if (state.calamity || run.activity.kind === "calamity") throw new Error("Calamity ends after one boss. Enter the next tier from Play.");
           if (state.phase !== "cleared") throw new Error("Clear the encounter before continuing.");
-          result = state.dungeon || state.infusion || state.war || state.story ? nextStage(state, run.session.teamProgress) : nextWave(state);
+          result = state.dungeon || state.infusion || state.war || state.story || state.oblivion ? nextStage(state, run.session.teamProgress) : nextWave(state);
           if (run.activity.kind !== "training") run.activity.stage++;
           gate(game.account, run.activity, false);
           run.session.stageEvents = [];

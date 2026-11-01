@@ -1,14 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import { starters } from '../src/content/starters';
+import { isCalamiticCharacter } from '../src/content/calamitic-characters';
 import { act, actionUnavailable } from '../src/game/battle';
 import { benchmarkTarget } from '../src/game/native-benchmark-pilot';
 import { auditBoundary, auditGear, auditLevels, auditProfiles, auditState, maximumProgress,
   measureCapability, resourceCost, rosterCombinations, screenMasters, chargedBurst, gearBudget,
   tankProbe, validateAuditGear } from './roster-capability';
+const benchmarkStarters = starters.filter(starter => !isCalamiticCharacter(starter.id));
 
 describe('opponent-free roster capability audit', () => {
   it('covers all16 bearers and every distinct unordered solo/duo/trio', () => {
     const teams = rosterCombinations();
+    expect(benchmarkStarters).toHaveLength(16);
     expect(teams.filter(team => team.length === 1)).toHaveLength(16);
     expect(teams.filter(team => team.length === 2)).toHaveLength(120);
     expect(teams.filter(team => team.length === 3)).toHaveLength(560);
@@ -21,7 +24,7 @@ describe('opponent-free roster capability audit', () => {
     expect(resourceCost('ember', 60, true).progress).toEqual({ level: 60, evolution: 4 });
   });
   it('validates all profile loadouts and maintains current caps and finite results', () => {
-    for (const profile of auditProfiles) for (const unit of starters) {
+    for (const profile of auditProfiles) for (const unit of benchmarkStarters) {
       const gear = auditGear([unit.id], profile);
       validateAuditGear([unit.id], gear);
       const state = auditState([unit.id], 105, profile, 1729, gear);

@@ -19,12 +19,23 @@ describe('six-form character artwork', () => {
     expect(characterName('thornia', 2)).toBe('Gilded Squire, Thornia');
     expect(characterName('crinso', 1)).toBe('Rosebound Page, Crinso');
   });
-  it.each(starters)('$name maps all six forms to real assets across portraits, Home, Character and battle state', (starter) => {
+  it.each(starters)('$name maps shipped forms and keeps pending art neutral across portraits, Home, Character and battle state', (starter) => {
     expect(evolutionTitles[starter.id]).toHaveLength(characterGrowth.forms);
     for (let evolution = 1; evolution <= characterGrowth.forms; evolution++) {
       const form = characterArt(starter.id, evolution);
       const name = `${form.title}, ${starter.name}`;
       expect(characterName(starter.id, evolution)).toBe(name);
+      if (!form.available) {
+        expect(existsSync(resolve('public', 'assets', 'characters', `${form.art}.png`))).toBe(false);
+        const account = emptyAccount();
+        account.characters[starter.id] = { level: 0, evolution };
+        const surfaces = [portrait(starter, evolution), homeHub(starter, false, account), characterHub(starter, 'overview', account)];
+        expect(surfaces[0]).toContain('data:image/svg+xml');
+        for (const html of surfaces) expect(html).not.toContain(`characters/${form.art}.png`);
+        const battle = createBattle(1729, [starter.id], { [starter.id]: { level: 0, evolution } });
+        expect(battle.allies[0].name).toBe(name);
+        continue;
+      }
       expect(existsSync(resolve('public', 'assets', 'characters', `${form.art}.png`))).toBe(true);
       const account = emptyAccount();
       account.characters[starter.id] = { level: 0, evolution };

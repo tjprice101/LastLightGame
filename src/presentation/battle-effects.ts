@@ -1,10 +1,14 @@
 import { type BattleEvent, type Combatant } from '../game/battle';
 import { isStarterId, type StarterId } from '../content/starters';
+import { isCalamiticCharacter } from '../content/calamitic-characters';
 
 type Motion = 'slash' | 'thrust' | 'bow' | 'cast' | 'hammer' | 'twin' | 'guard';
 type Signature = 'cleave' | 'trident' | 'petal' | 'cyclone' | 'lens' | 'feather' | 'fault' | 'mind' | 'star' | 'eclipse' | 'rose' | 'thorn' | 'twin' | 'meridian' | 'citadel' | 'resonance';
 
 export const characterChoreography = {
+  ozriel: { signature: 'citadel', motion: 'guard', family: 'radiant' },
+  ilvaris: { signature: 'resonance', motion: 'cast', family: 'force' },
+  kaelith: { signature: 'fault', motion: 'slash', family: 'void' },
   ember: { signature: 'cleave', motion: 'slash', family: 'flame' },
   tide: { signature: 'trident', motion: 'thrust', family: 'tide' },
   sprout: { signature: 'petal', motion: 'bow', family: 'bloom' },
@@ -60,10 +64,11 @@ export interface AttackFlair {
 export function attackFlair(unit: Combatant, action: string | undefined, enhancedAttack = false): AttackFlair {
   const level = unit.level ?? 0;
   const evolution = unit.evolution ?? 1;
+  const calamitic = !unit.captured && isCalamiticCharacter(unit.definitionId);
   if (!Number.isInteger(level) || level < 0 || !Number.isInteger(evolution) || evolution < 1 || evolution > 6) {
     throw new Error('Attack flair requires valid combatant progression.');
   }
-  const growth = unit.side === 'ally' ? Math.min(1, level / 105) * .65 + (evolution - 1) / 5 * .35
+  const growth = unit.side === 'ally' ? Math.min(1, level / (calamitic ? 110 : 105)) * .65 + (evolution - 1) / 5 * .35
     : Math.min(1, level / 120);
   const skill = enhancedAttack || action !== 'light' && action !== undefined;
   const ultimate = action === 'ultimate';

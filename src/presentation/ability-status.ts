@@ -7,10 +7,14 @@ import { elementalEffectFamilies, type ElementalEffectFamily } from '../content/
 import { nativeIdentities } from '../content/native-identities';
 
 type NativeSlot = 'passive' | 'skill1' | 'skill2' | 'ultimate';
-type NativeStatus = readonly [StatusArtId, string];
+type NativeStatus = readonly [StatusArtId | undefined, string];
 
 /** Statuses each native kit applies, tracks or spends, in reading order; shown beside the ability text in menus (D-339). */
 export const nativeAbilityStatuses: Record<StarterId, Partial<Record<NativeSlot, readonly NativeStatus[]>>> = {
+  ozriel: { passive: [[undefined, 'Refusal']], skill1: [['suppression', 'Weaken']], skill2: [['ward', 'Shield']], ultimate: [['ward', 'Shield']] },
+  ilvaris: { passive: [[undefined, 'Fate-seared Mark']], skill1: [[undefined, 'Fate-seared Mark']],
+    skill2: [['bloom', 'Healing'], [undefined, 'Hymn of Broken Glass']], ultimate: [['bloom', 'Healing']] },
+  kaelith: { passive: [[undefined, 'Fault']], skill1: [[undefined, 'Fault']], skill2: [[undefined, 'Fault']], ultimate: [[undefined, 'Fault']] },
   ember: { passive: [['burn', 'Burn']], skill1: [['burn', 'Burn']], skill2: [['burn', 'Burn']], ultimate: [['burn', 'Burn']] },
   tide: { passive: [['ward', 'Shield']], skill2: [['ward', 'Shield']], ultimate: [['ward', 'Shield']] },
   sprout: { passive: [['native-flora-seed', 'Seed']], skill1: [['native-flora-seed', 'Seed']],
@@ -61,8 +65,8 @@ export function abilityStatuses(strength: AbilityStrength, character?: string, s
   const generic = active.map(([, family, label]) =>
     `<span class="ability-status" data-effect-family="${family}" title="${elementalEffectFamilies[family].label} · ${label}">${statusIcon(family)}${label}</span>`);
   const shown = new Set<string>(active.map(([, family]) => family));
-  const native = (slot ? nativeStatusList(character, slot) : []).filter(([icon]) => !shown.has(icon) && (shown.add(icon), true))
-    .map(([icon, label]) => `<span class="ability-status" data-native-status="${icon}" title="${label}">${statusIcon(icon)}${label}</span>`);
+  const native = (slot ? nativeStatusList(character, slot) : []).filter(([icon]) => !icon || !shown.has(icon) && (shown.add(icon), true))
+    .map(([icon, label]) => `<span class="ability-status" data-native-status="${icon ?? 'text'}" title="${label}">${icon ? statusIcon(icon) : ''}${label}</span>`);
   return generic.length || native.length ? `<span class="ability-statuses">${[...generic, ...native].join('')}</span>` : '';
 }
 

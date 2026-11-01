@@ -1,8 +1,10 @@
 import type { Ability } from './combat';
 import type { StarterId } from './starters';
 import { nativeBalance } from './native-balance';
+import { calamiticFighters, isCalamiticCharacter, type CalamiticCharacterId } from './calamitic-characters';
 
 export interface NativeIdentityDefinition {
+  selfStats?: { health?: number; defense?: number; skillPower?: number };
   role: string;
   playLoop: string;
   passive: { name: string; description: string };
@@ -18,7 +20,25 @@ function ability(name: string, description: string, damageMultiplier?: number, t
   };
 }
 
+function calamiticIdentity(id: CalamiticCharacterId, role: string, playLoop: string,
+  selfStats: NativeIdentityDefinition['selfStats']): NativeIdentityDefinition {
+  const kit = calamiticFighters[id];
+  const abilities = structuredClone(kit.abilities);
+  abilities.ultimate.description = abilities.ultimate.description.replace(' Recover next turn.', '');
+  return { role, playLoop, selfStats, passive: { name: kit.passive.name, description: kit.passive.description },
+    abilities };
+}
+
 export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
+  ozriel: calamiticIdentity('ozriel', 'Refusal and stacking-shield tank',
+    '[Ozriel] protects every living squad member with stacking shields and one [Refusal] per encounter while he lives.',
+    { health: .65, defense: .65 }),
+  ilvaris: calamiticIdentity('ilvaris', 'Fate-marking recovery support',
+    '[Ilvaris] builds [Fate-seared Mark] to five stacks and refreshes [Hymn of Broken Glass] while healing the squad.',
+    { health: 2, defense: 1 }),
+  kaelith: calamiticIdentity('kaelith', 'Fault-building shatterglass attacker',
+    '[Kaelith] builds three [Fault] stacks through direct hits; [Glass Meridian] spends them for a stronger strike.',
+    { skillPower: .75 }),
   ember: {
     role: 'Persistent fire specialist',
     playLoop: '[Infernis] applies [Burn] that lasts across enemy phases; [Flame Arc] can deal its remaining damage at once.',
@@ -230,6 +250,9 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
 };
 
 const directDescriptionCoefficients: Record<StarterId, readonly (readonly number[])[]> = {
+  ozriel: [[240], [], [455]],
+  ilvaris: [[225], [], [440]],
+  kaelith: [[456], [365], [360]],
   ember: [[160], [110], [200]],
   tide: [[150], [], []],
   sprout: [[140], [], []],
@@ -251,7 +274,7 @@ const directDescriptionCoefficients: Record<StarterId, readonly (readonly number
 for (const id of Object.keys(nativeIdentities) as StarterId[]) {
   for (const [index, action] of (['skill1', 'skill2', 'ultimate'] as const).entries()) {
     const definition = nativeIdentities[id].abilities[action];
-    const scale = nativeBalance.skillDamageScale * (action === 'ultimate' ? nativeBalance.lastFlare.damage : 1);
+    const scale = isCalamiticCharacter(id) ? 1 : nativeBalance.skillDamageScale * (action === 'ultimate' ? nativeBalance.lastFlare.damage : 1);
     if (definition.strength.damageMultiplier !== undefined) definition.strength.damageMultiplier *= scale;
     const coefficients = directDescriptionCoefficients[id][index];
     definition.description = definition.description.replace(/(\d+(?:\.\d+)?)%/g, (text, amount: string) =>

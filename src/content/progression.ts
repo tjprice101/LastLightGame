@@ -2,6 +2,7 @@ import { evolutionRecipes, evolutionRequirement, getElement, materialFirstNeeded
 import { specialtyId } from './infusions';
 import { getStarter, isRoseCharacter, type StarterId } from './starters';
 import { roseMaterials } from './roses';
+import { isCalamiticCharacter } from './calamitic-characters';
 import { playableGrowth } from './stat-growth';
 
 export const currencies = [
@@ -17,6 +18,11 @@ export function evolutionRarity(evolution: number): MaterialRarity {
   characterLevelCap(evolution);
   return materialRarities[evolution - 1];
 }
+export function characterRarity(id: StarterId, evolution: number): MaterialRarity | 'Calamitic' {
+  if (!isCalamiticCharacter(id)) return evolutionRarity(evolution);
+  characterLevelCap(evolution, id);
+  return evolution === 6 ? 'Calamitic' : materialRarities[evolution];
+}
 export const fractureRules = {
   sourceTier: 1,
   destinationTier: 2,
@@ -24,7 +30,8 @@ export const fractureRules = {
   preservesLevel: true,
   lycalisReward: 10,
 } as const;
-export interface CharacterProgress { level: number; evolution: number; weaponRank?: number }
+export interface CharacterAscension { stats?: boolean; skill1?: boolean; skill2?: boolean; lastFlare?: boolean }
+export interface CharacterProgress { level: number; evolution: number; weaponRank?: number; ascension?: CharacterAscension }
 export const weaponRules = { maximumRank: 10, attackPerRank: .02 } as const;
 export function weaponCost(element: ElementId, progress: CharacterProgress): UpgradeCost {
   characterGrowthFactor(progress);
@@ -66,18 +73,18 @@ export function levelingMaterials(element: ElementId | 'rosethorn', destination:
   };
 }
 
-export function levelCost(element: ElementId, progress: CharacterProgress): UpgradeCost {
+export function levelCost(element: ElementId, progress: CharacterProgress, id?: StarterId): UpgradeCost {
   getElement(element);
-  characterGrowthFactor(progress);
-  if (progress.level === characterLevelCap(progress.evolution)) throw new Error('Reach the next evolution to raise the level cap.');
+  characterGrowthFactor(progress, id);
+  if (progress.level === characterLevelCap(progress.evolution, id, progress.ascension?.stats === true)) throw new Error('Reach the next evolution to raise the level cap.');
   const destination = progress.level + 1;
   return lateMaterialCost({ fractalis: 10 + 2 * destination, materials: { ...levelingMaterials(element, destination),
     ...(progress.evolution >= 5 ? { [specialtyId(element, 'level')]: 1 } : {}) } }, destination >= 61);
 }
 
-export function evolutionCost(element: ElementId, progress: CharacterProgress): UpgradeCost {
+export function evolutionCost(element: ElementId, progress: CharacterProgress, id?: StarterId): UpgradeCost {
   getElement(element);
-  characterGrowthFactor(progress);
+  characterGrowthFactor(progress, id);
   if (progress.evolution === characterGrowth.forms) throw new Error('This character has reached its final evolution.');
   const recipe = evolutionRecipes[progress.evolution - 1];
   const balance = evolutionBalance[progress.evolution - 1];
@@ -90,23 +97,43 @@ export function evolutionCost(element: ElementId, progress: CharacterProgress): 
   }, progress.evolution >= 4);
 }
 
-export function characterLevelCap(evolution: number): number {
+export function characterLevelCap(evolution: number, id?: StarterId, ascended = false): number {
   if (!Number.isInteger(evolution) || evolution < 1 || evolution > characterGrowth.forms) {
     throw new Error(`Character evolution must be an integer from 1 to ${characterGrowth.forms}.`);
   }
 
+  if (ascended) return 115;
+  if (id && isCalamiticCharacter(id) && evolution === 6) return 110;
   return characterGrowth.firstLevelCap + (evolution - 1) * characterGrowth.levelsPerEvolution;
 }
 
 export function characterLevelCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
-  const cost = levelCost(getStarter(id).elementId, progress);
+  const cost = levelCost(getStarter(id).elementId, progress, id);
+  if (isCalamiticCharacter(id)) {
+    const destination = progress.level + 1;
+    const chain = {
+      'calamity-common': Math.ceil(destination / 30),
+      ...Object.fromEntries(levelingMaterialTiers.filter((tier) => destination >= tier.destination)
+        .map((tier) => [`calamity-${tier.rarity.toLowerCase()}`, 1])),
+      ...(destination >= 91 ? { 'fragment-of-rise': 1 } : {}),
+    };
+    return lateMaterialCost({ fractalis: cost.fractalis, materials: chain }, destination >= 61);
+  }
   if (!isRoseCharacter(id)) return cost;
   return lateMaterialCost({ fractalis: cost.fractalis, materials: levelingMaterials('rosethorn', progress.level + 1) },
     progress.level + 1 >= 61);
 }
 
 export function characterEvolutionCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
-  const cost = evolutionCost(getStarter(id).elementId, progress);
+  const cost = evolutionCost(getStarter(id).elementId, progress, id);
+  if (isCalamiticCharacter(id)) {
+    const recipes = ['calamity-rare', 'calamity-epic', 'calamity-legendary', 'calamity-omnic', 'fragment-of-rise'] as const;
+    const amount = [5, 5, 5, 5, 5][progress.evolution - 1];
+    const chestAmount = [1, 2, 3, 5, 8][progress.evolution - 1];
+    const materials = { ...cost.materials, [recipes[progress.evolution - 1]]: amount,
+      'feather-severed-dawn': chestAmount, 'splinter-unmade-night': chestAmount };
+    return lateMaterialCost({ fractalis: cost.fractalis, materials }, progress.evolution >= 4);
+  }
   if (!isRoseCharacter(id)) return cost;
   const recipe = evolutionRecipes[progress.evolution - 1];
   const balance = evolutionBalance[progress.evolution - 1];
@@ -122,9 +149,9 @@ export function characterEvolutionRequirement(id: StarterId, evolution: number) 
   return { ...requirement, infusion: isRoseCharacter(id) ? 'roses' as const : requirement.infusion };
 }
 
-export function characterGrowthFactor(progress: CharacterProgress): number {
+export function characterGrowthFactor(progress: CharacterProgress, id?: StarterId): number {
   if (!Number.isInteger(progress.weaponRank ?? 0) || (progress.weaponRank ?? 0) < 0 || (progress.weaponRank ?? 0) > weaponRules.maximumRank) throw new Error('Invalid weapon rank.');
-  const cap = characterLevelCap(progress.evolution);
+  const cap = characterLevelCap(progress.evolution, id, progress.ascension?.stats === true);
   if (!Number.isInteger(progress.level) || progress.level < 0 || progress.level > cap) {
     throw new Error(`Character level must be an integer from 0 to ${cap}.`);
   }
@@ -132,8 +159,8 @@ export function characterGrowthFactor(progress: CharacterProgress): number {
     (progress.evolution - 1) * characterGrowth.perEvolution;
 }
 
-export function characterPotencyFactor(progress: CharacterProgress): number {
-  characterGrowthFactor(progress);
+export function characterPotencyFactor(progress: CharacterProgress, id?: StarterId): number {
+  characterGrowthFactor(progress, id);
   return 1 + progress.level * .003 + (progress.evolution - 1) * .05;
 }
 

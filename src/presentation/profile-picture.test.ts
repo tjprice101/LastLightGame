@@ -10,7 +10,13 @@ describe('installed square profile illustrations', () => {
     for (const picture of profilePictures) {
       const html = profilePicture(picture.id);
       const asset = `${picture.characterId}-${picture.form}` as const;
-      expect(html).toContain(`src="${assetUrl(`profile-pictures/${asset}.png`)}?v=${profilePictureArt[asset]}"`);
+      if (!(asset in profilePictureArt)) {
+        expect(html).toContain('Profile artwork pending');
+        expect(html).not.toContain('<img');
+        continue;
+      }
+      const revision = profilePictureArt[asset as keyof typeof profilePictureArt];
+      expect(html).toContain(`src="${assetUrl(`profile-pictures/${asset}.png`)}?v=${revision}"`);
       expect(html).not.toContain('assets/characters/');
       expect(html).not.toContain('character-idle');
     }

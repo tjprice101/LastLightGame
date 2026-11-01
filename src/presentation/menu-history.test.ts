@@ -13,7 +13,7 @@ describe('menu traversal history', () => {
     expect(main).toContain('[data-calamity-tiers="${saved.activity}"] [data-calamity-choice="${saved.tier}"]');
     expect(main).toContain('bindActivityDifficulties(app);');
     expect(main).toContain('bindEnemyStrength(app);');
-    expect(main).toContain("[data-dungeon-stage], [data-infusion-stage], [data-war-stage]')) control.dispatchEvent(new Event('change', { bubbles: true }))");
+    expect(main).toContain("[data-dungeon-stage], [data-oblivion-stage], [data-infusion-stage], [data-war-stage]')) control.dispatchEvent(new Event('change', { bubbles: true }))");
   });
   it('wires toolbar and result exits to the same server-owning Back flow with a resume fallback', () => {
     const main = readFileSync(new URL('../main.ts', import.meta.url), 'utf8');

@@ -1,6 +1,6 @@
 import { starters } from '../content/starters';
 import { characterName } from '../content/character-art';
-import { evolutionRarity } from '../content/progression';
+import { characterRarity } from '../content/progression';
 import { elements, materialRarities } from '../content/activities';
 import { resolveFighter, formatStat } from '../content/combat';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
@@ -34,10 +34,10 @@ function characterArchive(account: Account | null): string {
   const total = starters.length * 6;
   return `<div class="archive-filters" role="group" aria-label="Character archive filters">
       <label>Element<select data-character-filter="element"><option value="">All elements</option>${elements.map((element) => `<option value="${element.id}">${element.name}</option>`).join('')}</select></label>
-      <label>Rarity<select data-character-filter="rarity"><option value="">All rarities</option>${materialRarities.map((rarity) => `<option>${rarity}</option>`).join('')}</select></label>
+      <label>Rarity<select data-character-filter="rarity"><option value="">All rarities</option>${[...materialRarities, 'Calamitic'].map((rarity) => `<option>${rarity}</option>`).join('')}</select></label>
       <label>Ownership<select data-character-filter="ownership"><option value="">All characters</option><option value="owned">Owned</option><option value="unowned">Not owned</option></select></label>
       <label>Form discovery<select data-character-filter="discovery"><option value="">All forms</option><option value="revealed">Reached</option><option value="locked">Unreached</option></select></label>
-      <label>Stars<select data-character-filter="stars"><option value="">All stars</option>${[1, 2, 3, 4, 5, 6].map((stars) => `<option value="${stars}">${stars}-star</option>`).join('')}</select></label>
+      <label>Stars<select data-character-filter="stars"><option value="">All stars</option>${[1, 2, 3, 4, 5, 6, 7].map((stars) => `<option value="${stars}">${stars}-star</option>`).join('')}</select></label>
       <button class="text-button" data-reset-character-filters>Reset filters</button>
     </div><div class="archive-results-toolbar"><p data-character-filter-result role="status">${total} / ${total} forms shown</p>
       <div class="ref-archive-manage"><button class="ref-link" data-page="character">Manage Element-Bearers →</button></div></div>
@@ -50,12 +50,12 @@ function characterArchive(account: Account | null): string {
       const current = progress?.evolution === evolution;
       const kit = resolveFighter(starter.id, current ? progress : { level: 0, evolution, weaponRank: 0 }, current ? account?.conduitEquipment?.[starter.id] : undefined, current ? account?.conduitUpgrades : undefined,
         current ? account?.masterEquipment?.[starter.id] ?? undefined : undefined);
-      return `<article class="archive-card ${revealed ? 'archive-form-revealed' : 'archive-form-locked'}" data-archive-character="${starter.id}" data-form="${evolution}" data-filter-element="${starter.elementId}" data-filter-rarity="${evolutionRarity(evolution)}" data-filter-ownership="${!account ? 'unavailable' : owned ? 'owned' : 'unowned'}" data-filter-discovery="${!account ? 'unavailable' : revealed ? 'revealed' : 'locked'}" data-filter-stars="${starter.stars}">
-        <div class="archive-portrait${revealed ? '' : ' unreached-character-art'}">${portrait(starter, evolution)}</div>
-        <h3>${characterName(starter.id, evolution)} · Evo.${evolution}</h3>
-        ${elementLabel(starter.elementId)}${characterRating(starter.id, evolution)}
+      return `<article class="archive-card ${revealed ? 'archive-form-revealed' : 'archive-form-locked'}" data-archive-character="${starter.id}" data-form="${evolution}" data-filter-element="${starter.elementId}" data-filter-rarity="${characterRarity(starter.id, evolution)}" data-filter-ownership="${!account ? 'unavailable' : owned ? 'owned' : 'unowned'}" data-filter-discovery="${!account ? 'unavailable' : revealed ? 'revealed' : 'locked'}" data-filter-stars="${starter.stars}">
+        <div class="archive-portrait${revealed ? '' : ' unreached-character-art'}">${portrait(starter, evolution, current && progress?.ascension?.stats === true)}</div>
+        <h3>${characterName(starter.id, evolution, current && progress?.ascension?.stats === true)} · Evo.${evolution}</h3>
+        ${elementLabel(starter.elementId)}${characterRating(starter.id, evolution, current && progress?.ascension?.stats === true)}
         <p class="archive-ownership">${!account ? 'Ownership unavailable' : !owned ? 'Not owned' : current ? `Current form · Lv.${progress?.level}` : revealed ? 'Reached form' : 'Evolution not reached'}</p>
-        ${information(`archive-kit-${starter.id}-${evolution}`, `${characterName(starter.id, evolution)} · Evo.${evolution}`, `${characterRole(starter.id)}${elementLabel(starter.elementId)}${characterRating(starter.id, evolution)}
+        ${information(`archive-kit-${starter.id}-${evolution}`, `${characterName(starter.id, evolution, current && progress?.ascension?.stats === true)} · Evo.${evolution}`, `${characterRole(starter.id)}${elementLabel(starter.elementId)}${characterRating(starter.id, evolution, current && progress?.ascension?.stats === true)}
         <p class="archive-ownership">${!account ? 'Ownership unavailable' : !owned ? 'Not owned' : current ? `Current form · Lv.${progress?.level}` : revealed ? 'Reached form' : 'Evolution not reached'}</p>
         <p>${starter.weapon}</p>
         <h3>Origin</h3><p>${starter.description}</p><p>${starter.lore.story}</p><blockquote>${starter.lore.vow}</blockquote>

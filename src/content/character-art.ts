@@ -2,10 +2,12 @@ import { getStarter, type StarterId } from './starters';
 import { characterLevelCap } from './progression';
 import { flagshipEvolutionTitles } from './flagships';
 import { warEvolutionTitles } from './war-characters';
+import { calamiticEvolutionTitles, isCalamiticCharacter } from './calamitic-characters';
 
 export const evolutionTitles: Record<StarterId, readonly string[]> = {
   ...flagshipEvolutionTitles,
   ...warEvolutionTitles,
+  ...calamiticEvolutionTitles,
   ember: ['Beginner', 'Embersteel Knight', 'Phoenixflame Templar', 'Prismatic Dawn Ascendant', 'Seraph of the Heavenly Pyre', 'Eternal Heavenflame Sovereign'],
   tide: ['Beginner', 'Pearlcurrent Guard', 'Tidalcrest Paladin', 'Prismatic Wave Ascendant', 'Seraph of the Celestial Tide', 'Eternal Heavenwater Sovereign'],
   sprout: ['Beginner', 'Leaflight Warden', 'Bloomcrest Paladin', 'Prismatic Garden Ascendant', 'Seraph of the Heavenly Bloom', 'Eternal Heavenbloom Sovereign'],
@@ -15,15 +17,16 @@ export const evolutionTitles: Record<StarterId, readonly string[]> = {
 };
 
 export function characterArt(id: StarterId, evolution = 1): { art: string; title: string; available: boolean } {
-  characterLevelCap(evolution);
+  characterLevelCap(evolution, id);
   const starter = getStarter(id);
   return {
     art: evolution === 1 ? starter.art : `${starter.art}-evo-${evolution}`,
     title: evolutionTitles[id][evolution - 1],
-    available: true,
+    // D-435 Calamitic portraits are prompt-only until delivered.
+    available: !isCalamiticCharacter(id),
   };
 }
 
-export function characterName(id: StarterId, evolution = 1): string {
-  return `${characterArt(id, evolution).title}, ${getStarter(id).name}`;
+export function characterName(id: StarterId, evolution = 1, riseBlessed = false): string {
+  return `${characterArt(id, evolution).title}, ${getStarter(id).name}${riseBlessed ? ', Rise-blessed' : ''}`;
 }

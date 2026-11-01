@@ -10,7 +10,7 @@ import { roseMaterials } from './content/roses';
 import { creatures, getCreature } from './content/creatures';
 import { capturedProgress, resolveCapturedFighter } from './game/character-instances';
 import { resolveFighter } from './content/combat';
-import { evolutionRarity } from './content/progression';
+import { characterRarity, evolutionRarity } from './content/progression';
 
 export function exampleAccount(): Account {
   const account = emptyAccount();
@@ -69,9 +69,9 @@ export function memberDisplay(account: Account, id: string) {
   if (isStarterId(id)) {
     const person = getStarter(id), progress = account.characters[id];
     if (!progress) throw new Error('Element-Bearer is not owned.');
-    return { id, name: person.name, fullName: characterName(id, progress.evolution),
+    return { id, name: person.name, fullName: characterName(id, progress.evolution, progress.ascension?.stats === true),
       elementId: person.elementId, element: person.element, role: person.role, stars: person.stars,
-      rarity: evolutionRarity(progress.evolution), progress, art: `characters/${characterArt(id, progress.evolution).art}`,
+      rarity: characterRarity(id, progress.evolution), progress, art: `characters/${characterArt(id, progress.evolution).art}`,
       fighter: resolveFighter(id, progress, equipment, account.conduitUpgrades, account.masterEquipment?.[id] ?? undefined) };
   }
   const copy = account.capturedCharacters?.find(entry => entry.instanceId === id);

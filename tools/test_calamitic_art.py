@@ -1,103 +1,158 @@
-from hashlib import sha256
-from io import BytesIO
-import json
-from pathlib import Path
-import shutil
-import tempfile
+"""Validate the exact pending Calamitic queue without touching runtime content."""
+import re
 import unittest
+from unittest.mock import Mock, patch
 
-import numpy as np
-from PIL import Image
-from scipy.ndimage import binary_erosion
+from character_palette import apply_palette, design_prose, palette_clause
+from build_calamitic_art import (
+    DESIGNS, STATUSES, MATERIALS, CONDUITS, PALETTE, SPREAD, MARGINS,
+    outputs, references, write_preserving_endings,
+)
 
-from intake_calamitic_art import MAPPINGS, MANIFEST, SETTINGS, ROOT, intake, preflight
-from intake_status_art import clean
+BLOCK = re.compile(r"```text\n(.*?)\n```", re.S)
 
 
 class CalamiticArtTests(unittest.TestCase):
-    def test_all_six_reproduce_from_archived_bytes_with_transparent_margins(self):
-        manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
-        self.assertEqual(manifest["asset_count"], 6)
-        self.assertEqual(len(MAPPINGS), 6)
-        self.assertEqual(sum(row[2] == "conduits" for row in MAPPINGS), 5)
-        for source, archive, runtime, output, record in preflight():
-            with self.subTest(asset=record["asset"]):
-                self.assertEqual(source, archive)
-                self.assertEqual(sha256(archive.read_bytes()).hexdigest(), record["source_sha256"])
-                self.assertEqual(output, runtime.read_bytes())
-                self.assertEqual(record, next(row for row in manifest["assets"] if row["asset"] == record["asset"]))
-                self.assertFalse((ROOT / record["incoming"]).exists())
-                with Image.open(BytesIO(output)) as image:
-                    self.assertEqual(image.mode, "RGBA")
-                    self.assertEqual(image.size, (256, 256))
-                    alpha = np.asarray(image)[:, :, 3]
-                    self.assertFalse(alpha[:12].any())
-                    self.assertFalse(alpha[-12:].any())
-                    self.assertFalse(alpha[:, :12].any())
-                    self.assertFalse(alpha[:, -12:].any())
-                    x1, y1, x2, y2 = image.getbbox()
-                    self.assertLessEqual(max(x2 - x1, y2 - y1), 224)
+    def test_shared_global_prompt_rules_add_no_failures(self):
+        import test_art_prompts
 
-    def test_reviewed_gaps_are_transparent_and_actual_white_red_dark_pixels_survive(self):
-        settings = json.loads(SETTINGS.read_text(encoding="utf-8"))
-        for name, asset, _ in MAPPINGS:
-            with self.subTest(asset=asset):
-                with Image.open(ROOT / "Art" / "source" / "calamitic" / name) as image:
-                    original = np.asarray(image)
-                    processed = np.asarray(clean(image, settings[asset]))
-                for x, y in settings[asset]["background_seeds"]:
-                    self.assertEqual(processed[round(y * 1024), round(x * 1024), 3], 0)
-                r, g, b = original.astype(int).transpose(2, 0, 1)
-                for selected in ((r > 210) & (g > 210) & (b > 210),
-                                 (r > 175) & (r > g * 1.8) & (r > b * 1.3),
-                                 (r < 40) & (g < 40) & (b < 40)):
-                    self.assertGreater(selected.sum(), 20)
-                    self.assertGreater((processed[:, :, 3][selected] > 0).mean(), .99)
-                    opaque = selected & (processed[:, :, 3] == 255)
-                    self.assertGreater(opaque.sum(), 20)
-                    np.testing.assert_allclose(processed[:, :, :3][opaque], original[opaque], atol=1)
-                    interior = binary_erosion(selected, structure=np.ones((7, 7), dtype=bool))
-                    self.assertTrue((processed[:, :, 3][interior] == 255).all())
-                    np.testing.assert_allclose(processed[:, :, :3][interior], original[interior], atol=1)
-        throne = Image.open(ROOT / "Art" / "source" / "calamitic" / "Throne of Borrowed Tomorrows.png")
-        shadow = np.asarray(clean(throne, settings["calamitic-throne-borrowed-tomorrows"]))
-        self.assertEqual(shadow[965, 500, 3], 255)
+        entries = list(test_art_prompts.prompts())
+        new_paths = set(outputs())
+        baseline = [entry for entry in entries if entry[0] not in new_paths]
+        names = ("test_cutout_rules_and_destination_ratios_are_preserved",
+                 "test_every_prompt_retains_shared_rendering_and_valid_single_flags")
 
-    def test_supplied_alpha_is_authoritative(self):
-        image = Image.new("RGBA", (64, 64), (120, 230, 50, 255))
-        image.putpixel((0, 0), (10, 20, 30, 0))
-        settings = json.loads(SETTINGS.read_text(encoding="utf-8"))["calamitic-tokens"]
-        self.assertEqual(clean(image, settings).tobytes(), image.tobytes())
+        def failures_for(selected):
+            result = unittest.TestResult()
+            with patch.object(test_art_prompts, "prompts", lambda: iter(selected)):
+                for name in names:
+                    test_art_prompts.ArtPromptTests(name).run(result)
+            self.assertFalse(result.errors)
+            return {str(test) for test, _ in result.failures}
 
-    def test_cleanup_requires_apply_and_review(self):
-        for args in ((False, True, False), (True, True, False), (False, True, True)):
-            with self.assertRaisesRegex(ValueError, "--apply --reviewed"):
-                intake(*args)
+        # Historical packs have known failures; this queue must add none.
+        self.assertEqual(failures_for(entries), failures_for(baseline))
 
-    def test_conflicts_fail_before_writing_and_only_verified_root_duplicates_are_removed(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            archive = root / "Art" / "source" / "calamitic"
-            shutil.copytree(ROOT / "Art" / "source" / "calamitic", archive)
-            settings = root / "settings.json"
-            shutil.copyfile(SETTINGS, settings)
-            manifest = root / "manifest.json"
-            sentinel = root / "unrelated.png"
-            sentinel.write_bytes(b"untouched")
-            first = MAPPINGS[0]
-            incoming = root / first[0]
-            incoming.write_bytes(b"wrong source")
-            with self.assertRaisesRegex(FileExistsError, "Conflicting"):
-                preflight(root, settings, manifest)
-            self.assertFalse((root / "public").exists())
-            shutil.copyfile(archive / first[0], incoming)
-            intake(True, True, True, root, settings, manifest)
-            self.assertFalse(incoming.exists())
-            self.assertEqual(sentinel.read_bytes(), b"untouched")
-            runtime = root / "public" / "assets" / first[2] / f"{first[1]}.png"
-            runtime.write_bytes(b"changed export")
-            with self.assertRaisesRegex(FileExistsError, "Changed or untracked"):
-                preflight(root, settings, manifest)
+    def test_regeneration_preserves_existing_line_endings(self):
+        for newline in (b"\n", b"\r\n"):
+            path = Mock()
+            path.exists.return_value = True
+            path.read_bytes.return_value = b"original" + newline
+            write_preserving_endings(path, "updated\nsecond line\n")
+            path.write_bytes.assert_called_once_with(b"updated" + newline + b"second line" + newline)
+
+    def test_generated_packs_match_reproducible_sources(self):
+        generated = outputs()
+        self.assertEqual([len(BLOCK.findall(text)) for text in generated.values()], [33, 10, 1, 9])
+        for path, expected in generated.items():
+            self.assertEqual(path.read_text(encoding="utf-8"), expected, path.name)
+            self.assertIn("All artwork pending owner delivery", expected)
+            blocks = BLOCK.findall(expected)
+            self.assertEqual(expected.count("Target runtime asset ID:"), len(blocks))
+            self.assertEqual(expected.count("Target export:"), len(blocks))
+            self.assertEqual(expected.count("Filename:"), len(blocks))
+
+    def test_complete_roster_titles_abilities_and_materials(self):
+        self.assertEqual([d["name"] for d in DESIGNS], ["Ozriel", "Ilvaris", "Kaelith"])
+        self.assertEqual([d["gender"] for d in DESIGNS], ["male", "female", "female"])
+        self.assertEqual([d["element"] for d in DESIGNS], ["Tranquilitic", "Atmospheric", "Chaotic"])
+        self.assertEqual([d["role"] for d in DESIGNS], ["Tank", "Support", "Attacker"])
+        text = next(iter(outputs().values()))
+        for design in DESIGNS:
+            for title in design["titles"]:
+                self.assertIn(f"{title}, {design['name']}", text)
+            for _, name, _ in design["icons"]:
+                self.assertIn(name, text)
+            for action in ("passive", "skill1", "skill2", "ultimate"):
+                self.assertIn(f"`{design['id']}-{action}`", text)
+            for evolution in range(1, 7):
+                asset = design["id"] if evolution == 1 else f"{design['id']}-evo-{evolution}"
+                self.assertIn(f"`{asset}`", text)
+        self.assertEqual(len(STATUSES), 3)
+        self.assertEqual(len(MATERIALS), 10)
+        self.assertEqual(len(CONDUITS), 9)
+        ids = re.findall(r"Target runtime asset ID: `([^`]+)`", "\n".join(outputs().values()))
+        self.assertEqual(len(ids), len(set(ids)))
+        for name, _, _ in MATERIALS:
+            self.assertIn(name, "\n".join(outputs().values()))
+        for name, _ in CONDUITS:
+            self.assertIn(name, "\n".join(outputs().values()))
+
+    def test_exact_evolution_references_and_one_flag_each(self):
+        refs = references()
+        self.assertEqual(set(refs), set(range(7)))
+        counts = [0, 0]
+        for text in outputs().values():
+            for prompt in BLOCK.findall(text):
+                portrait = "--ar 4:3" in prompt
+                for flag in ("ar", "niji", "s", "q", "no"):
+                    self.assertEqual(len(re.findall(rf"--{flag}(?=\s)", prompt)), 1)
+                for flag in ("sref", "sw"):
+                    self.assertEqual(len(re.findall(rf"--{flag}(?=\s)", prompt)), int(portrait))
+                self.assertIn("--niji 6 --s 100 --q 1", prompt)
+                if portrait:
+                    stage = counts[0] % 6 + 1
+                    self.assertTrue(prompt.endswith(f" --sref {refs[stage]} --sw 400"))
+                    counts[0] += 1
+                else:
+                    self.assertIn("--ar 1:1", prompt)
+                    self.assertNotIn("--sref", prompt)
+                    self.assertNotIn("--sw", prompt)
+                    counts[1] += 1
+        self.assertEqual(counts, [18, 35])
+
+    def test_palette_locks_key_exemption_opaque_powers_and_safety(self):
+        clause = palette_clause("Calamitic item", palette=PALETTE)
+        for text in outputs().values():
+            for prompt in BLOCK.findall(text):
+                positive = prompt.split(" --ar", 1)[0]
+                design = design_prose(positive).split(", plain solid", 1)[0]
+                negatives = prompt.split(" --no ", 1)[1].split(" --sref", 1)[0]
+                self.assertEqual(prompt.count(clause), 1)
+                for color in PALETTE[1].split(", "):
+                    self.assertNotRegex(design, rf"\b{color}\b")
+                    if color != "green":
+                        self.assertIn(color, negatives.split(", text,", 1)[0])
+                self.assertNotIn("green", negatives.split(", "))
+                self.assertIn("plain solid green background (#00FF00)", positive)
+                self.assertIn("flat unlit color edge to edge and through all openings", positive)
+                self.assertIn("opaque solid-color lines ribbons rings and shapes with crisp hard edges", positive)
+                self.assertIn("no glows or glowing visual effects", positive)
+                self.assertIn("non-emissive painted highlights", positive)
+                self.assertIn("continuous clear solid-background safety margin on all four sides and corners", positive)
+                self.assertIn("nothing touches or crosses the frame edges", positive)
+                self.assertLessEqual(len(design_prose(positive).split()), 380)
+                self.assertLessEqual(len(positive.split()), 450)
+                self.assertEqual(apply_palette(prompt, "Calamitic item", palette=PALETTE, reference_weight=400), prompt)
+                self.assertNotRegex(design.replace("no glows or glowing visual effects", "").replace("non-emissive", ""),
+                                    r"\b(?:glow|glowing|luminous|translucent|emissive)\b")
+                self.assertNotRegex(design.lower(), r"\b(?:blood|gore|nude|naked|sexy|bust|breastplate|child|injury|wound)\b")
+
+    def test_portrait_architecture_anatomy_and_names_outside_prose(self):
+        portraits = [p for p in BLOCK.findall(next(iter(outputs().values()))) if "--sref" in p]
+        for design, prompts in zip(DESIGNS, (portraits[:6], portraits[6:12], portraits[12:])):
+            for index, prompt in enumerate(prompts):
+                positive = prompt.split(" --ar", 1)[0]
+                self.assertIn(design["weapon"], positive)
+                self.assertIn("2.5-3 heads tall", positive)
+                self.assertIn("fully covered prismatic pearlescent armor from head to toe", positive)
+                self.assertIn("shattering reality like glass", positive)
+                self.assertIn(f"{SPREAD[index]} percent canvas width and height with {MARGINS[index]} percent outer margins", positive)
+                body = "one third" if index < 3 else "one quarter" if index == 3 else "one fifth"
+                self.assertIn(f"body occupies {body} of canvas height", positive)
+                self.assertIn("continuous visible clearance overrides occupancy", positive)
+                for name in [design["name"], *design["titles"]]:
+                    self.assertNotIn(name.lower(), positive.lower())
+                if index >= 3:
+                    for phrase in ("shattered-glass wings", "crimson", "lattice"):
+                        self.assertIn(phrase, positive)
+                if index >= 4:
+                    self.assertIn("retain", positive)
+                    self.assertIn("dense", positive)
+        for prompt in BLOCK.findall("\n".join(outputs().values())):
+            if "--ar 1:1" in prompt:
+                self.assertIn("face-free", prompt)
+                self.assertIn("at least 15 percent empty margin", prompt)
 
 
 if __name__ == "__main__":

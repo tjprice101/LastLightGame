@@ -180,7 +180,7 @@ describe('roster, squad and summon screens', () => {
     }
     expect(featured.match(/aria-label="5-star character"/g)).toHaveLength(6);
     expect(featured.match(/aria-label="6-star character"/g)).toHaveLength(4);
-    expect(featured.match(/rarity-common">Common/g)).toHaveLength(10);
+    expect(featured.match(/rarity-common" data-rarity="Common">Common/g)).toHaveLength(10);
     expect(featured).not.toMatch(/Omnic|infusion:|characters\/|abilities\/|portrait/);
     expect(bannerCharacters(standardBannerPool().filter((entry) => entry.kind === 'creature'))).toBe('');
   });

@@ -832,8 +832,9 @@ describe('server authoritative game engine', () => {
 });
 
 describe('profile pictures and chat contract', () => {
-  it('validates all 32 profile pictures authoritatively without automatic writes', () => {
+  it('validates all 32 delivered-art profile pictures without automatic writes', () => {
     expect(profilePictures).toHaveLength(32);
+    expect(profilePictures.some(picture => ['ozriel', 'ilvaris', 'kaelith'].includes(picture.characterId))).toBe(false);
     expect(new Set(profilePictures.map(p => p.id)).size).toBe(32);
     const game = started();
     const loaded = structuredClone(game);

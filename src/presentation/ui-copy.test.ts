@@ -72,7 +72,7 @@ describe('visible UI copy', () => {
       const text = textContent(html);
       expect(text).not.toMatch(/\bauthored\b|\batomically\b|independent weighted bundle rolls|linear interpolation|intentional difficulty walls|base quantity rounds|verified final-clear receipt/i);
     }
-    expect(gameplayHub(account)).toContain('One boss, one chest, no other drops.');
+    expect(gameplayHub(account)).toContain('One sealed tier chest and one independent recruitment roll per victory.');
     expect(plain(gameplayHub(account))).toContain('Every Machine drops Broken Mechanical Components');
   });
   it('never uses affinity aliases in element filters or presentation data sources', () => {

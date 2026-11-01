@@ -5,6 +5,7 @@
 .star-tier-4 { --star-light: #efd4ff; --star-mid: #bd82ec; --star-dark: #6a3c9d; --star-glow: #c58aff88; }
 .star-tier-5 { --star-light: #fff; --star-mid: #eef5ff; --star-dark: #8dacc8; --star-glow: #eef8ffb0; }
 .star-tier-6 { --star-light: #fff; --star-mid: #abedff; --star-dark: #ab78df; --star-glow: #d4bdffc0; border-color: #e6d8ff80; box-shadow: inset 0 1px #fff6, 0 0 12px #c5a4ff30; }
+.star-tier-7 { --star-light: #fff; --star-mid: #e4e4e8; --star-dark: #4a0716; --star-glow: #a80f2d; border-color: #fff; box-shadow: inset 0 1px #fff8, 0 0 12px #a80f2d70; }
 .rating-stars { display: flex; flex-wrap: wrap; gap: 3px; }
 .rating-star { position: relative; display: block; width: 19px; height: 19px; flex: 0 0 19px; filter: drop-shadow(0 1px 1px #000) drop-shadow(0 0 3px var(--star-glow)); }
 .star-face, .star-shine { position: absolute; inset: 0; clip-path: polygon(50% 0%, 62% 34%, 98% 37%, 71% 60%, 80% 96%, 50% 77%, 20% 96%, 29% 60%, 2% 37%, 38% 34%); }
@@ -18,6 +19,8 @@
 .star-tier-4 .rating-star, .star-tier-5 .rating-star { filter: drop-shadow(0 1px 1px #000) drop-shadow(0 0 4px var(--star-glow)); }
 .star-tier-6 .rating-star { filter: drop-shadow(0 1px 1px #000) drop-shadow(0 0 5px #e8daff) drop-shadow(0 0 8px #90dfff70); }
 .star-tier-6 .star-face { background: linear-gradient(135deg, #fff 0%, #ffb5d8 18%, #ffe5a0 32%, #b9ffcf 46%, #aff0ff 60%, #c3b2ff 76%, #fff 88%, #df91dd 100%); }
+.star-tier-7 .star-face { background: linear-gradient(135deg, #fff 0%, #17171b 24%, #fff 43%, #a80f2d 57%, #08080b 76%, #fff 100%); }
+.star-tier-7 .rating-star { filter: drop-shadow(0 1px 1px #000) drop-shadow(0 0 5px #fff) drop-shadow(0 0 8px #a80f2d); }
 .rarity-badge { --rarity-metal: #bcbcc3; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 3px; border: 1px solid color-mix(in srgb, var(--rarity-metal) 60%, transparent); border-radius: 18px 8px 8px 18px; background: linear-gradient(140deg, #343438, #141417); box-shadow: inset 0 1px #ffffff15; }
 .rarity-uncommon { --rarity-metal: #9dd5aa; }
 .rarity-rare { --rarity-metal: #92c7ee; }
@@ -29,8 +32,14 @@
 .rarity-medallion > span { position: relative; font: 700 12px Georgia, serif; text-shadow: 0 1px 2px #000; }
 .rarity-label { color: var(--rarity-metal); letter-spacing: .03em; }
 .rarity-omnic .rarity-medallion { background: linear-gradient(135deg, #e9adc8, #d6d5a8, #a4ccd1, #b3a0d5); color: #fff; }
+.rarity-calamitic { --rarity-metal: #a80f2d; color: #fff; border-color: #fff; background: linear-gradient(115deg, #08080b 0%, #fff 26%, #17171b 42%, #750a22 59%, #08080b 78%, #fff 100%); box-shadow: inset 0 0 0 1px #a80f2d, 0 0 10px #a80f2d55; }
+.rarity-calamitic .rarity-medallion { color: #fff; border-color: #fff; background: linear-gradient(135deg, #fff 0%, #111 35%, #8a0d27 62%, #08080b 100%); }
+.rarity-calamitic .rarity-label { color: #fff; text-shadow: 0 0 5px #a80f2d; }
 .character-stat-rating { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 14px; }
 .character-stat-rating > strong { font: 600 12px "Segoe UI", sans-serif; color: #c8c8cf; }
 @keyframes rating-star-shine { 0%, 55% { background-position: 100% 0; } 85%, 100% { background-position: 0% 0; } }
 html[data-motion="reduced"] .star-shine { animation: none; background-position: 50% 0; opacity: .3; }
 :root[data-motion="reduced"] .star-shine { animation: none; background-position: 50% 0; opacity: .3; }
+
+.rise-blessed-badge { display: inline-grid; place-items: center; width: 32px; height: 32px; flex: 0 0 32px; border: 1px solid #fff; border-radius: 50%; background: radial-gradient(circle, #a80f2d 0 28%, #101014 60%, #050507 100%); box-shadow: inset 0 0 0 2px #a80f2d, 0 0 8px #a80f2d80; }
+.rise-blessed-badge svg { width: 25px; height: 25px; fill: #fff; stroke: #a80f2d; stroke-width: .8px; filter: drop-shadow(0 1px 2px #000); }

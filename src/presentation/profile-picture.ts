@@ -7,5 +7,7 @@ export function profilePicture(value: string): string {
   if (id === 'neutral') return '<span aria-hidden="true">L/L</span>';
   const picture = profilePictures.find(entry => entry.id === id)!;
   const asset = `${picture.characterId}-${picture.form}` as const;
-  return `<img class="profile-picture-art" src="${assetUrl(`profile-pictures/${asset}.png`)}?v=${profilePictureArt[asset]}" alt="${picture.name} profile picture" draggable="false" width="1024" height="1024">`;
+  if (!(asset in profilePictureArt)) return '<span class="profile-picture-pending" aria-label="Profile artwork pending">L/L</span>';
+  const revision = profilePictureArt[asset as keyof typeof profilePictureArt];
+  return `<img class="profile-picture-art" src="${assetUrl(`profile-pictures/${asset}.png`)}?v=${revision}" alt="${picture.name} profile picture" draggable="false" width="1024" height="1024">`;
 }

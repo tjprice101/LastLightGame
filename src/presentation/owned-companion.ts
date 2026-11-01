@@ -7,7 +7,7 @@ import { characterRating, starBadge } from './character-rating';
 import { materialRarities, getElement } from '../content/activities';
 import { elementAccents } from '../content/dungeon-art';
 import { characterName } from '../content/character-art';
-import { evolutionRarity } from '../content/progression';
+import { characterRarity } from '../content/progression';
 
 export function capturedRarity(creatureId: string) {
   const creature = getCreature(creatureId);
@@ -26,9 +26,9 @@ export function ownedCompanion(account: Account, id: string) {
     if (!account.characters[id]) throw new Error('Choose an Owned Element-Bearer.');
     const starter = getStarter(id);
     const progress = ownedProgress(account, id);
-    const name = characterName(id, progress.evolution);
-    return { name, label: name, color: starter.color, element: starter.element, level: progress.level, art: portrait(starter, progress.evolution),
-      rarity: evolutionRarity(progress.evolution), rating: characterRating(id, progress.evolution), progress: `Lv.${progress.level} · Evo.${progress.evolution}` };
+    const name = characterName(id, progress.evolution, progress.ascension?.stats === true);
+    return { name, label: name, color: starter.color, element: starter.element, level: progress.level, art: portrait(starter, progress.evolution, progress.ascension?.stats === true),
+      rarity: characterRarity(id, progress.evolution), rating: characterRating(id, progress.evolution, progress.ascension?.stats === true), progress: `Lv.${progress.level} · Evo.${progress.evolution}` };
   }
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
   if (!copy) throw new Error('Choose an owned captured copy.');

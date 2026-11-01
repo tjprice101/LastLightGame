@@ -27,6 +27,8 @@ describe('authoritative Calamity operations', () => {
     const opened = op(game, { kind: 'openCalamityChest', id, expectedCount: 1 });
     const historical = structuredClone(opened.response);
     delete historical.calamityOpening!.devourerCopies;
+    delete historical.calamityOpening!.calamiticMaterialVersion;
+    delete historical.calamityOpening!.materials['feather-severed-dawn'];
     historical.calamityOpening!.masterChests = 2;
     expect(validateGameResponse(historical)).toEqual(historical);
     historical.calamityOpening!.masterChests = 0;
@@ -149,7 +151,7 @@ describe('authoritative Calamity operations', () => {
     expect(opened.game.account.fractalis).toBe(reward.fractalis);
     expect(reward.fractalis).toBeGreaterThan(calamityChest('treasury', 3).fractalis);
     expect(validateGameResponse(opened.response).calamityOpening).toEqual(reward);
-    expect(Object.keys(reward).sort()).toEqual(['id', 'name', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'calamiticTokens', 'masterChests', 'devourerCopies'].sort());
+    expect(Object.keys(reward).sort()).toEqual(['id', 'name', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'calamiticTokens', 'masterChests', 'devourerCopies', 'calamiticMaterialVersion'].sort());
     expect(reward.calamiticTokens).toBe(8);
     expect(() => op(opened.game, { kind: 'openCalamityChest', id, expectedCount: 2 })).toThrow('count changed');
     expect(() => validateGameResponse({ ...opened.response, calamityOpening: { ...reward, bundles: 7 } })).toThrow('incomplete');

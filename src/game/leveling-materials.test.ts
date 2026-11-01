@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { elements, materialRarities } from '../content/activities';
 import { characterLevelCost, levelingMaterials, levelCost, type CharacterProgress } from '../content/progression';
 import { isRoseCharacter, starters } from '../content/starters';
+import { isCalamiticCharacter } from '../content/calamitic-characters';
 import { capturedLevelCost, createCreatureCopy } from './character-instances';
 import { ACCOUNT_KEY, emptyAccount, levelCharacterToMaximum, maxLevelPlan, saveAccount, upgradeCharacter } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
@@ -40,7 +41,7 @@ describe('cumulative higher-rarity leveling materials', () => {
   });
 
   it('uses destination level, not evolution, for all 16 Element-Bearers and preserves specialty surcharges', () => {
-    for (const character of starters) {
+    for (const character of starters.filter(character => !isCalamiticCharacter(character.id))) {
       for (const [level, evolution, higherTiers] of [[29, 1, 0], [30, 2, 1], [45, 3, 2],
         [60, 4, 3], [75, 5, 4], [90, 6, 5], [104, 6, 5], [10, 6, 0]]) {
         const progress: CharacterProgress = { level, evolution };

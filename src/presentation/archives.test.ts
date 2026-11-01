@@ -65,9 +65,9 @@ describe('unified Archives', () => {
     expect(html).toContain('Level 0 preview');
     expect(html).not.toMatch(/ \/ (Silhouette|Art locked|Art revealed|Loot locked|Loot revealed|Includes equipped Conduits)/);
     expect(html).not.toContain('Current saved stats');
-    expect(html.match(/data-archive-character=/g)).toHaveLength(96);
+    expect(html.match(/data-archive-character=/g)).toHaveLength(114);
     expect(html.match(/archive-form-revealed/g)).toHaveLength(2);
-    expect(html.match(/archive-form-locked/g)).toHaveLength(94);
+    expect(html.match(/archive-form-locked/g)).toHaveLength(112);
     for (const starter of starters) for (let evolution = 1; evolution <= 6; evolution++) {
       expect(html).toContain(`data-archive-character="${starter.id}" data-form="${evolution}"`);
       expect(html).toContain(characterArt(starter.id, evolution).title);
@@ -75,6 +75,7 @@ describe('unified Archives', () => {
     expect(html).toContain(characterArt('ember', 2).title);
     expect(html).toContain('aria-label="Uncommon rarity"');
     expect(html).toContain('aria-label="5-star character"');
+    expect(html).toContain('aria-label="7-star character"');
     expect(html).toContain(`<dd>${formatStat(resolveFighter('ember', account.characters.ember, account.conduitEquipment.ember).stats.health)}</dd>`);
     expect(html).toContain('Current combat kit');
     expect(account).toEqual(before);
@@ -146,7 +147,7 @@ describe('unified Archives', () => {
     expect(unavailable).not.toContain('Owned 0');
     expect(unavailable).not.toContain('<p class="archive-ownership">Not owned</p>');
     expect(unavailable).not.toContain('Art locked');
-    expect(unavailable.match(/archive-form-locked/g)).toHaveLength(96);
+    expect(unavailable.match(/archive-form-locked/g)).toHaveLength(114);
     expect(unavailable).not.toContain('archive-form-revealed');
   });
 

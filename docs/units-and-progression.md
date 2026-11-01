@@ -1,5 +1,35 @@
 # Units and progression
 
+## Calamitic progression (D-435 Section 1)
+
+Calamitic Element-Bearers retain the ordinary six forms but use rarity
+Uncommon→Rare→Epic→Legendary→Omnic→Calamitic and caps
+30/45/60/75/90/110. Their level costs replace elemental materials with the
+Calamity chain and add Fragment of Rise for destinations Lv.91–110. Evolution
+adds the appropriate Calamity material and both Heaven/Abyss chest specialties;
+amounts are a developer proposal implemented pending owner review. Shared
+character-aware cost and cap helpers drive previews, Max Level and atomic
+transactions. Saved Calamity victories independently offer the tier-mapped
+character at 10% if unowned; acquisition saves with the chest.
+See [D-435 cost and material table](calamitic-characters.md#materials-and-progression-costs-d-435-section-1).
+
+### Calamitic Ascension (D-435 Section 3)
+
+Each owned, ordinary Omnic Evo.6 Element-Bearer at Lv.105 or Calamitic Evo.6
+Element-Bearer at Lv.110 may spend 25 Shards of Calamity for Stat Ascension.
+This increases every resolved stat by 50% and raises the level cap to Lv.115;
+it does not grant levels. The extra levels use normal late-level costs, including
+Calamity-chain materials and Fragment of Rise for Calamitic Element-Bearers.
+Once Stat Ascension is saved, three independent 25-Shard Imbues are available:
+Skill 1, Skill 2 and Last Flare each gain +50% base Skill Power and +5 percentage
+points Skill Efficiency for that ability only, with the established 50% global
+Skill Efficiency cap. Captured Elemental-Devourers are never eligible. Optional
+per-character state is strictly validated and remains absent on legacy reads;
+each local/online operation rereads, validates and atomically saves the debit and
+Ascension step. Calamity boss Shards use a dedicated persisted RNG stream and
+are granted in the same atomic saved-victory write as the chest. See
+[Calamitic Ascension](calamitic-characters.md#calamitic-ascension).
+
 ## Later Element-Bearer material costs (D-431)
 
 Owner explicitly approves coordinated costs with D-430's modest rewards:

@@ -24,7 +24,7 @@ import { conduitElement } from './conduit-element';
 import { itemShowcase } from './item-showcase';
 import { bannerPercent, bannerPityLimits, validateBannerPity, type BannerOutcome } from '../content/standard-banner';
 import { summonBanners, getSummonBanner, type SummonBannerId } from '../content/summon-banners';
-import { evolutionRarity } from '../content/progression';
+import { characterRarity, evolutionRarity } from '../content/progression';
 import { information } from './information';
 import { summonLore } from '../content/world-lore';
 import { characterName } from '../content/character-art';
@@ -42,7 +42,7 @@ export function characterCopyManagement(account: Account | null, category: 'all'
   const copies = account.capturedCharacters ?? [];
   const activeCopy = copies.some((copy) => copy.instanceId === selectedCopy) ? selectedCopy : copies[0]?.instanceId;
   return `<section class="character-copy-management${compact ? ' ref-copy-management' : ''}" id="character-copies">
-    ${category !== 'creatures' ? `<h2>Element-Bearer locks</h2><div class="archive-grid">${ownedCharacters(account).map((id) => `<article class="archive-card"><h3 data-character-name="${id}">${characterName(id, ownedProgress(account, id).evolution)}</h3>${lockControl(account, id)}</article>`).join('')}</div>` : ''}
+    ${category !== 'creatures' ? `<h2>Element-Bearer locks</h2><div class="archive-grid">${ownedCharacters(account).map((id) => `<article class="archive-card"><h3 data-character-name="${id}">${characterName(id, ownedProgress(account, id).evolution, ownedProgress(account, id).ascension?.stats === true)}</h3>${lockControl(account, id)}</article>`).join('')}</div>` : ''}
     ${category !== 'bearers' ? `${compact ? '' : `<h2>Captured Elemental-Devourers · ${copies.length}</h2>
       <nav class="owned-roster" aria-label="Owned captured Elemental-Devourers">${copies.map((copy, index) => `<button class="roster-character" data-owned-capture="${copy.instanceId}" aria-pressed="${copy.instanceId === activeCopy}"><strong>${getCreature(copy.creatureId).name}</strong><span>Copy ${index + 1} · Lv.${capturedProgress(copy).level}</span></button>`).join('')}</nav>`}
       ${copies.length ? `<div class="archive-grid">${copies.filter((copy) => category === 'all' || copy.instanceId === activeCopy).map((copy) => {
@@ -76,7 +76,7 @@ export function characterRoster(account: Account | null, selected: StarterId): s
     const character = getStarter(id);
     const progress = ownedProgress(account, id);
     return `<button class="roster-character" data-owned-character="${id}" aria-pressed="${selected === id}" style="--element:${character.color}">
-      ${portrait(character, progress.evolution)}<span><strong>${characterName(id, progress.evolution)}</strong>${characterRole(id)}${characterRating(id, progress.evolution)}<small>Lv.${progress.level} · Evo.${progress.evolution}</small></span></button>`;
+      ${portrait(character, progress.evolution, progress.ascension?.stats === true)}<span><strong>${characterName(id, progress.evolution, progress.ascension?.stats === true)}</strong>${characterRole(id)}${characterRating(id, progress.evolution, progress.ascension?.stats === true)}<small>Lv.${progress.level} · Evo.${progress.evolution}</small></span></button>`;
   }).join('')}<button class="roster-summon" data-page="summon">Summon &rarr;</button></nav>`;
 }
 
@@ -247,10 +247,10 @@ export function bannerCharacters(pool: readonly BannerOutcome[]): string {
     <ul>${characters.map((entry) => {
       if (!isStarterId(entry.id)) throw new Error('Banner character definition is missing.');
       const character = getStarter(entry.id);
-      const rarity = evolutionRarity(1);
+      const rarity = characterRarity(entry.id, 1);
       return `<li data-banner-character="${entry.id}" style="--element:${character.color}">
         ${elementLabel(character.elementId)}<strong>${characterName(character.id)}</strong>
-        <span class="banner-character-rating">${starBadge(entry.stars)}<span class="rarity-badge rarity-${rarity.toLowerCase()}">${rarity}</span></span>
+        <span class="banner-character-rating">${starBadge(entry.stars)}<span class="rarity-badge rarity-${rarity.toLowerCase()}" data-rarity="${rarity}">${rarity}</span></span>
       </li>`;
     }).join('')}</ul></section>`;
 }
@@ -277,7 +277,7 @@ function bannerRates(banner: { id: string; name: string }, pool: readonly Banner
           name = characterName(entry.id);
         } else if (entry.kind === 'material') name = `${bannerMaterialTiers[entry.stars - 1].amount} ${materialName(entry.id)}`;
         else name = getCreature(entry.id).name;
-        const rarity = evolutionRarity(entry.kind === 'character' ? 1 : entry.stars);
+        const rarity = entry.kind === 'character' ? characterRarity(entry.id as StarterId, 1) : evolutionRarity(entry.stars);
         return `<tr data-banner-entry="${entry.id}" data-entry-stars="${entry.stars}"><th scope="row">${name}</th><td>${rarity}${entry.kind === 'character' ? `<span>${entry.stars}-star</span>` : ''}</td><td>${bannerPercent(entry.chance)} per draw</td></tr>`;
       }).join('')}</tbody></table></div></section>`).join('')}</div></section>`;
 }

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { nativeIdentityIds } from '../content/native-identities';
+import { isCalamiticCharacter } from '../content/calamitic-characters';
 import { type StarterId } from '../content/starters';
 import { act, createBattle, damageAmount, endTurn } from './battle';
 import { nativeIncomingMultiplier, nativeInstructionDamage, nativeSupportMultiplier } from './native-kits';
@@ -24,7 +25,7 @@ const previousDirect: Partial<Record<StarterId, number>> = {
 };
 
 describe('Last Flare roster-wide potency', () => {
-  it.each(nativeIdentityIds)('%s triples direct damage without changing Gauge, recovery or targets', id => {
+  it.each(nativeIdentityIds.filter(id => !isCalamiticCharacter(id)))('%s triples direct damage without changing Gauge, recovery or targets', id => {
     const state = fixture(id);
     state.allies[1].spent = true;
     const result = act(state, id, 'ultimate', state.enemies[0].id);

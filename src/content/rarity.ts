@@ -8,7 +8,7 @@ export const rarityColors = {
   Epic: '#c8a2f0',
   Legendary: '#ffab63',
   Omnic: '#f5f3ff',
-  Calamitic: '#f04a65',
+  Calamitic: '#a80f2d',
 } as const satisfies Record<Rarity, string>;
 
 export function isRarity(value: string | undefined): value is Rarity {

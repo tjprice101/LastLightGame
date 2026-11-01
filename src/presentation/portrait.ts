@@ -24,17 +24,17 @@ export function assetUrl(path: string): string {
   return revision ? `${url}?v=${revision}` : url;
 }
 
-export function portraitAttributes(starter: Starter, evolution = 1): { src: string; alt: string } {
+export function portraitAttributes(starter: Starter, evolution = 1, riseBlessed = false): { src: string; alt: string } {
   const form = characterArt(starter.id, evolution);
   const attributes = {
     src: form.available ? assetUrl(`characters/${form.art}.png`) : `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 960"><rect x="180" y="180" width="600" height="600" rx="100" fill="#171717" stroke="#999"/><text x="480" y="500" text-anchor="middle" fill="#ddd" font-size="54" font-family="Georgia">Artwork pending</text></svg>')}`,
-    alt: `${characterName(starter.id, evolution)}, ${starter.element.toLowerCase()} Element-Bearer with a ${starter.weapon.toLowerCase()}`,
+    alt: `${characterName(starter.id, evolution, riseBlessed)}, ${starter.element.toLowerCase()} Element-Bearer with a ${starter.weapon.toLowerCase()}`,
   };
   return { ...attributes, alt: `${attributes.alt}${form.available ? '' : '; artwork pending'}` };
 }
 
-export function portrait(starter: Starter, evolution = 1): string {
-  const { src, alt } = portraitAttributes(starter, evolution);
+export function portrait(starter: Starter, evolution = 1, riseBlessed = false): string {
+  const { src, alt } = portraitAttributes(starter, evolution, riseBlessed);
   return `<span class="character-idle" data-character="${starter.id}"><img draggable="false" src="${src}" alt="${alt}" ${characterFacingAttributes(starter.id, evolution)} width="960" height="960" /></span>`;
 }
 

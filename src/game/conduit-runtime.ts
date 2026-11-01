@@ -13,7 +13,7 @@ import { buffSnapshot } from './battle-buffs';
 import { debuffSnapshot } from './battle-debuffs';
 import { pilotAuthoredShieldAbsorbed, pilotEffectiveHeal } from './kit-pilots';
 import { hasNativeIdentity, nativeAbsorbedHit, nativeDirectHpLoss, nativeIncomingMultiplier,
-  nativeRouteDamage, nativeSupportMultiplier } from './native-kits';
+  nativeRouteDamage, nativeSupportMultiplier, nativeDamageTakenMultiplier, nativeHymn, nativeRefusal } from './native-kits';
 import { prepareCalamiticAction, afterCalamiticAction, calamiticSiegeBonus, deferCalamiticDamage,
   bankCalamiticDamage, calamiticSkillDefenseIgnore, calamiticSkillPowerBonus, calamiticSkillEfficiencyBonus } from './calamitic-conduits';
 
@@ -365,7 +365,7 @@ export function payShield(unit: Combatant, amount: number): number {
 }
 export function generatedStrike(state: BattleState, owner: Combatant, target: Combatant | undefined, offer: number, events: BattleEvent[], mitigated = true): number {
   if (!target || target.hp <= 0 || offer <= 0) return 0;
-  const damage = Math.max(1, Math.round(mitigated ? offer : offer * owner.stats.damage / Math.max(1, owner.stats.damage + effectiveDefense(state, target))));
+  const damage = Math.max(1, Math.round((mitigated ? offer : offer * owner.stats.damage / Math.max(1, owner.stats.damage + effectiveDefense(state, target))) * nativeDamageTakenMultiplier(state, owner, target)));
   const absorbed = consumeShield(target, damage).absorbed;
   const loss = Math.min(target.hp, damage - absorbed);
   target.hp -= loss;
@@ -511,6 +511,9 @@ export function conduitActionCost(actor: Combatant, action: ActionId, state: Bat
     return base === 0 ? 0 : Math.max(1, base - discount);
   }
   let efficiency = actor.stats.skillEfficiency ?? 0;
+  if ((action === 'skill1' && actor.kit?.ascension?.skill1) ||
+      (action === 'skill2' && actor.kit?.ascension?.skill2) ||
+      (action === 'ultimate' && actor.kit?.ascension?.lastFlare)) efficiency += .05;
   if (equipped(actor, 'starvein-conductor') && diverseSquad(state))
     efficiency += magnitude(state, 'starvein-conductor', .35);
   if (equipped(actor, 'execution-orrery') && action === 'skill2')
@@ -555,7 +558,10 @@ export function prepareConduitAction(state: BattleState, actor: Combatant, actio
   const n = gear(actor).numbers;
   const ctx: ConduitActivation = { action, paid, bonus: 0, criticalBonus: 0, guaranteed: false, forbidden: false,
     all: nativeAll, nativeAll, scale: 1, skillPower: phaseZeroStatsReady && action !== 'light'
-      ? (actor.stats.skillPower ?? 1) + calamiticSkillPowerBonus(state) : 1,
+      ? (actor.stats.skillPower ?? 1) + calamiticSkillPowerBonus(state) +
+        ((action === 'skill1' && actor.kit?.ascension?.skill1) ||
+         (action === 'skill2' && actor.kit?.ascension?.skill2) ||
+         (action === 'ultimate' && actor.kit?.ascension?.lastFlare) ? .5 : 0) : 1,
     skillDuration: phaseZeroStatsReady ? Math.floor(actor.stats.skillDuration ?? 0) : 0,
     criticalDamageBonus: 0, impacts: 1, hits: [], overheal: 0, healed: 0, healRecipients: [], spent: {}, healExtra: 0,
     shieldBurn: 0, burnPaid: false, freeAction: false,
@@ -749,6 +755,7 @@ export function prepareConduitAction(state: BattleState, actor: Combatant, actio
     ctx.bonus += n.goldImprint ?? 0;
     delete n.goldImprint;
   }
+  if (action !== 'light') ctx.skillPower += nativeHymn(actor, state.round)?.skillPower ?? 0;
   ctx.skillPower = Math.max(0, ctx.skillPower);
   return ctx;
 }
@@ -768,7 +775,7 @@ export function conduitHitModifiers(state: BattleState, actor: Combatant, target
 } {
   let bonus = ctx.bonus + calamiticSiegeBonus(state, actor, target);
   let pierce = 0;
-  let criticalDamageBonus = ctx.criticalDamageBonus;
+  let criticalDamageBonus = ctx.criticalDamageBonus + (nativeHymn(actor, state.round)?.criticalDamage ?? 0);
   let skillPowerBonus = 0;
   const action = ctx.action;
   if (phaseZeroStatsReady && action !== 'light') skillPowerBonus += ctx.spent.starveinPower ?? 0;
@@ -920,6 +927,7 @@ export function conduitHitModifiers(state: BattleState, actor: Combatant, target
 export function conduitCriticalHit(state: BattleState, actor: Combatant, target: Combatant,
   ctx: ConduitActivation, criticalBonus = 0) {
   const rolled = rollCritical(state, actor.stats.crit + criticalBonus + ctx.criticalBonus +
+    (hasNativeIdentity(actor) && actor.definitionId === 'kaelith' && ctx.action !== 'light' ? .05 : 0) +
     conduitCriticalBonus(state, actor, target, ctx.action));
   const critical = !ctx.forbidden && (ctx.guaranteed || rolled.critical);
   const elemental = critical && rolled.elemental;
@@ -930,6 +938,8 @@ export function conduitCriticalHit(state: BattleState, actor: Combatant, target:
     (critical && ctx.guaranteed && equipped(actor, 'falcon-sight') && !phaseZeroStatsReady
       ? 1 + value(state, actor, 'falcon-sight', .1, .2) : 1)) *
     (1 + (modifiers.criticalDamageBonus ?? 0));
+  const taken = nativeDamageTakenMultiplier(state, actor, target);
+  if (taken !== 1) modifiers.bonus = (1 + modifiers.bonus) * taken - 1;
   return { critical, elemental, modifiers, criticalMultiplier };
 }
 
@@ -1660,6 +1670,7 @@ function revive(state: BattleState, owner: Combatant, target: Combatant, fractio
   emit(events, 'heal', owner, target, target.hp, `${target.name} is revived by a Conduit at ${target.hp} HP.`);
 }
 function rescue(state: BattleState, target: Combatant, loss: number, events: BattleEvent[], direct: boolean): number {
+  loss = direct ? nativeRefusal(state, target, loss, events) : loss;
   if (loss < target.hp) return loss;
   const n = gear(target).numbers;
   if (phaseZeroStatsReady && n.rescueUsed) return loss;
@@ -1699,13 +1710,14 @@ export function afterConduitHpLoss(state: BattleState, target: Combatant, events
   }
 }
 export function conduitBurnTick(state: BattleState, owner: Combatant, target: Combatant): number {
-  if (target.burn.origin === 'conduit') return target.burn.damage;
+  const taken = nativeDamageTakenMultiplier(state, owner, target);
+  if (target.burn.origin === 'conduit') return target.burn.damage * taken;
   const n = gear(target).numbers;
-  if (phaseZeroStatsReady) return Math.round(target.burn.damage * (1 + (n[`cinderPower:${owner.id}`] ?? 0)));
+  if (phaseZeroStatsReady) return Math.round(target.burn.damage * (1 + (n[`cinderPower:${owner.id}`] ?? 0)) * taken);
   const cinderKey = `cinder:${owner.id}`, imprint = `imprint:${owner.id}`;
   let bonus = 0;
   if (equipped(owner, 'infernic-cinder-testament')) bonus += (n[cinderKey] ?? 0) * value(state, owner, 'infernic-cinder-testament', .2, .4);
-  return Math.round(target.burn.damage * (1 + bonus) * (n[imprint] ?? 1));
+  return Math.round(target.burn.damage * (1 + bonus) * (n[imprint] ?? 1) * taken);
 }
 export function afterConduitBurn(state: BattleState, owner: Combatant, target: Combatant, damage: number, events: BattleEvent[]): void {
   if (target.burn.origin !== 'conduit') delete gear(target).numbers[`imprint:${owner.id}`];
@@ -1969,7 +1981,7 @@ function routedDamage(state: BattleState, enemy: Combatant, target: Combatant, a
   const n = gear(target).numbers;
   if (phaseZeroStatsReady && n.stasisPenalty === state.round) amount = Math.round(amount * 1.25);
   const { loss: remaining } = absorbEnemyDamage(state, target, amount, events);
-  const loss = Math.min(target.hp, remaining);
+  const loss = Math.min(target.hp, nativeRefusal(state, target, remaining, events));
   const wasStanding = target.hp > 0;
   target.hp -= loss;
   emit(events, 'damage', enemy, target, loss, `${target.name} intercepts ${Math.round(amount)} damage (Conduit routing).`);
