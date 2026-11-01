@@ -12,8 +12,9 @@ PALETTE = ("black white pearlescent ivory and sharp saturated sparkling crimson"
 KEY = "green"
 HEX = "#00FF00"
 RARITIES = ("Uncommon", "Rare", "Epic", "Legendary", "Omnic", "Calamitic")
-SPREAD = (50, 60, 72, 84, 94, 96)
-MARGINS = (25, 20, 14, 8, 3, 2)
+# Owner (2026-11-01): ample edge spacing on every form; late forms grow denser, not wider.
+SPREAD = (50, 56, 62, 66, 70, 70)
+MARGINS = (25, 22, 19, 17, 15, 15)
 DESIGNS = (
     dict(name="Ozriel", id="ozriel", gender="male", element="Tranquilitic", role="Tank",
          identity="short white hair with one black forelock and crimson eyes",
@@ -110,8 +111,9 @@ def cutout(description, *, character=None, evolution=None):
                    "square standalone face-free collectible icon, one cohesive readable symbol, occupies two thirds of the square, ")
     extra_no = "" if portrait else ", character, creature, face, hands, portrait"
     prompt = (f"{description}, {CONTAIN}, {composition}{RENDERER}, {MARGIN}, "
-              + ("" if portrait else "at least 15 percent empty margin on every side and corner, ")
+              + ("at least 15 percent empty solid-background margin on every side and corner, " )
               + f"plain solid {KEY} background ({HEX}), flat unlit color edge to edge and through all openings, "
+              "completely solid single uniform background color with no shading no gradient no texture no floor no cast shadow no scenery, "
               "subject colors unchanged, no glows or glowing visual effects, elemental powers rendered as opaque "
               "solid-color lines ribbons rings and shapes with crisp hard edges, non-emissive painted highlights"
               + f" --ar {'4:3' if portrait else '1:1'} --niji 6 --s 100 --q 1 --no {CUTOUT_NO}{extra_no}")
@@ -164,6 +166,7 @@ def outputs():
                 "defiant heroic stance refusing a predetermined ending, left-facing three-quarter stance with eyes hands and feet clear, "
                 f"compact body occupies {body} of canvas height, "
                 f"whole ensemble target {SPREAD[index]} percent canvas width and height with {MARGINS[index]} percent outer margins, "
+                "late forms grow denser and more ornate inside the frame rather than wider, "
                 "continuous visible clearance overrides occupancy if any tip approaches an edge, "
                 "pearlescent prismatic faceting is bounded sheen not extra hues, sparkling crimson means crisp painted facet flecks"
             )

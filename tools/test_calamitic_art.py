@@ -121,6 +121,8 @@ class CalamiticArtTests(unittest.TestCase):
                 self.assertIn("non-emissive painted highlights", positive)
                 self.assertIn("continuous clear solid-background safety margin on all four sides and corners", positive)
                 self.assertIn("nothing touches or crosses the frame edges", positive)
+                self.assertIn("at least 15 percent empty solid-background margin on every side and corner", positive)
+                self.assertIn("completely solid single uniform background color with no shading no gradient", positive)
                 self.assertLessEqual(len(design_prose(positive).split()), 380)
                 self.assertLessEqual(len(positive.split()), 450)
                 self.assertEqual(apply_palette(prompt, "Calamitic item", palette=PALETTE, reference_weight=400), prompt)
@@ -141,6 +143,9 @@ class CalamiticArtTests(unittest.TestCase):
                 body = "one third" if index < 3 else "one quarter" if index == 3 else "one fifth"
                 self.assertIn(f"body occupies {body} of canvas height", positive)
                 self.assertIn("continuous visible clearance overrides occupancy", positive)
+                self.assertLessEqual(SPREAD[index], 70)
+                self.assertGreaterEqual(MARGINS[index], 15)
+                self.assertIn("grow denser and more ornate inside the frame rather than wider", positive)
                 for name in [design["name"], *design["titles"]]:
                     self.assertNotIn(name.lower(), positive.lower())
                 if index >= 3:
@@ -152,7 +157,7 @@ class CalamiticArtTests(unittest.TestCase):
         for prompt in BLOCK.findall("\n".join(outputs().values())):
             if "--ar 1:1" in prompt:
                 self.assertIn("face-free", prompt)
-                self.assertIn("at least 15 percent empty margin", prompt)
+                self.assertIn("at least 15 percent empty solid-background margin", prompt)
 
 
 if __name__ == "__main__":
