@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from 'vitest';
 import { calamiticConduits, calamiticLockMessage } from '../content/calamitic-conduits';
+import { getConduit } from '../content/conduits';
 import { emptyAccount, type Account } from '../game/account';
 import { conduitStore, updateConduitStore, conduitDetails, conduitIcon } from './conduit-store';
 import { onlineStores } from './online-store-profile';
@@ -44,15 +45,21 @@ describe('Calamitic market and shared surfaces', () => {
     }
   });
 
-  it('shows five universal illustrated creations after any recorded EX clear and prevents duplicate purchases', () => {
+  it('shows all fourteen universal creations, with pending art kept neutral, after any recorded EX clear and prevents duplicate purchases', () => {
     const account = unlocked();
     const host = render(conduitStore(account, first, 'Calamitic'));
-    expect(host.querySelectorAll('[data-store-conduit]')).toHaveLength(5);
+    expect(host.querySelectorAll('[data-store-conduit]')).toHaveLength(14);
     expect(host.textContent).toContain('Universal');
     expect(host.textContent).toContain('100 Calamitic Tokens');
     expect(host.querySelector<HTMLButtonElement>('[data-buy-conduit]')!.disabled).toBe(false);
+    expect(calamiticConduits.filter(design => 'art' in design && design.art === null)).toHaveLength(9);
     for (const design of calamiticConduits) {
-      expect(host.querySelector(`img[src*="${design.id}.png?v=${conduitArtRevisions[design.id]}"]`)).not.toBeNull();
+      const live = getConduit(design.id);
+      if (live.art) expect(host.querySelector(`img[src*="${design.id}.png?v=${conduitArtRevisions[design.id]}"]`)).not.toBeNull();
+      else {
+        expect(conduitIcon(design.id)).toContain('Artwork pending');
+        expect(conduitIcon(design.id)).not.toContain('src=');
+      }
     }
     expect(host.querySelector(`img[src="${currencyArt('calamitic-tokens')}"]`)).not.toBeNull();
     updateConduitStore(host, { ...account, calamiticTokens: 0, conduits: { [first]: 1 } }, first, 'Calamitic');
@@ -69,7 +76,7 @@ describe('Calamitic market and shared surfaces', () => {
     expect(host.querySelectorAll('[data-store-conduit]')).toHaveLength(0);
     expect(host.querySelector('.calamitic-store-lock')!.textContent).toBe(calamiticLockMessage);
     updateConduitStore(host, unlocked(), first, 'Calamitic');
-    expect(host.querySelectorAll('[data-store-conduit]')).toHaveLength(5);
+    expect(host.querySelectorAll('[data-store-conduit]')).toHaveLength(14);
     updateConduitStore(host, unlocked());
     expect(host.querySelectorAll('[data-store-conduit]')).toHaveLength(10);
     expect(host.querySelector('[data-store-rarity="Calamitic"]')).not.toBeNull();

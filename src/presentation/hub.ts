@@ -300,7 +300,7 @@ export function characterInformation(): string {
     <h3>Rose event growth</h3><p>Rosetta, Thornia and Crinso use Rosethorn materials instead of elemental and specialty materials: Seed for levels, plus Soul at Evo.5–6 and for late evolutions with Roselius. Roselius are capturable at Lv.120 or below, join at up to Lv.60 and sell for their form's material.</p>
     <h3>Captured Elemental-Devourers</h3><p>Keep their form and skills, cap at Lv.60 and never evolve. Boss stat bonuses are not retained.</p><p>Skill 1 and Skill 2 have no cooldown. A retained Last Flare uses its enemy interval as a cooldown. Missing skills stay unavailable.</p>
     <h3>Protection and sales</h3><p>Locked, squad and Conduit-equipped copies can't be sold or consumed. Sales are permanent; prices depend on form, not level.</p>
-    <h3>Conduits</h3><p>Unlock once, equip across your squad. No duplicate names on the same member.</p><ul><li>Eight ordinary slots; at most four Omnic, matching the wearer's element.</li><li>One Master slot, restricted to that Element-Bearer's Masters. Masters cannot be upgraded.</li><li>Equipment changes apply to the next run.</li></ul>`);
+    <h3>Conduits</h3><p>Unlock once, equip across your squad. No duplicate names on the same member.</p><ul><li>Eight ordinary slots; at most four matching Omnic and five Calamitic Conduits across the fourteen Calamitic designs.</li><li>One Master slot, restricted to that Element-Bearer's Masters. Masters cannot be upgraded.</li><li>Equipment changes apply to the next run.</li></ul>`);
 }
 
 function ascensionPanel(starter: Starter, account: Account | null, progress?: CharacterProgress): string {

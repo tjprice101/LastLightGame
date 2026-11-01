@@ -76,7 +76,8 @@ All six supplied root PNGs are archived byte-for-byte under
 The five machines resolve through their stable catalog IDs in
 `public/assets/conduits`; the shared currency uses
 `public/assets/currencies/calamitic-tokens.png`. All exports are256px RGBA with
-at most224px content. Existing90 ordinary Conduits now all have installed art.
+at most224px content. Of99 ordinary Conduits, the original90 have installed art; nine Calamitic
+Conduits remain art-pending with neutral placeholders and no runtime URLs.
 
 `Art/provenance/calamitic-art-settings.json` records per-source row-gradient
 keys,101 individually reviewed enclosed-gap seeds, edge decontamination and

@@ -47,7 +47,7 @@ describe('character Masters and chest contracts', () => {
     for (const character of starters.filter(character => !['ozriel', 'ilvaris', 'kaelith'].includes(character.id))) expect(masterConduits.filter(entry => entry.character === character.id)).toHaveLength(3);
     for (const id of ['ozriel', 'ilvaris', 'kaelith']) expect(masterConduits.some(entry => entry.character === id)).toBe(false);
     expect(masterConduits.every(entry => entry.rarity === 'Omnic' && entry.art === `master-conduits/${entry.id}.png`)).toBe(true);
-    expect(conduits).toHaveLength(90);
+    expect(conduits).toHaveLength(99);
   });
   it('gives every Master a distinct complete effect within each eligible character', () => {
     expect(new Set(masterConduits.map(entry => entry.effect)).size).toBe(48);

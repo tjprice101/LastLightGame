@@ -54,10 +54,10 @@ describe('Phase 0 shared runtime math', () => {
       expect(effect).toContain(`+${125 * (1 + level * .1)}% [Direct Damage]`);
     }
   });
-  it('uses the approved default effect text for every one of the 138 entries', () => {
+  it('uses the approved default effect text for every one of the 147 entries', () => {
     const entries = [...conduits, ...masterConduits];
-    expect(entries).toHaveLength(138);
-    expect(Object.keys(approvedConduitCatalog)).toHaveLength(138);
+    expect(entries).toHaveLength(147);
+    expect(Object.keys(approvedConduitCatalog)).toHaveLength(147);
     for (const entry of entries) {
       expect(approvedConduitCatalog[entry.id]?.name, entry.id).toBe(entry.name);
       if (entry.rarity === 'Calamitic') continue;

@@ -16,6 +16,7 @@ const files = {
   remaining: 'src/game/phase-zero-remaining-effects.test.ts',
   static: 'src/content/phase-zero-conduit-stats.test.ts',
   master: 'src/game/phase-zero-master-matrix.test.ts',
+  calamitic: 'src/game/calamitic-conduits-phase0.test.ts',
 };
 const executed = path => {
   const file = report.testResults.find(result => resolve(result.name) === resolve(root, ...path.split('/')));
@@ -41,6 +42,20 @@ for (const path of [files.replacement, files.remaining]) {
     evidence.set(id, { path, title: match[1], count: 7, coverage: 'Absent; +0..+5' });
   }
 }
+const sectionFourIds = [
+  'calamitic-bulwark-of-the-last-horizon', 'calamitic-reliquary-of-unending-mercy',
+  'calamitic-aegis-engine-of-severed-fate', 'calamitic-monolith-of-the-unmoved-star',
+  'calamitic-heartforge-of-the-sunless-dawn', 'calamitic-ruinmark-censer',
+  'calamitic-choir-array-of-branded-stars', 'calamitic-throne-of-the-lone-apostate',
+  'calamitic-worldbreaker-cannonade',
+];
+for (const id of sectionFourIds) {
+  const results = executed(files.calamitic).filter(test => test.ancestorTitles.some(title => title.includes(id)) &&
+    (test.title === 'has no effect when absent' || /^uses the approved effect text at \+[0-5]$/.test(test.title)));
+  if (results.length !== 7 || results.some(test => test.status !== 'passed'))
+    throw new Error(`Missing absent/+0..+5 D-435 behavior evidence: ${id}.`);
+  evidence.set(id, { path: files.calamitic, title: `${id} absent and +0..+5`, count: 7, coverage: 'Absent; +0..+5' });
+}
 for (const [id] of Object.entries(catalog).filter(([id]) => !id.startsWith('master-'))) {
   if (evidence.has(id)) continue;
   const results = executed(files.static).filter(test =>
@@ -56,7 +71,7 @@ for (const [id] of Object.entries(catalog).filter(([id]) => id.startsWith('maste
     throw new Error(`Missing concrete Master equipped/absent evidence: ${id}.`);
   evidence.set(id, { path: files.master, title: id, count: 2, coverage: 'Absent; equipped (fixed)' });
 }
-if (evidence.size !== 138) throw new Error(`Expected 138 behavior entries, found ${evidence.size}.`);
+if (evidence.size !== 147) throw new Error(`Expected 147 behavior entries, found ${evidence.size}.`);
 const digestPaths = [
   'src/content/omnic-conduit-stats.ts', 'src/game/omnic-refresh.test.ts',
   'docs/conduit-catalog.txt', ...Object.values(files), 'src/game/phase-zero-interactions.test.ts',
@@ -64,6 +79,8 @@ const digestPaths = [
   'src/content/phase-zero-conduit-upgrades.test.ts', 'src/content/phase-zero-conduit-upgrades.ts',
   'src/content/phase-zero-conduit-stats.ts', 'src/game/conduit-runtime.ts', 'src/game/native-kits.ts',
   'src/game/battle.ts', 'src/game/calamitic-conduits.ts',
+  'src/content/calamitic-conduits.ts', 'src/content/conduits.ts', 'src/game/account.ts',
+  'src/content/phase-zero-conduit-catalog.ts',
   'src/content/native-balance.ts', 'src/content/native-identities.ts',
   'src/game/last-flare-balance.test.ts', 'src/online/native-identities-server.test.ts',
   'src/online/phase-zero-authority.test.ts', 'src/presentation/phase-zero-battle-controls.test.ts',
@@ -86,16 +103,17 @@ const output = [
   '# Phase 0 Conduit behavior matrix', '',
   'This is executed numerical behavior evidence, not a count of source references or nonempty ability strings.',
   'The approved ability contract remains [conduit-catalog.txt](conduit-catalog.txt).',
-  'The release gate is enabled for coordinated client/authority publication (D-415, rules13). This report certifies tested behavior, not hosted deployment or balance quality.', '',
-  `- Roster: **138/138** entries, **${count}** passing baseline/equipment/upgrade scenarios.`,
-  '- Ordinary-slot entries: 90, each with an absent baseline and all six +0..+5 upgrade levels.',
+  'The release gate is enabled for coordinated client/authority publication (D-435 Section 4, rules14). This report certifies tested behavior, not hosted deployment or balance quality.', '',
+  `- Roster: **147/147** entries, **${count}** passing baseline/equipment/upgrade scenarios.`,
+  '- Ordinary-slot entries: 99, each with an absent baseline and all six +0..+5 upgrade levels.',
   '- Named Masters: 48, each with a concrete equipped and absent numerical behavior scenario.',
   `- Full regression: **${report.numPassedTests} tests / ${report.testResults.length} files passed**; zero failed or pending.`,
-  '- Description parity: all 138 defaults against the complete owner-authored catalog; all 90 ordinary entries at +0..+5; Masters reject upgrades.',
+  '- Description parity: all 147 defaults against the complete owner-authored catalog; all 99 ordinary entries at +0..+5; Masters reject upgrades.',
   '- Separate interaction tests cover generated Master Shield provenance, manual native packets, stored-packet scaling, duplicate auras, additive stat pools and Defense caps.',
   '- UI and authority suites additionally exercise target-dependent costs, frozen equipment and Throne controls.',
   '- D-382 regressions cover all45 replacements, complete-Health conversion thresholds, cast-level seeded randomness, conditional Health, sole-owner Shield provenance, routed protection and persisted Stasis clocks.',
   '- D-383 additionally checks all93 Omnic/Master personal and squad stat packages, fixed Master/ordinary additive pools, duplicate living-source stacking, Health clamping, revival, Glassroot, Training snapshots, focused Last Flare, every-two-impact Quarry payouts, native-only Phoenix healing and Seed settlement parity after persistent JSON key reordering.',
+  '- D-435 Section 4 checks the nine new Calamitic effects at +0..+5, the five-item equipment cap at UI/transaction/save/server/fighter boundaries, read-only legacy normalization, 80% Shield Damage Reduction cap, Choir trigger/Gauge clocks, and atomic Token purchases.',
   '- D-415 additionally checks canonical descriptions and Master selector formatting, native critical damage, explicit trap empowerment/refresh, Cinder20% stacking and Rosegarden Skill2 activation with a Last Flare negative case.',
   '- Passing tests do not establish subjective usefulness or mathematically exhaustive balance across every possible squad.', '',
   `Evidence source SHA-256 (LF-normalized): \`${digest.digest('hex')}\`.`,
@@ -109,4 +127,4 @@ const output = [
 ].join('\n');
 const destination = resolve(root, 'docs', 'conduit-behavior-matrix.md');
 writeFileSync(destination, output);
-console.log(`Wrote ${relative(root, destination).split(sep).join('/')} with 138 entries and ${count} passing behavior scenarios.`);
+console.log(`Wrote ${relative(root, destination).split(sep).join('/')} with 147 entries and ${count} passing behavior scenarios.`);

@@ -1036,6 +1036,18 @@ var approvedConduitCatalog = {
     "element": "Botanic (actual gameplay element)",
     "ability": "Your [Skills] turn 60% of [Overhealing] into a [Shield] for the healed ally, capped at 20% of their maximum [Health] and lasting two [Enemy Turns]. Replaces the previous [Shield] from this Conduit. +140% [Health] and +35% [Skill Power]."
   },
+  "calamitic-aegis-engine-of-severed-fate": {
+    "name": "Aegis-Engine of Severed Fate",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "Damage to this character's [Shields] is reduced by 36.666666666667%. +50% [Skill Power]."
+  },
+  "calamitic-bulwark-of-the-last-horizon": {
+    "name": "Bulwark of the Last Horizon",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "+200% maximum [Health] and +200% [Defense]. Incoming damage consumes 16.666666666667% fewer points from this character's [Shields]."
+  },
   "calamitic-cathedral-final-equation": {
     "name": "Cathedral of the Final Equation",
     "rarity": "Calamitic",
@@ -1048,11 +1060,41 @@ var approvedConduitCatalog = {
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
     "ability": "+50% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]."
   },
+  "calamitic-choir-array-of-branded-stars": {
+    "name": "Choir-Array of Branded Stars",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "When you apply a [Mark], each living Squad Member gains +33.333333333333% [Skill Power] and 6.666666666667% of their maximum [Elemental Gauge]. The Skill Power stacks per trigger until the end of the current turn; it can trigger four times per battle. +46.666666666667% [Health] and [Defense]."
+  },
+  "calamitic-heartforge-of-the-sunless-dawn": {
+    "name": "Heartforge of the Sunless Dawn",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "+333.333333333333% maximum [Health]. +16.666666666667% [Skill Power]."
+  },
   "calamitic-horizon-cleaving-godpress": {
     "name": "Horizon-Cleaving Godpress",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
     "ability": "Your damaging [Skills] ignore 55% of enemy [Defense]. +75% [Defense]."
+  },
+  "calamitic-monolith-of-the-unmoved-star": {
+    "name": "Monolith of the Unmoved Star",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "+333.333333333333% [Defense]. +10% [Skill Efficiency]."
+  },
+  "calamitic-reliquary-of-unending-mercy": {
+    "name": "Reliquary of Unending Mercy",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "[Skills] that heal or create [Shields] gain +83.333333333333% [Skill Power] and +23.333333333333% [Skill Efficiency]."
+  },
+  "calamitic-ruinmark-censer": {
+    "name": "Ruinmark Censer",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "Enemies this character [Weakens] take +10% damage from all sources while [Weakened]. +50% [Defense] and +40% [Skill Power]."
   },
   "calamitic-throne-borrowed-tomorrows": {
     "name": "Throne of Borrowed Tomorrows",
@@ -1060,11 +1102,23 @@ var approvedConduitCatalog = {
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
     "ability": "Your [Last Flare] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] this [Player Turn]. Each character can receive this extra action once per [Player Turn]. Allies in [Last Flare] [Recovery] are ineligible. +45% [Health] and +45% [Defense]."
   },
+  "calamitic-throne-of-the-lone-apostate": {
+    "name": "Throne of the Lone Apostate",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "If you are the only Element-Bearer in your Squad, gain +166.666666666667% [Defense], +166.666666666667% maximum [Health] and +83.333333333333% [Skill Power]."
+  },
   "calamitic-world-eater-orrery": {
     "name": "World-Eater's Orrery",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
     "ability": "+3 turns [Skill Duration]. [Debuffs] applied by your [Skills] gain +125% [Skill Power]."
+  },
+  "calamitic-worldbreaker-cannonade": {
+    "name": "Worldbreaker Cannonade",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "Your damaging [Skills] that hit all enemies gain +166.666666666667% [Skill Power]."
   }
 };
 function approvedConduitAbility(id) {
@@ -1158,6 +1212,15 @@ var phaseZeroUpgradePercentages = {
   "mending-valve": [0, 2, 3],
   "rootbound-triage-vault": [0, 1, 2, 3],
   "efflorescent-worldtree-heart": [0, 2, 3],
+  "calamitic-bulwark-of-the-last-horizon": [0, 1, 2],
+  "calamitic-reliquary-of-unending-mercy": [0, 1],
+  "calamitic-aegis-engine-of-severed-fate": [0, 1],
+  "calamitic-monolith-of-the-unmoved-star": [0, 1],
+  "calamitic-heartforge-of-the-sunless-dawn": [0, 1],
+  "calamitic-ruinmark-censer": [0, 1, 2],
+  "calamitic-choir-array-of-branded-stars": [0, 1, 2],
+  "calamitic-throne-of-the-lone-apostate": [0, 1, 2],
+  "calamitic-worldbreaker-cannonade": [0],
   "calamitic-cathedral-final-equation": [0, 1, 2],
   "calamitic-causality-funeral-engine": [0, 1],
   "calamitic-horizon-cleaving-godpress": [0, 1],
@@ -2595,13 +2658,83 @@ var calamiticConduits = [
     id: "calamitic-cathedral-final-equation",
     name: "Cathedral of the Final Equation",
     lore: "Three monumental cipher-engines turn around a captive crimson aperture. Rise built their closing equation to erase whatever she had chosen, not to worship it."
+  },
+  {
+    id: "calamitic-bulwark-of-the-last-horizon",
+    name: "Bulwark of the Last Horizon",
+    art: null,
+    lore: "Rise forged a black-and-white horizon wall around a crimson pressure core, reinforcing its bearer and the shields raised in its defense."
+  },
+  {
+    id: "calamitic-reliquary-of-unending-mercy",
+    name: "Reliquary of Unending Mercy",
+    art: null,
+    lore: "Rise built a white relief chamber carrying crimson channels through its healing and warding mechanisms, directing more power into restorative skills."
+  },
+  {
+    id: "calamitic-aegis-engine-of-severed-fate",
+    name: "Aegis-Engine of Severed Fate",
+    art: null,
+    lore: "Rise forged a crimson axle to drive an armored shield engine, preserving the bearer\u2019s barriers while feeding power into its skills."
+  },
+  {
+    id: "calamitic-monolith-of-the-unmoved-star",
+    name: "Monolith of the Unmoved Star",
+    art: null,
+    lore: "Rise set a star-shaped mass of dark metal inside a white brace, bracing its bearer against force and reducing skill costs."
+  },
+  {
+    id: "calamitic-heartforge-of-the-sunless-dawn",
+    name: "Heartforge of the Sunless Dawn",
+    art: null,
+    lore: "Rise sealed a crimson furnace within a pearl-white housing, restoring its bearer\u2019s strength and powering their skills."
+  },
+  {
+    id: "calamitic-ruinmark-censer",
+    name: "Ruinmark Censer",
+    art: null,
+    lore: "Rise built a black censer burning crimson behind a white lattice, marking weakened foes for greater harm from every attacker."
+  },
+  {
+    id: "calamitic-choir-array-of-branded-stars",
+    name: "Choir-Array of Branded Stars",
+    art: null,
+    lore: "Rise assembled a ring of white resonators around a crimson star, relaying each mark into a brief surge for the whole squad."
+  },
+  {
+    id: "calamitic-throne-of-the-lone-apostate",
+    name: "Throne of the Lone Apostate",
+    art: null,
+    lore: "Rise raised an empty black throne beneath a crimson-white canopy, concentrating its full power when its bearer stands alone."
+  },
+  {
+    id: "calamitic-worldbreaker-cannonade",
+    name: "Worldbreaker Cannonade",
+    art: null,
+    lore: "Rise designed a white cannon assembly around a crimson aperture, channeling its force into skills that strike every enemy."
   }
 ];
 function isCalamiticConduitId(id) {
   return calamiticConduits.some((conduit) => conduit.id === id);
 }
+var sectionFourCalamiticIds = /* @__PURE__ */ new Set([
+  "calamitic-bulwark-of-the-last-horizon",
+  "calamitic-reliquary-of-unending-mercy",
+  "calamitic-aegis-engine-of-severed-fate",
+  "calamitic-monolith-of-the-unmoved-star",
+  "calamitic-heartforge-of-the-sunless-dawn",
+  "calamitic-ruinmark-censer",
+  "calamitic-choir-array-of-branded-stars",
+  "calamitic-throne-of-the-lone-apostate",
+  "calamitic-worldbreaker-cannonade"
+]);
 function calamiticEffect(id, level = 0) {
   const amount = (base, maximum) => Number(calamiticPower(level, base, maximum).toFixed(6));
+  if (sectionFourCalamiticIds.has(id)) {
+    const ability3 = phaseZeroUpgradedAbility(id, level);
+    if (!ability3) throw new Error(`Missing approved Calamitic ability: ${id}.`);
+    return ability3;
+  }
   if (!phaseZeroStatsReady) {
     switch (id) {
       case "calamitic-world-eater-orrery":
@@ -2809,7 +2942,7 @@ var conduits = [
     rarity: "Calamitic",
     price: null,
     power: "Rise's annihilation machinery",
-    art: entry.id,
+    art: "art" in entry && entry.art === null ? null : entry.id,
     element: null,
     mechanic: null,
     buffs: [],
@@ -2849,7 +2982,23 @@ function validateConduitSlots(value2) {
   const ids = value2.filter((id) => id !== null);
   if (new Set(ids).size !== ids.length) throw new Error("Each named Conduit can be equipped only once per character.");
   if (ids.filter((id) => getConduit(id).rarity === "Omnic").length > 4) throw new Error("Equip at most four Omnic Conduits per character.");
+  if (ids.filter((id) => getConduit(id).rarity === "Calamitic").length > 5) throw new Error("Equip at most five Calamitic Conduits per character.");
   return [...value2];
+}
+function normalizeLegacyCalamiticSlots(value2) {
+  if (!Array.isArray(value2) || value2.length !== conduitSlotCount || !value2.every((id) => id === null || isConduitId(id))) {
+    throw new Error("Invalid Conduit slots.");
+  }
+  const ids = value2.filter((id) => id !== null);
+  if (new Set(ids).size !== ids.length) throw new Error("Each named Conduit can be equipped only once per character.");
+  let calamiticCount = 0;
+  const normalized = value2.map((id) => {
+    if (id === null || getConduit(id).rarity !== "Calamitic") return id;
+    if (calamiticCount >= 5) return null;
+    calamiticCount++;
+    return id;
+  });
+  return validateConduitSlots(normalized);
 }
 function normalizeLegacyKitSlots(value2, element) {
   if (!Array.isArray(value2) || value2.length !== conduitSlotCount || !value2.every((id) => id === null || isConduitId(id))) {
@@ -4442,7 +4591,13 @@ var phaseZeroStaticBonuses = {
   "calamitic-cathedral-final-equation": [{ stat: "skillEfficiency", amount: 0.65, additive: true }],
   "calamitic-horizon-cleaving-godpress": [{ stat: "defense", amount: 0.75 }],
   "calamitic-throne-borrowed-tomorrows": [{ stat: "health", amount: 0.45 }, { stat: "defense", amount: 0.45 }],
-  "calamitic-world-eater-orrery": [{ stat: "skillDuration", amount: 3, additive: true }]
+  "calamitic-world-eater-orrery": [{ stat: "skillDuration", amount: 3, additive: true }],
+  "calamitic-bulwark-of-the-last-horizon": [{ stat: "health", amount: 2 }, { stat: "defense", amount: 2 }],
+  "calamitic-aegis-engine-of-severed-fate": [{ stat: "skillPower", amount: 0.5, additive: true }],
+  "calamitic-monolith-of-the-unmoved-star": [{ stat: "defense", amount: 10 / 3 }, { stat: "skillEfficiency", amount: 0.1, additive: true }],
+  "calamitic-heartforge-of-the-sunless-dawn": [{ stat: "health", amount: 10 / 3 }, { stat: "skillPower", amount: 1 / 6, additive: true }],
+  "calamitic-ruinmark-censer": [{ stat: "defense", amount: 0.5 }, { stat: "skillPower", amount: 0.4, additive: true }],
+  "calamitic-choir-array-of-branded-stars": [{ stat: "health", amount: 7 / 15 }, { stat: "defense", amount: 7 / 15 }]
 };
 function phaseZeroUpgradeMagnitude(base, level) {
   if (!Number.isInteger(level) || level < 0 || level > 5) {
@@ -6744,6 +6899,27 @@ function calamiticNoLastFlareRecovery(owner) {
 function calamiticSkillPowerBonus(_state) {
   return 0;
 }
+function afterCalamiticMark(state, owner, target, events) {
+  const id = "calamitic-choir-array-of-branded-stars";
+  if (!phaseZeroStatsReady || owner.hp <= 0 || target.hp <= 0 || !equipped(owner, id)) return;
+  const memory = gear(owner).numbers;
+  const triggers = memory.calamiticChoirTriggers ?? 0;
+  if (triggers >= 4) return;
+  memory.calamiticChoirTriggers = triggers + 1;
+  const skillPower = power(state, owner, id, 1 / 3, 0.5);
+  const gauge = power(state, owner, id, 1 / 15, 0.1);
+  for (const ally of state.allies.filter((unit) => unit.hp > 0)) {
+    const numbers = gear(ally).numbers;
+    if (numbers.calamiticChoirThrough === state.round)
+      numbers.calamiticChoirSkillPower = (numbers.calamiticChoirSkillPower ?? 0) + skillPower;
+    else {
+      numbers.calamiticChoirThrough = state.round;
+      numbers.calamiticChoirSkillPower = skillPower;
+    }
+    generatedGaugePercent(owner, ally, gauge, events, state);
+  }
+  status2(owner, triggers + 1, `${owner.name}'s Choir-Array grants the Squad +${Math.round(skillPower * 100)}% Skill Power for this turn.`, events);
+}
 function calamiticSkillEfficiencyBonus(_state) {
   return 0;
 }
@@ -7024,6 +7200,8 @@ function nativeSupportMultiplier(state, owner) {
 function nativeDamageTakenMultiplier(state, source, target) {
   if (source.side !== "ally" || target.side !== "enemy") return 1;
   let multiplier = 1;
+  const weakenOwner = target.weakened > 0 ? state.allies.find((owner) => owner.id === target.weakenSourceId && equipped(owner, "calamitic-ruinmark-censer")) : void 0;
+  if (phaseZeroStatsReady && weakenOwner) multiplier *= 1 + calamiticPower(state.conduitUpgrades?.["calamitic-ruinmark-censer"] ?? 0, 0.1, 0.15);
   for (const owner of state.allies.filter(hasNativeIdentity)) {
     const mark = owner.native?.fateMarks?.[target.id];
     if (mark && mark.throughPhase >= state.round) multiplier *= (1 + 0.1 * mark.stacks) * 1.45;
@@ -7115,6 +7293,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
             throughPhase: state.round + 1 + activation.skillDuration
           };
           status3(state, events, owner, target, `${target.name}: Fate-seared Mark ${marks[target.id].stacks}/5; through enemy phase ${marks[target.id].throughPhase}.`);
+          afterCalamiticMark(state, owner, target, events);
         }
       }
       if (action === "ultimate") hit(4.4, true);
@@ -7417,6 +7596,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       if (action === "skill1" && target) {
         if (quarry?.target !== target.id) quarry = memory.quarry = { target: target.id, round: state.round, contributors: [] };
         hit(1.6);
+        if (target.hp > 0) afterCalamiticMark(state, owner, target, events);
       } else {
         const marked = foes(state).find((enemy) => enemy.id === quarry?.target);
         const contributors = quarry?.round === state.round ? quarry.contributors : [];
@@ -7890,7 +8070,7 @@ function nativeCleanup(state) {
 }
 
 // src/game/conduit-runtime.ts
-var conduitRulesVersion = phaseZeroStatsReady ? 13 : 4;
+var conduitRulesVersion = phaseZeroStatsReady ? 14 : 4;
 function gear(unit) {
   return unit.conduitRuntime ??= { numbers: {}, owners: {} };
 }
@@ -7922,7 +8102,7 @@ function heartcaseUnavailable(state, unit) {
 }
 function refreshConduitStats(state, initial = false) {
   if (!phaseZeroStatsReady) return;
-  const dynamic = state.allies.some((unit) => unit.masterConduit || equipped(unit, "horizon-heartcase") || equipped(unit, "clearwater-manifold") || equipped(unit, "ruinselect-prism") || equipped(unit, "emberlife-kiln") || Object.keys(omnicSquadStats).some((id) => equipped(unit, id)));
+  const dynamic = state.allies.some((unit) => unit.masterConduit || equipped(unit, "horizon-heartcase") || equipped(unit, "clearwater-manifold") || equipped(unit, "ruinselect-prism") || equipped(unit, "emberlife-kiln") || state.allies.length === 1 && !unit.captured && equipped(unit, "calamitic-throne-of-the-lone-apostate") || Object.keys(omnicSquadStats).some((id) => equipped(unit, id)));
   if (!dynamic) return;
   for (const unit of state.allies) {
     const memory = gear(unit);
@@ -7948,6 +8128,12 @@ function refreshConduitStats(state, initial = false) {
         defense: magnitude(state, "ruinselect-prism", 0.2) * dead
       });
     }
+    if (state.allies.length === 1 && !unit.captured && equipped(unit, "calamitic-throne-of-the-lone-apostate"))
+      add({
+        defense: magnitude(state, "calamitic-throne-of-the-lone-apostate", 5 / 3),
+        health: magnitude(state, "calamitic-throne-of-the-lone-apostate", 5 / 3),
+        skillPower: magnitude(state, "calamitic-throne-of-the-lone-apostate", 5 / 6)
+      });
     unit.stats.skillEfficiency = Math.min(0.5, (base.skillEfficiency ?? 0) + (pool.skillEfficiency ?? 0));
     if (equipped(unit, "horizon-heartcase") && heartcaseUnavailable(state, unit))
       add({ health: magnitude(state, "horizon-heartcase", 0.2) });
@@ -8324,6 +8510,9 @@ function conduitActionCost(actor, action, state, base, targetId) {
     return base === 0 ? 0 : Math.max(1, base - discount);
   }
   let efficiency = actor.stats.skillEfficiency ?? 0;
+  const actionTraits = conduitActionTraits(state, actor, action);
+  if ((actionTraits.healing || actionTraits.shield) && equipped(actor, "calamitic-reliquary-of-unending-mercy"))
+    efficiency += magnitude(state, "calamitic-reliquary-of-unending-mercy", 7 / 30);
   if (action === "skill1" && actor.kit?.ascension?.skill1 || action === "skill2" && actor.kit?.ascension?.skill2 || action === "ultimate" && actor.kit?.ascension?.lastFlare) efficiency += 0.05;
   if (equipped(actor, "starvein-conductor") && diverseSquad(state))
     efficiency += magnitude(state, "starvein-conductor", 0.35);
@@ -8599,6 +8788,16 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
   if (!phaseZeroStatsReady && action === "skill2" && hasNativeIdentity(actor) && equipped(actor, "master-crinso-1")) {
     ctx.bonus += n.goldImprint ?? 0;
     delete n.goldImprint;
+  }
+  if (phaseZeroStatsReady && action !== "light") {
+    const choir = n.calamiticChoirThrough === state.round ? n.calamiticChoirSkillPower ?? 0 : 0;
+    if (choir) {
+      ctx.skillPower += choir;
+    }
+    if ((traits.healing || traits.shield) && equipped(actor, "calamitic-reliquary-of-unending-mercy"))
+      ctx.skillPower += magnitude(state, "calamitic-reliquary-of-unending-mercy", 5 / 6);
+    if (nativeAll && traits.damage && equipped(actor, "calamitic-worldbreaker-cannonade"))
+      ctx.skillPower += magnitude(state, "calamitic-worldbreaker-cannonade", 5 / 3);
   }
   if (action !== "light") ctx.skillPower += nativeHymn(actor, state.round)?.skillPower ?? 0;
   ctx.skillPower = Math.max(0, ctx.skillPower);
@@ -9193,8 +9392,10 @@ function finishConduitAction(state, owner, ctx, events) {
         if (ctx.action !== "light") for (const hit of ctx.hits) {
           const enemy = state.enemies.find((enemy2) => enemy2.id === hit.target && enemy2.hp > 0);
           if (enemy && hit.damage > 0) {
-            if (phaseZeroStatsReady) gear(enemy).numbers[`nightglass:${owner.id}`] = state.round + 1;
-            else {
+            if (phaseZeroStatsReady) {
+              gear(enemy).numbers[`nightglass:${owner.id}`] = state.round + 1;
+              afterCalamiticMark(state, owner, enemy, events);
+            } else {
               enemy.conduitMarks ??= {};
               enemy.conduitMarks[owner.id] = (enemy.conduitMarks[owner.id] ?? 0) + 1;
             }
@@ -9738,7 +9939,15 @@ function nativeShieldActivationMultiplier(enemy, target) {
 }
 function absorbEnemyDamage(state, target, amount, events) {
   const shieldBefore = target.shield;
-  const reduction = phaseZeroStatsReady && equipped(target, "pale-bulwark-diadem") ? magnitude(state, "pale-bulwark-diadem", 0.5) : 0;
+  let reduction = 0;
+  if (phaseZeroStatsReady) {
+    if (equipped(target, "pale-bulwark-diadem")) reduction += magnitude(state, "pale-bulwark-diadem", 0.5);
+    if (equipped(target, "calamitic-bulwark-of-the-last-horizon"))
+      reduction += magnitude(state, "calamitic-bulwark-of-the-last-horizon", 1 / 6);
+    if (equipped(target, "calamitic-aegis-engine-of-severed-fate"))
+      reduction += magnitude(state, "calamitic-aegis-engine-of-severed-fate", 11 / 30);
+  }
+  reduction = Math.min(0.8, reduction);
   const covered = Math.min(amount, shieldBefore / (1 - reduction));
   const absorbed = consumeShield(target, covered * (1 - reduction));
   let loss = Math.max(0, amount - covered);
@@ -11129,7 +11338,7 @@ function isExchangeQuantity(value2) {
 // src/game/account.ts
 var ACCOUNT_KEY = "last-light.wallet";
 function emptyAccount() {
-  return { version: 10, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
+  return { version: 11, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
 function count(value2) {
   return typeof value2 === "number" && Number.isSafeInteger(value2) && value2 >= 0;
@@ -11154,7 +11363,7 @@ function hasHistoricalBossReceipt(receipts, boss) {
   return receipts.some((receipt) => receipt.length === 37 + boss.length && uuid2.test(receipt.slice(0, 36)) && receipt.slice(36) === `:${boss}`);
 }
 function validateAccount(value2) {
-  if (!record(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 && value2.version !== 7 && value2.version !== 8 && value2.version !== 9 && value2.version !== 10 || !count(value2.fractalis) || !count(value2.lycalis) || !record(value2.materials) || !record(value2.characters) || !record(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
+  if (!record(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 && value2.version !== 7 && value2.version !== 8 && value2.version !== 9 && value2.version !== 10 && value2.version !== 11 || !count(value2.fractalis) || !count(value2.lycalis) || !record(value2.materials) || !record(value2.characters) || !record(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
     throw new Error("The local progression save is invalid or unsupported. It has not been overwritten.");
   }
   const account = emptyAccount();
@@ -11338,7 +11547,7 @@ function validateAccount(value2) {
       if (!Array.isArray(slots) || slots.some((conduit) => conduit !== null && (!isConduitId(conduit) || !(account.conduits?.[conduit] ?? 0)))) {
         throw new Error("Conduit equipment requires an owned Conduit.");
       }
-      const equipped2 = value2.version < 5 ? normalizeLegacyKitSlots(slots, element) : validateConduitSlots(slots);
+      const equipped2 = value2.version < 5 ? normalizeLegacyKitSlots(slots, element) : value2.version < 11 ? normalizeLegacyCalamiticSlots(slots) : validateConduitSlots(slots);
       validateConduitElement(equipped2, element);
       account.conduitEquipment[id] = equipped2;
     }

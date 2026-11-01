@@ -137,7 +137,7 @@ describe('online profile presentation', () => {
     { friends: [], incoming: [{ userId: '1', username: 'peer', displayName: 'Peer', icon: 'neutral', frame: 'default' }], outgoing: [] });
     for (const region of ['Emberwake March', 'Glasswater Reach', 'Stormspan Heights', 'Rootstone Wilds', 'Stillhalo Vale', 'Riftbound Frontier']) expect(html).toContain(region);
     expect(html).toContain(`${26 - storyRules.regionStages}/${storyRules.regionStages}`);
-    expect(html).toContain('max="90"');
+    expect(html).toContain('max="99"');
     expect(html).toContain('max="144"');
     expect(html).toContain('3/144');
     expect(html).toContain('<span>Standard</span><b>12/200</b><b>24/500</b>');
@@ -166,7 +166,7 @@ describe('online profile presentation', () => {
     expect(html).toContain(`50 / ${storyRules.stages}`);
     expect(html).toContain('2 / 6');
     expect(html).toContain('<h2>Element-Bearers</h2><p><strong>1</strong><span> / 19</span>');
-    expect(html).toContain('<span>Conduit types</span><progress value="1" max="90"');
+    expect(html).toContain('<span>Conduit types</span><progress value="1" max="99"');
     expect(html).toContain('<dt>Total summons</dt><dd>17</dd>');
     expect(html).toContain('characters/infernis');
     expect(html).toContain('draggable="false"');

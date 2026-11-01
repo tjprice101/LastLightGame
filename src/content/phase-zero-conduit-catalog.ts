@@ -805,6 +805,18 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Botanic (actual gameplay element)",
     "ability": "Your [Skills] turn 60% of [Overhealing] into a [Shield] for the healed ally, capped at 20% of their maximum [Health] and lasting two [Enemy Turns]. Replaces the previous [Shield] from this Conduit. +140% [Health] and +35% [Skill Power]."
   },
+  "calamitic-aegis-engine-of-severed-fate": {
+    "name": "Aegis-Engine of Severed Fate",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "Damage to this character's [Shields] is reduced by 36.666666666667%. +50% [Skill Power]."
+  },
+  "calamitic-bulwark-of-the-last-horizon": {
+    "name": "Bulwark of the Last Horizon",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "+200% maximum [Health] and +200% [Defense]. Incoming damage consumes 16.666666666667% fewer points from this character's [Shields]."
+  },
   "calamitic-cathedral-final-equation": {
     "name": "Cathedral of the Final Equation",
     "rarity": "Calamitic",
@@ -817,11 +829,41 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
     "ability": "+50% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]."
   },
+  "calamitic-choir-array-of-branded-stars": {
+    "name": "Choir-Array of Branded Stars",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "When you apply a [Mark], each living Squad Member gains +33.333333333333% [Skill Power] and 6.666666666667% of their maximum [Elemental Gauge]. The Skill Power stacks per trigger until the end of the current turn; it can trigger four times per battle. +46.666666666667% [Health] and [Defense]."
+  },
+  "calamitic-heartforge-of-the-sunless-dawn": {
+    "name": "Heartforge of the Sunless Dawn",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "+333.333333333333% maximum [Health]. +16.666666666667% [Skill Power]."
+  },
   "calamitic-horizon-cleaving-godpress": {
     "name": "Horizon-Cleaving Godpress",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
     "ability": "Your damaging [Skills] ignore 55% of enemy [Defense]. +75% [Defense]."
+  },
+  "calamitic-monolith-of-the-unmoved-star": {
+    "name": "Monolith of the Unmoved Star",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "+333.333333333333% [Defense]. +10% [Skill Efficiency]."
+  },
+  "calamitic-reliquary-of-unending-mercy": {
+    "name": "Reliquary of Unending Mercy",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "[Skills] that heal or create [Shields] gain +83.333333333333% [Skill Power] and +23.333333333333% [Skill Efficiency]."
+  },
+  "calamitic-ruinmark-censer": {
+    "name": "Ruinmark Censer",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "Enemies this character [Weakens] take +10% damage from all sources while [Weakened]. +50% [Defense] and +40% [Skill Power]."
   },
   "calamitic-throne-borrowed-tomorrows": {
     "name": "Throne of Borrowed Tomorrows",
@@ -829,11 +871,23 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
     "ability": "Your [Last Flare] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] this [Player Turn]. Each character can receive this extra action once per [Player Turn]. Allies in [Last Flare] [Recovery] are ineligible. +45% [Health] and +45% [Defense]."
   },
+  "calamitic-throne-of-the-lone-apostate": {
+    "name": "Throne of the Lone Apostate",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "If you are the only Element-Bearer in your Squad, gain +166.666666666667% [Defense], +166.666666666667% maximum [Health] and +83.333333333333% [Skill Power]."
+  },
   "calamitic-world-eater-orrery": {
     "name": "World-Eater's Orrery",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
     "ability": "+3 turns [Skill Duration]. [Debuffs] applied by your [Skills] gain +125% [Skill Power]."
+  },
+  "calamitic-worldbreaker-cannonade": {
+    "name": "Worldbreaker Cannonade",
+    "rarity": "Calamitic",
+    "element": "Universal",
+    "ability": "Your damaging [Skills] that hit all enemies gain +166.666666666667% [Skill Power]."
   }
 };
 

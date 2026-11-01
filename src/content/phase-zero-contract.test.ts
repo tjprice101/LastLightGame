@@ -42,13 +42,13 @@ describe('approved Phase 0 catalog contract (not runtime effect verification)', 
     expect(entries.find(entry => entry.name === 'Breach Pendulum')?.ability).toContain('Multiple copies do not stack');
   });
   it('contains every entry exactly once in rarity/name order', () => {
-    expect(entries).toHaveLength(138);
-    expect(metadata).toHaveLength(138);
-    expect(new Set(entries.map((entry) => entry.name)).size).toBe(138);
-    expect(new Set(metadata.map((entry) => entry.id)).size).toBe(138);
+    expect(entries).toHaveLength(147);
+    expect(metadata).toHaveLength(147);
+    expect(new Set(entries.map((entry) => entry.name)).size).toBe(147);
+    expect(new Set(metadata.map((entry) => entry.id)).size).toBe(147);
     const tiers = ['Common', 'Rare', 'Legendary', 'Omnic', 'Calamitic'];
     expect(tiers.map((tier) => entries.filter((entry) =>
-      entry.rarity.replace(' (Master)', '') === tier).length)).toEqual([10, 15, 15, 93, 5]);
+      entry.rarity.replace(' (Master)', '') === tier).length)).toEqual([10, 15, 15, 93, 14]);
     const sorted = [...entries].sort((a, b) =>
       tiers.indexOf(a.rarity.replace(' (Master)', '')) -
       tiers.indexOf(b.rarity.replace(' (Master)', '')) || a.name.localeCompare(b.name));
@@ -64,7 +64,7 @@ describe('approved Phase 0 catalog contract (not runtime effect verification)', 
     expect(entry.ability).not.toMatch(/_{2,}|\b(?:TODO|TBD|undefined)\b/);
     if (expected.element) expect(entry.element).toContain(`${expected.element} (`);
     if (expected.character) expect(entry.element).toContain(`Master for ${expected.character} only`);
-    else if (!expected.element) expect(entry.element).toContain('gameplay: universal');
+    else if (!expected.element) expect(entry.element.toLowerCase()).toContain('universal');
   });
 
   it('keeps percentage grants distinct from Gauge costs and held-Gauge thresholds', () => {

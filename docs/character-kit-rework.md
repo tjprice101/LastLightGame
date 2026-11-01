@@ -17,7 +17,7 @@ Infernis Burn/detonation and Crinso alternating edges are separate; delayed
 Seeds, blade placement, order/Beat timing, interception, Instructions, forecasts,
 Quarry, traps, Survey and finite Foundation replace shared charge loops.
 The historical rules below are retained as design history, not active bonuses.
-See the [138-item compatibility audit](character-conduit-compatibility.md) for
+See the [147-item compatibility audit](character-conduit-compatibility.md) for
 equipment adaptations; client/server publication remains separate.
 
 ## Calamitic native identities (D-435)

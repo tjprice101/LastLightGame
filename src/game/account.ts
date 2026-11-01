@@ -10,7 +10,7 @@ import { loadProfile, type ProfileStorage } from './profile';
 import { type BattleResult } from './battle';
 import { materialName } from '../content/dungeon-art';
 import { getCreature } from '../content/creatures';
-import { getConduit, isConduitId, validateConduitSlots, normalizeLegacyKitSlots, validateConduitElement, conduitSlotCount, validateConduitUpgrades, conduitUpgradeCost, conduitUpgradeCap, type ConduitId, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
+import { getConduit, isConduitId, validateConduitSlots, normalizeLegacyKitSlots, normalizeLegacyCalamiticSlots, validateConduitElement, conduitSlotCount, validateConduitUpgrades, conduitUpgradeCost, conduitUpgradeCap, type ConduitId, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
 import { machineComponentDrop } from '../content/mechanical-components';
 import { bannerConduitBonus, machineConduitLoot, validateMachineLootFocus, isMachineFocusRarity,
   type MachineLootFocus, type MachineFocusRarity } from '../content/machines';
@@ -35,7 +35,7 @@ import { gatesOfOblivionRules, isOblivionStage, oblivionEncounter, oblivionMater
 
 export const ACCOUNT_KEY = 'last-light.wallet';
 export interface Account {
-  version: 10;
+  version: 11;
   fractalis: number;
   lycalis: number;
   bannerPity?: Partial<Record<SummonBannerId, BannerPity>>;
@@ -69,7 +69,7 @@ export interface Account {
   creatures: Record<string, { defeated: boolean }>;
 }
 export function emptyAccount(): Account {
-  return { version: 10, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
+  return { version: 11, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
 function count(value: unknown): value is number {
   return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
@@ -96,7 +96,7 @@ function hasHistoricalBossReceipt(receipts: readonly string[], boss: string): bo
     uuid.test(receipt.slice(0, 36)) && receipt.slice(36) === `:${boss}`);
 }
 export function validateAccount(value: unknown): Account {
-  if (!record(value) || (value.version !== 2 && value.version !== 3 && value.version !== 4 && value.version !== 5 && value.version !== 6 && value.version !== 7 && value.version !== 8 && value.version !== 9 && value.version !== 10) || !count(value.fractalis) || !count(value.lycalis) ||
+  if (!record(value) || (value.version !== 2 && value.version !== 3 && value.version !== 4 && value.version !== 5 && value.version !== 6 && value.version !== 7 && value.version !== 8 && value.version !== 9 && value.version !== 10 && value.version !== 11) || !count(value.fractalis) || !count(value.lycalis) ||
       !record(value.materials) || !record(value.characters) || !record(value.dungeonStages) ||
       typeof value.firstFracture !== 'boolean' || !Array.isArray(value.receipts) ||
       !value.receipts.every((receipt) => typeof receipt === 'string') || new Set(value.receipts).size !== value.receipts.length) {
@@ -290,7 +290,8 @@ export function validateAccount(value: unknown): Account {
       if (!Array.isArray(slots) || slots.some((conduit) => conduit !== null && (!isConduitId(conduit) || !(account.conduits?.[conduit] ?? 0)))) {
         throw new Error('Conduit equipment requires an owned Conduit.');
       }
-      const equipped = value.version < 5 ? normalizeLegacyKitSlots(slots, element) : validateConduitSlots(slots);
+      const equipped = value.version < 5 ? normalizeLegacyKitSlots(slots, element)
+        : value.version < 11 ? normalizeLegacyCalamiticSlots(slots) : validateConduitSlots(slots);
       validateConduitElement(equipped, element);
       account.conduitEquipment[id] = equipped;
     }

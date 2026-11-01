@@ -26,19 +26,19 @@ function fixture(id: CalamiticConduitId, level = 0, enabled = true) {
 }
 
 describe('Calamitic universal equipment', () => {
-  it('adds exactly five unique universal identities, above Omnic, with more expensive upgrades', () => {
-    expect(calamiticConduits).toHaveLength(5);
-    expect(new Set(calamiticConduits.map(entry => entry.id)).size).toBe(5);
+  it('adds fourteen unique universal identities, above Omnic, with more expensive upgrades', () => {
+    expect(calamiticConduits).toHaveLength(14);
+    expect(new Set(calamiticConduits.map(entry => entry.id)).size).toBe(14);
     for (const design of calamiticConduits) {
       const entry = getConduit(design.id);
-      expect(entry).toMatchObject({ rarity: 'Calamitic', element: null, art: entry.id, price: null, buffs: [] });
+      expect(entry).toMatchObject({ rarity: 'Calamitic', element: null, art: 'art' in design && design.art === null ? null : entry.id, price: null, buffs: [] });
       expect(entry.lore).not.toContain('shared prototype');
       for (const element of elements) expect(conduitEquipReason(entry, element.id, Array(8).fill(null), 0)).toBeNull();
       expect([0, 1, 2, 3, 4].map(level => conduitUpgradeCost(entry, level))).toEqual([10000, 20000, 40000, 70000, 100000]);
       for (let level = 0; level <= 5; level++) expect(conduitEffect(entry, level)).toBe(calamiticEffect(design.id, level));
       expect(conduitUpgradeCost(entry, 5)).toBeNull();
     }
-    const ids: (ConduitId | null)[] = [...calamiticConduits.map(entry => entry.id), null, null, null];
+    const ids: (ConduitId | null)[] = [...calamiticConduits.slice(0, 5).map(entry => entry.id), null, null, null];
     expect(validateConduitSlots(ids)).toEqual(ids);
     expect(() => validateConduitSlots([...ids.slice(0, 7), ids[0]])).toThrow('once');
     const omnic = conduits.filter(entry => entry.rarity === 'Omnic' && entry.element === 'infernic').slice(0, 4).map(entry => entry.id);
@@ -47,6 +47,8 @@ describe('Calamitic universal equipment', () => {
     expect(validateConduitSlots(mixed)).toEqual(mixed);
     const fiveOmnic = conduits.filter(entry => entry.rarity === 'Omnic').slice(0, 5).map(entry => entry.id);
     expect(() => validateConduitSlots([...fiveOmnic, ...ids.slice(0, 3)])).toThrow('four Omnic');
+    const sixCalamitic = [...calamiticConduits.slice(0, 6).map(entry => entry.id), null, null];
+    expect(() => validateConduitSlots(sixCalamitic)).toThrow('five Calamitic');
   });
 
   for (const level of [0, 1, 2, 3, 4, 5]) for (const enabled of [false, true]) {
@@ -185,7 +187,7 @@ describe('Calamitic universal equipment', () => {
   });
 
   it('is legal for every Element-Bearer and captured copies, without creating native abilities', () => {
-    const ids = calamiticConduits.map(entry => entry.id);
+    const ids = calamiticConduits.slice(0, 5).map(entry => entry.id);
     const slots: (ConduitId | null)[] = [...ids, null, null, null];
     for (const starter of starters) {
       const state = createBattle(17, [starter.id], undefined, { [starter.id]: slots });

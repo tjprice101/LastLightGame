@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { conduits } from '../content/conduits';
+import { calamiticConduits } from '../content/calamitic-conduits';
 import { conduitArtRevisions } from '../content/conduit-art-revisions';
 import { getCreature } from '../content/creatures';
 import { machineEnemies, machineRules } from '../content/machines';
@@ -18,7 +19,7 @@ describe('supplied machine artwork integration', () => {
     const supplied = conduits.filter((entry) => entry.art !== null);
     const pending = conduits.filter((entry) => entry.art === null);
     expect(supplied).toHaveLength(90);
-    expect(pending).toHaveLength(0);
+    expect(pending).toHaveLength(9);
     for (const conduit of supplied) {
       expect(conduit.art).toBe(conduit.id);
       const path = `conduits/${conduit.id}.png`;

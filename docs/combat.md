@@ -285,7 +285,7 @@ have six wins out of640. There are50 unresolved fixed-horizon timeouts.
 
 ## Omnic and Master refresh (D-383)
 
-The [catalog](conduit-catalog.txt) and [138-entry compatibility matrix](character-conduit-compatibility.md)
+The [catalog](conduit-catalog.txt) and [147-entry compatibility matrix](character-conduit-compatibility.md)
 own all exact abilities. D-383 refreshes45 ordinary Omnics and48 Masters:
 the owner's55 designs are preserved as the baseline;38 completions retain
 their distinct native/elemental triggers with individually tailored stat packages.
@@ -453,14 +453,14 @@ Implemented in the activated release:
 - Non-Defense reductions multiply before enforcing the20% damage floor.
   Generated proc Shields have finite clocks, independent of native duration.
 
-The [138-entry behavior matrix](conduit-behavior-matrix.md) records726 executed
-numerical scenarios: each of90 ordinary entries absent and at+0..+5, and each
+The [147-entry behavior matrix](conduit-behavior-matrix.md) records789 executed
+numerical scenarios: each of99 ordinary entries absent and at+0..+5, and each
 of48 named Masters equipped and absent. Separate integration tests verify
 generated Master Shield isolation, manual-packet modifiers, stored Power,
 strongest-only duplicate auras, additive pre-equipment stat pools and Defense
 caps. Atlas/Leviathan count one enemy attack rather than each impact; rounded
-Gauge receipts respect their per-turn caps. All138 default descriptions and
-90 ordinary upgrade descriptions are checked independently of behavior.
+Gauge receipts respect their per-turn caps. All147 default descriptions and
+99 ordinary upgrade descriptions are checked independently of behavior.
 This is local implementation evidence, not deployment or universal balance
 certification. See the current [handoff](handoff.md) for exact validation.
 

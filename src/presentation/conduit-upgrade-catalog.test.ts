@@ -29,19 +29,19 @@ function fixture(account: Account = { ...emptyAccount(), mechanicalComponents: 1
 }
 
 describe('owned Conduit upgrade catalog', () => {
-  it('paginates all 90 real names exactly once with six small cards and no list scrollers', () => {
+  it('paginates all 99 real names exactly once with six small cards and no list scrollers', () => {
     const f = fixture();
     const before = structuredClone(f.account);
-    expect(conduits).toHaveLength(90);
+    expect(conduits).toHaveLength(99);
     expect(f.ids()).toHaveLength(6);
     expect(f.host.querySelector('.ref-scroll')).toBeNull();
     expect(f.host.querySelector<HTMLButtonElement>('[data-upgrade-page="-1"]')!.disabled).toBe(true);
     const seen = [...f.ids()];
-    for (let index = 1; index < 15; index++) { f.page(); seen.push(...f.ids()); }
-    expect(seen).toHaveLength(90);
-    expect(new Set(seen).size).toBe(90);
+    for (let index = 1; index < 17; index++) { f.page(); seen.push(...f.ids()); }
+    expect(seen).toHaveLength(99);
+    expect(new Set(seen).size).toBe(99);
     expect(seen).toEqual([...conduits].sort((a, b) => a.name.localeCompare(b.name)).map(conduit => conduit.id));
-    expect(f.host.querySelector('.ref-upgrade-pagination span')!.textContent).toBe('85–90 of 90 · Page 15 / 15');
+    expect(f.host.querySelector('.ref-upgrade-pagination span')!.textContent).toBe('97–99 of 99 · Page 17 / 17');
     expect(f.host.querySelector<HTMLButtonElement>('[data-upgrade-page="1"]')!.disabled).toBe(true);
     f.page(-1);
     expect(f.ids()).toHaveLength(6);
@@ -113,7 +113,7 @@ describe('owned Conduit upgrade catalog', () => {
     const f = fixture();
     f.bind();
     f.page();
-    expect(f.host.querySelector('.ref-upgrade-pagination span')!.textContent).toContain('Page 2 / 15');
+    expect(f.host.querySelector('.ref-upgrade-pagination span')!.textContent).toContain('Page 2 / 17');
     f.change('[data-upgrade-status]', 'available');
     updateConduitUpgradeMenu(f.host, { ...f.account, mechanicalComponents: 0 });
     expect(f.ids()).toHaveLength(0);
@@ -152,7 +152,7 @@ describe('owned Conduit upgrade catalog', () => {
   });
 
   it('shows complete upgraded mechanics at all six levels without falsely marking them immutable', () => {
-    expect(conduits).toHaveLength(90);
+    expect(conduits).toHaveLength(99);
     for (const conduit of conduits) {
       const root = document.createElement('div');
       root.innerHTML = conduitUpgradeMenu({ ...emptyAccount(), conduits: { [conduit.id]: 1 } }, conduit.id);
@@ -179,8 +179,10 @@ describe('owned Conduit upgrade catalog', () => {
       expect(f.host.querySelector('[data-upgrade-sort]')).toBe(select);
       expect(select.previousElementSibling).toBe(trigger);
       expect(trigger!.textContent).toBe('Rarity highest');
-      expect(f.ids().slice(0, 5).every(id => getConduit(id).rarity === 'Calamitic')).toBe(true);
-      expect(getConduit(f.ids()[5]).rarity).toBe('Omnic');
+      const visibleIds = [...f.ids()];
+      for (let index = 1; index < 17; index++) { f.page(); visibleIds.push(...f.ids()); }
+      expect(visibleIds.slice(0, 14).every(id => getConduit(id).rarity === 'Calamitic')).toBe(true);
+      expect(getConduit(visibleIds[14]).rarity).toBe('Omnic');
       expect(f.host.querySelectorAll('.selection-trigger')).toHaveLength(1);
     } finally { dispose(); }
   });

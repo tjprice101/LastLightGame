@@ -14,10 +14,10 @@ import { debuffSnapshot } from './battle-debuffs';
 import { pilotAuthoredShieldAbsorbed, pilotEffectiveHeal } from './kit-pilots';
 import { hasNativeIdentity, nativeAbsorbedHit, nativeDirectHpLoss, nativeIncomingMultiplier,
   nativeRouteDamage, nativeSupportMultiplier, nativeDamageTakenMultiplier, nativeHymn, nativeRefusal } from './native-kits';
-import { prepareCalamiticAction, afterCalamiticAction, calamiticSiegeBonus, deferCalamiticDamage,
+import { prepareCalamiticAction, afterCalamiticAction, afterCalamiticMark, calamiticSiegeBonus, deferCalamiticDamage,
   bankCalamiticDamage, calamiticSkillDefenseIgnore, calamiticSkillPowerBonus, calamiticSkillEfficiencyBonus } from './calamitic-conduits';
 
-export const conduitRulesVersion = phaseZeroStatsReady ? 13 : 4;
+export const conduitRulesVersion = phaseZeroStatsReady ? 14 : 4;
 export interface ConduitShieldLayer {
   amount: number;
   owner: string;
@@ -108,6 +108,7 @@ export function refreshConduitStats(state: BattleState, initial = false): void {
   const dynamic = state.allies.some(unit => unit.masterConduit ||
     equipped(unit, 'horizon-heartcase') || equipped(unit, 'clearwater-manifold') ||
     equipped(unit, 'ruinselect-prism') || equipped(unit, 'emberlife-kiln') ||
+    state.allies.length === 1 && !unit.captured && equipped(unit, 'calamitic-throne-of-the-lone-apostate') ||
     Object.keys(omnicSquadStats).some(id => equipped(unit, id)));
   if (!dynamic) return;
   for (const unit of state.allies) {
@@ -135,6 +136,10 @@ export function refreshConduitStats(state: BattleState, initial = false): void {
       add({ skillPower: magnitude(state, 'ruinselect-prism', .55) * dead,
         defense: magnitude(state, 'ruinselect-prism', .2) * dead });
     }
+    if (state.allies.length === 1 && !unit.captured && equipped(unit, 'calamitic-throne-of-the-lone-apostate'))
+      add({ defense: magnitude(state, 'calamitic-throne-of-the-lone-apostate', 5 / 3),
+        health: magnitude(state, 'calamitic-throne-of-the-lone-apostate', 5 / 3),
+        skillPower: magnitude(state, 'calamitic-throne-of-the-lone-apostate', 5 / 6) });
     unit.stats.skillEfficiency = Math.min(.5, (base.skillEfficiency ?? 0) + (pool.skillEfficiency ?? 0));
     if (equipped(unit, 'horizon-heartcase') && heartcaseUnavailable(state, unit))
       add({ health: magnitude(state, 'horizon-heartcase', .2) });
@@ -511,6 +516,9 @@ export function conduitActionCost(actor: Combatant, action: ActionId, state: Bat
     return base === 0 ? 0 : Math.max(1, base - discount);
   }
   let efficiency = actor.stats.skillEfficiency ?? 0;
+  const actionTraits = conduitActionTraits(state, actor, action);
+  if ((actionTraits.healing || actionTraits.shield) && equipped(actor, 'calamitic-reliquary-of-unending-mercy'))
+    efficiency += magnitude(state, 'calamitic-reliquary-of-unending-mercy', 7 / 30);
   if ((action === 'skill1' && actor.kit?.ascension?.skill1) ||
       (action === 'skill2' && actor.kit?.ascension?.skill2) ||
       (action === 'ultimate' && actor.kit?.ascension?.lastFlare)) efficiency += .05;
@@ -754,6 +762,16 @@ export function prepareConduitAction(state: BattleState, actor: Combatant, actio
   if (!phaseZeroStatsReady && action === 'skill2' && hasNativeIdentity(actor) && equipped(actor, 'master-crinso-1')) {
     ctx.bonus += n.goldImprint ?? 0;
     delete n.goldImprint;
+  }
+  if (phaseZeroStatsReady && action !== 'light') {
+    const choir = n.calamiticChoirThrough === state.round ? n.calamiticChoirSkillPower ?? 0 : 0;
+    if (choir) {
+      ctx.skillPower += choir;
+    }
+    if ((traits.healing || traits.shield) && equipped(actor, 'calamitic-reliquary-of-unending-mercy'))
+      ctx.skillPower += magnitude(state, 'calamitic-reliquary-of-unending-mercy', 5 / 6);
+    if (nativeAll && traits.damage && equipped(actor, 'calamitic-worldbreaker-cannonade'))
+      ctx.skillPower += magnitude(state, 'calamitic-worldbreaker-cannonade', 5 / 3);
   }
   if (action !== 'light') ctx.skillPower += nativeHymn(actor, state.round)?.skillPower ?? 0;
   ctx.skillPower = Math.max(0, ctx.skillPower);
@@ -1329,8 +1347,10 @@ export function finishConduitAction(state: BattleState, owner: Combatant, ctx: C
         if (ctx.action !== 'light') for (const hit of ctx.hits) {
           const enemy = state.enemies.find(enemy => enemy.id === hit.target && enemy.hp > 0);
           if (enemy && hit.damage > 0) {
-            if (phaseZeroStatsReady) gear(enemy).numbers[`nightglass:${owner.id}`] = state.round + 1;
-            else { enemy.conduitMarks ??= {}; enemy.conduitMarks[owner.id] = (enemy.conduitMarks[owner.id] ?? 0) + 1; }
+            if (phaseZeroStatsReady) {
+              gear(enemy).numbers[`nightglass:${owner.id}`] = state.round + 1;
+              afterCalamiticMark(state, owner, enemy, events);
+            } else { enemy.conduitMarks ??= {}; enemy.conduitMarks[owner.id] = (enemy.conduitMarks[owner.id] ?? 0) + 1; }
           }
         }
         break;
@@ -1816,8 +1836,15 @@ function nativeShieldActivationMultiplier(enemy: Combatant, target: Combatant): 
 }
 function absorbEnemyDamage(state: BattleState, target: Combatant, amount: number, events: BattleEvent[]) {
   const shieldBefore = target.shield;
-  const reduction = phaseZeroStatsReady && equipped(target, 'pale-bulwark-diadem')
-    ? magnitude(state, 'pale-bulwark-diadem', .5) : 0;
+  let reduction = 0;
+  if (phaseZeroStatsReady) {
+    if (equipped(target, 'pale-bulwark-diadem')) reduction += magnitude(state, 'pale-bulwark-diadem', .5);
+    if (equipped(target, 'calamitic-bulwark-of-the-last-horizon'))
+      reduction += magnitude(state, 'calamitic-bulwark-of-the-last-horizon', 1 / 6);
+    if (equipped(target, 'calamitic-aegis-engine-of-severed-fate'))
+      reduction += magnitude(state, 'calamitic-aegis-engine-of-severed-fate', 11 / 30);
+  }
+  reduction = Math.min(.8, reduction);
   const covered = Math.min(amount, shieldBefore / (1 - reduction));
   const absorbed = consumeShield(target, covered * (1 - reduction));
   let loss = Math.max(0, amount - covered);

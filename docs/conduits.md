@@ -1,8 +1,29 @@
 # Conduits and Conduit Store
 
+## Current Calamitic equipment rules (D-435 Section 4)
+
+The catalog contains 99 ordinary-slot Conduits?including 14 universal
+Calamitic entries?and 48 named Masters. The nine additions cost 100 Calamitic
+Tokens each in the existing Rise shop. Their approved +0..+5 values follow the
+10%-of-base-per-upgrade curve; the exact text comes from the [catalog](conduit-catalog.txt)
+and is shared by Store, Inventory, equipment, upgrade and Collections views.
+Their icons remain neutral ?Artwork pending? placeholders until reviewed art
+delivery; no image URLs are assigned.
+
+A character may equip at most five Calamitic Conduits across all 14 designs,
+within eight ordinary slots. The four matching-element Omnic limit remains
+independent and unchanged. The limit is checked by the loadout UI, local equip
+transaction, account save validation, server authority and fighter resolution.
+Pre-v11 saves normalize excess Calamitic slots in slot order on read without
+writing; the first successful transaction persists v11. Shield Damage Reduction
+from applicable Conduits adds together and is capped at 80%. Choir-Array triggers
+at most four times per encounter, grants Gauge each time, and stacks Skill Power
+through the current turn. Rules14 preserves investments and saved rewards while
+restarting historical battle snapshots.
+
 ## Complete description and keyword audit (D-415)
 
-All138 live abilities (90 ordinary-slot Conduits and48 named Masters) were
+All147 live abilities (99 ordinary-slot Conduits and48 named Masters) were
 reviewed against their stat packages, triggers, recipients, clocks and upgrade
 policies in the [authoritative catalog](conduit-catalog.txt). Short stat-only
 entries remain short. Complex effects now state who acts, who receives the
@@ -26,7 +47,7 @@ or redundant comparisons to the unmodified skill.
   Skill (not15%), capped60%; Virtuous Planet Rosegarden triggers on Crimson
   Skyfall against Quarry (not Last Flare). No other Conduit balance changes.
 
-All90 ordinary percentage orders and +0..+5 policies remain intact, including
+All99 ordinary percentage orders and +0..+5 policies remain intact, including
 Causality's50+2-per-upgrade exception, fixed penalties and caps. Masters remain
 fixed. Regenerate with `node tools\build_phase_zero_conduit_catalog.mjs`.
 Validation includes every ordinary effect at six upgrades, every Master,
@@ -60,7 +81,7 @@ loadout/selection/loot/reward presentation suites, then `npm run build`.
 
 ## Description copy (D-397)
 
-All138 current ordinary/Master abilities were audited;21 descriptions were
+All147 current ordinary/Master abilities were audited;21 descriptions were
 tightened in the [authoritative catalog](conduit-catalog.txt). Show current
 values, triggers and meaningful limits, not upgrade formulas, repeated global
 stat rules, implementation terms such as "frozen Squad", or redundant passive
@@ -102,7 +123,7 @@ percentages grow10% of base per upgrade; penalties, conditions, proc chances,
 durations and extra-action counts stay fixed. Existing Skill Efficiency caps
 and Gauge floors remain. All names, IDs, art, ownership, saved levels, costs,
 acquisition and equip restrictions are preserved. The
-[current compatibility matrix](character-conduit-compatibility.md) covers138
+[current compatibility matrix](character-conduit-compatibility.md) covers147
 entries. Earlier effect descriptions below are historical, not additive.
 
 **D-379 Focus Loot:** [Machines](awaken-the-machines.md#focus-loot-d-379)
@@ -112,20 +133,21 @@ Obtaining it from any source atomically clears that tier's focus. Details
 remain available; Master/Common/Calamitic Conduits cannot be focused.
 
 **D-368/D-370 verified and activated for publication:** the approved
-[Phase 0 catalog](conduit-catalog.txt) specifies all138 replacement abilities
+[Phase 0 catalog](conduit-catalog.txt) specifies all147 replacement abilities
 and the new stat contract. Preserve IDs, ownership, equipment restrictions,
 artwork, saved upgrades and costs. Rules7 and the shared client/authority
 gate are enabled; hosted publication status is in the handoff.
-The [138-entry behavior matrix](conduit-behavior-matrix.md) records
+The [147-entry behavior matrix](conduit-behavior-matrix.md) records
 individual numerical checks and upgrade coverage. Historical
 mechanics below are historical where they conflict; never combine old
 passive bonuses with the replacement static calculator.
 
-**D-324:** [five Calamitic creations](calamitic-conduits.md) extend the catalog
-to90 ordinary plus48 Masters. Universal, token-purchased and above Omnic,
-they retain eight ordinary slots/unique names with no extra Calamitic cap.
-The existing four-Omnic maximum is separate. Rise alone built these devices;
-the earlier collaborative-prototype lore still applies to the original85.
+**D-324 / D-435:** [Calamitic creations](calamitic-conduits.md) extend the
+catalog to99 ordinary plus48 Masters. All fourteen are universal, token-purchased
+and above Omnic. The D-324 no-extra-cap rule is superseded: at most five may be
+equipped per character. The existing four-Omnic maximum is separate. Rise alone
+built these devices; the earlier collaborative-prototype lore still applies to
+the original85.
 
 **Historical D-316 native compatibility:** the approved sixteen-character replacement is
 implemented locally alongside explicitly adapted dependent effects. The

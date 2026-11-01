@@ -4,8 +4,9 @@ import { scheduledEnemySkill } from '../content/enemy-skills';
 import { debuffSnapshot } from './battle-debuffs';
 import { nativeBalance } from '../content/native-balance';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
+import { calamiticPower } from '../content/calamitic-conduits';
 import { isCalamiticCharacter } from '../content/calamitic-characters';
-import { calamiticSkillDefenseIgnore, calamiticSkillShieldBypass } from './calamitic-conduits';
+import { afterCalamiticMark, calamiticSkillDefenseIgnore, calamiticSkillShieldBypass } from './calamitic-conduits';
 import type { StatusArtId } from '../content/status-art';
 import { applyConduitBurn, applyConduitWeaken, nativeGauge, nativeHeal, nativeShield,
   conduitBurnTick, afterConduitBurn, conduitActionTraits, conduitCriticalHit, recordConduitHit,
@@ -179,6 +180,10 @@ export function nativeSupportMultiplier(state: BattleState, owner: Combatant): n
 export function nativeDamageTakenMultiplier(state: BattleState, source: Combatant, target: Combatant): number {
   if (source.side !== 'ally' || target.side !== 'enemy') return 1;
   let multiplier = 1;
+  const weakenOwner = target.weakened > 0
+    ? state.allies.find(owner => owner.id === target.weakenSourceId && equipped(owner, 'calamitic-ruinmark-censer'))
+    : undefined;
+  if (phaseZeroStatsReady && weakenOwner) multiplier *= 1 + calamiticPower(state.conduitUpgrades?.['calamitic-ruinmark-censer'] ?? 0, .1, .15);
   for (const owner of state.allies.filter(hasNativeIdentity)) {
     const mark = owner.native?.fateMarks?.[target.id];
     if (mark && mark.throughPhase >= state.round) multiplier *= (1 + .1 * mark.stacks) * 1.45;
@@ -257,6 +262,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
           marks[target.id] = { stacks: Math.min(5, (prior && prior.throughPhase >= state.round ? prior.stacks : 0) + 1),
             throughPhase: state.round + 1 + activation.skillDuration };
           status(state, events, owner, target, `${target.name}: Fate-seared Mark ${marks[target.id].stacks}/5; through enemy phase ${marks[target.id].throughPhase}.`);
+          afterCalamiticMark(state, owner, target, events);
         }
       }
       if (action === 'ultimate') hit(4.4, true);
@@ -498,6 +504,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
       if (action === 'skill1' && target) {
         if (quarry?.target !== target.id) quarry = memory.quarry = { target: target.id, round: state.round, contributors: [] };
         hit(1.6);
+        if (target.hp > 0) afterCalamiticMark(state, owner, target, events);
       } else {
         const marked = foes(state).find(enemy => enemy.id === quarry?.target);
         const contributors = quarry?.round === state.round ? quarry.contributors : [];

@@ -1,5 +1,24 @@
 # Current state and handoff
 
+## Calamitic Conduits (D-435 Section 4)
+
+- Added the nine owner-authored universal Calamitic Conduits to the existing
+  100-Token Rise shop. The exact +5 values map to +0 by dividing by 1.5;
+  each upgrade grows the +0 base by10%. Art remains pending with neutral
+  placeholders and no URLs. Store, Inventory, Character equipment and Collections
+  use the shared effect descriptions.
+- Enforced a maximum of five Calamitic Conduits per character across all14
+  at the UI, transaction, account/save, server and fighter boundaries. Pre-v11
+  saves normalize excess items by preserving the first five occupied slots
+  in memory only; the first successful transaction saves v11. Shield Damage
+  Reduction stacks additively and is capped at80%, including Pale Bulwark.
+  Choir grants Gauge on each valid Mark and stacks Skill Power until turn end,
+  with four triggers per encounter. Battle compatibility rules14 preserves
+  frozen equipment snapshots.
+- Tests cover all nine abilities at +0..+5, each conditional effect, the cap,
+  legacy normalization, atomic Token purchase and authoritative rejection.
+- Validation: `npx vitest run --testTimeout=200000` passed all7,044 tests in224 files; `npx vitest run src/presentation/calamitic-conduits.test.ts` passed6/6; `npx tsc --noEmit -p .`, `npm run build`, `node tools\bundle_server_game.mjs` and `npx tsc --project supabase\functions\game-operation\tsconfig.json` all passed. Build emitted only the existing large-chunk warning. No commit, push or deployment.
+
 ## Calamitic characters and progression (D-435 Sections 1-3)
 
 - Progression/economy: Calamitic six-form rarity ladder, Lv.30/45/60/75/90/110
@@ -16,7 +35,7 @@
 - Native kits/presentation are also implemented in the concurrent D-435 batch.
   The prompts are generated; actual Calamitic art is pending owner delivery. No missing-image URLs are wired.
   Gates of Oblivion is implemented in D-435 Section 2 below. Section 3 Shard
-  victories and Ascension are implemented; the nine new Conduits remain pending.
+  victories, Ascension and all nine new Calamitic Conduits are implemented (see Section 4 below).
 - Validation: `npx tsc --noEmit -p .`; `node tools\bundle_server_game.mjs`;
   `npx tsc --project supabase\functions\game-operation\tsconfig.json`.
   The 16-file Calamitic/progression/account/inventory/banner/archive/server

@@ -8,11 +8,22 @@ import { calamityEncounter } from '../src/content/calamity';
 import type { BattleState } from '../src/game/battle';
 
 describe('read-only exhaustive Conduit audit integrity', () => {
-  it('accounts for all138 IDs, all16 wearer decisions and all legal upgrade endpoints', () => {
-    expect(conduits).toHaveLength(90);
+  it('accounts for all147 IDs, all16 wearer decisions and all legal upgrade endpoints', () => {
+    expect(conduits).toHaveLength(99);
     expect(masterConduits).toHaveLength(48);
-    expect(auditCatalog).toHaveLength(138);
-    expect(new Set(auditCatalog.map(piece => piece.id)).size).toBe(138);
+    expect(auditCatalog).toHaveLength(147);
+    expect(new Set(auditCatalog.map(piece => piece.id)).size).toBe(147);
+    const calamitic = auditCatalog.filter(piece => piece.rarity === 'Calamitic');
+    expect(calamitic.map(piece => piece.id).sort()).toEqual([
+      'calamitic-aegis-engine-of-severed-fate', 'calamitic-bulwark-of-the-last-horizon',
+      'calamitic-cathedral-final-equation', 'calamitic-causality-funeral-engine',
+      'calamitic-choir-array-of-branded-stars', 'calamitic-heartforge-of-the-sunless-dawn',
+      'calamitic-horizon-cleaving-godpress', 'calamitic-monolith-of-the-unmoved-star',
+      'calamitic-reliquary-of-unending-mercy', 'calamitic-ruinmark-censer',
+      'calamitic-throne-borrowed-tomorrows', 'calamitic-throne-of-the-lone-apostate',
+      'calamitic-world-eater-orrery', 'calamitic-worldbreaker-cannonade',
+    ].sort());
+    expect(calamitic.every(piece => piece.levels.join(',') === '0,5')).toBe(true);
     for (const piece of auditCatalog) {
       expect(piece.eligible.length).toBeGreaterThan(0);
       expect(piece.eligible.length + piece.skipped.length).toBe(16);

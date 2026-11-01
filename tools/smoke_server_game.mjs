@@ -383,7 +383,7 @@ try {
 }
 
 async function smokePhaseZero(client, userId, username) {
-  assert.equal(conduitRulesVersion, 13, 'The production bundle must activate rules13');
+  assert.equal(conduitRulesVersion, 14, 'The production bundle must activate rules14');
   const id = 'calamitic-causality-funeral-engine';
   const entropy = { seed: () => 7321, uuid: () => randomUUID(), random: () => .9 };
   let game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
@@ -834,7 +834,7 @@ async function smokeNativeCalamity(client, userId, username) {
 }
 
 async function smokeRewardCorrections(client, userId, username) {
-  assert.equal(conduitRulesVersion, 13);
+  assert.equal(conduitRulesVersion, 14);
   const game = freshGame(username);
   game.starterId = 'ember';
   game.account.characters = { ember: { level: 0, evolution: 1 } };

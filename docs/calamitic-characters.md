@@ -1,12 +1,11 @@
 # Phase 0: Everything Calamity (D-435)
 
-Status: D-435 Sections 1-3 are implemented: Calamitic progression/acquisition,
-Gates of Oblivion, saved-victory Shard drops, Ascension and ability Imbues. Cost
-quantities remain a developer proposal pending owner review. Native battle kits
-and presentation are implemented. The nine new Calamitic Conduits and delivered
-art remain pending. Art prompts are generated, but no Calamitic art has been
-delivered or installed. This document remains the approved design contract;
-update it first if the owner revises the phase.
+Status: D-435 Sections 1-4 are implemented: Calamitic progression/acquisition,
+Gates of Oblivion, saved-victory Shard drops, Ascension/ability Imbues, and all
+fourteen Calamitic Conduits. Cost quantities for character evolution remain a
+developer proposal pending owner review. New Conduit art is still pending; the
+nine designs use neutral placeholders and no art URLs. This document remains the
+approved design contract; update it first if the owner revises the phase.
 
 ## Confirmed by the owner
 
@@ -282,6 +281,17 @@ prompt-only until delivered.
   the current turn. The trigger can fire at most 4 times per encounter.
 - **Evolution amounts:** developer proposes Feather, Splinter and Fragment of
   Rise amounts in line with Soar/Delve costs; the owner will review them.
+- Section 4 is implemented: all nine entries cost 100 Calamitic Tokens in the
+  existing shop, have the approved +0..+5 values, and retain neutral placeholders
+  pending delivery. Equip, transaction, account validation and fighter boundaries
+  enforce no more than five Calamitic Conduits per character across all fourteen.
+  Legacy equipment normalizes in memory by preserving the first five occupied
+  Calamitic slots; loading never writes. The first successful account transaction
+  persists schema v11. Shield reduction from Calamitic and other Shield effects
+  combines additively and is capped at 80%. Choir triggers at most four times per
+  encounter, stacks its Skill Power through the current turn, and grants Gauge.
+  Rules14 restarts historical battles through the existing snapshot-preserving
+  compatibility path. See [Conduits](conduits.md) and [Conduit catalog](conduit-catalog.txt).
 - The owner asked for implementation in sections, with questions along the way.
 
 ### Gates of Oblivion roster (owner-approved)
@@ -295,4 +305,4 @@ prompt-only until delivered.
 
 ### Gates of Oblivion implementation (D-435 Section 2)
 
-The activity is live as a 25-floor Calamitic-owned progression mode. `src/content/gates-of-oblivion.ts` defines the approved ten construct roster, mixed element assignments, unique lore and named skills, floor curve, and runtime loot table. It reuses shared enemy-stat growth, dungeon material ranges and Prismatica rules. Fragment rolls use their own persisted encounter stream; per-kill rewards, discovery and receipts commit atomically. Wallets without `oblivionStage` begin at Floor 1 without a read-time write. No art, capture or premium-currency assets or rewards are wired. Full behavior and validation are documented in [Gates of Oblivion](gates-of-oblivion.md). Calamitic Ascension/Shards are implemented in Section 3; the nine new Conduits remain pending.
+The activity is live as a 25-floor Calamitic-owned progression mode. `src/content/gates-of-oblivion.ts` defines the approved ten construct roster, mixed element assignments, unique lore and named skills, floor curve, and runtime loot table. It reuses shared enemy-stat growth, dungeon material ranges and Prismatica rules. Fragment rolls use their own persisted encounter stream; per-kill rewards, discovery and receipts commit atomically. Wallets without `oblivionStage` begin at Floor 1 without a read-time write. No art, capture or premium-currency assets or rewards are wired. Full behavior and validation are documented in [Gates of Oblivion](gates-of-oblivion.md). Calamitic Ascension/Shards are implemented in Section 3; the nine new Conduits are implemented in Section 4.

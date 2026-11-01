@@ -35,7 +35,7 @@ for await (const line of createInterface({ input: createReadStream(input), crlfD
     reversals.push(row);
 }
 if (!metadata || !completion || completion.completed !== totals.n) throw new Error('Incomplete matrix output.');
-if (metadata.catalog.length !== 138 || Object.keys(ids).length !== 138) throw new Error('Not all138 catalog IDs covered.');
+if (metadata.catalog.length !== 147 || Object.keys(ids).length !== 147) throw new Error('Not all147 catalog IDs covered.');
 for (const piece of metadata.catalog) {
   const expected = piece.eligible.length * piece.levels.length * 2 * 6 * 3 + piece.levels.length * 12 * 3 * 3;
   if (ids[piece.id]?.n !== expected) throw new Error(`Coverage mismatch: ${piece.id}: ${ids[piece.id]?.n}/${expected}`);

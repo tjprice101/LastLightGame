@@ -12,13 +12,13 @@ Beneficial ordinary percentages grow10% of base per upgrade; Masters remain fixe
 Do not activate a partial Conduit roster or claim checks that have not passed.
 
 SQUAD DESIGN REVISION
-D-382 replaces all 10 Common, 15 Rare, 15 Legendary and five Calamitic effects.
+D-382 replaces all 10 Common, 15 Rare, 15 Legendary and five original Calamitic effects. D-435 Section 4 adds nine more Calamitic effects.
 D-383 refreshes all 45 ordinary Omnic and 48 Master abilities. Owner55 designs are the baseline; the remaining38 retain distinct native/elemental mechanics with tailored stat packages.
 Masters remain character-specific and build on their actual native abilities.
 Calamitic effects emphasize one clear squad-changing mechanic, not long chains
 of conditions. Practical usefulness is a design goal, not a tested balance claim.
 
-138 Conduits: 90 ordinary-slot Conduits and 48 named Masters.
+147 Conduits: 99 ordinary-slot Conduits and 48 named Masters.
 Sorted by rarity (lowest to highest), then alphabetically by name.
 Masters are Omnic, not a separate rarity, and appear in the Omnic section.
 
@@ -840,8 +840,18 @@ Element: Botanic (actual gameplay element)
 Ability (Default Value): Your [Skills] turn 60% of [Overhealing] into a [Shield] for the healed ally, capped at 20% of their maximum [Health] and lasting two [Enemy Turns]. Replaces the previous [Shield] from this Conduit. +140% [Health] and +35% [Skill Power].
 
 ==============================================================================
-CALAMITIC (5)
+CALAMITIC (14)
 ==============================================================================
+
+Name: Aegis-Engine of Severed Fate
+Rarity: Calamitic
+Element: Universal
+Ability (Default Value): Damage to this character's [Shields] is reduced by 36.666666666667%. +50% [Skill Power].
+
+Name: Bulwark of the Last Horizon
+Rarity: Calamitic
+Element: Universal
+Ability (Default Value): +200% maximum [Health] and +200% [Defense]. Incoming damage consumes 16.666666666667% fewer points from this character's [Shields].
 
 Name: Cathedral of the Final Equation
 Rarity: Calamitic
@@ -853,17 +863,52 @@ Rarity: Calamitic
 Element: Chaotic (suggested thematic element; gameplay: universal)
 Ability (Default Value): +50% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage].
 
+Name: Choir-Array of Branded Stars
+Rarity: Calamitic
+Element: Universal
+Ability (Default Value): When you apply a [Mark], each living Squad Member gains +33.333333333333% [Skill Power] and 6.666666666667% of their maximum [Elemental Gauge]. The Skill Power stacks per trigger until the end of the current turn; it can trigger four times per battle. +46.666666666667% [Health] and [Defense].
+
+Name: Heartforge of the Sunless Dawn
+Rarity: Calamitic
+Element: Universal
+Ability (Default Value): +333.333333333333% maximum [Health]. +16.666666666667% [Skill Power].
+
 Name: Horizon-Cleaving Godpress
 Rarity: Calamitic
 Element: Chaotic (suggested thematic element; gameplay: universal)
 Ability (Default Value): Your damaging [Skills] ignore 55% of enemy [Defense]. +75% [Defense].
+
+Name: Monolith of the Unmoved Star
+Rarity: Calamitic
+Element: Universal
+Ability (Default Value): +333.333333333333% [Defense]. +10% [Skill Efficiency].
+
+Name: Reliquary of Unending Mercy
+Rarity: Calamitic
+Element: Universal
+Ability (Default Value): [Skills] that heal or create [Shields] gain +83.333333333333% [Skill Power] and +23.333333333333% [Skill Efficiency].
+
+Name: Ruinmark Censer
+Rarity: Calamitic
+Element: Universal
+Ability (Default Value): Enemies this character [Weakens] take +10% damage from all sources while [Weakened]. +50% [Defense] and +40% [Skill Power].
 
 Name: Throne of Borrowed Tomorrows
 Rarity: Calamitic
 Element: Chaotic (suggested thematic element; gameplay: universal)
 Ability (Default Value): Your [Last Flare] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] this [Player Turn]. Each character can receive this extra action once per [Player Turn]. Allies in [Last Flare] [Recovery] are ineligible. +45% [Health] and +45% [Defense].
 
+Name: Throne of the Lone Apostate
+Rarity: Calamitic
+Element: Universal
+Ability (Default Value): If you are the only Element-Bearer in your Squad, gain +166.666666666667% [Defense], +166.666666666667% maximum [Health] and +83.333333333333% [Skill Power].
+
 Name: World-Eater's Orrery
 Rarity: Calamitic
 Element: Chaotic (suggested thematic element; gameplay: universal)
 Ability (Default Value): +3 turns [Skill Duration]. [Debuffs] applied by your [Skills] gain +125% [Skill Power].
+
+Name: Worldbreaker Cannonade
+Rarity: Calamitic
+Element: Universal
+Ability (Default Value): Your damaging [Skills] that hit all enemies gain +166.666666666667% [Skill Power].

@@ -2,21 +2,22 @@
 
 This is executed numerical behavior evidence, not a count of source references or nonempty ability strings.
 The approved ability contract remains [conduit-catalog.txt](conduit-catalog.txt).
-The release gate is enabled for coordinated client/authority publication (D-415, rules13). This report certifies tested behavior, not hosted deployment or balance quality.
+The release gate is enabled for coordinated client/authority publication (D-435 Section 4, rules14). This report certifies tested behavior, not hosted deployment or balance quality.
 
-- Roster: **138/138** entries, **726** passing baseline/equipment/upgrade scenarios.
-- Ordinary-slot entries: 90, each with an absent baseline and all six +0..+5 upgrade levels.
+- Roster: **147/147** entries, **789** passing baseline/equipment/upgrade scenarios.
+- Ordinary-slot entries: 99, each with an absent baseline and all six +0..+5 upgrade levels.
 - Named Masters: 48, each with a concrete equipped and absent numerical behavior scenario.
-- Full regression: **6617 tests / 212 files passed**; zero failed or pending.
-- Description parity: all 138 defaults against the complete owner-authored catalog; all 90 ordinary entries at +0..+5; Masters reject upgrades.
+- Full regression: **7044 tests / 224 files passed**; zero failed or pending.
+- Description parity: all 147 defaults against the complete owner-authored catalog; all 99 ordinary entries at +0..+5; Masters reject upgrades.
 - Separate interaction tests cover generated Master Shield provenance, manual native packets, stored-packet scaling, duplicate auras, additive stat pools and Defense caps.
 - UI and authority suites additionally exercise target-dependent costs, frozen equipment and Throne controls.
 - D-382 regressions cover all45 replacements, complete-Health conversion thresholds, cast-level seeded randomness, conditional Health, sole-owner Shield provenance, routed protection and persisted Stasis clocks.
 - D-383 additionally checks all93 Omnic/Master personal and squad stat packages, fixed Master/ordinary additive pools, duplicate living-source stacking, Health clamping, revival, Glassroot, Training snapshots, focused Last Flare, every-two-impact Quarry payouts, native-only Phoenix healing and Seed settlement parity after persistent JSON key reordering.
+- D-435 Section 4 checks the nine new Calamitic effects at +0..+5, the five-item equipment cap at UI/transaction/save/server/fighter boundaries, read-only legacy normalization, 80% Shield Damage Reduction cap, Choir trigger/Gauge clocks, and atomic Token purchases.
 - D-415 additionally checks canonical descriptions and Master selector formatting, native critical damage, explicit trap empowerment/refresh, Cinder20% stacking and Rosegarden Skill2 activation with a Last Flare negative case.
 - Passing tests do not establish subjective usefulness or mathematically exhaustive balance across every possible squad.
 
-Evidence source SHA-256 (LF-normalized): `1cc98274b2af207e53b590986dcf4f369ba40be5ed0783800d33e741fcd57d81`.
+Evidence source SHA-256 (LF-normalized): `7dd581115c5d7a5f7783a449f6a408861dbcb9e5dc83dd5e82af057b2104935e`.
 Regenerate only from a complete passing full-suite JSON report:
 
 ```powershell
@@ -102,16 +103,16 @@ node tools\build_phase_zero_behavior_matrix.mjs "<passing-report.json>"
 | 75 | Kirin Cradle | `tranquilitic-kirin-cradle` | Absent; +0..+5 | [Kirin heals from effective Defense with its recipient-HP cap and full-HP Gauge alternative](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 76 | Leviathan Mercy Reflector | `tidebound-reflector` | Absent; +0..+5 | [tidebound-reflector reflects source-owned absorption across recipients with a shared Enemy Turn cap](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 77 | Leviathan Pump | `aquatic-leviathan-pump` | Absent; +0..+5 | [aquatic-leviathan-pump grants its Shield recipient Gauge with a per-recipient Enemy Turn cap and no old healing](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 78 | Leviathan Ward Loom | `ward-stitch-spool` | Absent; +0..+5 | [ward-stitch-spool buffs support skills only while a source Shield remains and adds one fixed Enemy Turn](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 78 | Leviathan Ward Loom | `ward-stitch-spool` | Absent; +0..+5 | [ward-stitch-spool buffs support skills only while a source Shield remains and preserves it until broken](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 79 | Living Worldwall Atlas | `master-bruno-1` | Absent; equipped (fixed) | [master-bruno-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 80 | Merciful Eclipse Regulator | `master-aurora-3` | Absent; equipped (fixed) | [master-aurora-3](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 81 | Nightglass Archive | `ominous-nightglass-archive` | Absent; +0..+5 | [Nightglass marks only damaging skills, buffs other-ally Normals and expires after two turns](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 82 | Nightglass Counterblade Engine | `master-razor-3` | Absent; equipped (fixed) | [master-razor-3](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 83 | Ocean Memory Worldpump | `master-tide-2` | Absent; equipped (fixed) | [master-tide-2](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
-| 84 | Ouroboros Core | `chaotic-ouroboros-core` | Absent; +0..+5 | [chaotic-ouroboros-core creates upgraded generated Shields for two fixed Enemy Turns after Last Flare](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 84 | Ouroboros Core | `chaotic-ouroboros-core` | Absent; +0..+5 | [chaotic-ouroboros-core creates upgraded generated Shields after Last Flare that last until broken](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 85 | Paradox Spindle | `chaotic-paradox-spindle` | Absent; +0..+5 | [Paradox buffs only other allies during recovery and does not allow recovery Normals](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 86 | Phoenix Lifeforge | `emberlife-kiln` | Absent; +0..+5 | [Emberlife heals the squad per native Burn tick without increasing received healing](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
-| 87 | Phoenix Reactor | `infernic-phoenix-reactor` | Absent; +0..+5 | [infernic-phoenix-reactor revives once with upgraded HP and a finite generated squad Shield](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 87 | Phoenix Reactor | `infernic-phoenix-reactor` | Absent; +0..+5 | [infernic-phoenix-reactor revives once with upgraded HP and a generated squad Shield that lasts until broken](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 88 | Phoenix Temper Dominion | `tempered-strike-link` | Absent; +0..+5 | [Tempered exchanges one received-skill-heal Attack bonus for the healer next-skill Efficiency](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 89 | Prismseal Astral Judiciary | `master-aurora-2` | Absent; equipped (fixed) | [master-aurora-2](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 90 | Pyre Census Requiem | `infernic-pyre-census` | Absent; +0..+5 | [Pyre Census gains Skill Power per distinct living element without the retired other-element Attack aura](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
@@ -123,7 +124,7 @@ node tools\build_phase_zero_behavior_matrix.mjs "<passing-report.json>"
 | 96 | Secondbeat Rupture Throne | `secondbeat-rack` | Absent; +0..+5 | [Secondbeat holds one damaged target and grants the source Gauge only when the damaging skill uses it](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 97 | Seraph Mirror | `luminous-seraph-mirror` | Absent; +0..+5 | [Seraph heals each recipient from their own max HP once per turn, not per target](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 98 | Shadow Rose Sovereign Foundry | `master-thornia-3` | Absent; equipped (fixed) | [master-thornia-3](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
-| 99 | Shared Tide Lifesea Engine | `oceanic-shared-tide-pump` | Absent; +0..+5 | [Shared Tide copies a single-target skill Shield at its scaled size and same expiry, with no damage-network sharing](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
+| 99 | Shared Tide Lifesea Engine | `oceanic-shared-tide-pump` | Absent; +0..+5 | [Shared Tide copies a single-target skill Shield at its scaled size until broken, with no damage-network sharing](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 100 | Shoreless Meridian Worldchart | `master-nerithe-1` | Absent; equipped (fixed) | [master-nerithe-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 101 | Sky Sovereign Escapement | `pulse-trigger-pawl` | Absent; +0..+5 | [pulse-trigger-pawl grants percentage Gauge once per critical skill turn, not per target or Normal](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 102 | Sky Without End Turbine | `master-atmoso-1` | Absent; equipped (fixed) | [master-atmoso-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
@@ -136,7 +137,7 @@ node tools\build_phase_zero_behavior_matrix.mjs "<passing-report.json>"
 | 109 | Storm Empress Execution Clock | `master-elise-3` | Absent; equipped (fixed) | [master-elise-3](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 110 | Stormstep Dynamo | `voltaic-stormstep-dynamo` | Absent; +0..+5 | [voltaic-stormstep-dynamo boosts the switched skill and the next different caster, not an obsolete damage multiplier](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 111 | Tempest Return Chronarch | `atmospheric-storm-clock` | Absent; +0..+5 | [Storm Clock counts critical Attack Actions, not AoE impacts, and holds one next-Last-Flare discount](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
-| 112 | Tempest Shelter Sovereign | `pressurecrest-governor` | Absent; +0..+5 | [Pressurecrest grants one timed injured-ally Shield per turn, never the retired dodge](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
+| 112 | Tempest Shelter Sovereign | `pressurecrest-governor` | Absent; +0..+5 | [Pressurecrest grants one injured-ally Shield per turn that lasts until broken, never the retired dodge](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 113 | Thousand-Rose Planetary Aegis | `master-thornia-2` | Absent; equipped (fixed) | [master-thornia-2](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 114 | Thousandfeather Zenith Loom | `master-bliss-1` | Absent; equipped (fixed) | [master-bliss-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 115 | Throne Beneath the World | `master-orvella-1` | Absent; equipped (fixed) | [master-orvella-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
@@ -157,9 +158,18 @@ node tools\build_phase_zero_behavior_matrix.mjs "<passing-report.json>"
 | 130 | Worldroot Sap Cathedral | `mending-valve` | Absent; +0..+5 | [Mending heals the lowest HP-percentage ally from total skill HP damage, with a per-cast cap](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 131 | Worldroot Triage Sanctuary | `rootbound-triage-vault` | Absent; +0..+5 | [rootbound-triage-vault selects the most injured and expires after any next action](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 132 | Worldseed Mercy Foundry | `master-sprout-1` | Absent; equipped (fixed) | [master-sprout-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
-| 133 | Worldtree Heart | `efflorescent-worldtree-heart` | Absent; +0..+5 | [Worldtree creates a capped timed replacement Shield, not an accumulating heal reserve or generic overheal Shield](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
-| 134 | Cathedral of the Final Equation | `calamitic-cathedral-final-equation` | Absent; +0..+5 | [calamitic-cathedral-final-equation buffs its bearer only, without the retired squad aura](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 135 | Causality Funeral Engine | `calamitic-causality-funeral-engine` | Absent; +0..+5 | [calamitic-causality-funeral-engine grants Efficiency and Last Flare damage without free actions](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 136 | Horizon-Cleaving Godpress | `calamitic-horizon-cleaving-godpress` | Absent; +0..+5 | [Godpress ignores Defense for skills without bypassing Shields or changing Normal damage](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
-| 137 | Throne of Borrowed Tomorrows | `calamitic-throne-borrowed-tomorrows` | Absent; +0..+5 | [calamitic-throne-borrowed-tomorrows grants spent nonrecovering recipients exactly one extra skill per player turn](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 138 | World-Eater's Orrery | `calamitic-world-eater-orrery` | Absent; +0..+5 | [calamitic-world-eater-orrery boosts debuff skills and duration without the retired healing](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 133 | Worldtree Heart | `efflorescent-worldtree-heart` | Absent; +0..+5 | [Worldtree creates a capped replacement Shield that lasts until broken, not an accumulating heal reserve or generic overheal Shield](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
+| 134 | Aegis-Engine of Severed Fate | `calamitic-aegis-engine-of-severed-fate` | Absent; +0..+5 | [calamitic-aegis-engine-of-severed-fate absent and +0..+5](../src/game/calamitic-conduits-phase0.test.ts) | 7 passed |
+| 135 | Bulwark of the Last Horizon | `calamitic-bulwark-of-the-last-horizon` | Absent; +0..+5 | [calamitic-bulwark-of-the-last-horizon absent and +0..+5](../src/game/calamitic-conduits-phase0.test.ts) | 7 passed |
+| 136 | Cathedral of the Final Equation | `calamitic-cathedral-final-equation` | Absent; +0..+5 | [calamitic-cathedral-final-equation buffs its bearer only, without the retired squad aura](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 137 | Causality Funeral Engine | `calamitic-causality-funeral-engine` | Absent; +0..+5 | [calamitic-causality-funeral-engine grants Efficiency and Last Flare damage without free actions](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 138 | Choir-Array of Branded Stars | `calamitic-choir-array-of-branded-stars` | Absent; +0..+5 | [calamitic-choir-array-of-branded-stars absent and +0..+5](../src/game/calamitic-conduits-phase0.test.ts) | 7 passed |
+| 139 | Heartforge of the Sunless Dawn | `calamitic-heartforge-of-the-sunless-dawn` | Absent; +0..+5 | [calamitic-heartforge-of-the-sunless-dawn absent and +0..+5](../src/game/calamitic-conduits-phase0.test.ts) | 7 passed |
+| 140 | Horizon-Cleaving Godpress | `calamitic-horizon-cleaving-godpress` | Absent; +0..+5 | [Godpress ignores Defense for skills without bypassing Shields or changing Normal damage](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
+| 141 | Monolith of the Unmoved Star | `calamitic-monolith-of-the-unmoved-star` | Absent; +0..+5 | [calamitic-monolith-of-the-unmoved-star absent and +0..+5](../src/game/calamitic-conduits-phase0.test.ts) | 7 passed |
+| 142 | Reliquary of Unending Mercy | `calamitic-reliquary-of-unending-mercy` | Absent; +0..+5 | [calamitic-reliquary-of-unending-mercy absent and +0..+5](../src/game/calamitic-conduits-phase0.test.ts) | 7 passed |
+| 143 | Ruinmark Censer | `calamitic-ruinmark-censer` | Absent; +0..+5 | [calamitic-ruinmark-censer absent and +0..+5](../src/game/calamitic-conduits-phase0.test.ts) | 7 passed |
+| 144 | Throne of Borrowed Tomorrows | `calamitic-throne-borrowed-tomorrows` | Absent; +0..+5 | [calamitic-throne-borrowed-tomorrows grants spent nonrecovering recipients exactly one extra skill per player turn](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 145 | Throne of the Lone Apostate | `calamitic-throne-of-the-lone-apostate` | Absent; +0..+5 | [calamitic-throne-of-the-lone-apostate absent and +0..+5](../src/game/calamitic-conduits-phase0.test.ts) | 7 passed |
+| 146 | World-Eater's Orrery | `calamitic-world-eater-orrery` | Absent; +0..+5 | [calamitic-world-eater-orrery boosts debuff skills and duration without the retired healing](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 147 | Worldbreaker Cannonade | `calamitic-worldbreaker-cannonade` | Absent; +0..+5 | [calamitic-worldbreaker-cannonade absent and +0..+5](../src/game/calamitic-conduits-phase0.test.ts) | 7 passed |

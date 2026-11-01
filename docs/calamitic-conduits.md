@@ -1,4 +1,41 @@
-# Calamitic Conduits (D-324 / current D-382)
+# Calamitic Conduits (D-324 / D-382; current D-435)
+
+## Current additions and equipment cap (D-435 Section 4)
+
+The current catalog has fourteen universal Calamitic Conduits: the original five
+plus nine new designs. Each new item costs 100 Calamitic Tokens in the existing
+Rise shop. All use ordinary slots and the existing +0..+5 upgrade system; each
+upgrade adds 10% of the +0 base value. The [approved effects](conduit-catalog.txt)
+are displayed consistently in Store, Inventory, Character equipment, upgrades
+and Collections. New artwork is pending; neutral placeholders are used with no
+asset URLs.
+
+At most five Calamitic Conduits may be equipped per character across all fourteen.
+This replaces D-324's original no-extra-limit choice; the four matching-element
+Omnic limit is separate. The UI, transaction, account validation, server authority
+and fighter resolution all enforce the cap. Pre-v11 saves normalize excess items
+in occupied-slot order on read without writing; the first successful transaction
+saves v11. Shield Damage Reduction adds across applicable effects but is capped
+at 80%. Choir-Array stacks Skill Power until turn end and triggers at most four
+times per encounter, granting Gauge on each trigger. Rules14 preserves battle
+snapshots and saved rewards when loading a prior encounter.
+
+| Conduit | +0 effect | +5 effect |
+| --- | --- | --- |
+| Bulwark of the Last Horizon | +200% Health and Defense; 16.66666667% less Shield damage | +300% Health and Defense; 25% less Shield damage |
+| Reliquary of Unending Mercy | Healing/Shield Skills: +83.33333333% Skill Power and +23.33333333% Skill Efficiency | +125% Skill Power and +35% Skill Efficiency |
+| Aegis-Engine of Severed Fate | 36.66666667% less damage to Shields; +50% Skill Power | 55% less damage to Shields; +75% Skill Power |
+| Monolith of the Unmoved Star | +333.33333333% Defense; +10% Skill Efficiency | +500% Defense; +15% Skill Efficiency |
+| Heartforge of the Sunless Dawn | +333.33333333% Health; +16.66666667% Skill Power | +500% Health; +25% Skill Power |
+| Ruinmark Censer | Weakened target takes +10% damage; +50% Defense; +40% Skill Power | +15% damage; +75% Defense; +60% Skill Power |
+| Choir-Array of Branded Stars | Each mark grants +33.33333333% Skill Power and 6.66666667% Gauge; +46.66666667% Health/Defense | +50% Skill Power and 10% Gauge; +70% Health/Defense |
+| Throne of the Lone Apostate | Solo Element-Bearer: +166.66666667% Defense/Health; +83.33333333% Skill Power | +250% Defense/Health; +125% Skill Power |
+| Worldbreaker Cannonade | Global damaging Skills: +166.66666667% Skill Power | +250% Skill Power |
+
+Choir's +50% Skill Power stacks for each valid Mark trigger; that buff expires
+when the current turn ends. The per-encounter four-trigger cap resets only in a
+new encounter. Damage reduction is applied to Shield absorption and cannot exceed
+the combined 80% cap, including Pale Bulwark Diadem.
 
 ## Causality efficiency correction (D-412)
 
@@ -52,7 +89,7 @@ effects below with owner-authored values; older effect designs are superseded.
   one of these five devices.
 - All elements and captured Elemental-Devourers may equip them. Each uses one
   of the existing eight ordinary slots, with no duplicate name per member.
-  There is no separate Calamitic limit. The four matching-Omnic maximum
+  D-324 originally had no separate Calamitic limit; D-435 supersedes that rule with a five-item maximum. The four matching-Omnic maximum
   remains unchanged; Calamitic items do not count toward that maximum.
 
 ## Five effects
@@ -75,7 +112,7 @@ live in `src/content/phase-zero-conduit-stats.ts`; current hooks live in
 `src/game/conduit-runtime.ts` and `src/game/calamitic-conduits.ts`. Historical
 typed effect coefficients remain only for explicitly disabled legacy tests.
 The [current compatibility matrix](character-conduit-compatibility.md) covers
-all90 ordinary plus48 Masters. No current reserve, debt, borrowed Defense
+all99 ordinary plus48 Masters. No current reserve, debt, borrowed Defense
 action, Equation counter or squad healing survives these replacements.
 
 ## Upgrades and persistence

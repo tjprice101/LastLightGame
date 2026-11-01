@@ -22,7 +22,7 @@ describe('shared menu information', () => {
       expect(text).toContain('Unlock once, equip across your Squad');
       expect(text.trim().split(/\s+/).length).toBeLessThanOrEqual(30);
       expect(text).not.toMatch(/Purchase with|Equip them in|bought once|each name equips/);
-      if (rarity) expect(text).toContain('ordinary slots, with no rarity limit');
+      if (rarity) expect(text).toContain('five-per-character limit');
       else expect(text).toContain('Extra copies give no benefit');
     }
   });
@@ -35,7 +35,7 @@ describe('shared menu information', () => {
       }
     }
     const rules = plain(characterInformation());
-    for (const text of ['at most four Omnic', "matching the wearer's Element", 'Masters cannot be upgraded', 'next run', "can't be sold or consumed"]) {
+    for (const text of ['at most four matching Omnic', 'five Calamitic Conduits', "Element-Bearer's Masters", 'Masters cannot be upgraded', 'next run', "can't be sold or consumed"]) {
       expect(rules).toContain(text);
     }
   });

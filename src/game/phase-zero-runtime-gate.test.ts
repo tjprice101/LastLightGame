@@ -19,7 +19,7 @@ describe('Phase 0 runtime release gate', () => {
   });
 
   it('preserves all five historical Calamitic descriptions', () => {
-    expect(calamiticConduits.map(entry => calamiticEffect(entry.id))).toEqual([
+    expect(calamiticConduits.slice(0, 5).map(entry => calamiticEffect(entry.id))).toEqual([
       "Store 40% of enemy Direct Damage to HP suffered by living squad members. [Normal Attack] releases the reserve as a [Bonus Strike] against the healthiest enemy.",
       "Defer 40% of each enemy hit's Direct Damage to HP after [Shields]. The deferred damage is taken at the start of the next Enemy Turn, ignores [Shields] and can defeat you.",
       "40% of your Attack Actions' Direct Damage bypasses enemy [Shields]. While the target has a [Shield], your Attack Actions also gain +30% Direct Damage.",

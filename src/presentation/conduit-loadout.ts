@@ -366,7 +366,7 @@ export function conduitLoadout(owner: string, name: string, element: ElementId, 
         ${masterRow(owner, account)}
         <div class="ref-equipment-grid loadout-grid">${artifactSlots.map((_, index) => slotCard(owner, captured, element, slots, index, account)).join('')}</div>
         ${account ? totalBonuses(owner, account) : ''}
-        <p class="ref-equipment-note">Up to four matching Omnic Conduits. Calamitic Conduits work on every element and use ordinary slots, with no extra limit. One name per character.</p>
+        <p class="ref-equipment-note">Up to four matching Omnic and five Calamitic Conduits across fourteen designs. Calamitic Conduits work on every element and use ordinary slots. One name per character.</p>
       </section>
       ${ownedList(owner, element, slots, account)}
     </div>

@@ -57,6 +57,13 @@ export const phaseZeroStaticBonuses = {
   'calamitic-horizon-cleaving-godpress': [{ stat: 'defense', amount: .75 }],
   'calamitic-throne-borrowed-tomorrows': [{ stat: 'health', amount: .45 }, { stat: 'defense', amount: .45 }],
   'calamitic-world-eater-orrery': [{ stat: 'skillDuration', amount: 3, additive: true }],
+  'calamitic-bulwark-of-the-last-horizon': [{ stat: 'health', amount: 2 }, { stat: 'defense', amount: 2 }],
+  'calamitic-aegis-engine-of-severed-fate': [{ stat: 'skillPower', amount: .5, additive: true }],
+  'calamitic-monolith-of-the-unmoved-star': [{ stat: 'defense', amount: 10 / 3 }, { stat: 'skillEfficiency', amount: .1, additive: true }],
+  'calamitic-heartforge-of-the-sunless-dawn': [{ stat: 'health', amount: 10 / 3 }, { stat: 'skillPower', amount: 1 / 6, additive: true }],
+  'calamitic-ruinmark-censer': [{ stat: 'defense', amount: .5 }, { stat: 'skillPower', amount: .4, additive: true }],
+  'calamitic-choir-array-of-branded-stars': [{ stat: 'health', amount: 7 / 15 }, { stat: 'defense', amount: 7 / 15 }],
+
 } as const satisfies Partial<Record<ConduitSlots[number] & string, readonly StaticBonus[]>>;
 
 export function phaseZeroUpgradeMagnitude(base: number, level: number): number {

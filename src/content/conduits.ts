@@ -119,7 +119,7 @@ export const conduits = ([
     lore: 'A prismatic elemental masterpiece restored from the mechanisms left behind when Let and Rise\'s collaboration ended.' })),
   ...kitConduitDesigns.map((entry) => ({ ...entry, power: 'Elemental Light', art: entry.id })),
   ...calamiticConduits.map(entry => ({ ...entry, rarity: 'Calamitic' as const, price: null, power: "Rise's annihilation machinery",
-    art: entry.id, element: null, mechanic: null, buffs: [] as readonly ConduitBuff[], effect: calamiticEffect(entry.id) })),
+    art: 'art' in entry && entry.art === null ? null : entry.id, element: null, mechanic: null, buffs: [] as readonly ConduitBuff[], effect: calamiticEffect(entry.id) })),
 ] as const).map(entry => ({ ...entry, mechanic: null,
   lore: isCalamiticConduitId(entry.id) ? entry.lore : `${conduitOrigin} ${entry.lore}` }));
 
@@ -158,7 +158,24 @@ export function validateConduitSlots(value: unknown): ConduitSlots {
   const ids = value.filter((id) => id !== null);
   if (new Set(ids).size !== ids.length) throw new Error('Each named Conduit can be equipped only once per character.');
   if (ids.filter((id) => getConduit(id).rarity === 'Omnic').length > 4) throw new Error('Equip at most four Omnic Conduits per character.');
+  if (ids.filter((id) => getConduit(id).rarity === 'Calamitic').length > 5) throw new Error('Equip at most five Calamitic Conduits per character.');
   return [...value];
+}
+/** Read-only compatibility for wallets predating the Calamitic equipment limit. */
+export function normalizeLegacyCalamiticSlots(value: unknown): ConduitSlots {
+  if (!Array.isArray(value) || value.length !== conduitSlotCount || !value.every((id) => id === null || isConduitId(id))) {
+    throw new Error('Invalid Conduit slots.');
+  }
+  const ids = value.filter((id) => id !== null);
+  if (new Set(ids).size !== ids.length) throw new Error('Each named Conduit can be equipped only once per character.');
+  let calamiticCount = 0;
+  const normalized = value.map((id) => {
+    if (id === null || getConduit(id).rarity !== 'Calamitic') return id;
+    if (calamiticCount >= 5) return null;
+    calamiticCount++;
+    return id;
+  });
+  return validateConduitSlots(normalized);
 }
 /** Compatibility only: protect every original slot and keep converted slots in their original order. */
 export function normalizeLegacyKitSlots(value: unknown, element: ElementId): ConduitSlots {
@@ -200,6 +217,7 @@ export function conduitEquipReason(conduit: Conduit, element: ElementId, slots: 
   const others = slots.filter((_, index) => index !== slot);
   if (others.includes(conduit.id)) return 'Already equipped';
   if (conduit.rarity === 'Omnic' && others.filter((id) => id !== null && getConduit(id).rarity === 'Omnic').length >= 4) return 'Four Omnic limit';
+  if (conduit.rarity === 'Calamitic' && others.filter((id) => id !== null && getConduit(id).rarity === 'Calamitic').length >= 5) return 'Five Calamitic limit';
   return null;
 }
 export function isConduitId(value: unknown): value is ConduitId {

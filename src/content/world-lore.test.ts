@@ -43,9 +43,9 @@ describe('Let and Rise founding canon', () => {
     expect(storyRegions.at(-1)?.conclusion).toContain('Neither Let\'s nor Rise\'s soul has been found');
   });
 
-  it('preserves shared prototypes and gives only the five Calamitic creations to Rise alone', () => {
-    expect(conduits).toHaveLength(90);
-    expect(conduits.filter(conduit => conduit.rarity === 'Calamitic')).toHaveLength(5);
+  it('preserves shared prototypes and gives all fourteen Calamitic creations to Rise alone', () => {
+    expect(conduits).toHaveLength(99);
+    expect(conduits.filter(conduit => conduit.rarity === 'Calamitic')).toHaveLength(14);
     expect(masterConduits).toHaveLength(48);
     for (const conduit of conduits) {
       if (conduit.rarity === 'Calamitic') {

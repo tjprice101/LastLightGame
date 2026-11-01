@@ -1,7 +1,7 @@
 import { calamiticPower, type CalamiticConduitId } from '../content/calamitic-conduits';
 import type { ActionId } from '../content/combat';
 import type { BattleEvent, BattleState, Combatant } from './battle';
-import { equipped, gear, generatedGauge, generatedStrike } from './conduit-runtime';
+import { equipped, gear, generatedGauge, generatedGaugePercent, generatedStrike } from './conduit-runtime';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
 
 function power(state: BattleState, owner: Combatant, id: CalamiticConduitId, base: number, maximum: number): number {
@@ -39,6 +39,28 @@ export function calamiticNoLastFlareRecovery(owner: Combatant): boolean {
 
 export function calamiticSkillPowerBonus(_state: BattleState): number {
   return 0;
+}
+
+export function afterCalamiticMark(state: BattleState, owner: Combatant, target: Combatant, events: BattleEvent[]): void {
+  const id = 'calamitic-choir-array-of-branded-stars';
+  if (!phaseZeroStatsReady || owner.hp <= 0 || target.hp <= 0 || !equipped(owner, id)) return;
+  const memory = gear(owner).numbers;
+  const triggers = memory.calamiticChoirTriggers ?? 0;
+  if (triggers >= 4) return;
+  memory.calamiticChoirTriggers = triggers + 1;
+  const skillPower = power(state, owner, id, 1 / 3, .5);
+  const gauge = power(state, owner, id, 1 / 15, .1);
+  for (const ally of state.allies.filter(unit => unit.hp > 0)) {
+    const numbers = gear(ally).numbers;
+    if (numbers.calamiticChoirThrough === state.round)
+      numbers.calamiticChoirSkillPower = (numbers.calamiticChoirSkillPower ?? 0) + skillPower;
+    else {
+      numbers.calamiticChoirThrough = state.round;
+      numbers.calamiticChoirSkillPower = skillPower;
+    }
+    generatedGaugePercent(owner, ally, gauge, events, state);
+  }
+  status(owner, triggers + 1, `${owner.name}'s Choir-Array grants the Squad +${Math.round(skillPower * 100)}% Skill Power for this turn.`, events);
 }
 
 export function calamiticSkillEfficiencyBonus(_state: BattleState): number {

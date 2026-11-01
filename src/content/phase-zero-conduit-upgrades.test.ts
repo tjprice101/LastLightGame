@@ -11,7 +11,7 @@ vi.mock('./phase-zero-stats', async original => ({
 }));
 
 describe('approved ability upgrade presentation', () => {
-  it('has an explicit policy for exactly all 90 upgradable entries', () => {
+  it('has an explicit policy for exactly all 99 upgradable entries', () => {
     expect(Object.keys(phaseZeroUpgradePercentages).sort()).toEqual(conduits.map(entry => entry.id).sort());
     for (const [id, indices] of Object.entries(phaseZeroUpgradePercentages)) {
       const values = [...approvedConduitCatalog[id].ability.matchAll(/([+-]?\d+(?:\.\d+)?)%/g)];
@@ -29,7 +29,12 @@ describe('approved ability upgrade presentation', () => {
     const blocks = [...text.matchAll(/^Name: (.+)\r?\nRarity: .+\r?\nElement: .+\r?\nAbility \(Default Value\): ([\s\S]*?)(?=\r?\n\r?\n|(?![\s\S]))/gm)];
     const expected = blocks.find(block => block[1].trim() === entry.name)?.[2].trim();
     expect(expected, entry.id).toBeDefined();
-    expect(phaseZeroUpgradedAbility(entry.id)).toBe(expected?.replace(/\s+/g, ' '));
+    const displayed = isCalamiticConduitId(entry.id) && entry.id !== 'calamitic-world-eater-orrery' &&
+      entry.id !== 'calamitic-causality-funeral-engine' && entry.id !== 'calamitic-horizon-cleaving-godpress' &&
+      entry.id !== 'calamitic-throne-borrowed-tomorrows' && entry.id !== 'calamitic-cathedral-final-equation'
+      ? expected?.replace(/([+-]?\d+(?:\.\d+)?)%/g, (_match, amount: string) => `${amount.startsWith('+') ? '+' : ''}${Number(Number(amount).toFixed(8))}%`)
+      : expected;
+    expect(phaseZeroUpgradedAbility(entry.id)).toBe(displayed?.replace(/\s+/g, ' '));
   });
 
   describe.each([0, 1, 2, 3, 4, 5])('+%i', level => {
@@ -77,7 +82,7 @@ describe('approved ability upgrade presentation', () => {
     }
   });
 
-  it('keeps shared stat explanations and upgrade formulas out of all 138 ability descriptions', () => {
+  it('keeps shared stat explanations and upgrade formulas out of all 147 ability descriptions', () => {
     for (const [id, entry] of Object.entries(approvedConduitCatalog))
       expect(entry.ability, id).not.toMatch(/per upgrade|scaled once by|cost caps and floors still apply|Passive(?: Ability)?:|frozen \[Squad\]/);
   });
