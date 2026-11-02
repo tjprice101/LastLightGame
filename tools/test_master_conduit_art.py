@@ -11,9 +11,10 @@ class MasterChestReplacementTests(unittest.TestCase):
     def test_replacement_palette_and_cutout_contract(self):
         text = chest_section()
         self.assertIn("Machine's Master Chest", text)
-        self.assertIn("pearl-white", text)
-        self.assertIn("gold filigree", text)
-        self.assertIn("rainbow-prismatic metal accents", text)
+        self.assertIn("pearlescent ivory", text)
+        self.assertIn("living machine", text)
+        self.assertIn("rainbow-prismatic mechanisms unfurling", text)
+        self.assertIn("starfield", text)
         self.assertIn("Let and Rise", text)
         self.assertIn("visibly locked not open", text)
         self.assertIn("at least 15% continuous outer clearance", text)

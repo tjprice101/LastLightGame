@@ -1,5 +1,7 @@
 # Documentation hub
 
+**Phase 1 proposal (not approved):** [new Elemental War Element-Bearers and role perks](phase-1-war-characters.md).
+
 **D-435:** [Phase 0: Everything Calamity](calamitic-characters.md) records the
 three 7-star Calamitic Element-Bearers and their progression. Sections 1 and 2
 are implemented; see the [Gates of Oblivion activity](gates-of-oblivion.md).
