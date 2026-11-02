@@ -23,7 +23,35 @@ colors outside the palette. Keep the entire machine within its clear 15% margins
 The nine Calamitic Masters now use distinct reactor, suppression, regeneration,
 supercharger, turbine, timing, harvester, accelerator and annihilation designs.
 Their names and catalog descriptions match the new prompts; IDs/effects are unchanged.
-Images remain pending delivery.
+All nine Calamitic Master images are now delivered and installed (D-448).
+
+### Delivered Calamitic Masters (D-448)
+
+All nine root deliveries matched their current names: three each for Ozriel,
+Ilvaris and Kaelith. Byte-identical originals live under
+`Art/source/master-conduits/calamitic`; source hashes, export hashes and reviewed
+settings are in `Art/provenance/calamitic-master-art-intake.json` and
+`calamitic-master-art-settings.json`.
+
+Reproduce/review with `python tools/intake_calamitic_master_art.py --review DIR`;
+install with `--apply --reviewed`. It reuses the established Master exporter and
+source-specific connected-key/gap cleanup. Glass Meridian has a tighter key to
+preserve its pale green-gray metal reflections. Chronodrive also removes the
+flat colored backdrop shadow, an enclosed cable-shadow region and detached
+generated lettering in an explicitly bounded empty-backdrop rectangle.
+White/crimson facets, gears, cables, attached dark shading and source bytes
+remain intact. Supplied alpha always bypasses keying.
+
+All nine exports are transparent256px PNGs (224px content limit) with AVIF
+siblings. Shared Master revisions now cover59 files:57 Masters plus the chest
+and Astral Reserve emblem. The existing resolver automatically wires equipment,
+selection panels, Inventory, Collections and chest reward/cinematic art;
+no separate hard-coded URLs, new mechanics or save/ownership changes.
+The historical50-image intake remains separate and unchanged.
+
+Validation: `python -m unittest discover -s tools -p test_calamitic_master_intake.py`,
+existing Master intake/Calamitic generator tests, shared Master artwork,
+Archives/equipment/reward and AVIF tests, then `npm run build`.
 
 ## Delivered Phase 0 Calamity artwork (D-441)
 

@@ -1,5 +1,9 @@
 # Documentation hub
 
+**D-448:** [All nine Calamitic Master images installed](art-workflow.md#delivered-calamitic-masters-d-448):
+archived originals, reviewed transparent cutouts and shared revisioned artwork
+across equipment, Inventory, Collections and chest rewards.
+
 **D-447:** [Team loadouts and three character Conduit configurations](menus-and-inventory.md#named-squad-loadouts-and-conduit-configurations-d-447):
 unlimited named squad snapshots, explicit Save/Equip/Rename controls and atomic
 ordinary/Master restoration with post-save sparkle feedback.

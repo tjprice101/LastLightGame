@@ -1,5 +1,38 @@
 # Current state and handoff
 
+## Delivered Calamitic Master artwork (D-448)
+
+- All nine deliveries matched: three each for Ozriel, Ilvaris and Kaelith;
+  nothing missing from this batch. Original bytes moved into
+  `Art/source/master-conduits/calamitic` only after archive/hash verification.
+- Source-specific connected keying and explicit enclosed gaps remove the
+  green/mint backgrounds. Glass Meridian protects pale green-gray metal
+  reflections; Chronodrive clears the flat colored backdrop shadow, enclosed
+  cable-shadow region and bounded detached background lettering. White/crimson
+  facets and intricate machine details remain; no source repainting.
+- `tools/intake_calamitic_master_art.py` reproduces all9 transparent256px PNGs;
+  settings/hashes under `Art/provenance/calamitic-master-art-*`. AVIF siblings
+  generated. Shared Master revisions now cover59 files (57 Masters plus chest
+  and Astral Reserve), enabling all existing equipment/choice/Inventory/
+  Collections/chest reward surfaces without special-case wiring.
+- Generator and prompt delivery status updated; historical50-image intake
+  remains unchanged. No mechanics, save, ownership, reward or authority changes.
+- Validation:6 new Python reproduction/source/mask/alpha tests,8 Calamitic
+  prompt tests and4 historical intake tests passed.47 focused Vitest tests
+  passed across shared Master art, Master mechanics/UI, Archives, element
+  labels and image formats. `npm run build` passed (existing chunk advisory).
+- Additional historical `test_master_conduit_art.py`:3 passed,2 pre-existing
+  errors. Its unchanged factory parser rejects the existing generic Master
+  helper (`Master ID/Omnic factory contract changed`); neither the parser nor
+  runtime catalog changed in this art intake. The current Calamitic generator
+  and historical delivered-art intake tests pass; no unrelated parser rewrite.
+- Reviewed all9 on dark/light backgrounds, with magnified Chronodrive and
+  Glass Meridian checks for colored-backdrop remnants/reflection protection. Actual shared icon
+  renderer browser fixture decoded all9 revisioned AVIFs at256px with HTTP200;
+  no account grants or save modifications.
+- Publication follows the normal commit/push/full CI/Pages workflow; verify
+  hosted version and exact PNG/AVIF bytes for all9.
+
 ## Team loadouts and character Conduit configurations (D-447)
 
 - Team has a Loadouts destination: unlimited named 1–3-member squad snapshots,

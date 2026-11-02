@@ -66,10 +66,11 @@ class CalamiticArtTests(unittest.TestCase):
         self.assertEqual([len(BLOCK.findall(text)) for text in generated.values()], [33, 10, 1, 9, 9])
         for path, expected in generated.items():
             self.assertEqual(path.read_text(encoding="utf-8"), expected, path.name)
-            self.assertIn("All artwork pending owner delivery", expected)
+            installed = path.name == "Calamitic Master Conduits.md"
+            self.assertIn("All nine Master images delivered and installed" if installed else "All artwork pending owner delivery", expected)
             blocks = BLOCK.findall(expected)
             self.assertEqual(expected.count("Target runtime asset ID:"), len(blocks))
-            self.assertEqual(expected.count("Target export:"), len(blocks))
+            self.assertEqual(expected.count("Installed export:" if installed else "Target export:"), len(blocks))
             self.assertEqual(expected.count("Filename:"), len(blocks))
 
     def test_complete_roster_titles_abilities_and_materials(self):

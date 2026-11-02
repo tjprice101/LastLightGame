@@ -1,0 +1,697 @@
+{
+  "decision": "D-448",
+  "asset_count": 9,
+  "assets": [
+    {
+      "asset": "master-ozriel-1",
+      "incoming": "Refusal Sovereign Heartdrive.png",
+      "source": "Art/source/master-conduits/calamitic/Refusal Sovereign Heartdrive.png",
+      "source_sha256": "6f63ea5d9d098f76844f46731795eacf323316a814593abbee97d580cc6e1405",
+      "runtime": "public/assets/master-conduits/master-ozriel-1.png",
+      "runtime_sha256": "264380fb9aada0353ee5dab814e8cab91fa6f2001af6189c494ba6078b39b13f",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        20,
+        240,
+        236
+      ],
+      "runtime_pixel_sha256": "760b0eb38e52d49f3ccf6313c7b63bb511f3bbb2e15d6dbdaf1110c68f5072eb",
+      "settings": {
+        "keys": [
+          [
+            108,
+            250,
+            188
+          ]
+        ],
+        "radius": 45,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 35
+        },
+        "background_seeds": [
+          [
+            0.6696,
+            0.1359
+          ],
+          [
+            0.3148,
+            0.1417
+          ],
+          [
+            0.7175,
+            0.1613
+          ],
+          [
+            0.2678,
+            0.1691
+          ],
+          [
+            0.5748,
+            0.7067
+          ],
+          [
+            0.4047,
+            0.7683
+          ],
+          [
+            0.4966,
+            0.7654
+          ],
+          [
+            0.609,
+            0.7761
+          ],
+          [
+            0.5367,
+            0.824
+          ]
+        ],
+        "review": "Mint backdrop and enclosed hydraulic-arm/cable openings only; preserve crimson heart, ivory shields and dark mechanical shading."
+      }
+    },
+    {
+      "asset": "master-ozriel-2",
+      "incoming": "Absolution Planetary Suppressor.png",
+      "source": "Art/source/master-conduits/calamitic/Absolution Planetary Suppressor.png",
+      "source_sha256": "6465d549235ffc2ad190f21034f83bae057e352b32983e401141dc7bc7f23dea",
+      "runtime": "public/assets/master-conduits/master-ozriel-2.png",
+      "runtime_sha256": "bc0903e43cfa9068f5447af6c989224e07ee50f717a627c499fb9aae6312893e",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        18,
+        16,
+        238,
+        240
+      ],
+      "runtime_pixel_sha256": "099d3d426893d6c989e2874d235f52079403898297c1b4a5e25f559ff10eca7b",
+      "settings": {
+        "keys": [
+          [
+            99,
+            159,
+            122
+          ]
+        ],
+        "radius": 45,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 35
+        },
+        "background_seeds": [
+          [
+            0.5709,
+            0.3333
+          ],
+          [
+            0.306,
+            0.3969
+          ],
+          [
+            0.5562,
+            0.393
+          ],
+          [
+            0.2023,
+            0.4399
+          ],
+          [
+            0.5103,
+            0.4497
+          ],
+          [
+            0.2014,
+            0.5591
+          ],
+          [
+            0.304,
+            0.5992
+          ],
+          [
+            0.608,
+            0.6285
+          ]
+        ],
+        "review": "Muted green backdrop through radial engine spokes and rotor gaps; retain ivory vanes, crimson spikes and black gearwork."
+      }
+    },
+    {
+      "asset": "master-ozriel-3",
+      "incoming": "Unfallen Continuum Worldengine.png",
+      "source": "Art/source/master-conduits/calamitic/Unfallen Continuum Worldengine.png",
+      "source_sha256": "1436fdaad08d15bf715039b6bf727470c3b680fc258f71a921825d3b9c79178b",
+      "runtime": "public/assets/master-conduits/master-ozriel-3.png",
+      "runtime_sha256": "3292f71fd66965730f1cf6dfb26a48d8d141ac3d6d11546ed926d86f13c13b8e",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        17,
+        240,
+        238
+      ],
+      "runtime_pixel_sha256": "0f82791104d3225caca125d726683e34b1b21064374d33531007a31a450bcc6e",
+      "settings": {
+        "keys": [
+          [
+            141,
+            221,
+            139
+          ]
+        ],
+        "radius": 45,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 35
+        },
+        "background_seeds": [],
+        "review": "Light green exterior only; no enclosed background openings. Preserve all ivory piston housings, silver gears and five crimson reactors."
+      }
+    },
+    {
+      "asset": "master-ilvaris-1",
+      "incoming": "Unsung Verse Harmonic Supercharger.png",
+      "source": "Art/source/master-conduits/calamitic/Unsung Verse Harmonic Supercharger.png",
+      "source_sha256": "1faf03098aa3cd0dbd6cea6b71bf57d1e03890859b972670e8635872339a5b14",
+      "runtime": "public/assets/master-conduits/master-ilvaris-1.png",
+      "runtime_sha256": "3f94104c35b102d0406bb10c7b914bf6190ab2ab2a3bd664f92eadd67ace3a03",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        17,
+        16,
+        238,
+        240
+      ],
+      "runtime_pixel_sha256": "fb6cadfc54c370731f9cf8f41c509056192851d6977c7b19e671e8ef12fa895c",
+      "settings": {
+        "keys": [
+          [
+            41,
+            253,
+            205
+          ]
+        ],
+        "radius": 45,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 35
+        },
+        "background_seeds": [
+          [
+            0.7146,
+            0.043
+          ],
+          [
+            0.5973,
+            0.0733
+          ],
+          [
+            0.825,
+            0.0899
+          ],
+          [
+            0.9022,
+            0.1848
+          ],
+          [
+            0.2884,
+            0.2248
+          ],
+          [
+            0.8612,
+            0.5181
+          ],
+          [
+            0.3157,
+            0.8543
+          ],
+          [
+            0.3724,
+            0.8631
+          ]
+        ],
+        "review": "Turquoise exterior and narrow casing/cable openings. Preserve magenta-crimson impellers, white enamel and dark inner machinery."
+      }
+    },
+    {
+      "asset": "master-ilvaris-2",
+      "incoming": "Hymnwind Imperial Turbine.png",
+      "source": "Art/source/master-conduits/calamitic/Hymnwind Imperial Turbine.png",
+      "source_sha256": "8043f307e4cb0fdaac367d69f85e8ba77a3d7fe5611b1ed5ca7969aaa2cbd1e0",
+      "runtime": "public/assets/master-conduits/master-ilvaris-2.png",
+      "runtime_sha256": "9f54ba1671c56f7d7653c18f9e609ba0cfa702e4dd4564c0191eb142936bc744",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        19,
+        16,
+        237,
+        240
+      ],
+      "runtime_pixel_sha256": "6b145451d52bb199d55c64cc0f419ee2a84e1888291b7bd48f328e6fea8478d2",
+      "settings": {
+        "keys": [
+          [
+            141,
+            233,
+            194
+          ]
+        ],
+        "radius": 45,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 35
+        },
+        "background_seeds": [
+          [
+            0.4565,
+            0.2229
+          ],
+          [
+            0.5806,
+            0.2268
+          ],
+          [
+            0.3675,
+            0.2532
+          ],
+          [
+            0.4321,
+            0.2522
+          ],
+          [
+            0.3803,
+            0.2698
+          ],
+          [
+            0.6755,
+            0.3265
+          ],
+          [
+            0.3548,
+            0.3021
+          ],
+          [
+            0.6373,
+            0.3099
+          ],
+          [
+            0.6256,
+            0.3284
+          ],
+          [
+            0.6256,
+            0.3548
+          ],
+          [
+            0.6598,
+            0.3568
+          ],
+          [
+            0.6706,
+            0.4018
+          ],
+          [
+            0.263,
+            0.435
+          ],
+          [
+            0.2933,
+            0.4477
+          ],
+          [
+            0.2669,
+            0.4878
+          ],
+          [
+            0.2981,
+            0.5083
+          ],
+          [
+            0.2864,
+            0.5464
+          ],
+          [
+            0.4252,
+            0.5758
+          ],
+          [
+            0.7713,
+            0.6051
+          ],
+          [
+            0.4203,
+            0.6178
+          ],
+          [
+            0.7253,
+            0.9365
+          ]
+        ],
+        "review": "Mint exterior and explicit impeller/rotor openings; preserve ivory and crimson blades, fine black cables and lower connected machinery."
+      }
+    },
+    {
+      "asset": "master-ilvaris-3",
+      "incoming": "Severed Prophecy Chronodrive.png",
+      "source": "Art/source/master-conduits/calamitic/Severed Prophecy Chronodrive.png",
+      "source_sha256": "0e94c28704c0a19f90d67c3ff5ac441f74ef24e2afe4433c0f969911812fbb2f",
+      "runtime": "public/assets/master-conduits/master-ilvaris-3.png",
+      "runtime_sha256": "923531fd2d7429878fedce7d6819cb72290bf3cb02ac1400ea5cd8851a136f1b",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        18,
+        240,
+        237
+      ],
+      "runtime_pixel_sha256": "91880fe015235e6dbc5ff8edca93791e011188068bb20ead96ecdbc1360274c3",
+      "settings": {
+        "keys": [
+          [
+            81,
+            210,
+            178
+          ],
+          [
+            62,
+            159,
+            165
+          ]
+        ],
+        "radius": 30,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 25
+        },
+        "background_seeds": [
+          [
+            0.7185,
+            0.3265
+          ],
+          [
+            0.7468,
+            0.3421
+          ],
+          [
+            0.8123,
+            0.3617
+          ],
+          [
+            0.7136,
+            0.7087
+          ],
+          [
+            0.3988,
+            0.7498
+          ],
+          [
+            0.741,
+            0.7595
+          ],
+          [
+            0.3685,
+            0.7898
+          ],
+          [
+            0.433,
+            0.784
+          ],
+          [
+            0.4018,
+            0.8084
+          ],
+          [
+            0.335,
+            0.735
+          ]
+        ],
+        "background_regions": [
+          {
+            "polygon": [
+              [
+                0.797,
+                0.718
+              ],
+              [
+                0.855,
+                0.718
+              ],
+              [
+                0.855,
+                0.747
+              ],
+              [
+                0.797,
+                0.747
+              ]
+            ],
+            "radius": 120
+          }
+        ],
+        "review": "Turquoise backdrop plus flat blue-green backdrop shadow and cable openings; local empty-backdrop rectangle removes generated lettering beside the lower-right blade. Preserve white blade armor, violet-black gears, crimson cables and mechanical contact shading."
+      }
+    },
+    {
+      "asset": "master-kaelith-1",
+      "incoming": "Glass Meridian Singularity Harvester.png",
+      "source": "Art/source/master-conduits/calamitic/Glass Meridian Singularity Harvester.png",
+      "source_sha256": "5a0b7e76e208ccb2c52c3ae2764b3f6ebe9f24d7ca6a7d0dc45ea46a0be44e1d",
+      "runtime": "public/assets/master-conduits/master-kaelith-1.png",
+      "runtime_sha256": "02241fcb8aa3574a8f4d8c0f03dfd95d84318fb571349cf72cfd64bfbc151132",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        21,
+        16,
+        234,
+        240
+      ],
+      "runtime_pixel_sha256": "40dbab613b1fda41c7ca32ddf68834b753ab143c4179087031e1c7139455e2a7",
+      "settings": {
+        "keys": [
+          [
+            122,
+            172,
+            142
+          ]
+        ],
+        "radius": 22,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "background_seeds": [
+          [
+            0.4897,
+            0.2131
+          ],
+          [
+            0.4633,
+            0.2199
+          ]
+        ],
+        "review": "Muted green exterior and two upper cable openings only. Tight threshold protects pale green-gray reflections on ivory crescent blades and metal gear hubs; never seed those subject facets."
+      }
+    },
+    {
+      "asset": "master-kaelith-2",
+      "incoming": "Thousand-Fault Rupture Accelerator.png",
+      "source": "Art/source/master-conduits/calamitic/Thousand-Fault Rupture Accelerator.png",
+      "source_sha256": "37de204c1b666733060dbff8ffe0ec609e45568cb2e1e93afd16f93dd986b225",
+      "runtime": "public/assets/master-conduits/master-kaelith-2.png",
+      "runtime_sha256": "fd2e67bfd10a7dd7eddee94c72abc61dab78b0d6f03f2d00b69a8f9dac6b2123",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        17,
+        16,
+        239,
+        240
+      ],
+      "runtime_pixel_sha256": "416e2980f28d893eb6065dd88d7342df6076c656706e24f91d10cdc861f2933b",
+      "settings": {
+        "keys": [
+          [
+            108,
+            239,
+            132
+          ]
+        ],
+        "radius": 45,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 35
+        },
+        "background_seeds": [
+          [
+            0.8182,
+            0.3978
+          ]
+        ],
+        "review": "Green exterior and enclosed upper chain opening; preserve crimson shards, white prismatic armor, wheel spokes, chain links and dark mechanical shading."
+      }
+    },
+    {
+      "asset": "master-kaelith-3",
+      "incoming": "Denied Fate Eclipse Annihilator.png",
+      "source": "Art/source/master-conduits/calamitic/Denied Fate Eclipse Annihilator.png",
+      "source_sha256": "a4630fc0f26ce7567b79d4448f7086a72ca67ccc5030b912e78a465d3395ef8b",
+      "runtime": "public/assets/master-conduits/master-kaelith-3.png",
+      "runtime_sha256": "f2a4a0ce1e48f772d5d0e3a2b6ca7cb709965c3c400a3f48ca5856266d9be0a2",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        240
+      ],
+      "runtime_pixel_sha256": "fae772e86f696c757cbd1558da071715882c45ec2a1a2ca7991a1911aa8e79b5",
+      "settings": {
+        "keys": [
+          [
+            132,
+            203,
+            167
+          ]
+        ],
+        "radius": 45,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 35
+        },
+        "background_seeds": [
+          [
+            0.2737,
+            0.2708
+          ],
+          [
+            0.5503,
+            0.2688
+          ],
+          [
+            0.652,
+            0.2766
+          ],
+          [
+            0.6325,
+            0.3294
+          ],
+          [
+            0.2502,
+            0.48
+          ],
+          [
+            0.7048,
+            0.5269
+          ],
+          [
+            0.5973,
+            0.6334
+          ],
+          [
+            0.4829,
+            0.8035
+          ]
+        ],
+        "review": "Mint exterior and enclosed crescent/rotor gaps; preserve black eclipse disk, violet housings and all attached or detached crimson shards."
+      }
+    }
+  ]
+}

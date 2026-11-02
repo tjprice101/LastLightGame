@@ -3454,6 +3454,36 @@
    "bytes": 72511,
    "avif": 36495
   },
+  "master-conduits/master-ilvaris-1.png": {
+   "source": "3f94104c35b102d0406bb10c7b914bf6190ab2ab2a3bd664f92eadd67ace3a03",
+   "bytes": 94670,
+   "avif": 36165
+  },
+  "master-conduits/master-ilvaris-2.png": {
+   "source": "9f54ba1671c56f7d7653c18f9e609ba0cfa702e4dd4564c0191eb142936bc744",
+   "bytes": 82755,
+   "avif": 35683
+  },
+  "master-conduits/master-ilvaris-3.png": {
+   "source": "923531fd2d7429878fedce7d6819cb72290bf3cb02ac1400ea5cd8851a136f1b",
+   "bytes": 88877,
+   "avif": 38470
+  },
+  "master-conduits/master-kaelith-1.png": {
+   "source": "02241fcb8aa3574a8f4d8c0f03dfd95d84318fb571349cf72cfd64bfbc151132",
+   "bytes": 68192,
+   "avif": 28258
+  },
+  "master-conduits/master-kaelith-2.png": {
+   "source": "fd2e67bfd10a7dd7eddee94c72abc61dab78b0d6f03f2d00b69a8f9dac6b2123",
+   "bytes": 103826,
+   "avif": 47143
+  },
+  "master-conduits/master-kaelith-3.png": {
+   "source": "f2a4a0ce1e48f772d5d0e3a2b6ca7cb709965c3c400a3f48ca5856266d9be0a2",
+   "bytes": 88019,
+   "avif": 46880
+  },
   "master-conduits/master-nerithe-1.png": {
    "source": "f11d5b05f3769e1e08793c519530b9f0a398f8bf609b64b4deeaf5f11446c14d",
    "bytes": 66470,
@@ -3483,6 +3513,21 @@
    "source": "7cc4bdbfb01c23d2e8c250cc991df9fcc164a40d8ea8967d6e1a81662ea5b48b",
    "bytes": 91239,
    "avif": 41996
+  },
+  "master-conduits/master-ozriel-1.png": {
+   "source": "264380fb9aada0353ee5dab814e8cab91fa6f2001af6189c494ba6078b39b13f",
+   "bytes": 89546,
+   "avif": 39461
+  },
+  "master-conduits/master-ozriel-2.png": {
+   "source": "bc0903e43cfa9068f5447af6c989224e07ee50f717a627c499fb9aae6312893e",
+   "bytes": 84643,
+   "avif": 36372
+  },
+  "master-conduits/master-ozriel-3.png": {
+   "source": "3292f71fd66965730f1cf6dfb26a48d8d141ac3d6d11546ed926d86f13c13b8e",
+   "bytes": 108762,
+   "avif": 39457
   },
   "master-conduits/master-razor-1.png": {
    "source": "f151961e0809ecc5246f592b503e638dafa73e3bef3be0dfee5400055d7bce4a",

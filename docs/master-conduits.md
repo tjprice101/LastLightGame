@@ -1,5 +1,17 @@
 # Character Master Conduits (D-201)
 
+## Delivered Calamitic Master artwork (D-448)
+
+All57 current Masters now have installed artwork: the original48 plus three
+each for Ozriel, Ilvaris and Kaelith. All nine new delivered originals are
+preserved under `Art/source/master-conduits/calamitic`; reviewed connected
+background keys/gaps reproduce their transparent256px icons via
+`tools/intake_calamitic_master_art.py`. Shared byte revisions wire their PNG/AVIF
+art across equipment, choices, Inventory, Collections and saved chest rewards.
+The historical48-Master rules/intake records below describe the original batch;
+current catalog count is57. Mechanics, ownership and chest behavior are unchanged.
+See [review/reproduction](art-workflow.md#delivered-calamitic-masters-d-448).
+
 ## Exact, shared ability descriptions (D-415)
 
 All48 fixed Masters are included in the

@@ -163,16 +163,22 @@ def cutout(description, *, character=None, evolution=None, icon=False):
     return prompt
 
 
-def block(heading, asset, folder, prompt):
+def block(heading, asset, folder, prompt, installed=False):
+    status = "installed after reviewed D-448 intake" if installed else "pending delivery; not an installed URL"
+    destination = "Installed export" if installed else "Target export"
     return (f"### {heading}\n\nFilename: `{asset}.png`\n"
-            f"Target runtime asset ID: `{asset}` (pending delivery; not an installed URL).\n"
-            f"Target export: `public/assets/{folder}/{asset}.png` after reviewed intake.\n\n"
+            f"Target runtime asset ID: `{asset}` ({status}).\n"
+            f"{destination}: `public/assets/{folder}/{asset}.png` after reviewed intake.\n\n"
             f"```text\n{prompt}\n```\n")
 
 
-def document(title, summary, blocks):
+def document(title, summary, blocks, installed=False):
+    status = ("**All nine Master images delivered and installed (D-448).** "
+              "Originals and reviewed keys/gaps/hashes are preserved by tools/intake_calamitic_master_art.py. "
+              "The prompts below are the generation record. " if installed else
+              "**All artwork pending owner delivery.** These are copy-ready original designs, not installed assets. ")
     return (f"# {title}\n\n{summary}\n\n"
-            "**All artwork pending owner delivery.** These are copy-ready original designs, not installed assets. "
+            f"{status}"
             "Names, titles, rarity and mechanics are metadata outside image prose. "
             "Black/white primary and secondary colors, sharp saturated sparkling crimson accents; "
             "pearlescent prismatic sheen means bounded faceting, never extra hues. "
@@ -223,7 +229,7 @@ def outputs():
         "dense interior construction and narrow readable key channels, painted dimensional metal facets"))
         for name, symbol in CONDUITS]
     masters = [block(f"{name} (Omnic Master / {bearer})", asset, "master-conduits", cutout(
-        f"one standalone {symbol}, {CONDUIT_FOUNDATION}") + ", buildings, cathedral, towers, temple, house, furniture, musical instrument")
+        f"one standalone {symbol}, {CONDUIT_FOUNDATION}") + ", buildings, cathedral, towers, temple, house, furniture, musical instrument", installed=True)
         for asset, name, bearer, symbol in MASTERS]
     emblem = block("Rise-blessed crown-burst", "rise-blessed-emblem", "ui", cutout(
         "one ornate mechanical crown-burst emblem, five white crown teeth on a black segmented ring, "
@@ -255,8 +261,8 @@ def outputs():
             "wind turbines and timing drives; Kaelith uses rotary harvesters, fracture accelerators and an eclipse engine. "
             "Foundation (D-443) for all Legendary, Omnic and Master Conduits: cosmic, ornate, resplendent machinery made by Let and Rise together, "
             "mechanical masterpieces that shimmer and shine in the light while staying true to the bearer's colors and element. "
-            "Object-only machines, no figures. Effects live in docs/conduit-catalog.txt; the installed 48 Masters are in "
-            "[Master Conduits](Master%20Conduits.md).", masters),
+            "Object-only machines, no figures. Effects live in docs/conduit-catalog.txt; the original 48 Masters are in "
+            "[Master Conduits](Master%20Conduits.md).", masters, installed=True),
     }
 
 

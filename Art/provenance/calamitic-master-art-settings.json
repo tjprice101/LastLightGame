@@ -1,0 +1,56 @@
+{
+  "master-ozriel-1": {
+    "keys": [[108, 250, 188]], "radius": 45, "border_only": true,
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 35},
+    "background_seeds": [[0.6696, 0.1359], [0.3148, 0.1417], [0.7175, 0.1613], [0.2678, 0.1691], [0.5748, 0.7067], [0.4047, 0.7683], [0.4966, 0.7654], [0.609, 0.7761], [0.5367, 0.824]],
+    "review": "Mint backdrop and enclosed hydraulic-arm/cable openings only; preserve crimson heart, ivory shields and dark mechanical shading."
+  },
+  "master-ozriel-2": {
+    "keys": [[99, 159, 122]], "radius": 45, "border_only": true,
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 35},
+    "background_seeds": [[0.5709, 0.3333], [0.306, 0.3969], [0.5562, 0.393], [0.2023, 0.4399], [0.5103, 0.4497], [0.2014, 0.5591], [0.304, 0.5992], [0.608, 0.6285]],
+    "review": "Muted green backdrop through radial engine spokes and rotor gaps; retain ivory vanes, crimson spikes and black gearwork."
+  },
+  "master-ozriel-3": {
+    "keys": [[141, 221, 139]], "radius": 45, "border_only": true,
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 35}, "background_seeds": [],
+    "review": "Light green exterior only; no enclosed background openings. Preserve all ivory piston housings, silver gears and five crimson reactors."
+  },
+  "master-ilvaris-1": {
+    "keys": [[41, 253, 205]], "radius": 45, "border_only": true,
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 35},
+    "background_seeds": [[0.7146, 0.043], [0.5973, 0.0733], [0.825, 0.0899], [0.9022, 0.1848], [0.2884, 0.2248], [0.8612, 0.5181], [0.3157, 0.8543], [0.3724, 0.8631]],
+    "review": "Turquoise exterior and narrow casing/cable openings. Preserve magenta-crimson impellers, white enamel and dark inner machinery."
+  },
+  "master-ilvaris-2": {
+    "keys": [[141, 233, 194]], "radius": 45, "border_only": true,
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 35},
+    "background_seeds": [[0.4565, 0.2229], [0.5806, 0.2268], [0.3675, 0.2532], [0.4321, 0.2522], [0.3803, 0.2698], [0.6755, 0.3265], [0.3548, 0.3021], [0.6373, 0.3099], [0.6256, 0.3284], [0.6256, 0.3548], [0.6598, 0.3568], [0.6706, 0.4018], [0.263, 0.435], [0.2933, 0.4477], [0.2669, 0.4878], [0.2981, 0.5083], [0.2864, 0.5464], [0.4252, 0.5758], [0.7713, 0.6051], [0.4203, 0.6178], [0.7253, 0.9365]],
+    "review": "Mint exterior and explicit impeller/rotor openings; preserve ivory and crimson blades, fine black cables and lower connected machinery."
+  },
+  "master-ilvaris-3": {
+    "keys": [[81, 210, 178], [62, 159, 165]], "radius": 30, "border_only": true,
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 25},
+    "background_seeds": [[0.7185, 0.3265], [0.7468, 0.3421], [0.8123, 0.3617], [0.7136, 0.7087], [0.3988, 0.7498], [0.741, 0.7595], [0.3685, 0.7898], [0.433, 0.784], [0.4018, 0.8084], [0.335, 0.735]],
+    "background_regions": [{"polygon": [[0.797, 0.718], [0.855, 0.718], [0.855, 0.747], [0.797, 0.747]], "radius": 120}],
+    "review": "Turquoise backdrop plus flat blue-green backdrop shadow and cable openings; local empty-backdrop rectangle removes generated lettering beside the lower-right blade. Preserve white blade armor, violet-black gears, crimson cables and mechanical contact shading."
+  },
+  "master-kaelith-1": {
+    "keys": [[122, 172, 142]], "radius": 22, "border_only": true,
+    "edge_cleanup": {"source_pixels": 1, "distance_ramp": 18},
+    "background_seeds": [[0.4897, 0.2131], [0.4633, 0.2199]],
+    "review": "Muted green exterior and two upper cable openings only. Tight threshold protects pale green-gray reflections on ivory crescent blades and metal gear hubs; never seed those subject facets."
+  },
+  "master-kaelith-2": {
+    "keys": [[108, 239, 132]], "radius": 45, "border_only": true,
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 35},
+    "background_seeds": [[0.8182, 0.3978]],
+    "review": "Green exterior and enclosed upper chain opening; preserve crimson shards, white prismatic armor, wheel spokes, chain links and dark mechanical shading."
+  },
+  "master-kaelith-3": {
+    "keys": [[132, 203, 167]], "radius": 45, "border_only": true,
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 35},
+    "background_seeds": [[0.2737, 0.2708], [0.5503, 0.2688], [0.652, 0.2766], [0.6325, 0.3294], [0.2502, 0.48], [0.7048, 0.5269], [0.5973, 0.6334], [0.4829, 0.8035]],
+    "review": "Mint exterior and enclosed crescent/rotor gaps; preserve black eclipse disk, violet housings and all attached or detached crimson shards."
+  }
+}

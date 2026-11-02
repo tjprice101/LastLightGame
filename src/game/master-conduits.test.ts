@@ -225,7 +225,7 @@ describe('all Master rules and frozen sessions', () => {
     expect(inventoryView(account)).toMatch(/assets\/master-conduits\/grand-master-chest\.png\?v=[0-9a-f]{16}/);
     expect(inventoryView(account)).not.toContain('Artwork pending');
     for (const entry of masterConduits) expect(existsSync(`public/assets/${entry.art}`)).toBe(entry.id in masterConduitArtRevisions);
-    expect(masterConduits.filter(entry => entry.id in masterConduitArtRevisions)).toHaveLength(48);
+    expect(masterConduits.filter(entry => entry.id in masterConduitArtRevisions)).toHaveLength(57);
     expect(existsSync('public/assets/master-conduits/grand-master-chest.png') && existsSync('public/assets/master-conduits/astral-reserve.png')).toBe(true);
     expect(team).not.toMatch(/assets\/conduits\/master-/);
   });
