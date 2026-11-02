@@ -4,7 +4,7 @@ import { emptyAccount } from '../game/account';
 import { createCreatureCopy } from '../game/character-instances';
 import { creatures, getCreature, creatureLore } from '../content/creatures';
 import { getStarter } from '../content/starters';
-import { machineOrigin, storyPurpose, summonLore, worldHistory } from '../content/world-lore';
+import { machineOrigin, storyPurpose, worldHistory } from '../content/world-lore';
 import { worldLore } from './world-lore';
 import { storyCampaign } from './story';
 import { sanctuaryHeader } from './sanctuary';
@@ -70,7 +70,10 @@ describe('canon across information and lore surfaces', () => {
 
   it('keeps summoning a squad acquisition, not a found creator or new soul reward', () => {
     for (const banner of ['standard', 'roses'] as const) {
-      expect(plain(summonHub(emptyAccount(), banner)).toLowerCase()).toContain(summonLore.toLowerCase());
+      const text = plain(summonHub(emptyAccount(), banner));
+      expect(text).toContain('Non-character draws give');
+      expect(text).toContain('Owned Element-Bearers convert to');
+      expect(text).not.toMatch(/found (?:Let|Rise)|souls? (?:reward|acquired|obtained)/i);
     }
   });
 

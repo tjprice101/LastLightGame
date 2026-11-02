@@ -104,7 +104,7 @@ describe('native ally targeting', () => {
       f.open();
       expect(document.querySelector<HTMLDialogElement>('.native-ally-picker')?.open).toBe(true);
       expect(f.authority.action).not.toHaveBeenCalled();
-      expect(document.querySelector('.native-ally-picker')?.textContent).toContain('Enemy target is unchanged');
+      expect(document.querySelector('.native-ally-picker')?.textContent).toContain('your enemy target stays selected');
       f.pick('ember');
       await vi.waitFor(() => expect(f.authority.action).toHaveBeenCalledExactlyOnceWith(id, action, 'ember'));
       expect(f.commit).not.toHaveBeenCalled();

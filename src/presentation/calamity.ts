@@ -113,8 +113,8 @@ export function calamityLoot(activity: CalamityActivityId, tier: CalamityTier): 
         ${calamityChestContents(activity, tier)}
       </section>
       <section class="calamity-loot-panel calamity-loot-random" aria-label="Random reward pool">
-        <header><p class="calamity-loot-eyebrow">${chest.bundles} independent selections</p><h4>Random reward pool</h4></header>
-        <p>Random rewards roll separately and can repeat, except Conduits.</p>
+        <header><p class="calamity-loot-eyebrow">${chest.bundles} rewards</p><h4>Random reward pool</h4></header>
+        <p>Random rewards can repeat, except Conduits.</p>
         <table><caption>Chance and quantity for each random reward</caption>
           <thead><tr><th scope="col">Reward</th><th scope="col">Chance per reward</th><th scope="col">Quantity</th></tr></thead><tbody>${rows.map(row =>
           `<tr><th scope="row">${escapeDialogText(row.label)}</th><td>${Number((row.weight / weight * 100).toFixed(6))}%</td><td>${row.min.toLocaleString('en-US')}-${row.max.toLocaleString('en-US')}</td></tr>`).join('')}</tbody></table>
@@ -144,8 +144,8 @@ export function calamitySection(activity: CalamityActivityId, account: Account |
   const prefix = `calamity-${activity}`;
   return `<section class="calamity-section" data-calamity-tiers="${activity}" aria-label="${escapeDialogText(definition.name)} Calamity">
     <div class="calamity-heading"><div><h3>${escapeDialogText(definition.name)} · Calamity</h3>
-      <p>Free entry. One sealed tier chest and one independent recruitment roll per victory.</p></div>
-      ${information(`${prefix}-rules`, 'Calamity rules', '<p>Each victory saves one chest and independently rolls a 10% chance to recruit its EX-tier Element-Bearer at Evo.1 Lv.0 if not already owned. No duplicate conversion. Open the chest in Inventory. Entry and retries are free.</p>', 'Calamity rules')}</div>
+      <p>Free entry. Each victory earns one chest and a chance to recruit an Element-Bearer.</p></div>
+      ${information(`${prefix}-rules`, 'Calamity rules', '<p>Each victory earns one chest and a 10% chance to recruit the tier’s Element-Bearer at Evo.1 Lv.0, if unowned. Owned characters give no recruitment reward. Open chests in Inventory. Entry and retries are free.</p>', 'Calamity rules')}</div>
     <div class="calamity-tier-tabs" role="tablist" aria-label="Calamity tier">
       ${([1, 2, 3] as const).map(tier => `<button type="button" role="tab" id="${prefix}-${tier}-tab" data-calamity-choice="${tier}"
         aria-controls="${prefix}-${tier}-panel" aria-selected="${tier === 1}" tabindex="${tier === 1 ? 0 : -1}">
@@ -168,10 +168,10 @@ export function calamitySection(activity: CalamityActivityId, account: Account |
           ${information(`${prefix}-${tier}-mechanics`, `${escapeDialogText(encounter.name)} · Boss abilities`, `<p>${escapeDialogText(encounter.description)}</p>`, 'Boss abilities')}</div>
         <section class="calamity-tier-reward" aria-label="Victory reward">
           <div class="calamity-chest-heading">${calamityChestIcon(tier)}<div><h5>Victory reward</h5><p>1 ${escapeDialogText(chest.name.replace(`${definition.name} `, ''))}</p><small>Open in Inventory.</small></div></div>
-          ${calamityChestContents(activity, tier)}<p class="calamity-recruitment-chance">Each saved victory has a 10% chance to recruit ${escapeDialogText(getStarter(calamiticCharacterByTier[tier]).name)} at Evo.1 Lv.0 if not already owned.</p></section>
+          ${calamityChestContents(activity, tier)}<p class="calamity-recruitment-chance">Each victory has a 10% chance to recruit ${escapeDialogText(getStarter(calamiticCharacterByTier[tier]).name)} at Evo.1 Lv.0 if unowned.</p></section>
         <footer class="calamity-tier-actions">
         <button class="primary-button" data-calamity="${activity}" data-calamity-tier="${tier}" ${access?.unlocked ? '' : 'disabled'}>Enter EX+${tier}</button>
-        <p class="activity-unlock-hint">${access?.unlocked ? '' : account ? escapeDialogText(access!.requirement) : 'Resolve the save error before entering.'}</p>
+        <p class="activity-unlock-hint">${access?.unlocked ? '' : account ? escapeDialogText(access!.requirement) : 'Cannot enter. Check the save error.'}</p>
         ${information(`calamity-${activity}-${tier}-loot`, 'Calamity chest · View Loot', calamityLoot(activity, tier), 'View Loot')}</footer></div></article>`;
     }).join('')}</div></section>`;
 }

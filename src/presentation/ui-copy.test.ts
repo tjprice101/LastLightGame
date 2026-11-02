@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, expect, it, vi } from 'vitest';
 import { emptyAccount } from '../game/account';
 import { createBattle } from '../game/battle';
@@ -72,8 +73,51 @@ describe('visible UI copy', () => {
       const text = textContent(html);
       expect(text).not.toMatch(/\bauthored\b|\batomically\b|independent weighted bundle rolls|linear interpolation|intentional difficulty walls|base quantity rounds|verified final-clear receipt/i);
     }
-    expect(gameplayHub(account)).toContain('One sealed tier chest and one independent recruitment roll per victory.');
+    expect(gameplayHub(account)).toContain('Each victory earns one chest and a chance to recruit an Element-Bearer.');
     expect(plain(gameplayHub(account))).toContain('Every Machine drops Broken Mechanical Components');
+  });
+  it('keeps developer notes, filler and advance system prompts out of rendered menus', () => {
+    const account = emptyAccount();
+    account.characters = Object.fromEntries(starters.map(starter => [starter.id, { level: 0, evolution: 1 }]));
+    account.squad = ['ember'];
+    account.calamityClears = { machines: 1 };
+    account.calamiticTokens = 100;
+    account.materials = { 'calamity-common': 1, 'feather-severed-dawn': 1, 'splinter-unmade-night': 1, 'fragment-of-rise': 1, 'shard-of-calamity': 1 };
+    const before = structuredClone(account);
+    const battle = createBattle();
+    battle.phase = 'cleared';
+    const surfaces = [
+      gameplayHub(emptyAccount()), gameplayHub(account), roseEvent(account),
+      inventoryView(account), archives(account),
+      conduitStore(emptyAccount(), undefined, 'Calamitic'),
+      conduitStore(account, undefined, 'Calamitic'), conduitStore(account),
+      conduitUpgradeMenu(account), onlineStores(account, null, 'materials'),
+      summonHub(account, 'standard'), summonHub(account, 'roses'),
+      settingsPanel('system', defaultBindings, 1), battleResults(battle, []),
+      ...battle.allies.map(unit => unitReadout(unit)),
+      ...starters.map(starter => characterHub(starter, 'overview', account)),
+      ...['home', 'team', 'inventory', 'gameplay', 'collections', 'stores', 'summon', 'profile'].map(page =>
+        sanctuaryHeader(page as Parameters<typeof sanctuaryHeader>[0], 0, 0)),
+    ];
+    const banned = /D-\d{3}|\b(?:RNG|atomic(?:ally)?|server-validated|first pass|not yet implemented|saved once)\b|independent (?:recruitment|weighted bundle|random stream)|before upgrading skills|unlocks after|you(?:'|’)ll later|harness the power|a testament to|seamlessly|embark|unleash|delve into(?! the Abyss)|until artwork is delivered/i;
+    for (const html of surfaces) {
+      const rendered = document.createElement('div');
+      rendered.innerHTML = html;
+      expect(rendered.textContent).not.toMatch(banned);
+      for (const element of Array.from(rendered.querySelectorAll('[aria-label], [title]'))) {
+        expect(element.getAttribute('aria-label') ?? '').not.toMatch(banned);
+        expect(element.getAttribute('title') ?? '').not.toMatch(banned);
+      }
+    }
+    const gameplay = plain(gameplayHub(account));
+    expect(gameplay).toContain('10% chance to recruit');
+    expect(gameplay).toContain('Evo.1 Lv.0');
+    expect(gameplay).toContain('Rise’s constructs guard 25 floors.');
+    const store = plain(conduitStore(account, undefined, 'Calamitic'));
+    expect(store).toContain('100 Calamitic Tokens');
+    expect(store).toContain('five-per-character limit');
+    expect(conduitStore(emptyAccount(), undefined, 'Calamitic')).toContain('Clear a Calamity tier.');
+    expect(account).toEqual(before);
   });
   it('never uses affinity aliases in element filters or presentation data sources', () => {
     const account = emptyAccount();

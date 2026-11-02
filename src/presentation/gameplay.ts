@@ -40,7 +40,7 @@ function oblivionEntry(account: Account | null): string {
   return `${enemyStrength(oblivionEncounter(stage))}<footer class="activity-entry"><label class="dungeon-stage-label">Floor
     <select data-oblivion-stage aria-label="Gates of Oblivion floor">${Array.from({ length: stage }, (_, index) => `<option value="${index + 1}" ${index + 1 === stage ? 'selected' : ''}>${index + 1}</option>`).join('')}</select></label>
     <button class="primary-button" data-oblivion ${access.unlocked ? '' : 'disabled'}>${access.unlocked ? 'Enter floor' : 'Locked'}</button>
-    ${access.unlocked ? '' : `<p class="activity-unlock-hint">Unlocks when you ${access.requirement}.</p>`}</footer>`;
+    ${access.unlocked ? '' : `<p class="activity-unlock-hint">${access.requirement}.</p>`}</footer>`;
 }
 
 function dungeonEntry(element: (typeof elements)[number]['id'], account: Account | null): string {
@@ -51,19 +51,19 @@ function dungeonEntry(element: (typeof elements)[number]['id'], account: Account
   return `${enemyStrength(dungeonEncounter(element, unlocked))}<footer class="activity-entry"><label class="dungeon-stage-label">Stage
     <select data-dungeon-stage="${element}" aria-label="${elements.find((entry) => entry.id === element)?.dungeon} stage">${Array.from({ length: unlocked }, (_, stage) => `<option value="${stage + 1}" ${stage + 1 === unlocked ? 'selected' : ''}>${stage + 1}</option>`).join('')}</select></label>
     <button class="primary-button" data-dungeon="${element}" ${access.unlocked ? '' : 'disabled'}>${access.unlocked ? 'Enter dungeon' : 'Locked'}</button>
-    ${access.unlocked ? '' : `<p class="activity-unlock-hint">Unlocks at ${access.requirement}. Your highest: Lv.${access.level}.</p>`}</footer>`;
+    ${access.unlocked ? '' : `<p class="activity-unlock-hint">Requires ${access.requirement}. Your highest: Lv.${access.level}.</p>`}</footer>`;
 }
 
 const activityCategories = [
   ['story', 'Story', `Six regions · ${storyRules.stages} stages · Lv.1-55`, 'story'],
   ['adventure', 'Training', 'Endless waves · Prismatica', 'gameplay'],
-  ['dungeons', 'Elemental dungeons', 'Unlock Lv.30 · Upgrade materials', 'inventory'],
-  ['infusion', 'Evolution infusion', 'Unlock Lv.50 · Heaven & Abyss', 'evolution'],
-  ['currency', 'Currency farms', 'Unlock Lv.60 · Currencies', 'inventory'],
-  ['machines', 'Awaken the Machines', 'Unlock Lv.10 + first region · Conduits', 'inventory'],
+  ['dungeons', 'Elemental dungeons', 'Upgrade materials', 'inventory'],
+  ['infusion', 'Evolution infusion', 'Heaven & Abyss', 'evolution'],
+  ['currency', 'Currency farms', 'Currencies', 'inventory'],
+  ['machines', 'Awaken the Machines', 'Conduits', 'inventory'],
   ['oblivion', 'Gates of Oblivion', 'Calamitic Element-Bearer required · Calamity materials', 'gameplay'],
-  ['war', 'Elemental War', 'Unlock Lv.85 · Rival challengers', 'gameplay'],
-  ['events', 'Events', 'Unlock Lv.75 · Crimson Roses', 'events'],
+  ['war', 'Elemental War', 'Rival challengers', 'gameplay'],
+  ['events', 'Events', 'Crimson Roses', 'events'],
 ] as const;
 
 const activitySections = [
@@ -87,10 +87,9 @@ function activityFacts(stages: string, levels: string, drops: string): string {
 
 function gameplayInformation(): string {
   return informationTopics('gameplay-information', [
-    { id: 'final-loot', title: 'Final-boss loot', summary: 'Final rewards and linear-material exceptions', content: `<p>${finalBossLootText}</p><p>Story's six regional bosses are stages ${storyBossStages.slice(0, -1).join(', ')} and ${storyBossStages[storyBossStages.length - 1]}. Other staged activities use their final stage, with the dungeon and linear-material exceptions above.</p>` },
+    { id: 'final-loot', title: 'Final-boss loot', summary: 'Final-stage rewards', content: `<p>${finalBossLootText}</p><p>Story's six regional bosses are stages ${storyBossStages.slice(0, -1).join(', ')} and ${storyBossStages[storyBossStages.length - 1]}. Other staged activities use their final stage, with the dungeon and linear-material exceptions above.</p>` },
     { id: 'origins', title: 'Let and Rise', summary: 'Infinity, Nothingness and the search for the creators', content: worldLore() },
-    { id: 'start', title: 'Unlocks', summary: 'Activity level requirements', content: `<p>Story is open from the start. Other activities unlock by your highest-level Element-Bearer, in the squad or not. Captures don't count.</p>
-      <ul><li>Awaken the Machines: Lv.10 and Emberwake March cleared</li><li>Elemental dungeons: Lv.30</li><li>Evolution infusion: Lv.50</li><li>Currency farms: Lv.60</li><li>Crimson Roses: Lv.75</li><li>Elemental War: Lv.85</li><li>Gates of Oblivion: own any Calamitic Element-Bearer</li></ul>` },
+    { id: 'start', title: 'Entry requirements', summary: 'Locked activities', content: `<p>Locked activities show their entry requirements. Level requirements use your highest-level Element-Bearer, in the squad or not. Captures don't count.</p>` },
     { id: 'enemy-strength', title: 'Enemy strength', summary: 'Reading the stat comparison', content: '<p>Red stats are above a standard enemy of the same level; blue stats are below. Boss abilities can add difficulty beyond these numbers.</p>' },
     { id: 'story', title: 'Story', summary: `Six regions, ${storyRules.stages} stages`, content: `<p>${storyPurpose}</p><p>${storyRulesText}</p>` },
     { id: 'training', title: 'Training', summary: 'Endless battles for Prismatica', content: `<p>Endless waves with your saved squad, starting at wave 1. Enemies cap at Lv.120.</p>
@@ -98,11 +97,11 @@ function gameplayInformation(): string {
     { id: 'dungeons', title: 'Elemental dungeons', summary: 'Upgrade materials by element', content: `<p>${elementalDungeonRules.stages} stages, Lv.${elementalDungeonRules.startingLevel}-${elementalEnemyLevel(elementalDungeonRules.maximumLevelStage)}. Every unlocked material rarity is guaranteed. Each material starts at 1-2 when unlocked and grows linearly to its final range. Prismatica grows linearly from 5-10 to 300-600. No final-boss reward multiplier. No captures or Null-Prismatica.</p>
       <p>Collections lists exact drop tables for defeated Elemental-Devourers.</p>` },
     { id: 'infusion', title: 'Evolution infusion', summary: 'Evolution materials from Heaven and Abyss', content: `<p>${infusionModeStageCount} stages, Lv.50-120. Form 3 from Lv.${infusionFormLevel(2)}, Form 4 from Lv.${infusionFormLevel(3)}, Form 5 from Lv.${infusionFormLevel(4)}.</p>
-      <p>15 stages retain the Lv.50-120 enemy curve. Both used specialties drop from Stage 1: evolution materials growing linearly from 1-2 to 7-8 and leveling materials from 1-2 to 8-10 at the final boss without an extra material multiplier. No weapon or elemental materials drop.</p>
+      <p>Both specialty materials drop from Stage 1. Evolution materials grow from 1-2 to 7-8 per enemy; leveling materials grow from 1-2 to 8-10. No weapon or elemental materials drop.</p>
       <p>Null-Prismatica from Lv.80: 8% for 1, 1.5% for 2, 0.5% for 3, rising to 10%, 10% and 5% at Lv.120. The stage ${infusionModeStageCount} boss gives 5, 10 or 15 at the same chances.</p>
       <p>50% capture chance per enemy. Captures keep their form and skills, up to Lv.60.</p>
       <ul>${infusionModes.map((mode) => `<li><strong>${mode.name}</strong>: ${elementLabel(infusionEnemyElements[mode.id])} enemies. Materials support: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</li>`).join('')}</ul>` },
-    { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages, Lv.65-120, six fixed forms and a boss every fifth stage. Prismatica grows linearly without boss multipliers; final Null-Prismatica boosts remain. No materials or clear bonus.</p>
+    { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages, Lv.65-120, six fixed forms and a boss every fifth stage. Prismatica has no boss multiplier. No materials or clear bonus.</p>
       <p>50% capture chance per enemy. Captures keep their form and skills, up to Lv.60. Sell copies in Team; locked, squad and Conduit-equipped copies are protected.</p>
       <h4>Crownfall Treasury</h4><p>${treasuryPrismaticaText} No Null-Prismatica.
       Sales, Common to Omnic: ${treasurySalePrices.map((price) => price.toLocaleString('en-US')).join(' / ')} Prismatica.</p>
@@ -133,7 +132,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
         <div class="training-details">${activityFacts('Endless waves', '1-120', 'Prismatica')}
           <div class="training-summary"><p>${trainingLore}</p><p>Each run starts at wave 1. HP and Elemental Gauge carry between waves.</p>${itemShowcase([{ id: 'fractalis' }], 'Rewards')}</div>
           <div><h4>First wave</h4>${enemyStrength({ level: 1, boss: false, stats: enemyCombatStats(1, false) })}</div>
-          <footer class="training-entry"><p class="quiet">Rewards save after each defeat. Leaving ends the run.</p><button class="primary-button" data-page="battle">Enter Training</button></footer>
+          <footer class="training-entry"><p class="quiet">Leaving keeps earned rewards and ends the run.</p><button class="primary-button" data-page="battle">Enter Training</button></footer>
         </div></article></section>
     <section class="activity-group" id="gameplay-dungeons"><h2>Elemental material dungeons</h2>
       ${activityPicker(elements.map((element) => ({ name: element.dungeon })))}
@@ -171,7 +170,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       <p>${machineOrigin}</p>
       ${activityFacts(`${machineRules.stages} stages`, '10-120', 'Prismatica · Broken Mechanical Components · Conduits')}
       <p>${machineDropRatesText}</p>
-      <p>Unowned Conduits only. A completed rarity awards no Conduit or replacement reward.</p>`, `
+      <p>Unowned Conduits only. Fully owned rarities drop nothing.</p>`, `
       ${itemShowcase([{ id: 'mechanical-components' }], 'Conduit upgrade currency')}
       <button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button>
       ${machineLootFocus(account)}
@@ -179,8 +178,8 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       </article></section>
     <section class="activity-group" id="gameplay-oblivion"><h2>Gates of Oblivion</h2><article class="activity-card">
       ${activityLayout(`${activityBanner('Gates of Oblivion', null, 'Gates of Oblivion activity banner', true)}
-      <p class="eyebrow">D-435 · Rise constructs</p>
-      <p>Ten original Rise constructs guard 25 floors. Their neutral placeholders remain until artwork is delivered.</p>
+      <p class="eyebrow">Rise’s constructs</p>
+      <p>Rise’s constructs guard 25 floors.</p>
       ${activityFacts(`${gatesOfOblivionRules.stages} floors · Boss every 5th`, `${gatesOfOblivionRules.startingLevel}-${gatesOfOblivionRules.maximumLevel}`, 'Prismatica · Calamity materials · Fragment of Rise')}`, `
       ${itemShowcase([{ id: 'fractalis' }, ...oblivionMaterialIds.map(id => ({ id })), { id: 'fragment-of-rise' }], 'Gates of Oblivion rewards')}
       ${oblivionEntry(account)}`)}
@@ -201,7 +200,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
             <select data-war-stage="${mode.character}" aria-label="${mode.name} stage" ${account ? '' : 'disabled'}>${Array.from({ length: unlocked }, (_, index) =>
               `<option value="${index + 1}" ${index + 1 === unlocked ? 'selected' : ''}>${index + 1} · Lv.${warEncounter(mode.character, index + 1).level}</option>`).join('')}</select></label>
             <button class="primary-button" data-war="${mode.character}" ${access?.unlocked ? '' : 'disabled'}>${access?.unlocked ? 'Enter trial · Free' : 'Locked'}</button>
-            ${access?.unlocked ? '' : `<p class="activity-unlock-hint">Unlocks at ${access?.requirement}. Your highest: Lv.${access?.level}.</p>`}</footer>`
+            ${access?.unlocked ? '' : `<p class="activity-unlock-hint">Requires ${access?.requirement}. Your highest: Lv.${access?.level}.</p>`}</footer>`
               : '<button disabled>Elemental War unavailable: resolve the save error</button>'}`)}
         </article>`;
       }).join('')}</section>

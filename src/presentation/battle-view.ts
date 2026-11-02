@@ -76,13 +76,13 @@ export function createSession(starterId: StarterId, progress: CharacterProgress 
       : createDungeonBattle(dungeon.element, dungeon.stage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures, upgrades) : createBattle(seed, ids, teamProgress, equipment, team?.captures, upgrades), team?.masters),
     runId: crypto.randomUUID(), progress: { ...progress }, teamProgress, stageEvents: [], entrancePending: true,
     log: [dungeon && 'activity' in dungeon ? `Calamity EX+${dungeon.tier} ready. ${calamityEncounter(dungeon.activity, dungeon.tier).description} Victory grants one sealed chest; open it in Inventory.`
-      : dungeon && 'mode' in dungeon && dungeon.mode === 'machines' ? `Awaken the Machines ready. ${machineRules.stages} stages. ${machineDropRatesText} Independent rarity rolls allow multiple Conduits per kill. Broken Mechanical Components quantity increases by stage. Ordinary Prismatica; no captures, evolution materials or Null-Prismatica.`
+      : dungeon && 'mode' in dungeon && dungeon.mode === 'machines' ? `Awaken the Machines ready. ${machineRules.stages} stages. ${machineDropRatesText} One enemy can drop multiple Conduits. Later stages drop more Broken Mechanical Components. Prismatica; no captures, evolution materials or Null-Prismatica.`
       : dungeon && 'mode' in dungeon && dungeon.mode === 'treasury' ? 'Crownfall Treasury ready. Defeats grant Prismatica and roll 50% capture chance; no material or Null-Prismatica drops.'
-      : dungeon && 'mode' in dungeon && dungeon.mode === 'sanctuary' ? 'Rosethorn Sanctuary ready. Defeats grant ordinary Prismatica, independently roll Null-Prismatica and 50% capture chance; no materials.'
+      : dungeon && 'mode' in dungeon && dungeon.mode === 'sanctuary' ? 'Rosethorn Sanctuary ready. Defeats grant Prismatica and Null-Prismatica, with a 50% capture chance; no materials.'
       : dungeon && 'mode' in dungeon && dungeon.mode === 'roses' ? 'Passion of Crimson Roses ready. Rosethorn materials and Prismatica per kill; 50% captures only at enemy levels 120 or below. No Null-Prismatica or clear bonus.'
       : dungeon && 'character' in dungeon ? `Elemental War ready. ${warRulesText}`
       : dungeon && 'storyStage' in dungeon ? `Story ready. ${storyRulesText}`
-      : dungeon && 'oblivionStage' in dungeon ? 'Gates of Oblivion ready. Calamitic materials and late-floor Fragment of Rise drops save after each defeat; no captures or Null-Prismatica.'
+      : dungeon && 'oblivionStage' in dungeon ? 'Gates of Oblivion ready. Defeat constructs for Calamity materials and Fragment of Rise; no captures or Null-Prismatica.'
       : dungeon ? 'Dungeon ready. Defeated enemies grant level-scaled Prismatica and materials.' : 'Squad Training ready at wave 1. Prismatica drops increase with enemy level.'],
   };
 }

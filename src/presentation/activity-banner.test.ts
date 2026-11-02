@@ -81,7 +81,7 @@ describe('reference activity banners', () => {
     expect(entries).toHaveLength(16);
     const oblivion = entries.find(entry => entry.includes('data-oblivion'));
     expect(oblivion).toContain('>Locked</button>');
-    expect(oblivion).toContain('Unlocks when you Own any Calamitic Element-Bearer.');
+    expect(oblivion).toContain('Own any Calamitic Element-Bearer.');
     expect(oblivion).not.toContain('Your highest:');
     const establishedEntries = entries.filter(entry => !entry.includes('data-oblivion'));
     expect(establishedEntries).toHaveLength(15);
@@ -90,7 +90,7 @@ describe('reference activity banners', () => {
       const locked = entry.includes('>Locked</button>');
       expect(entry.includes('class="activity-unlock-hint"')).toBe(locked);
       expect(entry.includes('Your highest:')).toBe(locked);
-      if (locked) expect(entry).toContain('Unlocks at ');
+      if (locked) expect(entry).toContain('Requires ');
     }
     expect(account).toEqual(before);
   });

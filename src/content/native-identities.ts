@@ -30,13 +30,13 @@ function calamiticIdentity(id: CalamiticCharacterId, role: string, playLoop: str
 }
 
 export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
-  ozriel: calamiticIdentity('ozriel', 'Refusal and stacking-shield tank',
+  ozriel: calamiticIdentity('ozriel', 'Shield tank',
     '[Ozriel] protects every living squad member with stacking shields and one [Refusal] per encounter while he lives.',
     { health: .65, defense: .65 }),
-  ilvaris: calamiticIdentity('ilvaris', 'Fate-marking recovery support',
+  ilvaris: calamiticIdentity('ilvaris', 'Mark and healing support',
     '[Ilvaris] builds [Fate-seared Mark] to five stacks and refreshes [Hymn of Broken Glass] while healing the squad.',
     { health: 2, defense: 1 }),
-  kaelith: calamiticIdentity('kaelith', 'Fault-building shatterglass attacker',
+  kaelith: calamiticIdentity('kaelith', 'Fault attacker',
     '[Kaelith] builds three [Fault] stacks through direct hits; [Glass Meridian] spends them for a stronger strike.',
     { skillPower: .75 }),
   ember: {
@@ -44,7 +44,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     playLoop: '[Infernis] applies [Burn] that lasts across enemy phases; [Flame Arc] can deal its remaining damage at once.',
     passive: {
       name: 'Unbroken Ember',
-      description: '[Burn] applied by [Infernis] lasts three enemy phases and deals its damage once per enemy phase, starting with the next one. Allied damage-over-time gains an additional 100% damage per 30 source levels, snapshotted when applied. Reapplying it resets the duration to three phases and keeps the higher damage per phase; it never stacks.',
+      description: '[Burn] applied by [Infernis] lasts three enemy phases and deals its damage once per enemy phase, starting with the next one. Allied damage-over-time gains +100% damage per 30 levels of its source, fixed when applied. Reapplying it resets the duration to three phases and keeps the higher damage per phase; it never stacks.',
     },
     abilities: {
       skill1: ability('Cinder Cleave', '160% direct damage to one enemy, then apply [Burn] dealing 25% of [Infernis]’s Attack per enemy phase for three enemy phases.', 1.6),
@@ -222,7 +222,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     },
   },
   orvella: {
-    role: 'Finite-durability team architect',
+    role: 'Squad barrier support',
     playLoop: '[Orvella] raises a shared [Foundation] that absorbs damage for the squad until its durability runs out; it can be repaired or spent for damage.',
     passive: {
       name: 'Load-Bearing Will',
@@ -235,7 +235,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     },
   },
   vaelor: {
-    role: 'Deterministic three-beat burst attacker',
+    role: 'Three-beat attacker',
     playLoop: '[Vaelor]’s skills change with a repeating three-step [Beat]; [Crescendo] strengthens [Last Chord of the Sky].',
     passive: {
       name: 'Standing Thunder',

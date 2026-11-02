@@ -10,7 +10,7 @@ describe('shared settings drawer', () => {
     expect(html).toContain('72%</output>');
     expect(html).toContain('id="music-muted" type="checkbox" checked');
     expect(html).toContain('aria-describedby="music-description"');
-    expect(html).toContain('Activities without music tracks are silent');
+    expect(html).toContain('Music pauses when this tab is hidden');
   });
   it('groups presentation, motion and selection keys with an accessible close control', () => {
     const html = settingsPanel('system', defaultBindings, 1);

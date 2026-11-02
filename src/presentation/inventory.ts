@@ -58,7 +58,7 @@ export function isInventoryTab(value: unknown): value is InventoryTab {
 function materialDescription(id: string): string {
   materialName(id);
   if (id.endsWith('-weapon') && specialtyMaterials.some(material => material.id === id)) {
-    return 'A specialty weapon material. Weapon upgrading is unavailable, so it is not spent.';
+    return 'Weapon material. No current use.';
   }
   if (id.endsWith('-level') && specialtyMaterials.some(material => material.id === id)) {
     return 'Levels matching Element-Bearers in Legendary and Omnic forms.';
@@ -68,7 +68,7 @@ function materialDescription(id: string): string {
   }
   if (isCalamiticMaterialId(id)) {
     const source = calamiticMaterials.find(material => material.id === id)?.source;
-    return source ? `Calamitic progression material. Source: ${source}.` : 'Calamitic progression material.';
+    return source ? `Levels and evolves Calamitic Element-Bearers. Found in ${source}.` : 'Calamitic material.';
   }
   if (roseMaterials.some(material => material.id === id)) {
     return 'Levels and evolves Rosetta, Thornia and Crinso.';
@@ -94,7 +94,7 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
   }).join('') + ((account?.masterChests ?? 0) > 0 ? `<li class="inventory-item" data-inventory-chest="${masterChest.id}" ${itemMetadata(masterChest.name, 'chests')}>
     <div class="inventory-item-art">${masterChestIcon()}</div>
     <strong>${masterChest.name}</strong><span class="inventory-quantity">Owned ${account?.masterChests}</span>
-    <div class="inventory-item-actions">${information('inventory-chest-details', masterChest.name, `<div class="inventory-detail-art">${masterChestIcon()}</div><p>Open to choose one unowned Omnic Master; it isn't equipped automatically.</p><p>Final Awaken the Machines boss: ${masterChest.chance * 100}% per defeat. Each Calamity EX+3 chest: two. Extra chests stay unopened once you own every Master.</p>`, 'Details')}
+    <div class="inventory-item-actions">${information('inventory-chest-details', masterChest.name, `<div class="inventory-detail-art">${masterChestIcon()}</div><p>Choose one unowned Omnic Master. Equip it in Team.</p><p>Final Awaken the Machines boss: ${masterChest.chance * 100}% per defeat. Each Calamity EX+3 chest: two. Extra chests stay unopened once you own every Master.</p>`, 'Details')}
     <button type="button" class="primary-button" data-open-master-chest aria-label="Open ${masterChest.name} · Choose a Master" ${ownedMasters.length === masterConduits.length ? 'disabled' : ''}>Open</button></div></li>` : '');
   const ordinaryMaterials = materials.filter(([id]) => !isCalamiticMaterialId(id));
   const calamiticMaterialItems = materials.filter(([id]) => isCalamiticMaterialId(id));

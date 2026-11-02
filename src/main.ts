@@ -40,7 +40,8 @@ import { characterName } from './content/character-art';
 import { uiIcon } from './presentation/ui-icon';
 import { currencyIcon } from './presentation/currency-icon';
 import { applyBattleSpeed, battleSpeeds, loadBattleSpeed, parseBattleSpeed, saveBattleSpeed, type BattleSpeed } from './presentation/battle-speed';
-import { celebrateUpgrade, celebrateAscension } from './presentation/upgrade-celebration';
+import { openCalamiticAscension } from './presentation/calamitic-ascension';
+import { celebrateUpgrade } from './presentation/upgrade-celebration';
 import { rarityFeedback } from './presentation/rarity-feedback';
 import { presentUpgrade } from './presentation/upgrade-result';
 import { activityTransitionPending, transitionActivity } from './presentation/activity-transition';
@@ -55,7 +56,7 @@ import { restartHistoricalConduitSession } from './presentation/conduit-compatib
 import { assertActivityAccess } from './game/activity-access';
 import { characterHub, characterInformation, homeHub, inventoryHub, isCharacterTab, updateCharacterTab, updateEvolutionSelection } from './presentation/hub';
 import { bindInventory, defaultInventorySections, defaultInventoryFilters, inventorySections, inventoryFilters, type InventoryFilters, type InventorySections, type InventoryTab } from './presentation/inventory';
-import { loadAccount, ownedProgress, equippedSquad, ownedCharacters, setSquad, summonCharacter, summonCharacters, multiSummonCount, purchaseExchangeMaterial, saveAccountRewards, unlockedStage, unlockedInfusionStage, unlockedOblivionStage, upgradeCharacter, evolutionFodderOptions, creatureSaleOffer, sellCurrencyCreature, type Account, type SummonDraw, ascendCharacter, canAscendCharacter, calamiticAscensionCost, type CalamiticAscensionStep } from './game/account';
+import { loadAccount, ownedProgress, equippedSquad, ownedCharacters, setSquad, summonCharacter, summonCharacters, multiSummonCount, purchaseExchangeMaterial, saveAccountRewards, unlockedStage, unlockedInfusionStage, unlockedOblivionStage, upgradeCharacter, evolutionFodderOptions, creatureSaleOffer, sellCurrencyCreature, type Account, type SummonDraw, ascendCharacter } from './game/account';
 import { getCreature } from './content/creatures';
 import { getSummonBanner, isSummonBannerId, type SummonBannerId } from './content/summon-banners';
 import { isInfusionMode } from './content/infusions';
@@ -1895,53 +1896,17 @@ app.addEventListener('click', async (event) => {
   if (!(event.target instanceof Element)) return;
   const button = event.target.closest<HTMLButtonElement>('[data-calamitic-ascension]');
   if (!button || button.disabled || menuPage !== 'team' || characterCategory !== 'bearers') return;
-  let saved = false;
-  try {
-    if (!journey.profile || !account) throw new Error('Character progression is unavailable.');
-    const id = button.dataset.calamiticAscension;
-    if (!isStarterId(id)) throw new Error('Choose an owned Element-Bearer.');
-    const starter = getStarter(id);
-    const expected = ownedProgress(account, id);
-    const steps: { id: CalamiticAscensionStep; name: string; effect: string }[] = [
-      { id: 'stats', name: 'Ascend', effect: 'All stats increase by 50% and your level cap becomes 115.' },
-      { id: 'skill1', name: 'Imbue Skill 1', effect: '+50% base Skill Power and +5 percentage points Skill Efficiency for Skill 1 only.' },
-      { id: 'skill2', name: 'Imbue Skill 2', effect: '+50% base Skill Power and +5 percentage points Skill Efficiency for Skill 2 only.' },
-      { id: 'lastFlare', name: 'Imbue Last Flare', effect: '+50% base Skill Power and +5 percentage points Skill Efficiency for Last Flare only.' },
-    ];
-    const shards = account.materials['shard-of-calamity'] ?? 0;
-    const rows = steps.map(step => {
-      const complete = expected.ascension?.[step.id] === true;
-      const eligible = canAscendCharacter(id, expected, step.id);
-      const state = complete ? 'Complete' : eligible ? 'Ready' : step.id === 'stats' ?
-        `Requires final form at Lv.${id === 'kaelith' || id === 'ozriel' || id === 'ilvaris' ? 110 : 105}` : 'Requires Ascend first';
-      return { ...step, complete, eligible, state };
-    });
-    const selected = await gameChoose('', [
-      ...rows.filter(row => row.eligible).map(row => ({ value: row.id, label: `${row.name} \u00b7 ${calamiticAscensionCost} Shards`, primary: true })),
-      { value: 'cancel', label: 'Close' },
-    ], 'cancel', { title: 'Calamitic Ascension', messageHtml: `<p>Shards of Calamity: <strong>${shards}</strong></p><div class="ascension-dialog-steps">${rows.map(row =>
-      `<article><h3>${escapeDialogText(row.name)} \u00b7 ${row.complete ? 'Complete' : `${calamiticAscensionCost} Shards`}</h3><p>${escapeDialogText(row.effect)}</p><small>${escapeDialogText(row.state)}</small></article>`).join('')}</div>` });
-    if (selected === 'cancel') return;
-    const step = selected as CalamiticAscensionStep;
-    const selectedRow = rows.find(row => row.id === step);
-    if (!selectedRow?.eligible) throw new Error('This Ascension step is not currently available.');
-    if (shards < calamiticAscensionCost) throw new Error(`Not enough Shards of Calamity. ${selectedRow.name} costs ${calamiticAscensionCost}.`);
-    if (!await gameConfirm(`${selectedRow.name} for ${calamiticAscensionCost} Shards of Calamity? ${selectedRow.effect}`, {
-      title: 'Confirm Calamitic Ascension', confirmLabel: selectedRow.name,
-    })) return;
+  if (!journey.profile || !account) return;
+  const id = button.dataset.calamiticAscension;
+  if (!isStarterId(id)) return;
+  const starter = getStarter(id);
+  openCalamiticAscension(starter, () => account!, async (step, expected) => {
     account = playMode === 'online'
       ? (await performOnline({ kind: 'ascendCharacter', id, step, expected })).account
       : ascendCharacter(gameStorage, id, step, expected);
-    saved = true;
-    updateCharacterTab(app, starter, characterTab, account);
-    const updated = ownedProgress(account, id);
-    celebrateAscension(app, starter, step, updated);
-    const status = app.querySelector<HTMLElement>('[data-ascension-result]');
-    if (status) status.textContent = `${characterName(id, updated.evolution, true)} \u00b7 ${selectedRow.name} saved.`;
-  } catch (error) {
-    console.error('Calamitic Ascension rejected', error);
-    showError(`${saved ? 'Ascension is saved, but its presentation could not complete.' : 'Ascension was not completed.'} ${errorMessage(error)}`);
-  }
+  }, () => {
+    if (menuPage === 'team' && characterCategory === 'bearers' && (selectedCharacter ?? journey.profile?.starterId) === id) updateCharacterTab(app, starter, characterTab, account);
+  });
 });
 
 app.addEventListener('click', async (event) => {

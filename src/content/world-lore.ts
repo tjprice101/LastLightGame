@@ -18,7 +18,7 @@ export const worldHistory = [
   { title: 'The search begins', text: 'The Element-Bearers seek Let\'s soul; the Elemental-Devourers seek Rise\'s. Neither soul has been found, and no creator has yet been declared the victor.' },
 ] as const;
 
-export const machineOrigin = 'The Machines are destroyed prototypes from the time Let and Rise worked together. Their damaged mechanisms still awaken amid the ruins of that collaboration; they are not Elemental-Devourers created by Rise.';
+export const machineOrigin = 'The Machines are damaged prototypes built by Let and Rise. Their mechanisms still awaken among the ruins.';
 export const conduitOrigin = 'Conduits are mechanisms salvaged from the time Let and Rise created worlds together. They use elemental energy called Elemental Light.';
 export const masterOrigin = 'Master Conduits come from Let and Rise\'s shared prototype work. Each is designed for a named Element-Bearer.';
 export const storyPurpose = 'Restore six regional beacons to reopen the roads and continue the search for Let\'s soul.';

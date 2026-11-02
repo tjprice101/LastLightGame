@@ -232,7 +232,7 @@ describe('Calamity presentation', () => {
     expect(tabs[1].getAttribute('aria-controls')).toBe(calamity.id);
     expect(calamity.querySelector('[data-infusion], [data-dungeon]')).toBeNull();
     expect(calamity.querySelector<HTMLButtonElement>('[data-calamity-tier="1"]')!.disabled).toBe(false);
-    expect(calamity.textContent).toContain('One sealed tier chest and one independent recruitment roll per victory');
+    expect(calamity.textContent).toContain('Each victory earns one chest and a chance to recruit an Element-Bearer');
     for (const tier of [1, 2, 3] as const) {
       const chest = calamityChest(activity.id, tier);
       const card = calamity.querySelector(`[data-calamity-tier="${tier}"]`)!.closest('.calamity-tier')!;
@@ -286,7 +286,7 @@ describe('Calamity presentation', () => {
       expect(document.body.textContent).toContain(`Prismatica${chest.fractalis.toLocaleString('en-US')}`);
       expect(document.body.textContent).toContain(`Null-Prismatica${chest.lycalis}`);
       expect(document.body.textContent).toContain(`Random rewards${chest.bundles}`);
-      expect(html).toContain('Random rewards roll separately and can repeat, except Conduits');
+      expect(html).toContain('Random rewards can repeat, except Conduits');
       for (const row of calamityLootTable(activity.id)) {
         expect(html).toContain(row.label);
         const totalWeight = calamityLootTable(activity.id).reduce((total, entry) => total + entry.weight, 0);
@@ -367,7 +367,7 @@ describe('Calamity presentation', () => {
     expect(rewards).toEqual([expect.objectContaining({ id: reward.calamityChest, amount: 1 })]);
     const html = battleResults(session.state, [reward]);
     expect(html).toContain(calamityChest('treasury', 2).name);
-    expect(html).toContain('Open your saved chest in Inventory');
+    expect(html).toContain('Open your chest in Inventory');
     expect(html).not.toContain('data-result-continue');
     expect(html).not.toContain('250000');
     expect(html).toContain('items/calamity-chest-master.png?v=');

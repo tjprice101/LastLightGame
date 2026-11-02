@@ -3,13 +3,14 @@ import { resolveFighter, formatStat, shatterGauge } from '../content/combat';
 import { artifactSlots, characterGrowth, characterLevelCap, characterRarity, evolutionRarity, upgradePaths, characterLevelCost, characterEvolutionCost, characterEvolutionRequirement, levelingMaterialTiers, type CharacterProgress } from '../content/progression';
 import { characterRating } from './character-rating';
 import { portrait, portraitAttributes, assetUrl, characterFacing, characterFacingAttributes } from './portrait';
+import { ascensionEntry } from './calamitic-ascension';
 import { elementalReveal } from './reveal';
 import { ownedCompanion } from './owned-companion';
 import { abilityIcon } from './ability-icon';
 import { getElement, type ElementId } from '../content/activities';
 import { uiIcon } from './ui-icon';
 import { materialArt, materialName } from '../content/dungeon-art';
-import { emptyAccount, ownedProgress, equippedSquad, ownedCharacters, evolutionFodderOptions, fodderSelectionStatus, canAscendCharacter, calamiticAscensionCost, type CalamiticAscensionStep, type Account } from '../game/account';
+import { emptyAccount, ownedProgress, equippedSquad, ownedCharacters, evolutionFodderOptions, fodderSelectionStatus, type Account } from '../game/account';
 import { characterName } from '../content/character-art';
 import { characterRole } from './character-role';
 import { currencyIcon } from './currency-icon';
@@ -211,7 +212,7 @@ export function inventoryHub(account: Account | null = emptyAccount(), selected:
 }
 
 function upgradePanel(starter: Starter, evolve: boolean, account: Account | null, result = true, compact = false, organized = false): string {
-  if (!account) return '<p>Progression unavailable. Resolve the save error before upgrading.</p><button class="primary-button" disabled>Upgrade unavailable</button>';
+  if (!account) return '<p>Upgrades unavailable. Check the save error.</p><button class="primary-button" disabled>Upgrade unavailable</button>';
   const current = ownedProgress(account, starter.id);
   const cap = characterLevelCap(current.evolution, starter.id, current.ascension?.stats === true);
   const finished = evolve ? current.evolution === characterGrowth.forms : current.level === cap;
@@ -300,23 +301,10 @@ export function characterInformation(): string {
     <h3>Rose event growth</h3><p>Rosetta, Thornia and Crinso use Rosethorn materials instead of elemental and specialty materials: Seed for levels, plus Soul at Evo.5–6 and for late evolutions with Roselius. Roselius are capturable at Lv.120 or below, join at up to Lv.60 and sell for their form's material.</p>
     <h3>Captured Elemental-Devourers</h3><p>Keep their form and skills, cap at Lv.60 and never evolve. Boss stat bonuses are not retained.</p><p>Skill 1 and Skill 2 have no cooldown. A retained Last Flare uses its enemy interval as a cooldown. Missing skills stay unavailable.</p>
     <h3>Protection and sales</h3><p>Locked, squad and Conduit-equipped copies can't be sold or consumed. Sales are permanent; prices depend on form, not level.</p>
-    <h3>Conduits</h3><p>Unlock once, equip across your squad. No duplicate names on the same member.</p><ul><li>Eight ordinary slots; at most four matching Omnic and five Calamitic Conduits across the fourteen Calamitic designs.</li><li>One Master slot, restricted to that Element-Bearer's Masters. Masters cannot be upgraded.</li><li>Equipment changes apply to the next run.</li></ul>`);
+    <h3>Conduits</h3><p>Unlock once, equip across your squad. No duplicate names on the same member.</p><ul><li>Eight ordinary slots; at most four matching Omnic and five Calamitic Conduits per member.</li><li>One Master slot, restricted to that Element-Bearer's Masters. Masters cannot be upgraded.</li><li>Equipment changes apply to the next run.</li></ul>`);
 }
 
-function ascensionPanel(starter: Starter, account: Account | null, progress?: CharacterProgress): string {
-  if (!account || !progress) return '';
-  const steps: { id: CalamiticAscensionStep; name: string; effect: string }[] = [
-    { id: 'stats', name: 'Ascend', effect: 'All stats +50%; raises level cap to 115.' },
-    { id: 'skill1', name: 'Imbue Skill 1', effect: '+50% base Skill Power and +5 percentage points Skill Efficiency for Skill 1.' },
-    { id: 'skill2', name: 'Imbue Skill 2', effect: '+50% base Skill Power and +5 percentage points Skill Efficiency for Skill 2.' },
-    { id: 'lastFlare', name: 'Imbue Last Flare', effect: '+50% base Skill Power and +5 percentage points Skill Efficiency for Last Flare.' },
-  ];
-  if (!steps.some(step => canAscendCharacter(starter.id, progress, step.id))) return '';
-  return `<section class="character-category calamitic-ascension-entry"><h3>Calamitic Ascension</h3>
-    <p>Shards of Calamity: <strong data-ascension-shards>${account.materials['shard-of-calamity'] ?? 0}</strong></p>
-    <p>Complete Ascend before any ability Imbue. Each step costs ${calamiticAscensionCost} Shards.</p>
-    <button class="primary-button" type="button" data-calamitic-ascension="${starter.id}">Calamitic Ascension</button><p data-ascension-result role="status"></p></section>`;
-}
+
 
 export function characterDetail(starter: Starter, selectedTab: string, account: Account | null = emptyAccount(), organized = false): string {
   const tab = characterTabs.find((entry) => entry.id === selectedTab);
@@ -344,7 +332,7 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
     detail = organized ? `<div class="ref-equipment-workspace">${referenceEquipment(starter.id, characterName(starter.id, progress?.evolution, progress?.ascension?.stats === true), starter.elementId, account)}</div>` : equipment(starter, account);
   } else if (selectedTab === 'upgrade-0' || selectedTab === 'upgrade-1') {
     detail = upgradePanel(starter, selectedTab === 'upgrade-0', account, true, false, organized) +
-      (selectedTab === 'upgrade-0' ? ascensionPanel(starter, account, progress) : '');
+      (selectedTab === 'upgrade-0' ? ascensionEntry(starter, account, progress) : '');
   } else {
     if (!upgradePaths.some((path) => path.id === selectedTab)) throw new Error('Unknown upgrade definition.');
     const specific = selectedTab === 'upgrade-3' ? `<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name}</span></h3><p>${readableEffect(kit.passive.description)}</p>${kitResource(kit, starter.id)}</article>`

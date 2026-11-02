@@ -25,7 +25,7 @@ export function MasterChoiceDialog({ account, onChoose, onClose }: {
   const elementStyle: CSSProperties & { '--conduit-element-accent': string } = {
     '--conduit-element-accent': elementAccents[element],
   };
-  return <Dialog id="master-choice" title={masterChest.name} subtitle={`Owned ${account.masterChests ?? 0} · Choose one unowned Master. You may choose for a future Element-Bearer.`} onClose={onClose}>
+  return <Dialog id="master-choice" title={masterChest.name} subtitle={`Owned ${account.masterChests ?? 0} · Choose one unowned Master.`} onClose={onClose}>
     <div className="ll-master-layout">
     <label className="ll-field">Element-Bearer<select value={character} onChange={event => {
       const choice = starters.find(starter => starter.id === event.target.value);

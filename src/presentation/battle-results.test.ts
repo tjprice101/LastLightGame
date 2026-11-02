@@ -97,7 +97,7 @@ describe('encounter result overlays', () => {
     expect(html).toContain('+8');
     expect(html).toContain('data-result-restart');
     expect(html).not.toContain('data-result-continue');
-    expect(battleResults(state, [])).toContain('No enemy rewards');
+    expect(battleResults(state, [])).toContain('No rewards earned');
   });
 
   it('waits for the final death/loot presentation before rendering Victory and retains rewards across actions for Adventure', async () => {

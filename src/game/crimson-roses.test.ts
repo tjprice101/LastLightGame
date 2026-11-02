@@ -584,7 +584,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     expect(html).toContain('data-infusion="roses"');
     expect(html).toContain('50% captures · Copies join at Lv.60');
     expect(html).not.toContain('No captures above Lv.120');
-    expect(html).toContain('independent 80-pull counter');
+    expect(html).toContain('own 80-pull counter');
     expect(html).toContain('6-star · 1.1%');
     expect(html).not.toContain('5-star tier: 1%');
     for (const id of ['rosetta', 'thornia', 'crinso']) expect(html).toContain(`data-banner-entry="${id}" data-entry-stars="6"`);

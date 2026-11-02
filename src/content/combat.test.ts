@@ -26,8 +26,8 @@ describe('character stat and kit growth', () => {
       expect(ability.strength).toEqual(original.abilities[action].strength);
       expect(ability.cooldown).toBe(original.abilities[action].cooldown);
       if (ability.strength.shield !== undefined) {
-        expect(ability.description).toContain('Shield: absorbs damage before HP');
-        expect(ability.description).toContain('higher amount');
+        expect(ability.description).toMatch(/absorbs? damage before HP/i);
+        expect(ability.description).toMatch(/stack/i);
       }
       if (ability.strength.weakenFraction !== undefined) expect(ability.description).toContain('Weaken');
       if (ability.strength.critBonus !== undefined) expect(ability.description).toContain('Critical chance bonus: this attack only.');

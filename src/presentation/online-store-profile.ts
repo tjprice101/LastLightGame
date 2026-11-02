@@ -118,19 +118,19 @@ export function materialExchange(account: Account | null, selected: string, navi
     <nav class="ref-exchange-categories" aria-label="Material categories">
       <button data-market-category="normal" aria-pressed="${category === 'normal'}">Normal Game Materials</button>
       <button data-market-category="event" aria-pressed="${category === 'event'}">Limited-time Event Materials</button></nav>
-    ${category === 'event' ? `<p class="ref-exchange-note" role="note">Event materials are only for ${restricted}. Normal Element-Bearers cannot use them.</p>` : ''}
+    ${category === 'event' ? `<p class="ref-exchange-note" role="note">Event materials are only for ${restricted}.</p>` : ''}
     <div class="ref-scroll"><div class="ref-product-grid">${products.map(entry => `<button class="ref-product" data-market-material="${entry.id}" aria-pressed="${product.id === entry.id}"><div class="ref-product-art">${exchangeArt(entry.materialId)}</div><b>${materialName(entry.materialId)}</b><small>${entry.rarity} · Owned ${owned(entry.materialId)}</small><span class="ref-chip">${entry.price.toLocaleString('en-US')} Prismatica</span></button>`).join('')}</div></div></section>
     <aside class="ref-panel ref-store-detail"><header class="ref-panel-heading">Details</header>
     ${itemShowcase([{ id: product.materialId, amount: account?.materials[product.materialId] ?? 0 }], materialName(product.materialId))}
     <h2>${materialName(product.materialId)}</h2>
-    <p>${product.category === 'event' ? `${product.rarity} ${product.eventName} event material. <strong>Only for ${restricted}</strong> — not usable by normal Element-Bearers.` : `${product.rarity} ${elements.find(element => element.id === product.id)?.name ?? ''} upgrade material. Usable by normal Element-Bearers.`}</p>
+    <p>${product.category === 'event' ? `${product.rarity} ${product.eventName} event material. <strong>Only for ${restricted}.</strong>` : `${product.rarity} ${elements.find(element => element.id === product.id)?.name ?? ''} upgrade material. Usable by normal Element-Bearers.`}</p>
     <dl class="ref-detail-facts"><div><dt>Price per unit</dt><dd>${product.price.toLocaleString('en-US')} Prismatica</dd></div><div><dt>Owned</dt><dd>${owned(product.materialId)}</dd></div><div><dt>Prismatica</dt><dd>${funds.toLocaleString('en-US')}</dd></div></dl>
     <footer><div class="ref-exchange-buy" role="group" aria-label="Buy quantity">${exchangeQuantities.map(quantity => {
       const cost = product.price * quantity;
       return `<button data-buy-material="${product.id}" data-quantity="${quantity}" ${account && funds >= cost ? '' : 'disabled'}><b>Buy ${quantity}</b><small>${cost.toLocaleString('en-US')} Prismatica</small></button>`;
     }).join('')}</div>
     ${account ? '' : '<p role="status">Material Exchange unavailable. Resolve the save error.</p>'}
-    <p>No bulk discounts or daily limits.${product.category === 'normal' ? ' Rarer materials and specialty items are not sold here.' : ''}</p></footer></aside></section>`;
+    <p>No bulk discounts or daily limits.</p></footer></aside></section>`;
 }
 
 export function onlineStores(account: Account | null, profile: OnlineProfileDisplay | null, tab: 'materials' | 'cosmetics', selectedMaterial = 'infernic', selectedFrame = 'default'): string {

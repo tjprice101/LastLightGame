@@ -78,7 +78,7 @@ describe('roster, squad and summon screens', () => {
     const dialog = html.slice(dialogStart, html.indexOf('</dialog>', dialogStart));
     expect(dialog).toContain('<table');
     expect(html.replace(dialog, '')).not.toContain('<table');
-    expect(dialog).toContain('independent 80-pull counter');
+    expect(dialog).toContain('own 80-pull counter');
     expect(dialog).toContain('Natural duplicates advance it instead');
     expect(dialog).toContain("restarts this banner's pity cycle");
   });

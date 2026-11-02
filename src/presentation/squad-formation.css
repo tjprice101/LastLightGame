@@ -16,8 +16,8 @@ html body .sanctuary-shell .squad-hub.squad-formation .squad-member-preview:hove
 html body .sanctuary-shell .squad-hub.squad-formation .squad-member-preview:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 html body .sanctuary-shell .squad-hub.squad-formation .squad-card-art { position: relative; display: grid; place-items: center; width: min(100%, 11rem); height: auto; aspect-ratio: 1; max-width: 11rem; flex: none; border-radius: .75rem; overflow: hidden;
   background: radial-gradient(circle at 50% 58%, color-mix(in srgb, var(--member-accent, #8a8a95) 30%, transparent), transparent 68%), #0f0f12; }
-html body .sanctuary-shell .squad-hub.squad-formation .squad-card-art .character-idle { display: block; width: 100%; height: 100%; }
-html body .sanctuary-shell .squad-hub.squad-formation .squad-card-art img { width: 100%; height: 100%; object-fit: contain; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-card-art .character-idle { position: absolute; inset: 6px; display: block; width: calc(100% - 12px); height: calc(100% - 12px); }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-card-art img { display: block; width: 100%; height: 100%; object-fit: contain; }
 html body .sanctuary-shell .squad-hub.squad-formation .empty-squad-slot { font-size: 4rem; color: #ffffff30; }
 html body .sanctuary-shell .squad-hub.squad-formation .squad-card-copy { display: flex; flex-direction: column; align-items: center; gap: .35rem; min-width: 0; text-align: center; }
 html body .sanctuary-shell .squad-hub.squad-formation .squad-card-copy strong { font-size: 1.05rem; line-height: 1.25; overflow-wrap: anywhere; }
@@ -39,16 +39,17 @@ html body .sanctuary-shell .squad-picker-filters button[aria-pressed="true"] { b
 html body .sanctuary-shell .squad-picker-search { flex: 1 1 14rem; max-width: 20rem; min-height: 40px; padding: .45rem .8rem; border: 1px solid #3a3a42; border-radius: .6rem; background: #1c1c20; color: #fff; font: inherit; }
 html body .sanctuary-shell .squad-picker-error:empty { display: none; }
 html body .sanctuary-shell .squad-picker-error { margin: .7rem 1.2rem 0; padding: .55rem .8rem; border-radius: .6rem; background: #4a1d1d; color: #ffd6d6; }
-html body .sanctuary-shell .squad-picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: .7rem; padding: 1rem 1.2rem 1.2rem; overflow-y: auto; overscroll-behavior: contain; }
+html body .sanctuary-shell .squad-picker-grid { display: grid; align-content: start; grid-auto-rows: max-content; min-height: 0; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: .7rem; padding: 1rem 1.2rem 1.2rem; overflow-y: auto; overscroll-behavior: contain; }
 html body .sanctuary-shell .squad-picker-empty { margin: 0; padding: 0 1.2rem 1.2rem; color: #b4b4be; }
 html body .sanctuary-shell .squad-pick-card { position: relative; display: flex; flex-direction: column; align-items: stretch; gap: .45rem; min-width: 0; padding: .5rem .5rem .7rem; border: 1px solid #2f2f36; border-radius: .8rem; background: #1b1b1f; color: inherit; font: inherit; text-align: center; cursor: pointer; transition: border-color .15s, transform .15s; }
 html body .sanctuary-shell .squad-pick-card[hidden] { display: none; }
 html body .sanctuary-shell .squad-pick-card:hover { border-color: #ffffff55; transform: translateY(-2px); }
 html body .sanctuary-shell .squad-pick-card:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 html body .sanctuary-shell .squad-pick-card[aria-pressed="true"] { border-color: var(--member-accent, #fff); box-shadow: 0 0 0 1px var(--member-accent, #fff) inset; }
-html body .sanctuary-shell .squad-pick-art { display: grid; place-items: center; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: .6rem;
+html body .sanctuary-shell .squad-pick-art { position: relative; flex: none; display: grid; place-items: center; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: .6rem;
   background: radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--member-accent, #8a8a95) 28%, transparent), transparent 70%), #0f0f12; }
-html body .sanctuary-shell .squad-pick-art > *, html body .sanctuary-shell .squad-pick-art .character-idle { display: block; width: 100%; height: 100%; }
+html body .sanctuary-shell .squad-pick-art > * { position: absolute; inset: 6px; display: block; width: calc(100% - 12px); height: calc(100% - 12px); }
+html body .sanctuary-shell .squad-pick-art .character-idle img { display: block; width: 100%; height: 100%; }
 html body .sanctuary-shell .squad-pick-art img { width: 100%; height: 100%; object-fit: contain; }
 html body .sanctuary-shell .squad-pick-copy { display: flex; flex-direction: column; gap: .2rem; min-width: 0; }
 html body .sanctuary-shell .squad-pick-copy strong { font-size: .88rem; line-height: 1.25; overflow-wrap: anywhere; }

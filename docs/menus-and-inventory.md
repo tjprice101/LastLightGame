@@ -1,5 +1,54 @@
 # Menus and inventory
 
+## Squad portrait containment and Calamitic Ascension
+
+The squad picker sizes scrollable rows from their content, not the available
+viewport height. Every card keeps a square, contained portrait above its full
+name and element/level text. Idle wrappers occupy an inset art box so neither
+inline-image baselines nor idle scaling clip the portrait. The three Squad
+slots use the same containment; Home's small squad portraits have no circular
+image crop. Button-surface styling must not change this artwork layout.
+
+Evolution shows a single Calamitic Ascension entry only at the final form's
+ordinary level cap, or after Ascension. Its crown-burst/crimson sheen opens a
+native in-game dialog with the selected portrait, name and actual Shard count.
+Before Ascension, only the 25-Shard Ascend card appears (all stats +50%, cap115).
+After it is saved, three 25-Shard Imbue cards show the actual Skill1, Skill2
+and Last Flare names/icons (+50% Skill Power, +5% Skill Efficiency). Completed
+steps remain visible; insufficient funds disable the affected action. There
+are no teaser/gating paragraphs for undiscovered Imbue steps.
+
+Each step has an inline Confirm/Cancel within the same modal. The existing
+local/online atomic transaction runs before refreshing the page/name/emblem,
+updating cards and showing finite shared Calamitic sheen/ring/spark feedback.
+Failures do not celebrate. Reduce motion keeps a static result. Escape cancels
+a confirmation first, then closes the dialog; Tab wraps within enabled controls.
+The close button remains pointer-accessible, feedback is disposable and focus
+returns to the entry even when saving replaced its DOM.
+
+Validation: Ascension presentation/account, roster, game-dialog, upgrade-celebration
+and motion-setting tests; real Chromium at1185×768 and390×844, including image
+containment, Tab cycling, pointer close, saved states and normal/reduced-motion
+animation timelines. No progression, costs, authority or save format changed.
+
+## Player-facing copy
+
+Keep controls and descriptions concise. Show exact costs, combat effects,
+durations and current lock reasons; keep odds and pity rules in Rates &
+Information. Do not advertise later upgrade steps or repeat entry requirements
+in navigation and general Help. Locked activity cards still explain what is
+needed to enter.
+
+Developer decision IDs, implementation/save/RNG details and artwork-delivery
+notes do not belong in player text. Missing art uses only a neutral placeholder
+label. Lore can name concrete people, places and events without repeating the
+world history on every card. Accessibility labels follow the same copy rules;
+control semantics, IDs and test hooks are unchanged.
+
+`src/presentation/ui-copy.test.ts` checks rendered activities, Calamity, Gates of
+Oblivion, Calamitic and ordinary Conduit stores, Collections, Inventory, summon
+rates, character overviews, Settings and battle results/readouts for regressions.
+
 ## Live bubble UI overhaul (D-433)
 
 - The approved D-432 style now drives the live game through a last-installed

@@ -94,7 +94,7 @@ describe('single per-banner 80-pull pity', () => {
       expect(result.account.bannerPity?.[other]).toEqual(account.bannerPity[other]);
       expect(loadAccount(storage).bannerPity).toEqual(result.account.bannerPity);
       const html = summonHub(result.account, bannerId);
-      expect(html).toContain('independent 80-pull counter');
+      expect(html).toContain('own 80-pull counter');
       expect(html).toContain('Natural duplicates advance it instead');
     },
   );

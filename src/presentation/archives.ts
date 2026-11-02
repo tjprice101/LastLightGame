@@ -99,19 +99,19 @@ function conduitArchive(account: Account | null): string {
     </article>`).join('')}${masterConduits.map(entry => `<article class="archive-card ${account?.masterConduits?.[entry.id] === 1 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" ${conduitElementTheme(getStarter(entry.character).elementId)} data-archive-master="${entry.id}" data-filter-rarity="Master" data-filter-ownership="${ownership(account?.masterConduits?.[entry.id] === 1)}">
       <div class="archive-mechanism">${masterConduitIcon(entry.id)}</div><h3>${entry.name}</h3>
       <p>Omnic Master · ${getStarter(entry.character).name}</p>${conduitElementLabel(getStarter(entry.character).elementId)}<p class="archive-ownership">${account ? account.masterConduits?.[entry.id] === 1 ? 'Owned' : 'Not owned' : 'Ownership unavailable'}</p>
-      <p class="archive-effect">${readableEffect(entry.effect)}</p><p>Choose from a ${masterChest.name}. Final Machines boss: ${masterChest.chance * 100}% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Named bearer enhancement; no upgrades.</p>
+      <p class="archive-effect">${readableEffect(entry.effect)}</p><p>Choose from a ${masterChest.name}. Final Machines boss: ${masterChest.chance * 100}% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Character-specific; cannot be upgraded.</p>
       ${information(`archive-master-${entry.id}`, entry.name, `${conduitElementLabel(getStarter(entry.character).elementId)}${conduitLore(entry.lore)}<p>${readableEffect(entry.effect)}</p>`, 'Details')}
     </article>`).join('')}</div>`;
 }
 
 export function archives(account: Account | null, selected: ArchiveGallery = 'characters'): string {
   return `<section class="archives"><header class="archive-toolbar"><div><h2>Collections</h2><p>Browse forms, Conduits and enemy discoveries.</p></div>${information('collections-information', 'Collections', `<h3>Forms and stats</h3><p>Color marks reached Element-Bearer forms and owned Conduits. Everything else stays silhouetted.</p><p>Your current forms show equipped stats. Other forms preview Lv.0 without Conduits. Stars and form rarity are separate.</p>
-    <h3>Enemy discovery</h3><p>Encounter an enemy to reveal its identity and lore; defeat it to reveal its loot table.</p><p>Loot quantities are equally likely within each range. Rarity rolls are independent, with no pity. Prismatica grows linearly without boss multipliers. Existing final-boss Null-Prismatica, Story materials and Machine components keep their boosts; drop chances are not multiplied.</p>
+    <h3>Enemy discovery</h3><p>Encounter an enemy to reveal its identity and lore; defeat it to reveal its loot table.</p><p>Loot quantities are equally likely within each range. Each rarity rolls separately, with no pity. See each loot table for quantities and chances.</p>
     <h3>Captures</h3><p>50% per kill in Heaven, Abyss, Treasury and Sanctuary. Crimson Roses has the same chance up to enemy Lv.120. No captures in Story, Training or elemental dungeons.</p><p>Captures keep their form and skills, cap at Lv.60 and sell by form, not level.</p>
     `)}</header>
     <nav class="archive-navigation" aria-label="Archive galleries">${galleries.map((gallery) =>
       `<button class="archive-gallery-button" data-archive-gallery="${gallery.id}" aria-controls="archive-${gallery.id}" aria-pressed="${selected === gallery.id}"><strong>${gallery.name}</strong><small>${gallery.subtitle}</small></button>`).join('')}</nav>
-    ${!account ? '<p role="alert">Saved ownership and discoveries unavailable. Resolve the save error; public catalog previews remain available.</p>' : ''}
+    ${!account ? '<p role="alert">Ownership and discoveries unavailable. Check the save error. You can still browse the catalog.</p>' : ''}
     ${galleries.map((gallery) => `<section id="archive-${gallery.id}" class="archive-panel" aria-labelledby="archive-${gallery.id}-heading" ${selected === gallery.id ? '' : 'hidden'}>
       <h2 class="ref-sr-only" id="archive-${gallery.id}-heading" tabindex="-1">${gallery.name}</h2>
       ${gallery.id === 'characters' ? characterArchive(account) : gallery.id === 'conduits' ? conduitArchive(account) : creatureGlossary(account)}

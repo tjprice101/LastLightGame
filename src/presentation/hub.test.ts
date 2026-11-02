@@ -248,7 +248,7 @@ describe('game-specific hub layouts', () => {
       expect(characterDetail(starters[0], tab, account)).toContain('id="upgrade-result" role="status"');
     }
     expect(inventoryHub(account)).toContain('Seed of Infernic');
-    expect(characterDetail(starters[0], 'upgrade-0', null)).toContain('Progression unavailable');
+    expect(characterDetail(starters[0], 'upgrade-0', null)).toContain('Upgrades unavailable');
   });
   it.each(starters)('$name owns its equipment menu separately from material inventory', (starter) => {
     const equipment = characterDetail(starter, 'equipment');

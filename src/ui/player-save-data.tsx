@@ -84,7 +84,7 @@ export function PlayerSaveData({ onChanged, onReady, onAccount, compact = false,
       {username && <Button disabled={busy} onClick={onAccount}>Online account<Icon name="arrow" /></Button>}
       {username && eligible === false && <p className="ll-account-copy">This account has already started. A save file cannot replace its progress. The controls above manage only this browser&apos;s offline save.</p>}
       {username && eligible && <>
-        <p className="ll-account-copy">Choose your starting progress before playing. Import is available only once, before your first starter or online transaction.</p>
+        <p className="ll-account-copy">Import a save once, or start fresh. Starting this account closes the import option.</p>
         <div className="ll-import-options" role="group" aria-label="New account progress">
           <label className="ll-import-option"><input type="radio" name="save-choice" checked={choice === 'fresh'} disabled={busy} onChange={() => setChoice('fresh')} value="fresh" />Start fresh</label>
           <label className="ll-import-option"><input type="radio" name="save-choice" checked={choice === 'import'} disabled={busy} onChange={() => setChoice('import')} value="import" />Import Save File</label>

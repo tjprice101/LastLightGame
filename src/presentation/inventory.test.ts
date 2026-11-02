@@ -195,7 +195,7 @@ describe('reference Inventory layout', () => {
     dialog.close = vi.fn(() => dialog.removeAttribute('open'));
     host.querySelector<HTMLButtonElement>('[data-information="inventory-heavens-weapon-details"]')!.click();
     expect(dialog.showModal).toHaveBeenCalledOnce();
-    expect(dialog.textContent).toContain('Weapon upgrading is unavailable');
+    expect(dialog.textContent).toContain('Weapon material. No current use.');
     expect(dialog.textContent).toContain('Owned 2');
     host.querySelector<HTMLButtonElement>('#inventory-heavens-weapon-details [data-close-information]')!.click();
     expect(dialog.close).toHaveBeenCalledOnce();

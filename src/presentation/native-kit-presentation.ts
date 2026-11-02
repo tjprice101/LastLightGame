@@ -74,7 +74,7 @@ export function nativeActionHint(state: BattleState, actor: Combatant, action: A
     : actor.definitionId === 'atmoso' && action === 'skill2' ? 'Release: second enemy-phase end'
     : actor.definitionId === 'tide' && action === 'ultimate' || actor.definitionId === 'bruno' && action === 'ultimate'
       || actor.definitionId === 'aurora' && action === 'ultimate' ? 'Through next two enemy phases'
-    : actor.definitionId === 'disciple' ? 'Next native action; ends by next player-turn end'
+    : actor.definitionId === 'disciple' ? 'Next action; ends by next player-turn end'
     : actor.definitionId === 'aurora' ? 'Next special within three enemy phases'
     : actor.definitionId === 'razor' && action === 'skill2' ? 'Guard next enemy phase; then a stacking shield'
     : actor.definitionId === 'thornia' && action !== 'skill2' ? 'Trap: three enemy phases'
@@ -92,7 +92,7 @@ export function createAllyTargetPicker(state: BattleState, actor: Combatant, act
   dialog.classList.add('native-ally-picker');
   dialog.innerHTML = `<h2>${escapeDialogText(ability.name)} · Choose ally</h2>
     <p>${escapeDialogText(allyTargetHint(actor, action))}</p><p>${escapeDialogText(readableEffect(ability.description))}</p>
-    <p>Enemy target is unchanged. Choose a recipient to commit this action, or cancel without spending Gauge or a turn.</p>
+    <p>Choose an ally. Cancel spends no Gauge or turn; your enemy target stays selected.</p>
     <form method="dialog"><div class="native-ally-choices">${candidates.map(ally =>
       `<button type="submit" class="text-button" value="${escapeDialogText(ally.id)}"><strong>${escapeDialogText(ally.name)}</strong><span>HP ${formatStat(ally.hp)} / ${formatStat(ally.stats.health)}${ally.id === actor.id ? ' · Self' : ''}</span></button>`).join('')}</div>
     <button type="submit" class="text-button" value="" autofocus>Cancel</button></form>`;

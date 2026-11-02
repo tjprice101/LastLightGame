@@ -26,7 +26,6 @@ import { bannerPercent, bannerPityLimits, validateBannerPity, type BannerOutcome
 import { summonBanners, getSummonBanner, type SummonBannerId } from '../content/summon-banners';
 import { characterRarity, evolutionRarity } from '../content/progression';
 import { information } from './information';
-import { summonLore } from '../content/world-lore';
 import { characterName } from '../content/character-art';
 import { materialName } from '../content/dungeon-art';
 import { bannerMaterialTiers, bannerDuplicateMaterialAmount } from '../content/banner-materials';
@@ -327,7 +326,7 @@ export function summonHub(account: Account | null, selected: SummonBannerId = 's
     <div class="ref-summon-main"><section class="ref-panel ref-summon-hero"><div class="summon-visual">
     <div class="summon-banner-art ${banner.artwork.path ? '' : 'art-pending'}" aria-label="${banner.name} artwork">
       ${banner.artwork.path ? `<img src="${assetUrl(banner.artwork.path)}" alt="${banner.artwork.alt}" width="1456" height="816">`
-        : `<div class="summon-banner-placeholder"><strong>${banner.name}</strong><span>Banner artwork pending</span></div>`}</div>
+        : `<div class="summon-banner-placeholder"><strong>${banner.name}</strong><span>Artwork pending</span></div>`}</div>
     <div class="ref-summon-overlay"><h2>${banner.name}</h2></div></div></section>${featuredCharacters(account, pool)}</div>
     <aside class="ref-panel ref-summon-draw" aria-label="Summon">
     <div class="summon-command"><h3>Summon</h3>
@@ -338,8 +337,8 @@ export function summonHub(account: Account | null, selected: SummonBannerId = 's
     <button id="summon-ten" class="primary-button" ${!banner.available || account.lycalis < banner.cost * multiSummonCount ? 'disabled' : ''} aria-describedby="banner-cost-note">Summon 10-Pull · ${banner.cost * multiSummonCount} Null-Prismatica</button>
     <p id="banner-cost-note" class="quiet" ${banner.available && account.lycalis >= banner.cost ? 'hidden' : ''}>${!banner.available ? 'Banner unavailable.' : account.lycalis < banner.cost ? 'Not enough Null-Prismatica.' : ''}</p>
     ${account.lycalis < banner.cost ? '<button class="text-button" type="button" data-page="gameplay">Earn more in Gameplay &rarr;</button>' : ''}</div>
-    ${information('summon-information', 'Rates & Information', `${bannerRates(banner, pool)}<section class="summon-rules"><h3>The search for Let</h3><p>${summonLore}</p><h3>Pity and reward rules</h3>
-      <ul><li>Each banner has its own independent ${bannerPityLimits.pulls}-pull counter. A new 5-star or 6-star Element-Bearer resets only this banner's counter. Natural duplicates advance it instead.</li><li>The guarantee chooses an unowned 5-star or unowned 6-star with a 50 / 50 tier chance, then equally among eligible characters in that tier.</li><li>If one tier has no unowned characters, the other tier is guaranteed instead. If every character in this banner is owned, the guarantee awards a duplicate with the usual conversion and restarts this banner's pity cycle.</li><li>Only this banner's characters are eligible. A banner with only one character tier uses that tier. Existing overdue progress guarantees the next draw.</li></ul>
+    ${information('summon-information', 'Rates & Information', `${bannerRates(banner, pool)}<section class="summon-rules"><h3>Pity and reward rules</h3>
+      <ul><li>Each banner has its own ${bannerPityLimits.pulls}-pull counter. A new 5-star or 6-star Element-Bearer resets only this banner's counter. Natural duplicates advance it instead.</li><li>The guarantee chooses an unowned 5-star or unowned 6-star with a 50 / 50 tier chance, then equally among eligible characters in that tier.</li><li>If one tier has no unowned characters, the other tier is guaranteed instead. If every character in this banner is owned, the guarantee awards a duplicate with the usual conversion and restarts this banner's pity cycle.</li><li>Only this banner's characters are eligible. A banner with only one character tier uses that tier. A full pity counter guarantees the next draw.</li></ul>
       <p>Bonus Legendary Conduit: 0.5% per pull, 0.1% each of five. Never auto-equipped.</p>
       <p>Non-character draws give ${bannerMaterialTiers.map(tier => `${tier.amount} ${tier.rarity}`).join(' / ')} materials ${banner.id === 'roses' ? '(Rosethorn materials)' : 'from one of the six elements, equally likely'}. Owned Element-Bearers convert to ${bannerDuplicateMaterialAmount} Rare ${banner.id === 'roses' ? 'Rosethorn materials' : 'materials of one random element'}.</p>
       <p>A 10-Pull uses the same rates and guarantees as ten single pulls. No extra bonus or discount.</p></section>`, 'Rates & Information')}</aside></div>`;

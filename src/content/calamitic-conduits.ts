@@ -3,7 +3,7 @@ import { phaseZeroStatsReady } from './phase-zero-stats';
 import { phaseZeroUpgradedAbility } from './phase-zero-conduit-upgrades';
 
 export const calamiticTokenPrice = 100;
-export const calamiticLockMessage = 'Rise deems you UNWORTHY of her most prized creations.';
+export const calamiticLockMessage = 'Clear a Calamity tier.';
 
 export function calamiticStoreUnlocked(account: { calamityClears?: Partial<Record<string, number>> } | null): boolean {
   return !!account && Object.values(account.calamityClears ?? {}).some(tier => tier !== undefined && tier >= 1);
@@ -13,15 +13,15 @@ export const calamiticPower = redesignValue;
 
 export const calamiticConduits = [
   { id: 'calamitic-world-eater-orrery', name: "World-Eater's Orrery",
-    lore: 'Rise suspended an annihilation furnace inside counter-rotating planetary rings. Every wound suffered by its bearers winds the machinery toward a single, deliberate ending.' },
+    lore: 'Rise suspended a furnace inside counter-rotating rings. Damage to its bearer winds the machinery.' },
   { id: 'calamitic-causality-funeral-engine', name: 'Causality Funeral Engine',
-    lore: 'Paired black-metal vaults bind the interval between impact and consequence. Rise built them to postpone destruction until her chosen moment, never to forgive it.' },
+    lore: 'Rise’s paired black-metal vaults delay the force of an impact, then release it.' },
   { id: 'calamitic-horizon-cleaving-godpress', name: 'Horizon-Cleaving Godpress',
-    lore: 'Opposing white-metal jaws close around an impossible horizon. Rise designed its crimson rails to press through barriers without mistaking protection for invulnerability.' },
+    lore: 'Rise’s white-metal jaws slide along crimson rails, crushing barriers between them.' },
   { id: 'calamitic-throne-borrowed-tomorrows', name: 'Throne of Borrowed Tomorrows',
-    lore: 'An empty command throne controls a canopy of interlocking timeworks. Rise could order its machinery to consume tomorrow before today had ended.' },
+    lore: 'An empty command throne controls interlocking clockwork. Rise built it to borrow time from its bearer.' },
   { id: 'calamitic-cathedral-final-equation', name: 'Cathedral of the Final Equation',
-    lore: 'Three monumental cipher-engines turn around a captive crimson aperture. Rise built their closing equation to erase whatever she had chosen, not to worship it.' },
+    lore: 'Rise’s three cipher-engines turn around a crimson aperture. Each completed sequence fires through its center.' },
   { id: 'calamitic-bulwark-of-the-last-horizon', name: 'Bulwark of the Last Horizon', art: null,
     lore: 'Rise forged a black-and-white horizon wall around a crimson pressure core, reinforcing its bearer and the shields raised in its defense.' },
   { id: 'calamitic-reliquary-of-unending-mercy', name: 'Reliquary of Unending Mercy', art: null,

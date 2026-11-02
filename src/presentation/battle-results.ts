@@ -55,7 +55,7 @@ export function battleResults(state: BattleState, events: readonly BattleEvent[]
       <h2 id="battle-result-heading" tabindex="-1">${victory ? 'Victory!' : 'Defeat'}</h2></div>
       <button class="text-button" data-result-dismiss>View battlefield</button></div>
     <p id="battle-result-note">${victory ? 'Rewards saved.' : 'Your squad has fallen. You keep rewards from defeated enemies.'}
-      ${victory ? state.calamity ? 'This Calamity tier is complete. Open your saved chest in Inventory. Replay this tier or return to Play to enter an unlocked tier.' : complete ? 'All stages completed. Replay this stage or return to Gameplay.' : staged ? 'Continue with full HP; Elemental Gauge carries into the next stage. Replay starts this stage with fresh HP and Gauge; earned rewards are kept.' : 'Health, Gauge and recovery carry into the next wave.' : ''}</p>
+      ${victory ? state.calamity ? 'Open your chest in Inventory.' : complete ? 'All stages cleared.' : staged ? 'Continue with full HP; Elemental Gauge carries into the next stage. Replay starts this stage with fresh HP and Gauge; earned rewards are kept.' : 'Health, Gauge and recovery carry into the next wave.' : ''}</p>
     ${victory && state.story && storyEncounter(state.story.storyStage).boss ? `<p class="story-conclusion">${storyEncounter(state.story.storyStage).conclusion}</p>` : ''}
     <div class="battle-result-rewards"><h3>Rewards earned this ${staged ? 'stage' : 'wave'}</h3>
       ${rewards.length ? `<ul>${rewards.map((item) => {
@@ -64,7 +64,7 @@ export function battleResults(state: BattleState, events: readonly BattleEvent[]
         ? `<img src="${lootArt(item)}" alt="" width="40" height="40">` : '<span class="result-reward-token" aria-hidden="true">+</span>'}
         <span>${item.name}${isConduitId(conduitId) ? conduitElement(conduitId) : ''}</span><strong>+${formatStat(item.amount)}</strong></li>`;
       }).join('')}</ul>`
-        : '<p class="quiet">No enemy rewards earned in this encounter.</p>'}
+        : '<p class="quiet">No rewards earned.</p>'}
       </div>
     <section class="battle-result-stats"><h3>Battle summary</h3>
       <p>Damage dealt ${formatStat(total('damage', true))} · Received ${formatStat(total('damage', false))}

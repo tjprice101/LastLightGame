@@ -1,3 +1,4 @@
+import { fighters } from '../content/combat';
 import { type Starter } from '../content/starters';
 import { type CharacterProgress } from '../content/progression';
 import { characterName } from '../content/character-art';
@@ -42,19 +43,20 @@ export function celebrateUpgrade(host: HTMLElement, starter: Starter, kind: Upgr
   active.set(portrait, cleanup);
 }
 
-export function celebrateAscension(host: HTMLElement, starter: Starter, step: AscensionCelebrationStep, progress: CharacterProgress): void {
-  const portrait = host.querySelector<HTMLElement>('.hub-showcase .hub-portrait');
+export function celebrateAscension(host: HTMLElement, starter: Starter, step: AscensionCelebrationStep, progress: CharacterProgress): () => void {
+  const portrait = host.querySelector<HTMLElement>('.ascension-hero .hub-portrait, .hub-showcase .hub-portrait');
   if (!portrait) throw new Error('Character portrait is missing for Calamitic Ascension feedback.');
   active.get(portrait)?.();
   const celebration = document.createElement('span');
   celebration.className = `upgrade-celebration celebration-ascension${rarityMotionReduced() ? ' celebration-reduced' : ''}`;
   celebration.style.setProperty('--element', '#a80f2d');
-  const label = step === 'stats' ? 'Calamitic Ascension complete' : 'Calamitic Imbue complete';
+  const label = step === 'stats' ? 'Ascended' : `${fighters[starter.id].abilities[step === 'lastFlare' ? 'ultimate' : step].name} imbued`;
+  const inModal = host.classList.contains('calamitic-ascension-modal');
   celebration.innerHTML = `<span class="upgrade-aura" aria-hidden="true"><span class="upgrade-aura-ring"></span>${Array.from({ length: 16 }, (_, index) =>
     `<span class="upgrade-spark" style="--angle:${index * 22.5}deg;--delay:${index % 4 * 55}ms"></span>`).join('')}</span>
-    <span class="upgrade-celebration-label" role="status">${characterName(starter.id, progress.evolution, true)}<strong>${label}</strong><span>${step === 'stats' ? 'Rise-blessed' : step === 'lastFlare' ? 'Last Flare' : step === 'skill1' ? 'Skill 1' : 'Skill 2'}</span></span>`;
+${inModal ? '' : `    <span class="upgrade-celebration-label" role="status">${characterName(starter.id, progress.evolution, true)}<strong>${label}</strong><span>${step === 'stats' ? 'Rise-blessed' : step === 'lastFlare' ? 'Last Flare' : step === 'skill1' ? 'Skill 1' : 'Skill 2'}</span></span>`}`;
   portrait.append(celebration);
-  const clearFeedback = rarityFeedback(celebration, 'Calamitic', label);
+  const clearFeedback = rarityFeedback(celebration, 'Calamitic', inModal ? undefined : label);
   portrait.classList.add('celebrating-ascension');
   const updateMotion = (): void => { celebration.classList.toggle('celebration-reduced', rarityMotionReduced()); };
   window.addEventListener('last-light-motion-change', updateMotion);
@@ -71,4 +73,5 @@ export function celebrateAscension(host: HTMLElement, starter: Starter, step: As
   };
   const timer = setTimeout(cleanup, 2200);
   active.set(portrait, cleanup);
+  return cleanup;
 }

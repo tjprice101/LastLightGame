@@ -1,5 +1,71 @@
 # Current state and handoff
 
+## Squad portrait containment and Calamitic Ascension UI
+
+- Reproduced the reported picker in Chromium at1185×768: a viewport-constrained
+  scroll grid used1fr rows while cards forced height100%/min-height0. Tracks
+  collapsed to122px although the square art was163px, placing text inside the
+  overflowing art. Content-sized rows and auto-height cards fix the cause.
+  Inset, absolutely contained idle wrappers also remove inline-image baseline
+  overflow in picker/Squad slots; Home mini portraits no longer circular-crop.
+- Evolution now has one eligible-only crown-burst/crimson-sheen entry with
+  progress, opening a dedicated shared native dialog. It shows the actual
+  portrait/name/Shard count, only Ascend initially, then three named/icon-backed
+  Imbue cards after the successful stat step. Confirm/Cancel stays in the modal;
+  the existing local/online atomic transaction remains unchanged. Saved steps
+  update in place and refresh the page's Rise-blessed name and emblem.
+- Shared finite Calamitic sweep/ring/spark feedback runs only after persistence.
+  Reduce motion is static. Failures do not celebrate; closing disposes feedback.
+  Explicit Tab wrapping, Escape,44px controls and pointer close were checked;
+  focus restores even when the page refresh replaced the original entry button.
+- Browser checks used both production-styled fixtures and the actual seeded
+  offline app, not fabricated rewards. All19 picker cards passed containment/
+  text separation checks; all three Squad slots passed image-fit/text checks.
+  Actual desktop/phone Ascend and Imbue flows, keyboard trapping and pointer
+  close/focus restore passed. Timeline captures at180ms,880ms and after cleanup
+  show finite motion; reduced feedback had zero running animations.
+- Local screenshots: `.ui-check\actual-picker-1185.png`,
+  `.ui-check\actual-picker-390.png`, `.ui-check\actual-slots-1185.png`,
+  `.ui-check\actual-home-390.png`, `.ui-check\actual-entry-1185.png`,
+  `.ui-check\actual-modal-{before,impact,sparkles,saved,reduced}-{1185,390}.png`.
+  The dev server and isolated Chromium were stopped after validation.
+- Validation: TypeScript passed; focused modal/account/roster/dialog/celebration/
+  motion tests passed68/68 in6 files. `npx tsc --noEmit -p .` and `npm run build`
+  passed (existing large-chunk warning). The requested exact full command had
+  7,055 passing tests and one pre-existing explicit20-second loot-dialog timeout
+  under concurrent load. Full `npx vitest run --testTimeout=200000 --maxWorkers=2`
+  then passed all7,056 tests in225 files (227.81s), without weakening timeouts.
+  No commit, push or deployment; no owner decisions or mechanics changes.
+
+## Player-facing text audit
+
+- Audited recent D-435 text first, then presentation/content/UI copy across
+  activities, battle readouts/results, menus, stores, materials, Collections,
+  Inventory, Settings and save/account controls. Revised copy in23 production
+  files and updated13 copy regression files. No mechanics, numbers, IDs,
+  accessibility roles or transaction behavior changed.
+- Removed the Gates decision label and artwork-delivery explanation, duplicate
+  unlock roadmaps, technical recruitment/save wording and repeated instructions.
+  Current lock reasons, costs, numeric effects, durations and rate/pity details
+  remain. Calamitic Conduit/character lore is shorter and more concrete.
+- Examples: `D-435 · Rise constructs` → `Rise’s constructs`;
+  `One sealed tier chest and one independent recruitment roll per victory` →
+  `Each victory earns one chest and a chance to recruit an Element-Bearer`;
+  `Unlocks when you Own any Calamitic Element-Bearer` →
+  `Own any Calamitic Element-Bearer`.
+- Added a rendered-copy guard for key menus, locked/unlocked Calamitic stores,
+  owned Calamitic materials, character overviews, Settings and battle results.
+  It also checks accessibility labels/tooltips for developer terms and filler.
+  Existing non-copy assertions were retained.
+- Validation: focused copy/content tests pass; `npx tsc --noEmit -p .` and
+  `npm run build` pass (existing large-chunk warning). The final exact full-suite
+  run had no assertion failures; one creature-loot dialog test exceeded its
+  explicit20-second timeout. The full bounded-worker rerun
+  (`npx vitest run --testTimeout=200000 --maxWorkers=2`) passed all7,056 tests
+  in225 files (227.81s).
+  Ascension UI and squad-picker styling belong to the concurrent UI batch and
+  were not edited by this audit. No commit, push or deployment requested.
+
 ## Calamitic Conduits (D-435 Section 4)
 
 - Added the nine owner-authored universal Calamitic Conduits to the existing

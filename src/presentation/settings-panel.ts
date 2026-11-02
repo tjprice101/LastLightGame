@@ -12,13 +12,13 @@ export function settingsPanel(motion: MotionPreference, bindings: Bindings, spee
       <label for="music-volume">Music volume <output id="music-volume-value" for="music-volume">${music.volume}%</output></label>
       <input id="music-volume" type="range" min="0" max="100" step="1" value="${music.volume}" aria-describedby="music-description">
       <label for="music-muted"><input id="music-muted" type="checkbox" ${music.muted ? 'checked' : ''}> Mute music</label>
-      <p id="music-description">Saved automatically on this device. Music starts after an interaction and pauses while this tab is hidden. Activities without music tracks are silent.</p>
+      <p id="music-description">Music pauses when this tab is hidden.</p>
     </section>
     <section class="settings-panel"><h3>Battle presentation</h3>
       <label for="settings-battle-speed">Animation speed</label>
       <select id="settings-battle-speed" data-battle-speed aria-describedby="speed-description">${battleSpeeds.map((value) =>
         `<option value="${value}" ${speed === value ? 'selected' : ''}>${value}&times;${value === 1 ? ' · Cinematic' : value === 2 ? ' · Quick' : ' · Fast'}</option>`).join('')}</select>
-      <p id="speed-description">Changes animation speed, not combat rules. Saved automatically on this device.</p>
+      <p id="speed-description">Changes animation speed only. Saved automatically.</p>
     </section>
     <form id="settings-form" class="settings-panel"><h3>Motion &amp; accessibility</h3>
       <label for="motion">Animation preference</label>
@@ -30,7 +30,7 @@ export function settingsPanel(motion: MotionPreference, bindings: Bindings, spee
       <button class="primary-button" type="submit">Save motion preference</button><p id="settings-result" role="status"></p>
     </form>
     <form id="hotkey-form" class="settings-panel hotkey-panel"><h3>Selection keys</h3>
-      <p>Switch allies or targets. Keys never attack or end a turn.</p>
+      <p>Switch allies or targets without taking an action.</p>
       <div class="settings-key-grid">${commands.map(([command, label]) => `<div><label for="key-${command}">${label}</label>
         <select id="key-${command}" name="${command}">${allowedCodes.map((code) =>
           `<option value="${code}" ${bindings[command] === code ? 'selected' : ''}>${keyLabel(code)}</option>`).join('')}</select></div>`).join('')}</div>

@@ -1,0 +1,55 @@
+.sanctuary-shell .calamitic-ascension-entry {
+  position: relative; isolation: isolate; overflow: hidden; display: flex; align-items: center;
+  gap: 16px; width: 100%; min-height: 88px; padding: 16px 22px; margin-top: 20px;
+  border: 1px solid #e8bbc480; border-radius: 18px; color: #fff; cursor: pointer;
+  background: linear-gradient(120deg, #09090c 15%, #501024 65%, #14090d);
+  box-shadow: inset 0 1px #fff3, 0 8px 26px #0006; font: inherit; text-align: left;
+}
+.calamitic-ascension-entry::after { content: ''; position: absolute; z-index: -1; inset: -100% -40%; background: linear-gradient(110deg, transparent 40%, #ffffff38 48%, #fff8 50%, transparent 58%); transform: translateX(-80%); animation: ascension-sheen 3600ms ease-in-out 2; pointer-events: none; }
+.calamitic-ascension-entry > span:nth-child(2) { flex: 1; display: grid; gap: 4px; }
+.calamitic-ascension-entry strong { font-size: clamp(16px, 2vw, 21px); }
+.calamitic-ascension-entry small { color: #efd1d8; }
+.ascension-crown { display: grid; place-items: center; flex: none; width: 48px; height: 48px; font-size: 34px; color: #fff; background: repeating-conic-gradient(from 0deg, #a5163c66 0 12deg, transparent 12deg 30deg); border-radius: 50%; text-shadow: 0 2px 6px #000; }
+.game-dialog.calamitic-ascension-modal { position: fixed; width: min(790px, calc(100vw - 24px)); padding: clamp(16px, 3vw, 28px); border-color: #ba607b88; background: radial-gradient(ellipse at 15% 0, #6d173340, transparent 65%), #101014; overflow-x: hidden; }
+.calamitic-ascension-modal .ascension-close { position: absolute; top: 10px; right: 10px; z-index: 3; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid #ffffff40; border-radius: 50%; background: #17171e; color: #fff; font: 28px/1 Georgia, serif; cursor: pointer; }
+.ascension-hero { display: grid; grid-template-columns: minmax(110px, 190px) minmax(0, 1fr); align-items: center; gap: 18px; padding-right: 36px; }
+.ascension-hero .hub-portrait { position: relative; width: 100%; height: auto; aspect-ratio: 1; min-height: 0; overflow: visible; }
+.ascension-hero .hub-portrait > .character-idle { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); }
+.ascension-hero .hub-portrait img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.game-dialog.calamitic-ascension-modal .ascension-hero h2 { margin: 8px 0 12px; font-size: clamp(18px, 3vw, 25px); overflow-wrap: normal; }
+.ascension-eyebrow { margin: 0; color: #f0c1cc; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+.ascension-shards { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.ascension-shards img { object-fit: contain; }
+.ascension-shards strong { display: block; color: #fff; font-size: 22px; }
+.ascension-shard-token { font-size: 30px; color: #f3dfe4; }
+.ascension-steps { display: grid; gap: 10px; margin-top: 18px; }
+.ascension-step { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 16px; border: 1px solid #ffffff26; border-radius: 16px; background: linear-gradient(115deg, #ffffff08, #600e211c); }
+.ascension-step.is-done { border-color: #9c3e5666; }
+.ascension-step-icon { display: grid; place-items: center; }
+.ascension-step-icon img { width: 56px; height: 56px; object-fit: contain; }
+.ascension-step h3 { margin: 3px 0 6px; font-size: 17px; overflow-wrap: anywhere; }
+.ascension-step p { margin: 0 0 7px; color: #ede3e6; font-size: 13px; }
+.ascension-step small { color: #bdb1b7; font-size: 12px; }
+.calamitic-ascension-modal .ascension-action { background: linear-gradient(120deg, #72182f, #230b15); border: 1px solid #bd7085; color: #fff; padding: 10px 18px; border-radius: 999px; box-shadow: inset 0 1px #ffffff38, 0 4px 14px #0005; }
+.calamitic-ascension-modal button { min-height: 44px; font-family: var(--ui-font, Georgia, serif); cursor: pointer; }
+.calamitic-ascension-modal button:disabled { opacity: .6; cursor: default; }
+.calamitic-ascension-modal button:focus-visible, .calamitic-ascension-entry:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.ascension-done { color: #f3ced9; font-size: 14px; }
+.ascension-confirm { position: sticky; bottom: 0; z-index: 2; padding: 12px 16px; margin-top: 14px; border: 1px solid #b5697b; border-radius: 14px; background: #1d1018; box-shadow: 0 -8px 22px #0009; }
+.ascension-confirm[hidden] { display: none; }
+.ascension-confirm p { margin: 0 0 10px; }
+.ascension-confirm > div { display: flex; justify-content: flex-end; gap: 12px; }
+.ascension-result { margin: 0 40px 12px 0; padding: 10px 14px; border-left: 3px solid #d993a5; background: #57172966; border-radius: 8px; color: #fff; }
+.ascension-result:empty { display: none; }
+.ascension-hero .upgrade-celebration { z-index: 2; }
+.ascension-hero .upgrade-celebration-label { font-size: 12px; }
+@keyframes ascension-sheen { 0%, 15% { transform: translateX(-80%); } 75%, 100% { transform: translateX(80%); } }
+:root[data-motion="reduced"] .calamitic-ascension-entry::after { animation: none; transform: none; opacity: .25; }
+@media (max-width: 560px) {
+  .ascension-hero { grid-template-columns: 95px minmax(0, 1fr); gap: 10px; padding-right: 22px; }
+  .game-dialog.calamitic-ascension-modal .ascension-hero h2 { font-size: 19px; line-height: 1.25; }
+  .ascension-step { grid-template-columns: 44px minmax(0, 1fr); gap: 10px; padding: 12px; }
+  .ascension-step-icon img { width: 44px; height: 44px; }
+  .ascension-step > button, .ascension-done { grid-column: 2; justify-self: start; }
+  .ascension-shards { font-size: 12px; }
+}
