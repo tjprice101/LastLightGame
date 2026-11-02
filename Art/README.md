@@ -58,6 +58,9 @@ No original, runtime image, recorded source path or recorded hash was rewritten.
 - [Heaven/Abyss packs](creatures/gamemodes/README.md).
 - [Machines](creatures/Awaken%20the%20Machines.md), [Treasury](creatures/Crownfall%20Treasury.md),
   [Sanctuary](creatures/Rosethorn%20Sanctuary.md), [Crimson Roses](creatures/Passion%20of%20Crimson%20Roses.md).
+- [Gates of Oblivion](creatures/Gates%20of%20Oblivion.md): 12 pending reference-free
+  prompts (10 construct cutouts, 3:1 header, 16:9 arena); reproducible with
+  `python tools\build_oblivion_art.py`.
 - Historical: [Flaming Depths](creatures/Flaming%20Depths.md).
 
 ## Items, actions and scenery
