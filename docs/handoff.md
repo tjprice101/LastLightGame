@@ -19,6 +19,10 @@
   contract and Conduit redesign); eight `test_calamitic_art.py` checks passed.
   `npm run build`, server TypeScript and Deno checks passed; existing chunk
   advisory unchanged. Authority rebundled/deployed and hosted smoke passed.
+- Full CI caught a missing "absorbs damage before HP" explanation on Ozriel's
+  Last Flare; restored it. Expanded focused verification includes
+  `src/content/combat.test.ts`: 466 tests / seven files passed. Authority was
+  regenerated, typechecked, redeployed and hosted-smoked again after the correction.
 
 ## Oblivion framing and machine-only Masters (D-444)
 

@@ -62,7 +62,7 @@ export const calamiticFighters: Record<CalamiticCharacterId, FighterDefinition> 
     abilities: {
       skill1: { name: 'Pane of Absolution', description: 'Deal 240% direct damage to one enemy, then reduce its direct damage by 50% with Weaken for the next two Enemy Turns.', cooldown: 0, strength: { damageMultiplier: 2.4, weakenFraction: .5 } },
       skill2: { name: 'Cathedral of Shards', description: 'Give each living squad member a 90-strength Shield before Skill Power bonuses. Shields absorb damage before HP, last until broken and stack with existing Shields.', cooldown: 0, targets: 'all-allies', strength: { shield: 90 } },
-      ultimate: { name: 'The World Refuses', description: 'Deal 455% direct damage to all enemies. Give each living squad member a 140-strength Shield before Skill Power bonuses; it lasts until broken and stacks with existing Shields. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 4.55, shield: 140 } },
+      ultimate: { name: 'The World Refuses', description: 'Deal 455% direct damage to all enemies. Give each living squad member a 140-strength Shield before Skill Power bonuses; it absorbs damage before HP, lasts until broken and stacks with existing Shields. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 4.55, shield: 140 } },
     },
   },
   ilvaris: {
