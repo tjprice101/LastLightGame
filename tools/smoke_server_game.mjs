@@ -49,7 +49,40 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--infusion-rebalance')) {
+  if (process.argv.includes('--loadouts')) {
+    let response = await call({ kind: 'bootstrap', starterId: 'ember' }, 0);
+    const transact = async operation => {
+      response = await call(operation, response.revision);
+      return response;
+    };
+    for (let index = 0; index < 3; index++) await transact({ kind: 'saveConduitConfiguration', character: 'ember', index, name: `Build ${index + 1}` });
+    assert.equal(response.account.conduitConfigurations.ember.length, 3);
+    await transact({ kind: 'renameConduitConfiguration', character: 'ember', index: 1, name: 'Renamed build' });
+    await transact({ kind: 'equipConduitConfiguration', character: 'ember', index: 1 });
+    const id = randomUUID(), requestId = randomUUID(), revision = response.revision;
+    const operation = { kind: 'saveSquadLoadout', id, name: 'Hosted squad' };
+    response = await call(operation, revision, requestId);
+    assert.deepEqual(await call(operation, revision, requestId), response);
+    assert.equal(response.revision, revision + 1);
+    assert.equal(response.account.squadLoadouts.length, 1);
+    assert.deepEqual(response.account.squadLoadouts[0].members[0].conduits, Array(8).fill(null));
+    await assert.rejects(call({ kind: 'renameSquadLoadout', id, name: 'Conflict' }, revision), error => error.status === 409);
+    await assert.rejects(call({ kind: 'saveSquadLoadout', id: randomUUID(), name: 'Injected', members: [] }, response.revision), error => error.status === 400);
+    await assert.rejects(call({ kind: 'saveConduitConfiguration', character: 'tide', index: 0, name: 'Unowned' }, response.revision), error => error.status === 400);
+    await assert.rejects(call({ kind: 'saveConduitConfiguration', character: 'ember', index: 3, name: 'Fourth' }, response.revision), error => error.status === 400);
+    await transact({ kind: 'renameSquadLoadout', id, name: 'Named hosted squad' });
+    await transact({ kind: 'equipSquadLoadout', id });
+    assert.deepEqual(response.account.squad, ['ember']);
+    assert.equal(response.account.squadLoadouts[0].name, 'Named hosted squad');
+    assert.equal(response.account.conduitConfigurations.ember[1].name, 'Renamed build');
+    assert.equal(response.account.fractalis, 0);
+    assert.equal(response.account.lycalis, 0);
+    assert.deepEqual((await call({ kind: 'read' }, response.revision)).account, response.account);
+    const before = structuredClone(response.account);
+    await transact({ kind: 'deleteSquadLoadout', id });
+    assert.deepEqual(response.account, { ...before, squadLoadouts: [] });
+    console.log('Hosted loadouts passed: three configs, authoritative snapshots, save/equip/rename/delete, idempotency, revision conflict and invalid-operation rejection; no grants.');
+  } else if (process.argv.includes('--infusion-rebalance')) {
     await smokeInfusionRebalance(client, created.user.id, username);
   } else if (process.argv.includes('--reward-corrections')) {
     await smokeRewardCorrections(client, created.user.id, username);

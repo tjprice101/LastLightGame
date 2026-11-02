@@ -5,6 +5,8 @@ import {
   purchaseConduit, setMachineLootFocus, equipConduit, unequipAllConduits, openMasterChest, openCalamityChest, equipMasterConduit, upgradeConduit, upgradeConduitToMaximum, upgradeCharacter, ascendCharacter, levelCapturedCharacter,
   levelCharacterToMaximum, saveAccountRewards, unlockedStage, unlockedInfusionStage,
   unlockedWarStage, unlockedStoryStage, unlockedOblivionStage, type Account,
+  saveSquadLoadout, renameSquadLoadout, equipSquadLoadout, deleteSquadLoadout,
+  saveConduitConfiguration, renameConduitConfiguration, equipConduitConfiguration,
 } from '../../../src/game/account';
 import { SAVE_KEY, type ProfileStorage } from '../../../src/game/profile';
 import { createBattle, createCalamityBattle, createStoryBattle, createDungeonBattle, createOblivionBattle, createInfusionBattle, createWarBattle,
@@ -109,6 +111,10 @@ const operationKeys: Record<GameOperation['kind'], string[]> = {
   friendRequest: ['username', 'friendCode'], acceptFriendRequest: ['userId'], declineFriendRequest: ['userId'],
   cancelFriendRequest: ['userId'], removeFriend: ['userId'],
   read: [], checkpoint: [], bootstrap: ['starterId'], importSave: ['save'], setSquad: ['ids'], setCharacterLock: ['id', 'locked'],
+  saveSquadLoadout: ['id', 'name'], renameSquadLoadout: ['id', 'name'],
+  equipSquadLoadout: ['id'], deleteSquadLoadout: ['id'],
+  saveConduitConfiguration: ['character', 'index', 'name'], renameConduitConfiguration: ['character', 'index', 'name'],
+  equipConduitConfiguration: ['character', 'index'],
   summon: ['bannerId'], summonTen: ['bannerId'], sellCurrencyCreature: ['id', 'saleOption'], sellCurrencyCreatures: ['selections'], purchaseConduit: ['id'],
   setMachineLootFocus: ['rarity', 'id'],
   equipConduit: ['character', 'slot', 'conduit'], upgradeConduit: ['id', 'expectedLevel'],
@@ -152,7 +158,8 @@ export function validateRequest(value: unknown): GameRequest {
     if (!isMachineFocusRarity(op.rarity)) throw new Error('Choose a valid Machines focus rarity.');
     if (op.id !== null) validateMachineLootFocus({ [op.rarity]: op.id });
   }
-  for (const field of ['slot', 'expectedLevel', 'quantity', 'expectedCount']) if (field in op) integer(op[field]);
+  for (const field of ['slot', 'index', 'expectedLevel', 'quantity', 'expectedCount']) if (field in op) integer(op[field]);
+  if ('name' in op) text(op.name, 40);
   if (op.kind === 'openCalamityChest') {
     parseCalamityChestId(op.id as string);
     if ((op.expectedCount as number) < 1) throw new Error('Choose an owned Calamity chest.');
@@ -454,6 +461,13 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
     if (!game.starterId) throw new Error('Choose your first Element-Bearer before playing.');
     switch (operation.kind) {
       case 'setSquad': setSquad(storage, operation.ids); break;
+      case 'saveSquadLoadout': saveSquadLoadout(storage, operation.id, operation.name); break;
+      case 'renameSquadLoadout': renameSquadLoadout(storage, operation.id, operation.name); break;
+      case 'equipSquadLoadout': equipSquadLoadout(storage, operation.id); break;
+      case 'deleteSquadLoadout': deleteSquadLoadout(storage, operation.id); break;
+      case 'saveConduitConfiguration': saveConduitConfiguration(storage, operation.character, operation.index, operation.name); break;
+      case 'renameConduitConfiguration': renameConduitConfiguration(storage, operation.character, operation.index, operation.name); break;
+      case 'equipConduitConfiguration': equipConduitConfiguration(storage, operation.character, operation.index); break;
       case 'setCharacterLock': setCharacterLock(storage, operation.id, operation.locked); break;
       case 'summon':
         summon = summonCharacter(storage, entropy.random, operation.bannerId);

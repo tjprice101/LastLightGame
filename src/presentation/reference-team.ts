@@ -18,8 +18,9 @@ import { currencyIcon } from './currency-icon';
 import { elementLabel } from './element-label';
 import { statPreview } from './stat-preview';
 import { bulkSaleControls, bulkSaleCopy } from './creature-bulk-sale';
+import { squadLoadoutsPanel } from './saved-loadouts';
 
-export type ReferenceTeamView = 'detail' | 'bearers' | 'creatures' | 'capture' | 'formation' | 'conduits' | 'capture-conduits';
+export type ReferenceTeamView = 'detail' | 'bearers' | 'creatures' | 'capture' | 'formation' | 'loadouts' | 'conduits' | 'capture-conduits';
 export interface ReferenceTeamState {
   view: ReferenceTeamView;
   selected: StarterId;
@@ -43,6 +44,7 @@ export function referenceTeamSidebar(account: Account, state: ReferenceTeamState
           ${index ? `<button class="ref-chip" data-make-leader="${id}" aria-label="Make ${member.name} the leader">♛ Lead</button>` : ''}</div>`;
       }).join('')}
       ${resonanceBadge(squad)}
+      <button type="button" data-team-view="loadouts" aria-pressed="${state.view === 'loadouts'}">Loadouts</button>
     </section>
     <section class="ref-panel ref-collection-sidebar"><header class="ref-panel-heading">Collection</header>
       <button class="ref-member-row ${state.view === 'detail' || state.view === 'bearers' ? 'is-selected' : ''}" data-team-view="bearers"><span class="ref-thumb ref-count">${ownedCharacters(account).length}</span><span><b>Element-Bearers</b><small>${ownedCharacters(account).length} owned · view all</small></span></button>
@@ -180,6 +182,7 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
   if (state.view === 'bearers') content = bearerGrid(account, state);
   else if (state.view === 'creatures') content = captureGrid(account);
   else if (state.view === 'formation') content = `<section class="ref-panel ref-scroll ref-formation">${squadHub(account)}</section>`;
+  else if (state.view === 'loadouts') content = squadLoadoutsPanel(account);
   else if (state.view === 'conduits' || state.view === 'capture-conduits') return conduitPage(account, state);
   else if (state.view === 'capture') {
     const copy = account.capturedCharacters?.find(entry => entry.instanceId === state.capture);

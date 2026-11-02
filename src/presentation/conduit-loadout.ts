@@ -1,4 +1,5 @@
 import { morphElement } from './dom-morph';
+import { conduitConfigurationsPanel } from './saved-loadouts';
 import { conduits, conduitBuffs, conduitEffect, conduitColor, conduitEquipReason, conduitSlotCount, conduitUpgradeCap, getConduit, isConduitId, type Conduit, type ConduitBuff, type ConduitSlots } from '../content/conduits';
 import { resolveFighter, formatStat } from '../content/combat';
 import { getStarter, isStarterId } from '../content/starters';
@@ -361,6 +362,7 @@ export function conduitLoadout(owner: string, name: string, element: ElementId, 
   return `<section class="ref-equipment conduit-loadout" aria-label="${name} equipment" data-character-equipment="${owner}" data-loadout-signature="${slots.map(entry => entry ?? '').join(',')}" data-loadout-first-empty="${slots.indexOf(null)}">
     <header class="loadout-header"><button type="button" class="loadout-back" ${captured ? `data-team-capture-detail="${owner}"` : `data-team-detail="${owner}"`}>← Back to ${shortName}</button>
       <div class="loadout-title"><h3>${shortName} · Conduits</h3><p>${filled} of ${conduitSlotCount} slots filled</p></div>${memberTabs(owner, account)}</header>
+    ${account ? conduitConfigurationsPanel(account, owner) : ''}
     <div class="loadout-layout">
       <section class="ref-panel loadout-slots" aria-label="Loadout"><header class="ref-panel-heading"><span>Loadout · ${filled} of ${conduitSlotCount}</span><button type="button" class="text-button loadout-clear" data-loadout-clear data-loadout-owner="${owner}" aria-label="Unequip all Conduits${captured ? '' : ', including Master'} from ${escapeDialogText(shortName)}" ${hasEquipment && account ? '' : 'disabled'}>Unequip All</button></header>
         ${masterRow(owner, account)}

@@ -353,3 +353,18 @@ banner atomicity, element/cap restrictions and all ten unique Omnic mechanics.
 duplicate rejection, removals, failure safety, exact effective stats and all-mode
 Continue/replay snapshots. Archives and elemental emblems already exist.
 Generated machine artwork/Common drop locations and Master behavior remain deferred.
+## Saved character configurations and squad equipment (D-447)
+
+Each owned Element-Bearer or captured Elemental-Devourer has three optional,
+named Conduit configurations: eight exact ordinary slots and, for an eligible
+Element-Bearer, its personal Master. Save current/Equip/Rename are explicit;
+manual changes never overwrite a saved configuration. Restoring one validates
+the complete equipment and saves once, without changing the squad, any other
+character or another configuration. Conduit upgrade progress remains current.
+
+Unlimited named Team loadouts snapshot only their 1–3 ordered members' current
+equipment. They do not capture or overwrite the three saved configurations.
+All existing equipment eligibility rules remain enforced locally and by the
+authority. Captured-copy sale/consumption clears that copy's configurations;
+retained team templates with missing copies are visibly unavailable, never
+partially equipped. See the [Team loadout contract](menus-and-inventory.md#named-squad-loadouts-and-conduit-configurations-d-447).

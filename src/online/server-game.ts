@@ -79,6 +79,10 @@ export type GameOperation =
   | { kind: 'bootstrap'; starterId: 'ember' | 'tide' | 'sprout' }
   | { kind: 'importSave'; save: SaveFile }
   | { kind: 'setSquad'; ids: string[] }
+  | { kind: 'saveSquadLoadout' | 'renameSquadLoadout'; id: string; name: string }
+  | { kind: 'equipSquadLoadout' | 'deleteSquadLoadout'; id: string }
+  | { kind: 'saveConduitConfiguration' | 'renameConduitConfiguration'; character: string; index: number; name: string }
+  | { kind: 'equipConduitConfiguration'; character: string; index: number }
   | { kind: 'setCharacterLock'; id: string; locked: boolean }
   | { kind: 'summon'; bannerId: SummonBannerId }
   | { kind: 'summonTen'; bannerId: SummonBannerId }

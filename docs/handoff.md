@@ -1,5 +1,42 @@
 # Current state and handoff
 
+## Team loadouts and character Conduit configurations (D-447)
+
+- Team has a Loadouts destination: unlimited named 1–3-member squad snapshots,
+  exact ordinary/Master equipment, Save new/Overwrite/Equip/Rename/Delete.
+  Other characters and all three per-character saved configurations stay intact.
+- Every owned Element-Bearer/captured Elemental-Devourer has three named
+  configuration slots in its full Conduit editor. Save current/Equip/Rename are
+  explicit; manual equipment changes do not overwrite presets. Matching current
+  equipment is indicated without adding an active-configuration wallet field.
+- Optional wallet fields read without writes/grants, survive save export/import
+  and authoritative operations, and retain every existing equipment restriction.
+  One write commits each mutation. Captured sale/fodder removes only that copy's
+  configurations; retained team snapshots with missing copies cannot equip.
+  Existing frozen battle squads/equipment remain unchanged.
+- Successful Save/Equip/Rename uses shared finite sparkle/sheen/impact and
+  celebration; Reduce motion keeps static accessible success. Confirmed
+  overwrite/delete, Escape, focus restoration and failures are explicit.
+- Validation: `npm test -- --testTimeout=200000 --maxWorkers=3` passed
+  7,188 tests /230 files. `npm run build`, authority TypeScript and Deno checks
+  passed. Existing chunk-size and jsdom canvas advisories remain.
+- Real browser: created a legal, unfunded Infernis account, saved/equipped a
+  squad and a character configuration; checked Escape cancellation and a
+  simulated failed storage write (raw wallet unchanged, no success effect).
+  Full-motion samples advanced and disposed; explicit in-game Reduce motion
+  produced zero effect animations/celebrations and persistent status.
+  Team/configuration cards fit1180/390/320px without horizontal overflow;
+  action targets remain at least44px.
+- Authority regenerated/deployed after explicit CLI consent; hosted
+  `node tools/smoke_server_game.mjs --loadouts` passed save/equip/rename/delete,
+  all three slots, authoritative snapshots, idempotency, revision conflict,
+  invalid-client snapshots/unowned members/fourth-slot rejection and read-back.
+  Temporary hosted accounts were removed. No currencies or units granted.
+- Publication: matching authority deployment/smoke is complete; the client
+  follows the normal push/CI/Pages verification workflow.
+  No new artwork needed; owner screenshot/files were not attached, so the
+  confirmed current-Team styling was used.
+
 ## Oblivion Lv140–180 and first-enemy artwork (D-446)
 
 - Shared `gatesOfOblivionRules` now interpolates140–180 over25 floors. All

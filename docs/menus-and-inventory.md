@@ -3374,3 +3374,45 @@ The owner-edited catalog remains the raw ability
 contract; brackets are applied at presentation, not combat calculations.
 Validate with `reference-text.test.ts`, `conduit-keywords.test.ts` and the
 affected presentation regression suites.
+## Named squad loadouts and Conduit configurations (D-447)
+
+Team's **Loadouts** button opens unlimited named squad snapshots in the current
+Team layout. Each snapshot stores 1–3 distinct owned members in order (leader
+first), their eight ordinary Conduit slots and their personal Master, if any.
+Save new, Equip, Rename, Overwrite with current squad and Delete are explicit
+actions. Names are trimmed, 1–40 characters, with no control characters.
+Overwrite and Delete use cancellable game-native confirmations.
+
+Every owned Element-Bearer and captured Elemental-Devourer has three named
+configuration slots on its full Conduit page. **Save current** records that
+character's current ordinary slots and Master; **Equip** restores one saved
+configuration; **Rename** changes only its name. Empty configurations can be
+saved, including no Master. Manual equipment changes never overwrite presets.
+The **Matches current** label compares exact slots and Master, not an active
+selection flag: identical snapshots can all match. Conduit upgrade levels
+continue to use account progress, rather than being rolled back by a preset.
+
+Team snapshots store only members' current equipment, not all three per-member
+presets. Equipping a team leaves other members' equipment and every named
+configuration unchanged. Equipping a configuration leaves the squad unchanged.
+All ownership, element, duplicate, ordinary-slot, Omnic/Calamitic limit and
+personal-Master restrictions apply; no partial squad/equipment restore is saved.
+
+Optional `squadLoadouts` / `conduitConfigurations` account fields preserve old
+wallets without load writes or grants. Saves/imports and the authority preserve
+them. Selling/consuming a captured copy removes that copy's personal presets;
+team snapshots retain its name/equipment and explicitly disable Equip until
+overwritten or deleted. They never substitute another copy or prevent wallet
+loading. Battle runs retain their frozen equipment/squad.
+
+Only successful writes trigger shared finite sparkle/sheen/impact feedback and
+the success celebration. Static accessible success text remains with Reduce
+motion; cancellation/failure never celebrates. Slot refresh retains unchanged
+portrait DOM, search/filter state and controls. Native confirmations retain
+Escape/cancellation/focus behavior; post-action controls receive focus.
+
+Validation: `src/game/saved-loadouts.test.ts`,
+`src/online/saved-loadouts.test.ts`, `src/presentation/saved-loadouts.test.ts`,
+existing Conduit/Team/feedback regressions, `npm run build`, authority typechecks
+and `node tools/smoke_server_game.mjs --loadouts`. Hosted smoke uses its own
+temporary, unmodified starter account and checks idempotency/revision conflicts.

@@ -1,5 +1,9 @@
 # Documentation hub
 
+**D-447:** [Team loadouts and three character Conduit configurations](menus-and-inventory.md#named-squad-loadouts-and-conduit-configurations-d-447):
+unlimited named squad snapshots, explicit Save/Equip/Rename controls and atomic
+ordinary/Master restoration with post-save sparkle feedback.
+
 **Phase 1 proposal (not approved):** [new Elemental War Element-Bearers and role perks](phase-1-war-characters.md).
 
 **D-435:** [Phase 0: Everything Calamity](calamitic-characters.md) records the

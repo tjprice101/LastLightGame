@@ -1,4 +1,7 @@
 import './style.css';
+import { savedLoadoutOperation, type SavedLoadoutOperation } from './presentation/saved-loadouts';
+import { saveSquadLoadout, renameSquadLoadout, equipSquadLoadout, deleteSquadLoadout,
+  saveConduitConfiguration, renameConduitConfiguration, equipConduitConfiguration } from './game/account';
 import { showStatusToast } from './presentation/status-toast';
 import './sanctuary.css';
 import './neutral-theme.css';
@@ -1628,7 +1631,7 @@ app.addEventListener('click', async event => {
         teamView = loadout ? 'capture-conduits' : 'capture';
       } else {
         const view = button.dataset.teamView;
-        if (view !== 'detail' && view !== 'bearers' && view !== 'creatures' && view !== 'capture' && view !== 'formation') throw new Error('Unknown Team view.');
+        if (view !== 'detail' && view !== 'bearers' && view !== 'creatures' && view !== 'capture' && view !== 'formation' && view !== 'loadouts') throw new Error('Unknown Team view.');
         teamView = view;
       }
       characterCategory = teamView === 'formation' ? 'squad' : teamView === 'creatures' || teamView === 'capture' || teamView === 'capture-conduits' ? 'creatures' : 'bearers';
@@ -2098,6 +2101,64 @@ app.addEventListener('click', async (event) => {
 function equipBanner(name: string, rarity: string, master = false): void {
   celebrate(master ? 'Master equipped' : 'Equipped', { ...rarityPalette(rarity), subtitle: name });
 }
+
+function performLocalLoadout(operation: SavedLoadoutOperation): Account {
+  switch (operation.kind) {
+    case 'saveSquadLoadout': return saveSquadLoadout(gameStorage, operation.id, operation.name);
+    case 'renameSquadLoadout': return renameSquadLoadout(gameStorage, operation.id, operation.name);
+    case 'equipSquadLoadout': return equipSquadLoadout(gameStorage, operation.id);
+    case 'deleteSquadLoadout': return deleteSquadLoadout(gameStorage, operation.id);
+    case 'saveConduitConfiguration': return saveConduitConfiguration(gameStorage, operation.character, operation.index, operation.name);
+    case 'renameConduitConfiguration': return renameConduitConfiguration(gameStorage, operation.character, operation.index, operation.name);
+    case 'equipConduitConfiguration': return equipConduitConfiguration(gameStorage, operation.character, operation.index);
+  }
+}
+let savedLoadoutBusy = false;
+app.addEventListener('click', async event => {
+  const button = event.target instanceof Element ? event.target.closest<HTMLButtonElement>('[data-saved-loadout-action]') : null;
+  if (!button || button.disabled || savedLoadoutBusy || onlineBusy || activityTransitionPending()) return;
+  savedLoadoutBusy = true;
+  const originalLabel = button.textContent;
+  let persisted = false;
+  try {
+    const operation = await savedLoadoutOperation(button);
+    if (!operation) return;
+    button.disabled = true;
+    button.textContent = 'Applying…';
+    const previousView = teamView, previousPage = menuPage;
+    account = playMode === 'online' ? (await performOnline(operation)).account : performLocalLoadout(operation);
+    persisted = true;
+    const subject = 'character' in operation ? 'Configuration' : 'Loadout';
+    const message = `${subject} ${operation.kind.startsWith('equip') ? 'equipped'
+      : operation.kind.startsWith('rename') ? 'renamed'
+        : operation.kind.startsWith('delete') ? 'deleted' : 'saved'}`;
+    if (journey.screen === 'menu' && menuPage === previousPage && teamView === previousView) {
+      const scroll = window.scrollY;
+      if ('character' in operation) refreshLoadout(operation.character);
+      else renderMenu();
+      window.scrollTo({ top: scroll });
+      const entry = 'character' in operation
+        ? app.querySelector<HTMLElement>(`[data-config-character="${operation.character}"][data-config-index="${operation.index}"]`)
+        : app.querySelector<HTMLElement>(`[data-saved-id="${operation.kind === 'deleteSquadLoadout' ? '' : operation.id}"]`);
+      const host = entry ?? app.querySelector<HTMLElement>('[data-saved-loadouts], [data-saved-configurations]');
+      const status = app.querySelector<HTMLElement>('[data-saved-loadout-status]');
+      if (status) status.textContent = `${message}.`;
+      if (host) {
+        const focus = host.querySelector<HTMLElement>(`[data-saved-loadout-action="${operation.kind}"]`) ??
+          host.querySelector<HTMLElement>('[data-saved-name]');
+        focus?.focus({ preventScroll: true });
+        if (operation.kind !== 'deleteSquadLoadout') rarityFeedback(host, 'Omnic', message);
+      }
+    }
+    if (operation.kind !== 'deleteSquadLoadout') celebrate(message, rarityPalette('Omnic'));
+  } catch (error) {
+    console.error('Saved loadout operation rejected', error);
+    showError(`${persisted ? 'Loadout saved, but its display could not refresh.' : 'Could not complete the loadout change.'} ${errorMessage(error)}`);
+  } finally {
+    savedLoadoutBusy = false;
+    if (button.isConnected) { button.disabled = false; button.textContent = originalLabel; }
+  }
+});
 
 function refreshLoadout(owner: string): void {
   if (account) {

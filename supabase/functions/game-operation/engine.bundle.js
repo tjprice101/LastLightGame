@@ -11589,6 +11589,102 @@ function isExchangeQuantity(value2) {
   return exchangeQuantities.includes(value2);
 }
 
+// src/game/saved-loadouts.ts
+var loadoutNameLimit = 40;
+var uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+function record(value2) {
+  return typeof value2 === "object" && value2 !== null && !Array.isArray(value2);
+}
+function loadoutName(value2) {
+  if (typeof value2 !== "string" || !value2.trim() || value2.trim().length > loadoutNameLimit || /[\u0000-\u001f\u007f]/.test(value2))
+    throw new Error(`Use a name of 1\u2013${loadoutNameLimit} characters without control characters.`);
+  return value2.trim();
+}
+function validateLoadoutId(id) {
+  if (typeof id !== "string" || !uuid.test(id)) throw new Error("Invalid squad loadout ID.");
+}
+function validateConfigurationIndex(index) {
+  if (!Number.isInteger(index) || typeof index !== "number" || index < 0 || index > 2)
+    throw new Error("Choose Conduit configuration 1, 2 or 3.");
+}
+function characterElement(account, character) {
+  if (isStarterId(character) && account.characters[character]) return getStarter(character).elementId;
+  const copy = account.capturedCharacters?.find((copy2) => copy2.instanceId === character);
+  if (copy) return getCreature(copy.creatureId).element;
+  throw new Error("A saved squad member is no longer owned. Update the loadout before equipping it.");
+}
+function validateEquipment(account, character, element, value2) {
+  if (!record(value2)) throw new Error("Invalid saved Conduit configuration.");
+  const conduits2 = validateConduitSlots(value2.conduits);
+  validateConduitElement(conduits2, element);
+  for (const id of conduits2)
+    if (id !== null && (!isConduitId(id) || !(account.conduits?.[id] ?? 0))) throw new Error("A loadout requires owned Conduits.");
+  const master2 = value2.master;
+  if (master2 !== null) {
+    if (!isStarterId(character) || !isMasterConduitId(master2) || account.masterConduits?.[master2] !== 1)
+      throw new Error("A loadout requires an owned, matching Master Conduit.");
+    validateMasterCharacter(master2, character);
+  }
+  return { conduits: [...conduits2], master: master2 };
+}
+function currentEquipment(account, character) {
+  characterElement(account, character);
+  return {
+    conduits: [...account.conduitEquipment?.[character] ?? Array(conduitSlotCount).fill(null)],
+    master: isStarterId(character) ? account.masterEquipment?.[character] ?? null : null
+  };
+}
+function validateSquadLoadouts(account, value2) {
+  if (!Array.isArray(value2)) throw new Error("Invalid saved squad loadouts.");
+  const ids = /* @__PURE__ */ new Set();
+  return value2.map((entry) => {
+    if (!record(entry)) throw new Error("Invalid saved squad loadout.");
+    validateLoadoutId(entry.id);
+    if (ids.has(entry.id)) throw new Error("Duplicate squad loadout ID.");
+    ids.add(entry.id);
+    if (!Array.isArray(entry.members) || !entry.members.length || entry.members.length > 3)
+      throw new Error("A squad loadout needs one to three members.");
+    const members = /* @__PURE__ */ new Set();
+    return { id: entry.id, name: loadoutName(entry.name), members: entry.members.map((member) => {
+      if (!record(member) || typeof member.character !== "string" || !isStarterId(member.character) && !(member.character.startsWith("capture:") && uuid.test(member.character.slice(8))) || typeof member.element !== "string" || !elements.some((element2) => element2.id === member.element) || members.has(member.character)) throw new Error("Invalid saved squad loadout member.");
+      const element = elements.find((element2) => element2.id === member.element)?.id;
+      if (!element || typeof member.name !== "string" || !member.name.trim() || member.name.length > 200)
+        throw new Error("Invalid saved squad member identity.");
+      if (isStarterId(member.character) && (!account.characters[member.character] || getStarter(member.character).elementId !== element))
+        throw new Error("A squad loadout requires an owned Element-Bearer of the saved element.");
+      const copy = account.capturedCharacters?.find((copy2) => copy2.instanceId === member.character);
+      if (copy && getCreature(copy.creatureId).element !== element) throw new Error("Saved loadout element does not match its member.");
+      members.add(member.character);
+      return {
+        character: member.character,
+        name: member.name,
+        element,
+        ...validateEquipment(account, member.character, element, member)
+      };
+    }) };
+  });
+}
+function validateConduitConfigurations(account, value2) {
+  if (!record(value2)) throw new Error("Invalid saved character Conduit configurations.");
+  const result = {};
+  for (const [character, entries] of Object.entries(value2)) {
+    const element = characterElement(account, character);
+    if (!Array.isArray(entries) || entries.length !== 3) throw new Error("Each character has exactly three Conduit configurations.");
+    const validate = (entry) => {
+      if (entry === null) return null;
+      if (!record(entry)) throw new Error("Invalid saved character Conduit configuration.");
+      return { name: loadoutName(entry.name), ...validateEquipment(account, character, element, entry) };
+    };
+    result[character] = [validate(entries[0]), validate(entries[1]), validate(entries[2])];
+  }
+  return result;
+}
+function applySavedEquipment(account, character, equipment) {
+  const validated = validateEquipment(account, character, characterElement(account, character), equipment);
+  account.conduitEquipment = { ...account.conduitEquipment, [character]: [...validated.conduits] };
+  if (isStarterId(character)) account.masterEquipment = { ...account.masterEquipment, [character]: validated.master };
+}
+
 // src/game/account.ts
 var ACCOUNT_KEY = "last-light.wallet";
 function emptyAccount() {
@@ -11597,7 +11693,7 @@ function emptyAccount() {
 function count(value2) {
   return typeof value2 === "number" && Number.isSafeInteger(value2) && value2 >= 0;
 }
-function record(value2) {
+function record2(value2) {
   return typeof value2 === "object" && value2 !== null && !Array.isArray(value2);
 }
 function migrateLegacyDungeonStage(stage, version) {
@@ -11613,11 +11709,11 @@ function migrateLegacyDungeonStage(stage, version) {
   return unlocked;
 }
 function hasHistoricalBossReceipt(receipts, boss) {
-  const uuid2 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  return receipts.some((receipt) => receipt.length === 37 + boss.length && uuid2.test(receipt.slice(0, 36)) && receipt.slice(36) === `:${boss}`);
+  const uuid3 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return receipts.some((receipt) => receipt.length === 37 + boss.length && uuid3.test(receipt.slice(0, 36)) && receipt.slice(36) === `:${boss}`);
 }
 function validateAccount(value2) {
-  if (!record(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 && value2.version !== 7 && value2.version !== 8 && value2.version !== 9 && value2.version !== 10 && value2.version !== 11 || !count(value2.fractalis) || !count(value2.lycalis) || !record(value2.materials) || !record(value2.characters) || !record(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
+  if (!record2(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 && value2.version !== 7 && value2.version !== 8 && value2.version !== 9 && value2.version !== 10 && value2.version !== 11 || !count(value2.fractalis) || !count(value2.lycalis) || !record2(value2.materials) || !record2(value2.characters) || !record2(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
     throw new Error("The local progression save is invalid or unsupported. It has not been overwritten.");
   }
   const account = emptyAccount();
@@ -11636,7 +11732,7 @@ function validateAccount(value2) {
     account.calamityShardSeed = value2.calamityShardSeed;
   }
   if (value2.calamityChests !== void 0) {
-    if (!record(value2.calamityChests)) throw new Error("Invalid saved Calamity chest inventory.");
+    if (!record2(value2.calamityChests)) throw new Error("Invalid saved Calamity chest inventory.");
     account.calamityChests = {};
     for (const [id, amount] of Object.entries(value2.calamityChests)) {
       parseCalamityChestId(id);
@@ -11645,7 +11741,7 @@ function validateAccount(value2) {
     }
   }
   if (value2.calamityClears !== void 0) {
-    if (!record(value2.calamityClears)) throw new Error("Invalid saved Calamity progress.");
+    if (!record2(value2.calamityClears)) throw new Error("Invalid saved Calamity progress.");
     account.calamityClears = {};
     for (const [id, tier] of Object.entries(value2.calamityClears)) {
       if (!isCalamityActivityId(id) || !count(tier) || tier > 3) throw new Error("Invalid saved Calamity clear.");
@@ -11653,7 +11749,7 @@ function validateAccount(value2) {
     }
   }
   if (value2.normalFinalClears !== void 0) {
-    if (!record(value2.normalFinalClears)) throw new Error("Invalid saved final-clear evidence.");
+    if (!record2(value2.normalFinalClears)) throw new Error("Invalid saved final-clear evidence.");
     account.normalFinalClears = {};
     for (const [id, cleared] of Object.entries(value2.normalFinalClears)) {
       if (!isCalamityActivityId(id) || typeof cleared !== "boolean") throw new Error("Invalid saved final-clear evidence.");
@@ -11673,7 +11769,7 @@ function validateAccount(value2) {
     account.masterChests = value2.masterChests;
   }
   if (value2.masterConduits !== void 0) {
-    if (!record(value2.masterConduits)) throw new Error("Invalid saved Master Conduit inventory.");
+    if (!record2(value2.masterConduits)) throw new Error("Invalid saved Master Conduit inventory.");
     account.masterConduits = {};
     for (const [id, amount] of Object.entries(value2.masterConduits)) {
       if (!isMasterConduitId(id) || amount !== 0 && amount !== 1) throw new Error("Invalid saved Master Conduit unlock.");
@@ -11681,7 +11777,7 @@ function validateAccount(value2) {
     }
   }
   if (value2.bannerPity !== void 0) {
-    if (!record(value2.bannerPity)) throw new Error("Invalid saved banner pity.");
+    if (!record2(value2.bannerPity)) throw new Error("Invalid saved banner pity.");
     account.bannerPity = {};
     for (const [id, counters] of Object.entries(value2.bannerPity)) {
       if (!isSummonBannerId(id)) throw new Error("Unknown saved pity banner.");
@@ -11715,7 +11811,7 @@ function validateAccount(value2) {
     account.oblivionStage = value2.oblivionStage;
   }
   if (value2.warStages !== void 0) {
-    if (!record(value2.warStages)) throw new Error("Invalid saved Elemental War progress.");
+    if (!record2(value2.warStages)) throw new Error("Invalid saved Elemental War progress.");
     account.warStages = {};
     for (const [id, stage] of Object.entries(value2.warStages)) {
       if (!isWarCharacter(id) || !count(stage) || stage < 1 || stage > warStageCount) throw new Error("Invalid saved Elemental War stage.");
@@ -11723,7 +11819,7 @@ function validateAccount(value2) {
     }
   }
   if (value2.conduits !== void 0) {
-    if (!record(value2.conduits)) throw new Error("Invalid saved Conduit inventory.");
+    if (!record2(value2.conduits)) throw new Error("Invalid saved Conduit inventory.");
     account.conduits = {};
     for (const [id, amount] of Object.entries(value2.conduits)) {
       if (!isConduitId(id) || !count(amount)) throw new Error("Invalid saved Conduit inventory.");
@@ -11749,12 +11845,12 @@ function validateAccount(value2) {
     account.materials[canonicalId] = total;
   }
   for (const [id, progress] of Object.entries(value2.characters)) {
-    if (!isStarterId(id) || !record(progress) || typeof progress.level !== "number" || typeof progress.evolution !== "number") {
+    if (!isStarterId(id) || !record2(progress) || typeof progress.level !== "number" || typeof progress.evolution !== "number") {
       throw new Error("Invalid saved character progress.");
     }
     if (progress.weaponRank !== void 0 && typeof progress.weaponRank !== "number") throw new Error("Invalid saved weapon rank.");
     if (progress.ascension !== void 0) {
-      if (!record(progress.ascension) || Object.keys(progress.ascension).length === 0 || Object.keys(progress.ascension).some((key) => !["stats", "skill1", "skill2", "lastFlare"].includes(key)) || Object.values(progress.ascension).some((flag) => flag !== true) || (progress.ascension.skill1 === true || progress.ascension.skill2 === true || progress.ascension.lastFlare === true) && progress.ascension.stats !== true || progress.ascension.stats === true && (progress.evolution !== 6 || progress.level < characterLevelCap(6, id))) {
+      if (!record2(progress.ascension) || Object.keys(progress.ascension).length === 0 || Object.keys(progress.ascension).some((key) => !["stats", "skill1", "skill2", "lastFlare"].includes(key)) || Object.values(progress.ascension).some((flag) => flag !== true) || (progress.ascension.skill1 === true || progress.ascension.skill2 === true || progress.ascension.lastFlare === true) && progress.ascension.stats !== true || progress.ascension.stats === true && (progress.evolution !== 6 || progress.level < characterLevelCap(6, id))) {
         throw new Error("Invalid saved Calamitic Ascension state.");
       }
     }
@@ -11779,7 +11875,7 @@ function validateAccount(value2) {
     account.squad = [...value2.squad];
   }
   if (value2.masterEquipment !== void 0) {
-    if (!record(value2.masterEquipment)) throw new Error("Invalid saved Master equipment.");
+    if (!record2(value2.masterEquipment)) throw new Error("Invalid saved Master equipment.");
     account.masterEquipment = {};
     for (const [character, id] of Object.entries(value2.masterEquipment)) {
       if (!isStarterId(character) || !account.characters[character]) throw new Error("Master equipment requires an owned Element-Bearer.");
@@ -11791,7 +11887,7 @@ function validateAccount(value2) {
     }
   }
   if (value2.conduitEquipment !== void 0) {
-    if (!record(value2.conduitEquipment)) throw new Error("Invalid saved Conduit equipment.");
+    if (!record2(value2.conduitEquipment)) throw new Error("Invalid saved Conduit equipment.");
     account.conduitEquipment = {};
     for (const [id, slots] of Object.entries(value2.conduitEquipment)) {
       if (!ownedCharacterInstances(account).includes(id)) throw new Error("Conduit equipment requires an owned character.");
@@ -11813,7 +11909,7 @@ function validateAccount(value2) {
     account.dungeonStages[canonicalId] = Math.max(account.dungeonStages[canonicalId] ?? 1, migratedStage);
   }
   if (value2.infusionStages !== void 0) {
-    if (!record(value2.infusionStages)) throw new Error("Invalid saved infusion stages.");
+    if (!record2(value2.infusionStages)) throw new Error("Invalid saved infusion stages.");
     for (const [id, stage] of Object.entries(value2.infusionStages)) {
       if (!isInfusionMode(id) || !count(stage) || stage < 1) throw new Error("Invalid saved infusion stage.");
       const resized = value2.version < 7 && isResizedActivity(id) && !(value2.version === 2 && id !== "machines");
@@ -11835,20 +11931,22 @@ function validateAccount(value2) {
       }
     }
     if (value2.creatures !== void 0) {
-      if (!record(value2.creatures)) throw new Error("Invalid saved Elemental-Devourer discoveries.");
+      if (!record2(value2.creatures)) throw new Error("Invalid saved Elemental-Devourer discoveries.");
       for (const [id, entry] of Object.entries(value2.creatures)) {
         getCreature(id);
-        if (!record(entry) || typeof entry.defeated !== "boolean") throw new Error("Invalid saved Elemental-Devourer discovery.");
+        if (!record2(entry) || typeof entry.defeated !== "boolean") throw new Error("Invalid saved Elemental-Devourer discovery.");
         account.creatures[id] = { defeated: entry.defeated };
       }
     }
   }
+  if (value2.squadLoadouts !== void 0) account.squadLoadouts = validateSquadLoadouts(account, value2.squadLoadouts);
+  if (value2.conduitConfigurations !== void 0) account.conduitConfigurations = validateConduitConfigurations(account, value2.conduitConfigurations);
   return account;
 }
 function loadAccount(storage) {
   const raw = storage.getItem(ACCOUNT_KEY);
   const value2 = raw === null ? null : JSON.parse(raw);
-  const account = raw === null ? emptyAccount() : record(value2) && value2.version === 1 && count(value2.fractalis) ? { ...emptyAccount(), fractalis: value2.fractalis } : validateAccount(value2);
+  const account = raw === null ? emptyAccount() : record2(value2) && value2.version === 1 && count(value2.fractalis) ? { ...emptyAccount(), fractalis: value2.fractalis } : validateAccount(value2);
   const profile = loadProfile(storage);
   if (profile) {
     account.characters[profile.starterId] ??= { level: 0, evolution: 1 };
@@ -11913,6 +12011,73 @@ function setSquad(storage, ids) {
   if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before editing a squad.");
   const account = loadAccount(storage);
   account.squad = [...ids];
+  return saveAccount(storage, account);
+}
+function loadLoadoutAccount(storage) {
+  if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before managing loadouts.");
+  return loadAccount(storage);
+}
+function saveSquadLoadout(storage, id, name) {
+  validateLoadoutId(id);
+  const account = loadLoadoutAccount(storage), title = loadoutName(name);
+  const members = equippedSquad(account).map((character) => {
+    const copy = account.capturedCharacters?.find((copy2) => copy2.instanceId === character);
+    const memberName = isStarterId(character) ? getStarter(character).name : copy ? getCreature(copy.creatureId).name : void 0;
+    if (!memberName) throw new Error("Choose an owned squad member.");
+    return {
+      character,
+      name: memberName,
+      element: characterElement(account, character),
+      ...currentEquipment(account, character)
+    };
+  });
+  const loadout = { id, name: title, members };
+  account.squadLoadouts = account.squadLoadouts?.some((entry) => entry.id === id) ? account.squadLoadouts.map((entry) => entry.id === id ? loadout : entry) : [...account.squadLoadouts ?? [], loadout];
+  return saveAccount(storage, account);
+}
+function renameSquadLoadout(storage, id, name) {
+  const account = loadLoadoutAccount(storage);
+  const entry = account.squadLoadouts?.find((entry2) => entry2.id === id);
+  if (!entry) throw new Error("Choose a saved squad loadout.");
+  entry.name = loadoutName(name);
+  return saveAccount(storage, account);
+}
+function equipSquadLoadout(storage, id) {
+  const account = loadLoadoutAccount(storage);
+  const entry = account.squadLoadouts?.find((entry2) => entry2.id === id);
+  if (!entry) throw new Error("Choose a saved squad loadout.");
+  for (const member of entry.members) applySavedEquipment(account, member.character, member);
+  account.squad = entry.members.map((member) => member.character);
+  return saveAccount(storage, account);
+}
+function deleteSquadLoadout(storage, id) {
+  const account = loadLoadoutAccount(storage);
+  if (!account.squadLoadouts?.some((entry) => entry.id === id)) throw new Error("Choose a saved squad loadout.");
+  account.squadLoadouts = account.squadLoadouts.filter((entry) => entry.id !== id);
+  return saveAccount(storage, account);
+}
+function saveConduitConfiguration(storage, character, index, name) {
+  validateConfigurationIndex(index);
+  const account = loadLoadoutAccount(storage);
+  const configurations = account.conduitConfigurations?.[character] ?? [null, null, null];
+  configurations[index] = { name: loadoutName(name), ...currentEquipment(account, character) };
+  account.conduitConfigurations = { ...account.conduitConfigurations, [character]: configurations };
+  return saveAccount(storage, account);
+}
+function renameConduitConfiguration(storage, character, index, name) {
+  validateConfigurationIndex(index);
+  const account = loadLoadoutAccount(storage);
+  const entry = account.conduitConfigurations?.[character]?.[index];
+  if (!entry) throw new Error("Save this Conduit configuration first.");
+  entry.name = loadoutName(name);
+  return saveAccount(storage, account);
+}
+function equipConduitConfiguration(storage, character, index) {
+  validateConfigurationIndex(index);
+  const account = loadLoadoutAccount(storage);
+  const entry = account.conduitConfigurations?.[character]?.[index];
+  if (!entry) throw new Error("Save this Conduit configuration first.");
+  applySavedEquipment(account, character, entry);
   return saveAccount(storage, account);
 }
 var summonCost = standardBanner.cost;
@@ -12031,6 +12196,7 @@ function sellCurrencyCreatures(storage, selections) {
   const ids = new Set(selections.map((selection) => selection.id));
   account.capturedCharacters = account.capturedCharacters?.filter((copy) => !ids.has(copy.instanceId));
   if (account.conduitEquipment) for (const id of ids) delete account.conduitEquipment[id];
+  if (account.conduitConfigurations) for (const id of ids) delete account.conduitConfigurations[id];
   return saveAccount(storage, account);
 }
 function ownedProgress(account, id) {
@@ -12256,6 +12422,7 @@ function upgradeCharacter(storage, id, kind, expected, fodderIds = []) {
   if (fodderIds.length) {
     account.capturedCharacters = account.capturedCharacters?.filter((copy) => !fodderIds.includes(copy.instanceId));
     for (const id2 of fodderIds) if (account.conduitEquipment) delete account.conduitEquipment[id2];
+    for (const id2 of fodderIds) if (account.conduitConfigurations) delete account.conduitConfigurations[id2];
   }
   account.characters[id] = kind === "level" ? { ...current, level: current.level + 1 } : { ...current, evolution: current.evolution + 1 };
   if (kind === "evolve" && !account.firstFracture) {
@@ -12315,7 +12482,7 @@ function saveAccountRewards(storage, result, runId) {
   const account = loadAccount(storage);
   if (result.state.calamity !== void 0) {
     const activity = result.state.calamity;
-    if (!record(activity) || !isCalamityActivityId(activity.activity) || !isCalamityTier(activity.tier) || result.state.dungeon || result.state.infusion || result.state.story || result.state.war || result.state.oblivion || !["player", "cleared", "defeat"].includes(result.state.phase) || result.state.wave !== 1 || result.state.enemies.length !== 1 || activity.tier > calamityUnlockedTier(account, activity.activity)) {
+    if (!record2(activity) || !isCalamityActivityId(activity.activity) || !isCalamityTier(activity.tier) || result.state.dungeon || result.state.infusion || result.state.story || result.state.war || result.state.oblivion || !["player", "cleared", "defeat"].includes(result.state.phase) || result.state.wave !== 1 || result.state.enemies.length !== 1 || activity.tier > calamityUnlockedTier(account, activity.activity)) {
       throw new Error("Invalid or locked Calamity encounter.");
     }
     const boss = result.state.enemies[0];
@@ -12382,7 +12549,7 @@ function saveAccountRewards(storage, result, runId) {
   if (result.events.some((event2) => event2.calamityChest !== void 0)) throw new Error("Calamity chests require a Calamity encounter.");
   const oblivion = result.state.oblivion;
   if (oblivion !== void 0) {
-    if (!record(oblivion) || Object.keys(oblivion).length !== 1 || !isOblivionStage(oblivion.stage) || result.state.dungeon || result.state.infusion || result.state.story || result.state.war || result.state.calamity || result.state.wave !== oblivion.stage || !["player", "cleared", "defeat"].includes(result.state.phase) || !Object.keys(account.characters).some(isCalamiticCharacter) || oblivion.stage > unlockedOblivionStage(account)) {
+    if (!record2(oblivion) || Object.keys(oblivion).length !== 1 || !isOblivionStage(oblivion.stage) || result.state.dungeon || result.state.infusion || result.state.story || result.state.war || result.state.calamity || result.state.wave !== oblivion.stage || !["player", "cleared", "defeat"].includes(result.state.phase) || !Object.keys(account.characters).some(isCalamiticCharacter) || oblivion.stage > unlockedOblivionStage(account)) {
       throw new Error("Invalid or locked Gates of Oblivion encounter.");
     }
     const encounter2 = oblivionEncounter(oblivion.stage);
@@ -12425,7 +12592,7 @@ function saveAccountRewards(storage, result, runId) {
       const expectedCurrency = activityPrismaticaDrop({ oblivion: { stage } }, enemy.level);
       const expectedMaterials = oblivionMaterialLoot(stage);
       const allowedKeys = ["kind", "source", "target", "amount", "critical", "message", "materials"];
-      if (enemy.hp > 0 || reward.source !== enemy.id || reward.target !== "" || reward.critical !== false || !count(reward.amount) || reward.amount < expectedCurrency.minimum || reward.amount > expectedCurrency.maximum || Object.entries(reward).some(([key, value2]) => value2 !== void 0 && !allowedKeys.includes(key)) || !record(reward.materials)) throw new Error("Invalid Gates of Oblivion reward.");
+      if (enemy.hp > 0 || reward.source !== enemy.id || reward.target !== "" || reward.critical !== false || !count(reward.amount) || reward.amount < expectedCurrency.minimum || reward.amount > expectedCurrency.maximum || Object.entries(reward).some(([key, value2]) => value2 !== void 0 && !allowedKeys.includes(key)) || !record2(reward.materials)) throw new Error("Invalid Gates of Oblivion reward.");
       const fragment = reward.materials["fragment-of-rise"];
       const expectedIds = new Set(expectedMaterials.map((drop) => drop.id));
       for (const drop of expectedMaterials) {
@@ -12462,7 +12629,7 @@ function saveAccountRewards(storage, result, runId) {
       const encounter2 = storyEncounter(stage);
       const range2 = activityPrismaticaDrop(result.state, enemy.level);
       const materialPool = storyMaterialLoot(stage);
-      if (enemy.hp > 0 || reward.capture !== void 0 || reward.conduits !== void 0 || reward.mechanicalComponents !== void 0 || reward.lycalis !== void 0 || reward.storyBonus !== void 0 || reward.recruitment !== void 0 || reward.recruitmentOutcome !== void 0 || !count(reward.amount) || reward.amount < range2.minimum || reward.amount > range2.maximum || !record(reward.materials) || !count(reward.materials[`${encounter2.element}-common`])) {
+      if (enemy.hp > 0 || reward.capture !== void 0 || reward.conduits !== void 0 || reward.mechanicalComponents !== void 0 || reward.lycalis !== void 0 || reward.storyBonus !== void 0 || reward.recruitment !== void 0 || reward.recruitmentOutcome !== void 0 || !count(reward.amount) || reward.amount < range2.minimum || reward.amount > range2.maximum || !record2(reward.materials) || !count(reward.materials[`${encounter2.element}-common`])) {
         throw new Error("Invalid Story reward.");
       }
       for (const [id, amount] of Object.entries(reward.materials)) {
@@ -12869,24 +13036,24 @@ function profileIconUnlocked(account, icon) {
   if (icon === "neutral") return true;
   return isStarterId(icon) ? ownedCharacters(account).includes(icon) : profilePictureUnlocked(account, icon);
 }
-function profileActivityFor(operation, previousStoryCompleted, resolved, uuid2) {
+function profileActivityFor(operation, previousStoryCompleted, resolved, uuid3) {
   if (operation.kind === "bootstrap") return {
-    id: uuid2(),
+    id: uuid3(),
     message: "Starter selected",
     detail: `${operation.starterId} Element-Bearer`
   };
   if (operation.kind === "importSave") return {
-    id: uuid2(),
+    id: uuid3(),
     message: "Save imported",
     detail: "Existing save moved online"
   };
   if (operation.kind === "summon" || operation.kind === "summonTen") return {
-    id: uuid2(),
+    id: uuid3(),
     message: "Summoned",
     detail: `${operation.bannerId === "roses" ? "Crimson Roses" : "Standard"} \xB7 ${operation.kind === "summonTen" ? 10 : 1} draw${operation.kind === "summonTen" ? "s" : ""}`
   };
   if (operation.kind === "purchaseConduit") return {
-    id: uuid2(),
+    id: uuid3(),
     message: "Conduit purchased",
     detail: getConduit(operation.id).name
   };
@@ -12895,7 +13062,7 @@ function profileActivityFor(operation, previousStoryCompleted, resolved, uuid2) 
     const completed = resolved.game.account.storyCompleted ?? 0;
     const restoredBeacon = Math.floor(completed / storyRules.regionStages) > Math.floor(previousStoryCompleted / storyRules.regionStages);
     return {
-      id: uuid2(),
+      id: uuid3(),
       message: "Story stage cleared",
       detail: `${restoredBeacon ? "Beacon restored \xB7 " : ""}Story \xB7 Stage ${stage}`
     };
@@ -12916,7 +13083,7 @@ function freshGame(username, createdAt = (/* @__PURE__ */ new Date()).toISOStrin
     statistics: { storyCompleted: 0, ownedBearers: 0, capturedCreatures: 0, discoveredCreatures: 0 }
   } };
 }
-function record2(value2) {
+function record3(value2) {
   return !!value2 && typeof value2 === "object" && !Array.isArray(value2);
 }
 function keys(value2, allowed) {
@@ -12940,6 +13107,13 @@ var operationKeys = {
   importSave: ["save"],
   setSquad: ["ids"],
   setCharacterLock: ["id", "locked"],
+  saveSquadLoadout: ["id", "name"],
+  renameSquadLoadout: ["id", "name"],
+  equipSquadLoadout: ["id"],
+  deleteSquadLoadout: ["id"],
+  saveConduitConfiguration: ["character", "index", "name"],
+  renameConduitConfiguration: ["character", "index", "name"],
+  equipConduitConfiguration: ["character", "index"],
   summon: ["bannerId"],
   summonTen: ["bannerId"],
   sellCurrencyCreature: ["id", "saleOption"],
@@ -12968,18 +13142,18 @@ var operationKeys = {
   quit: ["runId"]
 };
 function validateRequest(value2) {
-  if (!record2(value2)) throw new Error("Request must be an object.");
+  if (!record3(value2)) throw new Error("Request must be an object.");
   keys(value2, ["requestId", "expectedRevision", "operation"]);
   if (typeof value2.requestId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value2.requestId)) {
     throw new Error("A UUID request ID is required.");
   }
   integer(value2.expectedRevision);
-  if (!record2(value2.operation) || typeof value2.operation.kind !== "string" || !Object.hasOwn(operationKeys, value2.operation.kind)) throw new Error("Unknown game operation.");
+  if (!record3(value2.operation) || typeof value2.operation.kind !== "string" || !Object.hasOwn(operationKeys, value2.operation.kind)) throw new Error("Unknown game operation.");
   const op = value2.operation;
   if (op.kind === "sellCurrencyCreatures") {
     if (!Array.isArray(op.selections) || !op.selections.length) throw new Error("Choose at least one Elemental-Devourer to sell.");
     for (const selection of op.selections) {
-      if (!record2(selection)) throw new Error("Invalid sale selection.");
+      if (!record3(selection)) throw new Error("Invalid sale selection.");
       keys(selection, ["id", "saleOption"]);
       text(selection.id);
       text(selection.saleOption);
@@ -12995,7 +13169,8 @@ function validateRequest(value2) {
     if (!isMachineFocusRarity(op.rarity)) throw new Error("Choose a valid Machines focus rarity.");
     if (op.id !== null) validateMachineLootFocus({ [op.rarity]: op.id });
   }
-  for (const field of ["slot", "expectedLevel", "quantity", "expectedCount"]) if (field in op) integer(op[field]);
+  for (const field of ["slot", "index", "expectedLevel", "quantity", "expectedCount"]) if (field in op) integer(op[field]);
+  if ("name" in op) text(op.name, 40);
   if (op.kind === "openCalamityChest") {
     parseCalamityChestId(op.id);
     if (op.expectedCount < 1) throw new Error("Choose an owned Calamity chest.");
@@ -13006,32 +13181,32 @@ function validateRequest(value2) {
     if (!Array.isArray(op[field]) || op[field].length > maximum || !op[field].every((id) => typeof id === "string" && id.length > 0 && id.length <= 100)) throw new Error("Invalid character IDs.");
   }
   if (op.kind === "upgradeCharacter" || op.kind === "ascendCharacter") {
-    if (!record2(op.expected)) throw new Error("Invalid expected progress.");
+    if (!record3(op.expected)) throw new Error("Invalid expected progress.");
     keys(op.expected, ["level", "evolution", "weaponRank", "ascension"]);
     integer(op.expected.level);
     integer(op.expected.evolution);
     if ("weaponRank" in op.expected) integer(op.expected.weaponRank);
-    if ("ascension" in op.expected && (!record2(op.expected.ascension) || Object.keys(op.expected.ascension).some((key) => !["stats", "skill1", "skill2", "lastFlare"].includes(key)) || Object.values(op.expected.ascension).some((flag) => typeof flag !== "boolean"))) throw new Error("Invalid expected Ascension state.");
+    if ("ascension" in op.expected && (!record3(op.expected.ascension) || Object.keys(op.expected.ascension).some((key) => !["stats", "skill1", "skill2", "lastFlare"].includes(key)) || Object.values(op.expected.ascension).some((flag) => typeof flag !== "boolean"))) throw new Error("Invalid expected Ascension state.");
   }
   if (op.kind === "ascendCharacter" && !["stats", "skill1", "skill2", "lastFlare"].includes(String(op.step))) throw new Error("Invalid Calamitic Ascension step");
   if (op.kind === "maxConduit") {
-    if (!record2(op.expected)) throw new Error("Invalid Conduit Max Level preview.");
+    if (!record3(op.expected)) throw new Error("Invalid Conduit Max Level preview.");
     keys(op.expected, ["id", "currentLevel", "targetLevel", "cost"]);
     text(op.expected.id);
     for (const field of ["currentLevel", "targetLevel", "cost"]) integer(op.expected[field]);
   }
   if (op.kind === "levelMax") {
-    if (!record2(op.expected) || op.expected.id !== op.id) throw new Error("Invalid Max Level preview.");
+    if (!record3(op.expected) || op.expected.id !== op.id) throw new Error("Invalid Max Level preview.");
     keys(op.expected, ["id", "currentLevel", "targetLevel", "cap", "cost", "progressKey"]);
     for (const field of ["currentLevel", "targetLevel", "cap"]) integer(op.expected[field]);
     text(op.expected.progressKey, 8192);
-    if (!record2(op.expected.cost) || !record2(op.expected.cost.materials)) throw new Error("Invalid Max Level cost.");
+    if (!record3(op.expected.cost) || !record3(op.expected.cost.materials)) throw new Error("Invalid Max Level cost.");
     keys(op.expected.cost, ["fractalis", "materials"]);
     integer(op.expected.cost.fractalis);
     for (const amount of Object.values(op.expected.cost.materials)) integer(amount);
   }
   if (op.kind === "enter") {
-    if (!record2(op.activity) || !["training", "story", "dungeon", "oblivion", "infusion", "war", "calamity"].includes(String(op.activity.kind))) throw new Error("Invalid activity.");
+    if (!record3(op.activity) || !["training", "story", "dungeon", "oblivion", "infusion", "war", "calamity"].includes(String(op.activity.kind))) throw new Error("Invalid activity.");
     if (op.activity.kind === "calamity") {
       keys(op.activity, ["kind", "activity", "tier"]);
       if (!isCalamityActivityId(op.activity.activity) || !isCalamityTier(op.activity.tier)) throw new Error("Invalid Calamity activity or tier.");
@@ -13066,21 +13241,21 @@ var chatKeys = {
   block: { required: ["userId"] },
   unblock: { required: ["userId"] }
 };
-var uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+var uuid2 = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 var chatControl = /[\u0000-\u0008\u000b-\u001f\u007f]/;
 function validateChatRequest(value2) {
-  if (!record2(value2)) throw new Error("Request must be an object.");
+  if (!record3(value2)) throw new Error("Request must be an object.");
   keys(value2, ["requestId", "chat"]);
   if (typeof value2.requestId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value2.requestId)) {
     throw new Error("A UUID request ID is required.");
   }
   const op = value2.chat;
-  if (!record2(op) || typeof op.kind !== "string" || !Object.hasOwn(chatKeys, op.kind)) throw new Error("Unknown chat operation.");
+  if (!record3(op) || typeof op.kind !== "string" || !Object.hasOwn(chatKeys, op.kind)) throw new Error("Unknown chat operation.");
   const shape = chatKeys[op.kind];
   keys(op, ["kind", ...shape.required, ...shape.optional ?? []]);
   if (shape.required.some((key) => !(key in op))) throw new Error("Missing chat field.");
   for (const key of ["conversationId", "before", "userId"]) {
-    if (key in op && (typeof op[key] !== "string" || !uuid.test(op[key]))) throw new Error("Invalid chat identifier.");
+    if (key in op && (typeof op[key] !== "string" || !uuid2.test(op[key]))) throw new Error("Invalid chat identifier.");
   }
   for (const key of ["accept", "pinned", "muted"]) if (key in op && typeof op[key] !== "boolean") throw new Error("Invalid chat option.");
   if ("before" in op && !("conversationId" in op)) throw new Error("Choose a conversation to page.");
@@ -13095,30 +13270,30 @@ function validateChatRequest(value2) {
     const name = typeof op.name === "string" ? op.name.trim() : "";
     if (!name || [...name].length > chatGroupNameLength || /[\u0000-\u001f\u007f]/.test(name)) throw new Error("Invalid group name.");
   }
-  if ("userIds" in op && (!Array.isArray(op.userIds) || op.userIds.length > chatGroupMembers - 1 || !op.userIds.every((id) => typeof id === "string" && uuid.test(id)) || new Set(op.userIds.map((id) => id.toLowerCase())).size !== op.userIds.length)) {
+  if ("userIds" in op && (!Array.isArray(op.userIds) || op.userIds.length > chatGroupMembers - 1 || !op.userIds.every((id) => typeof id === "string" && uuid2.test(id)) || new Set(op.userIds.map((id) => id.toLowerCase())).size !== op.userIds.length)) {
     throw new Error(`Invite up to ${chatGroupMembers - 1} distinct friends.`);
   }
   return value2;
 }
 function validateFriendProfileRequest(value2) {
-  if (!record2(value2)) throw new Error("Request must be an object.");
+  if (!record3(value2)) throw new Error("Request must be an object.");
   keys(value2, ["requestId", "friendProfile"]);
-  if (typeof value2.requestId !== "string" || !uuid.test(value2.requestId)) throw new Error("A UUID request ID is required.");
-  if (!record2(value2.friendProfile)) throw new Error("Choose a friend.");
+  if (typeof value2.requestId !== "string" || !uuid2.test(value2.requestId)) throw new Error("A UUID request ID is required.");
+  if (!record3(value2.friendProfile)) throw new Error("Choose a friend.");
   keys(value2.friendProfile, ["userId"]);
-  if (typeof value2.friendProfile.userId !== "string" || !uuid.test(value2.friendProfile.userId)) throw new Error("Invalid friend user ID.");
+  if (typeof value2.friendProfile.userId !== "string" || !uuid2.test(value2.friendProfile.userId)) throw new Error("Invalid friend user ID.");
   return value2;
 }
 function friendProfileView(row) {
-  if (!record2(row) || typeof row.userId !== "string" || typeof row.username !== "string" || typeof row.createdAt !== "string") {
+  if (!record3(row) || typeof row.userId !== "string" || typeof row.username !== "string" || typeof row.createdAt !== "string") {
     throw new Error("Friend profile unavailable.");
   }
-  const stored = record2(row.state) ? row.state : freshGame(row.username, row.createdAt);
+  const stored = record3(row.state) ? row.state : freshGame(row.username, row.createdAt);
   const account = redactFriendAccount(stored.account);
-  const source = record2(stored.profile) ? stored.profile : freshGame(row.username, row.createdAt).profile;
-  const reference = record2(row.reference) ? row.reference : {};
+  const source = record3(stored.profile) ? stored.profile : freshGame(row.username, row.createdAt).profile;
+  const reference = record3(row.reference) ? row.reference : {};
   const icon = isProfileIcon(source.icon) && profileIconUnlocked(account, source.icon) ? source.icon : "neutral";
-  const recent = Array.isArray(reference.recentActivity) ? reference.recentActivity.filter((entry) => record2(entry) && typeof entry.id === "string" && typeof entry.message === "string" && typeof entry.detail === "string" && typeof entry.at === "string") : [];
+  const recent = Array.isArray(reference.recentActivity) ? reference.recentActivity.filter((entry) => record3(entry) && typeof entry.id === "string" && typeof entry.message === "string" && typeof entry.detail === "string" && typeof entry.at === "string") : [];
   return {
     userId: row.userId,
     account,
@@ -13205,7 +13380,7 @@ function validateRunActivity(run) {
     }
   } else if (oblivion !== void 0) throw new Error("Unsupported saved Gates of Oblivion encounter.");
   if (run.activity.kind === "calamity") {
-    if (!record2(calamity) || !isCalamityActivityId(calamity.activity) || !isCalamityTier(calamity.tier) || calamity.activity !== run.activity.activity || calamity.tier !== run.activity.tier) throw new Error("Unsupported saved Calamity encounter.");
+    if (!record3(calamity) || !isCalamityActivityId(calamity.activity) || !isCalamityTier(calamity.tier) || calamity.activity !== run.activity.activity || calamity.tier !== run.activity.tier) throw new Error("Unsupported saved Calamity encounter.");
   } else if (calamity !== void 0) throw new Error("Unsupported saved Calamity encounter.");
 }
 function gate(account, activity, entering = true) {
@@ -13283,6 +13458,27 @@ function resolveOperation(previous, operation, entropy) {
     switch (operation.kind) {
       case "setSquad":
         setSquad(storage, operation.ids);
+        break;
+      case "saveSquadLoadout":
+        saveSquadLoadout(storage, operation.id, operation.name);
+        break;
+      case "renameSquadLoadout":
+        renameSquadLoadout(storage, operation.id, operation.name);
+        break;
+      case "equipSquadLoadout":
+        equipSquadLoadout(storage, operation.id);
+        break;
+      case "deleteSquadLoadout":
+        deleteSquadLoadout(storage, operation.id);
+        break;
+      case "saveConduitConfiguration":
+        saveConduitConfiguration(storage, operation.character, operation.index, operation.name);
+        break;
+      case "renameConduitConfiguration":
+        renameConduitConfiguration(storage, operation.character, operation.index, operation.name);
+        break;
+      case "equipConduitConfiguration":
+        equipConduitConfiguration(storage, operation.character, operation.index);
         break;
       case "setCharacterLock":
         setCharacterLock(storage, operation.id, operation.locked);

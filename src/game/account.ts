@@ -32,6 +32,9 @@ import { bossLootMultiplier } from '../content/final-boss-loot';
 import { calamityChest, calamityChestId, calamityEncounter, isCalamityActivityId, isCalamityTier, parseCalamityChestId, rollCalamityChest, type CalamityActivityId, type CalamityTier } from '../content/calamity';
 import { calamiticLockMessage, calamiticStoreUnlocked, calamiticTokenPrice, isCalamiticConduitId } from '../content/calamitic-conduits';
 import { gatesOfOblivionRules, isOblivionStage, oblivionEncounter, oblivionMaterialLoot } from '../content/gates-of-oblivion';
+import { applySavedEquipment, characterElement, currentEquipment, loadoutName, validateConfigurationIndex,
+  validateConduitConfigurations, validateLoadoutId, validateSquadLoadouts,
+  type SquadLoadout, type ConduitConfigurations } from './saved-loadouts';
 
 export const ACCOUNT_KEY = 'last-light.wallet';
 export interface Account {
@@ -59,6 +62,8 @@ export interface Account {
   calamityShardSeed?: number;
   masterConduits?: Partial<Record<MasterConduitId, number>>;
   masterEquipment?: MasterLoadouts;
+  squadLoadouts?: SquadLoadout[];
+  conduitConfigurations?: Record<string, ConduitConfigurations>;
   firstFracture: boolean;
   dungeonStages: Partial<Record<PlayableDungeon, number>>;
   infusionStages: Partial<Record<InfusionModeId, number>>;
@@ -335,6 +340,8 @@ export function validateAccount(value: unknown): Account {
       }
     }
   }
+  if (value.squadLoadouts !== undefined) account.squadLoadouts = validateSquadLoadouts(account, value.squadLoadouts);
+  if (value.conduitConfigurations !== undefined) account.conduitConfigurations = validateConduitConfigurations(account, value.conduitConfigurations);
   return account;
 }
 export function loadAccount(storage: ProfileStorage): Account {
@@ -413,6 +420,71 @@ export function setSquad(storage: ProfileStorage, ids: readonly string[]): Accou
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before editing a squad.');
   const account = loadAccount(storage);
   account.squad = [...ids];
+  return saveAccount(storage, account);
+}
+function loadLoadoutAccount(storage: ProfileStorage): Account {
+  if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before managing loadouts.');
+  return loadAccount(storage);
+}
+export function saveSquadLoadout(storage: ProfileStorage, id: string, name: string): Account {
+  validateLoadoutId(id);
+  const account = loadLoadoutAccount(storage), title = loadoutName(name);
+  const members = equippedSquad(account).map(character => {
+    const copy = account.capturedCharacters?.find(copy => copy.instanceId === character);
+    const memberName = isStarterId(character) ? getStarter(character).name : copy ? getCreature(copy.creatureId).name : undefined;
+    if (!memberName) throw new Error('Choose an owned squad member.');
+    return { character, name: memberName,
+      element: characterElement(account, character), ...currentEquipment(account, character) };
+  });
+  const loadout: SquadLoadout = { id, name: title, members };
+  account.squadLoadouts = account.squadLoadouts?.some(entry => entry.id === id)
+    ? account.squadLoadouts.map(entry => entry.id === id ? loadout : entry)
+    : [...account.squadLoadouts ?? [], loadout];
+  return saveAccount(storage, account);
+}
+export function renameSquadLoadout(storage: ProfileStorage, id: string, name: string): Account {
+  const account = loadLoadoutAccount(storage);
+  const entry = account.squadLoadouts?.find(entry => entry.id === id);
+  if (!entry) throw new Error('Choose a saved squad loadout.');
+  entry.name = loadoutName(name);
+  return saveAccount(storage, account);
+}
+export function equipSquadLoadout(storage: ProfileStorage, id: string): Account {
+  const account = loadLoadoutAccount(storage);
+  const entry = account.squadLoadouts?.find(entry => entry.id === id);
+  if (!entry) throw new Error('Choose a saved squad loadout.');
+  for (const member of entry.members) applySavedEquipment(account, member.character, member);
+  account.squad = entry.members.map(member => member.character);
+  return saveAccount(storage, account);
+}
+export function deleteSquadLoadout(storage: ProfileStorage, id: string): Account {
+  const account = loadLoadoutAccount(storage);
+  if (!account.squadLoadouts?.some(entry => entry.id === id)) throw new Error('Choose a saved squad loadout.');
+  account.squadLoadouts = account.squadLoadouts.filter(entry => entry.id !== id);
+  return saveAccount(storage, account);
+}
+export function saveConduitConfiguration(storage: ProfileStorage, character: string, index: number, name: string): Account {
+  validateConfigurationIndex(index);
+  const account = loadLoadoutAccount(storage);
+  const configurations: ConduitConfigurations = account.conduitConfigurations?.[character] ?? [null, null, null];
+  configurations[index] = { name: loadoutName(name), ...currentEquipment(account, character) };
+  account.conduitConfigurations = { ...account.conduitConfigurations, [character]: configurations };
+  return saveAccount(storage, account);
+}
+export function renameConduitConfiguration(storage: ProfileStorage, character: string, index: number, name: string): Account {
+  validateConfigurationIndex(index);
+  const account = loadLoadoutAccount(storage);
+  const entry = account.conduitConfigurations?.[character]?.[index];
+  if (!entry) throw new Error('Save this Conduit configuration first.');
+  entry.name = loadoutName(name);
+  return saveAccount(storage, account);
+}
+export function equipConduitConfiguration(storage: ProfileStorage, character: string, index: number): Account {
+  validateConfigurationIndex(index);
+  const account = loadLoadoutAccount(storage);
+  const entry = account.conduitConfigurations?.[character]?.[index];
+  if (!entry) throw new Error('Save this Conduit configuration first.');
+  applySavedEquipment(account, character, entry);
   return saveAccount(storage, account);
 }
 export const summonCost = standardBanner.cost;
@@ -542,6 +614,7 @@ export function sellCurrencyCreatures(storage: ProfileStorage, selections: reado
   const ids = new Set(selections.map(selection => selection.id));
   account.capturedCharacters = account.capturedCharacters?.filter((copy) => !ids.has(copy.instanceId));
   if (account.conduitEquipment) for (const id of ids) delete account.conduitEquipment[id];
+  if (account.conduitConfigurations) for (const id of ids) delete account.conduitConfigurations[id];
   return saveAccount(storage, account);
 }
 export function ownedProgress(account: Account, id: StarterId): CharacterProgress {
@@ -786,6 +859,7 @@ export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: '
   if (fodderIds.length) {
     account.capturedCharacters = account.capturedCharacters?.filter((copy) => !fodderIds.includes(copy.instanceId));
     for (const id of fodderIds) if (account.conduitEquipment) delete account.conduitEquipment[id];
+    for (const id of fodderIds) if (account.conduitConfigurations) delete account.conduitConfigurations[id];
   }
   account.characters[id] = kind === 'level' ? { ...current, level: current.level + 1 } : { ...current, evolution: current.evolution + 1 };
   if (kind === 'evolve' && !account.firstFracture) {
