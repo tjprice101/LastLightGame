@@ -36,8 +36,8 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   ilvaris: calamiticIdentity('ilvaris', 'Mark and healing support',
     '[Ilvaris] builds [Fate-seared Mark] to five stacks and refreshes [Hymn of Broken Glass] while healing the squad.',
     { health: 2, defense: 1 }),
-  kaelith: calamiticIdentity('kaelith', 'Fault attacker',
-    '[Kaelith] builds three [Fault] stacks through direct hits; [Glass Meridian] spends them for a stronger strike.',
+  kaelith: calamiticIdentity('kaelith', 'Fractalized Incision attacker',
+    '[Kaelith] builds three [Fractalized Incision] stacks through direct hits; [Glass Meridian] spends them for a stronger strike.',
     { skillPower: .75 }),
   ember: {
     role: 'Persistent fire specialist',

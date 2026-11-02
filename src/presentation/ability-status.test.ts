@@ -63,7 +63,18 @@ describe('typed ability status labels', () => {
       expect(html).toMatch(/data-status-art="calamitic-(refusal|fate-mark|fault)"/);
       expect(html).not.toContain('Artwork pending');
     }
-    expect(resolveFighter('ilvaris').abilities.skill1.description).toContain('per stack, up to 5');
+    expect(resolveFighter('ilvaris').abilities.skill1.description).toContain('Fate-seared Mark (max 5)');
+    for (const action of ['passive', 'skill1', 'skill2', 'ultimate'] as const) {
+      expect(nativeAbilityStatuses.kaelith[action]).toEqual([['calamitic-fault', 'Fractalized Incision']]);
+    }
+    const kaelith = resolveFighter('kaelith');
+    expect(kaelith.abilities.skill1.description).toContain('through Reality Fault');
+    expect(kaelith.abilities.skill2.description).toContain('including the stack added by Reality Fault');
+    expect(kaelith.abilities.ultimate.description).toContain('existing stacks are not consumed');
+    const oldSnapshot = structuredClone(kaelith);
+    oldSnapshot.abilities.skill1.description = '456% damage to all enemies and 1 Fault on each.';
+    expect(describeFighter('kaelith', oldSnapshot).abilities.skill1.description).toBe(kaelith.abilities.skill1.description);
+    expect(oldSnapshot.abilities.skill1.description).toContain('1 Fault');
   });
   it('retains exact actions without generic resource or recovery instructions', () => {
     for (const starter of starters) {

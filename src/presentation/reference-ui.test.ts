@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { emptyAccount, type Account } from '../game/account';
 import { getStarter } from '../content/starters';
 import { createCreatureCopy } from '../game/character-instances';
@@ -24,6 +25,14 @@ function account(): Account {
 }
 
 describe('replacement reference screen structures', () => {
+  it('anchors ability copy to its grid column regardless of description length or missing artwork', () => {
+    const css = readFileSync(new URL('./bubble-ui.css', import.meta.url), 'utf8');
+    const selector = 'html body #app .sanctuary-shell .ref-ability-buttons:not(#_) > button[data-information]';
+    expect(css).toContain('repeat(auto-fit, minmax(min(300px, 100%), 1fr))');
+    expect(css).toContain(`${selector} { justify-items: stretch !important; }`);
+    expect(css).toContain(`${selector}:not(:has(> .ability-icon)) { grid-template-columns: minmax(0, 1fr) !important; }`);
+    expect(css).not.toMatch(/\.bubble-skill-summary\s*\{[^}]*-webkit-line-clamp/);
+  });
   it('gives Training its own scenery header, compact facts and real entry without a location picker', () => {
     const wallet = account();
     const before = structuredClone(wallet);

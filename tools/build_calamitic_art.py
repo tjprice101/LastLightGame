@@ -64,7 +64,7 @@ DESIGNS = (
                 ("Last Flare", "Denial of Fate", "floating double-crescent greatscythe with no wielder severing a taut crimson thread, three black rings cracking apart around the blade, six angular white glass feather-blades fanned around it, cracked crimson crown-ring above"))),
 )
 STATUSES = (
-    ("Fault", "calamitic-fault", "a black obsidian glass sigil split by three deep crimson fault canyons, white glass splinters bursting from each crack, a cracked white ring framing the sigil, sparkling crimson flecks scattering outward, bold readable silhouette at small size"),
+    ("Fractalized Incision", "calamitic-fault", "a black obsidian glass sigil split by three deep crimson fault canyons, white glass splinters bursting from each crack, a cracked white ring framing the sigil, sparkling crimson flecks scattering outward, bold readable silhouette at small size"),
     ("Fate-seared Mark", "calamitic-fate-seared-mark", "a sharp white glass diamond seal branded with a searing crimson fate brand, the brand cracking the seal into angular facets, a broken black halo and severed crimson thread ends circling it, small glass shards orbiting, bold readable silhouette at small size"),
     ("Refusal", "calamitic-refusal", "an unbroken pearlescent cathedral shield pane with a black ornate rim, a crimson fracture wedge shattering into pieces against its face, a burst of white glass splinters deflecting outward, a small cracked crimson halo above, bold readable silhouette at small size"),
 )

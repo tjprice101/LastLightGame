@@ -1074,15 +1074,15 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-kaelith-1": {
-    "description": "When [Glass Meridian] consumes 3 [Faults], it ignores 40% of the target's [Defense]. Kaelith gains +55% [Skill Power] and +45% [Direct Attack].",
+    "description": "When [Glass Meridian] consumes 3 [Fractalized Incision stacks], it ignores 40% of the target's [Defense]. Kaelith gains +55% [Skill Power] and +45% [Direct Attack].",
     "ranges": []
   },
   "master-kaelith-2": {
-    "description": "[Shatterfall] adds 1 extra [Fault] to every enemy it damages, up to 3. Kaelith gains +40% [Skill Efficiency] and +30% [Critical Rate].",
+    "description": "[Shatterfall] adds 1 extra [Fractalized Incision] to every enemy it damages, up to 3. Kaelith gains +40% [Skill Efficiency] and +30% [Critical Rate].",
     "ranges": []
   },
   "master-kaelith-3": {
-    "description": "[Denial of Fate] sets every enemy it damages to 3 [Faults]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain].",
+    "description": "[Denial of Fate] sets every enemy it damages to 3 [Fractalized Incision stacks]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain].",
     "ranges": []
   }
 };

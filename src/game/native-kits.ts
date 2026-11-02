@@ -304,7 +304,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
       const setFaults = (enemy: Combatant, count: number) => {
         const faults = memory.faults ??= {};
         faults[enemy.id] = Math.min(3, count);
-        status(state, events, owner, enemy, `${enemy.name}: Fault ${faults[enemy.id]}/3 (+${faults[enemy.id] * 10}% squad damage).`);
+        status(state, events, owner, enemy, `${enemy.name}: Fractalized Incision ${faults[enemy.id]}/3 (+${faults[enemy.id] * 10}% squad damage).`);
       };
       if (action === 'skill1') {
         const hits = struck(() => hit(4.56, true));
@@ -315,7 +315,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
         const spent = memory.faults?.[target.id] ?? 0;
         hit(3.65 * (1 + .2 * spent), false, spent >= 3 && equipped(owner, 'master-kaelith-1') ? .4 : 0);
         if (memory.faults) delete memory.faults[target.id];
-        status(state, events, owner, target, `${target.name}: Glass Meridian consumes ${spent} Faults; Fault 0/3.`);
+        status(state, events, owner, target, `${target.name}: Glass Meridian consumes ${spent} Fractalized Incision stacks; Fractalized Incision 0/3.`);
       }
       if (action === 'ultimate') {
         const hits = struck(() => hit(3.6, true));
@@ -708,7 +708,7 @@ export function nativePrimaryHit(state: BattleState, attacker: Combatant, target
   if (hasNativeIdentity(attacker) && attacker.definitionId === 'kaelith' && target.side === 'enemy' && target.hp > 0) {
     const faults = nativeMemory(attacker).faults ??= {};
     faults[target.id] = Math.min(3, (faults[target.id] ?? 0) + hits);
-    status(state, events, attacker, target, `${target.name}: Fault ${faults[target.id]}/3 (+${faults[target.id] * 10}% squad damage).`);
+    status(state, events, attacker, target, `${target.name}: Fractalized Incision ${faults[target.id]}/3 (+${faults[target.id] * 10}% squad damage).`);
   }
   for (const owner of living(state).filter(hasNativeIdentity)) {
     const quarry = owner.native?.quarry;
@@ -1060,7 +1060,7 @@ export function nativeMarkers(state: BattleState, unit: Combatant): NativeMarker
         value: `${mark.stacks}/5 · damage taken +${mark.stacks * 10}% · Severed Prophecy +45% · through enemy phase ${mark.throughPhase}`, icon: 'calamitic-fate-mark' });
     const faults = owner.native?.faults?.[unit.id];
     if (unit.side === 'enemy' && faults)
-      markers.push({ id: 'fault', owner: owner.id, label: 'Fault', value: `${faults}/3 · squad damage +${faults * 10}%`, icon: 'calamitic-fault' });
+      markers.push({ id: 'fault', owner: owner.id, label: 'Fractalized Incision', value: `${faults}/3 · squad damage +${faults * 10}%`, icon: 'calamitic-fault' });
     if (unit.side === 'ally' && owner.definitionId === 'ozriel' && owner.hp > 0)
       markers.push({ id: 'refusal', owner: owner.id, label: 'Refusal', value: owner.native?.refusalUsed?.includes(unit.id) ? 'Used this encounter' : 'Ready · once this encounter', icon: 'calamitic-refusal' });
     if (owner.hp <= 0 || owner.id === unit.id) continue;
@@ -1112,7 +1112,7 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
   for (const [id, mark] of Object.entries(memory.fateMarks ?? {})) if (mark.throughPhase >= state.round)
     add('Fate-seared Mark', `${mark.stacks}/5`, `${state.enemies.find(enemy => enemy.id === id)?.name}; +${mark.stacks * 10}% damage taken and +45% Severed Prophecy; through enemy phase ${mark.throughPhase}.`, ['calamitic-fate-mark']);
   for (const [id, faults] of Object.entries(memory.faults ?? {}))
-    add('Fault', `${faults}/3`, `${state.enemies.find(enemy => enemy.id === id)?.name}; +${faults * 10}% squad damage; Glass Meridian consumes for +20% each.`, ['calamitic-fault']);
+    add('Fractalized Incision', `${faults}/3`, `${state.enemies.find(enemy => enemy.id === id)?.name}; +${faults * 10}% squad damage; Glass Meridian consumes for +20% each.`, ['calamitic-fault']);
   const hymn = nativeHymn(unit, state.round);
   if (hymn) add('Hymn of Broken Glass', `Critical Damage +${Math.round(hymn.criticalDamage * 100)}% · Skill Power +${Math.round(hymn.skillPower * 100)}%`,
     `Refreshes without stacking; through player turn ${hymn.throughRound}.`);

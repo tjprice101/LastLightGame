@@ -318,7 +318,7 @@ floating double-crescent greatscythe with no wielder severing a taut crimson thr
 
 ## Shared signature status icons
 
-### Fault
+### Fractalized Incision
 
 Filename: `calamitic-fault.png`
 Target runtime asset ID: `calamitic-fault` (pending delivery; not an installed URL).

@@ -204,7 +204,7 @@ describe('owner-authored Calamitic native kits', () => {
     expect(flare.state.allies[2].shatter).toBe(0);
   });
 
-  it('Kaelith direct hits build Faults to three, granting the entire squad 10% per stack', () => {
+  it('Kaelith direct hits build Fractalized Incision stacks to three, granting the entire squad 10% per stack', () => {
     let state = encounter('kaelith', 'ember');
     for (let count = 1; count <= 5; count++) {
       const hit = use(state, 'kaelith', 'light');
@@ -219,14 +219,14 @@ describe('owner-authored Calamitic native kits', () => {
     expect(Object.values(area.state.allies[0].native?.faults ?? {})).toEqual([3, 1, 1]);
   });
 
-  it('Glass Meridian spends the prior Faults for +20% each and leaves no Fault after its own direct hit', () => {
+  it('Glass Meridian spends the prior Fractalized Incision stacks for +20% each and leaves no Fractalized Incision after its own direct hit', () => {
     const state = encounter('kaelith');
     nativeMemory(state.allies[0]).faults = { [state.enemies[0].id]: 3, [state.enemies[1].id]: 2 };
     const result = use(state, 'kaelith', 'skill2');
     expect(damage(result.events, 'kaelith')[0].amount).toBe(Math.round(365 * 1.75 * 1.6 * 1.3));
     expect(result.state.allies[0].native?.faults?.[state.enemies[0].id]).toBeUndefined();
     expect(result.state.allies[0].native?.faults?.[state.enemies[1].id]).toBe(2);
-    expect(result.events.some(event => event.message.includes('consumes 3 Faults'))).toBe(true);
+    expect(result.events.some(event => event.message.includes('consumes 3 Fractalized Incision stacks'))).toBe(true);
   });
 
   it('Kaelith Skills use the existing crit roll with five extra percentage points, not a new RNG stream', () => {
@@ -259,8 +259,8 @@ describe('owner-authored Calamitic native kits', () => {
     state = use(state, 'ilvaris', 'skill2').state;
     state = use(state, 'kaelith', 'light').state;
     nativeMemory(state.allies[0]).refusalUsed = ['ozriel'];
-    expect(nativeMarkers(state, state.enemies[0]).map(marker => marker.label)).toEqual(['Fate-seared Mark', 'Fault']);
-    expect(nativeMarkerReadout(state, state.enemies[0])).toContain('Fault');
+    expect(nativeMarkers(state, state.enemies[0]).map(marker => marker.label)).toEqual(['Fate-seared Mark', 'Fractalized Incision']);
+    expect(nativeMarkerReadout(state, state.enemies[0])).toContain('Fractalized Incision');
     expect(nativeMarkerReadout(state, state.enemies[0])).toContain('data-status-art="calamitic-fate-mark"');
     expect(nativeMarkerReadout(state, state.enemies[0])).toContain('data-status-art="calamitic-fault"');
     expect(nativeMarkerReadout(state, state.allies[0])).toContain('Used this encounter');

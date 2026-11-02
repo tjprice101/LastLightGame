@@ -347,7 +347,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Denied Fate Eclipse Annihilator",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Kaelith only)",
-    "ability": "[Denial of Fate] sets every enemy it damages to 3 [Faults]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain]."
+    "ability": "[Denial of Fate] sets every enemy it damages to 3 [Fractalized Incision stacks]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain]."
   },
   "master-crinso-2": {
     "name": "Duality Planet Flamewheel",
@@ -431,7 +431,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Glass Meridian Singularity Harvester",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Kaelith only)",
-    "ability": "When [Glass Meridian] consumes 3 [Faults], it ignores 40% of the target's [Defense]. Kaelith gains +55% [Skill Power] and +45% [Direct Attack]."
+    "ability": "When [Glass Meridian] consumes 3 [Fractalized Incision stacks], it ignores 40% of the target's [Defense]. Kaelith gains +55% [Skill Power] and +45% [Direct Attack]."
   },
   "master-rosetta-3": {
     "name": "Golden Thorn Judgment Loom",
@@ -719,7 +719,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Thousand-Fault Rupture Accelerator",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Kaelith only)",
-    "ability": "[Shatterfall] adds 1 extra [Fault] to every enemy it damages, up to 3. Kaelith gains +40% [Skill Efficiency] and +30% [Critical Rate]."
+    "ability": "[Shatterfall] adds 1 extra [Fractalized Incision] to every enemy it damages, up to 3. Kaelith gains +40% [Skill Efficiency] and +30% [Critical Rate]."
   },
   "master-thornia-2": {
     "name": "Thousand-Rose Planetary Aegis",

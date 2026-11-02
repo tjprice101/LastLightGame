@@ -1,5 +1,25 @@
 # Current state and handoff
 
+## Ability alignment and Fractalized Incision (D-445)
+
+- Shared Skills cards anchor heading/type/summary/cost at the same leading
+  edge, overriding the generic centered button rule. Text-only cards get a
+  full-width column; narrow cards fit their container and wrap long names.
+  Summaries no longer hide rules after three lines.
+- All three Calamitic kits clarify targets, durations, Shields, Gauge capacity
+  and stack behavior. Kaelith's displayed debuff is Fractalized Incision in
+  kits, status art labels, logs, native readouts, Master effects and prompts.
+  Internal `faults`/`fault`/`calamitic-fault`, delivered source filenames,
+  ability names, combat strengths, state and saves remain unchanged.
+- Browser: pure read-only character-detail fixtures for all 19 characters /
+  76 cards aligned at 1180px, 390px and 320px; no card overflow at 320px,
+  and no-icon text uses the full column. No accounts were funded or granted units.
+- Validation: 401 focused tests in six files passed via `npx vitest run`
+  (Calamitic kits, Master matrix, ability statuses, reference UI, Phase Zero
+  contract and Conduit redesign); eight `test_calamitic_art.py` checks passed.
+  `npm run build`, server TypeScript and Deno checks passed; existing chunk
+  advisory unchanged. Authority rebundled/deployed and hosted smoke passed.
+
 ## Oblivion framing and machine-only Masters (D-444)
 
 - Gates of Oblivion no longer reserves an empty Location-picker column. Its

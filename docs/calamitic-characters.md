@@ -50,10 +50,15 @@ Bounds:
 | Base stats | HP 240, DEF 13, ATK 50, Crit 22%, Crit Damage ×1.70, Elemental 10 |
 
 **Kit**
-- **Passive: Reality Fault.** +75% Skill Power and +5% Skill Critical Rate. Kaelith's direct hits add 1 **Fault** to the target (cap 3). Each Fault makes that enemy take +10% more damage from Kaelith and Squad Members (max +30%).
-- **Skill 1: Shatterfall.** 456% damage to all enemies and add 1 Fault on each.
-- **Skill 2: Glass Meridian.** 365% damage to one enemy. Consumes the target's Faults for +20% damage each.
-- **Last Flare: Denial of Fate.** 360% damage to all enemies. Faults are kept. Recover next turn.
+- **Passive: Reality Fault.** +75% Skill Power and +5% Skill Critical Rate. Kaelith's direct hits add 1 **Fractalized Incision** to the target (cap 3). Each Fractalized Incision makes that enemy take +10% more damage from Kaelith and Squad Members (max +30%).
+- **Skill 1: Shatterfall.** 456% direct damage to all enemies. Each hit adds one Fractalized Incision stack through Reality Fault, not a second application.
+- **Skill 2: Glass Meridian.** 365% direct damage to one enemy, increased by 20% per existing Fractalized Incision stack (max +60%). After the hit, removes all of that target's stacks, including its own direct-hit application.
+- **Last Flare: Denial of Fate.** 360% direct damage to all enemies. Each hit adds one Fractalized Incision stack (cap 3) without consuming existing stacks. Recover next turn.
+
+D-445 renames the debuff from Fault to **Fractalized Incision** across ability
+copy, status badges, logs, native readouts and Master effects. `faults`, `fault`
+and `calamitic-fault` remain internal state/icon IDs; delivered source
+`Fault.png` and provenance remain unchanged. No mechanics or migration changed.
 
 **Form titles:** Hairline Fracture → Glass-Edged Herald → Reaper of Written Endings → Seraph of the Broken Thread → Sovereign of Shattered Fate → The Fate That Was Never Written
 
@@ -69,8 +74,8 @@ Bounds:
 
 **Kit**
 - **Passive: Refusal.** +65% Defense and +65% Health. Once per encounter **for each squad member**, a hit that would defeat Ozriel or another squad member leaves them at 1 HP instead. It is not a revive and never restores a defeated unit.
-- **Skill 1: Pane of Absolution.** 240% damage to one enemy and 50% Weaken for two enemy phases.
-- **Skill 2: Cathedral of Shards.** Shield 90 to every living ally. It lasts until broken and stacks (D-434).
+- **Skill 1: Pane of Absolution.** 240% direct damage to one enemy; Weaken reduces its direct damage by 50% for the next two Enemy Turns.
+- **Skill 2: Cathedral of Shards.** A base 90-strength Shield to every living ally, increased by Skill Power. Absorbs damage before HP, lasts until broken and stacks (D-434).
 - **Last Flare: The World Refuses.** 455% damage to all enemies and shield 140 to every living ally. Recover next turn.
 
 **Form titles:** Unbroken Pane → Warden of the Glass Nave → Bastion of Refused Endings → Seraph of the Shattered Cathedral → Sovereign of the Unfallen Wall → The Ending That Was Denied
@@ -88,9 +93,8 @@ Bounds:
 **Kit**
 - **Passive: Severed Prophecy.** +200% Health and +100% Defense. Squad members deal +45% more damage to enemies carrying Ilvaris's **Fate-seared Mark**.
 - **Skill 1: Unwritten Verse.** 225% damage to one enemy and a Fate-seared Mark for 2 enemy phases: it takes +10% damage from all sources per stack, up to 5 stacks (+50%). Recasting adds a stack and refreshes the duration. 
-- **Skill 2: Hymn of Broken Glass.** Heals every living ally 35% of max Health and gives them +45% Critical Damage Multiplier and 50% Skill Power for 2 turns. On multiple casts, the Healing is applied 
-multiple times and the Direct Attack buff refreshes. 
-- **Last Flare: Tomorrow, Unwritten.** 440% damage to all enemies. Heals all allies 50% of max Health and gives them +10% Elemental Gauge. Recover next turn.
+- **Skill 2: Hymn of Broken Glass.** Heals every living ally for 35% of their max HP. Base buffs increase their existing Critical Damage multiplier by 45% and Skill Power by 50 percentage points through the next Player Turn. Recasting heals again and refreshes the buffs without stacking them. Healing and buff strength scale with Skill Power.
+- **Last Flare: Tomorrow, Unwritten.** 440% direct damage to all enemies. Heals every living ally for 50% of their max HP and restores 10% of each ally's Gauge capacity. Recover next turn.
 
 **Form titles:** First Unsung Note → Cantor of Cracked Heavens → Choir-Seraph of the Glass Vault → Herald of the Unwritten Hymn → Sovereign of the Severed Prophecy → The Song That Defied Fate
 
@@ -288,9 +292,9 @@ These designs are a developer proposal; numbers are open to owner tuning.
 | Ilvaris | Unsung Verse Harmonic Supercharger | Unwritten Verse adds 2 Fate-seared Mark stacks instead of 1. +45% Skill Power, +45% Skill Efficiency |
 | Ilvaris | Hymnwind Imperial Turbine | Hymn of Broken Glass also grants every living squad member 8% Elemental Gauge. +65% Health, +45% Skill Efficiency |
 | Ilvaris | Severed Prophecy Chronodrive | Tomorrow, Unwritten adds 1 Fate-seared Mark to every enemy. +55% Skill Power, +55% Gauge Gain |
-| Kaelith | Glass Meridian Singularity Harvester | Glass Meridian ignores 40% Defense when it consumes 3 Faults. +55% Skill Power, +45% Direct Attack |
-| Kaelith | Thousand-Fault Rupture Accelerator | Shatterfall adds 1 extra Fault to every enemy it damages. +40% Skill Efficiency, +30% Critical Rate |
-| Kaelith | Denied Fate Eclipse Annihilator | Denial of Fate sets every enemy it damages to 3 Faults. +45% Skill Power, +45% Gauge Gain |
+| Kaelith | Glass Meridian Singularity Harvester | Glass Meridian ignores 40% Defense when it consumes 3 Fractalized Incision stacks. +55% Skill Power, +45% Direct Attack |
+| Kaelith | Thousand-Fault Rupture Accelerator | Shatterfall adds 1 extra Fractalized Incision to every enemy it damages. +40% Skill Efficiency, +30% Critical Rate |
+| Kaelith | Denied Fate Eclipse Annihilator | Denial of Fate sets every enemy it damages to 3 Fractalized Incision stacks. +45% Skill Power, +45% Gauge Gain |
 
 Runtime hooks live in `src/game/native-kits.ts`; behaviour is covered by
 `src/game/phase-zero-master-matrix.test.ts` and `conduit-roster.test.ts`.

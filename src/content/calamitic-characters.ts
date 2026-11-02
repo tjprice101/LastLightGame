@@ -24,7 +24,7 @@ export const calamiticCharacters = [
     id: 'kaelith', stars: 7, name: 'Kaelith', role: 'Attacker', art: 'kaelith',
     title: 'The blade that cuts the thread of fate', element: 'Chaotic', elementId: 'chaotic',
     weapon: 'Shatterglass greatscythe', color: '#f3f0f1',
-    description: 'A Chaotic Element-Bearer in Let’s image, Kaelith’s greatscythe leaves faults that make enemies vulnerable to the squad.',
+    description: 'A Chaotic Element-Bearer in Let’s image, Kaelith’s greatscythe applies Fractalized Incision to make enemies vulnerable to the squad.',
     lore: { origin: 'The fault lines Rise’s calamity left in the sky', story: 'Kaelith entered a crack left in the sky by Rise’s calamity and returned with a scythe of fractured glass. She turns Chaotic Death and Destruction against Rise’s Elemental-Devourers. She seeks Let’s soul; the Devourers seek Rise’s. Both remain unfound.',
       vow: 'Whatever was written for us, I’ll unwrite it.',
       awakening: 'A hairline fracture runs through what was supposed to happen.' },
@@ -58,29 +58,29 @@ export const calamiticActionNames: Record<CalamiticCharacterId, { light: string 
 export const calamiticFighters: Record<CalamiticCharacterId, FighterDefinition> = {
   ozriel: {
     stats: { health: 345, defense: 24, damage: 34, crit: .1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
-    passive: { name: 'Refusal', description: '+65% Defense and +65% Health. Once per encounter for each squad member, a hit that would defeat them leaves them at 1 HP instead, only while Ozriel is alive; never revives a defeated unit.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    passive: { name: 'Refusal', description: 'Ozriel gains +65% Defense and +65% Health. While he is alive, each squad member (including Ozriel) survives one lethal hit per encounter with 1 HP.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
     abilities: {
-      skill1: { name: 'Pane of Absolution', description: '240% damage to one enemy; Weaken it by 50% for two enemy phases.', cooldown: 0, strength: { damageMultiplier: 2.4, weakenFraction: .5 } },
-      skill2: { name: 'Cathedral of Shards', description: 'Give every living ally 90 Shield. Absorbs damage before HP, lasts until broken and stacks.', cooldown: 0, targets: 'all-allies', strength: { shield: 90 } },
-      ultimate: { name: 'The World Refuses', description: '455% damage to all enemies and 140 Shield to living allies. Shields absorb damage before HP, last until broken and stack. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 4.55, shield: 140 } },
+      skill1: { name: 'Pane of Absolution', description: 'Deal 240% direct damage to one enemy, then reduce its direct damage by 50% with Weaken for the next two Enemy Turns.', cooldown: 0, strength: { damageMultiplier: 2.4, weakenFraction: .5 } },
+      skill2: { name: 'Cathedral of Shards', description: 'Give each living squad member a 90-strength Shield before Skill Power bonuses. Shields absorb damage before HP, last until broken and stack with existing Shields.', cooldown: 0, targets: 'all-allies', strength: { shield: 90 } },
+      ultimate: { name: 'The World Refuses', description: 'Deal 455% direct damage to all enemies. Give each living squad member a 140-strength Shield before Skill Power bonuses; it lasts until broken and stacks with existing Shields. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 4.55, shield: 140 } },
     },
   },
   ilvaris: {
     stats: { health: 265, defense: 16, damage: 40, crit: .15, shatterCapacity: 100, critMultiplier: 1.55, elementalDamage: 5 },
-    passive: { name: 'Severed Prophecy', description: '+200% Health and +100% Defense. Squad members deal +45% more damage to enemies carrying a Fate-seared Mark.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    passive: { name: 'Severed Prophecy', description: 'Ilvaris gains +200% Health and +100% Defense. The whole squad deals 45% more damage to enemies with Fate-seared Mark, in addition to the Mark’s own damage bonus.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
     abilities: {
-      skill1: { name: 'Unwritten Verse', description: '225% damage to one enemy and one Fate-seared Mark stack for two enemy phases: +10% damage taken per stack, up to 5. Recasting adds a stack and refreshes the duration.', cooldown: 0, strength: { damageMultiplier: 2.25 } },
-      skill2: { name: 'Hymn of Broken Glass', description: 'Heal every living ally 35% of max Health; +45% Critical Damage multiplier and +50% Skill Power for two turns. Each cast heals again and refreshes, never stacks, the buff.', cooldown: 0, targets: 'all-allies', strength: { healing: .35 } },
-      ultimate: { name: 'Tomorrow, Unwritten', description: '440% damage to all enemies; heal all allies 50% of max Health and give them 10% Elemental Gauge. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 4.4, healing: .5 } },
+      skill1: { name: 'Unwritten Verse', description: 'Deal 225% direct damage to one enemy, then add 1 Fate-seared Mark (max 5). Each stack makes it take 10% more squad damage. Marks last through the next two Enemy Turns; reapplying adds a stack and refreshes their duration.', cooldown: 0, strength: { damageMultiplier: 2.25 } },
+      skill2: { name: 'Hymn of Broken Glass', description: 'Heal each living squad member for 35% of their maximum HP. Increase their Critical Damage multiplier by 45% and Skill Power by 50 percentage points through the next Player Turn. Recasting heals again and refreshes the buffs without stacking them.', cooldown: 0, targets: 'all-allies', strength: { healing: .35 } },
+      ultimate: { name: 'Tomorrow, Unwritten', description: 'Deal 440% direct damage to all enemies. Heal each living squad member for 50% of their maximum HP and restore 10% of their Elemental Gauge capacity. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 4.4, healing: .5 } },
     },
   },
   kaelith: {
     stats: { health: 240, defense: 13, damage: 50, crit: .22, shatterCapacity: 100, critMultiplier: 1.7, elementalDamage: 10 },
-    passive: { name: 'Reality Fault', description: '+75% Skill Power and +5% Skill Critical Rate. Direct hits add 1 Fault (cap 3); each Fault makes that enemy take +10% damage from the squad.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    passive: { name: 'Reality Fault', description: 'Kaelith gains +75% Skill Power and +5% Skill Critical Rate. Each of her direct hits adds 1 Fractalized Incision stack (max 3). Each stack makes that enemy take 10% more squad damage, up to 30%, until consumed by Glass Meridian.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
     abilities: {
-      skill1: { name: 'Shatterfall', description: '456% damage to all enemies and 1 Fault on each.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 4.56 } },
-      skill2: { name: 'Glass Meridian', description: '365% damage to one enemy; consumes its Faults for +20% damage each.', cooldown: 0, strength: { damageMultiplier: 3.65 } },
-      ultimate: { name: 'Denial of Fate', description: '360% damage to all enemies. Faults are kept. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 3.6 } },
+      skill1: { name: 'Shatterfall', description: 'Deal 456% direct damage to all enemies. Each hit adds 1 Fractalized Incision stack through Reality Fault (max 3 per enemy).', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 4.56 } },
+      skill2: { name: 'Glass Meridian', description: 'Deal 365% direct damage to one enemy, increased by 20% for each Fractalized Incision stack it already has (up to 60%). Consume all of its stacks after the hit, including the stack added by Reality Fault.', cooldown: 0, strength: { damageMultiplier: 3.65 } },
+      ultimate: { name: 'Denial of Fate', description: 'Deal 360% direct damage to all enemies. Each hit adds 1 Fractalized Incision stack through Reality Fault (max 3); existing stacks are not consumed. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 3.6 } },
     },
   },
 };

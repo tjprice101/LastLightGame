@@ -1,5 +1,15 @@
 # Menus and inventory
 
+## Ability card alignment and copy (D-445)
+
+Every character's Skills cards stretch the copy across the available grid
+column, so short descriptions never center the heading, type or cost.
+Cards without artwork use one full-width text column. Summaries wrap in full,
+without cutting off stack limits or consumption rules; details and focus remain
+on the existing button. Calamitic descriptions clarify targets, stack gains,
+consumption, durations and Gauge capacity. Fractalized Incision is the displayed
+name of Kaelith's debuff; internal state and art IDs are unchanged.
+
 ## Gates of Oblivion framing (D-444)
 
 Gates of Oblivion uses the full activity content column, like Machines and Events.

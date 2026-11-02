@@ -457,7 +457,7 @@ Ability (Default Value): Store 40% of the durability absorbed by [Foundation] as
 Name: Denied Fate Eclipse Annihilator
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Kaelith only)
-Ability (Default Value): [Denial of Fate] sets every enemy it damages to 3 [Faults]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain].
+Ability (Default Value): [Denial of Fate] sets every enemy it damages to 3 [Fractalized Incision stacks]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain].
 
 Name: Duality Planet Flamewheel
 Rarity: Omnic (Master)
@@ -527,7 +527,7 @@ Ability (Default Value): Applying [Weaken] grants the most injured ally +30% [De
 Name: Glass Meridian Singularity Harvester
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Kaelith only)
-Ability (Default Value): When [Glass Meridian] consumes 3 [Faults], it ignores 40% of the target's [Defense]. Kaelith gains +55% [Skill Power] and +45% [Direct Attack].
+Ability (Default Value): When [Glass Meridian] consumes 3 [Fractalized Incision stacks], it ignores 40% of the target's [Defense]. Kaelith gains +55% [Skill Power] and +45% [Direct Attack].
 
 Name: Golden Thorn Judgment Loom
 Rarity: Omnic (Master)
@@ -767,7 +767,7 @@ Ability (Default Value): Your first critical [Skill] each [Player Turn] grants t
 Name: Thousand-Fault Rupture Accelerator
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Kaelith only)
-Ability (Default Value): [Shatterfall] adds 1 extra [Fault] to every enemy it damages, up to 3. Kaelith gains +40% [Skill Efficiency] and +30% [Critical Rate].
+Ability (Default Value): [Shatterfall] adds 1 extra [Fractalized Incision] to every enemy it damages, up to 3. Kaelith gains +40% [Skill Efficiency] and +30% [Critical Rate].
 
 Name: Thousand-Rose Planetary Aegis
 Rarity: Omnic (Master)
