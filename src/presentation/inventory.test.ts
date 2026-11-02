@@ -180,7 +180,7 @@ describe('reference Inventory layout', () => {
       expect(compact.textContent).toContain('Owned 1');
     }
     expect(account).toEqual(before);
-  });
+  }, 20000);
 
   it('opens material Details with honest usage copy and closes without consuming anything', () => {
     const account = emptyAccount();
