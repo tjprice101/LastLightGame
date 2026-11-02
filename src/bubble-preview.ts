@@ -3,7 +3,7 @@ import { characterArt, characterName } from './content/character-art';
 import { elementAccents, materialArt, materialName, dungeonArt } from './content/dungeon-art';
 import { conduits, conduitEffect, conduitEquipReason, conduitUpgradeCost, isConduitId, type ConduitSlots } from './content/conduits';
 import { masterConduits } from './content/master-conduits';
-import { characterLevelCost, characterEvolutionCost, characterEvolutionRequirement, characterLevelCap, type UpgradeCost } from './content/progression';
+import { characterLevelCost, characterEvolutionCost, characterEvolutionRequirement, characterLevelCap, displayEvolution, type UpgradeCost } from './content/progression';
 import { resolveFighter, formatStat, shatterGauge } from './content/combat';
 import { nativeIdentities } from './content/native-identities';
 import { abilityIcons } from './presentation/ability-icon';
@@ -417,7 +417,7 @@ function detailShell(content: string): string {
     <div class="focus-art">${image(person.art, person.fullName)}</div>
     <div class="focus-identity"><p class="eyebrow">${person.element} / ${esc(person.role)}</p><h2>${esc(person.fullName)}</h2>
     <p class="focus-stars" aria-label="${person.stars} stars">${'\u2605'.repeat(person.stars)}</p>
-    <div class="tags">${tag(person.rarity)}${tag(`Lv.${person.progress.level} / ${cap}`)}${starter ? tag(`Form ${person.progress.evolution} / 6`) : tag('Fixed form')}${starter ? tag(starter.weapon) : ''}</div></div>
+    <div class="tags">${tag(person.rarity)}${tag(`Lv.${person.progress.level} / ${cap}`)}${starter ? tag(`Form ${displayEvolution(state.selected, person.progress.evolution)} / ${displayEvolution(state.selected, 6)}`) : tag('Fixed form')}${starter ? tag(starter.weapon) : ''}</div></div>
     <div class="focus-cycle"><button class="tool-circle" data-action="cycle" data-step="-1" aria-label="Previous character">${uiIcon('back')}</button>
     <button class="tool-circle next-character" data-action="cycle" data-step="1" aria-label="Next character">${uiIcon('back')}</button></div>${button('Character art', 'team', false, 'back')}</section>
     <div class="detail-content">${content}</div></div>`;
@@ -482,7 +482,7 @@ function upgrade(mode: 'level' | 'max' | 'evolution'): string {
     : Object.entries(cost.materials).some(([id, count]) => (account().materials[id] ?? 0) < count) || cost.fractalis > account().fractalis ? 'Insufficient resources.'
       : required && !fodder.ready ? fodder.surplus ? 'Remove surplus copies.' : `Choose ${required} Evolution Value.` : '';
   return `${heading()}<div class="upgrade-layout"><section class="glass upgrade-portrait">${image(evo ? `characters/${characterArt(state.selected, next.evolution).art}` : person.art, person.fullName)}
-    <h2>${esc(evo && !state.capture ? characterName(state.selected, next.evolution) : person.fullName)}</h2><p>${evo ? `Form ${progress.evolution} → ${next.evolution}` : `Lv.${progress.level} → ${next.level} / Cap ${cap}`}</p>${button('Growth overview', 'growth')}</section>
+    <h2>${esc(evo && !state.capture ? characterName(state.selected, next.evolution) : person.fullName)}</h2><p>${evo ? `Form ${displayEvolution(state.selected, progress.evolution)} → ${displayEvolution(state.selected, next.evolution)}` : `Lv.${progress.level} → ${next.level} / Cap ${cap}`}</p>${button('Growth overview', 'growth')}</section>
     ${glass('Stat changes & cost', `<div class="stat-grid compact upgrade-stat-preview">${statPreview(person.fighter.stats, after)}</div><h3>${mode === 'max' ? 'Total affordable leveling cost' : 'Required resources'}</h3>${costRows(cost)}
       <div class="upgrade-confirm"><p role="status">${reason || 'Ready to confirm.'}</p><button class="pill primary full" data-action="upgrade" data-mode="${mode}" ${reason ? 'disabled' : ''}>${evo ? 'Evolve' : mode === 'max' ? 'Confirm leveling' : 'Level up'} ${uiIcon('evolution')}</button></div>`, 'upgrade-review')}
     ${evo && required ? glass('Choose Evolution Value', `<p class="muted">Each copy contributes its form value. Locked, squad and equipped copies cannot be consumed.</p><div class="devourer-picker">${options.map(entry =>
@@ -697,7 +697,7 @@ function archiveGrid(): string {
     }).join('') : starters.flatMap(person => Array.from({ length: 6 }, (_, index) => {
       const evolution = index + 1, reached = (account().characters[person.id]?.evolution ?? 0) >= evolution;
       return `<button class="item-card ${reached ? '' : 'undiscovered'}" data-action="character-reference" data-character="${person.id}" data-evolution="${evolution}">
-        <span class="item-art">${portrait(person.id, evolution)}</span><strong>${esc(characterName(person.id, evolution))}</strong><small>${person.stars} stars / Form ${evolution} / ${reached ? 'Reached' : 'Unreached'}</small></button>`;
+        <span class="item-art">${portrait(person.id, evolution)}</span><strong>${esc(characterName(person.id, evolution))}</strong><small>${person.stars} stars / Form ${displayEvolution(person.id, evolution)} / ${reached ? 'Reached' : 'Unreached'}</small></button>`;
     })).join('')}</div>`;
 }
 function masters(): string {
@@ -1077,7 +1077,7 @@ root.addEventListener('click', event => perform(() => {
         const evolved = mode === 'evolution' && isStarterId(id);
         render();
         cinematic(evolved ? {
-          kind: 'evolution', eyebrow: `Form ${person.progress.evolution} \u2192 ${after.progress.evolution}`, title: 'Evolution', subtitle: after.fullName,
+          kind: 'evolution', eyebrow: `Form ${displayEvolution(state.selected, person.progress.evolution)} \u2192 ${displayEvolution(state.selected, after.progress.evolution)}`, title: 'Evolution', subtitle: after.fullName,
           fromArt: person.art, art: after.art, tier: evolutionTier(after.progress.evolution),
         } : {
           kind: 'level', eyebrow: mode === 'max' ? 'Max Level' : 'Level up', title: `Lv.${person.progress.level} \u2192 ${after.progress.level}`, subtitle: after.fullName, art: after.art,

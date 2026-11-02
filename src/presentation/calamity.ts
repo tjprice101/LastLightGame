@@ -145,7 +145,7 @@ export function calamitySection(activity: CalamityActivityId, account: Account |
   return `<section class="calamity-section" data-calamity-tiers="${activity}" aria-label="${escapeDialogText(definition.name)} Calamity">
     <div class="calamity-heading"><div><h3>${escapeDialogText(definition.name)} · Calamity</h3>
       <p>Free entry. Each victory earns one chest and a chance to recruit an Element-Bearer.</p></div>
-      ${information(`${prefix}-rules`, 'Calamity rules', '<p>Each victory earns one chest and a 10% chance to recruit the tier’s Element-Bearer at Evo.1 Lv.0, if unowned. Owned characters give no recruitment reward. Open chests in Inventory. Entry and retries are free.</p>', 'Calamity rules')}</div>
+      ${information(`${prefix}-rules`, 'Calamity rules', '<p>Each victory earns one chest and a 10% chance to recruit the tier’s Element-Bearer at Evo.2 (Uncommon) Lv.0, if unowned. Owned characters give no recruitment reward. Open chests in Inventory. Entry and retries are free.</p>', 'Calamity rules')}</div>
     <div class="calamity-tier-tabs" role="tablist" aria-label="Calamity tier">
       ${([1, 2, 3] as const).map(tier => `<button type="button" role="tab" id="${prefix}-${tier}-tab" data-calamity-choice="${tier}"
         aria-controls="${prefix}-${tier}-panel" aria-selected="${tier === 1}" tabindex="${tier === 1 ? 0 : -1}">
@@ -168,7 +168,7 @@ export function calamitySection(activity: CalamityActivityId, account: Account |
           ${information(`${prefix}-${tier}-mechanics`, `${escapeDialogText(encounter.name)} · Boss abilities`, `<p>${escapeDialogText(encounter.description)}</p>`, 'Boss abilities')}</div>
         <section class="calamity-tier-reward" aria-label="Victory reward">
           <div class="calamity-chest-heading">${calamityChestIcon(tier)}<div><h5>Victory reward</h5><p>1 ${escapeDialogText(chest.name.replace(`${definition.name} `, ''))}</p><small>Open in Inventory.</small></div></div>
-          ${calamityChestContents(activity, tier)}<p class="calamity-recruitment-chance">Each victory has a 10% chance to recruit ${escapeDialogText(getStarter(calamiticCharacterByTier[tier]).name)} at Evo.1 Lv.0 if unowned.</p></section>
+          ${calamityChestContents(activity, tier)}<p class="calamity-recruitment-chance">Each victory has a 10% chance to recruit ${escapeDialogText(getStarter(calamiticCharacterByTier[tier]).name)} at Evo.2 (Uncommon) Lv.0 if unowned.</p></section>
         <footer class="calamity-tier-actions">
         <button class="primary-button" data-calamity="${activity}" data-calamity-tier="${tier}" ${access?.unlocked ? '' : 'disabled'}>Enter EX+${tier}</button>
         <p class="activity-unlock-hint">${access?.unlocked ? '' : account ? escapeDialogText(access!.requirement) : 'Cannot enter. Check the save error.'}</p>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { openingStarters as starters } from '../content/starters';
+import { getStarter, openingStarters as starters } from '../content/starters';
 import { characterDetail, characterHub, characterInformation, characterTabs, homeHub, inventoryHub, isCharacterTab } from './hub';
 import { emptyAccount } from '../game/account';
 import { storyRules } from '../content/story';
@@ -9,6 +9,18 @@ import { nativeIdentities } from '../content/native-identities';
 import { formatStat, resolveFighter } from '../content/combat';
 
 describe('game-specific hub layouts', () => {
+  it.each(['ozriel', 'ilvaris', 'kaelith'] as const)('%s displays Evo.2 as Uncommon and Evo.7 as Calamitic', (id) => {
+    const starter = getStarter(id);
+    const account = emptyAccount();
+    account.characters[id] = { level: 0, evolution: 1 };
+    const starting = characterHub(starter, 'overview', account);
+    expect(starting).toContain('Evo.2');
+    expect(starting).toContain('Uncommon');
+    account.characters[id] = { level: 110, evolution: 6 };
+    const final = characterHub(starter, 'overview', account);
+    expect(final).toContain('Evo.7');
+    expect(final).toContain('Calamitic');
+  });
   it.each([1, 2, 3, 4, 5])('blocks evolving form %i until its level cap, even with resources', (evolution) => {
     const account = emptyAccount();
     const cap = 15 * evolution + 15;

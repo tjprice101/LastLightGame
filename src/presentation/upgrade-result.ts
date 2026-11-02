@@ -1,6 +1,7 @@
 import { formatStat, resolveFighter } from '../content/combat';
 import { isStarterId } from '../content/starters';
 import { type Account, ownedProgress } from '../game/account';
+import { displayEvolution } from '../content/progression';
 import { resolveCapturedFighter } from '../game/character-instances';
 import { ownedCompanion } from './owned-companion';
 import { escapeDialogText } from './game-dialog';
@@ -55,13 +56,15 @@ export function upgradeResult(before: Account, after: Account, id: string, kind:
   const to = stats(after, id);
   const levelChange = `Level ${previous.level} → ${current.level}`;
   const evolutionChange = kind === 'evolve' && isStarterId(id)
-    ? ` · Evolution ${ownedProgress(before, id).evolution} → ${ownedProgress(after, id).evolution}` : '';
+    ? ` · Evolution ${displayEvolution(id, ownedProgress(before, id).evolution)} → ${displayEvolution(id, ownedProgress(after, id).evolution)}` : '';
   const evolved = kind === 'evolve' && isStarterId(id);
   const fromForm = evolved ? ownedProgress(before, id).evolution : 0;
+  const fromDisplayForm = evolved && isStarterId(id) ? displayEvolution(id, ownedProgress(before, id).evolution) : 0;
   const toForm = evolved ? ownedProgress(after, id).evolution : 0;
+  const toDisplayForm = evolved && isStarterId(id) ? displayEvolution(id, ownedProgress(after, id).evolution) : 0;
   return {
     cinematic: evolved ? {
-      kind: 'evolution', eyebrow: `Form ${fromForm} \u2192 ${toForm}`, title: 'Evolution', subtitle: current.label,
+      kind: 'evolution', eyebrow: `Form ${fromDisplayForm} \u2192 ${toDisplayForm}`, title: 'Evolution', subtitle: current.label,
       fromArt: imageSource(previous.art), art: imageSource(current.art), tier: evolutionTier(toForm), palette: { accent: current.color },
     } : {
       kind: 'level', eyebrow: 'Level up', title: `Lv.${previous.level} \u2192 ${current.level}`, subtitle: current.label,

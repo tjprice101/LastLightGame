@@ -1,5 +1,5 @@
 import { type Starter } from '../content/starters';
-import { type CharacterProgress } from '../content/progression';
+import { characterRarity, displayEvolution, type CharacterProgress } from '../content/progression';
 import { fighters } from '../content/combat';
 import { characterName } from '../content/character-art';
 import { materialArt } from '../content/dungeon-art';
@@ -27,7 +27,7 @@ export function ascensionContents(starter: Starter, account: Account): string {
   const progress = ownedProgress(account, starter.id);
   const shards = account.materials['shard-of-calamity'] ?? 0;
   const art = materialArt('shard-of-calamity');
-  return `<header class="ascension-hero"><div class="hub-portrait">${portrait(starter, progress.evolution, progress.ascension?.stats === true)}</div><div><p class="ascension-eyebrow">Calamitic Ascension</p><h2>${escape(characterName(starter.id, progress.evolution, progress.ascension?.stats === true))}</h2><div class="ascension-shards">${art ? `<img src="${assetUrl(`materials/${art}.png`)}" alt="" width="40" height="40">` : '<span class="ascension-shard-token" aria-hidden="true">◆</span>'}<span>Shards of Calamity <strong data-ascension-shards>${shards}</strong></span></div></div></header>
+  return `<header class="ascension-hero"><div class="hub-portrait">${portrait(starter, progress.evolution, progress.ascension?.stats === true)}</div><div><p class="ascension-eyebrow">Calamitic Ascension</p><h2>${escape(characterName(starter.id, progress.evolution, progress.ascension?.stats === true))}</h2><p class="ascension-form">Evo. ${displayEvolution(starter.id, progress.evolution)} ? ${characterRarity(starter.id, progress.evolution)}</p><div class="ascension-shards">${art ? `<img src="${assetUrl(`materials/${art}.png`)}" alt="" width="40" height="40">` : '<span class="ascension-shard-token" aria-hidden="true">◆</span>'}<span>Shards of Calamity <strong data-ascension-shards>${shards}</strong></span></div></div></header>
     <div class="ascension-steps">${steps.filter(step => step === 'stats' || progress.ascension?.stats).map(step => {
       const done = progress.ascension?.[step] === true;
       const action = step === 'stats' ? 'Ascend' : 'Imbue';

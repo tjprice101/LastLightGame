@@ -111,7 +111,7 @@ describe('visible UI copy', () => {
     }
     const gameplay = plain(gameplayHub(account));
     expect(gameplay).toContain('10% chance to recruit');
-    expect(gameplay).toContain('Evo.1 Lv.0');
+    expect(gameplay).toContain('Evo.2 (Uncommon) Lv.0');
     expect(gameplay).toContain('Rise’s constructs guard 25 floors.');
     const store = plain(conduitStore(account, undefined, 'Calamitic'));
     expect(store).toContain('100 Calamitic Tokens');

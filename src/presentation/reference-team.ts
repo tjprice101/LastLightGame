@@ -2,7 +2,7 @@ import { resonanceBadge } from './intrinsic-perks';
 import { elements, isCurrencyMode } from '../content/activities';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { characterName } from '../content/character-art';
-import { characterLevelCap, characterRarity, evolutionRarity } from '../content/progression';
+import { characterLevelCap, characterRarity, displayEvolution, evolutionRarity } from '../content/progression';
 import { formatStat, shatterGauge } from '../content/combat';
 import { ownedCharacters, ownedProgress, equippedSquad, characterProtection, creatureSaleOffer, isSellableCreatureMode, type Account } from '../game/account';
 import { saleControls } from './creature-sale';
@@ -197,8 +197,8 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
         <div class="ref-character-identity"><p data-reference-prefix>${title} · ${starter.weapon}</p><h2 data-reference-name>${starter.name}</h2>
           <div class="ref-tags">${elementLabel(starter.elementId)}<span class="ref-stars" aria-label="${starter.stars}-star Element-Bearer">${'★'.repeat(starter.stars)}</span><span class="ref-chip">${starter.role}</span><span class="ref-chip" data-reference-rarity data-rarity="${characterRarity(starter.id, progress.evolution)}">${characterRarity(starter.id, progress.evolution)}</span></div>
           <div class="ref-character-progress"><div>Level <span data-reference-level>${formatStat(progress.level)} / ${cap}</span><div class="ref-bar"><i style="width:${progress.level / cap * 100}%"></i></div></div>
-          <div><span data-reference-evolution>Evolution ${progress.evolution} / 6</span><div class="ref-pips">${Array.from({ length: 6 }, (_, index) => `<i class="${index < progress.evolution ? 'is-filled' : ''}"></i>`).join('')}</div></div></div>
-          <span data-owned-progress class="ref-sr-only">Lv.${progress.level} · Evo.${progress.evolution}</span>
+          <div><span data-reference-evolution>Evolution ${displayEvolution(starter.id, progress.evolution)} / ${displayEvolution(starter.id, 6)}</span><div class="ref-pips">${Array.from({ length: 6 }, (_, index) => `<i class="${index < progress.evolution ? 'is-filled' : ''}"></i>`).join('')}</div></div></div>
+          <span data-owned-progress class="ref-sr-only">Lv.${progress.level} · Evo.${displayEvolution(starter.id, progress.evolution)}</span>
           <div class="ref-character-header-actions">${squad[0] === starter.id ? '<span class="ref-chip ref-white">Squad leader</span>' : squad.includes(starter.id) ? `<button class="ref-chip" data-make-leader="${starter.id}">♛ Make leader</button>` : '<button class="ref-chip" data-team-view="formation">Add to squad</button>'}
           ${information(`bearer-lore-${starter.id}`, starter.name, `<p>${starter.description}</p><h3>${starter.lore.origin}</h3><p>${starter.lore.story}</p><blockquote>${starter.lore.vow}</blockquote>`, 'Lore')}</div></div>
       </header><nav class="ref-character-submenus" aria-label="Character sub-menus">${[

@@ -16,6 +16,7 @@ import { createConduitElement } from './conduit-element';
 import { pngFallback } from './image-format';
 import { rarityColors, type Rarity } from '../content/rarity';
 import { capturedRarity } from './owned-companion';
+import { characterRarity } from '../content/progression';
 
 export function isChestLoot(id: string): boolean {
   return id === masterChest.id || id.startsWith('calamity:');
@@ -52,7 +53,7 @@ export function lootItems(event: BattleEvent): LootItem[] {
     ...(event.calamiticRecruitment ? [{
       id: `calamitic-recruitment:${event.calamiticRecruitment}`,
       name: `${characterName(event.calamiticRecruitment)} \u00b7 Calamitic Element-Bearer`,
-      amount: 1, color: rarityColors.Calamitic, rarity: 'Calamitic' as const,
+      amount: 1, color: rarityColors[characterRarity(event.calamiticRecruitment, 1)], rarity: characterRarity(event.calamiticRecruitment, 1),
     }] : []),
     ...(event.calamityShards ? [{ id: 'shard-of-calamity', name: materialName('shard-of-calamity'), amount: event.calamityShards,
       art: materialArt('shard-of-calamity'), color: rarityColors.Calamitic, rarity: 'Calamitic' as const }] : []),

@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { starters } from '../content/starters';
+import { displayEvolution } from '../content/progression';
 import { celebrateUpgrade, upgradeCelebration } from './upgrade-celebration';
 import { reducedMotion } from './settings';
 
@@ -49,7 +50,7 @@ describe('saved character upgrade celebrations', () => {
     expect(level).toContain('Level 1');
     expect(level.match(/class="upgrade-spark"/g)).toHaveLength(6);
     expect(evolution).toContain('Evolution complete');
-    expect(evolution).toContain('Evolution 2');
+    expect(evolution).toContain(`Evolution ${displayEvolution(starter.id, 2)}`);
     expect(evolution.match(/class="upgrade-spark"/g)).toHaveLength(12);
     expect(evolution).toContain('role="status"');
     expect(evolution).toContain('aria-hidden="true"');

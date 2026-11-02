@@ -63,7 +63,7 @@ import { isInfusionMode } from './content/infusions';
 import { isPlayableDungeon } from './content/dungeons';
 import { isWarCharacter } from './content/elemental-war';
 import { unlockedWarStage } from './game/account';
-import { characterLevelCost, characterEvolutionCost, evolutionRarity } from './content/progression';
+import { characterLevelCost, characterEvolutionCost, displayEvolution, evolutionRarity } from './content/progression';
 import { materialName } from './content/dungeon-art';
 import { capturedProgress } from './game/character-instances';
 import { gameplayHub, bindGameplayNavigation } from './presentation/gameplay';
@@ -1946,7 +1946,7 @@ app.addEventListener('click', async (event) => {
     const rosterLevel = rosterButton?.querySelector('span > small');
     const rosterName = rosterButton?.querySelector('span > strong');
     if (rosterName) rosterName.textContent = characterName(starter.id, progress.evolution, progress.ascension?.stats === true);
-    if (rosterLevel) rosterLevel.textContent = `Lv.${progress.level} · Evo.${progress.evolution}`;
+    if (rosterLevel) rosterLevel.textContent = `Lv.${progress.level} · Evo.${displayEvolution(starter.id, progress.evolution)}`;
     const rosterPortrait = rosterButton?.querySelector('img');
     if (rosterPortrait) {
       const art = portraitAttributes(starter, progress.evolution, progress.ascension?.stats === true);
@@ -2053,7 +2053,7 @@ app.addEventListener('click', async (event) => {
         updateCharacterTab(app, starter, characterTab, account);
         const progress = ownedProgress(account, id);
         const label = app.querySelector(`[data-owned-character="${id}"] span > small`);
-        if (label) label.textContent = `Lv.${progress.level} · Evo.${progress.evolution}`;
+        if (label) label.textContent = `Lv.${progress.level} · Evo.${displayEvolution(starter.id, progress.evolution)}`;
         currency.textContent = String(account.fractalis);
         celebrateUpgrade(app, starter, 'level', progress);
       } else renderMenu();

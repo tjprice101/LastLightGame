@@ -1,5 +1,22 @@
 # Current state and handoff
 
+## Display evolution by rarity rank (D-438)
+
+- Added shared `rarityRank` / `displayEvolution` presentation helpers. Ordinary
+  forms remain Evo.1-6; Calamitic internal evolution1-6 now displays Evo.2-7,
+  matching Uncommon through Calamitic. Saves, internal evolution values, art
+  indices, costs, caps, growth and server validation are unchanged.
+- Updated character details/evolution previews, roster and Home/Squad readouts,
+  Archives, reference and bubble screens, Ascension modal, saved upgrade
+  celebrations/results, and Calamity recruitment notices/results. Recruitment
+  loot now uses the acquired character's actual Uncommon rarity.
+- Validation: `npx tsc --noEmit -p .` passed; focused progression/presentation
+  tests passed148/148; full `npx vitest run --testTimeout=200000 --maxWorkers=2`
+  passed7,069/7,069 tests in226 files. `npm run build` passed with the existing
+  large-chunk warning. `node tools\bundle_server_game.mjs` and
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`
+  passed; `engine.bundle.js` SHA-256 was unchanged. No commit, push or deployment.
+
 ## Phase 1 Section 1: role perks and Element Resonance (D-437)
 
 - Implemented shared innate role stat buckets for every Element-Bearer,

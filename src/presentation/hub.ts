@@ -1,7 +1,7 @@
 import { rolePerkRow } from './intrinsic-perks';
 import { getStarter, isStarterId, type Starter } from '../content/starters';
 import { resolveFighter, formatStat, shatterGauge } from '../content/combat';
-import { artifactSlots, characterGrowth, characterLevelCap, characterRarity, evolutionRarity, upgradePaths, characterLevelCost, characterEvolutionCost, characterEvolutionRequirement, levelingMaterialTiers, type CharacterProgress } from '../content/progression';
+import { artifactSlots, characterGrowth, characterLevelCap, characterRarity, displayEvolution, evolutionRarity, upgradePaths, characterLevelCost, characterEvolutionCost, characterEvolutionRequirement, levelingMaterialTiers, type CharacterProgress } from '../content/progression';
 import { characterRating } from './character-rating';
 import { portrait, portraitAttributes, assetUrl, characterFacing, characterFacingAttributes } from './portrait';
 import { ascensionEntry } from './calamitic-ascension';
@@ -142,7 +142,7 @@ export function homeHub(starter: Starter, firstArrival: boolean, account: Accoun
         <div class="sanctuary-identity-plate"><p class="element-pill">${capturedLeader ? `${capturedLeader.element} · Captured Elemental-Devourer` : `${starter.element} · ${starter.weapon}`}</p>
         <h2 aria-label="${displayName}">${identity} ${capturedLeader ? '' : characterRole(starter.id)}</h2>${capturedLeader?.rating ?? characterRating(starter.id, progress?.evolution, progress?.ascension?.stats === true)}
         ${capturedLeader ? '' : `<p class="home-vow">Level, evolve and equip Conduits in Team.</p>`}
-        <p class="upgrade-progress">${capturedLeader?.progress ?? `Lv.${progress?.level ?? 0} · Evo.${progress?.evolution ?? 1}`}</p>
+        <p class="upgrade-progress">${capturedLeader?.progress ?? `Lv.${progress?.level ?? 0} · Evo.${displayEvolution(starter.id, progress?.evolution ?? 1)}`}</p>
         <div class="mono-leader-stats">${([['Health', leaderStats.health], [phaseZeroStatsReady ? 'Direct Attack' : 'Attack', leaderStats.damage], ['Defense', leaderStats.defense]] as const).map(([label, value]) => `<div><small>${label}</small><strong>${formatStat(value)}</strong></div>`).join('')}</div>
         <button type="button" class="text-button home-character-link" data-page="team" data-team-area="${capturedLeader ? 'creatures' : 'bearers'}" ${capturedLeader ? `data-team-capture="${squad[0]}"` : `data-team-character="${starter.id}"`}>View ${capturedLeader ? 'creature' : 'character'} &rarr;</button>
         ${firstArrival ? `<p class="bond-message">Your starter is ready. Open Story to begin.</p>` : ''}</div>
@@ -217,7 +217,7 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
   const current = ownedProgress(account, starter.id);
   const cap = characterLevelCap(current.evolution, starter.id, current.ascension?.stats === true);
   const finished = evolve ? current.evolution === characterGrowth.forms : current.level === cap;
-  if (finished) return `<p class="upgrade-progress">Lv.${current.level} / ${cap} &middot; Evo.${current.evolution} / ${characterGrowth.forms}</p>
+  if (finished) return `<p class="upgrade-progress">Lv.${current.level} / ${cap} &middot; Evo.${displayEvolution(starter.id, current.evolution)} / ${displayEvolution(starter.id, characterGrowth.forms)}</p>
     <p>${evolve ? 'Final evolution reached.' : current.evolution === characterGrowth.forms ? 'Maximum level reached.' : 'Level cap reached. Evolution required.'}</p>
     ${!evolve ? `<button class="text-button" type="button" data-max-level="${starter.id}">Max Level</button>` : ''}${result ? '<p id="upgrade-result" role="status"></p>' : ''}`;
   const element = getElement(starter.elementId);
@@ -252,16 +252,16 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
       <span class="evolution-fodder-info"><strong>${creature.name}</strong><small>Lv.${capturedProgress(copy).level} · Value ${value}</small>${capturedRating(creature.id)}<small class="evolution-fodder-reason">${eligible ? '' : reasons.join(' · ')}</small>
       <span class="evolution-fodder-state">${eligible ? '<span class="fodder-unselected">Choose</span><span class="fodder-selected">Chosen</span>' : 'Unavailable'}</span></span></label>`).join('') : `<p>No Elemental-Devourers from [${modeName}] captured yet.</p>`}</div>
     </fieldset>` : '';
-  if (compact) return `<p class="ref-growth-summary">${evolve ? `Evo.${current.evolution} → ${next.evolution} · Level cap ${characterLevelCap(next.evolution, starter.id, false)}` : `Lv.${current.level} → ${next.level} · Cap ${cap}`}</p>
+  if (compact) return `<p class="ref-growth-summary">${evolve ? `Evo.${displayEvolution(starter.id, current.evolution)} → ${displayEvolution(starter.id, next.evolution)} · Level cap ${characterLevelCap(next.evolution, starter.id, false)}` : `Lv.${current.level} → ${next.level} · Cap ${cap}`}</p>
     <p class="ref-growth-cost">${currencyIcon('fractalis')}${cost.fractalis} Prismatica</p>
     <ul class="ref-growth-materials">${resources.slice(1).map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<span>${resource.needed} ${resource.name}<small>Owned ${resource.owned}</small></span></li>`).join('')}</ul>
     <section class="ref-growth-preview"><h3 class="ref-growth-preview-heading">Stat preview</h3><div>${statPreview(before, after, 'div')}</div></section>
     ${selection}<button class="primary-button" data-upgrade="${evolve ? 'evolve' : 'level'}" data-fodder-value-required="${count}" data-upgrade-blocked="${!!reason}" ${reason || count ? 'disabled' : ''}>${evolve ? 'Evolve' : 'Level up'}</button>
     ${!evolve ? `<button class="ref-link" data-max-level="${starter.id}">Max Level</button>` : ''}<p class="quiet">${reason}</p>`;
-  return `${organized ? '' : `<p class="upgrade-progress">Lv.${current.level} / ${cap} &middot; Evo.${current.evolution} / ${characterGrowth.forms}</p>`}
+  return `${organized ? '' : `<p class="upgrade-progress">Lv.${current.level} / ${cap} &middot; Evo.${displayEvolution(starter.id, current.evolution)} / ${displayEvolution(starter.id, characterGrowth.forms)}</p>`}
     <div class="character-upgrade-grid"><section class="character-category upgrade-benefits">${organized ? `<div class="ref-growth-preview"><h3 class="ref-growth-preview-heading">${evolve ? 'Stat &amp; form preview' : 'Level &amp; stat preview'}</h3>` : ''}${organized ? '' : `<h3>${evolve ? 'Evolution preview' : 'Level preview'}</h3>`}
-    <div class="hub-comparison"><div><small>CURRENT</small><strong>${evolve ? `Evo.${current.evolution}` : `Lv.${current.level}`}</strong></div>
-    <div><small>NEXT</small>${nextPortrait ? `<div class="evolution-silhouette unreached-character-art"><span class="character-idle" data-character="${starter.id}"><img draggable="false" src="${nextPortrait.src}" alt="${characterName(starter.id, next.evolution, false)} next evolution silhouette" ${characterFacingAttributes(starter.id, next.evolution)} width="150" height="150"></span></div>` : ''}<strong>${evolve ? `Evo.${next.evolution} · Cap ${characterLevelCap(next.evolution, starter.id)}` : `Lv.${next.level}`}</strong></div></div>
+    <div class="hub-comparison"><div><small>CURRENT</small><strong>${evolve ? `Evo.${displayEvolution(starter.id, current.evolution)}` : `Lv.${current.level}`}</strong></div>
+    <div><small>NEXT</small>${nextPortrait ? `<div class="evolution-silhouette unreached-character-art"><span class="character-idle" data-character="${starter.id}"><img draggable="false" src="${nextPortrait.src}" alt="${characterName(starter.id, next.evolution, false)} next evolution silhouette" ${characterFacingAttributes(starter.id, next.evolution)} width="150" height="150"></span></div>` : ''}<strong>${evolve ? `Evo.${displayEvolution(starter.id, next.evolution)} · Cap ${characterLevelCap(next.evolution, starter.id)}` : `Lv.${next.level}`}</strong></div></div>
     <div class="upgrade-stat-preview">${statPreview(before, after)}</div>
     ${organized ? '</div>' : ''}</section><section class="character-category upgrade-payment"><h3>Required resources${organized ? ' <small class="resource-key">Owned / Required</small>' : ''}</h3>${organized ? '' : '<p class="resource-key">Owned / Required</p>'}
     <ul class="upgrade-resources">${resources.map((resource) => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${resource.name}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>
@@ -298,7 +298,7 @@ export function characterInformation(): string {
     <p>Level caps by form: ordinary Element-Bearers ${Array.from({ length: characterGrowth.forms }, (_, index) => characterLevelCap(index + 1)).join(' / ')}; Calamitic Element-Bearers ${Array.from({ length: characterGrowth.forms }, (_, index) => characterLevelCap(index + 1, 'ozriel')).join(' / ')}. Evolving requires max level and keeps it.</p>
     <p>Each level costs Common materials plus one of each higher rarity unlocked at the destination level: ${levelingMaterialTiers.map(tier => `${tier.rarity} at ${tier.destination}+`).join(', ')}. Materials match the member's element (Rosethorn for Rosetta, Thornia, Crinso and Roselius); Calamitic Element-Bearers use the Calamity chain and Fragment of Rise for destinations Lv.91-110; late-form specialty costs are extra.</p>
     <p>Core growth: 1 + 0.15 &times; level + 1.5 &times; (evolution - 1); Defense uses core growth^0.7. Ability potency grows with level and evolution. Gauge gains, costs, cooldowns and durations don't scale, except through Conduits.</p>
-    <h3>Evolution fodder</h3><ul><li>Evo.3→4: 3 Evolution Value. Evo.4→5: 8. Evo.5→6: 15.</li><li>Each Elemental-Devourer is worth its form number (1-6). Combine copies to meet the exact total.</li><li>Use copies from the matching infusion mode; Rosetta, Thornia and Crinso use Roselius. Selected copies are consumed permanently.</li></ul>
+    <h3>Evolution fodder</h3><ul><li>Ordinary Element-Bearers: Evo.3 to 4 needs 3 Evolution Value, Evo.4 to 5 needs 8, and Evo.5 to 6 needs 15. Calamitic Element-Bearers: Evo.4 to 5 needs 3, Evo.5 to 6 needs 8, and Evo.6 to 7 needs 15.</li><li>Each Elemental-Devourer is worth its form number (1-6). Combine copies to meet the exact total.</li><li>Use copies from the matching infusion mode; Rosetta, Thornia and Crinso use Roselius. Selected copies are consumed permanently.</li></ul>
     <h3>Rose event growth</h3><p>Rosetta, Thornia and Crinso use Rosethorn materials instead of elemental and specialty materials: Seed for levels, plus Soul at Evo.5–6 and for late evolutions with Roselius. Roselius are capturable at Lv.120 or below, join at up to Lv.60 and sell for their form's material.</p>
     <h3>Captured Elemental-Devourers</h3><p>Keep their form and skills, cap at Lv.60 and never evolve. Boss stat bonuses are not retained.</p><p>Skill 1 and Skill 2 have no cooldown. A retained Last Flare uses its enemy interval as a cooldown. Missing skills stay unavailable.</p>
     <h3>Protection and sales</h3><p>Locked, squad and Conduit-equipped copies can't be sold or consumed. Sales are permanent; prices depend on form, not level.</p>
@@ -362,7 +362,7 @@ export function updateCharacterTab(host: HTMLElement, starter: Starter, selected
     }
   }
   const progressLabel = host.querySelector('[data-owned-progress]');
-  if (progressLabel) progressLabel.textContent = account ? `Lv.${ownedProgress(account, starter.id).level} · Evo.${ownedProgress(account, starter.id).evolution}` : 'Progress unavailable';
+  if (progressLabel) progressLabel.textContent = account ? `Lv.${ownedProgress(account, starter.id).level} · Evo.${displayEvolution(starter.id, ownedProgress(account, starter.id).evolution)}` : 'Progress unavailable';
   const formLabel = host.querySelector('[data-owned-title]');
   if (formLabel) formLabel.textContent = characterName(starter.id, account ? ownedProgress(account, starter.id).evolution : 1, account ? ownedProgress(account, starter.id).ascension?.stats === true : false);
   if (account && host.querySelector('[data-reference-name]')) {
@@ -376,7 +376,7 @@ export function updateCharacterTab(host: HTMLElement, starter: Starter, selected
     if (prefix) prefix.textContent = `${characterName(starter.id, progress.evolution, progress.ascension?.stats === true).split(', ')[0]} · ${starter.weapon}`;
     if (rarity) rarity.textContent = characterRarity(starter.id, progress.evolution);
     if (level) level.textContent = `${progress.level} / ${cap}`;
-    if (evolution) evolution.textContent = `Evolution ${progress.evolution} / 6`;
+    if (evolution) evolution.textContent = `Evolution ${displayEvolution(starter.id, progress.evolution)} / ${displayEvolution(starter.id, characterGrowth.forms)}`;
     if (bar) bar.style.width = `${progress.level / cap * 100}%`;
     host.querySelectorAll('.ref-pips i').forEach((pip, index) => pip.classList.toggle('is-filled', index < progress.evolution));
     host.querySelectorAll<HTMLElement>(`[data-reference-member="${starter.id}"]`).forEach(member => {
@@ -405,7 +405,7 @@ export function updateCharacterTab(host: HTMLElement, starter: Starter, selected
     const level = rosterEntry.querySelector('small');
     const thumbnail = rosterEntry.querySelector('img');
     if (name) name.textContent = characterName(starter.id, progress.evolution, progress.ascension?.stats === true);
-    if (level) level.textContent = `Lv.${progress.level} · Evo.${progress.evolution}`;
+    if (level) level.textContent = `Lv.${progress.level} · Evo.${displayEvolution(starter.id, progress.evolution)}`;
     if (thumbnail) {
       const attributes = portraitAttributes(starter, progress.evolution);
       const facing = characterFacing(starter.id, progress.evolution);
@@ -437,7 +437,7 @@ export function characterHub(starter: Starter, selectedTab: string, account: Acc
       <section class="hub-showcase"><div class="hub-portrait">${portrait(starter, account ? ownedProgress(account, starter.id).evolution : 1, account ? ownedProgress(account, starter.id).ascension?.stats === true : false)}</div>
         <p class="element-pill">${starter.element} · ${starter.weapon}</p><h2><span data-owned-title>${characterName(starter.id, account ? ownedProgress(account, starter.id).evolution : 1, account ? ownedProgress(account, starter.id).ascension?.stats === true : false)}</span> ${characterRole(starter.id)}</h2>
         ${characterRating(starter.id, account ? ownedProgress(account, starter.id).evolution : 1, account ? ownedProgress(account, starter.id).ascension?.stats === true : false)}
-        <p class="upgrade-progress" data-owned-progress>${account ? `Lv.${ownedProgress(account, starter.id).level} · Evo.${ownedProgress(account, starter.id).evolution}` : 'Progress unavailable'}</p>
+        <p class="upgrade-progress" data-owned-progress>${account ? `Lv.${ownedProgress(account, starter.id).level} · Evo.${displayEvolution(starter.id, ownedProgress(account, starter.id).evolution)}` : 'Progress unavailable'}</p>
         <div class="character-roster-strip">${characterRoster(account, starter.id)}</div></section>
       <section class="character-control-panel" data-menu-scroll="character-details" aria-label="Character details and upgrades">
         <nav class="hub-rail" aria-label="Character upgrade areas">${characterNavigation(starter, selectedTab)}</nav>

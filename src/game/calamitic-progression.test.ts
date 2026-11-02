@@ -124,11 +124,11 @@ describe('Calamitic progression and saved rewards', () => {
     expect(result.events[0]).toMatchObject({ calamiticRecruitment: character });
     expect(lootItems(result.events[0])).toContainEqual(expect.objectContaining({
       id: `calamitic-recruitment:${character}`, name: expect.stringContaining('Calamitic Element-Bearer'),
-      amount: 1, rarity: 'Calamitic', color: expect.any(String),
+      amount: 1, rarity: 'Uncommon', color: expect.any(String),
     }));
     expect(lootItems(result.events[0]).find(item => item.id === `calamitic-recruitment:${character}`)).not.toHaveProperty('art');
     const resultsHtml = battleResults(result.state, result.events);
-    expect(resultsHtml).toContain('data-rarity="Calamitic"');
+    expect(resultsHtml).toContain('data-rarity="Uncommon"');
     expect(resultsHtml).toContain('class="result-recruitment-reward"');
     expect(resultsHtml).toContain('Calamitic Element-Bearer');
     const retried = saveAccountRewards(storage, result, 'calamity-run-1');

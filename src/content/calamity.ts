@@ -220,5 +220,5 @@ export function calamityEncounter(activity: CalamityActivityId, tier: CalamityTi
 export function calamityWarning(activity: CalamityActivityId, tier: CalamityTier): string {
   const encounter = calamityEncounter(activity, tier);
   const bearer = getStarter(calamiticCharacterByTier[tier]);
-  return `${encounter.name} - Calamity EX+${tier}, Lv.${encounter.level}. Victory earns one ${calamityChest(activity, tier).name} and has a 10% chance to recruit ${bearer.name} at Evo.1 Lv.0 if unowned. No other random drops or captures. Entry and retries are free. ${encounter.description}`;
+  return `${encounter.name} - Calamity EX+${tier}, Lv.${encounter.level}. Victory earns one ${calamityChest(activity, tier).name} and has a 10% chance to recruit ${bearer.name} at Evo.2 (Uncommon) Lv.0 if unowned. No other random drops or captures. Entry and retries are free. ${encounter.description}`;
 }

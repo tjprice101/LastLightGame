@@ -27,10 +27,10 @@ DESIGNS = (
              "extremely ornate cathedral regalia with tower shoulders high vaulted collar and pane mantle, six layered shattered-glass wings, cracked crown-halo and crimson fracture lattice, elevated guard behind the great shield",
              "retain the cathedral regalia tower shoulders vaulted collar pane mantle and elevated guard, expand into twelve shattered-glass wings, two cracked crowned halos and shield buttresses, dense rear nave arches and interlocked crimson fracture lattices fill the interior",
              "retain all earlier tower shoulders vaulted collar pane mantle shield buttresses and elevated guard, eighteen shattered-glass wings and three nested cracked crown-halos, immense interwoven nave vaults and crimson fracture lattices densely fill the rear architecture, halberd framed by pearl-glass cathedral spires"),
-         icons=(("Passive", "Refusal", "one unbroken white shield pane holding back three cracked black wedges"),
-                ("Skill 1", "Pane of Absolution", "one glass halberd head passing through a fractured pearl pane with a crimson pressure notch"),
-                ("Skill 2", "Cathedral of Shards", "three interlocking pearl cathedral shield windows under one black buttress arch"),
-                ("Last Flare", "The World Refuses", "one immense white shield window between two parted cracked discs and thick crimson protective arcs"))),
+         icons=(("Passive", "Refusal", "a towering pearlescent cathedral tower shield seen head-on with a rose-window of interlocking white glass panes, a storm of black obsidian wedges and jagged crimson fracture spears shattering against its face and bursting outward into hundreds of pearl-glass splinters, a cracked crimson halo crowning the shield, twin black buttress wings braced behind it, crimson fault lines racing outward and stopping dead at its rim"),
+                ("Skill 1", "Pane of Absolution", "an ornate glass halberd driving point-first through a colossal pearl cathedral pane, the pane exploding into a radial spiral of razor glass shards, a crimson shockwave ring and three fractured black arches collapsing around the impact, sparkling crimson facet flecks caught in every shard, the halberd blade engraved with vaulted pearl filigree"),
+                ("Skill 2", "Cathedral of Shards", "an entire miniature shattered-glass cathedral rising as a protective dome, three nested pearl rose-windows stacked like shields, black flying buttresses and spires curving inward, crimson stained-glass seams pulsing through every pane, a ring of floating pearl glass shield fragments orbiting the cathedral base, intricate vaulted ribs and filigree at every level"),
+                ("Last Flare", "The World Refuses", "a colossal pearlescent tower shield planted at the center of a world-sized cracked black sphere that is splitting apart like glass, the shield holding the halves open, enormous crimson fracture canyons radiating in every direction, eighteen pearl-glass seraph wings fanning behind the shield, three nested cracked crimson crown-halos stacked above, a whirling vortex of white glass shards and black fragments, overwhelming cosmic defiance"))),
     dict(name="Ilvaris", id="ilvaris", gender="female", element="Atmospheric", role="Support",
          identity="white hair in two short swept locks with black tips and crimson eyes",
          weapon="one glass halo-lyre with a ring of suspended crystal panes and clearly separated strings, no blade",
@@ -42,10 +42,10 @@ DESIGNS = (
              "extremely ornate choir-seraph regalia with vaulted shoulders and pane mantle, six layered shattered-glass wings, cracked crown-halo and crimson fracture lattice, airborne conducting pose with both hands readable",
              "retain the choir-seraph regalia vaulted shoulders pane mantle and conducting pose, twelve shattered-glass wings, two cracked crowned halos and expanded lyre arches, dense rear glass choir vaults woven with crimson wind fracture lattices",
              "retain all earlier vaulted shoulders pane mantle lyre arches and conducting pose, eighteen shattered-glass wings and three nested cracked crown-halos, immense interlocked choir galleries and crimson wind fracture lattices densely fill the rear architecture, open strings remain readable"),
-         icons=(("Passive", "Severed Prophecy", "one cracked glass halo enclosing a severed crimson geometric thread"),
-                ("Skill 1", "Unwritten Verse", "one open pearl lyre arch pinning a black glass pane with a crimson diamond seal"),
-                ("Skill 2", "Hymn of Broken Glass", "three upward pearl petal panes woven around one open lyre arch with paired crimson support ribbons"),
-                ("Last Flare", "Tomorrow, Unwritten", "one crowned glass lyre sending three broad pearl arcs upward through a cracked black fate ring"))),
+         icons=(("Passive", "Severed Prophecy", "a black obsidian scroll of fate unrolling in a spiral and being cut apart by a single crimson lyre string, the severed ends curling away into shattered pearl-glass ribbons, a cracked pearlescent halo encircling the cut, small crimson musical arcs and glass notes scattering outward, intricate engraved black filigree along the scroll edges"),
+                ("Skill 1", "Unwritten Verse", "an ornate pearl halo-lyre with suspended crystal panes striking a single resonant chord, a sharp crimson sound-wave lance firing from its strings and shattering a black glass tablet into a fan of angular fragments, concentric pearl resonance rings expanding outward, crimson diamond seals locking the broken pieces in midair, dense choir filigree on the lyre frame"),
+                ("Skill 2", "Hymn of Broken Glass", "a blossoming choir of pearl-glass petals spiraling upward around an open halo-lyre, each petal a tiny stained-glass pane with crimson veins, wind-swept black and white ribbon streams braiding through them, a crown of suspended crystal tuning shards above, sparkling crimson flecks raining down like healing notes, elegant and rising composition"),
+                ("Last Flare", "Tomorrow, Unwritten", "a towering crowned glass halo-lyre suspended before a colossal black ring of fate that is shattering outward like a broken clock face, three immense pearl sound arcs tearing through the ring, eighteen shattered-glass wings unfolding behind the lyre, nested cracked crimson crown-halos, a tempest of white glass shards crimson ribbons and black fragments spiraling outward, triumphant cosmic choir architecture"))),
     dict(name="Kaelith", id="kaelith", gender="female", element="Chaotic", role="Attacker",
          identity="short black hair with white swept fringe and crimson eyes",
          weapon="one connected shatterglass greatscythe with a crescent blade of cracked pearl-glass and a complete central grip",
@@ -57,15 +57,15 @@ DESIGNS = (
              "extremely ornate fracture-seraph regalia with crescent shoulders and pane mantle, six layered shattered-glass wings, cracked crown-halo and crimson fracture lattice, suspended greatscythe sweep with face and grip clear",
              "retain the fracture-seraph regalia crescent shoulders pane mantle and suspended sweep, twelve shattered-glass wings, two cracked crowned halos and reinforced scythe ribs, dense rear broken-thread arches and crimson chaos fracture lattices",
              "retain all earlier crescent shoulders pane mantle scythe ribs and suspended sweep, eighteen shattered-glass wings and three nested cracked crown-halos, immense off-axis broken-thread mandalas and crimson chaos fracture lattices densely fill the rear architecture, complete crescent blade remains clear"),
-         icons=(("Passive", "Reality Fault", "one black glass disc split by three angular crimson cracks with pearl chipped edges"),
-                ("Skill 1", "Shatterfall", "three falling pearl-glass wedges striking one cracked black plane with a crimson impact chevron"),
-                ("Skill 2", "Glass Meridian", "one pearl greatscythe crescent crossing a split black meridian ring and three crimson fracture notches"),
-                ("Last Flare", "Denial of Fate", "one cracked pearl scythe crescent cutting an abstract crimson thread within three shattered black fate rings"))),
+         icons=(("Passive", "Reality Fault", "a black obsidian sphere of reality fracturing open along jagged crimson fault canyons, pearl-glass splinters erupting from every crack, a sharp crescent-shaped rift tearing the center, cracked pearlescent halo shards orbiting at tilted angles, sparkling crimson flecks and black fragments drifting away from the break, menacing and unstable silhouette"),
+                ("Skill 1", "Shatterfall", "a rain of enormous pearl-glass blades plunging from above into a black glass plane that explodes upward in a crown of shards, a crimson impact chevron and branching fault lines spidering outward, a crescent greatscythe silhouette slashing diagonally through the falling blades, black and white debris spiraling in the shockwave, violent dynamic diagonal composition"),
+                ("Skill 2", "Glass Meridian", "a colossal shatterglass greatscythe sweeping a full crescent arc that splits a giant black meridian ring cleanly in two, the cut edge erupting into a wide fan of pearl-glass shards and crimson fracture ribbons, three cracked black orbit rings breaking apart around it, sparkling crimson facets along the crescent blade, sweeping circular motion composition"),
+                ("Last Flare", "Denial of Fate", "an immense pearlescent greatscythe crescent cutting through the crimson thread of fate at the heart of three colliding shattered black fate rings, reality splitting behind it like a broken mirror into hundreds of angular panes, eighteen shattered-glass wings and a cracked crimson crown-halo flaring outward, a cataclysmic burst of black fragments white glass shards and crimson chaos ribbons, apocalyptic fate-denying climax"))),
 )
 STATUSES = (
-    ("Fault", "calamitic-fault", "one black glass mark with three thick crimson cracks and pearl chipped edges"),
-    ("Fate-seared Mark", "calamitic-fate-seared-mark", "one angular pearl-glass seal branded by a crimson diamond inside a broken black halo"),
-    ("Refusal", "calamitic-refusal", "one intact pearl shield pane with a black rim stopping a single crimson fracture wedge"),
+    ("Fault", "calamitic-fault", "a black obsidian glass sigil split by three deep crimson fault canyons, pearl-glass splinters bursting from each crack, a cracked white ring framing the sigil, sparkling crimson flecks scattering outward, bold readable silhouette at small size"),
+    ("Fate-seared Mark", "calamitic-fate-seared-mark", "a sharp pearl-glass diamond seal branded with a searing crimson fate brand, the brand cracking the seal into angular facets, a broken black halo and severed crimson thread ends circling it, small glass shards orbiting, bold readable silhouette at small size"),
+    ("Refusal", "calamitic-refusal", "an unbroken pearlescent cathedral shield pane with a black ornate rim, a crimson fracture wedge shattering into pieces against its face, a burst of white glass splinters deflecting outward, a small cracked crimson halo above, bold readable silhouette at small size"),
 )
 MATERIALS = (
     ("Seed of Calamity", "Common", "one small black pearl-glass seed with one white seam and a crimson fracture notch"),
@@ -105,9 +105,12 @@ def references():
     return refs
 
 
-def cutout(description, *, character=None, evolution=None):
+def cutout(description, *, character=None, evolution=None, icon=False):
     portrait = evolution is not None
     composition = ("full-body unit illustration, " if portrait else
+                   "square face-free epic ability icon, one explosive centered emblem with a bold readable silhouette at small size, "
+                   "dense layered ornamental depth and dramatic radial shattering motion, occupies two thirds of the square, "
+                   if icon else
                    "square standalone face-free collectible icon, one cohesive readable symbol, occupies two thirds of the square, ")
     extra_no = "" if portrait else ", character, creature, face, hands, portrait"
     prompt = (f"{description}, {CONTAIN}, {composition}{RENDERER}, {MARGIN}, "
@@ -171,15 +174,15 @@ def outputs():
                 "pearlescent prismatic faceting is bounded sheen not extra hues, sparkling crimson means crisp painted facet flecks"
             )
             asset = design["id"] if evolution == 1 else f"{design['id']}-evo-{evolution}"
-            portraits.append(block(f"Evo.{evolution} / {rarity} — {title}, {design['name']}", asset,
+            portraits.append(block(f"Evo.{evolution + 1} / {rarity} — {title}, {design['name']}", asset,
                                    "characters", cutout(description, character=design["name"], evolution=evolution)))
         portraits.append(f"## {design['name']} ability icons\n")
         for action, (kind, name, symbol) in zip(("passive", "skill1", "skill2", "ultimate"), design["icons"]):
             portraits.append(block(f"{kind} — {name}", f"{design['id']}-{action}", "abilities",
-                                   cutout(symbol, character=design["name"])))
+                                   cutout(symbol, character=design["name"], icon=True)))
     portraits.append("## Shared signature status icons\n")
     for name, asset, symbol in STATUSES:
-        portraits.append(block(name, asset, "abilities/statuses", cutout(symbol)))
+        portraits.append(block(name, asset, "abilities/statuses", cutout(symbol, icon=True)))
     materials = [block(f"{name} / {rarity}", slug(name), "materials", cutout(symbol))
                  for name, rarity, symbol in MATERIALS]
     machines = [block(name, f"calamitic-{slug(name)}", "conduits", cutout(

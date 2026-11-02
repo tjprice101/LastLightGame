@@ -23,6 +23,14 @@ export function characterRarity(id: StarterId, evolution: number): MaterialRarit
   characterLevelCap(evolution, id);
   return evolution === 6 ? 'Calamitic' : materialRarities[evolution];
 }
+export function rarityRank(rarity: MaterialRarity | 'Calamitic'): number {
+  const rank = rarity === 'Calamitic' ? materialRarities.length + 1 : materialRarities.indexOf(rarity) + 1;
+  if (rank < 1) throw new Error(`Unknown character rarity: ${rarity}.`);
+  return rank;
+}
+export function displayEvolution(id: StarterId, evolution: number): number {
+  return rarityRank(characterRarity(id, evolution));
+}
 export const fractureRules = {
   sourceTier: 1,
   destinationTier: 2,

@@ -13,12 +13,12 @@ approved design contract; update it first if the owner revises the phase.
   crimson shimmer. (Calamitic already exists as a Conduit rarity in
   `src/content/rarity.ts`; this phase extends it to characters and materials.)
 - Three 7-star Element-Bearers: one DPS (Attacker), one Tank, one Support.
-- Each has six forms, starting at **Uncommon** (Evo 1) and ending at
-  **Calamitic** (Evo 6): Uncommon → Rare → Epic → Legendary → Omnic → Calamitic.
+- Each has six forms, starting at **Uncommon** (Evo 2) and ending at
+  **Calamitic** (Evo 7): Uncommon → Rare → Epic → Legendary → Omnic → Calamitic.
 - They keep normal elements.
 - They should be very strong, but not stupidly broken.
 - Each EX+1 / EX+2 / EX+3 tier awards its own character. Clearing any EX+Y
-  stage has a 10% chance to award that tier's character at Evo 1.
+  stage has a 10% chance to award that tier's character at Evo 2 (Uncommon).
 - Art theme: cosmic Calamitic angels in fully prismatic pearlescent armor from
   head to toe, shattering reality like glass with their elemental powers and
   denying fate. Very detailed and extremely ornate.
@@ -138,7 +138,7 @@ spread with 25/20/14/8/3/2% margins.
 
 - Each EX tier owns one character: EX+1 Ozriel, EX+2 Ilvaris, EX+3 Kaelith.
 - Every saved victory at that EX tier, in any of the 12 Calamity activities,
-  has an independent **10%** chance to award that tier's character at Evo 1
+  has an independent **10%** chance to award that tier's character at Evo 2
   (Uncommon, Lv.0).
 - **Stop rolling once owned:** an owned character is never re-rolled and
   gives no duplicate conversion.
@@ -168,15 +168,15 @@ doubled.
 Calamitic evolution costs retain the normal elemental Prismatica and material
 recipe, plus both chest materials and one Calamity-chain material. The following
 quantities are the **developer proposal currently implemented for review**;
-late-step material doubling follows the existing rule (Evo.4→5 and Evo.5→6):
+late-step material doubling follows the existing rule (Evo.5→6 and Evo.6→7):
 
 | Evolution | Added Calamity material | Feather | Splinter | Effective late-step additions |
 |---|---|---:|---:|---|
-| Evo.1→2 | Bloom of Calamity ×5 | 1 | 1 | unchanged |
-| Evo.2→3 | Crest of Calamity ×5 | 2 | 2 | unchanged |
-| Evo.3→4 | Heart of Calamity ×5 | 3 | 3 | unchanged |
-| Evo.4→5 | Soul of Calamity ×5 | 5 | 5 | Soul ×10, Feather ×10, Splinter ×10 |
-| Evo.5→6 | Fragment of Rise ×5 | 8 | 8 | Fragment ×10, Feather ×16, Splinter ×16 |
+| Evo.2→3 | Bloom of Calamity ×5 | 1 | 1 | unchanged |
+| Evo.3→4 | Crest of Calamity ×5 | 2 | 2 | unchanged |
+| Evo.4→5 | Heart of Calamity ×5 | 3 | 3 | unchanged |
+| Evo.5→6 | Soul of Calamity ×5 | 5 | 5 | Soul ×10, Feather ×10, Splinter ×10 |
+| Evo.6→7 | Fragment of Rise ×5 | 8 | 8 | Fragment ×10, Feather ×16, Splinter ×16 |
 
 The Heaven and Abyss chests add fixed Feather / Splinter stacks of **1 / 2 / 3**
 at EX+1/2/3 respectively. These additions do not consume random draws; all

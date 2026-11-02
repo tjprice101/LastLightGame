@@ -1,7 +1,7 @@
 import { rolePerkRow } from './intrinsic-perks';
 import { starters } from '../content/starters';
 import { characterName } from '../content/character-art';
-import { characterRarity } from '../content/progression';
+import { characterRarity, displayEvolution } from '../content/progression';
 import { elements, materialRarities } from '../content/activities';
 import { resolveFighter, formatStat } from '../content/combat';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
@@ -53,10 +53,10 @@ function characterArchive(account: Account | null): string {
         current ? account?.masterEquipment?.[starter.id] ?? undefined : undefined);
       return `<article class="archive-card ${revealed ? 'archive-form-revealed' : 'archive-form-locked'}" data-archive-character="${starter.id}" data-form="${evolution}" data-filter-element="${starter.elementId}" data-filter-rarity="${characterRarity(starter.id, evolution)}" data-filter-ownership="${!account ? 'unavailable' : owned ? 'owned' : 'unowned'}" data-filter-discovery="${!account ? 'unavailable' : revealed ? 'revealed' : 'locked'}" data-filter-stars="${starter.stars}">
         <div class="archive-portrait${revealed ? '' : ' unreached-character-art'}">${portrait(starter, evolution, current && progress?.ascension?.stats === true)}</div>
-        <h3>${characterName(starter.id, evolution, current && progress?.ascension?.stats === true)} · Evo.${evolution}</h3>
+        <h3>${characterName(starter.id, evolution, current && progress?.ascension?.stats === true)} · Evo.${displayEvolution(starter.id, evolution)}</h3>
         ${elementLabel(starter.elementId)}${characterRating(starter.id, evolution, current && progress?.ascension?.stats === true)}
         <p class="archive-ownership">${!account ? 'Ownership unavailable' : !owned ? 'Not owned' : current ? `Current form · Lv.${progress?.level}` : revealed ? 'Reached form' : 'Evolution not reached'}</p>
-        ${information(`archive-kit-${starter.id}-${evolution}`, `${characterName(starter.id, evolution, current && progress?.ascension?.stats === true)} · Evo.${evolution}`, `${characterRole(starter.id)}${elementLabel(starter.elementId)}${characterRating(starter.id, evolution, current && progress?.ascension?.stats === true)}
+        ${information(`archive-kit-${starter.id}-${evolution}`, `${characterName(starter.id, evolution, current && progress?.ascension?.stats === true)} · Evo.${displayEvolution(starter.id, evolution)}`, `${characterRole(starter.id)}${elementLabel(starter.elementId)}${characterRating(starter.id, evolution, current && progress?.ascension?.stats === true)}
         <p class="archive-ownership">${!account ? 'Ownership unavailable' : !owned ? 'Not owned' : current ? `Current form · Lv.${progress?.level}` : revealed ? 'Reached form' : 'Evolution not reached'}</p>
         <p>${starter.weapon}</p>
         <h3>Origin</h3><p>${starter.description}</p><p>${starter.lore.story}</p><blockquote>${starter.lore.vow}</blockquote>

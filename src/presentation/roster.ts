@@ -25,7 +25,7 @@ import { conduitElement } from './conduit-element';
 import { itemShowcase } from './item-showcase';
 import { bannerPercent, bannerPityLimits, validateBannerPity, type BannerOutcome } from '../content/standard-banner';
 import { summonBanners, getSummonBanner, type SummonBannerId } from '../content/summon-banners';
-import { characterRarity, evolutionRarity } from '../content/progression';
+import { characterRarity, displayEvolution, evolutionRarity } from '../content/progression';
 import { information } from './information';
 import { characterName } from '../content/character-art';
 import { materialName } from '../content/dungeon-art';
@@ -76,7 +76,7 @@ export function characterRoster(account: Account | null, selected: StarterId): s
     const character = getStarter(id);
     const progress = ownedProgress(account, id);
     return `<button class="roster-character" data-owned-character="${id}" aria-pressed="${selected === id}" style="--element:${character.color}">
-      ${portrait(character, progress.evolution, progress.ascension?.stats === true)}<span><strong>${characterName(id, progress.evolution, progress.ascension?.stats === true)}</strong>${characterRole(id)}${characterRating(id, progress.evolution, progress.ascension?.stats === true)}<small>Lv.${progress.level} · Evo.${progress.evolution}</small></span></button>`;
+      ${portrait(character, progress.evolution, progress.ascension?.stats === true)}<span><strong>${characterName(id, progress.evolution, progress.ascension?.stats === true)}</strong>${characterRole(id)}${characterRating(id, progress.evolution, progress.ascension?.stats === true)}<small>Lv.${progress.level} · Evo.${displayEvolution(id, progress.evolution)}</small></span></button>`;
   }).join('')}<button class="roster-summon" data-page="summon">Summon &rarr;</button></nav>`;
 }
 

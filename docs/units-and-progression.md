@@ -2,6 +2,8 @@
 
 ## Calamitic progression (D-435 Section 1)
 
+Displayed evolution numbers always equal rarity ranks: Common 1 through Omnic 6, Calamitic 7. Calamitic saved evolution values remain 1-6 and display as Evo.2-7; this is presentation-only, with no change to saves, costs, caps, growth or server rules.
+
 Calamitic Element-Bearers retain the ordinary six forms but use rarity
 Uncommon→Rare→Epic→Legendary→Omnic→Calamitic and caps
 30/45/60/75/90/110. Their level costs replace elemental materials with the
@@ -15,7 +17,7 @@ See [D-435 cost and material table](calamitic-characters.md#materials-and-progre
 
 ### Calamitic Ascension (D-435 Section 3)
 
-Each owned, ordinary Omnic Evo.6 Element-Bearer at Lv.105 or Calamitic Evo.6
+Each owned, ordinary Omnic Evo.6 Element-Bearer at Lv.105 or Calamitic Evo.7
 Element-Bearer at Lv.110 may spend 25 Shards of Calamity for Stat Ascension.
 This increases every resolved stat by 50% and raises the level cap to Lv.115;
 it does not grant levels. The extra levels use normal late-level costs, including

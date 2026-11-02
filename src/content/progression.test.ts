@@ -1,11 +1,27 @@
 import { describe, expect, it } from 'vitest';
 import { artifactSlots, currencies, fractureRules, characterLevelCap, characterGrowthFactor, upgradePaths,
-  characterEvolutionCost, evolutionCost, characterLevelCost, levelingMaterials, evolutionBalance } from './progression';
+  characterEvolutionCost, evolutionCost, characterLevelCost, levelingMaterials, evolutionBalance, displayEvolution, rarityRank } from './progression';
 import { evolutionRecipes } from './activities';
 import { availableStarters, starters, isRoseCharacter, roseCharacters } from './starters';
-import { isCalamiticCharacter } from './calamitic-characters';
+import { isCalamiticCharacter, calamiticCharacters } from './calamitic-characters';
 import { loadMotion, saveMotion, SETTINGS_KEY } from '../presentation/settings';
 import { SAVE_KEY, type ProfileStorage } from '../game/profile';
+
+describe('displayed evolution rarity rank', () => {
+  it('keeps ordinary evolution numbers aligned with Common through Omnic', () => {
+    for (const starter of starters.filter(starter => !isCalamiticCharacter(starter.id))) {
+      expect([1, 2, 3, 4, 5, 6].map(evolution => displayEvolution(starter.id, evolution))).toEqual([1, 2, 3, 4, 5, 6]);
+    }
+  });
+
+  it('displays Calamitic internal evolutions 1-6 as rarity ranks 2-7', () => {
+    for (const character of calamiticCharacters) {
+      expect([1, 2, 3, 4, 5, 6].map(evolution => displayEvolution(character.id, evolution))).toEqual([2, 3, 4, 5, 6, 7]);
+    }
+    expect((['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Omnic', 'Calamitic'] as const).map(rarityRank))
+      .toEqual([1, 2, 3, 4, 5, 6, 7]);
+  });
+});
 
 describe('confirmed game foundation', () => {
   it('doubles late Element-Bearer materials exactly once, keeps currency and verifies full-progression totals', () => {
