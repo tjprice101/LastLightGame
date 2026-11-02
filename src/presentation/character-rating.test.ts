@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { materialRarities } from '../content/activities';
 import { starters, isRoseCharacter } from '../content/starters';
-import { characterRarity, evolutionRarity } from '../content/progression';
+import { characterRarity, displayEvolution, evolutionRarity } from '../content/progression';
 import { isCalamiticCharacter } from '../content/calamitic-characters';
 import { characterRating, starBadge } from './character-rating';
 import { characterHub, homeHub } from './hub';
@@ -28,7 +28,7 @@ describe('fixed summon stars and evolving rarity', () => {
       expect(label).toContain(`${starter.stars}-star`);
       expect(label).toContain(rarity);
       expect(label).toContain(`aria-label="${rarity} rarity"`);
-      expect(label).toContain('rarity-medallion');
+      expect(label).toContain(`<span class="rarity-medallion" aria-hidden="true"><span>${displayEvolution(starter.id, evolution)}</span>`);
       const account = { ...emptyAccount(), characters: { [starter.id]: { level: 0, evolution } }, squad: [starter.id] };
       for (const html of [homeHub(starter, false, account), characterHub(starter, 'overview', account),
         characterRoster(account, starter.id), squadHub(account)]) expect(html).toContain(label);
