@@ -1,5 +1,16 @@
 # Art and asset workflow
 
+## Legendary, Omnic and Master Conduit art foundation (D-443)
+
+Every future Legendary, Omnic and Master Conduit prompt depicts cosmic, ornate,
+resplendent machinery created by Let and Rise together: mechanical masterpieces
+of precision gears, nested rings and filigree plates in polished enamel and
+pearlescent metal that shimmer and shine in the light through crisp painted
+specular highlights. They stay true to the bearer's thematic colors and element
+and keep the cutout rules: no glow, no figures, solid key and full margins.
+Creator names stay out of image prose. The reference phrase is `CONDUIT_FOUNDATION` in
+`tools/build_calamitic_art.py`. The nine Calamitic Master prompts already use it.
+
 ## Delivered Phase 0 Calamity artwork (D-441)
 
 Reproduce with `python tools/intake_calamity_phase0_art.py --review DIR` (review

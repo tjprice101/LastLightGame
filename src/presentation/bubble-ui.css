@@ -85,7 +85,7 @@ html body .sanctuary-shell [data-button-surface="tile"]:is(:hover, :focus-visibl
 /* Artwork-backed cards keep their art; they only get rounding and the sweep. */
 html body .sanctuary-shell :is(.archive-card, .inventory-item, .ref-member-row, .ref-product, .glossary-card) { border-radius: 22px !important; overflow: hidden; }
 /* Primary and selected states: accent gel. */
-html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is(.primary-button, .game-confirm-button, .enter-button, [data-button-surface]:is([aria-pressed="true"], [aria-current]:not([aria-current="false"]))):not(:disabled):not(.archive-card):not(.ref-member-row):not(.inventory-item):not(.ref-product) {
+html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is(.primary-button, .game-confirm-button, .enter-button, [data-button-surface]:is([aria-pressed="true"], [aria-selected="true"], [aria-current]:not([aria-current="false"]))):not(:disabled):not(.archive-card):not(.ref-member-row):not(.inventory-item):not(.ref-product) {
   overflow: hidden; border-radius: 99px !important; color: #1a120c !important; text-shadow: 0 1px 0 #ffffff55; border: 1px solid #ffffff55 !important;
   background: radial-gradient(120% 140% at 30% 0%, color-mix(in srgb, var(--accent) 45%, white), var(--accent) 52%, color-mix(in srgb, var(--accent) 70%, black)) !important;
   box-shadow: inset 0 1px 1px #ffffffaa, inset 0 -8px 14px color-mix(in srgb, var(--accent) 55%, black), 0 8px 26px color-mix(in srgb, var(--accent) 35%, transparent) !important; }

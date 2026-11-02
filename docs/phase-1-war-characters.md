@@ -98,11 +98,12 @@ Exact numbers and ability names are drafted after outline approval.
 
 - Count the squad's **Element-Bearers** by combat element (captured
   Elemental-Devourers do not count).
-- Two Element-Bearers of the same element: every squad member gets **+25%
-  Skill Power**. Three of the same element: **+75% Skill Power**.
+- Two Element-Bearers of the same element: every squad member gets **+15%
+  Health**. Three of the same element: **+25% Health and +5% Skill Power**
+  (D-443; replaces the original +25%/+75% Skill Power).
 - Applies in every battle mode, uses the frozen run snapshot, and is shown in
-  the Squad/Team menu as a labeled badge (e.g. "Infernic Resonance: +25%
-  Skill Power") and in the Battle menu status list.
+  the Squad/Team menu as a labeled badge (e.g. "Infernic Resonance: +15%
+  Health") and in the Battle menu status list.
 
 ## Role perks: how they slot in
 

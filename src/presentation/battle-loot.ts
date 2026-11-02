@@ -8,7 +8,7 @@ import { getConduit, isConduitId, conduitColor } from '../content/conduits';
 import { mechanicalComponents } from '../content/mechanical-components';
 import { createConduitUpgradeMeter } from './conduit-upgrade-meter';
 import { getStarter } from '../content/starters';
-import { characterName } from '../content/character-art';
+import { characterArt, characterName } from '../content/character-art';
 import { masterChest } from '../content/master-conduits';
 import { calamityChest, parseCalamityChestId } from '../content/calamity';
 import { calamityChestArt } from '../content/calamity-art';
@@ -53,6 +53,7 @@ export function lootItems(event: BattleEvent): LootItem[] {
     ...(event.calamiticRecruitment ? [{
       id: `calamitic-recruitment:${event.calamiticRecruitment}`,
       name: `${characterName(event.calamiticRecruitment)} \u00b7 Calamitic Element-Bearer`,
+      art: characterArt(event.calamiticRecruitment, 1).art,
       amount: 1, color: rarityColors[characterRarity(event.calamiticRecruitment, 1)], rarity: characterRarity(event.calamiticRecruitment, 1),
     }] : []),
     ...(event.calamityShards ? [{ id: 'shard-of-calamity', name: materialName('shard-of-calamity'), amount: event.calamityShards,
@@ -82,7 +83,7 @@ export function lootArt(item: { id: string; art?: string }): string | undefined 
     : item.id === mechanicalComponents.id ? currencyArt('mechanical-components')
     : item.id === masterChest.id ? pngFallback(assetUrl(masterChest.art)) ?? assetUrl(masterChest.art)
     : item.id.startsWith('calamity:') ? assetUrl(`items/${calamityChestArt[parseCalamityChestId(item.id).tier]}.png`)
-    : item.art ? assetUrl(`${item.id.startsWith('recruitment:') ? 'characters' : item.id.startsWith('conduit:') ? 'conduits' : item.id.startsWith('capture:') ? 'enemies' : 'materials'}/${item.art}.png`) : undefined;
+    : item.art ? assetUrl(`${(item.id.startsWith('recruitment:') || item.id.startsWith('calamitic-recruitment:')) ? 'characters' : item.id.startsWith('conduit:') ? 'conduits' : item.id.startsWith('capture:') ? 'enemies' : 'materials'}/${item.art}.png`) : undefined;
 }
 
 export function lootBurst(event: BattleEvent, random: () => number = Math.random): HTMLElement {

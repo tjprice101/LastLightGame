@@ -1,5 +1,19 @@
 # Current state and handoff
 
+## Conduit art foundation, Resonance, buttons and recruit art (D-443)
+
+- Buttons: `button-style.ts` classifies by layout size and never tags wide text
+  buttons as round icons (the source of elongated ovals). `aria-selected` tabs use
+  the standard selected fill; Calamity EX+ tabs, Enter and View Loot size to content.
+- Element Resonance: 2 same-element Element-Bearers +15% Health; 3 +25% Health
+  and +5% Skill Power (`element-resonance.ts`, `battle.ts`). Combat rules 16
+  restarts historical runs via the existing path.
+- Calamitic recruitment loot and results show the base form portrait.
+- Art foundation for every Legendary/Omnic/Master Conduit: cosmic ornate
+  resplendent machinery by Let and Rise together that shimmers and shines in
+  the light, within the bearer's palette. The nine Calamitic Master prompts were
+  regenerated with it; images are still pending.
+
 ## Cosmic Master Chest and Calamitic Masters (D-442)
 
 - Replacement chest art installed via `tools/intake_master_chest_refresh.py

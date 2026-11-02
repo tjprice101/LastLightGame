@@ -6003,8 +6003,8 @@ function elementResonance(roster) {
     counts.set(element, (counts.get(element) ?? 0) + 1);
   }
   for (const [element, count2] of counts) {
-    if (count2 === 3) return { element, skillPower: 0.75 };
-    if (count2 === 2) return { element, skillPower: 0.25 };
+    if (count2 === 3) return { element, health: 0.25, skillPower: 0.05 };
+    if (count2 === 2) return { element, health: 0.15, skillPower: 0 };
   }
   return null;
 }
@@ -8297,7 +8297,7 @@ function nativeCleanup(state) {
 }
 
 // src/game/conduit-runtime.ts
-var conduitRulesVersion = phaseZeroStatsReady ? 15 : 4;
+var conduitRulesVersion = phaseZeroStatsReady ? 16 : 4;
 function gear(unit) {
   return unit.conduitRuntime ??= { numbers: {}, owners: {} };
 }
@@ -10598,8 +10598,14 @@ function createBattle(seed2 = 1729, roster = ["ember"], progress = {}, equipment
   };
   const resonance = elementResonance(roster);
   if (resonance) for (const unit of state.allies) {
+    const full = unit.hp >= unit.stats.health;
+    unit.stats.health *= 1 + resonance.health;
+    if (full) unit.hp = unit.stats.health;
     unit.stats.skillPower = (unit.stats.skillPower ?? 1) + resonance.skillPower;
-    if (unit.kit) unit.kit.stats.skillPower = unit.stats.skillPower;
+    if (unit.kit) {
+      unit.kit.stats.health = unit.stats.health;
+      unit.kit.stats.skillPower = unit.stats.skillPower;
+    }
   }
   initializeConduits(state, true);
   return state;

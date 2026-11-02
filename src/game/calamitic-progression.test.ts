@@ -6,7 +6,8 @@ import { materialArt, materialName, materialRarity } from '../content/dungeon-ar
 import { characterEvolutionCost, characterLevelCap, characterLevelCost, characterRarity, evolutionRarity } from '../content/progression';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards } from './account';
 import { createCalamityBattle, type BattleEvent, type BattleResult } from './battle';
-import { lootItems } from '../presentation/battle-loot';
+import { lootArt, lootItems } from '../presentation/battle-loot';
+import { characterArt } from '../content/character-art';
 import { battleResults } from '../presentation/battle-results';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 
@@ -126,8 +127,11 @@ describe('Calamitic progression and saved rewards', () => {
       id: `calamitic-recruitment:${character}`, name: expect.stringContaining('Calamitic Element-Bearer'),
       amount: 1, rarity: 'Uncommon', color: expect.any(String),
     }));
-    expect(lootItems(result.events[0]).find(item => item.id === `calamitic-recruitment:${character}`)).not.toHaveProperty('art');
+    const recruitItem = lootItems(result.events[0]).find(item => item.id === `calamitic-recruitment:${character}`)!;
+    expect(recruitItem.art).toBe(characterArt(character, 1).art);
+    expect(lootArt(recruitItem)).toContain(`characters/${characterArt(character, 1).art}.png`);
     const resultsHtml = battleResults(result.state, result.events);
+    expect(resultsHtml).toContain(`characters/${characterArt(character, 1).art}.png`);
     expect(resultsHtml).toContain('data-rarity="Uncommon"');
     expect(resultsHtml).toContain('class="result-recruitment-reward"');
     expect(resultsHtml).toContain('Calamitic Element-Bearer');

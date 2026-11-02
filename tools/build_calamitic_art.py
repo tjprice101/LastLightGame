@@ -112,6 +112,12 @@ MASTERS = (
     ("master-kaelith-3", "Eclipse of Denied Fate", "Kaelith",
      "black eclipse disk engine, two white cracked-glass scythe crescents curving around it in opposite directions, a severed crimson fate-thread pulled taut through the center with cut frayed ends, a fan of eighteen angular white glass blade-feathers behind the disk"),
 )
+# D-443 foundation for every Legendary, Omnic and Master Conduit: cosmic, ornate, resplendent machinery made by
+# Let and Rise together; mechanical masterpieces that shimmer and shine in the light in the owner's thematic palette.
+CONDUIT_FOUNDATION = ("cosmic ornate resplendent mechanical masterpiece forged by two celestial creators together, "
+                      "precision gears, nested rings and layered filigree plates, gleaming polished enamel and "
+                      "pearlescent metal that shimmers and shines in the light with crisp painted specular highlights, "
+                      "dense interior detail with narrow readable key channels")
 
 
 def slug(name):
@@ -217,8 +223,7 @@ def outputs():
         "dense interior construction and narrow readable key channels, painted dimensional metal facets"))
         for name, symbol in CONDUITS]
     masters = [block(f"{name} (Omnic Master / {bearer})", asset, "master-conduits", cutout(
-        f"one standalone {symbol}, Master Conduit relic machine, extremely ornate celestial engineering, "
-        "flat polished enamel and crisp cracked glass, dense interior detail with narrow readable key channels"))
+        f"one standalone {symbol}, {CONDUIT_FOUNDATION}"))
         for asset, name, bearer, symbol in MASTERS]
     emblem = block("Rise-blessed crown-burst", "rise-blessed-emblem", "ui", cutout(
         "one ornate mechanical crown-burst emblem, five white crown teeth on a black segmented ring, "
@@ -246,6 +251,8 @@ def outputs():
             "Calamitic Master Conduits", "Nine reference-free Master icons (D-442): three per Calamitic Element-Bearer. "
             "Each machine is built from its bearer's own weapon and kit motif: Ozriel's tower shield, halberd and cathedral; "
             "Ilvaris's halo-lyre, bells and severed prophecy; Kaelith's glass scythe, Faults and severed fate-thread. "
+            "Foundation (D-443) for all Legendary, Omnic and Master Conduits: cosmic, ornate, resplendent machinery made by Let and Rise together, "
+            "mechanical masterpieces that shimmer and shine in the light while staying true to the bearer's colors and element. "
             "Object-only machines, no figures. Effects live in docs/conduit-catalog.txt; the installed 48 Masters are in "
             "[Master Conduits](Master%20Conduits.md).", masters),
     }

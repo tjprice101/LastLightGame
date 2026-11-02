@@ -291,8 +291,11 @@ export function createBattle(seed = 1729, roster: readonly string[] = ['ember'],
   };
   const resonance = elementResonance(roster);
   if (resonance) for (const unit of state.allies) {
+    const full = unit.hp >= unit.stats.health;
+    unit.stats.health *= 1 + resonance.health;
+    if (full) unit.hp = unit.stats.health;
     unit.stats.skillPower = (unit.stats.skillPower ?? 1) + resonance.skillPower;
-    if (unit.kit) unit.kit.stats.skillPower = unit.stats.skillPower;
+    if (unit.kit) { unit.kit.stats.health = unit.stats.health; unit.kit.stats.skillPower = unit.stats.skillPower; }
   }
   initializeConduits(state, true);
   return state;

@@ -21,9 +21,8 @@
 #app .calamity-section .calamity-heading p { margin: .3rem 0 0; font-size: .85rem; line-height: 1.4; }
 .calamity-heading > div { min-width: 0; }
 .calamity-heading > button { flex: 0 0 auto; min-height: 44px; }
-.calamity-tier-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; margin-bottom: .5rem; }
-#app .calamity-tier-tabs button { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-height: 44px; padding: .55rem .85rem; font-size: .9rem; }
-.calamity-tier-tabs [aria-selected="true"] { outline: 2px solid var(--leader-accent, #e5a4a4); outline-offset: -2px; }
+.calamity-tier-tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .75rem; }
+#app .calamity-tier-tabs button { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 44px; padding: .55rem 1.25rem; font-size: .9rem; }
 .calamity-tier-tabs span { font-size: .8rem; opacity: .8; }
 .calamity-tiers { min-width: 0; }
 #app .calamity-section .calamity-tier { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 1fr); gap: 1rem; min-width: 0; padding: 0; text-align: left; }
@@ -53,7 +52,7 @@
 .calamity-reward-list strong { font-variant-numeric: tabular-nums; text-align: right; }
 #app .calamity-reward-list .currency-reward { display: flex; align-items: center; gap: .4rem; min-width: 0; }
 #app .calamity-reward-list .currency-icon { flex: 0 0 22px; width: 22px; height: 22px; margin: 0; }
-#app .calamity-section .calamity-tier-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .4rem .6rem; align-items: start; margin: 0; padding: 0; }
+#app .calamity-section .calamity-tier-actions { display: grid; grid-template-columns: auto auto; justify-content: start; gap: .4rem .6rem; align-items: start; margin: 0; padding: 0; }
 #app .calamity-tier-actions button { min-height: 44px; padding: .6rem 1rem; }
 #app .calamity-tier-actions .activity-unlock-hint { grid-column: 1 / -1; grid-row: 2; min-height: 0; font-size: .8rem; line-height: 1.4; }
 .calamity-tier-actions .activity-unlock-hint:empty { display: none; }

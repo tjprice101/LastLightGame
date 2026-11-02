@@ -1100,12 +1100,13 @@ pool as Conduits; Skill Power adds to the existing multiplier. Frozen battle
 stats and shared menu effective stats include these perks. Captured
 Elemental-Devourers receive none of the role perks.
 
-At battle creation, two same-element Element-Bearers grant the entire frozen
-squad +25 percentage points Skill Power; three grant +75. Captured copies do
+At battle creation (D-443), two same-element Element-Bearers grant the entire
+frozen squad +15% max Health; three grant +25% max Health and +5 percentage
+points Skill Power. Health starts full at the raised maximum. Captured copies do
 not count but receive the bonus. The full frozen roster is counted, not just
 currently living members; deaths and Settings do not recalculate it. Team/Squad
 and Battle status label active Element Resonance with its element accent.
-Combat rules15 uses the existing historical-run restart path with frozen
+Combat rules16 (D-443; previously15) uses the existing historical-run restart path with frozen
 investments and saved rewards retained, so pre-perk stat snapshots cannot mix
 with the new rules. No RNG stream, account field, acquisition rule, reward,
 load-time write or hostile tuning changed. Bounded before/after evidence and limitations are in

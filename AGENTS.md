@@ -1,5 +1,16 @@
 # Last Light: AI agent entry point
 
+## Conduit art foundation, Resonance, buttons (D-443)
+
+ALL Legendary/Omnic/Master Conduit art: cosmic, ornate, resplendent machinery
+made by Let and Rise together; mechanical masterpieces that shimmer and shine
+in the light, true to the bearer's thematic colors/element (painted specular
+highlights, no glow wording). build_calamitic_art.CONDUIT_FOUNDATION is the
+reference phrase. Resonance: 2 same-element EBs +15% Health; 3 +25% Health
++5% Skill Power; Combat rules16. Text buttons are never classified as round
+icon buttons (button-style.ts uses layout size); no stretched ovals.
+Calamitic recruit loot/results show the base (Evo.2) portrait.
+
 ## Cosmic Master Chest and Calamitic Masters (D-442)
 
 Grand Master Chest art replaced via tools/intake_master_chest_refresh.py

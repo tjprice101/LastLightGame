@@ -14,6 +14,7 @@ export function classifyButton(
   element: HTMLElement,
   backgroundImage: string,
   height: number,
+  width = height,
 ): ButtonKind {
   if (backgroundImage.includes('url(')) return 'art';
   const rect = element.getBoundingClientRect();
@@ -25,14 +26,17 @@ export function classifyButton(
   if (backgroundImage && backgroundImage !== 'none') return height > TEXT_BUTTON_MAX_HEIGHT ? 'art' : 'filled';
   if (height > TEXT_BUTTON_MAX_HEIGHT) return 'tile';
   const text = (element.textContent ?? '').replace(/\s+/g, '');
-  return text.length <= 2 || height < 32 ? 'icon' : 'text';
+  // Only compact, roughly square controls become round icons; wide labelled buttons stay text pills.
+  return text.length <= 2 || (height < 32 && width < height * 1.6) ? 'icon' : 'text';
 }
 
 function tag(element: HTMLElement): void {
   if (element.dataset.buttonSurface) return;
   const rect = element.getBoundingClientRect();
   if (!rect.width || !rect.height) return;
-  const kind = classifyButton(element, getComputedStyle(element).backgroundImage, rect.height);
+  // Layout size ignores entrance transforms (scale-in) that would otherwise misclassify wide buttons.
+  const height = element.offsetHeight || rect.height, width = element.offsetWidth || rect.width;
+  const kind = classifyButton(element, getComputedStyle(element).backgroundImage, height, width);
   element.dataset.buttonSurface = kind;
 }
 

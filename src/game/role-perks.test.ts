@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { fighters, resolveFighter } from '../content/combat';
 import { starters } from '../content/starters';
 import { intrinsicRole, roleBonuses, roleTarget } from '../content/role-perks';
@@ -63,18 +63,27 @@ describe('intrinsic roles and frozen Element Resonance', () => {
     expect(state.seed).toBe(1729);
   });
 
-  it('counts only bearers and grants 0, 25 or 75 percentage points to the whole squad', () => {
+  it('counts only bearers: two grant +15% Health, three +25% Health and +5% Skill Power to the whole squad', () => {
     expect(elementResonance(['ember', 'tide', 'sprout'])).toBeNull();
     expect(elementResonance(['sprout', capture.instanceId])).toBeNull();
-    expect(elementResonance(['sprout', 'bruno', capture.instanceId])).toEqual({ element: 'botanic', skillPower: .25 });
-    expect(elementResonance(['sprout', 'bruno', 'orvella'])).toEqual({ element: 'botanic', skillPower: .75 });
+    expect(elementResonance(['sprout', 'bruno', capture.instanceId])).toEqual({ element: 'botanic', health: .15, skillPower: 0 });
+    expect(elementResonance(['sprout', 'bruno', 'orvella'])).toEqual({ element: 'botanic', health: .25, skillPower: .05 });
+    const plain = createBattle(1, ['sprout', 'ember', capture.instanceId], {}, {}, [capture]);
     const state = createBattle(1, ['sprout', 'bruno', capture.instanceId], {}, {}, [capture]);
-    expect(state.allies.map(u => u.stats.skillPower)).toEqual([1.5, 1.25, 1.25]);
+    const solo = createBattle(1, ['bruno']);
+    expect(state.allies.map(u => u.stats.skillPower)).toEqual(plain.allies.map(u => u.stats.skillPower).map((v, i) => i === 1 ? solo.allies[0].stats.skillPower : v));
+    expect(state.allies[0].stats.health).toBeCloseTo(plain.allies[0].stats.health * 1.15);
+    expect(state.allies[2].stats.health).toBeCloseTo(plain.allies[2].stats.health * 1.15);
+    expect(state.allies[0].hp).toBe(state.allies[0].stats.health);
+    const health = state.allies[0].stats.health;
     state.allies[1].hp = 0;
     refreshConduitStats(state);
-    expect(state.allies[0].stats.skillPower).toBe(1.5);
-    expect(createBattle(1, ['sprout', 'bruno', 'orvella']).allies.map(u => u.stats.skillPower)).toEqual([2, 1.75, 1.75]);
-    expect(resonanceBadge(['sprout', 'bruno'])).toContain('Botanic Resonance: +25% Skill Power');
+    expect(state.allies[0].stats.health).toBe(health);
+    const trio = createBattle(1, ['sprout', 'bruno', 'orvella']);
+    expect(trio.allies[0].stats.health).toBeCloseTo(plain.allies[0].stats.health * 1.25);
+    expect(trio.allies[0].stats.skillPower).toBeCloseTo((plain.allies[0].stats.skillPower ?? 0) + .05);
+    expect(resonanceBadge(['sprout', 'bruno'])).toContain('Botanic Resonance: +15% Health');
+    expect(resonanceBadge(['sprout', 'bruno', 'orvella'])).toContain('Botanic Resonance: +25% Health, +5% Skill Power');
     expect(resonanceBadge(['ember', 'tide'])).toBe('');
   });
 

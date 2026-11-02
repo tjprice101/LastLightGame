@@ -32,6 +32,18 @@ class CalamiticArtTests(unittest.TestCase):
         # Historical packs have known failures; this queue must add none.
         self.assertEqual(failures_for(entries), failures_for(baseline))
 
+    def test_master_conduits_follow_let_and_rise_machinery_foundation(self):
+        text = next(v for k, v in outputs().items() if k.name == "Calamitic Master Conduits.md")
+        self.assertIn("Let and Rise together", text)
+        blocks = BLOCK.findall(text)
+        self.assertEqual(len(blocks), 9)
+        for prompt in blocks:
+            for phrase in ("cosmic ornate resplendent mechanical masterpiece", "shimmers and shines in the light",
+                           PALETTE_LOCK, "object-only emblem with no people"):
+                self.assertIn(phrase, prompt)
+            self.assertNotRegex(prompt.split(" --no ")[0].replace("no glows or glowing visual effects", "")
+                                .replace("non-emissive", ""), r"\b(?:glow|glowing|luminous|emissive)\b")
+
     def test_regeneration_preserves_existing_line_endings(self):
         for newline in (b"\n", b"\r\n"):
             path = Mock()
