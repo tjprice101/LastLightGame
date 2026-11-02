@@ -49,9 +49,13 @@ def assets(root=ROOT):
                          root / "Art" / "source" / "master-conduits" / filename,
                          root / "public" / "assets" / "master-conduits" / f"{asset}.png"))
     for asset, filename in EXTRAS:
+        runtime = root / "public" / "assets" / "master-conduits" / f"{asset}.png"
+        # D-442: the current chest belongs to intake_master_chest_refresh.py; this
+        # historical reproduction targets its archived previous runtime export.
+        if asset == "grand-master-chest" and (root / "Art" / "provenance" / "master-chest-refresh-intake.json").exists():
+            runtime = root / "Art" / "source" / "master-conduits" / "previous-runtime" / f"{asset}.png"
         rows.append((asset, filename,
-                     root / "Art" / "source" / "master-conduits" / filename,
-                     root / "public" / "assets" / "master-conduits" / f"{asset}.png"))
+                     root / "Art" / "source" / "master-conduits" / filename, runtime))
     return rows
 
 

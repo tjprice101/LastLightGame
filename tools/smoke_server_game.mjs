@@ -144,6 +144,7 @@ try {
   assert.deepEqual(enter.session.state.enemies[0].stats, {
     health: 87, damage: 23, defense: 4, crit: .12,
     critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0,
+    gaugeGain: 1, skillPower: 1, skillDuration: 0, skillEfficiency: 0,
   });
   const checkpoint = await call({ kind: 'checkpoint' }, enter.revision);
   assert.deepEqual(checkpoint.session, enter.session);

@@ -10,12 +10,12 @@ import { resolveFighter, type ActionId } from '../content/combat';
 import { starters, type StarterId } from '../content/starters';
 import { masterConduits, type MasterConduitId } from '../content/master-conduits';
 import { nativeBalance } from '../content/native-balance';
-import { nativeEnemyCompleted, nativePrimaryHit } from './native-kits';
+import { nativeEnemyCompleted, nativePrimaryHit, nativeRefusal } from './native-kits';
 import { act, actionUnavailable, createBattle, endTurn, type BattleEvent } from './battle';
 import {
   afterConduitBurn, afterConduitImpact, applyConduitBurn, applyConduitWeaken, conduitActionCost,
   conduitBurnTick, conduitDeaths, conduitHitModifiers, conduitIncoming, conduitTurnStart, finishConduitAction,
-  forcedConduitTarget, gear, initializeConduits, nativeGauge, nativeHeal, nativeShield, effectiveDefense,
+  forcedConduitTarget, gear, initializeConduits, nativeGauge, nativeHeal, nativeShield, effectiveDefense, equipped,
   nativeTargetDefense, conduitSuppressSkill,
   prepareConduitAction, recordConduitHit,
 } from './conduit-runtime';
@@ -869,6 +869,61 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       ally.spent = true; finish('light');
       expect(ally.spent).toBe(!enabled);
       break;
+    case 'master-ozriel-1':
+      ally.hp = 10; ally.shield = 0;
+      expect(nativeRefusal(state, ally, 500, events)).toBe(9);
+      expect(ally.shield).toBe(enabled ? 200 : 0);
+      break;
+    case 'master-ozriel-2': {
+      const result = attack('skill1');
+      for (const enemy of result.state.enemies.slice(1)) expect(enemy.weakened > 0).toBe(enabled);
+      break;
+    }
+    case 'master-ozriel-3': {
+      const used = [state.allies[1].id, state.allies[2].id];
+      owner.native = { refusalUsed: [...used] };
+      expect(attack('ultimate').state.allies[0].native?.refusalUsed).toEqual(enabled ? [] : used);
+      break;
+    }
+    case 'master-ilvaris-1':
+      expect(attack('skill1').state.allies[0].native?.fateMarks?.[target.id]?.stacks).toBe(enabled ? 2 : 1);
+      break;
+    case 'master-ilvaris-2': {
+      for (const unit of state.allies.slice(1)) unit.shatter = 0;
+      const result = attack('skill2');
+      // This harness mocks phaseZeroStatsReady=false, which disables percentage Gauge offers; the live
+      // grant is verified in phase-zero-master-matrix.test.ts.
+      expect(equipped(owner, 'master-ilvaris-2')).toBe(enabled);
+      for (const unit of result.state.allies.slice(1)) expect(unit.shatter).toBe(0);
+      break;
+    }
+    case 'master-ilvaris-3': {
+      const result = attack('ultimate');
+      for (const enemy of result.state.enemies.slice(1))
+        expect(result.state.allies[0].native?.fateMarks?.[enemy.id]?.stacks).toBe(enabled ? 1 : undefined);
+      break;
+    }
+    case 'master-kaelith-1': {
+      for (const enemy of state.enemies) { enemy.stats = { ...enemy.stats, health: 100000 }; enemy.hp = 100000; }
+      owner.native = { faults: { [target.id]: 3 } };
+      const full = 100000 - attack('skill2').state.enemies[0].hp;
+      owner.native = { faults: { [target.id]: 2 } };
+      const partial = 100000 - attack('skill2').state.enemies[0].hp;
+      expect(full / partial > 1.3).toBe(enabled);
+      break;
+    }
+    case 'master-kaelith-2': {
+      for (const enemy of state.enemies) { enemy.stats = { ...enemy.stats, health: 100000 }; enemy.hp = 100000; }
+      const result = attack('skill1');
+      for (const enemy of result.state.enemies) expect(result.state.allies[0].native?.faults?.[enemy.id]).toBe(enabled ? 2 : 1);
+      break;
+    }
+    case 'master-kaelith-3': {
+      for (const enemy of state.enemies) { enemy.stats = { ...enemy.stats, health: 100000 }; enemy.hp = 100000; }
+      const result = attack('ultimate');
+      for (const enemy of result.state.enemies) expect(result.state.allies[0].native?.faults?.[enemy.id]).toBe(enabled ? 3 : 1);
+      break;
+    }
     default:
       throw new Error(`Missing executable Master scenario: ${id}`);
   }

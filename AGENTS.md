@@ -1,5 +1,14 @@
 # Last Light: AI agent entry point
 
+## Cosmic Master Chest and Calamitic Masters (D-442)
+
+Grand Master Chest art replaced via tools/intake_master_chest_refresh.py
+(originals/previous runtime archived; historical intake targets archive).
+Ozriel/Ilvaris/Kaelith now have three Omnic Masters each (57 total);
+effects are developer proposals in docs/calamitic-characters.md. Art pending:
+Art/conduits/Calamitic Master Conduits.md (build_calamitic_art.py); use
+masterArtUrl's neutral pending tile, never missing PNG URLs.
+
 ## Phase 0 Calamity art installed (D-441)
 
 All65 delivered Phase0 PNGs installed: Ozriel/Ilvaris/Kaelith18 portraits and

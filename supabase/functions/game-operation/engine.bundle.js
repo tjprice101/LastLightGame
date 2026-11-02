@@ -478,6 +478,12 @@ var approvedConduitCatalog = {
     "element": "Infernic (suggested thematic element; gameplay: universal)",
     "ability": "Your [Last Flare] gains +99% [Skill Power]. All your [Attack Actions] gain +65% [Direct Damage]."
   },
+  "master-ozriel-2": {
+    "name": "Absolution Rose-Window Engine",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Ozriel only)",
+    "ability": "[Pane of Absolution] also applies 25% [Weaken] to every other living enemy until the end of the next [Enemy Turn]. Ozriel gains +55% [Defense] and +45% [Skill Power]."
+  },
   "clearwater-manifold": {
     "name": "Abyssal Clearwater Parliament",
     "rarity": "Omnic",
@@ -525,6 +531,12 @@ var approvedConduitCatalog = {
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Vaelor only)",
     "ability": "On [Tune], Vaelor's [Normal Attack] grants each other living ally +25% [Critical Rate] for their next [Attack Action]. On [Crescendo], it grants +40% [Critical Damage Multiplier] instead. Vaelor gains +30% [Critical Rate] and +45% [Elemental Gauge Gain]."
+  },
+  "master-ozriel-3": {
+    "name": "Cathedral of the Refused End",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Ozriel only)",
+    "ability": "[The World Refuses] restores [Refusal] for every living squad member who already used it this [Battle]. Ozriel gains +55% [Health] and +45% [Skill Efficiency]."
   },
   "infernic-cinder-testament": {
     "name": "Cinder Testament",
@@ -579,6 +591,12 @@ var approvedConduitCatalog = {
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
     "ability": "Your [Skills] ignore 35% of a Weakened enemy's [Defense]. If another ally applied that [Weaken], gain +20% [Skill Power] against that enemy. +35% [Skill Power], and +45% [Last Flare] [Direct Damage]."
+  },
+  "master-kaelith-3": {
+    "name": "Eclipse of Denied Fate",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Kaelith only)",
+    "ability": "[Denial of Fate] sets every enemy it damages to 3 [Faults]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain]."
   },
   "master-razor-2": {
     "name": "Eclipse Planet Watchtower",
@@ -646,6 +664,12 @@ var approvedConduitCatalog = {
     "element": "Chaotic (actual gameplay element)",
     "ability": "Applying [Weaken] grants the most injured ally +30% [Defense] for the next [Enemy Turn]. If they are below 50% [Health], also restore 6% of their maximum [Health]. Once per [Skill]. +25% [Skill Efficiency] and all [Squad Members] gain +55% [Health]."
   },
+  "master-kaelith-1": {
+    "name": "Glass Meridian Guillotine",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Kaelith only)",
+    "ability": "When [Glass Meridian] consumes 3 [Faults], it ignores 40% of the target's [Defense]. Kaelith gains +55% [Skill Power] and +45% [Direct Attack]."
+  },
   "master-rosetta-3": {
     "name": "Golden Thorn Judgment Loom",
     "rarity": "Omnic (Master)",
@@ -669,6 +693,12 @@ var approvedConduitCatalog = {
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Atmoso only)",
     "ability": "When Atmoso's [Cyclone] releases, each living ally gains a [Shield] equal to 30% of the total enemy [Health] it removed that lasts until broken. All [Squad Members] gain +55% [Health] and +45% [Defense]."
+  },
+  "master-ilvaris-2": {
+    "name": "Hymnwind Glass Carillon",
+    "rarity": "Omnic (Master)",
+    "element": "Atmospheric (named bearer's actual element; Master for Ilvaris only)",
+    "ability": "[Hymn of Broken Glass] also grants every living squad member 8% [Elemental Gauge]. Ilvaris gains +65% [Health] and +45% [Skill Efficiency]."
   },
   "master-elise-1": {
     "name": "Infinite Thunderwheel Arsenal",
@@ -820,6 +850,12 @@ var approvedConduitCatalog = {
     "element": "Tranquilitic (actual gameplay element)",
     "ability": "Your first critical [Attack Action] each [Player Turn] heals every living ally for 6% of their own maximum [Health]. All [Squad Members] gain +65% [Health]."
   },
+  "master-ilvaris-3": {
+    "name": "Severed Prophecy Orrery",
+    "rarity": "Omnic (Master)",
+    "element": "Atmospheric (named bearer's actual element; Master for Ilvaris only)",
+    "ability": "[Tomorrow, Unwritten] adds 1 [Fate-seared Mark] stack to every living enemy, up to 5. Ilvaris gains +55% [Skill Power] and +55% [Elemental Gauge Gain]."
+  },
   "master-thornia-3": {
     "name": "Shadow Rose Sovereign Foundry",
     "rarity": "Omnic (Master)",
@@ -910,6 +946,12 @@ var approvedConduitCatalog = {
     "element": "Atmospheric (actual gameplay element)",
     "ability": "Your first critical [Skill] each [Player Turn] grants the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] that lasts until broken. +85% [Defense] and +30% [Critical Rate]."
   },
+  "master-kaelith-2": {
+    "name": "Thousand-Fault Shatter Loom",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Kaelith only)",
+    "ability": "[Shatterfall] adds 1 extra [Fault] to every enemy it damages, up to 3. Kaelith gains +40% [Skill Efficiency] and +30% [Critical Rate]."
+  },
   "master-thornia-2": {
     "name": "Thousand-Rose Planetary Aegis",
     "rarity": "Omnic (Master)",
@@ -981,6 +1023,18 @@ var approvedConduitCatalog = {
     "rarity": "Omnic (Master)",
     "element": "Oceanic (named bearer's actual element; Master for Tizu only)",
     "ability": "Allies holding Tizu's [Shields] ignore 25% of enemy [Defense] when attacking enemies carrying his [Weaken]. +95% [Defense] and +35% [Skill Power]."
+  },
+  "master-ozriel-1": {
+    "name": "Unfallen Nave Reliquary",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Ozriel only)",
+    "ability": "When [Refusal] keeps a squad member at 1 HP, that member also gains a [Shield] worth 20% of their maximum Health that lasts until broken. Ozriel gains +75% [Health] and +65% [Defense]."
+  },
+  "master-ilvaris-1": {
+    "name": "Unsung Verse Choir-Organ",
+    "rarity": "Omnic (Master)",
+    "element": "Atmospheric (named bearer's actual element; Master for Ilvaris only)",
+    "ability": "[Unwritten Verse] adds 2 [Fate-seared Mark] stacks instead of 1, up to 5. Ilvaris gains +45% [Skill Power] and +45% [Skill Efficiency]."
   },
   "efflorescent-verdant-covenant": {
     "name": "Verdant Covenant",
@@ -2284,6 +2338,42 @@ var conduitRedesign = {
   "master-vaelor-3": {
     "description": "[Vaelor]'s [Normal Attack] lets the other ally with the most [Elemental Gauge] act again this player turn.",
     "ranges": []
+  },
+  "master-ozriel-1": {
+    "description": "When [Refusal] keeps a squad member at 1 HP, that member also gains a [Shield] worth 20% of their maximum Health that lasts until broken. Ozriel gains +75% [Health] and +65% [Defense].",
+    "ranges": []
+  },
+  "master-ozriel-2": {
+    "description": "[Pane of Absolution] also applies 25% [Weaken] to every other living enemy until the end of the next [Enemy Turn]. Ozriel gains +55% [Defense] and +45% [Skill Power].",
+    "ranges": []
+  },
+  "master-ozriel-3": {
+    "description": "[The World Refuses] restores [Refusal] for every living squad member who already used it this [Battle]. Ozriel gains +55% [Health] and +45% [Skill Efficiency].",
+    "ranges": []
+  },
+  "master-ilvaris-1": {
+    "description": "[Unwritten Verse] adds 2 [Fate-seared Mark] stacks instead of 1, up to 5. Ilvaris gains +45% [Skill Power] and +45% [Skill Efficiency].",
+    "ranges": []
+  },
+  "master-ilvaris-2": {
+    "description": "[Hymn of Broken Glass] also grants every living squad member 8% [Elemental Gauge]. Ilvaris gains +65% [Health] and +45% [Skill Efficiency].",
+    "ranges": []
+  },
+  "master-ilvaris-3": {
+    "description": "[Tomorrow, Unwritten] adds 1 [Fate-seared Mark] stack to every living enemy, up to 5. Ilvaris gains +55% [Skill Power] and +55% [Elemental Gauge Gain].",
+    "ranges": []
+  },
+  "master-kaelith-1": {
+    "description": "When [Glass Meridian] consumes 3 [Faults], it ignores 40% of the target's [Defense]. Kaelith gains +55% [Skill Power] and +45% [Direct Attack].",
+    "ranges": []
+  },
+  "master-kaelith-2": {
+    "description": "[Shatterfall] adds 1 extra [Fault] to every enemy it damages, up to 3. Kaelith gains +40% [Skill Efficiency] and +30% [Critical Rate].",
+    "ranges": []
+  },
+  "master-kaelith-3": {
+    "description": "[Denial of Fate] sets every enemy it damages to 3 [Faults]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain].",
+    "ranges": []
   }
 };
 function redesignValue(level, base, maximum) {
@@ -3064,7 +3154,7 @@ var masterChest = {
   art: "master-conduits/grand-master-chest.png",
   description: "Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward."
 };
-var masterRulesText = `${masterChest.name}: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 48.`;
+var masterRulesText = `${masterChest.name}: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 57.`;
 function master(character, slot, name, design) {
   return {
     id: `master-${character}-${slot}`,
@@ -3365,6 +3455,60 @@ var masterConduits = [
     3,
     "Broken Sky Imperial Metronome",
     "A black-and-gold sky metronome with resonance-blade pendulum, twelve thunder-frequency wings and enormous nested conductor halos"
+  ),
+  master(
+    "ozriel",
+    1,
+    "Unfallen Nave Reliquary",
+    "A white cathedral reliquary engine around one upright tower-shield core, black flying-buttress clamps, a crimson lifeline spindle and six shattered-glass nave wings"
+  ),
+  master(
+    "ozriel",
+    2,
+    "Absolution Rose-Window Engine",
+    "A colossal white rose-window wheel of interlocking glass panes, a glass halberd axle through its hub and crimson fracture spokes splitting outward into black suppression shutters"
+  ),
+  master(
+    "ozriel",
+    3,
+    "Cathedral of the Refused End",
+    "A walking cathedral-fortress machine of stacked white glass naves and black buttress legs, three cracked crimson crown-halos and a sealed great door that refuses to open"
+  ),
+  master(
+    "ilvaris",
+    1,
+    "Unsung Verse Choir-Organ",
+    "A white glass pipe organ of ascending crystal pipes on a black lacquered console, twin crimson string-lances and fate-seal diamonds fanned like a choir"
+  ),
+  master(
+    "ilvaris",
+    2,
+    "Hymnwind Glass Carillon",
+    "A tiered white glass bell carillon in a black halo cage, wind-turbine petal vanes and crimson ribbon channels spiralling upward through nested chimes"
+  ),
+  master(
+    "ilvaris",
+    3,
+    "Severed Prophecy Orrery",
+    "A black clockwork prophecy orrery with a white glass halo-lyre as its axis, broken calendar rings split by a single crimson string and orbiting white pane moons"
+  ),
+  master(
+    "kaelith",
+    1,
+    "Glass Meridian Guillotine",
+    "A black obsidian guillotine frame with a white cracked-glass crescent scythe blade, crimson meridian rails and three fault-locking clamp jaws"
+  ),
+  master(
+    "kaelith",
+    2,
+    "Thousand-Fault Shatter Loom",
+    "A colossal black loom whose shuttle is a white glass scythe crescent, weaving crimson fracture threads across hundreds of suspended white glass panes"
+  ),
+  master(
+    "kaelith",
+    3,
+    "Eclipse of Denied Fate",
+    "A black eclipse engine ringed by twin white glass scythe crescents, a severed crimson fate-thread through its core and eighteen angular glass blade-feathers"
   )
 ];
 function isMasterConduitId(value2) {
@@ -4529,7 +4673,16 @@ var omnicSelfStats = {
   "master-tide-3": { defense: 0.95, skillPower: 0.35 },
   "master-rosetta-2": { health: 0.8, skillEfficiency: 0.3 },
   "master-bruno-3": { damage: 0.6, defense: 0.85 },
-  "master-sprout-1": { skillPower: 0.65, shatterCapacity: 0.5 }
+  "master-sprout-1": { skillPower: 0.65, shatterCapacity: 0.5 },
+  "master-ozriel-1": { health: 0.75, defense: 0.65 },
+  "master-ozriel-2": { defense: 0.55, skillPower: 0.45 },
+  "master-ozriel-3": { health: 0.55, skillEfficiency: 0.45 },
+  "master-ilvaris-1": { skillPower: 0.45, skillEfficiency: 0.45 },
+  "master-ilvaris-2": { health: 0.65, skillEfficiency: 0.45 },
+  "master-ilvaris-3": { skillPower: 0.55, gaugeGain: 0.55 },
+  "master-kaelith-1": { skillPower: 0.55, damage: 0.45 },
+  "master-kaelith-2": { skillEfficiency: 0.4, crit: 0.3 },
+  "master-kaelith-3": { skillPower: 0.45, gaugeGain: 0.45 }
 };
 var omnicSquadStats = {
   "firstlight-cam": { gaugeGain: 0.5, defense: 0.4 },
@@ -7260,6 +7413,7 @@ function nativeRefusal(state, target, loss, events) {
   if (!owner) return loss;
   (nativeMemory(owner).refusalUsed ??= []).push(target.id);
   status3(state, events, owner, target, `${target.name}: Refusal used; remains at 1 HP (once per encounter).`);
+  if (equipped(owner, "master-ozriel-1")) nativeShield(state, owner, target, target.stats.health * 0.2, events, { stack: true });
   return Math.max(0, target.hp - 1);
 }
 function nativeAction(state, owner, action, targetId, events, direct, activation) {
@@ -7311,8 +7465,17 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       if (action === "skill1") {
         hit(2.4);
         if (target?.hp) applyConduitWeaken(state, owner, target, 0.5, events, action, 2, activation);
+        if (equipped(owner, "master-ozriel-2")) for (const enemy of foes(state).filter((enemy2) => enemy2.id !== target?.id))
+          applyConduitWeaken(state, owner, enemy, 0.25, events, action, 1, activation);
       }
-      if (action === "ultimate") hit(4.55, true);
+      if (action === "ultimate") {
+        hit(4.55, true);
+        if (equipped(owner, "master-ozriel-3") && memory.refusalUsed?.length) {
+          const alive2 = new Set(allies.map((unit) => unit.id));
+          memory.refusalUsed = memory.refusalUsed.filter((id) => !alive2.has(id));
+          status3(state, events, owner, owner, "Cathedral of the Refused End: Refusal restored for every living squad member.");
+        }
+      }
       if (action === "skill2" || action === "ultimate") for (const recipient of allies)
         nativeShield(
           state,
@@ -7324,20 +7487,24 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
         );
       break;
     case "ilvaris": {
+      const mark = (enemy, added) => {
+        const marks = memory.fateMarks ??= {};
+        const prior = marks[enemy.id];
+        marks[enemy.id] = {
+          stacks: Math.min(5, (prior && prior.throughPhase >= state.round ? prior.stacks : 0) + added),
+          throughPhase: state.round + 1 + activation.skillDuration
+        };
+        status3(state, events, owner, enemy, `${enemy.name}: Fate-seared Mark ${marks[enemy.id].stacks}/5; through enemy phase ${marks[enemy.id].throughPhase}.`);
+        afterCalamiticMark(state, owner, enemy, events);
+      };
       if (action === "skill1") {
         hit(2.25);
-        if (target?.hp) {
-          const marks = memory.fateMarks ??= {};
-          const prior = marks[target.id];
-          marks[target.id] = {
-            stacks: Math.min(5, (prior && prior.throughPhase >= state.round ? prior.stacks : 0) + 1),
-            throughPhase: state.round + 1 + activation.skillDuration
-          };
-          status3(state, events, owner, target, `${target.name}: Fate-seared Mark ${marks[target.id].stacks}/5; through enemy phase ${marks[target.id].throughPhase}.`);
-          afterCalamiticMark(state, owner, target, events);
-        }
+        if (target?.hp) mark(target, equipped(owner, "master-ilvaris-1") ? 2 : 1);
       }
-      if (action === "ultimate") hit(4.4, true);
+      if (action === "ultimate") {
+        hit(4.4, true);
+        if (equipped(owner, "master-ilvaris-3")) for (const enemy of foes(state)) mark(enemy, 1);
+      }
       if (action === "skill2" || action === "ultimate") {
         const power2 = activation.skillPower - (nativeHymn(owner, state.round)?.skillPower ?? 0) + (activation.supportPowerBonus ?? 0);
         for (const recipient of allies) {
@@ -7350,22 +7517,41 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
               skillPower: 0.5 * power2
             };
             status3(state, events, owner, recipient, `${recipient.name}: Hymn of Broken Glass; Critical Damage +${45 * power2}%, Skill Power +${50 * power2}%; refresh, through player turn ${recipient.native.hymn.throughRound}.`);
+            if (equipped(owner, "master-ilvaris-2")) generatedGaugePercent(owner, recipient, 0.08, events, state);
           } else generatedGaugePercent(owner, recipient, 0.1, events, state);
         }
         finishNativeHealing(state, owner, activation, events);
       }
       break;
     }
-    case "kaelith":
-      if (action === "skill1") hit(4.56, true);
+    case "kaelith": {
+      const struck = (strike) => {
+        const before = new Map(foes(state).map((enemy) => [enemy.id, enemy.hp + enemy.shield]));
+        strike();
+        return foes(state).filter((enemy) => enemy.hp + enemy.shield < (before.get(enemy.id) ?? 0));
+      };
+      const setFaults = (enemy, count2) => {
+        const faults = memory.faults ??= {};
+        faults[enemy.id] = Math.min(3, count2);
+        status3(state, events, owner, enemy, `${enemy.name}: Fault ${faults[enemy.id]}/3 (+${faults[enemy.id] * 10}% squad damage).`);
+      };
+      if (action === "skill1") {
+        const hits = struck(() => hit(4.56, true));
+        if (equipped(owner, "master-kaelith-2"))
+          for (const enemy of hits) setFaults(enemy, (memory.faults?.[enemy.id] ?? 0) + 1);
+      }
       if (action === "skill2" && target) {
         const spent = memory.faults?.[target.id] ?? 0;
-        hit(3.65 * (1 + 0.2 * spent));
+        hit(3.65 * (1 + 0.2 * spent), false, spent >= 3 && equipped(owner, "master-kaelith-1") ? 0.4 : 0);
         if (memory.faults) delete memory.faults[target.id];
         status3(state, events, owner, target, `${target.name}: Glass Meridian consumes ${spent} Faults; Fault 0/3.`);
       }
-      if (action === "ultimate") hit(3.6, true);
+      if (action === "ultimate") {
+        const hits = struck(() => hit(3.6, true));
+        if (equipped(owner, "master-kaelith-3")) for (const enemy of hits) setFaults(enemy, 3);
+      }
       break;
+    }
     case "ember":
       if (action === "skill1") {
         hit(1.6);

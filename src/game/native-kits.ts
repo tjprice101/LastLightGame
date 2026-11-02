@@ -204,6 +204,7 @@ export function nativeRefusal(state: BattleState, target: Combatant, loss: numbe
   if (!owner) return loss;
   (nativeMemory(owner).refusalUsed ??= []).push(target.id);
   status(state, events, owner, target, `${target.name}: Refusal used; remains at 1 HP (once per encounter).`);
+  if (equipped(owner, 'master-ozriel-1')) nativeShield(state, owner, target, target.stats.health * .2, events, { stack: true });
   return Math.max(0, target.hp - 1);
 }
 
@@ -247,25 +248,38 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
       if (action === 'skill1') {
         hit(2.4);
         if (target?.hp) applyConduitWeaken(state, owner, target, .5, events, action, 2, activation);
+        if (equipped(owner, 'master-ozriel-2')) for (const enemy of foes(state).filter(enemy => enemy.id !== target?.id))
+          applyConduitWeaken(state, owner, enemy, .25, events, action, 1, activation);
       }
-      if (action === 'ultimate') hit(4.55, true);
+      if (action === 'ultimate') {
+        hit(4.55, true);
+        if (equipped(owner, 'master-ozriel-3') && memory.refusalUsed?.length) {
+          const alive = new Set(allies.map(unit => unit.id));
+          memory.refusalUsed = memory.refusalUsed.filter(id => !alive.has(id));
+          status(state, events, owner, owner, 'Cathedral of the Refused End: Refusal restored for every living squad member.');
+        }
+      }
       if (action === 'skill2' || action === 'ultimate') for (const recipient of allies)
         nativeShield(state, owner, recipient, action === 'skill2' ? 90 : 140, events,
           { skillPower: activation.skillPower, activation, stack: true });
       break;
     case 'ilvaris': {
+      const mark = (enemy: Combatant, added: number) => {
+        const marks = memory.fateMarks ??= {};
+        const prior = marks[enemy.id];
+        marks[enemy.id] = { stacks: Math.min(5, (prior && prior.throughPhase >= state.round ? prior.stacks : 0) + added),
+          throughPhase: state.round + 1 + activation.skillDuration };
+        status(state, events, owner, enemy, `${enemy.name}: Fate-seared Mark ${marks[enemy.id].stacks}/5; through enemy phase ${marks[enemy.id].throughPhase}.`);
+        afterCalamiticMark(state, owner, enemy, events);
+      };
       if (action === 'skill1') {
         hit(2.25);
-        if (target?.hp) {
-          const marks = memory.fateMarks ??= {};
-          const prior = marks[target.id];
-          marks[target.id] = { stacks: Math.min(5, (prior && prior.throughPhase >= state.round ? prior.stacks : 0) + 1),
-            throughPhase: state.round + 1 + activation.skillDuration };
-          status(state, events, owner, target, `${target.name}: Fate-seared Mark ${marks[target.id].stacks}/5; through enemy phase ${marks[target.id].throughPhase}.`);
-          afterCalamiticMark(state, owner, target, events);
-        }
+        if (target?.hp) mark(target, equipped(owner, 'master-ilvaris-1') ? 2 : 1);
       }
-      if (action === 'ultimate') hit(4.4, true);
+      if (action === 'ultimate') {
+        hit(4.4, true);
+        if (equipped(owner, 'master-ilvaris-3')) for (const enemy of foes(state)) mark(enemy, 1);
+      }
       if (action === 'skill2' || action === 'ultimate') {
         const power = activation.skillPower - (nativeHymn(owner, state.round)?.skillPower ?? 0) + (activation.supportPowerBonus ?? 0);
         for (const recipient of allies) {
@@ -274,22 +288,41 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
             nativeMemory(recipient).hymn = { owner: owner.id, throughRound: state.round + 1 + activation.skillDuration,
               criticalDamage: .45 * power, skillPower: .5 * power };
             status(state, events, owner, recipient, `${recipient.name}: Hymn of Broken Glass; Critical Damage +${45 * power}%, Skill Power +${50 * power}%; refresh, through player turn ${recipient.native!.hymn!.throughRound}.`);
+            if (equipped(owner, 'master-ilvaris-2')) generatedGaugePercent(owner, recipient, .08, events, state);
           } else generatedGaugePercent(owner, recipient, .1, events, state);
         }
         finishNativeHealing(state, owner, activation, events);
       }
       break;
     }
-    case 'kaelith':
-      if (action === 'skill1') hit(4.56, true);
+    case 'kaelith': {
+      const struck = (strike: () => void) => {
+        const before = new Map(foes(state).map(enemy => [enemy.id, enemy.hp + enemy.shield]));
+        strike();
+        return foes(state).filter(enemy => enemy.hp + enemy.shield < (before.get(enemy.id) ?? 0));
+      };
+      const setFaults = (enemy: Combatant, count: number) => {
+        const faults = memory.faults ??= {};
+        faults[enemy.id] = Math.min(3, count);
+        status(state, events, owner, enemy, `${enemy.name}: Fault ${faults[enemy.id]}/3 (+${faults[enemy.id] * 10}% squad damage).`);
+      };
+      if (action === 'skill1') {
+        const hits = struck(() => hit(4.56, true));
+        if (equipped(owner, 'master-kaelith-2'))
+          for (const enemy of hits) setFaults(enemy, (memory.faults?.[enemy.id] ?? 0) + 1);
+      }
       if (action === 'skill2' && target) {
         const spent = memory.faults?.[target.id] ?? 0;
-        hit(3.65 * (1 + .2 * spent));
+        hit(3.65 * (1 + .2 * spent), false, spent >= 3 && equipped(owner, 'master-kaelith-1') ? .4 : 0);
         if (memory.faults) delete memory.faults[target.id];
         status(state, events, owner, target, `${target.name}: Glass Meridian consumes ${spent} Faults; Fault 0/3.`);
       }
-      if (action === 'ultimate') hit(3.6, true);
+      if (action === 'ultimate') {
+        const hits = struck(() => hit(3.6, true));
+        if (equipped(owner, 'master-kaelith-3')) for (const enemy of hits) setFaults(enemy, 3);
+      }
       break;
+    }
     case 'ember':
       if (action === 'skill1') { hit(1.6); if (target?.hp) burn(target, .25); }
       if (action === 'skill2') {

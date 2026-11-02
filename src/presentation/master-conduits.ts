@@ -8,11 +8,19 @@ import type { RewardPresentation } from './reward-screen';
 import { conduitLore } from './conduit-store';
 import { conduitElementLabel, conduitElementTheme } from './conduit-element';
 import { imageSource } from './bubble-ui';
+import { masterConduitArtRevisions } from '../content/master-conduit-art-revisions';
+
+const pendingMasterArt = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect x="40" y="40" width="176" height="176" rx="28" fill="#171717" stroke="#999" stroke-width="4"/><text x="128" y="122" text-anchor="middle" fill="#ddd" font-size="22" font-family="Georgia">Artwork</text><text x="128" y="150" text-anchor="middle" fill="#ddd" font-size="22" font-family="Georgia">pending</text></svg>')}`;
+
+/** Installed Masters have a reviewed revision; others show a neutral pending tile, never a missing PNG URL. */
+export function masterArtUrl(id: MasterConduitId): string {
+  return id in masterConduitArtRevisions ? assetUrl(getMasterConduit(id).art) : pendingMasterArt;
+}
 
 export function masterConduitIcon(id: MasterConduitId): string {
   const entry = getMasterConduit(id);
   const element = getStarter(entry.character).elementId;
-  return `<img class="master-art master-element-art" ${conduitElementTheme(element)} draggable="false" src="${assetUrl(entry.art)}" alt="${escapeDialogText(entry.name)}" width="256" height="256">`;
+  return `<img class="master-art master-element-art" ${conduitElementTheme(element)} draggable="false" src="${masterArtUrl(id)}" alt="${escapeDialogText(entry.name)}" width="256" height="256">`;
 }
 export function masterChestIcon(): string {
   return `<img class="master-art master-chest-art" draggable="false" src="${assetUrl(masterChest.art)}" alt="${masterChest.name}" width="256" height="256">`;

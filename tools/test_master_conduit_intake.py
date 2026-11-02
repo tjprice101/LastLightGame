@@ -33,7 +33,10 @@ class MasterConduitIntakeTests(unittest.TestCase):
             record = self.records[asset]
             with self.subTest(asset=asset):
                 self.assertEqual(record["source"], str(archived.relative_to(ROOT)))
-                self.assertEqual(record["runtime"], str(runtime.relative_to(ROOT)))
+                # D-442 retains the historical chest export as previous-runtime provenance.
+                historical = (r"public\assets\master-conduits\grand-master-chest.png"
+                              if asset == "grand-master-chest" else str(runtime.relative_to(ROOT)))
+                self.assertEqual(record["runtime"], historical)
                 self.assertEqual(record["settings"], self.settings[asset])
                 self.assertTrue(archived.is_file())
                 self.assertTrue(runtime.is_file())

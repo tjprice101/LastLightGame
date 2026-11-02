@@ -5,7 +5,7 @@ import { masterConduits, masterChest, type MasterConduitId } from '../content/ma
 import { starters, getStarter, type StarterId } from '../content/starters';
 import type { Account } from '../game/account';
 import { Button, Dialog, Status } from './components';
-import { assetUrl } from '../presentation/portrait';
+import { masterArtUrl } from '../presentation/master-conduits';
 import { referencedEffect } from '../presentation/effect-copy';
 import '../styles/ui.css';
 import { getElement } from '../content/activities';
@@ -39,7 +39,7 @@ export function MasterChoiceDialog({ account, onChoose, onClose }: {
           if (selected !== entry.id) rarityFeedback(event.currentTarget, 'Omnic');
           setSelected(entry.id);
         }}>
-        <img className="ll-master-art master-element-art" draggable={false} src={assetUrl(entry.art)} alt="" width={256} height={256} /><strong>{entry.name}</strong>
+        <img className="ll-master-art master-element-art" draggable={false} src={masterArtUrl(entry.id)} alt="" width={256} height={256} /><strong>{entry.name}</strong>
         <strong className="conduit-element-label" data-conduit-element={element}>{getElement(element).name}</strong>
         <small>Omnic Master{account.masterConduits?.[entry.id] === 1 ? ' · Owned' : ''}</small><span>{referencedEffect(entry.effect, false)}</span>
       </Button>)}

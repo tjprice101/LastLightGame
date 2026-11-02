@@ -42,7 +42,7 @@ class CalamiticArtTests(unittest.TestCase):
 
     def test_generated_packs_match_reproducible_sources(self):
         generated = outputs()
-        self.assertEqual([len(BLOCK.findall(text)) for text in generated.values()], [33, 10, 1, 9])
+        self.assertEqual([len(BLOCK.findall(text)) for text in generated.values()], [33, 10, 1, 9, 9])
         for path, expected in generated.items():
             self.assertEqual(path.read_text(encoding="utf-8"), expected, path.name)
             self.assertIn("All artwork pending owner delivery", expected)
@@ -98,7 +98,7 @@ class CalamiticArtTests(unittest.TestCase):
                     self.assertNotIn("--sref", prompt)
                     self.assertNotIn("--sw", prompt)
                     counts[1] += 1
-        self.assertEqual(counts, [18, 35])
+        self.assertEqual(counts, [18, 44])
 
     def test_compact_palette_key_quality_and_safety(self):
         for text in outputs().values():

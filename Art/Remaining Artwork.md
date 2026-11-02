@@ -8,6 +8,7 @@
 | [Native identity symbols](ui/Native%20Identity%20Status%20Icons.md) |0|All27 delivered symbols are archived, cleaned and installed (D-323)|
 | [Calamitic Conduits](conduits/Calamitic%20Conduits.md) |0|All five machines and the shared token are archived, cleaned and installed (D-325)|
 | [Calamitic Element-Bearers](characters/Calamitic%20Element-Bearers.md) |0|All portraits, ability/status icons, Conduits, materials and Rise-blessed emblem installed (D-441)|
+| [Calamitic Master Conduits](conduits/Calamitic%20Master%20Conduits.md) |9|Three Masters each for Ozriel, Ilvaris and Kaelith (D-442); neutral pending tiles until delivery|
 | [Gates of Oblivion](creatures/Gates%20of%20Oblivion.md) |0|All ten enemies, banner and arena installed (D-441)|
 | **Current queue** |**0**|All listed production packs are installed|
 

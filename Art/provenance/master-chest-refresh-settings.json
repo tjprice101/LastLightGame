@@ -1,0 +1,9 @@
+{
+  "border_only": true,
+  "keys": [[98, 175, 117], [75, 98, 80], [86, 136, 98]],
+  "radius": 34,
+  "edge_cleanup": {"source_pixels": 2, "distance_ramp": 55},
+  "background_seeds": [],
+  "foreground_polygons": [],
+  "review": "D-442 reviewed: flat green backdrop and its green-tinted cast shadow are border-connected keys; black/indigo chest, gold mechanisms, clawed legs and interior nebula greens are preserved."
+}

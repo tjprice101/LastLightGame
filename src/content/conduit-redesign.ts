@@ -1048,6 +1048,42 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
   "master-vaelor-3": {
     "description": "[Vaelor]'s [Normal Attack] lets the other ally with the most [Elemental Gauge] act again this player turn.",
     "ranges": []
+  },
+  "master-ozriel-1": {
+    "description": "When [Refusal] keeps a squad member at 1 HP, that member also gains a [Shield] worth 20% of their maximum Health that lasts until broken. Ozriel gains +75% [Health] and +65% [Defense].",
+    "ranges": []
+  },
+  "master-ozriel-2": {
+    "description": "[Pane of Absolution] also applies 25% [Weaken] to every other living enemy until the end of the next [Enemy Turn]. Ozriel gains +55% [Defense] and +45% [Skill Power].",
+    "ranges": []
+  },
+  "master-ozriel-3": {
+    "description": "[The World Refuses] restores [Refusal] for every living squad member who already used it this [Battle]. Ozriel gains +55% [Health] and +45% [Skill Efficiency].",
+    "ranges": []
+  },
+  "master-ilvaris-1": {
+    "description": "[Unwritten Verse] adds 2 [Fate-seared Mark] stacks instead of 1, up to 5. Ilvaris gains +45% [Skill Power] and +45% [Skill Efficiency].",
+    "ranges": []
+  },
+  "master-ilvaris-2": {
+    "description": "[Hymn of Broken Glass] also grants every living squad member 8% [Elemental Gauge]. Ilvaris gains +65% [Health] and +45% [Skill Efficiency].",
+    "ranges": []
+  },
+  "master-ilvaris-3": {
+    "description": "[Tomorrow, Unwritten] adds 1 [Fate-seared Mark] stack to every living enemy, up to 5. Ilvaris gains +55% [Skill Power] and +55% [Elemental Gauge Gain].",
+    "ranges": []
+  },
+  "master-kaelith-1": {
+    "description": "When [Glass Meridian] consumes 3 [Faults], it ignores 40% of the target's [Defense]. Kaelith gains +55% [Skill Power] and +45% [Direct Attack].",
+    "ranges": []
+  },
+  "master-kaelith-2": {
+    "description": "[Shatterfall] adds 1 extra [Fault] to every enemy it damages, up to 3. Kaelith gains +40% [Skill Efficiency] and +30% [Critical Rate].",
+    "ranges": []
+  },
+  "master-kaelith-3": {
+    "description": "[Denial of Fate] sets every enemy it damages to 3 [Faults]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain].",
+    "ranges": []
   }
 };
 

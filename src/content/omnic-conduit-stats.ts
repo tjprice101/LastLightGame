@@ -85,6 +85,15 @@ export const omnicSelfStats = {
   'master-rosetta-2': { health: .8, skillEfficiency: .3 },
   'master-bruno-3': { damage: .6, defense: .85 },
   'master-sprout-1': { skillPower: .65, shatterCapacity: .5 },
+  'master-ozriel-1': { health: .75, defense: .65 },
+  'master-ozriel-2': { defense: .55, skillPower: .45 },
+  'master-ozriel-3': { health: .55, skillEfficiency: .45 },
+  'master-ilvaris-1': { skillPower: .45, skillEfficiency: .45 },
+  'master-ilvaris-2': { health: .65, skillEfficiency: .45 },
+  'master-ilvaris-3': { skillPower: .55, gaugeGain: .55 },
+  'master-kaelith-1': { skillPower: .55, damage: .45 },
+  'master-kaelith-2': { skillEfficiency: .4, crit: .3 },
+  'master-kaelith-3': { skillPower: .45, gaugeGain: .45 },
 } as const satisfies Partial<Record<EquipmentId, OmnicStatBonuses>>;
 
 export const omnicSquadStats = {

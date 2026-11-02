@@ -91,6 +91,27 @@ CONDUITS = (
     ("Throne of the Lone Apostate", "an immense empty black-and-white command throne with a solitary central seat, nested defensive wings and one inward-focused crimson power circuit, no seated figure"),
     ("Worldbreaker Cannonade", "a colossal fan of nine jointed black-and-white annihilation cannon barrels linked to one crimson compression core, segmented rails and concentric white discharge wedges aimed across a wide arc"),
 )
+# D-442: three Masters per Calamitic Element-Bearer; motifs follow each bearer's weapon and kit exactly.
+MASTERS = (
+    ("master-ozriel-1", "Unfallen Nave Reliquary", "Ozriel",
+     "upright white enamel cathedral reliquary machine, a tall pearlescent tower shield standing at its center as the core, four black lacquered flying-buttress clamps gripping the shield edges, a crimson lifeline spindle coiled with crimson cable up its spine, six flat shattered-glass nave wings fanned symmetrically behind, pointed white glass spires on top"),
+    ("master-ozriel-2", "Absolution Rose-Window Engine", "Ozriel",
+     "round white glass rose-window wheel of interlocking geometric panes in a thick black lacquered frame, a glass halberd driven through the hub as its axle, crimson fracture spokes splitting the panes outward, eight angled black suppression shutters around the rim"),
+    ("master-ozriel-3", "Cathedral of the Refused End", "Ozriel",
+     "compact walking cathedral-fortress machine, stacked white enamel nave towers with pointed arches, four jointed black buttress legs planted wide, a sealed tall black great door barred by crimson cross-locks at its front, three cracked crimson crown-halos stacked above the central spire, shattered white glass pane windows"),
+    ("master-ilvaris-1", "Unsung Verse Choir-Organ", "Ilvaris",
+     "white glass pipe organ machine, ascending faceted crystal pipes arranged in a symmetrical fan, a black lacquered console base with crimson inlay lines, two crimson string-lances crossing in front of the pipes, a halo of crimson diamond seal plates above"),
+    ("master-ilvaris-2", "Hymnwind Glass Carillon", "Ilvaris",
+     "tiered white glass bell carillon, three stacked rings of hanging faceted glass bells inside a black lacquered halo cage, angled white wind-turbine petal vanes around the cage, crimson ribbon channels spiralling upward through the chimes, a cracked white halo on top"),
+    ("master-ilvaris-3", "Severed Prophecy Orrery", "Ilvaris",
+     "black clockwork orrery machine, an upright white glass halo-lyre with clearly separated strings as its central axis, three broken black calendar rings split clean by one taut crimson string, five small white glass pane moons on thin black orbit arms"),
+    ("master-kaelith-1", "Glass Meridian Guillotine", "Kaelith",
+     "tall black obsidian guillotine frame machine, a cracked white glass crescent scythe blade held high in the frame as the falling edge, two crimson meridian rails down the uprights, three black clamp jaws with crimson fracture marks at the base"),
+    ("master-kaelith-2", "Thousand-Fault Shatter Loom", "Kaelith",
+     "black lacquered weaving loom machine, a white cracked-glass scythe crescent as its shuttle, taut crimson fracture threads strung across the frame, dozens of small suspended white glass panes cracking along the threads, angular black heddle bars"),
+    ("master-kaelith-3", "Eclipse of Denied Fate", "Kaelith",
+     "black eclipse disk engine, two white cracked-glass scythe crescents curving around it in opposite directions, a severed crimson fate-thread pulled taut through the center with cut frayed ends, a fan of eighteen angular white glass blade-feathers behind the disk"),
+)
 
 
 def slug(name):
@@ -195,6 +216,10 @@ def outputs():
         "nearly cosmic scale expressed through extremely ornate nested engineering not scenery, "
         "dense interior construction and narrow readable key channels, painted dimensional metal facets"))
         for name, symbol in CONDUITS]
+    masters = [block(f"{name} (Omnic Master / {bearer})", asset, "master-conduits", cutout(
+        f"one standalone {symbol}, Master Conduit relic machine, extremely ornate celestial engineering, "
+        "flat polished enamel and crisp cracked glass, dense interior detail with narrow readable key channels"))
+        for asset, name, bearer, symbol in MASTERS]
     emblem = block("Rise-blessed crown-burst", "rise-blessed-emblem", "ui", cutout(
         "one ornate mechanical crown-burst emblem, five white crown teeth on a black segmented ring, "
         "one central crimson fracture diamond with six broad white-and-crimson burst wedges, "
@@ -217,6 +242,12 @@ def outputs():
             "Calamitic Conduits Phase 0", "Nine reference-free Rise-authored annihilation machines. "
             "Visual mechanisms suggest the approved effects without effect text or numeric lettering. "
             "These extend, never replace, the [five installed Calamitic designs](Calamitic%20Conduits.md).", machines),
+        art_path("conduits", "Calamitic Master Conduits.md", root=ROOT): document(
+            "Calamitic Master Conduits", "Nine reference-free Master icons (D-442): three per Calamitic Element-Bearer. "
+            "Each machine is built from its bearer's own weapon and kit motif: Ozriel's tower shield, halberd and cathedral; "
+            "Ilvaris's halo-lyre, bells and severed prophecy; Kaelith's glass scythe, Faults and severed fate-thread. "
+            "Object-only machines, no figures. Effects live in docs/conduit-catalog.txt; the installed 48 Masters are in "
+            "[Master Conduits](Master%20Conduits.md).", masters),
     }
 
 

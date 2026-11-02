@@ -1,5 +1,19 @@
 # Current state and handoff
 
+## Cosmic Master Chest and Calamitic Masters (D-442)
+
+- Replacement chest art installed via `tools/intake_master_chest_refresh.py
+  --apply` (green key plus connected green shadow removed; original and
+  previous runtime archived; manifest `Art/provenance/master-chest-refresh-intake.json`).
+  AVIF and Master art revisions regenerated.
+- Nine Calamitic Masters added (`master-ozriel|ilvaris|kaelith-1..3`): content,
+  stats, catalog text (156 entries regenerated), runtime hooks in
+  `native-kits.ts`, Master Chest choices and Archives. Art pending: prompts in
+  `Art/conduits/Calamitic Master Conduits.md`; `masterArtUrl` shows a neutral
+  pending tile. See [Calamitic characters](calamitic-characters.md#calamitic-master-conduits-d-442).
+- Count-based tests moved from 48 to 57 Masters / 147 to 156 catalog entries.
+- Open: owner review of the nine effects and delivery of their nine images.
+
 ## Phase 0 Calamity art installed (D-441)
 
 - `tools/intake_calamity_phase0_art.py --apply` archived and installed all65

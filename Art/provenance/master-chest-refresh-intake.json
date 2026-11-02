@@ -1,0 +1,55 @@
+{
+  "decision": "D-442",
+  "asset": "grand-master-chest",
+  "incoming": "Cosmic Grand Master Chest.png",
+  "source": "Art/source/master-conduits/refresh/Cosmic Grand Master Chest.png",
+  "source_sha256": "4b8012dbbe2b29875da54f1374de3e21c42dc80f0053c194446e89940d124bf1",
+  "previous_runtime": "Art/source/master-conduits/previous-runtime/grand-master-chest.png",
+  "previous_runtime_sha256": "01822f0ce6dbdaa82ad5762b5bd0cfe7d809945d7ddcd99da822ec4d9973be59",
+  "runtime": "public/assets/master-conduits/grand-master-chest.png",
+  "runtime_sha256": "af8da0b2e5782e3e84f43b3f84c373ec7033b7da400027137f899b86aa0e8a9d",
+  "source_mode": "RGB",
+  "source_dimensions": [
+    1024,
+    1024
+  ],
+  "processing": "reviewed border-connected RGB key (background and green-tinted cast shadow)",
+  "runtime_dimensions": [
+    256,
+    256
+  ],
+  "runtime_content_bbox": [
+    16,
+    19,
+    240,
+    236
+  ],
+  "settings": {
+    "border_only": true,
+    "keys": [
+      [
+        98,
+        175,
+        117
+      ],
+      [
+        75,
+        98,
+        80
+      ],
+      [
+        86,
+        136,
+        98
+      ]
+    ],
+    "radius": 34,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "D-442 reviewed: flat green backdrop and its green-tinted cast shadow are border-connected keys; black/indigo chest, gold mechanisms, clawed legs and interior nebula greens are preserved."
+  }
+}

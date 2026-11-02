@@ -10,7 +10,7 @@ import {
 } from './conduit-runtime';
 import {
   nativeAfterAction, nativeEnemyCompleted, nativeIncomingMultiplier, nativePhaseEnd, nativePrimaryHit,
-  nativeRouteDamage, nativeTurnStart,
+  nativeRefusal, nativeRouteDamage, nativeTurnStart,
 } from './native-kits';
 
 vi.mock('../content/phase-zero-stats', async original => ({
@@ -466,13 +466,63 @@ const checks: Record<MasterConduitId, Check> = {
     const crescendo = cast(state, 'light');
     expect(next(crescendo, 'light').criticalDamageBonus).toBe(equipped ? .4 : 0);
   },
+  'master-ozriel-1': (state, equipped) => {
+    state.allies[1].hp = 10;
+    expect(nativeRefusal(state, state.allies[1], 500, [])).toBe(9);
+    expect(state.allies[1].shield).toBe(equipped ? 200 : 0);
+    expect(state.allies[0].stats).toMatchObject({ health: equipped ? 1750 : 1000 });
+  },
+  'master-ozriel-2': (state, equipped) => {
+    const result = cast(state, 'skill1');
+    expect(result.enemies[0].weakenFraction).toBeCloseTo(.5);
+    for (const enemy of result.enemies.slice(1)) {
+      expect(enemy.weakened > 0).toBe(equipped);
+      if (equipped) expect(enemy.weakenFraction).toBeCloseTo(.25 * 1.45);
+    }
+  },
+  'master-ozriel-3': (state, equipped) => {
+    const used = [state.allies[1].id, state.allies[2].id];
+    state.allies[0].native = { refusalUsed: [...used] };
+    const result = cast(state, 'ultimate');
+    expect(result.allies[0].native?.refusalUsed).toEqual(equipped ? [] : used);
+  },
+  'master-ilvaris-1': (state, equipped) => {
+    const result = cast(state, 'skill1');
+    expect(result.allies[0].native?.fateMarks?.[result.enemies[0].id]?.stacks).toBe(equipped ? 2 : 1);
+  },
+  'master-ilvaris-2': (state, equipped) => {
+    for (const ally of state.allies.slice(1)) ally.shatter = 0;
+    const result = cast(state, 'skill2');
+    for (const ally of result.allies.slice(1)) expect(ally.shatter).toBe(equipped ? 16 : 0);
+  },
+  'master-ilvaris-3': (state, equipped) => {
+    const result = cast(state, 'ultimate');
+    for (const enemy of result.enemies.slice(1))
+      expect(result.allies[0].native?.fateMarks?.[enemy.id]?.stacks).toBe(equipped ? 1 : undefined);
+  },
+  'master-kaelith-1': (state, equipped) => {
+    const target = state.enemies[0].id;
+    state.allies[0].native = { faults: { [target]: 3 } };
+    const full = 100000 - cast(state, 'skill2').enemies[0].hp;
+    state.allies[0].native = { faults: { [target]: 2 } };
+    const partial = 100000 - cast(state, 'skill2').enemies[0].hp;
+    expect(full / partial > 1.3).toBe(equipped);
+  },
+  'master-kaelith-2': (state, equipped) => {
+    const result = cast(state, 'skill1');
+    for (const enemy of result.enemies) expect(result.allies[0].native?.faults?.[enemy.id]).toBe(equipped ? 2 : 1);
+  },
+  'master-kaelith-3': (state, equipped) => {
+    const result = cast(state, 'ultimate');
+    for (const enemy of result.enemies) expect(result.allies[0].native?.faults?.[enemy.id]).toBe(equipped ? 3 : 1);
+  },
 };
 
-describe('48-entry Master behavior matrix', () => {
-  it('has no Masters for the three Calamitic Element-Bearers', () => {
+describe('57-entry Master behavior matrix', () => {
+  it('has three Masters for each of the three Calamitic Element-Bearers (D-442)', () => {
     for (const id of ['ozriel', 'ilvaris', 'kaelith'])
-      expect(masterConduits.filter(entry => (entry.character as string) === id)).toEqual([]);
-    expect(masterConduits).toHaveLength(48);
+      expect(masterConduits.filter(entry => (entry.character as string) === id)).toHaveLength(3);
+    expect(masterConduits).toHaveLength(57);
   });
   it('has exactly one concrete behavior scenario per installed Master', () => {
     expect(Object.keys(checks).sort()).toEqual(masterConduits.map(entry => entry.id).sort());

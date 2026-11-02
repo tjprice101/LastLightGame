@@ -120,7 +120,7 @@ describe('Omnic element presentation (D-403)', () => {
     }
   });
 
-  it('uses the eligible bearer element for all 48 Omnic Masters and leaves chests generic', () => {
+  it('uses the eligible bearer element for all 57 Omnic Masters and leaves chests generic', () => {
     const account = wallet();
     for (const entry of masterConduits) {
       const element = getStarter(entry.character).elementId;

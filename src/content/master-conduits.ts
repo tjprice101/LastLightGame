@@ -11,7 +11,7 @@ export const masterChest = {
   description: 'Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward.',
 } as const;
 export const astralReserveArt = 'master-conduits/astral-reserve.png';
-export const masterRulesText = `${masterChest.name}: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 48.`;
+export const masterRulesText = `${masterChest.name}: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 57.`;
 
 function redesignedMasterRule(): OmnicRule { return { trigger: 'activation', outcomes: [] }; }
 function master<C extends StarterId, S extends 1 | 2 | 3>(character: C, slot: S, name: string, design: string) {
@@ -117,6 +117,24 @@ export const masterConduits = [
     'Three gold thunder planets in black conducting cages, resonance-blade axis and vast branching voltage organ-wing architecture'),
   master('vaelor', 3, 'Broken Sky Imperial Metronome',
     'A black-and-gold sky metronome with resonance-blade pendulum, twelve thunder-frequency wings and enormous nested conductor halos'),
+  master('ozriel', 1, 'Unfallen Nave Reliquary',
+    'A white cathedral reliquary engine around one upright tower-shield core, black flying-buttress clamps, a crimson lifeline spindle and six shattered-glass nave wings'),
+  master('ozriel', 2, 'Absolution Rose-Window Engine',
+    'A colossal white rose-window wheel of interlocking glass panes, a glass halberd axle through its hub and crimson fracture spokes splitting outward into black suppression shutters'),
+  master('ozriel', 3, 'Cathedral of the Refused End',
+    'A walking cathedral-fortress machine of stacked white glass naves and black buttress legs, three cracked crimson crown-halos and a sealed great door that refuses to open'),
+  master('ilvaris', 1, 'Unsung Verse Choir-Organ',
+    'A white glass pipe organ of ascending crystal pipes on a black lacquered console, twin crimson string-lances and fate-seal diamonds fanned like a choir'),
+  master('ilvaris', 2, 'Hymnwind Glass Carillon',
+    'A tiered white glass bell carillon in a black halo cage, wind-turbine petal vanes and crimson ribbon channels spiralling upward through nested chimes'),
+  master('ilvaris', 3, 'Severed Prophecy Orrery',
+    'A black clockwork prophecy orrery with a white glass halo-lyre as its axis, broken calendar rings split by a single crimson string and orbiting white pane moons'),
+  master('kaelith', 1, 'Glass Meridian Guillotine',
+    'A black obsidian guillotine frame with a white cracked-glass crescent scythe blade, crimson meridian rails and three fault-locking clamp jaws'),
+  master('kaelith', 2, 'Thousand-Fault Shatter Loom',
+    'A colossal black loom whose shuttle is a white glass scythe crescent, weaving crimson fracture threads across hundreds of suspended white glass panes'),
+  master('kaelith', 3, 'Eclipse of Denied Fate',
+    'A black eclipse engine ringed by twin white glass scythe crescents, a severed crimson fate-thread through its core and eighteen angular glass blade-feathers'),
 ] as const;
 
 export type MasterConduitId = (typeof masterConduits)[number]['id'];

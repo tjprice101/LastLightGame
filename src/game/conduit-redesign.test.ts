@@ -20,11 +20,11 @@ import { applyConduitBurn, applyConduitWeaken, conduitActionCost, conduitBurnTic
   conduitIncoming, conduitTurnStart, afterConduitBurn, effectiveDefense, finishConduitAction, gear, generatedShield,
   nativeGauge, nativeHeal, nativeShield, prepareConduitAction, recordConduitHit, initializeConduits, forcedConduitTarget } from './conduit-runtime';
 
-it('documents each of the current 147 equipment IDs exactly once in the generated compatibility matrix', () => {
+it('documents each of the current 156 equipment IDs exactly once in the generated compatibility matrix', () => {
   const matrix = readFileSync(join('docs', 'character-conduit-compatibility.md'), 'utf8');
   const ids = [...matrix.matchAll(/^\| `([^`]+)` \|/gm)].map(match => match[1]);
-  expect(ids).toHaveLength(147);
-  expect(new Set(ids).size).toBe(147);
+  expect(ids).toHaveLength(156);
+  expect(new Set(ids).size).toBe(156);
   expect(ids.sort()).toEqual([...conduits, ...masterConduits].map(item => item.id).sort());
 });
 
