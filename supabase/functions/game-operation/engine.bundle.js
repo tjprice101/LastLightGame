@@ -6014,8 +6014,8 @@ var gatesOfOblivionRules = {
   id: "oblivion",
   name: "Gates of Oblivion",
   stages: 25,
-  startingLevel: 125,
-  maximumLevel: 170,
+  startingLevel: 140,
+  maximumLevel: 180,
   fragmentUnlockStage: 20,
   fragmentChance: 0.1
 };

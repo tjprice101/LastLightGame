@@ -559,7 +559,45 @@
     "enclosed_min_area": 0.0004,
     "despill": true,
     "seeds": [],
-    "protect": []
+    "protect": [],
+    "erase": [
+      [
+        [
+          0,
+          0.958
+        ],
+        [
+          1,
+          0.958
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      [
+        [
+          0.755,
+          0.483
+        ],
+        [
+          0.855,
+          0.483
+        ],
+        [
+          0.855,
+          0.502
+        ],
+        [
+          0.755,
+          0.502
+        ]
+      ]
+    ]
   },
   "enemies/oblivion-glassbound-sentry.png": {
     "crop": 4,

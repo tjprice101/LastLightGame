@@ -168,6 +168,10 @@ def clean(image, settings):
         spill = rim & green_key & (out[..., 1] > np.maximum(out[..., 0], out[..., 2]))
         out[spill, 1] = np.maximum(out[spill, 0], out[spill, 2])
     alpha[alpha < 0.03] = 0
+    erase = Image.new("L", (width, height))
+    for polygon in settings.get("erase", []):
+        ImageDraw.Draw(erase).polygon([(x * width, y * height) for x, y in polygon], fill=255)
+    alpha[np.asarray(erase) > 0] = 0
     rgba = np.dstack((out, alpha * 255)).round().astype(np.uint8)
     rgba[alpha == 0, :3] = 0
     return Image.fromarray(rgba, "RGBA")
@@ -265,6 +269,8 @@ def install(remove_incoming=False):
         row["record"]["runtime"].removeprefix("public/assets/")] for row in planned}, indent=2) + "\n", encoding="utf-8")
     MANIFEST.write_text(json.dumps({"decision": "D-441", "asset_count": len(planned),
                                     "assets": [row["record"] for row in planned]}, indent=2) + "\n", encoding="utf-8")
+    from intake_calamity_art import preflight, write_revisions
+    write_revisions(preflight())
     if remove_incoming:
         for row in planned:
             incoming = ROOT / row["incoming"]

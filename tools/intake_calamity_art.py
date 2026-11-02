@@ -150,6 +150,9 @@ def write_revisions(planned):
     for _, _, _, output, record in planned:
         path = f"{record['category']}/{record['asset']}.png"
         lines.append(f"  '{path}': '{sha256(output).hexdigest()[:12]}',")
+    for folder in ("enemies", "banners", "backgrounds"):
+        for path in sorted((ROOT / "public" / "assets" / folder).glob("oblivion-*.png")):
+            lines.append(f"  '{folder}/{path.name}': '{digest(path)[:12]}',")
     REVISIONS.write_text("\n".join([*lines, "};", ""]), encoding="utf-8")
 
 

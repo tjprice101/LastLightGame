@@ -189,7 +189,7 @@ chest-material reduction is applied.
 
 ## Gates of Oblivion
 
-- A new activity built like the Elemental Dungeons: 25 floors, enemy Lv.125 → 170,
+- A new activity built like the Elemental Dungeons: 25 floors, enemy Lv.140 → 180,
   a boss every fifth floor.
 - **Unlock:** owning any Calamitic Element-Bearer.
 - **Enemies:** original Rise-made Calamity constructs in six-form lines. Art is
@@ -199,7 +199,7 @@ chest-material reduction is applied.
   - Seed / Bud / Bloom / Crest / Heart / Soul **of Calamity** (Common → Omnic);
   - **Fragment of Rise** (Calamitic tier, above Soul of Calamity).
 - Unlock levels, odds and stack sizes follow the Elemental Dungeon structure,
-  rescaled to Lv.125–170.
+  rescaled to Lv.140–180.
 - No captures and no Null-Prismatica.
 
 ## Calamitic Ascension
@@ -333,7 +333,7 @@ Stable IDs, Master eligibility, ownership, bonuses and native effects are unchan
 
 ### Gates of Oblivion roster (owner-approved)
 
-- Elemental Dungeon structure: 10 single-form original Rise constructs across 25 floors, Lv.125->170, boss every 5th floor: Shardling Acolyte, Glassbound Sentry, Oblivion Lantern-Wraith, Fracture Hound, Unmade Choir Drone, Crimson Gearwyrm, Husk-Seraph of Rise, Annihilation Colossus Fragment, Fatebreaker Warden, Gatekeeper of Oblivion (final boss, floor 25).
+- Elemental Dungeon structure: 10 single-form original Rise constructs across 25 floors, Lv.140->180, boss every 5th floor: Shardling Acolyte, Glassbound Sentry, Oblivion Lantern-Wraith, Fracture Hound, Unmade Choir Drone, Crimson Gearwyrm, Husk-Seraph of Rise, Annihilation Colossus Fragment, Fatebreaker Warden, Gatekeeper of Oblivion (final boss, floor 25).
 - Mixed combat elements: each enemy gets one of the six elements.
 - Each enemy has a named Calamity-style skill; floors 20+ add a second skill.
 - Drops: Prismatica plus the Calamity chain (Seed/Bud floor 1, Bloom 4, Crest 9, Heart 14, Soul 19), level-scaled stacks like dungeons.

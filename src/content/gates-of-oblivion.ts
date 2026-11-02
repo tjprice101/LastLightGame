@@ -6,7 +6,7 @@ import { rollDrop, type ScaledDrop } from './loot-random';
 import { activityPrismaticaDrop } from './prismatica';
 
 export const gatesOfOblivionRules = {
-  id: 'oblivion', name: 'Gates of Oblivion', stages: 25, startingLevel: 125, maximumLevel: 170,
+  id: 'oblivion', name: 'Gates of Oblivion', stages: 25, startingLevel: 140, maximumLevel: 180,
   fragmentUnlockStage: 20, fragmentChance: .1,
 } as const;
 

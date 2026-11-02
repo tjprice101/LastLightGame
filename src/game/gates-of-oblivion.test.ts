@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { emptyAccount, loadAccount, saveAccount, saveAccountRewards, validateAccount, ACCOUNT_KEY } from './account';
 import type { ProfileStorage } from './profile';
-import { createOblivionBattle, rollOblivionFragment } from './battle';
+import { createOblivionBattle, rollOblivionFragment, withMasterLoadouts } from './battle';
+import { enemyCombatStats } from '../content/stat-growth';
+import { loadout, measureBattle, progressAt } from '../../tools/battle-survey';
 import { activityAccess } from './activity-access';
 import { creatures, creatureLore, creatureLoot, getCreature } from '../content/creatures';
 import { activityPrismaticaDrop } from '../content/prismatica';
@@ -39,22 +41,44 @@ function createRewardResult(stage: number) {
 }
 
 describe('Gates of Oblivion', () => {
-  it('uses the 25-floor Lv.125-170 curve, fixed construct tiers, and fifth-floor bosses', () => {
-    expect(gatesOfOblivionRules).toMatchObject({ stages: 25, startingLevel: 125, maximumLevel: 170 });
-    expect(oblivionEnemyLevel(1)).toBe(125);
-    expect(oblivionEnemyLevel(25)).toBe(170);
+  it('uses the 25-floor Lv.140-180 curve, fixed construct tiers, and fifth-floor bosses', () => {
+    expect(gatesOfOblivionRules).toMatchObject({ stages: 25, startingLevel: 140, maximumLevel: 180 });
+    expect(oblivionEnemyLevel(1)).toBe(140);
+    expect(oblivionEnemyLevel(25)).toBe(180);
     expect(Array.from({ length: 25 }, (_, index) => oblivionEnemyLevel(index + 1)))
-      .toEqual([...Array(25)].map((_, index) => Math.round(125 + index * 45 / 24)));
+      .toEqual([...Array(25)].map((_, index) => Math.round(140 + index * 40 / 24)));
     for (let stage = 1; stage <= 25; stage++) {
       expect(oblivionEncounter(stage).boss).toBe(stage % 5 === 0);
       expect(oblivionEncounter(stage).stats).toMatchObject({
         health: expect.any(Number), damage: expect.any(Number), defense: expect.any(Number),
       });
+      const state = createOblivionBattle(stage, 21, 'ember', { level: 0, evolution: 1 });
+      expect(state.enemies).toHaveLength(stage % 5 === 0 ? 1 : 2);
+      for (const enemy of state.enemies) {
+        expect(enemy.level).toBe(oblivionEnemyLevel(stage));
+        expect(enemy.stats).toEqual(enemyCombatStats(oblivionEnemyLevel(stage), stage % 5 === 0));
+      }
     }
     expect(new Set(Array.from({ length: 25 }, (_, index) => oblivionConstructAtStage(index + 1).id)).size).toBe(10);
     expect(oblivionConstructAtStage(24).id).toBe('oblivion:fatebreaker-warden');
     expect(oblivionConstructAtStage(25).id).toBe('oblivion:gatekeeper-of-oblivion');
     expect(oblivionEncounter(25).boss).toBe(true);
+  });
+
+  it('resolves pressured endpoint encounters with conditional non-Calamitic endgame squads', () => {
+    const report = [];
+    for (const roster of [['ember', 'tide', 'sprout'], ['elise', 'bruno', 'sprout']] as const) {
+      const gear = loadout(roster, 'master5'), progress = progressAt(105);
+      const team = Object.fromEntries(roster.map(id => [id, progress]));
+      for (const floor of [1, 25]) for (const seed of [1, 1729, 104729]) {
+        const encounter = createOblivionBattle(floor, seed, roster[0], progress, roster, team, gear.equipment, [], gear.upgrades);
+        const { result } = measureBattle(withMasterLoadouts(encounter, gear.masters), 'native', { rounds: 100, decisions: 1800 });
+        expect(result.outcome).not.toBe('timeout');
+        report.push({ squad: roster.join('/'), floor, seed, level: encounter.enemies[0].level,
+          stats: encounter.enemies[0].stats, outcome: result.outcome, rounds: result.rounds });
+      }
+    }
+    if (process.env.OBLIVION_DIFFICULTY_REPORT === '1') process.stdout.write(`${JSON.stringify(report)}\n`);
   });
 
   it('registers ten original mixed-element Elemental-Devourers with distinct lore and delivered art', () => {

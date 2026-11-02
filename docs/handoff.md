@@ -1,5 +1,22 @@
 # Current state and handoff
 
+## Oblivion Lv140–180 and first-enemy artwork (D-446)
+
+- Shared `gatesOfOblivionRules` now interpolates140–180 over25 floors. All
+  rewards/gates/boss cadence unchanged; already frozen encounters remain frozen.
+- Shardling Acolyte: removed the detached orange baseline/background scribble
+  with reviewed source-relative erase polygons; archived original untouched.
+  PNG/AVIF/thumb and provenance refreshed. Shared revisions now include all
+  Oblivion enemies/banner/arena, preventing unversioned stale artwork.
+- Validation:39 tests passed across Oblivion/loot parity/activity banners;
+  cleanup reproduction/source-hash test passed. All25 actual floor spawns match
+  shared enemy stats. Twelve pressured endgame probes completed without timeout;
+  outcomes and paper endpoint stats are recorded in `gates-of-oblivion.md`.
+  Browser decoded the corrected AVIF at960×960 with HTTP200.
+- `npm run build`, authority TypeScript and Deno checks passed; six Calamity
+  artwork tests passed. Authority bundle regenerated, deployed and hosted smoke
+  passed. The existing build chunk-size advisory remains unchanged.
+
 ## Ability alignment and Fractalized Incision (D-445)
 
 - Shared Skills cards anchor heading/type/summary/cost at the same leading

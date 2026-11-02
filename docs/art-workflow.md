@@ -27,6 +27,15 @@ Images remain pending delivery.
 
 ## Delivered Phase 0 Calamity artwork (D-441)
 
+D-446: Shardling Acolyte's export removes its detached orange baseline and
+background scribble using two reviewed normalized `erase` polygons, not a
+global color deletion. Original bytes, weapon, toe, cloak and elemental orbs
+remain intact. `intake_calamity_phase0_art.py --apply` refreshes the shared
+Calamity/Oblivion revision map; `intake_calamity_art.write_revisions` includes
+all installed Oblivion enemy/banner/arena PNG hashes. Rebuild AVIF siblings
+after cleanup. `test_calamity_phase0_art.py` checks reproduction and the
+unchanged upper artwork; the display uses the new revision on every surface.
+
 Reproduce with `python tools/intake_calamity_phase0_art.py --review DIR` (review
 sheets) and `--apply` (install). Originals stay byte-identical in
 `Art/source/calamity-phase0`; hashes live in

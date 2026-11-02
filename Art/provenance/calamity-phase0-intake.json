@@ -984,7 +984,7 @@
       "source": "Art/source/calamity-phase0/Shardling Acolyte.png",
       "source_sha256": "d0f5517108dcd99b13e2ac15ce018aebbf8f90a10d3511c0fa32d1187045e591",
       "runtime": "public/assets/enemies/oblivion-shardling-acolyte.png",
-      "runtime_sha256": "b7569890d7f27be6eb7dc3b798de4ad3c9183b4f8c94b14535fe882f362004c5",
+      "runtime_sha256": "b0279f5f34adc54625eab6e00f27bffda2b1c0c35921216b2d7610e2725daf82",
       "settings": {
         "crop": 4,
         "radius": 46,
@@ -993,7 +993,45 @@
         "enclosed_min_area": 0.0004,
         "despill": true,
         "seeds": [],
-        "protect": []
+        "protect": [],
+        "erase": [
+          [
+            [
+              0,
+              0.958
+            ],
+            [
+              1,
+              0.958
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          [
+            [
+              0.755,
+              0.483
+            ],
+            [
+              0.855,
+              0.483
+            ],
+            [
+              0.855,
+              0.502
+            ],
+            [
+              0.755,
+              0.502
+            ]
+          ]
+        ]
       }
     },
     {
