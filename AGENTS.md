@@ -8,6 +8,14 @@ repeat casts, uncapped (owner choice). Conduit/passive sizing and refresh rules,
 absorption order, Burn bypass, pierce and first-hit reduction unchanged.
 Calamity benchmark records accepted stalls. See docs/combat.md (D-434).
 
+## Midjourney quality rules (D-439)
+
+Owner feedback: blurry portraits, no outer margin, green power-up backsplash on late forms,
+lumpy rock-ball armor and chibi people inside ability icons. All prompt generators import
+tools/prompt_quality.py: framing first, sharp lineart, nothing behind the subject, decisive
+per-piece flat plate armor (no pearls/orbs/rock), object-only icons with no chibi renderer and
+people/figure/chibi negatives. See Art/guides/midjourney-character-style-prompt.md (D-439).
+
 ## Animation and feedback are core UI requirements (D-418)
 
 For future game/UI work, polished motion and feedback are acceptance criteria,

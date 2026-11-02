@@ -64,6 +64,25 @@ Reference target: **compact gacha JRPG unit illustration**, matching the supplie
 
 ---
 
+## Generation quality rules (D-439)
+
+Owner generation feedback: blurry/smudged portraits, missing outer margins, key-colored power-up
+backsplashes behind Legendary/Omnic forms, armor rendered as lumpy balls of rock, and small chibi
+people appearing in ability icons. Every future generator imports `tools/prompt_quality.py`:
+
+- **Framing first:** portrait prompts begin with `PORTRAIT_FRAME` (zoomed-out, small centered
+  character, wide empty border). Midjourney weights early words most; percentages alone are ignored.
+- **Sharpness:** include `SHARP`; add `QUALITY_NO` (blur, smudged, soft focus, painterly smears) to `--no`.
+- **No backsplash:** include `NO_BACKDROP` (wings/halos/powers attach to the subject, nothing behind
+  it); add `BACKDROP_NO` (aura, energy burst, backsplash, sunburst, speed lines). Describe late-form
+  structures as back-mounted armor, never "rear architecture" or "shattering reality" around the figure.
+- **Decisive armor:** name every armor piece, material and color per character, plus `ARMOR_RULE`
+  (flat polished beveled plates, never pearls/orbs/lumpy rock); add `ARMOR_NO`. "Pearlescent" means a
+  sheen on flat plates; avoid "pearl" as a noun.
+- **Object-only icons:** ability/status/item icons use `ICON_RENDERER` and `OBJECT_ONLY`, never the chibi
+  figure renderer; add `ICON_NO` (person, figure, humanoid, chibi, mascot, angel). Weapons float with
+  "no wielder"; replace "seraph/choir" imagery with detached feather-blade emblems.
+
 ## Shared style lock for every art pack
 
 ### Future complete-design framing (D-135)

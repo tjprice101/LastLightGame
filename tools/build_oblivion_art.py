@@ -2,6 +2,7 @@
 from pathlib import Path
 
 from art_library import art_path
+from prompt_quality import SHARP, NO_BACKDROP, ARMOR_RULE, QUALITY_NO, BACKDROP_NO, ARMOR_NO
 
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT = art_path("creatures", "Gates of Oblivion.md", root=ROOT)
@@ -94,18 +95,18 @@ def enemy_prompt(index, element, design, pose):
     return (
         "full-body gacha JRPG creature illustration, distant pulled-back view of the complete artwork with every wing weapon "
         "tail crown ribbon ring and fragment tip fully visible inside a continuous clear outer safety margin, "
-        f"{design}, {pose}, compact body one third of canvas height, "
+        f"{design}, {pose}, armor and plating are {ARMOR_RULE}, {NO_BACKDROP}, compact body one third of canvas height, "
         f"complete artwork ensemble spans no more than {SPREAD[index]} percent of canvas width and height with at least "
         f"{MARGINS[index]} percent solid background-color margin on all four sides and corners, measured from the outermost "
         "ornament or effect rather than the body, nothing touches edges, pull back the entire ensemble uniformly without "
         "removing or shortening wings equipment powers or ornamentation, dense detailed interior contained within the central "
-        "footprint, compact chibi creature rendering with clean precise anime contours crisp cel shading smooth non-emissive "
+        f"footprint, {SHARP}, compact chibi creature rendering with clean precise anime contours crisp cel shading smooth non-emissive "
         f"painted highlights, jewel-like black white pearlescent ivory deep crimson and {accent} colors, authored creature colors "
         "control every plate wing ribbon and gem, complete silhouette fully visible with clear empty space beyond every tip, "
         "plain solid green background (#00FF00), completely solid single uniform background color with no shading no gradient "
         "no texture no floor no cast shadow no scenery, flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing "
         "visual effects, powers opaque solid-color hard-edged lines ribbons rings and shapes with non-emissive painted highlights "
-        f"--ar 4:3 --niji 6 --s 100 --q 1 --no {NEGATIVE}"
+        f"--ar 4:3 --niji 6 --s 100 --q 1 --no {NEGATIVE}, {QUALITY_NO}, {BACKDROP_NO}, {ARMOR_NO}"
     )
 
 

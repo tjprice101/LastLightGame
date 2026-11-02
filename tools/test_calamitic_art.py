@@ -137,7 +137,10 @@ class CalamiticArtTests(unittest.TestCase):
                 positive = prompt.split(" --ar", 1)[0]
                 self.assertIn(design["weapon"], positive)
                 self.assertIn("2.5-3 heads tall", positive)
-                self.assertIn("fully covered prismatic pearlescent armor from head to toe", positive)
+                self.assertIn(design["armor"], positive)
+                self.assertIn("never pearls orbs or lumpy rock", positive)
+                self.assertTrue(positive.startswith("zoomed-out full-body view"))
+                self.assertIn("nothing behind it but the flat background", positive)
                 self.assertIn("shattering reality like glass", positive)
                 self.assertIn(f"{SPREAD[index]} percent canvas width and height with {MARGINS[index]} percent outer margins", positive)
                 body = "one third" if index < 3 else "one quarter" if index == 3 else "one fifth"
@@ -157,6 +160,10 @@ class CalamiticArtTests(unittest.TestCase):
         for prompt in BLOCK.findall("\n".join(outputs().values())):
             if "--ar 1:1" in prompt:
                 self.assertIn("face-free", prompt)
+                self.assertIn("object-only emblem with no people", prompt)
+                self.assertNotIn("chibi anime renderer", prompt)
+                for word in ("person", "humanoid", "chibi"):
+                    self.assertIn(word, prompt.split(" --no ", 1)[1])
                 self.assertIn("at least 15 percent empty solid-background margin", prompt)
 
 

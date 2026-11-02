@@ -883,7 +883,8 @@ class ArtPromptTests(unittest.TestCase):
                 self.assertIn("no glows or glowing visual effects", positive)
                 self.assertIn("non-emissive painted highlights", positive)
                 self.assertRegex(positive, r"margin|padding")
-                self.assertRegex(positive, r"chibi|oversized.{0,30}head")
+                # D-439: object-only icons must not request the chibi figure renderer.
+                self.assertRegex(positive, r"chibi|oversized.{0,30}head|object-only emblem with no people")
                 self.assertNotIn("white gap", positive)
                 for exclusion in ("background gradient", "textured background", "glow", "light bloom"):
                     self.assertIn(exclusion, body.split("--no ", 1)[1])
