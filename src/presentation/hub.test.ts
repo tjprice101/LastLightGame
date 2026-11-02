@@ -72,7 +72,7 @@ describe('game-specific hub layouts', () => {
     account.materials = { 'infernic-common': Number.MAX_SAFE_INTEGER };
     for (const html of [homeHub(starters[0], false, account), characterDetail(starters[0], 'overview', account)]) {
       expect(html).toContain('<strong>5335</strong>');
-      expect(html).toContain('<strong>921.5</strong>');
+      expect(html).toContain('<strong>1843</strong>');
       expect(html).toContain('<strong>93.17</strong>');
     }
     expect(inventoryHub(account).match(/9007199254740991/g)).toHaveLength(4);
@@ -264,10 +264,10 @@ describe('game-specific hub layouts', () => {
   it('shows fractional growth consistently on Home, Overview and upgrade previews', () => {
     const account = emptyAccount();
     const preview = characterDetail(starters[0], 'upgrade-1', account);
-    for (const change of ['10 &rarr; 11.03', '38 &rarr; 43.7', '100% &rarr; 100%']) expect(preview.replace(/<[^>]*>/g, '')).toContain(change);
+    for (const change of ['10 &rarr; 11.03', '76 &rarr; 87.4', '150% &rarr; 150%']) expect(preview.replace(/<[^>]*>/g, '')).toContain(change);
     account.characters.ember = { level: 1, evolution: 1 };
     for (const html of [homeHub(starters[0], false, account), characterDetail(starters[0], 'overview', account)]) {
-      for (const value of ['11.03', '43.7', '100%']) expect(html).toContain(`<strong>${value}</strong>`);
+      for (const value of ['11.03', '87.4', '150%']) expect(html).toContain(`<strong>${value}</strong>`);
       expect(html).not.toContain('000000000');
     }
   });

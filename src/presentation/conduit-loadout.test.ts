@@ -97,7 +97,7 @@ describe('Conduit loadout (D-229)', () => {
     wallet.conduitEquipment = { ember: ['wardglass-transformer', 'siegebound-drive', null, null, null, null, null, null] };
     wallet.conduitUpgrades = {};
     const html = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
-    expect(html).toMatch(/<span>Direct Attack<\/span><strong><span class="stat-change stat-change--increase">\+35%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--increase">[\d,.]+<\/span><\/strong>/);
+    expect(html).toMatch(/<span>Direct Attack<\/span><strong><span class="stat-change stat-change--increase">\+17.5%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--increase">[\d,.]+<\/span><\/strong>/);
     expect(html).toMatch(/<span>Defense<\/span><strong><span class="stat-change stat-change--decrease">-35%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--decrease">[\d,.]+<\/span><\/strong>/);
   });
 
@@ -276,7 +276,7 @@ describe('Conduit loadout (D-229)', () => {
     expect(loadout.querySelector('.ref-master-slot.loadout-master [data-master-equipment="ember"]')).not.toBeNull();
     expect(loadout.querySelector('[data-loadout-master-rule="master-ember-1"]')).not.toBeNull();
     expect(loadout.querySelectorAll('.loadout-grid > [data-loadout-slot]')).toHaveLength(8);
-    expect(loadout.querySelector('.loadout-bonuses')?.textContent).toContain('Direct Attack+42%');
+    expect(loadout.querySelector('.loadout-bonuses')?.textContent).toContain('Direct Attack+21%');
     expect(host.querySelectorAll('.loadout-slot.is-empty .loadout-slot-plus [data-conduit-slot]')).toHaveLength(7);
     expect(host.querySelector('[data-loadout-unequip="0"]')?.textContent).toBe('Remove');
     expect(host.querySelector('.loadout-owned-list.ref-scroll')).toBeNull();

@@ -22,9 +22,9 @@ describe('Phase 0 authority source parity', () => {
     expect(result.response.result).toBeUndefined();
     expect(result.game.account).toEqual(previous.account);
     const restored = result.game.run!.session.state;
-    expect(restored.conduitRulesVersion).toBe(14);
+    expect(restored.conduitRulesVersion).toBe(15);
     expect(restored.allies[0].hp).toBe(restored.allies[0].stats.health);
-    expect(restored.allies[0].stats.skillPower).toBe(1);
+    expect(restored.allies[0].stats.skillPower).toBe(1.5);
     expect(restored.allies[0].stats.skillEfficiency).toBe(.5);
     expect(restored.allies[0].conduits?.[0]).toBe(id);
     expect(result.game.run!.session.entrancePending).toBe(true);
@@ -43,7 +43,7 @@ describe('Phase 0 authority source parity', () => {
     game = resolveOperation(game, { kind: 'enter', activity: { kind: 'training' } }, entropy).game;
     const session = game.run!.session;
     for (const unit of session.state.allies) {
-      expect(unit.stats.skillPower).toBe(1);
+      expect(unit.stats.skillPower).toBe(unit.definitionId === 'ember' ? 1.5 : 1);
       expect(unit.stats.gaugeGain).toBe(1);
       unit.shatter = 100;
     }

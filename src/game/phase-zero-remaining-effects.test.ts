@@ -74,7 +74,7 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
   it('citadel-spine protects only other living allies strictly below 75% Health', () => {
     const state = fixture('citadel-spine', level), [owner, ally] = state.allies;
     ally.hp = 749;
-    expect(effectiveDefense(state, ally)).toBeCloseTo(100 * (1 + benefit(.35, level)));
+    expect(effectiveDefense(state, ally)).toBeCloseTo(100 + 100 / 1.5 * benefit(.35, level));
     ally.hp = 750;
     expect(effectiveDefense(state, ally)).toBe(100);
     owner.hp = 0; ally.hp = 499;
@@ -179,12 +179,12 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
     const state = fixture('chaotic-ouroboros-core', level);
     hit(state, 'ultimate');
     const shield = Math.round(1000 * (1 + benefit(.55, level)) * benefit(.1, level));
-    expect(state.allies.map(ally => ally.shield)).toEqual(Array(3).fill(shield));
+    expect(state.allies.map(ally => ally.shield)).toEqual(state.allies.map(ally => Math.round(ally.stats.health * benefit(.1, level))));
     expireNativeShields(state, []);
     expect(state.allies[1].shield).toBe(shield);
     state.round += 3;
     expireNativeShields(state, []);
-    expect(state.allies.map(ally => ally.shield)).toEqual(Array(3).fill(shield));
+    expect(state.allies.map(ally => ally.shield)).toEqual(state.allies.map(ally => Math.round(ally.stats.health * benefit(.1, level))));
     expect(state.allies.every(ally => ally.conduitRuntime?.layers?.every(layer => !('expiresAfterPhase' in layer)) ?? true)).toBe(true);
   });
 

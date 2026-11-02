@@ -77,13 +77,13 @@ describe('shared elemental effect descriptors and snapshots', () => {
     expect(applied.state.enemies[0].pilot).toBeUndefined();
     expect(applied.state.enemies[0].weakened).toBe(0);
     expect(applied.events.some(event => event.kind === 'damage')).toBe(false);
-    expect(applied.state.allies[0].native?.seals?.[state.enemies[0].id]?.fraction).toBe(.4);
+    expect(applied.state.allies[0].native?.seals?.[state.enemies[0].id]?.fraction).toBe(.5);
     expect(applied.events.some((event) => event.elementalEffect?.family === 'focus')).toBe(false);
     const spent = act(endTurn(applied.state).state, 'aurora', 'skill2', state.enemies[0].id);
     expect(spent.state.enemies[0].pilot).toBeUndefined();
     expect(spent.state.allies[0].pilot).toBeUndefined();
     expect(spent.state.enemies[0].weakened).toBe(0);
-    expect(spent.state.allies[0].native?.seals?.[state.enemies[0].id]?.fraction).toBe(.4);
+    expect(spent.state.allies[0].native?.seals?.[state.enemies[0].id]?.fraction).toBe(.5);
   });
 
   it('tags currently active Burn, Weaken, and Conduit Fracture snapshots by precise effect and origin', () => {

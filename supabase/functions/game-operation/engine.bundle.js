@@ -2622,13 +2622,13 @@ var kitConduitDesigns = [
 var convertedKitConduitIds = new Set(kitConduitDesigns.map((entry) => entry.id));
 
 // src/content/world-lore.ts
-var machineOrigin = "The Machines are destroyed prototypes from the time Let and Rise worked together. Their damaged mechanisms still awaken amid the ruins of that collaboration; they are not Elemental-Devourers created by Rise.";
+var machineOrigin = "The Machines are damaged prototypes built by Let and Rise. Their mechanisms still awaken among the ruins.";
 var conduitOrigin = "Conduits are mechanisms salvaged from the time Let and Rise created worlds together. They use elemental energy called Elemental Light.";
 var masterOrigin = "Master Conduits come from Let and Rise's shared prototype work. Each is designed for a named Element-Bearer.";
 
 // src/content/calamitic-conduits.ts
 var calamiticTokenPrice = 100;
-var calamiticLockMessage = "Rise deems you UNWORTHY of her most prized creations.";
+var calamiticLockMessage = "Clear a Calamity tier.";
 function calamiticStoreUnlocked(account) {
   return !!account && Object.values(account.calamityClears ?? {}).some((tier) => tier !== void 0 && tier >= 1);
 }
@@ -2637,27 +2637,27 @@ var calamiticConduits = [
   {
     id: "calamitic-world-eater-orrery",
     name: "World-Eater's Orrery",
-    lore: "Rise suspended an annihilation furnace inside counter-rotating planetary rings. Every wound suffered by its bearers winds the machinery toward a single, deliberate ending."
+    lore: "Rise suspended a furnace inside counter-rotating rings. Damage to its bearer winds the machinery."
   },
   {
     id: "calamitic-causality-funeral-engine",
     name: "Causality Funeral Engine",
-    lore: "Paired black-metal vaults bind the interval between impact and consequence. Rise built them to postpone destruction until her chosen moment, never to forgive it."
+    lore: "Rise\u2019s paired black-metal vaults delay the force of an impact, then release it."
   },
   {
     id: "calamitic-horizon-cleaving-godpress",
     name: "Horizon-Cleaving Godpress",
-    lore: "Opposing white-metal jaws close around an impossible horizon. Rise designed its crimson rails to press through barriers without mistaking protection for invulnerability."
+    lore: "Rise\u2019s white-metal jaws slide along crimson rails, crushing barriers between them."
   },
   {
     id: "calamitic-throne-borrowed-tomorrows",
     name: "Throne of Borrowed Tomorrows",
-    lore: "An empty command throne controls a canopy of interlocking timeworks. Rise could order its machinery to consume tomorrow before today had ended."
+    lore: "An empty command throne controls interlocking clockwork. Rise built it to borrow time from its bearer."
   },
   {
     id: "calamitic-cathedral-final-equation",
     name: "Cathedral of the Final Equation",
-    lore: "Three monumental cipher-engines turn around a captive crimson aperture. Rise built their closing equation to erase whatever she had chosen, not to worship it."
+    lore: "Rise\u2019s three cipher-engines turn around a crimson aperture. Each completed sequence fires through its center."
   },
   {
     id: "calamitic-bulwark-of-the-last-horizon",
@@ -3816,10 +3816,10 @@ var calamiticCharacters = [
     elementId: "tranquilitic",
     weapon: "Cathedral tower shield and glass halberd",
     color: "#e8e4ec",
-    description: "A Tranquilitic Element-Bearer in Let\u2019s image, Ozriel holds a cathedral tower shield against Rise\u2019s calamity and refuses every ending written for his squad.",
+    description: "A Tranquilitic Element-Bearer in Let\u2019s image, Ozriel guards his squad with a cathedral tower shield and glass halberd.",
     lore: {
       origin: "The shattered cathedral at the edge of Rise\u2019s first calamity",
-      story: "Ozriel was the last warden of a glass cathedral when Rise\u2019s first calamity reached it. The windows broke inward; he did not. Tranquilitic gave him Peace that is chosen, not granted: the stillness of someone who has decided where the line is. Let made Element-Bearers in his image, and Ozriel kept that shape while the calamity tried to rewrite it. Rise\u2019s Elemental-Devourers still hunt the same elements, and neither creator\u2019s soul has been found. Ozriel stands in front of whoever the calamity chooses next.",
+      story: "Ozriel was the last warden of a glass cathedral when Rise\u2019s first calamity struck. He held its entrance as the windows broke around him. His Tranquilitic Peace steadies his shield against Rise\u2019s Elemental-Devourers. He seeks Let\u2019s soul; the Devourers seek Rise\u2019s. Both remain unfound.",
       vow: "The world ends when I allow it. Not before.",
       awakening: "A single pane holds. The calamity has not finished trying."
     }
@@ -3835,10 +3835,10 @@ var calamiticCharacters = [
     elementId: "atmospheric",
     weapon: "Glass halo-lyre",
     color: "#f2eef4",
-    description: "An Atmospheric Element-Bearer in Let\u2019s image, Ilvaris sears fate onto her enemies with a glass halo-lyre and strengthens every squad member who strikes them.",
+    description: "An Atmospheric Element-Bearer in Let\u2019s image, Ilvaris marks enemies with her glass halo-lyre to strengthen the squad\u2019s attacks.",
     lore: {
       origin: "The choir vault above the broken heavens",
-      story: "Ilvaris sang in a choir vault that had already heard the end of the world, a prophecy Rise\u2019s calamity was built to fulfil. She broke from the verse mid-hymn. Atmospheric carries Calm, and in her it became the calm of someone who knows a prophecy is only a song no one has answered. Let made Element-Bearers in his image; Rise made the Devourers and the calamities that follow them. Neither creator\u2019s soul has been found. Ilvaris marks what the calamity sends and makes sure her squad answers it.",
+      story: "Ilvaris left a choir whose hymns foretold Rise\u2019s calamity. She took a glass halo-lyre from its vault and turned those hymns against the approaching Elemental-Devourers. Atmospheric Calm lets her keep singing under attack. She seeks Let\u2019s soul; Rise\u2019s Elemental-Devourers seek hers. Both remain unfound.",
       vow: "Prophecy is only a song no one has answered yet.",
       awakening: "The first unsung note breaks the verse."
     }
@@ -3854,10 +3854,10 @@ var calamiticCharacters = [
     elementId: "chaotic",
     weapon: "Shatterglass greatscythe",
     color: "#f3f0f1",
-    description: "A Chaotic Element-Bearer in Let\u2019s image, Kaelith cracks reality around her enemies with a shatterglass greatscythe and cuts through the faults she leaves.",
+    description: "A Chaotic Element-Bearer in Let\u2019s image, Kaelith\u2019s greatscythe leaves faults that make enemies vulnerable to the squad.",
     lore: {
       origin: "The fault lines Rise\u2019s calamity left in the sky",
-      story: "Where Rise\u2019s calamity split the sky, the cracks stayed. Kaelith walked into one and came back carrying a scythe of fractured glass. Chaotic holds Death and Destruction, and she uses both against the ending Rise wrote for everyone else. Let made Element-Bearers in his image; Rise\u2019s Devourers stole the same elements, and neither side has found its creator\u2019s soul. Kaelith does not wait for fate to arrive. She finds where it is weakest and cuts.",
+      story: "Kaelith entered a crack left in the sky by Rise\u2019s calamity and returned with a scythe of fractured glass. She turns Chaotic Death and Destruction against Rise\u2019s Elemental-Devourers. She seeks Let\u2019s soul; the Devourers seek Rise\u2019s. Both remain unfound.",
       vow: "Whatever was written for us, I\u2019ll unwrite it.",
       awakening: "A hairline fracture runs through what was supposed to happen."
     }
@@ -3905,8 +3905,8 @@ var calamiticFighters = {
     passive: { name: "Refusal", description: "+65% Defense and +65% Health. Once per encounter for each squad member, a hit that would defeat them leaves them at 1 HP instead, only while Ozriel is alive; never revives a defeated unit.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
     abilities: {
       skill1: { name: "Pane of Absolution", description: "240% damage to one enemy; Weaken it by 50% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 2.4, weakenFraction: 0.5 } },
-      skill2: { name: "Cathedral of Shards", description: "Give every living ally 90 Shield; lasts until broken and stacks. Shield: absorbs damage before HP; higher amount shields stack.", cooldown: 0, targets: "all-allies", strength: { shield: 90 } },
-      ultimate: { name: "The World Refuses", description: "455% damage to all enemies and 140 Shield to living allies; lasts until broken and stacks. Shield: absorbs damage before HP; higher amount shields stack. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 4.55, shield: 140 } }
+      skill2: { name: "Cathedral of Shards", description: "Give every living ally 90 Shield. Absorbs damage before HP, lasts until broken and stacks.", cooldown: 0, targets: "all-allies", strength: { shield: 90 } },
+      ultimate: { name: "The World Refuses", description: "455% damage to all enemies and 140 Shield to living allies. Shields absorb damage before HP, last until broken and stack. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 4.55, shield: 140 } }
     }
   },
   ilvaris: {
@@ -4050,6 +4050,35 @@ function getStarter(id) {
   return starter;
 }
 
+// src/content/role-perks.ts
+function intrinsicRole(id, captured = false) {
+  if (captured || !isStarterId(id)) return void 0;
+  const role = getStarter(id).role;
+  return role === "Healer & Support" ? "Support" : role;
+}
+function roleBonuses(id, captured = false) {
+  switch (intrinsicRole(id, captured)) {
+    case "Tank":
+      return { defense: 0.5 };
+    case "Attacker":
+      return { damage: 1, skillPower: 0.5 };
+    case "Support":
+      return { health: 0.5, skillPower: 0.25 };
+    default:
+      return {};
+  }
+}
+function roleTarget(living2, roll2) {
+  if (!living2.length) throw new Error("Target selection needs a living member.");
+  const weight = (unit) => intrinsicRole(unit.definitionId, !!unit.captured) === "Tank" ? 1.25 : 1;
+  let remaining = roll2 * living2.reduce((sum, unit) => sum + weight(unit), 0);
+  for (const unit of living2) {
+    remaining -= weight(unit);
+    if (remaining < 0) return unit;
+  }
+  return living2[living2.length - 1];
+}
+
 // src/content/elemental-effects.ts
 var elementalEffectFamilies = {
   burn: { element: "infernic", label: "Infernic Embers" },
@@ -4167,19 +4196,19 @@ function calamiticIdentity(id, role, playLoop, selfStats) {
 var nativeIdentities = {
   ozriel: calamiticIdentity(
     "ozriel",
-    "Refusal and stacking-shield tank",
+    "Shield tank",
     "[Ozriel] protects every living squad member with stacking shields and one [Refusal] per encounter while he lives.",
     { health: 0.65, defense: 0.65 }
   ),
   ilvaris: calamiticIdentity(
     "ilvaris",
-    "Fate-marking recovery support",
+    "Mark and healing support",
     "[Ilvaris] builds [Fate-seared Mark] to five stacks and refreshes [Hymn of Broken Glass] while healing the squad.",
     { health: 2, defense: 1 }
   ),
   kaelith: calamiticIdentity(
     "kaelith",
-    "Fault-building shatterglass attacker",
+    "Fault attacker",
     "[Kaelith] builds three [Fault] stacks through direct hits; [Glass Meridian] spends them for a stronger strike.",
     { skillPower: 0.75 }
   ),
@@ -4188,7 +4217,7 @@ var nativeIdentities = {
     playLoop: "[Infernis] applies [Burn] that lasts across enemy phases; [Flame Arc] can deal its remaining damage at once.",
     passive: {
       name: "Unbroken Ember",
-      description: "[Burn] applied by [Infernis] lasts three enemy phases and deals its damage once per enemy phase, starting with the next one. Allied damage-over-time gains an additional 100% damage per 30 source levels, snapshotted when applied. Reapplying it resets the duration to three phases and keeps the higher damage per phase; it never stacks."
+      description: "[Burn] applied by [Infernis] lasts three enemy phases and deals its damage once per enemy phase, starting with the next one. Allied damage-over-time gains +100% damage per 30 levels of its source, fixed when applied. Reapplying it resets the duration to three phases and keeps the higher damage per phase; it never stacks."
     },
     abilities: {
       skill1: ability("Cinder Cleave", "160% direct damage to one enemy, then apply [Burn] dealing 25% of [Infernis]\u2019s Attack per enemy phase for three enemy phases.", 1.6),
@@ -4366,7 +4395,7 @@ var nativeIdentities = {
     }
   },
   orvella: {
-    role: "Finite-durability team architect",
+    role: "Squad barrier support",
     playLoop: "[Orvella] raises a shared [Foundation] that absorbs damage for the squad until its durability runs out; it can be repaired or spent for damage.",
     passive: {
       name: "Load-Bearing Will",
@@ -4379,7 +4408,7 @@ var nativeIdentities = {
     }
   },
   vaelor: {
-    role: "Deterministic three-beat burst attacker",
+    role: "Three-beat attacker",
     playLoop: "[Vaelor]\u2019s skills change with a repeating three-step [Beat]; [Crescendo] strengthens [Last Chord of the Sky].",
     passive: {
       name: "Standing Thunder",
@@ -4606,8 +4635,8 @@ function phaseZeroUpgradeMagnitude(base, level) {
   if (!Number.isFinite(base)) throw new Error("Conduit magnitude must be finite.");
   return base > 0 ? base * (1 + level * 0.1) : base;
 }
-function phaseZeroStatBase(value2, stat, equipment, upgrades = {}, master2) {
-  let bonus = 0;
+function phaseZeroStatBase(value2, stat, equipment, upgrades = {}, master2, intrinsic = {}) {
+  let bonus = intrinsic[stat] ?? 0;
   for (const id of equipment ?? []) {
     if (id === null || !(id in phaseZeroStaticBonuses)) continue;
     const effects = phaseZeroStaticBonuses[id];
@@ -4636,7 +4665,7 @@ function phaseZeroPercentageGaugeOffer(capacity, fraction, gaugeGain) {
   }
   return phaseZeroGaugeOffer(capacity * fraction, gaugeGain);
 }
-function applyPhaseZeroStaticBonuses(base, slots, upgrades = {}, master2) {
+function applyPhaseZeroStaticBonuses(base, slots, upgrades = {}, master2, intrinsic = {}) {
   const equipment = validateConduitSlots(slots);
   const levels = validateConduitUpgrades(upgrades);
   for (const key of statKeys) {
@@ -4645,8 +4674,10 @@ function applyPhaseZeroStaticBonuses(base, slots, upgrades = {}, master2) {
       throw new Error(`Invalid Phase 0 base stat: ${key}.`);
     }
   }
-  const percent = {};
-  const additive = {};
+  const percent = { ...intrinsic };
+  delete percent.skillPower;
+  const skillPower = intrinsic.skillPower;
+  const additive = { skillPower: skillPower ?? 0 };
   for (const id of equipment) {
     if (id === null) continue;
     const bonuses = id in phaseZeroStaticBonuses ? phaseZeroStaticBonuses[id] : [];
@@ -4811,7 +4842,7 @@ function resolveFighter(id, progress, equipment, upgrades, master2) {
     if (strength.critBonus !== void 0) strength.critBonus = Math.min(1, strength.critBonus);
   }
   if (equipment) validateConduitElement(equipment, getStarter(id).elementId);
-  applyConduitBuffs(kit.stats, equipment, upgrades, master2);
+  applyConduitBuffs(kit.stats, equipment, upgrades, master2, roleBonuses(id));
   const described = describeFighter(id, kit);
   return { ...described, stats: normalizeStats(described.stats) };
 }
@@ -4916,13 +4947,14 @@ function describeFighter(id, snapshot) {
   }
   return kit;
 }
-function applyConduitBuffs(stats, equipment, upgrades, master2) {
+function applyConduitBuffs(stats, equipment, upgrades, master2, intrinsic = {}) {
   if (phaseZeroStatsReady) {
     Object.assign(stats, applyPhaseZeroStaticBonuses(
       normalizeStats(stats),
       equipment ?? Array(8).fill(null),
       upgrades,
-      master2
+      master2,
+      intrinsic
     ));
     return;
   }
@@ -5816,6 +5848,21 @@ function loadProfile(storage) {
     throw new Error("This local save is invalid or uses an unsupported version.");
   }
   return { version: 1, starterId: data.starterId };
+}
+
+// src/game/element-resonance.ts
+function elementResonance(roster) {
+  const counts = /* @__PURE__ */ new Map();
+  for (const id of roster) {
+    if (!isStarterId(id)) continue;
+    const element = getStarter(id).elementId;
+    counts.set(element, (counts.get(element) ?? 0) + 1);
+  }
+  for (const [element, count2] of counts) {
+    if (count2 === 3) return { element, skillPower: 0.75 };
+    if (count2 === 2) return { element, skillPower: 0.25 };
+  }
+  return null;
 }
 
 // src/content/gates-of-oblivion.ts
@@ -8070,7 +8117,7 @@ function nativeCleanup(state) {
 }
 
 // src/game/conduit-runtime.ts
-var conduitRulesVersion = phaseZeroStatsReady ? 14 : 4;
+var conduitRulesVersion = phaseZeroStatsReady ? 15 : 4;
 function gear(unit) {
   return unit.conduitRuntime ??= { numbers: {}, owners: {} };
 }
@@ -8141,7 +8188,7 @@ function refreshConduitStats(state, initial = false) {
       if (["crit", "skillPower", "skillEfficiency", "gaugeGain"].includes(stat))
         unit.stats[stat] = (base[stat] ?? (stat === "skillPower" || stat === "gaugeGain" ? 1 : 0)) + (pool[stat] ?? 0);
       else {
-        const raw = stat === "health" || stat === "defense" || stat === "damage" || stat === "critMultiplier" || stat === "shatterCapacity" ? phaseZeroStatBase(base[stat], stat, unit.conduits, state.conduitUpgrades) : base[stat];
+        const raw = stat === "health" || stat === "defense" || stat === "damage" || stat === "critMultiplier" || stat === "shatterCapacity" ? phaseZeroStatBase(base[stat], stat, unit.conduits, state.conduitUpgrades, void 0, roleBonuses(unit.definitionId, !!unit.captured)) : base[stat];
         unit.stats[stat] = (base[stat] ?? 0) + (raw ?? 0) * (pool[stat] ?? 0);
       }
     }
@@ -8408,7 +8455,9 @@ function effectiveDefense(state, unit, excludeSquadAuras = false) {
     unit.conduitRuntime?.statBase?.defense ?? unit.stats.defense,
     "defense",
     unit.conduits,
-    state.conduitUpgrades
+    state.conduitUpgrades,
+    void 0,
+    unit.side === "ally" ? roleBonuses(unit.definitionId, !!unit.captured) : {}
   ) : unit.stats.defense;
   const n = unit.conduitRuntime?.numbers ?? {};
   if (phaseZeroStatsReady && !excludeSquadAuras && unit.side === "ally" && unit.hp > 0 && alive(state).some((owner) => equipped(owner, "master-sprout-3") && !!owner.native?.seeds?.[unit.id]?.empowered && (owner.native.seeds[unit.id]?.dueRound ?? 0) >= state.round)) {
@@ -8941,7 +8990,7 @@ function conduitHitModifiers(state, actor, target, ctx, critical) {
     if (actor.attackBoost && actor.attackBoost.throughRound >= state.round)
       attackBonus += actor.attackBoost.fraction;
   }
-  const attack = phaseZeroStatsReady ? actor.stats.damage + phaseZeroStatBase(actor.conduitRuntime?.statBase?.damage ?? actor.stats.damage, "damage", actor.conduits, state.conduitUpgrades) * (attackBonus + (coveredByBruno ? 0.25 : 0)) : actor.stats.damage * (1 + attackBonus + (coveredByBruno ? 0.25 : 0));
+  const attack = phaseZeroStatsReady ? actor.stats.damage + phaseZeroStatBase(actor.conduitRuntime?.statBase?.damage ?? actor.stats.damage, "damage", actor.conduits, state.conduitUpgrades, void 0, roleBonuses(actor.definitionId, !!actor.captured)) * (attackBonus + (coveredByBruno ? 0.25 : 0)) : actor.stats.damage * (1 + attackBonus + (coveredByBruno ? 0.25 : 0));
   const criticalBase = phaseZeroStatsReady ? phaseZeroStatBase(actor.conduitRuntime?.statBase?.critMultiplier ?? actor.stats.critMultiplier, "critMultiplier", actor.conduits, state.conduitUpgrades) : actor.stats.critMultiplier;
   return {
     bonus,
@@ -10367,6 +10416,11 @@ function createBattle(seed2 = 1729, roster = ["ember"], progress = {}, equipment
     }),
     enemies: spawnWave(1)
   };
+  const resonance = elementResonance(roster);
+  if (resonance) for (const unit of state.allies) {
+    unit.stats.skillPower = (unit.stats.skillPower ?? 1) + resonance.skillPower;
+    if (unit.kit) unit.kit.stats.skillPower = unit.stats.skillPower;
+  }
   initializeConduits(state, true);
   return state;
 }
@@ -10809,6 +10863,7 @@ function act(previous, actorId, action, targetId) {
     nativeAction(state, actor, action, targetId, events, direct, activation);
     nativeAfterAction(state, actor, action, priorInstruction, events);
     finishConduitAction(state, actor, activation, events);
+    supportRoleHeal(state, actor, action, events);
     refreshConduitStats(state);
     conduitDeaths(state, previous, events);
     nativeCleanup(state);
@@ -10911,11 +10966,23 @@ function act(previous, actorId, action, targetId) {
   }
   nativeAfterAction(state, actor, action, priorInstruction, events);
   finishConduitAction(state, actor, activation, events);
+  supportRoleHeal(state, actor, action, events);
   conduitDeaths(state, previous, events);
   checkOutcome(state);
   attachNativeView(state, events[events.length - 1]);
   awardDefeats(previous, state, events);
   return { state, events };
+}
+function supportRoleHeal(state, actor, action, events) {
+  if (action === "light" || intrinsicRole(actor.definitionId, !!actor.captured) !== "Support") return;
+  for (const ally of state.allies.filter((unit) => unit.hp > 0)) {
+    const amount = Math.min(ally.stats.health - ally.hp, Math.round(ally.stats.health * 0.04));
+    if (amount <= 0) continue;
+    ally.hp += amount;
+    event(events, "heal", actor, ally, amount, `${actor.name}'s Support perk restores ${amount} HP to ${ally.name}.`);
+    events[events.length - 1].origin = "native";
+    events[events.length - 1].rolePerk = "Support";
+  }
 }
 function newTurn(state, events) {
   state.round++;
@@ -10964,7 +11031,7 @@ function endTurn(previous) {
     const living2 = state.allies.filter((unit) => unit.hp > 0);
     if (!living2.length) break;
     const pattern = state.calamity ? calamityPatterns[state.calamity.activity] : void 0;
-    let selected = living2[Math.floor(roll(state) * living2.length)];
+    let selected = roleTarget(living2, roll(state));
     if (pattern?.targeting) selected = [...living2].sort((a, b) => (a.hp / a.stats.health - b.hp / b.stats.health) * (pattern.targeting === "lowest" ? 1 : -1))[0];
     const target = forcedConduitTarget(state, enemy, selected);
     if (pattern?.shieldEvery && state.round % pattern.shieldEvery === 0) {

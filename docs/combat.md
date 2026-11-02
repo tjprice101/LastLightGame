@@ -1081,3 +1081,32 @@ and "does not stack" statement in this and other documents.
   runs, and some runs now stall: the squad cannot be killed but cannot
   out-damage the boss's healing/barriers. Owner accepted this explicitly.
   The snapshot table records wins and stalls separately.
+
+## Intrinsic role perks and Element Resonance (D-437)
+
+All Element-Bearers, including Calamitic characters, use their authored role:
+
+- Tank: +50% Defense, 1.25 enemy single-target weight versus 1 for other members.
+  The existing single target roll is reused; Calamity patterns and taunts still override.
+- Attacker: +100% Direct Damage (the Direct Attack stat bucket), +50% Skill Power.
+- Support (including Flora's Healer & Support): +50% Health, +25% Skill Power.
+  Each successful Skill 1/2 or Last Flare additionally heals every living squad
+  member for 4% of that member's max Health, after the action resolves. This
+  fixed packet is capped by missing Health, does not scale with Skill Power or
+  feed personal/Conduit ability loops, and never revives or triggers on Normal Attack.
+
+Health/Defense/Direct Attack percentages add to the same pre-equipment-base
+pool as Conduits; Skill Power adds to the existing multiplier. Frozen battle
+stats and shared menu effective stats include these perks. Captured
+Elemental-Devourers receive none of the role perks.
+
+At battle creation, two same-element Element-Bearers grant the entire frozen
+squad +25 percentage points Skill Power; three grant +75. Captured copies do
+not count but receive the bonus. The full frozen roster is counted, not just
+currently living members; deaths and Settings do not recalculate it. Team/Squad
+and Battle status label active Element Resonance with its element accent.
+Combat rules15 uses the existing historical-run restart path with frozen
+investments and saved rewards retained, so pre-perk stat snapshots cannot mix
+with the new rules. No RNG stream, account field, acquisition rule, reward,
+load-time write or hostile tuning changed. Bounded before/after evidence and limitations are in
+[Section 1 of the Phase 1 plan](phase-1-war-characters.md#section-1-implementation-and-balance-evidence-d-437).

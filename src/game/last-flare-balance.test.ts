@@ -10,6 +10,7 @@ function fixture(id: StarterId) {
   for (const unit of state.allies) {
     unit.stats.health = 1000; unit.hp = 100;
     unit.stats.damage = 100; unit.stats.crit = 0;
+    unit.stats.skillPower = 1;
     unit.shatter = 100;
   }
   for (const enemy of state.enemies) {
@@ -58,7 +59,7 @@ describe('Last Flare roster-wide potency', () => {
   it('raises both Flora healing packets by 1.5 without double-scaling harvests or reviving', () => {
     const state = fixture('sprout');
     const result = act(state, 'sprout', 'ultimate', state.enemies[0].id);
-    expect(result.events.filter(event => event.kind === 'heal').map(event => event.amount)).toEqual([750, 750]);
+    expect(result.events.filter(event => event.kind === 'heal' && !event.rolePerk).map(event => event.amount)).toEqual([750, 750]);
     for (const seed of Object.values(result.state.allies[0].native?.seeds ?? {}))
       expect(seed).toMatchObject({ fraction: .975, dueRound: 2, empowered: true });
     for (const ally of result.state.allies) ally.hp = 20;
@@ -129,14 +130,14 @@ describe('Last Flare roster-wide potency', () => {
     expect(opening.events.filter(event => event.kind === 'damage').some(event => event.critical)).toBe(true);
     state.allies[1].spent = true;
     const closing = act(state, 'bliss', 'ultimate', state.enemies[0].id);
-    expect(closing.events.filter(event => event.kind === 'heal').map(event => event.amount)).toEqual([150]);
+    expect(closing.events.filter(event => event.kind === 'heal' && !event.rolePerk).map(event => event.amount)).toEqual([150]);
   });
 
   it('raises Rosetta contributor healing without healing noncontributors', () => {
     const state = fixture('rosetta');
     state.allies[0].native = { quarry: { target: state.enemies[0].id, round: 1, contributors: [state.allies[1].id] } };
     const result = act(state, 'rosetta', 'ultimate', state.enemies[0].id);
-    expect(result.events.filter(event => event.kind === 'heal').map(event => event.amount)).toEqual([150, 150]);
+    expect(result.events.filter(event => event.kind === 'heal' && !event.rolePerk).map(event => event.amount)).toEqual([150, 150]);
   });
 
   it('triples stored Wounds and Foundation damage without multiplying the stored Attack inside mitigation', () => {

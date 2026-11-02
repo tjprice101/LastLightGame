@@ -1,3 +1,4 @@
+import { roleBonuses } from './role-perks';
 import { describe, expect, it } from 'vitest';
 import { describeFighter, fighters, formatStat, resolveFighter, shatterGauge } from './combat';
 import { openingStarters as starters, starters as roster } from './starters';
@@ -40,8 +41,8 @@ describe('character stat and kit growth', () => {
   it.each(starters)('$name preserves its original base kit without mutating definitions', (starter) => {
     const original = structuredClone(fighters[starter.id]);
     const kit = resolveFighter(starter.id);
-    expect(kit.stats.health).toBe(original.stats.health);
-    expect(kit.stats.defense).toBe(original.stats.defense + original.passive.defenseBonus);
+    expect(kit.stats.health).toBe(original.stats.health * (1 + (roleBonuses(starter.id).health ?? 0)));
+    expect(kit.stats.defense).toBe((original.stats.defense + original.passive.defenseBonus) * (1 + (roleBonuses(starter.id).defense ?? 0)));
     expect(kit.stats.critMultiplier).toBe(1.5);
     expect(kit.stats.shatterCapacity).toBe(100);
     for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
@@ -88,7 +89,7 @@ describe('character stat and kit growth', () => {
     const progress = { level: 30, evolution: 2 };
     const factor = characterGrowthFactor(progress);
     const ember = resolveFighter('ember', progress);
-    expect(ember.stats.damage).toBeCloseTo(fighters.ember.stats.damage * factor);
+    expect(ember.stats.damage).toBeCloseTo(fighters.ember.stats.damage * factor * 2);
     expect(ember.abilities.skill1.description).toContain(`${160 * nativeBalance.skillDamageScale}% direct damage`);
     expect(ember.abilities.skill1.description).toContain('25% of [Infernis]’s Attack');
     expect(ember.passive.damageBonus).toBe(0);
@@ -108,9 +109,9 @@ describe('character stat and kit growth', () => {
   it.each(starters)('$name reaches bounded linear endgame stats before equipment and keeps percentage stats meaningful', (starter) => {
     const kit = resolveFighter(starter.id, { level: 105, evolution: 6 });
     expect(kit.stats.health).toBeGreaterThan(4_500);
-    expect(kit.stats.health).toBeLessThan(6_400);
+    expect(kit.stats.health / (1 + (roleBonuses(starter.id).health ?? 0))).toBeLessThan(6_400);
     expect(kit.stats.damage).toBeGreaterThan(700);
-    expect(kit.stats.damage).toBeLessThan(950);
+    expect(kit.stats.damage / (1 + (roleBonuses(starter.id).damage ?? 0))).toBeLessThan(950);
     expect(kit.stats.defense).toBeGreaterThan(70);
     expect(kit.stats.shatterCapacity).toBeLessThan(200);
     expect(kit.stats.crit).toBeLessThan(.5);

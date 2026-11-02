@@ -1,3 +1,5 @@
+import { intrinsicRole, roleTarget } from '../content/role-perks';
+import { elementResonance } from './element-resonance';
 import { actionIds, enemies, formatStat, resolveFighter, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats, type FighterDefinition } from '../content/combat';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { type CharacterProgress } from '../content/progression';
@@ -120,6 +122,7 @@ export interface BattleState {
   calamity?: { activity: CalamityActivityId; tier: CalamityTier };
 }
 export interface BattleEvent {
+  rolePerk?: 'Support';
   nativeKind?: NativeDamageKind;
   origin?: 'native' | 'conduit';
   kind: 'attack' | 'damage' | 'heal' | 'shield' | 'status' | 'turn' | 'reward';
@@ -286,6 +289,11 @@ export function createBattle(seed = 1729, roster: readonly string[] = ['ember'],
     }),
     enemies: spawnWave(1),
   };
+  const resonance = elementResonance(roster);
+  if (resonance) for (const unit of state.allies) {
+    unit.stats.skillPower = (unit.stats.skillPower ?? 1) + resonance.skillPower;
+    if (unit.kit) unit.kit.stats.skillPower = unit.stats.skillPower;
+  }
   initializeConduits(state, true);
   return state;
 }
@@ -714,6 +722,7 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
     nativeAction(state, actor, action, targetId, events, direct, activation);
     nativeAfterAction(state, actor, action, priorInstruction, events);
     finishConduitAction(state, actor, activation, events);
+    supportRoleHeal(state, actor, action, events);
     refreshConduitStats(state);
     conduitDeaths(state, previous, events);
     nativeCleanup(state);
@@ -804,11 +813,24 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   }
   nativeAfterAction(state, actor, action, priorInstruction, events);
   finishConduitAction(state, actor, activation, events);
+  supportRoleHeal(state, actor, action, events);
   conduitDeaths(state, previous, events);
   checkOutcome(state);
   attachNativeView(state, events[events.length - 1]);
   awardDefeats(previous, state, events);
   return { state, events };
+}
+
+function supportRoleHeal(state: BattleState, actor: Combatant, action: ActionId, events: BattleEvent[]): void {
+  if (action === 'light' || intrinsicRole(actor.definitionId, !!actor.captured) !== 'Support') return;
+  for (const ally of state.allies.filter(unit => unit.hp > 0)) {
+    const amount = Math.min(ally.stats.health - ally.hp, Math.round(ally.stats.health * .04));
+    if (amount <= 0) continue;
+    ally.hp += amount;
+    event(events, 'heal', actor, ally, amount, `${actor.name}'s Support perk restores ${amount} HP to ${ally.name}.`);
+    events[events.length - 1].origin = 'native';
+    events[events.length - 1].rolePerk = 'Support';
+  }
 }
 
 function newTurn(state: BattleState, events: BattleEvent[]): void {
@@ -861,7 +883,7 @@ export function endTurn(previous: BattleState): BattleResult {
     const living = state.allies.filter((unit) => unit.hp > 0);
     if (!living.length) break;
     const pattern = state.calamity ? calamityPatterns[state.calamity.activity] : undefined;
-    let selected = living[Math.floor(roll(state) * living.length)];
+    let selected = roleTarget(living, roll(state));
     if (pattern?.targeting) selected = [...living].sort((a, b) =>
       (a.hp / a.stats.health - b.hp / b.stats.health) * (pattern.targeting === 'lowest' ? 1 : -1))[0];
     const target = forcedConduitTarget(state, enemy, selected);

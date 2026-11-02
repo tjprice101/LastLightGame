@@ -7,7 +7,7 @@ function encounter(...roster: string[]): BattleState {
   const state = createBattle(7, roster);
   state.enemies = [state.enemies[0]];
   state.allies.forEach(unit => {
-    unit.shatter = 100; unit.stats.crit = 0; unit.stats.damage = 100;
+    unit.shatter = 100; unit.stats.crit = 0; unit.stats.damage = 100; unit.stats.skillPower = 1;
     unit.hp = unit.stats.health = 1000;
   });
   Object.assign(state.enemies[0].stats, { health: 100_000, defense: 0, damage: 0, crit: 0 });
@@ -92,12 +92,12 @@ describe('distinct no-equipment starter identities', () => {
   it('Flora has no automatic passive healing: empty harvest plants, then delivers at next player turn', () => {
     const state = encounter('sprout', 'ember');
     state.allies.forEach(unit => { unit.hp = 500; });
-    expect(endTurn(state).events.some(event => event.kind === 'heal')).toBe(false);
+    expect(endTurn(state).events.some(event => event.kind === 'heal' && !event.rolePerk)).toBe(false);
     const planted = use(state, 'sprout', 'skill2');
-    expect(planted.events.some(event => event.kind === 'heal')).toBe(false);
+    expect(planted.events.some(event => event.kind === 'heal' && !event.rolePerk)).toBe(false);
     expect(planted.state.allies[0].attackBoost).toBeUndefined();
     const delivered = endTurn(planted.state);
-    expect(delivered.events.filter(event => event.kind === 'heal').map(event => event.amount)).toEqual([1000 * nativeBalance.flora.seed, 1000 * nativeBalance.flora.seed]);
+    expect(delivered.events.filter(event => event.kind === 'heal' && !event.rolePerk).map(event => event.amount)).toEqual([461, 460]);
     expect(delivered.state.allies[0].native?.seeds).toEqual({});
     expect(delivered.state.allies[0].pilot).toBeUndefined();
   });
@@ -108,7 +108,7 @@ describe('distinct no-equipment starter identities', () => {
     const planted = use(state, 'sprout', 'skill1');
     expect(Object.keys(planted.state.allies[0].native?.seeds ?? {})).toEqual(['ember']);
     const harvest = use(planted.state, 'sprout', 'skill2');
-    expect(harvest.events.filter(event => event.kind === 'heal').map(event => [event.target, event.amount])).toEqual([['ember', 1000 * nativeBalance.flora.seed]]);
+    expect(harvest.events.filter(event => event.kind === 'heal' && !event.rolePerk).map(event => [event.target, event.amount])).toEqual([['ember', 1000 * nativeBalance.flora.seed - 40]]);
     expect(Object.keys(harvest.state.allies[0].native?.seeds ?? {})).toHaveLength(3);
   });
 
@@ -117,7 +117,7 @@ describe('distinct no-equipment starter identities', () => {
     state.allies[0].hp = state.allies[1].hp = 100;
     state.allies[2].hp = 0;
     const flare = use(state, 'sprout', 'ultimate');
-    expect(flare.events.filter(event => event.kind === 'heal').map(event => event.amount)).toEqual([1000 * nativeBalance.flora.immediateHeal, 1000 * nativeBalance.flora.immediateHeal]);
+    expect(flare.events.filter(event => event.kind === 'heal' && !event.rolePerk).map(event => event.amount)).toEqual([1000 * nativeBalance.flora.immediateHeal, 1000 * nativeBalance.flora.immediateHeal]);
     expect(flare.state.allies[2].hp).toBe(0);
     const normal = use(flare.state, 'sprout', 'skill1');
     expect(Object.values(normal.state.allies[0].native?.seeds ?? {}).map(seed => seed.fraction)).toEqual([nativeBalance.flora.empoweredSeed, nativeBalance.flora.empoweredSeed]);

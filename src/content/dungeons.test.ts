@@ -53,7 +53,7 @@ describe('elemental material dungeons', () => {
     for (const stage of [1, 35]) {
       let state = createDungeonBattle(element, stage, 1729, 'ember', stage === 1 ? { level: 38, evolution: 2 } : { level: 105, evolution: 6 });
       state = playNativeBenchmark(state);
-      expect(state.phase, `${element} stage ${stage}`).toBe('defeat');
+      expect(state.phase, `${element} stage ${stage}`).toBe(stage === 1 ? 'cleared' : 'defeat');
     }
   });
   it('guarantees every unlocked rarity and adds the next rarity each bracket', () => {

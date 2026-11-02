@@ -1,3 +1,4 @@
+import { roleBonuses, type IntrinsicBonuses } from './role-perks';
 import { getStarter, type StarterId } from './starters';
 import { characterGrowthFactor, characterPotencyFactor, weaponRules, type CharacterProgress } from './progression';
 import { getConduit, conduitBuffs, validateConduitSlots, validateConduitElement, type ConduitSlots, type ConduitUpgrades } from './conduits';
@@ -189,7 +190,7 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
     if (strength.critBonus !== undefined) strength.critBonus = Math.min(1, strength.critBonus);
   }
   if (equipment) validateConduitElement(equipment, getStarter(id).elementId);
-  applyConduitBuffs(kit.stats, equipment, upgrades, master);
+  applyConduitBuffs(kit.stats, equipment, upgrades, master, roleBonuses(id));
   const described = describeFighter(id, kit);
   return { ...described, stats: normalizeStats(described.stats) };
 }
@@ -302,10 +303,10 @@ export function describeFighter(id: StarterId, snapshot: FighterDefinition): Fig
 }
 
 export function applyConduitBuffs(stats: Stats, equipment?: ConduitSlots, upgrades?: ConduitUpgrades,
-  master?: MasterConduitId): void {
+  master?: MasterConduitId, intrinsic: IntrinsicBonuses = {}): void {
   if (phaseZeroStatsReady) {
     Object.assign(stats, applyPhaseZeroStaticBonuses(normalizeStats(stats),
-      equipment ?? Array<null>(8).fill(null), upgrades, master));
+      equipment ?? Array<null>(8).fill(null), upgrades, master, intrinsic));
     return;
   }
   if (equipment) for (const conduitId of validateConduitSlots(equipment)) {

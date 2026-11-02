@@ -1,3 +1,4 @@
+import { roleBonuses } from './role-perks';
 import { describe, expect, it } from 'vitest';
 import { enemies, fighters, resolveFighter, type Stats } from './combat';
 import { starters } from './starters';
@@ -30,12 +31,12 @@ describe('gated Phase 0 stat foundation', () => {
     const original = structuredClone(fighters[starter.id]);
     for (const progress of [{ level: 0, evolution: 1 }, { level: 30, evolution: 2 }, { level: 105, evolution: 6 }]) {
       const stats = resolveFighter(starter.id, progress).stats;
-      expect(stats).toMatchObject(starter.id === 'kaelith' ? { ...phaseZeroStatDefaults, skillPower: 1.75 } : phaseZeroStatDefaults);
+      expect(stats).toMatchObject({ ...phaseZeroStatDefaults, skillPower: (original.stats.skillPower ?? 1) + (roleBonuses(starter.id).skillPower ?? 0) });
       const growth = characterGrowthFactor(progress);
       const potency = characterPotencyFactor(progress);
-      expect(stats.health).toBeCloseTo(original.stats.health * growth);
-      expect(stats.damage).toBeCloseTo(original.stats.damage * growth);
-      expect(stats.defense).toBeCloseTo((original.stats.defense + original.passive.defenseBonus) * growth ** .7);
+      expect(stats.health).toBeCloseTo(original.stats.health * growth * (1 + (roleBonuses(starter.id).health ?? 0)));
+      expect(stats.damage).toBeCloseTo(original.stats.damage * growth * (1 + (roleBonuses(starter.id).damage ?? 0)));
+      expect(stats.defense).toBeCloseTo((original.stats.defense + original.passive.defenseBonus) * growth ** .7 * (1 + (roleBonuses(starter.id).defense ?? 0)));
       expect(stats.crit).toBeCloseTo(Math.min(1, original.stats.crit * potency));
       expect(stats.critMultiplier).toBeCloseTo(original.stats.critMultiplier * potency);
       expect(stats.shatterCapacity).toBeCloseTo(original.stats.shatterCapacity * potency);

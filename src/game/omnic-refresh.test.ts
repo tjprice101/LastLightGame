@@ -1,3 +1,4 @@
+import { roleBonuses } from '../content/role-perks';
 import { describe, expect, it } from 'vitest';
 import { applyConduitBuffs, resolveFighter, type Stats } from '../content/combat';
 import { conduits, type ConduitId, type ConduitSlots } from '../content/conduits';
@@ -46,11 +47,15 @@ describe('D-383 complete Omnic and Master refresh', () => {
       for (const stat of new Set([...Object.keys(own), ...Object.keys(squad)]) as Set<OmnicStat>) {
         const fraction = ((own[stat] ?? 0) + (squad[stat] ?? 0)) * (1 + level * .1);
         const initial = base[stat] ?? 0;
-        const expected = additive.has(stat) ? initial + fraction : initial * (1 + fraction);
+        const staticFraction = isMasterConduitId(entry.id) ? 0 : (own[stat] ?? 0) * (1 + level * .1);
+        const dynamicFraction = fraction - staticFraction;
+        const role = roleBonuses(owner.definitionId)[stat as 'health' | 'defense' | 'damage' | 'skillPower'] ?? 0;
+        const expected = additive.has(stat) ? initial + fraction : initial * (1 + staticFraction) *
+          (1 + dynamicFraction / (1 + staticFraction + role));
         expect(owner.stats[stat], `${entry.id} ${stat} +${level}`).toBeCloseTo(stat === 'skillEfficiency' ? Math.min(.5, expected) : expected);
         if (squad[stat]) {
           const amount = squad[stat]! * (1 + level * .1);
-          expect(state.allies[1].stats[stat]).toBeCloseTo(additive.has(stat) ? initial + amount : initial * (1 + amount));
+          expect(state.allies[1].stats[stat]).toBeCloseTo(additive.has(stat) ? initial + amount : initial + initial / (1 + (roleBonuses(state.allies[1].definitionId)[stat as 'health' | 'defense' | 'damage' | 'skillPower'] ?? 0)) * amount);
         }
         expect(phaseZeroUpgradedAbility(entry.id, level)).toContain(`[${phaseZeroStatLabels[stat]}]`);
       }
@@ -74,14 +79,14 @@ describe('D-383 complete Omnic and Master refresh', () => {
     const equipment = slots('bastion-lock', 'aquatic-leviathan-pump');
     const preview = resolveFighter('tide', undefined, equipment, {}, 'master-tide-1');
     const state = withMasterLoadouts(createBattle(1729, ['tide'], undefined, { tide: equipment }), { tide: 'master-tide-1' });
-    expect(state.allies[0].stats).toEqual(preview.stats);
+    for (const key of Object.keys(preview.stats) as (keyof Stats)[]) expect(state.allies[0].stats[key]).toBeCloseTo(preview.stats[key]!, 10);
   });
 
   it('stacks three living wearers, removes each lost source and never heals or resurrects during refresh', () => {
     const state = fixture();
     for (const unit of state.allies) unit.conduits = slots('chaotic-ouroboros-core');
     initializeConduits(state);
-    expect(state.allies.map(unit => unit.stats.health)).toEqual([2650, 2650, 2650]);
+    expect(state.allies.map(unit => unit.stats.health)).toEqual([2650, 2650, 2100]);
     state.allies[0].hp = 0; state.allies[1].hp = 2500;
     refreshConduitStats(state);
     expect(state.allies[1].stats.health).toBe(2100);
@@ -228,7 +233,7 @@ describe('D-383 complete Omnic and Master refresh', () => {
     expect(prepareConduitAction(state, recipient, 'skill2', 40, false).skillPower).toBeCloseTo(1.6);
     first.hp = 0;
     expect(prepareConduitAction(state, recipient, 'skill2', 40, false).skillPower).toBeCloseTo(1.85);
-    expect(effectiveDefense(state, recipient)).toBe(120);
+    expect(effectiveDefense(state, recipient)).toBeCloseTo(100 + 20 / 1.5);
     first.hp = 1;
     refreshConduitStats(state);
     expect(recipient.stats.skillPower).toBe(1);

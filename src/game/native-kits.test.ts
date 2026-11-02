@@ -7,7 +7,7 @@ import { nativeBalance } from '../content/native-balance';
 
 function encounter(...roster: string[]): BattleState {
   const state = createBattle(1729, roster);
-  for (const ally of state.allies) { ally.shatter = 100; ally.stats.crit = 0; ally.stats.health = ally.hp = 1000; ally.stats.damage = 100; }
+  for (const ally of state.allies) { ally.shatter = 100; ally.stats.crit = 0; ally.stats.health = ally.hp = 1000; ally.stats.damage = 100; ally.stats.skillPower = 1; }
   for (const enemy of state.enemies) {
     enemy.stats.health = enemy.hp = 100000;
     enemy.stats.defense = 0; enemy.stats.damage = 20; enemy.stats.crit = 0;
@@ -70,10 +70,10 @@ describe('sixteen native identities without equipment', () => {
     let state = encounter('sprout', 'ember');
     state.allies.forEach(unit => unit.hp = 500);
     const plant = use(state, 'sprout', 'skill2');
-    expect(plant.events.filter(event => event.kind === 'heal')).toHaveLength(0);
+    expect(plant.events.filter(event => event.kind === 'heal' && !event.rolePerk)).toHaveLength(0);
     const delivery = endTurn(plant.state);
     state = delivery.state;
-    expect(delivery.events.filter(event => event.kind === 'heal').map(event => event.amount)).toEqual([1000 * nativeBalance.flora.seed, 1000 * nativeBalance.flora.seed]);
+    expect(delivery.events.filter(event => event.kind === 'heal' && !event.rolePerk).map(event => event.amount)).toEqual([1000 * nativeBalance.flora.seed, 1000 * nativeBalance.flora.seed - 40]);
     state = use(state, 'sprout', 'ultimate').state;
     state = use(state, 'sprout', 'skill1').state;
     expect(Object.values(state.allies[0].native?.seeds ?? {}).every(pending => pending.fraction === nativeBalance.flora.empoweredSeed)).toBe(true);
@@ -351,7 +351,7 @@ describe('sixteen native identities without equipment', () => {
     expect(state.allies[0].attackBoost).toMatchObject({ fraction: .2, throughRound: 3 });
     state = endTurn(state).state;
     const crescendo = use(state, 'vaelor', 'ultimate');
-    expect(crescendo.events.find(event => event.kind === 'damage')?.amount).toBe(damageAmount(100, 3.4 * nativeBalance.skillDamageScale * 1.2 * 3, 0, false));
+    expect(crescendo.events.find(event => event.kind === 'damage')?.amount).toBe(damageAmount(100, 3.4 * nativeBalance.skillDamageScale * 1.1 * 3, 0, false));
     expect(crescendo.state.allies[0].recoverThrough).toBe(4);
     state = endTurn(crescendo.state).state;
     expect(state.allies[0].native?.beat).toBe(0);

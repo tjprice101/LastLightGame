@@ -11,6 +11,7 @@ function fixture(level = 0) {
   for (const unit of state.allies) {
     unit.hp = unit.stats.health = 10000;
     unit.stats.damage = 100; unit.stats.crit = 0; unit.shatter = 100;
+    unit.stats.skillPower = 1;
   }
   for (const enemy of state.enemies) {
     enemy.hp = enemy.stats.health = 100000;

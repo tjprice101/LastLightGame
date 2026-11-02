@@ -81,7 +81,7 @@ describe('D-435 Calamitic Ascension', () => {
     const ascendedProgress = { ...baseProgress, ascension: { stats: true, skill1: true } };
     const before = resolveFighter('ember', baseProgress).stats;
     const after = resolveFighter('ember', ascendedProgress).stats;
-    for (const key of Object.keys(before) as (keyof typeof before)[]) expect(after[key]).toBeCloseTo(before[key] * 1.5);
+    for (const key of Object.keys(before) as (keyof typeof before)[]) expect(after[key]).toBeCloseTo(key === 'skillPower' ? (before[key] - .5) * 1.5 + .5 : before[key] * 1.5);
     const unimbued = createBattle(1729, ['ember'], { ember: { ...baseProgress, ascension: { stats: true } } });
     const imbued = createBattle(1729, ['ember'], { ember: ascendedProgress });
     const plainPower = prepareConduitAction(unimbued, unimbued.allies[0], 'skill1', 0, false).skillPower;

@@ -1,3 +1,4 @@
+import { resonanceBadge } from './intrinsic-perks';
 import { elements, isCurrencyMode } from '../content/activities';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { characterName } from '../content/character-art';
@@ -41,6 +42,7 @@ export function referenceTeamSidebar(account: Account, state: ReferenceTeamState
           <span class="ref-thumb">${member.art}</span><span><b>${member.name}</b><small>${index ? 'Member' : 'Leader'}</small></span></button>
           ${index ? `<button class="ref-chip" data-make-leader="${id}" aria-label="Make ${member.name} the leader">♛ Lead</button>` : ''}</div>`;
       }).join('')}
+      ${resonanceBadge(squad)}
     </section>
     <section class="ref-panel ref-collection-sidebar"><header class="ref-panel-heading">Collection</header>
       <button class="ref-member-row ${state.view === 'detail' || state.view === 'bearers' ? 'is-selected' : ''}" data-team-view="bearers"><span class="ref-thumb ref-count">${ownedCharacters(account).length}</span><span><b>Element-Bearers</b><small>${ownedCharacters(account).length} owned · view all</small></span></button>

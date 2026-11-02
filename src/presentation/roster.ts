@@ -1,3 +1,4 @@
+import { resonanceBadge } from './intrinsic-perks';
 import { referencedEffect } from './effect-copy';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { ownedCharacters, ownedProgress, creatureSaleOffer, isSellableCreatureMode, multiSummonCount, type Account } from '../game/account';
@@ -109,7 +110,7 @@ export function squadHub(account: Account | null): string {
   return `<section class="squad-hub squad-formation"><header class="squad-heading"><div><h2>Squad formation</h2>
     <p>Select a slot to choose who fills it.</p>${information('squad-information', 'Squad', '<p>Pick one to three owned members; slot one leads. Element-Bearers and captured Elemental-Devourers fit any slot, and copies of the same Elemental-Devourer can share a squad. Picking a member from another slot swaps them. Changes apply when you Save squad.</p>')}</div>
     <div class="squad-save"><span data-squad-count>${squad.length} / 3 slots filled</span><button class="primary-button" type="submit" form="squad-form" ${owned.length ? '' : 'disabled'}>Save squad</button></div></header>
-    <form id="squad-form"><div class="squad-slots">${[0, 1, 2].map((index) => {
+    ${resonanceBadge(squad)}<form id="squad-form"><div class="squad-slots">${[0, 1, 2].map((index) => {
       const id = squad[index];
       return `<section class="squad-slot${index === 0 ? ' squad-slot-leader' : ''}"><h3>${squadSlotNames[index]}</h3>
         <button type="button" class="squad-member-preview" data-squad-assign="${index}" aria-haspopup="dialog" aria-label="${index === 0 ? 'Choose leader' : `Choose squad member ${index + 1}`}">${squadMemberPreview(account, id, index)}</button>

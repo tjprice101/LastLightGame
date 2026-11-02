@@ -1,3 +1,4 @@
+import { roleBonuses } from './role-perks';
 import { describe, expect, it } from 'vitest';
 import { describeFighter, fighters, resolveFighter, shatterGauge, type FighterDefinition } from './combat';
 import { nativeIdentities, nativeIdentityIds } from './native-identities';
@@ -81,9 +82,9 @@ describe('approved native identities', () => {
     expect(grown.pilot).toBeUndefined();
     expect(grown.passive).toMatchObject({ damageBonus: 0, defenseBonus: 0, healFraction: 0 });
     expect(grown.passive.lightGaugeBonus).toBe(id === 'nerithe' ? 5 : undefined);
-    expect(grown.stats.health).toBeCloseTo(base.stats.health * factor);
-    expect(grown.stats.damage).toBeCloseTo(base.stats.damage * factor * 1.04);
-    expect(grown.stats.defense).toBeCloseTo(base.stats.defense * factor ** .7);
+    expect(grown.stats.health).toBeCloseTo(base.stats.health * factor * (1 + (roleBonuses(id).health ?? 0)));
+    expect(grown.stats.damage).toBeCloseTo(base.stats.damage * factor * 1.04 * (1 + (roleBonuses(id).damage ?? 0)));
+    expect(grown.stats.defense).toBeCloseTo(base.stats.defense * factor ** .7 * (1 + (roleBonuses(id).defense ?? 0)));
     expect(grown.stats.elementalDamage).toBeCloseTo(base.stats.elementalDamage * factor);
     expect(grown.stats.crit).toBeCloseTo(Math.min(.75, base.stats.crit * potency));
     expect(grown.stats.critMultiplier).toBeCloseTo(Math.min(3, base.stats.critMultiplier * potency));

@@ -1,5 +1,35 @@
 # Current state and handoff
 
+## Phase 1 Section 1: role perks and Element Resonance (D-437)
+
+- Implemented shared innate role stat buckets for every Element-Bearer,
+  including Flora's Support alias and Calamitic characters; captures receive no
+  role perk. Tanks reuse the existing one target roll at weight1.25, before
+  unchanged taunt/pattern overrides. Support Skills/Last Flare emit fixed4%
+  post-cast heal events for living members only, separate from authored kits.
+- Frozen entry rosters grant squad-wide +25/+75 percentage points Skill Power
+  for two/three same-element bearers; captures receive but do not count.
+  Character/reference/Battle status show role rows; Team/Squad/Battle status
+  show active element-colored Resonance. Rules15 restarts historical runs via
+  the existing frozen-investment/reward-preserving compatibility path.
+- Stacking and the bounded paired D-404 experiments are in
+  [the Phase 1 plan](phase-1-war-characters.md#section-1-implementation-and-balance-evidence-d-437)
+  and [combat rules](combat.md#intrinsic-role-perks-and-element-resonance-d-437).
+  EX+3 Master-package wins118/288 →124/288; Mixed+5 11/288 →23/288;
+  bare0/288 unchanged. No hostile retune recommended or applied. Paper output
+  and pressured clears remain separate; this is not a new exhaustive audit.
+- Validation: `npx tsc --noEmit -p .` passed; required full
+  `npx vitest run --testTimeout=200000 --maxWorkers=2` passed7,064/7,064 tests
+  in226 files (244.43s). Focused changed-file tests and UI-copy guard also
+  passed1,746/1,746 tests in33 files (38.37s). `npm run build` passed
+  (existing large-chunk warning); shared server
+  regenerated with `node tools\bundle_server_game.mjs` and
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json` passed.
+  jsdom's existing unimplemented-canvas warnings did not fail the suite.
+- Section1 is complete. New War characters, their Conduits and art remain
+  unimplemented. No owner decision is needed for this section. No commit,
+  push or deployment was performed; the parent owns release/deployment.
+
 ## Squad portrait containment and Calamitic Ascension UI
 
 - Reproduced the reported picker in Chromium at1185×768: a viewport-constrained

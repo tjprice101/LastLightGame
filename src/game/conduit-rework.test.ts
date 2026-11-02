@@ -69,7 +69,7 @@ describe('D-382 replacement interactions', () => {
     const stats = { ...resolveFighter('ember').stats, health };
     applyConduitBuffs(stats, slots('glassroot-gimbal', 'vigil-core'));
     expect(stats.health).toBe(health * 2);
-    expect(stats.skillPower).toBeCloseTo(1 + Math.floor(health * 2 / 450) * .05);
+    expect(stats.skillPower).toBeCloseTo(1.5 + Math.floor(health * 2 / 450) * .05);
   });
 
   it('does not globally cap stacked Skill Duration, but retains status-specific Weaken limits', () => {

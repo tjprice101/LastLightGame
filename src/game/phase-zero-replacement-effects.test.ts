@@ -246,12 +246,12 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     target.shatter = 0;
     nativeGauge(state, target, 20, []);
     expect(target.shatter).toBe(Math.round(20 * (1.2 + scaling(.5, level))));
-    expect(effectiveDefense(state, target)).toBeCloseTo(100 * (1 + scaling(.4, level)));
+    expect(effectiveDefense(state, target)).toBeCloseTo(100 + 100 / 1.5 * scaling(.4, level));
     state.round = 3;
     target.shatter = 0;
     nativeGauge(state, target, 20, []);
     expect(target.shatter).toBe(Math.round(20 * (1.2 + scaling(.5, level))));
-    expect(effectiveDefense(state, target)).toBeCloseTo(100 * (1 + scaling(.4, level)));
+    expect(effectiveDefense(state, target)).toBeCloseTo(100 + 100 / 1.5 * scaling(.4, level));
   });
 
   it('Pale protects only its wearer Shields without the retired outgoing Power aura', () => {
@@ -356,15 +356,13 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
   it('Seraph heals each recipient from their own max HP once per turn, not per target', () => {
     const state = setup('luminous-seraph-mirror', level);
     for (const ally of state.allies) ally.hp = 100;
-    const heal = Math.round(1000 * (1 + scaling(.65, level)) * scaling(.06, level));
-    const expected = 100 + heal;
     finishHit(state, 'skill1', true, 100, true);
-    for (const ally of state.allies) expect(ally.hp).toBe(expected);
+    for (const ally of state.allies) expect(ally.hp).toBe(100 + Math.round(ally.stats.health * scaling(.06, level)));
     finishHit(state, 'light', true);
-    for (const ally of state.allies) expect(ally.hp).toBe(expected);
+    for (const ally of state.allies) expect(ally.hp).toBe(100 + Math.round(ally.stats.health * scaling(.06, level)));
     state.round++;
     finishHit(state, 'light', true);
-    for (const ally of state.allies) expect(ally.hp).toBe(100 + 2 * heal);
+    for (const ally of state.allies) expect(ally.hp).toBe(100 + 2 * Math.round(ally.stats.health * scaling(.06, level)));
   });
 
   it('Mending heals the lowest HP-percentage ally from total skill HP damage, with a per-cast cap', () => {
@@ -434,7 +432,7 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     applyConduitWeaken(state, owner, state.enemies[0], .25, [], 'skill1', 1, ctx);
     applyConduitWeaken(state, owner, state.enemies[1], .25, [], 'skill1', 1, ctx);
     expect(ally.hp).toBe(100 + Math.round(1000 * (1 + scaling(.55, level)) * scaling(.06, level)));
-    expect(effectiveDefense(state, ally)).toBeCloseTo(100 * (1 + scaling(.3, level)));
+    expect(effectiveDefense(state, ally)).toBeCloseTo(100 + 100 / 1.5 * scaling(.3, level));
     expect(state.enemies[0].weakenFraction).toBe(.25);
     state.round++;
     expect(effectiveDefense(state, ally)).toBe(100);
@@ -486,7 +484,7 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     nativeHeal(state, healer, owner, 100, [], true, prepareConduitAction(state, healer, 'skill2', 40, false));
     const ctx = prepareConduitAction(state, owner, 'light', 0, false);
     expect(conduitHitModifiers(state, owner, state.enemies[0], ctx, false).attack)
-      .toBeCloseTo(100 + 100 / (1 + scaling(1, level)) * scaling(.4, level));
+      .toBeCloseTo(100 + 100 / (2 + scaling(1, level)) * scaling(.4, level));
     recordConduitHit(ctx, state.enemies[0], 100, false, 1.5);
     finishConduitAction(state, owner, ctx, []);
     expect(conduitActionCost(healer, 'skill1', state, 25)).toBe(Math.ceil(25 * (1 - scaling(.2, level))));
@@ -703,7 +701,7 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     const ctx = prepareConduitAction(state, owner, 'skill1', 25, false);
     nativeHeal(state, owner, recipient, 100, [], true, ctx);
     expect(recipient.hp).toBeCloseTo(300 + 100 * (1.2 + scaling(.5, level)));
-    expect(effectiveDefense(state, recipient)).toBeCloseTo(100 * (1 + scaling(.3, level)));
+    expect(effectiveDefense(state, recipient)).toBeCloseTo(100 + 100 / 1.5 * scaling(.3, level));
     state.round++;
     expect(effectiveDefense(state, recipient)).toBe(100);
   });

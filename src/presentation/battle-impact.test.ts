@@ -7,7 +7,7 @@ describe('attack presentation impact boundary', () => {
   it('keeps automatic enemy-phase burn ticks separate from the triggering skill impact', () => {
     const state = createBattle(1729, ['ember']);
     state.allies[0].shatter = state.allies[0].stats.shatterCapacity;
-    state.enemies[0].hp = state.enemies[0].stats.health = 200;
+    state.enemies[0].hp = state.enemies[0].stats.health = 1000;
     const result = actAndAdvanceTurn(state, 'ember', 'skill1', state.enemies[0].id);
     const periodicIndex = result.events.findIndex((event) => event.periodic);
     expect(periodicIndex).toBeGreaterThan(0);

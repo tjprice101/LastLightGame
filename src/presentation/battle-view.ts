@@ -1,3 +1,4 @@
+import { rolePerkRow, resonanceBadge } from './intrinsic-perks';
 import { describeFighter, enemies, formatStat, type ActionId } from '../content/combat';
 import { gameConfirm, gameDialogPending } from './game-dialog';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
@@ -736,7 +737,7 @@ export class BattleView {
       </footer>
       <dialog id="battle-menu" class="battle-menu battle-status-menu" aria-labelledby="battle-menu-heading">
       <header class="drawer-heading"><div><p class="eyebrow">Turn ${state.round} &middot; Status</p><h2 id="battle-menu-heading">Battle status</h2></div><button id="close-battle-menu" class="drawer-close" aria-label="Close battle status">&times;</button></header>
-      <div class="battle-utilities">${(['ally', 'enemy'] as const).map((side) => `<section class="battle-status-side" data-status-side="${side}"><h3>${side === 'ally' ? 'Your squad' : 'Enemies'}</h3><div class="battle-status-grid">${(side === 'ally' ? state.allies : state.enemies).map((unit) => this.statusCard(state, unit)).join('')}</div></section>`).join('')}</div></dialog>`;
+      <div class="battle-utilities">${resonanceBadge(state.allies.filter(unit => !unit.captured).map(unit => unit.definitionId))}${(['ally', 'enemy'] as const).map((side) => `<section class="battle-status-side" data-status-side="${side}"><h3>${side === 'ally' ? 'Your squad' : 'Enemies'}</h3><div class="battle-status-grid">${(side === 'ally' ? state.allies : state.enemies).map((unit) => this.statusCard(state, unit)).join('')}</div></section>`).join('')}</div></dialog>`;
     if (results) celebrateBattleResults(this.host, this.session.state);
     this.vfxRunner?.destroy();
     this.vfxRunner = null;
@@ -954,6 +955,7 @@ export class BattleView {
     return `<article class="battle-status-card${unit.hp <= 0 ? ' is-defeated' : ''}" data-status-unit="${unit.id}">
       <header><strong>${unit.name}</strong><span>${unit.level !== null ? `Lv.${unit.level}` : ''}</span>${elementLabel(unit.element)}</header>
       <p class="battle-status-condition">${condition}${ally && unit.hp > 0 && unit.kit ? ` &middot; Last Flare ${flare ? 'not ready' : 'ready'}` : ''}</p>
+      ${ally && unit.kit && !unit.captured ? `<p><strong>${unit.kit.passive.name} · Passive</strong><br>${unit.kit.passive.description}</p>${rolePerkRow(unit.definitionId)}` : ''}
       <div class="battle-status-readout">${unitReadout(unit, false, state.allies, state.round, state)}${boost}</div></article>`;
   }
 

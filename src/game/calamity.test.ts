@@ -235,9 +235,9 @@ describe('Calamity visible boss patterns', () => {
 describe('Calamity seeded difficulty benchmarks', () => {
   it.each(tiers)('measures four-Omnic candidate squads under the tuned EX+%s curve', tier => {
     const expectedWins = {
-      1: { starters: [[36, 0], [36, 0], [36, 0]], mixed: [[36, 0], [35, 0], [36, 0]] },
-      2: { starters: [[34, 2], [24, 5], [36, 0]], mixed: [[10, 0], [8, 0], [36, 0]] },
-      3: { starters: [[30, 5], [8, 0], [35, 0]], mixed: [[0, 0], [0, 0], [30, 0]] },
+      1: { starters: [[36, 0], [36, 0], [36, 0]], mixed: [[36, 0], [36, 0], [36, 0]] },
+      2: { starters: [[36, 0], [32, 1], [36, 0]], mixed: [[30, 0], [30, 0], [36, 0]] },
+      3: { starters: [[36, 0], [9, 0], [35, 0]], mixed: [[4, 0], [0, 0], [36, 0]] },
     } as const;
     const roster = ['rosetta', 'thornia', 'sprout'] as const satisfies readonly StarterId[];
     const progress = Object.fromEntries(roster.map(id => [id, { level: 105, evolution: 6 }]));

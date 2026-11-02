@@ -55,7 +55,7 @@ describe('Phase 0 cross-effect rules', () => {
     ally.conduits = slots('bastion-lock', 'siegebound-drive', 'precision-escapement', 'judgment-lens');
     applyConduitBuffs(ally.stats, ally.conduits);
     ally.attackBoost = { fraction: .2, throughRound: 1 };
-    expect(effectiveDefense(state, ally)).toBeCloseTo(175);
+    expect(effectiveDefense(state, ally)).toBeCloseTo(135 + 135 / 1.85 * .4);
     const ctx = prepareConduitAction(state, ally, 'skill1', 25, false);
     const modifiers = conduitHitModifiers(state, ally, state.enemies[0], ctx, true);
     expect(modifiers.attack).toBeCloseTo(155);

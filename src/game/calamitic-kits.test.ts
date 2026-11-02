@@ -16,6 +16,7 @@ function encounter(...roster: string[]): BattleState {
     ally.stats.crit = 0;
     ally.hp = ally.stats.health = 1000;
     ally.stats.damage = 100;
+    ally.stats.skillPower = ally.id === 'kaelith' ? 1.75 : 1;
     ally.stats.defense = 0;
   }
   for (const enemy of state.enemies) {
@@ -39,10 +40,10 @@ describe('owner-authored Calamitic native kits', () => {
   it('applies own passive stats multiplicatively and preserves them through conduit stat refresh', () => {
     const ozriel = resolveFighter('ozriel'), ilvaris = resolveFighter('ilvaris'), kaelith = resolveFighter('kaelith');
     expect(ozriel.stats.health).toBeCloseTo(345 * 1.65);
-    expect(ozriel.stats.defense).toBeCloseTo(24 * 1.65);
-    expect(ilvaris.stats.health).toBe(265 * 3);
+    expect(ozriel.stats.defense).toBeCloseTo(24 * 1.65 * 1.5);
+    expect(ilvaris.stats.health).toBe(265 * 3 * 1.5);
     expect(ilvaris.stats.defense).toBe(16 * 2);
-    expect(kaelith.stats.skillPower).toBe(1.75);
+    expect(kaelith.stats.skillPower).toBe(2.25);
     for (const id of ['ozriel', 'ilvaris', 'kaelith'] as const)
       expect(resolveFighter(id, { level: 110, evolution: 6 }).nativeIdentity).toBe(true);
     const state = createBattle(1729, ['ozriel', 'ilvaris', 'kaelith']);
@@ -162,14 +163,14 @@ describe('owner-authored Calamitic native kits', () => {
     state.allies[2].hp = 0;
     const first = use(state, 'ilvaris', 'skill2');
     state = first.state;
-    expect(state.allies.map(ally => ally.hp)).toEqual([450, 450, 0]);
+    expect(state.allies.map(ally => ally.hp)).toEqual([490, 490, 0]);
     expect(state.allies[1].native?.hymn).toEqual({ owner: 'ilvaris', throughRound: 2, criticalDamage: .45, skillPower: .5 });
     expect(state.allies[2].native?.hymn).toBeUndefined();
     state.round = 2;
     const repeat = use(state, 'ilvaris', 'skill2');
     state = repeat.state;
     expect(damage(repeat.events, 'ilvaris')).toEqual([]);
-    expect(state.allies[1].hp).toBe(975);
+    expect(state.allies[1].hp).toBe(1000);
     expect(state.allies[1].native?.hymn).toEqual({ owner: 'ilvaris', throughRound: 3, criticalDamage: .45, skillPower: .5 });
     expect(nativeHymn(state.allies[1], 3)).toBeTruthy();
     state.round = 4;
@@ -198,7 +199,7 @@ describe('owner-authored Calamitic native kits', () => {
     state.allies[2].shatter = 0;
     const flare = use(state, 'ilvaris', 'ultimate');
     expect(damage(flare.events, 'ilvaris').map(event => event.amount)).toEqual([440, 440, 440]);
-    expect(flare.state.allies.map(ally => ally.hp)).toEqual([600, 600, 0]);
+    expect(flare.state.allies.map(ally => ally.hp)).toEqual([640, 640, 0]);
     expect(flare.state.allies[1].shatter).toBe(30);
     expect(flare.state.allies[2].shatter).toBe(0);
   });

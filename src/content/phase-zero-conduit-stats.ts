@@ -1,3 +1,4 @@
+import type { IntrinsicBonuses } from './role-perks';
 import type { ActionId, Stats } from './combat';
 import { validateConduitSlots, validateConduitUpgrades, type ConduitSlots, type ConduitUpgrades } from './conduits';
 import { omnicSelfStats, omnicStatBonuses } from './omnic-conduit-stats';
@@ -76,9 +77,9 @@ export function phaseZeroUpgradeMagnitude(base: number, level: number): number {
 
 export function phaseZeroStatBase(
   value: number, stat: 'health' | 'defense' | 'damage' | 'critMultiplier' | 'shatterCapacity',
-  equipment: ConduitSlots | undefined, upgrades: ConduitUpgrades = {}, master?: MasterConduitId,
+  equipment: ConduitSlots | undefined, upgrades: ConduitUpgrades = {}, master?: MasterConduitId, intrinsic: IntrinsicBonuses = {},
 ): number {
-  let bonus = 0;
+  let bonus = intrinsic[stat as keyof IntrinsicBonuses] ?? 0;
   for (const id of equipment ?? []) {
     if (id === null || !(id in phaseZeroStaticBonuses)) continue;
     const effects: readonly StaticBonus[] = phaseZeroStaticBonuses[id as keyof typeof phaseZeroStaticBonuses];
@@ -113,7 +114,7 @@ export function phaseZeroPercentageGaugeOffer(capacity: number, fraction: number
 
 /** Release preparation only: callers must not combine this with legacy equipment bonuses. */
 export function applyPhaseZeroStaticBonuses(
-  base: PhaseZeroEquipmentStats, slots: ConduitSlots, upgrades: ConduitUpgrades = {}, master?: MasterConduitId,
+  base: PhaseZeroEquipmentStats, slots: ConduitSlots, upgrades: ConduitUpgrades = {}, master?: MasterConduitId, intrinsic: IntrinsicBonuses = {},
 ): PhaseZeroEquipmentStats {
   const equipment = validateConduitSlots(slots);
   const levels = validateConduitUpgrades(upgrades);
@@ -123,8 +124,10 @@ export function applyPhaseZeroStaticBonuses(
       throw new Error(`Invalid Phase 0 base stat: ${key}.`);
     }
   }
-  const percent: Partial<Record<StatKey, number>> = {};
-  const additive: Partial<Record<StatKey, number>> = {};
+  const percent: Partial<Record<StatKey, number>> = { ...intrinsic };
+  delete percent.skillPower;
+  const skillPower = intrinsic.skillPower;
+  const additive: Partial<Record<StatKey, number>> = { skillPower: skillPower ?? 0 };
   for (const id of equipment) {
     if (id === null) continue;
     const bonuses: readonly StaticBonus[] = id in phaseZeroStaticBonuses

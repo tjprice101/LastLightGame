@@ -89,9 +89,9 @@ describe('read-only exhaustive Conduit audit integrity', () => {
     const rows: unknown[] = [];
     const encounter = { kind: 'calamity', activity: 'atmospheric', tier: 3 } as const;
     const primary = [true, false].map(on => measureBattle(auditBattle('master-razor-1', 'razor',
-      0, 'supported', on, encounter, 104729), 'native', auditLimits));
+      0, 'supported', on, encounter, 1729), 'native', auditLimits));
     runWinningAudit([{ category: 'all-calamity-patterns', id: 'master-razor-1', wearer: 'razor',
-      level: 0, context: 'supported', encounter: 'Calamity atmospheric EX+3', seed: 104729,
+      level: 0, context: 'supported', encounter: 'Calamity atmospheric EX+3', seed: 1729,
       on: primary[0].result, off: primary[1].result }], row => rows.push(row));
     expect(rows).toHaveLength(1);
     const replay = rows[0] as { on: { outcome: string; initial: { enemies: { hp: number }[] };

@@ -1,3 +1,4 @@
+import { roleBonuses } from '../content/role-perks';
 import { shatterGauge, type ActionId, type Stats } from '../content/combat';
 import { omnicSquadStats, omnicStatBonuses, type OmnicStat, type OmnicStatBonuses } from '../content/omnic-conduit-stats';
 import type { ConduitId } from '../content/conduits';
@@ -17,7 +18,7 @@ import { hasNativeIdentity, nativeAbsorbedHit, nativeDirectHpLoss, nativeIncomin
 import { prepareCalamiticAction, afterCalamiticAction, afterCalamiticMark, calamiticSiegeBonus, deferCalamiticDamage,
   bankCalamiticDamage, calamiticSkillDefenseIgnore, calamiticSkillPowerBonus, calamiticSkillEfficiencyBonus } from './calamitic-conduits';
 
-export const conduitRulesVersion = phaseZeroStatsReady ? 14 : 4;
+export const conduitRulesVersion = phaseZeroStatsReady ? 15 : 4;
 export interface ConduitShieldLayer {
   amount: number;
   owner: string;
@@ -148,7 +149,7 @@ export function refreshConduitStats(state: BattleState, initial = false): void {
         unit.stats[stat] = (base[stat] ?? (stat === 'skillPower' || stat === 'gaugeGain' ? 1 : 0)) + (pool[stat] ?? 0);
       else {
         const raw = stat === 'health' || stat === 'defense' || stat === 'damage' || stat === 'critMultiplier' || stat === 'shatterCapacity'
-          ? phaseZeroStatBase(base[stat], stat, unit.conduits, state.conduitUpgrades) : base[stat];
+          ? phaseZeroStatBase(base[stat], stat, unit.conduits, state.conduitUpgrades, undefined, roleBonuses(unit.definitionId, !!unit.captured)) : base[stat];
         unit.stats[stat] = (base[stat] ?? 0) + (raw ?? 0) * (pool[stat] ?? 0);
       }
     }
@@ -403,7 +404,7 @@ export function effectiveDefense(state: BattleState, unit: Combatant, excludeSqu
   let defense = unit.stats.defense;
   const baseDefense = phaseZeroStatsReady
     ? phaseZeroStatBase(unit.conduitRuntime?.statBase?.defense ?? unit.stats.defense,
-      'defense', unit.conduits, state.conduitUpgrades) : unit.stats.defense;
+      'defense', unit.conduits, state.conduitUpgrades, undefined, unit.side === 'ally' ? roleBonuses(unit.definitionId, !!unit.captured) : {}) : unit.stats.defense;
   const n = unit.conduitRuntime?.numbers ?? {};
   if (phaseZeroStatsReady && !excludeSquadAuras && unit.side === 'ally' && unit.hp > 0 &&
       alive(state).some(owner => equipped(owner, 'master-sprout-3') &&
@@ -932,7 +933,7 @@ export function conduitHitModifiers(state: BattleState, actor: Combatant, target
       attackBonus += actor.attackBoost.fraction;
   }
   const attack = phaseZeroStatsReady ? actor.stats.damage +
-    phaseZeroStatBase(actor.conduitRuntime?.statBase?.damage ?? actor.stats.damage, 'damage', actor.conduits, state.conduitUpgrades) *
+    phaseZeroStatBase(actor.conduitRuntime?.statBase?.damage ?? actor.stats.damage, 'damage', actor.conduits, state.conduitUpgrades, undefined, roleBonuses(actor.definitionId, !!actor.captured)) *
       (attackBonus + (coveredByBruno ? .25 : 0)) : actor.stats.damage * (1 + attackBonus + (coveredByBruno ? .25 : 0));
   const criticalBase = phaseZeroStatsReady
     ? phaseZeroStatBase(actor.conduitRuntime?.statBase?.critMultiplier ?? actor.stats.critMultiplier, 'critMultiplier', actor.conduits, state.conduitUpgrades) : actor.stats.critMultiplier;

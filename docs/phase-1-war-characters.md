@@ -1,8 +1,8 @@
 # Phase 1 proposal: new Elemental War Element-Bearers and role perks
 
-**Status: PROPOSAL (outline stage), nothing implemented.** Owner answered the
-first question round on 2026-11-01; this revision shows design outlines and the
-role-perk/Resonance approach for review before any code or numbers are final.
+**Status: APPROVED outlines (D-437). Section 1 implemented:** intrinsic role
+perks and Element Resonance. Characters, Conduits and art remain pending. Exact kit
+numbers and ability names are drafted with the character section.
 
 ## Confirmed by the owner
 
@@ -13,7 +13,7 @@ role-perk/Resonance approach for review before any code or numbers are final.
 - Implementation order: role perks, then characters, Conduits, art.
 - Balance: if the new perks make the roster far too strong, retune enemies
   slightly; otherwise let players feel stronger.
-- Role perks for Calamitic characters only if they fit smoothly; show the idea first.
+- D-437 approves the same intrinsic role perks for Calamitic characters.
 
 ## Role gaps (current roster; Calamitic in brackets)
 
@@ -27,7 +27,7 @@ role-perk/Resonance approach for review before any code or numbers are final.
 | Chaotic | Thornia, Razor | Crinso, [Kaelith] | Disciple |
 
 Note: Tizu is currently a **Tank** in game data (shields and Weaken). The owner
-described him as Oceanic support; see the open question below.
+described him as Oceanic support, then confirmed he stays a Tank.
 
 ## Shared rules (same as Nerithe / Orvella / Vaelor)
 
@@ -133,8 +133,91 @@ battle snapshot uses the same values.
 Per character: 6 portraits, 4 ability icons, 3 Master Conduit icons. Per
 trial: 3:1 header and 16:9 arena. 45 prompts total, reproducible tool and tests.
 
-## Open owner questions
+## Owner answers
 
-1. Tizu: keep him as a Tank, or reclassify him as Support (he would then get
-   the Support perk instead of the Tank perk)?
-2. Approve the three outlines and the role-perk/Resonance approach above?
+- Tizu stays a Tank.
+- Outlines, Element Resonance and the role-perk approach are approved (D-437).
+
+## Section 1 implementation and balance evidence (D-437)
+
+Role percentages share the existing Conduit stat pools: Health, Defense and
+Direct Attack percentages add before multiplying the grown stat; Skill Power
+adds percentage points to its existing multiplier. They never multiply the
+finished equipment stat. Dynamic Master/aura calculations remove the innate
+percentage together with equipment percentages when recovering the raw base.
+The authored role, including Flora's Healer & Support alias, applies to all
+Element-Bearers including Calamitic characters. Captured copies have no perk.
+
+Support's post-cast heal is a separate fixed 4% max-Health packet for each
+living member, capped by missing Health. It does not scale with Skill Power,
+trigger authored native-kit resources, revive, or trigger on Normal Attack.
+It emits ordinary native heal events after the cast finishes; failed casts
+produce none. Tank targeting consumes exactly the existing one roll, before
+the unchanged Calamity pattern and Conduit taunt overrides.
+
+Resonance is determined once from the complete frozen entry roster, including
+defeated bearers, and applied before Conduit initialization. Deaths do not
+remove it. Captured copies receive its Skill Power but never count toward it.
+Character/reference and Battle status show the role row under the passive;
+Team/Squad and Battle status show active element-colored Resonance only.
+
+### Paired bounded D-404 experiments
+
+Baseline engine bundles were built from the unmodified working tree before
+implementation; the same existing `tools/calamity-balance.ts` current-curve
+experiment and `tools/roster-capability.ts` functions were rerun afterwards.
+This is a bounded remeasurement, not a new exhaustive roster ranking or an
+observed-account average. No hostile numbers, rewards or progression changed. Rules15 restarts historical
+encounters through the existing frozen-investment/reward-preserving path.
+
+Pressure: eight authored survey teams, twelve Calamity activities, three tiers,
+three seeds (1/1729/104729), Lv105/Evo6, native-aware pilot, 100-round/1800-decision
+limits. Only bare/mixed0/mixed5/master5 rows are reported: 3,456 matched battles
+per side; no Calamitic characters or Calamitic Conduits in these rows. Masters
+are eligible. Each cell has 288 fights; wins and timeouts are separate.
+
+| Build | EX+1 wins before → after | EX+2 wins before → after | EX+3 wins before → after |
+| --- | --- | --- | --- |
+| Bare | 0 → 0 | 0 → 0 | 0 → 0 |
+| Mixed +0 | 16 → 40 | 4 → 9 | 3 → 3 |
+| Mixed +5 | 148 → 210 | 38 → 65 | 11 → 23 |
+| Personal Master +5 package | 227 → 276 | 143 → 154 | 118 → 124 |
+
+Master-package mean resolved rounds (all outcomes, not time-to-clear) were
+8.40 → 5.86 / 12.54 → 11.90 / 11.06 → 11.18 for EX+1/2/3. Its timeouts were
+0 → 0 / 6 → 6 / 3 → 4. Mixed+5 timeouts were 0 → 0 / 3 → 0 / 10 → 2.
+The hardest tier is not trivialized: Master-package EX+3 wins 41.0% → 43.1%,
+Mixed+5 3.8% → 8.0%, bare 0%. **No shared enemy retune is recommended/applied.**
+Existing permanent-Shield stalemates remain possible, distinct from clears.
+
+Paper output is a separate zero-Defense, no-enemy-pressure experiment using
+`auditState` / `measureCapability`, 18 cycles, the same three seeds at Lv105.
+These three conditional owned trios each use floor/farmed/ceiling gear profiles
+(27 runs per side). Mean sustainable direct+periodic damage per cycle:
+
+| Owned trio | Floor before → after | Farmed before → after | Ceiling before → after |
+| --- | --- | --- | --- |
+| Infernis / Tizu / Flora | 3,415.8 → 4,796.8 | 162,413.3 → 235,746.7 | 280,348.9 → 385,722.2 |
+| Nerithe / Orvella / Vaelor | 4,264.7 → 7,560.4 | 88,222.1 → 132,688.3 | 133,681.6 → 188,110.1 |
+| Rosetta / Bliss / Aurora (three Tranquilitic) | 4,489.3 → 8,007.8 | 82,086.7 → 146,334.3 | 358,149.1 → 768,487.8 |
+
+Floor total squad Health: 16,247.5 → 18,551.2 / 18,066.2 unchanged /
+15,762.5 → 18,369.4 respectively. These output runs are not healing-headroom,
+Shield-absorption, packet-survival or clear-rate experiments. The Tranquilitic
+ceiling is a conditional ownership/synergy example, not the ordinary account.
+Early unequipped Attacker bursts can now finish selected +10-level foes (Bliss
+at Lv19–60, Vaelor at Lv19–75); late pressure remains in the real encounters.
+
+### Validation
+
+- `npx tsc --noEmit -p .`: passed.
+- Dedicated role/Resonance and UI-copy guard:18/18 tests in2 files passed.
+- All changed test files plus that guard, `npx vitest run <changed tests>
+  src\game\role-perks.test.ts src\presentation\ui-copy.test.ts
+  --testTimeout=60000 --maxWorkers=2`:1,746/1,746 tests in33 files passed.
+- `npx vitest run --testTimeout=200000 --maxWorkers=2`:7,064/7,064 tests
+  in226 files passed (244.43s). Existing jsdom canvas warnings remain non-fatal.
+- `npm run build`: passed; existing large-chunk warning only.
+- `node tools\bundle_server_game.mjs`: regenerated matching authority bundle.
+- `npx tsc --project supabase\functions\game-operation\tsconfig.json`: passed.
+- No commit, push or deployment; later character/Conduit/art sections remain pending.

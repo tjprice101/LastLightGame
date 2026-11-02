@@ -131,7 +131,7 @@ describe('Phase 0 shared runtime math', () => {
     tide.masterConduit = 'master-tide-1';
     nativeShield(state, tide, recipient, 100, []);
     expect(effectiveDefense(state, recipient)).toBe(100);
-    expect(effectiveDefense(state, tide)).toBe(180);
+    expect(effectiveDefense(state, tide)).toBeCloseTo(100 + 80 / 1.5);
     recipient.shield = 0;
     expect(effectiveDefense(state, recipient)).toBe(100);
   });
@@ -224,12 +224,12 @@ describe('Phase 0 shared runtime math', () => {
     target.shatter = 0;
     nativeGauge(state, target, 20, []);
     expect(target.shatter).toBe(30);
-    expect(effectiveDefense(state, target)).toBe(140);
+    expect(effectiveDefense(state, target)).toBeCloseTo(100 + 40 / 1.5);
     target.shatter = 0;
     state.round = 3;
     nativeGauge(state, target, 20, []);
     expect(target.shatter).toBe(30);
-    expect(effectiveDefense(state, target)).toBe(140);
+    expect(effectiveDefense(state, target)).toBeCloseTo(100 + 40 / 1.5);
   });
 
   it('grants Pulse Trigger Gauge to other allies only once on the first critical skill each turn', () => {
@@ -445,11 +445,11 @@ describe('Phase 0 shared runtime math', () => {
     ally.shatter = 0;
     nativeGauge(state, ally, 10, []);
     expect(ally.shatter).toBe(13);
-    expect(effectiveDefense(state, bruno)).toBe(165);
+    expect(effectiveDefense(state, bruno)).toBeCloseTo(100 + 65 / 1.5);
 
     const activation = prepareConduitAction(state, bruno, 'ultimate', 100, false);
     nativeAction(state, bruno, 'ultimate', state.enemies[0].id, [], () => {}, activation);
-    expect(bruno.shield).toBeCloseTo(Math.max(250, effectiveDefense(state, bruno) * 2.5) *
+    expect(bruno.shield).toBeCloseTo(Math.max(bruno.stats.health * .25, effectiveDefense(state, bruno) * 2.5) *
       activation.skillPower * 1.5);
   });
 
@@ -458,7 +458,7 @@ describe('Phase 0 shared runtime math', () => {
     const [bruno, recipient] = state.allies;
     bruno.masterConduit = 'master-bruno-1';
     bruno.native = { cover: { targets: [recipient.id], fraction: .4, throughPhase: state.round } };
-    expect(effectiveDefense(state, bruno)).toBe(195);
+    expect(effectiveDefense(state, bruno)).toBeCloseTo(100 + 95 / 1.5);
     nativeRouteDamage(state, state.enemies[0], recipient, 100, [], () => {});
     expect(prepareConduitAction(state, recipient, 'skill1', 25, false).skillPower).toBe(1.3);
     expect(prepareConduitAction(state, recipient, 'skill1', 25, false).skillPower).toBe(1);
@@ -554,7 +554,7 @@ describe('Phase 0 shared runtime math', () => {
     const [orvella, first, second] = state.allies;
     orvella.masterConduit = 'master-orvella-3';
     orvella.native = { foundation: { durability: 500, maximum: 500, throughPhase: state.round + 1 } };
-    expect(effectiveDefense(state, first)).toBe(125);
+    expect(effectiveDefense(state, first)).toBeCloseTo(100 + 25 / 1.5);
     const repair = prepareConduitAction(state, orvella, 'skill1', 25, false);
     expect(repair.skillPower).toBe(1);
     nativeAction(state, orvella, 'skill1', state.enemies[0].id, [], () => {}, repair);
@@ -644,7 +644,7 @@ describe('Phase 0 shared runtime math', () => {
     const [owner, recipient, fallen] = state.allies;
     owner.masterConduit = 'master-sprout-3';
     owner.native = { seeds: { [recipient.id]: { fraction: .1, dueRound: state.round + 1, empowered: true } } };
-    expect(effectiveDefense(state, recipient)).toBe(125);
+    expect(effectiveDefense(state, recipient)).toBeCloseTo(100 + 25 / 1.5);
     fallen.hp = 0;
     const activation = prepareConduitAction(state, owner, 'ultimate', 100, false);
     finishConduitAction(state, owner, activation, []);
@@ -859,7 +859,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(owner.hp).toBe(543);
     expect(owner.shatter).toBe(0);
     expect(first.shield).toBe(233);
-    expect(second.shield).toBe(233);
+    expect(second.shield).toBe(205);
     expect(first.conduitRuntime?.layers?.[0]).not.toHaveProperty('expiresAfterPhase');
   });
 

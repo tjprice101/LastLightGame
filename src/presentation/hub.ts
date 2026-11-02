@@ -1,3 +1,4 @@
+import { rolePerkRow } from './intrinsic-perks';
 import { getStarter, isStarterId, type Starter } from '../content/starters';
 import { resolveFighter, formatStat, shatterGauge } from '../content/combat';
 import { artifactSlots, characterGrowth, characterLevelCap, characterRarity, evolutionRarity, upgradePaths, characterLevelCost, characterEvolutionCost, characterEvolutionRequirement, levelingMaterialTiers, type CharacterProgress } from '../content/progression';
@@ -317,14 +318,14 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
       <section class="character-category"><h3>Skills</h3><div class="ref-ability-buttons">
       ${(['passive', 'skill1', 'skill2', 'ultimate'] as const).map(action => {
         const label = action === 'passive' ? 'Passive' : action === 'skill1' ? 'Skill 1' : action === 'skill2' ? 'Skill 2' : 'Last Flare';
-        const content = action === 'passive' ? `<article class="hub-ability"><h3>${kit.passive.name}</h3><p>${readableEffect(kit.passive.description)}</p>${kitResource(kit, starter.id)}<p>Passive: automatic while alive. No action or Gauge cost.</p></article>`
+        const content = action === 'passive' ? `<article class="hub-ability"><h3>${kit.passive.name}</h3><p>${readableEffect(kit.passive.description)}</p>${rolePerkRow(starter.id)}${kitResource(kit, starter.id)}<p>Passive: automatic while alive. No action or Gauge cost.</p></article>`
           : ability(starter, action, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades);
         return information(`character-${starter.id}-${action}`, `${label} · ${action === 'passive' ? kit.passive.name : kit.abilities[action].name}`, content, `${label} details`,
           `${abilityIcon(starter.id, action)}<span><strong>${action === 'passive' ? kit.passive.name : kit.abilities[action].name}</strong><small>${label} · View details</small></span>`);
       }).join('')}</div></section></div>`;
   } else if (selectedTab === 'overview') {
     detail = `<div class="mono-character-quad"><section class="character-category mono-character-stats"><h3>Stats</h3>${stats(starter, progress, false, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades, account?.masterEquipment?.[starter.id] ?? undefined)}</section><section class="character-category character-combat"><h3>Skills</h3><div class="character-ability-grid">
-      <article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name} · Passive</span></h3><p>${readableEffect(kit.passive.description)}</p>${kitResource(kit, starter.id)}</article>
+      <article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name} · Passive</span></h3><p>${readableEffect(kit.passive.description)}</p>${rolePerkRow(starter.id)}${kitResource(kit, starter.id)}</article>
       ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => ability(starter, action, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)).join('')}</div></section>
       <section class="character-category mono-character-growth"><h3>Growth</h3><div class="mono-growth-options"><article><h4>Level up</h4>${upgradePanel(starter, false, account, false, true)}</article><article><h4>Evolve</h4>${upgradePanel(starter, true, account, false, true)}</article></div><p id="upgrade-result" role="status"></p></section>
       <section class="character-category mono-character-conduits"><h3>Conduits</h3>${equipment(starter, account, true)}</section></div>`;
@@ -335,7 +336,7 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
       (selectedTab === 'upgrade-0' ? ascensionEntry(starter, account, progress) : '');
   } else {
     if (!upgradePaths.some((path) => path.id === selectedTab)) throw new Error('Unknown upgrade definition.');
-    const specific = selectedTab === 'upgrade-3' ? `<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name}</span></h3><p>${readableEffect(kit.passive.description)}</p>${kitResource(kit, starter.id)}</article>`
+    const specific = selectedTab === 'upgrade-3' ? `<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name}</span></h3><p>${readableEffect(kit.passive.description)}</p>${rolePerkRow(starter.id)}${kitResource(kit, starter.id)}</article>`
       : ability(starter, selectedTab === 'upgrade-4' ? 'skill1' : selectedTab === 'upgrade-5' ? 'skill2' : 'ultimate', progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades);
     detail = `<section class="character-category"><h3>Current effect</h3>${specific}</section>`;
   }

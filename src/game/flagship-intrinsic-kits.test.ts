@@ -10,6 +10,7 @@ function encounter(...roster: string[]): BattleState {
   state.enemies = [state.enemies[0], { ...structuredClone(state.enemies[0]), id: 'second-target' }];
   state.allies.forEach(unit => {
     unit.shatter = 100; unit.stats.crit = 0; unit.stats.damage = 100;
+    unit.stats.skillPower = 1;
     unit.hp = unit.stats.health = 1000;
   });
   state.enemies.forEach(unit => {

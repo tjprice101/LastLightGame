@@ -33,7 +33,7 @@ describe('release-gated ten-stat surfaces', () => {
       const rows = Array.from(host.querySelectorAll('.hub-stats > div'));
       expect(rows).toHaveLength(10);
       const value = (label: string) => rows.find(row => row.querySelector('small')?.textContent === label)?.querySelector('strong')?.textContent;
-      expect(value('Skill Power')).toBe('100%');
+      expect(value('Skill Power')).toBe('instanceId' in unit ? '100%' : '150%');
       expect(value('Skill Duration')).toBe('0');
       expect(value('Skill Efficiency')).toBe('0%');
       expect(value('Elemental Gauge Gain')).toBe('100%');
@@ -69,7 +69,7 @@ describe('release-gated ten-stat surfaces', () => {
     const after = { ...before, elementalDamage: 9999, skillPower: 1.35, skillDuration: 2, skillEfficiency: .25, gaugeGain: 1.2 };
     const host = expectCurrentLabels(statPreview(before, after));
     expect(host.querySelectorAll(':scope > span')).toHaveLength(phaseZeroStatKeys.length);
-    expect(host.textContent).toContain('100% → 135%');
+    expect(host.textContent).toContain('150% → 135%');
     expect(host.textContent).toContain('0 → 2');
     expect(host.textContent).not.toContain('9999');
   });

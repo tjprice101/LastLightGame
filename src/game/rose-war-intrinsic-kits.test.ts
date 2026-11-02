@@ -12,6 +12,7 @@ function encounter(...roster: string[]): BattleState {
   });
   state.allies.forEach(unit => {
     unit.shatter = 100; unit.stats.crit = 0; unit.stats.damage = 100;
+    unit.stats.skillPower = 1;
     unit.hp = unit.stats.health = 1000;
   });
   return state;
@@ -43,7 +44,7 @@ describe('distinct Rose and Elemental War identities', () => {
     expect(state.allies[0].native?.quarry?.contributors).toHaveLength(2);
     state.allies.forEach(unit => { unit.hp = 500; });
     const flare = use(state, 'rosetta', 'ultimate');
-    expect(flare.events.filter(event => event.kind === 'heal').map(event => event.target)).toEqual(['rosetta', 'ember']);
+    expect(flare.events.filter(event => event.kind === 'heal' && !event.rolePerk).map(event => event.target)).toEqual(['rosetta', 'ember']);
     state = use(state, 'rosetta', 'skill1', state.enemies[1].id).state;
     expect(state.allies[0].native?.quarry?.contributors).toEqual(['rosetta']);
     const solo = use(encounter('rosetta'), 'rosetta', 'skill2');
@@ -146,7 +147,7 @@ describe('distinct Rose and Elemental War identities', () => {
     state = endTurn(state).state;
     expect(state.allies[0].native?.beat).toBe(2);
     const flare = use(state, 'vaelor', 'ultimate');
-    expect(flare.events.filter(event => event.kind === 'damage').map(event => event.amount)).toEqual([Math.round(340 * nativeBalance.skillDamageScale * 1.2 * 3), Math.round(340 * nativeBalance.skillDamageScale * 1.2 * 3)]);
+    expect(flare.events.filter(event => event.kind === 'damage').map(event => event.amount)).toEqual([Math.round(340 * nativeBalance.skillDamageScale * 1.1 * 3), Math.round(340 * nativeBalance.skillDamageScale * 1.1 * 3)]);
     const recovery = endTurn(flare.state).state;
     expect(recovery.allies[0].native?.beat).toBe(0);
     expect(recovery.allies[0].recoverThrough).toBe(flare.state.round + 1);
