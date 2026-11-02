@@ -16,6 +16,9 @@
 - `npm run build`, authority TypeScript and Deno checks passed; six Calamity
   artwork tests passed. Authority bundle regenerated, deployed and hosted smoke
   passed. The existing build chunk-size advisory remains unchanged.
+- Full CI required expanding the revision-map contract from18 Calamity files
+  to30 Calamity/Oblivion files. The regression now checks exact PNG hashes and
+  base-aware URLs for all10 Oblivion constructs plus banner/arena as well.
 
 ## Ability alignment and Fractalized Incision (D-445)
 

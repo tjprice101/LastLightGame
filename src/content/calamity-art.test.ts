@@ -7,6 +7,7 @@ import { calamityBossArt, calamityChestArt, calamityArenaArt } from './calamity-
 import { calamityArtRevisions } from './calamity-art-revisions';
 import { getCreature } from './creatures';
 import { assetUrl } from '../presentation/portrait';
+import { oblivionConstructs, oblivionConstructArt, oblivionBannerArt, oblivionArenaArt } from './gates-of-oblivion';
 
 describe('delivered Calamity artwork', () => {
   it('has all twelve boss cutouts and three tier-shared chests and arenas', () => {
@@ -19,11 +20,14 @@ describe('delivered Calamity artwork', () => {
     }
   });
 
-  it('resolves all eighteen installed files with exact byte revisions and deployment-base URLs', () => {
+  it('resolves all thirty Calamity and Oblivion files with exact byte revisions and deployment-base URLs', () => {
     const paths = [
       ...Object.values(calamityBossArt).map(art => `enemies/${art}.png`),
       ...Object.values(calamityChestArt).map(art => `items/${art}.png`),
       ...Object.values(calamityArenaArt).map(art => `backgrounds/${art}`),
+      ...oblivionConstructs.map(construct => `enemies/${oblivionConstructArt(construct)}.png`),
+      oblivionBannerArt,
+      `backgrounds/${oblivionArenaArt}`,
     ];
     expect(paths.sort()).toEqual(Object.keys(calamityArtRevisions).sort());
     for (const path of paths) {
