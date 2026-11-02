@@ -1,5 +1,11 @@
 # Menus and inventory
 
+## Gates of Oblivion framing (D-444)
+
+Gates of Oblivion uses the full activity content column, like Machines and Events.
+Do not reserve the dungeon Location picker's empty column for activities without
+a picker. Keep desktop media/details and mobile stacking, floor controls and gates.
+
 ## Squad portrait containment and Calamitic Ascension
 
 The squad picker sizes scrollable rows from their content, not the available

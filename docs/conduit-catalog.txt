@@ -374,7 +374,7 @@ Ability (Default Value): Your [Last Flare] gains +99% [Skill Power]. All your [A
 OMNIC (93)
 ==============================================================================
 
-Name: Absolution Rose-Window Engine
+Name: Absolution Planetary Suppressor
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Ozriel only)
 Ability (Default Value): [Pane of Absolution] also applies 25% [Weaken] to every other living enemy until the end of the next [Enemy Turn]. Ozriel gains +55% [Defense] and +45% [Skill Power].
@@ -419,11 +419,6 @@ Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Vaelor only)
 Ability (Default Value): On [Tune], Vaelor's [Normal Attack] grants each other living ally +25% [Critical Rate] for their next [Attack Action]. On [Crescendo], it grants +40% [Critical Damage Multiplier] instead. Vaelor gains +30% [Critical Rate] and +45% [Elemental Gauge Gain].
 
-Name: Cathedral of the Refused End
-Rarity: Omnic (Master)
-Element: Tranquilitic (named bearer's actual element; Master for Ozriel only)
-Ability (Default Value): [The World Refuses] restores [Refusal] for every living squad member who already used it this [Battle]. Ozriel gains +55% [Health] and +45% [Skill Efficiency].
-
 Name: Cinder Testament
 Rarity: Omnic
 Element: Infernic (actual gameplay element)
@@ -459,6 +454,11 @@ Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Orvella only)
 Ability (Default Value): Store 40% of the durability absorbed by [Foundation] as healing. At the next [Player Turn], split that healing equally among injured living allies, capped at 12% of each recipient's maximum [Health]. All [Squad Members] gain +55% [Health] and +35% [Skill Power].
 
+Name: Denied Fate Eclipse Annihilator
+Rarity: Omnic (Master)
+Element: Chaotic (named bearer's actual element; Master for Kaelith only)
+Ability (Default Value): [Denial of Fate] sets every enemy it damages to 3 [Faults]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain].
+
 Name: Duality Planet Flamewheel
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Crinso only)
@@ -468,11 +468,6 @@ Name: Eclipse Mantle
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
 Ability (Default Value): Your [Skills] ignore 35% of a Weakened enemy's [Defense]. If another ally applied that [Weaken], gain +20% [Skill Power] against that enemy. +35% [Skill Power], and +45% [Last Flare] [Direct Damage].
-
-Name: Eclipse of Denied Fate
-Rarity: Omnic (Master)
-Element: Chaotic (named bearer's actual element; Master for Kaelith only)
-Ability (Default Value): [Denial of Fate] sets every enemy it damages to 3 [Faults]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain].
 
 Name: Eclipse Planet Watchtower
 Rarity: Omnic (Master)
@@ -529,7 +524,7 @@ Rarity: Omnic
 Element: Chaotic (actual gameplay element)
 Ability (Default Value): Applying [Weaken] grants the most injured ally +30% [Defense] for the next [Enemy Turn]. If they are below 50% [Health], also restore 6% of their maximum [Health]. Once per [Skill]. +25% [Skill Efficiency] and all [Squad Members] gain +55% [Health].
 
-Name: Glass Meridian Guillotine
+Name: Glass Meridian Singularity Harvester
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Kaelith only)
 Ability (Default Value): When [Glass Meridian] consumes 3 [Faults], it ignores 40% of the target's [Defense]. Kaelith gains +55% [Skill Power] and +45% [Direct Attack].
@@ -554,7 +549,7 @@ Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Atmoso only)
 Ability (Default Value): When Atmoso's [Cyclone] releases, each living ally gains a [Shield] equal to 30% of the total enemy [Health] it removed that lasts until broken. All [Squad Members] gain +55% [Health] and +45% [Defense].
 
-Name: Hymnwind Glass Carillon
+Name: Hymnwind Imperial Turbine
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Ilvaris only)
 Ability (Default Value): [Hymn of Broken Glass] also grants every living squad member 8% [Elemental Gauge]. Ilvaris gains +65% [Health] and +45% [Skill Efficiency].
@@ -659,6 +654,11 @@ Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Bliss only)
 Ability (Default Value): [Thousandfeather Stillness] grants each other living ally +25% [Skill Efficiency] for their next [Skill]. When cast in [Closing], that [Skill] also gains +1 turn [Skill Duration]. Bliss gains +25% [Skill Efficiency] and +35% [Elemental Gauge Gain].
 
+Name: Refusal Sovereign Heartdrive
+Rarity: Omnic (Master)
+Element: Tranquilitic (named bearer's actual element; Master for Ozriel only)
+Ability (Default Value): When [Refusal] keeps a squad member at 1 HP, that member also gains a [Shield] worth 20% of their maximum Health that lasts until broken. Ozriel gains +75% [Health] and +65% [Defense].
+
 Name: Rose Beyond the Sun Orrery
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Rosetta only)
@@ -684,7 +684,7 @@ Rarity: Omnic
 Element: Tranquilitic (actual gameplay element)
 Ability (Default Value): Your first critical [Attack Action] each [Player Turn] heals every living ally for 6% of their own maximum [Health]. All [Squad Members] gain +65% [Health].
 
-Name: Severed Prophecy Orrery
+Name: Severed Prophecy Chronodrive
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Ilvaris only)
 Ability (Default Value): [Tomorrow, Unwritten] adds 1 [Fate-seared Mark] stack to every living enemy, up to 5. Ilvaris gains +55% [Skill Power] and +55% [Elemental Gauge Gain].
@@ -764,7 +764,7 @@ Rarity: Omnic
 Element: Atmospheric (actual gameplay element)
 Ability (Default Value): Your first critical [Skill] each [Player Turn] grants the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] that lasts until broken. +85% [Defense] and +30% [Critical Rate].
 
-Name: Thousand-Fault Shatter Loom
+Name: Thousand-Fault Rupture Accelerator
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Kaelith only)
 Ability (Default Value): [Shatterfall] adds 1 extra [Fault] to every enemy it damages, up to 3. Kaelith gains +40% [Skill Efficiency] and +30% [Critical Rate].
@@ -829,12 +829,12 @@ Rarity: Omnic (Master)
 Element: Oceanic (named bearer's actual element; Master for Tizu only)
 Ability (Default Value): Allies holding Tizu's [Shields] ignore 25% of enemy [Defense] when attacking enemies carrying his [Weaken]. +95% [Defense] and +35% [Skill Power].
 
-Name: Unfallen Nave Reliquary
+Name: Unfallen Continuum Worldengine
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Ozriel only)
-Ability (Default Value): When [Refusal] keeps a squad member at 1 HP, that member also gains a [Shield] worth 20% of their maximum Health that lasts until broken. Ozriel gains +75% [Health] and +65% [Defense].
+Ability (Default Value): [The World Refuses] restores [Refusal] for every living squad member who already used it this [Battle]. Ozriel gains +55% [Health] and +45% [Skill Efficiency].
 
-Name: Unsung Verse Choir-Organ
+Name: Unsung Verse Harmonic Supercharger
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Ilvaris only)
 Ability (Default Value): [Unwritten Verse] adds 2 [Fate-seared Mark] stacks instead of 1, up to 5. Ilvaris gains +45% [Skill Power] and +45% [Skill Efficiency].

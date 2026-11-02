@@ -1,5 +1,24 @@
 # Current state and handoff
 
+## Oblivion framing and machine-only Masters (D-444)
+
+- Gates of Oblivion no longer reserves an empty Location-picker column. Its
+  card fills the activity content area; existing desktop/media and mobile stacking remain.
+- Nine Calamitic Masters renamed in content/catalog/native feedback and
+  regenerated as distinct integrated luxury machines, not architecture or
+  enlarged household objects. Stable IDs, effects, ownership and stats unchanged.
+- Reproduce: `python tools/build_calamitic_art.py` and
+  `node tools/build_phase_zero_conduit_catalog.mjs`. Images remain pending.
+- Validation: 367 focused Vitest tests passed (contract, redesign, Masters,
+  Master matrix, activity banners); 8 Python Calamitic-art tests passed,
+  including machine-only exclusions and name synchronization. Real offline UI:
+  card/group widths match at desktop (1991px) and 390px mobile (339px), no
+  horizontal overflow; mobile floor/entry targets are 44px/49px tall.
+- `npm run build`, server TypeScript and Deno checks passed; authority bundle
+  regenerated and `game-operation` deployed. `node tools/smoke_server_game.mjs`
+  passed against the hosted authority and cleaned up its temporary accounts.
+  The build's existing large-chunk advisory is unchanged.
+
 ## Conduit art foundation, Resonance, buttons and recruit art (D-443)
 
 - Buttons: `button-style.ts` classifies by layout size and never tags wide text

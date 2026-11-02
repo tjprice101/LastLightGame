@@ -256,7 +256,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
         if (equipped(owner, 'master-ozriel-3') && memory.refusalUsed?.length) {
           const alive = new Set(allies.map(unit => unit.id));
           memory.refusalUsed = memory.refusalUsed.filter(id => !alive.has(id));
-          status(state, events, owner, owner, 'Cathedral of the Refused End: Refusal restored for every living squad member.');
+          status(state, events, owner, owner, 'Unfallen Continuum Worldengine: Refusal restored for every living squad member.');
         }
       }
       if (action === 'skill2' || action === 'ultimate') for (const recipient of allies)

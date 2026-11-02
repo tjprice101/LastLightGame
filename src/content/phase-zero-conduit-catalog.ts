@@ -248,7 +248,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "ability": "Your [Last Flare] gains +99% [Skill Power]. All your [Attack Actions] gain +65% [Direct Damage]."
   },
   "master-ozriel-2": {
-    "name": "Absolution Rose-Window Engine",
+    "name": "Absolution Planetary Suppressor",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Ozriel only)",
     "ability": "[Pane of Absolution] also applies 25% [Weaken] to every other living enemy until the end of the next [Enemy Turn]. Ozriel gains +55% [Defense] and +45% [Skill Power]."
@@ -301,12 +301,6 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Atmospheric (named bearer's actual element; Master for Vaelor only)",
     "ability": "On [Tune], Vaelor's [Normal Attack] grants each other living ally +25% [Critical Rate] for their next [Attack Action]. On [Crescendo], it grants +40% [Critical Damage Multiplier] instead. Vaelor gains +30% [Critical Rate] and +45% [Elemental Gauge Gain]."
   },
-  "master-ozriel-3": {
-    "name": "Cathedral of the Refused End",
-    "rarity": "Omnic (Master)",
-    "element": "Tranquilitic (named bearer's actual element; Master for Ozriel only)",
-    "ability": "[The World Refuses] restores [Refusal] for every living squad member who already used it this [Battle]. Ozriel gains +55% [Health] and +45% [Skill Efficiency]."
-  },
   "infernic-cinder-testament": {
     "name": "Cinder Testament",
     "rarity": "Omnic",
@@ -349,6 +343,12 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Botanic (named bearer's actual element; Master for Orvella only)",
     "ability": "Store 40% of the durability absorbed by [Foundation] as healing. At the next [Player Turn], split that healing equally among injured living allies, capped at 12% of each recipient's maximum [Health]. All [Squad Members] gain +55% [Health] and +35% [Skill Power]."
   },
+  "master-kaelith-3": {
+    "name": "Denied Fate Eclipse Annihilator",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Kaelith only)",
+    "ability": "[Denial of Fate] sets every enemy it damages to 3 [Faults]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain]."
+  },
   "master-crinso-2": {
     "name": "Duality Planet Flamewheel",
     "rarity": "Omnic (Master)",
@@ -360,12 +360,6 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
     "ability": "Your [Skills] ignore 35% of a Weakened enemy's [Defense]. If another ally applied that [Weaken], gain +20% [Skill Power] against that enemy. +35% [Skill Power], and +45% [Last Flare] [Direct Damage]."
-  },
-  "master-kaelith-3": {
-    "name": "Eclipse of Denied Fate",
-    "rarity": "Omnic (Master)",
-    "element": "Chaotic (named bearer's actual element; Master for Kaelith only)",
-    "ability": "[Denial of Fate] sets every enemy it damages to 3 [Faults]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain]."
   },
   "master-razor-2": {
     "name": "Eclipse Planet Watchtower",
@@ -434,7 +428,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "ability": "Applying [Weaken] grants the most injured ally +30% [Defense] for the next [Enemy Turn]. If they are below 50% [Health], also restore 6% of their maximum [Health]. Once per [Skill]. +25% [Skill Efficiency] and all [Squad Members] gain +55% [Health]."
   },
   "master-kaelith-1": {
-    "name": "Glass Meridian Guillotine",
+    "name": "Glass Meridian Singularity Harvester",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Kaelith only)",
     "ability": "When [Glass Meridian] consumes 3 [Faults], it ignores 40% of the target's [Defense]. Kaelith gains +55% [Skill Power] and +45% [Direct Attack]."
@@ -464,7 +458,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "ability": "When Atmoso's [Cyclone] releases, each living ally gains a [Shield] equal to 30% of the total enemy [Health] it removed that lasts until broken. All [Squad Members] gain +55% [Health] and +45% [Defense]."
   },
   "master-ilvaris-2": {
-    "name": "Hymnwind Glass Carillon",
+    "name": "Hymnwind Imperial Turbine",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Ilvaris only)",
     "ability": "[Hymn of Broken Glass] also grants every living squad member 8% [Elemental Gauge]. Ilvaris gains +65% [Health] and +45% [Skill Efficiency]."
@@ -589,6 +583,12 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Tranquilitic (named bearer's actual element; Master for Bliss only)",
     "ability": "[Thousandfeather Stillness] grants each other living ally +25% [Skill Efficiency] for their next [Skill]. When cast in [Closing], that [Skill] also gains +1 turn [Skill Duration]. Bliss gains +25% [Skill Efficiency] and +35% [Elemental Gauge Gain]."
   },
+  "master-ozriel-1": {
+    "name": "Refusal Sovereign Heartdrive",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Ozriel only)",
+    "ability": "When [Refusal] keeps a squad member at 1 HP, that member also gains a [Shield] worth 20% of their maximum Health that lasts until broken. Ozriel gains +75% [Health] and +65% [Defense]."
+  },
   "master-rosetta-1": {
     "name": "Rose Beyond the Sun Orrery",
     "rarity": "Omnic (Master)",
@@ -620,7 +620,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "ability": "Your first critical [Attack Action] each [Player Turn] heals every living ally for 6% of their own maximum [Health]. All [Squad Members] gain +65% [Health]."
   },
   "master-ilvaris-3": {
-    "name": "Severed Prophecy Orrery",
+    "name": "Severed Prophecy Chronodrive",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Ilvaris only)",
     "ability": "[Tomorrow, Unwritten] adds 1 [Fate-seared Mark] stack to every living enemy, up to 5. Ilvaris gains +55% [Skill Power] and +55% [Elemental Gauge Gain]."
@@ -716,7 +716,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "ability": "Your first critical [Skill] each [Player Turn] grants the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] that lasts until broken. +85% [Defense] and +30% [Critical Rate]."
   },
   "master-kaelith-2": {
-    "name": "Thousand-Fault Shatter Loom",
+    "name": "Thousand-Fault Rupture Accelerator",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Kaelith only)",
     "ability": "[Shatterfall] adds 1 extra [Fault] to every enemy it damages, up to 3. Kaelith gains +40% [Skill Efficiency] and +30% [Critical Rate]."
@@ -793,14 +793,14 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Oceanic (named bearer's actual element; Master for Tizu only)",
     "ability": "Allies holding Tizu's [Shields] ignore 25% of enemy [Defense] when attacking enemies carrying his [Weaken]. +95% [Defense] and +35% [Skill Power]."
   },
-  "master-ozriel-1": {
-    "name": "Unfallen Nave Reliquary",
+  "master-ozriel-3": {
+    "name": "Unfallen Continuum Worldengine",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Ozriel only)",
-    "ability": "When [Refusal] keeps a squad member at 1 HP, that member also gains a [Shield] worth 20% of their maximum Health that lasts until broken. Ozriel gains +75% [Health] and +65% [Defense]."
+    "ability": "[The World Refuses] restores [Refusal] for every living squad member who already used it this [Battle]. Ozriel gains +55% [Health] and +45% [Skill Efficiency]."
   },
   "master-ilvaris-1": {
-    "name": "Unsung Verse Choir-Organ",
+    "name": "Unsung Verse Harmonic Supercharger",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Ilvaris only)",
     "ability": "[Unwritten Verse] adds 2 [Fate-seared Mark] stacks instead of 1, up to 5. Ilvaris gains +45% [Skill Power] and +45% [Skill Efficiency]."

@@ -479,7 +479,7 @@ var approvedConduitCatalog = {
     "ability": "Your [Last Flare] gains +99% [Skill Power]. All your [Attack Actions] gain +65% [Direct Damage]."
   },
   "master-ozriel-2": {
-    "name": "Absolution Rose-Window Engine",
+    "name": "Absolution Planetary Suppressor",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Ozriel only)",
     "ability": "[Pane of Absolution] also applies 25% [Weaken] to every other living enemy until the end of the next [Enemy Turn]. Ozriel gains +55% [Defense] and +45% [Skill Power]."
@@ -532,12 +532,6 @@ var approvedConduitCatalog = {
     "element": "Atmospheric (named bearer's actual element; Master for Vaelor only)",
     "ability": "On [Tune], Vaelor's [Normal Attack] grants each other living ally +25% [Critical Rate] for their next [Attack Action]. On [Crescendo], it grants +40% [Critical Damage Multiplier] instead. Vaelor gains +30% [Critical Rate] and +45% [Elemental Gauge Gain]."
   },
-  "master-ozriel-3": {
-    "name": "Cathedral of the Refused End",
-    "rarity": "Omnic (Master)",
-    "element": "Tranquilitic (named bearer's actual element; Master for Ozriel only)",
-    "ability": "[The World Refuses] restores [Refusal] for every living squad member who already used it this [Battle]. Ozriel gains +55% [Health] and +45% [Skill Efficiency]."
-  },
   "infernic-cinder-testament": {
     "name": "Cinder Testament",
     "rarity": "Omnic",
@@ -580,6 +574,12 @@ var approvedConduitCatalog = {
     "element": "Botanic (named bearer's actual element; Master for Orvella only)",
     "ability": "Store 40% of the durability absorbed by [Foundation] as healing. At the next [Player Turn], split that healing equally among injured living allies, capped at 12% of each recipient's maximum [Health]. All [Squad Members] gain +55% [Health] and +35% [Skill Power]."
   },
+  "master-kaelith-3": {
+    "name": "Denied Fate Eclipse Annihilator",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Kaelith only)",
+    "ability": "[Denial of Fate] sets every enemy it damages to 3 [Faults]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain]."
+  },
   "master-crinso-2": {
     "name": "Duality Planet Flamewheel",
     "rarity": "Omnic (Master)",
@@ -591,12 +591,6 @@ var approvedConduitCatalog = {
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
     "ability": "Your [Skills] ignore 35% of a Weakened enemy's [Defense]. If another ally applied that [Weaken], gain +20% [Skill Power] against that enemy. +35% [Skill Power], and +45% [Last Flare] [Direct Damage]."
-  },
-  "master-kaelith-3": {
-    "name": "Eclipse of Denied Fate",
-    "rarity": "Omnic (Master)",
-    "element": "Chaotic (named bearer's actual element; Master for Kaelith only)",
-    "ability": "[Denial of Fate] sets every enemy it damages to 3 [Faults]. Kaelith gains +45% [Skill Power] and +45% [Elemental Gauge Gain]."
   },
   "master-razor-2": {
     "name": "Eclipse Planet Watchtower",
@@ -665,7 +659,7 @@ var approvedConduitCatalog = {
     "ability": "Applying [Weaken] grants the most injured ally +30% [Defense] for the next [Enemy Turn]. If they are below 50% [Health], also restore 6% of their maximum [Health]. Once per [Skill]. +25% [Skill Efficiency] and all [Squad Members] gain +55% [Health]."
   },
   "master-kaelith-1": {
-    "name": "Glass Meridian Guillotine",
+    "name": "Glass Meridian Singularity Harvester",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Kaelith only)",
     "ability": "When [Glass Meridian] consumes 3 [Faults], it ignores 40% of the target's [Defense]. Kaelith gains +55% [Skill Power] and +45% [Direct Attack]."
@@ -695,7 +689,7 @@ var approvedConduitCatalog = {
     "ability": "When Atmoso's [Cyclone] releases, each living ally gains a [Shield] equal to 30% of the total enemy [Health] it removed that lasts until broken. All [Squad Members] gain +55% [Health] and +45% [Defense]."
   },
   "master-ilvaris-2": {
-    "name": "Hymnwind Glass Carillon",
+    "name": "Hymnwind Imperial Turbine",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Ilvaris only)",
     "ability": "[Hymn of Broken Glass] also grants every living squad member 8% [Elemental Gauge]. Ilvaris gains +65% [Health] and +45% [Skill Efficiency]."
@@ -820,6 +814,12 @@ var approvedConduitCatalog = {
     "element": "Tranquilitic (named bearer's actual element; Master for Bliss only)",
     "ability": "[Thousandfeather Stillness] grants each other living ally +25% [Skill Efficiency] for their next [Skill]. When cast in [Closing], that [Skill] also gains +1 turn [Skill Duration]. Bliss gains +25% [Skill Efficiency] and +35% [Elemental Gauge Gain]."
   },
+  "master-ozriel-1": {
+    "name": "Refusal Sovereign Heartdrive",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Ozriel only)",
+    "ability": "When [Refusal] keeps a squad member at 1 HP, that member also gains a [Shield] worth 20% of their maximum Health that lasts until broken. Ozriel gains +75% [Health] and +65% [Defense]."
+  },
   "master-rosetta-1": {
     "name": "Rose Beyond the Sun Orrery",
     "rarity": "Omnic (Master)",
@@ -851,7 +851,7 @@ var approvedConduitCatalog = {
     "ability": "Your first critical [Attack Action] each [Player Turn] heals every living ally for 6% of their own maximum [Health]. All [Squad Members] gain +65% [Health]."
   },
   "master-ilvaris-3": {
-    "name": "Severed Prophecy Orrery",
+    "name": "Severed Prophecy Chronodrive",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Ilvaris only)",
     "ability": "[Tomorrow, Unwritten] adds 1 [Fate-seared Mark] stack to every living enemy, up to 5. Ilvaris gains +55% [Skill Power] and +55% [Elemental Gauge Gain]."
@@ -947,7 +947,7 @@ var approvedConduitCatalog = {
     "ability": "Your first critical [Skill] each [Player Turn] grants the living ally with the lowest [Health] percentage a [Shield] worth 15% of their maximum [Health] that lasts until broken. +85% [Defense] and +30% [Critical Rate]."
   },
   "master-kaelith-2": {
-    "name": "Thousand-Fault Shatter Loom",
+    "name": "Thousand-Fault Rupture Accelerator",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Kaelith only)",
     "ability": "[Shatterfall] adds 1 extra [Fault] to every enemy it damages, up to 3. Kaelith gains +40% [Skill Efficiency] and +30% [Critical Rate]."
@@ -1024,14 +1024,14 @@ var approvedConduitCatalog = {
     "element": "Oceanic (named bearer's actual element; Master for Tizu only)",
     "ability": "Allies holding Tizu's [Shields] ignore 25% of enemy [Defense] when attacking enemies carrying his [Weaken]. +95% [Defense] and +35% [Skill Power]."
   },
-  "master-ozriel-1": {
-    "name": "Unfallen Nave Reliquary",
+  "master-ozriel-3": {
+    "name": "Unfallen Continuum Worldengine",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Ozriel only)",
-    "ability": "When [Refusal] keeps a squad member at 1 HP, that member also gains a [Shield] worth 20% of their maximum Health that lasts until broken. Ozriel gains +75% [Health] and +65% [Defense]."
+    "ability": "[The World Refuses] restores [Refusal] for every living squad member who already used it this [Battle]. Ozriel gains +55% [Health] and +45% [Skill Efficiency]."
   },
   "master-ilvaris-1": {
-    "name": "Unsung Verse Choir-Organ",
+    "name": "Unsung Verse Harmonic Supercharger",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Ilvaris only)",
     "ability": "[Unwritten Verse] adds 2 [Fate-seared Mark] stacks instead of 1, up to 5. Ilvaris gains +45% [Skill Power] and +45% [Skill Efficiency]."
@@ -3459,56 +3459,56 @@ var masterConduits = [
   master(
     "ozriel",
     1,
-    "Unfallen Nave Reliquary",
-    "A white cathedral reliquary engine around one upright tower-shield core, black flying-buttress clamps, a crimson lifeline spindle and six shattered-glass nave wings"
+    "Refusal Sovereign Heartdrive",
+    "A colossal Tranquilitic life-preservation reactor with a crimson crystal heart, three geared flywheels and six hydraulic arms deploying pearlescent shield plates from a black armored chassis"
   ),
   master(
     "ozriel",
     2,
-    "Absolution Rose-Window Engine",
-    "A colossal white rose-window wheel of interlocking glass panes, a glass halberd axle through its hub and crimson fracture spokes splitting outward into black suppression shutters"
+    "Absolution Planetary Suppressor",
+    "A colossal Tranquilitic radial suppression engine with a white segmented iris, six articulated emitter barrels, crimson compression cylinders and integrated halberd-shaped cutting fins"
   ),
   master(
     "ozriel",
     3,
-    "Cathedral of the Refused End",
-    "A walking cathedral-fortress machine of stacked white glass naves and black buttress legs, three cracked crimson crown-halos and a sealed great door that refuses to open"
+    "Unfallen Continuum Worldengine",
+    "A colossal Tranquilitic twin-chamber regenerative engine with crimson reactors, an exposed crankshaft, pearlescent flywheel petals, piston banks and reserve pressure tanks"
   ),
   master(
     "ilvaris",
     1,
-    "Unsung Verse Choir-Organ",
-    "A white glass pipe organ of ascending crystal pipes on a black lacquered console, twin crimson string-lances and fate-seal diamonds fanned like a choir"
+    "Unsung Verse Harmonic Supercharger",
+    "A colossal Atmospheric harmonic supercharger with three crimson resonance cores, black helical impellers, pearlescent feather vanes and tensioned resonator filaments across exposed gear drums"
   ),
   master(
     "ilvaris",
     2,
-    "Hymnwind Glass Carillon",
-    "A tiered white glass bell carillon in a black halo cage, wind-turbine petal vanes and crimson ribbon channels spiralling upward through nested chimes"
+    "Hymnwind Imperial Turbine",
+    "A colossal Atmospheric axial wind turbine with counter-rotating pearlescent vanes, black armored nacelles, crimson crystal core and six articulated thrust-vector nozzles"
   ),
   master(
     "ilvaris",
     3,
-    "Severed Prophecy Orrery",
-    "A black clockwork prophecy orrery with a white glass halo-lyre as its axis, broken calendar rings split by a single crimson string and orbiting white pane moons"
+    "Severed Prophecy Chronodrive",
+    "A colossal Atmospheric gyroscopic timing engine with tilted black gear rings, crimson crystal escapement, white differential housings and pearlescent swept stabilizer fins"
   ),
   master(
     "kaelith",
     1,
-    "Glass Meridian Guillotine",
-    "A black obsidian guillotine frame with a white cracked-glass crescent scythe blade, crimson meridian rails and three fault-locking clamp jaws"
+    "Glass Meridian Singularity Harvester",
+    "A colossal Chaotic rotary fracture harvester with opposing pearlescent scythe rotors, black armored axle, three crimson compression cores and articulated clamp jaws"
   ),
   master(
     "kaelith",
     2,
-    "Thousand-Fault Shatter Loom",
-    "A colossal black loom whose shuttle is a white glass scythe crescent, weaving crimson fracture threads across hundreds of suspended white glass panes"
+    "Thousand-Fault Rupture Accelerator",
+    "A colossal Chaotic triple-rail rupture accelerator with crimson induction chambers, black armored drive spine, pearlescent crescent cam blades and branching piston arrays"
   ),
   master(
     "kaelith",
     3,
-    "Eclipse of Denied Fate",
-    "A black eclipse engine ringed by twin white glass scythe crescents, a severed crimson fate-thread through its core and eighteen angular glass blade-feathers"
+    "Denied Fate Eclipse Annihilator",
+    "A colossal Chaotic eclipse annihilation engine with a black containment core, counter-rotating pearlescent crescent rotors, eighteen blade radiators and crimson crystal injectors"
   )
 ];
 function isMasterConduitId(value2) {
@@ -7473,7 +7473,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
         if (equipped(owner, "master-ozriel-3") && memory.refusalUsed?.length) {
           const alive2 = new Set(allies.map((unit) => unit.id));
           memory.refusalUsed = memory.refusalUsed.filter((id) => !alive2.has(id));
-          status3(state, events, owner, owner, "Cathedral of the Refused End: Refusal restored for every living squad member.");
+          status3(state, events, owner, owner, "Unfallen Continuum Worldengine: Refusal restored for every living squad member.");
         }
       }
       if (action === "skill2" || action === "ultimate") for (const recipient of allies)

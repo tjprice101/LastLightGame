@@ -11,6 +11,20 @@ and keep the cutout rules: no glow, no figures, solid key and full margins.
 Creator names stay out of image prose. The reference phrase is `CONDUIT_FOUNDATION` in
 `tools/build_calamitic_art.py`. The nine Calamitic Master prompts already use it.
 
+### Machines, not architecture (D-444)
+
+The original [Omnic Machines](../Art/creatures/Awaken%20the%20Machines.md)
+are the visual reference: luxurious integrated chassis, exposed precision gears,
+crystal reactors, armored housings, pistons and articulated assemblies.
+Scale comes from dense, masterfully crafted mechanical workings, never buildings,
+cathedrals, towers, furniture or enlarged musical instruments. Preserve vibrant
+character palettes and pearlescent specular highlights without adding glow or
+colors outside the palette. Keep the entire machine within its clear 15% margins.
+The nine Calamitic Masters now use distinct reactor, suppression, regeneration,
+supercharger, turbine, timing, harvester, accelerator and annihilation designs.
+Their names and catalog descriptions match the new prompts; IDs/effects are unchanged.
+Images remain pending delivery.
+
 ## Delivered Phase 0 Calamity artwork (D-441)
 
 Reproduce with `python tools/intake_calamity_phase0_art.py --review DIR` (review

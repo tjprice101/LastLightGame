@@ -1,5 +1,14 @@
 # Last Light: AI agent entry point
 
+## Conduits are machines, not architecture (D-444)
+
+Legendary/Omnic/Master Conduits must read as integrated, luxurious machines:
+armored chassis, visible gears, crystal reactors, pistons, articulated assemblies
+and polished pearlescent craftsmanship. Use the original Omnic Machines batch
+as the visual reference, not buildings, cathedrals or enlarged household objects.
+Keep each bearer's element/palette, compact renderer and complete outer margins.
+The nine renamed Calamitic Masters retain their IDs/effects; art remains pending.
+
 ## Conduit art foundation, Resonance, buttons (D-443)
 
 ALL Legendary/Omnic/Master Conduit art: cosmic, ornate, resplendent machinery

@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from build_calamitic_art import (
-    DESIGNS, STATUSES, MATERIALS, CONDUITS, PALETTE, PALETTE_LOCK, MARGINS,
+    DESIGNS, STATUSES, MATERIALS, CONDUITS, MASTERS, PALETTE, PALETTE_LOCK, MARGINS,
     outputs, references, write_preserving_endings,
 )
 
@@ -39,10 +39,19 @@ class CalamiticArtTests(unittest.TestCase):
         self.assertEqual(len(blocks), 9)
         for prompt in blocks:
             for phrase in ("cosmic ornate resplendent mechanical masterpiece", "shimmers and shines in the light",
-                           PALETTE_LOCK, "object-only emblem with no people"):
+                           "one integrated luxury-scale chassis", PALETTE_LOCK, "object-only emblem with no people"):
                 self.assertIn(phrase, prompt)
+            design = prompt.split(" --no ")[0]
+            self.assertNotRegex(design, r"\b(?:cathedral|building|nave|buttress|spire|temple|bell|organ|carillon|loom|guillotine)\b")
+            for excluded in ("buildings", "cathedral", "musical instrument"):
+                self.assertIn(excluded, prompt.split(" --no ")[1])
             self.assertNotRegex(prompt.split(" --no ")[0].replace("no glows or glowing visual effects", "")
                                 .replace("non-emissive", ""), r"\b(?:glow|glowing|luminous|emissive)\b")
+        runtime = (next(iter(outputs())).parents[2] / "src/content/master-conduits.ts").read_text(encoding="utf-8")
+        for asset, name, bearer, symbol in MASTERS:
+            character, slot = asset.removeprefix("master-").rsplit("-", 1)
+            self.assertIn(f"master('{character}', {slot}, '{name}'", runtime)
+            self.assertIn({"Ozriel": "Tranquilitic", "Ilvaris": "Atmospheric", "Kaelith": "Chaotic"}[bearer], symbol)
 
     def test_regeneration_preserves_existing_line_endings(self):
         for newline in (b"\n", b"\r\n"):

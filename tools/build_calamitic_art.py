@@ -91,33 +91,33 @@ CONDUITS = (
     ("Throne of the Lone Apostate", "an immense empty black-and-white command throne with a solitary central seat, nested defensive wings and one inward-focused crimson power circuit, no seated figure"),
     ("Worldbreaker Cannonade", "a colossal fan of nine jointed black-and-white annihilation cannon barrels linked to one crimson compression core, segmented rails and concentric white discharge wedges aimed across a wide arc"),
 )
-# D-442: three Masters per Calamitic Element-Bearer; motifs follow each bearer's weapon and kit exactly.
+# D-444: integrated luxury-scale machines, not buildings or enlarged household objects.
 MASTERS = (
-    ("master-ozriel-1", "Unfallen Nave Reliquary", "Ozriel",
-     "upright white enamel cathedral reliquary machine, a tall pearlescent tower shield standing at its center as the core, four black lacquered flying-buttress clamps gripping the shield edges, a crimson lifeline spindle coiled with crimson cable up its spine, six flat shattered-glass nave wings fanned symmetrically behind, pointed white glass spires on top"),
-    ("master-ozriel-2", "Absolution Rose-Window Engine", "Ozriel",
-     "round white glass rose-window wheel of interlocking geometric panes in a thick black lacquered frame, a glass halberd driven through the hub as its axle, crimson fracture spokes splitting the panes outward, eight angled black suppression shutters around the rim"),
-    ("master-ozriel-3", "Cathedral of the Refused End", "Ozriel",
-     "compact walking cathedral-fortress machine, stacked white enamel nave towers with pointed arches, four jointed black buttress legs planted wide, a sealed tall black great door barred by crimson cross-locks at its front, three cracked crimson crown-halos stacked above the central spire, shattered white glass pane windows"),
-    ("master-ilvaris-1", "Unsung Verse Choir-Organ", "Ilvaris",
-     "white glass pipe organ machine, ascending faceted crystal pipes arranged in a symmetrical fan, a black lacquered console base with crimson inlay lines, two crimson string-lances crossing in front of the pipes, a halo of crimson diamond seal plates above"),
-    ("master-ilvaris-2", "Hymnwind Glass Carillon", "Ilvaris",
-     "tiered white glass bell carillon, three stacked rings of hanging faceted glass bells inside a black lacquered halo cage, angled white wind-turbine petal vanes around the cage, crimson ribbon channels spiralling upward through the chimes, a cracked white halo on top"),
-    ("master-ilvaris-3", "Severed Prophecy Orrery", "Ilvaris",
-     "black clockwork orrery machine, an upright white glass halo-lyre with clearly separated strings as its central axis, three broken black calendar rings split clean by one taut crimson string, five small white glass pane moons on thin black orbit arms"),
-    ("master-kaelith-1", "Glass Meridian Guillotine", "Kaelith",
-     "tall black obsidian guillotine frame machine, a cracked white glass crescent scythe blade held high in the frame as the falling edge, two crimson meridian rails down the uprights, three black clamp jaws with crimson fracture marks at the base"),
-    ("master-kaelith-2", "Thousand-Fault Shatter Loom", "Kaelith",
-     "black lacquered weaving loom machine, a white cracked-glass scythe crescent as its shuttle, taut crimson fracture threads strung across the frame, dozens of small suspended white glass panes cracking along the threads, angular black heddle bars"),
-    ("master-kaelith-3", "Eclipse of Denied Fate", "Kaelith",
-     "black eclipse disk engine, two white cracked-glass scythe crescents curving around it in opposite directions, a severed crimson fate-thread pulled taut through the center with cut frayed ends, a fan of eighteen angular white glass blade-feathers behind the disk"),
+    ("master-ozriel-1", "Refusal Sovereign Heartdrive", "Ozriel",
+     "colossal armored life-preservation reactor, a sparkling crimson crystal heart locked between three counter-rotating flywheels, six hydraulic arms deploy overlapping pearlescent shield plates, exposed black gear trains and braided pressure conduits, broad low forward-thrust chassis, Tranquilitic stillness expressed by perfectly balanced shield gimbals"),
+    ("master-ozriel-2", "Absolution Planetary Suppressor", "Ozriel",
+     "colossal radial suppression engine, a white segmented iris inside a black toothed rotor, six articulated emitter barrels linked by crimson compression cylinders, halberd-shaped cutting fins integrated into the rotor housing, pearlescent armored jaw plates and visible reduction gears, Tranquilitic power expressed by concentric solid crimson restraint bands"),
+    ("master-ozriel-3", "Unfallen Continuum Worldengine", "Ozriel",
+     "colossal twin-chamber regenerative engine, two crimson crystal reactors connected by a thick exposed crankshaft, twelve pearlescent armored flywheel petals around black turbine hubs, interlocking piston banks and reserve pressure tanks, three nested stabilizer rings, Tranquilitic stillness expressed by perfectly aligned mechanical balances"),
+    ("master-ilvaris-1", "Unsung Verse Harmonic Supercharger", "Ilvaris",
+     "colossal harmonic supercharger, three faceted crimson resonance cores in a single white armored compressor housing, six black helical impellers with pearlescent feather-shaped vanes, tensioned crimson resonator filaments across exposed gear drums, Atmospheric power expressed by solid spiral wind ribbons through the connected exhaust nozzles"),
+    ("master-ilvaris-2", "Hymnwind Imperial Turbine", "Ilvaris",
+     "colossal axial wind turbine, two counter-rotating crowns of pearlescent blade vanes around a sparkling crimson core, swept black armored nacelles and six articulated thrust-vector nozzles, exposed ring bearings and geared intake shutters, Atmospheric power expressed by crisp white and crimson wind helices tightly wrapping the chassis"),
+    ("master-ilvaris-3", "Severed Prophecy Chronodrive", "Ilvaris",
+     "colossal gyroscopic timing engine, three tilted black gear rings mechanically linked around a crimson crystal escapement, white enamel differential housings with exposed pinions, suspended resonator wires terminate at toothed timing drums, pearlescent swept stabilizer fins, Atmospheric power expressed by angular wind ribbons crossing the broken timing circuit"),
+    ("master-kaelith-1", "Glass Meridian Singularity Harvester", "Kaelith",
+     "colossal rotary fracture harvester, two opposing pearlescent scythe-shaped cutting rotors on a black armored axle, three crimson compression cores joined by hydraulic feed lines, articulated clamp jaws and exposed planetary gears, Chaotic power expressed by tightly contained zigzag fracture ribbons feeding the cutting aperture"),
+    ("master-kaelith-2", "Thousand-Fault Rupture Accelerator", "Kaelith",
+     "colossal triple-rail rupture accelerator, three crimson crystal induction chambers along one black armored drive spine, six pearlescent crescent cam blades on linked flywheels, branching piston arrays and segmented focusing jaws, Chaotic power expressed by sharp crimson fracture tracks across captive white crystal plates"),
+    ("master-kaelith-3", "Denied Fate Eclipse Annihilator", "Kaelith",
+     "colossal eclipse annihilation engine, a black spherical containment core inside two counter-rotating pearlescent crescent rotors, eighteen articulated blade-shaped radiator vanes, crimson crystal injectors and exposed geared drive collars, Chaotic power expressed by a severed crimson circuit bursting into crisp angular shards within the machine"),
 )
 # D-443 foundation for every Legendary, Omnic and Master Conduit: cosmic, ornate, resplendent machinery made by
 # Let and Rise together; mechanical masterpieces that shimmer and shine in the light in the owner's thematic palette.
-CONDUIT_FOUNDATION = ("cosmic ornate resplendent mechanical masterpiece forged by two celestial creators together, "
-                      "precision gears, nested rings and layered filigree plates, gleaming polished enamel and "
+CONDUIT_FOUNDATION = ("cosmic ornate resplendent mechanical masterpiece, one integrated luxury-scale chassis, "
+                      "precision gears and layered engraved armor, gleaming polished enamel and "
                       "pearlescent metal that shimmers and shines in the light with crisp painted specular highlights, "
-                      "dense interior detail with narrow readable key channels")
+                      "vibrant saturated crimson crystal facets, dense workings with readable key channels")
 
 
 def slug(name):
@@ -223,7 +223,7 @@ def outputs():
         "dense interior construction and narrow readable key channels, painted dimensional metal facets"))
         for name, symbol in CONDUITS]
     masters = [block(f"{name} (Omnic Master / {bearer})", asset, "master-conduits", cutout(
-        f"one standalone {symbol}, {CONDUIT_FOUNDATION}"))
+        f"one standalone {symbol}, {CONDUIT_FOUNDATION}") + ", buildings, cathedral, towers, temple, house, furniture, musical instrument")
         for asset, name, bearer, symbol in MASTERS]
     emblem = block("Rise-blessed crown-burst", "rise-blessed-emblem", "ui", cutout(
         "one ornate mechanical crown-burst emblem, five white crown teeth on a black segmented ring, "
@@ -249,8 +249,10 @@ def outputs():
             "These extend, never replace, the [five installed Calamitic designs](Calamitic%20Conduits.md).", machines),
         art_path("conduits", "Calamitic Master Conduits.md", root=ROOT): document(
             "Calamitic Master Conduits", "Nine reference-free Master icons (D-442): three per Calamitic Element-Bearer. "
-            "Each machine is built from its bearer's own weapon and kit motif: Ozriel's tower shield, halberd and cathedral; "
-            "Ilvaris's halo-lyre, bells and severed prophecy; Kaelith's glass scythe, Faults and severed fate-thread. "
+            "D-444 replaces architectural and household-object silhouettes with integrated colossal machines, "
+            "following the original [Omnic machine batch](../creatures/Awaken%20the%20Machines.md). "
+            "Ozriel uses armored shield reactors and suppression machinery; Ilvaris uses harmonic compressors, "
+            "wind turbines and timing drives; Kaelith uses rotary harvesters, fracture accelerators and an eclipse engine. "
             "Foundation (D-443) for all Legendary, Omnic and Master Conduits: cosmic, ornate, resplendent machinery made by Let and Rise together, "
             "mechanical masterpieces that shimmer and shine in the light while staying true to the bearer's colors and element. "
             "Object-only machines, no figures. Effects live in docs/conduit-catalog.txt; the installed 48 Masters are in "

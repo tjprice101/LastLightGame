@@ -1,5 +1,12 @@
 # Gates of Oblivion (D-435 Section 2)
 
+## Menu layout (D-444)
+
+The activity card fills the content area beside the main activity navigation.
+Unlike elemental dungeons, this activity has no Location picker and reserves
+no empty picker column. Phones stack the existing banner, rewards, floor
+selector and entry controls without horizontal overflow; entry gates are unchanged. (D-435 Section 2)
+
 Gates of Oblivion is implemented as a Calamitic-gated, 25-floor progression activity. It is not a Calamity EX+ encounter. A profile must own Ozriel, Ilvaris, or Kaelith before Floor 1 can be entered. The activity remains visible while locked, with the ownership requirement shown in Play. Only the next uncleared floor is available. The gate is checked by the client, the server session-entry path, and the per-kill reward transaction.
 
 ## Floors and encounters
