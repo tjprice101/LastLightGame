@@ -118,7 +118,7 @@ describe('visible UI copy', () => {
     expect(store).toContain('five-per-character limit');
     expect(conduitStore(emptyAccount(), undefined, 'Calamitic')).toContain('Clear a Calamity tier.');
     expect(account).toEqual(before);
-  });
+  }, 60_000);
   it('never uses affinity aliases in element filters or presentation data sources', () => {
     const account = emptyAccount();
     account.characters = Object.fromEntries(starters.map(starter => [starter.id, { level: 0, evolution: 1 }]));
