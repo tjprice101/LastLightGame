@@ -3324,6 +3324,8 @@ Team detail headers lead with a large square portrait (up to ~19rem) beside the 
 
 Squad shows three slot cards (Leader first) with large portraits, name, rating and element/progress. Change/Choose (or clicking the card) opens a picker modal listing every owned Element-Bearer and Elemental-Devourer with All/Element-Bearers/Elemental-Devourers filters, name search and tags for members already placed; choosing a placed member swaps slots. Remove clears members 2-3; the leader cannot move into an empty slot. Changes are a draft until Save squad, which still submits the hidden slot-N selects in one atomic save.
 
+On desktop (961px and wider) the formation fills the Team panel height: slot portraits shrink or grow with the available space so the Change/Remove/Choose actions always stay visible without scrolling, falling back to panel scrolling only below a minimum slot height. The member picker spans nearly the full window width (up to 96rem, centered) with wider cards.
+
 ## Viewport-scaled text (D-237)
 
 The root font size grows with viewport width (bounded by height) from about 16.5px at 1280px up to 22px on wide windows, so menus fill large or zoomed-out screens instead of staying small. Size new menu text in rem so it follows this scale.
