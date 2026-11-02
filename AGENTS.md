@@ -8,6 +8,12 @@ repeat casts, uncapped (owner choice). Conduit/passive sizing and refresh rules,
 absorption order, Burn bypass, pierce and first-hit reduction unchanged.
 Calamity benchmark records accepted stalls. See docs/combat.md (D-434).
 
+## Short prompts (D-440)
+
+Owner wants short Midjourney prompts: front-load framing/margin/design, one-line
+palette, required background phrases, concise --no. Calamitic pack caps positive
+text at230 words (test_calamitic_art.py). Avoid long repeated boilerplate.
+
 ## Midjourney quality rules (D-439)
 
 Owner feedback: blurry portraits, no outer margin, green power-up backsplash on late forms,

@@ -3,9 +3,8 @@ import re
 import unittest
 from unittest.mock import Mock, patch
 
-from character_palette import apply_palette, design_prose, palette_clause
 from build_calamitic_art import (
-    DESIGNS, STATUSES, MATERIALS, CONDUITS, PALETTE, SPREAD, MARGINS,
+    DESIGNS, STATUSES, MATERIALS, CONDUITS, PALETTE, PALETTE_LOCK, MARGINS,
     outputs, references, write_preserving_endings,
 )
 
@@ -101,31 +100,26 @@ class CalamiticArtTests(unittest.TestCase):
                     counts[1] += 1
         self.assertEqual(counts, [18, 35])
 
-    def test_palette_locks_key_exemption_opaque_powers_and_safety(self):
-        clause = palette_clause("Calamitic item", palette=PALETTE)
+    def test_compact_palette_key_quality_and_safety(self):
         for text in outputs().values():
             for prompt in BLOCK.findall(text):
                 positive = prompt.split(" --ar", 1)[0]
-                design = design_prose(positive).split(", plain solid", 1)[0]
-                negatives = prompt.split(" --no ", 1)[1].split(" --sref", 1)[0]
-                self.assertEqual(prompt.count(clause), 1)
+                negatives = prompt.split(" --no ", 1)[1].split(" --sref", 1)[0].split(", ")
+                design = positive.split(", plain solid", 1)[0]
+                self.assertEqual(positive.count(PALETTE_LOCK), 1)
                 for color in PALETTE[1].split(", "):
                     self.assertNotRegex(design, rf"\b{color}\b")
                     if color != "green":
-                        self.assertIn(color, negatives.split(", text,", 1)[0])
-                self.assertNotIn("green", negatives.split(", "))
-                self.assertIn("plain solid green background (#00FF00)", positive)
-                self.assertIn("flat unlit color edge to edge and through all openings", positive)
-                self.assertIn("opaque solid-color lines ribbons rings and shapes with crisp hard edges", positive)
-                self.assertIn("no glows or glowing visual effects", positive)
-                self.assertIn("non-emissive painted highlights", positive)
-                self.assertIn("continuous clear solid-background safety margin on all four sides and corners", positive)
-                self.assertIn("nothing touches or crosses the frame edges", positive)
-                self.assertIn("at least 15 percent empty solid-background margin on every side and corner", positive)
-                self.assertIn("completely solid single uniform background color with no shading no gradient", positive)
-                self.assertLessEqual(len(design_prose(positive).split()), 380)
-                self.assertLessEqual(len(positive.split()), 450)
-                self.assertEqual(apply_palette(prompt, "Calamitic item", palette=PALETTE, reference_weight=400), prompt)
+                        self.assertIn(color, negatives)
+                self.assertNotIn("green", negatives)
+                for phrase in ("plain solid green background (#00FF00)", "flat unlit color edge to edge and through all openings",
+                               "subject colors unchanged", "no glows or glowing visual effects", "non-emissive painted highlights",
+                               "sharp clean lineart", "percent empty margin on every side"):
+                    self.assertIn(phrase, positive)
+                for word in ("aura", "backsplash", "blur", "smudged", "glow", "light bloom", "background gradient"):
+                    self.assertIn(word, negatives)
+                # Owner (D-440): prompts must stay short.
+                self.assertLessEqual(len(positive.split()), 230)
                 self.assertNotRegex(design.replace("no glows or glowing visual effects", "").replace("non-emissive", ""),
                                     r"\b(?:glow|glowing|luminous|translucent|emissive)\b")
                 self.assertNotRegex(design.lower(), r"\b(?:blood|gore|nude|naked|sexy|bust|breastplate|child|injury|wound)\b")
@@ -135,36 +129,29 @@ class CalamiticArtTests(unittest.TestCase):
         for design, prompts in zip(DESIGNS, (portraits[:6], portraits[6:12], portraits[12:])):
             for index, prompt in enumerate(prompts):
                 positive = prompt.split(" --ar", 1)[0]
-                self.assertIn(design["weapon"], positive)
-                self.assertIn("2.5-3 heads tall", positive)
-                self.assertIn(design["armor"], positive)
-                self.assertIn("never pearls orbs or lumpy rock", positive)
-                self.assertTrue(positive.startswith("zoomed-out full-body view"))
-                self.assertIn("nothing behind it but the flat background", positive)
-                self.assertIn("shattering reality like glass", positive)
-                self.assertIn(f"{SPREAD[index]} percent canvas width and height with {MARGINS[index]} percent outer margins", positive)
-                body = "one third" if index < 3 else "one quarter" if index == 3 else "one fifth"
-                self.assertIn(f"body occupies {body} of canvas height", positive)
-                self.assertIn("continuous visible clearance overrides occupancy", positive)
-                self.assertLessEqual(SPREAD[index], 70)
+                self.assertTrue(positive.startswith(f"zoomed-out full-body view, small centered character, {MARGINS[index]} percent"))
                 self.assertGreaterEqual(MARGINS[index], 15)
-                self.assertIn("grow denser and more ornate inside the frame rather than wider", positive)
+                for phrase in (design["weapon"], design["armor"], "2.5-3 heads tall", "never pearls or rock",
+                               "nothing behind it", "eyes only"):
+                    self.assertIn(phrase, positive)
+                body = "one third" if index < 3 else "one quarter" if index == 3 else "one fifth"
+                self.assertIn(f"body {body} of canvas height", positive)
                 for name in [design["name"], *design["titles"]]:
                     self.assertNotIn(name.lower(), positive.lower())
+                for word in ("pearls", "orbs", "rocks", "lumpy armor"):
+                    self.assertIn(word, prompt.split(" --no ", 1)[1])
                 if index >= 3:
-                    for phrase in ("shattered-glass wings", "crimson", "lattice"):
+                    for phrase in ("wings", "crimson", "lattice"):
                         self.assertIn(phrase, positive)
                 if index >= 4:
                     self.assertIn("retain", positive)
-                    self.assertIn("dense", positive)
         for prompt in BLOCK.findall("\n".join(outputs().values())):
             if "--ar 1:1" in prompt:
-                self.assertIn("face-free", prompt)
                 self.assertIn("object-only emblem with no people", prompt)
-                self.assertNotIn("chibi anime renderer", prompt)
-                for word in ("person", "humanoid", "chibi"):
+                self.assertIn("15 percent empty margin on every side", prompt)
+                self.assertNotIn("chibi anime", prompt)
+                for word in ("person", "figure", "chibi"):
                     self.assertIn(word, prompt.split(" --no ", 1)[1])
-                self.assertIn("at least 15 percent empty solid-background margin", prompt)
 
 
 if __name__ == "__main__":

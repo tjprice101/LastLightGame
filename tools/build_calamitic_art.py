@@ -3,10 +3,6 @@ from pathlib import Path
 import re
 
 from art_library import art_path
-from character_palette import apply_palette
-from build_elemental_war_art import RENDERER, CONTAIN, MARGIN, CUTOUT_NO
-from prompt_quality import (SHARP, PORTRAIT_FRAME, NO_BACKDROP, ARMOR_RULE, WING_RULE, ICON_RENDERER,
-                            OBJECT_ONLY, QUALITY_NO, BACKDROP_NO, ARMOR_NO, ICON_NO)
 
 ROOT = Path(__file__).resolve().parent.parent
 PALETTE = ("black white pearlescent ivory and sharp saturated sparkling crimson",
@@ -52,20 +48,20 @@ DESIGNS = (
                 ("Last Flare", "Tomorrow, Unwritten", "a towering crowned glass halo-lyre suspended before a colossal black ring of fate that is shattering outward like a broken clock face, three immense white sound arcs tearing through the ring, eighteen detached angular glass feather-blades unfolding behind the lyre in a wing-shaped emblem, nested cracked crimson crown-halos, a tempest of white glass shards crimson ribbons and black fragments spiraling outward, triumphant cosmic emblem architecture"))),
     dict(name="Kaelith", id="kaelith", gender="female", element="Chaotic", role="Attacker",
          identity="short black hair with white swept fringe and crimson eyes",
-         armor="black lacquered plate armor with white enamel edges and crimson inlay lines, sharp crescent pauldrons, clawed segmented gauntlets, a long black tabard split into angular panels",
+         armor="black lacquered plate armor with white enamel edges and crimson inlay, clawed gauntlets, long black paneled tabard",
          weapon="one connected shatterglass greatscythe with a crescent blade of cracked white glass and a complete central grip",
          titles=("Hairline Fracture", "Glass-Edged Herald", "Reaper of Written Endings", "Seraph of the Broken Thread", "Sovereign of Shattered Fate", "The Fate That Was Never Written"),
          forms=(
              "simple smooth pearlescent full-body armor, modest crescent greatscythe, one small cracked halo, defiant balanced stance",
              "fitted black pane armor with white wrist plates and split white shoulder cape, greatscythe gains a cracked white edge, two short glass winglets, advancing diagonal stance",
              "layered crescent pauldrons articulated gauntlets and hooked white greaves, greatscythe gains three fracture ribs, four off-axis glass wing fans and crimson chaos ribbons, pivoting sweep pose",
-             "stacked white crescent pauldrons, four-point white plate half-cape, crimson fracture lattice engraved on the chest plate, six shattered-glass wings of flat angular white feather-blades on a black spine plate, one cracked white crown-halo ring, airborne two-handed diagonal scythe sweep",
+             "stacked white crescent pauldrons, four-point white plate half-cape, crimson fracture lattice on the chest plate, six wings of flat angular white glass feather-blades on a black spine plate, one cracked white halo ring, airborne two-handed diagonal scythe sweep",
              "retain the fracture-seraph regalia crescent shoulders pane mantle and suspended sweep, twelve shattered-glass wings, two cracked crowned halos and reinforced scythe ribs, dense back-mounted broken-thread arches and crimson chaos fracture lattices",
-             "retain the Legendary half-cape and sweep, spiked double crescent pauldrons, dense crimson fracture lattice on the chest plate, eighteen shattered-glass wings in three tiers on a black spine, three nested cracked crown-halo rings, enlarged double-crescent scythe blade on a black crimson-banded shaft"),
-         icons=(("Passive", "Reality Fault", "one black obsidian sphere split open along three jagged crimson fault cracks, the two halves pried slightly apart, sharp white glass splinters jutting from every crack edge, one tilted cracked white ring around the sphere, a few black and white fragments floating close to the break, compact centered emblem"),
-                ("Skill 1", "Shatterfall", "three long white glass blades plunging point-down into a flat black glass slab, the slab cracking into angular plates where they strike, a crimson chevron mark at each impact point, short crimson fracture lines branching across the slab, a few white shards kicked upward, compact vertical emblem"),
-                ("Skill 2", "Glass Meridian", "one floating shatterglass greatscythe with no wielder, crescent blade of cracked white glass on a black shaft with crimson bands, the blade slicing cleanly through a thick black ring, the ring cut into two halves with crimson fracture edges, a short curved solid crimson cut-ribbon following the blade, compact circular emblem"),
-                ("Last Flare", "Denial of Fate", "one large floating shatterglass greatscythe with no wielder angled diagonally, double crescent blade of cracked white glass on a black shaft with crimson bands, the blade severing a taut crimson thread whose cut ends curl away, three interlocking black rings cracking apart around the scythe head, six flat angular white glass feather-blades fanned around the emblem, one cracked crimson crown-ring above, white shards and black fragments flying outward, ornate climactic emblem"))),
+             "retain the Legendary half-cape and sweep, spiked double crescent pauldrons, dense crimson fracture lattice on the chest plate, eighteen glass feather-blade wings in three tiers on a black spine, three nested cracked halo rings, enlarged double-crescent scythe blade on a black crimson-banded shaft"),
+         icons=(("Passive", "Reality Fault", "black obsidian sphere split along three jagged crimson cracks, halves pried apart, white glass splinters at the crack edges, one tilted cracked white ring"),
+                ("Skill 1", "Shatterfall", "three white glass blades plunging into a black glass slab, the slab cracking into angular plates, a crimson chevron at each impact, a few white shards flying up"),
+                ("Skill 2", "Glass Meridian", "floating greatscythe with no wielder, cracked white glass crescent blade on a black crimson-banded shaft, slicing a thick black ring in two, short crimson cut-ribbon"),
+                ("Last Flare", "Denial of Fate", "floating double-crescent greatscythe with no wielder severing a taut crimson thread, three black rings cracking apart around the blade, six angular white glass feather-blades fanned around it, cracked crimson crown-ring above"))),
 )
 STATUSES = (
     ("Fault", "calamitic-fault", "a black obsidian glass sigil split by three deep crimson fault canyons, white glass splinters bursting from each crack, a cracked white ring framing the sigil, sparkling crimson flecks scattering outward, bold readable silhouette at small size"),
@@ -110,30 +106,34 @@ def references():
     return refs
 
 
+# D-440: compact prompts. Midjourney weights early words; long boilerplate dilutes the design.
+PALETTE_LOCK = "palette only black, white, pearlescent ivory and sparkling crimson"
+STYLE = ("clean precise anime contours, crisp cel shading, non-emissive painted highlights, "
+         "jewel-like colors, sharp clean lineart")
+BACKGROUND = (f"plain solid {KEY} background ({HEX}), flat unlit color edge to edge and through all openings, "
+              "subject colors unchanged, no glows or glowing visual effects")
+NO_COLORS = ", ".join(c for c in PALETTE[1].split(", ") if c != KEY)
+NO_BASE = ("text, watermark, cropping, scenery, photorealism, 3d render, background gradient, textured background, "
+           "glow, light bloom, aura, backsplash, blur, smudged")
+
+
 def cutout(description, *, character=None, evolution=None, icon=False):
     portrait = evolution is not None
     if portrait:
-        lead, renderer = f"{PORTRAIT_FRAME}, ", RENDERER
-        composition = f"{NO_BACKDROP}, "
-        extra_no = f", {QUALITY_NO}, {BACKDROP_NO}, {ARMOR_NO}"
+        head = (f"zoomed-out full-body view, small centered character, {MARGINS[evolution - 1]} percent empty margin "
+                f"on every side, {description}, wings halos and powers attached to the character, nothing behind it, "
+                f"chibi anime gacha style, {STYLE}")
+        extra_no = ", pearls, orbs, rocks, lumpy armor, nose, mouth, multiple characters"
     else:
-        lead, renderer = "", ICON_RENDERER
-        composition = ((f"square face-free epic ability icon, {OBJECT_ONLY}, one explosive centered emblem with a bold "
-                        "readable silhouette at small size, dense layered ornamental depth and dramatic shattering motion, "
-                        "occupies two thirds of the square, ") if icon else
-                       f"square standalone face-free collectible icon, {OBJECT_ONLY}, one cohesive readable symbol, "
-                       "occupies two thirds of the square, ")
-        extra_no = f", character, creature, face, hands, portrait, {ICON_NO}, {QUALITY_NO}"
-    prompt = (f"{lead}{description}, {CONTAIN}, {composition}{renderer}, {SHARP}, {MARGIN}, "
-              "at least 15 percent empty solid-background margin on every side and corner, "
-              f"plain solid {KEY} background ({HEX}), flat unlit color edge to edge and through all openings, "
-              "completely solid single uniform background color with no shading no gradient no texture no floor no cast shadow no scenery, "
-              "subject colors unchanged, no glows or glowing visual effects, elemental powers rendered as opaque "
-              "solid-color lines ribbons rings and shapes with crisp hard edges, non-emissive painted highlights"
-              + f" --ar {'4:3' if portrait else '1:1'} --niji 6 --s 100 --q 1 --no {CUTOUT_NO}{extra_no}")
+        kind = "epic ability icon" if icon else "collectible icon"
+        head = (f"{description}, square {kind}, object-only emblem with no people, centered, "
+                f"two thirds of the square, 15 percent empty margin on every side, anime game icon, {STYLE}")
+        extra_no = ", person, figure, chibi, face, hands"
+    prompt = (f"{head}, {PALETTE_LOCK}, {BACKGROUND} --ar {'4:3' if portrait else '1:1'} --niji 6 --s 100 --q 1 "
+              f"--no {NO_COLORS}, {NO_BASE}{extra_no}")
     if portrait:
         prompt += f" --sref {references()[evolution]} --sw 400"
-    return apply_palette(prompt, character or "Calamitic item", palette=PALETTE, reference_weight=400)
+    return prompt
 
 
 def block(heading, asset, folder, prompt):
@@ -173,16 +173,9 @@ def outputs():
             evolution = index + 1
             body = "one third" if index < 3 else "one quarter" if index == 3 else "one fifth"
             description = (
-                f"one human {design['gender']} cosmic celestial angel with {design['identity']}, "
-                "rounded oversized head tiny torso short limbs 2.5-3 heads tall, eyes only with no other facial features, "
-                f"{design['armor']}, {ARMOR_RULE}, {WING_RULE}, "
-                f"{design['weapon']}, {form}, opaque shards shattering reality like glass, "
-                "defiant heroic stance, left-facing three-quarter stance, hands and feet clear, "
-                f"compact body occupies {body} of canvas height, "
-                f"whole ensemble target {SPREAD[index]} percent canvas width and height with {MARGINS[index]} percent outer margins, "
-                "late forms grow denser and more ornate inside the frame rather than wider, "
-                "continuous visible clearance overrides occupancy, "
-                "sparkling crimson means crisp painted facet flecks"
+                f"chibi {design['gender']} cosmic celestial angel, {design['identity']}, eyes only with no other "
+                f"facial features, 2.5-3 heads tall, {design['armor']}, flat polished plate armor never pearls or rock, "
+                f"{design['weapon']}, {form}, left-facing three-quarter stance, body {body} of canvas height"
             )
             asset = design["id"] if evolution == 1 else f"{design['id']}-evo-{evolution}"
             portraits.append(block(f"Evo.{evolution + 1} / {rarity} — {title}, {design['name']}", asset,
