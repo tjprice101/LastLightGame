@@ -13,7 +13,7 @@ import { elementEmotions, machineOrigin } from './world-lore';
 import { calamityBossLore, calamityIntro, enemyLineLore, enemyLore } from './enemy-lore';
 import { calamityActivities, calamityChest, calamityTierScaling, isCalamityTier, type CalamityActivityId } from './calamity';
 import { calamityBossArt } from './calamity-art';
-import { gatesOfOblivionRules, oblivionConstructAtStage, oblivionEncounter, oblivionLoot } from './gates-of-oblivion';
+import { gatesOfOblivionRules, oblivionConstructArt, oblivionConstructAtStage, oblivionEncounter, oblivionLoot } from './gates-of-oblivion';
 
 export interface Creature {
   id: string;
@@ -69,7 +69,7 @@ function catalog(): Creature[] {
     const id = construct.id;
     const existing = result.find(creature => creature.id === id);
     if (existing) { if (!existing.stages.includes(stage)) existing.stages.push(stage); }
-    else result.push({ id, name: construct.name, area: gatesOfOblivionRules.name, element: construct.element,
+    else result.push({ id, name: construct.name, art: oblivionConstructArt(construct), area: gatesOfOblivionRules.name, element: construct.element,
       oblivion: true, lore: construct.lore, stages: [stage] });
   }
   for (const activity of calamityActivities) {

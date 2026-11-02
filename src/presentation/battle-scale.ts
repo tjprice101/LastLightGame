@@ -29,6 +29,7 @@ const artworkSizes: readonly (readonly [number, readonly string[]])[] = [
     'laurel-of-the-sacred-flame-rosethorn-wisp', 'nullshell-scarab',
     'petalhorn-satyr', 'roselius-golden-thorns', 'scepter-of-radiance-gleamstone-slime',
     'story-atmospheric-0', 'story-chaotic-0', 'story-infernic-3', 'story-oceanic-2',
+    'oblivion-shardling-acolyte', 'oblivion-oblivion-lantern-wraith', 'oblivion-unmade-choir-drone',
   ]],
   [1.25, [
     'abyss-ruins-awakening', 'brasshorn-minotaur', 'brineclaw-sentinel',
@@ -41,6 +42,7 @@ const artworkSizes: readonly (readonly [number, readonly string[]])[] = [
     'seraph-of-the-rose-pyre-rosethorn-wisp', 'stormhorn-faun', 'thornshell-beetle',
     'thunderclaw-raiju', 'umbrasilk-weaver', 'story-botanic-1', 'story-chaotic-3',
     'story-infernic-1', 'story-oceanic-1', 'story-tranquilitic-1', 'story-tranquilitic-3',
+    'oblivion-glassbound-sentry', 'oblivion-fracture-hound',
   ]],
   [1.5, [
     'abyss-hunger-beyond-veil', 'abyssbell-oracle', 'concord-lion', 'cyclonewing-griffin',
@@ -50,6 +52,8 @@ const artworkSizes: readonly (readonly [number, readonly string[]])[] = [
     'sovereign-of-the-hallowed-garden-rosethorn-wisp', 'stillbell-oracle',
     'sunmirror-oracle', 'tempestwing-roc', 'verdant-antler-regent', 'zephyrcoil-drake',
     'story-atmospheric-3', 'story-botanic-3', 'story-tranquilitic-boss',
+    'oblivion-crimson-gearwyrm', 'oblivion-husk-seraph-of-rise',
+    'oblivion-annihilation-colossus-fragment', 'oblivion-fatebreaker-warden',
   ]],
   [1.75, [
     'calamity-boss-treasury', 'calamity-boss-sanctuary', 'calamity-boss-heavens',
@@ -69,6 +73,7 @@ const artworkSizes: readonly (readonly [number, readonly string[]])[] = [
     'sovereign-of-the-unbroken-accord', 'the-crown-beyond-dawn-gleamstone-slime',
     'the-flame-beyond-eternity-rosethorn-wisp', 'story-atmospheric-boss',
     'story-botanic-boss', 'story-chaotic-boss', 'story-infernic-boss', 'story-oceanic-boss',
+    'oblivion-gatekeeper-of-oblivion',
   ]],
 ];
 

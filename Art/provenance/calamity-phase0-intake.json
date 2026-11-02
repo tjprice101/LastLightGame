@@ -1,0 +1,1180 @@
+{
+  "decision": "D-441",
+  "asset_count": 65,
+  "assets": [
+    {
+      "incoming": "Unbroken Pane, Ozriel.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/Unbroken Pane, Ozriel.png",
+      "source_sha256": "ffcb2c2618559e5adb250a4aaf72fd8a99d85c34e416721b52fd0b7d7c6aad72",
+      "runtime": "public/assets/characters/ozriel.png",
+      "runtime_sha256": "e3d4eae830152488df31cc6367bdfcb973c26930c0e3ea5e95771073163feb34",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Warden of the Glass Nave, Ozriel.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/Warden of the Glass Nave, Ozriel.png",
+      "source_sha256": "363d995fe567f3687948780e7112401506c13c8d867011a72ef359d1d9f9b97b",
+      "runtime": "public/assets/characters/ozriel-evo-2.png",
+      "runtime_sha256": "e9a831b48e7437e5c58c3cb57614baf73b5dae37523e15266b0d6a4efee24c97",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Bastion of Refused Endings, Ozriel.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/Bastion of Refused Endings, Ozriel.png",
+      "source_sha256": "290a87f277865256a59188623e041e82bc9fae6b74736c802148e67700fb84f2",
+      "runtime": "public/assets/characters/ozriel-evo-3.png",
+      "runtime_sha256": "f973129b376e2ffcb80723ae9bfacba184f6558f150f4d7f343babb3780915ae",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Seraph of the Shattered Cathedral, Ozriel.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/Seraph of the Shattered Cathedral, Ozriel.png",
+      "source_sha256": "226c5ac54f1c3a1fda9bc0521bf6d88f1581fbeb501e5ceac58dbb86183a5a1b",
+      "runtime": "public/assets/characters/ozriel-evo-4.png",
+      "runtime_sha256": "f0ae51800b5aac3177bc70aa45d9ff8f205d02fa9eb66cff806f29828b5ac29a",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Sovereign of the Unfallen Wall, Ozriel.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/Sovereign of the Unfallen Wall, Ozriel.png",
+      "source_sha256": "0999748cbb0253388b4539ab07b3a87a5febe79209ed1ba9ae70bae2635215cc",
+      "runtime": "public/assets/characters/ozriel-evo-5.png",
+      "runtime_sha256": "b9fb35e686bb6b5391d71907dc7c3ff2dc3c28c72322a22cd73f150fa56620e6",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 2e-05,
+        "despill": true,
+        "seeds": [],
+        "protect": [],
+        "chroma": {
+          "min": 14,
+          "dark": 0
+        }
+      }
+    },
+    {
+      "incoming": "The Ending That Was Denied, Ozriel.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/The Ending That Was Denied, Ozriel.png",
+      "source_sha256": "9681b651cc2cd5d3794082a32796e108e9e4f7a5b601ebb0aa48e1d5716a3a07",
+      "runtime": "public/assets/characters/ozriel-evo-6.png",
+      "runtime_sha256": "aeb2060d26e522998ff2ce524861ab240dc2d0340351e1af8f59ee58d17db57c",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 2e-05,
+        "despill": true,
+        "seeds": [],
+        "protect": [],
+        "chroma": {
+          "min": 14,
+          "dark": 0
+        }
+      }
+    },
+    {
+      "incoming": "Passive \u2014 Refusal.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Passive \u2014 Refusal.png",
+      "source_sha256": "b1da73f19041629e0dfcf5815222e453586f03e6a1bb9cb740836a97272a442a",
+      "runtime": "public/assets/abilities/ozriel-passive.png",
+      "runtime_sha256": "ec45c42025c1d4f792f5607bb58baa945270cc1ee4a7e334e2c7bef81905ee3c",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Skill 1 \u2014 Pane of Absolution.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Skill 1 \u2014 Pane of Absolution.png",
+      "source_sha256": "cfd92e05128e6907fad65eae442173a600790c834b9e2190018c877df4d7262f",
+      "runtime": "public/assets/abilities/ozriel-skill1.png",
+      "runtime_sha256": "aef696bb97ae433390d3b850118d010b58a793c3f784aacbc6de0ba65e05a39c",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Skill 2 \u2014 Cathedral of Shards.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Skill 2 \u2014 Cathedral of Shards.png",
+      "source_sha256": "7265ae53c04e6eec93817e343eb8accaa59f2a4abeef08bc77c59ee4e1a31960",
+      "runtime": "public/assets/abilities/ozriel-skill2.png",
+      "runtime_sha256": "c7ea272fb6d0c52d988a92c93d825e4ab50cf8398120eb09adb92006185a8980",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Last Flare \u2014 The World Refuses.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Last Flare \u2014 The World Refuses.png",
+      "source_sha256": "0ee0462f8beba9f310c8cf95b379866d078934bd63031efdc898eba4108372fb",
+      "runtime": "public/assets/abilities/ozriel-ultimate.png",
+      "runtime_sha256": "27883ea1c54cc6d5c411a9e5076be1b788a86051faa637e20cdb0374cc805a03",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "First Unsung Note, Ilvaris.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/First Unsung Note, Ilvaris.png",
+      "source_sha256": "b931d7dd117f947a8197810d94918239a8787660e1122745b2005fe430223a85",
+      "runtime": "public/assets/characters/ilvaris.png",
+      "runtime_sha256": "ab5328000ae75ec664fabe9ea5ba3cef295a6e2682e08fc3bc90b0a93ccaf2db",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Cantor of Cracked Heavens, Ilvaris.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/Cantor of Cracked Heavens, Ilvaris.png",
+      "source_sha256": "80459ec4e41fd32b6999ed806365ee285ac4cde28fee13dbdab587f64632f142",
+      "runtime": "public/assets/characters/ilvaris-evo-2.png",
+      "runtime_sha256": "2c0550f7e13460274a5ba0efc19fa0fd958541f274e4faa755f6296e5cf90300",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Choir-Seraph of the Glass Vault, Ilvaris.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/Choir-Seraph of the Glass Vault, Ilvaris.png",
+      "source_sha256": "ae5f9c5726e1bfa3e74572927f3d1bb59a0489d9ddfd81ded4307ca7b6876b4a",
+      "runtime": "public/assets/characters/ilvaris-evo-3.png",
+      "runtime_sha256": "3b241870ff6b0c93b2f453b042ef66155d03700509b38f995898f9a5067a7939",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Herald of the Unwritten Hymn, Ilvaris.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/Herald of the Unwritten Hymn, Ilvaris.png",
+      "source_sha256": "90c1a96d74af88c13eff7b4aabe158dff9a898f13d40665304f0ac9cf6325f32",
+      "runtime": "public/assets/characters/ilvaris-evo-4.png",
+      "runtime_sha256": "690f4ff375b8ac2f9ff6bc7b2e825e7291292334ddfdafe5af9636e025f2a2fd",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Sovereign of the Severed Prophecy, Ilvaris.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/Sovereign of the Severed Prophecy, Ilvaris.png",
+      "source_sha256": "8ad4e6e2ada8ede00c6b3f2dcb7e1bec55e67be6f7ebfb36b9bd2c0363ceb58a",
+      "runtime": "public/assets/characters/ilvaris-evo-5.png",
+      "runtime_sha256": "98605048fdd8e8739c0bbc1312e47421da3e83506ced332f1cf1368564986ce0",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 2e-05,
+        "despill": true,
+        "seeds": [],
+        "protect": [],
+        "chroma": {
+          "min": 14,
+          "dark": 0
+        }
+      }
+    },
+    {
+      "incoming": "The Song That Defied Fate, Ilvaris.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/The Song That Defied Fate, Ilvaris.png",
+      "source_sha256": "eeba86b01ca42f2b05d6c4d509d62ee0f4f53b64549718a44848cff4f1a236b9",
+      "runtime": "public/assets/characters/ilvaris-evo-6.png",
+      "runtime_sha256": "9282abe2c3ad325278316ebe5bb9c12b8b03535c9034a7e7fd189b7f0c02a431",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Severed Prophecy.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Severed Prophecy.png",
+      "source_sha256": "ed1a8abf9ba1f88fc6e097c351da57f8f97de1c007fae27674a31da54c5fa70c",
+      "runtime": "public/assets/abilities/ilvaris-passive.png",
+      "runtime_sha256": "cba0741931cedd87991da4841f62b8f85cdcb903f5d940ee57a364ca7c1bc5b7",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Skill 1 \u2014 Unwritten Verse.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Skill 1 \u2014 Unwritten Verse.png",
+      "source_sha256": "5ce99a45b5ffebb61fc975b93894927789fcf6065d351b6729ec76ae96a28df4",
+      "runtime": "public/assets/abilities/ilvaris-skill1.png",
+      "runtime_sha256": "a102ee8963846545b4aedefee0ab24bc43919d00e7b84252b5fa3f35591c3f5e",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Skill 2 \u2014 Hymn of Broken Glass.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Skill 2 \u2014 Hymn of Broken Glass.png",
+      "source_sha256": "fc630d0db27ce69c349819d567c080e6ab995bd9bcca81b95b2647056a148c70",
+      "runtime": "public/assets/abilities/ilvaris-skill2.png",
+      "runtime_sha256": "3a7ff1d47082f4aaf3bab521340e2a5aa3341d8834153fa5fccf559a1a33637e",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Last Flare \u2014 Tomorrow, Unwritten.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Last Flare \u2014 Tomorrow, Unwritten.png",
+      "source_sha256": "12aa2a27e8350e05cf87bf9486e0a6d4539b2c2e1f735716120ad2264ebdd32b",
+      "runtime": "public/assets/abilities/ilvaris-ultimate.png",
+      "runtime_sha256": "cd49b14b3b730e403d663c9fd68408d157933bbfb9d66512682b0e984a20cee5",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Hairline Fracture, Kaelith.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/Hairline Fracture, Kaelith.png",
+      "source_sha256": "8af3b41569aa0fa28a302ade940e9853a64a4b8faa936479613647971102481e",
+      "runtime": "public/assets/characters/kaelith.png",
+      "runtime_sha256": "843c3a86c50b8a43a903c2186734f75f8dda63fcaa66e9541f42caed0b480d31",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Glass-Edged Herald, Kaelith.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/Glass-Edged Herald, Kaelith.png",
+      "source_sha256": "8bfe112857cd72023d06e33cea315d24c5b64335553b0ce20884e089c2d1f1f6",
+      "runtime": "public/assets/characters/kaelith-evo-2.png",
+      "runtime_sha256": "cf5d538e39e228685d24cd7997b552f11b78024dcf6dcd3612c2e3721a593bfd",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Reaper of Written Endings, Kaelith.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/Reaper of Written Endings, Kaelith.png",
+      "source_sha256": "20c8b770066f5f942d405dbb7cf0362afa0d152ac7958fabe3a852c3e8a245c9",
+      "runtime": "public/assets/characters/kaelith-evo-3.png",
+      "runtime_sha256": "410749adeed626a1154c53900947d13a889e27323a4a04297e3574ff7e54cab7",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Seraph of the Broken Thread, Kaelith.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/Seraph of the Broken Thread, Kaelith.png",
+      "source_sha256": "2d8d9deab8e93717d49bf5f59ba6b83e2cb778a1f5a412ac49a2c6f4f7056afc",
+      "runtime": "public/assets/characters/kaelith-evo-4.png",
+      "runtime_sha256": "87b7bb27b1fd9c83eca8b0abfeb82f9c88c32a5b5bc4250bbf8c2bc035646f15",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Sovereign of Shattered Fate, Kaelith.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/Sovereign of Shattered Fate, Kaelith.png",
+      "source_sha256": "9e7ff88e558500c37fe1e56ab9c0b118abf4ea0702ee33a46b6138fd5a9d59e0",
+      "runtime": "public/assets/characters/kaelith-evo-5.png",
+      "runtime_sha256": "53ae0f197ebefe2e3f3b33bf45d36c20584006f03b78ee69fd0137cb847007d9",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 2e-05,
+        "despill": true,
+        "seeds": [],
+        "protect": [],
+        "chroma": {
+          "min": 8,
+          "dark": 16
+        }
+      }
+    },
+    {
+      "incoming": "The Fate That Was Never Written, Kaelith.png",
+      "category": "characters",
+      "source": "Art/source/calamity-phase0/The Fate That Was Never Written, Kaelith.png",
+      "source_sha256": "fc837ef39d2b35616f1c3f408dd7513979547681f9a1a7da0c41678b446048a8",
+      "runtime": "public/assets/characters/kaelith-evo-6.png",
+      "runtime_sha256": "46172bd38ae8193b5cd5a0f6d743d5f8fffd08618ed755c885b78a8c7bd542f2",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 2e-05,
+        "despill": true,
+        "seeds": [],
+        "protect": [],
+        "chroma": {
+          "min": 14,
+          "dark": 0
+        }
+      }
+    },
+    {
+      "incoming": "Passive \u2014 Reality Fault.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Passive \u2014 Reality Fault.png",
+      "source_sha256": "c13303c0b56aa6f304a4b97c6bbfc40d71f9df310f1eaee123241d73e52f9a6d",
+      "runtime": "public/assets/abilities/kaelith-passive.png",
+      "runtime_sha256": "00f040f40502e9449cc6345bddd4db9ffb1b10b9a5f4958b1c094c1b46224ea0",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Skill 1 \u2014 Shatterfall.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Skill 1 \u2014 Shatterfall.png",
+      "source_sha256": "ad2e70e25ee0e045a56689aced3b1946a3bbe8b25e6cb3e1d1fdfe8d7230de8c",
+      "runtime": "public/assets/abilities/kaelith-skill1.png",
+      "runtime_sha256": "154bc28a8684e337073621aeab93008752d6f4851423ff2295c3e839f239de44",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Skill 2 \u2014 Glass Meridian.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Skill 2 \u2014 Glass Meridian.png",
+      "source_sha256": "13d63f197a21ea02f6c4f291b12a41feb1822101cbf3ea9de24b7695aec26b1f",
+      "runtime": "public/assets/abilities/kaelith-skill2.png",
+      "runtime_sha256": "3f32114e7407957c54bbe70b33ea40cddb32abbb762e6992f93b31c8bc6fd147",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Last Flare \u2014 Denial of Fate.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Last Flare \u2014 Denial of Fate.png",
+      "source_sha256": "2ea05cecac444ad3c33078d25207a4048ea56428187153e51a6e410aaff88433",
+      "runtime": "public/assets/abilities/kaelith-ultimate.png",
+      "runtime_sha256": "70b4c29c06cdcadba03d337aa9a175c483057ebc5e7f32433cbfa37b9a13e165",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Fault.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Fault.png",
+      "source_sha256": "1e7e9e3d0d399c2404e24a59db9285b829ff5f009d2df020797c3acc35174f8e",
+      "runtime": "public/assets/abilities/statuses/status-calamitic-fault.png",
+      "runtime_sha256": "1f9ef50675e52bd8915ec982d3bdd36dfd5d30a9946c2c425d0a3ffd20a6ee50",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Fate-seared Mark.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Fate-seared Mark.png",
+      "source_sha256": "f4ea35074a7d3e28522e4d14cbdac51999a0219a034dc319c6f0855cb339345c",
+      "runtime": "public/assets/abilities/statuses/status-calamitic-fate-mark.png",
+      "runtime_sha256": "d9ff88c0faccc38797deae08557d1ef85b03b3da564efebffbf8782f0b45a8ce",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Refusal.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Refusal.png",
+      "source_sha256": "e39d4e9eb5779465dec3c16e1d235d47fd89184bf851c88ef34edfbf2a1a515e",
+      "runtime": "public/assets/abilities/statuses/status-calamitic-refusal.png",
+      "runtime_sha256": "0fe684262f0d03d9c5f7d5fc43b0cc6957e154fdc817f5c2c7aa5ef796aaa70f",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Bulwark of the Last Horizon.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Bulwark of the Last Horizon.png",
+      "source_sha256": "0045da2836a4aa5fad9fbf4dfb56700a507bab38ed94ea56f82aab8e3575ce1c",
+      "runtime": "public/assets/conduits/calamitic-bulwark-of-the-last-horizon.png",
+      "runtime_sha256": "628ed910f2403ade0986a3704b068bb13e760aefd562201d9b41cc0b6d857abf",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Reliquary of Unending Mercy.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Reliquary of Unending Mercy.png",
+      "source_sha256": "601ffe05cdb381dade2189abd5792445d37d8f449bf15a73c4a0751424c8ea62",
+      "runtime": "public/assets/conduits/calamitic-reliquary-of-unending-mercy.png",
+      "runtime_sha256": "84f77f63027dba6f8a8bde20925f6b59e62ba3d639e6366713c3b8e128413a97",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Aegis-Engine of Severed Fate.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Aegis-Engine of Severed Fate.png",
+      "source_sha256": "a4edfd9ed1872a76fc889f64d0f2cd66d3ac24e73aa624bfe7241cb5463babfe",
+      "runtime": "public/assets/conduits/calamitic-aegis-engine-of-severed-fate.png",
+      "runtime_sha256": "8bef7f86615e8010273bfe4180499bcec30c6eb4e52ab82bfc397cbd59e5d242",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": [],
+        "green_shadow": 12
+      }
+    },
+    {
+      "incoming": "Monolith of the Unmoved Star.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Monolith of the Unmoved Star.png",
+      "source_sha256": "3d75ec7b678c8f198a805a661d75a94578de3c7d30376b8ee2f209eeac524fdf",
+      "runtime": "public/assets/conduits/calamitic-monolith-of-the-unmoved-star.png",
+      "runtime_sha256": "7b0f5a0fd6469c48d04b717bf418c31001991d1876ee82982305155241aac640",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Heartforge of the Sunless Dawn.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Heartforge of the Sunless Dawn.png",
+      "source_sha256": "2714b6153466a92b4c9cb7aad2e4b3a7c57f7ca11c83c52611e40a8656aea10c",
+      "runtime": "public/assets/conduits/calamitic-heartforge-of-the-sunless-dawn.png",
+      "runtime_sha256": "3126c8e1eeff364adf894c50c721ecee4cd581c348839a3d6c23ba27abf47ce1",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Ruinmark Censer.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Ruinmark Censer.png",
+      "source_sha256": "4fea5bc7791f8a36b4ef89fa96bb6282dda14c3818e3d067ca544ea7aac0d619",
+      "runtime": "public/assets/conduits/calamitic-ruinmark-censer.png",
+      "runtime_sha256": "9e4298e2801b0511793c0a852bd5288a23d5c87460f833780bb36ce07189bb96",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Choir-Array of Branded Stars.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Choir-Array of Branded Stars.png",
+      "source_sha256": "33467782d426876024cfe39e519de2d47c3d741595212284b3341625221b041b",
+      "runtime": "public/assets/conduits/calamitic-choir-array-of-branded-stars.png",
+      "runtime_sha256": "9048820fa2f5d711ff7c4b79cb841bf2affaaacd3aaa98b20ef458e682283556",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Throne of the Lone Apostate.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Throne of the Lone Apostate.png",
+      "source_sha256": "41ff4a4d27d1528eb26f175b614e1c436302a73011e71407511d30cd7582f332",
+      "runtime": "public/assets/conduits/calamitic-throne-of-the-lone-apostate.png",
+      "runtime_sha256": "035e63a56377a793c7ed94c1ae4f1c5de2969ca409635ac24d166e2493779aa7",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Worldbreaker Cannonade.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Worldbreaker Cannonade.png",
+      "source_sha256": "d5bc99e4de5395a39e2df95bbdb7c95547056dec52957f50056a2714d803e774",
+      "runtime": "public/assets/conduits/calamitic-worldbreaker-cannonade.png",
+      "runtime_sha256": "bb8688b87ebfe4c6a57524cff67d4b7e3fc74e6548339d027db866fc58d805bc",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Seed of Calamity.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Seed of Calamity.png",
+      "source_sha256": "7ac890ea9bca86e9721f5ef90ddf98804861041bd07c5c316fd5d02a0b9d4b19",
+      "runtime": "public/assets/materials/calamity-common.png",
+      "runtime_sha256": "f64681d3a8ff4364b1824294ba06d516b3edda89f3780ce53b6995ba00d4c992",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Bud of Calamity.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Bud of Calamity.png",
+      "source_sha256": "53f9c7e1402686fb320cd977665471b4fe09e566431da7a6bdebe43f4abec52d",
+      "runtime": "public/assets/materials/calamity-uncommon.png",
+      "runtime_sha256": "1a8b5913374694957e31e0ef5224ee69b700d99a3a15f72555bbbd58edc489d1",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Bloom of Calamity.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Bloom of Calamity.png",
+      "source_sha256": "51c650aab0f2d9147ce9f84760573e72fe9417f81b0037ff1e42562afe340fcc",
+      "runtime": "public/assets/materials/calamity-rare.png",
+      "runtime_sha256": "8fb664cbb55d49a735b82ee06d6b755b0e97d6daec79ffa270fe4527f47dcf8a",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Crest of Calamity.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Crest of Calamity.png",
+      "source_sha256": "cf465fbc291aa03a8d22f85e7b6655b83b43fac3a0f5637b6b8410677386dadc",
+      "runtime": "public/assets/materials/calamity-epic.png",
+      "runtime_sha256": "f1785e3c0fd7a2a48fec5481bd2f701ddcf91b77c045dcf8bd86e8b48d2b27f8",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Heart of Calamity.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Heart of Calamity.png",
+      "source_sha256": "1f63f9f05aff1907b918ea3c7072385c240cc47a0e31f6b04b15bffebaf99cc8",
+      "runtime": "public/assets/materials/calamity-legendary.png",
+      "runtime_sha256": "44dfc855e070eea7a26042f3c6cf61af7e8d3156dbc3f177878ac8cec693ddbc",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": [],
+        "green_shadow": 12
+      }
+    },
+    {
+      "incoming": "Soul of Calamity.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Soul of Calamity.png",
+      "source_sha256": "89512039f691d377f5b5dd12d872333cad122793e9c218b071250505d421cdf0",
+      "runtime": "public/assets/materials/calamity-omnic.png",
+      "runtime_sha256": "e84a9138e987d68ed1e65954b093269f620eb1b561dc382d5db589d791a209ce",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Fragment of Rise.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Fragment of Rise.png",
+      "source_sha256": "f13e217200b2bb73b11f1c94b0fecba525f8aeab437cc21e406748e92d9d7910",
+      "runtime": "public/assets/materials/fragment-of-rise.png",
+      "runtime_sha256": "1d7e7d6f0862e0563a43d4e1929a67b600e74677e247f518494d02449321969a",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Feather of the Severed Dawn.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Feather of the Severed Dawn.png",
+      "source_sha256": "a2ba15526d7e2e444f3b11e70f4c0e0c601b76d42db879247182a017a238ffcb",
+      "runtime": "public/assets/materials/feather-severed-dawn.png",
+      "runtime_sha256": "b30eb03617323d21fe3a88f9ebc15a30226caf6ca286e9d09f8c258a7d00b06d",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Splinter of the Unmade Night.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Splinter of the Unmade Night.png",
+      "source_sha256": "2c3794f95c067e3d7986543d7a55b5433111996804e86c0c74b0ed468aa7849c",
+      "runtime": "public/assets/materials/splinter-unmade-night.png",
+      "runtime_sha256": "86a7ada3e2170bb98f9f6b417ca5813523e7d9483044975483967093d68166a1",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Shard of Calamity.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Shard of Calamity.png",
+      "source_sha256": "4b776c3a8e6db46ce9552aa46f0ff13cd5476ab0020738164d3ecd720ffa268d",
+      "runtime": "public/assets/materials/shard-of-calamity.png",
+      "runtime_sha256": "a5557f6a65c59aa06ea1faadb8dc4e446e15abdd20d292f1e574cb6b35e90ca9",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Rise-blessed Emblem.png",
+      "category": "icons",
+      "source": "Art/source/calamity-phase0/Rise-blessed Emblem.png",
+      "source_sha256": "21be659979a7ee12474d5510cd59e570af211a01ec7fa16bdea7eab3d55ec908",
+      "runtime": "public/assets/items/rise-blessed-emblem.png",
+      "runtime_sha256": "42cd19dd13e219b8116bc740454119972cd096e94780b0f7332539f9df2d6e12",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Shardling Acolyte.png",
+      "category": "enemies",
+      "source": "Art/source/calamity-phase0/Shardling Acolyte.png",
+      "source_sha256": "d0f5517108dcd99b13e2ac15ce018aebbf8f90a10d3511c0fa32d1187045e591",
+      "runtime": "public/assets/enemies/oblivion-shardling-acolyte.png",
+      "runtime_sha256": "b7569890d7f27be6eb7dc3b798de4ad3c9183b4f8c94b14535fe882f362004c5",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Glassbound Sentry.png",
+      "category": "enemies",
+      "source": "Art/source/calamity-phase0/Glassbound Sentry.png",
+      "source_sha256": "acc375afe210da40dc99beabd8666bcd2fca51f23c1352e88fde3846bf6455b2",
+      "runtime": "public/assets/enemies/oblivion-glassbound-sentry.png",
+      "runtime_sha256": "7143aaac329cfeccd3f634909ad8b292d5e9ef370acae876e164c69c068112e3",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Oblivion Lantern-Wraith.png",
+      "category": "enemies",
+      "source": "Art/source/calamity-phase0/Oblivion Lantern-Wraith.png",
+      "source_sha256": "5ab7740d365e288b7839551624817d15387cb3c5617b6960e8790e2abc978547",
+      "runtime": "public/assets/enemies/oblivion-oblivion-lantern-wraith.png",
+      "runtime_sha256": "1e0285161ae940a705e5a12be0036d1eb67b0dea93867c93a8250a34f34fcf8e",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Fracture Hound.png",
+      "category": "enemies",
+      "source": "Art/source/calamity-phase0/Fracture Hound.png",
+      "source_sha256": "ca395f411f227d957057df742c0cefe44b1f35232e0b8340a7d1881abd0c2ec3",
+      "runtime": "public/assets/enemies/oblivion-fracture-hound.png",
+      "runtime_sha256": "56c873422d051ce98d5dba981e5eecc8472e51a30990dc71fd92f1dcc33da8ec",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Unmade Choir Drone.png",
+      "category": "enemies",
+      "source": "Art/source/calamity-phase0/Unmade Choir Drone.png",
+      "source_sha256": "4fb26e21eea9eaaa34c7d2358cec3e429d3a84fce7956a0a51aed78eeb21445c",
+      "runtime": "public/assets/enemies/oblivion-unmade-choir-drone.png",
+      "runtime_sha256": "6a1ee276962e5f3c09107eaaa0da644664c2914557fe0db014c4e3d9c70e6c77",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Crimson Gearwyrm.png",
+      "category": "enemies",
+      "source": "Art/source/calamity-phase0/Crimson Gearwyrm.png",
+      "source_sha256": "ba8c1273960c15681d783cf18e39ab51124d50072b50c249a452362fa5ce3488",
+      "runtime": "public/assets/enemies/oblivion-crimson-gearwyrm.png",
+      "runtime_sha256": "82b21d83730a65392f92dc005b22116532c06ddfffa616f2cebc0fc01ac17f65",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Husk-Seraph of Rise.png",
+      "category": "enemies",
+      "source": "Art/source/calamity-phase0/Husk-Seraph of Rise.png",
+      "source_sha256": "d5a05a47bd843fc6ff60159af2973482a6d640785449054b4b1e6daf74309d2e",
+      "runtime": "public/assets/enemies/oblivion-husk-seraph-of-rise.png",
+      "runtime_sha256": "6a508354ac7f6245dbdf11f6ed4518938394e67d238b7e2d448a44cb48a57b30",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Annihilation Colossus Fragment.png",
+      "category": "enemies",
+      "source": "Art/source/calamity-phase0/Annihilation Colossus Fragment.png",
+      "source_sha256": "7c077d4318c03c6cf685d60f63bfda16461340aec6d1dcc9a16bb0a12daa4f38",
+      "runtime": "public/assets/enemies/oblivion-annihilation-colossus-fragment.png",
+      "runtime_sha256": "f4a83a34bb0130cc3df9918769806c710d170a377cbf02033b6d4591caa8e92b",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Fatebreaker Warden.png",
+      "category": "enemies",
+      "source": "Art/source/calamity-phase0/Fatebreaker Warden.png",
+      "source_sha256": "ae2ccb862a0a19ddfd127c981654c1f7f2464ef7a605553d2cb9e70a7a1ec003",
+      "runtime": "public/assets/enemies/oblivion-fatebreaker-warden.png",
+      "runtime_sha256": "c6a2b3453fabe706730fbac2068075635bce5e561c2c8332e87b37a5fedc222d",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Gatekeeper of Oblivion.png",
+      "category": "enemies",
+      "source": "Art/source/calamity-phase0/Gatekeeper of Oblivion.png",
+      "source_sha256": "af9c1392160f6cc348d9ec1f88dc1fcd596b45041ac1a00b0cc540835101b2ab",
+      "runtime": "public/assets/enemies/oblivion-gatekeeper-of-oblivion.png",
+      "runtime_sha256": "a5734b19b724d0d2800f622a40fb25e1a6512306fedac3c20aba097dad75f758",
+      "settings": {
+        "crop": 4,
+        "radius": 46,
+        "ramp": 34,
+        "enclosed_radius": 30,
+        "enclosed_min_area": 0.0004,
+        "despill": true,
+        "seeds": [],
+        "protect": []
+      }
+    },
+    {
+      "incoming": "Mode header - 31.png",
+      "category": "banner",
+      "source": "Art/source/calamity-phase0/Mode header - 31.png",
+      "source_sha256": "bba20f969371d694beb1d67b7e515270663060fd8fc328a891b9090da29b19e9",
+      "runtime": "public/assets/banners/oblivion-banner.png",
+      "runtime_sha256": "bba20f969371d694beb1d67b7e515270663060fd8fc328a891b9090da29b19e9",
+      "settings": {}
+    },
+    {
+      "incoming": "Battle arena - 169.png",
+      "category": "arena",
+      "source": "Art/source/calamity-phase0/Battle arena - 169.png",
+      "source_sha256": "c64d200fe3feb907d6660c867af76a8f8245b00bb877a2d5b3b318aa20171844",
+      "runtime": "public/assets/backgrounds/oblivion-arena.png",
+      "runtime_sha256": "c64d200fe3feb907d6660c867af76a8f8245b00bb877a2d5b3b318aa20171844",
+      "settings": {}
+    }
+  ]
+}

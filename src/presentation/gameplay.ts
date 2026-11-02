@@ -31,7 +31,7 @@ import { worldLore } from './world-lore';
 import { activityDifficulty } from './calamity';
 import { enemyStrength } from './enemy-strength';
 import { enemyCombatStats } from '../content/stat-growth';
-import { gatesOfOblivionRules, oblivionEncounter, oblivionMaterialIds } from '../content/gates-of-oblivion';
+import { gatesOfOblivionRules, oblivionBannerArt, oblivionEncounter, oblivionMaterialIds } from '../content/gates-of-oblivion';
 
 function oblivionEntry(account: Account | null): string {
   if (!account) return '<button disabled>Gates of Oblivion unavailable: resolve the save error</button>';
@@ -177,7 +177,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       ${infusionEntry({ id: 'machines', name: 'Awaken the Machines' }, account)}`), account)}
       </article></section>
     <section class="activity-group" id="gameplay-oblivion"><h2>Gates of Oblivion</h2><article class="activity-card">
-      ${activityLayout(`${activityBanner('Gates of Oblivion', null, 'Gates of Oblivion activity banner', true)}
+      ${activityLayout(`${activityBanner('Gates of Oblivion', oblivionBannerArt, 'Gates of Oblivion: shattered black-and-white gates split by crimson light.', true)}
       <p class="eyebrow">Rise’s constructs</p>
       <p>Rise’s constructs guard 25 floors.</p>
       ${activityFacts(`${gatesOfOblivionRules.stages} floors · Boss every 5th`, `${gatesOfOblivionRules.startingLevel}-${gatesOfOblivionRules.maximumLevel}`, 'Prismatica · Calamity materials · Fragment of Rise')}`, `

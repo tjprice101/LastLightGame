@@ -18,8 +18,8 @@ describe('supplied machine artwork integration', () => {
   it('registers every new Conduit through the shared equipment/archive/loot resolvers', () => {
     const supplied = conduits.filter((entry) => entry.art !== null);
     const pending = conduits.filter((entry) => entry.art === null);
-    expect(supplied).toHaveLength(90);
-    expect(pending).toHaveLength(9);
+    expect(supplied).toHaveLength(99);
+    expect(pending).toHaveLength(0);
     for (const conduit of supplied) {
       expect(conduit.art).toBe(conduit.id);
       const path = `conduits/${conduit.id}.png`;

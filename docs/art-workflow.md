@@ -1,5 +1,18 @@
 # Art and asset workflow
 
+## Delivered Phase 0 Calamity artwork (D-441)
+
+Reproduce with `python tools/intake_calamity_phase0_art.py --review DIR` (review
+sheets) and `--apply` (install). Originals stay byte-identical in
+`Art/source/calamity-phase0`; hashes live in
+`Art/provenance/calamity-phase0-intake.json`. Per-asset settings in
+`calamity-phase0-settings.json` are reviewed, not generic: `crop` trims generated
+frame lines, side strips fall back to the overall border key, `green_shadow`
+removes connected green-tinted cast shadows, and `chroma` keys by green dominance
+on very dark backgrounds so black/white armor and wings survive. Banner and
+arena are copied unchanged (scenery). Afterwards regenerate character, status and
+Conduit revision maps and run `npm run art:avif`.
+
 ## Rarity UI/effect palette (D-417)
 
 [Shared rarity accents](menus-and-inventory.md#shared-rarity-accents-and-feedback-d-417)

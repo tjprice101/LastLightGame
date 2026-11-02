@@ -155,7 +155,7 @@ export const materialArtNames = ['Seed', 'Bloom', 'Shard', 'Crest', 'Heart', 'So
 export function materialArt(id: string): string | undefined {
   materialName(id);
   if (roseMaterials.some((material) => material.id === id)) return id;
-  if (calamiticMaterials.some((material) => material.id === id)) return undefined;
+  if (calamiticMaterials.some((material) => material.id === id)) return id;
   const specialty = specialtyMaterials.find((entry) => entry.id === id);
   if (specialty) return specialty.art;
   const [elementId, rarity] = id.split('-');

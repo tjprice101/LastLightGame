@@ -242,6 +242,26 @@
    "bytes": 64160,
    "avif": 31772
   },
+  "abilities/ilvaris-passive.png": {
+   "source": "cba0741931cedd87991da4841f62b8f85cdcb903f5d940ee57a364ca7c1bc5b7",
+   "bytes": 85227,
+   "avif": 44509
+  },
+  "abilities/ilvaris-skill1.png": {
+   "source": "a102ee8963846545b4aedefee0ab24bc43919d00e7b84252b5fa3f35591c3f5e",
+   "bytes": 75375,
+   "avif": 41464
+  },
+  "abilities/ilvaris-skill2.png": {
+   "source": "3a7ff1d47082f4aaf3bab521340e2a5aa3341d8834153fa5fccf559a1a33637e",
+   "bytes": 85918,
+   "avif": 49758
+  },
+  "abilities/ilvaris-ultimate.png": {
+   "source": "cd49b14b3b730e403d663c9fd68408d157933bbfb9d66512682b0e984a20cee5",
+   "bytes": 82425,
+   "avif": 45285
+  },
   "abilities/infernis-cinder-cleave.png": {
    "source": "b2d863ad528dffcff2fde27739d0f45861ffb5b0d3d16d1cccc3429d80026f58",
    "bytes": 73733,
@@ -271,6 +291,26 @@
    "source": "021cd90accf40ea4e5ce91667315d96bd619d7cd2ee4a09851f757fbecf7400f",
    "bytes": 91034,
    "avif": 48128
+  },
+  "abilities/kaelith-passive.png": {
+   "source": "00f040f40502e9449cc6345bddd4db9ffb1b10b9a5f4958b1c094c1b46224ea0",
+   "bytes": 87067,
+   "avif": 42662
+  },
+  "abilities/kaelith-skill1.png": {
+   "source": "154bc28a8684e337073621aeab93008752d6f4851423ff2295c3e839f239de44",
+   "bytes": 79490,
+   "avif": 35448
+  },
+  "abilities/kaelith-skill2.png": {
+   "source": "3f32114e7407957c54bbe70b33ea40cddb32abbb762e6992f93b31c8bc6fd147",
+   "bytes": 57840,
+   "avif": 32262
+  },
+  "abilities/kaelith-ultimate.png": {
+   "source": "70b4c29c06cdcadba03d337aa9a175c483057ebc5e7f32433cbfa37b9a13e165",
+   "bytes": 66037,
+   "avif": 40513
   },
   "abilities/nerithe-passive.png": {
    "source": "9ad5329ed384a99e8b30f8e429e58e4bb1b01052b048bf7762f3c17fa1988835",
@@ -321,6 +361,26 @@
    "source": "0517e9322e35074537b61b5a200b73a95581715244cc8e91a53040ecaa2576ce",
    "bytes": 61851,
    "avif": 25586
+  },
+  "abilities/ozriel-passive.png": {
+   "source": "ec45c42025c1d4f792f5607bb58baa945270cc1ee4a7e334e2c7bef81905ee3c",
+   "bytes": 89902,
+   "avif": 43859
+  },
+  "abilities/ozriel-skill1.png": {
+   "source": "aef696bb97ae433390d3b850118d010b58a793c3f784aacbc6de0ba65e05a39c",
+   "bytes": 87273,
+   "avif": 47980
+  },
+  "abilities/ozriel-skill2.png": {
+   "source": "c7ea272fb6d0c52d988a92c93d825e4ab50cf8398120eb09adb92006185a8980",
+   "bytes": 81564,
+   "avif": 35655
+  },
+  "abilities/ozriel-ultimate.png": {
+   "source": "27883ea1c54cc6d5c411a9e5076be1b788a86051faa637e20cdb0374cc805a03",
+   "bytes": 75205,
+   "avif": 37492
   },
   "abilities/razor-defend.png": {
    "source": "685382807bdf73d1b05214cdef74af3f665c625c2aff0cfce541768ddf774420",
@@ -391,6 +451,21 @@
    "source": "424f90eb0a7ae9e2b7080809b089837312b171a2ccf590b5f80cdb71bf87b471",
    "bytes": 75021,
    "avif": 38302
+  },
+  "abilities/statuses/status-calamitic-fate-mark.png": {
+   "source": "d9ff88c0faccc38797deae08557d1ef85b03b3da564efebffbf8782f0b45a8ce",
+   "bytes": 84523,
+   "avif": 45238
+  },
+  "abilities/statuses/status-calamitic-fault.png": {
+   "source": "1f9ef50675e52bd8915ec982d3bdd36dfd5d30a9946c2c425d0a3ffd20a6ee50",
+   "bytes": 90899,
+   "avif": 48137
+  },
+  "abilities/statuses/status-calamitic-refusal.png": {
+   "source": "0fe684262f0d03d9c5f7d5fc43b0cc6957e154fdc817f5c2c7aa5ef796aaa70f",
+   "bytes": 89359,
+   "avif": 41037
   },
   "abilities/statuses/status-focus.png": {
    "source": "66c7374d14a84cc5380a286e939aa184fce8f0fe03ead0b107f92348aa197fe6",
@@ -732,6 +807,11 @@
    "bytes": 1764397,
    "avif": 341018
   },
+  "backgrounds/oblivion-arena.png": {
+   "source": "c64d200fe3feb907d6660c867af76a8f8245b00bb877a2d5b3b318aa20171844",
+   "bytes": 1807783,
+   "avif": 383840
+  },
   "backgrounds/oceanic-valley.png": {
    "source": "5b8b3ebda1c76ecea2d58240aa289621dbf2b095d34c1140597fa3b50b206be3",
    "bytes": 1632522,
@@ -881,6 +961,11 @@
    "source": "22fa501b3cf3e970a595d17334ae2e694c6ab10e16213dfe34148ed0a788e799",
    "bytes": 1468050,
    "avif": 279413
+  },
+  "banners/oblivion-banner.png": {
+   "source": "bba20f969371d694beb1d67b7e515270663060fd8fc328a891b9090da29b19e9",
+   "bytes": 1751234,
+   "avif": 381748
   },
   "banners/oceanic-valley.png": {
    "source": "d19c24965f73d85d7bcc1b983a9897aa3db7923fcecfdf89283f246b4f760e83",
@@ -1220,6 +1305,42 @@
    "avif": 151204,
    "thumb": 46368
   },
+  "characters/ilvaris-evo-2.png": {
+   "source": "2c0550f7e13460274a5ba0efc19fa0fd958541f274e4faa755f6296e5cf90300",
+   "bytes": 691707,
+   "avif": 169533,
+   "thumb": 53109
+  },
+  "characters/ilvaris-evo-3.png": {
+   "source": "3b241870ff6b0c93b2f453b042ef66155d03700509b38f995898f9a5067a7939",
+   "bytes": 718606,
+   "avif": 186433,
+   "thumb": 58725
+  },
+  "characters/ilvaris-evo-4.png": {
+   "source": "690f4ff375b8ac2f9ff6bc7b2e825e7291292334ddfdafe5af9636e025f2a2fd",
+   "bytes": 717324,
+   "avif": 200421,
+   "thumb": 58170
+  },
+  "characters/ilvaris-evo-5.png": {
+   "source": "98605048fdd8e8739c0bbc1312e47421da3e83506ced332f1cf1368564986ce0",
+   "bytes": 916772,
+   "avif": 252686,
+   "thumb": 80151
+  },
+  "characters/ilvaris-evo-6.png": {
+   "source": "9282abe2c3ad325278316ebe5bb9c12b8b03535c9034a7e7fd189b7f0c02a431",
+   "bytes": 865099,
+   "avif": 259402,
+   "thumb": 74456
+  },
+  "characters/ilvaris.png": {
+   "source": "ab5328000ae75ec664fabe9ea5ba3cef295a6e2682e08fc3bc90b0a93ccaf2db",
+   "bytes": 729782,
+   "avif": 196988,
+   "thumb": 58522
+  },
   "characters/infernis-evo-2.png": {
    "source": "a07e754b46ec0c044ac0184d0c6689b01ccc283290a85bb4906eb084393a52c1",
    "bytes": 608650,
@@ -1255,6 +1376,42 @@
    "bytes": 569490,
    "avif": 146689,
    "thumb": 44092
+  },
+  "characters/kaelith-evo-2.png": {
+   "source": "cf5d538e39e228685d24cd7997b552f11b78024dcf6dcd3612c2e3721a593bfd",
+   "bytes": 650100,
+   "avif": 170557,
+   "thumb": 53103
+  },
+  "characters/kaelith-evo-3.png": {
+   "source": "410749adeed626a1154c53900947d13a889e27323a4a04297e3574ff7e54cab7",
+   "bytes": 642113,
+   "avif": 155643,
+   "thumb": 48268
+  },
+  "characters/kaelith-evo-4.png": {
+   "source": "87b7bb27b1fd9c83eca8b0abfeb82f9c88c32a5b5bc4250bbf8c2bc035646f15",
+   "bytes": 820247,
+   "avif": 243232,
+   "thumb": 69748
+  },
+  "characters/kaelith-evo-5.png": {
+   "source": "53ae0f197ebefe2e3f3b33bf45d36c20584006f03b78ee69fd0137cb847007d9",
+   "bytes": 931751,
+   "avif": 278927,
+   "thumb": 87871
+  },
+  "characters/kaelith-evo-6.png": {
+   "source": "46172bd38ae8193b5cd5a0f6d743d5f8fffd08618ed755c885b78a8c7bd542f2",
+   "bytes": 973304,
+   "avif": 296034,
+   "thumb": 78611
+  },
+  "characters/kaelith.png": {
+   "source": "843c3a86c50b8a43a903c2186734f75f8dda63fcaa66e9541f42caed0b480d31",
+   "bytes": 591831,
+   "avif": 138889,
+   "thumb": 39080
   },
   "characters/nerithe-evo-2.png": {
    "source": "42b693d24a1aa78706d9d01c2da969caf7f08c681aa564e2c75dc75b482e5b50",
@@ -1327,6 +1484,42 @@
    "bytes": 607903,
    "avif": 169573,
    "thumb": 51842
+  },
+  "characters/ozriel-evo-2.png": {
+   "source": "e9a831b48e7437e5c58c3cb57614baf73b5dae37523e15266b0d6a4efee24c97",
+   "bytes": 692759,
+   "avif": 183047,
+   "thumb": 54133
+  },
+  "characters/ozriel-evo-3.png": {
+   "source": "f973129b376e2ffcb80723ae9bfacba184f6558f150f4d7f343babb3780915ae",
+   "bytes": 671219,
+   "avif": 158728,
+   "thumb": 50597
+  },
+  "characters/ozriel-evo-4.png": {
+   "source": "f0ae51800b5aac3177bc70aa45d9ff8f205d02fa9eb66cff806f29828b5ac29a",
+   "bytes": 758176,
+   "avif": 235632,
+   "thumb": 69672
+  },
+  "characters/ozriel-evo-5.png": {
+   "source": "b9fb35e686bb6b5391d71907dc7c3ff2dc3c28c72322a22cd73f150fa56620e6",
+   "bytes": 833345,
+   "avif": 241625,
+   "thumb": 67679
+  },
+  "characters/ozriel-evo-6.png": {
+   "source": "aeb2060d26e522998ff2ce524861ab240dc2d0340351e1af8f59ee58d17db57c",
+   "bytes": 927816,
+   "avif": 251792,
+   "thumb": 75644
+  },
+  "characters/ozriel.png": {
+   "source": "e3d4eae830152488df31cc6367bdfcb973c26930c0e3ea5e95771073163feb34",
+   "bytes": 672151,
+   "avif": 158149,
+   "thumb": 46484
   },
   "characters/razor-evo-2.png": {
    "source": "41555b93d77ac38de1e23ecdf290fe1a4f795df72c59b94a15c546827d185577",
@@ -1563,6 +1756,16 @@
    "bytes": 57648,
    "avif": 25494
   },
+  "conduits/calamitic-aegis-engine-of-severed-fate.png": {
+   "source": "8bef7f86615e8010273bfe4180499bcec30c6eb4e52ab82bfc397cbd59e5d242",
+   "bytes": 81684,
+   "avif": 33168
+  },
+  "conduits/calamitic-bulwark-of-the-last-horizon.png": {
+   "source": "628ed910f2403ade0986a3704b068bb13e760aefd562201d9b41cc0b6d857abf",
+   "bytes": 106381,
+   "avif": 40125
+  },
   "conduits/calamitic-cathedral-final-equation.png": {
    "source": "27a5991a96016148db8bfadc6a1f7617f69e2253ce1d0445af667b4b261ed111",
    "bytes": 80576,
@@ -1573,20 +1776,55 @@
    "bytes": 74621,
    "avif": 31267
   },
+  "conduits/calamitic-choir-array-of-branded-stars.png": {
+   "source": "9048820fa2f5d711ff7c4b79cb841bf2affaaacd3aaa98b20ef458e682283556",
+   "bytes": 84872,
+   "avif": 41243
+  },
+  "conduits/calamitic-heartforge-of-the-sunless-dawn.png": {
+   "source": "3126c8e1eeff364adf894c50c721ecee4cd581c348839a3d6c23ba27abf47ce1",
+   "bytes": 85693,
+   "avif": 30760
+  },
   "conduits/calamitic-horizon-cleaving-godpress.png": {
    "source": "ebc759c07443f56ba43f99e505f1e3d0cc9bb2fdcbaf1d1c3f2427201bf3f8c7",
    "bytes": 90667,
    "avif": 40345
+  },
+  "conduits/calamitic-monolith-of-the-unmoved-star.png": {
+   "source": "7b0f5a0fd6469c48d04b717bf418c31001991d1876ee82982305155241aac640",
+   "bytes": 84540,
+   "avif": 43680
+  },
+  "conduits/calamitic-reliquary-of-unending-mercy.png": {
+   "source": "84f77f63027dba6f8a8bde20925f6b59e62ba3d639e6366713c3b8e128413a97",
+   "bytes": 88553,
+   "avif": 36187
+  },
+  "conduits/calamitic-ruinmark-censer.png": {
+   "source": "9e4298e2801b0511793c0a852bd5288a23d5c87460f833780bb36ce07189bb96",
+   "bytes": 55677,
+   "avif": 28078
   },
   "conduits/calamitic-throne-borrowed-tomorrows.png": {
    "source": "e464850e5dd5161685c18a2aaf4b05652570c2295b196af76cc970d845833480",
    "bytes": 79088,
    "avif": 32340
   },
+  "conduits/calamitic-throne-of-the-lone-apostate.png": {
+   "source": "035e63a56377a793c7ed94c1ae4f1c5de2969ca409635ac24d166e2493779aa7",
+   "bytes": 100351,
+   "avif": 45051
+  },
   "conduits/calamitic-world-eater-orrery.png": {
    "source": "2e9ee72fb64d83e3c207790bbf3a921fc23f140ecbe3f81274db472ca7d18d60",
    "bytes": 86578,
    "avif": 40931
+  },
+  "conduits/calamitic-worldbreaker-cannonade.png": {
+   "source": "bb8688b87ebfe4c6a57524cff67d4b7e3fc74e6548339d027db866fc58d805bc",
+   "bytes": 77410,
+   "avif": 32989
   },
   "conduits/chaotic-fault-verdict.png": {
    "source": "872bbba3de17a12c35e3a7dd7b7f36d5d54c18b50f4f813768611c9830a9c34e",
@@ -2508,6 +2746,66 @@
    "avif": 197227,
    "thumb": 70547
   },
+  "enemies/oblivion-annihilation-colossus-fragment.png": {
+   "source": "f4a83a34bb0130cc3df9918769806c710d170a377cbf02033b6d4591caa8e92b",
+   "bytes": 750165,
+   "avif": 235367,
+   "thumb": 70903
+  },
+  "enemies/oblivion-crimson-gearwyrm.png": {
+   "source": "82b21d83730a65392f92dc005b22116532c06ddfffa616f2cebc0fc01ac17f65",
+   "bytes": 721912,
+   "avif": 211443,
+   "thumb": 65257
+  },
+  "enemies/oblivion-fatebreaker-warden.png": {
+   "source": "c6a2b3453fabe706730fbac2068075635bce5e561c2c8332e87b37a5fedc222d",
+   "bytes": 715683,
+   "avif": 204498,
+   "thumb": 53763
+  },
+  "enemies/oblivion-fracture-hound.png": {
+   "source": "56c873422d051ce98d5dba981e5eecc8472e51a30990dc71fd92f1dcc33da8ec",
+   "bytes": 624323,
+   "avif": 227586,
+   "thumb": 68203
+  },
+  "enemies/oblivion-gatekeeper-of-oblivion.png": {
+   "source": "a5734b19b724d0d2800f622a40fb25e1a6512306fedac3c20aba097dad75f758",
+   "bytes": 849336,
+   "avif": 264853,
+   "thumb": 74781
+  },
+  "enemies/oblivion-glassbound-sentry.png": {
+   "source": "7143aaac329cfeccd3f634909ad8b292d5e9ef370acae876e164c69c068112e3",
+   "bytes": 686725,
+   "avif": 201582,
+   "thumb": 61707
+  },
+  "enemies/oblivion-husk-seraph-of-rise.png": {
+   "source": "6a508354ac7f6245dbdf11f6ed4518938394e67d238b7e2d448a44cb48a57b30",
+   "bytes": 691593,
+   "avif": 224597,
+   "thumb": 67106
+  },
+  "enemies/oblivion-oblivion-lantern-wraith.png": {
+   "source": "1e0285161ae940a705e5a12be0036d1eb67b0dea93867c93a8250a34f34fcf8e",
+   "bytes": 635192,
+   "avif": 222514,
+   "thumb": 65663
+  },
+  "enemies/oblivion-shardling-acolyte.png": {
+   "source": "b7569890d7f27be6eb7dc3b798de4ad3c9183b4f8c94b14535fe882f362004c5",
+   "bytes": 413581,
+   "avif": 137186,
+   "thumb": 43029
+  },
+  "enemies/oblivion-unmade-choir-drone.png": {
+   "source": "6a1ee276962e5f3c09107eaaa0da644664c2914557fe0db014c4e3d9c70e6c77",
+   "bytes": 764014,
+   "avif": 290764,
+   "thumb": 89674
+  },
   "enemies/obsidian-gargoyle.png": {
    "source": "d7a10e5e76b32ac44211210b0b1d6faac083e28b041bd18ef08a217819e1a1f0",
    "bytes": 655407,
@@ -3021,6 +3319,11 @@
    "bytes": 78779,
    "avif": 34932
   },
+  "items/rise-blessed-emblem.png": {
+   "source": "42cd19dd13e219b8116bc740454119972cd096e94780b0f7332539f9df2d6e12",
+   "bytes": 72815,
+   "avif": 33427
+  },
   "master-conduits/astral-reserve.png": {
    "source": "083d5886404947a1fc7edb4cfedec5299f7ae9818a831d308709b4452f49e47a",
    "bytes": 74233,
@@ -3346,6 +3649,36 @@
    "bytes": 76223,
    "avif": 42211
   },
+  "materials/calamity-common.png": {
+   "source": "f64681d3a8ff4364b1824294ba06d516b3edda89f3780ce53b6995ba00d4c992",
+   "bytes": 71194,
+   "avif": 34597
+  },
+  "materials/calamity-epic.png": {
+   "source": "f1785e3c0fd7a2a48fec5481bd2f701ddcf91b77c045dcf8bd86e8b48d2b27f8",
+   "bytes": 83260,
+   "avif": 43786
+  },
+  "materials/calamity-legendary.png": {
+   "source": "44dfc855e070eea7a26042f3c6cf61af7e8d3156dbc3f177878ac8cec693ddbc",
+   "bytes": 88220,
+   "avif": 46528
+  },
+  "materials/calamity-omnic.png": {
+   "source": "e84a9138e987d68ed1e65954b093269f620eb1b561dc382d5db589d791a209ce",
+   "bytes": 82291,
+   "avif": 42120
+  },
+  "materials/calamity-rare.png": {
+   "source": "8fb664cbb55d49a735b82ee06d6b755b0e97d6daec79ffa270fe4527f47dcf8a",
+   "bytes": 60919,
+   "avif": 26971
+  },
+  "materials/calamity-uncommon.png": {
+   "source": "1a8b5913374694957e31e0ef5224ee69b700d99a3a15f72555bbbd58edc489d1",
+   "bytes": 78187,
+   "avif": 35313
+  },
   "materials/chaotic-bloom.png": {
    "source": "24c6d3dcf70b3e525d61828cbd08c8426167990f0b64bf68ea43dd1d7747b61a",
    "bytes": 78168,
@@ -3405,6 +3738,16 @@
    "source": "d0397ccfeedd930f3d4fcbcaae8e87d3eb158176bc03624e87961a48d30a6def",
    "bytes": 79777,
    "avif": 42107
+  },
+  "materials/feather-severed-dawn.png": {
+   "source": "b30eb03617323d21fe3a88f9ebc15a30226caf6ca286e9d09f8c258a7d00b06d",
+   "bytes": 74611,
+   "avif": 37754
+  },
+  "materials/fragment-of-rise.png": {
+   "source": "1d7e7d6f0862e0563a43d4e1929a67b600e74677e247f518494d02449321969a",
+   "bytes": 88365,
+   "avif": 44405
   },
   "materials/heavens-chalice-undying-dawn.png": {
    "source": "89c47e5968b5452fd17c565d7383fcd848b0037be7b76075d1709b46601b52dd",
@@ -3540,6 +3883,16 @@
    "source": "ebeb79bfc86868273c769cfa70f0405b5eff7f257a38722ed61cf719560cdcb2",
    "bytes": 89561,
    "avif": 37287
+  },
+  "materials/shard-of-calamity.png": {
+   "source": "a5557f6a65c59aa06ea1faadb8dc4e446e15abdd20d292f1e574cb6b35e90ca9",
+   "bytes": 99279,
+   "avif": 46271
+  },
+  "materials/splinter-unmade-night.png": {
+   "source": "86a7ada3e2170bb98f9f6b417ca5813523e7d9483044975483967093d68166a1",
+   "bytes": 95796,
+   "avif": 46866
   },
   "materials/tectonic-bloom.png": {
    "source": "dbd0c557b3e502274c67e570dacd2047433defd0ac07891299b0e7aea9849ef1",

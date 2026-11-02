@@ -57,11 +57,11 @@ describe('typed ability status labels', () => {
     expect(resolveFighter('tide').abilities.skill1.description).toContain('for the next enemy phase');
     expect(resolveFighter('tide').abilities.skill1.description.split(/\s+/).length).toBeLessThanOrEqual(65);
   });
-  it('shows owner-authored Calamitic stacks as text without inventing status art', () => {
+  it('shows owner-authored Calamitic stacks with their delivered status art', () => {
     for (const id of ['ozriel', 'ilvaris', 'kaelith'] as const) {
       const html = kitResource(resolveFighter(id), id);
-      expect(html).toContain('data-native-status="text"');
-      expect(html).not.toContain('<img');
+      expect(html).toMatch(/data-status-art="calamitic-(refusal|fate-mark|fault)"/);
+      expect(html).not.toContain('Artwork pending');
     }
     expect(resolveFighter('ilvaris').abilities.skill1.description).toContain('per stack, up to 5');
   });

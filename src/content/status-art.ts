@@ -37,6 +37,9 @@ export const statusArt = {
   'native-vaelor-rise': 'abilities/statuses/status-native-vaelor-rise.png',
   'native-vaelor-crescendo': 'abilities/statuses/status-native-vaelor-crescendo.png',
   'native-bruno-cover': 'abilities/statuses/status-native-bruno-cover.png',
+  'calamitic-fault': 'abilities/statuses/status-calamitic-fault.png',
+  'calamitic-fate-mark': 'abilities/statuses/status-calamitic-fate-mark.png',
+  'calamitic-refusal': 'abilities/statuses/status-calamitic-refusal.png',
 } as const;
 
 export type StatusArtId = keyof typeof statusArt;

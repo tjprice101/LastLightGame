@@ -1,5 +1,22 @@
 # Current state and handoff
 
+## Phase 0 Calamity art installed (D-441)
+
+- `tools/intake_calamity_phase0_art.py --apply` archived and installed all65
+  delivered root PNGs (originals in `Art/source/calamity-phase0`, manifest
+  `Art/provenance/calamity-phase0-intake.json`, reviewed settings beside it).
+  Root copies removed with `--remove-incoming` after validation.
+- Wired: Ozriel/Ilvaris/Kaelith portraits (`character-art.ts` available) and
+  facing, their passive/skill/Last Flare icons, Fate-seared Mark/Fault/Refusal
+  status icons (native readouts and markers), nine Calamitic Conduits,
+  Calamitic materials, the Rise-blessed emblem badge, Gates of Oblivion enemy
+  sprites/catalog art, gameplay banner and battle arena (previously fell back
+  to the Training field). Character/status/Conduit revision maps regenerated;
+  `npm run art:avif` encoded65 copies.
+- Not delivered: Hymn of Broken Glass status icon (text only), revised
+  Machine Master Chest art. Calamitic characters remain excluded from profile
+  pictures (server validation unchanged).
+
 ## Display evolution by rarity rank (D-438)
 
 - Added shared `rarityRank` / `displayEvolution` presentation helpers. Ordinary

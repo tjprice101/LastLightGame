@@ -253,7 +253,7 @@ describe('owner-authored Calamitic native kits', () => {
     expect(endTurn(recovering).state.allies[0].recoverThrough).toBe(2);
   });
 
-  it('resets bounded native memories on a new encounter, with readable icon-free statuses', () => {
+  it('resets bounded native memories on a new encounter, with readable statuses and delivered icons', () => {
     let state = encounter('ozriel', 'ilvaris', 'kaelith');
     state = use(state, 'ilvaris', 'skill1').state;
     state = use(state, 'ilvaris', 'skill2').state;
@@ -261,13 +261,14 @@ describe('owner-authored Calamitic native kits', () => {
     nativeMemory(state.allies[0]).refusalUsed = ['ozriel'];
     expect(nativeMarkers(state, state.enemies[0]).map(marker => marker.label)).toEqual(['Fate-seared Mark', 'Fault']);
     expect(nativeMarkerReadout(state, state.enemies[0])).toContain('Fault');
-    expect(nativeMarkerReadout(state, state.enemies[0])).not.toContain('<img');
+    expect(nativeMarkerReadout(state, state.enemies[0])).toContain('data-status-art="calamitic-fate-mark"');
+    expect(nativeMarkerReadout(state, state.enemies[0])).toContain('data-status-art="calamitic-fault"');
     expect(nativeMarkerReadout(state, state.allies[0])).toContain('Used this encounter');
     expect(nativeMarkerReadout(state, state.allies[0])).toContain('Hymn of Broken Glass');
     for (const id of ['ozriel', 'ilvaris', 'kaelith'] as const) {
-      expect(abilityIcon(id, 'passive')).toBe('');
-      expect(abilityIcon(id, 'skill1')).toBe('');
-      expect(abilityStatuses({}, id, 'passive')).not.toContain('<img');
+      expect(abilityIcon(id, 'passive')).toContain(`abilities/${id}-passive.png`);
+      expect(abilityIcon(id, 'skill1')).toContain(`abilities/${id}-skill1.png`);
+      expect(abilityStatuses({}, id, 'passive')).not.toContain('Artwork pending');
       const unit = state.allies.find(ally => ally.id === id)!;
       unit.evolution = 6;
       unit.level = 110;

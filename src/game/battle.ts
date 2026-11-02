@@ -6,7 +6,7 @@ import { type CharacterProgress } from '../content/progression';
 import { rollDrop, rollStagedLycalis } from '../content/loot-random';
 import { activityPrismaticaDrop } from '../content/prismatica';
 import { dungeonEncounter, materialDrops, type PlayableDungeon } from '../content/dungeons';
-import { oblivionEncounter, oblivionMaterialDrops, oblivionFragmentDrop, gatesOfOblivionRules } from '../content/gates-of-oblivion';
+import { oblivionEncounter, oblivionMaterialDrops, oblivionFragmentDrop, gatesOfOblivionRules, oblivionConstructArt } from '../content/gates-of-oblivion';
 import { elementSources } from '../content/element-migration';
 import { materialName } from '../content/dungeon-art';
 import { infusionEncounter, infusionDrops, capturedEnemyStats, enemyCaptureAllowed, enemyCaptureChance } from '../content/infusions';
@@ -338,6 +338,7 @@ export function createOblivionBattle(stage: number, seed: number, starter: Start
     const unit = combatant(`oblivion-${stage}-${index}`, encounter.construct.id, encounter.construct.name, 'enemy', encounter.stats, encounter.construct.element);
     unit.level = encounter.level;
     unit.creatureId = encounter.construct.id;
+    unit.art = oblivionConstructArt(encounter.construct);
     unit.color = elementAccents[encounter.construct.element];
     unit.boss = encounter.boss;
     const skills = enemySkills(encounter.level, encounter.boss, encounter.construct.skill, encounter.abilityMultiplier);

@@ -57,7 +57,7 @@ describe('Gates of Oblivion', () => {
     expect(oblivionEncounter(25).boss).toBe(true);
   });
 
-  it('registers ten original mixed-element Elemental-Devourers with distinct lore and neutral pending art', () => {
+  it('registers ten original mixed-element Elemental-Devourers with distinct lore and delivered art', () => {
     expect(oblivionConstructs).toHaveLength(10);
     expect(new Set(oblivionConstructs.map(entry => entry.element)).size).toBe(6);
     const glossary = creatures.filter(creature => creature.oblivion);
@@ -65,7 +65,7 @@ describe('Gates of Oblivion', () => {
     for (const construct of oblivionConstructs) {
       const creature = getCreature(construct.id);
       expect(creature).toMatchObject({ name: construct.name, element: construct.element, area: 'Gates of Oblivion' });
-      expect(creature.art).toBeUndefined();
+      expect(creature.art).toBe(`oblivion-${construct.id.slice('oblivion:'.length)}`);
       expect(creatureLore(creature)).toContain(construct.lore);
       expect(creatureLore(creature)).toContain("Rise's creation, seeking her soul");
       expect(creatureLoot(creature, creature.stages[0]).some(drop => drop.id.startsWith('capture:'))).toBe(false);

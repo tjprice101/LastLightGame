@@ -71,7 +71,7 @@ describe('Calamitic progression and saved rewards', () => {
     expect(loadAccount(storage).characters.ozriel).toEqual({ level: 110, evolution: 6 });
   });
 
-  it('registers every Calamitic material with its name, rarity and no pending-art URL', () => {
+  it('registers every Calamitic material with its name, rarity and delivered art', () => {
     expect(calamiticMaterials.map(material => material.id)).toEqual([
       'calamity-common', 'calamity-uncommon', 'calamity-rare', 'calamity-epic',
       'calamity-legendary', 'calamity-omnic', 'fragment-of-rise', 'feather-severed-dawn',
@@ -80,7 +80,7 @@ describe('Calamitic progression and saved rewards', () => {
     for (const material of calamiticMaterials) {
       expect(materialName(material.id)).toBe(material.name);
       expect(materialRarity(material.id)).toBe(material.rarity);
-      expect(materialArt(material.id)).toBeUndefined();
+      expect(materialArt(material.id)).toBe(material.id);
     }
   });
 

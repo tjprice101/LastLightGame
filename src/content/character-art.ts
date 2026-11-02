@@ -2,7 +2,7 @@ import { getStarter, type StarterId } from './starters';
 import { characterLevelCap } from './progression';
 import { flagshipEvolutionTitles } from './flagships';
 import { warEvolutionTitles } from './war-characters';
-import { calamiticEvolutionTitles, isCalamiticCharacter } from './calamitic-characters';
+import { calamiticEvolutionTitles } from './calamitic-characters';
 
 export const evolutionTitles: Record<StarterId, readonly string[]> = {
   ...flagshipEvolutionTitles,
@@ -22,8 +22,7 @@ export function characterArt(id: StarterId, evolution = 1): { art: string; title
   return {
     art: evolution === 1 ? starter.art : `${starter.art}-evo-${evolution}`,
     title: evolutionTitles[id][evolution - 1],
-    // D-435 Calamitic portraits are prompt-only until delivered.
-    available: !isCalamiticCharacter(id),
+    available: true,
   };
 }
 

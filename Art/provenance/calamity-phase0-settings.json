@@ -1,0 +1,656 @@
+{
+  "characters/ozriel.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "characters/ozriel-evo-2.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "characters/ozriel-evo-3.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "characters/ozriel-evo-4.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "characters/ozriel-evo-5.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 2e-05,
+    "despill": true,
+    "seeds": [],
+    "protect": [],
+    "chroma": {
+      "min": 14,
+      "dark": 0
+    }
+  },
+  "characters/ozriel-evo-6.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 2e-05,
+    "despill": true,
+    "seeds": [],
+    "protect": [],
+    "chroma": {
+      "min": 14,
+      "dark": 0
+    }
+  },
+  "abilities/ozriel-passive.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "abilities/ozriel-skill1.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "abilities/ozriel-skill2.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "abilities/ozriel-ultimate.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "characters/ilvaris.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "characters/ilvaris-evo-2.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "characters/ilvaris-evo-3.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "characters/ilvaris-evo-4.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "characters/ilvaris-evo-5.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 2e-05,
+    "despill": true,
+    "seeds": [],
+    "protect": [],
+    "chroma": {
+      "min": 14,
+      "dark": 0
+    }
+  },
+  "characters/ilvaris-evo-6.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "abilities/ilvaris-passive.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "abilities/ilvaris-skill1.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "abilities/ilvaris-skill2.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "abilities/ilvaris-ultimate.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "characters/kaelith.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "characters/kaelith-evo-2.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "characters/kaelith-evo-3.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "characters/kaelith-evo-4.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "characters/kaelith-evo-5.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 2e-05,
+    "despill": true,
+    "seeds": [],
+    "protect": [],
+    "chroma": {
+      "min": 8,
+      "dark": 16
+    }
+  },
+  "characters/kaelith-evo-6.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 2e-05,
+    "despill": true,
+    "seeds": [],
+    "protect": [],
+    "chroma": {
+      "min": 14,
+      "dark": 0
+    }
+  },
+  "abilities/kaelith-passive.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "abilities/kaelith-skill1.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "abilities/kaelith-skill2.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "abilities/kaelith-ultimate.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "abilities/statuses/status-calamitic-fault.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "abilities/statuses/status-calamitic-fate-mark.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "abilities/statuses/status-calamitic-refusal.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "conduits/calamitic-bulwark-of-the-last-horizon.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "conduits/calamitic-reliquary-of-unending-mercy.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "conduits/calamitic-aegis-engine-of-severed-fate.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": [],
+    "green_shadow": 12
+  },
+  "conduits/calamitic-monolith-of-the-unmoved-star.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "conduits/calamitic-heartforge-of-the-sunless-dawn.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "conduits/calamitic-ruinmark-censer.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "conduits/calamitic-choir-array-of-branded-stars.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "conduits/calamitic-throne-of-the-lone-apostate.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "conduits/calamitic-worldbreaker-cannonade.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "materials/calamity-common.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "materials/calamity-uncommon.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "materials/calamity-rare.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "materials/calamity-epic.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "materials/calamity-legendary.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": [],
+    "green_shadow": 12
+  },
+  "materials/calamity-omnic.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "materials/fragment-of-rise.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "materials/feather-severed-dawn.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "materials/splinter-unmade-night.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "materials/shard-of-calamity.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "items/rise-blessed-emblem.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "enemies/oblivion-shardling-acolyte.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "enemies/oblivion-glassbound-sentry.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "enemies/oblivion-oblivion-lantern-wraith.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "enemies/oblivion-fracture-hound.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "enemies/oblivion-unmade-choir-drone.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "enemies/oblivion-crimson-gearwyrm.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "enemies/oblivion-husk-seraph-of-rise.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "enemies/oblivion-annihilation-colossus-fragment.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "enemies/oblivion-fatebreaker-warden.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "enemies/oblivion-gatekeeper-of-oblivion.png": {
+    "crop": 4,
+    "radius": 46,
+    "ramp": 34,
+    "enclosed_radius": 30,
+    "enclosed_min_area": 0.0004,
+    "despill": true,
+    "seeds": [],
+    "protect": []
+  },
+  "banners/oblivion-banner.png": {},
+  "backgrounds/oblivion-arena.png": {}
+}

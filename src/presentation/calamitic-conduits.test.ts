@@ -45,14 +45,14 @@ describe('Calamitic market and shared surfaces', () => {
     }
   });
 
-  it('shows all fourteen universal creations, with pending art kept neutral, after any recorded EX clear and prevents duplicate purchases', () => {
+  it('shows all fourteen universal creations with installed art after any recorded EX clear and prevents duplicate purchases', () => {
     const account = unlocked();
     const host = render(conduitStore(account, first, 'Calamitic'));
     expect(host.querySelectorAll('[data-store-conduit]')).toHaveLength(14);
     expect(host.textContent).toContain('Universal');
     expect(host.textContent).toContain('100 Calamitic Tokens');
     expect(host.querySelector<HTMLButtonElement>('[data-buy-conduit]')!.disabled).toBe(false);
-    expect(calamiticConduits.filter(design => 'art' in design && design.art === null)).toHaveLength(9);
+    expect(calamiticConduits.filter(design => 'art' in design && design.art === null)).toHaveLength(0);
     for (const design of calamiticConduits) {
       const live = getConduit(design.id);
       if (live.art) expect(host.querySelector(`img[src*="${design.id}.png?v=${conduitArtRevisions[design.id]}"]`)).not.toBeNull();

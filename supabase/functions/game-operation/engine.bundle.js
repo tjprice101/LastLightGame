@@ -2662,55 +2662,46 @@ var calamiticConduits = [
   {
     id: "calamitic-bulwark-of-the-last-horizon",
     name: "Bulwark of the Last Horizon",
-    art: null,
     lore: "Rise forged a black-and-white horizon wall around a crimson pressure core, reinforcing its bearer and the shields raised in its defense."
   },
   {
     id: "calamitic-reliquary-of-unending-mercy",
     name: "Reliquary of Unending Mercy",
-    art: null,
     lore: "Rise built a white relief chamber carrying crimson channels through its healing and warding mechanisms, directing more power into restorative skills."
   },
   {
     id: "calamitic-aegis-engine-of-severed-fate",
     name: "Aegis-Engine of Severed Fate",
-    art: null,
     lore: "Rise forged a crimson axle to drive an armored shield engine, preserving the bearer\u2019s barriers while feeding power into its skills."
   },
   {
     id: "calamitic-monolith-of-the-unmoved-star",
     name: "Monolith of the Unmoved Star",
-    art: null,
     lore: "Rise set a star-shaped mass of dark metal inside a white brace, bracing its bearer against force and reducing skill costs."
   },
   {
     id: "calamitic-heartforge-of-the-sunless-dawn",
     name: "Heartforge of the Sunless Dawn",
-    art: null,
     lore: "Rise sealed a crimson furnace within a pearl-white housing, restoring its bearer\u2019s strength and powering their skills."
   },
   {
     id: "calamitic-ruinmark-censer",
     name: "Ruinmark Censer",
-    art: null,
     lore: "Rise built a black censer burning crimson behind a white lattice, marking weakened foes for greater harm from every attacker."
   },
   {
     id: "calamitic-choir-array-of-branded-stars",
     name: "Choir-Array of Branded Stars",
-    art: null,
     lore: "Rise assembled a ring of white resonators around a crimson star, relaying each mark into a brief surge for the whole squad."
   },
   {
     id: "calamitic-throne-of-the-lone-apostate",
     name: "Throne of the Lone Apostate",
-    art: null,
     lore: "Rise raised an empty black throne beneath a crimson-white canopy, concentrating its full power when its bearer stands alone."
   },
   {
     id: "calamitic-worldbreaker-cannonade",
     name: "Worldbreaker Cannonade",
-    art: null,
     lore: "Rise designed a white cannon assembly around a crimson aperture, channeling its force into skills that strike every enemy."
   }
 ];
@@ -2942,7 +2933,7 @@ var conduits = [
     rarity: "Calamitic",
     price: null,
     power: "Rise's annihilation machinery",
-    art: "art" in entry && entry.art === null ? null : entry.id,
+    art: entry.id,
     element: null,
     mechanic: null,
     buffs: [],
@@ -5887,6 +5878,9 @@ var oblivionConstructs = [
   { id: "oblivion:fatebreaker-warden", name: "Fatebreaker Warden", element: "chaotic", skill: "Calamity Edict: Thread Severance", secondSkill: "No Record of the Next Step", lore: "Fatebreaker Wardens carry a register of predicted arrivals and strike through every entry that proves wrong. The newest page is always left blank for the challenger." },
   { id: "oblivion:gatekeeper-of-oblivion", name: "Gatekeeper of Oblivion", element: "oceanic", skill: "Calamity Lock: Oblivion\u2019s Verdict", secondSkill: "The Gate Beyond the Last Key", lore: "The Gatekeeper has kept the final threshold closed through every recorded shift. Its key is fused into the lock, and the hinge pins have never moved." }
 ];
+function oblivionConstructArt(construct) {
+  return `oblivion-${construct.id.slice("oblivion:".length)}`;
+}
 var oblivionMaterialRarities = ["common", "uncommon", "rare", "epic", "legendary", "omnic"];
 var oblivionMaterialUnlockFloors = [1, 1, 4, 9, 14, 19];
 var oblivionMaterialIds = ["calamity-common", "calamity-uncommon", "calamity-rare", "calamity-epic", "calamity-legendary", "calamity-omnic"];
@@ -6491,6 +6485,7 @@ function catalog() {
     } else result.push({
       id,
       name: construct.name,
+      art: oblivionConstructArt(construct),
       area: gatesOfOblivionRules.name,
       element: construct.element,
       oblivion: true,
@@ -6695,8 +6690,7 @@ function characterArt(id, evolution = 1) {
   return {
     art: evolution === 1 ? starter.art : `${starter.art}-evo-${evolution}`,
     title: evolutionTitles[id][evolution - 1],
-    // D-435 Calamitic portraits are prompt-only until delivered.
-    available: !isCalamiticCharacter(id)
+    available: true
   };
 }
 function characterName(id, evolution = 1, riseBlessed = false) {
@@ -10461,6 +10455,7 @@ function createOblivionBattle(stage, seed2, starter, progress, roster = [starter
     const unit = combatant(`oblivion-${stage}-${index}`, encounter2.construct.id, encounter2.construct.name, "enemy", encounter2.stats, encounter2.construct.element);
     unit.level = encounter2.level;
     unit.creatureId = encounter2.construct.id;
+    unit.art = oblivionConstructArt(encounter2.construct);
     unit.color = elementAccents[encounter2.construct.element];
     unit.boss = encounter2.boss;
     const skills = enemySkills(encounter2.level, encounter2.boss, encounter2.construct.skill, encounter2.abilityMultiplier);

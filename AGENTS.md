@@ -1,5 +1,16 @@
 # Last Light: AI agent entry point
 
+## Phase 0 Calamity art installed (D-441)
+
+All65 delivered Phase0 PNGs installed: Ozriel/Ilvaris/Kaelith18 portraits and
+12 ability icons, 3 Calamitic statuses (Hymn has no art; stays text),9 Conduits,
+11 materials incl. Fragment of Rise/Shard/Feather/Splinter, Rise-blessed emblem,
+10 Oblivion enemies, Oblivion banner and arena. tools/intake_calamity_phase0_art.py
+plus Art/provenance/calamity-phase0-settings.json own reviewed keys (crop, border
+fallback, green_shadow, chroma for dark-green keys); originals in
+Art/source/calamity-phase0. D-440 compact prompts are the standard foundation
+for future characters; each new character must still be uniquely designed.
+
 ## Shields last until broken (D-434)
 
 Every Shield (Skill, Last Flare, passive, Conduit) lasts until broken, never

@@ -1018,18 +1018,18 @@ export function nativeMarkers(state: BattleState, unit: Combatant): NativeMarker
   if (unit.side === 'ally' && nativeHymn(unit, state.round)) {
     const hymn = nativeHymn(unit, state.round)!;
     markers.push({ id: 'hymn', owner: hymn.owner, label: 'Hymn of Broken Glass',
-      value: `Critical Damage +${Math.round(hymn.criticalDamage * 100)}% ? Skill Power +${Math.round(hymn.skillPower * 100)}% ? through player turn ${hymn.throughRound}` });
+      value: `Critical Damage +${Math.round(hymn.criticalDamage * 100)}% · Skill Power +${Math.round(hymn.skillPower * 100)}% · through player turn ${hymn.throughRound}` });
   }
   for (const owner of state.allies.filter(hasNativeIdentity)) {
     const mark = owner.native?.fateMarks?.[unit.id];
     if (unit.side === 'enemy' && mark && mark.throughPhase >= state.round)
       markers.push({ id: 'fate-mark', owner: owner.id, label: 'Fate-seared Mark',
-        value: `${mark.stacks}/5 ? damage taken +${mark.stacks * 10}% ? Severed Prophecy +45% ? through enemy phase ${mark.throughPhase}` });
+        value: `${mark.stacks}/5 · damage taken +${mark.stacks * 10}% · Severed Prophecy +45% · through enemy phase ${mark.throughPhase}`, icon: 'calamitic-fate-mark' });
     const faults = owner.native?.faults?.[unit.id];
     if (unit.side === 'enemy' && faults)
-      markers.push({ id: 'fault', owner: owner.id, label: 'Fault', value: `${faults}/3 ? squad damage +${faults * 10}%` });
+      markers.push({ id: 'fault', owner: owner.id, label: 'Fault', value: `${faults}/3 · squad damage +${faults * 10}%`, icon: 'calamitic-fault' });
     if (unit.side === 'ally' && owner.definitionId === 'ozriel' && owner.hp > 0)
-      markers.push({ id: 'refusal', owner: owner.id, label: 'Refusal', value: owner.native?.refusalUsed?.includes(unit.id) ? 'Used this encounter' : 'Ready ? once this encounter' });
+      markers.push({ id: 'refusal', owner: owner.id, label: 'Refusal', value: owner.native?.refusalUsed?.includes(unit.id) ? 'Used this encounter' : 'Ready · once this encounter', icon: 'calamitic-refusal' });
     if (owner.hp <= 0 || owner.id === unit.id) continue;
     const memory = owner.native ?? {};
     if (unit.side === 'ally') {
@@ -1075,13 +1075,13 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
     rows.push({ label, value, description, icons, ...(rule ? { rule } : {}) });
   if (unit.definitionId === 'ozriel') for (const recipient of state.allies)
     add('Refusal', memory.refusalUsed?.includes(recipient.id) ? 'Used' : unit.hp > 0 ? 'Ready' : 'Unavailable',
-      `${recipient.name}; once per encounter while Ozriel is alive; a lethal hit leaves 1 HP, never revives.`);
+      `${recipient.name}; once per encounter while Ozriel is alive; a lethal hit leaves 1 HP, never revives.`, ['calamitic-refusal']);
   for (const [id, mark] of Object.entries(memory.fateMarks ?? {})) if (mark.throughPhase >= state.round)
-    add('Fate-seared Mark', `${mark.stacks}/5`, `${state.enemies.find(enemy => enemy.id === id)?.name}; +${mark.stacks * 10}% damage taken and +45% Severed Prophecy; through enemy phase ${mark.throughPhase}.`);
+    add('Fate-seared Mark', `${mark.stacks}/5`, `${state.enemies.find(enemy => enemy.id === id)?.name}; +${mark.stacks * 10}% damage taken and +45% Severed Prophecy; through enemy phase ${mark.throughPhase}.`, ['calamitic-fate-mark']);
   for (const [id, faults] of Object.entries(memory.faults ?? {}))
-    add('Fault', `${faults}/3`, `${state.enemies.find(enemy => enemy.id === id)?.name}; +${faults * 10}% squad damage; Glass Meridian consumes for +20% each.`);
+    add('Fault', `${faults}/3`, `${state.enemies.find(enemy => enemy.id === id)?.name}; +${faults * 10}% squad damage; Glass Meridian consumes for +20% each.`, ['calamitic-fault']);
   const hymn = nativeHymn(unit, state.round);
-  if (hymn) add('Hymn of Broken Glass', `Critical Damage +${Math.round(hymn.criticalDamage * 100)}% ? Skill Power +${Math.round(hymn.skillPower * 100)}%`,
+  if (hymn) add('Hymn of Broken Glass', `Critical Damage +${Math.round(hymn.criticalDamage * 100)}% · Skill Power +${Math.round(hymn.skillPower * 100)}%`,
     `Refreshes without stacking; through player turn ${hymn.throughRound}.`);
   if (hasNativeIdentity(unit) && unit.definitionId === 'bliss') {
     const others = living(state).filter(ally => ally.id !== unit.id);

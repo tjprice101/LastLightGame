@@ -11,10 +11,10 @@ type NativeStatus = readonly [StatusArtId | undefined, string];
 
 /** Statuses each native kit applies, tracks or spends, in reading order; shown beside the ability text in menus (D-339). */
 export const nativeAbilityStatuses: Record<StarterId, Partial<Record<NativeSlot, readonly NativeStatus[]>>> = {
-  ozriel: { passive: [[undefined, 'Refusal']], skill1: [['suppression', 'Weaken']], skill2: [['ward', 'Shield']], ultimate: [['ward', 'Shield']] },
-  ilvaris: { passive: [[undefined, 'Fate-seared Mark']], skill1: [[undefined, 'Fate-seared Mark']],
+  ozriel: { passive: [['calamitic-refusal', 'Refusal']], skill1: [['suppression', 'Weaken']], skill2: [['ward', 'Shield']], ultimate: [['ward', 'Shield']] },
+  ilvaris: { passive: [['calamitic-fate-mark', 'Fate-seared Mark']], skill1: [['calamitic-fate-mark', 'Fate-seared Mark']],
     skill2: [['bloom', 'Healing'], [undefined, 'Hymn of Broken Glass']], ultimate: [['bloom', 'Healing']] },
-  kaelith: { passive: [[undefined, 'Fault']], skill1: [[undefined, 'Fault']], skill2: [[undefined, 'Fault']], ultimate: [[undefined, 'Fault']] },
+  kaelith: { passive: [['calamitic-fault', 'Fault']], skill1: [['calamitic-fault', 'Fault']], skill2: [['calamitic-fault', 'Fault']], ultimate: [['calamitic-fault', 'Fault']] },
   ember: { passive: [['burn', 'Burn']], skill1: [['burn', 'Burn']], skill2: [['burn', 'Burn']], ultimate: [['burn', 'Burn']] },
   tide: { passive: [['ward', 'Shield']], skill2: [['ward', 'Shield']], ultimate: [['ward', 'Shield']] },
   sprout: { passive: [['native-flora-seed', 'Seed']], skill1: [['native-flora-seed', 'Seed']],

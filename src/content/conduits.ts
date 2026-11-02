@@ -119,7 +119,7 @@ export const conduits = ([
     lore: 'A prismatic elemental masterpiece restored from the mechanisms left behind when Let and Rise\'s collaboration ended.' })),
   ...kitConduitDesigns.map((entry) => ({ ...entry, power: 'Elemental Light', art: entry.id })),
   ...calamiticConduits.map(entry => ({ ...entry, rarity: 'Calamitic' as const, price: null, power: "Rise's annihilation machinery",
-    art: 'art' in entry && entry.art === null ? null : entry.id, element: null, mechanic: null, buffs: [] as readonly ConduitBuff[], effect: calamiticEffect(entry.id) })),
+    art: entry.id, element: null, mechanic: null, buffs: [] as readonly ConduitBuff[], effect: calamiticEffect(entry.id) })),
 ] as const).map(entry => ({ ...entry, mechanic: null,
   lore: isCalamiticConduitId(entry.id) ? entry.lore : `${conduitOrigin} ${entry.lore}` }));
 

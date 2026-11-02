@@ -24,6 +24,11 @@ export const oblivionConstructs = [
 ] as const satisfies readonly { id: string; name: string; element: ElementId; skill: string; secondSkill: string; lore: string }[];
 
 export type OblivionConstruct = (typeof oblivionConstructs)[number];
+export const oblivionArenaArt = 'oblivion-arena.png';
+export const oblivionBannerArt = 'banners/oblivion-banner.png';
+export function oblivionConstructArt(construct: { id: string }): string {
+  return `oblivion-${construct.id.slice('oblivion:'.length)}`;
+}
 export const oblivionMaterialRarities = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic'] as const satisfies readonly MaterialRarity[];
 export const oblivionMaterialUnlockFloors = [1, 1, 4, 9, 14, 19] as const;
 export const oblivionMaterialIds = ['calamity-common', 'calamity-uncommon', 'calamity-rare', 'calamity-epic', 'calamity-legendary', 'calamity-omnic'] as const;

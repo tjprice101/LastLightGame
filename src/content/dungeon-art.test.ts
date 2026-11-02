@@ -44,7 +44,8 @@ describe('supplied elemental dungeon artwork', () => {
   });
   it('shows all supplied dungeon/mode banners while preserving unavailable-save gating', () => {
     const html = gameplayHub();
-    expect(html.match(/class="dungeon-banner"/g)).toHaveLength(15);
+    expect(html.match(/class="dungeon-banner"/g)).toHaveLength(16);
+    expect(html).toContain('banners/oblivion-banner.png');
     expect(html).toContain('banners/machines-banner.png');
     expect(html).toContain('banners/roses-banner.png');
     const dungeons = html.slice(html.indexOf('id="gameplay-dungeons"'), html.indexOf('id="gameplay-infusion"'));

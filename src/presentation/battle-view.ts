@@ -2,6 +2,7 @@ import { rolePerkRow, resonanceBadge } from './intrinsic-perks';
 import { describeFighter, enemies, formatStat, type ActionId } from '../content/combat';
 import { gameConfirm, gameDialogPending } from './game-dialog';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
+import { gatesOfOblivionRules, oblivionArenaArt, oblivionEncounter } from '../content/gates-of-oblivion';
 import { actAndAdvanceTurn, advanceUnavailableTurns, teamCanAct, combatantCanAct, actionUnavailable, createBattle, createCalamityBattle, createDungeonBattle, createOblivionBattle, createInfusionBattle, createWarBattle, createStoryBattle, endTurn, nextStage, nextWave, withMasterLoadouts, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
 import { calamityEncounter, isCalamityActivityId, isCalamityTier, type CalamityActivityId, type CalamityTier } from '../content/calamity';
 import { confirmCalamity } from './calamity';
@@ -711,8 +712,9 @@ export class BattleView {
       : state.story ? storyEncounter(state.story.storyStage)
       : state.war ? warEncounter(state.war.character, state.war.stage)
       : state.infusion ? infusionEncounter(state.infusion.mode, state.infusion.stage)
+      : state.oblivion ? { ...oblivionEncounter(state.oblivion.stage), background: oblivionArenaArt, color: '#d4143c' }
       : state.dungeon ? dungeonEncounter(state.dungeon.element, state.dungeon.stage) : null;
-    const stages = state.calamity ? 1 : state.story ? storyRules.stages : state.war ? warStageCount : state.infusion ? infusionStageCount(state.infusion.mode) : dungeonStageCount;
+    const stages = state.calamity ? 1 : state.oblivion ? gatesOfOblivionRules.stages : state.story ? storyRules.stages : state.war ? warStageCount : state.infusion ? infusionStageCount(state.infusion.mode) : dungeonStageCount;
     const complete = !!dungeon && dungeon.stage === stages && state.phase === 'cleared';
     const results = this.session.resultsVisible !== false ? battleResults(state, this.session.stageEvents) : '';
     const toolbar = this.host.parentElement?.closest('.battle-screen')?.querySelector('.battle-toolbar');
@@ -720,7 +722,7 @@ export class BattleView {
     this.host.innerHTML = `${dungeon && !dungeon.background
       ? `<div class="battle-scenery pending-dungeon-scenery" style="--element:${dungeon.color}" aria-hidden="true"></div>`
       : `<img class="battle-scenery${state.calamity ? ' calamity-scenery' : ''}" src="${assetUrl(`backgrounds/${dungeon?.background ?? 'grassy-field.png'}`)}" alt="${dungeon?.name ?? 'Grassy field'} battle scenery" width="1456" height="816" />`}
-      <div class="battle-top"><div class="battle-heading"><span class="eyebrow">${state.calamity ? `CALAMITY · EX+${state.calamity.tier}` : state.story ? 'STORY CAMPAIGN' : state.war ? 'ELEMENTAL WAR' : state.infusion?.mode === 'machines' ? 'MACHINE TRIAL' : state.infusion?.mode === 'roses' ? 'EVENT' : state.infusion && isCurrencyMode(state.infusion.mode) ? 'CURRENCY FARM' : state.infusion ? 'INFUSION TRIAL' : dungeon ? 'ELEMENTAL DUNGEON' : state.allies.length === 1 ? 'SOLO TRAINING' : 'SQUAD TRAINING'}</span><h1 tabindex="-1">${dungeon?.name ?? 'Training'}</h1></div>
+      <div class="battle-top"><div class="battle-heading"><span class="eyebrow">${state.calamity ? `CALAMITY · EX+${state.calamity.tier}` : state.story ? 'STORY CAMPAIGN' : state.war ? 'ELEMENTAL WAR' : state.infusion?.mode === 'machines' ? 'MACHINE TRIAL' : state.infusion?.mode === 'roses' ? 'EVENT' : state.infusion && isCurrencyMode(state.infusion.mode) ? 'CURRENCY FARM' : state.infusion ? 'INFUSION TRIAL' : state.oblivion ? 'GATES OF OBLIVION' : dungeon ? 'ELEMENTAL DUNGEON' : state.allies.length === 1 ? 'SOLO TRAINING' : 'SQUAD TRAINING'}</span><h1 tabindex="-1">${dungeon?.name ?? 'Training'}</h1></div>
       <span class="battle-progress">${dungeon ? 'Stage' : 'Wave'} ${state.wave}${dungeon ? ` / ${stages}` : ''}${dungeon ? `<meter min="0" max="${stages}" value="${state.wave}" aria-label="Activity stage progress">${state.wave} / ${stages}</meter>` : ''} &middot; Turn ${state.round} &middot; ${this.session.entrancePending ? 'Entering encounter' : complete ? 'Activity complete' : state.phase === 'player' ? 'Player turn' : state.phase === 'cleared' ? 'Encounter cleared' : 'Squad defeated'}</span>
       <div class="battle-header-actions"><span data-battle-toolbar-slot></span><button id="open-battle-menu" class="battle-chrome-button" aria-haspopup="dialog" aria-controls="battle-menu">Battle menu</button>
       ${state.phase !== 'player' ? `<button data-result-show class="battle-turn-button">${state.phase === 'cleared' ? 'View victory' : 'View results'}</button>` : ''}</div></div>
