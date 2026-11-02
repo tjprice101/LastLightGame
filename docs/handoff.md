@@ -32,6 +32,8 @@
   no account grants or save modifications.
 - Publication follows the normal commit/push/full CI/Pages workflow; verify
   hosted version and exact PNG/AVIF bytes for all9.
+- Full CI exposed the isolated preview's historical nine-placeholder image
+  expectation; updated it to require installed artwork for all57 Masters.
 
 ## Team loadouts and character Conduit configurations (D-447)
 

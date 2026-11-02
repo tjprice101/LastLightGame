@@ -81,7 +81,7 @@ describe('isolated bubble UI concept', () => {
     expect(cards).toHaveLength(masterConduits.length);
     expect(root.querySelectorAll('.item-card.undiscovered')).toHaveLength(masterConduits.length - 2);
     cards.forEach(card => expect(card.querySelector('img, .art-pending')).not.toBeNull());
-    expect(root.querySelectorAll('.item-card img')).toHaveLength(masterConduits.length - 9);
+    expect(root.querySelectorAll('.item-card img')).toHaveLength(masterConduits.length);
   });
   it('filters the roster and reports an honest empty state', () => {
     visit('bearers');
