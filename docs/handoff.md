@@ -1,5 +1,19 @@
 # Current state and handoff
 
+## Story paused: major future benchmark (2026-11-03)
+
+Owner explicitly pauses Story here for a later major milestone. Do not resume
+story drafting, puzzle/replay implementation, new chapters or future-art intake
+without a new owner request. D-450's live Chapter1 labels/Codex remain unchanged.
+
+Resume from [the approved design and script](chapters-2-3-design.md), D-451/D-452
+and [the75-prompt visual pack](../Art/story/Chapters%202-3%20Draft.md).
+Preserve all approvals, the875-NP budget, one-time optional replay safeguards
+and black/ominous Rise-machine direction. Paper placement/optional reactions
+and Chapter2 pursuit dialogue remain drafts. Next time, confirm implementation
+scope, settle those remaining drafts and validate schema/migration/balance;
+this benchmark does not itself authorize implementation.
+
 ## Author script, puzzles and875-NP approval (D-452)
 
 - Owner explicitly chose **record approvals and stop before implementation**.

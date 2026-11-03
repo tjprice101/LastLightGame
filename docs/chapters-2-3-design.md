@@ -1,5 +1,10 @@
 # Story polish and Chapters 2-3 design draft
 
+**PAUSED BY OWNER (2026-11-03): major future Story benchmark.** Retain this
+approved baseline and its remaining draft boundaries; resume only on a new
+owner request. No further Story implementation or art intake is authorized
+by this checkpoint. The75-prompt pack remains visual development, not live art.
+
 **D-450/D-451/D-452: approved story foundations, dialogue, core-puzzle rules,
 one-time replay safeguards and reward budget. Owner requests recording approvals
 and stopping before implementation. None of these new systems is live.**

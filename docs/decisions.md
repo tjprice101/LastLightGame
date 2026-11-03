@@ -5,6 +5,11 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Story pause (2026-11-03): owner designates the D-451/D-452 Story baseline as a
+major benchmark to return to later. Preserve approvals and unresolved drafts;
+do not continue Story implementation/drafting or future-art intake until
+explicitly resumed. [Resume checkpoint](handoff.md#story-paused-major-future-benchmark-2026-11-03).
+
 D-452 (2026-11-03): owner approves six revised unsigned papers as Rise's private
 reflections before breaking cores; Chapter3 shows her writing a familiar line.
 Approves reassuring Let note without worthiness, exact memory sequence making
