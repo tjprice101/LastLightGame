@@ -1,5 +1,20 @@
 # Art and asset workflow
 
+## Character-first wardrobe and evolution (2026-11-03)
+
+Outfit uniqueness is as important as weapons/powers. Do not prescribe armor,
+metal plates or rainbow prismatic armor for every character. Choose fabric,
+cut, decoration and silhouette that express the character's role and emotional
+presence, then grow those ideas through distinct rarity stages in the same
+compact anime/cel renderer. Solenne now develops opaque lunar bellflower silk/
+brocade and silver embroidery; Myrthen seasonal leaf-jacquard duelist coats/
+textile tiers. See the [current design rationale](phase-1-war-characters.md).
+Preserve fixed identity unless a meaningful transformation is explicitly
+authored and noted beside its prompt. No literal adoption of the owner's
+illustrative white-hair/rainbow example. Palette, key, sharpness, no edge glow,
+references and full margins remain. Only12 portraits and their notes revised;
+no installed images or Conduit-machine rules change.
+
 **Solenne Omnic moonlight refinement (2026-11-03):** moon and swirling spectral
 energy lead the design, not equipment detail. A colossal silver crescent frames
 her crown; silver/lilac/rose-ivory ribbons dominate the silhouette. No fire/

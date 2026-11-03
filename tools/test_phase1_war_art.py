@@ -76,7 +76,7 @@ class PhaseOneWarArtTests(unittest.TestCase):
                        "interwoven rising helices", "sound rings envelop",
                        "without hiding face hands or bell",
                        "vast asymmetric mandala", "cascading brocade trains",
-                       "razor-defined", "colossal lotus-bell shield"):
+                       "crisp embroidered folds", "colossal lotus-bell shield"):
             self.assertIn(clause, prompt)
         self.assertIn(RENDERER, prompt)
         self.assertIn("lotus-bell shield on two visible chains", prompt)
@@ -126,6 +126,24 @@ class PhaseOneWarArtTests(unittest.TestCase):
                 self.assertNotIn("aura", negatives)
         self.assertEqual(document().count("**Intentional evolution changes:**"), 12)
         self.assertEqual(document().count("No hair, eye or paint changes."), 12)
+
+    def test_outfits_express_distinct_roles_without_default_armor(self):
+        portraits = {name: p.split(" --ar")[0].lower() for name, _, p in blocks() if "--ar 4:3" in p}
+        for stage in range(1, 7):
+            moon = portraits[f"solenne-{stage}.png"]
+            harvest = portraits[f"myrthen-{stage}.png"]
+            self.assertIn("dress" if stage < 5 else "gown", moon)
+            self.assertIn("jade", harvest)
+            self.assertIn("coat", harvest)
+            for prompt in (moon, harvest):
+                for obsolete in ("breastplate", "pauldrons", "greaves", "lamellar", "plate armor"):
+                    self.assertNotIn(obsolete, prompt)
+        for slug in ("solenne", "myrthen"):
+            for stage in (1, 2):
+                for late in ("colossal", "mandala", "triple-tier", "majestic"):
+                    self.assertNotIn(late, portraits[f"{slug}-{stage}.png"])
+        self.assertIn("silver-thread", portraits["solenne-6.png"])
+        self.assertIn("rime lace", portraits["myrthen-6.png"])
 
 
 if __name__ == "__main__":

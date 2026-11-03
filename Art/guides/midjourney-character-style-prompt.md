@@ -1,5 +1,19 @@
 # Last Light — Character Art Midjourney Prompt Guide
 
+**Character-first outfits (2026-11-03, supersedes mandatory armor language):**
+the shared renderer is fixed, not the costume formula. Characters may wear
+dresses, robes, tailored coats, woven botanical textiles or other identity-
+appropriate outfits; armor/prismatic armor is not a universal evolution goal.
+Design from personality, role, movement, material and emotional impression,
+then specify a concise purposeful progression. Luxury can be silk pleats,
+embroidery, sculpted cloth folds and beautifully crafted weapons. Powers and
+embodied motifs remain visible at every stage and grow gradually toward Omnic.
+The owner's white-haired rainbow moon maiden is illustrative, not an instruction
+to copy that appearance. Solenne/Myrthen retain authored hair/eyes/paint/palettes;
+their twelve portraits now use distinct lunar silk and seasonal duelist couture.
+Existing installed artwork and unrelated prompts are unchanged. Conduits keep
+their separate mechanical foundation.
+
 **Evolution continuity / explicit changes (2026-11-03):** preserve each line's
 distinct hair color/style, eyes, markings, palette and signature equipment
 unless an authored transformation is intentional. Put meaningful intentional

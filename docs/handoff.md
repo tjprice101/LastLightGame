@@ -1,5 +1,25 @@
 # Current state and handoff
 
+## Character-first wardrobe: Solenne and Myrthen (2026-11-03)
+
+- Owner requests nuanced identity-driven outfits rather than generic armor/
+  prismatic armor, maintaining renderer and other foundations. Her white-haired
+  rainbow moon maiden was illustrative: no hair/eye/paint/palette change made.
+- Revised12 portraits and adjacent notes: Solenne opaque bellflower silk,
+  crescent embroidery and lunar brocade; Myrthen seasonal leaf-jacquard
+  coat-dress, seed knots, rime lace and split hems for duelist movement.
+  Distinct rationale and rarity progression documented in Phase1 plan.
+- Bell/two chains and twin sickles/one chain stay prominent; powers begin
+  small and build to enveloping Omnic crescendos. Same references/Niji settings,
+  compact anatomy, sharp cel renderer,15% border and `glow on edges` negative.
+- Caldrex and all33 other prompt blocks unchanged. No gameplay, artwork intake
+  or Story work. Generate/test exact45-block pack and verify edit scope.
+  `python tools/build_phase1_war_art.py` reproduced45 prompts;
+  `python -m unittest discover -s tools -p test_phase1_war_art.py` passed7 tests.
+  Exact diff confirms12 intended portraits only, other33 unchanged, all
+  parameters/negatives/reference URLs unchanged. Positive prompts remain
+  at most260 words. `git diff --check` passed. Actual image review still pending.
+
 ## Evolution identity notes and edge-glow exclusion (2026-11-03)
 
 - Solenne/Myrthen all12 portraits retain verbatim shared identity definitions

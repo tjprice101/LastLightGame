@@ -5,6 +5,16 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Character-first wardrobe (2026-11-03): owner clarifies outfits need not be
+armor/prismatic armor. Design nuanced costumes, materials and evolution
+progression from the character's feel/power/identity; retain the shared
+renderer and existing foundational constraints. Authorizes reworking
+Solenne/Myrthen six-form portraits, including Omnic, not Caldrex. White-haired
+rainbow moon maiden is illustrative, not a prescribed identity change.
+New proposal uses lunar silk/brocade for Solenne and seasonal botanical
+duelist textiles for Myrthen, preserving hair/eyes/paint/palettes/weapons.
+Supersedes earlier mandatory armor progression, not mechanical Conduit rules.
+
 Evolution identity continuity (2026-11-03): owner requests `glow on edges`
 in negatives and consistent distinctive details across Solenne/Myrthen forms.
 Meaningful intentional transformations must be explained next to each prompt;

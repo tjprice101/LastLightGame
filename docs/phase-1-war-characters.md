@@ -8,6 +8,40 @@ numbers remain pending; proposed ability labels are not runtime definitions.
 
 ## Current art revision and remaining work (2026-11-03)
 
+### Current outfit philosophy: character first, not armor by default
+
+This supersedes earlier armor-specific visual descriptions below, including
+the previously accepted Solenne Omnic costume. Owner authorizes reworking both
+women's six-form lines while preserving the renderer and other foundations.
+The white-haired rainbow moon maiden was an example of creative freedom,
+not a mandatory new identity. No hair/eye/paint/palette transformations here.
+
+**Solenne feels like a sanctuary that will not yield.** Her Tank identity comes
+from grounded protective poses, a commanding bell shield and sheltering
+resonance, not a metal bodysuit. A simple opaque black-lilac wrap dress grows
+through pleated overskirts, embroidered bellflower sleeves and rose-ivory petal
+folds into cascading lunar brocade. Silver-thread crescents and bounded
+opalescent fabric sheen express moonlight without importing rainbow hues.
+Later folds echo the bell's nested skirts; energy originates at its rim.
+The small base-form moonlight trace culminates in the seven-gate Omnic
+mandala and enveloping resonance. Weapon/energy remain the main spectacle.
+
+**Myrthen feels like the orchard changing season in a single turning step.**
+Her Attacker identity is nimble and purposeful, with two readable sickles and
+one chain. A practical split hunting coat, jade leggings and seed sash grow
+through leaf-cut tails, seed-fringe knots and pink sleeve streamers into
+luxurious leaf-jacquard coat-dress layers. White rime lace, blossom embroidery
+and woven bough crowns evoke four seasons through textile/material choices,
+not generic armor. Split hems preserve her harvest-dancer motion. Four-season
+traces, budding fans and full botanical wings increase gradually to Omnic
+triple tiers and blade-sourced helices.
+
+All12 portrait prompts and adjacent evolution notes reflect these choices.
+Common stays simply dressed; Uncommon/Rare develop the idea; Epic impresses;
+Legendary is luxurious but leaves room for Omnic. Caldrex and all33 non-target
+prompt blocks are unchanged. Mechanical Conduits remain machines: character
+outfit freedom does not change their separate art foundation.
+
 **Continuity clarification:** Solenne and Myrthen keep their exact authored
 hair color/style, eyes and paint through all six forms; no color transformation
 is intended. Each portrait now has adjacent fixed-identity, costume/weapon
@@ -100,8 +134,8 @@ The pack replaces repeated cathedral/temple/feather-wing escalation with:
   shaved sides, ochre cheek stripe, black quilted coat/orange sash, brass gate
   gauntlets, shoulder exhaust shutters and opaque attached heat loops.
 - **Solenne:** wingless off-axis moon-gate hoops on a physical shoulder yoke,
-  black bob/long side braid, gold temple-paint bars, black/lilac robes, flat
-  silver/rose-ivory lamellae and a chained bell shield. Hoops are worn regalia,
+  black bob/long side braid, gold temple-paint bars, black/lilac bellflower silk,
+  silver-thread crescents and a chained bell shield. Hoops are lunar regalia,
   not a floating building. Her Conduits are engines, not enlarged bells.
 - **Myrthen:** jagged brown ponytail/side braid, pink cheek slash, split hunting
   coat and linked sickles; four distinct botanical fans (pink blossom petals,
@@ -193,9 +227,9 @@ other character uses.
 
 ### Solenne, Moonbell Abbess (Tranquilitic Tank)
 
-- **Look (revised visual proposal):** meditative wingless bell guardian.
-  Flat silver and rose-ivory lamellae over black/lilac robes; offset moon-gate
-  hoops mounted to a shoulder yoke, articulated gold hinges and cloth ribbons.
+- **Look (current visual proposal):** meditative wingless bell guardian.
+  Opaque black/lilac silk, rose-ivory bellflower folds and silver-thread
+  crescents; offset moon-gates frame increasingly lavish brocade trains.
   No floating temple. Palette: moon silver, lilac, rose ivory, ink black, gold.
 - **Weapon:** a large bronze-and-pearl temple bell carried on chains, used as
   her shield; she rings it to call enemies to her. (Distinct from Ozriel's
@@ -211,9 +245,10 @@ other character uses.
 ### Myrthen, Season Reaper (Botanic Attacker)
 
 - **Look:** a harvest duelist with wings made of the four seasons (spring
-  blossom, summer leaf, autumn amber, winter frost), bark-and-jade armor with
-  growth-ring engraving; by Omnic a rotating orchard crown and a seasonal leaf
-  storm. Palette: jade, bark brown, blossom pink, amber, frost white.
+  blossom, summer leaf, autumn amber, winter frost), bark-brown and jade
+  leaf-jacquard coat-dress, seed knots and growth-ring embroidery; by Omnic a
+  woven orchard diadem and enveloping seasonal ribbons. Palette: jade,
+  bark brown, blossom pink, amber, frost white.
 - **Weapon:** twin chained sickles.
 - **Play pattern:** a three-step damage cycle. Each Skill advances the season
   (Sprout, Bloom, Harvest). At Harvest the next Skill or Last Flare hits much
