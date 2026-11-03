@@ -1,5 +1,12 @@
 # Last Light — Character Art Midjourney Prompt Guide
 
+**Omnic crescendo:** owner visual examples call for wildly awe-inspiring
+silhouettes, lavish nested costume/weapon detailing and bold, razor-defined
+swirling powers. Apply that visual ambition through each character's own
+identity, not by copying example costumes. Preserve crisp layer boundaries,
+clear face/weapon windows and outer margins; more detail must not become
+blur, soft bloom or fog. Solenne Omnic is the current scoped prompt refinement.
+
 **Persistent identity and escalating powers (2026-11-03):** every image in a
 character's evolution line must visibly retain what embodies that character,
 not merely mention it in a heading. Energy/powers begin as a readable trace

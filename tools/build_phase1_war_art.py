@@ -67,7 +67,7 @@ DESIGNS = (
             "sculpted crescent pauldrons, engraved lamellar overskirt and gold chain guides; twin offset silver moon-gates, long lilac sleeve ribbons and larger floral-engraved bell raised across torso",
             "complete moon-silver ceremonial armor, high rose-ivory collar, layered black-lilac mantle and crescent greaves; three ornate moon-gates and broad opaque lilac resonance ribbons, gold-filigree bell shield, poised floating guard",
             "majestic silver and rose-ivory regalia, gold-inlaid crescent pauldrons, cascading lilac mantle and articulated chain guards; five immense offset moon-gates with lace-like metal tracery, prismatic engraved bell shield and densely overlapping lilac resonance folds",
-            "retain Legendary regalia mantle chain guards and bell; seven gold-filigree moon-gates, prismatic crescent fans; immense opaque lilac bell-resonance spirals encircle feet torso and crown in interwoven rising helices, silver-edged sound rings envelop her without hiding face hands or bell, suspended guard",
+            "retain Legendary regalia mantle chain guards and bell; colossal lotus-bell shield, engraved skirts, crescent pauldrons, cascading brocade trains, prismatic moon-silver crown; seven gold-filigree moon-gates interlock into a vast asymmetric mandala; opaque lilac bell-resonance spirals encircle feet torso and crown in interwoven rising helices; razor-defined silver-edged sound rings envelop dense crescent tracery without hiding face hands or bell, airborne guard",
         ),
         icons=(
             ("Passive", "Held Stillness", "four flat rose-ivory silence plates nested inside a silver crescent clamp, one unstruck bell clapper suspended at center"),
@@ -141,6 +141,8 @@ def blocks():
         slug = design["slug"]
         for index, (rarity, title, form) in enumerate(zip(RARITIES, design["titles"], design["forms"]), 1):
             signature = design["signature"] if index >= 3 else "restrained early-form equipment, no mature back array"
+            if slug == "solenne" and index == 6:
+                signature = "wingless"
             subject = (f"{design['identity']}; {design['clothing']}; {design['weapon']}. {form}. "
                        f"{signature}. {ARMOR_RULE}; "
                        + (f"{CRAFT}; " if index >= 3 else "")

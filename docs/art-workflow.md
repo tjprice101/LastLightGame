@@ -1,5 +1,16 @@
 # Art and asset workflow
 
+**Omnic visual-density reference (2026-11-03):** owner examples emphasize
+an awe-inspiring silhouette, lavish layered costume/weapon detailing and
+bold sharply defined enveloping powers. Translate that level of grandeur,
+not the examples' specific costumes/palettes, into each character's identity.
+Solenne Omnic now combines a colossal engraved lotus-bell shield, crescent
+pauldrons, brocade trains, a moon-silver crown and asymmetric moon-gate mandala
+with dense lilac resonance helices. Distinct hard contours, readable layer
+separation and painted highlights matter more than soft bloom or particle fog.
+Keep the established renderer, clear outer border and subject palette.
+This prompt change alone cannot guarantee sharp generated images; review pixels.
+
 **Persistent motif / power crescendo (2026-11-03):** every evolution retains
 the character's defining embodied motif. Powers must visibly build in
 prominence and complexity through the line, culminating in grand swirling,

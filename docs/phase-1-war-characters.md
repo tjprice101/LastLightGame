@@ -8,6 +8,12 @@ numbers remain pending; proposed ability labels are not runtime definitions.
 
 ## Current art revision and remaining work (2026-11-03)
 
+Solenne Omnic refinement from owner examples: dramatically denser luxury
+detailing and a bold asymmetric silhouette, colossal lotus-bell shield,
+brocade trains/crescent pauldrons/crown and seven-gate mandala, all wrapped
+in sharply defined lilac resonance helices. Keep the existing renderer and
+identity; do not reproduce the examples' costumes or recolor her to match.
+
 **Power progression clarification:** owner accepts the character art direction.
 Every form must visibly retain the character's defining motif, while energy
 and powers gradually become much more elaborate, swirling and enveloping.

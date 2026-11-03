@@ -73,7 +73,9 @@ class PhaseOneWarArtTests(unittest.TestCase):
         prompt = next(p for name, _, p in blocks() if name == "solenne-6.png")
         for clause in ("bell-resonance spirals", "feet torso and crown",
                        "interwoven rising helices", "sound rings envelop",
-                       "without hiding face hands or bell"):
+                       "without hiding face hands or bell",
+                       "vast asymmetric mandala", "cascading brocade trains",
+                       "razor-defined", "colossal lotus-bell shield"):
             self.assertIn(clause, prompt)
         self.assertIn(RENDERER, prompt)
         self.assertIn("one bronze-and-rose-ivory temple bell", prompt)

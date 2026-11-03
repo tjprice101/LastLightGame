@@ -1,5 +1,16 @@
 # Current state and handoff
 
+## Solenne Omnic grandeur / owner examples (2026-11-03)
+
+- Owner requests much more awe-inspiring Omnic imagery/detail without blur.
+  Examples convey ornate layered costume, dominant weapon silhouettes and
+  sharp enveloping effects; do not copy their specific designs.
+- Only Solenne Omnic revised: colossal engraved lotus-bell, towering crescent
+  pauldrons, cascading brocade, silver crown, asymmetric seven-gate mandala
+  and razor-defined lilac resonance helices. Style/palette/references unchanged.
+- Validate focused generator tests and compare45 blocks to ensure other44
+  prompts unchanged. No gameplay, installed-art or Story changes.
+
 ## Persistent motifs and swirling power crescendo (2026-11-03)
 
 - Owner accepts current character designs; future forms must always visibly
