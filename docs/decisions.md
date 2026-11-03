@@ -5,6 +5,14 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Evolution grandeur correction (2026-11-03): owner rejects perceived renderer
+drift and overly literal design constraints. Infernis/Tizu are the explicit
+style/progression references; ALL character evolutions become increasingly
+grand, luxurious and impeccably crafted while retaining unique appearances.
+Phase1 portraits restore starter Niji/settings and richly escalating
+armor/weapons/powers, without modifying installed art or abandoning margins.
+No claim of generated-image quality before delivery/review.
+
 Character style clarification (2026-11-03): owner confirms that unique character
 appearance does not authorize renderer/style changes. All new characters retain
 the roster's compact chibi anatomy, precise anime contours, crisp cel shading,

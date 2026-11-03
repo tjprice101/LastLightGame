@@ -23,12 +23,16 @@ class PhaseOneWarArtTests(unittest.TestCase):
                 if "--ar 4:3" in prompt:
                     self.assertIn(RENDERER, prompt)
                     self.assertIn("rounded oversized head tiny torso short limbs", prompt)
+                    self.assertIn("body one third of canvas height", prompt)
+                    self.assertNotIn("small centered character", prompt)
                     self.assertIn("--sref https://", prompt)
                     self.assertIn("--sw 150", prompt)
                     self.assertIn("no mouth nose or eyebrows", prompt)
                 else:
                     self.assertNotIn("--sref", prompt)
                     self.assertNotIn("--sw", prompt)
+                if "--ar 4:3" in prompt or "--ar 1:1" in prompt:
+                    self.assertIn("--niji 6 --s 100 --q 1", prompt)
                 if "--ar 4:3" in prompt or "--ar 1:1" in prompt:
                     self.assertIn("empty15 percent border", prompt)
                     self.assertIn("Plain solid unlit", prompt)
@@ -49,6 +53,9 @@ class PhaseOneWarArtTests(unittest.TestCase):
             self.assertNotIn("Eternal", " ".join(design["titles"]))
             self.assertIn("hair", design["identity"])
             self.assertIn("paint", design["identity"])
+            self.assertIn("retain Legendary", design["forms"][-1])
+            self.assertIn("prismatic", design["forms"][-1])
+            self.assertTrue(any(word in design["forms"][-2] for word in ("majestic", "Majestic")))
         self.assertIn("wingless", DESIGNS[0]["signature"])
         self.assertIn("wingless", DESIGNS[1]["signature"])
         self.assertIn("white rime-coated bare twigs", DESIGNS[2]["signature"])

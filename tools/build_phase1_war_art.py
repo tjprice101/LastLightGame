@@ -5,7 +5,7 @@ from build_calamitic_art import CONDUIT_FOUNDATION, references
 from build_elemental_war_art import RENDERER
 from character_palette import REFERENCE_WEIGHT
 from prompt_quality import (
-    ARMOR_RULE, ICON_NO, ICON_RENDERER, OBJECT_ONLY, PORTRAIT_FRAME,
+    ARMOR_RULE, ICON_NO, ICON_RENDERER, OBJECT_ONLY,
     QUALITY_NO, SHARP,
 )
 
@@ -13,6 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "Art" / "characters" / "Elemental War Phase 1.md"
 RARITIES = ("Common", "Uncommon", "Rare", "Epic", "Legendary", "Omnic")
 STYLE = f"{RENDERER}, rounded oversized head tiny torso short limbs, 2.5-3 heads tall"
+PORTRAIT_OPEN = "full-body gacha JRPG unit illustration on a plain canvas, one compact character"
+CRAFT = "intricate engraved trim, lustrous enamel and prismatic facets within the palette, impeccable layered craftsmanship"
 NO = "text, lettering, watermark, cropping, photorealism, 3d render, glow, light bloom, aura, backsplash, background gradient, " + QUALITY_NO
 MARGIN = "entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; every tip visible, nothing touches the frame"
 
@@ -25,15 +27,15 @@ DESIGNS = (
         key="green", hex="#00FF00",
         clothing="black quilted forge coat, burnt-orange sash, brass-riveted apron plates",
         weapon="two connected forge gauntlets with rectangular interlocking furnace-gate shields",
-        signature="wingless; shoulder-mounted exhaust shutters and anchored flat orange heat-ribbon loops, no floating buildings",
+        signature="wingless silhouette crowned by sweeping furnace vanes and broad amber-orange flame ribbons, brass filigree and ash-white enamel",
         titles=("Kiln Warden", "Banked Fire", "The Furnace Holds", "Bearer of the Closed Gate", "No Flame Passes", "The Last Kiln"),
         forms=(
-            "simple coat, short gloves with modest gate plates, sturdy boots; square planted guard, no exhaust crown",
-            "brass breastplate, overlapping wrist shutters and heel guards; one short exhaust stack on each shoulder, fists braced together",
-            "black beveled shoulder housings, brass elbow pistons and orange inset greaves; four compact exhaust shutters, gauntlets opened sideways",
-            "fully plated forge coat, stepped brass gorget and interlocking apron lamellae; six shoulder-mounted exhaust shutters, three flat orange heat loops anchored to gauntlets",
-            "retain plated coat gorget and apron; massive asymmetrical furnace pauldrons, nested gauntlet gate jaws, eight rear-mounted exhaust shutters and dense interwoven orange heat loops, frontal locked guard",
-            "retain Legendary pauldrons coat gorget apron and gate jaws; twelve articulated exhaust shutters in a compact horseshoe, double piston braces and nested brass pressure rails, dense attached orange heat loops fill interior gaps, fists seal a monumental furnace gate",
+            "simple black forge coat, orange sash, modest brass gate gauntlets and sturdy boots; grounded watchful guard, a small ember curl at each wrist",
+            "fitted obsidian breastplate, brass-edged shoulder guards and layered greaves; enlarged gauntlets with ash-white enamel jaws, narrow orange flames trace their edges, fists braced together",
+            "sculpted furnace pauldrons, engraved brass gauntlets and overlapping black hip plates; forked brass crown, long orange-lined mantle and four swept furnace vanes, broad flame curls frame the open guard",
+            "complete luxurious obsidian-and-ash-white plate regalia, high brass gorget, layered mantle and ornate gate gauntlets; six sweeping gilded furnace vanes and braided orange flame ribbons rise above the shoulders, commanding raised guard",
+            "majestic black enamel armor with ash-white beveled insets, intricate brass filigree, monumental furnace pauldrons and cascading orange-lined mantle; immense interlocking gate gauntlets, eight crown-like furnace vanes and densely woven amber-orange flame arabesques, suspended bastion pose",
+            "retain Legendary armor pauldrons mantle and gauntlets; elaborate prismatic brass gate jaws, triple-tier furnace crown and twelve swept enamel vanes, immense white-centered amber-orange flame ribbons curl through dense gilded tracery around the entire ensemble, luxurious celestial forge monarch, face and hands clear",
         ),
         icons=(
             ("Passive", "Banked Heat", "three amber rectangular heat cells held in a black brass-riveted gauntlet housing, orange pressure traces confined inside"),
@@ -61,11 +63,11 @@ DESIGNS = (
         titles=("Moonbell Keeper", "Between Two Chimes", "The Patient Circle", "Keeper of the Unstruck Bell", "A Silence Held", "The Bell That Stayed"),
         forms=(
             "simple belted robe, small bell with two short chains and silver wrist guards; grounded listening pose, no hoop array",
-            "silver breastplate and rose-ivory wrist scales over robe; one small shoulder-yoke hoop, bell held beside one knee",
-            "crescent silver pauldrons, flat lamellar overskirt and gold chain guides; two offset shoulder-mounted hoops, bell raised across torso",
-            "layered silver collar, rectangular robe armor and crescent greaves; three interlocking yoke hoops, broad bell skirt and two attached lilac vibration arcs, leaning protective stance",
-            "retain collar robe armor and greaves; five rose-ivory moon-gate hoops mounted on one silver shoulder yoke, layered chain guards and folded lilac cloth ribbons, bell shield held forward",
-            "retain Legendary collar robe armor yoke chain guards and stance; seven off-axis moon-gate hoops with flat gold hinge joints, dense overlapping lilac vibration arcs bound to bell and hoops, elaborately engraved bell shield remains dominant",
+            "fitted silver breastplate, rose-ivory wrist scales and lilac-lined robe; one crescent shoulder hoop, gold-trimmed bell held beside one knee, a narrow lilac sound ribbon",
+            "sculpted crescent pauldrons, engraved lamellar overskirt and gold chain guides; twin offset silver moon-gates, long lilac sleeve ribbons and larger floral-engraved bell raised across torso",
+            "complete moon-silver ceremonial armor, high rose-ivory collar, layered black-lilac mantle and crescent greaves; three ornate moon-gates and broad opaque lilac resonance ribbons, gold-filigree bell shield, poised floating guard",
+            "majestic silver and rose-ivory regalia, gold-inlaid crescent pauldrons, cascading lilac mantle and articulated chain guards; five immense offset moon-gates with lace-like metal tracery, prismatic engraved bell shield and densely overlapping lilac resonance folds",
+            "retain Legendary regalia pauldrons mantle chain guards and bell; seven interwoven moon-gates crowned with gold filigree, prismatic rose-ivory crescent fans and broad lilac resonance ribbons fill the interior, monumental polished bell with nested engraved skirts, serene celestial guardian in suspended protective pose",
         ),
         icons=(
             ("Passive", "Held Stillness", "four flat rose-ivory silence plates nested inside a silver crescent clamp, one unstruck bell clapper suspended at center"),
@@ -89,15 +91,15 @@ DESIGNS = (
         key="blue", hex="#0000FF",
         clothing="short bark-brown split hunting coat, jade fitted leggings, blossom-pink shoulder lining",
         weapon="exactly two curved sickles joined by one visible chain, two readable grips",
-        signature="four rigid botanical wing-fans rooted in a back harness: pink layered blossom petals, jade leaf blades, amber seed husks, white rime-coated bare twigs; no feather or glass wings",
+        signature="four botanical wing-fans: pink petals, jade leaves, amber husks, white rime-coated bare twigs; no feather or glass wings",
         titles=("Season Reaper", "First Turning", "Bough and Blade", "Harvest in Motion", "The Orchard Remembers", "When All Seasons Meet"),
         forms=(
             "simple hunting coat and boots, modest sickles with a short slack chain, one jade leaf clasp; no wings yet, low dueling stance",
-            "jade forearm plates and brown leather shoulder guards; two small living leaf fans on back harness, sickles held apart",
-            "jade breastplate with flat growth-ring engraving, amber knee guards; four small distinct seasonal botanical fans, chain curves across open foreground",
-            "layered jade shoulder blades, bark-brown coat armor and white-edged greaves; four broad seasonal fans with distinct materials, pink petal strips attached to harness, twisting two-sickle stance",
-            "retain breastplate coat armor and greaves; four immense layered seasonal fans, asymmetrical amber sickle guards, jade thorn-chain links and harness-mounted segmented orchard crown, dense botanical interior",
-            "retain Legendary four-material fans armor chain crown and stance; each fan gains three nested botanical tiers, layered pink petals jade leaves amber husks and white rime twigs interleave without recoloring, segmented orchard crown folds around harness, both sickles and chain fully readable",
+            "fitted jade forearm plates, amber-edged leather shoulders and white-lined coat; paired leaf fans, polished hooked sickles held apart and a narrow pink petal ribbon",
+            "engraved jade breastplate, blossom-shaped pauldrons and amber knee guards; four distinct seasonal botanical fans, layered hunting mantle and ornamented sickles, chain sweeps through open foreground",
+            "complete jade enamel armor with amber filigree, sculpted blossom pauldrons and white-edged greaves; four broad seasonal wings and cascading pink-lined mantle, large hooked sickles with thorn guards, twisting airborne harvest stance",
+            "majestic jade-and-amber regalia, engraved growth-ring breastplate, sweeping blossom pauldrons and cascading bark-brown mantle; four immense layered seasonal wings, ornate amber sickle guards, jade thorn-chain and segmented orchard crown, dense botanical scrollwork",
+            "retain Legendary armor mantle sickles chain and crown; three luxuriant botanical tiers per wing interweave around an immense orchard diadem, prismatic sickle blades and curling seasonal ribbons, sovereign harvest duelist with clear face and grips",
         ),
         icons=(
             ("Passive", "Turning Season", "one triangular growth-ring medallion with three distinct sectors: jade sprout, pink blossom and amber grain head, a white edge marking the return"),
@@ -117,7 +119,7 @@ DESIGNS = (
 
 
 def cutout(design, subject, portrait=False, evolution=1):
-    head = f"{PORTRAIT_FRAME}, {STYLE}" if portrait else f"{ICON_RENDERER}, {OBJECT_ONLY}"
+    head = f"{PORTRAIT_OPEN}, {STYLE}" if portrait else f"{ICON_RENDERER}, {OBJECT_ONLY}"
     excluded = ", ".join(color for color in design["excluded"].split(", ") if color != design["key"])
     negative = f"{NO}, {excluded}"
     if portrait:
@@ -127,7 +129,7 @@ def cutout(design, subject, portrait=False, evolution=1):
     prompt = (f"{head}. {subject}. Palette only {design['palette']}; prismatic means these colors only. "
               f"{SHARP}. {MARGIN}. Plain solid unlit {design['key']} background ({design['hex']}) "
               "fills every opening, no scenery or cast-shadow backdrop. --ar "
-              f"{'4:3' if portrait else '1:1'} --no {negative}")
+              f"{'4:3' if portrait else '1:1'} --niji 6 --s 100 --q 1 --no {negative}")
     if portrait:
         prompt += f" --sref {references()[evolution]} --sw {REFERENCE_WEIGHT}"
     return prompt
@@ -140,7 +142,9 @@ def blocks():
         for index, (rarity, title, form) in enumerate(zip(RARITIES, design["titles"], design["forms"]), 1):
             signature = design["signature"] if index >= 3 else "restrained early-form equipment, no mature back array"
             subject = (f"{design['identity']}; {design['clothing']}; {design['weapon']}. {form}. "
-                       f"{signature}. {ARMOR_RULE}; powers attach to equipment, nothing behind but flat key")
+                       f"{signature}. {ARMOR_RULE}; "
+                       + (f"{CRAFT}; " if index >= 3 else "")
+                       + "body one third of canvas height, complete weapon and powers readable, plain background without a separate effect backdrop")
             rows.append((f"{slug}-{index}.png", f"{title}, {design['name']} / {rarity}", cutout(design, subject, True, index)))
         for index, (slot, name, symbol) in enumerate(design["icons"], 1):
             rows.append((f"{slug}-ability-{index}.png", f"{slot}: {name} (proposed label)", cutout(design, symbol)))
@@ -178,6 +182,11 @@ def document():
         "  non-emissive painted highlights and jewel-like colors. Rounded oversized heads,",
         "  tiny torsos and short limbs stay consistent. Uniqueness means appearance,",
         "  costume, hair, palette, equipment and effects, never a different rendering style.",
+        "- Infernis/Tizu are the direct progression reference: modest base, increasingly",
+        "  ornate armor and signature weapon, then majestic luxurious prismatic regalia",
+        "  with sweeping elemental powers. Not a literal accumulation of hardware parts.",
+        "  Use their --niji 6 --s 100 --q 1 settings. Small anatomy never means timid",
+        "  equipment or underdeveloped late forms; keep the whole ensemble magnificent.",
         "- Caldrex: square wingless forge silhouette, ash-white squared hair, ochre cheek stripe,",
         "  black coat/orange sash, brass gate gauntlets and attached opaque heat loops.",
         "- Solenne: wingless off-axis hoop silhouette, black bob/side braid, gold temple bars,",

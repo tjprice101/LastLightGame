@@ -8,6 +8,17 @@ numbers remain pending; proposed ability labels are not runtime definitions.
 
 ## Current art revision and remaining work (2026-11-03)
 
+**Progression correction:** Infernis and Tizu are the direct style/progression
+reference, not just a renderer phrase. Every evolution gains richer armor,
+more magnificent signature equipment and more elaborate elemental powers;
+Legendary/Omnic are luxurious, majestic prismatic regalia, not modest outfits
+with increasing hardware counts. Preserve compact anatomy without making the
+whole ensemble timid. The revised18 portraits restore the starter generation
+settings `--niji 6 --s 100 --q 1`, foreground the unit/design rather than repeated
+"small centered" language, and retain full edge clearance. Existing starter
+prompts/art are references, not modified assets. All future character lines
+should follow this escalating grandeur while retaining individual appearances.
+
 Owner permits any character design provided it is unique, and requests this
 pass stay within art/documentation: preserve names, roles and approved kit
 concepts. Story remains paused. These new visual specifics are proposals for

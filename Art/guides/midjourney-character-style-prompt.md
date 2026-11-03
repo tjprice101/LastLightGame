@@ -1,5 +1,14 @@
 # Last Light — Character Art Midjourney Prompt Guide
 
+**Evolution grandeur clarification (2026-11-03):** use Infernis/Tizu as direct
+renderer and progression references. Every character grows grander, more
+luxurious and impeccably crafted through its evolutions: increasingly ornate
+armor and signature equipment, sweeping elemental powers, majestic prismatic
+late regalia. Unique appearance is not an excuse for humble late forms or
+literal bolt-on part counting. Compact anatomy and clear margins must preserve
+the entire magnificent ensemble. New Phase1 cutouts restore the starters'
+`--niji 6 --s 100 --q 1`; existing art is unchanged.
+
 **Appearance is not style (owner clarification, 2026-11-03):** character
 uniqueness means different hair, costume, palette, equipment, materials and
 effects within the same established compact anime/cel renderer. Do not vary

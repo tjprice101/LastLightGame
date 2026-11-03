@@ -1,5 +1,12 @@
 # Art and asset workflow
 
+**Character progression clarification (2026-11-03):** Infernis/Tizu are the
+direct visual foundation for all future character lines. Preserve their shared
+renderer and escalating luxurious armor/weapon/elemental grandeur, not just
+chibi terminology. Phase1's18 portraits now use starter generation settings
+and richer authored evolution designs; image quality still needs actual
+generation/review, not an assumed guarantee from text or tests.
+
 ## New Elemental War visual proposals (2026-11-03)
 
 [Caldrex, Solenne and Myrthen](../Art/characters/Elemental%20War%20Phase%201.md)

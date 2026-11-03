@@ -1,5 +1,18 @@
 # Current state and handoff
 
+## Infernis/Tizu evolution-grandeur correction (2026-11-03)
+
+- Owner says renderer has drifted and rejects literal feature-count escalation.
+  Directly read Infernis/Tizu packs; new generator had omitted their Niji6,
+  stylize100 and quality1 settings and overemphasized small centered hardware.
+- Restore starter settings for Phase1 cutouts; all18 portraits now have authored
+  progression from modest base to luxurious layered armor, monumental signature
+  equipment and sweeping prismatic elemental regalia. Compact body stays one
+  third of canvas, with full15% ensemble margins and existing references.
+- Keep unique silhouettes/hair/clothing/paint, shared renderer, figure-free
+  icons and mechanical Masters. No installed art or gameplay changes.
+  Story remains paused. Actual generations still need visual review.
+
 ## Character appearance versus shared style clarification (2026-11-03)
 
 - Owner explicitly preserves the existing roster's art style; uniqueness is
