@@ -2,6 +2,18 @@
 
 **Spoilers / owner-approved narrative direction / NOT IMPLEMENTED.**
 
+**D-451 author interview:** the wisp is truly a fragment of Let, unknown to the
+party. Nyrasma machines are new Rise creations, black/ominous and protecting
+where they believe her soul is. Brink and Gates connect without merging their
+activities. Chapter3 reveals Let's intention through memories and emotions;
+Rise's partial soul fragment communicates feelings/images and asks the party
+to seek her complete self while retaining their emotions. It does not know
+her whole plan. Unsigned papers remain unattributed until Chapter3.
+The11 region/enemy foundations and125/75/75 provisional stage counts are approved;
+exact scenes, rewards and core-puzzle/restart implementation are not.
+[Revised scenes and design](chapters-2-3-design.md) supersede earlier conflicting
+lineage/wisp/complete-soul assumptions below. No gameplay changes in this phase.
+
 **D-450 clarification:** Chapter1 is now labeled **Search the Six Beacons of
 Emotion**, with the current120-stage layout (six x20, not the historical150
 below). Its seven-entry milestone Codex is implemented; cryptic papers are

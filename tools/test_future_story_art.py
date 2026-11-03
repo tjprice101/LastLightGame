@@ -37,6 +37,17 @@ class FutureStoryArtTests(unittest.TestCase):
             self.assertNotIn("rise-portrait", name)
             self.assertNotIn("let-portrait", name)
 
+    def test_nyrasma_machines_are_black_readable_and_ominous(self):
+        machines = [row for row in blocks() if row[0].startswith("chapter-2-") and "--ar 4:3" in row[2]]
+        self.assertEqual(len(machines), 25)
+        for filename, _, prompt in machines:
+            with self.subTest(filename=filename):
+                self.assertIn("predominantly black", prompt)
+                self.assertIn("Ominous imposing machine", prompt)
+                self.assertIn("no large bright colored panels", prompt)
+                self.assertIn("crisp edge highlights", prompt)
+                self.assertNotIn("ivory", prompt)
+
 
 if __name__ == "__main__":
     unittest.main()

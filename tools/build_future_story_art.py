@@ -1,4 +1,4 @@
-"""Reproduce the unapproved Chapters 2-3 visual development pack, never runtime art."""
+"""Reproduce the approved visual foundations and draft scenes, never runtime art."""
 from pathlib import Path
 
 from prompt_quality import SHARP, QUALITY_NO, BACKDROP_NO, NO_BACKDROP, PORTRAIT_FRAME
@@ -8,50 +8,50 @@ OUTPUT = ROOT / "Art" / "story" / "Chapters 2-3 Draft.md"
 
 # Five identities per region: four ordinary enemies and a separate regional boss.
 REGIONS = [
-    ("chapter-2", "arrival-of-brass", "Arrival of Brass", "bronze, ivory enamel and restrained teal",
+    ("chapter-2", "arrival-of-brass", "Arrival of Brass", "predominantly polished black metal, dark bronze workings and restrained teal insets",
      "a shuttered civic arrival concourse, interlocking bronze road locks, ivory transit platforms, teal route inlays",
      [
-         ("Latchwheel Runner", "one low oval clockwork body on two toothed bronze wheels, ivory hinged noseplate and two small teal signal lenses, a rear ratchet tail"),
-         ("Ticketjaw Clamp", "a walking four-legged turnstile machine, paired flat ivory clamp jaws, exposed bronze rack gears and one rectangular teal inspection lens"),
-         ("Rivetcrown Skitter", "a six-legged bronze maintenance machine, low hexagonal ivory shell, three upright flat rivet fins and articulated teal-tipped feelers"),
-         ("Gatebell Hauler", "a squat wheeled load machine, suspended ivory bell-shaped counterweight enclosed by a square bronze cage, two jointed lifting arms"),
-         ("Turnkey Processional Engine", "a colossal low eight-wheeled gate machine, three intermeshing bronze flywheels, segmented ivory shutter breastplate, one giant horizontal key-shaped piston and teal recessed control tracks"),
+         ("Latchwheel Runner", "one low black oval clockwork body on two toothed dark bronze wheels, black hinged noseplate and two small teal signal lenses, a rear ratchet tail"),
+         ("Ticketjaw Clamp", "a walking four-legged black turnstile machine, paired flat black clamp jaws, exposed dark bronze rack gears and one rectangular teal inspection lens"),
+         ("Rivetcrown Skitter", "a six-legged black maintenance machine, low hexagonal black shell, three upright dark bronze flat rivet fins and articulated teal-tipped feelers"),
+         ("Gatebell Hauler", "a squat black wheeled load machine, suspended black bell-shaped counterweight enclosed by a square dark bronze cage, two jointed lifting arms"),
+         ("Turnkey Processional Engine", "a colossal low eight-wheeled black gate machine, three intermeshing dark bronze flywheels, segmented black shutter breastplate, one giant horizontal key-shaped piston and teal recessed control tracks"),
      ]),
-    ("chapter-2", "glasswater-circuit", "Glasswater Circuit", "navy enamel, silver and cyan glass",
+    ("chapter-2", "glasswater-circuit", "Glasswater Circuit", "predominantly black enamel, gunmetal workings and restrained cyan glass",
      "a flooded precision waterworks avenue, silver sluice gates, navy tiled channels, cyan glass pressure conduits",
      [
-         ("Sluicefin Glider", "a navy torpedo-shaped aquatic machine, two broad silver hinged fins, cyan glass pressure chamber and a forked mechanical tail"),
-         ("Valveback Crawler", "a four-legged silver pipe-inspection machine, navy cylindrical back tank, two offset cyan gauges and hooked flat gripping feet"),
-         ("Pressurecoil Eel", "a serpentine segmented navy machine, silver compression bellows along its body, one cyan glass spinal tube and a blunt bifurcated head"),
-         ("Prismgill Siphon", "a small radial aquatic machine, five silver intake fins surrounding a navy pressure drum, cyan glass gills and three articulated stabilizer feet"),
-         ("Undertide Pressure Regent", "an immense manta-shaped navy pressure machine, broad layered silver fin plates, twin cylindrical bellows, a central cyan glass regulator and two forked sluice claws"),
+         ("Sluicefin Glider", "a black torpedo-shaped aquatic machine, two broad gunmetal hinged fins, small cyan glass pressure chamber and a forked mechanical tail"),
+         ("Valveback Crawler", "a four-legged black pipe-inspection machine, black cylindrical back tank, two offset cyan gauges and gunmetal hooked flat gripping feet"),
+         ("Pressurecoil Eel", "a serpentine segmented black machine, gunmetal compression bellows along its body, one narrow cyan glass spinal tube and a blunt bifurcated head"),
+         ("Prismgill Siphon", "a small radial black aquatic machine, five gunmetal intake fins surrounding a black pressure drum, narrow cyan glass gills and three articulated stabilizer feet"),
+         ("Undertide Pressure Regent", "an immense manta-shaped black pressure machine, broad layered gunmetal fin plates, twin black cylindrical bellows, a central small cyan glass regulator and two forked sluice claws"),
      ]),
-    ("chapter-2", "suspended-mile", "Suspended Mile", "indigo enamel, polished silver and amber glass",
+    ("chapter-2", "suspended-mile", "Suspended Mile", "predominantly black enamel, dark silver workings and restrained amber glass",
      "a high aerial transit mile, suspended silver tracks and counterweights, indigo station platforms, amber glass signal housings",
      [
-         ("Railwing Kite", "a diamond-bodied aerial machine, two folding silver rail fins, indigo enamel breastplate, amber rectangular eye and paired hooked landing legs"),
-         ("Pendulum Talon", "a compact three-clawed hanging machine, one indigo spherical bearing inside an angular silver yoke, amber side gauges and a long flat pendulum tail"),
-         ("Cablehorn Rammer", "a compact quadrupedal transit machine, two curved silver cable-spool horns, indigo shield panels and amber angular eye slits"),
-         ("Gyrovane Strider", "a two-legged indigo balancing machine, three offset silver gyroscopic rings around its waist and one upright amber vane, no humanoid hands or face"),
-         ("Zenith Counterweight Tyrant", "a huge condor-shaped transit machine, indigo ribbed torso, six flat silver wing spars carrying amber counterweights, two enormous articulated hook feet and a rear vertical stabilizer"),
+         ("Railwing Kite", "a diamond-bodied black aerial machine, two folding dark silver rail fins, black enamel breastplate, amber rectangular eye and paired hooked landing legs"),
+         ("Pendulum Talon", "a compact black three-clawed hanging machine, one black spherical bearing inside an angular dark silver yoke, small amber side gauges and a long flat pendulum tail"),
+         ("Cablehorn Rammer", "a compact black quadrupedal transit machine, two curved dark silver cable-spool horns, black shield panels and amber angular eye slits"),
+         ("Gyrovane Strider", "a two-legged black balancing machine, three offset dark silver gyroscopic rings around its waist and one narrow upright amber vane, no humanoid hands or face"),
+         ("Zenith Counterweight Tyrant", "a huge condor-shaped black transit machine, black ribbed torso, six flat dark silver wing spars carrying black counterweights with amber insets, two enormous articulated hook feet and a rear vertical stabilizer"),
      ]),
-    ("chapter-2", "garden-of-returning-cogs", "Garden of Returning Cogs", "jade enamel, ivory and copper",
+    ("chapter-2", "garden-of-returning-cogs", "Garden of Returning Cogs", "predominantly black enamel, dark copper workings and restrained jade insets",
      "overgrown civic maintenance terraces, copper recirculation channels, jade mechanical planters, ivory paving, botanical growth threaded through machines",
      [
-         ("Seedgear Roller", "a small jade spherical maintenance machine divided into six flat shell panels, copper wheel rim and two ivory seed-shaped grippers"),
-         ("Tendrilpump Mantis", "a slender six-legged jade irrigation machine, long ivory cutting forearms, copper pump abdomen and two curled mechanical hose feelers"),
-         ("Copperleaf Grazer", "a broad quadrupedal pruning machine, jade angular shell, copper leaf-shaped side blades, ivory wedge muzzle and short segmented tail"),
-         ("Irrigation Loom", "a low eight-legged jade machine, copper shuttle mechanism between ivory support rails, tightly coiled water hoses and a flat diamond pressure lens"),
-         ("Verdant Recirculation Heart", "an enormous squat jade irrigation machine, four ivory articulated support legs, exposed copper triple pump chambers and large flat leaf-shaped valve plates surrounding a central mechanical heart drum"),
+         ("Seedgear Roller", "a small black spherical maintenance machine divided into six flat shell panels, dark copper wheel rim, two black seed-shaped grippers and narrow jade insets"),
+         ("Tendrilpump Mantis", "a slender six-legged black irrigation machine, long black cutting forearms, dark copper pump abdomen, small jade inspection slots and two curled mechanical hose feelers"),
+         ("Copperleaf Grazer", "a broad black quadrupedal pruning machine, black angular shell, dark copper leaf-shaped side blades, black wedge muzzle, small jade insets and short segmented tail"),
+         ("Irrigation Loom", "a low eight-legged black machine, dark copper shuttle mechanism between black support rails, tightly coiled water hoses and a small jade diamond pressure lens"),
+         ("Verdant Recirculation Heart", "an enormous squat black irrigation machine, four black articulated support legs, exposed dark copper triple pump chambers, small jade inspection insets and large flat black leaf-shaped valve plates surrounding a central mechanical heart drum"),
      ]),
-    ("chapter-2", "unanswered-terminal", "The Unanswered Terminal", "plum enamel, black metal and pale gold",
+    ("chapter-2", "unanswered-terminal", "The Unanswered Terminal", "predominantly black metal, dark plum inset plates and restrained pale gold workings",
      "a silent subterranean dispatch terminal, plum rail beds, black metal routing wheels, pale gold conduit seams, a narrow descending transit aperture",
      [
-         ("Signalspine Courier", "a sleek four-legged plum dispatch machine, pale gold antenna comb along its back, black armored snout and a sealed rectangular cargo case"),
-         ("Mutegear Auditor", "a hovering black hexagonal inspection machine, three offset plum shutter plates, pale gold mechanical iris and two folding caliper arms"),
-         ("Routejaw Hound", "a low black quadrupedal machine, plum segmented flank guards, pale gold jaw hinges and a flat bifurcated cable tail"),
-         ("Terminal Threader", "an elongated plum rail machine, six small black wheels, pale gold threading needles enclosed inside a rectangular mechanical shroud"),
-         ("Silent Dispatch Sovereign", "a massive black and plum routing machine, radial pale gold switching arms around a horizontal drum, six tracked support pods and a central closed plum shutter, unmistakably machinery not a building"),
+         ("Signalspine Courier", "a sleek four-legged black dispatch machine, narrow pale gold antenna comb along its back, dark plum inset snout plates and a sealed black rectangular cargo case"),
+         ("Mutegear Auditor", "a hovering black hexagonal inspection machine, three offset black shutter plates with dark plum insets, a narrow pale gold mechanical iris and two folding caliper arms"),
+         ("Routejaw Hound", "a low black quadrupedal machine, black segmented flank guards with dark plum insets, narrow pale gold jaw hinges and a flat bifurcated cable tail"),
+         ("Terminal Threader", "an elongated black rail machine, six small black wheels, narrow pale gold threading needles enclosed inside a rectangular black mechanical shroud with dark plum insets"),
+         ("Silent Dispatch Sovereign", "a massive black routing machine, radial black switching arms with narrow pale gold joints around a horizontal drum, six tracked support pods and a central closed black shutter with dark plum insets, unmistakably machinery not a building"),
      ]),
     ("intermission", "faultline-stair", "Faultline Stair", "charcoal, copper and amber",
      "broken transit access shafts descending through natural strata, charcoal rock ledges, abandoned copper rails and amber mineral seams",
@@ -128,9 +128,12 @@ def blocks():
         for index, (enemy, design) in enumerate(enemies):
             boss = index == 4
             presence = "formidable majestic regional boss, dense layered subject detail" if boss else "distinct readable ordinary creature or machine, compact anatomy"
+            machine_mood = ("Ominous imposing machine, predominantly black armored chassis, narrow recessed inspection slits, "
+                            "precise dark metal workings with crisp edge highlights so every mechanism remains readable, "
+                            "district colors confined to small insets, no large bright colored panels. ") if part == "chapter-2" else ""
             prompt = (
                 f"{PORTRAIT_FRAME}, complete design inside a continuous empty safety margin at least 15 percent on every side and corner. "
-                f"{design}. Subject palette strictly {palette}. {presence}; side-facing three-quarter view facing right, all feet fins horns cables and tips fully visible. "
+                f"{design}. {machine_mood}Subject palette strictly {palette}. {presence}; side-facing three-quarter view facing right, all feet fins horns cables and tips fully visible. "
                 "Compact anime game unit rendering, clean precise contours, crisp cel shading, opaque materials, smooth non-emissive painted highlights; "
                 f"{SHARP}. {NO_BACKDROP}. Entire ensemble contained inside central 70 percent; pull back uniformly, never crop or remove details. "
                 "Plain flat unlit solid #00FF00 background, same green in all empty gaps. "
@@ -170,9 +173,12 @@ def document():
 Companion design: [chapter design and approval boundaries](../../docs/chapters-2-3-design.md).
 These75 copy-ready prompts cover55 unique enemy/boss cutouts,11 arenas,
 three maps, three chapter/part banners and three transition concepts.
-Region names, palettes, species, Chapter3 length and machine lineage are
-proposals. No Rise/Let portrait or confirmed soul depiction is included.
-The transition images deliberately avoid resolving the wisp's identity.
+Region/enemy identities and provisional125/75/75 stage structure are approved
+foundations under D-451. Nyrasma machines are new creations of Rise and
+predominantly black/ominous, with restrained district accents, not bright panels.
+Exact scenes and generated images still require review; no gameplay is authorized.
+No Rise/Let portrait or confirmed soul depiction is included. The wisp really
+is Let's fragment, but transition images do not disclose that to the party.
 
 Generate only the desired fenced prompt, not the heading/filename.
 Filenames identify future intake candidates, not current runtime URLs.

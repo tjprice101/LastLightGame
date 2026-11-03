@@ -1,5 +1,9 @@
 # Documentation hub
 
+**D-451:** [Revised story scenes, core puzzle and optional restart design](chapters-2-3-design.md)
+records the author interview, approved regional foundations and black/ominous
+Nyrasma machines. New dialogue/rewards/puzzle details await approval; design only.
+
 **D-450:** [Chapter1 review and Chapters2-3 design draft](chapters-2-3-design.md):
 live Chapter1 labeling and milestone Story Codex; cryptic papers, Nyrasma,
 separate pursuit and Chapter3 are proposals with75 copy-ready Midjourney prompts.

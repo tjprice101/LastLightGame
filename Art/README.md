@@ -4,8 +4,11 @@
 
 [Chapters2-3 and intermission](story/Chapters%202-3%20Draft.md) contains75
 copy-ready Midjourney prompts:55 enemy/boss cutouts,11 arenas, three maps,
-three banners and three transition concepts. All new identities are proposals,
-not delivered or implemented content. [Design and approval boundaries](../docs/chapters-2-3-design.md).
+three banners and three transition concepts. D-451 approves region/enemy
+foundations and requests predominantly black, ominous Nyrasma machines; all25
+machine cutout prompts now follow that direction. Exact scenes/generated images
+still need review. No delivered or implemented content.
+[Design and approval boundaries](../docs/chapters-2-3-design.md).
 
 ## Completed native/Calamity artwork queue (D-317 / D-318 / D-323)
 

@@ -1,5 +1,36 @@
 # Current state and handoff
 
+## Story author interview and revised proposal (D-451)
+
+- Next scope explicitly DESIGN ONLY. No core puzzles, restart, schema,
+  live story text changes, new chapters, resets or authority changes authorized.
+- Confirmed: unsigned much vaguer papers, author unknown until Chapter3;
+  cryptic Let note; wisp really Let's soul fragment but unknown to party.
+  New Rise-built black/ominous machines guard where they believe her soul is.
+  Brink connects to Gates; existing Gates mode stays separate.
+- Region/enemy foundations approved;125/75/75 stages and55-85/85-100/100-120
+  levels are provisional approved targets, not tested balance. Chapter3 memories/
+  emotions expose Let's plan; Rise's partial fragment shares images/feelings,
+  asks the party to seek her while retaining emotions, not complete explanation.
+- `docs/chapters-2-3-design.md` revises fragments, note, memories and fragment
+  scene; proposes regional3x3 rotate/connect core puzzles with post-boss reward
+  persistence, separate repair gate, save-failure retry and reduced-motion VFX.
+  Restart is OPTIONAL and preserves historical first-clear eligibility.
+  No live account has been reset. Compatibility/schema details need approval.
+- Revised reward PROPOSAL:200/250/300 first-clear Prismatica by part,
+  150 replay;1 premium per stage plus5 on regional finals. Totals66,250
+  Prismatica/330 Null-Prismatica across275 stages, excluding kill rewards.
+  Owner requested revised quantities, not approval of these numbers.
+- Updated all25 Nyrasma machine cutout prompts to black dominant readable
+  ominous chassis; identities preserved, no bright-panel contradictions.
+  Generated75-prompt pack remains unwired; actual images still need review.
+  Preserve the owner's existing spacing correction in the design document.
+- Validation: regenerate `python tools/build_future_story_art.py`, then
+  `python -m unittest discover -s tools -p test_future_story_art.py`:
+  all4 tests passed, including all25 black/ominous machine prompts and exact
+  75-block reproduction. `git diff --check` passed.
+  No runtime changes require client build or authority deployment.
+
 ## Chapter1 Story polish and future-chapter draft (D-450)
 
 - Owner confirmed Rise destroyed beacon cores; bosses prevent restoration
