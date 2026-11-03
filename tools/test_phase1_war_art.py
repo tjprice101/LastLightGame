@@ -1,6 +1,7 @@
 import unittest
 
 from build_phase1_war_art import DESIGNS, OUTPUT, blocks, document
+from build_elemental_war_art import RENDERER
 
 
 class PhaseOneWarArtTests(unittest.TestCase):
@@ -20,6 +21,8 @@ class PhaseOneWarArtTests(unittest.TestCase):
                 positive = prompt.split(" --ar")[0]
                 self.assertLessEqual(len(positive.split()), 260)
                 if "--ar 4:3" in prompt:
+                    self.assertIn(RENDERER, prompt)
+                    self.assertIn("rounded oversized head tiny torso short limbs", prompt)
                     self.assertIn("--sref https://", prompt)
                     self.assertIn("--sw 150", prompt)
                     self.assertIn("no mouth nose or eyebrows", prompt)

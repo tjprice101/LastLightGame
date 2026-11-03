@@ -5,6 +5,12 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Character style clarification (2026-11-03): owner confirms that unique character
+appearance does not authorize renderer/style changes. All new characters retain
+the roster's compact chibi anatomy, precise anime contours, crisp cel shading,
+smooth painted highlights and jewel-like colors; vary design details only.
+Phase1 portraits reuse the existing Elemental War renderer verbatim.
+
 Elemental War art clarification (2026-11-03): owner permits any character design
 provided it is unique. This pass preserves Caldrex/Solenne/Myrthen names,
 elements, roles and kit concepts; scope is45 prompts and documentation only.

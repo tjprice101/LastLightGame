@@ -2,6 +2,7 @@
 from pathlib import Path
 
 from build_calamitic_art import CONDUIT_FOUNDATION, references
+from build_elemental_war_art import RENDERER
 from character_palette import REFERENCE_WEIGHT
 from prompt_quality import (
     ARMOR_RULE, ICON_NO, ICON_RENDERER, OBJECT_ONLY, PORTRAIT_FRAME,
@@ -11,7 +12,7 @@ from prompt_quality import (
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "Art" / "characters" / "Elemental War Phase 1.md"
 RARITIES = ("Common", "Uncommon", "Rare", "Epic", "Legendary", "Omnic")
-STYLE = "compact anime gacha unit, rounded head tiny torso short limbs, 2.5-3 heads tall, crisp cel shading, non-emissive painted highlights"
+STYLE = f"{RENDERER}, rounded oversized head tiny torso short limbs, 2.5-3 heads tall"
 NO = "text, lettering, watermark, cropping, photorealism, 3d render, glow, light bloom, aura, backsplash, background gradient, " + QUALITY_NO
 MARGIN = "entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; every tip visible, nothing touches the frame"
 
@@ -172,6 +173,11 @@ def document():
         "",
         "## Visual separation and generation contract",
         "",
+        "- Same established character art style as the existing roster: original compact",
+        "  gacha JRPG chibi renderer, precise anime contours, crisp cel shading, smooth",
+        "  non-emissive painted highlights and jewel-like colors. Rounded oversized heads,",
+        "  tiny torsos and short limbs stay consistent. Uniqueness means appearance,",
+        "  costume, hair, palette, equipment and effects, never a different rendering style.",
         "- Caldrex: square wingless forge silhouette, ash-white squared hair, ochre cheek stripe,",
         "  black coat/orange sash, brass gate gauntlets and attached opaque heat loops.",
         "- Solenne: wingless off-axis hoop silhouette, black bob/side braid, gold temple bars,",

@@ -1,5 +1,11 @@
 # Last Light — Character Art Midjourney Prompt Guide
 
+**Appearance is not style (owner clarification, 2026-11-03):** character
+uniqueness means different hair, costume, palette, equipment, materials and
+effects within the same established compact anime/cel renderer. Do not vary
+rendering style, anatomy/proportion conventions or realism between characters.
+The new Phase1 pack reuses the original Elemental War renderer verbatim.
+
 **New Elemental War proposals (2026-11-03):**
 [Caldrex, Solenne and Myrthen](../characters/Elemental%20War%20Phase%201.md)
 use unique title phrases rather than a universal rank ladder, two wingless

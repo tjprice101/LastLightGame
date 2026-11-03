@@ -13,6 +13,14 @@ pass stay within art/documentation: preserve names, roles and approved kit
 concepts. Story remains paused. These new visual specifics are proposals for
 review, not approval of tuned kits or gameplay implementation.
 
+Owner clarification: uniqueness refers to **appearance, not art style**.
+All three keep the existing roster's original compact gacha JRPG chibi renderer,
+rounded oversized heads/tiny torsos/short limbs, precise anime contours, crisp
+cel shading, smooth non-emissive painted highlights and jewel-like colors.
+The generator reuses the established Elemental War renderer verbatim. Hair,
+graphic paint, clothing, materials, weapons and effects can differ without
+changing anatomy, rendering technique or introducing realism.
+
 The pack replaces repeated cathedral/temple/feather-wing escalation with:
 
 - **Caldrex:** wingless square forge silhouette, squared ash-white haircut and

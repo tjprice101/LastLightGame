@@ -1,5 +1,15 @@
 # Current state and handoff
 
+## Character appearance versus shared style clarification (2026-11-03)
+
+- Owner explicitly preserves the existing roster's art style; uniqueness is
+  hair, costume, palette, equipment/materials and effects, not a new renderer.
+- Phase1 generator now reuses the original Elemental War `RENDERER` verbatim
+  with established compact anatomy; regenerated all18 portraits, retaining
+  identities, margins, reference URLs/weight and other27 prompts.
+- Added a regression assertion for shared renderer/anatomy. No actual
+  artwork, runtime, kit or Story changes.
+
 ## New Elemental War art/documentation pass (2026-11-03)
 
 - Owner requests missing-work status and a complete art pass using accumulated
