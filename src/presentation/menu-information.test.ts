@@ -89,7 +89,8 @@ describe('shared menu information', () => {
     expect(rules).not.toContain('<details');
     const disclosures = html.match(/<details\b[^>]*>/g) ?? [];
     expect(disclosures.length).toBeGreaterThan(0);
-    expect(disclosures.every(tag => tag === '<details class="conduit-lore-disclosure">')).toBe(true);
+    expect(disclosures.filter(tag => tag !== '<details class="conduit-lore-disclosure">'))
+      .toEqual(['<details data-story-codex-entry="founding">']);
   });
   it('keeps summon rules visible inside Rates & Information, without nested disclosures', () => {
     const html = summonHub(emptyAccount());

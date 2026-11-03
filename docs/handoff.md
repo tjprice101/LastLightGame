@@ -28,6 +28,9 @@
   overflow for Codex/chapter map at1180/390/320px. Save data was not modified.
 - Publish through full CI/Pages; verify exact hosted version and Codex/title
   assets. Art/design drafts are author-review deliverables, not live canon.
+- Full CI identified the historical Collections disclosure whitelist; it now
+  permits exactly the unlocked founding Codex disclosure on a fresh account,
+  retaining the prohibition on nested generic Information disclosures.
 
 ## Loadout and character configuration polish (D-449)
 
