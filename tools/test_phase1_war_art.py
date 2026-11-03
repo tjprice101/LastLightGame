@@ -23,7 +23,7 @@ class PhaseOneWarArtTests(unittest.TestCase):
                 if "--ar 4:3" in prompt:
                     self.assertIn(RENDERER, prompt)
                     self.assertIn("rounded oversized head tiny torso short limbs", prompt)
-                    self.assertIn("body one third of canvas height", prompt)
+                    self.assertIn("body one third of canvas height", prompt.lower())
                     self.assertNotIn("small centered character", prompt)
                     self.assertIn("--sref https://", prompt)
                     self.assertIn("--sw 150", prompt)
@@ -82,6 +82,10 @@ class PhaseOneWarArtTests(unittest.TestCase):
         self.assertIn("lotus-bell shield on two visible chains", prompt)
         self.assertIn("strictly silver lilac and rose-ivory", prompt)
         self.assertIn("never in the energy", prompt)
+        self.assertIn("visible clapper and taut chain grips", prompt)
+        self.assertIn("unfurl from its ringing rim", prompt)
+        self.assertIn("bell braced forward to intercept a strike", prompt)
+        self.assertLess(prompt.index("lotus-bell shield"), prompt.index("spectral moonlight"))
         self.assertLess(prompt.index("spectral moonlight"), prompt.index("female"))
         negatives = prompt.split(" --no ", 1)[1].split(" --sref", 1)[0].split(", ")
         for color in ("red", "orange", "yellow", "amber"):

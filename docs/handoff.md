@@ -1,5 +1,16 @@
 # Current state and handoff
 
+## Solenne Omnic weapon and guardian continuity (2026-11-03)
+
+- Owner requests slightly stronger weapon emphasis and continuity with her
+  epic later evolution identity. Only Solenne Omnic changed: dominant lotus-bell
+  shield, visible clapper/engraved rim and taut chain grips; spectral resonance
+  originates from the ringing rim. Forward-braced airborne guard expresses
+  protective Tranquilitic Tank, preserving Legendary costume and Omnic moonlight.
+- Same renderer, palette, reference/settings and complete margins. Other44
+  prompts unchanged; no gameplay, installed-art or Story changes.
+- Validate focused4 prompt tests, exact45-block diff and `git diff --check`.
+
 ## Solenne Omnic spectral moonlight focus (2026-11-03)
 
 - Read owner attachment without modifying it. Moon and spectral energy must

@@ -8,6 +8,13 @@ numbers remain pending; proposed ability labels are not runtime definitions.
 
 ## Current art revision and remaining work (2026-11-03)
 
+Solenne Omnic weapon/role refinement: foreground her colossal lotus-bell
+shield with readable armored petals, engraved rim, clapper and two taut chain
+grips. Moonlight ribbons originate at its ringing rim. Her forward-braced
+airborne guard communicates the patient protective Tank, not a passive
+moon caster; retain Legendary robes, silver regalia, chain guards and crescent
+pauldrons beneath the Omnic mandala. Other44 prompt blocks remain unchanged.
+
 Latest Solenne Omnic refinement: foreground a colossal moon-silver crescent
 and dominating silver/lilac/rose-ivory spectral moonlight helices. Preserve
 regalia, bell, wingless silhouette and exact style settings. Energy is never

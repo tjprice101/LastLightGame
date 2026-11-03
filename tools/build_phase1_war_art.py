@@ -152,17 +152,18 @@ def blocks():
                        + "body one third of canvas height, complete weapon and powers readable, plain background without a separate effect backdrop")
             if slug == "solenne" and index == 6:
                 subject = (
-                    "A colossal moon-silver crescent frames her crown; immense spectral moonlight ribbons "
-                    "strictly silver lilac and rose-ivory dominate the silhouette, spiraling around feet torso and crown "
-                    "in interwoven rising helices, sharp opaque bands with crisp painted highlights. "
+                    "A colossal lotus-bell shield on two visible chains commands the foreground, "
+                    "rose-ivory armored petals, bronze-gold engraved rim, visible clapper and taut chain grips; "
+                    "spectral moonlight ribbons strictly silver lilac and rose-ivory unfurl from its ringing rim "
+                    "around feet torso and crown in interwoven rising helices. "
                     f"{design['identity']}; wingless. "
-                    "Retain Legendary black-lilac robes, silver regalia, crescent pauldrons, cascading brocade trains "
-                    "and gold chain guards; colossal lotus-bell shield on two visible chains, nested engraved skirts "
-                    "and prismatic crown. Seven tilted gold-filigree moon-gates form a vast asymmetric mandala. "
-                    "Silver-edged sound rings envelop dense crescent tracery without hiding face hands or bell. "
-                    "Moon and spectral energy are the primary spectacle; restrained gold only on metal trim, "
-                    "never in the energy. Majestic airborne guard, body one third of canvas height; "
-                    "razor-defined layers, luxurious beveled enamel and filigree, no atmospheric haze"
+                    "Retain Legendary black-lilac robes, silver regalia, sculpted crescent pauldrons, "
+                    "cascading brocade trains and gold chain guards; prismatic moon-silver crown. "
+                    "Colossal silver crescent and seven tilted moon-gates form a vast asymmetric mandala. "
+                    "Silver-edged sound rings envelop her without hiding face hands or bell. "
+                    "Airborne guardian, bell braced forward to intercept a strike, hands controlling chains; "
+                    "serene resolve, not a passive caster. Restrained gold only on metal trim, never in the energy. "
+                    "Body one third of canvas height; razor-defined enamel filigree and opaque energy, no haze"
                 )
             rows.append((f"{slug}-{index}.png", f"{title}, {design['name']} / {rarity}", cutout(design, subject, True, index)))
         for index, (slot, name, symbol) in enumerate(design["icons"], 1):
