@@ -8,6 +8,15 @@ numbers remain pending; proposed ability labels are not runtime definitions.
 
 ## Current art revision and remaining work (2026-11-03)
 
+**Continuity clarification:** Solenne and Myrthen keep their exact authored
+hair color/style, eyes and paint through all six forms; no color transformation
+is intended. Each portrait now has adjacent fixed-identity, costume/weapon
+continuity and intentional-change notes. Later armor layers over the identity
+costume rather than replacing it with an unrelated look. Bell/two-chain and
+twin-sickle/one-chain identities persist. All twelve negatives add
+`glow on edges`; authored spectral/seasonal powers and painted highlights stay.
+Rarity-specific notes preserve gradual complexity, not Omnic at every stage.
+
 ### Evolution-line pass after Solenne Omnic acceptance
 
 Owner accepted the weapon-led Solenne Omnic design and requests its principles

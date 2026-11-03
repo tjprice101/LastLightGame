@@ -1,6 +1,6 @@
 import unittest
 
-from build_phase1_war_art import DESIGNS, OUTPUT, blocks, document
+from build_phase1_war_art import DESIGNS, EVOLUTION_NOTES, OUTPUT, blocks, document
 from build_elemental_war_art import RENDERER
 
 
@@ -113,6 +113,19 @@ class PhaseOneWarArtTests(unittest.TestCase):
         self.assertIn("full silhouette", portraits["solenne-5.png"])
         self.assertIn("full silhouette", portraits["myrthen-5.png"])
         self.assertIn("triple-tier botanical wings", portraits["myrthen-6.png"])
+
+    def test_fixed_identity_and_explained_evolution_changes(self):
+        portraits = {name: p for name, _, p in blocks() if "--ar 4:3" in p}
+        for design in DESIGNS[1:]:
+            self.assertEqual(len(EVOLUTION_NOTES[design["slug"]]), 6)
+            for stage in range(1, 7):
+                prompt = portraits[f"{design['slug']}-{stage}.png"]
+                self.assertIn(design["identity"], prompt)
+                negatives = prompt.split(" --no ", 1)[1].split(" --sref", 1)[0].split(", ")
+                self.assertIn("glow on edges", negatives)
+                self.assertNotIn("aura", negatives)
+        self.assertEqual(document().count("**Intentional evolution changes:**"), 12)
+        self.assertEqual(document().count("No hair, eye or paint changes."), 12)
 
 
 if __name__ == "__main__":

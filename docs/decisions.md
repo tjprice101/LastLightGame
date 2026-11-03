@@ -5,6 +5,12 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Evolution identity continuity (2026-11-03): owner requests `glow on edges`
+in negatives and consistent distinctive details across Solenne/Myrthen forms.
+Meaningful intentional transformations must be explained next to each prompt;
+no hair/eye/paint transformations are currently intended. Preserve gradually
+increasing rarity complexity and authored swirling powers. Caldrex unchanged.
+
 Evolution-line application (2026-11-03): owner accepts current Solenne Omnic
 and requests the same identity/weapon-led energy progression in her earlier
 forms and Myrthen's full line, not Caldrex. Revise Solenne1-5 and Myrthen1-6

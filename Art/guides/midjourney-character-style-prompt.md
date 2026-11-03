@@ -1,5 +1,15 @@
 # Last Light — Character Art Midjourney Prompt Guide
 
+**Evolution continuity / explicit changes (2026-11-03):** preserve each line's
+distinct hair color/style, eyes, markings, palette and signature equipment
+unless an authored transformation is intentional. Put meaningful intentional
+changes beside the relevant prompt so the owner can distinguish progression
+from drift. Solenne/Myrthen have no intended hair/eye/paint transformations;
+their twelve portraits now have fixed-identity and evolution-change notes.
+Use `glow on edges` in their negatives without suppressing crisp swirling
+subject powers. Armor, weapon ornament, pose and energy complexity grow
+gradually; do not make every rarity Omnic-level.
+
 **Omnic crescendo:** owner visual examples call for wildly awe-inspiring
 silhouettes, lavish nested costume/weapon detailing and bold, razor-defined
 swirling powers. Apply that visual ambition through each character's own

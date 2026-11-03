@@ -11,6 +11,24 @@ from prompt_quality import (
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "Art" / "characters" / "Elemental War Phase 1.md"
+EVOLUTION_NOTES = {
+    "solenne": (
+        "Simple robe, wrist guards and small bell; one ankle-level moonlight trace. No moon-gate array.",
+        "Adds fitted breastplate, wrist scales and a crescent ornament; larger bell and paired knee/waist ribbons.",
+        "Adds crescent pauldrons, lamellar overskirt and chain guides; lotus-bell, two moon-gates and torso/shoulder spirals.",
+        "Complete ceremonial armor and layered mantle; larger nested bell, three gates and crown-height ribbons. Not Omnic density.",
+        "Luxurious brocade and prismatic bell; five gates and full-silhouette resonance, still less dense than Omnic.",
+        "Colossal bell, seven-gate mandala and enveloping resonance crescendo; retains Legendary costume foundation.",
+    ),
+    "myrthen": (
+        "Simple hunting coat and modest linked sickles; four-season blade traces, no wings.",
+        "Adds forearm/shoulder armor, larger sickles and paired budding fans; energy reaches calves.",
+        "Adds breastplate, pauldrons and greaves; four distinct botanical fans emerge, energy braids around torso.",
+        "Complete enamel armor and mantle; broad seasonal wings and crown-height ribbons, below late-form density.",
+        "Luxurious regalia, orchard crown and monumental sickles; full-silhouette energy, reserving triple-tier wings for Omnic.",
+        "Retains Legendary foundation; colossal sickles, triple-tier wings, orchard diadem and vast blade-sourced helices.",
+    ),
+}
 RARITIES = ("Common", "Uncommon", "Rare", "Epic", "Legendary", "Omnic")
 STYLE = f"{RENDERER}, rounded oversized head tiny torso short limbs, 2.5-3 heads tall"
 PORTRAIT_OPEN = "full-body gacha JRPG unit illustration on a plain canvas, one compact character"
@@ -131,6 +149,7 @@ def cutout(design, subject, portrait=False, evolution=1):
         if design["slug"] == "solenne":
             negative += ", red, yellow, amber"
         negative += ", fire, flames"
+        negative += ", glow on edges"
     prompt = (f"{head}. {subject}. Palette only {design['palette']}; prismatic means these colors only. "
               f"{SHARP}. {MARGIN}. Plain solid unlit {design['key']} background ({design['hex']}) "
               "fills every opening, no scenery or cast-shadow backdrop. --ar "
@@ -230,7 +249,11 @@ def document():
         "  enveloping late-form crescendo without hiding identity or crossing margins.",
         "  Solenne's earlier forms now lead into her approved Omnic; Myrthen's full",
         "  line follows the same weapon-led, identity-specific power crescendo.",
-        "  Caldrex and Solenne Omnic are unchanged by this evolution-line pass.",
+        "  Caldrex remains unchanged; Solenne Omnic keeps its accepted design.",
+        "- Solenne/Myrthen negative prompts explicitly exclude glow on edges, not",
+        "  their sharply defined authored spectral/seasonal energy or painted highlights.",
+        "- Fixed identity applies to every form: no hair/eye/paint color or hairstyle",
+        "  transformations are intended. Adjacent notes explain purposeful progression.",
         "- Caldrex: square wingless forge silhouette, ash-white squared hair, ochre cheek stripe,",
         "  black coat/orange sash, brass gate gauntlets and attached opaque heat loops.",
         "- Solenne: wingless off-axis hoop silhouette, black bob/side braid, gold temple bars,",
@@ -256,7 +279,20 @@ def document():
         "",
     ]
     for filename, title, prompt in blocks():
-        lines += [f"## {title}", "", f"Proposed export: `{filename}` (not a runtime URL).", "", "```text", prompt, "```", ""]
+        lines += [f"## {title}", "", f"Proposed export: `{filename}` (not a runtime URL).", ""]
+        for design in DESIGNS:
+            if design["slug"] not in EVOLUTION_NOTES:
+                continue
+            for index, note in enumerate(EVOLUTION_NOTES[design["slug"]], 1):
+                if filename == f"{design['slug']}-{index}.png":
+                    lines += [
+                        f"**Fixed identity (all six forms):** {design['identity']}.",
+                        f"**Costume/weapon continuity:** {design['clothing']}; {design['weapon']}. "
+                        "Later armor layers over this costume; weapon size/ornament changes, not weapon identity.",
+                        f"**Intentional evolution changes:** {note} No hair, eye or paint changes.",
+                        "",
+                    ]
+        lines += ["```text", prompt, "```", ""]
     return "\n".join(lines)
 
 

@@ -1,5 +1,17 @@
 # Current state and handoff
 
+## Evolution identity notes and edge-glow exclusion (2026-11-03)
+
+- Solenne/Myrthen all12 portraits retain verbatim shared identity definitions
+  (hair color/style, eyes and paint); no identity transformation intended.
+  Added adjacent identity/costume/weapon locks and purposeful progression notes
+  for every form, with rarity-specific complexity rather than all-Omnic detail.
+- Add `glow on edges` only to these12 portrait negatives. Preserve accepted
+  positive descriptions, references/settings and other33 prompt blocks.
+  Caldrex, abilities, Masters, scenery and installed art unchanged.
+- Validate focused generator tests and exact block-diff scope. Story paused;
+  no runtime changes.
+
 ## Solenne earlier forms and Myrthen full-line revision (2026-11-03)
 
 - Owner accepts Solenne Omnic and requests earlier forms plus the other
