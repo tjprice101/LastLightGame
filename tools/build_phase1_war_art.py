@@ -62,11 +62,11 @@ DESIGNS = (
         signature="wingless; nested offset moon-gate hoops fastened to a shoulder yoke, opaque lilac vibration arcs attached to the bell",
         titles=("Moonbell Keeper", "Between Two Chimes", "The Patient Circle", "Keeper of the Unstruck Bell", "A Silence Held", "The Bell That Stayed"),
         forms=(
-            "simple belted robe, small bell with two short chains and silver wrist guards; grounded listening pose, no hoop array",
-            "fitted silver breastplate, rose-ivory wrist scales and lilac-lined robe; one crescent shoulder hoop, gold-trimmed bell held beside one knee, a narrow lilac sound ribbon",
-            "sculpted crescent pauldrons, engraved lamellar overskirt and gold chain guides; twin offset silver moon-gates, long lilac sleeve ribbons and larger floral-engraved bell raised across torso",
-            "complete moon-silver ceremonial armor, high rose-ivory collar, layered black-lilac mantle and crescent greaves; three ornate moon-gates and broad opaque lilac resonance ribbons, gold-filigree bell shield, poised floating guard",
-            "majestic silver and rose-ivory regalia, gold-inlaid crescent pauldrons, cascading lilac mantle and articulated chain guards; five immense offset moon-gates with lace-like metal tracery, prismatic engraved bell shield and densely overlapping lilac resonance folds",
+            "simple belted black robe with lilac lining, silver wrist guards; small rose-ivory bell shield on two short chains, visible clapper and crescent engraving; one slender spectral moonlight ribbon curls from its rim around her ankles, grounded watchful guard",
+            "fitted moon-silver breastplate, rose-ivory wrist scales and lilac-lined robe; larger gold-edged bell shield on two chains, crescent shoulder ornament; paired spectral moonlight ribbons coil from its ringing rim around knees and waist, planted forward guard",
+            "sculpted crescent pauldrons, engraved silver lamellar overskirt and gold chain guides; broad lotus-bell shield on two chains, readable clapper; twin tilted moon-gates and spectral moonlight ribbons spiral from its rim around torso and shoulders, poised interception stance",
+            "complete moon-silver ceremonial armor, high rose-ivory collar and layered lilac mantle; immense lotus-bell shield on two chains, nested engraved skirts; three crescent moon-gates, broad spectral moonlight ribbons sweep from its rim around feet torso and crown, airborne protective guard",
+            "majestic silver regalia, gold-inlaid crescent pauldrons, cascading brocade trains and chain guards; monumental prismatic lotus-bell shield on two chains braced forward; five interwoven moon-gates form an asymmetric crescent crown, dense spectral moonlight ribbons and silver-edged sound rings spiral from the bell around the full silhouette",
             "retain Legendary regalia mantle chain guards and bell; colossal lotus-bell shield, engraved skirts, crescent pauldrons, cascading brocade trains, prismatic moon-silver crown; seven gold-filigree moon-gates interlock into a vast asymmetric mandala; opaque lilac bell-resonance spirals encircle feet torso and crown in interwoven rising helices; razor-defined silver-edged sound rings envelop dense crescent tracery without hiding face hands or bell, airborne guard",
         ),
         icons=(
@@ -94,12 +94,12 @@ DESIGNS = (
         signature="four botanical wing-fans: pink petals, jade leaves, amber husks, white rime-coated bare twigs; no feather or glass wings",
         titles=("Season Reaper", "First Turning", "Bough and Blade", "Harvest in Motion", "The Orchard Remembers", "When All Seasons Meet"),
         forms=(
-            "simple hunting coat and boots, modest sickles with a short slack chain, one jade leaf clasp; no wings yet, low dueling stance",
-            "fitted jade forearm plates, amber-edged leather shoulders and white-lined coat; paired leaf fans, polished hooked sickles held apart and a narrow pink petal ribbon",
-            "engraved jade breastplate, blossom-shaped pauldrons and amber knee guards; four distinct seasonal botanical fans, layered hunting mantle and ornamented sickles, chain sweeps through open foreground",
-            "complete jade enamel armor with amber filigree, sculpted blossom pauldrons and white-edged greaves; four broad seasonal wings and cascading pink-lined mantle, large hooked sickles with thorn guards, twisting airborne harvest stance",
-            "majestic jade-and-amber regalia, engraved growth-ring breastplate, sweeping blossom pauldrons and cascading bark-brown mantle; four immense layered seasonal wings, ornate amber sickle guards, jade thorn-chain and segmented orchard crown, dense botanical scrollwork",
-            "retain Legendary armor mantle sickles chain and crown; three luxuriant botanical tiers per wing interweave around an immense orchard diadem, prismatic sickle blades and curling seasonal ribbons, sovereign harvest duelist with clear face and grips",
+            "simple split hunting coat and boots; modest hooked sickles joined by one short chain, both grips clear; four-season energy traces of pink petals jade leaves amber husks and white rime curl beside the blades, no wings yet, low dueling guard",
+            "fitted jade forearm plates, amber-edged shoulders and pink-lined coat; enlarged hooked sickles with leaf-carved guards, one connecting chain; paired budding botanical fans and four-season energy ribbons coil around her calves and blades, advancing duelist stance",
+            "engraved jade breastplate, blossom pauldrons and amber greaves; long hooked sickles with thorn guards and one sweeping chain; four distinct botanical fans unfold, four-season energy ribbons braid around waist shoulders and blades, turning harvest strike",
+            "complete jade enamel armor, amber filigree and cascading pink-lined mantle; immense hooked sickles with white-edged blades and one thorn-link chain; four broad seasonal wings, four-season energy ribbons sweep around feet torso and crown, airborne reaping stance",
+            "majestic jade-and-amber regalia, growth-ring breastplate, sweeping blossom pauldrons and cascading mantle; monumental prismatic sickles and one jade thorn-chain dominate the foreground; four luxuriant seasonal wings and segmented orchard crown, dense four-season energy ribbons interweave around the full silhouette",
+            "retain Legendary armor mantle sickles chain and crown; colossal prismatic sickles with layered thorn guards and one sweeping chain; four triple-tier botanical wings frame an immense orchard diadem, asymmetric living boughs and engraved growth rings; vast four-season energy ribbons spiral from the blades around feet torso and crown, interwoven pink petals jade leaves amber husks and white rime, commanding airborne harvest strike",
         ),
         icons=(
             ("Passive", "Turning Season", "one triangular growth-ring medallion with three distinct sectors: jade sprout, pink blossom and amber grain head, a white edge marking the return"),
@@ -126,9 +126,11 @@ def cutout(design, subject, portrait=False, evolution=1):
         negative += ", feather wings, extra characters, mouth, nose, eyebrows, lumpy armor"
     else:
         negative += f", {ICON_NO}"
-    if portrait and design["slug"] == "solenne" and evolution == 6:
+    if portrait and design["slug"] in ("solenne", "myrthen"):
         negative = negative.replace(", aura, backsplash", "")
-        negative += ", red, yellow, amber, fire, flames"
+        if design["slug"] == "solenne":
+            negative += ", red, yellow, amber"
+        negative += ", fire, flames"
     prompt = (f"{head}. {subject}. Palette only {design['palette']}; prismatic means these colors only. "
               f"{SHARP}. {MARGIN}. Plain solid unlit {design['key']} background ({design['hex']}) "
               "fills every opening, no scenery or cast-shadow backdrop. --ar "
@@ -150,6 +152,22 @@ def blocks():
                        f"{signature}. {ARMOR_RULE}; "
                        + (f"{CRAFT}; " if index >= 3 else "")
                        + "body one third of canvas height, complete weapon and powers readable, plain background without a separate effect backdrop")
+            if slug == "solenne" and index < 6:
+                subject = (
+                    f"{form}. {design['identity']}; wingless. "
+                    "Spectral energy strictly silver lilac and rose-ivory; gold only on metal trim, never in the energy. "
+                    "Bell and crescent motif clearly visible, both hands control chains; serene protective resolve. "
+                    "Body one third of canvas height; sharp opaque energy, distinct layers, face hands and bell unobscured"
+                )
+            elif slug == "myrthen":
+                subject = (
+                    f"{form}. {design['identity']}; {design['clothing']}. "
+                    "Four-season energy strictly pink jade amber and white, never blue ice or fire. "
+                    + ("Wing materials: pink petals, jade leaves, amber husks, white rime-coated bare twigs; no feather or glass wings. "
+                       if index >= 3 else "")
+                    + "Body one third of canvas height; razor-defined opaque ribbons, "
+                    "lustrous beveled armor, face hands both sickle grips and complete chain unobscured"
+                )
             if slug == "solenne" and index == 6:
                 subject = (
                     "A colossal lotus-bell shield on two visible chains commands the foreground, "
@@ -210,7 +228,9 @@ def document():
         "- Defining motifs persist in every form. Elemental energy grows from a visible",
         "  base-form trace into increasingly elaborate swirling powers, reaching an",
         "  enveloping late-form crescendo without hiding identity or crossing margins.",
-        "  This pass changes only Solenne's Omnic prompt; other forms are not rewritten.",
+        "  Solenne's earlier forms now lead into her approved Omnic; Myrthen's full",
+        "  line follows the same weapon-led, identity-specific power crescendo.",
+        "  Caldrex and Solenne Omnic are unchanged by this evolution-line pass.",
         "- Caldrex: square wingless forge silhouette, ash-white squared hair, ochre cheek stripe,",
         "  black coat/orange sash, brass gate gauntlets and attached opaque heat loops.",
         "- Solenne: wingless off-axis hoop silhouette, black bob/side braid, gold temple bars,",

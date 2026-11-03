@@ -37,7 +37,7 @@ class PhaseOneWarArtTests(unittest.TestCase):
                     self.assertIn("empty15 percent border", prompt)
                     self.assertIn("Plain solid unlit", prompt)
                     self.assertIn("sharp crisp focus", prompt)
-                    if name != "solenne-6.png":
+                    if not name.startswith(("solenne-", "myrthen-")) or "--ar 4:3" not in prompt:
                         self.assertIn("backsplash", prompt)
                     design = next(d for d in DESIGNS if d["slug"] in name)
                     negatives = prompt.split(" --no ", 1)[1].split(" --sref", 1)[0].split(", ")
@@ -91,6 +91,28 @@ class PhaseOneWarArtTests(unittest.TestCase):
         for color in ("red", "orange", "yellow", "amber"):
             self.assertIn(color, negatives)
         self.assertNotIn("warm colors", negatives)
+
+    def test_reworked_lines_keep_weapons_motifs_and_power_progression(self):
+        portraits = {name: p for name, _, p in blocks() if "--ar 4:3" in p}
+        for stage in range(1, 7):
+            moon = portraits[f"solenne-{stage}.png"]
+            harvest = portraits[f"myrthen-{stage}.png"]
+            self.assertIn("spectral moonlight ribbon", moon)
+            self.assertIn("crescent", moon.lower())
+            self.assertIn("bell shield", moon)
+            self.assertIn("chains", moon)
+            self.assertIn("never in the energy", moon)
+            self.assertIn("four-season energy", harvest.lower())
+            self.assertIn("sickles", harvest)
+            self.assertIn("chain", harvest)
+            for material in ("pink", "jade", "amber", "white"):
+                self.assertIn(material, harvest)
+            if stage >= 3:
+                self.assertIn("white rime-coated bare twigs", harvest)
+        self.assertIn("no wings yet", portraits["myrthen-1.png"])
+        self.assertIn("full silhouette", portraits["solenne-5.png"])
+        self.assertIn("full silhouette", portraits["myrthen-5.png"])
+        self.assertIn("triple-tier botanical wings", portraits["myrthen-6.png"])
 
 
 if __name__ == "__main__":

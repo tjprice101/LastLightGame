@@ -1,5 +1,23 @@
 # Current state and handoff
 
+## Solenne earlier forms and Myrthen full-line revision (2026-11-03)
+
+- Owner accepts Solenne Omnic and requests earlier forms plus the other
+  non-Caldrex character (Myrthen). Scope:11 portraits, no gameplay.
+- Solenne1-5 now develop chained bell/crescent/strict spectral moonlight from
+  modest ankle trace to imposing full-silhouette resonance, leading to accepted
+  Omnic unchanged. Myrthen1-6 keep twin linked sickles/four-season motifs at
+  every stage; energy rises from blade traces to vast seasonal helices,
+  botanical wings and luxurious orchard regalia. Modest bases stay modest.
+- Same renderer, palette, evolution references/settings and full margins.
+  Caldrex, Solenne Omnic and all non-portrait prompts unchanged.
+- Reproduce `python tools/build_phase1_war_art.py`; validate focused prompt
+  tests and compare45 blocks against prior revision for exactly11 intended edits.
+  All5 tests passed; exact block comparison confirms only Solenne1-5 and
+  Myrthen1-6 changed, other34 identical, all reference URLs/weights preserved.
+  `git diff --check` passed.
+  Story remains paused; no delivered-art or authority changes.
+
 ## Solenne Omnic weapon and guardian continuity (2026-11-03)
 
 - Owner requests slightly stronger weapon emphasis and continuity with her

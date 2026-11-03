@@ -5,6 +5,12 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Evolution-line application (2026-11-03): owner accepts current Solenne Omnic
+and requests the same identity/weapon-led energy progression in her earlier
+forms and Myrthen's full line, not Caldrex. Revise Solenne1-5 and Myrthen1-6
+only; preserve approved Omnic Solenne, renderer, palette, reference/settings
+and margins. New wording does not authorize gameplay or actual-art intake.
+
 Persistent character motif / escalating energy (2026-11-03): owner accepts
 current character direction and requires each form to visibly retain what
 embodies that character. Powers grow progressively more extreme, swirling

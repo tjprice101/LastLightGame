@@ -8,6 +8,31 @@ numbers remain pending; proposed ability labels are not runtime definitions.
 
 ## Current art revision and remaining work (2026-11-03)
 
+### Evolution-line pass after Solenne Omnic acceptance
+
+Owner accepted the weapon-led Solenne Omnic design and requests its principles
+across her earlier forms and Myrthen's full line. Only11 portraits change:
+Solenne Common-Legendary and Myrthen Common-Omnic. Caldrex, Solenne Omnic,
+all ability/Master/scenery prompts and runtime content remain unchanged.
+
+- Solenne always has her chained bell shield, crescent motif and silver/
+  lilac/rose-ivory spectral moonlight. A small ankle ribbon grows into paired
+  coils, torso/shoulder spirals, sweeping crown-height ribbons and a dense
+  full-silhouette resonance weave. Bell, robes and protective guard become
+  increasingly luxurious and imposing, retaining her patient Tank identity.
+- Myrthen always has two linked sickles and four-season traces, even before
+  wings emerge. Pink petals, jade leaves, amber husks and white rime develop
+  from blade-side curls into calf coils, torso braids, full-body ribbons and
+  Omnic blade-sourced helices. Distinct botanical materials, thorn guards,
+  orchard diadem and a commanding harvest strike preserve her Attacker identity.
+- Same established renderer/anatomy, exact evolution references at150, starter
+  Niji/settings and complete15% borders. Energy is opaque and sharply layered;
+  no fire vocabulary or blue frost. Gold is Solenne trim only, never her energy.
+  Drop generic aura/backsplash negatives locally so authored powers can surround
+  the figure; retain no-bloom/no-haze and key-background constraints.
+- New visual wording remains subject to actual generated-image review;
+  no artwork delivery, kit tuning or gameplay implementation implied.
+
 Solenne Omnic weapon/role refinement: foreground her colossal lotus-bell
 shield with readable armored petals, engraved rim, clapper and two taut chain
 grips. Moonlight ribbons originate at its ringing rim. Her forward-braced
