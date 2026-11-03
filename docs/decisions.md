@@ -5,6 +5,15 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Complete Phase1 kit drafting (2026-11-03): owner requests a new standalone
+document fully specifying Caldrex/Solenne/Myrthen and their nine Masters.
+Owner explicitly chooses Circle of Repose as Solenne's Stillness generator
+instead of adding the unavailable Defense action. Keep the four-action
+registry. [Full numerical proposal](phase-1-war-kit-specification.md) defines
+base stats, costs, final potency, bounded loops, sources/clocks, Master
+packages and validation cases; numbers are unimplemented and not implicitly
+approved or encounter-tested. No Story resumption or reward-system change.
+
 Character-first wardrobe (2026-11-03): owner clarifies outfits need not be
 armor/prismatic armor. Design nuanced costumes, materials and evolution
 progression from the character's feel/power/identity; retain the shared

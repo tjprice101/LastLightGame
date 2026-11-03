@@ -1,5 +1,12 @@
 # Elemental War
 
+## Pending Phase1 kit specification (2026-11-03)
+
+[Caldrex, Solenne and Myrthen](phase-1-war-kit-specification.md) now have a
+complete design proposal covering exact native kits and nine personal Masters.
+No new characters/trials/rewards are implemented by this document. Current
+Nerithe/Orvella/Vaelor activities and guaranteed recruitment remain unchanged.
+
 **D-428 Prismatica override:** per-boss Prismatica now grows linearly from
 1,500-2,500 at Stage1 to30,000-45,000 at10, with no currency boss multiplier.
 Supersedes earlier Prismatica curves/5x statements below. Null-Prismatica,

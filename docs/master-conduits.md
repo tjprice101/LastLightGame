@@ -1,5 +1,13 @@
 # Character Master Conduits (D-201)
 
+## Pending Phase1 alternatives (design only, 2026-11-03)
+
+[Nine fully specified Master proposals](phase-1-war-kit-specification.md#6-nine-fixed-omnic-master-conduits)
+cover Caldrex, Solenne and Myrthen with exact personal stat packages,
+native transformations and bounded triggered effects. They are **not** in the
+live57-Master catalog or chest selector yet. Proposed expansion would yield66;
+no drop rates, ownership, upgrades or current effects change in this draft.
+
 ## Delivered Calamitic Master artwork (D-448)
 
 All57 current Masters now have installed artwork: the original48 plus three

@@ -1,5 +1,31 @@
 # Current state and handoff
 
+## Complete Phase1 kits and nine Master proposals (2026-11-03)
+
+- Requested deliverable: `docs/phase-1-war-kit-specification.md`, new standalone
+  complete design, not runtime implementation. Contains base stats, role/stat
+  semantics, final coefficients, action costs/recovery, resources/Mark/Burn/
+  Weaken/taunt clocks, exact nine Master stats/effects, examples and test matrix.
+- Owner confirms Circle of Repose builds Stillness; current registry has only
+  four actions, so supersede earlier Defense-based setup, do not add Defense.
+- Current tuning references: native ordinary direct1.6, Last Flare damage3/
+  support1.5; proposed values are final, never multiply those factors again.
+  Ordinary 25/40 and Last Flare100 costs use shared Efficiency rules. No
+  bypass of recovery, native critical/mitigation/Defense-ignore conventions.
+- Heat cap3/gain1 per enemy phase (cap4 Master); Stillness cap4/gain2 per
+  Circle, one per enemy hit or all on Last Flare; Myrthen Sprout/Bloom/Harvest,
+  one transition per manual ordinary skill, not per target.
+- Nine fixed Omnic Masters remain proposals outside live57 catalog; would
+  bring it to66. No new chest drop rates, grants, automatic equips or upgrades.
+  Generated effects have explicit non-recursion and phase/round/lineage bounds.
+- Update outline/index/Elemental War/Master docs to link the proposal.
+  Numerical review, implementation, actual encounter tests and all45 artwork
+  deliveries remain pending. Story remains paused; no authority changes.
+- Documentation validation:13 coefficient/example arithmetic checks passed;
+  all9 Master names match the art generator and all deliverable local links
+  resolve. `git diff --check` passed. No runtime tests/build needed for this
+  documentation-only revision; no balance/clear-rate claim made.
+
 ## Character-first wardrobe: Solenne and Myrthen (2026-11-03)
 
 - Owner requests nuanced identity-driven outfits rather than generic armor/

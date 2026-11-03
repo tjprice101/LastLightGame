@@ -3,8 +3,15 @@
 **Status: APPROVED outlines (D-437). Section 1 implemented:** intrinsic role
 perks and Element Resonance. Characters and Conduits remain unimplemented.
 The [45-prompt visual proposal](../Art/characters/Elemental%20War%20Phase%201.md)
-is now authored; no images delivered/generated/intaken. Exact kit
-numbers remain pending; proposed ability labels are not runtime definitions.
+is now authored; no images delivered/generated/intaken.
+[Complete kit and nine-Master specification](phase-1-war-kit-specification.md)
+now proposes exact numbers, timing and interactions. These are unimplemented,
+not balance-approved runtime definitions.
+
+**Kit clarification (2026-11-03):** owner chooses Circle of Repose to build
+Solenne's Stillness because the current action registry has no Defense action.
+This supersedes Defense-based setup in historical outlines below; keep four
+actions. The new specification owns the current proposed complete kit.
 
 ## Current art revision and remaining work (2026-11-03)
 
@@ -154,8 +161,10 @@ ordinary Conduit counts or acquisition rarities are invented.
 
 - Review proposed form titles, visual details, four ability labels per bearer
   and nine Master machine names; preserve approved gameplay outline identities.
-- Specify exact stats, ability/passive coefficients, costs/cooldowns,
-  Heat/Stillness/season clocks and guards, mark interactions and Master effects.
+- Review the [fully specified kit/Master proposal](phase-1-war-kit-specification.md):
+  stats, ability coefficients, costs/cooldowns, resource clocks/guards,
+  Mark interactions and all nine fixed Master packages are now drafted.
+  Potency and combat balance remain untested, not implicitly approved.
 - Implement three characters, trials, guaranteed first recruitment/duplicate
   handling and nine Masters through shared content, combat and authority paths.
 - Produce/deliver45 images from the prompts; review actual pixels for identity,
@@ -234,7 +243,7 @@ other character uses.
 - **Weapon:** a large bronze-and-pearl temple bell carried on chains, used as
   her shield; she rings it to call enemies to her. (Distinct from Ozriel's
   tower shield and halberd.)
-- **Play pattern:** rewards patience. Using Defense builds Stillness (max 4);
+- **Play pattern:** rewards patience. Circle of Repose builds Stillness (max 4);
   while she has Stillness, hits against her are reduced and spend it. Her
   Skills ring the bell to pull enemy attacks onto her, shield the whole squad
   and Weaken enemies. Her Last Flare cashes in all Stillness for squad shields
@@ -258,8 +267,10 @@ other character uses.
 - **Master Conduits:** stronger Harvest that keeps one season; the mark jumps
   to a new enemy when the marked enemy dies; kills heal the squad and grant Gauge.
 
-Exact numbers remain unimplemented. The prompt pack proposes four ability
-labels per character for review; they are not approved numerical kit specs.
+Exact numbers and nine complete Master packages are proposed in the
+[standalone specification](phase-1-war-kit-specification.md), not implemented.
+The art pack's ability labels now have corresponding concrete proposed rules;
+they are not approved or measured combat balance.
 
 ## Element Resonance (replaces Kinship)
 
