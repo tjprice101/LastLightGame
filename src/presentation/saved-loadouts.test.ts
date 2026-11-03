@@ -39,14 +39,56 @@ describe('saved loadout controls', () => {
     const saved = account();
     document.body.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', saved);
     expect(document.querySelectorAll('[data-config-index]')).toHaveLength(3);
-    expect(document.querySelector('[data-config-index="0"] h4')?.textContent).toContain('Matches current');
+    expect(document.querySelector('[data-config-index="0"] .saved-loadout-match')?.textContent).toBe('Matches current');
     expect(document.querySelector<HTMLButtonElement>('[data-config-index="1"] [data-saved-loadout-action="equipConduitConfiguration"]')?.disabled).toBe(true);
+    document.querySelector<HTMLDetailsElement>('.saved-configuration-equipment')!.open = true;
     const art = document.querySelector('[data-loadout-slot="0"] img');
     saved.conduitEquipment!.ember = Array<null>(8).fill(null);
     expect(refreshConduitLoadout(document.body, 'ember', 'Infernis', 'infernic', saved)).toBe(true);
-    expect(document.querySelector('[data-config-index="0"] h4')?.textContent).not.toContain('Matches current');
+    expect(document.querySelector('[data-config-index="0"] .saved-loadout-match')).toBeNull();
     expect(saved.conduitConfigurations?.ember[0]?.conduits[0]).toBe('vigil-core');
+    expect(document.querySelector<HTMLDetailsElement>('.saved-configuration-equipment')?.open).toBe(true);
     expect(art).toBeTruthy();
+  });
+  it('keeps save controls before the visual squad and places all entries inside the Team scroll surface', () => {
+    const saved = account(), before = JSON.stringify(saved);
+    document.body.innerHTML = squadLoadoutsPanel(saved);
+    const scroll = document.querySelector('.saved-loadout-scroll')!;
+    expect(scroll.classList.contains('ref-scroll')).toBe(true);
+    expect(scroll.querySelectorAll('[data-saved-entry]')).toHaveLength(2);
+    const current = scroll.querySelector('[data-saved-id=""]')!;
+    expect(current.querySelector('[data-saved-name]')!.compareDocumentPosition(current.querySelector('.saved-loadout-members')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(current.querySelectorAll('.saved-loadout-slots li')).toHaveLength(8);
+    expect(current.querySelectorAll('.saved-loadout-slots .is-empty')).toHaveLength(7);
+    expect(current.querySelector('.saved-loadout-slot-art .conduit-icon')).not.toBeNull();
+    expect(current.querySelector('.saved-loadout-slots li')?.textContent).toContain('Slot 1Vigil Core');
+    expect(current.querySelector('.saved-loadout-master')?.textContent).toContain('MasterNone equipped');
+    expect(document.querySelector('.saved-loadout-match')?.textContent).toBe('Matches current');
+    expect(JSON.stringify(saved)).toBe(before);
+  });
+  it('shows the saved Master and current upgrade art without claiming those upgrades are part of the preset', () => {
+    const saved = account();
+    saved.conduitUpgrades = { 'vigil-core': 3 };
+    saved.squadLoadouts![0].members[0].master = 'master-ember-1';
+    document.body.innerHTML = squadLoadoutsPanel(saved);
+    const card = document.querySelector(`[data-saved-id="${id}"]`)!;
+    expect(card.querySelector('[data-conduit-upgrade="3"]')).not.toBeNull();
+    expect(card.querySelector('.saved-loadout-master img.master-art')).not.toBeNull();
+    expect(card.querySelector('.saved-loadout-match')).toBeNull();
+  });
+  it('distinguishes empty configurations from saved snapshots and keeps the editor above inspectable equipment', () => {
+    const saved = account(), before = JSON.stringify(saved);
+    document.body.innerHTML = conduitConfigurationsPanel(saved, 'ember');
+    expect(document.querySelector('.ref-panel-heading')?.textContent).toContain('1 / 3 saved');
+    expect(document.querySelectorAll('.saved-configuration-empty')).toHaveLength(2);
+    const first = document.querySelector('[data-config-index="0"]')!;
+    const details = first.querySelector('details')!;
+    expect(details.open).toBe(false);
+    expect(details.querySelector('summary')?.textContent).toContain('1 / 8 Conduits');
+    expect(details.querySelectorAll('.saved-loadout-slots li')).toHaveLength(8);
+    expect(first.querySelector('[data-saved-loadout-action]')!.compareDocumentPosition(details) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    details.open = true;
+    expect(JSON.stringify(saved)).toBe(before);
   });
   it('disables a stale captured template explicitly without substituting a squad', () => {
     const saved = account(), copy = createCreatureCopy('infusion:treasury:0');

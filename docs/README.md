@@ -1,5 +1,9 @@
 # Documentation hub
 
+**D-449:** [Loadout and configuration UI polish](menus-and-inventory.md#loadout-and-configuration-presentation-d-449):
+visual squad/equipment cards, accessible desktop scrolling and clearer compact
+character configuration cards with inspectable saved equipment.
+
 **D-448:** [All nine Calamitic Master images installed](art-workflow.md#delivered-calamitic-masters-d-448):
 archived originals, reviewed transparent cutouts and shared revisioned artwork
 across equipment, Inventory, Collections and chest rewards.

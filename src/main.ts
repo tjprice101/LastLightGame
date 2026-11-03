@@ -2134,9 +2134,12 @@ app.addEventListener('click', async event => {
         : operation.kind.startsWith('delete') ? 'deleted' : 'saved'}`;
     if (journey.screen === 'menu' && menuPage === previousPage && teamView === previousView) {
       const scroll = window.scrollY;
+      const loadoutScroll = app.querySelector('.saved-loadout-scroll')?.scrollTop ?? 0;
       if ('character' in operation) refreshLoadout(operation.character);
       else renderMenu();
       window.scrollTo({ top: scroll });
+      const loadoutList = app.querySelector('.saved-loadout-scroll');
+      if (loadoutList) loadoutList.scrollTop = loadoutScroll;
       const entry = 'character' in operation
         ? app.querySelector<HTMLElement>(`[data-config-character="${operation.character}"][data-config-index="${operation.index}"]`)
         : app.querySelector<HTMLElement>(`[data-saved-id="${operation.kind === 'deleteSquadLoadout' ? '' : operation.id}"]`);

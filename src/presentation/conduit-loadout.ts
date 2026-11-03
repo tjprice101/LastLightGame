@@ -382,7 +382,12 @@ export function conduitLoadout(owner: string, name: string, element: ElementId, 
 export function refreshConduitLoadout(host: HTMLElement, owner: string, name: string, element: ElementId, account: Account | null): boolean {
   const current = Array.from(host.querySelectorAll<HTMLElement>('.conduit-loadout')).find(entry => entry.dataset.characterEquipment === owner);
   if (!current) return false;
+  const expandedConfigurations = Array.from(current.querySelectorAll<HTMLDetailsElement>('.saved-configuration-equipment[open]'))
+    .map(details => details.closest<HTMLElement>('[data-config-index]')?.dataset.configIndex);
   morphElement(current, conduitLoadout(owner, name, element, account));
+  current.querySelectorAll<HTMLDetailsElement>('.saved-configuration-equipment').forEach(details => {
+    details.open = expandedConfigurations.includes(details.closest<HTMLElement>('[data-config-index]')?.dataset.configIndex);
+  });
   applyLoadoutView(host);
   return true;
 }

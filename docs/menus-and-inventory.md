@@ -1,5 +1,37 @@
 # Menus and inventory
 
+## Loadout and configuration presentation (D-449)
+
+Team Loadouts uses a contained desktop scroll surface so long squads and saved
+lists cannot clip the name or action controls. The new-loadout editor precedes
+the current squad. Responsive member cards show the full portrait, leader/member
+position, element and level, eight numbered ordinary slots with artwork/names,
+and a separate Master row. Empty slots remain explicit. Cards widen or stack
+instead of squeezing long Conduit names into the previous dense inline list.
+Saved entries retain clear matching/unavailable states and all existing actions.
+The list retains its scroll position after a saved operation; mobile uses normal
+page scrolling.
+
+Character Conduit configurations have three numbered cards, a saved-slot count,
+separate Empty slot/Saved/Matches current states, naming fields and aligned
+Save/Overwrite, Equip and Rename controls. Unsaved slots explain their empty
+state; saved equipment is inspectable through a keyboard-accessible native
+disclosure, rather than permanently pushing the actual equipment editor down
+the page. Expanded previews survive in-place equipment refreshes. Inputs and
+action buttons use modest rounded corners, not elongated oval framing.
+
+This is presentation only: snapshot contents, validation, atomic saves, overwrite
+confirmations and post-save sparkle/celebration behavior are unchanged. No effect
+runs for an equipment-preview disclosure. Shared success effects remain finite,
+pointer-transparent and static under Reduce motion.
+
+Validate with `npx vitest run src/presentation/saved-loadouts.test.ts
+src/presentation/conduit-loadout.test.ts src/presentation/rarity-feedback.test.ts
+--maxWorkers=3 --testTimeout=200000` and `npm run build`. Browser-check populated,
+empty and matching cards, expanded previews, desktop scrolling, 44px controls
+and no horizontal overflow at1800/1180/780/390/320px. Sample the existing success
+feedback over time and under explicit Reduce motion, not only in screenshots.
+
 ## Ability card alignment and copy (D-445)
 
 Every character's Skills cards stretch the copy across the available grid

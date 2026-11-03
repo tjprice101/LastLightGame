@@ -1,5 +1,30 @@
 # Current state and handoff
 
+## Loadout and character configuration polish (D-449)
+
+- Team Loadouts replaces dense equipment paragraphs with responsive member
+  cards, exact named/artwork slots and a separate Master row. Name/Save precede
+  the squad; a real desktop scroll surface keeps long lists accessible and
+  preserves scroll across saved operations. Mobile remains page-scrolling.
+- Character configurations show numbered cards, explicit empty/saved/matching
+  states, a saved-slot count, aligned Save/Overwrite/Equip/Rename controls and
+  keyboard-accessible saved-equipment previews. Expanded previews survive
+  in-place refreshes. Modest input/button corners override oval framing.
+- Save schemas, transactions, ownership, frozen battles and post-save-only
+  shared sparkle/celebration are unchanged. No authority deployment required.
+- Validation:58 tests passed via `npx vitest run
+  src/presentation/saved-loadouts.test.ts src/presentation/conduit-loadout.test.ts
+  src/presentation/rarity-feedback.test.ts --maxWorkers=3 --testTimeout=200000`.
+  `npm run build` passed with the existing chunk-size advisory.
+- Browser fixtures at1800/1180/780/390/320px had no horizontal overflow and
+  controls at least44px; desktop lists scroll and saved equipment remains
+  inspectable on phones. All9 inspected configuration images decoded.
+  Feedback ring transforms advanced between timed samples, disappeared after
+  completion, stayed pointer-transparent, and had zero animations under
+  explicit Reduce motion. No account grants or save modifications in fixtures.
+- Publish through full CI/Pages and verify the hosted version plus shipped
+  configuration/loadout markup and styles.
+
 ## Delivered Calamitic Master artwork (D-448)
 
 - All nine deliveries matched: three each for Ozriel, Ilvaris and Kaelith;
