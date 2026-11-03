@@ -1,8 +1,57 @@
 # Phase 1 proposal: new Elemental War Element-Bearers and role perks
 
 **Status: APPROVED outlines (D-437). Section 1 implemented:** intrinsic role
-perks and Element Resonance. Characters, Conduits and art remain pending. Exact kit
-numbers and ability names are drafted with the character section.
+perks and Element Resonance. Characters and Conduits remain unimplemented.
+The [45-prompt visual proposal](../Art/characters/Elemental%20War%20Phase%201.md)
+is now authored; no images delivered/generated/intaken. Exact kit
+numbers remain pending; proposed ability labels are not runtime definitions.
+
+## Current art revision and remaining work (2026-11-03)
+
+Owner permits any character design provided it is unique, and requests this
+pass stay within art/documentation: preserve names, roles and approved kit
+concepts. Story remains paused. These new visual specifics are proposals for
+review, not approval of tuned kits or gameplay implementation.
+
+The pack replaces repeated cathedral/temple/feather-wing escalation with:
+
+- **Caldrex:** wingless square forge silhouette, squared ash-white haircut and
+  shaved sides, ochre cheek stripe, black quilted coat/orange sash, brass gate
+  gauntlets, shoulder exhaust shutters and opaque attached heat loops.
+- **Solenne:** wingless off-axis moon-gate hoops on a physical shoulder yoke,
+  black bob/long side braid, gold temple-paint bars, black/lilac robes, flat
+  silver/rose-ivory lamellae and a chained bell shield. Hoops are worn regalia,
+  not a floating building. Her Conduits are engines, not enlarged bells.
+- **Myrthen:** jagged brown ponytail/side braid, pink cheek slash, split hunting
+  coat and linked sickles; four distinct botanical fans (pink blossom petals,
+  jade leaves, amber husks, white rime twigs), never generic feather/glass wings.
+  Their four-season visual identity does not alter her approved three-step kit.
+
+New form titles use individual phrases, not a universal Eternal/Seraph ladder.
+Prefix/name display compatibility stays unchanged; no existing character is
+renamed. Face paint is a narrow owner-requested graphic-decoration exception
+to the historical no-facial-marks rule, not added realistic facial anatomy.
+All nine proposed Omnic Masters are integrated luxurious machines in their
+bearer's palette, following the joint Let/Rise foundation. No additional
+ordinary Conduit counts or acquisition rarities are invented.
+
+### Remaining checklist
+
+- Review proposed form titles, visual details, four ability labels per bearer
+  and nine Master machine names; preserve approved gameplay outline identities.
+- Specify exact stats, ability/passive coefficients, costs/cooldowns,
+  Heat/Stillness/season clocks and guards, mark interactions and Master effects.
+- Implement three characters, trials, guaranteed first recruitment/duplicate
+  handling and nine Masters through shared content, combat and authority paths.
+- Produce/deliver45 images from the prompts; review actual pixels for identity,
+  sharpness, complete borders, materials, key gaps and reference availability.
+  Archive originals, intake cutouts offline and wire shared revisioned URLs.
+- Validate ordinary non-Calamitic progression, same-element squads, frozen
+  snapshots, saves/rewards/recruitment, all kit/Conduit surfaces and authority;
+  run scoped tests, full suite/build and deploy matching runtime when authorized.
+
+Reproduce: `python tools/build_phase1_war_art.py`.
+Validate: `python -m unittest discover -s tools -p test_phase1_war_art.py`.
 
 ## Confirmed by the owner
 
@@ -46,9 +95,10 @@ other character uses.
 
 ### Caldrex, Kiln Warden (Infernic Tank)
 
-- **Look:** a walking forge-cathedral. Obsidian and brass plate with
-  molten-glass window panels, hanging forge-chain mantle, back-mounted chimney
-  spires that grow into a full furnace cathedral by Omnic. Palette: obsidian,
+- **Look (revised visual proposal):** wingless wearable forge, obsidian and
+  brass beveled plates, flat orange pressure insets, forge-chain mantle and
+  shoulder exhaust shutters growing into a dense articulated horseshoe.
+  No detached cathedral or building. Palette: obsidian,
   brass, molten orange, white-hot gold, ash white.
 - **Weapon:** two colossal forge gauntlets that lock together into a
   furnace-gate shield.
@@ -62,10 +112,10 @@ other character uses.
 
 ### Solenne, Moonbell Abbess (Tranquilitic Tank)
 
-- **Look:** a meditative temple guardian. Lotus-petal armor in moon silver and
-  rose pearl, floating circular moon-gate halos, a mantle of layered cloud
-  ribbons; by Omnic a full floating temple of moon-gates and lotus tiers
-  behind her. Palette: moon silver, lilac, rose pearl, ink black, gold leaf.
+- **Look (revised visual proposal):** meditative wingless bell guardian.
+  Flat silver and rose-ivory lamellae over black/lilac robes; offset moon-gate
+  hoops mounted to a shoulder yoke, articulated gold hinges and cloth ribbons.
+  No floating temple. Palette: moon silver, lilac, rose ivory, ink black, gold.
 - **Weapon:** a large bronze-and-pearl temple bell carried on chains, used as
   her shield; she rings it to call enemies to her. (Distinct from Ozriel's
   tower shield and halberd.)
@@ -92,7 +142,8 @@ other character uses.
 - **Master Conduits:** stronger Harvest that keeps one season; the mark jumps
   to a new enemy when the marked enemy dies; kills heal the squad and grant Gauge.
 
-Exact numbers and ability names are drafted after outline approval.
+Exact numbers remain unimplemented. The prompt pack proposes four ability
+labels per character for review; they are not approved numerical kit specs.
 
 ## Element Resonance (replaces Kinship)
 
@@ -132,7 +183,8 @@ battle snapshot uses the same values.
 ## Art (prompt-only until delivery)
 
 Per character: 6 portraits, 4 ability icons, 3 Master Conduit icons. Per
-trial: 3:1 header and 16:9 arena. 45 prompts total, reproducible tool and tests.
+trial: 3:1 header and 16:9 arena. 45 prompts total, now authored in the linked
+pack with reproducible tool/tests. Universal Normal Attack/Defense art is reused.
 
 ## Owner answers
 

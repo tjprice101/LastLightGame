@@ -1,5 +1,29 @@
 # Current state and handoff
 
+## New Elemental War art/documentation pass (2026-11-03)
+
+- Owner requests missing-work status and a complete art pass using accumulated
+  feedback; any character design is acceptable if unique. Preserve the three
+  approved names/roles/kit outlines; no implementation in this pass.
+- `Art/characters/Elemental War Phase 1.md`:45 reproducible proposed prompts,
+  6 portraits +4 ability icons +3 Omnic Masters +header/arena per bearer.
+  Caldrex is wingless forge/gauntlets; Solenne is wingless hoop-yoke/bell;
+  Myrthen uses four botanical fan materials/linked sickles. Distinct hair,
+  graphic face paint and clothing, individual titles without repeated ranks.
+- Reuse exact guide portrait references at standard150, concise sharp
+  cutouts with15% borders and no aura/backsplash, figure-free icons and
+  luxury integrated mechanical Conduits. No actual images or runtime URLs.
+- Plan now has an explicit remaining checklist: exact kit/Master tuning,
+  character/trial/recruitment/authority wiring,45 delivered/reviewed images,
+  intake, validation/balance and matching runtime publication.
+- Story remains paused. No account/combat/gear/acquisition changes.
+- Reproduce `python tools/build_phase1_war_art.py`; validate
+  `python -m unittest discover -s tools -p test_phase1_war_art.py`.
+  All3 tests passed:45 unique filenames/exact reproduction,18/21/3/3
+  portrait/icon/header/arena shape,260-word positive prompt cap, reference
+  scope, margins, key-color exemption and distinct mechanical Masters.
+  `git diff --check` passed. No runtime build required for this art/docs pass.
+
 ## Story paused: major future benchmark (2026-11-03)
 
 Owner explicitly pauses Story here for a later major milestone. Do not resume

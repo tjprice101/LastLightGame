@@ -1,5 +1,15 @@
 # Last Light — Character Art Midjourney Prompt Guide
 
+**New Elemental War proposals (2026-11-03):**
+[Caldrex, Solenne and Myrthen](../characters/Elemental%20War%20Phase%201.md)
+use unique title phrases rather than a universal rank ladder, two wingless
+silhouettes and one botanical-wing design. Graphic cheek/temple paint is a
+narrow owner-requested decoration exception to the no-facial-marks rule below;
+eyes remain the only anatomical facial features. Other packs stay unchanged.
+Different wing materials or no wings are valid; do not impose shared glass
+feathers on these characters. Retain the standard150 mapped portrait references,
+full15% margins and figure-free icons; new visual details remain proposals.
+
 **Palette control (D-159):** every portrait retains its exact reference URL at150, with identity-specific subject palette locks and unwanted-color exclusions. Prismatic/opal describes faceting inside that palette, not extra hues. Character-specific icons/weapons share the palette without reference flags. Solid keys, scenery and installed images unchanged.
 
 **Reference scope (D-155):** only Element-Bearer character portraits use `--sref`

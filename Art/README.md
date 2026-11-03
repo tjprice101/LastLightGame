@@ -1,5 +1,13 @@
 # Art library
 
+## New Elemental War visual proposals
+
+[Caldrex / Solenne / Myrthen](characters/Elemental%20War%20Phase%201.md):
+45 prompts (18 portraits,12 ability icons,9 mechanical Omnic Masters,
+3 headers,3 arenas). Distinct palettes/hair/paint/clothing/materials, two
+wingless silhouettes and one botanical-wing design. Prompt-only proposals;
+no delivered images or playable characters.
+
 ## Future Story visual development (D-450)
 
 [Chapters2-3 and intermission](story/Chapters%202-3%20Draft.md) contains75

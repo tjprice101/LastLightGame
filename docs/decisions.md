@@ -5,6 +5,15 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Elemental War art clarification (2026-11-03): owner permits any character design
+provided it is unique. This pass preserves Caldrex/Solenne/Myrthen names,
+elements, roles and kit concepts; scope is45 prompts and documentation only.
+Proposed distinct hair/clothing/graphic face paint, wingless and botanical
+silhouettes replace repetitive form ladders. All Masters remain luxurious
+integrated machines, not buildings or instruments. New visual details, titles
+and ability/machine names are review proposals, not tuned-kit approval.
+No gameplay implementation or Story resumption. [Current plan](phase-1-war-characters.md).
+
 Story pause (2026-11-03): owner designates the D-451/D-452 Story baseline as a
 major benchmark to return to later. Preserve approvals and unresolved drafts;
 do not continue Story implementation/drafting or future-art intake until

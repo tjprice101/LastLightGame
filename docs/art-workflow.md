@@ -1,5 +1,22 @@
 # Art and asset workflow
 
+## New Elemental War visual proposals (2026-11-03)
+
+[Caldrex, Solenne and Myrthen](../Art/characters/Elemental%20War%20Phase%201.md)
+have45 proposed prompts, not runtime artwork. Reproduce with
+`python tools/build_phase1_war_art.py`; validate with
+`python -m unittest discover -s tools -p test_phase1_war_art.py`.
+Reuse shared quality clauses, exact evolution references at standard150 and
+luxury mechanical Master foundation; do not copy the Calamitic-only crimson
+palette or its owner-specific400 weight into other character packs.
+Wingless designs and different botanical wing materials are intentional.
+Graphic face paint is an owner-requested exception for these proposals only;
+eyes remain the only anatomical facial features. Form titles need not share
+Eternal/Seraph ranks. Installed art and historical packs are unchanged.
+Late forms increase layered interior detail within15% clear borders, not
+silhouette spread. Ability icons are figure-free; no generated cutout bloom.
+Review imagery/names before intake; follow [remaining work](phase-1-war-characters.md).
+
 ## Legendary, Omnic and Master Conduit art foundation (D-443)
 
 Every future Legendary, Omnic and Master Conduit prompt depicts cosmic, ornate,

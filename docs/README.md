@@ -1,5 +1,11 @@
 # Documentation hub
 
+**New Elemental War art pass (2026-11-03):**
+[Phase1 plan and remaining checklist](phase-1-war-characters.md) and
+[45-prompt visual proposal](../Art/characters/Elemental%20War%20Phase%201.md).
+Role perks implemented; three characters, tuned kits, nine Masters and actual
+artwork remain future work. Story remains explicitly paused.
+
 **D-452:** [Approved story script, core rules and optional replay safeguards](chapters-2-3-design.md)
 now includes the875-NP future-stage budget. Owner requests recording approvals
 and stopping before implementation; D-451 pending-approval status below is historical.
