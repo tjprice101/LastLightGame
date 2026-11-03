@@ -8,6 +8,15 @@ numbers remain pending; proposed ability labels are not runtime definitions.
 
 ## Current art revision and remaining work (2026-11-03)
 
+**Power progression clarification:** owner accepts the character art direction.
+Every form must visibly retain the character's defining motif, while energy
+and powers gradually become much more elaborate, swirling and enveloping.
+Late grandeur comes from that power crescendo as well as luxurious armor.
+Preserve style, identity, palette, margins and readable equipment. This pass
+changes only Solenne Omnic: immense lilac bell-resonance helices spiral around
+feet, torso and crown, with interwoven silver-edged sound rings surrounding
+her regalia and moon-gates. The bell remains visible; other44 prompts unchanged.
+
 **Progression correction:** Infernis and Tizu are the direct style/progression
 reference, not just a renderer phrase. Every evolution gains richer armor,
 more magnificent signature equipment and more elaborate elemental powers;

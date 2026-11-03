@@ -5,6 +5,14 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Persistent character motif / escalating energy (2026-11-03): owner accepts
+current character direction and requires each form to visibly retain what
+embodies that character. Powers grow progressively more extreme, swirling
+around and enveloping the character, especially late evolutions; armor
+escalation alone is insufficient. Preserve style and existing cutout constraints.
+Current authorized prompt edit is Solenne Omnic only, with grand lilac
+bell-resonance helices and silver-edged sound rings. Other prompts/art unchanged.
+
 Evolution grandeur correction (2026-11-03): owner rejects perceived renderer
 drift and overly literal design constraints. Infernis/Tizu are the explicit
 style/progression references; ALL character evolutions become increasingly

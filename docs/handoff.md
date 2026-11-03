@@ -1,5 +1,22 @@
 # Current state and handoff
 
+## Persistent motifs and swirling power crescendo (2026-11-03)
+
+- Owner accepts current character designs; future forms must always visibly
+  retain their defining embodied motif and increasingly emphasize energy/powers
+  swirling around them, culminating in grand enveloping late-form effects.
+  Preserve established renderer, palette, margins and face/equipment readability.
+- Documented in shared prompt guide, art workflow, Phase1 plan and decision log.
+  Solenne Omnic alone changes: immense lilac resonance spirals around feet,
+  torso and crown, interwoven silver-edged sound rings, retained bell/regalia/
+  moon-gates. Other44 prompt blocks and installed artwork remain unchanged.
+- Validate exact45-block reproduction, concise style contracts and Solenne
+  power identity with `python -m unittest discover -s tools -p test_phase1_war_art.py`.
+  All4 tests passed; compared all45 generated blocks against the prior commit:
+  only Solenne Omnic changed, other44 byte-identical as text.
+  `git diff --check` passed.
+  Story remains paused; no gameplay changes.
+
 ## Infernis/Tizu evolution-grandeur correction (2026-11-03)
 
 - Owner says renderer has drifted and rejects literal feature-count escalation.

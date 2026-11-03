@@ -1,5 +1,16 @@
 # Art and asset workflow
 
+**Persistent motif / power crescendo (2026-11-03):** every evolution retains
+the character's defining embodied motif. Powers must visibly build in
+prominence and complexity through the line, culminating in grand swirling,
+enveloping elemental manifestations, not armor detail alone. Preserve the
+existing style, palette, complete margins and readable face/equipment.
+Subject-bound powers may surround the figure; do not interpret "no backsplash"
+as prohibiting authored swirling powers. No generic backdrop burst, glow or
+key spill in cutouts. Verify each delivered form actually contains its motif
+and compare the full line for escalating powers. Only Solenne's Omnic prompt
+is revised now; all other current prompts and installed images stay unchanged.
+
 **Character progression clarification (2026-11-03):** Infernis/Tizu are the
 direct visual foundation for all future character lines. Preserve their shared
 renderer and escalating luxurious armor/weapon/elemental grandeur, not just

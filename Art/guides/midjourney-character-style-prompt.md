@@ -1,5 +1,17 @@
 # Last Light — Character Art Midjourney Prompt Guide
 
+**Persistent identity and escalating powers (2026-11-03):** every image in a
+character's evolution line must visibly retain what embodies that character,
+not merely mention it in a heading. Energy/powers begin as a readable trace
+and become progressively more elaborate, grand and enveloping: swirling
+ribbons, spirals, rings or other character-specific manifestations around the
+body, equipment and silhouette. Late forms require an emphatic power crescendo,
+not just richer armor or extra hardware. Preserve the established renderer,
+palette, face/weapon readability and complete edge clearance. These are
+subject powers, not a generic background burst; cutouts remain opaque,
+non-emissive and keyed, with no generated bloom. Current scoped edit:
+Solenne Omnic only; do not silently rewrite other existing prompts or art.
+
 **Evolution grandeur clarification (2026-11-03):** use Infernis/Tizu as direct
 renderer and progression references. Every character grows grander, more
 luxurious and impeccably crafted through its evolutions: increasingly ornate

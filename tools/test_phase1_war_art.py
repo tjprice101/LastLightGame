@@ -69,6 +69,15 @@ class PhaseOneWarArtTests(unittest.TestCase):
             if not name.startswith("master-caldrex"):
                 self.assertNotIn("crimson", prompt)
 
+    def test_solenne_omnic_enveloping_power_keeps_identity(self):
+        prompt = next(p for name, _, p in blocks() if name == "solenne-6.png")
+        for clause in ("bell-resonance spirals", "feet torso and crown",
+                       "interwoven rising helices", "sound rings envelop",
+                       "without hiding face hands or bell"):
+            self.assertIn(clause, prompt)
+        self.assertIn(RENDERER, prompt)
+        self.assertIn("one bronze-and-rose-ivory temple bell", prompt)
+
 
 if __name__ == "__main__":
     unittest.main()
