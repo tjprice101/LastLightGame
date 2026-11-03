@@ -1,7 +1,26 @@
 # Story polish and Chapters 2-3 design draft
 
-**D-450/D-451: approved story/design foundations, with draft dialogue, puzzle
-details and revised rewards for review. No new gameplay implementation authorized.**
+**D-450/D-451/D-452: approved story foundations, dialogue, core-puzzle rules,
+one-time replay safeguards and reward budget. Owner requests recording approvals
+and stopping before implementation. None of these new systems is live.**
+
+## Final author review (D-452)
+
+The owner approved the six revised papers below, private reflections written
+by Rise before breaking the cores, and a Chapter3 memory showing her writing
+one familiar line. The unnamed party voice is curious but wary, natural and
+brief, not constant riddles. Let's reassuring cryptic note omits worthiness.
+The exact note, memory sequence, nonverbal Rise scene and surviving-fragment
+repair explanation below are approved.
+
+Core rules include an optional full-solution hint without reward penalty,
+Reset board, accessible non-color-only connection/orientation feedback and
+remembered unfinished rotations. Restart is a **one-time optional replay**
+offered to existing players after the rewrite, not a permanent reset feature.
+Preserve earned Codex records and historical rewards independently of replay
+progress. The875-Null-Prismatica future-stage budget and Prismatica quantities
+below are approved, superseding330. **Record and stop before implementation.**
+Schema, migration and encounter balance still require engineering validation.
 
 ## Approval status after the author interview (D-451)
 
@@ -9,7 +28,7 @@ Confirmed: the11 region names and enemy/art identities below are the foundation;
 Nyrasma machines must be predominantly black and ominous. They are new machines
 made by Rise, guarding the approaches to where they believe her soul is located.
 The guiding wisp is genuinely a fragment of Let, but the party does not know.
-Keep a cryptic note from Let; its wording below is a draft. Unsigned papers must
+Keep a cryptic note from Let; its wording below was approved in D-452. Unsigned papers must
 be much vaguer and their author must remain unknown until Chapter3.
 
 The125/75/75 stage counts and55-85/85-100/100-120 level ranges are approved
@@ -25,7 +44,7 @@ rotate/connect puzzle after each regional boss; players may choose to restart
 the rewritten Chapter1, with historical first-clear rewards protected from
 repeat payout. **Do not reset any account or implement that gate yet.** The
 owner explicitly requests the revised design/dialogue first, then approval.
-Revised reward quantities below are not approved.
+Reward quantities below were subsequently approved in D-452.
 
 ## What Chapter 1 currently tells
 
@@ -57,9 +76,9 @@ load-time writes or new wallet fields. Quiet boss-victory text points to the
 record; replays say it is available, not falsely newly earned. The records use
 confirmed history rather than invented character quotations.
 
-### Proposed cryptic-paper pacing: approval required
+### Approved cryptic papers; placement remains proposed
 
-These revised, deliberately incomplete lines are **drafts**, not implemented
+These revised, deliberately incomplete lines are **approved**, not implemented
 dialogue. Suggested milestones remain10/30/50/70/90/110, subject to approval.
 They are unsigned; Rise's authorship is not revealed until Chapter3. Proposed
 stage-local discoveries are readable when found; beacon records remain separate
@@ -67,19 +86,21 @@ at20/40/60/80/100/120. No early title or narrator identifies their author.
 
 | Region | Proposed fragment | Proposed player-character response |
 | --- | --- | --- |
-| Emberwake | "...still warm." | "The rest is gone." |
-| Glasswater | "Not the reflection." | "A warning? Or part of something longer?" |
-| Stormspan | "There was a pause." | "Before what?" |
-| Rootstone | "What remained, grew." | "Someone kept this." |
-| Stillhalo | "An interval. Nothing more." | "We are missing the beginning." |
-| Riftbound | "...and still, a little longer." | "Keep it with the others." |
+| Emberwake | "The warmth remained after the light went out." | "The rest is gone." |
+| Glasswater | "I looked for an answer. The water returned only my face." | "A warning? Or part of something longer?" |
+| Stormspan | "For a moment, neither of us spoke. I thought that meant we understood." | "Before what?" |
+| Rootstone | "I returned to the same place. Something had grown through the cracks." | "Someone kept this." |
+| Stillhalo | "There was no arguing that day. I mistook it for peace." | "We are missing the beginning." |
+| Riftbound | "I could not make him listen. I could only ask for a little longer." | "Keep it with the others." |
 
-Their precise wording, placement and player-character reactions need approval.
+Paper wording is approved; placement and the optional response column remain
+drafts. Rise wrote these private reflections before breaking the cores.
+They initially suggest a strained relationship; Chapter3 supplies the context.
 Responses represent the player through the characters, not a new fixed
 protagonist or ownership-dependent required cast. Unique starter voice variants
 are not assumed. No signature, collectible spending or complete revelation.
 
-## Rebuild Core: design for approval, not implemented
+## Rebuild Core: approved rules, not implemented
 
 After a regional boss, kill and stage-clear rewards save immediately. Victory
 offers **Rebuild Core** and **Return to map**; normal onward Continue remains
@@ -87,13 +108,18 @@ unavailable until the core's successful save. The map shows **Core awaiting
 repair** and an accessible Rebuild Core button. At the final beacon, rebuilding
 completes Chapter1. Earlier stages remain replayable; quitting never removes loot.
 
-Proposed puzzle: a small3x3 board of fixed source/receiver nodes and rotatable
+Approved puzzle: a small3x3 board of fixed source/receiver nodes and rotatable
 straight/corner circuit pieces. Click/tap or Enter/Space rotates a selected
 piece90 degrees; Tab reaches each piece and its accessible orientation label.
 Connect the source to the receiver, then choose **Restore beacon**. Patterns are
 authored, deterministic, solvable and regional, not randomized puzzles or
 speed tests. No timer, resource cost, failure damage, input-mashing or new RNG.
 Target a short understandable interaction, not an enforced duration.
+Include **Reset board** and an optional **Show solution** hint without reduced
+rewards. Remember unfinished rotations across return to map/reload; restored
+core state alone grants progression. A persistence failure must be explicit,
+not silently claim the board was saved. Include text connection/orientation
+feedback and keyboard controls, not color-only signals.
 
 | Region | Proposed visual motif / increasing interaction |
 | --- | --- |
@@ -104,10 +130,11 @@ Target a short understandable interaction, not an enforced duration.
 | Stillhalo |Ivory inset channels, five sections.|
 | Riftbound |Violet fracture seams, six sections; no timing pressure.|
 
-These are UI circuit motifs, not new elemental lore or delivered art. Proposed
-repair explanation: the party reconnects surviving channels and channels its
-elemental energy into the damaged mechanism. **That explanation is still a draft**;
-do not require an owned bearer of each element or invent replacement-core items.
+These are UI circuit motifs, not delivered art. Approved repair explanation:
+Rise shattered the core's connections, but fragments and channels remain.
+The party realigns the fragments, reconnects channels and rekindles the beacon
+with elemental energy already present. No replacement-core items, new energy
+source or requirement to own a bearer of each element.
 
 Unconnected circuits show an explicit status such as "The channel ends before
 the receiver"; Restore remains disabled. Successful alignment gives a small
@@ -123,18 +150,21 @@ valid submitted board before committing core restoration, idempotently. Next
 region entry checks repaired state server-side; finishing the final boss alone
 must not bypass it. A suspended old run must not Continue past a new gate:
 define explicit resume compatibility while retaining frozen gear and earned loot.
-Draft choice: save completed cores, not each rotation; cancellation/reload may
-reset an unfinished board and must explain that before leaving.
+Persist unfinished rotations as approved in D-452; never treat an unfinished
+or merely aligned board as a successfully restored core.
 
 ### Optional rewritten-Chapter1 restart
 
-Offer a clearly confirmed **Restart Chapter1 story** choice, not a forced/global
+Offer existing players a clearly confirmed, **one-time optional**
+**Restart Chapter1 story** choice after the rewrite, not a permanent or forced/global
 reset. Players who decline retain current completed progress and region access;
-proposed compatibility treats their already-cleared beacons as rebuilt. Players
+approved compatibility treats their already-cleared beacons as rebuilt. Players
 who accept restart chapter access, papers and core steps, but keep characters,
 levels, currencies, items, equipment, loadouts and non-Story activity access.
-The latter compatibility details are proposed safeguards, not broader reset
-authorization. Do not delete discoveries or other collections.
+These are approved safeguards, not broader reset authorization.
+Preserve earned Codex records, discoveries and other collections. Track replay
+narrative progress separately from permanent rewarded clears; confirmation must
+list exactly what changes.
 
 Preserve historical first-clear eligibility independently of replay progression:
 previously paid stage premium and regional bonuses never pay again. Ordinary
@@ -144,7 +174,7 @@ from the account's authoritative existing credited clears, not invented receipts
 or a client-supplied list. No migration grants or writes merely for loading.
 Restart is one confirmed atomic operation; reject during an active Story run
 until the player explicitly exits it, rather than silently destroying that run.
-This needs approved schema, client/authority migration and rollback/failure tests
+This needs schema, client/authority migration and rollback/failure tests
 before implementation. No restart is present in the current live game.
 
 ## Proposed campaign loop
@@ -180,30 +210,32 @@ per region are four ordinary enemies and a boss, not five evolutions.
 First24 stages vary the four ordinary identities; no random recruitment.
 Codex milestones at local stages5/15/25 give approach/clue/conclusion records.
 
-### Revised reward quantities: owner approval required
+### Approved future-stage rewards (D-452), not implemented
 
-Retain the reward kinds, but replace the earlier550-premium proposal with a
-more milestone-weighted budget. All amounts below are **proposals**, not live
+Retain the reward kinds, but replace the earlier330-premium proposal with the
+owner-approved875 budget. All amounts below are **approved**, not live
 economy edits. Chapter1's existing rewards remain unchanged.
 
 | Part | First-clear Prismatica / stage | Replay Prismatica / stage | First-clear Null-Prismatica | Part totals from first-clear stage awards |
 | --- | --- | --- | --- | --- |
-| Chapter2,125 stages |200 |150 |1 per stage, plus5 on each of5 regional finals |25,000 Prismatica /150 Null-Prismatica |
-| Intermission,75 stages |250 |150 |1 per stage, plus5 on each of3 regional finals |18,750 Prismatica /90 Null-Prismatica |
-| Chapter3,75 stages |300 |150 |1 per stage, plus5 on each of3 regional finals |22,500 Prismatica /90 Null-Prismatica |
+| Chapter2,125 stages |200 |150 |2 per stage, plus25 on each of5 regional finals |25,000 Prismatica /375 Null-Prismatica |
+| Intermission,75 stages |250 |150 |2 per stage, plus25 on each of3 regional finals |18,750 Prismatica /225 Null-Prismatica |
+| Chapter3,75 stages |300 |150 |2 per stage, plus25 on each of3 regional finals, plus50 at the Chapter3 finale |22,500 Prismatica /275 Null-Prismatica |
 
-Combined first-clear stage awards:66,250 Prismatica and330 Null-Prismatica,
-versus550 premium in the first draft (220 fewer,40% reduction). The final-stage
-five-unit supplement is part of that stage's single atomic first-clear award;
+Combined first-clear stage awards:66,250 Prismatica and875 Null-Prismatica.
+That is550 from275 stage awards,275 from11 regional supplements and50 at
+the Chapter3 finale. The finale awards77 NP total (2+25+50).
+Each supplement is part of that stage's single atomic first-clear award;
 it never repeats on replay and is not another claim. No additional escalating
 regional one-time Prismatica/premium bonuses are proposed. At10 per summon,
-330 premium funds33 draws; this is a budget description, not a balance result.
+875 premium funds87 draws with5 remaining; this is a budget description, not a balance result.
 Ordinary kill rewards are separate from these exact totals.
 
 Proposal for per-kill Prismatica: retain the existing linear level-based activity
 curve without extra boss multipliers. Region-themed Common/Uncommon materials
 only, no captures, new currencies, free characters, Conduits or repeat premium.
-These quantities and the no-extra-regional-bonus choice require owner approval.
+The stage quantities and no-extra-regional-bonus choice are approved.
+The per-kill curve/material proposal remains separate from those exact totals.
 
 ## Chapter2: Explore the Metropolis
 
@@ -284,15 +316,17 @@ No prompt claims actual generated-pixel containment or owner visual approval.
 Reproduce via `python tools/build_future_story_art.py`; validate with
 `python -m unittest discover -s tools -p test_future_story_art.py`.
 
-Before implementation, approve the remaining exact scene/paper wording, puzzle
-and restart details, reward quantities and tested difficulty. No later gameplay
+The owner has approved the scenes/papers, puzzle/restart rules and stage rewards
+under D-452, but explicitly requests stopping before implementation. Difficulty
+still needs testing, and paper placements/optional reactions remain drafts. No later gameplay
 or live Chapter1 reset/gate implementation is authorized in this phase.
 Prompts can be generated for visual exploration, but
 final art intake must follow those approvals and preserve supplied originals.
 
-## Revised scenes: exact wording and imagery for author review
+## Revised scenes: D-452 approved passages, not implemented
 
-These are drafts, not shipped dialogue or proof of a new lore mechanism.
+The opening note/wisp line, Chapter3 memory and Rise-fragment passages below
+are approved, not shipped dialogue. Chapter2 ending/pursuit remains a draft.
 No fixed premium cast is required; **player-character** lines are spoken by
 the player's represented character. Narration describes discoveries, not an
 omniscient announcement of the twist.
@@ -303,15 +337,15 @@ The party finds the shattered machine beyond the restored final beacon.
 Its protected message plate remains legible; a small wisp emerges from the
 broken housing. Neither a creator nameplate nor an inventory reward identifies it.
 
-**Let's note (draft):**
+**Let's note (approved):**
 
 > To those who have come this far:
 > What was divided is not yet lost.
-> If you are worthy of the road ahead, follow what remains.
+> Follow what remains.
 > Beyond Nyrasma, the search continues.
 > Let.
 
-**Player-character:** "He left this for someone who reached the beacons."
+**Player-character (additional draft line):** "He left this for someone who reached the beacons."
 
 The wisp drifts toward the distant city, stops and returns a short distance.
 
@@ -345,7 +379,7 @@ objects left in silence. The party feels loss without a complete explanation.
 conflict returning. Rapid images give way to clarity rather than an exposition
 wall. No invented faction massacre, named victim or definitive war chronology.
 
-**Player-character:** "He was afraid it would happen again. Then fear became anger."
+**Player-character:** "He thought it would happen again. He stopped believing it could change."
 
 **Third memory / exhaustion and desire for peace:** the same impulse to mend
 gives way to an image of perfect stillness, with no one left to experience it.
@@ -354,10 +388,10 @@ gives way to an image of perfect stillness, with no one left to experience it.
 
 **Final memory / explicit intention:** Let imagines removing the whole world,
 bearers and Devourers alike, so that no conflict can ever recur. The recollected
-thought below is a proposed expression of his intention, not a current
+thought below is an approved expression of his intention, not a current
 conversation or proof that he has already carried it out.
 
-**Let, remembered thought (draft):** "If nothing remains, nothing can suffer.
+**Let, remembered thought:** "If nothing remains, nothing can suffer.
 No one can begin it again."
 
 **Player-character:** "Not a world without war. A world without anyone."
@@ -368,28 +402,27 @@ for Chapter6. His suffering explains his reasoning; it does not excuse the plan.
 ### Chapter3: Rise's fragment
 
 After the final guardian, the party reaches a fragment, not Rise in totality.
-It sends incomplete images: separated pieces reaching toward each other,
-hands holding onto something precious, and a path continuing beyond this place.
-Grief, fear, anger, calm and hope are felt rather than spoken by an all-knowing Rise.
+It sends disconnected images: scattered lights drawing toward one another,
+hands struggling to keep a small light from slipping away, and a path beyond
+the chamber. Warmth, fear and hope mingle, not spoken exposition.
 
-**Player-character:** "There is more of you. You want us to find it."
+**Player-character:** "There is more of you... Is that what you want us to find?"
 
 An image returns: a hand loosening its grip, then closing again around its
 small held light. The feeling is urgent but not commanding.
 
-**Player-character:** "And not leave ourselves behind. Keep what we feel."
+**Player-character:** "And hold on to what we feel. I think that is what you mean."
 
-Proposed authorship reveal: the remembered texture/handwriting of the unsigned
-papers appears among these fragmentary images. This associates them with Rise
-without granting her fragment knowledge of every paper or her complete plan.
-The actual recognition device is a draft, not a new memory-transfer rule.
+Approved authorship reveal: a memory shows Rise writing, "I could not make
+him listen. I could only ask for a little longer." This identifies a familiar
+paper without granting her fragment knowledge of her complete plan.
 
-**Player-character:** "Those scraps along the beacons... they were yours."
+**Player-character:** "The papers. You wrote them."
 
 The fragment offers no complete answer or guarantee of benevolence.
 
 **Player-character:** "You broke the cores. We have not forgotten. But we will
-find the rest of you, and hear what you could not leave here."
+find the rest of you. We still need answers."
 
 End on an informed choice to continue, not instant absolution, recruitment,
 creator reconciliation or an early confrontation with Let.

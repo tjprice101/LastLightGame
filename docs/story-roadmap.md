@@ -2,6 +2,13 @@
 
 **Spoilers / owner-approved narrative direction / NOT IMPLEMENTED.**
 
+**D-452 supersedes pending approvals below:** exact papers, Let note, Chapter3
+memory/Rise-fragment scene, core puzzle rules and one-time optional replay
+safeguards approved. Future275 stages award875 NP, not330; see the design
+for exact part budgets. Owner explicitly requests recording and stopping
+before implementation. Optional paper reactions/placement and pursuit lines
+remain drafts; no live reset or core gate.
+
 **D-451 author interview:** the wisp is truly a fragment of Let, unknown to the
 party. Nyrasma machines are new Rise creations, black/ominous and protecting
 where they believe her soul is. Brink and Gates connect without merging their

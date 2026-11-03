@@ -1,5 +1,29 @@
 # Current state and handoff
 
+## Author script, puzzles and875-NP approval (D-452)
+
+- Owner explicitly chose **record approvals and stop before implementation**.
+  No new runtime, schema, authority, puzzle or reset changes in this revision.
+- Six clearer papers approved as Rise's private reflections before breaking
+  cores; show her writing a familiar line in Chapter3. Exact Let note, memory
+  sequence and nonverbal Rise scene approved in the design. Party voice is
+  curious/wary, short and natural. Optional paper reactions/placement and
+  Chapter2 pursuit dialogue remain drafts, not silently approved.
+- Core puzzle approved with Reset, penalty-free solution hint, keyboard/text
+  feedback and remembered unfinished rotations. Repair reconnects surviving
+  fragments/channels and rekindles existing energy, no owned-element requirement.
+- One-time optional replay for existing players approved; preserve holdings,
+  loadouts, other activities, earned Codex and permanent first-clear history.
+  No repeat premium/regional awards; normal replay/kill rewards remain.
+  Decliners keep access; require explicit exit from active Story run.
+- Future275-stage rewards approved:875 NP total (550 stage +275 regional
+  +50 Chapter3 finale); part totals375/225/275. Prismatica first-clear
+  200/250/300 by part and150 replay;66,250 first-clear total, kill rewards
+  separate. Chapter1 unchanged. This supersedes D-451's330-NP proposal.
+- Validation: documentation-only; `git diff --check` and exact budget arithmetic.
+  Implementation/migration/failure tests and ordinary-progression balance
+  testing remain future work, not completed validation.
+
 ## Story author interview and revised proposal (D-451)
 
 - Next scope explicitly DESIGN ONLY. No core puzzles, restart, schema,

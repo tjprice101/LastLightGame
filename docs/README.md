@@ -1,5 +1,9 @@
 # Documentation hub
 
+**D-452:** [Approved story script, core rules and optional replay safeguards](chapters-2-3-design.md)
+now includes the875-NP future-stage budget. Owner requests recording approvals
+and stopping before implementation; D-451 pending-approval status below is historical.
+
 **D-451:** [Revised story scenes, core puzzle and optional restart design](chapters-2-3-design.md)
 records the author interview, approved regional foundations and black/ominous
 Nyrasma machines. New dialogue/rewards/puzzle details await approval; design only.

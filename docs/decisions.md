@@ -5,6 +5,21 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+D-452 (2026-11-03): owner approves six revised unsigned papers as Rise's private
+reflections before breaking cores; Chapter3 shows her writing a familiar line.
+Approves reassuring Let note without worthiness, exact memory sequence making
+world erasure unmistakable, nonverbal Rise imagery and uncertain party
+interpretation. Core repair realigns surviving fragments/channels and rekindles
+existing elemental energy. Approves3x3 rotation puzzle, optional solution hint
+without reward penalty, Reset board and remembered unfinished rotations.
+Approves one-time optional rewritten-Chapter1 replay for existing players,
+preserving holdings/loadouts/non-Story access/earned Codex/permanent reward
+history, no repeat historical first-clear payouts, no restart during active
+Story run. Future275 stages award875 NP:2 per stage +25 per11 regional finals
++50 Chapter3 finale; Prismatica200/250/300 first-clear by part,150 replay.
+Chapter1 rewards unchanged. **Record approvals and stop before implementation.**
+See [approved script and detailed safeguards](chapters-2-3-design.md).
+
 D-317 clarification (2026-10-15): the owner means a mechanic symbol **within
 an ability-icon picture frame**, not a literal trophy. All27 native prompts
 now use a front-facing square beveled rim and opaque recessed inset, with
