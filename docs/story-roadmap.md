@@ -2,6 +2,17 @@
 
 **Spoilers / owner-approved narrative direction / NOT IMPLEMENTED.**
 
+**D-450 clarification:** Chapter1 is now labeled **Search the Six Beacons of
+Emotion**, with the current120-stage layout (six x20, not the historical150
+below). Its seven-entry milestone Codex is implemented; cryptic papers are
+still drafts. Rise destroyed the cores to delay the search. Chapter1 ends
+with restored beacons only; the shattered machine, note and guiding wisp move
+to **Chapter2's opening**. The wisp's precise nature remains unconfirmed.
+The75-stage pursuit is a separate intermission. Chapter3 reveals Let's plan;
+Chapter6 confronts him. [Current draft and75 art prompts](chapters-2-3-design.md)
+propose future regions/gameplay without implementing them. This clarification
+supersedes the conflicting timing/counts in the historical outline below.
+
 This records the owner's future main-story outline. It does not add dialogue,
 transcription items, chapters, stages, unlocks, soul wisps, recruitable creators
 or new combat elements. Current runtime behavior remains governed by

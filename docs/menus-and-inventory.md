@@ -1,5 +1,16 @@
 # Menus and inventory
 
+## Story Codex (D-450)
+
+Collections has a fourth gallery, Story Codex. Its Chapter1 entries derive
+directly from saved Story clears: prologue plus six20-stage beacon milestones.
+Locked records show only an unlock requirement, never hidden spoiler titles
+or paragraphs. Native disclosures allow optional rereading with keyboard
+focus, no modal interruption, new currency, claimed item or account writes.
+Existing Collections history restores the selected gallery. Story, Home and
+activity selection identify the current campaign as Chapter1. See
+[campaign contract](story-and-training.md#chapter1-and-story-codex-d-450).
+
 ## Loadout and configuration presentation (D-449)
 
 Team Loadouts uses a contained desktop scroll surface so long squads and saved

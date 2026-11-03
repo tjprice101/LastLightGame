@@ -2,6 +2,7 @@ import { type Starter, isStarterId, type StarterId } from '../content/starters';
 import { characterName } from '../content/character-art';
 import { characterRarity, displayEvolution, evolutionRarity } from '../content/progression';
 import { storyEncounter, storyRegions, storyRules } from '../content/story';
+import { chapterOneTitle } from '../content/story-codex';
 import { equippedSquad, ownedProgress, unlockedStoryStage, type Account } from '../game/account';
 import { capturedProgress } from '../game/character-instances';
 import { uiIcon } from './ui-icon';
@@ -48,7 +49,7 @@ export function referenceHome(starter: Starter, account: Account | null): string
   const storyPercent = Math.round(completed / storyRules.stages * 100);
   return `<div class="ref-screen ref-home bubble-home">
     <section class="bubble-home-intro">
-      <button class="ref-panel ref-home-story" data-page="story">${encounter.background ? `<img class="ref-home-story-arena" src="${assetUrl(`backgrounds/${encounter.background}`)}" alt="" draggable="false" />` : ''}<span class="ref-panel-heading">${completed === 0 ? 'Story' : 'Continue story'}</span><span><strong>${completed === storyRules.stages ? 'Story complete' : region?.name ?? encounter.name}</strong><small>${completed < storyRules.stages ? `Stage ${encounter.regionStage} &middot; Enemies Lv.${encounter.level} &middot; ` : ''}${completed} / ${storyRules.stages} stages cleared</small><span class="bubble-story-meter" role="meter" aria-label="Story progress" aria-valuemin="0" aria-valuemax="${storyRules.stages}" aria-valuenow="${completed}"><i style="width:${storyPercent}%"></i></span><small>Drops Prismatica and Common/Uncommon materials.</small></span><span class="ref-go" aria-hidden="true">&rarr;</span></button>
+      <button class="ref-panel ref-home-story" data-page="story">${encounter.background ? `<img class="ref-home-story-arena" src="${assetUrl(`backgrounds/${encounter.background}`)}" alt="" draggable="false" />` : ''}<span class="ref-panel-heading">${completed === 0 ? 'Story · Chapter 1' : 'Continue story · Chapter 1'}</span><span><small>${chapterOneTitle}</small><strong>${completed === storyRules.stages ? 'Chapter 1 complete' : region?.name ?? encounter.name}</strong><small>${completed < storyRules.stages ? `Stage ${encounter.regionStage} &middot; Enemies Lv.${encounter.level} &middot; ` : ''}${completed} / ${storyRules.stages} stages cleared</small><span class="bubble-story-meter" role="meter" aria-label="Chapter 1 progress" aria-valuemin="0" aria-valuemax="${storyRules.stages}" aria-valuenow="${completed}"><i style="width:${storyPercent}%"></i></span><small>Drops Prismatica and Common/Uncommon materials.</small></span><span class="ref-go" aria-hidden="true">&rarr;</span></button>
     </section>
     <section class="ref-home-leader bubble-home-orbit" aria-label="Destinations">
       <div class="bubble-portrait-universe"><span class="bubble-orbit-ring" aria-hidden="true"></span><span class="bubble-orbit-ring inner" aria-hidden="true"></span>

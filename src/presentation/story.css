@@ -27,3 +27,4 @@
 @media (max-width: 640px) { .story-world-map { grid-template-columns: repeat(2, minmax(0, 1fr)); } .story-stage-path { grid-template-columns: repeat(5, minmax(44px, 1fr)); gap: 5px; } .story-region-panel { padding: 12px; } .story-stage { padding: 6px; } }
 [data-motion="reduced"] .story-world-map button { transition: none; }
 [data-motion="reduced"] .story-world-map button:hover { transform: none; }
+.story-chapter-title { grid-column: 1 / -1; margin: 0 0 16px; font-size: clamp(1.15rem, 2vw, 1.65rem); line-height: 1.4; overflow-wrap: anywhere; }

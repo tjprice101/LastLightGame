@@ -39,11 +39,11 @@ describe('unified Archives', () => {
     expect(images.length).toBeGreaterThan(0);
     for (const image of images) expect(image).toContain('draggable="false"');
   });
-  it('groups the three galleries with compact controls and one visible default panel', () => {
+  it('groups the four galleries with compact controls and one visible default panel', () => {
     const html = archives(emptyAccount());
-    expect(html.match(/data-archive-gallery=/g)).toHaveLength(3);
+    expect(html.match(/data-archive-gallery=/g)).toHaveLength(4);
     expect(html).not.toContain('class="archive-banner ');
-    expect(html.match(/class="ref-sr-only" id="archive-/g)).toHaveLength(3);
+    expect(html.match(/class="ref-sr-only" id="archive-/g)).toHaveLength(4);
     expect(html).toContain('id="archive-characters" class="archive-panel" aria-labelledby="archive-characters-heading" >');
     expect(html).toContain('id="archive-conduits" class="archive-panel" aria-labelledby="archive-conduits-heading" hidden');
     expect(html).toContain('id="archive-creatures" class="archive-panel" aria-labelledby="archive-creatures-heading" hidden');

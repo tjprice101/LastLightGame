@@ -22,6 +22,7 @@ import { infusionEntry } from './activity-entry';
 import { elementalWars, warEncounter, warRulesText } from '../content/elemental-war';
 import { getStarter } from '../content/starters';
 import { storyRules, storyRulesText } from '../content/story';
+import { chapterOneTitle } from '../content/story-codex';
 const storyBossStages = Array.from({ length: storyRules.stages / storyRules.regionStages }, (_, index) => (index + 1) * storyRules.regionStages);
 import { finalBossLootText } from '../content/final-boss-loot';
 import { storyCampaign } from './story';
@@ -55,7 +56,7 @@ function dungeonEntry(element: (typeof elements)[number]['id'], account: Account
 }
 
 const activityCategories = [
-  ['story', 'Story', `Six regions · ${storyRules.stages} stages · Lv.1-55`, 'story'],
+  ['story', 'Story · Chapter 1', `${chapterOneTitle} · ${storyRules.stages} stages · Lv.1-55`, 'story'],
   ['adventure', 'Training', 'Endless waves · Prismatica', 'gameplay'],
   ['dungeons', 'Elemental dungeons', 'Upgrade materials', 'inventory'],
   ['infusion', 'Evolution infusion', 'Heaven & Abyss', 'evolution'],

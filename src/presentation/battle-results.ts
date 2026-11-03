@@ -56,7 +56,7 @@ export function battleResults(state: BattleState, events: readonly BattleEvent[]
       <button class="text-button" data-result-dismiss>View battlefield</button></div>
     <p id="battle-result-note">${victory ? 'Rewards saved.' : 'Your squad has fallen. You keep rewards from defeated enemies.'}
       ${victory ? state.calamity ? 'Open your chest in Inventory.' : complete ? 'All stages cleared.' : staged ? 'Continue with full HP; Elemental Gauge carries into the next stage. Replay starts this stage with fresh HP and Gauge; earned rewards are kept.' : 'Health, Gauge and recovery carry into the next wave.' : ''}</p>
-    ${victory && state.story && storyEncounter(state.story.storyStage).boss ? `<p class="story-conclusion">${storyEncounter(state.story.storyStage).conclusion}</p>` : ''}
+    ${victory && state.story && storyEncounter(state.story.storyStage).boss ? `<p class="story-conclusion">${storyEncounter(state.story.storyStage).conclusion}</p><p class="story-codex-notice" role="status">Beacon record available in Collections · Story Codex.</p>` : ''}
     <div class="battle-result-rewards"><h3>Rewards earned this ${staged ? 'stage' : 'wave'}</h3>
       ${rewards.length ? `<ul>${rewards.map((item) => {
         const conduitId = item.id.startsWith('conduit:') ? item.id.slice('conduit:'.length) : null;

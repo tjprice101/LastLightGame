@@ -1,5 +1,9 @@
 # Documentation hub
 
+**D-450:** [Chapter1 review and Chapters2-3 design draft](chapters-2-3-design.md):
+live Chapter1 labeling and milestone Story Codex; cryptic papers, Nyrasma,
+separate pursuit and Chapter3 are proposals with75 copy-ready Midjourney prompts.
+
 **D-449:** [Loadout and configuration UI polish](menus-and-inventory.md#loadout-and-configuration-presentation-d-449):
 visual squad/equipment cards, accessible desktop scrolling and clearer compact
 character configuration cards with inspectable saved equipment.

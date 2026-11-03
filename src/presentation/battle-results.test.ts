@@ -12,6 +12,20 @@ const reward = (source: string, amount: number, materials: Record<string, number
 });
 
 describe('encounter result overlays', () => {
+  it('quietly points to the Codex only after a regional Story victory without claiming a fresh unlock', () => {
+    const state = createStoryBattle(storyRules.regionStages, 1, 'ember', { level: 105, evolution: 6 });
+    state.phase = 'cleared';
+    const before = structuredClone(state);
+    const html = battleResults(state, []);
+    expect(html).toContain('Beacon record available in Collections · Story Codex.');
+    expect(html).not.toContain('New Codex');
+    expect(state).toEqual(before);
+    state.phase = 'defeat';
+    expect(battleResults(state, [])).not.toContain('story-codex-notice');
+    const ordinary = createStoryBattle(1, 1, 'ember', { level: 105, evolution: 6 });
+    ordinary.phase = 'cleared';
+    expect(battleResults(ordinary, [])).not.toContain('story-codex-notice');
+  });
   it.each(['nerithe', 'orvella', 'vaelor'] as const)('gives new %s recruits chest-scale art while duplicate currency stays compact', character => {
     const state = createWarBattle(character, 10, 1, 'ember', { level: 105, evolution: 6 });
     state.phase = 'cleared';

@@ -1,5 +1,13 @@
 # Let and Rise: founding canon (D-269)
 
+**D-450 Chapter1 clarification:** Rise destroyed the beacons' cores. Their
+Devourer guardians oppose relighting them because they advance the search for
+Let's soul. Her need for time to convince the bearers is author-only motive,
+not an early public revelation. Chapter1 currently has120 stages. It ends
+with beacons restored; the machine/note/wisp opening belongs to Chapter2.
+The Codex records confirmed history at beacon milestones; cryptic papers and
+future dialogue remain proposals in [the story design](chapters-2-3-design.md).
+
 This is the owner's confirmed origin story. It supersedes earlier generic
 world-origin prose; existing regions, human identities, creatures and artwork
 remain part of these worlds.

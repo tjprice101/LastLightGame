@@ -1,5 +1,34 @@
 # Current state and handoff
 
+## Chapter1 Story polish and future-chapter draft (D-450)
+
+- Owner confirmed Rise destroyed beacon cores; bosses prevent restoration
+  because it advances the search for Let's soul. Her need to buy time and true
+  motive stay cryptic. The player-character speaks through the characters,
+  not a new fixed narrator. Chapter1 ends at restored beacons; machine/note/wisp
+  moves to Chapter2 opening. Chapter3 reveals the plan; Chapter6 confronts Let.
+- Chapter1 is labeled Search the Six Beacons of Emotion on Story, Home and
+  activity selection. Collections has the explicitly approved seven-record
+  Story Codex (0/20/40/60/80/100/120 clears). Retroactive read-only unlocks,
+  locked prose/titles absent from DOM, optional native reading, quiet regional
+  victory notices. No new save fields/rewards, early twists or authority changes.
+- `docs/chapters-2-3-design.md` reviews the narrative gaps, drafts six cryptic
+  papers/reactions for approval, proposes Chapter2's five25-stage regions,
+  separate three25-stage pursuit and a three25-stage Chapter3. Levels, rewards,
+  new identities, machine lineage and Oblivion relationship are UNAPPROVED.
+  Exact note/wisp nature/Rise dialogue remain owner decisions; no later
+  chapters or creator fighters are implemented.
+- `Art/story/Chapters 2-3 Draft.md` has75 copy-ready Midjourney prompts:
+  55 enemy/boss cutouts,11 arenas, three maps, three banners, three transitions.
+  Reproduce with `python tools/build_future_story_art.py`; three
+  `test_future_story_art.py` tests passed. No generated images or runtime wiring.
+- Focused Story/Codex/Archives/results/lore/history/copy tests and build pass;
+  existing chunk-size advisory remains. Browser fixtures checked3 unlocked/
+  4 locked entries at40 clears, native disclosure opening, and no horizontal
+  overflow for Codex/chapter map at1180/390/320px. Save data was not modified.
+- Publish through full CI/Pages; verify exact hosted version and Codex/title
+  assets. Art/design drafts are author-review deliverables, not live canon.
+
 ## Loadout and character configuration polish (D-449)
 
 - Team Loadouts replaces dense equipment paragraphs with responsive member

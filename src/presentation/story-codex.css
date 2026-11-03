@@ -1,0 +1,15 @@
+.story-codex { min-width: 0; max-width: 960px; margin-inline: auto; }
+.story-codex > header { margin-bottom: 20px; }
+.story-codex p { line-height: 1.65; }
+.story-codex-entries { display: grid; gap: 12px; padding: 0; list-style: none; }
+.story-codex-entries > li { border: 1px solid #ffffff26; border-radius: 14px; background: #ffffff05; overflow-wrap: anywhere; }
+.story-codex summary, .story-codex-locked { display: flex; align-items: center; gap: 16px; padding: 16px; min-height: 56px; box-sizing: border-box; }
+.story-codex summary { cursor: pointer; }
+.story-codex summary::marker { content: ''; }
+.story-codex summary::after { content: '+'; margin-left: auto; font-size: 1.3rem; }
+.story-codex details[open] > summary::after { content: '-'; }
+.story-codex summary:focus-visible { outline: 2px solid var(--ui-accent, #cce4df); outline-offset: -3px; border-radius: 14px; }
+.story-codex-number { display: grid; place-items: center; flex: none; width: 36px; height: 36px; border: 1px solid #ffffff36; border-radius: 10px; }
+.story-codex small { display: block; color: #b7c1c6; font-size: .8rem; margin-top: 6px; }
+.story-codex-copy { padding: 0 20px 12px; max-width: 75ch; }
+.story-codex-locked { color: #b7c1c6; }

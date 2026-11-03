@@ -15,6 +15,7 @@ import { storyPurpose } from '../content/world-lore';
 import { worldLore } from './world-lore';
 import { enemyStrength } from './enemy-strength';
 import { stageLootButton } from './stage-loot';
+import { chapterOneTitle } from '../content/story-codex';
 
 const R = storyRules.regionStages;
 let selectedRegion: number | undefined;
@@ -52,6 +53,7 @@ export function storyCampaign(account: Account | null, starterId: StarterId, sho
   const start = activeRegion * R + 1;
   const activeStage = selectedStage && storyEncounter(selectedStage).regionIndex === activeRegion ? selectedStage : Math.min(Math.max(unlocked, start), start + R - 1);
   return `<div class="story-campaign mono-story-campaign">
+    <h2 class="story-chapter-title">${chapterOneTitle}</h2>
     <aside class="ref-story-region-sidebar"><header class="ref-story-region-heading"><span class="eyebrow">Regions · ${storyRegions.length}</span>
       ${information('story-prologue-information', 'Let and Rise · Opening prologue', `${worldLore()}<h3>${starter.title}</h3><p>${starter.lore.story}</p><blockquote>${starter.lore.vow}</blockquote><p>${storyPurpose}</p>`, 'Prologue')}
       </header>

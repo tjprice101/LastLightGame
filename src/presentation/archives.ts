@@ -1,4 +1,5 @@
 import { rolePerkRow } from './intrinsic-perks';
+import { storyCodex } from './story-codex';
 import { starters } from '../content/starters';
 import { characterName } from '../content/character-art';
 import { characterRarity, displayEvolution } from '../content/progression';
@@ -28,6 +29,7 @@ const galleries = [
   { id: 'characters', name: 'Character Archive', subtitle: 'Element-Bearers · Forms · Combat kits' },
   { id: 'conduits', name: 'Conduit Archive', subtitle: 'Conduit effects · Ownership' },
   { id: 'creatures', name: 'Elemental-Devourer &amp; Machine Glossary', subtitle: 'Discoveries · Elements · Enemy loot' },
+  { id: 'story', name: 'Story Codex', subtitle: 'Chapters · Beacons · Discovered lore' },
 ] as const;
 export type ArchiveGallery = (typeof galleries)[number]['id'];
 
@@ -115,7 +117,7 @@ export function archives(account: Account | null, selected: ArchiveGallery = 'ch
     ${!account ? '<p role="alert">Ownership and discoveries unavailable. Check the save error. You can still browse the catalog.</p>' : ''}
     ${galleries.map((gallery) => `<section id="archive-${gallery.id}" class="archive-panel" aria-labelledby="archive-${gallery.id}-heading" ${selected === gallery.id ? '' : 'hidden'}>
       <h2 class="ref-sr-only" id="archive-${gallery.id}-heading" tabindex="-1">${gallery.name}</h2>
-      ${gallery.id === 'characters' ? characterArchive(account) : gallery.id === 'conduits' ? conduitArchive(account) : creatureGlossary(account)}
+      ${gallery.id === 'characters' ? characterArchive(account) : gallery.id === 'conduits' ? conduitArchive(account) : gallery.id === 'story' ? storyCodex(account) : creatureGlossary(account)}
     </section>`).join('')}</section>`;
 }
 

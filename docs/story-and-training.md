@@ -1,5 +1,28 @@
 # Story campaign and endless Training (D-160/D-164)
 
+## Chapter1 and Story Codex (D-450)
+
+The current campaign is labeled **Chapter 1: Search the Six Beacons of Emotion**
+in its map/stages view, activity selector and Home shortcut. It remains six
+regions x20 stages (120 total), with unchanged enemies, drops, entry and saves.
+Collections adds **Story Codex**: the founding prologue at zero clears and a
+record at each beacon milestone20/40/60/80/100/120. Existing progress unlocks
+records retroactively without writes, claims or new rewards. Locked titles and
+text are not rendered. Null account data reports unavailable progress rather
+than treating it as a new account. Regional boss victories quietly point to
+Collections; replays do not claim a new unlock.
+
+Rise broke the beacon cores, and the Devourer guardians oppose relighting them
+because they lead toward Let's soul. Her underlying motive and Let's destructive
+plan are not exposed in Chapter1. The machine/note/wisp scene belongs to the
+future Chapter2 opening, not the Chapter1 ending. Current records contain no
+invented character dialogue. [Review, proposed papers and Chapters2-3 design](chapters-2-3-design.md).
+
+Validate `src/presentation/story-codex.test.ts` together with Archives, Story,
+battle-results, Home and Gameplay tests and the build. Browser-check unlocked
+and locked records, native disclosure keyboard controls, gallery history/focus,
+responsive chapter heading/map and no later-story spoilers or save writes.
+
 **D-428 Prismatica override:** Story stays120 stages; per-enemy Prismatica
 grows linearly8-16->750-1,500 by stage without regional-boss spikes.
 Training grows5-10->300-600 by enemy Lv.1-120 and holds at the enemy cap.
