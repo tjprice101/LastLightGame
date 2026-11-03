@@ -37,7 +37,8 @@ class PhaseOneWarArtTests(unittest.TestCase):
                     self.assertIn("empty15 percent border", prompt)
                     self.assertIn("Plain solid unlit", prompt)
                     self.assertIn("sharp crisp focus", prompt)
-                    self.assertIn("backsplash", prompt)
+                    if name != "solenne-6.png":
+                        self.assertIn("backsplash", prompt)
                     design = next(d for d in DESIGNS if d["slug"] in name)
                     negatives = prompt.split(" --no ", 1)[1].split(" --sref", 1)[0].split(", ")
                     self.assertNotIn(design["key"], negatives)
@@ -71,14 +72,21 @@ class PhaseOneWarArtTests(unittest.TestCase):
 
     def test_solenne_omnic_enveloping_power_keeps_identity(self):
         prompt = next(p for name, _, p in blocks() if name == "solenne-6.png")
-        for clause in ("bell-resonance spirals", "feet torso and crown",
+        for clause in ("spectral moonlight ribbons", "feet torso and crown",
                        "interwoven rising helices", "sound rings envelop",
                        "without hiding face hands or bell",
                        "vast asymmetric mandala", "cascading brocade trains",
                        "razor-defined", "colossal lotus-bell shield"):
             self.assertIn(clause, prompt)
         self.assertIn(RENDERER, prompt)
-        self.assertIn("one bronze-and-rose-ivory temple bell", prompt)
+        self.assertIn("lotus-bell shield on two visible chains", prompt)
+        self.assertIn("strictly silver lilac and rose-ivory", prompt)
+        self.assertIn("never in the energy", prompt)
+        self.assertLess(prompt.index("spectral moonlight"), prompt.index("female"))
+        negatives = prompt.split(" --no ", 1)[1].split(" --sref", 1)[0].split(", ")
+        for color in ("red", "orange", "yellow", "amber"):
+            self.assertIn(color, negatives)
+        self.assertNotIn("warm colors", negatives)
 
 
 if __name__ == "__main__":

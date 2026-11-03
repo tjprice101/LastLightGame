@@ -1,5 +1,16 @@
 # Art and asset workflow
 
+**Solenne Omnic moonlight refinement (2026-11-03):** moon and swirling spectral
+energy lead the design, not equipment detail. A colossal silver crescent frames
+her crown; silver/lilac/rose-ivory ribbons dominate the silhouette. No fire/
+moonfire vocabulary: it encouraged unwanted orange/red energy in owner results.
+Gold remains confined to metal trim; do not negate all warm colors and thereby
+contradict that trim. Local negatives exclude red/orange/yellow/amber and fire.
+Drop generic aura/backsplash negatives for this prompt, but retain sharp opaque
+energy, no bloom/haze, solid key, complete margins and existing renderer/Niji/
+reference settings. Do not copy unsupported weighting syntax or raise the
+reference weight from the attachment. Other44 prompt blocks remain unchanged.
+
 **Omnic visual-density reference (2026-11-03):** owner examples emphasize
 an awe-inspiring silhouette, lavish layered costume/weapon detailing and
 bold sharply defined enveloping powers. Translate that level of grandeur,

@@ -126,6 +126,9 @@ def cutout(design, subject, portrait=False, evolution=1):
         negative += ", feather wings, extra characters, mouth, nose, eyebrows, lumpy armor"
     else:
         negative += f", {ICON_NO}"
+    if portrait and design["slug"] == "solenne" and evolution == 6:
+        negative = negative.replace(", aura, backsplash", "")
+        negative += ", red, yellow, amber, fire, flames"
     prompt = (f"{head}. {subject}. Palette only {design['palette']}; prismatic means these colors only. "
               f"{SHARP}. {MARGIN}. Plain solid unlit {design['key']} background ({design['hex']}) "
               "fills every opening, no scenery or cast-shadow backdrop. --ar "
@@ -147,6 +150,20 @@ def blocks():
                        f"{signature}. {ARMOR_RULE}; "
                        + (f"{CRAFT}; " if index >= 3 else "")
                        + "body one third of canvas height, complete weapon and powers readable, plain background without a separate effect backdrop")
+            if slug == "solenne" and index == 6:
+                subject = (
+                    "A colossal moon-silver crescent frames her crown; immense spectral moonlight ribbons "
+                    "strictly silver lilac and rose-ivory dominate the silhouette, spiraling around feet torso and crown "
+                    "in interwoven rising helices, sharp opaque bands with crisp painted highlights. "
+                    f"{design['identity']}; wingless. "
+                    "Retain Legendary black-lilac robes, silver regalia, crescent pauldrons, cascading brocade trains "
+                    "and gold chain guards; colossal lotus-bell shield on two visible chains, nested engraved skirts "
+                    "and prismatic crown. Seven tilted gold-filigree moon-gates form a vast asymmetric mandala. "
+                    "Silver-edged sound rings envelop dense crescent tracery without hiding face hands or bell. "
+                    "Moon and spectral energy are the primary spectacle; restrained gold only on metal trim, "
+                    "never in the energy. Majestic airborne guard, body one third of canvas height; "
+                    "razor-defined layers, luxurious beveled enamel and filigree, no atmospheric haze"
+                )
             rows.append((f"{slug}-{index}.png", f"{title}, {design['name']} / {rarity}", cutout(design, subject, True, index)))
         for index, (slot, name, symbol) in enumerate(design["icons"], 1):
             rows.append((f"{slug}-ability-{index}.png", f"{slot}: {name} (proposed label)", cutout(design, symbol)))

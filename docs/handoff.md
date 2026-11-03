@@ -1,5 +1,16 @@
 # Current state and handoff
 
+## Solenne Omnic spectral moonlight focus (2026-11-03)
+
+- Read owner attachment without modifying it. Moon and spectral energy must
+  dominate, strict silver/lilac/rose-ivory energy, not orange/red flames.
+- Scoped Solenne Omnic override puts crescent/energy before character details,
+  avoids fire/moonfire vocabulary, keeps gold only on trim and preserves
+  renderer, anatomy, margins, Niji6/settings, exact reference and150 weight.
+  Remove local generic aura/backsplash negatives, not no-bloom/sharp-key rules.
+- Other44 blocks remain unchanged. Actual images still need palette/sharpness
+  review. No runtime or Story changes.
+
 ## Solenne Omnic grandeur / owner examples (2026-11-03)
 
 - Owner requests much more awe-inspiring Omnic imagery/detail without blur.

@@ -8,6 +8,12 @@ numbers remain pending; proposed ability labels are not runtime definitions.
 
 ## Current art revision and remaining work (2026-11-03)
 
+Latest Solenne Omnic refinement: foreground a colossal moon-silver crescent
+and dominating silver/lilac/rose-ivory spectral moonlight helices. Preserve
+regalia, bell, wingless silhouette and exact style settings. Energy is never
+gold/red/orange/yellow; gold remains metal trim only. Avoid fire/moonfire words
+and broad warm-color bans. Other44 prompts are unchanged.
+
 Solenne Omnic refinement from owner examples: dramatically denser luxury
 detailing and a bold asymmetric silhouette, colossal lotus-bell shield,
 brocade trains/crescent pauldrons/crown and seven-gate mandala, all wrapped
