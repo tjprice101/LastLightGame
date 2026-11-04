@@ -42,13 +42,13 @@ describe('approved Phase 0 catalog contract (not runtime effect verification)', 
     expect(entries.find(entry => entry.name === 'Breach Pendulum')?.ability).toContain('Multiple copies do not stack');
   });
   it('contains every entry exactly once in rarity/name order', () => {
-    expect(entries).toHaveLength(156);
-    expect(metadata).toHaveLength(156);
-    expect(new Set(entries.map((entry) => entry.name)).size).toBe(156);
-    expect(new Set(metadata.map((entry) => entry.id)).size).toBe(156);
+    expect(entries).toHaveLength(165);
+    expect(metadata).toHaveLength(165);
+    expect(new Set(entries.map((entry) => entry.name)).size).toBe(165);
+    expect(new Set(metadata.map((entry) => entry.id)).size).toBe(165);
     const tiers = ['Common', 'Rare', 'Legendary', 'Omnic', 'Calamitic'];
     expect(tiers.map((tier) => entries.filter((entry) =>
-      entry.rarity.replace(' (Master)', '') === tier).length)).toEqual([10, 15, 15, 102, 14]);
+      entry.rarity.replace(' (Master)', '') === tier).length)).toEqual([10, 15, 15, 111, 14]);
     const sorted = [...entries].sort((a, b) =>
       tiers.indexOf(a.rarity.replace(' (Master)', '')) -
       tiers.indexOf(b.rarity.replace(' (Master)', '')) || a.name.localeCompare(b.name));

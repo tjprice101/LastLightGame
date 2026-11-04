@@ -17,7 +17,7 @@ const expectedIdentity = [
   ['razor', 'Razor', 6, 'Tank', 'Chaotic', 'Night sword', '#bc9bef'],
   ['nerithe', 'Nerithe', 6, 'Attacker', 'Oceanic', 'Surveyor trident', '#54c9d4'],
   ['orvella', 'Orvella', 6, 'Tank', 'Botanic', 'Crystal mace', '#d2b59a'],
-  ['vaelor', 'Vaelor', 6, 'Attacker', 'Atmospheric', 'Resonance blade', '#e6d177'], ['ozriel', 'Ozriel', 7, 'Tank', 'Tranquilitic', 'Cathedral tower shield and glass halberd', '#e8e4ec'], ['ilvaris', 'Ilvaris', 7, 'Support', 'Atmospheric', 'Glass halo-lyre', '#f2eef4'], ['kaelith', 'Kaelith', 7, 'Attacker', 'Chaotic', 'Shatterglass greatscythe', '#f3f0f1'],
+  ['vaelor', 'Vaelor', 6, 'Attacker', 'Atmospheric', 'Resonance blade', '#e6d177'], ['caldrex', 'Caldrex', 6, 'Tank', 'Infernic', 'Forge gauntlets', '#ff8a2b'], ['solenne', 'Solenne', 6, 'Tank', 'Tranquilitic', 'Temple bell shield', '#b9a4d8'], ['myrthen', 'Myrthen', 6, 'Attacker', 'Botanic', 'Chained sickles', '#6fbf5a'], ['ozriel', 'Ozriel', 7, 'Tank', 'Tranquilitic', 'Cathedral tower shield and glass halberd', '#e8e4ec'], ['ilvaris', 'Ilvaris', 7, 'Support', 'Atmospheric', 'Glass halo-lyre', '#f2eef4'], ['kaelith', 'Kaelith', 7, 'Attacker', 'Chaotic', 'Shatterglass greatscythe', '#f3f0f1'],
 ] as const;
 
 const elementalThemes: Record<string, readonly string[]> = {

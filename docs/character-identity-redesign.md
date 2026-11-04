@@ -1,5 +1,15 @@
 # Character identity redesign: sixteen native kits (D-311 / D-316)
 
+## Current tooltip direction (2026-11-03)
+
+The [description standard](menus-and-inventory.md#in-game-description-standard-2026-11-03)
+applies to the full roster, including historical kits below: exact in-game
+effects without repeated shared rules, obvious deductions or technical
+commentary. Burn/Weaken are shared statuses; don't invent a bespoke status
+variant for each character. Preserve authored potency and meaningful source
+interactions. General Shield/status rules live in the player glossary.
+The [Phase1 kits](phase-1-war-kit-specification.md) follow the same standard.
+
 ## Status and direction
 
 **Implemented locally under D-316; publication remains separate.** The owner

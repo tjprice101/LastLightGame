@@ -1,7 +1,7 @@
 import { roleBonuses } from './role-perks';
 import { describe, expect, it } from 'vitest';
 import { describeFighter, fighters, resolveFighter, shatterGauge, type FighterDefinition } from './combat';
-import { nativeIdentities, nativeIdentityIds } from './native-identities';
+import { exactDirectDamageIds, nativeIdentities, nativeIdentityIds } from './native-identities';
 import { nativeBalance } from './native-balance';
 import { characterGrowthFactor, characterPotencyFactor } from './progression';
 import { starters, type StarterId } from './starters';
@@ -26,6 +26,9 @@ const coefficients: Record<StarterId, readonly (number | undefined)[]> = {
   nerithe: [1.8, 1.3, 2.8],
   orvella: [1.4, undefined, 2],
   vaelor: [1.7, 1.2, 2.6],
+  caldrex: [undefined, 2.55, undefined],
+  solenne: [2.4, undefined, 7.2],
+  myrthen: [2.72, 1.92, 12.48],
 };
 const actions = ['skill1', 'skill2', 'ultimate'] as const;
 
@@ -37,13 +40,13 @@ describe('approved native identities', () => {
     expect(new Set(nativeIdentityIds.map(id => nativeIdentities[id].playLoop)).size).toBe(starters.length);
   });
 
-  it('describes the shared tuned HP fractions and preserves stronger pending Seed rules', () => {
-    expect(nativeIdentities.tide.abilities.skill2.description).toContain(`${nativeBalance.tizu.shelter * 100}% of its maximum HP`);
-    expect(nativeIdentities.tide.abilities.ultimate.description).toContain(`${nativeBalance.tizu.oceanMemory * 100}% of their maximum HP`);
-    expect(nativeIdentities.sprout.passive.description).toContain(`${nativeBalance.flora.seed * 100}% of its holder’s maximum HP`);
-    expect(nativeIdentities.sprout.abilities.skill2.description).toContain(`${nativeBalance.flora.seed * 100}% of maximum HP`);
-    expect(nativeIdentities.sprout.abilities.skill2.description).toContain(`${nativeBalance.flora.empoweredSeed * 100}% for an [Empowered Seed]`);
-    expect(nativeIdentities.sprout.abilities.skill2.description).toContain('A new [Seed] never replaces a pending [Empowered Seed]');
+  it('describes tuned Health fractions concisely and preserves stronger pending Seed rules', () => {
+    expect(nativeIdentities.tide.abilities.skill2.description).toContain(`${nativeBalance.tizu.shelter * 100}% of its maximum Health`);
+    expect(nativeIdentities.tide.abilities.ultimate.description).toContain(`${nativeBalance.tizu.oceanMemory * 100}% of their maximum Health`);
+    expect(nativeIdentities.sprout.passive.description).toContain(`${nativeBalance.flora.seed * 100}% of its holder’s maximum Health`);
+    expect(nativeIdentities.sprout.abilities.skill2.description).toContain(`${nativeBalance.flora.seed * 100}% maximum Health`);
+    expect(nativeIdentities.sprout.abilities.skill2.description).toContain(`${nativeBalance.flora.empoweredSeed * 100}% for [Empowered Seeds]`);
+    expect(nativeIdentities.sprout.abilities.skill2.description).toContain('preserving any pending [Empowered Seed]');
     expect(nativeIdentities.sprout.abilities.ultimate.description).toContain(`${nativeBalance.flora.immediateHeal * 100}% of its maximum HP`);
     expect(nativeIdentities.sprout.abilities.ultimate.description).toContain(`${nativeBalance.flora.empoweredSeed * 100}% at the start of the next player turn`);
   });
@@ -92,7 +95,7 @@ describe('approved native identities', () => {
     for (const [index, action] of actions.entries()) {
       expect(grown.abilities[action].cooldown).toBe(0);
       const coefficient = coefficients[id][index];
-      const scale = nativeIdentities[id].selfStats ? 1 : nativeBalance.skillDamageScale * (action === 'ultimate' ? nativeBalance.lastFlare.damage : 1);
+      const scale = nativeIdentities[id].selfStats || exactDirectDamageIds.includes(id) ? 1 : nativeBalance.skillDamageScale * (action === 'ultimate' ? nativeBalance.lastFlare.damage : 1);
       expect(grown.abilities[action].strength.damageMultiplier).toBe(coefficient === undefined ? undefined : coefficient * scale);
       expect(grown.abilities[action].strength).toEqual(base.abilities[action].strength);
       expect(grown.abilities[action].strength).toEqual(nativeIdentities[id].abilities[action].strength);

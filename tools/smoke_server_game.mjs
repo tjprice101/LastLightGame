@@ -49,7 +49,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--loadouts')) {
+  if (process.argv.includes('--phase-one-war')) {
+    await smokePhaseOneWar(client, created.user.id, username);
+  } else if (process.argv.includes('--loadouts')) {
     let response = await call({ kind: 'bootstrap', starterId: 'ember' }, 0);
     const transact = async operation => {
       response = await call(operation, response.revision);
@@ -414,6 +416,89 @@ try {
   }
   if (failures.length) throw new Error(`Hosted smoke cleanup failed for disposable identity IDs: ${failures.join(', ')}`);
   console.log('Hosted smoke identities and cascading gameplay records removed.');
+}
+
+async function smokePhaseOneWar(firstClient, firstId, firstUsername) {
+  const characters = ['caldrex', 'solenne', 'myrthen'];
+  const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
+  for (const masterIndex of [1, 2, 3]) {
+    let client = firstClient, userId = firstId, username = firstUsername;
+    if (masterIndex > 1) {
+      username = `war_${randomUUID().replaceAll('-', '').slice(0, 10)}`;
+      const password = randomUUID() + randomUUID(), email = `${username}@example.invalid`;
+      const made = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { username } });
+      if (made.error || !made.data.user) throw new Error('War smoke identity creation failed.');
+      userId = made.data.user.id; ids.push(userId);
+      client = createClient(url, clientKey, { auth: { persistSession: false } });
+      if ((await client.auth.signInWithPassword({ email, password })).error) throw new Error('War smoke authentication failed.');
+    }
+    let game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
+    Object.assign(game.account.characters, Object.fromEntries(characters.map(id => [id, { level: 105, evolution: 6 }])));
+    game.account.squad = [...characters];
+    game.account.storyCompleted = 120;
+    game.account.warStages = Object.fromEntries(characters.map(id => [id, 10]));
+    game.account.masterConduits = Object.fromEntries(characters.flatMap(id =>
+      [1, 2, 3].map(index => [`master-${id}-${index}`, 1])));
+    game.account.masterEquipment = Object.fromEntries(characters.map(id => [id, `master-${id}-${masterIndex}`]));
+    game = resolveOperation(game, { kind: 'enter', activity: { kind: 'training' } }, entropy).game;
+    for (const ally of game.run.session.state.allies) ally.shatter = 100;
+    for (const enemy of game.run.session.state.enemies) {
+      enemy.stats.health = enemy.hp = 1000000000;
+      enemy.stats.defense = enemy.stats.damage = 100;
+      enemy.stats.crit = 0;
+    }
+    assert.ok(ids.includes(userId), 'Only disposable identities may receive fixtures');
+    const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+    assert.equal(seeded.error, null);
+    async function invoke(operation, revision, requestId = randomUUID()) {
+      const result = await client.functions.invoke('game-operation', {
+        body: { operation, expectedRevision: revision, requestId },
+      });
+      if (result.error) throw new Error(`Hosted War ${operation.kind} failed (${result.error.context?.status ?? 'transport'}).`);
+      return result.data;
+    }
+    let response = await invoke({ kind: 'read' }, 0);
+    const initialAccount = structuredClone(response.account);
+    assert.deepEqual(response.session.state.allies.map(ally => ally.id), characters);
+    assert.equal(response.session.state.conduitRulesVersion, conduitRulesVersion);
+    assert.deepEqual(response.account.masterEquipment, game.account.masterEquipment);
+    async function compare(operation) {
+      const expected = resolveOperation(game, operation, entropy);
+      const revision = response.revision, requestId = randomUUID();
+      response = await invoke(operation, revision, requestId);
+      assert.deepEqual(response.result, JSON.parse(JSON.stringify(expected.response.result)));
+      assert.deepEqual(response.session.state, JSON.parse(JSON.stringify(expected.response.session.state)));
+      assert.deepEqual(response.account, initialAccount);
+      assert.deepEqual(await invoke(operation, revision, requestId), response);
+      game = expected.game;
+    }
+    const runId = response.session.runId, targetId = response.session.state.enemies[0].id;
+    for (const [actorId, action] of [['caldrex', 'skill1'], ['solenne', 'skill2'], ['myrthen', 'skill1']]) {
+      await compare({ kind: 'act', runId, actorId, action, targetId });
+    }
+    await compare({ kind: 'endTurn', runId });
+    for (let round = 0; round < 2; round++) {
+      for (const actorId of characters) await compare({ kind: 'act', runId, actorId, action: 'light', targetId });
+      await compare({ kind: 'endTurn', runId });
+    }
+    for (const actorId of characters) await compare({ kind: 'act', runId, actorId, action: 'ultimate', targetId });
+    await compare({ kind: 'endTurn', runId });
+    const checkpoint = await invoke({ kind: 'checkpoint' }, response.revision);
+    assert.deepEqual(checkpoint.session, response.session);
+    response = await invoke({ kind: 'quit', runId }, response.revision);
+    for (const character of characters) {
+      response = await invoke({ kind: 'enter', activity: { kind: 'war', character, stage: 10 } }, response.revision);
+      assert.equal(response.session.state.enemies[0].level, 140);
+      assert.ok(response.session.state.enemies[0].art.includes(character));
+      response = await invoke({ kind: 'quit', runId: response.session.runId }, response.revision);
+    }
+    const persisted = (await invoke({ kind: 'read' }, response.revision)).account;
+    assert.deepEqual(persisted, response.account);
+    for (const field of ['characters', 'squad', 'masterConduits', 'masterEquipment', 'fractalis', 'lycalis']) {
+      assert.deepEqual(persisted[field], initialAccount[field], `Trial entry preserves ${field}`);
+    }
+  }
+  console.log(`Hosted Phase1 War passed: rules${conduitRulesVersion}, all three native kits with nine equipped Masters, exact local/authority events and state, seeded RNG parity, action/turn idempotency, checkpoint and all three Lv140 trial entries. Controlled disposable fixtures only, not a balance or clear-rate experiment.`);
 }
 
 async function smokePhaseZero(client, userId, username) {

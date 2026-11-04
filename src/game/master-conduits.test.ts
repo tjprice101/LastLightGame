@@ -42,15 +42,15 @@ function masterState(id: MasterConduitId) {
 
 describe('character Masters and chest contracts', () => {
   it('has exactly three unique Omnic Masters for each eligible Element-Bearer, outside the ordinary catalog', () => {
-    expect(masterConduits).toHaveLength(57);
-    expect(new Set(masterConduits.map(entry => entry.id)).size).toBe(57);
-    expect(new Set(masterConduits.map(entry => entry.name)).size).toBe(57);
+    expect(masterConduits).toHaveLength(66);
+    expect(new Set(masterConduits.map(entry => entry.id)).size).toBe(66);
+    expect(new Set(masterConduits.map(entry => entry.name)).size).toBe(66);
     for (const character of starters) expect(masterConduits.filter(entry => entry.character === character.id)).toHaveLength(3);
     expect(masterConduits.every(entry => entry.rarity === 'Omnic' && entry.art === `master-conduits/${entry.id}.png`)).toBe(true);
     expect(conduits).toHaveLength(99);
   });
   it('gives every Master a distinct complete effect within each eligible character', () => {
-    expect(new Set(masterConduits.map(entry => entry.effect)).size).toBe(57);
+    expect(new Set(masterConduits.map(entry => entry.effect)).size).toBe(66);
     for (const character of starters) {
       const own = masterConduits.filter(entry => entry.character === character.id);
       expect(new Set(own.map(entry => entry.effect)).size).toBe(3);
@@ -218,14 +218,14 @@ describe('all Master rules and frozen sessions', () => {
     expect(team).toContain('Always active · Omnic Master');
     expect(team).not.toContain('Master slot · Reserved');
     expect(inventoryView(account)).toContain('data-open-master-chest');
-    expect(archives(account, 'conduits').match(/data-archive-master=/g)).toHaveLength(57);
+    expect(archives(account, 'conduits').match(/data-archive-master=/g)).toHaveLength(66);
     const { owner } = masterState('master-ember-2');
     expect(unitReadout(owner, true)).not.toContain('Astral Reserve');
     expect(team).toMatch(/assets\/master-conduits\/master-ember-2\.png\?v=[0-9a-f]{16}" alt="Cinderstar Genesis Engine"/);
     expect(inventoryView(account)).toMatch(/assets\/master-conduits\/grand-master-chest\.png\?v=[0-9a-f]{16}/);
     expect(inventoryView(account)).not.toContain('Artwork pending');
     for (const entry of masterConduits) expect(existsSync(`public/assets/${entry.art}`)).toBe(entry.id in masterConduitArtRevisions);
-    expect(masterConduits.filter(entry => entry.id in masterConduitArtRevisions)).toHaveLength(57);
+    expect(masterConduits.filter(entry => entry.id in masterConduitArtRevisions)).toHaveLength(66);
     expect(existsSync('public/assets/master-conduits/grand-master-chest.png') && existsSync('public/assets/master-conduits/astral-reserve.png')).toBe(true);
     expect(team).not.toMatch(/assets\/conduits\/master-/);
   });

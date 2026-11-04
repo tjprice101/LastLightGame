@@ -1,5 +1,13 @@
 # Conduits and Conduit Store
 
+## Description and scaling clarification (2026-11-03)
+
+Use the [global in-game tooltip standard](menus-and-inventory.md#in-game-description-standard-2026-11-03):
+exact effects/values/limits without redundant shared rules or deductions.
+Conduit-generated effects do not automatically scale with Skill Power.
+Owner explicitly permits existing Master-specific scaling and enhancements
+to native abilities; this is not a request to nerf existing Masters.
+
 ## Current Calamitic equipment rules (D-435 Section 4)
 
 The catalog contains 99 ordinary-slot Conduits?including 14 universal

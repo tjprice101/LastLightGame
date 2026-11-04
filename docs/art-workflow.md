@@ -1,5 +1,47 @@
 # Art and asset workflow
 
+## Delivered Phase1 War artwork (2026-11-03)
+
+All45 owner-delivered RGB PNGs for Caldrex, Solenne and Myrthen are archived
+byte-for-byte under `Art/source/phase1-war`:18 portraits,12 ability icons,
+nine Master icons, three trial headers and three arenas. Reviewed exports use
+stable runtime IDs in the matching `public/assets` categories. No other
+character's image is substituted. Delivered appearance is authoritative even
+where hair, palette or powers differ from the earlier written proposals.
+
+`tools/intake_phase1_war_art.py` owns reproduction.
+`Art/provenance/phase1-war-art-settings.json` records per-source connected keys,
+row gradients, individually reviewed enclosed gaps and two empty frame fixes.
+`Art/provenance/phase1-war-art-intake.json` records original/export SHA-256,
+dimensions and review notes. Every source was archived and its bytes verified
+before its exact root delivery file was removed. All scenes preserve original
+opaque PNG bytes. Portraits use960px RGBA canvases; icons256px.
+
+Review dark/light contact sheets and full-size compositions, not alpha alone.
+Preserve Myrthen's blue-white seasonal powers, green/turquoise metal and
+Seedtrace's authored blue cast shadow, plus Solenne's pale hair/silver/pink
+metal and Caldrex's gold/shadows. Similar background colors inside the design
+are not permission for global color deletion. Solenne's Last Flare needs its
+reviewed outer-frame cleanup and explicit bell-ring gaps. Supplied alpha, if
+delivered later, bypasses color removal. Some tips are clipped in the originals;
+padding does not recreate missing pixels.
+
+Reproduction/review:
+
+```powershell
+python tools\intake_phase1_war_art.py --review <review-directory>
+python tools\intake_phase1_war_art.py --write-revisions
+python tools\master_conduit_art_revisions.py --write
+python -m unittest discover -s tools -p test_phase1_war_intake.py
+```
+
+`prepare_sprite` routes these sources through the same reviewed cleaner.
+Shared path-keyed byte revisions cover all45 assets; the character and Master
+revision maps are also refreshed. Facing metadata preserves genuine frontal
+poses and mirrors directional images only. Generate matching AVIFs through
+the normal build pipeline. Historical art-pending statements below are
+superseded for this delivery.
+
 ## Character-first wardrobe and evolution (2026-11-03)
 
 Outfit uniqueness is as important as weapons/powers. Do not prescribe armor,

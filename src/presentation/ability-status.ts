@@ -46,6 +46,11 @@ export const nativeAbilityStatuses: Record<StarterId, Partial<Record<NativeSlot,
     skill2: [['native-orvella-foundation', 'Foundation']], ultimate: [['native-orvella-foundation', 'Foundation']] },
   vaelor: { passive: [['native-vaelor-tune', 'Tune'], ['native-vaelor-rise', 'Rise'], ['native-vaelor-crescendo', 'Crescendo']],
     skill1: [['native-vaelor-tune', 'Tune']], skill2: [['native-vaelor-rise', 'Rise']], ultimate: [['native-vaelor-crescendo', 'Crescendo']] },
+  caldrex: { passive: [[undefined, 'Heat']], skill1: [['ward', 'Shield'], [undefined, 'Taunt']], skill2: [[undefined, 'Heat'], ['burn', 'Burn']],
+    ultimate: [[undefined, 'Heat'], ['ward', 'Shield'], [undefined, 'Taunt'], ['burn', 'Burn']] },
+  solenne: { passive: [[undefined, 'Stillness']], skill1: [['suppression', 'Weaken'], [undefined, 'Taunt']], skill2: [[undefined, 'Stillness'], ['ward', 'Shield']],
+    ultimate: [[undefined, 'Stillness'], ['ward', 'Shield']] },
+  myrthen: { passive: [[undefined, 'Season']], skill1: [[undefined, 'Reaper’s Claim'], [undefined, 'Season']], skill2: [[undefined, 'Season']], ultimate: [[undefined, 'Season']] },
 };
 
 function nativeStatusList(character: string | undefined, slot: NativeSlot): readonly NativeStatus[] {

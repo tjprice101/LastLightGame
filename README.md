@@ -4,6 +4,18 @@ An original cinematic 2D gacha RPG inspired by Brave Frontier.
 
 ## Current state and art direction
 
+Caldrex, Solenne and Myrthen now have playable kits, nine personal Masters,
+three Elemental War trials and all45 installed delivered artworks. See the
+[current handoff](docs/handoff.md) for validation/publication and the
+[intake contract](docs/art-workflow.md#delivered-phase1-war-artwork-2026-11-03)
+for source preservation and reviewed cleanup. Story work remains paused.
+
+All kit/equipment descriptions follow the
+[concise in-game tooltip standard](docs/menus-and-inventory.md#in-game-description-standard-2026-11-03):
+exact effects, not vague summaries or repeated shared rules. Burn/Weaken are
+shared statuses. Existing explicit Master-specific Skill Power scaling remains
+valid; do not assume all generated Conduit effects receive that scaling.
+
 Use the [documentation index](docs/README.md) and
 [current handoff](docs/handoff.md) for implemented behavior and verification.
 The original prototype overview below is a superseded historical snapshot,

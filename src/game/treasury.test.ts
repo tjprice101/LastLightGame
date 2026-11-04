@@ -134,7 +134,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     expect(gameplayHub(account)).toContain('data-infusion="treasury"');
     expect(gameplayHub(account)).toContain('30,000-60,000 at Stage 25');
     expect(gameplayHub(account)).toContain('assets/banners/treasury-banner.png');
-    expect(archives(account).match(/data-archive-character=/g)).toHaveLength(114);
+    expect(archives(account).match(/data-archive-character=/g)).toHaveLength(132);
   });
   it('creates base EBs and material bundles with larger Rare duplicate conversions without modifying old progress', () => {
     const saved = funded();

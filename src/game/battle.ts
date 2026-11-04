@@ -34,11 +34,11 @@ import { calamityEncounter, calamityPatterns, calamityChest, type CalamityActivi
 import { initializeConduits, refreshConduitStats, equipped, gear, value, effectiveDefense, nativeTargetDefense, afterConduitImpact, conduitActionCost, conduitActionBlocked, recoveryNormal,
   prepareConduitAction, conduitCriticalHit, recordConduitHit, finishConduitAction, applyConduitBurn, applyConduitWeaken,
   nativeHeal, nativeShield, nativeGauge, supportEffect, conduitTurnStart, conduitIncoming, conduitBurnTick, afterConduitBurn,
-  conduitDeaths, forcedConduitTarget, conduitSuppressSkill, expireNativeShields, type ConduitRuntimeState, type ConduitActivation } from './conduit-runtime';
+  conduitDeaths, forcedConduitTarget, conduitSuppressSkill, expireNativeShields, payShield, type ConduitRuntimeState, type ConduitActivation } from './conduit-runtime';
 import { calamiticActionReason, calamiticExtraActionAvailable, calamiticNoLastFlareRecovery,
   calamiticShieldBypass, settleCalamiticDebt } from './calamitic-conduits';
 import { hasNativeIdentity, nativeAction, nativeAfterAction, nativePrimaryHit, nativeInstructionDamage, nativeCleanup,
-  nativeBurnPhase, nativeEnemyCompleted, nativePhaseEnd, nativeTurnStart, attachNativeView, type NativeView, type NativeKitState, type NativeDamageKind } from './native-kits';
+  nativeBurnPhase, nativeEnemyCompleted, nativeTrace, nativeStillnessMultiplier, nativePhaseEnd, nativeTurnStart, attachNativeView, type NativeView, type NativeKitState, type NativeDamageKind } from './native-kits';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
 
 export interface Combatant {
@@ -282,6 +282,7 @@ export function createBattle(seed = 1729, roster: readonly string[] = ['ember'],
       const unit = combatant(starter.id, starter.id, characterName(id, progress[id]?.evolution, progress[id]?.ascension?.stats === true), 'ally', kit.stats, starter.elementId);
       unit.kit = kit;
       if (id === 'vaelor') unit.native = { beat: 0, beatRound: 1 };
+      else if (id === 'myrthen') unit.native = { season: 'sprout' };
       unit.level = progress[id]?.level ?? null;
       unit.evolution = progress[id]?.evolution ?? 1;
       if (equipment[id]) unit.conduits = [...equipment[id]];
@@ -495,6 +496,17 @@ function hurt(target: Combatant, amount: number, source: Combatant, events: Batt
   }
 }
 
+export function periodicDamage(state: BattleState, target: Combatant, amount: number, source: Combatant, events: BattleEvent[], critical = false, elementalCritical = false, origin: 'native' | 'conduit' = 'native'): void {
+  if (amount <= 0 || target.hp <= 0) return;
+  const reduced = Math.max(1, Math.round(amount * nativeStillnessMultiplier(state, target, events)));
+  const absorbed = payShield(target, reduced);
+  hurt(target, reduced - absorbed, source, events, critical, true, 0, elementalCritical);
+  const hit = events[events.length - 1];
+  hit.origin = origin;
+  hit.shieldAbsorbed = absorbed;
+  if (absorbed) hit.message += ` ${formatStat(absorbed)} Shield absorbed.`;
+}
+
 function healTeam(state: BattleState, source: Combatant, amount: number, events: BattleEvent[], percent = false, ctx?: ConduitActivation): void {
   for (const ally of state.allies.filter((unit) => unit.hp > 0)) {
     nativeHeal(state, source, ally, percent ? Math.max(1, Math.round(ally.stats.health * amount)) : amount, events, !percent, ctx);
@@ -676,11 +688,20 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   const strength = action === 'light' ? null : definition.abilities[action].strength;
   const events: BattleEvent[] = [];
   const name = action === 'light' ? basicActionName(actor.definitionId, action) : definition.abilities[action].name;
-  const paid = actionGaugeCost(actor, action, state, targetId);
+  let paid = actionGaugeCost(actor, action, state, targetId);
   const nativeAll = native ? nativeAbility?.targets === 'all-enemies' &&
     !(phaseZeroStatsReady && actor.definitionId === 'ember' && action === 'ultimate' && equipped(actor, 'master-ember-2'))
     : !actor.captured && (action === 'ultimate' || (action === 'skill2' && actor.definitionId === 'ember') ||
     (action !== 'light' && definition.abilities[action].targets === 'all-enemies'));
+  if (native && action === 'ultimate' && actor.definitionId === 'myrthen' && equipped(actor, 'master-myrthen-2') && paid > 0 &&
+      nativeTrace(state, actor, .05)) {
+    const cost = Math.round(actor.stats.health * .15);
+    if (actor.hp > cost) {
+      actor.hp -= cost;
+      paid = 0;
+      event(events, 'status', actor, actor, cost, `${actor.name}'s Seedtrace spends ${cost} Health instead of Elemental Gauge.`);
+    }
+  }
   actor.shatter -= paid;
   refreshConduitStats(state);
   const activation = prepareConduitAction(state, actor, action, paid, nativeAll);
@@ -878,7 +899,7 @@ export function endTurn(previous: BattleState): BattleResult {
       const rolled = kitBurn ? rollCritical(state, source.stats.crit) : { critical: false, elemental: false };
       const damage = conduitBurnTick(state, source, enemy) *
         (rolled.critical ? source.stats.critMultiplier * (rolled.elemental ? elementalCritFactor : 1) : 1);
-      hurt(enemy, Math.round(damage), source, events, rolled.critical, true, 0, rolled.elemental);
+      periodicDamage(state, enemy, Math.round(damage), source, events, rolled.critical, rolled.elemental, enemy.burn.origin === 'conduit' ? 'conduit' : 'native');
       events[events.length - 1].origin = enemy.burn.origin === 'conduit' ? 'conduit' : 'native';
       if (enemy.burn.origin !== 'conduit') pilotBurnDamage(state, source, priorHp - enemy.hp, events);
       afterConduitBurn(state, source, enemy, priorHp - enemy.hp, events);
@@ -1045,6 +1066,7 @@ export function nextWave(previous: BattleState): BattleResult {
   state.phase = 'player';
   for (const ally of state.allies) { delete ally.pilot; delete ally.native; }
   for (const ally of state.allies) if (ally.definitionId === 'vaelor') ally.native = { beat: 0, beatRound: state.round + 1 };
+  for (const ally of state.allies) if (ally.definitionId === 'myrthen' && !ally.captured) ally.native = { season: 'sprout' };
   for (const ally of state.allies) {
     delete ally.omnicMemory;
     delete ally.omnicProtection;

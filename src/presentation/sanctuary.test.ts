@@ -111,7 +111,7 @@ describe('full sanctuary UI', () => {
     expect(html.match(/data-infusion="/g)).toHaveLength(6);
     expect(html).toContain('data-page="battle"');
     expect(html.match(/class="activity-picker"/g)).toHaveLength(4);
-    expect(html.match(/data-activity-choice=/g)).toHaveLength(13);
+    expect(html.match(/data-activity-choice=/g)).toHaveLength(16);
     expect(html).toContain('TRANQUILITIC · PRISMATICA');
     expect(html).not.toContain('LUMINOUS');
     expect(html).toContain('data-information="gameplay-information"');

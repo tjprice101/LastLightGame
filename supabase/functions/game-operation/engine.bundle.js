@@ -520,6 +520,12 @@ var approvedConduitCatalog = {
     "element": "Botanic (actual gameplay element)",
     "ability": "[Normal Attack] taunts all enemies for the next [Enemy Turn]. Each enemy attack aimed at you during that turn grants the other allies 4% [Elemental Gauge]."
   },
+  "master-caldrex-1": {
+    "name": "Banked-Sun Pressure Accumulator",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Caldrex only)",
+    "ability": "Increase maximum [Heat] to 5. Gain +12% [Defense] per stored [Heat]. Caldrex gains +60% [Health] and +50% [Defense]."
+  },
   "master-sprout-2": {
     "name": "Briar Constellation Loom",
     "rarity": "Omnic (Master)",
@@ -532,11 +538,23 @@ var approvedConduitCatalog = {
     "element": "Atmospheric (named bearer's actual element; Master for Vaelor only)",
     "ability": "On [Tune], Vaelor's [Normal Attack] grants each other living ally +25% [Critical Rate] for their next [Attack Action]. On [Crescendo], it grants +40% [Critical Damage Multiplier] instead. Vaelor gains +30% [Critical Rate] and +45% [Elemental Gauge Gain]."
   },
+  "master-solenne-3": {
+    "name": "Cadence Differential Drive",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Solenne only)",
+    "ability": "When an enemy hit consumes [Stillness], restore 7% of maximum [Elemental Gauge] to each living squad member, once per [Enemy Turn]. When [The Last Reverberation] spends [Stillness], restore 3% of maximum [Elemental Gauge] per charge spent to each other living squad member. Solenne gains +40% [Health], +30 percentage points [Skill Power] and +15 percentage points [Skill Efficiency]."
+  },
   "infernic-cinder-testament": {
     "name": "Cinder Testament",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
     "ability": "Each time another ally damages an enemy carrying your [Burn] with a [Skill], that [Burn] gains +20% damage, up to +60%. Refreshing it keeps the accumulated bonus."
+  },
+  "master-caldrex-3": {
+    "name": "Cinderpulse Triage Converter",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Caldrex only)",
+    "ability": "When an allied ability-applied [Burn] tick damages an enemy's [Health] or [Shield], restore 8% maximum [Health] to all living squad members. Can occur once per [Enemy Turn] while Caldrex is alive. Burn detonations and Conduit damage do not trigger this effect. Caldrex gains +75% [Health] and +30 percentage points [Skill Power]."
   },
   "master-ember-2": {
     "name": "Cinderstar Genesis Engine",
@@ -549,6 +567,12 @@ var approvedConduitCatalog = {
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Disciple only)",
     "ability": "When an ally consumes Disciple's [Resolve], each other living ally gains 10% [Elemental Gauge]."
+  },
+  "master-caldrex-2": {
+    "name": "Counterstroke Recoil Foundry",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Caldrex only)",
+    "ability": "When an enemy drawn by Caldrex's taunt damages his [Health] or [Shield], retaliate for 90% of his [Direct Attack]. Retaliation can critically strike. Caldrex gains +50% [Health], +40% [Direct Attack] and +25 percentage points [Skill Power]."
   },
   "master-crinso-3": {
     "name": "Crimson Beauty Pyre Requiem",
@@ -814,6 +838,18 @@ var approvedConduitCatalog = {
     "element": "Tranquilitic (named bearer's actual element; Master for Bliss only)",
     "ability": "[Thousandfeather Stillness] grants each other living ally +25% [Skill Efficiency] for their next [Skill]. When cast in [Closing], that [Skill] also gains +1 turn [Skill Duration]. Bliss gains +25% [Skill Efficiency] and +35% [Elemental Gauge Gain]."
   },
+  "master-solenne-2": {
+    "name": "Quiet-Arc Shelter Projector",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Solenne only)",
+    "ability": "After Solenne uses either Skill or her Last Flare, grant the living squad member with the lowest [Health] percentage an additional [Shield] equal to 20% of their maximum [Health]. Solenne gains +75% [Health] and +25 percentage points [Skill Power]."
+  },
+  "master-myrthen-3": {
+    "name": "Reaping-Tide Recovery Dynamo",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Myrthen only)",
+    "ability": "When Myrthen's Normal Attack, Skill or Last Flare directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power]."
+  },
   "master-ozriel-1": {
     "name": "Refusal Sovereign Heartdrive",
     "rarity": "Omnic (Master)",
@@ -838,11 +874,23 @@ var approvedConduitCatalog = {
     "element": "Chaotic (actual gameplay element)",
     "ability": "Gain +55% [Skill Power] and +20% [Defense] per currently defeated [Squad Member]."
   },
+  "master-myrthen-1": {
+    "name": "Seasonwheel Harvest Transmission",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Myrthen only)",
+    "ability": "Increase [Harvest]'s bonus direct damage from 35% to 75%. After spending [Harvest], return to [Bloom] instead of [Sprout]. Myrthen gains +60% [Direct Attack] and +35 percentage points [Skill Power]."
+  },
   "secondbeat-rack": {
     "name": "Secondbeat Rupture Throne",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
     "ability": "After another ally damages an enemy, your next damaging [Skill] against that same enemy gains +35% [Skill Power]. Using it grants that ally 8% [Elemental Gauge]. +35% [Health] and +15% [Critical Rate]."
+  },
+  "master-myrthen-2": {
+    "name": "Seedtrace Pursuit Distributor",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Myrthen only)",
+    "ability": "After using either Skill or her Last Flare, Myrthen has a 10% chance to enter [Harvest]. [All That Ripens] has a 5% chance to consume 15% of Myrthen's maximum [Health] instead of [Elemental Gauge]. Requires enough Gauge to cast normally. If the Health cost would defeat her, use the normal Gauge cost instead. Recovery still applies. Myrthen gains +45% [Direct Attack] and +25 percentage points [Critical Rate]."
   },
   "luminous-seraph-mirror": {
     "name": "Seraph Mirror",
@@ -921,6 +969,12 @@ var approvedConduitCatalog = {
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Bliss only)",
     "ability": "In [Opening], [Warfeather Cut] grants each other living ally +25% [Critical Rate] for their next [Attack Action]. In [Closing], it heals every other living ally for 6% of their maximum [Health], before [Skill Power]. Bliss gains +85% [Direct Attack] and +25% [Critical Rate]."
+  },
+  "master-solenne-1": {
+    "name": "Stillpoint Inertial Governor",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Solenne only)",
+    "ability": "Increase [Held Stillness]'s damage reduction from 20% to 35% per charge consumed. Solenne gains +50% [Health] and +75% [Defense]."
   },
   "master-elise-3": {
     "name": "Storm Empress Execution Clock",
@@ -2339,6 +2393,42 @@ var conduitRedesign = {
     "description": "[Vaelor]'s [Normal Attack] lets the other ally with the most [Elemental Gauge] act again this player turn.",
     "ranges": []
   },
+  "master-caldrex-1": {
+    "description": "Increase maximum [Heat] to 5. Gain +12% [Defense] per stored [Heat]. Caldrex gains +60% [Health] and +50% [Defense].",
+    "ranges": []
+  },
+  "master-caldrex-2": {
+    "description": "When an enemy drawn by Caldrex's taunt damages his [Health] or [Shield], retaliate for 90% of his [Direct Attack]. Retaliation can critically strike. Caldrex gains +50% [Health], +40% [Direct Attack] and +25 percentage points [Skill Power].",
+    "ranges": []
+  },
+  "master-caldrex-3": {
+    "description": "When an allied ability-applied [Burn] tick damages an enemy's [Health] or [Shield], restore 8% maximum [Health] to all living squad members. Can occur once per [Enemy Turn] while Caldrex is alive. Burn detonations and Conduit damage do not trigger this effect. Caldrex gains +75% [Health] and +30 percentage points [Skill Power].",
+    "ranges": []
+  },
+  "master-solenne-1": {
+    "description": "Increase [Held Stillness]'s damage reduction from 20% to 35% per charge consumed. Solenne gains +50% [Health] and +75% [Defense].",
+    "ranges": []
+  },
+  "master-solenne-2": {
+    "description": "After Solenne uses either Skill or her Last Flare, grant the living squad member with the lowest [Health] percentage an additional [Shield] equal to 20% of their maximum [Health]. Solenne gains +75% [Health] and +25 percentage points [Skill Power].",
+    "ranges": []
+  },
+  "master-solenne-3": {
+    "description": "When an enemy hit consumes [Stillness], restore 7% of maximum [Elemental Gauge] to each living squad member, once per [Enemy Turn]. When [The Last Reverberation] spends [Stillness], restore 3% of maximum [Elemental Gauge] per charge spent to each other living squad member. Solenne gains +40% [Health], +30 percentage points [Skill Power] and +15 percentage points [Skill Efficiency].",
+    "ranges": []
+  },
+  "master-myrthen-1": {
+    "description": "Increase [Harvest]'s bonus direct damage from 35% to 75%. After spending [Harvest], return to [Bloom] instead of [Sprout]. Myrthen gains +60% [Direct Attack] and +35 percentage points [Skill Power].",
+    "ranges": []
+  },
+  "master-myrthen-2": {
+    "description": "After using either Skill or her Last Flare, Myrthen has a 10% chance to enter [Harvest]. [All That Ripens] has a 5% chance to consume 15% of Myrthen's maximum [Health] instead of [Elemental Gauge]. Requires enough Gauge to cast normally. If the Health cost would defeat her, use the normal Gauge cost instead. Recovery still applies. Myrthen gains +45% [Direct Attack] and +25 percentage points [Critical Rate].",
+    "ranges": []
+  },
+  "master-myrthen-3": {
+    "description": "When Myrthen's Normal Attack, Skill or Last Flare directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power].",
+    "ranges": []
+  },
   "master-ozriel-1": {
     "description": "When [Refusal] keeps a squad member at 1 HP, that member also gains a [Shield] worth 20% of their maximum Health that lasts until broken. Ozriel gains +75% [Health] and +65% [Defense].",
     "ranges": []
@@ -3154,7 +3244,7 @@ var masterChest = {
   art: "master-conduits/grand-master-chest.png",
   description: "Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward."
 };
-var masterRulesText = `${masterChest.name}: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 57.`;
+var masterRulesText = `${masterChest.name}: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 66.`;
 function master(character, slot, name, design) {
   return {
     id: `master-${character}-${slot}`,
@@ -3455,6 +3545,60 @@ var masterConduits = [
     3,
     "Broken Sky Imperial Metronome",
     "A black-and-gold sky metronome with resonance-blade pendulum, twelve thunder-frequency wings and enormous nested conductor halos"
+  ),
+  master(
+    "caldrex",
+    1,
+    "Banked-Sun Pressure Accumulator",
+    "a squat black pressure engine, three amber crystal heat cartridges linked by brass piston manifolds, interlocking valve jaws, stepped radiator shutters"
+  ),
+  master(
+    "caldrex",
+    2,
+    "Counterstroke Recoil Foundry",
+    "a wide black recoil engine, two opposing brass impact pistons feeding an orange crystal compression chamber, toothed return flywheels and armored heat sinks"
+  ),
+  master(
+    "caldrex",
+    3,
+    "Cinderpulse Triage Converter",
+    "a triangular black conversion engine, three orange crystal intake turbines feeding one ash-white output cartridge, brass capillary pumps and nested cooling vanes"
+  ),
+  master(
+    "solenne",
+    1,
+    "Stillpoint Inertial Governor",
+    "a low silver gyroscopic engine, four flat rose-ivory damping plates around a lilac crystal flywheel, gold counterweight gears and black articulated stabilizers"
+  ),
+  master(
+    "solenne",
+    2,
+    "Quiet-Arc Shelter Projector",
+    "a crescent silver shielding engine, three rose-ivory shutter jaws around a lilac crystal lens, gold rack drives and overlapping flat defensive emitter plates"
+  ),
+  master(
+    "solenne",
+    3,
+    "Cadence Differential Drive",
+    "a compact silver differential engine, four interlocked gold escapement wheels linked to lilac crystal timing rails, rose-ivory piston housings and black drive belts"
+  ),
+  master(
+    "myrthen",
+    1,
+    "Seasonwheel Harvest Transmission",
+    "a jade three-lobed transmission engine, pink crystal germination cartridge and amber harvest rotor connected by bark-brown planetary gears, white faceted timing teeth"
+  ),
+  master(
+    "myrthen",
+    2,
+    "Seedtrace Pursuit Distributor",
+    "a long jade targeting machine, one amber crystal indexing drum feeding three articulated pink-tipped relay arms, brown rack rails and white tracking apertures"
+  ),
+  master(
+    "myrthen",
+    3,
+    "Reaping-Tide Recovery Dynamo",
+    "a broad jade recovery engine, paired amber sickle-shaped rotors feeding a pink crystal regeneration cartridge, white pump housings and brown geared Gauge flywheels"
   ),
   master(
     "ozriel",
@@ -3871,6 +4015,63 @@ var warCharacters = [
     color: "#e6d177",
     description: "An Atmospheric Element-Bearer shaped in Let\u2019s image, Vaelor finds Calm in the thunder choir with a resonance blade.",
     lore: { origin: "The towers of the thunder choir", story: "Vaelor listened in the thunder-choir towers for the missing rhythm between storms. With a small resonance blade he followed the silence, learning that Atmospheric means Calm: the clear interval in which a broken sky can be heard without being forced to sing. Let created Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole the same elements. Both factions seek their creators\u2019 souls, still separate and unfound; the contest has no winner. Vaelor follows the quiet frequencies around rumors of Let\u2019s soul, certain that the missing note must be heard before anyone can claim the final chord.", vow: "Even a broken sky can sing again.", awakening: "Quiet voltage finds its first rhythm, not its final chord." }
+  },
+  {
+    id: "caldrex",
+    stars: 6,
+    name: "Caldrex",
+    role: "Tank",
+    art: "caldrex",
+    title: "Wrath banked behind a closed furnace gate",
+    element: "Infernic",
+    elementId: "infernic",
+    weapon: "Forge gauntlets",
+    color: "#ff8a2b",
+    description: "An Infernic Element-Bearer shaped in Let\u2019s image, Caldrex banks Wrath in forge gauntlets and holds the furnace gate for his squad.",
+    lore: {
+      origin: "The abandoned kiln floors",
+      story: "Caldrex tended the last kiln on an abandoned forge floor, learning that Infernic is Wrath: heat that is safest when it is kept, measured and released only to protect others. With forge gauntlets he closes furnace gates around people the world has left exposed. Let created Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole those same elements. Both factions search for their creators\u2019 souls; neither has found one, and no one has won. Caldrex follows the warmth of Let\u2019s trail while keeping every gate behind him shut.",
+      vow: "No flame passes while I hold the gate.",
+      awakening: "The kiln stirs behind the gate; its keeper is not yet found."
+    }
+  },
+  {
+    id: "solenne",
+    stars: 6,
+    name: "Solenne",
+    role: "Tank",
+    art: "solenne",
+    title: "Peace held in the silence between two chimes",
+    element: "Tranquilitic",
+    elementId: "tranquilitic",
+    weapon: "Temple bell shield",
+    color: "#b9a4d8",
+    description: "A Tranquilitic Element-Bearer shaped in Let\u2019s image, Solenne keeps Peace with a temple bell held as a shield.",
+    lore: {
+      origin: "The moon-silver court",
+      story: "Solenne kept a temple bell in a moon-silver court and learned that Tranquilitic is Peace: not an absence of sound but a silence patient enough to be held. Her bell shield answers each blow with stillness before it rings. Let made Element-Bearers in his image; Rise made Elemental-Devourers in hers and stole the same elements. Both factions seek their creators\u2019 souls, still unfound and unreconciled. Solenne walks the quiet intervals around rumors of Let\u2019s soul, keeping the bell unstruck until it is needed.",
+      vow: "The bell rings only to keep you whole.",
+      awakening: "A quiet circle widens; its first chime is still to come."
+    }
+  },
+  {
+    id: "myrthen",
+    stars: 6,
+    name: "Myrthen",
+    role: "Attacker",
+    art: "myrthen",
+    title: "Joy and Life turn with every season",
+    element: "Botanic",
+    elementId: "botanic",
+    weapon: "Chained sickles",
+    color: "#6fbf5a",
+    description: "A Botanic Element-Bearer shaped in Let\u2019s image, Myrthen reaps Joy and Life through every season with chained sickles.",
+    lore: {
+      origin: "The terraced orchard floors",
+      story: "Myrthen worked the terraced orchards and learned that Botanic is Joy and Life as a cycle: sprout, bloom, harvest, and the return to sprout. Her chained sickles gather what has ripened without denying what must grow again. Let created Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole the same elements. Both factions seek their creators\u2019 souls; no one has been reunited with one and no one has won. Myrthen follows the turning seasons toward Let\u2019s trail, harvesting only what is ready.",
+      vow: "Every season gets its turn.",
+      awakening: "A fifth season stirs between harvest and sprout; its meaning is not yet known."
+    }
   }
 ];
 function isWarCharacter(value2) {
@@ -3900,12 +4101,18 @@ var warEvolutionTitles = {
     "Conductor of the Broken Sky",
     "Sovereign of the Final Frequency",
     "The Sky's Final Chord"
-  ]
+  ],
+  caldrex: ["Kiln Warden", "Banked Fire", "The Furnace Holds", "Bearer of the Closed Gate", "No Flame Passes", "The Last Kiln"],
+  solenne: ["Moonbell Keeper", "Between Two Chimes", "The Patient Circle", "Keeper of the Unstruck Bell", "A Silence Held", "The Bell That Stayed"],
+  myrthen: ["Season Reaper", "First Turning", "Bough and Blade", "Harvest in Motion", "The Orchard Remembers", "When All Seasons Meet"]
 };
 var warActionNames = {
   nerithe: { light: "Surveyor's Thrust" },
   orvella: { light: "Plumbline Strike" },
-  vaelor: { light: "Tuning Strike" }
+  vaelor: { light: "Tuning Strike" },
+  caldrex: { light: "Gate Bash" },
+  solenne: { light: "Bell Tap" },
+  myrthen: { light: "Sickle Cut" }
 };
 var warFighters = {
   nerithe: {
@@ -3934,6 +4141,33 @@ var warFighters = {
       skill1: { name: "Forked Cadence", description: "180% damage to one enemy with +20 percentage points critical chance.", cooldown: 0, strength: { damageMultiplier: 1.8, critBonus: 0.2 } },
       skill2: { name: "Resonance Cascade", description: "140% damage to all enemies.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.4 } },
       ultimate: { name: "Last Chord of the Sky", description: "330% damage to all enemies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3.3 } }
+    }
+  },
+  caldrex: {
+    stats: { health: 300, defense: 20, damage: 32, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
+    passive: { name: "Banked Heat", description: "Gain 1 Heat (max 3) when an enemy direct attack damages Caldrex\u2019s Health or Shield, once per enemy phase.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: "Close the Kiln", description: "Shield every living squad member and taunt eligible random single-target attacks for the next enemy phase; area-of-effect and scripted attacks are unchanged.", cooldown: 0, targets: "all-allies", strength: { shield: 1 } },
+      skill2: { name: "Cinder Discharge", description: "Spend all Heat to strike all enemies and Burn them.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.55 } },
+      ultimate: { name: "Nothing Beyond These Gates", description: "Spend all Heat for a squad shield, Defense and ally Burn pressure. Recover next turn.", cooldown: 0, targets: "all-allies", strength: { shield: 1 } }
+    }
+  },
+  solenne: {
+    stats: { health: 285, defense: 19, damage: 30, crit: 0.12, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
+    passive: { name: "Held Stillness", description: "Hold up to 4 Stillness; each hit consumes 1 to reduce its damage by 20%.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: "Answer the Bell", description: "Strike one enemy, Weaken it and taunt eligible random single-target attacks for the next enemy phase; area-of-effect and scripted attacks are unchanged.", cooldown: 0, strength: { damageMultiplier: 2.4, weakenFraction: 0.25 } },
+      skill2: { name: "Circle of Repose", description: "Gain 2 Stillness and shield the squad.", cooldown: 0, targets: "all-allies", strength: { shield: 1 } },
+      ultimate: { name: "The Last Reverberation", description: "Spend all Stillness to strike all enemies and shield the squad. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 7.2, shield: 1 } }
+    }
+  },
+  myrthen: {
+    stats: { health: 220, defense: 11, damage: 44, crit: 0.22, shatterCapacity: 100, critMultiplier: 1.65, elementalDamage: 0 },
+    passive: { name: "Turning Season", description: "Skills advance Sprout, Bloom and Harvest; Harvest empowers the next Skill or Last Flare.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: "Reaper\u2019s Claim", description: "Strike one enemy and mark it.", cooldown: 0, strength: { damageMultiplier: 2.72 } },
+      skill2: { name: "Turn the Bough", description: "Strike all enemies.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.92 } },
+      ultimate: { name: "All That Ripens", description: "Strike one enemy. Recover next turn.", cooldown: 0, strength: { damageMultiplier: 12.48 } }
     }
   }
 };
@@ -4040,8 +4274,8 @@ var calamiticFighters = {
     passive: { name: "Refusal", description: "Ozriel gains +65% Defense and +65% Health. While he is alive, each squad member (including Ozriel) survives one lethal hit per encounter with 1 HP.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
     abilities: {
       skill1: { name: "Pane of Absolution", description: "Deal 240% direct damage to one enemy, then reduce its direct damage by 50% with Weaken for the next two Enemy Turns.", cooldown: 0, strength: { damageMultiplier: 2.4, weakenFraction: 0.5 } },
-      skill2: { name: "Cathedral of Shards", description: "Give each living squad member a 90-strength Shield before Skill Power bonuses. Shields absorb damage before HP, last until broken and stack with existing Shields.", cooldown: 0, targets: "all-allies", strength: { shield: 90 } },
-      ultimate: { name: "The World Refuses", description: "Deal 455% direct damage to all enemies. Give each living squad member a 140-strength Shield before Skill Power bonuses; it absorbs damage before HP, lasts until broken and stacks with existing Shields. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 4.55, shield: 140 } }
+      skill2: { name: "Cathedral of Shards", description: "Grant each living squad member a 90-strength Shield, scaled by Skill Power.", cooldown: 0, targets: "all-allies", strength: { shield: 90 } },
+      ultimate: { name: "The World Refuses", description: "Deal 455% direct damage to all enemies. Grant each living squad member a 140-strength Shield, scaled by Skill Power. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 4.55, shield: 140 } }
     }
   },
   ilvaris: {
@@ -4049,7 +4283,7 @@ var calamiticFighters = {
     passive: { name: "Severed Prophecy", description: "Ilvaris gains +200% Health and +100% Defense. The whole squad deals 45% more damage to enemies with Fate-seared Mark, in addition to the Mark\u2019s own damage bonus.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
     abilities: {
       skill1: { name: "Unwritten Verse", description: "Deal 225% direct damage to one enemy, then add 1 Fate-seared Mark (max 5). Each stack makes it take 10% more squad damage. Marks last through the next two Enemy Turns; reapplying adds a stack and refreshes their duration.", cooldown: 0, strength: { damageMultiplier: 2.25 } },
-      skill2: { name: "Hymn of Broken Glass", description: "Heal each living squad member for 35% of their maximum HP. Increase their Critical Damage multiplier by 45% and Skill Power by 50 percentage points through the next Player Turn. Recasting heals again and refreshes the buffs without stacking them.", cooldown: 0, targets: "all-allies", strength: { healing: 0.35 } },
+      skill2: { name: "Hymn of Broken Glass", description: "Heal each living squad member for 35% of their maximum Health. Increase their Critical Damage multiplier by 45% and Skill Power by 50 percentage points through the next Player Turn. Recasting refreshes the buffs.", cooldown: 0, targets: "all-allies", strength: { healing: 0.35 } },
       ultimate: { name: "Tomorrow, Unwritten", description: "Deal 440% direct damage to all enemies. Heal each living squad member for 50% of their maximum HP and restore 10% of their Elemental Gauge capacity. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 4.4, healing: 0.5 } }
     }
   },
@@ -4057,9 +4291,9 @@ var calamiticFighters = {
     stats: { health: 240, defense: 13, damage: 50, crit: 0.22, shatterCapacity: 100, critMultiplier: 1.7, elementalDamage: 10 },
     passive: { name: "Reality Fault", description: "Kaelith gains +75% Skill Power and +5% Skill Critical Rate. Each of her direct hits adds 1 Fractalized Incision stack (max 3). Each stack makes that enemy take 10% more squad damage, up to 30%, until consumed by Glass Meridian.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
     abilities: {
-      skill1: { name: "Shatterfall", description: "Deal 456% direct damage to all enemies. Each hit adds 1 Fractalized Incision stack through Reality Fault (max 3 per enemy).", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 4.56 } },
+      skill1: { name: "Shatterfall", description: "Deal 456% direct damage to all enemies.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 4.56 } },
       skill2: { name: "Glass Meridian", description: "Deal 365% direct damage to one enemy, increased by 20% for each Fractalized Incision stack it already has (up to 60%). Consume all of its stacks after the hit, including the stack added by Reality Fault.", cooldown: 0, strength: { damageMultiplier: 3.65 } },
-      ultimate: { name: "Denial of Fate", description: "Deal 360% direct damage to all enemies. Each hit adds 1 Fractalized Incision stack through Reality Fault (max 3); existing stacks are not consumed. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3.6 } }
+      ultimate: { name: "Denial of Fate", description: "Deal 360% direct damage to all enemies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3.6 } }
     }
   }
 };
@@ -4352,12 +4586,12 @@ var nativeIdentities = {
     playLoop: "[Infernis] applies [Burn] that lasts across enemy phases; [Flame Arc] can deal its remaining damage at once.",
     passive: {
       name: "Unbroken Ember",
-      description: "[Burn] applied by [Infernis] lasts three enemy phases and deals its damage once per enemy phase, starting with the next one. Allied damage-over-time gains +100% damage per 30 levels of its source, fixed when applied. Reapplying it resets the duration to three phases and keeps the higher damage per phase; it never stacks."
+      description: "Allied damage-over-time gains +100% damage per 30 levels of its source, fixed when applied."
     },
     abilities: {
       skill1: ability("Cinder Cleave", "160% direct damage to one enemy, then apply [Burn] dealing 25% of [Infernis]\u2019s Attack per enemy phase for three enemy phases.", 1.6),
       skill2: ability("Flame Arc", "110% direct damage to all enemies. Each surviving enemy carrying [Infernis]\u2019s [Burn] immediately takes the damage of up to two of its remaining [Burn] phases, and those phases are removed. [Burn] applied by other characters is unaffected.", 1.1, "all-enemies"),
-      ultimate: ability("Last Flare: Dawnfire", "200% direct damage to all enemies, then apply [Burn] dealing 135% of [Infernis]\u2019s Attack per enemy phase for three enemy phases; an existing stronger [Burn] keeps its higher damage. [Burn] continues during the recovery turn while [Infernis] is alive.", 2, "all-enemies")
+      ultimate: ability("Last Flare: Dawnfire", "200% direct damage to all enemies, then apply [Burn] dealing 135% of [Infernis]\u2019s Attack per enemy phase for three enemy phases.", 2, "all-enemies")
     }
   },
   tide: {
@@ -4368,9 +4602,9 @@ var nativeIdentities = {
       description: "When a shield from [Tizu]\u2019s abilities fully absorbs an enemy\u2019s direct hit so that no HP is lost, the shielded ally gains 8 [Elemental Gauge]."
     },
     abilities: {
-      skill1: { ...ability("Undertow Thrust", "150% direct damage to one enemy and apply 25% [Weaken] for the next enemy phase. [Weaken] reduces the direct damage that enemy deals.", 1.5), strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
-      skill2: ability("Tidal Shelter", `Choose one living ally. It gains a shield worth ${nativeBalance.tizu.shelter * 100}% of its maximum HP. The shield lasts until broken; recasting adds another shield on top.`, void 0, "one-ally"),
-      ultimate: ability("Last Flare: Ocean Memory", `All living allies gain a shield worth ${nativeBalance.tizu.oceanMemory * 100}% of their maximum HP that lasts until broken and stacks with existing shields. The first direct hit each ally takes while this shield remains is reduced by 45% before the shield absorbs it.`, void 0, "all-allies")
+      skill1: { ...ability("Undertow Thrust", "150% direct damage to one enemy and apply 25% [Weaken] for the next enemy phase.", 1.5), strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
+      skill2: ability("Tidal Shelter", `Grant one living ally a Shield equal to ${nativeBalance.tizu.shelter * 100}% of its maximum Health.`, void 0, "one-ally"),
+      ultimate: ability("Last Flare: Ocean Memory", `Grant all living allies a Shield equal to ${nativeBalance.tizu.oceanMemory * 100}% of their maximum Health. Reduce the first direct hit each ally takes while this Shield remains by 45%.`, void 0, "all-allies")
     }
   },
   sprout: {
@@ -4378,11 +4612,11 @@ var nativeIdentities = {
     playLoop: "[Flora] plants [Seed] healing that restores HP at the start of the next player turn, or harvests it immediately with [Verdant Renewal].",
     passive: {
       name: "Root of Hope",
-      description: `Each living ally can hold one [Seed]. At the start of the next player turn, a [Seed] restores ${nativeBalance.flora.seed * 100}% of its holder\u2019s maximum HP and disappears, as long as [Flora] is alive. A [Seed] never stacks or revives. Planting a new [Seed] replaces the old one and resets its timing.`
+      description: `Each living ally can hold one [Seed]. At the start of the next player turn, it restores ${nativeBalance.flora.seed * 100}% of its holder\u2019s maximum Health while [Flora] is alive, then disappears. Planting another replaces the previous [Seed].`
     },
     abilities: {
-      skill1: ability("Briar Shot", "140% direct damage to one enemy, then plant a [Seed] on the living ally with the lowest HP percentage; ties go to the earlier squad position.", 1.4),
-      skill2: ability("Verdant Renewal", `Every existing [Seed] immediately heals its holder (${nativeBalance.flora.seed * 100}% of maximum HP, or ${nativeBalance.flora.empoweredSeed * 100}% for an [Empowered Seed]) and is removed. Then every living ally receives a new [Seed]. With no existing [Seed], the harvest heals nothing. A new [Seed] never replaces a pending [Empowered Seed].`, void 0, "all-allies"),
+      skill1: ability("Briar Shot", "140% direct damage to one enemy, then plant a [Seed] on the living ally with the lowest Health percentage.", 1.4),
+      skill2: ability("Verdant Renewal", `Harvest existing [Seeds], healing their holders for ${nativeBalance.flora.seed * 100}% maximum Health (${nativeBalance.flora.empoweredSeed * 100}% for [Empowered Seeds]). Then plant a [Seed] on each living ally, preserving any pending [Empowered Seed].`, void 0, "all-allies"),
       ultimate: ability("Last Flare: Worldseed", `Every living ally immediately heals ${nativeBalance.flora.immediateHeal * 100}% of its maximum HP, then receives an [Empowered Seed] that restores ${nativeBalance.flora.empoweredSeed * 100}% at the start of the next player turn while [Flora] is alive.`, void 0, "all-allies")
     }
   },
@@ -4395,7 +4629,7 @@ var nativeIdentities = {
     },
     abilities: {
       skill1: ability("Razor Gale", "180% direct damage to one enemy. If a [Cyclone] exists, it releases immediately on all living enemies and ends.", 1.8),
-      skill2: ability("Cyclone Weave", "Release any existing [Cyclone], then create a new [Cyclone] with 0 [Gust] lasting two enemy phases. When the second enemy phase ends, it releases on all living enemies. A [Cyclone] release deals 70% of [Atmoso]\u2019s Attack plus 30% per [Gust]. [Gust] never carries over to a new [Cyclone]. [Atmoso] must be alive for a release.", void 0, "all-enemies"),
+      skill2: ability("Cyclone Weave", "Release any existing [Cyclone], then create one with 0 [Gust]. After two enemy phases, it releases on all living enemies for 70% of [Atmoso]\u2019s Attack plus 30% per [Gust]. [Atmoso] must be alive for a release.", void 0, "all-enemies"),
       ultimate: ability("Last Flare: Sky Without End", "Release any active [Cyclone] at its current [Gust] count for three times its normal release damage, then deal 200% direct damage to all enemies.", 2, "all-enemies")
     }
   },
@@ -4409,7 +4643,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability("Voltstar Cut", "Throw one held [Shuriken] for 110% direct damage to the selected enemy; it lodges in that enemy. With no [Shuriken] held, deal 140% direct damage instead and neither [Shuriken] moves. Both [Shuriken] can lodge in the same enemy.", 1.1),
       skill2: ability("Crosscurrent Volley", "Recall every lodged [Shuriken]: each strikes its enemy for 90% of [Elise]\u2019s Attack. If both were in the same enemy, it takes one extra 60% strike. If both [Shuriken] are already held, deal 140% direct damage to the selected enemy instead. Recalled strikes generate no Gauge.", 1.4),
-      ultimate: ability("Last Flare: Infinite Thunderwheel", "Recall every lodged [Shuriken] with 270% strikes and a 180% same-enemy strike, then deal 260% direct damage to the selected enemy. Both [Shuriken] return to [Elise] afterward.", 2.6)
+      ultimate: ability("Last Flare: Infinite Thunderwheel", "Recall every lodged [Shuriken] with 270% strikes and a 180% same-enemy strike, then deal 260% direct damage to the selected enemy.", 2.6)
     }
   },
   bliss: {
@@ -4421,7 +4655,7 @@ var nativeIdentities = {
     },
     abilities: {
       skill1: ability("Warfeather Cut", "170% direct damage to one enemy. [Opening]: +25 percentage points Critical Rate for this attack. [Closing]: heal the most injured other living ally for 6% of its maximum HP. [Passing]: no bonus.", 1.7),
-      skill2: ability("Quietstorm Flourish", "120% direct damage to all enemies. [Opening]: living allies deal 10% more direct damage until this player turn ends. [Closing]: all living allies gain a stacking shield worth 6% of their maximum HP that lasts until broken. [Passing]: no bonus.", 1.2, "all-enemies"),
+      skill2: ability("Quietstorm Flourish", "120% direct damage to all enemies. [Opening]: living allies deal 10% more direct damage this player turn. [Closing]: grant all living allies a Shield equal to 6% of their maximum Health.", 1.2, "all-enemies"),
       ultimate: ability("Last Flare: Thousandfeather Stillness", "250% direct damage to all enemies. [Opening]: +45 percentage points Critical Rate for this attack. [Closing]: heal other living allies for 15% of their maximum HP. [Passing]: no bonus.", 2.5, "all-enemies")
     }
   },
@@ -4435,7 +4669,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability("Seismic Hammerfall", "190% direct damage to one enemy.", 1.9),
       skill2: ability("Citadel Mantle", "Place [Cover] on another living ally until the next enemy phase ends: 50% of the direct damage it takes, after Defense, is redirected to [Bruno]. Only one ally can hold this [Cover]; recasting moves it. If [Bruno] is the only living ally, he instead takes 20% less direct damage for that phase. Redirected damage cannot be redirected again.", void 0, "one-ally", true),
-      ultimate: ability("Last Flare: Worldwall Ascendant", "Place [Cover] on every other living ally for two enemy phases, redirecting 60% of each direct hit to [Bruno]; this replaces single-ally [Cover]. [Bruno] gains a shield worth 30% of his maximum HP that lasts until broken and stacks.", void 0, "all-allies")
+      ultimate: ability("Last Flare: Worldwall Ascendant", "Place [Cover] on every other living ally for two enemy phases, redirecting 60% of each direct hit to [Bruno]; this replaces single-ally [Cover]. Grant [Bruno] a Shield equal to 30% of his maximum Health.", void 0, "all-allies")
     }
   },
   disciple: {
@@ -4446,8 +4680,8 @@ var nativeIdentities = {
       description: "[Disciple] maintains one [Instruction] on one living ally, which can be [Disciple]. The ally\u2019s next action of any kind ([Normal Attack] or a skill) uses it up; otherwise it expires at the end of the next player turn. Giving a new [Instruction] replaces the old one. A new [Instruction] takes effect after the action that granted it."
     },
     abilities: {
-      skill1: ability("Thoughtspark Benediction", "Give one living ally [Strike]: its next action that deals damage deals 30% more direct damage. If its next action deals no damage, [Strike] is used up with no effect.", void 0, "one-ally"),
-      skill2: ability("Concord of Chaos", "Give one living ally [Shelter]: if its next action heals or shields, that healing or shielding is 35% larger. If its next action only deals damage, [Shelter] is used up with no effect. Healing and shields created by Conduits are not increased.", void 0, "one-ally"),
+      skill1: ability("Thoughtspark Benediction", "Give one living ally [Strike]: its next action deals 30% more direct damage.", void 0, "one-ally"),
+      skill2: ability("Concord of Chaos", "Give one living ally [Shelter]: its next action heals and Shields for 35% more. Does not increase Conduit-generated healing or Shields.", void 0, "one-ally"),
       ultimate: ability("Last Flare: Unbound Mindcrown", "Give [Resolve] to all living allies, replacing their current [Instruction]. Each ally\u2019s next action gains [Strike] (45% more direct damage), [Shelter] (52.5% more healing and shields) or both, matching what that action does. [Resolve] expires at the end of the next player turn.", void 0, "all-allies")
     }
   },
@@ -4459,7 +4693,7 @@ var nativeIdentities = {
       description: "The battle menu shows each living enemy\u2019s next scheduled special skill or ultimate and the enemy phase it is due, or states that none is scheduled."
     },
     abilities: {
-      skill1: ability("Gleamseal", "Place a [Seal] on one enemy: its next scheduled special skill or ultimate within three enemy phases deals 40% less direct damage, then the [Seal] ends. Its [Normal Attack] does not use the [Seal]. Recasting resets the duration and keeps the stronger [Seal]; it never stacks."),
+      skill1: ability("Gleamseal", "Place a [Seal] on one enemy for three enemy phases. Its next scheduled special skill or ultimate deals 40% less direct damage and consumes the [Seal]. Recasting refreshes it and keeps the stronger reduction."),
       skill2: ability("Eclipse Mandate", "100% direct damage to all enemies, then place a 25% [Seal] on each survivor, following the same rules as [Gleamseal].", 1, "all-enemies"),
       ultimate: ability("Last Flare: Final Dawn Verdict", "For two enemy phases, all living allies take 75% less direct damage from enemy ultimates. Enemy [Normal Attack] and other skills are unaffected.", void 0, "all-allies")
     }
@@ -4472,8 +4706,8 @@ var nativeIdentities = {
       description: "HP [Razor] loses to direct enemy hits is stored as [Wounds]. Damage absorbed by shields, damage redirected to him, [Burn], HP he pays himself and Conduit effects add no [Wounds]. Healing does not remove [Wounds]."
     },
     abilities: {
-      skill1: ability("Nightcleave", "160% direct damage to one enemy, then spend all [Wounds] for an extra strike that uses the spent amount as its Attack, reduced by Defense. With no [Wounds], only the first hit occurs.", 1.6),
-      skill2: ability("Eclipse Bastion", "[Razor] takes 30% less direct damage during the next enemy phase. If he lost HP to direct hits during that phase, he then gains a stacking shield equal to that HP that lasts until broken."),
+      skill1: ability("Nightcleave", "160% direct damage to one enemy, then spend all [Wounds] for an extra strike that uses the spent amount as its Attack.", 1.6),
+      skill2: ability("Eclipse Bastion", "[Razor] takes 30% less direct damage during the next enemy phase, then gains a Shield equal to the Health he lost to direct hits during that phase."),
       ultimate: ability("Last Flare: Unbroken Midnight", "220% direct damage to one enemy, then spend all [Wounds] for an extra strike dealing three times the damage of a strike using twice the spent amount as its Attack, reduced by Defense.", 2.2)
     }
   },
@@ -4486,8 +4720,8 @@ var nativeIdentities = {
     },
     abilities: {
       skill1: ability("Golden Thorn Volley", "160% direct damage to one enemy and mark it as [Quarry] until it is defeated or [Rosetta] marks another enemy. This hit counts as her contribution. Marking the same enemy again keeps this turn\u2019s count; marking a different enemy resets it.", 1.6),
-      skill2: ability("Crimson Skyfall", "200% direct damage to a living [Quarry], plus 25% for each other ally who hit it this player turn. With no living [Quarry], deal 160% direct damage to the selected enemy. Does not mark a [Quarry].", 2),
-      ultimate: ability("Last Flare: Rose Beyond the Sun", "300% direct damage to the [Quarry], or to the selected enemy if there is none. If at least two different allies hit the [Quarry] this player turn, those allies heal 15% of their maximum HP; other allies are not healed.", 3)
+      skill2: ability("Crimson Skyfall", "200% direct damage to a living [Quarry], plus 25% for each other ally who hit it this player turn. With no living [Quarry], deal 160% direct damage to the selected enemy.", 2),
+      ultimate: ability("Last Flare: Rose Beyond the Sun", "300% direct damage to the [Quarry], or to the selected enemy if there is none. If at least two different allies hit the [Quarry] this player turn, heal those allies for 15% of their maximum Health.", 3)
     }
   },
   thornia: {
@@ -4498,7 +4732,7 @@ var nativeIdentities = {
       description: "Each enemy can hold one [Thorn Trap] from [Thornia], with up to three charges. When that enemy finishes an action that deals direct damage to any ally, one charge is spent for a strike of 60% of [Thornia]\u2019s Attack. This happens once per enemy action, however many allies it hits. Damage absorbed by shields still counts; actions that deal no damage do not."
     },
     abilities: {
-      skill1: ability("Gilded Thorn Guard", "Place a [Thorn Trap] with three charges on the selected enemy for three enemy phases. Recasting resets it to three charges and three enemy phases and never adds more. Recasting on an [Empowered Thorn Trap] keeps it empowered."),
+      skill1: ability("Gilded Thorn Guard", "Place a [Thorn Trap] with three charges on the selected enemy for three enemy phases. Recasting refreshes its charges and duration, preserving an [Empowered Thorn Trap]."),
       skill2: ability("Shadow Rose Cleave", "170% direct damage to one enemy. If it has a [Thorn Trap], spend one charge for an extra strike of 80% of [Thornia]\u2019s Attack.", 1.7),
       ultimate: ability("Last Flare: Thousand-Rose Dominion", "140% direct damage to all enemies, then place an [Empowered Thorn Trap] with three charges on each survivor for three enemy phases. Its strikes deal 270% of [Thornia]\u2019s Attack.", 1.4, "all-enemies")
     }
@@ -4508,7 +4742,7 @@ var nativeIdentities = {
     playLoop: "Alternating [Golden Edge] and [Crimson Rupture] builds [Combo]; [Last Flare: Blossoming Cataclysm] spends it.",
     passive: {
       name: "Rose Duality",
-      description: "Using [Golden Edge] after [Crimson Rupture], or [Crimson Rupture] after [Golden Edge], adds 1 [Combo]. Using the same one of these two skills twice in a row resets [Combo] to 0. When there is no previous skill to compare (the first use, or after [Last Flare: Blossoming Cataclysm]), the skill starts a new chain at 0 [Combo]. [Normal Attack] does not affect the chain."
+      description: "Alternating [Golden Edge] and [Crimson Rupture] adds 1 [Combo]. Repeating either skill resets [Combo] to 0. The first use after battle starts or [Last Flare: Blossoming Cataclysm] begins a new chain at 0. [Normal Attack] does not affect the chain."
     },
     abilities: {
       skill1: ability("Golden Edge", "160% direct damage to one enemy. If [Crinso]\u2019s previous skill was [Crimson Rupture], this attack ignores 20% of the target\u2019s Defense. Then updates [Combo] as described in [Rose Duality].", 1.6),
@@ -4537,7 +4771,7 @@ var nativeIdentities = {
       description: "Only one [Foundation] can exist. While it has durability, it absorbs up to 20% of each direct hit on a living ally (after Defense), before that ally\u2019s shields, and loses durability equal to the amount absorbed. When one attack hits several allies at once, the absorbed amount is shared proportionally."
     },
     abilities: {
-      skill1: ability("Keystone Reversal", "140% direct damage to one enemy, then repair the [Foundation] by 8% of [Orvella]\u2019s maximum HP. With no [Foundation], deal 180% direct damage instead. Never creates a [Foundation].", 1.4),
+      skill1: ability("Keystone Reversal", "140% direct damage to one enemy, then repair the [Foundation] by 8% of [Orvella]\u2019s maximum Health. With no [Foundation], deal 180% direct damage instead.", 1.4),
       skill2: ability("Raise the Faultline", "Create a [Foundation] with durability equal to 30% of [Orvella]\u2019s maximum HP for three enemy phases. Recasting replaces it at full durability; it never stacks.", void 0, "all-allies"),
       ultimate: ability("Worldweight Citadel", "200% direct damage to all enemies. An existing [Foundation] is used up for an extra strike on each enemy that uses its remaining durability as Attack, reduced by Defense.", 2, "all-enemies")
     }
@@ -4552,10 +4786,50 @@ var nativeIdentities = {
     abilities: {
       skill1: ability("Forked Cadence", "170% direct damage to one enemy. On [Tune], +30 percentage points Critical Rate for this attack.", 1.7),
       skill2: ability("Resonance Cascade", "120% direct damage to all enemies. On [Rise], [Vaelor] deals 20% more direct damage until the end of his next player turn; recasting refreshes it and it never stacks.", 1.2, "all-enemies"),
-      ultimate: ability("Last Chord of the Sky", "260% direct damage to all enemies, or 340% on [Crescendo]. Usable on any [Beat]. After a cast on [Crescendo], the recovery turn falls on the following [Tune].", 2.6, "all-enemies")
+      ultimate: ability("Last Chord of the Sky", "260% direct damage to all enemies, or 340% on [Crescendo].", 2.6, "all-enemies")
+    }
+  },
+  caldrex: {
+    role: "Heat-banking tank",
+    playLoop: "[Caldrex] banks [Heat] when enemies hit him, shields and taunts random single-target attacks, then spends [Heat] for [Burn] strikes or a gate-wide shield.",
+    passive: {
+      name: "Banked Heat",
+      description: "Gain 1 [Heat] (maximum 3) when an enemy direct attack damages [Caldrex]\u2019s Health or Shield, once per enemy phase. Redirected damage and damage over time never grant [Heat]. [Heat] resets with each new encounter."
+    },
+    abilities: {
+      skill1: ability("Close the Kiln", "Shield every living squad member for 12% of their maximum HP, scaled by Skill Power. Taunt: during the next enemy phase, enemy attacks that would pick a random single target are directed at [Caldrex]; area-of-effect and scripted attacks are not overridden.", void 0, "all-allies"),
+      skill2: ability("Cinder Discharge", "Spend all [Heat]: 255% direct damage to all enemies plus 24% per [Heat] spent, and apply [Burn] to each enemy hit.", 2.55, "all-enemies"),
+      ultimate: ability("Nothing Beyond These Gates", "Spend all [Heat]. Shield every living squad member for 65% of their maximum HP plus 12% Defense per [Heat] spent for 2 turns (both scaled by Skill Power) and taunt for the next enemy phase (random single-target attacks only; area-of-effect and scripted attacks are not overridden). For the next 2 enemy phases, ability-applied [Burn] from allies deals 25% more while [Caldrex] lives; [Burn] detonations and Conduit damage are unchanged.", void 0, "all-allies")
+    }
+  },
+  solenne: {
+    role: "Stillness tank",
+    playLoop: "[Solenne] holds [Stillness] charges that soften each hit, then spends them for a bell-toll strike and squad shield.",
+    passive: {
+      name: "Held Stillness",
+      description: "Hold up to 4 [Stillness]. When [Solenne] takes direct or periodic damage, she consumes 1 [Stillness] to reduce that damage by 20% before shields. [Stillness] resets with each new encounter."
+    },
+    abilities: {
+      skill1: ability("Answer the Bell", "240% direct damage to one enemy, apply [Weaken], and taunt for the next enemy phase (random single-target attacks only; area-of-effect and scripted attacks are not overridden).", 2.4),
+      skill2: ability("Circle of Repose", "Gain 2 [Stillness] and shield every living squad member for 16% of their maximum HP, scaled by Skill Power.", void 0, "all-allies"),
+      ultimate: ability("The Last Reverberation", "Spend all [Stillness]: 720% direct damage plus 45% per [Stillness] spent to all enemies, and shield every living squad member for 24% of their maximum HP plus 4.5% per [Stillness] spent, scaled by Skill Power.", 7.2, "all-enemies")
+    }
+  },
+  myrthen: {
+    role: "Seasonal reaper",
+    playLoop: "[Myrthen] turns through [Sprout], [Bloom] and [Harvest] with Skills; [Harvest] empowers her next Skill or Last Flare.",
+    passive: {
+      name: "Turning Season",
+      description: "Each battle starts in [Sprout]. Using a Skill advances [Sprout] to [Bloom] to [Harvest]. In [Harvest], the next Skill or Last Flare deals 35% more direct damage, then returns to [Sprout]. Normal Attacks never advance the season; a Last Flare outside [Harvest] preserves it."
+    },
+    abilities: {
+      skill1: ability("Reaper\u2019s Claim", "272% direct damage to one enemy, then mark it with [Reaper\u2019s Claim] for 2 enemy phases: it takes 12% more native direct damage from squad attacks and abilities, not Conduit-generated damage or periodic damage. Only one enemy is marked at a time. In [Harvest], ignores 20% of the target\u2019s Defense.", 2.72),
+      skill2: ability("Turn the Bough", "192% direct damage to all enemies. In [Harvest], ignores 20% of their Defense.", 1.92, "all-enemies"),
+      ultimate: ability("All That Ripens", "1,248% direct damage to one enemy. In [Harvest], ignores 30% of its Defense.", 12.48)
     }
   }
 };
+var exactDirectDamageIds = ["caldrex", "solenne", "myrthen"];
 var directDescriptionCoefficients = {
   ozriel: [[240], [], [455]],
   ilvaris: [[225], [], [440]],
@@ -4575,12 +4849,15 @@ var directDescriptionCoefficients = {
   crinso: [[160], [200, 40, 240], [260, 45, 395]],
   nerithe: [[180], [130], [280]],
   orvella: [[140, 180], [], [200]],
-  vaelor: [[170], [120], [260, 340]]
+  vaelor: [[170], [120], [260, 340]],
+  caldrex: [[], [], []],
+  solenne: [[], [], []],
+  myrthen: [[], [], []]
 };
 for (const id of Object.keys(nativeIdentities)) {
   for (const [index, action] of ["skill1", "skill2", "ultimate"].entries()) {
     const definition = nativeIdentities[id].abilities[action];
-    const scale = isCalamiticCharacter(id) ? 1 : nativeBalance.skillDamageScale * (action === "ultimate" ? nativeBalance.lastFlare.damage : 1);
+    const scale = isCalamiticCharacter(id) || exactDirectDamageIds.includes(id) ? 1 : nativeBalance.skillDamageScale * (action === "ultimate" ? nativeBalance.lastFlare.damage : 1);
     if (definition.strength.damageMultiplier !== void 0) definition.strength.damageMultiplier *= scale;
     const coefficients = directDescriptionCoefficients[id][index];
     definition.description = definition.description.replace(/(\d+(?:\.\d+)?)%/g, (text2, amount) => coefficients.includes(Number(amount)) ? `${Number((Number(amount) * scale).toFixed(2))}%` : text2);
@@ -4682,7 +4959,16 @@ var omnicSelfStats = {
   "master-ilvaris-3": { skillPower: 0.55, gaugeGain: 0.55 },
   "master-kaelith-1": { skillPower: 0.55, damage: 0.45 },
   "master-kaelith-2": { skillEfficiency: 0.4, crit: 0.3 },
-  "master-kaelith-3": { skillPower: 0.45, gaugeGain: 0.45 }
+  "master-kaelith-3": { skillPower: 0.45, gaugeGain: 0.45 },
+  "master-caldrex-1": { health: 0.6, defense: 0.5 },
+  "master-caldrex-2": { health: 0.5, damage: 0.4, skillPower: 0.25 },
+  "master-caldrex-3": { health: 0.75, skillPower: 0.3 },
+  "master-solenne-1": { health: 0.5, defense: 0.75 },
+  "master-solenne-2": { health: 0.75, skillPower: 0.25 },
+  "master-solenne-3": { health: 0.4, skillPower: 0.3, skillEfficiency: 0.15 },
+  "master-myrthen-1": { damage: 0.6, skillPower: 0.35 },
+  "master-myrthen-2": { damage: 0.45, crit: 0.25 },
+  "master-myrthen-3": { damage: 0.4, health: 0.5, skillPower: 0.2 }
 };
 var omnicSquadStats = {
   "firstlight-cam": { gaugeGain: 0.5, defense: 0.4 },
@@ -6854,7 +7140,10 @@ function characterName(id, evolution = 1, riseBlessed = false) {
 var elementalWars = [
   { character: "nerithe", name: "The Sea Without a Shore", element: "oceanic" },
   { character: "orvella", name: "The Throne Beneath the World", element: "botanic" },
-  { character: "vaelor", name: "The Sky's Final Chord", element: "atmospheric" }
+  { character: "vaelor", name: "The Sky's Final Chord", element: "atmospheric" },
+  { character: "caldrex", name: "The Last Kiln", element: "infernic" },
+  { character: "solenne", name: "The Bell That Stayed", element: "tranquilitic" },
+  { character: "myrthen", name: "When All Seasons Meet", element: "botanic" }
 ];
 function warEncounter(character, stage) {
   const mode = elementalWars.find((entry) => entry.character === character);
@@ -7268,7 +7557,7 @@ function attachNativeView(state, event2) {
   for (const ally of state.allies) if (ally.native) units[ally.id] = structuredClone(ally.native);
   event2.nativeView = { round: state.round, units };
 }
-function fixed(state, owner, target, power2, kind, events, bypass = false, activation, stored = true) {
+function fixed(state, owner, target, power2, kind, events, bypass = false, activation, stored = true, origin = "native") {
   if (owner.hp <= 0 || target.hp <= 0 || power2 <= 0) return 0;
   const hit = activation ? conduitCriticalHit(state, owner, target, activation) : void 0;
   const rolled = hit ?? rollCritical(state, owner.stats.crit);
@@ -7286,7 +7575,7 @@ function fixed(state, owner, target, power2, kind, events, bypass = false, activ
     }
   }
   const flareDamage = activation?.action === "ultimate" ? nativeBalance.lastFlare.damage : 1;
-  const taken = kind === "burn" || phaseZeroStatsReady && activation && !stored ? 1 : nativeDamageTakenMultiplier(state, owner, target);
+  const taken = kind === "burn" || phaseZeroStatsReady && activation && !stored ? 1 : nativeDamageTakenMultiplier(state, owner, target, origin);
   const damage = bypass ? Math.round(power2 * flareDamage * taken * (critical ? criticalMultiplier : 1)) : damageAmount(
     attack,
     power2 / attack * flareDamage * taken,
@@ -7310,7 +7599,7 @@ function fixed(state, owner, target, power2, kind, events, bypass = false, activ
     amount: loss,
     critical,
     elementalCritical: elemental,
-    origin: "native",
+    origin,
     nativeKind: kind,
     periodic: kind === "burn",
     shieldRemaining: target.shield,
@@ -7391,7 +7680,7 @@ function nativeSupportMultiplier(state, owner) {
   const instruction = owner.native?.instruction;
   return instruction && instruction.throughRound >= state.round && living(state).some((unit) => unit.id === instruction.owner) && instruction.kind !== "strike" ? 1 + (phaseZeroStatsReady ? instruction.supportBonus ?? 0.35 : 0.35) : 1;
 }
-function nativeDamageTakenMultiplier(state, source, target) {
+function nativeDamageTakenMultiplier(state, source, target, origin = "native") {
   if (source.side !== "ally" || target.side !== "enemy") return 1;
   let multiplier = 1;
   const weakenOwner = target.weakened > 0 ? state.allies.find((owner) => owner.id === target.weakenSourceId && equipped(owner, "calamitic-ruinmark-censer")) : void 0;
@@ -7401,6 +7690,7 @@ function nativeDamageTakenMultiplier(state, source, target) {
     if (mark && mark.throughPhase >= state.round) multiplier *= (1 + 0.1 * mark.stacks) * 1.45;
     const faults = owner.native?.faults?.[target.id] ?? 0;
     multiplier *= 1 + 0.1 * faults;
+    if (origin === "native" && owner.hp > 0 && owner.native?.claim?.target === target.id && owner.native.claim.throughPhase >= state.round) multiplier *= 1.12;
   }
   return multiplier;
 }
@@ -7416,16 +7706,60 @@ function nativeRefusal(state, target, loss, events) {
   if (equipped(owner, "master-ozriel-1")) nativeShield(state, owner, target, target.stats.health * 0.2, events, { stack: true });
   return Math.max(0, target.hp - 1);
 }
+function nativeHeatCap(owner) {
+  return equipped(owner, "master-caldrex-1") ? 5 : 3;
+}
+function guardOnce(owner, key, round) {
+  const guards = nativeMemory(owner).guards ??= {};
+  if (guards[key] === round) return false;
+  guards[key] = round;
+  return true;
+}
+function nativeTrace(state, _owner, chance) {
+  return roll(state) < chance;
+}
+function nativeDefenseBonus(state, unit, baseDefense) {
+  if (unit.side !== "ally" || unit.hp <= 0) return 0;
+  let bonus = 0;
+  if (hasNativeIdentity(unit) && unit.definitionId === "caldrex" && equipped(unit, "master-caldrex-1"))
+    bonus += 0.12 * (unit.native?.heat ?? 0);
+  const buff = unit.native?.defenseBuff;
+  if (buff && buff.throughRound >= state.round) bonus += buff.fraction;
+  return bonus * baseDefense;
+}
+function nativeTauntTarget(state, enemy) {
+  const taunter = living(state).find((unit) => hasNativeIdentity(unit) && (unit.native?.tauntThrough ?? -1) >= state.round);
+  const owners = gear(enemy).owners;
+  if (taunter) owners.nativeTaunt = taunter.id;
+  else delete owners.nativeTaunt;
+  return taunter;
+}
+function warEnemyHit(state, enemy, events) {
+  let start = events.length - 1;
+  while (start >= 0 && !(events[start].kind === "attack" && events[start].source === enemy.id)) start--;
+  const strikes = events.slice(start + 1).filter((entry) => entry.kind === "damage" && entry.source === enemy.id && !entry.periodic && entry.origin !== "conduit" && entry.nativeKind !== "redirect" && !entry.message.includes("Conduit routing") && (entry.amount > 0 || (entry.shieldAbsorbed ?? 0) > 0));
+  for (const owner of living(state).filter((unit) => hasNativeIdentity(unit) && unit.definitionId === "caldrex")) {
+    if (!strikes.some((entry) => entry.target === owner.id)) continue;
+    const memory = nativeMemory(owner);
+    if ((memory.heat ?? 0) < nativeHeatCap(owner) && guardOnce(owner, "heat", state.round)) {
+      memory.heat = (memory.heat ?? 0) + 1;
+      status3(state, events, owner, owner, `${owner.name} banks Heat ${memory.heat}/${nativeHeatCap(owner)}.`);
+    }
+    if (equipped(owner, "master-caldrex-2") && (memory.tauntThrough ?? -1) >= state.round && gear(enemy).owners.nativeTaunt === owner.id)
+      fixed(state, owner, enemy, owner.stats.damage * 0.9, "revenge", events, false, void 0, true, "conduit");
+  }
+}
 function nativeAction(state, owner, action, targetId, events, direct, activation) {
   const memory = nativeMemory(owner);
   const target = state.enemies.find((enemy) => enemy.id === targetId && enemy.hp > 0);
   const ally = state.allies.find((unit) => unit.id === targetId && unit.hp > 0);
   const calamitic = isCalamiticCharacter(owner.definitionId);
-  const flareDamage = action === "ultimate" && !calamitic ? nativeBalance.lastFlare.damage : 1;
-  const flareSupport = action === "ultimate" ? nativeBalance.lastFlare.support : 1;
+  const warExact = exactDirectDamageIds.includes(owner.definitionId);
+  const flareDamage = action === "ultimate" && !calamitic && !warExact ? nativeBalance.lastFlare.damage : 1;
+  const flareSupport = action === "ultimate" && !warExact ? nativeBalance.lastFlare.support : 1;
   const hit = (coefficient, all = false, pierce = 0, crit = 0, chosen = target) => direct(
     all ? foes(state) : chosen ? [chosen] : [],
-    coefficient * (action === "light" || calamitic ? 1 : nativeBalance.skillDamageScale) * flareDamage,
+    coefficient * (action === "light" || calamitic || warExact ? 1 : nativeBalance.skillDamageScale) * flareDamage,
     Math.min(1, pierce * flareSupport),
     Math.min(1, crit * flareSupport)
   );
@@ -7451,7 +7785,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
     };
     recipient.burn = { ...burns[recipient.id], sourceId: owner.id, origin: "native" };
     resetConduitBurnStreak(owner, recipient);
-    status3(state, events, owner, recipient, `${recipient.name}: Infernis Burn, ${burns[recipient.id].damage} per phase for ${burns[recipient.id].turns} phases.`);
+    status3(state, events, owner, recipient, `${recipient.name}: Burn from ${owner.name}, ${burns[recipient.id].damage} per phase for ${burns[recipient.id].turns} phases.`);
   };
   if (action === "light") {
     hit(1);
@@ -7959,6 +8293,85 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       }
       if (action === "ultimate") hit((memory.beat ?? 0) === 2 ? 3.4 : 2.6, true);
       break;
+    case "caldrex": {
+      const spent = Math.min(nativeHeatCap(owner), memory.heat ?? 0);
+      const taunt = () => {
+        memory.tauntThrough = state.round + activation.skillDuration;
+        status3(state, events, owner, owner, `${owner.name} draws eligible single-target enemy attacks through enemy phase ${memory.tauntThrough}.`);
+      };
+      if (action === "skill1") {
+        for (const recipient of allies) shield(recipient, 0.12);
+        taunt();
+      }
+      if (action === "skill2") {
+        memory.heat = 0;
+        hit(2.55 + 0.24 * spent, true);
+        for (const enemy of foes(state)) burn(enemy, 0.25);
+        if (spent) status3(state, events, owner, owner, `${owner.name} spends ${spent} Heat.`);
+      }
+      if (action === "ultimate") {
+        memory.heat = 0;
+        for (const recipient of allies) {
+          shield(recipient, 0.65);
+          if (spent) nativeMemory(recipient).defenseBuff = {
+            fraction: 0.12 * spent * activation.skillPower,
+            throughRound: state.round + 1 + activation.skillDuration
+          };
+        }
+        taunt();
+        memory.burnBoostThrough = state.round + 1 + activation.skillDuration;
+        status3(state, events, owner, owner, `${owner.name} spends ${spent} Heat; allied ability Burn deals 25% more through enemy phase ${memory.burnBoostThrough}.`);
+      }
+      break;
+    }
+    case "solenne": {
+      const spent = Math.min(4, memory.stillness ?? 0);
+      if (action === "skill1") {
+        hit(2.4);
+        if (target?.hp) applyConduitWeaken(state, owner, target, 0.25, events, action, 1, activation);
+        memory.tauntThrough = state.round + activation.skillDuration;
+        status3(state, events, owner, owner, `${owner.name} draws eligible single-target enemy attacks through enemy phase ${memory.tauntThrough}.`);
+      }
+      if (action === "skill2") {
+        memory.stillness = Math.min(4, spent + 2);
+        status3(state, events, owner, owner, `${owner.name} holds ${memory.stillness}/4 Stillness.`);
+        for (const recipient of allies) shield(recipient, 0.16);
+      }
+      if (action === "ultimate") {
+        memory.stillness = 0;
+        hit(7.2 + 0.45 * spent, true);
+        for (const recipient of allies) shield(recipient, 0.24 + 0.045 * spent);
+        if (spent && equipped(owner, "master-solenne-3"))
+          for (const recipient of other) generatedGaugePercent(owner, recipient, 0.03 * spent, events, state);
+      }
+      if (equipped(owner, "master-solenne-2")) {
+        const lowest = [...allies].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+        if (lowest) generatedShield(owner, lowest, lowest.stats.health * 0.2, events, true);
+      }
+      break;
+    }
+    case "myrthen": {
+      const season = memory.season ?? "sprout";
+      const harvest = season === "harvest";
+      const bonus = harvest ? equipped(owner, "master-myrthen-1") ? 0.75 : 0.35 : 0;
+      const pierce = harvest ? action === "ultimate" ? 0.3 : 0.2 : 0;
+      if (action === "skill1") {
+        hit(2.72 * (1 + bonus), false, pierce);
+        if (target?.hp) {
+          memory.claim = { target: target.id, throughPhase: state.round + 1 + activation.skillDuration };
+          status3(state, events, owner, target, `${target.name}: Reaper\u2019s Claim, +12% direct damage taken from the squad through enemy phase ${memory.claim.throughPhase}.`);
+        }
+      }
+      if (action === "skill2") hit(1.92 * (1 + bonus), true, pierce);
+      if (action === "ultimate") hit(12.48 * (1 + bonus), false, pierce);
+      let next = season;
+      if (harvest) next = equipped(owner, "master-myrthen-1") ? "bloom" : "sprout";
+      else if (action !== "ultimate") next = season === "sprout" ? "bloom" : "harvest";
+      if (equipped(owner, "master-myrthen-2") && nativeTrace(state, owner, 0.1)) next = "harvest";
+      memory.season = next;
+      status3(state, events, owner, owner, `${owner.name} is in ${next[0].toUpperCase()}${next.slice(1)}.`);
+      break;
+    }
     default:
       throw new Error(`Missing native identity for ${owner.definitionId}.`);
   }
@@ -7995,6 +8408,12 @@ function nativeAfterAction(state, owner, action, priorInstruction, events) {
 }
 function nativePrimaryHit(state, attacker, target, effective, events, hits = 1) {
   if (!effective) return;
+  if (hasNativeIdentity(attacker) && attacker.definitionId === "myrthen" && target.side === "enemy" && target.hp <= 0 && attacker.hp > 0 && equipped(attacker, "master-myrthen-3") && foes(state).length > 0 && guardOnce(attacker, "reaping", state.round)) {
+    for (const ally of living(state)) {
+      generatedHeal(attacker, ally, ally.stats.health * 0.06, events, state);
+      generatedGaugePercent(attacker, ally, 0.05, events, state);
+    }
+  }
   if (hasNativeIdentity(attacker) && attacker.definitionId === "kaelith" && target.side === "enemy" && target.hp > 0) {
     const faults = nativeMemory(attacker).faults ??= {};
     faults[target.id] = Math.min(3, (faults[target.id] ?? 0) + hits);
@@ -8034,8 +8453,19 @@ function nativePrimaryHit(state, attacker, target, effective, events, hits = 1) 
     }
   }
 }
-function nativeIncomingMultiplier(state, enemy, target, action, events) {
+function nativeStillnessMultiplier(state, target, events) {
   let multiplier = 1;
+  if (hasNativeIdentity(target) && target.definitionId === "solenne" && target.hp > 0 && (target.native?.stillness ?? 0) > 0) {
+    target.native.stillness--;
+    multiplier *= 1 - (equipped(target, "master-solenne-1") ? 0.35 : 0.2);
+    status3(state, events, target, target, `${target.name} spends Stillness (${target.native.stillness}/4 remain).`);
+    if (equipped(target, "master-solenne-3") && guardOnce(target, "cadence", state.round))
+      for (const ally of living(state)) generatedGaugePercent(target, ally, 0.07, events, state);
+  }
+  return multiplier;
+}
+function nativeIncomingMultiplier(state, enemy, target, action, events) {
+  let multiplier = nativeStillnessMultiplier(state, target, events);
   if (target.native?.reduction && target.native.reduction.throughPhase >= state.round)
     multiplier *= phaseZeroStatsReady ? Math.max(0, 1 - target.native.reduction.fraction) : 1 - target.native.reduction.fraction;
   if (target.native?.bastion && target.native.bastion.throughPhase >= state.round)
@@ -8136,6 +8566,7 @@ function nativeEnemyCompleted(state, enemy, damaging, events) {
         events
       );
   }
+  warEnemyHit(state, enemy, events);
   if (!damaging) return;
   for (const owner of living(state).filter(hasNativeIdentity)) {
     const trap = owner.native?.traps?.[enemy.id];
@@ -8182,7 +8613,12 @@ function nativeBurnPhase(state, enemy, events) {
     burn.turns--;
     enemy.burn.turns = burn.turns;
     const previous = enemy.hp;
-    fixed(state, owner, enemy, tick, "burn", events, true);
+    const warded = living(state).some((unit) => hasNativeIdentity(unit) && unit.definitionId === "caldrex" && (unit.native?.burnBoostThrough ?? -1) >= state.round);
+    const hpAndShield = enemy.hp + enemy.shield;
+    fixed(state, owner, enemy, warded ? tick * 1.25 : tick, "burn", events, true);
+    const triage = living(state).find((unit) => hasNativeIdentity(unit) && unit.definitionId === "caldrex" && equipped(unit, "master-caldrex-3"));
+    if (triage && enemy.hp + enemy.shield < hpAndShield && guardOnce(triage, "triage", state.round))
+      for (const ally of living(state)) generatedHeal(triage, ally, ally.stats.health * 0.08, events, state);
     afterConduitBurn(state, owner, enemy, previous - enemy.hp, events);
     burn.turns = enemy.burn.turns;
     if (otherBurn) enemy.burn = otherBurn;
@@ -8222,6 +8658,9 @@ function nativePhaseEnd(state, events) {
       delete memory.bastion;
     }
     if (memory.cover && memory.cover.throughPhase <= state.round) delete memory.cover;
+    if (memory.tauntThrough !== void 0 && memory.tauntThrough <= state.round) delete memory.tauntThrough;
+    if (memory.burnBoostThrough !== void 0 && memory.burnBoostThrough <= state.round) delete memory.burnBoostThrough;
+    if (memory.claim && memory.claim.throughPhase <= state.round) delete memory.claim;
     if (memory.reduction && memory.reduction.throughPhase <= state.round) delete memory.reduction;
     if (memory.foundation && memory.foundation.throughPhase <= state.round) delete memory.foundation;
     for (const [id, trap] of Object.entries(memory.traps ?? {})) if (trap.throughPhase <= state.round || trap.charges <= 0) delete memory.traps[id];
@@ -8264,6 +8703,7 @@ function nativeTurnStart(state, events) {
     finishNativeHealing(state, owner, healing, events);
   }
   for (const ally of state.allies) if (ally.native?.hymn && ally.native.hymn.throughRound < state.round) delete ally.native.hymn;
+  for (const ally of state.allies) if (ally.native?.defenseBuff && ally.native.defenseBuff.throughRound < state.round) delete ally.native.defenseBuff;
   for (const ally of state.allies) if (ally.native?.instruction && ally.native.instruction.throughRound < state.round) delete ally.native.instruction;
 }
 function nativeCleanup(state) {
@@ -8291,6 +8731,7 @@ function nativeCleanup(state) {
     if (ally.native.blades) ally.native.blades = ally.native.blades.map((id) => id && live.has(id) ? id : null);
     if (ally.native.survey && !live.has(ally.native.survey.target)) delete ally.native.survey;
     if (ally.native.quarry && !live.has(ally.native.quarry.target)) delete ally.native.quarry;
+    if (ally.native.claim && !live.has(ally.native.claim.target)) delete ally.native.claim;
     for (const key of ["burns", "traps", "seals"])
       for (const id of Object.keys(ally.native[key] ?? {})) if (!live.has(id)) delete ally.native[key][id];
   }
@@ -8421,10 +8862,10 @@ function conduitActionTraits(state, actor, action) {
   const closing = others.length > 0 && others.every((ally) => ally.spent);
   const id = actor.definitionId;
   return {
-    damage: id === "atmoso" || id === "elise" || id === "bliss" || id === "ember" || id === "crinso" || id === "rosetta" || id === "vaelor" || id === "razor" && action !== "skill2" || id === "aurora" && action === "skill2" || id === "thornia" && action !== "skill1" || id === "orvella" && action !== "skill2" || id === "nerithe" || (id === "tide" || id === "sprout" || id === "bruno") && action === "skill1",
+    damage: id === "atmoso" || id === "elise" || id === "bliss" || id === "ember" || id === "crinso" || id === "rosetta" || id === "vaelor" || id === "razor" && action !== "skill2" || id === "aurora" && action === "skill2" || id === "thornia" && action !== "skill1" || id === "orvella" && action !== "skill2" || id === "nerithe" || id === "myrthen" || id === "caldrex" && action === "skill2" || id === "solenne" && action !== "skill2" || (id === "tide" || id === "sprout" || id === "bruno") && action === "skill1",
     healing: id === "sprout" || id === "bliss" && closing && action !== "skill2" || id === "rosetta" && action === "ultimate" && (actor.native?.quarry?.contributors.length ?? 0) >= 2,
-    shield: id === "tide" && action !== "skill1" || id === "bruno" && action === "ultimate" || id === "bliss" && action === "skill2" && (closing || equipped(actor, "master-bliss-1")),
-    debuff: id === "ember" && action !== "skill2" || id === "tide" && action === "skill1" || id === "aurora" && action !== "ultimate" || id === "thornia" && action !== "skill2"
+    shield: id === "caldrex" && action !== "skill2" || id === "solenne" && action !== "skill1" || id === "tide" && action !== "skill1" || id === "bruno" && action === "ultimate" || id === "bliss" && action === "skill2" && (closing || equipped(actor, "master-bliss-1")),
+    debuff: id === "ember" && action !== "skill2" || id === "tide" && action === "skill1" || id === "caldrex" && action === "skill2" || id === "solenne" && action === "skill1" || id === "aurora" && action !== "ultimate" || id === "thornia" && action !== "skill2"
   };
 }
 function injured(state, owner, other = false) {
@@ -8600,7 +9041,7 @@ function payShield(unit, amount) {
 }
 function generatedStrike(state, owner, target, offer, events, mitigated = true) {
   if (!target || target.hp <= 0 || offer <= 0) return 0;
-  const damage = Math.max(1, Math.round((mitigated ? offer : offer * owner.stats.damage / Math.max(1, owner.stats.damage + effectiveDefense(state, target))) * nativeDamageTakenMultiplier(state, owner, target)));
+  const damage = Math.max(1, Math.round((mitigated ? offer : offer * owner.stats.damage / Math.max(1, owner.stats.damage + effectiveDefense(state, target))) * nativeDamageTakenMultiplier(state, owner, target, "conduit")));
   const absorbed = consumeShield(target, damage).absorbed;
   const loss = Math.min(target.hp, damage - absorbed);
   target.hp -= loss;
@@ -8644,6 +9085,7 @@ function effectiveDefense(state, unit, excludeSquadAuras = false) {
     defense += baseDefense * 0.25;
   }
   if (phaseZeroStatsReady && unit.side === "ally" && unit.hp > 0 && unit.native?.cover && unit.native.cover.throughPhase >= state.round && equipped(unit, "master-bruno-1")) defense += baseDefense * 0.4;
+  if (phaseZeroStatsReady) defense += nativeDefenseBonus(state, unit, baseDefense);
   if (phaseZeroStatsReady && equipped(unit, "horizon-heartcase") && heartcaseUnavailable(state, unit))
     defense += baseDefense * magnitude(state, "horizon-heartcase", 0.1);
   if (phaseZeroStatsReady && unit.side === "ally") {
@@ -8704,6 +9146,8 @@ function nativeControl(state, owner, target) {
 }
 function nativeSupportAction(state, actor, action) {
   if (!hasNativeIdentity(actor)) return false;
+  if (actor.definitionId === "caldrex") return action === "skill1" || action === "ultimate";
+  if (actor.definitionId === "solenne") return action === "skill2";
   if (actor.definitionId === "tide") return action === "skill2" || action === "ultimate";
   if (actor.definitionId === "sprout") return action === "skill2" || action === "ultimate";
   if (actor.definitionId === "bruno") return action === "ultimate";
@@ -10062,7 +10506,7 @@ function afterConduitHpLoss(state, target, events) {
   }
 }
 function conduitBurnTick(state, owner, target) {
-  const taken = nativeDamageTakenMultiplier(state, owner, target);
+  const taken = nativeDamageTakenMultiplier(state, owner, target, "periodic");
   if (target.burn.origin === "conduit") return target.burn.damage * taken;
   const n = gear(target).numbers;
   if (phaseZeroStatsReady) return Math.round(target.burn.damage * (1 + (n[`cinderPower:${owner.id}`] ?? 0)) * taken);
@@ -10140,7 +10584,8 @@ function forcedConduitTarget(state, enemy, randomTarget) {
   const owner = alive(state).filter((ally) => memory.numbers[`taunt:${ally.id}`] && (equipped(ally, "master-tide-3") && enemy.weakened > 0 && enemy.weakenSourceId === ally.id || equipped(ally, "tectonic-atlas-bastion") && gear(ally).numbers.tauntRound === state.round)).sort((a, b) => memory.numbers[`taunt:${b.id}`] - memory.numbers[`taunt:${a.id}`])[0];
   if (owner) memory.owners.taunt = owner.id;
   else delete memory.owners.taunt;
-  return owner ?? randomTarget;
+  if (owner) return owner;
+  return nativeTauntTarget(state, enemy) ?? randomTarget;
 }
 function conduitSuppressSkill(enemy) {
   const n = gear(enemy).numbers;
@@ -10589,6 +11034,7 @@ function createBattle(seed2 = 1729, roster = ["ember"], progress = {}, equipment
       const unit = combatant(starter.id, starter.id, characterName(id, progress[id]?.evolution, progress[id]?.ascension?.stats === true), "ally", kit.stats, starter.elementId);
       unit.kit = kit;
       if (id === "vaelor") unit.native = { beat: 0, beatRound: 1 };
+      else if (id === "myrthen") unit.native = { season: "sprout" };
       unit.level = progress[id]?.level ?? null;
       unit.evolution = progress[id]?.evolution ?? 1;
       if (equipment[id]) unit.conduits = [...equipment[id]];
@@ -10799,6 +11245,16 @@ function hurt(target, amount, source, events, critical = false, periodic = false
     events[events.length - 1].debuffs = debuffSnapshot(target);
   }
 }
+function periodicDamage(state, target, amount, source, events, critical = false, elementalCritical = false, origin = "native") {
+  if (amount <= 0 || target.hp <= 0) return;
+  const reduced = Math.max(1, Math.round(amount * nativeStillnessMultiplier(state, target, events)));
+  const absorbed = payShield(target, reduced);
+  hurt(target, reduced - absorbed, source, events, critical, true, 0, elementalCritical);
+  const hit = events[events.length - 1];
+  hit.origin = origin;
+  hit.shieldAbsorbed = absorbed;
+  if (absorbed) hit.message += ` ${formatStat(absorbed)} Shield absorbed.`;
+}
 function healTeam(state, source, amount, events, percent = false, ctx) {
   for (const ally of state.allies.filter((unit) => unit.hp > 0)) {
     nativeHeal(state, source, ally, percent ? Math.max(1, Math.round(ally.stats.health * amount)) : amount, events, !percent, ctx);
@@ -10997,8 +11453,16 @@ function act(previous, actorId, action, targetId) {
   const strength = action === "light" ? null : definition.abilities[action].strength;
   const events = [];
   const name = action === "light" ? basicActionName(actor.definitionId, action) : definition.abilities[action].name;
-  const paid = actionGaugeCost(actor, action, state, targetId);
+  let paid = actionGaugeCost(actor, action, state, targetId);
   const nativeAll = native ? nativeAbility?.targets === "all-enemies" && !(phaseZeroStatsReady && actor.definitionId === "ember" && action === "ultimate" && equipped(actor, "master-ember-2")) : !actor.captured && (action === "ultimate" || action === "skill2" && actor.definitionId === "ember" || action !== "light" && definition.abilities[action].targets === "all-enemies");
+  if (native && action === "ultimate" && actor.definitionId === "myrthen" && equipped(actor, "master-myrthen-2") && paid > 0 && nativeTrace(state, actor, 0.05)) {
+    const cost = Math.round(actor.stats.health * 0.15);
+    if (actor.hp > cost) {
+      actor.hp -= cost;
+      paid = 0;
+      event(events, "status", actor, actor, cost, `${actor.name}'s Seedtrace spends ${cost} Health instead of Elemental Gauge.`);
+    }
+  }
   actor.shatter -= paid;
   refreshConduitStats(state);
   const activation = prepareConduitAction(state, actor, action, paid, nativeAll);
@@ -11209,7 +11673,7 @@ function endTurn(previous) {
       const kitBurn = enemy.burn.origin !== "conduit";
       const rolled = kitBurn ? rollCritical(state, source.stats.crit) : { critical: false, elemental: false };
       const damage = conduitBurnTick(state, source, enemy) * (rolled.critical ? source.stats.critMultiplier * (rolled.elemental ? elementalCritFactor : 1) : 1);
-      hurt(enemy, Math.round(damage), source, events, rolled.critical, true, 0, rolled.elemental);
+      periodicDamage(state, enemy, Math.round(damage), source, events, rolled.critical, rolled.elemental, enemy.burn.origin === "conduit" ? "conduit" : "native");
       events[events.length - 1].origin = enemy.burn.origin === "conduit" ? "conduit" : "native";
       if (enemy.burn.origin !== "conduit") pilotBurnDamage(state, source, priorHp - enemy.hp, events);
       afterConduitBurn(state, source, enemy, priorHp - enemy.hp, events);
@@ -11384,6 +11848,7 @@ function nextWave(previous) {
     delete ally.native;
   }
   for (const ally of state.allies) if (ally.definitionId === "vaelor") ally.native = { beat: 0, beatRound: state.round + 1 };
+  for (const ally of state.allies) if (ally.definitionId === "myrthen" && !ally.captured) ally.native = { season: "sprout" };
   for (const ally of state.allies) {
     delete ally.omnicMemory;
     delete ally.omnicProtection;
@@ -12939,7 +13404,10 @@ function redactFriendAccount(value2) {
 }
 
 // src/content/profile-pictures.ts
-var profilePictures = starters.filter((character) => !isCalamiticCharacter(character.id)).flatMap((character) => ["base", "omnic"].map((form) => ({
+function hasDeliveredProfilePictures(id) {
+  return !isCalamiticCharacter(id) && id !== "caldrex" && id !== "solenne" && id !== "myrthen";
+}
+var profilePictures = starters.filter((character) => hasDeliveredProfilePictures(character.id)).flatMap((character) => ["base", "omnic"].map((form) => ({
   id: `profile:${character.id}:${form}`,
   characterId: character.id,
   form,

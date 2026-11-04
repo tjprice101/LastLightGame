@@ -36,7 +36,7 @@ export function exampleAccount(): Account {
   account.infusionStages = { heavens: 15, abyss: 12, machines: 35, treasury: 15, sanctuary: 10, roses: 15 };
   account.normalFinalClears = { infernic: true, heavens: true, machines: true };
   account.calamityClears = { machines: 2 };
-  account.warStages = { nerithe: 4, orvella: 1, vaelor: 1 };
+  account.warStages = { nerithe: 4, orvella: 1, vaelor: 1, caldrex: 1, solenne: 1, myrthen: 1 };
   const eligible = creatures.filter(entry => ['heavens', 'abyss', 'treasury', 'sanctuary', 'roses'].includes(entry.mode ?? ''));
   account.capturedCharacters = eligible.map((entry, index) => ({
     instanceId: `capture:00000000-0000-4000-8000-${String(index + 1).padStart(12, '0')}`,

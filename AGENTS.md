@@ -1,5 +1,43 @@
 # Last Light: AI agent entry point
 
+## Player-facing kit descriptions (2026-11-03)
+
+Write every character/ability/Conduit description as an in-game tooltip:
+name, exact effect, target, value, duration and meaningful trigger limit.
+Do not replace concrete mechanics with vague build summaries. Do not pad
+tooltips with obvious deductions, repeated shared rules, implementation
+contracts, test plans, tie-break algorithms or editorial notes. Explain
+shared Burn/Weaken/Shield rules once in the glossary; retain genuinely
+different authored potency, timing, ownership or exceptions where necessary.
+Use Health in prose. Preserve facts needed to make an informed choice.
+
+Conduit-generated effects do not automatically scale with Skill Power.
+Personal Skill Power stats and enhancements to an authored ability are
+different. Owner explicitly allows existing Master-specific scaling
+(e.g. Vaelor's Thunder Choir native enhancement); do not globally nerf it.
+New Phase1 Masters follow their exact documented effects, with no implicit
+Skill Power added to generated counter/heal/Shield amounts.
+See docs/menus-and-inventory.md and docs/phase-1-war-kit-specification.md.
+
+Playable Caldrex/Solenne/Myrthen, their nine Masters and War trials are
+implemented:22 characters/66 Masters. All45 images are delivered/installed.
+Use tools/intake_phase1_war_art.py and its reviewed source-specific settings;
+originals belong under Art/source/phase1-war. Never globally remove interior
+blue/green: authored powers, gems, reflections and cast shadows remain.
+Supplied alpha is authoritative; scenes remain opaque. Source-clipped tips
+cannot be reconstructed by padding. Story remains explicitly paused.
+
+Claim affects native direct packets only, not Conduit-generated/periodic
+damage. Stillness covers incoming direct/periodic damage before Shields,
+not Health costs. Seedtrace uses existing combat RNG, normal Gauge eligibility,
+survivable15% maximum Health substitution/fallback and unchanged recovery.
+Counterstroke is explicitly critical-capable, not a global Conduit crit change.
+New ability VFX profiles and War previews use the shared finite foundations.
+The32 dedicated profile pictures remain unchanged; no new profile PNGs exist.
+Bounded paper/pressured checks are in docs/enemy-benchmark-calibration.md;
+they are conditional owned-team experiments, not ordinary-account averages
+or a new full-roster ceiling. No hostile retuning or unrelated run restart.
+
 ## Conduits are machines, not architecture (D-444)
 
 Legendary/Omnic/Master Conduits must read as integrated, luxurious machines:

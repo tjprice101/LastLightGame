@@ -289,6 +289,12 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Botanic (actual gameplay element)",
     "ability": "[Normal Attack] taunts all enemies for the next [Enemy Turn]. Each enemy attack aimed at you during that turn grants the other allies 4% [Elemental Gauge]."
   },
+  "master-caldrex-1": {
+    "name": "Banked-Sun Pressure Accumulator",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Caldrex only)",
+    "ability": "Increase maximum [Heat] to 5. Gain +12% [Defense] per stored [Heat]. Caldrex gains +60% [Health] and +50% [Defense]."
+  },
   "master-sprout-2": {
     "name": "Briar Constellation Loom",
     "rarity": "Omnic (Master)",
@@ -301,11 +307,23 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Atmospheric (named bearer's actual element; Master for Vaelor only)",
     "ability": "On [Tune], Vaelor's [Normal Attack] grants each other living ally +25% [Critical Rate] for their next [Attack Action]. On [Crescendo], it grants +40% [Critical Damage Multiplier] instead. Vaelor gains +30% [Critical Rate] and +45% [Elemental Gauge Gain]."
   },
+  "master-solenne-3": {
+    "name": "Cadence Differential Drive",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Solenne only)",
+    "ability": "When an enemy hit consumes [Stillness], restore 7% of maximum [Elemental Gauge] to each living squad member, once per [Enemy Turn]. When [The Last Reverberation] spends [Stillness], restore 3% of maximum [Elemental Gauge] per charge spent to each other living squad member. Solenne gains +40% [Health], +30 percentage points [Skill Power] and +15 percentage points [Skill Efficiency]."
+  },
   "infernic-cinder-testament": {
     "name": "Cinder Testament",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
     "ability": "Each time another ally damages an enemy carrying your [Burn] with a [Skill], that [Burn] gains +20% damage, up to +60%. Refreshing it keeps the accumulated bonus."
+  },
+  "master-caldrex-3": {
+    "name": "Cinderpulse Triage Converter",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Caldrex only)",
+    "ability": "When an allied ability-applied [Burn] tick damages an enemy's [Health] or [Shield], restore 8% maximum [Health] to all living squad members. Can occur once per [Enemy Turn] while Caldrex is alive. Burn detonations and Conduit damage do not trigger this effect. Caldrex gains +75% [Health] and +30 percentage points [Skill Power]."
   },
   "master-ember-2": {
     "name": "Cinderstar Genesis Engine",
@@ -318,6 +336,12 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Disciple only)",
     "ability": "When an ally consumes Disciple's [Resolve], each other living ally gains 10% [Elemental Gauge]."
+  },
+  "master-caldrex-2": {
+    "name": "Counterstroke Recoil Foundry",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Caldrex only)",
+    "ability": "When an enemy drawn by Caldrex's taunt damages his [Health] or [Shield], retaliate for 90% of his [Direct Attack]. Retaliation can critically strike. Caldrex gains +50% [Health], +40% [Direct Attack] and +25 percentage points [Skill Power]."
   },
   "master-crinso-3": {
     "name": "Crimson Beauty Pyre Requiem",
@@ -583,6 +607,18 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Tranquilitic (named bearer's actual element; Master for Bliss only)",
     "ability": "[Thousandfeather Stillness] grants each other living ally +25% [Skill Efficiency] for their next [Skill]. When cast in [Closing], that [Skill] also gains +1 turn [Skill Duration]. Bliss gains +25% [Skill Efficiency] and +35% [Elemental Gauge Gain]."
   },
+  "master-solenne-2": {
+    "name": "Quiet-Arc Shelter Projector",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Solenne only)",
+    "ability": "After Solenne uses either Skill or her Last Flare, grant the living squad member with the lowest [Health] percentage an additional [Shield] equal to 20% of their maximum [Health]. Solenne gains +75% [Health] and +25 percentage points [Skill Power]."
+  },
+  "master-myrthen-3": {
+    "name": "Reaping-Tide Recovery Dynamo",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Myrthen only)",
+    "ability": "When Myrthen's Normal Attack, Skill or Last Flare directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power]."
+  },
   "master-ozriel-1": {
     "name": "Refusal Sovereign Heartdrive",
     "rarity": "Omnic (Master)",
@@ -607,11 +643,23 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Chaotic (actual gameplay element)",
     "ability": "Gain +55% [Skill Power] and +20% [Defense] per currently defeated [Squad Member]."
   },
+  "master-myrthen-1": {
+    "name": "Seasonwheel Harvest Transmission",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Myrthen only)",
+    "ability": "Increase [Harvest]'s bonus direct damage from 35% to 75%. After spending [Harvest], return to [Bloom] instead of [Sprout]. Myrthen gains +60% [Direct Attack] and +35 percentage points [Skill Power]."
+  },
   "secondbeat-rack": {
     "name": "Secondbeat Rupture Throne",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
     "ability": "After another ally damages an enemy, your next damaging [Skill] against that same enemy gains +35% [Skill Power]. Using it grants that ally 8% [Elemental Gauge]. +35% [Health] and +15% [Critical Rate]."
+  },
+  "master-myrthen-2": {
+    "name": "Seedtrace Pursuit Distributor",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Myrthen only)",
+    "ability": "After using either Skill or her Last Flare, Myrthen has a 10% chance to enter [Harvest]. [All That Ripens] has a 5% chance to consume 15% of Myrthen's maximum [Health] instead of [Elemental Gauge]. Requires enough Gauge to cast normally. If the Health cost would defeat her, use the normal Gauge cost instead. Recovery still applies. Myrthen gains +45% [Direct Attack] and +25 percentage points [Critical Rate]."
   },
   "luminous-seraph-mirror": {
     "name": "Seraph Mirror",
@@ -690,6 +738,12 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Bliss only)",
     "ability": "In [Opening], [Warfeather Cut] grants each other living ally +25% [Critical Rate] for their next [Attack Action]. In [Closing], it heals every other living ally for 6% of their maximum [Health], before [Skill Power]. Bliss gains +85% [Direct Attack] and +25% [Critical Rate]."
+  },
+  "master-solenne-1": {
+    "name": "Stillpoint Inertial Governor",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Solenne only)",
+    "ability": "Increase [Held Stillness]'s damage reduction from 20% to 35% per charge consumed. Solenne gains +50% [Health] and +75% [Defense]."
   },
   "master-elise-3": {
     "name": "Storm Empress Execution Clock",

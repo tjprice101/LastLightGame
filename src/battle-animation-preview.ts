@@ -6,6 +6,7 @@ import { isActionId } from './content/combat';
 import { infusionStageCount } from './content/activities';
 import { isInfusionMode } from './content/infusions';
 import { storyRules } from './content/story';
+import { isWarCharacter } from './content/elemental-war';
 import { defaultBindings } from './game/hotkeys';
 import { act, endTurn } from './game/battle';
 import { BattleView, createSession, type BattleSession, type BattleAuthority } from './presentation/battle-view';
@@ -54,7 +55,7 @@ function rebuild(entrance: boolean): void {
   const destination = mode.value === 'training' ? undefined
     : mode.value === 'story' ? { storyStage: storyRules.stages }
     : mode.value === 'dungeons' ? { element: 'infernic' as const, stage: 35 }
-    : mode.value === 'war' ? { character: 'vaelor' as const, stage: 10 }
+    : mode.value === 'war' ? { character: isWarCharacter(character.value) ? character.value : 'vaelor', stage: 10 }
     : isInfusionMode(mode.value)
       ? { mode: mode.value, stage: infusionStageCount(mode.value) }
       : null;

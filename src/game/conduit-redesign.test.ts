@@ -20,11 +20,11 @@ import { applyConduitBurn, applyConduitWeaken, conduitActionCost, conduitBurnTic
   conduitIncoming, conduitTurnStart, afterConduitBurn, effectiveDefense, finishConduitAction, gear, generatedShield,
   nativeGauge, nativeHeal, nativeShield, prepareConduitAction, recordConduitHit, initializeConduits, forcedConduitTarget } from './conduit-runtime';
 
-it('documents each of the current 156 equipment IDs exactly once in the generated compatibility matrix', () => {
+it('documents each of the current 165 equipment IDs exactly once in the generated compatibility matrix', () => {
   const matrix = readFileSync(join('docs', 'character-conduit-compatibility.md'), 'utf8');
   const ids = [...matrix.matchAll(/^\| `([^`]+)` \|/gm)].map(match => match[1]);
-  expect(ids).toHaveLength(156);
-  expect(new Set(ids).size).toBe(156);
+  expect(ids).toHaveLength(165);
+  expect(new Set(ids).size).toBe(165);
   expect(ids.sort()).toEqual([...conduits, ...masterConduits].map(item => item.id).sort());
 });
 
@@ -41,7 +41,7 @@ it('keeps description coefficients aligned and removes retired Conduit jargon', 
     expect(description ?? '').not.toMatch(forbidden);
   }
   expect(conduitGlossary.map(entry => entry.term)).toEqual([
-    'Global', 'Attack Action', 'Bonus Strike', 'Direct Damage', 'Shield', 'Enemy Turn', 'Round', 'Battle',
+    'Global', 'Attack Action', 'Bonus Strike', 'Direct Damage', 'Shield', 'Burn', 'Weaken', 'Enemy Turn', 'Round', 'Battle',
   ]);
 });
 

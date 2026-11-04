@@ -65,9 +65,9 @@ describe('unified Archives', () => {
     expect(html).toContain('Level 0 preview');
     expect(html).not.toMatch(/ \/ (Silhouette|Art locked|Art revealed|Loot locked|Loot revealed|Includes equipped Conduits)/);
     expect(html).not.toContain('Current saved stats');
-    expect(html.match(/data-archive-character=/g)).toHaveLength(114);
+    expect(html.match(/data-archive-character=/g)).toHaveLength(132);
     expect(html.match(/archive-form-revealed/g)).toHaveLength(2);
-    expect(html.match(/archive-form-locked/g)).toHaveLength(112);
+    expect(html.match(/archive-form-locked/g)).toHaveLength(130);
     for (const starter of starters) for (let evolution = 1; evolution <= 6; evolution++) {
       expect(html).toContain(`data-archive-character="${starter.id}" data-form="${evolution}"`);
       expect(html).toContain(characterArt(starter.id, evolution).title);
@@ -94,8 +94,8 @@ describe('unified Archives', () => {
     expect(html).toContain('Owned 3');
     const conduitsSection = html.slice(html.indexOf('id="archive-conduits"'), html.indexOf('id="archive-creatures"'));
     expect(conduitsSection).not.toContain('Master Conduit artwork pending');
-    expect(conduitsSection.match(/assets\/master-conduits\/master-[a-z]+-[123]\.png\?v=[0-9a-f]{16}/g)).toHaveLength(57);
-    expect(conduitsSection.match(/data-archive-master=/g)).toHaveLength(57);
+    expect(conduitsSection.match(/assets\/master-conduits\/master-[a-z]+-[123]\.png\?v=[0-9a-f]{16}/g)).toHaveLength(66);
+    expect(conduitsSection.match(/data-archive-master=/g)).toHaveLength(66);
     for (const conduit of conduits) {
       if (conduit.art) expect(html).toContain(`assets/conduits/${conduit.art}.png`);
       else expect(html).toContain('Artwork pending');
@@ -110,7 +110,7 @@ describe('unified Archives', () => {
     for (const account of [emptyAccount(), { ...emptyAccount(), conduits: { 'vigil-core': 0 } }, null]) {
       const before = structuredClone(account);
       const html = archives(account, 'conduits');
-      expect(html.match(/class="archive-card archive-conduit-locked"/g)).toHaveLength(conduits.filter(entry => entry.rarity !== 'Calamitic').length + 57);
+      expect(html.match(/class="archive-card archive-conduit-locked"/g)).toHaveLength(conduits.filter(entry => entry.rarity !== 'Calamitic').length + 66);
       expect(html).not.toContain('archive-conduit-revealed');
       expect(html).toContain('Everything else stays silhouetted');
       if (!account) expect(html).toContain('Ownership unavailable');
@@ -121,7 +121,7 @@ describe('unified Archives', () => {
   it('reveals Master Conduit art only when that Master is owned', () => {
     const html = archives({ ...emptyAccount(), masterConduits: { 'master-ember-1': 1 } }, 'conduits');
     expect(html.match(/archive-conduit-revealed/g)).toHaveLength(1);
-    expect(html.match(/class="archive-card archive-conduit-locked"/g)).toHaveLength(conduits.filter(entry => entry.rarity !== 'Calamitic').length + 56);
+    expect(html.match(/class="archive-card archive-conduit-locked"/g)).toHaveLength(conduits.filter(entry => entry.rarity !== 'Calamitic').length + 65);
     const css = readFileSync(new URL('./archives.css', import.meta.url), 'utf8');
     expect(css).toMatch(/\.archive-conduit-locked \.archive-mechanism \.master-art\s*\{\s*background: none;\s*border-color: transparent;/);
     for (const entry of masterConduits) {
@@ -147,7 +147,7 @@ describe('unified Archives', () => {
     expect(unavailable).not.toContain('Owned 0');
     expect(unavailable).not.toContain('<p class="archive-ownership">Not owned</p>');
     expect(unavailable).not.toContain('Art locked');
-    expect(unavailable.match(/archive-form-locked/g)).toHaveLength(114);
+    expect(unavailable.match(/archive-form-locked/g)).toHaveLength(132);
     expect(unavailable).not.toContain('archive-form-revealed');
   });
 

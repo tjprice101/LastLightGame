@@ -28,7 +28,7 @@ function storage() {
     setItem: vi.fn((key, value) => { map.set(key, value); }), removeItem: (key) => { map.delete(key); } };
   const account = emptyAccount();
   account.characters.ember = { level: 105, evolution: 6, weaponRank: 2 };
-  account.warStages = { nerithe: 10, orvella: 10, vaelor: 10 };
+  account.warStages = { nerithe: 10, orvella: 10, vaelor: 10, caldrex: 10, solenne: 10, myrthen: 10 };
   account.squad = ['ember'];
   saveAccount(saved, account);
   vi.mocked(saved.setItem).mockClear();
@@ -279,7 +279,7 @@ describe('Elemental War', () => {
     const account = saveAccountRewards(saved, first, 'nerithe-first');
     expect(account.characters.nerithe).toEqual({ level: 0, evolution: 1, weaponRank: 0 });
     expect(account.squad).toEqual(['ember']);
-    expect(account.warStages).toEqual({ nerithe: 10, orvella: 10, vaelor: 10 });
+    expect(account.warStages).toEqual({ nerithe: 10, orvella: 10, vaelor: 10, caldrex: 10, solenne: 10, myrthen: 10 });
     const next = defeat('nerithe');
     const reward = next.events.find((event) => event.kind === 'reward')!;
     const duplicate = saveAccountRewards(saved, next, 'nerithe-second');

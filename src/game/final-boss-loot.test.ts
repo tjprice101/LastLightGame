@@ -37,7 +37,7 @@ function storage(storyCompleted: number = storyRules.stages, fractalis = 0) {
   const saved: ProfileStorage = { getItem: key => values.get(key) ?? null,
     setItem: (key, value) => { values.set(key, value); }, removeItem: key => { values.delete(key); } };
   saveAccount(saved, { ...emptyAccount(), storyCompleted, fractalis,
-    infusionStages: { machines: infusionStageCount('machines') }, warStages: { nerithe: 10, orvella: 10, vaelor: 10 } });
+    infusionStages: { machines: infusionStageCount('machines') }, warStages: { nerithe: 10, orvella: 10, vaelor: 10, caldrex: 10, solenne: 10, myrthen: 10 } });
   return saved;
 }
 

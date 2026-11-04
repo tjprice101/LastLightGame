@@ -1,6 +1,12 @@
 type Facing = 'left' | 'right' | 'front';
 
 const sourceFacing: Record<string, Facing> = {
+  caldrex: 'left', 'caldrex-evo-2': 'left', 'caldrex-evo-3': 'left',
+  'caldrex-evo-4': 'front', 'caldrex-evo-5': 'left', 'caldrex-evo-6': 'front',
+  solenne: 'left', 'solenne-evo-2': 'left', 'solenne-evo-3': 'front',
+  'solenne-evo-4': 'left', 'solenne-evo-5': 'front', 'solenne-evo-6': 'left',
+  myrthen: 'left', 'myrthen-evo-2': 'left', 'myrthen-evo-3': 'left',
+  'myrthen-evo-4': 'right', 'myrthen-evo-5': 'left', 'myrthen-evo-6': 'left',
   'calamity-boss-treasury': 'front',
   'calamity-boss-sanctuary': 'front',
   'calamity-boss-heavens': 'front',

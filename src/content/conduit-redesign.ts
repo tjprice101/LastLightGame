@@ -1049,6 +1049,42 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "description": "[Vaelor]'s [Normal Attack] lets the other ally with the most [Elemental Gauge] act again this player turn.",
     "ranges": []
   },
+  "master-caldrex-1": {
+    "description": "Increase maximum [Heat] to 5. Gain +12% [Defense] per stored [Heat]. Caldrex gains +60% [Health] and +50% [Defense].",
+    "ranges": []
+  },
+  "master-caldrex-2": {
+    "description": "When an enemy drawn by Caldrex's taunt damages his [Health] or [Shield], retaliate for 90% of his [Direct Attack]. Retaliation can critically strike. Caldrex gains +50% [Health], +40% [Direct Attack] and +25 percentage points [Skill Power].",
+    "ranges": []
+  },
+  "master-caldrex-3": {
+    "description": "When an allied ability-applied [Burn] tick damages an enemy's [Health] or [Shield], restore 8% maximum [Health] to all living squad members. Can occur once per [Enemy Turn] while Caldrex is alive. Burn detonations and Conduit damage do not trigger this effect. Caldrex gains +75% [Health] and +30 percentage points [Skill Power].",
+    "ranges": []
+  },
+  "master-solenne-1": {
+    "description": "Increase [Held Stillness]'s damage reduction from 20% to 35% per charge consumed. Solenne gains +50% [Health] and +75% [Defense].",
+    "ranges": []
+  },
+  "master-solenne-2": {
+    "description": "After Solenne uses either Skill or her Last Flare, grant the living squad member with the lowest [Health] percentage an additional [Shield] equal to 20% of their maximum [Health]. Solenne gains +75% [Health] and +25 percentage points [Skill Power].",
+    "ranges": []
+  },
+  "master-solenne-3": {
+    "description": "When an enemy hit consumes [Stillness], restore 7% of maximum [Elemental Gauge] to each living squad member, once per [Enemy Turn]. When [The Last Reverberation] spends [Stillness], restore 3% of maximum [Elemental Gauge] per charge spent to each other living squad member. Solenne gains +40% [Health], +30 percentage points [Skill Power] and +15 percentage points [Skill Efficiency].",
+    "ranges": []
+  },
+  "master-myrthen-1": {
+    "description": "Increase [Harvest]'s bonus direct damage from 35% to 75%. After spending [Harvest], return to [Bloom] instead of [Sprout]. Myrthen gains +60% [Direct Attack] and +35 percentage points [Skill Power].",
+    "ranges": []
+  },
+  "master-myrthen-2": {
+    "description": "After using either Skill or her Last Flare, Myrthen has a 10% chance to enter [Harvest]. [All That Ripens] has a 5% chance to consume 15% of Myrthen's maximum [Health] instead of [Elemental Gauge]. Requires enough Gauge to cast normally. If the Health cost would defeat her, use the normal Gauge cost instead. Recovery still applies. Myrthen gains +45% [Direct Attack] and +25 percentage points [Critical Rate].",
+    "ranges": []
+  },
+  "master-myrthen-3": {
+    "description": "When Myrthen's Normal Attack, Skill or Last Flare directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power].",
+    "ranges": []
+  },
   "master-ozriel-1": {
     "description": "When [Refusal] keeps a squad member at 1 HP, that member also gains a [Shield] worth 20% of their maximum Health that lasts until broken. Ozriel gains +75% [Health] and +65% [Defense].",
     "ranges": []

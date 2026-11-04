@@ -205,6 +205,6 @@ describe('Disciple ally empowerment', () => {
     expect(kit.abilities.skill1.strength).toEqual({});
     expect(kit.abilities.ultimate.strength).toEqual({});
     expect(kit.abilities.skill1.description).toContain('30% more direct damage');
-    expect(kit.abilities.skill2.description).toContain('35% larger');
+    expect(kit.abilities.skill2.description).toContain('next action heals and Shields for 35% more');
   });
 });

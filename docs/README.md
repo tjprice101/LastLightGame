@@ -1,15 +1,18 @@
 # Documentation hub
 
-**Phase1 kit summaries (2026-11-03):**
+**Phase1 playable integration (2026-11-03):**
 [Caldrex, Solenne and Myrthen: abilities and nine Masters](phase-1-war-kit-specification.md)
 uses in-game-style descriptions with exact effects, values and durations.
-Design-only, not live.
+Owner now explicitly requests implementation; see [handoff](handoff.md) for
+validation/publication status. The [global tooltip standard](menus-and-inventory.md#in-game-description-standard-2026-11-03)
+also applies to existing characters and equipment.
 
 **New Elemental War art pass (2026-11-03):**
 [Phase1 plan and remaining checklist](phase-1-war-characters.md) and
 [45-prompt visual proposal](../Art/characters/Elemental%20War%20Phase%201.md).
-Role perks implemented; three characters, tuned kits, nine Masters and actual
-artwork remain future work. Story remains explicitly paused.
+All45 delivered images are [archived and exported](art-workflow.md#delivered-phase1-war-artwork-2026-11-03)
+with source-specific background cleanup and byte revisions.
+Story remains explicitly paused.
 
 **D-452:** [Approved story script, core rules and optional replay safeguards](chapters-2-3-design.md)
 now includes the875-NP future-stage budget. Owner requests recording approvals
@@ -35,7 +38,7 @@ across equipment, Inventory, Collections and chest rewards.
 unlimited named squad snapshots, explicit Save/Equip/Rename controls and atomic
 ordinary/Master restoration with post-save sparkle feedback.
 
-**Phase 1 proposal (not approved):** [new Elemental War Element-Bearers and role perks](phase-1-war-characters.md).
+**Phase1 approved scope:** [new Elemental War Element-Bearers and role perks](phase-1-war-characters.md).
 
 **D-435:** [Phase 0: Everything Calamity](calamitic-characters.md) records the
 three 7-star Calamitic Element-Bearers and their progression. Sections 1 and 2

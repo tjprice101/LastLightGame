@@ -1,17 +1,25 @@
-# Phase 1 proposal: new Elemental War Element-Bearers and role perks
+# Phase1 War Element-Bearers, Masters and role perks
 
-**Status: APPROVED outlines (D-437). Section 1 implemented:** intrinsic role
-perks and Element Resonance. Characters and Conduits remain unimplemented.
-The [45-prompt visual proposal](../Art/characters/Elemental%20War%20Phase%201.md)
-is now authored; no images delivered/generated/intaken.
-[Character kits and nine-Master summaries](phase-1-war-kit-specification.md)
-describe each ability as an in-game tooltip, including proposed exact values.
-These are unimplemented, not balance-approved runtime definitions.
+**Current scope (2026-11-03): APPROVED playable integration.** Owner explicitly
+requests all three characters, their approved kits, nine personal Masters
+and Elemental War trials. Role perks and Element Resonance were already live.
+All45 images are delivered, archived and exported with reviewed background
+cleanup; see the [intake contract](art-workflow.md#delivered-phase1-war-artwork-2026-11-03).
+The [45-prompt source](../Art/characters/Elemental%20War%20Phase%201.md)
+remains generation history, not a reason to repaint delivered images.
+[Character abilities and nine Masters](phase-1-war-kit-specification.md)
+own the approved current tooltips. Implementation/release verification is
+tracked in the [handoff](handoff.md), separately from design approval.
+
+The [bounded validation report](enemy-benchmark-calibration.md#bounded-phase1-war-checks-2026-11-03)
+separates zero-Defense paper output from36 actual pressured own-trial fights.
+It is conditional on the tested owned trio/equipment, not ordinary account
+access or a replacement for the historical global benchmark.
 
 **Kit clarification (2026-11-03):** owner chooses Circle of Repose to build
 Solenne's Stillness because the current action registry has no Defense action.
 This supersedes Defense-based setup in historical outlines below; keep four
-actions. The new specification owns the current proposed complete kit.
+actions. The new specification owns the current approved complete kit.
 
 ## Current art revision and remaining work (2026-11-03)
 
@@ -157,21 +165,20 @@ All nine proposed Omnic Masters are integrated luxurious machines in their
 bearer's palette, following the joint Let/Rise foundation. No additional
 ordinary Conduit counts or acquisition rarities are invented.
 
-### Remaining checklist
+### Delivery and validation checklist
 
-- Review proposed form titles, visual details, four ability labels per bearer
-  and nine Master machine names; preserve approved gameplay outline identities.
-- Review the [in-game-style kit/Master descriptions](phase-1-war-kit-specification.md).
-  Proposed values, costs, durations and trigger limits are included;
-  implementation and combat balance are not tested or implicitly approved.
-- Implement three characters, trials, guaranteed first recruitment/duplicate
+- [x] Apply owner-approved [in-game kit/Master tooltips](phase-1-war-kit-specification.md),
+  preserving exact values, costs, durations, source restrictions and limits.
+- [x] Implement all three characters/trials, guaranteed recruitment/duplicate
   handling and nine Masters through shared content, combat and authority paths.
-- Produce/deliver45 images from the prompts; review actual pixels for identity,
-  sharpness, complete borders, materials, key gaps and reference availability.
-  Archive originals, intake cutouts offline and wire shared revisioned URLs.
-- Validate ordinary non-Calamitic progression, same-element squads, frozen
-  snapshots, saves/rewards/recruitment, all kit/Conduit surfaces and authority;
-  run scoped tests, full suite/build and deploy matching runtime when authorized.
+- [x] Archive all45 originals, review actual cutout pixels/keys/gaps on dark/light,
+  preserve opaque scenes and install revisioned exports without repainting.
+- [x] Validate shared progression/resonance, frozen snapshots, atomic rewards,
+  recruitment, kit/Conduit surfaces, VFX and authority. Full suite7,423/build/
+  authority checks pass; matching backend deployed with explicit consent.
+- [x] Run separate bounded paper/pressured non-Calamitic checks, recording
+  ownership/equipment limitations rather than claiming population clear rates.
+- Client publication and hosted release checks follow the [handoff](handoff.md).
 
 Reproduce: `python tools/build_phase1_war_art.py`.
 Validate: `python -m unittest discover -s tools -p test_phase1_war_art.py`.
@@ -187,7 +194,7 @@ Validate: `python -m unittest discover -s tools -p test_phase1_war_art.py`.
   slightly; otherwise let players feel stronger.
 - D-437 approves the same intrinsic role perks for Calamitic characters.
 
-## Role gaps (current roster; Calamitic in brackets)
+## Historical role gaps before Phase1 (Calamitic in brackets)
 
 | Element | Tank | Attacker | Support |
 | --- | --- | --- | --- |
@@ -208,7 +215,7 @@ own Elemental War trial: 10 stages Lv.90 to 140 against that character's six
 forms, stage 10 guarantees recruitment, owned results convert to 100
 Null-Prismatica. Shields last until broken and stack.
 
-## Character outlines
+## Historical character outlines (current tooltips supersede)
 
 Visual direction for all three: compact gacha anime renderer, completely solid
 backgrounds with ample edge margins, base form simply equipped, then
@@ -267,9 +274,10 @@ other character uses.
   to a new enemy when the marked enemy dies; kills heal the squad and grant Gauge.
 
 Abilities and nine Master alternatives are described in the
-[standalone summaries](phase-1-war-kit-specification.md), not implemented.
-The art pack's ability labels have corresponding plain-language descriptions;
-proposed values are not approved or measured combat balance.
+[current tooltips](phase-1-war-kit-specification.md), now implemented.
+These supersede the earlier outline details above, including older Master
+concepts. Exact bounded combat measurements are linked at the top; they do not
+certify a new full-roster balance ceiling.
 
 ## Element Resonance (replaces Kinship)
 
@@ -302,15 +310,17 @@ battle snapshot uses the same values.
   This is the smoothest option because the perk is attached to the role, not
   the rarity; Calamitic power stays distinct through their stats, kits,
   Ascension and Calamitic Conduits.
-- **Balance check:** after implementing, rerun the D-404 benchmark experiments.
-  If clear rates jump far beyond target, apply a small shared enemy Health
-  increase rather than per-mode edits.
+- **Balance check:** rerun separate D-404 paper and pressured experiments.
+  The bounded new-character checks alone do not authorize a hostile retune;
+  preserve authored levels, gates and rewards.
 
-## Art (prompt-only until delivery)
+## Art (delivered and installed)
 
 Per character: 6 portraits, 4 ability icons, 3 Master Conduit icons. Per
 trial: 3:1 header and 16:9 arena. 45 prompts total, now authored in the linked
-pack with reproducible tool/tests. Universal Normal Attack/Defense art is reused.
+pack with reproducible tool/tests. All45 delivered originals are archived and
+reviewed exports installed; see the [intake contract](art-workflow.md#delivered-phase1-war-artwork-2026-11-03).
+Universal Normal Attack/Defense art is reused.
 
 ## Owner answers
 

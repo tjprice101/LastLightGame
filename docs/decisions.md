@@ -5,6 +5,23 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Phase1 delivery/integration (2026-11-03): owner supplies all45 root images and
+requests archiving, appropriate background removal and wiring. Follow-up
+explicitly selects full playable integration of all three characters, kits,
+nine Masters and War trials. Sources are authoritative even where appearance
+differs from prompt proposals; preserve original bytes and authored powers/
+shadows, record settings/hashes and inspect dark/light cleanup before install.
+Story remains paused.
+
+Global description clarification (2026-11-03): apply the concise in-game
+tooltip standard to the entire roster and AI-facing guidance, not just these
+three. Shared Burn/Weaken rules should not be re-explained as bespoke variants.
+Preserve meaningful authored differences and selection-critical exceptions.
+When shown Vaelor's existing Master-specific Skill Power scaling, owner says
+that is fine; preserve it. This supersedes any blanket interpretation that
+Master effects can never scale. No implicit scaling for other generated
+effects and no unrelated existing-equipment rebalance.
+
 Phase1 kit feedback (2026-11-03): owner edits the
 [in-game descriptions](phase-1-war-kit-specification.md) directly; preserve
 those changed values and effects. Follow-up confirms Stillness cap4,

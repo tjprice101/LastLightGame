@@ -8,6 +8,7 @@ import { abilityArtRevisions } from '../content/ability-art-revisions';
 import { storyArtRevisions } from '../content/story-art-revisions';
 import { statusArtRevisions } from '../content/status-art-revisions';
 import { calamityArtRevisions } from '../content/calamity-art-revisions';
+import { phase1WarArtRevisions } from '../content/phase1-war-art-revisions';
 import { runtimeArtPath } from './image-format';
 
 export function assetUrl(path: string): string {
@@ -16,11 +17,11 @@ export function assetUrl(path: string): string {
   const conduit = /^conduits\/([^/]+)\.png$/.exec(path);
   const ability = /^abilities\/([^/]+)\.png$/.exec(path);
   const master = /^master-conduits\/([^/]+)\.png$/.exec(path);
-  const revision = character
+  const revision = phase1WarArtRevisions[path] ?? (character
     ? characterArtRevisions[character[1]]
     : conduit ? conduitArtRevisions[conduit[1]]
       : master ? masterConduitArtRevisions[master[1]]
-      : ability ? abilityArtRevisions[ability[1]] : statusArtRevisions[path] ?? storyArtRevisions[path] ?? calamityArtRevisions[path];
+      : ability ? abilityArtRevisions[ability[1]] : statusArtRevisions[path] ?? storyArtRevisions[path] ?? calamityArtRevisions[path]);
   return revision ? `${url}?v=${revision}` : url;
 }
 

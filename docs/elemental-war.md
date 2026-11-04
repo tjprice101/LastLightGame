@@ -1,11 +1,17 @@
 # Elemental War
 
-## Pending Phase1 kit specification (2026-11-03)
+## Phase1 expansion (2026-11-03)
 
-[Caldrex, Solenne and Myrthen](phase-1-war-kit-specification.md) now have a
-plain-language ability summaries and nine proposed personal Masters.
-No new characters/trials/rewards are implemented by this document. Current
-Nerithe/Orvella/Vaelor activities and guaranteed recruitment remain unchanged.
+[Caldrex, Solenne and Myrthen](phase-1-war-kit-specification.md) join the
+approved playable scope with their kits, nine personal Masters and three
+additional trials. All45 images are [delivered and installed](art-workflow.md#delivered-phase1-war-artwork-2026-11-03);
+see the [handoff](handoff.md) for validation/publication.
+The family now has six trials; all retain10 stages from90 to140, free
+sequential entry, frozen runs and current shared currency rules. Stage10
+guarantees that trial's Lv.0/Evo.1 Element-Bearer, or100 Null-Prismatica if
+already owned. No summon-pool additions, captures or automatic grants.
+New acquisition uses the same atomic kill/recruitment receipt transaction.
+Original Nerithe/Orvella/Vaelor behavior remains unchanged.
 
 **D-428 Prismatica override:** per-boss Prismatica now grows linearly from
 1,500-2,500 at Stage1 to30,000-45,000 at10, with no currency boss multiplier.
@@ -26,8 +32,8 @@ Validate all three new recruitment results and duplicate conversions in
 
 ## Guaranteed final-stage recruitment (D-414)
 
-Every stage10 victory guarantees its own Element-Bearer: Nerithe, Orvella or
-Vaelor, at Lv.0/Evo.1 and unequipped. An already-owned result converts to
+Every stage10 victory guarantees its own Element-Bearer: Nerithe, Orvella,
+Vaelor, Caldrex, Solenne or Myrthen, at Lv.0/Evo.1 and unequipped. An already-owned result converts to
 100 Null-Prismatica on every clear/replay. Stages1-9 never recruit.
 Currency rolls, stage unlocks and atomic receipt persistence remain unchanged;
 there are no retroactive grants. This supersedes the former1% recruitment rule.

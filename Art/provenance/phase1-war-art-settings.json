@@ -1,0 +1,1960 @@
+{
+  "caldrex": {
+    "keys": [
+      [
+        62,
+        119,
+        88
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.601461,
+        0.576509
+      ],
+      [
+        0.375812,
+        0.595905
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "caldrex-evo-2": {
+    "keys": [
+      [
+        42,
+        115,
+        76
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.606331,
+        0.543103
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "caldrex-evo-3": {
+    "keys": [
+      [
+        56,
+        96,
+        76
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.318994,
+        0.358836
+      ],
+      [
+        0.633117,
+        0.568966
+      ],
+      [
+        0.299513,
+        0.62069
+      ],
+      [
+        0.777597,
+        0.28125
+      ],
+      [
+        0.70211,
+        0.796336
+      ],
+      [
+        0.11526,
+        0.344828
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "caldrex-evo-4": {
+    "keys": [
+      [
+        46,
+        116,
+        95
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.51461,
+        0.866379
+      ],
+      [
+        0.248377,
+        0.783405
+      ],
+      [
+        0.754058,
+        0.810345
+      ],
+      [
+        0.284091,
+        0.53556
+      ],
+      [
+        0.426136,
+        0.386853
+      ],
+      [
+        0.592532,
+        0.394397
+      ],
+      [
+        0.269481,
+        0.942888
+      ],
+      [
+        0.456169,
+        0.419181
+      ],
+      [
+        0.420455,
+        0.469828
+      ],
+      [
+        0.541396,
+        0.266164
+      ],
+      [
+        0.574675,
+        0.417026
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "caldrex-evo-5": {
+    "keys": [
+      [
+        24,
+        105,
+        47
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.728084,
+        0.789871
+      ],
+      [
+        0.893669,
+        0.560345
+      ],
+      [
+        0.801948,
+        0.570043
+      ],
+      [
+        0.9375,
+        0.49569
+      ],
+      [
+        0.258117,
+        0.628233
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "caldrex-evo-6": {
+    "keys": [
+      [
+        68,
+        76,
+        54
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.633929,
+        0.221983
+      ],
+      [
+        0.204545,
+        0.511853
+      ],
+      [
+        0.446429,
+        0.769397
+      ],
+      [
+        0.241883,
+        0.704741
+      ],
+      [
+        0.345779,
+        0.28556
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "caldrex-passive": {
+    "keys": [
+      [
+        127,
+        163,
+        135
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "caldrex-skill1": {
+    "keys": [
+      [
+        136,
+        149,
+        131
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "caldrex-skill2": {
+    "keys": [
+      [
+        181,
+        199,
+        112
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "caldrex-ultimate": {
+    "keys": [
+      [
+        103,
+        132,
+        113
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "master-caldrex-1": {
+    "keys": [
+      [
+        157,
+        210,
+        164
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.777344,
+        0.646484
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "master-caldrex-2": {
+    "keys": [
+      [
+        91,
+        189,
+        114
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.438477,
+        0.160156
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "master-caldrex-3": {
+    "keys": [
+      [
+        149,
+        195,
+        156
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "elemental-war-caldrex-banner": {
+    "processing": "opaque scenery; unchanged source bytes",
+    "review": "Reviewed supplied trial scene; retain opaque source bytes and full composition."
+  },
+  "elemental-war-caldrex-arena": {
+    "processing": "opaque scenery; unchanged source bytes",
+    "review": "Reviewed supplied trial scene; retain opaque source bytes and full composition."
+  },
+  "solenne": {
+    "keys": [
+      [
+        57,
+        107,
+        71
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "solenne-evo-2": {
+    "keys": [
+      [
+        2,
+        113,
+        95
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.747565,
+        0.755388
+      ],
+      [
+        0.362825,
+        0.62931
+      ],
+      [
+        0.107143,
+        0.344828
+      ],
+      [
+        0.916396,
+        0.550647
+      ],
+      [
+        0.758117,
+        0.517241
+      ],
+      [
+        0.657468,
+        0.453664
+      ],
+      [
+        0.604708,
+        0.363147
+      ],
+      [
+        0.704545,
+        0.154095
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "solenne-evo-3": {
+    "keys": [
+      [
+        43,
+        118,
+        85
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.232955,
+        0.62931
+      ],
+      [
+        0.289773,
+        0.530172
+      ],
+      [
+        0.277597,
+        0.289871
+      ],
+      [
+        0.310065,
+        0.684267
+      ],
+      [
+        0.585227,
+        0.507543
+      ],
+      [
+        0.413149,
+        0.615302
+      ],
+      [
+        0.69724,
+        0.720905
+      ],
+      [
+        0.57711,
+        0.400862
+      ],
+      [
+        0.30276,
+        0.452586
+      ],
+      [
+        0.412338,
+        0.428879
+      ],
+      [
+        0.357955,
+        0.62931
+      ],
+      [
+        0.332792,
+        0.445043
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "solenne-evo-4": {
+    "keys": [
+      [
+        55,
+        123,
+        80
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.207792,
+        0.545259
+      ],
+      [
+        0.324675,
+        0.570043
+      ],
+      [
+        0.742695,
+        0.550647
+      ],
+      [
+        0.405032,
+        0.282328
+      ],
+      [
+        0.789773,
+        0.53125
+      ],
+      [
+        0.543831,
+        0.490302
+      ],
+      [
+        0.503247,
+        0.405172
+      ],
+      [
+        0.200487,
+        0.703664
+      ],
+      [
+        0.694805,
+        0.564655
+      ],
+      [
+        0.835227,
+        0.497845
+      ],
+      [
+        0.678571,
+        0.517241
+      ],
+      [
+        0.655032,
+        0.466595
+      ],
+      [
+        0.631494,
+        0.398707
+      ],
+      [
+        0.466721,
+        0.581897
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "solenne-evo-5": {
+    "keys": [
+      [
+        38,
+        97,
+        56
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.734578,
+        0.272629
+      ],
+      [
+        0.796266,
+        0.575431
+      ],
+      [
+        0.203734,
+        0.481681
+      ],
+      [
+        0.69237,
+        0.405172
+      ],
+      [
+        0.146104,
+        0.471983
+      ],
+      [
+        0.275974,
+        0.476293
+      ],
+      [
+        0.332792,
+        0.570043
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "solenne-evo-6": {
+    "keys": [
+      [
+        61,
+        102,
+        73
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.205357,
+        0.507543
+      ],
+      [
+        0.886364,
+        0.574353
+      ],
+      [
+        0.681818,
+        0.371767
+      ],
+      [
+        0.318994,
+        0.481681
+      ],
+      [
+        0.796266,
+        0.544181
+      ],
+      [
+        0.719156,
+        0.46875
+      ],
+      [
+        0.752435,
+        0.331897
+      ],
+      [
+        0.680195,
+        0.169181
+      ],
+      [
+        0.681818,
+        0.053879
+      ],
+      [
+        0.556006,
+        0.115302
+      ],
+      [
+        0.55763,
+        0.445043
+      ],
+      [
+        0.694805,
+        0.552802
+      ],
+      [
+        0.871753,
+        0.130388
+      ],
+      [
+        0.788149,
+        0.212284
+      ],
+      [
+        0.611201,
+        0.425647
+      ],
+      [
+        0.646104,
+        0.501078
+      ],
+      [
+        0.643669,
+        0.072198
+      ],
+      [
+        0.585227,
+        0.413793
+      ],
+      [
+        0.665584,
+        0.392241
+      ],
+      [
+        0.246753,
+        0.422414
+      ],
+      [
+        0.779221,
+        0.342672
+      ],
+      [
+        0.637987,
+        0.241379
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "solenne-passive": {
+    "keys": [
+      [
+        136,
+        160,
+        145
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.704102,
+        0.230469
+      ],
+      [
+        0.826172,
+        0.510742
+      ],
+      [
+        0.576172,
+        0.831055
+      ],
+      [
+        0.787109,
+        0.649414
+      ],
+      [
+        0.480469,
+        0.223633
+      ],
+      [
+        0.657227,
+        0.788086
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "solenne-skill1": {
+    "keys": [
+      [
+        112,
+        188,
+        145
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.698242,
+        0.299805
+      ],
+      [
+        0.317383,
+        0.333008
+      ],
+      [
+        0.685547,
+        0.62207
+      ],
+      [
+        0.495117,
+        0.107422
+      ],
+      [
+        0.384766,
+        0.165039
+      ],
+      [
+        0.619141,
+        0.079102
+      ],
+      [
+        0.829102,
+        0.143555
+      ],
+      [
+        0.890625,
+        0.242188
+      ],
+      [
+        0.323242,
+        0.262695
+      ],
+      [
+        0.912109,
+        0.348633
+      ],
+      [
+        0.733398,
+        0.084961
+      ],
+      [
+        0.878906,
+        0.449219
+      ],
+      [
+        0.81543,
+        0.540039
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "solenne-skill2": {
+    "keys": [
+      [
+        132,
+        167,
+        152
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.646484,
+        0.4375
+      ],
+      [
+        0.729492,
+        0.441406
+      ],
+      [
+        0.772461,
+        0.614258
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "solenne-ultimate": {
+    "keys": [
+      [
+        70,
+        114,
+        94
+      ]
+    ],
+    "row_gradient": false,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.03,
+        0.03
+      ],
+      [
+        0.4,
+        0.32
+      ],
+      [
+        0.6,
+        0.32
+      ],
+      [
+        0.374023,
+        0.267578
+      ],
+      [
+        0.62793,
+        0.269531
+      ],
+      [
+        0.375977,
+        0.735352
+      ],
+      [
+        0.625977,
+        0.733398
+      ],
+      [
+        0.262695,
+        0.379883
+      ],
+      [
+        0.738281,
+        0.621094
+      ],
+      [
+        0.263672,
+        0.621094
+      ],
+      [
+        0.737305,
+        0.380859
+      ],
+      [
+        0.694336,
+        0.585938
+      ],
+      [
+        0.305664,
+        0.416992
+      ],
+      [
+        0.306641,
+        0.587891
+      ],
+      [
+        0.698242,
+        0.420898
+      ],
+      [
+        0.556641,
+        0.713867
+      ],
+      [
+        0.444336,
+        0.713867
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped. Remove only the empty outer generated frame and green ring gaps.",
+    "discarded_frame_regions": [
+      [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          0.012
+        ],
+        [
+          0,
+          0.012
+        ]
+      ],
+      [
+        [
+          0,
+          0.988
+        ],
+        [
+          1,
+          0.988
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      [
+        [
+          0,
+          0
+        ],
+        [
+          0.012,
+          0
+        ],
+        [
+          0.012,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      [
+        [
+          0.988,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          0.988,
+          1
+        ]
+      ]
+    ]
+  },
+  "master-solenne-1": {
+    "keys": [
+      [
+        128,
+        216,
+        149
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "master-solenne-2": {
+    "keys": [
+      [
+        142,
+        176,
+        138
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "master-solenne-3": {
+    "keys": [
+      [
+        113,
+        173,
+        127
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.460938,
+        0.292969
+      ],
+      [
+        0.75293,
+        0.208008
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "elemental-war-solenne-banner": {
+    "processing": "opaque scenery; unchanged source bytes",
+    "review": "Reviewed supplied trial scene; retain opaque source bytes and full composition."
+  },
+  "elemental-war-solenne-arena": {
+    "processing": "opaque scenery; unchanged source bytes",
+    "review": "Reviewed supplied trial scene; retain opaque source bytes and full composition."
+  },
+  "myrthen": {
+    "keys": [
+      [
+        21,
+        123,
+        206
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.234578,
+        0.751078
+      ],
+      [
+        0.327922,
+        0.65625
+      ],
+      [
+        0.541396,
+        0.060345
+      ],
+      [
+        0.840909,
+        0.380388
+      ],
+      [
+        0.636364,
+        0.600216
+      ],
+      [
+        0.655032,
+        0.668103
+      ],
+      [
+        0.405844,
+        0.543103
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "myrthen-evo-2": {
+    "keys": [
+      [
+        43,
+        129,
+        206
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.605519,
+        0.450431
+      ],
+      [
+        0.496753,
+        0.796336
+      ],
+      [
+        0.315747,
+        0.644397
+      ],
+      [
+        0.678571,
+        0.698276
+      ],
+      [
+        0.535714,
+        0.578664
+      ],
+      [
+        0.716721,
+        0.924569
+      ],
+      [
+        0.659091,
+        0.059267
+      ],
+      [
+        0.592532,
+        0.739224
+      ],
+      [
+        0.400162,
+        0.453664
+      ],
+      [
+        0.36526,
+        0.645474
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "myrthen-evo-3": {
+    "keys": [
+      [
+        47,
+        86,
+        166
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.416396,
+        0.892241
+      ],
+      [
+        0.671266,
+        0.52694
+      ],
+      [
+        0.299513,
+        0.693966
+      ],
+      [
+        0.283279,
+        0.826509
+      ],
+      [
+        0.362825,
+        0.50431
+      ],
+      [
+        0.368506,
+        0.587284
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "myrthen-evo-4": {
+    "keys": [
+      [
+        27,
+        126,
+        203
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.494318,
+        0.896552
+      ],
+      [
+        0.784903,
+        0.796336
+      ],
+      [
+        0.44724,
+        0.797414
+      ],
+      [
+        0.341721,
+        0.797414
+      ],
+      [
+        0.627435,
+        0.668103
+      ],
+      [
+        0.406656,
+        0.424569
+      ],
+      [
+        0.583604,
+        0.428879
+      ],
+      [
+        0.472403,
+        0.090517
+      ],
+      [
+        0.542208,
+        0.581897
+      ],
+      [
+        0.718344,
+        0.705819
+      ],
+      [
+        0.530032,
+        0.145474
+      ],
+      [
+        0.686688,
+        0.625
+      ],
+      [
+        0.551136,
+        0.471983
+      ],
+      [
+        0.654221,
+        0.83944
+      ],
+      [
+        0.576299,
+        0.632543
+      ],
+      [
+        0.357143,
+        0.438578
+      ],
+      [
+        0.418831,
+        0.587284
+      ],
+      [
+        0.204545,
+        0.725216
+      ],
+      [
+        0.349026,
+        0.875
+      ],
+      [
+        0.290584,
+        0.729526
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "myrthen-evo-5": {
+    "keys": [
+      [
+        8,
+        61,
+        144
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.483766,
+        0.927802
+      ],
+      [
+        0.26461,
+        0.912716
+      ],
+      [
+        0.766234,
+        0.572198
+      ],
+      [
+        0.750812,
+        0.662716
+      ],
+      [
+        0.273539,
+        0.623922
+      ],
+      [
+        0.757305,
+        0.446121
+      ],
+      [
+        0.809253,
+        0.139009
+      ],
+      [
+        0.659091,
+        0.911638
+      ],
+      [
+        0.679383,
+        0.081897
+      ],
+      [
+        0.519481,
+        0.040948
+      ],
+      [
+        0.584416,
+        0.039871
+      ],
+      [
+        0.438312,
+        0.078664
+      ],
+      [
+        0.685065,
+        0.139009
+      ],
+      [
+        0.760552,
+        0.143319
+      ],
+      [
+        0.577922,
+        0.063578
+      ],
+      [
+        0.424513,
+        0.105603
+      ],
+      [
+        0.756494,
+        0.190733
+      ],
+      [
+        0.703734,
+        0.107759
+      ],
+      [
+        0.672078,
+        0.053879
+      ],
+      [
+        0.397727,
+        0.164871
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped. Preserve the authored blue-white ice planes; do not key all interior blue."
+  },
+  "myrthen-evo-6": {
+    "keys": [
+      [
+        116,
+        156,
+        228
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.633929,
+        0.298491
+      ],
+      [
+        0.383117,
+        0.322198
+      ],
+      [
+        0.733766,
+        0.429957
+      ],
+      [
+        0.681818,
+        0.192888
+      ],
+      [
+        0.701299,
+        0.49569
+      ],
+      [
+        0.685065,
+        0.726293
+      ],
+      [
+        0.351461,
+        0.363147
+      ],
+      [
+        0.732955,
+        0.278017
+      ],
+      [
+        0.345779,
+        0.453664
+      ],
+      [
+        0.608766,
+        0.478448
+      ],
+      [
+        0.366071,
+        0.789871
+      ],
+      [
+        0.275162,
+        0.485991
+      ],
+      [
+        0.571429,
+        0.489224
+      ],
+      [
+        0.25974,
+        0.568966
+      ],
+      [
+        0.603896,
+        0.211207
+      ],
+      [
+        0.755682,
+        0.21875
+      ],
+      [
+        0.181818,
+        0.571121
+      ],
+      [
+        0.728896,
+        0.159483
+      ],
+      [
+        0.354708,
+        0.507543
+      ],
+      [
+        0.607143,
+        0.380388
+      ],
+      [
+        0.464286,
+        0.485991
+      ],
+      [
+        0.48539,
+        0.064655
+      ],
+      [
+        0.663149,
+        0.478448
+      ],
+      [
+        0.607143,
+        0.18319
+      ],
+      [
+        0.443182,
+        0.511853
+      ],
+      [
+        0.284091,
+        0.538793
+      ],
+      [
+        0.120942,
+        0.567888
+      ],
+      [
+        0.314935,
+        0.537716
+      ],
+      [
+        0.69724,
+        0.252155
+      ],
+      [
+        0.689935,
+        0.336207
+      ],
+      [
+        0.784091,
+        0.673491
+      ],
+      [
+        0.313312,
+        0.497845
+      ],
+      [
+        0.732955,
+        0.195043
+      ],
+      [
+        0.597403,
+        0.158405
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "myrthen-passive": {
+    "keys": [
+      [
+        86,
+        195,
+        253
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "myrthen-skill1": {
+    "keys": [
+      [
+        63,
+        207,
+        254
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.535156,
+        0.305664
+      ],
+      [
+        0.904297,
+        0.748047
+      ],
+      [
+        0.782227,
+        0.885742
+      ],
+      [
+        0.098633,
+        0.170898
+      ],
+      [
+        0.318359,
+        0.0625
+      ],
+      [
+        0.267578,
+        0.074219
+      ],
+      [
+        0.420898,
+        0.047852
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped.",
+    "discarded_frame_regions": [
+      [
+        [
+          0.998,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          0.998,
+          1
+        ]
+      ]
+    ]
+  },
+  "myrthen-skill2": {
+    "keys": [
+      [
+        58,
+        191,
+        254
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.196289,
+        0.446289
+      ],
+      [
+        0.161133,
+        0.217773
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "myrthen-ultimate": {
+    "keys": [
+      [
+        36,
+        186,
+        238
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.160156,
+        0.359375
+      ],
+      [
+        0.214844,
+        0.585938
+      ],
+      [
+        0.291016,
+        0.216797
+      ],
+      [
+        0.209961,
+        0.737305
+      ],
+      [
+        0.458984,
+        0.201172
+      ],
+      [
+        0.699219,
+        0.758789
+      ],
+      [
+        0.744141,
+        0.602539
+      ],
+      [
+        0.21582,
+        0.474609
+      ],
+      [
+        0.511719,
+        0.749023
+      ],
+      [
+        0.59375,
+        0.729492
+      ],
+      [
+        0.761719,
+        0.523438
+      ],
+      [
+        0.335938,
+        0.734375
+      ],
+      [
+        0.675781,
+        0.676758
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "master-myrthen-1": {
+    "keys": [
+      [
+        82,
+        189,
+        254
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.583008,
+        0.12793
+      ],
+      [
+        0.819336,
+        0.583984
+      ],
+      [
+        0.417969,
+        0.823242
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "master-myrthen-2": {
+    "keys": [
+      [
+        41,
+        190,
+        225
+      ],
+      [
+        19,
+        197,
+        236
+      ],
+      [
+        13,
+        206,
+        254
+      ],
+      [
+        57,
+        184,
+        229
+      ]
+    ],
+    "row_gradient": false,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.620117,
+        0.135742
+      ],
+      [
+        0.451172,
+        0.188477
+      ]
+    ],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped. Blue cast shadow is authored; preserve it in full, not as row-key stripes."
+  },
+  "master-myrthen-3": {
+    "keys": [
+      [
+        45,
+        203,
+        240
+      ],
+      [
+        28,
+        206,
+        251
+      ],
+      [
+        70,
+        204,
+        246
+      ],
+      [
+        36,
+        205,
+        254
+      ]
+    ],
+    "row_gradient": false,
+    "radius": 34,
+    "border_only": true,
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 32
+    },
+    "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+  },
+  "elemental-war-myrthen-banner": {
+    "processing": "opaque scenery; unchanged source bytes",
+    "review": "Reviewed supplied trial scene; retain opaque source bytes and full composition."
+  },
+  "elemental-war-myrthen-arena": {
+    "processing": "opaque scenery; unchanged source bytes",
+    "review": "Reviewed supplied trial scene; retain opaque source bytes and full composition."
+  }
+}

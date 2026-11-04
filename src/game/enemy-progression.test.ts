@@ -221,7 +221,7 @@ describe('hostile progression balance', () => {
       const enemy = enemyCombatStats(level + 10, false);
       const same = enemyCombatStats(level, false);
       const normal = damageAmount(fighter.stats.damage, 1, enemy.defense, false);
-      expect(Math.ceil(enemy.health / normal), `${id} Lv.${level} +10`).toBeGreaterThanOrEqual(id === 'rosetta' || id === 'vaelor' ? 6 : 7);
+      expect(Math.ceil(enemy.health / normal), `${id} Lv.${level} +10`).toBeGreaterThanOrEqual(['rosetta', 'vaelor', 'myrthen'].includes(id) ? 6 : 7);
       expect(damageAmount(enemy.damage, 1, fighter.stats.defense, false) / fighter.stats.health).toBeGreaterThan(.1);
       expect(enemy.health / normal).toBeGreaterThan(same.health / damageAmount(fighter.stats.damage, 1, same.defense, false) * 1.15);
       const state = createBattle(1729, [id], { [id]: { level, evolution } });

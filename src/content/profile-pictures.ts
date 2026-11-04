@@ -3,9 +3,12 @@ import { characterName } from './character-art';
 import { ownedCharacters, ownedProgress, type Account } from '../game/account';
 import { isCalamiticCharacter, type CalamiticCharacterId } from './calamitic-characters';
 
-export type ProfilePictureCharacterId = Exclude<StarterId, CalamiticCharacterId>;
+export type ProfilePictureCharacterId = Exclude<StarterId, CalamiticCharacterId | 'caldrex' | 'solenne' | 'myrthen'>;
 export type ProfilePictureId = `profile:${ProfilePictureCharacterId}:${'base' | 'omnic'}`;
-export const profilePictures = starters.filter(character => !isCalamiticCharacter(character.id)).flatMap(character => (['base', 'omnic'] as const).map(form => ({
+function hasDeliveredProfilePictures(id: StarterId): id is ProfilePictureCharacterId {
+  return !isCalamiticCharacter(id) && id !== 'caldrex' && id !== 'solenne' && id !== 'myrthen';
+}
+export const profilePictures = starters.filter(character => hasDeliveredProfilePictures(character.id)).flatMap(character => (['base', 'omnic'] as const).map(form => ({
   id: `profile:${character.id}:${form}` as ProfilePictureId,
   characterId: character.id,
   form,
@@ -26,5 +29,5 @@ export function profilePictureUnlocked(account: Account, id: ProfilePictureId): 
 }
 
 export function canonicalProfilePicture(value: string): ProfilePictureId | 'neutral' {
-  return isProfilePictureId(value) ? value : isStarterId(value) && !isCalamiticCharacter(value) ? `profile:${value}:base` : 'neutral';
+  return isProfilePictureId(value) ? value : isStarterId(value) && hasDeliveredProfilePictures(value) ? `profile:${value}:base` : 'neutral';
 }

@@ -1,5 +1,11 @@
 # Roster capability audit: levels 0-105
 
+> **Phase1 extension (2026-11-03):** Caldrex, Solenne and Myrthen are eligible
+> non-Calamitic characters, including their personal Masters. Their
+> [bounded paper and actual War checks](enemy-benchmark-calibration.md#bounded-phase1-war-checks-2026-11-03)
+> are recorded separately. They do not update the historical full-roster
+> rankings below, model ordinary ownership, or authorize an enemy retune.
+
 > **D-415 measurement boundary:** the numerical report below predates critical
 > eligibility for native Burn and triggered kit damage, plus the corrected
 > Cinder Testament/Rosegarden effects. Its methods, non-Calamitic equipment

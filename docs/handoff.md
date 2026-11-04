@@ -1,5 +1,68 @@
 # Current state and handoff
 
+## Phase1 War installation and integration (2026-11-03)
+
+- Owner explicitly selects full playable Caldrex/Solenne/Myrthen integration:
+  approved kits, nine Masters and three War trials, not artwork-only wiring.
+  Story remains paused. Existing explicit Master-specific Skill Power scaling
+  is allowed; do not globally nerf it under the generated-effect rule.
+- All45 delivered originals are archived byte-identically under
+  `Art/source/phase1-war`;18 portraits/12 ability icons/nine Masters are reviewed
+  cutouts and all six scenes preserve opaque source bytes. Root delivery
+  files were removed only after archival/hash verification.
+  `tools/intake_phase1_war_art.py` plus reviewed settings/manifest reproduce
+  every export. Preserve authored blue-white powers, green crystals/metals,
+  cast shadows and pale hair; padding cannot restore source-clipped tips.
+- Shared byte revisions and reviewed facing cover all45 assets. AVIF generation
+  encoded45 new files. Browser decoded all45 AVIFs through shared `assetUrl`;
+  new portrait/ability/Master reward surfaces and18 facing cases have tests.
+- Applied concise tooltip guidance globally in `AGENTS.md`, index/root/art
+  guides and system docs, and removed redundant explanations in existing kits.
+  Exact shared Burn/Weaken/Shield rules now live in the glossary. No existing
+  authored potency or Master scaling was rebalanced by this wording cleanup.
+- Implemented all three native kits/trials and nine matching Masters:
+  22 characters/66 Masters/165 Conduit catalog entries. Existing ten-stage
+  gates, Stage10 guaranteed recruit/100 Null-Prismatica duplicate conversion,
+  atomic receipts, frozen equipment and no automatic grants/pool changes remain.
+  Claim excludes generated/periodic packets; Stillness applies before Shields
+  to direct/periodic damage, not costs. Seedtrace uses combat RNG with exact
+  Gauge eligibility, survivable Health substitution/fallback and recovery.
+  Nine Master numeric/provenance cases have dedicated assertions.
+- New VFX profiles and War preview fixtures are wired. Browser sampled live
+  frames for all three Last Flares, then the actual BattleVFXRunner: distinct
+  frames over time, one impact each and cleared canvases on completion/
+  cancellation. Shared reduced-motion/static-feedback regression paths remain.
+  The six War cards each expose10 stages; all24 card images decode correctly.
+- Art validation: `python -m unittest discover -s tools -p
+  test_phase1_war_intake.py` passed9; `test_phase1_war_art.py` passed7.
+  The expanded old/new War Python group passed24/27: three historical failures
+  are pre-existing (old docs test expects former1% recruitment; original War
+  settings/manifest disagreement and a previously changed foreground sample).
+  Original tests, cleaner and actual old provenance are unchanged from HEAD;
+  baseline docs already specify100%. Do not silently repair unrelated art.
+- Final `npm test -- --testTimeout=200000 --maxWorkers=3` passed7,423 tests/
+  235 files. `npm run build`, authority TypeScript and
+  `npx --yes deno check supabase\functions\game-operation\index.ts` passed.
+  Existing large-chunk/jsdom-canvas advisories remain. Coupled profile/roster
+  counts and tooltip assertions are fixed; the32 delivered profile pictures
+  remain unchanged, with explicit rejection of nonexistent new profile IDs.
+- `npx vitest run tools\phase1-war-experiments.test.ts --silent=false
+  --maxWorkers=1` passed2 independent experiments: six-round zero-Defense solo
+  output/support and36 pressured own Stage10 Lv140 trials.35 wins/one defeat;
+  conditional owned new character/Tizu/Flora, mixed+0, optional personal Master,
+  no Calamitic gear or retuning. Exact scope/results are in the benchmark doc;
+  not an average account, population clear rate or new full-roster ranking.
+- Authority bundle rebuilt and, after explicit CLI consent, deployed with
+  `npx supabase functions deploy game-operation --project-ref
+  ohtfgwomdfteaxubndww --use-api --yes`.
+  `node tools\smoke_server_game.mjs --phase-one-war` passed hosted rules16:
+  three native kits/nine equipped Masters, exact local/server events/state,
+  seeded RNG, action/turn idempotency, checkpoint and all three Lv140 entries.
+  Its three disposable identities and cascading records were removed; no
+  existing player account was changed. No new rules/wallet version was needed.
+- Client publication uses the normal main-push/Pages workflow; verify the
+  hosted version and revisioned delivered artwork before reporting it live.
+
 ## Owner kit edits incorporated (2026-11-03)
 
 - Preserved owner changes in `docs/phase-1-war-kit-specification.md` and removed

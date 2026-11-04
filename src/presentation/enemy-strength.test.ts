@@ -31,7 +31,7 @@ describe('visible enemy strength', () => {
       createBattle(), createStoryBattle(1, 1729, 'ember', { level: 0, evolution: 1 }), createStoryBattle(25, 1729, 'ember', { level: 0, evolution: 1 }),
       ...playableDungeons.map(element => createDungeonBattle(element, 35, 1729, 'ember', { level: 0, evolution: 1 })),
       ...(['heavens', 'abyss', 'treasury', 'sanctuary', 'machines', 'roses'] as const).map(mode => createInfusionBattle(mode, 5, 1729, 'ember', { level: 0, evolution: 1 })),
-      ...(['nerithe', 'orvella', 'vaelor'] as const).map(character => createWarBattle(character, 10, 1729, 'ember', { level: 0, evolution: 1 })),
+      ...(['nerithe', 'orvella', 'vaelor', 'caldrex', 'solenne', 'myrthen'] as const).map(character => createWarBattle(character, 10, 1729, 'ember', { level: 0, evolution: 1 })),
       ...calamityActivities.flatMap(activity => ([1, 2, 3] as const).map(tier => createCalamityBattle(activity.id, tier, 1729, 'ember', { level: 0, evolution: 1 }))),
     ];
     for (const state of states) for (const enemy of state.enemies) {
@@ -96,13 +96,13 @@ describe('visible enemy strength', () => {
     account.characters.ember = { level: 105, evolution: 6 };
     account.dungeonStages = Object.fromEntries(elements.map(element => [element.id, 35]));
     account.infusionStages = { heavens: infusionModeStageCount, abyss: infusionModeStageCount, treasury: 25, sanctuary: 25, machines: machineStageCount, roses: 35 };
-    account.warStages = { nerithe: 10, orvella: 10, vaelor: 10 };
+    account.warStages = { nerithe: 10, orvella: 10, vaelor: 10, caldrex: 10, solenne: 10, myrthen: 10 };
     const before = structuredClone(account);
     document.body.innerHTML = gameplayHub(account);
     bindEnemyStrength(document.body);
     bindActivityDifficulties(document.body);
     const controls = document.querySelectorAll<HTMLSelectElement>('[data-dungeon-stage], [data-infusion-stage], [data-war-stage]');
-    expect(controls).toHaveLength(15);
+    expect(controls).toHaveLength(18);
     for (const control of Array.from(controls)) {
       const panel = control.closest('[data-difficulty-panel], .activity-card')!;
       for (const stage of [Number(control.value), 1, 5, Number(control.options[control.options.length - 1].value)]) {

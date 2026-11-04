@@ -22,6 +22,12 @@ export const abilityIcons = {
     skill2: 'orvella-skill2', ultimate: 'orvella-ultimate' },
   vaelor: { passive: 'vaelor-passive', light: 'vaelor-light', skill1: 'vaelor-skill1',
     skill2: 'vaelor-skill2', ultimate: 'vaelor-ultimate' },
+  caldrex: { passive: 'caldrex-passive', light: 'caldrex-light', skill1: 'caldrex-skill1',
+    skill2: 'caldrex-skill2', ultimate: 'caldrex-ultimate' },
+  solenne: { passive: 'solenne-passive', light: 'solenne-light', skill1: 'solenne-skill1',
+    skill2: 'solenne-skill2', ultimate: 'solenne-ultimate' },
+  myrthen: { passive: 'myrthen-passive', light: 'myrthen-light', skill1: 'myrthen-skill1',
+    skill2: 'myrthen-skill2', ultimate: 'myrthen-ultimate' },
   ember: infernisIcons,
   tide: {
     passive: 'tizu-stillwater-guard',

@@ -10,7 +10,7 @@ import {
 } from './conduit-runtime';
 import {
   nativeAfterAction, nativeEnemyCompleted, nativeIncomingMultiplier, nativePhaseEnd, nativePrimaryHit,
-  nativeRefusal, nativeRouteDamage, nativeTurnStart,
+  nativeRefusal, nativeRouteDamage, nativeTurnStart, nativeBurnPhase, nativeHeatCap,
 } from './native-kits';
 
 vi.mock('../content/phase-zero-stats', async original => ({
@@ -500,6 +500,64 @@ const checks: Record<MasterConduitId, Check> = {
     for (const enemy of result.enemies.slice(1))
       expect(result.allies[0].native?.fateMarks?.[enemy.id]?.stacks).toBe(equipped ? 1 : undefined);
   },
+  'master-caldrex-1': (state, equipped) => {
+    state.allies[0].native = { heat: 3 };
+    expect(nativeHeatCap(state.allies[0])).toBe(equipped ? 5 : 3);
+    const base = 100;
+    expect(effectiveDefense(state, state.allies[0]) / base > 1.2).toBe(equipped);
+  },
+  'master-caldrex-2': (state, equipped) => {
+    state.allies[0].native = { tauntThrough: state.round };
+    const enemy = state.enemies[0];
+    gear(enemy).owners.nativeTaunt = state.allies[0].id;
+    const events = [
+      { kind: 'attack', source: enemy.id, target: state.allies[0].id, amount: 0, message: 'attack' },
+      { kind: 'damage', source: enemy.id, target: state.allies[0].id, amount: 10, message: 'hit' },
+    ] as unknown as BattleEvent[];
+    nativeEnemyCompleted(state, enemy, true, events);
+    expect(enemy.hp < 100000).toBe(equipped);
+  },
+  'master-caldrex-3': (state, equipped) => {
+    wound(state);
+    const enemy = state.enemies[0];
+    state.allies[0].native = { burns: { [enemy.id]: { turns: 3, damage: 10 } } };
+    enemy.burn = { turns: 3, damage: 10, sourceId: state.allies[0].id, origin: 'native' };
+    nativeBurnPhase(state, enemy, []);
+    expect(state.allies[1].hp).toBe(equipped ? 180 : 100);
+  },
+  'master-solenne-1': (state, equipped) => {
+    state.allies[0].native = { stillness: 1 };
+    const multiplier = nativeIncomingMultiplier(state, state.enemies[0], state.allies[0], 'light', []);
+    expect(multiplier).toBeCloseTo(equipped ? .65 : .8, 5);
+  },
+  'master-solenne-2': (state, equipped) => {
+    wound(state);
+    const result = cast(state, 'skill2');
+    expect(shieldLayers(result, 1).length).toBe(equipped ? 2 : 1);
+  },
+  'master-solenne-3': (state, equipped) => {
+    state.allies[0].native = { stillness: 1 };
+    for (const ally of state.allies) ally.shatter = 0;
+    nativeIncomingMultiplier(state, state.enemies[0], state.allies[0], 'light', []);
+    expect(state.allies[1].shatter > 0).toBe(equipped);
+  },
+  'master-myrthen-1': (state, equipped) => {
+    state.allies[0].native = { season: 'harvest' };
+    expect(cast(state, 'skill1').allies[0].native?.season).toBe(equipped ? 'bloom' : 'sprout');
+  },
+  'master-myrthen-2': (state, equipped) => {
+    state.allies[0].native = { season: 'sprout' };
+    const season = cast(state, 'skill1').allies[0].native?.season;
+    if (equipped) expect(['bloom', 'harvest']).toContain(season);
+    else expect(season).toBe('bloom');
+  },
+  'master-myrthen-3': (state, equipped) => {
+    wound(state);
+    state.enemies[0].hp = 1;
+    const result = cast(state, 'light');
+    expect(result.enemies[0].hp).toBe(0);
+    expect(result.allies[1].hp).toBe(equipped ? 160 : 100);
+  },
   'master-kaelith-1': (state, equipped) => {
     const target = state.enemies[0].id;
     state.allies[0].native = { faults: { [target]: 3 } };
@@ -518,11 +576,11 @@ const checks: Record<MasterConduitId, Check> = {
   },
 };
 
-describe('57-entry Master behavior matrix', () => {
+describe('66-entry Master behavior matrix', () => {
   it('has three Masters for each of the three Calamitic Element-Bearers (D-442)', () => {
     for (const id of ['ozriel', 'ilvaris', 'kaelith'])
       expect(masterConduits.filter(entry => (entry.character as string) === id)).toHaveLength(3);
-    expect(masterConduits).toHaveLength(57);
+    expect(masterConduits).toHaveLength(66);
   });
   it('has exactly one concrete behavior scenario per installed Master', () => {
     expect(Object.keys(checks).sort()).toEqual(masterConduits.map(entry => entry.id).sort());

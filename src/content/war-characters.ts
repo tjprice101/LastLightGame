@@ -26,7 +26,33 @@ export const warCharacters = [
     description: 'An Atmospheric Element-Bearer shaped in Let’s image, Vaelor finds Calm in the thunder choir with a resonance blade.',
     lore: { origin: 'The towers of the thunder choir', story: 'Vaelor listened in the thunder-choir towers for the missing rhythm between storms. With a small resonance blade he followed the silence, learning that Atmospheric means Calm: the clear interval in which a broken sky can be heard without being forced to sing. Let created Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole the same elements. Both factions seek their creators’ souls, still separate and unfound; the contest has no winner. Vaelor follows the quiet frequencies around rumors of Let’s soul, certain that the missing note must be heard before anyone can claim the final chord.', vow: 'Even a broken sky can sing again.', awakening: 'Quiet voltage finds its first rhythm, not its final chord.' },
   },
-] as const;
+  {
+    id: 'caldrex', stars: 6, name: 'Caldrex', role: 'Tank', art: 'caldrex',
+    title: 'Wrath banked behind a closed furnace gate', element: 'Infernic', elementId: 'infernic',
+    weapon: 'Forge gauntlets', color: '#ff8a2b',
+    description: 'An Infernic Element-Bearer shaped in Let’s image, Caldrex banks Wrath in forge gauntlets and holds the furnace gate for his squad.',
+    lore: { origin: 'The abandoned kiln floors', story: 'Caldrex tended the last kiln on an abandoned forge floor, learning that Infernic is Wrath: heat that is safest when it is kept, measured and released only to protect others. With forge gauntlets he closes furnace gates around people the world has left exposed. Let created Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole those same elements. Both factions search for their creators’ souls; neither has found one, and no one has won. Caldrex follows the warmth of Let’s trail while keeping every gate behind him shut.',
+      vow: 'No flame passes while I hold the gate.',
+      awakening: 'The kiln stirs behind the gate; its keeper is not yet found.' },
+  },
+  {
+    id: 'solenne', stars: 6, name: 'Solenne', role: 'Tank', art: 'solenne',
+    title: 'Peace held in the silence between two chimes', element: 'Tranquilitic', elementId: 'tranquilitic',
+    weapon: 'Temple bell shield', color: '#b9a4d8',
+    description: 'A Tranquilitic Element-Bearer shaped in Let’s image, Solenne keeps Peace with a temple bell held as a shield.',
+    lore: { origin: 'The moon-silver court', story: 'Solenne kept a temple bell in a moon-silver court and learned that Tranquilitic is Peace: not an absence of sound but a silence patient enough to be held. Her bell shield answers each blow with stillness before it rings. Let made Element-Bearers in his image; Rise made Elemental-Devourers in hers and stole the same elements. Both factions seek their creators’ souls, still unfound and unreconciled. Solenne walks the quiet intervals around rumors of Let’s soul, keeping the bell unstruck until it is needed.',
+      vow: 'The bell rings only to keep you whole.',
+      awakening: 'A quiet circle widens; its first chime is still to come.' },
+  },
+  {
+    id: 'myrthen', stars: 6, name: 'Myrthen', role: 'Attacker', art: 'myrthen',
+    title: 'Joy and Life turn with every season', element: 'Botanic', elementId: 'botanic',
+    weapon: 'Chained sickles', color: '#6fbf5a',
+    description: 'A Botanic Element-Bearer shaped in Let’s image, Myrthen reaps Joy and Life through every season with chained sickles.',
+    lore: { origin: 'The terraced orchard floors', story: 'Myrthen worked the terraced orchards and learned that Botanic is Joy and Life as a cycle: sprout, bloom, harvest, and the return to sprout. Her chained sickles gather what has ripened without denying what must grow again. Let created Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole the same elements. Both factions seek their creators’ souls; no one has been reunited with one and no one has won. Myrthen follows the turning seasons toward Let’s trail, harvesting only what is ready.',
+      vow: 'Every season gets its turn.',
+      awakening: 'A fifth season stirs between harvest and sprout; its meaning is not yet known.' },
+  },] as const;
 
 export type WarCharacterId = (typeof warCharacters)[number]['id'];
 export function isWarCharacter(value: unknown): value is WarCharacterId {
@@ -40,12 +66,18 @@ export const warEvolutionTitles: Record<WarCharacterId, readonly string[]> = {
     'Architect of the Moving Citadel', 'Sovereign of the Deep Foundations', 'The Throne Beneath the World'],
   vaelor: ['Quiet Voltage', 'Keeper of the Stormbeat', 'Marshal of the Thunder Choir',
     'Conductor of the Broken Sky', 'Sovereign of the Final Frequency', 'The Sky\'s Final Chord'],
+  caldrex: ['Kiln Warden', 'Banked Fire', 'The Furnace Holds', 'Bearer of the Closed Gate', 'No Flame Passes', 'The Last Kiln'],
+  solenne: ['Moonbell Keeper', 'Between Two Chimes', 'The Patient Circle', 'Keeper of the Unstruck Bell', 'A Silence Held', 'The Bell That Stayed'],
+  myrthen: ['Season Reaper', 'First Turning', 'Bough and Blade', 'Harvest in Motion', 'The Orchard Remembers', 'When All Seasons Meet'],
 };
 
 export const warActionNames: Record<WarCharacterId, { light: string }> = {
   nerithe: { light: 'Surveyor\'s Thrust' },
   orvella: { light: 'Plumbline Strike' },
   vaelor: { light: 'Tuning Strike' },
+  caldrex: { light: 'Gate Bash' },
+  solenne: { light: 'Bell Tap' },
+  myrthen: { light: 'Sickle Cut' },
 };
 
 export const warFighters: Record<WarCharacterId, FighterDefinition> = {
@@ -75,6 +107,33 @@ export const warFighters: Record<WarCharacterId, FighterDefinition> = {
       skill1: { name: 'Forked Cadence', description: '180% damage to one enemy with +20 percentage points critical chance.', cooldown: 0, strength: { damageMultiplier: 1.8, critBonus: .2 } },
       skill2: { name: 'Resonance Cascade', description: '140% damage to all enemies.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 1.4 } },
       ultimate: { name: 'Last Chord of the Sky', description: '330% damage to all enemies. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 3.3 } },
+    },
+  },
+  caldrex: {
+    stats: { health: 300, defense: 20, damage: 32, crit: .1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
+    passive: { name: 'Banked Heat', description: 'Gain 1 Heat (max 3) when an enemy direct attack damages Caldrex’s Health or Shield, once per enemy phase.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: 'Close the Kiln', description: 'Shield every living squad member and taunt eligible random single-target attacks for the next enemy phase; area-of-effect and scripted attacks are unchanged.', cooldown: 0, targets: 'all-allies', strength: { shield: 1 } },
+      skill2: { name: 'Cinder Discharge', description: 'Spend all Heat to strike all enemies and Burn them.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.55 } },
+      ultimate: { name: 'Nothing Beyond These Gates', description: 'Spend all Heat for a squad shield, Defense and ally Burn pressure. Recover next turn.', cooldown: 0, targets: 'all-allies', strength: { shield: 1 } },
+    },
+  },
+  solenne: {
+    stats: { health: 285, defense: 19, damage: 30, crit: .12, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
+    passive: { name: 'Held Stillness', description: 'Hold up to 4 Stillness; each hit consumes 1 to reduce its damage by 20%.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: 'Answer the Bell', description: 'Strike one enemy, Weaken it and taunt eligible random single-target attacks for the next enemy phase; area-of-effect and scripted attacks are unchanged.', cooldown: 0, strength: { damageMultiplier: 2.4, weakenFraction: .25 } },
+      skill2: { name: 'Circle of Repose', description: 'Gain 2 Stillness and shield the squad.', cooldown: 0, targets: 'all-allies', strength: { shield: 1 } },
+      ultimate: { name: 'The Last Reverberation', description: 'Spend all Stillness to strike all enemies and shield the squad. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 7.2, shield: 1 } },
+    },
+  },
+  myrthen: {
+    stats: { health: 220, defense: 11, damage: 44, crit: .22, shatterCapacity: 100, critMultiplier: 1.65, elementalDamage: 0 },
+    passive: { name: 'Turning Season', description: 'Skills advance Sprout, Bloom and Harvest; Harvest empowers the next Skill or Last Flare.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: 'Reaper’s Claim', description: 'Strike one enemy and mark it.', cooldown: 0, strength: { damageMultiplier: 2.72 } },
+      skill2: { name: 'Turn the Bough', description: 'Strike all enemies.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 1.92 } },
+      ultimate: { name: 'All That Ripens', description: 'Strike one enemy. Recover next turn.', cooldown: 0, strength: { damageMultiplier: 12.48 } },
     },
   },
 };

@@ -94,6 +94,15 @@ export const omnicSelfStats = {
   'master-kaelith-1': { skillPower: .55, damage: .45 },
   'master-kaelith-2': { skillEfficiency: .4, crit: .3 },
   'master-kaelith-3': { skillPower: .45, gaugeGain: .45 },
+  'master-caldrex-1': { health: .6, defense: .5 },
+  'master-caldrex-2': { health: .5, damage: .4, skillPower: .25 },
+  'master-caldrex-3': { health: .75, skillPower: .3 },
+  'master-solenne-1': { health: .5, defense: .75 },
+  'master-solenne-2': { health: .75, skillPower: .25 },
+  'master-solenne-3': { health: .4, skillPower: .3, skillEfficiency: .15 },
+  'master-myrthen-1': { damage: .6, skillPower: .35 },
+  'master-myrthen-2': { damage: .45, crit: .25 },
+  'master-myrthen-3': { damage: .4, health: .5, skillPower: .2 },
 } as const satisfies Partial<Record<EquipmentId, OmnicStatBonuses>>;
 
 export const omnicSquadStats = {

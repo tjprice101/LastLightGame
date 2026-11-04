@@ -46,7 +46,7 @@ describe('Let and Rise founding canon', () => {
   it('preserves shared prototypes and gives all fourteen Calamitic creations to Rise alone', () => {
     expect(conduits).toHaveLength(99);
     expect(conduits.filter(conduit => conduit.rarity === 'Calamitic')).toHaveLength(14);
-    expect(masterConduits).toHaveLength(57);
+    expect(masterConduits).toHaveLength(66);
     for (const conduit of conduits) {
       if (conduit.rarity === 'Calamitic') {
         expect(conduit.lore).toContain('Rise');

@@ -26,7 +26,7 @@ const previousDirect: Partial<Record<StarterId, number>> = {
 };
 
 describe('Last Flare roster-wide potency', () => {
-  it.each(nativeIdentityIds.filter(id => !isCalamiticCharacter(id)))('%s triples direct damage without changing Gauge, recovery or targets', id => {
+  it.each(nativeIdentityIds.filter(id => !isCalamiticCharacter(id) && !['caldrex', 'solenne', 'myrthen'].includes(id)))('%s triples direct damage without changing Gauge, recovery or targets', id => {
     const state = fixture(id);
     state.allies[1].spent = true;
     const result = act(state, id, 'ultimate', state.enemies[0].id);

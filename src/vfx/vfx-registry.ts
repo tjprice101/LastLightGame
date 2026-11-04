@@ -305,6 +305,33 @@ export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
       ultimate: { name: 'Last Flare: Resonance Cascade', tier: 'ultimate', archetype: 'cataclysm', description: 'Harmonic crystal blade strike shattering space with destructive acoustic glass ripples.', palette: P_VAELOR, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
     },
   },
+  caldrex: {
+    characterId: 'caldrex', characterName: 'Caldrex', element: 'Infernic', elementId: 'infernic', signature: 'kiln', weapon: 'Forge gauntlets',
+    abilities: {
+      light: { name: 'Gate Bash', tier: 'light', archetype: 'slam', description: 'A furnace-gauntlet impact with a compact ember ring.', palette: { ...P_EMBER, id: 'caldrex', name: 'Caldrex · Banked Heat' }, duration: 1.8, chargeDuration: .35, impactDuration: .5 },
+      skill1: { name: 'Close the Kiln', tier: 'skill1', archetype: 'mandala', description: 'Forge-gate rings close into a protective squad barrier.', palette: { ...P_EMBER, id: 'caldrex', name: 'Caldrex · Banked Heat' }, duration: 2.4, chargeDuration: .55, impactDuration: .8 },
+      skill2: { name: 'Cinder Discharge', tier: 'skill2', archetype: 'vortex', description: 'Banked cinders expand from the furnace in a broad fire spiral.', palette: { ...P_EMBER, id: 'caldrex', name: 'Caldrex · Banked Heat' }, duration: 2.6, chargeDuration: .7, impactDuration: .9 },
+      ultimate: { name: 'Nothing Beyond These Gates', tier: 'ultimate', archetype: 'cataclysm', description: 'Monumental furnace gates and concentric heat barriers seal around the squad.', palette: { ...P_EMBER, id: 'caldrex', name: 'Caldrex · Banked Heat' }, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
+    },
+  },
+  solenne: {
+    characterId: 'solenne', characterName: 'Solenne', element: 'Tranquilitic', elementId: 'tranquilitic', signature: 'moonbell', weapon: 'Temple bell shield',
+    abilities: {
+      light: { name: 'Bell Tap', tier: 'light', archetype: 'slam', description: 'A silver-lilac bell impact spreads a single measured ring.', palette: { ...P_BLISS, id: 'solenne', name: 'Solenne · Stillness', mid: { r: 185, g: 164, b: 216, a: .9 } }, duration: 1.8, chargeDuration: .35, impactDuration: .5 },
+      skill1: { name: 'Answer the Bell', tier: 'skill1', archetype: 'beam', description: 'A focused bell-tone crosses nested moonlit circles.', palette: { ...P_BLISS, id: 'solenne', name: 'Solenne · Stillness', mid: { r: 185, g: 164, b: 216, a: .9 } }, duration: 2.4, chargeDuration: .55, impactDuration: .8 },
+      skill2: { name: 'Circle of Repose', tier: 'skill2', archetype: 'mandala', description: 'Quiet lilac circles settle into protective bell-shaped wards.', palette: { ...P_BLISS, id: 'solenne', name: 'Solenne · Stillness', mid: { r: 185, g: 164, b: 216, a: .9 } }, duration: 2.6, chargeDuration: .7, impactDuration: .9 },
+      ultimate: { name: 'The Last Reverberation', tier: 'ultimate', archetype: 'cataclysm', description: 'Layered moonbell rings release one final expanding reverberation.', palette: { ...P_BLISS, id: 'solenne', name: 'Solenne · Stillness', mid: { r: 185, g: 164, b: 216, a: .9 } }, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
+    },
+  },
+  myrthen: {
+    characterId: 'myrthen', characterName: 'Myrthen', element: 'Botanic', elementId: 'botanic', signature: 'seasons', weapon: 'Chained sickles',
+    abilities: {
+      light: { name: 'Sickle Cut', tier: 'light', archetype: 'slash', description: 'A curved sickle trail scatters small orchard leaves.', palette: { ...P_SPROUT, id: 'myrthen', name: 'Myrthen · Turning Season' }, duration: 1.8, chargeDuration: .35, impactDuration: .5 },
+      skill1: { name: 'Reaper’s Claim', tier: 'skill1', archetype: 'slash', description: 'Chained sickles cross around a single ripening orchard seal.', palette: { ...P_SPROUT, id: 'myrthen', name: 'Myrthen · Turning Season' }, duration: 2.4, chargeDuration: .55, impactDuration: .8 },
+      skill2: { name: 'Turn the Bough', tier: 'skill2', archetype: 'vortex', description: 'A sweeping chain arc turns boughs and leaves through the enemy line.', palette: { ...P_SPROUT, id: 'myrthen', name: 'Myrthen · Turning Season' }, duration: 2.6, chargeDuration: .7, impactDuration: .9 },
+      ultimate: { name: 'All That Ripens', tier: 'ultimate', archetype: 'cataclysm', description: 'Sprout, bloom and harvest converge into a single immense sickle arc.', palette: { ...P_SPROUT, id: 'myrthen', name: 'Myrthen · Turning Season' }, duration: 3.4, chargeDuration: 1.2, impactDuration: 1.4 },
+    },
+  },
 };
 
 export function getVFXProfileForCombatant(combatantId: string, element?: string): CharacterVFXProfile {

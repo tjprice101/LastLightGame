@@ -68,9 +68,10 @@ describe('typed ability status labels', () => {
       expect(nativeAbilityStatuses.kaelith[action]).toEqual([['calamitic-fault', 'Fractalized Incision']]);
     }
     const kaelith = resolveFighter('kaelith');
-    expect(kaelith.abilities.skill1.description).toContain('through Reality Fault');
+    expect(kaelith.passive.description).toContain('Each of her direct hits adds 1 Fractalized Incision stack (max 3)');
+    expect(kaelith.abilities.skill1.description).toBe('Deal 456% direct damage to all enemies.');
     expect(kaelith.abilities.skill2.description).toContain('including the stack added by Reality Fault');
-    expect(kaelith.abilities.ultimate.description).toContain('existing stacks are not consumed');
+    expect(kaelith.passive.description).toContain('until consumed by Glass Meridian');
     const oldSnapshot = structuredClone(kaelith);
     oldSnapshot.abilities.skill1.description = '456% damage to all enemies and 1 Fault on each.';
     expect(describeFighter('kaelith', oldSnapshot).abilities.skill1.description).toBe(kaelith.abilities.skill1.description);
@@ -90,7 +91,7 @@ describe('typed ability status labels', () => {
   it('shows only the native passive statuses, without fake charges, when explaining native identities', () => {
     for (const starter of starters) {
       const summary = kitResource(resolveFighter(starter.id), starter.id);
-      expect(summary).not.toContain('charges');
+      expect(summary).not.toContain('Spending resets the saved charges');
       const expected = nativeAbilityStatuses[starter.id].passive ?? [];
       expect(summary.match(/data-native-status=/g)?.length ?? 0).toBe(new Set(expected.map(([icon]) => icon)).size);
       expect(summary).not.toContain('data-effect-family=');

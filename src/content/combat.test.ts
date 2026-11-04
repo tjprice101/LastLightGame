@@ -5,6 +5,7 @@ import { openingStarters as starters, starters as roster } from './starters';
 import { characterLevelCap, characterGrowthFactor, characterPotencyFactor } from './progression';
 import { nativeIdentities } from './native-identities';
 import { nativeBalance } from './native-balance';
+import { conduitGlossary } from './conduit-glossary';
 
 describe('character stat and kit growth', () => {
   it.each(roster)('$name has no ordinary skill cooldown at any evolution', starter => {
@@ -27,8 +28,8 @@ describe('character stat and kit growth', () => {
       expect(ability.strength).toEqual(original.abilities[action].strength);
       expect(ability.cooldown).toBe(original.abilities[action].cooldown);
       if (ability.strength.shield !== undefined) {
-        expect(ability.description).toMatch(/absorbs? damage before HP/i);
-        expect(ability.description).toMatch(/stack/i);
+        expect(ability.description).toContain('Shield');
+        expect(ability.description).toContain(`${ability.strength.shield}`);
       }
       if (ability.strength.weakenFraction !== undefined) expect(ability.description).toContain('Weaken');
       if (ability.strength.critBonus !== undefined) expect(ability.description).toContain('Critical chance bonus: this attack only.');
@@ -37,6 +38,15 @@ describe('character stat and kit growth', () => {
     }
     expect(kit.passive.description).not.toMatch(/\beffective authored\b/);
     expect(kit.passive.description).toBe(nativeIdentities[starter.id].passive.description);
+  });
+  it('explains shared Shield rules in one glossary instead of every ability', () => {
+    const definition = conduitGlossary.find(entry => entry.term === 'Shield')?.definition;
+    expect(definition).toContain('absorbs damage before [Health]');
+    expect(definition).toContain('lasts until broken');
+    expect(definition).toContain('stack on repeat casts');
+    expect(nativeIdentities.ozriel.abilities.skill2.description).not.toContain('last until broken');
+    expect(conduitGlossary.find(entry => entry.term === 'Burn')?.definition).toContain('25% of its source’s [Direct Attack]');
+    expect(conduitGlossary.find(entry => entry.term === 'Weaken')?.definition).toContain('25% for the next enemy phase');
   });
   it.each(starters)('$name preserves its original base kit without mutating definitions', (starter) => {
     const original = structuredClone(fighters[starter.id]);
@@ -97,10 +107,10 @@ describe('character stat and kit growth', () => {
     expect(tide.passive.defenseBonus).toBe(0);
     expect(tide.abilities.skill1.strength.weakenFraction).toBe(.25);
     expect(tide.abilities.skill1.description).toContain('for the next enemy phase');
-    expect(tide.abilities.skill2.description).toContain(`${nativeBalance.tizu.shelter * 100}% of its maximum HP`);
+    expect(tide.abilities.skill2.description).toContain(`${nativeBalance.tizu.shelter * 100}% of its maximum Health`);
     const flora = resolveFighter('sprout', progress);
     expect(flora.abilities.skill2.strength).toEqual({});
-    expect(flora.abilities.skill2.description).toContain(`${nativeBalance.flora.seed * 100}% of maximum HP`);
+    expect(flora.abilities.skill2.description).toContain(`${nativeBalance.flora.seed * 100}% maximum Health`);
     expect(flora.passive.healFraction).toBe(0);
     expect(flora.passive.description).toContain('start of the next player turn');
     expect(ember.stats.crit).toBeCloseTo(fighters.ember.stats.crit * characterPotencyFactor(progress));

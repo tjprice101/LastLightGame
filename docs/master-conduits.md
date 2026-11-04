@@ -1,23 +1,32 @@
 # Character Master Conduits (D-201)
 
-## Pending Phase1 alternatives (design only, 2026-11-03)
+## Phase1 alternatives (2026-11-03)
 
-[Nine Master summaries](phase-1-war-kit-specification.md)
-describe Caldrex, Solenne and Myrthen's proposed alternatives in plain language.
-They are **not** in the
-live57-Master catalog or chest selector yet. Proposed expansion would yield66;
-no drop rates, ownership, upgrades or current effects change in this draft.
+[Nine Master tooltips](phase-1-war-kit-specification.md) describe Caldrex,
+Solenne and Myrthen's approved alternatives. Owner explicitly requests their
+playable integration. The catalog expands from57 to66 fixed bearer-only
+Masters, retaining one separate matching-bearer Master slot and current chest
+acquisition rules. No automatic ownership or equip.
+
+All nine delivered icons are installed, archived and hash-recorded through
+the [Phase1 intake](art-workflow.md#delivered-phase1-war-artwork-2026-11-03).
+Shared byte-revision URLs cover equipment, choices, Inventory, Collections
+and saved chest rewards. Current validation/publication is in the [handoff](handoff.md).
+New generated effects follow their exact values without implicit Skill Power.
+Existing explicit Master-specific scaling remains valid.
+Caldrex's Counterstroke retaliation is explicitly critical-capable; this
+does not make other generated Conduit strikes critical-capable.
 
 ## Delivered Calamitic Master artwork (D-448)
 
-All57 current Masters now have installed artwork: the original48 plus three
+This historical batch completed artwork for57 Masters: the original48 plus three
 each for Ozriel, Ilvaris and Kaelith. All nine new delivered originals are
 preserved under `Art/source/master-conduits/calamitic`; reviewed connected
 background keys/gaps reproduce their transparent256px icons via
 `tools/intake_calamitic_master_art.py`. Shared byte revisions wire their PNG/AVIF
 art across equipment, choices, Inventory, Collections and saved chest rewards.
 The historical48-Master rules/intake records below describe the original batch;
-current catalog count is57. Mechanics, ownership and chest behavior are unchanged.
+that batch's catalog count was57. Mechanics, ownership and chest behavior were unchanged.
 See [review/reproduction](art-workflow.md#delivered-calamitic-masters-d-448).
 
 ## Exact, shared ability descriptions (D-415)

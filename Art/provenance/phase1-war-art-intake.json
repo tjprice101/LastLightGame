@@ -1,0 +1,2593 @@
+{
+  "asset_count": 45,
+  "assets": [
+    {
+      "incoming": "Kiln Warden, Caldrex.png",
+      "category": "characters",
+      "asset": "caldrex",
+      "source": "Art/source/phase1-war/characters/Kiln Warden, Caldrex.png",
+      "source_sha256": "e1163c55d6980ac1cd2771d220481f04c7853b3afc75befba3788468a5f5a226",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/caldrex.png",
+      "runtime_sha256": "5ce3884150a4a7cf419faff01a14ce995761b02f6034e0474c70dbca9eeb8b20",
+      "settings": {
+        "keys": [
+          [
+            62,
+            119,
+            88
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.601461,
+            0.576509
+          ],
+          [
+            0.375812,
+            0.595905
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Banked Fire, Caldrex.png",
+      "category": "characters",
+      "asset": "caldrex-evo-2",
+      "source": "Art/source/phase1-war/characters/Banked Fire, Caldrex.png",
+      "source_sha256": "882d9979e8b9d180da48fb1133ee3e11d2faf95dde4991148961843f590383e3",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/caldrex-evo-2.png",
+      "runtime_sha256": "6c3c560b5345cc5193cc22fba47960ca5ba48d8c5957af39bceb1b3111ae4e87",
+      "settings": {
+        "keys": [
+          [
+            42,
+            115,
+            76
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.606331,
+            0.543103
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "The Furnace Holds, Caldrex.png",
+      "category": "characters",
+      "asset": "caldrex-evo-3",
+      "source": "Art/source/phase1-war/characters/The Furnace Holds, Caldrex.png",
+      "source_sha256": "62d02005336e745577cfe448863d24ecd8eea5dfecd66245f463285056845da9",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/caldrex-evo-3.png",
+      "runtime_sha256": "a0179a1d66e38721590720235107edb08c4d771d01b21081a48a0ff2807d1687",
+      "settings": {
+        "keys": [
+          [
+            56,
+            96,
+            76
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.318994,
+            0.358836
+          ],
+          [
+            0.633117,
+            0.568966
+          ],
+          [
+            0.299513,
+            0.62069
+          ],
+          [
+            0.777597,
+            0.28125
+          ],
+          [
+            0.70211,
+            0.796336
+          ],
+          [
+            0.11526,
+            0.344828
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Bearer of the Closed Gate, Caldrex.png",
+      "category": "characters",
+      "asset": "caldrex-evo-4",
+      "source": "Art/source/phase1-war/characters/Bearer of the Closed Gate, Caldrex.png",
+      "source_sha256": "6ce92517aff2cc7cd119e08f146a326a5742f9026f5943abccbefd5c2466e20f",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/caldrex-evo-4.png",
+      "runtime_sha256": "9694c7a340d5699b0329ce38d4d975ed8fbdb8f1b52e31eeb39251051dc2c941",
+      "settings": {
+        "keys": [
+          [
+            46,
+            116,
+            95
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.51461,
+            0.866379
+          ],
+          [
+            0.248377,
+            0.783405
+          ],
+          [
+            0.754058,
+            0.810345
+          ],
+          [
+            0.284091,
+            0.53556
+          ],
+          [
+            0.426136,
+            0.386853
+          ],
+          [
+            0.592532,
+            0.394397
+          ],
+          [
+            0.269481,
+            0.942888
+          ],
+          [
+            0.456169,
+            0.419181
+          ],
+          [
+            0.420455,
+            0.469828
+          ],
+          [
+            0.541396,
+            0.266164
+          ],
+          [
+            0.574675,
+            0.417026
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "No Flame Passes, Caldrex.png",
+      "category": "characters",
+      "asset": "caldrex-evo-5",
+      "source": "Art/source/phase1-war/characters/No Flame Passes, Caldrex.png",
+      "source_sha256": "1f0614af19d7460db56d4399589141b8e5c0e6504837f6656c498b9dd8f5ece3",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/caldrex-evo-5.png",
+      "runtime_sha256": "aa062779efbc2e05c6c8a0e6d27a8d680aed43682af321e4d8b340479c09fe14",
+      "settings": {
+        "keys": [
+          [
+            24,
+            105,
+            47
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.728084,
+            0.789871
+          ],
+          [
+            0.893669,
+            0.560345
+          ],
+          [
+            0.801948,
+            0.570043
+          ],
+          [
+            0.9375,
+            0.49569
+          ],
+          [
+            0.258117,
+            0.628233
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "The Last Kiln, Caldrex.png",
+      "category": "characters",
+      "asset": "caldrex-evo-6",
+      "source": "Art/source/phase1-war/characters/The Last Kiln, Caldrex.png",
+      "source_sha256": "f1d2f6cc4efa68d3043fa52351de9bc8b168ca743452eef0a1ab17d28baf076e",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/caldrex-evo-6.png",
+      "runtime_sha256": "b6773723f02738c941d5bffb6b0dde39044401c0218252d4455cdbc3ecf047df",
+      "settings": {
+        "keys": [
+          [
+            68,
+            76,
+            54
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.633929,
+            0.221983
+          ],
+          [
+            0.204545,
+            0.511853
+          ],
+          [
+            0.446429,
+            0.769397
+          ],
+          [
+            0.241883,
+            0.704741
+          ],
+          [
+            0.345779,
+            0.28556
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Passive Banked Heat.png",
+      "category": "abilities",
+      "asset": "caldrex-passive",
+      "source": "Art/source/phase1-war/abilities/Passive Banked Heat.png",
+      "source_sha256": "3cc342fc8395af2c40ba06b73751bcea8aed13758a4a0cd257ef0170887a5c40",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/abilities/caldrex-passive.png",
+      "runtime_sha256": "bba18199611cf242300ab79ba2a94b627f631115f9050024f94506d40ff906f9",
+      "settings": {
+        "keys": [
+          [
+            127,
+            163,
+            135
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Skill 1 Close the Kiln.png",
+      "category": "abilities",
+      "asset": "caldrex-skill1",
+      "source": "Art/source/phase1-war/abilities/Skill 1 Close the Kiln.png",
+      "source_sha256": "9af0c27b7bd66f523e36ffacb3ac22d6e7520cc54df7e981ef0236cf05ea6b97",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/abilities/caldrex-skill1.png",
+      "runtime_sha256": "6a755ac5429206b5dee44bf8a731b7960dac43c382035f422f507304cbe00cad",
+      "settings": {
+        "keys": [
+          [
+            136,
+            149,
+            131
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Skill 2 Cinder Discharge.png",
+      "category": "abilities",
+      "asset": "caldrex-skill2",
+      "source": "Art/source/phase1-war/abilities/Skill 2 Cinder Discharge.png",
+      "source_sha256": "2aed1fb1534f88070cc2ea0aa66eeea03843c37371d231ebfe0f20f3417feab5",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/abilities/caldrex-skill2.png",
+      "runtime_sha256": "cf818ddff9fa93a0c466f32aee828ba66d6eaa1faef9ac7e62888d47a705d034",
+      "settings": {
+        "keys": [
+          [
+            181,
+            199,
+            112
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Last Flare Nothing Beyond These Gates.png",
+      "category": "abilities",
+      "asset": "caldrex-ultimate",
+      "source": "Art/source/phase1-war/abilities/Last Flare Nothing Beyond These Gates.png",
+      "source_sha256": "2f2e6679a3554598659b16a4c39b2ddffcd8d3b993b777512c7858fb9f5fa6e0",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/abilities/caldrex-ultimate.png",
+      "runtime_sha256": "59a96dde0bcf7393ce9bbd02c0cc8364d1e1395f83b0cc4d534404d7722e81a5",
+      "settings": {
+        "keys": [
+          [
+            103,
+            132,
+            113
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Banked-Sun Pressure Accumulator.png",
+      "category": "master-conduits",
+      "asset": "master-caldrex-1",
+      "source": "Art/source/phase1-war/master-conduits/Banked-Sun Pressure Accumulator.png",
+      "source_sha256": "2e0928279f3536e6d5bc2ee7ecce38964e4d43fca967426c7044efe67bf4f83c",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/master-conduits/master-caldrex-1.png",
+      "runtime_sha256": "d01c4c15eb04066cc5f7f9bba692cd3a435d87747ea930566ccde23ddbc11a89",
+      "settings": {
+        "keys": [
+          [
+            157,
+            210,
+            164
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.777344,
+            0.646484
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Counterstroke Recoil Foundry.png",
+      "category": "master-conduits",
+      "asset": "master-caldrex-2",
+      "source": "Art/source/phase1-war/master-conduits/Counterstroke Recoil Foundry.png",
+      "source_sha256": "840566705dc2200ecc2072fffbea0e00b0059b6c5c06db8fec23f2f3448173f8",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/master-conduits/master-caldrex-2.png",
+      "runtime_sha256": "37570b6420ef74976616b9e8d903ce7be0edd72e5ee9272d38ab9b53f5aaccfc",
+      "settings": {
+        "keys": [
+          [
+            91,
+            189,
+            114
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.438477,
+            0.160156
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Cinderpulse Triage Converter.png",
+      "category": "master-conduits",
+      "asset": "master-caldrex-3",
+      "source": "Art/source/phase1-war/master-conduits/Cinderpulse Triage Converter.png",
+      "source_sha256": "f8ebda73dcc1ec4dea851e0194983d6a5d9e9d2088f6b6a092f7c0b8ac11a8ec",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/master-conduits/master-caldrex-3.png",
+      "runtime_sha256": "bd5dabe3e2acf9ef131170c0dbfc06f33dc3885c4da5899781897f97517936cd",
+      "settings": {
+        "keys": [
+          [
+            149,
+            195,
+            156
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Caldrex trial header.png",
+      "category": "banners",
+      "asset": "elemental-war-caldrex-banner",
+      "source": "Art/source/phase1-war/banners/Caldrex trial header.png",
+      "source_sha256": "9c96c5ff61f0aae30d0d74e9d5eacf4e285505d7f8887cd52605a0476810b5aa",
+      "source_dimensions": [
+        1904,
+        640
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/banners/elemental-war-caldrex-banner.png",
+      "runtime_sha256": "9c96c5ff61f0aae30d0d74e9d5eacf4e285505d7f8887cd52605a0476810b5aa",
+      "settings": {
+        "processing": "opaque scenery; unchanged source bytes",
+        "review": "Reviewed supplied trial scene; retain opaque source bytes and full composition."
+      }
+    },
+    {
+      "incoming": "Caldrex trial arena.png",
+      "category": "backgrounds",
+      "asset": "elemental-war-caldrex-arena",
+      "source": "Art/source/phase1-war/backgrounds/Caldrex trial arena.png",
+      "source_sha256": "448810539d4fbc25796d5343250d4cd67470c7dc5bc3f7b2d0afb145fc957752",
+      "source_dimensions": [
+        1456,
+        816
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/backgrounds/elemental-war-caldrex-arena.png",
+      "runtime_sha256": "448810539d4fbc25796d5343250d4cd67470c7dc5bc3f7b2d0afb145fc957752",
+      "settings": {
+        "processing": "opaque scenery; unchanged source bytes",
+        "review": "Reviewed supplied trial scene; retain opaque source bytes and full composition."
+      }
+    },
+    {
+      "incoming": "Moonbell Keeper, Solenne.png",
+      "category": "characters",
+      "asset": "solenne",
+      "source": "Art/source/phase1-war/characters/Moonbell Keeper, Solenne.png",
+      "source_sha256": "cde07375a2fc227a580ee21fe79901c605dcab6701a671364a404920779775b3",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/solenne.png",
+      "runtime_sha256": "8477678b4ab5ce2bb7fed6202290abbf768e07424a909dbf3da4a1fe5ef25332",
+      "settings": {
+        "keys": [
+          [
+            57,
+            107,
+            71
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Between Two Chimes, Solenne.png",
+      "category": "characters",
+      "asset": "solenne-evo-2",
+      "source": "Art/source/phase1-war/characters/Between Two Chimes, Solenne.png",
+      "source_sha256": "1c100eecbd1ab61bfe4c19bc4d55fcc7831171def3768e7122ec61b4a2761fc5",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/solenne-evo-2.png",
+      "runtime_sha256": "b795f51136f2953fe769fefb4f14b10ee48afa89298ccdd0b4c77021c08ae382",
+      "settings": {
+        "keys": [
+          [
+            2,
+            113,
+            95
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.747565,
+            0.755388
+          ],
+          [
+            0.362825,
+            0.62931
+          ],
+          [
+            0.107143,
+            0.344828
+          ],
+          [
+            0.916396,
+            0.550647
+          ],
+          [
+            0.758117,
+            0.517241
+          ],
+          [
+            0.657468,
+            0.453664
+          ],
+          [
+            0.604708,
+            0.363147
+          ],
+          [
+            0.704545,
+            0.154095
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "The Patient Circle, Solenne.png",
+      "category": "characters",
+      "asset": "solenne-evo-3",
+      "source": "Art/source/phase1-war/characters/The Patient Circle, Solenne.png",
+      "source_sha256": "9c39504de97cdbbf72790a44aec0ad2c1db21ba826873e77c9526841dd9d1948",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/solenne-evo-3.png",
+      "runtime_sha256": "715d13a75c8d6d4cd6ba1da5b26db924570a3b4967e7a242da15ce5ffaa154d4",
+      "settings": {
+        "keys": [
+          [
+            43,
+            118,
+            85
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.232955,
+            0.62931
+          ],
+          [
+            0.289773,
+            0.530172
+          ],
+          [
+            0.277597,
+            0.289871
+          ],
+          [
+            0.310065,
+            0.684267
+          ],
+          [
+            0.585227,
+            0.507543
+          ],
+          [
+            0.413149,
+            0.615302
+          ],
+          [
+            0.69724,
+            0.720905
+          ],
+          [
+            0.57711,
+            0.400862
+          ],
+          [
+            0.30276,
+            0.452586
+          ],
+          [
+            0.412338,
+            0.428879
+          ],
+          [
+            0.357955,
+            0.62931
+          ],
+          [
+            0.332792,
+            0.445043
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Keeper of the Unstruck Bell, Solenne.png",
+      "category": "characters",
+      "asset": "solenne-evo-4",
+      "source": "Art/source/phase1-war/characters/Keeper of the Unstruck Bell, Solenne.png",
+      "source_sha256": "01b9b94a253ce741291dcb141259d8a62bf643d28bff085166b42af5dc4f0747",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/solenne-evo-4.png",
+      "runtime_sha256": "8f6d3a7ea88dd6851c4a0a2125a667ad8c5ffb2f728f1c8bd84968a2e0c99d85",
+      "settings": {
+        "keys": [
+          [
+            55,
+            123,
+            80
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.207792,
+            0.545259
+          ],
+          [
+            0.324675,
+            0.570043
+          ],
+          [
+            0.742695,
+            0.550647
+          ],
+          [
+            0.405032,
+            0.282328
+          ],
+          [
+            0.789773,
+            0.53125
+          ],
+          [
+            0.543831,
+            0.490302
+          ],
+          [
+            0.503247,
+            0.405172
+          ],
+          [
+            0.200487,
+            0.703664
+          ],
+          [
+            0.694805,
+            0.564655
+          ],
+          [
+            0.835227,
+            0.497845
+          ],
+          [
+            0.678571,
+            0.517241
+          ],
+          [
+            0.655032,
+            0.466595
+          ],
+          [
+            0.631494,
+            0.398707
+          ],
+          [
+            0.466721,
+            0.581897
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "A Silence Held, Solenne.png",
+      "category": "characters",
+      "asset": "solenne-evo-5",
+      "source": "Art/source/phase1-war/characters/A Silence Held, Solenne.png",
+      "source_sha256": "a6fd971eea0db6085866fc7ab26e1db728bb3636daf97769bcd6ae7dee3b5699",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/solenne-evo-5.png",
+      "runtime_sha256": "4996b1957896d98e50d5fbbed792343ba6bcfef99dbbf55db9ae0e823007b304",
+      "settings": {
+        "keys": [
+          [
+            38,
+            97,
+            56
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.734578,
+            0.272629
+          ],
+          [
+            0.796266,
+            0.575431
+          ],
+          [
+            0.203734,
+            0.481681
+          ],
+          [
+            0.69237,
+            0.405172
+          ],
+          [
+            0.146104,
+            0.471983
+          ],
+          [
+            0.275974,
+            0.476293
+          ],
+          [
+            0.332792,
+            0.570043
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "The Bell That Stayed, Solenne.png",
+      "category": "characters",
+      "asset": "solenne-evo-6",
+      "source": "Art/source/phase1-war/characters/The Bell That Stayed, Solenne.png",
+      "source_sha256": "6cbb49685f78d4a9d3bd2b24f0fc6823bf0a5078f8cd2da0d0438df84927235a",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/solenne-evo-6.png",
+      "runtime_sha256": "dd6b20a50f646bc72db42c4c7496095dc9948e26d9873c128fb688461676075c",
+      "settings": {
+        "keys": [
+          [
+            61,
+            102,
+            73
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.205357,
+            0.507543
+          ],
+          [
+            0.886364,
+            0.574353
+          ],
+          [
+            0.681818,
+            0.371767
+          ],
+          [
+            0.318994,
+            0.481681
+          ],
+          [
+            0.796266,
+            0.544181
+          ],
+          [
+            0.719156,
+            0.46875
+          ],
+          [
+            0.752435,
+            0.331897
+          ],
+          [
+            0.680195,
+            0.169181
+          ],
+          [
+            0.681818,
+            0.053879
+          ],
+          [
+            0.556006,
+            0.115302
+          ],
+          [
+            0.55763,
+            0.445043
+          ],
+          [
+            0.694805,
+            0.552802
+          ],
+          [
+            0.871753,
+            0.130388
+          ],
+          [
+            0.788149,
+            0.212284
+          ],
+          [
+            0.611201,
+            0.425647
+          ],
+          [
+            0.646104,
+            0.501078
+          ],
+          [
+            0.643669,
+            0.072198
+          ],
+          [
+            0.585227,
+            0.413793
+          ],
+          [
+            0.665584,
+            0.392241
+          ],
+          [
+            0.246753,
+            0.422414
+          ],
+          [
+            0.779221,
+            0.342672
+          ],
+          [
+            0.637987,
+            0.241379
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Passive Held Stillness.png",
+      "category": "abilities",
+      "asset": "solenne-passive",
+      "source": "Art/source/phase1-war/abilities/Passive Held Stillness.png",
+      "source_sha256": "d0175980a7aff13d002975a8f795f4dd3bee24dc5649e99b98abfdf545131024",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/abilities/solenne-passive.png",
+      "runtime_sha256": "968311b6fb79eeff1d98a9c83a271e92f3c4f63c69ff93267a4c9f28d962d4f9",
+      "settings": {
+        "keys": [
+          [
+            136,
+            160,
+            145
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.704102,
+            0.230469
+          ],
+          [
+            0.826172,
+            0.510742
+          ],
+          [
+            0.576172,
+            0.831055
+          ],
+          [
+            0.787109,
+            0.649414
+          ],
+          [
+            0.480469,
+            0.223633
+          ],
+          [
+            0.657227,
+            0.788086
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Skill 1 Answer the Bell.png",
+      "category": "abilities",
+      "asset": "solenne-skill1",
+      "source": "Art/source/phase1-war/abilities/Skill 1 Answer the Bell.png",
+      "source_sha256": "1322a146c85f1acfab312f9ad41ea8908818039d375bd5d415eefda4d0507cdf",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/abilities/solenne-skill1.png",
+      "runtime_sha256": "ec3eeffc00ccc562ec7e96c1cc1352270b1bbf19806d9abb28de2500f40823fa",
+      "settings": {
+        "keys": [
+          [
+            112,
+            188,
+            145
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.698242,
+            0.299805
+          ],
+          [
+            0.317383,
+            0.333008
+          ],
+          [
+            0.685547,
+            0.62207
+          ],
+          [
+            0.495117,
+            0.107422
+          ],
+          [
+            0.384766,
+            0.165039
+          ],
+          [
+            0.619141,
+            0.079102
+          ],
+          [
+            0.829102,
+            0.143555
+          ],
+          [
+            0.890625,
+            0.242188
+          ],
+          [
+            0.323242,
+            0.262695
+          ],
+          [
+            0.912109,
+            0.348633
+          ],
+          [
+            0.733398,
+            0.084961
+          ],
+          [
+            0.878906,
+            0.449219
+          ],
+          [
+            0.81543,
+            0.540039
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Skill 2 Circle of Repose.png",
+      "category": "abilities",
+      "asset": "solenne-skill2",
+      "source": "Art/source/phase1-war/abilities/Skill 2 Circle of Repose.png",
+      "source_sha256": "c4f2ca7a164fa87fe75014ec00ba299f2fb6ce22a9d7ffa678090d5dea343d42",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/abilities/solenne-skill2.png",
+      "runtime_sha256": "e5b0caa6cf1ccac26a3fd61d4e70e6ac828ce77e4a1eb3668b0e772d619819a2",
+      "settings": {
+        "keys": [
+          [
+            132,
+            167,
+            152
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.646484,
+            0.4375
+          ],
+          [
+            0.729492,
+            0.441406
+          ],
+          [
+            0.772461,
+            0.614258
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Last Flare The Last Reverberation.png",
+      "category": "abilities",
+      "asset": "solenne-ultimate",
+      "source": "Art/source/phase1-war/abilities/Last Flare The Last Reverberation.png",
+      "source_sha256": "567a8ad83efe4b6ff3b628e8fdd290215d5479f270b2571e153f02ee7a8b50df",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/abilities/solenne-ultimate.png",
+      "runtime_sha256": "d3bfb011321a6a61b4d61f6b39a51237205f91fdaf2c3f4816697a2dd8e8bfcd",
+      "settings": {
+        "keys": [
+          [
+            70,
+            114,
+            94
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.03,
+            0.03
+          ],
+          [
+            0.4,
+            0.32
+          ],
+          [
+            0.6,
+            0.32
+          ],
+          [
+            0.374023,
+            0.267578
+          ],
+          [
+            0.62793,
+            0.269531
+          ],
+          [
+            0.375977,
+            0.735352
+          ],
+          [
+            0.625977,
+            0.733398
+          ],
+          [
+            0.262695,
+            0.379883
+          ],
+          [
+            0.738281,
+            0.621094
+          ],
+          [
+            0.263672,
+            0.621094
+          ],
+          [
+            0.737305,
+            0.380859
+          ],
+          [
+            0.694336,
+            0.585938
+          ],
+          [
+            0.305664,
+            0.416992
+          ],
+          [
+            0.306641,
+            0.587891
+          ],
+          [
+            0.698242,
+            0.420898
+          ],
+          [
+            0.556641,
+            0.713867
+          ],
+          [
+            0.444336,
+            0.713867
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped. Remove only the empty outer generated frame and green ring gaps.",
+        "discarded_frame_regions": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              0.012
+            ],
+            [
+              0,
+              0.012
+            ]
+          ],
+          [
+            [
+              0,
+              0.988
+            ],
+            [
+              1,
+              0.988
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          [
+            [
+              0,
+              0
+            ],
+            [
+              0.012,
+              0
+            ],
+            [
+              0.012,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          [
+            [
+              0.988,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              0.988,
+              1
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Stillpoint Inertial Governor.png",
+      "category": "master-conduits",
+      "asset": "master-solenne-1",
+      "source": "Art/source/phase1-war/master-conduits/Stillpoint Inertial Governor.png",
+      "source_sha256": "2f8eccbcce6ffabb7ad23443c8e8dac91701a9df8e375cb97de85f89c6cad763",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/master-conduits/master-solenne-1.png",
+      "runtime_sha256": "7566ae1aff847aa4f5082104bbd3ea69ddc79ff5abfe6494798bdd8d97a46ba3",
+      "settings": {
+        "keys": [
+          [
+            128,
+            216,
+            149
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Quiet-Arc Shelter Projector.png",
+      "category": "master-conduits",
+      "asset": "master-solenne-2",
+      "source": "Art/source/phase1-war/master-conduits/Quiet-Arc Shelter Projector.png",
+      "source_sha256": "dcf963dabb563714cf98076e8b72c8eb02552795a8b46df42c76acb51b05fe18",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/master-conduits/master-solenne-2.png",
+      "runtime_sha256": "fc49aaed26285a94f8d83ada8e0fe770d60990a818dd5e3963a94a78d187402c",
+      "settings": {
+        "keys": [
+          [
+            142,
+            176,
+            138
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Cadence Differential Drive.png",
+      "category": "master-conduits",
+      "asset": "master-solenne-3",
+      "source": "Art/source/phase1-war/master-conduits/Cadence Differential Drive.png",
+      "source_sha256": "8189ec58b33539d41cd4fdb86e3203f5cc04690af640d7f89d9ec2d5a7991d0f",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/master-conduits/master-solenne-3.png",
+      "runtime_sha256": "1fd1a696fca11d5b21faca8dbc3b5caa1ccb84637cea59e1246663106ba20250",
+      "settings": {
+        "keys": [
+          [
+            113,
+            173,
+            127
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.460938,
+            0.292969
+          ],
+          [
+            0.75293,
+            0.208008
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Solenne trial header.png",
+      "category": "banners",
+      "asset": "elemental-war-solenne-banner",
+      "source": "Art/source/phase1-war/banners/Solenne trial header.png",
+      "source_sha256": "e8053b85a2485eb41b48239dd0b77623b3cfecac3bcd88468b93ddf138fda011",
+      "source_dimensions": [
+        1904,
+        640
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/banners/elemental-war-solenne-banner.png",
+      "runtime_sha256": "e8053b85a2485eb41b48239dd0b77623b3cfecac3bcd88468b93ddf138fda011",
+      "settings": {
+        "processing": "opaque scenery; unchanged source bytes",
+        "review": "Reviewed supplied trial scene; retain opaque source bytes and full composition."
+      }
+    },
+    {
+      "incoming": "Solenne trial arena.png",
+      "category": "backgrounds",
+      "asset": "elemental-war-solenne-arena",
+      "source": "Art/source/phase1-war/backgrounds/Solenne trial arena.png",
+      "source_sha256": "2fd23e3cd94362c3c1fbfc33dae924647be718a8e869d5d678eb623756096878",
+      "source_dimensions": [
+        1456,
+        816
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/backgrounds/elemental-war-solenne-arena.png",
+      "runtime_sha256": "2fd23e3cd94362c3c1fbfc33dae924647be718a8e869d5d678eb623756096878",
+      "settings": {
+        "processing": "opaque scenery; unchanged source bytes",
+        "review": "Reviewed supplied trial scene; retain opaque source bytes and full composition."
+      }
+    },
+    {
+      "incoming": "Season Reaper, Myrthen.png",
+      "category": "characters",
+      "asset": "myrthen",
+      "source": "Art/source/phase1-war/characters/Season Reaper, Myrthen.png",
+      "source_sha256": "8606c1489ebe3b7823ce83033dcab36eec6826c52d41f25864f61ce46342074f",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/myrthen.png",
+      "runtime_sha256": "631b1d3cf69214d1bf772b668aefed91afcc486a94f23a0da2b96b2c4021b60a",
+      "settings": {
+        "keys": [
+          [
+            21,
+            123,
+            206
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.234578,
+            0.751078
+          ],
+          [
+            0.327922,
+            0.65625
+          ],
+          [
+            0.541396,
+            0.060345
+          ],
+          [
+            0.840909,
+            0.380388
+          ],
+          [
+            0.636364,
+            0.600216
+          ],
+          [
+            0.655032,
+            0.668103
+          ],
+          [
+            0.405844,
+            0.543103
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "First Turning, Myrthen.png",
+      "category": "characters",
+      "asset": "myrthen-evo-2",
+      "source": "Art/source/phase1-war/characters/First Turning, Myrthen.png",
+      "source_sha256": "ae2f21676c28b4bbab0a22020dc46141bf155ec0608eb7eb6a252f70690a8b24",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/myrthen-evo-2.png",
+      "runtime_sha256": "24db1c220f85aa6b7def2740c5072c4912ffd29a0f86950627b0d1d79654dade",
+      "settings": {
+        "keys": [
+          [
+            43,
+            129,
+            206
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.605519,
+            0.450431
+          ],
+          [
+            0.496753,
+            0.796336
+          ],
+          [
+            0.315747,
+            0.644397
+          ],
+          [
+            0.678571,
+            0.698276
+          ],
+          [
+            0.535714,
+            0.578664
+          ],
+          [
+            0.716721,
+            0.924569
+          ],
+          [
+            0.659091,
+            0.059267
+          ],
+          [
+            0.592532,
+            0.739224
+          ],
+          [
+            0.400162,
+            0.453664
+          ],
+          [
+            0.36526,
+            0.645474
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Bough and Blade, Myrthen.png",
+      "category": "characters",
+      "asset": "myrthen-evo-3",
+      "source": "Art/source/phase1-war/characters/Bough and Blade, Myrthen.png",
+      "source_sha256": "4e7d6bc04f32e2d5396af4c148416afbbb1bbf385d1bd491c2418ee588845804",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/myrthen-evo-3.png",
+      "runtime_sha256": "e3ac6844dcdbfea904e13bb8f939e072da962f7de48b61431668565c9f23f3d2",
+      "settings": {
+        "keys": [
+          [
+            47,
+            86,
+            166
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.416396,
+            0.892241
+          ],
+          [
+            0.671266,
+            0.52694
+          ],
+          [
+            0.299513,
+            0.693966
+          ],
+          [
+            0.283279,
+            0.826509
+          ],
+          [
+            0.362825,
+            0.50431
+          ],
+          [
+            0.368506,
+            0.587284
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Harvest in Motion, Myrthen.png",
+      "category": "characters",
+      "asset": "myrthen-evo-4",
+      "source": "Art/source/phase1-war/characters/Harvest in Motion, Myrthen.png",
+      "source_sha256": "2906d26f8b5373312cef7bb61f03bb6d3c899ce1cac5e92d92a455ac355a3858",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/myrthen-evo-4.png",
+      "runtime_sha256": "4acc5353ab7b727be6696c903dcfca81399c123286a4e11e22b79b8ad0500d40",
+      "settings": {
+        "keys": [
+          [
+            27,
+            126,
+            203
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.494318,
+            0.896552
+          ],
+          [
+            0.784903,
+            0.796336
+          ],
+          [
+            0.44724,
+            0.797414
+          ],
+          [
+            0.341721,
+            0.797414
+          ],
+          [
+            0.627435,
+            0.668103
+          ],
+          [
+            0.406656,
+            0.424569
+          ],
+          [
+            0.583604,
+            0.428879
+          ],
+          [
+            0.472403,
+            0.090517
+          ],
+          [
+            0.542208,
+            0.581897
+          ],
+          [
+            0.718344,
+            0.705819
+          ],
+          [
+            0.530032,
+            0.145474
+          ],
+          [
+            0.686688,
+            0.625
+          ],
+          [
+            0.551136,
+            0.471983
+          ],
+          [
+            0.654221,
+            0.83944
+          ],
+          [
+            0.576299,
+            0.632543
+          ],
+          [
+            0.357143,
+            0.438578
+          ],
+          [
+            0.418831,
+            0.587284
+          ],
+          [
+            0.204545,
+            0.725216
+          ],
+          [
+            0.349026,
+            0.875
+          ],
+          [
+            0.290584,
+            0.729526
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "The Orchard Remembers, Myrthen.png",
+      "category": "characters",
+      "asset": "myrthen-evo-5",
+      "source": "Art/source/phase1-war/characters/The Orchard Remembers, Myrthen.png",
+      "source_sha256": "1e85dc2b207342b15e5b5d45ca3bd9437ad2fd9907ceb11c56b4b0903bb4beb2",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/myrthen-evo-5.png",
+      "runtime_sha256": "ee1494f7badc10c8bb84f988d224c3fe20986351939559fd91dc273dd304f296",
+      "settings": {
+        "keys": [
+          [
+            8,
+            61,
+            144
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.483766,
+            0.927802
+          ],
+          [
+            0.26461,
+            0.912716
+          ],
+          [
+            0.766234,
+            0.572198
+          ],
+          [
+            0.750812,
+            0.662716
+          ],
+          [
+            0.273539,
+            0.623922
+          ],
+          [
+            0.757305,
+            0.446121
+          ],
+          [
+            0.809253,
+            0.139009
+          ],
+          [
+            0.659091,
+            0.911638
+          ],
+          [
+            0.679383,
+            0.081897
+          ],
+          [
+            0.519481,
+            0.040948
+          ],
+          [
+            0.584416,
+            0.039871
+          ],
+          [
+            0.438312,
+            0.078664
+          ],
+          [
+            0.685065,
+            0.139009
+          ],
+          [
+            0.760552,
+            0.143319
+          ],
+          [
+            0.577922,
+            0.063578
+          ],
+          [
+            0.424513,
+            0.105603
+          ],
+          [
+            0.756494,
+            0.190733
+          ],
+          [
+            0.703734,
+            0.107759
+          ],
+          [
+            0.672078,
+            0.053879
+          ],
+          [
+            0.397727,
+            0.164871
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped. Preserve the authored blue-white ice planes; do not key all interior blue."
+      }
+    },
+    {
+      "incoming": "When All Seasons Meet, Myrthen.png",
+      "category": "characters",
+      "asset": "myrthen-evo-6",
+      "source": "Art/source/phase1-war/characters/When All Seasons Meet, Myrthen.png",
+      "source_sha256": "b8b25595ea8309b48875adda956b57d5eb2ed39272d24a98144e838aee71e697",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/myrthen-evo-6.png",
+      "runtime_sha256": "d660d4cd282c6e4c8d4d569521071516f1eaaa8f71ff0102a8f54ff24239039b",
+      "settings": {
+        "keys": [
+          [
+            116,
+            156,
+            228
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.633929,
+            0.298491
+          ],
+          [
+            0.383117,
+            0.322198
+          ],
+          [
+            0.733766,
+            0.429957
+          ],
+          [
+            0.681818,
+            0.192888
+          ],
+          [
+            0.701299,
+            0.49569
+          ],
+          [
+            0.685065,
+            0.726293
+          ],
+          [
+            0.351461,
+            0.363147
+          ],
+          [
+            0.732955,
+            0.278017
+          ],
+          [
+            0.345779,
+            0.453664
+          ],
+          [
+            0.608766,
+            0.478448
+          ],
+          [
+            0.366071,
+            0.789871
+          ],
+          [
+            0.275162,
+            0.485991
+          ],
+          [
+            0.571429,
+            0.489224
+          ],
+          [
+            0.25974,
+            0.568966
+          ],
+          [
+            0.603896,
+            0.211207
+          ],
+          [
+            0.755682,
+            0.21875
+          ],
+          [
+            0.181818,
+            0.571121
+          ],
+          [
+            0.728896,
+            0.159483
+          ],
+          [
+            0.354708,
+            0.507543
+          ],
+          [
+            0.607143,
+            0.380388
+          ],
+          [
+            0.464286,
+            0.485991
+          ],
+          [
+            0.48539,
+            0.064655
+          ],
+          [
+            0.663149,
+            0.478448
+          ],
+          [
+            0.607143,
+            0.18319
+          ],
+          [
+            0.443182,
+            0.511853
+          ],
+          [
+            0.284091,
+            0.538793
+          ],
+          [
+            0.120942,
+            0.567888
+          ],
+          [
+            0.314935,
+            0.537716
+          ],
+          [
+            0.69724,
+            0.252155
+          ],
+          [
+            0.689935,
+            0.336207
+          ],
+          [
+            0.784091,
+            0.673491
+          ],
+          [
+            0.313312,
+            0.497845
+          ],
+          [
+            0.732955,
+            0.195043
+          ],
+          [
+            0.597403,
+            0.158405
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Passive Turning Season.png",
+      "category": "abilities",
+      "asset": "myrthen-passive",
+      "source": "Art/source/phase1-war/abilities/Passive Turning Season.png",
+      "source_sha256": "7405bb21be03f0b1caf52e4f667fb4cc2c9324236b7b47fe2f0918729037c87b",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/abilities/myrthen-passive.png",
+      "runtime_sha256": "3a74e7d78bd6219f71508363834efe2303aee26236a2797cdf6c6cf2fe291d0c",
+      "settings": {
+        "keys": [
+          [
+            86,
+            195,
+            253
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Skill 1 Reaper's Claim.png",
+      "category": "abilities",
+      "asset": "myrthen-skill1",
+      "source": "Art/source/phase1-war/abilities/Skill 1 Reaper's Claim.png",
+      "source_sha256": "2852c286d4c38a041876a5cda4a88b63fd698ec03dd22cc87c0657e3b2bfe0b3",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/abilities/myrthen-skill1.png",
+      "runtime_sha256": "29ffbbd8c9d11bdd6a8378002a074d973384526d28280d0a72151aad5b982d5f",
+      "settings": {
+        "keys": [
+          [
+            63,
+            207,
+            254
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.535156,
+            0.305664
+          ],
+          [
+            0.904297,
+            0.748047
+          ],
+          [
+            0.782227,
+            0.885742
+          ],
+          [
+            0.098633,
+            0.170898
+          ],
+          [
+            0.318359,
+            0.0625
+          ],
+          [
+            0.267578,
+            0.074219
+          ],
+          [
+            0.420898,
+            0.047852
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped.",
+        "discarded_frame_regions": [
+          [
+            [
+              0.998,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              0.998,
+              1
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Skill 2 Turn the Bough.png",
+      "category": "abilities",
+      "asset": "myrthen-skill2",
+      "source": "Art/source/phase1-war/abilities/Skill 2 Turn the Bough.png",
+      "source_sha256": "7c615031d8c1d22e793ece281c3328e1546f981557c5b800e5870cc2b6010412",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/abilities/myrthen-skill2.png",
+      "runtime_sha256": "64efb6a890d2efbb548e487d76f3d92d6eb24eaedd22ee5915f53dff1442915a",
+      "settings": {
+        "keys": [
+          [
+            58,
+            191,
+            254
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.196289,
+            0.446289
+          ],
+          [
+            0.161133,
+            0.217773
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Last Flare All That Ripens.png",
+      "category": "abilities",
+      "asset": "myrthen-ultimate",
+      "source": "Art/source/phase1-war/abilities/Last Flare All That Ripens.png",
+      "source_sha256": "6b373eed043ab05cee1eb0f48b86e02caffcc6c100ee65a9d9bc5aa4956a9f6d",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/abilities/myrthen-ultimate.png",
+      "runtime_sha256": "984d3c68da0644391a855f51e8a241a9618e3511a31b291bf5868acbdd38147d",
+      "settings": {
+        "keys": [
+          [
+            36,
+            186,
+            238
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.160156,
+            0.359375
+          ],
+          [
+            0.214844,
+            0.585938
+          ],
+          [
+            0.291016,
+            0.216797
+          ],
+          [
+            0.209961,
+            0.737305
+          ],
+          [
+            0.458984,
+            0.201172
+          ],
+          [
+            0.699219,
+            0.758789
+          ],
+          [
+            0.744141,
+            0.602539
+          ],
+          [
+            0.21582,
+            0.474609
+          ],
+          [
+            0.511719,
+            0.749023
+          ],
+          [
+            0.59375,
+            0.729492
+          ],
+          [
+            0.761719,
+            0.523438
+          ],
+          [
+            0.335938,
+            0.734375
+          ],
+          [
+            0.675781,
+            0.676758
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Seasonwheel Harvest Transmission.png",
+      "category": "master-conduits",
+      "asset": "master-myrthen-1",
+      "source": "Art/source/phase1-war/master-conduits/Seasonwheel Harvest Transmission.png",
+      "source_sha256": "2fdb15721461f0166ca6f9f21a85fe10066c6bfe26079c4fdb329c75c65cbc79",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/master-conduits/master-myrthen-1.png",
+      "runtime_sha256": "0bbec3dc25ba4cabc764b8acae9e7653d950503128845a14628ad2b240a03cab",
+      "settings": {
+        "keys": [
+          [
+            82,
+            189,
+            254
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.583008,
+            0.12793
+          ],
+          [
+            0.819336,
+            0.583984
+          ],
+          [
+            0.417969,
+            0.823242
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Seedtrace Pursuit Distributor.png",
+      "category": "master-conduits",
+      "asset": "master-myrthen-2",
+      "source": "Art/source/phase1-war/master-conduits/Seedtrace Pursuit Distributor.png",
+      "source_sha256": "6221d8060695c8e52e768acc1b277b0166307743d26bc87fb5dd2ddca7fdbd22",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/master-conduits/master-myrthen-2.png",
+      "runtime_sha256": "7d4a5fa6cdb5082315a83cb5af1147937609e30de8e528cbb0c39ba31de591f2",
+      "settings": {
+        "keys": [
+          [
+            41,
+            190,
+            225
+          ],
+          [
+            19,
+            197,
+            236
+          ],
+          [
+            13,
+            206,
+            254
+          ],
+          [
+            57,
+            184,
+            229
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.620117,
+            0.135742
+          ],
+          [
+            0.451172,
+            0.188477
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped. Blue cast shadow is authored; preserve it in full, not as row-key stripes."
+      }
+    },
+    {
+      "incoming": "Reaping-Tide Recovery Dynamo.png",
+      "category": "master-conduits",
+      "asset": "master-myrthen-3",
+      "source": "Art/source/phase1-war/master-conduits/Reaping-Tide Recovery Dynamo.png",
+      "source_sha256": "d6c7c0df0fe961ce5a5cf4858692790d2477156be6363aa82aee7bd999db077e",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/master-conduits/master-myrthen-3.png",
+      "runtime_sha256": "be3d8233c6c5a9e20891822dac6e3c616f7ff51ba2f1253f601e1870ca9aa505",
+      "settings": {
+        "keys": [
+          [
+            45,
+            203,
+            240
+          ],
+          [
+            28,
+            206,
+            251
+          ],
+          [
+            70,
+            204,
+            246
+          ],
+          [
+            36,
+            205,
+            254
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Reviewed dark/light montage and source-specific gap candidates. Retain authored hair, clothing, elemental powers, metal highlights and painted shadows; source-clipped tips remain source-clipped."
+      }
+    },
+    {
+      "incoming": "Myrthen trial header.png",
+      "category": "banners",
+      "asset": "elemental-war-myrthen-banner",
+      "source": "Art/source/phase1-war/banners/Myrthen trial header.png",
+      "source_sha256": "643877780e2bb43a88af8857b4f1da28cbb616d9ddfec1995198f29be0b883f9",
+      "source_dimensions": [
+        1904,
+        640
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/banners/elemental-war-myrthen-banner.png",
+      "runtime_sha256": "643877780e2bb43a88af8857b4f1da28cbb616d9ddfec1995198f29be0b883f9",
+      "settings": {
+        "processing": "opaque scenery; unchanged source bytes",
+        "review": "Reviewed supplied trial scene; retain opaque source bytes and full composition."
+      }
+    },
+    {
+      "incoming": "Myrthen trial arena.png",
+      "category": "backgrounds",
+      "asset": "elemental-war-myrthen-arena",
+      "source": "Art/source/phase1-war/backgrounds/Myrthen trial arena.png",
+      "source_sha256": "e10834852b1598bbf10845ce52a2bae729c7a3fead782c169d8c82d9158dcde6",
+      "source_dimensions": [
+        1456,
+        816
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/backgrounds/elemental-war-myrthen-arena.png",
+      "runtime_sha256": "e10834852b1598bbf10845ce52a2bae729c7a3fead782c169d8c82d9158dcde6",
+      "settings": {
+        "processing": "opaque scenery; unchanged source bytes",
+        "review": "Reviewed supplied trial scene; retain opaque source bytes and full composition."
+      }
+    }
+  ]
+}

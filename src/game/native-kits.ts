@@ -1,8 +1,9 @@
 import { type ActionId } from '../content/combat';
-import { damageAmount, rollCritical, elementalCritFactor, type BattleEvent, type BattleState, type Combatant } from './battle';
+import { damageAmount, roll, rollCritical, elementalCritFactor, type BattleEvent, type BattleState, type Combatant } from './battle';
 import { scheduledEnemySkill } from '../content/enemy-skills';
 import { debuffSnapshot } from './battle-debuffs';
 import { nativeBalance } from '../content/native-balance';
+import { exactDirectDamageIds } from '../content/native-identities';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
 import { calamiticPower } from '../content/calamitic-conduits';
 import { isCalamiticCharacter } from '../content/calamitic-characters';
@@ -42,6 +43,14 @@ export interface NativeKitState {
   firstWard?: Record<string, { throughPhase: number }>;
   hostileReduction?: number;
   conduitGaugeTriggers?: string[];
+  heat?: number;
+  stillness?: number;
+  tauntThrough?: number;
+  burnBoostThrough?: number;
+  defenseBuff?: { fraction: number; throughRound: number };
+  season?: 'sprout' | 'bloom' | 'harvest';
+  claim?: { target: string; throughPhase: number };
+  guards?: Record<string, number>;
 }
 
 export type NativeDamageKind = 'burn' | 'detonation' | 'cyclone' | 'recall' | 'revenge' | 'trap' | 'demolition' | 'redirect';
@@ -68,7 +77,7 @@ export function attachNativeView(state: BattleState, event: BattleEvent | undefi
 }
 
 function fixed(state: BattleState, owner: Combatant, target: Combatant, power: number, kind: NativeDamageKind, events: BattleEvent[],
-  bypass = false, activation?: Parameters<typeof applyConduitBurn>[4], stored = true): number {
+  bypass = false, activation?: Parameters<typeof applyConduitBurn>[4], stored = true, origin: 'native' | 'conduit' = 'native'): number {
   if (owner.hp <= 0 || target.hp <= 0 || power <= 0) return 0;
   const hit = activation ? conduitCriticalHit(state, owner, target, activation) : undefined;
   const rolled = hit ?? rollCritical(state, owner.stats.crit);
@@ -88,7 +97,7 @@ function fixed(state: BattleState, owner: Combatant, target: Combatant, power: n
     }
   }
   const flareDamage = activation?.action === 'ultimate' ? nativeBalance.lastFlare.damage : 1;
-  const taken = kind === 'burn' || phaseZeroStatsReady && activation && !stored ? 1 : nativeDamageTakenMultiplier(state, owner, target);
+  const taken = kind === 'burn' || phaseZeroStatsReady && activation && !stored ? 1 : nativeDamageTakenMultiplier(state, owner, target, origin);
   const damage = bypass ? Math.round(power * flareDamage * taken * (critical ? criticalMultiplier : 1))
     : damageAmount(attack, power / attack * flareDamage * taken,
       nativeTargetDefense(state, target) * (1 - ignore), critical, criticalMultiplier);
@@ -102,7 +111,7 @@ function fixed(state: BattleState, owner: Combatant, target: Combatant, power: n
     nativePrimaryHit(state, owner, target, loss > 0 || absorbed > 0, events);
   }
   events.push({ kind: 'damage', source: owner.id, target: target.id, amount: loss, critical, elementalCritical: elemental,
-    origin: 'native', nativeKind: kind, periodic: kind === 'burn', shieldRemaining: target.shield, shieldAbsorbed: absorbed,
+    origin, nativeKind: kind, periodic: kind === 'burn', shieldRemaining: target.shield, shieldAbsorbed: absorbed,
     debuffs: debuffSnapshot(target),
     message: `${owner.name}: ${kind} deals ${loss} damage to ${target.name}${elemental ? ' (Elemental Crit)' : critical ? ' (critical)' : ''}${absorbed ? ` (${absorbed} shield absorbed)` : ''}.` });
   return loss;
@@ -177,7 +186,7 @@ export function nativeSupportMultiplier(state: BattleState, owner: Combatant): n
     instruction.kind !== 'strike' ? 1 + (phaseZeroStatsReady ? instruction.supportBonus ?? .35 : .35) : 1;
 }
 
-export function nativeDamageTakenMultiplier(state: BattleState, source: Combatant, target: Combatant): number {
+export function nativeDamageTakenMultiplier(state: BattleState, source: Combatant, target: Combatant, origin: 'native' | 'conduit' | 'periodic' = 'native'): number {
   if (source.side !== 'ally' || target.side !== 'enemy') return 1;
   let multiplier = 1;
   const weakenOwner = target.weakened > 0
@@ -189,6 +198,7 @@ export function nativeDamageTakenMultiplier(state: BattleState, source: Combatan
     if (mark && mark.throughPhase >= state.round) multiplier *= (1 + .1 * mark.stacks) * 1.45;
     const faults = owner.native?.faults?.[target.id] ?? 0;
     multiplier *= 1 + .1 * faults;
+    if (origin === 'native' && owner.hp > 0 && owner.native?.claim?.target === target.id && owner.native.claim.throughPhase >= state.round) multiplier *= 1.12;
   }
   return multiplier;
 }
@@ -208,16 +218,67 @@ export function nativeRefusal(state: BattleState, target: Combatant, loss: numbe
   return Math.max(0, target.hp - 1);
 }
 
+export function nativeHeatCap(owner: Combatant): number {
+  return equipped(owner, 'master-caldrex-1') ? 5 : 3;
+}
+
+function guardOnce(owner: Combatant, key: string, round: number): boolean {
+  const guards = nativeMemory(owner).guards ??= {};
+  if (guards[key] === round) return false;
+  guards[key] = round;
+  return true;
+}
+
+export function nativeTrace(state: BattleState, _owner: Combatant, chance: number): boolean {
+  return roll(state) < chance;
+}
+
+export function nativeDefenseBonus(state: BattleState, unit: Combatant, baseDefense: number): number {
+  if (unit.side !== 'ally' || unit.hp <= 0) return 0;
+  let bonus = 0;
+  if (hasNativeIdentity(unit) && unit.definitionId === 'caldrex' && equipped(unit, 'master-caldrex-1'))
+    bonus += .12 * (unit.native?.heat ?? 0);
+  const buff = unit.native?.defenseBuff;
+  if (buff && buff.throughRound >= state.round) bonus += buff.fraction;
+  return bonus * baseDefense;
+}
+
+export function nativeTauntTarget(state: BattleState, enemy: Combatant): Combatant | undefined {
+  const taunter = living(state).find(unit => hasNativeIdentity(unit) && (unit.native?.tauntThrough ?? -1) >= state.round);
+  const owners = gear(enemy).owners;
+  if (taunter) owners.nativeTaunt = taunter.id;
+  else delete owners.nativeTaunt;
+  return taunter;
+}
+
+function warEnemyHit(state: BattleState, enemy: Combatant, events: BattleEvent[]): void {
+  let start = events.length - 1;
+  while (start >= 0 && !(events[start].kind === 'attack' && events[start].source === enemy.id)) start--;
+  const strikes = events.slice(start + 1).filter(entry => entry.kind === 'damage' && entry.source === enemy.id && !entry.periodic &&
+    entry.origin !== 'conduit' && entry.nativeKind !== 'redirect' && !entry.message.includes('Conduit routing') && (entry.amount > 0 || (entry.shieldAbsorbed ?? 0) > 0));
+  for (const owner of living(state).filter(unit => hasNativeIdentity(unit) && unit.definitionId === 'caldrex')) {
+    if (!strikes.some(entry => entry.target === owner.id)) continue;
+    const memory = nativeMemory(owner);
+    if ((memory.heat ?? 0) < nativeHeatCap(owner) && guardOnce(owner, 'heat', state.round)) {
+      memory.heat = (memory.heat ?? 0) + 1;
+      status(state, events, owner, owner, `${owner.name} banks Heat ${memory.heat}/${nativeHeatCap(owner)}.`);
+    }
+    if (equipped(owner, 'master-caldrex-2') && (memory.tauntThrough ?? -1) >= state.round && gear(enemy).owners.nativeTaunt === owner.id)
+      fixed(state, owner, enemy, owner.stats.damage * .9, 'revenge', events, false, undefined, true, 'conduit');
+  }
+}
+
 export function nativeAction(state: BattleState, owner: Combatant, action: ActionId, targetId: string,
   events: BattleEvent[], direct: Direct, activation: Parameters<typeof applyConduitBurn>[4]): void {
   const memory = nativeMemory(owner);
   const target = state.enemies.find(enemy => enemy.id === targetId && enemy.hp > 0);
   const ally = state.allies.find(unit => unit.id === targetId && unit.hp > 0);
   const calamitic = isCalamiticCharacter(owner.definitionId);
-  const flareDamage = action === 'ultimate' && !calamitic ? nativeBalance.lastFlare.damage : 1;
-  const flareSupport = action === 'ultimate' ? nativeBalance.lastFlare.support : 1;
+  const warExact = (exactDirectDamageIds as readonly string[]).includes(owner.definitionId);
+  const flareDamage = action === 'ultimate' && !calamitic && !warExact ? nativeBalance.lastFlare.damage : 1;
+  const flareSupport = action === 'ultimate' && !warExact ? nativeBalance.lastFlare.support : 1;
   const hit = (coefficient: number, all = false, pierce = 0, crit = 0, chosen = target) =>
-    direct(all ? foes(state) : chosen ? [chosen] : [], coefficient * (action === 'light' || calamitic ? 1 : nativeBalance.skillDamageScale) * flareDamage,
+    direct(all ? foes(state) : chosen ? [chosen] : [], coefficient * (action === 'light' || calamitic || warExact ? 1 : nativeBalance.skillDamageScale) * flareDamage,
       Math.min(1, pierce * flareSupport), Math.min(1, crit * flareSupport));
   const allies = living(state);
   const other = allies.filter(unit => unit.id !== owner.id);
@@ -234,7 +295,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
       turns: 3 + activation.skillDuration + (phaseZeroStatsReady && equipped(owner, 'flare-focusing-iris') ? 1 : 0) };
     recipient.burn = { ...burns[recipient.id], sourceId: owner.id, origin: 'native' };
     resetConduitBurnStreak(owner, recipient);
-    status(state, events, owner, recipient, `${recipient.name}: Infernis Burn, ${burns[recipient.id].damage} per phase for ${burns[recipient.id].turns} phases.`);
+    status(state, events, owner, recipient, `${recipient.name}: Burn from ${owner.name}, ${burns[recipient.id].damage} per phase for ${burns[recipient.id].turns} phases.`);
   };
   if (action === 'light') {
     hit(1);
@@ -665,6 +726,83 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
       }
       if (action === 'ultimate') hit((memory.beat ?? 0) === 2 ? 3.4 : 2.6, true);
       break;
+    case 'caldrex': {
+      const spent = Math.min(nativeHeatCap(owner), memory.heat ?? 0);
+      const taunt = () => {
+        memory.tauntThrough = state.round + activation.skillDuration;
+        status(state, events, owner, owner, `${owner.name} draws eligible single-target enemy attacks through enemy phase ${memory.tauntThrough}.`);
+      };
+      if (action === 'skill1') {
+        for (const recipient of allies) shield(recipient, .12);
+        taunt();
+      }
+      if (action === 'skill2') {
+        memory.heat = 0;
+        hit(2.55 + .24 * spent, true);
+        for (const enemy of foes(state)) burn(enemy, .25);
+        if (spent) status(state, events, owner, owner, `${owner.name} spends ${spent} Heat.`);
+      }
+      if (action === 'ultimate') {
+        memory.heat = 0;
+        for (const recipient of allies) {
+          shield(recipient, .65);
+          if (spent) nativeMemory(recipient).defenseBuff = { fraction: .12 * spent * activation.skillPower,
+            throughRound: state.round + 1 + activation.skillDuration };
+        }
+        taunt();
+        memory.burnBoostThrough = state.round + 1 + activation.skillDuration;
+        status(state, events, owner, owner, `${owner.name} spends ${spent} Heat; allied ability Burn deals 25% more through enemy phase ${memory.burnBoostThrough}.`);
+      }
+      break;
+    }
+    case 'solenne': {
+      const spent = Math.min(4, memory.stillness ?? 0);
+      if (action === 'skill1') {
+        hit(2.4);
+        if (target?.hp) applyConduitWeaken(state, owner, target, .25, events, action, 1, activation);
+        memory.tauntThrough = state.round + activation.skillDuration;
+        status(state, events, owner, owner, `${owner.name} draws eligible single-target enemy attacks through enemy phase ${memory.tauntThrough}.`);
+      }
+      if (action === 'skill2') {
+        memory.stillness = Math.min(4, spent + 2);
+        status(state, events, owner, owner, `${owner.name} holds ${memory.stillness}/4 Stillness.`);
+        for (const recipient of allies) shield(recipient, .16);
+      }
+      if (action === 'ultimate') {
+        memory.stillness = 0;
+        hit(7.2 + .45 * spent, true);
+        for (const recipient of allies) shield(recipient, .24 + .045 * spent);
+        if (spent && equipped(owner, 'master-solenne-3'))
+          for (const recipient of other) generatedGaugePercent(owner, recipient, .03 * spent, events, state);
+      }
+      if (equipped(owner, 'master-solenne-2')) {
+        const lowest = [...allies].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+        if (lowest) generatedShield(owner, lowest, lowest.stats.health * .2, events, true);
+      }
+      break;
+    }
+    case 'myrthen': {
+      const season = memory.season ?? 'sprout';
+      const harvest = season === 'harvest';
+      const bonus = harvest ? (equipped(owner, 'master-myrthen-1') ? .75 : .35) : 0;
+      const pierce = harvest ? (action === 'ultimate' ? .3 : .2) : 0;
+      if (action === 'skill1') {
+        hit(2.72 * (1 + bonus), false, pierce);
+        if (target?.hp) {
+          memory.claim = { target: target.id, throughPhase: state.round + 1 + activation.skillDuration };
+          status(state, events, owner, target, `${target.name}: Reaper’s Claim, +12% direct damage taken from the squad through enemy phase ${memory.claim.throughPhase}.`);
+        }
+      }
+      if (action === 'skill2') hit(1.92 * (1 + bonus), true, pierce);
+      if (action === 'ultimate') hit(12.48 * (1 + bonus), false, pierce);
+      let next: NonNullable<NativeKitState['season']> = season;
+      if (harvest) next = equipped(owner, 'master-myrthen-1') ? 'bloom' : 'sprout';
+      else if (action !== 'ultimate') next = season === 'sprout' ? 'bloom' : 'harvest';
+      if (equipped(owner, 'master-myrthen-2') && nativeTrace(state, owner, .1)) next = 'harvest';
+      memory.season = next;
+      status(state, events, owner, owner, `${owner.name} is in ${next[0].toUpperCase()}${next.slice(1)}.`);
+      break;
+    }
     default: throw new Error(`Missing native identity for ${owner.definitionId}.`);
   }
 }
@@ -705,6 +843,13 @@ export function nativeAfterAction(state: BattleState, owner: Combatant, action: 
 
 export function nativePrimaryHit(state: BattleState, attacker: Combatant, target: Combatant, effective: boolean, events: BattleEvent[], hits = 1): void {
   if (!effective) return;
+  if (hasNativeIdentity(attacker) && attacker.definitionId === 'myrthen' && target.side === 'enemy' && target.hp <= 0 && attacker.hp > 0 &&
+      equipped(attacker, 'master-myrthen-3') && foes(state).length > 0 && guardOnce(attacker, 'reaping', state.round)) {
+    for (const ally of living(state)) {
+      generatedHeal(attacker, ally, ally.stats.health * .06, events, state);
+      generatedGaugePercent(attacker, ally, .05, events, state);
+    }
+  }
   if (hasNativeIdentity(attacker) && attacker.definitionId === 'kaelith' && target.side === 'enemy' && target.hp > 0) {
     const faults = nativeMemory(attacker).faults ??= {};
     faults[target.id] = Math.min(3, (faults[target.id] ?? 0) + hits);
@@ -742,8 +887,20 @@ export function nativePrimaryHit(state: BattleState, attacker: Combatant, target
   }
 }
 
-export function nativeIncomingMultiplier(state: BattleState, enemy: Combatant, target: Combatant, action: ActionId, events: BattleEvent[]): number {
+export function nativeStillnessMultiplier(state: BattleState, target: Combatant, events: BattleEvent[]): number {
   let multiplier = 1;
+  if (hasNativeIdentity(target) && target.definitionId === 'solenne' && target.hp > 0 && (target.native?.stillness ?? 0) > 0) {
+    target.native!.stillness!--;
+    multiplier *= 1 - (equipped(target, 'master-solenne-1') ? .35 : .2);
+    status(state, events, target, target, `${target.name} spends Stillness (${target.native!.stillness}/4 remain).`);
+    if (equipped(target, 'master-solenne-3') && guardOnce(target, 'cadence', state.round))
+      for (const ally of living(state)) generatedGaugePercent(target, ally, .07, events, state);
+  }
+  return multiplier;
+}
+
+export function nativeIncomingMultiplier(state: BattleState, enemy: Combatant, target: Combatant, action: ActionId, events: BattleEvent[]): number {
+  let multiplier = nativeStillnessMultiplier(state, target, events);
   if (target.native?.reduction && target.native.reduction.throughPhase >= state.round)
     multiplier *= phaseZeroStatsReady ? Math.max(0, 1 - target.native.reduction.fraction) : 1 - target.native.reduction.fraction;
   if (target.native?.bastion && target.native.bastion.throughPhase >= state.round)
@@ -859,6 +1016,7 @@ export function nativeEnemyCompleted(state: BattleState, enemy: Combatant, damag
       timedConduitShield(state, owner, recipient, recipient.stats.health * .15,
         'master-aurora-1', state.round, events);
   }
+  warEnemyHit(state, enemy, events);
   if (!damaging) return;
   for (const owner of living(state).filter(hasNativeIdentity)) {
     const trap = owner.native?.traps?.[enemy.id];
@@ -900,7 +1058,12 @@ export function nativeBurnPhase(state: BattleState, enemy: Combatant, events: Ba
     burn.turns--;
     enemy.burn.turns = burn.turns;
     const previous = enemy.hp;
-    fixed(state, owner, enemy, tick, 'burn', events, true);
+    const warded = living(state).some(unit => hasNativeIdentity(unit) && unit.definitionId === 'caldrex' && (unit.native?.burnBoostThrough ?? -1) >= state.round);
+    const hpAndShield = enemy.hp + enemy.shield;
+    fixed(state, owner, enemy, warded ? tick * 1.25 : tick, 'burn', events, true);
+    const triage = living(state).find(unit => hasNativeIdentity(unit) && unit.definitionId === 'caldrex' && equipped(unit, 'master-caldrex-3'));
+    if (triage && enemy.hp + enemy.shield < hpAndShield && guardOnce(triage, 'triage', state.round))
+      for (const ally of living(state)) generatedHeal(triage, ally, ally.stats.health * .08, events, state);
     afterConduitBurn(state, owner, enemy, previous - enemy.hp, events);
     burn.turns = enemy.burn.turns;
     if (otherBurn) enemy.burn = otherBurn;
@@ -942,6 +1105,9 @@ export function nativePhaseEnd(state: BattleState, events: BattleEvent[]): void 
       delete memory.bastion;
     }
     if (memory.cover && memory.cover.throughPhase <= state.round) delete memory.cover;
+    if (memory.tauntThrough !== undefined && memory.tauntThrough <= state.round) delete memory.tauntThrough;
+    if (memory.burnBoostThrough !== undefined && memory.burnBoostThrough <= state.round) delete memory.burnBoostThrough;
+    if (memory.claim && memory.claim.throughPhase <= state.round) delete memory.claim;
     if (memory.reduction && memory.reduction.throughPhase <= state.round) delete memory.reduction;
     if (memory.foundation && memory.foundation.throughPhase <= state.round) delete memory.foundation;
     for (const [id, trap] of Object.entries(memory.traps ?? {})) if (trap.throughPhase <= state.round || trap.charges <= 0) delete memory.traps![id];
@@ -985,6 +1151,7 @@ export function nativeTurnStart(state: BattleState, events: BattleEvent[]): void
     finishNativeHealing(state, owner, healing, events);
   }
   for (const ally of state.allies) if (ally.native?.hymn && ally.native.hymn.throughRound < state.round) delete ally.native.hymn;
+  for (const ally of state.allies) if (ally.native?.defenseBuff && ally.native.defenseBuff.throughRound < state.round) delete ally.native.defenseBuff;
   for (const ally of state.allies) if (ally.native?.instruction && ally.native.instruction.throughRound < state.round) delete ally.native.instruction;
 }
 
@@ -1010,6 +1177,7 @@ export function nativeCleanup(state: BattleState): void {
     if (ally.native.blades) ally.native.blades = ally.native.blades.map(id => id && live.has(id) ? id : null) as [string | null, string | null];
     if (ally.native.survey && !live.has(ally.native.survey.target)) delete ally.native.survey;
     if (ally.native.quarry && !live.has(ally.native.quarry.target)) delete ally.native.quarry;
+    if (ally.native.claim && !live.has(ally.native.claim.target)) delete ally.native.claim;
     for (const key of ['burns', 'traps', 'seals'] as const)
       for (const id of Object.keys(ally.native[key] ?? {})) if (!live.has(id)) delete ally.native[key]![id];
   }
@@ -1053,7 +1221,13 @@ export function nativeMarkers(state: BattleState, unit: Combatant): NativeMarker
     markers.push({ id: 'hymn', owner: hymn.owner, label: 'Hymn of Broken Glass',
       value: `Critical Damage +${Math.round(hymn.criticalDamage * 100)}% · Skill Power +${Math.round(hymn.skillPower * 100)}% · through player turn ${hymn.throughRound}` });
   }
+  const buff = unit.side === 'ally' ? unit.native?.defenseBuff : undefined;
+  if (buff && buff.throughRound >= state.round) markers.push({ id: 'gate-ward', owner: unit.id, label: 'Gate Ward',
+    value: `Defense +${Math.round(buff.fraction * 100)}% · through player turn ${buff.throughRound}`, icon: 'ward' });
   for (const owner of state.allies.filter(hasNativeIdentity)) {
+    const claim = owner.native?.claim;
+    if (unit.side === 'enemy' && claim?.target === unit.id && claim.throughPhase >= state.round)
+      markers.push({ id: 'reapers-claim', owner: owner.id, label: 'Reaper’s Claim', value: `+12% direct damage taken · through enemy phase ${claim.throughPhase}` });
     const mark = owner.native?.fateMarks?.[unit.id];
     if (unit.side === 'enemy' && mark && mark.throughPhase >= state.round)
       markers.push({ id: 'fate-mark', owner: owner.id, label: 'Fate-seared Mark',
@@ -1142,6 +1316,21 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
     ['native-crinso-combo', ...(memory.edge ? [`native-crinso-${memory.edge}-edge` as const] : [])], true);
   if (unit.definitionId === 'vaelor') add('Beat', ['Tune', 'Rise', 'Crescendo'][memory.beat ?? 0],
     'Advances every global player turn, including recovery.', [(['native-vaelor-tune', 'native-vaelor-rise', 'native-vaelor-crescendo'] as const)[memory.beat ?? 0]], true);
+  if (unit.definitionId === 'caldrex') {
+    add('Heat', `${memory.heat ?? 0}/${nativeHeatCap(unit)}`, 'Banked when an enemy direct attack damages Health or Shield, once per enemy phase; Cinder Discharge and Nothing Beyond These Gates spend it.', [], true);
+    if (memory.tauntThrough !== undefined && memory.tauntThrough >= state.round) add('Taunt', `through enemy phase ${memory.tauntThrough}`, 'Enemies target Caldrex.', ['suppression']);
+    if (memory.burnBoostThrough !== undefined && memory.burnBoostThrough >= state.round) add('Burn Surge', '+25%', `Allied ability-applied Burn through enemy phase ${memory.burnBoostThrough}.`, ['burn']);
+  }
+  if (unit.definitionId === 'solenne') {
+    add('Stillness', `${memory.stillness ?? 0}/4`, `Each hit consumes 1 Stillness to reduce damage by ${equipped(unit, 'master-solenne-1') ? 35 : 20}%.`, [], true);
+    if (memory.tauntThrough !== undefined && memory.tauntThrough >= state.round) add('Taunt', `through enemy phase ${memory.tauntThrough}`, 'Enemies target Solenne.', ['suppression']);
+  }
+  if (unit.definitionId === 'myrthen') {
+    const season = memory.season ?? 'sprout';
+    add('Season', `${season[0].toUpperCase()}${season.slice(1)}`, 'Skills advance Sprout, Bloom, then Harvest; Harvest empowers the next Skill or Last Flare.', [], true);
+    if (memory.claim && memory.claim.throughPhase >= state.round) add('Reaper’s Claim', state.enemies.find(enemy => enemy.id === memory.claim?.target)?.name ?? '', `+12% direct damage taken through enemy phase ${memory.claim.throughPhase}.`);
+  }
+  if (memory.defenseBuff && memory.defenseBuff.throughRound >= state.round) add('Gate Ward', `Defense +${Math.round(memory.defenseBuff.fraction * 100)}%`, `Through player turn ${memory.defenseBuff.throughRound}.`, ['ward']);
   if (memory.foundation) add('Foundation', `${Math.ceil(memory.foundation.durability)}/${Math.ceil(memory.foundation.maximum)}`,
     `Shared durability through enemy phase ${memory.foundation.throughPhase}.`, ['native-orvella-foundation']);
   if (unit.definitionId === 'razor') add('Wounds', `${Math.round(memory.wounds ?? 0)}`,

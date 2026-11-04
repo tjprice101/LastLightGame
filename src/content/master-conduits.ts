@@ -11,7 +11,7 @@ export const masterChest = {
   description: 'Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward.',
 } as const;
 export const astralReserveArt = 'master-conduits/astral-reserve.png';
-export const masterRulesText = `${masterChest.name}: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 57.`;
+export const masterRulesText = `${masterChest.name}: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 66.`;
 
 function redesignedMasterRule(): OmnicRule { return { trigger: 'activation', outcomes: [] }; }
 function master<C extends StarterId, S extends 1 | 2 | 3>(character: C, slot: S, name: string, design: string) {
@@ -117,6 +117,24 @@ export const masterConduits = [
     'Three gold thunder planets in black conducting cages, resonance-blade axis and vast branching voltage organ-wing architecture'),
   master('vaelor', 3, 'Broken Sky Imperial Metronome',
     'A black-and-gold sky metronome with resonance-blade pendulum, twelve thunder-frequency wings and enormous nested conductor halos'),
+  master('caldrex', 1, 'Banked-Sun Pressure Accumulator',
+    'a squat black pressure engine, three amber crystal heat cartridges linked by brass piston manifolds, interlocking valve jaws, stepped radiator shutters'),
+  master('caldrex', 2, 'Counterstroke Recoil Foundry',
+    'a wide black recoil engine, two opposing brass impact pistons feeding an orange crystal compression chamber, toothed return flywheels and armored heat sinks'),
+  master('caldrex', 3, 'Cinderpulse Triage Converter',
+    'a triangular black conversion engine, three orange crystal intake turbines feeding one ash-white output cartridge, brass capillary pumps and nested cooling vanes'),
+  master('solenne', 1, 'Stillpoint Inertial Governor',
+    'a low silver gyroscopic engine, four flat rose-ivory damping plates around a lilac crystal flywheel, gold counterweight gears and black articulated stabilizers'),
+  master('solenne', 2, 'Quiet-Arc Shelter Projector',
+    'a crescent silver shielding engine, three rose-ivory shutter jaws around a lilac crystal lens, gold rack drives and overlapping flat defensive emitter plates'),
+  master('solenne', 3, 'Cadence Differential Drive',
+    'a compact silver differential engine, four interlocked gold escapement wheels linked to lilac crystal timing rails, rose-ivory piston housings and black drive belts'),
+  master('myrthen', 1, 'Seasonwheel Harvest Transmission',
+    'a jade three-lobed transmission engine, pink crystal germination cartridge and amber harvest rotor connected by bark-brown planetary gears, white faceted timing teeth'),
+  master('myrthen', 2, 'Seedtrace Pursuit Distributor',
+    'a long jade targeting machine, one amber crystal indexing drum feeding three articulated pink-tipped relay arms, brown rack rails and white tracking apertures'),
+  master('myrthen', 3, 'Reaping-Tide Recovery Dynamo',
+    'a broad jade recovery engine, paired amber sickle-shaped rotors feeding a pink crystal regeneration cartridge, white pump housings and brown geared Gauge flywheels'),
   master('ozriel', 1, 'Refusal Sovereign Heartdrive',
     'A colossal Tranquilitic life-preservation reactor with a crimson crystal heart, three geared flywheels and six hydraulic arms deploying pearlescent shield plates from a black armored chassis'),
   master('ozriel', 2, 'Absolution Planetary Suppressor',

@@ -1,5 +1,27 @@
 # Menus and inventory
 
+## In-game description standard (2026-11-03)
+
+All character, ability and Conduit descriptions use concise in-game tooltips,
+not design reports or vague summaries. State the actual effect, target,
+numbers, duration and meaningful trigger limits. Do not repeat obvious
+consequences (spending a resource removes its stored bonus), shared Shield
+rules, standard status definitions, tie-breaking or implementation notes.
+Keep important exceptions and eligibility visible rather than hiding them
+in the name of brevity. Use Health in prose.
+
+Burn and Weaken are shared statuses, not character-specific status species.
+The shared glossary owns their general behavior; authored ability potency,
+duration and source interactions remain explicit where different. This
+wording cleanup does not silently rebalance existing applications.
+Shield absorption/lasting-until-broken/skill stacking is explained centrally.
+Character and battle views share the same current kit descriptions.
+
+Conduit-generated effects have no implicit Skill Power multiplier. Stat
+bonuses and native ability modifications are not separate generated effects.
+Owner allows existing explicit Master-specific scaling, including Vaelor's
+Thunder Choir native enhancement; do not strip it from gameplay/descriptions.
+
 ## Story Codex (D-450)
 
 Collections has a fourth gallery, Story Codex. Its Chapter1 entries derive

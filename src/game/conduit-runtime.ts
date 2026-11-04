@@ -14,7 +14,8 @@ import { buffSnapshot } from './battle-buffs';
 import { debuffSnapshot } from './battle-debuffs';
 import { pilotAuthoredShieldAbsorbed, pilotEffectiveHeal } from './kit-pilots';
 import { hasNativeIdentity, nativeAbsorbedHit, nativeDirectHpLoss, nativeIncomingMultiplier,
-  nativeRouteDamage, nativeSupportMultiplier, nativeDamageTakenMultiplier, nativeHymn, nativeRefusal } from './native-kits';
+  nativeRouteDamage, nativeSupportMultiplier, nativeDamageTakenMultiplier, nativeHymn, nativeRefusal,
+  nativeDefenseBonus, nativeTauntTarget } from './native-kits';
 import { prepareCalamiticAction, afterCalamiticAction, afterCalamiticMark, calamiticSiegeBonus, deferCalamiticDamage,
   bankCalamiticDamage, calamiticSkillDefenseIgnore, calamiticSkillPowerBonus, calamiticSkillEfficiencyBonus } from './calamitic-conduits';
 
@@ -200,14 +201,14 @@ export function conduitActionTraits(state: BattleState, actor: Combatant, action
     damage: id === 'atmoso' || id === 'elise' || id === 'bliss' || id === 'ember' || id === 'crinso' ||
       id === 'rosetta' || id === 'vaelor' || id === 'razor' && action !== 'skill2' ||
       id === 'aurora' && action === 'skill2' || id === 'thornia' && action !== 'skill1' || id === 'orvella' && action !== 'skill2' ||
-      id === 'nerithe' ||
+      id === 'nerithe' || id === 'myrthen' || id === 'caldrex' && action === 'skill2' || id === 'solenne' && action !== 'skill2' ||
       (id === 'tide' || id === 'sprout' || id === 'bruno') && action === 'skill1',
     healing: id === 'sprout' || id === 'bliss' && closing && action !== 'skill2' ||
       id === 'rosetta' && action === 'ultimate' && (actor.native?.quarry?.contributors.length ?? 0) >= 2,
-    shield: id === 'tide' && action !== 'skill1' || id === 'bruno' && action === 'ultimate' ||
+    shield: id === 'caldrex' && action !== 'skill2' || id === 'solenne' && action !== 'skill1' || id === 'tide' && action !== 'skill1' || id === 'bruno' && action === 'ultimate' ||
       id === 'bliss' && action === 'skill2' && (closing || equipped(actor, 'master-bliss-1')),
     debuff: id === 'ember' && action !== 'skill2' || id === 'tide' && action === 'skill1' ||
-      id === 'aurora' && action !== 'ultimate' || id === 'thornia' && action !== 'skill2',
+      id === 'caldrex' && action === 'skill2' || id === 'solenne' && action === 'skill1' || id === 'aurora' && action !== 'ultimate' || id === 'thornia' && action !== 'skill2',
   };
 }
 function injured(state: BattleState, owner: Combatant, other = false): Combatant | undefined {
@@ -371,7 +372,7 @@ export function payShield(unit: Combatant, amount: number): number {
 }
 export function generatedStrike(state: BattleState, owner: Combatant, target: Combatant | undefined, offer: number, events: BattleEvent[], mitigated = true): number {
   if (!target || target.hp <= 0 || offer <= 0) return 0;
-  const damage = Math.max(1, Math.round((mitigated ? offer : offer * owner.stats.damage / Math.max(1, owner.stats.damage + effectiveDefense(state, target))) * nativeDamageTakenMultiplier(state, owner, target)));
+  const damage = Math.max(1, Math.round((mitigated ? offer : offer * owner.stats.damage / Math.max(1, owner.stats.damage + effectiveDefense(state, target))) * nativeDamageTakenMultiplier(state, owner, target, 'conduit')));
   const absorbed = consumeShield(target, damage).absorbed;
   const loss = Math.min(target.hp, damage - absorbed);
   target.hp -= loss;
@@ -415,6 +416,7 @@ export function effectiveDefense(state: BattleState, unit: Combatant, excludeSqu
   if (phaseZeroStatsReady && unit.side === 'ally' && unit.hp > 0 && unit.native?.cover &&
       unit.native.cover.throughPhase >= state.round &&
       equipped(unit, 'master-bruno-1')) defense += baseDefense * .4;
+  if (phaseZeroStatsReady) defense += nativeDefenseBonus(state, unit, baseDefense);
   if (phaseZeroStatsReady && equipped(unit, 'horizon-heartcase') && heartcaseUnavailable(state, unit))
     defense += baseDefense * magnitude(state, 'horizon-heartcase', .1);
   if (phaseZeroStatsReady && unit.side === 'ally') {
@@ -482,6 +484,8 @@ function nativeControl(state: BattleState, owner: Combatant, target: Combatant):
 }
 function nativeSupportAction(state: BattleState, actor: Combatant, action: ActionId): boolean {
   if (!hasNativeIdentity(actor)) return false;
+  if (actor.definitionId === 'caldrex') return action === 'skill1' || action === 'ultimate';
+  if (actor.definitionId === 'solenne') return action === 'skill2';
   if (actor.definitionId === 'tide') return action === 'skill2' || action === 'ultimate';
   if (actor.definitionId === 'sprout') return action === 'skill2' || action === 'ultimate';
   if (actor.definitionId === 'bruno') return action === 'ultimate';
@@ -1731,7 +1735,7 @@ export function afterConduitHpLoss(state: BattleState, target: Combatant, events
   }
 }
 export function conduitBurnTick(state: BattleState, owner: Combatant, target: Combatant): number {
-  const taken = nativeDamageTakenMultiplier(state, owner, target);
+  const taken = nativeDamageTakenMultiplier(state, owner, target, 'periodic');
   if (target.burn.origin === 'conduit') return target.burn.damage * taken;
   const n = gear(target).numbers;
   if (phaseZeroStatsReady) return Math.round(target.burn.damage * (1 + (n[`cinderPower:${owner.id}`] ?? 0)) * taken);
@@ -1810,7 +1814,8 @@ export function forcedConduitTarget(state: BattleState, enemy: Combatant, random
     .sort((a, b) => memory.numbers[`taunt:${b.id}`] - memory.numbers[`taunt:${a.id}`])[0];
   if (owner) memory.owners.taunt = owner.id;
   else delete memory.owners.taunt;
-  return owner ?? randomTarget;
+  if (owner) return owner;
+  return nativeTauntTarget(state, enemy) ?? randomTarget;
 }
 export function conduitSuppressSkill(enemy: Combatant): boolean {
   const n = gear(enemy).numbers;

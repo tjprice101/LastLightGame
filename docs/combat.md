@@ -1,5 +1,23 @@
 # Combat specification
 
+## Shared status wording and Master scaling (2026-11-03)
+
+Burn and Weaken use shared status semantics, not per-character status variants.
+Concise ability descriptions name these effects and retain authored differing
+potency/duration; general behavior lives in the glossary. Description cleanup
+alone does not change existing combat math or source ownership.
+
+Generated Conduit effects do not receive Skill Power implicitly. Equipment
+stats and native ability enhancements still affect the authored ability.
+Owner explicitly accepts existing Master-specific scaling, including
+Vaelor's Thunder Choir attack buff. New effects must state their intended
+scaling rather than assume it. See the [tooltip standard](menus-and-inventory.md#in-game-description-standard-2026-11-03).
+
+Caldrex's Counterstroke Recoil Foundry retaliation explicitly can critically
+hit under its approved tooltip. This is a named Master exception, not global
+critical eligibility for generated Conduit damage. Seedtrace's survivable
+Health substitution retains normal Last Flare Gauge eligibility and recovery.
+
 ## All character-kit damage can crit (D-415)
 
 Owner explicitly includes ongoing and triggered native damage, not just direct
@@ -20,7 +38,8 @@ remain scoped to those actions.
 
 These packets do not become extra Attack Actions or earn extra Gauge,
 Instructions or recursive Conduit procs. Conduit-generated damage remains
-under its existing non-critical rules. Native resource gains, costs,
+under its existing non-critical rules unless an effect explicitly permits
+criticals (such as Counterstroke Recoil Foundry). Native resource gains, costs,
 cooldowns, recovery, rewards and independent reward RNG are unchanged.
 The added combat critical rolls intentionally change subsequent seeded combat
 outcomes. Rules13 restarts historical frozen encounters through the existing

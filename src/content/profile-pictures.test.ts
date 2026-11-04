@@ -21,5 +21,10 @@ describe('earned character profile pictures', () => {
     expect(isProfilePictureId('profile:ember:omnic')).toBe(true);
     expect(isProfilePictureId('profile:ember:epic')).toBe(false);
     expect(isProfilePictureId('profile:unknown:base')).toBe(false);
+    for (const id of ['caldrex', 'solenne', 'myrthen']) {
+      expect(canonicalProfilePicture(id)).toBe('neutral');
+      expect(isProfilePictureId(`profile:${id}:base`)).toBe(false);
+      expect(isProfilePictureId(`profile:${id}:omnic`)).toBe(false);
+    }
   });
 });

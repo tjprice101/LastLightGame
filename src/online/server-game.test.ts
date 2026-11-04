@@ -286,7 +286,7 @@ describe('server authoritative game engine', () => {
     game.account.storyCompleted = storyRules.stages;
     game.account.dungeonStages = Object.fromEntries(playableDungeons.map(element => [element, 35]));
     game.account.infusionStages = Object.fromEntries(replayModes.map(mode => [mode, infusionStageCount(mode)]));
-    game.account.warStages = { nerithe: 10, orvella: 10, vaelor: 10 };
+    game.account.warStages = { nerithe: 10, orvella: 10, vaelor: 10, caldrex: 10, solenne: 10, myrthen: 10 };
     const entered = op(game, { kind: 'enter', activity }).game;
     const state = entered.run!.session.state;
     state.allies[0].shatter = 100;

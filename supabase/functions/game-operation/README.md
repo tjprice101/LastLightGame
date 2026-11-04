@@ -1,5 +1,27 @@
 # Authoritative game operation
 
+## Phase1 War characters and Masters (2026-11-03)
+
+Regenerate/type-check/deploy the shared engine with the matching client.
+Caldrex, Solenne and Myrthen add three playable War identities and nine fixed
+Masters (22 characters/66 Masters total). Existing ten-stage War access,
+guaranteed final recruitment,100 Null-Prismatica duplicate conversion and
+atomic receipts remain. No automatic ownership, summon-pool change, wallet
+migration, load-time writes or restart of unrelated frozen runs.
+
+Claim affects native direct packets only. Stillness reduces direct/periodic
+incoming damage before Shields, not a Health cost. Seedtrace's approved
+chances consume combat RNG and retain normal Gauge eligibility/recovery.
+Generated effects have no implicit Skill Power; preserve existing explicit
+Master exceptions. Follow the [global tooltip standard](../../../docs/menus-and-inventory.md#in-game-description-standard-2026-11-03).
+
+`node tools\smoke_server_game.mjs --phase-one-war` uses only disposable
+identities and controlled fixtures. It checks all three native kits with
+each set of personal Masters, exact local/hosted events and state, combat RNG
+parity, action/turn retries, checkpoint persistence and all three Lv140 trial
+entries. It removes its identities/records afterward. This is authority parity,
+not a balance/clear-rate experiment; see the [separate bounded measurements](../../../docs/enemy-benchmark-calibration.md#bounded-phase1-war-checks-2026-11-03).
+
 ## Coordinated materials and later costs (D-429/D-430/D-431)
 
 Regenerate/type-check/deploy the shared bundle with the client. Dungeon/Rose

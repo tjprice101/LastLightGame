@@ -127,6 +127,26 @@
    "bytes": 65747,
    "avif": 33056
   },
+  "abilities/caldrex-passive.png": {
+   "source": "bba18199611cf242300ab79ba2a94b627f631115f9050024f94506d40ff906f9",
+   "bytes": 77001,
+   "avif": 27374
+  },
+  "abilities/caldrex-skill1.png": {
+   "source": "6a755ac5429206b5dee44bf8a731b7960dac43c382035f422f507304cbe00cad",
+   "bytes": 64667,
+   "avif": 22257
+  },
+  "abilities/caldrex-skill2.png": {
+   "source": "cf818ddff9fa93a0c466f32aee828ba66d6eaa1faef9ac7e62888d47a705d034",
+   "bytes": 69920,
+   "avif": 32018
+  },
+  "abilities/caldrex-ultimate.png": {
+   "source": "59a96dde0bcf7393ce9bbd02c0cc8364d1e1395f83b0cc4d534404d7722e81a5",
+   "bytes": 73936,
+   "avif": 24789
+  },
   "abilities/crinso-defend.png": {
    "source": "e99c2f4f6912c679d1a8e8c335bd47226e4578687d777c02452bf7d0bc8fe907",
    "bytes": 93782,
@@ -312,6 +332,26 @@
    "bytes": 66037,
    "avif": 40513
   },
+  "abilities/myrthen-passive.png": {
+   "source": "3a74e7d78bd6219f71508363834efe2303aee26236a2797cdf6c6cf2fe291d0c",
+   "bytes": 91463,
+   "avif": 33948
+  },
+  "abilities/myrthen-skill1.png": {
+   "source": "29ffbbd8c9d11bdd6a8378002a074d973384526d28280d0a72151aad5b982d5f",
+   "bytes": 67733,
+   "avif": 37894
+  },
+  "abilities/myrthen-skill2.png": {
+   "source": "64efb6a890d2efbb548e487d76f3d92d6eb24eaedd22ee5915f53dff1442915a",
+   "bytes": 63923,
+   "avif": 36514
+  },
+  "abilities/myrthen-ultimate.png": {
+   "source": "984d3c68da0644391a855f51e8a241a9618e3511a31b291bf5868acbdd38147d",
+   "bytes": 97591,
+   "avif": 53739
+  },
   "abilities/nerithe-passive.png": {
    "source": "9ad5329ed384a99e8b30f8e429e58e4bb1b01052b048bf7762f3c17fa1988835",
    "bytes": 115609,
@@ -441,6 +481,26 @@
    "source": "a508ae3c373f0ed32ab3911e4ab54f1d6fdd9039763fc0705abc22b15e4d1696",
    "bytes": 107670,
    "avif": 58459
+  },
+  "abilities/solenne-passive.png": {
+   "source": "968311b6fb79eeff1d98a9c83a271e92f3c4f63c69ff93267a4c9f28d962d4f9",
+   "bytes": 78266,
+   "avif": 33876
+  },
+  "abilities/solenne-skill1.png": {
+   "source": "ec3eeffc00ccc562ec7e96c1cc1352270b1bbf19806d9abb28de2500f40823fa",
+   "bytes": 70226,
+   "avif": 34449
+  },
+  "abilities/solenne-skill2.png": {
+   "source": "e5b0caa6cf1ccac26a3fd61d4e70e6ac828ce77e4a1eb3668b0e772d619819a2",
+   "bytes": 61812,
+   "avif": 32486
+  },
+  "abilities/solenne-ultimate.png": {
+   "source": "d3bfb011321a6a61b4d61f6b39a51237205f91fdaf2c3f4816697a2dd8e8bfcd",
+   "bytes": 87599,
+   "avif": 36916
   },
   "abilities/statuses/status-bloom.png": {
    "source": "5460f876814de10477caef414dec35a7c3cb686ded9af6860f495d9ff7802021",
@@ -757,6 +817,16 @@
    "bytes": 1552979,
    "avif": 342366
   },
+  "backgrounds/elemental-war-caldrex-arena.png": {
+   "source": "448810539d4fbc25796d5343250d4cd67470c7dc5bc3f7b2d0afb145fc957752",
+   "bytes": 1285977,
+   "avif": 248538
+  },
+  "backgrounds/elemental-war-myrthen-arena.png": {
+   "source": "e10834852b1598bbf10845ce52a2bae729c7a3fead782c169d8c82d9158dcde6",
+   "bytes": 2214398,
+   "avif": 649851
+  },
   "backgrounds/elemental-war-nerithe-arena.png": {
    "source": "fb719315c84d2f09ccf2553d16c50483bedc612259d7b8d9f0a7ae7ce6d8be75",
    "bytes": 1988949,
@@ -766,6 +836,11 @@
    "source": "79ea80a84aee530f3a448e5f3150841f0bce47c1e67717cc753649c8fec6d739",
    "bytes": 1635958,
    "avif": 356229
+  },
+  "backgrounds/elemental-war-solenne-arena.png": {
+   "source": "2fd23e3cd94362c3c1fbfc33dae924647be718a8e869d5d678eb623756096878",
+   "bytes": 1597506,
+   "avif": 290709
   },
   "backgrounds/elemental-war-vaelor-arena.png": {
    "source": "af77f5ca40da0a0ce2121532f0bb95197e2e50f9ac612675c04bfec0aa3e43cb",
@@ -917,6 +992,16 @@
    "bytes": 1515843,
    "avif": 270399
   },
+  "banners/elemental-war-caldrex-banner.png": {
+   "source": "9c96c5ff61f0aae30d0d74e9d5eacf4e285505d7f8887cd52605a0476810b5aa",
+   "bytes": 1501530,
+   "avif": 316516
+  },
+  "banners/elemental-war-myrthen-banner.png": {
+   "source": "643877780e2bb43a88af8857b4f1da28cbb616d9ddfec1995198f29be0b883f9",
+   "bytes": 2001448,
+   "avif": 547677
+  },
   "banners/elemental-war-nerithe-banner.png": {
    "source": "bd364ab6a038077d204f07f504c99c25027fdabc7afc893a695e69b4a61a9b78",
    "bytes": 1853572,
@@ -926,6 +1011,11 @@
    "source": "e1346cbf9a9bfa84250ec5ebd4243cd7fb8b50e1eee21e4cf4c55138fc3964e8",
    "bytes": 1995631,
    "avif": 486665
+  },
+  "banners/elemental-war-solenne-banner.png": {
+   "source": "e8053b85a2485eb41b48239dd0b77623b3cfecac3bcd88468b93ddf138fda011",
+   "bytes": 1828747,
+   "avif": 400945
   },
   "banners/elemental-war-vaelor-banner.png": {
    "source": "ea4ed46eedce9279f78f01c2fa29242daeff9b84a5c5be3a453d7b7b5340ea38",
@@ -1160,6 +1250,42 @@
    "bytes": 609369,
    "avif": 118767,
    "thumb": 39893
+  },
+  "characters/caldrex-evo-2.png": {
+   "source": "6c3c560b5345cc5193cc22fba47960ca5ba48d8c5957af39bceb1b3111ae4e87",
+   "bytes": 701220,
+   "avif": 155900,
+   "thumb": 45688
+  },
+  "characters/caldrex-evo-3.png": {
+   "source": "a0179a1d66e38721590720235107edb08c4d771d01b21081a48a0ff2807d1687",
+   "bytes": 752063,
+   "avif": 186192,
+   "thumb": 55429
+  },
+  "characters/caldrex-evo-4.png": {
+   "source": "9694c7a340d5699b0329ce38d4d975ed8fbdb8f1b52e31eeb39251051dc2c941",
+   "bytes": 824275,
+   "avif": 266986,
+   "thumb": 78648
+  },
+  "characters/caldrex-evo-5.png": {
+   "source": "aa062779efbc2e05c6c8a0e6d27a8d680aed43682af321e4d8b340479c09fe14",
+   "bytes": 839213,
+   "avif": 253918,
+   "thumb": 76310
+  },
+  "characters/caldrex-evo-6.png": {
+   "source": "b6773723f02738c941d5bffb6b0dde39044401c0218252d4455cdbc3ecf047df",
+   "bytes": 863986,
+   "avif": 258852,
+   "thumb": 77574
+  },
+  "characters/caldrex.png": {
+   "source": "5ce3884150a4a7cf419faff01a14ce995761b02f6034e0474c70dbca9eeb8b20",
+   "bytes": 757153,
+   "avif": 164787,
+   "thumb": 43025
   },
   "characters/crinso-evo-2.png": {
    "source": "63034dd8c3006c4b707c30e869a5e89473c84b141b858ce19e6ab7e9bf15c13d",
@@ -1413,6 +1539,42 @@
    "avif": 138889,
    "thumb": 39080
   },
+  "characters/myrthen-evo-2.png": {
+   "source": "24db1c220f85aa6b7def2740c5072c4912ffd29a0f86950627b0d1d79654dade",
+   "bytes": 579320,
+   "avif": 188134,
+   "thumb": 58819
+  },
+  "characters/myrthen-evo-3.png": {
+   "source": "e3ac6844dcdbfea904e13bb8f939e072da962f7de48b61431668565c9f23f3d2",
+   "bytes": 655804,
+   "avif": 220297,
+   "thumb": 67801
+  },
+  "characters/myrthen-evo-4.png": {
+   "source": "4acc5353ab7b727be6696c903dcfca81399c123286a4e11e22b79b8ad0500d40",
+   "bytes": 700608,
+   "avif": 255834,
+   "thumb": 79070
+  },
+  "characters/myrthen-evo-5.png": {
+   "source": "ee1494f7badc10c8bb84f988d224c3fe20986351939559fd91dc273dd304f296",
+   "bytes": 886291,
+   "avif": 313981,
+   "thumb": 94809
+  },
+  "characters/myrthen-evo-6.png": {
+   "source": "d660d4cd282c6e4c8d4d569521071516f1eaaa8f71ff0102a8f54ff24239039b",
+   "bytes": 905887,
+   "avif": 334439,
+   "thumb": 97733
+  },
+  "characters/myrthen.png": {
+   "source": "631b1d3cf69214d1bf772b668aefed91afcc486a94f23a0da2b96b2c4021b60a",
+   "bytes": 570255,
+   "avif": 166877,
+   "thumb": 53512
+  },
   "characters/nerithe-evo-2.png": {
    "source": "42b693d24a1aa78706d9d01c2da969caf7f08c681aa564e2c75dc75b482e5b50",
    "bytes": 793252,
@@ -1592,6 +1754,42 @@
    "bytes": 622701,
    "avif": 176204,
    "thumb": 46890
+  },
+  "characters/solenne-evo-2.png": {
+   "source": "b795f51136f2953fe769fefb4f14b10ee48afa89298ccdd0b4c77021c08ae382",
+   "bytes": 641396,
+   "avif": 180715,
+   "thumb": 53063
+  },
+  "characters/solenne-evo-3.png": {
+   "source": "715d13a75c8d6d4cd6ba1da5b26db924570a3b4967e7a242da15ce5ffaa154d4",
+   "bytes": 730645,
+   "avif": 212513,
+   "thumb": 65500
+  },
+  "characters/solenne-evo-4.png": {
+   "source": "8f6d3a7ea88dd6851c4a0a2125a667ad8c5ffb2f728f1c8bd84968a2e0c99d85",
+   "bytes": 733418,
+   "avif": 219563,
+   "thumb": 63804
+  },
+  "characters/solenne-evo-5.png": {
+   "source": "4996b1957896d98e50d5fbbed792343ba6bcfef99dbbf55db9ae0e823007b304",
+   "bytes": 907956,
+   "avif": 231709,
+   "thumb": 65409
+  },
+  "characters/solenne-evo-6.png": {
+   "source": "dd6b20a50f646bc72db42c4c7496095dc9948e26d9873c128fb688461676075c",
+   "bytes": 1036684,
+   "avif": 311495,
+   "thumb": 86533
+  },
+  "characters/solenne.png": {
+   "source": "8477678b4ab5ce2bb7fed6202290abbf768e07424a909dbf3da4a1fe5ef25332",
+   "bytes": 825684,
+   "avif": 186445,
+   "thumb": 46064
   },
   "characters/thornia-evo-2.png": {
    "source": "ab02f91914b2dcdc1b7378d9b165f21023d39bf2b44ddf20a28f071944c4346c",
@@ -3394,6 +3592,21 @@
    "bytes": 88714,
    "avif": 33759
   },
+  "master-conduits/master-caldrex-1.png": {
+   "source": "d01c4c15eb04066cc5f7f9bba692cd3a435d87747ea930566ccde23ddbc11a89",
+   "bytes": 87362,
+   "avif": 30076
+  },
+  "master-conduits/master-caldrex-2.png": {
+   "source": "37570b6420ef74976616b9e8d903ce7be0edd72e5ee9272d38ab9b53f5aaccfc",
+   "bytes": 94557,
+   "avif": 34778
+  },
+  "master-conduits/master-caldrex-3.png": {
+   "source": "bd5dabe3e2acf9ef131170c0dbfc06f33dc3885c4da5899781897f97517936cd",
+   "bytes": 64419,
+   "avif": 23584
+  },
   "master-conduits/master-crinso-1.png": {
    "source": "6a15558e16f357a7084c5cef11ed1b31a4addab50b6c746e25dc5e9405144058",
    "bytes": 79028,
@@ -3484,6 +3697,21 @@
    "bytes": 88019,
    "avif": 46880
   },
+  "master-conduits/master-myrthen-1.png": {
+   "source": "0bbec3dc25ba4cabc764b8acae9e7653d950503128845a14628ad2b240a03cab",
+   "bytes": 101934,
+   "avif": 40477
+  },
+  "master-conduits/master-myrthen-2.png": {
+   "source": "7d4a5fa6cdb5082315a83cb5af1147937609e30de8e528cbb0c39ba31de591f2",
+   "bytes": 66343,
+   "avif": 29688
+  },
+  "master-conduits/master-myrthen-3.png": {
+   "source": "be3d8233c6c5a9e20891822dac6e3c616f7ff51ba2f1253f601e1870ca9aa505",
+   "bytes": 108586,
+   "avif": 42764
+  },
   "master-conduits/master-nerithe-1.png": {
    "source": "f11d5b05f3769e1e08793c519530b9f0a398f8bf609b64b4deeaf5f11446c14d",
    "bytes": 66470,
@@ -3558,6 +3786,21 @@
    "source": "c479418959a67d3336252ab912fc4f72b517a681a7cd92e5b5fc1694b0bd3715",
    "bytes": 90120,
    "avif": 42363
+  },
+  "master-conduits/master-solenne-1.png": {
+   "source": "7566ae1aff847aa4f5082104bbd3ea69ddc79ff5abfe6494798bdd8d97a46ba3",
+   "bytes": 92293,
+   "avif": 31580
+  },
+  "master-conduits/master-solenne-2.png": {
+   "source": "fc49aaed26285a94f8d83ada8e0fe770d60990a818dd5e3963a94a78d187402c",
+   "bytes": 101206,
+   "avif": 33926
+  },
+  "master-conduits/master-solenne-3.png": {
+   "source": "1fd1a696fca11d5b21faca8dbc3b5caa1ccb84637cea59e1246663106ba20250",
+   "bytes": 79177,
+   "avif": 31544
   },
   "master-conduits/master-sprout-1.png": {
    "source": "da73c1f80b9ffab9f3922b86abb74560b2a3415e9aadc5a0138de30c7a9e3b65",

@@ -36,7 +36,7 @@ describe('reference activity banners', () => {
       expect(war).toContain(`data-war="${mode.character}" >Enter trial · Free`);
       expect(war).toContain(`10 · Lv.${warEncounter(mode.character, 10).level}</option>`);
     }
-    expect(war.match(/class="activity-entry"/g)).toHaveLength(3);
+    expect(war.match(/class="activity-entry"/g)).toHaveLength(6);
     expect(war).not.toContain('class="activity-unlock-hint"');
     expect(account).toEqual(before);
   });
@@ -44,7 +44,7 @@ describe('reference activity banners', () => {
     const account = emptyAccount();
     account.infusionStages.machines = machineStageCount;
     const html = gameplayHub(account);
-    expect(html.match(/class="activity-entry"/g)).toHaveLength(16);
+    expect(html.match(/class="activity-entry"/g)).toHaveLength(19);
     expect(html).toContain('id="gameplay-oblivion"');
     expect(html.match(/data-dungeon-stage=/g)).toHaveLength(6);
     expect(html.match(/data-infusion-stage=/g)).toHaveLength(6);
@@ -61,14 +61,14 @@ describe('reference activity banners', () => {
     expect(gameplayHub(null)).not.toContain('class="activity-entry"');
   });
   it.each([
-    [0, 0, 15],
-    [10, storyRules.regionStages - 1, 15],
-    [10, storyRules.regionStages, 14],
-    [29, 25, 14],
-    [30, 25, 8],
-    [50, 25, 6],
-    [60, 25, 4],
-    [75, 25, 3],
+    [0, 0, 18],
+    [10, storyRules.regionStages - 1, 18],
+    [10, storyRules.regionStages, 17],
+    [29, 25, 17],
+    [30, 25, 11],
+    [50, 25, 9],
+    [60, 25, 7],
+    [75, 25, 6],
     [85, 25, 0],
   ])('shows requirements only for locked entries at Lv.%i with %i Story clears', (level, storyCompleted, lockedCount) => {
     const account = emptyAccount();
@@ -78,13 +78,13 @@ describe('reference activity banners', () => {
     const html = gameplayHub(account);
     const entries = [...html.matchAll(/<footer class="activity-entry">([\s\S]*?)<\/footer>/g)]
       .map(match => match[1]);
-    expect(entries).toHaveLength(16);
+    expect(entries).toHaveLength(19);
     const oblivion = entries.find(entry => entry.includes('data-oblivion'));
     expect(oblivion).toContain('>Locked</button>');
     expect(oblivion).toContain('Own any Calamitic Element-Bearer.');
     expect(oblivion).not.toContain('Your highest:');
     const establishedEntries = entries.filter(entry => !entry.includes('data-oblivion'));
-    expect(establishedEntries).toHaveLength(15);
+    expect(establishedEntries).toHaveLength(18);
     expect(establishedEntries.filter(entry => entry.includes('class="activity-unlock-hint"'))).toHaveLength(lockedCount);
     for (const entry of establishedEntries) {
       const locked = entry.includes('>Locked</button>');

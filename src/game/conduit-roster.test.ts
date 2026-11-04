@@ -10,7 +10,7 @@ import { resolveFighter, type ActionId } from '../content/combat';
 import { starters, type StarterId } from '../content/starters';
 import { masterConduits, type MasterConduitId } from '../content/master-conduits';
 import { nativeBalance } from '../content/native-balance';
-import { nativeEnemyCompleted, nativePrimaryHit, nativeRefusal } from './native-kits';
+import { nativeBurnPhase, nativeEnemyCompleted, nativeHeatCap, nativeIncomingMultiplier, nativePrimaryHit, nativeRefusal } from './native-kits';
 import { act, actionUnavailable, createBattle, endTurn, type BattleEvent } from './battle';
 import {
   afterConduitBurn, afterConduitImpact, applyConduitBurn, applyConduitWeaken, conduitActionCost,
@@ -924,6 +924,61 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       for (const enemy of result.state.enemies) expect(result.state.allies[0].native?.faults?.[enemy.id]).toBe(enabled ? 3 : 1);
       break;
     }
+    case 'master-caldrex-1':
+      owner.native = { heat: 3 };
+      expect(nativeHeatCap(owner)).toBe(enabled ? 5 : 3);
+      // The Defense-per-Heat bonus is Phase 0-gated and verified in phase-zero-master-matrix.test.ts.
+      break;
+    case 'master-caldrex-2': {
+      owner.native = { tauntThrough: state.round };
+      gear(target).owners.nativeTaunt = owner.id;
+      const strike = [
+        { kind: 'attack', source: target.id, target: owner.id, amount: 0, message: 'attack' },
+        { kind: 'damage', source: target.id, target: owner.id, amount: 10, message: 'hit' },
+      ] as unknown as BattleEvent[];
+      target.hp = target.stats.health = 100000;
+      nativeEnemyCompleted(state, target, true, strike);
+      expect(target.hp < 100000).toBe(enabled);
+      break;
+    }
+    case 'master-caldrex-3':
+      ally.hp = 100;
+      owner.native = { burns: { [target.id]: { turns: 3, damage: 10 } } };
+      target.burn = { turns: 3, damage: 10, sourceId: owner.id, origin: 'native' };
+      nativeBurnPhase(state, target, events);
+      expect(ally.hp).toBe(enabled ? 180 : 100);
+      break;
+    case 'master-solenne-1':
+      owner.native = { stillness: 1 };
+      expect(nativeIncomingMultiplier(state, target, owner, 'light', events)).toBeCloseTo(enabled ? .65 : .8, 5);
+      break;
+    case 'master-solenne-2': {
+      ally.hp = 100;
+      const result = attack('skill2');
+      expect((result.state.allies[1].conduitRuntime?.layers ?? []).length).toBe(enabled ? 2 : 1);
+      break;
+    }
+    case 'master-solenne-3':
+      owner.native = { stillness: 1 };
+      expect(equipped(owner, 'master-solenne-3')).toBe(enabled);
+      nativeIncomingMultiplier(state, target, owner, 'light', events);
+      break;
+    case 'master-myrthen-1':
+      owner.native = { season: 'harvest' };
+      expect(attack('skill1').state.allies[0].native?.season).toBe(enabled ? 'bloom' : 'sprout');
+      break;
+    case 'master-myrthen-2': {
+      owner.native = { season: 'sprout' };
+      const season = attack('skill1').state.allies[0].native?.season;
+      if (enabled) expect(['bloom', 'harvest']).toContain(season);
+      else expect(season).toBe('bloom');
+      break;
+    }
+    case 'master-myrthen-3':
+      ally.hp = 100;
+      target.hp = 1;
+      expect(attack('light').state.allies[1].hp).toBe(enabled ? 160 : 100);
+      break;
     default:
       throw new Error(`Missing executable Master scenario: ${id}`);
   }

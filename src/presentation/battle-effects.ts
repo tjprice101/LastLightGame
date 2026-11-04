@@ -25,6 +25,9 @@ export const characterChoreography = {
   nerithe: { signature: 'meridian', motion: 'thrust', family: 'tide' },
   orvella: { signature: 'citadel', motion: 'hammer', family: 'bloom' },
   vaelor: { signature: 'resonance', motion: 'slash', family: 'force' },
+  caldrex: { signature: 'citadel', motion: 'guard', family: 'flame' },
+  solenne: { signature: 'meridian', motion: 'guard', family: 'radiant' },
+  myrthen: { signature: 'petal', motion: 'twin', family: 'bloom' },
 } as const satisfies Record<StarterId, { signature: Signature; motion: Motion; family: AttackFlair['family'] }>;
 
 const signaturePaths: Record<Signature, string> = {

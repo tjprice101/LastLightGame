@@ -12,7 +12,7 @@ const benchmarkStarters = starters.filter(character => !isCalamiticCharacter(cha
 describe('offline battle survey integrity', () => {
   it('constructs legal eight-slot, matching-element loadouts for all16 characters and every build', () => {
     const metadata = describeSurvey();
-    expect(benchmarkStarters).toHaveLength(16);
+    expect(benchmarkStarters).toHaveLength(19);
     for (const gear of Object.values(metadata.builds)) for (const character of benchmarkStarters) {
       const slots = gear.equipment[character.id]!;
       expect(validateConduitSlots(slots)).toEqual(slots);

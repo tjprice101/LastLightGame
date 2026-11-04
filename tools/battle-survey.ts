@@ -25,7 +25,7 @@ export type Encounter =
   | { kind: 'story'; stage: number }
   | { kind: 'dungeon'; element: PlayableDungeon; stage: number }
   | { kind: 'infusion'; mode: InfusionModeId; stage: number }
-  | { kind: 'war'; character: 'nerithe' | 'orvella' | 'vaelor'; stage: number }
+  | { kind: 'war'; character: 'nerithe' | 'orvella' | 'vaelor' | 'caldrex' | 'solenne' | 'myrthen'; stage: number }
   | { kind: 'calamity'; activity: CalamityActivityId; tier: CalamityTier };
 const common: ConduitId[] = ['vigil-core', 'bastion-lock', 'parallax-relay', 'crosspin-governor',
   'fieldbrace-coupler', 'siegebound-drive', 'reserve-torque-crank', 'prism-splinter-socket'];

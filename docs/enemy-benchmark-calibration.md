@@ -1,5 +1,39 @@
 # Global character benchmarks and enemy calibration (D-404)
 
+## Bounded Phase1 War checks (2026-11-03)
+
+New Caldrex/Solenne/Myrthen checks do not replace the historical full-roster
+rankings or justify changing hostile curves. Reproduce with
+`npx vitest run tools\phase1-war-experiments.test.ts --silent=false --maxWorkers=1`.
+
+The paper experiment is solo Lv105, Common+0 planned equipment, seed1729,
+six rounds against zero Defense with no incoming attacks. Output and support
+are separate runs; support creates laboratory Health headroom, not actual
+damage suffered. These are **six-round totals**, not DPR or survival estimates:
+
+| Character | Damage total | Effective healing total | Shield creation total |
+| --- | ---: | ---: | ---: |
+| Caldrex |7,377|0|10,803.375|
+| Solenne |29,067|0|0|
+| Myrthen |116,505|0|0|
+
+Zero support in this bounded policy/run does not mean a character cannot
+Shield or heal. Paper output cannot be substituted for an encounter clear.
+
+The pressured experiment uses each character's own Stage10 Lv140 War trial,
+conditional owned `[new character, Tizu, Flora]`, all Lv105, mixed+0 ordinary
+equipment, and no Calamitic gear. For each character, test no Master and each
+of its three fixed personal Masters with seeds1/1729/104729:36 fights total.
+Caldrex won12/12 (50-68 rounds); Solenne12/12 (18-30); Myrthen11/12 (7-58).
+The one defeat is Myrthen without a Master at seed1, with no survivors and
+0.0002 enemy Health fraction remaining after rounding. No hostile retuning.
+
+This is a bounded regression sample, not a population clear-rate estimate,
+an average account or proof that these units can acquire themselves. Only one
+starter is free; owning the tested trio, Lv105 progression, equipment and
+optional personal Master are explicit preparation conditions. No EX+3 or
+global ceiling claim follows from these trials.
+
 ## Rules13 critical-damage remeasurement (D-415)
 
 The global audit and D-404 before/after measurements below predate native

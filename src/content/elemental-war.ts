@@ -15,6 +15,9 @@ export const elementalWars = [
   { character: 'nerithe', name: 'The Sea Without a Shore', element: 'oceanic' },
   { character: 'orvella', name: 'The Throne Beneath the World', element: 'botanic' },
   { character: 'vaelor', name: 'The Sky\'s Final Chord', element: 'atmospheric' },
+  { character: 'caldrex', name: 'The Last Kiln', element: 'infernic' },
+  { character: 'solenne', name: 'The Bell That Stayed', element: 'tranquilitic' },
+  { character: 'myrthen', name: 'When All Seasons Meet', element: 'botanic' },
 ] as const;
 
 export function warEncounter(character: WarCharacterId, stage: number) {
