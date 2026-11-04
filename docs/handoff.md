@@ -1,5 +1,21 @@
 # Current state and handoff
 
+## Owner kit edits incorporated (2026-11-03)
+
+- Preserved owner changes in `docs/phase-1-war-kit-specification.md` and removed
+  inline editorial notes, contradictory remnants and redundant tooltip text.
+- Confirmed Stillness cap4; Stillpoint +50% Health/+75% Defense; ability
+  Shields scale with Skill Power, Conduit-generated effects do not.
+- Seedtrace:10% Harvest roll after Skills/Last Flare;5% Last Flare substitutes
+  survivable15% maximum Health for Gauge, requires normal Gauge eligibility,
+  falls back to Gauge if lethal and retains recovery.
+- Owner changes include Heat cap5 Master,90% critical-capable retaliation,
+  squad8% Burn-triggered heal, Stillness consumption by periodic damage,
+  revised Last Flares, Harvest75% Master, and self-including kill Gauge.
+  Burn/Weaken remain shared statuses; don't embed bespoke variants.
+- Keep tooltips concise globally, retaining essential limits and exceptions.
+  All changes remain design documentation; live combat is unchanged.
+
 ## Simplified Phase1 kit summaries (2026-11-03)
 
 - Owner clarifies the requested format: descriptions as stated in-game.

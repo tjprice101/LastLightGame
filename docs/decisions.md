@@ -5,6 +5,21 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Phase1 kit feedback (2026-11-03): owner edits the
+[in-game descriptions](phase-1-war-kit-specification.md) directly; preserve
+those changed values and effects. Follow-up confirms Stillness cap4,
+Stillpoint's original +50% Health/+75% Defense header, ability Shield scaling
+with Skill Power but no Skill Power scaling for Conduit-generated effects.
+Seedtrace rolls its10% Harvest chance after either Skill or Last Flare.
+Its5% Last Flare substitution requires normal Gauge eligibility, retains Gauge
+and pays15% maximum Health only if survivable; otherwise uses normal Gauge.
+Recovery remains. Owner permits the specified new chance effects; historical
+no-new-RNG proposal language does not override them.
+Global tooltip direction: concise player-facing effects, not redundant
+deductions, implementation caveats or repeated explanations of shared statuses.
+Burn/Weaken use shared status definitions, not bespoke character variants.
+This is documentation feedback, not a request to change live combat systems.
+
 Complete Phase1 kit drafting (2026-11-03): owner requests a new standalone
 document fully specifying Caldrex/Solenne/Myrthen and their nine Masters.
 Owner explicitly chooses Circle of Repose as Solenne's Stillness generator
