@@ -1,5 +1,23 @@
 # Elemental War
 
+## Separate trial and Omnic names (2026-11-04)
+
+Activity names are distinct from character evolution titles:
+
+| Character | War trial | Preserved Omnic title |
+|---|---|---|
+| Nerithe | Lament of the Spiral Sea | The Sea Without a Shore |
+| Orvella | Rise of the Buried Citadel | The Throne Beneath the World |
+| Vaelor | Overture of the Broken Sky | The Sky's Final Chord |
+| Caldrex | Siege of the Unbroken Furnace | The Last Kiln |
+| Solenne | Requiem of the Silent Moon | The Bell That Stayed |
+| Myrthen | The Orchard Beyond Autumn | When All Seasons Meet |
+
+Shared trial metadata supplies the activity picker, cards, stage accessibility
+labels and loot headings. Character names, artwork, stable trial IDs, saved
+progress and rewards are unchanged. Validate with `src/game/elemental-war.test.ts`
+and `src/presentation/activity-banner.test.ts`.
+
 ## Phase1 expansion (2026-11-03)
 
 [Caldrex, Solenne and Myrthen](phase-1-war-kit-specification.md) join the

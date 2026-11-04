@@ -7138,12 +7138,12 @@ function characterName(id, evolution = 1, riseBlessed = false) {
 
 // src/content/elemental-war.ts
 var elementalWars = [
-  { character: "nerithe", name: "The Sea Without a Shore", element: "oceanic" },
-  { character: "orvella", name: "The Throne Beneath the World", element: "botanic" },
-  { character: "vaelor", name: "The Sky's Final Chord", element: "atmospheric" },
-  { character: "caldrex", name: "The Last Kiln", element: "infernic" },
-  { character: "solenne", name: "The Bell That Stayed", element: "tranquilitic" },
-  { character: "myrthen", name: "When All Seasons Meet", element: "botanic" }
+  { character: "nerithe", name: "Lament of the Spiral Sea", element: "oceanic" },
+  { character: "orvella", name: "Rise of the Buried Citadel", element: "botanic" },
+  { character: "vaelor", name: "Overture of the Broken Sky", element: "atmospheric" },
+  { character: "caldrex", name: "Siege of the Unbroken Furnace", element: "infernic" },
+  { character: "solenne", name: "Requiem of the Silent Moon", element: "tranquilitic" },
+  { character: "myrthen", name: "The Orchard Beyond Autumn", element: "botanic" }
 ];
 function warEncounter(character, stage) {
   const mode = elementalWars.find((entry) => entry.character === character);

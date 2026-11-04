@@ -1,5 +1,23 @@
 # Current state and handoff
 
+## Separate all six War names (2026-11-04)
+
+Owner-approved trial names are Siege of the Unbroken Furnace (Caldrex),
+Requiem of the Silent Moon (Solenne), and The Orchard Beyond Autumn (Myrthen).
+The original three become Lament of the Spiral Sea (Nerithe), Rise of the
+Buried Citadel (Orvella), and Overture of the Broken Sky (Vaelor).
+All six existing Omnic titles remain unchanged. Shared activity metadata updates
+the picker/cards, stage labels and loot headings without changing IDs,
+artwork, saves, combat or rewards. Regression coverage asserts exact mode names,
+preserved Omnic enemy identities and rendered card/accessibility labels.
+Validation: `npx vitest run src\game\elemental-war.test.ts
+src\presentation\activity-banner.test.ts --maxWorkers=2` passed40 tests;
+`npm run build`, `node tools\bundle_server_game.mjs` and authority
+`npx tsc --noEmit -p supabase\functions\game-operation\tsconfig.json` passed.
+Matching authority deployed successfully; generated bundle changes only six
+display strings. No rules version bump or frozen-run restart is needed.
+See [current naming contract](elemental-war.md#separate-trial-and-omnic-names-2026-11-04).
+
 ## Phase1 War installation and integration (2026-11-03)
 
 - Owner explicitly selects full playable Caldrex/Solenne/Myrthen integration:

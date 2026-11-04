@@ -12,12 +12,12 @@ export { isWarCharacter, type WarCharacterId } from './war-characters';
 export { warStageCount } from './activities';
 export const warRulesText = 'Ten free stages, Lv.90-140, one boss each. Prismatica grows linearly from 1,500-2,500 to 30,000-45,000, without a final-boss multiplier. Null-Prismatica: 30% chance of 1, rising to 60% of 25, retaining its final 5x quantity boost. Every final boss clear guarantees recruitment at Lv.0, Evo.1 of its Element-Bearer; an owned result becomes 100 Null-Prismatica. No pity, materials or captures. HP resets between stages; Gauge carries over.';
 export const elementalWars = [
-  { character: 'nerithe', name: 'The Sea Without a Shore', element: 'oceanic' },
-  { character: 'orvella', name: 'The Throne Beneath the World', element: 'botanic' },
-  { character: 'vaelor', name: 'The Sky\'s Final Chord', element: 'atmospheric' },
-  { character: 'caldrex', name: 'The Last Kiln', element: 'infernic' },
-  { character: 'solenne', name: 'The Bell That Stayed', element: 'tranquilitic' },
-  { character: 'myrthen', name: 'When All Seasons Meet', element: 'botanic' },
+  { character: 'nerithe', name: 'Lament of the Spiral Sea', element: 'oceanic' },
+  { character: 'orvella', name: 'Rise of the Buried Citadel', element: 'botanic' },
+  { character: 'vaelor', name: 'Overture of the Broken Sky', element: 'atmospheric' },
+  { character: 'caldrex', name: 'Siege of the Unbroken Furnace', element: 'infernic' },
+  { character: 'solenne', name: 'Requiem of the Silent Moon', element: 'tranquilitic' },
+  { character: 'myrthen', name: 'The Orchard Beyond Autumn', element: 'botanic' },
 ] as const;
 
 export function warEncounter(character: WarCharacterId, stage: number) {

@@ -5,6 +5,15 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Separate War names (2026-11-04): owner requires distinct Omnic titles and
+Elemental War mode names for Caldrex, Solenne and Myrthen, and approves
+Siege of the Unbroken Furnace, Requiem of the Silent Moon and The Orchard
+Beyond Autumn respectively. Preserve their existing Omnic titles, artwork,
+IDs, progression and rewards. Owner extends the same rule to the original
+three and approves Lament of the Spiral Sea (Nerithe), Rise of the Buried
+Citadel (Orvella), and Overture of the Broken Sky (Vaelor).
+[Current names](elemental-war.md#separate-trial-and-omnic-names-2026-11-04).
+
 Phase1 delivery/integration (2026-11-03): owner supplies all45 root images and
 requests archiving, appropriate background removal and wiring. Follow-up
 explicitly selects full playable integration of all three characters, kits,

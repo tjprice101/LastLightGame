@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { warEncounter, warLoot, rollWarRewards, elementalWars } from '../content/elemental-war';
 import { warCharacters, warFighters } from '../content/war-characters';
 import { availableStarters, getStarter } from '../content/starters';
-import { characterArt } from '../content/character-art';
+import { characterArt, characterName } from '../content/character-art';
 import { characterLevelCap, characterEvolutionCost, characterLevelCost } from '../content/progression';
 import { enemyCombatStats } from '../content/stat-growth';
 import { standardBannerPool } from '../content/standard-banner';
@@ -48,6 +48,33 @@ function defeat(character: WarCharacterId = 'orvella', stage = 10, burn = false)
 }
 
 describe('Elemental War', () => {
+  it.each([
+    ['nerithe', 'Lament of the Spiral Sea', 'The Sea Without a Shore'],
+    ['orvella', 'Rise of the Buried Citadel', 'The Throne Beneath the World'],
+    ['vaelor', 'Overture of the Broken Sky', "The Sky's Final Chord"],
+    ['caldrex', 'Siege of the Unbroken Furnace', 'The Last Kiln'],
+    ['solenne', 'Requiem of the Silent Moon', 'The Bell That Stayed'],
+    ['myrthen', 'The Orchard Beyond Autumn', 'When All Seasons Meet'],
+  ] as const)('keeps %s trial names separate from preserved Omnic titles', (character, name, title) => {
+    expect(elementalWars.find(mode => mode.character === character)?.name).toBe(name);
+    const encounter = warEncounter(character, 10);
+    expect(encounter.name).toBe(name);
+    expect(encounter.enemyName).toBe(characterName(character, 6));
+    expect(encounter.enemyName).toBe(`${title}, ${getStarter(character).name}`);
+    expect(encounter.name).not.toBe(title);
+    const html = gameplayHub(emptyAccount());
+    expect(html).toContain(`<h3>${name}</h3>`);
+    expect(html).toContain(`aria-label="${name} stage"`);
+  });
+
+  it('keeps every War trial name unique and distinct from every Omnic title', () => {
+    const names = elementalWars.map(mode => mode.name);
+    expect(new Set(names).size).toBe(elementalWars.length);
+    for (const { character } of elementalWars) {
+      expect(names).not.toContain(characterArt(character, 6).title);
+    }
+  });
+
   it('authors all three ten-stage schedules, supplied scenery, human portraits and boss skills', () => {
     const levels = [90, 96, 101, 107, 112, 118, 123, 129, 134, 140];
     const forms = [1, 1, 2, 2, 3, 3, 4, 4, 5, 6];
