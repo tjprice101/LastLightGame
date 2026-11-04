@@ -60,8 +60,12 @@
   seeded RNG, action/turn idempotency, checkpoint and all three Lv140 entries.
   Its three disposable identities and cascading records were removed; no
   existing player account was changed. No new rules/wallet version was needed.
-- Client publication uses the normal main-push/Pages workflow; verify the
-  hosted version and revisioned delivered artwork before reporting it live.
+- Gameplay/art release `1375b4dfddc3d17696d8a58a311f50c9fd4e5cf9` is published.
+  [Pages run41776429113](https://github.com/tjprice101/LastLightGame/actions/runs/41776429113)
+  succeeded; hosted `version.json` matched that full SHA. The hosted browser
+  decoded all45 new AVIF assets (18 portraits/21 icons/six scenes), with no
+  missing images. The title loads normally. Subsequent publication-note edits
+  do not change the validated gameplay/art payload.
 
 ## Owner kit edits incorporated (2026-11-03)
 

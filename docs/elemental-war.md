@@ -3,7 +3,7 @@
 ## Phase1 expansion (2026-11-03)
 
 [Caldrex, Solenne and Myrthen](phase-1-war-kit-specification.md) join the
-approved playable scope with their kits, nine personal Masters and three
+playable roster with their kits, nine personal Masters and three
 additional trials. All45 images are [delivered and installed](art-workflow.md#delivered-phase1-war-artwork-2026-11-03);
 see the [handoff](handoff.md) for validation/publication.
 The family now has six trials; all retain10 stages from90 to140, free

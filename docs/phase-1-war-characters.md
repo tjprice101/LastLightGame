@@ -1,8 +1,8 @@
 # Phase1 War Element-Bearers, Masters and role perks
 
-**Current scope (2026-11-03): APPROVED playable integration.** Owner explicitly
-requests all three characters, their approved kits, nine personal Masters
-and Elemental War trials. Role perks and Element Resonance were already live.
+**Current status (2026-11-03): IMPLEMENTED and released.** Owner explicitly
+approved all three characters, their kits, nine personal Masters and War
+trials. Role perks and Element Resonance were already live.
 All45 images are delivered, archived and exported with reviewed background
 cleanup; see the [intake contract](art-workflow.md#delivered-phase1-war-artwork-2026-11-03).
 The [45-prompt source](../Art/characters/Elemental%20War%20Phase%201.md)

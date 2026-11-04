@@ -3,8 +3,9 @@
 **Phase1 playable integration (2026-11-03):**
 [Caldrex, Solenne and Myrthen: abilities and nine Masters](phase-1-war-kit-specification.md)
 uses in-game-style descriptions with exact effects, values and durations.
-Owner now explicitly requests implementation; see [handoff](handoff.md) for
-validation/publication status. The [global tooltip standard](menus-and-inventory.md#in-game-description-standard-2026-11-03)
+All three kits/trials and nine Masters are implemented and released; see
+[handoff](handoff.md) for exact validation/publication evidence.
+The [global tooltip standard](menus-and-inventory.md#in-game-description-standard-2026-11-03)
 also applies to existing characters and equipment.
 
 **New Elemental War art pass (2026-11-03):**

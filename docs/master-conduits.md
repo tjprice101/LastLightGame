@@ -3,8 +3,8 @@
 ## Phase1 alternatives (2026-11-03)
 
 [Nine Master tooltips](phase-1-war-kit-specification.md) describe Caldrex,
-Solenne and Myrthen's approved alternatives. Owner explicitly requests their
-playable integration. The catalog expands from57 to66 fixed bearer-only
+Solenne and Myrthen's implemented alternatives. The catalog expands from57
+to66 fixed bearer-only
 Masters, retaining one separate matching-bearer Master slot and current chest
 acquisition rules. No automatic ownership or equip.
 
