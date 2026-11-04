@@ -1,5 +1,22 @@
 # Current state and handoff
 
+## Remaining expansion roadmap (2026-11-04)
+
+Owner requests organization, not implementation. The
+[new ordered roadmap](remaining-expansion-phases.md) preserves supplied
+Phases4/5/6/8 and prerequisites, with an explicit source mapping and unresolved
+design gates. All future characters follow identity -> full appearance line
+-> advanced visual powers -> prompt/name fidelity -> uniqueness/spectacle
+-> owner questions. Do not skip the interview for supplied banner themes.
+
+Clarified: each banner has four5-stars (two male/two female) and two6-stars
+(one male/one female); resets are8 PM America/New_York, weekly Sunday,
+following DST. Rose/Moon end November30,2026 at reset. Original November/
+December target windows remain recorded, with no activation, backdating or
+silent rescheduling. Story stays paused. Next work requires the remaining
+Phase1 decisions and Phase2 character interview, not immediate content launch.
+Documentation-only change; no runtime validation required.
+
 ## Separate all six War names (2026-11-04)
 
 Owner-approved trial names are Siege of the Unbroken Furnace (Caldrex),

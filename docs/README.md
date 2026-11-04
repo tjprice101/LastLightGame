@@ -1,5 +1,11 @@
 # Documentation hub
 
+**Remaining expansion (2026-11-04):**
+[Implementation-ordered phases and complete requirements](remaining-expansion-phases.md)
+cover the mandatory character-first workflow, reset/archive foundations, Moon
+and Sunshade banners, login calendar, mailbox/friend gifts and Master/shop/
+first-acquisition QoL. Planning only; no date activation or gameplay changes.
+
 **Phase1 playable integration (2026-11-03):**
 [Caldrex, Solenne and Myrthen: abilities and nine Masters](phase-1-war-kit-specification.md)
 uses in-game-style descriptions with exact effects, values and durations.

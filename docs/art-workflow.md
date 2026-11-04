@@ -1,5 +1,17 @@
 # Art and asset workflow
 
+## Mandatory future character design gate (2026-11-04)
+
+For every future character, design identity/lore first, then the complete
+evolution appearance, then specific aesthetic powers/mythology. Check that
+the prompts express the identity and the Omnic makes the name meaningful;
+review uniqueness and awe-inspiring progression, then ask the owner questions
+before locking the design. Exact wings/motifs and intentional physical changes
+must be explicit, not guessed between prompts. Preserve the established
+renderer and gradual complexity; no armor-by-default shortcut.
+The [full workflow and upcoming banner requirements](remaining-expansion-phases.md#required-character-workflow-every-future-character)
+apply beyond the Moon/Sunshade batches as well.
+
 ## Delivered Phase1 War artwork (2026-11-03)
 
 All45 owner-delivered RGB PNGs for Caldrex, Solenne and Myrthen are archived

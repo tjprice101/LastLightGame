@@ -1,5 +1,16 @@
 # Development roadmap
 
+## Current remaining expansion order (2026-11-04)
+
+The [remaining expansion phases](remaining-expansion-phases.md) are the current
+owner-requested future sequence: reset/archive foundations; identity-first
+design of both banners; shared acquisition/Master/shop QoL; mailbox, gifts
+and login calendar; Moon delivery; Sunshade delivery. It preserves the full
+original scope and records clarified roster counts, dates and reset timezone.
+Design only: no feature activation, backdating or unapproved economy values.
+Story remains paused. The older phase tables below are delivery history,
+not competing instructions for these new phases.
+
 ## Current maintenance baseline
 
 D-415 is released: all-kit critical damage, explicit trap empowerment and the

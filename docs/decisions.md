@@ -5,6 +5,18 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Remaining expansion organization (2026-11-04): preserve the owner's complete
+Moon/Sunshade, reset/archive, login/mail/gift and QoL requirements in the
+[implementation-ordered roadmap](remaining-expansion-phases.md).
+Every future character follows identity-first, full evolution appearance,
+advanced aesthetic powers, prompt/name fidelity, uniqueness/spectacle review
+and owner questions. This is planning, not permission to implement all phases.
+Owner resolves each banner to four5-stars (two male/two female) and two6-stars
+(one male/one female),8 PM America/New_York daily resets and Sunday weekly
+resets with DST. November31 becomes November30,2026 at reset for Rose/Moon.
+Original target windows remain; no activation/backdating/rescheduling yet.
+The roadmap distinguishes remaining economy/scheduling choices from approval.
+
 Separate War names (2026-11-04): owner requires distinct Omnic titles and
 Elemental War mode names for Caldrex, Solenne and Myrthen, and approves
 Siege of the Unbroken Furnace, Requiem of the Silent Moon and The Orchard
