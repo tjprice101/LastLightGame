@@ -5,8 +5,8 @@ perks and Element Resonance. Characters and Conduits remain unimplemented.
 The [45-prompt visual proposal](../Art/characters/Elemental%20War%20Phase%201.md)
 is now authored; no images delivered/generated/intaken.
 [Character kits and nine-Master summaries](phase-1-war-kit-specification.md)
-describe what each character does in plain language. These are unimplemented,
-not balance-approved runtime definitions; numerical tuning remains pending.
+describe each ability as an in-game tooltip, including proposed exact values.
+These are unimplemented, not balance-approved runtime definitions.
 
 **Kit clarification (2026-11-03):** owner chooses Circle of Repose to build
 Solenne's Stillness because the current action registry has no Defense action.
@@ -161,9 +161,9 @@ ordinary Conduit counts or acquisition rarities are invented.
 
 - Review proposed form titles, visual details, four ability labels per bearer
   and nine Master machine names; preserve approved gameplay outline identities.
-- Review the [plain-language kit/Master summaries](phase-1-war-kit-specification.md).
-  Exact stats, coefficients, costs, timing and trigger limits remain future
-  implementation work; combat balance is not tested or implicitly approved.
+- Review the [in-game-style kit/Master descriptions](phase-1-war-kit-specification.md).
+  Proposed values, costs, durations and trigger limits are included;
+  implementation and combat balance are not tested or implicitly approved.
 - Implement three characters, trials, guaranteed first recruitment/duplicate
   handling and nine Masters through shared content, combat and authority paths.
 - Produce/deliver45 images from the prompts; review actual pixels for identity,
@@ -269,7 +269,7 @@ other character uses.
 Abilities and nine Master alternatives are described in the
 [standalone summaries](phase-1-war-kit-specification.md), not implemented.
 The art pack's ability labels have corresponding plain-language descriptions;
-exact numerical tuning remains pending.
+proposed values are not approved or measured combat balance.
 
 ## Element Resonance (replaces Kinship)
 

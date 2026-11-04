@@ -2,14 +2,16 @@
 
 ## Simplified Phase1 kit summaries (2026-11-03)
 
-- Owner corrects the requested format: character name and what they do only.
-  `docs/phase-1-war-kit-specification.md` now contains three character summaries,
-  their passive/basic/Skill/Last Flare descriptions and nine Master descriptions.
-  Removed formulas, base-stat tables, technical contracts and testing sections.
+- Owner clarifies the requested format: descriptions as stated in-game.
+  `docs/phase-1-war-kit-specification.md` contains character names/roles,
+  intrinsic perks, passive/basic/Skill/Last Flare tooltips and nine Master
+  tooltips with proposed exact values, costs, durations and trigger limits.
+  No base-stat tables, technical contracts or testing sections.
 - Circle of Repose still builds Solenne's Stillness; no Defense action added.
 - Related index/plan/Elemental War/Master documentation now describes the
   simplified deliverable, not an exact numerical specification.
-- Exact numerical tuning, implementation, encounter testing and all45 artwork
+- Proposed values are restored as player-facing tooltips, not approved balance.
+  Implementation, encounter testing and all45 artwork
   deliveries remain pending. Nine Masters are outside the live57 catalog.
   No gameplay or authority changes; Story remains paused.
 

@@ -10,10 +10,11 @@ document fully specifying Caldrex/Solenne/Myrthen and their nine Masters.
 Owner explicitly chooses Circle of Repose as Solenne's Stillness generator
 instead of adding the unavailable Defense action. Keep the four-action
 registry. Owner subsequently clarifies the deliverable must contain only
-character names and what they do. Replace the lengthy numerical draft with
-[plain-language ability and Master summaries](phase-1-war-kit-specification.md);
-no formulas, technical contracts or testing sections in that file.
-Numerical tuning and implementation remain pending. No Story resumption or
+character names and what they do, then clarifies this means in-game-style
+tooltips, not vague summaries. [Ability and Master descriptions](phase-1-war-kit-specification.md)
+include proposed exact values, costs, durations and trigger limits, without
+base-stat tables, technical contracts or testing sections.
+Balance validation and implementation remain pending. No Story resumption or
 reward-system change.
 
 Character-first wardrobe (2026-11-03): owner clarifies outfits need not be

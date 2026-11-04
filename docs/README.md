@@ -2,7 +2,7 @@
 
 **Phase1 kit summaries (2026-11-03):**
 [Caldrex, Solenne and Myrthen: abilities and nine Masters](phase-1-war-kit-specification.md)
-contains only character names and plain-language descriptions of what they do.
+uses in-game-style descriptions with exact effects, values and durations.
 Design-only, not live.
 
 **New Elemental War art pass (2026-11-03):**
