@@ -35,7 +35,11 @@
   the clock to advance. Both disposable identities/cascading records removed.
   Production time was not changed; future closure/purchases are local
   injected-clock cases, not a claimed live-time test.
-- Client publication is pending commit/push and hosted release verification.
+- Published gameplay/client commit `96868e3f367c77669abad95ea23589f7626b94b1`.
+  Pages run41933195451 succeeded; its final CI suite passed7,451 tests/236
+  files. Hosted browser `version.json` matched that exact SHA and loaded
+  chunks contained the archive, event shop and exact closure timestamp.
+  Authority smoke passed separately as above; temporary local server stopped.
   [Exact contract](special-banner-lifecycle.md) and
   [remaining phases](remaining-expansion-phases.md) distinguish this completed
   implementation from the still-gated Moon/Sunshade character designs.

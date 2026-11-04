@@ -75,6 +75,11 @@ See [art workflow](art-workflow.md) and the
 | 5 | Special Banner #2: Glow of the Moon's Light | Uses Phase1 scheduling/archive, approved Phase2 designs, supplied/reviewed art and Phase3 reward/equipment foundations. |
 | 6 | Special Banner #3: The Angel-blazened Sunshade | Reuses the validated Moon event lifecycle, with its own approved roster, assets and theme. |
 
+**Current delivery:** Phase1 is implemented and released, including the
+follow-up post-event shop requirements. [Validation/publication](handoff.md).
+Phases2-6 remain unimplemented; next is the identity-first design package,
+not immediate activation of the target banner windows.
+
 This is implementation order, not a new marketing calendar. Phase2 design/art
 preparation can run alongside approved foundation work. Phases3/4 do not
 silently authorize delaying a banner or removing a requested feature to meet a
