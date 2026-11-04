@@ -1,5 +1,32 @@
 # Current state and handoff
 
+## Shop sheen containment (2026-11-04)
+
+Owner reports oversized diagonal shimmer in the event shop. Root cause:
+`position: static` on purchase buttons let their absolutely positioned sheen
+use an ancestor's dimensions. Buttons now use relative positioning and hidden
+overflow, retaining normal flex layout, artwork and post-save reward effects.
+Regression covers all six disabled purchase buttons and the containment rule.
+`npx vitest run src\presentation\online-store-profile.test.ts
+src\online\event-lifecycle.test.ts --maxWorkers=2` passed35 tests;
+`npm run build` passed TypeScript and Vite (existing chunk-size advisory).
+Browser sampled disabled and focused-enabled controls over time: highlights
+stay clipped, pointer-transparent and finite; explicit Reduce motion disables
+the sweep. Verification used rendered in-memory shop markup, no account writes.
+Phase2 identity proposals below remain unapproved and are the next owner gate.
+
+## Phase2 identity-first design (2026-11-04)
+
+Owner says continue. Started the required identity-first workflow with a
+[twelve-character proposal and22-character role audit](moon-sunshade-character-design.md).
+Both banners preserve four5-stars/two6-stars and three male/three female.
+Prioritize Infernic/Oceanic support/sustain and Atmospheric tank/non-Calamitic
+access; label existing-role additions honestly. Human celestial orders and
+non-Infernic Sunshade flame interpretation are proposed lore, not approved
+new species/elements/history. Names, roles and identities await owner review;
+do not skip to locked appearances, numeric kits or art prompts. No runtime
+changes or character/banner registrations in this documentation-only step.
+
 ## Phase1 lifecycle and post-event shops (2026-11-04)
 
 - Owner authorizes implementation and Rose schedule activation. Daily8 PM

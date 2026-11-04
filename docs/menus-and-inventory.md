@@ -10,6 +10,9 @@ all six Roselius forms and post-event-only online purchases.
 Event Materials stays permanently available. No-owner event warnings cannot
 be hidden; creature warnings explain combat and event-specific uses accurately.
 Confirmed purchases use the shared saved rarity receipt, never pre-save effects.
+Purchase buttons retain a relative positioning context and clipped overflow:
+their decorative sheen must stay inside the button, including when disabled,
+not expand into viewport-sized diagonal beams across the shop.
 [Complete contract and validation](special-banner-lifecycle.md).
 
 ## In-game description standard (2026-11-03)

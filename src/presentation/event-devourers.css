@@ -30,7 +30,8 @@
 }
 
 .event-devourer-card > button {
-  position: static;
+  position: relative;
+  overflow: hidden;
   width: 100%;
   min-height: 44px;
   margin-top: auto;

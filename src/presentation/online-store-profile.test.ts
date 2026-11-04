@@ -5,6 +5,8 @@ import { storyRules } from '../content/story';
 import { bindProfileEditor, friendPresence, onlineProfile, onlineStores, profileFrames, refreshFriendPresence, refreshProfileTracking, type OnlineProfileDisplay } from './online-store-profile';
 import { starters } from '../content/starters';
 import { profilePictures } from '../content/profile-pictures';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 afterEach(() => { document.body.replaceChildren(); vi.restoreAllMocks(); });
 
@@ -14,6 +16,19 @@ const profile: OnlineProfileDisplay = {
 };
 
 describe('online Material Exchange and Cosmetic Store', () => {
+  it('contains purchase-button sheen inside each event-shop button, including disabled buttons', () => {
+    document.body.innerHTML = onlineStores(emptyAccount(), null, 'event-devourers');
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-buy-event-devourer]'));
+    expect(buttons).toHaveLength(6);
+    for (const button of buttons) {
+      expect(button.disabled).toBe(true);
+      expect(button.matches('.event-devourer-card > button')).toBe(true);
+    }
+    const styles = readFileSync(resolve('src', 'presentation', 'event-devourers.css'), 'utf8');
+    const rule = styles.match(/\.event-devourer-card > button\s*\{([^}]+)\}/)?.[1];
+    expect(rule).toMatch(/position:\s*relative/);
+    expect(rule).toMatch(/overflow:\s*hidden/);
+  });
   it('separates normal Common materials from Rose event materials with 1/5/10 purchase buttons', () => {
     const account = emptyAccount();
     account.materials['infernic-common'] = 7;

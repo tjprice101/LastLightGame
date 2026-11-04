@@ -1,5 +1,11 @@
 # Documentation hub
 
+**Phase2 identity review (2026-11-04):**
+[Moon and Sunshade character proposals](moon-sunshade-character-design.md)
+audit current22-character role coverage and propose twelve distinct identities.
+Names/lore/roles remain proposals; full appearances, kits and prompts follow
+owner review. No new characters or banners are live.
+
 **Special-banner lifecycle (2026-11-04):**
 [Reset clock, Rose closure, archive and post-event shops](special-banner-lifecycle.md).
 Rose draws/activity close November30 at8 PM New York; pity/progress stay.
