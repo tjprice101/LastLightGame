@@ -1,10 +1,9 @@
 # Documentation hub
 
-**Complete Phase1 kit proposal (2026-11-03):**
-[Caldrex, Solenne and Myrthen: exact kits and nine Masters](phase-1-war-kit-specification.md)
-contains base stats, costs, final coefficients, source/clock/trigger rules,
-Master stat packages, examples and acceptance cases. Design-only, not live.
-Owner confirms Circle of Repose builds Stillness; no new Defense action.
+**Phase1 kit summaries (2026-11-03):**
+[Caldrex, Solenne and Myrthen: abilities and nine Masters](phase-1-war-kit-specification.md)
+contains only character names and plain-language descriptions of what they do.
+Design-only, not live.
 
 **New Elemental War art pass (2026-11-03):**
 [Phase1 plan and remaining checklist](phase-1-war-characters.md) and

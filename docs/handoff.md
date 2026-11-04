@@ -1,30 +1,17 @@
 # Current state and handoff
 
-## Complete Phase1 kits and nine Master proposals (2026-11-03)
+## Simplified Phase1 kit summaries (2026-11-03)
 
-- Requested deliverable: `docs/phase-1-war-kit-specification.md`, new standalone
-  complete design, not runtime implementation. Contains base stats, role/stat
-  semantics, final coefficients, action costs/recovery, resources/Mark/Burn/
-  Weaken/taunt clocks, exact nine Master stats/effects, examples and test matrix.
-- Owner confirms Circle of Repose builds Stillness; current registry has only
-  four actions, so supersede earlier Defense-based setup, do not add Defense.
-- Current tuning references: native ordinary direct1.6, Last Flare damage3/
-  support1.5; proposed values are final, never multiply those factors again.
-  Ordinary 25/40 and Last Flare100 costs use shared Efficiency rules. No
-  bypass of recovery, native critical/mitigation/Defense-ignore conventions.
-- Heat cap3/gain1 per enemy phase (cap4 Master); Stillness cap4/gain2 per
-  Circle, one per enemy hit or all on Last Flare; Myrthen Sprout/Bloom/Harvest,
-  one transition per manual ordinary skill, not per target.
-- Nine fixed Omnic Masters remain proposals outside live57 catalog; would
-  bring it to66. No new chest drop rates, grants, automatic equips or upgrades.
-  Generated effects have explicit non-recursion and phase/round/lineage bounds.
-- Update outline/index/Elemental War/Master docs to link the proposal.
-  Numerical review, implementation, actual encounter tests and all45 artwork
-  deliveries remain pending. Story remains paused; no authority changes.
-- Documentation validation:13 coefficient/example arithmetic checks passed;
-  all9 Master names match the art generator and all deliverable local links
-  resolve. `git diff --check` passed. No runtime tests/build needed for this
-  documentation-only revision; no balance/clear-rate claim made.
+- Owner corrects the requested format: character name and what they do only.
+  `docs/phase-1-war-kit-specification.md` now contains three character summaries,
+  their passive/basic/Skill/Last Flare descriptions and nine Master descriptions.
+  Removed formulas, base-stat tables, technical contracts and testing sections.
+- Circle of Repose still builds Solenne's Stillness; no Defense action added.
+- Related index/plan/Elemental War/Master documentation now describes the
+  simplified deliverable, not an exact numerical specification.
+- Exact numerical tuning, implementation, encounter testing and all45 artwork
+  deliveries remain pending. Nine Masters are outside the live57 catalog.
+  No gameplay or authority changes; Story remains paused.
 
 ## Character-first wardrobe: Solenne and Myrthen (2026-11-03)
 

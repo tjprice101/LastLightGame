@@ -2,9 +2,9 @@
 
 ## Pending Phase1 alternatives (design only, 2026-11-03)
 
-[Nine fully specified Master proposals](phase-1-war-kit-specification.md#6-nine-fixed-omnic-master-conduits)
-cover Caldrex, Solenne and Myrthen with exact personal stat packages,
-native transformations and bounded triggered effects. They are **not** in the
+[Nine Master summaries](phase-1-war-kit-specification.md)
+describe Caldrex, Solenne and Myrthen's proposed alternatives in plain language.
+They are **not** in the
 live57-Master catalog or chest selector yet. Proposed expansion would yield66;
 no drop rates, ownership, upgrades or current effects change in this draft.
 

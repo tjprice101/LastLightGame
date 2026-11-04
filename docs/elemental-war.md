@@ -3,7 +3,7 @@
 ## Pending Phase1 kit specification (2026-11-03)
 
 [Caldrex, Solenne and Myrthen](phase-1-war-kit-specification.md) now have a
-complete design proposal covering exact native kits and nine personal Masters.
+plain-language ability summaries and nine proposed personal Masters.
 No new characters/trials/rewards are implemented by this document. Current
 Nerithe/Orvella/Vaelor activities and guaranteed recruitment remain unchanged.
 
