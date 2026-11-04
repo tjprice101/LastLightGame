@@ -5,7 +5,7 @@ import { informationTopics } from './information';
 import { worldLore } from './world-lore';
 import { storyRules } from '../content/story';
 
-export const sanctuaryPages = ['home', 'team', 'character', 'gameplay', 'events', 'inventory', 'stores', 'collections', 'squad', 'summon', 'story', 'battle', 'glossary', 'archives', 'conduit-store', 'conduit-upgrade', 'profile'] as const;
+export const sanctuaryPages = ['home', 'team', 'character', 'gameplay', 'events', 'inventory', 'stores', 'collections', 'squad', 'summon', 'special-banner-archive', 'story', 'battle', 'glossary', 'archives', 'conduit-store', 'conduit-upgrade', 'profile'] as const;
 export type MenuPage = (typeof sanctuaryPages)[number];
 export type TeamArea = 'squad' | 'bearers' | 'creatures';
 
@@ -23,6 +23,7 @@ const headings: Record<MenuPage, readonly [string, string]> = {
   gameplay: ['ACTIVITIES', 'Gameplay'], events: ['EVENTS', 'Events'],
   inventory: ['OWNED ITEMS', 'Inventory'], stores: ['STORES', 'Stores'], collections: ['CATALOGS', 'Collections'], squad: ['FORMATION', 'Squad'],
   summon: ['SUMMONING', 'Summon'], story: ['SIX BEACONS', 'Story'],
+  'special-banner-archive': ['SPECIAL BANNERS', 'Special Banner Archive'],
   battle: ['YOUR SQUAD · GRASSY FIELD', 'Training'],
   glossary: ['COLLECTIONS · DISCOVERIES', 'Archives'],
   archives: ['COLLECTIONS · DISCOVERIES', 'Archives'],

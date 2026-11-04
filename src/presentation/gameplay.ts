@@ -116,7 +116,7 @@ function gameplayInformation(): string {
   ]);
 }
 
-export function gameplayHub(account: Account | null = emptyAccount()): string {
+export function gameplayHub(account: Account | null = emptyAccount(), eventAccess?: import('../content/event-schedule').EventAccess): string {
   return `<div class="gameplay-hub ref-screen ref-play"><aside class="ref-panel ref-activity-sidebar"><header class="ref-panel-heading">Activity</header>
     <div class="menu-information-action">
     ${information('gameplay-information', 'Gameplay information', gameplayInformation())}</div>
@@ -208,7 +208,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
     <section class="activity-group" id="gameplay-story"><h2>Story</h2>
       ${storyCampaign(account, account ? ownedCharacters(account)[0] ?? 'ember' : 'ember', false)}
       </section>
-    <section class="activity-group" id="gameplay-events"><h2>Events</h2>${roseEvent(account, false)}</section></div>`;
+    <section class="activity-group" id="gameplay-events"><h2>Events</h2>${roseEvent(account, false, eventAccess)}</section></div>`;
 }
 
 export function bindGameplayNavigation(host: HTMLElement): void {

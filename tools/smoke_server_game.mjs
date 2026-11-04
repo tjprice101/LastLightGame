@@ -18,6 +18,12 @@ if (!serviceKey || !clientKey) throw new Error('Hosted test keys unavailable.');
 const url = 'https://ohtfgwomdfteaxubndww.supabase.co';
 const admin = createClient(url, serviceKey, { auth: { persistSession: false } });
 const ids = [];
+function assertSameSavedResponse(actual, expected) {
+  const { serverTime: actualTime, ...actualSaved } = actual;
+  const { serverTime: expectedTime, ...expectedSaved } = expected;
+  assert.ok(Number.isSafeInteger(actualTime) && actualTime >= expectedTime);
+  assert.deepEqual(actualSaved, expectedSaved);
+}
 try {
   const username = `smoke_${randomUUID().slice(0, 8)}`;
   const password = randomUUID() + randomUUID();
@@ -49,7 +55,25 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--phase-one-war')) {
+  if (process.argv.includes('--event-lifecycle')) {
+    let response = await call({ kind: 'bootstrap', starterId: 'ember' }, 0);
+    assert.ok(Number.isSafeInteger(response.serverTime));
+    assert.ok(Math.abs(response.serverTime - Date.now()) < 120000);
+    const before = structuredClone(response.account);
+    await assert.rejects(call({ kind: 'purchaseEventDevourer', id: 'infusion:roses:0' }, response.revision),
+      error => error.status === 400 && error.message.includes('after their event'));
+    await assert.rejects(call({ kind: 'purchaseEventDevourer', id: 'infusion:roses:0',
+      now: Date.parse('2026-12-01T01:00:00Z'), price: 0 }, response.revision),
+      error => error.status === 400);
+    const requestId = randomUUID(), revision = response.revision;
+    response = await call({ kind: 'checkpoint' }, revision, requestId);
+    assertSameSavedResponse(await call({ kind: 'checkpoint' }, revision, requestId), response);
+    assert.deepEqual(response.account, before);
+    const read = await call({ kind: 'read' }, response.revision);
+    assert.deepEqual(read.account, before);
+    assert.ok(read.serverTime >= response.serverTime);
+    console.log('Hosted event lifecycle passed: authoritative clock, active-event shop denial, client clock/price rejection, idempotent checkpoint and unchanged account. Future closure/purchases are covered by injected-clock local authority tests, not claimed as live-time checks.');
+  } else if (process.argv.includes('--phase-one-war')) {
     await smokePhaseOneWar(client, created.user.id, username);
   } else if (process.argv.includes('--loadouts')) {
     let response = await call({ kind: 'bootstrap', starterId: 'ember' }, 0);
@@ -137,7 +161,7 @@ try {
   assert.equal(initial.profile.daysPlayed, 1);
   assert.ok(Number.isSafeInteger(initial.profile.playTimeSeconds));
   assert.ok(initial.profile.recentActivity.some(event => event.message === 'Profile created'));
-  assert.deepEqual(await call({ kind: 'read' }, 0, initialReadId), initial);
+  assertSameSavedResponse(await call({ kind: 'read' }, 0, initialReadId), initial);
   await new Promise(resolve => setTimeout(resolve, 1100));
   const activeRead = await call({ kind: 'read' }, 0);
   assert.ok(activeRead.profile.playTimeSeconds >= initial.profile.playTimeSeconds + 1);

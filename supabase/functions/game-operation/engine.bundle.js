@@ -12054,6 +12054,49 @@ function isExchangeQuantity(value2) {
   return exchangeQuantities.includes(value2);
 }
 
+// src/content/event-schedule.ts
+var resetTimezone = "America/New_York";
+var roseEventEndsAt = Date.parse("2026-12-01T01:00:00Z");
+var roseEventWindows = [{ opensAt: null, closesAt: roseEventEndsAt }];
+var localClock = new Intl.DateTimeFormat("en-US", {
+  timeZone: resetTimezone,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  hourCycle: "h23"
+});
+function eventWindowActive(now, windows) {
+  if (!Number.isFinite(now)) throw new Error("Invalid event time.");
+  for (const window of windows) {
+    if (!Number.isFinite(window.closesAt) || window.opensAt !== null && (!Number.isFinite(window.opensAt) || window.opensAt >= window.closesAt)) throw new Error("Invalid event schedule.");
+  }
+  return windows.some((window) => (window.opensAt === null || now >= window.opensAt) && now < window.closesAt);
+}
+function roseEventActive(now) {
+  return eventWindowActive(now, roseEventWindows);
+}
+function assertRoseEventActive(now) {
+  if (!roseEventActive(now)) throw new Error("Roses Under Sunny Skies has ended. Browse Special Banner Archive; event shops remain available.");
+}
+
+// src/content/event-devourers.ts
+var eventDevourerPrices = [1e4, 3e4, 1e5, 35e4, 15e5, 5e6];
+var eventDevourers = eventDevourerPrices.map((price, tier) => ({
+  id: `infusion:roses:${tier}`,
+  price,
+  rarity: materialRarities[tier],
+  creature: getCreature(`infusion:roses:${tier}`)
+}));
+function eventDevourerProduct(id) {
+  const product = eventDevourers.find((entry) => entry.id === id);
+  if (!product) throw new Error("Unknown Event Elemental-Devourer.");
+  return product;
+}
+function assertEventDevourerAvailable(now) {
+  if (now < roseEventEndsAt || roseEventActive(now)) throw new Error("Event Elemental-Devourers can only be purchased after their event ends, not while it is active.");
+}
+
 // src/game/saved-loadouts.ts
 var loadoutNameLimit = 40;
 var uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -12586,6 +12629,17 @@ function drawBanner(account, banner, random) {
   const bonusConduit = bannerConduitBonus(random);
   if (bonusConduit) account.conduits = { ...account.conduits, [bonusConduit]: (account.conduits?.[bonusConduit] ?? 0) + 1 };
   return { entry: result.entry, materials, duplicate, guarantee: result.guarantee, bonusConduit };
+}
+function purchaseEventDevourer(storage, id, now) {
+  if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before using the event shop.");
+  assertEventDevourerAvailable(now);
+  const product = eventDevourerProduct(id);
+  const account = loadAccount(storage);
+  if (account.fractalis < product.price) throw new Error("Not enough Prismatica for this Event Elemental-Devourer.");
+  const copy = createCreatureCopy(product.id);
+  account.fractalis -= product.price;
+  account.capturedCharacters = validateCapturedCharacters([...account.capturedCharacters ?? [], copy]);
+  return saveAccount(storage, account);
 }
 function purchaseExchangeMaterial(storage, productId, quantity) {
   if (!loadProfile(storage)) throw new Error("Choose your first Element-****** using the Material Exchange.");
@@ -13600,6 +13654,7 @@ var operationKeys = {
   levelCaptured: ["id", "expectedLevel"],
   levelMax: ["id", "expected"],
   purchaseMaterial: ["element", "quantity"],
+  purchaseEventDevourer: ["id"],
   purchaseFrame: ["frame"],
   updateProfile: ["displayName", "bio", "icon", "frame"],
   enter: ["activity"],
@@ -13811,7 +13866,7 @@ function preserveHistoricalRunCopies(game) {
 function storyCompletedOf(game) {
   return validateAccount(game.account).storyCompleted ?? 0;
 }
-function publicGame(stored, revision) {
+function publicGame(stored, revision, now = Date.now()) {
   const game = structuredClone(stored);
   if (isLegacyStoryRun(game)) game.run = null;
   preserveHistoricalRunCopies(game);
@@ -13827,6 +13882,7 @@ function publicGame(stored, revision) {
   } };
   return {
     revision,
+    serverTime: now,
     account: structuredClone(account),
     starterId: game.starterId,
     profile,
@@ -13878,6 +13934,10 @@ function encounter(game, run, seed2, trainingWave = 1) {
 }
 function resolveOperation(previous, operation, entropy) {
   validateRequest({ requestId: "00000000-0000-4000-8000-000000000001", expectedRevision: 0, operation });
+  const now = entropy.now?.() ?? Date.now();
+  if ((operation.kind === "summon" || operation.kind === "summonTen") && operation.bannerId === "roses" || operation.kind === "enter" && operation.activity.kind === "infusion" && operation.activity.mode === "roses" || (operation.kind === "continue" || operation.kind === "retry") && previous.run?.activity.kind === "infusion" && previous.run.activity.mode === "roses") {
+    assertRoseEventActive(now);
+  }
   const game = structuredClone(previous);
   if (isLegacyStoryRun(game)) game.run = null;
   preserveHistoricalRunCopies(game);
@@ -13908,7 +13968,7 @@ function resolveOperation(previous, operation, entropy) {
   let summon;
   let summons;
   let calamityOpening;
-  if (operation.kind === "read" || operation.kind === "checkpoint") return { game, response: publicGame(game, 0) };
+  if (operation.kind === "read" || operation.kind === "checkpoint") return { game, response: publicGame(game, 0, now) };
   if (operation.kind === "bootstrap") {
     if (game.starterId || Object.keys(game.account.characters).length) throw new Error("Starter has already been selected.");
     if (!["ember", "tide", "sprout"].includes(operation.starterId)) throw new Error("Invalid initial starter.");
@@ -14025,6 +14085,9 @@ function resolveOperation(previous, operation, entropy) {
       case "purchaseMaterial":
         purchaseExchangeMaterial(storage, operation.element, operation.quantity);
         break;
+      case "purchaseEventDevourer":
+        purchaseEventDevourer(storage, operation.id, now);
+        break;
       case "purchaseFrame": {
         if (!frames.includes(operation.frame)) throw new Error("Unknown profile frame.");
         if (game.profile.ownedFrames.includes(operation.frame)) throw new Error("This profile frame is already owned.");
@@ -14126,7 +14189,7 @@ function resolveOperation(previous, operation, entropy) {
   }
   game.account = validateAccount(game.account);
   if (!isProfileIcon(game.profile.icon) || !profileIconUnlocked(game.account, game.profile.icon)) game.profile.icon = "neutral";
-  return { game, response: { ...publicGame(game, 0), ...result ? { result } : {}, ...summon ? { summon } : {}, ...summons ? { summons } : {}, ...calamityOpening ? { calamityOpening } : {} } };
+  return { game, response: { ...publicGame(game, 0, now), ...result ? { result } : {}, ...summon ? { summon } : {}, ...summons ? { summons } : {}, ...calamityOpening ? { calamityOpening } : {} } };
 }
 export {
   conduitRulesVersion,

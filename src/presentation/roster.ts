@@ -30,6 +30,8 @@ import { information } from './information';
 import { characterName } from '../content/character-art';
 import { materialName } from '../content/dungeon-art';
 import { bannerMaterialTiers, bannerDuplicateMaterialAmount } from '../content/banner-materials';
+import { roseEventActive, roseAccessMessage, type EventAccess } from '../content/event-schedule';
+import { roseEventRules } from './rose-event';
 
 function lockControl(account: Account, id: string): string {
   const protection = characterProtection(account, id);
@@ -315,13 +317,18 @@ function featuredCharacters(account: Account, pool: readonly BannerOutcome[]): s
   }).join('')}</ul></div>`).join('')}</section>`;
 }
 
-export function summonHub(account: Account | null, selected: SummonBannerId = 'standard'): string {
+export function summonHub(account: Account | null, selected: SummonBannerId = 'standard',
+  access: EventAccess = { online: true, now: Date.now() }, archive = false): string {
   if (!account) return '<p role="alert">Summoning unavailable. Resolve the save error.</p>';
   const banner = getSummonBanner(selected);
+  const timed = banner.id === 'roses';
+  const available = banner.available && !archive && (!timed || access.online && roseEventActive(access.now));
   const pool = banner.pool();
   const pity = validateBannerPity(account.bannerPity?.[banner.id] ?? { highestStar: 0, unownedHighestStar: 0 });
   return `<div class="ref-screen ref-summon" data-banner="${banner.id}">
-    <aside class="ref-summon-left"><section class="ref-panel"><h3>Banners</h3>${bannerNavigation(summonBanners, selected)}</section>
+    <aside class="ref-summon-left"><section class="ref-panel"><h3>${archive ? 'Special Banner Archive' : 'Banners'}</h3>${archive ? `${bannerNavigation(summonBanners.filter(entry => entry.id !== 'standard'), selected)}<p>${roseEventActive(access.now) ? 'Current event record' : 'Archived event'} · Browse only. Reruns must be explicitly scheduled.</p>` : bannerNavigation(summonBanners, selected)}
+    <button type="button" data-page="${archive ? 'summon' : 'special-banner-archive'}">${archive ? 'Back to Summon' : 'Special Banner Archive'}</button>
+    ${timed ? `<p role="status">${roseAccessMessage(access)}</p>` : ''}</section>
       <section class="ref-panel banner-pity" aria-label="Banner pity"><h3>Pity guarantees</h3>
       <dl class="summon-pity-progress"><div><dt>Guaranteed Element-Bearer</dt><dd>${pity.highestStar} / ${bannerPityLimits.pulls}${pity.highestStar + 1 >= bannerPityLimits.pulls ? ' · Next draw guaranteed' : ''}</dd><meter min="0" max="${bannerPityLimits.pulls}" value="${Math.min(pity.highestStar, bannerPityLimits.pulls)}" aria-label="80-pull pity progress"></meter></div></dl></section></aside>
     <div class="ref-summon-main"><section class="ref-panel ref-summon-hero"><div class="summon-visual">
@@ -329,18 +336,19 @@ export function summonHub(account: Account | null, selected: SummonBannerId = 's
       ${banner.artwork.path ? `<img src="${assetUrl(banner.artwork.path)}" alt="${banner.artwork.alt}" width="1456" height="816">`
         : `<div class="summon-banner-placeholder"><strong>${banner.name}</strong><span>Artwork pending</span></div>`}</div>
     <div class="ref-summon-overlay"><h2>${banner.name}</h2></div></div></section>${featuredCharacters(account, pool)}</div>
-    <aside class="ref-panel ref-summon-draw" aria-label="Summon">
-    <div class="summon-command"><h3>Summon</h3>
+    <aside class="ref-panel ref-summon-draw" aria-label="${archive ? 'Archived banner information' : 'Summon'}">
+    <div class="summon-command"><h3>${archive ? 'Preserved draw rules' : 'Summon'}</h3>
     <p class="currency-reward">${currencyIcon('lycalis')}<span>Owned ${account.lycalis} · Cost ${banner.cost}</span></p>
     <meter class="summon-affordability" min="0" max="${banner.cost}" value="${Math.min(account.lycalis, banner.cost)}" aria-label="Null-Prismatica towards one draw"></meter>
     <p id="summon-result" role="status"></p>
-    <button id="summon-character" class="primary-button" ${!banner.available || account.lycalis < banner.cost ? 'disabled' : ''} aria-describedby="banner-cost-note">Summon · ${banner.cost} Null-Prismatica</button>
-    <button id="summon-ten" class="primary-button" ${!banner.available || account.lycalis < banner.cost * multiSummonCount ? 'disabled' : ''} aria-describedby="banner-cost-note">Summon 10-Pull · ${banner.cost * multiSummonCount} Null-Prismatica</button>
-    <p id="banner-cost-note" class="quiet" ${banner.available && account.lycalis >= banner.cost ? 'hidden' : ''}>${!banner.available ? 'Banner unavailable.' : account.lycalis < banner.cost ? 'Not enough Null-Prismatica.' : ''}</p>
-    ${account.lycalis < banner.cost ? '<button class="text-button" type="button" data-page="gameplay">Earn more in Gameplay &rarr;</button>' : ''}</div>
+    ${archive ? '<p>Archive browsing only. No draws or purchases here. Pity, ownership and event progress are retained.</p>' : `<button id="summon-character" class="primary-button" ${!available || account.lycalis < banner.cost ? 'disabled' : ''} aria-describedby="banner-cost-note">Summon · ${banner.cost} Null-Prismatica</button>
+    <button id="summon-ten" class="primary-button" ${!available || account.lycalis < banner.cost * multiSummonCount ? 'disabled' : ''} aria-describedby="banner-cost-note">Summon 10-Pull · ${banner.cost * multiSummonCount} Null-Prismatica</button>`}
+    <p id="banner-cost-note" class="quiet" ${available && account.lycalis >= banner.cost ? 'hidden' : ''}>${!available ? archive ? 'Archived information only.' : timed ? roseAccessMessage(access) : 'Banner unavailable.' : account.lycalis < banner.cost ? 'Not enough Null-Prismatica.' : ''}</p>
+    ${!archive && account.lycalis < banner.cost ? '<button class="text-button" type="button" data-page="gameplay">Earn more in Gameplay &rarr;</button>' : ''}</div>
     ${information('summon-information', 'Rates & Information', `${bannerRates(banner, pool)}<section class="summon-rules"><h3>Pity and reward rules</h3>
       <ul><li>Each banner has its own ${bannerPityLimits.pulls}-pull counter. A new 5-star or 6-star Element-Bearer resets only this banner's counter. Natural duplicates advance it instead.</li><li>The guarantee chooses an unowned 5-star or unowned 6-star with a 50 / 50 tier chance, then equally among eligible characters in that tier.</li><li>If one tier has no unowned characters, the other tier is guaranteed instead. If every character in this banner is owned, the guarantee awards a duplicate with the usual conversion and restarts this banner's pity cycle.</li><li>Only this banner's characters are eligible. A banner with only one character tier uses that tier. A full pity counter guarantees the next draw.</li></ul>
       <p>Bonus Legendary Conduit: 0.5% per pull, 0.1% each of five. Never auto-equipped.</p>
       <p>Non-character draws give ${bannerMaterialTiers.map(tier => `${tier.amount} ${tier.rarity}`).join(' / ')} materials ${banner.id === 'roses' ? '(Rosethorn materials)' : 'from one of the six elements, equally likely'}. Owned Element-Bearers convert to ${bannerDuplicateMaterialAmount} Rare ${banner.id === 'roses' ? 'Rosethorn materials' : 'materials of one random element'}.</p>
-      <p>A 10-Pull uses the same rates and guarantees as ten single pulls. No extra bonus or discount.</p></section>`, 'Rates & Information')}</aside></div>`;
+      <p>A 10-Pull uses the same rates and guarantees as ten single pulls. No extra bonus or discount.</p></section>`, 'Rates & Information')}
+      ${archive ? information('archived-rose-event', 'Event rules and progression', roseEventRules) : ''}</aside></div>`;
 }

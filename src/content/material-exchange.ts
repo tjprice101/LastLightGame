@@ -49,6 +49,9 @@ export function eventMaterialWarningHidden(storage: PreferenceStorage): boolean 
 export function hideEventMaterialWarning(storage: PreferenceStorage): void {
   storage.setItem(eventMaterialWarningKey, 'hidden');
 }
+export function eventMaterialWarningRequired(product: ExchangeProduct, ownsEventBearer: boolean, hidden: boolean): boolean {
+  return product.category === 'event' && (!ownsEventBearer || !hidden);
+}
 export function eventMaterialWarning(product: ExchangeProduct, quantity: number): string {
   if (product.category !== 'event' || !product.restrictedTo) throw new Error('Only event materials need this warning.');
   return `These materials are ONLY for ${product.restrictedTo.join(', ')}, and NOT for normal Element-Bearers. Buy ${quantity} for ${(product.price * quantity).toLocaleString('en-US')} Prismatica?`;

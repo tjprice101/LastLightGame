@@ -1,5 +1,21 @@
 # Authoritative game operation
 
+## Timed special-event lifecycle (2026-11-04)
+
+Server time closes Rose draws/new entry/Continue/Retry at
+2026-12-01T01:00:00Z (November30,8 PM New York). An existing encounter may
+finish and save rewards. Pity/progress remain; permanent material purchases
+are unchanged. New `purchaseEventDevourer` accepts only an ID, checks the
+ended event on the server, and atomically spends the approved Prismatica
+price/appends an ordinary distinct Roselius copy. It rejects active events,
+including explicitly scheduled reruns. Clients cannot supply time or price.
+Responses include advisory `serverTime`; no rules/wallet bump or run restart.
+Bundle/type-check/deploy the matching engine, then run `node
+tools\smoke_server_game.mjs --event-lifecycle` while Roses is active.
+Future closure and purchases use injected-clock local authority tests;
+never change production time or real player data to simulate closure.
+See [lifecycle contract](../../../docs/special-banner-lifecycle.md).
+
 ## Phase1 War characters and Masters (2026-11-03)
 
 Regenerate/type-check/deploy the shared engine with the matching client.

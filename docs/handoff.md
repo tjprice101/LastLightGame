@@ -1,5 +1,45 @@
 # Current state and handoff
 
+## Phase1 lifecycle and post-event shops (2026-11-04)
+
+- Owner authorizes implementation and Rose schedule activation. Daily8 PM
+  America/New_York/weekly Sunday8 PM share DST-aware keys. Rose draws/activity
+  close November30 at reset; authority rejects new entry/Continue/Retry,
+  permits finishing the current encounter and retains rewards/pity/progress.
+- Browse-only Special Banner Archive preserves actual roster/art, rates,
+  costs/pity/duplicate rules and full Rose activity/progression information.
+  Offline timed draws/entry are disabled; archive browsing remains.
+- Event materials remain permanent. Stores adds Event Elemental-Devourers:
+  all six ordinary Roselius forms, unlimited repeats, approved prices
+  10k/30k/100k/350k/1.5m/5m Prismatica. Purchases only after event closure,
+  unavailable again during active reruns. Atomic spend/copy, current cap60,
+  authored retained skills and existing protections; no automatic equips.
+- No-owner event-item warnings always appear, without hide bypass. Roselius
+  warning accurately preserves their combat use. New saved purchases use
+  shared finite rarity reward presentation, Skip/Continue and reduced motion.
+- Full suite passed7,449 tests/236 files before the final presentation-only
+  grid correction and extra explicit-window test. Production build, authority
+  TypeScript and Deno passed. Browser found/repaired narrow cards/overlapping
+  buttons; revised six-card shop has all six images loaded, no overflow at
+  actual488/1600px viewport widths, and no overlap/overflow in a320px-wide
+  controlled container (not a claimed320px browser viewport).
+- Final focused six-file regression passed152 tests, including the additional
+  explicit-window and mandatory no-owner warning cases. Browser exercised an actual one-write in-memory
+  purchase followed by the shared receipt, sampled advancing animation times
+  at200/650/1350ms, and verified Skip/Continue removed the dialog.
+- Matching authority deployed; `node tools\smoke_server_game.mjs
+  --event-lifecycle` passed hosted clock, active-event purchase denial,
+  forged timestamp/price rejection, idempotent checkpoint and unchanged-account
+  checks. The first smoke correctly exposed a comparison that included fresh
+  advisory server time; saved state is now compared exactly while permitting
+  the clock to advance. Both disposable identities/cascading records removed.
+  Production time was not changed; future closure/purchases are local
+  injected-clock cases, not a claimed live-time test.
+- Client publication is pending commit/push and hosted release verification.
+  [Exact contract](special-banner-lifecycle.md) and
+  [remaining phases](remaining-expansion-phases.md) distinguish this completed
+  implementation from the still-gated Moon/Sunshade character designs.
+
 ## Remaining expansion roadmap (2026-11-04)
 
 Owner requests organization, not implementation. The

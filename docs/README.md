@@ -1,5 +1,11 @@
 # Documentation hub
 
+**Special-banner lifecycle (2026-11-04):**
+[Reset clock, Rose closure, archive and post-event shops](special-banner-lifecycle.md).
+Rose draws/activity close November30 at8 PM New York; pity/progress stay.
+Event materials remain permanent; all six Roselius forms unlock for purchases
+after closure, with mandatory no-owner warnings.
+
 **Remaining expansion (2026-11-04):**
 [Implementation-ordered phases and complete requirements](remaining-expansion-phases.md)
 cover the mandatory character-first workflow, reset/archive foundations, Moon

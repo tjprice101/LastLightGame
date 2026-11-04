@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   eventMaterialWarning, eventMaterialWarningHidden, eventMaterialWarningKey, exchangeProduct, exchangeProducts,
-  hideEventMaterialWarning, roseExchangePrices,
+  hideEventMaterialWarning, roseExchangePrices, eventMaterialWarningRequired,
 } from '../content/material-exchange';
 import { emptyAccount, loadAccount, purchaseExchangeMaterial, saveAccount, summonCharacters } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
@@ -41,6 +41,15 @@ describe('Material Exchange categories and Rose event materials', () => {
     hideEventMaterialWarning(storage);
     expect(values.get(eventMaterialWarningKey)).toBe('hidden');
     expect(eventMaterialWarningHidden(storage)).toBe(true);
+  });
+
+  it('never lets the hide preference bypass an event warning without an associated Element-Bearer', () => {
+    const product = exchangeProduct('rosethorn-common');
+    expect(eventMaterialWarningRequired(product, false, true)).toBe(true);
+    expect(eventMaterialWarningRequired(product, false, false)).toBe(true);
+    expect(eventMaterialWarningRequired(product, true, true)).toBe(false);
+    expect(eventMaterialWarningRequired(product, true, false)).toBe(true);
+    expect(eventMaterialWarningRequired(exchangeProduct('infernic'), false, false)).toBe(false);
   });
 
   it('purchases 1/5/10 offline in one atomic write and rejects invalid purchases without writing', () => {

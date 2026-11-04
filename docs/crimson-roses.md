@@ -1,5 +1,13 @@
 # Passion of Crimson Roses and Roses Under Sunny Skies
 
+**Scheduled closure (2026-11-04):** draws and activity end November30,2026
+at8 PM New York. Finish the current encounter; no Continue/Retry/new entries.
+Pity, event progress and ownership remain. Event materials stay permanently
+in Material Exchange; all six Roselius forms become buyable in Event
+Elemental-Devourers only after closure, not during active reruns.
+[Archive, prices, warnings and authority rules](special-banner-lifecycle.md)
+supersede historical no-expiry statements below.
+
 **D-430/D-431:** [current material curve](dungeons-and-captures.md#modest-material-staircase-d-430)
 ends Seed10-12/Bud7-8/Bloom6-7/Crest4-5/Heart3-4/Soul2-3, retaining
 existing unlocks. [Late cost multiplier](units-and-progression.md#later-element-bearer-material-costs-d-431)

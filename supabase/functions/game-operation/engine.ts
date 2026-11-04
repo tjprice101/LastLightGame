@@ -1,7 +1,7 @@
 import {
   ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, validateAccount, equippedSquad, ownedCharacters,
   ownedCharacterInstances, ownedProgress, setSquad, setCharacterLock, summonCharacter, summonCharacters, multiSummonCount,
-  purchaseExchangeMaterial, type SummonDraw, sellCurrencyCreature, sellCurrencyCreatures,
+  purchaseExchangeMaterial, purchaseEventDevourer, type SummonDraw, sellCurrencyCreature, sellCurrencyCreatures,
   purchaseConduit, setMachineLootFocus, equipConduit, unequipAllConduits, openMasterChest, openCalamityChest, equipMasterConduit, upgradeConduit, upgradeConduitToMaximum, upgradeCharacter, ascendCharacter, levelCapturedCharacter,
   levelCharacterToMaximum, saveAccountRewards, unlockedStage, unlockedInfusionStage,
   unlockedWarStage, unlockedStoryStage, unlockedOblivionStage, type Account,
@@ -45,6 +45,7 @@ import { validateSaveFile } from '../../../src/game/save-file';
 import { conduitRulesVersion } from '../../../src/game/conduit-runtime';
 export { conduitRulesVersion };
 import { atTrainingWave, conduitRestartNotice } from '../../../src/presentation/conduit-compatibility';
+import { assertRoseEventActive } from '../../../src/content/event-schedule';
 
 export interface DurableRun {
   session: ServerBattleSession;
@@ -123,7 +124,7 @@ const operationKeys: Record<GameOperation['kind'], string[]> = {
   openMasterChest: ['id'], equipMasterConduit: ['character', 'conduit'],
   openCalamityChest: ['id', 'expectedCount'],
   upgradeCharacter: ['id', 'upgradeKind', 'expected', 'fodderIds'], ascendCharacter: ['id', 'step', 'expected'], levelCaptured: ['id', 'expectedLevel'],
-  levelMax: ['id', 'expected'], purchaseMaterial: ['element', 'quantity'], purchaseFrame: ['frame'],
+  levelMax: ['id', 'expected'], purchaseMaterial: ['element', 'quantity'], purchaseEventDevourer: ['id'], purchaseFrame: ['frame'],
   updateProfile: ['displayName', 'bio', 'icon', 'frame'], enter: ['activity'],
   act: ['runId', 'actorId', 'action', 'targetId'], endTurn: ['runId'], continue: ['runId'],
   retry: ['runId'], quit: ['runId'],
@@ -340,7 +341,7 @@ function preserveHistoricalRunCopies(game: DurableGame): void {
 export function storyCompletedOf(game: DurableGame): number {
   return validateAccount(game.account).storyCompleted ?? 0;
 }
-export function publicGame(stored: DurableGame, revision: number): GameResponse {
+export function publicGame(stored: DurableGame, revision: number, now = Date.now()): GameResponse {
   const game = structuredClone(stored);
   if (isLegacyStoryRun(game)) game.run = null;
   preserveHistoricalRunCopies(game);
@@ -353,7 +354,7 @@ export function publicGame(stored: DurableGame, revision: number): GameResponse 
     capturedCreatures: account.capturedCharacters?.length ?? 0,
     discoveredCreatures: Object.keys(account.creatures).length,
   } };
-  return { revision, account: structuredClone(account), starterId: game.starterId, profile,
+  return { revision, serverTime: now, account: structuredClone(account), starterId: game.starterId, profile,
     session,
     social: { friends: [], incoming: [], outgoing: [] } };
 }
@@ -410,8 +411,15 @@ function encounter(game: DurableGame, run: DurableRun, seed: number, trainingWav
   return state;
 }
 export function resolveOperation(previous: DurableGame, operation: GameOperation,
-  entropy: { seed(): number; uuid(): string; random(): number }): { game: DurableGame; response: GameResponse } {
+  entropy: { seed(): number; uuid(): string; random(): number; now?(): number }): { game: DurableGame; response: GameResponse } {
   validateRequest({ requestId: '00000000-0000-4000-8000-000000000001', expectedRevision: 0, operation });
+  const now = entropy.now?.() ?? Date.now();
+  if ((operation.kind === 'summon' || operation.kind === 'summonTen') && operation.bannerId === 'roses' ||
+      operation.kind === 'enter' && operation.activity.kind === 'infusion' && operation.activity.mode === 'roses' ||
+      (operation.kind === 'continue' || operation.kind === 'retry') &&
+        previous.run?.activity.kind === 'infusion' && previous.run.activity.mode === 'roses') {
+    assertRoseEventActive(now);
+  }
   const game = structuredClone(previous);
   if (isLegacyStoryRun(game)) game.run = null;
   preserveHistoricalRunCopies(game);
@@ -443,7 +451,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
   let summon: ReturnType<typeof summonCharacter> | undefined;
   let summons: SummonDraw[] | undefined;
   let calamityOpening: GameResponse['calamityOpening'];
-  if (operation.kind === 'read' || operation.kind === 'checkpoint') return { game, response: publicGame(game, 0) };
+  if (operation.kind === 'read' || operation.kind === 'checkpoint') return { game, response: publicGame(game, 0, now) };
   if (operation.kind === 'bootstrap') {
     if (game.starterId || Object.keys(game.account.characters).length) throw new Error('Starter has already been selected.');
     if (!['ember', 'tide', 'sprout'].includes(operation.starterId)) throw new Error('Invalid initial starter.');
@@ -507,6 +515,8 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
       case 'levelMax': levelCharacterToMaximum(storage, operation.expected); break;
       case 'purchaseMaterial':
         purchaseExchangeMaterial(storage, operation.element, operation.quantity); break;
+      case 'purchaseEventDevourer':
+        purchaseEventDevourer(storage, operation.id, now); break;
       case 'purchaseFrame': {
         if (!frames.includes(operation.frame)) throw new Error('Unknown profile frame.');
         if (game.profile.ownedFrames.includes(operation.frame)) throw new Error('This profile frame is already owned.');
@@ -590,5 +600,5 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
   }
   game.account = validateAccount(game.account);
   if (!isProfileIcon(game.profile.icon) || !profileIconUnlocked(game.account, game.profile.icon)) game.profile.icon = 'neutral';
-  return { game, response: { ...publicGame(game, 0), ...(result ? { result } : {}), ...(summon ? { summon } : {}), ...(summons ? { summons } : {}), ...(calamityOpening ? { calamityOpening } : {}) } };
+  return { game, response: { ...publicGame(game, 0, now), ...(result ? { result } : {}), ...(summon ? { summon } : {}), ...(summons ? { summons } : {}), ...(calamityOpening ? { calamityOpening } : {}) } };
 }

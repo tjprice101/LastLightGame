@@ -84,13 +84,16 @@ import { saleItems } from './presentation/creature-sale';
 import { itemShowcase } from './presentation/item-showcase';
 import { capturedRarity } from './presentation/owned-companion';
 import { rarities, type Rarity } from './content/rarity';
-import { exchangeCategory, exchangeProduct, exchangeProducts, isExchangeQuantity, eventMaterialWarning, eventMaterialWarningHidden, hideEventMaterialWarning } from './content/material-exchange';
+import { exchangeCategory, exchangeProduct, exchangeProducts, isExchangeQuantity, eventMaterialWarning, eventMaterialWarningHidden, eventMaterialWarningRequired, hideEventMaterialWarning } from './content/material-exchange';
 import { presentReward } from './presentation/reward-screen';
 import { summonReward, summonTenReward } from './presentation/summon-presentation';
 import { conduitReward } from './presentation/conduit-presentation';
 import './sanctuary-reference.css';
 import { openOnlineAccount as showOnlineAccount } from './presentation/online-account';
-import { onlineStores, onlineProfile, friendProfileScreen, bindProfileEditor, refreshProfileTracking, refreshFriendPresence, type OnlineProfileDisplay, type SocialDisplay } from './presentation/online-store-profile';
+import { onlineStores, onlineProfile, friendProfileScreen, bindProfileEditor, refreshProfileTracking, refreshFriendPresence, type StoreTab, type OnlineProfileDisplay, type SocialDisplay } from './presentation/online-store-profile';
+import { assertRoseEventActive, type EventAccess } from './content/event-schedule';
+import { eventBearerIds, eventDevourerProduct, eventDevourerWarning } from './content/event-devourers';
+import { ownedCompanion } from './presentation/owned-companion';
 import { gameOperation, friendProfile, GameOperationError, type GameOperation, type GameResponse, type Activity, type FriendProfileResponse } from './online/server-game';
 import { onlineClient, onlineUsername } from './online/account-client';
 import { saveOfflineProgress } from './game/save-file';
@@ -173,7 +176,17 @@ let socialDisplay: SocialDisplay | undefined;
 let chatIdentity: string | null = null;
 let chatUiState: ChatUiState = { drafts: new Map(), query: '' };
 let disposeFriendChat: (() => void) | null = null;
-let storeTab: 'materials' | 'cosmetics' = 'materials';
+let storeTab: StoreTab = 'materials';
+let serverClock: { time: number; received: number } | null = null;
+function eventAccess(): EventAccess {
+  return { online: playMode === 'online' && serverClock !== null,
+    now: serverClock ? serverClock.time + performance.now() - serverClock.received : Date.now() };
+}
+function assertTimedEventAccess(): void {
+  const access = eventAccess();
+  if (!access.online) throw new Error('Sign in online to use this timed event.');
+  assertRoseEventActive(access.now);
+}
 let storeConduit: string | undefined;
 let upgradeConduitSelection: string | undefined;
 let storeRarity = '';
@@ -197,6 +210,7 @@ function openOnlineAccount(onPlay?: () => Promise<void>): void {
 }
 
 function applyOnline(response: GameResponse, updateSession = true): void {
+  if (response.serverTime !== undefined) serverClock = { time: response.serverTime, received: performance.now() };
   onlineRevision = response.revision;
   onlineWallet = response.account;
   account = structuredClone(response.account);
@@ -268,6 +282,7 @@ async function enterOnline(progressReady = false): Promise<void> {
 }
 
 async function enterBattle(activity: Activity, destination?: Parameters<typeof createSession>[2]): Promise<void> {
+  if (activity.kind === 'infusion' && activity.mode === 'roses') assertTimedEventAccess();
   assertActivityAccess(currentAccount(), activity);
   if (playMode === 'online') {
     const response = await performOnline({ kind: 'enter', activity });
@@ -325,7 +340,7 @@ interface MenuSnapshot {
   storeConduit: string | undefined;
   upgradeConduitSelection: string | undefined;
   storeRarity: string;
-  storeTab: 'materials' | 'cosmetics';
+  storeTab: StoreTab;
   marketMaterial: string;
   marketFrame: string;
   profileTab: 'info' | 'friends' | 'chats';
@@ -533,7 +548,7 @@ function frame(body: string, battle = false, sanctuary = false): void {
   document.body.classList.toggle('in-battle', battle);
   const backgroundScreen: AmbientScreen = battle ? 'battle' : !sanctuary
     ? journey.screen === 'selection' ? 'selection' : 'title'
-    : menuPage === 'conduit-store' || menuPage === 'conduit-upgrade' ? 'stores' : menuPage === 'archives' || menuPage === 'glossary' ? 'collections' : menuPage === 'profile' ? 'home' : menuPage === 'team' ? characterCategory === 'squad' ? 'squad' : 'character' : menuPage;
+    : menuPage === 'conduit-store' || menuPage === 'conduit-upgrade' ? 'stores' : menuPage === 'archives' || menuPage === 'glossary' ? 'collections' : menuPage === 'special-banner-archive' ? 'summon' : menuPage === 'profile' ? 'home' : menuPage === 'team' ? characterCategory === 'squad' ? 'squad' : 'character' : menuPage;
   app.innerHTML = battle ? `<div class="battle-screen">${body}${ambientBackground(backgroundScreen)}<p id="status" class="status" role="alert"></p></div>` : `<div class="shell ${sanctuary ? 'sanctuary-shell' : ''}">
     ${ambientBackground(backgroundScreen)}
     ${sanctuary ? '' : '<header class="masthead"><span class="brand-mark">L · L</span><span>LAST LIGHT</span><span class="build-label">PRELUDE &middot; 0.1</span></header>'}
@@ -1271,6 +1286,7 @@ function renderMenu(firstArrival = false): void {
     let saved = false;
     try {
       const banner = getSummonBanner(selectedBanner);
+      if (banner.id === 'roses') assertTimedEventAccess();
       if (!await gameConfirm(`Spend ${banner.cost} Null-Prismatica for one ${banner.name} draw? See Rates & Information for odds and reward rules.`, { title: banner.name, confirmLabel: 'Summon' })) return;
       const result = playMode === 'online' ? (await performOnline({ kind: 'summon', bannerId: banner.id })).summon : summonCharacter(gameStorage, Math.random, banner.id);
       if (!result) throw new Error('The server did not return the saved summon receipt.');
@@ -1297,6 +1313,7 @@ function renderMenu(firstArrival = false): void {
     let saved = false;
     try {
       const banner = getSummonBanner(selectedBanner);
+      if (banner.id === 'roses') assertTimedEventAccess();
       const cost = banner.cost * multiSummonCount;
       if (!await gameConfirm(`Spend ${cost} Null-Prismatica for ten ${banner.name} draws? Each draw uses the normal odds, pity and bonus rules. See Rates & Information.`, { title: banner.name, confirmLabel: 'Summon 10-Pull' })) return;
       let result: { account: Account; draws: SummonDraw[] };
@@ -1427,7 +1444,7 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
     view: teamView, selected: selectedCharacter ?? starter.id, capture: selectedCapture, element: teamElement, sort: teamSort, tab: characterTab,
   });
   if (page === 'inventory') return inventoryHub(account, inventoryTab, inventoryExpanded, inventoryFilterState);
-  if (page === 'stores') return onlineStores(account, playerProfile, storeTab, marketMaterial, marketFrame);
+  if (page === 'stores') return onlineStores(account, playerProfile, storeTab, marketMaterial, marketFrame, eventAccess());
   if (page === 'profile') return gameStorage.active
     ? '<section class="ref-panel"><h1 tabindex="-1">Debug Player info</h1><p>This test profile lives only in memory. Real save-data management and online accounts are disabled here.</p><p>Exit debug or reload to return to your real progress.</p><button class="text-button" data-exit-debug>Exit debug</button></section>'
     : viewedFriend ? friendProfileScreen(viewedFriend.account, { ...viewedFriend.profile, userId: viewedFriend.userId })
@@ -1436,10 +1453,11 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
   if (page === 'conduit-store') return conduitStore(account, storeConduit, storeRarity);
   if (page === 'conduit-upgrade') return conduitUpgradeMenu(account, upgradeConduitSelection);
   if (page === 'archives' || page === 'glossary') return archives(account, page === 'glossary' ? 'creatures' : 'characters');
-  if (page === 'summon') return summonHub(account, selectedBanner);
-  if (page === 'gameplay') return gameplayHub(account);
-  if (page === 'story') return gameplayHub(account);
-  if (page === 'events') return roseEvent(account);
+  if (page === 'summon') return summonHub(account, selectedBanner, eventAccess());
+  if (page === 'special-banner-archive') return summonHub(account, selectedBanner === 'standard' ? 'roses' : selectedBanner, eventAccess(), true);
+  if (page === 'gameplay') return gameplayHub(account, eventAccess());
+  if (page === 'story') return gameplayHub(account, eventAccess());
+  if (page === 'events') return roseEvent(account, true, eventAccess());
   return settingsPanel(motionPreference, bindings, speed, musicPreferences);
 }
 
@@ -1746,7 +1764,7 @@ app.addEventListener('click', async event => {
 
 app.addEventListener('click', async event => {
   if (!(event.target instanceof Element)) return;
-  const button = event.target.closest<HTMLButtonElement>('[data-store-tab], [data-market-category], [data-market-material], [data-market-frame], [data-buy-material], [data-buy-frame], [data-equip-frame], [data-open-online-account], [data-online-signout]');
+  const button = event.target.closest<HTMLButtonElement>('[data-store-tab], [data-market-category], [data-market-material], [data-market-frame], [data-buy-material], [data-buy-event-devourer], [data-buy-frame], [data-equip-frame], [data-open-online-account], [data-online-signout]');
   if (!button || button.disabled) return;
   try {
     if (button.hasAttribute('data-open-online-account')) {
@@ -1755,7 +1773,7 @@ app.addEventListener('click', async event => {
     }
     if (button.dataset.storeTab) {
       const tab = button.dataset.storeTab;
-      if (tab !== 'materials' && tab !== 'cosmetics') throw new Error('Unknown store.');
+      if (tab !== 'materials' && tab !== 'cosmetics' && tab !== 'event-devourers') throw new Error('Unknown store.');
       storeTab = tab;
       renderMenu();
       return;
@@ -1780,7 +1798,10 @@ app.addEventListener('click', async event => {
       if (!isExchangeQuantity(quantity)) throw new Error('Choose a valid material quantity.');
       const name = materialName(product.materialId);
       const cost = (product.price * quantity).toLocaleString('en-US');
-      if (product.category === 'event' && !eventMaterialWarningHidden(gameStorage)) {
+      const noEventBearer = !eventBearerIds.some(id => currentAccount().characters[id]);
+      if (product.category === 'event' && noEventBearer) {
+        if (!await gameConfirm(eventMaterialWarning(product, quantity), { title: 'Event warning', confirmLabel: 'Purchase' })) return;
+      } else if (eventMaterialWarningRequired(product, !noEventBearer, eventMaterialWarningHidden(gameStorage))) {
         const choice = await gameChoose(eventMaterialWarning(product, quantity), [
           { value: 'hide', label: 'Do not show again' }, { value: 'back', label: 'Back' },
           { value: 'purchase', label: 'Purchase', primary: true },
@@ -1788,6 +1809,26 @@ app.addEventListener('click', async event => {
         if (choice === 'hide') {
           hideEventMaterialWarning(gameStorage);
           showError('Event material warnings hidden. Nothing was purchased.');
+          return;
+        }
+        if (button.dataset.buyEventDevourer) {
+          if (gameDialogPending()) return;
+          if (!eventAccess().online) throw new Error('Sign in online to purchase Event Elemental-Devourers.');
+          const product = eventDevourerProduct(button.dataset.buyEventDevourer);
+          const noEventBearer = !eventBearerIds.some(id => currentAccount().characters[id]);
+          if (!await gameConfirm(`${noEventBearer ? `${eventDevourerWarning}\n\n` : ''}Buy one ${product.creature.name} for ${product.price.toLocaleString('en-US')} Prismatica?`, {
+            title: noEventBearer ? 'Event warning' : 'Event Elemental-Devourers', confirmLabel: 'Purchase',
+          })) return;
+          const before = new Set(currentAccount().capturedCharacters?.map(copy => copy.instanceId));
+          const response = await performOnline({ kind: 'purchaseEventDevourer', id: product.id });
+          renderMenu();
+          const copy = response.account.capturedCharacters?.find(entry => entry.creatureId === product.id && !before.has(entry.instanceId));
+          if (!copy) throw new Error('Purchase saved, but the new copy could not be displayed. Check Team.');
+          showError(`${product.creature.name} purchased and saved.`);
+          await presentReward({ title: 'Event Elemental-Devourer acquired', name: product.creature.name,
+            art: ownedCompanion(response.account, copy.instanceId).art, rarity: product.rarity,
+            details: `<p>One copy saved at Lv.${copy.level}. Not automatically equipped or added to your squad.</p>`,
+            accent: '#ffffff', animationLabel: 'Your saved purchase arrives.' });
           return;
         }
         if (choice !== 'purchase') return;
@@ -1990,7 +2031,7 @@ app.addEventListener('change', (event) => {
 app.addEventListener('click', (event) => {
   if (!(event.target instanceof Element)) return;
   const button = event.target.closest<HTMLButtonElement>('[data-summon-banner]');
-  if (!button || menuPage !== 'summon') return;
+  if (!button || menuPage !== 'summon' && menuPage !== 'special-banner-archive') return;
   try {
     const id = button.dataset.summonBanner;
     if (!isSummonBannerId(id)) throw new Error('Unknown summon banner.');

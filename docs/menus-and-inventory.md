@@ -1,5 +1,17 @@
 # Menus and inventory
 
+## Special Banner Archive and event shops (2026-11-04)
+
+Summon and the Rose activity card link to the browse-only Special Banner
+Archive, preserving actual roster/art, rates, pity, costs and event rules.
+Timed draws/entry require online authority. Closed events remain inspectable.
+Stores adds Event Elemental-Devourers with readable form/skill/price cards,
+all six Roselius forms and post-event-only online purchases.
+Event Materials stays permanently available. No-owner event warnings cannot
+be hidden; creature warnings explain combat and event-specific uses accurately.
+Confirmed purchases use the shared saved rarity receipt, never pre-save effects.
+[Complete contract and validation](special-banner-lifecycle.md).
+
 ## In-game description standard (2026-11-03)
 
 All character, ability and Conduit descriptions use concise in-game tooltips,

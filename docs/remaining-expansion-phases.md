@@ -2,7 +2,9 @@
 
 ## Status and scope (2026-11-04)
 
-Owner-requested roadmap, not an implementation or launch instruction.
+Original owner-requested roadmap. Follow-up authorizes implementing it phase
+by phase; [Phase1's exact lifecycle/shop contract](special-banner-lifecycle.md)
+supersedes its original unresolved decisions and Rose no-activation gate.
 This layout replaces the numbering of the supplied remaining Phases4/5/6/8;
 it does not reopen completed work or resume the paused Story work.
 Requirements below are confirmed unless explicitly marked as a proposal or
@@ -20,7 +22,7 @@ because they appear here.
   interpreting the original "EST" as a fixed UTC-5 offset.
 - "November31" is corrected to **November30,2026 at the daily reset**.
   This applies to the current Rose banner and the Moon banner target end.
-- Keep the requested banner windows as targets, but **do not activate,
+- Keep the requested Moon/Sunshade banner windows as targets, but **do not activate,
   backdate, grant compensation or silently reschedule anything yet**.
   The Moon target start predates this roadmap. Release readiness and handling
   a missed target require a separate owner decision.
@@ -86,9 +88,9 @@ designs explicitly depend on mail/calendar rewards.
 
 - One shared reset boundary: daily8 PM New York; weekly Sunday8 PM New York.
   Reuse it for all daily/weekly features rather than separate ad-hoc clocks.
-- End the current **Roses Under Sunny Skies** special banner at the confirmed
-  November30,2026 daily reset, subject to separately approved activation of
-  scheduling. Preserve its associated information and mechanics for reruns.
+- End the current **Roses Under Sunny Skies** special banner and associated
+  activity at the confirmed November30,2026 daily reset. Owner now approves
+  activating this schedule. Preserve information and mechanics for reruns.
 - Add the exact destination **Special Banner Archive**. Preserve this and
   every future special banner's mechanics and information in-game for reruns:
   roster, actual rates/pity/costs, duplicate rules, event rules/rewards,
@@ -97,18 +99,26 @@ designs explicitly depend on mail/calendar rewards.
   progress/pity, or permission to replace existing owned units/materials.
   Keep stable IDs, account ownership, inventory and completed transactions.
 
-### Open before implementation
+### Phase1 decisions resolved by follow-up
 
-- Archive browsing versus playable rerun entry; when and how reruns activate.
-- Whether a banner's associated event closes with its draws, and what remains
-  playable/viewable outside its window.
-- Pity/event-progress behavior across closure and reruns; preserve current
-  state until the owner approves any change.
+- Archive browsing only; reruns must be explicitly scheduled.
+- Associated activities close with draws; an encounter underway may finish,
+  but new entry/Continue/Retry are blocked after closure.
+- Retain pity/event progress across reruns, never reset automatically.
+- Event materials remain in the existing shop permanently.
+- New Event Elemental-Devourers shop: all six Roselius forms, unlimited repeat
+  purchases, ordinary authored acquisition/skills; owner approves Prismatica
+  prices10k/30k/100k/350k/1.5m/5m. Only purchasable after closure; disable
+  purchases again during an active rerun.
+- Always warn before event-item purchases if no associated Element-Bearer
+  is owned; no hide preference bypass. Creature wording preserves their
+  legitimate combat uses.
+- Timed draws/rewards/gifts require online authority; browsing works offline.
+
+### Still open for future banner releases
+
 - Start timestamps for Moon/Sunshade and the precise December31 end time.
   Only the November end-at-reset and global reset times are confirmed.
-- Offline versus authority-backed eligibility and unavailable-network UX.
-  Prefer the existing authority for reward-bearing time checks; client clock
-  changes must not mint another day's rewards.
 
 ### Exit checks
 
@@ -287,5 +297,5 @@ Deliver Moon first, then Sunshade, each with its own approved design package:
 | Phase8 Master-slot details and animated UI overhaul | Phase3 |
 
 No original Phase7 was supplied; none is silently invented. The next actual
-work is Phase1 design decisions, alongside the Phase2 character interview,
-not immediate activation of the target banner dates.
+work after Phase1 validation is the Phase2 character interview, not immediate
+activation of the unimplemented Moon/Sunshade target banner dates.

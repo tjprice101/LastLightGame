@@ -5,6 +5,19 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Phase1 lifecycle/shop approval (2026-11-04): owner says to implement both
+foundations and active Rose closure. Archive is browse-only; associated
+activities close with draws November30 at8 PM New York. Finish the current
+encounter, block new entry/Continue/Retry, retain rewards/pity/progress.
+Event materials remain permanently purchasable. Add Event Elemental-Devourers
+shop after closure, unavailable during active events/reruns. Owner approves
+all six ordinary Roselius forms, unlimited repeats and Prismatica prices
+10k/30k/100k/350k/1.5m/5m. Always show an unhideable warning if no associated
+event Element-Bearer is owned, accurately preserving creatures' combat uses.
+Timed operations require online authority; offline archive browsing remains.
+[Exact contract](special-banner-lifecycle.md) supersedes original Phase1
+open questions/no-activation restriction, not Moon/Sunshade release gates.
+
 Remaining expansion organization (2026-11-04): preserve the owner's complete
 Moon/Sunshade, reset/archive, login/mail/gift and QoL requirements in the
 [implementation-ordered roadmap](remaining-expansion-phases.md).

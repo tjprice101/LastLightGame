@@ -102,6 +102,7 @@ export type GameOperation =
   | { kind: 'levelCaptured'; id: string; expectedLevel: number }
   | { kind: 'levelMax'; id: string; expected: MaxLevelPlan }
   | { kind: 'purchaseMaterial'; element: string; quantity: 1 | 5 | 10 }
+  | { kind: 'purchaseEventDevourer'; id: string }
   | { kind: 'purchaseFrame'; frame: ProfileFrame }
   | { kind: 'updateProfile'; displayName: string; bio: string; icon: ProfileIcon; frame: ProfileFrame }
   | { kind: 'enter'; activity: Activity }
@@ -119,6 +120,7 @@ export interface SocialPlayer {
 }
 export interface OnlineSocial { friends: SocialPlayer[]; incoming: SocialPlayer[]; outgoing: SocialPlayer[] }
 export interface GameResponse {
+  serverTime?: number;
   revision: number;
   account: Account;
   starterId: StarterId | null;
@@ -268,6 +270,7 @@ export function validateGameResponse(value: unknown): GameResponse {
   if (!object(value) || !safeCount(value.revision) ||
     !(value.starterId === null || isStarterId(value.starterId)) ||
     !object(value.profile) || !object(value.social)) return invalid();
+  if (value.serverTime !== undefined && !safeCount(value.serverTime)) return invalid();
   const profile = value.profile;
   if (typeof profile.username !== 'string' || !/^[a-z0-9_]{3,16}$/.test(profile.username) ||
     typeof profile.displayName !== 'string' || [...profile.displayName].length > 16 ||

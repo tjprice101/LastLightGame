@@ -260,6 +260,9 @@ export class BattleView {
     }
     try {
       const state = this.session.state;
+      if (state.infusion?.mode === 'roses' && state.phase === 'cleared') {
+        throw new Error('Sign in online for timed event entries. Earned rewards are retained.');
+      }
       let result: BattleResult;
       if (command === 'endTurn') {
         if (state.calamity && state.phase === 'cleared') throw new Error('This Calamity tier is complete. Enter another tier from Play.');
@@ -882,6 +885,9 @@ export class BattleView {
       if (activityTransitionPending() || this.busy || this.disposed || this.dragging || gameDialogPending()) return;
       const dungeon = this.session.state.calamity ?? this.session.state.story ?? this.session.state.war ?? this.session.state.infusion ?? this.session.state.dungeon;
       try {
+        if (!this.authority && this.session.state.infusion?.mode === 'roses') {
+          throw new Error('Sign in online for timed event retries. Earned rewards are retained.');
+        }
         if (this.session.state.calamity) {
           const { activity, tier } = this.session.state.calamity;
           if (!await confirmCalamity(activity, tier)) return;

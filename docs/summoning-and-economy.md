@@ -1,5 +1,12 @@
 # Summoning and economy
 
+**Special-event lifecycle (2026-11-04):** Rose draws/activity end November30,
+2026 at8 PM America/New_York. Authority gates timed operations; offline
+archive browsing remains. Pity/progress survive closure/reruns. Materials
+remain permanently in the exchange; event creatures are sold only after
+closure, at owner-approved prices, with no-owner warnings.
+[Exact contract](special-banner-lifecycle.md) supersedes no-expiry assumptions.
+
 **D-429/D-430/D-431 material balance:** [current material curves](dungeons-and-captures.md#modest-material-staircase-d-430)
 and [later Element-Bearer costs](units-and-progression.md#later-element-bearer-material-costs-d-431)
 supersede older material endpoints/cost claims below. Existing inventories and

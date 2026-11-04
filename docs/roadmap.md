@@ -2,12 +2,16 @@
 
 ## Current remaining expansion order (2026-11-04)
 
+Follow-up authorizes phase-by-phase implementation.
+[Phase1 lifecycle and post-event shops](special-banner-lifecycle.md) resolve
+the reset/archive decisions and activate only the Rose closing schedule.
+
 The [remaining expansion phases](remaining-expansion-phases.md) are the current
 owner-requested future sequence: reset/archive foundations; identity-first
 design of both banners; shared acquisition/Master/shop QoL; mailbox, gifts
 and login calendar; Moon delivery; Sunshade delivery. It preserves the full
 original scope and records clarified roster counts, dates and reset timezone.
-Design only: no feature activation, backdating or unapproved economy values.
+Moon/Sunshade remain design-gated: no backdating or unapproved economy values.
 Story remains paused. The older phase tables below are delivery history,
 not competing instructions for these new phases.
 

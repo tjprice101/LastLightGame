@@ -17,6 +17,12 @@ import './profile-layout.css';
 import { profilePictures, profilePictureUnlocked, canonicalProfilePicture } from '../content/profile-pictures';
 import { profilePicture } from './profile-picture';
 import { chatShell } from './friend-chat';
+import { eventDevourers } from '../content/event-devourers';
+import { roseEventActive, type EventAccess } from '../content/event-schedule';
+import { infusionEncounter } from '../content/infusions';
+import { capturedLevelCap } from '../game/character-instances';
+import { enemySkills } from '../content/enemy-skills';
+import './event-devourers.css';
 
 export interface OnlineProfileDisplay {
   username: string;
@@ -117,7 +123,7 @@ export function materialExchange(account: Account | null, selected: string, navi
     <section class="ref-panel"><header class="ref-panel-heading">Material Exchange</header>
     <nav class="ref-exchange-categories" aria-label="Material categories">
       <button data-market-category="normal" aria-pressed="${category === 'normal'}">Normal Game Materials</button>
-      <button data-market-category="event" aria-pressed="${category === 'event'}">Limited-time Event Materials</button></nav>
+      <button data-market-category="event" aria-pressed="${category === 'event'}">Event Materials</button></nav>
     ${category === 'event' ? `<p class="ref-exchange-note" role="note">Event materials are only for ${restricted}.</p>` : ''}
     <div class="ref-scroll"><div class="ref-product-grid">${products.map(entry => `<button class="ref-product" data-market-material="${entry.id}" aria-pressed="${product.id === entry.id}"><div class="ref-product-art">${exchangeArt(entry.materialId)}</div><b>${materialName(entry.materialId)}</b><small>${entry.rarity} · Owned ${owned(entry.materialId)}</small><span class="ref-chip">${entry.price.toLocaleString('en-US')} Prismatica</span></button>`).join('')}</div></div></section>
     <aside class="ref-panel ref-store-detail"><header class="ref-panel-heading">Details</header>
@@ -133,14 +139,35 @@ export function materialExchange(account: Account | null, selected: string, navi
     <p>No bulk discounts or daily limits.</p></footer></aside></section>`;
 }
 
-export function onlineStores(account: Account | null, profile: OnlineProfileDisplay | null, tab: 'materials' | 'cosmetics', selectedMaterial = 'infernic', selectedFrame = 'default'): string {
+export type StoreTab = 'materials' | 'cosmetics' | 'event-devourers';
+
+export function onlineStores(account: Account | null, profile: OnlineProfileDisplay | null, tab: StoreTab, selectedMaterial = 'infernic', selectedFrame = 'default',
+  access: EventAccess = { online: !!profile, now: Date.now() }): string {
   const online = profile !== null;
   const notice = online ? '' : '<p role="status" data-online-perk>Profile frames are visible to friends on your online profile. Sign in to buy or equip a frame. Frames have no gameplay effects.</p>';
   const navigation = `<nav class="online-store-tabs" aria-label="Stores">
     <button data-store-tab="materials" aria-pressed="${tab === 'materials'}">Material Exchange</button>
     <button data-store-tab="cosmetics" aria-pressed="${tab === 'cosmetics'}">Cosmetic Store</button>
+    <button data-store-tab="event-devourers" aria-pressed="${tab === 'event-devourers'}">Event Elemental-Devourers</button>
     <button data-page="conduit-store">Conduit Store</button><button data-page="conduit-store" data-market-calamitic>Calamitic Conduits</button></nav>`;
   if (tab === 'materials') return materialExchange(account, selectedMaterial, navigation);
+  if (tab === 'event-devourers') {
+    const active = roseEventActive(access.now);
+    return `<section class="online-market ref-screen ref-market ref-event-devourer-store">${navigation}<section class="ref-panel">
+      <header class="ref-panel-heading">Event Elemental-Devourers</header>
+      <h2>Roses Under Sunny Skies · Roselius</h2>
+      <p role="status">${active ? 'Purchases unlock after the event ends on November 30, 2026 at 8 PM New York time. Unavailable again during any explicitly scheduled rerun.' : 'Event ended. All six forms are available for repeat purchases.'}</p>
+      ${access.online ? '' : '<p>Sign in online to purchase event copies. Browsing is available offline.</p>'}
+      <p>Each purchase gives one unlocked, unequipped copy with its authored skills, at Lv.${capturedLevelCap}. No automatic squad changes. Rosethorn materials are sold permanently in Material Exchange.</p>
+      <div class="event-devourer-grid">${eventDevourers.map(product => {
+        const encounter = infusionEncounter('roses', product.creature.stages[0]);
+        const owned = account?.capturedCharacters?.filter(copy => copy.creatureId === product.id).length ?? 0;
+        return `<article class="ref-panel event-devourer-card"><div class="event-devourer-art">${product.creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${product.creature.art}.png`)}" alt="${product.creature.name}">` : '<span>Artwork pending</span>'}</div>
+          <h3>${product.creature.name}</h3><p>${product.rarity} · Lv.${Math.min(capturedLevelCap, encounter.level)} · Owned ${owned}</p>
+          <p>${enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier).map(skill => `${skill.name} · ${Math.round(skill.multiplier * 100)}% Direct Attack`).join(' / ')}</p>
+          <button data-buy-event-devourer="${product.id}" ${account && access.online && !active && account.fractalis >= product.price ? '' : 'disabled'}>Buy · ${product.price.toLocaleString('en-US')} Prismatica</button></article>`;
+      }).join('')}</div></section></section>`;
+  }
   const choice = profileFrames.find(frame => frame.id === selectedFrame) ?? profileFrames[0];
   const owned = choice.id === 'default' || profile?.ownedFrames.includes(choice.id);
   return `<section class="online-market ref-screen ref-market">${navigation}<section class="ref-panel"><header class="ref-panel-heading">Cosmetic Store · Profile frames</header><div class="ref-scroll"><div class="ref-product-grid">${profileFrames.map(frame => {

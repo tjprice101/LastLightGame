@@ -25,6 +25,7 @@ import { isCalamiticMaterialId } from '../content/calamitic-materials';
 import { calamiticCharacterByTier, calamiticCharacterChance, isCalamiticCharacter } from '../content/calamitic-characters';
 import type { CalamiticCharacterId } from '../content/calamitic-characters';
 import { exchangeProduct, isExchangeQuantity } from '../content/material-exchange';
+import { assertEventDevourerAvailable, eventDevourerProduct } from '../content/event-devourers';
 import { isWarCharacter, warEncounter, warLoot, warStageCount, type WarCharacterId } from '../content/elemental-war';
 import { canonicalElement, isLegacyElement } from '../content/element-migration';
 import { storyEncounter, storyCreature, storyRules, storyBossBonus, storyMaterialLoot, storyCompletionReward, storyClearReward, migrateLegacyStoryCompleted, migratePreviousStoryCompleted } from '../content/story';
@@ -531,6 +532,18 @@ function drawBanner(account: Account, banner: ReturnType<typeof getSummonBanner>
   if (bonusConduit) account.conduits = { ...account.conduits, [bonusConduit]: (account.conduits?.[bonusConduit] ?? 0) + 1 };
   return { entry: result.entry, materials, duplicate, guarantee: result.guarantee, bonusConduit };
 }
+export function purchaseEventDevourer(storage: ProfileStorage, id: string, now: number): Account {
+  if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before using the event shop.');
+  assertEventDevourerAvailable(now);
+  const product = eventDevourerProduct(id);
+  const account = loadAccount(storage);
+  if (account.fractalis < product.price) throw new Error('Not enough Prismatica for this Event Elemental-Devourer.');
+  const copy = createCreatureCopy(product.id);
+  account.fractalis -= product.price;
+  account.capturedCharacters = validateCapturedCharacters([...(account.capturedCharacters ?? []), copy]);
+  return saveAccount(storage, account);
+}
+
 export function purchaseExchangeMaterial(storage: ProfileStorage, productId: string, quantity: number): Account {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-****** using the Material Exchange.');
   const product = exchangeProduct(productId);

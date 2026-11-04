@@ -1,5 +1,23 @@
 # Last Light: AI agent entry point
 
+## Timed special events and permanent event shops (2026-11-04)
+
+Use docs/special-banner-lifecycle.md and docs/remaining-expansion-phases.md.
+Rose draws/activity close November30,2026 at8 PM America/New_York; daily
+reset is8 PM and weekly Sunday8 PM, following DST. Authority time gates
+draws, entry/Continue/Retry and post-event creature purchases. An encounter
+underway may finish; never erase saved rewards, pity or event progress.
+Special Banner Archive is browse-only; reruns require explicit scheduling.
+Event materials remain permanently purchasable. All six Roselius forms
+unlock in Event Elemental-Devourers after closure, never during an active
+event/rerun. Approved prices10k/30k/100k/350k/1.5m/5m Prismatica.
+Always warn before buying event items if no associated Element-Bearer is
+owned; the old hide-warning preference cannot bypass this. Roselius can
+fight, so do not claim they are useless without their event characters.
+Do not activate/backdate the unimplemented Moon/Sunshade banners.
+Every future character follows the mandatory identity-first six-step gate
+in the remaining expansion roadmap, ending with owner questions/approval.
+
 ## Player-facing kit descriptions (2026-11-03)
 
 Write every character/ability/Conduit description as an in-game tooltip:
