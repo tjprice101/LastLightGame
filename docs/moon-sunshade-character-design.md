@@ -2,7 +2,8 @@
 
 ## Status and approval boundary
 
-**Phase2, step1: identity proposals (2026-11-04). Not approved or playable.**
+**Phase2, step1: identity proposals (2026-11-04). Individual characters not
+approved or playable. Moon's mortal celestial order is approved.**
 The owner authorizes continuing the roadmap, not skipping individual character
 review. This document proposes twelve identities before full appearances,
 numeric kits, Conduits or prompts. No runtime registrations, assets, drops,
@@ -10,7 +11,11 @@ banner odds or launch dates are changed.
 
 Each banner retains four5-stars (two male/two female) and two6-stars
 (one male/one female). Both group themes are confirmed requirements; names,
-individual lore, role assignments and the interpretations below are proposals.
+individual lore and role assignments remain proposals. The Moon's shared
+mortal-order direction is approved; Sunshade's shared lore remains proposed.
+Owner requests all designs in files for readable review, not only in question
+forms. Keep every later appearance, kit, Conduit and prompt design in the
+appropriate reviewable document before requesting approval.
 No new element, creator, soul discovery, resolved war or Story chapter is
 introduced. Moonlight and sunlight are aesthetic motifs, not combat elements.
 
@@ -40,12 +45,13 @@ existing role; do not describe every new combination as previously absent.
 **Confirmed theme:** black-and-white shimmering moonlight angelic warriors,
 shiny metallic armor, the moon's strength and space's beauty and regality.
 
-**Proposed shared identity:** the Witnesses of the Unfinished Night, a mortal
+**Approved shared identity (2026-11-04):** the Witnesses of the Unfinished Night, a mortal
 order that records promises made to people still missing. Their angelic
 appearance expresses deliberate craft and elemental manifestations, not a
 new divine species or proof that Let has returned. Moonlight reveals what
 their weapons are protecting; it does not make all six peaceful or identical.
-The order name and mortal-order interpretation require owner review.
+Owner selected this named mortal celestial order. Individual identities below
+still require review; that choice does not approve all six characters.
 
 ### Maerion — male,5-star, Oceanic Healer
 

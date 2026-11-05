@@ -5,6 +5,13 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Phase2 review delivery and Moon lore (2026-11-04): owner requests all designs
+in files so they can read them, not only in question forms. The Moon's shared
+identity is the mortal celestial order **Witnesses of the Unfinished Night**.
+Individual names/lore/roles remain unapproved; Sunshade lore remains proposed.
+Keep complete design documents available before subsequent approval questions.
+[All twelve current identity proposals](moon-sunshade-character-design.md).
+
 Phase1 lifecycle/shop approval (2026-11-04): owner says to implement both
 foundations and active Rose closure. Archive is browse-only; associated
 activities close with draws November30 at8 PM New York. Finish the current

@@ -14,6 +14,10 @@ Browser sampled disabled and focused-enabled controls over time: highlights
 stay clipped, pointer-transparent and finite; explicit Reduce motion disables
 the sweep. Verification used rendered in-memory shop markup, no account writes.
 Phase2 identity proposals below remain unapproved and are the next owner gate.
+Published `348081f7eaf08878d446ae25698a8063dcc1b624`; Pages
+run41936636851 succeeded (full test/build/deploy workflow). Hosted browser
+`version.json` matched that exact SHA and the loaded production stylesheet
+contained the relative/clipped purchase-button rule. Temporary server stopped.
 
 ## Phase2 identity-first design (2026-11-04)
 
@@ -21,9 +25,13 @@ Owner says continue. Started the required identity-first workflow with a
 [twelve-character proposal and22-character role audit](moon-sunshade-character-design.md).
 Both banners preserve four5-stars/two6-stars and three male/three female.
 Prioritize Infernic/Oceanic support/sustain and Atmospheric tank/non-Calamitic
-access; label existing-role additions honestly. Human celestial orders and
-non-Infernic Sunshade flame interpretation are proposed lore, not approved
-new species/elements/history. Names, roles and identities await owner review;
+access; label existing-role additions honestly. Sunshade order history and
+non-Infernic flame interpretation remain proposed lore, not approved
+new species/elements/history. Owner approves the Moon's named
+mortal order, Witnesses of the Unfinished Night, and requests all designs in
+files for readable review (not only approval forms). The design document
+contains all twelve proposals and is surfaced as a file deliverable.
+Sunshade order lore, names, roles and individual identities await owner review;
 do not skip to locked appearances, numeric kits or art prompts. No runtime
 changes or character/banner registrations in this documentation-only step.
 
