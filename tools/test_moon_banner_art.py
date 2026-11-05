@@ -3,7 +3,8 @@ import unittest
 from build_calamitic_art import references
 from build_elemental_war_art import RENDERER
 from build_moon_banner_art import (
-    CHARACTERS, OUTPUT, RARITIES, STATUS_SYMBOLS, approved_sections, blocks, document,
+    CHARACTERS, OUTPUT, RARITIES, STATUS_SYMBOLS, approved_sections, blocks, cutout, document,
+    vespera_cutout,
 )
 
 
@@ -96,6 +97,31 @@ class MoonBannerArtTests(unittest.TestCase):
                     self.assertIn("no people no figures no faces and no wielder", prompt)
                     self.assertNotIn("--sref", prompt)
         self.assertIn("Foundational ability-art standard", document())
+
+    def test_vespera_pilot_is_complete_and_shorter_without_losing_design(self):
+        rows = [row for row in blocks() if row[0].startswith(
+            ("vespera-", "master-vespera-", "moon-status-vespera-"))]
+        self.assertEqual(len(rows), 16)
+        for asset, _, prompt, _ in rows:
+            with self.subTest(asset=asset):
+                self.assertNotIn("character-design details:", prompt)
+                self.assertIn("silver-white", prompt)
+                self.assertIn("charcoal", prompt)
+                self.assertIn("non-emissive", prompt)
+                self.assertIn("continuous empty15 percent border", prompt)
+        fixed, forms = approved_sections()["vespera"]
+        character = next(c for c in CHARACTERS if c["slug"] == "vespera")
+        for stage, form in enumerate(forms, 1):
+            old_subject = (f"full-body gacha JRPG unit illustration, one compact female; "
+                           f"{character['weapon']}; {fixed} {form} {character['motif']}")
+            old = cutout(old_subject, "4:3", True, stage)
+            new = next(row[2] for row in rows if row[0] == f"vespera-{stage}.png")
+            self.assertLess(len(new.split(" --ar")[0].split()),
+                            len(old.split(" --ar")[0].split()) * .85)
+            self.assertIn("one physical pennant", new)
+            self.assertIn("All flame ribbons originate at the standard crest", new)
+        subject = "one silver signal clasp"
+        self.assertLess(len(vespera_cutout(subject)), len(cutout(subject)))
 
 
 if __name__ == "__main__":

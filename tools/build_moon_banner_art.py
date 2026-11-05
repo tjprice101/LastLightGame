@@ -177,38 +177,70 @@ def cutout(subject, aspect="1:1", portrait=False, stage=1, *, palette=PALETTE, c
             f"--ar {aspect} --niji 6 --s 100 --q 1 --no {negatives}{suffix}")
 
 
+def vespera_cutout(subject, aspect="1:1", portrait=False, stage=1):
+    if portrait:
+        body = "one third" if stage <= 4 else "one quarter" if stage == 5 else "one fifth"
+        style = (f"{RENDERER}; rounded oversized head, tiny torso, short limbs, 2.5-3 heads tall; "
+                 f"body {body} of canvas height, unchanged anatomy")
+        suffix = f" --sref {references()[stage]} --sw {REFERENCE_WEIGHT}"
+        exclusions = ", mouth, nose, eyebrows, face paint, extra characters"
+    else:
+        style = f"{ICON_RENDERER}; {OBJECT_ONLY}"
+        suffix = ""
+        exclusions = ", " + ICON_NO
+    return (f"{subject}. {style}. Black-white-silver costume, equipment and powers; "
+            "natural authored skin tones are exempt. Polished mirror-metal planes and opaque silver-white "
+            "flame ribbons with charcoal cuts, crisp non-emissive edges. "
+            "Entire ensemble inside central70 percent, continuous empty15 percent border on every side "
+            "and corner; uninterrupted safety margin, all tips visible. "
+            "plain solid green background (#00FF00), flat unlit color through every opening. "
+            f"--ar {aspect} --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, "
+            "cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, "
+            "background gradient, textured background, scenery, cast-shadow backdrop, blur, watercolor, "
+            f"depth of field, noise, {COLOR_NO}{exclusions}{suffix}")
+
+
 def blocks():
     rows = []
     approved = approved_sections()
     for character in CHARACTERS:
         fixed, forms = approved[character["slug"]]
+        render = vespera_cutout if character["slug"] == "vespera" else cutout
         for stage, (title, rarity, form) in enumerate(zip(character["titles"], RARITIES, forms), 1):
             subject = (f"full-body gacha JRPG unit illustration, one compact {character['gender']}; "
                        f"{character['weapon']}; {fixed} {form} {character['motif']}")
+            if character["slug"] == "vespera":
+                subject = (f"full-body gacha JRPG unit illustration, one compact female; {fixed} "
+                           f"{character['weapon']}. {form} Black signal-officer coat with white facing "
+                           "and a diagonal silver signal cord. All flame ribbons originate at the standard "
+                           "crest; one physical pennant, no additional held flags")
             rows.append((f"{character['slug']}-{stage}.png", f"{title}, {character['name']} / {rarity}",
-                         cutout(subject, "4:3", True, stage), form))
+                         render(subject, "4:3", True, stage), form))
         for action, name, symbol in character["icons"]:
             identity = character.get("icon_identity", "")
             rows.append((f"{character['slug']}-{action}.png", f"{character['name']} / {name}",
-                         cutout(f"one standalone ability pictogram: {symbol}"
-                                + (f"; character-design details: {identity}" if identity else "")),
+                         render(f"one standalone ability pictogram: {symbol}"
+                                + ((f"; {identity}" if character["slug"] == "vespera" else
+                                    f"; character-design details: {identity}") if identity else "")),
                          "Recognizable equipment, costume-detail and power motifs; no figure."
                          if identity else "New symbolic composition; no figure."))
         rows.append((f"{character['slug']}-weapon.png", f"{character['name']} / Signature equipment",
-                     cutout(f"one standalone equipment illustration: {character['weapon']}; exquisitely crafted silver-black metal; no hands"),
+                     render(f"one standalone equipment illustration: {character['weapon']}; exquisitely crafted silver-black metal; no hands"),
                      "Optional showcase export; not replacement Normal Attack/Defense art."))
     foundation = ("cosmic ornate resplendent mechanical masterpiece, one integrated luxury-scale chassis, "
                   "precision gears, nested engraved platework and vast connected gantries, "
                   "black-white polished enamel and silver faceted cores, crisp painted specular reflections; "
                   "architecture words describe a mechanism, not buildings")
     for character, slot, name, design in master_rows():
-        prompt = cutout(f"one standalone Omnic personal Master: {design} {foundation}")
+        render = vespera_cutout if character["slug"] == "vespera" else cutout
+        prompt = render(f"one standalone Omnic personal Master: {design} {foundation}")
         prompt = prompt.replace(" --no ", " --no buildings, cathedral buildings, towers, houses, furniture, musical instrument, ", 1)
         rows.append((f"master-{character['slug']}-{slot}.png", f"{character['name']} / {name}", prompt,
                      "Mechanical art proposal; kit coefficients unchanged."))
     for owner, slug, label, symbol in STATUS_SYMBOLS:
+        render = vespera_cutout if owner == "vespera" else cutout
         rows.append((f"moon-status-{owner}-{slug}.png", f"{owner.title()} / {label} status",
-                     cutout(f"one bold small-scale status pictogram: {symbol}; simple readable silhouette"),
+                     render(f"one bold small-scale status pictogram: {symbol}; simple readable silhouette"),
                      "Symbol only; numeric counters and clocks remain HTML."))
     for asset, label, aspect, subject in SCENES:
         prompt = (f"{subject}; original compact anime game scenery renderer, crisp contours, cel shading, "
@@ -230,6 +262,18 @@ def document():
         "[Approved appearances](../../docs/moon-sunshade-character-design.md) | "
         "[Kits and strength flags](../../docs/moon-sunshade-kit-specification.md)",
         "Reproduce: `python tools/build_moon_banner_art.py`. Do not edit generated blocks by hand.",
+        "## Vespera visual-language pilot\n\n"
+        "All16 Vespera prompts use a shorter subject-first composition: fixed identity and pose, "
+        "approved stage costume/powers, renderer, palette, then containment/key and parameters. "
+        "Six portraits, four abilities, one optional weapon, three Masters and two status icons are covered. "
+        "Full approved design/change notes remain beside portraits; no appearance or kit changes. "
+        "Other characters and shared event scenery are not part of this pilot.\n\n"
+        "Generate Common and Omnic plus one ability icon first; inspect identity, single standard/pennant, "
+        "flame origins, silhouette clearance and crisp rendering before spending on the remaining set. "
+        "Use Draft only if the selected model supports it; these prompts retain `--niji 6`, not an "
+        "untested model switch or automatic `--draft` addition. No personalization or Omni Reference "
+        "is silently enabled. Upscale only accepted sources needing more resolution. "
+        "Prompt checks validate written constraints, not generated pixels or guaranteed results.",
         "## Inventory and boundaries",
         "| Category | Count | Scope |\n|---|---:|---|\n"
         "| Portraits |36|Six forms for each of six characters|\n"

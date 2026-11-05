@@ -1,5 +1,25 @@
 # Current state and handoff
 
+## Vespera prompt-language pilot
+
+Owner requested a scoped rewrite, retaining her identity and art style.
+All16 Vespera prompts in the [Moon pack](../Art/characters/Glow%20of%20the%20Moon's%20Light.md)
+now use concise subject-first visual language: six portraits, four abilities,
+one optional weapon, three Masters and Beacon/Signal statuses. Generator owns
+the rewrite; other82 Moon prompts remain byte-identical. Approved fixed
+features/form rows, single standard/pennant, crest-origin whiteflame, costume,
+palette, compact renderer, mapped references150 and15% margins are retained.
+Portrait positive prose fell from254-275 words to199-212; other Vespera
+prompts also shortened. No model, personalization, Omni Reference, gameplay
+or runtime artwork change. Common/Omnic/one-icon visual review precedes the
+remaining generations; Draft is conditional on model support, not appended
+to the existing Niji6 prompts. No generated images or pixel approval claimed.
+
+Validation: `python -m unittest discover -s tools -p test_moon_banner_art.py`
+passed6; `python -m unittest discover -s tools -p test_seasonal_art.py` passed5.
+Exact16-change/82-unchanged comparison and shorter positive prose for every
+Vespera prompt passed. Stop at this character for owner generation/review.
+
 ## Published art-neutral expansion
 
 Runtime release `d325cc751779ba22f355479f5c57a0795d5f2ca2` is pushed and
