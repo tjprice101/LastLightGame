@@ -5,6 +5,13 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Phase2 next character step (2026-11-04): owner chooses **Moon first:
+evolution titles, art inventory and prompts; keep flagged kit values unchanged**.
+New title/icon/scene proposals require review; no event acquisition/stage/
+enemy/material rules are invented to fill missing art counts. Sunshade package
+follows separately. Existing image exports and live gameplay remain unchanged.
+[Moon review pack](../Art/characters/Glow%20of%20the%20Moon's%20Light.md).
+
 Phase2 kit-strength review (2026-11-04): owner accepts kit directions subject
 to no weak buffs, then explicitly chooses **flag questionable values only;
 do not change numbers yet**. Preserve owner edits to Maerion and Caevren.

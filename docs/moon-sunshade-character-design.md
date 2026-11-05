@@ -11,6 +11,9 @@ kits/Conduits next. These are approved design specifications, not approved art
 prompts, numeric kits or playable characters.
 The [complete twelve-kit/36-Master proposal](moon-sunshade-kit-specification.md)
 is the next separate review package.
+Owner subsequently authorizes [Moon-first titles/inventory/prompts](../Art/characters/Glow%20of%20the%20Moon's%20Light.md)
+with flagged kit values unchanged. New titles and prompt compositions remain
+separate review proposals, not automatic approval of a playable event.
 No runtime registrations, assets, drops,
 banner odds or launch dates are changed.
 
@@ -589,7 +592,9 @@ white hair fan, two side locks, shield hand and short blade stay fixed.
 3. Review the [numeric in-game kits and36 personal Masters](moon-sunshade-kit-specification.md).
    Owner selects three alternative personal Masters per character, no added
    ordinary Conduits. Acquisition remains a separate proposal, not an assumption.
-4. Inventory all required character/event art and author reproducible prompts.
+4. Review the [Moon98-prompt pack](../Art/characters/Glow%20of%20the%20Moon's%20Light.md).
+   Enemy/material/map/reward requirements await separate event design;
+   Sunshade titles/prompts remain next after Moon review.
    Keep identity/kit/prompt/delivered-art/release approvals separate.
 
 Wing/ring/arc counts above are approved specifications, not generated art or combat

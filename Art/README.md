@@ -1,5 +1,17 @@
 # Art library
 
+## Moon banner design and prompt review
+
+[Glow of the Moon's Light](characters/Glow%20of%20the%20Moon's%20Light.md)
+contains98 copy-ready proposals:36 portraits,24 ability icons,18 personal
+Masters,6 standalone equipment illustrations,11 native status pictograms and
+3 shared scenes. Appearances approved; titles, new icon/scene compositions
+and prompt lock await review. Event enemies/materials/map/reward assets remain
+explicitly TBD, not silently omitted. No delivery or runtime registration.
+Reproduce with `tools/build_moon_banner_art.py`; validate
+`python -m unittest discover -s tools -p test_moon_banner_art.py`.
+Flagged kit numbers remain unchanged; Sunshade prompts remain pending.
+
 ## Delivered Phase1 Elemental War artwork
 
 [Caldrex / Solenne / Myrthen](characters/Elemental%20War%20Phase%201.md):

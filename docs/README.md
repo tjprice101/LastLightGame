@@ -1,5 +1,12 @@
 # Documentation hub
 
+**Phase2 Moon art review (2026-11-04):**
+[Moon evolution titles, full current inventory and98 prompts](../Art/characters/Glow%20of%20the%20Moon's%20Light.md)
+retain approved six-form appearances, exact portrait references and individual
+power geometry. New titles/icons/shared scenes require review; no delivered
+images or live characters. Flagged kit values unchanged. Event-dependent art
+counts remain explicit TBD; Sunshade prompts follow separately.
+
 **Phase2 kit review (2026-11-04):**
 [Moon and Sunshade character designs](moon-sunshade-character-design.md)
 retain twelve accepted identity directions and the current22-character role

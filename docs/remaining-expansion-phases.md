@@ -80,7 +80,9 @@ follow-up post-event shop requirements. [Validation/publication](handoff.md).
 Phase2 design is underway: twelve identity directions accepted, with
 [all72 appearance/power specifications](moon-sunshade-character-design.md)
 approved by the owner. [Twelve kits and36 personal Masters](moon-sunshade-kit-specification.md)
-are now proposed for review. Prompts and delivered art remain pending.
+are now proposed for review. Owner chooses Moon-first art work with flagged
+kit values unchanged: [98 prompts/titles/inventory](../Art/characters/Glow%20of%20the%20Moon's%20Light.md)
+are drafted for review. Sunshade prompts and all delivered art remain pending.
 Phases3-6 remain unimplemented; target banner windows are not activated.
 
 This is implementation order, not a new marketing calendar. Phase2 design/art

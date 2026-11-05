@@ -1,5 +1,33 @@
 # Current state and handoff
 
+## Phase2 Moon titles and reproducible art package (2026-11-04)
+
+Owner chooses Moon-first evolution titles, art inventory and prompts with
+flagged kit numbers unchanged. [New98-prompt pack](../Art/characters/Glow%20of%20the%20Moon's%20Light.md):
+36 portraits/titles,24 ability icons,18 Masters,6 optional standalone equipment,
+11 native status pictograms and3 shared scenes. New titles, icon compositions
+and lunar harbor-observatory scenery require review; no event rule approval,
+delivery or runtime registration. Enemy/boss/material/map/reward requirements
+are explicitly TBD pending event/acquisition design; Sunshade prompts pending.
+`tools/build_moon_banner_art.py` reads approved appearance rows/fixed features
+and Master directions, preserving72-form source document and kit values.
+Portraits alone keep exact guide references at150; cutouts retain15% safety
+margins, original anime/cel renderer, palette and glow-on-edges exclusions.
+Signed reference availability is not promised; renew owner URLs if expired.
+Validation:
+- `python tools\build_moon_banner_art.py`: produced98 prompt proposals.
+- `python -m unittest discover -s tools -p test_moon_banner_art.py`:4 passed,
+  including exact reproduction, counts, fixed features/form fidelity, distinct
+  titles, reference scope and clearance.
+- `python -m unittest discover -s tools -p test_character_style_references.py`:
+  3 passed.
+- Shared `test_art_prompts.py`:28 tests,176 failures outside this new pack,
+  zero Moon-pack failures after correcting its margin/background/scenery
+  wording. Full shared suite is not passing; unrelated historical packs were
+  not rewritten. Failure details reviewed from temporary output, not claimed
+  as successful baseline validation.
+No gameplay/authority/build change; normal publication workflow follows.
+
 ## Phase2 kit acceptance and flag-only strength review (2026-11-04)
 
 Owner accepts kits subject to avoiding weak buffs, then selects flag-only
