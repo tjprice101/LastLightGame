@@ -5,6 +5,14 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Phase2 kit-strength review (2026-11-04): owner accepts kit directions subject
+to no weak buffs, then explicitly chooses **flag questionable values only;
+do not change numbers yet**. Preserve owner edits to Maerion and Caevren.
+Review full-stack payoff, coverage, trigger frequency, overflow, capacity and
+replacement behavior, not one blanket percentage floor. Existing global role
+perks/characters remain unchanged. Exact revised values require owner selection.
+[Strength review and retained kits](moon-sunshade-kit-specification.md).
+
 Phase2 review delivery and Moon lore (2026-11-04): owner requests all designs
 in files so they can read them, not only in question forms. The Moon's shared
 identity is the mortal celestial order **Witnesses of the Unfinished Night**.

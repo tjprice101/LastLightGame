@@ -2,17 +2,67 @@
 
 ## Review status
 
-**Proposed kits, not approved or implemented (2026-11-04).**
+**Kit directions accepted; flagged strength values await review. Not implemented
+(2026-11-04).**
 Owner approves the [twelve identities and all six-form appearances](moon-sunshade-character-design.md),
 then authorizes kit/Conduit design. Confirmed scope: **three alternative
 personal Master Conduits per character,36 total; no added ordinary Conduits**.
-One personal Master can be equipped at a time. Acquisition, balance approval,
+Owner accepts the kits subject to avoiding weak buffs, then explicitly requests
+**flagging questionable values only, without changing any numbers**. Preserve
+the owner's Maerion/Caevren edits. The strength review below is not a balance
+certification or permission to increase numbers automatically.
+One personal Master can be equipped at a time. Acquisition, final strength approval,
 art prompts/delivery and playable release remain separate decisions.
 
 Descriptions below are intended as in-game text, not implementation reports.
 Numbers are proposed final base coefficients at100% Skill Power, before role
 and equipment bonuses. They are not inputs for another global1.6x skill/3x
 Last Flare multiplication. See [current combat conventions](combat.md).
+
+## Buff-strength flags for owner review
+
+**No numbers changed by this review.** Small increments are not automatically
+weak: examine the complete effect, its targeting, frequency, existing role perk
+and Master stat package. The following are specific concerns, not proven
+encounter failures. Suggested review directions are not approved replacements.
+
+| Character / effect | Current value and full payoff | Why review it | Review direction, not a numeric change |
+|---|---|---|---|
+| Oryn / Last Flare [Accord] Defense | Skill2 grants one ally +30%; Last Flare replaces it with +20% for all allies. | The existing holder loses10 percentage points when the stronger-cost ability replaces the buff. Team coverage improves, but personal protection falls. | Decide whether Last Flare should retain at least the single-target Defense strength. |
+| Asteriel / Moonflower Seedworld Orrery | +5 Skill Power points per [Promise], up to4: +20 points fully charged, in addition to the Master's static +30 points. | The charge bonus vanishes when the payoff spends [Promise]. Under the current text, the consuming Last Flare might lose the very bonus earned for it. | Specify whether it snapshots before spending; then assess the fully charged bonus rather than just the per-stack number. |
+| Ilyss / Crescent-Link Severance Loom | Healing rises from10% to13% per charge; cap3→4. Base maximum Last Flare is95% recipient Health; Master maximum is117%, before Power. | At three charges the special coefficient improvement is only9% recipient Health; at four, much of the117% heal can overflow. It offers no overflow conversion. The Master also adds +35 Skill Power points. | Review whether extra healing without a secondary benefit is sufficiently distinct/useful at normal missing-Health levels. |
+| Serapha / Open-Arc Sanctuary Regulator | +5% recipient maximum-Health healing per spent [Interval], up to4: +20% at full stacks. Static +35 Skill Power points also apply. | Base Last Flare already heals70%; role Power raises that to87.5% before its separate4% role heal. The extra healing may often be wasted, though the added Interval also improves mitigation. | Judge the combination of protection and effective healing, not theoretical healing alone. |
+| Serapha / Articulated Mercy Fanforge | A consumed [Ceasefire] heals12% maximum Health, once per ally per enemy phase. | Generated healing has no implicit Skill Power. Each next-hit token is consumed once, so the two-phase Last Flare does not automatically produce two heals per ally. | Review a single actual12% heal alongside its conditional20%-plus mitigation and static stats. |
+| Rhaziel / [Repair] and Anvil-Needle Restoration Foundry | Record20% of the first absorbed direct packet per ally/phase, or35% with the Master; caps20%/30% recipient Health. | At a packet equal to10% recipient Health, delayed healing is only2%, or3.5% with the Master. A hypothetical fully absorbed35%-Health Skill1 Shield gives7%, or12.25%, but later packets in that phase do not contribute. Caps are not guaranteed payouts. | Review whether first-packet-only capture makes this preparation payoff too small under multi-hit pressure. |
+| Rhaziel / Borrowed-Dawn Seam Cathedral | +25% Defense for2 player turns after his Shield breaks. | It cannot protect the breaking hit; Defense gain is not25% damage reduction. For equal Attack/Defense in the existing ratio, +25% Defense alone cuts subsequent direct damage by about11.1%, before other modifiers. | Compare subsequent-hit survival, not the nominal Defense percentage. |
+| Vespera / Mirror-Pennant Ignition Crown | +30% Burn damage and15% Defense ignore on another ally's signaled attack against her Burn target. | Defense ignore is not a15% damage bonus. At equal Attack/Defense,15% ignore yields about8.1% more direct damage. Burn and the static stats may still make the package worthwhile. | Assess both Burn payoff and the conditional attack benefit together. |
+| Elaris / Firebreak Route-Opening Turbine | Other allies' next damaging Skill/Last Flare ignores15% Defense after she spends [Branch]. | About8.1% direct-damage gain at equal Attack/Defense; near zero against negligible Defense. It excludes Elaris and needs another ally's eligible action before expiry. | Test high-Defense and ordinary-pressure use; decide whether the conditional team opportunity is substantial enough. |
+| Veyr / Refuge-Sparing Siege Regulator | Shield5% recipient maximum Health per [Fault] spent; this Master retains the native cap3, so maximum15% for each ally. | It is a generated Master Shield and receives no implicit Skill Power. At one charge it is only5%, though it accompanies an attack and large static bonuses. | Review one-stack versus fully prepared protection without assuming the alternate cap4 Master can also be equipped. |
+| Aureth / Keystone Convection Worldshield | Adds5% recipient maximum-Health Shield per [Momentum], up to4: base60%→80% at full stacks. | The coefficient bonus at the original three stacks is15%; four-stack maximum adds20%. The cap also raises the Defense payoff30%→40%. It is not just a5% Shield, but requires deliberate holder changes. | Review setup time and the combined Shield/Defense payoff; no blanket increase solely because the per-stack number is small. |
+| Conditional Gauge Masters / Vespera, Asteriel, Serapha, Rhaziel, Oryn, Aureth | Current grants10/8/10/8/10/8 Gauge respectively, with distinct per-turn/phase limits. | Fixed grants become a smaller fraction of an expanded maximum Gauge. At capacity200,8/10 Gauge is4%/5% capacity before Gain. Conditional spend/removal/absorption requirements also differ. Maerion's owner-edited grant is15% capacity, not15 flat Gauge. | Decide which conditional receipts should remain flat versus capacity-based; do not silently convert them to percentages. |
+| Thessara / Droughtbreak Delivery Dynamo | Skill2 grant8→10 Gauge per Reserve:32→40 at native cap4. Last Flare6→8 per Reserve:24→32 to each other ally. | Increment is8 Gauge per recipient at full stacks; it is not just a2-Gauge effect. Existing +20 Efficiency and +40% Health also contribute. At expanded capacity, the relative improvement shrinks. | Review full-stack delivery before deciding whether this specialized Gauge alternative is too modest. |
+
+### Values not automatically flagged as weak
+
+- Vespera's single-target35% [Signal] and Asteriel's team30% [Moonflower]
+  have different coverage; their charged Last Flares reach80% natively.
+  Oryn's30% [Accord] applies to only one attack per player turn, but includes
+  Normal Attacks. These are meaningful nominal bonuses, not interchangeable
+  power comparisons or proven clear-rate estimates.
+- Small per-stack figures must be evaluated at their **own** legal maximum.
+  Only one Master is equipped: do not combine a cap-increase alternative with
+  a different Master's enhanced coefficient.
+- The shared4% Support role heal is existing game behavior, not a new primary
+  healing ability. Leave global role perks and existing characters unchanged.
+- Owner-edited Maerion reserve45%/85%, overflow Shield35%, Gauge15% and
+  Caevren Load5/+10% Defense per charge and Skill2 Shield/redirection55% are
+  preserved exactly. These do not certify survivability: greater redirection
+  also increases Caevren's incoming load.
+
+**Next decision:** owner selects flagged effects to revise and approves exact
+replacement values. Until then, retain every listed coefficient, scope,
+duration and cap. Actual pressured-encounter and paper checks remain required
+before activation; this documentation review does not supply those results.
 
 ## Shared actions and role perks
 
@@ -49,22 +99,22 @@ it never resets charges or replays an expired payoff.
 **Passive - Names Still Carried**
 
 While Maerion lives, record direct Health damage taken by squad members as
-[Unreturned], up to40% of Maerion's maximum Health. Redirected damage and
+[Unreturned], up to 45% of Maerion's maximum Health. Redirected damage and
 damage-over-time do not contribute.
 
 **Skill1 - Crescent Triage |25 Gauge**
 
-Deal200% Direct Attack to one enemy. Heal the living squad member with the
-lowest Health percentage for25% of their maximum Health.
+Deal 200% Direct Attack to one enemy. Heal the living squad member with the
+lowest Health percentage for 25% of their maximum Health.
 
 **Skill2 - A Place on the Ferry |40 Gauge**
 
-Heal one chosen living ally for45% of their maximum Health, plus all stored
-[Unreturned]. Spend [Unreturned].
+Heal one chosen living ally for 45% of their maximum Health, plus all stored
+[Unreturned]. Spends [Unreturned].
 
 **Last Flare - Bring Every Name Home |100 Gauge**
 
-Heal all living squad members for70% of their maximum Health. Divide stored
+Heal all living squad members for 70% of their maximum Health. Divide stored
 [Unreturned] equally among them as additional healing, then spend it.
 Recover next player turn.
 
@@ -72,7 +122,7 @@ Recover next player turn.
 
 **+75% Health | +25 percentage points Skill Power**
 
-Increase [Unreturned]'s capacity to60% of Maerion's maximum Health.
+Increase [Unreturned]'s capacity to 85% of Maerion's maximum Health.
 Direct damage absorbed by Shields also contributes; redirected damage does not.
 
 **Master - Crescent Rib Mercy Foundry**
@@ -80,14 +130,14 @@ Direct damage absorbed by Shields also contributes; redirected damage does not.
 **+50% Health | +35 percentage points Skill Power**
 
 Convert excess healing from [A Place on the Ferry] into a Shield for its
-target, up to25% of that ally's maximum Health.
+target, up to 35% of that ally's maximum Health.
 
 **Master - Ferrywake Remembrance Dynamo**
 
 **+40% Health | +20 percentage points Skill Efficiency**
 
-When Maerion's Skills or Last Flare heal an ally from below50% Health to at
-least50%, grant that ally8 Elemental Gauge. Once per ally per player turn.
+When Maerion's Skills or Last Flare heal an ally from below 50% Health to at
+least 50%, grant that ally 15% Elemental Gauge. Once per ally per player turn.
 
 ### Caevren
 
@@ -95,23 +145,23 @@ least50%, grant that ally8 Elemental Gauge. Once per ally per player turn.
 
 **Passive - Weight of the Watch**
 
-When an enemy's direct attack damages Caevren's Health or Shield, gain1
-[Load], up to3. Once per enemy phase; redirected damage also qualifies.
+When an enemy's direct attack damages Caevren's Health or Shield, gain 1
+[Load], up to 3. Once per enemy phase; redirected damage also qualifies.
 
 **Skill1 - Hold the Meridian |25 Gauge**
 
-Deal280% Direct Attack to one enemy. Taunt enemies for the next enemy phase.
+Deal 280% Direct Attack to one enemy. Taunt enemies for the next enemy phase.
 
 **Skill2 - Counterweight Covenant |40 Gauge**
 
-Grant one chosen other living ally a Shield equal to30% of their maximum
-Health. For2 enemy phases, redirect30% of their incoming enemy direct damage
+Grant one chosen other living ally a Shield equal to 30% of their maximum
+Health. For 2 enemy phases, redirect 30% of their incoming enemy direct damage
 to Caevren while he lives.
 
 **Last Flare - The Night Shall Not Fall |100 Gauge**
 
-Spend all [Load]. Grant Caevren a Shield equal to60% of his maximum Health,
-plus12% per [Load] spent. For2 enemy phases, redirect30% of incoming enemy
+Spend all [Load]. Grant Caevren a Shield equal to 60% of his maximum Health,
+plus 12% per [Load] spent. For 2 enemy phases, redirect 30% of incoming enemy
 direct damage from every other living ally to Caevren.
 Recover next player turn.
 
@@ -119,20 +169,20 @@ Recover next player turn.
 
 **+60% Health | +60% Defense**
 
-Increase maximum [Load] to4. Gain +8% Defense per stored [Load].
+Increase maximum [Load] to 5. Gain +10% Defense per stored [Load].
 
 **Master - Observatory Loadshare Regulator**
 
 **+75% Health | +25 percentage points Skill Power**
 
-Increase [Counterweight Covenant]'s Shield from30% to45% maximum Health
-and its damage redirection from30% to40%. The Last Flare's redirection is unchanged.
+Increase [Counterweight Covenant]'s Shield from 30% to 55% maximum Health
+and its damage redirection from 30% to 55%. The Last Flare's redirection is unchanged.
 
 **Master - Falling-Star Recoil Turbine**
 
 **+50% Defense | +40% Direct Attack**
 
-After an enemy's direct attack damages Caevren's Health or Shield, deal100%
+After an enemy's direct attack damages Caevren's Health or Shield, deal 100%
 of his Direct Attack to that attacker. Once per enemy phase; can critically
 strike. Redirected damage qualifies.
 
@@ -142,32 +192,32 @@ strike. Redirected damage qualifies.
 
 **Passive - Someone Still Beyond the Walls**
 
-When another living ally spends Vespera's [Signal], gain1 [Beacon], up to3.
+When another living ally spends Vespera's [Signal], gain 1 [Beacon], up to 3.
 Once per player turn.
 
 **Skill1 - Whitefire Dispatch |25 Gauge**
 
-Deal220% Direct Attack to one enemy. Apply [Burn] dealing25% of Vespera's
-Direct Attack per enemy phase for3 enemy phases.
+Deal 220% Direct Attack to one enemy. Apply [Burn] dealing 25% of Vespera's
+Direct Attack per enemy phase for 3 enemy phases.
 
 **Skill2 - Keep the Last Beacon |40 Gauge**
 
 Give one chosen other living ally [Signal]: their next damaging Skill or
-Last Flare deals35% more direct damage. Lasts through the next player turn;
+Last Flare deals 35% more direct damage. Lasts through the next player turn;
 refreshes rather than stacks.
 
 **Last Flare - None Left in the Dark |100 Gauge**
 
-Spend all [Beacon]. Deal480% Direct Attack to all enemies. Give each other
-living ally [Signal] for50% more direct damage, plus10% per [Beacon] spent.
+Spend all [Beacon]. Deal 480% Direct Attack to all enemies. Give each other
+living ally [Signal] for 50% more direct damage, plus 10% per [Beacon] spent.
 Lasts through the next player turn. Recover next player turn.
 
 **Master - Whitefire Procession Transmitter**
 
 **+50% Health | +30 percentage points Skill Power**
 
-Increase maximum [Beacon] to4. [Keep the Last Beacon]'s [Signal] grants50%
-more direct damage instead of35%.
+Increase maximum [Beacon] to 4. [Keep the Last Beacon]'s [Signal] grants 50%
+more direct damage instead of 35%.
 
 **Master - Mirror-Pennant Ignition Crown**
 

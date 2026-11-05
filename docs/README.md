@@ -7,6 +7,9 @@ audit. All72 evolution appearances now specify clothing, fixed features,
 weapons and exact aesthetic-power geometry; owner approves these designs.
 [Twelve complete in-game kits and36 personal Masters](moon-sunshade-kit-specification.md)
 are now proposed for separate review, including mechanical art directions.
+Owner accepts kit directions but requests a flag-only buff-strength review;
+the kit file now lists conditional/stacked payoffs and questionable values.
+No numerical changes are authorized by that review.
 Three Masters per character/no added ordinary Conduits is confirmed scope,
 not approval of their new effects. No new characters or banners are live.
 

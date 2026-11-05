@@ -1,5 +1,19 @@
 # Current state and handoff
 
+## Phase2 kit acceptance and flag-only strength review (2026-11-04)
+
+Owner accepts kits subject to avoiding weak buffs, then selects flag-only
+review: **do not change numbers yet**. Integrated their existing file edits
+without overwriting them: Maerion reserve45%/85%, overflow35%, Gauge15%;
+Caevren Load5/+10% Defense per stored charge, Skill2 Shield/redirection55%.
+Added [review table](moon-sunshade-kit-specification.md#buff-strength-flags-for-owner-review)
+covering Oryn's weaker replacement, Asteriel's spend/snapshot ambiguity,
+healing overflow/conditional Repair, Defense effectiveness,15% ignore,
+small generated Shields and fixed Gauge at expanded capacity.
+No new coefficients, global perks, native mechanics or authority changes.
+Kit directions accepted; flagged replacements await owner's exact decision.
+Documentation arithmetic is illustrative, not encounter/balance certification.
+
 ## Phase2 appearance approval and complete kit draft (2026-11-04)
 
 Owner reviews/approves all72 appearances and asks for kits/Conduits next;
