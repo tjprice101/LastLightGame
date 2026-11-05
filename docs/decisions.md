@@ -5,6 +5,13 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Character-linked ability art (2026-11-05): owner requests Moon Caevren onward
+ability images match character design elements and makes this a future
+foundation. All20 affected prompts now retain equipment, costume-detail and
+power motifs alongside the effect, with object-only/reference-free icons.
+Do not globally repaint installed artwork or duplicate universal actions.
+[Moon pack](../Art/characters/Glow%20of%20the%20Moon's%20Light.md).
+
 Phase2 next character step (2026-11-04): owner chooses **Moon first:
 evolution titles, art inventory and prompts; keep flagged kit values unchanged**.
 New title/icon/scene proposals require review; no event acquisition/stage/

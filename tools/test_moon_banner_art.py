@@ -85,6 +85,18 @@ class MoonBannerArtTests(unittest.TestCase):
         self.assertIn("Flagged kit values remain unchanged", content)
         self.assertNotRegex(content, r"/assets/.*\.png")
 
+    def test_caevren_onward_ability_icons_retain_character_design(self):
+        prompts = {asset: prompt for asset, _, prompt, _ in blocks()}
+        for character in CHARACTERS[1:]:
+            for action, _, symbol in character["icons"]:
+                with self.subTest(character=character["name"], action=action):
+                    prompt = prompts[f"{character['slug']}-{action}.png"]
+                    self.assertIn(symbol, prompt)
+                    self.assertIn(character["icon_identity"], prompt)
+                    self.assertIn("no people no figures no faces and no wielder", prompt)
+                    self.assertNotIn("--sref", prompt)
+        self.assertIn("Foundational ability-art standard", document())
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -38,10 +38,11 @@ CHARACTERS = (
                  "Brace Beneath the Falling Sky", "Anchor of the Unfinished Night", "No Star Falls Unheld"),
          weapon="one counterweight flail, short silver handle, one articulated chain, one dark spherical weight inside a white meridian cage",
          motif="black observatory coat under white squared platework; attached calibrated wind vanes, never feathers",
+         icon_identity="white squared plate edges and silver meridian cage ribs matching the observatory yoke; black padded-coat inset texture, stepped rectangular wind vanes; no feathers",
          icons=(
-             ("passive", "Weight of the Watch", "one caged dark counterweight seated on three white load brackets"),
+             ("passive", "Weight of the Watch", "one dark spherical flail counterweight inside its white meridian cage, seated in three squared observatory-yoke load brackets, two compressed wind struts"),
              ("skill1", "Hold the Meridian", "a single caged flail weight held on a taut mechanical chain beside a firm white wind brace"),
-             ("skill2", "Counterweight Covenant", "two unequal white pressure chambers linked by one silver transfer bridge and a protective vane"),
+             ("skill2", "Counterweight Covenant", "one meridian-caged flail counterweight connected by its articulated silver chain to a smaller white squared armor-yoke plate, stepped wind vanes visibly bracing the protected plate"),
              ("ultimate", "The Night Shall Not Fall", "a massive meridian-caged counterweight, three surrounding load-transfer arcs and a broad white protective brace"),
          )),
     dict(name="Vespera", slug="vespera", gender="female",
@@ -49,6 +50,7 @@ CHARACTERS = (
                  "Marshal of Unextinguished Signals", "Procession Beyond the Walls", "None Left in the Dark"),
          weapon="one tall bladed standard with one silver spear tip and one physical white swallowtail pennant",
          motif="black signal-officer coat with white facing and a diagonal silver signal cord; one white high braid bound with black ribbon; stage-specified silver-white flames originate at the standard crest, no orange fire",
+         icon_identity="single silver spear-tip standard crest and white swallowtail pennant, black-white coat-facing folds and diagonal silver signal-cord trim; serrated silver-white flame ribbons with charcoal cuts originate at the crest",
          icons=(
              ("passive", "Someone Still Beyond the Walls", "three small silver-white beacon cells linked to one white swallowtail pennant"),
              ("skill1", "Whitefire Dispatch", "one silver spear tip emitting a sharp whiteflame curl with charcoal interior cuts"),
@@ -60,6 +62,7 @@ CHARACTERS = (
                  "Mercy Between the Severed Threads", "Release Without Oblivion", "What Harm Cannot Hold"),
          weapon="one connected pair of severance shears, two crescent blades joined at a visible pivot, one handle in each hand",
          motif="white pleated dress over black armor and opaque leggings; stage-specified power geometry uses separated crescent links, no bound figures",
+         icon_identity="connected silver shear-pivot relief and separated crescent-link tracery matching the equipment; sharply folded white dress pleats against black bodice-like plate insets; cascading spaced links, never feathers or souls",
          icons=(
              ("passive", "What Need Not Remain", "three cleanly separated silver crescent links beside one intact protective loop"),
              ("skill1", "Cut the Harmful Thread", "one connected shear pivot and two crescent blades cutting a charcoal ribbon into two separated ends"),
@@ -71,6 +74,7 @@ CHARACTERS = (
                  "Keeper of the Open Conservatory", "Garden of Unhoarded Stars", "Every Orbit Bears a Future"),
          weapon="one palm-held seed-orrery focus, one closed central seed capsule and only the stage-specified satellite capsules",
          motif="silver low hair knot and two curling forelocks; black scholar tunic and white petal coat, no green botanical colors",
+         icon_identity="closed central seed capsule with silver seed-orrery ribs, white petal-coat folds and silver leaf-vein trim against black scholar-cloth insets; cultivated moonflower branches, not generic stars",
          icons=(
              ("passive", "Futures Given Freely", "one closed silver seed capsule branching toward a shelter leaf and an outward flowering path"),
              ("skill1", "Lend the Quiet Seed", "one closed moonflower seed unfolding two opaque white protective petal ribs"),
@@ -82,6 +86,7 @@ CHARACTERS = (
                  "Mantle of the Merciful Passage", "Sanctuary Without Surrender", "Let Them Leave Alive"),
          weapon="one mercy scepter, two short opposing blades around an open central oval, not a bell or lens",
          motif="charcoal hair in two rolled side coils and a short low tail; white judicial coat, hinged silver mantle, deliberately open lunar arcs",
+         icon_identity="split-oval mercy-scepter crest with two short opposing blade tips, articulated silver mantle hinges and straight black-lined white judicial-coat pleats; open lunar arcs preserve a clear passage, no bells or lenses",
          icons=(
              ("passive", "An Interval Without Surrender", "three silver timing notches along an open lunar arc with a deliberate clear passage"),
              ("skill1", "Terms of Mercy", "a split-oval scepter head beside one shortened charcoal attack stroke and an open silver arc"),
@@ -183,8 +188,12 @@ def blocks():
             rows.append((f"{character['slug']}-{stage}.png", f"{title}, {character['name']} / {rarity}",
                          cutout(subject, "4:3", True, stage), form))
         for action, name, symbol in character["icons"]:
+            identity = character.get("icon_identity", "")
             rows.append((f"{character['slug']}-{action}.png", f"{character['name']} / {name}",
-                         cutout(f"one standalone ability pictogram: {symbol}"), "New symbolic composition; no figure."))
+                         cutout(f"one standalone ability pictogram: {symbol}"
+                                + (f"; character-design details: {identity}" if identity else "")),
+                         "Recognizable equipment, costume-detail and power motifs; no figure."
+                         if identity else "New symbolic composition; no figure."))
         rows.append((f"{character['slug']}-weapon.png", f"{character['name']} / Signature equipment",
                      cutout(f"one standalone equipment illustration: {character['weapon']}; exquisitely crafted silver-black metal; no hands"),
                      "Optional showcase export; not replacement Normal Attack/Defense art."))
@@ -234,6 +243,12 @@ def document():
         "| Total currently specifiable |98|All proposed export labels, never working asset URLs|",
         "Normal Attack/Defense and Burn/Weaken retain existing universal/shared art. No duplicate requests. "
         "Banner/splash is one proposed shared source; derivative crops can be reviewed after delivery.",
+        "**Foundational ability-art standard:** every future character-specific ability image must "
+        "express its effect through recognizable approved equipment construction, costume material/trim "
+        "and power geometry, not merely a generic symbol in the character's palette. "
+        "Caevren through Serapha now carry these details explicitly in all20 ability prompts. "
+        "Cloth/plate fragments are object ornament, never a miniature character, face, hands or worn outfit. "
+        "Shared universal actions remain shared; this pass does not rewrite Maerion or installed artwork.",
         "**Unresolved event assets:** enemy/boss roster and form counts, special materials/recipes, "
         "map/layout, event reward/chest/emblem requirements and any extra arenas depend on the separate "
         "event/acquisition design. Counts remain TBD, not zero and not silently covered by this98-image pack. "

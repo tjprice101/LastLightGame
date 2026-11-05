@@ -1,5 +1,17 @@
 # Last Light: AI agent entry point
 
+## Character-linked ability art (2026-11-05)
+
+Every future character-specific ability image must embody the approved
+character design: recognizable signature-equipment construction, clothing
+material/trim and distinct power geometry, not a generic effect symbol with
+matching colors. Describe those details directly in each prompt. Icons stay
+object-only: costume fragments are ornament, not worn outfits, figures, faces
+or hands. Preserve shared universal actions, palette, renderer, clearance and
+reference-free icon policy. Current scoped correction: Moon Caevren through
+Serapha, all20 ability prompts; Maerion and installed artwork unchanged.
+See docs/art-workflow.md and the Moon art pack.
+
 ## Timed special events and permanent event shops (2026-11-04)
 
 Use docs/special-banner-lifecycle.md and docs/remaining-expansion-phases.md.

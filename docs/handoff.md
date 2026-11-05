@@ -1,5 +1,21 @@
 # Current state and handoff
 
+## Character-linked ability art foundation (2026-11-05)
+
+Owner says Caevren onward ability images must match character design elements,
+as a new future foundation. Updated generator and all20 Caevren/Vespera/
+Ilyss/Asteriel/Serapha ability prompts with equipment construction, costume
+materials/trim and distinct power geometry; replaced Caevren's generic
+pressure-chamber Skill2 symbol with his chained counterweight/protected yoke.
+Maerion, portraits, kit values and installed art remain unchanged.
+Added per-character/action fidelity regression; documented permanent standard
+in AGENTS, art workflow and prompt guide. Icons remain figure-free/reference-free.
+Validation: `python tools\build_moon_banner_art.py` regenerated98 blocks;
+`python -m unittest discover -s tools -p test_moon_banner_art.py` passed5 tests;
+`python -m unittest discover -s tools -p test_character_style_references.py`
+passed3 tests. Exact before/after comparison confirmed only the20 requested
+ability prompts changed; other78 prompts unchanged. `git diff --check` passed.
+
 ## Phase2 Moon titles and reproducible art package (2026-11-04)
 
 Owner chooses Moon-first evolution titles, art inventory and prompts with

@@ -1,5 +1,17 @@
 # Art and asset workflow
 
+## Character-linked ability art foundation (2026-11-05)
+
+Owner requires ability images to match their character's design elements,
+not only palette or abstract mechanics. Each future character-specific
+ability prompt explicitly identifies recognizable equipment construction,
+costume material/trim and personal power shapes, integrated with the actual
+ability effect. Do not paste the portrait into an icon: object-only symbols
+can borrow pleats, plate edges, hinges or insignia without figures/hands/faces.
+Keep shared universal actions shared, icons reference-free and existing
+reviewed artwork unchanged. Moon Caevren through Serapha now apply this in
+all20 ability prompts; Maerion is outside the requested correction.
+
 ## Moon banner prompt package (2026-11-04)
 
 Owner chooses Moon-first title/inventory/prompt work while retaining flagged

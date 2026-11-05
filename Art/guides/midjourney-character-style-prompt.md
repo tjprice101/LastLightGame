@@ -1,5 +1,15 @@
 # Last Light — Character Art Midjourney Prompt Guide
 
+**Character-linked ability art (2026-11-05):** every future character-specific
+ability icon expresses its effect through recognizable approved equipment,
+costume materials/trim and personal power geometry, not a generic effect with
+matching colors. Specify the actual shapes in each prompt. Object-only
+ornaments may borrow pleats, plate borders and hinges, never depict a worn
+outfit or miniature character/hands/face. Universal actions remain shared;
+icons retain reference-free rendering, palette and complete outer clearance.
+Current correction covers Caevren through Serapha's20 Moon ability prompts,
+not Maerion or installed images.
+
 **Character-first outfits (2026-11-03, supersedes mandatory armor language):**
 the shared renderer is fixed, not the costume formula. Characters may wear
 dresses, robes, tailored coats, woven botanical textiles or other identity-
