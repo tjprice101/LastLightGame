@@ -1,11 +1,12 @@
 # Documentation hub
 
-**Phase2 identity review (2026-11-04):**
-[Moon and Sunshade character proposals](moon-sunshade-character-design.md)
-audit current22-character role coverage and propose twelve distinct identities.
-Moon's named mortal celestial order is approved; individual names/lore/roles
-remain proposals. Full appearances, kits and prompts follow
-owner review. No new characters or banners are live.
+**Phase2 appearance review (2026-11-04):**
+[Moon and Sunshade character designs](moon-sunshade-character-design.md)
+retain twelve accepted identity directions and the current22-character role
+audit. All72 evolution appearances now specify clothing, fixed features,
+weapons and exact aesthetic-power geometry. New appearance details await
+review; numeric kits, Conduits and prompts follow. No new characters or banners
+are live.
 
 **Special-banner lifecycle (2026-11-04):**
 [Reset clock, Rose closure, archive and post-event shops](special-banner-lifecycle.md).

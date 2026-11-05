@@ -1,5 +1,22 @@
 # Current state and handoff
 
+## Phase2 full appearance proposal (2026-11-04)
+
+Owner accepts the twelve identity directions, then requests more clothing,
+design and appearance detail before continuing. Updated the same
+[readable design file](moon-sunshade-character-design.md) with all72 form
+specifications: fixed hair/eyes/skin, costume materials/silhouettes, weapon
+construction, intentional changes and exact wing/ring/arc geometry.
+Moon stays black/white/silver; Sunshade stays full black-gold armor with
+orange-black ignition and bounded elemental accents. Every line starts
+simply; late forms retain earlier motifs and expand their own architecture.
+Wing counts/geometry vary rather than assigning identical feather halos.
+No hair/eye/skin transformations, new facial-feature exceptions, generated
+art, runtime registrations, mechanics or event schedule changes.
+Appearance/power details remain proposals pending review; numeric in-game
+kits/Conduits, evolution titles and prompts remain next. Documentation-only;
+reviewed coverage and Markdown structure, no runtime tests needed.
+
 ## Shop sheen containment (2026-11-04)
 
 Owner reports oversized diagonal shimmer in the event shop. Root cause:
@@ -13,7 +30,8 @@ src\online\event-lifecycle.test.ts --maxWorkers=2` passed35 tests;
 Browser sampled disabled and focused-enabled controls over time: highlights
 stay clipped, pointer-transparent and finite; explicit Reduce motion disables
 the sweep. Verification used rendered in-memory shop markup, no account writes.
-Phase2 identity proposals below remain unapproved and are the next owner gate.
+At this release, Phase2 identity proposals below were the next owner gate;
+the later appearance update above records their subsequent acceptance.
 Published `348081f7eaf08878d446ae25698a8063dcc1b624`; Pages
 run41936636851 succeeded (full test/build/deploy workflow). Hosted browser
 `version.json` matched that exact SHA and the loaded production stylesheet
@@ -31,7 +49,8 @@ new species/elements/history. Owner approves the Moon's named
 mortal order, Witnesses of the Unfinished Night, and requests all designs in
 files for readable review (not only approval forms). The design document
 contains all twelve proposals and is surfaced as a file deliverable.
-Sunshade order lore, names, roles and individual identities await owner review;
+At this step Sunshade order lore, names, roles and identities awaited review;
+the owner subsequently accepted them, as recorded above.
 do not skip to locked appearances, numeric kits or art prompts. No runtime
 changes or character/banner registrations in this documentation-only step.
 

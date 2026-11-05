@@ -77,8 +77,10 @@ See [art workflow](art-workflow.md) and the
 
 **Current delivery:** Phase1 is implemented and released, including the
 follow-up post-event shop requirements. [Validation/publication](handoff.md).
-Phases2-6 remain unimplemented; next is the identity-first design package,
-not immediate activation of the target banner windows.
+Phase2 design is underway: twelve identity directions accepted, with
+[all72 appearance/power specifications](moon-sunshade-character-design.md)
+now proposed for review. Kits, Conduits, prompts and delivered art remain
+pending. Phases3-6 remain unimplemented; target banner windows are not activated.
 
 This is implementation order, not a new marketing calendar. Phase2 design/art
 preparation can run alongside approved foundation work. Phases3/4 do not
