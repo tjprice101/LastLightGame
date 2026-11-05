@@ -1,5 +1,20 @@
 # Art and asset workflow
 
+## Complete art-pending seasonal expansion
+
+Owner authorizes feature completion without generated art. See the
+[219-image inventory including optional equipment](remaining-expansion-art.md)
+and [event design](moon-sunshade-events.md). Sunshade and both enemy/material
+chains now have reproducible prompt packs; no delivery or runtime image URL
+is implied. All twelve bearers are six-star; fixed appearance rows/coefficients
+remain preserved. Existing universal actions/currencies remain shared.
+Banner AND gamemode names must differ from character identity names and
+Omnic titles while remaining symbolic and recognizable. Apply this permanent
+criterion alongside character-linked ability icons and identity-first design.
+Regenerate via the three documented generators and validate
+`python -m unittest discover -s tools -p test_seasonal_art.py`.
+This closes the earlier event-inventory TBD, not the actual delivery queue.
+
 ## Character-linked ability art foundation (2026-11-05)
 
 Owner requires ability images to match their character's design elements,

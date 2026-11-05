@@ -128,11 +128,11 @@ def clean(value):
     return re.sub(r"\s+", " ", value.replace("**", "")).strip()
 
 
-def approved_sections():
+def approved_sections(characters=CHARACTERS):
     source = DESIGN.read_text(encoding="utf-8")
     result = {}
-    for character in CHARACTERS:
-        match = re.search(rf"^### {character['name']} .*?(?=^### |^## Banner #3:)", source, re.M | re.S)
+    for character in characters:
+        match = re.search(rf"^### {character['name']} .*?(?=^### |^## Banner #3:|^## Review|^## Next|\Z)", source, re.M | re.S)
         if not match:
             raise ValueError(f"Missing approved appearance: {character['name']}")
         section = match.group()
@@ -144,10 +144,10 @@ def approved_sections():
     return result
 
 
-def master_rows():
+def master_rows(characters=CHARACTERS):
     source = KITS.read_text(encoding="utf-8")
     rows = []
-    for character in CHARACTERS:
+    for character in characters:
         found = re.findall(rf"^\| {character['name']} \| ([^|]+) \| ([^|]+) \|$", source, re.M)
         if len(found) != 3:
             raise ValueError(f"Expected three Masters: {character['name']}")
@@ -156,7 +156,7 @@ def master_rows():
     return rows
 
 
-def cutout(subject, aspect="1:1", portrait=False, stage=1):
+def cutout(subject, aspect="1:1", portrait=False, stage=1, *, palette=PALETTE, color_no=COLOR_NO):
     if portrait:
         craft = ("restrained early-form craft, no mature wing array" if stage < 3 else
                  "increasingly exquisite stage-appropriate craft" if stage < 5 else
@@ -165,12 +165,12 @@ def cutout(subject, aspect="1:1", portrait=False, stage=1):
         style = (f"{RENDERER}, rounded oversized head tiny torso short limbs, 2.5-3 heads tall; "
                  f"body {body} of canvas height without changing anatomy. {craft}")
         suffix = f" --sref {references()[stage]} --sw {REFERENCE_WEIGHT}"
-        negatives = NO + ", " + COLOR_NO + ", mouth, nose, eyebrows, face paint, extra characters"
+        negatives = NO + ", " + color_no + ", mouth, nose, eyebrows, face paint, extra characters"
     else:
         style = f"{ICON_RENDERER}; {OBJECT_ONLY}, isolated subject with no cast-shadow backdrop"
         suffix = ""
-        negatives = NO + ", " + COLOR_NO + ", " + ICON_NO
-    return (f"{subject}. {style}. {PALETTE}. Opaque sharply bounded non-emissive powers; "
+        negatives = NO + ", " + color_no + ", " + ICON_NO
+    return (f"{subject}. {style}. {palette}. Opaque sharply bounded non-emissive powers; "
             f"painted metal reflections only. {SHARP}. {MARGIN}. "
             "plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, "
             "subject colors unchanged, no glows or glowing visual effects, no scenery. "
@@ -249,10 +249,11 @@ def document():
         "Caevren through Serapha now carry these details explicitly in all20 ability prompts. "
         "Cloth/plate fragments are object ornament, never a miniature character, face, hands or worn outfit. "
         "Shared universal actions remain shared; this pass does not rewrite Maerion or installed artwork.",
-        "**Unresolved event assets:** enemy/boss roster and form counts, special materials/recipes, "
-        "map/layout, event reward/chest/emblem requirements and any extra arenas depend on the separate "
-        "event/acquisition design. Counts remain TBD, not zero and not silently covered by this98-image pack. "
-        "No copied Roselius creatures, Rose materials or invented event stages.",
+        "**Event extension:** six Vesperwing forms and six Moonwake materials have their own "
+        "[signature activity pack](../creatures/Moon%20and%20Sunshade%20Events.md), not duplicate entries "
+        "in this98-image pack. No separate boss portrait or specialty item chain is required. "
+        "See the [complete checklist](../../docs/remaining-expansion-art.md) for combined totals. "
+        "Historical event counts were TBD, not zero; the event specification now supplies them.",
         "## Identity, complexity and reference contract",
         "All36 portraits preserve exact fixed features and approved stage rows. Adjacent change notes are "
         "intentional costume/power evolution, never hair/eye/skin transformations. "

@@ -1,5 +1,27 @@
 # Last Light: AI agent entry point
 
+## Art-pending expansion and distinct event naming
+
+Owner authorizes completing the remaining expansion without generated artwork.
+Use docs/moon-sunshade-events.md and docs/remaining-expansion-art.md; never
+interpret prompt completion as playable integration or hosted release.
+All twelve Moon/Sunshade bearers are now6-star (three male/three female per
+banner), superseding earlier4five/2six splits. Three personal Masters each
+join existing chest choices; no new ordinary Conduits/drop rates/auto-equip.
+Both new events remain inactive until explicit launch approval.
+Banner names AND gamemode/activity names must differ from character identity
+names and Omnic evolution titles, while remaining recognizable and symbolic
+of their shared event. This is permanent naming criteria, not only a War fix.
+Preserve distinct existing approved activity names; do not derive a mode from
+a character's Omnic title. Current Rose pattern means80-pull single pity,
+material-bundle summons/duplicate Bloom,50% event captures at Lv60, not old
+200/500 pity or historical creature-summon rewards.
+Owner approves the exact login/streak ladder and ordinary shop prices in
+the event specification. Gifts are free one SEND/account/reset day to an
+accepted friend; no receiving cap. Mail never expires; claims atomic and
+idempotent. Legacy holdings seed seen; new acquisition markers sync online.
+Require real authority/schema/UI validation, no load writes or unearned grants.
+
 ## Character-linked ability art (2026-11-05)
 
 Every future character-specific ability image must embody the approved

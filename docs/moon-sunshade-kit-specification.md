@@ -14,6 +14,14 @@ certification or permission to increase numbers automatically.
 One personal Master can be equipped at a time. Acquisition, final strength approval,
 art prompts/delivery and playable release remain separate decisions.
 
+Latest implementation authorization: all twelve bearers are now six-star;
+owner requests art-neutral wiring of both inactive banners and approves all36
+personal Masters in the existing chest-choice pool, without changing drops
+or automatic equipment. Preserve every coefficient below and flagged values.
+[Current event/account rules](moon-sunshade-events.md) and
+[completed prompt inventory](remaining-expansion-art.md) supersede earlier
+unresolved acquisition/art-count gates, not actual artwork delivery.
+
 Descriptions below are intended as in-game text, not implementation reports.
 Numbers are proposed final base coefficients at100% Skill Power, before role
 and equipment bonuses. They are not inputs for another global1.6x skill/3x

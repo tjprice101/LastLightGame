@@ -1,5 +1,21 @@
 # Art library
 
+## Remaining Moon/Sunshade art: full prompt inventory
+
+[Complete delivery checklist](../docs/remaining-expansion-art.md):
+**207 required images plus12 optional equipment showcases,219 total**.
+The [Moon98-prompt pack](characters/Glow%20of%20the%20Moon's%20Light.md),
+[Sunshade97-prompt pack](characters/The%20Angel-blazened%20Sunshade.md) and
+[signature event24-prompt pack](creatures/Moon%20and%20Sunshade%20Events.md)
+cover all named sources exactly once. All twelve bearers are six-star.
+Six Vesperwing/Moonwake and six Solcarapace/Dawnforge forms/materials each
+complete the previously TBD event inventory. Bosses/captures share form art;
+no extra specialty chain, map, Profile picture or chest is required.
+No new artwork has been delivered or installed. Native art-neutral controls
+permit feature implementation before delivery; events remain inactive until
+explicit launch approval. Historical Moon-first status below is superseded
+for inventory coverage, not permission to repaint installed images.
+
 ## Moon banner design and prompt review
 
 [Glow of the Moon's Light](characters/Glow%20of%20the%20Moon's%20Light.md)

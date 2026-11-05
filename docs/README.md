@@ -1,5 +1,21 @@
 # Documentation hub
 
+**Art-pending expansion and current approvals:**
+[Both signature activities and exact account/shop rules](moon-sunshade-events.md)
+define Harbor of Unreturned Names/Vesperwing/Moonwake and Beneath the Borrowed
+Dawn/Solcarapace/Dawnforge. All twelve bearers are six-star; current Rose rules
+apply, both new schedules remain inactive. Owner approves login/streak tuning,
+ordinary tier prices and36 personal Masters in the existing chest pool.
+[Remaining art checklist](remaining-expansion-art.md) lists **207 required,
+12 optional,219 including optional images**, with a bottom total.
+[Sunshade97-prompt pack](../Art/characters/The%20Angel-blazened%20Sunshade.md)
+and [event24-prompt pack](../Art/creatures/Moon%20and%20Sunshade%20Events.md)
+complete the previously missing prompt inventory. No generated art is needed
+for art-neutral implementation; see the handoff for runtime/release evidence.
+New permanent criterion: banner and gamemode names differ from character
+identity names and Omnic titles while symbolically identifying their event.
+Historical status entries below describe earlier phases, not current blockers.
+
 **Phase2 Moon art review (2026-11-04):**
 [Moon evolution titles, full current inventory and98 prompts](../Art/characters/Glow%20of%20the%20Moon's%20Light.md)
 retain approved six-form appearances, exact portrait references and individual

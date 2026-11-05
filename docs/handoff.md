@@ -1,5 +1,51 @@
 # Current state and handoff
 
+## Current: completing art-pending expansion
+
+Task: finish remaining phases without Midjourney tokens; preserve every owner
+requirement. All twelve Moon/Sunshade bearers are now six-star, three male/
+three female per banner. Both schedules remain inactive until launch approval.
+Current Rose mechanical pattern replaces historical pity/capture/summon
+assumptions. Owner approves exact login/streak reward ladder, geometric ordinary
+shop prices and36 personal Masters in the existing chest-choice pool.
+Permanent new naming criterion: banner AND activity names differ from identity
+names and Omnic titles, while symbolically identifying the same event.
+
+Changes:
+- [Signature activity/enemy/material/social/shop specification](moon-sunshade-events.md):
+  Moon Harbor of Unreturned Names/Vesperwing/Moonwake and Sunshade Beneath the
+  Borrowed Dawn/Solcarapace/Dawnforge; no extra specialty chain or boss source.
+- [Complete missing-art checklist](remaining-expansion-art.md), **207 required
+  plus12 optional equipment sources,219 including optional**, literal bottom
+  total. Twelve bearers/72 forms,48 abilities,36 Masters,21 statuses,12 enemy
+  forms,12 materials and6 scenes; shared universal assets counted zero.
+- [Sunshade97-prompt pack](../Art/characters/The%20Angel-blazened%20Sunshade.md)
+  and [event24-prompt pack](../Art/creatures/Moon%20and%20Sunshade%20Events.md).
+  Moon98 prompts remain; original portrait/icon bytes untouched.
+- Shared appearance/Master parser reused, exact approved features preserved,
+  Sunshade24 ability icons explicitly use costume/equipment/power identity;
+  reference-free enemies/materials, portraits exact guide references150.
+- Updated plan, index, decision log, AI entry point, art workflow/guide/library
+  with all-six-star, art-pending and naming rules; earlier status below is history.
+
+Implemented at this boundary: **design/prompt inventory only**. Master bulk,
+seasonal combat/runtime and social/calendar/shop implementation are in progress;
+not yet claimed complete, validated or released. No artwork delivered, no
+generated PNG requests or working URLs fabricated. No live banner activation.
+
+Validation:
+- Three generators produced98/97/24 entries,219 unique export labels;
+  required count207 after excluding12 optional equipment illustrations.
+- `python -m unittest discover -s tools -p test_moon_banner_art.py`:5 passed.
+- `python -m unittest discover -s tools -p test_seasonal_art.py`:5 passed;
+  exact reproduction, counts, approved feature/ability fidelity, distinct
+  symbolic names, exact portrait references,380-word cap and15% clearance.
+- `python -m unittest discover -s tools -p test_character_style_references.py`:
+  3 passed.
+Known baseline: older shared art suite had176 unrelated historical failures;
+not repaired or claimed passing. Gameplay/build/authority/hosted validation
+will follow implementation, not inferred from these documentation checks.
+
 ## Character-linked ability art foundation (2026-11-05)
 
 Owner says Caevren onward ability images must match character design elements,

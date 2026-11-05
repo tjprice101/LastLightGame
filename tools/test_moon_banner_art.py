@@ -81,7 +81,7 @@ class MoonBannerArtTests(unittest.TestCase):
             self.assertIn(expected[slug], rows[-1])
         content = document()
         self.assertEqual(content.count("No hair, eye or skin changes."), 36)
-        self.assertIn("Counts remain TBD, not zero", content)
+        self.assertIn("Historical event counts were TBD, not zero", content)
         self.assertIn("Flagged kit values remain unchanged", content)
         self.assertNotRegex(content, r"/assets/.*\.png")
 

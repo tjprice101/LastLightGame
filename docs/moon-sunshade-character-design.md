@@ -17,8 +17,9 @@ separate review proposals, not automatic approval of a playable event.
 No runtime registrations, assets, drops,
 banner odds or launch dates are changed.
 
-Each banner retains four5-stars (two male/two female) and two6-stars
-(one male/one female). Both group themes are confirmed requirements; names,
+Latest owner clarification: each banner has **six6-stars**, three male and
+three female. This supersedes the earlier four5-star/two6-star distribution
+without changing appearances or approved kit coefficients. Both group themes are confirmed requirements; names,
 individual identity directions are now approved. Appearance specifications
 below develop those identities without changing their roles or backstories.
 Owner requests all designs in files for readable review, not only in question
@@ -101,7 +102,7 @@ their weapons are protecting; it does not make all six peaceful or identical.
 Owner selected this named mortal celestial order and subsequently accepted
 the six individual identities and complete appearance/power details.
 
-### Maerion — male,5-star, Oceanic Healer
+### Maerion — male,6-star, Oceanic Healer
 
 - **Who:** a battlefield surgeon who preserves the names on ruined ferry
   tokens. Reserved, meticulous and unexpectedly gentle with frightened people.
@@ -142,7 +143,7 @@ well-made hull; never generic splashes, feathers or Tizu's tidal wall.
 **Intentional changes:** coat length, plated ribwork, diadem and wing/arc
 counts only. Hair lock, token location and polearm type never change.
 
-### Caevren — male,5-star, Atmospheric Tank
+### Caevren — male,6-star, Atmospheric Tank
 
 - **Who:** an observatory sentinel who catches falling instruments before
   anyone notices the tower shaking. Dry humor; stillness under pressure.
@@ -180,7 +181,7 @@ orbital loops; grounded stance, no storm clouds or floating extra weapons.
 **Intentional changes:** structural plate layering, cage detail and exact
 wing/ring counts; never a hairstyle change or second flail.
 
-### Vespera — female,5-star, Infernic Support
+### Vespera — female,6-star, Infernic Support
 
 - **Who:** a night-watch signal officer who refuses to extinguish the final
   beacon while anyone remains beyond the walls. Stern, practical, fiercely loyal.
@@ -219,7 +220,7 @@ orange/gold Moon drift. Sharp lifting pennants suggest communication and resolve
 **Intentional changes:** longer coat panels, command insignia as abstract
 shapes, wing/arc counts; the braid, ribbon and single physical flag persist.
 
-### Ilyss — female,5-star, Chaotic Healer
+### Ilyss — female,6-star, Chaotic Healer
 
 - **Who:** a funerary restorer who repairs memorials but will not promise
   resurrection. Warm, candid and impatient with false consolation.
@@ -349,7 +350,7 @@ not permission to change every character's combat element to Infernic.
 Owner accepts the documented direction. Ignition remains aesthetic for
 non-Infernic members, not a new combat rule or automatic Burn application.
 
-### Rhaziel — male,5-star, Infernic Healer
+### Rhaziel — male,6-star, Infernic Healer
 
 - **Who:** a field armorer who returns repaired armor with its dents recorded,
   never polished out of history. Blunt, generous and stubbornly protective.
@@ -387,7 +388,7 @@ background, real sparks entering eyes, or Caldrex heat-storage cage.
 **Intentional changes:** repair seams, apron panels and wing/arc counts only.
 Hair forelock, tool hands and matte-black armor base stay fixed.
 
-### Oryn — male,5-star, Tranquilitic Support
+### Oryn — male,6-star, Tranquilitic Support
 
 - **Who:** a former ceremonial execution guard who became a mediator before
   carrying out an unjust sentence. Soft-spoken, observant and difficult to hurry.
@@ -425,7 +426,7 @@ not Serapha's lunar fan curves or Disciple's mind-control imagery.
 **Intentional changes:** seal relief, tabard length and wing/arc counts only;
 hair queue, square hammer and full-coverage armor never change.
 
-### Thessara — female,5-star, Oceanic Support
+### Thessara — female,6-star, Oceanic Support
 
 - **Who:** a desert reservoir captain who measures every promise in water
   delivered. Sardonic, practical and suspicious of beautiful speeches.
@@ -464,7 +465,7 @@ no steam obscuring the face and no broad ocean wave swallowing her design.
 **Intentional changes:** vessel platework and wing/arc counts; the two glaive
 chambers, three braids and bounded blue water are fixed.
 
-### Elaris — female,5-star, Botanic Attacker
+### Elaris — female,6-star, Botanic Attacker
 
 - **Who:** an orchard outrider who cuts firebreaks rather than waiting for
   permission to save the next grove. Adventurous and irreverently optimistic.
@@ -591,16 +592,18 @@ white hair fan, two side locks, shield hand and short blade stay fixed.
    Appearance design is approved; prompt authoring/approval remains separate.
 3. Review the [numeric in-game kits and36 personal Masters](moon-sunshade-kit-specification.md).
    Owner selects three alternative personal Masters per character, no added
-   ordinary Conduits. Acquisition remains a separate proposal, not an assumption.
+   ordinary Conduits. Owner subsequently approves all36 Masters joining the
+   existing chest-choice pool, preserving drops and manual equipment.
 4. Review the [Moon98-prompt pack](../Art/characters/Glow%20of%20the%20Moon's%20Light.md).
-   Enemy/material/map/reward requirements await separate event design;
-   Sunshade titles/prompts remain next after Moon review.
+   [Sunshade97 prompts](../Art/characters/The%20Angel-blazened%20Sunshade.md) and
+   [both signature activities](moon-sunshade-events.md) now complete the
+   enemy/material design and prompt inventory without generated artwork.
    Keep identity/kit/prompt/delivered-art/release approvals separate.
 
 Wing/ring/arc counts above are approved specifications, not generated art or combat
 mechanics. All twelve lines retain their physical identity; no hair/eye/skin
 transformation is proposed. Numeric kits and Conduit effects remain proposed;
-exact acquisition, final evolution titles and art prompts remain pending.
+acquisition scope is approved; actual generated artwork remains pending.
 No new character/banner is live.
 Refer to the [full roadmap](remaining-expansion-phases.md) for all retained
 event, asset, schedule and economy requirements.

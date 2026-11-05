@@ -1,0 +1,259 @@
+# Moon and Sunshade: signature activity enemy and material art
+
+**24 copy-ready prompts; no delivered images. Twelve fixed creature forms and twelve materials.**
+
+[Activity/loot/progression specification](../../docs/moon-sunshade-events.md) | [Moon character/scenery pack](../characters/Glow%20of%20the%20Moon's%20Light.md) | [Sunshade character/scenery pack](../characters/The%20Angel-blazened%20Sunshade.md) | [Full remaining-art checklist](../../docs/remaining-expansion-art.md)
+
+Reproduce: `python tools/build_seasonal_event_art.py`. Names remain outside image prose. Banner and gamemode names must differ from character identity and Omnic titles, yet remain symbolic of the same event. No copied Roselius or Rose material artwork.
+
+## Source count and export contract
+
+| Event | Enemy forms | Seed→Soul materials | Total |
+|---|---:|---:|---:|
+| Harbor of Unreturned Names / Moon |6|6|12|
+| Beneath the Borrowed Dawn / Sunshade |6|6|12|
+| Total |12|12|24|
+
+Bosses use the same authored form artwork as ordinary encounters, not extra portraits. The captured same-event forms are infusion fodder; no extra specialty-item chain. Each event's banner/event splash, header and arena are already counted in its character pack. No separate map, chest, reward logo or Profile image is required.
+
+Enemies and materials are reference-free. Original compact anime/cel species renderer, complete silhouettes within70% and continuous15% solid green-key safety margin on every side. Future reviewed offline keying only; never remove supplied alpha or globally erase matching gems/highlights. Cutout powers opaque and non-emissive, scenery separately full-bleed. Creature names, material labels, stacks and clocks stay accessible HTML.
+
+## Vesperwing / Common
+
+Proposed export: `moon-vesperwing-1.png` (not a runtime URL).
+
+**Design / intentional change:** Two small white moth wings, plain black carapace and one silver crescent plate; a single quiet white wake stroke.
+
+```text
+full-body gacha JRPG creature illustration, one compact lunar harbor moth Devourer, dark central carapace, white antennae, white-silver moth wings, one crescent ferry-token chest plate and split tail ribbon; no humanoid body or held weapon. Two small white moth wings, plain black carapace and one silver crescent plate; a single quiet white wake stroke. original compact gacha JRPG chibi anime renderer, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors, same compact species proportions in every form, simple early craft, not a mature Omnic wing array. costume equipment and powers only black white silver and charcoal; natural authored skin tones are exempt, no rainbow metal or extra elemental hues. Opaque sharply bounded non-emissive powers, painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings; no glows or glowing visual effects, subject colors unchanged, no scenery. --ar 4:3 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, blue effects, cyan effects, green clothing, green effects, purple effects, pink effects, orange effects, gold metal, humanoid, people, hands, held weapons, extra creatures
+```
+
+## Tokenwatch Vesperwing / Uncommon
+
+Proposed export: `moon-vesperwing-2.png` (not a runtime URL).
+
+**Design / intentional change:** Same two wings gain silver leading-edge ribs; paired white tail ribbons and two short wake arcs.
+
+```text
+full-body gacha JRPG creature illustration, one compact lunar harbor moth Devourer, dark central carapace, white antennae, white-silver moth wings, one crescent ferry-token chest plate and split tail ribbon; no humanoid body or held weapon. Same two wings gain silver leading-edge ribs; paired white tail ribbons and two short wake arcs. original compact gacha JRPG chibi anime renderer, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors, same compact species proportions in every form, simple early craft, not a mature Omnic wing array. costume equipment and powers only black white silver and charcoal; natural authored skin tones are exempt, no rainbow metal or extra elemental hues. Opaque sharply bounded non-emissive powers, painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings; no glows or glowing visual effects, subject colors unchanged, no scenery. --ar 4:3 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, blue effects, cyan effects, green clothing, green effects, purple effects, pink effects, orange effects, gold metal, humanoid, people, hands, held weapons, extra creatures
+```
+
+## Quaykeeper Vesperwing / Rare
+
+Proposed export: `moon-vesperwing-3.png` (not a runtime URL).
+
+**Design / intentional change:** Four moth wings, black-white segmented thorax plates, crescent rimmed antenna bases and two open silver wake arcs.
+
+```text
+full-body gacha JRPG creature illustration, one compact lunar harbor moth Devourer, dark central carapace, white antennae, white-silver moth wings, one crescent ferry-token chest plate and split tail ribbon; no humanoid body or held weapon. Four moth wings, black-white segmented thorax plates, crescent rimmed antenna bases and two open silver wake arcs. original compact gacha JRPG chibi anime renderer, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors, same compact species proportions in every form, layered stage-appropriate craft, compact central body retained. costume equipment and powers only black white silver and charcoal; natural authored skin tones are exempt, no rainbow metal or extra elemental hues. Opaque sharply bounded non-emissive powers, painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings; no glows or glowing visual effects, subject colors unchanged, no scenery. --ar 4:3 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, blue effects, cyan effects, green clothing, green effects, purple effects, pink effects, orange effects, gold metal, humanoid, people, hands, held weapons, extra creatures
+```
+
+## Nightlock Vesperwing / Epic
+
+Proposed export: `moon-vesperwing-4.png` (not a runtime URL).
+
+**Design / intentional change:** Six pleated wing panels, layered polished silver carapace and three interleaved open harbor arcs; body remains compact.
+
+```text
+full-body gacha JRPG creature illustration, one compact lunar harbor moth Devourer, dark central carapace, white antennae, white-silver moth wings, one crescent ferry-token chest plate and split tail ribbon; no humanoid body or held weapon. Six pleated wing panels, layered polished silver carapace and three interleaved open harbor arcs; body remains compact. original compact gacha JRPG chibi anime renderer, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors, same compact species proportions in every form, layered stage-appropriate craft, compact central body retained. costume equipment and powers only black white silver and charcoal; natural authored skin tones are exempt, no rainbow metal or extra elemental hues. Opaque sharply bounded non-emissive powers, painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings; no glows or glowing visual effects, subject colors unchanged, no scenery. --ar 4:3 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, blue effects, cyan effects, green clothing, green effects, purple effects, pink effects, orange effects, gold metal, humanoid, people, hands, held weapons, extra creatures
+```
+
+## Unreturned Harbor Vesperwing / Legendary
+
+Proposed export: `moon-vesperwing-5.png` (not a runtime URL).
+
+**Design / intentional change:** Eight monumental ribbed moth wings, dense black-silver token tracery and four open lunar arches, never a building carried on its back.
+
+```text
+full-body gacha JRPG creature illustration, one compact lunar harbor moth Devourer, dark central carapace, white antennae, white-silver moth wings, one crescent ferry-token chest plate and split tail ribbon; no humanoid body or held weapon. Eight monumental ribbed moth wings, dense black-silver token tracery and four open lunar arches, never a building carried on its back. original compact gacha JRPG chibi anime renderer, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors, same compact species proportions in every form, dense majestic late-form craft, central body and complete antennae/legs clear. costume equipment and powers only black white silver and charcoal; natural authored skin tones are exempt, no rainbow metal or extra elemental hues. Opaque sharply bounded non-emissive powers, painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings; no glows or glowing visual effects, subject colors unchanged, no scenery. --ar 4:3 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, blue effects, cyan effects, green clothing, green effects, purple effects, pink effects, orange effects, gold metal, humanoid, people, hands, held weapons, extra creatures
+```
+
+## Passage Beyond Midnight Vesperwing / Omnic
+
+Proposed export: `moon-vesperwing-6.png` (not a runtime URL).
+
+**Design / intentional change:** Twelve vast paired moth wings retain the Legendary rib architecture; five open crescent passages and dense wake filaments around one clear dark body.
+
+```text
+full-body gacha JRPG creature illustration, one compact lunar harbor moth Devourer, dark central carapace, white antennae, white-silver moth wings, one crescent ferry-token chest plate and split tail ribbon; no humanoid body or held weapon. Twelve vast paired moth wings retain the Legendary rib architecture; five open crescent passages and dense wake filaments around one clear dark body. original compact gacha JRPG chibi anime renderer, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors, same compact species proportions in every form, dense majestic late-form craft, central body and complete antennae/legs clear. costume equipment and powers only black white silver and charcoal; natural authored skin tones are exempt, no rainbow metal or extra elemental hues. Opaque sharply bounded non-emissive powers, painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings; no glows or glowing visual effects, subject colors unchanged, no scenery. --ar 4:3 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, blue effects, cyan effects, green clothing, green effects, purple effects, pink effects, orange effects, gold metal, humanoid, people, hands, held weapons, extra creatures
+```
+
+## Seed of Moonwake
+
+Proposed export: `moonwake-seed.png` (not a runtime URL).
+
+**Design / intentional change:** Tiny black seed capsule inside one smooth white crescent shell, two short silver root lines; readable humble seed, not a miniature world.
+
+```text
+one standalone seed crafting material, Tiny black seed capsule inside one smooth white crescent shell, two short silver root lines; readable humble seed, not a miniature world. recognizable original seed capsule retained through the chain; no faces or figures. clean anime game icon rendering, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors; object-only emblem with no people no figures no faces and no wielder, isolated subject with no cast-shadow backdrop. costume equipment and powers only black white silver and charcoal; natural authored skin tones are exempt, no rainbow metal or extra elemental hues. Opaque sharply bounded non-emissive powers; painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, no scenery. --ar 1:1 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, blue effects, cyan effects, green clothing, green effects, purple effects, pink effects, orange effects, gold metal, person, people, figure, humanoid, chibi, mascot, tiny character, angel
+```
+
+## Bud of Moonwake
+
+Proposed export: `moonwake-bud.png` (not a runtime URL).
+
+**Design / intentional change:** Same central capsule; two white folded petal shutters open, silver crescent ribs and a small wake ribbon.
+
+```text
+one standalone bud crafting material, Same central capsule; two white folded petal shutters open, silver crescent ribs and a small wake ribbon. recognizable original seed capsule retained through the chain; no faces or figures. clean anime game icon rendering, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors; object-only emblem with no people no figures no faces and no wielder, isolated subject with no cast-shadow backdrop. costume equipment and powers only black white silver and charcoal; natural authored skin tones are exempt, no rainbow metal or extra elemental hues. Opaque sharply bounded non-emissive powers; painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, no scenery. --ar 1:1 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, blue effects, cyan effects, green clothing, green effects, purple effects, pink effects, orange effects, gold metal, person, people, figure, humanoid, chibi, mascot, tiny character, angel
+```
+
+## Bloom of Moonwake
+
+Proposed export: `moonwake-bloom.png` (not a runtime URL).
+
+**Design / intentional change:** Four sharp white moonflower petals retain the black capsule; polished silver ribs and two orderly open wake arcs.
+
+```text
+one standalone bloom crafting material, Four sharp white moonflower petals retain the black capsule; polished silver ribs and two orderly open wake arcs. recognizable original seed capsule retained through the chain; no faces or figures. clean anime game icon rendering, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors; object-only emblem with no people no figures no faces and no wielder, isolated subject with no cast-shadow backdrop. costume equipment and powers only black white silver and charcoal; natural authored skin tones are exempt, no rainbow metal or extra elemental hues. Opaque sharply bounded non-emissive powers; painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, no scenery. --ar 1:1 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, blue effects, cyan effects, green clothing, green effects, purple effects, pink effects, orange effects, gold metal, person, people, figure, humanoid, chibi, mascot, tiny character, angel
+```
+
+## Crest of Moonwake
+
+Proposed export: `moonwake-crest.png` (not a runtime URL).
+
+**Design / intentional change:** Six layered white-black petal blades become a sculpted crescent seal; silver radial ribs and three open harbor arcs.
+
+```text
+one standalone crest crafting material, Six layered white-black petal blades become a sculpted crescent seal; silver radial ribs and three open harbor arcs. recognizable original seed capsule retained through the chain; no faces or figures. clean anime game icon rendering, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors; object-only emblem with no people no figures no faces and no wielder, isolated subject with no cast-shadow backdrop. costume equipment and powers only black white silver and charcoal; natural authored skin tones are exempt, no rainbow metal or extra elemental hues. Opaque sharply bounded non-emissive powers; painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, no scenery. --ar 1:1 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, blue effects, cyan effects, green clothing, green effects, purple effects, pink effects, orange effects, gold metal, person, people, figure, humanoid, chibi, mascot, tiny character, angel
+```
+
+## Heart of Moonwake
+
+Proposed export: `moonwake-heart.png` (not a runtime URL).
+
+**Design / intentional change:** Closed dark faceted central heart retains the crescent shell, eight interleaved silver petals and nested wake channels.
+
+```text
+one standalone heart crafting material, Closed dark faceted central heart retains the crescent shell, eight interleaved silver petals and nested wake channels. recognizable original seed capsule retained through the chain; no faces or figures. clean anime game icon rendering, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors; object-only emblem with no people no figures no faces and no wielder, isolated subject with no cast-shadow backdrop. costume equipment and powers only black white silver and charcoal; natural authored skin tones are exempt, no rainbow metal or extra elemental hues. Opaque sharply bounded non-emissive powers; painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, no scenery. --ar 1:1 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, blue effects, cyan effects, green clothing, green effects, purple effects, pink effects, orange effects, gold metal, person, people, figure, humanoid, chibi, mascot, tiny character, angel
+```
+
+## Soul of Moonwake
+
+Proposed export: `moonwake-soul.png` (not a runtime URL).
+
+**Design / intentional change:** Magnificent black-silver lunar seedworld retains the central crescent capsule; twelve layered white petals and five open harbor rails, dense precision faceting without figures or soul faces.
+
+```text
+one standalone soul crafting material, Magnificent black-silver lunar seedworld retains the central crescent capsule; twelve layered white petals and five open harbor rails, dense precision faceting without figures or soul faces. recognizable original seed capsule retained through the chain; no faces or figures. clean anime game icon rendering, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors; object-only emblem with no people no figures no faces and no wielder, isolated subject with no cast-shadow backdrop. costume equipment and powers only black white silver and charcoal; natural authored skin tones are exempt, no rainbow metal or extra elemental hues. Opaque sharply bounded non-emissive powers; painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, no scenery. --ar 1:1 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, blue effects, cyan effects, green clothing, green effects, purple effects, pink effects, orange effects, gold metal, person, people, figure, humanoid, chibi, mascot, tiny character, angel
+```
+
+## Solcarapace / Common
+
+Proposed export: `sunshade-solcarapace-1.png` (not a runtime URL).
+
+**Design / intentional change:** Plain black beetle shell, narrow gold rims, six short legs and one small orange-black seam flame. No mature wing array.
+
+```text
+full-body gacha JRPG creature illustration, one compact solar scarab Devourer, one black beetle body, gold carapace ridges, exactly six small armored legs, split wing cases, one gold wedge head crest and paired round shoulder vents; antennae fully visible, no humanoid body or held weapon. Plain black beetle shell, narrow gold rims, six short legs and one small orange-black seam flame. No mature wing array. original compact gacha JRPG chibi anime renderer, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors, same compact species proportions in every form, simple early craft, not a mature Omnic wing array. costume and equipment black and warm gold, sharply bounded orange-black ignition; natural authored skin hair and eye colors exempt; small authored elemental accents only, no rainbow metal. Opaque sharply bounded non-emissive powers, painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings; no glows or glowing visual effects, subject colors unchanged, no scenery. --ar 4:3 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, rainbow clothing, rainbow effects, pink effects, purple clothing, cyan armor, humanoid, people, hands, held weapons, extra creatures
+```
+
+## Dawnvent Solcarapace / Uncommon
+
+Proposed export: `sunshade-solcarapace-2.png` (not a runtime URL).
+
+**Design / intentional change:** Gold ribwork on the same shell, two opened wing cases, paired orange seam curls and reinforced head wedge.
+
+```text
+full-body gacha JRPG creature illustration, one compact solar scarab Devourer, one black beetle body, gold carapace ridges, exactly six small armored legs, split wing cases, one gold wedge head crest and paired round shoulder vents; antennae fully visible, no humanoid body or held weapon. Gold ribwork on the same shell, two opened wing cases, paired orange seam curls and reinforced head wedge. original compact gacha JRPG chibi anime renderer, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors, same compact species proportions in every form, simple early craft, not a mature Omnic wing array. costume and equipment black and warm gold, sharply bounded orange-black ignition; natural authored skin hair and eye colors exempt; small authored elemental accents only, no rainbow metal. Opaque sharply bounded non-emissive powers, painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings; no glows or glowing visual effects, subject colors unchanged, no scenery. --ar 4:3 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, rainbow clothing, rainbow effects, pink effects, purple clothing, cyan armor, humanoid, people, hands, held weapons, extra creatures
+```
+
+## Routeforge Solcarapace / Rare
+
+Proposed export: `sunshade-solcarapace-3.png` (not a runtime URL).
+
+**Design / intentional change:** Two broad armored flight wings, segmented gold shell shutters, distinct paired vents and two angular flame paths.
+
+```text
+full-body gacha JRPG creature illustration, one compact solar scarab Devourer, one black beetle body, gold carapace ridges, exactly six small armored legs, split wing cases, one gold wedge head crest and paired round shoulder vents; antennae fully visible, no humanoid body or held weapon. Two broad armored flight wings, segmented gold shell shutters, distinct paired vents and two angular flame paths. original compact gacha JRPG chibi anime renderer, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors, same compact species proportions in every form, layered stage-appropriate craft, compact central body retained. costume and equipment black and warm gold, sharply bounded orange-black ignition; natural authored skin hair and eye colors exempt; small authored elemental accents only, no rainbow metal. Opaque sharply bounded non-emissive powers, painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings; no glows or glowing visual effects, subject colors unchanged, no scenery. --ar 4:3 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, rainbow clothing, rainbow effects, pink effects, purple clothing, cyan armor, humanoid, people, hands, held weapons, extra creatures
+```
+
+## Canopyward Solcarapace / Epic
+
+Proposed export: `sunshade-solcarapace-4.png` (not a runtime URL).
+
+**Design / intentional change:** Four layered flight wings, black-gold vent mantle and three sharply folded flame arcs; all six legs remain visible.
+
+```text
+full-body gacha JRPG creature illustration, one compact solar scarab Devourer, one black beetle body, gold carapace ridges, exactly six small armored legs, split wing cases, one gold wedge head crest and paired round shoulder vents; antennae fully visible, no humanoid body or held weapon. Four layered flight wings, black-gold vent mantle and three sharply folded flame arcs; all six legs remain visible. original compact gacha JRPG chibi anime renderer, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors, same compact species proportions in every form, layered stage-appropriate craft, compact central body retained. costume and equipment black and warm gold, sharply bounded orange-black ignition; natural authored skin hair and eye colors exempt; small authored elemental accents only, no rainbow metal. Opaque sharply bounded non-emissive powers, painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings; no glows or glowing visual effects, subject colors unchanged, no scenery. --ar 4:3 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, rainbow clothing, rainbow effects, pink effects, purple clothing, cyan armor, humanoid, people, hands, held weapons, extra creatures
+```
+
+## Borrowed-Sun Solcarapace / Legendary
+
+Proposed export: `sunshade-solcarapace-5.png` (not a runtime URL).
+
+**Design / intentional change:** Six monumental wing-case fans, ornate gold carapace inlay and four open convection arcs; retained compact beetle body.
+
+```text
+full-body gacha JRPG creature illustration, one compact solar scarab Devourer, one black beetle body, gold carapace ridges, exactly six small armored legs, split wing cases, one gold wedge head crest and paired round shoulder vents; antennae fully visible, no humanoid body or held weapon. Six monumental wing-case fans, ornate gold carapace inlay and four open convection arcs; retained compact beetle body. original compact gacha JRPG chibi anime renderer, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors, same compact species proportions in every form, dense majestic late-form craft, central body and complete antennae/legs clear. costume and equipment black and warm gold, sharply bounded orange-black ignition; natural authored skin hair and eye colors exempt; small authored elemental accents only, no rainbow metal. Opaque sharply bounded non-emissive powers, painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings; no glows or glowing visual effects, subject colors unchanged, no scenery. --ar 4:3 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, rainbow clothing, rainbow effects, pink effects, purple clothing, cyan armor, humanoid, people, hands, held weapons, extra creatures
+```
+
+## Dawn Beyond the Broken Canopy Solcarapace / Omnic
+
+Proposed export: `sunshade-solcarapace-6.png` (not a runtime URL).
+
+**Design / intentional change:** Ten huge black-gold wing fans retain the vent architecture, five open solar arcs and dense orange-black flame channels, central beetle and crest readable.
+
+```text
+full-body gacha JRPG creature illustration, one compact solar scarab Devourer, one black beetle body, gold carapace ridges, exactly six small armored legs, split wing cases, one gold wedge head crest and paired round shoulder vents; antennae fully visible, no humanoid body or held weapon. Ten huge black-gold wing fans retain the vent architecture, five open solar arcs and dense orange-black flame channels, central beetle and crest readable. original compact gacha JRPG chibi anime renderer, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors, same compact species proportions in every form, dense majestic late-form craft, central body and complete antennae/legs clear. costume and equipment black and warm gold, sharply bounded orange-black ignition; natural authored skin hair and eye colors exempt; small authored elemental accents only, no rainbow metal. Opaque sharply bounded non-emissive powers, painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings; no glows or glowing visual effects, subject colors unchanged, no scenery. --ar 4:3 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, rainbow clothing, rainbow effects, pink effects, purple clothing, cyan armor, humanoid, people, hands, held weapons, extra creatures
+```
+
+## Seed of Dawnforge
+
+Proposed export: `dawnforge-seed.png` (not a runtime URL).
+
+**Design / intentional change:** One tiny black angular seed wrapped in a modest gold split shell, single bounded orange seam.
+
+```text
+one standalone seed crafting material, One tiny black angular seed wrapped in a modest gold split shell, single bounded orange seam. recognizable original seed capsule retained through the chain; no faces or figures. clean anime game icon rendering, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors; object-only emblem with no people no figures no faces and no wielder, isolated subject with no cast-shadow backdrop. costume and equipment black and warm gold, sharply bounded orange-black ignition; natural authored skin hair and eye colors exempt; small authored elemental accents only, no rainbow metal. Opaque sharply bounded non-emissive powers; painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, no scenery. --ar 1:1 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, rainbow clothing, rainbow effects, pink effects, purple clothing, cyan armor, person, people, figure, humanoid, chibi, mascot, tiny character, angel
+```
+
+## Bud of Dawnforge
+
+Proposed export: `dawnforge-bud.png` (not a runtime URL).
+
+**Design / intentional change:** Same seed under two opening gold pod plates, black folded inner bud and two orange-black joining strokes.
+
+```text
+one standalone bud crafting material, Same seed under two opening gold pod plates, black folded inner bud and two orange-black joining strokes. recognizable original seed capsule retained through the chain; no faces or figures. clean anime game icon rendering, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors; object-only emblem with no people no figures no faces and no wielder, isolated subject with no cast-shadow backdrop. costume and equipment black and warm gold, sharply bounded orange-black ignition; natural authored skin hair and eye colors exempt; small authored elemental accents only, no rainbow metal. Opaque sharply bounded non-emissive powers; painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, no scenery. --ar 1:1 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, rainbow clothing, rainbow effects, pink effects, purple clothing, cyan armor, person, people, figure, humanoid, chibi, mascot, tiny character, angel
+```
+
+## Bloom of Dawnforge
+
+Proposed export: `dawnforge-bloom.png` (not a runtime URL).
+
+**Design / intentional change:** Four black-gold blade petals around the original seed, precise orange seams and a short forked root clasp.
+
+```text
+one standalone bloom crafting material, Four black-gold blade petals around the original seed, precise orange seams and a short forked root clasp. recognizable original seed capsule retained through the chain; no faces or figures. clean anime game icon rendering, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors; object-only emblem with no people no figures no faces and no wielder, isolated subject with no cast-shadow backdrop. costume and equipment black and warm gold, sharply bounded orange-black ignition; natural authored skin hair and eye colors exempt; small authored elemental accents only, no rainbow metal. Opaque sharply bounded non-emissive powers; painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, no scenery. --ar 1:1 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, rainbow clothing, rainbow effects, pink effects, purple clothing, cyan armor, person, people, figure, humanoid, chibi, mascot, tiny character, angel
+```
+
+## Crest of Dawnforge
+
+Proposed export: `dawnforge-crest.png` (not a runtime URL).
+
+**Design / intentional change:** Six layered gold petal blades form a sunshade seal, black central seed, stepped orange channels and three open arcs.
+
+```text
+one standalone crest crafting material, Six layered gold petal blades form a sunshade seal, black central seed, stepped orange channels and three open arcs. recognizable original seed capsule retained through the chain; no faces or figures. clean anime game icon rendering, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors; object-only emblem with no people no figures no faces and no wielder, isolated subject with no cast-shadow backdrop. costume and equipment black and warm gold, sharply bounded orange-black ignition; natural authored skin hair and eye colors exempt; small authored elemental accents only, no rainbow metal. Opaque sharply bounded non-emissive powers; painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, no scenery. --ar 1:1 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, rainbow clothing, rainbow effects, pink effects, purple clothing, cyan armor, person, people, figure, humanoid, chibi, mascot, tiny character, angel
+```
+
+## Heart of Dawnforge
+
+Proposed export: `dawnforge-heart.png` (not a runtime URL).
+
+**Design / intentional change:** Faceted black solar heart within eight gold vent-petal shutters, dense repair-line filigree and four orange-black paths.
+
+```text
+one standalone heart crafting material, Faceted black solar heart within eight gold vent-petal shutters, dense repair-line filigree and four orange-black paths. recognizable original seed capsule retained through the chain; no faces or figures. clean anime game icon rendering, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors; object-only emblem with no people no figures no faces and no wielder, isolated subject with no cast-shadow backdrop. costume and equipment black and warm gold, sharply bounded orange-black ignition; natural authored skin hair and eye colors exempt; small authored elemental accents only, no rainbow metal. Opaque sharply bounded non-emissive powers; painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, no scenery. --ar 1:1 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, rainbow clothing, rainbow effects, pink effects, purple clothing, cyan armor, person, people, figure, humanoid, chibi, mascot, tiny character, angel
+```
+
+## Soul of Dawnforge
+
+Proposed export: `dawnforge-soul.png` (not a runtime URL).
+
+**Design / intentional change:** Magnificent enclosed black-gold seed sun with twelve integrated vent petals, five open solar channels and brilliant painted faceting; no generated glow on edges or soul figures.
+
+```text
+one standalone soul crafting material, Magnificent enclosed black-gold seed sun with twelve integrated vent petals, five open solar channels and brilliant painted faceting; no generated glow on edges or soul figures. recognizable original seed capsule retained through the chain; no faces or figures. clean anime game icon rendering, clean precise anime contours, crisp cel shading, smooth non-emissive painted highlights and jewel-like saturated colors; object-only emblem with no people no figures no faces and no wielder, isolated subject with no cast-shadow backdrop. costume and equipment black and warm gold, sharply bounded orange-black ignition; natural authored skin hair and eye colors exempt; small authored elemental accents only, no rainbow metal. Opaque sharply bounded non-emissive powers; painted metal reflections only. sharp crisp focus, clean precise lineart, no smudging. entire ensemble inside central70 percent, continuous empty15 percent border on every side and corner; uninterrupted solid-background safety margin, every weapon wing hair armor and effect tip fully visible, nothing touches or crosses the frame. plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, no scenery. --ar 1:1 --niji 6 --s 100 --q 1 --no text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, blur, blurry, smudged, soft focus, painterly smears, watercolor, sketch, depth of field, noise, rainbow clothing, rainbow effects, pink effects, purple clothing, cyan armor, person, people, figure, humanoid, chibi, mascot, tiny character, angel
+```

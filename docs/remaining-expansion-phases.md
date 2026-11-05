@@ -13,10 +13,9 @@ because they appear here.
 
 ### Confirmed clarifications
 
-- Each new banner has **six characters: four5-star and two6-star**.
-  There are three male and three female characters overall: each gender has
-  two5-stars and one6-star. This replaces the original conflicting request
-  for three characters per star tier with incompatible parenthetical counts.
+- Latest owner clarification: each new banner has **six six-star characters**,
+  three male and three female. It supersedes the earlier four5-star/two6-star
+  clarification; keep accepted identities, appearances and flagged numbers.
 - Daily reset: **8:00 PM America/New_York**, following daylight saving.
   Weekly reset: **Sunday at8:00 PM in that same timezone**. This supersedes
   interpreting the original "EST" as a fixed UTC-5 offset.
@@ -45,7 +44,8 @@ Follow these steps in order for every character, including both new banners:
    shapes, movement and increasingly enveloping power, not generic effect fog.
 4. **Prompt-to-identity check.** Prompts must visibly emphasize these features.
    Could someone seeing only the name and Omnic form understand why the name
-   fits? Keep form titles distinct from associated activity/mode names.
+   fits? Banner AND gamemode names must differ from character identity names
+   and Omnic titles, while remaining recognizable and symbolic of the event.
 5. **Uniqueness and spectacle check.** Is the result individual, awe-inspiring,
    epic and thematically coherent? Escalate from a readable simple base to an
    extraordinary Omnic; do not make every earlier form Omnic-level.
@@ -72,18 +72,26 @@ See [art workflow](art-workflow.md) and the
 | 2 | Identity-first design and approval for both new banners | Starts art lead time early; requires the character workflow, existing roster-gap audit and owner review, not completed live-service UI. |
 | 3 | Shared acquisition/equipment QoL and material-shop refresh | Establishes reusable selection, reward-detail and first-acquisition feedback before adding twelve characters and new reward sources. Independent of Phase2 design approval. |
 | 4 | Mailbox, friend gifts and monthly login calendar | Uses Phase1 day keys and Phase3 acquisition feedback; mailbox delivery precedes gifts and calendar delivery integration. |
-| 5 | Special Banner #2: Glow of the Moon's Light | Uses Phase1 scheduling/archive, approved Phase2 designs, supplied/reviewed art and Phase3 reward/equipment foundations. |
+| 5 | Special Banner #2: Glow of the Moon's Light | Uses Phase1 scheduling/archive, approved Phase2 designs and Phase3 reward/equipment foundations. Art-neutral implementation is now authorized; reviewed art can follow. |
 | 6 | Special Banner #3: The Angel-blazened Sunshade | Reuses the validated Moon event lifecycle, with its own approved roster, assets and theme. |
 
 **Current delivery:** Phase1 is implemented and released, including the
 follow-up post-event shop requirements. [Validation/publication](handoff.md).
-Phase2 design is underway: twelve identity directions accepted, with
+Phase2 design is complete: twelve identity directions accepted, with
 [all72 appearance/power specifications](moon-sunshade-character-design.md)
 approved by the owner. [Twelve kits and36 personal Masters](moon-sunshade-kit-specification.md)
-are now proposed for review. Owner chooses Moon-first art work with flagged
-kit values unchanged: [98 prompts/titles/inventory](../Art/characters/Glow%20of%20the%20Moon's%20Light.md)
-are drafted for review. Sunshade prompts and all delivered art remain pending.
-Phases3-6 remain unimplemented; target banner windows are not activated.
+have accepted directions, with flagged coefficients unchanged. The
+[98 Moon prompts](../Art/characters/Glow%20of%20the%20Moon's%20Light.md),
+[97 Sunshade prompts](../Art/characters/The%20Angel-blazened%20Sunshade.md) and
+[24 event prompts](../Art/creatures/Moon%20and%20Sunshade%20Events.md)
+complete the prompt inventory. All actual generated art remains pending.
+Owner now authorizes completing Phases3-6 without generated artwork.
+[Signature activities and confirmed account/shop rules](moon-sunshade-events.md)
+define the latest current-Rose mechanical pattern and approved login ladder,
+free friend-gift allowance, mailbox and tier prices. Both schedules remain
+inactive until explicit launch approval. [Art checklist](remaining-expansion-art.md)
+accounts for207 required plus12 optional images. Runtime implementation and
+validation are tracked in the handoff; do not treat this design as release proof.
 
 This is implementation order, not a new marketing calendar. Phase2 design/art
 preparation can run alongside approved foundation work. Phases3/4 do not
@@ -147,7 +155,7 @@ Do not silently rewrite existing characters to manufacture a gap.
 ### Banner #2: Glow of the Moon's Light
 
 - Requested target window: **November1,2026 through November30,2026 at reset**.
-- Six new Element-Bearers with the confirmed four5-star/two6-star distribution.
+- Six new six-star Element-Bearers, three male and three female.
 - **Black-and-white shimmering moonlight angelic warriors**, adorned in shiny
   metallic armor; embody the moon's strength and space's beauty and regality.
 - Apply the full character-first workflow even though the group theme is
@@ -194,8 +202,8 @@ separate gates. No missing-image URLs, unrelated substitute art or auto-grants.
   and polished, meaningful animations rather than a visually ambiguous list.
 - Keep chest choice and equipment choice consistent but distinct: inspect/
   choose is not automatic equip, and cancellation must not consume chests.
-- Decide bulk limits, duplicate eligibility, selection editing and transaction
-  semantics before implementation. Reuse shared saved-reward presentation;
+- Confirmed: up to owned chest count/remaining unowned Masters, no duplicates,
+  editable across characters, one atomic confirmation. Reuse saved presentation;
   celebrate only persisted results, with Skip, focus and reduced motion.
 
 ### Material shop
@@ -204,10 +212,10 @@ separate gates. No missing-image URLs, unrelated substitute art or auto-grants.
   once **any owned character reaches the relevant leveling threshold**.
 - Prices grow **exponentially** across the relevant progression; the requested
   anchor is **about550,000 Prismatica for one Soul of <element>**.
-- Confirm the exact covered materials, thresholds, price curve, stock/quantity
-  rules and any daily/weekly refresh behavior. The heading "Shop refresh"
-  does not itself specify timed stock replenishment. Do not silently include
-  special-banner materials or replace existing infusion/fodder requirements.
+- Confirmed: ordinary Seed/Bud/Bloom/Crest/Heart/Soul prices80/470/2750/
+  16100/94100/550000, unlock current owned Element-Bearer levels0/30/45/60/
+  75/90. Existing1/5/10 quantities, unlimited purchases/no timed stock.
+  Preserve event prices and current infusion/fodder requirements.
 - Use shared eligibility/cost helpers in previews and atomic transactions.
   Preserve exact counts/currencies, overflow rejection and failed-save safety.
 
@@ -219,9 +227,9 @@ separate gates. No missing-image URLs, unrelated substitute art or auto-grants.
   Do not clear it merely because an unrelated menu was opened.
 - Also define keyboard-focus and touch equivalents; reduced motion uses a
   static marker. Preserve accessible labels and avoid color-only meaning.
-- Decide which acquisition categories count, legacy-account initialization
-  and whether unread state syncs across devices. Do not mark the entire
-  historical inventory as newly acquired without owner approval.
+- Confirmed: first-ever characters, captured forms, materials, Conduits and
+  Masters; legacy holdings seed seen, unread syncs online. Hover/focus/tap
+  clears the item and parent paths; do not mark old holdings new.
 
 ## Phase4: mailbox, gifts and monthly login calendar
 
@@ -229,8 +237,8 @@ separate gates. No missing-image URLs, unrelated substitute art or auto-grants.
 
 Create a mailbox delivery system for **patch notes, friend gifts and similar
 deliveries**. Support readable informational messages and clearly identified
-claimable attachments, with duplicate-safe, atomic reward claims. Decide
-expiry, retention, read state, claim-all and attachment limits before building.
+claimable attachments, with duplicate-safe, atomic reward claims. Confirmed:
+no expiry, persistent read/claimed states, individual/claim-all atomic claims.
 A read receipt must not be confused with a successful reward claim.
 
 ### Friend gifts
@@ -243,10 +251,10 @@ Add a once-per-day option to gift friends **one of**:
   **currently active special banners**.
 
 Deliver gifts through the mailbox and use the shared daily boundary.
-Before implementation confirm whether once/day is per friend or per sender
-overall, whether gifts deduct inventory or are a free allowance, recipient
-limits, eligible friendship rules, and active-banner checks at send/claim.
-Do not assume these choices or introduce daily premium generation silently.
+Confirmed: one send per sender account per reset day, free allowance without
+inventory deduction, currently accepted friend required, no receiving cap.
+Authority checks active-event Seed eligibility at send; a saved attachment
+does not become invalid when the event later closes.
 Sending/claiming/retrying must never duplicate or partially lose attachments.
 
 ### Calendar and reward draft
@@ -256,17 +264,12 @@ awards the **next reward in the sequence** for days actually logged in, and
 tracks consecutive-day streaks. Rewards must become greater/better through
 the month and with more consistent attendance/streaks.
 
-**Proposed structure, not approved tuning:** separate monthly attendance
-progress from current consecutive streak; use a rising base-reward ladder
-with stronger milestone days and additional streak milestones. A missed day
-does not silently invent a login or claim. Show next reward, monthly progress,
-streak, claimed rewards and time to reset. Exact amounts/items and milestone
-days must be drafted and approved against gift/banner economy budgets.
-
-Resolve calendar month versus rolling month, what the original "concurrent
-days" means beyond consecutive streaks, missed-day effects, automatic versus
-manual claims, streak carryover, month length, eligibility for late joiners,
-and catch-up policy before implementation. No paid catch-up is authorized.
+**Approved tuning:** exact [reward ladder and budget](moon-sunshade-events.md#approved-reward-and-shop-tuning).
+Calendar month follows New York reset-day key; monthly attendance cumulative,
+separate consecutive streak. One manual claim/day, next ordinal reward,
+actual month length. Missed days retain monthly attendance but break streak;
+streak crosses month boundaries. No automatic/catch-up rewards or paid catch-up.
+Show next reward, monthly progress, streak, claimed rewards and time to reset.
 
 ### Exit checks
 
@@ -279,8 +282,8 @@ rules, denied writes, overflow and actual saved reward feedback.
 Deliver Moon first, then Sunshade, each with its own approved design package:
 
 1. Register approved characters, kits, Conduits, progression and event rules.
-2. Preserve/archive reviewed delivered sources and wire every art surface;
-   validate evolution identity, facing, complete silhouettes and revisions.
+2. Wire neutral named visuals now; when delivered, preserve/archive reviewed
+   sources and verify evolution identity, facing, containment and revisions.
 3. Integrate approved draw/event rules with atomic purchases/rewards,
    acquisition details, first-acquisition indicators and optional mailbox
    hooks only where approved. Keep existing accounts and unrelated pools.
@@ -307,6 +310,6 @@ Deliver Moon first, then Sunshade, each with its own approved design package:
 | Phase8 first-acquisition red pulsing indicators / hover clear | Phase3 |
 | Phase8 Master-slot details and animated UI overhaul | Phase3 |
 
-No original Phase7 was supplied; none is silently invented. The next actual
-work after Phase1 validation is the Phase2 character interview, not immediate
-activation of the unimplemented Moon/Sunshade target banner dates.
+No original Phase7 was supplied; none is silently invented. Character
+interview/appearance/kit design is complete; implement approved remaining
+systems without artwork, not immediate activation of obsolete target dates.

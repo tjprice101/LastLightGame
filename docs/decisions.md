@@ -5,6 +5,31 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Remaining expansion, art-pending authorization: owner has exhausted generation
+tokens and requests complete feature wiring before artwork delivery.
+All twelve new bearers are6-star (three male/three female per banner), overriding
+the earlier4five/2six split. Both new banners/activities remain inactive until
+explicit launch approval. Reuse current Rose format:80-pull single pity,
+1.1% bearer tier,98.9% material bundles, duplicate15Bloom and50% event captures
+at Lv60; do not revive historical200/500 pity or creature summon awards.
+Three Masters each join the existing chest-choice pool without changing drops.
+[Activity/enemy/material contract](moon-sunshade-events.md).
+
+Permanent event naming criterion: banner AND gamemode/activity names must
+differ from character identities and Omnic titles, while staying recognizable
+and symbolic of the event. Harbor of Unreturned Names and Beneath the Borrowed
+Dawn are separate activity names, not substituted banner or character titles.
+
+Calendar/mail/gifts/shop approval: owner approves the exact monthly attendance
+and cross-month streak reward ladder and approximately geometric ordinary
+material prices in the activity specification. Manual claim once New York
+reset-day; monthly cumulative attendance/no catch-up, missed day breaks streak.
+Free one gift SEND/account/day to an accepted friend; no sender deduction or
+receiving cap. Persistent no-expiry mail with atomic individual/claim-all.
+Bulk Master choices editable/no duplicates/one-save; legacy acquisitions seed
+seen and future unread markers sync online. These rules require real authority
+validation, not local clock eligibility or client-funded saves.
+
 Character-linked ability art (2026-11-05): owner requests Moon Caevren onward
 ability images match character design elements and makes this a future
 foundation. All20 affected prompts now retain equipment, costume-detail and

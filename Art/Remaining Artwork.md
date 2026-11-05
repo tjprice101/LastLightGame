@@ -1,5 +1,15 @@
 # Remaining artwork: current generation queue
 
+## Remaining expansion, art-pending authorization
+
+The earlier native/Calamity queue below is complete, not the new seasonal
+queue. See [the consolidated expansion checklist](../docs/remaining-expansion-art.md):
+**207 required Moon/Sunshade images,12 optional equipment illustrations,
+219 including optional**. Both complete character packs and the two signature
+enemy/material chains are linked there. No new images have been delivered.
+Feature implementation is authorized without waiting for generation; both
+events remain inactive until explicit launch approval.
+
 ## Copy-ready packs
 
 | Pack | Images | What to generate |
@@ -8,7 +18,7 @@
 | [Native identity symbols](ui/Native%20Identity%20Status%20Icons.md) |0|All27 delivered symbols are archived, cleaned and installed (D-323)|
 | [Calamitic Conduits](conduits/Calamitic%20Conduits.md) |0|All five machines and the shared token are archived, cleaned and installed (D-325)|
 | [Calamitic Element-Bearers](characters/Calamitic%20Element-Bearers.md) |0|All portraits, ability/status icons, Conduits, materials and Rise-blessed emblem installed (D-441)|
-| [Calamitic Master Conduits](conduits/Calamitic%20Master%20Conduits.md) |9|Three Masters each for Ozriel, Ilvaris and Kaelith (D-442); neutral pending tiles until delivery|
+| [Calamitic Master Conduits](conduits/Calamitic%20Master%20Conduits.md) |0|All nine delivered and installed (D-448); original sources and reviewed settings preserved|
 | [Gates of Oblivion](creatures/Gates%20of%20Oblivion.md) |0|All ten enemies, banner and arena installed (D-441)|
 | **Current queue** |**0**|All listed production packs are installed|
 

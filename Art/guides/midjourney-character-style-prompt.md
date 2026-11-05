@@ -1,5 +1,15 @@
 # Last Light — Character Art Midjourney Prompt Guide
 
+**Distinct event naming foundation:** banner names AND activity/gamemode names
+must differ from character identity names and Omnic form titles, yet remain
+recognizable and symbolic of their event. A shared visual theme is appropriate;
+reusing a character's ultimate title as the mode name is not. Keep names
+outside image prose; express the connection through authored equipment,
+costume, power and scenery motifs. Moon/Sunshade activity/enemy/material
+directions and their complete source inventory are in
+[the event specification](../../docs/moon-sunshade-events.md) and
+[the delivery checklist](../../docs/remaining-expansion-art.md).
+
 **Character-linked ability art (2026-11-05):** every future character-specific
 ability icon expresses its effect through recognizable approved equipment,
 costume materials/trim and personal power geometry, not a generic effect with
