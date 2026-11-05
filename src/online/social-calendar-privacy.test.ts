@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { freshGame, friendProfileView, resolveOperation } from '../../supabase/functions/game-operation/engine';
 
 describe('social/calendar data stays private', () => {
@@ -17,7 +18,7 @@ describe('social/calendar data stays private', () => {
     }
   });
   it('stores social/calendar metadata outside the game aggregate and never adds it to friend references', () => {
-    const sql = readFileSync('supabase\\migrations\\20261105000000_social_calendar.sql', 'utf8');
+    const sql = readFileSync(join('supabase', 'migrations', '20261105000000_social_calendar.sql'), 'utf8');
     expect(sql).toContain('create table private.calendar_attendance');
     expect(sql).toContain('create table private.player_mail');
     expect(sql).not.toContain('create or replace function public.friend_profile');

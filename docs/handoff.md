@@ -74,6 +74,9 @@ Production authority and both SQL migrations are deployed. Hosted verification:
 
 Client commit/push and matching Pages SHA/content verification remain pending
 at this snapshot. No hosted-client release claim until those operations pass.
+Initial Pages CI caught two Windows-only test fixture paths, while8075 other
+tests passed. Replaced those paths with platform-native `node:path` joins;
+all privacy, CSS motion/accessibility and transaction assertions are retained.
 Prompt delivery queue remains207 required/12 optional/219 including optional.
 Explicit launch timing and generated-image delivery remain owner gates;
 do not auto-activate either new banner. Ilyss's exact chosen-cleanse requirement

@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { bindAcquisitionMarkers } from './acquisition-markers';
 import { acknowledgeAcquisitions, type AcquisitionHoldings } from '../game/acquisition-markers';
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 const fixture = (): AcquisitionHoldings & { capturedCharacters: { instanceId: string; creatureId: string }[] } => ({
   characters: { ember: {}, tide: {} }, materials: { 'infernic-common': 4 },
@@ -43,7 +44,7 @@ describe('acquisition indicators across real routes and item surfaces', () => {
     expect(document.querySelector('[data-inventory-material]')?.getAttribute('tabindex')).toBe('0');
     expect(document.querySelector('[data-inventory-material] .new-acquisition-mark')?.getAttribute('aria-hidden')).toBe('true');
     expect(document.querySelector('[data-inventory-material]')?.getAttribute('aria-describedby')).toContain('new-acquisition-');
-    const css = readFileSync('src\\presentation\\acquisition-markers.css', 'utf8');
+    const css = readFileSync(join('src', 'presentation', 'acquisition-markers.css'), 'utf8');
     expect(css).toContain('html[data-motion="reduced"]');
     expect(css).toContain('animation: none');
     expect(css).toContain('1.9s ease-in-out 3');
