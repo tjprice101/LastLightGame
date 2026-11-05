@@ -79,8 +79,9 @@ See [art workflow](art-workflow.md) and the
 follow-up post-event shop requirements. [Validation/publication](handoff.md).
 Phase2 design is underway: twelve identity directions accepted, with
 [all72 appearance/power specifications](moon-sunshade-character-design.md)
-now proposed for review. Kits, Conduits, prompts and delivered art remain
-pending. Phases3-6 remain unimplemented; target banner windows are not activated.
+approved by the owner. [Twelve kits and36 personal Masters](moon-sunshade-kit-specification.md)
+are now proposed for review. Prompts and delivered art remain pending.
+Phases3-6 remain unimplemented; target banner windows are not activated.
 
 This is implementation order, not a new marketing calendar. Phase2 design/art
 preparation can run alongside approved foundation work. Phases3/4 do not
@@ -170,8 +171,9 @@ splash art, battle arena and any required event/reward/enemy/material artwork.
 Explicitly inventory portrait forms, ability icons, weapons, Conduit icons,
 headers, scenery and additional needed assets instead of assuming a fixed
 count. Universal shared actions stay shared unless a change is approved.
-Clarify Conduit types/counts and acquisition, including personal Masters if
-intended; the request does not yet fix those numbers.
+Owner subsequently confirms three alternative personal Masters per character,
+36 total, with no additional ordinary Conduits. Acquisition remains unresolved;
+do not silently expand chest pools or assign costs/drops.
 
 Do not invent approved rates, pity, event stage counts, drop tables, material
 recipes or numeric kits. Present these designs for review. Character approval,

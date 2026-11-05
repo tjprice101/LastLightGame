@@ -2,12 +2,15 @@
 
 ## Status and approval boundary
 
-**Phase2, steps2-3: appearance and aesthetic-power proposals (2026-11-04).**
+**Phase2, steps2-3: approved appearances and aesthetic powers (2026-11-04).**
 Owner approves the twelve identity directions and requests more clothing,
 design and appearance detail before continuing. Both shared order directions,
 names, elements, roles and individual identity seeds below are accepted.
-The newly detailed appearances and power geometry remain reviewable proposals,
-not approved art prompts, numeric kits or playable characters.
+Owner subsequently approves all appearance/power details below and requests
+kits/Conduits next. These are approved design specifications, not approved art
+prompts, numeric kits or playable characters.
+The [complete twelve-kit/36-Master proposal](moon-sunshade-kit-specification.md)
+is the next separate review package.
 No runtime registrations, assets, drops,
 banner odds or launch dates are changed.
 
@@ -93,7 +96,7 @@ appearance expresses deliberate craft and elemental manifestations, not a
 new divine species or proof that Let has returned. Moonlight reveals what
 their weapons are protecting; it does not make all six peaceful or identical.
 Owner selected this named mortal celestial order and subsequently accepted
-the six individual identity directions. New appearance detail awaits review.
+the six individual identities and complete appearance/power details.
 
 ### Maerion — male,5-star, Oceanic Healer
 
@@ -578,19 +581,21 @@ white hair fan, two side locks, shield hand and short blade stay fixed.
 
 ## Next design gates
 
-1. Identity names, element/role placement and shared order directions are
-   accepted. Do not treat that as approval of newly added appearance details.
+1. Identity names, element/role placement, shared order directions and all
+   appearance/power details are accepted.
 2. This document now specifies fixed face/hair/eye signatures, costume materials,
    exact weapons, all72 evolution appearances and aesthetic-power geometry.
-   Owner reviews these additions before appearance/prompt lock.
-3. Write numeric in-game kits, associated Conduit alternatives and acquisition
-   proposals as separate reviewable sections, not hidden assumptions.
+   Appearance design is approved; prompt authoring/approval remains separate.
+3. Review the [numeric in-game kits and36 personal Masters](moon-sunshade-kit-specification.md).
+   Owner selects three alternative personal Masters per character, no added
+   ordinary Conduits. Acquisition remains a separate proposal, not an assumption.
 4. Inventory all required character/event art and author reproducible prompts.
    Keep identity/kit/prompt/delivered-art/release approvals separate.
 
-Wing/ring/arc counts above are explicit proposals, not generated art or combat
+Wing/ring/arc counts above are approved specifications, not generated art or combat
 mechanics. All twelve lines retain their physical identity; no hair/eye/skin
-transformation is proposed. Numeric kits, Conduits, exact acquisition details,
-final evolution titles and art prompts remain the next design work, not live.
+transformation is proposed. Numeric kits and Conduit effects remain proposed;
+exact acquisition, final evolution titles and art prompts remain pending.
+No new character/banner is live.
 Refer to the [full roadmap](remaining-expansion-phases.md) for all retained
 event, asset, schedule and economy requirements.

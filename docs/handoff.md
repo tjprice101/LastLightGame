@@ -1,5 +1,24 @@
 # Current state and handoff
 
+## Phase2 appearance approval and complete kit draft (2026-11-04)
+
+Owner reviews/approves all72 appearances and asks for kits/Conduits next;
+selects three alternative personal Masters per character,36 total, no added
+ordinary Conduits. [Appearance file](moon-sunshade-character-design.md) records
+approval. [New readable kit file](moon-sunshade-kit-specification.md) supplies
+twelve complete native kits,36 Master names/stat bonuses/effects and all36
+mechanical art directions. Reuses existing Support perk for healer identities;
+retains25/40/100 Gauge costs, ordinary recovery and equipment scaling rules.
+Explicitly distinguishes native stored resources from generated Master effects,
+bounded clocks, actual absorption/healing, mark replacement and routing.
+These are unvalidated numerical proposals, not gameplay implementation.
+No new catalog IDs, RNG, authority changes, grants or schedule activation.
+Kit/effect approval, acquisition, benchmark checks, final titles/prompts,
+delivered-art review and live integration remain separate next gates.
+Appearance publication `2dc6aaa35146a286e0522b5a932c838b2c8fea15`;
+Pages run41956526434 passed full test/build/deploy workflow.
+Documentation-only edits; coverage/structure checks, not claimed combat tests.
+
 ## Phase2 full appearance proposal (2026-11-04)
 
 Owner accepts the twelve identity directions, then requests more clothing,
@@ -13,8 +32,8 @@ simply; late forms retain earlier motifs and expand their own architecture.
 Wing counts/geometry vary rather than assigning identical feather halos.
 No hair/eye/skin transformations, new facial-feature exceptions, generated
 art, runtime registrations, mechanics or event schedule changes.
-Appearance/power details remain proposals pending review; numeric in-game
-kits/Conduits, evolution titles and prompts remain next. Documentation-only;
+At this drafting step, appearance/power details were proposals pending review;
+their later approval and kit draft are recorded above. Documentation-only;
 reviewed coverage and Markdown structure, no runtime tests needed.
 
 ## Shop sheen containment (2026-11-04)

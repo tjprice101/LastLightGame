@@ -1,12 +1,14 @@
 # Documentation hub
 
-**Phase2 appearance review (2026-11-04):**
+**Phase2 kit review (2026-11-04):**
 [Moon and Sunshade character designs](moon-sunshade-character-design.md)
 retain twelve accepted identity directions and the current22-character role
 audit. All72 evolution appearances now specify clothing, fixed features,
-weapons and exact aesthetic-power geometry. New appearance details await
-review; numeric kits, Conduits and prompts follow. No new characters or banners
-are live.
+weapons and exact aesthetic-power geometry; owner approves these designs.
+[Twelve complete in-game kits and36 personal Masters](moon-sunshade-kit-specification.md)
+are now proposed for separate review, including mechanical art directions.
+Three Masters per character/no added ordinary Conduits is confirmed scope,
+not approval of their new effects. No new characters or banners are live.
 
 **Special-banner lifecycle (2026-11-04):**
 [Reset clock, Rose closure, archive and post-event shops](special-banner-lifecycle.md).

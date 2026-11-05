@@ -15,6 +15,15 @@ the subsequently added appearance specifications or numeric kits.
 Keep complete design documents available before subsequent approval questions.
 [All twelve character designs](moon-sunshade-character-design.md).
 
+Phase2 appearance approval and Conduit scope (2026-11-04): after reviewing
+the expanded file, owner approves all twelve six-form appearances and aesthetic
+power details, and requests kits/Conduits next. Each character receives three
+alternative personal Masters,36 total, with no additional ordinary Conduits.
+New kit numbers/Master effects remain separate proposals for approval;
+acquisition, prompt generation, artwork intake and playable release are not
+authorized by this design approval.
+[Kit and Master proposal](moon-sunshade-kit-specification.md).
+
 Phase1 lifecycle/shop approval (2026-11-04): owner says to implement both
 foundations and active Rose closure. Archive is browse-only; associated
 activities close with draws November30 at8 PM New York. Finish the current
