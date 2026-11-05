@@ -7,7 +7,7 @@ atomic claims/retries and the two applied production migrations.
 [Seasonal benchmark checks](enemy-benchmark-calibration.md#bounded-moonsunshade-checks-art-pending-implementation)
 separate paper output/support/packet survival from144 actual pressured fights.
 [Handoff](handoff.md) records the8077-test integration pass, build, deployed
-authority/hosted smokes and final client publication gate. Both new event schedules remain inactive, regardless of
+authority/hosted smokes and verified Pages release. Both new event schedules remain inactive, regardless of
 whether owned-character/Master systems are deployed.
 
 **Art-pending expansion and current approvals:**

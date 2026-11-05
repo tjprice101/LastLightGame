@@ -1,5 +1,19 @@
 # Current state and handoff
 
+## Published art-neutral expansion
+
+Runtime release `d325cc751779ba22f355479f5c57a0795d5f2ca2` is pushed and
+hosted. [Pages run41988594603](https://github.com/tjprice101/LastLightGame/actions/runs/41988594603)
+passed **8077 tests/249 files**, configured online build and deployment.
+Hosted `version.json.build` matched that exact commit. The hosted title loaded
+with online sign-in/create-account and offline controls. Both production
+migrations, matching authority deployment and disposable hosted social/event
+smokes passed as detailed below. No Moon/Sunshade launch or gift window was
+activated. **207 required and12 optional images remain undelivered**; neutral
+named visuals are intentional. No gameplay feature from this bounded expansion
+is left waiting on artwork. Older publication-pending snapshots below describe
+the validation sequence, not the current release state.
+
 ## Current integration: art-neutral expansion ready for publication checks
 
 Owner-authorized remaining feature wiring is implemented locally:
