@@ -1,9 +1,8 @@
 import unittest
 
 from build_calamitic_art import references
-from build_elemental_war_art import RENDERER
 from build_moon_banner_art import (
-    CHARACTERS, OUTPUT, RARITIES, STATUS_SYMBOLS, approved_sections, blocks, cutout, document,
+    CHARACTERS, MOON_RENDERER, OUTPUT, RARITIES, STATUS_SYMBOLS, approved_sections, blocks, cutout, document,
     vespera_cutout,
 )
 
@@ -35,7 +34,7 @@ class MoonBannerArtTests(unittest.TestCase):
                     self.assertIn(fixed, prompt)
                     self.assertIn(form, prompt)
                     self.assertIn(character["weapon"], prompt)
-                    self.assertIn(RENDERER, prompt)
+                    self.assertIn(MOON_RENDERER, prompt)
                     self.assertTrue(prompt.endswith(f"--sref {refs[stage]} --sw 150"))
                     self.assertNotIn(character["titles"][stage - 1], prompt)
                     self.assertIn("glow on edges", prompt.split(" --no ", 1)[1])
@@ -116,12 +115,22 @@ class MoonBannerArtTests(unittest.TestCase):
                            f"{character['weapon']}; {fixed} {form} {character['motif']}")
             old = cutout(old_subject, "4:3", True, stage)
             new = next(row[2] for row in rows if row[0] == f"vespera-{stage}.png")
-            self.assertLess(len(new.split(" --ar")[0].split()),
+            self.assertLess(len(new.split(" Palette lock")[0].split()),
                             len(old.split(" --ar")[0].split()) * .85)
             self.assertIn("one physical pennant", new)
             self.assertIn("All flame ribbons originate at the standard crest", new)
         subject = "one silver signal clasp"
         self.assertLess(len(vespera_cutout(subject)), len(cutout(subject)))
+
+    def test_all_moon_portraits_preserve_identity_without_saturated_color_conflict(self):
+        portraits = [prompt for _, _, prompt, _ in blocks() if "--ar 4:3" in prompt]
+        self.assertEqual(len(portraits), 36)
+        for prompt in portraits:
+            self.assertNotIn("jewel-like saturated colors", prompt)
+            self.assertIn("Palette lock covers costume, equipment, powers and their reflections", prompt)
+            self.assertIn("preserve authored skin, hair and eyes", prompt)
+            self.assertIn("Green key is background only", prompt)
+            self.assertIn("--niji 6 --s 100 --q 1", prompt)
 
 
 if __name__ == "__main__":

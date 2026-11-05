@@ -1,5 +1,19 @@
 # Current state and handoff
 
+## Moon portrait follow-through
+
+Owner requested the same error be corrected elsewhere in the Moon file.
+Audit found the inherited `jewel-like saturated colors` cue still present in
+all36 portraits, including Vespera. Removed that competing color cue while
+retaining precise jewel-like edge rendering, and explicitly locked costume,
+equipment, powers and reflections to black/white/silver/charcoal. Authored
+skin/hair/eyes remain exempt; green key cannot tint the subject.
+Fixed features, every approved stage row, compact renderer, portrait reference
+URLs/weights, parameters, margins and source inventory are unchanged.
+Previously corrected59 character-linked objects and three shared scenes remain
+unchanged. This is a Moon-only generator correction, not a global portrait
+rewrite or generated-image approval.
+
 ## Character-linked object palette/construction correction
 
 Owner reported Caevren output drifting into spiked/faceted weapon shapes and

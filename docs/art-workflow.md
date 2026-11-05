@@ -12,7 +12,11 @@ silver chain and rectangular wind vanes are not a spiked gemstone mace.
 Sunshade retains only each owner's authored elemental accents.
 The solid green key is background only, not subject tint or reflected light.
 Preserve the compact cel renderer, reference-free objects and clearance.
-Portraits, event creatures/materials and installed artwork are unchanged.
+Moon follow-through also removes the competing saturated-color cue from all36
+portraits and explicitly locks powers/reflections to the authored palette,
+exempting fixed skin/hair/eyes. Their approved stage designs, compact renderer,
+references and parameters stay intact. Sunshade portraits, event creatures/
+materials and installed artwork are unchanged.
 Validate the reproducible packs and owner inheritance with
 `python -m unittest discover -s tools -p test_seasonal_art.py`.
 Written guards cannot guarantee a matching generation: inspect actual pixels

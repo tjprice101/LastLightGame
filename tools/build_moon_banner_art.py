@@ -20,6 +20,8 @@ PALETTE = ("costume equipment and powers only black white silver and charcoal; "
 NO = ("text, lettering, numbers, runes, watermark, cropping, photorealism, 3d render, "
       "glow on edges, glow, light bloom, haze, aura, backsplash, background gradient, textured background, " + QUALITY_NO)
 COLOR_NO = "blue effects, cyan effects, green clothing, green effects, purple effects, pink effects, orange effects, gold metal"
+MOON_RENDERER = RENDERER.replace("jewel-like saturated colors",
+                               "jewel-like precision of edges within the authored palette")
 
 CHARACTERS = (
     dict(name="Maerion", slug="maerion", gender="male",
@@ -243,7 +245,12 @@ def blocks():
                            "and a diagonal silver signal cord. All flame ribbons originate at the standard "
                            "crest; one physical pennant, no additional held flags")
             rows.append((f"{character['slug']}-{stage}.png", f"{title}, {character['name']} / {rarity}",
-                         render(subject, "4:3", True, stage), form))
+                         render(subject, "4:3", True, stage).replace(RENDERER, MOON_RENDERER).replace(
+                             " --ar ",
+                             " Palette lock covers costume, equipment, powers and their reflections: "
+                             "black, white, silver and charcoal only; preserve authored skin, hair and eyes. "
+                             "Neutral metal reflections, no iridescent tint. Green key is background only, "
+                             "never reflected onto the subject. --ar ", 1), form))
         for action, name, symbol in character["icons"]:
             rows.append((f"{character['slug']}-{action}.png", f"{character['name']} / {name}",
                          character_object(character, f"one standalone ability pictogram: {symbol}"),
@@ -290,7 +297,9 @@ def document():
         "Palette applies to cores, reflections and powers too; the green key is background only. "
         "Generic saturated-jewel and faceted-core cues are removed from these objects. Caevren uses "
         "a smooth dark counterweight, white meridian cage/yokes and silver chain, not a spiked crystal mace. "
-        "Portrait prompts and references are unchanged; generated pixels still require review.",
+        "All36 portraits now remove the same saturated-color cue and explicitly lock reflections/powers "
+        "to the authored palette; fixed features, stage designs and references are unchanged. "
+        "Generated pixels still require review.",
         "## Vespera visual-language pilot\n\n"
         "Vespera's six portraits retain the shorter subject-first pilot: fixed identity and pose, "
         "approved stage costume/powers, renderer, palette, then containment/key and parameters. "
