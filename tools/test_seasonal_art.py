@@ -81,6 +81,34 @@ class SeasonalArtTests(unittest.TestCase):
                     self.assertNotIn("object-only", prompt)
                     self.assertNotIn("--sref", prompt)
 
+    def test_every_character_object_inherits_its_own_materials_and_power_shapes(self):
+        count = 0
+        for pack in (moon, sun):
+            rows = pack.blocks()
+            for character in pack.CHARACTERS:
+                slug = character["slug"]
+                owned = [prompt for asset, _, prompt, _ in rows
+                         if "--ar 1:1" in prompt and (
+                             asset.startswith((slug + "-", "master-" + slug + "-"))
+                             or asset.startswith(("moon-status-" + slug + "-", "sunshade-status-" + slug + "-")))]
+                self.assertGreaterEqual(len(owned), 8)
+                for prompt in owned:
+                    count += 1
+                    with self.subTest(owner=slug, prompt=prompt[:65]):
+                        self.assertIn(character["icon_identity"], prompt)
+                        self.assertIn("Owner construction:", prompt)
+                        self.assertIn("green key is background only", prompt)
+                        self.assertIn("every plate, core, reflection and power ribbon", prompt)
+                        self.assertNotIn("jewel-like saturated colors", prompt)
+                        self.assertNotIn("silver faceted cores", prompt)
+                        self.assertNotIn("crystal reactor", prompt)
+                        self.assertNotIn("--sref", prompt)
+                        self.assertIn("object-only", prompt)
+                        if slug == "caevren":
+                            self.assertIn("smooth dark sphere held inside white meridian cage ribs", prompt)
+                            self.assertIn("no mace spikes or crystal clusters", prompt)
+        self.assertEqual(count, 117)
+
 
 if __name__ == "__main__":
     unittest.main()

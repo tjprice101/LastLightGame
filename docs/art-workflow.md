@@ -1,5 +1,23 @@
 # Art and asset workflow
 
+## Owner-bound object palette and construction correction
+
+The Moon/Sunshade character-linked ability, equipment, Master and status
+generators now carry each owner's actual costume-material relief, equipment
+construction and power shapes into every object prompt, not just abilities.
+Palette applies to inner cores, reflections and powers as well as casing.
+Generic saturated-jewel/faceted-core/reactor cues must not override those
+materials. Caevren's smooth dark counterweight, white meridian ribs/yokes,
+silver chain and rectangular wind vanes are not a spiked gemstone mace.
+Sunshade retains only each owner's authored elemental accents.
+The solid green key is background only, not subject tint or reflected light.
+Preserve the compact cel renderer, reference-free objects and clearance.
+Portraits, event creatures/materials and installed artwork are unchanged.
+Validate the reproducible packs and owner inheritance with
+`python -m unittest discover -s tools -p test_seasonal_art.py`.
+Written guards cannot guarantee a matching generation: inspect actual pixels
+before approving a pack. No unapproved identity image/reference is invented.
+
 ## Complete art-pending seasonal expansion
 
 Owner authorizes feature completion without generated art. See the

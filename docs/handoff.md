@@ -1,5 +1,22 @@
 # Current state and handoff
 
+## Character-linked object palette/construction correction
+
+Owner reported Caevren output drifting into spiked/faceted weapon shapes and
+off-character finish. Corrected the source generators across both seasonal
+packs: all117 character-linked objects (abilities, optional equipment, Masters
+and statuses) now inherit their individual owner's material/trim/power identity.
+Removed generic saturated-jewel rendering and generic faceted/crystal-core cues.
+Caevren explicitly retains a smooth dark sphere, white meridian cage/yokes,
+silver chain and rectangular wind vanes, with no mace spikes/crystal clusters.
+Owner palette applies inside cores/reflections/powers; background green cannot
+tint the subject. Sunshade's authored steel-blue/olive/white-gray exceptions
+remain owner-specific. No portrait/reference, shared scene, event material/
+creature, runtime image or gameplay changes. No generated-image success claim.
+Reproduce the two character packs; validate Moon and seasonal art suites.
+Vespera's preceding portrait pilot remains intact; her objects receive the
+same owner-material correction, rather than reverting her identity.
+
 ## Vespera prompt-language pilot
 
 Owner requested a scoped rewrite, retaining her identity and art style.

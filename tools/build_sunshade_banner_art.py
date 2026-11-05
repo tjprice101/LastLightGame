@@ -1,7 +1,7 @@
 """Reproduce Sunshade prompts from the approved appearances and Master designs."""
 from pathlib import Path
 
-from build_moon_banner_art import RARITIES, approved_sections, cutout, master_rows
+from build_moon_banner_art import RARITIES, approved_sections, character_object, cutout, master_rows
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "Art" / "characters" / "The Angel-blazened Sunshade.md"
@@ -107,6 +107,10 @@ def sun_cutout(subject, aspect="1:1", portrait=False, stage=1):
     return cutout(subject, aspect, portrait, stage, palette=PALETTE, color_no=COLOR_NO)
 
 
+def sun_object(character, subject):
+    return character_object(character, subject, palette=PALETTE, color_no=COLOR_NO)
+
+
 def blocks():
     rows = []
     approved = approved_sections(CHARACTERS)
@@ -120,22 +124,23 @@ def blocks():
                          sun_cutout(subject, "4:3", True, stage), form))
         for action, name, symbol in character["icons"]:
             rows.append((f"{character['slug']}-{action}.png", f"{character['name']} / {name}",
-                         sun_cutout(f"one standalone ability pictogram: {symbol}; character-design details: {character['icon_identity']}"),
+                         sun_object(character, f"one standalone ability pictogram: {symbol}"),
                          "Recognizable signature-equipment, costume-detail and power geometry; no figure."))
         rows.append((f"{character['slug']}-weapon.png", f"{character['name']} / Signature equipment",
-                     sun_cutout(f"one standalone equipment illustration: {character['weapon']}; black-gold craftsmanship; no hands"),
+                     sun_object(character, f"one standalone equipment illustration: {character['weapon']}; no hands"),
                      "Optional showcase; shared Normal Attack/Defense remain unchanged."))
-    foundation = ("one integrated luxury-scale mechanical chassis, precision gears, crystal reactor, pistons, "
+    foundation = ("one integrated luxury-scale mechanical chassis, precision gears, owner-matched metal reactor, pistons, "
                   "articulated wing assemblies and dense nested engraved platework; polished black-gold metal "
                   "with sharply bounded orange-black energy paths, magnificent Omnic craftsmanship, not buildings")
     for character, slot, name, design in master_rows(CHARACTERS):
-        prompt = sun_cutout(f"one standalone personal Master: {design} {foundation}")
+        prompt = sun_object(character, f"one standalone personal Master: {design} {foundation}")
         prompt = prompt.replace(" --no ", " --no buildings, towers, houses, furniture, musical instrument, ", 1)
         rows.append((f"master-{character['slug']}-{slot}.png", f"{character['name']} / {name}", prompt,
                      "Mechanical personal Master; no reference flags or implied new mechanics."))
     for owner, slug, label, symbol in STATUS_SYMBOLS:
+        character = next(entry for entry in CHARACTERS if entry["slug"] == owner)
         rows.append((f"sunshade-status-{owner}-{slug}.png", f"{owner.title()} / {label} status",
-                     sun_cutout(f"one bold small-scale status pictogram: {symbol}; simple readable silhouette"),
+                     sun_object(character, f"one bold small-scale status pictogram: {symbol}; simple readable silhouette"),
                      "Symbol only; actual owners, numeric values and clocks stay HTML."))
     for asset, label, aspect, subject in SCENES:
         prompt = (f"{subject}; original compact anime game scenery renderer, clean contours, crisp cel shading, "
@@ -156,6 +161,11 @@ def document():
         "[Signature activities](../../docs/moon-sunshade-events.md) | "
         "[Complete missing-art checklist](../../docs/remaining-expansion-art.md)",
         "Reproduce: `python tools/build_sunshade_banner_art.py`. Do not hand-edit generated blocks.",
+        "**Owner-material correction:** all character-linked objects carry the owner's costume-material "
+        "relief, equipment construction and bounded power shapes. Black/gold remains structural; "
+        "only explicitly authored steel-blue, muted olive or white-gray accents appear for their owners. "
+        "Cores/reflections inherit that palette; no generic saturated gemstones or crystal reactor. "
+        "Green key is background only. Portrait prompts and references remain unchanged.",
         "## Inventory",
         "| Category | Images |\n|---|---:|\n| Six-form portraits |36|\n| Passive/Skill1/Skill2/Last Flare |24|\n"
         "| Personal Masters |18|\n| Native/Master status pictograms |10|\n| Banner/splash, header, arena |3|\n"

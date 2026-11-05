@@ -27,6 +27,7 @@ CHARACTERS = (
                  "Steward of Unfinished Voyages", "Harbor for the Unreturned", "Every Name Carried Home"),
          weapon="one crescent polearm with a long dark shaft and blunt inward silver curve",
          motif="white surgeon coat over black segmented armor; three small unlettered ferry tokens on the left-belt clasp; water forms hull ribs, never feathers",
+         icon_identity="white field-coat panel folds over black segmented plate insets, three unlettered silver ferry tokens and blunt crescent polearm relief; silver-black water forms curved hull ribs, never feathers",
          icons=(
              ("passive", "Names Still Carried", "three unlettered ferry tokens beside a crescent reservoir with one measured silver water band"),
              ("skill1", "Crescent Triage", "one crescent polearm tip beside a precise inward water stitch and a small shelter rib"),
@@ -200,6 +201,33 @@ def vespera_cutout(subject, aspect="1:1", portrait=False, stage=1):
             f"depth of field, noise, {COLOR_NO}{exclusions}{suffix}")
 
 
+def character_object(character, subject, *, palette=PALETTE, color_no=COLOR_NO):
+    identity = character["icon_identity"]
+    construction = ""
+    if character["slug"] == "caevren":
+        construction = (
+            "The weight is a smooth dark sphere held inside white meridian cage ribs, not a cut gemstone; "
+            "short silver handle, articulated chain, squared white yoke plates and stepped rectangular "
+            "wind vanes; blunt engineered edges, no mace spikes or crystal clusters. ")
+    prompt = cutout(
+        f"{subject}. Owner construction: {identity}. {construction}"
+        "Match these costume materials as object inlays and relief only, never a miniature wearer. "
+        "Keep the depicted action readable; status symbols stay simple, weapons retain their authored "
+        "outline, Masters alone use dense connected mechanical assemblies",
+        palette=palette, color_no=color_no)
+    prompt = prompt.replace(
+        "smooth non-emissive painted highlights and jewel-like saturated colors",
+        "non-emissive painted highlights; jewel-like precision of edges, not colored gemstones")
+    prompt = prompt.replace(
+        ". " + palette + ".",
+        ". " + palette + "; these colors apply to every plate, core, reflection and power ribbon, "
+        "not just the outer casing. Neutral white reflections stay neutral; no iridescent metal. "
+        "The green key is background only, no reflected green or background-colored subject edges.")
+    if character["slug"] == "caevren":
+        prompt = prompt.replace(" --no ", " --no mace spikes, crystal clusters, gemstone weight, ", 1)
+    return prompt
+
+
 def blocks():
     rows = []
     approved = approved_sections()
@@ -217,30 +245,25 @@ def blocks():
             rows.append((f"{character['slug']}-{stage}.png", f"{title}, {character['name']} / {rarity}",
                          render(subject, "4:3", True, stage), form))
         for action, name, symbol in character["icons"]:
-            identity = character.get("icon_identity", "")
             rows.append((f"{character['slug']}-{action}.png", f"{character['name']} / {name}",
-                         render(f"one standalone ability pictogram: {symbol}"
-                                + ((f"; {identity}" if character["slug"] == "vespera" else
-                                    f"; character-design details: {identity}") if identity else "")),
-                         "Recognizable equipment, costume-detail and power motifs; no figure."
-                         if identity else "New symbolic composition; no figure."))
+                         character_object(character, f"one standalone ability pictogram: {symbol}"),
+                         "Owner-specific equipment, costume materials and power geometry; no figure."))
         rows.append((f"{character['slug']}-weapon.png", f"{character['name']} / Signature equipment",
-                     render(f"one standalone equipment illustration: {character['weapon']}; exquisitely crafted silver-black metal; no hands"),
+                     character_object(character, f"one standalone equipment illustration: {character['weapon']}; no hands"),
                      "Optional showcase export; not replacement Normal Attack/Defense art."))
     foundation = ("cosmic ornate resplendent mechanical masterpiece, one integrated luxury-scale chassis, "
                   "precision gears, nested engraved platework and vast connected gantries, "
-                  "black-white polished enamel and silver faceted cores, crisp painted specular reflections; "
+                  "owner-matched polished enamel and metal cores, crisp painted specular reflections; "
                   "architecture words describe a mechanism, not buildings")
     for character, slot, name, design in master_rows():
-        render = vespera_cutout if character["slug"] == "vespera" else cutout
-        prompt = render(f"one standalone Omnic personal Master: {design} {foundation}")
+        prompt = character_object(character, f"one standalone Omnic personal Master: {design} {foundation}")
         prompt = prompt.replace(" --no ", " --no buildings, cathedral buildings, towers, houses, furniture, musical instrument, ", 1)
         rows.append((f"master-{character['slug']}-{slot}.png", f"{character['name']} / {name}", prompt,
                      "Mechanical art proposal; kit coefficients unchanged."))
     for owner, slug, label, symbol in STATUS_SYMBOLS:
-        render = vespera_cutout if owner == "vespera" else cutout
+        character = next(entry for entry in CHARACTERS if entry["slug"] == owner)
         rows.append((f"moon-status-{owner}-{slug}.png", f"{owner.title()} / {label} status",
-                     render(f"one bold small-scale status pictogram: {symbol}; simple readable silhouette"),
+                     character_object(character, f"one bold small-scale status pictogram: {symbol}; simple readable silhouette"),
                      "Symbol only; numeric counters and clocks remain HTML."))
     for asset, label, aspect, subject in SCENES:
         prompt = (f"{subject}; original compact anime game scenery renderer, crisp contours, cel shading, "
@@ -262,12 +285,19 @@ def document():
         "[Approved appearances](../../docs/moon-sunshade-character-design.md) | "
         "[Kits and strength flags](../../docs/moon-sunshade-kit-specification.md)",
         "Reproduce: `python tools/build_moon_banner_art.py`. Do not edit generated blocks by hand.",
+        "**Owner-material correction:** every character-linked ability, weapon, Master and status now "
+        "carries its owner's equipment construction, costume-material relief and exact power geometry. "
+        "Palette applies to cores, reflections and powers too; the green key is background only. "
+        "Generic saturated-jewel and faceted-core cues are removed from these objects. Caevren uses "
+        "a smooth dark counterweight, white meridian cage/yokes and silver chain, not a spiked crystal mace. "
+        "Portrait prompts and references are unchanged; generated pixels still require review.",
         "## Vespera visual-language pilot\n\n"
-        "All16 Vespera prompts use a shorter subject-first composition: fixed identity and pose, "
+        "Vespera's six portraits retain the shorter subject-first pilot: fixed identity and pose, "
         "approved stage costume/powers, renderer, palette, then containment/key and parameters. "
         "Six portraits, four abilities, one optional weapon, three Masters and two status icons are covered. "
         "Full approved design/change notes remain beside portraits; no appearance or kit changes. "
-        "Other characters and shared event scenery are not part of this pilot.\n\n"
+        "The later owner-material correction extends object identity checks across both banners; "
+        "other portraits and shared event scenery are not part of this pilot.\n\n"
         "Generate Common and Omnic plus one ability icon first; inspect identity, single standard/pennant, "
         "flame origins, silhouette clearance and crisp rendering before spending on the remaining set. "
         "Use Draft only if the selected model supports it; these prompts retain `--niji 6`, not an "
