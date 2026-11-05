@@ -1,4 +1,4 @@
-import { starters, getStarter, isStarterId, type StarterId } from './content/starters';
+import { starters, getStarter, isStarterId, starterVow, type StarterId } from './content/starters';
 import { characterArt, characterName } from './content/character-art';
 import { elementAccents, materialArt, materialName, dungeonArt } from './content/dungeon-art';
 import { conduits, conduitEffect, conduitEquipReason, conduitUpgradeCost, isConduitId, type ConduitSlots } from './content/conduits';
@@ -29,7 +29,8 @@ import { dungeonEncounter } from './content/dungeons';
 import { storyRegions, storyRules, storyEncounter, storyCreature, storyLoot, storyBossBonus, storyClearReward } from './content/story';
 import { getSummonBanner, isSummonBannerId } from './content/summon-banners';
 import { bannerPityLimits, bannerPercent } from './content/standard-banner';
-import { calamityActivities, calamityEncounter, calamityChest, calamityLootTable, parseCalamityChestId, type CalamityTier } from './content/calamity';
+import { calamityActivities, calamityEncounter, calamityChest, calamityLootTable, parseCalamityChestId, isCalamityActivityId, type CalamityTier } from './content/calamity';
+import { isNewEventId } from './content/moon-sunshade-events';
 import { warEncounter, warLoot, elementalWars } from './content/elemental-war';
 import { activityAccess } from './game/activity-access';
 import { normalizeStats, phaseZeroStatKeys, phaseZeroStatLabels, statDisplayUnit } from './content/phase-zero-stats';
@@ -602,23 +603,25 @@ function activity(calamity = false): string {
   const war = elementalWars.find(entry => entry.name === selectedActivity);
   const activityId = dungeon?.id ?? mode?.id ?? 'infernic';
   const stage = state.activityStage, tier = state.calamityTier;
-  const encounter = calamity ? calamityEncounter(activityId, tier) : dungeon ? dungeonEncounter(dungeon.id, stage) : mode ? infusionEncounter(mode.id, stage) : war ? warEncounter(war.character, stage) : null;
-  const stages = calamity ? 3 : dungeon ? dungeonStageCount : mode ? infusionStageCount(mode.id) : war ? 10 : 1;
-  const unlocked = calamity ? calamityUnlockedTier(account(), activityId) : dungeon ? account().dungeonStages[dungeon.id] ?? 1
+  const calamityId = isCalamityActivityId(activityId) ? activityId : 'heavens';
+  const showCalamity = calamity && isCalamityActivityId(activityId);
+  const encounter = showCalamity ? calamityEncounter(calamityId, tier) : dungeon ? dungeonEncounter(dungeon.id, stage) : mode ? infusionEncounter(mode.id, stage) : war ? warEncounter(war.character, stage) : null;
+  const stages = showCalamity ? 3 : dungeon ? dungeonStageCount : mode ? infusionStageCount(mode.id) : war ? 10 : 1;
+  const unlocked = showCalamity ? calamityUnlockedTier(account(), calamityId) : dungeon ? account().dungeonStages[dungeon.id] ?? 1
     : mode ? account().infusionStages[mode.id] ?? 1 : war ? account().warStages?.[war.character] ?? 1 : 1;
-  const access = activityAccess(account(), calamity ? { kind: 'calamity', activity: activityId, tier } : dungeon ? { kind: 'dungeon', element: dungeon.id, stage }
+  const access = activityAccess(account(), showCalamity ? { kind: 'calamity', activity: calamityId, tier } : dungeon ? { kind: 'dungeon', element: dungeon.id, stage }
     : mode ? { kind: 'infusion', mode: mode.id, stage } : war ? { kind: 'war', character: war.character, stage } : { kind: 'training' });
-  const art = calamity ? `backgrounds/calamity-arena-ex-${tier}` : encounter && 'background' in encounter && encounter.background ? `backgrounds/${encounter.background.replace(/\.png$/, '')}` : 'backgrounds/grassy-field';
-  const chest = calamity ? calamityChest(activityId, tier) : null;
+  const art = showCalamity ? `backgrounds/calamity-arena-ex-${tier}` : encounter && 'background' in encounter && encounter.background ? `backgrounds/${encounter.background.replace(/\.png$/, '')}` : 'backgrounds/grassy-field';
+  const chest = showCalamity ? calamityChest(calamityId, tier) : null;
   const source: StageLootSource | null = dungeon ? { kind: 'dungeon', element: dungeon.id } : mode ? { kind: 'infusion', mode: mode.id } : war ? { kind: 'war', character: war.character } : null;
   return `${heading()}<div class="activity-detail"><section class="activity-scenery glass">${image(art)}
-    <div><p class="eyebrow">${calamity ? `Calamity EX+${tier}` : 'Normal'}</p><h2>${esc(selectedActivity)}</h2><p>${encounter ? `Lv.${encounter.level}${calamity || ('boss' in encounter && encounter.boss) ? ' / Boss' : ''}` : 'Endless waves / starts at Lv.1'}</p>
-    <div class="action-row">${chest ? button('Chests', 'chests') : ''}${mode?.id === 'machines' ? button('Focus Loot', 'machineFocus') : ''}<button class="pill primary enter-activity" data-screen="battle" ${!access.unlocked ? 'disabled' : ''}>${uiIcon('gameplay')}${calamity ? 'Enter Calamity' : 'Enter activity'}</button></div></div></section>
-    ${glass(calamity ? 'Choose difficulty' : 'Stage selection', `${calamity ? `<label class="field">Activity<select id="calamity-activity">${calamityActivities.map(entry => `<option value="${entry.name}" ${selectedActivity === entry.name ? 'selected' : ''}>${entry.name}</option>`).join('')}</select></label>` : ''}
-    <div class="tabs">${button('Normal', 'activity', !calamity)}${dungeon || mode ? button('Calamity', 'calamity', calamity) : ''}</div>
+    <div><p class="eyebrow">${showCalamity ? `Calamity EX+${tier}` : 'Normal'}</p><h2>${esc(selectedActivity)}</h2><p>${encounter ? `Lv.${encounter.level}${showCalamity || ('boss' in encounter && encounter.boss) ? ' / Boss' : ''}` : 'Endless waves / starts at Lv.1'}</p>
+    <div class="action-row">${chest ? button('Chests', 'chests') : ''}${mode?.id === 'machines' ? button('Focus Loot', 'machineFocus') : ''}<button class="pill primary enter-activity" data-screen="battle" ${!access.unlocked ? 'disabled' : ''}>${uiIcon('gameplay')}${showCalamity ? 'Enter Calamity' : 'Enter activity'}</button></div></div></section>
+    ${glass(showCalamity ? 'Choose difficulty' : 'Stage selection', `${showCalamity ? `<label class="field">Activity<select id="calamity-activity">${calamityActivities.map(entry => `<option value="${entry.name}" ${selectedActivity === entry.name ? 'selected' : ''}>${entry.name}</option>`).join('')}</select></label>` : ''}
+    <div class="tabs">${button('Normal', 'activity', !showCalamity)}${dungeon || mode && !isNewEventId(mode.id) ? button('Calamity', 'calamity', showCalamity) : ''}</div>
     <div class="stage-grid ${stages > 25 ? 'many-stages' : ''}">${Array.from({ length: stages }, (_, i) => {
-      const entry = calamity ? calamityEncounter(activityId, (i + 1) as CalamityTier) : dungeon ? dungeonEncounter(dungeon.id, i + 1) : mode ? infusionEncounter(mode.id, i + 1) : war ? warEncounter(war.character, i + 1) : null;
-      return stageButton('stage', i + 1, `${calamity ? 'EX+' : ''}${i + 1}`, i + 1 === (calamity ? tier : stage), i + 1 > unlocked, i + 1 < unlocked, entry?.level, calamity || Boolean(entry && 'boss' in entry && entry.boss));
+      const entry = showCalamity ? calamityEncounter(calamityId, (i + 1) as CalamityTier) : dungeon ? dungeonEncounter(dungeon.id, i + 1) : mode ? infusionEncounter(mode.id, i + 1) : war ? warEncounter(war.character, i + 1) : null;
+      return stageButton('stage', i + 1, `${showCalamity ? 'EX+' : ''}${i + 1}`, i + 1 === (showCalamity ? tier : stage), i + 1 > unlocked, i + 1 < unlocked, entry?.level, showCalamity || Boolean(entry && 'boss' in entry && entry.boss));
     }).join('')}</div>
     ${!access.unlocked ? `<p class="missing">Locked: ${esc(access.requirement)}.</p>` : ''}<h3>Rewards</h3>
     ${chest ? `<div class="activity-chest">${image('master-conduits/grand-master-chest', chest.name)}<p>Guaranteed ${esc(chest.name)} on victory.</p></div><button class="pill" data-action="chest-loot" data-chest="${chest.id}" data-view-only="true">View Loot</button>` : source ? `<div class="loot-pool">${stageLootContent(source, stage, account())}</div><button class="pill" data-action="loot-rates">Drop rates</button>` : '<p>Prismatica only. No materials, captures or Null-Prismatica.</p>'}
@@ -819,7 +822,7 @@ function loadouts(): string {
 function lore(): string {
   if (state.capture) return detailShell(glass('Origin', `<p>${esc(creatureLore(getCreature(account().capturedCharacters!.find(copy => copy.instanceId === state.capture)!.creatureId)))}</p>`));
   const person = getStarter(state.selected);
-  return detailShell(`${glass('Behind the light', `<p class="eyebrow">${esc(person.lore.origin)}</p><h2>${person.name}</h2><p class="lore-copy">${esc(person.lore.story)}</p><blockquote>${esc(person.lore.vow)}</blockquote>`)} `);
+  return detailShell(`${glass('Behind the light', `<p class="eyebrow">${esc(person.lore.origin)}</p><h2>${person.name}</h2><p class="lore-copy">${esc(person.lore.story)}</p><blockquote>${esc(starterVow(person))}</blockquote>`)} `);
 }
 function body(): string {
   switch (state.screen) {

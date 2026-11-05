@@ -1,0 +1,29 @@
+[data-new-acquisition] { position: relative; }
+[data-new-acquisition] > .new-acquisition-mark {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #e54352;
+  border: 1px solid #ffb9bf;
+  box-shadow: 0 0 0 2px #151518;
+  z-index: 3;
+  pointer-events: none;
+  animation: new-acquisition-pulse 1.9s ease-in-out 3;
+}
+.new-acquisition-accessible {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@keyframes new-acquisition-pulse {
+  0%, 100% { opacity: .85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+html[data-motion="reduced"] [data-new-acquisition] > .new-acquisition-mark { animation: none; }

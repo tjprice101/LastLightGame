@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { starters } from './starters';
+import { moonCharacters, sunshadeCharacters } from './moon-sunshade-characters';
 
 const expectedIdentity = [
   ['ember', 'Infernis', 5, 'Attacker', 'Infernic', 'Greatsword', '#f39b6d'],
@@ -30,8 +31,11 @@ const elementalThemes: Record<string, readonly string[]> = {
 };
 
 describe('character lore revision', () => {
-  it('keeps all nineteen stable character identities and gameplay-facing metadata', () => {
-    expect(starters.map(({ id }) => id)).toEqual(expectedIdentity.map(([id]) => id));
+  it('keeps all legacy identities and adds only the twelve authored event identities', () => {
+    expect(starters.map(({ id }) => id)).toEqual([
+      ...expectedIdentity.slice(0, 6).map(([id]) => id), ...moonCharacters.map(character => character.id),
+      ...sunshadeCharacters.map(character => character.id), ...expectedIdentity.slice(6).map(([id]) => id),
+    ]);
     for (const [id, name, stars, role, element, weapon, color] of expectedIdentity) {
       expect(starters.find((character) => character.id === id)).toMatchObject({
         id, name, stars, role, element, weapon, color,

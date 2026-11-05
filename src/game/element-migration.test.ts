@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, purchaseConduit, migrateLegacyDungeonStage, evolutionFodderOptions } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
+import { acquisitionView } from './acquisition-markers';
 import { createCreatureCopy } from './character-instances';
 import { createDungeonBattle, act, nextStage } from './battle';
 import { elements, elementalEnemyLevel, materialRarities } from '../content/activities';
@@ -40,7 +41,7 @@ describe('six-element save and encounter migration', () => {
     expect(Object.keys(migrated.materials)).toHaveLength(36);
     saveAccount(storage, migrated);
     expect(storage.setItem).toHaveBeenCalledTimes(1);
-    expect(loadAccount(storage)).toEqual(migrated);
+    expect(loadAccount(storage)).toEqual({ ...migrated, acquisitionMarkers: acquisitionView(migrated) });
     expect(storage.setItem).toHaveBeenCalledTimes(1);
   });
 

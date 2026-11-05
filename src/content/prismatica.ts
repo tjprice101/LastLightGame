@@ -31,6 +31,8 @@ export function activityPrismaticaDrop(activity: CurrencyActivity, enemyLevel: n
       treasury: { opening: [133, 266], final: [30000, 60000] },
       sanctuary: { opening: [7, 14], final: [300, 600] },
       roses: { opening: [9, 18], final: [750, 1500] },
+      moon: { opening: [9, 18], final: [750, 1500] },
+      sunshade: { opening: [9, 18], final: [750, 1500] },
       machines: { opening: [5, 10], final: [500, 1000] },
     };
     const range = endpoints[mode];

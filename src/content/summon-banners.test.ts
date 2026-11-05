@@ -7,7 +7,7 @@ import { SAVE_KEY, type ProfileStorage } from '../game/profile';
 
 describe('summon banner selection', () => {
   it('registers Standard and the approved rose event banner', () => {
-    expect(summonBanners.map((banner) => banner.id)).toEqual(['standard', 'roses']);
+    expect(summonBanners.map((banner) => banner.id)).toEqual(['standard', 'roses', 'moon', 'sunshade']);
     expect(getSummonBanner('standard').pool()).toEqual(standardBannerPool());
     expect(isSummonBannerId('standard')).toBe(true);
     for (const id of ['event', '', null, undefined]) expect(isSummonBannerId(id)).toBe(false);

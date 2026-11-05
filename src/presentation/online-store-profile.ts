@@ -7,7 +7,7 @@ import { materialArt, materialName } from '../content/dungeon-art';
 import { assetUrl } from './portrait';
 import { itemShowcase } from './item-showcase';
 import { portrait } from './portrait';
-import { exchangeProducts, exchangeQuantities } from '../content/material-exchange';
+import { exchangeProducts, exchangeProductUnlocked, exchangeQuantities } from '../content/material-exchange';
 import './online-store-profile.css';
 import { storyRegions, storyRules } from '../content/story';
 import { creatures } from '../content/creatures';
@@ -17,7 +17,8 @@ import './profile-layout.css';
 import { profilePictures, profilePictureUnlocked, canonicalProfilePicture } from '../content/profile-pictures';
 import { profilePicture } from './profile-picture';
 import { chatShell } from './friend-chat';
-import { eventDevourers } from '../content/event-devourers';
+import { eventDevourers, eventDevourerAvailable } from '../content/event-devourers';
+import { newEventWindowActive } from '../content/moon-sunshade-events';
 import { roseEventActive, type EventAccess } from '../content/event-schedule';
 import { infusionEncounter } from '../content/infusions';
 import { capturedLevelCap } from '../game/character-instances';
@@ -118,6 +119,7 @@ export function materialExchange(account: Account | null, selected: string, navi
   const products = exchangeProducts.filter(entry => entry.category === category);
   const owned = (id: string) => (account?.materials[id] ?? 0).toLocaleString('en-US');
   const funds = account?.fractalis ?? 0;
+  const unlocked = exchangeProductUnlocked(product, account);
   const restricted = product.restrictedTo ? product.restrictedTo.join(', ') : '';
   return `<section class="online-market ref-screen ref-market ref-exchange" data-exchange-category="${category}">${navigation}
     <section class="ref-panel"><header class="ref-panel-heading">Material Exchange</header>
@@ -125,15 +127,16 @@ export function materialExchange(account: Account | null, selected: string, navi
       <button data-market-category="normal" aria-pressed="${category === 'normal'}">Normal Game Materials</button>
       <button data-market-category="event" aria-pressed="${category === 'event'}">Event Materials</button></nav>
     ${category === 'event' ? `<p class="ref-exchange-note" role="note">Event materials are only for ${restricted}.</p>` : ''}
-    <div class="ref-scroll"><div class="ref-product-grid">${products.map(entry => `<button class="ref-product" data-market-material="${entry.id}" aria-pressed="${product.id === entry.id}"><div class="ref-product-art">${exchangeArt(entry.materialId)}</div><b>${materialName(entry.materialId)}</b><small>${entry.rarity} · Owned ${owned(entry.materialId)}</small><span class="ref-chip">${entry.price.toLocaleString('en-US')} Prismatica</span></button>`).join('')}</div></div></section>
+    <div class="ref-scroll"><div class="ref-product-grid">${products.map(entry => `<button class="ref-product" data-market-material="${entry.id}" aria-pressed="${product.id === entry.id}"><div class="ref-product-art">${exchangeArt(entry.materialId)}</div><b>${materialName(entry.materialId)}</b><small>${entry.rarity} · Owned ${owned(entry.materialId)}${exchangeProductUnlocked(entry, account) ? '' : ` · Unlock at owned Element-Bearer Lv.${entry.unlockLevel ?? 0}`}</small><span class="ref-chip">${entry.price.toLocaleString('en-US')} Prismatica</span></button>`).join('')}</div></div></section>
     <aside class="ref-panel ref-store-detail"><header class="ref-panel-heading">Details</header>
     ${itemShowcase([{ id: product.materialId, amount: account?.materials[product.materialId] ?? 0 }], materialName(product.materialId))}
     <h2>${materialName(product.materialId)}</h2>
-    <p>${product.category === 'event' ? `${product.rarity} ${product.eventName} event material. <strong>Only for ${restricted}.</strong>` : `${product.rarity} ${elements.find(element => element.id === product.id)?.name ?? ''} upgrade material. Usable by normal Element-Bearers.`}</p>
+    <p>${product.category === 'event' ? `${product.rarity} ${product.eventName} event material. <strong>Only for ${restricted}.</strong>` : `${product.rarity} ${elements.find(element => product.materialId.startsWith(`${element.id}-`))?.name ?? ''} upgrade material. Usable by normal Element-Bearers.`}</p>
+    ${product.category === 'normal' ? `<p role="status">${unlocked ? 'Unlocked' : 'Locked'} · Requires any owned Element-Bearer at level ${product.unlockLevel ?? 0}. Captured Elemental-Devourers do not unlock this tier.</p>` : ''}
     <dl class="ref-detail-facts"><div><dt>Price per unit</dt><dd>${product.price.toLocaleString('en-US')} Prismatica</dd></div><div><dt>Owned</dt><dd>${owned(product.materialId)}</dd></div><div><dt>Prismatica</dt><dd>${funds.toLocaleString('en-US')}</dd></div></dl>
     <footer><div class="ref-exchange-buy" role="group" aria-label="Buy quantity">${exchangeQuantities.map(quantity => {
       const cost = product.price * quantity;
-      return `<button data-buy-material="${product.id}" data-quantity="${quantity}" ${account && funds >= cost ? '' : 'disabled'}><b>Buy ${quantity}</b><small>${cost.toLocaleString('en-US')} Prismatica</small></button>`;
+      return `<button data-buy-material="${product.id}" data-quantity="${quantity}" ${unlocked && funds >= cost ? '' : 'disabled'}><b>Buy ${quantity}</b><small>${cost.toLocaleString('en-US')} Prismatica</small></button>`;
     }).join('')}</div>
     ${account ? '' : '<p role="status">Material Exchange unavailable. Resolve the save error.</p>'}
     <p>No bulk discounts or daily limits.</p></footer></aside></section>`;
@@ -152,20 +155,26 @@ export function onlineStores(account: Account | null, profile: OnlineProfileDisp
     <button data-page="conduit-store">Conduit Store</button><button data-page="conduit-store" data-market-calamitic>Calamitic Conduits</button></nav>`;
   if (tab === 'materials') return materialExchange(account, selectedMaterial, navigation);
   if (tab === 'event-devourers') {
-    const active = roseEventActive(access.now);
     return `<section class="online-market ref-screen ref-market ref-event-devourer-store">${navigation}<section class="ref-panel">
       <header class="ref-panel-heading">Event Elemental-Devourers</header>
-      <h2>Roses Under Sunny Skies · Roselius</h2>
-      <p role="status">${active ? 'Purchases unlock after the event ends on November 30, 2026 at 8 PM New York time. Unavailable again during any explicitly scheduled rerun.' : 'Event ended. All six forms are available for repeat purchases.'}</p>
+      <h2>Event-family copies</h2>
+      <p role="status">Copies are available only after their event has actually completed a scheduled window, and never during an active rerun. Launches remain subject to authoritative event schedules.</p>
       ${access.online ? '' : '<p>Sign in online to purchase event copies. Browsing is available offline.</p>'}
-      <p>Each purchase gives one unlocked, unequipped copy with its authored skills, at Lv.${capturedLevelCap}. No automatic squad changes. Rosethorn materials are sold permanently in Material Exchange.</p>
+      <p>Each purchase gives one unlocked, unequipped copy with its authored skills at the listed level. No automatic squad changes. Event-family materials are sold permanently in Material Exchange.</p>
       <div class="event-devourer-grid">${eventDevourers.map(product => {
-        const encounter = infusionEncounter('roses', product.creature.stages[0]);
+        const available = eventDevourerAvailable(product.eventId, access.now);
+        const active = product.eventId === 'roses' ? roseEventActive(access.now) : newEventWindowActive(product.eventId, access.now);
+        const status = product.eventId === 'roses'
+          ? active ? 'Purchases unlock after the event ends; unavailable during any scheduled rerun.' : 'Event window completed. Purchases are available until a rerun begins.'
+          : available ? 'A scheduled event window has completed. Purchases are available until a rerun begins.'
+            : active ? 'Purchases are unavailable during an active rerun.'
+              : 'Unavailable until this event has actually completed a scheduled launch window.';
+        const encounter = infusionEncounter(product.eventId, product.creature.stages[0]);
         const owned = account?.capturedCharacters?.filter(copy => copy.creatureId === product.id).length ?? 0;
-        return `<article class="ref-panel event-devourer-card"><div class="event-devourer-art">${product.creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${product.creature.art}.png`)}" alt="${product.creature.name}">` : '<span>Artwork pending</span>'}</div>
-          <h3>${product.creature.name}</h3><p>${product.rarity} · Lv.${Math.min(capturedLevelCap, encounter.level)} · Owned ${owned}</p>
+        return `<article class="ref-panel event-devourer-card" data-event="${product.eventId}" data-creature="${product.id}"><div class="event-devourer-art">${product.creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${product.creature.art}.png`)}" alt="${product.creature.name}">` : '<span>Artwork pending</span>'}</div>
+          <h3>${product.eventName} · ${product.creature.name}</h3><p role="status">${status}</p><p>${product.rarity} · Lv.${Math.min(capturedLevelCap, encounter.level)} · Owned ${owned}</p>
           <p>${enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier).map(skill => `${skill.name} · ${Math.round(skill.multiplier * 100)}% Direct Attack`).join(' / ')}</p>
-          <button data-buy-event-devourer="${product.id}" ${account && access.online && !active && account.fractalis >= product.price ? '' : 'disabled'}>Buy · ${product.price.toLocaleString('en-US')} Prismatica</button></article>`;
+          <button data-buy-event-devourer="${product.id}" ${account && access.online && available && account.fractalis >= product.price ? '' : 'disabled'}>Buy · ${product.price.toLocaleString('en-US')} Prismatica</button></article>`;
       }).join('')}</div></section></section>`;
   }
   const choice = profileFrames.find(frame => frame.id === selectedFrame) ?? profileFrames[0];
@@ -230,7 +239,7 @@ function profileSidePanels(account: Account, profile: ProfileView, readOnly: boo
 
 export function onlineProfile(account: Account | null, profile: OnlineProfileDisplay | null, social?: SocialDisplay, view: 'info' | 'friends' | 'chats' = 'info', requestView: 'incoming' | 'outgoing' = 'incoming'): string {
   if (!profile || !account) return `<section class="online-profile"><h1 tabindex="-1">Player info</h1><ll-player-save-data></ll-player-save-data></section>`;
-  const navigation = `<nav class="ref-market-tabs"><button data-profile-tab="info" aria-pressed="${view === 'info'}">Player info</button><button data-profile-tab="chats" aria-pressed="${view === 'chats'}">Chats <span data-chat-unread></span></button><button data-profile-tab="friends" aria-pressed="${view === 'friends'}">Friends · ${social?.friends.length ?? 'unavailable'}${social?.incoming.length ? `<span class="profile-new-requests">${social.incoming.length} new</span>` : ''}</button></nav>`;
+  const navigation = `<nav class="ref-market-tabs"><button data-profile-tab="info" aria-pressed="${view === 'info'}">Player info</button><button data-profile-tab="chats" aria-pressed="${view === 'chats'}">Chats <span data-chat-unread></span></button><button data-profile-tab="friends" aria-pressed="${view === 'friends'}">Friends · ${social?.friends.length ?? 'unavailable'}${social?.incoming.length ? `<span class="profile-new-requests">${social.incoming.length} new</span>` : ''}</button><button type="button" data-social-calendar="attendance">Attendance</button><button type="button" data-social-calendar="mail">Mailbox</button><button type="button" data-social-calendar="gifts">Free gift</button></nav>`;
   if (view === 'chats') return `<section class="online-profile ref-screen ref-profile profile-chat-layout">${navigation}${chatShell()}</section>`;
   const canonicalIcon = canonicalProfilePicture(profile.icon);
   const icon = canonicalIcon === 'neutral' || profilePictureUnlocked(account, canonicalIcon) ? profilePicture(profile.icon) : profilePicture('neutral');

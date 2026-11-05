@@ -13,7 +13,7 @@ import { roll, rollCritical, elementalCritFactor } from './battle';
 import { buffSnapshot } from './battle-buffs';
 import { debuffSnapshot } from './battle-debuffs';
 import { pilotAuthoredShieldAbsorbed, pilotEffectiveHeal } from './kit-pilots';
-import { hasNativeIdentity, nativeAbsorbedHit, nativeDirectHpLoss, nativeIncomingMultiplier,
+import { hasNativeIdentity, nativeAbsorbedHit, nativeAuthoredShieldAbsorbed, nativeDirectHpLoss, nativeIncomingMultiplier,
   nativeRouteDamage, nativeSupportMultiplier, nativeDamageTakenMultiplier, nativeHymn, nativeRefusal,
   nativeDefenseBonus, nativeTauntTarget } from './native-kits';
 import { prepareCalamiticAction, afterCalamiticAction, afterCalamiticMark, calamiticSiegeBonus, deferCalamiticDamage,
@@ -460,6 +460,10 @@ export function nativeTargetDefense(state: BattleState, target: Combatant): numb
   if (phaseZeroStatsReady && target.side === 'enemy') {
     const n = target.conduitRuntime?.numbers ?? {};
     let reduction = 0;
+    for (const owner of alive(state).filter(unit => unit.definitionId === 'veyr' && hasNativeIdentity(unit))) {
+      if (owner.native?.faultTarget === target.id && (owner.native.faultThroughPhase ?? -1) >= state.round)
+        reduction += Math.min(.4, (owner.native.faultCount ?? 0) * .08);
+    }
     if (alive(state).some(owner => equipped(owner, 'master-aurora-1') &&
         (owner.native?.seals?.[target.id]?.throughPhase ?? 0) >= state.round)) reduction += .25;
     if ((n.thorniaDefenseThrough ?? 0) >= state.round) reduction += .2;
@@ -471,6 +475,11 @@ export function nativeTargetDefense(state: BattleState, target: Combatant): numb
   }
   const exposed = alive(state).some(owner => equipped(owner, 'master-aurora-1') && nativeControl(state, owner, target));
   let multiplier = exposed ? (phaseZeroStatsReady ? .75 : .85) : 1;
+  const fractured = alive(state).reduce((total, owner) => total + (hasNativeIdentity(owner) &&
+    owner.definitionId === 'veyr' && owner.native?.faultTarget === target.id &&
+    (owner.native.faultThroughPhase ?? -1) >= state.round
+      ? Math.min(.4, (owner.native.faultCount ?? 0) * .08) : 0), 0);
+  multiplier *= 1 - Math.min(.4, fractured);
   if (phaseZeroStatsReady && target.side === 'enemy') {
     const lodged = alive(state).filter(owner => equipped(owner, 'master-elise-1'))
       .reduce((count, owner) => count + (owner.native?.blades?.filter(id => id === target.id).length ?? 0), 0);
@@ -778,7 +787,13 @@ export function prepareConduitAction(state: BattleState, actor: Combatant, actio
     if (nativeAll && traits.damage && equipped(actor, 'calamitic-worldbreaker-cannonade'))
       ctx.skillPower += magnitude(state, 'calamitic-worldbreaker-cannonade', 5 / 3);
   }
-  if (action !== 'light') ctx.skillPower += nativeHymn(actor, state.round)?.skillPower ?? 0;
+  if (action !== 'light') {
+    ctx.skillPower += nativeHymn(actor, state.round)?.skillPower ?? 0;
+    const skillPowerBuff = actor.native?.skillPowerBuff;
+    if (skillPowerBuff && skillPowerBuff.throughRound >= state.round &&
+        state.allies.some(ally => ally.id === skillPowerBuff.owner && ally.hp > 0))
+      ctx.skillPower += skillPowerBuff.fraction;
+  }
   ctx.skillPower = Math.max(0, ctx.skillPower);
   return ctx;
 }
@@ -2026,6 +2041,7 @@ function routedDamage(state: BattleState, enemy: Combatant, target: Combatant, a
 }
 function absorbedNative(state: BattleState, owner: Combatant, target: Combatant, enemy: Combatant, amount: number, broken: boolean, events: BattleEvent[]): void {
   if (owner.hp <= 0) return;
+  nativeAuthoredShieldAbsorbed(state, owner, target, amount, broken, events);
   const n = gear(owner).numbers;
   if (phaseZeroStatsReady && equipped(owner, 'tidebound-reflector')) {
     const key = `reflection:${state.round}`;

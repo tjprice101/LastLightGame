@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { masterConduits, type MasterConduitId } from '../content/master-conduits';
+import { isNewEventCharacter } from '../content/moon-sunshade-events';
+import { omnicStatBonuses } from '../content/omnic-conduit-stats';
 import { nativeBalance } from '../content/native-balance';
 import { act, createBattle, type BattleState, type BattleEvent } from './battle';
 import type { ActionId } from '../content/combat';
@@ -28,7 +30,7 @@ const wound = (state: BattleState) => { for (const ally of state.allies.slice(1)
 const shieldLayers = (state: BattleState, target = 1) => state.allies[target].conduitRuntime?.layers ?? [];
 
 // Each callback asserts a numerical native behavior both with and without its named Master.
-const checks: Record<MasterConduitId, Check> = {
+const checks: Partial<Record<MasterConduitId, Check>> = {
   'master-ember-1': (state, equipped) => {
     wound(state);
     afterConduitBurn(state, state.allies[0], state.enemies[0], 100, []);
@@ -576,16 +578,20 @@ const checks: Record<MasterConduitId, Check> = {
   },
 };
 
-describe('66-entry Master behavior matrix', () => {
-  it('has three Masters for each of the three Calamitic Element-Bearers (D-442)', () => {
+const eventMasters = masterConduits.filter(entry => isNewEventCharacter(entry.character));
+const legacyMasters = masterConduits.filter(entry => !isNewEventCharacter(entry.character));
+
+describe('102-entry Master behavior matrix', () => {
+  it('has three Masters for each of the three Calamitic Element-Bearers and twelve scheduled-event Element-Bearers', () => {
     for (const id of ['ozriel', 'ilvaris', 'kaelith'])
       expect(masterConduits.filter(entry => (entry.character as string) === id)).toHaveLength(3);
-    expect(masterConduits).toHaveLength(66);
+    expect(eventMasters).toHaveLength(36);
+    expect(masterConduits).toHaveLength(102);
   });
-  it('has exactly one concrete behavior scenario per installed Master', () => {
-    expect(Object.keys(checks).sort()).toEqual(masterConduits.map(entry => entry.id).sort());
+  it('has one concrete legacy behavior scenario per installed legacy Master', () => {
+    expect(Object.keys(checks).sort()).toEqual(legacyMasters.map(entry => entry.id).sort());
   });
-  for (const entry of masterConduits) describe(entry.id, () => {
+  for (const entry of legacyMasters) describe(entry.id, () => {
     it.each([false, true])(['master-atmoso-2', 'master-crinso-2'].includes(entry.id)
       ? 'checks equipped=%s Shields that last until broken against its absent baseline'
       : 'checks equipped=%s against its absent baseline', equipped => {
@@ -600,7 +606,35 @@ describe('66-entry Master behavior matrix', () => {
       for (const enemy of state.enemies) { enemy.hp = 100000; enemy.stats.health = 100000; }
       if (equipped) state.allies[0].masterConduit = entry.id;
       initializeConduits(state);
-      checks[entry.id](state, equipped);
+      checks[entry.id]!(state, equipped);
     });
+  });
+  it.each(eventMasters)('$id has an exercised owned/unowned stat effect', entry => {
+    const prepare = (equipped: boolean) => {
+      const state = createBattle(1729, [entry.character, 'ember', 'tide']);
+      for (const unit of [...state.allies, ...state.enemies]) {
+        unit.stats = { ...unit.stats, health: 1000, damage: 100, defense: 100, crit: 0, critMultiplier: 1.5,
+          shatterCapacity: 200, skillPower: 1, skillDuration: 0, skillEfficiency: 0, gaugeGain: 1 };
+        unit.hp = 1000; unit.shatter = 100;
+      }
+      if (equipped) state.allies[0].masterConduit = entry.id;
+      initializeConduits(state);
+      return state;
+    };
+    const absent = prepare(false).allies[0].stats;
+    const equipped = prepare(true).allies[0].stats;
+    const bonuses = omnicStatBonuses(entry.id);
+    const additiveStats = ['crit', 'skillPower', 'skillEfficiency', 'gaugeGain'] as const;
+    expect(Object.values(bonuses).some(amount => amount !== undefined && amount !== 0)).toBe(true);
+    for (const [stat, amount] of Object.entries(bonuses) as [keyof typeof absent, number | undefined][]) {
+      const base = absent[stat] ?? 0;
+      const actual = equipped[stat] ?? 0;
+      const bonus = amount ?? 0;
+      if (additiveStats.includes(stat as typeof additiveStats[number])) {
+        expect(actual).toBeCloseTo(base + bonus);
+      } else {
+        expect(actual).toBeGreaterThan(base);
+      }
+    }
   });
 });

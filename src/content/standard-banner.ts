@@ -3,6 +3,7 @@ import { bannerMaterialDefinition, bannerMaterialPool } from './banner-materials
 import { lootRoll } from './loot-random';
 import { isWarCharacter } from './war-characters';
 import { isCalamiticCharacter } from './calamitic-characters';
+import { newEventForCharacter } from './moon-sunshade-events';
 
 export const bannerPityLimits = { pulls: 80 } as const;
 const savedBannerPityBounds = { highestStar: 200, unownedHighestStar: 500 } as const;
@@ -89,7 +90,8 @@ export type StandardBannerEntry =
 
 export function standardBannerPool(): StandardBannerEntry[] {
   const characters = starters.filter((character): character is Extract<typeof character, { stars: 5 | 6 }> =>
-    character.stars !== 7 && !isRoseCharacter(character.id) && !isWarCharacter(character.id) && !isCalamiticCharacter(character.id));
+    character.stars !== 7 && !isRoseCharacter(character.id) && !isWarCharacter(character.id) &&
+    !isCalamiticCharacter(character.id) && !newEventForCharacter(character.id));
   const characterChance = ([5, 6] as const).reduce((total, stars) =>
     total + (characters.some((character) => character.stars === stars) ? bannerCharacterTierRates[stars] : 0), 0);
   const remaining = 1 - characterChance;

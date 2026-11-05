@@ -19,6 +19,7 @@ import { nativeTargetDefense } from './conduit-runtime';
 import { nativeBalance } from '../content/native-balance';
 import { masterConduits } from '../content/master-conduits';
 import { approvedConduitCatalog } from '../content/phase-zero-conduit-catalog';
+import { phaseZeroUpgradedAbility } from '../content/phase-zero-conduit-upgrades';
 
 function fixture(roster: string[] = ['ember', 'tide', 'sprout']): BattleState {
   const state = createBattle(1729, roster);
@@ -56,9 +57,13 @@ describe('Phase 0 shared runtime math', () => {
   });
   it('uses the approved default effect text for every one of the 165 entries', () => {
     const entries = [...conduits, ...masterConduits];
-    expect(entries).toHaveLength(165);
+    expect(entries).toHaveLength(201);
     expect(Object.keys(approvedConduitCatalog)).toHaveLength(165);
     for (const entry of entries) {
+      if ('character' in entry && !approvedConduitCatalog[entry.id]) {
+        expect(phaseZeroUpgradedAbility(entry.id)).toBe(entry.effect);
+        continue;
+      }
       expect(approvedConduitCatalog[entry.id]?.name, entry.id).toBe(entry.name);
       if (entry.rarity === 'Calamitic') continue;
       const effect = 'character' in entry ? entry.effect : conduitEffect(entry as Conduit, 0);

@@ -1,5 +1,91 @@
 # Current state and handoff
 
+## Current integration: art-neutral expansion ready for publication checks
+
+Owner-authorized remaining feature wiring is implemented locally:
+twelve six-star Moon/Sunshade bearers and36 personal Masters, native kits,
+family materials/fodder, two distinct35-stage signature activities, independent
+80-pull banners/pity, archive and post-event shops; both schedules stay empty/
+inactive. No Moon/Sunshade artwork has been delivered or substituted.
+Shared bulk Master opening and equipment-slot View Details, ordinary36-tier
+material purchases, authoritative manual attendance/streak ladder, free
+accepted-friend gifts, persistent mail/read/claims and synced first-acquisition
+markers are wired. [Social authority specification](social-calendar.md).
+
+Root corrections from exact validation:
+- Authority Continue/Retry recheck timed-event schedules without reapplying
+  ordinary entry-level locks to frozen runs. Current encounter rewards can
+  finish after closure; new-stage Continue/Retry/entry cannot.
+- Actual Stage35 fights exposed inappropriate premium loot routing for
+  Moon/Sunshade. Only Heaven/Abyss/Sanctuary roll staged premium; other modes
+  reject the premium odds API. Late-event kill regression checks reward save,
+  no premium grant and unchanged premium RNG.
+- Real native loop regressions corrected Rhaziel Repair delivery and exact
+  Vespera Burn/Elaris pierce/Veyr target-only damage.
+- Browser error/dismissal flow exposed social-dialog active-lock retention.
+  Close/Escape/cancel now synchronously dispose and resolve; pending results
+  cannot close a newer dialog or launch a late celebration. Real queued-close
+  regressions pass after rejected save and pending dismissal.
+- Ilyss Skill2 now offers the approved typed Burn/Weaken choice after ally
+  selection when both statuses exist. Single-status actions stay immediate;
+  cancellation executes nothing. Local and authority validation reject forged
+  choices; removal provenance and Last Flare's existing priority are retained.
+
+Validation:
+- `npm test -- --reporter=dot --maxWorkers=2`: **8077 tests/249 files passed**.
+  Earlier307/49 failures were resolved without discarding old raw-save,
+  failed-write/overflow, frozen-run or neutral-art behavior assertions.
+  Heavy repeated Collections tests have scoped budgets and reused markup;
+  Windows full-suite worker load was bounded rather than weakening checks.
+- Final social/game-dialog/reward focused suite:26 passed after synchronous
+  disposal correction (additional tests after that full run).
+- `node tools\bundle_server_game.mjs` and `npm run build`: passed.
+  First final bundle write hit a transient Windows user-mapped file lock;
+  stopped the owned preview server, retried successfully. TypeScript/Vite
+  passed; AVIF encoded0/no new art; existing large-chunk warning remains.
+- Native/VFX/experiment suites pass. [Bounded seasonal benchmarks](enemy-benchmark-calibration.md):
+  separate six-round paper damage/effective healing/Shield totals and direct
+  packet probes;144 actual conditional owned-team event fights produced
+ 129 wins/14 defeats/1 timeout. No hostile retuning, coefficient inflation,
+  ordinary-account clear-rate or global-ranking claim.
+- Browser production engine timeline scrub sampled0/15/45/80/100% for all
+  twelve Last Flares: distinct changing intermediate pixel hashes and the
+  same clean final backdrop. Engine instances destroyed afterward. Native
+  real-time RAF observation was throttled because the integrated page stayed
+  hidden; the successful temporal check is deterministic production-engine
+  timeline simulation, not falsely claimed wall-clock playback.
+- In-memory attendance UI fixture showed pending save without rewards,
+  saved receipt with Skip, and explicit reduced-motion rejected-save alert
+  without celebration. No RPC or wallet fixture writes. Integrated browser
+  did not honor requested390px viewport (actual488px), so no exact390px
+  browser containment claim. Existing focused UI tests cover layout semantics.
+
+Production authority and both SQL migrations are deployed. Hosted verification:
+- `node tools\smoke_social_calendar.mjs --execute`: passed accepted friendship,
+  all three gift choices, one free send/day, persistent read/claimed mail,
+  idempotent atomic claim-all, current-reset attendance, private markers and
+  frozen-run/revision safety. Disposable unfunded identities deleted.
+- `node tools\smoke_server_game.mjs --event-lifecycle`: passed authoritative
+  clock, active Rose shop denial, inactive Moon/Sunshade summons/entry/shops,
+  forged clock/price rejection, idempotent checkpoint and unchanged account.
+  Disposable identities and cascading gameplay records removed. Initial run
+  caught a stale error-text assertion; updated it to the actual validated
+  completed-window rule, added both inactive-event checks, then reran.
+
+Client commit/push and matching Pages SHA/content verification remain pending
+at this snapshot. No hosted-client release claim until those operations pass.
+Prompt delivery queue remains207 required/12 optional/219 including optional.
+Explicit launch timing and generated-image delivery remain owner gates;
+do not auto-activate either new banner. Ilyss's exact chosen-cleanse requirement
+is completed and included in the final full-suite pass.
+
+Production infrastructure update: `npx supabase db push --linked --yes`
+successfully applied exactly `20261105000000_social_calendar.sql` and
+`20261105010000_acquisition_markers.sql` to the matching LastLight production
+project. No event gift windows were activated. Matching final bundled
+`game-operation` authority deployment passed, followed by both hosted smokes
+above; Pages client publication remains to be verified.
+
 ## Current: completing art-pending expansion
 
 Task: finish remaining phases without Midjourney tokens; preserve every owner
@@ -45,6 +131,59 @@ Validation:
 Known baseline: older shared art suite had176 unrelated historical failures;
 not repaired or claimed passing. Gameplay/build/authority/hosted validation
 will follow implementation, not inferred from these documentation checks.
+
+Design/art publication: `83f52859ef58d19da7c07ff5901fcb417b6b1334` pushed;
+Pages run41975939443 passed **7452 tests/236 files**, configured TypeScript/
+Vite build and deployment. Hosted `version.json` **build** field matched that
+exact SHA. The first probe erroneously checked `commit`/`sha` fields and
+reported a mismatch despite a correct response; corrected against the actual
+`build` field and passed. This validates the art/specification commit only:
+in-progress runtime changes were intentionally not staged or released, and
+no authority deployment or newly playable event is claimed.
+
+Implementation results received, not yet integrated/released:
+- Master bulk chest transaction and saved receipt implemented, including
+  singleton compatibility and no auto-equip. Follow-up completed the separate
+  equipment-slot View Details UI, hidden-select/save hooks, post-save feedback
+  and focus restoration. Reported focused selection/rarity23 passed,
+  loadout1 passed/32 skipped, chest/authority9 passed/114 skipped,
+  full reward-screen7 passed and Vite build passed. Typecheck was blocked by
+  concurrent expanded native-ID integration, so final validation remains open.
+- [Social/calendar implementation](social-calendar.md) reports actual
+  PostgreSQL authority for attendance/free gifts/mail, privacy preservation
+  and36 ordinary material shop tiers. Nine focused suites84 tests and local
+  migration/SQL assertions passed. Migration
+  `20261105000000_social_calendar.sql` is **not applied to production**.
+  First-acquisition markers were initially missing; implementation continues
+  rather than declaring the whole social/QoL phase complete.
+- Seasonal combat/activity/banner integration is still in progress; authority
+  bundle must be regenerated after all changes settle. No schedules activated.
+
+Integration validation update:
+- Parent full `npm test -- --reporter=dot` failed307 tests; release paused.
+  Coupled expanded-roster/catalog/neutral-art expectations are being corrected
+  by the seasonal implementation owner, not blanket snapshot acceptance.
+- Marker-related complete-account expectations fixed in six game suites;
+ 118 tests passed, retaining raw-save, failed-write, overflow, reward and
+  no-load-write assertions.
+- Parent grouped social/marker/Master UI validation: **70 tests/12 suites
+  passed** using `npx vitest run` on acquisition-markers (game/online/UI),
+  acquisition-surfaces, social-calendar (online/privacy/UI), material-exchange,
+  material-shop-server, master-choice-dialog, selection-panel and reward-screen.
+- Continue gate now checks the target new stage against authoritative time;
+  post-close current-encounter kill/reward persists, Continue/Retry rejected.
+  Empty Moon/Sunshade windows reject entry. Product-specific18 event-copy
+  shop choices/warnings preserve installed Rose art and inactive new families.
+  Latest lifecycle/shop31 tests and TypeScript check passed; engine bundle
+  regenerated and syntax-checked, but final regeneration follows settled edits.
+- Both production migrations remain unapplied. Dry-run found exactly
+  `20261105000000_social_calendar.sql` and
+  `20261105010000_acquisition_markers.sql`.
+- Hosted smoke tool `tools/smoke_social_calendar.mjs --execute` is ready:
+  disposable unfunded identities only, actual gift/mail/attendance/privacy/
+  frozen-run checks and cleanup. Syntax/default dry-run passed; production
+  execution intentionally waits for migration/authority/client validation.
+No runtime commit, production mutation or full-suite success claimed yet.
 
 ## Character-linked ability art foundation (2026-11-05)
 

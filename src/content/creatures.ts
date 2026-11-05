@@ -7,6 +7,7 @@ import { machineComponentDrop } from './mechanical-components';
 import { dungeonEncounter, dungeonVariants, materialLoot } from './dungeons';
 import { infusionEncounter, infusionLoot, infusionElements, enemyCaptureAllowed, enemyCaptureChance } from './infusions';
 import { stagedLycalisOdds } from './loot-random';
+import { isNewEventId } from './moon-sunshade-events';
 import { activityPrismaticaDrop } from './prismatica';
 import { storyEncounter, storyCreature, storyRules, storyLoot } from './story';
 import { elementEmotions, machineOrigin } from './world-lore';
@@ -142,7 +143,7 @@ export function creatureLoot(creature: Creature, stage?: number, ownedConduits?:
     loot.push(...materialLoot(creature.dungeonElement, stage));
   } else if (creature.mode && stage !== undefined) {
     const pool = infusionLoot(creature.mode, stage);
-    const odds = creature.mode === 'roses' ? [] : stagedLycalisOdds(creature.mode, level, stage);
+    const odds = creature.mode === 'roses' || isNewEventId(creature.mode) ? [] : stagedLycalisOdds(creature.mode, level, stage);
     loot.push(...odds.filter((outcome) => outcome.amount > 0).map((outcome) => ({
       id: 'lycalis', minimum: outcome.amount, maximum: outcome.amount, chance: outcome.chance,
       note: `Each defeated enemy has one chance to award Null-Prismatica, separate from its other drops. The rows are alternative amounts, not extra rolls: at most one amount is awarded (mutually exclusive). Chance of none: ${formatStat(odds[0].chance * 100)}%. Ordinary enemies and bosses use the same odds.`,

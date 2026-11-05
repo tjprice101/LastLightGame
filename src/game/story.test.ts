@@ -5,6 +5,7 @@ import { migrateLegacyStoryCompleted, migratePreviousStoryCompleted, storyBossBo
 import { creatures, creatureLoot, getCreature } from '../content/creatures';
 import { dungeonEncounter } from '../content/dungeons';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, unlockedStoryStage, validateAccount } from './account';
+import { acquisitionView } from './acquisition-markers';
 import { act, createBattle, createStoryBattle, endTurn, nextStage, nextWave, type BattleResult } from './battle';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { createCreatureCopy } from './character-instances';
@@ -229,7 +230,7 @@ describe('atomic Story progression and first-clear rewards', () => {
       expect(fixture.writes()).toBe(writes);
       expect(fixture.saved.getItem(ACCOUNT_KEY)).toBe(raw);
       saveAccount(fixture.saved, loaded);
-      expect(loadAccount(fixture.saved)).toEqual(loaded);
+      expect(loadAccount(fixture.saved)).toEqual({ ...loaded, acquisitionMarkers: acquisitionView(loaded) });
     });
 
   it('rejects a v7 Story count above the 18-stage-region layout', () => {

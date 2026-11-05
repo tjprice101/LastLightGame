@@ -129,6 +129,8 @@ export const enemyLineLore: Readonly<Record<InfusionModeId, string>> = {
   treasury: 'Gleamstone Slimes live in the vaults of Crownfall Treasury, wearing the gemstones they have absorbed as shells. Older forms carry crowns, scepters and full regalia, and they rarely flee, because a defeated one is worth a small fortune.',
   sanctuary: 'Rosethorn Wisps are small rose-colored flames that drift through Rosethorn Sanctuary like lit candles. As they grow they gather laurels, armor and wings of rose fire, and the oldest burn with a steady flame that no wind can put out.',
   roses: 'Roselius is the rose spirit of the Passion of Crimson Roses gardens, first appearing as a single walking blossom. Its later forms grow golden thorns, knightly armor and broad petal wings, and every one of them fights to keep a rose from being cut.',
+  moon: 'Vesperwing moths keep the Harbor of Unreturned Names, their pale wings carrying messages that never reached the people they sought. Each form guards another part of the unfinished crossing.',
+  sunshade: 'Solcarapace scarabs build the Dawnforge beneath the borrowed dawn, their layered shells catching the last heat of a sun they cannot keep. Each form seals another passage through the forge.',
   machines: 'These Machines wake among the wrecked workshops of Awaken the Machines, half rusted and half running. Each model is built in the shape of a different beast, from a cracked watcher to a gold-plated phoenix, and all of them still follow attack orders nobody remembers giving.',
 };
 

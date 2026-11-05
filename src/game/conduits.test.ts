@@ -20,7 +20,8 @@ describe('Conduit purchase persistence', () => {
     const write = vi.spyOn(saved, 'setItem');
     const purchased = purchaseConduit(saved, conduit.id);
     expect(write).toHaveBeenCalledTimes(1);
-    expect(purchased).toEqual({ ...before, fractalis: 20000 - conduit.price, conduits: { [conduit.id]: 1 } });
+    expect(purchased).toEqual({ ...before, fractalis: 20000 - conduit.price, conduits: { [conduit.id]: 1 },
+      acquisitionMarkers: { 'character:ember': true, 'material:infernic-common': false, [`conduit:${conduit.id}`]: false } });
     expect(loadAccount(saved)).toEqual(purchased);
     const again = purchaseConduit(saved, conduit.id);
     expect(again.conduits?.[conduit.id]).toBe(2);

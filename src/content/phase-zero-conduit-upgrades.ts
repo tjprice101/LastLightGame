@@ -1,4 +1,5 @@
 import { approvedConduitAbility } from './phase-zero-conduit-catalog';
+import { moonSunshadeMasters } from './moon-sunshade-masters';
 
 // Percentage positions that grow; thresholds, costs, penalties and safety caps stay fixed.
 export const phaseZeroUpgradePercentages: Readonly<Record<string, readonly number[]>> = {
@@ -48,7 +49,7 @@ export function stasisChancePercent(level: number): number {
 }
 
 export function phaseZeroUpgradedAbility(id: string, level = 0): string | undefined {
-  const ability = approvedConduitAbility(id);
+  const ability = approvedConduitAbility(id) ?? moonSunshadeMasters.find(entry => entry.id === id)?.effect;
   if (ability === undefined) return undefined;
   if (!Number.isInteger(level) || level < 0 || level > 5)
     throw new Error('Conduit upgrade level must be an integer from 0 to 5.');

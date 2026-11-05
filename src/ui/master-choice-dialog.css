@@ -29,6 +29,13 @@ html body #master-choice .ll-master-option::before,
 html body #master-choice .ll-master-option::after { content: none; }
 html body #master-choice .ll-master-art { width: 112px; height: 112px; justify-self: center; }
 html body #master-choice .ll-master-option > span:last-child { font-size: 16px; line-height: 1.6; }
+html body #master-choice .ll-master-selected { flex: none; max-height: 150px; overflow-y: auto; padding: 12px; border: 1px solid #ffffff26; border-radius: 12px; }
+html body #master-choice .ll-master-selected > strong { display: block; margin-bottom: 8px; }
+html body #master-choice .ll-master-selected p { margin: 0; opacity: .8; }
+html body #master-choice .ll-master-selected ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+html body #master-choice .ll-master-selected li { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-width: 0; }
+html body #master-choice .ll-master-selected li > span { min-width: 0; overflow-wrap: anywhere; }
+html body #master-choice .ll-master-selected .ll-button { min-height: 40px; flex: none; }
 html body #master-choice .ll-master-footer { flex: none; border-top: 1px solid #ffffff26; padding-top: 12px; }
 html body #master-choice .ll-status { margin: 0 0 12px; padding: 0; background: none; text-align: center; }
 html body #master-choice .ll-account-actions { margin: 0; justify-content: center; }

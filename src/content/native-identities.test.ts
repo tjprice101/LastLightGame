@@ -29,6 +29,18 @@ const coefficients: Record<StarterId, readonly (number | undefined)[]> = {
   caldrex: [undefined, 2.55, undefined],
   solenne: [2.4, undefined, 7.2],
   myrthen: [2.72, 1.92, 12.48],
+  maerion: [2, undefined, undefined],
+  caevren: [2.8, undefined, undefined],
+  vespera: [2.2, undefined, 4.8],
+  ilyss: [2.2, undefined, undefined],
+  asteriel: [undefined, undefined, undefined],
+  serapha: [2.4, undefined, undefined],
+  rhaziel: [undefined, undefined, undefined],
+  oryn: [2.4, undefined, undefined],
+  thessara: [2.4, undefined, undefined],
+  elaris: [2.8, 2.4, 10.5],
+  veyr: [3.2, 2.4, 10.5],
+  aureth: [undefined, 2.4, undefined],
 };
 const actions = ['skill1', 'skill2', 'ultimate'] as const;
 
@@ -99,9 +111,14 @@ describe('approved native identities', () => {
       expect(grown.abilities[action].strength.damageMultiplier).toBe(coefficient === undefined ? undefined : coefficient * scale);
       expect(grown.abilities[action].strength).toEqual(base.abilities[action].strength);
       expect(grown.abilities[action].strength).toEqual(nativeIdentities[id].abilities[action].strength);
+      const effectStrength = id === 'tide' && action === 'skill1' ? { weakenFraction: .25 }
+        : id === 'vespera' && action === 'skill1' ? { burnMultiplier: .25 }
+        : id === 'ilyss' && action === 'skill1' ? { weakenFraction: .25 }
+        : id === 'serapha' && action === 'skill1' ? { weakenFraction: .2 }
+        : id === 'oryn' && action === 'skill1' ? { weakenFraction: .25 } : {};
       const expectedStrength = nativeIdentities[id].selfStats ? nativeIdentities[id].abilities[action].strength : coefficients[id][index] === undefined
         ? {}
-        : { damageMultiplier: coefficients[id][index]! * scale, ...(id === 'tide' && action === 'skill1' ? { weakenFraction: .25 } : {}) };
+        : { damageMultiplier: coefficients[id][index]! * scale, ...effectStrength };
       expect(grown.abilities[action].strength).toEqual(expectedStrength);
     }
     expect(base).toEqual(before);
@@ -124,7 +141,10 @@ describe('approved native identities', () => {
     const targeted = nativeIdentityIds.flatMap(id => actions
       .filter(action => fighters[id].abilities[action].targets === 'one-ally')
       .map(action => `${id}:${action}`));
-    expect(targeted.sort()).toEqual(['bruno:skill2', 'disciple:skill1', 'disciple:skill2', 'tide:skill2']);
+    expect(targeted.sort()).toEqual([
+      'aureth:skill1', 'bruno:skill2', 'caevren:skill2', 'disciple:skill1', 'disciple:skill2',
+      'ilyss:skill2', 'maerion:skill2', 'oryn:skill2', 'rhaziel:skill1', 'thessara:skill2', 'tide:skill2', 'vespera:skill2',
+    ]);
     expect(fighters.bruno.abilities.skill2.excludeSelf).toBe(true);
     expect(fighters.bruno.abilities.skill2.description).toContain('If [Bruno] is the only living ally');
     expect(fighters.tide.abilities.skill2.excludeSelf).toBeUndefined();

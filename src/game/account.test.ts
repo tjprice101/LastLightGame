@@ -63,8 +63,10 @@ describe('persistent progression transactions', () => {
       expect(migrated[field]).toEqual(legacy[field]);
     }
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
-    saveAccount(saved, migrated);
-    expect(loadAccount(saved)).toEqual(migrated);
+    const persisted = saveAccount(saved, migrated);
+    expect(loadAccount(saved)).toEqual(persisted);
+    expect({ ...persisted, acquisitionMarkers: undefined }).toEqual({ ...migrated, acquisitionMarkers: undefined });
+    expect(Object.values(persisted.acquisitionMarkers ?? {})).not.toContain(false);
     expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(11);
     expect(validateAccount({ ...legacy, infusionStages: { heavens: 1 } }).infusionStages).toEqual({ heavens: 1 });
   });

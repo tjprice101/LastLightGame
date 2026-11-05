@@ -28,7 +28,7 @@ export function masterChestIcon(): string {
 export function masterReference(id?: MasterConduitId | null): string {
   if (!id) return '';
   const entry = getMasterConduit(id);
-  return `<section class="master-reference"><h3>Master · ${entry.name}</h3>${conduitElementLabel(getStarter(entry.character).elementId)}<p>${referencedEffect(entry.effect)}</p><small>${getStarter(entry.character).name} only · Cannot be upgraded</small>${conduitLore(entry.lore)}</section>`;
+  return `<section class="master-reference" data-acquisition-master="${entry.id}"><h3>Master · ${entry.name}</h3>${conduitElementLabel(getStarter(entry.character).elementId)}<p>${referencedEffect(entry.effect)}</p><small>${getStarter(entry.character).name} only · Cannot be upgraded</small>${conduitLore(entry.lore)}</section>`;
 }
 export function masterEquipment(character: string, account: Account | null): string {
   if (!isStarterId(character)) return '<div class="ref-master-slot"><strong>Master slot</strong><p>Character Masters are for their named Element-Bearer only.</p></div>';
@@ -51,4 +51,27 @@ export function masterReward(id: MasterConduitId, account: Account): RewardPrese
     accent: getStarter(entry.character).color,
     animationLabel: "Revealing your Master Conduit",
     savedLabel: "Master Conduit saved. Equip it in Team." };
+}
+export function masterRewards(ids: readonly MasterConduitId[], account: Account): RewardPresentation {
+  if (!ids.length || new Set(ids).size !== ids.length) throw new Error('Choose a non-empty list of unique Masters.');
+  const entries = ids.map(id => getMasterConduit(id));
+  if (entries.some(entry => account.masterConduits?.[entry.id] !== 1)) throw new Error('A saved Master reward is not owned.');
+  const lead = getStarter(entries[0].character);
+  const details = `<section class="master-bulk-rewards summon-ten-grid" aria-label="All saved Master Conduits">${entries.map(entry => {
+    const character = getStarter(entry.character);
+    return `<article class="summon-ten-result master-bulk-reward" data-rarity="Omnic">
+      <div class="summon-ten-art">${masterConduitIcon(entry.id)}</div><b>${escapeDialogText(entry.name)}</b>
+      <small>${escapeDialogText(character.name)} · ${conduitElementLabel(character.elementId)} · Omnic Master</small>
+      <details><summary>Inspect Master details</summary><p>${referencedEffect(escapeDialogText(entry.effect))}</p></details></article>`;
+  }).join('')}</section><p>${entries.length} Master Conduit${entries.length === 1 ? '' : 's'} saved. None were auto-equipped.</p>`;
+  return {
+    cinematic: { kind: 'chest', eyebrow: "Machine's Master Chest", title: `${entries.length} Masters unlocked`,
+      subtitle: 'Master Conduits saved', art: imageSource(masterChestIcon()), tier: 'prismatic',
+      palette: { accent: lead.color, theme: 'prismatic' } },
+    title: 'Master Conduits unlocked', name: `${entries.length} saved Master${entries.length === 1 ? '' : 's'}`,
+    rarity: 'Omnic', art: `<div class="master-bulk-chest-art">${masterChestIcon()}</div>`, details,
+    accent: lead.color, animationLabel: 'Revealing your Master Conduits',
+    savedLabel: `${entries.length} Master Conduit${entries.length === 1 ? '' : 's'} saved. None were auto-equipped.`,
+    celebration: 'Master Conduits unlocked',
+  };
 }

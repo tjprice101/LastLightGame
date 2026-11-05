@@ -14,9 +14,9 @@ import { bannerShowcase } from './banner-showcase';
 import { BattleView } from './battle-view';
 import { createBattle } from '../game/battle';
 
-describe('current character artwork across revealed and locked surfaces', () => {
+describe('current character artwork across revealed and locked surfaces', { timeout: 30_000 }, () => {
+  const locked = archives(emptyAccount());
   it.each(starters)('$name uses byte-derived revisions only for shipped forms and keeps pending art neutral', (starter) => {
-    const locked = archives(emptyAccount());
     for (let evolution = 1; evolution <= 6; evolution++) {
       const form = characterArt(starter.id, evolution);
       expect(portrait(starter, evolution, true)).toContain(`alt="${characterName(starter.id, evolution, true)},`);

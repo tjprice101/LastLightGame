@@ -4,6 +4,7 @@ import { characterGrowthFactor, characterPotencyFactor, weaponRules, type Charac
 import { getConduit, conduitBuffs, validateConduitSlots, validateConduitElement, type ConduitSlots, type ConduitUpgrades } from './conduits';
 import { type ElementId } from './activities';
 import { flagshipFighters } from './flagships';
+import { moonSunshadeFighters } from './moon-sunshade-fighters';
 import { warFighters, warActionNames, isWarCharacter } from './war-characters';
 import { calamiticFighters, calamiticActionNames, isCalamiticCharacter } from './calamitic-characters';
 import { kitPilotDescriptions, type KitPilot } from './kit-pilots';
@@ -61,6 +62,7 @@ export type ResolvedFighterDefinition = Omit<FighterDefinition, 'stats'> & { sta
 
 export const fighters: Record<StarterId, FighterDefinition> = {
   ...flagshipFighters,
+  ...moonSunshadeFighters,
   ...warFighters,
   ...calamiticFighters,
   ember: {

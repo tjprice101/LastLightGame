@@ -589,7 +589,12 @@ Validate `activity-transition.test.ts` and `battle-entrance.test.ts`.
 
 The former Cosmic Grand Master Chest is now **Machine's Master Chest**.
 Inventory keeps its image decorative and provides a separate visible **Open**
-button using the existing choice/confirmation flow and all-owned restriction.
+button. The chooser lets players select up to their owned chest count and the
+remaining unowned Masters across characters; changing characters preserves the
+editable selection. One confirmation opens the whole selection atomically.
+Canceling before confirmation spends nothing, duplicate/owned Masters are
+unavailable, and no unlock is auto-equipped. The saved reward receipt shows
+every selected Master with an accessible details disclosure for its effect.
 Master drops/results resolve the revisioned PNG, not a text token. Master and
 Calamity chest drops use96px artwork with wider cluster spacing; victory receipts
 give chests dedicated full-width rows with artwork up to240 by200px. Ordinary
@@ -598,9 +603,12 @@ Master chests, not the consumed Calamity chest. The Master reveal no longer says
 "Planetary locks released." Saved rewards, focus/Skip/Continue/reduced motion,
 drop odds and account IDs are unchanged.
 
-Validate chest cases in `battle-loot.test.ts`, `battle-results.test.ts`,
-`inventory.test.ts`, `calamity.test.ts` and `conduit-element.test.ts`, plus browser
-desktop/mobile artwork loading, button targets and contained receipt scrolling.
+Validate bulk Master transactions/authority/UI/reward cases in
+`master-conduits.test.ts`, `server-game.test.ts`,
+`master-choice-dialog.test.tsx` and `conduit-element.test.ts`; also run chest
+cases in `battle-loot.test.ts`, `battle-results.test.ts`, `inventory.test.ts`
+and `calamity.test.ts`, plus browser desktop/mobile artwork loading, button
+targets and contained receipt scrolling.
 
 ## Omnic elemental identity (D-403)
 

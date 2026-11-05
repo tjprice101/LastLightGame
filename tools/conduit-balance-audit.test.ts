@@ -9,11 +9,11 @@ import { calamityEncounter } from '../src/content/calamity';
 import type { BattleState } from '../src/game/battle';
 
 describe('read-only exhaustive Conduit audit integrity', () => {
-  it('accounts for all156 IDs, all16 wearer decisions and all legal upgrade endpoints', () => {
+  it('accounts for all201 IDs, all31 ordinary wearer decisions and all legal upgrade endpoints', () => {
     expect(conduits).toHaveLength(99);
-    expect(masterConduits).toHaveLength(66);
-    expect(auditCatalog).toHaveLength(165);
-    expect(new Set(auditCatalog.map(piece => piece.id)).size).toBe(165);
+    expect(masterConduits).toHaveLength(102);
+    expect(auditCatalog).toHaveLength(201);
+    expect(new Set(auditCatalog.map(piece => piece.id)).size).toBe(201);
     const calamitic = auditCatalog.filter(piece => piece.rarity === 'Calamitic');
     expect(calamitic.map(piece => piece.id).sort()).toEqual([
       'calamitic-aegis-engine-of-severed-fate', 'calamitic-bulwark-of-the-last-horizon',
@@ -27,7 +27,7 @@ describe('read-only exhaustive Conduit audit integrity', () => {
     expect(calamitic.every(piece => piece.levels.join(',') === '0,5')).toBe(true);
     for (const piece of auditCatalog) {
       expect(piece.eligible.length).toBeGreaterThan(0);
-      expect(piece.eligible.length + piece.skipped.length).toBe(piece.eligible.some(isCalamiticCharacter) ? 20 : 19);
+      expect(piece.eligible.length + piece.skipped.length).toBe(piece.eligible.some(isCalamiticCharacter) ? 32 : 31);
       expect(piece.levels).toEqual(piece.rarity === 'Master' ? [0] : [0, 5]);
     }
   });

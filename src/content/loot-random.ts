@@ -31,7 +31,7 @@ export function sanctuaryLycalisOdds(level: number) {
 }
 
 export function stagedLycalisOdds(mode: InfusionModeId, level: number, stage?: number) {
-  if (mode === 'treasury' || mode === 'roses' || mode === 'machines') throw new Error('This mode does not award Null-Prismatica drops.');
+  if (mode !== 'heavens' && mode !== 'abyss' && mode !== 'sanctuary') throw new Error('This mode does not award Null-Prismatica drops.');
   const multiplier = stage === undefined ? 1 : bossLootMultiplier({ infusion: { mode, stage } });
   return (mode === 'sanctuary' ? sanctuaryLycalisOdds(level) : infusionLycalisOdds(level))
     .map(outcome => ({ ...outcome, amount: outcome.amount * multiplier }));

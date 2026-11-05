@@ -1,4 +1,4 @@
-import type { CharacterVFXProfile, VFXPalette, BaseVFXSystem, VFXArchetype } from './types';
+import type { AbilityVFXDefinition, CharacterVFXProfile, VFXPalette, BaseVFXSystem, VFXArchetype } from './types';
 import { SlashVFXSystem } from './systems/slash-vfx';
 import { BeamVFXSystem } from './systems/beam-vfx';
 import { MandalaVFXSystem } from './systems/mandala-vfx';
@@ -6,6 +6,9 @@ import { SlamVFXSystem } from './systems/slam-vfx';
 import { VortexVFXSystem } from './systems/vortex-vfx';
 import { VolleyVFXSystem } from './systems/volley-vfx';
 import { CataclysmVFXSystem } from './systems/cataclysm-vfx';
+import { moonCharacters, sunshadeCharacters } from '../content/moon-sunshade-characters';
+import { nativeIdentities } from '../content/native-identities';
+import type { MoonSunshadeCharacterId } from '../content/moon-sunshade-fighters';
 
 const systemConstructors = {
   slash: SlashVFXSystem,
@@ -160,7 +163,65 @@ const P_VAELOR: VFXPalette = {
   groundGlow: 'rgba(40, 205, 170, 0.38)',
 };
 
+const eventArchetypes: Record<MoonSunshadeCharacterId, readonly [VFXArchetype, VFXArchetype, VFXArchetype]> = {
+  maerion: ['beam', 'mandala', 'cataclysm'],
+  caevren: ['slam', 'vortex', 'cataclysm'],
+  vespera: ['beam', 'volley', 'cataclysm'],
+  ilyss: ['slash', 'mandala', 'cataclysm'],
+  asteriel: ['mandala', 'vortex', 'cataclysm'],
+  serapha: ['beam', 'mandala', 'cataclysm'],
+  rhaziel: ['mandala', 'beam', 'cataclysm'],
+  oryn: ['beam', 'slash', 'cataclysm'],
+  thessara: ['vortex', 'beam', 'cataclysm'],
+  elaris: ['slash', 'vortex', 'cataclysm'],
+  veyr: ['slam', 'slash', 'cataclysm'],
+  aureth: ['slam', 'volley', 'cataclysm'],
+};
+
+function eventPalette(id: MoonSunshadeCharacterId, name: string, hex: string): VFXPalette {
+  const raw = hex.replace('#', '');
+  const mid = { r: parseInt(raw.slice(0, 2), 16), g: parseInt(raw.slice(2, 4), 16), b: parseInt(raw.slice(4, 6), 16), a: .9 };
+  const mix = (channel: number, toward: number, amount: number) => Math.round(channel + (toward - channel) * amount);
+  return {
+    name: `${name} · signature`,
+    id,
+    core: { r: 255, g: 255, b: 255, a: 1 },
+    inner: { r: mix(mid.r, 255, .35), g: mix(mid.g, 255, .35), b: mix(mid.b, 255, .35), a: .95 },
+    mid,
+    outer: { r: Math.round(mid.r * .5), g: Math.round(mid.g * .5), b: Math.round(mid.b * .5), a: .75 },
+    spectral: { r: mix(mid.r, 255, .2), g: mix(mid.g, 255, .2), b: mix(mid.b, 255, .2), a: .55 },
+    smoke: { r: Math.round(mid.r * .18), g: Math.round(mid.g * .18), b: Math.round(mid.b * .18), a: .4 },
+    groundGlow: `rgba(${mid.r}, ${mid.g}, ${mid.b}, 0.38)`,
+  };
+}
+
+function eventCharacterProfile(character: (typeof moonCharacters)[number] | (typeof sunshadeCharacters)[number]): CharacterVFXProfile {
+  const id = character.id as MoonSunshadeCharacterId;
+  const identity = nativeIdentities[id];
+  const palette = eventPalette(id, character.name, character.color);
+  const [skill1, skill2, ultimate] = eventArchetypes[id];
+  const make = (tier: 'light' | 'skill1' | 'skill2' | 'ultimate', archetype: VFXArchetype,
+    name: string, description: string, duration: number): AbilityVFXDefinition =>
+    ({ name, tier, archetype, description, palette, duration, chargeDuration: .35, impactDuration: .5 });
+  return {
+    characterId: id,
+    characterName: character.name,
+    element: character.element,
+    elementId: character.elementId,
+    signature: identity.passive.name,
+    weapon: character.weapon,
+    abilities: {
+      light: make('light', 'slash', 'Normal Attack', `A brief ${character.name} signature strike.`, 1.8),
+      skill1: make('skill1', skill1, identity.abilities.skill1.name, identity.abilities.skill1.description, 2.4),
+      skill2: make('skill2', skill2, identity.abilities.skill2.name, identity.abilities.skill2.description, 2.8),
+      ultimate: make('ultimate', ultimate, identity.abilities.ultimate.name, identity.abilities.ultimate.description, 4.2),
+    },
+  };
+}
+
 export const CHARACTER_PROFILES: Record<string, CharacterVFXProfile> = {
+  ...Object.fromEntries([...moonCharacters, ...sunshadeCharacters].map(character =>
+    [character.id, eventCharacterProfile(character)])),
   ember: {
     characterId: 'ember', characterName: 'Infernis', element: 'Infernic', elementId: 'infernic', signature: 'cleave', weapon: 'Greatsword',
     abilities: {

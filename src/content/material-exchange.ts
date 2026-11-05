@@ -1,14 +1,17 @@
-import { elements } from './activities';
+import { elements, materialRarities, materialFirstNeededLevel } from './activities';
 import { roseMaterials } from './roses';
+import { getStarter } from './starters';
+import { moonSunshadeEvents, newEventMaterialIds } from './moon-sunshade-events';
 
 export type ExchangeCategory = 'normal' | 'event';
 export interface ExchangeProduct {
-  /** Purchase identifier: an element ID for normal materials, the material ID for event materials. */
+  /** Legacy element ID for ordinary Seeds; material ID for higher/event tiers. */
   id: string;
   materialId: string;
   category: ExchangeCategory;
   rarity: string;
   price: number;
+  unlockLevel?: number;
   /** Event materials are restricted to these Element-Bearers. */
   restrictedTo?: readonly string[];
   eventName?: string;
@@ -17,23 +20,37 @@ export interface ExchangeProduct {
 export const exchangeQuantities = [1, 5, 10] as const;
 export type ExchangeQuantity = typeof exchangeQuantities[number];
 export const normalExchangePrice = 80;
+export const normalExchangePrices = [80, 470, 2_750, 16_100, 94_100, 550_000] as const;
 export const roseExchangePrices = [2_500, 7_500, 25_000, 75_000, 250_000, 750_000] as const;
 export const roseMaterialCharacters = ['Rosetta', 'Thornia', 'Crinso'] as const;
 
 export const exchangeProducts: readonly ExchangeProduct[] = [
-  ...elements.map((element): ExchangeProduct => ({
-    id: element.id, materialId: `${element.id}-common`, category: 'normal', rarity: 'Common', price: normalExchangePrice,
-  })),
+  ...elements.flatMap(element => materialRarities.map((rarity, tier): ExchangeProduct => ({
+    id: tier === 0 ? element.id : `${element.id}-${rarity.toLowerCase()}`,
+    materialId: `${element.id}-${rarity.toLowerCase()}`, category: 'normal', rarity,
+    price: normalExchangePrices[tier], unlockLevel: materialFirstNeededLevel[rarity],
+  }))),
   ...roseMaterials.map((material, tier): ExchangeProduct => ({
     id: material.id, materialId: material.id, category: 'event', rarity: material.rarity, price: roseExchangePrices[tier],
     restrictedTo: roseMaterialCharacters, eventName: 'Roses Under Sunny Skies',
   })),
+  ...moonSunshadeEvents.flatMap(event => newEventMaterialIds(event.id).map((materialId, tier): ExchangeProduct => ({
+    id: materialId, materialId, category: 'event', rarity: materialRarities[tier], price: roseExchangePrices[tier],
+    restrictedTo: event.characters.map(id => getStarter(id as Parameters<typeof getStarter>[0]).name),
+    eventName: event.bannerName,
+  }))),
 ];
 
 export function exchangeProduct(id: string): ExchangeProduct {
-  const product = exchangeProducts.find(entry => entry.id === id);
+  const product = exchangeProducts.find(entry => entry.id === id || entry.materialId === id);
   if (!product) throw new Error('Unknown Material Exchange product.');
   return product;
+}
+export function exchangeProductUnlocked(product: ExchangeProduct, account: {
+  characters: Partial<Record<string, { level: number }>>;
+} | null): boolean {
+  return account !== null && (product.category === 'event' ||
+    Object.values(account.characters).some(progress => progress && progress.level >= (product.unlockLevel ?? 0)));
 }
 export function isExchangeQuantity(value: unknown): value is ExchangeQuantity {
   return exchangeQuantities.includes(value as ExchangeQuantity);

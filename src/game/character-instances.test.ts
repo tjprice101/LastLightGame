@@ -39,7 +39,10 @@ describe('duplicate character-instance foundation', () => {
   });
   it('round-trips duplicates and preserves all existing ownership, progress and gear', () => {
     const { saved, account } = seeded();
-    expect(loadAccount(saved)).toEqual(account);
+    expect(loadAccount(saved)).toEqual({ ...account, acquisitionMarkers: {
+      'character:ember': true, 'character:tide': false,
+      'conduit:vigil-core': false, 'form:infusion:heavens:0': false,
+    } });
     expect(ownedCharacterInstances(account)).toEqual(['ember', 'tide', first, second]);
     expect(validateAccount(account)).toEqual(account);
   });

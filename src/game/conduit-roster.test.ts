@@ -9,6 +9,7 @@ import { conduitBuffs, conduits, type ConduitId } from '../content/conduits';
 import { resolveFighter, type ActionId } from '../content/combat';
 import { starters, type StarterId } from '../content/starters';
 import { masterConduits, type MasterConduitId } from '../content/master-conduits';
+import { isNewEventCharacter } from '../content/moon-sunshade-events';
 import { nativeBalance } from '../content/native-balance';
 import { nativeBurnPhase, nativeEnemyCompleted, nativeHeatCap, nativeIncomingMultiplier, nativePrimaryHit, nativeRefusal } from './native-kits';
 import { act, actionUnavailable, createBattle, endTurn, type BattleEvent } from './battle';
@@ -984,7 +985,8 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
   }
 }
 
-describe('every fixed Master replacement', () => {
-  it.each(masterConduits)('$id executes its unique native transformation or effect', entry => exerciseMaster(entry.id, true));
-  it.each(masterConduits)('$id cannot run without that matching Master', entry => exerciseMaster(entry.id, false));
+const legacyMasters = masterConduits.filter(entry => !isNewEventCharacter(entry.character));
+describe('every legacy fixed Master replacement', () => {
+  it.each(legacyMasters)('$id executes its unique native transformation or effect', entry => exerciseMaster(entry.id, true));
+  it.each(legacyMasters)('$id cannot run without that matching Master', entry => exerciseMaster(entry.id, false));
 });

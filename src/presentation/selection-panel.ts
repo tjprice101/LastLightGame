@@ -75,6 +75,17 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
         choices.className = 'selection-options';
         choices.tabIndex = 0;
         choices.setAttribute('aria-label', `${control.label} choices`);
+        let masterDetails: HTMLElement | null = null;
+        if (select.hasAttribute('data-master-equipment')) {
+          const intro = document.createElement('p');
+          intro.className = 'master-selection-intro';
+          intro.textContent = 'Choose a Master for this Element-Bearer. View Details to inspect its full effect and lore. It equips only after the saved selection succeeds.';
+          choices.append(intro);
+          masterDetails = document.createElement('section');
+          masterDetails.className = 'master-selection-details';
+          masterDetails.id = `master-selection-details-${++sequence}`;
+          masterDetails.setAttribute('aria-live', 'polite');
+        }
         Array.from(select.options).forEach((option, index) => {
           const choice = document.createElement('button');
           choice.type = 'button';
@@ -105,7 +116,28 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
           choice.append(text);
           const lootSource = stageLootSourceOf(select);
           let row: HTMLElement = choice;
-          if (lootSource) {
+          if (masterDetails && isMasterConduitId(option.value)) {
+            const masterId = option.value;
+            row = document.createElement('div');
+            row.className = 'selection-option-row selection-option-row--master';
+            row.append(choice);
+            const detailsButton = document.createElement('button');
+            detailsButton.type = 'button';
+            detailsButton.className = 'master-selection-view-details';
+            detailsButton.textContent = 'View Details';
+            detailsButton.setAttribute('aria-label', `View Details for ${getMasterConduit(masterId).name}`);
+            detailsButton.setAttribute('aria-controls', masterDetails.id);
+            detailsButton.setAttribute('aria-expanded', 'false');
+            detailsButton.addEventListener('click', () => {
+              if (!host.contains(select) || select.disabled || !select.options[index] ||
+                  select.options[index] !== option || option.disabled) return;
+              choices.querySelectorAll<HTMLButtonElement>('.master-selection-view-details').forEach(button =>
+                button.setAttribute('aria-expanded', String(button === detailsButton)));
+              masterDetails!.innerHTML = `<h3>Master for ${getStarter(getMasterConduit(masterId).character).name}</h3>${masterReference(masterId)}`;
+              masterDetails!.hidden = false;
+            });
+            row.append(detailsButton);
+          } else if (lootSource) {
             row = document.createElement('div');
             row.className = 'selection-option-row';
             row.append(choice);
@@ -134,6 +166,15 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
           });
           choices.append(row);
         });
+        if (masterDetails) {
+          const selected = select.selectedOptions[0];
+          if (selected && isMasterConduitId(selected.value)) {
+            masterDetails.innerHTML = `<h3>Currently equipped Master</h3>${masterReference(selected.value)}`;
+          } else {
+            masterDetails.innerHTML = '<h3>Master details</h3><p>Select an owned Master and use View Details to review its effect before equipping.</p>';
+          }
+          choices.append(masterDetails);
+        }
         dialog.append(header, choices);
         button.focus({ preventScroll: true });
         dialog.showModal();
@@ -168,9 +209,10 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
   };
 }
 import { getMasterConduit, isMasterConduitId } from '../content/master-conduits';
-import { masterConduitIcon } from './master-conduits';
+import { masterConduitIcon, masterReference } from './master-conduits';
 import { getStarter, isStarterId } from '../content/starters';
 import { portrait } from './portrait';
 import { stageLootButton, stageLootSourceOf } from './stage-loot';
 import { conduitElementLabel, createConduitElement } from './conduit-element';
 import { isConduitId } from '../content/conduits';
+import './master-selection.css';

@@ -1,0 +1,45 @@
+.social-calendar-dialog {
+  width: min(850px, calc(100vw - 24px));
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+}
+.social-calendar-dialog nav,
+.social-calendar-dialog .game-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.social-calendar-dialog button,
+.social-calendar-dialog fieldset label {
+  min-height: 44px;
+}
+.social-calendar-dialog nav [aria-pressed="true"] {
+  border-bottom: 3px solid currentColor;
+}
+.social-server-time { font-size: .9em; }
+.social-calendar-feedback { position: relative; isolation: isolate; }
+.attendance-ladder {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+}
+.attendance-ladder li {
+  padding: 12px;
+  border: 1px solid #8886;
+  border-radius: 10px;
+}
+.attendance-ladder li[data-saved] { background: #8882; }
+.attendance-ladder b,
+.attendance-ladder span,
+.social-mail-list span,
+.social-mail-list small { display: block; }
+.social-mail-list { list-style: none; padding: 0; }
+.social-mail-list li { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.social-mail-list [data-calendar-mail] { flex: 1 1 250px; text-align: left; padding: 12px; }
+.social-calendar-dialog fieldset { display: grid; gap: 6px; margin: 16px 0; }
+.social-calendar-dialog fieldset label { display: flex; align-items: center; gap: 10px; padding: 6px; }
+.social-mail-body { white-space: pre-wrap; overflow-wrap: anywhere; }
+.social-reward-art { display: flex; justify-content: center; gap: 16px; }
+.social-reward-art .currency-icon { width: 80px; height: 80px; }

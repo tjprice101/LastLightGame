@@ -4,6 +4,7 @@ import { materialLoot, dungeonFractalisDrop, materialBrackets } from '../content
 import { infusionEncounter, infusionLoot } from '../content/infusions';
 import { enemySkills } from '../content/enemy-skills';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, setMachineLootFocus, validateAccount } from './account';
+import { acquisitionView } from './acquisition-markers';
 import { createDungeonBattle, createInfusionBattle, endTurn } from './battle';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { capturedProgress, resolveCapturedFighter } from './character-instances';
@@ -156,7 +157,7 @@ describe('D-425 material rewards and historical compatibility', () => {
         expect(writes).not.toHaveBeenCalled();
         expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
         saveAccount(saved, loaded);
-        expect(loadAccount(saved)).toEqual(loaded);
+        expect(loadAccount(saved)).toEqual({ ...loaded, acquisitionMarkers: acquisitionView(loaded) });
         expect(writes).toHaveBeenCalledOnce();
       }
     }

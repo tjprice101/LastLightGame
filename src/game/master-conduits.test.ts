@@ -8,7 +8,7 @@ import { resolveFighter } from '../content/combat';
 import { conduits } from '../content/conduits';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { createBattle, createInfusionBattle, withMasterLoadouts, act, endTurn, nextStage, nextWave, type BattleEvent } from './battle';
-import { ACCOUNT_KEY, emptyAccount, saveAccount, loadAccount, validateAccount, openMasterChest, equipMasterConduit, equipConduit, saveAccountRewards, type Account } from './account';
+import { ACCOUNT_KEY, emptyAccount, saveAccount, loadAccount, validateAccount, openMasterChest, openMasterChests, equipMasterConduit, equipConduit, saveAccountRewards, type Account } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { createSession } from '../presentation/battle-view';
 import { unitReadout } from '../presentation/unit-readout';
@@ -42,17 +42,20 @@ function masterState(id: MasterConduitId) {
 
 describe('character Masters and chest contracts', () => {
   it('has exactly three unique Omnic Masters for each eligible Element-Bearer, outside the ordinary catalog', () => {
-    expect(masterConduits).toHaveLength(66);
-    expect(new Set(masterConduits.map(entry => entry.id)).size).toBe(66);
-    expect(new Set(masterConduits.map(entry => entry.name)).size).toBe(66);
-    for (const character of starters) expect(masterConduits.filter(entry => entry.character === character.id)).toHaveLength(3);
-    expect(masterConduits.every(entry => entry.rarity === 'Omnic' && entry.art === `master-conduits/${entry.id}.png`)).toBe(true);
+    expect(masterConduits.length % 3).toBe(0);
+    expect(new Set(masterConduits.map(entry => entry.id)).size).toBe(masterConduits.length);
+    expect(new Set(masterConduits.map(entry => entry.name)).size).toBe(masterConduits.length);
+    const eligibleCharacters = new Set(masterConduits.map(entry => entry.character));
+    expect(eligibleCharacters.size).toBe(masterConduits.length / 3);
+    for (const character of eligibleCharacters) expect(masterConduits.filter(entry => entry.character === character)).toHaveLength(3);
+    expect(masterConduits.slice(0, 66).every(entry =>
+      entry.rarity === 'Omnic' && entry.art === `master-conduits/${entry.id}.png`)).toBe(true);
     expect(conduits).toHaveLength(99);
   });
   it('gives every Master a distinct complete effect within each eligible character', () => {
-    expect(new Set(masterConduits.map(entry => entry.effect)).size).toBe(66);
-    for (const character of starters) {
-      const own = masterConduits.filter(entry => entry.character === character.id);
+    expect(new Set(masterConduits.map(entry => entry.effect)).size).toBe(masterConduits.length);
+    for (const character of new Set(masterConduits.map(entry => entry.character))) {
+      const own = masterConduits.filter(entry => entry.character === character);
       expect(new Set(own.map(entry => entry.effect)).size).toBe(3);
     }
   });
@@ -100,6 +103,31 @@ describe('character Masters and chest contracts', () => {
     expect(account.characters.nerithe).toBeUndefined();
     expect(account.masterEquipment).toBeUndefined();
     expect(account.fractalis).toBe(0);
+  });
+  it('opens selected Masters across characters in one atomic save without auto-equipping', () => {
+    const saved = storage({ masterChests: 2 });
+    const write = vi.spyOn(saved, 'setItem');
+    const account = openMasterChests(saved, ['master-ember-1', 'master-nerithe-2']);
+    expect(write).toHaveBeenCalledOnce();
+    expect(account.masterChests).toBe(0);
+    expect(account.masterConduits).toEqual({ 'master-ember-1': 1, 'master-nerithe-2': 1 });
+    expect(account.masterEquipment).toBeUndefined();
+    expect(account.characters.nerithe).toBeUndefined();
+  });
+  it('rejects invalid bulk selections before writing and keeps all chests on save failure', () => {
+    const saved = storage({ masterChests: 2, masterConduits: { 'master-ember-1': 1 } });
+    const before = saved.getItem(ACCOUNT_KEY);
+    const write = vi.spyOn(saved, 'setItem');
+    expect(() => openMasterChests(saved, [])).toThrow('at least one');
+    expect(() => openMasterChests(saved, ['master-ember-2', 'master-ember-2'])).toThrow('only once');
+    expect(() => openMasterChests(saved, ['master-ember-2', 'master-nerithe-1', 'master-kaelith-1'])).toThrow('Not enough');
+    expect(() => openMasterChests(saved, ['master-ember-1', 'master-ember-2'])).toThrow('already owned');
+    expect(() => openMasterChests(saved, ['not-a-master'] as never)).toThrow('valid Master');
+    expect(write).not.toHaveBeenCalled();
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
+    write.mockImplementation(() => { throw new Error('Disk denied'); });
+    expect(() => openMasterChests(saved, ['master-ember-2', 'master-nerithe-1'])).toThrow('Disk denied');
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
   });
   it('rejects duplicates, no chest, forged IDs, captures and mismatch without changing storage', () => {
     const saved = storage({ masterConduits: { 'master-ember-1': 1 } });
@@ -218,13 +246,15 @@ describe('all Master rules and frozen sessions', () => {
     expect(team).toContain('Always active · Omnic Master');
     expect(team).not.toContain('Master slot · Reserved');
     expect(inventoryView(account)).toContain('data-open-master-chest');
-    expect(archives(account, 'conduits').match(/data-archive-master=/g)).toHaveLength(66);
+    expect(archives(account, 'conduits').match(/data-archive-master=/g)).toHaveLength(masterConduits.length);
     const { owner } = masterState('master-ember-2');
     expect(unitReadout(owner, true)).not.toContain('Astral Reserve');
     expect(team).toMatch(/assets\/master-conduits\/master-ember-2\.png\?v=[0-9a-f]{16}" alt="Cinderstar Genesis Engine"/);
     expect(inventoryView(account)).toMatch(/assets\/master-conduits\/grand-master-chest\.png\?v=[0-9a-f]{16}/);
     expect(inventoryView(account)).not.toContain('Artwork pending');
-    for (const entry of masterConduits) expect(existsSync(`public/assets/${entry.art}`)).toBe(entry.id in masterConduitArtRevisions);
+    for (const entry of masterConduits) {
+      expect(entry.art !== '' && existsSync(`public/assets/${entry.art}`)).toBe(entry.id in masterConduitArtRevisions);
+    }
     expect(masterConduits.filter(entry => entry.id in masterConduitArtRevisions)).toHaveLength(66);
     expect(existsSync('public/assets/master-conduits/grand-master-chest.png') && existsSync('public/assets/master-conduits/astral-reserve.png')).toBe(true);
     expect(team).not.toMatch(/assets\/conduits\/master-/);

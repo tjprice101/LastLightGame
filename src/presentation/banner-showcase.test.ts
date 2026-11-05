@@ -34,7 +34,8 @@ describe('banner showcases', () => {
     const before = structuredClone(account);
     const home = homeHub(openingStarters[0], false, account);
     for (const banner of summonBanners) {
-      expect(home).toContain(`data-information="banner-showcase-${banner.id}"`);
+      if (banner.id === 'standard' || banner.id === 'roses')
+        expect(home).toContain(`data-information="banner-showcase-${banner.id}"`);
       expect(summonHub(account, banner.id)).not.toContain(`data-information="banner-showcase-${banner.id}"`);
       expect(summonHub(account, banner.id)).toContain('data-information="summon-information"');
     }

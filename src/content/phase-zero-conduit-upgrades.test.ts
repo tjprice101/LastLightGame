@@ -4,6 +4,7 @@ import { approvedConduitCatalog } from './phase-zero-conduit-catalog';
 import { phaseZeroUpgradedAbility, phaseZeroUpgradePercentages } from './phase-zero-conduit-upgrades';
 import { conduits, conduitEffect } from './conduits';
 import { masterConduits } from './master-conduits';
+import { moonSunshadeMasters } from './moon-sunshade-masters';
 import { calamiticEffect, isCalamiticConduitId } from './calamitic-conduits';
 
 vi.mock('./phase-zero-stats', async original => ({
@@ -25,6 +26,11 @@ describe('approved ability upgrade presentation', () => {
   });
 
   it.each([...conduits, ...masterConduits])('$id preserves its entire owner-authored default, including continuation lines', entry => {
+    const seasonal = moonSunshadeMasters.find(master => master.id === entry.id);
+    if (seasonal) {
+      expect(phaseZeroUpgradedAbility(entry.id)).toBe(seasonal.effect);
+      return;
+    }
     const text = readFileSync(new URL('../../docs/conduit-catalog.txt', import.meta.url), 'utf8');
     const blocks = [...text.matchAll(/^Name: (.+)\r?\nRarity: .+\r?\nElement: .+\r?\nAbility \(Default Value\): ([\s\S]*?)(?=\r?\n\r?\n|(?![\s\S]))/gm)];
     const expected = blocks.find(block => block[1].trim() === entry.name)?.[2].trim();

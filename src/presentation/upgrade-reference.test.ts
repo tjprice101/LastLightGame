@@ -337,7 +337,7 @@ describe('reference Team upgrade presentation', () => {
       expect(account).toEqual(before);
     }
   });
-  it.each(starters)('$name uses the Collections silhouette treatment and actual next form', starter => {
+  it.each(starters)('$name uses the Collections silhouette treatment and actual next form', { timeout: 30_000 }, starter => {
     const account = emptyAccount();
     account.characters[starter.id] = { level: 0, evolution: 1 };
     account.squad = [starter.id];

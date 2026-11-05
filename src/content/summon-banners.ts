@@ -1,9 +1,12 @@
 import { standardBanner, standardBannerPool } from './standard-banner';
 import { roseBanner, roseBannerPool } from './rose-banner';
+import { moonBanner, sunshadeBanner } from './moon-sunshade-banners';
 
 export const summonBanners = [
   { ...standardBanner, pool: standardBannerPool },
   { ...roseBanner, pool: roseBannerPool },
+  moonBanner,
+  sunshadeBanner,
 ] as const;
 
 export type SummonBanner = (typeof summonBanners)[number];

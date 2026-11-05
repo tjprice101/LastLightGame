@@ -7,7 +7,7 @@ import { infusionModeStageCount } from '../content/activities';
 describe('progressive cinematic attack flair', () => {
   it('gives all characters fitting signatures and weapon/casting choreography', () => {
     expect(Object.keys(characterChoreography)).toHaveLength(starters.length);
-    expect(new Set(Object.values(characterChoreography).map(profile => profile.signature)).size).toBe(16);
+    expect(new Set(Object.values(characterChoreography).map(profile => profile.signature)).size).toBe(starters.length);
     for (const { id } of starters) {
       const unit = createBattle(1, [id]).allies[0];
       const before = structuredClone(unit);

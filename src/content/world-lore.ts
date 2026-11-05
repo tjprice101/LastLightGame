@@ -32,4 +32,6 @@ export const devourerHabitats = {
   treasury: 'Earn Prismatica by defeating Crownfall Slimes. Captured copies can also be sold for Prismatica.',
   sanctuary: 'Earn Prismatica and Null-Prismatica by defeating Rosethorn wisps. Captured copies can be sold for both currencies.',
   roses: 'Defeat Roselius for Rosethorn materials used by Rosetta, Thornia and Crinso.',
+  moon: 'Enter The Harbor of Unreturned Names to face Vesperwing moths and earn Moonwake materials.',
+  sunshade: 'Enter Beneath the Borrowed Dawn to face Solcarapace scarabs and earn Dawnforge materials.',
 } as const satisfies Record<Exclude<InfusionModeId, 'machines'>, string>;

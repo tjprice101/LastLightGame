@@ -1,6 +1,8 @@
 import { rolePerkRow, resonanceBadge } from './intrinsic-perks';
 import { describeFighter, enemies, formatStat, type ActionId } from '../content/combat';
 import { gameConfirm, gameDialogPending } from './game-dialog';
+import { createCleanseChoicePicker } from './cleanse-choice';
+import type { CleanseChoice } from '../game/native-kits';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { gatesOfOblivionRules, oblivionArenaArt, oblivionEncounter } from '../content/gates-of-oblivion';
 import { actAndAdvanceTurn, advanceUnavailableTurns, teamCanAct, combatantCanAct, actionUnavailable, createBattle, createCalamityBattle, createDungeonBattle, createOblivionBattle, createInfusionBattle, createWarBattle, createStoryBattle, endTurn, nextStage, nextWave, withMasterLoadouts, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
@@ -55,7 +57,7 @@ import type { NativeView } from '../game/native-kits';
 export interface BattleSession { state: BattleState; log: string[]; runId: string; progress: CharacterProgress; teamProgress?: Partial<Record<StarterId, CharacterProgress>>; stageEvents: BattleEvent[]; entrancePending?: boolean; resultsVisible?: boolean }
 export interface BattleAuthorityResponse { session: BattleSession; result?: BattleResult }
 export interface BattleAuthority {
-  action(actorId: string, action: ActionId, targetId: string): Promise<BattleAuthorityResponse>;
+  action(actorId: string, action: ActionId, targetId: string, cleanseChoice?: CleanseChoice): Promise<BattleAuthorityResponse>;
   endTurn(): Promise<BattleAuthorityResponse>;
   nextStage(): Promise<BattleAuthorityResponse>;
   nextWave(): Promise<BattleAuthorityResponse>;
@@ -113,6 +115,7 @@ export class BattleView {
   private disposed = false;
   private dragging = false;
   private allyPicker: ReturnType<typeof createAllyTargetPicker> | null = null;
+  private cleansePicker: ReturnType<typeof createCleanseChoicePicker> | null = null;
   private errorFadeTimer: ReturnType<typeof setTimeout> | undefined;
   private errorClearTimer: ReturnType<typeof setTimeout> | undefined;
   private vfxRunner: BattleVFXRunner | null = null;
@@ -205,6 +208,7 @@ export class BattleView {
     clearRarityFeedback(this.host);
     this.disposed = true;
     this.allyPicker?.cancel();
+    this.cleansePicker?.cancel();
     this.allyPicker = null;
     this.clearErrorTimers();
     this.dragging = false;
@@ -232,7 +236,7 @@ export class BattleView {
     this.command(command);
   };
 
-  private command(command: Command | ActionId | 'endTurn', allyTargetId?: string): void {
+  private command(command: Command | ActionId | 'endTurn', allyTargetId?: string, cleanseChoice?: CleanseChoice): void {
     if (activityTransitionPending() || this.busy || this.disposed || this.dragging || this.allyPicker || gameDialogPending()) return;
     if (command === 'nextAlly' || command === 'nextTarget') {
       const allies = command === 'nextAlly';
@@ -254,8 +258,14 @@ export class BattleView {
       return;
     }
     const actionTargetId = allyTargetId ?? this.targetId;
+    const recipient = this.session.state.allies.find(unit => unit.id === actionTargetId && unit.hp > 0);
+    if (actor?.definitionId === 'ilyss' && command === 'skill2' && !cleanseChoice &&
+      recipient && recipient.burn.turns > 0 && recipient.weakened > 0) {
+      void this.chooseCleanse(actor, actionTargetId);
+      return;
+    }
     if (this.authority) {
-      void this.authoritativeCommand(command, actionTargetId);
+      void this.authoritativeCommand(command, actionTargetId, cleanseChoice);
       return;
     }
     try {
@@ -274,7 +284,7 @@ export class BattleView {
           result = { state: advanced.state, events: [...result.events, ...advanced.events] };
         }
       } else {
-        result = actAndAdvanceTurn(state, this.actorId, command, actionTargetId);
+        result = actAndAdvanceTurn(state, this.actorId, command, actionTargetId, cleanseChoice);
       }
       this.commitRewards(result);
       if (result.state.wave !== state.wave) {
@@ -288,6 +298,25 @@ export class BattleView {
     } catch (error) {
       console.error('Battle action rejected', error);
       this.error(error instanceof Error ? error.message : 'Battle action failed.');
+    }
+  }
+
+  private async chooseCleanse(actor: Combatant, targetId: string): Promise<void> {
+    const state = this.session.state;
+    try {
+      const picker = createCleanseChoicePicker();
+      this.cleansePicker = picker;
+      const choice = await picker.result;
+      if (this.cleansePicker === picker) this.cleansePicker = null;
+      if (this.disposed || choice === null) return;
+      if (this.session.state !== state || this.actorId !== actor.id) {
+        this.error('The battle changed. Choose the action and recipient again.');
+        return;
+      }
+      this.command('skill2', targetId, choice);
+    } catch (error) {
+      this.cleansePicker = null;
+      if (!this.disposed) this.error(error instanceof Error ? error.message : 'No action was spent.');
     }
   }
 
@@ -339,7 +368,7 @@ export class BattleView {
     this.errorClearTimer = undefined;
   }
 
-  private async authoritativeCommand(command: ActionId | 'endTurn', actionTargetId: string): Promise<void> {
+  private async authoritativeCommand(command: ActionId | 'endTurn', actionTargetId: string, cleanseChoice?: CleanseChoice): Promise<void> {
     if (!this.authority || this.busy || this.disposed) return;
     const state = this.session.state;
     if (command === 'endTurn' && state.calamity && state.phase === 'cleared') {
@@ -352,7 +381,9 @@ export class BattleView {
     const announcement = this.host.querySelector('#battle-announcement');
     if (announcement) announcement.textContent = 'Waiting for the server to confirm this action...';
     try {
-      const response = command !== 'endTurn' ? await this.authority.action(this.actorId, command, actionTargetId)
+      const response = command !== 'endTurn' ? await (cleanseChoice
+        ? this.authority.action(this.actorId, command, actionTargetId, cleanseChoice)
+        : this.authority.action(this.actorId, command, actionTargetId))
         : state.phase === 'cleared' ? await (state.story || state.dungeon || state.infusion || state.war
           ? this.authority.nextStage() : this.authority.nextWave()) : await this.authority.endTurn();
       if (this.disposed) return;

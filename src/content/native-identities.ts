@@ -2,6 +2,8 @@ import type { Ability } from './combat';
 import type { StarterId } from './starters';
 import { nativeBalance } from './native-balance';
 import { calamiticFighters, isCalamiticCharacter, type CalamiticCharacterId } from './calamitic-characters';
+import { moonSunshadeNativeIdentities } from './moon-sunshade-native-identities';
+import { isNewEventCharacter } from './moon-sunshade-events';
 
 export interface NativeIdentityDefinition {
   selfStats?: { health?: number; defense?: number; skillPower?: number };
@@ -30,6 +32,7 @@ function calamiticIdentity(id: CalamiticCharacterId, role: string, playLoop: str
 }
 
 export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
+  ...moonSunshadeNativeIdentities,
   ozriel: calamiticIdentity('ozriel', 'Shield tank',
     '[Ozriel] protects every living squad member with stacking shields and one [Refusal] per encounter while he lives.',
     { health: .65, defense: .65 }),
@@ -289,7 +292,8 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
 };
 
 // Owner-approved final percentages are authored directly, so the shared skill/Last Flare multipliers must not be applied again.
-export const exactDirectDamageIds: readonly StarterId[] = ['caldrex', 'solenne', 'myrthen'];
+export const exactDirectDamageIds: readonly StarterId[] = ['caldrex', 'solenne', 'myrthen',
+  'maerion', 'caevren', 'vespera', 'ilyss', 'asteriel', 'serapha', 'rhaziel', 'oryn', 'thessara', 'elaris', 'veyr', 'aureth'];
 
 const directDescriptionCoefficients: Record<StarterId, readonly (readonly number[])[]> = {
   ozriel: [[240], [], [455]],
@@ -314,14 +318,27 @@ const directDescriptionCoefficients: Record<StarterId, readonly (readonly number
   caldrex: [[], [], []],
   solenne: [[], [], []],
   myrthen: [[], [], []],
+  maerion: [[200], [], []],
+  caevren: [[280], [], []],
+  vespera: [[220], [], [480]],
+  ilyss: [[220], [], []],
+  asteriel: [[], [], []],
+  serapha: [[240], [], []],
+  rhaziel: [[], [], []],
+  oryn: [[240], [], []],
+  thessara: [[240], [], []],
+  elaris: [[280], [240], [1050]],
+  veyr: [[320], [240], [1050]],
+  aureth: [[], [240], []],
 };
 
 for (const id of Object.keys(nativeIdentities) as StarterId[]) {
   for (const [index, action] of (['skill1', 'skill2', 'ultimate'] as const).entries()) {
     const definition = nativeIdentities[id].abilities[action];
-    const scale = isCalamiticCharacter(id) || exactDirectDamageIds.includes(id) ? 1 : nativeBalance.skillDamageScale * (action === 'ultimate' ? nativeBalance.lastFlare.damage : 1);
+    const scale = isCalamiticCharacter(id) || exactDirectDamageIds.includes(id) || isNewEventCharacter(id)
+      ? 1 : nativeBalance.skillDamageScale * (action === 'ultimate' ? nativeBalance.lastFlare.damage : 1);
     if (definition.strength.damageMultiplier !== undefined) definition.strength.damageMultiplier *= scale;
-    const coefficients = directDescriptionCoefficients[id][index];
+    const coefficients = directDescriptionCoefficients[id]?.[index] ?? [];
     definition.description = definition.description.replace(/(\d+(?:\.\d+)?)%/g, (text, amount: string) =>
       coefficients.includes(Number(amount)) ? `${Number((Number(amount) * scale).toFixed(2))}%` : text);
     if (action === 'ultimate' && id === 'crinso') definition.description = definition.description.replace('ignores 30%', 'ignores 45%');

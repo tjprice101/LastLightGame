@@ -93,7 +93,8 @@ describe('typed ability status labels', () => {
       const summary = kitResource(resolveFighter(starter.id), starter.id);
       expect(summary).not.toContain('Spending resets the saved charges');
       const expected = nativeAbilityStatuses[starter.id].passive ?? [];
-      expect(summary.match(/data-native-status=/g)?.length ?? 0).toBe(new Set(expected.map(([icon]) => icon)).size);
+      expect(summary.match(/data-native-status=/g)?.length ?? 0)
+        .toBe(new Set(expected.map(([icon, label]) => icon ?? label)).size);
       expect(summary).not.toContain('data-effect-family=');
     }
     const historical = resolveFighter('ember');

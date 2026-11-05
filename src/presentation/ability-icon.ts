@@ -55,6 +55,18 @@ export const abilityIcons = {
     passive: 'crinso-passive', light: 'crinso-light', skill1: 'crinso-skill1',
     skill2: 'crinso-skill2', ultimate: 'crinso-ultimate',
   },
+  maerion: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  caevren: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  vespera: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  ilyss: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  asteriel: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  serapha: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  rhaziel: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  oryn: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  thessara: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  elaris: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  veyr: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  aureth: { passive: '', skill1: '', skill2: '', ultimate: '' },
 } as const satisfies Record<StarterId, Record<'skill1' | 'skill2' | 'ultimate' | 'passive', string> & { light?: string }>;
 
 export function abilityIcon(starterId: StarterId, action: ActionId | 'passive'): string {

@@ -38,6 +38,7 @@ describe('Conduit loadouts', () => {
     const after = unequipAllConduits(saved, 'ember');
     expect(write).toHaveBeenCalledTimes(1);
     expect(after).toEqual({ ...before,
+      acquisitionMarkers: { ...before.acquisitionMarkers, 'master:master-ember-1': false, 'master:master-tide-1': false },
       conduitEquipment: { ...before.conduitEquipment, ember: Array(8).fill(null) },
       masterEquipment: { ...before.masterEquipment, ember: null } });
     expect(loadAccount(saved)).toEqual(after);

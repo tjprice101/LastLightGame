@@ -23,17 +23,17 @@ describe('authored enemy bestiary lore', () => {
     }
   });
 
-  it('keeps every lore string unique except within the six declared lines', () => {
+  it('keeps every lore string unique except within the eight declared lines', () => {
     const outside = creatures.filter(creature => !creature.mode).map(creatureLore);
     expect(new Set(outside).size).toBe(outside.length);
     const lines = Object.keys(enemyLineLore);
-    expect(lines.sort()).toEqual(['abyss', 'heavens', 'machines', 'roses', 'sanctuary', 'treasury']);
+    expect(lines.sort()).toEqual(['abyss', 'heavens', 'machines', 'moon', 'roses', 'sanctuary', 'sunshade', 'treasury']);
     for (const line of lines) {
       const forms = creatures.filter(creature => creature.mode === line);
       expect(forms, line).toHaveLength(6);
       for (const form of forms) expect(creatureLore(form).startsWith(enemyLineLore[line as keyof typeof enemyLineLore])).toBe(true);
     }
-    expect(new Set(Object.values(enemyLineLore)).size).toBe(6);
+    expect(new Set(Object.values(enemyLineLore)).size).toBe(8);
     expect(new Set(Object.values(enemyLore)).size).toBe(Object.keys(enemyLore).length);
   });
 

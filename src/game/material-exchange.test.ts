@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   eventMaterialWarning, eventMaterialWarningHidden, eventMaterialWarningKey, exchangeProduct, exchangeProducts,
   hideEventMaterialWarning, roseExchangePrices, eventMaterialWarningRequired,
+  exchangeProductUnlocked, normalExchangePrices,
 } from '../content/material-exchange';
 import { emptyAccount, loadAccount, purchaseExchangeMaterial, saveAccount, summonCharacters } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
@@ -23,9 +24,12 @@ function fixture(edit: (account: ReturnType<typeof emptyAccount>) => void = () =
 }
 
 describe('Material Exchange categories and Rose event materials', () => {
-  it('catalogs six normal Common materials and six priced Rose-only event materials', () => {
-    expect(exchangeProducts.filter(product => product.category === 'normal').map(product => product.price)).toEqual(Array(6).fill(80));
-    const event = exchangeProducts.filter(product => product.category === 'event');
+  it('catalogs all36 ordinary materials at approved prices and preserves six Rose-only prices', () => {
+    const normal = exchangeProducts.filter(product => product.category === 'normal');
+    expect(normal).toHaveLength(36);
+    expect(normal.filter(product => product.rarity === 'Common').map(product => product.price)).toEqual(Array(6).fill(80));
+    expect(normalExchangePrices).toEqual([80, 470, 2750, 16100, 94100, 550000]);
+    const event = exchangeProducts.filter(product => product.category === 'event' && product.materialId.startsWith('rosethorn-'));
     expect(event.map(product => product.materialId)).toEqual(['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic'].map(r => `rosethorn-${r}`));
     expect(event.map(product => product.price)).toEqual([2500, 7500, 25000, 75000, 250000, 750000]);
     expect(Object.values(roseExchangePrices)).toEqual([2500, 7500, 25000, 75000, 250000, 750000]);
@@ -72,6 +76,31 @@ describe('Material Exchange categories and Rose event materials', () => {
     const { storage } = fixture(account => { account.fractalis = 10000; account.materials['rosethorn-common'] = Number.MAX_SAFE_INTEGER; });
     expect(() => purchaseExchangeMaterial(storage, 'rosethorn-common', 1)).toThrow('capacity');
     expect(loadAccount(storage).fractalis).toBe(10000);
+  });
+  it.each([
+    ['infernic', 0, 80], ['oceanic-uncommon', 30, 470], ['botanic-rare', 45, 2750],
+    ['atmospheric-epic', 60, 16100], ['chaotic-legendary', 75, 94100], ['tranquilitic-omnic', 90, 550000],
+  ] as const)('unlocks %s at any owned Element-Bearer level %i and purchases atomically', (id, level, price) => {
+    const { storage } = fixture(account => {
+      account.characters.ember = { level, evolution: 6 };
+      account.fractalis = price * 10;
+    });
+    const product = exchangeProduct(id);
+    expect(exchangeProductUnlocked(product, { characters: { ember: { level: Math.max(0, level - 1) } } })).toBe(level === 0);
+    expect(exchangeProductUnlocked(product, { characters: {} })).toBe(false);
+    expect(exchangeProductUnlocked(product, { characters: { tide: { level } } })).toBe(true);
+    const after = purchaseExchangeMaterial(storage, id, 10);
+    expect(after.fractalis).toBe(0);
+    expect(after.materials[product.materialId]).toBe(10);
+    expect(storage.setItem).toHaveBeenCalledOnce();
+  });
+  it('rejects a locked tier without a save and preserves the legacy Seed ID', () => {
+    const { storage, values } = fixture(account => { account.fractalis = 1000000; });
+    const before = new Map(values);
+    expect(() => purchaseExchangeMaterial(storage, 'infernic-omnic', 1)).toThrow('level 90');
+    expect(values).toEqual(before);
+    expect(storage.setItem).not.toHaveBeenCalled();
+    expect(exchangeProduct('infernic-common')).toEqual(exchangeProduct('infernic'));
   });
 });
 

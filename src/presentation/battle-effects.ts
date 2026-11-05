@@ -3,7 +3,9 @@ import { isStarterId, type StarterId } from '../content/starters';
 import { isCalamiticCharacter } from '../content/calamitic-characters';
 
 type Motion = 'slash' | 'thrust' | 'bow' | 'cast' | 'hammer' | 'twin' | 'guard';
-type Signature = 'cleave' | 'trident' | 'petal' | 'cyclone' | 'lens' | 'feather' | 'fault' | 'mind' | 'star' | 'eclipse' | 'rose' | 'thorn' | 'twin' | 'meridian' | 'citadel' | 'resonance';
+type Signature = 'cleave' | 'trident' | 'petal' | 'cyclone' | 'lens' | 'feather' | 'fault' | 'mind' | 'star' | 'eclipse' | 'rose' | 'thorn' | 'twin' | 'meridian' | 'citadel' | 'resonance' |
+  'ferry' | 'counterweight' | 'beacon' | 'severance' | 'orbit' | 'interval' | 'repair' | 'accord' | 'reserve' | 'branch' | 'loadbearing' | 'corridor' |
+  'pillar' | 'flare' | 'vortex' | 'hammer' | 'bloomwheel' | 'halo';
 
 export const characterChoreography = {
   ozriel: { signature: 'citadel', motion: 'guard', family: 'radiant' },
@@ -15,7 +17,7 @@ export const characterChoreography = {
   atmoso: { signature: 'cyclone', motion: 'cast', family: 'force' },
   aurora: { signature: 'lens', motion: 'cast', family: 'radiant' },
   bliss: { signature: 'feather', motion: 'twin', family: 'radiant' },
-  bruno: { signature: 'fault', motion: 'hammer', family: 'bloom' },
+  bruno: { signature: 'hammer', motion: 'hammer', family: 'bloom' },
   disciple: { signature: 'mind', motion: 'cast', family: 'void' },
   elise: { signature: 'star', motion: 'twin', family: 'force' },
   razor: { signature: 'eclipse', motion: 'guard', family: 'void' },
@@ -23,11 +25,23 @@ export const characterChoreography = {
   thornia: { signature: 'thorn', motion: 'guard', family: 'void' },
   crinso: { signature: 'twin', motion: 'twin', family: 'flame' },
   nerithe: { signature: 'meridian', motion: 'thrust', family: 'tide' },
-  orvella: { signature: 'citadel', motion: 'hammer', family: 'bloom' },
-  vaelor: { signature: 'resonance', motion: 'slash', family: 'force' },
-  caldrex: { signature: 'citadel', motion: 'guard', family: 'flame' },
-  solenne: { signature: 'meridian', motion: 'guard', family: 'radiant' },
-  myrthen: { signature: 'petal', motion: 'twin', family: 'bloom' },
+  orvella: { signature: 'pillar', motion: 'hammer', family: 'bloom' },
+  vaelor: { signature: 'vortex', motion: 'slash', family: 'force' },
+  caldrex: { signature: 'flare', motion: 'guard', family: 'flame' },
+  solenne: { signature: 'halo', motion: 'guard', family: 'radiant' },
+  myrthen: { signature: 'bloomwheel', motion: 'twin', family: 'bloom' },
+  maerion: { signature: 'ferry', motion: 'cast', family: 'tide' },
+  caevren: { signature: 'counterweight', motion: 'hammer', family: 'force' },
+  vespera: { signature: 'beacon', motion: 'cast', family: 'flame' },
+  ilyss: { signature: 'severance', motion: 'twin', family: 'void' },
+  asteriel: { signature: 'orbit', motion: 'cast', family: 'bloom' },
+  serapha: { signature: 'interval', motion: 'guard', family: 'radiant' },
+  rhaziel: { signature: 'repair', motion: 'cast', family: 'void' },
+  oryn: { signature: 'accord', motion: 'thrust', family: 'void' },
+  thessara: { signature: 'reserve', motion: 'cast', family: 'tide' },
+  elaris: { signature: 'branch', motion: 'slash', family: 'bloom' },
+  veyr: { signature: 'loadbearing', motion: 'hammer', family: 'flame' },
+  aureth: { signature: 'corridor', motion: 'guard', family: 'flame' },
 } as const satisfies Record<StarterId, { signature: Signature; motion: Motion; family: AttackFlair['family'] }>;
 
 const signaturePaths: Record<Signature, string> = {
@@ -47,6 +61,24 @@ const signaturePaths: Record<Signature, string> = {
   meridian: 'M10 50 H90 M50 10 V90 M20 22 Q50 50 20 78 M80 22 Q50 50 80 78 M20 22 Q50 0 80 22 M20 78 Q50 100 80 78',
   citadel: 'M14 84 V38 H28 V22 H40 V38 H60 V22 H72 V38 H86 V84 Z M40 84 V60 L50 48 L60 60 V84 M8 92 H92',
   resonance: 'M8 50 H22 L32 20 L43 80 L55 8 L66 88 L78 36 L86 50 H94 M18 12 L82 88',
+  ferry: 'M12 70 Q50 88 88 70 L80 82 H20 Z M22 64 V30 H78 V64 M35 30 V18 H65 V30 M50 18 V8 M32 48 H68',
+  counterweight: 'M50 8 V70 M36 70 H64 L72 88 H28 Z M35 28 H65 M42 22 L50 14 L58 22',
+  beacon: 'M50 10 V88 M35 30 L50 16 L65 30 M26 42 Q50 22 74 42 M18 56 Q50 34 82 56 M50 62 L42 78 H58 Z',
+  severance: 'M18 18 Q52 38 82 82 M82 18 Q48 38 18 82 M32 35 L68 65 M68 35 L32 65 M44 50 H56',
+  orbit: 'M50 50 C12 20 20 82 50 50 C80 18 88 80 50 50 M50 8 V18 M50 82 V92 M8 50 H18 M82 50 H92 M50 50 L66 34',
+  interval: 'M12 50 H38 M62 50 H88 M38 24 V76 M62 24 V76 M44 34 H56 M44 66 H56',
+  repair: 'M50 12 L58 34 L82 28 L66 48 L84 66 L60 62 L50 88 L40 62 L16 66 L34 48 L18 28 L42 34 Z M42 50 H58 M50 42 V58',
+  accord: 'M14 30 H42 Q50 30 50 42 V58 Q50 70 58 70 H86 M14 70 H42 Q50 70 50 58 V42 Q50 30 58 30 H86 M25 22 L14 30 L25 38 M75 62 L86 70 L75 78',
+  reserve: 'M50 12 C30 28 30 68 50 88 C70 68 70 28 50 12 Z M32 50 H68 M38 38 L50 28 L62 38 M38 62 L50 72 L62 62',
+  branch: 'M50 90 V22 M50 48 L28 28 M50 62 L75 38 M28 28 L24 14 M28 28 L12 30 M75 38 L86 20 M75 38 L90 44 M50 22 L42 10 M50 22 L60 10',
+  loadbearing: 'M16 82 L30 32 L50 58 L70 18 L86 82 Z M30 32 L42 82 M70 18 L58 52 L66 82 M22 70 H78',
+  corridor: 'M14 86 V14 H30 V70 H70 V14 H86 V86 Z M38 58 L50 42 L62 58 M38 34 L50 18 L62 34',
+  pillar: 'M28 88 V18 H72 V88 Z M20 18 H80 M36 32 H64 M36 48 H64 M36 64 H64 M20 88 H80',
+  flare: 'M50 10 L58 42 L88 24 L68 52 L92 72 L60 64 L50 92 L40 64 L8 72 L32 52 L12 24 L42 42 Z',
+  vortex: 'M50 12 C24 12 16 42 38 50 C52 55 64 42 56 34 C50 28 42 34 46 40 M50 88 C76 88 84 58 62 50 C48 45 36 58 44 66 C50 72 58 66 54 60 M20 24 L30 34 M80 76 L70 66',
+  hammer: 'M24 18 H76 V34 H24 Z M42 34 H58 V78 H42 Z M30 78 H70 V90 H30 Z',
+  bloomwheel: 'M50 50 C30 36 34 18 50 14 C66 18 70 36 50 50 C64 30 82 32 88 46 C84 62 68 66 50 50 C72 56 74 76 60 86 C44 84 40 68 50 50 C36 72 18 70 12 56 C16 40 32 36 50 50 C28 44 26 24 40 14',
+  halo: 'M50 12 A38 38 0 1 1 49.9 12 M50 24 A26 26 0 1 0 50.1 24 M50 4 V18 M50 82 V96 M4 50 H18 M82 50 H96',
 };
 
 export interface AttackFlair {

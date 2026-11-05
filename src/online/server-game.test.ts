@@ -26,6 +26,26 @@ function started() { return op(freshGame('tester'), { kind: 'bootstrap', starter
 function rich() { const game = started(); game.account.fractalis = 1000000; game.account.lycalis = 1000; return game; }
 
 describe('server authoritative game engine', () => {
+  it('accepts and atomically applies one bulk Master chest operation without randomness or auto-equipping', () => {
+    const game = started();
+    game.account.masterChests = 2;
+    const operation: GameOperation = { kind: 'openMasterChests', ids: ['master-ember-1', 'master-nerithe-2'] };
+    validateRequest({ requestId: crypto.randomUUID(), expectedRevision: 0, operation });
+    const before = structuredClone(game);
+    const random = vi.fn(() => { throw new Error('Opening selected Master chests must not consume RNG.'); });
+    const result = resolveOperation(game, operation, { ...entropy, random }).game;
+    expect(random).not.toHaveBeenCalled();
+    expect(game).toEqual(before);
+    expect(result.account.masterChests).toBe(0);
+    expect(result.account.masterConduits).toEqual({ 'master-ember-1': 1, 'master-nerithe-2': 1 });
+    expect(result.account.masterEquipment).toBeUndefined();
+    expect(result.account.characters.nerithe).toBeUndefined();
+    expect(() => validateRequest({ requestId: crypto.randomUUID(), expectedRevision: 0,
+      operation: { kind: 'openMasterChests', ids: ['master-ember-1', 'master-ember-1'], unexpected: true } })).toThrow();
+    expect(() => op(game, { kind: 'openMasterChests', ids: ['master-ember-1', 'master-ember-1'] })).toThrow('only once');
+    expect(() => op(game, { kind: 'openMasterChests', ids: ['master-ember-1', 'master-tide-1', 'master-sprout-1'] })).toThrow('Not enough');
+    expect(game.account.masterChests).toBe(2);
+  });
   it('validates and atomically applies mixed per-copy bulk sales without accepting duplicate/protected copies', () => {
     const game = started();
     const copies = ['heavens:2', 'abyss:1', 'treasury:0'].map(id => createCreatureCopy(`infusion:${id}`));
@@ -484,7 +504,8 @@ describe('server authoritative game engine', () => {
     const initial = freshGame('newplayer');
     const before = structuredClone(initial);
     const imported = op(initial, { kind: 'importSave', save }).game;
-    expect(imported.account).toEqual(save.account);
+    expect({ ...imported.account, acquisitionMarkers: undefined }).toEqual({ ...save.account, acquisitionMarkers: undefined });
+    expect(Object.values(imported.account.acquisitionMarkers ?? {})).not.toContain(false);
     expect(imported.starterId).toBe('ember');
     expect(imported.profile.username).toBe('newplayer');
     expect(imported.run).toBeNull();
@@ -757,7 +778,8 @@ describe('server authoritative game engine', () => {
       expect(game.account.fractalis).toBe(before - price);
     }
     expect(() => op(game, { kind: 'purchaseMaterial', element: 'rosethorn-omnic', quantity: 10 })).toThrow('Prismatica');
-    expect(() => op(game, { kind: 'purchaseMaterial', element: 'infernic-rare', quantity: 1 })).toThrow('Unknown');
+    expect(() => op(game, { kind: 'purchaseMaterial', element: 'infernic-mythic', quantity: 1 })).toThrow('Unknown');
+    expect(() => op(game, { kind: 'purchaseMaterial', element: 'infernic-rare', quantity: 1 })).toThrow('level 45');
   });
   it('commits a 10-pull atomically with ten validated receipts and sequential pity', () => {
     const game = rich();

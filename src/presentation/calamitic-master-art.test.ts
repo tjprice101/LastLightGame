@@ -13,7 +13,7 @@ const delivered = masterConduits.filter(entry => ['ozriel', 'ilvaris', 'kaelith'
 describe('delivered Calamitic Master artwork', () => {
   it('covers three Masters per Calamitic bearer with exact-byte shared revisions', () => {
     expect(delivered).toHaveLength(9);
-    expect(Object.keys(masterConduitArtRevisions)).toHaveLength(masterConduits.length + 2);
+    expect(Object.keys(masterConduitArtRevisions)).toHaveLength(masterConduits.filter(entry => entry.art).length + 2);
     for (const entry of delivered) {
       const bytes = readFileSync(`public/assets/${entry.art}`);
       const revision = createHash('sha256').update(bytes).digest('hex').slice(0, 16);

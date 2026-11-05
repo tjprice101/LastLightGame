@@ -1,5 +1,5 @@
 import { rolePerkRow } from './intrinsic-perks';
-import { getStarter, isStarterId, type Starter } from '../content/starters';
+import { getStarter, isStarterId, starterVow, type Starter } from '../content/starters';
 import { resolveFighter, formatStat, shatterGauge } from '../content/combat';
 import { artifactSlots, characterGrowth, characterLevelCap, characterRarity, displayEvolution, evolutionRarity, upgradePaths, characterLevelCost, characterEvolutionCost, characterEvolutionRequirement, levelingMaterialTiers, type CharacterProgress } from '../content/progression';
 import { characterRating } from './character-rating';
@@ -149,7 +149,7 @@ export function homeHub(starter: Starter, firstArrival: boolean, account: Accoun
         ${information('home-information', 'Character information',
           stats(capturedCopy ?? starter, progress, false, account?.conduitEquipment?.[capturedCopy?.instanceId ?? starter.id], account?.conduitUpgrades) +
           (capturedLeader ? `<p>${capturedLeader.progress} · Level cap 60</p><p>Cannot evolve.</p>` :
-            `<p>${starter.description}</p><p>${starter.lore.story}</p><blockquote>"${starter.lore.vow}"</blockquote>`))}
+            `<p>${starter.description}</p><p>${starter.lore.story}</p><blockquote>"${starterVow(starter)}"</blockquote>`))}
       </section>
       <aside class="home-squad" aria-label="Current squad">
         <div class="hub-info">

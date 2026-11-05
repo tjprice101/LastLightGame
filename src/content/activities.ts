@@ -64,6 +64,8 @@ export const currencyModes = [
 ] as const;
 export const eventModes = [
   { id: 'roses', name: 'Passion of Crimson Roses', stages: 35, startingLevel: 80, maximumLevel: 140, enemyTiers: 6 },
+  { id: 'moon', name: 'The Harbor of Unreturned Names', stages: 35, startingLevel: 80, maximumLevel: 140, enemyTiers: 6 },
+  { id: 'sunshade', name: 'Beneath the Borrowed Dawn', stages: 35, startingLevel: 80, maximumLevel: 140, enemyTiers: 6 },
 ] as const;
 export const machineModes = [
   { id: 'machines', name: 'Awaken the Machines', stages: machineStageCount, startingLevel: 10, maximumLevel: 120, enemyTiers: 6 },

@@ -631,8 +631,12 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
       seed ^= seed >>> 17;
       seed ^= seed << 5;
       state.captureSeed = seed >>> 0;
-      if (enemyCaptureAllowed(state.infusion.mode, enemy.level) && captureSucceeds(state.captureSeed / 0x100000000)) capture = { creatureId: enemy.creatureId, level: Math.min(capturedLevelCap, enemy.level) };
-      if (state.infusion.mode !== 'treasury' && state.infusion.mode !== 'roses') lycalis = rollStagedLycalis(state.infusion.mode, enemy.level, () => {
+      if (enemyCaptureAllowed(state.infusion.mode, enemy.level) && captureSucceeds(state.captureSeed / 0x100000000)) capture = {
+        creatureId: enemy.creatureId,
+        level: state.infusion.mode === 'moon' || state.infusion.mode === 'sunshade'
+          ? 60 : Math.min(capturedLevelCap, enemy.level),
+      };
+      if (state.infusion.mode === 'heavens' || state.infusion.mode === 'abyss' || state.infusion.mode === 'sanctuary') lycalis = rollStagedLycalis(state.infusion.mode, enemy.level, () => {
         let premiumSeed = state.lycalisSeed ?? (((previous.seed ^ 0x9e3779b9) >>> 0) || 1);
         premiumSeed ^= premiumSeed << 13;
         premiumSeed ^= premiumSeed >>> 17;
@@ -659,10 +663,21 @@ export function captureSucceeds(value: number): boolean {
   return value < enemyCaptureChance;
 }
 
-export function act(previous: BattleState, actorId: string, action: ActionId, targetId: string): BattleResult {
+export function act(previous: BattleState, actorId: string, action: ActionId, targetId: string,
+  cleanseChoice?: import('./native-kits').CleanseChoice): BattleResult {
   if (!isActionId(action)) throw new Error('Unknown combat action.');
   const original = previous.allies.find((unit) => unit.id === actorId);
   if (!original) throw new Error('Unknown team member.');
+  const cleanseTarget = previous.allies.find(unit => unit.id === targetId && unit.hp > 0);
+  const chosenCleanse = original.definitionId === 'ilyss' && hasNativeIdentity(original) && action === 'skill2';
+  if (cleanseChoice !== undefined) {
+    if (!chosenCleanse || (cleanseChoice !== 'burn' && cleanseChoice !== 'weaken'))
+      throw new Error('Invalid cleanse choice.');
+    if (!cleanseTarget || (cleanseChoice === 'burn' ? cleanseTarget.burn.turns <= 0 : cleanseTarget.weakened <= 0))
+      throw new Error('The chosen status is no longer present.');
+  } else if (chosenCleanse && cleanseTarget && cleanseTarget.burn.turns > 0 && cleanseTarget.weakened > 0) {
+    throw new Error('Choose Burn or Weaken to remove.');
+  }
   const reason = actionUnavailable(previous, original, action, targetId);
   if (reason) throw new Error(reason);
   const native = hasNativeIdentity(original);
@@ -715,8 +730,8 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   if (action === 'ultimate' && actor.captured && !calamiticNoLastFlareRecovery(actor))
     actor.readyRound.ultimate = state.round + definition.abilities.ultimate.cooldown;
   if (native) {
-    const direct = (selected: Combatant[], coefficient: number, pierce = 0, criticalBonus = 0) => {
-      const targets = activation.all ? state.enemies.filter(enemy => enemy.hp > 0) :
+    const direct = (selected: Combatant[], coefficient: number, pierce = 0, criticalBonus = 0, preserveTargets = false) => {
+      const targets = preserveTargets ? selected : activation.all ? state.enemies.filter(enemy => enemy.hp > 0) :
         nativeAll ? selected.filter(enemy => enemy.id === targetId) : selected;
       for (const target of targets) {
         if (target.hp <= 0) continue;
@@ -744,7 +759,7 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
         nativePrimaryHit(state, actor, target, effectiveHits > 0, events, effectiveHits);
       }
     };
-    nativeAction(state, actor, action, targetId, events, direct, activation);
+    nativeAction(state, actor, action, targetId, events, direct, activation, cleanseChoice);
     nativeAfterAction(state, actor, action, priorInstruction, events);
     finishConduitAction(state, actor, activation, events);
     supportRoleHeal(state, actor, action, events);
@@ -970,8 +985,9 @@ export function endTurn(previous: BattleState): BattleResult {
   return { state, events };
 }
 
-export function actAndAdvanceTurn(previous: BattleState, actorId: string, action: ActionId, targetId: string): BattleResult {
-  const actionResult = act(previous, actorId, action, targetId);
+export function actAndAdvanceTurn(previous: BattleState, actorId: string, action: ActionId, targetId: string,
+  cleanseChoice?: import('./native-kits').CleanseChoice): BattleResult {
+  const actionResult = act(previous, actorId, action, targetId, cleanseChoice);
   const advanced = advanceUnavailableTurns(actionResult.state);
   return { state: advanced.state, events: [...actionResult.events, ...advanced.events] };
 }

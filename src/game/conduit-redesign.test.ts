@@ -14,6 +14,7 @@ import { nativeBalance } from '../content/native-balance';
 import { conduitRedesign } from '../content/conduit-redesign';
 import { conduitGlossary } from '../content/conduit-glossary';
 import { calamiticConduits, calamiticEffect } from '../content/calamitic-conduits';
+import { isNewEventCharacter } from '../content/moon-sunshade-events';
 
 import { act, actionUnavailable, createBattle, endTurn, nextWave, withMasterLoadouts, type BattleEvent } from './battle';
 import { applyConduitBurn, applyConduitWeaken, conduitActionCost, conduitBurnTick, conduitHitModifiers,
@@ -25,7 +26,8 @@ it('documents each of the current 165 equipment IDs exactly once in the generate
   const ids = [...matrix.matchAll(/^\| `([^`]+)` \|/gm)].map(match => match[1]);
   expect(ids).toHaveLength(165);
   expect(new Set(ids).size).toBe(165);
-  expect(ids.sort()).toEqual([...conduits, ...masterConduits].map(item => item.id).sort());
+  expect(ids.sort()).toEqual([...conduits, ...masterConduits.filter(entry => !isNewEventCharacter(entry.character))]
+    .map(item => item.id).sort());
 });
 
 it('keeps description coefficients aligned and removes retired Conduit jargon', () => {

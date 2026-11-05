@@ -2,11 +2,14 @@ import { starters, isStarterId, type StarterId } from './starters';
 import { characterName } from './character-art';
 import { ownedCharacters, ownedProgress, type Account } from '../game/account';
 import { isCalamiticCharacter, type CalamiticCharacterId } from './calamitic-characters';
+import { isNewEventCharacter } from './moon-sunshade-events';
+import type { MoonCharacterId, SunshadeCharacterId } from './starters';
 
-export type ProfilePictureCharacterId = Exclude<StarterId, CalamiticCharacterId | 'caldrex' | 'solenne' | 'myrthen'>;
+export type ProfilePictureCharacterId = Exclude<StarterId, CalamiticCharacterId | MoonCharacterId | SunshadeCharacterId |
+  'caldrex' | 'solenne' | 'myrthen'>;
 export type ProfilePictureId = `profile:${ProfilePictureCharacterId}:${'base' | 'omnic'}`;
 function hasDeliveredProfilePictures(id: StarterId): id is ProfilePictureCharacterId {
-  return !isCalamiticCharacter(id) && id !== 'caldrex' && id !== 'solenne' && id !== 'myrthen';
+  return !isCalamiticCharacter(id) && !isNewEventCharacter(id) && id !== 'caldrex' && id !== 'solenne' && id !== 'myrthen';
 }
 export const profilePictures = starters.filter(character => hasDeliveredProfilePictures(character.id)).flatMap(character => (['base', 'omnic'] as const).map(form => ({
   id: `profile:${character.id}:${form}` as ProfilePictureId,

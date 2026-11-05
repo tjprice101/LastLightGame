@@ -9,6 +9,7 @@ import { characterGrowth, characterLevelCap } from '../content/progression';
 import { roseMaterials } from '../content/roses';
 import { calamiticMaterials } from '../content/calamitic-materials';
 import { isCalamiticCharacter } from '../content/calamitic-characters';
+import { newEventMaterialIds, moonSunshadeEvents } from '../content/moon-sunshade-events';
 import { starters } from '../content/starters';
 import { storyRules } from '../content/story';
 import { ACCOUNT_KEY, emptyAccount, validateAccount, type Account } from './account';
@@ -24,6 +25,8 @@ export function createDebugAccount(): Account {
   account.mechanicalComponents = 1_000_000_000;
   account.masterChests = 100;
   account.materials = Object.fromEntries([...elementalMaterials, ...specialtyMaterials, ...roseMaterials, ...calamiticMaterials].map(material => [material.id, 1_000_000]));
+  for (const event of moonSunshadeEvents) for (const id of newEventMaterialIds(event.id))
+    account.materials[id] = 1_000_000;
   account.characters = Object.fromEntries(starters.filter(starter => !isCalamiticCharacter(starter.id)).map(starter => [starter.id, {
     level: characterLevelCap(characterGrowth.forms, starter.id), evolution: characterGrowth.forms,
   }]));
@@ -43,7 +46,7 @@ export function createDebugAccount(): Account {
     return Array.from({ length: 3 }, () => {
       const stage = creature.stages[0];
       const encounter = infusionEncounter(mode, stage);
-      return createCreatureCopy(creature.id, stage, 120, encounter.level > 120 ? 'banner-duplicate' : undefined);
+      return createCreatureCopy(creature.id, stage, 120, mode === 'roses' && encounter.level > 120 ? 'banner-duplicate' : undefined);
     });
   });
   return validateAccount(account);

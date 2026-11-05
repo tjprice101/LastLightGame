@@ -2,7 +2,7 @@ import {
   ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, validateAccount, equippedSquad, ownedCharacters,
   ownedCharacterInstances, ownedProgress, setSquad, setCharacterLock, summonCharacter, summonCharacters, multiSummonCount,
   purchaseExchangeMaterial, purchaseEventDevourer, type SummonDraw, sellCurrencyCreature, sellCurrencyCreatures,
-  purchaseConduit, setMachineLootFocus, equipConduit, unequipAllConduits, openMasterChest, openCalamityChest, equipMasterConduit, upgradeConduit, upgradeConduitToMaximum, upgradeCharacter, ascendCharacter, levelCapturedCharacter,
+  purchaseConduit, setMachineLootFocus, equipConduit, unequipAllConduits, openMasterChest, openMasterChests, openCalamityChest, equipMasterConduit, upgradeConduit, upgradeConduitToMaximum, upgradeCharacter, ascendCharacter, levelCapturedCharacter,
   levelCharacterToMaximum, saveAccountRewards, unlockedStage, unlockedInfusionStage,
   unlockedWarStage, unlockedStoryStage, unlockedOblivionStage, type Account,
   saveSquadLoadout, renameSquadLoadout, equipSquadLoadout, deleteSquadLoadout,
@@ -46,6 +46,8 @@ import { conduitRulesVersion } from '../../../src/game/conduit-runtime';
 export { conduitRulesVersion };
 import { atTrainingWave, conduitRestartNotice } from '../../../src/presentation/conduit-compatibility';
 import { assertRoseEventActive } from '../../../src/content/event-schedule';
+import { assertNewEventActive, isNewEventId } from '../../../src/content/moon-sunshade-events';
+import { acquisitionView } from '../../../src/game/acquisition-markers';
 
 export interface DurableRun {
   session: ServerBattleSession;
@@ -121,12 +123,12 @@ const operationKeys: Record<GameOperation['kind'], string[]> = {
   equipConduit: ['character', 'slot', 'conduit'], upgradeConduit: ['id', 'expectedLevel'],
   maxConduit: ['expected'],
   unequipAllConduits: ['character'],
-  openMasterChest: ['id'], equipMasterConduit: ['character', 'conduit'],
+  openMasterChest: ['id'], openMasterChests: ['ids'], equipMasterConduit: ['character', 'conduit'],
   openCalamityChest: ['id', 'expectedCount'],
   upgradeCharacter: ['id', 'upgradeKind', 'expected', 'fodderIds'], ascendCharacter: ['id', 'step', 'expected'], levelCaptured: ['id', 'expectedLevel'],
   levelMax: ['id', 'expected'], purchaseMaterial: ['element', 'quantity'], purchaseEventDevourer: ['id'], purchaseFrame: ['frame'],
   updateProfile: ['displayName', 'bio', 'icon', 'frame'], enter: ['activity'],
-  act: ['runId', 'actorId', 'action', 'targetId'], endTurn: ['runId'], continue: ['runId'],
+  act: ['runId', 'actorId', 'action', 'targetId', 'cleanseChoice'], endTurn: ['runId'], continue: ['runId'],
   retry: ['runId'], quit: ['runId'],
 };
 export function validateRequest(value: unknown): GameRequest {
@@ -150,7 +152,9 @@ export function validateRequest(value: unknown): GameRequest {
   }
   if (op.kind === 'importSave') validateSaveFile(op.save);
   keys(op, ['kind', ...operationKeys[op.kind as GameOperation['kind']]]);
-  if (operationKeys[op.kind as GameOperation['kind']].some(key => key !== 'fodderIds' && key !== 'saleOption' &&
+  if ('cleanseChoice' in op && op.cleanseChoice !== 'burn' && op.cleanseChoice !== 'weaken')
+    throw new Error('Invalid cleanse choice.');
+  if (operationKeys[op.kind as GameOperation['kind']].some(key => key !== 'fodderIds' && key !== 'saleOption' && key !== 'cleanseChoice' &&
       !(op.kind === 'friendRequest' && (key === 'username' || key === 'friendCode')) && !(key in op))) throw new Error('Missing operation field.');
   for (const field of ['id', 'character', 'runId', 'actorId', 'targetId', 'bannerId', 'starterId', 'element', 'frame', 'upgradeKind', 'action', 'saleOption']) {
     if (field in op && !(op.kind === 'setMachineLootFocus' && field === 'id' && op.id === null)) text(op[field]);
@@ -375,10 +379,14 @@ function validateRunActivity(run: DurableRun): void {
       calamity.activity !== run.activity.activity || calamity.tier !== run.activity.tier) throw new Error('Unsupported saved Calamity encounter.');
   } else if (calamity !== undefined) throw new Error('Unsupported saved Calamity encounter.');
 }
-function gate(account: Account, activity: Activity, entering = true): void {
-  if (entering || activity.kind === 'oblivion') assertActivityAccess(account, activity);
+function gate(account: Account, activity: Activity, entering: boolean, now: number): void {
+  if (activity.kind === 'infusion') {
+    if (activity.mode === 'roses') assertRoseEventActive(now);
+    else if (isNewEventId(activity.mode)) assertNewEventActive(activity.mode, now);
+  }
+  if (entering || activity.kind === 'oblivion') assertActivityAccess(account, activity, now);
   if (activity.kind === 'calamity') {
-    assertActivityAccess(account, activity);
+    assertActivityAccess(account, activity, now);
     return;
   }
   if (activity.kind === 'training') return;
@@ -462,6 +470,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
     if (game.starterId || game.run || Object.keys(game.account.characters).length) throw new Error('Save files can only be imported into a new, unstarted online account.');
     const save = validateSaveFile(operation.save);
     game.account = save.account;
+    game.account.acquisitionMarkers = acquisitionView(save.account);
     game.starterId = save.profile.starterId;
   } else if (['friendRequest', 'acceptFriendRequest', 'declineFriendRequest', 'cancelFriendRequest', 'removeFriend'].includes(operation.kind)) {
     // The commit RPC validates and atomically changes the recipient graph.
@@ -478,12 +487,12 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
       case 'equipConduitConfiguration': equipConduitConfiguration(storage, operation.character, operation.index); break;
       case 'setCharacterLock': setCharacterLock(storage, operation.id, operation.locked); break;
       case 'summon':
-        summon = summonCharacter(storage, entropy.random, operation.bannerId);
+        summon = summonCharacter(storage, entropy.random, operation.bannerId, now);
         game.profile.totalDraws++;
         if (!Number.isSafeInteger(game.profile.totalDraws)) throw new Error('Draw count overflow.');
         break;
       case 'summonTen':
-        summons = summonCharacters(storage, entropy.random, operation.bannerId, multiSummonCount).draws;
+        summons = summonCharacters(storage, entropy.random, operation.bannerId, multiSummonCount, now).draws;
         game.profile.totalDraws += multiSummonCount;
         if (!Number.isSafeInteger(game.profile.totalDraws)) throw new Error('Draw count overflow.');
         break;
@@ -494,6 +503,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
       case 'equipConduit': equipConduit(storage, operation.character, operation.slot, operation.conduit); break;
       case 'unequipAllConduits': unequipAllConduits(storage, operation.character); break;
       case 'openMasterChest': openMasterChest(storage, operation.id); break;
+      case 'openMasterChests': openMasterChests(storage, operation.ids); break;
       case 'openCalamityChest': {
         const reward = openCalamityChest(storage, operation.id, operation.expectedCount).reward;
         calamityOpening = { id: reward.id, name: reward.name, fractalis: reward.fractalis, lycalis: reward.lycalis,
@@ -532,7 +542,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
         break;
       case 'enter': {
         if (game.run) throw new Error('Quit the current run before entering another activity.');
-        gate(game.account, operation.activity);
+        gate(game.account, operation.activity, true, now);
         const roster = equippedSquad(game.account);
         const teamProgress = structuredClone(game.account.characters);
         const run: DurableRun = {
@@ -564,7 +574,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
           if (!actor || actionUnavailable(state, actor, operation.action, operation.targetId)) throw new Error('The selected squad member cannot use that action.');
           const targets = [...state.allies, ...state.enemies];
           if (!targets.some(t => t.id === operation.targetId && t.hp > 0)) throw new Error('Invalid battle target.');
-          result = actAndAdvanceTurn(state, operation.actorId, operation.action, operation.targetId);
+          result = actAndAdvanceTurn(state, operation.actorId, operation.action, operation.targetId, operation.cleanseChoice);
         } else if (operation.kind === 'endTurn') {
           if (state.phase !== 'player') throw new Error('Battle is not in the player phase.');
           const first = endTurn(state);
@@ -573,15 +583,16 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
         } else if (operation.kind === 'continue') {
           if (state.calamity || run.activity.kind === 'calamity') throw new Error('Calamity ends after one boss. Enter the next tier from Play.');
           if (state.phase !== 'cleared') throw new Error('Clear the encounter before continuing.');
+          if (run.activity.kind !== 'training') run.activity.stage++;
+          gate(game.account, run.activity, false, now);
           result = state.dungeon || state.infusion || state.war || state.story || state.oblivion
             ? nextStage(state, run.session.teamProgress) : nextWave(state);
-          if (run.activity.kind !== 'training') run.activity.stage++;
-          gate(game.account, run.activity, false);
           run.session.stageEvents = []; run.session.entrancePending = true;
         } else {
           if (state.phase !== 'defeat' && run.activity.kind !== 'calamity' && !(state.phase === 'cleared' && run.activity.kind !== 'training')) {
             throw new Error('Retry requires defeat or a cleared stage.');
           }
+          gate(game.account, run.activity, false, now);
           run.session.runId = entropy.uuid();
           run.session.stageEvents = []; run.session.entrancePending = true;
           result = advanceUnavailableTurns(encounter(game, run, entropy.seed()));

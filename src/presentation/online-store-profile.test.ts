@@ -4,7 +4,9 @@ import { emptyAccount } from '../game/account';
 import { storyRules } from '../content/story';
 import { bindProfileEditor, friendPresence, onlineProfile, onlineStores, profileFrames, refreshFriendPresence, refreshProfileTracking, type OnlineProfileDisplay } from './online-store-profile';
 import { starters } from '../content/starters';
+import { creatures } from '../content/creatures';
 import { profilePictures } from '../content/profile-pictures';
+import { eventDevourers, eventDevourerAvailable } from '../content/event-devourers';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -16,28 +18,42 @@ const profile: OnlineProfileDisplay = {
 };
 
 describe('online Material Exchange and Cosmetic Store', () => {
-  it('contains purchase-button sheen inside each event-shop button, including disabled buttons', () => {
+  it('lists all event-family copies as art-neutral, schedule-gated products with copy selectors', () => {
     document.body.innerHTML = onlineStores(emptyAccount(), null, 'event-devourers');
     const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-buy-event-devourer]'));
-    expect(buttons).toHaveLength(6);
+    expect(buttons).toHaveLength(18);
     for (const button of buttons) {
       expect(button.disabled).toBe(true);
       expect(button.matches('.event-devourer-card > button')).toBe(true);
+      expect(button.closest('.event-devourer-card')?.getAttribute('data-creature')).toBeTruthy();
     }
+    expect(document.querySelectorAll('.event-devourer-card[data-event="moon"]')).toHaveLength(6);
+    expect(document.querySelectorAll('.event-devourer-card[data-event="sunshade"]')).toHaveLength(6);
+    expect(document.querySelectorAll('.event-devourer-card[data-event="roses"]')).toHaveLength(6);
+    expect(document.querySelectorAll('.event-devourer-card[data-creature]')).toHaveLength(18);
+    expect(eventDevourers.filter(product => product.eventId !== 'roses')
+      .every(product => product.creature.art == null)).toBe(true);
+    expect(eventDevourers.filter(product => product.eventId === 'moon')).toHaveLength(6);
+    expect(eventDevourers.filter(product => product.eventId === 'sunshade')).toHaveLength(6);
+    expect(eventDevourers.filter(product => product.eventId === 'roses')).toHaveLength(6);
+    expect(eventDevourerAvailable('moon', Date.now())).toBe(false);
+    expect(eventDevourerAvailable('sunshade', Date.now())).toBe(false);
+    expect(document.body.textContent).toContain('Unavailable until this event has actually completed a scheduled launch window.');
     const styles = readFileSync(resolve('src', 'presentation', 'event-devourers.css'), 'utf8');
     const rule = styles.match(/\.event-devourer-card > button\s*\{([^}]+)\}/)?.[1];
     expect(rule).toMatch(/position:\s*relative/);
     expect(rule).toMatch(/overflow:\s*hidden/);
   });
-  it('separates normal Common materials from Rose event materials with 1/5/10 purchase buttons', () => {
+  it('separates all ordinary material tiers from event materials with 1/5/10 purchase buttons', () => {
     const account = emptyAccount();
+    account.characters.ember = { level: 0, evolution: 1 };
     account.materials['infernic-common'] = 7;
     account.fractalis = 1000;
     const before = structuredClone(account);
     const html = onlineStores(account, profile, 'materials');
     expect(html).toContain('data-market-category="normal" aria-pressed="true"');
     expect(html).toContain('data-market-category="event" aria-pressed="false"');
-    expect(html.match(/data-market-material=/g)).toHaveLength(6);
+    expect(html.match(/data-market-material=/g)).toHaveLength(36);
     expect(html.match(/data-buy-material="infernic"/g)).toHaveLength(3);
     for (const quantity of [1, 5, 10]) expect(html).toContain(`data-quantity="${quantity}"`);
     expect(html).toContain('800 Prismatica');
@@ -61,6 +77,7 @@ describe('online Material Exchange and Cosmetic Store', () => {
 
   it('keeps the exchange usable offline without simulating an online account', () => {
     const account = emptyAccount();
+    account.characters.ember = { level: 0, evolution: 1 };
     account.fractalis = 80;
     const html = onlineStores(account, null, 'materials');
     expect(html).not.toMatch(/data-buy-material="infernic" data-quantity="1"[^>]*disabled/);
@@ -70,6 +87,19 @@ describe('online Material Exchange and Cosmetic Store', () => {
     expect(cosmetics).toContain('data-online-perk');
     expect(cosmetics).toContain('Sign in to buy or equip a frame. Frames have no gameplay effects.');
     expect(cosmetics).not.toContain('purchase materials');
+  });
+  it('shows owned Element-Bearer unlock gates for higher tiers without disabling browsing', () => {
+    const account = emptyAccount();
+    account.characters.ember = { level: 89, evolution: 6 };
+    account.fractalis = 5500000;
+    const locked = onlineStores(account, profile, 'materials', 'infernic-omnic');
+    expect(locked).toContain('Locked · Requires any owned Element-Bearer at level 90');
+    expect(locked).toMatch(/data-buy-material="infernic-omnic" data-quantity="1"[^>]*disabled/);
+    expect(locked).toContain('data-market-material="infernic-omnic"');
+    account.characters.ember.level = 90;
+    const unlocked = onlineStores(account, profile, 'materials', 'infernic-omnic');
+    expect(unlocked).not.toMatch(/data-buy-material="infernic-omnic" data-quantity="10"[^>]*disabled/);
+    expect(unlocked).toContain('5,500,000 Prismatica');
   });
 
   it('distinguishes free switching, permanent purchases and the selected frame', () => {
@@ -103,7 +133,8 @@ describe('online profile presentation', () => {
     document.body.innerHTML = onlineProfile(emptyAccount(), profile, {
       friends: [], incoming: [], outgoing: [],
     }, 'friends');
-    expect(document.querySelectorAll('.ref-market-tabs button')).toHaveLength(3);
+    expect(document.querySelectorAll('.ref-market-tabs [data-profile-tab]')).toHaveLength(3);
+    expect(document.querySelectorAll('.ref-market-tabs [data-social-calendar]')).toHaveLength(3);
     expect(document.querySelector('[data-open-friend-requests]')).toBeNull();
     expect(document.querySelector('[data-social-tab="incoming"]')).not.toBeNull();
     expect(document.querySelector('[data-social-tab="outgoing"]')).not.toBeNull();
@@ -153,8 +184,9 @@ describe('online profile presentation', () => {
     for (const region of ['Emberwake March', 'Glasswater Reach', 'Stormspan Heights', 'Rootstone Wilds', 'Stillhalo Vale', 'Riftbound Frontier']) expect(html).toContain(region);
     expect(html).toContain(`${26 - storyRules.regionStages}/${storyRules.regionStages}`);
     expect(html).toContain('max="99"');
-    expect(html).toContain('max="162"');
-    expect(html).toContain('3/162');
+    const formCount = starters.length * 6 + creatures.filter(creature => creature.mode && creature.mode !== 'machines').length;
+    expect(html).toContain(`max="${formCount}"`);
+    expect(html).toContain(`3/${formCount}`);
     expect(html).toContain('<span>Standard</span><b>12/200</b><b>24/500</b>');
     expect(html).toContain('<span>Roses</span><b>8/200</b><b>9/500</b>');
     expect(html).toContain('14 h 22 m');
@@ -180,7 +212,7 @@ describe('online profile presentation', () => {
     const html = onlineProfile(account, { ...profile, totalDraws: 17, icon: 'ember' });
     expect(html).toContain(`50 / ${storyRules.stages}`);
     expect(html).toContain('2 / 6');
-    expect(html).toContain('<h2>Element-Bearers</h2><p><strong>1</strong><span> / 22</span>');
+    expect(html).toContain(`<h2>Element-Bearers</h2><p><strong>1</strong><span> / ${starters.length}</span>`);
     expect(html).toContain('<span>Conduit types</span><progress value="1" max="99"');
     expect(html).toContain('<dt>Total summons</dt><dd>17</dd>');
     expect(html).toContain('characters/infernis');

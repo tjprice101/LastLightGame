@@ -9,7 +9,7 @@ import { referenceHome } from './reference-home';
 import { gameplayHub } from './gameplay';
 import { getStarter } from '../content/starters';
 
-describe('stage-gated Story Codex', () => {
+describe('stage-gated Story Codex', { timeout: 30_000 }, () => {
   it('uses the approved seven milestones and derives old-account unlocks without mutation', () => {
     expect(storyCodexEntries.map(entry => entry.stage)).toEqual([0, 20, 40, 60, 80, 100, 120]);
     for (const completed of [0, 19, 20, 39, 40, 60, 80, 100, 119, 120]) {

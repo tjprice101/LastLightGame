@@ -95,10 +95,10 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
     close.focus({ preventScroll: true });
     dialog.setAttribute('data-reward-revealed', 'true');
     if (animateArt && !rarityMotionReduced()) {
-      const cards = art.querySelectorAll<HTMLElement>('.summon-ten-result[data-rarity]');
-      if (cards.length) cards.forEach((card, index) => {
+      const cards = dialog.querySelectorAll<HTMLElement>('.summon-ten-result[data-rarity], .master-bulk-reward[data-rarity]');
+      if (cards.length) cards.forEach(card => {
         const rarity = card.dataset.rarity;
-        if (index < 12 && isRarity(rarity)) rarityFeedback(card, rarity);
+        if (isRarity(rarity)) rarityFeedback(card, rarity);
       });
       else if (reward.rarity) rarityFeedback(art, reward.rarity);
       artAnimation = reward.tier

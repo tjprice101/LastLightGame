@@ -1,6 +1,6 @@
 import { rolePerkRow } from './intrinsic-perks';
 import { storyCodex } from './story-codex';
-import { starters } from '../content/starters';
+import { starters, starterVow } from '../content/starters';
 import { characterName } from '../content/character-art';
 import { characterRarity, displayEvolution } from '../content/progression';
 import { elements, materialRarities } from '../content/activities';
@@ -61,7 +61,7 @@ function characterArchive(account: Account | null): string {
         ${information(`archive-kit-${starter.id}-${evolution}`, `${characterName(starter.id, evolution, current && progress?.ascension?.stats === true)} · Evo.${displayEvolution(starter.id, evolution)}`, `${characterRole(starter.id)}${elementLabel(starter.elementId)}${characterRating(starter.id, evolution, current && progress?.ascension?.stats === true)}
         <p class="archive-ownership">${!account ? 'Ownership unavailable' : !owned ? 'Not owned' : current ? `Current form · Lv.${progress?.level}` : revealed ? 'Reached form' : 'Evolution not reached'}</p>
         <p>${starter.weapon}</p>
-        <h3>Origin</h3><p>${starter.description}</p><p>${starter.lore.story}</p><blockquote>${starter.lore.vow}</blockquote>
+        <h3>Origin</h3><p>${starter.description}</p><p>${starter.lore.story}</p><blockquote>${starterVow(starter)}</blockquote>
         ${current ? '' : '<p class="quiet">Level 0 preview</p>'}
         <dl class="archive-stats"><div><dt>Health</dt><dd>${formatStat(kit.stats.health)}</dd></div>
           <div><dt>${phaseZeroStatsReady ? 'Direct Attack' : 'Attack'}</dt><dd>${formatStat(kit.stats.damage)}</dd></div><div><dt>Defense</dt><dd>${formatStat(kit.stats.defense)}</dd></div></dl>

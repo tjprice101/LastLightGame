@@ -1,6 +1,7 @@
 import { flagshipCharacters } from './flagships';
 import { warCharacters } from './war-characters';
 import { calamiticCharacters } from './calamitic-characters';
+import { moonCharacters, sunshadeCharacters } from './moon-sunshade-characters';
 
 export const openingStarters = [
   {
@@ -85,14 +86,23 @@ export const roseCharacters = [
     lore: { origin: 'The paths between twin roses', story: 'On the paths between twin roses, Crinso learned that tending a garden sometimes means protecting what lives and sometimes accepting what must end. His small double-edged dagger became one rose-centered sword, golden fire and crimson lightning held in a single grip. Chaotic bears Death and Destruction, not a promise of cruelty. Let made Element-Bearers in his image; Rise’s Elemental-Devourers broke convention to steal their elements. Both sides hunt their creators’ souls, still separate and unfound, and Crinso will not call the contest settled before either is found. He follows the trail of Let’s soul while guarding the people caught between factions.', vow: 'I choose what grows beyond the storm.', awakening: 'Two petals unfold around one resolve; neither soul has returned.' },
   },
 ] as const;
-export const starters = [...openingStarters, ...roseCharacters, ...flagshipCharacters, ...warCharacters, ...calamiticCharacters] as const;
+export const starters = [...openingStarters, ...roseCharacters, ...moonCharacters, ...sunshadeCharacters,
+  ...flagshipCharacters, ...warCharacters, ...calamiticCharacters] as const;
 export type Starter = (typeof starters)[number];
 export type StarterId = Starter['id'];
 export type RoseCharacterId = (typeof roseCharacters)[number]['id'];
+export type MoonCharacterId = (typeof moonCharacters)[number]['id'];
+export type SunshadeCharacterId = (typeof sunshadeCharacters)[number]['id'];
 export const availableStarters = openingStarters;
 
 export function isRoseCharacter(id: StarterId): id is RoseCharacterId {
   return roseCharacters.some((character) => character.id === id);
+}
+export function isMoonCharacter(id: StarterId): id is MoonCharacterId {
+  return moonCharacters.some((character) => character.id === id);
+}
+export function isSunshadeCharacter(id: StarterId): id is SunshadeCharacterId {
+  return sunshadeCharacters.some((character) => character.id === id);
 }
 
 export function isAvailableStarter(id: StarterId): boolean {
@@ -107,4 +117,9 @@ export function getStarter(id: StarterId): Starter {
   const starter = starters.find((entry) => entry.id === id);
   if (!starter) throw new Error(`Unknown starter: ${id}`);
   return starter;
+}
+
+export function starterVow(starter: Starter): string {
+  if ('vow' in starter.lore) return starter.lore.vow;
+  return 'vow' in starter ? starter.vow : '';
 }

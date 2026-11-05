@@ -51,10 +51,39 @@ export interface NativeKitState {
   season?: 'sprout' | 'bloom' | 'harvest';
   claim?: { target: string; throughPhase: number };
   guards?: Record<string, number>;
+  unreturned?: number;
+  load?: number;
+  beacon?: number;
+  severance?: number;
+  promise?: number;
+  interval?: number;
+  reserve?: number;
+  branches?: number;
+  branchTarget?: string;
+  faultCount?: number;
+  faultTarget?: string;
+  faultThroughPhase?: number;
+  aftershock?: { target: string; amount: number; dueRound: number };
+  momentum?: number;
+  leadTarget?: string;
+  path?: 'shelter' | 'flourish';
+  intercept?: { targets: string[]; fraction: number; throughPhase: number };
+  terms?: { target: string; throughPhase: number };
+  accords?: Record<string, number>;
+  accord?: { owner: string; throughRound: number };
+  signal?: { owner: string; bonus: number; throughRound: number };
+  moonflower?: { owner: string; bonus: number; throughRound: number };
+  openRoute?: { owner: string; pierce: number; throughRound: number };
+  ceasefire?: { owner: string; fraction: number; charges: number; throughPhase: number; reducedRound?: number };
+  lead?: { owner: string; fraction: number; throughPhase: number };
+  repair?: Record<string, { amount: number; dueRound: number }>;
+  skillPowerBuff?: { owner: string; fraction: number; throughRound: number };
+  actionStartedAt?: number;
 }
 
 export type NativeDamageKind = 'burn' | 'detonation' | 'cyclone' | 'recall' | 'revenge' | 'trap' | 'demolition' | 'redirect';
-type Direct = (targets: Combatant[], coefficient: number, pierce?: number, criticalBonus?: number) => void;
+type Direct = (targets: Combatant[], coefficient: number, pierce?: number, criticalBonus?: number,
+  preserveTargets?: boolean) => void;
 const living = (state: BattleState) => state.allies.filter(unit => unit.hp > 0);
 const foes = (state: BattleState) => state.enemies.filter(unit => unit.hp > 0);
 export const hasNativeIdentity = (unit: Combatant): boolean => !unit.captured && unit.kit?.nativeIdentity === true;
@@ -182,8 +211,11 @@ export function nativeInstructionDamage(state: BattleState, owner: Combatant): n
 
 export function nativeSupportMultiplier(state: BattleState, owner: Combatant): number {
   const instruction = owner.native?.instruction;
-  return instruction && instruction.throughRound >= state.round && living(state).some(unit => unit.id === instruction.owner) &&
+  const instructed = instruction && instruction.throughRound >= state.round && living(state).some(unit => unit.id === instruction.owner) &&
     instruction.kind !== 'strike' ? 1 + (phaseZeroStatsReady ? instruction.supportBonus ?? .35 : .35) : 1;
+  const skillPowerBuff = owner.native?.skillPowerBuff;
+  return instructed * (skillPowerBuff && skillPowerBuff.throughRound >= state.round &&
+    living(state).some(unit => unit.id === skillPowerBuff.owner) ? 1 + skillPowerBuff.fraction : 1);
 }
 
 export function nativeDamageTakenMultiplier(state: BattleState, source: Combatant, target: Combatant, origin: 'native' | 'conduit' | 'periodic' = 'native'): number {
@@ -229,6 +261,117 @@ function guardOnce(owner: Combatant, key: string, round: number): boolean {
   return true;
 }
 
+const moonSunshadeIdentities = new Set([
+  'maerion', 'caevren', 'vespera', 'ilyss', 'asteriel', 'serapha',
+  'rhaziel', 'oryn', 'thessara', 'elaris', 'veyr', 'aureth',
+]);
+function isMoonSunshadeIdentity(id: string): boolean { return moonSunshadeIdentities.has(id); }
+
+function lowestHealthAlly(state: BattleState): Combatant | undefined {
+  return living(state).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+}
+
+function maerionHeal(state: BattleState, owner: Combatant, target: Combatant, offer: number,
+  events: BattleEvent[], activation: Parameters<typeof applyConduitBurn>[4]): number {
+  const before = target.hp;
+  const restored = nativeHeal(state, owner, target, offer, events, true, activation);
+  if (equipped(owner, 'master-maerion-3') && before < target.stats.health * .5 &&
+      target.hp >= target.stats.health * .5 && guardOnce(owner, `triage:${target.id}`, state.round))
+    generatedGaugePercent(owner, target, .15, events, state);
+  return restored;
+}
+
+function eventDirectModifiers(state: BattleState, attacker: Combatant, target: Combatant, action: ActionId): { bonus: number; pierce: number } {
+  if (action === 'light') return { bonus: 0, pierce: 0 };
+  let bonus = 0, pierce = 0;
+  const signal = attacker.native?.signal;
+  const signalOwner = signal && living(state).find(unit => unit.id === signal.owner && unit.definitionId === 'vespera');
+  if (signal && signal.throughRound >= state.round && signalOwner) {
+    bonus += signal.bonus;
+    if (equipped(signalOwner, 'master-vespera-2') && target.burn.sourceId === signalOwner.id && target.burn.turns > 0) pierce += .15;
+  }
+  const moonflower = attacker.native?.moonflower;
+  if (moonflower && moonflower.throughRound >= state.round &&
+      living(state).some(unit => unit.id === moonflower.owner && unit.definitionId === 'asteriel'))
+    bonus += moonflower.bonus;
+  const route = attacker.native?.openRoute;
+  if (route && route.throughRound >= state.round &&
+      living(state).some(unit => unit.id === route.owner && unit.definitionId === 'elaris')) pierce += route.pierce;
+  for (const owner of living(state).filter(unit => unit.definitionId === 'oryn')) {
+    if (owner.native?.terms?.target !== target.id || owner.native.terms.throughPhase < state.round ||
+        (owner.native.accords?.[attacker.id] ?? -1) < state.round ||
+        (owner.native.guards?.[`accord:${state.round}`] ?? -1) === state.round) continue;
+    bonus += equipped(owner, 'master-oryn-1') ? .5 : .3;
+  }
+  return { bonus: Math.min(1.5, bonus), pierce: Math.min(.8, pierce) };
+}
+
+function setIntercept(owner: Combatant, targets: readonly Combatant[], fraction: number, throughPhase: number): void {
+  nativeMemory(owner).intercept = { targets: targets.map(target => target.id), fraction, throughPhase };
+}
+
+export type CleanseChoice = 'burn' | 'weaken';
+
+function cleanseOne(target: Combatant, choice?: CleanseChoice): boolean {
+  if (choice !== 'weaken' && target.burn.turns > 0) {
+    target.burn = { damage: 0, turns: 0, sourceId: '', origin: 'native' };
+    return true;
+  }
+  if (choice !== 'burn' && target.weakened > 0) {
+    target.weakened = 0;
+    target.weakenFraction = 0;
+    delete target.weakenSourceId;
+    delete target.weakenOrigin;
+    return true;
+  }
+  return false;
+}
+
+function changeCultivationPath(state: BattleState, owner: Combatant, path: NonNullable<NativeKitState['path']>, events: BattleEvent[]): void {
+  const memory = nativeMemory(owner);
+  if (memory.path && memory.path !== path)
+    memory.promise = Math.min(3, (memory.promise ?? 0) + 1);
+  memory.path = path;
+  status(state, events, owner, owner, `${owner.name}: ${path === 'shelter' ? 'Shelter' : 'Flourish'} path${memory.promise ? ` · Promise ${memory.promise}/3` : ''}.`);
+}
+
+function setMoonflower(owner: Combatant, target: Combatant, bonus: number, throughRound: number): void {
+  target.native ??= {};
+  target.native.moonflower = { owner: owner.id, bonus, throughRound };
+}
+
+function gainReserve(owner: Combatant): void {
+  const memory = nativeMemory(owner);
+  memory.reserve = Math.min(equipped(owner, 'master-thessara-1') ? 5 : 4, (memory.reserve ?? 0) + 1);
+}
+
+function setBranches(state: BattleState, owner: Combatant, target: Combatant, amount: number, events: BattleEvent[]): void {
+  const memory = nativeMemory(owner);
+  const current = memory.branchTarget === target.id ? memory.branches ?? 0 : 0;
+  memory.branchTarget = target.id;
+  memory.branches = Math.min(equipped(owner, 'master-elaris-1') ? 4 : 3, current + amount);
+  status(state, events, owner, target, `${target.name}: Branch ${memory.branches}/${equipped(owner, 'master-elaris-1') ? 4 : 3}.`);
+}
+
+function setVeyrFault(state: BattleState, owner: Combatant, target: Combatant, count: number, events: BattleEvent[]): void {
+  const memory = nativeMemory(owner);
+  memory.faultTarget = target.id;
+  memory.faultCount = Math.min(equipped(owner, 'master-veyr-1') ? 4 : 3, count);
+  memory.faultThroughPhase = state.round + 2;
+  status(state, events, owner, target, `${target.name}: Fault ${memory.faultCount}/${equipped(owner, 'master-veyr-1') ? 4 : 3} · Defense −${Math.min(40, memory.faultCount * 8)}% through enemy phase ${memory.faultThroughPhase}.`);
+}
+
+function moveLead(owner: Combatant, target: Combatant, state: BattleState, phases: number): void {
+  const memory = nativeMemory(owner);
+  const moved = memory.leadTarget !== target.id;
+  if (moved && memory.leadTarget && guardOnce(owner, 'momentum', state.round))
+    memory.momentum = Math.min(equipped(owner, 'master-aureth-1') ? 4 : 3, (memory.momentum ?? 0) + 1);
+  memory.leadTarget = target.id;
+  target.native ??= {};
+  target.native.lead = { owner: owner.id, fraction: equipped(owner, 'master-aureth-2') ? .3 : .2,
+    throughPhase: state.round + phases };
+}
+
 export function nativeTrace(state: BattleState, _owner: Combatant, chance: number): boolean {
   return roll(state) < chance;
 }
@@ -236,6 +379,8 @@ export function nativeTrace(state: BattleState, _owner: Combatant, chance: numbe
 export function nativeDefenseBonus(state: BattleState, unit: Combatant, baseDefense: number): number {
   if (unit.side !== 'ally' || unit.hp <= 0) return 0;
   let bonus = 0;
+  if (hasNativeIdentity(unit) && unit.definitionId === 'caevren' && equipped(unit, 'master-caevren-1'))
+    bonus += .1 * (unit.native?.load ?? 0);
   if (hasNativeIdentity(unit) && unit.definitionId === 'caldrex' && equipped(unit, 'master-caldrex-1'))
     bonus += .12 * (unit.native?.heat ?? 0);
   const buff = unit.native?.defenseBuff;
@@ -269,17 +414,26 @@ function warEnemyHit(state: BattleState, enemy: Combatant, events: BattleEvent[]
 }
 
 export function nativeAction(state: BattleState, owner: Combatant, action: ActionId, targetId: string,
-  events: BattleEvent[], direct: Direct, activation: Parameters<typeof applyConduitBurn>[4]): void {
+  events: BattleEvent[], direct: Direct, activation: Parameters<typeof applyConduitBurn>[4], cleanseChoice?: CleanseChoice): void {
   const memory = nativeMemory(owner);
+  memory.actionStartedAt = events.length;
+  if (action !== 'light' && owner.definitionId === 'asteriel' && equipped(owner, 'master-asteriel-1'))
+    activation.skillPower += (memory.promise ?? 0) * .05;
   const target = state.enemies.find(enemy => enemy.id === targetId && enemy.hp > 0);
   const ally = state.allies.find(unit => unit.id === targetId && unit.hp > 0);
   const calamitic = isCalamiticCharacter(owner.definitionId);
   const warExact = (exactDirectDamageIds as readonly string[]).includes(owner.definitionId);
   const flareDamage = action === 'ultimate' && !calamitic && !warExact ? nativeBalance.lastFlare.damage : 1;
   const flareSupport = action === 'ultimate' && !warExact ? nativeBalance.lastFlare.support : 1;
-  const hit = (coefficient: number, all = false, pierce = 0, crit = 0, chosen = target) =>
-    direct(all ? foes(state) : chosen ? [chosen] : [], coefficient * (action === 'light' || calamitic || warExact ? 1 : nativeBalance.skillDamageScale) * flareDamage,
-      Math.min(1, pierce * flareSupport), Math.min(1, crit * flareSupport));
+  const hit = (coefficient: number, all = false, pierce = 0, crit = 0, chosen = target, preserveTargets = false) => {
+    const targets = all ? foes(state) : chosen ? [chosen] : [];
+    const modifiers = targets.map(enemy => eventDirectModifiers(state, owner, enemy, action));
+    const bonus = modifiers.reduce((highest, current) => Math.max(highest, current.bonus), 0);
+    const extraPierce = modifiers.reduce((highest, current) => Math.max(highest, current.pierce), 0);
+    direct(targets, coefficient * (action === 'light' || calamitic || warExact ? 1 : nativeBalance.skillDamageScale) *
+      flareDamage * (1 + bonus), Math.min(1, (pierce + extraPierce) * flareSupport),
+      Math.min(1, crit * flareSupport), preserveTargets);
+  };
   const allies = living(state);
   const other = allies.filter(unit => unit.id !== owner.id);
   const acted = other.filter(unit => unit.spent).length;
@@ -302,9 +456,291 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
     if (owner.definitionId === 'nerithe' && target?.hp) {
       memory.survey = { target: target.id, points: memory.survey?.target === target.id ? memory.survey.points + 1 : 1 };
     }
-    return;
+    if (!isMoonSunshadeIdentity(owner.definitionId)) return;
   }
   switch (owner.definitionId) {
+    case 'maerion': {
+      if (action === 'skill1') {
+        hit(2);
+        const recipient = lowestHealthAlly(state);
+        if (recipient) maerionHeal(state, owner, recipient, recipient.stats.health * .25, events, activation);
+      } else if (action === 'skill2') {
+        const amount = memory.unreturned ?? 0;
+        memory.unreturned = 0;
+        if (ally) {
+          const offer = ally.stats.health * .45 + amount;
+          const priorOverheal = activation.overheal;
+          maerionHeal(state, owner, ally, offer, events, activation);
+          const overheal = Math.max(0, activation.overheal - priorOverheal);
+          if (equipped(owner, 'master-maerion-2') && overheal > 0) {
+            const existing = nativeShield(state, owner, ally, Math.min(overheal, ally.stats.health * .35), events,
+              { skillPower: activation.skillPower, activation, stack: true });
+            if (existing > 0) status(state, events, owner, ally, `${ally.name}: Maerion's healing overflow becomes Shield.`, existing);
+          }
+        }
+      } else if (action === 'ultimate') {
+        const amount = memory.unreturned ?? 0;
+        memory.unreturned = 0;
+        for (const recipient of allies)
+          maerionHeal(state, owner, recipient, recipient.stats.health * .7 + amount / Math.max(1, allies.length), events, activation);
+      }
+      finishNativeHealing(state, owner, activation, events);
+      break;
+    }
+    case 'caevren':
+      if (action === 'skill1') {
+        hit(2.8);
+        memory.tauntThrough = state.round + activation.skillDuration;
+      } else if (action === 'skill2' && ally) {
+        const fraction = equipped(owner, 'master-caevren-2') ? .55 : .3;
+        shield(ally, fraction);
+        setIntercept(owner, [ally], equipped(owner, 'master-caevren-2') ? .55 : .3, state.round + 2 + activation.skillDuration);
+      } else if (action === 'ultimate') {
+        const spent = memory.load ?? 0;
+        memory.load = 0;
+        activation.spent.load = spent;
+        shield(owner, .6 + .12 * spent);
+        setIntercept(owner, other, .3, state.round + 2 + activation.skillDuration);
+      }
+      break;
+    case 'vespera':
+      if (action === 'skill1') {
+        hit(2.2);
+        if (target?.hp) burn(target, equipped(owner, 'master-vespera-2') ? .25 * 1.3 : .25);
+      } else if (action === 'skill2' && ally) {
+        ally.native ??= {};
+        ally.native.signal = { owner: owner.id, bonus: equipped(owner, 'master-vespera-1') ? .5 : .35,
+          throughRound: state.round + 1 + activation.skillDuration };
+        status(state, events, owner, ally, `${ally.name}: Signal is ready for their next damaging Skill or Last Flare.`);
+      } else if (action === 'ultimate') {
+        const spent = memory.beacon ?? 0;
+        memory.beacon = 0;
+        activation.spent.beacon = spent;
+        hit(4.8, true);
+        for (const recipient of other) {
+          recipient.native ??= {};
+          recipient.native.signal = { owner: owner.id, bonus: .5 + .1 * spent,
+            throughRound: state.round + 1 + activation.skillDuration };
+        }
+      }
+      break;
+    case 'ilyss':
+      if (action === 'skill1') {
+        hit(2.2);
+        if (target?.hp) applyConduitWeaken(state, owner, target, .25, events, action, 2, activation);
+      } else if (action === 'skill2' && ally) {
+        nativeHeal(state, owner, ally, ally.stats.health * .45, events, true, activation);
+        if (cleanseOne(ally, cleanseChoice)) {
+          const amount = equipped(owner, 'master-ilyss-1') ? 4 : 3;
+          if (guardOnce(owner, 'severance', state.round)) memory.severance = Math.min(amount, (memory.severance ?? 0) + 1);
+          if (equipped(owner, 'master-ilyss-2') && guardOnce(owner, `cleanse-shield:${ally.id}`, state.round))
+            shield(ally, .15);
+          if (equipped(owner, 'master-ilyss-3'))
+            ally.native = { ...ally.native, skillPowerBuff: { owner: owner.id, fraction: .25,
+              throughRound: state.round + 2 + activation.skillDuration } };
+        }
+      } else if (action === 'ultimate') {
+        const spent = memory.severance ?? 0;
+        memory.severance = 0;
+        activation.spent.severance = spent;
+        const fraction = .65 + spent * (equipped(owner, 'master-ilyss-1') ? .13 : .1);
+        for (const recipient of allies) {
+          nativeHeal(state, owner, recipient, recipient.stats.health * fraction, events, true, activation);
+          if (cleanseOne(recipient)) {
+            if (guardOnce(owner, 'severance', state.round))
+              memory.severance = Math.min(equipped(owner, 'master-ilyss-1') ? 4 : 3, (memory.severance ?? 0) + 1);
+            if (equipped(owner, 'master-ilyss-2') && guardOnce(owner, `cleanse-shield:${recipient.id}`, state.round))
+              shield(recipient, .15);
+          }
+        }
+      }
+      finishNativeHealing(state, owner, activation, events);
+      break;
+    case 'asteriel':
+      if (action === 'skill1') {
+        changeCultivationPath(state, owner, 'shelter', events);
+        for (const recipient of allies) shield(recipient, .25);
+        if (equipped(owner, 'master-asteriel-2') && guardOnce(owner, 'cultivation-heal', state.round)) {
+          const recipient = lowestHealthAlly(state);
+          if (recipient) nativeHeal(state, owner, recipient, recipient.stats.health * .2, events, true, activation);
+        }
+      } else if (action === 'skill2') {
+        changeCultivationPath(state, owner, 'flourish', events);
+        for (const recipient of allies) setMoonflower(owner, recipient, .3, state.round + 1 + activation.skillDuration);
+      } else if (action === 'ultimate') {
+        const spent = memory.promise ?? 0;
+        memory.promise = 0;
+        activation.spent.promise = spent;
+        if (memory.path !== 'flourish') {
+          for (const recipient of allies) shield(recipient, .45 + .08 * spent);
+        } else {
+          for (const recipient of allies) setMoonflower(owner, recipient, .5 + .1 * spent,
+            state.round + 1 + activation.skillDuration);
+        }
+      }
+      break;
+    case 'serapha':
+      if (action === 'skill1') {
+        hit(2.4);
+        if (target?.hp) applyConduitWeaken(state, owner, target, .2, events, action, 2, activation);
+      } else if (action === 'skill2' || action === 'ultimate') {
+        const spent = action === 'ultimate' ? memory.interval ?? 0 : 0;
+        if (action === 'ultimate') {
+          memory.interval = 0;
+          activation.spent.interval = spent;
+        }
+        const healFraction = action === 'skill2' ? .3 : .7 + (equipped(owner, 'master-serapha-1') ? .05 : 0) * spent;
+        const reduction = action === 'ultimate' ? .2 + .05 * spent : .2;
+        const through = state.round + (action === 'ultimate' ? 2 : 1) + activation.skillDuration;
+        for (const recipient of allies) {
+          nativeHeal(state, owner, recipient, recipient.stats.health * healFraction, events, true, activation);
+          recipient.native ??= {};
+          recipient.native.ceasefire = { owner: owner.id, fraction: reduction, charges: 1, throughPhase: through };
+        }
+        finishNativeHealing(state, owner, activation, events);
+      }
+      break;
+    case 'rhaziel':
+      if (action === 'skill1' && ally) shield(ally, .35);
+      else if (action === 'skill2' || action === 'ultimate') {
+        const healing = action === 'skill2' ? .2 : .45;
+        const shielding = action === 'skill2' ? .2 : .55;
+        for (const recipient of allies) {
+          nativeHeal(state, owner, recipient, recipient.stats.health * healing, events, true, activation);
+          shield(recipient, shielding);
+        }
+        finishNativeHealing(state, owner, activation, events);
+      }
+      break;
+    case 'oryn':
+      if (action === 'skill1') {
+        hit(2.4);
+        if (target?.hp) {
+          memory.terms = { target: target.id, throughPhase: state.round + 2 + activation.skillDuration };
+          applyConduitWeaken(state, owner, target, .25, events, action, 2, activation);
+        }
+      } else if (action === 'skill2' && ally) {
+        memory.accords = { [ally.id]: state.round + 2 + activation.skillDuration };
+        ally.native ??= {};
+        ally.native.defenseBuff = { fraction: .3, throughRound: state.round + 2 + activation.skillDuration };
+        ally.native.accord = { owner: owner.id, throughRound: state.round + 2 + activation.skillDuration };
+        if (equipped(owner, 'master-oryn-2')) shield(ally, .25);
+      } else if (action === 'ultimate') {
+        for (const enemy of foes(state)) {
+          applyConduitWeaken(state, owner, enemy, .3, events, action, 2, activation);
+          if (memory.terms?.target === enemy.id) memory.terms.throughPhase = state.round + 2 + activation.skillDuration;
+        }
+        memory.accords = Object.fromEntries(allies.map(member => [member.id, state.round + 2 + activation.skillDuration]));
+        for (const recipient of allies) {
+          recipient.native ??= {};
+          recipient.native.defenseBuff = { fraction: .2, throughRound: state.round + 2 + activation.skillDuration };
+          recipient.native.accord = { owner: owner.id, throughRound: state.round + 2 + activation.skillDuration };
+        }
+      }
+      break;
+    case 'thessara':
+      if (action === 'skill1') {
+        hit(2.4);
+        if (target?.hp) gainReserve(owner);
+      } else if (action === 'skill2' && ally) {
+        const spent = memory.reserve ?? 0;
+        memory.reserve = 0;
+        activation.spent.reserve = spent;
+        nativeHeal(state, owner, ally, ally.stats.health * (.2 + spent * (equipped(owner, 'master-thessara-1') ? .12 : .1)),
+          events, true, activation);
+        nativeGauge(state, ally, spent * (equipped(owner, 'master-thessara-3') ? 10 : 8), events);
+        if (equipped(owner, 'master-thessara-2')) shield(ally, .2 + .03 * spent);
+        finishNativeHealing(state, owner, activation, events);
+      } else if (action === 'ultimate') {
+        const spent = memory.reserve ?? 0;
+        memory.reserve = 0;
+        activation.spent.reserve = spent;
+        for (const recipient of allies) {
+          nativeHeal(state, owner, recipient, recipient.stats.health * (.5 + .05 * spent), events, true, activation);
+          if (recipient.id !== owner.id) nativeGauge(state, recipient, spent * (equipped(owner, 'master-thessara-3') ? 8 : 6), events);
+        }
+        finishNativeHealing(state, owner, activation, events);
+      }
+      break;
+    case 'elaris':
+      if (action === 'skill1') {
+        hit(2.8);
+        if (target?.hp) setBranches(state, owner, target, equipped(owner, 'master-elaris-2') ? 2 : 1, events);
+      } else if (action === 'skill2' && target) {
+        const spent = memory.branches ?? 0;
+        memory.branches = 0;
+        activation.spent.branches = spent;
+        const marked = foes(state).find(enemy => enemy.id === memory.branchTarget);
+        for (const enemy of foes(state)) hit(2.4, false, enemy === marked ? spent * .08 : 0, 0, enemy, true);
+        if (equipped(owner, 'master-elaris-3')) for (const recipient of other) {
+          recipient.native ??= {};
+          recipient.native.openRoute = { owner: owner.id, pierce: .15, throughRound: state.round + 1 + activation.skillDuration };
+        }
+      } else if (action === 'ultimate' && target) {
+        const spent = memory.branchTarget === target.id ? memory.branches ?? 0 : 0;
+        memory.branches = 0;
+        activation.spent.branches = spent;
+        hit(10.5 + (memory.branchTarget === target.id ? .9 * spent : 0), false,
+          memory.branchTarget === target.id ? .1 * spent : 0);
+        if (equipped(owner, 'master-elaris-3')) for (const recipient of other) {
+          recipient.native ??= {};
+          recipient.native.openRoute = { owner: owner.id, pierce: .15, throughRound: state.round + 1 + activation.skillDuration };
+        }
+      }
+      break;
+    case 'veyr':
+      if (action === 'skill1') {
+        hit(3.2);
+        if (target?.hp) setVeyrFault(state, owner, target, (memory.faultTarget === target.id ? memory.faultCount ?? 0 : 0) + 1, events);
+      } else if (action === 'skill2' && target) {
+        const spent = memory.faultTarget === target.id ? memory.faultCount ?? 0 : 0;
+        memory.faultCount = 0;
+        memory.faultThroughPhase = undefined;
+        activation.spent.faults = spent;
+        hit(2.4, true);
+        if (memory.faultTarget === target.id && target.hp > 0) {
+          if (spent > 0) {
+            const start = events.length;
+            hit(2 * spent, false, 0, 0, target, true);
+            for (const event of events.slice(start)) if (event.kind === 'damage') event.nativeKind = 'demolition';
+          }
+          if (equipped(owner, 'master-veyr-2')) memory.aftershock = {
+            target: target.id, amount: owner.stats.damage * spent, dueRound: state.round,
+          };
+        }
+        if (equipped(owner, 'master-veyr-3')) for (const recipient of allies) shield(recipient, .05 * spent);
+      } else if (action === 'ultimate' && target) {
+        const spent = memory.faultTarget === target.id ? memory.faultCount ?? 0 : 0;
+        memory.faultCount = 0;
+        memory.faultThroughPhase = undefined;
+        activation.spent.faults = spent;
+        hit(10.5 + (memory.faultTarget === target.id ? 2 * spent : 0), false, 0, 0, target);
+        if (equipped(owner, 'master-veyr-2') && memory.faultTarget === target.id && target.hp > 0)
+          memory.aftershock = { target: target.id, amount: owner.stats.damage * spent, dueRound: state.round };
+        if (equipped(owner, 'master-veyr-3')) for (const recipient of allies) shield(recipient, .05 * spent);
+      }
+      break;
+    case 'aureth':
+      if (action === 'skill1' && ally) {
+        shield(ally, .35);
+        moveLead(owner, ally, state, 2 + activation.skillDuration);
+      } else if (action === 'skill2') {
+        hit(2.4, true);
+        moveLead(owner, owner, state, 1 + activation.skillDuration);
+        memory.tauntThrough = state.round + activation.skillDuration;
+      } else if (action === 'ultimate') {
+        const spent = memory.momentum ?? 0;
+        memory.momentum = 0;
+        activation.spent.momentum = spent;
+        for (const recipient of allies) {
+          shield(recipient, .6 + (equipped(owner, 'master-aureth-1') ? .15 : .1) * spent);
+          recipient.native ??= {};
+          recipient.native.defenseBuff = { fraction: .1 * spent, throughRound: state.round + 2 + activation.skillDuration };
+        }
+        moveLead(owner, owner, state, 1 + activation.skillDuration);
+        memory.tauntThrough = state.round + activation.skillDuration;
+      }
+      break;
     case 'ozriel':
       if (action === 'skill1') {
         hit(2.4);
@@ -808,10 +1244,46 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
 }
 
 export function nativeAfterAction(state: BattleState, owner: Combatant, action: ActionId, priorInstruction: NativeKitState['instruction'], events: BattleEvent[]): void {
+  const actionEvents = events.slice(owner.native?.actionStartedAt ?? events.length);
+  const actionDamage = actionEvents.some(event => event.kind === 'damage' && event.source === owner.id &&
+    (event.amount > 0 || (event.shieldAbsorbed ?? 0) > 0));
+  const ability = action === 'light' ? undefined : owner.kit?.abilities[action];
+  const traits = phaseZeroStatsReady ? conduitActionTraits(state, owner, action) : undefined;
+  const damaging = traits?.damage ?? (action === 'light' || ability?.strength.damageMultiplier !== undefined);
+  if (action !== 'light' && damaging && actionDamage) {
+    const signal = owner.native?.signal;
+    if (signal && signal.throughRound >= state.round) {
+      delete owner.native!.signal;
+      const source = living(state).find(unit => unit.id === signal.owner && unit.definitionId === 'vespera');
+      if (source) {
+        const memory = nativeMemory(source);
+        memory.beacon = Math.min(equipped(source, 'master-vespera-1') ? 4 : 3, (memory.beacon ?? 0) + 1);
+        if (equipped(source, 'master-vespera-3') && guardOnce(source, `signal-gauge:${state.round}`, state.round))
+          nativeGauge(state, owner, 10, events);
+        status(state, events, source, owner, `${source.name}'s Signal is spent; Beacon ${memory.beacon}/${equipped(source, 'master-vespera-1') ? 4 : 3}.`);
+      }
+    }
+    const moonflower = owner.native?.moonflower;
+    if (moonflower && moonflower.throughRound >= state.round) {
+      delete owner.native!.moonflower;
+      const source = living(state).find(unit => unit.id === moonflower.owner && unit.definitionId === 'asteriel');
+      if (source && equipped(source, 'master-asteriel-3') && guardOnce(source, `moonflower-gauge:${state.round}`, state.round))
+        nativeGauge(state, owner, 8, events);
+      if (source) status(state, events, source, owner, `${owner.name}'s Moonflower is spent.`);
+    }
+    if (owner.native?.openRoute && owner.native.openRoute.throughRound >= state.round) {
+      delete owner.native.openRoute;
+      status(state, events, owner, owner, `${owner.name}'s Open Route is spent.`);
+    }
+    for (const source of living(state).filter(unit => unit.definitionId === 'oryn' && equipped(unit, 'master-oryn-3'))) {
+      const term = source.native?.terms;
+      if (!term || term.throughPhase < state.round || (source.native?.accords?.[owner.id] ?? -1) < state.round ||
+          !actionEvents.some(event => event.kind === 'damage' && event.source === owner.id && event.target === term.target) ||
+          !guardOnce(source, `accord-gauge:${state.round}`, state.round)) continue;
+      nativeGauge(state, owner, 10, events);
+    }
+  }
   if (priorInstruction && owner.native?.instruction === priorInstruction) {
-    const ability = action === 'light' ? undefined : owner.kit?.abilities[action];
-    const traits = phaseZeroStatsReady ? conduitActionTraits(state, owner, action) : undefined;
-    const damaging = traits?.damage ?? (action === 'light' || ability?.strength.damageMultiplier !== undefined);
     const supporting = traits ? traits.healing || traits.shield :
       ability?.strength.healing !== undefined || ability?.strength.shield !== undefined;
     const matchingOnly = phaseZeroStatsReady && priorInstruction.throughRound >= state.round &&
@@ -901,6 +1373,19 @@ export function nativeStillnessMultiplier(state: BattleState, target: Combatant,
 
 export function nativeIncomingMultiplier(state: BattleState, enemy: Combatant, target: Combatant, action: ActionId, events: BattleEvent[]): number {
   let multiplier = nativeStillnessMultiplier(state, target, events);
+  const ceasefire = target.native?.ceasefire;
+  if (ceasefire && ceasefire.charges > 0 && ceasefire.throughPhase >= state.round &&
+      living(state).some(owner => owner.id === ceasefire.owner && owner.definitionId === 'serapha')) {
+    multiplier *= Math.max(0, 1 - ceasefire.fraction);
+    ceasefire.charges--;
+    ceasefire.reducedRound = state.round;
+    status(state, events, state.allies.find(owner => owner.id === ceasefire.owner)!, target,
+      `${target.name}'s Ceasefire reduces this direct hit by ${Math.round(ceasefire.fraction * 100)}%.`);
+  }
+  const lead = target.native?.lead;
+  if (lead && lead.throughPhase >= state.round &&
+      living(state).some(owner => owner.id === lead.owner && owner.definitionId === 'aureth'))
+    multiplier *= Math.max(0, 1 - lead.fraction);
   if (target.native?.reduction && target.native.reduction.throughPhase >= state.round)
     multiplier *= phaseZeroStatsReady ? Math.max(0, 1 - target.native.reduction.fraction) : 1 - target.native.reduction.fraction;
   if (target.native?.bastion && target.native.bastion.throughPhase >= state.round)
@@ -953,6 +1438,16 @@ export function nativeRouteDamage(state: BattleState, enemy: Combatant, target: 
       grantToken(state, target, 'brunoCoverSkillPower', .3);
     redirect(bruno, routed * .75);
   }
+  for (const owner of living(state).filter(unit => unit.definitionId === 'caevren')) {
+    const intercept = owner.native?.intercept;
+    if (!intercept || intercept.throughPhase < state.round || !intercept.targets.includes(target.id)) continue;
+    const routed = remaining * intercept.fraction;
+    remaining -= routed;
+    if (routed > 0) {
+      redirect(owner, routed);
+      status(state, events, owner, target, `${owner.name} intercepts ${Math.round(intercept.fraction * 100)}% of the direct hit.`);
+    }
+  }
   const foundations = living(state).filter(owner => owner.native?.foundation &&
     owner.native.foundation.durability > 0 && owner.native.foundation.throughPhase >= state.round);
   if (phaseZeroStatsReady) foundations.sort((a, b) =>
@@ -987,6 +1482,14 @@ export function nativeAllocateFoundation(durability: number, hits: readonly numb
 }
 
 export function nativeDirectHpLoss(state: BattleState, target: Combatant, loss: number, events: BattleEvent[]): void {
+  if (target.side === 'ally' && loss > 0) for (const owner of living(state).filter(unit => unit.definitionId === 'maerion')) {
+    const memory = nativeMemory(owner);
+    const capacity = owner.stats.health * (equipped(owner, 'master-maerion-1') ? .85 : .45);
+    const stored = Math.min(capacity, (memory.unreturned ?? 0) + loss);
+    const gained = stored - (memory.unreturned ?? 0);
+    memory.unreturned = stored;
+    if (gained > 0) status(state, events, owner, target, `${owner.name} records ${gained} direct Health loss as Unreturned (${Math.round(stored)}/${Math.round(capacity)}).`, gained);
+  }
   if (hasNativeIdentity(target) && target.definitionId === 'razor' && loss > 0) {
     const memory = nativeMemory(target);
     memory.wounds = (memory.wounds ?? 0) + loss;
@@ -1004,7 +1507,30 @@ export function nativeAbsorbedHit(state: BattleState, target: Combatant, nativeO
   }
 }
 
+export function nativeAuthoredShieldAbsorbed(state: BattleState, owner: Combatant, target: Combatant,
+  amount: number, broken: boolean, events: BattleEvent[]): void {
+  if (!hasNativeIdentity(owner) || owner.definitionId !== 'rhaziel' || amount <= 0) return;
+  const memory = nativeMemory(owner);
+  if (guardOnce(owner, `repair:${target.id}`, state.round)) {
+    const repair = memory.repair ??= {};
+    const prior = repair[target.id]?.dueRound === state.round + 1 ? repair[target.id].amount : 0;
+    const rate = equipped(owner, 'master-rhaziel-1') ? .35 : .2;
+    const cap = target.stats.health * (equipped(owner, 'master-rhaziel-1') ? .3 : .2);
+    repair[target.id] = { amount: Math.min(cap, prior + amount * rate), dueRound: state.round + 1 };
+    status(state, events, owner, target, `${target.name}: Repair ${Math.round(repair[target.id].amount)} stored for the next player turn.`);
+  }
+  if (broken && equipped(owner, 'master-rhaziel-2') && guardOnce(owner, `repair-break:${target.id}`, state.round)) {
+    target.native ??= {};
+    target.native.defenseBuff = { fraction: .25, throughRound: state.round + 2 };
+    status(state, events, owner, target, `${target.name}: Rhaziel's broken Shield grants +25% Defense for two player turns.`);
+  }
+}
+
 export function nativeEnemyCompleted(state: BattleState, enemy: Combatant, damaging: boolean, events: BattleEvent[]): void {
+  let attackStart = events.length - 1;
+  while (attackStart >= 0 && !(events[attackStart].kind === 'attack' && events[attackStart].source === enemy.id)) attackStart--;
+  const strikes = attackStart >= 0 ? events.slice(attackStart + 1).filter(event => event.kind === 'damage' &&
+    event.source === enemy.id && !event.periodic && (event.amount > 0 || (event.shieldAbsorbed ?? 0) > 0)) : [];
   const auroraOwnerId = gear(enemy).owners.auroraShieldOwner;
   if (auroraOwnerId) {
     delete gear(enemy).owners.auroraShieldOwner;
@@ -1017,6 +1543,41 @@ export function nativeEnemyCompleted(state: BattleState, enemy: Combatant, damag
         'master-aurora-1', state.round, events);
   }
   warEnemyHit(state, enemy, events);
+  if (strikes.length) for (const owner of living(state).filter(hasNativeIdentity)) {
+    if (owner.definitionId === 'caevren' && strikes.some(event => event.target === owner.id)) {
+      const memory = nativeMemory(owner);
+      if (guardOnce(owner, 'load', state.round)) {
+        memory.load = Math.min(equipped(owner, 'master-caevren-1') ? 5 : 3, (memory.load ?? 0) + 1);
+        status(state, events, owner, owner, `${owner.name}: Load ${memory.load}/${equipped(owner, 'master-caevren-1') ? 5 : 3}.`);
+      }
+      if (equipped(owner, 'master-caevren-3') && guardOnce(owner, 'counterweight', state.round))
+        fixed(state, owner, enemy, owner.stats.damage, 'revenge', events);
+    }
+    if (owner.definitionId === 'serapha' && enemy.weakenSourceId === owner.id && enemy.weakened > 0) {
+      if (guardOnce(owner, 'interval', state.round)) {
+        owner.native!.interval = Math.min(equipped(owner, 'master-serapha-1') ? 4 : 3, (owner.native!.interval ?? 0) + 1);
+        status(state, events, owner, owner, `${owner.name}: Interval ${owner.native!.interval}/${equipped(owner, 'master-serapha-1') ? 4 : 3}.`);
+      }
+      if (equipped(owner, 'master-serapha-3') && guardOnce(owner, 'serapha-gauge', state.round)) {
+        const recipient = lowestHealthAlly(state);
+        if (recipient) nativeGauge(state, recipient, 10, events);
+      }
+    }
+    if (owner.definitionId === 'aureth' && equipped(owner, 'master-aureth-3') &&
+        strikes.some(event => event.target === owner.native?.leadTarget) &&
+        guardOnce(owner, 'lead-gauge', state.round)) {
+      const holder = living(state).find(ally => ally.id === owner.native?.leadTarget);
+      if (holder) nativeGauge(state, holder, 8, events);
+    }
+  }
+  for (const event of strikes) {
+    const recipient = living(state).find(ally => ally.id === event.target);
+    const ceasefire = recipient?.native?.ceasefire;
+    if (!recipient || !ceasefire || ceasefire.owner === '' || ceasefire.reducedRound !== state.round) continue;
+    const owner = living(state).find(ally => ally.id === ceasefire.owner && ally.definitionId === 'serapha');
+    if (owner && equipped(owner, 'master-serapha-2') && guardOnce(owner, `ceasefire-heal:${recipient.id}`, state.round))
+      nativeHeal(state, owner, recipient, recipient.stats.health * .12, events, true);
+  }
   if (!damaging) return;
   for (const owner of living(state).filter(hasNativeIdentity)) {
     const trap = owner.native?.traps?.[enemy.id];
@@ -1089,6 +1650,18 @@ export function nativePhaseEnd(state: BattleState, events: BattleEvent[]): void 
   }
   for (const owner of living(state).filter(hasNativeIdentity)) {
     const memory = nativeMemory(owner);
+    if (memory.aftershock && memory.aftershock.dueRound <= state.round) {
+      const target = foes(state).find(enemy => enemy.id === memory.aftershock?.target);
+      if (target) fixed(state, owner, target, memory.aftershock.amount, 'detonation', events, true);
+      delete memory.aftershock;
+    }
+    if (memory.faultTarget && (memory.faultThroughPhase ?? -1) <= state.round) {
+      status(state, events, owner, state.enemies.find(enemy => enemy.id === memory.faultTarget) ?? owner,
+        `${owner.name}'s Fault expires.`);
+      delete memory.faultTarget;
+      delete memory.faultCount;
+      delete memory.faultThroughPhase;
+    }
     if (memory.cyclone && --memory.cyclone.phases <= 0) releaseCyclone(state, owner, events);
     if (memory.bastion && memory.bastion.throughPhase <= state.round) {
       if (memory.bastion.loss > 0) {
@@ -1105,6 +1678,7 @@ export function nativePhaseEnd(state: BattleState, events: BattleEvent[]): void 
       delete memory.bastion;
     }
     if (memory.cover && memory.cover.throughPhase <= state.round) delete memory.cover;
+    if (memory.intercept && memory.intercept.throughPhase <= state.round) delete memory.intercept;
     if (memory.tauntThrough !== undefined && memory.tauntThrough <= state.round) delete memory.tauntThrough;
     if (memory.burnBoostThrough !== undefined && memory.burnBoostThrough <= state.round) delete memory.burnBoostThrough;
     if (memory.claim && memory.claim.throughPhase <= state.round) delete memory.claim;
@@ -1112,6 +1686,10 @@ export function nativePhaseEnd(state: BattleState, events: BattleEvent[]): void 
     if (memory.foundation && memory.foundation.throughPhase <= state.round) delete memory.foundation;
     for (const [id, trap] of Object.entries(memory.traps ?? {})) if (trap.throughPhase <= state.round || trap.charges <= 0) delete memory.traps![id];
     for (const [id, seal] of Object.entries(memory.seals ?? {})) if (seal.throughPhase <= state.round) delete memory.seals![id];
+  }
+  for (const unit of state.allies) {
+    if (unit.native?.ceasefire && unit.native.ceasefire.throughPhase <= state.round) delete unit.native.ceasefire;
+    if (unit.native?.lead && unit.native.lead.throughPhase <= state.round) delete unit.native.lead;
   }
   nativeCleanup(state);
 }
@@ -1129,6 +1707,20 @@ export function nativeTurnStart(state: BattleState, events: BattleEvent[]): void
       const share = bank / recipients.length;
       for (const ally of recipients)
         generatedHeal(owner, ally, share, events, state, ally.stats.health * .12);
+    }
+  }
+  for (const owner of living(state).filter(unit => unit.definitionId === 'rhaziel' && hasNativeIdentity(unit))) {
+    const repairs = owner.native?.repair;
+    if (!repairs) continue;
+    for (const [id, repair] of Object.entries(repairs)) {
+      if (repair.dueRound > state.round) continue;
+      delete repairs[id];
+      const target = living(state).find(ally => ally.id === id);
+      if (!target || repair.amount <= 0) continue;
+      const restored = nativeHeal(state, owner, target, repair.amount, events, true);
+      if (restored > 0 && equipped(owner, 'master-rhaziel-3') &&
+          guardOnce(owner, `repair-gauge:${target.id}`, state.round))
+        nativeGauge(state, target, 8, events);
     }
   }
   for (const owner of living(state).filter(hasNativeIdentity)) {
@@ -1153,6 +1745,13 @@ export function nativeTurnStart(state: BattleState, events: BattleEvent[]): void
   for (const ally of state.allies) if (ally.native?.hymn && ally.native.hymn.throughRound < state.round) delete ally.native.hymn;
   for (const ally of state.allies) if (ally.native?.defenseBuff && ally.native.defenseBuff.throughRound < state.round) delete ally.native.defenseBuff;
   for (const ally of state.allies) if (ally.native?.instruction && ally.native.instruction.throughRound < state.round) delete ally.native.instruction;
+  for (const ally of state.allies) {
+    if (ally.native?.signal && ally.native.signal.throughRound < state.round) delete ally.native.signal;
+    if (ally.native?.moonflower && ally.native.moonflower.throughRound < state.round) delete ally.native.moonflower;
+    if (ally.native?.openRoute && ally.native.openRoute.throughRound < state.round) delete ally.native.openRoute;
+    if (ally.native?.accord && ally.native.accord.throughRound < state.round) delete ally.native.accord;
+    if (ally.native?.skillPowerBuff && ally.native.skillPowerBuff.throughRound < state.round) delete ally.native.skillPowerBuff;
+  }
 }
 
 export function nativeCleanup(state: BattleState): void {
@@ -1251,6 +1850,32 @@ export function nativeMarkers(state: BattleState, unit: Combatant): NativeMarker
         markers.push({ id: 'cover', owner: owner.id, label: 'Cover', value: `${owner.name} takes ${Math.round(memory.cover.fraction * 100)}% of direct hits · through enemy phase ${memory.cover.throughPhase}`, icon: 'native-bruno-cover' });
       if (memory.foundation && memory.foundation.throughPhase >= state.round)
         markers.push({ id: 'foundation', owner: owner.id, label: 'Foundation', value: `${Math.ceil(memory.foundation.durability)} durability · ${owner.name}`, icon: 'native-orvella-foundation' });
+      if (memory.intercept && memory.intercept.throughPhase >= state.round && memory.intercept.targets.includes(unit.id))
+        markers.push({ id: 'intercept', owner: owner.id, label: 'Interception',
+          value: `${owner.name} redirects ${Math.round(memory.intercept.fraction * 100)}% of enemy direct damage · through enemy phase ${memory.intercept.throughPhase}` });
+      if (memory.repair?.[unit.id])
+        markers.push({ id: 'repair', owner: owner.id, label: 'Repair',
+          value: `${Math.round(memory.repair[unit.id].amount)} heals on player turn ${memory.repair[unit.id].dueRound}` });
+      if (unit.native?.signal)
+        markers.push({ id: 'signal', owner: unit.native.signal.owner, label: 'Signal',
+          value: `next damaging Skill or Last Flare +${Math.round(unit.native.signal.bonus * 100)}% · through player turn ${unit.native.signal.throughRound}` });
+      if (unit.native?.moonflower)
+        markers.push({ id: 'moonflower', owner: unit.native.moonflower.owner, label: 'Moonflower',
+          value: `next damaging Skill or Last Flare +${Math.round(unit.native.moonflower.bonus * 100)}% · through player turn ${unit.native.moonflower.throughRound}` });
+      if (unit.native?.openRoute)
+        markers.push({ id: 'open-route', owner: unit.native.openRoute.owner, label: 'Open Route',
+          value: `next damaging Skill or Last Flare ignores ${Math.round(unit.native.openRoute.pierce * 100)}% Defense · through player turn ${unit.native.openRoute.throughRound}` });
+      if (unit.native?.accord && unit.native.accord.throughRound >= state.round)
+        markers.push({ id: 'accord', owner: unit.native.accord.owner, label: 'Accord', value: `boost against Terms · through player turn ${unit.native.accord.throughRound}` });
+      if (unit.native?.ceasefire && unit.native.ceasefire.throughPhase >= state.round)
+        markers.push({ id: 'ceasefire', owner: unit.native.ceasefire.owner, label: 'Ceasefire',
+          value: `${unit.native.ceasefire.charges ? 'next direct hit' : 'spent'} −${Math.round(unit.native.ceasefire.fraction * 100)}% · through enemy phase ${unit.native.ceasefire.throughPhase}` });
+      if (unit.native?.lead && unit.native.lead.throughPhase >= state.round)
+        markers.push({ id: 'lead', owner: unit.native.lead.owner, label: 'Lead',
+          value: `enemy direct damage −${Math.round(unit.native.lead.fraction * 100)}% · through enemy phase ${unit.native.lead.throughPhase}` });
+      if (unit.native?.skillPowerBuff && unit.native.skillPowerBuff.throughRound >= state.round)
+        markers.push({ id: 'skill-power', owner: unit.native.skillPowerBuff.owner, label: 'Skill Power',
+          value: `+${Math.round(unit.native.skillPowerBuff.fraction * 100)}% · through player turn ${unit.native.skillPowerBuff.throughRound}` });
     } else {
       const trap = memory.traps?.[unit.id];
       if (trap && trap.charges > 0) {
@@ -1269,6 +1894,10 @@ export function nativeMarkers(state: BattleState, unit: Combatant): NativeMarker
         value: `${memory.survey.points} point${memory.survey.points === 1 ? '' : 's'} · ${owner.name}`, icon: 'native-nerithe-survey' });
       if (memory.quarry?.target === unit.id) markers.push({ id: 'quarry', owner: owner.id, label: 'Quarry',
         value: `${memory.quarry.round === state.round ? memory.quarry.contributors.length : 0} contributors this turn · ${owner.name}`, icon: 'native-rosetta-quarry' });
+      if (owner.definitionId === 'veyr' && memory.faultTarget === unit.id &&
+          (memory.faultThroughPhase ?? -1) >= state.round)
+        markers.push({ id: 'fault', owner: owner.id, label: 'Fault',
+          value: `${memory.faultCount ?? 0}/4 · Defense −${Math.min(40, (memory.faultCount ?? 0) * 8)}% · through enemy phase ${memory.faultThroughPhase}` });
     }
   }
   return markers;
@@ -1335,6 +1964,52 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
     `Shared durability through enemy phase ${memory.foundation.throughPhase}.`, ['native-orvella-foundation']);
   if (unit.definitionId === 'razor') add('Wounds', `${Math.round(memory.wounds ?? 0)}`,
     'Stored from direct enemy HP loss.', ['native-razor-wounds']);
+  if (unit.definitionId === 'maerion') {
+    const capacity = unit.stats.health * (equipped(unit, 'master-maerion-1') ? .85 : .45);
+    add('Unreturned', `${Math.round(memory.unreturned ?? 0)}/${Math.round(capacity)}`,
+      'Direct Health damage taken by allies; redirected damage and damage-over-time are excluded. Crescent Triage spends none; Ferry and Last Flare spend the stored amount.');
+  }
+  if (unit.definitionId === 'caevren')
+    add('Load', `${memory.load ?? 0}/${equipped(unit, 'master-caevren-1') ? 5 : 3}`,
+      'Gain one when an enemy direct attack damages Caevren’s Health or Shield, once per enemy phase. Counterweight Covenant and Last Flare spend Load.');
+  if (unit.definitionId === 'vespera')
+    add('Beacon', `${memory.beacon ?? 0}/${equipped(unit, 'master-vespera-1') ? 4 : 3}`,
+      'Gain one when another living ally spends Vespera’s Signal, once per player turn. Last Flare spends Beacon.');
+  if (unit.definitionId === 'ilyss')
+    add('Severance', `${memory.severance ?? 0}/${equipped(unit, 'master-ilyss-1') ? 4 : 3}`,
+      'Gain when Skills or Last Flare remove Burn or Weaken, once per player turn. Last Flare spends Severance.');
+  if (unit.definitionId === 'asteriel') {
+    add('Cultivation', memory.path ? memory.path[0].toUpperCase() + memory.path.slice(1) : 'Unchosen',
+      'Skill1 enters Shelter; Skill2 enters Flourish. Changing between paths grants one Promise.');
+    add('Promise', `${memory.promise ?? 0}/3`, 'Earned by changing cultivation path; Last Flare spends Promise.');
+  }
+  if (unit.definitionId === 'serapha')
+    add('Interval', `${memory.interval ?? 0}/${equipped(unit, 'master-serapha-1') ? 4 : 3}`,
+      'Gain when an enemy carrying Serapha’s Weaken uses a direct attack, once per enemy phase. Last Flare spends Interval.');
+  if (unit.definitionId === 'rhaziel') for (const [id, repair] of Object.entries(memory.repair ?? {}))
+    add('Repair', `${Math.round(repair.amount)}`, `${state.allies.find(ally => ally.id === id)?.name}; due player turn ${repair.dueRound}.`);
+  if (unit.definitionId === 'oryn') {
+    if (memory.terms) add('Terms', state.enemies.find(enemy => enemy.id === memory.terms?.target)?.name ?? '',
+      `Direct damage taken −${state.enemies.find(enemy => enemy.id === memory.terms?.target)?.weakenFraction
+        ? Math.round((state.enemies.find(enemy => enemy.id === memory.terms?.target)?.weakenFraction ?? 0) * 100) : 0}% · through enemy phase ${memory.terms.throughPhase}.`);
+    add('Accord', `${Object.keys(memory.accords ?? {}).length} ally`,
+      'Once per player turn, an accorded ally deals bonus direct damage to the Terms target.');
+  }
+  if (unit.definitionId === 'thessara')
+    add('Reserve', `${memory.reserve ?? 0}/${equipped(unit, 'master-thessara-1') ? 5 : 4}`,
+      'Normal Attacks and Skill1 that hit directly gain one Reserve. Skill2 and Last Flare spend it.');
+  if (unit.definitionId === 'elaris' && memory.branchTarget)
+    add('Branch', `${memory.branches ?? 0}/${equipped(unit, 'master-elaris-1') ? 4 : 3}`,
+      `${state.enemies.find(enemy => enemy.id === memory.branchTarget)?.name ?? ''}; Normal Attacks and Skill1 build Branch. Skill2 and Last Flare spend it.`);
+  if (unit.definitionId === 'veyr' && memory.faultTarget)
+    add('Fault', `${memory.faultCount ?? 0}/${equipped(unit, 'master-veyr-1') ? 4 : 3}`,
+      `${state.enemies.find(enemy => enemy.id === memory.faultTarget)?.name ?? ''}; Defense −${Math.min(40, (memory.faultCount ?? 0) * 8)}% · through enemy phase ${memory.faultThroughPhase}.`);
+  if (unit.definitionId === 'aureth') {
+    add('Momentum', `${memory.momentum ?? 0}/${equipped(unit, 'master-aureth-1') ? 4 : 3}`,
+      'Moving Lead to a different ally grants one Momentum, once per player turn. Last Flare spends Momentum.');
+    add('Lead', state.allies.find(ally => ally.id === memory.leadTarget)?.name ?? 'Unassigned',
+      'The Lead holder takes reduced enemy direct damage while Aureth lives.');
+  }
   if (memory.bastion && memory.bastion.throughPhase >= state.round) add('Bastion', '30% direct-hit reduction',
     `Through enemy phase ${memory.bastion.throughPhase}; ${Math.round(memory.bastion.loss)} HP lost stored for the following shield.`, ['native-razor-bastion']);
   if (memory.ultimateWardThrough !== undefined && memory.ultimateWardThrough >= state.round) add('Ultimate Ward',

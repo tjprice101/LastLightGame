@@ -1,6 +1,6 @@
 import { resonanceBadge } from './intrinsic-perks';
 import { elements, isCurrencyMode } from '../content/activities';
-import { getStarter, isStarterId, type StarterId } from '../content/starters';
+import { getStarter, isStarterId, starterVow, type StarterId } from '../content/starters';
 import { characterName } from '../content/character-art';
 import { characterLevelCap, characterRarity, displayEvolution, evolutionRarity } from '../content/progression';
 import { formatStat, shatterGauge } from '../content/combat';
@@ -195,7 +195,7 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
     const squad = equippedSquad(account);
     const title = characterName(state.selected, progress.evolution).split(', ')[0];
     const cap = characterLevelCap(progress.evolution, state.selected);
-    content = `<section class="ref-team-detail ref-bearer-detail">
+    content = `<section class="ref-team-detail ref-bearer-detail" data-acquisition-character="${starter.id}">
       <header class="ref-panel ref-character-header hub-showcase"><div class="ref-character-portrait hub-portrait">${portrait(starter, progress.evolution)}</div>
         <div class="ref-character-identity"><p data-reference-prefix>${title} · ${starter.weapon}</p><h2 data-reference-name>${starter.name}</h2>
           <div class="ref-tags">${elementLabel(starter.elementId)}<span class="ref-stars" aria-label="${starter.stars}-star Element-Bearer">${'★'.repeat(starter.stars)}</span><span class="ref-chip">${starter.role}</span><span class="ref-chip" data-reference-rarity data-rarity="${characterRarity(starter.id, progress.evolution)}">${characterRarity(starter.id, progress.evolution)}</span></div>
@@ -203,7 +203,7 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
           <div><span data-reference-evolution>Evolution ${displayEvolution(starter.id, progress.evolution)} / ${displayEvolution(starter.id, 6)}</span><div class="ref-pips">${Array.from({ length: 6 }, (_, index) => `<i class="${index < progress.evolution ? 'is-filled' : ''}"></i>`).join('')}</div></div></div>
           <span data-owned-progress class="ref-sr-only">Lv.${progress.level} · Evo.${displayEvolution(starter.id, progress.evolution)}</span>
           <div class="ref-character-header-actions">${squad[0] === starter.id ? '<span class="ref-chip ref-white">Squad leader</span>' : squad.includes(starter.id) ? `<button class="ref-chip" data-make-leader="${starter.id}">♛ Make leader</button>` : '<button class="ref-chip" data-team-view="formation">Add to squad</button>'}
-          ${information(`bearer-lore-${starter.id}`, starter.name, `<p>${starter.description}</p><h3>${starter.lore.origin}</h3><p>${starter.lore.story}</p><blockquote>${starter.lore.vow}</blockquote>`, 'Lore')}</div></div>
+          ${information(`bearer-lore-${starter.id}`, starter.name, `<p>${starter.description}</p><h3>${starter.lore.origin}</h3><p>${starter.lore.story}</p><blockquote>${starterVow(starter)}</blockquote>`, 'Lore')}</div></div>
       </header><nav class="ref-character-submenus" aria-label="Character sub-menus">${[
         ['overview', 'Stats & Skills'], ['upgrade-1', 'Level'], ['upgrade-0', 'Evolution'], ['equipment', 'Conduits'],
       ].map(([tab, label]) => `<button type="button" data-character-tab="${tab}" aria-pressed="${tab === (state.tab ?? 'overview')}">${label}</button>`).join('')}</nav>

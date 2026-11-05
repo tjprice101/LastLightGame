@@ -10,9 +10,9 @@ import { describeSurvey, enemyWhatIf, levelSweepLevels, loadout, makeBattle, mak
 const benchmarkStarters = starters.filter(character => !isCalamiticCharacter(character.id));
 
 describe('offline battle survey integrity', () => {
-  it('constructs legal eight-slot, matching-element loadouts for all16 characters and every build', () => {
+  it('constructs legal eight-slot, matching-element loadouts for all31 non-Calamitic characters and every build', () => {
     const metadata = describeSurvey();
-    expect(benchmarkStarters).toHaveLength(19);
+    expect(benchmarkStarters).toHaveLength(31);
     for (const gear of Object.values(metadata.builds)) for (const character of benchmarkStarters) {
       const slots = gear.equipment[character.id]!;
       expect(validateConduitSlots(slots)).toEqual(slots);

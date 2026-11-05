@@ -32,13 +32,13 @@ import { conduitUpgradeMenu, bindConduitUpgrades, updateConduitUpgradeMenu } fro
 import { getConduit, isConduitId, conduitEffect } from './content/conduits';
 import { purchaseConduit, setMachineLootFocus, equipConduit, setCharacterLock, ownedCharacterInstances, levelCapturedCharacter } from './game/account';
 import { bindMachineLootFocus } from './presentation/machine-loot-focus';
-import { openMasterChest, openCalamityChest, equipMasterConduit, unequipAllConduits } from './game/account';
+import { openMasterChests, openCalamityChest, equipMasterConduit, unequipAllConduits } from './game/account';
 import { calamiticTokenPrice, isCalamiticConduitId } from './content/calamitic-conduits';
 import { parseCalamityChestId, calamityChest } from './content/calamity';
 import { bindActivityDifficulties, bindCalamityEntries, calamityOpeningReward } from './presentation/calamity';
 import { getMasterConduit, isMasterConduitId } from './content/master-conduits';
-import { chooseMasterConduit } from './ui/master-choice-dialog';
-import { masterReward } from './presentation/master-conduits';
+import { chooseMasterConduits } from './ui/master-choice-dialog';
+import { masterRewards } from './presentation/master-conduits';
 import { characterName } from './content/character-art';
 import { uiIcon } from './presentation/ui-icon';
 import { currencyIcon } from './presentation/currency-icon';
@@ -92,7 +92,7 @@ import './sanctuary-reference.css';
 import { openOnlineAccount as showOnlineAccount } from './presentation/online-account';
 import { onlineStores, onlineProfile, friendProfileScreen, bindProfileEditor, refreshProfileTracking, refreshFriendPresence, type StoreTab, type OnlineProfileDisplay, type SocialDisplay } from './presentation/online-store-profile';
 import { assertRoseEventActive, type EventAccess } from './content/event-schedule';
-import { eventBearerIds, eventDevourerProduct, eventDevourerWarning } from './content/event-devourers';
+import { eventDevourerProduct, eventDevourerWarning } from './content/event-devourers';
 import { ownedCompanion } from './presentation/owned-companion';
 import { gameOperation, friendProfile, GameOperationError, type GameOperation, type GameResponse, type Activity, type FriendProfileResponse } from './online/server-game';
 import { onlineClient, onlineUsername } from './online/account-client';
@@ -102,6 +102,12 @@ import { isProfilePictureId } from './content/profile-pictures';
 import { profilePicture } from './presentation/profile-picture';
 import { chooseProfilePicture } from './presentation/profile-picture-browser';
 import { bindFriendChat, onlineChatTransport, type ChatUiState } from './presentation/friend-chat';
+import { bindSocialCalendar, type SocialCalendarUiState } from './presentation/social-calendar';
+import { socialCalendarOperation } from './online/social-calendar';
+import { acquisitionMarkerOperation } from './online/acquisition-markers';
+import { bindAcquisitionMarkers } from './presentation/acquisition-markers';
+import { acknowledgeAcquisitions, type AcquisitionMarkers } from './game/acquisition-markers';
+import { saveAccount } from './game/account';
 import './presentation/mono-reference.css';
 import { referenceHome } from './presentation/reference-home';
 import { bindCaptureTabs, referenceTeam, type ReferenceTeamView } from './presentation/reference-team';
@@ -176,6 +182,9 @@ let socialDisplay: SocialDisplay | undefined;
 let chatIdentity: string | null = null;
 let chatUiState: ChatUiState = { drafts: new Map(), query: '' };
 let disposeFriendChat: (() => void) | null = null;
+let disposeSocialCalendar: (() => void) | null = null;
+let disposeAcquisitionMarkers: (() => void) | null = null;
+const socialCalendarUiState: SocialCalendarUiState = {};
 let storeTab: StoreTab = 'materials';
 let serverClock: { time: number; received: number } | null = null;
 function eventAccess(): EventAccess {
@@ -304,7 +313,8 @@ function battleAuthority(): BattleAuthority {
     return battleSession.runId;
   };
   return {
-    action: (actorId, action, targetId) => authorityReply({ kind: 'act', runId: runId(), actorId, action, targetId }),
+    action: (actorId, action, targetId, cleanseChoice) => authorityReply({ kind: 'act', runId: runId(), actorId, action, targetId,
+      ...(cleanseChoice ? { cleanseChoice } : {}) }),
     endTurn: () => authorityReply({ kind: 'endTurn', runId: runId() }),
     nextStage: () => authorityReply({ kind: 'continue', runId: runId() }),
     nextWave: () => authorityReply({ kind: 'continue', runId: runId() }),
@@ -538,6 +548,10 @@ function showError(message: string): void {
 function frame(body: string, battle = false, sanctuary = false): void {
   disposeFriendChat?.();
   disposeFriendChat = null;
+  disposeSocialCalendar?.();
+  disposeSocialCalendar = null;
+  disposeAcquisitionMarkers?.();
+  disposeAcquisitionMarkers = null;
   const identity = playMode === 'online' ? playerProfile?.username ?? null : null;
   if (identity !== chatIdentity) {
     chatIdentity = identity;
@@ -557,6 +571,57 @@ function frame(body: string, battle = false, sanctuary = false): void {
     ${sanctuary ? '' : '<footer><span>AN ORIGINAL GACHA RPG</span><span>A WORLD WAITING TO AWAKEN</span></footer>'}
   </div>`;
   if (gameStorage.active) app.insertAdjacentHTML('beforeend', '<aside class="debug-profile-banner" aria-label="Debug profile"><strong>DEBUG · Isolated test profile</strong><button type="button" class="text-button" data-exit-debug>Exit debug</button></aside>');
+  if (sanctuary && !battle && !viewedFriend && journey.profile && account) {
+    const markerIdentity = playMode === 'online' ? playerProfile?.username : null;
+    const mergeMarkers = (markers: AcquisitionMarkers): AcquisitionMarkers => {
+      if (!account) return markers;
+      const merged = { ...account.acquisitionMarkers };
+      for (const [key, seen] of Object.entries(markers)) merged[key] = merged[key] === true || seen;
+      account.acquisitionMarkers = merged;
+      if (onlineWallet) onlineWallet.acquisitionMarkers = { ...merged };
+      return merged;
+    };
+    let disposed = false;
+    let release: (() => void) | undefined;
+    const bind = () => {
+      release?.();
+      release = bindAcquisitionMarkers(app, {
+        account: () => account ?? {},
+        acknowledge: async keys => {
+          if (playMode === 'online') {
+            if (gameStorage.active || playerProfile?.username !== markerIdentity) throw new Error('Your online account changed. No new-item markers were cleared.');
+            const snapshot = await acquisitionMarkerOperation(keys);
+            if (disposed || playerProfile?.username !== markerIdentity) return snapshot.markers;
+            return mergeMarkers(snapshot.markers);
+          }
+          const current = loadAccount(gameStorage);
+          current.acquisitionMarkers = acknowledgeAcquisitions(current, keys);
+          account = saveAccount(gameStorage, current);
+          return account.acquisitionMarkers!;
+        },
+        error: message => { if (!disposed) showError(message); },
+      });
+    };
+    bind();
+    const refresh = async () => {
+      if (disposed || playMode !== 'online' || playerProfile?.username !== markerIdentity) return;
+      try {
+        const snapshot = await acquisitionMarkerOperation();
+        if (disposed || playerProfile?.username !== markerIdentity) return;
+        mergeMarkers(snapshot.markers);
+        app.dispatchEvent(new Event('last-light-acquisition-change'));
+      } catch (error) { if (!disposed) showError(errorMessage(error)); }
+    };
+    if (markerIdentity) void refresh();
+    const timer = markerIdentity ? window.setInterval(() => { void refresh(); }, 20000) : undefined;
+    const focused = () => { void refresh(); };
+    window.addEventListener('focus', focused);
+    disposeAcquisitionMarkers = () => {
+      disposed = true; release?.();
+      if (timer !== undefined) window.clearInterval(timer);
+      window.removeEventListener('focus', focused);
+    };
+  }
   music.setTrack(battle ? battleSession ? battleMusic(battleSession.state) : null : 'main-theme');
 }
 
@@ -795,6 +860,31 @@ function renderMenu(firstArrival = false): void {
       return response;
     }, error => showError(errorMessage(error)));
   }
+  if (playMode === 'online' && playerProfile && menuPage === 'profile') {
+    const identity = playerProfile.username;
+    disposeSocialCalendar = bindSocialCalendar(app, {
+      identity, state: socialCalendarUiState, friends: () => socialDisplay?.friends ?? [],
+      transport: async (command, requestId) => {
+        if (gameStorage.active || playMode !== 'online' || playerProfile?.username !== identity) throw new Error('Sign in again to use attendance and mail.');
+        if (onlineBusy || onlinePending || onlineCheckpointBusy) throw new Error('Finish or retry the pending online operation first.');
+        onlineBusy = true;
+        try {
+          const result = await socialCalendarOperation(command, requestId);
+          if (command.kind !== 'read') {
+            try {
+              const refreshed = await gameOperation({ kind: 'read' });
+              if (playMode !== 'online' || playerProfile?.username !== identity) throw new Error('Your account changed. Sign in again to view the saved result.');
+              applyOnline(refreshed, false);
+            } catch (error) {
+              throw new Error(`Your social/calendar action was saved, but the account refresh could not finish. Retry this same action to reload its saved result. ${errorMessage(error)}`);
+            }
+          }
+          return result;
+        } finally { onlineBusy = false; }
+      },
+      onError: message => showError(message),
+    });
+  }
   bindInventory(app, (tab) => { inventoryTab = tab; }, (sections) => { inventoryExpanded = sections; }, (filters) => { inventoryFilterState = filters; });
   app.querySelectorAll<HTMLButtonElement>('[data-open-calamity-chest]').forEach(button => button.addEventListener('click', async () => {
     if (masterOpening || gameDialogPending() || onlineBusy || onlinePending) return;
@@ -837,13 +927,17 @@ function renderMenu(firstArrival = false): void {
     masterOpening = true;
     let saved = false;
     try {
-      const id = await chooseMasterConduit(currentAccount());
-      if (!id) return;
-      const master = getMasterConduit(id);
-      if (!await gameConfirm(`Open one Machine's Master Chest for ${master.name}? ${master.effect} It will be unlocked, not equipped.`, { title: 'Open Master chest', confirmLabel: 'Open chest' })) return;
-      account = playMode === 'online' ? (await performOnline({ kind: 'openMasterChest', id })).account : openMasterChest(gameStorage, id);
+      const ids = await chooseMasterConduits(currentAccount());
+      if (!ids?.length) return;
+      const names = ids.map(id => getMasterConduit(id).name).join(', ');
+      if (!await gameConfirm(`Open ${ids.length} Machine's Master Chest${ids.length === 1 ? '' : 'es'} for: ${names}? They will be unlocked, not equipped.`, {
+        title: 'Open Master chests', confirmLabel: `Open ${ids.length} chest${ids.length === 1 ? '' : 's'}`,
+      })) return;
+      account = playMode === 'online'
+        ? (await performOnline({ kind: 'openMasterChests', ids })).account
+        : openMasterChests(gameStorage, ids);
       saved = true;
-      const reward = masterReward(id, account);
+      const reward = masterRewards(ids, account);
       renderMenu();
       await presentReward(reward);
       app.querySelector<HTMLButtonElement>('[data-open-master-chest]')?.focus({ preventScroll: true });
@@ -1718,6 +1812,9 @@ app.addEventListener('change', async event => {
     const id = isMasterConduitId(select.value) ? select.value : null;
     account = playMode === 'online' ? (await performOnline({ kind: 'equipMasterConduit', character, conduit: id })).account : equipMasterConduit(gameStorage, character, id);
     refreshLoadout(character);
+    const refreshedMasterSelect = app.querySelector<HTMLSelectElement>(`select[data-master-equipment="${character}"]`);
+    const masterTrigger = refreshedMasterSelect?.previousElementSibling;
+    if (masterTrigger instanceof HTMLButtonElement && !masterTrigger.disabled) masterTrigger.focus({ preventScroll: true });
     if (id) {
       const target = app.querySelector<HTMLElement>('.ref-master-slot');
       if (target) rarityFeedback(target, 'Omnic', 'Master equipped');
@@ -1798,7 +1895,8 @@ app.addEventListener('click', async event => {
       if (!isExchangeQuantity(quantity)) throw new Error('Choose a valid material quantity.');
       const name = materialName(product.materialId);
       const cost = (product.price * quantity).toLocaleString('en-US');
-      const noEventBearer = !eventBearerIds.some(id => currentAccount().characters[id]);
+      const noEventBearer = !(product.restrictedTo ?? []).some(name => Object.entries(currentAccount().characters)
+        .some(([id, progress]) => progress && isStarterId(id) && getStarter(id).name === name));
       if (product.category === 'event' && noEventBearer) {
         if (!await gameConfirm(eventMaterialWarning(product, quantity), { title: 'Event warning', confirmLabel: 'Purchase' })) return;
       } else if (eventMaterialWarningRequired(product, !noEventBearer, eventMaterialWarningHidden(gameStorage))) {
@@ -1815,8 +1913,8 @@ app.addEventListener('click', async event => {
           if (gameDialogPending()) return;
           if (!eventAccess().online) throw new Error('Sign in online to purchase Event Elemental-Devourers.');
           const product = eventDevourerProduct(button.dataset.buyEventDevourer);
-          const noEventBearer = !eventBearerIds.some(id => currentAccount().characters[id]);
-          if (!await gameConfirm(`${noEventBearer ? `${eventDevourerWarning}\n\n` : ''}Buy one ${product.creature.name} for ${product.price.toLocaleString('en-US')} Prismatica?`, {
+          const noEventBearer = !product.bearerIds.some(id => currentAccount().characters[id]);
+          if (!await gameConfirm(`${noEventBearer ? `${eventDevourerWarning(product)}\n\n` : ''}Buy one ${product.creature.name} for ${product.price.toLocaleString('en-US')} Prismatica?`, {
             title: noEventBearer ? 'Event warning' : 'Event Elemental-Devourers', confirmLabel: 'Purchase',
           })) return;
           const before = new Set(currentAccount().capturedCharacters?.map(copy => copy.instanceId));

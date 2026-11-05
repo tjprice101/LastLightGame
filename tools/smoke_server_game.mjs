@@ -61,7 +61,15 @@ try {
     assert.ok(Math.abs(response.serverTime - Date.now()) < 120000);
     const before = structuredClone(response.account);
     await assert.rejects(call({ kind: 'purchaseEventDevourer', id: 'infusion:roses:0' }, response.revision),
-      error => error.status === 400 && error.message.includes('after their event'));
+      error => error.status === 400 && error.message.includes('after an actually completed event window'));
+    for (const event of ['moon', 'sunshade']) {
+      await assert.rejects(call({ kind: 'summon', bannerId: event }, response.revision),
+        error => error.status === 400 && error.message.includes('not active'));
+      await assert.rejects(call({ kind: 'enter', activity: { kind: 'infusion', mode: event, stage: 1 } }, response.revision),
+        error => error.status === 400 && error.message.includes('not active'));
+      await assert.rejects(call({ kind: 'purchaseEventDevourer', id: `infusion:${event}:0` }, response.revision),
+        error => error.status === 400 && error.message.includes('after an actually completed event window'));
+    }
     await assert.rejects(call({ kind: 'purchaseEventDevourer', id: 'infusion:roses:0',
       now: Date.parse('2026-12-01T01:00:00Z'), price: 0 }, response.revision),
       error => error.status === 400);
@@ -72,7 +80,7 @@ try {
     const read = await call({ kind: 'read' }, response.revision);
     assert.deepEqual(read.account, before);
     assert.ok(read.serverTime >= response.serverTime);
-    console.log('Hosted event lifecycle passed: authoritative clock, active-event shop denial, client clock/price rejection, idempotent checkpoint and unchanged account. Future closure/purchases are covered by injected-clock local authority tests, not claimed as live-time checks.');
+    console.log('Hosted event lifecycle passed: authoritative clock, active-event shop denial, inactive Moon/Sunshade summons/entry/post-event shops, client clock/price rejection, idempotent checkpoint and unchanged account. Future closure/purchases are covered by injected-clock local authority tests, not claimed as live-time checks.');
   } else if (process.argv.includes('--phase-one-war')) {
     await smokePhaseOneWar(client, created.user.id, username);
   } else if (process.argv.includes('--loadouts')) {

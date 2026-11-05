@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { conduits } from './conduits';
 import { masterConduits } from './master-conduits';
+import { isNewEventCharacter } from './moon-sunshade-events';
 import { getStarter } from './starters';
 import { elements } from './activities';
 
@@ -27,7 +28,7 @@ const metadata = [
     element: entry.element ? elements.find((element) => element.id === entry.element)?.name : undefined,
     character: undefined,
   })),
-  ...masterConduits.map((entry) => ({
+  ...masterConduits.filter(entry => !isNewEventCharacter(entry.character)).map((entry) => ({
     id: entry.id, name: entry.name, rarity: `${entry.rarity} (Master)`,
     element: elements.find((element) => element.id === getStarter(entry.character).elementId)?.name,
     character: getStarter(entry.character).name,

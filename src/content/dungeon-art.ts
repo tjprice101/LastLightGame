@@ -2,12 +2,14 @@ import { elements, elementalMaterials, materialRarities, type ElementId } from '
 import { specialtyMaterials } from './infusions';
 import { roseMaterials } from './roses';
 import { calamiticMaterials } from './calamitic-materials';
+import { newEventMaterialDefinition } from './moon-sunshade-events';
 import { elementAssetIds, type LegacyElementId } from './element-migration';
 import { type Rarity } from './rarity';
 
 export function materialRarity(id: string): Rarity | undefined {
   return elementalMaterials.find(material => material.id === id)?.rarity ??
     roseMaterials.find(material => material.id === id)?.rarity ??
+    newEventMaterialDefinition(id)?.rarity ??
     calamiticMaterials.find(material => material.id === id)?.rarity;
 }
 
@@ -155,6 +157,7 @@ export const materialArtNames = ['Seed', 'Bloom', 'Shard', 'Crest', 'Heart', 'So
 export function materialArt(id: string): string | undefined {
   materialName(id);
   if (roseMaterials.some((material) => material.id === id)) return id;
+  if (newEventMaterialDefinition(id)) return undefined;
   if (calamiticMaterials.some((material) => material.id === id)) return id;
   const specialty = specialtyMaterials.find((entry) => entry.id === id);
   if (specialty) return specialty.art;
@@ -169,6 +172,8 @@ export function materialName(id: string): string {
   if (calamitic) return calamitic.name;
   const rose = roseMaterials.find((material) => material.id === id);
   if (rose) return rose.name;
+  const eventMaterial = newEventMaterialDefinition(id);
+  if (eventMaterial) return eventMaterial.name;
   const specialty = specialtyMaterials.find((entry) => entry.id === id);
   if (specialty) return specialty.name;
   const [elementId, rarity] = id.split('-');

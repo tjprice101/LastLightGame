@@ -5,6 +5,7 @@ import { freshGame, resolveOperation, validateRequest, type DurableGame } from '
 import type { GameOperation } from './server-game';
 import { validateGameResponse } from './server-game';
 import { storyRules } from '../content/story';
+import { moonSunshadeEvents, moonSunshadeShopPrices, type ScheduledEventWindow } from '../content/moon-sunshade-events';
 import { summonHub } from '../presentation/roster';
 import { onlineStores } from '../presentation/online-store-profile';
 import { roseEvent } from '../presentation/rose-event';
@@ -27,6 +28,17 @@ function fixture() {
   game.account.infusionStages = { roses: 35 };
   game.account.bannerPity = { roses: { highestStar: 37, unownedHighestStar: 0 } };
   return game;
+}
+function withCompletedEventWindow<T>(id: 'moon' | 'sunshade', runTest: () => T): T {
+  const event = moonSunshadeEvents.find(candidate => candidate.id === id)!;
+  const schedule = event as unknown as { windows: readonly ScheduledEventWindow[] };
+  const original = event.windows;
+  schedule.windows = [{ opensAt: before - 1, closesAt: after }];
+  try {
+    return runTest();
+  } finally {
+    schedule.windows = original;
+  }
 }
 
 describe('shared New York reset clock', () => {
@@ -71,6 +83,9 @@ describe('authoritative special-event lifecycle', () => {
   it('blocks new entries while preserving archived progress and live non-event modes', () => {
     const game = fixture();
     expect(() => run(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'roses', stage: 1 } }, after)).toThrow('ended');
+    for (const mode of ['moon', 'sunshade'] as const) {
+      expect(() => run(game, { kind: 'enter', activity: { kind: 'infusion', mode, stage: 1 } }, after)).toThrow('not active');
+    }
     const read = run(game, { kind: 'read' }, after);
     expect(read.game).toEqual(game);
     expect(validateGameResponse(read.response).serverTime).toBe(after);
@@ -92,6 +107,28 @@ describe('authoritative special-event lifecycle', () => {
     expect(quit.run).toBeNull();
     expect(quit.account).toEqual(cleared.game.account);
   });
+  it('lets a Moon encounter finish and save after closure but blocks its next stage', () => {
+    const event = moonSunshadeEvents.find(candidate => candidate.id === 'moon')!;
+    const mutableEvent = event as unknown as { windows: readonly ScheduledEventWindow[] };
+    const originalWindows = event.windows;
+    mutableEvent.windows = [{ opensAt: before - 1, closesAt: after }];
+    try {
+      const entered = run(fixture(), { kind: 'enter', activity: { kind: 'infusion', mode: 'moon', stage: 1 } }, before).game;
+      const session = entered.run!.session;
+      session.state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
+      session.state.allies[0].shatter = 100;
+      const cleared = run(entered, { kind: 'act', runId: session.runId,
+        actorId: 'ember', action: 'skill2', targetId: session.state.enemies[0].id }, after);
+      expect(cleared.game.run!.session.state.phase).toBe('cleared');
+      expect(cleared.game.account.fractalis).toBeGreaterThan(entered.account.fractalis);
+      expect(cleared.game.account.materials['moonwake-common']).toBeGreaterThan(0);
+      for (const kind of ['continue', 'retry'] as const) {
+        expect(() => run(cleared.game, { kind, runId: session.runId }, after)).toThrow('not active');
+      }
+    } finally {
+      mutableEvent.windows = originalWindows;
+    }
+  });
   it('keeps event materials permanently purchasable before and after closure', () => {
     for (const now of [before, after]) {
       expect(run(fixture(), { kind: 'purchaseMaterial', element: 'rosethorn-common', quantity: 10 }, now)
@@ -101,23 +138,30 @@ describe('authoritative special-event lifecycle', () => {
 });
 
 describe('post-event Elemental-Devourer shop', () => {
-  it('uses the exact approved prices and ordinary authored copies for all six forms', () => {
+  it('uses the exact approved prices and ordinary authored copies for all eighteen event forms', () => {
     expect(eventDevourerPrices).toEqual([10_000, 30_000, 100_000, 350_000, 1_500_000, 5_000_000]);
+    expect(moonSunshadeShopPrices).toEqual([2_500, 7_500, 25_000, 75_000, 250_000, 750_000]);
     for (const product of eventDevourers) {
-      const game = fixture();
-      const operation = { kind: 'purchaseEventDevourer', id: product.id } as const;
-      expect(() => run(game, operation, before)).toThrow('after their event');
-      const result = run(game, operation, after).game;
-      expect(result.account.fractalis).toBe(game.account.fractalis - product.price);
-      const copy = result.account.capturedCharacters![0];
-      const { instanceId: _expected, ...expected } = createCreatureCopy(product.id);
-      const { instanceId: _actual, ...actual } = copy;
-      expect(actual).toEqual(expected);
-      expect(copy.locked).toBe(false);
-      expect(result.account.squad).toEqual(game.account.squad);
-      const repeated = run(result, operation, after).game;
-      expect(new Set(repeated.account.capturedCharacters!.map(entry => entry.instanceId)).size).toBe(2);
-      expect(repeated.account.bannerPity).toEqual(game.account.bannerPity);
+      const tier = Number(product.id.split(':').at(-1));
+      expect(product.price).toBe(product.eventId === 'roses' ? eventDevourerPrices[tier] : moonSunshadeShopPrices[tier]);
+      const purchaseAfterCompletion = () => {
+        const game = fixture();
+        const operation = { kind: 'purchaseEventDevourer', id: product.id } as const;
+        expect(() => run(game, operation, before)).toThrow('after an actually completed event window');
+        const result = run(game, operation, after).game;
+        expect(result.account.fractalis).toBe(game.account.fractalis - product.price);
+        const copy = result.account.capturedCharacters![0];
+        const { instanceId: _expected, ...expected } = createCreatureCopy(product.id);
+        const { instanceId: _actual, ...actual } = copy;
+        expect(actual).toEqual(expected);
+        expect(copy.locked).toBe(false);
+        expect(result.account.squad).toEqual(game.account.squad);
+        const repeated = run(result, operation, after).game;
+        expect(new Set(repeated.account.capturedCharacters!.map(entry => entry.instanceId)).size).toBe(2);
+        expect(repeated.account.bannerPity).toEqual(game.account.bannerPity);
+      };
+      if (product.eventId === 'roses') purchaseAfterCompletion();
+      else withCompletedEventWindow(product.eventId, purchaseAfterCompletion);
     }
   });
   it('rejects unknown IDs, insufficient funds and client-supplied clocks/prices', () => {
@@ -166,14 +210,26 @@ describe('archive and event availability presentation', () => {
     }
     expect(roseEvent(game.account, true, { online: true, now: before })).toContain('data-infusion="roses"');
   });
-  it('shows all six shop forms but only enables purchases online after closure', () => {
+  it('shows all eighteen shop forms but only enables purchases online after each completed window', () => {
     const account = fixture().account;
     for (const access of [{ online: false, now: after }, { online: true, now: before }]) {
       const html = onlineStores(account, null, 'event-devourers', undefined, undefined, access);
-      expect(html.match(/data-buy-event-devourer="[^"]+" disabled/g)).toHaveLength(6);
+      expect(html.match(/data-buy-event-devourer="[^"]+" disabled/g)).toHaveLength(18);
     }
     const html = onlineStores(account, null, 'event-devourers', undefined, undefined, { online: true, now: after });
-    expect(html.match(/data-buy-event-devourer=/g)).toHaveLength(6);
-    expect(html).not.toMatch(/data-buy-event-devourer="[^"]+" disabled/);
+    expect(html.match(/data-buy-event-devourer=/g)).toHaveLength(18);
+    expect(html.match(/data-buy-event-devourer="infusion:roses:[^"]+" disabled/g)).toBeNull();
+    expect(html.match(/data-buy-event-devourer="infusion:(moon|sunshade):[^"]+" disabled/g)).toHaveLength(12);
+  });
+  it.each(['moon', 'sunshade'] as const)('unlocks %s copies only after a completed window and closes during reruns', id => {
+    withCompletedEventWindow(id, () => {
+      const account = fixture().account;
+      const active = onlineStores(account, null, 'event-devourers', undefined, undefined, { online: true, now: before });
+      expect(active.match(new RegExp(`data-buy-event-devourer="infusion:${id}:[^"]+" disabled`, 'g'))).toHaveLength(6);
+      const afterWindow = onlineStores(account, null, 'event-devourers', undefined, undefined, { online: true, now: after });
+      expect(afterWindow.match(new RegExp(`data-buy-event-devourer="infusion:${id}:[^"]+"(?! disabled)`, 'g'))).toHaveLength(6);
+      const rerun = onlineStores(account, null, 'event-devourers', undefined, undefined, { online: true, now: before });
+      expect(rerun.match(new RegExp(`data-buy-event-devourer="infusion:${id}:[^"]+" disabled`, 'g'))).toHaveLength(6);
+    });
   });
 });

@@ -81,7 +81,8 @@ describe('isolated bubble UI concept', () => {
     expect(cards).toHaveLength(masterConduits.length);
     expect(root.querySelectorAll('.item-card.undiscovered')).toHaveLength(masterConduits.length - 2);
     cards.forEach(card => expect(card.querySelector('img, .art-pending')).not.toBeNull());
-    expect(root.querySelectorAll('.item-card img')).toHaveLength(masterConduits.length);
+    expect(root.querySelectorAll('.item-card img')).toHaveLength(masterConduits.filter(master => master.art).length);
+    expect(root.querySelectorAll('.item-card .art-pending')).toHaveLength(masterConduits.filter(master => !master.art).length);
   });
   it('filters the roster and reports an honest empty state', () => {
     visit('bearers');
@@ -282,8 +283,8 @@ describe('isolated bubble UI concept', () => {
   });
   it('uses reached-form silhouettes and gates discovery loot', () => {
     visit('archive');
-    expect(root.querySelectorAll('.item-card')).toHaveLength(132);
-    expect(root.querySelectorAll('.item-card.undiscovered')).toHaveLength(44);
+    expect(root.querySelectorAll('.item-card')).toHaveLength(204);
+    expect(root.querySelectorAll('.item-card.undiscovered')).toHaveLength(68);
     click('[data-view="creatures"]');
     const undiscovered = root.querySelector<HTMLButtonElement>('.item-card.undiscovered')!;
     undiscovered.click();

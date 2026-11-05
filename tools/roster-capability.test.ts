@@ -9,13 +9,13 @@ import { auditBoundary, auditGear, auditLevels, auditProfiles, auditState, maxim
 const benchmarkStarters = starters.filter(starter => !isCalamiticCharacter(starter.id));
 
 describe('opponent-free roster capability audit', () => {
-  it('covers all19 bearers and every distinct unordered solo/duo/trio', () => {
+  it('covers all31 non-Calamitic bearers and every distinct unordered solo/duo/trio', () => {
     const teams = rosterCombinations();
-    expect(benchmarkStarters).toHaveLength(19);
-    expect(teams.filter(team => team.length === 1)).toHaveLength(19);
-    expect(teams.filter(team => team.length === 2)).toHaveLength(171);
-    expect(teams.filter(team => team.length === 3)).toHaveLength(969);
-    expect(new Set(teams.map(team => [...team].sort().join(','))).size).toBe(1159);
+    expect(benchmarkStarters).toHaveLength(31);
+    expect(teams.filter(team => team.length === 1)).toHaveLength(31);
+    expect(teams.filter(team => team.length === 2)).toHaveLength(465);
+    expect(teams.filter(team => team.length === 3)).toHaveLength(4495);
+    expect(new Set(teams.map(team => [...team].sort().join(','))).size).toBe(4991);
   });
   it('does not grant unreachable early evolutions or legacy weapon ranks', () => {
     expect(auditLevels.map(level => maximumProgress(level).evolution)).toEqual([1, 1, 2, 4, 5, 6, 6]);

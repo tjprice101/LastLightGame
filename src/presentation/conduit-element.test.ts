@@ -15,7 +15,7 @@ import { conduitUpgradeMenu } from './conduit-upgrade';
 import { machineLootFocus } from './machine-loot-focus';
 import { stageLootContent } from './stage-loot';
 import { conduitReward } from './conduit-presentation';
-import { masterChestIcon, masterConduitIcon, masterReference, masterReward } from './master-conduits';
+import { masterChestIcon, masterConduitIcon, masterReference, masterReward, masterRewards } from './master-conduits';
 import { lootBurst } from './battle-loot';
 import type { BattleEvent } from '../game/battle';
 import { bindSelectionPanels } from './selection-panel';
@@ -40,6 +40,19 @@ describe('Omnic element presentation (D-403)', () => {
     expect(reward.animationLabel).toBe('Revealing your Master Conduit');
     expect(reward.savedLabel).toBe('Master Conduit saved. Equip it in Team.');
     expect(reward.animationLabel).not.toMatch(/planet/i);
+  });
+  it('presents every saved bulk Master with inspectable effect details', () => {
+    const account = wallet();
+    const ids = ['master-ember-1', 'master-nerithe-2'] as const;
+    const reward = masterRewards(ids, account);
+    const host = parse(reward.details);
+    const cards = Array.from(host.querySelectorAll<HTMLElement>('.master-bulk-reward'));
+    expect(cards).toHaveLength(ids.length);
+    expect(host.querySelectorAll('.master-bulk-reward details summary')).toHaveLength(ids.length);
+    expect(host.textContent).toContain('Inspect Master details');
+    expect(host.textContent).toContain('None were auto-equipped');
+    expect(cards.map(card => card.querySelector('b')?.textContent)).toEqual(ids.map(id => masterConduits.find(entry => entry.id === id)?.name));
+    expect(cards.every(card => card.querySelector('img') && card.querySelector('details p'))).toBe(true);
   });
   it('uses the canonical element and shared palette for all 45 Omnics, not legacy asset names', () => {
     expect(omnics).toHaveLength(45);

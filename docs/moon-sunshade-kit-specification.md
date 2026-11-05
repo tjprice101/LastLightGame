@@ -2,8 +2,8 @@
 
 ## Review status
 
-**Kit directions accepted; flagged strength values await review. Not implemented
-(2026-11-04).**
+**Native kits and36 Masters wired art-neutral; flagged strength values unchanged.
+See [handoff](handoff.md) for integration validation and publication status.**
 Owner approves the [twelve identities and all six-form appearances](moon-sunshade-character-design.md),
 then authorizes kit/Conduit design. Confirmed scope: **three alternative
 personal Master Conduits per character,36 total; no added ordinary Conduits**.
@@ -23,7 +23,7 @@ or automatic equipment. Preserve every coefficient below and flagged values.
 unresolved acquisition/art-count gates, not actual artwork delivery.
 
 Descriptions below are intended as in-game text, not implementation reports.
-Numbers are proposed final base coefficients at100% Skill Power, before role
+Numbers are authored final base coefficients at100% Skill Power, before role
 and equipment bonuses. They are not inputs for another global1.6x skill/3x
 Last Flare multiplication. See [current combat conventions](combat.md).
 

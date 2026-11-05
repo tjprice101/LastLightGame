@@ -4,6 +4,7 @@ import { lootRoll } from './loot-random';
 import { machineStageCount } from './activities';
 import { masterOrigin } from './world-lore';
 import { redesignEffect } from './conduit-redesign';
+import { moonSunshadeMasters } from './moon-sunshade-masters';
 
 export const masterChest = {
   id: 'grand-master-chest', name: "Machine's Master Chest",
@@ -153,6 +154,7 @@ export const masterConduits = [
     'A colossal Chaotic triple-rail rupture accelerator with crimson induction chambers, black armored drive spine, pearlescent crescent cam blades and branching piston arrays'),
   master('kaelith', 3, 'Denied Fate Eclipse Annihilator',
     'A colossal Chaotic eclipse annihilation engine with a black containment core, counter-rotating pearlescent crescent rotors, eighteen blade radiators and crimson crystal injectors'),
+  ...moonSunshadeMasters,
 ] as const;
 
 export type MasterConduitId = (typeof masterConduits)[number]['id'];

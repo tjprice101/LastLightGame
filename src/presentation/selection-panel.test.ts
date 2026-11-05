@@ -1,4 +1,6 @@
 // @vitest-environment jsdom
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { bindSelectionPanels } from './selection-panel';
 
@@ -8,6 +10,14 @@ afterEach(() => {
 });
 
 describe('scrollable selection panels', () => {
+  it('keeps Master details impact finite, pointer-transparent and disabled by game reduced motion', () => {
+    const css = readFileSync(join(process.cwd(), 'src', 'presentation', 'master-selection.css'), 'utf8');
+    expect(css).toContain('animation: master-selection-impact 520ms ease-out both;');
+    expect(css).toContain('pointer-events: none;');
+    expect(css).toContain('html[data-motion="reduced"] body .selection-modal .master-selection-details::after');
+    expect(css).toContain('body.reduced-motion .selection-modal .master-selection-details::after { display: none; animation: none; }');
+    expect(css).not.toMatch(/master-selection-impact[^;]*infinite/);
+  });
   function setup() {
     const host = document.createElement('main');
     host.innerHTML = `<label for="conduit">Conduit slot</label><select id="conduit">
@@ -57,7 +67,7 @@ describe('scrollable selection panels', () => {
 
   it('shows canonical Master artwork and preserves the backing selection transaction', () => {
     const host = document.createElement('main');
-    host.innerHTML = '<select data-master-equipment="ember" aria-label="Master Conduit"><option value="">No Master equipped</option><option value="master-ember-1">Helios Pyre Cathedral · Omnic Master</option></select>';
+    host.innerHTML = '<select data-master-equipment="ember" aria-label="Master Conduit"><option value="">No Master equipped</option><option value="master-ember-1">Helios Pyre Cathedral · Omnic Master</option><option value="master-ember-2">Cinderstar Genesis Engine · Omnic Master</option></select>';
     document.body.append(host);
     const dispose = bindSelectionPanels(host);
     const dialog = document.querySelector<HTMLDialogElement>('.selection-modal')!;
@@ -68,11 +78,42 @@ describe('scrollable selection panels', () => {
     expect(options[0].querySelector('img')).toBeNull();
     expect(options[1].querySelector('img')?.getAttribute('src')).toContain('master');
     expect(options[1].textContent).toContain('Helios Pyre Cathedral');
+    expect(dialog.textContent).toContain('Choose a Master for this Element-Bearer');
+    expect(dialog.textContent).toContain('Select an owned Master');
     const change = vi.fn();
     host.addEventListener('change', change);
+    const details = dialog.querySelector<HTMLButtonElement>('[aria-label="View Details for Helios Pyre Cathedral"]')!;
+    const secondDetails = dialog.querySelector<HTMLButtonElement>('[aria-label="View Details for Cinderstar Genesis Engine"]')!;
+    expect(dialog.querySelectorAll('.master-selection-view-details')).toHaveLength(2);
+    details.click();
+    expect(details.getAttribute('aria-expanded')).toBe('true');
+    expect(dialog.querySelector('.master-selection-details')?.textContent).toContain('Master for Infernis');
+    expect(dialog.querySelector('.master-selection-details')?.textContent).toContain('Cannot be upgraded');
+    expect(dialog.querySelector('.master-selection-details')?.textContent).toContain('25%');
+    secondDetails.click();
+    expect(details.getAttribute('aria-expanded')).toBe('false');
+    expect(secondDetails.getAttribute('aria-expanded')).toBe('true');
+    expect(dialog.querySelector('.master-selection-details')?.textContent).toContain('Cinderstar Genesis Engine');
+    expect(dialog.open).toBe(true);
+    expect(host.querySelector('select')?.value).toBe('');
+    expect(change).not.toHaveBeenCalled();
     options[1].click();
     expect(host.querySelector('select')?.value).toBe('master-ember-1');
     expect(change).toHaveBeenCalledTimes(1);
+    dispose();
+  });
+  it('shows the saved equipped Master effect immediately without changing the backing selection', () => {
+    const host = document.createElement('main');
+    host.innerHTML = '<select data-master-equipment="ember" aria-label="Master Conduit"><option value="">No Master equipped</option><option value="master-ember-1" selected>Helios Pyre Cathedral · Omnic Master</option></select>';
+    document.body.append(host);
+    const dispose = bindSelectionPanels(host);
+    const dialog = document.querySelector<HTMLDialogElement>('.selection-modal')!;
+    dialog.showModal = vi.fn(() => { dialog.open = true; });
+    dialog.close = vi.fn(() => { dialog.open = false; dialog.dispatchEvent(new Event('close')); });
+    host.querySelector<HTMLButtonElement>('.selection-trigger')!.click();
+    expect(dialog.querySelector('.master-selection-details')?.textContent).toContain('Currently equipped Master');
+    expect(dialog.querySelector('.master-selection-details')?.textContent).toContain('Master · Helios Pyre Cathedral');
+    expect(host.querySelector('select')?.value).toBe('master-ember-1');
     dispose();
   });
   it('shows only the owned portrait options supplied by the profile picker', () => {

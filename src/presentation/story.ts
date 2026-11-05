@@ -1,7 +1,7 @@
 import { storyRegions, storyEncounter, storyRules, storyBossBonus, storyRulesText, storyLoot, storyCompletionReward, storyReplayReward } from '../content/story';
 import { getElement } from '../content/activities';
 import { type Account, unlockedStoryStage } from '../game/account';
-import { getStarter, type StarterId } from '../content/starters';
+import { getStarter, starterVow, type StarterId } from '../content/starters';
 import { elementLabel } from './element-label';
 import { elementAccents } from '../content/dungeon-art';
 import { information } from './information';
@@ -55,7 +55,7 @@ export function storyCampaign(account: Account | null, starterId: StarterId, sho
   return `<div class="story-campaign mono-story-campaign">
     <h2 class="story-chapter-title">${chapterOneTitle}</h2>
     <aside class="ref-story-region-sidebar"><header class="ref-story-region-heading"><span class="eyebrow">Regions · ${storyRegions.length}</span>
-      ${information('story-prologue-information', 'Let and Rise · Opening prologue', `${worldLore()}<h3>${starter.title}</h3><p>${starter.lore.story}</p><blockquote>${starter.lore.vow}</blockquote><p>${storyPurpose}</p>`, 'Prologue')}
+      ${information('story-prologue-information', 'Let and Rise · Opening prologue', `${worldLore()}<h3>${starter.title}</h3><p>${starter.lore.story}</p><blockquote>${starterVow(starter)}</blockquote><p>${storyPurpose}</p>`, 'Prologue')}
       </header>
     <nav class="story-world-map" aria-label="Linear elemental regions">${storyRegions.map((region, index) => {
       const first = index * R + 1;
@@ -92,7 +92,7 @@ export function storyCampaign(account: Account | null, starterId: StarterId, sho
         <footer class="ref-story-entry" data-story-detail="${index}">${stageDetail(selected, completed, unlocked, highestBearerLevel(account))}</footer></section>`;
     }).join('')}
     </section>
-    <details class="story-prologue"><summary>Read opening prologue</summary><article class="story-panel lore-panel"><h2>Let and Rise</h2>${worldLore()}<h3>${starter.title}</h3><p>${starter.lore.story}</p><blockquote>"${starter.lore.vow}"</blockquote><p>${storyPurpose}</p></article></details>
+    <details class="story-prologue"><summary>Read opening prologue</summary><article class="story-panel lore-panel"><h2>Let and Rise</h2>${worldLore()}<h3>${starter.title}</h3><p>${starter.lore.story}</p><blockquote>"${starterVow(starter)}"</blockquote><p>${storyPurpose}</p></article></details>
     <button class="text-button" data-page="gameplay" data-training-activity>Training · Endless waves &rarr;</button>
   </div>`;
 }

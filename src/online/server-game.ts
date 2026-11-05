@@ -93,6 +93,7 @@ export type GameOperation =
   | { kind: 'equipConduit'; character: string; slot: number; conduit: ConduitId | null }
   | { kind: 'unequipAllConduits'; character: string }
   | { kind: 'openMasterChest'; id: MasterConduitId }
+  | { kind: 'openMasterChests'; ids: MasterConduitId[] }
   | { kind: 'openCalamityChest'; id: string; expectedCount: number }
   | { kind: 'equipMasterConduit'; character: StarterId; conduit: MasterConduitId | null }
   | { kind: 'upgradeConduit'; id: ConduitId; expectedLevel: number }
@@ -106,7 +107,8 @@ export type GameOperation =
   | { kind: 'purchaseFrame'; frame: ProfileFrame }
   | { kind: 'updateProfile'; displayName: string; bio: string; icon: ProfileIcon; frame: ProfileFrame }
   | { kind: 'enter'; activity: Activity }
-  | { kind: 'act'; runId: string; actorId: string; action: ActionId; targetId: string }
+  | { kind: 'act'; runId: string; actorId: string; action: ActionId; targetId: string;
+      cleanseChoice?: import('../game/native-kits').CleanseChoice }
   | { kind: 'endTurn' | 'continue' | 'retry' | 'quit'; runId: string };
 export interface GameRequest {
   requestId: string;

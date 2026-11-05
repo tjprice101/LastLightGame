@@ -4,6 +4,7 @@ import { artifactSlots, currencies, fractureRules, characterLevelCap, characterG
 import { evolutionRecipes } from './activities';
 import { availableStarters, starters, isRoseCharacter, roseCharacters } from './starters';
 import { isCalamiticCharacter, calamiticCharacters } from './calamitic-characters';
+import { newEventForCharacter } from './moon-sunshade-events';
 import { loadMotion, saveMotion, SETTINGS_KEY } from '../presentation/settings';
 import { SAVE_KEY, type ProfileStorage } from '../game/profile';
 
@@ -28,7 +29,8 @@ describe('confirmed game foundation', () => {
     for (const starter of starters.filter(starter => !isCalamiticCharacter(starter.id))) {
       const totals: Record<string, number> = {};
       let currency = 0, level = 0;
-      const family = isRoseCharacter(starter.id) ? 'rosethorn' : starter.elementId;
+      const event = newEventForCharacter(starter.id);
+      const family = event?.family ?? (isRoseCharacter(starter.id) ? 'rosethorn' : starter.elementId);
       const add = (cost: ReturnType<typeof characterLevelCost>) => {
         currency += cost.fractalis;
         for (const [id, amount] of Object.entries(cost.materials)) totals[id] = (totals[id] ?? 0) + amount;
@@ -39,7 +41,7 @@ describe('confirmed game foundation', () => {
           const multiplier = destination >= 61 ? 2 : 1;
           const expected = Object.fromEntries(Object.entries(levelingMaterials(family, destination))
             .map(([id, amount]) => [id, amount * multiplier]));
-          if (!isRoseCharacter(starter.id) && evolution >= 5) {
+          if (!isRoseCharacter(starter.id) && !event && evolution >= 5) {
             const specialty = starter.elementId === 'chaotic' || starter.elementId === 'tranquilitic' ? 'abyss' : 'heavens';
             expected[`${specialty}-level`] = multiplier;
           }
@@ -51,7 +53,7 @@ describe('confirmed game foundation', () => {
       expect(currency).toBe(21480);
       expect(['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic']
         .map(rarity => totals[`${family}-${rarity}`])).toEqual([430, 155, 165, 160, 80, 30]);
-      if (isRoseCharacter(starter.id)) expect(Object.keys(totals)).toHaveLength(6);
+      if (isRoseCharacter(starter.id) || event) expect(Object.keys(totals)).toHaveLength(6);
       else {
         expect(Object.entries(totals).find(([id]) => id.endsWith('-evolution'))?.[1]).toBe(30);
         expect(Object.entries(totals).find(([id]) => id.endsWith('-level'))?.[1]).toBe(60);
@@ -59,7 +61,8 @@ describe('confirmed game foundation', () => {
     }
   });
   it('preserves ordinary recipes and uses their base rarity format with Rosethorn for Roses', () => {
-    for (const starter of starters.filter(starter => !isRoseCharacter(starter.id) && !isCalamiticCharacter(starter.id))) {
+    for (const starter of starters.filter(starter => !isRoseCharacter(starter.id) &&
+      !newEventForCharacter(starter.id) && !isCalamiticCharacter(starter.id))) {
       for (let evolution = 1; evolution <= 5; evolution++) {
         const progress = { level: characterLevelCap(evolution), evolution };
         expect(characterEvolutionCost(starter.id, progress)).toEqual(evolutionCost(starter.elementId, progress));

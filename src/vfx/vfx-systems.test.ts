@@ -15,9 +15,11 @@ describe('VFX Registry & Character Profiles', () => {
     'aurora', 'bliss', 'bruno', 'disciple',
     'elise', 'razor', 'rosetta', 'thornia',
     'crinso', 'nerithe', 'orvella', 'vaelor',
+    'maerion', 'caevren', 'vespera', 'ilyss', 'asteriel', 'serapha',
+    'rhaziel', 'oryn', 'thessara', 'elaris', 'veyr', 'aureth',
   ];
 
-  it('contains all 16 Element-Bearers with complete metadata', () => {
+  it('contains all 28 Element-Bearers with complete metadata', () => {
     for (const charId of expectedCharacters) {
       const profile = CHARACTER_PROFILES[charId];
       expect(profile, `Missing character profile for ${charId}`).toBeDefined();
@@ -28,7 +30,7 @@ describe('VFX Registry & Character Profiles', () => {
     }
   });
 
-  it('has 4 unique, authored abilities for every single character (64 total)', () => {
+  it('has 4 unique, authored abilities for every single character (112 total)', () => {
     const tiers: AbilityTier[] = ['light', 'skill1', 'skill2', 'ultimate'];
     const archetypeCounts: Record<VFXArchetype, number> = {
       slash: 0,
@@ -61,13 +63,12 @@ describe('VFX Registry & Character Profiles', () => {
       }
     }
 
-    expect(totalAbilities).toBe(64);
+    expect(totalAbilities).toBe(expectedCharacters.length * 4);
     // Every archetype must be utilized across the roster!
     for (const [arch, count] of Object.entries(archetypeCounts)) {
       expect(count, `Archetype ${arch} should be used by multiple abilities`).toBeGreaterThan(0);
     }
-    // All 16 Ultimates must use the cataclysm archetype
-    expect(archetypeCounts.cataclysm).toBe(16);
+    expect(archetypeCounts.cataclysm).toBe(expectedCharacters.length);
   });
 
   it('provides working singleton systems for all 7 archetypes', () => {

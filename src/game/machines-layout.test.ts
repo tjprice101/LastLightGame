@@ -7,6 +7,7 @@ import { machineStageCount, migratePreviousMachineStage } from '../content/activ
 import { activityPrismaticaDrop } from '../content/prismatica';
 import { masterChestDrops } from '../content/master-conduits';
 import { ACCOUNT_KEY, calamityUnlockedTier, emptyAccount, loadAccount, saveAccount, setMachineLootFocus, validateAccount } from './account';
+import { acquisitionView } from './acquisition-markers';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { freshGame, publicGame, resolveOperation } from '../../supabase/functions/game-operation/engine';
 import type { GameOperation } from '../online/server-game';
@@ -90,7 +91,7 @@ describe('35-stage Machines layout and v9 migration', () => {
         masterChests: 2, conduits: source.conduits, machineLootFocus: source.machineLootFocus,
         normalFinalClears: source.normalFinalClears, calamityClears: source.calamityClears });
       saveAccount(saved, loaded);
-      expect(loadAccount(saved)).toEqual(loaded);
+      expect(loadAccount(saved)).toEqual({ ...loaded, acquisitionMarkers: acquisitionView(loaded) });
       expect(validateAccount(loaded)).toEqual(loaded);
       expect(writes).toHaveBeenCalledOnce();
     }

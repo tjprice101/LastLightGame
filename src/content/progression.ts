@@ -2,6 +2,7 @@ import { evolutionRecipes, evolutionRequirement, getElement, materialFirstNeeded
 import { specialtyId } from './infusions';
 import { getStarter, isRoseCharacter, type StarterId } from './starters';
 import { roseMaterials } from './roses';
+import { isNewEventCharacter, newEventForCharacter, newEventMaterialIds, type NewEventFamily } from './moon-sunshade-events';
 import { isCalamiticCharacter } from './calamitic-characters';
 import { playableGrowth } from './stat-growth';
 
@@ -69,8 +70,8 @@ export const levelingMaterialTiers = [
   { rarity: 'Omnic', destination: materialFirstNeededLevel.Omnic + 1 },
 ] as const satisfies readonly { rarity: MaterialRarity; destination: number }[];
 
-export function levelingMaterials(element: ElementId | 'rosethorn', destination: number): Record<string, number> {
-  if (element !== 'rosethorn') getElement(element);
+export function levelingMaterials(element: ElementId | 'rosethorn' | NewEventFamily, destination: number): Record<string, number> {
+  if (element !== 'rosethorn' && element !== 'moonwake' && element !== 'dawnforge') getElement(element);
   if (!Number.isInteger(destination) || destination < 1 || destination > 120) {
     throw new Error('Leveling destination must be an integer from 1 to 120.');
   }
@@ -127,6 +128,11 @@ export function characterLevelCost(id: StarterId, progress: CharacterProgress): 
     };
     return lateMaterialCost({ fractalis: cost.fractalis, materials: chain }, destination >= 61);
   }
+  if (isNewEventCharacter(id)) {
+    const family = newEventForCharacter(id)!.family;
+    return lateMaterialCost({ fractalis: cost.fractalis, materials: levelingMaterials(family, progress.level + 1) },
+      progress.level + 1 >= 61);
+  }
   if (!isRoseCharacter(id)) return cost;
   return lateMaterialCost({ fractalis: cost.fractalis, materials: levelingMaterials('rosethorn', progress.level + 1) },
     progress.level + 1 >= 61);
@@ -142,6 +148,14 @@ export function characterEvolutionCost(id: StarterId, progress: CharacterProgres
       'feather-severed-dawn': chestAmount, 'splinter-unmade-night': chestAmount };
     return lateMaterialCost({ fractalis: cost.fractalis, materials }, progress.evolution >= 4);
   }
+  if (isNewEventCharacter(id)) {
+    const familyMaterials = newEventMaterialIds(newEventForCharacter(id)!.id);
+    const recipe = evolutionRecipes[progress.evolution - 1];
+    const balance = evolutionBalance[progress.evolution - 1];
+    return lateMaterialCost({ fractalis: cost.fractalis, materials: Object.fromEntries(recipe.rarities.map((rarity, index) => [
+      familyMaterials[materialRarities.indexOf(rarity)], balance.amounts[index],
+    ])) }, progress.evolution >= 4);
+  }
   if (!isRoseCharacter(id)) return cost;
   const recipe = evolutionRecipes[progress.evolution - 1];
   const balance = evolutionBalance[progress.evolution - 1];
@@ -154,7 +168,8 @@ export function characterEvolutionCost(id: StarterId, progress: CharacterProgres
 
 export function characterEvolutionRequirement(id: StarterId, evolution: number) {
   const requirement = evolutionRequirement(getStarter(id).elementId, evolution);
-  return { ...requirement, infusion: isRoseCharacter(id) ? 'roses' as const : requirement.infusion };
+  const event = newEventForCharacter(id);
+  return { ...requirement, infusion: isRoseCharacter(id) ? 'roses' as const : event?.id ?? requirement.infusion };
 }
 
 export function characterGrowthFactor(progress: CharacterProgress, id?: StarterId): number {

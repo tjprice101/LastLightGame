@@ -20,11 +20,14 @@ import { infusionEncounter, infusionLoot, infusionElements, creatureSaleOptions 
 import { standardBanner, resolveBannerPull, validateBannerPity, type StandardBannerEntry, type BannerPity } from '../content/standard-banner';
 import { bannerDuplicateMaterials, type BannerMaterialReward } from '../content/banner-materials';
 import { getSummonBanner, isSummonBannerId, type SummonBannerId } from '../content/summon-banners';
+import { assertNewEventActive, isNewEventId, newEventDefinition, newEventMaterialDefinition, moonSunshadePityLimit, type NewEventId } from '../content/moon-sunshade-events';
+import { newEventDuplicateMaterials } from '../content/banner-materials';
 import { roseMaterials } from '../content/roses';
 import { isCalamiticMaterialId } from '../content/calamitic-materials';
 import { calamiticCharacterByTier, calamiticCharacterChance, isCalamiticCharacter } from '../content/calamitic-characters';
 import type { CalamiticCharacterId } from '../content/calamitic-characters';
-import { exchangeProduct, isExchangeQuantity } from '../content/material-exchange';
+import { exchangeProduct, exchangeProductUnlocked, isExchangeQuantity } from '../content/material-exchange';
+import { advanceAcquisitions, validAcquisitionKey, type AcquisitionMarkers } from './acquisition-markers';
 import { assertEventDevourerAvailable, eventDevourerProduct } from '../content/event-devourers';
 import { isWarCharacter, warEncounter, warLoot, warStageCount, type WarCharacterId } from '../content/elemental-war';
 import { canonicalElement, isLegacyElement } from '../content/element-migration';
@@ -39,10 +42,12 @@ import { applySavedEquipment, characterElement, currentEquipment, loadoutName, v
 
 export const ACCOUNT_KEY = 'last-light.wallet';
 export interface Account {
+  acquisitionMarkers?: import('./acquisition-markers').AcquisitionMarkers;
   version: 11;
   fractalis: number;
   lycalis: number;
   bannerPity?: Partial<Record<SummonBannerId, BannerPity>>;
+  eventBannerPity?: Partial<Record<NewEventId, number>>;
   materials: Record<string, number>;
   characters: Partial<Record<StarterId, CharacterProgress>>;
   squad?: string[];
@@ -111,6 +116,11 @@ export function validateAccount(value: unknown): Account {
   const account = emptyAccount();
   account.fractalis = value.fractalis;
   account.lycalis = value.lycalis;
+  if (value.acquisitionMarkers !== undefined) {
+    if (!record(value.acquisitionMarkers) || Object.entries(value.acquisitionMarkers).some(([key, seen]) =>
+      !validAcquisitionKey(key) || typeof seen !== 'boolean')) throw new Error('Invalid acquisition marker history.');
+    account.acquisitionMarkers = { ...value.acquisitionMarkers } as AcquisitionMarkers;
+  }
   if (value.calamiticTokens !== undefined) {
     if (!count(value.calamiticTokens)) throw new Error('Invalid saved Calamitic Token balance.');
     account.calamiticTokens = value.calamiticTokens;
@@ -174,6 +184,16 @@ export function validateAccount(value: unknown): Account {
     for (const [id, counters] of Object.entries(value.bannerPity)) {
       if (!isSummonBannerId(id)) throw new Error('Unknown saved pity banner.');
       account.bannerPity[id] = validateBannerPity(counters);
+    }
+  }
+  if (value.eventBannerPity !== undefined) {
+    if (!record(value.eventBannerPity)) throw new Error('Invalid saved event banner pity.');
+    account.eventBannerPity = {};
+    for (const [id, pity] of Object.entries(value.eventBannerPity)) {
+      if (!isNewEventId(id) || !count(pity) || pity >= moonSunshadePityLimit) {
+        throw new Error('Invalid saved event banner pity.');
+      }
+      account.eventBannerPity[id] = pity;
     }
   }
   account.firstFracture = value.firstFracture;
@@ -493,16 +513,19 @@ export interface SummonDraw {
   entry: StandardBannerEntry; materials?: BannerMaterialReward; copy?: CapturedCharacter; duplicate: boolean; guarantee: string; bonusConduit?: ConduitId;
 }
 export const multiSummonCount = 10;
-export function summonCharacter(storage: ProfileStorage, random: () => number = Math.random, bannerId: string = 'standard'):
+export function summonCharacter(storage: ProfileStorage, random: () => number = Math.random, bannerId: string = 'standard', now = Date.now()):
   { account: Account } & SummonDraw {
-  const { account, draws } = summonCharacters(storage, random, bannerId, 1);
+  const { account, draws } = summonCharacters(storage, random, bannerId, 1, now);
   return { account, ...draws[0] };
 }
 /** Resolves draws sequentially (pity, ownership and bonuses carry forward), then saves cost and every reward in one write. */
-export function summonCharacters(storage: ProfileStorage, random: () => number = Math.random, bannerId: string = 'standard', count: number = multiSummonCount):
+export function summonCharacters(storage: ProfileStorage, random: () => number = Math.random, bannerId: string = 'standard',
+  count: number = multiSummonCount, now = Date.now()):
   { account: Account; draws: SummonDraw[] } {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before summoning.');
   const banner = getSummonBanner(bannerId);
+  const eventId = isNewEventId(banner.id) ? banner.id : undefined;
+  if (eventId) assertNewEventActive(eventId, now);
   if (count !== 1 && count !== multiSummonCount) throw new Error('Choose a single or 10-pull summon.');
   if (!banner.available) throw new Error('Banner unavailable.');
   const account = loadAccount(storage);
@@ -513,6 +536,7 @@ export function summonCharacters(storage: ProfileStorage, random: () => number =
   return { account: saveAccount(storage, account), draws };
 }
 function drawBanner(account: Account, banner: ReturnType<typeof getSummonBanner>, random: () => number): SummonDraw {
+  if (isNewEventId(banner.id)) return drawNewEventBanner(account, banner, random);
   const result = resolveBannerPull(banner.pool(), ownedCharacters(account),
     account.bannerPity?.[banner.id] ?? { highestStar: 0, unownedHighestStar: 0 }, random);
   const duplicate = result.entry.kind === 'character' && account.characters[result.entry.id] !== undefined;
@@ -532,10 +556,37 @@ function drawBanner(account: Account, banner: ReturnType<typeof getSummonBanner>
   if (bonusConduit) account.conduits = { ...account.conduits, [bonusConduit]: (account.conduits?.[bonusConduit] ?? 0) + 1 };
   return { entry: result.entry, materials, duplicate, guarantee: result.guarantee, bonusConduit };
 }
+function drawNewEventBanner(account: Account, banner: ReturnType<typeof getSummonBanner>, random: () => number): SummonDraw {
+  if (!isNewEventId(banner.id)) throw new Error('Invalid event banner.');
+  const event = newEventDefinition(banner.id);
+  const pity = account.eventBannerPity?.[event.id] ?? 0;
+  const roll = random();
+  if (!Number.isFinite(roll) || roll < 0 || roll >= 1) throw new Error('Invalid event banner random roll.');
+  const pool = banner.pool();
+  const characters = pool.filter(entry => entry.kind === 'character');
+  let cumulative = 0;
+  const entry = pity >= moonSunshadePityLimit - 1
+    ? characters[Math.floor(roll * characters.length)]
+    : pool.find(candidate => {
+      cumulative += candidate.chance;
+      return roll < cumulative || candidate === pool.at(-1);
+    });
+  if (!entry) throw new Error('Invalid event banner pool.');
+  const duplicate = entry.kind === 'character' && account.characters[entry.id] !== undefined;
+  const materials: BannerMaterialReward | undefined = duplicate
+    ? newEventDuplicateMaterials(event.family)
+    : entry.kind === 'material' ? { id: entry.id, amount: entry.amount } : undefined;
+  if (!duplicate && entry.kind === 'character') account.characters[entry.id] = { level: 0, evolution: 1, weaponRank: 0 };
+  if (materials) account.materials[materials.id] = (account.materials[materials.id] ?? 0) + materials.amount;
+  account.eventBannerPity = { ...account.eventBannerPity,
+    [event.id]: entry.kind === 'character' ? 0 : pity + 1 };
+  return { entry, materials, duplicate, guarantee: entry.kind === 'character' && pity >= moonSunshadePityLimit - 1
+    ? 'event pity' : 'none' };
+}
 export function purchaseEventDevourer(storage: ProfileStorage, id: string, now: number): Account {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before using the event shop.');
-  assertEventDevourerAvailable(now);
   const product = eventDevourerProduct(id);
+  assertEventDevourerAvailable(now, product.eventId);
   const account = loadAccount(storage);
   if (account.fractalis < product.price) throw new Error('Not enough Prismatica for this Event Elemental-Devourer.');
   const copy = createCreatureCopy(product.id);
@@ -549,6 +600,7 @@ export function purchaseExchangeMaterial(storage: ProfileStorage, productId: str
   const product = exchangeProduct(productId);
   if (!isExchangeQuantity(quantity)) throw new Error('Invalid Material Exchange quantity.');
   const account = loadAccount(storage);
+  if (!exchangeProductUnlocked(product, account)) throw new Error(`This material unlocks when any owned Element-Bearer reaches level ${product.unlockLevel ?? 0}.`);
   const cost = product.price * quantity;
   if (account.fractalis < cost) throw new Error(`Not enough Prismatica. ${quantity} costs ${cost}.`);
   const owned = (account.materials[product.materialId] ?? 0) + quantity;
@@ -565,7 +617,7 @@ export function treasurySaleOffer(account: Account, id: string) {
   return { ...offer, amount: offer.fractalis };
 }
 export function isSellableCreatureMode(mode: InfusionModeId | undefined): boolean {
-  return !!mode && (isCurrencyMode(mode) || mode === 'roses' || mode === 'heavens' || mode === 'abyss');
+  return !!mode && (isCurrencyMode(mode) || mode === 'roses' || isNewEventId(mode) || mode === 'heavens' || mode === 'abyss');
 }
 export function creatureSaleOffer(account: Account, id: string, optionId?: string) {
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
@@ -674,6 +726,21 @@ export function unequipAllConduits(storage: ProfileStorage, character: string): 
   if (isStarterId(character) && account.masterEquipment?.[character]) {
     account.masterEquipment = { ...account.masterEquipment, [character]: null };
   }
+  return saveAccount(storage, account);
+}
+export function openMasterChests(storage: ProfileStorage, ids: readonly MasterConduitId[]): Account {
+  if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer opening a Master chest.');
+  if (!Array.isArray(ids) || ids.length < 1) throw new Error('Choose at least one Master Conduit.');
+  if (new Set(ids).size !== ids.length) throw new Error('Choose each Master Conduit only once.');
+  if (!ids.every(isMasterConduitId)) throw new Error('Choose valid Master Conduits.');
+  const account = loadAccount(storage);
+  const availableChests = account.masterChests ?? 0;
+  if (availableChests < ids.length) throw new Error("Not enough Machine's Master Chests for this selection.");
+  if (ids.some(id => (account.masterConduits?.[id] ?? 0) > 0)) {
+    throw new Error('A selected Master Conduit is already owned. Choose only unowned Masters.');
+  }
+  account.masterChests = availableChests - ids.length;
+  account.masterConduits = { ...account.masterConduits, ...Object.fromEntries(ids.map(id => [id, 1])) };
   return saveAccount(storage, account);
 }
 export function openMasterChest(storage: ProfileStorage, id: MasterConduitId): Account {
@@ -813,6 +880,7 @@ export function upgradeConduit(storage: ProfileStorage, id: ConduitId, expectedL
 }
 export function saveAccount(storage: ProfileStorage, account: Account): Account {
   const validated = validateAccount(account);
+  validated.acquisitionMarkers = advanceAcquisitions(loadAccount(storage), validated);
   for (const [rarity, id] of Object.entries(validated.machineLootFocus ?? {})) {
     if (isMachineFocusRarity(rarity) && (validated.conduits?.[id] ?? 0) > 0) delete validated.machineLootFocus?.[rarity];
   }
@@ -834,7 +902,7 @@ export function setMachineLootFocus(storage: ProfileStorage, rarity: MachineFocu
 }
 function isMaterial(id: string): boolean {
   return elementalMaterials.some((material) => material.id === id) || specialtyMaterials.some((material) => material.id === id) ||
-    roseMaterials.some((material) => material.id === id) || isCalamiticMaterialId(id);
+    roseMaterials.some((material) => material.id === id) || newEventMaterialDefinition(id) !== undefined || isCalamiticMaterialId(id);
 }
 export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: 'level' | 'evolve' | 'weapon', expected: CharacterProgress, fodderIds: readonly string[] = []): Account {
   if (kind === 'weapon') throw new Error('Weapon upgrades are unavailable. Existing weapon bonuses are preserved.');
@@ -1164,7 +1232,8 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     }
     if (reward.recruitment !== undefined || reward.recruitmentOutcome !== undefined) throw new Error('Recruitment requires Elemental War.');
     const range = activityPrismaticaDrop(result.state, enemy.level);
-    if (result.state.infusion && (isCurrencyMode(result.state.infusion.mode) || result.state.infusion.mode === 'roses' || result.state.infusion.mode === 'machines') &&
+    if (result.state.infusion && (isCurrencyMode(result.state.infusion.mode) || result.state.infusion.mode === 'roses' ||
+        isNewEventId(result.state.infusion.mode) || result.state.infusion.mode === 'machines') &&
         (enemy.hp > 0 || !enemy.creatureId || getCreature(enemy.creatureId).mode !== result.state.infusion.mode ||
           !getCreature(enemy.creatureId).stages.includes(result.state.infusion.stage) ||
           enemy.level !== infusionEncounter(result.state.infusion.mode, result.state.infusion.stage, result.state.infusion.schedule ?? 'legacy').level)) throw new Error('Invalid currency-farm reward source.');
@@ -1208,6 +1277,10 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       account.lycalis += reward.lycalis;
     }
     if (result.state.infusion?.mode === 'roses' && !count(reward.materials?.['rosethorn-common'])) throw new Error('Roselius rewards require their guaranteed Seed drop.');
+    if (result.state.infusion && isNewEventId(result.state.infusion.mode) &&
+        !count(reward.materials?.[`${newEventDefinition(result.state.infusion.mode).family}-common`])) {
+      throw new Error(`${newEventDefinition(result.state.infusion.mode).activityName} rewards require their guaranteed Seed drop.`);
+    }
     for (const [id, amount] of Object.entries(reward.materials ?? {})) {
       if (result.state.infusion && (isCurrencyMode(result.state.infusion.mode) || result.state.infusion.mode === 'machines')) throw new Error('This activity does not drop materials.');
       if (!count(amount) || !isMaterial(id)) throw new Error('Invalid enemy material drop.');
@@ -1226,6 +1299,15 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
         const drop = infusionLoot('roses', result.state.infusion.stage).specialties.find((entry) => entry.id === id);
         if (!drop || amount < drop.minimum || amount > drop.maximum || amount % (drop.quantityMultiplier ?? 1) !== 0) throw new Error('Invalid Rosethorn material drop.');
       } else if (roseMaterials.some((material) => material.id === id)) throw new Error('Rosethorn materials only drop in Passion of Crimson Roses.');
+      if (result.state.infusion && isNewEventId(result.state.infusion.mode)) {
+        const activity = result.state.infusion;
+        const drop = infusionLoot(activity.mode, activity.stage).specialties.find(entry => entry.id === id);
+        if (!drop || amount < drop.minimum || amount > drop.maximum || amount % (drop.quantityMultiplier ?? 1) !== 0) {
+          throw new Error('Invalid Moonwake or Dawnforge material drop.');
+        }
+      } else if (id.startsWith('moonwake-') || id.startsWith('dawnforge-')) {
+        throw new Error('Moonwake and Dawnforge materials only drop in their matching activities.');
+      }
       if (multiplier > 1) {
         const activity = result.state.infusion;
         const pool = result.state.dungeon ? materialLoot(result.state.dungeon.element, result.state.dungeon.stage)
@@ -1245,7 +1327,8 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       const creature = getCreature(reward.capture.creatureId);
       const stage = result.state.infusion?.stage;
       if (!creature.mode || creature.mode === 'machines' || !stage || creature.mode !== result.state.infusion?.mode ||
-          enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== Math.min(capturedLevelCap, enemy.level) ||
+          enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) ||
+          reward.capture.level !== (isNewEventId(creature.mode) ? 60 : Math.min(capturedLevelCap, enemy.level)) ||
           enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? 'legacy').level) {
         throw new Error('Invalid captured enemy reward.');
       }
@@ -1324,7 +1407,8 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
           result.state.wave === infusion.stage && boss.id === `infusion-${infusion.mode}-${infusion.stage}-0`) {
         const encounter = infusionEncounter(infusion.mode, infusion.stage, infusion.schedule ?? 'legacy');
         if (boss.level === encounter.level && boss.element === encounter.enemy.element &&
-            boss.creatureId === `infusion:${infusion.mode}:${encounter.tier}`) normalActivity = infusion.mode;
+            boss.creatureId === `infusion:${infusion.mode}:${encounter.tier}` && isCalamityActivityId(infusion.mode))
+          normalActivity = infusion.mode;
       }
     }
     if (normalActivity && account.normalFinalClears?.[normalActivity] !== true) {

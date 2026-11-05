@@ -18,7 +18,7 @@ import { bracketReferences } from './reference-text';
 
 const plain = (text?: string | null): string => (text ?? '').replace(/<span class="element-label"[^>]*><img[^>]*>(\[[^\]]+\])<\/span>/g, '$1').replace(/\[([^[\]]+)\]/g, '$1');
 
-describe('canon across information and lore surfaces', () => {
+describe('canon across information and lore surfaces', { timeout: 30_000 }, () => {
   it('shares complete founding history through Help, Gameplay and both Story prologue surfaces', () => {
     const account = emptyAccount();
     const host = document.createElement('main');

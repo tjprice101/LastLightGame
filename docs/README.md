@@ -1,5 +1,15 @@
 # Documentation hub
 
+**Remaining features, art-neutral integration:**
+[Online attendance, gifts, mailbox and acquisition-marker authority](social-calendar.md)
+documents real SQL/RPC rules, all36 ordinary material tiers, privacy,
+atomic claims/retries and the two applied production migrations.
+[Seasonal benchmark checks](enemy-benchmark-calibration.md#bounded-moonsunshade-checks-art-pending-implementation)
+separate paper output/support/packet survival from144 actual pressured fights.
+[Handoff](handoff.md) records the8077-test integration pass, build, deployed
+authority/hosted smokes and final client publication gate. Both new event schedules remain inactive, regardless of
+whether owned-character/Master systems are deployed.
+
 **Art-pending expansion and current approvals:**
 [Both signature activities and exact account/shop rules](moon-sunshade-events.md)
 define Harbor of Unreturned Names/Vesperwing/Moonwake and Beneath the Borrowed

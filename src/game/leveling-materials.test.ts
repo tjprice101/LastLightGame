@@ -3,6 +3,7 @@ import { elements, materialRarities } from '../content/activities';
 import { characterLevelCost, levelingMaterials, levelCost, type CharacterProgress } from '../content/progression';
 import { isRoseCharacter, starters } from '../content/starters';
 import { isCalamiticCharacter } from '../content/calamitic-characters';
+import { newEventForCharacter } from '../content/moon-sunshade-events';
 import { capturedLevelCost, createCreatureCopy } from './character-instances';
 import { ACCOUNT_KEY, emptyAccount, levelCharacterToMaximum, maxLevelPlan, saveAccount, upgradeCharacter } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
@@ -45,9 +46,10 @@ describe('cumulative higher-rarity leveling materials', () => {
       for (const [level, evolution, higherTiers] of [[29, 1, 0], [30, 2, 1], [45, 3, 2],
         [60, 4, 3], [75, 5, 4], [90, 6, 5], [104, 6, 5], [10, 6, 0]]) {
         const progress: CharacterProgress = { level, evolution };
-        const family = isRoseCharacter(character.id) ? 'rosethorn' : character.elementId;
+        const event = newEventForCharacter(character.id);
+        const family = event?.family ?? (isRoseCharacter(character.id) ? 'rosethorn' : character.elementId);
         const materials = expectedMaterials(family, level + 1, higherTiers);
-        if (evolution >= 5 && !isRoseCharacter(character.id)) {
+        if (evolution >= 5 && !isRoseCharacter(character.id) && !event) {
           const specialty = ['infernic', 'oceanic', 'atmospheric', 'botanic'].includes(character.elementId) ? 'heavens-level' : 'abyss-level';
           materials[specialty] = (materials[specialty] ?? 0) + 1;
         }

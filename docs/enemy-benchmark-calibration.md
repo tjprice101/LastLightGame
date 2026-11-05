@@ -1,5 +1,76 @@
 # Global character benchmarks and enemy calibration (D-404)
 
+## Bounded Moon/Sunshade checks, art-pending implementation
+
+Reproduce:
+`npx vitest run tools\seasonal-experiments.test.ts --maxWorkers=1 --reporter=dot`.
+These extend the bounded checks, not the historical global roster ranking or
+an ordinary-account performance distribution. No hostile curves were changed.
+Only one starter is free; tested ownership, Lv105 progression and gear are
+explicit preparation assumptions. Events remain inactive at runtime; laboratory
+encounter construction does not grant launch access or account ownership.
+
+Paper: each new character solo Lv105, Common+0 gear, seed1729, six rounds,
+zero-Defense neutral target and no incoming attacks. Effective healing uses
+separate artificial missing-Health headroom; it is not recovery from actual
+enemy damage. Shield creation is separate from damage and survival:
+
+| Character | Damage total | Effective healing total | Shield creation total |
+|---|---:|---:|---:|
+| Maerion |30048|24166.78125|0|
+| Caevren |33849|0|0|
+| Vespera |51151|1878|0|
+| Ilyss |32316|1878|0|
+| Asteriel |7377|1878|22288.78125|
+| Serapha |34582|1878|0|
+| Rhaziel |7377|1878|31204.29375|
+| Oryn |34582|1878|0|
+| Thessara |34582|1878|0|
+| Elaris |110181|0|0|
+| Veyr |123193|0|0|
+| Aureth |7146|0|29409.1875|
+
+These are totals, not DPR or real-time DPS. Zero measured support for a
+particular policy is not inability to heal/Shield. The reused native-aware
+pilot has no optimized seasonal policy; its default prioritizes ultimate,
+Skill1, Skill2, Normal. Target selection/skill availability remain real.
+The separate packet probe is a single incoming effective direct-damage
+threshold with one eligible protection setup, not multi-round survival.
+Thresholds approximately Maerion/Vespera/Ilyss/Oryn/Thessara15641.5,
+Caevren33780.5, Asteriel29014.5, Serapha19551.9, Rhaziel31986.5,
+Elaris/Veyr12731.5 and Aureth42225.6; no Calamitic gear.
+
+Pressure: `[new character, Tizu, Flora]`, all Lv105, mixed+0 ordinary gear,
+each new character's own Stage35 Lv140 event boss. For each character,
+no Master and each of its three fixed personal alternatives, seeds1/1729/
+104729: **144 actual fights**, no Calamitic gear. The100-boundary-round cap
+reports inclusive displayed round101 for a timeout.
+
+| Character | Wins | Defeats | Timeouts |
+|---|---:|---:|---:|
+| Maerion |9|3|0|
+| Caevren |12|0|0|
+| Vespera |12|0|0|
+| Ilyss |12|0|0|
+| Asteriel |12|0|0|
+| Serapha |12|0|0|
+| Rhaziel |12|0|0|
+| Oryn |12|0|0|
+| Thessara |6|6|0|
+| Elaris |7|5|0|
+| Veyr |12|0|0|
+| Aureth |11|0|1|
+| Total |129|14|1|
+
+These samples do not certify ordinary clear rates, self-acquisition, optimized
+synergy or EX+3 viability. Failures/timeouts are retained rather than hidden
+through buffs or enemy nerfs. Previously flagged coefficients remain unchanged.
+The experiment exposed a late-event kill bug: Moon/Sunshade were incorrectly
+routed into infusion premium drops, crashing at Lv140 and potentially awarding
+unapproved premium below120. Battle premium rolling and odds now explicitly
+allow only Heaven/Abyss/Sanctuary. Regression verifies a real late-event kill
+grants ordinary rewards, no premium and no premium RNG consumption.
+
 ## Bounded Phase1 War checks (2026-11-03)
 
 New Caldrex/Solenne/Myrthen checks do not replace the historical full-roster

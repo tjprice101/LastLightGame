@@ -5,12 +5,14 @@ import { characterHub, homeHub } from './hub';
 import { BattleView } from './battle-view';
 import { createBattle } from '../game/battle';
 import { nativeIdentities } from '../content/native-identities';
+import { moonCharacters, sunshadeCharacters } from '../content/moon-sunshade-characters';
 
 describe('character role medals', () => {
   it('classifies the current kits without changing combat stats', () => {
     expect(starters.map(({ name, role }) => [name, role])).toEqual([
       ['Infernis', 'Attacker'], ['Tizu', 'Tank'], ['Flora', 'Healer & Support'],
       ['Rosetta', 'Attacker'], ['Thornia', 'Tank'], ['Crinso', 'Attacker'],
+      ...[...moonCharacters, ...sunshadeCharacters].map(({ name, role }) => [name, role]),
       ['Atmoso', 'Attacker'], ['Aurora', 'Support'], ['Bliss', 'Attacker'],
       ['Bruno', 'Tank'], ['Disciple', 'Support'], ['Elise', 'Attacker'], ['Razor', 'Tank'],
       ['Nerithe', 'Attacker'], ['Orvella', 'Tank'], ['Vaelor', 'Attacker'], ['Caldrex', 'Tank'], ['Solenne', 'Tank'], ['Myrthen', 'Attacker'], ['Ozriel', 'Tank'], ['Ilvaris', 'Support'], ['Kaelith', 'Attacker'],

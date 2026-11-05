@@ -343,7 +343,7 @@ describe('replacement reference screen structures', () => {
   it('keeps every material and frame selectable while exposing only the selected transaction', () => {
     const wallet = account();
     const material = onlineStores(wallet, null, 'materials', 'oceanic');
-    expect(material.match(/data-market-material=/g)).toHaveLength(6);
+    expect(material.match(/data-market-material=/g)).toHaveLength(36);
     expect(material).toContain('data-buy-material="oceanic" data-quantity="1" disabled');
     expect(material.match(/data-buy-material=/g)).toHaveLength(3);
     const frames = onlineStores(wallet, null, 'cosmetics', 'infernic', 'double-outline');
