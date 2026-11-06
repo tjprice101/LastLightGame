@@ -5,6 +5,15 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Living-world audit request (2026-11-05): owner requests specified prompt
+verification followed by a full presentation audit and extremely detailed
+UI/menu implementation plan. [Evidence and phased proposals](living-world-ui-audit-plan.md)
+distinguish current behavior, confirmed requirements and proposed changes.
+This approves audit/planning scope, not every proposed redesign or optional
+behavior. Manual battle presentation Skip, new Home social shortcuts and any
+new graphics-quality setting remain separate scope decisions. Existing event
+launch gates, gameplay, account writes and artwork identities are unchanged.
+
 Living-world quality and celestial redesign (2026-11-05): owner requires
 intentional elegant motion/light across screens/battles/actions, luxurious
 saved rewards, professional concise information and purposeful intuitive UI.

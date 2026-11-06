@@ -1,5 +1,15 @@
 # Menus and inventory
 
+## Living-world audit and rollout plan (2026-11-05)
+
+[Evidence-backed full presentation audit and implementation plan](living-world-ui-audit-plan.md)
+maps current screen families to an ordered rollout and measurable gates.
+It separates source findings, safe renderer-fixture observations and untested
+visual/performance questions. Preserve the contracts below; proposed surface,
+motion and copy changes are not a completed global redesign or authorization
+to change gameplay/navigation behavior. Start with the shared pilot, not
+another overriding stylesheet or maximum-intensity effects on every control.
+
 ## Living, elegant interface standard (2026-11-05)
 
 Every area needs purposeful hierarchy, clean navigation and concise exact

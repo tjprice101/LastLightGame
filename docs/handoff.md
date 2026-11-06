@@ -1,5 +1,45 @@
 # Current state and handoff
 
+## Living-world UI audit and phased plan
+
+Owner requested verification of the specified prompts, then a full game
+presentation audit and extremely detailed uniformity/living-world plan.
+[Audit and implementation plan](living-world-ui-audit-plan.md) is now the
+single planning deliverable: source baseline
+`f2f3442ed8c9eb7dd19da75de82d1e97f7a4f521`, evidence tiers,22 prioritized
+findings,20 screen-family plans, phases0-10 with prerequisites, exact-state/
+responsive/accessibility/temporal/performance gates and release guidance.
+No UI mechanics, artwork, balance, ownership or launch schedule was changed.
+
+Current strengths retained: saved-outcome reward foundation, impact-aligned
+battle VFX, native HTML dialogs, reduced-motion feedback and frozen run/history
+behavior. Main gaps are cascade ownership, generic global effects, local versus
+leader color meaning, repeated/derived copy, target sizing and common lifecycle
+and utility feedback. Inventory's hard-coded "all57" Master help is a confirmed
+copy finding, not a missing bulk-chest mechanic.
+
+Browser evidence: hosted title was inspected; actual current renderers/styles
+were sampled with one in-memory Lv0/Evo1 Infernis and zero currencies, never
+funding or saving an owner account. Actual fixture widths were1600/488/400,
+not requested1280/390/320. No sampled horizontal overflow; Edit squad and
+Story Prologue fell below44px target size. Prologue measured94x36 after active
+Gameplay binding. Browser visibility was hidden, so no smooth-playback or
+mobile performance claim is made. Those cases remain implementation gates.
+
+Validation commands:
+`python -m unittest discover -s tools -p test_moon_banner_art.py` (7 passed),
+`python -m unittest discover -s tools -p test_seasonal_art.py` (8 passed).
+All15 prompt tests passed;219 source/207 required inventory remains intact.
+This task is documentation-only beyond safe read-only browser fixtures; no
+runtime suite/build or authority redeploy is needed locally for the plan.
+Documentation links and named future test paths are checked before publication.
+
+Next implementation pilot: header, Home, ordinary panel, dialog and one
+selection/saved-success interaction, using existing foundations. Proposed
+manual battle presentation Skip, new Home social shortcuts and any new
+graphics-quality setting are separate optional scope decisions, not approved
+behavior. Review actual pilot motion before spreading it across all screens.
+
 ## Living-world philosophy and celestial redesign
 
 Owner sets permanent standards: every screen/battle/action should feel alive,

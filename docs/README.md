@@ -1,5 +1,15 @@
 # Documentation hub
 
+**Living-world interface audit and implementation plan (2026-11-05):**
+[Full evidence-backed audit and phased plan](living-world-ui-audit-plan.md)
+covers every presentation screen family, current strengths, prioritized gaps,
+semantic surfaces/colors, intent-specific motion, concise information,
+transaction/focus/history safety, phased dependencies and measurable acceptance
+gates. Hosted title and safe in-memory renderer fixtures were sampled; exact
+320/390px layouts, visible temporal playback and device performance remain
+validation work. This is planning, not an implemented global UI redesign.
+The specified celestial prompt suites were reverified:15 tests passed.
+
 **Current owner presentation/celestial direction (2026-11-05):**
 [Living-world vision](game-vision.md#living-world-quality-foundation-2026-11-05)
 sets elegant motion/light, luxurious saved rewards, concise professional text
@@ -9,7 +19,7 @@ restrictions: black/white with blue-purple lunar powers or orange-pink solar
 powers. Moon Ilyss/Asteriel/Serapha portraits and all Moon associated art are
 reworked; other three Moon portraits stay intact. Sunshade gets a complete
 aesthetic overhaul, not kit/balance changes. No delivered art or completed
-global UI audit is implied.
+global UI implementation is implied; the separate audit/plan is linked above.
 
 **Remaining features, art-neutral integration:**
 [Online attendance, gifts, mailbox and acquisition-marker authority](social-calendar.md)
