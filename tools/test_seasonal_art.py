@@ -95,10 +95,11 @@ class SeasonalArtTests(unittest.TestCase):
                 for prompt in owned:
                     count += 1
                     with self.subTest(owner=slug, prompt=prompt[:65]):
-                        identity = moon.LUNAR_IDENTITY[slug] if pack is moon else character["icon_identity"]
+                        lunar = pack is moon and slug in moon.LUNAR_OWNERS
+                        identity = moon.LUNAR_IDENTITY[slug] if lunar else character["icon_identity"]
                         self.assertIn(identity, prompt)
                         self.assertIn("green key is background only", prompt.lower())
-                        if pack is moon:
+                        if lunar:
                             self.assertIn("deep-blue and bright vibrant purple", prompt)
                             self.assertNotIn("purple effects", prompt.split(" --no ", 1)[1])
                         self.assertNotIn("jewel-like saturated colors", prompt)
@@ -113,8 +114,9 @@ class SeasonalArtTests(unittest.TestCase):
     def test_owner_approved_celestial_colors_are_not_excluded(self):
         for pack, colors in ((moon, ("deep-blue", "purple")), (sun, ("deep-orange", "pearlescent"))):
             for asset, _, prompt, _ in pack.blocks():
-                if pack is moon and not ("--ar 1:1" in prompt or
-                                         re.fullmatch(r"(ilyss|asteriel|serapha)-[1-6]\.png", asset)):
+                if pack is moon and not any(
+                    asset.startswith((owner + "-", "master-" + owner + "-", "moon-status-" + owner + "-"))
+                    for owner in moon.LUNAR_OWNERS):
                     continue
                 with self.subTest(asset=asset):
                     positive, negative = prompt.split(" --no ", 1)

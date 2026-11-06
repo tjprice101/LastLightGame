@@ -1,5 +1,32 @@
 # Current state and handoff
 
+## Moon portrait and associated-art matching (2026-11-06)
+
+Owner withdrew the plan to rename/reuse delivered Moon portraits as four new
+War characters. No identity, lore, kit, source archival, runtime art or playable
+integration was performed. The replacement request is matching each current
+portrait to its ability/weapon/status/Master prompts.
+
+Found a concrete drift: the protected Maerion/Caevren/Vespera portraits were
+black-white-silver, while all their associated prompts used new blue-purple
+moons. Their associated prompts now inherit existing owner construction and
+silver-white powers, including Maerion's hull ribs/tokens, Caevren's smooth
+caged counterweight/rectangular vanes and Vespera's single standard/pennant
+and crest-origin whiteflame. Nine Master art design rows were corrected;
+names and all coefficients stay. Masters remain elaborate integrated machinery.
+Ilyss/Asteriel/Serapha retain matching blue-purple lunar objects/portraits.
+Sunshade owner matching remains unchanged. All36 Moon portrait prompt bodies
+must compare identical to the prior published commit.
+
+Reproduction and validation:
+`python tools\build_moon_banner_art.py`;
+`python -m unittest discover -s tools -p test_moon_banner_art.py` (8 passed);
+`python -m unittest discover -s tools -p test_seasonal_art.py` (8 passed).
+The added all59-object regression checks local owner palette/construction,
+not a blanket banner accent. Total inventory98/97/24 =219 remains unchanged.
+Source documentation records the superseding matching rule. These are prompt
+changes, not generated-pixel guarantees or an art intake/release.
+
 ## Living-world UI audit and phased plan
 
 Owner requested verification of the specified prompts, then a full game

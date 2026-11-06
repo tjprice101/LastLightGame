@@ -1,5 +1,20 @@
 # Art and asset workflow
 
+## Portrait-to-associated-art consistency (2026-11-06)
+
+Owner cancels repurposing the delivered Moon portraits into new War characters.
+No names, lore, kits, runtime images or source originals are changed/archived.
+The current portrait design is the authority for its abilities, weapon,
+statuses and Masters; banner-wide energy is not permission to invent a
+different appearance. In the Moon pack, Maerion/Caevren/Vespera keep their
+existing black-white-silver portrait construction and silver-white powers
+across associated prompts. Ilyss/Asteriel/Serapha keep blue-purple lunar art
+matching their redesigned portraits. This supersedes applying blue-purple
+moons to every Moon owner's associated object regardless of portrait.
+All six retain distinct equipment/costume relief; Masters stay elaborate
+mechanical sculptures. Sunshade's orange-pink/black-white owner matching is
+unchanged. Validate Moon and seasonal generator suites.
+
 ## Current celestial art foundation (2026-11-05, superseding palette locks)
 
 Owner rejects monochrome copy-pasted banner art. Ilyss/Asteriel/Serapha now

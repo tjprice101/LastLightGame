@@ -5,6 +5,15 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Portrait/associated-art matching (2026-11-06): owner withdraws repurposing
+the delivered Moon portraits into newly named War characters. Instead every
+character's ability, weapon, status and Master art must match its current
+portrait's materials, equipment and power geometry. Correct the protected
+Maerion/Caevren/Vespera associated prompts to their black-white-silver
+portraits; the redesigned Ilyss/Asteriel/Serapha retain blue-purple lunar
+matching. This supersedes the prior all-Moon blue-purple object direction,
+not character names, portrait prompts, kits, acquisition or launch rules.
+
 Living-world audit request (2026-11-05): owner requests specified prompt
 verification followed by a full presentation audit and extremely detailed
 UI/menu implementation plan. [Evidence and phased proposals](living-world-ui-audit-plan.md)

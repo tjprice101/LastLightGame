@@ -2,7 +2,7 @@ import unittest
 
 from build_calamitic_art import references
 from build_moon_banner_art import (
-    CHARACTERS, LUNAR_ABILITIES, LUNAR_IDENTITY, MOON_RENDERER, OUTPUT, RARITIES, STATUS_SYMBOLS, approved_sections, blocks, cutout, document,
+    CHARACTERS, LUNAR_ABILITIES, LUNAR_IDENTITY, LUNAR_OWNERS, MOON_RENDERER, OUTPUT, RARITIES, STATUS_SYMBOLS, approved_sections, blocks, cutout, document,
     vespera_cutout,
 )
 
@@ -91,13 +91,41 @@ class MoonBannerArtTests(unittest.TestCase):
             for index, (action, _, _) in enumerate(character["icons"]):
                 with self.subTest(character=character["name"], action=action):
                     prompt = prompts[f"{character['slug']}-{action}.png"]
-                    self.assertIn(LUNAR_ABILITIES[character["slug"]][index], prompt)
-                    self.assertIn(LUNAR_IDENTITY[character["slug"]], prompt)
-                    self.assertIn("bright vibrant purple", prompt)
-                    self.assertNotIn("purple effects", prompt.split(" --no ", 1)[1])
+                    lunar = character["slug"] in LUNAR_OWNERS
+                    self.assertIn(LUNAR_ABILITIES[character["slug"]][index] if lunar else character["icons"][index][2], prompt)
+                    self.assertIn(LUNAR_IDENTITY[character["slug"]] if lunar else character["icon_identity"], prompt)
+                    if lunar:
+                        self.assertIn("bright vibrant purple", prompt)
+                        self.assertNotIn("purple effects", prompt.split(" --no ", 1)[1])
                     self.assertIn("no people no figures no faces and no wielder", prompt)
                     self.assertNotIn("--sref", prompt)
         self.assertIn("Foundational ability-art standard", document())
+
+    def test_all_associated_art_matches_its_portrait_palette_and_construction(self):
+        count = 0
+        for character in CHARACTERS:
+            slug = character["slug"]
+            for asset, _, prompt, _ in blocks():
+                if "--ar 1:1" not in prompt or not asset.startswith(
+                    (slug + "-", "master-" + slug + "-", "moon-status-" + slug + "-")):
+                    continue
+                count += 1
+                positive, negative = prompt.split(" --no ", 1)
+                with self.subTest(owner=slug, asset=asset):
+                    if slug in LUNAR_OWNERS:
+                        self.assertIn(LUNAR_IDENTITY[slug], positive)
+                        self.assertIn("deep-blue and bright vibrant purple", positive)
+                        self.assertNotIn("purple effects", negative)
+                    else:
+                        self.assertIn(character["icon_identity"], positive)
+                        self.assertIn("costume equipment and powers only black white silver and charcoal", positive)
+                        for drift in ("deep-blue", "purple", "violet", "blue moon"):
+                            self.assertNotIn(drift, positive.lower())
+                        self.assertIn("purple effects", negative)
+                    if slug == "caevren":
+                        self.assertIn("not a cut gemstone", positive)
+                        self.assertIn("mace spikes", negative)
+        self.assertEqual(count, 59)
 
     def test_vespera_pilot_is_complete_and_shorter_without_losing_design(self):
         rows = [row for row in blocks() if row[0].startswith(

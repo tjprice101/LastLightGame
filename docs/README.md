@@ -1,5 +1,14 @@
 # Documentation hub
 
+**Portrait and associated-art matching (2026-11-06):**
+[Current owner-matching rule](art-workflow.md#portrait-to-associated-art-consistency-2026-11-06)
+keeps ability/weapon/status/Master art aligned with each actual portrait.
+Maerion/Caevren/Vespera associated prompts now match their unchanged
+black-white-silver portraits, not added blue-purple moons. The redesigned
+lunar trio and Sunshade retain their matching colored powers. All portraits,
+kits and names remain unchanged; the proposed new War repurposing was
+withdrawn. Moon8 + seasonal8 tests pass.
+
 **Living-world interface audit and implementation plan (2026-11-05):**
 [Full evidence-backed audit and phased plan](living-world-ui-audit-plan.md)
 covers every presentation screen family, current strengths, prioritized gaps,

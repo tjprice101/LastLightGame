@@ -1,5 +1,17 @@
 # Last Light — Character Art Midjourney Prompt Guide
 
+## Match the actual owner, not just the banner (2026-11-06)
+
+Every character-specific icon, weapon, status and Master must inherit its
+current portrait's equipment outline, costume materials, palette and power
+geometry. Do not introduce a banner-wide color or shape absent from that
+owner's portrait. Maerion/Caevren/Vespera associated prompts retain their
+black-white-silver portraits and silver-white powers; Ilyss/Asteriel/Serapha
+retain their redesigned blue-purple lunar motifs. This supersedes the earlier
+instruction to color every Moon-associated object blue-purple. Spectacular
+Masters remain owner-shaped mechanical sculptures, not recolored generic
+machines or miniature characters. Existing portraits and installed art stay.
+
 ## Celestial creativity and readable generation language (2026-11-05)
 
 Use the fixed compact anime/cel renderer to create unmistakably individual
