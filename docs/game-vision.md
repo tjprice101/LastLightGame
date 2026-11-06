@@ -1,5 +1,27 @@
 # Game vision
 
+## Living-world quality foundation (2026-11-05)
+
+Last Light should make players feel, not merely display systems. Every screen,
+battle, menu and meaningful click needs intentional composition and elegant
+feedback specific to the game. Vibrant color, modern lighting/bloom, motion
+and luxurious reward reveals are acceptance criteria. Keep controls immediate,
+effects finite and disposable, static accessible Reduce motion feedback, and
+celebrations strictly after successful persistence.
+
+Text should read like professional game UI: clear hierarchy, concise exact
+effects and useful exceptions, without redundant shared rules or convoluted
+phrasing. Intuitive navigation and purposeful spacing are part of quality.
+
+Character individuality and banner identity must be unmistakable through
+silhouette, costume, equipment, energy and associated art. The compact cel
+renderer is fixed; creativity inside it is not. A cosmetic palette lock is
+not permission to make monochrome interchangeable designs. Masters should
+be distinct awe-inspiring cosmic mechanical sculptures, not recolored chassis.
+The [current celestial redesign](moon-sunshade-character-design.md) supersedes
+the old Moon grayscale/Sunshade gold-only art restrictions. These principles
+are ongoing standards, not a claim that every existing screen has been audited.
+
 **Difficulty pursuit (D-319):** enemies grow smoothly exponentially game-wide,
 outpacing unchanged playable growth. Intentional walls encourage better teams
 and builds, not character buffs or guaranteed easy clears. Calamity targets

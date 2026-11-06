@@ -1,5 +1,26 @@
 # Last Light — Character Art Midjourney Prompt Guide
 
+## Celestial creativity and readable generation language (2026-11-05)
+
+Use the fixed compact anime/cel renderer to create unmistakably individual
+silhouettes, elaborate couture and spectacular colored powers. Moon-associated
+art is not grayscale-only. Ilyss/Asteriel/Serapha portraits now emphasize black
+clothing, white accents, deep-blue/bright-purple flowing lunar energy and vivid
+moon phases; other Moon portraits stay intact. Sunshade is black/white with
+deep-orange and pearlescent-pink solar energy, replacing the older gold lock.
+All banner-associated abilities and Masters must carry their owner's visual
+identity and banner motifs, not generic monochrome symbols.
+
+Write what Midjourney can depict: subject, shapes/placement, materials/colors,
+pose, renderer and composition. Describe a Master as a cosmic mechanical
+sculpture, not rely on the game's item name. Prefer clear "swirling flames"
+with useful scale/direction over ornate synonyms. Use compatible parameters
+purposefully; more modifiers do not ensure a better result. Preserve the
+authored reference/model policy, never invent an Omni reference or profile.
+Inspect samples before a full batch; upscale accepted images only as needed.
+Vibrant opaque painted powers are valid in cutouts; soft edge bloom/key spill
+is not. Scenery and runtime VFX may use radiant bloom separately.
+
 **Distinct event naming foundation:** banner names AND activity/gamemode names
 must differ from character identity names and Omnic form titles, yet remain
 recognizable and symbolic of their event. A shared visual theme is appropriate;

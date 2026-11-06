@@ -111,24 +111,24 @@ The arena has clear left/right fighting lanes; scenery remains behind units.
 The Keepers of the Borrowed Dawn reopen rescue routes under the shattered
 solar canopy. Devourer wardens endlessly repair obsolete routes and attack
 anyone moving their keystones. The squad changes what is protected, not the
-world's creators or established elements. The armor's black-orange ignition
+world's creators or established elements. The deep-orange/pearlescent-pink ignition
 is a visual motif; non-Infernic bearers do not automatically gain Burn.
 
 **Enemy line: Solcarapace**, an Infernic solar scarab Devourer. One black
-beetle body with gold carapace ridges, six small armored legs and split
+beetle body with white carapace ridges, six small armored legs and split
 wing cases. No humanoid bodies, swords, machine-only provenance or moth
-anatomy. A single gold wedge-shaped head crest and paired round shoulder
-vents persist across all forms. Opaque black-orange flame folds unfold
+anatomy. A single white wedge-shaped head crest and paired round shoulder
+vents persist across all forms. Opaque deep-orange and pearlescent-pink flame folds unfold
 behind the wing cases; complete antennae/legs remain contained.
 
 | Form | Proposed name | Appearance and powers |
 |---|---|---|
-| Common | Solcarapace | Plain black beetle shell, narrow gold rims, six short legs and one small orange-black seam flame. No mature wing array. |
-| Uncommon | Dawnvent Solcarapace | Gold ribwork on the same shell, two opened wing cases, paired orange seam curls and reinforced head wedge. |
-| Rare | Routeforge Solcarapace | Two broad armored flight wings, segmented gold shell shutters, distinct paired vents and two angular flame paths. |
-| Epic | Canopyward Solcarapace | Four layered flight wings, black-gold vent mantle and three sharply folded flame arcs; all six legs remain visible. |
-| Legendary | Borrowed-Sun Solcarapace | Six monumental wing-case fans, ornate gold carapace inlay and four open convection arcs; retained compact beetle body. |
-| Omnic | Dawn Beyond the Broken Canopy Solcarapace | Ten huge black-gold wing fans retain the vent architecture, five open solar arcs and dense orange-black flame channels, central beetle and crest readable. |
+| Common | Solcarapace | Plain black beetle shell, narrow white rims, six short legs and one small deep-orange seam flame with a pink tip. No mature wing array. |
+| Uncommon | Dawnvent Solcarapace | White ribwork on the same shell, two opened wing cases, paired orange-pink curls and reinforced white head wedge. |
+| Rare | Routeforge Solcarapace | Two broad black-white flight wings, segmented shell shutters, paired vents and two angular deep-orange paths edged pearlescent pink. |
+| Epic | Canopyward Solcarapace | Four layered black-white wings and three folded orange-pink flame arcs; all six legs remain visible. |
+| Legendary | Borrowed-Sun Solcarapace | Six monumental black-white wing-case fans, white inlay and four deep-orange convection arcs carrying pink solar phase plates; compact beetle body retained. |
+| Omnic | Dawn Beyond the Broken Canopy Solcarapace | Ten huge black-white wing fans, five open orange solar arcs and dense pearlescent-pink flame channels around a vivid solar disc; central beetle and white crest readable. |
 
 **Enemy skill direction:** Gilded Vent Strike and, at the existing second-skill
 gate, Canopy Ignition. Use current Rose-format scheduled direct coefficients,
@@ -143,25 +143,25 @@ but require Dawnforge/Solcarapace rather than another family's resources.
 
 | Tier | Material appearance |
 |---|---|
-| Seed | One tiny black angular seed wrapped in a modest gold split shell, single bounded orange seam. |
-| Bud | Same seed under two opening gold pod plates, black folded inner bud and two orange-black joining strokes. |
-| Bloom | Four black-gold blade petals around the original seed, precise orange seams and a short forked root clasp. |
-| Crest | Six layered gold petal blades form a sunshade seal, black central seed, stepped orange channels and three open arcs. |
-| Heart | Faceted black solar heart within eight gold vent-petal shutters, dense repair-line filigree and four orange-black paths. |
-| Soul | Magnificent enclosed black-gold seed sun with twelve integrated vent petals, five open solar channels and brilliant painted faceting; no generated glow on edges or soul figures. |
+| Seed | One tiny black angular seed in a white split shell, one deep-orange seam with a pearlescent-pink tip. |
+| Bud | Same seed under two opening white pod plates, black inner bud and two orange-pink joining strokes. |
+| Bloom | Four black-white blade petals around the seed, deep-orange seams and a pink forked root clasp. |
+| Crest | Six white petal blades form a black-centered solar seal; orange channels and three pearlescent-pink open arcs. |
+| Heart | Black solar heart inside eight white vent-petal shutters, orange repair filigree and four pearlescent-pink paths. |
+| Soul | Magnificent black-white seed sun with twelve integrated vent petals, five deep-orange solar channels and pearlescent-pink painted plasma facets; no glow on edges or soul figures. |
 
 Solcarapace captures are same-event infusion fodder. No second specialty
 material family, new premium currency or invented consumable is needed.
 
 ### Shared art composition
 
-One16:9 banner/event splash: a regal black-gold solar canopy over a dark
-rescue terrace, gilded fan ribs, measured reservoir channels, seedpod
+One16:9 banner/event splash: a regal black-white solar canopy over a dark
+rescue terrace, white fan ribs, measured reservoir channels, seedpod
 buttresses, controlled fracture seams and unstruck square seals; opaque
-orange-black flames at the architecture's edges. No reward portrait grid.
+deep-orange and pearlescent-pink flames at the architecture's edges. No reward portrait grid.
 One3:1 activity header: a broken solar canopy with a clearly reopened route
-and gold keystone emblem. One16:9 arena: black-gold terrace below the broken
-canopy, empty left/right lanes and a clear center, distant orange-lit vents.
+and white keystone emblem. One16:9 arena: black-white terrace below the broken
+canopy, empty left/right lanes and a clear center, distant orange-pink vents.
 Scenery lighting/bloom permitted; no source-key background on scenes.
 
 ## Social/calendar and QoL rules confirmed with this request

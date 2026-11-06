@@ -1,5 +1,27 @@
 # Art and asset workflow
 
+## Current celestial art foundation (2026-11-05, superseding palette locks)
+
+Owner rejects monochrome copy-pasted banner art. Ilyss/Asteriel/Serapha now
+use black-primary/white-accent couture with flowing deep-blue/bright-purple
+energy, vivid moons/phases and distinct cosmic link/garden/sanctuary motifs.
+Maerion/Caevren/Vespera portraits remain unchanged; ALL Moon abilities and
+mechanical sculptures are redesigned with individual colorful lunar imagery.
+Sunshade is radically reimagined in black/white with deep-orange and
+pearlescent-pink solar energy, not the historical gold-only lock. Event
+scarabs/materials/scenes inherit that new solar palette too.
+
+The renderer stays compact anime/cel, but silhouette, costume and energy can
+be spectacular. Masters are immense distinct cosmic mechanical sculptures,
+with concrete visible gear/rotor/piston construction rather than game jargon.
+Generation prose should be visual and concise, not an adjective pile or a
+list of every modifier. Preserve compatible model/reference settings,
+authored skin/hair/eyes, cutout key clearance and crisp opaque powers; never
+exclude the very colors the owner asks for. Runtime and scenery may bloom.
+Review generated pixels before claiming success. No installed image, kit,
+reward or event launch is changed by a prompt revision.
+Older grayscale/gold correction notes below are historical and superseded.
+
 ## Owner-bound object palette and construction correction
 
 The Moon/Sunshade character-linked ability, equipment, Master and status

@@ -5,6 +5,20 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+Living-world quality and celestial redesign (2026-11-05): owner requires
+intentional elegant motion/light across screens/battles/actions, luxurious
+saved rewards, professional concise information and purposeful intuitive UI.
+Renderer is a foundation for imaginative silhouettes, not repeated costumes.
+Owner permits necessary Sunshade aesthetic redesign: black/white primary and
+secondary with deep-orange/pearlescent-pink energy. Moon Ilyss/Asteriel/Serapha
+portraits become black-primary/white-accent with deep-blue/bright-purple lunar
+energy and vividly colored moon phases. Other Moon portraits stay unchanged.
+All Moon abilities/Masters require colorful individual celestial redesign.
+Clear visual English and appropriate compatible Midjourney functions replace
+jargon and contradictory grayscale-only restrictions. Gameplay/IDs/launch gates
+are unchanged; no new artwork delivery or global UI completion is implied.
+[Reviewable designs](moon-sunshade-character-design.md).
+
 Remaining expansion, art-pending authorization: owner has exhausted generation
 tokens and requests complete feature wiring before artwork delivery.
 All twelve new bearers are6-star (three male/three female per banner), overriding

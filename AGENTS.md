@@ -1,5 +1,35 @@
 # Last Light: AI agent entry point
 
+## Living-world presentation and celestial art direction (2026-11-05)
+
+Every screen, battle, menu and accepted action must feel intentionally alive,
+elegant and unique to Last Light. Modern vibrant light, bloom, dynamic motion
+and luxurious reward choreography are core acceptance criteria, not decoration
+added after functionality. Preserve immediate controls, accessible static
+Reduce motion feedback, finite/disposable effects and save-before-celebration.
+Information must be professionally organized, concise and nonredundant while
+retaining exact mechanics and meaningful exceptions. UI hierarchy/navigation
+must have purpose, not disconnected half-finished panels.
+
+Character creativity operates within the fixed compact anime/cel renderer,
+not identical costumes or monochrome templates. Banner membership should be
+recognizable from portrait, ability and mechanical sculpture. Moon Ilyss/
+Asteriel/Serapha now use black-primary clothing, white accents, deep-blue and
+bright-purple lunar energy, vividly colored moon phases and celestial grandeur.
+Other three Moon portraits stay unchanged; ALL Moon associated art is rebuilt
+around individual colorful lunar identities. Sunshade is radically redesigned:
+black/white primary and secondary, deep-orange and pearlescent-pink solar energy,
+not the superseded black/gold-only theme. Preserve kits, stable IDs, schedules
+and existing delivered art. See docs/moon-sunshade-character-design.md.
+
+Use concrete visual English and model-compatible parameters, not opaque game
+jargon or modifier dumping. Translate a Master Conduit into its depicted
+cosmic mechanical sculpture, with distinct gears, actuators and energy paths.
+Color constraints must never forbid the authored energy colors. Preserve
+reference policy; do not invent identity refs, profiles, model support or
+generation guarantees. Cutouts use crisp opaque vibrant painted powers;
+runtime/scenery may bloom. Preview actual pixels before declaring visual success.
+
 ## Art-pending expansion and distinct event naming
 
 Owner authorizes completing the remaining expansion without generated artwork.

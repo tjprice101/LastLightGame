@@ -1,5 +1,16 @@
 # Documentation hub
 
+**Current owner presentation/celestial direction (2026-11-05):**
+[Living-world vision](game-vision.md#living-world-quality-foundation-2026-11-05)
+sets elegant motion/light, luxurious saved rewards, concise professional text
+and purposeful UI as ongoing standards. [Redesigned character appearances](moon-sunshade-character-design.md)
+and the reproducible Moon/Sunshade prompt packs supersede grayscale-only/gold
+restrictions: black/white with blue-purple lunar powers or orange-pink solar
+powers. Moon Ilyss/Asteriel/Serapha portraits and all Moon associated art are
+reworked; other three Moon portraits stay intact. Sunshade gets a complete
+aesthetic overhaul, not kit/balance changes. No delivered art or completed
+global UI audit is implied.
+
 **Remaining features, art-neutral integration:**
 [Online attendance, gifts, mailbox and acquisition-marker authority](social-calendar.md)
 documents real SQL/RPC rules, all36 ordinary material tiers, privacy,

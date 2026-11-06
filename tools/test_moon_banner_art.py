@@ -2,7 +2,7 @@ import unittest
 
 from build_calamitic_art import references
 from build_moon_banner_art import (
-    CHARACTERS, MOON_RENDERER, OUTPUT, RARITIES, STATUS_SYMBOLS, approved_sections, blocks, cutout, document,
+    CHARACTERS, LUNAR_ABILITIES, LUNAR_IDENTITY, MOON_RENDERER, OUTPUT, RARITIES, STATUS_SYMBOLS, approved_sections, blocks, cutout, document,
     vespera_cutout,
 )
 
@@ -38,7 +38,7 @@ class MoonBannerArtTests(unittest.TestCase):
                     self.assertTrue(prompt.endswith(f"--sref {refs[stage]} --sw 150"))
                     self.assertNotIn(character["titles"][stage - 1], prompt)
                     self.assertIn("glow on edges", prompt.split(" --no ", 1)[1])
-                    self.assertIn("natural authored skin tones are exempt", prompt)
+                    self.assertIn("natural authored skin tones are exempt", prompt.lower())
                     self.assertNotIn("gold metal", prompt.split(" --no ", 1)[0])
         self.assertEqual(len(titles), len(set(titles)))
         self.assertNotIn("Glow of the Moon's Light", titles)
@@ -65,7 +65,7 @@ class MoonBannerArtTests(unittest.TestCase):
                     self.assertIn("no wielder", prompt)
                     self.assertIn("tiny character", prompt)
                 if asset.startswith("master-"):
-                    self.assertIn("one integrated luxury-scale chassis", prompt)
+                    self.assertIn("one immense cosmic mechanical sculpture", prompt)
                     self.assertIn("precision gears", prompt)
                     self.assertIn("not buildings", prompt)
 
@@ -87,12 +87,14 @@ class MoonBannerArtTests(unittest.TestCase):
 
     def test_caevren_onward_ability_icons_retain_character_design(self):
         prompts = {asset: prompt for asset, _, prompt, _ in blocks()}
-        for character in CHARACTERS[1:]:
-            for action, _, symbol in character["icons"]:
+        for character in CHARACTERS:
+            for index, (action, _, _) in enumerate(character["icons"]):
                 with self.subTest(character=character["name"], action=action):
                     prompt = prompts[f"{character['slug']}-{action}.png"]
-                    self.assertIn(symbol, prompt)
-                    self.assertIn(character["icon_identity"], prompt)
+                    self.assertIn(LUNAR_ABILITIES[character["slug"]][index], prompt)
+                    self.assertIn(LUNAR_IDENTITY[character["slug"]], prompt)
+                    self.assertIn("bright vibrant purple", prompt)
+                    self.assertNotIn("purple effects", prompt.split(" --no ", 1)[1])
                     self.assertIn("no people no figures no faces and no wielder", prompt)
                     self.assertNotIn("--sref", prompt)
         self.assertIn("Foundational ability-art standard", document())
@@ -104,8 +106,9 @@ class MoonBannerArtTests(unittest.TestCase):
         for asset, _, prompt, _ in rows:
             with self.subTest(asset=asset):
                 self.assertNotIn("character-design details:", prompt)
-                self.assertIn("silver-white", prompt)
-                self.assertIn("charcoal", prompt)
+                if asset.startswith("vespera-") and "--ar 4:3" in prompt:
+                    self.assertIn("silver-white", prompt)
+                    self.assertIn("charcoal", prompt)
                 self.assertIn("non-emissive", prompt)
                 self.assertIn("continuous empty15 percent border", prompt)
         fixed, forms = approved_sections()["vespera"]
@@ -127,9 +130,12 @@ class MoonBannerArtTests(unittest.TestCase):
         self.assertEqual(len(portraits), 36)
         for prompt in portraits:
             self.assertNotIn("jewel-like saturated colors", prompt)
-            self.assertIn("Palette lock covers costume, equipment, powers and their reflections", prompt)
+            if "Palette lock" in prompt:
+                self.assertIn("Palette lock covers costume, equipment, powers and their reflections", prompt)
+            else:
+                self.assertIn("deep-blue and bright vibrant purple", prompt)
             self.assertIn("preserve authored skin, hair and eyes", prompt)
-            self.assertIn("Green key is background only", prompt)
+            self.assertIn("green key is background only", prompt.lower())
             self.assertIn("--niji 6 --s 100 --q 1", prompt)
 
 

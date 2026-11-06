@@ -6,6 +6,13 @@ implementing the approved features; neutral named UI remains until reviewed
 art intake. These counts cover the remaining expansion, not replacements for
 the already-installed roster, currency, universal actions or Phase1 War art.
 
+**Current redesign (2026-11-05):** counts are unchanged. Sunshade is now
+black/white with deep-orange/pearlescent-pink solar energy; its characters,
+associated art and activity family follow that direction. Moon Ilyss/Asteriel/
+Serapha portraits and all Moon associated art use vividly colored blue-purple
+lunar motifs. Other three Moon portraits remain intact. Use the regenerated
+packs, not older monochrome/gold-only prompt copies.
+
 ## Copy-ready documents
 
 - [Moon: characters, abilities, Masters, statuses and scenes](../Art/characters/Glow%20of%20the%20Moon's%20Light.md)

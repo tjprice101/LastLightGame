@@ -2,6 +2,16 @@
 
 ## Status and approval boundary
 
+**Current owner redesign (2026-11-05):** grayscale-only Moon and black/gold
+Sunshade restrictions are superseded. Preserve Maerion/Caevren/Vespera portraits.
+Rework Ilyss/Asteriel/Serapha in black-primary/white-accent couture with deep-blue
+and bright-purple energy, vividly colored moons/phases and cosmic grandeur.
+Rebuild every Moon ability and Master as distinct colored lunar art. Sunshade
+may be radically reimagined with black/white clothing and deep-orange/
+pearlescent-pink solar energy. Keep the compact renderer, native kits, stable
+identities and explicit inactive-launch gates. Design/prompt completion does
+not mean generated-image approval.
+
 **Phase2, steps2-3: approved appearances and aesthetic powers (2026-11-04).**
 Owner approves the twelve identity directions and requests more clothing,
 design and appearance detail before continuing. Both shared order directions,
@@ -45,11 +55,14 @@ introduced. Moonlight and sunlight are aesthetic motifs, not combat elements.
   Six-star acquisition is not permission for an Omnic-looking base.
 - Moon uses black, white, silver and charcoal, with small individual grayscale
   variations. Metallic sheen is painted reflection, not rainbow recoloring.
-  Sunshade uses black armor, warm gold and orange-black ignition; small bounded
-  elemental details remain legible without turning the shared armor blue/green.
-  Black flame has a readable orange inner ribbon, not a black shape lost in black.
-  Every Sunshade Common has a small orange-black ignition stroke on one gold
-  armor seam alongside its listed elemental trace; higher forms expand it.
+  Sunshade's owner-approved redesign (2026-11-05) uses **black and white as
+  primary and secondary costume/equipment colors, never gold**, with **deep
+  orange and pearlescent pink elemental energy**. Pearlescence means crisp
+  pink/white painted facets, not rainbow sheen, translucency or emitted light.
+  Water, growth, fracture, repair and convection retain distinct shapes within
+  that energy palette, not their former blue/olive/gold accents. Natural skin,
+  hair and eyes are exempt. Common carries one small energy trace; late forms
+  build magnificent solar/celestial architecture from the same owner motif.
 - Both banners explicitly request armored warriors. Individuality here comes
   from coat, skirt, tabard, collar, plate shape and wing construction, not twelve
   identical cuirasses. Cloth is fully covered and supports movement; Sunshade
@@ -239,22 +252,23 @@ shapes, wing/arc counts; the braid, ribbon and single physical flag persist.
 **Fixed features:** pale cool skin, large rounded dark-gray eyes, jaw-length
 black bob with a single white underlayer visible on the left. Open-handed
 gestures and a slight head tilt express candid warmth without facial realism.
-**Costume identity:** a white pleated restoration dress over opaque black
-leggings, with a black armored bodice, silver cuffs and low armored boots.
+**Costume identity:** a black pleated restoration dress over opaque black
+leggings, white inset folds, silver shear-pivot embroidery and low armored boots.
 Her paired severance shears are **one connected implement**: two crescent
 blades joined at a visible pivot, with one handle in each hand when opened.
 
 | Form | Clothing, equipment and visible power changes |
 |---|---|
-| Common | Simple calf-length white dress, black bodice and short sleeves over fitted black arm coverings. Small connected shears; two separated link fragments float near their pivot. No wings/rings. |
-| Uncommon | Narrow silver hemwork and detachable-looking black shoulder capelets; shears gain silver hinge caps. Four discrete link fragments form one open crescent. No wings. |
-| Rare | Overlapping white pleated skirt panels and articulated silver cuffs. Two wings of spaced crescent links hang downward behind the shoulders; one open crescent beside the pivot. |
-| Epic | Black-silver corset-like external platework over the fully covered dress, layered white mantle pleats. Four linked wings and two open crescents curl away from her hands. |
-| Legendary | Sculpted silver bodice, black ribbon lattice and a low broken-crescent tiara; six broad separated-link wings and three open crescents. Shears remain compact and readable. |
-| Omnic | Magnificent white pleated restoration gown with black-silver interleaved armor and dense hem filigree. Ten cascading crescent-link wings and four open crescents weave a regal unbinding canopy; every link stays separate, no bound figures or soul silhouettes. |
+| Common | Calf-length black pleated dress, thin white inset folds and fitted black sleeves. Small connected shears; two deep-blue crescent links and a bright-purple moon sliver beside the pivot. No wings/rings. |
+| Uncommon | White seam fans and silver hinge embroidery on black shoulder capelets. Four blue-purple link fragments trace an open crescent beneath a small painted violet moon. No wings. |
+| Rare | Layered black skirt panels with white pleat interiors and silver cuffs. Two wings of separated blue crescent links edged purple; a purple half-moon nestles above the shear pivot. |
+| Epic | Black shear-hinge bodice plates and cascading white-lined mantle pleats. Four cascading link wings, two open crescents and a vivid blue-purple gibbous moon behind the upper mantle; ribbons coil away from the hands. |
+| Legendary | Black sculpted gown, white seam lattice and a broken-crescent silver tiara. Six broad blue-purple separated-link wings and three open crescents surround a richly painted violet full moon; the compact shears stay readable. |
+| Omnic | Vast black restoration gown with sculpted white inset waterfalls and silver hinge filigree. Ten cascading blue-purple crescent-link wings and four open crescents spiral around a huge richly colored violet-blue moon with sharp crater facets and smaller phase medallions; dense separated links fill the rear canopy without hiding face or shears. |
 
-**Power language:** cleanly separated charcoal/silver bands become orderly
-protective shapes. Healing identity is restoration, not necromancy imagery.
+**Power language:** deep-blue separated links and bright-purple flowing ribbons
+form a protective lunar unbinding canopy. Vivid phase moons are opaque painted
+subject powers, not scenery or proof of souls. Healing is restoration, not necromancy.
 **Intentional changes:** layered skirt/mantle, plate detail and link geometry;
 no hair bleaching, detached second shears or new facial marks.
 
@@ -278,19 +292,20 @@ no hair bleaching, detached second shears or new facial marks.
 **Fixed features:** rich warm-brown skin, bright white-gray eyes, long silver
 hair braided into a loose low knot, two short curling forelocks. A welcoming
 outward palm and lightly angled stance retain his quiet mischief.
-**Costume identity:** a black scholar's tunic beneath a white petal-cut coat,
+**Costume identity:** a black scholar's tunic beneath a black petal-cut coat with white interiors,
 silver leaf-vein armor and a seed-vial belt. One palm-held seed-orrery focus
 has a central closed seed capsule; additional capsules belong to its orbit,
-not spare weapons. Botanical forms use silver/white/charcoal, not green drift.
+not spare weapons. Deep-blue branches and vivid purple moonflowers carry the
+lunar palette; a colored moon anchors the living star-garden, not generic stars.
 
 | Form | Clothing, equipment and visible power changes |
 |---|---|
-| Common | Plain tunic, short white coat, small leaf-shaped shoulder plates and two belt vials. One seed capsule with two tiny petal strokes. No wings/rings. |
-| Uncommon | Silver seam embroidery, petal cuffs and three belt vials. One thin complete focus orbit carries two smaller capsules. No wings. |
-| Rare | Layered petal coat tails and leaf-vein gauntlets. Two moonflower-petal wings; one focus orbit with three satellite capsules. |
-| Epic | White petal mantle over black lattice armor, articulated floral waist panels. Six petal wings form three overlapping calyx pairs; two focus orbits carry four capsules in total. |
-| Legendary | Dense moonflower inlay and a silver calyx crown, retaining the scholar's open coat. Eight broad branching petal wings; three focus orbits carry six capsules. |
-| Omnic | Exquisite layered conservatory regalia with black-silver vine tracery and a monumental calyx mantle. Twelve branching moonflower wings; four focus orbits carry eight capsules, with crisp cultivated growth paths filling the rear star-garden. |
+| Common | Black tunic and short black petal coat with white cuffs, small silver leaf plates and two belt vials. One seed capsule sprouts two blue-purple petals beside a purple moon sliver. No wings/rings. |
+| Uncommon | Silver leaf-vein seams, white petal interiors and three vials. One thin blue orbit carries two smaller capsules around a vivid purple quarter-moon. No wings. |
+| Rare | Black petal coat tails with sculpted white interiors and silver leaf gauntlets. Two vivid purple moonflower wings; one blue focus orbit carries three capsules beneath a blue-purple half-moon. |
+| Epic | Layered black calyx mantle over white-trimmed lattice armor. Six blue-purple petal wings form three calyx pairs; two blue orbits carry four capsules around a richly colored gibbous moon. |
+| Legendary | Black embroidered moonflower coat, white branching inlay and a silver calyx crown. Eight purple branching petal wings; three deep-blue focus orbits carry six capsules around a vivid cratered violet full moon. |
+| Omnic | Monumental black calyx regalia with white petal folds and silver seed-vial tracery. Twelve branching blue-purple moonflower wings and four braided focus orbits carry eight capsules around a huge violet-blue moon; colored lunar phases hang like fruit among dense flowering branches, retaining clear face and central seed focus. |
 
 **Power language:** each capsule sends one sharply drawn growth branch into
 its orbit. Living possibilities are distinguishable seeds, not generic stars.
@@ -318,37 +333,52 @@ orbit counts. The original central capsule and low hair knot remain.
 **Fixed features:** warm olive skin, long narrow pearl-gray eyes, charcoal
 hair parted centrally into two rolled side coils and a short low tail.
 Measured squared shoulders and an outward scepter angle imply decisive mercy.
-**Costume identity:** a fitted white judicial riding coat over black armor,
+**Costume identity:** a fitted black judicial riding coat with white inset panels over black armor,
 silver hinged collar and straight divided skirt panels with dark lining.
 One mercy scepter ends in two short opposing blades around an open central
 oval, not Solenne's bells, Rosetta's bow or Aurora's lens focus.
 
 | Form | Clothing, equipment and visible power changes |
 |---|---|
-| Common | Simple white coat, low silver collar, black chest plate and plain riding boots. One short open lunar arc beneath the scepter head. No wings/rings. |
-| Uncommon | Silver pleat edging and hinged wrist plates; scepter gains one central hinge detail. Two short open arcs establish a safe gap. No wings. |
-| Rare | Articulated silver shoulder mantle and divided white skirt panels. Two plate-fan wings, two nested open lunar arcs behind the arms. |
-| Epic | Four overlapping mantle leaves and polished black-silver waist plates. Four plate-fan wings and three open arcs create deliberate passageways, never closed cages. |
-| Legendary | White-silver adjudicator regalia with a low split-oval crown. Eight broad articulated fan wings and four open arcs; paired blade tips stay short. |
-| Omnic | Lavish hinged silver mantle above sweeping black-lined white coat panels, every fold sharply separated. Twelve enormous layered fan wings and five open lunar arcs form a moving sanctuary with a clear central passage and the original split scepter. |
+| Common | Black riding coat with narrow white lapel insets, low silver collar and black boots. One blue open arc beneath the split scepter holds a vivid purple moon sliver. No wings/rings. |
+| Uncommon | White pleat edges and silver wrist hinges; one scepter hinge. Two deep-blue arcs frame a purple quarter-moon with a deliberate clear exit. No wings. |
+| Rare | Black divided skirt panels with white interiors and articulated silver shoulder mantle. Two plate-fan wings carry purple phase inlays; two nested blue arcs frame a blue-purple half-moon behind the arms. |
+| Epic | Four black mantle leaves with white hinge borders and silver waist plates. Four plate-fan wings and three sweeping blue-purple arcs form open passages beneath a vivid gibbous moon. |
+| Legendary | Black judicial regalia, white panel waterfalls and low split-oval crown. Eight broad fan wings carry vibrant purple moon phases; four deep-blue arcs sweep around a richly painted violet full moon, paired scepter tips remaining short. |
+| Omnic | Vast black hinged mantle with sharply folded white panel interiors and silver split-oval filigree. Twelve enormous phase-inlaid fan wings and five blue-purple open lunar arcs sweep around a huge crater-faceted violet-blue moon; bright-purple ribbons flow through a clear central sanctuary passage, retaining the original split scepter. |
 
 **Power language:** spaces between arcs matter as much as their brilliance;
-architectural restraint rather than bells, halos or uncontrolled starfields.
+deliberate sanctuary passages framed by vividly colored phases rather than
+bells or uncontrolled starfields. Blue-purple ribbons follow the hinged fans.
 **Intentional changes:** hinged mantle, skirt layering, crown and wing/arc
 counts. Hair coils, scepter oval and open passage motif persist.
 
 ## Banner #3: The Angel-blazened Sunshade
 
-**Confirmed theme:** head-to-toe black-and-golden armored warriors, armor
-igniting into black-and-orange flames, sunlit glory, ornate and regal designs.
+**Owner-approved aesthetic redesign (2026-11-05):** head-to-toe **black-and-white**
+armored warriors with **deep-orange and pearlescent-pink** elemental energy.
+This supersedes the former gold armor, orange-black ignition and blue/olive
+accent directions throughout Sunshade portraits, abilities, equipment, status
+symbols, mechanical sculptures and scenes. Godly solar/celestial magnificence
+comes from spectacular owner-specific silhouettes, lavish clothing construction
+and precisely layered powers in the same compact Infernis/Tizu anime/cel
+renderer, not taller bodies, realism or generic angel feathers.
 
 **Approved identity direction:** the Keepers of the Borrowed Dawn, a mortal order
 that protects settlements beneath a shattered solar canopy. They do not own
-the sun or worship a newly invented creator. Their heavy black-gold armor
-channels their own elements; orange-black ignition is the shared aesthetic,
+the sun or worship a newly invented creator. Their black-and-white armor
+channels their own elements; orange/pink solar energy is the shared aesthetic,
 not permission to change every character's combat element to Infernic.
 Owner accepts the documented direction. Ignition remains aesthetic for
 non-Infernic members, not a new combat rule or automatic Burn application.
+
+Names, lore, roles, natural features, unique equipment seeds and all authored
+wing/ring/open-arc counts are retained. Common remains simply equipped, while
+Omnic expands the established silhouette into a massive intricate celestial
+ensemble. Cutout energy is opaque, sharply bounded and non-emissive; scenery
+alone may use glare/bloom. Exact portrait references150, niji6, ratios, compact
+anatomy and continuous15% safety margins remain unchanged. This approves
+designs and prompt authoring, not delivered artwork or a gameplay change.
 
 ### Rhaziel — male,6-star, Infernic Healer
 
@@ -358,8 +388,8 @@ non-Infernic members, not a new combat rule or automatic Burn application.
   wearers, he opened his forge to people the court would not provision.
 - **Distinct identity:** restorative forgecraft driven by anger at neglect,
   not Caldrex's heat-storage tank identity.
-- **Signature to develop:** a long forge needle and anvil-gauntlet, black-gold
-  articulated armor and controlled orange-black seams joining protective forms.
+- **Signature to develop:** a long forge needle and anvil-gauntlet, black-white
+  articulated armor and orange/pink stitching joining protective forms.
 - **Gameplay direction:** sustain that rewards preparing for incoming pressure;
   distinguish its decisions from Maerion's restoration.
 - **Omnic test:** a resplendent armored mender, rebuilding a defense under fire.
@@ -369,24 +399,27 @@ non-Infernic members, not a new combat rule or automatic Burn application.
 **Fixed features:** deep warm-brown skin, steady amber eyes, short black hair
 with a squared silver forelock. His bent working stance keeps the left
 anvil-gauntlet raised and the right forge needle aimed beside it.
-**Costume identity:** full matte-black fitted armor beneath a heavy gold-edged
-smith's split apron; broad cuffs and beveled boots, not a furnace sarcophagus.
+**Costume identity:** full matte-black fitted armor beneath a white split
+smith's apron; stepped anvil cuffs, beveled boots and intentional repaired
+joins. White metal folds and black seam valleys become a celestial pleated
+forge, not a furnace sarcophagus.
 One long needle-shaped casting rod and one oversized left anvil-gauntlet
 remain his tools; no hammer substitution.
 
 | Form | Clothing, equipment and visible power changes |
 |---|---|
-| Common | Plain black armor from collar to boots, simple gold-edged apron and small anvil-gauntlet. One orange-black joining ribbon follows the casting rod. No wings/rings. |
-| Uncommon | Gold rivet bands, reinforced apron corners and stepped gauntlet face; two joining ribbons. No wings/rings. |
-| Rare | Articulated gold repair seams over black chest/limb plates. Two broad forge-fold wings emerge like opened metal leaves; one small open seam arc behind the gauntlet. |
-| Epic | Four apron panels, nested shoulder braces and patterned gauntlet inlay. Four forge-fold wings and two open seam arcs connect the rear leaves. |
-| Legendary | Dense gold repair lattice, monumental cuffwork and low anvil crest. Four forge-fold wings expand into deeply pleated metal fans; three open seam arcs and sharply bounded joining filaments connect their inner folds. |
-| Omnic | Regal black-gold field-forge armor and an elaborate segmented apron, retaining visible purposeful repaired joins. Six vast folded-metal wings, four seam arcs and orange-black joining paths form an immense mender's scaffold around the original tools. |
+| Common | Plain black armor, white split apron, small white-faced anvil-gauntlet and beveled boots. One deep-orange joining ribbon with a pearlescent-pink stitch follows the casting rod. No wings/rings. |
+| Uncommon | White rivet bands, reinforced apron corners and stepped gauntlet face over black cuffs. Two orange joining ribbons with pink cross-stitches. No wings/rings. |
+| Rare | White repaired chest/limb seams and flared apron hems. Two broad black-white forge-fold wings open like pleated metal leaves; one small open seam arc behind the gauntlet carries orange and pink stitches. |
+| Epic | Four angular white apron panels, nested black shoulder braces and white gauntlet inlay. Four forge-fold wings and two open seam arcs interweave orange repair threads with pink faceted stitch clasps. |
+| Legendary | Dense white repair lattice, monumental stepped cuffs and low anvil crest. Four deeply pleated forge-fold wings become vast black-backed solar fans; three open seam arcs and orange/pink joining filaments lace their interior folds. |
+| Omnic | Magnificent black-white celestial mender armor, enormous beveled cuffs and segmented white apron with recorded dents. Six colossal folded-metal wings, four open seam arcs and dense orange stitch rails with pearlescent-pink repair facets form an immense solar loom around the original tools. |
 
 **Power language:** flames stitch armor geometry together; no industrial
 background, real sparks entering eyes, or Caldrex heat-storage cage.
-**Intentional changes:** repair seams, apron panels and wing/arc counts only.
-Hair forelock, tool hands and matte-black armor base stay fixed.
+**Intentional changes:** black-white repair regalia and solar-loom energy
+replace gold forging. Apron panels and all wing/arc counts remain authored;
+hair forelock, tool hands, recorded dents and matte-black armor base stay fixed.
 
 ### Oryn — male,6-star, Tranquilitic Support
 
@@ -397,7 +430,7 @@ Hair forelock, tool hands and matte-black armor base stay fixed.
 - **Distinct identity:** Peace as negotiated terms and coordinated restraint,
   not another moon sanctuary, bell keeper or mental domination kit.
 - **Signature to develop:** a broad seal-headed polehammer, sunshade shoulder
-  plates and interlocking oath arcs traced through orange-black ignition.
+  plates and interlocking oath arcs traced in deep orange and pearlescent pink.
 - **Gameplay direction:** select a clear ally/enemy condition to alter the next
   exchange; no absolute action denial or forced surrender.
 - **Omnic test:** an overwhelming arbiter whose authority creates a way out.
@@ -405,26 +438,29 @@ Hair forelock, tool hands and matte-black armor base stay fixed.
 #### Appearance and six-form progression
 
 **Fixed features:** medium tan skin, calm narrow honey-gold eyes, straight
-black hair gathered in a short low queue, one gold metal hair tie.
+black hair gathered in a short low queue, one white metal hair tie.
 The polehammer is held vertically off-center, never across his eyes.
-**Costume identity:** full black ceremonial armor with broad flat gold
-shoulder plates, a straight dark tabard and geometric seal borders.
+**Costume identity:** full black ceremonial armor with broad flat white
+shoulder tablets, a straight white-faced dark tabard and nested square seals.
+Long rectangular panels and open angular energy distinguish his solar court
+from every curved or feathered silhouette.
 One long polehammer has a wide square seal head, not an execution axe.
 Seals are abstract nested squares with no readable script.
 
 | Form | Clothing, equipment and visible power changes |
 |---|---|
-| Common | Plain enclosed black torso/limb armor, narrow gold trim and short tabard. One small orange-black open oath arc beside the square hammer head. No wings/rings. |
-| Uncommon | Flat gold shoulder bars, squared cuff seals and longer tabard; two small interlocking open arcs. No wings. |
-| Rare | Gold-edged rectangular waist plates and a split shoulder canopy. Two straight tablet-like wings and two open square-cornered oath arcs. |
-| Epic | Three-layer tabard borders and articulated gold shoulder shelves. Four tablet wings, three open oath arcs with clearly visible exit gaps. |
-| Legendary | Monumental black-gold ceremonial platework and a low square-seal crown. Six broad tablet wings and four open oath arcs; the polehammer head gains dense inset relief. |
-| Omnic | Exquisite nested seal armor and sweeping straight ceremonial panels. Ten towering tablet wings and five open oath arcs frame a vast negotiated threshold, black-orange flame tracing borders rather than imprisoning the figure. |
+| Common | Plain black enclosed armor, white square cuffs and short white-faced tabard. One small deep-orange open oath arc with a pink corner beside the square hammer head. No wings/rings. |
+| Uncommon | Flat white shoulder bars, squared cuff seals and longer black-bordered tabard; two small interlocking orange/pink open arcs. No wings. |
+| Rare | White-edged rectangular waist plates and split black-white shoulder canopy. Two straight tablet wings and two open square-cornered oath arcs with pink inset steps and orange outer paths. |
+| Epic | Three-layer black-white tabard borders and articulated white shoulder shelves. Four tablet wings and three open oath arcs become interlocking solar terraces with clear exit gaps. |
+| Legendary | Monumental white ceremonial shelves over black armor and low square-seal crown. Six broad tablet wings, four open oath arcs and dense hammer-head relief; orange paths carry pink faceted corner seals. |
+| Omnic | Exquisite black-white nested seal armor and sweeping rectangular ceremonial panels. Ten colossal stepped tablet wings and five open oath arcs form an immense celestial threshold; orange/pink stair-stepped energy borders remain deliberately open, never imprisoning the figure. |
 
 **Power language:** ordered rectangular arcs with purposeful openings,
 not Serapha's lunar fan curves or Disciple's mind-control imagery.
-**Intentional changes:** seal relief, tabard length and wing/arc counts only;
-hair queue, square hammer and full-coverage armor never change.
+**Intentional changes:** black-white tablet regalia and orange/pink stepped
+solar borders replace gold ceremony. Seal relief, tabard and all wing/arc
+counts remain; hair queue, square hammer and full-coverage armor persist.
 
 ### Thessara — female,6-star, Oceanic Support
 
@@ -434,36 +470,39 @@ hair queue, square hammer and full-coverage armor never change.
   then followed the emptied channels to find the villages the court omitted.
 - **Distinct identity:** Sadness transformed into equitable provision, not
   another sea monarch, tidal shield user or lunar surgeon.
-- **Signature to develop:** a paired-vessel glaive, black-gold reservoir armor,
-  sharp water bands passing through flame-lit mechanical-looking armor channels.
+- **Signature to develop:** a paired-vessel glaive, black-white reservoir armor,
+  sharp pink water bands passing through orange-lined mechanical channels.
 - **Gameplay direction:** distribute a bounded team resource with competing
   priorities; no unlimited Gauge engine or copied Nerithe Normal bonus.
 - **Omnic test:** the radiant bearer of a moving reservoir, with water readable
-  even amid the banner's orange-black armor ignition.
+  through measured channels within the shared orange/pink energy palette.
 
 #### Appearance and six-form progression
 
 **Fixed features:** deep brown skin, clear steel-blue eyes, black hair in
-three tight braids gathered low, a small gold crescent clasp at their join.
+three tight braids gathered low, a small white crescent clasp at their join.
 Wide planted feet and an angled raised glaive express practical command.
-**Costume identity:** full black reservoir armor with gold ribbed channels,
-a short sand-colored scarf enclosed beneath the collar, and split hip
+**Costume identity:** full black reservoir armor with white ribbed channels,
+a short white scarf enclosed beneath the collar, and split hip
 panels shaped like vessel halves. One glaive bears a single curved blade
 above **two vessel chambers** set into the neck; it is not two weapons.
+Fluted shoulders, suspended channel bridges and nested water fins create a
+celestial reservoir, never a generic ocean queen's dress.
 
 | Form | Clothing, equipment and visible power changes |
 |---|---|
-| Common | Plain black armor with narrow gold channel lines, short hip panels and covered gloves/boots. Two small vessel chambers; one opaque steel-blue water band passes between them. No wings/rings. |
-| Uncommon | Gold ribwork on bracers/greaves and a reinforced high collar. Two water bands pass through the weapon channels; small orange-black flames stay at outer armor seams. No wings. |
-| Rare | Gold vessel-shaped shoulders and overlapping black hip plates. Two narrow aqueduct-fin wings; one open water arc connects their lower channels. |
-| Epic | Four nested vessel waist panels and polished gold conduit-like ribwork, purely costume. Four aqueduct-fin wings and two open water arcs; orange-black ignition outlines exterior metal only. |
-| Legendary | Magnificent reservoir-captain armor, a low two-vessel diadem and densely patterned glaive chambers. Six aqueduct wings and three open water arcs carry steel-blue bands through gold joints. |
-| Omnic | Lavish black-gold reservoir regalia with stacked vessel shoulders and intricate channel bridges. Eight immense aqueduct-fin wings and four open water arcs form a moving cistern; the water stays bounded steel-blue inside, black-orange ignition outside. |
+| Common | Plain black armor, narrow white channel lines, short vessel-hip panels and covered gloves/boots. Two small glaive chambers; one pearlescent-pink water band with a deep-orange underside passes between them. No wings/rings. |
+| Uncommon | White fluted bracers/greaves and reinforced high collar. Two pink water bands pass through orange-lined weapon channels; tiny exterior orange seam strokes. No wings. |
+| Rare | White vessel shoulders and overlapping black hip plates. Two narrow black-white aqueduct-fin wings; one open pink water arc connects orange-edged lower channels. |
+| Epic | Four nested vessel waist panels and white ribbed channel bridges. Four aqueduct-fin wings and two open water arcs braid pink water ribbons through deep-orange transfer paths. |
+| Legendary | Magnificent fluted black-white reservoir armor, low two-vessel diadem and patterned glaive chambers. Six aqueduct wings and three open water arcs carry faceted pink streams through orange-lined white joints. |
+| Omnic | Lavish black-white solar reservoir regalia, stacked vessel shoulders and elaborate suspended channel bridges. Eight colossal aqueduct-fin wings and four open water arcs form an immense moving cistern; layered pearlescent-pink streams and deep-orange channel undersides remain measured, opaque and crisply bounded. |
 
 **Power language:** delivered water has a clear route, source and destination;
 no steam obscuring the face and no broad ocean wave swallowing her design.
-**Intentional changes:** vessel platework and wing/arc counts; the two glaive
-chambers, three braids and bounded blue water are fixed.
+**Intentional changes:** black-white fluted reservoir regalia and pink/orange
+water replace gold/blue accents. All vessel and wing/arc counts, two glaive
+chambers and three braids remain; water retains its measured liquid geometry.
 
 ### Elaris — female,6-star, Botanic Attacker
 
@@ -473,7 +512,7 @@ chambers, three braids and bounded blue water are fixed.
   then joined the order to defend roads linking isolated growing communities.
 - **Distinct identity:** branching precision and cultivated escape routes,
   not Myrthen's seasons, chain/sickles or Harvest cycle.
-- **Signature to develop:** a single branching javelin, layered black-gold
+- **Signature to develop:** a single branching javelin, layered black-white
   seedpod armor and rigid growth-lances arranged into a blazing crown.
 - **Gameplay direction:** build a precise breach through selected targets;
   she deepens Botanic attacking rather than filling a nonexistent empty role.
@@ -482,26 +521,29 @@ chambers, three braids and bounded blue water are fixed.
 #### Appearance and six-form progression
 
 **Fixed features:** warm brown skin, bright amber-green eyes, short tightly
-curled black hair swept to the left under a gold leaf-shaped clip.
+curled black hair swept to the left under a white leaf-shaped clip.
 A springing forward stance, one heel lifted, conveys her outrider confidence.
-**Costume identity:** light but full-coverage black segmented armor with gold
+**Costume identity:** light but full-coverage black segmented armor with white
 seedpod knee/shoulder plates and a split armored riding overskirt. One
 branching javelin has a main spear point and two short fixed side tines;
 manifested growth-lances are rear powers, never extra held weapons.
+Hinged pod armor and pointed riding panels expand into a thornless solar
+grove of serrated lance-leaves, not feathers, sickles or a flower ball.
 
 | Form | Clothing, equipment and visible power changes |
 |---|---|
-| Common | Close black collar/torso/limb plates, small gold seedpod knees, short riding skirt. Simple three-point javelin; one muted olive growth stroke around its neck. No wings/rings. |
-| Uncommon | Gold pod cuffs, overlapping riding panels and embossed seed ribs. Two short growth strokes, with restrained orange-black armor seams. No wings. |
-| Rare | Hinged seedpod shoulders and gold ribbed thigh plates. Two narrow branching lance-leaf wings; one open growth arc follows the javelin sweep. |
-| Epic | Four pointed riding-skirt panels and ornate pod greaves. Four branching wings and two open growth arcs build a sharp escaping spiral. |
-| Legendary | Regal gold seedpod armor over black flexible joints, low branching diadem. Four lance-leaf wings branch into broad serrated sprays; three open growth arcs carry small olive seed tips, not a new green costume. |
-| Omnic | Magnificent black-gold outrider regalia with dense nested pod ribs and sweeping pointed skirt armor. Six colossal branching lance-leaf wings and four open growth arcs form a spear-grove crown amid sharply traced orange-black flames. |
+| Common | Close black armor, small white seedpod knees and short riding skirt. Simple three-point javelin; one deep-orange growth stroke ends in a pearlescent-pink seed tip. No wings/rings. |
+| Uncommon | White pod cuffs, overlapping black-white riding panels and embossed seed ribs. Two orange growth strokes with pink seed tips. No wings. |
+| Rare | Hinged white seedpod shoulders and ribbed thigh plates. Two narrow branching lance-leaf wings; one open orange growth arc with pink faceted leaves follows the javelin sweep. |
+| Epic | Four pointed white riding-skirt panels over black armor and ornate pod greaves. Four branching wings and two open growth arcs build a sharp orange/pink escaping spiral. |
+| Legendary | Regal white seedpod armor over black flexible joints and low branching diadem. Four lance-leaf wings spread into enormous serrated sprays; three open growth arcs carry pink seed facets along orange branch spines. |
+| Omnic | Magnificent black-white celestial outrider regalia with nested pod ribs and sweeping pointed skirt armor. Six colossal branching lance-leaf wings and four open growth arcs create an immense off-axis solar spear-grove crown; deep-orange spines carry dense pearlescent-pink leaf blades and seed facets. |
 
 **Power language:** outward branching paths and narrow leaf-lances,
 not Myrthen's sickles, seasonal trees or harvest bouquets.
-**Intentional changes:** pod plate unfolding and wing/arc counts only; short
-curls, leaf clip, three-point javelin and flexible riding silhouette persist.
+**Intentional changes:** black-white pod armor and orange/pink solar growth
+replace gold/olive. All pod and wing/arc counts remain; short curls, leaf clip,
+three-point javelin and flexible riding silhouette persist.
 
 ### Veyr — male,6-star, Chaotic Attacker
 
@@ -512,7 +554,7 @@ curls, leaf clip, three-point javelin and flexible riding silhouette persist.
 - **Distinct identity:** destructive precision and controlled structural failure,
   not Crinso's duality blade or Kaelith's fate-cutting Calamitic identity.
 - **Signature to develop:** an articulated demolition lance, segmented
-  black-gold armor and concentric fracture seams outlined by black-orange flame.
+  black-white armor and concentric orange/pink controlled fracture seams.
 - **Gameplay direction:** dismantle a chosen defense through earned setup;
   no new universal percentage-health execution.
 - **Omnic test:** a terrifyingly regal siege-breaker who controls exactly
@@ -523,23 +565,26 @@ curls, leaf clip, three-point javelin and flexible riding silhouette persist.
 **Fixed features:** cool medium-brown skin, focused copper-gold eyes, straight
 black chin-length hair tucked behind one ear with a center silver streak.
 Compact forward brace, one hand near the lance balance point, no giant anatomy.
-**Costume identity:** full black segmented siege armor with gold load-path
+**Costume identity:** full black segmented siege armor with white load-path
 seams, an asymmetric short plate mantle and angular layered boots.
 One articulated demolition lance has a single terminal wedge and a nested
 collar of three hinged braces; it never becomes a sword, drill or gun.
+Offset wedge plates and separated orbital paths form a celestial disassembly
+array with an intact center, never random shattered rubble.
 
 | Form | Clothing, equipment and visible power changes |
 |---|---|
-| Common | Simple black armor with a short right-shoulder mantle and narrow gold joins. Single wedge lance, three closed collar braces; one orange-black fracture stroke beside the tip. No wings/rings. |
-| Uncommon | Reinforced gold load seams and two mantle layers; lance braces open slightly. One small complete fracture loop around the lance collar; no wings. |
-| Rare | Stepped black-gold shoulders and articulated flank plates. Two angular wedge wings; one complete fracture ring behind the torso, broken-line detail inside its solid outline. |
-| Epic | Four descending mantle plates and dense gold joint relief. Four wedge wings and two offset fracture rings; lance still has exactly three collar braces. |
-| Legendary | Monumental nested siege platework, a low three-wedge crown and elaborate but readable lance collar. Eight wedge wings and three fracture rings show controlled separation paths. |
-| Omnic | Lavish black-gold dismantler armor with intricate load-line inlay and sweeping segmented mantle. Twelve massive wedge wings and four offset fracture rings form a precision siege-breaker array; orange-black seams terminate at deliberate joints, not random cracks everywhere. |
+| Common | Simple black armor, short right-shoulder mantle and narrow white joins. Single wedge lance, three closed collar braces; one deep-orange fault stroke with a pink node beside the tip. No wings/rings. |
+| Uncommon | Reinforced white load seams and two black-white mantle layers; lance braces open slightly. One small complete orange fracture loop with pink joint facets around the collar; no wings. |
+| Rare | Stepped black-white shoulders and articulated flank plates. Two angular wedge wings; one complete fracture ring behind the torso, orange broken-line paths and pink release nodes inside its solid outline. |
+| Epic | Four descending white mantle plates and dense black joint relief. Four wedge wings and two offset orange/pink fracture rings; lance retains exactly three collar braces. |
+| Legendary | Monumental nested black-white siege plates, low three-wedge crown and elaborate readable lance collar. Eight wedge wings and three fracture rings form controlled celestial separation paths with pink joint facets on orange rails. |
+| Omnic | Lavish black-white dismantler regalia, interlocking load-line inlay and sweeping segmented mantle. Twelve colossal wedge wings and four offset fracture rings form a vast asymmetric solar disassembly array; dense orange fault rails end precisely at pearlescent-pink release joints around an intact center. |
 
 **Power language:** controlled geometric disassembly, no ruins or crushed
 people in the cutout; avoid Kaelith's fate-cutting or universal execution imagery.
-**Intentional changes:** armor nesting, collar opening and wing/ring counts;
+**Intentional changes:** black-white wedge regalia and orange/pink fault
+geometry replace gold siege metal. Armor nesting, collar opening and all wing/ring counts remain;
 silver hair streak, single terminal wedge and three collar braces are fixed.
 
 ### Aureth — female,6-star, Atmospheric Tank
@@ -552,7 +597,7 @@ silver hair streak, single terminal wedge and three collar braces are fixed.
 - **Distinct identity:** mobile protection through commanding wind channels,
   not Caevren's anchored counterweight or a reskin of Ozriel's wall.
 - **Signature to develop:** a sunshade shield and short command blade,
-  black-gold canopy armor and immense sharply segmented convection wings.
+  black-white canopy armor and immense orange/pink segmented convection wings.
 - **Gameplay direction:** protect a moving squad through chosen exposure/
   redirection windows, distinct from stationary absorption.
 - **Omnic test:** a magnificent walking eclipse shelter, holding the burning
@@ -563,24 +608,25 @@ silver hair streak, single terminal wedge and three collar braces are fixed.
 **Fixed features:** rich warm-brown skin, wide confident pale-gold eyes,
 white hair in a short swept-back fan with two long black-bound side locks.
 An open leading stance holds the shield outward rather than hiding her body.
-**Costume identity:** full black rescue-captain armor with gold fan-rib
-shoulders, a short split command cape and hooked gold boot guards.
+**Costume identity:** full black rescue-captain armor with white fan-rib
+shoulders, a short split white command cape and hooked white boot guards.
 One broad fan-shaped sunshade shield stays in her left hand; one short
-straight command blade stays in her right. A small gold keystone plate
+straight command blade stays in her right. A small white keystone plate
 on her upper back is carried equipment, not a floating stone building.
 
 | Form | Clothing, equipment and visible power changes |
 |---|---|
-| Common | Plain black collar/torso/limb armor, small gold shoulders and short cape. Modest fan shield, short blade and small back keystone; one wind stroke beneath the shield. No wings/rings. |
-| Uncommon | Reinforced gold fan ribs and divided cape tails; two wind strokes spread from the back plate. Sparse orange-black flames at shoulder seams. No wings. |
-| Rare | Articulated shoulder canopy and flared gold shin guards. Two broad convection-fan wings unfold from the keystone; one open wind arc curves over the shield. |
-| Epic | Four layered command-cape tails, nested shield ribs and sculpted gold gauntlets. Four convection wings and two open wind arcs spread upward and sideways. |
-| Legendary | Regal black-gold rescue armor, a low fan crest and monumental but movable shield. Eight broad convection wings and three open wind arcs open a shelter corridor rather than a closed wall. |
-| Omnic | Exquisite layered canopy armor and sweeping black-gold command mantle, the short blade and carried keystone still readable. Twelve colossal segmented convection wings and four open wind arcs form an immense walking eclipse shelter, with orange-black ignition along the outer fan ribs. |
+| Common | Plain black armor, small white fan shoulders and short cape. Modest fan shield, short blade and small white back keystone; one pink wind stroke over a deep-orange underside beneath the shield. No wings/rings. |
+| Uncommon | Reinforced white fan ribs and divided black-white cape tails; two orange/pink wind strokes spread from the back plate. No wings. |
+| Rare | Articulated black-white shoulder canopy and flared white shin guards. Two broad convection-fan wings unfold from the keystone; one open pink wind arc on an orange lower edge curves over the shield. |
+| Epic | Four white command-cape tails, nested black-white shield ribs and sculpted white gauntlets. Four convection wings and two open wind arcs spread layered pink pressure leaves along orange fan spines. |
+| Legendary | Regal black-white rescue armor, low fan crest and monumental movable shield. Eight broad convection wings and three open wind arcs reveal a clear shelter corridor between faceted pink currents and deep-orange ribs. |
+| Omnic | Exquisite black-white canopy armor and sweeping tiered command mantle; short blade and carried white keystone remain readable. Twelve colossal segmented convection wings and four open wind arcs form an immense walking solar eclipse shelter, with pearlescent-pink pressure leaves on deep-orange fan spines and a deliberate open corridor. |
 
 **Power language:** ascending currents and broad moving fans, not Caevren's
-stationary rings. Opaque white-gray wind bands remain distinct from flames.
-**Intentional changes:** cape/armor fan layering, crest and wing/arc counts;
+stationary rings. Broad pink pressure leaves remain distinct from narrow flame stitching.
+**Intentional changes:** black-white fan regalia and orange/pink convection
+replace gold/gray. Cape/armor fan layering, crest and all wing/arc counts remain;
 white hair fan, two side locks, shield hand and short blade stay fixed.
 
 ## Next design gates

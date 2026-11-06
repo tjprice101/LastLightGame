@@ -691,42 +691,42 @@ mechanical purpose are mandatory. No icon URLs are registered before delivery.
 
 | Character | Master | Distinct core and integrated surrounding machinery |
 |---|---|---|
-| Maerion | Unreturned Voyage Worldpump | Silver crescent pump around a dark faceted water world, nested hull-rib gantries, three ferry-token escapements and sweeping keel rails. |
-| Maerion | Crescent Rib Mercy Foundry | White-silver hull foundry with an inward-facing crescent casting aperture, layered rib shutters and interwoven overflow channels. |
-| Maerion | Ferrywake Remembrance Dynamo | Black-silver twin wake turbines joined by a crescent spindle, unlettered token gears and immense swept recovery fins. |
-| Caevren | Meridian Counterweight Atlas | Caged black celestial weight beneath white calibrated yokes, densely nested meridian braces and broad load-bearing vane wings. |
-| Caevren | Observatory Loadshare Regulator | Silver balance manifold with paired pressure chambers, connected weight-transfer rails and stepped protective vane vaults. |
-| Caevren | Falling-Star Recoil Turbine | One caged weight on a mechanically linked recoil chain, silver ratchet heart, massive counterstroke fins and circular return rails. |
-| Vespera | Whitefire Procession Transmitter | Bladed signal mast inside a mirrored transmission cathedral, staggered pennant shutters and razor-defined whiteflame relay tracks. |
-| Vespera | Mirror-Pennant Ignition Crown | Black-silver ignition heart, mirror pennant vanes and crescent breach apertures with opaque whiteflame filaments. |
-| Vespera | Unextinguished Relay Cathedral | Linked silver beacon chambers, unbroken black cable architecture and immense pennant gantries around a single signal core. |
-| Ilyss | Crescent-Link Severance Loom | One connected shear-pivot loom, paired crescent cutters, separated-link feed rails and cascading silver mechanical link wings. |
-| Ilyss | Unbinding Mercy Worldlock | Open black-silver worldlock with an unclosed central crescent, layered link shutters and protective pleated plate vaults. |
-| Ilyss | Broken-Link Continuance Engine | Charcoal continuity rotor with carefully separated silver link paths, connected transmission bridges and pleated wing housings. |
-| Asteriel | Moonflower Seedworld Orrery | One closed seedworld core, eight satellite seed chambers on connected silver growth rails and a colossal moonflower calyx chassis. |
-| Asteriel | Night-Library Germination Vault | White-black seed vault with densely layered petal shutters, silver root escapements and monumental germination gantries. |
-| Asteriel | Freely-Given Starseed Distributor | Opening central seed capsule, linked orbital delivery tracks and a silver moonflower distribution crown, no floating unrelated seeds. |
-| Serapha | Open-Arc Sanctuary Regulator | Split-oval scepter spindle, open lunar regulator rails and immense hinged silver fan vaults with a clear central passage. |
-| Serapha | Articulated Mercy Fanforge | Black-silver fanforge heart, overlapping mechanically hinged mantle leaves and nested protective arc ribs. |
-| Serapha | Unstruck Verdict Concordance | An unstruck split-oval seal suspended in white-silver concordance bearings, alternating open channels and immense adjudicator fan housings. |
-| Rhaziel | Anvil-Needle Restoration Foundry | Gold casting-needle axis over a black anvil heart, nested repaired seam plates and vast folded-metal forge gantries. |
-| Rhaziel | Borrowed-Dawn Seam Cathedral | Black-gold seam cathedral, branching orange-black joining paths and densely interlocked repair buttresses around a shield mold. |
-| Rhaziel | Remembered-Dent Repair Dynamo | Gold pressure dynamo with deliberately patterned repair joins, anvil ratchets and linked recovery-return rails. |
-| Oryn | Unstruck Seal Arbitration Engine | Square gold seal suspended above a black arbitration anvil, open rectangular oath rails and towering tablet-wing machinery. |
-| Oryn | Open-Threshold Oath Worldlock | Unclosed black-gold threshold lock with square-seal shutters, immense tablet vaults and connected orange-black border channels. |
-| Oryn | Sunshade Concordance Distributor | Gold concordance manifold with linked square-seal junctions, open delivery rails and densely stepped oath-wing housings. |
-| Thessara | Twin-Vessel Reservoir Worldpump | Exactly two enormous water chambers inside a black-gold pump, blue inner conduits, orange-black outer seams and integrated aqueduct fins. |
-| Thessara | Unomitted Channel Manifold | Two-chamber glaive-neck manifold with gold reservoir gates, blue transfer bridges and immense channel-wing arches. |
-| Thessara | Droughtbreak Delivery Dynamo | Black-gold reservoir flywheel joined to paired vessel chambers, measured blue delivery tracks and outer ignition vanes. |
-| Elaris | Spear-Grove Breakthrough Crown | Three-point spear axis in a black-gold seedpod crown, six immense branching lance-leaf gantries and nested breach rails. |
-| Elaris | Seedpod Pursuit Foundry | Gold seedpod casting heart with twin branch-feed escapements, black articulated leaf-lance molds and connected pursuit fins. |
-| Elaris | Firebreak Route-Opening Turbine | Three-point lance-shaped route cutter, branching gold bypass rails and enormous serrated seedpod turbine wings. |
-| Veyr | Precision Faultworld Dismantler | Black faceted world held by exactly three gold collar braces, wedge-wing load paths and four nested fracture regulators. |
-| Veyr | Three-Brace Demolition Orrery | Single wedge lance spindle, three linked demolition braces and immense delayed-release fracture orbit mechanisms. |
-| Veyr | Refuge-Sparing Siege Regulator | Black-gold selective-disassembly core over an intact shelter chamber, load-line shutters and huge precisely jointed wedge vaults. |
-| Aureth | Keystone Convection Worldshield | Carried-keystone-inspired gold heart inside a black fan shield, immense convection canopy wings and connected ascending pressure channels. |
-| Aureth | Eclipse Canopy Rescue Foundry | Black-gold eclipse canopy around a fan-shaped shield mold, layered rescue-route apertures and broad hinged convection vaults. |
-| Aureth | Moving-Horizon Corridor Turbine | Keystone turbine with an open moving corridor, linked gold fan rotors and white-gray wind channels edged by orange-black ignition. |
+| Maerion | Unreturned Voyage Worldpump | Vast black-white ship-rib cradle, silver ferry-token gear hubs, violet moon rotor and three deep-blue measured water channels. |
+| Maerion | Crescent Rib Mercy Foundry | Crescent casting aperture and layered silver hull shutters around a blue reservoir sphere; violet phase valves feed interwoven overflow rails. |
+| Maerion | Ferrywake Remembrance Dynamo | Twin deep-blue wake turbines around a violet lunar reactor, silver token gears and immense swept white-black recovery fins. |
+| Caevren | Meridian Counterweight Atlas | Huge smooth dark counterweight inside white meridian ribs, squared yokes, silver chain gears and broad blue wind vanes; purple phase dials. |
+| Caevren | Observatory Loadshare Regulator | Tilted meridian gyroscope, paired violet-blue pressure chambers, silver weight-transfer chains and stepped black-white vane actuators. |
+| Caevren | Falling-Star Recoil Turbine | Caged dark weight on a silver recoil chain, blue wind turbines and purple phase flywheels across massive squared white return rails. |
+| Vespera | Whitefire Procession Transmitter | Silver signal mast inside interlocked black-white pennant shutters, transmission gears and purple-tipped whiteflame rails around a blue moon rotor. |
+| Vespera | Mirror-Pennant Ignition Crown | Black ignition heart, mirrored white pennant vanes, silver breach shutters and blue-violet phase rotors carrying purple-white flames. |
+| Vespera | Unextinguished Relay Cathedral | Three silver beacon chambers, black cables and enormous white pennant gantries; blue flywheels drive purple-white flame tracks, not a literal building. |
+| Ilyss | Crescent-Link Severance Loom | Giant connected silver shear pivot, separated blue crescent feed rails, black-white pleated waterfalls and cascading purple phase rotors. |
+| Ilyss | Unbinding Mercy Worldlock | Unclosed black-white crescent lock, silver link shutters and pleated vault plates; a vivid violet-blue moon turns inside the open mechanism. |
+| Ilyss | Broken-Link Continuance Engine | Black continuity rotor, separated silver link gears, blue transmission bridges and white-lined wing housings carrying purple lunar ribbons. |
+| Asteriel | Moonflower Seedworld Orrery | Eight closed seed reactors on four blue geared orbits, enormous black-white calyx shutters and purple moonflower turbine blades. |
+| Asteriel | Night-Library Germination Vault | Huge petal vault around a violet moon reactor, silver leaf-vein pistons and twelve purple flowering wing assemblies fed by blue branches. |
+| Asteriel | Freely-Given Starseed Distributor | Interwoven silver vine gears, closed seed hubs and black-white calyx rails; blue lunar phase rotors distribute purple moonflower sprays. |
+| Serapha | Open-Arc Sanctuary Regulator | Vast split-oval hinge engine, black-white fan shutters and five blue open rails carrying purple phases around a violet moon rotor. |
+| Serapha | Articulated Mercy Fanforge | Three black-white sanctuary fan shields on silver axles, purple phase inlays and deep-blue channels; the central passage stays open. |
+| Serapha | Unstruck Verdict Concordance | Layered silver adjudicator fans, split-oval gear crown and black-white panel waterfalls; purple phase flywheels drive blue open-arc wings. |
+| Rhaziel | Anvil-Needle Restoration Foundry | White casting-needle spindle over a black beveled anvil core, needle-feed gears and enormous pleated black-white metal wings; deep-orange stitch rails carry pearlescent-pink repaired seam clasps. |
+| Rhaziel | Borrowed-Dawn Seam Cathedral | Fan-shaped shield mold inside an immense black-white folded-metal sculpture, branching needle carriages and interlocked repair shutters; orange joining threads and pink faceted stitch bridges fill the pleated interior, no building. |
+| Rhaziel | Remembered-Dent Repair Dynamo | Flattened white anvil pressure rotor with recorded dents, black stepped ratchets and paired recovery-return rails; orange repair loops weave pink seam plates through wide folded cuff-like wings. |
+| Oryn | Unstruck Seal Arbitration Engine | One square white seal held above a black square bearing by stepped pressure arms, nested seal gears and immense straight tablet wings; orange oath rails have pink corner facets and deliberate exits. |
+| Oryn | Open-Threshold Oath Worldlock | Open-sided black-white square lock, four staggered seal shutters and vast stepped tablet wings; deep-orange rectangular tracks carry pearlescent-pink corner latches without closing the central passage. |
+| Oryn | Sunshade Concordance Distributor | Three linked square-seal junctions around a black-white rectangular distribution gear, open delivery rails and tiered tablet housings; orange paths with pink stepped facets branch outward in a monumental angular solar fan. |
+| Thessara | Twin-Vessel Reservoir Worldpump | Exactly two enormous fluted black-white water chambers joined by a curved glaive-neck pump spindle, geared channel bridges and immense aqueduct-fin wings; pearlescent-pink water bands pass through deep-orange lined channels. |
+| Thessara | Unomitted Channel Manifold | Exactly two glaive-neck vessel chambers in an asymmetric black-white distribution sculpture, white sliding gates, black transfer gears and cascading channel fins; equal pink water streams follow orange-edged delivery bridges. |
+| Thessara | Droughtbreak Delivery Dynamo | Black reservoir flywheel between exactly two white fluted vessels, curved-blade neck brace and nested aqueduct rotors; measured pink water ribbons and deep-orange channel undersides sweep through enormous slotted fin wings. |
+| Elaris | Spear-Grove Breakthrough Crown | One main spear point and two fixed side tines rise from a black-white hinged seedpod core; six immense branching lance-leaf arms and nested breach gears form a serrated solar crown with orange spines and pink seed facets. |
+| Elaris | Seedpod Pursuit Foundry | White opening seedpod casting core, twin black branch-feed escapements and articulated leaf-lance molds; stepped pod shutters unfold into immense pointed riding-panel fins, orange branch rails bearing pink faceted leaf blades. |
+| Elaris | Firebreak Route-Opening Turbine | Three-point javelin spindle within a black-white split seedpod turbine, branching bypass rails and enormous serrated leaf rotors; deep-orange growth paths carry pearlescent-pink seed tips around a deliberate open escape channel. |
+| Veyr | Precision Faultworld Dismantler | Black faceted sphere held by exactly three white hinged collar braces, one terminal wedge axis and four offset fracture regulators; immense black-white wedge wings carry orange fault rails ending at pink release joints. |
+| Veyr | Three-Brace Demolition Orrery | One terminal wedge spindle, exactly three black-white articulated collar braces and linked delayed-release gears; immense offset fracture rotors and angular mantle-plate wings separate along orange paths with pink joint facets. |
+| Veyr | Refuge-Sparing Siege Regulator | Intact white shelter chamber inside a black selective-disassembly rotor, stepped load-line shutters and enormous precisely jointed wedge wings; orange outer fault rails stop at pink release nodes without crossing the protected center. |
+| Aureth | Keystone Convection Worldshield | White carried-keystone relief seated in a black fan-shaped shield rotor, nested fan-rib gears and immense hinged canopy wings; pearlescent-pink pressure leaves rise along deep-orange spines around a clear shelter corridor. |
+| Aureth | Eclipse Canopy Rescue Foundry | Black-white fan-shield mold beneath a colossal tiered eclipse canopy, white hinged command-cape shutters and black pressure gears; broad pink convection leaves ride orange lower edges through open rescue-route apertures. |
+| Aureth | Moving-Horizon Corridor Turbine | White keystone spindle between two offset black-white fan rotors, linked pressure rails and sweeping hooked canopy fins; deep-orange spines carry pearlescent-pink wind bands around an unobstructed moving corridor. |
 
 ## Design boundaries for eventual implementation
 

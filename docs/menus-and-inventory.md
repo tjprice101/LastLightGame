@@ -1,5 +1,16 @@
 # Menus and inventory
 
+## Living, elegant interface standard (2026-11-05)
+
+Every area needs purposeful hierarchy, clean navigation and concise exact
+information. Meaningful actions deserve game-specific motion/light feedback;
+reward screens should feel luxurious through staged reveals, radiant accents
+and polished transitions, not added transaction waits. Reuse shared feedback
+foundations; preserve immediate Skip/dismissal/focus, finite pointer-transparent
+effects, explicit Reduce motion static feedback and save-before-celebration.
+Do not animate a failure as success. This is a global acceptance standard,
+not blanket authorization to change every layout or a completed UI audit.
+
 ## Special Banner Archive and event shops (2026-11-04)
 
 Summon and the Rose activity card link to the browse-only Special Banner

@@ -1,5 +1,43 @@
 # Current state and handoff
 
+## Living-world philosophy and celestial redesign
+
+Owner sets permanent standards: every screen/battle/action should feel alive,
+elegant and game-specific; modern vibrant lighting/motion, luxurious saved
+reward reveals, concise professional information and purposeful intuitive UI.
+Saved in AGENTS, vision, interface/art specifications and prompt guide. This
+pass records acceptance criteria, not a completed global UI implementation.
+
+Owner clarified exact art boundaries: all Sunshade aesthetics may be radically
+redesigned, black/white primary/secondary with deep-orange and pearlescent-pink
+energy. Ilyss/Asteriel/Serapha portraits become black-primary/white-accent,
+with deep-blue/bright-purple powers, vivid moons/phases and celestial grandeur.
+Maerion/Caevren/Vespera portraits stay unchanged. All Moon abilities/Masters
+are redesigned; associated weapons/statuses inherit their owners' new motifs.
+Stable names, lore, kits, values, schedules and installed artwork are preserved.
+Godly visual presence does not introduce divine canon or new combat mechanics.
+
+Moon silhouettes are a separated-link restoration canopy, a flowering seed
+orrery and an articulated open-passage sanctuary. Their colored moons grow
+from small early phases to huge intricate late moons without changing compact
+anatomy. All18 protected Moon portraits compare byte-identical to the prior
+commit. Mechanical descriptions use actual sculpture/gear/rotor structures,
+not game-item terminology. The two packs retain their98/97 source counts;
+Sunshade scarabs/materials inherit the changed orange-pink/black-white palette.
+Prompt completion is not generated-image acceptance; both events remain closed.
+
+Sunshade completion: Rhaziel solar repair loom, Oryn stepped seal threshold,
+Thessara celestial reservoir, Elaris branching spear-grove, Veyr precision
+fracture array and Aureth walking eclipse shelter. All36 appearances and
+associated97 prompts are rebuilt, retaining fixed natural features, equipment
+seeds and exact reference suffixes. All36 personal Master art table rows
+match the new lunar/solar direction; mechanics remain untouched.
+Validation: Moon art7 and seasonal art8 tests pass (15 total), including exact
+219 sources/207 required, regeneration,380-word limit, colors not forbidden,
+individual owner motifs, reference scope, mechanical construction, explicit
+clearance and fixed features. All18 protected Moon portraits compare exactly.
+No live UI redesign, balance change, generated image or launch approval claimed.
+
 ## Moon portrait follow-through
 
 Owner requested the same error be corrected elsewhere in the Moon file.

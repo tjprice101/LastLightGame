@@ -230,6 +230,70 @@ def character_object(character, subject, *, palette=PALETTE, color_no=COLOR_NO):
     return prompt
 
 
+LUNAR_IDENTITY = {
+    "maerion": "silver ferry-token clasps, white coat-panel relief and black hull ribs; deep-blue water and purple lunar phase medallions",
+    "caevren": "smooth dark spherical counterweight, white meridian cage and squared yokes, silver chain and rectangular wind vanes; deep-blue wind bands and purple phase dials",
+    "vespera": "silver spear-tip crest, white swallowtail pennant and black signal-coat folds; silver-white flame ribbons tipped vivid purple above deep-blue moon discs",
+    "ilyss": "connected silver shear pivot, black gown pleats with white interiors, separated deep-blue crescent links and bright-purple lunar ribbons",
+    "asteriel": "central seed capsule and silver leaf-vein ribs, black petal-coat relief with white interiors, deep-blue branches and bright-purple moonflowers",
+    "serapha": "split-oval scepter relief and articulated silver fan hinges, black judicial panel folds with white interiors, deep-blue open arcs and bright-purple lunar phases",
+}
+LUNAR_ABILITIES = {
+    "maerion": (
+        "three silver ferry tokens hang beneath a vividly painted purple quarter-moon; deep-blue water curls into a sheltered boat-rib cradle",
+        "a silver crescent polearm tip draws a deep-blue water stitch across a black hull plate beneath a purple half-moon",
+        "a ribbed black-white lunar vessel pours one deep-blue water ribbon through a purple crescent portal into a silver receiving cradle",
+        "a great silver-black ship-rib canopy carries a richly colored violet moon; three blue water channels sweep outward beneath a procession of purple moon phases",
+    ),
+    "caevren": (
+        "a dark spherical counterweight inside white meridian ribs balances three squared yokes; blue wind ribbons orbit a violet moon dial",
+        "a short silver handle and taut chain hold one smooth caged weight against a broad deep-blue wind brace; purple half-moon plates mark its meridian",
+        "a white yoke plate connects to a caged dark counterweight by an articulated chain; rectangular vanes sweep blue wind beneath a vivid purple crescent",
+        "a massive white meridian cage anchors a cratered violet-blue moon sphere; three squared load rails and layered blue wind wings fan outward",
+    ),
+    "vespera": (
+        "three silver beacon cells rise beneath a white swallowtail pennant; purple-tipped white flames curl around a deep-blue lunar phase disc",
+        "one silver spear-tip crest sends a sharply curling silver-white flame with vivid purple tips across a blue half-moon dispatch plate",
+        "one white pennant crest relays a purple-tipped white flame through a silver signal clasp; a deep-blue crescent supports the ribbon",
+        "one great silver standard crest unfolds serrated purple-white flame pennants around a richly colored blue-violet moon; three outward blue relay paths remain distinct",
+    ),
+    "ilyss": (
+        "three separated deep-blue crescent links arc around a bright-purple moon sliver above sharply folded black-white gown relief",
+        "connected silver crescent shears part a deep-blue ribbon into two ends; a vividly colored purple half-moon remains intact behind the pivot",
+        "open connected shears lift one dark link from a blue protective loop; purple lunar ribbons flow through the open cut beneath a phase moon",
+        "ten cascading blue crescent-link sprays frame a vivid violet-blue full moon above a silver shear pivot; four purple open crescents flow outward over black-white pleat relief",
+    ),
+    "asteriel": (
+        "a closed silver seed capsule branches into vivid purple moonflowers around a deep-blue quarter-moon orbit and black-white petal relief",
+        "one silver seed unfolds two blue petal ribs beneath a vividly colored purple crescent, protected by white-inlaid black calyx plates",
+        "a black-white petal vault opens around a violet half-moon; three closed silver seeds follow separate deep-blue branching paths",
+        "a huge richly colored violet-blue moon rises from a silver seed-orrery; twelve purple moonflower sprays and four blue seed orbits form a dense flowering mechanical garden",
+    ),
+    "serapha": (
+        "three purple moon-phase plates rest on silver fan hinges above an intentionally open deep-blue crescent passage",
+        "one split-oval silver scepter head shortens a dark attack stroke beneath a purple half-moon; a deep-blue open arc keeps the exit clear",
+        "two black-white articulated fan leaves shelter a vivid violet crescent; bright-purple ribbons follow blue open arcs without closing the passage",
+        "twelve layered silver fan sprays carry purple moon phases around a vivid violet-blue moon; five deep-blue open arcs form a sweeping sanctuary with a clear central opening",
+    ),
+}
+def lunar_cutout(subject, portrait=False, stage=1):
+    body = "one third" if stage <= 4 else "one quarter" if stage == 5 else "one fifth"
+    style = (f"{MOON_RENDERER}; rounded head, tiny torso, short limbs, 2.5-3 heads tall, body {body} of canvas"
+             if portrait else f"{ICON_RENDERER.replace('jewel-like saturated colors', 'jewel-like crisp facets')}; {OBJECT_ONLY}")
+    suffix = f" --sref {references()[stage]} --sw {REFERENCE_WEIGHT}" if portrait else ""
+    return (f"{subject}. {style}. Black primary surfaces, white accents and silver mechanics; "
+            "deep-blue and bright vibrant purple elemental energy, vividly colored crater-faceted moons "
+            "and lunar phases. Natural authored skin tones are exempt; preserve authored skin, hair and eyes. "
+            "Opaque flowing ribbons, crisp painted highlights, non-emissive edges. "
+            "entire ensemble inside central70 percent, continuous empty15 percent border on every side "
+            "and corner; uninterrupted safety margin, all tips visible. "
+            "plain solid green background (#00FF00), flat unlit through all openings; green key is background only. "
+            f"--ar {'4:3' if portrait else '1:1'} --niji 6 --s 100 --q 1 --no text, lettering, numbers, "
+            "watermark, cropping, photorealism, 3d render, glow on edges, light bloom, haze, "
+            "background gradient, scenery, green effects, gold metal, orange effects, "
+            f"{'mouth, nose, eyebrows, face paint, extra characters' if portrait else ICON_NO}{suffix}")
+
+
 def blocks():
     rows = []
     approved = approved_sections()
@@ -244,33 +308,39 @@ def blocks():
                            f"{character['weapon']}. {form} Black signal-officer coat with white facing "
                            "and a diagonal silver signal cord. All flame ribbons originate at the standard "
                            "crest; one physical pennant, no additional held flags")
-            rows.append((f"{character['slug']}-{stage}.png", f"{title}, {character['name']} / {rarity}",
-                         render(subject, "4:3", True, stage).replace(RENDERER, MOON_RENDERER).replace(
+            prompt = render(subject, "4:3", True, stage).replace(RENDERER, MOON_RENDERER).replace(
                              " --ar ",
                              " Palette lock covers costume, equipment, powers and their reflections: "
                              "black, white, silver and charcoal only; preserve authored skin, hair and eyes. "
                              "Neutral metal reflections, no iridescent tint. Green key is background only, "
-                             "never reflected onto the subject. --ar ", 1), form))
-        for action, name, symbol in character["icons"]:
+                             "never reflected onto the subject. --ar ", 1)
+            if character["slug"] in ("ilyss", "asteriel", "serapha"):
+                prompt = lunar_cutout(
+                    f"full-body gacha JRPG unit illustration, one compact {character['gender']}; "
+                    f"{fixed} {character['weapon']}. {form}", True, stage)
+            rows.append((f"{character['slug']}-{stage}.png", f"{title}, {character['name']} / {rarity}", prompt, form))
+        for index, (action, name, symbol) in enumerate(character["icons"]):
             rows.append((f"{character['slug']}-{action}.png", f"{character['name']} / {name}",
-                         character_object(character, f"one standalone ability pictogram: {symbol}"),
+                         lunar_cutout(f"one standalone ability emblem: {LUNAR_ABILITIES[character['slug']][index]}; "
+                                      f"Owner construction: {LUNAR_IDENTITY[character['slug']]}"),
                          "Owner-specific equipment, costume materials and power geometry; no figure."))
         rows.append((f"{character['slug']}-weapon.png", f"{character['name']} / Signature equipment",
-                     character_object(character, f"one standalone equipment illustration: {character['weapon']}; no hands"),
+                     lunar_cutout(f"one standalone equipment illustration: {character['weapon']}; "
+                                  f"Owner construction: {LUNAR_IDENTITY[character['slug']]}"),
                      "Optional showcase export; not replacement Normal Attack/Defense art."))
-    foundation = ("cosmic ornate resplendent mechanical masterpiece, one integrated luxury-scale chassis, "
-                  "precision gears, nested engraved platework and vast connected gantries, "
-                  "owner-matched polished enamel and metal cores, crisp painted specular reflections; "
-                  "architecture words describe a mechanism, not buildings")
     for character, slot, name, design in master_rows():
-        prompt = character_object(character, f"one standalone Omnic personal Master: {design} {foundation}")
+        prompt = lunar_cutout(
+            f"one immense cosmic mechanical sculpture: {design}; "
+            f"Owner construction: {LUNAR_IDENTITY[character['slug']]}; precision gears, nested engraved "
+            "plates and articulated energy paths, one integrated mechanism, not buildings")
         prompt = prompt.replace(" --no ", " --no buildings, cathedral buildings, towers, houses, furniture, musical instrument, ", 1)
         rows.append((f"master-{character['slug']}-{slot}.png", f"{character['name']} / {name}", prompt,
                      "Mechanical art proposal; kit coefficients unchanged."))
     for owner, slug, label, symbol in STATUS_SYMBOLS:
         character = next(entry for entry in CHARACTERS if entry["slug"] == owner)
         rows.append((f"moon-status-{owner}-{slug}.png", f"{owner.title()} / {label} status",
-                     character_object(character, f"one bold small-scale status pictogram: {symbol}; simple readable silhouette"),
+                     lunar_cutout(f"one bold small-scale status pictogram: {symbol}; simple readable silhouette; "
+                                  f"Owner construction: {LUNAR_IDENTITY[owner]}"),
                      "Symbol only; numeric counters and clocks remain HTML."))
     for asset, label, aspect, subject in SCENES:
         prompt = (f"{subject}; original compact anime game scenery renderer, crisp contours, cel shading, "
@@ -292,14 +362,12 @@ def document():
         "[Approved appearances](../../docs/moon-sunshade-character-design.md) | "
         "[Kits and strength flags](../../docs/moon-sunshade-kit-specification.md)",
         "Reproduce: `python tools/build_moon_banner_art.py`. Do not edit generated blocks by hand.",
-        "**Owner-material correction:** every character-linked ability, weapon, Master and status now "
-        "carries its owner's equipment construction, costume-material relief and exact power geometry. "
-        "Palette applies to cores, reflections and powers too; the green key is background only. "
-        "Generic saturated-jewel and faceted-core cues are removed from these objects. Caevren uses "
-        "a smooth dark counterweight, white meridian cage/yokes and silver chain, not a spiked crystal mace. "
-        "All36 portraits now remove the same saturated-color cue and explicitly lock reflections/powers "
-        "to the authored palette; fixed features, stage designs and references are unchanged. "
-        "Generated pixels still require review.",
+        "**Current celestial redesign:** Ilyss/Asteriel/Serapha now wear black-primary, white-accent "
+        "couture with deep-blue and bright-purple flowing energy, vivid cratered moons and phase motifs. "
+        "Maerion/Caevren/Vespera portraits are unchanged. Every character-linked ability, weapon, Master "
+        "and status carries individual colorful lunar construction. Masters are immense cosmic mechanical "
+        "sculptures, not generic monochrome chassis. Green key remains background only. "
+        "Names/kits/references remain; generated pixels still require review.",
         "## Vespera visual-language pilot\n\n"
         "Vespera's six portraits retain the shorter subject-first pilot: fixed identity and pose, "
         "approved stage costume/powers, renderer, palette, then containment/key and parameters. "
@@ -338,13 +406,14 @@ def document():
         "See the [complete checklist](../../docs/remaining-expansion-art.md) for combined totals. "
         "Historical event counts were TBD, not zero; the event specification now supplies them.",
         "## Identity, complexity and reference contract",
-        "All36 portraits preserve exact fixed features and approved stage rows. Adjacent change notes are "
+        "All36 portraits preserve fixed features and current owner-directed stage rows. Adjacent change notes are "
         "intentional costume/power evolution, never hair/eye/skin transformations. "
         "Common/Uncommon remain simple even for6-stars. Legendary architecture grows into Omnic; "
         "wing counts/materials differ by character. Titles are display prefixes outside image prose, "
         "not banner names, combat mode names or written lettering.",
-        "Same original Infernis/Tizu compact anime/cel renderer, natural authored skin tones and strict "
-        "black-white-silver costume/equipment/power palette. Eyes are the only anatomical facial features. "
+        "Same original Infernis/Tizu compact anime/cel renderer and natural authored skin tones. "
+        "New lunar designs use black-white-silver costume with deep-blue/bright-purple energy, not a "
+        "grayscale-only power restriction. Eyes are the only anatomical facial features. "
         "Entire ensemble stays inside70% with15% uninterrupted key margin on every edge; "
         "no cropped tips, haze, soft bloom or glow on edges. Painted metallic reflections remain.",
         "Portraits alone use the guide's exact evolution-matched signed URLs at150. "

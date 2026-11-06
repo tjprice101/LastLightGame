@@ -12,10 +12,10 @@ SPEC = ROOT / "docs" / "moon-sunshade-events.md"
 OUTPUT = ROOT / "Art" / "creatures" / "Moon and Sunshade Events.md"
 FAMILIES = (
     dict(slug="moon", family="Moonwake", enemy="Vesperwing",
-         identity="one compact lunar harbor moth Devourer, dark central carapace, white antennae, white-silver moth wings, one crescent ferry-token chest plate and split tail ribbon; no humanoid body or held weapon",
+         identity="one compact lunar harbor moth creature, dark central carapace, white antennae, white-silver moth wings, one crescent ferry-token chest plate and split tail ribbon; no humanoid body or held weapon",
          palette=PALETTE, color_no=COLOR_NO),
     dict(slug="sunshade", family="Dawnforge", enemy="Solcarapace",
-         identity="one compact solar scarab Devourer, one black beetle body, gold carapace ridges, exactly six small armored legs, split wing cases, one gold wedge head crest and paired round shoulder vents; antennae fully visible, no humanoid body or held weapon",
+         identity="one compact solar scarab creature, one black beetle body, white carapace ridges, exactly six small armored legs, split wing cases, one white wedge head crest and paired round shoulder vents; deep-orange and pearlescent-pink solar energy, antennae fully visible, no humanoid body or held weapon",
          palette=SUN_PALETTE, color_no=SUN_NO),
 )
 TIERS = ("Seed", "Bud", "Bloom", "Crest", "Heart", "Soul")

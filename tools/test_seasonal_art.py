@@ -95,19 +95,50 @@ class SeasonalArtTests(unittest.TestCase):
                 for prompt in owned:
                     count += 1
                     with self.subTest(owner=slug, prompt=prompt[:65]):
-                        self.assertIn(character["icon_identity"], prompt)
-                        self.assertIn("Owner construction:", prompt)
-                        self.assertIn("green key is background only", prompt)
-                        self.assertIn("every plate, core, reflection and power ribbon", prompt)
+                        identity = moon.LUNAR_IDENTITY[slug] if pack is moon else character["icon_identity"]
+                        self.assertIn(identity, prompt)
+                        self.assertIn("green key is background only", prompt.lower())
+                        if pack is moon:
+                            self.assertIn("deep-blue and bright vibrant purple", prompt)
+                            self.assertNotIn("purple effects", prompt.split(" --no ", 1)[1])
                         self.assertNotIn("jewel-like saturated colors", prompt)
                         self.assertNotIn("silver faceted cores", prompt)
                         self.assertNotIn("crystal reactor", prompt)
                         self.assertNotIn("--sref", prompt)
                         self.assertIn("object-only", prompt)
                         if slug == "caevren":
-                            self.assertIn("smooth dark sphere held inside white meridian cage ribs", prompt)
-                            self.assertIn("no mace spikes or crystal clusters", prompt)
+                            self.assertIn("smooth dark spherical counterweight", prompt)
         self.assertEqual(count, 117)
+
+    def test_owner_approved_celestial_colors_are_not_excluded(self):
+        for pack, colors in ((moon, ("deep-blue", "purple")), (sun, ("deep-orange", "pearlescent"))):
+            for asset, _, prompt, _ in pack.blocks():
+                if pack is moon and not ("--ar 1:1" in prompt or
+                                         re.fullmatch(r"(ilyss|asteriel|serapha)-[1-6]\.png", asset)):
+                    continue
+                with self.subTest(asset=asset):
+                    positive, negative = prompt.split(" --no ", 1)
+                    for color in colors:
+                        self.assertIn(color, positive.lower())
+                    self.assertNotIn("pink effects", negative)
+                    if pack is moon:
+                        self.assertNotIn("purple effects", negative)
+                        self.assertNotIn("blue effects", negative)
+                    self.assertNotIn("personal Master", positive)
+                    self.assertNotIn("Conduit", positive)
+                    if asset.startswith("master-"):
+                        self.assertIn("mechanical", positive)
+                        self.assertRegex(positive.lower(), r"gear|rotor|piston|axle")
+
+    def test_reworked_moon_trio_keep_individual_moon_architecture(self):
+        prompts = {asset: prompt for asset, _, prompt, _ in moon.blocks()}
+        for owner, signature in (("ilyss", "shear"), ("asteriel", "seed"), ("serapha", "scepter")):
+            for stage in range(1, 7):
+                prompt = prompts[f"{owner}-{stage}.png"]
+                self.assertIn(signature, prompt)
+                self.assertIn("moon", prompt.lower())
+                self.assertIn("Black primary", prompt)
+            self.assertIn("huge", prompts[f"{owner}-6.png"].lower())
 
 
 if __name__ == "__main__":
