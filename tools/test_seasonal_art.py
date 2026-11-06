@@ -80,6 +80,18 @@ class SeasonalArtTests(unittest.TestCase):
                     self.assertIn(family["identity"], prompt)
                     self.assertNotIn("object-only", prompt)
                     self.assertNotIn("--sref", prompt)
+            for asset, _, prompt, _ in rows:
+                if not asset.startswith((family["slug"] + "-", family["family"].lower() + "-")):
+                    continue
+                positive, negative = prompt.split(" --no ", 1)
+                if family["slug"] == "moon":
+                    self.assertIn("deep-blue", positive)
+                    self.assertIn("purple", positive.lower())
+                    self.assertNotIn("purple effects", negative)
+                    self.assertNotIn("blue effects", negative)
+                else:
+                    self.assertIn("deep-orange", positive)
+                    self.assertIn("pearlescent", positive)
 
     def test_every_character_object_inherits_its_own_materials_and_power_shapes(self):
         count = 0

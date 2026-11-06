@@ -112,17 +112,17 @@ STATUS_SYMBOLS = (
 )
 SCENES = (
     ("moon-banner.png", "Summoning banner / event splash", "16:9",
-     "one monumental black-white lunar harbor observatory, a silver moon reflected in still dark water, "
-     "interwoven ship-rib arches counterweight vanes whiteflame pennant sculptures separated-link tracery "
+     "one monumental black-white lunar harbor observatory, a huge vividly cratered violet-blue moon reflected in deep-blue water, "
+     "silver ship-rib arches blue counterweight vanes purple-white flame pennant sculptures separated-link tracery "
      "moonflower conservatory roofs and articulated open fan gates; six distinct motifs form one composition, "
      "no character reward grid, no figures, royal celestial scale with subtle moonlight glare and scenery bloom"),
     ("moon-header.png", "Activity header", "3:1",
-     "a panoramic silver lunar harbor gateway with a clear open passage, black-white mirrored metal ribs, "
+     "a panoramic silver lunar harbor gateway with a vivid purple moon behind blue-lit black-white mirrored metal ribs, a clear open passage, "
      "a central unlettered crescent token emblem, distant observatory meridian silhouettes and moonflower terraces; "
-     "quiet regal night, no people, no text, moonlit scenery reflections"),
+     "deep-blue wake channels and purple moonflower terraces, regal night, no people, no text, moonlit scenery reflections"),
     ("moon-arena.png", "Battle arena", "16:9",
-     "an empty black-white lunar harbor observatory terrace, silver ribbed railings below a distant moon, "
-     "still dark water and restrained moonflower architecture, broad uncluttered left and right fighting lanes, "
+     "an empty black-white lunar harbor observatory terrace, silver ribbed railings below a large violet-blue moon, "
+     "deep-blue water channels and purple moonflower architecture, blue-purple light restricted to rear arches and floor edges, broad uncluttered left and right fighting lanes, "
      "clear central floor, scenery depth stays behind combatants, no people or enemies, subtle reflected moonlight"),
 )
 
@@ -238,14 +238,25 @@ LUNAR_IDENTITY = {
     "asteriel": "central seed capsule and silver leaf-vein ribs, black petal-coat relief with white interiors, deep-blue branches and bright-purple moonflowers",
     "serapha": "split-oval scepter relief and articulated silver fan hinges, black judicial panel folds with white interiors, deep-blue open arcs and bright-purple lunar phases",
 }
-LUNAR_OWNERS = frozenset(("ilyss", "asteriel", "serapha"))
+LUNAR_OWNERS = frozenset(character["slug"] for character in CHARACTERS)
+LUNAR_PALETTE = (
+    "Black primary surfaces, white accents and silver mechanics; deep-blue and bright vibrant purple "
+    "elemental energy, vividly colored crater-faceted moons and lunar phases"
+)
+LUNAR_COLOR_NO = "green effects, gold metal, orange effects"
 
 
 def matching_object(character, subject):
-    if character["slug"] in LUNAR_OWNERS:
-        return lunar_cutout(
-            f"{subject}; Owner construction: {LUNAR_IDENTITY[character['slug']]}")
-    return character_object(character, subject)
+    construction = ""
+    if character["slug"] == "caevren":
+        construction = (
+            "; smooth dark spherical counterweight, not a cut gemstone; "
+            "white cage ribs and rectangular vanes, no mace spikes or crystal clusters")
+    prompt = lunar_cutout(
+        f"{subject}; Owner construction: {LUNAR_IDENTITY[character['slug']]}{construction}")
+    if character["slug"] == "caevren":
+        prompt = prompt.replace(" --no ", " --no mace spikes, crystal clusters, gemstone weight, ", 1)
+    return prompt
 
 
 LUNAR_ABILITIES = {
@@ -291,16 +302,15 @@ def lunar_cutout(subject, portrait=False, stage=1):
     style = (f"{MOON_RENDERER}; rounded head, tiny torso, short limbs, 2.5-3 heads tall, body {body} of canvas"
              if portrait else f"{ICON_RENDERER.replace('jewel-like saturated colors', 'jewel-like crisp facets')}; {OBJECT_ONLY}")
     suffix = f" --sref {references()[stage]} --sw {REFERENCE_WEIGHT}" if portrait else ""
-    return (f"{subject}. {style}. Black primary surfaces, white accents and silver mechanics; "
-            "deep-blue and bright vibrant purple elemental energy, vividly colored crater-faceted moons "
-            "and lunar phases. Natural authored skin tones are exempt; preserve authored skin, hair and eyes. "
+    return (f"{subject}. {style}. {LUNAR_PALETTE}. "
+            "Natural authored skin tones are exempt; preserve authored skin, hair and eyes. "
             "Opaque flowing ribbons, crisp painted highlights, non-emissive edges. "
             "entire ensemble inside central70 percent, continuous empty15 percent border on every side "
             "and corner; uninterrupted safety margin, all tips visible. "
             "plain solid green background (#00FF00), flat unlit through all openings; green key is background only. "
             f"--ar {'4:3' if portrait else '1:1'} --niji 6 --s 100 --q 1 --no text, lettering, numbers, "
             "watermark, cropping, photorealism, 3d render, glow on edges, light bloom, haze, "
-            "background gradient, scenery, green effects, gold metal, orange effects, "
+            f"background gradient, scenery, {LUNAR_COLOR_NO}, "
             f"{'mouth, nose, eyebrows, face paint, extra characters' if portrait else ICON_NO}{suffix}")
 
 
@@ -309,29 +319,23 @@ def blocks():
     approved = approved_sections()
     for character in CHARACTERS:
         fixed, forms = approved[character["slug"]]
-        render = vespera_cutout if character["slug"] == "vespera" else cutout
         for stage, (title, rarity, form) in enumerate(zip(character["titles"], RARITIES, forms), 1):
-            subject = (f"full-body gacha JRPG unit illustration, one compact {character['gender']}; "
-                       f"{character['weapon']}; {fixed} {form} {character['motif']}")
+            continuity = ""
             if character["slug"] == "vespera":
-                subject = (f"full-body gacha JRPG unit illustration, one compact female; {fixed} "
-                           f"{character['weapon']}. {form} Black signal-officer coat with white facing "
-                           "and a diagonal silver signal cord. All flame ribbons originate at the standard "
-                           "crest; one physical pennant, no additional held flags")
-            prompt = render(subject, "4:3", True, stage).replace(RENDERER, MOON_RENDERER).replace(
-                             " --ar ",
-                             " Palette lock covers costume, equipment, powers and their reflections: "
-                             "black, white, silver and charcoal only; preserve authored skin, hair and eyes. "
-                             "Neutral metal reflections, no iridescent tint. Green key is background only, "
-                             "never reflected onto the subject. --ar ", 1)
-            if character["slug"] in LUNAR_OWNERS:
-                prompt = lunar_cutout(
-                    f"full-body gacha JRPG unit illustration, one compact {character['gender']}; "
-                    f"{fixed} {character['weapon']}. {form}", True, stage)
+                continuity = (
+                    " One physical pennant, no additional held flags. "
+                    "All flame ribbons originate at the standard crest; silver-white flames "
+                    "have charcoal cuts and purple tips, not orange fire.")
+            elif character["slug"] == "caevren":
+                continuity = (
+                    " Smooth dark spherical counterweight inside white meridian ribs; "
+                    "no mace spikes or crystal clusters, rectangular vanes never feathers.")
+            prompt = lunar_cutout(
+                f"full-body gacha JRPG unit illustration, one compact {character['gender']}; "
+                f"{fixed} {character['weapon']}. {form}{continuity}", True, stage)
             rows.append((f"{character['slug']}-{stage}.png", f"{title}, {character['name']} / {rarity}", prompt, form))
         for index, (action, name, symbol) in enumerate(character["icons"]):
-            if character["slug"] in LUNAR_OWNERS:
-                symbol = LUNAR_ABILITIES[character["slug"]][index]
+            symbol = LUNAR_ABILITIES[character["slug"]][index]
             rows.append((f"{character['slug']}-{action}.png", f"{character['name']} / {name}",
                          matching_object(character, f"one standalone ability emblem: {symbol}"),
                          "Owner-specific equipment, costume materials and power geometry; no figure."))
@@ -354,7 +358,7 @@ def blocks():
     for asset, label, aspect, subject in SCENES:
         prompt = (f"{subject}; original compact anime game scenery renderer, crisp contours, cel shading, "
                   "painted highlights and jewel-like metal detail in richly layered architecture; "
-                  "palette black white silver charcoal, full-bleed scenery, uncluttered "
+                  f"{LUNAR_PALETTE}; full-bleed scenery, uncluttered "
                   "composition, scenery lighting permitted. "
                   f"--ar {aspect} --niji 6 --s 100 --q 1 --no text, lettering, watermark, people, "
                   "character portraits, reward grid, photorealism, 3d render, blur, rainbow colors")
@@ -373,17 +377,18 @@ def document():
         "Reproduce: `python tools/build_moon_banner_art.py`. Do not edit generated blocks by hand.",
         "**Current celestial redesign:** Ilyss/Asteriel/Serapha now wear black-primary, white-accent "
         "couture with deep-blue and bright-purple flowing energy, vivid cratered moons and phase motifs. "
-        "Maerion/Caevren/Vespera portraits are unchanged; their abilities, weapons, Masters and statuses "
-        "match those portraits' black-white-silver materials and silver-white powers, without invented "
-        "blue-purple moons. Ilyss/Asteriel/Serapha associated art retains its portraits' blue-purple "
+        "Maerion/Caevren/Vespera now have revised lunar couture and blue-purple phase powers matching "
+        "the other three Moon characters, while retaining fixed features and equipment seeds. "
+        "Every ability, weapon, Master and status follows its own portrait's colorful "
         "lunar construction. Masters are immense owner-shaped cosmic mechanical sculptures, not "
         "generic chassis or a different character's equipment. Green key remains background only. "
         "Names/kits/references remain; generated pixels still require review.",
         "## Vespera visual-language pilot\n\n"
-        "Vespera's six portraits retain the shorter subject-first pilot: fixed identity and pose, "
+        "Vespera's six portraits retain the subject-first order: fixed identity and pose, "
         "approved stage costume/powers, renderer, palette, then containment/key and parameters. "
         "Six portraits, four abilities, one optional weapon, three Masters and two status icons are covered. "
-        "Full approved design/change notes remain beside portraits; no appearance or kit changes. "
+        "Full current design/change notes remain beside portraits; the lunar appearance changes "
+        "do not change kits. "
         "The later owner-material correction extends object identity checks across both banners; "
         "other portraits and shared event scenery are not part of this pilot.\n\n"
         "Generate Common and Omnic plus one ability icon first; inspect identity, single standard/pennant, "
@@ -410,7 +415,7 @@ def document():
         "and power geometry, not merely a generic symbol in the character's palette. "
         "All six characters carry these details explicitly in all24 ability prompts. "
         "Cloth/plate fragments are object ornament, never a miniature character, face, hands or worn outfit. "
-        "Shared universal actions remain shared; this pass does not rewrite portraits or installed artwork.",
+        "Shared universal actions remain shared; no installed artwork is changed by generation.",
         "**Event extension:** six Vesperwing forms and six Moonwake materials have their own "
         "[signature activity pack](../creatures/Moon%20and%20Sunshade%20Events.md), not duplicate entries "
         "in this98-image pack. No separate boss portrait or specialty item chain is required. "

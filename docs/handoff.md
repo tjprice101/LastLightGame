@@ -1,5 +1,53 @@
 # Current state and handoff
 
+## All-Moon redesign and four artwork-led War proposals (2026-11-06)
+
+Latest request supersedes the grayscale matching/preservation paragraphs
+below. Maerion/Caevren/Vespera now receive18 lunar portrait rewrites:
+black-white/silver couture, deep-blue and vivid-purple moons/phases and
+individual hull-rib/meridian-anchor/pennant-relay silhouettes. Natural fixed
+features, names, equipment seeds, wing/ring counts, kits and references remain.
+All59 Moon associated objects match; nine Master art rows use those powers.
+Three shared scenes and all12 Moon enemy/material prompts now match too.
+Sunshade remains its orange-pink direction. No event/date/reward changes.
+
+All24 older supplied root portraits are present and visually reviewed in
+authored six-form order. Owner confirms reuse as four separate War character
+designs only, no playable integration. [Full generated specification](phase-2-war-designs.md)
+and [44 new associated prompts](../Art/characters/Elemental%20War%20Phase%202.md)
+cover Neralis (Oceanic Healer & Support), Varkhel (Infernic Tank), Seravelle
+(Infernic Support), Velmira (Chaotic Attacker), lore/vows, six-form source
+mappings, base stats, meaningful native counters/buffs, three Masters each,
+strengths/limits, trial header/arena and eight status symbols.
+Numbers/names remain review proposals, not measured balance or release.
+Their actual colored source identity stays distinct from the new Moon art.
+
+`tools/archive_phase2_war_art.py --archive` preserves all24 original bytes
+under `Art/source/phase2-war`; original filenames/new names/form IDs/hashes/
+dimensions/review notes are in `Art/provenance/phase2-war-source-mapping.json`.
+Root originals remain. No key cleanup, recolor, resize, runtime URL/PNG,
+character/trial registration or authority deployment. Supplied hair/weapon
+drift and clipped tips are honestly recorded; padding is not reconstruction.
+
+Generators: `tools/build_moon_banner_art.py`,
+`tools/build_seasonal_event_art.py`, `tools/build_phase2_war_art.py`.
+Focused validation uses Moon, seasonal and Phase2-War Python suites, including
+reproduction, reference/clearance/word limits, all-owner palette matching,
+44 new/24 reused counts and hash-preserving/idempotent archival failures.
+Combined command from `tools`:
+`python -m unittest test_moon_banner_art test_seasonal_art test_phase2_war_art test_phase1_war_art`
+passes31 tests. Additional historical `test_elemental_war_art` has3 passing
+checks and1 pre-existing failure: it demands obsolete `**1% chance**`, already
+absent from the prior committed War spec under guaranteed Stage10 recruitment.
+No unrelated test/rule was changed to conceal it. All18 Ilyss/Asteriel/Serapha
+portrait bodies and all Sunshade portrait/object/event bodies compare unchanged;
+only the requested18 Moon portraits were rewritten.
+Seasonal207 required/12 optional remains; separate War44 new images gives
+251 required new images,263 including optional. Future War integration needs
+owner approval, reviewed art intake, exact mechanics tests, non-Calamitic
+paper/support/survival and actual pressured-trial checks, full suite/build
+and matching hosted authority/client verification.
+
 ## Moon portrait and associated-art matching (2026-11-06)
 
 Owner withdrew the plan to rename/reuse delivered Moon portraits as four new

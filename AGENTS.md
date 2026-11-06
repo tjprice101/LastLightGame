@@ -1,5 +1,22 @@
 # Last Light: AI agent entry point
 
+## All-Moon redesign and artwork-led War proposals (2026-11-06)
+
+Owner now reworks Maerion/Caevren/Vespera portraits as well: all six Moon
+characters and all associated abilities/weapons/statuses/Masters/scenery,
+Vesperwing and Moonwake share black-white/silver material with deep-blue
+and vivid-purple moon phases. Preserve each owner's fixed features, equipment,
+lore/kits/IDs and inactive schedules; never monochrome-only object art.
+This supersedes preserving those three grayscale portraits or excluding
+blue-purple from their associated prompts. Sunshade remains orange-pink.
+The24 older supplied Moon portraits are archived byte-exact as four proposed
+War characters: Neralis, Varkhel, Seravelle, Velmira. docs/phase-2-war-designs.md
+and Art/characters/Elemental War Phase 2.md own names, lore, kits, mappings
+and44 missing associated images. No playable integration is approved yet.
+Keep their actual cyan/amber, scarlet/orange/violet, orange/gold or violet/gold
+palettes; do not apply the new Moon palette to reclaimed War artwork.
+Preserve root originals until reviewed intake, no automatic keying/export.
+
 ## Living-world presentation and celestial art direction (2026-11-05)
 
 Every screen, battle, menu and accepted action must feel intentionally alive,

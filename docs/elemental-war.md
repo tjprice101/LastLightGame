@@ -1,5 +1,19 @@
 # Elemental War
 
+## Phase2 artwork-led proposals (2026-11-06)
+
+Owner reuses24 older Moon-labeled root portraits for four distinct new
+proposed War characters: Neralis (Oceanic Healer & Support), Varkhel
+(Infernic Tank), Seravelle (Infernic Support) and Velmira (Chaotic Attacker).
+[Complete designs, lore, kits, strengths and source/form mappings](phase-2-war-designs.md)
+and [44 matching associated prompts](../Art/characters/Elemental%20War%20Phase%202.md)
+are reviewable design deliverables. Original bytes are archived with hashes;
+root files remain until reviewed intake. No character/trial is registered,
+no new recruitment/drop/save/authority behavior is implemented in this pass.
+Future trials would reuse current War rules, not seasonal summon/material
+chains. Names and numeric designs remain proposals pending implementation
+approval and actual non-Calamitic benchmark tests.
+
 ## Separate trial and Omnic names (2026-11-04)
 
 Activity names are distinct from character evolution titles:

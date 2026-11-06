@@ -1,5 +1,17 @@
 # Last Light — Character Art Midjourney Prompt Guide
 
+## Latest all-Moon and reclaimed-War direction (2026-11-06)
+
+All six Moon characters now have blue-purple lunar portrait and associated
+art. Maerion/Caevren/Vespera's grayscale exception below is superseded by their
+new portrait designs: black-white/silver material, deep-blue water/wind/relay
+paths and vivid-purple moon phases, with individual hull/counterweight/pennant
+construction. Update related event scenes, Vesperwing and Moonwake too.
+The older supplied portraits are a separate proposed War package; their
+ability/Master/status/scenery prompts inherit their actual colored appearances,
+not this Moon palette. Never confuse the old filename with the new owner.
+No new portrait generations are needed for those24 reclaimed sources.
+
 ## Match the actual owner, not just the banner (2026-11-06)
 
 Every character-specific icon, weapon, status and Master must inherit its

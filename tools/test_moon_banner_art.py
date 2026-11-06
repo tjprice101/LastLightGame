@@ -112,22 +112,15 @@ class MoonBannerArtTests(unittest.TestCase):
                 count += 1
                 positive, negative = prompt.split(" --no ", 1)
                 with self.subTest(owner=slug, asset=asset):
-                    if slug in LUNAR_OWNERS:
-                        self.assertIn(LUNAR_IDENTITY[slug], positive)
-                        self.assertIn("deep-blue and bright vibrant purple", positive)
-                        self.assertNotIn("purple effects", negative)
-                    else:
-                        self.assertIn(character["icon_identity"], positive)
-                        self.assertIn("costume equipment and powers only black white silver and charcoal", positive)
-                        for drift in ("deep-blue", "purple", "violet", "blue moon"):
-                            self.assertNotIn(drift, positive.lower())
-                        self.assertIn("purple effects", negative)
+                    self.assertIn(LUNAR_IDENTITY[slug], positive)
+                    self.assertIn("deep-blue and bright vibrant purple", positive)
+                    self.assertNotIn("purple effects", negative)
                     if slug == "caevren":
                         self.assertIn("not a cut gemstone", positive)
                         self.assertIn("mace spikes", negative)
         self.assertEqual(count, 59)
 
-    def test_vespera_pilot_is_complete_and_shorter_without_losing_design(self):
+    def test_vespera_lunar_rework_preserves_single_standard_and_clear_language(self):
         rows = [row for row in blocks() if row[0].startswith(
             ("vespera-", "master-vespera-", "moon-status-vespera-"))]
         self.assertEqual(len(rows), 16)
@@ -142,16 +135,23 @@ class MoonBannerArtTests(unittest.TestCase):
         fixed, forms = approved_sections()["vespera"]
         character = next(c for c in CHARACTERS if c["slug"] == "vespera")
         for stage, form in enumerate(forms, 1):
-            old_subject = (f"full-body gacha JRPG unit illustration, one compact female; "
-                           f"{character['weapon']}; {fixed} {form} {character['motif']}")
-            old = cutout(old_subject, "4:3", True, stage)
             new = next(row[2] for row in rows if row[0] == f"vespera-{stage}.png")
-            self.assertLess(len(new.split(" Palette lock")[0].split()),
-                            len(old.split(" --ar")[0].split()) * .85)
-            self.assertIn("one physical pennant", new)
+            self.assertIn("One physical pennant", new)
             self.assertIn("All flame ribbons originate at the standard crest", new)
+            self.assertIn("purple", new)
         subject = "one silver signal clasp"
         self.assertLess(len(vespera_cutout(subject)), len(cutout(subject)))
+
+    def test_all_six_portrait_lines_and_shared_scenes_have_current_lunar_color(self):
+        self.assertEqual(len(LUNAR_OWNERS), 6)
+        for asset, _, prompt, _ in blocks():
+            positive, negative = prompt.split(" --no ", 1)
+            self.assertIn("deep-blue", positive)
+            self.assertIn("purple", positive.lower())
+            self.assertNotIn("blue effects", negative)
+            self.assertNotIn("purple effects", negative)
+            if "--ar 4:3" in prompt:
+                self.assertIn("moon", positive.lower())
 
     def test_all_moon_portraits_preserve_identity_without_saturated_color_conflict(self):
         portraits = [prompt for _, _, prompt, _ in blocks() if "--ar 4:3" in prompt]

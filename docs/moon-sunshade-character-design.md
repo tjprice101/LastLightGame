@@ -2,11 +2,15 @@
 
 ## Status and approval boundary
 
-**Current owner redesign (2026-11-05):** grayscale-only Moon and black/gold
-Sunshade restrictions are superseded. Preserve Maerion/Caevren/Vespera portraits.
-Rework Ilyss/Asteriel/Serapha in black-primary/white-accent couture with deep-blue
+**Current owner redesign (2026-11-06):** all six Moon characters now use
+black-primary/white-accent couture with deep-blue
 and bright-purple energy, vividly colored moons/phases and cosmic grandeur.
-Rebuild every Moon ability and Master as distinct colored lunar art. Sunshade
+Maerion/Caevren/Vespera receive complete six-form lunar refinements below;
+their fixed features, equipment seeds, names, lore and kits remain. All
+associated prompts and Moonwake/Vesperwing/scenery match the same theme.
+The earlier portrait-preservation/grayscale exceptions are superseded.
+Existing delivered older portraits are separately reused as proposed War
+characters, never substituted for these new Moon designs. Sunshade
 may be radically reimagined with black/white clothing and deep-orange/
 pearlescent-pink solar energy. Keep the compact renderer, native kits, stable
 identities and explicit inactive-launch gates. Design/prompt completion does
@@ -53,8 +57,9 @@ introduced. Moonlight and sunlight are aesthetic motifs, not combat elements.
   establishes the full motif, Epic unfolds it, Legendary becomes monumental,
   and Omnic expands that same architecture into a distinct lavish crescendo.
   Six-star acquisition is not permission for an Omnic-looking base.
-- Moon uses black, white, silver and charcoal, with small individual grayscale
-  variations. Metallic sheen is painted reflection, not rainbow recoloring.
+- Moon uses black-primary and white-accent material with silver mechanics,
+  deep-blue and vivid-purple power, and clearly colored moon phases. Metallic
+  sheen is painted reflection, not arbitrary rainbow recoloring.
   Sunshade's owner-approved redesign (2026-11-05) uses **black and white as
   primary and secondary costume/equipment colors, never gold**, with **deep
   orange and pearlescent pink elemental energy**. Pearlescence means crisp
@@ -136,22 +141,23 @@ the six individual identities and complete appearance/power details.
 **Fixed features:** warm medium-brown skin, soft narrow silver-gray eyes,
 charcoal hair in a low tied tail, one white lock at the right temple. His
 upright but slightly sheltering stance keeps one open hand beside the polearm.
-**Costume identity:** a surgeon's high-collared white coat over black segmented
-armor, split below the knee into two boat-prow panels. Plain unlettered ferry
+**Costume identity:** a high-collared black surgeon-admiral coat with white
+inner prow panels, silver hull-rib seams and violet crescent clasps, split
+below the knee into two boat-prow panels. Plain unlettered ferry
 tokens hang from the same left-belt clasp in every form; no readable names.
 The single crescent polearm has a long dark shaft and blunt inward silver
 curve, not an additional sword or realistic surgical instrument.
 
 | Form | Clothing, equipment and visible power changes |
 |---|---|
-| Common | Short white field coat, plain black breastplate, fitted gloves/boots; three small ferry tokens. Simple crescent polearm; one silver-black water ribbon curves beneath his open hand. No wings/rings. |
-| Uncommon | Coat extends to the knee, silver cuff stitching and boat-rib greaves; the clasp remains plain. Two controlled water ribbons trace opposite sides of the polearm. No wings/rings. |
-| Rare | Two layered prow coat panels, ribbed silver shoulder guards, crescent clasp; the weapon curve gains nested metal ribs. Two narrow swept water-rib wings unfold from the shoulder line. |
-| Epic | Pleated black undercoat and articulated white-silver sleeve plates; four water-rib wings form a shallow protective hull behind him. One open water arc passes under both feet, never a scenery boat. |
-| Legendary | Long overlapping prow panels, polished ribwork torso and a low crescent diadem. Six broad hull-rib wings and two open keel arcs shelter the silhouette; the Rare weapon remains recognizable. |
-| Omnic | White-silver admiral-surgeon regalia with dense black inlay, layered ribbed mantle and the original three tokens prominently retained. Eight vast swept hull wings, three nested open keel arcs and interwoven water ribs form a remembered vessel around the same compact body. |
+| Common | Short black field coat with white inner panels, modest silver chest rib and fitted gloves/boots; three small silver ferry tokens. Simple crescent polearm; one deep-blue water stitch curls under his open hand around a tiny purple moon sliver. No wings/rings. |
+| Uncommon | Knee-length black coat, white prow lining, silver cuff stitching and boat-rib greaves; two blue water ribbons follow the polearm and shelter a vivid purple quarter-moon over the token clasp. No wings/rings. |
+| Rare | Layered black prow panels with crisp white interiors, silver rib shoulders and a violet crescent clasp; nested polearm ribs. Two narrow blue hull-rib wings carry purple phase inlays around a silver half-moon cradle. |
+| Epic | Deep pleated black undercoat, white sleeve channels and silver keel filigree; four sweeping blue water-rib wings form an open protective hull. One open keel arc passes under both feet and lifts a purple three-quarter moon behind the shoulders, never a scenery boat. |
+| Legendary | Overlapping black-white prow trains, polished silver torso ribs and a low violet crescent diadem. Six monumental blue hull-rib wings and two open keel arcs cradle a huge vividly cratered purple moon; dense silver token chains trace the water channels, original polearm clear. |
+| Omnic | Retain Legendary admiral-surgeon couture, expand black pleated prow trains with white interiors, silver ribbed mantle and the original three tokens. Eight vast blue hull wings and three nested open keel arcs shelter a huge violet-blue full moon; interwoven purple water stitches and silver phase medallions fill the rear hull while the face and single crescent polearm stay clear. |
 
-**Power language:** precise water bands meet at crescent junctions like a
+**Power language:** deep-blue water bands and purple lunar stitches meet at crescent junctions like a
 well-made hull; never generic splashes, feathers or Tizu's tidal wall.
 **Intentional changes:** coat length, plated ribwork, diadem and wing/arc
 counts only. Hair lock, token location and polearm type never change.
@@ -175,22 +181,24 @@ counts only. Hair lock, token location and polearm type never change.
 **Fixed features:** deep brown skin, half-lidded pale-gray eyes, close-cropped
 black curls with a square central forelock. Broad armored shoulders surround
 the standard tiny torso, not a different muscular/realistic body.
-**Costume identity:** an observatory work harness over a black padded coat,
-white rectangular platework, one offset shoulder yoke and squared boots.
+**Costume identity:** a black observatory coat with white stepped facing,
+silver meridian seams, one offset shoulder yoke and squared boots. Blue wind
+channels and purple phase dials follow structural ribs, not random gemstones.
 One counterweight flail consists of a short silver handle, a single articulated
 chain and one dark spherical weight inside a white meridian cage.
 
 | Form | Clothing, equipment and visible power changes |
 |---|---|
-| Common | Simple white chest plate over the black coat, low yoke and flat square greaves. One caged flail weight; two short wind strokes brace its sides. No wings/rings. |
-| Uncommon | Reinforced silver harness buckles, white knee plates and a ribbed yoke; the weight gains a second cage rib. One small complete wind ring around the weight; no wings. |
-| Rare | Hinged shoulder yoke and angular white waist plates. Two rectangular vane wings and one horizontal bracing ring sit behind the upper torso. |
-| Epic | Stacked yoke plates, black padded skirt tabs and silver meridian seams; four stepped vane wings. Two differently tilted complete bracing rings frame the shoulders without crossing his eyes. |
-| Legendary | Monumental counterweight shoulders, white-silver chest lattice and a low squared crown. The same four vane wings broaden into deeply nested load-bearing fans; three tilted rings echo the flail's meridian cage. |
-| Omnic | Lavish calibrated platework and dense nested yoke arches, retaining the flail and black working coat. Six massive stepped vane wings and four offset rings brace a vast astronomical anchor silhouette; the single weight stays visibly attached. |
+| Common | Black padded coat, small white chest yoke and flat square greaves. One smooth caged flail weight; two deep-blue wind struts brace a tiny purple phase plate on its cage. No wings/rings. |
+| Uncommon | Silver harness buckles, white knee plates and a ribbed yoke; second flail cage rib. One small blue wind ring circles the weight with a vivid purple quarter-moon dial; no wings. |
+| Rare | Hinged silver shoulder yoke and angular white waist plates over black cloth. Two rectangular blue vane wings and one horizontal bracing ring carry purple half-moon plates behind the shoulders; smooth weight remains clear. |
+| Epic | Stacked white-edged black yokes, padded skirt tabs and engraved silver meridian seams; four stepped blue vane wings. Two tilted blue rings support purple three-quarter moon dials behind the shoulders without crossing his eyes. |
+| Legendary | Monumental black-white counterweight shoulders, silver chest lattice and low squared crown. Four broad deeply nested blue load-bearing fans and three tilted rings brace a huge violet-blue moon above the original smooth flail cage; white rectangular vanes remain distinct from feathers. |
+| Omnic | Retain Legendary working coat and lattice, expand lavish calibrated yoke arches and dense silver load-path relief. Six massive stepped blue vane wings and four offset rings brace a huge richly cratered purple moon; violet phase flywheels and parallel blue wind struts fill the astronomical anchor while the single smooth weight stays attached by one silver chain. |
 
-**Power language:** compressed wind forms short parallel struts and measured
-orbital loops; grounded stance, no storm clouds or floating extra weapons.
+**Power language:** deep-blue compressed wind forms parallel struts and measured
+orbital loops supporting vivid-purple moon dials; grounded stance,
+no storm clouds or floating extra weapons.
 **Intentional changes:** structural plate layering, cage detail and exact
 wing/ring counts; never a hairstyle change or second flail.
 
@@ -202,8 +210,8 @@ wing/ring counts; never a hairstyle change or second flail.
   abandon a district. Her Wrath is directed at preventable abandonment.
 - **Distinct identity:** fire as coordination and defiance, not Infernis's
   greatsword aggression or Caldrex's furnace enclosure.
-- **Signature to develop:** a bladed signal standard, silver-white flame
-  pennants and blackened mirrored armor; no accidental orange Moon palette.
+- **Signature to develop:** a bladed signal standard, purple-tipped whiteflame
+  pennants, deep-blue phase relays and blackened mirrored armor; no orange fire.
 - **Gameplay direction:** prepare allies' offensive opportunities rather than
   become a third Infernic damage specialist.
 - **Omnic test:** a winged procession of unextinguished signal flames, all
@@ -221,15 +229,16 @@ are additional flame ribbons, not duplicate flags held by invisible soldiers.
 
 | Form | Clothing, equipment and visible power changes |
 |---|---|
-| Common | Hip-length coat, small mirror breastplate and silver boots; unadorned diagonal cord. One small silver-white flame curls from the pennant tip. No wings/rings. |
-| Uncommon | Knee-length split coat, reinforced bracers and white piping; one flame ribbon follows the braid's direction without replacing hair. No wings/rings. |
-| Rare | Sharp silver epaulettes, layered coat facing and a notched pennant clasp. Two long pennant-shaped flame wings rise from the standard's rear crest. |
-| Epic | Four coat-tail panels and articulated mirror gauntlets; six flame wings open as three staggered pennant pairs. Two small open flame arcs wrap the shaft, not the face. |
-| Legendary | Faceted silver command armor, black-white braided aiguillette and a low spear-point diadem. Ten serrated pennant wings, three open shaft arcs and crisp secondary flame filaments. |
-| Omnic | Dense mirror-inlaid marshal regalia with sweeping black-white coat panels. Fourteen colossal pennant wings in rising ranks, four shaft arcs and interlaced signal flames; every main ribbon visibly originates at the same standard crest. |
+| Common | Hip-length black signal coat with white facing, modest silver breastplate and boots; plain diagonal cord. One small silver-white flame with a purple tip curls from the standard crest beside a tiny blue moon sliver. No wings/rings. |
+| Uncommon | Knee-length split black coat, white piping and silver bracers; one purple-tipped whiteflame follows the braid without replacing hair, a deep-blue quarter-moon relay fixed below the single pennant. No wings/rings. |
+| Rare | Sharp silver epaulettes, layered white coat facing and notched purple phase clasp. Two long purple-white pennant flame wings rise from the standard's rear crest around a vivid blue half-moon. |
+| Epic | Four black-white coat-tail panels and articulated mirror gauntlets; six purple-white flame wings open in three staggered pennant pairs. Two open blue shaft arcs carry violet phase plates, leaving face and physical pennant clear. |
+| Legendary | Silver mirror-inlaid black command armor, white-lined pleated trains, braided signal cord and low spear-point diadem. Ten serrated purple-white pennant wings and three blue shaft arcs relay a huge richly colored blue-violet moon; crisp flame filaments originate at the crest. |
+| Omnic | Retain Legendary command couture and expand mirror-inlaid black marshal regalia with sweeping white interiors. Fourteen colossal purple-white pennant wings in rising ranks and four deep-blue shaft arcs frame a huge violet-blue full moon; densely interlaced signal flames and phase relays fill the rear ranks, every main ribbon originating at the same standard crest. |
 
-**Power language:** white flame with silver/charcoal interior cuts, never
-orange/gold Moon drift. Sharp lifting pennants suggest communication and resolve.
+**Power language:** silver-white flame with charcoal interior cuts and vivid
+purple tips, routed through deep-blue lunar phase relays, never orange/gold.
+Sharp lifting pennants suggest communication and resolve.
 **Intentional changes:** longer coat panels, command insignia as abstract
 shapes, wing/arc counts; the braid, ribbon and single physical flag persist.
 

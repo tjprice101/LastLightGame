@@ -3,7 +3,7 @@ from pathlib import Path
 import re
 
 from build_elemental_war_art import RENDERER
-from build_moon_banner_art import MARGIN, NO, PALETTE, RARITIES, COLOR_NO, cutout
+from build_moon_banner_art import LUNAR_PALETTE, LUNAR_COLOR_NO, MARGIN, NO, MOON_RENDERER, RARITIES, cutout
 from build_sunshade_banner_art import PALETTE as SUN_PALETTE, COLOR_NO as SUN_NO
 from prompt_quality import SHARP
 
@@ -12,8 +12,8 @@ SPEC = ROOT / "docs" / "moon-sunshade-events.md"
 OUTPUT = ROOT / "Art" / "creatures" / "Moon and Sunshade Events.md"
 FAMILIES = (
     dict(slug="moon", family="Moonwake", enemy="Vesperwing",
-         identity="one compact lunar harbor moth creature, dark central carapace, white antennae, white-silver moth wings, one crescent ferry-token chest plate and split tail ribbon; no humanoid body or held weapon",
-         palette=PALETTE, color_no=COLOR_NO),
+         identity="one compact lunar harbor moth creature, dark central carapace, white antennae, black-white silver-ribbed moth wings, one crescent ferry-token chest plate and split tail ribbon; deep-blue wake filaments and vivid-purple moon phases, no humanoid body or held weapon",
+         palette=LUNAR_PALETTE, color_no=LUNAR_COLOR_NO),
     dict(slug="sunshade", family="Dawnforge", enemy="Solcarapace",
          identity="one compact solar scarab creature, one black beetle body, white carapace ridges, exactly six small armored legs, split wing cases, one white wedge head crest and paired round shoulder vents; deep-orange and pearlescent-pink solar energy, antennae fully visible, no humanoid body or held weapon",
          palette=SUN_PALETTE, color_no=SUN_NO),
@@ -36,13 +36,14 @@ def blocks():
     rows = []
     for family in FAMILIES:
         enemies, materials = rows_for(family)
+        renderer = MOON_RENDERER if family["slug"] == "moon" else RENDERER
         for stage, (rarity, name, design) in enumerate(enemies, 1):
             craft = ("simple early craft, not a mature Omnic wing array" if stage < 3 else
                      "dense majestic late-form craft, central body and complete antennae/legs clear" if stage >= 5 else
                      "layered stage-appropriate craft, compact central body retained")
             prompt = (
                 f"full-body gacha JRPG creature illustration, {family['identity']}. {design.strip()} "
-                f"{RENDERER}, same compact species proportions in every form, {craft}. {family['palette']}. "
+                f"{renderer}, same compact species proportions in every form, {craft}. {family['palette']}. "
                 f"Opaque sharply bounded non-emissive powers, painted metal reflections only. {SHARP}. {MARGIN}. "
                 "plain solid green background (#00FF00), flat unlit color edge to edge and through all openings; "
                 "no glows or glowing visual effects, subject colors unchanged, no scenery. "
@@ -57,6 +58,9 @@ def blocks():
                 "recognizable original seed capsule retained through the chain; no faces or figures",
                 palette=family["palette"], color_no=family["color_no"],
             )
+            if family["slug"] == "moon":
+                prompt = prompt.replace(
+                    "jewel-like saturated colors", "jewel-like crisp facets within the authored palette")
             rows.append((f"{family['family'].lower()}-{tier.lower()}.png",
                          f"{tier} of {family['family']}", prompt, design.strip()))
     return rows
@@ -81,6 +85,9 @@ def document():
         "The captured same-event forms are infusion fodder; no extra specialty-item chain. "
         "Each event's banner/event splash, header and arena are already counted in its character pack. "
         "No separate map, chest, reward logo or Profile image is required.",
+        "Current Moon family: deep-blue wake channels and vivid-purple moons/phases inside "
+        "black-white/silver material, matching all six lunar characters. Sunshade remains "
+        "black-white with deep-orange/pearlescent-pink solar energy. Neither family is monochrome-only.",
         "Enemies and materials are reference-free. Original compact anime/cel species renderer, "
         "complete silhouettes within70% and continuous15% solid green-key safety margin on every side. "
         "Future reviewed offline keying only; never remove supplied alpha or globally erase matching "

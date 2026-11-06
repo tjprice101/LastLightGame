@@ -5,6 +5,22 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+All-Moon redesign and reclaimed-War scope (2026-11-06): owner now requests
+reworking Maerion/Caevren/Vespera portraits and all associated prompts to
+match the other Moon characters and event. All six use vivid blue-purple
+lunar powers with distinct black-white/silver construction; Moonwake,
+Vesperwing and event scenery match. This supersedes preserving the three
+grayscale portraits and the immediately preceding matching exception.
+Keep existing character names, natural features, equipment seeds, kits and
+inactive event schedules.
+
+Owner also renews reuse of24 supplied older portraits as four new War
+designs, confirms four six-image sets, design/lore/kits/three-Masters/prompts
+only (no playable integration), exact archival/provenance and retention of
+root originals until reviewed intake. [Four proposed identities and designs](phase-2-war-designs.md)
+record Neralis/Varkhel/Seravelle/Velmira, current rules and44 new image needs.
+Names/numeric proposals are not yet accepted tuning or implemented characters.
+
 Portrait/associated-art matching (2026-11-06): owner withdraws repurposing
 the delivered Moon portraits into newly named War characters. Instead every
 character's ability, weapon, status and Master art must match its current

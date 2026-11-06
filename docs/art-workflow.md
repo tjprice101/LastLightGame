@@ -1,5 +1,27 @@
 # Art and asset workflow
 
+## All-Moon redesign and archived War source reuse (2026-11-06)
+
+The latest owner request supersedes the grayscale matching exception below.
+Maerion/Caevren/Vespera now receive revised portraits with black-white couture,
+deep-blue/vivid-purple lunar powers and distinct hull/meridian/signal motifs.
+All six portraits, abilities, Masters, statuses, weapons and shared scenes
+match that theme; Moonwake/Vesperwing are reworked too. Existing names,
+fixed features, kits and schedules stay.
+
+The24 older delivered root portraits are separately preserved for four new
+proposed Elemental War characters, not installed as current Moon portraits.
+[Full designs and source map](phase-2-war-designs.md) and
+[44 new associated prompts](../Art/characters/Elemental%20War%20Phase%202.md)
+retain actual colored source identity. `tools/archive_phase2_war_art.py --archive`
+copies exact bytes to `Art/source/phase2-war` without renaming originals or
+key removal and verifies SHA-256 in
+`Art/provenance/phase2-war-source-mapping.json`. Root originals stay.
+No runtime export, URL, character registration or gameplay implementation
+is performed. Source-clipped tips and supplied hair/weapon differences are
+recorded, not claimed repaired. Future RGB/gradient cleanup needs per-source
+review; preserve actual cyan/green/gold/pale details inside the subject.
+
 ## Portrait-to-associated-art consistency (2026-11-06)
 
 Owner cancels repurposing the delivered Moon portraits into new War characters.

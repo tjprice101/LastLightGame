@@ -57,6 +57,9 @@ The squad opens a passage without resolving the creators' war or a Story chapter
 
 **Enemy line: Vesperwing**, a Tranquilitic lunar moth Devourer. Keep a single
 compact moth body, dark central carapace, white antennae and white-silver wings.
+Deep-blue wake filaments and vivid-purple lunar phases identify the Moon
+family across enemies, materials and scenery, matching all six current
+character designs; never grayscale-only or orange/pink Sunshade energy.
 No humanoid face, held weapons or Rose armor. The same crescent ferry-token
 chest plate and split tail ribbon identify all six forms. Calm-but-formidable
 silhouette progresses toward a vast open harbor gate; not a copied butterfly
@@ -64,12 +67,12 @@ character or feathery angel.
 
 | Form | Proposed name | Appearance and powers |
 |---|---|---|
-| Common | Vesperwing | Two small white moth wings, plain black carapace and one silver crescent plate; a single quiet white wake stroke. |
-| Uncommon | Tokenwatch Vesperwing | Same two wings gain silver leading-edge ribs; paired white tail ribbons and two short wake arcs. |
-| Rare | Quaykeeper Vesperwing | Four moth wings, black-white segmented thorax plates, crescent rimmed antenna bases and two open silver wake arcs. |
-| Epic | Nightlock Vesperwing | Six pleated wing panels, layered polished silver carapace and three interleaved open harbor arcs; body remains compact. |
-| Legendary | Unreturned Harbor Vesperwing | Eight monumental ribbed moth wings, dense black-silver token tracery and four open lunar arches, never a building carried on its back. |
-| Omnic | Passage Beyond Midnight Vesperwing | Twelve vast paired moth wings retain the Legendary rib architecture; five open crescent passages and dense wake filaments around one clear dark body. |
+| Common | Vesperwing | Two small white moth wings, plain black carapace and one silver crescent plate; a deep-blue wake stroke and tiny purple moon sliver, no mature phase array. |
+| Uncommon | Tokenwatch Vesperwing | Same two wings gain silver ribs and violet phase inlays; paired white tail ribbons and two blue wake arcs shelter a purple quarter-moon plate. |
+| Rare | Quaykeeper Vesperwing | Four black-white moth wings, segmented thorax plates, crescent antenna bases and two open blue wake arcs; purple half-moon panels follow the silver wing ribs. |
+| Epic | Nightlock Vesperwing | Six pleated wing panels, polished silver carapace and three interleaved deep-blue harbor arcs supporting purple three-quarter moons; body remains compact. |
+| Legendary | Unreturned Harbor Vesperwing | Eight monumental black-white ribbed moth wings, dense silver token tracery and four blue lunar arches; a huge violet-blue moon and purple phase filaments fill the wing interior, never a building on its back. |
+| Omnic | Passage Beyond Midnight Vesperwing | Twelve vast black-white moth wings retain the Legendary ribs; five open blue crescent passages and dense purple wake filaments surround a huge richly cratered violet-blue moon behind one clear dark body. |
 
 **Enemy skill direction:** Crescent Quay Strike, scheduled direct single-target
 attack using current event skill coefficients. At the existing second-skill
@@ -85,12 +88,12 @@ combat element. The family is crafting matter, not another elemental affinity.
 
 | Tier | Material appearance |
 |---|---|
-| Seed | Tiny black seed capsule inside one smooth white crescent shell, two short silver root lines; readable humble seed, not a miniature world. |
-| Bud | Same central capsule; two white folded petal shutters open, silver crescent ribs and a small wake ribbon. |
-| Bloom | Four sharp white moonflower petals retain the black capsule; polished silver ribs and two orderly open wake arcs. |
-| Crest | Six layered white-black petal blades become a sculpted crescent seal; silver radial ribs and three open harbor arcs. |
-| Heart | Closed dark faceted central heart retains the crescent shell, eight interleaved silver petals and nested wake channels. |
-| Soul | Magnificent black-silver lunar seedworld retains the central crescent capsule; twelve layered white petals and five open harbor rails, dense precision faceting without figures or soul faces. |
+| Seed | Tiny black seed capsule inside one white crescent shell, two silver root lines and a single deep-blue seam tipped purple; humble seed, not a miniature world. |
+| Bud | Same central capsule; two white folded petal shutters open, silver ribs and a blue wake ribbon around a tiny purple phase facet. |
+| Bloom | Four black-white moonflower petals retain the capsule; polished silver ribs and two blue wake arcs around a vivid purple half-moon core. |
+| Crest | Six black-white petal blades form a crescent seal; silver radial ribs and three blue harbor arcs carry purple lunar phase plates. |
+| Heart | Dark central heart retains the crescent shell, eight silver-edged black-white petals and nested blue channels around a rich violet moon chamber. |
+| Soul | Magnificent black-white lunar seedworld retains the crescent capsule; twelve silver-ribbed petals and five open blue harbor rails surround a vivid violet-blue full moon with purple wake filaments; no figures or soul faces. |
 
 Vesperwing captures are the same-event infusion fodder. **No extra specialty
 item chain** is required: Moonwake materials and selected Vesperwing copies
@@ -98,9 +101,10 @@ fulfill the current Rose-format evolution/infusion replacement.
 
 ### Shared art composition
 
-Use the existing proposed Moon banner/header/arena pack: silver reflected moon,
-black-white harbor observatory, hull ribs, counterweight vanes, whiteflame
-pennants, crescent links, moonflower roofs and articulated open fan passages.
+Use the current Moon banner/header/arena pack: huge vivid violet-blue moon,
+deep-blue reflected water, black-white harbor observatory, silver hull ribs,
+blue counterweight vanes, purple-white flame pennants, blue crescent links,
+purple moonflower roofs and articulated open fan passages.
 Banner/event splash is one16:9 source, activity header3:1, battle arena16:9.
 The arena has clear left/right fighting lanes; scenery remains behind units.
 

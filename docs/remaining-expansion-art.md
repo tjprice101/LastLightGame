@@ -6,12 +6,20 @@ implementing the approved features; neutral named UI remains until reviewed
 art intake. These counts cover the remaining expansion, not replacements for
 the already-installed roster, currency, universal actions or Phase1 War art.
 
-**Current redesign (2026-11-05):** counts are unchanged. Sunshade is now
+**Current redesign (2026-11-06):** counts are unchanged. Sunshade is now
 black/white with deep-orange/pearlescent-pink solar energy; its characters,
-associated art and activity family follow that direction. Moon Ilyss/Asteriel/
-Serapha portraits and all Moon associated art use vividly colored blue-purple
-lunar motifs. Other three Moon portraits remain intact. Use the regenerated
+associated art and activity family follow that direction. All six Moon
+portraits and associated/event/material art use vivid blue-purple
+lunar motifs. Maerion/Caevren/Vespera are now revised too. Use the regenerated
 packs, not older monochrome/gold-only prompt copies.
+
+The24 supplied older Moon-labeled portraits are archived for the separate
+[four-character War proposal](phase-2-war-designs.md), not counted as current
+Moon delivery. Its [44 missing associated images](../Art/characters/Elemental%20War%20Phase%202.md)
+are separate from this approved seasonal expansion count. Combined future
+queue: **251 required new images (207 seasonal +44 War), plus12 optional
+seasonal equipment images =263 new images including optional**. The24 reused
+War portraits need no regeneration. War integration is not yet approved.
 
 ## Copy-ready documents
 

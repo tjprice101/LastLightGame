@@ -1,5 +1,22 @@
 # Documentation hub
 
+**Latest Moon redesign and reclaimed Elemental War art (2026-11-06):**
+All six Moon characters now share black-white/silver material and vivid
+blue-purple lunar powers. [Updated appearances](moon-sunshade-character-design.md)
+rework Maerion/Caevren/Vespera too; [Moon prompts](../Art/characters/Glow%20of%20the%20Moon's%20Light.md)
+and [enemy/material prompts](../Art/creatures/Moon%20and%20Sunshade%20Events.md)
+match their current theme. The prior grayscale-preservation exception below
+is historical. No kits or event gates are changed.
+
+The24 older supplied portraits are archived byte-exact for
+[Neralis, Varkhel, Seravelle and Velmira: complete proposed War designs](phase-2-war-designs.md),
+including lore, source/form mappings, stats, native kits,12 personal Masters,
+strengths/limits and future validation. [44 associated art prompts](../Art/characters/Elemental%20War%20Phase%202.md)
+use their actual cyan/amber, scarlet/orange/violet, orange/gold and violet/gold
+palettes. Root originals remain; no playable integration or runtime art intake.
+Seasonal queue207 required/12 optional is unchanged; the separate War queue
+adds44 new images and reuses24 portraits.
+
 **Portrait and associated-art matching (2026-11-06):**
 [Current owner-matching rule](art-workflow.md#portrait-to-associated-art-consistency-2026-11-06)
 keeps ability/weapon/status/Master art aligned with each actual portrait.

@@ -1,9 +1,9 @@
 # Moon and Sunshade: ability kits and personal Masters
 
-**Portrait matching (2026-11-06):** the nine Maerion/Caevren/Vespera Master
-art rows match their unchanged black-white-silver portrait materials/powers.
-The redesigned lunar trio retains blue-purple owner-specific art. This
-supersedes the earlier banner-wide blue-purple object direction; names,
+**Current redesign (2026-11-06):** all six Moon portraits and associated
+art share black-white material and vivid blue-purple lunar powers, with each
+owner's distinct construction. Maerion/Caevren/Vespera's newly revised
+portraits supersede their protected grayscale versions. Names,
 effects, values and acquisition rules below are unchanged.
 
 ## Review status
@@ -697,15 +697,15 @@ mechanical purpose are mandatory. No icon URLs are registered before delivery.
 
 | Character | Master | Distinct core and integrated surrounding machinery |
 |---|---|---|
-| Maerion | Unreturned Voyage Worldpump | Vast black-white ship-rib cradle, silver ferry-token gear hubs and three measured silver-white water channels through a dark reservoir rotor. |
-| Maerion | Crescent Rib Mercy Foundry | Blunt crescent casting aperture and layered silver hull shutters around a charcoal reservoir sphere; white overflow channels feed silver phase valves. |
-| Maerion | Ferrywake Remembrance Dynamo | Twin silver-white wake turbines around a dark reservoir, silver token gears and immense swept white-black recovery fins shaped like hull ribs, never feathers. |
-| Caevren | Meridian Counterweight Atlas | Huge smooth dark counterweight inside white meridian ribs, squared yokes, silver chain gears and broad rectangular white wind vanes; silver calibrated dials. |
-| Caevren | Observatory Loadshare Regulator | Tilted white meridian gyroscope, paired black-white pressure chambers, silver weight-transfer chains and stepped rectangular vane actuators. |
-| Caevren | Falling-Star Recoil Turbine | Caged smooth dark weight on a silver recoil chain, white wind turbines and silver calibrated flywheels across massive squared white return rails. |
-| Vespera | Whitefire Procession Transmitter | Silver spear-tip signal mast inside interlocked black-white swallowtail-pennant shutters, transmission gears and silver-white flame rails with charcoal cuts. |
-| Vespera | Mirror-Pennant Ignition Crown | Black ignition heart, mirrored white swallowtail-pennant vanes and silver breach rotors; serrated silver-white flames with charcoal cuts originate at the spear-tip crest. |
-| Vespera | Unextinguished Relay Cathedral | Three silver beacon chambers, black signal cords and enormous white pennant gantries; silver flywheels drive crest-origin whiteflame relay tracks, not a literal building. |
+| Maerion | Unreturned Voyage Worldpump | Vast black-white ship-rib cradle, silver ferry-token gear hubs and three deep-blue measured water channels through a purple moon rotor; white prow-panel relief, never feathers. |
+| Maerion | Crescent Rib Mercy Foundry | Blunt crescent casting aperture and layered silver hull shutters around a blue reservoir sphere; violet phase valves feed interwoven purple overflow rails. |
+| Maerion | Ferrywake Remembrance Dynamo | Twin deep-blue wake turbines around a violet moon, silver token gears and immense swept black-white recovery fins shaped like hull ribs, never feathers. |
+| Caevren | Meridian Counterweight Atlas | Huge smooth dark counterweight inside white meridian ribs, squared yokes, silver chain gears and broad rectangular blue wind vanes; purple phase dials. |
+| Caevren | Observatory Loadshare Regulator | Tilted white meridian gyroscope, paired violet-blue pressure chambers, silver weight-transfer chains and stepped rectangular black-white vane actuators. |
+| Caevren | Falling-Star Recoil Turbine | Caged smooth dark weight on a silver recoil chain, blue wind turbines and purple phase flywheels across massive squared white return rails. |
+| Vespera | Whitefire Procession Transmitter | Silver spear-tip signal mast inside interlocked black-white swallowtail-pennant shutters, transmission gears and purple-tipped whiteflame rails around a deep-blue moon rotor. |
+| Vespera | Mirror-Pennant Ignition Crown | Black ignition heart, mirrored white swallowtail-pennant vanes and silver breach rotors; purple-tipped silver-white flames with charcoal cuts originate at the spear-tip crest around blue phase discs. |
+| Vespera | Unextinguished Relay Cathedral | Three silver beacon chambers, black signal cords and enormous white pennant gantries; blue flywheels drive crest-origin purple-white flame relay tracks, not a literal building. |
 | Ilyss | Crescent-Link Severance Loom | Giant connected silver shear pivot, separated blue crescent feed rails, black-white pleated waterfalls and cascading purple phase rotors. |
 | Ilyss | Unbinding Mercy Worldlock | Unclosed black-white crescent lock, silver link shutters and pleated vault plates; a vivid violet-blue moon turns inside the open mechanism. |
 | Ilyss | Broken-Link Continuance Engine | Black continuity rotor, separated silver link gears, blue transmission bridges and white-lined wing housings carrying purple lunar ribbons. |
