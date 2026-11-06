@@ -1,8 +1,18 @@
 # Art library
 
+## Current unfinished-work audit and canonical plan location (2026-11-06)
+
+[Future Plans register](../docs/Future%20Plans/README.md) and
+[source-image/cost audit](../docs/Future%20Plans/image-budget-audit.md) own
+unfinished queues. Four-War, future Story and experiments moved there; linked
+production packs and preserved source/provenance remain here. All D-441
+Calamitic/Gates and D-448 Master artwork is installed: older "pending" labels
+below are historical, not new generation requests. Current required seasonal/
+proposed-War queue is251 new images;24 War portraits are already supplied.
+
 ## Remaining Moon/Sunshade art: full prompt inventory
 
-[Complete delivery checklist](../docs/remaining-expansion-art.md):
+[Complete delivery checklist](../docs/Future%20Plans/remaining-expansion-art.md):
 **207 required images plus12 optional equipment showcases,219 total**.
 The [Moon98-prompt pack](characters/Glow%20of%20the%20Moon's%20Light.md),
 [Sunshade97-prompt pack](characters/The%20Angel-blazened%20Sunshade.md) and
@@ -41,13 +51,13 @@ and [playable integration status](../docs/handoff.md).
 
 ## Future Story visual development (D-450)
 
-[Chapters2-3 and intermission](story/Chapters%202-3%20Draft.md) contains75
+[Chapters2-3 and intermission](../docs/Future%20Plans/Chapters%202-3%20Draft.md) contains75
 copy-ready Midjourney prompts:55 enemy/boss cutouts,11 arenas, three maps,
 three banners and three transition concepts. D-451 approves region/enemy
 foundations and requests predominantly black, ominous Nyrasma machines; all25
 machine cutout prompts now follow that direction. Exact scenes/generated images
 still need review. No delivered or implemented content.
-[Design and approval boundaries](../docs/chapters-2-3-design.md).
+[Design and approval boundaries](../docs/Future%20Plans/chapters-2-3-design.md).
 
 ## Completed native/Calamity artwork queue (D-317 / D-318 / D-323)
 
@@ -147,10 +157,10 @@ No original, runtime image, recorded source path or recorded hash was rewritten.
 
 ## Experiments
 
-- [Starter Omnic alternate skins](experiments/Starter%20Omnic%20Alternate%20Skins.md):
+- [Starter Omnic alternate skins](../docs/Future%20Plans/Starter%20Omnic%20Alternate%20Skins.md):
   three owner-requested costume tests using original Omnic image references,
   unchanged Evo.6 style reference,10% outer margins and contrasting keys.
   Generation only; no playable skin system or installed artwork changes.
 
-- [Enemy style/palette pilot](experiments/Enemy%20Style%20Pilot.md):
+- [Enemy style/palette pilot](../docs/Future%20Plans/Enemy%20Style%20Pilot.md):
   three low-weight reference alternatives, not production pack replacement.

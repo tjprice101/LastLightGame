@@ -16,7 +16,7 @@ Rise broke the beacon cores, and the Devourer guardians oppose relighting them
 because they lead toward Let's soul. Her underlying motive and Let's destructive
 plan are not exposed in Chapter1. The machine/note/wisp scene belongs to the
 future Chapter2 opening, not the Chapter1 ending. Current records contain no
-invented character dialogue. [Review, proposed papers and Chapters2-3 design](chapters-2-3-design.md).
+invented character dialogue. [Review, proposed papers and Chapters2-3 design](Future%20Plans/chapters-2-3-design.md).
 
 Validate `src/presentation/story-codex.test.ts` together with Archives, Story,
 battle-results, Home and Gameplay tests and the build. Browser-check unlocked
@@ -72,7 +72,7 @@ art, difficulty, unlocks and rewards remain unchanged.
 Chapter1, **Search the Six Beacons of Emotion**. Rise's transcription shards
 and the future final-boss machine/note/wisp are documentation-only, as are
 Nyrasma's125 stages, the75-stage pursuit and Chapters3-7.
-[Spoiler roadmap and unresolved details](story-roadmap.md).
+[Spoiler roadmap and unresolved details](Future%20Plans/story-roadmap.md).
 The [Music library](../Music/README.md) supplies generation briefs for the
 Main Theme, all six regional battle themes and every current battle activity;
 seven delivered tracks are now installed (D-280): the menu theme and one

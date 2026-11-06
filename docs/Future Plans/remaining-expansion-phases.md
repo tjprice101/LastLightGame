@@ -3,7 +3,7 @@
 ## Status and scope (2026-11-04)
 
 Original owner-requested roadmap. Follow-up authorizes implementing it phase
-by phase; [Phase1's exact lifecycle/shop contract](special-banner-lifecycle.md)
+by phase; [Phase1's exact lifecycle/shop contract](../special-banner-lifecycle.md)
 supersedes its original unresolved decisions and Rose no-activation gate.
 This layout replaces the numbering of the supplied remaining Phases4/5/6/8;
 it does not reopen completed work or resume the paused Story work.
@@ -61,8 +61,8 @@ Preserve the existing cutout no-glow-on-edges exclusion, contrasting key
 backgrounds and art-review rules. Shimmering metal, painted specular highlights
 and opaque flame/energy structures express the requested themes in cutout
 prompts; runtime VFX and full-bleed scenery may glow and bloom.
-See [art workflow](art-workflow.md) and the
-[shared prompt guide](../Art/guides/midjourney-character-style-prompt.md).
+See [art workflow](../art-workflow.md) and the
+[shared prompt guide](../../Art/guides/midjourney-character-style-prompt.md).
 
 ## Ordered phases and dependencies
 
@@ -76,17 +76,17 @@ See [art workflow](art-workflow.md) and the
 | 6 | Special Banner #3: The Angel-blazened Sunshade | Reuses the validated Moon event lifecycle, with its own approved roster, assets and theme. |
 
 **Current delivery:** Phase1 is implemented and released, including the
-follow-up post-event shop requirements. [Validation/publication](handoff.md).
+follow-up post-event shop requirements. [Validation/publication](../handoff.md).
 Phase2 design is complete: twelve identity directions accepted, with
-[all72 appearance/power specifications](moon-sunshade-character-design.md)
-approved by the owner. [Twelve kits and36 personal Masters](moon-sunshade-kit-specification.md)
+[all72 appearance/power specifications](../moon-sunshade-character-design.md)
+approved by the owner. [Twelve kits and36 personal Masters](../moon-sunshade-kit-specification.md)
 have accepted directions, with flagged coefficients unchanged. The
-[98 Moon prompts](../Art/characters/Glow%20of%20the%20Moon's%20Light.md),
-[97 Sunshade prompts](../Art/characters/The%20Angel-blazened%20Sunshade.md) and
-[24 event prompts](../Art/creatures/Moon%20and%20Sunshade%20Events.md)
+[98 Moon prompts](../../Art/characters/Glow%20of%20the%20Moon's%20Light.md),
+[97 Sunshade prompts](../../Art/characters/The%20Angel-blazened%20Sunshade.md) and
+[24 event prompts](../../Art/creatures/Moon%20and%20Sunshade%20Events.md)
 complete the prompt inventory. All actual generated art remains pending.
 Owner now authorizes completing Phases3-6 without generated artwork.
-[Signature activities and confirmed account/shop rules](moon-sunshade-events.md)
+[Signature activities and confirmed account/shop rules](../moon-sunshade-events.md)
 define the latest current-Rose mechanical pattern and approved login ladder,
 free friend-gift allowance, mailbox and tier prices. Both schedules remain
 inactive until explicit launch approval. [Art checklist](remaining-expansion-art.md)
@@ -264,7 +264,7 @@ awards the **next reward in the sequence** for days actually logged in, and
 tracks consecutive-day streaks. Rewards must become greater/better through
 the month and with more consistent attendance/streaks.
 
-**Approved tuning:** exact [reward ladder and budget](moon-sunshade-events.md#approved-reward-and-shop-tuning).
+**Approved tuning:** exact [reward ladder and budget](../moon-sunshade-events.md#approved-reward-and-shop-tuning).
 Calendar month follows New York reset-day key; monthly attendance cumulative,
 separate consecutive streak. One manual claim/day, next ordinal reward,
 actual month length. Missed days retain monthly attendance but break streak;

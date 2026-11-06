@@ -2,7 +2,7 @@
 
 ## Living-world audit and rollout plan (2026-11-05)
 
-[Evidence-backed full presentation audit and implementation plan](living-world-ui-audit-plan.md)
+[Evidence-backed full presentation audit and implementation plan](Future%20Plans/living-world-ui-audit-plan.md)
 maps current screen families to an ordered rollout and measurable gates.
 It separates source findings, safe renderer-fixture observations and untested
 visual/performance questions. Preserve the contracts below; proposed surface,

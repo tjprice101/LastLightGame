@@ -18,7 +18,7 @@ class SeasonalArtTests(unittest.TestCase):
         self.assertEqual(len({row[0] for row in rows}), 219)
         required = [row for row in rows if not row[0].endswith("-weapon.png")]
         self.assertEqual(len(required), 207)
-        checklist = (moon.ROOT / "docs" / "remaining-expansion-art.md").read_text(encoding="utf-8")
+        checklist = (moon.ROOT / "docs" / "Future Plans" / "remaining-expansion-art.md").read_text(encoding="utf-8")
         self.assertRegex(checklist, r"## Total images needed\n\n\*\*207 required images\.\*\*")
         self.assertTrue(checklist.rstrip().endswith("**219 images including every optional illustration.**"))
 

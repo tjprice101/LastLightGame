@@ -1,5 +1,16 @@
 # Art and asset workflow
 
+## Unfinished art and plans: canonical filing (2026-11-06)
+
+[Future Plans](Future%20Plans/README.md) owns deferred design/prompt packages
+and restart gates; [audited image budget](Future%20Plans/image-budget-audit.md)
+separates required, paused, optional and experimental sources. Four-War and
+future Story generators write there, not their historical paths. Production
+Moon/Sunshade packs stay in the Art library and link to the moved checklist.
+Archived source bytes/provenance/runtime exports remain in place. Historical
+"pending Calamitic/Gates" notes below are superseded by D-441/D-448 intake,
+not permission to request those installed images again.
+
 ## All-Moon redesign and archived War source reuse (2026-11-06)
 
 The latest owner request supersedes the grayscale matching exception below.
@@ -11,8 +22,8 @@ fixed features, kits and schedules stay.
 
 The24 older delivered root portraits are separately preserved for four new
 proposed Elemental War characters, not installed as current Moon portraits.
-[Full designs and source map](phase-2-war-designs.md) and
-[44 new associated prompts](../Art/characters/Elemental%20War%20Phase%202.md)
+[Full designs and source map](Future%20Plans/phase-2-war-designs.md) and
+[44 new associated prompts](Future%20Plans/Elemental%20War%20Phase%202.md)
 retain actual colored source identity. `tools/archive_phase2_war_art.py --archive`
 copies exact bytes to `Art/source/phase2-war` without renaming originals or
 key removal and verifies SHA-256 in
@@ -84,7 +95,7 @@ before approving a pack. No unapproved identity image/reference is invented.
 ## Complete art-pending seasonal expansion
 
 Owner authorizes feature completion without generated art. See the
-[219-image inventory including optional equipment](remaining-expansion-art.md)
+[219-image inventory including optional equipment](Future%20Plans/remaining-expansion-art.md)
 and [event design](moon-sunshade-events.md). Sunshade and both enemy/material
 chains now have reproducible prompt packs; no delivery or runtime image URL
 is implied. All twelve bearers are six-star; fixed appearance rows/coefficients
@@ -135,7 +146,7 @@ review uniqueness and awe-inspiring progression, then ask the owner questions
 before locking the design. Exact wings/motifs and intentional physical changes
 must be explicit, not guessed between prompts. Preserve the established
 renderer and gradual complexity; no armor-by-default shortcut.
-The [full workflow and upcoming banner requirements](remaining-expansion-phases.md#required-character-workflow-every-future-character)
+The [full workflow and upcoming banner requirements](Future%20Plans/remaining-expansion-phases.md#required-character-workflow-every-future-character)
 apply beyond the Moon/Sunshade batches as well.
 
 ## Delivered Phase1 War artwork (2026-11-03)
@@ -638,7 +649,7 @@ checks the32 IDs, signatures, reference suffixes, palettes, margins and word lim
 
 ## Starter Omnic alternate-skin experiment
 
-[Three copy-ready prompts](../Art/experiments/Starter%20Omnic%20Alternate%20Skins.md)
+[Three copy-ready prompts](Future%20Plans/Starter%20Omnic%20Alternate%20Skins.md)
 preserve Infernis/Tizu/Flora identities, compact renderer, signature weapons and
 six final-form wings while changing costume/regalia. Owner supplies original
 Omnic image URLs; exact existing Evo.6 style URL stays at150. Requested central80%
@@ -933,7 +944,7 @@ review of generated full-resolution palette, layering and tip containment.
 ## Reference-style versus palette pilot (D-158)
 
 Owner wants the approved reference renderer, not borrowed costume/palette.
-[Separate three-enemy pilot](../Art/experiments/Enemy%20Style%20Pilot.md)
+[Separate three-enemy pilot](Future%20Plans/Enemy%20Style%20Pilot.md)
 preserves production species/details/framing and exact owner URLs while testing
 weight10 in revision2 after the owner rejected weight50's palette transfer.
 Material/color-placement clauses and individual exclusions retain legitimate

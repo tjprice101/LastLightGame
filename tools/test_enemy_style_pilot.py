@@ -1,13 +1,13 @@
 import unittest
 import re
-from build_enemy_style_pilot import ROOT, document, pilot_prompts, rosetta_pilot
+from build_enemy_style_pilot import ROOT, OUTPUT, document, pilot_prompts, rosetta_pilot
 from character_palette import palette_clause
 from art_library import art_path
 
 
 class EnemyStylePilotTests(unittest.TestCase):
     def test_exact_reproduction_and_unchanged_design_baselines(self):
-        self.assertEqual((art_path("experiments", "Enemy Style Pilot.md", root=ROOT)).read_text(encoding="utf-8"), document())
+        self.assertEqual(OUTPUT.read_text(encoding="utf-8"), document())
         prompts = pilot_prompts()
         self.assertEqual(len(prompts), 3)
         for heading, baseline, prompt in prompts:

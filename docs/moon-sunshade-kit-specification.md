@@ -25,7 +25,7 @@ owner requests art-neutral wiring of both inactive banners and approves all36
 personal Masters in the existing chest-choice pool, without changing drops
 or automatic equipment. Preserve every coefficient below and flagged values.
 [Current event/account rules](moon-sunshade-events.md) and
-[completed prompt inventory](remaining-expansion-art.md) supersede earlier
+[completed prompt inventory](Future%20Plans/remaining-expansion-art.md) supersede earlier
 unresolved acquisition/art-count gates, not actual artwork delivery.
 
 Descriptions below are intended as in-game text, not implementation reports.
@@ -818,5 +818,5 @@ These notes belong to design review, not repeated in every in-game tooltip.
    preserve approved appearance and obtain separate prompt/delivery approval.
 5. Implement and validate matching client/authority behavior only after approval.
 
-The [remaining roadmap](remaining-expansion-phases.md) retains all lifecycle,
+The [remaining roadmap](Future%20Plans/remaining-expansion-phases.md) retains all lifecycle,
 shop, login, mailbox, gifting and QoL requirements unchanged.

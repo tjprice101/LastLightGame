@@ -660,5 +660,5 @@ mechanics. All twelve lines retain their physical identity; no hair/eye/skin
 transformation is proposed. Numeric kits and Conduit effects remain proposed;
 acquisition scope is approved; actual generated artwork remains pending.
 No new character/banner is live.
-Refer to the [full roadmap](remaining-expansion-phases.md) for all retained
+Refer to the [full roadmap](Future%20Plans/remaining-expansion-phases.md) for all retained
 event, asset, schedule and economy requirements.

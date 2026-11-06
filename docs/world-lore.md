@@ -6,7 +6,7 @@ Let's soul. Her need for time to convince the bearers is author-only motive,
 not an early public revelation. Chapter1 currently has120 stages. It ends
 with beacons restored; the machine/note/wisp opening belongs to Chapter2.
 The Codex records confirmed history at beacon milestones; cryptic papers and
-future dialogue remain proposals in [the story design](chapters-2-3-design.md).
+future dialogue remain proposals in [the story design](Future%20Plans/chapters-2-3-design.md).
 
 This is the owner's confirmed origin story. It supersedes earlier generic
 world-origin prose; existing regions, human identities, creatures and artwork
@@ -97,7 +97,7 @@ Source art, prompts and historical decision/provenance records are unchanged.
 Further story outcomes remain for owner direction and future gameplay.
 
 **D-275 future direction:** the owner has now supplied the
-[seven-chapter spoiler outline](story-roadmap.md), including Rise's papers,
+[seven-chapter spoiler outline](Future%20Plans/story-roadmap.md), including Rise's papers,
 the moral reversal, Nyrasma and eventual coexistence. That document records
 future narrative, not current in-game knowledge or implemented outcomes.
 Do not reveal its twists in current Help/Prologue or award either creator.

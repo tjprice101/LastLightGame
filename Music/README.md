@@ -164,5 +164,5 @@ The installed controller currently loops MP3s with crossfades; further
 editing/formats and sound-effect playback remain future work.
 
 See [founding canon](../docs/world-lore.md),
-[future campaign spoilers](../docs/story-roadmap.md) and
+[future campaign spoilers](../docs/Future%20Plans/story-roadmap.md) and
 [current Story mechanics](../docs/story-and-training.md).

@@ -57,9 +57,9 @@ validation rather than converted into invented defects.
 
 ## 2. Prompt verification: the requested art changes are already current
 
-The specified [Moon pack](../Art/characters/Glow%20of%20the%20Moon's%20Light.md),
-[Sunshade pack](../Art/characters/The%20Angel-blazened%20Sunshade.md) and
-[activity enemy/material pack](../Art/creatures/Moon%20and%20Sunshade%20Events.md)
+The specified [Moon pack](../../Art/characters/Glow%20of%20the%20Moon's%20Light.md),
+[Sunshade pack](../../Art/characters/The%20Angel-blazened%20Sunshade.md) and
+[activity enemy/material pack](../../Art/creatures/Moon%20and%20Sunshade%20Events.md)
 reproduce from their source generators.
 
 Verified at this audit:
@@ -105,17 +105,17 @@ Future delivered artwork needs its own visual intake review before use.
 
 ### Source coverage
 
-- [Application composition and imports](../src/main.ts): routes, shell, history
+- [Application composition and imports](../../src/main.ts): routes, shell, history
   integration, state refresh and presentation bindings.
-- [Sanctuary navigation](../src/presentation/sanctuary.ts),
-  [Home](../src/presentation/reference-home.ts),
-  [Team](../src/presentation/reference-team.ts),
-  [character detail/growth/equipment](../src/presentation/hub.ts).
-- [Inventory](../src/presentation/inventory.ts),
-  [Conduit Store](../src/presentation/conduit-store.ts),
-  [Collections](../src/presentation/archives.ts),
-  [Story](../src/presentation/story.ts),
-  [Gameplay](../src/presentation/gameplay.ts).
+- [Sanctuary navigation](../../src/presentation/sanctuary.ts),
+  [Home](../../src/presentation/reference-home.ts),
+  [Team](../../src/presentation/reference-team.ts),
+  [character detail/growth/equipment](../../src/presentation/hub.ts).
+- [Inventory](../../src/presentation/inventory.ts),
+  [Conduit Store](../../src/presentation/conduit-store.ts),
+  [Collections](../../src/presentation/archives.ts),
+  [Story](../../src/presentation/story.ts),
+  [Gameplay](../../src/presentation/gameplay.ts).
 - Opening/account/save, profile/social/calendar, settings, loadouts and selection
   modules through a separate bounded source review.
 - Battle/cut-ins/impact/loot/results, reward/summon/upgrade/rarity systems and
@@ -220,63 +220,63 @@ These are presentation priorities, not vulnerability severities.
 ### Finding details and evidence
 
 **UI-01: cascade ownership.**
-[Application imports](../src/main.ts) load sanctuary, neutral, character,
+[Application imports](../../src/main.ts) load sanctuary, neutral, character,
 interface, numeric, layout, reference, mono, leader, button and bubble styling.
-[Bubble CSS](../src/presentation/bubble-ui.css) contains 284 lines matching
+[Bubble CSS](../../src/presentation/bubble-ui.css) contains 284 lines matching
 `!important` in the audit's source search. That is not itself a rendering defect,
 but makes visual ownership and regression prediction difficult.
 Do not add a new "final-final" stylesheet. Migrate selected selectors only after
 capturing their intended computed appearance and behavior.
 
 **UI-02: a lively background can still be uniform.**
-[Ambient screen definitions](../src/presentation/ambient-background.ts) and
-[ambient CSS](../src/ambient-background.css) already supply different geometric
-patterns. [Bubble CSS](../src/presentation/bubble-ui.css) explicitly replaces
+[Ambient screen definitions](../../src/presentation/ambient-background.ts) and
+[ambient CSS](../../src/ambient-background.css) already supply different geometric
+patterns. [Bubble CSS](../../src/presentation/bubble-ui.css) explicitly replaces
 the old per-screen layer outside battle with one persistent backdrop.
 Keep persistence if it avoids tearing; vary its composition/theme intentionally
 instead of running both systems.
 
 **UI-03: a press is not a celebration.**
-[Press feedback and installation](../src/presentation/bubble-ui.ts) add two
+[Press feedback and installation](../../src/presentation/bubble-ui.ts) add two
 rings, particles/glyphs and a scale sequence to eligible controls before the
 result of an operation is known. Cosmetic press response can be valid before
 saving, but it should communicate acknowledgement, not success.
 No destructive/cancel/retry action should look like an acquisition.
 
 **UI-04: color has several owners.**
-[Leader theme](../src/presentation/leader-theme.ts) sets `--ui-accent`.
-[Button styling](../src/presentation/button-style.css) and
-[bubble heading/surface rules](../src/presentation/bubble-ui.css) consume it
+[Leader theme](../../src/presentation/leader-theme.ts) sets `--ui-accent`.
+[Button styling](../../src/presentation/button-style.css) and
+[bubble heading/surface rules](../../src/presentation/bubble-ui.css) consume it
 widely. Navigation may use this accent; item details must retain their own
 element/banner/rarity. Avoid one accent overwriting all of those meanings.
 
 **UI-05: current facts beat remembered numbers.**
-[Inventory help](../src/presentation/inventory.ts) has the literal text
+[Inventory help](../../src/presentation/inventory.ts) has the literal text
 "Chests stay unopened once you own all 57." Other UI logic correctly uses
 the actual Master catalog. This is a confirmed copy inconsistency, not an
 unimplemented bulk chest mechanic. The future fix should derive the count
 or remove the unnecessary count while retaining the unopened-chest rule.
 
 **UI-06: structured content should own presentation.**
-[Ability card enhancement](../src/presentation/bubble-ui.ts) finds paragraphs
+[Ability card enhancement](../../src/presentation/bubble-ui.ts) finds paragraphs
 inside dialogs and appends an aria-hidden summary/cost to the card.
-[Character detail](../src/presentation/hub.ts) already renders the source kit.
+[Character detail](../../src/presentation/hub.ts) already renders the source kit.
 Provide one structured card/detail representation instead of inferring the
 summary from DOM classes and paragraph order.
 
 **UI-09: catalog scale is real.**
-[Character Archive](../src/presentation/archives.ts) renders six forms per
+[Character Archive](../../src/presentation/archives.ts) renders six forms per
 starter, resolves preview kits and embeds dialogs for those forms. The fixture
 had 218 visible buttons in the default Collections template.
 This is not proof of poor frame rate. Measure initial render/filter/open costs;
 prefer lazy details first, and consider paging only if measured cost warrants it.
 
 **UI-10 through UI-17: keep the good state guarantees.**
-[Battle presentation](../src/presentation/battle-view.ts),
-[reward screen](../src/presentation/reward-screen.ts),
-[rarity feedback](../src/presentation/rarity-feedback.ts),
-[upgrade celebrations](../src/presentation/upgrade-celebration.ts) and
-[activity transition](../src/presentation/activity-transition.ts) already
+[Battle presentation](../../src/presentation/battle-view.ts),
+[reward screen](../../src/presentation/reward-screen.ts),
+[rarity feedback](../../src/presentation/rarity-feedback.ts),
+[upgrade celebrations](../../src/presentation/upgrade-celebration.ts) and
+[activity transition](../../src/presentation/activity-transition.ts) already
 have meaningful cancellation/cleanup/save sequencing.
 The audit recommends explicit coordination and measured resource ownership,
 not a new global state machine or removal of existing protections.
@@ -467,7 +467,7 @@ Acceptance:
 
 **Intent:** sanctuary, belonging and a clear next destination.
 
-Current [Home](../src/presentation/reference-home.ts) has a leader orbit,
+Current [Home](../../src/presentation/reference-home.ts) has a leader orbit,
 six destinations, Story progress and a squad rail. Preserve those destinations
 and the authored leader; do not reintroduce a competing navigation scheme.
 
@@ -808,7 +808,7 @@ Acceptance:
 
 **Intent:** anticipation, reveal, recognition and a trustworthy saved receipt.
 
-Retain the existing [reward foundation](../src/presentation/reward-screen.ts),
+Retain the existing [reward foundation](../../src/presentation/reward-screen.ts),
 actual saved results, duplicate conversions, bonus items, pity, Skip and Continue.
 
 Proposed:
@@ -837,7 +837,7 @@ Acceptance:
 
 **Intent:** readable tactical action with distinct, radiant character expression.
 
-Retain [BattleView](../src/presentation/battle-view.ts), actual ordered events,
+Retain [BattleView](../../src/presentation/battle-view.ts), actual ordered events,
 impact callbacks, frozen squads/equipment, skills, speed and scenery.
 
 Proposed:

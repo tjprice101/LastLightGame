@@ -2,7 +2,7 @@
 
 **Four proposed six-star characters. 24 delivered portraits reused; 44 new associated images needed. No playable integration.**
 
-[Complete identities, lore, kits, strengths and source mappings](../../docs/phase-2-war-designs.md). Reproduce with `python tools/build_phase2_war_art.py`; do not edit generated prompt blocks.
+[Complete identities, lore, kits, strengths and source mappings](phase-2-war-designs.md). Reproduce with `python tools/build_phase2_war_art.py`; do not edit generated prompt blocks.
 
 ## Generation and identity contract
 

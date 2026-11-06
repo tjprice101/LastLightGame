@@ -35,8 +35,8 @@ supersedes the conflicting timing/counts in the historical outline below.
 This records the owner's future main-story outline. It does not add dialogue,
 transcription items, chapters, stages, unlocks, soul wisps, recruitable creators
 or new combat elements. Current runtime behavior remains governed by
-[Story and Training](story-and-training.md); the implemented founding history
-remains in [world lore](world-lore.md).
+[Story and Training](../story-and-training.md); the implemented founding history
+remains in [world lore](../world-lore.md).
 
 ## Narrative intent
 
@@ -109,7 +109,7 @@ invent gameplay. No chapter content or migration is implemented by this document
 
 ## Related material
 
-- [Founding canon](world-lore.md)
-- [Current150-stage Story](story-and-training.md)
-- [Game vision](game-vision.md)
-- [Instrumental music library](../Music/README.md)
+- [Founding canon](../world-lore.md)
+- [Current150-stage Story](../story-and-training.md)
+- [Game vision](../game-vision.md)
+- [Instrumental music library](../../Music/README.md)

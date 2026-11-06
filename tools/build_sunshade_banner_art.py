@@ -201,7 +201,7 @@ def document():
         "[Approved appearances](../../docs/moon-sunshade-character-design.md) | "
         "[Kits/Masters](../../docs/moon-sunshade-kit-specification.md) | "
         "[Signature activities](../../docs/moon-sunshade-events.md) | "
-        "[Complete missing-art checklist](../../docs/remaining-expansion-art.md)",
+        "[Complete missing-art checklist](../../docs/Future%20Plans/remaining-expansion-art.md)",
         "Reproduce: `python tools/build_sunshade_banner_art.py`. Do not hand-edit generated blocks.",
         "**Owner-approved aesthetic redesign (2026-11-05):** black and white are the primary/secondary "
         "costume and equipment colors, not gold. Deep orange and pearlescent pink are the only elemental "

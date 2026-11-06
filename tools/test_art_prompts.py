@@ -10,7 +10,14 @@ BLOCK = re.compile(r"```(?:text)?\n(.*?)\n```", re.S)
 
 
 def prompts():
-    for path in sorted((ROOT / "Art").rglob("*.md")):
+    future = ROOT / "docs" / "Future Plans"
+    paths = list((ROOT / "Art").rglob("*.md")) + [
+        future / name for name in (
+            "Elemental War Phase 2.md", "Chapters 2-3 Draft.md",
+            "Starter Omnic Alternate Skins.md", "Enemy Style Pilot.md",
+        )
+    ]
+    for path in sorted(paths):
         text = path.read_text(encoding="utf-8")
         for index, body in enumerate(BLOCK.findall(text), 1):
             if "--niji" in body:
@@ -862,7 +869,7 @@ class ArtPromptTests(unittest.TestCase):
                     if path == art_path("characters", "Calamitic Element-Bearers.md", root=ROOT):
                         weight = 400
                     else:
-                        weight = 10 if path == art_path("experiments", "Enemy Style Pilot.md", root=ROOT) and index <= 3 else 150
+                        weight = 10 if path == ROOT / "docs" / "Future Plans" / "Enemy Style Pilot.md" and index <= 3 else 150
                     self.assertRegex(body, rf" --sref https://\S+ --sw {weight}$")
                 else:
                     self.assertNotIn("--sref", body)

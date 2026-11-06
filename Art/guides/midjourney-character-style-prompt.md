@@ -53,7 +53,7 @@ outside image prose; express the connection through authored equipment,
 costume, power and scenery motifs. Moon/Sunshade activity/enemy/material
 directions and their complete source inventory are in
 [the event specification](../../docs/moon-sunshade-events.md) and
-[the delivery checklist](../../docs/remaining-expansion-art.md).
+[the delivery checklist](../../docs/Future%20Plans/remaining-expansion-art.md).
 
 **Character-linked ability art (2026-11-05):** every future character-specific
 ability icon expresses its effect through recognizable approved equipment,

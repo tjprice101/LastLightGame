@@ -119,4 +119,4 @@ idempotency and unchanged account using a disposable identity. It does not
 pretend that the future closure has occurred on the production server.
 
 See [handoff](handoff.md) for actual validation/publication evidence and
-[remaining expansion](remaining-expansion-phases.md) for later phases.
+[remaining expansion](Future%20Plans/remaining-expansion-phases.md) for later phases.

@@ -34,7 +34,7 @@ Normal Attack/Defense and Burn/Weaken retain existing universal/shared art. No d
 
 **Foundational ability-art standard:** every future character-specific ability image must express its effect through recognizable approved equipment construction, costume material/trim and power geometry, not merely a generic symbol in the character's palette. All six characters carry these details explicitly in all24 ability prompts. Cloth/plate fragments are object ornament, never a miniature character, face, hands or worn outfit. Shared universal actions remain shared; no installed artwork is changed by generation.
 
-**Event extension:** six Vesperwing forms and six Moonwake materials have their own [signature activity pack](../creatures/Moon%20and%20Sunshade%20Events.md), not duplicate entries in this98-image pack. No separate boss portrait or specialty item chain is required. See the [complete checklist](../../docs/remaining-expansion-art.md) for combined totals. Historical event counts were TBD, not zero; the event specification now supplies them.
+**Event extension:** six Vesperwing forms and six Moonwake materials have their own [signature activity pack](../creatures/Moon%20and%20Sunshade%20Events.md), not duplicate entries in this98-image pack. No separate boss portrait or specialty item chain is required. See the [complete checklist](../../docs/Future%20Plans/remaining-expansion-art.md) for combined totals. Historical event counts were TBD, not zero; the event specification now supplies them.
 
 ## Identity, complexity and reference contract
 

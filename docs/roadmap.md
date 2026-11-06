@@ -1,12 +1,20 @@
 # Development roadmap
 
+## Canonical unfinished-work register (2026-11-06)
+
+[Future Plans](Future%20Plans/README.md) now owns the UI audit, reclaimed War
+proposals, paused Story, payment ideas and original expansion sequence/checklist.
+Its audited status supersedes stale pending phase descriptions below.
+Released art-neutral seasonal/mail/calendar/shop systems are not to be rebuilt;
+remaining seasonal intake/launch requires reviewed art and explicit date approval.
+
 ## Current remaining expansion order (2026-11-04)
 
 Follow-up authorizes phase-by-phase implementation.
 [Phase1 lifecycle and post-event shops](special-banner-lifecycle.md) resolve
 the reset/archive decisions and activate only the Rose closing schedule.
 
-The [remaining expansion phases](remaining-expansion-phases.md) are the current
+The [remaining expansion phases](Future%20Plans/remaining-expansion-phases.md) are the current
 owner-requested future sequence: reset/archive foundations; identity-first
 design of both banners; shared acquisition/Master/shop QoL; mailbox, gifts
 and login calendar; Moon delivery; Sunshade delivery. It preserves the full

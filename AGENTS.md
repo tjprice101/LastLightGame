@@ -1,5 +1,15 @@
 # Last Light: AI agent entry point
 
+## Canonical unfinished-work location (2026-11-06)
+
+Use [Future Plans](docs/Future%20Plans/README.md) for all standalone unfinished
+plans, deferred ideas, resume gates and the audited image/Midjourney budget.
+UI audit, four reclaimed War designs/prompts, paused Story, payment design,
+expansion planning/checklist and art experiments live there. Generators/tests
+must follow those paths; never recreate old competing documents. Keep live
+contracts, runtime/source images and provenance in their established locations.
+Filing does not authorize paused Story, War integration, event launch or spending.
+
 ## All-Moon redesign and artwork-led War proposals (2026-11-06)
 
 Owner now reworks Maerion/Caevren/Vespera portraits as well: all six Moon
@@ -10,8 +20,8 @@ lore/kits/IDs and inactive schedules; never monochrome-only object art.
 This supersedes preserving those three grayscale portraits or excluding
 blue-purple from their associated prompts. Sunshade remains orange-pink.
 The24 older supplied Moon portraits are archived byte-exact as four proposed
-War characters: Neralis, Varkhel, Seravelle, Velmira. docs/phase-2-war-designs.md
-and Art/characters/Elemental War Phase 2.md own names, lore, kits, mappings
+War characters: Neralis, Varkhel, Seravelle, Velmira. docs/Future Plans/phase-2-war-designs.md
+and docs/Future Plans/Elemental War Phase 2.md own names, lore, kits, mappings
 and44 missing associated images. No playable integration is approved yet.
 Keep their actual cyan/amber, scarlet/orange/violet, orange/gold or violet/gold
 palettes; do not apply the new Moon palette to reclaimed War artwork.
@@ -50,7 +60,7 @@ runtime/scenery may bloom. Preview actual pixels before declaring visual success
 ## Art-pending expansion and distinct event naming
 
 Owner authorizes completing the remaining expansion without generated artwork.
-Use docs/moon-sunshade-events.md and docs/remaining-expansion-art.md; never
+Use docs/moon-sunshade-events.md and docs/Future Plans/remaining-expansion-art.md; never
 interpret prompt completion as playable integration or hosted release.
 All twelve Moon/Sunshade bearers are now6-star (three male/three female per
 banner), superseding earlier4five/2six splits. Three personal Masters each
@@ -83,7 +93,7 @@ See docs/art-workflow.md and the Moon art pack.
 
 ## Timed special events and permanent event shops (2026-11-04)
 
-Use docs/special-banner-lifecycle.md and docs/remaining-expansion-phases.md.
+Use docs/special-banner-lifecycle.md and docs/Future Plans/remaining-expansion-phases.md.
 Rose draws/activity close November30,2026 at8 PM America/New_York; daily
 reset is8 PM and weekly Sunday8 PM, following DST. Authority time gates
 draws, entry/Continue/Retry and post-event creature purchases. An encounter

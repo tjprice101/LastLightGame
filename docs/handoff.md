@@ -1,5 +1,48 @@
 # Current state and handoff
 
+## Future Plans filing and image-budget audit (2026-11-06)
+
+Owner requests consolidating unfinished information, not implementing it.
+[Future Plans restart register](Future%20Plans/README.md) is canonical.
+Eleven standalone plan/prompt/experiment documents moved there with relative
+links and generator/test paths updated. Live specifications,24 archived War
+sources, root originals, runtime images and hashes did not move or change.
+No new schedule, combat, acquisition, payment or authority behavior.
+
+[Audited source-image counts and Midjourney costs](Future%20Plans/image-budget-audit.md)
+reconcile207 seasonal required +44 proposed War =251; +75 paused Story =326;
++17 production-related options =343; +8 experiments =351. The pilot contains
+three enemy alternatives AND two Rosetta palette tests; no hidden three-image
+undercount. Twelve seasonal optional weapons are included only once. All24
+reused War portraits and completed D-441/D-448 art are excluded. Later chapters/
+creator kits remain unquantified, not assumed zero.
+
+Official2026-11-06 pricing: Standard30USD/month with15 Fast hours/unlimited
+Relax images; Pro60USD with30 Fast hours/Stealth; extra Fast4USD/hour.
+Documented2/4/7 GPU-minute/source scenarios are assumptions, not measured niji
+costs or guaranteed acceptance. Check current balance and sample jobs first.
+251 sources cost roughly33-117USD extra Fast if exhausted, or a30USD Standard
+month using eligible Relax jobs when waiting is acceptable; tax excluded.
+Resume from the register's workstream gate, never an older historical phase
+status. Story stays paused and four-War integration stays unapproved.
+
+Validation from `tools`:
+`python -m unittest test_future_plans test_phase2_war_art test_future_story_art test_seasonal_art test_moon_banner_art test_phase1_war_art test_enemy_style_pilot`
+passes44 tests. New filing checks resolve every local Future Plans link,
+assert old locations absent, deduplicate326 core candidate filenames and
+count all8 experimental blocks. A HEAD comparison confirms all11 moved
+documents retain content except relinked destinations and all219 seasonal
+prompt bodies are byte-identical. No archived/root/runtime asset changed.
+`git diff --check` passes.
+
+Broader historical art suites are not clean: `test_art_library` still hardcodes
+26 provenance JSONs despite55 already committed, and `test_art_prompts` has
+strict legacy wording/reference assertions inconsistent with existing packs.
+The broader34-test diagnostic records316 subtest/assertion failures across
+three methods, zero errors. Retain their coverage of the moved prompt packs;
+do not silently skip them or rewrite artwork to satisfy obsolete prose.
+Current focused contracts pass; legacy test maintenance is separately registered.
+
 ## All-Moon redesign and four artwork-led War proposals (2026-11-06)
 
 Latest request supersedes the grayscale matching/preservation paragraphs
@@ -13,8 +56,8 @@ Sunshade remains its orange-pink direction. No event/date/reward changes.
 
 All24 older supplied root portraits are present and visually reviewed in
 authored six-form order. Owner confirms reuse as four separate War character
-designs only, no playable integration. [Full generated specification](phase-2-war-designs.md)
-and [44 new associated prompts](../Art/characters/Elemental%20War%20Phase%202.md)
+designs only, no playable integration. [Full generated specification](Future%20Plans/phase-2-war-designs.md)
+and [44 new associated prompts](Future%20Plans/Elemental%20War%20Phase%202.md)
 cover Neralis (Oceanic Healer & Support), Varkhel (Infernic Tank), Seravelle
 (Infernic Support), Velmira (Chaotic Attacker), lore/vows, six-form source
 mappings, base stats, meaningful native counters/buffs, three Masters each,
@@ -79,7 +122,7 @@ changes, not generated-pixel guarantees or an art intake/release.
 
 Owner requested verification of the specified prompts, then a full game
 presentation audit and extremely detailed uniformity/living-world plan.
-[Audit and implementation plan](living-world-ui-audit-plan.md) is now the
+[Audit and implementation plan](Future%20Plans/living-world-ui-audit-plan.md) is now the
 single planning deliverable: source baseline
 `f2f3442ed8c9eb7dd19da75de82d1e97f7a4f521`, evidence tiers,22 prioritized
 findings,20 screen-family plans, phases0-10 with prerequisites, exact-state/
@@ -322,7 +365,7 @@ Changes:
 - [Signature activity/enemy/material/social/shop specification](moon-sunshade-events.md):
   Moon Harbor of Unreturned Names/Vesperwing/Moonwake and Sunshade Beneath the
   Borrowed Dawn/Solcarapace/Dawnforge; no extra specialty chain or boss source.
-- [Complete missing-art checklist](remaining-expansion-art.md), **207 required
+- [Complete missing-art checklist](Future%20Plans/remaining-expansion-art.md), **207 required
   plus12 optional equipment sources,219 including optional**, literal bottom
   total. Twelve bearers/72 forms,48 abilities,36 Masters,21 statuses,12 enemy
   forms,12 materials and6 scenes; shared universal assets counted zero.
@@ -578,13 +621,13 @@ changes or character/banner registrations in this documentation-only step.
   chunks contained the archive, event shop and exact closure timestamp.
   Authority smoke passed separately as above; temporary local server stopped.
   [Exact contract](special-banner-lifecycle.md) and
-  [remaining phases](remaining-expansion-phases.md) distinguish this completed
+  [remaining phases](Future%20Plans/remaining-expansion-phases.md) distinguish this completed
   implementation from the still-gated Moon/Sunshade character designs.
 
 ## Remaining expansion roadmap (2026-11-04)
 
 Owner requests organization, not implementation. The
-[new ordered roadmap](remaining-expansion-phases.md) preserves supplied
+[new ordered roadmap](Future%20Plans/remaining-expansion-phases.md) preserves supplied
 Phases4/5/6/8 and prerequisites, with an explicit source mapping and unresolved
 design gates. All future characters follow identity -> full appearance line
 -> advanced visual powers -> prompt/name fidelity -> uniqueness/spectacle
@@ -867,8 +910,8 @@ Owner explicitly pauses Story here for a later major milestone. Do not resume
 story drafting, puzzle/replay implementation, new chapters or future-art intake
 without a new owner request. D-450's live Chapter1 labels/Codex remain unchanged.
 
-Resume from [the approved design and script](chapters-2-3-design.md), D-451/D-452
-and [the75-prompt visual pack](../Art/story/Chapters%202-3%20Draft.md).
+Resume from [the approved design and script](Future%20Plans/chapters-2-3-design.md), D-451/D-452
+and [the75-prompt visual pack](Future%20Plans/Chapters%202-3%20Draft.md).
 Preserve all approvals, the875-NP budget, one-time optional replay safeguards
 and black/ominous Rise-machine direction. Paper placement/optional reactions
 and Chapter2 pursuit dialogue remain drafts. Next time, confirm implementation
@@ -911,7 +954,7 @@ this benchmark does not itself authorize implementation.
   levels are provisional approved targets, not tested balance. Chapter3 memories/
   emotions expose Let's plan; Rise's partial fragment shares images/feelings,
   asks the party to seek her while retaining emotions, not complete explanation.
-- `docs/chapters-2-3-design.md` revises fragments, note, memories and fragment
+- `docs/Future Plans/chapters-2-3-design.md` revises fragments, note, memories and fragment
   scene; proposes regional3x3 rotate/connect core puzzles with post-boss reward
   persistence, separate repair gate, save-failure retry and reduced-motion VFX.
   Restart is OPTIONAL and preserves historical first-clear eligibility.
@@ -942,13 +985,13 @@ this benchmark does not itself authorize implementation.
   Story Codex (0/20/40/60/80/100/120 clears). Retroactive read-only unlocks,
   locked prose/titles absent from DOM, optional native reading, quiet regional
   victory notices. No new save fields/rewards, early twists or authority changes.
-- `docs/chapters-2-3-design.md` reviews the narrative gaps, drafts six cryptic
+- `docs/Future Plans/chapters-2-3-design.md` reviews the narrative gaps, drafts six cryptic
   papers/reactions for approval, proposes Chapter2's five25-stage regions,
   separate three25-stage pursuit and a three25-stage Chapter3. Levels, rewards,
   new identities, machine lineage and Oblivion relationship are UNAPPROVED.
   Exact note/wisp nature/Rise dialogue remain owner decisions; no later
   chapters or creator fighters are implemented.
-- `Art/story/Chapters 2-3 Draft.md` has75 copy-ready Midjourney prompts:
+- `docs/Future Plans/Chapters 2-3 Draft.md` has75 copy-ready Midjourney prompts:
   55 enemy/boss cutouts,11 arenas, three maps, three banners, three transitions.
   Reproduce with `python tools/build_future_story_art.py`; three
   `test_future_story_art.py` tests passed. No generated images or runtime wiring.
@@ -6128,7 +6171,7 @@ undeployed status below are superseded by D-289 above.
 
 ## Future payments document and combat wait reliability (D-285/D-286)
 
-- Added [future microtransactions design](microtransactions-design.md):
+- Added [future microtransactions design](Future%20Plans/microtransactions-design.md):
   PayPal Business settlement/withdrawals, fees/holds, Stripe and merchant-of-record
   alternatives, platform constraints, sandbox/live setup, server capture and
   verified webhooks, exactly-once atomic credit, paid/earned ledger, offline-import
@@ -6431,7 +6474,7 @@ undeployed status below are superseded by D-289 above.
   Glasswater, Stormspan and Rootstone, each with a copyable style prompt and
   distinct arrangement. Guitar is the melodic "singer"; no lead vocals/lyrics/
   speech, optional wordless choir only. No audio generated, installed or wired.
-- Added [future story roadmap](story-roadmap.md): all seven chapters and
+- Added [future story roadmap](Future%20Plans/story-roadmap.md): all seven chapters and
   intermission, Rise's papers, Let's message/wisp, Nyrasma, Brink of Oblivion,
   the moral reversal, survival/creator alliance and eventual reconciliation/
   Let acquisition. Chapter2 is5x25, intermission3x25; Chapter1 keeps6x25.
@@ -7238,7 +7281,7 @@ Earlier72px uniform-tile sizing below is superseded by this reference layout.
 
 ## Starter Omnic alternate-skin prompt test
 
-- Added `Art/experiments/Starter Omnic Alternate Skins.md` with Obsidian Phoenix
+- Added `docs/Future Plans/Starter Omnic Alternate Skins.md` with Obsidian Phoenix
   Empress Infernis, Abyssal Pearl Emperor Tizu and Jade Blossom Empress Flora.
   Owner's original Omnic image URLs preserved verbatim; exact Evo.6 style
   reference retained at150. Identities/weapons/six wings unchanged, alternate

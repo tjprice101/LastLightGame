@@ -246,5 +246,5 @@ feature needs client/authority/schema tests, atomic rollback/idempotence,
 frozen-run compatibility, existing account preservation and hosted checks.
 Both new event schedules stay empty until launch approval. No broken image
 URLs, substituted Rose artwork or Midjourney generation prerequisite.
-The [missing-art checklist](remaining-expansion-art.md) counts actual source
+The [missing-art checklist](Future%20Plans/remaining-expansion-art.md) counts actual source
 images once, with optional equipment shown separately.

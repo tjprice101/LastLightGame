@@ -2,7 +2,7 @@
 
 **24 copy-ready prompts; no delivered images. Twelve fixed creature forms and twelve materials.**
 
-[Activity/loot/progression specification](../../docs/moon-sunshade-events.md) | [Moon character/scenery pack](../characters/Glow%20of%20the%20Moon's%20Light.md) | [Sunshade character/scenery pack](../characters/The%20Angel-blazened%20Sunshade.md) | [Full remaining-art checklist](../../docs/remaining-expansion-art.md)
+[Activity/loot/progression specification](../../docs/moon-sunshade-events.md) | [Moon character/scenery pack](../characters/Glow%20of%20the%20Moon's%20Light.md) | [Sunshade character/scenery pack](../characters/The%20Angel-blazened%20Sunshade.md) | [Full remaining-art checklist](../../docs/Future%20Plans/remaining-expansion-art.md)
 
 Reproduce: `python tools/build_seasonal_event_art.py`. Names remain outside image prose. Banner and gamemode names must differ from character identity and Omnic titles, yet remain symbolic of the same event. No copied Roselius or Rose material artwork.
 

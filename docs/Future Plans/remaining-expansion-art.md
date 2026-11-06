@@ -15,7 +15,7 @@ packs, not older monochrome/gold-only prompt copies.
 
 The24 supplied older Moon-labeled portraits are archived for the separate
 [four-character War proposal](phase-2-war-designs.md), not counted as current
-Moon delivery. Its [44 missing associated images](../Art/characters/Elemental%20War%20Phase%202.md)
+Moon delivery. Its [44 missing associated images](Elemental%20War%20Phase%202.md)
 are separate from this approved seasonal expansion count. Combined future
 queue: **251 required new images (207 seasonal +44 War), plus12 optional
 seasonal equipment images =263 new images including optional**. The24 reused
@@ -23,12 +23,12 @@ War portraits need no regeneration. War integration is not yet approved.
 
 ## Copy-ready documents
 
-- [Moon: characters, abilities, Masters, statuses and scenes](../Art/characters/Glow%20of%20the%20Moon's%20Light.md)
-- [Sunshade: characters, abilities, Masters, statuses and scenes](../Art/characters/The%20Angel-blazened%20Sunshade.md)
-- [Both signature activities: enemy forms and Seed→Soul materials](../Art/creatures/Moon%20and%20Sunshade%20Events.md)
-- [Approved identity/appearance rows](moon-sunshade-character-design.md)
-- [In-game kits and personal Master effects](moon-sunshade-kit-specification.md)
-- [Activity, enemy and material-chain specification](moon-sunshade-events.md)
+- [Moon: characters, abilities, Masters, statuses and scenes](../../Art/characters/Glow%20of%20the%20Moon's%20Light.md)
+- [Sunshade: characters, abilities, Masters, statuses and scenes](../../Art/characters/The%20Angel-blazened%20Sunshade.md)
+- [Both signature activities: enemy forms and Seed→Soul materials](../../Art/creatures/Moon%20and%20Sunshade%20Events.md)
+- [Approved identity/appearance rows](../moon-sunshade-character-design.md)
+- [In-game kits and personal Master effects](../moon-sunshade-kit-specification.md)
+- [Activity, enemy and material-chain specification](../moon-sunshade-events.md)
 
 Reproduce packs with:
 

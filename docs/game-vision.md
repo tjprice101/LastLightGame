@@ -40,7 +40,7 @@ elements. Machines are wrecked prototypes from their collaboration.
 Nyrasma and Brink of Oblivion to finding both creators, resisting annihilation
 and reconciling bearers/Devourers and Let/Rise. This is documented future
 direction only; no chapters, creator stats/elements or acquisitions are live.
-[Spoiler roadmap](story-roadmap.md).
+[Spoiler roadmap](Future%20Plans/story-roadmap.md).
 
 **Music (D-274):** original170 BPM instrumental orchestral rock/metal,
 expressive lead guitar instead of a singer, gentle piano/celestial contrasts

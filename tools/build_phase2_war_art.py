@@ -5,8 +5,9 @@ from build_moon_banner_art import CHARACTERS as MOON_CHARACTERS, MARGIN, MOON_RE
 from prompt_quality import ICON_NO, ICON_RENDERER, OBJECT_ONLY, QUALITY_NO, SHARP
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "Art" / "characters" / "Elemental War Phase 2.md"
-SPEC = ROOT / "docs" / "phase-2-war-designs.md"
+FUTURE = ROOT / "docs" / "Future Plans"
+OUTPUT = FUTURE / "Elemental War Phase 2.md"
+SPEC = FUTURE / "phase-2-war-designs.md"
 ARCHIVE = Path("Art") / "source" / "phase2-war"
 MANIFEST = ROOT / "Art" / "provenance" / "phase2-war-source-mapping.json"
 DESIGNS = (
@@ -280,7 +281,7 @@ def document():
     parts = [
         "# Elemental War Phase 2: artwork-led associated art",
         "**Four proposed six-star characters. 24 delivered portraits reused; 44 new associated images needed. No playable integration.**",
-        "[Complete identities, lore, kits, strengths and source mappings](../../docs/phase-2-war-designs.md). "
+        "[Complete identities, lore, kits, strengths and source mappings](phase-2-war-designs.md). "
         "Reproduce with `python tools/build_phase2_war_art.py`; do not edit generated prompt blocks.",
         "## Generation and identity contract",
         "The supplied pixels, not the old Moon filename or old prose, own these four appearances. "
@@ -314,9 +315,9 @@ def specification():
     parts = [
         "# Elemental War Phase 2: four artwork-led character designs",
         "**Owner-requested design/prompt scope only (2026-11-06). Names and numeric designs are proposals; no playable registration, acquisition or authority changes.**",
-        "[Associated prompt pack](../Art/characters/Elemental%20War%20Phase%202.md) | "
-        "[Existing War rules](elemental-war.md) | [Global benchmark boundary](enemy-benchmark-calibration.md) | "
-        "[Source provenance](../Art/provenance/phase2-war-source-mapping.json).",
+        "[Associated prompt pack](Elemental%20War%20Phase%202.md) | "
+        "[Existing War rules](../elemental-war.md) | [Global benchmark boundary](../enemy-benchmark-calibration.md) | "
+        "[Source provenance](../../Art/provenance/phase2-war-source-mapping.json).",
         "Reproduce this specification and the prompt pack: `python tools/build_phase2_war_art.py`.",
         "## Reuse, not replacement",
         "The 24 supplied root portraits become four new proposed War identities. Current Moon names, "

@@ -2,7 +2,7 @@
 
 **Owner-requested design/prompt scope only (2026-11-06). Names and numeric designs are proposals; no playable registration, acquisition or authority changes.**
 
-[Associated prompt pack](../Art/characters/Elemental%20War%20Phase%202.md) | [Existing War rules](elemental-war.md) | [Global benchmark boundary](enemy-benchmark-calibration.md) | [Source provenance](../Art/provenance/phase2-war-source-mapping.json).
+[Associated prompt pack](Elemental%20War%20Phase%202.md) | [Existing War rules](../elemental-war.md) | [Global benchmark boundary](../enemy-benchmark-calibration.md) | [Source provenance](../../Art/provenance/phase2-war-source-mapping.json).
 
 Reproduce this specification and the prompt pack: `python tools/build_phase2_war_art.py`.
 

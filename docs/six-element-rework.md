@@ -85,7 +85,7 @@ related dungeon encounters, with roughly equivalent tier rewards.
 
 **Confirmed D-158 follow-up:** preserve reference-based enemy rendering in a
 small low-weight pilot, review generated outcomes before global application.
-[Three copy-ready alternatives](../Art/experiments/Enemy%20Style%20Pilot.md).
+[Three copy-ready alternatives](Future%20Plans/Enemy%20Style%20Pilot.md).
 Production enemy prompts remain reference-free pending outcome review.
 Installed pixels and gameplay were unchanged by the pilot. Character prompt
 controls are separately implemented under D-159.

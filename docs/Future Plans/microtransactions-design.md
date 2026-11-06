@@ -103,7 +103,7 @@ never return fake success or silently discard the payment.
 
 Existing Supabase authentication, authoritative gameplay and revision/CAS
 transactions provide a foundation; see the
-[server operation contract](../supabase/functions/game-operation/README.md).
+[server operation contract](../../supabase/functions/game-operation/README.md).
 Proposed additions:
 
 - Server-only pack catalog and authenticated checkout creation endpoint.

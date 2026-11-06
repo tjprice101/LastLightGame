@@ -4,7 +4,7 @@ from pathlib import Path
 from prompt_quality import SHARP, QUALITY_NO, BACKDROP_NO, NO_BACKDROP, PORTRAIT_FRAME
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "Art" / "story" / "Chapters 2-3 Draft.md"
+OUTPUT = ROOT / "docs" / "Future Plans" / "Chapters 2-3 Draft.md"
 
 # Five identities per region: four ordinary enemies and a separate regional boss.
 REGIONS = [
@@ -170,7 +170,7 @@ def document():
 
 **D-450 / DRAFT FOR OWNER APPROVAL. Not implemented, not delivered artwork.**
 
-Companion design: [chapter design and approval boundaries](../../docs/chapters-2-3-design.md).
+Companion design: [chapter design and approval boundaries](chapters-2-3-design.md).
 These75 copy-ready prompts cover55 unique enemy/boss cutouts,11 arenas,
 three maps, three chapter/part banners and three transition concepts.
 Region/enemy identities and provisional125/75/75 stage structure are approved

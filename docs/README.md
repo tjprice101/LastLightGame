@@ -1,5 +1,16 @@
 # Documentation hub
 
+## Future Plans and audited image budget (2026-11-06)
+
+[Canonical unfinished-work register](Future%20Plans/README.md) collects the UI
+audit, four new War proposals, paused Story design/prompt packs, microtransactions,
+expansion roadmap/checklist and generation-only experiments. Each entry records
+what is complete, what remains, dependencies and the exact restart/approval gate.
+[Image and Midjourney cost audit](Future%20Plans/image-budget-audit.md) separates
+251 required seasonal/War images,326 with paused Story,343 with production-related
+options and351 with experiments;24 War portraits already exist. Active contracts
+stay in this library; historical "pending" entries below are not current debt.
+
 **Latest Moon redesign and reclaimed Elemental War art (2026-11-06):**
 All six Moon characters now share black-white/silver material and vivid
 blue-purple lunar powers. [Updated appearances](moon-sunshade-character-design.md)
@@ -9,9 +20,9 @@ match their current theme. The prior grayscale-preservation exception below
 is historical. No kits or event gates are changed.
 
 The24 older supplied portraits are archived byte-exact for
-[Neralis, Varkhel, Seravelle and Velmira: complete proposed War designs](phase-2-war-designs.md),
+[Neralis, Varkhel, Seravelle and Velmira: complete proposed War designs](Future%20Plans/phase-2-war-designs.md),
 including lore, source/form mappings, stats, native kits,12 personal Masters,
-strengths/limits and future validation. [44 associated art prompts](../Art/characters/Elemental%20War%20Phase%202.md)
+strengths/limits and future validation. [44 associated art prompts](Future%20Plans/Elemental%20War%20Phase%202.md)
 use their actual cyan/amber, scarlet/orange/violet, orange/gold and violet/gold
 palettes. Root originals remain; no playable integration or runtime art intake.
 Seasonal queue207 required/12 optional is unchanged; the separate War queue
@@ -27,7 +38,7 @@ kits and names remain unchanged; the proposed new War repurposing was
 withdrawn. Moon8 + seasonal8 tests pass.
 
 **Living-world interface audit and implementation plan (2026-11-05):**
-[Full evidence-backed audit and phased plan](living-world-ui-audit-plan.md)
+[Full evidence-backed audit and phased plan](Future%20Plans/living-world-ui-audit-plan.md)
 covers every presentation screen family, current strengths, prioritized gaps,
 semantic surfaces/colors, intent-specific motion, concise information,
 transaction/focus/history safety, phased dependencies and measurable acceptance
@@ -63,7 +74,7 @@ define Harbor of Unreturned Names/Vesperwing/Moonwake and Beneath the Borrowed
 Dawn/Solcarapace/Dawnforge. All twelve bearers are six-star; current Rose rules
 apply, both new schedules remain inactive. Owner approves login/streak tuning,
 ordinary tier prices and36 personal Masters in the existing chest pool.
-[Remaining art checklist](remaining-expansion-art.md) lists **207 required,
+[Remaining art checklist](Future%20Plans/remaining-expansion-art.md) lists **207 required,
 12 optional,219 including optional images**, with a bottom total.
 [Sunshade97-prompt pack](../Art/characters/The%20Angel-blazened%20Sunshade.md)
 and [event24-prompt pack](../Art/creatures/Moon%20and%20Sunshade%20Events.md)
@@ -100,7 +111,7 @@ Event materials remain permanent; all six Roselius forms unlock for purchases
 after closure, with mandatory no-owner warnings.
 
 **Remaining expansion (2026-11-04):**
-[Implementation-ordered phases and complete requirements](remaining-expansion-phases.md)
+[Implementation-ordered phases and complete requirements](Future%20Plans/remaining-expansion-phases.md)
 cover the mandatory character-first workflow, reset/archive foundations, Moon
 and Sunshade banners, login calendar, mailbox/friend gifts and Master/shop/
 first-acquisition QoL. Planning only; no date activation or gameplay changes.
@@ -120,15 +131,15 @@ All45 delivered images are [archived and exported](art-workflow.md#delivered-pha
 with source-specific background cleanup and byte revisions.
 Story remains explicitly paused.
 
-**D-452:** [Approved story script, core rules and optional replay safeguards](chapters-2-3-design.md)
+**D-452:** [Approved story script, core rules and optional replay safeguards](Future%20Plans/chapters-2-3-design.md)
 now includes the875-NP future-stage budget. Owner requests recording approvals
 and stopping before implementation; D-451 pending-approval status below is historical.
 
-**D-451:** [Revised story scenes, core puzzle and optional restart design](chapters-2-3-design.md)
+**D-451:** [Revised story scenes, core puzzle and optional restart design](Future%20Plans/chapters-2-3-design.md)
 records the author interview, approved regional foundations and black/ominous
 Nyrasma machines. New dialogue/rewards/puzzle details await approval; design only.
 
-**D-450:** [Chapter1 review and Chapters2-3 design draft](chapters-2-3-design.md):
+**D-450:** [Chapter1 review and Chapters2-3 design draft](Future%20Plans/chapters-2-3-design.md):
 live Chapter1 labeling and milestone Story Codex; cryptic papers, Nyrasma,
 separate pursuit and Chapter3 are proposals with75 copy-ready Midjourney prompts.
 
@@ -727,7 +738,7 @@ the selected enemy. Drag-down remains equivalent; Defense stays in Battle menu.
 **Future microtransactions:** payment architecture, PayPal Business settlement,
 provider alternatives, verified one-time currency fulfillment, testing and
 unresolved policies are recorded for later. No checkout or real-money purchases
-are enabled. [Design proposal](microtransactions-design.md).
+are enabled. [Design proposal](Future%20Plans/microtransactions-design.md).
 
 **Ability VFX preview verification:** both studios use base-aware module entries.
 Delayed-frame VFX timing, live speed/motion cancellation and explicit bounded
@@ -762,7 +773,7 @@ Song changes now crossfade over1.6 seconds; activity curtains fade in/out over
 **Future campaign spoilers (D-275):** owner-approved seven-chapter outline,
 Rise's transcription trail, Nyrasma, the pursuit to Brink of Oblivion and
 creator reconciliation/recruitment. Documentation only; current Story and
-creator mechanics unchanged. [Future story roadmap](story-roadmap.md).
+creator mechanics unchanged. [Future story roadmap](Future%20Plans/story-roadmap.md).
 
 **Founding canon (D-269):** Let/Infinity and Rise/Nothingness jointly created
 worlds, then split themselves after their rivalry drew civilizations into war.
@@ -798,7 +809,7 @@ Add friend/Received/Sent sidebar and real accepted-friend online/last-seen statu
 **Starter Omnic skin tests:** three generation-only alternate costume prompts,
 owner-provided image references, visible10% outer margins and palette-specific
 contrasting backgrounds. No runtime skins or production prompt replacement.
-[Prompt pack](../Art/experiments/Starter%20Omnic%20Alternate%20Skins.md).
+[Prompt pack](Future%20Plans/Starter%20Omnic%20Alternate%20Skins.md).
 
 **One-screen desktop profile (D-258):** short desktop screens retain three
 columns, a side-by-side portrait/name editor and compact progress/activity rows.
@@ -1133,7 +1144,7 @@ generated outputs still need review.
 colors/design. Three low-weight enemy alternatives are approved for testing,
 not global enemy prompt rollout. D-160 now approves the previously pending
 six-element/Story/UI baseline. [Rework plan](six-element-rework.md) /
-[Art library](../Art/README.md) / [Pilot](../Art/experiments/Enemy%20Style%20Pilot.md).
+[Art library](../Art/README.md) / [Pilot](Future%20Plans/Enemy%20Style%20Pilot.md).
 
 **Reference-free enemies (D-155):** both reference URL and weight flags removed
 from all129 enemy prompts across18 packs. Written designs/framing and installed

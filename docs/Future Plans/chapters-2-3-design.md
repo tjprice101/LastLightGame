@@ -307,7 +307,7 @@ the party remembers Rise broke their beacons and has not forgotten the war.
 
 ## Art deliverables and implementation boundary
 
-[The complete proposed prompt pack](../Art/story/Chapters%202-3%20Draft.md)
+[The complete proposed prompt pack](Chapters%202-3%20Draft.md)
 contains55 unique enemy/boss cutouts,11 arenas, three part maps, three banners
 and three transitional scene illustrations:75 prompts total. This covers the
 proposed5+3+3 regions, **not** playable creator portraits or new material/ability

@@ -2,7 +2,7 @@
 
 **97 copy-ready prompts; all source images pending. Six six-star Element-Bearers, three male and three female.**
 
-[Approved appearances](../../docs/moon-sunshade-character-design.md) | [Kits/Masters](../../docs/moon-sunshade-kit-specification.md) | [Signature activities](../../docs/moon-sunshade-events.md) | [Complete missing-art checklist](../../docs/remaining-expansion-art.md)
+[Approved appearances](../../docs/moon-sunshade-character-design.md) | [Kits/Masters](../../docs/moon-sunshade-kit-specification.md) | [Signature activities](../../docs/moon-sunshade-events.md) | [Complete missing-art checklist](../../docs/Future%20Plans/remaining-expansion-art.md)
 
 Reproduce: `python tools/build_sunshade_banner_art.py`. Do not hand-edit generated blocks.
 

@@ -2,7 +2,7 @@
 
 **D-450 / DRAFT FOR OWNER APPROVAL. Not implemented, not delivered artwork.**
 
-Companion design: [chapter design and approval boundaries](../../docs/chapters-2-3-design.md).
+Companion design: [chapter design and approval boundaries](chapters-2-3-design.md).
 These75 copy-ready prompts cover55 unique enemy/boss cutouts,11 arenas,
 three maps, three chapter/part banners and three transition concepts.
 Region/enemy identities and provisional125/75/75 stage structure are approved

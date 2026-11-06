@@ -5,6 +5,7 @@ from character_palette import palette_clause
 from art_library import art_path
 
 ROOT = Path(__file__).resolve().parent.parent
+OUTPUT = ROOT / "docs" / "Future Plans" / "Enemy Style Pilot.md"
 PILOTS = (
     (3, "Rare - Ivory Kirin / stages35-50 / Tranquilitic",
      "warm cream-ivory ceramic body plates and wing vanes, champagne pearl clasps, neutral silver antlers and joints, pale blush rose limited to sensor eyes and two slender ribbons, cream-and-silver shadows",
@@ -159,6 +160,5 @@ def document():
 
 
 if __name__ == "__main__":
-    destination = art_path("experiments", "Enemy Style Pilot.md", root=ROOT)
-    destination.parent.mkdir(exist_ok=True)
-    destination.write_text(document(), encoding="utf-8")
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT.write_text(document(), encoding="utf-8")
