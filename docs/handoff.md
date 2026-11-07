@@ -38,6 +38,14 @@ Client publication is the production-only main push/Pages workflow; verify
 its full suite and hosted `version.json` against that commit before calling
 the client release live.
 
+Publication verified: runtime commit `84f1093a15350a9ef3d5cfe7c9624958855c8c9e`
+passed [Pages CI](https://github.com/tjprice101/LastLightGame/actions/runs/42407672321):
+`npm test` passed8,366 tests/255 files; configured production build and
+deployment passed. Hosted `version.json` matched that SHA, and the client,
+Moon banner/header/arena returned HTTP200. Hosted title startup was checked.
+The local mock-up suite is excluded from the committed CI source, not
+published to satisfy this release.
+
 Local mock-up files and earlier mock-up documentation remain unstaged; no
 mock-up implementation/publication is authorized by this release. The new
 single-file premium design remains at the plan/wait-for-go gate.

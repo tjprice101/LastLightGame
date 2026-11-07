@@ -25,6 +25,12 @@ authority checks. Hosted verification uses
 `node tools/smoke_server_game.mjs --moon-launch` with disposable identities.
 Publication outcomes are recorded in the [handoff](handoff.md).
 
+Runtime release `84f1093a` is published and verified: matching authority
+passed the hosted Moon launch smoke; client CI passed8,366 tests/255 files,
+configured build and Pages deployment. Hosted version matched the runtime
+commit, with all Moon banner/header/arena assets HTTP200. No local mock-up
+files were included.
+
 ## Approved implementation direction
 
 Owner requests both full banners/activities and remaining QoL/social phases
