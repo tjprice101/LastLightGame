@@ -49,6 +49,22 @@ const coefficients: Record<StarterId, readonly (number | undefined)[]> = {
 const actions = ['skill1', 'skill2', 'ultimate'] as const;
 
 describe('approved native identities', () => {
+  it('teaches reclaimed War resources without presenting Master-only triggers as base mechanics', () => {
+    const neralis = nativeIdentities.neralis.passive.description;
+    expect(neralis).toContain('missing Health');
+    expect(neralis).toContain('even when healing several allies');
+    expect(neralis).toContain('can earn 1 back');
+    expect(nativeIdentities.seravelle.playLoop).not.toContain('Burn');
+    expect(nativeIdentities.seravelle.playLoop).toContain('Last Flare gives other allies Gauge');
+    expect(nativeIdentities.seravelle.passive.description).toContain('whole squad can earn only 1 per round');
+    const velmira = nativeIdentities.velmira.passive.description;
+    expect(velmira).toContain('Repeating a Skill keeps existing stacks');
+    expect(velmira).toContain('first Skill grants 1 [Crosscut] after resolving');
+    expect(velmira).not.toContain('funds');
+    expect(nativeIdentities.velmira.abilities.skill2.description).toContain('before this attack');
+    expect(nativeIdentities.velmira.abilities.skill2.description).toContain('Keep your stacks');
+  });
+
   it('covers exactly the stable playable roster with distinct roles and play loops', () => {
     expect([...nativeIdentityIds].sort()).toEqual(starters.map(starter => starter.id).sort());
     expect(nativeIdentityIds).toHaveLength(starters.length);

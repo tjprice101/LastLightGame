@@ -40,7 +40,7 @@ DESIGNS = (
             "Dark-silver swept hair, broad black wings, longer white panel trains and amber tokens; crescent hook and opposite spear point over a bright blue returning current.",
             "Long silver hair and curling side locks, ornate dark feather wings and layered white-black admiral coat; amber fittings and blue water spirals around a double-ended polearm. Actual wing/weapon tips need intake clearance review.",
         ),
-        passive=("Returning Current", "Gain 1 [Current], up to 3, when Neralis's Normal Attack deals direct damage or his native ability restores Health. Gain at most 1 per action."),
+        passive=("Returning Current", "Gain 1 [Current], up to 3, when Neralis's Normal Attack damages an enemy or his ability restores missing Health. Gain at most 1 per action, even when healing several allies. Healing after spending Current can earn 1 back; healing full Health, the Support role perk and Conduit healing do not count."),
         skills=(
             ("skill1", "Light the Next Station", "25 Gauge", "Restore 35% maximum Health to one living squad member, scaled by Neralis's Skill Power. Grant that member +30% Defense for 2 turns.", "one amber station clasp on a silver crescent-hook rib guiding a cyan-blue water stitch into an intact white coat-panel shield"),
             ("skill2", "Carry Them Back", "40 Gauge", "Spend all [Current]. Restore 18% maximum Health to each living squad member, plus 6% per [Current] spent, scaled by Neralis's Skill Power.", "three amber route tokens feeding distinct cyan-blue return channels through one black-white crescent pump, white foam at the receiving silver cradle"),
@@ -139,7 +139,7 @@ DESIGNS = (
             "White hair under a pointed gold crown, red officer panel, broad black-white feather wings and orange-yellow lance flame. The visible abstract white cross-like insignia remains source detail, not generated lettering.",
             "Long flowing white hair with twin braids, ornate silver-black dress armor, red panel accents and gold fittings; huge dark wings and bright golden lightning-like flame along the spear. Not a purple lunar relay.",
         ),
-        passive=("Convoy Cadence", "When any living squad member's Normal Attack deals direct damage, gain 1 [Cadence], up to 3. Once per round while Seravelle is alive."),
+        passive=("Convoy Cadence", "The first squad Normal Attack that damages an enemy each round grants 1 [Cadence], up to 3, while Seravelle is alive. Seravelle's own Normal Attack counts. The whole squad can earn only 1 per round; triggered attacks do not count."),
         skills=(
             ("skill1", "Send the Ember Ahead", "25 Gauge", "Deal 245% of Seravelle's Direct Attack to one enemy. Apply Burn for 2 enemy phases, dealing 12% of her Direct Attack per phase, scaled by her Skill Power.", "one silver lance head sends an orange-red flame stitch past a gold-brass braid clasp, black-white feather vanes and red officer-panel relief"),
             ("skill2", "Move as One", "40 Gauge", "Spend all [Cadence]. Grant every living squad member +30% Direct Attack for 2 turns, plus 10% per [Cadence] spent. This buff is not scaled by Skill Power.", "three gold-brass braid rings relay separate orange-red flame paths through white-black feather vanes, joined by red command-panel insets"),
@@ -189,10 +189,10 @@ DESIGNS = (
             "Dark blunt bob, white blade-petal skirt, black armor and dense black wings with green-yellow spark details. Preserve supplied detail during key removal; do not globally erase green pixels from the subject.",
             "Long curled dark hair, layered white gown, black-silver regalia and black wings edged red/violet; gold ring-grip blades with golden fracture energy. Face/window and full feather tips need edge review.",
         ),
-        passive=("Alternating Edge", "Gain 1 [Crosscut], up to 3, when an ordinary Skill differs from Velmira's previous ordinary Skill. The first Skill establishes the sequence without granting a stack. Normal Attacks and Last Flare do not change the previous-Skill record."),
+        passive=("Alternating Edge", "After using a different Skill from Velmira's previous Skill, gain 1 [Crosscut], up to 3. The first Skill grants no stack. Repeating a Skill keeps existing stacks but grants none. Normal Attacks and Last Flare do not change which Skill comes next in the sequence."),
         skills=(
             ("skill1", "Open the Seam", "25 Gauge", "Deal 280% of Velmira's Direct Attack to one enemy. Apply Weaken for 2 enemy phases, reducing that enemy's direct damage by 25%.", "one silver crescent blade and gold ring grip opening an amber-gold seam in a dark plate, violet-magenta edge ribbon and sharp white pleat relief"),
-            ("skill2", "Turn the Other Edge", "40 Gauge", "Deal 205% of Velmira's Direct Attack to all enemies. Ignore 20% of their Defense while holding at least 2 [Crosscut]; this Skill does not spend [Crosscut].", "two independent silver crescent blades cross along violet-magenta cutting ribbons over a white pleated-panel seal, gold ring grips and black feather-tip relief"),
+            ("skill2", "Turn the Other Edge", "40 Gauge", "Deal 205% of Velmira's Direct Attack to all enemies. With at least 2 [Crosscut] before this attack, ignore 20% of their Defense. Keep your stacks; any new Crosscut is gained after the attack.", "two independent silver crescent blades cross along violet-magenta cutting ribbons over a white pleated-panel seal, gold ring grips and black feather-tip relief"),
             ("ultimate", "Leave the Doorway Standing", "100 Gauge | Recover next player turn", "Spend all [Crosscut]. Deal 1,050% of Velmira's Direct Attack to one enemy, plus 90% per [Crosscut] spent. Ignore 30% of the target's Defense.", "two magnificent silver crescent blades with gold ring hubs part an amber fracture seam, three vivid violet-magenta cutting arcs inside black feather fans and white pleated-panel relief"),
         ),
         passive_art="two independent silver crescent edges and gold ring grips around three violet-magenta crosscut notches, white pleat and black feather relief",

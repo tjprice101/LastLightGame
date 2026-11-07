@@ -81,7 +81,7 @@ crescent-hook polearm and spear-ended dark shaft, silver collar ribs, split whit
 
 ### Passive: Returning Current
 
-Gain 1 [Current], up to 3, when Neralis's Normal Attack deals direct damage or his native ability restores Health. Gain at most 1 per action.
+Gain 1 [Current], up to 3, when Neralis's Normal Attack damages an enemy or his ability restores missing Health. Gain at most 1 per action, even when healing several allies. Healing after spending Current can earn 1 back; healing full Health, the Support role perk and Conduit healing do not count.
 
 ### Normal Attack
 
@@ -263,7 +263,7 @@ single silver lance head with black shaft, gold-brass braid-clasp rings and red 
 
 ### Passive: Convoy Cadence
 
-When any living squad member's Normal Attack deals direct damage, gain 1 [Cadence], up to 3. Once per round while Seravelle is alive.
+The first squad Normal Attack that damages an enemy each round grants 1 [Cadence], up to 3, while Seravelle is alive. Seravelle's own Normal Attack counts. The whole squad can earn only 1 per round; triggered attacks do not count.
 
 ### Normal Attack
 
@@ -354,7 +354,7 @@ paired silver crescent blades with gold ring grips and dark pivots, white pleate
 
 ### Passive: Alternating Edge
 
-Gain 1 [Crosscut], up to 3, when an ordinary Skill differs from Velmira's previous ordinary Skill. The first Skill establishes the sequence without granting a stack. Normal Attacks and Last Flare do not change the previous-Skill record.
+After using a different Skill from Velmira's previous Skill, gain 1 [Crosscut], up to 3. The first Skill grants no stack. Repeating a Skill keeps existing stacks but grants none. Normal Attacks and Last Flare do not change which Skill comes next in the sequence.
 
 ### Normal Attack
 
@@ -370,7 +370,7 @@ Deal 280% of Velmira's Direct Attack to one enemy. Apply Weaken for 2 enemy phas
 
 **40 Gauge**
 
-Deal 205% of Velmira's Direct Attack to all enemies. Ignore 20% of their Defense while holding at least 2 [Crosscut]; this Skill does not spend [Crosscut].
+Deal 205% of Velmira's Direct Attack to all enemies. With at least 2 [Crosscut] before this attack, ignore 20% of their Defense. Keep your stacks; any new Crosscut is gained after the attack.
 
 ### Last Flare: Leave the Doorway Standing
 

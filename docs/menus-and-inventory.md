@@ -1,5 +1,15 @@
 # Menus and inventory
 
+## Reclaimed War kit clarity (2026-11-07)
+
+The four new play-loop summaries distinguish default actions from optional
+Master triggers. Seravelle's Burn-to-Gauge effect requires her personal Master;
+her base Gauge support comes from Last Flare. Resource descriptions explain
+Neralis's missing-Health requirement/one gain per action/post-spend gain,
+Seravelle's one gain per squad round, and Velmira's retained stacks/sequence/
+pre-attack pierce check. These are explanations of existing behavior, not new
+combat timing or resource rules. No balance/roster redesign is implied.
+
 ## Reclaimed War trial/portrait presentation (2026-11-06)
 
 Neralis/Varkhel/Seravelle/Velmira use their reviewed six-form portraits across

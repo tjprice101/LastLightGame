@@ -1,5 +1,24 @@
 # Current state and handoff
 
+## Reclaimed War intuitiveness follow-up (2026-11-07)
+
+Owner authorizes necessary follow-up after the kit review. Corrected shared
+play-loop/passive/Skill2 explanations, not combat coefficients or native rules.
+Seravelle no longer claims Master-only Burn-to-Gauge as a base kit mechanic.
+Neralis explicitly teaches missing-Health/one-per-action/post-spend Current.
+Velmira explains retained stacks on repeat, retained sequence after Last Flare,
+pre-attack pierce eligibility and the first-stack Master without vague "funds".
+Varkhel's loop distinguishes piercing single-target spending from squad-shield
+Last Flare. Generator/spec stay aligned; all44 art prompt bodies remain intact.
+Keep prior measured losses/timeouts and roster-overlap concerns as future
+review evidence, not permission for speculative buffs or arbitrary new mechanics.
+Validation: focused `npx vitest run src\content\native-identities.test.ts src\game\phase2-war-kits.test.ts src\presentation\native-status-art.test.ts --maxWorkers=2 --reporter=dot`
+passes140 tests in3 files. From `tools`, `python -m unittest test_phase2_war_art test_future_plans`
+passes11 tests. `npm run build`, authority bundle regeneration/TypeScript/Deno
+checks and `git diff --check` pass. Compared all44 generated prompt bodies
+against HEAD: unchanged. No combat state-machine, coefficients, assets or
+save/recruitment rules changed. Publication/hosted verification follows.
+
 ## Approved reclaimed War integration/intake (2026-11-06)
 
 Runtime kits/counters, twelve personal Masters, trial/content/account/UI wiring

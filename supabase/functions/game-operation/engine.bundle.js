@@ -5728,10 +5728,10 @@ var nativeIdentities = {
   },
   neralis: {
     role: "Oceanic healer and support",
-    playLoop: "[Neralis] earns [Current] through effective Normal damage and native healing, then spends it for squad recovery.",
+    playLoop: "Attack to build [Current], rescue one wounded ally, or spend [Current] to heal the squad.",
     passive: {
       name: "Returning Current",
-      description: "Gain 1 [Current], up to 3, when a Normal Attack deals direct damage or a native ability restores Health. Gain at most 1 per action. [Amber-Station Return Manifold] raises the cap to 4."
+      description: "Gain 1 [Current], up to 3, when Neralis\u2019s Normal Attack damages an enemy or his ability restores missing Health. Gain at most 1 per action, even when healing several allies. Healing after spending [Current] can earn 1 back; healing full Health, the Support role perk and Conduit healing do not count. With [Amber-Station Return Manifold], the cap is 4."
     },
     abilities: {
       skill1: ability2("Light the Next Station", "Restore 35% maximum Health to one living squad member, scaled by Skill Power. Grant +30% Defense for 2 turns.", void 0, "one-ally"),
@@ -5741,7 +5741,7 @@ var nativeIdentities = {
   },
   varkhel: {
     role: "Infernic tension tank",
-    playLoop: "[Varkhel] banks [Tension] from enemy direct hits and Normal Attacks, then spends it for piercing counterstrikes.",
+    playLoop: "Shield and Taunt to build [Tension] from incoming hits, then spend it on a piercing strike or a squad-shielding Last Flare.",
     passive: {
       name: "Tension Held",
       description: "Gain 1 [Tension], up to 4, when an enemy direct attack effectively damages Varkhel\u2019s Health or Shield, once per enemy phase. His damaging Normal Attack also grants 1 [Tension]. [Faultstar Chain Accumulator] raises the cap to 5."
@@ -5754,10 +5754,10 @@ var nativeIdentities = {
   },
   seravelle: {
     role: "Infernic convoy support",
-    playLoop: "[Seravelle] builds [Cadence] from effective manual Normal Attacks, spends it on a fixed squad Attack buff, and uses Burn to fund allies\u2019 Gauge.",
+    playLoop: "Squad Normal Attacks build [Cadence]. Spend it to strengthen the squad; Last Flare gives other allies Gauge and Skill Power.",
     passive: {
       name: "Convoy Cadence",
-      description: "The first effective manual Normal Attack in a round grants 1 [Cadence], up to 3, while Seravelle is alive. Triggered attacks and repeated targets do not grant more. [Ashroad Cadence Transmission] raises the cap to 4."
+      description: "The first squad Normal Attack that damages an enemy each round grants 1 [Cadence], up to 3, while Seravelle is alive. Seravelle\u2019s own Normal Attack counts. The whole squad can earn only 1 per round; triggered attacks do not count. With [Ashroad Cadence Transmission], the cap is 4."
     },
     abilities: {
       skill1: ability2("Send the Ember Ahead", "Deal 245% direct Attack to one enemy. Apply [Burn] for 2 enemy phases, dealing 12% of Seravelle\u2019s Direct Attack per phase, scaled by her Skill Power.", 2.45),
@@ -5767,14 +5767,14 @@ var nativeIdentities = {
   },
   velmira: {
     role: "Chaotic alternating-edge attacker",
-    playLoop: "[Velmira] alternates [Open the Seam] and [Turn the Other Edge] to earn [Crosscut], then spends it on a piercing Last Flare.",
+    playLoop: "Alternate [Open the Seam] and [Turn the Other Edge] to build [Crosscut]. Keep it for area Defense-piercing or spend it on Last Flare.",
     passive: {
       name: "Alternating Edge",
-      description: "Gain 1 [Crosscut], up to 3, when an ordinary Skill differs from Velmira\u2019s previous ordinary Skill. The first Skill establishes the sequence without granting a stack. Normal Attacks and Last Flare do not change the previous-Skill record. [Twin-Edge Sequence Orrery] raises the cap to 4 and funds the first ordinary Skill once per encounter."
+      description: "After using a different Skill from Velmira\u2019s previous Skill, gain 1 [Crosscut], up to 3. The first Skill grants no stack. Repeating a Skill keeps existing stacks but grants none. Normal Attacks and Last Flare do not change which Skill comes next in the sequence. With [Twin-Edge Sequence Orrery], the cap is 4 and the first Skill grants 1 [Crosscut] after resolving."
     },
     abilities: {
       skill1: ability2("Open the Seam", "Deal 280% direct Attack to one enemy. Apply [Weaken] for 2 enemy phases, reducing its direct damage by 25%. [Goldseam Precision Fracturer] deals 35% more direct damage against a Weakened enemy.", 2.8),
-      skill2: ability2("Turn the Other Edge", "Deal 205% direct Attack to all enemies. Ignore 20% of their Defense while holding at least 2 [Crosscut]; [Goldseam Precision Fracturer] raises this to 35%. The earned stack is not considered until after this Skill resolves.", 2.05, "all-enemies"),
+      skill2: ability2("Turn the Other Edge", "Deal 205% direct Attack to all enemies. With at least 2 [Crosscut] before this attack, ignore 20% of their Defense; [Goldseam Precision Fracturer] raises this to 35%. Keep your stacks; any new [Crosscut] is gained after the attack.", 2.05, "all-enemies"),
       ultimate: ability2("Leave the Doorway Standing", "Spend all [Crosscut]. Deal 1,050% direct Attack to one enemy, plus 90% per [Crosscut] spent. Ignore 30% of its Defense. [Open-Threshold Return Drive] refunds 25% maximum Gauge and heals Velmira for 18% maximum Health when at least 3 [Crosscut] were spent; Recovery still applies.", 10.5)
     }
   }
