@@ -1,7 +1,9 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 import { emptyAccount } from '../game/account';
-import { starters } from '../content/starters';
+import { starters as allStarters } from '../content/starters';
+import { characterReleased } from '../content/release-visibility';
+const starters = allStarters.filter(character => characterReleased(character.id));
 import { archives } from './archives';
 import { gameplayHub } from './gameplay';
 import { characterHub, characterInformation, characterTabs, inventoryHub } from './hub';

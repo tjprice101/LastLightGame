@@ -55,14 +55,46 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--event-lifecycle')) {
+  if (process.argv.includes('--moon-launch')) {
+    const entropy = { seed: () => 1729, random: () => .9, uuid: () => randomUUID() };
+    const game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
+    game.account.characters.ember = { level: 105, evolution: 6 };
+    game.account.storyCompleted = 120;
+    game.account.fractalis = 1_000_000;
+    game.account.lycalis = 100;
+    game.account.masterChests = 2;
+    assert.ok(ids.includes(created.user.id), 'Only disposable identities may receive fixtures');
+    assert.equal((await admin.rpc('load_game_account', { p_user: created.user.id, p_initial: game })).error, null);
+    let response = await call({ kind: 'read' }, 0);
+    const before = structuredClone(response.account);
+    for (const operation of [
+      { kind: 'summon', bannerId: 'sunshade' },
+      { kind: 'enter', activity: { kind: 'infusion', mode: 'sunshade', stage: 1 } },
+      { kind: 'purchaseEventDevourer', id: 'infusion:sunshade:0' },
+      { kind: 'purchaseMaterial', element: 'dawnforge-common', quantity: 1 },
+      { kind: 'openMasterChest', id: 'master-rhaziel-1' },
+      { kind: 'openMasterChests', ids: ['master-ember-1', 'master-rhaziel-1'] },
+      { kind: 'purchaseEventDevourer', id: 'infusion:moon:0' },
+    ]) await assert.rejects(call(operation, response.revision), error => error.status === 400);
+    assert.deepEqual((await call({ kind: 'read' }, response.revision)).account, before);
+    const revision = response.revision, requestId = randomUUID();
+    response = await call({ kind: 'summon', bannerId: 'moon' }, revision, requestId);
+    assert.equal(response.account.lycalis, 90);
+    assertSameSavedResponse(await call({ kind: 'summon', bannerId: 'moon' }, revision, requestId), response);
+    response = await call({ kind: 'enter', activity: { kind: 'infusion', mode: 'moon', stage: 1 } }, response.revision);
+    assert.equal(response.session.state.infusion.mode, 'moon');
+    response = await call({ kind: 'quit', runId: response.session.runId }, response.revision);
+    response = await call({ kind: 'purchaseMaterial', element: 'moonwake-common', quantity: 1 }, response.revision);
+    assert.ok(response.account.materials['moonwake-common'] > 0);
+    console.log('Hosted Moon launch passed: paid draw with idempotent replay, activity entry/quit, material purchase, active-event shop denial, all Sunshade acquisition paths rejected without account changes. Disposable fixture removed.');
+  } else if (process.argv.includes('--event-lifecycle')) {
     let response = await call({ kind: 'bootstrap', starterId: 'ember' }, 0);
     assert.ok(Number.isSafeInteger(response.serverTime));
     assert.ok(Math.abs(response.serverTime - Date.now()) < 120000);
     const before = structuredClone(response.account);
     await assert.rejects(call({ kind: 'purchaseEventDevourer', id: 'infusion:roses:0' }, response.revision),
       error => error.status === 400 && error.message.includes('after an actually completed event window'));
-    for (const event of ['moon', 'sunshade']) {
+    for (const event of ['sunshade']) {
       await assert.rejects(call({ kind: 'summon', bannerId: event }, response.revision),
         error => error.status === 400 && error.message.includes('not active'));
       await assert.rejects(call({ kind: 'enter', activity: { kind: 'infusion', mode: event, stage: 1 } }, response.revision),
@@ -70,6 +102,8 @@ try {
       await assert.rejects(call({ kind: 'purchaseEventDevourer', id: `infusion:${event}:0` }, response.revision),
         error => error.status === 400 && error.message.includes('after an actually completed event window'));
     }
+    await assert.rejects(call({ kind: 'purchaseEventDevourer', id: 'infusion:moon:0' }, response.revision),
+      error => error.status === 400 && error.message.includes('after an actually completed event window'));
     await assert.rejects(call({ kind: 'purchaseEventDevourer', id: 'infusion:roses:0',
       now: Date.parse('2026-12-01T01:00:00Z'), price: 0 }, response.revision),
       error => error.status === 400);
@@ -80,7 +114,7 @@ try {
     const read = await call({ kind: 'read' }, response.revision);
     assert.deepEqual(read.account, before);
     assert.ok(read.serverTime >= response.serverTime);
-    console.log('Hosted event lifecycle passed: authoritative clock, active-event shop denial, inactive Moon/Sunshade summons/entry/post-event shops, client clock/price rejection, idempotent checkpoint and unchanged account. Future closure/purchases are covered by injected-clock local authority tests, not claimed as live-time checks.');
+    console.log('Hosted event lifecycle passed: authoritative clock, active-event shop denial, unreleased Sunshade summons/entry/post-event shops, client clock/price rejection, idempotent checkpoint and unchanged account. Moon launch acceptance uses --moon-launch; future closure/purchases use injected-clock local authority tests.');
   } else if (process.argv.includes('--phase-one-war')) {
     await smokePhaseOneWar(client, created.user.id, username);
   } else if (process.argv.includes('--phase-two-war')) {

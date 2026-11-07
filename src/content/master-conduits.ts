@@ -5,6 +5,7 @@ import { machineStageCount } from './activities';
 import { masterOrigin } from './world-lore';
 import { redesignEffect } from './conduit-redesign';
 import { moonSunshadeMasters } from './moon-sunshade-masters';
+import { characterReleased } from './release-visibility';
 
 export const masterChest = {
   id: 'grand-master-chest', name: "Machine's Master Chest",
@@ -193,7 +194,7 @@ export const masterConduits = [
   ...moonSunshadeMasters,
 ] as const;
 
-export const masterRulesText = `${masterChest.name}: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all ${masterConduits.length}.`;
+export const masterRulesText = `${masterChest.name}: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned released Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all ${masterConduits.filter(master => characterReleased(master.character)).length}.`;
 export type MasterConduitId = (typeof masterConduits)[number]['id'];
 export type MasterConduit = (typeof masterConduits)[number];
 export type MasterLoadouts = Partial<Record<StarterId, MasterConduitId | null>>;

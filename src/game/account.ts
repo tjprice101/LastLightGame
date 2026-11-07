@@ -14,7 +14,8 @@ import { getConduit, isConduitId, validateConduitSlots, normalizeLegacyKitSlots,
 import { machineComponentDrop } from '../content/mechanical-components';
 import { bannerConduitBonus, machineConduitLoot, validateMachineLootFocus, isMachineFocusRarity,
   type MachineLootFocus, type MachineFocusRarity } from '../content/machines';
-import { isMasterConduitId, masterChest, validateMasterCharacter, type MasterConduitId, type MasterLoadouts } from '../content/master-conduits';
+import { getMasterConduit, isMasterConduitId, masterChest, validateMasterCharacter, type MasterConduitId, type MasterLoadouts } from '../content/master-conduits';
+import { characterReleased } from '../content/release-visibility';
 import { validateCapturedCharacters, migrateLegacyCapturedCopies, preservePreviousInfusionCopies, validateCharacterLocks, capturedProgress, capturedLevelCost, capturedLevelCap, createCreatureCopy, type CapturedCharacter, type CharacterLocks } from './character-instances';
 import { infusionEncounter, infusionLoot, infusionElements, creatureSaleOptions } from '../content/infusions';
 import { standardBanner, resolveBannerPull, validateBannerPity, type StandardBannerEntry, type BannerPity } from '../content/standard-banner';
@@ -735,6 +736,7 @@ export function openMasterChests(storage: ProfileStorage, ids: readonly MasterCo
   if (!Array.isArray(ids) || ids.length < 1) throw new Error('Choose at least one Master Conduit.');
   if (new Set(ids).size !== ids.length) throw new Error('Choose each Master Conduit only once.');
   if (!ids.every(isMasterConduitId)) throw new Error('Choose valid Master Conduits.');
+  if (ids.some(id => !characterReleased(getMasterConduit(id).character))) throw new Error('This Master Conduit is not released.');
   const account = loadAccount(storage);
   const availableChests = account.masterChests ?? 0;
   if (availableChests < ids.length) throw new Error("Not enough Machine's Master Chests for this selection.");
@@ -748,6 +750,7 @@ export function openMasterChests(storage: ProfileStorage, ids: readonly MasterCo
 export function openMasterChest(storage: ProfileStorage, id: MasterConduitId): Account {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before opening a Master chest.');
   if (!isMasterConduitId(id)) throw new Error('Choose a valid Master Conduit.');
+  if (!characterReleased(getMasterConduit(id).character)) throw new Error('This Master Conduit is not released.');
   const account = loadAccount(storage);
   if ((account.masterChests ?? 0) < 1) throw new Error("No Machine's Master Chest is available.");
   if ((account.masterConduits?.[id] ?? 0) > 0) throw new Error('This Master Conduit is already owned. Choose an unowned Master.');

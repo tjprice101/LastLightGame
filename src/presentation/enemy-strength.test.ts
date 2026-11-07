@@ -95,7 +95,7 @@ describe('visible enemy strength', () => {
     const account = emptyAccount();
     account.characters.ember = { level: 105, evolution: 6 };
     account.dungeonStages = Object.fromEntries(elements.map(element => [element.id, 35]));
-    account.infusionStages = { heavens: infusionModeStageCount, abyss: infusionModeStageCount, treasury: 25, sanctuary: 25, machines: machineStageCount, roses: 35 };
+    account.infusionStages = { heavens: infusionModeStageCount, abyss: infusionModeStageCount, treasury: 25, sanctuary: 25, machines: machineStageCount, roses: 35, moon: 35 };
     account.warStages = { nerithe: 10, orvella: 10, vaelor: 10, caldrex: 10, solenne: 10, myrthen: 10,
       neralis: 10, varkhel: 10, seravelle: 10, velmira: 10 };
     const before = structuredClone(account);
@@ -103,7 +103,7 @@ describe('visible enemy strength', () => {
     bindEnemyStrength(document.body);
     bindActivityDifficulties(document.body);
     const controls = document.querySelectorAll<HTMLSelectElement>('[data-dungeon-stage], [data-infusion-stage], [data-war-stage]');
-    expect(controls).toHaveLength(22);
+    expect(controls).toHaveLength(23);
     for (const control of Array.from(controls)) {
       const panel = control.closest('[data-difficulty-panel], .activity-card')!;
       for (const stage of [Number(control.value), 1, 5, Number(control.options[control.options.length - 1].value)]) {

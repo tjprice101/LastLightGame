@@ -210,18 +210,19 @@ describe('archive and event availability presentation', () => {
     }
     expect(roseEvent(game.account, true, { online: true, now: before })).toContain('data-infusion="roses"');
   });
-  it('shows all eighteen shop forms but only enables purchases online after each completed window', () => {
+  it('shows twelve released shop forms and enables purchases only after each completed window', () => {
     const account = fixture().account;
     for (const access of [{ online: false, now: after }, { online: true, now: before }]) {
       const html = onlineStores(account, null, 'event-devourers', undefined, undefined, access);
-      expect(html.match(/data-buy-event-devourer="[^"]+" disabled/g)).toHaveLength(18);
+      expect(html.match(/data-buy-event-devourer="[^"]+" disabled/g)).toHaveLength(12);
     }
     const html = onlineStores(account, null, 'event-devourers', undefined, undefined, { online: true, now: after });
-    expect(html.match(/data-buy-event-devourer=/g)).toHaveLength(18);
+    expect(html.match(/data-buy-event-devourer=/g)).toHaveLength(12);
     expect(html.match(/data-buy-event-devourer="infusion:roses:[^"]+" disabled/g)).toBeNull();
-    expect(html.match(/data-buy-event-devourer="infusion:(moon|sunshade):[^"]+" disabled/g)).toHaveLength(12);
+    expect(html.match(/data-buy-event-devourer="infusion:moon:[^"]+" disabled/g)).toBeNull();
+    expect(html).not.toContain('sunshade');
   });
-  it.each(['moon', 'sunshade'] as const)('unlocks %s copies only after a completed window and closes during reruns', id => {
+  it.each(['moon'] as const)('unlocks %s copies only after a completed window and closes during reruns', id => {
     withCompletedEventWindow(id, () => {
       const account = fixture().account;
       const active = onlineStores(account, null, 'event-devourers', undefined, undefined, { online: true, now: before });

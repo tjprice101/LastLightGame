@@ -2,6 +2,12 @@
 
 ## Status and scope (2026-11-04)
 
+November7 follow-up: owner now authorizes Moon launch immediately through
+the previously specified November30 daily reset, not a backdated November1
+launch. Sunshade remains unscheduled and entirely hidden from live catalogs.
+The [current release contract](../moon-sunshade-events.md#moon-launch-and-sunshade-concealment-2026-11-07)
+supersedes the original no-activation targets below.
+
 Original owner-requested roadmap. Follow-up authorizes implementing it phase
 by phase; [Phase1's exact lifecycle/shop contract](../special-banner-lifecycle.md)
 supersedes its original unresolved decisions and Rose no-activation gate.

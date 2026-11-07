@@ -43,7 +43,7 @@ describe('reviewed Moon delivery on shared runtime surfaces', () => {
     }
   });
 
-  it('shares six enemy forms and six material identities without changing inactive launch gates', () => {
+  it('shares six enemy forms and six material identities during the approved Moon launch', () => {
     for (let stage = 1; stage <= 35; stage++) {
       const encounter = infusionEncounter('moon', stage);
       const art = `moon-vesperwing-${encounter.tier + 1}`;
@@ -57,11 +57,12 @@ describe('reviewed Moon delivery on shared runtime surfaces', () => {
     });
     expect(moonBanner.artwork.path).toBe(newEventDefinition('moon').bannerArt);
     expect(moonBanner.artwork.alt).not.toContain('pending');
-    expect(newEventWindowActive('moon', Date.now())).toBe(false);
-    const html = moonEvent(emptyAccount(), { online: true, now: Date.now() });
+    const now = Date.parse('2026-11-08T00:00:00Z');
+    expect(newEventWindowActive('moon', now)).toBe(true);
+    const html = moonEvent(emptyAccount(), { online: true, now });
     expect(html).toContain(assetUrl('banners/moon-header.png'));
-    expect(html).toContain('Event entry unavailable');
-    expect(html).not.toContain('data-infusion="moon"');
+    expect(html).not.toContain('Event entry unavailable');
+    expect(html).toContain('data-infusion="moon"');
     expect(html).not.toContain('Artwork pending');
   });
 

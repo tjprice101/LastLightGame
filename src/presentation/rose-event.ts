@@ -35,7 +35,7 @@ export function roseEvent(account: Account | null, showInformation = true,
     <button class="text-button" data-page="summon" data-rose-banner>Roses Under Sunny Skies &rarr;</button>
     <p role="status">${roseAccessMessage(access)}</p>
     <button type="button" data-page="special-banner-archive">Special Banner Archive</button>
-    ${access.online && roseEventActive(access.now) ? infusionEntry({ id: 'roses', name: 'Passion of Crimson Roses' }, account) : '<button disabled>Event entry unavailable</button>'}`), account)}</article>`;
+    ${access.online && roseEventActive(access.now) ? infusionEntry({ id: 'roses', name: 'Passion of Crimson Roses' }, account, access.now) : '<button disabled>Event entry unavailable</button>'}`), account)}</article>`;
 }
 
 export function moonEvent(account: Account | null,
@@ -53,6 +53,6 @@ export function moonEvent(account: Account | null,
     <p role="status">${newEventAccessMessage('moon', access.online, access.now)}</p>
     <button type="button" data-page="special-banner-archive">Special Banner Archive</button>
     ${access.online && newEventWindowActive('moon', access.now)
-      ? infusionEntry({ id: 'moon', name: event.activityName }, account)
+      ? infusionEntry({ id: 'moon', name: event.activityName }, account, access.now)
       : '<button disabled>Event entry unavailable</button>'}`)}</article>`;
 }

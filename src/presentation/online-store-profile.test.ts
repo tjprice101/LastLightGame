@@ -3,8 +3,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { emptyAccount } from '../game/account';
 import { storyRules } from '../content/story';
 import { bindProfileEditor, friendPresence, onlineProfile, onlineStores, profileFrames, refreshFriendPresence, refreshProfileTracking, type OnlineProfileDisplay } from './online-store-profile';
-import { starters } from '../content/starters';
-import { creatures } from '../content/creatures';
+import { starters as allStarters } from '../content/starters';
+import { creatures as allCreatures } from '../content/creatures';
+import { characterReleased, creatureReleased } from '../content/release-visibility';
+const starters = allStarters.filter(character => characterReleased(character.id));
+const creatures = allCreatures.filter(creature => creatureReleased(creature.id));
 import { profilePictures } from '../content/profile-pictures';
 import { eventDevourers, eventDevourerAvailable } from '../content/event-devourers';
 import { readFileSync } from 'node:fs';
@@ -18,19 +21,19 @@ const profile: OnlineProfileDisplay = {
 };
 
 describe('online Material Exchange and Cosmetic Store', () => {
-  it('lists all event-family copies with delivered Moon art and unchanged schedule-gated selectors', () => {
+  it('lists released event copies with delivered Moon art and hides Sunshade', () => {
     document.body.innerHTML = onlineStores(emptyAccount(), null, 'event-devourers');
     const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-buy-event-devourer]'));
-    expect(buttons).toHaveLength(18);
+    expect(buttons).toHaveLength(12);
     for (const button of buttons) {
       expect(button.disabled).toBe(true);
       expect(button.matches('.event-devourer-card > button')).toBe(true);
       expect(button.closest('.event-devourer-card')?.getAttribute('data-creature')).toBeTruthy();
     }
     expect(document.querySelectorAll('.event-devourer-card[data-event="moon"]')).toHaveLength(6);
-    expect(document.querySelectorAll('.event-devourer-card[data-event="sunshade"]')).toHaveLength(6);
+    expect(document.querySelectorAll('.event-devourer-card[data-event="sunshade"]')).toHaveLength(0);
     expect(document.querySelectorAll('.event-devourer-card[data-event="roses"]')).toHaveLength(6);
-    expect(document.querySelectorAll('.event-devourer-card[data-creature]')).toHaveLength(18);
+    expect(document.querySelectorAll('.event-devourer-card[data-creature]')).toHaveLength(12);
     expect(eventDevourers.filter(product => product.eventId === 'sunshade')
       .every(product => product.creature.art == null)).toBe(true);
     expect(eventDevourers.filter(product => product.eventId === 'moon')
@@ -40,7 +43,7 @@ describe('online Material Exchange and Cosmetic Store', () => {
     expect(eventDevourers.filter(product => product.eventId === 'roses')).toHaveLength(6);
     expect(eventDevourerAvailable('moon', Date.now())).toBe(false);
     expect(eventDevourerAvailable('sunshade', Date.now())).toBe(false);
-    expect(document.body.textContent).toContain('Unavailable until this event has actually completed a scheduled launch window.');
+    expect(document.body.textContent).not.toContain('Sunshade');
     const styles = readFileSync(resolve('src', 'presentation', 'event-devourers.css'), 'utf8');
     const rule = styles.match(/\.event-devourer-card > button\s*\{([^}]+)\}/)?.[1];
     expect(rule).toMatch(/position:\s*relative/);

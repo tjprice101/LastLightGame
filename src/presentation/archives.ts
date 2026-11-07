@@ -1,6 +1,6 @@
 import { rolePerkRow } from './intrinsic-perks';
 import { storyCodex } from './story-codex';
-import { starters, starterVow } from '../content/starters';
+import { starters as allStarters, starterVow } from '../content/starters';
 import { characterName } from '../content/character-art';
 import { characterRarity, displayEvolution } from '../content/progression';
 import { elements, materialRarities } from '../content/activities';
@@ -21,9 +21,13 @@ import { elementLabel } from './element-label';
 import { information } from './information';
 import { abilityStatuses, kitResource } from './ability-status';
 import './archives.css';
-import { masterChest, masterConduits } from '../content/master-conduits';
+import { masterChest, masterConduits as allMasters } from '../content/master-conduits';
 import { masterConduitIcon } from './master-conduits';
 import { getStarter } from '../content/starters';
+import { characterReleased } from '../content/release-visibility';
+
+const starters = allStarters.filter(character => characterReleased(character.id));
+const masterConduits = allMasters.filter(master => characterReleased(master.character));
 
 const galleries = [
   { id: 'characters', name: 'Character Archive', subtitle: 'Element-Bearers · Forms · Combat kits' },

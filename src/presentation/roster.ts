@@ -24,7 +24,9 @@ import { conduitIcon } from './conduit-store';
 import { conduitElement } from './conduit-element';
 import { itemShowcase } from './item-showcase';
 import { bannerPercent, bannerPityLimits, validateBannerPity, type BannerOutcome } from '../content/standard-banner';
-import { summonBanners, getSummonBanner, type SummonBannerId } from '../content/summon-banners';
+import { summonBanners as allBanners, getSummonBanner, type SummonBannerId } from '../content/summon-banners';
+import { eventReleased } from '../content/release-visibility';
+const summonBanners = allBanners.filter(banner => eventReleased(banner.id));
 import { characterRarity, displayEvolution, evolutionRarity } from '../content/progression';
 import { information } from './information';
 import { characterName } from '../content/character-art';
@@ -321,6 +323,7 @@ function featuredCharacters(account: Account, pool: readonly BannerOutcome[]): s
 export function summonHub(account: Account | null, selected: SummonBannerId = 'standard',
   access: EventAccess = { online: true, now: Date.now() }, archive = false): string {
   if (!account) return '<p role="alert">Summoning unavailable. Resolve the save error.</p>';
+  if (!eventReleased(selected)) return '<p role="alert">This banner is not released.</p>';
   const banner = getSummonBanner(selected);
   const eventBanner = isNewEventId(banner.id);
   const timed = banner.id === 'roses' || eventBanner;

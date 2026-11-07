@@ -1,7 +1,9 @@
 import { useState, type CSSProperties } from 'react';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
-import { masterConduits, masterChest, type MasterConduitId } from '../content/master-conduits';
+import { masterConduits as allMasters, masterChest, type MasterConduitId } from '../content/master-conduits';
+import { characterReleased } from '../content/release-visibility';
+const masterConduits = allMasters.filter(master => characterReleased(master.character));
 import { starters, getStarter, type StarterId } from '../content/starters';
 import type { Account } from '../game/account';
 import { Button, Dialog, Status } from './components';

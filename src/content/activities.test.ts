@@ -62,14 +62,14 @@ describe('activity and progression framework', () => {
     for (const invalid of [0, 6, 1.5, NaN]) expect(() => evolutionRequirement('infernic', invalid)).toThrow('1 to 5');
   });
   it('renders all activities by type, gates unavailable modes, and previews starter recipes', () => {
-    const markup = gameplayHub();
+    const markup = gameplayHub(undefined, { online: true, now: Date.parse('2026-11-08T00:00:00Z') });
     for (const element of elements) expect(markup).toContain(element.dungeon);
     for (const mode of infusionModes) expect(markup).toContain(mode.name);
     expect(markup).not.toContain('Dungeon not playable yet');
     expect(markup.match(/data-dungeon="/g)).toHaveLength(6);
     expect(markup.match(/<dd>35 stages<\/dd>.*?<dd>38-120<\/dd>/g)).toHaveLength(6);
     expect(markup).toContain(`<dd>${machineStageCount} stages</dd>`);
-    expect(markup.match(/data-infusion="/g)).toHaveLength(6);
+    expect(markup.match(/data-infusion="/g)).toHaveLength(7);
     expect(markup).toContain('data-infusion="machines"');
     expect(markup).toContain('data-page="battle"');
     expect(markup).toContain('data-story-enter="1"');

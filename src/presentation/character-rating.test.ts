@@ -9,6 +9,7 @@ import { characterRoster, squadHub, summonHub } from './roster';
 import { emptyAccount } from '../game/account';
 import { isWarCharacter } from '../content/war-characters';
 import { moonSunshadeEvents } from '../content/moon-sunshade-events';
+import { characterReleased } from '../content/release-visibility';
 
 describe('fixed summon stars and evolving rarity', () => {
   it.each([1, 2, 3, 4, 5, 6, 7])('renders exactly %s physical stars with an accessible tier label', (stars) => {
@@ -36,7 +37,7 @@ describe('fixed summon stars and evolving rarity', () => {
     }
     const event = moonSunshadeEvents.find(event => event.characters.some(id => id === starter.id));
     const summon = summonHub(emptyAccount(), event?.bannerId ?? (isRoseCharacter(starter.id) ? 'roses' : 'standard'));
-    if (isWarCharacter(starter.id) || isCalamiticCharacter(starter.id)) expect(summon).not.toContain(starter.name);
+    if (!characterReleased(starter.id) || isWarCharacter(starter.id) || isCalamiticCharacter(starter.id)) expect(summon).not.toContain(starter.name);
     else {
       expect(summon).toContain(starter.name);
       expect(summon).toContain(`Common<span>${starter.stars}-star</span>`);

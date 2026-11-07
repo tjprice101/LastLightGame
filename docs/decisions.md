@@ -1,5 +1,17 @@
 # Decision log
 
+## Moon launch and unreleased Sunshade concealment (2026-11-07)
+
+Owner authorizes deploying Moon now with the previously specified
+November30,2026 daily-reset end (8PM America/New_York). No backdated November1
+launch or compensation. Sunshade must have no player-facing preview, banner,
+character/Master catalog, enemy, material shop or acquisition hints until
+explicit release approval. Preserve internal IDs and saved holdings; reject
+new Dawnforge purchases and unreleased personal Master chest selections.
+The [release contract](moon-sunshade-events.md#moon-launch-and-sunshade-concealment-2026-11-07)
+supersedes earlier both-inactive/inspectable directions. Local UI mock-ups
+remain unpublished and the new single-file design still awaits "go."
+
 ## Starting the shared living-world UI foundations (2026-11-07)
 
 **Approved:** owner says "Do that now" after the recommendation to begin the

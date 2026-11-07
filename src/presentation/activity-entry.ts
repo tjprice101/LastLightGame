@@ -4,10 +4,10 @@ import { activityAccess } from '../game/activity-access';
 import { infusionEncounter } from '../content/infusions';
 import { enemyStrength } from './enemy-strength';
 
-export function infusionEntry(mode: { id: InfusionModeId; name: string }, account: Account | null): string {
+export function infusionEntry(mode: { id: InfusionModeId; name: string }, account: Account | null, now = Date.now()): string {
   if (!account) return '<button disabled>Cannot enter. Check the save error.</button>';
   const unlocked = unlockedInfusionStage(account, mode.id);
-  const access = activityAccess(account, { kind: 'infusion', mode: mode.id, stage: unlocked });
+  const access = activityAccess(account, { kind: 'infusion', mode: mode.id, stage: unlocked }, now);
   return `${enemyStrength(infusionEncounter(mode.id, unlocked))}<footer class="activity-entry"><label class="dungeon-stage-label">Stage<select data-infusion-stage="${mode.id}" aria-label="${mode.name} stage">${Array.from({ length: unlocked }, (_, index) => `<option value="${index + 1}" ${index + 1 === unlocked ? 'selected' : ''}>${index + 1}</option>`).join('')}</select></label>
     <button class="primary-button" data-infusion="${mode.id}" ${access.unlocked ? '' : 'disabled'}>${access.unlocked ? `Enter ${mode.name}` : 'Locked'}</button>
     ${access.unlocked ? '' : `<p class="activity-unlock-hint">Requires ${access.requirement}. Your highest: Lv.${access.level}.</p>`}</footer>`;

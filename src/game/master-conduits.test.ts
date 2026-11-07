@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import { masterConduitArtRevisions } from '../content/master-conduit-art-revisions';
 import { masterConduits, masterChestDrops, getMasterConduit, type MasterConduitId } from '../content/master-conduits';
 import { starters } from '../content/starters';
+import { characterReleased } from '../content/release-visibility';
 import { resolveFighter } from '../content/combat';
 import { conduits } from '../content/conduits';
 import { creatureLoot, getCreature } from '../content/creatures';
@@ -250,7 +251,7 @@ describe('all Master rules and frozen sessions', () => {
     expect(team).toContain('Always active · Omnic Master');
     expect(team).not.toContain('Master slot · Reserved');
     expect(inventoryView(account)).toContain('data-open-master-chest');
-    expect(archives(account, 'conduits').match(/data-archive-master=/g)).toHaveLength(masterConduits.length);
+    expect(archives(account, 'conduits').match(/data-archive-master=/g)).toHaveLength(masterConduits.filter(master => characterReleased(master.character)).length);
     const { owner } = masterState('master-ember-2');
     expect(unitReadout(owner, true)).not.toContain('Astral Reserve');
     expect(team).toMatch(/assets\/master-conduits\/master-ember-2\.png\?v=[0-9a-f]{16}" alt="Cinderstar Genesis Engine"/);

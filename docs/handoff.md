@@ -1,5 +1,48 @@
 # Current state and handoff
 
+## Moon release and Sunshade concealment (2026-11-07)
+
+Owner authorizes immediate Moon launch through November30,2026 at8PM
+America/New_York (December1 at01:00UTC). Explicit opening November7 at
+19:22:12.304UTC; no backdated rewards/compensation. Moon draw/activity controls
+use the shared authority window. Closing still permits an underway encounter
+to finish and retain rewards, but blocks new entry/draw/Continue/Retry.
+
+Sunshade is hidden from banner navigation/archives, character forms/kits,
+personal Masters/chest selectors, enemy catalogs, material exchange and
+event-copy shops. Internal definitions/IDs/save validation remain; raw saved
+holdings are preserved, not deleted. New Dawnforge purchases and Sunshade
+Master chest claims (including mixed bulk selections) reject atomically.
+Released catalogs now contain32 Element-Bearers/192 forms and96 Masters.
+Event entry eligibility now uses the supplied authority clock rather than
+an unrelated device clock.
+
+Validation: `npm run build`, `node tools/bundle_server_game.mjs`,
+`npx tsc --noEmit -p supabase/functions/game-operation/tsconfig.json` and
+`npx --yes deno check supabase/functions/game-operation/index.ts` passed.
+Six related suites passed76 tests. The bounded full run passed8,386 tests;
+its two obsolete preview/stage fixtures were corrected and the final
+`npx vitest run src/bubble-preview.test.ts src/presentation/enemy-strength.test.ts src/content/release-visibility.test.ts --maxWorkers=2 --reporter=dot`
+passed36 tests, including four exact release/clock/visibility/atomicity checks.
+Final `npx tsc --noEmit` passed. Initial unconstrained full run also suffered
+parallel-load timeouts; no test timeouts were relaxed.
+
+Matching authority deployed with
+`npx supabase functions deploy game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt --yes`.
+`node tools/smoke_server_game.mjs --moon-launch` passed hosted paid draw/
+idempotency, entry/quit, material purchase, active-event shop denial and all
+Sunshade acquisition rejections. Disposable identities/records were removed.
+Browser module checks confirmed enabled Moon entry/draw, installed header,
+the exact November30 at8PM message and absent Sunshade catalogs.
+Client publication is the production-only main push/Pages workflow; verify
+its full suite and hosted `version.json` against that commit before calling
+the client release live.
+
+Local mock-up files and earlier mock-up documentation remain unstaged; no
+mock-up implementation/publication is authorized by this release. The new
+single-file premium design remains at the plan/wait-for-go gate.
+See [release contract](moon-sunshade-events.md#moon-launch-and-sunshade-concealment-2026-11-07).
+
 ## Living-world shared-foundation tranche (2026-11-07)
 
 Owner authorizes beginning the UI rollout. Implemented initial Phase1/2 pilot

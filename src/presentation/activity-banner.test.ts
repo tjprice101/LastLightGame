@@ -44,10 +44,10 @@ describe('reference activity banners', () => {
     const account = emptyAccount();
     account.infusionStages.machines = machineStageCount;
     const html = gameplayHub(account);
-    expect(html.match(/class="activity-entry"/g)).toHaveLength(23);
+    expect(html.match(/class="activity-entry"/g)).toHaveLength(24);
     expect(html).toContain('id="gameplay-oblivion"');
     expect(html.match(/data-dungeon-stage=/g)).toHaveLength(6);
-    expect(html.match(/data-infusion-stage=/g)).toHaveLength(6);
+    expect(html.match(/data-infusion-stage=/g)).toHaveLength(7);
     expect(html).toContain(`value="${machineStageCount}" selected`);
     expect(html).toContain('data-infusion="machines"');
     expect(html).toContain('class="activity-facts"');
@@ -78,12 +78,12 @@ describe('reference activity banners', () => {
     const html = gameplayHub(account);
     const entries = [...html.matchAll(/<footer class="activity-entry">([\s\S]*?)<\/footer>/g)]
       .map(match => match[1]);
-    expect(entries).toHaveLength(23);
+    expect(entries).toHaveLength(24);
     const oblivion = entries.find(entry => entry.includes('data-oblivion'));
     expect(oblivion).toContain('>Locked</button>');
     expect(oblivion).toContain('Own any Calamitic Element-Bearer.');
     expect(oblivion).not.toContain('Your highest:');
-    const establishedEntries = entries.filter(entry => !entry.includes('data-oblivion'));
+    const establishedEntries = entries.filter(entry => !entry.includes('data-oblivion') && !entry.includes('data-infusion="moon"'));
     expect(establishedEntries).toHaveLength(22);
     expect(establishedEntries.filter(entry => entry.includes('class="activity-unlock-hint"'))).toHaveLength(lockedCount);
     for (const entry of establishedEntries) {

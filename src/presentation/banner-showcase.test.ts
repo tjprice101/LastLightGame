@@ -7,6 +7,7 @@ import { bannerShowcase } from './banner-showcase';
 import { homeHub } from './hub';
 import { summonHub } from './roster';
 import { emptyAccount } from '../game/account';
+import { eventReleased } from '../content/release-visibility';
 
 describe('banner showcases', () => {
   it.each(summonBanners)('$name lists exactly its real high-star base forms with artwork and elements', (banner) => {
@@ -33,7 +34,7 @@ describe('banner showcases', () => {
     account.characters.ember = { level: 105, evolution: 6 };
     const before = structuredClone(account);
     const home = homeHub(openingStarters[0], false, account);
-    for (const banner of summonBanners) {
+    for (const banner of summonBanners.filter(banner => eventReleased(banner.id))) {
       if (banner.id === 'standard' || banner.id === 'roses')
         expect(home).toContain(`data-information="banner-showcase-${banner.id}"`);
       expect(summonHub(account, banner.id)).not.toContain(`data-information="banner-showcase-${banner.id}"`);

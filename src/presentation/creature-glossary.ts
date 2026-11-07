@@ -1,4 +1,6 @@
-import { creatures, getCreature, creatureLoot, creatureLore } from '../content/creatures';
+import { creatures as allCreatures, getCreature, creatureLoot, creatureLore } from '../content/creatures';
+import { creatureReleased } from '../content/release-visibility';
+const creatures = allCreatures.filter(creature => creatureReleased(creature.id));
 import { materialArt, materialName } from '../content/dungeon-art';
 import { formatStat } from '../content/combat';
 import { type Account } from '../game/account';

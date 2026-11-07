@@ -1,5 +1,11 @@
 # Documentation hub
 
+## Moon launch (2026-11-07)
+
+[Release and visibility contract](moon-sunshade-events.md#moon-launch-and-sunshade-concealment-2026-11-07):
+Moon launches now through November30 at8PM New York time. Unreleased Sunshade
+is hidden from all player-facing catalogs and new acquisitions.
+
 ## Living-world UI foundation rollout (2026-11-07)
 
 Owner authorizes starting the [shared UI rollout](Future%20Plans/living-world-ui-audit-plan.md#first-shared-foundation-tranche-2026-11-07).

@@ -40,7 +40,7 @@ export const moonSunshadeEvents = [
     enemyElement: 'tranquilitic',
     enemyCommon: 'Vesperwing',
     characters: moonCharacters.map(character => character.id),
-    windows: [],
+    windows: [{ opensAt: Date.parse('2026-11-07T19:22:12.304Z'), closesAt: Date.parse('2026-12-01T01:00:00Z') }],
     bannerArt: 'banners/moon-banner.png',
     activityHeaderArt: 'banners/moon-header.png',
     arenaArt: 'backgrounds/moon-arena.png',

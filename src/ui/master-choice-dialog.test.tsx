@@ -5,6 +5,7 @@ import { chooseMasterConduit, chooseMasterConduits } from './master-choice-dialo
 import { emptyAccount } from '../game/account';
 import { masterConduits, type MasterConduitId } from '../content/master-conduits';
 import { starters } from '../content/starters';
+import { characterReleased } from '../content/release-visibility';
 import { getElement } from '../content/activities';
 import { elementAccents } from '../content/dungeon-art';
 import { referencedEffect } from '../presentation/effect-copy';
@@ -31,8 +32,12 @@ describe('React Master chest choice', () => {
     let result!: Promise<MasterConduitId | null>;
     await act(async () => { result = chooseMasterConduit(account); });
     const select = document.querySelector('select')!;
+    for (const starter of starters.filter(starter => !characterReleased(starter.id))) {
+      expect(Array.from(select.options).some(option => option.value === starter.id)).toBe(false);
+      expect(document.querySelector('dialog')!.textContent).not.toContain(starter.name);
+    }
     expect(['ozriel', 'ilvaris', 'kaelith'].every(id => Array.from(select.options).some(option => option.value === id))).toBe(true);
-    for (const starter of starters.filter(starter => masterConduits.some(entry => entry.character === starter.id))) {
+    for (const starter of starters.filter(starter => characterReleased(starter.id) && masterConduits.some(entry => entry.character === starter.id))) {
       await act(async () => { select.value = starter.id; select.dispatchEvent(new Event('change', { bubbles: true })); });
       const cards = document.querySelectorAll<HTMLElement>('.ll-master-option');
       expect(cards).toHaveLength(3);

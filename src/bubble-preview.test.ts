@@ -1,7 +1,9 @@
 // @vitest-environment jsdom
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { elementAccents } from './content/dungeon-art';
-import { masterConduits } from './content/master-conduits';
+import { masterConduits as allMasters } from './content/master-conduits';
+import { characterReleased } from './content/release-visibility';
+const masterConduits = allMasters.filter(master => characterReleased(master.character));
 import { exampleAccount, memberDisplay } from './bubble-preview-model';
 import { maxLevelPlan } from './game/account';
 import { normalizeStats, phaseZeroStatKeys, phaseZeroStatLabels, statDisplayUnit } from './content/phase-zero-stats';
@@ -283,8 +285,8 @@ describe('isolated bubble UI concept', () => {
   });
   it('uses reached-form silhouettes and gates discovery loot', () => {
     visit('archive');
-    expect(root.querySelectorAll('.item-card')).toHaveLength(228);
-    expect(root.querySelectorAll('.item-card.undiscovered')).toHaveLength(76);
+    expect(root.querySelectorAll('.item-card')).toHaveLength(192);
+    expect(root.querySelectorAll('.item-card.undiscovered')).toHaveLength(64);
     click('[data-view="creatures"]');
     const undiscovered = root.querySelector<HTMLButtonElement>('.item-card.undiscovered')!;
     undiscovered.click();

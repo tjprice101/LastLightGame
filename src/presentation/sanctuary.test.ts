@@ -101,14 +101,14 @@ describe('full sanctuary UI', () => {
     expect(inventoryHub(null)).toContain('Resource inventory unavailable');
   });
   it('keeps canonical dungeon and infusion content while separating activity categories', () => {
-    const html = gameplayHub();
+    const html = gameplayHub(undefined, { online: true, now: Date.parse('2026-11-08T00:00:00Z') });
     for (const element of elements) expect(html).toContain(element.dungeon);
     for (const mode of infusionModes) expect(html).toContain(mode.name);
     expect(html.match(/class="activity-group"/g)).toHaveLength(9);
     expect(html).toContain('id="gameplay-oblivion"');
     expect(html).not.toContain('Dungeon not playable yet');
     expect(html.match(/data-dungeon="/g)).toHaveLength(6);
-    expect(html.match(/data-infusion="/g)).toHaveLength(6);
+    expect(html.match(/data-infusion="/g)).toHaveLength(7);
     expect(html).toContain('data-page="battle"');
     expect(html.match(/class="activity-picker"/g)).toHaveLength(4);
     expect(html.match(/data-activity-choice=/g)).toHaveLength(20);

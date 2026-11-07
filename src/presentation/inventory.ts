@@ -9,7 +9,9 @@ import { materialArt, materialName } from '../content/dungeon-art';
 import { assetUrl } from './portrait';
 import { information, informationTopics } from './information';
 import './inventory.css';
-import { masterChest, masterConduits } from '../content/master-conduits';
+import { masterChest, masterConduits as allMasters } from '../content/master-conduits';
+import { characterReleased, materialReleased } from '../content/release-visibility';
+const masterConduits = allMasters.filter(master => characterReleased(master.character));
 import { masterChestIcon, masterConduitIcon } from './master-conduits';
 import { getStarter } from '../content/starters';
 import { specialtyMaterials } from '../content/infusions';
@@ -48,7 +50,7 @@ function inventoryInformation(): string {
     { id: 'materials', title: 'Materials', summary: 'Sources and banner bundles', content: '<p>Earned in Story, elemental dungeons, Heaven, Abyss and Passion of Crimson Roses.</p><p>Summon bundles contain Common, Uncommon or Rare materials: one random element on Standard, Rosethorn on Roses. Duplicate Element-Bearers give larger Rare bundles.</p>' },
     { id: 'conduits', title: 'Conduits', summary: 'Where to get them', content: '<p>Common: Conduit Store. Rare, Legendary and Omnic: Awaken the Machines. Summons can also award a Legendary bonus.</p><p>Unlock once, equip across your squad. Upgrade with Broken Mechanical Components.</p>' },
     { id: 'conduit-terms', title: 'Conduit terms', summary: 'Words used in Conduit effects', content: `<dl class="conduit-glossary">${conduitGlossary.map(entry => `<dt>${entry.term}</dt><dd>${entry.definition}</dd>`).join('')}</dl>` },
-    { id: 'masters', title: 'Masters & chests', summary: 'Sources and selection', content: `<p>${masterChest.name}s: ` + masterChest.chance * 100 + '% from the stage ' + machineStageCount + ' Machines boss; two guaranteed in each Calamity EX+3 chest.</p><p>Choose any unowned Master, even for an unowned Element-Bearer. Masters are character-specific and cannot be upgraded. Chests stay unopened once you own all 57.</p>' },
+    { id: 'masters', title: 'Masters & chests', summary: 'Sources and selection', content: `<p>${masterChest.name}s: ` + masterChest.chance * 100 + '% from the stage ' + machineStageCount + ' Machines boss; two guaranteed in each Calamity EX+3 chest.</p><p>Choose any unowned released Master, even for an unowned Element-Bearer. Masters are character-specific and cannot be upgraded. Chests stay unopened once you own all ' + masterConduits.length + '.</p>' },
   ]));
 }
 export function isInventoryTab(value: unknown): value is InventoryTab {
@@ -77,7 +79,7 @@ function materialDescription(id: string): string {
 }
 
 export function inventoryView(account: Account | null, selected: InventoryTab = 'materials', sections: Readonly<InventorySections> = defaultInventorySections, filters: Readonly<InventoryFilters> = defaultInventoryFilters): string {
-  const materials = Object.entries(account?.materials ?? {}).filter(([, amount]) => amount > 0);
+  const materials = Object.entries(account?.materials ?? {}).filter(([id, amount]) => amount > 0 && materialReleased(id));
   const components = account?.mechanicalComponents ?? 0;
   const calamityChests = Object.entries(account?.calamityChests ?? {}).filter(([, count]) => count > 0);
   const resourceCount = materials.length + (components > 0 ? 1 : 0) + calamityChests.length + ((account?.masterChests ?? 0) > 0 ? 1 : 0);

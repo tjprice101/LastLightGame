@@ -1,4 +1,29 @@
-# Moon and Sunshade: signature activities and art-pending release
+# Moon and Sunshade: signature activities and release
+
+## Moon launch and Sunshade concealment (2026-11-07)
+
+Owner authorizes Moon to launch now with the previously specified end:
+**November30,2026 at8PM America/New_York**, December1 at01:00UTC.
+The explicit window is November7 at19:22:12.304UTC inclusive through
+December1 at01:00UTC exclusive. No missed-target compensation or backdated
+November1 rewards are granted. The matching client and authority share this
+schedule; ongoing encounters may finish after closure, but entry, draws,
+Continue and Retry close. Pity, saved rewards and progress remain.
+
+Sunshade is **unreleased and hidden**, not a disabled preview. No schedule
+is installed. Its banner, character forms/kits, personal Masters, enemies,
+materials, shops and acquisition hints are absent from player-facing catalogs.
+Internal IDs/content/save validation remain for compatibility; saved holdings
+are not deleted or migrated. New Dawnforge purchases and Sunshade personal
+Master chest selections are rejected atomically by the authority. Standard
+Banner pools remain unchanged. Released Moon materials are permanently
+purchasable; Moon copies become purchasable only after its completed window.
+
+Validate using `npx vitest run src/content/release-visibility.test.ts`,
+the related presentation/lifecycle suites, the production build and matching
+authority checks. Hosted verification uses
+`node tools/smoke_server_game.mjs --moon-launch` with disposable identities.
+Publication outcomes are recorded in the [handoff](handoff.md).
 
 ## Approved implementation direction
 
@@ -9,8 +34,9 @@ gender balance, identities, six forms, approved appearances and kits remain.
 Flagged kit coefficients remain unchanged after measured Moon review. All104
 Moon sources are installed; Sunshade remains art-pending. See
 [reviewed intake](art-workflow.md#delivered-moon-artwork-2026-11-07).
-Both events stay **inactive with no scheduled window until explicit launch
-approval**. Never interpret an empty schedule as an event that already ended.
+Moon now uses the explicitly approved window above. Sunshade stays
+**inactive with no scheduled window and hidden until explicit release approval**.
+Never interpret an empty schedule as an event that already ended.
 
 Reuse **current** Rose mechanics, not its historical rules:
 
@@ -39,7 +65,8 @@ Reuse **current** Rose mechanics, not its historical rules:
   prices2500/7500/25000/75000/250000/750000. Event copies use approved existing
   prices10000/30000/100000/350000/1500000/5000000, only **after an actually
   completed scheduled window**, disabled during reruns.
-- Inactive banners/activities are inspectable, never purchasable/enterable.
+- Released inactive banners/activities are inspectable, never purchasable/enterable;
+  unreleased Sunshade content is not inspectable.
   Archive retains actual rates, cost, pity, ownership and event rules. Authority
   time gates live entry/summons/Continue/Retry; an existing encounter may finish.
 

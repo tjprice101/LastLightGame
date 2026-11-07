@@ -2,6 +2,7 @@ import { elements, materialRarities, materialFirstNeededLevel } from './activiti
 import { roseMaterials } from './roses';
 import { getStarter } from './starters';
 import { moonSunshadeEvents, newEventMaterialIds } from './moon-sunshade-events';
+import { materialReleased } from './release-visibility';
 
 export type ExchangeCategory = 'normal' | 'event';
 export interface ExchangeProduct {
@@ -44,6 +45,7 @@ export const exchangeProducts: readonly ExchangeProduct[] = [
 export function exchangeProduct(id: string): ExchangeProduct {
   const product = exchangeProducts.find(entry => entry.id === id || entry.materialId === id);
   if (!product) throw new Error('Unknown Material Exchange product.');
+  if (!materialReleased(product.materialId)) throw new Error('This material is not released.');
   return product;
 }
 export function exchangeProductUnlocked(product: ExchangeProduct, account: {

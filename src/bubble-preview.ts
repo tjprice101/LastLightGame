@@ -1,8 +1,8 @@
-import { starters, getStarter, isStarterId, starterVow, type StarterId } from './content/starters';
+import { starters as allStarters, getStarter, isStarterId, starterVow, type StarterId } from './content/starters';
 import { characterArt, characterName } from './content/character-art';
 import { elementAccents, materialArt, materialName, dungeonArt } from './content/dungeon-art';
 import { conduits, conduitEffect, conduitEquipReason, conduitUpgradeCost, isConduitId, type ConduitSlots } from './content/conduits';
-import { masterConduits } from './content/master-conduits';
+import { masterConduits as allMasters } from './content/master-conduits';
 import { characterLevelCost, characterEvolutionCost, characterEvolutionRequirement, characterLevelCap, displayEvolution, type UpgradeCost } from './content/progression';
 import { resolveFighter, formatStat, shatterGauge } from './content/combat';
 import { nativeIdentities } from './content/native-identities';
@@ -17,8 +17,8 @@ import { setSquad, equippedSquad, ownedCharacterInstances, maxLevelPlan, levelCh
   summonCharacters, multiSummonCount, levelCapturedCharacter, openCalamityChest, setMachineLootFocus, type SummonDraw } from './game/account';
 import { isMachineFocusRarity } from './content/machines';
 import { capturedLevelCap, capturedLevelCost } from './game/character-instances';
-import { creatures, getCreature, creatureLoot, creatureLore } from './content/creatures';
-import { elements, infusionStageCount, dungeonStageCount, infusionModes, currencyModes, eventModes, machineModes, materialRarities } from './content/activities';
+import { creatures as allCreatures, getCreature, creatureLoot, creatureLore } from './content/creatures';
+import { elements, infusionStageCount, dungeonStageCount, infusionModes, currencyModes, eventModes as allEvents, machineModes, materialRarities } from './content/activities';
 import { specialtyMaterials } from './content/infusions';
 import { roseMaterials } from './content/roses';
 import { currencyArt } from './presentation/currency-icon';
@@ -37,7 +37,13 @@ import { normalizeStats, phaseZeroStatKeys, phaseZeroStatLabels, statDisplayUnit
 import { statPreview } from './presentation/stat-preview';
 import { stageLootContent, type StageLootSource } from './presentation/stage-loot';
 import { worldHistory, storyPurpose, summonLore, trainingLore, machineOrigin, conduitOrigin, masterOrigin, warLore, devourerHabitats } from './content/world-lore';
-import { exchangeProducts, exchangeQuantities, exchangeProduct } from './content/material-exchange';
+import { exchangeProducts as allProducts, exchangeQuantities, exchangeProduct } from './content/material-exchange';
+import { characterReleased, creatureReleased, eventReleased, materialReleased } from './content/release-visibility';
+const starters = allStarters.filter(character => characterReleased(character.id));
+const masterConduits = allMasters.filter(master => characterReleased(master.character));
+const creatures = allCreatures.filter(creature => creatureReleased(creature.id));
+const eventModes = allEvents.filter(event => eventReleased(event.id));
+const exchangeProducts = allProducts.filter(product => materialReleased(product.materialId));
 import { purchaseExchangeMaterial } from './game/account';
 import type { BubbleBattleDestination } from './bubble-battle-session';
 import { parseBattleSpeed } from './presentation/battle-speed';
@@ -649,7 +655,7 @@ function summon(): string {
       <button class="pill full" data-action="rates">Rates & information</button>`, 'summon-panel')}</div>`;
 }
 function inventory(): string {
-  const holdings = state.inventoryTab === 'materials' ? Object.entries(account().materials).filter(([, amount]) => amount > 0).map(([id, amount]) =>
+  const holdings = state.inventoryTab === 'materials' ? Object.entries(account().materials).filter(([id, amount]) => amount > 0 && materialReleased(id)).map(([id, amount]) =>
     itemCard(materialPath(id), materialName(id), `${amount.toLocaleString()} owned`)).join('')
     : conduits.filter(entry => (account().conduits?.[entry.id] ?? 0) > 0).map(entry =>
       itemCard(`conduits/${entry.id}`, entry.name, `${entry.rarity} / Lv.${account().conduitUpgrades?.[entry.id] ?? 0} / ${account().conduits?.[entry.id]} owned`)).join('')
@@ -658,7 +664,7 @@ function inventory(): string {
     ${glass('Null-Prismatica', `${image('currencies/lycalis')}<strong>${account().lycalis.toLocaleString()}</strong>`)}
     ${glass('Broken Mechanical Components', `${image('currencies/mechanical-components')}<strong>${account().mechanicalComponents?.toLocaleString()}</strong>`)}</div>
     <div class="toolbar"><div class="tabs">${['materials', 'conduits'].map(tab => `<button class="pill ${state.inventoryTab === tab ? 'primary' : ''}" data-action="inventory-tab" data-tab="${tab}">${tab === 'materials' ? 'Materials' : 'Conduits & Masters'}</button>`).join('')}</div>
-    ${tag(`${state.inventoryTab === 'materials' ? Object.values(account().materials).filter(amount => amount > 0).length : Object.values(account().conduits ?? {}).filter(amount => amount > 0).length + Object.keys(account().masterConduits ?? {}).length} owned types`)}
+    ${tag(`${state.inventoryTab === 'materials' ? Object.entries(account().materials).filter(([id, amount]) => amount > 0 && materialReleased(id)).length : Object.values(account().conduits ?? {}).filter(amount => amount > 0).length + masterConduits.filter(master => account().masterConduits?.[master.id]).length} owned types`)}
     ${button('Chests', 'chests')}${button('Conduit Store', 'stores')}</div><div class="item-grid">${holdings || '<p>No items in this section.</p>'}</div>`;
 }
 function stores(): string {

@@ -2,6 +2,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { creatureSaleOffer, emptyAccount } from '../game/account';
 import { getStarter, starters } from '../content/starters';
+import { characterReleased } from '../content/release-visibility';
 import { characterEvolutionCost, characterLevelCost, characterLevelCap } from '../content/progression';
 import { materialName } from '../content/dungeon-art';
 import { bindCaptureTabs, referenceTeam } from './reference-team';
@@ -337,7 +338,7 @@ describe('reference Team upgrade presentation', () => {
       expect(account).toEqual(before);
     }
   });
-  it.each(starters)('$name uses the Collections silhouette treatment and actual next form', { timeout: 30_000 }, starter => {
+  it.each(starters.filter(starter => characterReleased(starter.id)))('$name uses the Collections silhouette treatment and actual next form', { timeout: 30_000 }, starter => {
     const account = emptyAccount();
     account.characters[starter.id] = { level: 0, evolution: 1 };
     account.squad = [starter.id];
