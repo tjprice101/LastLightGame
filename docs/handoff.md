@@ -41,7 +41,15 @@ with the existing large-chunk warning. Final
 (331.48s). Earlier runs loaded the stale disabled-color expectation before its
 correction; the final unchanged tree passes, including the new contrast check.
 Future Plans Python checks pass4 tests; `git diff --check` passes.
-Hosted release verification is pending publication.
+Runtime `44b9dd20c78bea68b66066ee9dcf4e9a4b8c092c` is committed/pushed.
+[Pages run42393510880](https://github.com/tjprice101/LastLightGame/actions/runs/42393510880)
+passes tests, configured online build and deployment. Hosted `version.json.build`
+matches that exact runtime. All six initial JS/CSS resources return200; hosted
+CSS contains the disabled-control token and neutral ring, and JS contains the
+explicit toast state. Title smoke renders both entry controls above44px with
+no broken images. This is an asset/title check, not a populated online journey.
+No authority deployment is needed for these presentation-only changes.
+The attached local preview has been stopped.
 
 Resume populated/temporal/device Phase0 evidence, measured remaining Phase1/2
 gaps and then Phase3 Home/navigation journeys. Phases3-10 remain unfinished.

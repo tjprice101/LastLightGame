@@ -5,7 +5,7 @@
 Owner authorizes starting the rollout. This tranche implements the shared
 control/panel/feedback pilot, **not all phases0-10 or every Phase0 exit gate**.
 Baseline is the verified Moon release `88c82fd19284151544ad408e4aeac851d2b548fa`;
-the handoff-only HEAD is `a7e1f5de`. Historical audit findings below remain
+the pre-pilot handoff-only HEAD was `a7e1f5de`. Historical audit findings below remain
 evidence from their stated baseline, not current implementation claims.
 
 ### Implemented in the existing owners
@@ -55,7 +55,9 @@ explicit Reduce motion. No smooth-motion,60fps or hardware performance claim.
 
 Focused final control/lifecycle/history/dialog/settings validation passes98
 tests in11 files; `npm run build` passes with the existing large-chunk warning.
-The handoff records full-suite and exact hosted release verification.
+The final full suite passes8,369 tests in254 files. Runtime
+`44b9dd20c78bea68b66066ee9dcf4e9a4b8c092c` is published; the handoff records
+the successful Pages run and exact hosted version/assets/title verification.
 
 **Resume:** finish Phase0 populated/temporal/device evidence and expand the
 Phase1/2 pilot where a specific conflict is measured, then Phase3 Home/navigation
