@@ -1,5 +1,16 @@
 # Decision log
 
+## Starting the shared living-world UI foundations (2026-11-07)
+
+**Approved:** owner says "Do that now" after the recommendation to begin the
+shared UI baseline, visual state ownership and motion/feedback foundations.
+Implement in existing owners, not a competing stylesheet or engine/navigation
+replacement. Preserve authored art, Georgia, element/rarity identity, immediate
+controls/history/focus/Skip, explicit in-game Reduce motion and saved-success timing.
+The [first tranche](Future%20Plans/living-world-ui-audit-plan.md#first-shared-foundation-tranche-2026-11-07)
+does not declare all audit phases or visible-device performance complete.
+No combat/economy/ownership/RNG changes, paid service or seasonal activation.
+
 ## Moon delivery, six-character tuning and material amounts (2026-11-07)
 
 **Approved:** archive/install the owner's104 Moon PNGs, offline-clean appropriate

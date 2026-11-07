@@ -1,13 +1,22 @@
 /* Bubble interface (D-433). Imported last. Presentation only: glossy gel controls,
    glass bubble panels, stylized Georgia, the persistent living backdrop and all
    effect/cinematic layers. Never restyles supplied artwork or battle field units. */
-:root { --accent: var(--ui-accent, #f4f4f5); --bubble-faint: color-mix(in srgb, var(--accent) 9%, transparent); --bubble-line: color-mix(in srgb, var(--accent) 22%, #ffffff14); }
+:root {
+  --accent: var(--ui-accent, #f4f4f5);
+  --bubble-faint: color-mix(in srgb, var(--accent) 9%, transparent);
+  --bubble-line: color-mix(in srgb, var(--accent) 22%, #ffffff14);
+  --surface-radius: 24px;
+  --surface-panel: linear-gradient(140deg, #ffffff0d, #ffffff03 50%, #00000024), #0d1017e6;
+  --surface-dialog: linear-gradient(150deg, #1d212cf5, #0d1017fa);
+  --surface-shadow: inset 0 1px #ffffff12, 0 20px 60px #0004;
+}
 html body { background: radial-gradient(ellipse at 68% 47%, #141821, #090b10 70%); }
 html body #app { position: relative; z-index: 1; }
 
 /* ---------- Persistent living backdrop (outside #app, never re-rendered) ---------- */
 .bubble-backdrop { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; background-image: radial-gradient(#ffffff08 .6px, transparent .6px); background-size: 6px 6px; }
 .bubble-backdrop::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 180px #000a; }
+.bubble-backdrop[data-motion-paused="true"] *, .bubble-backdrop[data-motion-paused="true"] *::before { animation-play-state: paused !important; }
 body.in-battle .bubble-backdrop { display: none; }
 .bubble-glow { position: absolute; width: 75vw; height: 80vh; right: -4vw; top: 10vh; background: radial-gradient(ellipse, color-mix(in srgb, var(--accent) 16%, transparent), transparent 67%); animation: bubble-aurora 24s ease-in-out infinite alternate; }
 .bubble-current { position: absolute; width: min(80vw, 1000px); height: min(85vh, 850px); border-radius: 50%; background: radial-gradient(ellipse, color-mix(in srgb, var(--accent) 10%, transparent), transparent 65%); }
@@ -46,10 +55,10 @@ html body .sanctuary-shell .sanctuary-wallet > .text-button { width: 48px; heigh
 html body :is(.shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) { font-family: var(--ui-font, Georgia, 'Times New Roman', serif); }
 html body .sanctuary-shell :is(h1, h2):not(.ref-sr-only) { background: linear-gradient(180deg, #fff 30%, color-mix(in srgb, var(--accent) 38%, #d9d4cc)); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 2px 14px color-mix(in srgb, var(--accent) 26%, transparent)); }
 html body .sanctuary-shell h3 { text-shadow: 0 2px 12px color-mix(in srgb, var(--accent) 18%, transparent); }
-html body .sanctuary-shell :is(.ref-panel-heading, .eyebrow, .calamity-loot-eyebrow) { font-variant: small-caps; letter-spacing: .24em; font-weight: 700; color: color-mix(in srgb, var(--accent) 70%, #fff); text-shadow: 0 0 10px color-mix(in srgb, var(--accent) 45%, transparent); }
+html body .sanctuary-shell :is(.ref-panel-heading, .eyebrow, .calamity-loot-eyebrow) { font-variant: small-caps; letter-spacing: .12em; font-weight: 700; color: var(--menu-text, #f4f1e9); }
 
 /* ---------- Glass bubble panels ---------- */
-html body .sanctuary-shell :is(.ref-panel, .inventory-panel, .calamity-loot-panel, .summon-featured) { border-radius: 28px !important; border: 1px solid color-mix(in srgb, var(--accent) 16%, #ffffff16) !important; background: linear-gradient(140deg, #ffffff0d, #ffffff03 50%, #00000024), #0d1017b3 !important; box-shadow: inset 0 1px #ffffff12, 0 20px 60px #0004 !important; backdrop-filter: blur(10px); transition: box-shadow .4s, border-color .4s; }
+html body .sanctuary-shell :is(.ref-panel, .inventory-panel, .calamity-loot-panel, .summon-featured) { border-radius: var(--surface-radius) !important; border: 1px solid var(--bubble-line) !important; background: var(--surface-panel) !important; box-shadow: var(--surface-shadow) !important; backdrop-filter: blur(10px); transition: box-shadow var(--control-duration), border-color var(--control-duration); }
 html body .sanctuary-shell .ref-panel:hover { box-shadow: inset 0 1px #ffffff1f, 0 0 34px var(--bubble-faint), 0 20px 60px #0004 !important; }
 html body .sanctuary-shell :is(.ref-chip, .rarity-badge, .ref-stars, .ref-count) { border-radius: 99px !important; }
 html body .sanctuary-shell :is(.ref-bar, meter) { border-radius: 99px; overflow: hidden; }
@@ -59,24 +68,24 @@ html body .sanctuary-shell .summon-sidebar :is(button, .text-button, .primary-bu
 /* ---------- Gel buttons ---------- */
 /* Zero specificity so authored absolute/fixed button positioning (map beacons, orbit bubbles) still wins. */
 :where(:is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is([data-button-surface], .text-button, .primary-button, .secondary-button, .game-confirm-button, .enter-button)) { position: relative; }
-html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is([data-button-surface="text"], [data-button-surface="filled"], .text-button, .secondary-button):not(.ref-member-row):not(.archive-card):not(.inventory-item) {
-  overflow: hidden; border-radius: 99px !important; justify-content: center !important; justify-items: center !important; text-align: center !important; padding-left: 20px !important; padding-right: 20px !important;
-  border: 1px solid #ffffff26 !important; text-shadow: 0 1px 1px #0008; letter-spacing: .03em;
+html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is([data-button-surface="text"], [data-button-surface="filled"], .text-button, .secondary-button):not([data-button-surface="art"]):not(.ref-member-row):not(.archive-card):not(.inventory-item):not(:disabled, [aria-disabled="true"]):not(.primary-button, .game-confirm-button, [aria-pressed="true"], [aria-selected="true"], [aria-current]:not([aria-current="false"])) {
+  overflow: hidden; border-radius: 99px !important; justify-content: flex-start !important; justify-items: start !important; text-align: left !important; padding-left: 20px !important; padding-right: 20px !important;
+  border: 1px solid var(--control-border) !important; text-shadow: 0 1px 1px #0008; letter-spacing: .03em;
   background: linear-gradient(180deg, #ffffff16, #ffffff05 55%, #00000026), radial-gradient(ellipse at 50% 120%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%), #151820cc !important;
   box-shadow: inset 0 1px 0 #ffffff30, inset 0 -6px 12px #0000003a, 0 4px 14px #0000004d !important;
-  transition: transform .2s, box-shadow .25s, border-color .25s !important; }
-html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is([data-button-surface="text"], [data-button-surface="icon"], [data-button-surface="filled"], .text-button, .primary-button, .secondary-button)::before {
+  transition: transform var(--control-duration), box-shadow var(--control-duration), border-color var(--control-duration) !important; }
+html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is([data-button-surface="text"], [data-button-surface="icon"], [data-button-surface="filled"], .text-button, .primary-button, .secondary-button):not([data-button-surface="art"])::before {
   content: ''; pointer-events: none; position: absolute; left: 12%; right: 12%; top: 2px; height: 44%; border-radius: 99px; background: linear-gradient(180deg, #ffffff40, #ffffff00); opacity: .55; }
-html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is([data-button-surface="text"], [data-button-surface="icon"], [data-button-surface="filled"], .text-button, .primary-button, .secondary-button)::after {
+html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is([data-button-surface="text"], [data-button-surface="icon"], [data-button-surface="filled"], .text-button, .primary-button, .secondary-button):not([data-button-surface="art"])::after {
   content: ''; pointer-events: none; position: absolute; inset: -50% -80%; background: linear-gradient(110deg, transparent 40%, #ffffff38 50%, transparent 60%); transform: translateX(-55%); }
-html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is([data-button-surface], .text-button, .primary-button, .secondary-button):is(:hover, :focus-visible):not(:disabled)::after { animation: bubble-shimmer .75s both; }
+html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is([data-button-surface], .text-button, .primary-button, .secondary-button):is(:hover, :focus-visible):not([data-button-surface="art"]):not(:disabled, [aria-disabled="true"])::after { animation: bubble-shimmer .75s both; }
 html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is([data-button-surface="text"], [data-button-surface="icon"], [data-button-surface="filled"], .text-button, .secondary-button):hover:not(:disabled) {
-  transform: translateY(-2px); border-color: var(--bubble-line) !important; box-shadow: inset 0 1px 0 #ffffff3a, inset 0 -6px 12px #00000030, 0 6px 22px color-mix(in srgb, var(--accent) 24%, transparent) !important; }
-html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is([data-button-surface], .text-button, .primary-button, .secondary-button):active:not(:disabled) { transform: translateY(1px) scale(.96); }
+  border-color: var(--control-selected-border) !important; box-shadow: inset 0 1px 0 #ffffff3a, inset 0 -6px 12px #00000030, 0 6px 22px color-mix(in srgb, var(--accent) 16%, transparent) !important; }
+html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is([data-button-surface], .text-button, .primary-button, .secondary-button):active:not([data-button-surface="art"]):not(:disabled, [aria-disabled="true"]) { transform: scale(.98); }
 html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) [data-button-surface="icon"] {
   overflow: hidden; border-radius: 50% !important; border: 1px solid #ffffff24 !important;
-  background: radial-gradient(circle at 35% 25%, #4a4e5a, #171a22 70%) !important; box-shadow: inset 0 1px 1px #ffffff40, inset 0 -6px 10px #0006, 0 4px 14px #0007 !important; transition: transform .2s, box-shadow .2s !important; }
-html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) [data-button-surface="icon"]:hover:not(:disabled) { transform: translateY(-2px) scale(1.06); box-shadow: inset 0 1px 1px #ffffff50, 0 6px 22px color-mix(in srgb, var(--accent) 35%, transparent) !important; }
+  background: radial-gradient(circle at 35% 25%, #4a4e5a, #171a22 70%) !important; box-shadow: inset 0 1px 1px #ffffff40, inset 0 -6px 10px #0006, 0 4px 14px #0007 !important; transition: transform var(--control-duration), box-shadow var(--control-duration) !important; }
+html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) [data-button-surface="icon"]:hover:not(:disabled, [aria-disabled="true"]) { box-shadow: inset 0 1px 1px #ffffff50, 0 6px 22px color-mix(in srgb, var(--accent) 20%, transparent) !important; }
 /* Tiles stay cards (rounded glass with a sweep), not pills. */
 html body .sanctuary-shell [data-button-surface="tile"] { overflow: hidden; border-radius: 24px !important; border: 1px solid color-mix(in srgb, var(--accent) 14%, #ffffff16) !important; box-shadow: inset 0 1px #ffffff14, 0 12px 30px #0003 !important; transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .3s, border-color .3s !important; }
 html body .sanctuary-shell [data-button-surface="tile"]::after { content: ''; position: absolute; inset: -40% -90%; z-index: 3; pointer-events: none; background: linear-gradient(110deg, transparent 42%, #ffffff2e 50%, color-mix(in srgb, var(--accent) 22%, transparent) 53%, transparent 60%); transform: translateX(-60%); }
@@ -85,23 +94,23 @@ html body .sanctuary-shell [data-button-surface="tile"]:is(:hover, :focus-visibl
 /* Artwork-backed cards keep their art; they only get rounding and the sweep. */
 html body .sanctuary-shell :is(.archive-card, .inventory-item, .ref-member-row, .ref-product, .glossary-card) { border-radius: 22px !important; overflow: hidden; }
 /* Primary and selected states: accent gel. */
-html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is(.primary-button, .game-confirm-button, .enter-button, [data-button-surface]:is([aria-pressed="true"], [aria-selected="true"], [aria-current]:not([aria-current="false"]))):not(:disabled):not(.archive-card):not(.ref-member-row):not(.inventory-item):not(.ref-product) {
-  overflow: hidden; border-radius: 99px !important; color: #1a120c !important; text-shadow: 0 1px 0 #ffffff55; border: 1px solid #ffffff55 !important;
+html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is(.primary-button, .game-confirm-button, .enter-button, [data-button-surface]:is([aria-pressed="true"], [aria-selected="true"], [aria-current]:not([aria-current="false"]))):not(:disabled, [aria-disabled="true"]):not([data-button-surface="art"]):not(.game-destructive):not(.archive-card):not(.ref-member-row):not(.inventory-item):not(.ref-product) {
+  overflow: hidden; border-radius: 99px !important; color: #1a120c !important; text-shadow: 0 1px 0 #ffffff55; border: 1px solid var(--control-selected-border) !important;
   background: radial-gradient(120% 140% at 30% 0%, color-mix(in srgb, var(--accent) 45%, white), var(--accent) 52%, color-mix(in srgb, var(--accent) 70%, black)) !important;
   box-shadow: inset 0 1px 1px #ffffffaa, inset 0 -8px 14px color-mix(in srgb, var(--accent) 55%, black), 0 8px 26px color-mix(in srgb, var(--accent) 35%, transparent) !important; }
-html body :is(.sanctuary-shell, .shell, .game-dialog, .reward-screen) :is(.primary-button, .game-confirm-button, .enter-button):not(:disabled) { animation: bubble-primary-pulse 2.8s ease-in-out infinite; }
-html body :is(.sanctuary-shell, .shell, .game-dialog, .reward-screen) :is(.primary-button, .game-confirm-button, .enter-button):not(:disabled)::after { animation: bubble-idle-sheen 4.6s ease-in-out infinite; }
+html body :is(.sanctuary-shell, .shell, .game-dialog, .reward-screen) :is(.primary-button, .game-confirm-button, .enter-button):not(:disabled, [aria-disabled="true"]):not(.game-destructive):not([data-button-surface="art"])::after { animation: bubble-idle-sheen 4.6s ease-in-out infinite; }
 html body :is(.sanctuary-shell, .shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen, .online-account) :is(.primary-button, .game-confirm-button, .enter-button) :is(.ui-icon, svg) { color: inherit; }
 
 /* ---------- Dialogs and drawers: floating glass bubbles ---------- */
-html body :is(.game-dialog, .information-modal, .selection-modal, .settings-drawer, .online-account)[open] { border-radius: 30px !important; border: 1px solid color-mix(in srgb, var(--accent) 30%, #ffffff1a) !important; background: linear-gradient(150deg, #1d212ced, #0d1017f2) !important; box-shadow: inset 0 1px #ffffff1c, 0 0 60px color-mix(in srgb, var(--accent) 14%, transparent), 0 30px 90px #000c !important; animation: bubble-dialog-in .45s cubic-bezier(.2,1.3,.4,1) both; }
+html body :is(.game-dialog, .information-modal, .selection-modal, .settings-drawer, .online-account)[open] { border-radius: var(--surface-radius) !important; border: 1px solid var(--bubble-line) !important; background: var(--surface-dialog) !important; box-shadow: inset 0 1px #ffffff1c, 0 0 60px color-mix(in srgb, var(--accent) 14%, transparent), 0 30px 90px #000c !important; animation: bubble-dialog-in .32s cubic-bezier(.2,.8,.3,1) both; }
 html body :is(.game-dialog, .information-modal, .selection-modal, .settings-drawer, .online-account)::backdrop { background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--accent) 10%, #0009), #000c); backdrop-filter: blur(4px); }
 html body :is(.information-modal, .settings-drawer, .selection-modal) .drawer-close { width: 44px; height: 44px; border-radius: 50% !important; }
 
 /* ---------- Interaction effects ---------- */
 .bubble-effects { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 900; }
-.click-burst { position: fixed; width: 0; height: 0; pointer-events: none; animation: bubble-burst-life .85s both; z-index: 901; }
-.click-ring { position: absolute; left: -12px; top: -12px; width: 24px; height: 24px; border: 1px solid color-mix(in srgb, var(--accent) 75%, white); border-radius: 50%; box-shadow: 0 0 15px color-mix(in srgb, var(--accent) 25%, transparent); animation: bubble-ripple .65s ease-out both; }
+.click-burst { position: fixed; width: 0; height: 0; pointer-events: none; animation: bubble-burst-life .45s both; z-index: 901; }
+dialog > .click-burst { position: absolute; }
+.click-ring { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border: 1px solid #ffffff80; border-radius: 50%; box-shadow: 0 0 8px #ffffff14; animation: bubble-ripple .38s ease-out both; }
 .click-ring.second { animation-delay: .08s; border-color: #ffffff50; }
 .fx-particle { position: absolute; width: var(--size); height: var(--size); border-radius: 50%; background: radial-gradient(circle at 30% 25%, white, var(--accent) 60%, transparent); box-shadow: 0 0 10px var(--accent); animation: bubble-click-spark .8s cubic-bezier(.15,.55,.3,1) both; }
 .fx-star { width: 10px; height: 10px; background: color-mix(in srgb, var(--accent) 40%, white); clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); }
@@ -155,6 +164,11 @@ html body :is(.information-modal, .settings-drawer, .selection-modal) .drawer-cl
 /* ---------- Reduced motion: static interface ---------- */
 html[data-motion="reduced"] :is(.bubble-backdrop, .sanctuary-shell, .shell) *, html[data-motion="reduced"] .bubble-backdrop *::before { animation: none !important; transition: none !important; }
 html[data-motion="reduced"] .bubble-effects { display: none; }
+html[data-motion="reduced"] :is(.game-dialog, .information-modal, .selection-modal, .settings-drawer, .online-account, .reward-screen) *,
+html[data-motion="reduced"] [data-button-surface]::before,
+html[data-motion="reduced"] [data-button-surface]::after { animation: none !important; transition: none !important; }
+html body [data-button-surface]:is(:disabled, [aria-disabled="true"])::before,
+html body [data-button-surface]:is(:disabled, [aria-disabled="true"])::after { display: none; }
 
 @media (max-width: 700px) {
   html body .sanctuary-shell .sanctuary-header { flex-wrap: wrap; padding: 10px 10px 4px !important; gap: 8px; }
@@ -309,7 +323,7 @@ html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-id
 html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity > .ref-character-progress { justify-self: stretch !important; }
 html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-submenus > button[aria-pressed="true"] { color: #f4f1ec !important; -webkit-text-fill-color: currentColor; }
 html body #app .sanctuary-shell .ref-team-sidebar .ref-panel-heading { flex-wrap: nowrap !important; white-space: nowrap; gap: 8px; }
-html body #app .sanctuary-shell .ref-team-sidebar .ref-panel-heading > button { white-space: nowrap; flex: none; min-height: 40px; padding: 6px 14px; }
+html body #app .sanctuary-shell .ref-team-sidebar .ref-panel-heading > button { white-space: nowrap; flex: none; min-height: var(--control-target); padding: 6px 14px; }
 html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity > p { margin: 0; font-size: .76rem; letter-spacing: .14em; font-variant: small-caps; color: color-mix(in srgb, var(--accent) 55%, #fff); }
 html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity h2 { margin: 0 !important; font-size: clamp(2rem, 3vw, 3.2rem) !important; line-height: 1.02; }
 html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity :is(.ref-tags, .ref-character-header-actions) { display: flex !important; flex-wrap: wrap; justify-content: center !important; gap: 6px; }
@@ -361,7 +375,7 @@ html[data-motion="reduced"] body #app .sanctuary-shell .ref-bearer-detail[data-o
 
 html body #app .sanctuary-shell .ref-story-region-heading { flex-wrap: nowrap !important; align-items: center !important; gap: 8px !important; }
 html body #app .sanctuary-shell .ref-story-region-heading > span { white-space: nowrap; }
-html body #app .sanctuary-shell .ref-story-region-heading > button { flex: none; white-space: nowrap; min-height: 36px !important; padding: 4px 14px !important; font-size: .82rem; text-decoration: none !important; }
+html body #app .sanctuary-shell .ref-story-region-heading > button { flex: none; white-space: nowrap; min-height: var(--control-target) !important; padding: 4px 14px !important; font-size: .82rem; text-decoration: none !important; }
 html body #app .sanctuary-shell .ref-map-node { background: none !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; overflow: visible !important; border-radius: 0 !important; animation: none !important; }
 html body #app .sanctuary-shell .ref-map-node::before, html body #app .sanctuary-shell .ref-map-node::after { content: none !important; }
 html body #app .sanctuary-shell .ref-map-node > span { box-shadow: inset 0 1px 1px #ffffff55, 0 0 0 4px #0006, 0 0 18px color-mix(in srgb, var(--accent) 45%, transparent); transition: transform .25s cubic-bezier(.34,1.56,.64,1); }
@@ -417,7 +431,7 @@ html body .selection-modal .selection-option-row:hover { border-color: color-mix
 html body .selection-modal .selection-option-row > .selection-option { flex: 1 1 auto !important; min-height: 44px !important; min-width: 44px !important; border-radius: 99px !important; justify-content: center !important; justify-items: center !important; text-align: center !important; font-weight: 700 !important; font-variant-numeric: tabular-nums; background: radial-gradient(120% 140% at 30% 0%, #ffffff1f, transparent 55%), #161922 !important; border: 1px solid #ffffff1a !important; box-shadow: inset 0 1px #ffffff22, inset 0 -5px 10px #0005 !important; }
 html body .selection-modal .selection-option-row > .selection-option::before { display: none !important; }
 html body .selection-modal .selection-option[aria-pressed="true"] { background: radial-gradient(120% 140% at 30% 0%, #ffffff40, transparent 60%), var(--accent) !important; color: #120d0b !important; border-color: transparent !important; box-shadow: 0 0 20px var(--bubble-faint), inset 0 1px #fff6 !important; }
-html body .selection-modal .selection-option-row > .stage-loot-button { flex: 0 0 auto !important; min-height: 36px !important; padding: 0 14px !important; font-size: .82rem !important; text-decoration: none !important; background: transparent !important; border: 1px solid color-mix(in srgb, var(--accent) 30%, #ffffff18) !important; box-shadow: none !important; color: #e9e6df !important; }
+html body .selection-modal .selection-option-row > .stage-loot-button { flex: 0 0 auto !important; min-height: var(--control-target) !important; padding: 0 14px !important; font-size: .82rem !important; text-decoration: none !important; background: transparent !important; border: 1px solid color-mix(in srgb, var(--accent) 30%, #ffffff18) !important; box-shadow: none !important; color: #e9e6df !important; }
 html body .selection-modal .selection-option-row > .stage-loot-button::before { display: none !important; }
 html body .selection-modal .selection-option-row > .stage-loot-button:hover { background: color-mix(in srgb, var(--accent) 18%, transparent) !important; }
 /* Store detail: compact showcase row so purchase controls stay in view */
@@ -517,7 +531,7 @@ html body :is(.settings-drawer, .information-modal, .selection-modal, .game-dial
 html body dialog.game-dialog[open]:not(#_) { padding: 26px 28px 22px !important; }
 html body .game-dialog .game-dialog-actions { gap: 12px !important; }
 html body .game-dialog .game-dialog-actions button:not(#_) { min-width: 120px; justify-content: center !important; }
-html body .game-dialog .game-destructive:not(:disabled):not(#_) { background: radial-gradient(120% 140% at 30% 0%, #ffffff55, transparent 50%), linear-gradient(160deg, #ff8a8a, #c6343f) !important; color: #1a0607 !important; border-color: #ffb3b366 !important; box-shadow: inset 0 1px #fff8, 0 0 24px #ff4d5a55, 0 8px 20px #0007 !important; }
+html body .game-dialog .game-destructive:not(:disabled):not(#_) { color: var(--control-danger) !important; border-color: #e58c7980 !important; background: #bf59451a !important; box-shadow: none !important; text-shadow: none; }
 
 /* Narrow headers: balances keep a full row and never break digits; utility circles follow (D-433). */
 @media (max-width: 700px) {

@@ -3,9 +3,27 @@
    tagged. Flat buttons get a subtle leader-accent gradient, and labels sit bold
    at the leading edge beside an accent marker instead of dead center. */
 :root {
+  --control-target: 44px;
+  --control-border: #555b68;
+  --control-focus: #f4f4f5;
+  --control-selected-border: color-mix(in srgb, var(--ui-accent, #f4f4f5) 65%, #fff);
+  --control-disabled-text: #b4b6bf;
+  --control-danger: #ffc3b8;
+  --control-duration: 160ms;
   --button-glow: linear-gradient(135deg, color-mix(in srgb, var(--ui-accent, #f4f4f5) 20%, transparent) 0%, color-mix(in srgb, var(--ui-accent, #f4f4f5) 5%, transparent) 42%, transparent 72%);
   --button-shade: linear-gradient(180deg, rgb(255 255 255 / .05), rgb(0 0 0 / .2));
   --button-marker: linear-gradient(var(--ui-accent, #f4f4f5), var(--ui-accent, #f4f4f5));
+}
+
+html body :is(.shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer, .online-account, .reward-screen) [data-button-surface]:not([data-button-surface="art"]):not(#battle-root *) {
+  min-height: var(--control-target);
+  min-width: var(--control-target);
+  font-weight: 700;
+}
+html body [data-button-surface="icon"]:not(#battle-root *) { min-width: var(--control-target); }
+html body [data-button-surface]:not([data-button-surface="art"]):not(#battle-root *):focus-visible {
+  outline: 2px solid var(--control-focus);
+  outline-offset: 3px;
 }
 
 [data-button-surface="icon"],
@@ -61,7 +79,8 @@ html body :is(button, .primary-button, .secondary-button, [role="button"]):is(:d
   background: linear-gradient(180deg, #34343a, #26262b) !important;
   background-image: linear-gradient(180deg, #34343a, #26262b) !important;
   border-color: #45454c !important;
-  color: #8d8d95 !important;
+  color: var(--control-disabled-text) !important;
+  opacity: 1;
   box-shadow: none !important;
   text-shadow: none !important;
   cursor: not-allowed !important;

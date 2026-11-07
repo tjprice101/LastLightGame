@@ -1,11 +1,73 @@
 # Living-world UI audit and implementation plan
 
+## First shared-foundation tranche (2026-11-07)
+
+Owner authorizes starting the rollout. This tranche implements the shared
+control/panel/feedback pilot, **not all phases0-10 or every Phase0 exit gate**.
+Baseline is the verified Moon release `88c82fd19284151544ad408e4aeac851d2b548fa`;
+the handoff-only HEAD is `a7e1f5de`. Historical audit findings below remain
+evidence from their stated baseline, not current implementation claims.
+
+### Implemented in the existing owners
+
+- `button-style.css` owns ordinary minimum44px targets, focus/state tokens and
+  legible disabled text. `bubble-ui.css` consumes them rather than overriding
+  leading-edge labels with centered text. Native/ARIA-disabled controls have
+  no decorative sheen; artwork-backed controls remain excluded from the shared
+  flat-control treatment.
+- Shared panel/dialog surface tokens provide clearer backing and consistent
+  ordinary frames. Local authored Home/art compositions retain their shapes.
+  Panel labels lose excessive tracking/glow without changing Georgia, numeric
+  values, rarity/element colors or navigation.
+- Team Edit squad, Story Prologue, selection-panel loot actions and toast
+  dismissal meet44px. Styling classifies the initial layout synchronously;
+  hidden-tab mutations no longer wait indefinitely for a suspended RAF.
+- Ordinary clicks give one brief neutral ring, not success stars, confetti or
+  a second scale animation layered over CSS. Successful acquisitions/accepted
+  rarity selections keep their separate existing feedback.
+- Bubble WAAPI animations/decorations have cleanup ownership. In-game Reduce
+  motion cancels active effects and settles a saved cinematic immediately;
+  Escape/Skip and a caller's previous inert state are preserved. Hidden
+  documents pause the ambient backdrop; returning resumes it. No automatic
+  device-motion override replaces the explicit in-game preference.
+- The application passes explicit error/success/info tones to the shared toast.
+  Errors no longer become green because their message mentions "equipped".
+  Warnings hidden/debug state are notices, not acquisitions. Errors use assertive
+  announcements; success/info use polite status. Existing post-save transaction
+  and celebration timing is unchanged.
+
+### Evidence and remaining gates
+
+| Family / behavior | Evidence in this tranche | Still unobserved / next gate |
+|---|---|---|
+| Team and shared controls | Before Edit squad40px; after44px. Actual CSS viewport320px, no horizontal overflow. Leading labels700; close44x44. | Populated mixed squads, endgame layouts and full keyboard journeys |
+| Home, Inventory, Conduit Store, Gameplay | Actual CSS viewport390px; static Reduce motion fixtures have no visible controls below44x44 or horizontal overflow; sampled images load. Accounts are in memory, one Lv0 starter/zero currencies. Additional320px Home/Inventory/Store fixtures retain exact maximum-safe-integer currency text with no overflow or sub44px controls; no saved funding. | Complete pending/error journeys; large material/Conduit holdings and endgame stats; desktop/device comparison |
+| Confirmation dialog | Cancel resolves false, removes dialog and restores focus. Destructive button uses explicit muted-red treatment, no glow/sheen,44px. | Every domain confirmation/denial/retry sequence |
+| Lifecycle | Timed tests cover finite neutral feedback, disabled/inert exclusion, motion switching, particle cancellation, hidden/resume, Escape, cinematic inert restoration and reinstall disposal. | Visible temporal recordings and real-device frame pacing |
+| Other screen families | Original audit's source/state checklist retained. | Populated Summon/rewards, battle, social/profile, opening and all modal permutations |
+
+The integrated browser reports hidden visibility and scales the requested device
+dimensions: requested256/312 CSS-equivalent widths report actual320/390.
+Measurements above use the reported layout viewport, not invented physical
+device screenshots. A frozen non-reduced Home entrance produced small transformed
+rectangles in the hidden browser; static target checks were repeated under
+explicit Reduce motion. No smooth-motion,60fps or hardware performance claim.
+
+Focused final control/lifecycle/history/dialog/settings validation passes98
+tests in11 files; `npm run build` passes with the existing large-chunk warning.
+The handoff records full-suite and exact hosted release verification.
+
+**Resume:** finish Phase0 populated/temporal/device evidence and expand the
+Phase1/2 pilot where a specific conflict is measured, then Phase3 Home/navigation
+journeys. Phases3-10 remain unfinished; no art generation or seasonal launch is
+needed to continue UI work.
+
 ## 1. Status, intent and boundaries
 
 **Audit date:** November 5, 2026, with verification continuing November 6 UTC.
 **Source baseline:** `f2f3442ed8c9eb7dd19da75de82d1e97f7a4f521`.
-**Status:** evidence-backed presentation audit and proposed implementation plan.
-This document does not claim the proposed UI changes are implemented.
+**Status:** evidence-backed presentation audit with an implemented first shared
+foundation tranche above; the remaining phased plan is not completed.
 
 The owner wants Last Light to feel alive, elegant and unmistakably itself.
 The objective is not to put more particles on every button. It is to connect

@@ -2,7 +2,7 @@
  * Bubble interface runtime (D-433). Presentation only: a persistent living
  * background, press bursts, sparkle glyphs, celebration pop-ups, skippable
  * cinematics and entrance pops. Never changes game state, RNG or saves; every
- * effect is skipped under reduced motion (setting or OS).
+ * effect respects the explicit in-game Reduce motion setting.
  */
 import { reducedMotion } from './settings';
 import { isRarity, rarityColors } from '../content/rarity';
@@ -10,11 +10,40 @@ import '../bubble-battle.css';
 
 const glyphs = ['\u2726', '\u2727', '\u2736', '\u273A', '\u00B7'];
 let effects: HTMLElement | null = null;
-let installed = false;
+let disposeInstalled: (() => void) | null = null;
 let lastScreen = '';
+const animations = new Set<Animation>();
+const decorations = new Map<HTMLElement, () => void>();
+const cinematics = new Set<() => void>();
+
+function animate(element: HTMLElement, frames: Keyframe[], options: KeyframeAnimationOptions): Animation {
+  const animation = element.animate(frames, options);
+  animations.add(animation);
+  const release = (): void => { animations.delete(animation); };
+  animation.addEventListener('finish', release, { once: true });
+  animation.addEventListener('cancel', release, { once: true });
+  return animation;
+}
+
+function expire(element: HTMLElement, duration: number): void {
+  const cleanup = (): void => {
+    clearTimeout(timer);
+    element.remove();
+    decorations.delete(element);
+  };
+  const timer = window.setTimeout(cleanup, duration);
+  decorations.set(element, cleanup);
+}
+
+function clearMotion(): void {
+  cinematics.forEach(finish => finish());
+  animations.forEach(animation => animation.cancel());
+  animations.clear();
+  decorations.forEach(cleanup => cleanup());
+}
 
 export function bubbleMotionAllowed(): boolean {
-  return !reducedMotion() && typeof document.body?.animate === 'function';
+  return !reducedMotion() && !document.hidden && typeof document.body?.animate === 'function';
 }
 
 function layer(): HTMLElement {
@@ -45,13 +74,13 @@ export function glyphBurst(x: number, y: number, count: number, reach: number, h
     (host ?? layer()).append(spark);
     const angle = Math.random() * Math.PI * 2, distance = reach * (.45 + Math.random() * .75);
     const dx = Math.cos(angle) * distance, dy = Math.sin(angle) * distance - rise * Math.random(), spin = Math.random() * 300 - 150;
-    spark.animate([
+    animate(spark, [
       { opacity: 0, transform: 'translate(-50%, -50%) scale(.2) rotate(0deg)' },
       { opacity: 1, transform: `translate(calc(-50% + ${dx * .55}px), calc(-50% + ${dy * .55}px)) scale(1.15) rotate(${spin * .5}deg)`, offset: .35 },
       { opacity: 0, transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy + rise * .4}px)) scale(.3) rotate(${spin}deg)` },
     ], { duration: 750 + Math.random() * 650, delay: Math.random() * 120, easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'both' })
       .addEventListener('finish', () => spark.remove(), { once: true });
-    window.setTimeout(() => spark.remove(), 2200);
+    expire(spark, 2200);
   }
 }
 
@@ -63,22 +92,15 @@ function pressFeedback(target: HTMLElement, event: MouseEvent): void {
   const host = target.closest('dialog[open]') ?? layer();
   const burst = document.createElement('div');
   burst.className = 'click-burst';
-  burst.style.left = `${x}px`; burst.style.top = `${y}px`;
-  burst.innerHTML = `<span class="click-ring"></span><span class="click-ring second"></span>${Array.from({ length: 12 }, (_, i) => {
-    const angle = i * Math.PI / 6, distance = 35 + (i % 3) * 17;
-    return `<i class="fx-particle ${i % 3 === 0 ? 'fx-star' : ''}" style="--dx:${Math.cos(angle) * distance}px;--dy:${Math.sin(angle) * distance - 12}px;--size:${i % 3 + 3}px;--spin:${i * 43}deg"></i>`;
-  }).join('')}`;
+  burst.setAttribute('aria-hidden', 'true');
+  const bounds = host.getBoundingClientRect();
+  const dialog = host instanceof HTMLDialogElement;
+  burst.style.left = `${dialog ? x - bounds.left - host.clientLeft + host.scrollLeft : x}px`;
+  burst.style.top = `${dialog ? y - bounds.top - host.clientTop + host.scrollTop : y}px`;
+  burst.innerHTML = '<span class="click-ring"></span>';
   host.append(burst);
   burst.addEventListener('animationend', animation => { if (animation.target === burst) burst.remove(); });
-  window.setTimeout(() => burst.remove(), 1200);
-  const major = target.matches('.hub-bubble, .home-bubble, [data-bubble-primary], .primary-button, [data-button-surface="tile"]');
-  glyphBurst(x, y, major ? 12 : 6, major ? 80 : 60, target.closest('dialog[open]'));
-  target.animate([
-    { transform: 'scale(1)' },
-    { transform: 'scale(.95)', offset: .25 },
-    { transform: 'scale(1.03)', offset: .6 },
-    { transform: 'scale(1)' },
-  ], { duration: 420, easing: 'ease-out', composite: 'add' });
+  expire(burst, 550);
 }
 
 /** Colour theme of the thing obtained: Calamitic is black/white/crimson, Omnic prismatic. */
@@ -153,10 +175,10 @@ export function celebrate(message: string, options: FxPalette & { subtitle?: str
     bolts.innerHTML = lightningMarkup([{ count: 8, delay: 60 }]);
     scope.append(bolts);
   }
-  window.setTimeout(() => scope.remove(), 2400);
+  expire(scope, 2400);
   glyphBurst(innerWidth / 2, innerHeight * .42, 26, Math.min(innerWidth, 900) * .38, scope, 60);
-  window.setTimeout(() => glyphBurst(innerWidth * .3, innerHeight * .5, 10, 140, scope, 80), 180);
-  window.setTimeout(() => glyphBurst(innerWidth * .7, innerHeight * .5, 10, 140, scope, 80), 300);
+  window.setTimeout(() => { if (scope.isConnected) glyphBurst(innerWidth * .3, innerHeight * .5, 10, 140, scope, 80); }, 180);
+  window.setTimeout(() => { if (scope.isConnected) glyphBurst(innerWidth * .7, innerHeight * .5, 10, 140, scope, 80); }, 300);
 }
 
 export type CinematicKind = 'level' | 'evolution' | 'summon' | 'conduit' | 'chest';
@@ -218,6 +240,7 @@ export function cinematic(spec: CinematicSpec): Promise<void> {
       <div class="cine-flash"></div><div class="cine-text"><p>${escapeText(spec.eyebrow)}</p><h2>${escapeText(spec.title)}</h2>${spec.subtitle ? `<small>${escapeText(spec.subtitle)}</small>` : ''}</div><span class="cine-skip">Tap to skip</span>`;
     document.body.append(scene);
     const app = document.querySelector<HTMLElement>('#app');
+    const wasInert = app?.inert ?? false;
     if (app) app.inert = true;
     let finished = false;
     const timers: number[] = [];
@@ -226,9 +249,14 @@ export function cinematic(spec: CinematicSpec): Promise<void> {
       finished = true;
       timers.forEach(timer => window.clearTimeout(timer));
       document.removeEventListener('keydown', key);
-      if (app) app.inert = false;
-      scene.classList.add('cine-out');
-      window.setTimeout(() => scene.remove(), 380);
+      window.removeEventListener('last-light-motion-change', settleMotion);
+      document.removeEventListener('visibilitychange', settleMotion);
+      cinematics.delete(finish);
+      if (app) app.inert = wasInert;
+      if (bubbleMotionAllowed()) {
+        scene.classList.add('cine-out');
+        expire(scene, 380);
+      } else scene.remove();
       resolve();
     };
     const key = (event: KeyboardEvent): void => {
@@ -236,6 +264,10 @@ export function cinematic(spec: CinematicSpec): Promise<void> {
     };
     scene.addEventListener('click', finish);
     document.addEventListener('keydown', key);
+    const settleMotion = (): void => { if (!bubbleMotionAllowed()) finish(); };
+    window.addEventListener('last-light-motion-change', settleMotion);
+    document.addEventListener('visibilitychange', settleMotion);
+    cinematics.add(finish);
     const burstAt = (delay: number, count: number, reach: number) => timers.push(window.setTimeout(() =>
       glyphBurst(innerWidth / 2, innerHeight * .44, count, reach, scene, 40), delay));
     burstAt(peakAt, 34, Math.min(innerWidth, 1000) * .42);
@@ -253,7 +285,7 @@ const entranceTargets = ['.bubble-page-heading', '.home-bubble', '.home-story', 
 function popEntrances(root: ParentNode): void {
   if (!bubbleMotionAllowed()) return;
   Array.from(root.querySelectorAll<HTMLElement>(entranceTargets)).filter(element => element.offsetParent !== null).slice(0, 36).forEach((element, index) => {
-    element.animate([
+    animate(element, [
       { opacity: 0, transform: 'translateY(14px) scale(.82)' },
       { opacity: 1, transform: 'translateY(-1px) scale(1.02)', offset: .65 },
       { opacity: 1, transform: 'none' },
@@ -276,7 +308,7 @@ function homeZoomStart(target: HTMLElement): void {
   portal.style.left = `${x}px`; portal.style.top = `${y}px`;
   if (accent) portal.style.setProperty('--accent', accent);
   layer().append(portal);
-  window.setTimeout(() => portal.remove(), 700);
+  expire(portal, 700);
 }
 
 function homeZoomEnter(app: HTMLElement): void {
@@ -287,11 +319,14 @@ function homeZoomEnter(app: HTMLElement): void {
   if (!screen) return;
   const rect = screen.getBoundingClientRect();
   screen.style.transformOrigin = `${zoom.x - rect.left}px ${zoom.y - rect.top}px`;
-  screen.animate([
+  const animation = animate(screen, [
     { opacity: 0, transform: 'scale(.4)' },
     { opacity: 1, offset: .55 },
     { opacity: 1, transform: 'none' },
-  ], { duration: 560, easing: 'cubic-bezier(.2,1.05,.3,1)' }).addEventListener('finish', () => { screen.style.transformOrigin = ''; }, { once: true });
+  ], { duration: 560, easing: 'cubic-bezier(.2,1.05,.3,1)' });
+  const reset = (): void => { screen.style.transformOrigin = ''; };
+  animation.addEventListener('finish', reset, { once: true });
+  animation.addEventListener('cancel', reset, { once: true });
 }
 
 /** Screen identity used to pop entrances only on navigation, not on in-page re-renders. */
@@ -345,7 +380,7 @@ function orbitTeamDetail(app: HTMLElement): void {
         portal.style.left = `${rect.left + rect.width / 2}px`;
         portal.style.top = `${rect.top + rect.height / 2}px`;
         layer().append(portal);
-        window.setTimeout(() => portal.remove(), 700);
+        expire(portal, 700);
       }
       detail.style.setProperty('--zoom-x', `${rect.left + rect.width / 2 - detail.getBoundingClientRect().left}px`);
       detail.style.setProperty('--zoom-y', `${rect.top + rect.height / 2 - detail.getBoundingClientRect().top}px`);
@@ -355,40 +390,50 @@ function orbitTeamDetail(app: HTMLElement): void {
   });
 }
 
-export function installBubbleUi(app: HTMLElement): void {
-  if (installed) return;
-  installed = true;
+export function installBubbleUi(app: HTMLElement): () => void {
+  if (disposeInstalled) return disposeInstalled;
   const backdrop = document.createElement('div');
   backdrop.className = 'bubble-backdrop';
   backdrop.setAttribute('aria-hidden', 'true');
   backdrop.innerHTML = bubbleBackdrop();
   document.body.prepend(backdrop);
   layer();
-  document.addEventListener('click', event => {
+  const press = (event: MouseEvent): void => {
     const target = event.target instanceof Element ? event.target.closest<HTMLElement>('button, [role="button"], summary, a[href]') : null;
-    if (!target || target.matches(':disabled') || target.closest('.cine, .battle-field, .battle-units, #battle-root .battle-unit')) return;
+    if (!target || target.matches(':disabled, [aria-disabled="true"]') || target.closest('[inert], .cine, .battle-field, .battle-units, #battle-root .battle-unit')) return;
     pressFeedback(target, event);
-  });
+  };
+  document.addEventListener('click', press);
   // Capture phase: record the zoom origin before the app re-renders the destination.
-  document.addEventListener('click', event => {
+  const zoom = (event: MouseEvent): void => {
     const target = event.target instanceof Element ? event.target.closest<HTMLElement>('.bubble-home-orbit > button, button.ref-home-story') : null;
-    if (target && !target.matches(':disabled')) homeZoomStart(target);
-  }, true);
-  document.addEventListener('keydown', event => {
+    if (target && !target.matches(':disabled, [aria-disabled="true"]')) homeZoomStart(target);
+  };
+  document.addEventListener('click', zoom, true);
+  const escape = (event: KeyboardEvent): void => {
     if (event.key !== 'Escape' || document.querySelector('dialog[open], .cine')) return;
     const open = app.querySelector<HTMLElement>('.ref-bearer-detail[data-zoom="open"]');
     if (!open) return;
     event.preventDefault();
     event.stopImmediatePropagation();
     open.querySelector<HTMLButtonElement>(':scope > .bubble-zoom-back, .bubble-zoom-back')?.click();
-  }, true);
+  };
+  document.addEventListener('keydown', escape, true);
+  const updateMotion = (): void => {
+    backdrop.dataset.motionPaused = String(document.hidden);
+    if (!bubbleMotionAllowed()) clearMotion();
+  };
+  window.addEventListener('last-light-motion-change', updateMotion);
+  document.addEventListener('visibilitychange', updateMotion);
+  updateMotion();
   const observer = new MutationObserver(() => {
     orbitTeamDetail(app);
     const identity = screenIdentity(app);
     if (identity === lastScreen) return;
     lastScreen = identity;
+    const zooming = screenZoom !== null;
     homeZoomEnter(app);
-    popEntrances(app);
+    if (!zooming) popEntrances(app);
   });
   observer.observe(app, { childList: true });
   const battleObserver = new MutationObserver(() => {
@@ -398,6 +443,24 @@ export function installBubbleUi(app: HTMLElement): void {
     else enhanceSkillCards(app);
   });
   battleObserver.observe(app, { childList: true, subtree: true });
+  const dispose = (): void => {
+    observer.disconnect();
+    battleObserver.disconnect();
+    document.removeEventListener('click', press);
+    document.removeEventListener('click', zoom, true);
+    document.removeEventListener('keydown', escape, true);
+    window.removeEventListener('last-light-motion-change', updateMotion);
+    document.removeEventListener('visibilitychange', updateMotion);
+    clearMotion();
+    backdrop.remove();
+    effects?.remove();
+    effects = null;
+    lastScreen = zoomKey = '';
+    screenZoom = null;
+    disposeInstalled = null;
+  };
+  disposeInstalled = dispose;
+  return dispose;
 }
 
 function plainSummary(text: string): string {

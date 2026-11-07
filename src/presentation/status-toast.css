@@ -21,7 +21,7 @@ html:root body :is(.sanctuary-shell, .battle-screen) > #status[data-toast-tone="
 .status-toast-body strong { color: var(--toast-accent); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
 .status-toast-message { color: #dcdce0; }
 html body #status .status-toast-close {
-  flex: none; display: grid; place-items: center; width: 2rem; height: 2rem; min-height: 0; margin: -.2rem -.2rem 0 0; padding: 0;
+  flex: none; display: grid; place-items: center; width: 44px; height: 44px; min-height: 44px; margin: -.2rem -.2rem 0 0; padding: 0;
   border: 0; border-radius: .5rem; background: transparent; color: #a9a9ae; font-size: 1.2rem; line-height: 1; cursor: pointer;
 }
 html body #status .status-toast-close:hover { background: #ffffff14; color: #fff; }

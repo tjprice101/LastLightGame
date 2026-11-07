@@ -1,5 +1,23 @@
 # Menus and inventory
 
+## Shared living-world foundation pilot (2026-11-07)
+
+The first [UI rollout tranche](Future%20Plans/living-world-ui-audit-plan.md#first-shared-foundation-tranche-2026-11-07)
+is implemented, not the entire audit. Existing button/panel/dialog owners now
+share state/surface tokens; ordinary labels stay at the leading edge and sampled
+small controls meet44px. Artwork-backed controls keep their authored presentation.
+Neutral presses use one finite ring rather than acquisition-level stars or
+double scale motion. Accepted rarity selections and saved rewards retain their
+separate shared celebrations. Destructive confirmations never use success glow.
+
+The application specifies error/success/info status tones, not message-derived
+outcomes. Warnings and debug notices are informational; errors announce assertively,
+saved successes politely. Bubble motion has disposal/cancellation ownership,
+hidden ambient pause and immediate cinematic settlement on explicit in-game
+Reduce motion, retaining Escape/Skip and previous inert state. No device-media
+override, transaction delay, gameplay/RNG/save change or new art requirement.
+Populated screen journeys and visible device/temporal evidence remain future gates.
+
 ## Reclaimed War kit clarity (2026-11-07)
 
 The four new play-loop summaries distinguish default actions from optional

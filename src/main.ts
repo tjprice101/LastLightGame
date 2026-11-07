@@ -2,7 +2,7 @@ import './style.css';
 import { savedLoadoutOperation, type SavedLoadoutOperation } from './presentation/saved-loadouts';
 import { saveSquadLoadout, renameSquadLoadout, equipSquadLoadout, deleteSquadLoadout,
   saveConduitConfiguration, renameConduitConfiguration, equipConduitConfiguration } from './game/account';
-import { showStatusToast } from './presentation/status-toast';
+import { showStatusToast, type ToastTone } from './presentation/status-toast';
 import './sanctuary.css';
 import './neutral-theme.css';
 import './character-screen.css';
@@ -150,7 +150,8 @@ bindInformation(app);
 bindSelectionPanels(app);
 bindStageLoot(app, () => account);
 installButtonStyle(document.body);
-installBubbleUi(app);
+const disposeBubbleUi = installBubbleUi(app);
+import.meta.hot?.dispose(disposeBubbleUi);
 let characterCategory: TeamArea = 'squad';
 let teamView: ReferenceTeamView = 'detail';
 let teamElement = '';
@@ -524,7 +525,7 @@ function squadSession(current: Account, destination?: Parameters<typeof createSe
   return createSession(leader, ownedProgress(current, leader), destination, { ids, progress: current.characters, equipment: current.conduitEquipment, captures: current.capturedCharacters, upgrades: current.conduitUpgrades, masters: current.masterEquipment });
 }
 
-function showError(message: string): void {
+function showError(message: string, tone: ToastTone = 'error'): void {
   const status = app.querySelector<HTMLElement>('dialog[open] #settings-error') ??
     app.querySelector<HTMLElement>('#status');
   if (!status) throw new Error('Status region is missing.');
@@ -534,7 +535,7 @@ function showError(message: string): void {
     return;
   }
   const pending =  Boolean(playMode === 'online' && onlinePending && !onlineBusy);
-  const target = status.id === 'status' ? showStatusToast(status, message, { persistent: pending }) : status;
+  const target = status.id === 'status' ? showStatusToast(status, message, { persistent: pending, tone }) : status;
   if (target === status) status.textContent = message;
   if (pending) {
     const retry = document.createElement('button');
@@ -1120,7 +1121,7 @@ function renderMenu(firstArrival = false): void {
   });
   app.querySelectorAll<HTMLButtonElement>('[data-feature]').forEach((button) => {
     button.addEventListener('click', () => {
-      showError(`${button.dataset.feature} is coming later. No units or currency have been changed.`);
+      showError(`${button.dataset.feature} is coming later. No units or currency have been changed.`, 'info');
     });
   });
   app.querySelectorAll<HTMLButtonElement>('[data-infusion]').forEach((button) => {
@@ -1770,7 +1771,7 @@ function offlineSaveChanged(change: OfflineChange): void {
   if (playMode === 'online') {
     if (playerInfoOpen) renderPlayerInfo();
     else renderMenu();
-    showError(change === 'loaded' ? 'Offline save loaded. Your online progress is unchanged.' : 'Offline save deleted. Your online progress is unchanged.');
+    showError(change === 'loaded' ? 'Offline save loaded. Your online progress is unchanged.' : 'Offline save deleted. Your online progress is unchanged.', 'success');
     return;
   }
   const fromMenu = journey.screen === 'menu';
@@ -1788,11 +1789,11 @@ function offlineSaveChanged(change: OfflineChange): void {
       profileTab = 'info';
     } else playerInfoOpen = true;
     render();
-    showError('Offline save loaded.');
+    showError('Offline save loaded.', 'success');
   } else {
     playerInfoOpen = true;
     render();
-    showError('Offline save data deleted. Online account data is unchanged.');
+    showError('Offline save data deleted. Online account data is unchanged.', 'success');
   }
 }
 
@@ -1849,7 +1850,7 @@ app.addEventListener('click', async event => {
     if (response.session && menuPage !== 'battle') visitMenu('battle');
     if (operation.kind === 'quit' && menuPage === 'battle') await backMenu();
     else render();
-    showError('The previous operation is confirmed and saved.');
+    showError('The previous operation is confirmed and saved.', 'success');
     if (response.summon && operation.kind === 'summon') await presentReward(summonReward(response.summon, operation.bannerId));
     if (response.summons && operation.kind === 'summonTen') await presentReward(summonTenReward(response.account, response.summons, operation.bannerId));
     if (response.calamityOpening && operation.kind === 'openCalamityChest') await presentReward(calamityOpeningReward(operation.id, response.calamityOpening));
@@ -1906,7 +1907,7 @@ app.addEventListener('click', async event => {
         ] as const, 'back', { title: 'Event materials only' });
         if (choice === 'hide') {
           hideEventMaterialWarning(gameStorage);
-          showError('Event material warnings hidden. Nothing was purchased.');
+          showError('Event material warnings hidden. Nothing was purchased.', 'info');
           return;
         }
         if (button.dataset.buyEventDevourer) {
@@ -1922,7 +1923,7 @@ app.addEventListener('click', async event => {
           renderMenu();
           const copy = response.account.capturedCharacters?.find(entry => entry.creatureId === product.id && !before.has(entry.instanceId));
           if (!copy) throw new Error('Purchase saved, but the new copy could not be displayed. Check Team.');
-          showError(`${product.creature.name} purchased and saved.`);
+          showError(`${product.creature.name} purchased and saved.`, 'success');
           await presentReward({ title: 'Event Elemental-Devourer acquired', name: product.creature.name,
             art: ownedCompanion(response.account, copy.instanceId).art, rarity: product.rarity,
             details: `<p>One copy saved at Lv.${copy.level}. Not automatically equipped or added to your squad.</p>`,
@@ -1934,7 +1935,7 @@ app.addEventListener('click', async event => {
       if (playMode === 'online') await performOnline({ kind: 'purchaseMaterial', element: product.id, quantity });
       else account = purchaseExchangeMaterial(gameStorage, product.id, quantity);
       renderMenu();
-      showError(`${quantity} ${name} purchased and saved.`);
+      showError(`${quantity} ${name} purchased and saved.`, 'success');
       return;
     }
     if (playMode !== 'online' || !playerProfile) throw new Error('Profile frames are an online profile feature. Sign in to an online account to buy or equip them.');
@@ -1966,7 +1967,7 @@ app.addEventListener('click', async event => {
       await performOnline({ kind: 'updateProfile', displayName: playerProfile.displayName, bio: playerProfile.bio, icon, frame });
     }
     renderMenu();
-    showError(button.dataset.buyFrame ? 'Profile frame purchased and saved. Equip it at any time.' : 'Profile frame equipped.');
+    showError(button.dataset.buyFrame ? 'Profile frame purchased and saved. Equip it at any time.' : 'Profile frame equipped.', 'success');
   } catch (error) {
     console.error('Online store or profile operation failed', error);
     showError(errorMessage(error));
@@ -2104,7 +2105,7 @@ app.addEventListener('click', async (event) => {
     celebrateUpgrade(app, starter, kind, ownedProgress(updatedAccount, starter.id));
     const result = app.querySelector('#upgrade-result');
     if (result) result.textContent = `${characterName(starter.id, progress.evolution, progress.ascension?.stats === true)} ${kind === 'level' ? 'leveled up' : 'evolved'}.`;
-    else showError(`${characterName(starter.id, progress.evolution, progress.ascension?.stats === true)} ${kind === 'level' ? 'leveled up' : 'evolved'}.`);
+    else showError(`${characterName(starter.id, progress.evolution, progress.ascension?.stats === true)} ${kind === 'level' ? 'leveled up' : 'evolved'}.`, 'success');
     await presentUpgrade(before, updatedAccount, starter.id, kind);
   } catch (error) {
     console.error('Character upgrade rejected', error);
@@ -2453,7 +2454,7 @@ if (import.meta.env.DEV) bindDebugPhrase(document, () =>
       teamView = 'detail';
       menuPage = 'home';
       enter();
-      showError('Debug profile active. All gameplay content is unlocked in memory only. Exit debug or reload to return to your real saves.');
+      showError('Debug profile active. All gameplay content is unlocked in memory only. Exit debug or reload to return to your real saves.', 'info');
     } catch (error) {
       console.error('Debug profile activation failed', error);
       showError(`Could not activate the test profile. ${errorMessage(error)}`);

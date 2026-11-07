@@ -1,5 +1,51 @@
 # Current state and handoff
 
+## Living-world shared-foundation tranche (2026-11-07)
+
+Owner authorizes beginning the UI rollout. Implemented initial Phase1/2 pilot
+in existing owners, with representative Phase0 evidence; not every screen or
+all phases0-10. [Current rollout/evidence](Future%20Plans/living-world-ui-audit-plan.md#first-shared-foundation-tranche-2026-11-07)
+and [menu contract](menus-and-inventory.md#shared-living-world-foundation-pilot-2026-11-07)
+own the exact scope and restart gates.
+
+Ordinary control targets/focus/disabled/selected tokens, leading-edge labels,
+panel/dialog surface tokens and calmer heading tracking replace competing
+rules in `button-style.css`/`bubble-ui.css`. Team Edit squad40→44px, Story
+Prologue/loot actions44px, toast close44x44. Initial/hidden styling no longer
+depends on a suspended RAF. No global flat treatment for artwork-backed buttons.
+Presses receive one finite neutral ring without success sparkles/double scaling.
+Saved celebrations retain their existing rarity identity and after-save timing.
+
+Bubble installation returns a disposer; tracked WAAPI/decorations cancel on
+explicit in-game Reduce motion, hidden ambient animation pauses, cinematics
+settle immediately and restore previous inert state, Skip/Escape remain immediate.
+Application statuses now pass explicit tones: errors cannot turn green due to
+words like "equipped"; warnings/debug are notices. Success/info are polite;
+errors assertive. No gameplay, economy, RNG, event launch, real-account writes,
+new assets or matching authority change.
+
+Browser fixtures use one in-memory Lv0 starter/zero currencies. Actual CSS
+viewports320px Team and390px Home/Inventory/Store/Gameplay show no horizontal
+overflow or sub44px visible controls under Reduce motion. Cancel removes the
+dialog/restores focus; destructive treatment is muted red, no sheen,44px.
+Additional320px Home/Inventory/Store fixtures preserve the exact
+9,007,199,254,740,991 currency values without horizontal overflow or sub44px
+visible controls. These values exist only in renderer memory, never saved.
+The browser is hidden and reports widths1.25x requested dimensions; no physical
+device or visible temporal/frame-rate claim. Initial frozen Home entrance
+geometry was rechecked statically rather than misreported as a touch-target bug.
+Focused final `npx vitest run` control/lifecycle/rarity/dialog/history/information/
+selection/settings selectors passes98 tests in11 files; `npm run build` passes
+with the existing large-chunk warning. Final
+`npx vitest run --maxWorkers=2 --reporter=dot` passes8,369 tests in254 files
+(331.48s). Earlier runs loaded the stale disabled-color expectation before its
+correction; the final unchanged tree passes, including the new contrast check.
+Future Plans Python checks pass4 tests; `git diff --check` passes.
+Hosted release verification is pending publication.
+
+Resume populated/temporal/device Phase0 evidence, measured remaining Phase1/2
+gaps and then Phase3 Home/navigation journeys. Phases3-10 remain unfinished.
+
 ## Moon delivery, kit review and material rewards (2026-11-07)
 
 All104 Moon delivery PNGs are archived byte-exact under `Art/source/moon`,

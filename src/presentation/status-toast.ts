@@ -18,13 +18,16 @@ const lifetimes: Record<ToastTone, number> = { error: 9000, success: 4500, info:
 const timers = new WeakMap<HTMLElement, number>();
 
 /** Renders a styled, dismissible toast into the shared status live region. */
-export function showStatusToast(status: HTMLElement, message: string, options: { persistent?: boolean } = {}): HTMLElement {
-  const tone = toastTone(message);
+export function showStatusToast(status: HTMLElement, message: string, options: { persistent?: boolean; tone?: ToastTone } = {}): HTMLElement {
+  const tone = options.tone ?? toastTone(message);
   const previous = timers.get(status);
   if (previous !== undefined) clearTimeout(previous);
   const doc = status.ownerDocument;
   status.textContent = '';
   status.dataset.toastTone = tone;
+  status.setAttribute('role', tone === 'error' ? 'alert' : 'status');
+  status.setAttribute('aria-live', tone === 'error' ? 'assertive' : 'polite');
+  status.setAttribute('aria-atomic', 'true');
   const icon = doc.createElement('span');
   icon.className = 'status-toast-icon';
   icon.setAttribute('aria-hidden', 'true');
@@ -48,6 +51,8 @@ export function showStatusToast(status: HTMLElement, message: string, options: {
     timers.delete(status);
     status.textContent = '';
     delete status.dataset.toastTone;
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
   };
   close.addEventListener('click', clear);
   status.append(icon, body, close);

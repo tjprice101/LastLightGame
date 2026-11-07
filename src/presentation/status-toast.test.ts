@@ -29,6 +29,24 @@ describe('shared status toast', () => {
     expect(status.dataset.toastTone).toBeUndefined();
   });
 
+  it('uses explicit outcomes instead of guessing success from an error or warning message', () => {
+    const status = document.createElement('p');
+    showStatusToast(status, 'The previously equipped Conduit could not be saved.', { tone: 'error' });
+    expect(status.dataset.toastTone).toBe('error');
+    expect(status.getAttribute('role')).toBe('alert');
+    expect(status.getAttribute('aria-live')).toBe('assertive');
+    showStatusToast(status, 'Warnings hidden. Nothing was purchased.', { tone: 'info' });
+    expect(status.dataset.toastTone).toBe('info');
+    expect(status.querySelector('strong')?.textContent).toBe('Notice');
+    expect(status.getAttribute('role')).toBe('status');
+    expect(status.getAttribute('aria-live')).toBe('polite');
+    showStatusToast(status, 'Your changes are saved.', { tone: 'success' });
+    expect(status.dataset.toastTone).toBe('success');
+    expect(status.getAttribute('aria-atomic')).toBe('true');
+    status.querySelector<HTMLButtonElement>('button')!.click();
+    expect(status.getAttribute('aria-live')).toBe('polite');
+  });
+
   it('auto-dismisses unless persistent, and a newer message replaces the old timer', () => {
     vi.useFakeTimers();
     const status = document.createElement('p');

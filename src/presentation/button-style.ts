@@ -49,11 +49,12 @@ export function installButtonStyle(root: HTMLElement = document.body): () => voi
     });
   };
   const schedule = (): void => {
+    if (document.hidden) { scan(); return; }
     if (!frame) frame = requestAnimationFrame(scan);
   };
   const observer = new MutationObserver(schedule);
   observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'open', 'aria-hidden', 'aria-expanded'] });
-  schedule();
+  scan();
   return () => {
     observer.disconnect();
     if (frame) cancelAnimationFrame(frame);

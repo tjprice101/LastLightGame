@@ -1,5 +1,14 @@
 # Documentation hub
 
+## Living-world UI foundation rollout (2026-11-07)
+
+Owner authorizes starting the [shared UI rollout](Future%20Plans/living-world-ui-audit-plan.md#first-shared-foundation-tranche-2026-11-07).
+The first control/panel/feedback pilot is implemented in the existing owners:
+leading labels, sampled44px targets, explicit status tones, neutral press effects
+and motion lifecycle cleanup. [Menu contract](menus-and-inventory.md) and
+[handoff](handoff.md) separate validated work from populated-screen, visible
+temporal/device and remaining phase gates. No gameplay or new art changes.
+
 ## Moon delivery and material-reward reduction (2026-11-07)
 
 [All104 Moon sources](art-workflow.md#delivered-moon-artwork-2026-11-07) are
