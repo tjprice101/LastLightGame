@@ -11,7 +11,12 @@ Affected follow-up passes3,124 tests in28 files. Final
 `npx vitest run --maxWorkers=2 --testTimeout=200000 --reporter=dot`
 passes **8,321 tests in251 files**. Final build/bundle/TypeScript/Deno checks
 pass, and matching authority redeployment plus both hosted smoke suites pass.
-Client publication/hosted build verification follows the validated commit.
+Runtime commit `ba962ff0235edba5325bf67ce2fd681a7c57e7aa` is pushed.
+Pages run42315856365 passes CI tests/configured build/deploy; hosted
+`version.json.build` matches that exact commit. All four Omnic AVIF portrait
+URLs return200. Matching production authority passes both hosted smoke suites.
+This is a verified runtime release; subsequent handoff-only commits do not
+change its mechanics/art bytes.
 
 `npm run build` passes (24 new AVIF portraits encoded; existing large-chunk
 warning only); `node tools\bundle_server_game.mjs`,
@@ -28,7 +33,7 @@ saved reads/retries). All disposable identities/cascading rows removed.
 Early smoke failures were fixture mistakes (nonexistent session.activity,
 two own actions in one turn, missing explicit seen history, serverTime retries,
 too-long test usernames); fixed with truthful fixtures and normal turn flow,
-not production gameplay changes. Client release/push remains pending.
+not production gameplay changes. Client release/push verified above.
 
 [Bounded combat evidence](enemy-benchmark-calibration.md#bounded-reclaimed-war-checks-2026-11-06)
 records48 actual pressured encounters:38 wins,6 defeats,4 timeouts. Neralis
@@ -77,7 +82,7 @@ was explicitly aborted. Do not claim a completed mobile/temporal visual audit.
 Final `python -m unittest test_phase2_war_intake test_phase2_war_art test_elemental_war_art test_future_plans test_character_art_revisions`
 passes24 tests. `git diff --check` passes. Runtime integration, bounded combat,
 build and hosted authority checks are complete; browser limitations above
-remain explicit. Client release is not certified until hosted build matches.
+remain explicit. Hosted runtime build is certified as recorded above.
 
 The [canonical design/restart package](Future%20Plans/phase-2-war-designs.md)
 retains lore, exact mechanics and limits. [44 associated prompts](Future%20Plans/Elemental%20War%20Phase%202.md)
