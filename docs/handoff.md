@@ -52,7 +52,13 @@ Calamity material chest reductions, existing holdings/currencies, saved reads
 and idempotent retries. All identities/cascading records were removed.
 Initial smoke failures were fixture-only mistakes (session run ID and absent
 chest action result), corrected without gameplay changes.
-Client push/Pages version verification is recorded in the publication follow-up.
+Runtime release `88c82fd19284151544ad408e4aeac851d2b548fa` is committed/pushed.
+Pages run42357145886 passes253 test files, configured build and deployment.
+Hosted `version.json.build` matches that exact release; all104 revisioned Moon
+AVIF URLs return200 with valid image content. Hosted `--event-lifecycle` also
+passes inactive Moon/Sunshade draw/entry/shop gates, authoritative clock and
+unchanged account checks; its disposable identity is removed.
+Subsequent handoff-only commits do not change this verified runtime.
 Known unrelated Python debt: `test_art_library.py` freezes the provenance count
 at26, although baseline HEAD already tracks57 JSON records (current59). Its
 count failure was not masked or fixed as part of this intake.
