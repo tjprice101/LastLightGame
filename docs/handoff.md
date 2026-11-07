@@ -17,7 +17,13 @@ passes140 tests in3 files. From `tools`, `python -m unittest test_phase2_war_art
 passes11 tests. `npm run build`, authority bundle regeneration/TypeScript/Deno
 checks and `git diff --check` pass. Compared all44 generated prompt bodies
 against HEAD: unchanged. No combat state-machine, coefficients, assets or
-save/recruitment rules changed. Publication/hosted verification follows.
+save/recruitment rules changed. Runtime release
+`49786539966f141dce4d4c1f93de8e6d4990186b` is pushed; Pages run42343735655
+passes8,322 tests in251 files, configured build and deploy. Hosted
+`version.json.build` matches exactly. Matching production authority deployed
+with explicit owner consent; hosted `--phase-two-war` passes all12 Master/
+four-kit parity fixtures and cleans disposable accounts. Subsequent handoff-only
+commits do not change this verified runtime.
 
 ## Approved reclaimed War integration/intake (2026-11-06)
 
