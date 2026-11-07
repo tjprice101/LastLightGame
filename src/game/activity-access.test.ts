@@ -13,8 +13,8 @@ const gates: readonly [Activity, number, number][] = [
   [{ kind: 'training' }, 0, 1], [{ kind: 'story', stage: 1 }, 0, 1],
   [{ kind: 'infusion', mode: 'machines', stage: 1 }, 10, 1],
   [{ kind: 'dungeon', element: 'infernic', stage: 1 }, 30, 1],
-  [{ kind: 'infusion', mode: 'heavens', stage: 1 }, 50, 3],
-  [{ kind: 'infusion', mode: 'abyss', stage: 1 }, 50, 3],
+  [{ kind: 'infusion', mode: 'heavens', stage: 1 }, 30, 3],
+  [{ kind: 'infusion', mode: 'abyss', stage: 1 }, 30, 3],
   [{ kind: 'infusion', mode: 'treasury', stage: 1 }, 60, 3],
   [{ kind: 'infusion', mode: 'sanctuary', stage: 1 }, 60, 3],
   [{ kind: 'infusion', mode: 'roses', stage: 1 }, 75, 4],
@@ -66,10 +66,9 @@ describe('highest-owned Element-Bearer activity access', () => {
 
   it('makes evolution fodder and specialties available before each progression cap', () => {
     for (const mode of ['heavens', 'abyss'] as const) {
-      for (const [stage, tier, level] of [[5, 1, 62], [8, 2, 73], [9, 3, 77]]) {
+      for (const [stage, tier, level] of [[1, 0, 30], [2, 0, 38], [3, 0, 46], [4, 1, 54], [5, 1, 62], [8, 2, 73], [9, 3, 77]]) {
         expect(infusionEncounter(mode, stage)).toMatchObject({ tier, level, boss: stage % 5 === 0 });
       }
-      expect(infusionEncounter(mode, 1).level).toBe(50);
       expect(infusionEncounter(mode, infusionStageCount(mode)).level).toBe(120);
       expect(infusionLoot(mode, 14).specialties.map(drop => drop.id))
         .toEqual([`${mode}-evolution`, `${mode}-level`]);
@@ -81,7 +80,7 @@ describe('highest-owned Element-Bearer activity access', () => {
     const progress = { level: 50, evolution: 3 };
     game.account.characters.ember = progress;
     game = resolveOperation(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'heavens', stage: 1 } }, entropy).game;
-    expect(game.run!.session.state.enemies[0].level).toBe(50);
+    expect(game.run!.session.state.enemies[0].level).toBe(30);
     const legacy = createInfusionBattle('heavens', 1, 1, 'ember', progress, ['ember'], { ember: progress }, {}, [], {}, 'legacy');
     delete legacy.infusion!.schedule;
     legacy.enemies.forEach(enemy => { enemy.hp = 1; enemy.burn = { damage: 1, turns: 1 }; });

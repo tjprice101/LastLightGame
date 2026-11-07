@@ -49,7 +49,8 @@ describe('shared menu information', () => {
     expect(rules).toContain('No duplicate names on the same member');
     for (const tab of characterTabs) {
       const html = characterHub(starters[0], tab.id);
-      expect(html).not.toContain('data-information=');
+      if (tab.id === 'overview' || tab.id === 'upgrade-0') expect(html).toContain(`data-information="evolution-values-${starters[0].id}"`);
+      else expect(html).not.toContain('data-information=');
       expect(plain(html)).toContain('<details class="character-kit-navigation">');
     }
   });

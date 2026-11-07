@@ -21,10 +21,17 @@ function funded(saved: ProfileStorage) {
   const account = emptyAccount();
   account.fractalis = 100000;
   account.materials = { 'infernic-common': 1000, 'infernic-uncommon': 1000, 'infernic-rare': 1000, 'infernic-epic': 1000, 'infernic-legendary': 1000, 'infernic-omnic': 1000, 'heavens-evolution': 1000, 'heavens-level': 1000 };
-  account.capturedCharacters = Array.from({ length: 6 }, (_, index) => ({
-    instanceId: `capture:00000000-0000-4000-8000-${String(index + 1).padStart(12, '0')}`, creatureId: 'infusion:heavens:5', locked: false,
+  const fodderForms = [1, 2, 3, 4, 4, 5, 5, 5];
+  account.capturedCharacters = fodderForms.map((form, index) => ({
+    instanceId: `capture:00000000-0000-4000-8000-${String(index + 1).padStart(12, '0')}`,
+    creatureId: `infusion:heavens:${form - 1}`, locked: false,
   }));
   return saveAccount(saved, account);
+}
+function fodderFor(account: ReturnType<typeof funded>, evolution: number): string[] {
+  const value = [0, 1, 2, 3, 8, 15][evolution];
+  return account.capturedCharacters!.filter((copy) => copy.creatureId === `infusion:heavens:${evolution - 1}`)
+    .slice(0, Math.ceil(value / evolution)).map((copy) => copy.instanceId);
 }
 
 describe('persistent progression transactions', () => {
@@ -35,7 +42,7 @@ describe('persistent progression transactions', () => {
     account.characters.ember = { level: cap - 1, evolution };
     saveAccount(saved, account);
     const before = saved.getItem(ACCOUNT_KEY);
-    const fodder = evolution >= 3 ? account.capturedCharacters!.slice(0, evolution - 2).map((copy) => copy.instanceId) : [];
+    const fodder = fodderFor(account, evolution);
     expect(() => upgradeCharacter(saved, 'ember', 'evolve', account.characters.ember!, fodder)).toThrow('cap');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
     account.characters.ember.level = cap;
@@ -73,7 +80,7 @@ describe('persistent progression transactions', () => {
   it('migrates v6 resized activity unlocks read-only and persists v9 in the first transaction', () => {
     const saved = storage();
     const legacy = { ...emptyAccount(), version: 6, fractalis: 100,
-      materials: { 'infernic-common': 1 }, infusionStages: { heavens: 35, abyss: 18, machines: 100 } };
+      materials: { 'infernic-common': 2 }, infusionStages: { heavens: 35, abyss: 18, machines: 100 } };
     const raw = JSON.stringify(legacy);
     saved.setItem(ACCOUNT_KEY, raw);
     let writes = 0;
@@ -142,8 +149,8 @@ describe('persistent progression transactions', () => {
     expect(result.state.phase).toBe('cleared');
     const account = saveAccountRewards(saved, result, `run-${element}`);
     expect(account.materials).toEqual({
-      [`${element}-common`]: 5, [`${element}-uncommon`]: 4, [`${element}-rare`]: 3,
-      [`${element}-epic`]: 2, [`${element}-legendary`]: 2, [`${element}-omnic`]: 1,
+      [`${element}-common`]: 3, [`${element}-uncommon`]: 3, [`${element}-rare`]: 2,
+      [`${element}-epic`]: 1, [`${element}-legendary`]: 1, [`${element}-omnic`]: 1,
     });
     expect(account.fractalis).toBe(300);
     expect(unlockedStage(loadAccount(saved), element)).toBe(35);
@@ -172,7 +179,7 @@ describe('persistent progression transactions', () => {
     funded(saved);
     const result = upgradeCharacter(saved, 'ember', 'level', { level: 0, evolution: 1 });
     expect(result.fractalis).toBe(99988);
-    expect(result.materials['infernic-common']).toBe(999);
+    expect(result.materials['infernic-common']).toBe(998);
     expect(ownedProgress(loadAccount(saved), 'ember')).toEqual({ level: 1, evolution: 1 });
     expect(() => upgradeCharacter(saved, 'ember', 'level', { level: 0, evolution: 1 })).toThrow('changed');
     expect(() => upgradeCharacter(saved, 'tide', 'level', { level: 0, evolution: 1 })).toThrow('Owned Element-Bearer');
@@ -194,14 +201,14 @@ describe('persistent progression transactions', () => {
         const recipe = evolutionCost('infernic', before);
         totalCost += recipe.fractalis;
         for (const [id, amount] of Object.entries(recipe.materials)) spent[id] = (spent[id] ?? 0) + amount;
-        const fodder = before.evolution >= 3 ? account.capturedCharacters!.slice(0, before.evolution - 2).map((copy) => copy.instanceId) : [];
+        const fodder = fodderFor(account, before.evolution);
         account = upgradeCharacter(saved, 'ember', 'evolve', before, fodder);
         expect(ownedProgress(account, 'ember').level).toBe(level);
         expect(account.lycalis).toBe(10);
       }
     }
     expect(totalCost).toBe(21480);
-    expect(spent).toEqual({ 'infernic-common': 430, 'infernic-uncommon': 155, 'infernic-rare': 165, 'infernic-epic': 160, 'infernic-legendary': 80, 'infernic-omnic': 30, 'heavens-evolution': 30, 'heavens-level': 60 });
+    expect(spent).toEqual({ 'infernic-common': 661, 'infernic-uncommon': 248, 'infernic-rare': 255, 'infernic-epic': 240, 'infernic-legendary': 120, 'infernic-omnic': 45, 'heavens-evolution': 45, 'heavens-level': 90 });
     expect(account.fractalis).toBe(100000 - totalCost);
     expect(account.characters.ember).toEqual({ level: 105, evolution: 6 });
     expect(account.capturedCharacters).toHaveLength(0);

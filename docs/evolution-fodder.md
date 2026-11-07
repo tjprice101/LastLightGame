@@ -1,5 +1,36 @@
 # Evolution creature infusion (Phase7)
 
+## All evolutions and early access (2026-11-07)
+
+Owner now requires Devourers for **all five evolution transitions**:
+internal Evo.1->2 requires1 Evolution Value,2->3 requires2, then3/8/15
+for the existing late transitions. This supersedes the no-fodder early rows
+below. Each eligible copy is still worth its form1-6; no minimum form or
+automatic selection. Keep Heaven/Abyss elemental routing, Roselius for Roses
+and the matching seasonal activity for seasonal bearers. Locked, in-squad,
+Conduit-equipped, wrong-family, missing and duplicate UUIDs remain rejected.
+No unnecessary surplus copy is consumed. Leveling does not consume copies.
+
+The owner approves Heaven/Abyss access at highest-owned bearer **Lv.30**
+instead of50, with early enemies starting at30 to avoid locking the only free
+starter at its first cap. Live15-stage caps encounters1-4 use Lv.30/38/46/54
+and one enemy each; stage5 onward retains the previous levels, stats, formation,
+forms, rewards per kill and boss schedule. Early single-enemy formation is
+validated with the actual native kits of all three unequipped Lv.30 starters,
+not a conditional owned trio: each clears at least4 of five fixed seeded
+attempts with kit-aware shielding/healing. This is a bounded viability check,
+not an observed account-average clear rate or guarantee. Capture chance stays50%;
+copies remain distinct.
+Legacy schedules and historical25-/35-stage migration anchors remain unchanged.
+Late encounters and premium reward thresholds remain unchanged.
+
+Shared encounter rules18 restart old active encounters using existing frozen
+loadouts and saved-reward retention; no load-time account write or compensation.
+The matching authority must be deployed with the client. Explicit selection,
+confirmation and evolution debit/progress/removal remain one atomic transaction.
+Validate economy-rebalance, evolution-fodder, activity-access, infusion-rebalance,
+captures and online/authority tests, plus the disposable hosted economy smoke.
+
 **D-346 additive Evolution Value (current):** late evolutions no longer need a
 minimum form. Every eligible copy from the bearer's infusion mode (or Roselius
 for Rose bearers) is worth its form, 1-6. Evo.3->4 needs **3**, Evo.4->5 **8**

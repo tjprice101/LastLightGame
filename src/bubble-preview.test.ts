@@ -277,7 +277,7 @@ describe('isolated bubble UI concept', () => {
     expect(root.querySelector('.activity-scenery')?.textContent).toContain('Lv.120');
     expect(root.querySelectorAll('.loot-pool img').length).toBeGreaterThan(2);
     click('[data-action="loot-rates"]');
-    expect(root.querySelector('dialog .loot-table')?.textContent).toContain('4–5');
+    expect(root.querySelector('dialog .loot-table')?.textContent).toContain('3');
     click('[data-action="close"]');
     visit('play'); click('[data-group="machines"]'); click('[data-activity="Awaken the Machines"]');
     click('[data-action="stage"][data-stage="35"]');

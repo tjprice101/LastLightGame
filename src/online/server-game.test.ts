@@ -169,8 +169,8 @@ describe('server authoritative game engine', () => {
       const progress = { level: characterLevelCap(evolution), evolution };
       game.account.characters[id] = progress;
       game.account.materials = evolution === 4
-        ? { 'rosethorn-rare': 50, 'rosethorn-epic': 20 }
-        : { 'rosethorn-epic': 50, 'rosethorn-legendary': 20 };
+        ? { 'rosethorn-rare': 75, 'rosethorn-epic': 30 }
+        : { 'rosethorn-epic': 75, 'rosethorn-legendary': 30 };
       game.account.capturedCharacters = Array.from({ length: evolution - 2 }, () => createCreatureCopy('infusion:roses:4'));
       const operation: GameOperation = { kind: 'upgradeCharacter', id, upgradeKind: 'evolve', expected: progress,
         fodderIds: game.account.capturedCharacters.map(copy => copy.instanceId) };
@@ -242,8 +242,7 @@ describe('server authoritative game engine', () => {
     const game = rich();
     const progress = { level: 75, evolution: 5 };
     game.account.characters[id] = progress;
-    game.account.materials = { 'rosethorn-common': 6, 'rosethorn-uncommon': 2, 'rosethorn-rare': 2,
-      'rosethorn-epic': 2, 'rosethorn-legendary': 2 };
+    game.account.materials = { ...characterLevelCost(id, progress).materials };
     const before = structuredClone(game);
     const single = op(game, { kind: 'upgradeCharacter', id, upgradeKind: 'level', expected: progress }).game;
     const expected = maxLevelPlan(game.account, id);
@@ -339,7 +338,7 @@ describe('server authoritative game engine', () => {
   it.each(['skill1', 'skill2'] as const)('accepts successive %s actions in resumed Element-Bearer and captured runs', action => {
     for (const captured of [false, true]) {
       const game = started();
-      const copy = createCreatureCopy('infusion:abyss:0', 1);
+      const copy = createCreatureCopy('infusion:abyss:1', 4);
       if (captured) {
         game.account.capturedCharacters = [copy];
         game.account.squad = [copy.instanceId];

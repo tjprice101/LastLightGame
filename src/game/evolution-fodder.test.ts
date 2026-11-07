@@ -105,13 +105,16 @@ describe('protected-safe evolution Elemental-Devourer infusion', () => {
     expect(() => upgradeCharacter(storage, 'ember', 'evolve', account.characters.ember!, ids)).toThrow('changed');
     expect(loadAccount(storage)).toEqual(saved);
   });
-  it('does not accept fodder for early evolutions/levels and never retroactively consumes saved late forms', () => {
+  it('requires selected fodder for early evolutions, not levels, without retroactive consumption', () => {
     for (const evolution of [1, 2]) {
       const { storage, account } = setup(evolution);
       account.materials['infernic-common'] = 100;
       saveAccount(storage, account);
-      expect(() => upgradeCharacter(storage, 'ember', 'evolve', account.characters.ember!, [copy(1).instanceId])).toThrow('This upgrade does not consume Elemental-Devourers.');
-      expect(upgradeCharacter(storage, 'ember', 'evolve', account.characters.ember!).capturedCharacters).toHaveLength(4);
+      expect(evolutionRequirement('infernic', evolution).fodderValue).toBe(evolution);
+      const before = storage.getItem(ACCOUNT_KEY);
+      expect(() => upgradeCharacter(storage, 'ember', 'evolve', account.characters.ember!)).toThrow();
+      expect(storage.getItem(ACCOUNT_KEY)).toBe(before);
+      expect(upgradeCharacter(storage, 'ember', 'evolve', account.characters.ember!, [copy(1).instanceId]).capturedCharacters).toHaveLength(3);
     }
     const { storage, account } = setup(6);
     const before = storage.getItem(ACCOUNT_KEY);

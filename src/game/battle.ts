@@ -404,7 +404,7 @@ export function createInfusionBattle(mode: InfusionModeId, stage: number, seed: 
   const state = createBattle(seed, roster, teamProgress, equipment, captures, upgrades);
   state.wave = stage;
   state.infusion = { mode, stage, schedule };
-  state.enemies = Array.from({ length: encounter.boss ? 1 : 2 }, (_, index) => {
+  state.enemies = Array.from({ length: encounter.enemyCount }, (_, index) => {
     const unit = combatant(`infusion-${mode}-${stage}-${index}`, 'goblin', encounter.enemy.name, 'enemy', encounter.stats, encounter.enemy.element);
     unit.level = encounter.level;
     unit.creatureId = `infusion:${mode}:${encounter.tier}`;

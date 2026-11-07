@@ -1,5 +1,33 @@
 # Summoning and economy
 
+## Additional farm reduction and upgrade costs (2026-11-07)
+
+Owner confirms a further **35% reduction from current positive material drops**
+for the six elemental dungeons, Heaven/Abyss evolution/level specialties, and
+Gates of Oblivion's Calamity Seed-Soul chain. Apply after the prior50% rounding:
+`max(1, round(max(1, round(authored * .5)) * .65))`.
+Do not combine factors before rounding or resample the reduced bounds.
+Shared tables preserve source sampling, chance, RNG draw counts and exact
+reachable quantities in kill rewards, validation, Collections and authority.
+Final elemental/Calamity chain ranges are3-4 /3 /2-3 /1-2 /1 /1;
+Heaven/Abyss evolution ends3, leveling3 per successful kill.
+
+Story, Rose, Moon/Sunshade activity materials, banner rewards, shop/sale outputs,
+Fragment of Rise, currencies and existing holdings receive no additional cut.
+Calamity encounters and chest rewards retain their current behavior, including
+the previous15% chest-material reduction. No new reward receipt marker or
+inventory migration is needed.
+
+Separately, owner confirms future leveling/evolution **material costs +50%,
+rounded up once from the final current recipe**, including captured leveling.
+Currency costs stay unchanged. See [progression](units-and-progression.md#all-upgrade-material-increase-and-first-evolution-fodder-2026-11-07)
+and [all-evolution fodder/early access](evolution-fodder.md#all-evolutions-and-early-access-2026-11-07).
+These current rules override the older reward/cost claims below only for the
+specified sources and transactions; no retrospective deduction or grants.
+
+Validate material-rewards/economy-rebalance and actual dungeon/infusion/Oblivion
+kill-to-save/table-parity tests. Deploy matching encounter rules18 authority.
+
 ## Seasonal pity reveal repair (2026-11-07)
 
 Moon's80th-draw guarantee returns the saved receipt label `event pity`.

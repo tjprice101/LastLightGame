@@ -70,10 +70,10 @@ describe('D-435 Calamitic Ascension', () => {
     const progress: CharacterProgress = { level: 110, evolution: 6, ascension: { stats: true } };
     expect(characterLevelCap(6, 'kaelith', true)).toBe(115);
     const cost = characterLevelCost('kaelith', progress);
-    expect(cost.materials['calamity-common']).toBe(8);
-    expect(cost.materials['fragment-of-rise']).toBe(2);
+    expect(cost.materials['calamity-common']).toBe(12);
+    expect(cost.materials['fragment-of-rise']).toBe(3);
     expect(cost.materials['infernic-common']).toBeUndefined();
-    expect(characterLevelCost('kaelith', { ...progress, level: 114 }).materials['fragment-of-rise']).toBe(2);
+    expect(characterLevelCost('kaelith', { ...progress, level: 114 }).materials['fragment-of-rise']).toBe(3);
   });
 
   it('multiplies resolved stats by 50% and applies skill power/efficiency only to the imbued action, respecting the efficiency cap', () => {

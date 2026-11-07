@@ -7,6 +7,7 @@ import { abilityIcons } from './ability-icon';
 import { characterName } from '../content/character-art';
 import { nativeIdentities } from '../content/native-identities';
 import { formatStat, resolveFighter } from '../content/combat';
+import { createCreatureCopy } from '../game/character-instances';
 
 describe('game-specific hub layouts', () => {
   it.each(['ozriel', 'ilvaris', 'kaelith'] as const)('%s displays Evo.2 as Uncommon and Evo.7 as Calamitic', (id) => {
@@ -242,11 +243,16 @@ describe('game-specific hub layouts', () => {
   it('renders funded upgrades, fixed native coefficients, final caps and real inventory', () => {
     const account = emptyAccount();
     account.fractalis = 500;
-    account.materials['infernic-common'] = 20;
+    account.materials['infernic-common'] = 30;
+    account.capturedCharacters = [createCreatureCopy('infusion:heavens:0')];
     account.characters.ember = { level: 30, evolution: 1 };
     const evolve = characterDetail(starters[0], 'upgrade-0', account);
-    expect(evolve).toMatch(/data-upgrade="evolve"[^>]*data-upgrade-blocked="false"[^>]*>Evolve/);
-    expect(evolve).toContain('20 / 15');
+    const evolveButton = evolve.match(/<button[^>]*data-upgrade="evolve"[^>]*>Evolve<\/button>/)?.[0];
+    expect(evolveButton).toContain('disabled');
+    expect(evolve).toContain('data-fodder-value-required="1"');
+    expect(evolve).toContain('Value 1');
+    expect(evolve).toContain('data-eligible-count="1"');
+    expect(evolve).toContain('30 / 23');
     expect(evolve).toContain('500 / 300');
     expect(evolve).not.toContain('PREVIEW');
     expect(evolve).not.toContain('Materials coming later');

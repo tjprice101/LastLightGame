@@ -42,7 +42,7 @@ describe('plentiful loot quantities', () => {
       }
     }
     expect(materialLoot('infernic', 1)[0]).toMatchObject({ minimum: 1, maximum: 1 });
-    expect(materialLoot('infernic', 25)[0]).toMatchObject({ minimum: 4, maximum: 5 });
+    expect(materialLoot('infernic', 25)[0]).toMatchObject({ minimum: 3, maximum: 3 });
     for (let level = 1; level <= 120; level++) expect(fractalisDrop(level).maximum).toBeLessThanOrEqual(600);
   });
   it('uses independent integer draws from base to double base without adding locked items', () => {
@@ -69,7 +69,7 @@ describe('plentiful loot quantities', () => {
       expect(rarities).toEqual(materialRarities.slice(0, rarities.length));
     }
     const final = materialLoot('infernic', 35);
-    expect(final.map(({ minimum, maximum }) => [minimum, maximum])).toEqual([[5, 6], [4, 4], [3, 4], [2, 3], [2, 2], [1, 2]]);
+    expect(final.map(({ minimum, maximum }) => [minimum, maximum])).toEqual([[3, 4], [3, 3], [2, 3], [1, 2], [1, 1], [1, 1]]);
   });
 
   it('keeps specialty and any-element rarity gates at all Heaven and Abyss stages', () => {
@@ -90,7 +90,7 @@ describe('plentiful loot quantities', () => {
     for (const mode of ['heavens', 'abyss'] as const) {
       const pool = infusionLoot(mode, infusionModeStageCount);
       for (const drop of pool.specialties) {
-        expect([drop.minimum, drop.maximum]).toEqual(drop.id.endsWith('-evolution') ? [4, 4] : [4, 5]);
+        expect([drop.minimum, drop.maximum]).toEqual([3, 3]);
       }
       expect(pool.bonuses).toEqual([]);
     }

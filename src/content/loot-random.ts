@@ -9,7 +9,7 @@ export function lootRoll(random: () => number): number {
 }
 
 export function infusionLycalisOdds(level: number) {
-  if (!Number.isInteger(level) || level < 50 || level > 120) throw new Error('Null-Prismatica drops require an infusion enemy level from 50 to 120.');
+  if (!Number.isInteger(level) || level < 30 || level > 120) throw new Error('Null-Prismatica drops require an infusion enemy level from 30 to 120.');
   if (level < 80) return [{ amount: 0, chance: 1 }];
   const growth = (level - 80) / 40;
   return [
@@ -61,11 +61,11 @@ export interface ScaledDrop {
   maximum: number;
   chance: number;
   quantityMultiplier?: number;
-  quantitySource?: { minimum: number; maximum: number; multiplier: number; factor: number };
+  quantitySource?: { minimum: number; maximum: number; multiplier: number; factor: number; furtherFactor?: number };
 }
 
 export function materialRewardAmount(amount: number, factor = .5): number {
-  if (!Number.isSafeInteger(amount) || amount < 1 || ![.5, .85].includes(factor)) {
+  if (!Number.isSafeInteger(amount) || amount < 1 || ![.5, .65, .85].includes(factor)) {
     throw new Error('Invalid material reward quantity or factor.');
   }
   return Math.max(1, Math.round(amount * factor));
@@ -85,13 +85,32 @@ export function materialRewardRange<T extends ScaledDrop>(drop: T, factor = .5):
     quantitySource: { minimum: drop.minimum, maximum: drop.maximum, multiplier: quantityMultiplier, factor } };
 }
 
+export function furtherMaterialRewardRange<T extends ScaledDrop>(drop: T): T {
+  if (!drop.quantitySource || drop.quantitySource.furtherFactor !== undefined) {
+    throw new Error('Additional material reduction requires a once-reduced range.');
+  }
+  return { ...drop, minimum: materialRewardAmount(drop.minimum, .65),
+    maximum: materialRewardAmount(drop.maximum, .65), quantitySource: { ...drop.quantitySource, furtherFactor: .65 } };
+}
+
+function sourceRewardAmount(amount: number, source: NonNullable<ScaledDrop['quantitySource']>): number {
+  const reduced = materialRewardAmount(amount, source.factor);
+  if (source.furtherFactor === undefined) return reduced;
+  if (source.furtherFactor !== .65) throw new Error('Invalid additional material reduction.');
+  return materialRewardAmount(reduced, source.furtherFactor);
+}
+
 export function validDropAmount(drop: ScaledDrop, amount: number): boolean {
   if (!Number.isSafeInteger(amount) || amount < drop.minimum || amount > drop.maximum) return false;
   if (!drop.quantitySource) return amount % (drop.quantityMultiplier ?? 1) === 0;
-  const { minimum, maximum, multiplier, factor } = drop.quantitySource;
-  const first = Math.max(minimum, amount === 1 ? 1 : Math.ceil((amount - .5) / factor));
-  const candidate = Math.ceil(first / multiplier) * multiplier;
-  return candidate <= maximum && materialRewardAmount(candidate, factor) === amount;
+  const source = drop.quantitySource;
+  let low = source.minimum / source.multiplier, high = source.maximum / source.multiplier;
+  while (low < high) {
+    const middle = Math.floor(low + (high - low) / 2);
+    if (sourceRewardAmount(middle * source.multiplier, source) < amount) low = middle + 1;
+    else high = middle;
+  }
+  return sourceRewardAmount(low * source.multiplier, source) === amount;
 }
 
 export function scaledDrop(level: number, startingLevel: number, unlockLevel: number,
@@ -115,13 +134,13 @@ export function rollDrop(drop: ScaledDrop, random: () => number): number | undef
   if (drop.quantitySource) {
     const source = drop.quantitySource;
     if (drop.quantityMultiplier !== undefined ||
-        drop.minimum !== materialRewardAmount(source.minimum, source.factor) ||
-        drop.maximum !== materialRewardAmount(source.maximum, source.factor)) {
+        drop.minimum !== sourceRewardAmount(source.minimum, source) ||
+        drop.maximum !== sourceRewardAmount(source.maximum, source)) {
       throw new Error('Invalid reduced material reward range.');
     }
     const amount = rollDrop({ minimum: source.minimum, maximum: source.maximum, chance: drop.chance,
       quantityMultiplier: source.multiplier }, random);
-    return amount === undefined ? undefined : materialRewardAmount(amount, source.factor);
+    return amount === undefined ? undefined : sourceRewardAmount(amount, source);
   }
   const multiplier = drop.quantityMultiplier ?? 1;
   if (!Number.isSafeInteger(drop.minimum) || !Number.isSafeInteger(drop.maximum) ||

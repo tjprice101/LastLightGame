@@ -89,23 +89,23 @@ describe('Calamitic progression and saved rewards', () => {
     const cost = characterLevelCost('ozriel', { level: 90, evolution: 6 });
     expect(cost.fractalis).toBe(192);
     expect(cost.materials).toEqual({
-      'calamity-common': 8, 'calamity-uncommon': 2, 'calamity-rare': 2,
-      'calamity-epic': 2, 'calamity-legendary': 2, 'calamity-omnic': 2, 'fragment-of-rise': 2,
+      'calamity-common': 12, 'calamity-uncommon': 3, 'calamity-rare': 3,
+      'calamity-epic': 3, 'calamity-legendary': 3, 'calamity-omnic': 3, 'fragment-of-rise': 3,
     });
-    expect(characterLevelCost('ozriel', { level: 109, evolution: 6 }).materials['fragment-of-rise']).toBe(2);
-    expect(characterLevelCost('ember', { level: 104, evolution: 6 }).materials['infernic-common']).toBe(8);
+    expect(characterLevelCost('ozriel', { level: 109, evolution: 6 }).materials['fragment-of-rise']).toBe(3);
+    expect(characterLevelCost('ember', { level: 104, evolution: 6 }).materials['infernic-common']).toBe(12);
   });
 
   it('adds proposed chest and Calamity-chain costs to the unchanged elemental recipes with late doubling', () => {
     const first = characterEvolutionCost('ozriel', { level: 30, evolution: 1 });
-    expect(first.materials).toMatchObject({ 'tranquilitic-common': 15, 'calamity-rare': 5,
-      'feather-severed-dawn': 1, 'splinter-unmade-night': 1 });
+    expect(first.materials).toMatchObject({ 'tranquilitic-common': 23, 'calamity-rare': 8,
+      'feather-severed-dawn': 2, 'splinter-unmade-night': 2 });
     const late = characterEvolutionCost('ozriel', { level: 75, evolution: 4 });
-    expect(late.materials).toMatchObject({ 'calamity-omnic': 10,
-      'feather-severed-dawn': 10, 'splinter-unmade-night': 10 });
+    expect(late.materials).toMatchObject({ 'calamity-omnic': 15,
+      'feather-severed-dawn': 15, 'splinter-unmade-night': 15 });
     const final = characterEvolutionCost('ozriel', { level: 90, evolution: 5 });
-    expect(final.materials).toMatchObject({ 'fragment-of-rise': 10,
-      'feather-severed-dawn': 16, 'splinter-unmade-night': 16 });
+    expect(final.materials).toMatchObject({ 'fragment-of-rise': 15,
+      'feather-severed-dawn': 24, 'splinter-unmade-night': 24 });
   });
 
   it.each([1, 2, 3] as const)('awards the tier-mapped Calamitic character on the independent seeded 10% roll at EX+%i', tier => {

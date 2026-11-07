@@ -2,7 +2,7 @@ import { elements, infusionModes, currencyModes, eventModes, machineModes, isCur
 import { machineEnemies } from './machines';
 import { type Stats } from './combat';
 import { phaseZeroStatDefaults, type ResolvedStats } from './phase-zero-stats';
-import { materialRewardRange, rollDrop, type ScaledDrop } from './loot-random';
+import { furtherMaterialRewardRange, materialRewardRange, rollDrop, type ScaledDrop } from './loot-random';
 import { capturedGrowth, enemyCombatStats, playableGrowth } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
 import { roseMaterials, roseSaleQuantities, roseFormStages, roseCaptureAllowed, roseMaterialUnlocks } from './roses';
@@ -100,7 +100,7 @@ export const infusionEnemies = {
 export const infusionEnemyElements = { heavens: 'tranquilitic', abyss: 'chaotic', treasury: 'tranquilitic', sanctuary: 'tranquilitic', roses: 'tranquilitic',
   moon: 'tranquilitic', sunshade: 'infernic', machines: 'botanic' } as const satisfies Record<InfusionModeId, ElementId>;
 export function infusionEnemyStats(level: number, boss: boolean): Stats {
-  if (!Number.isInteger(level) || level < 50 || level > 120) throw new Error('Infusion enemy level must be from 50 to 120.');
+  if (!Number.isInteger(level) || level < 30 || level > 120) throw new Error('Infusion enemy level must be from 30 to 120.');
   return creatureEnemyStats(level, boss);
 }
 export function treasuryEnemyStats(level: number, boss: boolean): Stats {
@@ -169,9 +169,10 @@ export function capturedEnemyStats(level: number, maximumLevel = 120): ResolvedS
 const infusionLevelAnchors = [[1, 50], [13, 65], [19, 75], [25, 85], [35, 120]] as const;
 const infusionAnchorStages = 35;
 export type InfusionSchedule = 'legacy' | 'caps';
-/** Samples the original 35-stage anchor curve proportionally across the current stage count (D-346). */
+/** Lower only the first four live stages; historical layouts and stage5+ retain their anchors. */
 export function infusionEnemyLevel(stage: number): number {
-  return infusionLevelForLayout(stage, infusionModeStageCount);
+  const level = infusionLevelForLayout(stage, infusionModeStageCount);
+  return stage < 5 ? Math.round(level - 20 * (5 - stage) / 4) : level;
 }
 function infusionLevelForLayout(stage: number, stages: number): number {
   if (!Number.isInteger(stage) || stage < 1 || stage > stages) throw new Error('Invalid infusion stage.');
@@ -200,16 +201,18 @@ export function infusionEncounter(mode: InfusionModeId, stage: number, schedule:
   if (!definition) throw new Error('Unknown staged Elemental-Devourer mode.');
   const startingLevel = definition.startingLevel;
   const maximumLevel = 'maximumLevel' in definition ? definition.maximumLevel : 120;
-  const level = mode === 'heavens' || mode === 'abyss' ? schedule === 'legacy' ? Math.round(80 + (stage - 1) * 40 / (stages - 1)) : infusionLevelForLayout(stage, stages)
+  const level = mode === 'heavens' || mode === 'abyss' ? schedule === 'legacy' ? Math.round(80 + (stage - 1) * 40 / (stages - 1))
+    : layout ? infusionLevelForLayout(stage, stages) : infusionEnemyLevel(stage)
     : Math.round(startingLevel + (stage - 1) * (maximumLevel - startingLevel) / (stages - 1));
   const boss = stage % 5 === 0;
+  const enemyCount = boss || (mode === 'heavens' || mode === 'abyss') && schedule === 'caps' && !layout && stage < 5 ? 1 : 2;
   const stats = mode === 'treasury' ? treasuryEnemyStats(level, boss)
     : mode === 'sanctuary' ? sanctuaryEnemyStats(level, boss)
     : mode === 'roses' ? roseEnemyStats(level, boss)
     : isNewEventId(mode) ? eventEnemyStats(mode, level, boss)
     : mode === 'machines' ? creatureEnemyStats(level, boss) : infusionEnemyStats(level, boss);
   const [name, art] = infusionEnemies[mode][tier];
-  return { name: definition.name, stage, level, boss, stats, tier, forms: 6,
+  return { name: definition.name, stage, level, boss, enemyCount, stats, tier, forms: 6,
     enemy: { name, ...(art ? { art } : {}), element: mode === 'machines' ? machineEnemies[tier].element : infusionEnemyElements[mode] },
     color: mode === 'machines' ? '#dddddd' : mode === 'heavens' ? '#ff6565' : mode === 'abyss' ? '#f464d4' : mode === 'sanctuary' ? '#e7a7bf'
       : mode === 'roses' ? '#d36b7d' : mode === 'moon' ? '#cbd2d8' : mode === 'sunshade' ? '#d9a64c' : '#eed78b',
@@ -225,8 +228,8 @@ const roseMaterialFirstStages = roseMaterialUnlocks.map(level => Array.from(
   .find(stage => infusionEncounter('roses', stage).level >= level)!);
 
 export const specialtyDropTable = [
-  { purpose: 'evolution', level: 50 },
-  { purpose: 'level', level: 50 },
+  { purpose: 'evolution', level: 30 },
+  { purpose: 'level', level: 30 },
 ] as const;
 export function infusionLoot(mode: InfusionModeId, stage: number, schedule: InfusionSchedule = 'caps'): {
   specialties: (ScaledDrop & { id: string })[];
@@ -249,9 +252,9 @@ export function infusionLoot(mode: InfusionModeId, stage: number, schedule: Infu
   };
   }
   const progress = (stage - 1) / (infusionModeStageCount - 1);
-  const specialties = specialtyDropTable.map(entry => materialRewardRange({ id: `${mode}-${entry.purpose}`,
+  const specialties = specialtyDropTable.map(entry => furtherMaterialRewardRange(materialRewardRange({ id: `${mode}-${entry.purpose}`,
     minimum: Math.round(1 + (entry.purpose === 'evolution' ? 6 : 7) * progress),
-    maximum: Math.round(2 + (entry.purpose === 'evolution' ? 6 : 8) * progress), chance: 1 }));
+    maximum: Math.round(2 + (entry.purpose === 'evolution' ? 6 : 8) * progress), chance: 1 })));
   return { specialties, bonuses: [] };
 }
 

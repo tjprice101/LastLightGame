@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { materialRewardAmount, materialRewardRange, rollDrop, validDropAmount } from './loot-random';
+import { furtherMaterialRewardRange, materialRewardAmount, materialRewardRange, rollDrop, validDropAmount } from './loot-random';
 import { materialLoot } from './dungeons';
 import { infusionLoot, infusionDrops } from './infusions';
 import { oblivionMaterialLoot, oblivionFragmentDrop } from './gates-of-oblivion';
@@ -10,8 +10,29 @@ import { bossLootRange } from './final-boss-loot';
 
 const finalRanges = [[5, 6], [4, 4], [3, 4], [2, 3], [2, 2], [1, 2]];
 const ranges = (drops: readonly { minimum: number; maximum: number }[]) => drops.map(drop => [drop.minimum, drop.maximum]);
+const furtherRanges = (values: number[][]) => values.map(range => range.map(amount => Math.max(1, Math.round(amount * .65))));
 
 describe('future material reward quantities', () => {
+  it('stacks the35% cut on already-rounded quantities, preserving RNG and exact reachable values', () => {
+    for (const chance of [1, .25]) {
+      const base = { minimum: 1, maximum: 30, chance, quantityMultiplier: 5 };
+      const reduced = furtherMaterialRewardRange(materialRewardRange({ ...base, minimum: 5 }));
+      const reachable = new Set([5, 10, 15, 20, 25, 30].map(amount => Math.max(1, Math.round(Math.round(amount * .5) * .65))));
+      for (let roll = 0; roll < 1; roll += .01) {
+        const originalRandom = vi.fn(() => roll), reducedRandom = vi.fn(() => roll);
+        const original = rollDrop({ ...base, minimum: 5 }, originalRandom);
+        const actual = rollDrop(reduced, reducedRandom);
+        expect(actual).toBe(original === undefined ? undefined : Math.max(1, Math.round(Math.round(original * .5) * .65)));
+        expect(reducedRandom.mock.calls).toEqual(originalRandom.mock.calls);
+        if (actual !== undefined) reachable.add(actual);
+      }
+      for (let amount = 0; amount <= reduced.maximum + 1; amount++) {
+        expect(validDropAmount(reduced, amount)).toBe(reachable.has(amount));
+      }
+      expect(() => furtherMaterialRewardRange(reduced)).toThrow();
+      expect(() => rollDrop({ ...reduced, maximum: reduced.maximum + 1 }, () => 0)).toThrow();
+    }
+  });
   it('rounds positive rewards once to the nearest whole unit, with a minimum of1', () => {
     expect([1, 2, 3, 5, 7, 10, 12, 15].map(amount => materialRewardAmount(amount)))
       .toEqual([1, 1, 2, 3, 4, 5, 6, 8]);
@@ -57,8 +78,8 @@ describe('future material reward quantities', () => {
 
   it('shows exact early, middle and final dungeon ranges without changing unlocks or family IDs', () => {
     expect(ranges(materialLoot('infernic', 1))).toEqual([[1, 1], [1, 1]]);
-    expect(ranges(materialLoot('infernic', 18))).toEqual([[3, 4], [2, 3], [2, 2], [1, 2]]);
-    expect(ranges(materialLoot('infernic', 35))).toEqual(finalRanges);
+    expect(ranges(materialLoot('infernic', 18))).toEqual(furtherRanges([[3, 4], [2, 3], [2, 2], [1, 2]]));
+    expect(ranges(materialLoot('infernic', 35))).toEqual(furtherRanges(finalRanges));
     expect(materialLoot('infernic', 5).map(drop => drop.id)).toEqual(['infernic-common', 'infernic-uncommon']);
     expect(materialLoot('infernic', 6).map(drop => drop.id)).toEqual(['infernic-common', 'infernic-uncommon', 'infernic-rare']);
   });
@@ -76,15 +97,15 @@ describe('future material reward quantities', () => {
   it.each(['heavens', 'abyss'] as const)('%s specialty amounts reduce without changing schedules or final currency/capture boosts', mode => {
     for (const schedule of ['caps', 'legacy'] as const) {
       expect(ranges(infusionLoot(mode, 1, schedule).specialties)).toEqual([[1, 1], [1, 1]]);
-      expect(ranges(infusionLoot(mode, 8, schedule).specialties)).toEqual([[2, 3], [3, 3]]);
-      expect(ranges(infusionLoot(mode, 15, schedule).specialties)).toEqual([[4, 4], [4, 5]]);
+      expect(ranges(infusionLoot(mode, 8, schedule).specialties)).toEqual(furtherRanges([[2, 3], [3, 3]]));
+      expect(ranges(infusionLoot(mode, 15, schedule).specialties)).toEqual(furtherRanges([[4, 4], [4, 5]]));
     }
   });
 
   it('covers Gates family materials, but not Fragment of Rise probabilities/quantities', () => {
     expect(ranges(oblivionMaterialLoot(1))).toEqual([[1, 1], [1, 1]]);
-    expect(ranges(oblivionMaterialLoot(13))).toEqual([[3, 4], [2, 3], [2, 2], [1, 2]]);
-    expect(ranges(oblivionMaterialLoot(25))).toEqual(finalRanges);
+    expect(ranges(oblivionMaterialLoot(13))).toEqual(furtherRanges([[3, 4], [2, 3], [2, 2], [1, 2]]));
+    expect(ranges(oblivionMaterialLoot(25))).toEqual(furtherRanges(finalRanges));
     expect(oblivionFragmentDrop(19, false)).toBeUndefined();
     expect(oblivionFragmentDrop(20, false)).toEqual({ minimum: 1, maximum: 1, chance: .1 });
     expect(oblivionFragmentDrop(25, true)).toEqual({ minimum: 1, maximum: 1, chance: 1 });

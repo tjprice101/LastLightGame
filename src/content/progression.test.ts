@@ -40,10 +40,10 @@ describe('confirmed game foundation', () => {
           const cost = characterLevelCost(starter.id, { level, evolution }), destination = level + 1;
           const multiplier = destination >= 61 ? 2 : 1;
           const expected = Object.fromEntries(Object.entries(levelingMaterials(family, destination))
-            .map(([id, amount]) => [id, amount * multiplier]));
+            .map(([id, amount]) => [id, Math.ceil(amount * multiplier * 1.5)]));
           if (!isRoseCharacter(starter.id) && !event && evolution >= 5) {
             const specialty = starter.elementId === 'chaotic' || starter.elementId === 'tranquilitic' ? 'abyss' : 'heavens';
-            expected[`${specialty}-level`] = multiplier;
+            expected[`${specialty}-level`] = Math.ceil(multiplier * 1.5);
           }
           expect(cost).toEqual({ fractalis: 10 + 2 * destination, materials: expected });
           add(cost); level++;
@@ -52,11 +52,11 @@ describe('confirmed game foundation', () => {
       }
       expect(currency).toBe(21480);
       expect(['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic']
-        .map(rarity => totals[`${family}-${rarity}`])).toEqual([430, 155, 165, 160, 80, 30]);
+        .map(rarity => totals[`${family}-${rarity}`])).toEqual([661, 248, 255, 240, 120, 45]);
       if (isRoseCharacter(starter.id) || event) expect(Object.keys(totals)).toHaveLength(6);
       else {
-        expect(Object.entries(totals).find(([id]) => id.endsWith('-evolution'))?.[1]).toBe(30);
-        expect(Object.entries(totals).find(([id]) => id.endsWith('-level'))?.[1]).toBe(60);
+        expect(Object.entries(totals).find(([id]) => id.endsWith('-evolution'))?.[1]).toBe(45);
+        expect(Object.entries(totals).find(([id]) => id.endsWith('-level'))?.[1]).toBe(90);
       }
     }
   });
@@ -70,21 +70,21 @@ describe('confirmed game foundation', () => {
     }
     for (const character of roseCharacters) {
       expect(characterLevelCost(character.id, { level: 75, evolution: 5 }).materials).toEqual({
-        'rosethorn-common': 6, 'rosethorn-uncommon': 2, 'rosethorn-rare': 2,
-        'rosethorn-epic': 2, 'rosethorn-legendary': 2,
+        'rosethorn-common': 9, 'rosethorn-uncommon': 3, 'rosethorn-rare': 3,
+        'rosethorn-epic': 3, 'rosethorn-legendary': 3,
       });
-      expect(characterLevelCost(character.id, { level: 90, evolution: 6 }).materials['rosethorn-omnic']).toBe(2);
+      expect(characterLevelCost(character.id, { level: 90, evolution: 6 }).materials['rosethorn-omnic']).toBe(3);
       for (let evolution = 1; evolution <= 6; evolution++) {
         for (let level = 0; level < characterLevelCap(evolution); level++) {
           expect(characterLevelCost(character.id, { level, evolution })).toEqual({
             fractalis: 10 + 2 * (level + 1), materials: Object.fromEntries(
-              Object.entries(levelingMaterials('rosethorn', level + 1)).map(([id, amount]) => [id, amount * (level >= 60 ? 2 : 1)])),
+              Object.entries(levelingMaterials('rosethorn', level + 1)).map(([id, amount]) => [id, Math.ceil(amount * (level >= 60 ? 2 : 1) * 1.5)])),
           });
         }
         if (evolution < 6) expect(characterEvolutionCost(character.id, { level: characterLevelCap(evolution), evolution }))
           .toEqual({ fractalis: evolutionBalance[evolution - 1].fractalis,
             materials: Object.fromEntries(evolutionRecipes[evolution - 1].rarities.map((rarity, index) =>
-              [`rosethorn-${rarity.toLowerCase()}`, evolutionBalance[evolution - 1].amounts[index] * (evolution >= 4 ? 2 : 1)])) });
+              [`rosethorn-${rarity.toLowerCase()}`, Math.ceil(evolutionBalance[evolution - 1].amounts[index] * (evolution >= 4 ? 2 : 1) * 1.5)])) });
       }
     }
   });

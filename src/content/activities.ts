@@ -55,8 +55,8 @@ export const warStageCount = 10;
 export const storyStageLayout = { regionStages: 20, stages: 120, previousRegionStages: 18, previousStages: 108, legacyRegionStages: 25, legacyStages: 150 } as const;
 export const elementalDungeonRules = { stages: dungeonStageCount, startingLevel: 38, maximumLevel: 120, maximumLevelStage: dungeonStageCount } as const;
 export const infusionModes = [
-  { id: 'heavens', name: 'Soar to Heaven', energy: 'Light', enemyTheme: 'Dawnthorn Slime evolution line', stages: infusionModeStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
-  { id: 'abyss', name: 'Delve into the Abyss', energy: 'Chaotic', enemyTheme: 'Wraththorn Slime evolution line', stages: infusionModeStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
+  { id: 'heavens', name: 'Soar to Heaven', energy: 'Light', enemyTheme: 'Dawnthorn Slime evolution line', stages: infusionModeStageCount, startingLevel: 30, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
+  { id: 'abyss', name: 'Delve into the Abyss', energy: 'Chaotic', enemyTheme: 'Wraththorn Slime evolution line', stages: infusionModeStageCount, startingLevel: 30, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
 ] as const;
 export const currencyModes = [
   { id: 'treasury', name: 'Crownfall Treasury', stages: 25, startingLevel: 65, maximumLevel: 120, enemyTiers: 6 },
@@ -116,11 +116,11 @@ export function evolutionRequirement(elementId: ElementId, from: number) {
   if (!recipe) throw new Error('Evolution source must be an integer from 1 to 5.');
   return {
     ...recipe, elementId, dungeon: element.dungeon, infusion: element.infusion,
-    requiresFractalis: true, requiresInfusableEnemies: from >= 3,
-    creatureCount: from >= 3 ? from - 2 : 0,
-    minimumCreatureForm: from >= 3 ? from : null,
+    requiresFractalis: true, requiresInfusableEnemies: true,
+    creatureCount: from >= 3 ? from - 2 : 1,
+    minimumCreatureForm: from,
     /** D-346 addition rule: each captured copy is worth its form (1-6); the chosen copies must total this value. */
-    fodderValue: from >= 3 ? (from - 2) * from : 0,
+    fodderValue: from >= 3 ? (from - 2) * from : from,
     quantitiesDefined: true,
   } as const;
 }

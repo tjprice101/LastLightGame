@@ -50,6 +50,14 @@ export function weaponCost(element: ElementId, progress: CharacterProgress): Upg
 }
 
 export interface UpgradeCost { fractalis: number; materials: Record<string, number> }
+export function increasedMaterialCost(cost: UpgradeCost): UpgradeCost {
+  return { fractalis: cost.fractalis, materials: Object.fromEntries(Object.entries(cost.materials).map(([id, amount]) => {
+    if (!Number.isSafeInteger(amount) || amount < 1) throw new Error('Invalid upgrade material quantity.');
+    const increased = amount + Math.ceil(amount / 2);
+    if (!Number.isSafeInteger(increased)) throw new Error('Upgrade material quantity overflow.');
+    return [id, increased];
+  })) };
+}
 function lateMaterialCost(cost: UpgradeCost, late: boolean): UpgradeCost {
   return late ? { fractalis: cost.fractalis,
     materials: Object.fromEntries(Object.entries(cost.materials).map(([id, amount]) => [id, amount * 2])) } : cost;
@@ -83,6 +91,10 @@ export function levelingMaterials(element: ElementId | 'rosethorn' | NewEventFam
 }
 
 export function levelCost(element: ElementId, progress: CharacterProgress, id?: StarterId): UpgradeCost {
+  return increasedMaterialCost(baseLevelCost(element, progress, id));
+}
+
+function baseLevelCost(element: ElementId, progress: CharacterProgress, id?: StarterId): UpgradeCost {
   getElement(element);
   characterGrowthFactor(progress, id);
   if (progress.level === characterLevelCap(progress.evolution, id, progress.ascension?.stats === true)) throw new Error('Reach the next evolution to raise the level cap.');
@@ -92,6 +104,10 @@ export function levelCost(element: ElementId, progress: CharacterProgress, id?: 
 }
 
 export function evolutionCost(element: ElementId, progress: CharacterProgress, id?: StarterId): UpgradeCost {
+  return increasedMaterialCost(baseEvolutionCost(element, progress, id));
+}
+
+function baseEvolutionCost(element: ElementId, progress: CharacterProgress, id?: StarterId): UpgradeCost {
   getElement(element);
   characterGrowthFactor(progress, id);
   if (progress.evolution === characterGrowth.forms) throw new Error('This character has reached its final evolution.');
@@ -117,7 +133,11 @@ export function characterLevelCap(evolution: number, id?: StarterId, ascended = 
 }
 
 export function characterLevelCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
-  const cost = levelCost(getStarter(id).elementId, progress, id);
+  return increasedMaterialCost(baseCharacterLevelCost(id, progress));
+}
+
+function baseCharacterLevelCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
+  const cost = baseLevelCost(getStarter(id).elementId, progress, id);
   if (isCalamiticCharacter(id)) {
     const destination = progress.level + 1;
     const chain = {
@@ -139,7 +159,11 @@ export function characterLevelCost(id: StarterId, progress: CharacterProgress): 
 }
 
 export function characterEvolutionCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
-  const cost = evolutionCost(getStarter(id).elementId, progress, id);
+  return increasedMaterialCost(baseCharacterEvolutionCost(id, progress));
+}
+
+function baseCharacterEvolutionCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
+  const cost = baseEvolutionCost(getStarter(id).elementId, progress, id);
   if (isCalamiticCharacter(id)) {
     const recipes = ['calamity-rare', 'calamity-epic', 'calamity-legendary', 'calamity-omnic', 'fragment-of-rise'] as const;
     const amount = [5, 5, 5, 5, 5][progress.evolution - 1];

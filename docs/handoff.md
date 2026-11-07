@@ -1,5 +1,40 @@
 # Current state and handoff
 
+## Farm, material costs and first-evolution access (2026-11-07)
+
+Owner-confirmed economy maintenance, separate from the paused UI redesign:
+elemental dungeon, Heaven/Abyss level/evolution specialty and Oblivion Calamity
+Seed-Soul drops receive another35% cut after previous rounding, min1. Final
+family ranges3-4 /3 /2-3 /1-2 /1 /1; both used infusion specialties end3.
+Calamity encounters/chests, Fragment of Rise, event/Story/banner/shop/sale
+rewards, currencies and saved holdings remain unchanged.
+
+Future leveling/evolution material quantities cost1.5x, rounded up after all
+existing recipe substitutions and late doubling, including captured leveling.
+No exponential growth or currency/Conduit/weapon/Ascension cost change.
+All evolutions now require explicit protected-safe Value1/2/3/8/15 Devourers.
+Owner also approves early Heaven/Abyss access atLv.30: live caps stages1-4
+use30/38/46/54 and one enemy each. Late encounters and historical capture/layout
+migrations stay intact. Rules18 restarts old encounters with frozen loadouts
+and previously saved rewards retained. No account migration or load writes.
+
+Shared helpers wire single upgrades, Max Level, Character confirmation,
+kill rewards/Collections/validation and authority. New all-roster early
+evolution tests verify appropriate families, locks/squad/equipment protections,
+atomic denied saves, costs and first-Fracture reward. Actual native-kit
+unequipped starter checks require at least4 of five fixed seeded first-stage
+clears each; not a paper-DPR proxy or population estimate.
+
+Validation: `npx vitest run --exclude '**/ui-design-lab.test.ts'
+--exclude '**/radiant-ui.test.ts' --maxWorkers=2 --testTimeout=60000` passes
+all8,378 production tests. Paused unpublished mock-up tests are intentionally
+excluded. Matching authority bundle and TypeScript checks pass; production
+build passes with the existing chunk-size warning. Browser receipt-free
+fixtures verify first-evolution23-material cost, explicit copy picker and exact
+final farm ranges without account writes or page errors.
+Publication and disposable hosted economy/evolution checks pending.
+See [economy contract](summoning-and-economy.md#additional-farm-reduction-and-upgrade-costs-2026-11-07).
+
 ## Moon release and Sunshade concealment (2026-11-07)
 
 Owner authorizes immediate Moon launch through November30,2026 at8PM

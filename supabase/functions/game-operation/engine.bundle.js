@@ -46,8 +46,8 @@ var warStageCount = 10;
 var storyStageLayout = { regionStages: 20, stages: 120, previousRegionStages: 18, previousStages: 108, legacyRegionStages: 25, legacyStages: 150 };
 var elementalDungeonRules = { stages: dungeonStageCount, startingLevel: 38, maximumLevel: 120, maximumLevelStage: dungeonStageCount };
 var infusionModes = [
-  { id: "heavens", name: "Soar to Heaven", energy: "Light", enemyTheme: "Dawnthorn Slime evolution line", stages: infusionModeStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
-  { id: "abyss", name: "Delve into the Abyss", energy: "Chaotic", enemyTheme: "Wraththorn Slime evolution line", stages: infusionModeStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } }
+  { id: "heavens", name: "Soar to Heaven", energy: "Light", enemyTheme: "Dawnthorn Slime evolution line", stages: infusionModeStageCount, startingLevel: 30, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
+  { id: "abyss", name: "Delve into the Abyss", energy: "Chaotic", enemyTheme: "Wraththorn Slime evolution line", stages: infusionModeStageCount, startingLevel: 30, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } }
 ];
 var currencyModes = [
   { id: "treasury", name: "Crownfall Treasury", stages: 25, startingLevel: 65, maximumLevel: 120, enemyTiers: 6 },
@@ -104,11 +104,11 @@ function evolutionRequirement(elementId, from) {
     dungeon: element.dungeon,
     infusion: element.infusion,
     requiresFractalis: true,
-    requiresInfusableEnemies: from >= 3,
-    creatureCount: from >= 3 ? from - 2 : 0,
-    minimumCreatureForm: from >= 3 ? from : null,
+    requiresInfusableEnemies: true,
+    creatureCount: from >= 3 ? from - 2 : 1,
+    minimumCreatureForm: from,
     /** D-346 addition rule: each captured copy is worth its form (1-6); the chosen copies must total this value. */
-    fodderValue: from >= 3 ? (from - 2) * from : 0,
+    fodderValue: from >= 3 ? (from - 2) * from : from,
     quantitiesDefined: true
   };
 }
@@ -170,7 +170,7 @@ function lootRoll(random) {
   return value2;
 }
 function infusionLycalisOdds(level) {
-  if (!Number.isInteger(level) || level < 50 || level > 120) throw new Error("Null-Prismatica drops require an infusion enemy level from 50 to 120.");
+  if (!Number.isInteger(level) || level < 30 || level > 120) throw new Error("Null-Prismatica drops require an infusion enemy level from 30 to 120.");
   if (level < 80) return [{ amount: 0, chance: 1 }];
   const growth = (level - 80) / 40;
   return [
@@ -203,7 +203,7 @@ function rollLycalisOdds(odds, random) {
   return odds[odds.length - 1].amount;
 }
 function materialRewardAmount(amount, factor = 0.5) {
-  if (!Number.isSafeInteger(amount) || amount < 1 || ![0.5, 0.85].includes(factor)) {
+  if (!Number.isSafeInteger(amount) || amount < 1 || ![0.5, 0.65, 0.85].includes(factor)) {
     throw new Error("Invalid material reward quantity or factor.");
   }
   return Math.max(1, Math.round(amount * factor));
@@ -221,18 +221,39 @@ function materialRewardRange(drop, factor = 0.5) {
     quantitySource: { minimum: drop.minimum, maximum: drop.maximum, multiplier: quantityMultiplier, factor }
   };
 }
+function furtherMaterialRewardRange(drop) {
+  if (!drop.quantitySource || drop.quantitySource.furtherFactor !== void 0) {
+    throw new Error("Additional material reduction requires a once-reduced range.");
+  }
+  return {
+    ...drop,
+    minimum: materialRewardAmount(drop.minimum, 0.65),
+    maximum: materialRewardAmount(drop.maximum, 0.65),
+    quantitySource: { ...drop.quantitySource, furtherFactor: 0.65 }
+  };
+}
+function sourceRewardAmount(amount, source) {
+  const reduced = materialRewardAmount(amount, source.factor);
+  if (source.furtherFactor === void 0) return reduced;
+  if (source.furtherFactor !== 0.65) throw new Error("Invalid additional material reduction.");
+  return materialRewardAmount(reduced, source.furtherFactor);
+}
 function validDropAmount(drop, amount) {
   if (!Number.isSafeInteger(amount) || amount < drop.minimum || amount > drop.maximum) return false;
   if (!drop.quantitySource) return amount % (drop.quantityMultiplier ?? 1) === 0;
-  const { minimum, maximum, multiplier, factor } = drop.quantitySource;
-  const first = Math.max(minimum, amount === 1 ? 1 : Math.ceil((amount - 0.5) / factor));
-  const candidate = Math.ceil(first / multiplier) * multiplier;
-  return candidate <= maximum && materialRewardAmount(candidate, factor) === amount;
+  const source = drop.quantitySource;
+  let low = source.minimum / source.multiplier, high = source.maximum / source.multiplier;
+  while (low < high) {
+    const middle = Math.floor(low + (high - low) / 2);
+    if (sourceRewardAmount(middle * source.multiplier, source) < amount) low = middle + 1;
+    else high = middle;
+  }
+  return sourceRewardAmount(low * source.multiplier, source) === amount;
 }
 function rollDrop(drop, random) {
   if (drop.quantitySource) {
     const source = drop.quantitySource;
-    if (drop.quantityMultiplier !== void 0 || drop.minimum !== materialRewardAmount(source.minimum, source.factor) || drop.maximum !== materialRewardAmount(source.maximum, source.factor)) {
+    if (drop.quantityMultiplier !== void 0 || drop.minimum !== sourceRewardAmount(source.minimum, source) || drop.maximum !== sourceRewardAmount(source.maximum, source)) {
       throw new Error("Invalid reduced material reward range.");
     }
     const amount = rollDrop({
@@ -241,7 +262,7 @@ function rollDrop(drop, random) {
       chance: drop.chance,
       quantityMultiplier: source.multiplier
     }, random);
-    return amount === void 0 ? void 0 : materialRewardAmount(amount, source.factor);
+    return amount === void 0 ? void 0 : sourceRewardAmount(amount, source);
   }
   const multiplier = drop.quantityMultiplier ?? 1;
   if (!Number.isSafeInteger(drop.minimum) || !Number.isSafeInteger(drop.maximum) || !Number.isSafeInteger(multiplier) || multiplier < 1 || drop.minimum % multiplier !== 0 || drop.maximum % multiplier !== 0 || drop.minimum < 1 || drop.maximum < drop.minimum || !Number.isFinite(drop.chance) || drop.chance <= 0 || drop.chance > 1) throw new Error("Invalid loot drop range or chance.");
@@ -6830,7 +6851,7 @@ var infusionEnemyElements = {
   machines: "botanic"
 };
 function infusionEnemyStats(level, boss) {
-  if (!Number.isInteger(level) || level < 50 || level > 120) throw new Error("Infusion enemy level must be from 50 to 120.");
+  if (!Number.isInteger(level) || level < 30 || level > 120) throw new Error("Infusion enemy level must be from 30 to 120.");
   return creatureEnemyStats(level, boss);
 }
 function treasuryEnemyStats(level, boss) {
@@ -6898,6 +6919,10 @@ function capturedEnemyStats(level, maximumLevel = 120) {
 }
 var infusionLevelAnchors = [[1, 50], [13, 65], [19, 75], [25, 85], [35, 120]];
 var infusionAnchorStages = 35;
+function infusionEnemyLevel(stage) {
+  const level = infusionLevelForLayout(stage, infusionModeStageCount);
+  return stage < 5 ? Math.round(level - 20 * (5 - stage) / 4) : level;
+}
 function infusionLevelForLayout(stage, stages) {
   if (!Number.isInteger(stage) || stage < 1 || stage > stages) throw new Error("Invalid infusion stage.");
   return anchorLevel(1 + (stage - 1) * (infusionAnchorStages - 1) / (stages - 1));
@@ -6922,8 +6947,9 @@ function infusionEncounter(mode, stage, schedule = "caps", layout) {
   if (!definition) throw new Error("Unknown staged Elemental-Devourer mode.");
   const startingLevel = definition.startingLevel;
   const maximumLevel = "maximumLevel" in definition ? definition.maximumLevel : 120;
-  const level = mode === "heavens" || mode === "abyss" ? schedule === "legacy" ? Math.round(80 + (stage - 1) * 40 / (stages - 1)) : infusionLevelForLayout(stage, stages) : Math.round(startingLevel + (stage - 1) * (maximumLevel - startingLevel) / (stages - 1));
+  const level = mode === "heavens" || mode === "abyss" ? schedule === "legacy" ? Math.round(80 + (stage - 1) * 40 / (stages - 1)) : layout ? infusionLevelForLayout(stage, stages) : infusionEnemyLevel(stage) : Math.round(startingLevel + (stage - 1) * (maximumLevel - startingLevel) / (stages - 1));
   const boss = stage % 5 === 0;
+  const enemyCount = boss || (mode === "heavens" || mode === "abyss") && schedule === "caps" && !layout && stage < 5 ? 1 : 2;
   const stats = mode === "treasury" ? treasuryEnemyStats(level, boss) : mode === "sanctuary" ? sanctuaryEnemyStats(level, boss) : mode === "roses" ? roseEnemyStats(level, boss) : isNewEventId(mode) ? eventEnemyStats(mode, level, boss) : mode === "machines" ? creatureEnemyStats(level, boss) : infusionEnemyStats(level, boss);
   const [name, art] = infusionEnemies[mode][tier];
   return {
@@ -6931,6 +6957,7 @@ function infusionEncounter(mode, stage, schedule = "caps", layout) {
     stage,
     level,
     boss,
+    enemyCount,
     stats,
     tier,
     forms: 6,
@@ -6947,8 +6974,8 @@ var roseMaterialFirstStages = roseMaterialUnlocks.map((level) => Array.from(
   (_, index) => index + 1
 ).find((stage) => infusionEncounter("roses", stage).level >= level));
 var specialtyDropTable = [
-  { purpose: "evolution", level: 50 },
-  { purpose: "level", level: 50 }
+  { purpose: "evolution", level: 30 },
+  { purpose: "level", level: 30 }
 ];
 function infusionLoot(mode, stage, schedule = "caps") {
   infusionEncounter(mode, stage, schedule);
@@ -6972,12 +6999,12 @@ function infusionLoot(mode, stage, schedule = "caps") {
     };
   }
   const progress = (stage - 1) / (infusionModeStageCount - 1);
-  const specialties = specialtyDropTable.map((entry) => materialRewardRange({
+  const specialties = specialtyDropTable.map((entry) => furtherMaterialRewardRange(materialRewardRange({
     id: `${mode}-${entry.purpose}`,
     minimum: Math.round(1 + (entry.purpose === "evolution" ? 6 : 7) * progress),
     maximum: Math.round(2 + (entry.purpose === "evolution" ? 6 : 8) * progress),
     chance: 1
-  }));
+  })));
   return { specialties, bonuses: [] };
 }
 function infusionDrops(mode, stage, random, schedule = "caps") {
@@ -7002,6 +7029,14 @@ var fractureRules = {
   lycalisReward: 10
 };
 var weaponRules = { maximumRank: 10, attackPerRank: 0.02 };
+function increasedMaterialCost(cost) {
+  return { fractalis: cost.fractalis, materials: Object.fromEntries(Object.entries(cost.materials).map(([id, amount]) => {
+    if (!Number.isSafeInteger(amount) || amount < 1) throw new Error("Invalid upgrade material quantity.");
+    const increased = amount + Math.ceil(amount / 2);
+    if (!Number.isSafeInteger(increased)) throw new Error("Upgrade material quantity overflow.");
+    return [id, increased];
+  })) };
+}
 function lateMaterialCost(cost, late) {
   return late ? {
     fractalis: cost.fractalis,
@@ -7032,7 +7067,7 @@ function levelingMaterials(element, destination) {
     ...Object.fromEntries(levelingMaterialTiers.filter((tier) => destination >= tier.destination).map((tier) => [`${element}-${tier.rarity.toLowerCase()}`, 1]))
   };
 }
-function levelCost(element, progress, id) {
+function baseLevelCost(element, progress, id) {
   getElement(element);
   characterGrowthFactor(progress, id);
   if (progress.level === characterLevelCap(progress.evolution, id, progress.ascension?.stats === true)) throw new Error("Reach the next evolution to raise the level cap.");
@@ -7042,7 +7077,7 @@ function levelCost(element, progress, id) {
     ...progress.evolution >= 5 ? { [specialtyId(element, "level")]: 1 } : {}
   } }, destination >= 61);
 }
-function evolutionCost(element, progress, id) {
+function baseEvolutionCost(element, progress, id) {
   getElement(element);
   characterGrowthFactor(progress, id);
   if (progress.evolution === characterGrowth.forms) throw new Error("This character has reached its final evolution.");
@@ -7065,7 +7100,10 @@ function characterLevelCap(evolution, id, ascended = false) {
   return characterGrowth.firstLevelCap + (evolution - 1) * characterGrowth.levelsPerEvolution;
 }
 function characterLevelCost(id, progress) {
-  const cost = levelCost(getStarter(id).elementId, progress, id);
+  return increasedMaterialCost(baseCharacterLevelCost(id, progress));
+}
+function baseCharacterLevelCost(id, progress) {
+  const cost = baseLevelCost(getStarter(id).elementId, progress, id);
   if (isCalamiticCharacter(id)) {
     const destination = progress.level + 1;
     const chain = {
@@ -7089,7 +7127,10 @@ function characterLevelCost(id, progress) {
   );
 }
 function characterEvolutionCost(id, progress) {
-  const cost = evolutionCost(getStarter(id).elementId, progress, id);
+  return increasedMaterialCost(baseCharacterEvolutionCost(id, progress));
+}
+function baseCharacterEvolutionCost(id, progress) {
+  const cost = baseEvolutionCost(getStarter(id).elementId, progress, id);
   if (isCalamiticCharacter(id)) {
     const recipes = ["calamity-rare", "calamity-epic", "calamity-legendary", "calamity-omnic", "fragment-of-rise"];
     const amount = [5, 5, 5, 5, 5][progress.evolution - 1];
@@ -7511,7 +7552,7 @@ function materialLoot(element, stage) {
   return materialRarities2.flatMap((rarity) => {
     const firstStage = materialBrackets.find((bracket) => bracket.ranges[rarity] !== void 0).firstStage;
     if (stage < firstStage) return [];
-    return [{ id: `${element}-${rarity}`, ...linearMaterialRange(rarity, stage, firstStage, elementalDungeonRules.stages) }];
+    return [{ id: `${element}-${rarity}`, ...furtherMaterialRewardRange(linearMaterialRange(rarity, stage, firstStage, elementalDungeonRules.stages)) }];
   });
 }
 function materialDrops(element, stage, random) {
@@ -7613,7 +7654,7 @@ function oblivionMaterialLoot(stage) {
   return oblivionMaterialRarities.flatMap((rarity, index) => {
     const firstStage = oblivionMaterialUnlockFloors[index];
     if (stage < firstStage) return [];
-    return [{ id: oblivionMaterialIds[index], ...linearMaterialRange(rarity, stage, firstStage, gatesOfOblivionRules.stages) }];
+    return [{ id: oblivionMaterialIds[index], ...furtherMaterialRewardRange(linearMaterialRange(rarity, stage, firstStage, gatesOfOblivionRules.stages)) }];
   });
 }
 function oblivionFragmentDrop(stage, boss = oblivionEncounter(stage).boss) {
@@ -8305,10 +8346,10 @@ function capturedLevelCost(copy) {
   const { level } = capturedProgress(copy);
   if (level >= capturedLevelCap) throw new Error(`Maximum captured Elemental-Devourer level ${capturedLevelCap} reached.`);
   const creature = getCreature(copy.creatureId);
-  return {
+  return increasedMaterialCost({
     fractalis: 10 + 2 * (level + 1),
     materials: levelingMaterials(creature.mode === "roses" ? "rosethorn" : creature.element, level + 1)
-  };
+  });
 }
 function resolveCapturedFighter(copy, equipment, upgrades) {
   const creature = getCreature(copy.creatureId);
@@ -10843,7 +10884,7 @@ function nativeCleanup(state) {
 }
 
 // src/game/conduit-runtime.ts
-var conduitRulesVersion = phaseZeroStatsReady ? 17 : 4;
+var conduitRulesVersion = phaseZeroStatsReady ? 18 : 4;
 function gear(unit) {
   return unit.conduitRuntime ??= { numbers: {}, owners: {} };
 }
@@ -13266,7 +13307,7 @@ function createInfusionBattle(mode, stage, seed2, starter, progress, roster = [s
   const state = createBattle(seed2, roster, teamProgress, equipment, captures, upgrades);
   state.wave = stage;
   state.infusion = { mode, stage, schedule };
-  state.enemies = Array.from({ length: encounter2.boss ? 1 : 2 }, (_, index) => {
+  state.enemies = Array.from({ length: encounter2.enemyCount }, (_, index) => {
     const unit = combatant(`infusion-${mode}-${stage}-${index}`, "goblin", encounter2.enemy.name, "enemy", encounter2.stats, encounter2.enemy.element);
     unit.level = encounter2.level;
     unit.creatureId = `infusion:${mode}:${encounter2.tier}`;
@@ -15853,7 +15894,7 @@ function activityAccess(account, activity, now = Date.now()) {
     return { unlocked, minimumLevel: 0, level: highestBearerLevel(account), requirement: requirement2 };
   }
   const event2 = activity.kind === "infusion" && isNewEventId(activity.mode) ? newEventDefinition(activity.mode) : void 0;
-  const minimumLevel = activity.kind === "dungeon" ? 30 : activity.kind === "war" ? 85 : activity.kind !== "infusion" ? 0 : activity.mode === "machines" ? 10 : activity.mode === "treasury" || activity.mode === "sanctuary" ? 60 : activity.mode === "roses" || event2 ? 75 : 50;
+  const minimumLevel = activity.kind === "dungeon" ? 30 : activity.kind === "war" ? 85 : activity.kind !== "infusion" ? 0 : activity.mode === "machines" ? 10 : activity.mode === "treasury" || activity.mode === "sanctuary" ? 60 : activity.mode === "roses" || event2 ? 75 : 30;
   const firstRegion = activity.kind === "infusion" && activity.mode === "machines";
   const level = highestBearerLevel(account);
   const regionCleared = !firstRegion || (account.storyCompleted ?? 0) >= storyRules.regionStages;

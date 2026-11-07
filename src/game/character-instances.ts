@@ -7,7 +7,7 @@ import { applyConduitBuffs, formatStat, type FighterDefinition, type ResolvedFig
 import { normalizeStats } from '../content/phase-zero-stats';
 import { validateConduitElement, type ConduitSlots, type ConduitUpgrades } from '../content/conduits';
 import { roseDuplicateMinimumLevel } from '../content/roses';
-import { levelingMaterials } from '../content/progression';
+import { increasedMaterialCost, levelingMaterials } from '../content/progression';
 
 export interface CapturedCharacter {
   instanceId: string;
@@ -130,8 +130,8 @@ export function capturedLevelCost(copy: CapturedCharacter) {
   const { level } = capturedProgress(copy);
   if (level >= capturedLevelCap) throw new Error(`Maximum captured Elemental-Devourer level ${capturedLevelCap} reached.`);
   const creature = getCreature(copy.creatureId);
-  return { fractalis: 10 + 2 * (level + 1),
-    materials: levelingMaterials(creature.mode === 'roses' ? 'rosethorn' : creature.element, level + 1) };
+  return increasedMaterialCost({ fractalis: 10 + 2 * (level + 1),
+    materials: levelingMaterials(creature.mode === 'roses' ? 'rosethorn' : creature.element, level + 1) });
 }
 
 export function resolveCapturedFighter(copy: CapturedCharacter, equipment?: ConduitSlots, upgrades?: ConduitUpgrades): ResolvedFighterDefinition {

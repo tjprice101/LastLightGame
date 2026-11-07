@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { freshGame, resolveOperation } from '../../supabase/functions/game-operation/engine';
 import { actAndAdvanceTurn, actionGaugeCost } from '../game/battle';
+import { conduitRulesVersion } from '../game/conduit-runtime';
 
 const entropy = { seed: () => 7321, random: () => .9,
   uuid: () => '00000000-0000-4000-8000-000000000001' };
@@ -22,7 +23,7 @@ describe('Phase 0 authority source parity', () => {
     expect(result.response.result).toBeUndefined();
     expect(result.game.account).toEqual(previous.account);
     const restored = result.game.run!.session.state;
-    expect(restored.conduitRulesVersion).toBe(17);
+    expect(restored.conduitRulesVersion).toBe(conduitRulesVersion);
     expect(restored.allies[0].hp).toBe(restored.allies[0].stats.health);
     expect(restored.allies[0].stats.skillPower).toBe(1.5);
     expect(restored.allies[0].stats.skillEfficiency).toBe(.5);

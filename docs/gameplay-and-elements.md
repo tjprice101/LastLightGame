@@ -1,5 +1,16 @@
 # Gameplay, elements and farming framework
 
+**Current owner override (2026-11-07):** Heaven/Abyss open at Lv.30;
+the first four live stages are30/38/46/54 with one enemy each, supporting
+the only free starter's first evolution. Stage5+ and historical layouts remain
+unchanged. Every evolution now requires Value1/2/3/8/15 protected-safe Devourers.
+See [early access](evolution-fodder.md#all-evolutions-and-early-access-2026-11-07).
+Elemental dungeon, Heaven/Abyss specialty and Oblivion Seed-Soul material drops
+receive another35% cut after previous rounding; leveling/evolution material
+costs increase50% rounded up. [Current economy contract](summoning-and-economy.md#additional-farm-reduction-and-upgrade-costs-2026-11-07)
+supersedes older endpoints/access/cost statements below. No additional reduction
+to Calamity encounters/chests, event/Story/banner materials or currencies.
+
 **D-430/D-431:** [current modest material staircase](dungeons-and-captures.md#modest-material-staircase-d-430)
 and [coordinated later costs](units-and-progression.md#later-element-bearer-material-costs-d-431)
 supersede older material endpoints/late cost claims. Unlocks, chances, enemy

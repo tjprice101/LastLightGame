@@ -184,6 +184,8 @@ try {
     await smokeRoseProgression(client, created.user.id, username);
   } else if (process.argv.includes('--phase-zero')) {
     await smokePhaseZero(client, created.user.id, username);
+  } else if (process.argv.includes('--economy-rebalance')) {
+    await smokeEconomyRebalance(client, created.user.id, username);
   } else if (process.argv.includes('--evolution')) {
     await smokeEvolutionFodder(client, created.user.id, username);
   } else if (process.argv.includes('--native-calamity')) {
@@ -2186,7 +2188,7 @@ async function smokeEvolutionFodder(client, userId, username) {
   game.account.firstFracture = true;
   game.account.squad = ['ember'];
   game.account.fractalis = 10000;
-  game.account.materials = { 'infernic-epic': 50, 'infernic-legendary': 20, 'heavens-evolution': 20 };
+  game.account.materials = { 'infernic-epic': 75, 'infernic-legendary': 30, 'heavens-evolution': 30 };
   game.account.capturedCharacters = [4, 4, 4, 3].map(form => ({
     instanceId: `capture:${randomUUID()}`, creatureId: `infusion:heavens:${form - 1}`, locked: false,
   }));
@@ -2215,6 +2217,57 @@ async function smokeEvolutionFodder(client, userId, username) {
   assert.deepEqual(await invoke(operation, initial.revision, requestId), evolved);
   assert.deepEqual((await invoke({ kind: 'read' }, evolved.revision)).account, evolved.account);
   console.log('Hosted evolution smoke passed: Infernis Evo.5->6 with 4+4+4+3 Evolution Value, exact costs and four-copy consumption, one revision, idempotent retry and persisted account. No owner accounts modified.');
+}
+
+async function smokeEconomyRebalance(client, userId, username) {
+  assert.ok(ids.includes(userId), 'Economy fixtures must belong only to a disposable identity.');
+  const game = freshGame(username);
+  game.starterId = 'ember';
+  game.account.characters = { ember: { level: 30, evolution: 1 } };
+  game.account.squad = ['ember'];
+  game.account.fractalis = 10000;
+  game.account.materials = { 'infernic-common': 26, 'infernic-uncommon': 2 };
+  game.account.capturedCharacters = [{ instanceId: `capture:${randomUUID()}`,
+    creatureId: 'infusion:heavens:0', locked: false }];
+  const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+  assert.equal(seeded.error, null);
+  let revision = 0;
+  async function invoke(operation, requestId = randomUUID(), expectedRevision = revision) {
+    const result = await client.functions.invoke('game-operation', { body: { operation, expectedRevision, requestId } });
+    if (result.error) throw new Error(`Hosted economy ${operation.kind} failed (${result.error.context?.status ?? 'transport'}).`);
+    revision = result.data.revision;
+    return result.data;
+  }
+  await invoke({ kind: 'read' });
+  const enter = await invoke({ kind: 'enter', activity: { kind: 'infusion', mode: 'heavens', stage: 1 } });
+  assert.equal(enter.session.state.enemies.length, 1);
+  assert.equal(enter.session.state.enemies[0].level, 30);
+  assert.equal(enter.session.state.conduitRulesVersion, conduitRulesVersion);
+  const beforeUpgrade = await invoke({ kind: 'quit' });
+  const operation = { kind: 'upgradeCharacter', id: 'ember', upgradeKind: 'evolve',
+    expected: { level: 30, evolution: 1 }, fodderIds: [game.account.capturedCharacters[0].instanceId] };
+  const rejected = await client.functions.invoke('game-operation', {
+    body: { operation: { ...operation, fodderIds: [] }, expectedRevision: revision, requestId: randomUUID() },
+  });
+  assert.ok(rejected.error, 'Early evolution must reject missing fodder.');
+  assert.deepEqual((await invoke({ kind: 'read' })).account, beforeUpgrade.account);
+  const requestId = randomUUID(), previousRevision = revision;
+  const evolved = await invoke(operation, requestId);
+  assert.equal(evolved.account.materials['infernic-common'], 3);
+  assert.equal(evolved.account.characters.ember.evolution, 2);
+  assert.equal(evolved.account.characters.ember.level, 30);
+  assert.equal(evolved.account.capturedCharacters.length, 0);
+  assert.equal(evolved.account.fractalis, 9700);
+  assert.equal(evolved.account.lycalis, 10);
+  assert.deepEqual(await invoke(operation, requestId, previousRevision), evolved);
+  const leveled = await invoke({ kind: 'upgradeCharacter', id: 'ember', upgradeKind: 'level',
+    expected: { level: 30, evolution: 2 } });
+  assert.equal(leveled.account.characters.ember.level, 31);
+  assert.equal(leveled.account.materials['infernic-common'], 0);
+  assert.equal(leveled.account.materials['infernic-uncommon'], 0);
+  assert.equal(leveled.account.fractalis, 9628);
+  assert.deepEqual((await invoke({ kind: 'read' })).account, leveled.account);
+  console.log('Hosted economy smoke passed: only-starter Lv30 infusion access, one early enemy, explicit first-evolution fodder, +50% rounded material costs, atomic rejection, first-Fracture reward, idempotent retry and persisted next-level costs. Disposable identity only.');
 }
 
 async function smokeRoseProgression(client, userId, username) {

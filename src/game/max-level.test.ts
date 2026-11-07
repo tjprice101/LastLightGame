@@ -32,12 +32,12 @@ function funded(): Account {
 }
 
 describe('Max Level plans and transactions', () => {
-  it.each(roseCharacters)('levels $name from 75 to 90 without Souls and requires two Souls starting at 91', character => {
+  it.each(roseCharacters)('levels $name from 75 to 90 without Souls and requires three Souls starting at 91', character => {
     const store = storage();
     const account = funded();
     account.characters[character.id] = { level: 75, evolution: 5 };
-    account.materials = { 'rosethorn-common': 90, 'rosethorn-uncommon': 30, 'rosethorn-rare': 30,
-      'rosethorn-epic': 30, 'rosethorn-legendary': 30 };
+    account.materials = { 'rosethorn-common': 135, 'rosethorn-uncommon': 45, 'rosethorn-rare': 45,
+      'rosethorn-epic': 45, 'rosethorn-legendary': 45 };
     saveAccount(store.saved, account);
     const plan = maxLevelPlan(account, character.id);
     expect(plan).toMatchObject({ targetLevel: 90, cost: { fractalis: 2640, materials: account.materials } });
@@ -50,14 +50,16 @@ describe('Max Level plans and transactions', () => {
     expect(after.characters[character.id]).toEqual({ level: 90, evolution: 5 });
     expect(after.materials['rosethorn-omnic']).toBeUndefined();
     after.characters[character.id] = { level: 90, evolution: 6 };
-    after.materials = { 'rosethorn-common': 8, 'rosethorn-uncommon': 2, 'rosethorn-rare': 2,
-      'rosethorn-epic': 2, 'rosethorn-legendary': 2 };
+    after.materials = { 'rosethorn-common': 12, 'rosethorn-uncommon': 3, 'rosethorn-rare': 3,
+      'rosethorn-epic': 3, 'rosethorn-legendary': 3 };
     expect(maxLevelPlan(after, character.id).targetLevel).toBe(90);
     after.materials['rosethorn-omnic'] = 1;
     expect(maxLevelPlan(after, character.id).targetLevel).toBe(90);
     after.materials['rosethorn-omnic'] = 2;
+    expect(maxLevelPlan(after, character.id).targetLevel).toBe(90);
+    after.materials['rosethorn-omnic'] = 3;
     expect(maxLevelPlan(after, character.id)).toMatchObject({ targetLevel: 91,
-      cost: { materials: { 'rosethorn-omnic': 2 } } });
+      cost: { materials: { 'rosethorn-omnic': 3 } } });
   });
 
   it('previews exact cumulative costs without mutating the account or save', () => {
@@ -66,7 +68,7 @@ describe('Max Level plans and transactions', () => {
     const before = structuredClone(account);
     const writes = store.writes();
     const plan = maxLevelPlan(account, 'ember');
-    expect(plan).toMatchObject({ currentLevel: 0, targetLevel: 30, cap: 30, cost: { fractalis: 1230, materials: { 'infernic-common': 30 } } });
+    expect(plan).toMatchObject({ currentLevel: 0, targetLevel: 30, cap: 30, cost: { fractalis: 1230, materials: { 'infernic-common': 60 } } });
     expect(account).toEqual(before);
     expect(store.writes()).toBe(writes);
     expect(maxLevelPreview(account, 'ember').html).toContain('Level 0 &rarr; 30 · Cap 30');
@@ -79,8 +81,8 @@ describe('Max Level plans and transactions', () => {
     expect(html).toContain('class="max-level-actions"');
   });
   it.each([
-    [25, 100, 1, 12, 1], [26, 100, 2, 26, 2],
-    [1000, 1, 1, 12, 1], [11, 100, 0, 0, 0], [1000, 0, 0, 0, 0],
+    [25, 100, 1, 12, 2], [26, 100, 2, 26, 4],
+    [1000, 1, 0, 0, 0], [1000, 2, 1, 12, 2], [11, 100, 0, 0, 0], [1000, 0, 0, 0, 0],
   ])('uses exact affordability thresholds with %i Prismatica · %i materials', (fractalis, materials, target, currency, quantity) => {
     const account = funded();
     account.fractalis = fractalis;
@@ -93,9 +95,9 @@ describe('Max Level plans and transactions', () => {
   it('stops at specialty material limits for late forms and never evolves', () => {
     const account = funded();
     account.characters.ember = { level: 75, evolution: 5, weaponRank: 3 };
-    account.materials['heavens-level'] = 2;
+    account.materials['heavens-level'] = 3;
     const plan = maxLevelPlan(account, 'ember');
-    expect(plan).toMatchObject({ targetLevel: 76, cost: { fractalis: 162, materials: { 'infernic-common': 6, 'heavens-level': 2 } } });
+    expect(plan).toMatchObject({ targetLevel: 76, cost: { fractalis: 162, materials: { 'infernic-common': 9, 'heavens-level': 3 } } });
     account.characters.ember = { level: 104, evolution: 6 };
     expect(maxLevelPlan(account, 'ember').targetLevel).toBe(105);
   });
@@ -109,7 +111,7 @@ describe('Max Level plans and transactions', () => {
     expect(loadAccount(store.saved)).toEqual(after);
     expect(after.characters.ember).toEqual({ level: 30, evolution: 1, weaponRank: 3 });
     expect(after.fractalis).toBe(before.fractalis - 1230);
-    expect(after.materials['infernic-common']).toBe(970);
+    expect(after.materials['infernic-common']).toBe(940);
     for (const key of ['lycalis', 'squad', 'receipts', 'firstFracture'] as const) expect(after[key]).toEqual(before[key]);
   });
   it('levels exact captured IDs to 60 retaining form, locks, gear and kit', () => {
@@ -189,6 +191,6 @@ describe('Max Level plans and transactions', () => {
     account.characters.ember = { level: 30, evolution: 2 };
     const plan = maxLevelPlan(account, 'ember');
     const currency = Array.from({ length: 15 }, (_, index) => levelCost('infernic', { level: 30 + index, evolution: 2 }).fractalis).reduce((sum, value) => sum + value, 0);
-    expect(plan).toMatchObject({ targetLevel: 45, cost: { fractalis: currency, materials: { 'infernic-common': 30 } } });
+    expect(plan).toMatchObject({ targetLevel: 45, cost: { fractalis: currency, materials: { 'infernic-common': 45 } } });
   });
 });

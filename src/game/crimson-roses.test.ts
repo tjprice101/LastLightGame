@@ -210,7 +210,7 @@ describe('Passion of Crimson Roses integration', () => {
     expect(infusionLoot('roses', 9).specialties).toHaveLength(5);
     expect(infusionLoot('roses', 10).specialties).toHaveLength(6);
     expect(materialLoot('infernic', 35).map(drop => [drop.minimum, drop.maximum]))
-      .toEqual([[5, 6], [4, 4], [3, 4], [2, 3], [2, 2], [1, 2]]);
+      .toEqual([[3, 4], [3, 3], [2, 3], [1, 2], [1, 1], [1, 1]]);
     for (let stage = 1; stage <= 35; stage++) {
       const encounter = infusionEncounter('roses', stage);
       const creature = getCreature(`infusion:roses:${encounter.tier}`);
@@ -467,7 +467,9 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
       const store = storage();
       const account = funded();
       account.characters[character.id] = { level: cap - 1, evolution };
-      const copies = Array.from({ length: Math.max(0, evolution - 2) }, () => createCreatureCopy('infusion:roses:4'));
+      const fodderValue = [0, 1, 2, 3, 8, 15][evolution];
+      const copies = Array.from({ length: Math.ceil(fodderValue / evolution) },
+        () => createCreatureCopy(`infusion:roses:${evolution - 1}`));
       account.capturedCharacters = copies;
       saveAccount(store.saved, account);
       const raw = store.saved.getItem(ACCOUNT_KEY);
@@ -488,13 +490,13 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     for (const evolution of [4, 5]) {
       const progress = { level: characterLevelCap(evolution), evolution };
       const cost: UpgradeCost = evolution === 4
-        ? { fractalis: 2400, materials: { 'rosethorn-rare': 50, 'rosethorn-epic': 20 } }
-        : { fractalis: 4800, materials: { 'rosethorn-epic': 50, 'rosethorn-legendary': 20 } };
+        ? { fractalis: 2400, materials: { 'rosethorn-rare': 75, 'rosethorn-epic': 30 } }
+        : { fractalis: 4800, materials: { 'rosethorn-epic': 75, 'rosethorn-legendary': 30 } };
       expect(characterEvolutionCost(character.id, progress)).toEqual(cost);
       const account = funded();
       account.characters[character.id] = progress;
       account.materials = { ...cost.materials };
-      const copies = Array.from({ length: evolution - 2 }, () => createCreatureCopy('infusion:roses:4'));
+      const copies = Array.from({ length: evolution - 2 }, () => createCreatureCopy(`infusion:roses:${evolution - 1}`));
       account.capturedCharacters = copies;
       const store = storage();
       saveAccount(store.saved, account);
@@ -527,7 +529,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     account.characters.thornia = { level: 0, evolution: 1 };
     saveAccount(store.saved, account);
     const plan = maxLevelPlan(account, 'thornia');
-    expect(plan.cost).toEqual({ fractalis: 1230, materials: { 'rosethorn-common': 30 } });
+    expect(plan.cost).toEqual({ fractalis: 1230, materials: { 'rosethorn-common': 60 } });
     expect(levelCharacterToMaximum(store.saved, plan).characters.thornia?.level).toBe(30);
     const copy = createCreatureCopy('infusion:roses:4');
     account.capturedCharacters = [copy, createCreatureCopy('infusion:abyss:5')];

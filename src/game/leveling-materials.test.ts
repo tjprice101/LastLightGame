@@ -29,6 +29,9 @@ function expectedMaterials(family: string, destination: number, higherTiers: num
   return { [`${family}-common`]: Math.ceil(destination / 30), ...Object.fromEntries(
     materialRarities.slice(1, higherTiers + 1).map(rarity => [`${family}-${rarity.toLowerCase()}`, 1])) };
 }
+function increasedMaterials(materials: Record<string, number>) {
+  return Object.fromEntries(Object.entries(materials).map(([id, amount]) => [id, amount + Math.ceil(amount / 2)]));
+}
 
 describe('cumulative higher-rarity leveling materials', () => {
   it.each(boundaries)('requires the exact cumulative rarities at destination %i', (destination, higherTiers) => {
@@ -54,7 +57,9 @@ describe('cumulative higher-rarity leveling materials', () => {
           materials[specialty] = (materials[specialty] ?? 0) + 1;
         }
         if (level >= 60) for (const id of Object.keys(materials)) materials[id] *= 2;
-        expect(characterLevelCost(character.id, progress)).toEqual({ fractalis: 10 + 2 * (level + 1), materials });
+        expect(characterLevelCost(character.id, progress)).toEqual({
+          fractalis: 10 + 2 * (level + 1), materials: increasedMaterials(materials),
+        });
       }
     }
     expect(() => levelCost('infernic', { level: 105, evolution: 6 })).toThrow('cap');
@@ -69,7 +74,7 @@ describe('cumulative higher-rarity leveling materials', () => {
         : copy.creatureId.includes('abyss') ? 'chaotic' : 'tranquilitic';
       for (const [destination, higherTiers] of boundaries.filter(([destination]) => destination <= 60)) {
         expect(capturedLevelCost({ ...copy, level: destination - 1 })).toEqual({
-          fractalis: 10 + 2 * destination, materials: expectedMaterials(family, destination, higherTiers),
+          fractalis: 10 + 2 * destination, materials: increasedMaterials(expectedMaterials(family, destination, higherTiers)),
         });
       }
       for (const level of [60, 61, 90, 120]) expect(() => capturedLevelCost({ ...copy, level })).toThrow('Maximum');
@@ -83,8 +88,8 @@ describe('cumulative higher-rarity leveling materials', () => {
     account.characters.rosetta = { level: 90, evolution: 6 };
     account.fractalis = 1000;
     const family = kind === 'ember' ? 'infernic' : 'rosethorn';
-    account.materials = { ...Object.fromEntries(materialRarities.map(rarity => [`${family}-${rarity.toLowerCase()}`, 10])),
-      'heavens-level': 10 };
+    account.materials = { ...Object.fromEntries(materialRarities.map(rarity => [`${family}-${rarity.toLowerCase()}`, 20])),
+      'heavens-level': 20 };
     account.materials[`${family}-omnic`] = 0;
     saveAccount(store.saved, account);
     const transact = () => upgradeCharacter(store.saved, kind, 'level', { level: 90, evolution: 6 });
@@ -93,17 +98,17 @@ describe('cumulative higher-rarity leveling materials', () => {
     expect(() => transact()).toThrow('Not enough');
     expect(store.writes()).toBe(writes);
     expect(store.saved.getItem(ACCOUNT_KEY)).toBe(raw);
-    account.materials[`${family}-omnic`] = 10;
+    account.materials[`${family}-omnic`] = 20;
     saveAccount(store.saved, account);
     const beforeWrites = store.writes();
     const after = transact();
     expect(store.writes()).toBe(beforeWrites + 1);
     expect(after.fractalis).toBe(808);
-    expect(after.materials[`${family}-common`]).toBe(2);
+    expect(after.materials[`${family}-common`]).toBe(8);
     for (const rarity of materialRarities.slice(1)) {
-      expect(after.materials[`${family}-${rarity.toLowerCase()}`]).toBe(8);
+      expect(after.materials[`${family}-${rarity.toLowerCase()}`]).toBe(17);
     }
-    expect(after.materials['heavens-level']).toBe(kind === 'ember' ? 8 : 10);
+    expect(after.materials['heavens-level']).toBe(kind === 'ember' ? 17 : 20);
   });
 
   it.each([31, 46, 61, 76, 91])('Max Level stops exactly before destination %i if its new rarity is missing', destination => {
@@ -133,7 +138,7 @@ describe('cumulative higher-rarity leveling materials', () => {
     account.characters.ember = { level: 90, evolution: 6 };
     account.fractalis = 1000;
     account.materials = { ...Object.fromEntries(Object.entries(expectedMaterials('infernic', 91, 5))
-      .map(([id, amount]) => [id, amount * 2])), 'heavens-level': 2 };
+      .map(([id, amount]) => [id, amount * 3])), 'heavens-level': 3 };
     saveAccount(store.saved, account);
     const raw = store.saved.getItem(ACCOUNT_KEY);
     const writes = store.writes();

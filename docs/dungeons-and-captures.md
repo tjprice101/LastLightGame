@@ -1,5 +1,16 @@
 # Dungeons and captured enemies
 
+**Current owner economy/access override (2026-11-07):** elemental dungeon
+Seed-Soul and Heaven/Abyss level/evolution specialty rewards receive another35%
+cut after the previous50% rounding, min1. Final dungeon ranges are3-4 /3 /2-3
+/1-2 /1 /1. Drop chances, material unlocks, currencies and current holdings stay
+unchanged. Heaven/Abyss now open atLv.30, with one enemy on live caps stages1-4
+atLv.30/38/46/54; stage5+ and historical layout/schedules remain unchanged.
+All five evolutions require Value1/2/3/8/15 protected-safe Devourers; future
+leveling/evolution materials cost50% more rounded up, including captured leveling.
+See [economy](summoning-and-economy.md#additional-farm-reduction-and-upgrade-costs-2026-11-07)
+and [first-evolution access](evolution-fodder.md#all-evolutions-and-early-access-2026-11-07).
+
 ## Future material quantities (2026-11-07)
 
 The [economy reduction](summoning-and-economy.md#future-material-reward-reduction-2026-11-07)

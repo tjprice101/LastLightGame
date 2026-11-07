@@ -37,8 +37,10 @@ describe('level-dependent enemy skill kits', () => {
     }
     for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= infusionModeStageCount; stage++) {
       const state = createInfusionBattle(mode, stage, 1, 'ember', progress);
-      expect(state.enemies[0].enemySkills).toHaveLength(2);
-      expect(state.enemies[0].enemySkills?.[1].action).toBe(stage % 5 === 0 ? 'ultimate' : 'skill2');
+      expect(state.enemies[0].enemySkills).toHaveLength(state.enemies[0].level! < 50 ? 1 : 2);
+      if (state.enemies[0].enemySkills?.length === 2) {
+        expect(state.enemies[0].enemySkills[1].action).toBe(stage % 5 === 0 ? 'ultimate' : 'skill2');
+      }
     }
     let state = createBattle();
     for (let wave = 1; wave < 50; wave++) {

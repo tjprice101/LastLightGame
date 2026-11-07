@@ -48,8 +48,8 @@ describe('Phase8 Null-Prismatica rewards and gated Standard Banner', () => {
     }
     expect(rollInfusionLycalis(80, () => 0)).toBe(0);
     expect(rollInfusionLycalis(120, () => .9999999)).toBe(3);
-    for (let level = 50; level < 80; level++) expect(infusionLycalisOdds(level)).toEqual([{ amount: 0, chance: 1 }]);
-    for (const level of [49, 121, NaN, 80.5]) expect(() => infusionLycalisOdds(level)).toThrow();
+    for (let level = 30; level < 80; level++) expect(infusionLycalisOdds(level)).toEqual([{ amount: 0, chance: 1 }]);
+    for (const level of [29, 121, NaN, 80.5]) expect(() => infusionLycalisOdds(level)).toThrow();
     for (const roll of [-1, 1, NaN, Infinity]) expect(() => rollInfusionLycalis(100, () => roll)).toThrow('[0, 1)');
   });
   it.each(['heavens', 'abyss'] as const)('%s persists burn/AOE and boss premium rewards atomically, deduplicates and preserves existing reward RNG', (mode) => {

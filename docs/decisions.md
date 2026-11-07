@@ -1,5 +1,27 @@
 # Decision log
 
+## Farm reduction, upgrade materials and all-evolution fodder (2026-11-07)
+
+Owner confirms another35% cut from already-reduced positive elemental dungeon,
+Heaven/Abyss level/evolution specialty and Oblivion Calamity Seed-Soul drops.
+Round each step separately, min1; preserve source rolls/chances and holdings.
+Calamity encounters/chests, Fragment of Rise and event/Story/banner/shop/sale
+rewards receive no additional cut.
+
+Each future leveling/evolution final material recipe costs50% more, rounded up,
+not exponentially compounded. Includes captured leveling and all bearer families;
+currencies, weapon/Conduit/Ascension costs remain unchanged. All five evolutions
+require selected protected-safe Evolution Value1/2/3/8/15 with existing source
+family restrictions. No retroactive charge or automatic consumption.
+
+To prevent first-starter progression lock, owner approves Heaven/Abyss unlock
+atLv.30 and an early encounter progression starting30 while retaining late
+content. Live caps stages1-4 use30/38/46/54 and one enemy each; stage5+, legacy
+schedules and historical migration anchors stay unchanged. Rules18 uses the
+existing frozen-loadout restart and saved-reward-retention mechanism.
+See [current contract](summoning-and-economy.md#additional-farm-reduction-and-upgrade-costs-2026-11-07).
+UI redesign remains paused and local mock-ups remain unpublished.
+
 ## Moon launch and unreleased Sunshade concealment (2026-11-07)
 
 Owner authorizes deploying Moon now with the previously specified

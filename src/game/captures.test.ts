@@ -43,7 +43,7 @@ function seeded() {
 
 describe('50% capture rewards and retained fixed-form Elemental-Devourers', () => {
   it.each(['skill1', 'skill2'] as const)('repeats captured %s on the next turn, preserving saved intervals and Gauge costs', action => {
-    const captured = copy();
+    const captured = copy(1);
     const before = structuredClone(captured);
     let state = createBattle(1729, [captured.instanceId], {}, {}, [captured]);
     const actor = state.allies[0];
@@ -114,7 +114,7 @@ describe('50% capture rewards and retained fixed-form Elemental-Devourers', () =
     });
   it('captures every newly killed eligible enemy separately, saves once, and retains actual level/skills', () => {
     const saved = storage();
-    const state = createInfusionBattle('abyss', 1, 1, 'ember', { level: 105, evolution: 6 });
+    const state = createInfusionBattle('abyss', 6, 1, 'ember', { level: 105, evolution: 6 });
     state.enemies.forEach((enemy) => { enemy.hp = 1; });
     state.allies[0].shatter = 100;
     const result = act(state, 'ember', 'skill2', state.enemies[0].id);
@@ -123,7 +123,7 @@ describe('50% capture rewards and retained fixed-form Elemental-Devourers', () =
   });
   it('handles burn kills atomically and idempotently, including multiple duplicate captures', () => {
     const saved = storage();
-    const state = createInfusionBattle('abyss', 1, 1, 'ember', { level: 105, evolution: 6 });
+    const state = createInfusionBattle('abyss', 6, 1, 'ember', { level: 105, evolution: 6 });
     state.enemies.forEach((enemy) => { enemy.hp = 1; enemy.burn = { damage: 1, turns: 1 }; });
     const result = endTurn(state);
     const rewards = result.events.filter((event) => event.kind === 'reward');
@@ -138,7 +138,7 @@ describe('50% capture rewards and retained fixed-form Elemental-Devourers', () =
     expect(account.capturedCharacters).toHaveLength(2);
     expect(new Set(account.capturedCharacters?.map((entry) => entry.instanceId)).size).toBe(2);
     for (const entry of account.capturedCharacters ?? []) {
-      expect(entry.level).toBe(50);
+      expect(entry.level).toBe(60);
       expect(entry.skills).toEqual(state.enemies[0].enemySkills);
       expect(entry.locked).toBe(false);
     }
@@ -177,6 +177,8 @@ describe('50% capture rewards and retained fixed-form Elemental-Devourers', () =
   });
   it('allows duplicate species with distinct IDs and a captured leader across every destination', () => {
     const { saved, account } = seeded();
+    account.capturedCharacters = [copy(1), copy(1, false, 2)];
+    saveAccount(saved, account);
     const ids = account.capturedCharacters!.map((entry) => entry.instanceId);
     const mixed = setSquad(saved, [ids[0], 'ember', ids[1]]);
     expect(characterProtection(mixed, ids[0]).protected).toBe(true);
@@ -186,7 +188,7 @@ describe('50% capture rewards and retained fixed-form Elemental-Devourers', () =
     for (const destination of destinations) {
       const session = createSession('ember', account.characters.ember, destination, { ids: mixed.squad!, progress: mixed.characters, captures });
       expect(session.state.allies.map((ally) => ally.id)).toEqual(mixed.squad);
-      expect(session.state.allies[0].captured?.creatureId).toBe('infusion:abyss:0');
+      expect(session.state.allies[0].captured?.creatureId).toBe('infusion:abyss:2');
       const actor = session.state.allies[0];
       actor.shatter = 100;
       actor.stats.crit = 0;
@@ -209,12 +211,12 @@ describe('50% capture rewards and retained fixed-form Elemental-Devourers', () =
     const { saved, account } = seeded();
     const first = account.capturedCharacters![0];
     const second = account.capturedCharacters![1];
-    const leveled = levelCapturedCharacter(saved, first.instanceId, 50);
-    expect(leveled.capturedCharacters?.[0].level).toBe(51);
-    expect(leveled.capturedCharacters?.[1].level).toBe(50);
-    expect(leveled.fractalis).toBe(9888);
-    expect(leveled.materials['chaotic-common']).toBe(98);
-    expect(() => levelCapturedCharacter(saved, first.instanceId, 50)).toThrow('changed');
+    const leveled = levelCapturedCharacter(saved, first.instanceId, 30);
+    expect(leveled.capturedCharacters?.[0].level).toBe(31);
+    expect(leveled.capturedCharacters?.[1].level).toBe(30);
+    expect(leveled.fractalis).toBe(9928);
+    expect(leveled.materials['chaotic-common']).toBe(97);
+    expect(() => levelCapturedCharacter(saved, first.instanceId, 30)).toThrow('changed');
     const equipped = equipConduit(saved, first.instanceId, 0, 'vigil-core');
     expect(resolveCapturedFighter(equipped.capturedCharacters![0], equipped.conduitEquipment?.[first.instanceId]).stats.health)
       .toBeCloseTo(resolveCapturedFighter(equipped.capturedCharacters![0]).stats.health * 2);
@@ -313,11 +315,11 @@ describe('50% capture rewards and retained fixed-form Elemental-Devourers', () =
     const write = saved.setItem;
     saved.setItem = () => { throw new Error('Write denied'); };
     const id = account.capturedCharacters![0].instanceId;
-    expect(() => levelCapturedCharacter(saved, id, 50)).toThrow('Write denied');
+    expect(() => levelCapturedCharacter(saved, id, 30)).toThrow('Write denied');
     expect(() => equipConduit(saved, id, 0, 'vigil-core')).toThrow('Write denied');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
     saved.setItem = write;
-    expect(levelCapturedCharacter(saved, id, 50).capturedCharacters?.[0].level).toBe(51);
+    expect(levelCapturedCharacter(saved, id, 30).capturedCharacters?.[0].level).toBe(31);
     expect(equipConduit(saved, id, 0, 'vigil-core').conduitEquipment?.[id]?.[0]).toBe('vigil-core');
   });
 });

@@ -37,7 +37,7 @@ export function activityAccess(account: Account, activity: Activity, now = Date.
   const minimumLevel = activity.kind === 'dungeon' ? 30 : activity.kind === 'war' ? 85
     : activity.kind !== 'infusion' ? 0 : activity.mode === 'machines' ? 10
     : activity.mode === 'treasury' || activity.mode === 'sanctuary' ? 60
-    : activity.mode === 'roses' || event ? 75 : 50;
+    : activity.mode === 'roses' || event ? 75 : 30;
   const firstRegion = activity.kind === 'infusion' && activity.mode === 'machines';
   const level = highestBearerLevel(account);
   const regionCleared = !firstRegion || (account.storyCompleted ?? 0) >= storyRules.regionStages;

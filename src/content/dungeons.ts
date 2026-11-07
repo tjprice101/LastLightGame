@@ -4,7 +4,7 @@ import { dungeonArt, legacyDungeonArt, elementAccents } from './dungeon-art';
 import { type Stats } from './combat';
 import { legacyDungeonEnemies, legacyDungeonStrikes, type DungeonEnemy } from './dungeon-enemies';
 import { elementSources, type LegacyElementId } from './element-migration';
-import { rollDrop, type ScaledDrop } from './loot-random';
+import { furtherMaterialRewardRange, rollDrop, type ScaledDrop } from './loot-random';
 import { enemyCombatStats } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
 import { materialLevelBrackets, materialRarities, linearMaterialRange, type MaterialRarity } from './material-drops';
@@ -64,7 +64,7 @@ export function materialLoot(element: ElementId, stage: number): (ScaledDrop & {
   return materialRarities.flatMap(rarity => {
     const firstStage = materialBrackets.find(bracket => bracket.ranges[rarity] !== undefined)!.firstStage;
     if (stage < firstStage) return [];
-    return [{ id: `${element}-${rarity}`, ...linearMaterialRange(rarity, stage, firstStage, elementalDungeonRules.stages) }];
+    return [{ id: `${element}-${rarity}`, ...furtherMaterialRewardRange(linearMaterialRange(rarity, stage, firstStage, elementalDungeonRules.stages)) }];
   });
 }
 

@@ -2,6 +2,7 @@ import type { ElementId } from './activities';
 import { enemyCombatStats } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
 import { linearMaterialRange, type MaterialRarity } from './material-drops';
+import { furtherMaterialRewardRange } from './loot-random';
 import { rollDrop, type ScaledDrop } from './loot-random';
 import { activityPrismaticaDrop } from './prismatica';
 
@@ -64,7 +65,7 @@ export function oblivionMaterialLoot(stage: number): (ScaledDrop & { id: string 
   return oblivionMaterialRarities.flatMap((rarity, index) => {
     const firstStage = oblivionMaterialUnlockFloors[index];
     if (stage < firstStage) return [];
-    return [{ id: oblivionMaterialIds[index], ...linearMaterialRange(rarity, stage, firstStage, gatesOfOblivionRules.stages) }];
+    return [{ id: oblivionMaterialIds[index], ...furtherMaterialRewardRange(linearMaterialRange(rarity, stage, firstStage, gatesOfOblivionRules.stages)) }];
   });
 }
 

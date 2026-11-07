@@ -41,7 +41,7 @@ describe('activity and progression framework', () => {
     expect(elements.filter((element) => element.infusion === 'abyss').map((element) => element.id)).toEqual([
       'tranquilitic', 'chaotic',
     ]);
-    expect(infusionModes.map((mode) => [mode.stages, mode.startingLevel, mode.enemyTiers])).toEqual([[infusionModeStageCount, 50, 6], [infusionModeStageCount, 50, 6]]);
+    expect(infusionModes.map((mode) => [mode.stages, mode.startingLevel, mode.enemyTiers])).toEqual([[infusionModeStageCount, 30, 6], [infusionModeStageCount, 30, 6]]);
   });
   it('uses approved adjacent-rarity recipes and captured-creature requirements', () => {
     expect(evolutionRecipes.map((recipe) => recipe.rarities)).toEqual([
@@ -52,10 +52,10 @@ describe('activity and progression framework', () => {
       expect(result.dungeon).toBe(element.dungeon);
       expect(result.infusion).toBe(element.infusion);
       expect(result.requiresFractalis).toBe(true);
-      expect(result.requiresInfusableEnemies).toBe(from >= 3);
-      expect(result.creatureCount).toBe(from >= 3 ? from - 2 : 0);
-      expect(result.minimumCreatureForm).toBe(from >= 3 ? from : null);
-      expect(result.fodderValue).toBe(from >= 3 ? (from - 2) * from : 0);
+      expect(result.requiresInfusableEnemies).toBe(true);
+      expect(result.creatureCount).toBe(from >= 3 ? from - 2 : 1);
+      expect(result.minimumCreatureForm).toBe(from);
+      expect(result.fodderValue).toBe(from >= 3 ? (from - 2) * from : from);
       expect(result.quantitiesDefined).toBe(true);
       expect(result.to).toBe(from + 1);
     }

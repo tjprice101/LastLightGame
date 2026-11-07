@@ -65,7 +65,7 @@ describe('reference activity banners', () => {
     [10, storyRules.regionStages - 1, 22],
     [10, storyRules.regionStages, 21],
     [29, 25, 21],
-    [30, 25, 15],
+    [30, 25, 13],
     [50, 25, 13],
     [60, 25, 11],
     [75, 25, 10],

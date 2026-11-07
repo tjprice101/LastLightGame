@@ -268,9 +268,9 @@ describe('hostile progression balance', () => {
       expect(resolveCapturedFighter(legacy).stats.health).toBe(capturedEnemyStats(60).health * .65);
       const current = createCreatureCopy(`infusion:${mode}:0`, 1);
       const before = structuredClone(current);
-      expect(current.level).toBe(50);
-      expect(resolveCapturedFighter(current).stats.health).toBe(capturedEnemyStats(50).health * .65);
-      expect(resolveCapturedFighter(current).stats.health).toBeLessThan(resolveFighter('ember', { level: 50, evolution: 3 }).stats.health);
+      expect(current.level).toBe(30);
+      expect(resolveCapturedFighter(current).stats.health).toBe(capturedEnemyStats(30).health * .65);
+      expect(resolveCapturedFighter(current).stats.health).toBeLessThan(resolveFighter('ember', { level: 30, evolution: 3 }).stats.health);
       expect(resolveCapturedFighter({ ...current, level: 120 }).stats.damage).toBeLessThan(enemyCombatStats(120, false).damage);
       expect(current).toEqual(before);
     }

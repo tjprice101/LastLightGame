@@ -1,5 +1,12 @@
 # Gates of Oblivion (D-435 Section 2)
 
+**Current material override (2026-11-07):** Calamity Seed-Soul drops receive
+another35% reduction after the existing50% rounded reduction, minimum1.
+Final chain ranges are3-4 /3 /2-3 /1-2 /1 /1; source sampling/chances and RNG
+draw counts are preserved. Fragment of Rise, currencies, floors, gates,
+encounter stats and Calamity EX+ chest rewards are unchanged.
+See the [economy contract](summoning-and-economy.md#additional-farm-reduction-and-upgrade-costs-2026-11-07).
+
 ## Menu layout (D-444)
 
 The activity card fills the content area beside the main activity navigation.

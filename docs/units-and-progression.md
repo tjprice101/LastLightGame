@@ -1,5 +1,35 @@
 # Units and progression
 
+## All-upgrade material increase and first-evolution fodder (2026-11-07)
+
+Owner confirms each future level-up and evolution costs **50% more materials**,
+rounded up once from its current final recipe: `amount + ceil(amount / 2)`.
+This is not exponential per-level growth. Apply after the existing late doubling
+and character-specific substitutions/surcharges, not before them. Includes
+ordinary, Rose, seasonal and Calamitic bearers, ascended leveling and captured
+Elemental-Devourer leveling. Currency, weapon/Conduit costs and25-Shard
+Ascension/Imbue costs are unchanged. Existing holdings/progress are not rewritten.
+
+Examples: Lv.0->1 Common1 becomes2; ordinary first evolution15 becomes23;
+late per-level material2 becomes3; late Common6 becomes9. Full ordinary/Rose/
+seasonal Lv.0->105 plus five evolutions totals Common661, Uncommon248, Rare255,
+Epic240, Legendary120, Omnic45. Ordinary leveling/evolution specialties total
+90/45, and Prismatica remains21,480. These replace the historical totals below.
+Max Level sums each newly rounded level recipe, not1.5x an old aggregate.
+
+Every evolution requires explicitly selected protected-safe Devourers:
+Evolution Value **1 / 2 / 3 / 8 / 15** for internal Evo.1->2 through5->6.
+Existing family eligibility and additive per-form values remain; higher-value
+copies may cover a lower requirement but surplus copies are rejected.
+First Fracture still grants10 Null-Prismatica once, only in the successful save.
+No retroactive charges, automatic selection/consumption or extra save occurs.
+See [early access and rules](evolution-fodder.md#all-evolutions-and-early-access-2026-11-07).
+
+Validation: exact recipes/full totals, captured costs, cumulative Max Level
+affordability, all-roster early evolution protections, denied/stale saves and
+authority parity in the progression, leveling, Max Level, economy-rebalance
+and evolution-fodder suites. Preserve existing save-before-feedback ordering.
+
 ## Calamitic progression (D-435 Section 1)
 
 Displayed evolution numbers always equal rarity ranks: Common 1 through Omnic 6, Calamitic 7. Calamitic saved evolution values remain 1-6 and display as Evo.2-7; this is presentation-only, with no change to saves, costs, caps, growth or server rules.
