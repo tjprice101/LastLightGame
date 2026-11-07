@@ -1,5 +1,21 @@
 # Last Light: AI agent entry point
 
+## Reclaimed War integration and recruitment override (2026-11-06)
+
+Owner approves Neralis/Varkhel/Seravelle/Velmira playable kits,12 personal
+Masters and four trials from docs/Future Plans/phase-2-war-designs.md.
+Their24 supplied portraits are reviewed, keyed offline and installed under
+stable new IDs; exact originals/hashes remain in Art/source/phase2-war and
+Art/provenance. Verified duplicate root files may be removed after intake.
+Forty-four associated icons/status/Master/header/arena images remain pending;
+use honest neutral existing presentation, never missing URLs or other owners' art.
+All ten War modes recruit with5% probability per final-boss clear, zero on
+Stages1-9. Only successful owned recruitment converts to100NP; a failed roll
+never celebrates or grants conversion. Preserve atomic receipts, separate RNG,
+currency/gates/hostile stats/frozen loadouts and no pity/auto-grants.
+This supersedes proposal-only/no-intake and guaranteed D-414 directions below.
+Paused Story and inactive Moon/Sunshade launch schedules are unchanged.
+
 ## Canonical unfinished-work location (2026-11-06)
 
 Use [Future Plans](docs/Future%20Plans/README.md) for all standalone unfinished

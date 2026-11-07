@@ -579,14 +579,18 @@ const checks: Partial<Record<MasterConduitId, Check>> = {
 };
 
 const eventMasters = masterConduits.filter(entry => isNewEventCharacter(entry.character));
-const legacyMasters = masterConduits.filter(entry => !isNewEventCharacter(entry.character));
+const phase2Characters = new Set(['neralis', 'varkhel', 'seravelle', 'velmira']);
+const phase2Masters = masterConduits.filter(entry => phase2Characters.has(entry.character as string));
+const legacyMasters = masterConduits.filter(entry => !isNewEventCharacter(entry.character) &&
+  !phase2Characters.has(entry.character as string));
 
-describe('102-entry Master behavior matrix', () => {
+describe('114-entry Master behavior matrix', () => {
   it('has three Masters for each of the three Calamitic Element-Bearers and twelve scheduled-event Element-Bearers', () => {
     for (const id of ['ozriel', 'ilvaris', 'kaelith'])
       expect(masterConduits.filter(entry => (entry.character as string) === id)).toHaveLength(3);
     expect(eventMasters).toHaveLength(36);
-    expect(masterConduits).toHaveLength(102);
+    expect(masterConduits).toHaveLength(114);
+    expect(phase2Masters).toHaveLength(12);
   });
   it('has one concrete legacy behavior scenario per installed legacy Master', () => {
     expect(Object.keys(checks).sort()).toEqual(legacyMasters.map(entry => entry.id).sort());

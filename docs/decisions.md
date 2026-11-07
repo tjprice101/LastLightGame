@@ -1,5 +1,21 @@
 # Decision log
 
+## Reclaimed War integration and5% final-boss recruitment (2026-11-06)
+
+**Approved:** owner authorizes implementing Neralis, Varkhel, Seravelle and
+Velmira from their [complete design/kit contract](Future%20Plans/phase-2-war-designs.md),
+using supplied24 portraits and neutral placeholders for undelivered abilities/
+Masters/status/scenery, in the existing War pattern. Offline background removal,
+installed portrait wiring and removal of verified root duplicates are approved;
+archived exact source bytes/hashes remain. No Moon identity replacement.
+
+**Approved consequential probability change:** all ten War modes recruit with
+5% probability per final-boss clear (Stages1-9 zero), replacing D-414 guarantees.
+Owned successful recruitment still converts to100NP; a failed roll gives no
+recruitment/conversion. Atomic rewards and independent RNG remain. Existing
+currency/gates/hostile definitions, Standard/seasonal summon pools and inactive
+event schedules are unchanged. No auto-grants, new specialty materials or pity.
+
 ## Future Plans filing and audited budget (2026-11-06)
 
 **Confirmed:** owner requests moving the existing UI audit, four artwork-led

@@ -139,6 +139,18 @@ export const omnicSelfStats = {
   'master-aureth-1': { health: .6, defense: .6 },
   'master-aureth-2': { health: .75, skillPower: .25 },
   'master-aureth-3': { defense: .5, skillEfficiency: .2 },
+  'master-neralis-1': { health: .6, skillPower: .35 },
+  'master-neralis-2': { health: .5, defense: .6 },
+  'master-neralis-3': { health: .4, damage: .4, skillPower: .25 },
+  'master-varkhel-1': { health: .7, defense: .5 },
+  'master-varkhel-2': { health: .5, skillPower: .35 },
+  'master-varkhel-3': { health: .5, damage: .45 },
+  'master-seravelle-1': { health: .5, skillPower: .35 },
+  'master-seravelle-2': { damage: .45, skillPower: .3 },
+  'master-seravelle-3': { health: .6, defense: .4 },
+  'master-velmira-1': { damage: .6, skillPower: .3 },
+  'master-velmira-2': { damage: .45, crit: .25 },
+  'master-velmira-3': { health: .5, damage: .35, skillPower: .2 },
 } as const satisfies Partial<Record<EquipmentId, OmnicStatBonuses>>;
 
 export const omnicSquadStats = {

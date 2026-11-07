@@ -12,12 +12,26 @@ import { enemyDebuffs } from './battle-status';
 
 describe('delivered shared elemental status icons', () => {
   it('serves all 39 real exports with byte-derived revisions and decorative accessible markup', () => {
-    expect(Object.keys(statusArt)).toHaveLength(39);
-    for (const [id, path] of Object.entries(statusArt)) {
+    expect(Object.keys(statusArt)).toHaveLength(43);
+    const delivered = Object.entries(statusArt).filter(([, path]) => !path.startsWith('data:'));
+    expect(delivered).toHaveLength(39);
+    for (const [id, path] of delivered) {
       const bytes = readFileSync(`public/assets/${path}`);
       const revision = createHash('sha256').update(bytes).digest('hex').slice(0, 16);
       expect(assetUrl(path)).toContain(`assets/${path}?v=${revision}`);
       expect(statusIcon(id as keyof typeof statusArt)).toContain('alt="" aria-hidden="true"');
+    }
+  });
+
+  it('uses four named neutral status placeholders without requesting missing exports', () => {
+    const pending = Object.entries(statusArt).filter(([, path]) => path.startsWith('data:'));
+    expect(pending.map(([id]) => id).sort()).toEqual([
+      'native-phase2-cadence', 'native-phase2-crosscut', 'native-phase2-current', 'native-phase2-tension',
+    ]);
+    for (const [id, path] of pending) {
+      expect(decodeURIComponent(path)).toContain('art pending');
+      expect(statusIcon(id as keyof typeof statusArt)).toContain(`src="${path}"`);
+      expect(statusIcon(id as keyof typeof statusArt)).not.toContain('assets/');
     }
   });
 

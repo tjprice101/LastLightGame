@@ -48,8 +48,12 @@ describe('character Masters and chest contracts', () => {
     const eligibleCharacters = new Set(masterConduits.map(entry => entry.character));
     expect(eligibleCharacters.size).toBe(masterConduits.length / 3);
     for (const character of eligibleCharacters) expect(masterConduits.filter(entry => entry.character === character)).toHaveLength(3);
-    expect(masterConduits.slice(0, 66).every(entry =>
+    expect(masterConduits.filter(entry => !['neralis', 'varkhel', 'seravelle', 'velmira'].includes(entry.character)).slice(0, 66).every(entry =>
       entry.rarity === 'Omnic' && entry.art === `master-conduits/${entry.id}.png`)).toBe(true);
+    expect(masterConduits.filter(entry => ['neralis', 'varkhel', 'seravelle', 'velmira'].includes(entry.character)))
+      .toHaveLength(12);
+    expect(masterConduits.filter(entry => ['neralis', 'varkhel', 'seravelle', 'velmira'].includes(entry.character))
+      .every(entry => !('art' in entry))).toBe(true);
     expect(conduits).toHaveLength(99);
   });
   it('gives every Master a distinct complete effect within each eligible character', () => {

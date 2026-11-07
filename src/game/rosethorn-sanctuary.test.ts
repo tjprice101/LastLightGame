@@ -265,7 +265,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     expect(glossary).toContain('currencies/lycalis.png');
     expect(glossary).toContain('Playable copy');
     expect(glossary).toContain('separate 50% chance');
-    expect(archives(account).match(/data-archive-character=/g)).toHaveLength(204);
+    expect(archives(account).match(/data-archive-character=/g)).toHaveLength(228);
     const html = summonHub(account);
     expect(html.match(/data-banner-entry=/g)).toHaveLength(28);
     const table = [...html.matchAll(/<table[\s\S]*?<\/table>/g)].map(match => match[0]).join('');

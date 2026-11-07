@@ -21,8 +21,8 @@ describe('profile picture collection', () => {
     const browse = document.querySelector<HTMLButtonElement>('#browse')!;
     browse.focus();
     const result = chooseProfilePicture(account, 'ember');
-    expect(document.querySelectorAll('[data-picture]')).toHaveLength(33);
-    expect(document.querySelectorAll('[data-picture] > .picture-tile-art')).toHaveLength(33);
+    expect(document.querySelectorAll('[data-picture]')).toHaveLength(41);
+    expect(document.querySelectorAll('[data-picture] > .picture-tile-art')).toHaveLength(41);
     for (const tile of Array.from(document.querySelectorAll('[data-picture]'))) {
       expect(tile.querySelector(':scope > b')).not.toBeNull();
       expect(tile.querySelector(':scope > small')).not.toBeNull();
@@ -57,10 +57,10 @@ describe('profile picture collection', () => {
     expect(document.querySelector('[data-dialog-value="use"]')?.textContent).toBe('Currently in use');
     expect(document.querySelector<HTMLButtonElement>('[data-dialog-value="use"]')!.disabled).toBe(true);
     document.querySelector<HTMLButtonElement>('[data-picture-category="omnic"]')!.click();
-    expect(document.querySelectorAll('[data-picture]:not([hidden])')).toHaveLength(16);
+    expect(document.querySelectorAll('[data-picture]:not([hidden])')).toHaveLength(20);
     expect(document.querySelector<HTMLElement>('[data-picture-group="default"]')!.hidden).toBe(true);
     document.querySelector<HTMLButtonElement>('[data-picture-filter="unlocked"]')!.click();
-    expect(document.querySelector('[data-picture-showing]')?.textContent).toBe('Showing 1 of 33 pictures');
+    expect(document.querySelector('[data-picture-showing]')?.textContent).toBe('Showing 1 of 41 pictures');
     const search = document.querySelector<HTMLInputElement>('[data-picture-search]')!;
     search.value = 'not a character';
     search.dispatchEvent(new Event('input', { bubbles: true }));

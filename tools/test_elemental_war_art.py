@@ -78,10 +78,11 @@ class ElementalWarArtTests(unittest.TestCase):
 
     def test_design_status_stage_endpoints_and_exact_recruitment_contract(self):
         spec = (ROOT / "docs" / "elemental-war.md").read_text(encoding="utf-8")
-        for phrase in ("Nerithe is implemented", "**1% chance**", "**base form as a playable character**",
-                       "two female, one male", "existing currency", "Approved currency tuning",
-                       "No recruitment pity", "one validated", "receipt-deduplicated",
-                       "stages1-9", "roll < .01", "Lv.0/Evo.1/weapon0"):
+        for phrase in ("Nerithe is implemented", "**5% recruitment chance per final-boss clear**",
+                       "including all six", "four new trials", "Stages1-9 never recruit",
+                       "A failed roll grants neither recruitment nor duplicate conversion",
+                       "Lv.0/Evo.1 unequipped", "persist atomically once",
+                       "independent recruitment RNG"):
             self.assertIn(phrase, spec)
         rows = re.findall(r"^\| (\d+) \| (\d+) \| Evo\.(\d) \|", spec, re.M)
         self.assertEqual(len(rows), 10)

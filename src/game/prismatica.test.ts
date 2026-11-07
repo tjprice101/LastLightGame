@@ -28,7 +28,7 @@ function storage() {
   const account = emptyAccount();
   account.storyCompleted = storyRules.stages;
   account.infusionStages = { heavens: 15, abyss: 15, treasury: 25, sanctuary: 25, roses: 35, machines: 35 };
-  account.warStages = { nerithe: 10, orvella: 10, vaelor: 10, caldrex: 10, solenne: 10, myrthen: 10 };
+  account.warStages = Object.fromEntries(elementalWars.map(war => [war.character, 10]));
   const values = new Map([[SAVE_KEY, '{"version":1,"starterId":"ember"}'], [ACCOUNT_KEY, JSON.stringify(account)]]);
   const saved: ProfileStorage = { getItem: key => values.get(key) ?? null,
     setItem: vi.fn((key, value) => { values.set(key, value); }), removeItem: key => { values.delete(key); } };

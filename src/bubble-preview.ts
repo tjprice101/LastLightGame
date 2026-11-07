@@ -499,7 +499,7 @@ function equipment(): string {
   }).join('')}</div>`)}
     ${glass('Personal Master', state.capture ? '<p>Master Conduits are exclusive to their matching Element-Bearer.</p>' : `<div class="master-slot">${(() => {
       const master = masterConduits.find(entry => entry.id === account().masterEquipment?.[state.selected]);
-      return `${master ? image(master.art.replace(/\.png$/, ''), master.name) : uiIcon('inventory')}<div><h3>${master?.name ?? 'Empty Master slot'}</h3><p>${esc(master?.effect ?? 'Equip one owned, character-specific Master separately from the eight ordinary slots.')}</p></div>`;
+      return `${master ? image(master.art?.replace(/\.png$/, '') ?? '', master.name) : uiIcon('inventory')}<div><h3>${master?.name ?? 'Empty Master slot'}</h3><p>${esc(master?.effect ?? 'Equip one owned, character-specific Master separately from the eight ordinary slots.')}</p></div>`;
     })()}<button class="pill" data-action="master-picker">Choose Master</button></div>`)}${button('Your Conduits', 'loadouts')}`);
 }
 const activityCards: readonly [string, string, string, Screen][] = [
@@ -653,7 +653,7 @@ function inventory(): string {
     itemCard(materialPath(id), materialName(id), `${amount.toLocaleString()} owned`)).join('')
     : conduits.filter(entry => (account().conduits?.[entry.id] ?? 0) > 0).map(entry =>
       itemCard(`conduits/${entry.id}`, entry.name, `${entry.rarity} / Lv.${account().conduitUpgrades?.[entry.id] ?? 0} / ${account().conduits?.[entry.id]} owned`)).join('')
-      + masterConduits.filter(entry => account().masterConduits?.[entry.id]).map(entry => itemCard(entry.art.replace(/\.png$/, ''), entry.name, 'Omnic / Personal Master')).join('');
+      + masterConduits.filter(entry => account().masterConduits?.[entry.id]).map(entry => itemCard(entry.art?.replace(/\.png$/, '') ?? '', entry.name, 'Omnic / Personal Master')).join('');
   return `${heading()}<div class="holdings-row">${glass('Prismatica', `${image('currencies/fractalis')}<strong>${account().fractalis.toLocaleString()}</strong>`)}
     ${glass('Null-Prismatica', `${image('currencies/lycalis')}<strong>${account().lycalis.toLocaleString()}</strong>`)}
     ${glass('Broken Mechanical Components', `${image('currencies/mechanical-components')}<strong>${account().mechanicalComponents?.toLocaleString()}</strong>`)}</div>
@@ -705,7 +705,7 @@ function archiveGrid(): string {
 }
 function masters(): string {
   return `${heading()}<p class="page-subtitle">Masters are character-specific mechanisms with a separate equipment slot.</p><div class="toolbar">${button('Element-Bearer Archive', 'archive')}${tag('Character-specific equipment')}</div>
-    <div class="item-grid">${masterConduits.map(entry => itemCard(entry.art.replace(/\.png$/, ''), entry.name, `${getStarter(entry.character).name} / ${account().masterConduits?.[entry.id] ? 'Owned' : 'Unowned'}`, 'details', !account().masterConduits?.[entry.id])).join('')}</div>`;
+    <div class="item-grid">${masterConduits.map(entry => itemCard(entry.art?.replace(/\.png$/, '') ?? '', entry.name, `${getStarter(entry.character).name} / ${account().masterConduits?.[entry.id] ? 'Owned' : 'Unowned'}`, 'details', !account().masterConduits?.[entry.id])).join('')}</div>`;
 }
 function conduitArchive(focus = false): string {
   return `${heading()}<div class="toolbar"><p class="muted">${focus ? 'Each rarity rolls independently. Choose an unowned mechanism to focus, without changing its rarity odds.' : 'Owned in color. Unowned in silhouette. Undelivered artwork stays a named neutral tile.'}</p>
@@ -1056,7 +1056,7 @@ root.addEventListener('click', event => perform(() => {
       break;
     }
     case 'master-picker': dialog('Choose Personal Master', `<button class="pill" data-action="master-equip">Unequip Master</button><div class="equipment-picker">${masterConduits.filter(entry => entry.character === state.selected && account().masterConduits?.[entry.id]).map(entry =>
-      `<button class="item-card" data-action="master-equip" data-master="${entry.id}">${image(entry.art.replace(/\.png$/, ''), entry.name)}<strong>${entry.name}</strong><small>${esc(entry.effect)}</small></button>`).join('') || '<p>No matching Master owned. Choose one from a Machine’s Master Chest.</p>'}</div>`); break;
+      `<button class="item-card" data-action="master-equip" data-master="${entry.id}">${image(entry.art?.replace(/\.png$/, '') ?? '', entry.name)}<strong>${entry.name}</strong><small>${esc(entry.effect)}</small></button>`).join('') || '<p>No matching Master owned. Choose one from a Machine’s Master Chest.</p>'}</div>`); break;
     case 'master-equip': {
       const master = masterConduits.find(entry => entry.id === target.dataset.master);
       equipMasterConduit(session.storage, state.selected, master?.id ?? null);
@@ -1188,14 +1188,15 @@ root.addEventListener('click', event => perform(() => {
       celebrate('Message sent.'); break;
     }
     case 'chest': dialog('Choose an unowned Master', `<div class="equipment-picker">${masterConduits.filter(entry => !account().masterConduits?.[entry.id]).map(entry =>
-      `<button class="item-card" data-action="master-claim" data-master="${entry.id}">${image(entry.art.replace(/\.png$/, ''), entry.name)}<strong>${entry.name}</strong><small>${getStarter(entry.character).name}</small></button>`).join('') || '<p>All Masters owned. Your chest remains unopened.</p>'}</div>`); break;
+      `<button class="item-card" data-action="master-claim" data-master="${entry.id}">${image(entry.art?.replace(/\.png$/, '') ?? '', entry.name)}<strong>${entry.name}</strong><small>${getStarter(entry.character).name}</small></button>`).join('') || '<p>All Masters owned. Your chest remains unopened.</p>'}</div>`); break;
     case 'master-claim': {
       const master = masterConduits.find(entry => entry.id === target.dataset.master);
       if (!master) throw new Error('Choose a valid Master.');
       confirmAction(master.name, `<p>Use one Machine’s Master Chest to acquire this Master. It will not be automatically equipped.</p><p>${esc(master.effect)}</p>`, () => {
         openMasterChest(session.storage, master.id);
-        state.revealItems = [{ art: master.art.replace(/\.png$/, ''), name: master.name, detail: 'Personal Master acquired' }];
-        cinematic({ kind: 'chest', eyebrow: "Machine's Master Chest", title: master.name, subtitle: 'Personal Master acquired', art: master.art.replace(/\.png$/, ''), tier: 'prismatic' }, () => navigate('rewards'));
+        const art = master.art?.replace(/\.png$/, '') ?? '';
+        state.revealItems = [{ art, name: master.name, detail: 'Personal Master acquired' }];
+        cinematic({ kind: 'chest', eyebrow: "Machine's Master Chest", title: master.name, subtitle: 'Personal Master acquired', art, tier: 'prismatic' }, () => navigate('rewards'));
       }); break;
     }
     case 'chest-loot': {

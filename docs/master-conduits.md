@@ -1,5 +1,21 @@
 # Character Master Conduits (D-201)
 
+## Four reclaimed War alternatives (2026-11-06)
+
+Owner approves three alternatives each for Neralis/Varkhel/Seravelle/Velmira,
+using the existing one matching-bearer personal Master slot and chest choice
+foundation. [Twelve exact stat/effect contracts](Future%20Plans/phase-2-war-designs.md)
+preserve independent native counters, real costs/recovery and fixed Gauge/
+stat bonuses. New generated effects do not recursively feed native loops.
+All twelve ability effects remain fixed/non-upgradeable in the authoritative
+catalog. Existing ordinary Master stat-upgrade progression still uses approved
+per-stat rules; it does not grow counter caps, Gauge refunds, extra Shields or
+other native trigger effects. Catalog coverage now includes114 Masters,
+including the36 inactive seasonal bearers' alternatives.
+Their twelve images remain pending; neutral named panels and exact tooltip
+text are authoritative, not missing image URLs. No automatic unlock/equip or
+new chest-drop probabilities. [44 pending associated sources](Future%20Plans/Elemental%20War%20Phase%202.md).
+
 ## Phase1 alternatives (2026-11-03)
 
 [Nine Master tooltips](phase-1-war-kit-specification.md) describe Caldrex,

@@ -58,6 +58,11 @@ export interface NativeKitState {
   promise?: number;
   interval?: number;
   reserve?: number;
+  current?: number;
+  tension?: number;
+  cadence?: number;
+  crosscut?: number;
+  previousSkill?: 'skill1' | 'skill2';
   branches?: number;
   branchTarget?: string;
   faultCount?: number;
@@ -254,6 +259,14 @@ export function nativeHeatCap(owner: Combatant): number {
   return equipped(owner, 'master-caldrex-1') ? 5 : 3;
 }
 
+function phase2CounterCap(owner: Combatant, master: 1): number {
+  if (owner.definitionId === 'neralis') return equipped(owner, 'master-neralis-1') ? 4 : 3;
+  if (owner.definitionId === 'varkhel') return equipped(owner, 'master-varkhel-1') ? 5 : 4;
+  if (owner.definitionId === 'seravelle') return equipped(owner, 'master-seravelle-1') ? 4 : 3;
+  if (owner.definitionId === 'velmira') return equipped(owner, 'master-velmira-1') ? 4 : 3;
+  return master;
+}
+
 function guardOnce(owner: Combatant, key: string, round: number): boolean {
   const guards = nativeMemory(owner).guards ??= {};
   if (guards[key] === round) return false;
@@ -383,6 +396,8 @@ export function nativeDefenseBonus(state: BattleState, unit: Combatant, baseDefe
     bonus += .1 * (unit.native?.load ?? 0);
   if (hasNativeIdentity(unit) && unit.definitionId === 'caldrex' && equipped(unit, 'master-caldrex-1'))
     bonus += .12 * (unit.native?.heat ?? 0);
+  if (hasNativeIdentity(unit) && unit.definitionId === 'varkhel' && equipped(unit, 'master-varkhel-1'))
+    bonus += .1 * (unit.native?.tension ?? 0);
   const buff = unit.native?.defenseBuff;
   if (buff && buff.throughRound >= state.round) bonus += buff.fraction;
   return bonus * baseDefense;
@@ -410,6 +425,14 @@ function warEnemyHit(state: BattleState, enemy: Combatant, events: BattleEvent[]
     }
     if (equipped(owner, 'master-caldrex-2') && (memory.tauntThrough ?? -1) >= state.round && gear(enemy).owners.nativeTaunt === owner.id)
       fixed(state, owner, enemy, owner.stats.damage * .9, 'revenge', events, false, undefined, true, 'conduit');
+  }
+  for (const owner of living(state).filter(unit => hasNativeIdentity(unit) && unit.definitionId === 'varkhel')) {
+    if (!strikes.some(entry => entry.target === owner.id &&
+        (entry.amount > 0 || (entry.shieldAbsorbed ?? 0) > 0))) continue;
+    if ((owner.native?.tension ?? 0) >= phase2CounterCap(owner, 1) ||
+        !guardOnce(owner, 'tension', state.round)) continue;
+    owner.native!.tension = (owner.native?.tension ?? 0) + 1;
+    status(state, events, owner, owner, `${owner.name} banks Tension ${owner.native!.tension}/${phase2CounterCap(owner, 1)}.`);
   }
 }
 
@@ -1239,6 +1262,137 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
       status(state, events, owner, owner, `${owner.name} is in ${next[0].toUpperCase()}${next.slice(1)}.`);
       break;
     }
+    case 'neralis': {
+      const current = Math.min(phase2CounterCap(owner, 1), memory.current ?? 0);
+      const heal = (recipient: Combatant, offer: number) => {
+        const before = recipient.hp;
+        const restored = nativeHeal(state, owner, recipient, offer, events, true, activation);
+        if (equipped(owner, 'master-neralis-3') && before < recipient.stats.health * .5 && restored > 0 &&
+            guardOnce(owner, `return-gauge:${recipient.id}`, state.round))
+          generatedGaugePercent(owner, recipient, .1, events, state);
+        return restored;
+      };
+      if (action === 'skill1' && ally) {
+        heal(ally, ally.stats.health * .35);
+        const throughRound = state.round + 1 + activation.skillDuration;
+        ally.native ??= {};
+        ally.native.defenseBuff = { fraction: .3, throughRound };
+        status(state, events, owner, ally, `${ally.name}: Station Defense +30% through player turn ${throughRound}.`);
+        if (equipped(owner, 'master-neralis-2'))
+          nativeShield(state, owner, ally, ally.stats.health * .2, events,
+            { skillPower: activation.skillPower, activation, stack: true });
+      } else if (action === 'skill2') {
+        memory.current = 0;
+        const perCurrent = equipped(owner, 'master-neralis-1') ? .09 : .06;
+        for (const recipient of allies)
+          heal(recipient, recipient.stats.health * (.18 + perCurrent * current));
+        status(state, events, owner, owner, `${owner.name} spends ${current} Current.`);
+      } else if (action === 'ultimate') {
+        memory.current = 0;
+        hit(7.2, true);
+        for (const recipient of living(state))
+          heal(recipient, recipient.stats.health * (.3 + .05 * current));
+        status(state, events, owner, owner, `${owner.name} spends ${current} Current.`);
+      }
+      finishNativeHealing(state, owner, activation, events);
+      break;
+    }
+    case 'varkhel': {
+      const tension = Math.min(phase2CounterCap(owner, 1), memory.tension ?? 0);
+      if (action === 'skill1') {
+        nativeShield(state, owner, owner, owner.stats.health * .25, events,
+          { skillPower: activation.skillPower, activation, stack: true });
+        memory.defenseBuff = { fraction: .4, throughRound: state.round + 1 + activation.skillDuration };
+        memory.tauntThrough = state.round + activation.skillDuration;
+        status(state, events, owner, owner, `${owner.name} gains +40% Defense and taunts eligible random single-target attacks through enemy phase ${memory.tauntThrough}.`);
+        if (equipped(owner, 'master-varkhel-2')) for (const recipient of other)
+          nativeShield(state, owner, recipient, recipient.stats.health * .16, events,
+            { skillPower: activation.skillPower, activation, stack: true });
+      } else if (action === 'skill2') {
+        memory.tension = 0;
+        hit(2.85 + .45 * tension, false,
+          equipped(owner, 'master-varkhel-3') ? .35 : .2);
+        if (tension >= 3 && equipped(owner, 'master-varkhel-3'))
+          generatedGaugePercent(owner, owner, .15, events, state);
+        if (tension) status(state, events, owner, owner, `${owner.name} spends ${tension} Tension.`);
+      } else if (action === 'ultimate') {
+        memory.tension = 0;
+        hit(6.9 + .55 * tension, true);
+        for (const recipient of living(state)) shield(recipient, .3);
+        if (tension) status(state, events, owner, owner, `${owner.name} spends ${tension} Tension.`);
+      }
+      break;
+    }
+    case 'seravelle': {
+      const cadence = Math.min(phase2CounterCap(owner, 1), memory.cadence ?? 0);
+      if (action === 'skill1' && target) {
+        hit(2.45);
+        if (target.hp > 0) {
+          const burns = memory.burns ??= {};
+          const damage = applyConduitBurn(state, owner, target, owner.stats.damage * .12, activation);
+          burns[target.id] = { damage, turns: 2 + activation.skillDuration };
+          target.burn = { ...burns[target.id], sourceId: owner.id, origin: 'native' };
+          resetConduitBurnStreak(owner, target);
+          status(state, events, owner, target, `${target.name}: Burn from ${owner.name}, ${damage} per phase for ${burns[target.id].turns} phases.`);
+        }
+      } else if (action === 'skill2') {
+        memory.cadence = 0;
+        const base = equipped(owner, 'master-seravelle-1') ? .4 : .3;
+        const fraction = base + .1 * cadence;
+        const throughRound = state.round + 1 + activation.skillDuration;
+        for (const recipient of allies) {
+          const previous = recipient.attackBoost;
+          if (!previous || previous.throughRound < state.round || previous.sourceId === owner.id ||
+              previous.origin === 'native' && fraction > previous.fraction)
+            recipient.attackBoost = { fraction, throughRound, sourceId: owner.id, origin: 'native' };
+          else if (previous.sourceId === owner.id && previous.throughRound >= state.round)
+            recipient.attackBoost = { ...previous, fraction, throughRound };
+          status(state, events, owner, recipient, `${recipient.name}: Direct Attack +${Math.round(fraction * 100)}% through player turn ${throughRound}.`);
+        }
+        status(state, events, owner, owner, `${owner.name} spends ${cadence} Cadence.`);
+      } else if (action === 'ultimate') {
+        hit(6.2, true);
+        const throughRound = state.round + 1 + activation.skillDuration;
+        for (const recipient of other) {
+          generatedGaugePercent(owner, recipient, .2, events, state);
+          recipient.native ??= {};
+          recipient.native.skillPowerBuff = { owner: owner.id, fraction: .3, throughRound };
+          status(state, events, owner, recipient, `${recipient.name}: Skill Power +30% and 20% Gauge through player turn ${throughRound}.`);
+        }
+        if (equipped(owner, 'master-seravelle-3')) for (const recipient of allies)
+          nativeShield(state, owner, recipient, recipient.stats.health * .22, events,
+            { skillPower: activation.skillPower, activation, stack: true });
+      }
+      break;
+    }
+    case 'velmira': {
+      const crosscut = Math.min(phase2CounterCap(owner, 1), memory.crosscut ?? 0);
+      if (action === 'skill1') {
+        const fortified = equipped(owner, 'master-velmira-2') && !!target?.weakened;
+        hit(2.8 * (fortified ? 1.35 : 1));
+        if (target?.hp) applyConduitWeaken(state, owner, target, .25, events, action, 2, activation);
+      } else if (action === 'skill2') {
+        const pierce = crosscut >= 2 ? equipped(owner, 'master-velmira-2') ? .35 : .2 : 0;
+        hit(2.05, true, pierce);
+      } else if (action === 'ultimate') {
+        memory.crosscut = 0;
+        hit(10.5 + .9 * crosscut, false, .3);
+        if (crosscut >= 3 && equipped(owner, 'master-velmira-3')) {
+          generatedGaugePercent(owner, owner, .25, events, state);
+          nativeHeal(state, owner, owner, owner.stats.health * .18, events, false);
+        }
+      }
+      if (action === 'skill1' || action === 'skill2') {
+        const previousSkill = memory.previousSkill;
+        if (previousSkill && previousSkill !== action)
+          memory.crosscut = Math.min(phase2CounterCap(owner, 1), crosscut + 1);
+        memory.previousSkill = action;
+        if (equipped(owner, 'master-velmira-1') && guardOnce(owner, 'first-skill', 0))
+          memory.crosscut = Math.min(phase2CounterCap(owner, 1), (memory.crosscut ?? 0) + 1);
+        status(state, events, owner, owner, `${owner.name} holds ${memory.crosscut ?? 0}/${phase2CounterCap(owner, 1)} Crosscut.`);
+      }
+      break;
+    }
     default: throw new Error(`Missing native identity for ${owner.definitionId}.`);
   }
 }
@@ -1247,6 +1401,37 @@ export function nativeAfterAction(state: BattleState, owner: Combatant, action: 
   const actionEvents = events.slice(owner.native?.actionStartedAt ?? events.length);
   const actionDamage = actionEvents.some(event => event.kind === 'damage' && event.source === owner.id &&
     (event.amount > 0 || (event.shieldAbsorbed ?? 0) > 0));
+  const effectiveNativeDamage = actionEvents.some(event => event.kind === 'damage' && event.source === owner.id &&
+    event.origin !== 'conduit' && !event.periodic && event.nativeKind !== 'redirect' &&
+    (event.amount > 0 || (event.shieldAbsorbed ?? 0) > 0));
+  const effectiveNativeHeal = actionEvents.some(event => event.kind === 'heal' && event.source === owner.id &&
+    event.origin === 'native' && event.amount > 0);
+  if (hasNativeIdentity(owner) && owner.definitionId === 'neralis' &&
+      (action === 'light' && effectiveNativeDamage || action !== 'light' && effectiveNativeHeal)) {
+    const current = owner.native?.current ?? 0;
+    const cap = phase2CounterCap(owner, 1);
+    if (current < cap) {
+      owner.native!.current = current + 1;
+      status(state, events, owner, owner, `${owner.name} gains Current ${owner.native!.current}/${cap}.`);
+    }
+  }
+  if (hasNativeIdentity(owner) && owner.definitionId === 'varkhel' && action === 'light' && effectiveNativeDamage) {
+    const tension = owner.native?.tension ?? 0;
+    const cap = phase2CounterCap(owner, 1);
+    if (tension < cap) {
+      owner.native!.tension = tension + 1;
+      status(state, events, owner, owner, `${owner.name} gains Tension ${owner.native!.tension}/${cap}.`);
+    }
+  }
+  if (action === 'light' && effectiveNativeDamage) for (const seravelle of living(state).filter(unit =>
+      hasNativeIdentity(unit) && unit.definitionId === 'seravelle')) {
+    const cap = phase2CounterCap(seravelle, 1);
+    if (!guardOnce(seravelle, 'cadence', state.round)) continue;
+    if ((seravelle.native?.cadence ?? 0) < cap) {
+      seravelle.native!.cadence = (seravelle.native?.cadence ?? 0) + 1;
+      status(state, events, seravelle, seravelle, `${seravelle.name} gains Cadence ${seravelle.native!.cadence}/${cap}.`);
+    }
+  }
   const ability = action === 'light' ? undefined : owner.kit?.abilities[action];
   const traits = phaseZeroStatsReady ? conduitActionTraits(state, owner, action) : undefined;
   const damaging = traits?.damage ?? (action === 'light' || ability?.strength.damageMultiplier !== undefined);
@@ -1622,6 +1807,12 @@ export function nativeBurnPhase(state: BattleState, enemy: Combatant, events: Ba
     const warded = living(state).some(unit => hasNativeIdentity(unit) && unit.definitionId === 'caldrex' && (unit.native?.burnBoostThrough ?? -1) >= state.round);
     const hpAndShield = enemy.hp + enemy.shield;
     fixed(state, owner, enemy, warded ? tick * 1.25 : tick, 'burn', events, true);
+    if (hpAndShield > enemy.hp + enemy.shield) for (const seravelle of living(state).filter(unit =>
+        hasNativeIdentity(unit) && unit.definitionId === 'seravelle' && equipped(unit, 'master-seravelle-2'))) {
+      if (!guardOnce(seravelle, 'burn-gauge', state.round)) continue;
+      for (const recipient of living(state).filter(unit => unit.id !== seravelle.id))
+        generatedGaugePercent(seravelle, recipient, .05, events, state);
+    }
     const triage = living(state).find(unit => hasNativeIdentity(unit) && unit.definitionId === 'caldrex' && equipped(unit, 'master-caldrex-3'));
     if (triage && enemy.hp + enemy.shield < hpAndShield && guardOnce(triage, 'triage', state.round))
       for (const ally of living(state)) generatedHeal(triage, ally, ally.stats.health * .08, events, state);
@@ -1821,7 +2012,8 @@ export function nativeMarkers(state: BattleState, unit: Combatant): NativeMarker
       value: `Critical Damage +${Math.round(hymn.criticalDamage * 100)}% · Skill Power +${Math.round(hymn.skillPower * 100)}% · through player turn ${hymn.throughRound}` });
   }
   const buff = unit.side === 'ally' ? unit.native?.defenseBuff : undefined;
-  if (buff && buff.throughRound >= state.round) markers.push({ id: 'gate-ward', owner: unit.id, label: 'Gate Ward',
+  if (buff && buff.throughRound >= state.round) markers.push({ id: 'gate-ward', owner: unit.id,
+    label: unit.definitionId === 'neralis' ? 'Station Defense' : unit.definitionId === 'varkhel' ? 'Warning Chain' : 'Gate Ward',
     value: `Defense +${Math.round(buff.fraction * 100)}% · through player turn ${buff.throughRound}`, icon: 'ward' });
   for (const owner of state.allies.filter(hasNativeIdentity)) {
     const claim = owner.native?.claim;
@@ -1912,6 +2104,22 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
   if (unit.definitionId === 'ozriel') for (const recipient of state.allies)
     add('Refusal', memory.refusalUsed?.includes(recipient.id) ? 'Used' : unit.hp > 0 ? 'Ready' : 'Unavailable',
       `${recipient.name}; once per encounter while Ozriel is alive; a lethal hit leaves 1 HP, never revives.`, ['calamitic-refusal']);
+  if (unit.definitionId === 'neralis')
+    add('Current', `${memory.current ?? 0}/${phase2CounterCap(unit, 1)}`,
+      'Gain once per action from effective Normal damage or native healing. Skill2 and Last Flare spend Current.',
+      ['native-phase2-current'], true);
+  if (unit.definitionId === 'varkhel')
+    add('Tension', `${memory.tension ?? 0}/${phase2CounterCap(unit, 1)}`,
+      'Gain from effective enemy direct Health or Shield damage once per enemy phase, or an effective Normal Attack. Skill2 and Last Flare spend Tension.',
+      ['native-phase2-tension'], true);
+  if (unit.definitionId === 'seravelle')
+    add('Cadence', `${memory.cadence ?? 0}/${phase2CounterCap(unit, 1)}`,
+      'Gain at most once per round from an effective manual Normal Attack while Seravelle lives. Move as One spends Cadence.',
+      ['native-phase2-cadence'], true);
+  if (unit.definitionId === 'velmira')
+    add('Crosscut', `${memory.crosscut ?? 0}/${phase2CounterCap(unit, 1)}`,
+      `Ordinary Skill sequence: ${memory.previousSkill ?? 'not started'}. Only alternating ordinary Skills add Crosscut; Last Flare spends it.`,
+      ['native-phase2-crosscut'], true);
   for (const [id, mark] of Object.entries(memory.fateMarks ?? {})) if (mark.throughPhase >= state.round)
     add('Fate-seared Mark', `${mark.stacks}/5`, `${state.enemies.find(enemy => enemy.id === id)?.name}; +${mark.stacks * 10}% damage taken and +45% Severed Prophecy; through enemy phase ${mark.throughPhase}.`, ['calamitic-fate-mark']);
   for (const [id, faults] of Object.entries(memory.faults ?? {}))

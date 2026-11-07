@@ -1,18 +1,29 @@
 # Elemental War
 
-## Phase2 artwork-led proposals (2026-11-06)
+## Ten trials and 5% final-boss recruitment (2026-11-06)
 
 Owner reuses24 older Moon-labeled root portraits for four distinct new
-proposed War characters: Neralis (Oceanic Healer & Support), Varkhel
+War characters: Neralis (Oceanic Healer & Support), Varkhel
 (Infernic Tank), Seravelle (Infernic Support) and Velmira (Chaotic Attacker).
 [Complete designs, lore, kits, strengths and source/form mappings](Future%20Plans/phase-2-war-designs.md)
 and [44 matching associated prompts](Future%20Plans/Elemental%20War%20Phase%202.md)
-are reviewable design deliverables. Original bytes are archived with hashes;
-root files remain until reviewed intake. No character/trial is registered,
-no new recruitment/drop/save/authority behavior is implemented in this pass.
-Future trials would reuse current War rules, not seasonal summon/material
-chains. Names and numeric designs remain proposals pending implementation
-approval and actual non-Calamitic benchmark tests.
+are the owner-approved integration contract. Original bytes stay archived;
+reviewed24 transparent portraits are installed and root duplicates removed only
+after archive/export hash verification. Ability/Master/status/header/arena art
+is still pending, with neutral presentation, never another character's imagery.
+No summon or special material chain is added. Normal growth/evolution/fodder,
+ownership, equipment, Archive and trial surfaces use existing shared foundations.
+
+**Supersedes D-414 and historical guarantee statements below:** every War mode
+has exactly **5% recruitment chance per final-boss clear**, including all six
+existing and four new trials. Stages1-9 never recruit. A successful result grants
+that trial's Lv.0/Evo.1 unequipped bearer, or100 Null-Prismatica when already owned.
+A failed roll grants neither recruitment nor duplicate conversion. Rewards,
+discovery/unlocks/receipts/recruitment/conversion persist atomically once.
+No pity, retroactive grants or rewards simply for entering a trial. Preserve
+independent recruitment RNG, currency curves, authored gates, hostile definitions,
+frozen loadouts and manual Continue/Retry. Live-client/authority release evidence
+and pressured/paper benchmark outcomes belong in the handoff.
 
 ## Separate trial and Omnic names (2026-11-04)
 
@@ -26,6 +37,10 @@ Activity names are distinct from character evolution titles:
 | Caldrex | Siege of the Unbroken Furnace | The Last Kiln |
 | Solenne | Requiem of the Silent Moon | The Bell That Stayed |
 | Myrthen | The Orchard Beyond Autumn | When All Seasons Meet |
+| Neralis | Passage of the Returning River | The River Keeps Its Promise |
+| Varkhel | Trial of the Suspended Chain | The Chain Refuses to Break |
+| Seravelle | March of the Ember Convoy | The Last Wagon Sees the Dawn |
+| Velmira | Dance of the Unfastened Court | What Remains Beyond the Cut |
 
 Shared trial metadata supplies the activity picker, cards, stage accessibility
 labels and loot headings. Character names, artwork, stable trial IDs, saved
@@ -62,13 +77,14 @@ finite rarity feedback, saved receipts and result controls are unchanged.
 Validate all three new recruitment results and duplicate conversions in
 `src/presentation/battle-results.test.ts`, plus browser checks at320/390/1280px.
 
-## Guaranteed final-stage recruitment (D-414)
+## Historical guaranteed final-stage recruitment (D-414)
 
 Every stage10 victory guarantees its own Element-Bearer: Nerithe, Orvella,
 Vaelor, Caldrex, Solenne or Myrthen, at Lv.0/Evo.1 and unequipped. An already-owned result converts to
 100 Null-Prismatica on every clear/replay. Stages1-9 never recruit.
 Currency rolls, stage unlocks and atomic receipt persistence remain unchanged;
-there are no retroactive grants. This supersedes the former1% recruitment rule.
+there are no retroactive grants. This superseded the former1% rule; the2026-11-06 five-percent contract above
+now supersedes this guarantee. Retain historical account ownership/progress.
 
 ## Consistent hostile difficulty (D-289)
 

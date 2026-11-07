@@ -27,7 +27,7 @@ function clear(state: BattleState) {
   state.componentSeed = 0;
   state.lycalisSeed = state.war ? 1 : 15500;
   state.captureSeed = 0x80000000;
-  state.recruitmentSeed = 0x80000000;
+  state.recruitmentSeed = 1;
   state.masterChestSeed = 0;
   return act(state, 'ember', 'light', state.enemies[0].id);
 }
@@ -37,7 +37,8 @@ function storage(storyCompleted: number = storyRules.stages, fractalis = 0) {
   const saved: ProfileStorage = { getItem: key => values.get(key) ?? null,
     setItem: (key, value) => { values.set(key, value); }, removeItem: key => { values.delete(key); } };
   saveAccount(saved, { ...emptyAccount(), storyCompleted, fractalis,
-    infusionStages: { machines: infusionStageCount('machines') }, warStages: { nerithe: 10, orvella: 10, vaelor: 10, caldrex: 10, solenne: 10, myrthen: 10 } });
+    infusionStages: { machines: infusionStageCount('machines') },
+    warStages: Object.fromEntries(elementalWars.map(war => [war.character, 10])) });
   return saved;
 }
 

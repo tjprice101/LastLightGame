@@ -289,11 +289,56 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
       ultimate: ability('All That Ripens', '1,248% direct damage to one enemy. In [Harvest], ignores 30% of its Defense.', 12.48),
     },
   },
+  neralis: {
+    role: 'Oceanic healer and support',
+    playLoop: '[Neralis] earns [Current] through effective Normal damage and native healing, then spends it for squad recovery.',
+    passive: { name: 'Returning Current',
+      description: 'Gain 1 [Current], up to 3, when a Normal Attack deals direct damage or a native ability restores Health. Gain at most 1 per action. [Amber-Station Return Manifold] raises the cap to 4.' },
+    abilities: {
+      skill1: ability('Light the Next Station', 'Restore 35% maximum Health to one living squad member, scaled by Skill Power. Grant +30% Defense for 2 turns.', undefined, 'one-ally'),
+      skill2: ability('Carry Them Back', 'Spend all [Current]. Restore 18% maximum Health to each living squad member, plus 6% per [Current] spent, scaled by Skill Power. [Amber-Station Return Manifold] increases the per-Current heal to 9%.', undefined, 'all-allies'),
+      ultimate: ability('No Crossing Left Empty', 'Spend all [Current]. Deal 720% direct Attack to all enemies and restore 30% maximum Health to each living squad member, plus 5% per [Current] spent, scaled by Skill Power.', 7.2, 'all-enemies'),
+    },
+  },
+  varkhel: {
+    role: 'Infernic tension tank',
+    playLoop: '[Varkhel] banks [Tension] from enemy direct hits and Normal Attacks, then spends it for piercing counterstrikes.',
+    passive: { name: 'Tension Held',
+      description: 'Gain 1 [Tension], up to 4, when an enemy direct attack effectively damages Varkhel’s Health or Shield, once per enemy phase. His damaging Normal Attack also grants 1 [Tension]. [Faultstar Chain Accumulator] raises the cap to 5.' },
+    abilities: {
+      skill1: ability('Set the Warning Chain', 'Grant Varkhel a Shield equal to 25% maximum Health, scaled by Skill Power. Gain +40% Defense for 2 turns and Taunt for the next enemy phase. [Scarlet-Hinge Load Distributor] also shields each other living ally for 16% maximum Health, scaled by Skill Power.', undefined, 'all-allies'),
+      skill2: ability('Return the Strain', 'Spend all [Tension]. Deal 285% of Direct Attack to one enemy, plus 45% per [Tension] spent. Ignore 20% of its Defense; [Recoil-Star Compression Turbine] raises this to 35% and refunds 15% maximum Gauge when at least 3 [Tension] were spent.', 2.85),
+      ultimate: ability('The Bridge Holds Behind Me', 'Spend all [Tension]. Deal 690% of Direct Attack to all enemies, plus 55% per [Tension] spent. Shield each living squad member for 30% maximum Health, scaled by Skill Power.', 6.9, 'all-enemies'),
+    },
+  },
+  seravelle: {
+    role: 'Infernic convoy support',
+    playLoop: '[Seravelle] builds [Cadence] from effective manual Normal Attacks, spends it on a fixed squad Attack buff, and uses Burn to fund allies’ Gauge.',
+    passive: { name: 'Convoy Cadence',
+      description: 'The first effective manual Normal Attack in a round grants 1 [Cadence], up to 3, while Seravelle is alive. Triggered attacks and repeated targets do not grant more. [Ashroad Cadence Transmission] raises the cap to 4.' },
+    abilities: {
+      skill1: ability('Send the Ember Ahead', 'Deal 245% direct Attack to one enemy. Apply [Burn] for 2 enemy phases, dealing 12% of Seravelle’s Direct Attack per phase, scaled by her Skill Power.', 2.45),
+      skill2: ability('Move as One', 'Spend all [Cadence]. Grant each living squad member +30% Direct Attack for 2 turns, plus 10% per [Cadence] spent. This fixed buff is not scaled by Skill Power. [Ashroad Cadence Transmission] raises its base bonus to 40%.', undefined, 'all-allies'),
+      ultimate: ability('The Road Belongs to Everyone', 'Deal 620% direct Attack to all enemies. Grant each other living squad member 20% maximum Gauge and +30 percentage points Skill Power for 2 turns; these buffs do not strengthen this attack.', 6.2, 'all-enemies'),
+    },
+  },
+  velmira: {
+    role: 'Chaotic alternating-edge attacker',
+    playLoop: '[Velmira] alternates [Open the Seam] and [Turn the Other Edge] to earn [Crosscut], then spends it on a piercing Last Flare.',
+    passive: { name: 'Alternating Edge',
+      description: 'Gain 1 [Crosscut], up to 3, when an ordinary Skill differs from Velmira’s previous ordinary Skill. The first Skill establishes the sequence without granting a stack. Normal Attacks and Last Flare do not change the previous-Skill record. [Twin-Edge Sequence Orrery] raises the cap to 4 and funds the first ordinary Skill once per encounter.' },
+    abilities: {
+      skill1: ability('Open the Seam', 'Deal 280% direct Attack to one enemy. Apply [Weaken] for 2 enemy phases, reducing its direct damage by 25%. [Goldseam Precision Fracturer] deals 35% more direct damage against a Weakened enemy.', 2.8),
+      skill2: ability('Turn the Other Edge', 'Deal 205% direct Attack to all enemies. Ignore 20% of their Defense while holding at least 2 [Crosscut]; [Goldseam Precision Fracturer] raises this to 35%. The earned stack is not considered until after this Skill resolves.', 2.05, 'all-enemies'),
+      ultimate: ability('Leave the Doorway Standing', 'Spend all [Crosscut]. Deal 1,050% direct Attack to one enemy, plus 90% per [Crosscut] spent. Ignore 30% of its Defense. [Open-Threshold Return Drive] refunds 25% maximum Gauge and heals Velmira for 18% maximum Health when at least 3 [Crosscut] were spent; Recovery still applies.', 10.5),
+    },
+  },
 };
 
 // Owner-approved final percentages are authored directly, so the shared skill/Last Flare multipliers must not be applied again.
 export const exactDirectDamageIds: readonly StarterId[] = ['caldrex', 'solenne', 'myrthen',
-  'maerion', 'caevren', 'vespera', 'ilyss', 'asteriel', 'serapha', 'rhaziel', 'oryn', 'thessara', 'elaris', 'veyr', 'aureth'];
+  'maerion', 'caevren', 'vespera', 'ilyss', 'asteriel', 'serapha', 'rhaziel', 'oryn', 'thessara', 'elaris', 'veyr', 'aureth',
+  'neralis', 'varkhel', 'seravelle', 'velmira'];
 
 const directDescriptionCoefficients: Record<StarterId, readonly (readonly number[])[]> = {
   ozriel: [[240], [], [455]],
@@ -330,6 +375,10 @@ const directDescriptionCoefficients: Record<StarterId, readonly (readonly number
   elaris: [[280], [240], [1050]],
   veyr: [[320], [240], [1050]],
   aureth: [[], [240], []],
+  neralis: [[], [], [720]],
+  varkhel: [[], [285], [690]],
+  seravelle: [[245], [], [620]],
+  velmira: [[280], [205], [1050]],
 };
 
 for (const id of Object.keys(nativeIdentities) as StarterId[]) {

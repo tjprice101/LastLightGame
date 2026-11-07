@@ -30,13 +30,21 @@ const elementalThemes: Record<string, readonly string[]> = {
   chaotic: ['Death', 'Destruction'],
 };
 
+const phase2Identity = [
+  ['neralis', 'Neralis', 6, 'Healer & Support', 'Oceanic', 'Crescent polearm', '#62cce3'],
+  ['varkhel', 'Varkhel', 6, 'Tank', 'Infernic', 'Chained counterweight', '#f07450'],
+  ['seravelle', 'Seravelle', 6, 'Support', 'Infernic', 'Silver lance', '#f1784d'],
+  ['velmira', 'Velmira', 6, 'Attacker', 'Chaotic', 'Pair of crescent blades', '#b98de7'],
+] as const;
+
 describe('character lore revision', () => {
   it('keeps all legacy identities and adds only the twelve authored event identities', () => {
     expect(starters.map(({ id }) => id)).toEqual([
       ...expectedIdentity.slice(0, 6).map(([id]) => id), ...moonCharacters.map(character => character.id),
-      ...sunshadeCharacters.map(character => character.id), ...expectedIdentity.slice(6).map(([id]) => id),
+      ...sunshadeCharacters.map(character => character.id), ...expectedIdentity.slice(6, 19).map(([id]) => id),
+      ...phase2Identity.map(([id]) => id), ...expectedIdentity.slice(19).map(([id]) => id),
     ]);
-    for (const [id, name, stars, role, element, weapon, color] of expectedIdentity) {
+    for (const [id, name, stars, role, element, weapon, color] of [...expectedIdentity, ...phase2Identity]) {
       expect(starters.find((character) => character.id === id)).toMatchObject({
         id, name, stars, role, element, weapon, color,
       });

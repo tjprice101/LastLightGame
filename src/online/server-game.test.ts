@@ -306,7 +306,7 @@ describe('server authoritative game engine', () => {
     game.account.storyCompleted = storyRules.stages;
     game.account.dungeonStages = Object.fromEntries(playableDungeons.map(element => [element, 35]));
     game.account.infusionStages = Object.fromEntries(replayModes.map(mode => [mode, infusionStageCount(mode)]));
-    game.account.warStages = { nerithe: 10, orvella: 10, vaelor: 10, caldrex: 10, solenne: 10, myrthen: 10 };
+    game.account.warStages = Object.fromEntries(elementalWars.map(war => [war.character, 10]));
     const entered = op(game, { kind: 'enter', activity }).game;
     const state = entered.run!.session.state;
     state.allies[0].shatter = 100;
@@ -854,10 +854,10 @@ describe('server authoritative game engine', () => {
 });
 
 describe('profile pictures and chat contract', () => {
-  it('validates all 32 delivered-art profile pictures without automatic writes', () => {
-    expect(profilePictures).toHaveLength(32);
+  it('validates all 40 delivered-art profile pictures without automatic writes', () => {
+    expect(profilePictures).toHaveLength(40);
     expect(profilePictures.some(picture => ['ozriel', 'ilvaris', 'kaelith'].includes(picture.characterId))).toBe(false);
-    expect(new Set(profilePictures.map(p => p.id)).size).toBe(32);
+    expect(new Set(profilePictures.map(p => p.id)).size).toBe(40);
     const game = started();
     const loaded = structuredClone(game);
     expect(loaded).toEqual(game);

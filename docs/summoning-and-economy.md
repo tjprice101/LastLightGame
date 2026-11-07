@@ -1,5 +1,15 @@
 # Summoning and economy
 
+## Elemental War recruitment override (2026-11-06)
+
+Every War trial now has5% recruitment chance on each Stage10 final-boss clear,
+zero on Stages1-9. Successful recruitment grants its own Lv.0/Evo.1 unequipped
+bearer; an owned successful result converts to100 Null-Prismatica. Failed
+recruitment rolls give no conversion. Independent recruitment RNG and one atomic
+kill/reward/receipt transaction preserve currency/unlocks/ownership; no pity or
+retroactive grants. [Ten-trial contract](elemental-war.md) supersedes historical
+D-414 guaranteed recruitment, not Standard/Rose/special-banner draw probabilities.
+
 **Special-event lifecycle (2026-11-04):** Rose draws/activity end November30,
 2026 at8 PM America/New_York. Authority gates timed operations; offline
 archive browsing remains. Pity/progress survive closure/reruns. Materials

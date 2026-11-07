@@ -191,12 +191,13 @@ export function gameplayHub(account: Account | null = emptyAccount(), eventAcces
         const unlocked = account ? unlockedWarStage(account, mode.character) : 1;
         const access = account ? activityAccess(account, { kind: 'war', character: mode.character, stage: unlocked }) : null;
         return `<article class="activity-card" style="--dungeon:${elementAccents[mode.element]}">${activityLayout(`
-          ${activityBanner(mode.name, `banners/${warEncounter(mode.character, 1).banner}`, `${mode.name} activity banner`, true)}
+          ${activityBanner(mode.name, warEncounter(mode.character, 1).banner
+            ? `banners/${warEncounter(mode.character, 1).banner}` : null, `${mode.name} activity banner`, true)}
           <p class="eyebrow">${getStarter(mode.character).name} · ${elementLabel(mode.element)}</p>
           <p>${getStarter(mode.character).description}</p><p>${warLore}</p>
           ${activityFacts('10 stages · One boss each', '90-140', 'Prismatica · Null-Prismatica · Final-boss recruitment')}`, `
           ${itemShowcase([{ id: 'fractalis' }, { id: 'lycalis' }], 'Currency rewards')}
-          <p>Final boss:100% base-form recruitment · Already owned:100 Null-Prismatica</p>
+          <p>Final boss:5% base-form recruitment chance · Already-owned successful recruitment:100 Null-Prismatica</p>
           ${account ? `${enemyStrength(warEncounter(mode.character, unlocked))}<footer class="activity-entry"><label class="dungeon-stage-label">Stage
             <select data-war-stage="${mode.character}" aria-label="${mode.name} stage" ${account ? '' : 'disabled'}>${Array.from({ length: unlocked }, (_, index) =>
               `<option value="${index + 1}" ${index + 1 === unlocked ? 'selected' : ''}>${index + 1} · Lv.${warEncounter(mode.character, index + 1).level}</option>`).join('')}</select></label>

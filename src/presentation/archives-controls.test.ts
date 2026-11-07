@@ -59,12 +59,12 @@ describe('Collections controls', { timeout: 30_000 }, () => {
     f.select('stars', '5');
     expect(f.visible()).toHaveLength(1);
     expect(f.visible()[0].dataset.archiveCharacter).toBe('ember');
-    expect(f.host.querySelector('[data-character-filter-result]')?.textContent).toBe('1 / 204 forms shown');
+    expect(f.host.querySelector('[data-character-filter-result]')?.textContent).toBe('1 / 228 forms shown');
     f.select('discovery', 'locked');
     expect(f.visible()).toHaveLength(0);
     expect(f.host.querySelector('[data-character-filter-result]')?.textContent).toBe('No forms match these filters.');
     f.host.querySelector<HTMLButtonElement>('[data-reset-character-filters]')!.click();
-    expect(f.visible()).toHaveLength(204);
+    expect(f.visible()).toHaveLength(228);
     expect(Array.from(f.host.querySelectorAll('#archive-characters .archive-filters .selection-trigger')).map(button => button.textContent))
       .toEqual(['All elements', 'All rarities', 'All characters', 'All forms', 'All stars']);
     expect(f.account).toEqual(f.before);
@@ -81,7 +81,7 @@ describe('Collections controls', { timeout: 30_000 }, () => {
       .find(button => button.textContent === 'Infernic')!.click();
     expect(dialog.open).toBe(false);
     expect(document.activeElement).toBe(trigger);
-    expect(f.visible()).toHaveLength(24);
+    expect(f.visible()).toHaveLength(36);
     for (const gallery of ['conduits', 'creatures', 'characters']) {
       f.host.querySelector<HTMLButtonElement>(`[data-archive-gallery="${gallery}"]`)!.click();
       const panels = Array.from(f.host.querySelectorAll<HTMLElement>('.archive-panel'));
@@ -89,7 +89,7 @@ describe('Collections controls', { timeout: 30_000 }, () => {
       expect(f.host.querySelector(`[data-archive-gallery="${gallery}"]`)?.getAttribute('aria-pressed')).toBe('true');
       expect(document.activeElement?.id).toBe(`archive-${gallery}-heading`);
     }
-    expect(f.visible()).toHaveLength(24);
+    expect(f.visible()).toHaveLength(36);
     expect(f.host.querySelector('[data-archive-character="ember"]')).toBe(card);
     expect(f.account).toEqual(f.before);
   });

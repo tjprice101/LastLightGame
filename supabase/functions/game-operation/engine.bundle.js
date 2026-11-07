@@ -518,6 +518,18 @@ var approvedConduitCatalog = {
     "element": "Tranquilitic (actual gameplay element)",
     "ability": "Allies holding your [Skill]-created [Shields] gain +20% [Critical Rate] and take 30% less [Direct Damage] from enemy critical hits. +90% [Defense] and +40% [Critical Damage Multiplier]."
   },
+  "master-neralis-1": {
+    "name": "Amber-Station Return Manifold",
+    "rarity": "Omnic (Master)",
+    "element": "Oceanic (named bearer's actual element; Master for Neralis only)",
+    "ability": "Increase maximum Current to 4. Increase Carry Them Back healing per Current from 6% to 9% maximum Health. Neralis gains +60% [Health] and +35% [Skill Power]."
+  },
+  "master-seravelle-1": {
+    "name": "Ashroad Cadence Transmission",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Seravelle only)",
+    "ability": "Increase maximum Cadence to 4. Increase Move as One\u2019s base Direct Attack bonus from 30% to 40%. Seravelle gains +50% [Health] and +35% [Skill Power]."
+  },
   "tectonic-atlas-bastion": {
     "name": "Atlas Bastion",
     "rarity": "Omnic",
@@ -529,6 +541,18 @@ var approvedConduitCatalog = {
     "rarity": "Omnic (Master)",
     "element": "Infernic (named bearer's actual element; Master for Caldrex only)",
     "ability": "Increase maximum [Heat] to 5. Gain +12% [Defense] per stored [Heat]. Caldrex gains +60% [Health] and +50% [Defense]."
+  },
+  "master-neralis-2": {
+    "name": "Blackwing Crossing Stabilizer",
+    "rarity": "Omnic (Master)",
+    "element": "Oceanic (named bearer's actual element; Master for Neralis only)",
+    "ability": "After Light the Next Station, grant its target a Shield equal to 20% maximum Health, scaled by Neralis\u2019s Skill Power. Neralis gains +50% [Health] and +60% [Defense]."
+  },
+  "master-seravelle-3": {
+    "name": "Braided-Signal Continuance Engine",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Seravelle only)",
+    "ability": "After The Road Belongs to Everyone, grant each living squad member a Shield equal to 22% maximum Health, scaled by Seravelle\u2019s Skill Power. Seravelle gains +60% [Health] and +40% [Defense]."
   },
   "master-sprout-2": {
     "name": "Briar Constellation Loom",
@@ -571,6 +595,12 @@ var approvedConduitCatalog = {
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Disciple only)",
     "ability": "When an ally consumes Disciple's [Resolve], each other living ally gains 10% [Elemental Gauge]."
+  },
+  "master-seravelle-2": {
+    "name": "Convoy-Flame Distribution Crown",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Seravelle only)",
+    "ability": "When an allied native Burn tick damages an enemy, restore 5% maximum Gauge to each other living squad member. Once per enemy phase while Seravelle lives; Burn detonations and Conduit damage do not trigger it. Seravelle gains +45% [Direct Attack] and +30% [Skill Power]."
   },
   "master-caldrex-2": {
     "name": "Counterstroke Recoil Foundry",
@@ -650,6 +680,12 @@ var approvedConduitCatalog = {
     "element": "Botanic (actual gameplay element)",
     "ability": "While you are alive, other allies gain bonus [Defense] equal to 25% of your effective [Defense]. +75% [Defense] and +55% [Skill Power]."
   },
+  "master-varkhel-1": {
+    "name": "Faultstar Chain Accumulator",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Varkhel only)",
+    "ability": "Increase maximum Tension to 5. Gain +10% Defense per stored Tension. Varkhel gains +70% [Health] and +50% [Defense]."
+  },
   "master-vaelor-1": {
     "name": "Final Chord Celestial Resonator",
     "rarity": "Omnic (Master)",
@@ -697,6 +733,12 @@ var approvedConduitCatalog = {
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Rosetta only)",
     "ability": "[Golden Thorn Volley] grants each other living ally +35% [Skill Power] for their next damaging [Skill] against Rosetta's [Quarry]. Rosetta gains +60% [Skill Power] and +35% [Elemental Gauge Capacity]."
+  },
+  "master-velmira-2": {
+    "name": "Goldseam Precision Fracturer",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Velmira only)",
+    "ability": "When Open the Seam targets a Weakened enemy, deal 35% more direct damage. Increase Turn the Other Edge\u2019s Defense ignore from 20% to 35% while its Crosscut condition is met. Velmira gains +45% [Direct Attack] and +25% [Critical Rate]."
   },
   "atmospheric-griffin-turbine": {
     "name": "Griffin Turbine",
@@ -788,6 +830,12 @@ var approvedConduitCatalog = {
     "element": "Oceanic (named bearer's actual element; Master for Tizu only)",
     "ability": "[Tidal Shelter] gains +50% [Skill Power]. While its [Shield] remains, the recipient gains +25% [Skill Efficiency] for their next [Skill]. Tizu gains +45% [Defense] and +25% [Elemental Gauge Gain]."
   },
+  "master-velmira-3": {
+    "name": "Open-Threshold Return Drive",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Velmira only)",
+    "ability": "When Leave the Doorway Standing spends at least 3 Crosscut, restore 25% of Velmira\u2019s maximum Gauge after its cost and heal her for 18% maximum Health. Recovery still applies. Velmira gains +50% [Health], +35% [Direct Attack] and +20% [Skill Power]."
+  },
   "chaotic-ouroboros-core": {
     "name": "Ouroboros Core",
     "rarity": "Omnic",
@@ -854,6 +902,12 @@ var approvedConduitCatalog = {
     "element": "Botanic (named bearer's actual element; Master for Myrthen only)",
     "ability": "When Myrthen's Normal Attack, Skill or Last Flare directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power]."
   },
+  "master-varkhel-3": {
+    "name": "Recoil-Star Compression Turbine",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Varkhel only)",
+    "ability": "Increase Return the Strain\u2019s Defense ignore from 20% to 35%. When it spends at least 3 Tension, restore 15% of Varkhel\u2019s maximum Gauge after its cost. Varkhel gains +45% [Direct Attack] and +50% [Health]."
+  },
   "master-ozriel-1": {
     "name": "Refusal Sovereign Heartdrive",
     "rarity": "Omnic (Master)",
@@ -877,6 +931,12 @@ var approvedConduitCatalog = {
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
     "ability": "Gain +55% [Skill Power] and +20% [Defense] per currently defeated [Squad Member]."
+  },
+  "master-varkhel-2": {
+    "name": "Scarlet-Hinge Load Distributor",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Varkhel only)",
+    "ability": "After Set the Warning Chain, grant each other living squad member a Shield equal to 16% maximum Health, scaled by Varkhel\u2019s Skill Power. Varkhel gains +50% [Health] and +35% [Skill Power]."
   },
   "master-myrthen-1": {
     "name": "Seasonwheel Harvest Transmission",
@@ -1046,6 +1106,12 @@ var approvedConduitCatalog = {
     "element": "Atmospheric (named bearer's actual element; Master for Elise only)",
     "ability": "Each [Shuriken] lodged by [Voltstar Cut] gives the next other ally's damaging [Skill] against that enemy +35% [Skill Power]. One stored bonus is spent per cast; recalling the [Shuriken] removes unused bonuses. Elise gains +80% [Direct Attack] and +40% [Skill Power]."
   },
+  "master-velmira-1": {
+    "name": "Twin-Edge Sequence Orrery",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Velmira only)",
+    "ability": "Increase maximum Crosscut to 4. The first ordinary Skill of each encounter grants 1 Crosscut after resolving. Velmira gains +60% [Direct Attack] and +30% [Skill Power]."
+  },
   "master-crinso-1": {
     "name": "Twin-Rose Singularity Drive",
     "rarity": "Omnic (Master)",
@@ -1105,6 +1171,12 @@ var approvedConduitCatalog = {
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Rosetta only)",
     "ability": "[Crimson Skyfall] against Rosetta's [Quarry] heals each living ally who hit it this [Player Turn] for 8% of their own maximum [Health]. Each contributor other than Rosetta also gains +20% [Skill Efficiency] for their next [Skill]. Rosetta gains +80% [Health] and +30% [Skill Efficiency]."
+  },
+  "master-neralis-3": {
+    "name": "Weirheart Recollection Dynamo",
+    "rarity": "Omnic (Master)",
+    "element": "Oceanic (named bearer's actual element; Master for Neralis only)",
+    "ability": "When a native heal restores Health to an ally below 50% Health before that heal, restore 10% maximum Gauge to that ally. Once per round per ally; excludes Support-perk and Conduit healing. Neralis gains +40% [Health], +40% [Direct Attack] and +25% [Skill Power]."
   },
   "master-bruno-3": {
     "name": "Worldforge Hammer Dominion",
@@ -3344,15 +3416,15 @@ var masterChest = {
   art: "master-conduits/grand-master-chest.png",
   description: "Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward."
 };
-var masterRulesText = `${masterChest.name}: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 66.`;
-function master(character, slot, name, design) {
+function master(character, slot, name, design, effect, artAvailable = true) {
+  const id = `master-${character}-${slot}`;
   return {
-    id: `master-${character}-${slot}`,
+    id,
     character,
     name,
     rarity: "Omnic",
-    art: `master-conduits/master-${character}-${slot}.png`,
-    effect: redesignEffect(`master-${character}-${slot}`),
+    ...artAvailable ? { art: `master-conduits/${id}.png` } : {},
+    effect: effect ?? redesignEffect(id),
     design,
     lore: masterOrigin
   };
@@ -3701,6 +3773,102 @@ var masterConduits = [
     "a broad jade recovery engine, paired amber sickle-shaped rotors feeding a pink crystal regeneration cartridge, white pump housings and brown geared Gauge flywheels"
   ),
   master(
+    "neralis",
+    1,
+    "Amber-Station Return Manifold",
+    "A magnificent crescent-hook manifold, four amber station capsules, silver return gears and three cyan-blue water turbines inside black-white prow-panel shutters",
+    "Increase maximum Current to 4. Increase Carry Them Back healing per Current from 6% to 9% maximum Health. Neralis gains +60% [Health] and +35% [Skill Power].",
+    false
+  ),
+  master(
+    "neralis",
+    2,
+    "Blackwing Crossing Stabilizer",
+    "A colossal swept black feather-rib stabilizer, silver crescent braces and amber bearings; cyan-blue water pressure lifts interlocking white rescue plates",
+    "After Light the Next Station, grant its target a Shield equal to 20% maximum Health, scaled by Neralis\u2019s Skill Power. Neralis gains +50% [Health] and +60% [Defense].",
+    false
+  ),
+  master(
+    "neralis",
+    3,
+    "Weirheart Recollection Dynamo",
+    "A vast amber station-heart rotor between paired silver crescent impellers, cyan-blue capillary channels and black-white coat-panel relief; three separate return axles",
+    "When a native heal restores Health to an ally below 50% Health before that heal, restore 10% maximum Gauge to that ally. Once per round per ally; excludes Support-perk and Conduit healing. Neralis gains +40% [Health], +40% [Direct Attack] and +25% [Skill Power].",
+    false
+  ),
+  master(
+    "varkhel",
+    1,
+    "Faultstar Chain Accumulator",
+    "An immense scarlet-black chain accumulator, five amber pressure cylinders, silver counterweight gears and a dark fault-star sphere edged violet inside white collar shutters",
+    "Increase maximum Tension to 5. Gain +10% Defense per stored Tension. Varkhel gains +70% [Health] and +50% [Defense].",
+    false
+  ),
+  master(
+    "varkhel",
+    2,
+    "Scarlet-Hinge Load Distributor",
+    "A colossal silver load hinge with scarlet warning-panel fins, three orange-amber pressure outlets and black feather-rib counterbalances, articulated chain drums",
+    "After Set the Warning Chain, grant each other living squad member a Shield equal to 16% maximum Health, scaled by Varkhel\u2019s Skill Power. Varkhel gains +50% [Health] and +35% [Skill Power].",
+    false
+  ),
+  master(
+    "varkhel",
+    3,
+    "Recoil-Star Compression Turbine",
+    "A massive black counterweight recoil turbine, violet-rimmed orange fault star, scarlet compression shutters and silver toothed return axles linked by one chain circuit",
+    "Increase Return the Strain\u2019s Defense ignore from 20% to 35%. When it spends at least 3 Tension, restore 15% of Varkhel\u2019s maximum Gauge after its cost. Varkhel gains +45% [Direct Attack] and +50% [Health].",
+    false
+  ),
+  master(
+    "seravelle",
+    1,
+    "Ashroad Cadence Transmission",
+    "A magnificent silver lance-shaped transmission, four gold-brass braid-ring flywheels, red officer-enamel shutters and orange-red flame channels through black-white feather vanes",
+    "Increase maximum Cadence to 4. Increase Move as One\u2019s base Direct Attack bonus from 30% to 40%. Seravelle gains +50% [Health] and +35% [Skill Power].",
+    false
+  ),
+  master(
+    "seravelle",
+    2,
+    "Convoy-Flame Distribution Crown",
+    "A colossal gold-brass flame distributor with three silver output pistons, red enamel relay petals, orange-white plasma channels and alternating black-white feather fins",
+    "When an allied native Burn tick damages an enemy, restore 5% maximum Gauge to each other living squad member. Once per enemy phase while Seravelle lives; Burn detonations and Conduit damage do not trigger it. Seravelle gains +45% [Direct Attack] and +30% [Skill Power].",
+    false
+  ),
+  master(
+    "seravelle",
+    3,
+    "Braided-Signal Continuance Engine",
+    "An immense silver continuity engine, paired gold braid-ring axles, white-black feather shutter plates and red command-latch relief; orange-red flame channels shelter three white output shields",
+    "After The Road Belongs to Everyone, grant each living squad member a Shield equal to 22% maximum Health, scaled by Seravelle\u2019s Skill Power. Seravelle gains +60% [Health] and +40% [Defense].",
+    false
+  ),
+  master(
+    "velmira",
+    1,
+    "Twin-Edge Sequence Orrery",
+    "An immense twin-crescent sequence orrery, four violet-magenta phase rotors, independent silver blade rails and gold ring axles inside black feather fins and white pleated shutters",
+    "Increase maximum Crosscut to 4. The first ordinary Skill of each encounter grants 1 Crosscut after resolving. Velmira gains +60% [Direct Attack] and +30% [Skill Power].",
+    false
+  ),
+  master(
+    "velmira",
+    2,
+    "Goldseam Precision Fracturer",
+    "A colossal gold-seam precision engine, paired silver crescent cutter rails, violet-magenta pressure channels and amber fracture chambers with black-white pleat relief",
+    "When Open the Seam targets a Weakened enemy, deal 35% more direct damage. Increase Turn the Other Edge\u2019s Defense ignore from 20% to 35% while its Crosscut condition is met. Velmira gains +45% [Direct Attack] and +25% [Critical Rate].",
+    false
+  ),
+  master(
+    "velmira",
+    3,
+    "Open-Threshold Return Drive",
+    "A vast open crescent return drive, gold ring-grip flywheels and silver return pistons around violet-magenta channels, amber seam lights and black feather blades with white pleated inlays",
+    "When Leave the Doorway Standing spends at least 3 Crosscut, restore 25% of Velmira\u2019s maximum Gauge after its cost and heal her for 18% maximum Health. Recovery still applies. Velmira gains +50% [Health], +35% [Direct Attack] and +20% [Skill Power].",
+    false
+  ),
+  master(
     "ozriel",
     1,
     "Refusal Sovereign Heartdrive",
@@ -3756,6 +3924,7 @@ var masterConduits = [
   ),
   ...moonSunshadeMasters
 ];
+var masterRulesText = `${masterChest.name}: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all ${masterConduits.length}.`;
 function isMasterConduitId(value2) {
   return masterConduits.some((entry) => entry.id === value2);
 }
@@ -4173,6 +4342,82 @@ var warCharacters = [
       vow: "Every season gets its turn.",
       awakening: "A fifth season stirs between harvest and sprout; its meaning is not yet known."
     }
+  },
+  {
+    id: "neralis",
+    stars: 6,
+    name: "Neralis",
+    role: "Healer & Support",
+    art: "neralis",
+    title: "The current that returns for the last traveler",
+    element: "Oceanic",
+    elementId: "oceanic",
+    weapon: "Crescent polearm",
+    color: "#62cce3",
+    description: "An Oceanic Element-Bearer in Let\u2019s image, Neralis carries Sadness as a promise to return for the last traveler.",
+    lore: {
+      origin: "The river stations of the Broken Weirs",
+      story: "Neralis once measured rivers for a council that drew borders where bridges should have been. When a broken weir stranded both banks, he used his crescent polearm to pull the rescue lines across, then returned until the crossing was empty. He keeps amber station lights on his coat so a traveler can recognize a guide before understanding a map. His dark wings are folded river-shadow plumes; the bright blue current follows his weapon rather than a distant moon. Oceanic Sadness teaches him to remember each abandoned crossing without accepting abandonment as its future. Let made Element-Bearers in his image; Rise made Elemental-Devourers in hers and stole the same elements. Both factions seek their creators\u2019 souls; neither has found one and no faction has won. Neralis follows Let\u2019s still-unfound trail between repair journeys.",
+      vow: "A road is not finished until it brings someone back.",
+      awakening: "The river returns for one more traveler."
+    }
+  },
+  {
+    id: "varkhel",
+    stars: 6,
+    name: "Varkhel",
+    role: "Tank",
+    art: "varkhel",
+    title: "Wrath held on a chain instead of unleashed",
+    element: "Infernic",
+    elementId: "infernic",
+    weapon: "Chained counterweight",
+    color: "#f07450",
+    description: "An Infernic Element-Bearer in Let\u2019s image, Varkhel holds Wrath on a chain so the people behind him can retreat.",
+    lore: {
+      origin: "The chainworks above Cinderfall Span",
+      story: "Varkhel was paid to sever the suspension chains of an occupied bridge. Instead he fastened his counterweight to its failing hinge and held the retreat open. The red sash remembers the warning cloth tied to that hinge, not a royal title. His armor grew around the strain: silver joint plates, black wing mantles and, later, scarlet furnace enamel. Infernic Wrath is the anger he refuses to spend on the people he is protecting. Let made Element-Bearers in his image; Rise made Elemental-Devourers in hers and stole the same elements. Both factions seek their creators\u2019 souls; neither has found one and no faction has won. Varkhel follows Let\u2019s trail through ruined chainworks without abandoning the people behind him.",
+      vow: "Let the chain answer the blow, not the people behind me.",
+      awakening: "The suspended chain answers a measured hand."
+    }
+  },
+  {
+    id: "seravelle",
+    stars: 6,
+    name: "Seravelle",
+    role: "Support",
+    art: "seravelle",
+    title: "A signal raised for people, not for conquest",
+    element: "Infernic",
+    elementId: "infernic",
+    weapon: "Silver lance",
+    color: "#f1784d",
+    description: "An Infernic Element-Bearer in Let\u2019s image, Seravelle raises Wrath as a signal for everyone who still needs the road.",
+    lore: {
+      origin: "The ash-white courier roads of Bellmarch",
+      story: "Seravelle carried route orders until she found a convoy whose destination had been erased from every official chart. She braided the evacuees\u2019 white cord into her hair and raised her lance where the next wagon could see it. Her red officer panels and gold fittings are repaired courier equipment; her black-white wings turn flame into a visible guide. Infernic Wrath is directed at the ease with which people become inconvenient numbers. Let made Element-Bearers in his image; Rise made Elemental-Devourers in hers and stole the same elements. Both factions seek their creators\u2019 souls; neither has found one and no faction has won. Seravelle searches for Let\u2019s still-scattered soul without claiming that a wing or a flame is divine authority.",
+      vow: "The signal belongs to everyone who still needs the road.",
+      awakening: "A signal crosses the ash-white road."
+    }
+  },
+  {
+    id: "velmira",
+    stars: 6,
+    name: "Velmira",
+    role: "Attacker",
+    art: "velmira",
+    title: "The cut that opens a way without erasing what matters",
+    element: "Chaotic",
+    elementId: "chaotic",
+    weapon: "Pair of crescent blades",
+    color: "#b98de7",
+    description: "A Chaotic Element-Bearer in Let\u2019s image, Velmira uses Death and Destruction to open a way without calling destruction a cure.",
+    lore: {
+      origin: "The severance ateliers of Thornless Court",
+      story: "Velmira cut ceremonial bindings in an atelier whose rulers praised every beautiful knot and never asked who could untie it. When the court sealed its doors, she turned the atelier\u2019s paired crescent blades against the locking seams. Her white pleats preserve the craft she loved; dark feather fans and violet tips remember what she refused to become. Chaotic Death and Destruction give her the courage to end an oppressive mechanism without calling destruction itself a cure. Let made Element-Bearers in his image; Rise made Elemental-Devourers in hers and stole the same elements. Both factions seek their creators\u2019 souls; neither has found one and no faction has won. Velmira follows Let\u2019s lost soul through abandoned courts.",
+      vow: "A broken lock should leave the doorway standing.",
+      awakening: "The paired blades find a way through."
+    }
   }
 ];
 function isWarCharacter(value2) {
@@ -4205,7 +4450,39 @@ var warEvolutionTitles = {
   ],
   caldrex: ["Kiln Warden", "Banked Fire", "The Furnace Holds", "Bearer of the Closed Gate", "No Flame Passes", "The Last Kiln"],
   solenne: ["Moonbell Keeper", "Between Two Chimes", "The Patient Circle", "Keeper of the Unstruck Bell", "A Silence Held", "The Bell That Stayed"],
-  myrthen: ["Season Reaper", "First Turning", "Bough and Blade", "Harvest in Motion", "The Orchard Remembers", "When All Seasons Meet"]
+  myrthen: ["Season Reaper", "First Turning", "Bough and Blade", "Harvest in Motion", "The Orchard Remembers", "When All Seasons Meet"],
+  neralis: [
+    "Weirline Guide",
+    "Keeper of the Amber Stations",
+    "A Crossing Remembered",
+    "Wings Above the Broken Weir",
+    "Return Against the Current",
+    "The River Keeps Its Promise"
+  ],
+  varkhel: [
+    "Chainwork Holdfast",
+    "The Warning Cloth",
+    "Weight Against the Breach",
+    "A Span Held Open",
+    "Wrath Within the Hinge",
+    "The Chain Refuses to Break"
+  ],
+  seravelle: [
+    "Ashroad Courier",
+    "The Braided Route",
+    "Signal Above the Convoy",
+    "Marshal of the Open Road",
+    "A Standard Without a Throne",
+    "The Last Wagon Sees the Dawn"
+  ],
+  velmira: [
+    "Atelier Defector",
+    "A Knot Unfastened",
+    "The Measured Cut",
+    "Keeper of the Open Threshold",
+    "An Ending Chosen Carefully",
+    "What Remains Beyond the Cut"
+  ]
 };
 var warActionNames = {
   nerithe: { light: "Surveyor's Thrust" },
@@ -4213,7 +4490,11 @@ var warActionNames = {
   vaelor: { light: "Tuning Strike" },
   caldrex: { light: "Gate Bash" },
   solenne: { light: "Bell Tap" },
-  myrthen: { light: "Sickle Cut" }
+  myrthen: { light: "Sickle Cut" },
+  neralis: { light: "Crescent Thrust" },
+  varkhel: { light: "Counterweight Strike" },
+  seravelle: { light: "Beacon Lance" },
+  velmira: { light: "Measured Edge" }
 };
 var warFighters = {
   nerithe: {
@@ -4269,6 +4550,46 @@ var warFighters = {
       skill1: { name: "Reaper\u2019s Claim", description: "Strike one enemy and mark it.", cooldown: 0, strength: { damageMultiplier: 2.72 } },
       skill2: { name: "Turn the Bough", description: "Strike all enemies.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.92 } },
       ultimate: { name: "All That Ripens", description: "Strike one enemy. Recover next turn.", cooldown: 0, strength: { damageMultiplier: 12.48 } }
+    }
+  },
+  neralis: {
+    nativeIdentity: true,
+    stats: { health: 240, defense: 12, damage: 32, crit: 0.12, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
+    passive: { name: "Returning Current", description: "Gain Current from effective Normal damage or native healing, once per action.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: "Light the Next Station", description: "Heal one living ally for 35% maximum Health, scaled by Skill Power; grant +30% Defense for 2 turns.", cooldown: 0, targets: "one-ally", strength: {} },
+      skill2: { name: "Carry Them Back", description: "Spend all Current to heal each living ally for 18% maximum Health plus 6% per Current, scaled by Skill Power.", cooldown: 0, targets: "all-allies", strength: {} },
+      ultimate: { name: "No Crossing Left Empty", description: "Spend all Current; deal 720% Direct Attack to all enemies and heal living allies for 30% maximum Health plus 5% per Current, scaled by Skill Power.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 7.2 } }
+    }
+  },
+  varkhel: {
+    nativeIdentity: true,
+    stats: { health: 305, defense: 21, damage: 33, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
+    passive: { name: "Tension Held", description: "Gain Tension when an enemy direct attack effectively damages Health or Shield once per enemy phase, or when a Normal Attack deals damage.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: "Set the Warning Chain", description: "Gain a Shield equal to 25% maximum Health, scaled by Skill Power; +40% Defense for 2 turns and Taunt for the next enemy phase.", cooldown: 0, targets: "all-allies", strength: {} },
+      skill2: { name: "Return the Strain", description: "Spend all Tension; deal 285% Direct Attack plus 45% per Tension to one enemy, ignoring 20% Defense.", cooldown: 0, strength: { damageMultiplier: 2.85 } },
+      ultimate: { name: "The Bridge Holds Behind Me", description: "Spend all Tension; deal 690% Direct Attack plus 55% per Tension to all enemies and shield living allies for 30% maximum Health, scaled by Skill Power.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 6.9 } }
+    }
+  },
+  seravelle: {
+    nativeIdentity: true,
+    stats: { health: 235, defense: 13, damage: 34, crit: 0.14, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
+    passive: { name: "Convoy Cadence", description: "The first effective manual Normal Attack each round grants Cadence while Seravelle lives.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: "Send the Ember Ahead", description: "Deal 245% Direct Attack to one enemy and apply Burn for 2 enemy phases, dealing 12% of Attack per phase, scaled by Skill Power.", cooldown: 0, strength: { damageMultiplier: 2.45 } },
+      skill2: { name: "Move as One", description: "Spend all Cadence; grant living allies +30% Direct Attack plus 10% per Cadence for 2 turns. This fixed bonus is not scaled by Skill Power.", cooldown: 0, targets: "all-allies", strength: {} },
+      ultimate: { name: "The Road Belongs to Everyone", description: "Deal 620% Direct Attack to all enemies; grant each other living ally 20% maximum Gauge and +30 percentage points Skill Power for 2 turns.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 6.2 } }
+    }
+  },
+  velmira: {
+    nativeIdentity: true,
+    stats: { health: 218, defense: 11, damage: 45, crit: 0.23, shatterCapacity: 100, critMultiplier: 1.65, elementalDamage: 0 },
+    passive: { name: "Alternating Edge", description: "Gain Crosscut when an ordinary Skill differs from the previous ordinary Skill; the first Skill establishes the sequence.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: "Open the Seam", description: "Deal 280% Direct Attack to one enemy and apply Weaken for 2 enemy phases, reducing its direct damage by 25%.", cooldown: 0, strength: { damageMultiplier: 2.8, weakenFraction: 0.25 } },
+      skill2: { name: "Turn the Other Edge", description: "Deal 205% Direct Attack to all enemies; ignore 20% Defense while holding at least 2 Crosscut.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.05 } },
+      ultimate: { name: "Leave the Doorway Standing", description: "Spend all Crosscut; deal 1,050% Direct Attack plus 90% per Crosscut to one enemy, ignoring 30% Defense.", cooldown: 0, strength: { damageMultiplier: 10.5 } }
     }
   }
 };
@@ -5404,6 +5725,58 @@ var nativeIdentities = {
       skill2: ability2("Turn the Bough", "192% direct damage to all enemies. In [Harvest], ignores 20% of their Defense.", 1.92, "all-enemies"),
       ultimate: ability2("All That Ripens", "1,248% direct damage to one enemy. In [Harvest], ignores 30% of its Defense.", 12.48)
     }
+  },
+  neralis: {
+    role: "Oceanic healer and support",
+    playLoop: "[Neralis] earns [Current] through effective Normal damage and native healing, then spends it for squad recovery.",
+    passive: {
+      name: "Returning Current",
+      description: "Gain 1 [Current], up to 3, when a Normal Attack deals direct damage or a native ability restores Health. Gain at most 1 per action. [Amber-Station Return Manifold] raises the cap to 4."
+    },
+    abilities: {
+      skill1: ability2("Light the Next Station", "Restore 35% maximum Health to one living squad member, scaled by Skill Power. Grant +30% Defense for 2 turns.", void 0, "one-ally"),
+      skill2: ability2("Carry Them Back", "Spend all [Current]. Restore 18% maximum Health to each living squad member, plus 6% per [Current] spent, scaled by Skill Power. [Amber-Station Return Manifold] increases the per-Current heal to 9%.", void 0, "all-allies"),
+      ultimate: ability2("No Crossing Left Empty", "Spend all [Current]. Deal 720% direct Attack to all enemies and restore 30% maximum Health to each living squad member, plus 5% per [Current] spent, scaled by Skill Power.", 7.2, "all-enemies")
+    }
+  },
+  varkhel: {
+    role: "Infernic tension tank",
+    playLoop: "[Varkhel] banks [Tension] from enemy direct hits and Normal Attacks, then spends it for piercing counterstrikes.",
+    passive: {
+      name: "Tension Held",
+      description: "Gain 1 [Tension], up to 4, when an enemy direct attack effectively damages Varkhel\u2019s Health or Shield, once per enemy phase. His damaging Normal Attack also grants 1 [Tension]. [Faultstar Chain Accumulator] raises the cap to 5."
+    },
+    abilities: {
+      skill1: ability2("Set the Warning Chain", "Grant Varkhel a Shield equal to 25% maximum Health, scaled by Skill Power. Gain +40% Defense for 2 turns and Taunt for the next enemy phase. [Scarlet-Hinge Load Distributor] also shields each other living ally for 16% maximum Health, scaled by Skill Power.", void 0, "all-allies"),
+      skill2: ability2("Return the Strain", "Spend all [Tension]. Deal 285% of Direct Attack to one enemy, plus 45% per [Tension] spent. Ignore 20% of its Defense; [Recoil-Star Compression Turbine] raises this to 35% and refunds 15% maximum Gauge when at least 3 [Tension] were spent.", 2.85),
+      ultimate: ability2("The Bridge Holds Behind Me", "Spend all [Tension]. Deal 690% of Direct Attack to all enemies, plus 55% per [Tension] spent. Shield each living squad member for 30% maximum Health, scaled by Skill Power.", 6.9, "all-enemies")
+    }
+  },
+  seravelle: {
+    role: "Infernic convoy support",
+    playLoop: "[Seravelle] builds [Cadence] from effective manual Normal Attacks, spends it on a fixed squad Attack buff, and uses Burn to fund allies\u2019 Gauge.",
+    passive: {
+      name: "Convoy Cadence",
+      description: "The first effective manual Normal Attack in a round grants 1 [Cadence], up to 3, while Seravelle is alive. Triggered attacks and repeated targets do not grant more. [Ashroad Cadence Transmission] raises the cap to 4."
+    },
+    abilities: {
+      skill1: ability2("Send the Ember Ahead", "Deal 245% direct Attack to one enemy. Apply [Burn] for 2 enemy phases, dealing 12% of Seravelle\u2019s Direct Attack per phase, scaled by her Skill Power.", 2.45),
+      skill2: ability2("Move as One", "Spend all [Cadence]. Grant each living squad member +30% Direct Attack for 2 turns, plus 10% per [Cadence] spent. This fixed buff is not scaled by Skill Power. [Ashroad Cadence Transmission] raises its base bonus to 40%.", void 0, "all-allies"),
+      ultimate: ability2("The Road Belongs to Everyone", "Deal 620% direct Attack to all enemies. Grant each other living squad member 20% maximum Gauge and +30 percentage points Skill Power for 2 turns; these buffs do not strengthen this attack.", 6.2, "all-enemies")
+    }
+  },
+  velmira: {
+    role: "Chaotic alternating-edge attacker",
+    playLoop: "[Velmira] alternates [Open the Seam] and [Turn the Other Edge] to earn [Crosscut], then spends it on a piercing Last Flare.",
+    passive: {
+      name: "Alternating Edge",
+      description: "Gain 1 [Crosscut], up to 3, when an ordinary Skill differs from Velmira\u2019s previous ordinary Skill. The first Skill establishes the sequence without granting a stack. Normal Attacks and Last Flare do not change the previous-Skill record. [Twin-Edge Sequence Orrery] raises the cap to 4 and funds the first ordinary Skill once per encounter."
+    },
+    abilities: {
+      skill1: ability2("Open the Seam", "Deal 280% direct Attack to one enemy. Apply [Weaken] for 2 enemy phases, reducing its direct damage by 25%. [Goldseam Precision Fracturer] deals 35% more direct damage against a Weakened enemy.", 2.8),
+      skill2: ability2("Turn the Other Edge", "Deal 205% direct Attack to all enemies. Ignore 20% of their Defense while holding at least 2 [Crosscut]; [Goldseam Precision Fracturer] raises this to 35%. The earned stack is not considered until after this Skill resolves.", 2.05, "all-enemies"),
+      ultimate: ability2("Leave the Doorway Standing", "Spend all [Crosscut]. Deal 1,050% direct Attack to one enemy, plus 90% per [Crosscut] spent. Ignore 30% of its Defense. [Open-Threshold Return Drive] refunds 25% maximum Gauge and heals Velmira for 18% maximum Health when at least 3 [Crosscut] were spent; Recovery still applies.", 10.5)
+    }
   }
 };
 var exactDirectDamageIds = [
@@ -5421,7 +5794,11 @@ var exactDirectDamageIds = [
   "thessara",
   "elaris",
   "veyr",
-  "aureth"
+  "aureth",
+  "neralis",
+  "varkhel",
+  "seravelle",
+  "velmira"
 ];
 var directDescriptionCoefficients = {
   ozriel: [[240], [], [455]],
@@ -5457,7 +5834,11 @@ var directDescriptionCoefficients = {
   thessara: [[240], [], []],
   elaris: [[280], [240], [1050]],
   veyr: [[320], [240], [1050]],
-  aureth: [[], [240], []]
+  aureth: [[], [240], []],
+  neralis: [[], [], [720]],
+  varkhel: [[], [285], [690]],
+  seravelle: [[245], [], [620]],
+  velmira: [[280], [205], [1050]]
 };
 for (const id of Object.keys(nativeIdentities)) {
   for (const [index, action] of ["skill1", "skill2", "ultimate"].entries()) {
@@ -5609,7 +5990,19 @@ var omnicSelfStats = {
   "master-veyr-3": { damage: 0.4, health: 0.5 },
   "master-aureth-1": { health: 0.6, defense: 0.6 },
   "master-aureth-2": { health: 0.75, skillPower: 0.25 },
-  "master-aureth-3": { defense: 0.5, skillEfficiency: 0.2 }
+  "master-aureth-3": { defense: 0.5, skillEfficiency: 0.2 },
+  "master-neralis-1": { health: 0.6, skillPower: 0.35 },
+  "master-neralis-2": { health: 0.5, defense: 0.6 },
+  "master-neralis-3": { health: 0.4, damage: 0.4, skillPower: 0.25 },
+  "master-varkhel-1": { health: 0.7, defense: 0.5 },
+  "master-varkhel-2": { health: 0.5, skillPower: 0.35 },
+  "master-varkhel-3": { health: 0.5, damage: 0.45 },
+  "master-seravelle-1": { health: 0.5, skillPower: 0.35 },
+  "master-seravelle-2": { damage: 0.45, skillPower: 0.3 },
+  "master-seravelle-3": { health: 0.6, defense: 0.4 },
+  "master-velmira-1": { damage: 0.6, skillPower: 0.3 },
+  "master-velmira-2": { damage: 0.45, crit: 0.25 },
+  "master-velmira-3": { health: 0.5, damage: 0.35, skillPower: 0.2 }
 };
 var omnicSquadStats = {
   "firstlight-cam": { gaugeGain: 0.5, defense: 0.4 },
@@ -7874,7 +8267,11 @@ var elementalWars = [
   { character: "vaelor", name: "Overture of the Broken Sky", element: "atmospheric" },
   { character: "caldrex", name: "Siege of the Unbroken Furnace", element: "infernic" },
   { character: "solenne", name: "Requiem of the Silent Moon", element: "tranquilitic" },
-  { character: "myrthen", name: "The Orchard Beyond Autumn", element: "botanic" }
+  { character: "myrthen", name: "The Orchard Beyond Autumn", element: "botanic" },
+  { character: "neralis", name: "Passage of the Returning River", element: "oceanic", artPending: true },
+  { character: "varkhel", name: "Trial of the Suspended Chain", element: "infernic", artPending: true },
+  { character: "seravelle", name: "March of the Ember Convoy", element: "infernic", artPending: true },
+  { character: "velmira", name: "Dance of the Unfastened Court", element: "chaotic", artPending: true }
 ];
 function warEncounter(character, stage) {
   const mode = elementalWars.find((entry) => entry.character === character);
@@ -7901,8 +8298,8 @@ function warEncounter(character, stage) {
     color: starter.color,
     stats,
     skills,
-    background: `elemental-war-${character}-arena.png`,
-    banner: `elemental-war-${character}-banner.png`
+    background: "artPending" in mode && mode.artPending ? void 0 : `elemental-war-${character}-arena.png`,
+    banner: "artPending" in mode && mode.artPending ? void 0 : `elemental-war-${character}-banner.png`
   };
 }
 function warLoot(stage) {
@@ -7912,7 +8309,7 @@ function warLoot(stage) {
   return {
     fractalis: activityPrismaticaDrop({ war: { stage } }, 140),
     lycalis: { chance: 0.3 + 0.3 * t, quantity: Math.round(1 + 4 * t) * multiplier },
-    recruitmentChance: stage === warStageCount ? 1 : 0
+    recruitmentChance: stage === warStageCount ? 0.05 : 0
   };
 }
 function rollWarRewards(stage, currencyRandom, premiumRandom, recruitmentRandom) {
@@ -8442,6 +8839,13 @@ function nativeRefusal(state, target, loss, events) {
 function nativeHeatCap(owner) {
   return equipped(owner, "master-caldrex-1") ? 5 : 3;
 }
+function phase2CounterCap(owner, master2) {
+  if (owner.definitionId === "neralis") return equipped(owner, "master-neralis-1") ? 4 : 3;
+  if (owner.definitionId === "varkhel") return equipped(owner, "master-varkhel-1") ? 5 : 4;
+  if (owner.definitionId === "seravelle") return equipped(owner, "master-seravelle-1") ? 4 : 3;
+  if (owner.definitionId === "velmira") return equipped(owner, "master-velmira-1") ? 4 : 3;
+  return master2;
+}
 function guardOnce(owner, key, round) {
   const guards = nativeMemory(owner).guards ??= {};
   if (guards[key] === round) return false;
@@ -8564,6 +8968,8 @@ function nativeDefenseBonus(state, unit, baseDefense) {
     bonus += 0.1 * (unit.native?.load ?? 0);
   if (hasNativeIdentity(unit) && unit.definitionId === "caldrex" && equipped(unit, "master-caldrex-1"))
     bonus += 0.12 * (unit.native?.heat ?? 0);
+  if (hasNativeIdentity(unit) && unit.definitionId === "varkhel" && equipped(unit, "master-varkhel-1"))
+    bonus += 0.1 * (unit.native?.tension ?? 0);
   const buff = unit.native?.defenseBuff;
   if (buff && buff.throughRound >= state.round) bonus += buff.fraction;
   return bonus * baseDefense;
@@ -8588,6 +8994,12 @@ function warEnemyHit(state, enemy, events) {
     }
     if (equipped(owner, "master-caldrex-2") && (memory.tauntThrough ?? -1) >= state.round && gear(enemy).owners.nativeTaunt === owner.id)
       fixed(state, owner, enemy, owner.stats.damage * 0.9, "revenge", events, false, void 0, true, "conduit");
+  }
+  for (const owner of living(state).filter((unit) => hasNativeIdentity(unit) && unit.definitionId === "varkhel")) {
+    if (!strikes.some((entry) => entry.target === owner.id && (entry.amount > 0 || (entry.shieldAbsorbed ?? 0) > 0))) continue;
+    if ((owner.native?.tension ?? 0) >= phase2CounterCap(owner, 1) || !guardOnce(owner, "tension", state.round)) continue;
+    owner.native.tension = (owner.native?.tension ?? 0) + 1;
+    status3(state, events, owner, owner, `${owner.name} banks Tension ${owner.native.tension}/${phase2CounterCap(owner, 1)}.`);
   }
 }
 function nativeAction(state, owner, action, targetId, events, direct, activation, cleanseChoice) {
@@ -9536,6 +9948,162 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       status3(state, events, owner, owner, `${owner.name} is in ${next[0].toUpperCase()}${next.slice(1)}.`);
       break;
     }
+    case "neralis": {
+      const current = Math.min(phase2CounterCap(owner, 1), memory.current ?? 0);
+      const heal = (recipient, offer) => {
+        const before = recipient.hp;
+        const restored = nativeHeal(state, owner, recipient, offer, events, true, activation);
+        if (equipped(owner, "master-neralis-3") && before < recipient.stats.health * 0.5 && restored > 0 && guardOnce(owner, `return-gauge:${recipient.id}`, state.round))
+          generatedGaugePercent(owner, recipient, 0.1, events, state);
+        return restored;
+      };
+      if (action === "skill1" && ally) {
+        heal(ally, ally.stats.health * 0.35);
+        const throughRound = state.round + 1 + activation.skillDuration;
+        ally.native ??= {};
+        ally.native.defenseBuff = { fraction: 0.3, throughRound };
+        status3(state, events, owner, ally, `${ally.name}: Station Defense +30% through player turn ${throughRound}.`);
+        if (equipped(owner, "master-neralis-2"))
+          nativeShield(
+            state,
+            owner,
+            ally,
+            ally.stats.health * 0.2,
+            events,
+            { skillPower: activation.skillPower, activation, stack: true }
+          );
+      } else if (action === "skill2") {
+        memory.current = 0;
+        const perCurrent = equipped(owner, "master-neralis-1") ? 0.09 : 0.06;
+        for (const recipient of allies)
+          heal(recipient, recipient.stats.health * (0.18 + perCurrent * current));
+        status3(state, events, owner, owner, `${owner.name} spends ${current} Current.`);
+      } else if (action === "ultimate") {
+        memory.current = 0;
+        hit(7.2, true);
+        for (const recipient of living(state))
+          heal(recipient, recipient.stats.health * (0.3 + 0.05 * current));
+        status3(state, events, owner, owner, `${owner.name} spends ${current} Current.`);
+      }
+      finishNativeHealing(state, owner, activation, events);
+      break;
+    }
+    case "varkhel": {
+      const tension = Math.min(phase2CounterCap(owner, 1), memory.tension ?? 0);
+      if (action === "skill1") {
+        nativeShield(
+          state,
+          owner,
+          owner,
+          owner.stats.health * 0.25,
+          events,
+          { skillPower: activation.skillPower, activation, stack: true }
+        );
+        memory.defenseBuff = { fraction: 0.4, throughRound: state.round + 1 + activation.skillDuration };
+        memory.tauntThrough = state.round + activation.skillDuration;
+        status3(state, events, owner, owner, `${owner.name} gains +40% Defense and taunts eligible random single-target attacks through enemy phase ${memory.tauntThrough}.`);
+        if (equipped(owner, "master-varkhel-2")) for (const recipient of other)
+          nativeShield(
+            state,
+            owner,
+            recipient,
+            recipient.stats.health * 0.16,
+            events,
+            { skillPower: activation.skillPower, activation, stack: true }
+          );
+      } else if (action === "skill2") {
+        memory.tension = 0;
+        hit(
+          2.85 + 0.45 * tension,
+          false,
+          equipped(owner, "master-varkhel-3") ? 0.35 : 0.2
+        );
+        if (tension >= 3 && equipped(owner, "master-varkhel-3"))
+          generatedGaugePercent(owner, owner, 0.15, events, state);
+        if (tension) status3(state, events, owner, owner, `${owner.name} spends ${tension} Tension.`);
+      } else if (action === "ultimate") {
+        memory.tension = 0;
+        hit(6.9 + 0.55 * tension, true);
+        for (const recipient of living(state)) shield(recipient, 0.3);
+        if (tension) status3(state, events, owner, owner, `${owner.name} spends ${tension} Tension.`);
+      }
+      break;
+    }
+    case "seravelle": {
+      const cadence = Math.min(phase2CounterCap(owner, 1), memory.cadence ?? 0);
+      if (action === "skill1" && target) {
+        hit(2.45);
+        if (target.hp > 0) {
+          const burns = memory.burns ??= {};
+          const damage = applyConduitBurn(state, owner, target, owner.stats.damage * 0.12, activation);
+          burns[target.id] = { damage, turns: 2 + activation.skillDuration };
+          target.burn = { ...burns[target.id], sourceId: owner.id, origin: "native" };
+          resetConduitBurnStreak(owner, target);
+          status3(state, events, owner, target, `${target.name}: Burn from ${owner.name}, ${damage} per phase for ${burns[target.id].turns} phases.`);
+        }
+      } else if (action === "skill2") {
+        memory.cadence = 0;
+        const base = equipped(owner, "master-seravelle-1") ? 0.4 : 0.3;
+        const fraction = base + 0.1 * cadence;
+        const throughRound = state.round + 1 + activation.skillDuration;
+        for (const recipient of allies) {
+          const previous = recipient.attackBoost;
+          if (!previous || previous.throughRound < state.round || previous.sourceId === owner.id || previous.origin === "native" && fraction > previous.fraction)
+            recipient.attackBoost = { fraction, throughRound, sourceId: owner.id, origin: "native" };
+          else if (previous.sourceId === owner.id && previous.throughRound >= state.round)
+            recipient.attackBoost = { ...previous, fraction, throughRound };
+          status3(state, events, owner, recipient, `${recipient.name}: Direct Attack +${Math.round(fraction * 100)}% through player turn ${throughRound}.`);
+        }
+        status3(state, events, owner, owner, `${owner.name} spends ${cadence} Cadence.`);
+      } else if (action === "ultimate") {
+        hit(6.2, true);
+        const throughRound = state.round + 1 + activation.skillDuration;
+        for (const recipient of other) {
+          generatedGaugePercent(owner, recipient, 0.2, events, state);
+          recipient.native ??= {};
+          recipient.native.skillPowerBuff = { owner: owner.id, fraction: 0.3, throughRound };
+          status3(state, events, owner, recipient, `${recipient.name}: Skill Power +30% and 20% Gauge through player turn ${throughRound}.`);
+        }
+        if (equipped(owner, "master-seravelle-3")) for (const recipient of allies)
+          nativeShield(
+            state,
+            owner,
+            recipient,
+            recipient.stats.health * 0.22,
+            events,
+            { skillPower: activation.skillPower, activation, stack: true }
+          );
+      }
+      break;
+    }
+    case "velmira": {
+      const crosscut = Math.min(phase2CounterCap(owner, 1), memory.crosscut ?? 0);
+      if (action === "skill1") {
+        const fortified = equipped(owner, "master-velmira-2") && !!target?.weakened;
+        hit(2.8 * (fortified ? 1.35 : 1));
+        if (target?.hp) applyConduitWeaken(state, owner, target, 0.25, events, action, 2, activation);
+      } else if (action === "skill2") {
+        const pierce = crosscut >= 2 ? equipped(owner, "master-velmira-2") ? 0.35 : 0.2 : 0;
+        hit(2.05, true, pierce);
+      } else if (action === "ultimate") {
+        memory.crosscut = 0;
+        hit(10.5 + 0.9 * crosscut, false, 0.3);
+        if (crosscut >= 3 && equipped(owner, "master-velmira-3")) {
+          generatedGaugePercent(owner, owner, 0.25, events, state);
+          nativeHeal(state, owner, owner, owner.stats.health * 0.18, events, false);
+        }
+      }
+      if (action === "skill1" || action === "skill2") {
+        const previousSkill = memory.previousSkill;
+        if (previousSkill && previousSkill !== action)
+          memory.crosscut = Math.min(phase2CounterCap(owner, 1), crosscut + 1);
+        memory.previousSkill = action;
+        if (equipped(owner, "master-velmira-1") && guardOnce(owner, "first-skill", 0))
+          memory.crosscut = Math.min(phase2CounterCap(owner, 1), (memory.crosscut ?? 0) + 1);
+        status3(state, events, owner, owner, `${owner.name} holds ${memory.crosscut ?? 0}/${phase2CounterCap(owner, 1)} Crosscut.`);
+      }
+      break;
+    }
     default:
       throw new Error(`Missing native identity for ${owner.definitionId}.`);
   }
@@ -9543,6 +10111,32 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
 function nativeAfterAction(state, owner, action, priorInstruction, events) {
   const actionEvents = events.slice(owner.native?.actionStartedAt ?? events.length);
   const actionDamage = actionEvents.some((event2) => event2.kind === "damage" && event2.source === owner.id && (event2.amount > 0 || (event2.shieldAbsorbed ?? 0) > 0));
+  const effectiveNativeDamage = actionEvents.some((event2) => event2.kind === "damage" && event2.source === owner.id && event2.origin !== "conduit" && !event2.periodic && event2.nativeKind !== "redirect" && (event2.amount > 0 || (event2.shieldAbsorbed ?? 0) > 0));
+  const effectiveNativeHeal = actionEvents.some((event2) => event2.kind === "heal" && event2.source === owner.id && event2.origin === "native" && event2.amount > 0);
+  if (hasNativeIdentity(owner) && owner.definitionId === "neralis" && (action === "light" && effectiveNativeDamage || action !== "light" && effectiveNativeHeal)) {
+    const current = owner.native?.current ?? 0;
+    const cap = phase2CounterCap(owner, 1);
+    if (current < cap) {
+      owner.native.current = current + 1;
+      status3(state, events, owner, owner, `${owner.name} gains Current ${owner.native.current}/${cap}.`);
+    }
+  }
+  if (hasNativeIdentity(owner) && owner.definitionId === "varkhel" && action === "light" && effectiveNativeDamage) {
+    const tension = owner.native?.tension ?? 0;
+    const cap = phase2CounterCap(owner, 1);
+    if (tension < cap) {
+      owner.native.tension = tension + 1;
+      status3(state, events, owner, owner, `${owner.name} gains Tension ${owner.native.tension}/${cap}.`);
+    }
+  }
+  if (action === "light" && effectiveNativeDamage) for (const seravelle of living(state).filter((unit) => hasNativeIdentity(unit) && unit.definitionId === "seravelle")) {
+    const cap = phase2CounterCap(seravelle, 1);
+    if (!guardOnce(seravelle, "cadence", state.round)) continue;
+    if ((seravelle.native?.cadence ?? 0) < cap) {
+      seravelle.native.cadence = (seravelle.native?.cadence ?? 0) + 1;
+      status3(state, events, seravelle, seravelle, `${seravelle.name} gains Cadence ${seravelle.native.cadence}/${cap}.`);
+    }
+  }
   const ability3 = action === "light" ? void 0 : owner.kit?.abilities[action];
   const traits = phaseZeroStatsReady ? conduitActionTraits(state, owner, action) : void 0;
   const damaging = traits?.damage ?? (action === "light" || ability3?.strength.damageMultiplier !== void 0);
@@ -9900,6 +10494,11 @@ function nativeBurnPhase(state, enemy, events) {
     const warded = living(state).some((unit) => hasNativeIdentity(unit) && unit.definitionId === "caldrex" && (unit.native?.burnBoostThrough ?? -1) >= state.round);
     const hpAndShield = enemy.hp + enemy.shield;
     fixed(state, owner, enemy, warded ? tick * 1.25 : tick, "burn", events, true);
+    if (hpAndShield > enemy.hp + enemy.shield) for (const seravelle of living(state).filter((unit) => hasNativeIdentity(unit) && unit.definitionId === "seravelle" && equipped(unit, "master-seravelle-2"))) {
+      if (!guardOnce(seravelle, "burn-gauge", state.round)) continue;
+      for (const recipient of living(state).filter((unit) => unit.id !== seravelle.id))
+        generatedGaugePercent(seravelle, recipient, 0.05, events, state);
+    }
     const triage = living(state).find((unit) => hasNativeIdentity(unit) && unit.definitionId === "caldrex" && equipped(unit, "master-caldrex-3"));
     if (triage && enemy.hp + enemy.shield < hpAndShield && guardOnce(triage, "triage", state.round))
       for (const ally of living(state)) generatedHeal(triage, ally, ally.stats.health * 0.08, events, state);
@@ -12373,6 +12972,10 @@ function createBattle(seed2 = 1729, roster = ["ember"], progress = {}, equipment
       unit.kit = kit;
       if (id === "vaelor") unit.native = { beat: 0, beatRound: 1 };
       else if (id === "myrthen") unit.native = { season: "sprout" };
+      else if (id === "neralis") unit.native = { current: 0 };
+      else if (id === "varkhel") unit.native = { tension: 0 };
+      else if (id === "seravelle") unit.native = { cadence: 0 };
+      else if (id === "velmira") unit.native = { crosscut: 0 };
       unit.level = progress[id]?.level ?? null;
       unit.evolution = progress[id]?.evolution ?? 1;
       if (equipment[id]) unit.conduits = [...equipment[id]];

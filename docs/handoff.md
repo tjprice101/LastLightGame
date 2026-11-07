@@ -1,5 +1,91 @@
 # Current state and handoff
 
+## Approved reclaimed War integration/intake (2026-11-06)
+
+Runtime kits/counters, twelve personal Masters, trial/content/account/UI wiring
+and5% recruitment are implemented. Focused integration suite passes399 tests;
+parent roster-filter/experiment follow-up passes9. Full-suite escalation
+initially exposed133 tightly coupled old-count/lore/Master-spec/pending-art
+assertions; corrected against the actual current contract, not skipped.
+Affected follow-up passes3,124 tests in28 files. Final
+`npx vitest run --maxWorkers=2 --testTimeout=200000 --reporter=dot`
+passes **8,321 tests in251 files**. Final build/bundle/TypeScript/Deno checks
+pass, and matching authority redeployment plus both hosted smoke suites pass.
+Client publication/hosted build verification follows the validated commit.
+
+`npm run build` passes (24 new AVIF portraits encoded; existing large-chunk
+warning only); `node tools\bundle_server_game.mjs`,
+`npx tsc --project supabase\functions\game-operation\tsconfig.json --pretty false`
+and `npx --yes deno check supabase\functions\game-operation\index.ts` pass.
+Supabase required fresh explicit consent; owner approved through confirmation.
+Matching production `game-operation` deployed with
+`npx supabase functions deploy game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt --yes`.
+Hosted `--phase-two-war` passes all12 Master fixtures, four kits' skills/Normal/
+ultimate, exact event/state/RNG parity, retries, checkpoint and all four Lv140
+trial entries. Hosted `--war-recruitment` passes40 cases across all ten modes
+(new/owned final success, owned failed roll/no conversion, zero Stage9/RNG use,
+saved reads/retries). All disposable identities/cascading rows removed.
+Early smoke failures were fixture mistakes (nonexistent session.activity,
+two own actions in one turn, missing explicit seen history, serverTime retries,
+too-long test usernames); fixed with truthful fixtures and normal turn flow,
+not production gameplay changes. Client release/push remains pending.
+
+[Bounded combat evidence](enemy-benchmark-calibration.md#bounded-reclaimed-war-checks-2026-11-06)
+records48 actual pressured encounters:38 wins,6 defeats,4 timeouts. Neralis
+4/6/2; Varkhel10/0/2; Seravelle12/0/0; Velmira12/0/0. No tuning to hide failures.
+Separate paper experiments are **owned-trio** totals, not solo/DPR. Separate
+single direct packets are survivable for all four, not a clear-rate claim.
+
+Owner now approves implementing Neralis/Varkhel/Seravelle/Velmira, their twelve
+personal Masters and four trials. All ten War modes change to5% recruitment
+per final Stage10 boss clear, zero earlier; only a successful owned roll
+converts to100 Null-Prismatica. This supersedes proposal-only and guaranteed
+recruitment historical statements below. Paused Story and inactive seasonal
+launch schedules remain unchanged.
+
+All24 supplied portraits are installed with stable IDs/revisioned URLs.
+Exact originals remain in `Art/source/phase2-war`; source mapping, reviewed
+fixed teal/green keys, enclosed gap seeds and export hashes live under
+`Art/provenance/phase2-war-*`. Root duplicates removed only after all archive
+and export hashes passed. Dark/light six-form sheets reviewed for every unit.
+Fixed keys avoid source-tip-contaminated row-gradient strips. Preserve authored
+water/flame/green-yellow powers, pale armor, dark chains and painted shadows.
+Magnified green-power verification uses actual authored sparks: all eight
+vivid-green source pixels remain opaque and byte-identical. A prior invented
+100-pixel assertion was wrong because the source contains only eight; a
+near-key exterior point is background, not a lost wing-power feature.
+Source-clipped tips and supplied hair/weapon variation remain; no reconstruction.
+
+Reproduce with `python tools\intake_phase2_war_art.py --apply`,
+`python tools\archive_phase2_war_art.py --archive`,
+`python tools\character_art_revisions.py --write`,
+`python tools\build_phase2_war_art.py`.
+From `tools`, `python -m unittest test_phase2_war_intake test_phase2_war_art test_elemental_war_art test_future_plans`
+passes23 tests, including exact24-export reproduction, archive/root safeguards,
+colored subject pixels,44 pending-source counts and current5% copy.
+`python -m unittest test_prepare_art test_character_art_revisions test_phase1_war_intake`
+passes29 further tests, preserving shared sprite preparation, byte-derived
+revisions and prior Phase1 installed artwork.
+Renderer-only browser fixtures (no account writes) import all ten War choices,
+exercise24 new-character detail/skill/equipment panels, and select all four
+new trial cards. At reported1600px width, no document overflow; each new
+Omnic portrait URL responds200, cards expose pending-art labels and exact5%.
+This verifies DOM/content/asset routing, not natural entrance playback or
+mobile presentation. Integrated viewport resizing did not reliably produce
+requested390/320px; an image-decode loop stalled in the hidden browser and
+was explicitly aborted. Do not claim a completed mobile/temporal visual audit.
+Final `python -m unittest test_phase2_war_intake test_phase2_war_art test_elemental_war_art test_future_plans test_character_art_revisions`
+passes24 tests. `git diff --check` passes. Runtime integration, bounded combat,
+build and hosted authority checks are complete; browser limitations above
+remain explicit. Client release is not certified until hosted build matches.
+
+The [canonical design/restart package](Future%20Plans/phase-2-war-designs.md)
+retains lore, exact mechanics and limits. [44 associated prompts](Future%20Plans/Elemental%20War%20Phase%202.md)
+remain16 abilities/12 Masters/8 status symbols/4 headers/4 arenas. All24 existing
+portraits are excluded from new-generation costs; combined seasonal+War251
+required count is unchanged. Pending visuals use named neutral presentation,
+not missing URLs or borrowed unrelated artwork.
+
 ## Future Plans filing and image-budget audit (2026-11-06)
 
 Owner requests consolidating unfinished information, not implementing it.

@@ -5,7 +5,8 @@ import { isCalamiticCharacter } from '../content/calamitic-characters';
 type Motion = 'slash' | 'thrust' | 'bow' | 'cast' | 'hammer' | 'twin' | 'guard';
 type Signature = 'cleave' | 'trident' | 'petal' | 'cyclone' | 'lens' | 'feather' | 'fault' | 'mind' | 'star' | 'eclipse' | 'rose' | 'thorn' | 'twin' | 'meridian' | 'citadel' | 'resonance' |
   'ferry' | 'counterweight' | 'beacon' | 'severance' | 'orbit' | 'interval' | 'repair' | 'accord' | 'reserve' | 'branch' | 'loadbearing' | 'corridor' |
-  'pillar' | 'flare' | 'vortex' | 'hammer' | 'bloomwheel' | 'halo';
+  'pillar' | 'flare' | 'vortex' | 'hammer' | 'bloomwheel' | 'halo' | 'returning-current' |
+  'suspended-chain' | 'ember-convoy' | 'unfastened-court';
 
 export const characterChoreography = {
   ozriel: { signature: 'citadel', motion: 'guard', family: 'radiant' },
@@ -42,6 +43,10 @@ export const characterChoreography = {
   elaris: { signature: 'branch', motion: 'slash', family: 'bloom' },
   veyr: { signature: 'loadbearing', motion: 'hammer', family: 'flame' },
   aureth: { signature: 'corridor', motion: 'guard', family: 'flame' },
+  neralis: { signature: 'returning-current', motion: 'thrust', family: 'tide' },
+  varkhel: { signature: 'suspended-chain', motion: 'guard', family: 'flame' },
+  seravelle: { signature: 'ember-convoy', motion: 'thrust', family: 'flame' },
+  velmira: { signature: 'unfastened-court', motion: 'twin', family: 'void' },
 } as const satisfies Record<StarterId, { signature: Signature; motion: Motion; family: AttackFlair['family'] }>;
 
 const signaturePaths: Record<Signature, string> = {
@@ -79,6 +84,10 @@ const signaturePaths: Record<Signature, string> = {
   hammer: 'M24 18 H76 V34 H24 Z M42 34 H58 V78 H42 Z M30 78 H70 V90 H30 Z',
   bloomwheel: 'M50 50 C30 36 34 18 50 14 C66 18 70 36 50 50 C64 30 82 32 88 46 C84 62 68 66 50 50 C72 56 74 76 60 86 C44 84 40 68 50 50 C36 72 18 70 12 56 C16 40 32 36 50 50 C28 44 26 24 40 14',
   halo: 'M50 12 A38 38 0 1 1 49.9 12 M50 24 A26 26 0 1 0 50.1 24 M50 4 V18 M50 82 V96 M4 50 H18 M82 50 H96',
+  'returning-current': 'M12 62 C28 22 70 22 86 62 M18 62 C30 42 46 42 58 62 C68 78 82 78 90 60 M18 76 H82 M50 18 V42 M40 32 L50 42 L60 32',
+  'suspended-chain': 'M50 10 L62 22 L50 34 L38 22 Z M50 34 V58 M50 58 C26 58 24 78 50 88 C76 78 74 58 50 58 Z M50 66 L59 75 L50 84 L41 75 Z M28 42 H72',
+  'ember-convoy': 'M18 78 L50 18 L82 78 M30 58 H70 M38 72 H62 M50 26 V56 M10 88 H90 M50 8 L58 20 H42 Z',
+  'unfastened-court': 'M18 18 C54 24 76 40 82 82 M82 18 C46 24 24 40 18 82 M28 30 L72 70 M72 30 L28 70 M50 8 V28 M50 72 V92 M8 50 H28 M72 50 H92',
 };
 
 export interface AttackFlair {

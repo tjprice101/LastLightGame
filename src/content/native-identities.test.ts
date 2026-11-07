@@ -41,6 +41,10 @@ const coefficients: Record<StarterId, readonly (number | undefined)[]> = {
   elaris: [2.8, 2.4, 10.5],
   veyr: [3.2, 2.4, 10.5],
   aureth: [undefined, 2.4, undefined],
+  neralis: [undefined, undefined, 7.2],
+  varkhel: [undefined, 2.85, 6.9],
+  seravelle: [2.45, undefined, 6.2],
+  velmira: [2.8, 2.05, 10.5],
 };
 const actions = ['skill1', 'skill2', 'ultimate'] as const;
 
@@ -143,7 +147,7 @@ describe('approved native identities', () => {
       .map(action => `${id}:${action}`));
     expect(targeted.sort()).toEqual([
       'aureth:skill1', 'bruno:skill2', 'caevren:skill2', 'disciple:skill1', 'disciple:skill2',
-      'ilyss:skill2', 'maerion:skill2', 'oryn:skill2', 'rhaziel:skill1', 'thessara:skill2', 'tide:skill2', 'vespera:skill2',
+      'ilyss:skill2', 'maerion:skill2', 'neralis:skill1', 'oryn:skill2', 'rhaziel:skill1', 'thessara:skill2', 'tide:skill2', 'vespera:skill2',
     ]);
     expect(fighters.bruno.abilities.skill2.excludeSelf).toBe(true);
     expect(fighters.bruno.abilities.skill2.description).toContain('If [Bruno] is the only living ally');

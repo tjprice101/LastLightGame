@@ -1,6 +1,6 @@
 # Elemental War Phase 2: four artwork-led character designs
 
-**Owner-requested design/prompt scope only (2026-11-06). Names and numeric designs are proposals; no playable registration, acquisition or authority changes.**
+**Owner approves playable integration and reviewed portrait intake (2026-11-06). This is the current four-character kit/art contract; release evidence lives in the handoff.**
 
 [Associated prompt pack](Elemental%20War%20Phase%202.md) | [Existing War rules](../elemental-war.md) | [Global benchmark boundary](../enemy-benchmark-calibration.md) | [Source provenance](../../Art/provenance/phase2-war-source-mapping.json).
 
@@ -8,15 +8,15 @@ Reproduce this specification and the prompt pack: `python tools/build_phase2_war
 
 ## Reuse, not replacement
 
-The 24 supplied root portraits become four new proposed War identities. Current Moon names, kits and save IDs remain intact; their new lunar prompt directions are separate. Originals are archived byte-for-byte with original filenames, new identity/form mapping and SHA-256. Root files stay until reviewed intake is approved. No automatic key removal, source repaint, runtime PNG or reveal URL is created. Source edge clipping, hairstyle drift and weapon changes are recorded below instead of falsely claiming perfect six-form continuity.
+The 24 supplied portraits become four distinct War identities. Current Moon names, kits and save IDs remain intact; their new lunar prompt directions are separate. Originals are archived byte-for-byte with original filenames, new identity/form mapping and SHA-256. Approved offline per-source key/gap cleanup installs the runtime portraits; verified duplicate root files are removed only after archive/export hash validation. No source repaint or online background removal. Source edge clipping, hairstyle drift and weapon changes are recorded below instead of falsely claiming perfect six-form continuity.
 
 These are mortal human Element-Bearers in Let's image. Wings are elemental manifestations and craft, not divine species. Neither creator's soul is recovered and no faction wins. The four identities are not members of the Moon order and have no seasonal summon placement.
 
-## Shared proposed gameplay contract
+## Shared approved gameplay contract
 
-- Six-star, six forms, Lv.0/Evo.1 and unequipped on future acquisition; no starter grants.
+- Six-star, six forms, Lv.0/Evo.1 and unequipped on acquisition; no starter grants.
 - Existing War template: 10 free sequential stages, authored Lv.90-140 curve; bosses use shared hostile definitions, not playable role perks or personal Master mechanics.
-- Stage10 would guarantee that trial's bearer, or the current 100 Null-Prismatica owned conversion. Current currency rules/receipt atomicity retained; no trial materials, captures or summon pool. Prismatica grows linearly from1500-2500 at1 to30000-45000 at10, with no final multiplier. Null-Prismatica chance grows30%-60%; quantity follows the existing round(1+4*(stage-1)/9), with final5x quantity retained.
+- Every War mode now has a 5% recruitment chance per Stage10 final-boss clear; Stages1-9 never recruit. A successful owned recruitment converts to100 Null-Prismatica; a failed roll grants neither recruitment nor conversion. Current currency rules/receipt atomicity retained; no trial materials, captures or summon pool. Prismatica grows linearly from1500-2500 at1 to30000-45000 at10, with no final multiplier. Null-Prismatica chance grows30%-60%; quantity follows the existing round(1+4*(stage-1)/9), with final5x quantity retained.
 - Ordinary same-element progression materials and existing Heaven/Abyss fodder associations apply; no new material family is needed just because the art was reused.
 - Normal: 100% Direct Attack to one enemy, +20 Gauge; shared Defense and action legality.
 - Skill1/2 base costs25/40, cooldown0; Last Flare100 and real next-player-turn recovery. Existing Skill Efficiency adjusts costs, Skill Power scales native damage/healing/Shield unless explicitly excepted. Stat/Gauge/counter bonuses are fixed, not implicitly scaled by Skill Power. Direct damage follows existing Defense/critical math.
@@ -25,9 +25,9 @@ These are mortal human Element-Bearers in Let's image. Wings are elemental manif
 - Named resources start empty and reset each encounter. Capped native counters have no account field; frozen Settings/session state retains counters and guards. HP resets between stages and Gauge carries over, while owned loadout/progression stay frozen.
 - Buff durations use current per-owner turn clocks; apply/refresh, never multiply-stack the same source. Taunt affects eligible random single-target attacks, not scripts/AoE.
 - No new RNG beyond existing critical outcomes. Triggered healing/Shield/Conduit output does not recursively generate native counters unless explicitly allowed. All effects require living owners/targets; no revive or negative Health.
-- One personal Master at a time, three alternatives per bearer, same future chest-choice mechanism. No new drop chance, Calamitic tier or automatic equip.
+- One personal Master at a time, three alternatives per bearer, same existing chest-choice mechanism. Master chest drop chances unchanged; no Calamitic tier or automatic equip.
 
-### Proposed trial stage/form map
+### Trial stage/form map
 
 The existing shared War curve, not a new authored difficulty table:
 
@@ -46,9 +46,9 @@ The existing shared War curve, not a new authored difficulty table:
 
 ## Numeric review boundary
 
-The designs deliberately offer substantial 25-60% useful buffs and meaningful funded payoffs, not tiny decorative boosts. This is not a balance certification: run non-Calamitic paper damage, effective healing, Shield creation, packet survival and actual pressured War encounters separately before approving numeric implementation. A trio is conditional on ownership, not an average account; only one starter is guaranteed. Do not tune enemies to these proposals or claim measured clear rates.
+The designs deliberately offer substantial 25-60% useful buffs and meaningful funded payoffs, not tiny decorative boosts. This is not a balance certification: run non-Calamitic paper damage, effective healing, Shield creation, packet survival and actual pressured War encounters separately during implementation validation. A trio is conditional on ownership, not an average account; only one starter is guaranteed. Do not tune enemies to the strongest paper outlier or claim unmeasured clear rates.
 
-## Neralis — proposed six-star Oceanic Healer & Support
+## Neralis — six-star Oceanic Healer & Support
 
 **Identity:** The current that returns for the last traveler.
 
@@ -129,7 +129,7 @@ When a native heal restores Health to an ally below 50% Health before that heal,
 
 **Art direction:** a vast amber station-heart rotor between paired silver crescent impellers, cyan-blue capillary channels and black-white coat-panel relief; three separate return axles.
 
-### Strengths, costs and proposed trial
+### Strengths, costs and trial
 
 **Strengths:** Reliable single-target rescue, Current-funded squad healing and a useful non-Calamitic Oceanic sustain choice. Healing is based on actual restored Health; no free Gauge from overheal.
 
@@ -139,7 +139,7 @@ When a native heal restores Health to an ally below 50% Health before that heal,
 
 **War activity:** Passage of the Returning River. Header and arena borrow the actual equipment/material motifs above, not the current Moon event scenery. Trial name differs from identity and Omnic title.
 
-## Varkhel — proposed six-star Infernic Tank
+## Varkhel — six-star Infernic Tank
 
 **Identity:** Wrath held on a chain instead of unleashed.
 
@@ -220,7 +220,7 @@ Increase Return the Strain's Defense ignore from 20% to 35%. When it spends at l
 
 **Art direction:** a massive black counterweight recoil turbine, violet-rimmed orange fault star, scarlet compression shutters and silver toothed return axles linked by one chain circuit.
 
-### Strengths, costs and proposed trial
+### Strengths, costs and trial
 
 **Strengths:** A damage-fed and Normal-fed tank with deliberate stored-pressure offense, strong short defensive setup and a meaningful piercing strike.
 
@@ -230,7 +230,7 @@ Increase Return the Strain's Defense ignore from 20% to 35%. When it spends at l
 
 **War activity:** Trial of the Suspended Chain. Header and arena borrow the actual equipment/material motifs above, not the current Moon event scenery. Trial name differs from identity and Omnic title.
 
-## Seravelle — proposed six-star Infernic Support
+## Seravelle — six-star Infernic Support
 
 **Identity:** A signal raised for people, not for conquest.
 
@@ -311,7 +311,7 @@ After The Road Belongs to Everyone, grant each living squad member a Shield equa
 
 **Art direction:** an immense silver continuity engine, paired gold braid-ring axles, white-black feather shutter plates and red command-latch relief; orange-red flame channels shelter three white output shields.
 
-### Strengths, costs and proposed trial
+### Strengths, costs and trial
 
 **Strengths:** A funded squad offensive buffer with explicit Burn pressure and a Last Flare that helps other squad members reach their next abilities. Not a monochrome clone of Vespera.
 
@@ -321,7 +321,7 @@ After The Road Belongs to Everyone, grant each living squad member a Shield equa
 
 **War activity:** March of the Ember Convoy. Header and arena borrow the actual equipment/material motifs above, not the current Moon event scenery. Trial name differs from identity and Omnic title.
 
-## Velmira — proposed six-star Chaotic Attacker
+## Velmira — six-star Chaotic Attacker
 
 **Identity:** The cut that opens a way without erasing what matters.
 
@@ -402,7 +402,7 @@ When Leave the Doorway Standing spends at least 3 [Crosscut], restore 25% of Vel
 
 **Art direction:** a vast open crescent return drive, gold ring-grip flywheels and silver return pistons around violet-magenta channels, amber seam lights and black feather blades with white pleated inlays.
 
-### Strengths, costs and proposed trial
+### Strengths, costs and trial
 
 **Strengths:** Alternating-skill setup, sustained AoE with earned pierce, and a clear single-target finisher. Substantial bonuses rather than cosmetic single-digit buffs.
 
@@ -412,7 +412,7 @@ When Leave the Doorway Standing spends at least 3 [Crosscut], restore 25% of Vel
 
 **War activity:** Dance of the Unfastened Court. Header and arena borrow the actual equipment/material motifs above, not the current Moon event scenery. Trial name differs from identity and Omnic title.
 
-## Exact mechanic resolutions for future implementation
+## Exact mechanic resolutions
 
 - Neralis: Current granted by a native heal is at most once across all targets of that action, after the action's spend; shared role/Conduit healing and overheal do not grant it. For a multi-target native heal, the Gauge-return Master checks each target's pre-heal Health and actual restored amount independently; its once-per-round guards survive Settings.
 - Varkhel: incoming Tension requires effective direct Health damage or actual Shield absorption; Burn, reflected/redirected/Conduit packets do not grant it. Normal grants once per action. Shield/Defense refresh and taunt use the existing clock, not an extra enemy phase.
@@ -420,14 +420,14 @@ When Leave the Doorway Standing spends at least 3 [Crosscut], restore 25% of Vel
 - Velmira: determine whether the chosen Skill alternates, resolve that Skill's damage using its pre-action Crosscut amount, then add its earned stack. Skill2's pierce condition therefore cannot be met retroactively by the new stack. Last Flare snapshots/spends its counter before damage, keeps the previous ordinary Skill record, then applies its funded Master recovery once. The first-Skill Master grants only once per encounter.
 - Master Gauge/heal after-effects execute once after the actual action cost; no cost bypass, extra action, new roll or equipment-scale amplification of fixed native counters.
 
-## Required validation before playable integration
+## Required integration validation
 
 1. Review all24 source mappings and acceptance of their supplied hair/weapon differences; inspect source-clipped tips rather than claiming padding repairs them.
 2. Review names/lore/roles/kits and the44 new prompts. Delivered portrait quality is not evidence that unseen icons/Masters/scenes exist.
 3. Add exact-boundary native/Master tests: empty/full counter, effective/ineffective triggers, multi-target once guards, dead owner, refresh, Settings and new encounters.
 4. Benchmark paper damage, healing, Shield creation and survival separately with explicit ownership/gear; then actual pressured trials at relevant gates, no Calamitic equipment.
-5. Wire every live surface/authority/save validation only after explicit implementation approval, add no migration grants, preserve existing progression and atomic receipts.
-6. Reviewed art intake, full tests/build and matching hosted authority/client verification are required for an actual release. No release is authorized in this pass.
+5. Owner approves implementation on2026-11-06. Wire every live surface/authority/save validation, add no migration grants, preserve existing progression and atomic receipts.
+6. Reviewed art intake, full tests/build and matching hosted authority/client verification are required for an actual release; see the handoff for results.
 
 ## Total images needed
 

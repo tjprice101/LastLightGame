@@ -15,13 +15,15 @@ export async function chooseProfilePicture(account: Account, current: string): P
   const unlocked = profilePictures.filter(picture => profilePictureUnlocked(account, picture.id)).length;
   const { dialog, dispose } = createGameDialog('Profile pictures');
   const title = (name: string, character: string) => name.endsWith(`, ${character}`) ? name.slice(0, -character.length - 2) : name;
-  const percent = Math.round((unlocked + 1) / 33 * 100);
+  const totalCharacters = profilePictures.length;
+  const totalPictures = totalCharacters + 1;
+  const percent = Math.round((unlocked + 1) / totalPictures * 100);
   dialog.classList.add('profile-picture-dialog');
   dialog.innerHTML = `<form method="dialog" class="picture-back-bar"><button value="cancel">← Back to profile</button><span>Profile <span aria-hidden="true">›</span> <strong>Profile pictures</strong></span></form>
     <div class="profile-picture-browser"><section class="picture-catalog" aria-label="Picture collection">
-    <header><div class="picture-progress" style="--picture-progress:${percent}%" role="progressbar" aria-label="Profile pictures unlocked" aria-valuenow="${unlocked + 1}" aria-valuemin="0" aria-valuemax="33"><span>${percent}%</span></div><div><h2>Profile pictures</h2><p>${unlocked + 1} of 33 unlocked <span>· ${unlocked} of 32 character pictures</span></p></div></header>
+    <header><div class="picture-progress" style="--picture-progress:${percent}%" role="progressbar" aria-label="Profile pictures unlocked" aria-valuenow="${unlocked + 1}" aria-valuemin="0" aria-valuemax="${totalPictures}"><span>${percent}%</span></div><div><h2>Profile pictures</h2><p>${unlocked + 1} of ${totalPictures} unlocked <span>· ${unlocked} of ${totalCharacters} character pictures</span></p></div></header>
     <div class="picture-tools"><label><span class="picture-sr-only">Search pictures</span><input type="search" data-picture-search placeholder="Search by name or character"></label><nav aria-label="Picture filters"><button type="button" data-picture-filter="all" aria-pressed="true">All</button><button type="button" data-picture-filter="unlocked" aria-pressed="false">Unlocked</button><button type="button" data-picture-filter="locked" aria-pressed="false">Locked</button></nav></div>
-    <nav class="picture-categories" aria-label="Picture categories">${[['all', 'All', unlocked + 1, 33], ['default', 'Default', 1, 1], ['characters', 'Characters', unlocked, 32], ['base', 'Acquisition', profilePictures.filter(p => p.form === 'base' && profilePictureUnlocked(account, p.id)).length, 16], ['omnic', 'Omnic', profilePictures.filter(p => p.form === 'omnic' && profilePictureUnlocked(account, p.id)).length, 16]].map(([id, label, count, total]) => `<button type="button" data-picture-category="${id}" aria-pressed="${id === 'all'}">${label} <span>${count}/${total}</span></button>`).join('')}</nav>
+    <nav class="picture-categories" aria-label="Picture categories">${[['all', 'All', unlocked + 1, totalPictures], ['default', 'Default', 1, 1], ['characters', 'Characters', unlocked, totalCharacters], ['base', 'Acquisition', profilePictures.filter(p => p.form === 'base' && profilePictureUnlocked(account, p.id)).length, profilePictures.filter(p => p.form === 'base').length], ['omnic', 'Omnic', profilePictures.filter(p => p.form === 'omnic' && profilePictureUnlocked(account, p.id)).length, profilePictures.filter(p => p.form === 'omnic').length]].map(([id, label, count, total]) => `<button type="button" data-picture-category="${id}" aria-pressed="${id === 'all'}">${label} <span>${count}/${total}</span></button>`).join('')}</nav>
     <p class="picture-showing" data-picture-showing></p><div class="picture-collection">
     <section data-picture-group="default"><h3>Default <span>1 / 1</span></h3><div class="picture-grid"><button type="button" data-picture="neutral" data-picture-category-id="default" aria-pressed="${selected === 'neutral'}"><span class="picture-tile-art">${profilePicture('neutral')}<span class="picture-selected-mark" aria-hidden="true">✓</span></span><b>Last Light</b><small>Default · Available to everyone</small></button></div></section>
     <section data-picture-group="characters"><h3>Characters <span>${unlocked} / 32</span></h3><div class="picture-grid">${profilePictures.map(picture => {
@@ -46,7 +48,7 @@ export async function chooseProfilePicture(account: Account, current: string): P
           group.hidden = !group.querySelector('[data-picture]:not([hidden])');
         });
         const visible = dialog.querySelectorAll('[data-picture]:not([hidden])').length;
-        dialog.querySelector<HTMLElement>('[data-picture-showing]')!.textContent = `Showing ${visible} of 33 pictures`;
+        dialog.querySelector<HTMLElement>('[data-picture-showing]')!.textContent = `Showing ${visible} of ${totalPictures} pictures`;
         const picture = profilePictures.find(entry => entry.id === selected);
         const available = selected === 'neutral' || isProfilePictureId(selected) && profilePictureUnlocked(account, selected);
         const character = picture ? getStarter(picture.characterId).name : '';

@@ -283,8 +283,8 @@ describe('isolated bubble UI concept', () => {
   });
   it('uses reached-form silhouettes and gates discovery loot', () => {
     visit('archive');
-    expect(root.querySelectorAll('.item-card')).toHaveLength(204);
-    expect(root.querySelectorAll('.item-card.undiscovered')).toHaveLength(68);
+    expect(root.querySelectorAll('.item-card')).toHaveLength(228);
+    expect(root.querySelectorAll('.item-card.undiscovered')).toHaveLength(76);
     click('[data-view="creatures"]');
     const undiscovered = root.querySelector<HTMLButtonElement>('.item-card.undiscovered')!;
     undiscovered.click();

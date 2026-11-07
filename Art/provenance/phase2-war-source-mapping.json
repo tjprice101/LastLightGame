@@ -1,8 +1,8 @@
 {
-  "scope": "Four new proposed Elemental War identities, not Moon roster replacement.",
+  "scope": "Four reclaimed Elemental War identities, not Moon roster replacement.",
   "originals_retained": true,
-  "runtime_exported": false,
-  "characters_implemented": false,
+  "runtime_exported": true,
+  "root_originals_removed": true,
   "portrait_count": 24,
   "records": [
     {
@@ -20,7 +20,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/neralis.png",
+      "runtime_sha256": "00d59a54eb7aee33bbcb34026d9ea2ac13179f205bdad60594bc3fe0fa286181"
     },
     {
       "character": "Neralis",
@@ -37,7 +39,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/neralis-evo-2.png",
+      "runtime_sha256": "158b70e7af91591c9365d43027b17044dfebbf05e789032a3f716185314a1d71"
     },
     {
       "character": "Neralis",
@@ -54,7 +58,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/neralis-evo-3.png",
+      "runtime_sha256": "22a724bc752357b1f27a7c14ea6a656b4537e12a5746491b2bd7a53555a22ee3"
     },
     {
       "character": "Neralis",
@@ -71,7 +77,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/neralis-evo-4.png",
+      "runtime_sha256": "78faf179f658849b21b64eebac6c08007c67930614bd23bde6cbcc3ca5483e5a"
     },
     {
       "character": "Neralis",
@@ -88,7 +96,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/neralis-evo-5.png",
+      "runtime_sha256": "94a6ce94db9c8695e2847c45630788e23ec860ad9e4250dfe41939a60fbdba8e"
     },
     {
       "character": "Neralis",
@@ -105,7 +115,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/neralis-evo-6.png",
+      "runtime_sha256": "63207164f7f539554c2902a55fdb1568f6d9bb7b752468094b9b6e1dec483739"
     },
     {
       "character": "Varkhel",
@@ -122,7 +134,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/varkhel.png",
+      "runtime_sha256": "8d8d6bada42137380c78aa82a1f6691fe2a89dbac0127b5aa254da16aef87d67"
     },
     {
       "character": "Varkhel",
@@ -139,7 +153,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/varkhel-evo-2.png",
+      "runtime_sha256": "bf0c4b506f03012aee0bba7b2e2b029f251b6aad8b6ed37b901f22864937aa50"
     },
     {
       "character": "Varkhel",
@@ -156,7 +172,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/varkhel-evo-3.png",
+      "runtime_sha256": "9db5d759a571268598d8f91df74c52f58e69d1ca18414a9978385f9b18ca749d"
     },
     {
       "character": "Varkhel",
@@ -173,7 +191,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/varkhel-evo-4.png",
+      "runtime_sha256": "8c9f576f59b2b03d147bd21c7a9fbd3b3251c90add0e50fe92d436438f1ba8a0"
     },
     {
       "character": "Varkhel",
@@ -190,7 +210,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/varkhel-evo-5.png",
+      "runtime_sha256": "fc83029577482215ddb11f40f6bf48c92c87f38088fe9a622e60464d74681300"
     },
     {
       "character": "Varkhel",
@@ -207,7 +229,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/varkhel-evo-6.png",
+      "runtime_sha256": "28f0dd89a996d39e2f370ccb10a02b77ec200f011ab273d808400eca9ed4c725"
     },
     {
       "character": "Seravelle",
@@ -224,7 +248,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/seravelle.png",
+      "runtime_sha256": "03b1d09f32e3fdaf0c479a8be99412a87cf143ef209479071f9f5f52f55ce34d"
     },
     {
       "character": "Seravelle",
@@ -241,7 +267,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/seravelle-evo-2.png",
+      "runtime_sha256": "f1d4235ab6ba9de32bdad2f81a412f95b7c6f447e5f994b9359d04e1a9f2e5c2"
     },
     {
       "character": "Seravelle",
@@ -258,7 +286,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/seravelle-evo-3.png",
+      "runtime_sha256": "c343a34b5a72e8226ee3bceb61993bad6085c54e4d8c88a92c910e367dabee0a"
     },
     {
       "character": "Seravelle",
@@ -275,7 +305,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/seravelle-evo-4.png",
+      "runtime_sha256": "233164e645e8f69b283b5babed833d3d400b51707f2be4a98d72fbf011813df9"
     },
     {
       "character": "Seravelle",
@@ -292,7 +324,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/seravelle-evo-5.png",
+      "runtime_sha256": "3a2c9c27d880ae1e0fbe77f473bf33f715a409636c99e36c8ef8f49133154a3a"
     },
     {
       "character": "Seravelle",
@@ -309,7 +343,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/seravelle-evo-6.png",
+      "runtime_sha256": "57f143c518051719ccecdead073af65b9a6860c19520c1022e18aefd313d1138"
     },
     {
       "character": "Velmira",
@@ -326,7 +362,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/velmira.png",
+      "runtime_sha256": "6af7658174430f25bb5864cd75184b0c422955c63d65d8833ee67d43303ab1e5"
     },
     {
       "character": "Velmira",
@@ -343,7 +381,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/velmira-evo-2.png",
+      "runtime_sha256": "54b89baef441fb88b867f84140acdd04aa2bcc0d0d38aa1ed7d2a03eaa0f97c0"
     },
     {
       "character": "Velmira",
@@ -360,7 +400,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/velmira-evo-3.png",
+      "runtime_sha256": "f0dab9bdb5e385bb9c980e8168399921c433d26d14e804db44d740debf340459"
     },
     {
       "character": "Velmira",
@@ -377,7 +419,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/velmira-evo-4.png",
+      "runtime_sha256": "afd1cbd5e4fe82c78ad949c6efc4309ce47898f05cd7b003cf0b3d2fafc59f21"
     },
     {
       "character": "Velmira",
@@ -394,7 +438,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/velmira-evo-5.png",
+      "runtime_sha256": "d4bd4a528fb21bed93be6662a6ebc628790989a88f58e65ca65bb16748637afb"
     },
     {
       "character": "Velmira",
@@ -411,7 +457,9 @@
       "height": 928,
       "mode": "RGB",
       "processing": "Exact original bytes; no key removal, resize, color edits or re-encoding.",
-      "intake_status": "Source archived; runtime export and pixel cleanup not approved."
+      "intake_status": "Reviewed runtime export installed; original bytes retained.",
+      "runtime": "public/assets/characters/velmira-evo-6.png",
+      "runtime_sha256": "aeca68533b5f79ae51f603e7eab4647f17ac0072b79247ca2523df4c27225023"
     }
   ]
 }

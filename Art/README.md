@@ -1,5 +1,15 @@
 # Art library
 
+## Reclaimed War portrait intake (2026-11-06)
+
+All24 older root portraits are now reviewed and installed for Neralis,
+Varkhel, Seravelle and Velmira, not the redesigned Moon roster. Exact original
+bytes remain under `source/phase2-war`; settings/gaps/hashes in `provenance`.
+Root duplicates removed only after source/export verification.
+[Reproduction contract](../docs/art-workflow.md#delivered-reclaimed-war-portraits-2026-11-06).
+Owner approves playable integration;44 ability/Master/status/header/arena
+images still need delivery from [Future Plans](../docs/Future%20Plans/Elemental%20War%20Phase%202.md).
+
 ## Current unfinished-work audit and canonical plan location (2026-11-06)
 
 [Future Plans register](../docs/Future%20Plans/README.md) and

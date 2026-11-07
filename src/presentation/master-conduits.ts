@@ -14,7 +14,8 @@ const pendingMasterArt = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="h
 
 /** Installed Masters have a reviewed revision; others show a neutral pending tile, never a missing PNG URL. */
 export function masterArtUrl(id: MasterConduitId): string {
-  return id in masterConduitArtRevisions ? assetUrl(getMasterConduit(id).art) : pendingMasterArt;
+  const art = getMasterConduit(id).art;
+  return art && id in masterConduitArtRevisions ? assetUrl(art) : pendingMasterArt;
 }
 
 export function masterConduitIcon(id: MasterConduitId): string {

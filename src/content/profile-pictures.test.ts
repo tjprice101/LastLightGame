@@ -4,7 +4,7 @@ import { profilePictures, profilePictureUnlocked, canonicalProfilePicture, isPro
 
 describe('earned character profile pictures', () => {
   it('defines exactly two pictures per Element-Bearer without load writes or grants', () => {
-    expect(profilePictures).toHaveLength(32);
+    expect(profilePictures).toHaveLength(40);
     const account = emptyAccount(), before = structuredClone(account);
     expect(profilePictures.some(picture => profilePictureUnlocked(account, picture.id))).toBe(false);
     expect(account).toEqual(before);

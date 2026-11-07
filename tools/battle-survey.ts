@@ -5,6 +5,7 @@ import { validateConduitElement, validateConduitSlots, type ConduitId, type Cond
   type ConduitSlots, type ConduitUpgrades } from '../src/content/conduits';
 import { playableDungeons, type PlayableDungeon } from '../src/content/dungeons';
 import { masterConduits, type MasterConduitId, type MasterLoadouts } from '../src/content/master-conduits';
+import type { WarCharacterId } from '../src/content/war-characters';
 import { characterLevelCap, type CharacterProgress } from '../src/content/progression';
 import { enemyCalamityApproach, enemyCombatStats, enemyResistanceRamp, enemyStrengthMultiplier } from '../src/content/stat-growth';
 import { enemyAbilityMultiplier, enemySkills } from '../src/content/enemy-skills';
@@ -25,7 +26,7 @@ export type Encounter =
   | { kind: 'story'; stage: number }
   | { kind: 'dungeon'; element: PlayableDungeon; stage: number }
   | { kind: 'infusion'; mode: InfusionModeId; stage: number }
-  | { kind: 'war'; character: 'nerithe' | 'orvella' | 'vaelor' | 'caldrex' | 'solenne' | 'myrthen'; stage: number }
+  | { kind: 'war'; character: WarCharacterId; stage: number }
   | { kind: 'calamity'; activity: CalamityActivityId; tier: CalamityTier };
 const common: ConduitId[] = ['vigil-core', 'bastion-lock', 'parallax-relay', 'crosspin-governor',
   'fieldbrace-coupler', 'siegebound-drive', 'reserve-torque-crank', 'prism-splinter-socket'];

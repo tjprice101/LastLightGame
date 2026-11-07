@@ -1,5 +1,59 @@
 # Global character benchmarks and enemy calibration (D-404)
 
+## Bounded reclaimed War checks (2026-11-06)
+
+Reproduce `npx vitest run tools\phase2-war-experiments.test.ts --maxWorkers=1`.
+No enemy curves or character coefficients were retuned to hide losses.
+These measurements do not replace the global non-Calamitic audit or establish
+ordinary-account averages; only one starter is free.
+
+Paper uses explicitly owned `[new character, Tizu, Flora]`, all Lv105, Common+0,
+no Masters/Calamitic gear, seed1729, six rounds, zero Defense and no incoming
+attacks. **These are trio totals, not solo output or DPR.** Effective healing
+uses artificial missing-Health headroom in a separate run; it is not recovery
+from real incoming damage. Shields are measured separately:
+
+| New member | Trio damage | Trio effective healing | Trio Shield creation |
+| --- | ---: | ---: | ---: |
+| Neralis |58,416|148,260.755|29,817.315|
+| Varkhel |58,557|90,384.125|50,340.7265625|
+| Seravelle |89,979|93,366.25|25,387.93125|
+| Velmira |145,550|80,468.25|19,626.13125|
+
+The experiment logs per-owner contributions. Native-aware pilot choices are
+bounded and not optimized; role healing remains separately sourced from native
+healing. Zero output/support in a policy is not inability to perform that role.
+
+Pressure uses each new member's own Stage10 Lv140 War boss, the same explicitly
+owned trio, all Lv105, mixed+0 ordinary gear, no Master and each of the three
+personal Master+0 alternatives, seeds1/1729/104729:48 actual encounters.
+The100-boundary-round cap reports displayed round101 for a timeout.
+
+| New member | Wins | Defeats | Timeouts |
+| --- | ---: | ---: | ---: |
+| Neralis |4|6|2|
+| Varkhel |10|0|2|
+| Seravelle |12|0|0|
+| Velmira |12|0|0|
+| Total |38|6|4|
+
+Failures/timeouts are retained. This does not certify self-acquisition, population
+clear rates, optimized synergy or EX+3. Neralis's weaker bounded pilot outcome
+is evidence for future review, not permission to tune normal enemies around
+the strongest new paper attacker.
+
+Separate actual single direct-packet probes use mixed+0, no Master, the other
+two owned allies incapacitated, Shields zero, enemy critical chance zero and
+scheduled skills removed. All four survive this one packet; this is not
+multi-round survival or a maximum survivable-packet threshold:
+
+| Member | Packet | Health before | Health after |
+| --- | ---: | ---: | ---: |
+| Neralis |10,083|28,110.6|18,027.6|
+| Varkhel |9,820|27,366.125|17,546.125|
+| Seravelle |10,063|23,934.75|13,871.75|
+| Velmira |10,102|19,560.05|9,458.05|
+
 ## Bounded Moon/Sunshade checks, art-pending implementation
 
 Reproduce:

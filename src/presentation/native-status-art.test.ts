@@ -75,7 +75,17 @@ describe('delivered native identity status art', () => {
     for (const [beat, icon] of [[0, 'native-vaelor-tune'], [1, 'native-vaelor-rise'], [2, 'native-vaelor-crescendo']] as const)
       verify(fixture('vaelor', { beat }), [icon]);
     verify(fixture('bruno', { cover: { targets: ['ember'], fraction: .5, throughPhase: 2 } }), ['native-bruno-cover']);
-    expect([...seen].sort()).toEqual(Object.keys(statusArt).filter(id => id.startsWith('native-')).sort());
+    expect([...seen].sort()).toEqual(Object.entries(statusArt)
+      .filter(([id, path]) => id.startsWith('native-') && !path.startsWith('data:')).map(([id]) => id).sort());
+  });
+
+  it('shows accurate Phase 2 native counters using named neutral placeholder art', () => {
+    for (const [id, native, icon] of [
+      ['neralis', { current: 2 }, 'native-phase2-current'],
+      ['varkhel', { tension: 3 }, 'native-phase2-tension'],
+      ['seravelle', { cadence: 2 }, 'native-phase2-cadence'],
+      ['velmira', { crosscut: 2 }, 'native-phase2-crosscut'],
+    ] as const) check(fixture(id, native), [icon]);
   });
 
   it('retains target, values and clocks; removes inactive icons without state mutations', () => {

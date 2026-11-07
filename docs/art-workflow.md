@@ -1,5 +1,27 @@
 # Art and asset workflow
 
+## Delivered reclaimed War portraits (2026-11-06)
+
+Owner approves Neralis/Varkhel/Seravelle/Velmira playable integration and offline
+background removal of24 older Moon-labeled portraits. Exact originals remain in
+`Art/source/phase2-war`, with source/form/hashes in
+`Art/provenance/phase2-war-source-mapping.json`. Reproduce/export via
+`python tools/intake_phase2_war_art.py --apply`; settings and intake hashes in
+`Art/provenance/phase2-war-art-settings.json` and `phase2-war-art-intake.json`.
+Reviewed fixed per-source teal/green keys and enclosed gap seeds preserve
+cyan water, orange flames, violet/gold and legitimate green-yellow spark detail.
+Tip-contaminated row-strip gradients were rejected during review. Supplied
+alpha bypasses all key cleanup; existing hair/weapon drift and source clipping
+are retained rather than falsely repaired.
+
+All24 `public/assets/characters/<slug>[-evo-N].png` exports use transparent960px
+canvases and864px contained content. Shared `prepare_sprite` prefers the reviewed
+originals; byte-derived portrait revisions update all menu/field/cut-in surfaces.
+`--remove-incoming` deletes only hash-matched named root duplicates after all
+archive/export verification. Ability/Master/status/header/arena images remain
+pending and never get invented URLs. Forty-four prompts remain in
+[Future Plans](Future%20Plans/Elemental%20War%20Phase%202.md).
+
 ## Unfinished art and plans: canonical filing (2026-11-06)
 
 [Future Plans](Future%20Plans/README.md) owns deferred design/prompt packages

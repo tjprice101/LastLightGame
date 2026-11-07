@@ -55,10 +55,10 @@ describe('Phase 0 shared runtime math', () => {
       expect(effect).toContain(`+${125 * (1 + level * .1)}% [Direct Damage]`);
     }
   });
-  it('uses the approved default effect text for every one of the 165 entries', () => {
+  it('uses the approved default effect text for every one of the 213 entries', () => {
     const entries = [...conduits, ...masterConduits];
-    expect(entries).toHaveLength(201);
-    expect(Object.keys(approvedConduitCatalog)).toHaveLength(165);
+    expect(entries).toHaveLength(213);
+    expect(Object.keys(approvedConduitCatalog)).toHaveLength(177);
     for (const entry of entries) {
       if ('character' in entry && !approvedConduitCatalog[entry.id]) {
         expect(phaseZeroUpgradedAbility(entry.id)).toBe(entry.effect);

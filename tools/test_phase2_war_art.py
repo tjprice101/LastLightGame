@@ -21,7 +21,7 @@ class Phase2WarArtTests(unittest.TestCase):
         self.assertEqual(sum("-trial-" in asset for asset, _, _ in rows), 8)
         self.assertEqual(sum(asset.startswith("war-status-") for asset, _, _ in rows), 8)
         self.assertEqual(sum(asset.startswith("master-") for asset, _, _ in rows), 12)
-        self.assertIn("no playable", pack.SPEC.read_text(encoding="utf-8").lower())
+        self.assertIn("5% recruitment chance", pack.SPEC.read_text(encoding="utf-8"))
 
     def test_all_four_identities_are_distinct_from_source_names(self):
         self.assertEqual(len(pack.DESIGNS), 4)
@@ -88,8 +88,8 @@ class Phase2WarArtTests(unittest.TestCase):
 
     def test_preserved_sources_and_provenance(self):
         manifest = json.loads(pack.MANIFEST.read_text(encoding="utf-8"))
-        self.assertFalse(manifest["runtime_exported"])
-        self.assertFalse(manifest["characters_implemented"])
+        self.assertTrue(manifest["runtime_exported"])
+        self.assertTrue(manifest["root_originals_removed"])
         self.assertEqual(manifest["portrait_count"], 24)
         rows = manifest["records"]
         self.assertEqual(len({row["archive"] for row in rows}), 24)

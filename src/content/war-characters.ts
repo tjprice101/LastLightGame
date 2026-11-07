@@ -52,7 +52,48 @@ export const warCharacters = [
     lore: { origin: 'The terraced orchard floors', story: 'Myrthen worked the terraced orchards and learned that Botanic is Joy and Life as a cycle: sprout, bloom, harvest, and the return to sprout. Her chained sickles gather what has ripened without denying what must grow again. Let created Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole the same elements. Both factions seek their creators’ souls; no one has been reunited with one and no one has won. Myrthen follows the turning seasons toward Let’s trail, harvesting only what is ready.',
       vow: 'Every season gets its turn.',
       awakening: 'A fifth season stirs between harvest and sprout; its meaning is not yet known.' },
-  },] as const;
+  },
+  {
+    id: 'neralis', stars: 6, name: 'Neralis', role: 'Healer & Support', art: 'neralis',
+    title: 'The current that returns for the last traveler', element: 'Oceanic', elementId: 'oceanic',
+    weapon: 'Crescent polearm', color: '#62cce3',
+    description: 'An Oceanic Element-Bearer in Let’s image, Neralis carries Sadness as a promise to return for the last traveler.',
+    lore: { origin: 'The river stations of the Broken Weirs',
+      story: 'Neralis once measured rivers for a council that drew borders where bridges should have been. When a broken weir stranded both banks, he used his crescent polearm to pull the rescue lines across, then returned until the crossing was empty. He keeps amber station lights on his coat so a traveler can recognize a guide before understanding a map. His dark wings are folded river-shadow plumes; the bright blue current follows his weapon rather than a distant moon. Oceanic Sadness teaches him to remember each abandoned crossing without accepting abandonment as its future. Let made Element-Bearers in his image; Rise made Elemental-Devourers in hers and stole the same elements. Both factions seek their creators’ souls; neither has found one and no faction has won. Neralis follows Let’s still-unfound trail between repair journeys.',
+      vow: 'A road is not finished until it brings someone back.',
+      awakening: 'The river returns for one more traveler.' },
+  },
+  {
+    id: 'varkhel', stars: 6, name: 'Varkhel', role: 'Tank', art: 'varkhel',
+    title: 'Wrath held on a chain instead of unleashed', element: 'Infernic', elementId: 'infernic',
+    weapon: 'Chained counterweight', color: '#f07450',
+    description: 'An Infernic Element-Bearer in Let’s image, Varkhel holds Wrath on a chain so the people behind him can retreat.',
+    lore: { origin: 'The chainworks above Cinderfall Span',
+      story: 'Varkhel was paid to sever the suspension chains of an occupied bridge. Instead he fastened his counterweight to its failing hinge and held the retreat open. The red sash remembers the warning cloth tied to that hinge, not a royal title. His armor grew around the strain: silver joint plates, black wing mantles and, later, scarlet furnace enamel. Infernic Wrath is the anger he refuses to spend on the people he is protecting. Let made Element-Bearers in his image; Rise made Elemental-Devourers in hers and stole the same elements. Both factions seek their creators’ souls; neither has found one and no faction has won. Varkhel follows Let’s trail through ruined chainworks without abandoning the people behind him.',
+      vow: 'Let the chain answer the blow, not the people behind me.',
+      awakening: 'The suspended chain answers a measured hand.' },
+  },
+  {
+    id: 'seravelle', stars: 6, name: 'Seravelle', role: 'Support', art: 'seravelle',
+    title: 'A signal raised for people, not for conquest', element: 'Infernic', elementId: 'infernic',
+    weapon: 'Silver lance', color: '#f1784d',
+    description: 'An Infernic Element-Bearer in Let’s image, Seravelle raises Wrath as a signal for everyone who still needs the road.',
+    lore: { origin: 'The ash-white courier roads of Bellmarch',
+      story: 'Seravelle carried route orders until she found a convoy whose destination had been erased from every official chart. She braided the evacuees’ white cord into her hair and raised her lance where the next wagon could see it. Her red officer panels and gold fittings are repaired courier equipment; her black-white wings turn flame into a visible guide. Infernic Wrath is directed at the ease with which people become inconvenient numbers. Let made Element-Bearers in his image; Rise made Elemental-Devourers in hers and stole the same elements. Both factions seek their creators’ souls; neither has found one and no faction has won. Seravelle searches for Let’s still-scattered soul without claiming that a wing or a flame is divine authority.',
+      vow: 'The signal belongs to everyone who still needs the road.',
+      awakening: 'A signal crosses the ash-white road.' },
+  },
+  {
+    id: 'velmira', stars: 6, name: 'Velmira', role: 'Attacker', art: 'velmira',
+    title: 'The cut that opens a way without erasing what matters', element: 'Chaotic', elementId: 'chaotic',
+    weapon: 'Pair of crescent blades', color: '#b98de7',
+    description: 'A Chaotic Element-Bearer in Let’s image, Velmira uses Death and Destruction to open a way without calling destruction a cure.',
+    lore: { origin: 'The severance ateliers of Thornless Court',
+      story: 'Velmira cut ceremonial bindings in an atelier whose rulers praised every beautiful knot and never asked who could untie it. When the court sealed its doors, she turned the atelier’s paired crescent blades against the locking seams. Her white pleats preserve the craft she loved; dark feather fans and violet tips remember what she refused to become. Chaotic Death and Destruction give her the courage to end an oppressive mechanism without calling destruction itself a cure. Let made Element-Bearers in his image; Rise made Elemental-Devourers in hers and stole the same elements. Both factions seek their creators’ souls; neither has found one and no faction has won. Velmira follows Let’s lost soul through abandoned courts.',
+      vow: 'A broken lock should leave the doorway standing.',
+      awakening: 'The paired blades find a way through.' },
+  },
+] as const;
 
 export type WarCharacterId = (typeof warCharacters)[number]['id'];
 export function isWarCharacter(value: unknown): value is WarCharacterId {
@@ -69,6 +110,14 @@ export const warEvolutionTitles: Record<WarCharacterId, readonly string[]> = {
   caldrex: ['Kiln Warden', 'Banked Fire', 'The Furnace Holds', 'Bearer of the Closed Gate', 'No Flame Passes', 'The Last Kiln'],
   solenne: ['Moonbell Keeper', 'Between Two Chimes', 'The Patient Circle', 'Keeper of the Unstruck Bell', 'A Silence Held', 'The Bell That Stayed'],
   myrthen: ['Season Reaper', 'First Turning', 'Bough and Blade', 'Harvest in Motion', 'The Orchard Remembers', 'When All Seasons Meet'],
+  neralis: ['Weirline Guide', 'Keeper of the Amber Stations', 'A Crossing Remembered',
+    'Wings Above the Broken Weir', 'Return Against the Current', 'The River Keeps Its Promise'],
+  varkhel: ['Chainwork Holdfast', 'The Warning Cloth', 'Weight Against the Breach',
+    'A Span Held Open', 'Wrath Within the Hinge', 'The Chain Refuses to Break'],
+  seravelle: ['Ashroad Courier', 'The Braided Route', 'Signal Above the Convoy',
+    'Marshal of the Open Road', 'A Standard Without a Throne', 'The Last Wagon Sees the Dawn'],
+  velmira: ['Atelier Defector', 'A Knot Unfastened', 'The Measured Cut',
+    'Keeper of the Open Threshold', 'An Ending Chosen Carefully', 'What Remains Beyond the Cut'],
 };
 
 export const warActionNames: Record<WarCharacterId, { light: string }> = {
@@ -78,6 +127,10 @@ export const warActionNames: Record<WarCharacterId, { light: string }> = {
   caldrex: { light: 'Gate Bash' },
   solenne: { light: 'Bell Tap' },
   myrthen: { light: 'Sickle Cut' },
+  neralis: { light: 'Crescent Thrust' },
+  varkhel: { light: 'Counterweight Strike' },
+  seravelle: { light: 'Beacon Lance' },
+  velmira: { light: 'Measured Edge' },
 };
 
 export const warFighters: Record<WarCharacterId, FighterDefinition> = {
@@ -134,6 +187,46 @@ export const warFighters: Record<WarCharacterId, FighterDefinition> = {
       skill1: { name: 'Reaper’s Claim', description: 'Strike one enemy and mark it.', cooldown: 0, strength: { damageMultiplier: 2.72 } },
       skill2: { name: 'Turn the Bough', description: 'Strike all enemies.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 1.92 } },
       ultimate: { name: 'All That Ripens', description: 'Strike one enemy. Recover next turn.', cooldown: 0, strength: { damageMultiplier: 12.48 } },
+    },
+  },
+  neralis: {
+    nativeIdentity: true,
+    stats: { health: 240, defense: 12, damage: 32, crit: .12, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
+    passive: { name: 'Returning Current', description: 'Gain Current from effective Normal damage or native healing, once per action.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: 'Light the Next Station', description: 'Heal one living ally for 35% maximum Health, scaled by Skill Power; grant +30% Defense for 2 turns.', cooldown: 0, targets: 'one-ally', strength: {} },
+      skill2: { name: 'Carry Them Back', description: 'Spend all Current to heal each living ally for 18% maximum Health plus 6% per Current, scaled by Skill Power.', cooldown: 0, targets: 'all-allies', strength: {} },
+      ultimate: { name: 'No Crossing Left Empty', description: 'Spend all Current; deal 720% Direct Attack to all enemies and heal living allies for 30% maximum Health plus 5% per Current, scaled by Skill Power.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 7.2 } },
+    },
+  },
+  varkhel: {
+    nativeIdentity: true,
+    stats: { health: 305, defense: 21, damage: 33, crit: .10, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
+    passive: { name: 'Tension Held', description: 'Gain Tension when an enemy direct attack effectively damages Health or Shield once per enemy phase, or when a Normal Attack deals damage.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: 'Set the Warning Chain', description: 'Gain a Shield equal to 25% maximum Health, scaled by Skill Power; +40% Defense for 2 turns and Taunt for the next enemy phase.', cooldown: 0, targets: 'all-allies', strength: {} },
+      skill2: { name: 'Return the Strain', description: 'Spend all Tension; deal 285% Direct Attack plus 45% per Tension to one enemy, ignoring 20% Defense.', cooldown: 0, strength: { damageMultiplier: 2.85 } },
+      ultimate: { name: 'The Bridge Holds Behind Me', description: 'Spend all Tension; deal 690% Direct Attack plus 55% per Tension to all enemies and shield living allies for 30% maximum Health, scaled by Skill Power.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 6.9 } },
+    },
+  },
+  seravelle: {
+    nativeIdentity: true,
+    stats: { health: 235, defense: 13, damage: 34, crit: .14, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
+    passive: { name: 'Convoy Cadence', description: 'The first effective manual Normal Attack each round grants Cadence while Seravelle lives.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: 'Send the Ember Ahead', description: 'Deal 245% Direct Attack to one enemy and apply Burn for 2 enemy phases, dealing 12% of Attack per phase, scaled by Skill Power.', cooldown: 0, strength: { damageMultiplier: 2.45 } },
+      skill2: { name: 'Move as One', description: 'Spend all Cadence; grant living allies +30% Direct Attack plus 10% per Cadence for 2 turns. This fixed bonus is not scaled by Skill Power.', cooldown: 0, targets: 'all-allies', strength: {} },
+      ultimate: { name: 'The Road Belongs to Everyone', description: 'Deal 620% Direct Attack to all enemies; grant each other living ally 20% maximum Gauge and +30 percentage points Skill Power for 2 turns.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 6.2 } },
+    },
+  },
+  velmira: {
+    nativeIdentity: true,
+    stats: { health: 218, defense: 11, damage: 45, crit: .23, shatterCapacity: 100, critMultiplier: 1.65, elementalDamage: 0 },
+    passive: { name: 'Alternating Edge', description: 'Gain Crosscut when an ordinary Skill differs from the previous ordinary Skill; the first Skill establishes the sequence.', damageBonus: 0, defenseBonus: 0, healFraction: 0 },
+    abilities: {
+      skill1: { name: 'Open the Seam', description: 'Deal 280% Direct Attack to one enemy and apply Weaken for 2 enemy phases, reducing its direct damage by 25%.', cooldown: 0, strength: { damageMultiplier: 2.8, weakenFraction: .25 } },
+      skill2: { name: 'Turn the Other Edge', description: 'Deal 205% Direct Attack to all enemies; ignore 20% Defense while holding at least 2 Crosscut.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.05 } },
+      ultimate: { name: 'Leave the Doorway Standing', description: 'Spend all Crosscut; deal 1,050% Direct Attack plus 90% per Crosscut to one enemy, ignoring 30% Defense.', cooldown: 0, strength: { damageMultiplier: 10.5 } },
     },
   },
 };

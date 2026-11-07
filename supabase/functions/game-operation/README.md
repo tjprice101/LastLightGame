@@ -1,5 +1,29 @@
 # Authoritative game operation
 
+## Four reclaimed War characters and5% recruitment (2026-11-06)
+
+Deploy the matching rebuilt shared engine for Neralis/Varkhel/Seravelle/Velmira,
+their native kits, personal Masters and four additional War trials.
+All ten trials now roll5% recruitment per Stage10 final-boss clear and never
+recruit on Stages1-9. Owned successful recruitment converts to100NP; unsuccessful
+rolls grant no conversion. Client input cannot select a recruitment outcome.
+Kill rewards/discovery/unlocks/recruitment/receipts remain one atomic authority
+operation; retries preserve the saved roll. No summon-pool change, retroactive
+grants or new material chain. Existing runs/progression remain frozen as authored;
+validate shared local/hosted state/event/RNG parity before claiming release.
+[Current contract](../../../docs/elemental-war.md) supersedes guaranteed-recruitment
+historical paragraphs below.
+
+`node tools\smoke_server_game.mjs --phase-two-war` passes all twelve personal
+Master fixtures, all four native kits' skills/Normal/ultimate, exact event/state/
+combat RNG parity, checkpoint, action/turn retries and Lv140 trial entries.
+`--war-recruitment` passes40 hosted fixtures across all ten modes: new/owned
+successful final recruitment, failed owned final rolls with no conversion,
+zero Stage9 recruitment/RNG use, saved reads and idempotent retries.
+Fixtures contain explicitly seen acquisition history and valid disposable
+usernames; identities and cascading rows are removed in finally. These are
+authority parity checks, not progression funding or clear-rate benchmarks.
+
 ## Timed special-event lifecycle (2026-11-04)
 
 Server time closes Rose draws/new entry/Continue/Retry at

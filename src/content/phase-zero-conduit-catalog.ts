@@ -283,6 +283,18 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Tranquilitic (actual gameplay element)",
     "ability": "Allies holding your [Skill]-created [Shields] gain +20% [Critical Rate] and take 30% less [Direct Damage] from enemy critical hits. +90% [Defense] and +40% [Critical Damage Multiplier]."
   },
+  "master-neralis-1": {
+    "name": "Amber-Station Return Manifold",
+    "rarity": "Omnic (Master)",
+    "element": "Oceanic (named bearer's actual element; Master for Neralis only)",
+    "ability": "Increase maximum Current to 4. Increase Carry Them Back healing per Current from 6% to 9% maximum Health. Neralis gains +60% [Health] and +35% [Skill Power]."
+  },
+  "master-seravelle-1": {
+    "name": "Ashroad Cadence Transmission",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Seravelle only)",
+    "ability": "Increase maximum Cadence to 4. Increase Move as One’s base Direct Attack bonus from 30% to 40%. Seravelle gains +50% [Health] and +35% [Skill Power]."
+  },
   "tectonic-atlas-bastion": {
     "name": "Atlas Bastion",
     "rarity": "Omnic",
@@ -294,6 +306,18 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "rarity": "Omnic (Master)",
     "element": "Infernic (named bearer's actual element; Master for Caldrex only)",
     "ability": "Increase maximum [Heat] to 5. Gain +12% [Defense] per stored [Heat]. Caldrex gains +60% [Health] and +50% [Defense]."
+  },
+  "master-neralis-2": {
+    "name": "Blackwing Crossing Stabilizer",
+    "rarity": "Omnic (Master)",
+    "element": "Oceanic (named bearer's actual element; Master for Neralis only)",
+    "ability": "After Light the Next Station, grant its target a Shield equal to 20% maximum Health, scaled by Neralis’s Skill Power. Neralis gains +50% [Health] and +60% [Defense]."
+  },
+  "master-seravelle-3": {
+    "name": "Braided-Signal Continuance Engine",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Seravelle only)",
+    "ability": "After The Road Belongs to Everyone, grant each living squad member a Shield equal to 22% maximum Health, scaled by Seravelle’s Skill Power. Seravelle gains +60% [Health] and +40% [Defense]."
   },
   "master-sprout-2": {
     "name": "Briar Constellation Loom",
@@ -336,6 +360,12 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Disciple only)",
     "ability": "When an ally consumes Disciple's [Resolve], each other living ally gains 10% [Elemental Gauge]."
+  },
+  "master-seravelle-2": {
+    "name": "Convoy-Flame Distribution Crown",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Seravelle only)",
+    "ability": "When an allied native Burn tick damages an enemy, restore 5% maximum Gauge to each other living squad member. Once per enemy phase while Seravelle lives; Burn detonations and Conduit damage do not trigger it. Seravelle gains +45% [Direct Attack] and +30% [Skill Power]."
   },
   "master-caldrex-2": {
     "name": "Counterstroke Recoil Foundry",
@@ -415,6 +445,12 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Botanic (actual gameplay element)",
     "ability": "While you are alive, other allies gain bonus [Defense] equal to 25% of your effective [Defense]. +75% [Defense] and +55% [Skill Power]."
   },
+  "master-varkhel-1": {
+    "name": "Faultstar Chain Accumulator",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Varkhel only)",
+    "ability": "Increase maximum Tension to 5. Gain +10% Defense per stored Tension. Varkhel gains +70% [Health] and +50% [Defense]."
+  },
   "master-vaelor-1": {
     "name": "Final Chord Celestial Resonator",
     "rarity": "Omnic (Master)",
@@ -462,6 +498,12 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Rosetta only)",
     "ability": "[Golden Thorn Volley] grants each other living ally +35% [Skill Power] for their next damaging [Skill] against Rosetta's [Quarry]. Rosetta gains +60% [Skill Power] and +35% [Elemental Gauge Capacity]."
+  },
+  "master-velmira-2": {
+    "name": "Goldseam Precision Fracturer",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Velmira only)",
+    "ability": "When Open the Seam targets a Weakened enemy, deal 35% more direct damage. Increase Turn the Other Edge’s Defense ignore from 20% to 35% while its Crosscut condition is met. Velmira gains +45% [Direct Attack] and +25% [Critical Rate]."
   },
   "atmospheric-griffin-turbine": {
     "name": "Griffin Turbine",
@@ -553,6 +595,12 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Oceanic (named bearer's actual element; Master for Tizu only)",
     "ability": "[Tidal Shelter] gains +50% [Skill Power]. While its [Shield] remains, the recipient gains +25% [Skill Efficiency] for their next [Skill]. Tizu gains +45% [Defense] and +25% [Elemental Gauge Gain]."
   },
+  "master-velmira-3": {
+    "name": "Open-Threshold Return Drive",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Velmira only)",
+    "ability": "When Leave the Doorway Standing spends at least 3 Crosscut, restore 25% of Velmira’s maximum Gauge after its cost and heal her for 18% maximum Health. Recovery still applies. Velmira gains +50% [Health], +35% [Direct Attack] and +20% [Skill Power]."
+  },
   "chaotic-ouroboros-core": {
     "name": "Ouroboros Core",
     "rarity": "Omnic",
@@ -619,6 +667,12 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Botanic (named bearer's actual element; Master for Myrthen only)",
     "ability": "When Myrthen's Normal Attack, Skill or Last Flare directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power]."
   },
+  "master-varkhel-3": {
+    "name": "Recoil-Star Compression Turbine",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Varkhel only)",
+    "ability": "Increase Return the Strain’s Defense ignore from 20% to 35%. When it spends at least 3 Tension, restore 15% of Varkhel’s maximum Gauge after its cost. Varkhel gains +45% [Direct Attack] and +50% [Health]."
+  },
   "master-ozriel-1": {
     "name": "Refusal Sovereign Heartdrive",
     "rarity": "Omnic (Master)",
@@ -642,6 +696,12 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
     "ability": "Gain +55% [Skill Power] and +20% [Defense] per currently defeated [Squad Member]."
+  },
+  "master-varkhel-2": {
+    "name": "Scarlet-Hinge Load Distributor",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Varkhel only)",
+    "ability": "After Set the Warning Chain, grant each other living squad member a Shield equal to 16% maximum Health, scaled by Varkhel’s Skill Power. Varkhel gains +50% [Health] and +35% [Skill Power]."
   },
   "master-myrthen-1": {
     "name": "Seasonwheel Harvest Transmission",
@@ -811,6 +871,12 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "element": "Atmospheric (named bearer's actual element; Master for Elise only)",
     "ability": "Each [Shuriken] lodged by [Voltstar Cut] gives the next other ally's damaging [Skill] against that enemy +35% [Skill Power]. One stored bonus is spent per cast; recalling the [Shuriken] removes unused bonuses. Elise gains +80% [Direct Attack] and +40% [Skill Power]."
   },
+  "master-velmira-1": {
+    "name": "Twin-Edge Sequence Orrery",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Velmira only)",
+    "ability": "Increase maximum Crosscut to 4. The first ordinary Skill of each encounter grants 1 Crosscut after resolving. Velmira gains +60% [Direct Attack] and +30% [Skill Power]."
+  },
   "master-crinso-1": {
     "name": "Twin-Rose Singularity Drive",
     "rarity": "Omnic (Master)",
@@ -870,6 +936,12 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Rosetta only)",
     "ability": "[Crimson Skyfall] against Rosetta's [Quarry] heals each living ally who hit it this [Player Turn] for 8% of their own maximum [Health]. Each contributor other than Rosetta also gains +20% [Skill Efficiency] for their next [Skill]. Rosetta gains +80% [Health] and +30% [Skill Efficiency]."
+  },
+  "master-neralis-3": {
+    "name": "Weirheart Recollection Dynamo",
+    "rarity": "Omnic (Master)",
+    "element": "Oceanic (named bearer's actual element; Master for Neralis only)",
+    "ability": "When a native heal restores Health to an ally below 50% Health before that heal, restore 10% maximum Gauge to that ally. Once per round per ally; excludes Support-perk and Conduit healing. Neralis gains +40% [Health], +40% [Direct Attack] and +25% [Skill Power]."
   },
   "master-bruno-3": {
     "name": "Worldforge Hammer Dominion",

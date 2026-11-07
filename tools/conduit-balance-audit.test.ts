@@ -9,11 +9,11 @@ import { calamityEncounter } from '../src/content/calamity';
 import type { BattleState } from '../src/game/battle';
 
 describe('read-only exhaustive Conduit audit integrity', () => {
-  it('accounts for all201 IDs, all31 ordinary wearer decisions and all legal upgrade endpoints', () => {
+  it('accounts for all213 IDs, all35 ordinary wearer decisions and all legal upgrade endpoints', () => {
     expect(conduits).toHaveLength(99);
-    expect(masterConduits).toHaveLength(102);
-    expect(auditCatalog).toHaveLength(201);
-    expect(new Set(auditCatalog.map(piece => piece.id)).size).toBe(201);
+    expect(masterConduits).toHaveLength(114);
+    expect(auditCatalog).toHaveLength(213);
+    expect(new Set(auditCatalog.map(piece => piece.id)).size).toBe(213);
     const calamitic = auditCatalog.filter(piece => piece.rarity === 'Calamitic');
     expect(calamitic.map(piece => piece.id).sort()).toEqual([
       'calamitic-aegis-engine-of-severed-fate', 'calamitic-bulwark-of-the-last-horizon',
@@ -27,7 +27,7 @@ describe('read-only exhaustive Conduit audit integrity', () => {
     expect(calamitic.every(piece => piece.levels.join(',') === '0,5')).toBe(true);
     for (const piece of auditCatalog) {
       expect(piece.eligible.length).toBeGreaterThan(0);
-      expect(piece.eligible.length + piece.skipped.length).toBe(piece.eligible.some(isCalamiticCharacter) ? 32 : 31);
+      expect(piece.eligible.length + piece.skipped.length).toBe(piece.eligible.some(isCalamiticCharacter) ? 36 : 35);
       expect(piece.levels).toEqual(piece.rarity === 'Master' ? [0] : [0, 5]);
     }
   });
@@ -51,7 +51,7 @@ describe('read-only exhaustive Conduit audit integrity', () => {
           expect(off.equipment[wearer]).not.toContain(piece.id);
         }
       }
-  });
+  }, 15000);
   it('uses real level105 allies and unchanged native enemies and distinguishes timeouts', () => {
     const state = auditBattle('stasis-reliquary', 'tide', 5, 'supported', true, auditEncounters[5], 1729);
     expect(state.allies.map(unit => unit.level)).toEqual([105, 105, 105]);

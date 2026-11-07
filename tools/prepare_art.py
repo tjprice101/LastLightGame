@@ -137,6 +137,15 @@ def supplied_cutout(asset_id):
 
 
 def prepare_sprite(source, asset_id, canvas_size=CANVAS_SIZE, content_size=CONTENT_SIZE, **matte_options):
+    from intake_phase2_war_art import reviewed_source as phase2_source
+    phase2 = phase2_source(asset_id)
+    if phase2:
+        from intake_phase2_war_art import prepare, SETTINGS
+        import json
+        from io import BytesIO
+        settings = json.loads(SETTINGS.read_text(encoding="utf-8"))
+        with Image.open(BytesIO(prepare(phase2, settings[asset_id], canvas_size, content_size))) as image:
+            return image.copy()
     from intake_phase1_war_art import reviewed_source as phase1_source
     phase1 = phase1_source(asset_id)
     if phase1:

@@ -241,7 +241,7 @@ describe('50% capture rewards and retained fixed-form Elemental-Devourers', () =
     const html = archives(account);
     expect(html).not.toContain('Owned copies');
     expect(html).not.toContain('data-archive-character="infusion:');
-    expect(html.match(/data-archive-character=/g)).toHaveLength(204);
+    expect(html.match(/data-archive-character=/g)).toHaveLength(228);
   });
   it('retains boss ultimates with their exact damage, cooldown and recovery', () => {
     const captured = copy(5, true);

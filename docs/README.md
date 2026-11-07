@@ -1,5 +1,17 @@
 # Documentation hub
 
+## Reclaimed War integration approval and portrait intake (2026-11-06)
+
+Owner approves the four new [War character kits/trials](Future%20Plans/phase-2-war-designs.md),
+with24 reviewed portraits installed and verified duplicate root files removed.
+Their44 undelivered associated images use neutral presentation.
+[All War trials now have5% final-boss recruitment](elemental-war.md), not
+guaranteed recruitment; failed rolls never grant100NP duplicate conversion.
+[Intake/reproduction](art-workflow.md#delivered-reclaimed-war-portraits-2026-11-06)
+and [handoff](handoff.md) own validation/release evidence. Proposal-only historical
+entries below are superseded, while Story remains paused and new seasonal
+schedules remain inactive.
+
 ## Future Plans and audited image budget (2026-11-06)
 
 [Canonical unfinished-work register](Future%20Plans/README.md) collects the UI

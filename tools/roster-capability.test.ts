@@ -9,13 +9,13 @@ import { auditBoundary, auditGear, auditLevels, auditProfiles, auditState, maxim
 const benchmarkStarters = starters.filter(starter => !isCalamiticCharacter(starter.id));
 
 describe('opponent-free roster capability audit', () => {
-  it('covers all31 non-Calamitic bearers and every distinct unordered solo/duo/trio', () => {
+  it('covers all35 non-Calamitic bearers and every distinct unordered solo/duo/trio', () => {
     const teams = rosterCombinations();
-    expect(benchmarkStarters).toHaveLength(31);
-    expect(teams.filter(team => team.length === 1)).toHaveLength(31);
-    expect(teams.filter(team => team.length === 2)).toHaveLength(465);
-    expect(teams.filter(team => team.length === 3)).toHaveLength(4495);
-    expect(new Set(teams.map(team => [...team].sort().join(','))).size).toBe(4991);
+    expect(benchmarkStarters).toHaveLength(35);
+    expect(teams.filter(team => team.length === 1)).toHaveLength(35);
+    expect(teams.filter(team => team.length === 2)).toHaveLength(595);
+    expect(teams.filter(team => team.length === 3)).toHaveLength(6545);
+    expect(new Set(teams.map(team => [...team].sort().join(','))).size).toBe(7175);
   });
   it('does not grant unreachable early evolutions or legacy weapon ranks', () => {
     expect(auditLevels.map(level => maximumProgress(level).evolution)).toEqual([1, 1, 2, 4, 5, 6, 6]);
@@ -36,7 +36,7 @@ describe('opponent-free roster capability audit', () => {
       expect(result.actions).toBeLessThanOrEqual(18);
       expect(result.exhausted).toBe(false);
     }
-  });
+  }, 15000);
   it('uses real Normal damage events with no incoming attacks, Gauge or reward grants', () => {
     const state = auditState(['ember'], 0, 'floor', 1);
     const single = act(state, 'ember', 'light', 'measuring-target');

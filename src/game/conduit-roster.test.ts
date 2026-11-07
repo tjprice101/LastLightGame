@@ -980,6 +980,76 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       target.hp = 1;
       expect(attack('light').state.allies[1].hp).toBe(enabled ? 160 : 100);
       break;
+    case 'master-neralis-1': {
+      owner.native = { current: 3 };
+      ally.hp = 100;
+      const result = attack('skill2');
+      const restored = result.events.find(event => event.kind === 'heal' && event.source === owner.id &&
+        event.target === ally.id && !event.rolePerk)!.amount;
+      expect(restored).toBe(enabled ? 450 : 360);
+      break;
+    }
+    case 'master-neralis-2': {
+      ally.hp = 100;
+      ally.shield = 0;
+      if (ally.conduitRuntime) ally.conduitRuntime.layers = [];
+      const result = attack('skill1');
+      expect(result.state.allies[1].shield > 0).toBe(enabled);
+      break;
+    }
+    case 'master-neralis-3': {
+      ally.hp = 100;
+      const result = attack('skill1');
+      expect(result.state.allies[0].native?.guards?.[`return-gauge:${ally.id}`])
+        .toBe(enabled ? state.round : undefined);
+      break;
+    }
+    case 'master-varkhel-1': {
+      owner.native = { tension: 4 };
+      const result = attack('light');
+      expect(result.state.allies[0].native?.tension).toBe(enabled ? 5 : 4);
+      break;
+    }
+    case 'master-varkhel-2':
+      expect(attack('skill1').state.allies[1].shield > 0).toBe(enabled);
+      break;
+    case 'master-varkhel-3': {
+      owner.native = { tension: 3 };
+      const result = attack('skill2');
+      expect(result.state.allies[0].native?.tension).toBe(0);
+      expect(result.events.some(event => event.kind === 'damage' && event.amount > 0)).toBe(true);
+      expect(equipped(owner, id)).toBe(enabled);
+      // Percentage Gauge grants require the live Phase 0 contract covered by phase2-war-kits.test.ts.
+      break;
+    }
+    case 'master-seravelle-1':
+      owner.native = { cadence: 3 };
+      expect(attack('skill2').state.allies[1].attackBoost?.fraction).toBeCloseTo(enabled ? .7 : .6);
+      break;
+    case 'master-seravelle-2':
+      owner.native = { burns: { [target.id]: { damage: 10, turns: 2 } } };
+      target.burn = { damage: 10, turns: 2, sourceId: owner.id, origin: 'native' };
+      nativeBurnPhase(state, target, events);
+      expect(owner.native.guards?.['burn-gauge']).toBe(enabled ? state.round : undefined);
+      break;
+    case 'master-seravelle-3':
+      expect(attack('ultimate').state.allies.every(unit => unit.shield > 0)).toBe(enabled);
+      break;
+    case 'master-velmira-1':
+      expect(attack('skill1').state.allies[0].native?.crosscut).toBe(enabled ? 1 : 0);
+      break;
+    case 'master-velmira-2': {
+      target.weakened = 2;
+      const result = attack('skill1');
+      const damage = result.events.find(event => event.kind === 'damage' && event.target === target.id)!.amount;
+      expect(damage).toBe(enabled ? 189 : 140);
+      break;
+    }
+    case 'master-velmira-3':
+      owner.native = { crosscut: 3 };
+      owner.hp = 100;
+      expect(attack('ultimate').state.allies[0].hp).toBe(enabled ? 280 : 100);
+      break;
     default:
       throw new Error(`Missing executable Master scenario: ${id}`);
   }

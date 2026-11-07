@@ -12,13 +12,13 @@ export const masterChest = {
   description: 'Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward.',
 } as const;
 export const astralReserveArt = 'master-conduits/astral-reserve.png';
-export const masterRulesText = `${masterChest.name}: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all 66.`;
-
 function redesignedMasterRule(): OmnicRule { return { trigger: 'activation', outcomes: [] }; }
-function master<C extends StarterId, S extends 1 | 2 | 3>(character: C, slot: S, name: string, design: string) {
-  return { id: `master-${character}-${slot}` as const, character, name, rarity: 'Omnic' as const,
-    art: `master-conduits/master-${character}-${slot}.png` as const, effect: redesignEffect(`master-${character}-${slot}`), design,
-    lore: masterOrigin };
+function master<C extends StarterId, S extends 1 | 2 | 3>(character: C, slot: S, name: string, design: string,
+  effect?: string, artAvailable = true) {
+  const id = `master-${character}-${slot}` as const;
+  return { id, character, name, rarity: 'Omnic' as const,
+    ...(artAvailable ? { art: `master-conduits/${id}.png` as const } : {}),
+    effect: effect ?? redesignEffect(id), design, lore: masterOrigin };
 }
 
 export const masterConduits = [
@@ -136,6 +136,42 @@ export const masterConduits = [
     'a long jade targeting machine, one amber crystal indexing drum feeding three articulated pink-tipped relay arms, brown rack rails and white tracking apertures'),
   master('myrthen', 3, 'Reaping-Tide Recovery Dynamo',
     'a broad jade recovery engine, paired amber sickle-shaped rotors feeding a pink crystal regeneration cartridge, white pump housings and brown geared Gauge flywheels'),
+  master('neralis', 1, 'Amber-Station Return Manifold',
+    'A magnificent crescent-hook manifold, four amber station capsules, silver return gears and three cyan-blue water turbines inside black-white prow-panel shutters',
+    'Increase maximum Current to 4. Increase Carry Them Back healing per Current from 6% to 9% maximum Health. Neralis gains +60% [Health] and +35% [Skill Power].', false),
+  master('neralis', 2, 'Blackwing Crossing Stabilizer',
+    'A colossal swept black feather-rib stabilizer, silver crescent braces and amber bearings; cyan-blue water pressure lifts interlocking white rescue plates',
+    'After Light the Next Station, grant its target a Shield equal to 20% maximum Health, scaled by Neralis’s Skill Power. Neralis gains +50% [Health] and +60% [Defense].', false),
+  master('neralis', 3, 'Weirheart Recollection Dynamo',
+    'A vast amber station-heart rotor between paired silver crescent impellers, cyan-blue capillary channels and black-white coat-panel relief; three separate return axles',
+    'When a native heal restores Health to an ally below 50% Health before that heal, restore 10% maximum Gauge to that ally. Once per round per ally; excludes Support-perk and Conduit healing. Neralis gains +40% [Health], +40% [Direct Attack] and +25% [Skill Power].', false),
+  master('varkhel', 1, 'Faultstar Chain Accumulator',
+    'An immense scarlet-black chain accumulator, five amber pressure cylinders, silver counterweight gears and a dark fault-star sphere edged violet inside white collar shutters',
+    'Increase maximum Tension to 5. Gain +10% Defense per stored Tension. Varkhel gains +70% [Health] and +50% [Defense].', false),
+  master('varkhel', 2, 'Scarlet-Hinge Load Distributor',
+    'A colossal silver load hinge with scarlet warning-panel fins, three orange-amber pressure outlets and black feather-rib counterbalances, articulated chain drums',
+    'After Set the Warning Chain, grant each other living squad member a Shield equal to 16% maximum Health, scaled by Varkhel’s Skill Power. Varkhel gains +50% [Health] and +35% [Skill Power].', false),
+  master('varkhel', 3, 'Recoil-Star Compression Turbine',
+    'A massive black counterweight recoil turbine, violet-rimmed orange fault star, scarlet compression shutters and silver toothed return axles linked by one chain circuit',
+    'Increase Return the Strain’s Defense ignore from 20% to 35%. When it spends at least 3 Tension, restore 15% of Varkhel’s maximum Gauge after its cost. Varkhel gains +45% [Direct Attack] and +50% [Health].', false),
+  master('seravelle', 1, 'Ashroad Cadence Transmission',
+    'A magnificent silver lance-shaped transmission, four gold-brass braid-ring flywheels, red officer-enamel shutters and orange-red flame channels through black-white feather vanes',
+    'Increase maximum Cadence to 4. Increase Move as One’s base Direct Attack bonus from 30% to 40%. Seravelle gains +50% [Health] and +35% [Skill Power].', false),
+  master('seravelle', 2, 'Convoy-Flame Distribution Crown',
+    'A colossal gold-brass flame distributor with three silver output pistons, red enamel relay petals, orange-white plasma channels and alternating black-white feather fins',
+    'When an allied native Burn tick damages an enemy, restore 5% maximum Gauge to each other living squad member. Once per enemy phase while Seravelle lives; Burn detonations and Conduit damage do not trigger it. Seravelle gains +45% [Direct Attack] and +30% [Skill Power].', false),
+  master('seravelle', 3, 'Braided-Signal Continuance Engine',
+    'An immense silver continuity engine, paired gold braid-ring axles, white-black feather shutter plates and red command-latch relief; orange-red flame channels shelter three white output shields',
+    'After The Road Belongs to Everyone, grant each living squad member a Shield equal to 22% maximum Health, scaled by Seravelle’s Skill Power. Seravelle gains +60% [Health] and +40% [Defense].', false),
+  master('velmira', 1, 'Twin-Edge Sequence Orrery',
+    'An immense twin-crescent sequence orrery, four violet-magenta phase rotors, independent silver blade rails and gold ring axles inside black feather fins and white pleated shutters',
+    'Increase maximum Crosscut to 4. The first ordinary Skill of each encounter grants 1 Crosscut after resolving. Velmira gains +60% [Direct Attack] and +30% [Skill Power].', false),
+  master('velmira', 2, 'Goldseam Precision Fracturer',
+    'A colossal gold-seam precision engine, paired silver crescent cutter rails, violet-magenta pressure channels and amber fracture chambers with black-white pleat relief',
+    'When Open the Seam targets a Weakened enemy, deal 35% more direct damage. Increase Turn the Other Edge’s Defense ignore from 20% to 35% while its Crosscut condition is met. Velmira gains +45% [Direct Attack] and +25% [Critical Rate].', false),
+  master('velmira', 3, 'Open-Threshold Return Drive',
+    'A vast open crescent return drive, gold ring-grip flywheels and silver return pistons around violet-magenta channels, amber seam lights and black feather blades with white pleated inlays',
+    'When Leave the Doorway Standing spends at least 3 Crosscut, restore 25% of Velmira’s maximum Gauge after its cost and heal her for 18% maximum Health. Recovery still applies. Velmira gains +50% [Health], +35% [Direct Attack] and +20% [Skill Power].', false),
   master('ozriel', 1, 'Refusal Sovereign Heartdrive',
     'A colossal Tranquilitic life-preservation reactor with a crimson crystal heart, three geared flywheels and six hydraulic arms deploying pearlescent shield plates from a black armored chassis'),
   master('ozriel', 2, 'Absolution Planetary Suppressor',
@@ -157,6 +193,7 @@ export const masterConduits = [
   ...moonSunshadeMasters,
 ] as const;
 
+export const masterRulesText = `${masterChest.name}: ${masterChest.chance * 100}% from the stage ${machineStageCount} Machines boss; two guaranteed in each Calamity EX+Omnipotent chest. Choose any unowned Master, even for an unowned Element-Bearer. Masters use a character-specific slot and cannot be upgraded. Chests stay unopened once you own all ${masterConduits.length}.`;
 export type MasterConduitId = (typeof masterConduits)[number]['id'];
 export type MasterConduit = (typeof masterConduits)[number];
 export type MasterLoadouts = Partial<Record<StarterId, MasterConduitId | null>>;

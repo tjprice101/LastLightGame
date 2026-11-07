@@ -280,7 +280,7 @@ def blocks():
 def document():
     parts = [
         "# Elemental War Phase 2: artwork-led associated art",
-        "**Four proposed six-star characters. 24 delivered portraits reused; 44 new associated images needed. No playable integration.**",
+        "**Four approved six-star War characters. 24 delivered portraits installed; 44 associated images remain pending and use neutral presentation until reviewed delivery.**",
         "[Complete identities, lore, kits, strengths and source mappings](phase-2-war-designs.md). "
         "Reproduce with `python tools/build_phase2_war_art.py`; do not edit generated prompt blocks.",
         "## Generation and identity contract",
@@ -314,27 +314,30 @@ def document():
 def specification():
     parts = [
         "# Elemental War Phase 2: four artwork-led character designs",
-        "**Owner-requested design/prompt scope only (2026-11-06). Names and numeric designs are proposals; no playable registration, acquisition or authority changes.**",
+        "**Owner approves playable integration and reviewed portrait intake (2026-11-06). This is the current four-character kit/art contract; release evidence lives in the handoff.**",
         "[Associated prompt pack](Elemental%20War%20Phase%202.md) | "
         "[Existing War rules](../elemental-war.md) | [Global benchmark boundary](../enemy-benchmark-calibration.md) | "
         "[Source provenance](../../Art/provenance/phase2-war-source-mapping.json).",
         "Reproduce this specification and the prompt pack: `python tools/build_phase2_war_art.py`.",
         "## Reuse, not replacement",
-        "The 24 supplied root portraits become four new proposed War identities. Current Moon names, "
+        "The 24 supplied portraits become four distinct War identities. Current Moon names, "
         "kits and save IDs remain intact; their new lunar prompt directions are separate. Originals "
         "are archived byte-for-byte with original filenames, new identity/form mapping and SHA-256. "
-        "Root files stay until reviewed intake is approved. No automatic key removal, source repaint, "
-        "runtime PNG or reveal URL is created. Source edge clipping, hairstyle drift and weapon changes "
+        "Approved offline per-source key/gap cleanup installs the runtime portraits; verified duplicate "
+        "root files are removed only after archive/export hash validation. No source repaint or online "
+        "background removal. Source edge clipping, hairstyle drift and weapon changes "
         "are recorded below instead of falsely claiming perfect six-form continuity.",
         "These are mortal human Element-Bearers in Let's image. Wings are elemental manifestations "
         "and craft, not divine species. Neither creator's soul is recovered and no faction wins. "
         "The four identities are not members of the Moon order and have no seasonal summon placement.",
-        "## Shared proposed gameplay contract",
-        "- Six-star, six forms, Lv.0/Evo.1 and unequipped on future acquisition; no starter grants.\n"
+        "## Shared approved gameplay contract",
+        "- Six-star, six forms, Lv.0/Evo.1 and unequipped on acquisition; no starter grants.\n"
         "- Existing War template: 10 free sequential stages, authored Lv.90-140 curve; bosses use "
         "shared hostile definitions, not playable role perks or personal Master mechanics.\n"
-        "- Stage10 would guarantee that trial's bearer, or the current 100 Null-Prismatica owned "
-        "conversion. Current currency rules/receipt atomicity retained; no trial materials, captures "
+        "- Every War mode now has a 5% recruitment chance per Stage10 final-boss clear; "
+        "Stages1-9 never recruit. A successful owned recruitment converts to100 Null-Prismatica; "
+        "a failed roll grants neither recruitment nor conversion. Current currency rules/receipt "
+        "atomicity retained; no trial materials, captures "
         "or summon pool. Prismatica grows linearly from1500-2500 at1 to30000-45000 at10, with no "
         "final multiplier. Null-Prismatica chance grows30%-60%; quantity follows the existing "
         "round(1+4*(stage-1)/9), with final5x quantity retained.\n"
@@ -358,9 +361,9 @@ def specification():
         "- No new RNG beyond existing critical outcomes. Triggered healing/Shield/Conduit output "
         "does not recursively generate native counters unless explicitly allowed. All effects "
         "require living owners/targets; no revive or negative Health.\n"
-        "- One personal Master at a time, three alternatives per bearer, same future chest-choice "
-        "mechanism. No new drop chance, Calamitic tier or automatic equip.",
-        "### Proposed trial stage/form map\n\n"
+        "- One personal Master at a time, three alternatives per bearer, same existing chest-choice "
+        "mechanism. Master chest drop chances unchanged; no Calamitic tier or automatic equip.",
+        "### Trial stage/form map\n\n"
         "The existing shared War curve, not a new authored difficulty table:\n\n"
         "| Stage | Enemy level | Portrait form |\n|---:|---:|---|\n" +
         "\n".join(
@@ -371,15 +374,15 @@ def specification():
         "The designs deliberately offer substantial 25-60% useful buffs and meaningful funded "
         "payoffs, not tiny decorative boosts. This is not a balance certification: run non-Calamitic "
         "paper damage, effective healing, Shield creation, packet survival and actual pressured "
-        "War encounters separately before approving numeric implementation. A trio is conditional "
+        "War encounters separately during implementation validation. A trio is conditional "
         "on ownership, not an average account; only one starter is guaranteed. Do not tune enemies "
-        "to these proposals or claim measured clear rates.",
+        "to the strongest paper outlier or claim unmeasured clear rates.",
     ]
     mapping = source_rows()
     for design in DESIGNS:
         name = design["name"]
         parts.extend((
-            f"## {name} — proposed six-star {design['element']} {design['role']}",
+            f"## {name} — six-star {design['element']} {design['role']}",
             f"**Identity:** {design['title']}.\n\n**Origin:** {design['origin']}.\n\n"
             f"**Lore:** {design['lore']}\n\n**Vow:** {design['vow']}",
             f"### Appearance authority\n\n{design['identity']}.\n\n**Palette:** {design['palette']}. "
@@ -402,13 +405,13 @@ def specification():
             parts.append(f"### Master: {master}\n\n**{stats}**\n\n{effect}\n\n"
                          f"**Art direction:** {sculpture}.")
         parts.append(
-            f"### Strengths, costs and proposed trial\n\n**Strengths:** {design['strengths']}\n\n"
+            f"### Strengths, costs and trial\n\n**Strengths:** {design['strengths']}\n\n"
             f"**Limits:** {design['limits']}\n\n**Pilot rotation:** {design['pilot']}\n\n"
             f"**War activity:** {design['trial']}. Header and arena borrow the actual equipment/material "
             "motifs above, not the current Moon event scenery. Trial name differs from identity and Omnic title."
         )
     parts.extend((
-        "## Exact mechanic resolutions for future implementation",
+        "## Exact mechanic resolutions",
         "- Neralis: Current granted by a native heal is at most once across all targets of that "
         "action, after the action's spend; shared role/Conduit healing and overheal do not grant it. "
         "For a multi-target native heal, the Gauge-return Master checks each target's pre-heal Health "
@@ -428,7 +431,7 @@ def specification():
         "Master recovery once. The first-Skill Master grants only once per encounter.\n"
         "- Master Gauge/heal after-effects execute once after the actual action cost; no cost "
         "bypass, extra action, new roll or equipment-scale amplification of fixed native counters.",
-        "## Required validation before playable integration",
+        "## Required integration validation",
         "1. Review all24 source mappings and acceptance of their supplied hair/weapon differences; "
         "inspect source-clipped tips rather than claiming padding repairs them.\n"
         "2. Review names/lore/roles/kits and the44 new prompts. Delivered portrait quality is not "
@@ -437,10 +440,10 @@ def specification():
         "triggers, multi-target once guards, dead owner, refresh, Settings and new encounters.\n"
         "4. Benchmark paper damage, healing, Shield creation and survival separately with explicit "
         "ownership/gear; then actual pressured trials at relevant gates, no Calamitic equipment.\n"
-        "5. Wire every live surface/authority/save validation only after explicit implementation "
-        "approval, add no migration grants, preserve existing progression and atomic receipts.\n"
+        "5. Owner approves implementation on2026-11-06. Wire every live surface/authority/save "
+        "validation, add no migration grants, preserve existing progression and atomic receipts.\n"
         "6. Reviewed art intake, full tests/build and matching hosted authority/client verification "
-        "are required for an actual release. No release is authorized in this pass.",
+        "are required for an actual release; see the handoff for results.",
         "## Total images needed",
         "**44 new associated images. 24 delivered portraits reused. 68 total package images.**",
     ))
@@ -450,4 +453,4 @@ def specification():
 if __name__ == "__main__":
     OUTPUT.write_text(document(), encoding="utf-8")
     SPEC.write_text(specification(), encoding="utf-8")
-    print(f"Wrote {len(blocks())} associated prompts and four complete War design proposals.")
+    print(f"Wrote {len(blocks())} associated prompts and the approved four-character War contract.")

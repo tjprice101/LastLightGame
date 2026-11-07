@@ -83,6 +83,10 @@ try {
     console.log('Hosted event lifecycle passed: authoritative clock, active-event shop denial, inactive Moon/Sunshade summons/entry/post-event shops, client clock/price rejection, idempotent checkpoint and unchanged account. Future closure/purchases are covered by injected-clock local authority tests, not claimed as live-time checks.');
   } else if (process.argv.includes('--phase-one-war')) {
     await smokePhaseOneWar(client, created.user.id, username);
+  } else if (process.argv.includes('--phase-two-war')) {
+    await smokePhaseTwoWar(client, created.user.id, username);
+  } else if (process.argv.includes('--war-recruitment')) {
+    await smokeWarRecruitment(client, created.user.id, username);
   } else if (process.argv.includes('--loadouts')) {
     let response = await call({ kind: 'bootstrap', starterId: 'ember' }, 0);
     const transact = async operation => {
@@ -531,6 +535,175 @@ async function smokePhaseOneWar(firstClient, firstId, firstUsername) {
     }
   }
   console.log(`Hosted Phase1 War passed: rules${conduitRulesVersion}, all three native kits with nine equipped Masters, exact local/authority events and state, seeded RNG parity, action/turn idempotency, checkpoint and all three Lv140 trial entries. Controlled disposable fixtures only, not a balance or clear-rate experiment.`);
+}
+
+async function smokePhaseTwoWar(firstClient, firstId, firstUsername) {
+  const characters = ['neralis', 'varkhel', 'seravelle', 'velmira'];
+  const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
+  const cases = characters.flatMap(character => [1, 2, 3].map(masterIndex => ({ character, masterIndex })));
+  for (const [index, { character, masterIndex }] of cases.entries()) {
+    let client = firstClient, userId = firstId, username = firstUsername;
+    if (index > 0) {
+      username = `war2_${randomUUID().replaceAll('-', '').slice(0, 10)}`;
+      const password = randomUUID() + randomUUID(), email = `${username}@example.invalid`;
+      const made = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { username } });
+      if (made.error || !made.data.user) throw new Error('Phase 2 War smoke identity creation failed.');
+      userId = made.data.user.id; ids.push(userId);
+      client = createClient(url, clientKey, { auth: { persistSession: false } });
+      if ((await client.auth.signInWithPassword({ email, password })).error) throw new Error('Phase 2 War smoke authentication failed.');
+    }
+    let game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
+    Object.assign(game.account.characters, Object.fromEntries([...characters, 'tide', 'sprout'].map(id =>
+      [id, { level: 105, evolution: 6 }])));
+    game.account.squad = [character, 'tide', 'sprout'];
+    game.account.storyCompleted = 120;
+    game.account.warStages = Object.fromEntries(characters.map(id => [id, 10]));
+    game.account.masterConduits = Object.fromEntries(characters.flatMap(id =>
+      [1, 2, 3].map(master => [`master-${id}-${master}`, 1])));
+    game.account.masterEquipment = { [character]: `master-${character}-${masterIndex}` };
+    game.account.acquisitionMarkers = Object.fromEntries([
+      ...Object.keys(game.account.characters).map(id => `character:${id}`),
+      ...Object.keys(game.account.masterConduits).map(id => `master:${id}`),
+    ].map(key => [key, true]));
+    game = resolveOperation(game, {
+      kind: 'enter', activity: { kind: 'war', character, stage: 10 },
+    }, entropy).game;
+    for (const ally of game.run.session.state.allies) {
+      ally.shatter = 100;
+      ally.hp = Math.floor(ally.stats.health * .4);
+    }
+    for (const enemy of game.run.session.state.enemies) {
+      enemy.stats.health = enemy.hp = 1000000000;
+      enemy.stats.defense = enemy.stats.damage = 100;
+      enemy.stats.crit = 0;
+    }
+    assert.ok(ids.includes(userId), 'Only disposable identities may receive fixtures');
+    const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+    assert.equal(seeded.error, null);
+    async function invoke(operation, revision, requestId = randomUUID()) {
+      const result = await client.functions.invoke('game-operation', {
+        body: { operation, expectedRevision: revision, requestId },
+      });
+      if (result.error) throw new Error(`Hosted Phase 2 War ${operation.kind} failed (${result.error.context?.status ?? 'transport'}).`);
+      return result.data;
+    }
+    let response = await invoke({ kind: 'read' }, 0);
+    const initialAccount = structuredClone(response.account);
+    assert.equal(response.session.state.war.character, character);
+    assert.equal(response.session.state.war.stage, 10);
+    assert.ok(response.session.state.allies.some(ally => ally.definitionId === character));
+    assert.equal(response.session.state.conduitRulesVersion, conduitRulesVersion);
+    assert.deepEqual(response.account.masterEquipment, game.account.masterEquipment);
+    async function compare(operation) {
+      const expected = resolveOperation(game, operation, entropy);
+      const revision = response.revision, requestId = randomUUID();
+      response = await invoke(operation, revision, requestId);
+      assert.deepEqual(response.result, JSON.parse(JSON.stringify(expected.response.result)));
+      assert.deepEqual(response.session.state, JSON.parse(JSON.stringify(expected.response.session.state)));
+      assert.deepEqual(response.account, JSON.parse(JSON.stringify(expected.response.account)));
+      assertSameSavedResponse(await invoke(operation, revision, requestId), response);
+      game = expected.game;
+    }
+    const runId = response.session.runId, enemyId = response.session.state.enemies[0].id;
+    const actions = {
+      neralis: [['skill1', 'tide'], ['skill2', enemyId]],
+      varkhel: [['skill1', enemyId], ['skill2', enemyId]],
+      seravelle: [['skill1', enemyId], ['skill2', enemyId]],
+      velmira: [['skill1', enemyId], ['skill2', enemyId]],
+    }[character];
+    for (const [action, targetId] of actions) {
+      await compare({ kind: 'act', runId, actorId: character, action, targetId });
+      await compare({ kind: 'endTurn', runId });
+    }
+    for (let round = 0; round < 4; round++) {
+      await compare({ kind: 'act', runId, actorId: character, action: 'light', targetId: enemyId });
+      await compare({ kind: 'endTurn', runId });
+    }
+    await compare({ kind: 'act', runId, actorId: character, action: 'ultimate', targetId: enemyId });
+    await compare({ kind: 'endTurn', runId });
+    const checkpoint = await invoke({ kind: 'checkpoint' }, response.revision);
+    assert.deepEqual(checkpoint.session, response.session);
+    response = await invoke({ kind: 'quit', runId }, response.revision);
+    game = resolveOperation(game, { kind: 'quit', runId }, entropy).game;
+    for (const trialCharacter of characters) {
+      response = await invoke({ kind: 'enter', activity: { kind: 'war', character: trialCharacter, stage: 10 } }, response.revision);
+      assert.equal(response.session.state.enemies[0].level, 140);
+      assert.equal(response.session.state.war.character, trialCharacter);
+      assert.ok(response.session.state.enemies[0].art.includes(trialCharacter));
+      for (const field of ['characters', 'squad', 'masterConduits', 'masterEquipment', 'warStages', 'fractalis', 'lycalis'])
+        assert.deepEqual(response.account[field], initialAccount[field], `Phase 2 trial entry preserves ${field}`);
+      const trialRunId = response.session.runId;
+      response = await invoke({ kind: 'quit', runId: trialRunId }, response.revision);
+    }
+    const persisted = (await invoke({ kind: 'read' }, response.revision)).account;
+    assert.deepEqual(persisted, response.account);
+    for (const field of ['characters', 'squad', 'masterConduits', 'masterEquipment', 'warStages', 'fractalis', 'lycalis']) {
+      assert.deepEqual(persisted[field], initialAccount[field], `Phase 2 trial entry preserves ${field}`);
+    }
+  }
+  console.log(`Hosted Phase 2 War passed: rules${conduitRulesVersion}, four new native kits with all twelve personal Master fixtures, skills/Normal/ultimate, exact local/authority events and state, seeded RNG parity, action/turn idempotency, checkpoint and all four Lv140 trial entries. Controlled disposable fixtures only, not a balance or clear-rate experiment.`);
+}
+
+async function smokeWarRecruitment(firstClient, firstId, firstUsername) {
+  const characters = ['nerithe', 'orvella', 'vaelor', 'caldrex', 'solenne', 'myrthen',
+    'neralis', 'varkhel', 'seravelle', 'velmira'];
+  const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
+  const cases = characters.flatMap(character => [
+    { character, stage: 10, owned: false, seed: 1, success: true },
+    { character, stage: 10, owned: true, seed: 1, success: true },
+    { character, stage: 10, owned: true, seed: 1000, success: false },
+    { character, stage: 9, owned: false, seed: 1, success: false },
+  ]);
+  for (const [index, fixture] of cases.entries()) {
+    let client = firstClient, userId = firstId, username = firstUsername;
+    if (index > 0) {
+      username = `wrl_${randomUUID().replaceAll('-', '').slice(0, 10)}`;
+      const password = randomUUID() + randomUUID(), email = `${username}@example.invalid`;
+      const made = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { username } });
+      if (made.error || !made.data.user) throw new Error('War recruitment smoke identity creation failed.');
+      userId = made.data.user.id; ids.push(userId);
+      client = createClient(url, clientKey, { auth: { persistSession: false } });
+      if ((await client.auth.signInWithPassword({ email, password })).error) throw new Error('War recruitment smoke authentication failed.');
+    }
+    let game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
+    game.account.characters.ember = { level: 105, evolution: 6 };
+    if (fixture.owned) game.account.characters[fixture.character] = { level: 0, evolution: 1 };
+    game.account.storyCompleted = 120;
+    game.account.warStages = Object.fromEntries(characters.map(id => [id, 10]));
+    game.account.acquisitionMarkers = Object.fromEntries(Object.keys(game.account.characters).map(id => [`character:${id}`, true]));
+    game = resolveOperation(game, { kind: 'enter', activity: { kind: 'war', character: fixture.character, stage: fixture.stage } }, entropy).game;
+    const state = game.run.session.state;
+    state.allies[0].shatter = 100;
+    state.enemies[0].hp = 1;
+    state.enemies[0].stats.defense = 0;
+    state.recruitmentSeed = fixture.seed;
+    assert.ok(ids.includes(userId), 'Only disposable identities may receive recruitment fixtures');
+    const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+    assert.equal(seeded.error, null);
+    async function invoke(operation, revision, requestId = randomUUID()) {
+      const result = await client.functions.invoke('game-operation', { body: { operation, expectedRevision: revision, requestId } });
+      if (result.error) throw new Error(`Hosted War recruitment ${operation.kind} failed (${result.error.context?.status ?? 'transport'}).`);
+      return result.data;
+    }
+    const read = await invoke({ kind: 'read' }, 0);
+    const operation = { kind: 'act', runId: read.session.runId, actorId: 'ember', action: 'skill1', targetId: state.enemies[0].id };
+    const expected = resolveOperation(game, operation, entropy).response;
+    const requestId = randomUUID(), actual = await invoke(operation, read.revision, requestId);
+    assert.deepEqual(actual.result, JSON.parse(JSON.stringify(expected.result)));
+    assert.deepEqual(actual.account, JSON.parse(JSON.stringify(expected.account)));
+    const reward = actual.result.events.find(event => event.kind === 'reward');
+    assert.equal(reward.recruitment, fixture.success ? fixture.character : undefined);
+    assert.equal(reward.recruitmentOutcome, fixture.success ? fixture.owned ? 'duplicate' : 'new' : undefined);
+    assert.equal(actual.account.lycalis, (reward.lycalis ?? 0) + (fixture.success && fixture.owned ? 100 : 0));
+    assert.deepEqual(actual.account.squad, ['ember']);
+    if (fixture.success && !fixture.owned)
+      assert.deepEqual(actual.account.characters[fixture.character], { level: 0, evolution: 1, weaponRank: 0 });
+    if (fixture.stage < 10) assert.equal(actual.session.state.recruitmentSeed, fixture.seed);
+    assertSameSavedResponse(await invoke(operation, read.revision, requestId), actual);
+    const persisted = await invoke({ kind: 'read' }, actual.revision);
+    assert.deepEqual(persisted.account, actual.account);
+  }
+  console.log('Hosted War recruitment passed: all ten modes,40 fixtures covering new/owned successful final rolls, failed owned rolls with no conversion, zero Stage9 recruitment/RNG consumption, exact local/authority saved rewards, persistence and idempotent retries. Disposable identities only.');
 }
 
 async function smokePhaseZero(client, userId, username) {

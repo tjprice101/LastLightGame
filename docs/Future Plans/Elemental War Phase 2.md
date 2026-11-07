@@ -1,6 +1,6 @@
 # Elemental War Phase 2: artwork-led associated art
 
-**Four proposed six-star characters. 24 delivered portraits reused; 44 new associated images needed. No playable integration.**
+**Four approved six-star War characters. 24 delivered portraits installed; 44 associated images remain pending and use neutral presentation until reviewed delivery.**
 
 [Complete identities, lore, kits, strengths and source mappings](phase-2-war-designs.md). Reproduce with `python tools/build_phase2_war_art.py`; do not edit generated prompt blocks.
 

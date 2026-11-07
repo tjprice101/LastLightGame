@@ -404,6 +404,16 @@ Rarity: Omnic
 Element: Tranquilitic (actual gameplay element)
 Ability (Default Value): Allies holding your [Skill]-created [Shields] gain +20% [Critical Rate] and take 30% less [Direct Damage] from enemy critical hits. +90% [Defense] and +40% [Critical Damage Multiplier].
 
+Name: Amber-Station Return Manifold
+Rarity: Omnic (Master)
+Element: Oceanic (named bearer's actual element; Master for Neralis only)
+Ability (Default Value): Increase maximum Current to 4. Increase Carry Them Back healing per Current from 6% to 9% maximum Health. Neralis gains +60% [Health] and +35% [Skill Power].
+
+Name: Ashroad Cadence Transmission
+Rarity: Omnic (Master)
+Element: Infernic (named bearer's actual element; Master for Seravelle only)
+Ability (Default Value): Increase maximum Cadence to 4. Increase Move as One’s base Direct Attack bonus from 30% to 40%. Seravelle gains +50% [Health] and +35% [Skill Power].
+
 Name: Atlas Bastion
 Rarity: Omnic
 Element: Botanic (actual gameplay element)
@@ -413,6 +423,16 @@ Name: Banked-Sun Pressure Accumulator
 Rarity: Omnic (Master)
 Element: Infernic (named bearer's actual element; Master for Caldrex only)
 Ability (Default Value): Increase maximum [Heat] to 5. Gain +12% [Defense] per stored [Heat]. Caldrex gains +60% [Health] and +50% [Defense].
+
+Name: Blackwing Crossing Stabilizer
+Rarity: Omnic (Master)
+Element: Oceanic (named bearer's actual element; Master for Neralis only)
+Ability (Default Value): After Light the Next Station, grant its target a Shield equal to 20% maximum Health, scaled by Neralis’s Skill Power. Neralis gains +50% [Health] and +60% [Defense].
+
+Name: Braided-Signal Continuance Engine
+Rarity: Omnic (Master)
+Element: Infernic (named bearer's actual element; Master for Seravelle only)
+Ability (Default Value): After The Road Belongs to Everyone, grant each living squad member a Shield equal to 22% maximum Health, scaled by Seravelle’s Skill Power. Seravelle gains +60% [Health] and +40% [Defense].
 
 Name: Briar Constellation Loom
 Rarity: Omnic (Master)
@@ -448,6 +468,11 @@ Name: Concord Planet Thoughtforge
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Disciple only)
 Ability (Default Value): When an ally consumes Disciple's [Resolve], each other living ally gains 10% [Elemental Gauge].
+
+Name: Convoy-Flame Distribution Crown
+Rarity: Omnic (Master)
+Element: Infernic (named bearer's actual element; Master for Seravelle only)
+Ability (Default Value): When an allied native Burn tick damages an enemy, restore 5% maximum Gauge to each other living squad member. Once per enemy phase while Seravelle lives; Burn detonations and Conduit damage do not trigger it. Seravelle gains +45% [Direct Attack] and +30% [Skill Power].
 
 Name: Counterstroke Recoil Foundry
 Rarity: Omnic (Master)
@@ -514,6 +539,11 @@ Rarity: Omnic
 Element: Botanic (actual gameplay element)
 Ability (Default Value): While you are alive, other allies gain bonus [Defense] equal to 25% of your effective [Defense]. +75% [Defense] and +55% [Skill Power].
 
+Name: Faultstar Chain Accumulator
+Rarity: Omnic (Master)
+Element: Infernic (named bearer's actual element; Master for Varkhel only)
+Ability (Default Value): Increase maximum Tension to 5. Gain +10% Defense per stored Tension. Varkhel gains +70% [Health] and +50% [Defense].
+
 Name: Final Chord Celestial Resonator
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Vaelor only)
@@ -553,6 +583,11 @@ Name: Golden Thorn Judgment Loom
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Rosetta only)
 Ability (Default Value): [Golden Thorn Volley] grants each other living ally +35% [Skill Power] for their next damaging [Skill] against Rosetta's [Quarry]. Rosetta gains +60% [Skill Power] and +35% [Elemental Gauge Capacity].
+
+Name: Goldseam Precision Fracturer
+Rarity: Omnic (Master)
+Element: Chaotic (named bearer's actual element; Master for Velmira only)
+Ability (Default Value): When Open the Seam targets a Weakened enemy, deal 35% more direct damage. Increase Turn the Other Edge’s Defense ignore from 20% to 35% while its Crosscut condition is met. Velmira gains +45% [Direct Attack] and +25% [Critical Rate].
 
 Name: Griffin Turbine
 Rarity: Omnic
@@ -629,6 +664,11 @@ Rarity: Omnic (Master)
 Element: Oceanic (named bearer's actual element; Master for Tizu only)
 Ability (Default Value): [Tidal Shelter] gains +50% [Skill Power]. While its [Shield] remains, the recipient gains +25% [Skill Efficiency] for their next [Skill]. Tizu gains +45% [Defense] and +25% [Elemental Gauge Gain].
 
+Name: Open-Threshold Return Drive
+Rarity: Omnic (Master)
+Element: Chaotic (named bearer's actual element; Master for Velmira only)
+Ability (Default Value): When Leave the Doorway Standing spends at least 3 Crosscut, restore 25% of Velmira’s maximum Gauge after its cost and heal her for 18% maximum Health. Recovery still applies. Velmira gains +50% [Health], +35% [Direct Attack] and +20% [Skill Power].
+
 Name: Ouroboros Core
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
@@ -684,6 +724,11 @@ Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Myrthen only)
 Ability (Default Value): When Myrthen's Normal Attack, Skill or Last Flare directly defeats an enemy, restore 6% maximum [Health] and 5% maximum [Elemental Gauge] to each living squad member, including Myrthen. Can occur once per round while combat continues. Myrthen gains +40% [Direct Attack], +50% [Health] and +20 percentage points [Skill Power].
 
+Name: Recoil-Star Compression Turbine
+Rarity: Omnic (Master)
+Element: Infernic (named bearer's actual element; Master for Varkhel only)
+Ability (Default Value): Increase Return the Strain’s Defense ignore from 20% to 35%. When it spends at least 3 Tension, restore 15% of Varkhel’s maximum Gauge after its cost. Varkhel gains +45% [Direct Attack] and +50% [Health].
+
 Name: Refusal Sovereign Heartdrive
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Ozriel only)
@@ -703,6 +748,11 @@ Name: Ruinselect Fracture Parliament
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
 Ability (Default Value): Gain +55% [Skill Power] and +20% [Defense] per currently defeated [Squad Member].
+
+Name: Scarlet-Hinge Load Distributor
+Rarity: Omnic (Master)
+Element: Infernic (named bearer's actual element; Master for Varkhel only)
+Ability (Default Value): After Set the Warning Chain, grant each other living squad member a Shield equal to 16% maximum Health, scaled by Varkhel’s Skill Power. Varkhel gains +50% [Health] and +35% [Skill Power].
 
 Name: Seasonwheel Harvest Transmission
 Rarity: Omnic (Master)
@@ -844,6 +894,11 @@ Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Elise only)
 Ability (Default Value): Each [Shuriken] lodged by [Voltstar Cut] gives the next other ally's damaging [Skill] against that enemy +35% [Skill Power]. One stored bonus is spent per cast; recalling the [Shuriken] removes unused bonuses. Elise gains +80% [Direct Attack] and +40% [Skill Power].
 
+Name: Twin-Edge Sequence Orrery
+Rarity: Omnic (Master)
+Element: Chaotic (named bearer's actual element; Master for Velmira only)
+Ability (Default Value): Increase maximum Crosscut to 4. The first ordinary Skill of each encounter grants 1 Crosscut after resolving. Velmira gains +60% [Direct Attack] and +30% [Skill Power].
+
 Name: Twin-Rose Singularity Drive
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Crinso only)
@@ -893,6 +948,11 @@ Name: Virtuous Planet Rosegarden
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Rosetta only)
 Ability (Default Value): [Crimson Skyfall] against Rosetta's [Quarry] heals each living ally who hit it this [Player Turn] for 8% of their own maximum [Health]. Each contributor other than Rosetta also gains +20% [Skill Efficiency] for their next [Skill]. Rosetta gains +80% [Health] and +30% [Skill Efficiency].
+
+Name: Weirheart Recollection Dynamo
+Rarity: Omnic (Master)
+Element: Oceanic (named bearer's actual element; Master for Neralis only)
+Ability (Default Value): When a native heal restores Health to an ally below 50% Health before that heal, restore 10% maximum Gauge to that ally. Once per round per ally; excludes Support-perk and Conduit healing. Neralis gains +40% [Health], +40% [Direct Attack] and +25% [Skill Power].
 
 Name: Worldforge Hammer Dominion
 Rarity: Omnic (Master)

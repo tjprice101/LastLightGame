@@ -35,11 +35,29 @@ function storage() {
   return { saved, map };
 }
 
-function defeat(character: WarCharacterId = 'orvella', stage = 10, burn = false): BattleResult {
+function unlockWar(saved: ProfileStorage, character: WarCharacterId): void {
+  const account = loadAccount(saved);
+  account.warStages = { ...account.warStages, [character]: 10 };
+  saveAccount(saved, account);
+  vi.mocked(saved.setItem).mockClear();
+}
+
+function recruitmentSeedForFailure(): number {
+  for (let seed = 1; seed < 1000; seed++) {
+    let value = seed;
+    value ^= value << 13;
+    value ^= value >>> 17;
+    value ^= value << 5;
+    if ((value >>> 0) / 0x100000000 >= .05) return seed;
+  }
+  throw new Error('Unable to find a deterministic failed recruitment seed.');
+}
+
+function defeat(character: WarCharacterId = 'orvella', stage = 10, burn = false, recruitmentSeed = 1): BattleResult {
   const state = createWarBattle(character, stage, 1, 'ember', { level: 105, evolution: 6 });
   state.enemies[0].hp = 1;
   state.allies[0].shatter = 100;
-  state.recruitmentSeed = 1;
+  state.recruitmentSeed = recruitmentSeed;
   if (burn) {
     state.enemies[0].burn = { damage: 1, turns: 1, sourceId: 'ember' };
     return endTurn(state);
@@ -55,6 +73,10 @@ describe('Elemental War', () => {
     ['caldrex', 'Siege of the Unbroken Furnace', 'The Last Kiln'],
     ['solenne', 'Requiem of the Silent Moon', 'The Bell That Stayed'],
     ['myrthen', 'The Orchard Beyond Autumn', 'When All Seasons Meet'],
+    ['neralis', 'Passage of the Returning River', 'The River Keeps Its Promise'],
+    ['varkhel', 'Trial of the Suspended Chain', 'The Chain Refuses to Break'],
+    ['seravelle', 'March of the Ember Convoy', 'The Last Wagon Sees the Dawn'],
+    ['velmira', 'Dance of the Unfastened Court', 'What Remains Beyond the Cut'],
   ] as const)('keeps %s trial names separate from preserved Omnic titles', (character, name, title) => {
     expect(elementalWars.find(mode => mode.character === character)?.name).toBe(name);
     const encounter = warEncounter(character, 10);
@@ -75,15 +97,22 @@ describe('Elemental War', () => {
     }
   });
 
-  it('authors all three ten-stage schedules, supplied scenery, human portraits and boss skills', () => {
+  it('authors all ten War schedules, supplied or honestly pending scenery, portraits and boss skills', () => {
     const levels = [90, 96, 101, 107, 112, 118, 123, 129, 134, 140];
     const forms = [1, 1, 2, 2, 3, 3, 4, 4, 5, 6];
+    const pendingArt = new Set(['neralis', 'varkhel', 'seravelle', 'velmira']);
     for (const { character, element } of elementalWars) {
       for (let stage = 1; stage <= 10; stage++) {
         const encounter = warEncounter(character, stage);
         const state = createWarBattle(character, stage, 17, 'ember', { level: 0, evolution: 1 });
-        expect(encounter).toMatchObject({ level: levels[stage - 1], evolution: forms[stage - 1], element,
-          banner: `elemental-war-${character}-banner.png`, background: `elemental-war-${character}-arena.png`, boss: true });
+        expect(encounter).toMatchObject({ level: levels[stage - 1], evolution: forms[stage - 1], element, boss: true });
+        if (pendingArt.has(character)) {
+          expect(encounter.banner).toBeUndefined();
+          expect(encounter.background).toBeUndefined();
+        } else {
+          expect(encounter.banner).toBe(`elemental-war-${character}-banner.png`);
+          expect(encounter.background).toBe(`elemental-war-${character}-arena.png`);
+        }
         expect(state.enemies).toHaveLength(1);
         expect(state.enemies[0]).toMatchObject({ definitionId: character, level: encounter.level,
           evolution: encounter.evolution, element, art: characterArt(character, encounter.evolution).art, boss: true });
@@ -111,6 +140,9 @@ describe('Elemental War', () => {
       for (const action of ['passive', 'light', 'skill1', 'skill2', 'ultimate'] as const) {
         if (action === 'light') {
           expect(abilityIcon(id, action)).toContain('abilities/universal-normal-attack.png');
+        } else if (['neralis', 'varkhel', 'seravelle', 'velmira'].includes(id)) {
+          expect(abilityIcon(id, action)).toContain('data:image/svg+xml');
+          expect(abilityIcon(id, action)).not.toContain(`abilities/${id}-${action}.png`);
         } else {
           expect(abilityIcon(id, action)).toContain(`abilities/${id}-${action}.png`);
         }
@@ -118,7 +150,7 @@ describe('Elemental War', () => {
     }
   });
 
-  it('enforces exact currency ranges, independent premium and final-only guaranteed recruitment', () => {
+  it('enforces exact currency ranges, independent premium and final-only 5% recruitment', () => {
     expect(warLoot(1)).toMatchObject({ fractalis: { minimum: 1500, maximum: 2500 }, lycalis: { chance: .3, quantity: 1 } });
     expect(warLoot(10)).toMatchObject({ fractalis: { minimum: 30000, maximum: 45000 }, lycalis: { chance: .6, quantity: 25 } });
     const recruitment = vi.fn(() => 0);
@@ -127,10 +159,10 @@ describe('Elemental War', () => {
     }
     expect(recruitment).not.toHaveBeenCalled();
     expect(rollWarRewards(10, () => 0, () => .6, () => .009999)).toEqual({ amount: 30000, lycalis: 0, recruitment: true });
-    expect(rollWarRewards(10, () => .999999, () => .599999, () => .999999)).toEqual({ amount: 45000, lycalis: 25, recruitment: true });
-    expect(warLoot(10).recruitmentChance).toBe(1);
-    for (const roll of [0, .01, .5, .999999]) {
-      expect(rollWarRewards(10, () => 0, () => .99, () => roll).recruitment).toBe(true);
+    expect(rollWarRewards(10, () => .999999, () => .599999, () => .999999)).toEqual({ amount: 45000, lycalis: 25, recruitment: false });
+    expect(warLoot(10).recruitmentChance).toBe(.05);
+    for (const { character } of elementalWars) for (const [roll, success] of [[0, true], [.049999, true], [.05, false]] as const) {
+      expect(rollWarRewards(10, () => 0, () => .99, () => roll).recruitment, `${character} roll=${roll}`).toBe(success);
     }
     for (const invalid of [-1, 1, NaN, Infinity]) {
       expect(() => rollWarRewards(10, () => 0, () => 0, () => invalid)).toThrow();
@@ -149,9 +181,10 @@ describe('Elemental War', () => {
     expect(second.events.filter((event) => event.kind !== 'reward')).toEqual(first.events.filter((event) => event.kind !== 'reward'));
   });
 
-  it.each(elementalWars.map(({ character }) => character))('guarantees the correct final-stage recruit for %s', character => {
+  it.each(elementalWars.map(({ character }) => character))('saves a deterministic successful final-stage recruit for %s', character => {
     for (const burn of [false, true]) {
       const { saved } = storage();
+      if (['neralis', 'varkhel', 'seravelle', 'velmira'].includes(character)) unlockWar(saved, character);
       const result = defeat(character, 10, burn);
       expect(result.events.find(event => event.kind === 'reward')?.recruitment).toBe(character);
       expect(saveAccountRewards(saved, result, `war-${character}-${burn}`).characters[character])
@@ -194,6 +227,24 @@ describe('Elemental War', () => {
     expect(reward.recruitmentOutcome).toBe('duplicate');
     expect(lootItems(reward).some((item) => item.id.startsWith('recruitment:'))).toBe(false);
     expect(lootItems(reward).find((item) => item.id === 'lycalis')?.amount).toBe(account.lycalis);
+    expect(saved.setItem).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not convert an owned bearer when the actual final-stage recruitment roll fails', () => {
+    const { saved } = storage();
+    unlockWar(saved, 'neralis');
+    const current = loadAccount(saved);
+    current.characters.neralis = { level: 30, evolution: 2, weaponRank: 1 };
+    saveAccount(saved, current);
+    vi.mocked(saved.setItem).mockClear();
+    const result = defeat('neralis', 10, false, recruitmentSeedForFailure());
+    const reward = result.events.find(event => event.kind === 'reward')!;
+    expect(reward.recruitment).toBeUndefined();
+    const before = loadAccount(saved).lycalis;
+    const account = saveAccountRewards(saved, result, 'failed-owned-recruitment');
+    expect(account.lycalis - before).toBe(reward.lycalis ?? 0);
+    expect(reward.recruitmentOutcome).toBeUndefined();
+    expect(account.characters.neralis).toEqual({ level: 30, evolution: 2, weaponRank: 1 });
     expect(saved.setItem).toHaveBeenCalledTimes(1);
   });
 
@@ -296,8 +347,14 @@ describe('Elemental War', () => {
     const gameplay = gameplayHub(account);
     expect(gameplay).toContain('data-war="orvella"');
     expect(gameplay).toContain('data-war="vaelor"');
-    expect(gameplay).toContain('data-war="nerithe"');
-    for (const { character } of elementalWars) expect(gameplay).toContain(`banners/elemental-war-${character}-banner.png`);
+    expect(gameplay).toContain('data-war="neralis"');
+    for (const { character } of elementalWars) {
+      if (['neralis', 'varkhel', 'seravelle', 'velmira'].includes(character)) {
+        expect(gameplay).not.toContain(`banners/elemental-war-${character}-banner.png`);
+      } else {
+        expect(gameplay).toContain(`banners/elemental-war-${character}-banner.png`);
+      }
+    }
   });
 
   it('saves Nerithe recruitment and duplicate conversion without modifying squad or other trials', () => {

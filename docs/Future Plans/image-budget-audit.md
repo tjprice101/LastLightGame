@@ -6,7 +6,7 @@ Count unit: one distinct accepted high-resolution source image, not a four-image
 grid, prompt submission, crop, AVIF derivative, transparent export or animation
 frame. Multiple runtime surfaces using one source count once. Prompt-only
 content is not delivered art. Counts exclude installed images and preserve
-the24 existing portraits assigned to the four proposed War characters.
+the24 existing portraits assigned to the four approved reclaimed War characters.
 
 ## 1. Seasonal artwork:207 required,12 optional
 
@@ -33,7 +33,7 @@ The older24 Moon-labeled portraits are **not** delivery for this redesigned
 queue: they belong to the separate War reuse plan. Both event schedules remain
 inactive; intake does not implicitly approve activation.
 
-## 2. Four proposed War bearers:44 new,24 reused
+## 2. Four approved reclaimed War bearers:44 new,24 reused
 
 [Designs](phase-2-war-designs.md), [prompt inventory](Elemental%20War%20Phase%202.md)
 and [hash/form mapping](../../Art/provenance/phase2-war-source-mapping.json).
@@ -52,10 +52,12 @@ No summon banner, new enemy family, specialty material/infusion chain, extra
 portrait/profile set or new currency is required. Existing same-element
 materials/fodder and shared Normal/Defense/Burn/Weaken artwork are reused.
 Hair/weapon variations and clipped source tips need intake review; they are not
-automatically counted as24 regeneration requests. Names/kits/integration are
-proposals, so this44-image queue is conditional on proceeding with that plan.
+automatically counted as24 regeneration requests. Owner approves names/kits/integration and reviewed24 portrait intake on2026-11-06.
+The44-image queue remains genuinely undelivered; neutral presentation is used
+while mechanics are integrated. All original source bytes remain archived;
+root duplicates are removed only after archive/export verification.
 
-**Immediate seasonal + proposed War queue:207+44 =251 required new images.**
+**Immediate seasonal + reclaimed War queue:207+44 =251 required new images.**
 **With twelve optional seasonal equipment showcases:263.**
 
 ## 3. Paused Story:75 named concepts, not release-ready commitments
@@ -148,7 +150,7 @@ measurements of our niji6/reference150 workflow.
 | Accepted source scope | Lean hours | Working hours | Heavy hours | Additional Fast cost if your current allowance is exhausted |
 |---|---:|---:|---:|---:|
 | 207 seasonal required |6.90|13.80|24.15|$27.60-$96.60|
-| 251 seasonal + proposed War required |8.37|16.73|29.28|$33.47-$117.13|
+| 251 seasonal + reclaimed War required |8.37|16.73|29.28|$33.47-$117.13|
 | 263 including seasonal showcases |8.77|17.53|30.68|$35.07-$122.73|
 | 326 including paused Story |10.87|21.73|38.03|$43.47-$152.13|
 | 343 plus production-related optional concepts |11.43|22.87|40.02|$45.73-$160.07|

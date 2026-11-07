@@ -10,7 +10,7 @@ import { warStageCount } from './activities';
 
 export { isWarCharacter, type WarCharacterId } from './war-characters';
 export { warStageCount } from './activities';
-export const warRulesText = 'Ten free stages, Lv.90-140, one boss each. Prismatica grows linearly from 1,500-2,500 to 30,000-45,000, without a final-boss multiplier. Null-Prismatica: 30% chance of 1, rising to 60% of 25, retaining its final 5x quantity boost. Every final boss clear guarantees recruitment at Lv.0, Evo.1 of its Element-Bearer; an owned result becomes 100 Null-Prismatica. No pity, materials or captures. HP resets between stages; Gauge carries over.';
+export const warRulesText = 'Ten free stages, Lv.90-140, one boss each. Prismatica grows linearly from 1,500-2,500 to 30,000-45,000, without a final-boss multiplier. Null-Prismatica: 30% chance of 1, rising to 60% of 25, retaining its final 5x quantity boost. Stages 1-9 have no recruitment chance; each final-boss clear has a separate 5% chance to recruit its bearer at Lv.0, Evo.1. Only a successful owned recruitment converts to 100 Null-Prismatica. No pity, materials or captures. HP resets between stages; Gauge carries over.';
 export const elementalWars = [
   { character: 'nerithe', name: 'Lament of the Spiral Sea', element: 'oceanic' },
   { character: 'orvella', name: 'Rise of the Buried Citadel', element: 'botanic' },
@@ -18,6 +18,10 @@ export const elementalWars = [
   { character: 'caldrex', name: 'Siege of the Unbroken Furnace', element: 'infernic' },
   { character: 'solenne', name: 'Requiem of the Silent Moon', element: 'tranquilitic' },
   { character: 'myrthen', name: 'The Orchard Beyond Autumn', element: 'botanic' },
+  { character: 'neralis', name: 'Passage of the Returning River', element: 'oceanic', artPending: true },
+  { character: 'varkhel', name: 'Trial of the Suspended Chain', element: 'infernic', artPending: true },
+  { character: 'seravelle', name: 'March of the Ember Convoy', element: 'infernic', artPending: true },
+  { character: 'velmira', name: 'Dance of the Unfastened Court', element: 'chaotic', artPending: true },
 ] as const;
 
 export function warEncounter(character: WarCharacterId, stage: number) {
@@ -34,8 +38,9 @@ export function warEncounter(character: WarCharacterId, stage: number) {
   ultimate.name = kit.abilities.ultimate.name;
   return { ...mode, stage, level, evolution, tier: evolution - 1, forms: 6, boss: true,
     enemyName: characterName(character, evolution), art: characterArt(character, evolution).art,
-    color: starter.color, stats, skills, background: `elemental-war-${character}-arena.png`,
-    banner: `elemental-war-${character}-banner.png` };
+    color: starter.color, stats, skills,
+    background: 'artPending' in mode && mode.artPending ? undefined : `elemental-war-${character}-arena.png`,
+    banner: 'artPending' in mode && mode.artPending ? undefined : `elemental-war-${character}-banner.png` };
 }
 
 export function warLoot(stage: number) {
@@ -44,7 +49,7 @@ export function warLoot(stage: number) {
   const multiplier = bossLootMultiplier({ war: { stage } });
   return { fractalis: activityPrismaticaDrop({ war: { stage } }, 140),
     lycalis: { chance: .3 + .3 * t, quantity: Math.round(1 + 4 * t) * multiplier },
-    recruitmentChance: stage === warStageCount ? 1 : 0 };
+    recruitmentChance: stage === warStageCount ? .05 : 0 };
 }
 
 export function rollWarRewards(stage: number, currencyRandom: () => number, premiumRandom: () => number,

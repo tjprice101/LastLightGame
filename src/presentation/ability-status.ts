@@ -76,6 +76,16 @@ export const nativeAbilityStatuses: Record<StarterId, Partial<Record<NativeSlot,
     skill2: [[undefined, 'Fault']], ultimate: [[undefined, 'Fault']] },
   aureth: { passive: [[undefined, 'Lead'], [undefined, 'Momentum']], skill1: [[undefined, 'Lead'], ['ward', 'Shield']],
     skill2: [[undefined, 'Lead'], ['suppression', 'Taunt']], ultimate: [[undefined, 'Momentum'], [undefined, 'Lead'], ['ward', 'Shield']] },
+  neralis: { passive: [['native-phase2-current', 'Current']], skill1: [['bloom', 'Healing'], [undefined, 'Defense']],
+    skill2: [['native-phase2-current', 'Current'], ['bloom', 'Healing']],
+    ultimate: [['native-phase2-current', 'Current'], ['bloom', 'Healing']] },
+  varkhel: { passive: [['native-phase2-tension', 'Tension']], skill1: [['ward', 'Shield'], [undefined, 'Defense'], ['suppression', 'Taunt']],
+    skill2: [['native-phase2-tension', 'Tension']], ultimate: [['native-phase2-tension', 'Tension'], ['ward', 'Shield']] },
+  seravelle: { passive: [['native-phase2-cadence', 'Cadence']], skill1: [['burn', 'Burn']],
+    skill2: [['native-phase2-cadence', 'Cadence'], [undefined, 'Direct Attack']],
+    ultimate: [['bloom', 'Gauge'], [undefined, 'Skill Power']] },
+  velmira: { passive: [['native-phase2-crosscut', 'Crosscut']], skill1: [['suppression', 'Weaken']],
+    skill2: [['native-phase2-crosscut', 'Crosscut']], ultimate: [['native-phase2-crosscut', 'Crosscut']] },
 };
 
 function nativeStatusList(character: string | undefined, slot: NativeSlot): readonly NativeStatus[] {

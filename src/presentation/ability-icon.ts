@@ -28,6 +28,10 @@ export const abilityIcons = {
     skill2: 'solenne-skill2', ultimate: 'solenne-ultimate' },
   myrthen: { passive: 'myrthen-passive', light: 'myrthen-light', skill1: 'myrthen-skill1',
     skill2: 'myrthen-skill2', ultimate: 'myrthen-ultimate' },
+  neralis: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  varkhel: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  seravelle: { passive: '', skill1: '', skill2: '', ultimate: '' },
+  velmira: { passive: '', skill1: '', skill2: '', ultimate: '' },
   ember: infernisIcons,
   tide: {
     passive: 'tizu-stillwater-guard',
@@ -69,9 +73,12 @@ export const abilityIcons = {
   aureth: { passive: '', skill1: '', skill2: '', ultimate: '' },
 } as const satisfies Record<StarterId, Record<'skill1' | 'skill2' | 'ultimate' | 'passive', string> & { light?: string }>;
 
+const pendingPhase2AbilityIcon = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect x="24" y="24" width="208" height="208" rx="24" fill="#171717" stroke="#999" stroke-width="4"/><text x="128" y="116" text-anchor="middle" fill="#ddd" font-size="20" font-family="Georgia">Ability</text><text x="128" y="146" text-anchor="middle" fill="#ddd" font-size="20" font-family="Georgia">art pending</text></svg>')}`;
+const phase2WarBearers = new Set<StarterId>(['neralis', 'varkhel', 'seravelle', 'velmira']);
+
 export function abilityIcon(starterId: StarterId, action: ActionId | 'passive'): string {
   const icons: Partial<Record<ActionId | 'passive', string>> = abilityIcons[starterId];
   const icon = action === 'light' ? 'universal-normal-attack' : icons[action];
-  if (!icon) return '';
-  return `<img class="ability-icon" src="${assetUrl(`abilities/${icon}.png`)}" alt="" aria-hidden="true" width="256" height="256" />`;
+  if (!icon && !phase2WarBearers.has(starterId)) return '';
+  return `<img class="ability-icon" src="${icon ? assetUrl(`abilities/${icon}.png`) : pendingPhase2AbilityIcon}" alt="" aria-hidden="true" width="256" height="256" />`;
 }

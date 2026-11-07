@@ -1,5 +1,23 @@
 # Menus and inventory
 
+## Reclaimed War trial/portrait presentation (2026-11-06)
+
+Neralis/Varkhel/Seravelle/Velmira use their reviewed six-form portraits across
+owned roster, progression, Collections and War field/cut-in presentations,
+with shared facing and byte revisions. Four trials join the same existing
+ten-stage navigation structure as earlier War characters. All ten mode cards/
+reward explanations state5% recruitment per final boss clear, never guaranteed.
+New ability/Master/status/header/arena art is undelivered: retain concise names,
+exact effects and neutral accessible panels rather than unrelated images.
+Normal Attack/Defense retain shared universal icons. Pending header/arena
+presentation must not imply an asset exists.
+
+Saved successful recruitment/owned conversion uses the existing reward
+presentation and immediate Skip/Continue. Unsuccessful recruitment is not
+celebrated; ordinary saved boss rewards still retain their own presentation.
+No account grants, duplicate saves, artificial waits or new motion foundations.
+Preserve reduced-motion static feedback, focus, dismissal and frozen Settings.
+
 ## Living-world audit and rollout plan (2026-11-05)
 
 [Evidence-backed full presentation audit and implementation plan](Future%20Plans/living-world-ui-audit-plan.md)

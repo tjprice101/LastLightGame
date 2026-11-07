@@ -283,6 +283,10 @@ export function createBattle(seed = 1729, roster: readonly string[] = ['ember'],
       unit.kit = kit;
       if (id === 'vaelor') unit.native = { beat: 0, beatRound: 1 };
       else if (id === 'myrthen') unit.native = { season: 'sprout' };
+      else if (id === 'neralis') unit.native = { current: 0 };
+      else if (id === 'varkhel') unit.native = { tension: 0 };
+      else if (id === 'seravelle') unit.native = { cadence: 0 };
+      else if (id === 'velmira') unit.native = { crosscut: 0 };
       unit.level = progress[id]?.level ?? null;
       unit.evolution = progress[id]?.evolution ?? 1;
       if (equipment[id]) unit.conduits = [...equipment[id]];

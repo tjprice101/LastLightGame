@@ -28,9 +28,9 @@ const entries = [...conduits.filter(entry => entry.rarity === 'Omnic'), ...maste
 const additive = new Set<OmnicStat>(['crit', 'skillPower', 'skillEfficiency', 'gaugeGain']);
 
 describe('D-383 complete Omnic and Master refresh', () => {
-  it('covers exactly 45 ordinary Omnics and 102 named Masters', () => {
-    expect(entries).toHaveLength(147);
-    expect(new Set(entries.map(entry => entry.id)).size).toBe(147);
+  it('covers exactly 45 ordinary Omnics and 114 named Masters', () => {
+    expect(entries).toHaveLength(159);
+    expect(new Set(entries.map(entry => entry.id)).size).toBe(159);
   });
 
   for (const entry of entries) it(`${entry.id} applies every personal and living-squad stat at its supported upgrades`, () => {

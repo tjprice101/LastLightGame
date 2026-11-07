@@ -1,0 +1,2005 @@
+{
+  "scope": "24 approved reclaimed War portraits; source bytes retained.",
+  "assets": [
+    {
+      "asset": "neralis",
+      "character": "Neralis",
+      "stage": 1,
+      "incoming": "Ferry-Token Keeper, Maerion.png",
+      "source": "Art/source/phase2-war/neralis/Ferry-Token Keeper, Maerion.png",
+      "source_sha256": "6daf8e0a71d9e042ddbbe32f0dedb2de240816a143901eee27e205c7c92204ab",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/neralis.png",
+      "runtime_sha256": "00d59a54eb7aee33bbcb34026d9ea2ac13179f205bdad60594bc3fe0fa286181",
+      "settings": {
+        "keys": [
+          [
+            14,
+            125,
+            109
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.4058,
+            0.5442
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "neralis-evo-2",
+      "character": "Neralis",
+      "stage": 2,
+      "incoming": "Crescent Field Medic, Maerion.png",
+      "source": "Art/source/phase2-war/neralis/Crescent Field Medic, Maerion.png",
+      "source_sha256": "7f81ff26b94db88e9f20e9d684fc29b8f9db4a4195edb7cd391f53d50bb9c4bf",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/neralis-evo-2.png",
+      "runtime_sha256": "158b70e7af91591c9365d43027b17044dfebbf05e789032a3f716185314a1d71",
+      "settings": {
+        "keys": [
+          [
+            2,
+            94,
+            79
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.7265,
+            0.6304
+          ],
+          [
+            0.6071,
+            0.583
+          ],
+          [
+            0.6761,
+            0.4871
+          ],
+          [
+            0.9091,
+            0.7834
+          ],
+          [
+            0.8271,
+            0.7996
+          ],
+          [
+            0.9026,
+            0.5075
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "neralis-evo-3",
+      "character": "Neralis",
+      "stage": 3,
+      "incoming": "Ribs of the Returning Tide, Maerion.png",
+      "source": "Art/source/phase2-war/neralis/Ribs of the Returning Tide, Maerion.png",
+      "source_sha256": "2d0fd4b6a45c0543a738ee26484f9f3da92551dc846b246a26b61550e0daf5da",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/neralis-evo-3.png",
+      "runtime_sha256": "22a724bc752357b1f27a7c14ea6a656b4537e12a5746491b2bd7a53555a22ee3",
+      "settings": {
+        "keys": [
+          [
+            4,
+            174,
+            152
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.2102,
+            0.8179
+          ],
+          [
+            0.319,
+            0.6918
+          ],
+          [
+            0.2516,
+            0.5345
+          ],
+          [
+            0.5471,
+            0.4375
+          ],
+          [
+            0.5674,
+            0.3642
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "neralis-evo-4",
+      "character": "Neralis",
+      "stage": 4,
+      "incoming": "Steward of Unfinished Voyages, Maerion.png",
+      "source": "Art/source/phase2-war/neralis/Steward of Unfinished Voyages, Maerion.png",
+      "source_sha256": "c6dab0330a4cd943de028b3ff47eb86b02657453edd8b0ccf7767d9b8a7563d4",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/neralis-evo-4.png",
+      "runtime_sha256": "78faf179f658849b21b64eebac6c08007c67930614bd23bde6cbcc3ca5483e5a",
+      "settings": {
+        "keys": [
+          [
+            2,
+            138,
+            125
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.1802,
+            0.6131
+          ],
+          [
+            0.7638,
+            0.5808
+          ],
+          [
+            0.539,
+            0.833
+          ],
+          [
+            0.6136,
+            0.3944
+          ],
+          [
+            0.8084,
+            0.9084
+          ],
+          [
+            0.4286,
+            0.7974
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "neralis-evo-5",
+      "character": "Neralis",
+      "stage": 5,
+      "incoming": "Harbor for the Unreturned, Maerion.png",
+      "source": "Art/source/phase2-war/neralis/Harbor for the Unreturned, Maerion.png",
+      "source_sha256": "829d3fdc0f66d2a79f03ac9fba68f75548d267e57aa0820c74ecd6b24e70c1a9",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/neralis-evo-5.png",
+      "runtime_sha256": "94a6ce94db9c8695e2847c45630788e23ec860ad9e4250dfe41939a60fbdba8e",
+      "settings": {
+        "keys": [
+          [
+            36,
+            113,
+            60
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.224,
+            0.6584
+          ],
+          [
+            0.2102,
+            0.5442
+          ],
+          [
+            0.444,
+            0.4192
+          ],
+          [
+            0.6339,
+            0.8761
+          ],
+          [
+            0.5812,
+            0.7931
+          ],
+          [
+            0.2606,
+            0.7608
+          ],
+          [
+            0.5187,
+            0.8524
+          ],
+          [
+            0.2865,
+            0.8287
+          ],
+          [
+            0.4554,
+            0.6002
+          ],
+          [
+            0.6412,
+            0.5862
+          ],
+          [
+            0.5925,
+            0.3869
+          ],
+          [
+            0.7256,
+            0.7963
+          ],
+          [
+            0.4456,
+            0.6185
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "neralis-evo-6",
+      "character": "Neralis",
+      "stage": 6,
+      "incoming": "Every Name Carried Home, Maerion.png",
+      "source": "Art/source/phase2-war/neralis/Every Name Carried Home, Maerion.png",
+      "source_sha256": "a90ffa3ec01eb5c00003f0fda25a414f51919bd68e7d0e01149fb2c467cc16d1",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/neralis-evo-6.png",
+      "runtime_sha256": "63207164f7f539554c2902a55fdb1568f6d9bb7b752468094b9b6e1dec483739",
+      "settings": {
+        "keys": [
+          [
+            51,
+            95,
+            70
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.8141,
+            0.6584
+          ],
+          [
+            0.7476,
+            0.6034
+          ],
+          [
+            0.28,
+            0.3922
+          ],
+          [
+            0.3709,
+            0.5054
+          ],
+          [
+            0.5641,
+            0.5043
+          ],
+          [
+            0.5933,
+            0.2662
+          ],
+          [
+            0.6396,
+            0.3912
+          ],
+          [
+            0.8896,
+            0.6649
+          ],
+          [
+            0.2532,
+            0.3448
+          ],
+          [
+            0.7873,
+            0.4515
+          ],
+          [
+            0.4554,
+            0.7446
+          ],
+          [
+            0.3482,
+            0.4267
+          ],
+          [
+            0.7687,
+            0.5787
+          ],
+          [
+            0.8758,
+            0.5323
+          ],
+          [
+            0.0828,
+            0.1918
+          ],
+          [
+            0.345,
+            0.2683
+          ],
+          [
+            0.2719,
+            0.1541
+          ],
+          [
+            0.2825,
+            0.2737
+          ],
+          [
+            0.5593,
+            0.2856
+          ],
+          [
+            0.1834,
+            0.5377
+          ],
+          [
+            0.2435,
+            0.1864
+          ],
+          [
+            0.3117,
+            0.2091
+          ],
+          [
+            0.2987,
+            0.3642
+          ],
+          [
+            0.2313,
+            0.3082
+          ],
+          [
+            0.8287,
+            0.5409
+          ],
+          [
+            0.6867,
+            0.3858
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "varkhel",
+      "character": "Varkhel",
+      "stage": 1,
+      "incoming": "Observatory Sentinel, Caevren.png",
+      "source": "Art/source/phase2-war/varkhel/Observatory Sentinel, Caevren.png",
+      "source_sha256": "9297e5d7d60e1135a8190712458081af98618d2a0bf616fe4d2156bce4d0bc64",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/varkhel.png",
+      "runtime_sha256": "8d8d6bada42137380c78aa82a1f6691fe2a89dbac0127b5aa254da16aef87d67",
+      "settings": {
+        "keys": [
+          [
+            6,
+            166,
+            146
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.3872,
+            0.8405
+          ],
+          [
+            0.5528,
+            0.8782
+          ],
+          [
+            0.2175,
+            0.9224
+          ],
+          [
+            0.75,
+            0.8039
+          ],
+          [
+            0.2711,
+            0.9655
+          ],
+          [
+            0.2995,
+            0.9353
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "varkhel-evo-2",
+      "character": "Varkhel",
+      "stage": 2,
+      "incoming": "Keeper of the Counterweight, Caevren.png",
+      "source": "Art/source/phase2-war/varkhel/Keeper of the Counterweight, Caevren.png",
+      "source_sha256": "09d8b93bc6e89fcf366e19ce9b0cdda49547a38ece0de1fe8d4910d794e162e1",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/varkhel-evo-2.png",
+      "runtime_sha256": "bf0c4b506f03012aee0bba7b2e2b029f251b6aad8b6ed37b901f22864937aa50",
+      "settings": {
+        "keys": [
+          [
+            35,
+            168,
+            137
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.6705,
+            0.9019
+          ],
+          [
+            0.8157,
+            0.7123
+          ],
+          [
+            0.5041,
+            0.3858
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "varkhel-evo-3",
+      "character": "Varkhel",
+      "stage": 3,
+      "incoming": "The Meridian Holds, Caevren.png",
+      "source": "Art/source/phase2-war/varkhel/The Meridian Holds, Caevren.png",
+      "source_sha256": "f0f841f38e53ce26f429aaf6f32975b710ef02dc2344ae9fd8ef589bc4d8cf64",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/varkhel-evo-3.png",
+      "runtime_sha256": "9db5d759a571268598d8f91df74c52f58e69d1ca18414a9978385f9b18ca749d",
+      "settings": {
+        "keys": [
+          [
+            7,
+            186,
+            161
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.6445,
+            0.8955
+          ],
+          [
+            0.2175,
+            0.8114
+          ],
+          [
+            0.9359,
+            0.2877
+          ],
+          [
+            0.6916,
+            0.4203
+          ],
+          [
+            0.6696,
+            0.3599
+          ],
+          [
+            0.733,
+            0.6185
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "varkhel-evo-4",
+      "character": "Varkhel",
+      "stage": 4,
+      "incoming": "Brace Beneath the Falling Sky, Caevren.png",
+      "source": "Art/source/phase2-war/varkhel/Brace Beneath the Falling Sky, Caevren.png",
+      "source_sha256": "7f02877a930ead593d31b6c49d33e69ffb9c6e00bb2f230d65f4ff812b8e3bd3",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/varkhel-evo-4.png",
+      "runtime_sha256": "8c9f576f59b2b03d147bd21c7a9fbd3b3251c90add0e50fe92d436438f1ba8a0",
+      "settings": {
+        "keys": [
+          [
+            3,
+            183,
+            158
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.6485,
+            0.861
+          ],
+          [
+            0.3287,
+            0.5744
+          ],
+          [
+            0.3506,
+            0.7909
+          ],
+          [
+            0.2817,
+            0.7015
+          ],
+          [
+            0.7435,
+            0.7802
+          ],
+          [
+            0.7589,
+            0.5539
+          ],
+          [
+            0.3888,
+            0.7306
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "varkhel-evo-5",
+      "character": "Varkhel",
+      "stage": 5,
+      "incoming": "Anchor of the Unfinished Night, Caevren.png",
+      "source": "Art/source/phase2-war/varkhel/Anchor of the Unfinished Night, Caevren.png",
+      "source_sha256": "4ea3198ab3cc7eeedcd284be20496533dd075ece9bb5060c6963655357b79831",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/varkhel-evo-5.png",
+      "runtime_sha256": "fc83029577482215ddb11f40f6bf48c92c87f38088fe9a622e60464d74681300",
+      "settings": {
+        "keys": [
+          [
+            13,
+            77,
+            34
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.3831,
+            0.8966
+          ],
+          [
+            0.2484,
+            0.8664
+          ],
+          [
+            0.0901,
+            0.8448
+          ],
+          [
+            0.8636,
+            0.6853
+          ],
+          [
+            0.5812,
+            0.5323
+          ],
+          [
+            0.8369,
+            0.5679
+          ],
+          [
+            0.7792,
+            0.5927
+          ],
+          [
+            0.6185,
+            0.319
+          ],
+          [
+            0.7857,
+            0.6239
+          ],
+          [
+            0.7232,
+            0.5808
+          ],
+          [
+            0.1883,
+            0.5722
+          ],
+          [
+            0.6526,
+            0.5679
+          ],
+          [
+            0.6656,
+            0.5571
+          ],
+          [
+            0.5966,
+            0.8836
+          ],
+          [
+            0.1826,
+            0.3912
+          ],
+          [
+            0.4326,
+            0.8147
+          ],
+          [
+            0.2403,
+            0.4957
+          ],
+          [
+            0.849,
+            0.7209
+          ],
+          [
+            0.7532,
+            0.5442
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "varkhel-evo-6",
+      "character": "Varkhel",
+      "stage": 6,
+      "incoming": "No Star Falls Unheld, Caevren.png",
+      "source": "Art/source/phase2-war/varkhel/No Star Falls Unheld, Caevren.png",
+      "source_sha256": "9cc38e2753f2f32375fd39e425e8fef816d8156045ee5240e156d434872f1112",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/varkhel-evo-6.png",
+      "runtime_sha256": "28f0dd89a996d39e2f370ccb10a02b77ec200f011ab273d808400eca9ed4c725",
+      "settings": {
+        "keys": [
+          [
+            44,
+            119,
+            64
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.3782,
+            0.8653
+          ],
+          [
+            0.5544,
+            0.2586
+          ],
+          [
+            0.8101,
+            0.8362
+          ],
+          [
+            0.151,
+            0.5162
+          ],
+          [
+            0.5966,
+            0.7791
+          ],
+          [
+            0.2817,
+            0.5399
+          ],
+          [
+            0.0852,
+            0.8341
+          ],
+          [
+            0.5771,
+            0.3901
+          ],
+          [
+            0.25,
+            0.7651
+          ],
+          [
+            0.3044,
+            0.1358
+          ],
+          [
+            0.6769,
+            0.2381
+          ],
+          [
+            0.6185,
+            0.3297
+          ],
+          [
+            0.7873,
+            0.7974
+          ],
+          [
+            0.2362,
+            0.2726
+          ],
+          [
+            0.1136,
+            0.6541
+          ],
+          [
+            0.155,
+            0.4461
+          ],
+          [
+            0.7045,
+            0.4677
+          ],
+          [
+            0.6867,
+            0.2101
+          ],
+          [
+            0.8872,
+            0.4084
+          ],
+          [
+            0.388,
+            0.7511
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "seravelle",
+      "character": "Seravelle",
+      "stage": 1,
+      "incoming": "Last-Beacon Watch, Vespera.png",
+      "source": "Art/source/phase2-war/seravelle/Last-Beacon Watch, Vespera.png",
+      "source_sha256": "b46a96e33b4826ef7002ccb070f8ee15debd9b2471bbe5d33035ea23cfacf1f2",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/seravelle.png",
+      "runtime_sha256": "03b1d09f32e3fdaf0c479a8be99412a87cf143ef209479071f9f5f52f55ce34d",
+      "settings": {
+        "keys": [
+          [
+            52,
+            126,
+            100
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.8685,
+            0.7435
+          ],
+          [
+            0.5511,
+            0.9159
+          ],
+          [
+            0.4862,
+            0.4946
+          ],
+          [
+            0.9058,
+            0.9547
+          ],
+          [
+            0.5877,
+            0.5787
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "seravelle-evo-2",
+      "character": "Seravelle",
+      "stage": 2,
+      "incoming": "Whitefire Messenger, Vespera.png",
+      "source": "Art/source/phase2-war/seravelle/Whitefire Messenger, Vespera.png",
+      "source_sha256": "26373a8a4c79daf3e903aa426e56e2e9960d58c66171bdb600e7047db9946c52",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/seravelle-evo-2.png",
+      "runtime_sha256": "f1d4235ab6ba9de32bdad2f81a412f95b7c6f447e5f994b9359d04e1a9f2e5c2",
+      "settings": {
+        "keys": [
+          [
+            1,
+            154,
+            121
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.1778,
+            0.8998
+          ],
+          [
+            0.4992,
+            0.9192
+          ],
+          [
+            0.8263,
+            0.5948
+          ],
+          [
+            0.72,
+            0.9138
+          ],
+          [
+            0.6128,
+            0.5312
+          ],
+          [
+            0.9334,
+            0.5894
+          ],
+          [
+            0.7565,
+            0.1573
+          ],
+          [
+            0.401,
+            0.3998
+          ],
+          [
+            0.6583,
+            0.0291
+          ],
+          [
+            0.8231,
+            0.9591
+          ],
+          [
+            0.5747,
+            0.7414
+          ],
+          [
+            0.5081,
+            0.4353
+          ],
+          [
+            0.8076,
+            0.3513
+          ],
+          [
+            0.707,
+            0.8006
+          ],
+          [
+            0.4667,
+            0.4192
+          ],
+          [
+            0.806,
+            0.7586
+          ],
+          [
+            0.6209,
+            0.417
+          ],
+          [
+            0.7119,
+            0.1045
+          ],
+          [
+            0.7963,
+            0.694
+          ],
+          [
+            0.7792,
+            0.2597
+          ],
+          [
+            0.7906,
+            0.8114
+          ],
+          [
+            0.4619,
+            0.1239
+          ],
+          [
+            0.7776,
+            0.5442
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "seravelle-evo-3",
+      "character": "Seravelle",
+      "stage": 3,
+      "incoming": "Standard of the Night Road, Vespera.png",
+      "source": "Art/source/phase2-war/seravelle/Standard of the Night Road, Vespera.png",
+      "source_sha256": "1797a37f7566079fc072274d8313b2b190fea2321e42a4050d1297187c45e17c",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/seravelle-evo-3.png",
+      "runtime_sha256": "c343a34b5a72e8226ee3bceb61993bad6085c54e4d8c88a92c910e367dabee0a",
+      "settings": {
+        "keys": [
+          [
+            2,
+            116,
+            110
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.5731,
+            0.9407
+          ],
+          [
+            0.5162,
+            0.4547
+          ],
+          [
+            0.7281,
+            0.4925
+          ],
+          [
+            0.8644,
+            0.4838
+          ],
+          [
+            0.737,
+            0.0172
+          ],
+          [
+            0.5593,
+            0.4731
+          ],
+          [
+            0.767,
+            0.7392
+          ],
+          [
+            0.6518,
+            0.5927
+          ],
+          [
+            0.6656,
+            0.472
+          ],
+          [
+            0.7338,
+            0.7134
+          ],
+          [
+            0.6883,
+            0.4806
+          ],
+          [
+            0.5455,
+            0.4925
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "seravelle-evo-4",
+      "character": "Seravelle",
+      "stage": 4,
+      "incoming": "Marshal of Unextinguished Signals, Vespera.png",
+      "source": "Art/source/phase2-war/seravelle/Marshal of Unextinguished Signals, Vespera.png",
+      "source_sha256": "cce733af1cd4da915bce6a4e295c5156bb48f8eeac2138d4397fb8cc5a196792",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/seravelle-evo-4.png",
+      "runtime_sha256": "233164e645e8f69b283b5babed833d3d400b51707f2be4a98d72fbf011813df9",
+      "settings": {
+        "keys": [
+          [
+            1,
+            90,
+            80
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.4781,
+            0.8761
+          ],
+          [
+            0.6453,
+            0.8955
+          ],
+          [
+            0.3945,
+            0.6099
+          ],
+          [
+            0.5739,
+            0.8276
+          ],
+          [
+            0.569,
+            0.7953
+          ],
+          [
+            0.517,
+            0.4655
+          ],
+          [
+            0.6656,
+            0.6638
+          ],
+          [
+            0.5966,
+            0.3901
+          ],
+          [
+            0.2394,
+            0.7834
+          ],
+          [
+            0.6656,
+            0.8545
+          ],
+          [
+            0.5308,
+            0.2037
+          ],
+          [
+            0.6388,
+            0.6638
+          ],
+          [
+            0.5982,
+            0.6175
+          ],
+          [
+            0.6047,
+            0.4062
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "seravelle-evo-5",
+      "character": "Seravelle",
+      "stage": 5,
+      "incoming": "Procession Beyond the Walls, Vespera.png",
+      "source": "Art/source/phase2-war/seravelle/Procession Beyond the Walls, Vespera.png",
+      "source_sha256": "4e00f111b4d28838b24682ddbeeeb6e49c73fabb3520e0e8084dc4ce61849168",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/seravelle-evo-5.png",
+      "runtime_sha256": "3a2c9c27d880ae1e0fbe77f473bf33f715a409636c99e36c8ef8f49133154a3a",
+      "settings": {
+        "keys": [
+          [
+            13,
+            116,
+            61
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.2427,
+            0.6088
+          ],
+          [
+            0.733,
+            0.3739
+          ],
+          [
+            0.7378,
+            0.6099
+          ],
+          [
+            0.8222,
+            0.681
+          ],
+          [
+            0.6615,
+            0.3556
+          ],
+          [
+            0.2232,
+            0.6498
+          ],
+          [
+            0.8312,
+            0.1433
+          ],
+          [
+            0.4846,
+            0.417
+          ],
+          [
+            0.2711,
+            0.5388
+          ],
+          [
+            0.1883,
+            0.68
+          ],
+          [
+            0.5284,
+            0.3664
+          ],
+          [
+            0.151,
+            0.8039
+          ],
+          [
+            0.7719,
+            0.6315
+          ],
+          [
+            0.444,
+            0.2349
+          ],
+          [
+            0.3093,
+            0.5291
+          ],
+          [
+            0.4115,
+            0.1875
+          ],
+          [
+            0.694,
+            0.625
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "seravelle-evo-6",
+      "character": "Seravelle",
+      "stage": 6,
+      "incoming": "None Left in the Dark, Vespera.png",
+      "source": "Art/source/phase2-war/seravelle/None Left in the Dark, Vespera.png",
+      "source_sha256": "ff4137833af385eba64e21bde138ec85ecf89b7192c7c2051a289383c1782735",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/seravelle-evo-6.png",
+      "runtime_sha256": "57f143c518051719ccecdead073af65b9a6860c19520c1022e18aefd313d1138",
+      "settings": {
+        "keys": [
+          [
+            51,
+            115,
+            71
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.1778,
+            0.6045
+          ],
+          [
+            0.8206,
+            0.6175
+          ],
+          [
+            0.2183,
+            0.6584
+          ],
+          [
+            0.2354,
+            0.5657
+          ],
+          [
+            0.6331,
+            0.3685
+          ],
+          [
+            0.2995,
+            0.6293
+          ],
+          [
+            0.3174,
+            0.6034
+          ],
+          [
+            0.388,
+            0.556
+          ],
+          [
+            0.2468,
+            0.9052
+          ],
+          [
+            0.1372,
+            0.5474
+          ],
+          [
+            0.2476,
+            0.6897
+          ],
+          [
+            0.655,
+            0.1983
+          ],
+          [
+            0.4643,
+            0.569
+          ],
+          [
+            0.3636,
+            0.597
+          ],
+          [
+            0.7857,
+            0.7435
+          ],
+          [
+            0.2411,
+            0.6336
+          ],
+          [
+            0.7394,
+            0.6325
+          ],
+          [
+            0.651,
+            0.5625
+          ],
+          [
+            0.7662,
+            0.5162
+          ],
+          [
+            0.2784,
+            0.6692
+          ],
+          [
+            0.3401,
+            0.5668
+          ],
+          [
+            0.263,
+            0.6034
+          ],
+          [
+            0.7752,
+            0.6088
+          ],
+          [
+            0.8458,
+            0.9052
+          ],
+          [
+            0.6778,
+            0.1994
+          ],
+          [
+            0.6794,
+            0.6562
+          ],
+          [
+            0.8896,
+            0.8502
+          ],
+          [
+            0.8028,
+            0.6369
+          ],
+          [
+            0.4221,
+            0.6261
+          ],
+          [
+            0.6834,
+            0.2565
+          ],
+          [
+            0.6875,
+            0.6175
+          ],
+          [
+            0.392,
+            0.6509
+          ],
+          [
+            0.3588,
+            0.389
+          ],
+          [
+            0.2881,
+            0.5625
+          ],
+          [
+            0.2045,
+            0.9181
+          ],
+          [
+            0.6558,
+            0.6293
+          ],
+          [
+            0.4245,
+            0.3373
+          ],
+          [
+            0.7784,
+            0.681
+          ],
+          [
+            0.7078,
+            0.6519
+          ],
+          [
+            0.862,
+            0.5938
+          ],
+          [
+            0.8052,
+            0.5711
+          ],
+          [
+            0.6802,
+            0.6013
+          ],
+          [
+            0.599,
+            0.1519
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "velmira",
+      "character": "Velmira",
+      "stage": 1,
+      "incoming": "Memorial Restorer, Ilyss.png",
+      "source": "Art/source/phase2-war/velmira/Memorial Restorer, Ilyss.png",
+      "source_sha256": "ad065520dfc4acc0c12da9224298813c06252e158f942d97a9d0d047d7f3c264",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/velmira.png",
+      "runtime_sha256": "6af7658174430f25bb5864cd75184b0c422955c63d65d8833ee67d43303ab1e5",
+      "settings": {
+        "keys": [
+          [
+            35,
+            121,
+            87
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.6558,
+            0.7252
+          ],
+          [
+            0.5657,
+            0.555
+          ],
+          [
+            0.6088,
+            0.7608
+          ],
+          [
+            0.4034,
+            0.4537
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "velmira-evo-2",
+      "character": "Velmira",
+      "stage": 2,
+      "incoming": "Tender of the Broken Link, Ilyss.png",
+      "source": "Art/source/phase2-war/velmira/Tender of the Broken Link, Ilyss.png",
+      "source_sha256": "fc8900c143d642e541f2d615fff43fe279df03132c139bcc197f89189ee6bf1e",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/velmira-evo-2.png",
+      "runtime_sha256": "54b89baef441fb88b867f84140acdd04aa2bcc0d0d38aa1ed7d2a03eaa0f97c0",
+      "settings": {
+        "keys": [
+          [
+            0,
+            110,
+            97
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.2256,
+            0.5851
+          ],
+          [
+            0.7549,
+            0.6293
+          ],
+          [
+            0.4131,
+            0.5981
+          ],
+          [
+            0.3693,
+            0.5032
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "velmira-evo-3",
+      "character": "Velmira",
+      "stage": 3,
+      "incoming": "Crescent Unbinder, Ilyss.png",
+      "source": "Art/source/phase2-war/velmira/Crescent Unbinder, Ilyss.png",
+      "source_sha256": "9317ecb0a2f8491852d044f7e6996500d7a41f8f50a5340d663286d7def431fa",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/velmira-evo-3.png",
+      "runtime_sha256": "f0dab9bdb5e385bb9c980e8168399921c433d26d14e804db44d740debf340459",
+      "settings": {
+        "keys": [
+          [
+            0,
+            102,
+            102
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.4651,
+            0.8685
+          ],
+          [
+            0.3953,
+            0.3847
+          ],
+          [
+            0.2703,
+            0.2575
+          ],
+          [
+            0.7427,
+            0.5539
+          ],
+          [
+            0.2622,
+            0.9666
+          ],
+          [
+            0.3953,
+            0.5657
+          ],
+          [
+            0.349,
+            0.5614
+          ],
+          [
+            0.3734,
+            0.9041
+          ],
+          [
+            0.6696,
+            0.6034
+          ],
+          [
+            0.2378,
+            0.2403
+          ],
+          [
+            0.5885,
+            0.4332
+          ],
+          [
+            0.1299,
+            0.5366
+          ],
+          [
+            0.1989,
+            0.6024
+          ],
+          [
+            0.2532,
+            0.1864
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "velmira-evo-4",
+      "character": "Velmira",
+      "stage": 4,
+      "incoming": "Mercy Between the Severed Threads, Ilyss.png",
+      "source": "Art/source/phase2-war/velmira/Mercy Between the Severed Threads, Ilyss.png",
+      "source_sha256": "be3e27885d20f6f11bf4977528d0724f9e80f8e554f7bf71087e27a7c06bdf6f",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/velmira-evo-4.png",
+      "runtime_sha256": "afd1cbd5e4fe82c78ad949c6efc4309ce47898f05cd7b003cf0b3d2fafc59f21",
+      "settings": {
+        "keys": [
+          [
+            33,
+            179,
+            39
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.4545,
+            0.8125
+          ],
+          [
+            0.4172,
+            0.3556
+          ],
+          [
+            0.5446,
+            0.389
+          ],
+          [
+            0.6323,
+            0.681
+          ],
+          [
+            0.3604,
+            0.1853
+          ],
+          [
+            0.4497,
+            0.3642
+          ],
+          [
+            0.3523,
+            0.2769
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "velmira-evo-5",
+      "character": "Velmira",
+      "stage": 5,
+      "incoming": "Release Without Oblivion, Ilyss.png",
+      "source": "Art/source/phase2-war/velmira/Release Without Oblivion, Ilyss.png",
+      "source_sha256": "d1218703927ce05f160c95ee545e6c589c5f02140bcb6dc793d5b8ab35bc144a",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/velmira-evo-5.png",
+      "runtime_sha256": "d4bd4a528fb21bed93be6662a6ebc628790989a88f58e65ca65bb16748637afb",
+      "settings": {
+        "keys": [
+          [
+            14,
+            153,
+            21
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.5,
+            0.8847
+          ],
+          [
+            0.2021,
+            0.8901
+          ],
+          [
+            0.7029,
+            0.8987
+          ],
+          [
+            0.6583,
+            0.5431
+          ],
+          [
+            0.5503,
+            0.458
+          ],
+          [
+            0.3003,
+            0.569
+          ],
+          [
+            0.5893,
+            0.3103
+          ],
+          [
+            0.6948,
+            0.4925
+          ],
+          [
+            0.8466,
+            0.9784
+          ],
+          [
+            0.2662,
+            0.542
+          ],
+          [
+            0.8393,
+            0.9591
+          ],
+          [
+            0.1364,
+            0.9741
+          ],
+          [
+            0.6112,
+            0.4213
+          ],
+          [
+            0.3571,
+            0.5442
+          ],
+          [
+            0.3523,
+            0.458
+          ],
+          [
+            0.3669,
+            0.4256
+          ],
+          [
+            0.6307,
+            0.3772
+          ],
+          [
+            0.6623,
+            0.4095
+          ],
+          [
+            0.4286,
+            0.458
+          ],
+          [
+            0.2468,
+            0.667
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    },
+    {
+      "asset": "velmira-evo-6",
+      "character": "Velmira",
+      "stage": 6,
+      "incoming": "What Harm Cannot Hold, Ilyss.png",
+      "source": "Art/source/phase2-war/velmira/What Harm Cannot Hold, Ilyss.png",
+      "source_sha256": "8c77975265a6b9ba7b8c85506805f67cb92fc21c06a623f3e94b22540fd6b0de",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public/assets/characters/velmira-evo-6.png",
+      "runtime_sha256": "aeca68533b5f79ae51f603e7eab4647f17ac0072b79247ca2523df4c27225023",
+      "settings": {
+        "keys": [
+          [
+            34,
+            96,
+            41
+          ]
+        ],
+        "row_gradient": false,
+        "radius": 34,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.5763,
+            0.2425
+          ],
+          [
+            0.4123,
+            0.1983
+          ],
+          [
+            0.6209,
+            0.1853
+          ],
+          [
+            0.5593,
+            0.2403
+          ],
+          [
+            0.4261,
+            0.2371
+          ],
+          [
+            0.4318,
+            0.2694
+          ],
+          [
+            0.5974,
+            0.2112
+          ],
+          [
+            0.5755,
+            0.2284
+          ],
+          [
+            0.8961,
+            0.4213
+          ]
+        ],
+        "foreground_polygons": [],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 32
+        },
+        "review": "Original/full six-form sheet and numbered eligible-component overlay inspected. Fixed per-source teal/green key avoids tip-contaminated row-strip artifacts. Reviewed enclosed gaps only; preserve pale armor, feathers, hair, dark chains, painted shadows and authored cyan water/orange flame/violet/gold/green-yellow power detail. Existing source clipping/hairstyle/weapon drift retained."
+      }
+    }
+  ]
+}

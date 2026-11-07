@@ -15,7 +15,9 @@ describe('character role medals', () => {
       ...[...moonCharacters, ...sunshadeCharacters].map(({ name, role }) => [name, role]),
       ['Atmoso', 'Attacker'], ['Aurora', 'Support'], ['Bliss', 'Attacker'],
       ['Bruno', 'Tank'], ['Disciple', 'Support'], ['Elise', 'Attacker'], ['Razor', 'Tank'],
-      ['Nerithe', 'Attacker'], ['Orvella', 'Tank'], ['Vaelor', 'Attacker'], ['Caldrex', 'Tank'], ['Solenne', 'Tank'], ['Myrthen', 'Attacker'], ['Ozriel', 'Tank'], ['Ilvaris', 'Support'], ['Kaelith', 'Attacker'],
+      ['Nerithe', 'Attacker'], ['Orvella', 'Tank'], ['Vaelor', 'Attacker'], ['Caldrex', 'Tank'], ['Solenne', 'Tank'], ['Myrthen', 'Attacker'],
+      ['Neralis', 'Healer & Support'], ['Varkhel', 'Tank'], ['Seravelle', 'Support'], ['Velmira', 'Attacker'],
+      ['Ozriel', 'Tank'], ['Ilvaris', 'Support'], ['Kaelith', 'Attacker'],
     ]);
   });
 
