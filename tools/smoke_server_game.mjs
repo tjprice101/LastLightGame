@@ -2243,7 +2243,7 @@ async function smokeEconomyRebalance(client, userId, username) {
   assert.equal(enter.session.state.enemies.length, 1);
   assert.equal(enter.session.state.enemies[0].level, 30);
   assert.equal(enter.session.state.conduitRulesVersion, conduitRulesVersion);
-  const beforeUpgrade = await invoke({ kind: 'quit' });
+  const beforeUpgrade = await invoke({ kind: 'quit', runId: enter.session.runId });
   const operation = { kind: 'upgradeCharacter', id: 'ember', upgradeKind: 'evolve',
     expected: { level: 30, evolution: 1 }, fodderIds: [game.account.capturedCharacters[0].instanceId] };
   const rejected = await client.functions.invoke('game-operation', {

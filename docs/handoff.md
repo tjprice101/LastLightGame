@@ -32,7 +32,15 @@ excluded. Matching authority bundle and TypeScript checks pass; production
 build passes with the existing chunk-size warning. Browser receipt-free
 fixtures verify first-evolution23-material cost, explicit copy picker and exact
 final farm ranges without account writes or page errors.
-Publication and disposable hosted economy/evolution checks pending.
+Release implementation commit `0ab9fc80` pushed; matching game-operation
+authority deployed successfully. `node tools\smoke_server_game.mjs
+--economy-rebalance` verifies only-starter Lv30 entry, one enemy, missing-fodder
+rejection, exact23-material first evolution, first-Fracture reward, retry
+idempotency and next-level3/2 materials. `--evolution` verifies late15-Value
+4+4+4+3 consumption and75/30/30 costs. Both pass; disposable identities and
+cascading records are removed. The new smoke initially omitted quit's required
+runId; corrected test request passes without any authority change.
+Matching hosted client pipeline verification remains pending.
 See [economy contract](summoning-and-economy.md#additional-farm-reduction-and-upgrade-costs-2026-11-07).
 
 ## Moon release and Sunshade concealment (2026-11-07)
