@@ -1,5 +1,16 @@
 # Documentation hub
 
+## Moon delivery and material-reward reduction (2026-11-07)
+
+[All104 Moon sources](art-workflow.md#delivered-moon-artwork-2026-11-07) are
+archived and wired; event schedules remain inactive.
+[Remaining image budget](Future%20Plans/image-budget-audit.md) is147 required
+sources, not251. The owner also approves halving future ordinary material
+quantities, including Oblivion, while preserving currencies, costs and holdings:
+[economy](summoning-and-economy.md), [dungeon rewards](dungeons-and-captures.md),
+and [Calamity chest-only15% exception](calamity-mode.md).
+[Handoff](handoff.md) records integrated validation and release status.
+
 ## Reclaimed War integration approval and portrait intake (2026-11-06)
 
 Owner approves the four new [War character kits/trials](Future%20Plans/phase-2-war-designs.md),

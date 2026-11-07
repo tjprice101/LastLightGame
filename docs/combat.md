@@ -1,5 +1,19 @@
 # Combat specification
 
+## Moon authored-rule corrections: rules17 (2026-11-07)
+
+Maerion's first Master now counts direct Shield absorption in [Unreturned],
+excluding redirected damage from that added receipt and retaining its85% cap.
+Vespera gains at most one [Beacon] per player turn when allies spend [Signal].
+Asteriel's first Master raises [Promise] capacity to4, matching its authored
+specification; the base capacity stays3. No combat coefficients, action costs
+or recovery values change in this measured tuning pass.
+
+Combat rules17 supersedes16 and uses the existing historical-encounter restart
+path. Frozen squad/progress/equipment/investments remain; saved rewards and
+holdings are retained. Stale action input is not executed on the restarted
+encounter. Both client and authority must ship matching rules17.
+
 ## Shared status wording and Master scaling (2026-11-03)
 
 Burn and Weaken use shared status semantics, not per-character status variants.

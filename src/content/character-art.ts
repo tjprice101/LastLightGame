@@ -29,7 +29,6 @@ export const evolutionTitles: Record<StarterId, readonly string[]> = {
 };
 
 const artworkPending = new Set([
-  'maerion', 'caevren', 'vespera', 'ilyss', 'asteriel', 'serapha',
   'rhaziel', 'oryn', 'thessara', 'elaris', 'veyr', 'aureth',
 ]);
 

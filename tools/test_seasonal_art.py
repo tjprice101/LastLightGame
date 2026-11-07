@@ -19,8 +19,8 @@ class SeasonalArtTests(unittest.TestCase):
         required = [row for row in rows if not row[0].endswith("-weapon.png")]
         self.assertEqual(len(required), 207)
         checklist = (moon.ROOT / "docs" / "Future Plans" / "remaining-expansion-art.md").read_text(encoding="utf-8")
-        self.assertRegex(checklist, r"## Total images needed\n\n\*\*207 required images\.\*\*")
-        self.assertTrue(checklist.rstrip().endswith("**219 images including every optional illustration.**"))
+        self.assertRegex(checklist, r"## Total images needed\n\n\*\*103 seasonal images still needed, plus44 reclaimed War images =147 required\.\*\*")
+        self.assertTrue(checklist.rstrip().endswith("**115 seasonal images including optional;159 including the44 War images.**"))
 
     def test_sun_approved_features_and_ability_identity(self):
         approved = moon.approved_sections(sun.CHARACTERS)

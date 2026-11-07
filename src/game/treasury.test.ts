@@ -144,7 +144,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     const duplicate = summonCharacter(saved, () => 0);
     expect(duplicate.duplicate).toBe(true);
     expect(duplicate.copy).toBeUndefined();
-    expect(duplicate.materials).toEqual({ id: 'infernic-rare', amount: 15 });
+    expect(duplicate.materials).toEqual({ id: 'infernic-rare', amount: 8 });
     expect(duplicate.account.characters.ember).toEqual(account.characters.ember);
     expect(duplicate.account.squad).toEqual(['ember']);
     expect(duplicate.account.lycalis).toBe(90);
@@ -186,7 +186,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
       expect(result.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 0 });
       expect(result.account.lycalis).toBe(90);
       expect(result.copy).toBeUndefined();
-      expect(result.materials).toEqual(allOwned ? { id: 'infernic-rare', amount: 15 } : undefined);
+      expect(result.materials).toEqual(allOwned ? { id: 'infernic-rare', amount: 8 } : undefined);
       expect(write).toHaveBeenCalledTimes(1);
       expect(loadAccount(saved)).toEqual(result.account);
     }

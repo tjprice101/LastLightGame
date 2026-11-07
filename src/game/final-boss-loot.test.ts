@@ -5,7 +5,7 @@ import { playableDungeons } from '../content/dungeons';
 import { elementalWars, warStageCount } from '../content/elemental-war';
 import { rollDrop, rollStagedLycalis, stagedLycalisOdds } from '../content/loot-random';
 import { activityPrismaticaDrop } from '../content/prismatica';
-import { storyBossBonus, storyCompletionReward, storyRegions, storyRules } from '../content/story';
+import { storyBossBonus, storyCompletionReward, storyMaterialLoot, storyRegions, storyRules } from '../content/story';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { act, createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, type BattleState } from './battle';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards } from './account';
@@ -56,15 +56,20 @@ describe('repeatable final-boss rewards with smooth Prismatica and retained item
     const level = state.enemies[0].level!;
     const expectedCurrency = activityPrismaticaDrop(state, level).minimum;
     expect(reward.amount).toBe(expectedCurrency);
-    for (const quantity of Object.values(!state.dungeon && !['heavens', 'abyss', 'roses'].includes(state.infusion?.mode ?? '') ? reward.materials ?? {} : {})) {
-      expect(quantity % 5).toBe(0);
-      expect(quantity).toBeGreaterThanOrEqual(5);
+    if (state.story) {
+      const loot = storyMaterialLoot(state.story.storyStage);
+      for (const [id, quantity] of Object.entries(reward.materials ?? {})) {
+        const drop = loot.find(entry => entry.id === id);
+        if (!drop?.quantitySource) throw new Error('Story material source range is missing.');
+        expect(quantity).toBe(drop.minimum);
+        expect(quantity).toBe(Math.round(drop.quantitySource.minimum / 2));
+      }
     }
-    if (state.dungeon) expect(Object.values(reward.materials!)).toEqual([10, 7, 6, 4, 3, 2]);
+    if (state.dungeon) expect(Object.values(reward.materials!)).toEqual([5, 4, 3, 2, 2, 1]);
     if (state.infusion?.mode === 'heavens' || state.infusion?.mode === 'abyss') {
-      expect(Object.values(reward.materials!)).toEqual([7, 8]);
+      expect(Object.values(reward.materials!)).toEqual([4, 4]);
     }
-    if (state.infusion?.mode === 'roses') expect(Object.values(reward.materials!)).toEqual([10, 7, 6, 4, 3, 2]);
+    if (state.infusion?.mode === 'roses') expect(Object.values(reward.materials!)).toEqual([5, 4, 3, 2, 2, 1]);
     if (state.infusion?.mode === 'machines') {
       expect(reward.mechanicalComponents).toBe(625);
       expect(Object.values(reward.conduits!)).toEqual([1, 1, 1]);

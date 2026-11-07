@@ -13,13 +13,14 @@ import { roll, rollCritical, elementalCritFactor } from './battle';
 import { buffSnapshot } from './battle-buffs';
 import { debuffSnapshot } from './battle-debuffs';
 import { pilotAuthoredShieldAbsorbed, pilotEffectiveHeal } from './kit-pilots';
-import { hasNativeIdentity, nativeAbsorbedHit, nativeAuthoredShieldAbsorbed, nativeDirectHpLoss, nativeIncomingMultiplier,
+import { hasNativeIdentity, nativeAbsorbedHit, nativeAuthoredShieldAbsorbed, nativeDirectHpLoss,
+  nativeDirectShieldAbsorbed, nativeIncomingMultiplier,
   nativeRouteDamage, nativeSupportMultiplier, nativeDamageTakenMultiplier, nativeHymn, nativeRefusal,
   nativeDefenseBonus, nativeTauntTarget } from './native-kits';
 import { prepareCalamiticAction, afterCalamiticAction, afterCalamiticMark, calamiticSiegeBonus, deferCalamiticDamage,
   bankCalamiticDamage, calamiticSkillDefenseIgnore, calamiticSkillPowerBonus, calamiticSkillEfficiencyBonus } from './calamitic-conduits';
 
-export const conduitRulesVersion = phaseZeroStatsReady ? 16 : 4;
+export const conduitRulesVersion = phaseZeroStatsReady ? 17 : 4;
 export interface ConduitShieldLayer {
   amount: number;
   owner: string;
@@ -1960,6 +1961,7 @@ export function conduitIncoming(state: BattleState, enemy: Combatant, target: Co
   const shieldResult = absorbEnemyDamage(state, target, remaining, events);
   const { absorbed } = shieldResult;
   let loss = shieldResult.loss;
+  nativeDirectShieldAbsorbed(state, target, absorbed.absorbed, events);
   if (!phaseZeroStatsReady && shieldBefore > 0 && target.shield <= 0 && absorbed.absorbed > 0 && equipped(target, 'fieldbrace-coupler')) n.fieldbraceRound = state.round + 1;
   for (const [id, amount] of absorbed.native) {
     const owner = state.allies.find(ally => ally.id === id);

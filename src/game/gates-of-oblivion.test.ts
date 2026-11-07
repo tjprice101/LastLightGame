@@ -107,12 +107,12 @@ describe('Gates of Oblivion', () => {
       [14, [...oblivionMaterialIds.slice(0, 5)]], [19, [...oblivionMaterialIds]] ] as const) {
       expect(oblivionMaterialLoot(stage).map(drop => drop.id)).toEqual(ids);
     }
-    expect(oblivionMaterialLoot(1).map(({ minimum, maximum }) => [minimum, maximum])).toEqual([[1, 2], [1, 2]]);
+    expect(oblivionMaterialLoot(1).map(({ minimum, maximum }) => [minimum, maximum])).toEqual([[1, 1], [1, 1]]);
     expect(oblivionMaterialLoot(25).map(({ minimum, maximum }) => [minimum, maximum]))
-      .toEqual([[10, 12], [7, 8], [6, 7], [4, 5], [3, 4], [2, 3]]);
+      .toEqual([[5, 6], [4, 4], [3, 4], [2, 3], [2, 2], [1, 2]]);
     expect(oblivionMaterialDrops(25, () => 0)).toEqual({
-      'calamity-common': 10, 'calamity-uncommon': 7, 'calamity-rare': 6,
-      'calamity-epic': 4, 'calamity-legendary': 3, 'calamity-omnic': 2,
+      'calamity-common': 5, 'calamity-uncommon': 4, 'calamity-rare': 3,
+      'calamity-epic': 2, 'calamity-legendary': 2, 'calamity-omnic': 1,
     });
   });
 

@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { act, createBattle, type BattleEvent, type BattleState } from './battle';
+import { conduitIncoming } from './conduit-runtime';
 import {
   nativeAuthoredShieldAbsorbed, nativeDirectHpLoss, nativeEnemyCompleted, nativeIncomingMultiplier,
-  nativeTurnStart,
+  nativeMarkers, nativeReadout, nativeTurnStart,
 } from './native-kits';
 
 function encounter(...roster: string[]): BattleState {
@@ -43,6 +44,50 @@ function directEnemyAttack(enemyId: string, targetId: string): BattleEvent[] {
 }
 
 describe('Moon and Sunshade native combat loops', () => {
+  it('exposes Moon resource, path and team-token icons from typed native state', () => {
+    const counters = [
+      ['maerion', 'Unreturned', 'moon-maerion-unreturned', { unreturned: 120 }],
+      ['caevren', 'Load', 'moon-caevren-load', { load: 2 }],
+      ['vespera', 'Beacon', 'moon-vespera-beacon', { beacon: 2 }],
+      ['ilyss', 'Severance', 'moon-ilyss-severance', { severance: 2 }],
+      ['asteriel', 'Promise', 'moon-asteriel-promise', { promise: 2, path: 'shelter' }],
+      ['serapha', 'Interval', 'moon-serapha-interval', { interval: 2 }],
+    ] as const;
+    for (const [id, label, icon, native] of counters) {
+      const state = encounter(id);
+      state.allies[0].native = native;
+      const rows = nativeReadout(state, state.allies[0]).filter(row => row.label === label);
+      expect(rows).toHaveLength(1);
+      expect(rows[0].icons).toContain(icon);
+    }
+
+    for (const [path, icon] of [
+      ['shelter', 'moon-asteriel-shelter'],
+      ['flourish', 'moon-asteriel-flourish'],
+    ] as const) {
+      const state = encounter('asteriel');
+      state.allies[0].native = { path };
+      expect(nativeReadout(state, state.allies[0]).find(row => row.label === 'Cultivation Path')?.icons).toContain(icon);
+    }
+
+    const signalState = encounter('vespera', 'ember');
+    signalState.allies[1].native = { signal: { owner: 'vespera', bonus: .35, throughRound: 2 } };
+    expect(nativeMarkers(signalState, signalState.allies[1]).find(marker => marker.id === 'signal')?.icon)
+      .toBe('moon-vespera-signal');
+
+    const flowerState = encounter('asteriel', 'ember');
+    flowerState.allies[1].native = { moonflower: { owner: 'asteriel', bonus: .3, throughRound: 2 } };
+    expect(nativeMarkers(flowerState, flowerState.allies[1]).find(marker => marker.id === 'moonflower')?.icon)
+      .toBe('moon-asteriel-moonflower');
+
+    const ceasefireState = encounter('serapha', 'ember');
+    ceasefireState.allies[1].native = { ceasefire: {
+      owner: 'serapha', fraction: .2, charges: 1, throughPhase: 2,
+    } };
+    expect(nativeMarkers(ceasefireState, ceasefireState.allies[1]).find(marker => marker.id === 'ceasefire')?.icon)
+      .toBe('moon-serapha-ceasefire');
+  });
+
   it.each(['burn', 'weaken'] as const)('Ilyss removes the chosen %s while preserving the other application', choice => {
     const state = encounter('ilyss', 'ember');
     const ally = state.allies[1];
@@ -161,6 +206,28 @@ describe('Moon and Sunshade native combat loops', () => {
       event.target === recipient.id && event.amount === 900)).toBe(true);
   });
 
+  it('Maerion’s first Master stores direct Shield absorption but not redirected Shield absorption', () => {
+    let direct = encounter('maerion', 'tide');
+    direct.allies[0].masterConduit = 'master-maerion-1';
+    direct = use(direct, 'tide', 'skill2', 'tide').state;
+    conduitIncoming(direct, direct.enemies[0], direct.allies[1], 100, false, false, []);
+    expect(direct.allies[0].native?.unreturned).toBeGreaterThan(0);
+
+    let redirected = encounter('maerion', 'tide', 'caevren');
+    redirected.allies[0].masterConduit = 'master-maerion-1';
+    redirected = use(redirected, 'tide', 'skill2', 'caevren').state;
+    redirected.allies[2].native = {
+      intercept: { targets: ['tide'], fraction: .3, throughPhase: redirected.round + 1 },
+    };
+    const events: BattleEvent[] = [];
+    conduitIncoming(redirected, redirected.enemies[0], redirected.allies[1], 100, false, false, events);
+    const targetHealthLoss = events.filter(event => event.kind === 'damage' &&
+      event.target === 'tide' && event.source === redirected.enemies[0].id)
+      .reduce((sum, event) => sum + event.amount, 0);
+    expect(targetHealthLoss).toBeGreaterThan(0);
+    expect(redirected.allies[0].native?.unreturned).toBe(targetHealthLoss);
+  });
+
   it('Caevren earns Load only from his own effective direct hits, once per enemy phase, then spends it on his shield', () => {
     const state = encounter('caevren');
     const owner = state.allies[0];
@@ -190,6 +257,24 @@ describe('Moon and Sunshade native combat loops', () => {
     expect(withSignal.state.allies[1].native?.signal).toBeUndefined();
   });
 
+  it('Vespera earns Beacon at most once per player turn even when multiple allies spend Signal', () => {
+    let state = encounter('vespera', 'ember', 'tide');
+    state.allies[0].native = { beacon: 0 };
+    for (const ally of state.allies.slice(1))
+      ally.native = { signal: { owner: 'vespera', bonus: .5, throughRound: state.round + 1 } };
+    state = use(state, 'ember', 'skill1').state;
+    state = use(state, 'tide', 'skill1').state;
+    expect(state.allies[0].native?.beacon).toBe(1);
+    expect(state.allies.slice(1).every(ally => !ally.native?.signal)).toBe(true);
+
+    state.round++;
+    for (const ally of state.allies.slice(1))
+      ally.native = { signal: { owner: 'vespera', bonus: .5, throughRound: state.round + 1 } };
+    state = use(state, 'ember', 'skill1').state;
+    state = use(state, 'tide', 'skill1').state;
+    expect(state.allies[0].native?.beacon).toBe(2);
+  });
+
   it('Ilyss earns Severance from a real cleanse and spends it on a stronger, sourced team heal', () => {
     const state = encounter('ilyss', 'ember');
     const ally = state.allies[1];
@@ -217,6 +302,17 @@ describe('Moon and Sunshade native combat loops', () => {
     expect(flare.state.allies[1].native?.moonflower).toMatchObject({
       owner: 'asteriel', bonus: .6, throughRound: state.round + 1,
     });
+  });
+
+  it('Asteriel’s first Master raises Promise capacity to four without changing the base cap', () => {
+    let state = encounter('asteriel');
+    state.allies[0].masterConduit = 'master-asteriel-1';
+    for (const action of ['skill1', 'skill2', 'skill1', 'skill2', 'skill1'] as const)
+      state = use(state, 'asteriel', action).state;
+    expect(state.allies[0].native?.promise).toBe(4);
+    expect(nativeReadout(state, state.allies[0]).find(row => row.label === 'Promise')?.value).toBe('4/4');
+    const flare = use(state, 'asteriel', 'ultimate');
+    expect(flare.state.allies[0].native?.promise).toBe(0);
   });
 
   it('Serapha earns Interval only from a live enemy weakened by her and spends it into a timed Ceasefire', () => {

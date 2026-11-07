@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT = ROOT / "src" / "content" / "master-conduit-art-revisions.ts"
-EXPECTED = 68
+EXPECTED = 86
 
 
 def revision_source():

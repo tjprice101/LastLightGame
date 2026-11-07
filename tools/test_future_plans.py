@@ -62,15 +62,19 @@ class FuturePlansTests(unittest.TestCase):
         self.assertEqual(len(filenames) + 12 + 1 + 4, 343)
         self.assertEqual(len(filenames) + 12 + 1 + 4 + experiments, 351)
         text = (FUTURE / "image-budget-audit.md").read_text(encoding="utf-8")
-        for total in ("251", "263", "326", "343", "351"):
+        moon_delivered = [row for row in moon.blocks() if not row[0].endswith("-weapon.png")]
+        moon_delivered += [row for row in events.blocks() if row[0].startswith("moon")]
+        self.assertEqual(len(moon_delivered), 104)
+        self.assertEqual(len(required) + len(war.blocks()) - len(moon_delivered), 147)
+        for total in ("147", "159", "222", "239", "247"):
             self.assertIn(f"**{total}", text)
         self.assertIn("unquantified", text)
 
     def test_budget_working_case_and_exhausted_allowance_are_explicit(self):
         text = (FUTURE / "image-budget-audit.md").read_text(encoding="utf-8")
-        self.assertAlmostEqual(251 * 4 / 60, 16.733333333333334)
-        self.assertIn("$36.93 working", text)
-        self.assertIn("working estimate **$67**", text)
+        self.assertAlmostEqual(147 * 4 / 60, 9.8)
+        self.assertIn("$30 working", text)
+        self.assertIn("working estimate **$39**", text)
         self.assertIn("exclude your already-paid subscription", text)
         self.assertIn("planning proxies", text)
         self.assertIn("no purchase or generation authorized", text.lower())

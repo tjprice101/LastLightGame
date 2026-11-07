@@ -13,7 +13,7 @@ import { getStarter, starters, type StarterId } from '../src/content/starters';
 import { isCalamiticCharacter } from '../src/content/calamitic-characters';
 import { actAndAdvanceTurn, actionUnavailable, createBattle, createCalamityBattle, createDungeonBattle,
   createInfusionBattle, createStoryBattle, createWarBattle, endTurn, nextWave, withMasterLoadouts,
-  type BattleEvent, type BattleState } from '../src/game/battle';
+  type BattleEvent, type BattleState, type Combatant } from '../src/game/battle';
 import { benchmarkPriorities, benchmarkTarget } from '../src/game/native-benchmark-pilot';
 import { initializeConduits } from '../src/game/conduit-runtime';
 const benchmarkStarters = starters.filter(character => !isCalamiticCharacter(character.id));
@@ -22,6 +22,8 @@ export const surveySeeds = [1, 1729, 12345, 54321, 104729, 65537, 314159, 271828
 export const surveyLimits = { rounds: 100, decisions: 1800 } as const;
 export type Build = 'bare' | 'common0' | 'mixed0' | 'mixed5' | 'omnic0' | 'omnic5' | 'master5' | 'calamitic5';
 export type Policy = 'native' | 'flare-first' | 'balanced';
+export type SurveyPriorities = (state: BattleState, actor: Combatant) => ActionId[];
+export type SurveyTarget = (state: BattleState, actor: Combatant, action: ActionId) => string;
 export type Encounter =
   | { kind: 'story'; stage: number }
   | { kind: 'dungeon'; element: PlayableDungeon; stage: number }
@@ -111,7 +113,8 @@ export interface Outcome {
 const emptyContribution = (): Contribution => ({ damage: 0, healing: 0, shieldsCreated: 0, periodicDamage: 0, actions: {} });
 
 export function measureBattle(initial: BattleState, policy: Policy = 'native',
-  limits: { rounds: number; decisions: number } = surveyLimits) {
+  limits: { rounds: number; decisions: number } = surveyLimits, prioritiesFor?: SurveyPriorities,
+  targetFor?: SurveyTarget) {
   let state = initial, decisions = 0, firstKoRound: number | null = null;
   const startRound = initial.round, initialEnemyHealth = initial.enemies.reduce((sum, unit) => sum + unit.stats.health, 0);
   const contribution = Object.fromEntries(initial.allies.map(unit => [unit.id, emptyContribution()]));
@@ -136,12 +139,13 @@ export function measureBattle(initial: BattleState, policy: Policy = 'native',
     if (!actor) {
       const result = endTurn(state); state = result.state; collect(result.events);
     } else {
-      const native = policy === 'balanced' && actor.definitionId === 'tide'
+      const native = prioritiesFor ? prioritiesFor(state, actor) : policy === 'balanced' && actor.definitionId === 'tide'
         ? (actor.hp < actor.stats.health * .5 ? ['ultimate', 'skill1', 'light'] : ['skill1', 'light']) as ActionId[]
         : benchmarkPriorities(state, actor);
       const priorities: ActionId[] = [...(policy === 'flare-first' ? ['ultimate' as const, ...native] : native),
         'skill1', 'skill2', 'light', 'ultimate'];
-      const choice = priorities.map(action => ({ action, target: benchmarkTarget(state, actor, action) }))
+      const choice = priorities.map(action => ({ action,
+        target: targetFor ? targetFor(state, actor, action) : benchmarkTarget(state, actor, action) }))
         .find(({ action, target }) => !actionUnavailable(state, actor, action, target));
       if (!choice) throw new Error(`Survey pilot has no legal choice for ${actor.id}.`);
       contribution[actor.id].actions[choice.action] = (contribution[actor.id].actions[choice.action] ?? 0) + 1;

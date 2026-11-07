@@ -85,6 +85,8 @@ try {
     await smokePhaseOneWar(client, created.user.id, username);
   } else if (process.argv.includes('--phase-two-war')) {
     await smokePhaseTwoWar(client, created.user.id, username);
+  } else if (process.argv.includes('--moon-materials')) {
+    await smokeMoonMaterials(client, created.user.id, username);
   } else if (process.argv.includes('--war-recruitment')) {
     await smokeWarRecruitment(client, created.user.id, username);
   } else if (process.argv.includes('--loadouts')) {
@@ -1155,6 +1157,109 @@ async function smokeNativeCalamity(client, userId, username) {
     assert.equal(exited.session, null);
   }
   console.log(`Hosted native/Calamity smoke passed: rules${conduitRulesVersion}, explicit Tizu/Disciple recipients, Lv170 EX3 chest-only fixture victory, atomic opening with two Master chests, idempotent action/opening, persisted holdings and freshly spawned exact120/140/145/170 stats and artwork.`);
+}
+
+async function smokeMoonMaterials(firstClient, firstId, firstUsername) {
+  assert.equal(conduitRulesVersion, 17);
+  const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
+  const fixtures = ['maerion', 'vespera', 'asteriel', 'dungeon', 'story', 'infernic-chest', 'heavens-chest'];
+  for (const [index, fixture] of fixtures.entries()) {
+    let client = firstClient, userId = firstId, username = firstUsername;
+    if (index > 0) {
+      username = `moon_${randomUUID().replaceAll('-', '').slice(0, 10)}`;
+      const password = randomUUID() + randomUUID(), email = `${username}@example.invalid`;
+      const made = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { username } });
+      if (made.error || !made.data.user) throw new Error('Moon/material smoke identity creation failed.');
+      userId = made.data.user.id; ids.push(userId);
+      client = createClient(url, clientKey, { auth: { persistSession: false } });
+      if ((await client.auth.signInWithPassword({ email, password })).error) throw new Error('Moon/material smoke authentication failed.');
+    }
+    let game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
+    Object.assign(game.account.characters, Object.fromEntries(['maerion', 'vespera', 'asteriel', 'tide', 'sprout'].map(id =>
+      [id, { level: 105, evolution: 6 }])));
+    game.account.storyCompleted = 120;
+    game.account.dungeonStages = { infernic: 35 };
+    game.account.materials = { 'infernic-common': 123 };
+    game.account.fractalis = 456;
+    game.account.lycalis = 78;
+    let operations;
+    if (fixture.endsWith('-chest')) {
+      const mode = fixture.replace('-chest', '');
+      const id = `calamity:${mode}:1`;
+      game.account.calamityChests = { [id]: 1 };
+      operations = [{ kind: 'openCalamityChest', id, expectedCount: 1 }];
+    } else {
+      const character = ['maerion', 'vespera', 'asteriel'].includes(fixture) ? fixture : 'ember';
+      game.account.squad = [character, 'tide', 'sprout'];
+      if (character !== 'ember') {
+        const master = `master-${character}-1`;
+        game.account.masterConduits = { [master]: 1 };
+        game.account.masterEquipment = { [character]: master };
+      }
+      const activity = fixture === 'dungeon' ? { kind: 'dungeon', element: 'infernic', stage: 35 }
+        : fixture === 'story' ? { kind: 'story', stage: 120 } : { kind: 'training' };
+      game = resolveOperation(game, { kind: 'enter', activity }, entropy).game;
+      const state = game.run.session.state, runId = game.run.session.runId;
+      for (const ally of state.allies) {
+        ally.shatter = 100;
+        ally.shield = ally.stats.health * 2;
+      }
+      for (const enemy of state.enemies) {
+        enemy.stats.health = enemy.hp = character === 'ember' ? 1 : 1000000000;
+        enemy.stats.defense = 0;
+        enemy.stats.damage = 100;
+        enemy.stats.crit = 0;
+      }
+      const targetId = state.enemies[0].id;
+      if (fixture === 'maerion') {
+        state.allies[0].native = { unreturned: 0 };
+        operations = [{ kind: 'endTurn', runId }];
+      } else if (fixture === 'vespera') {
+        state.allies[0].native = { beacon: 0 };
+        for (const ally of state.allies.slice(1))
+          ally.native = { signal: { owner: 'vespera', bonus: .5, throughRound: state.round + 1 } };
+        operations = ['tide', 'sprout'].map(actorId => ({ kind: 'act', runId, actorId, action: 'skill1', targetId }));
+      } else if (fixture === 'asteriel') {
+        state.allies[0].native = { path: 'shelter', promise: 3 };
+        operations = [{ kind: 'act', runId, actorId: character, action: 'skill2', targetId }];
+      } else {
+        operations = [{ kind: 'act', runId, actorId: character, action: 'light', targetId }];
+      }
+    }
+    assert.ok(ids.includes(userId), 'Only disposable identities may receive fixtures');
+    const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+    assert.equal(seeded.error, null);
+    async function invoke(operation, revision, requestId = randomUUID()) {
+      const result = await client.functions.invoke('game-operation', {
+        body: { operation, expectedRevision: revision, requestId },
+      });
+      if (result.error) throw new Error(`Hosted Moon/material ${fixture} ${operation.kind} failed (${result.error.context?.status ?? 'transport'}).`);
+      return result.data;
+    }
+    let response = await invoke({ kind: 'read' }, 0);
+    assert.equal(response.account.materials['infernic-common'], 123, 'Read never reduces existing holdings');
+    for (const operation of operations) {
+      const expected = resolveOperation(game, operation, entropy);
+      const revision = response.revision, requestId = randomUUID();
+      response = await invoke(operation, revision, requestId);
+      assert.deepEqual(response.result, expected.response.result === undefined
+        ? undefined : JSON.parse(JSON.stringify(expected.response.result)));
+      assert.deepEqual(response.session?.state, expected.response.session
+        ? JSON.parse(JSON.stringify(expected.response.session.state)) : undefined);
+      assert.deepEqual(response.account.materials, expected.response.account.materials);
+      assert.equal(response.account.fractalis, expected.response.account.fractalis);
+      assert.equal(response.account.lycalis, expected.response.account.lycalis);
+      assert.deepEqual(response.calamityOpening, expected.response.calamityOpening);
+      assertSameSavedResponse(await invoke(operation, revision, requestId), response);
+      game = expected.game;
+    }
+    if (fixture === 'maerion') assert.ok(response.session.state.allies[0].native.unreturned > 0);
+    if (fixture === 'vespera') assert.equal(response.session.state.allies[0].native.beacon, 1);
+    if (fixture === 'asteriel') assert.equal(response.session.state.allies[0].native.promise, 4);
+    if (fixture.endsWith('-chest')) assert.equal(response.calamityOpening.materialRewardVersion, 1);
+    assert.deepEqual((await invoke({ kind: 'read' }, response.revision)).account, response.account);
+  }
+  console.log('Hosted Moon/material parity passed: rules17, direct Shield receipts, once-per-turn Beacon, Promise4, dungeon/Story material rolls,15% Calamity chest contents, unchanged existing holdings/currencies, saved reads and idempotent retries. Seven disposable fixtures; no seasonal launch or balance claim.');
 }
 
 async function smokeRewardCorrections(client, userId, username) {

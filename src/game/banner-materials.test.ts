@@ -84,8 +84,8 @@ describe('material-only non-character banner rewards', () => {
     const rolls = bannerId === 'standard' ? [.5, .999, 0, 0] : [.5, 0, 0];
     const result = summonCharacter(storage, () => rolls.shift()!, bannerId);
     const id = bannerId === 'standard' ? 'chaotic-rare' : 'rosethorn-rare';
-    expect(result.materials).toEqual({ id, amount: 15 });
-    expect(result.account.materials[id]).toBe(15);
+    expect(result.materials).toEqual({ id, amount: 8 });
+    expect(result.account.materials[id]).toBe(8);
     expect(result.duplicate).toBe(true);
     expect(result.guarantee).toBe('all-owned-character');
     expect(result.account.bannerPity?.[bannerId]).toEqual({ highestStar: 0, unownedHighestStar: 0 });

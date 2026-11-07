@@ -1,13 +1,14 @@
 import { elements } from './activities';
-import { lootRoll } from './loot-random';
+import { lootRoll, materialRewardAmount } from './loot-random';
 import { moonSunshadeEvents, newEventMaterialIds } from './moon-sunshade-events';
 
 export const bannerMaterialTiers = [
-  { rarity: 'Common', weight: 50, amount: 10 },
-  { rarity: 'Uncommon', weight: 30, amount: 6 },
-  { rarity: 'Rare', weight: 17, amount: 3 },
+  { rarity: 'Common', weight: 50, amount: materialRewardAmount(10) },
+  { rarity: 'Uncommon', weight: 30, amount: materialRewardAmount(6) },
+  { rarity: 'Rare', weight: 17, amount: materialRewardAmount(3) },
 ] as const;
-export const bannerDuplicateMaterialAmount = 15;
+export const authoredBannerDuplicateMaterialAmount = 15;
+export const bannerDuplicateMaterialAmount = materialRewardAmount(authoredBannerDuplicateMaterialAmount);
 export interface BannerMaterialReward { id: string; amount: number }
 
 function materialFamilies(): string[] {
@@ -20,7 +21,7 @@ export function bannerMaterialDefinition(id: string) {
   if (!tier || (!materialFamilies().includes(family) && !elements.some(element => element.id === family))) {
     throw new Error('Unknown banner material.');
   }
-  return { id, ...tier };
+  return { id, ...tier, authoredAmount: [10, 6, 3][bannerMaterialTiers.indexOf(tier)] };
 }
 
 export function bannerMaterialPool(event: boolean, remaining: number) {

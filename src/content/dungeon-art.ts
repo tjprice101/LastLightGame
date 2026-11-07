@@ -157,7 +157,10 @@ export const materialArtNames = ['Seed', 'Bloom', 'Shard', 'Crest', 'Heart', 'So
 export function materialArt(id: string): string | undefined {
   materialName(id);
   if (roseMaterials.some((material) => material.id === id)) return id;
-  if (newEventMaterialDefinition(id)) return undefined;
+  const eventMaterial = newEventMaterialDefinition(id);
+  if (eventMaterial) return eventMaterial.event === 'moon'
+    ? `moonwake-${['seed', 'bud', 'bloom', 'crest', 'heart', 'soul'][materialRarities.indexOf(eventMaterial.rarity)]}`
+    : undefined;
   if (calamiticMaterials.some((material) => material.id === id)) return id;
   const specialty = specialtyMaterials.find((entry) => entry.id === id);
   if (specialty) return specialty.art;

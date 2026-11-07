@@ -1,6 +1,9 @@
 # Audited image queue and Midjourney budget
 
-**Snapshot: 2026-11-06. USD, before tax; no purchase or generation authorized.**
+**Snapshot: 2026-11-07. USD, before tax; no purchase or generation authorized.**
+
+**147 required new images remain.** The owner's104 Moon sources are now
+archived, reviewed and installed; subtract them from the previous251 queue.
 
 Count unit: one distinct accepted high-resolution source image, not a four-image
 grid, prompt submission, crop, AVIF derivative, transparent export or animation
@@ -8,29 +11,31 @@ frame. Multiple runtime surfaces using one source count once. Prompt-only
 content is not delivered art. Counts exclude installed images and preserve
 the24 existing portraits assigned to the four approved reclaimed War characters.
 
-## 1. Seasonal artwork:207 required,12 optional
+## 1. Seasonal artwork:103 remaining,104 installed,12 optional
 
 [Source checklist](remaining-expansion-art.md); reproducible Moon98 +
 Sunshade97 + events24 =219 distinct candidate source filenames. Twelve
-`-weapon.png` showcases are optional, leaving207 required.
+`-weapon.png` showcases are optional. Of207 required sources,104 Moon images
+are installed, leaving103 Sunshade images.
 
-| Required category | Moon | Sunshade | Total |
+| Required category | Moon installed | Sunshade needed | Still needed |
 |---|---:|---:|---:|
-| Six-form portraits |36|36|72|
-| Four ability icons per bearer |24|24|48|
-| Three personal Masters per bearer |18|18|36|
-| Native/Master status symbols |11|10|21|
-| Six-form signature enemies |6|6|12|
-| Seed-through-Soul materials |6|6|12|
-| Summoning banner/event splash, shared source |1|1|2|
-| Activity header |1|1|2|
-| Arena |1|1|2|
-| **Required subtotal** |**104**|**103**|**207**|
+| Six-form portraits |36|36|36|
+| Four ability icons per bearer |24|24|24|
+| Three personal Masters per bearer |18|18|18|
+| Native/Master status symbols |11|10|10|
+| Six-form signature enemies |6|6|6|
+| Seed-through-Soul materials |6|6|6|
+| Summoning banner/event splash, shared source |1|1|1|
+| Activity header |1|1|1|
+| Arena |1|1|1|
+| **Required subtotal** |**104**|**103**|**103**|
 | Optional equipment illustrations |6|6|12|
 
 All six Moon bearers use the latest matching blue-purple lunar direction.
 The older24 Moon-labeled portraits are **not** delivery for this redesigned
-queue: they belong to the separate War reuse plan. Both event schedules remain
+queue: they belong to the separate War reuse plan. The new104 Moon delivery is
+separately preserved in `Art/source/moon`. Both event schedules remain
 inactive; intake does not implicitly approve activation.
 
 ## 2. Four approved reclaimed War bearers:44 new,24 reused
@@ -57,8 +62,8 @@ The44-image queue remains genuinely undelivered; neutral presentation is used
 while mechanics are integrated. All original source bytes remain archived;
 root duplicates are removed only after archive/export verification.
 
-**Immediate seasonal + reclaimed War queue:207+44 =251 required new images.**
-**With twelve optional seasonal equipment showcases:263.**
+**Immediate seasonal + reclaimed War queue:103+44 =147 required new images.**
+**With twelve optional seasonal equipment showcases:159.**
 
 ## 3. Paused Story:75 named concepts, not release-ready commitments
 
@@ -90,7 +95,7 @@ than assume zero. Current Chapter1 enemies/arenas/map are installed and excluded
 | Enemy style/reference alternatives and Rosetta palette tests |5|[Experiment pack](Enemy%20Style%20Pilot.md); three enemy alternatives and two Rosetta tests, not production replacement|
 
 Production-related optional sources total17 (12+1+4). Experiments add8.
-Do not let those25 obscure the251 seasonal/War requirement.
+Do not let those25 obscure the147 seasonal/War requirement.
 
 ## 5. Excluded completed or non-image work
 
@@ -99,6 +104,7 @@ Do not let those25 obscure the251 seasonal/War requirement.
 - Gates of Oblivion's ten enemies/header/arena, Calamity12 bosses/three chests/
   three arenas, native27 statuses, Chapter1 art and existing universal actions.
 -24 reused War portraits, root duplicate originals and historical source exports.
+-104 installed Moon portraits/icons/Masters/statuses/enemies/materials/scenes.
 - Calendar/gifts/mail/shop/markers: accessible native UI and existing artwork.
 - Living-world UI audit: procedural light/motion and HTML/CSS, **zero newly
   specified Midjourney sources**. Later approved bespoke backgrounds may add scope.
@@ -149,12 +155,12 @@ measurements of our niji6/reference150 workflow.
 
 | Accepted source scope | Lean hours | Working hours | Heavy hours | Additional Fast cost if your current allowance is exhausted |
 |---|---:|---:|---:|---:|
-| 207 seasonal required |6.90|13.80|24.15|$27.60-$96.60|
-| 251 seasonal + reclaimed War required |8.37|16.73|29.28|$33.47-$117.13|
-| 263 including seasonal showcases |8.77|17.53|30.68|$35.07-$122.73|
-| 326 including paused Story |10.87|21.73|38.03|$43.47-$152.13|
-| 343 plus production-related optional concepts |11.43|22.87|40.02|$45.73-$160.07|
-| 351 including all eight experiments |11.70|23.40|40.95|$46.80-$163.80|
+| 103 seasonal required |3.43|6.87|12.02|$13.73-$48.07|
+| 147 seasonal + reclaimed War required |4.90|9.80|17.15|$19.60-$68.60|
+| 159 including seasonal showcases |5.30|10.60|18.55|$21.20-$74.20|
+| 222 including paused Story |7.40|14.80|25.90|$29.60-$103.60|
+| 239 plus production-related optional concepts |7.97|15.93|27.88|$31.87-$111.53|
+| 247 including all eight experiments |8.23|16.47|28.82|$32.93-$115.27|
 
 These extra-time costs **exclude your already-paid subscription**, available
 Fast balance and any earned time. They are not per-image purchase prices or
@@ -167,17 +173,17 @@ guaranteed spending caps.
   time-sensitive or ineligible tasks. Two months =**$60**. Unlimited Relax
   avoids per-generation Fast charges but does not guarantee completion within
   a month or waive task restrictions.
-- **251 images, Fast-only:** a fresh Standard month costs about **$30 lean,
-  $36.93 working, $87.13 heavy** including extra time beyond15 hours. A fresh
+- **147 images, Fast-only:** a fresh Standard month costs about **$30 lean,
+  $30 working, $38.60 heavy** including extra time beyond15 hours. A fresh
   Pro month (**$60**,30 hours) covers these modeled cases; Pro is also the
   option if you want private Stealth generation.
-- **All351 named images/concepts, Fast-only:** fresh Standard approximately
-  **$30 lean, $63.60 working, $133.80 heavy**; fresh Pro approximately
-  **$60 lean/working, $103.80 heavy**. The351 scope includes paused/unapproved
+- **All247 remaining named images/concepts, Fast-only:** fresh Standard approximately
+  **$30 lean, $35.87 working, $85.27 heavy**; fresh Pro approximately
+  **$60 in these modeled cases**. The247 scope includes paused/unapproved
   experiments; do not spend on it indiscriminately.
 - Since you already ran out of time, check your plan/remaining balance and
   whether Relax is available first. The honest incremental Fast-only estimate
-  for251 is roughly **$33-$117**, working estimate **$67**, in extra GPU time.
+  for147 is roughly **$20-$69**, working estimate **$39**, in extra GPU time.
   Your current plan is unknown; an upgrade's exact prorated charge must be
   checked on your account.
 
@@ -190,9 +196,12 @@ Midjourney or another generation service during this audit.
 
 ## Total images needed
 
-**251 required new seasonal/War images;24 War portraits already supplied.**
+**147 required new seasonal/War images;104 Moon sources and24 War portraits installed.**
 
-**263 with optional seasonal equipment.**
+**159 with optional seasonal equipment.**
+
+**222** including paused Story; **239** with production-related options;
+**247** with all experiments.
 
 **326 including all75 paused Story concepts.**
 

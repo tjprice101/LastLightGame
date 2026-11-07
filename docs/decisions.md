@@ -1,5 +1,22 @@
 # Decision log
 
+## Moon delivery, six-character tuning and material amounts (2026-11-07)
+
+**Approved:** archive/install the owner's104 Moon PNGs, offline-clean appropriate
+cutouts and wire existing shared surfaces. Keep scenery opaque and originals
+byte-exact. Intake does not authorize activating Moon/Sunshade schedules or
+granting characters. Review/tune all six Moon kits with measured non-Calamitic
+evidence and concise exact descriptions; no random-tip system.
+
+**Clarified material scope:** reduce future Seed/Bud/Bloom-style and associated
+upgrade-material quantities globally by50%, including Gates of Oblivion.
+Round to nearest whole unit with minimum1 for successful positive quantities.
+Calamity encounter rewards remain unchanged; Calamity chest **material contents**
+receive15% reduction instead. Preserve current holdings, currencies, costs,
+probabilities and nonmaterial chest contents. Existing chest systems are not
+deleted or renamed into enemy rewards. See the [economy](summoning-and-economy.md)
+and [Calamity](calamity-mode.md) contracts for exact current endpoints.
+
 ## Reclaimed War integration and5% final-boss recruitment (2026-11-06)
 
 **Approved:** owner authorizes implementing Neralis, Varkhel, Seravelle and

@@ -185,7 +185,7 @@ describe('Phase8 Null-Prismatica rewards and gated Standard Banner', () => {
       expect(html.match(/data-banner-entry=/g)).toHaveLength(28);
       expect(html).toContain('0.166667% per draw');
       expect(html).not.toContain('disabled');
-      expect(html).toContain('15 Rare materials');
+      expect(html).toContain('8 Rare materials');
       expect(html).not.toContain('All Element-Bearers owned');
     }
     expect(standardBanner.available).toBe(true);

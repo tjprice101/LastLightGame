@@ -11,10 +11,10 @@ import { unitReadout } from './unit-readout';
 import { enemyDebuffs } from './battle-status';
 
 describe('delivered shared elemental status icons', () => {
-  it('serves all 39 real exports with byte-derived revisions and decorative accessible markup', () => {
-    expect(Object.keys(statusArt)).toHaveLength(43);
+  it('serves all 50 real exports with byte-derived revisions and decorative accessible markup', () => {
+    expect(Object.keys(statusArt)).toHaveLength(54);
     const delivered = Object.entries(statusArt).filter(([, path]) => !path.startsWith('data:'));
-    expect(delivered).toHaveLength(39);
+    expect(delivered).toHaveLength(50);
     for (const [id, path] of delivered) {
       const bytes = readFileSync(`public/assets/${path}`);
       const revision = createHash('sha256').update(bytes).digest('hex').slice(0, 16);

@@ -437,9 +437,15 @@ describe('server authoritative game engine', () => {
     const result = op(game, { kind: 'summon', bannerId });
     expect(result.response.summon?.entry.kind).toBe('material');
     expect(result.response.summon?.materials?.id).toMatch(/-rare$/);
-    expect(result.response.summon?.materials?.amount).toBe(3);
+    expect(result.response.summon?.materials?.amount).toBe(2);
     expect(result.game.account.capturedCharacters).toBeUndefined();
     expect(validateGameResponse(result.response)).toEqual(result.response);
+    const historicalMaterial = structuredClone(result.response);
+    delete historicalMaterial.summon!.materialRewardVersion;
+    historicalMaterial.summon!.materials!.amount = 3;
+    if (historicalMaterial.summon!.entry.kind !== 'material') throw new Error('Historical material entry is missing.');
+    historicalMaterial.summon!.entry.amount = 3;
+    expect(validateGameResponse(historicalMaterial)).toEqual(historicalMaterial);
     const materials = result.response.summon!.materials!;
     for (const patch of [undefined, { ...materials, amount: 0 }, { ...materials, amount: 15 },
       { ...materials, id: 'infernic-omnic' }, { ...materials, id: 'rosethorn-epic' }]) {
@@ -450,10 +456,15 @@ describe('server authoritative game engine', () => {
     for (const entry of entries) if (entry.kind === 'character') owned.account.characters[entry.id] = { level: 0, evolution: 1 };
     owned.account.bannerPity = { [bannerId]: { highestStar: 79, unownedHighestStar: 149 } };
     const duplicate = op(owned, { kind: 'summon', bannerId });
-    expect(duplicate.response.summon?.materials?.amount).toBe(15);
+    expect(duplicate.response.summon?.materials?.amount).toBe(8);
     expect(duplicate.response.summon?.materials?.id).toMatch(/-rare$/);
     expect(duplicate.response.summon?.copy).toBeUndefined();
     expect(validateGameResponse(duplicate.response)).toEqual(duplicate.response);
+    const historicalDuplicate = structuredClone(duplicate.response);
+    historicalDuplicate.summon!.materials!.amount = 15;
+    expect(() => validateGameResponse(historicalDuplicate)).toThrow('incomplete');
+    delete historicalDuplicate.summon!.materialRewardVersion;
+    expect(validateGameResponse(historicalDuplicate)).toEqual(historicalDuplicate);
     expect(owned.account.bannerPity?.[bannerId]?.highestStar).toBe(79);
     expect(duplicate.game.account.bannerPity?.[bannerId]?.highestStar).toBe(0);
   });
@@ -471,7 +482,7 @@ describe('server authoritative game engine', () => {
       const roll = entries.slice(0, index).reduce((total, entry) => total + entry.chance, 0) + entry.chance / 2;
       const result = resolveOperation(game, { kind: 'summon', bannerId }, { ...entropy, random: () => roll });
       expect(result.response.summon?.duplicate).toBe(true);
-      expect(result.response.summon?.materials?.amount).toBe(15);
+      expect(result.response.summon?.materials?.amount).toBe(8);
       expect(result.game.account.bannerPity?.[bannerId]?.highestStar).toBe(game.account.bannerPity[bannerId]!.highestStar + 1);
       const other = bannerId === 'standard' ? 'roses' : 'standard';
       expect(result.game.account.bannerPity?.[other]).toEqual(game.account.bannerPity[other]);

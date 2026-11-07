@@ -509,7 +509,8 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
         calamityOpening = { id: reward.id, name: reward.name, fractalis: reward.fractalis, lycalis: reward.lycalis,
           materials: reward.materials, conduits: reward.conduits, mechanicalComponents: reward.mechanicalComponents,
           calamiticTokens: reward.calamiticTokens, masterChests: reward.masterChests,
-          devourerCopies: reward.devourerCopies, calamiticMaterialVersion: reward.calamiticMaterialVersion };
+          devourerCopies: reward.devourerCopies, calamiticMaterialVersion: reward.calamiticMaterialVersion,
+          materialRewardVersion: reward.materialRewardVersion };
         break;
       }
       case 'equipMasterConduit': equipMasterConduit(storage, operation.character, operation.conduit); break;

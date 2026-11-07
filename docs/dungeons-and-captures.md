@@ -1,5 +1,17 @@
 # Dungeons and captured enemies
 
+## Future material quantities (2026-11-07)
+
+The [economy reduction](summoning-and-economy.md#future-material-reward-reduction-2026-11-07)
+supersedes earlier awarded endpoints below. Roll the unchanged authored curve,
+then save `max(1, round(quantity * .5))`, once per material reward.
+Opening1-2 becomes1; final family ranges become5-6/4/3-4/2-3/2/1-2.
+Soar/Delve final evolution7-8 becomes4, leveling8-10 becomes4-5.
+Rounding preserves original draw probabilities, including collapsed bounds.
+All unlocks, currencies, captures, costs and existing holdings remain unchanged.
+Calamity chest materials instead reduce15%; their evolution9 becomes8 and
+leveling10-20 becomes9-17. No encounter or nonmaterial chest rewards change.
+
 ## Modest material staircase (D-430)
 
 Owner approves adjacent-stage plateaus instead of guaranteed+1 every stage.

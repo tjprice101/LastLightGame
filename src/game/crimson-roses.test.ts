@@ -203,14 +203,14 @@ describe('Passion of Crimson Roses integration', () => {
     const first = infusionLoot('roses', 1).specialties;
     expect(first.map(drop => drop.id)).toEqual(roseMaterials.slice(0, 5).map(material => material.id));
     expect(first.map(drop => [drop.minimum, drop.maximum, drop.chance]))
-      .toEqual(Array.from({ length: 5 }, () => [1, 2, 1]));
+      .toEqual(Array.from({ length: 5 }, () => [1, 1, 1]));
     const final = infusionLoot('roses', 35).specialties;
-    expect(final.map((drop) => [drop.minimum, drop.maximum])).toEqual([[10, 12], [7, 8], [6, 7], [4, 5], [3, 4], [2, 3]]);
+    expect(final.map((drop) => [drop.minimum, drop.maximum])).toEqual([[5, 6], [4, 4], [3, 4], [2, 3], [2, 2], [1, 2]]);
     expect(final.map((drop) => drop.chance)).toEqual([1, 1, 1, 1, 1, 1]);
     expect(infusionLoot('roses', 9).specialties).toHaveLength(5);
     expect(infusionLoot('roses', 10).specialties).toHaveLength(6);
     expect(materialLoot('infernic', 35).map(drop => [drop.minimum, drop.maximum]))
-      .toEqual([[10, 12], [7, 8], [6, 7], [4, 5], [3, 4], [2, 3]]);
+      .toEqual([[5, 6], [4, 4], [3, 4], [2, 3], [2, 2], [1, 2]]);
     for (let stage = 1; stage <= 35; stage++) {
       const encounter = infusionEncounter('roses', stage);
       const creature = getCreature(`infusion:roses:${encounter.tier}`);
@@ -222,7 +222,7 @@ describe('Passion of Crimson Roses integration', () => {
           return [[Math.round(1 + (minimum - 1) * progress), Math.round(2 + (maximum - 2) * progress)]];
         });
       expect(infusionLoot('roses', stage).specialties.map(drop => [drop.minimum, drop.maximum, drop.chance]))
-        .toEqual(ranges.map(([minimum, maximum]) => [minimum, maximum, 1]));
+        .toEqual(ranges.map(([minimum, maximum]) => [Math.max(1, Math.round(minimum / 2)), Math.max(1, Math.round(maximum / 2)), 1]));
       if (stage > 1) {
         const previous = infusionLoot('roses', stage - 1).specialties;
         previous.forEach((drop, tier) => {
@@ -269,7 +269,7 @@ describe('Passion of Crimson Roses integration', () => {
       if (stage === 35) {
         expect(rewards[0].amount).toBeGreaterThanOrEqual(750);
         expect(rewards[0].amount).toBeLessThanOrEqual(1500);
-        expect(saved.materials['rosethorn-legendary']).toBeGreaterThanOrEqual(3);
+        expect(saved.materials['rosethorn-legendary']).toBe(2);
       }
     }
   });
@@ -399,8 +399,8 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     const second = summonCharacter(store.saved, () => roll, 'roses');
     expect(store.writes()).toBe(2);
     expect(second.copy).toBeUndefined();
-    expect(second.materials).toEqual({ id: 'rosethorn-rare', amount: 15 });
-    expect(second.account.materials['rosethorn-rare']).toBe(1015);
+    expect(second.materials).toEqual({ id: 'rosethorn-rare', amount: 8 });
+    expect(second.account.materials['rosethorn-rare']).toBe(1008);
     expect(second.account.lycalis).toBe(980);
     expect(second.account.bannerPity?.standard).toBeUndefined();
     expect(second.account.characters[character.id]).toEqual(first.account.characters[character.id]);
@@ -589,7 +589,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     expect(html).not.toContain('5-star tier: 1%');
     for (const id of ['rosetta', 'thornia', 'crinso']) expect(html).toContain(`data-banner-entry="${id}" data-entry-stars="6"`);
     expect(html).not.toContain('Thornia and Crinso do not reset');
-    expect(html).toContain('15 Rare Rosethorn materials');
+    expect(html).toContain('8 Rare Rosethorn materials');
     expect(html).toContain('6 Soul of Rosethorn');
     expect(html).toContain('assets/banners/roses-banner.png');
     expect(html).toContain('assets/banners/summon-roses.png');

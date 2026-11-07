@@ -7,6 +7,7 @@ import { roseMaterials } from './roses';
 import { calamiticCharacterByTier } from './calamitic-characters';
 import { getStarter } from './starters';
 import { enemyCaptureAllowed, isInfusionMode } from './infusions';
+import { materialRewardAmount, materialRewardRange, rollDrop, type ScaledDrop } from './loot-random';
 
 export type CalamityActivityId = ElementId | 'treasury' | 'sanctuary' | 'heavens' | 'abyss' | 'machines' | 'roses';
 export type CalamityTier = 1 | 2 | 3;
@@ -61,7 +62,8 @@ export function calamityChest(activity: CalamityActivityId, tier: CalamityTier) 
     devourerCopies: isInfusionMode(activity) && enemyCaptureAllowed(activity, 120)
       ? { creatureId: `infusion:${activity}:5`, amount: tier } : null,
     componentRange: activity === 'machines' ? { min: [3_000, 5_000, 10_000][tier - 1], max: [6_000, 8_000, 12_000][tier - 1] } : null,
-    guaranteedMaterials };
+    guaranteedMaterials: Object.fromEntries(Object.entries(guaranteedMaterials)
+      .map(([id, amount]) => [id, materialRewardAmount(amount, .85)])) };
 }
 
 export interface CalamityLootRow {
@@ -71,9 +73,14 @@ export interface CalamityLootRow {
   max: number;
   kind: 'fractalis' | 'lycalis' | 'material' | 'conduit' | 'components';
   id?: string;
+  quantitySource?: ScaledDrop['quantitySource'];
+}
+function chestMaterialRow(row: CalamityLootRow): CalamityLootRow {
+  const drop = materialRewardRange({ minimum: row.min, maximum: row.max, chance: 1 }, .85);
+  return { ...row, min: drop.minimum, max: drop.maximum, quantitySource: drop.quantitySource };
 }
 function materialRows(ids: readonly { id: string; name: string }[]): CalamityLootRow[] {
-  return ids.map((material, index) => ({ label: material.name, id: material.id, kind: 'material',
+  return ids.map((material, index) => chestMaterialRow({ label: material.name, id: material.id, kind: 'material',
     weight: [10, 15, 25, 25, 15, 10][index], min: [30, 20, 15, 10, 6, 3][index], max: [60, 40, 30, 20, 12, 6][index] }));
 }
 export function calamityLootTable(activity: CalamityActivityId): CalamityLootRow[] {
@@ -103,7 +110,7 @@ export function calamityLootTable(activity: CalamityActivityId): CalamityLootRow
         id: `${activity}-evolution`, kind: 'material', weight: 50, min: 9, max: 9 },
       { label: activity === 'heavens' ? 'Chalice of the Undying Dawn' : 'Hourglass of Endless Wrath',
         id: `${activity}-level`, kind: 'material', weight: 50, min: 10, max: 20 },
-    ];
+    ].map(row => chestMaterialRow({ ...row, kind: 'material' }));
   }
   return materialRows(materialRarities.map(rarity => ({
     id: `${activity}-${rarity.toLowerCase()}`, name: `${calamityActivity(activity).name} ${rarity} Material`,
@@ -122,6 +129,7 @@ export interface CalamityOpening {
   roseliusCopies?: number;
   devourerCopies?: { creatureId: string; amount: number } | null;
   calamiticMaterialVersion?: 1;
+  materialRewardVersion?: 1;
 }
 export function rollCalamityChest(activity: CalamityActivityId, tier: CalamityTier, roll: () => number,
   owned: Readonly<Partial<Record<ConduitId, number>>> = {}): CalamityOpening {
@@ -129,7 +137,7 @@ export function rollCalamityChest(activity: CalamityActivityId, tier: CalamityTi
   const reward: CalamityOpening = { id: chest.id, name: chest.name, fractalis: chest.fractalis,
     lycalis: chest.lycalis, calamiticTokens: chest.calamiticTokens, masterChests: chest.masterChests,
     materials: { ...chest.guaranteedMaterials }, conduits: {}, mechanicalComponents: 0, devourerCopies: chest.devourerCopies,
-    calamiticMaterialVersion: 1 };
+    calamiticMaterialVersion: 1, materialRewardVersion: 1 };
   const table = calamityLootTable(activity);
   const random = () => {
     const value = roll();
@@ -146,7 +154,10 @@ export function rollCalamityChest(activity: CalamityActivityId, tier: CalamityTi
     let pick = random() * totalWeight;
     const row = table.find(entry => { pick -= entry.weight; return pick < 0; }) ?? table[table.length - 1];
     const quantityRoll = random();
-    const amount = row.min + Math.floor(quantityRoll * (row.max - row.min + 1));
+    const amount = row.kind === 'material'
+      ? rollDrop({ minimum: row.min, maximum: row.max, chance: 1, quantitySource: row.quantitySource }, () => quantityRoll)
+      : row.min + Math.floor(quantityRoll * (row.max - row.min + 1));
+    if (amount === undefined) throw new Error('Guaranteed Calamity bundle did not drop.');
     if (row.kind === 'fractalis' || row.kind === 'lycalis') reward[row.kind] += amount;
     else if (row.kind === 'components') reward.mechanicalComponents += amount;
     else if (row.kind === 'material' && row.id) reward.materials[row.id] = (reward.materials[row.id] ?? 0) + amount;

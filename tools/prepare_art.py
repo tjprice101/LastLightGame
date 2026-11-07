@@ -137,6 +137,16 @@ def supplied_cutout(asset_id):
 
 
 def prepare_sprite(source, asset_id, canvas_size=CANVAS_SIZE, content_size=CONTENT_SIZE, **matte_options):
+    from intake_moon_art import reviewed_source as moon_source
+    moon = moon_source(asset_id)
+    if moon:
+        from intake_moon_art import prepare, SETTINGS
+        import json
+        from io import BytesIO
+        settings = json.loads(SETTINGS.read_text(encoding="utf-8"))
+        with Image.open(BytesIO(prepare(moon[0], settings[asset_id], moon[1],
+                                       canvas_size, content_size))) as image:
+            return image.copy()
     from intake_phase2_war_art import reviewed_source as phase2_source
     phase2 = phase2_source(asset_id)
     if phase2:

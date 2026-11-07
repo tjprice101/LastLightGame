@@ -13,7 +13,7 @@ import { infusionEnemyElements, treasurySalePrices, sanctuarySalePrices, special
 import { elementLabel } from './element-label';
 import { information, informationTopics } from './information';
 import { itemShowcase } from './item-showcase';
-import { roseEvent, roseEventRules } from './rose-event';
+import { roseEvent, roseEventRules, moonEvent } from './rose-event';
 import { machineRules, machineRulesText, machineDropRatesText } from '../content/machines';
 import { machineLootFocus } from './machine-loot-focus';
 import { activityBanner } from './activity-banner';
@@ -95,10 +95,10 @@ function gameplayInformation(): string {
     { id: 'story', title: 'Story', summary: `Six regions, ${storyRules.stages} stages`, content: `<p>${storyPurpose}</p><p>${storyRulesText}</p>` },
     { id: 'training', title: 'Training', summary: 'Endless battles for Prismatica', content: `<p>Endless waves with your saved squad, starting at wave 1. Enemies cap at Lv.120.</p>
       <p>Prismatica per kill: 5-10 at Lv.1 to 300-600 at Lv.120. No materials, captures or Null-Prismatica.</p>` },
-    { id: 'dungeons', title: 'Elemental dungeons', summary: 'Upgrade materials by element', content: `<p>${elementalDungeonRules.stages} stages, Lv.${elementalDungeonRules.startingLevel}-${elementalEnemyLevel(elementalDungeonRules.maximumLevelStage)}. Every unlocked material rarity is guaranteed. Each material starts at 1-2 when unlocked and grows linearly to its final range. Prismatica grows linearly from 5-10 to 300-600. No final-boss reward multiplier. No captures or Null-Prismatica.</p>
+    { id: 'dungeons', title: 'Elemental dungeons', summary: 'Upgrade materials by element', content: `<p>${elementalDungeonRules.stages} stages, Lv.${elementalDungeonRules.startingLevel}-${elementalEnemyLevel(elementalDungeonRules.maximumLevelStage)}. Every unlocked material rarity is guaranteed. Each material starts at 1 when unlocked and grows linearly to its final range. Prismatica grows linearly from 5-10 to 300-600. No final-boss reward multiplier. No captures or Null-Prismatica.</p>
       <p>Collections lists exact drop tables for defeated Elemental-Devourers.</p>` },
     { id: 'infusion', title: 'Evolution infusion', summary: 'Evolution materials from Heaven and Abyss', content: `<p>${infusionModeStageCount} stages, Lv.50-120. Form 3 from Lv.${infusionFormLevel(2)}, Form 4 from Lv.${infusionFormLevel(3)}, Form 5 from Lv.${infusionFormLevel(4)}.</p>
-      <p>Both specialty materials drop from Stage 1. Evolution materials grow from 1-2 to 7-8 per enemy; leveling materials grow from 1-2 to 8-10. No weapon or elemental materials drop.</p>
+      <p>Both specialty materials drop from Stage 1. Evolution materials grow from 1 to 4 per enemy; leveling materials grow from 1 to 4-5. No weapon or elemental materials drop.</p>
       <p>Null-Prismatica from Lv.80: 8% for 1, 1.5% for 2, 0.5% for 3, rising to 10%, 10% and 5% at Lv.120. The stage ${infusionModeStageCount} boss gives 5, 10 or 15 at the same chances.</p>
       <p>50% capture chance per enemy. Captures keep their form and skills, up to Lv.60.</p>
       <ul>${infusionModes.map((mode) => `<li><strong>${mode.name}</strong>: ${elementLabel(infusionEnemyElements[mode.id])} enemies. Materials support: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</li>`).join('')}</ul>` },
@@ -209,7 +209,7 @@ export function gameplayHub(account: Account | null = emptyAccount(), eventAcces
     <section class="activity-group" id="gameplay-story"><h2>Story</h2>
       ${storyCampaign(account, account ? ownedCharacters(account)[0] ?? 'ember' : 'ember', false)}
       </section>
-    <section class="activity-group" id="gameplay-events"><h2>Events</h2>${roseEvent(account, false, eventAccess)}</section></div>`;
+    <section class="activity-group" id="gameplay-events"><h2>Events</h2>${roseEvent(account, false, eventAccess)}${moonEvent(account, eventAccess)}</section></div>`;
 }
 
 export function bindGameplayNavigation(host: HTMLElement): void {

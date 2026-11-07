@@ -6,7 +6,9 @@ Owner requests both full banners/activities and remaining QoL/social phases
 without waiting for Midjourney artwork. All twelve new Element-Bearers are
 **six-star**. This supersedes the earlier four5-star/two6-star distribution;
 gender balance, identities, six forms, approved appearances and kits remain.
-Flagged kit coefficients remain unchanged. No new art is delivered.
+Flagged kit coefficients remain unchanged after measured Moon review. All104
+Moon sources are installed; Sunshade remains art-pending. See
+[reviewed intake](art-workflow.md#delivered-moon-artwork-2026-11-07).
 Both events stay **inactive with no scheduled window until explicit launch
 approval**. Never interpret an empty schedule as an event that already ended.
 

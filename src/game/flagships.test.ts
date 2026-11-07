@@ -99,7 +99,7 @@ describe('playable flagship roster', () => {
     expect(duplicate.duplicate).toBe(true);
     expect(duplicate.copy).toBeUndefined();
     expect(duplicate.materials?.id).toMatch(/-rare$/);
-    expect(duplicate.materials?.amount).toBe(15);
+    expect(duplicate.materials?.amount).toBe(8);
     expect(duplicate.account.characters[character.id]).toEqual(result.account.characters[character.id]);
   });
   it('shares leveling, evolution routes, squad saves and gear without granting resources', () => {

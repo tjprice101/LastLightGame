@@ -18,7 +18,7 @@ const profile: OnlineProfileDisplay = {
 };
 
 describe('online Material Exchange and Cosmetic Store', () => {
-  it('lists all event-family copies as art-neutral, schedule-gated products with copy selectors', () => {
+  it('lists all event-family copies with delivered Moon art and unchanged schedule-gated selectors', () => {
     document.body.innerHTML = onlineStores(emptyAccount(), null, 'event-devourers');
     const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-buy-event-devourer]'));
     expect(buttons).toHaveLength(18);
@@ -31,8 +31,10 @@ describe('online Material Exchange and Cosmetic Store', () => {
     expect(document.querySelectorAll('.event-devourer-card[data-event="sunshade"]')).toHaveLength(6);
     expect(document.querySelectorAll('.event-devourer-card[data-event="roses"]')).toHaveLength(6);
     expect(document.querySelectorAll('.event-devourer-card[data-creature]')).toHaveLength(18);
-    expect(eventDevourers.filter(product => product.eventId !== 'roses')
+    expect(eventDevourers.filter(product => product.eventId === 'sunshade')
       .every(product => product.creature.art == null)).toBe(true);
+    expect(eventDevourers.filter(product => product.eventId === 'moon')
+      .every(product => product.creature.art?.startsWith('moon-vesperwing-'))).toBe(true);
     expect(eventDevourers.filter(product => product.eventId === 'moon')).toHaveLength(6);
     expect(eventDevourers.filter(product => product.eventId === 'sunshade')).toHaveLength(6);
     expect(eventDevourers.filter(product => product.eventId === 'roses')).toHaveLength(6);

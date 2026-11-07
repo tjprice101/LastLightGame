@@ -1,5 +1,38 @@
 # Summoning and economy
 
+## Future material reward reduction (2026-11-07)
+
+Owner clarifies the global50% reduction applies to **future material rewards**,
+not currencies, costs or existing holdings. Ordinary elemental, Rosethorn,
+Moonwake, Dawnforge and Gates of Oblivion material families, Soar/Delve
+specialties, Story materials and material banner outcomes use
+`max(1, round(authoredReward * .5))` for each successful positive reward.
+Authored quantity curves and quantity draws are retained, then reduced once;
+rounded visible bounds are not resampled as a new uniform distribution.
+Banner Common/Uncommon/Rare amounts are5/3/2; duplicate Rare bundles are8.
+These are saved rewards, not reductions applied when spending or reading holdings.
+
+Calamity **encounter** rewards remain unchanged. Only material contents of
+Calamity chests use `.85` instead of `.5`, per selected material bundle;
+guaranteed material quantities use the same nearest-whole/minimum1 rule.
+Bundles3/5/7, sealed/Master chest counts, currencies, components, Conduits,
+tokens and copies are unchanged. Other defeated-enemy reward sources are still
+ordinary rewards, not new chest systems. Fragment of Rise remains unchanged.
+
+Shared tables drive kills, account validation, Collections and authority.
+Unlocks, drop/capture/recruitment odds, RNG streams/draw counts, receipts,
+save atomicity and all previously saved holdings/outcomes remain intact.
+No migration, load write, compensation or additional reward roll is introduced.
+New material summon/chest receipts carry `materialRewardVersion:1`; unmarked
+historical cached receipts retain their authored amounts and validate without
+rerolling. The marker versions reward responses, not wallets/holdings.
+Single- and10-pull reward presentation follows the same distinction, displaying
+saved historical quantities instead of rejecting or recomputing them. Invalid
+version markers, mismatched amounts and markers without materials fail explicitly.
+This overrides older reward endpoint claims below, not authored costs.
+Validate with `src\content\material-rewards.test.ts` and the focused dungeon,
+infusion, Story, Gates, banner, Calamity account/authority and loot parity suites.
+
 ## Elemental War recruitment override (2026-11-06)
 
 Every War trial now has5% recruitment chance on each Stage10 final-boss clear,

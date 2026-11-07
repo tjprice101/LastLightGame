@@ -343,9 +343,10 @@ function cleanseOne(target: Combatant, choice?: CleanseChoice): boolean {
 function changeCultivationPath(state: BattleState, owner: Combatant, path: NonNullable<NativeKitState['path']>, events: BattleEvent[]): void {
   const memory = nativeMemory(owner);
   if (memory.path && memory.path !== path)
-    memory.promise = Math.min(3, (memory.promise ?? 0) + 1);
+    memory.promise = Math.min(equipped(owner, 'master-asteriel-1') ? 4 : 3, (memory.promise ?? 0) + 1);
   memory.path = path;
-  status(state, events, owner, owner, `${owner.name}: ${path === 'shelter' ? 'Shelter' : 'Flourish'} path${memory.promise ? ` · Promise ${memory.promise}/3` : ''}.`);
+  const capacity = equipped(owner, 'master-asteriel-1') ? 4 : 3;
+  status(state, events, owner, owner, `${owner.name}: ${path === 'shelter' ? 'Shelter' : 'Flourish'} path${memory.promise ? ` · Promise ${memory.promise}/${capacity}` : ''}.`);
 }
 
 function setMoonflower(owner: Combatant, target: Combatant, bonus: number, throughRound: number): void {
@@ -1442,10 +1443,13 @@ export function nativeAfterAction(state: BattleState, owner: Combatant, action: 
       const source = living(state).find(unit => unit.id === signal.owner && unit.definitionId === 'vespera');
       if (source) {
         const memory = nativeMemory(source);
-        memory.beacon = Math.min(equipped(source, 'master-vespera-1') ? 4 : 3, (memory.beacon ?? 0) + 1);
+        const gained = guardOnce(source, 'beacon', state.round);
+        if (gained) memory.beacon = Math.min(equipped(source, 'master-vespera-1') ? 4 : 3,
+          (memory.beacon ?? 0) + 1);
         if (equipped(source, 'master-vespera-3') && guardOnce(source, `signal-gauge:${state.round}`, state.round))
           nativeGauge(state, owner, 10, events);
-        status(state, events, source, owner, `${source.name}'s Signal is spent; Beacon ${memory.beacon}/${equipped(source, 'master-vespera-1') ? 4 : 3}.`);
+        status(state, events, source, owner, `${source.name}'s Signal is spent${
+          gained ? `; Beacon ${memory.beacon}/${equipped(source, 'master-vespera-1') ? 4 : 3}` : ''}.`);
       }
     }
     const moonflower = owner.native?.moonflower;
@@ -1680,6 +1684,22 @@ export function nativeDirectHpLoss(state: BattleState, target: Combatant, loss: 
     memory.wounds = (memory.wounds ?? 0) + loss;
     if (memory.bastion?.throughPhase === state.round) memory.bastion.loss += loss;
     status(state, events, target, target, `${target.name} banks ${memory.wounds} Wounds.`, memory.wounds);
+  }
+}
+
+export function nativeDirectShieldAbsorbed(state: BattleState, target: Combatant, amount: number,
+  events: BattleEvent[]): void {
+  if (target.side !== 'ally' || amount <= 0) return;
+  for (const owner of living(state).filter(unit => unit.definitionId === 'maerion' &&
+    equipped(unit, 'master-maerion-1'))) {
+    const memory = nativeMemory(owner);
+    const capacity = owner.stats.health * .85;
+    const stored = Math.min(capacity, (memory.unreturned ?? 0) + amount);
+    const gained = stored - (memory.unreturned ?? 0);
+    memory.unreturned = stored;
+    if (gained > 0) status(state, events, owner, target,
+      `${owner.name} records ${gained} direct Shield absorption as Unreturned (${Math.round(stored)}/${Math.round(capacity)}).`,
+      gained);
   }
 }
 
@@ -2048,12 +2068,14 @@ export function nativeMarkers(state: BattleState, unit: Combatant): NativeMarker
       if (memory.repair?.[unit.id])
         markers.push({ id: 'repair', owner: owner.id, label: 'Repair',
           value: `${Math.round(memory.repair[unit.id].amount)} heals on player turn ${memory.repair[unit.id].dueRound}` });
-      if (unit.native?.signal)
+      if (unit.native?.signal && unit.native.signal.throughRound >= state.round)
         markers.push({ id: 'signal', owner: unit.native.signal.owner, label: 'Signal',
-          value: `next damaging Skill or Last Flare +${Math.round(unit.native.signal.bonus * 100)}% · through player turn ${unit.native.signal.throughRound}` });
-      if (unit.native?.moonflower)
+          value: `next damaging Skill or Last Flare +${Math.round(unit.native.signal.bonus * 100)}% · through player turn ${unit.native.signal.throughRound}`,
+          icon: 'moon-vespera-signal' });
+      if (unit.native?.moonflower && unit.native.moonflower.throughRound >= state.round)
         markers.push({ id: 'moonflower', owner: unit.native.moonflower.owner, label: 'Moonflower',
-          value: `next damaging Skill or Last Flare +${Math.round(unit.native.moonflower.bonus * 100)}% · through player turn ${unit.native.moonflower.throughRound}` });
+          value: `next damaging Skill or Last Flare +${Math.round(unit.native.moonflower.bonus * 100)}% · through player turn ${unit.native.moonflower.throughRound}`,
+          icon: 'moon-asteriel-moonflower' });
       if (unit.native?.openRoute)
         markers.push({ id: 'open-route', owner: unit.native.openRoute.owner, label: 'Open Route',
           value: `next damaging Skill or Last Flare ignores ${Math.round(unit.native.openRoute.pierce * 100)}% Defense · through player turn ${unit.native.openRoute.throughRound}` });
@@ -2061,7 +2083,8 @@ export function nativeMarkers(state: BattleState, unit: Combatant): NativeMarker
         markers.push({ id: 'accord', owner: unit.native.accord.owner, label: 'Accord', value: `boost against Terms · through player turn ${unit.native.accord.throughRound}` });
       if (unit.native?.ceasefire && unit.native.ceasefire.throughPhase >= state.round)
         markers.push({ id: 'ceasefire', owner: unit.native.ceasefire.owner, label: 'Ceasefire',
-          value: `${unit.native.ceasefire.charges ? 'next direct hit' : 'spent'} −${Math.round(unit.native.ceasefire.fraction * 100)}% · through enemy phase ${unit.native.ceasefire.throughPhase}` });
+          value: `${unit.native.ceasefire.charges ? 'next direct hit' : 'spent'} −${Math.round(unit.native.ceasefire.fraction * 100)}% · through enemy phase ${unit.native.ceasefire.throughPhase}`,
+          icon: 'moon-serapha-ceasefire' });
       if (unit.native?.lead && unit.native.lead.throughPhase >= state.round)
         markers.push({ id: 'lead', owner: unit.native.lead.owner, label: 'Lead',
           value: `enemy direct damage −${Math.round(unit.native.lead.fraction * 100)}% · through enemy phase ${unit.native.lead.throughPhase}` });
@@ -2120,6 +2143,40 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
     add('Crosscut', `${memory.crosscut ?? 0}/${phase2CounterCap(unit, 1)}`,
       `Ordinary Skill sequence: ${memory.previousSkill ?? 'not started'}. Only alternating ordinary Skills add Crosscut; Last Flare spends it.`,
       ['native-phase2-crosscut'], true);
+  if (unit.definitionId === 'maerion') {
+    const capacity = unit.stats.health * (equipped(unit, 'master-maerion-1') ? .85 : .45);
+    const recordsShieldAbsorption = equipped(unit, 'master-maerion-1');
+    add('Unreturned', `${Math.round(memory.unreturned ?? 0)}/${Math.round(capacity)}`,
+      `Stores allies’ actual direct Health loss${recordsShieldAbsorption ? ' and direct Shield absorption' : ''} while Maerion lives; redirected damage and damage-over-time do not count. Skill2 and Last Flare spend it.`,
+      ['moon-maerion-unreturned'], true);
+  }
+  if (unit.definitionId === 'caevren')
+    add('Load', `${memory.load ?? 0}/${equipped(unit, 'master-caevren-1') ? 5 : 3}`,
+      'Gain 1 when an enemy direct attack damages Caevren’s Health or Shield, once per enemy phase. Redirected hits count; Last Flare spends Load.',
+      ['moon-caevren-load'], true);
+  if (unit.definitionId === 'vespera')
+    add('Beacon', `${memory.beacon ?? 0}/${equipped(unit, 'master-vespera-1') ? 4 : 3}`,
+      'Gain 1 when another living ally spends Vespera’s Signal, once per player turn. Last Flare spends Beacon.',
+      ['moon-vespera-beacon'], true);
+  if (unit.definitionId === 'ilyss')
+    add('Severance', `${memory.severance ?? 0}/${equipped(unit, 'master-ilyss-1') ? 4 : 3}`,
+      'Gain 1 when Ilyss removes one Burn or Weaken application with a Skill or Last Flare, once per player turn. Last Flare spends Severance.',
+      ['moon-ilyss-severance'], true);
+  if (unit.definitionId === 'asteriel') {
+    add('Promise', `${memory.promise ?? 0}/${equipped(unit, 'master-asteriel-1') ? 4 : 3}`,
+      'Switching between Shelter and Flourish grants 1 Promise. Last Flare spends Promise and preserves the current path.',
+      ['moon-asteriel-promise'], true);
+    const path = memory.path;
+    const pathIcon = path === 'shelter' ? 'moon-asteriel-shelter'
+      : path === 'flourish' ? 'moon-asteriel-flourish' : undefined;
+    add('Cultivation Path', path === 'shelter' ? 'Shelter' : path === 'flourish' ? 'Flourish' : 'None',
+      'Skill1 enters Shelter and shields the squad; Skill2 enters Flourish and gives the squad Moonflower.',
+      pathIcon ? [pathIcon] : [], true);
+  }
+  if (unit.definitionId === 'serapha')
+    add('Interval', `${memory.interval ?? 0}/${equipped(unit, 'master-serapha-1') ? 4 : 3}`,
+      'Gain 1 when an enemy carrying Serapha’s Weaken makes a direct attack, once per enemy phase. Last Flare spends Interval.',
+      ['moon-serapha-interval'], true);
   for (const [id, mark] of Object.entries(memory.fateMarks ?? {})) if (mark.throughPhase >= state.round)
     add('Fate-seared Mark', `${mark.stacks}/5`, `${state.enemies.find(enemy => enemy.id === id)?.name}; +${mark.stacks * 10}% damage taken and +45% Severed Prophecy; through enemy phase ${mark.throughPhase}.`, ['calamitic-fate-mark']);
   for (const [id, faults] of Object.entries(memory.faults ?? {}))
@@ -2172,28 +2229,6 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
     `Shared durability through enemy phase ${memory.foundation.throughPhase}.`, ['native-orvella-foundation']);
   if (unit.definitionId === 'razor') add('Wounds', `${Math.round(memory.wounds ?? 0)}`,
     'Stored from direct enemy HP loss.', ['native-razor-wounds']);
-  if (unit.definitionId === 'maerion') {
-    const capacity = unit.stats.health * (equipped(unit, 'master-maerion-1') ? .85 : .45);
-    add('Unreturned', `${Math.round(memory.unreturned ?? 0)}/${Math.round(capacity)}`,
-      'Direct Health damage taken by allies; redirected damage and damage-over-time are excluded. Crescent Triage spends none; Ferry and Last Flare spend the stored amount.');
-  }
-  if (unit.definitionId === 'caevren')
-    add('Load', `${memory.load ?? 0}/${equipped(unit, 'master-caevren-1') ? 5 : 3}`,
-      'Gain one when an enemy direct attack damages Caevren’s Health or Shield, once per enemy phase. Counterweight Covenant and Last Flare spend Load.');
-  if (unit.definitionId === 'vespera')
-    add('Beacon', `${memory.beacon ?? 0}/${equipped(unit, 'master-vespera-1') ? 4 : 3}`,
-      'Gain one when another living ally spends Vespera’s Signal, once per player turn. Last Flare spends Beacon.');
-  if (unit.definitionId === 'ilyss')
-    add('Severance', `${memory.severance ?? 0}/${equipped(unit, 'master-ilyss-1') ? 4 : 3}`,
-      'Gain when Skills or Last Flare remove Burn or Weaken, once per player turn. Last Flare spends Severance.');
-  if (unit.definitionId === 'asteriel') {
-    add('Cultivation', memory.path ? memory.path[0].toUpperCase() + memory.path.slice(1) : 'Unchosen',
-      'Skill1 enters Shelter; Skill2 enters Flourish. Changing between paths grants one Promise.');
-    add('Promise', `${memory.promise ?? 0}/3`, 'Earned by changing cultivation path; Last Flare spends Promise.');
-  }
-  if (unit.definitionId === 'serapha')
-    add('Interval', `${memory.interval ?? 0}/${equipped(unit, 'master-serapha-1') ? 4 : 3}`,
-      'Gain when an enemy carrying Serapha’s Weaken uses a direct attack, once per enemy phase. Last Flare spends Interval.');
   if (unit.definitionId === 'rhaziel') for (const [id, repair] of Object.entries(memory.repair ?? {}))
     add('Repair', `${Math.round(repair.amount)}`, `${state.allies.find(ally => ally.id === id)?.name}; due player turn ${repair.dueRound}.`);
   if (unit.definitionId === 'oryn') {

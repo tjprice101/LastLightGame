@@ -1,5 +1,5 @@
 import { elementalMaterials, dungeonStageCount, elementalEnemyLevel, infusionStageCount, isCurrencyMode, evolutionRequirement, isResizedActivity, migrateLegacyActivityStage, migratePreviousMachineStage, previousMachineStageCount, migratePreviousInfusionStage, previousInfusionStageCount, type ElementId, type ResizedActivityId } from '../content/activities';
-import { stagedLycalisOdds } from '../content/loot-random';
+import { stagedLycalisOdds, validDropAmount } from '../content/loot-random';
 import { activityPrismaticaDrop } from '../content/prismatica';
 import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, characterEvolutionRequirement, fractureRules, characterLevelCost, type CharacterProgress, type UpgradeCost } from '../content/progression';
 import { isInfusionMode, specialtyMaterials } from '../content/infusions';
@@ -511,6 +511,7 @@ export function equipConduitConfiguration(storage: ProfileStorage, character: st
 export const summonCost = standardBanner.cost;
 export interface SummonDraw {
   entry: StandardBannerEntry; materials?: BannerMaterialReward; copy?: CapturedCharacter; duplicate: boolean; guarantee: string; bonusConduit?: ConduitId;
+  materialRewardVersion?: 1;
 }
 export const multiSummonCount = 10;
 export function summonCharacter(storage: ProfileStorage, random: () => number = Math.random, bannerId: string = 'standard', now = Date.now()):
@@ -554,7 +555,8 @@ function drawBanner(account: Account, banner: ReturnType<typeof getSummonBanner>
   account.bannerPity = { ...account.bannerPity, [banner.id]: result.pity };
   const bonusConduit = bannerConduitBonus(random);
   if (bonusConduit) account.conduits = { ...account.conduits, [bonusConduit]: (account.conduits?.[bonusConduit] ?? 0) + 1 };
-  return { entry: result.entry, materials, duplicate, guarantee: result.guarantee, bonusConduit };
+  return { entry: result.entry, materials, duplicate, guarantee: result.guarantee, bonusConduit,
+    ...(materials ? { materialRewardVersion: 1 as const } : {}) };
 }
 function drawNewEventBanner(account: Account, banner: ReturnType<typeof getSummonBanner>, random: () => number): SummonDraw {
   if (!isNewEventId(banner.id)) throw new Error('Invalid event banner.');
@@ -581,7 +583,7 @@ function drawNewEventBanner(account: Account, banner: ReturnType<typeof getSummo
   account.eventBannerPity = { ...account.eventBannerPity,
     [event.id]: entry.kind === 'character' ? 0 : pity + 1 };
   return { entry, materials, duplicate, guarantee: entry.kind === 'character' && pity >= moonSunshadePityLimit - 1
-    ? 'event pity' : 'none' };
+    ? 'event pity' : 'none', ...(materials ? { materialRewardVersion: 1 as const } : {}) };
 }
 export function purchaseEventDevourer(storage: ProfileStorage, id: string, now: number): Account {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before using the event shop.');
@@ -1187,7 +1189,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       }
       for (const [id, amount] of Object.entries(reward.materials)) {
         const drop = materialPool.find((entry) => entry.id === id);
-        if (!drop || !count(amount) || amount < drop.minimum || amount > drop.maximum || amount % multiplier !== 0) throw new Error('Invalid Story material drop.');
+        if (!drop || !count(amount) || !validDropAmount(drop, amount)) throw new Error('Invalid Story material drop.');
         account.materials[id] = (account.materials[id] ?? 0) + amount;
       }
       account.fractalis += reward.amount;

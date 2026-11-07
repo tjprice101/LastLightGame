@@ -29,7 +29,7 @@ function withOpenMoonWindow<T>(run: () => T): T {
 }
 
 describe('Moon and Sunshade art-neutral authority', () => {
-  it('keeps new events closed, prevents local entry and shows disabled art-neutral banner controls', () => {
+  it('keeps new events closed, prevents local entry and shows disabled delivered Moon banner controls', () => {
     const saved = storage();
     const account = emptyAccount();
     account.fractalis = 100;
@@ -42,7 +42,7 @@ describe('Moon and Sunshade art-neutral authority', () => {
     expect(() => summonCharacter(saved, () => 0, 'moon', 100)).toThrow('not active');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
     const screen = summonHub(account, 'moon', { online: true, now: 100 });
-    expect(screen).toContain('Artwork pending');
+    expect(screen).not.toContain('Artwork pending');
     expect(screen).toContain('Not launched or not active');
     expect(screen).toMatch(/id="summon-character"[^>]*disabled/);
     expect(screen).toContain('Moonwake');
@@ -74,8 +74,8 @@ describe('Moon and Sunshade art-neutral authority', () => {
       rolls = 0;
       const duplicate = summonCharacter(duplicates, () => { rolls++; return 0; }, 'moon', 100);
       expect(duplicate.duplicate).toBe(true);
-      expect(duplicate.materials).toEqual({ id: 'moonwake-rare', amount: 15 });
-      expect(duplicate.account.materials['moonwake-rare']).toBe(15);
+      expect(duplicate.materials).toEqual({ id: 'moonwake-rare', amount: 8 });
+      expect(duplicate.account.materials['moonwake-rare']).toBe(8);
       expect(duplicate.account.eventBannerPity?.moon).toBe(0);
       expect(rolls).toBe(1);
     });

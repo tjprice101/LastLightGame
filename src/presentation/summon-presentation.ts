@@ -13,7 +13,7 @@ import { escapeDialogText } from './game-dialog';
 import { summonRevealTier, type RewardPresentation } from './reward-screen';
 import { materialArt, materialName } from '../content/dungeon-art';
 import { assetUrl } from './portrait';
-import { bannerMaterialDefinition, bannerDuplicateMaterialAmount } from '../content/banner-materials';
+import { authoredBannerDuplicateMaterialAmount, bannerMaterialDefinition, bannerDuplicateMaterialAmount } from '../content/banner-materials';
 import { rarities, type Rarity } from '../content/rarity';
 import { type CinematicTier } from './bubble-ui';
 
@@ -53,14 +53,20 @@ function drawStars(draw: Pick<SummonDraw, 'entry'>): number {
 export function summonReward(result: SummonResult, bannerId: SummonBannerId): RewardPresentation {
   const banner = getSummonBanner(bannerId);
   const entry = result.entry;
+  if ('materialRewardVersion' in result && (result.materialRewardVersion !== 1 || !result.materials)) {
+    throw new Error('Invalid summoned material reward version.');
+  }
   let reward: RewardPresentation;
   if (result.materials) {
     const materials = result.materials;
     const tier = bannerMaterialDefinition(materials.id);
+    const reduced = result.materialRewardVersion === 1;
+    const amount = reduced ? tier.amount : tier.authoredAmount;
+    const duplicateAmount = reduced ? bannerDuplicateMaterialAmount : authoredBannerDuplicateMaterialAmount;
     if (!Number.isSafeInteger(materials.amount) || materials.amount <= 0) throw new Error('Summoned material definition is missing.');
     if (result.duplicate && (entry.kind !== 'character' || !isStarterId(entry.id))) throw new Error('Converted Element-Bearer definition is missing.');
-    if (result.duplicate ? tier.rarity !== 'Rare' || materials.amount !== bannerDuplicateMaterialAmount
-      : entry.kind !== 'material' || entry.id !== materials.id || entry.amount !== materials.amount || materials.amount !== tier.amount) {
+    if (result.duplicate ? tier.rarity !== 'Rare' || materials.amount !== duplicateAmount
+      : entry.kind !== 'material' || entry.id !== materials.id || entry.amount !== materials.amount || materials.amount !== amount) {
       throw new Error('Summoned material receipt does not match its outcome.');
     }
     reward = { title: result.duplicate ? 'Duplicate converted' : 'Materials summoned', rarity: tier.rarity,

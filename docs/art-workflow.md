@@ -1,5 +1,42 @@
 # Art and asset workflow
 
+## Delivered Moon artwork (2026-11-07)
+
+All104 required Moon sources are installed:36 portraits,24 abilities,18 personal
+Masters,11 statuses, six Vesperwing forms, six Moonwake materials, and the shared
+summoning splash/activity header/arena. Originals retain their exact filenames
+and bytes under `Art/source/moon`, separate from the historical Moon-labeled
+portraits already assigned to reclaimed War characters.
+
+`Art/provenance/moon-art-intake.json` records source/export hashes, dimensions,
+mapping, alpha authority and reviewed settings. Reproduce with
+`python tools/intake_moon_art.py --apply`; inspect dark/light sheets with
+`--review <directory>`. `moon-art-settings.json` contains fixed per-source
+green/teal keys and explicit enclosed-gap seeds, including tight dark-background
+thresholds. Supplied alpha bypasses cleanup. Five reviewed outer-frame corrections
+retain weapon/effect tips; Moonwake Bloom uses narrow background-strip keys,
+not a crop that cuts its blades. Pale armor, blue/cyan/purple powers and painted
+shadows remain. No runtime keying, palette replacement or reconstruction of
+source-clipped detail.
+
+Portraits/enemies use960px canvases with864px contained content; icons/materials/
+Masters/statuses use256px with224px content. Scenery remains opaque, byte-exact
+and natural-aspect. Shared `prepare_sprite` prioritizes these reviewed originals.
+`moon-art-revisions.ts` versions all104 exact paths; character/Master revision
+generators also cover their new exports. Reviewed facing metadata covers36 units
+and six enemy forms across menus, fields and cut-ins.
+
+Archive/export verification preceded removal of104 hash-matched root originals.
+Shared artwork resolves portraits, skills, personal Masters, typed native
+counters/markers, captures/catalog entries, recipes/holdings/rewards, summoning
+and the Moon activity card/arena. This installs artwork, **not a launch schedule**:
+Moon and Sunshade remain inactive. No ownership grants or artwork-triggered
+saves. Sunshade103 and reclaimed War44 required sources remain undelivered;
+the immediate image queue is147, plus12 optional equipment showcases.
+
+Validate with `python -m unittest discover -s tools -p test_moon_art_intake.py`
+and the Moon art/shared portrait/status/activity tests.
+
 ## Delivered reclaimed War portraits (2026-11-06)
 
 Owner approves Neralis/Varkhel/Seravelle/Velmira playable integration and offline

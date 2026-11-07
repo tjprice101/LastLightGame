@@ -69,7 +69,8 @@ def blocks():
 def document():
     parts = [
         "# Moon and Sunshade: signature activity enemy and material art",
-        "**24 copy-ready prompts; no delivered images. Twelve fixed creature forms and twelve materials.**",
+        "**24 copy-ready prompts. All12 Moon enemy/material images are installed; "
+        "the12 Sunshade images remain pending. Twelve fixed creature forms and twelve materials.**",
         "[Activity/loot/progression specification](../../docs/moon-sunshade-events.md) | "
         "[Moon character/scenery pack](../characters/Glow%20of%20the%20Moon's%20Light.md) | "
         "[Sunshade character/scenery pack](../characters/The%20Angel-blazened%20Sunshade.md) | "

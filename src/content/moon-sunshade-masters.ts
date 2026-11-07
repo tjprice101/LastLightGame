@@ -1,5 +1,6 @@
 import type { StarterId } from './starters';
 import { masterOrigin } from './world-lore';
+import { moonArtRevisions } from './moon-art-revisions';
 
 const masterEffects = {
   'maerion-1': '+75% Health | +25 percentage points Skill Power. [Unreturned] capacity becomes 85% of Maerion’s maximum Health; direct Shield absorption contributes, redirected damage does not.',
@@ -14,7 +15,7 @@ const masterEffects = {
   'ilyss-1': '+50% Health | +35 percentage points Skill Power. Increase maximum [Severance] to 4; each [Severance] spent by Last Flare adds 13% maximum-Health healing instead of 10%.',
   'ilyss-2': '+75% Health | +20 percentage points Skill Power. When Ilyss removes [Burn] or [Weaken] with a Skill or Last Flare, Shield that ally for 15% of their maximum Health, once per ally per player turn.',
   'ilyss-3': '+40% Health | +20 percentage points Skill Efficiency. After [Unbind the Living] removes a debuff, grant its target +25 percentage points Skill Power for two player turns; refreshes rather than stacks.',
-  'asteriel-1': '+60% Health | +30 percentage points Skill Power. Gain +5 percentage points Skill Power per stored [Promise].',
+  'asteriel-1': '+60% Health | +30 percentage points Skill Power. Increase maximum [Promise] to 4; gain +5 percentage points Skill Power per stored [Promise].',
   'asteriel-2': '+75% Health | +25 percentage points Skill Power. After Asteriel enters [Shelter], heal the living squad member with the lowest Health percentage for 20% of their maximum Health, once per player turn.',
   'asteriel-3': '+40% Health | +20 percentage points Skill Efficiency. When another ally spends Asteriel’s [Moonflower], grant that ally 8 Elemental Gauge after the attack resolves, once per player turn.',
   'serapha-1': '+60% Health | +35 percentage points Skill Power. Increase maximum [Interval] to 4; each [Interval] spent by Last Flare also adds 5% maximum-Health healing.',
@@ -47,7 +48,8 @@ function pendingMaster<C extends StarterId, S extends 1 | 2 | 3>(
   const effect = masterEffects[`${character}-${slot}` as keyof typeof masterEffects];
   if (!effect) throw new Error(`Missing Master effect: ${id}`);
   return {
-    id, character, name, rarity: 'Omnic' as const, art: '',
+    id, character, name, rarity: 'Omnic' as const,
+    art: moonArtRevisions[`master-conduits/${id}.png`] ? `master-conduits/${id}.png` : '',
     effect: effect.replace(/\b(Health|Defense|Direct Attack|Skill Power|Skill Efficiency|Critical Rate)\b/g,
       (_match, stat: string) => `[${stat}]`),
     design, lore: masterOrigin,

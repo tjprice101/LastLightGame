@@ -41,7 +41,7 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(draw.duplicate).toBe(true);
     expect(draw.account.lycalis).toBe(45);
     expect(draw.account.characters.ember).toEqual(original.characters.ember);
-    expect(draw.materials).toEqual({ id: 'infernic-rare', amount: 15 });
+    expect(draw.materials).toEqual({ id: 'infernic-rare', amount: 8 });
     expect(draw.copy).toBeUndefined();
     expect(draw.account.bannerPity?.standard).toEqual({ highestStar: 1, unownedHighestStar: 0 });
     const bought = purchaseConduit(saved, 'vigil-core');
@@ -189,7 +189,7 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(loaded.capturedCharacters).toBeUndefined();
     const draw = summonCharacter(saved, () => 0);
     expect(write).toHaveBeenCalledTimes(1);
-    expect(draw.account).toMatchObject({ version: 11, fractalis: 12345, lycalis: 0, materials: { ...legacy.materials, 'infernic-rare': 15 },
+    expect(draw.account).toMatchObject({ version: 11, fractalis: 12345, lycalis: 0, materials: { ...legacy.materials, 'infernic-rare': 8 },
       characters: legacy.characters, firstFracture: true, receipts: legacy.receipts,
       creatures: legacy.creatures, squad: legacy.squad, dungeonStages: { infernic: 35 }, infusionStages: { heavens: 15 } });
     expect(draw.copy).toBeUndefined();

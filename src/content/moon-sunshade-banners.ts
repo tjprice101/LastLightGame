@@ -29,10 +29,10 @@ function eventBanner(index: 0 | 1) {
     cost: 10,
     available: true,
     artwork: {
-      path: null,
+      path: definition.bannerArt,
       aspectRatio: '16:9' as const,
       direction: 'Omnic' as const,
-      alt: `${definition.bannerName} artwork pending.`,
+      alt: definition.bannerArt ? `${definition.bannerName} lunar harbor.` : `${definition.bannerName} artwork pending.`,
     },
     pool,
   };

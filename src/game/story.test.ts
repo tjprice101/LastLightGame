@@ -103,7 +103,7 @@ describe('six-region linear Story contract', () => {
     expect(storyLoot(storyRules.stages).map((drop) => drop.id)).toEqual(['fractalis', 'chaotic-common', 'chaotic-uncommon']);
     expect(storyMaterialLoot(1)[1].chance).toBeCloseTo(.25);
     expect(storyMaterialLoot(storyRules.stages)[1].chance).toBeCloseTo(.8);
-    expect(storyMaterialLoot(storyRules.stages)[0]).toMatchObject({ minimum: 15, maximum: 30 });
+    expect(storyMaterialLoot(storyRules.stages)[0]).toMatchObject({ minimum: 8, maximum: 15 });
     expect(() => storyDrops(storyRules.stages, () => 1)).toThrow();
   });
 

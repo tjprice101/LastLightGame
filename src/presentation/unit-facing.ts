@@ -1,6 +1,20 @@
 type Facing = 'left' | 'right' | 'front';
 
 const sourceFacing: Record<string, Facing> = {
+  maerion: 'left', 'maerion-evo-2': 'left', 'maerion-evo-3': 'left',
+  'maerion-evo-4': 'left', 'maerion-evo-5': 'left', 'maerion-evo-6': 'left',
+  caevren: 'left', 'caevren-evo-2': 'right', 'caevren-evo-3': 'right',
+  'caevren-evo-4': 'left', 'caevren-evo-5': 'left', 'caevren-evo-6': 'front',
+  vespera: 'right', 'vespera-evo-2': 'right', 'vespera-evo-3': 'left',
+  'vespera-evo-4': 'front', 'vespera-evo-5': 'left', 'vespera-evo-6': 'left',
+  ilyss: 'front', 'ilyss-evo-2': 'front', 'ilyss-evo-3': 'right',
+  'ilyss-evo-4': 'front', 'ilyss-evo-5': 'front', 'ilyss-evo-6': 'front',
+  asteriel: 'right', 'asteriel-evo-2': 'left', 'asteriel-evo-3': 'left',
+  'asteriel-evo-4': 'front', 'asteriel-evo-5': 'front', 'asteriel-evo-6': 'front',
+  serapha: 'left', 'serapha-evo-2': 'left', 'serapha-evo-3': 'right',
+  'serapha-evo-4': 'front', 'serapha-evo-5': 'left', 'serapha-evo-6': 'front',
+  'moon-vesperwing-1': 'front', 'moon-vesperwing-2': 'front', 'moon-vesperwing-3': 'left',
+  'moon-vesperwing-4': 'front', 'moon-vesperwing-5': 'front', 'moon-vesperwing-6': 'front',
   caldrex: 'left', 'caldrex-evo-2': 'left', 'caldrex-evo-3': 'left',
   'caldrex-evo-4': 'front', 'caldrex-evo-5': 'left', 'caldrex-evo-6': 'front',
   solenne: 'left', 'solenne-evo-2': 'left', 'solenne-evo-3': 'front',

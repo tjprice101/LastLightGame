@@ -1,6 +1,17 @@
 import type { ElementalEffectTag } from './elemental-effects';
 
 export const statusArt = {
+  'moon-maerion-unreturned': 'abilities/statuses/moon-status-maerion-unreturned.png',
+  'moon-caevren-load': 'abilities/statuses/moon-status-caevren-load.png',
+  'moon-vespera-beacon': 'abilities/statuses/moon-status-vespera-beacon.png',
+  'moon-vespera-signal': 'abilities/statuses/moon-status-vespera-signal.png',
+  'moon-ilyss-severance': 'abilities/statuses/moon-status-ilyss-severance.png',
+  'moon-asteriel-promise': 'abilities/statuses/moon-status-asteriel-promise.png',
+  'moon-asteriel-shelter': 'abilities/statuses/moon-status-asteriel-shelter.png',
+  'moon-asteriel-flourish': 'abilities/statuses/moon-status-asteriel-flourish.png',
+  'moon-asteriel-moonflower': 'abilities/statuses/moon-status-asteriel-moonflower.png',
+  'moon-serapha-interval': 'abilities/statuses/moon-status-serapha-interval.png',
+  'moon-serapha-ceasefire': 'abilities/statuses/moon-status-serapha-ceasefire.png',
   burn: 'abilities/statuses/status-burn.png',
   ward: 'abilities/statuses/status-ward.png',
   bloom: 'abilities/statuses/status-bloom.png',

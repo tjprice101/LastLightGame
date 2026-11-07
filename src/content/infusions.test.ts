@@ -130,10 +130,10 @@ describe('playable Heaven and Abyss', () => {
     }
     for (const mode of ['heavens', 'abyss'] as const) {
       expect(infusionDrops(mode, stageCount, draws([0, 0, 0]))).toEqual({
-        [`${mode}-evolution`]: 7, [`${mode}-level`]: 8,
+        [`${mode}-evolution`]: 4, [`${mode}-level`]: 4,
       });
       expect(infusionDrops(mode, stageCount, draws([.999999, .999999, .999999]))).toEqual({
-        [`${mode}-evolution`]: 8, [`${mode}-level`]: 10,
+        [`${mode}-evolution`]: 4, [`${mode}-level`]: 5,
       });
     }
     for (const bad of [-1, 1, NaN, Infinity]) expect(() => infusionDrops('abyss', stageCount, () => bad)).toThrow('[0, 1)');

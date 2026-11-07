@@ -1,5 +1,23 @@
 # Authoritative game operation
 
+## Material reward quantities (2026-11-07)
+
+Rebuild the shared engine for the matching client: ordinary future material
+rewards are50% of the authored sampled amount, nearest whole/minimum1;
+Calamity chest materials instead use85%, per material bundle. Material tables
+retain source ranges so authority/client preserve quantity draws and probabilities
+while exposing the actual reduced bounds. Story validation checks reachable
+rounded post-boss amounts, not obsolete divisibility by5. Banner material
+constants also drive strict response validation. No wallet migration/holdings
+rewrite, currency/cost/chance/capture/recruitment change, new roll or receipt
+change. Calamity encounter and all nonmaterial chest rewards remain unchanged.
+New material summon/chest responses carry `materialRewardVersion:1`, allowing
+strict reduced-quantity validation while unmarked historical cached receipts
+remain readable at their original authored amounts. No receipt is rewritten.
+See [economy contract](../../../docs/summoning-and-economy.md#future-material-reward-reduction-2026-11-07).
+Bundle, type-check and deploy with the matching client in the publication pass;
+local shared-source parity tests alone do not establish a hosted release.
+
 ## Four reclaimed War characters and5% recruitment (2026-11-06)
 
 Deploy the matching rebuilt shared engine for Neralis/Varkhel/Seravelle/Velmira,

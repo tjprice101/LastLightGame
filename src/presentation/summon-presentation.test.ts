@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { emptyAccount } from '../game/account';
+import { emptyAccount, type SummonDraw } from '../game/account';
+import { bannerMaterialDefinition } from '../content/banner-materials';
 import { getSummonBanner } from '../content/summon-banners';
 import { materialName } from '../content/dungeon-art';
 import { summonReward, summonTenReward, type SummonResult } from './summon-presentation';
@@ -9,6 +10,64 @@ import { conduitEffect, getConduit } from '../content/conduits';
 import { referencedEffect } from './effect-copy';
 
 describe('saved summon reward presentation', () => {
+  it.each(['standard', 'roses'] as const)('preserves historical and versioned %s material receipts without mutation', bannerId => {
+    const pool = getSummonBanner(bannerId).pool();
+    const character = pool.find(entry => entry.kind === 'character');
+    if (!character) throw new Error('Character receipt fixture is missing.');
+    const draws: SummonDraw[] = [];
+    for (const entry of pool.filter(entry => entry.kind === 'material')) {
+      if (entry.kind !== 'material') throw new Error('Material receipt fixture is missing.');
+      const tier = bannerMaterialDefinition(entry.id);
+      for (const version of [undefined, 1] as const) {
+        const amount = version === 1 ? tier.amount : tier.authoredAmount;
+        const result: SummonResult = { account: emptyAccount(), entry: { ...entry, amount },
+          materials: { id: entry.id, amount }, duplicate: false, guarantee: 'none',
+          ...(version === 1 ? { materialRewardVersion: 1 } : {}) };
+        const before = structuredClone(result);
+        expect(summonReward(result, bannerId).name).toBe(`${amount} ${materialName(entry.id)}`);
+        expect(result).toEqual(before);
+        expect(() => summonReward({ ...result, materials: { id: entry.id, amount: amount + 1 } }, bannerId)).toThrow('receipt');
+        const mismatched = structuredClone(result);
+        if (version === 1) delete mismatched.materialRewardVersion;
+        else mismatched.materialRewardVersion = 1;
+        expect(() => summonReward(mismatched, bannerId)).toThrow('receipt');
+        draws.push(result);
+      }
+    }
+    const id = bannerId === 'roses' ? 'rosethorn-rare' : 'infernic-rare';
+    for (const version of [undefined, 1] as const) {
+      const amount = version === 1 ? 8 : 15;
+      const result: SummonResult = { account: emptyAccount(), entry: character,
+        materials: { id, amount }, duplicate: true, guarantee: 'none',
+        ...(version === 1 ? { materialRewardVersion: 1 } : {}) };
+      const before = structuredClone(result);
+      expect(summonReward(result, bannerId).name).toBe(`${amount} ${materialName(id)}`);
+      expect(result).toEqual(before);
+      expect(() => summonReward({ ...result, materials: { id, amount: version === 1 ? 15 : 8 } }, bannerId)).toThrow('receipt');
+      draws.push(result);
+    }
+    const mixed = Array.from({ length: 10 }, (_, index) => draws[index % draws.length]);
+    const before = structuredClone(mixed);
+    expect(summonTenReward(emptyAccount(), mixed, bannerId).art.match(/class="summon-ten-result/g)).toHaveLength(10);
+    expect(mixed).toEqual(before);
+  });
+
+  it('rejects invalid material receipt versions and version markers without material rewards', () => {
+    const pool = getSummonBanner('standard').pool();
+    const entry = pool.find(entry => entry.kind === 'material');
+    const character = pool.find(entry => entry.kind === 'character');
+    if (!entry || entry.kind !== 'material' || !character) throw new Error('Version receipt fixtures are missing.');
+    const result: SummonResult = { account: emptyAccount(), entry, duplicate: false, guarantee: 'none',
+      materials: { id: entry.id, amount: entry.amount }, materialRewardVersion: 1 };
+    for (const version of [undefined, null, 0, 2, '1', NaN]) {
+      const malformed = { ...result, materialRewardVersion: version } as unknown as SummonResult;
+      expect(() => summonReward(malformed, 'standard')).toThrow('version');
+      expect(() => summonTenReward(emptyAccount(), Array.from({ length: 10 }, () => malformed), 'standard')).toThrow('version');
+    }
+    expect(() => summonReward({ account: emptyAccount(), entry: character, duplicate: false,
+      guarantee: 'none', materialRewardVersion: 1 }, 'standard')).toThrow('version');
+  });
+
   it('shares the saved receipt foundation with purchases/restoration without consuming or equipping copies', () => {
     const account = { ...emptyAccount(), conduits: { 'vigil-core': 2 }, conduitUpgrades: { 'vigil-core': 3 } };
     const before = structuredClone(account);
@@ -63,7 +122,7 @@ describe('saved summon reward presentation', () => {
     if (!character || !material || material.kind !== 'material') throw new Error('Real outcomes missing.');
     const draws = Array.from({ length: 10 }, (_, index) => index === 3
       ? { entry: character, duplicate: false, guarantee: 'highest-star' }
-      : { entry: material, materials: { id: material.id, amount: material.amount }, duplicate: false, guarantee: 'none' });
+      : { entry: material, materials: { id: material.id, amount: material.amount }, duplicate: false, guarantee: 'none', materialRewardVersion: 1 as const });
     const account = { ...emptyAccount(), characters: { [character.id]: { level: 0, evolution: 1 } }, materials: { [material.id]: material.amount * 9 } };
     const before = structuredClone(draws);
     const reward = summonTenReward(account, draws, 'standard');
@@ -78,7 +137,7 @@ describe('saved summon reward presentation', () => {
     if (!entry || entry.kind !== 'material') throw new Error('Real material outcome missing.');
     const materials = { id: entry.id, amount: entry.amount };
     const account = { ...emptyAccount(), materials: { [entry.id]: entry.amount } };
-    const reward = summonReward({ account, entry, materials, duplicate: false, guarantee: 'none' }, 'standard');
+    const reward = summonReward({ account, entry, materials, duplicate: false, guarantee: 'none', materialRewardVersion: 1 }, 'standard');
     expect(reward.title).toBe('Materials summoned');
     expect(reward.details).toContain(`${entry.amount} received`);
     const html = rewardScreenMarkup(reward);
@@ -107,7 +166,7 @@ describe('saved summon reward presentation', () => {
     const duplicate = summonReward({ account: { ...emptyAccount(), materials: { 'infernic-rare': 15 } }, entry: six,
       materials: { id: 'infernic-rare', amount: 15 }, duplicate: true, guarantee: 'none' }, 'standard');
     expect(duplicate.tier).toBe('six-star');
-    const plain = summonReward({ account: emptyAccount(), entry: material, materials: { id: material.id, amount: material.amount }, duplicate: false, guarantee: 'none' }, 'standard');
+    const plain = summonReward({ account: emptyAccount(), entry: material, materials: { id: material.id, amount: material.amount }, duplicate: false, guarantee: 'none', materialRewardVersion: 1 }, 'standard');
     expect(plain.tier).toBeUndefined();
     expect(rewardScreenMarkup(plain)).not.toContain('reward-rays');
     const html = rewardScreenMarkup(sixReward);
@@ -124,7 +183,7 @@ describe('saved summon reward presentation', () => {
     if (!five || !six || !material || material.kind !== 'material') throw new Error('Real outcomes missing.');
     const draws = (special: typeof five[]) => Array.from({ length: 10 }, (_, index) => special[index]
       ? { entry: special[index], duplicate: false, guarantee: 'none' }
-      : { entry: material, materials: { id: material.id, amount: material.amount }, duplicate: false, guarantee: 'none' });
+      : { entry: material, materials: { id: material.id, amount: material.amount }, duplicate: false, guarantee: 'none', materialRewardVersion: 1 as const });
     const account = { ...emptyAccount(), characters: { [five.id]: { level: 0, evolution: 1 }, [six.id]: { level: 0, evolution: 1 } }, materials: { [material.id]: material.amount * 10 } };
     expect(summonTenReward(account, draws([]), 'standard').tier).toBeUndefined();
     expect(summonTenReward(account, draws([five]), 'standard').tier).toBe('five-star');

@@ -23,9 +23,9 @@ export interface MoonSunshadeEvent {
   enemyCommon: string;
   characters: readonly StarterId[];
   windows: readonly ScheduledEventWindow[];
-  bannerArt: null;
-  activityHeaderArt: null;
-  arenaArt: null;
+  bannerArt: string | null;
+  activityHeaderArt: string | null;
+  arenaArt: string | null;
 }
 
 export const moonSunshadeEvents = [
@@ -41,9 +41,9 @@ export const moonSunshadeEvents = [
     enemyCommon: 'Vesperwing',
     characters: moonCharacters.map(character => character.id),
     windows: [],
-    bannerArt: null,
-    activityHeaderArt: null,
-    arenaArt: null,
+    bannerArt: 'banners/moon-banner.png',
+    activityHeaderArt: 'banners/moon-header.png',
+    arenaArt: 'backgrounds/moon-arena.png',
   },
   {
     id: 'sunshade',
@@ -104,13 +104,15 @@ export function newEventHasCompletedWindow(id: NewEventId, now: number): boolean
 
 export function assertNewEventActive(id: NewEventId, now: number): void {
   if (!newEventWindowActive(id, now)) {
-    throw new Error(`${newEventDefinition(id).activityName} is not active. Browse the art-neutral archive; event progress and pity are retained.`);
+    throw new Error(`${newEventDefinition(id).activityName} is not active. Browse the archive; event progress and pity are retained.`);
   }
 }
 
 export function newEventAccessMessage(id: NewEventId, online: boolean, now: number): string {
   const definition = newEventDefinition(id);
-  if (!newEventWindowActive(id, now)) return 'Not launched or not active. Artwork is pending; event progress and banner pity are retained.';
+  if (!newEventWindowActive(id, now)) return newEventDefinition(id).bannerArt
+    ? 'Not launched or not active. Event progress and banner pity are retained.'
+    : 'Not launched or not active. Artwork is pending; event progress and banner pity are retained.';
   if (!online) return 'Sign in online to enter this timed event or summon. Offline archive browsing remains available.';
   const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone: 'America/New_York', dateStyle: 'long', timeStyle: 'short',

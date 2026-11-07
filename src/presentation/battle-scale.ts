@@ -8,11 +8,13 @@ const characterScales = [1, 1.08, 1.16, 1.3, 1.5, 1.65] as const;
 
 const artworkSizes: readonly (readonly [number, readonly string[]])[] = [
   [.65, [
+    'moon-vesperwing-1',
     'ashling', 'budling', 'duskmote', 'gleamstone-slime', 'hushbud', 'imp',
     'pebblefin-sprig', 'puffling', 'riftpip', 'rosethorn-wisp', 'sparkpip',
     'story-infernic-0', 'story-infernic-2', 'story-botanic-0', 'story-tranquilitic-0',
   ]],
   [.85, [
+    'moon-vesperwing-2',
     'abyss-wraththorn-slime', 'bellcap-keeper', 'claycap-kobold', 'coalcap-kobold',
     'coppercap-gremlin', 'diadem-of-daybreak-gleamstone-slime', 'glimmerkin',
     'gloomtail-cat', 'goblin', 'heavens-dawnthorn-slime', 'lanterncap-brownie',
@@ -23,6 +25,7 @@ const artworkSizes: readonly (readonly [number, readonly string[]])[] = [
     'story-tranquilitic-2',
   ]],
   [1, [
+    'moon-vesperwing-3',
     'abyss-starless-murmur', 'ashwing-harrier', 'coilback-scarab', 'coralcrest-nereid',
     'emberhorn-faun', 'fractured-watcher', 'furnace-salamander', 'gustfeather-harpy',
     'heavens-scarlet-benediction', 'hollowmantle-sentinel',
@@ -32,6 +35,7 @@ const artworkSizes: readonly (readonly [number, readonly string[]])[] = [
     'oblivion-shardling-acolyte', 'oblivion-oblivion-lantern-wraith', 'oblivion-unmade-choir-drone',
   ]],
   [1.25, [
+    'moon-vesperwing-4',
     'abyss-ruins-awakening', 'brasshorn-minotaur', 'brineclaw-sentinel',
     'cinderhide-cyclops', 'cloudhorn-ibex', 'dawncrest-guardian', 'flintback-armadillo',
     'geode-cyclops', 'glasswake-kelpie', 'heavens-gilded-reproach',
@@ -45,6 +49,7 @@ const artworkSizes: readonly (readonly [number, readonly string[]])[] = [
     'oblivion-glassbound-sentry', 'oblivion-fracture-hound',
   ]],
   [1.5, [
+    'moon-vesperwing-5',
     'abyss-hunger-beyond-veil', 'abyssbell-oracle', 'concord-lion', 'cyclonewing-griffin',
     'eclipse-antler-regent', 'fracturecoil-drake', 'heavens-thorns-first-light',
     'ivory-kirin', 'magma-wyrm-knight', 'opalwing-griffin', 'riftwing-chimera',
@@ -56,6 +61,7 @@ const artworkSizes: readonly (readonly [number, readonly string[]])[] = [
     'oblivion-annihilation-colossus-fragment', 'oblivion-fatebreaker-warden',
   ]],
   [1.75, [
+    'moon-vesperwing-6',
     'calamity-boss-treasury', 'calamity-boss-sanctuary', 'calamity-boss-heavens',
     'calamity-boss-abyss', 'calamity-boss-machines', 'calamity-boss-infernic',
     'calamity-boss-oceanic', 'calamity-boss-atmospheric', 'calamity-boss-botanic',

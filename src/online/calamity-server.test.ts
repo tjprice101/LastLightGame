@@ -20,6 +20,21 @@ function ready() {
 }
 
 describe('authoritative Calamity operations', () => {
+  it('preserves pre-reduction material receipts while rejecting obsolete quantities on new openings', () => {
+    const game = ready(), id = calamityChestId('infernic', 1);
+    game.account.calamityChests = { [id]: 1 };
+    const opened = op(game, { kind: 'openCalamityChest', id, expectedCount: 1 });
+    const before = structuredClone(opened.game);
+    const historical = structuredClone(opened.response);
+    historical.calamityOpening!.materials = { 'infernic-common': 180 };
+    expect(() => validateGameResponse(historical)).toThrow('incomplete');
+    delete historical.calamityOpening!.materialRewardVersion;
+    expect(validateGameResponse(historical)).toEqual(historical);
+    expect(opened.game).toEqual(before);
+    historical.calamityOpening!.materials['infernic-common'] = 181;
+    expect(() => validateGameResponse(historical)).toThrow('incomplete');
+  });
+
   it('reads historical cached opening receipts without rerolling or granting new rewards', () => {
     const game = ready();
     const id = calamityChestId('heavens', 3);
@@ -151,7 +166,7 @@ describe('authoritative Calamity operations', () => {
     expect(opened.game.account.fractalis).toBe(reward.fractalis);
     expect(reward.fractalis).toBeGreaterThan(calamityChest('treasury', 3).fractalis);
     expect(validateGameResponse(opened.response).calamityOpening).toEqual(reward);
-    expect(Object.keys(reward).sort()).toEqual(['id', 'name', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'calamiticTokens', 'masterChests', 'devourerCopies', 'calamiticMaterialVersion'].sort());
+    expect(Object.keys(reward).sort()).toEqual(['id', 'name', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'calamiticTokens', 'masterChests', 'devourerCopies', 'calamiticMaterialVersion', 'materialRewardVersion'].sort());
     expect(reward.calamiticTokens).toBe(8);
     expect(() => op(opened.game, { kind: 'openCalamityChest', id, expectedCount: 2 })).toThrow('count changed');
     expect(() => validateGameResponse({ ...opened.response, calamityOpening: { ...reward, bundles: 7 } })).toThrow('incomplete');

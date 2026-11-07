@@ -1,20 +1,21 @@
 # Remaining artwork: current generation queue
 
-## Audited all-plan queue (2026-11-06)
+## Audited all-plan queue (2026-11-07)
 
 Use the [Future Plans source-image audit](../docs/Future%20Plans/image-budget-audit.md)
-for complete current counts and Midjourney assumptions:251 required seasonal/
-proposed-War,326 including paused Story,343 with production-related options,
-351 with experiments. The historical production queue below is installed;
+for complete current counts and Midjourney assumptions:147 required seasonal/
+War,222 including paused Story,239 with production-related options,
+247 with experiments. All104 Moon images and24 reclaimed War portraits are
+installed. The historical production queue below is installed;
 its zero subtotal does not mean no seasonal/future artwork remains.
 
 ## Remaining expansion, art-pending authorization
 
 The earlier native/Calamity queue below is complete, not the new seasonal
 queue. See [the consolidated expansion checklist](../docs/Future%20Plans/remaining-expansion-art.md):
-**207 required Moon/Sunshade images,12 optional equipment illustrations,
-219 including optional**. Both complete character packs and the two signature
-enemy/material chains are linked there. No new images have been delivered.
+**103 required Sunshade images,12 optional seasonal equipment illustrations,
+115 including optional**. Both complete character packs and the two signature
+enemy/material chains are linked there. All104 Moon images are installed.
 Feature implementation is authorized without waiting for generation; both
 events remain inactive until explicit launch approval.
 

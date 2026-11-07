@@ -2,7 +2,7 @@ import { elements, infusionModes, currencyModes, eventModes, machineModes, isCur
 import { machineEnemies } from './machines';
 import { type Stats } from './combat';
 import { phaseZeroStatDefaults, type ResolvedStats } from './phase-zero-stats';
-import { rollDrop, type ScaledDrop } from './loot-random';
+import { materialRewardRange, rollDrop, type ScaledDrop } from './loot-random';
 import { capturedGrowth, enemyCombatStats, playableGrowth } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
 import { roseMaterials, roseSaleQuantities, roseFormStages, roseCaptureAllowed, roseMaterialUnlocks } from './roses';
@@ -80,12 +80,12 @@ export const infusionEnemies = {
     ['The Garden Beyond Eternity, Roselius', 'roselius-garden-eternity'],
   ],
   moon: [
-    ['Vesperwing', undefined],
-    ['Tokenwatch Vesperwing', undefined],
-    ['Quaykeeper Vesperwing', undefined],
-    ['Nightlock Vesperwing', undefined],
-    ['Unreturned Harbor Vesperwing', undefined],
-    ['Passage Beyond Midnight Vesperwing', undefined],
+    ['Vesperwing', 'moon-vesperwing-1'],
+    ['Tokenwatch Vesperwing', 'moon-vesperwing-2'],
+    ['Quaykeeper Vesperwing', 'moon-vesperwing-3'],
+    ['Nightlock Vesperwing', 'moon-vesperwing-4'],
+    ['Unreturned Harbor Vesperwing', 'moon-vesperwing-5'],
+    ['Passage Beyond Midnight Vesperwing', 'moon-vesperwing-6'],
   ],
   sunshade: [
     ['Solcarapace', undefined],
@@ -213,7 +213,7 @@ export function infusionEncounter(mode: InfusionModeId, stage: number, schedule:
     enemy: { name, ...(art ? { art } : {}), element: mode === 'machines' ? machineEnemies[tier].element : infusionEnemyElements[mode] },
     color: mode === 'machines' ? '#dddddd' : mode === 'heavens' ? '#ff6565' : mode === 'abyss' ? '#f464d4' : mode === 'sanctuary' ? '#e7a7bf'
       : mode === 'roses' ? '#d36b7d' : mode === 'moon' ? '#cbd2d8' : mode === 'sunshade' ? '#d9a64c' : '#eed78b',
-    background: isNewEventId(mode) ? undefined : `${mode}-arena.png`,
+    background: isNewEventId(mode) ? newEventDefinition(mode).arenaArt?.replace(/^backgrounds\//, '') : `${mode}-arena.png`,
     ability: mode === 'machines' ? machineEnemies[tier].skill : mode === 'heavens' ? 'Scarlet Judgment' : mode === 'abyss' ? 'Cosmic Wrath' : mode === 'sanctuary' ? 'Hallowed Rosefire'
       : mode === 'roses' ? 'Golden Thorn Benediction' : mode === 'moon' ? 'Crescent Quay Strike'
       : mode === 'sunshade' ? 'Gilded Vent Strike' : 'Sovereign Facet',
@@ -249,7 +249,7 @@ export function infusionLoot(mode: InfusionModeId, stage: number, schedule: Infu
   };
   }
   const progress = (stage - 1) / (infusionModeStageCount - 1);
-  const specialties = specialtyDropTable.map(entry => ({ id: `${mode}-${entry.purpose}`,
+  const specialties = specialtyDropTable.map(entry => materialRewardRange({ id: `${mode}-${entry.purpose}`,
     minimum: Math.round(1 + (entry.purpose === 'evolution' ? 6 : 7) * progress),
     maximum: Math.round(2 + (entry.purpose === 'evolution' ? 6 : 8) * progress), chance: 1 }));
   return { specialties, bonuses: [] };

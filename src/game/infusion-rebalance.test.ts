@@ -36,10 +36,10 @@ describe('D-425 material rewards and historical compatibility', () => {
       drops.forEach((drop, index) => {
         const progress = (stage - unlocks[index]) / (35 - unlocks[index]);
         const [minimum, maximum] = endpoints[index];
-        expect(drop).toMatchObject({ chance: 1, minimum: Math.round(1 + (minimum - 1) * progress),
-          maximum: Math.round(2 + (maximum - 2) * progress) });
+        expect(drop).toMatchObject({ chance: 1, minimum: Math.max(1, Math.round(Math.round(1 + (minimum - 1) * progress) / 2)),
+          maximum: Math.max(1, Math.round(Math.round(2 + (maximum - 2) * progress) / 2)) });
         expect(drop.quantityMultiplier).toBeUndefined();
-        if (stage === unlocks[index]) expect([drop.minimum, drop.maximum]).toEqual([1, 2]);
+        if (stage === unlocks[index]) expect([drop.minimum, drop.maximum]).toEqual([1, 1]);
         if (stage > unlocks[index]) {
           const previous = materialLoot(element.id, stage - 1)[index];
           expect(drop.minimum - previous.minimum).toBeGreaterThanOrEqual(0);
@@ -52,7 +52,7 @@ describe('D-425 material rewards and historical compatibility', () => {
         minimum: Math.round(5 + 295 * (stage - 1) / 34), maximum: Math.round(10 + 590 * (stage - 1) / 34) });
     }
     expect(materialLoot('infernic', 35).map(drop => [drop.minimum, drop.maximum]))
-      .toEqual(endpoints);
+      .toEqual([[5, 6], [4, 4], [3, 4], [2, 3], [2, 2], [1, 2]]);
     for (const stage of [0, 36, 1.5, NaN, Infinity]) expect(() => dungeonFractalisDrop(stage)).toThrow();
   });
   it.each(modes)('%s has15 stages, the same normalized level curve, and exactly two linear specialties', mode => {
@@ -68,8 +68,8 @@ describe('D-425 material rewards and historical compatibility', () => {
       for (const schedule of ['caps', 'legacy'] as const) {
         expect(infusionLoot(mode, stage, schedule)).toMatchObject({ bonuses: [], specialties:
           ['evolution', 'level'].map(purpose => ({ id: `${mode}-${purpose}`, chance: 1,
-            minimum: Math.round(1 + (purpose === 'evolution' ? 6 : 7) * progress),
-            maximum: Math.round(2 + (purpose === 'evolution' ? 6 : 8) * progress) })) });
+            minimum: Math.max(1, Math.round(Math.round(1 + (purpose === 'evolution' ? 6 : 7) * progress) / 2)),
+            maximum: Math.max(1, Math.round(Math.round(2 + (purpose === 'evolution' ? 6 : 8) * progress) / 2)) })) });
       }
     }
   });
@@ -83,7 +83,7 @@ describe('D-425 material rewards and historical compatibility', () => {
       expect(drops.map(drop => [drop.minimum, drop.maximum])).toEqual([
         [Math.round(1 + 6 * progress), Math.round(2 + 6 * progress)],
         [Math.round(1 + 7 * progress), Math.round(2 + 8 * progress)],
-      ]);
+      ].map(range => range.map(amount => Math.max(1, Math.round(amount / 2)))));
       const creature = getCreature(state.enemies[0].creatureId!);
       for (const drop of drops) expect(creatureLoot(creature, stage).find(entry => entry.id === drop.id)).toEqual(drop);
       const forged = structuredClone(result), raw = saved.getItem(ACCOUNT_KEY);

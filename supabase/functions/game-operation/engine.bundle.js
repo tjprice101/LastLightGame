@@ -202,7 +202,47 @@ function rollLycalisOdds(odds, random) {
   }
   return odds[odds.length - 1].amount;
 }
+function materialRewardAmount(amount, factor = 0.5) {
+  if (!Number.isSafeInteger(amount) || amount < 1 || ![0.5, 0.85].includes(factor)) {
+    throw new Error("Invalid material reward quantity or factor.");
+  }
+  return Math.max(1, Math.round(amount * factor));
+}
+function materialRewardRange(drop, factor = 0.5) {
+  if (drop.quantitySource) throw new Error("Material reward range is already reduced.");
+  const minimum = materialRewardAmount(drop.minimum, factor);
+  const maximum = materialRewardAmount(drop.maximum, factor);
+  const { quantityMultiplier = 1, ...rest } = drop;
+  if (!Number.isSafeInteger(quantityMultiplier) || quantityMultiplier < 1 || drop.minimum % quantityMultiplier !== 0 || drop.maximum % quantityMultiplier !== 0 || drop.maximum < drop.minimum) throw new Error("Invalid material reward range.");
+  return {
+    ...rest,
+    minimum,
+    maximum,
+    quantitySource: { minimum: drop.minimum, maximum: drop.maximum, multiplier: quantityMultiplier, factor }
+  };
+}
+function validDropAmount(drop, amount) {
+  if (!Number.isSafeInteger(amount) || amount < drop.minimum || amount > drop.maximum) return false;
+  if (!drop.quantitySource) return amount % (drop.quantityMultiplier ?? 1) === 0;
+  const { minimum, maximum, multiplier, factor } = drop.quantitySource;
+  const first = Math.max(minimum, amount === 1 ? 1 : Math.ceil((amount - 0.5) / factor));
+  const candidate = Math.ceil(first / multiplier) * multiplier;
+  return candidate <= maximum && materialRewardAmount(candidate, factor) === amount;
+}
 function rollDrop(drop, random) {
+  if (drop.quantitySource) {
+    const source = drop.quantitySource;
+    if (drop.quantityMultiplier !== void 0 || drop.minimum !== materialRewardAmount(source.minimum, source.factor) || drop.maximum !== materialRewardAmount(source.maximum, source.factor)) {
+      throw new Error("Invalid reduced material reward range.");
+    }
+    const amount = rollDrop({
+      minimum: source.minimum,
+      maximum: source.maximum,
+      chance: drop.chance,
+      quantityMultiplier: source.multiplier
+    }, random);
+    return amount === void 0 ? void 0 : materialRewardAmount(amount, source.factor);
+  }
   const multiplier = drop.quantityMultiplier ?? 1;
   if (!Number.isSafeInteger(drop.minimum) || !Number.isSafeInteger(drop.maximum) || !Number.isSafeInteger(multiplier) || multiplier < 1 || drop.minimum % multiplier !== 0 || drop.maximum % multiplier !== 0 || drop.minimum < 1 || drop.maximum < drop.minimum || !Number.isFinite(drop.chance) || drop.chance <= 0 || drop.chance > 1) throw new Error("Invalid loot drop range or chance.");
   if (drop.chance < 1 && lootRoll(random) >= drop.chance) return void 0;
@@ -1314,6 +1354,114 @@ var machineOrigin = "The Machines are damaged prototypes built by Let and Rise. 
 var conduitOrigin = "Conduits are mechanisms salvaged from the time Let and Rise created worlds together. They use elemental energy called Elemental Light.";
 var masterOrigin = "Master Conduits come from Let and Rise's shared prototype work. Each is designed for a named Element-Bearer.";
 
+// src/content/moon-art-revisions.ts
+var moonArtRevisions = {
+  "characters/maerion.png": "91db4f82d958bb85",
+  "characters/maerion-evo-2.png": "bd322529e50cc6f2",
+  "characters/maerion-evo-3.png": "c28b055bb4bafcc3",
+  "characters/maerion-evo-4.png": "93290682a03d9e1b",
+  "characters/maerion-evo-5.png": "3186d8b11acb8665",
+  "characters/maerion-evo-6.png": "8543db58ccf42b20",
+  "abilities/maerion-passive.png": "a4c42a298912d405",
+  "abilities/maerion-skill1.png": "707dd990201a2758",
+  "abilities/maerion-skill2.png": "1b951d9f2ed3520c",
+  "abilities/maerion-ultimate.png": "45c67aa22545ddb0",
+  "characters/caevren.png": "1fa7e4b4f9b40f51",
+  "characters/caevren-evo-2.png": "f545664370765672",
+  "characters/caevren-evo-3.png": "0de687a95bd739f4",
+  "characters/caevren-evo-4.png": "8764ad082a6d7380",
+  "characters/caevren-evo-5.png": "a5aee7f602789a0c",
+  "characters/caevren-evo-6.png": "507e1231f11bd652",
+  "abilities/caevren-passive.png": "5c131b1da4a1de21",
+  "abilities/caevren-skill1.png": "0003e046609a2404",
+  "abilities/caevren-skill2.png": "3f485fba9e442be6",
+  "abilities/caevren-ultimate.png": "5a7949c3a64ac6e5",
+  "characters/vespera.png": "d62de6b0fe3ef5b4",
+  "characters/vespera-evo-2.png": "f665ba310ce70f2f",
+  "characters/vespera-evo-3.png": "3db73eda42195c71",
+  "characters/vespera-evo-4.png": "67b6ce72dbc8a43b",
+  "characters/vespera-evo-5.png": "3b14b4aad9f9d6ce",
+  "characters/vespera-evo-6.png": "45be7e173b9bd76d",
+  "abilities/vespera-passive.png": "34cafbecd82cc330",
+  "abilities/vespera-skill1.png": "51bf466f26ca26c2",
+  "abilities/vespera-skill2.png": "43ecf9470443f714",
+  "abilities/vespera-ultimate.png": "32a0ae26accfe621",
+  "characters/ilyss.png": "64fefcf60d10a08d",
+  "characters/ilyss-evo-2.png": "3c6b213b7d89859c",
+  "characters/ilyss-evo-3.png": "0bf5d1e0821f6be8",
+  "characters/ilyss-evo-4.png": "3145157d99bb26bd",
+  "characters/ilyss-evo-5.png": "5f96fc7780fcdb6c",
+  "characters/ilyss-evo-6.png": "fe50ea97eeaef6ee",
+  "abilities/ilyss-passive.png": "6ebc5ca9db856b4a",
+  "abilities/ilyss-skill1.png": "3e623b4104961247",
+  "abilities/ilyss-skill2.png": "5a693ec94472ad07",
+  "abilities/ilyss-ultimate.png": "83763aa106ab7744",
+  "characters/asteriel.png": "431c26605e1bcf71",
+  "characters/asteriel-evo-2.png": "122017f83ef1f876",
+  "characters/asteriel-evo-3.png": "747a4b03eda4d3bf",
+  "characters/asteriel-evo-4.png": "56f6f136ab6debde",
+  "characters/asteriel-evo-5.png": "667815304686093a",
+  "characters/asteriel-evo-6.png": "1e0f02af385d21ca",
+  "abilities/asteriel-passive.png": "d8f93309dd4efb0e",
+  "abilities/asteriel-skill1.png": "76a93ec972f98320",
+  "abilities/asteriel-skill2.png": "65171a68ce610e81",
+  "abilities/asteriel-ultimate.png": "159fc03ad390e5c7",
+  "characters/serapha.png": "252eae9e8a94a51a",
+  "characters/serapha-evo-2.png": "f1396a5493f63f1d",
+  "characters/serapha-evo-3.png": "37bb6cb58f2f9353",
+  "characters/serapha-evo-4.png": "fba8bf206f28bd3b",
+  "characters/serapha-evo-5.png": "076d8323f9e42962",
+  "characters/serapha-evo-6.png": "7162a9df57c674e2",
+  "abilities/serapha-passive.png": "105992695c69a568",
+  "abilities/serapha-skill1.png": "93509f6c1cf958d0",
+  "abilities/serapha-skill2.png": "c3de7778003e6463",
+  "abilities/serapha-ultimate.png": "5cc90d43db294826",
+  "master-conduits/master-maerion-1.png": "14ea04087d680733",
+  "master-conduits/master-maerion-2.png": "ec390d6f816b0886",
+  "master-conduits/master-maerion-3.png": "951cba7b7725e9d1",
+  "master-conduits/master-caevren-1.png": "6ade2b00f452b751",
+  "master-conduits/master-caevren-2.png": "3f36a1a41d445714",
+  "master-conduits/master-caevren-3.png": "f1601b0a6219423b",
+  "master-conduits/master-vespera-1.png": "91909fc33998d963",
+  "master-conduits/master-vespera-2.png": "333ef48a2968fa97",
+  "master-conduits/master-vespera-3.png": "fa049ca9f8b14272",
+  "master-conduits/master-ilyss-1.png": "2d3460c27c49ea66",
+  "master-conduits/master-ilyss-2.png": "a606a0b2b99be949",
+  "master-conduits/master-ilyss-3.png": "e56b07643aa91c1e",
+  "master-conduits/master-asteriel-1.png": "a6700da619ebaf3d",
+  "master-conduits/master-asteriel-2.png": "9e39c4c63b9b9414",
+  "master-conduits/master-asteriel-3.png": "468cae01dcf38087",
+  "master-conduits/master-serapha-1.png": "fb46fae73b479fa7",
+  "master-conduits/master-serapha-2.png": "8d6ee490a2efbef5",
+  "master-conduits/master-serapha-3.png": "52c1b7b95da6808e",
+  "abilities/statuses/moon-status-maerion-unreturned.png": "9c07401d04f52e47",
+  "abilities/statuses/moon-status-caevren-load.png": "8cc416602dafc1ff",
+  "abilities/statuses/moon-status-vespera-beacon.png": "18ab2a504be5814d",
+  "abilities/statuses/moon-status-vespera-signal.png": "9131fb7f17b8a5a7",
+  "abilities/statuses/moon-status-ilyss-severance.png": "bc9d6c2aaefb5cc3",
+  "abilities/statuses/moon-status-asteriel-promise.png": "98d48039e824e055",
+  "abilities/statuses/moon-status-asteriel-shelter.png": "fff9c909fb3bd63d",
+  "abilities/statuses/moon-status-asteriel-flourish.png": "a95e83d4e33deef6",
+  "abilities/statuses/moon-status-asteriel-moonflower.png": "55303bff01e502c8",
+  "abilities/statuses/moon-status-serapha-interval.png": "207626cf0581c964",
+  "abilities/statuses/moon-status-serapha-ceasefire.png": "0bc2263d825f8dac",
+  "enemies/moon-vesperwing-1.png": "4f39280481145dd4",
+  "enemies/moon-vesperwing-2.png": "fcaae9065fab95dd",
+  "enemies/moon-vesperwing-3.png": "b5e8c907a0f0f51a",
+  "enemies/moon-vesperwing-4.png": "0dacb8e0c58324bf",
+  "enemies/moon-vesperwing-5.png": "fdeab7670c920fa1",
+  "enemies/moon-vesperwing-6.png": "7334eedf0b5cef7d",
+  "materials/moonwake-seed.png": "57e9f098c4eac6b3",
+  "materials/moonwake-bud.png": "6fd5edceae6b6a33",
+  "materials/moonwake-bloom.png": "9c437efd3cab8842",
+  "materials/moonwake-crest.png": "2ac3f2824ebcaf74",
+  "materials/moonwake-heart.png": "0daa3b8944a7d638",
+  "materials/moonwake-soul.png": "09046a25d10e1a9a",
+  "banners/moon-banner.png": "b703eb3a4424c4de",
+  "banners/moon-header.png": "b461689dcfc6f3d3",
+  "backgrounds/moon-arena.png": "acbfe2efe8659b68"
+};
+
 // src/content/moon-sunshade-masters.ts
 var masterEffects = {
   "maerion-1": "+75% Health | +25 percentage points Skill Power. [Unreturned] capacity becomes 85% of Maerion\u2019s maximum Health; direct Shield absorption contributes, redirected damage does not.",
@@ -1328,7 +1476,7 @@ var masterEffects = {
   "ilyss-1": "+50% Health | +35 percentage points Skill Power. Increase maximum [Severance] to 4; each [Severance] spent by Last Flare adds 13% maximum-Health healing instead of 10%.",
   "ilyss-2": "+75% Health | +20 percentage points Skill Power. When Ilyss removes [Burn] or [Weaken] with a Skill or Last Flare, Shield that ally for 15% of their maximum Health, once per ally per player turn.",
   "ilyss-3": "+40% Health | +20 percentage points Skill Efficiency. After [Unbind the Living] removes a debuff, grant its target +25 percentage points Skill Power for two player turns; refreshes rather than stacks.",
-  "asteriel-1": "+60% Health | +30 percentage points Skill Power. Gain +5 percentage points Skill Power per stored [Promise].",
+  "asteriel-1": "+60% Health | +30 percentage points Skill Power. Increase maximum [Promise] to 4; gain +5 percentage points Skill Power per stored [Promise].",
   "asteriel-2": "+75% Health | +25 percentage points Skill Power. After Asteriel enters [Shelter], heal the living squad member with the lowest Health percentage for 20% of their maximum Health, once per player turn.",
   "asteriel-3": "+40% Health | +20 percentage points Skill Efficiency. When another ally spends Asteriel\u2019s [Moonflower], grant that ally 8 Elemental Gauge after the attack resolves, once per player turn.",
   "serapha-1": "+60% Health | +35 percentage points Skill Power. Increase maximum [Interval] to 4; each [Interval] spent by Last Flare also adds 5% maximum-Health healing.",
@@ -1362,7 +1510,7 @@ function pendingMaster(character, slot, name, design) {
     character,
     name,
     rarity: "Omnic",
-    art: "",
+    art: moonArtRevisions[`master-conduits/${id}.png`] ? `master-conduits/${id}.png` : "",
     effect: effect.replace(
       /\b(Health|Defense|Direct Attack|Skill Power|Skill Efficiency|Critical Rate)\b/g,
       (_match, stat) => `[${stat}]`
@@ -5110,62 +5258,62 @@ function ability(name, description, damageMultiplier, targets, excludeSelf) {
 var moonSunshadeNativeIdentities = {
   maerion: {
     role: "Measured recovery support",
-    playLoop: "[Unreturned] records direct Health loss and converts it into restorative choices.",
-    passive: { name: "Names Still Carried", description: "While Maerion lives, record direct Health damage taken by allies as [Unreturned], up to 45% of Maerion\u2019s maximum Health. Redirected damage and damage-over-time do not count." },
+    playLoop: "Turn allies\u2019 direct Health losses into [Unreturned], then spend it to heal one ally or the whole team.",
+    passive: { name: "Names Still Carried", description: "While Maerion lives, store allies\u2019 direct Health loss as [Unreturned], up to 45% of his maximum Health. Redirected damage and damage-over-time do not count." },
     abilities: {
-      skill1: ability("Crescent Triage", "Deal 200% Direct Attack to one enemy. Heal the living ally with the lowest Health percentage for 25% of their maximum Health.", 2),
-      skill2: ability("A Place on the Ferry", "Heal one chosen living ally for 45% of their maximum Health, plus all stored [Unreturned]. Spends [Unreturned].", void 0, "one-ally"),
-      ultimate: ability("Last Flare: Bring Every Name Home", "Heal all living squad members for 70% of their maximum Health. Divide stored [Unreturned] equally among them as additional healing, then spend it. Recover next turn.", void 0, "all-allies")
+      skill1: ability("Crescent Triage", "Deal 200% Direct Attack damage to one enemy and heal the living ally with the lowest Health percentage for 25% of their maximum Health.", 2),
+      skill2: ability("A Place on the Ferry", "Heal one chosen living ally for 45% of maximum Health plus all stored [Unreturned], then spend it.", void 0, "one-ally"),
+      ultimate: ability("Last Flare: Bring Every Name Home", "Heal all living squad members for 70% of maximum Health. Split stored [Unreturned] evenly among them as extra healing, then spend it. Recover next turn.", void 0, "all-allies")
     }
   },
   caevren: {
     role: "Counterweight interception tank",
-    playLoop: "[Load] is earned from direct enemy attacks, then spent to strengthen Caevren\u2019s self-shield.",
-    passive: { name: "Weight of the Watch", description: "When an enemy direct attack damages Caevren\u2019s Health or Shield, gain 1 [Load], up to 3, once per enemy phase. Redirected damage qualifies." },
+    playLoop: "Take enemy hits to build [Load], then spend it to strengthen Caevren\u2019s Last Flare Shield.",
+    passive: { name: "Weight of the Watch", description: "When an enemy direct attack damages Caevren\u2019s Health or Shield, gain 1 [Load] (max 3), once per enemy phase. Redirected hits count." },
     abilities: {
-      skill1: ability("Hold the Meridian", "Deal 280% Direct Attack to one enemy and taunt eligible attacks for the next enemy phase.", 2.8),
-      skill2: ability("Counterweight Covenant", "Shield one chosen other living ally for 30% of their maximum Health. For two enemy phases, redirect 30% of that ally\u2019s incoming enemy direct damage to Caevren while he lives.", void 0, "one-ally"),
-      ultimate: ability("Last Flare: The Night Shall Not Fall", "Spend all [Load]. Shield Caevren for 60% of his maximum Health, plus 12% per [Load] spent. For two enemy phases, redirect 30% of incoming enemy direct damage from every other living ally to Caevren. Recover next turn.")
+      skill1: ability("Hold the Meridian", "Deal 280% Direct Attack damage to one enemy and taunt eligible attacks through the next enemy phase.", 2.8),
+      skill2: ability("Counterweight Covenant", "Give one chosen other living ally Shield equal to 30% of maximum Health. For two enemy phases, redirect 30% of their incoming enemy direct damage to Caevren while he lives.", void 0, "one-ally"),
+      ultimate: ability("Last Flare: The Night Shall Not Fall", "Spend all [Load]. Shield Caevren for 60% of maximum Health plus 12% per [Load] spent. For two enemy phases, redirect 30% of every other living ally\u2019s incoming enemy direct damage to Caevren. Recover next turn.")
     }
   },
   vespera: {
     role: "Signal and team-offense support",
-    playLoop: "[Signal] sets up a teammate; once spent, Vespera earns [Beacon] for a coordinated Last Flare.",
-    passive: { name: "Someone Still Beyond the Walls", description: "When another living ally spends Vespera\u2019s [Signal], gain 1 [Beacon], up to 3, once per player turn." },
+    playLoop: "[Signal] boosts an ally\u2019s next damaging Skill; when it is spent, gain [Beacon] for Vespera\u2019s Last Flare.",
+    passive: { name: "Someone Still Beyond the Walls", description: "When another living ally spends Vespera\u2019s [Signal], gain 1 [Beacon] (max 3), once per player turn." },
     abilities: {
-      skill1: { ...ability("Whitefire Dispatch", "Deal 220% Direct Attack to one enemy. Apply [Burn] dealing 25% of Vespera\u2019s Direct Attack per enemy phase for three enemy phases. Burn ignores Defense.", 2.2), strength: { damageMultiplier: 2.2, burnMultiplier: 0.25 } },
-      skill2: ability("Keep the Last Beacon", "Give one chosen other living ally [Signal]: their next damaging Skill or Last Flare deals 35% more direct damage. Lasts through the next player turn; refreshes rather than stacks.", void 0, "one-ally", true),
-      ultimate: ability("Last Flare: None Left in the Dark", "Spend all [Beacon]. Deal 480% Direct Attack to all enemies. Give each other living ally [Signal] for 50% more direct damage, plus 10% per [Beacon] spent. Lasts through the next player turn. Recover next turn.", 4.8, "all-enemies", true)
+      skill1: { ...ability("Whitefire Dispatch", "Deal 220% Direct Attack damage to one enemy and Burn it for 25% of Vespera\u2019s Direct Attack per enemy phase for three enemy phases. Burn ignores Defense.", 2.2), strength: { damageMultiplier: 2.2, burnMultiplier: 0.25 } },
+      skill2: ability("Keep the Last Beacon", "Give one other living ally [Signal]: their next damaging Skill or Last Flare deals 35% more direct damage, through the next player turn. Reapplying refreshes it rather than stacking.", void 0, "one-ally", true),
+      ultimate: ability("Last Flare: None Left in the Dark", "Spend all [Beacon]. Deal 480% Direct Attack damage to all enemies, then Signal every other living ally for 50% more direct damage plus 10% per [Beacon] spent, through the next player turn. Recover next turn.", 4.8, "all-enemies", true)
     }
   },
   ilyss: {
     role: "Debuff-cleansing healer",
-    playLoop: "Remove a harmful status with [Unbind the Living] or her Last Flare to earn [Severance] for team recovery.",
-    passive: { name: "What Need Not Remain", description: "When Ilyss removes [Burn] or [Weaken] with a Skill or Last Flare, gain 1 [Severance], up to 3, once per player turn." },
+    playLoop: "Remove harmful statuses to build [Severance], then spend it to strengthen team healing.",
+    passive: { name: "What Need Not Remain", description: "When Ilyss removes one [Burn] or [Weaken] application with a Skill or Last Flare, gain 1 [Severance] (max 3), once per player turn." },
     abilities: {
-      skill1: { ...ability("Cut the Harmful Thread", "Deal 220% Direct Attack to one enemy. Apply 25% [Weaken] for two enemy phases.", 2.2), strength: { damageMultiplier: 2.2, weakenFraction: 0.25 } },
-      skill2: ability("Unbind the Living", "Heal one chosen living ally for 45% of their maximum Health. Remove one chosen [Burn] or [Weaken] application from them, if present.", void 0, "one-ally"),
-      ultimate: ability("Last Flare: No Promise of Resurrection", "Spend all [Severance]. Heal every living squad member for 65% of their maximum Health, plus 10% per [Severance] spent. Remove one [Burn] or [Weaken] application from each healed member, if present. Recover next turn.", void 0, "all-allies")
+      skill1: { ...ability("Cut the Harmful Thread", "Deal 220% Direct Attack damage to one enemy and Weaken it by 25% for two enemy phases.", 2.2), strength: { damageMultiplier: 2.2, weakenFraction: 0.25 } },
+      skill2: ability("Unbind the Living", "Heal one chosen living ally for 45% of maximum Health. Remove one chosen [Burn] or [Weaken] application from them, if present.", void 0, "one-ally"),
+      ultimate: ability("Last Flare: No Promise of Resurrection", "Spend all [Severance]. Heal every living squad member for 65% of maximum Health plus 10% per [Severance] spent. Remove one [Burn] from each member, if present; otherwise remove one [Weaken]. Recover next turn.", void 0, "all-allies")
     }
   },
   asteriel: {
     role: "Path-changing support",
-    playLoop: "Choose [Shelter] or [Flourish]; changing cultivation paths earns [Promise] for a later team payoff.",
-    passive: { name: "Futures Given Freely", description: "[Shelter] and [Flourish] are cultivation paths. Begin without a path. Using Skill1 enters [Shelter]; Skill2 enters [Flourish]. Changing from one path to the other grants 1 [Promise], up to 3." },
+    playLoop: "Switch between [Shelter] and [Flourish] to earn [Promise], then spend it on stronger team Shields or Moonflower attacks.",
+    passive: { name: "Futures Given Freely", description: "Begin without a path. Skill1 enters [Shelter]; Skill2 enters [Flourish]. Switching between paths grants 1 [Promise] (max 3)." },
     abilities: {
-      skill1: ability("Lend the Quiet Seed", "Enter [Shelter]. Shield every living squad member for 25% of their maximum Health.", void 0, "all-allies"),
-      skill2: ability("Open the Night Library", "Enter [Flourish]. Give every living squad member [Moonflower]: their next damaging Skill or Last Flare deals 30% more direct damage. Lasts through the next player turn; refreshes rather than stacks.", void 0, "all-allies"),
-      ultimate: ability("Last Flare: Every Orbit Bears a Future", "Spend all [Promise]. In [Shelter], shield every living squad member for 45% of their maximum Health, plus 8% per [Promise] spent. In [Flourish], give every living member [Moonflower] for 50% more direct damage, plus 10% per [Promise] spent. Without a path, use [Shelter]. Preserve the current path. Recover next turn.")
+      skill1: ability("Lend the Quiet Seed", "Enter [Shelter] and Shield every living squad member for 25% of maximum Health.", void 0, "all-allies"),
+      skill2: ability("Open the Night Library", "Enter [Flourish] and give every living squad member [Moonflower]: their next damaging Skill or Last Flare deals 30% more direct damage, through the next player turn. Reapplying refreshes it rather than stacking.", void 0, "all-allies"),
+      ultimate: ability("Last Flare: Every Orbit Bears a Future", "Spend all [Promise]. In [Shelter], Shield every living squad member for 45% of maximum Health plus 8% per [Promise] spent. In [Flourish], give every living member [Moonflower] for 50% more direct damage plus 10% per [Promise] spent. With no path, use [Shelter]. Keep the current path. Recover next turn.")
     }
   },
   serapha: {
     role: "Protective-window healer",
-    playLoop: "[Ceasefire] creates a protected interval; enemies attacking through [Weaken] build [Interval] for a stronger Last Flare.",
-    passive: { name: "An Interval Without Surrender", description: "When an enemy carrying Serapha\u2019s [Weaken] uses a direct attack, gain 1 [Interval], up to 3, once per enemy phase." },
+    playLoop: "Weaken enemies to build [Interval] from their attacks, then spend it on stronger team healing and protection.",
+    passive: { name: "An Interval Without Surrender", description: "When an enemy carrying Serapha\u2019s [Weaken] uses a direct attack, gain 1 [Interval] (max 3), once per enemy phase." },
     abilities: {
-      skill1: { ...ability("Terms of Mercy", "Deal 240% Direct Attack to one enemy. Apply 20% [Weaken] for two enemy phases.", 2.4), strength: { damageMultiplier: 2.4, weakenFraction: 0.2 } },
-      skill2: ability("A Passage Left Open", "Heal every living squad member for 30% of their maximum Health. Give each [Ceasefire], reducing the next enemy direct hit they take by 20%. Expires after the next enemy phase; refreshes rather than stacks.", void 0, "all-allies"),
-      ultimate: ability("Last Flare: Let Them Leave Alive", "Spend all [Interval]. Heal every living squad member for 70% of their maximum Health. Give each [Ceasefire] for 20% damage reduction, plus 5% per [Interval] spent, expiring after two enemy phases. Recover next turn.", void 0, "all-allies")
+      skill1: { ...ability("Terms of Mercy", "Deal 240% Direct Attack damage to one enemy and Weaken it by 20% for two enemy phases.", 2.4), strength: { damageMultiplier: 2.4, weakenFraction: 0.2 } },
+      skill2: ability("A Passage Left Open", "Heal every living squad member for 30% of maximum Health. Give each [Ceasefire], reducing their next enemy direct hit by 20%. It expires after the next enemy phase; reapplying refreshes it rather than stacking.", void 0, "all-allies"),
+      ultimate: ability("Last Flare: Let Them Leave Alive", "Spend all [Interval]. Heal every living squad member for 70% of maximum Health. Give each [Ceasefire] to reduce one next enemy direct hit by 20% plus 5% per [Interval] spent; it expires after two enemy phases. Recover next turn.", void 0, "all-allies")
     }
   },
   rhaziel: {
@@ -5355,9 +5503,9 @@ var moonSunshadeEvents = [
     enemyCommon: "Vesperwing",
     characters: moonCharacters.map((character) => character.id),
     windows: [],
-    bannerArt: null,
-    activityHeaderArt: null,
-    arenaArt: null
+    bannerArt: "banners/moon-banner.png",
+    activityHeaderArt: "banners/moon-header.png",
+    arenaArt: "backgrounds/moon-arena.png"
   },
   {
     id: "sunshade",
@@ -5406,7 +5554,7 @@ function newEventHasCompletedWindow(id, now) {
 }
 function assertNewEventActive(id, now) {
   if (!newEventWindowActive(id, now)) {
-    throw new Error(`${newEventDefinition(id).activityName} is not active. Browse the art-neutral archive; event progress and pity are retained.`);
+    throw new Error(`${newEventDefinition(id).activityName} is not active. Browse the archive; event progress and pity are retained.`);
   }
 }
 function isNewEventId(value2) {
@@ -6554,11 +6702,11 @@ function linearMaterialRange(rarity, stage, firstStage, lastStage) {
   if (!Number.isInteger(stage) || !Number.isInteger(firstStage) || !Number.isInteger(lastStage) || firstStage < 1 || firstStage >= lastStage || stage < firstStage || stage > lastStage) throw new Error("Invalid linear material stage.");
   const [minimum, maximum] = linearMaterialFinalRanges[rarity];
   const progress = (stage - firstStage) / (lastStage - firstStage);
-  return {
+  return materialRewardRange({
     minimum: Math.round(1 + (minimum - 1) * progress),
     maximum: Math.round(2 + (maximum - 2) * progress),
     chance: 1
-  };
+  });
 }
 var bracketRanges = [
   { common: [4, 5] },
@@ -6645,12 +6793,12 @@ var infusionEnemies = {
     ["The Garden Beyond Eternity, Roselius", "roselius-garden-eternity"]
   ],
   moon: [
-    ["Vesperwing", void 0],
-    ["Tokenwatch Vesperwing", void 0],
-    ["Quaykeeper Vesperwing", void 0],
-    ["Nightlock Vesperwing", void 0],
-    ["Unreturned Harbor Vesperwing", void 0],
-    ["Passage Beyond Midnight Vesperwing", void 0]
+    ["Vesperwing", "moon-vesperwing-1"],
+    ["Tokenwatch Vesperwing", "moon-vesperwing-2"],
+    ["Quaykeeper Vesperwing", "moon-vesperwing-3"],
+    ["Nightlock Vesperwing", "moon-vesperwing-4"],
+    ["Unreturned Harbor Vesperwing", "moon-vesperwing-5"],
+    ["Passage Beyond Midnight Vesperwing", "moon-vesperwing-6"]
   ],
   sunshade: [
     ["Solcarapace", void 0],
@@ -6779,7 +6927,7 @@ function infusionEncounter(mode, stage, schedule = "caps", layout) {
     forms: 6,
     enemy: { name, ...art ? { art } : {}, element: mode === "machines" ? machineEnemies[tier].element : infusionEnemyElements[mode] },
     color: mode === "machines" ? "#dddddd" : mode === "heavens" ? "#ff6565" : mode === "abyss" ? "#f464d4" : mode === "sanctuary" ? "#e7a7bf" : mode === "roses" ? "#d36b7d" : mode === "moon" ? "#cbd2d8" : mode === "sunshade" ? "#d9a64c" : "#eed78b",
-    background: isNewEventId(mode) ? void 0 : `${mode}-arena.png`,
+    background: isNewEventId(mode) ? newEventDefinition(mode).arenaArt?.replace(/^backgrounds\//, "") : `${mode}-arena.png`,
     ability: mode === "machines" ? machineEnemies[tier].skill : mode === "heavens" ? "Scarlet Judgment" : mode === "abyss" ? "Cosmic Wrath" : mode === "sanctuary" ? "Hallowed Rosefire" : mode === "roses" ? "Golden Thorn Benediction" : mode === "moon" ? "Crescent Quay Strike" : mode === "sunshade" ? "Gilded Vent Strike" : "Sovereign Facet",
     abilityMultiplier: enemyAbilityMultiplier(level),
     legacyAbilityMultiplier: 1.2 + (stage - 1) / (stages - 1) * (["roses", "moon", "sunshade"].includes(mode) ? 0.65 : 24 * 0.016)
@@ -6815,7 +6963,7 @@ function infusionLoot(mode, stage, schedule = "caps") {
     };
   }
   const progress = (stage - 1) / (infusionModeStageCount - 1);
-  const specialties = specialtyDropTable.map((entry) => ({
+  const specialties = specialtyDropTable.map((entry) => materialRewardRange({
     id: `${mode}-${entry.purpose}`,
     minimum: Math.round(1 + (entry.purpose === "evolution" ? 6 : 7) * progress),
     maximum: Math.round(2 + (entry.purpose === "evolution" ? 6 : 8) * progress),
@@ -7624,7 +7772,7 @@ function storyMaterialLoot(stage) {
     { id: `${element}-common`, minimum, maximum: minimum * 2, chance: 1 },
     { id: `${element}-uncommon`, minimum, maximum: minimum * 2, chance: 0.25 + 0.55 * (level - 1) / 54 }
   ];
-  return drops.map((drop) => bossLootRange(drop, bossLootMultiplier({ story: { storyStage: stage } })));
+  return drops.map((drop) => materialRewardRange(bossLootRange(drop, bossLootMultiplier({ story: { storyStage: stage } }))));
 }
 function storyDrops(stage, random) {
   return Object.fromEntries(storyMaterialLoot(stage).flatMap((drop) => {
@@ -7632,7 +7780,7 @@ function storyDrops(stage, random) {
     return amount === void 0 ? [] : [[drop.id, amount]];
   }));
 }
-var storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common and Uncommon materials of their region; no captures. Prismatica per kill grows linearly from 8-16 at Stage 1 to 750-1,500 at Stage ${storyRules.stages}, with no regional-boss multiplier. Regional bosses keep 5x materials on every clear and their one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
+var storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common and Uncommon materials of their region; no captures. Material rewards are halved after the quantity roll, rounded to the nearest whole unit with a minimum of 1. Prismatica per kill grows linearly from 8-16 at Stage 1 to 750-1,500 at Stage ${storyRules.stages}, with no regional-boss multiplier. Regional bosses give 5x materials before the reduction and a one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
 
 // src/content/calamity.ts
 var calamityTierScaling = {
@@ -7690,11 +7838,15 @@ function calamityChest(activity, tier) {
     masterChests: activity === "machines" && tier === 3 ? 2 : 0,
     devourerCopies: isInfusionMode(activity) && enemyCaptureAllowed(activity, 120) ? { creatureId: `infusion:${activity}:5`, amount: tier } : null,
     componentRange: activity === "machines" ? { min: [3e3, 5e3, 1e4][tier - 1], max: [6e3, 8e3, 12e3][tier - 1] } : null,
-    guaranteedMaterials
+    guaranteedMaterials: Object.fromEntries(Object.entries(guaranteedMaterials).map(([id2, amount]) => [id2, materialRewardAmount(amount, 0.85)]))
   };
 }
+function chestMaterialRow(row) {
+  const drop = materialRewardRange({ minimum: row.min, maximum: row.max, chance: 1 }, 0.85);
+  return { ...row, min: drop.minimum, max: drop.maximum, quantitySource: drop.quantitySource };
+}
 function materialRows(ids) {
-  return ids.map((material, index) => ({
+  return ids.map((material, index) => chestMaterialRow({
     label: material.name,
     id: material.id,
     kind: "material",
@@ -7748,7 +7900,7 @@ function calamityLootTable(activity) {
         min: 10,
         max: 20
       }
-    ];
+    ].map((row) => chestMaterialRow({ ...row, kind: "material" }));
   }
   return materialRows(materialRarities.map((rarity) => ({
     id: `${activity}-${rarity.toLowerCase()}`,
@@ -7768,7 +7920,8 @@ function rollCalamityChest(activity, tier, roll2, owned = {}) {
     conduits: {},
     mechanicalComponents: 0,
     devourerCopies: chest.devourerCopies,
-    calamiticMaterialVersion: 1
+    calamiticMaterialVersion: 1,
+    materialRewardVersion: 1
   };
   const table = calamityLootTable(activity);
   const random = () => {
@@ -7789,7 +7942,8 @@ function rollCalamityChest(activity, tier, roll2, owned = {}) {
       return pick < 0;
     }) ?? table[table.length - 1];
     const quantityRoll = random();
-    const amount = row.min + Math.floor(quantityRoll * (row.max - row.min + 1));
+    const amount = row.kind === "material" ? rollDrop({ minimum: row.min, maximum: row.max, chance: 1, quantitySource: row.quantitySource }, () => quantityRoll) : row.min + Math.floor(quantityRoll * (row.max - row.min + 1));
+    if (amount === void 0) throw new Error("Guaranteed Calamity bundle did not drop.");
     if (row.kind === "fractalis" || row.kind === "lycalis") reward[row.kind] += amount;
     else if (row.kind === "components") reward.mechanicalComponents += amount;
     else if (row.kind === "material" && row.id) reward.materials[row.id] = (reward.materials[row.id] ?? 0) + amount;
@@ -8234,12 +8388,6 @@ var evolutionTitles = {
   aureth: ["Corridor Rescue Captain", "****** the Keystone", "A Route Beneath the Ashwind", "Command of the Moving Shelter", "Walking Eclipse Guardian", "Hold the Burning Sky Open"]
 };
 var artworkPending = /* @__PURE__ */ new Set([
-  "maerion",
-  "caevren",
-  "vespera",
-  "ilyss",
-  "asteriel",
-  "serapha",
   "rhaziel",
   "oryn",
   "thessara",
@@ -8919,9 +9067,10 @@ function cleanseOne(target, choice) {
 function changeCultivationPath(state, owner, path, events) {
   const memory = nativeMemory(owner);
   if (memory.path && memory.path !== path)
-    memory.promise = Math.min(3, (memory.promise ?? 0) + 1);
+    memory.promise = Math.min(equipped(owner, "master-asteriel-1") ? 4 : 3, (memory.promise ?? 0) + 1);
   memory.path = path;
-  status3(state, events, owner, owner, `${owner.name}: ${path === "shelter" ? "Shelter" : "Flourish"} path${memory.promise ? ` \xB7 Promise ${memory.promise}/3` : ""}.`);
+  const capacity = equipped(owner, "master-asteriel-1") ? 4 : 3;
+  status3(state, events, owner, owner, `${owner.name}: ${path === "shelter" ? "Shelter" : "Flourish"} path${memory.promise ? ` \xB7 Promise ${memory.promise}/${capacity}` : ""}.`);
 }
 function setMoonflower(owner, target, bonus, throughRound) {
   target.native ??= {};
@@ -10147,10 +10296,14 @@ function nativeAfterAction(state, owner, action, priorInstruction, events) {
       const source = living(state).find((unit) => unit.id === signal.owner && unit.definitionId === "vespera");
       if (source) {
         const memory = nativeMemory(source);
-        memory.beacon = Math.min(equipped(source, "master-vespera-1") ? 4 : 3, (memory.beacon ?? 0) + 1);
+        const gained = guardOnce(source, "beacon", state.round);
+        if (gained) memory.beacon = Math.min(
+          equipped(source, "master-vespera-1") ? 4 : 3,
+          (memory.beacon ?? 0) + 1
+        );
         if (equipped(source, "master-vespera-3") && guardOnce(source, `signal-gauge:${state.round}`, state.round))
           nativeGauge(state, owner, 10, events);
-        status3(state, events, source, owner, `${source.name}'s Signal is spent; Beacon ${memory.beacon}/${equipped(source, "master-vespera-1") ? 4 : 3}.`);
+        status3(state, events, source, owner, `${source.name}'s Signal is spent${gained ? `; Beacon ${memory.beacon}/${equipped(source, "master-vespera-1") ? 4 : 3}` : ""}.`);
       }
     }
     const moonflower = owner.native?.moonflower;
@@ -10364,6 +10517,24 @@ function nativeDirectHpLoss(state, target, loss, events) {
     memory.wounds = (memory.wounds ?? 0) + loss;
     if (memory.bastion?.throughPhase === state.round) memory.bastion.loss += loss;
     status3(state, events, target, target, `${target.name} banks ${memory.wounds} Wounds.`, memory.wounds);
+  }
+}
+function nativeDirectShieldAbsorbed(state, target, amount, events) {
+  if (target.side !== "ally" || amount <= 0) return;
+  for (const owner of living(state).filter((unit) => unit.definitionId === "maerion" && equipped(unit, "master-maerion-1"))) {
+    const memory = nativeMemory(owner);
+    const capacity = owner.stats.health * 0.85;
+    const stored = Math.min(capacity, (memory.unreturned ?? 0) + amount);
+    const gained = stored - (memory.unreturned ?? 0);
+    memory.unreturned = stored;
+    if (gained > 0) status3(
+      state,
+      events,
+      owner,
+      target,
+      `${owner.name} records ${gained} direct Shield absorption as Unreturned (${Math.round(stored)}/${Math.round(capacity)}).`,
+      gained
+    );
   }
 }
 function nativeAbsorbedHit(state, target, nativeOwners, loss, events) {
@@ -10663,7 +10834,7 @@ function nativeCleanup(state) {
 }
 
 // src/game/conduit-runtime.ts
-var conduitRulesVersion = phaseZeroStatsReady ? 16 : 4;
+var conduitRulesVersion = phaseZeroStatsReady ? 17 : 4;
 function gear(unit) {
   return unit.conduitRuntime ??= { numbers: {}, owners: {} };
 }
@@ -12664,6 +12835,7 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   const shieldResult = absorbEnemyDamage(state, target, remaining, events);
   const { absorbed } = shieldResult;
   let loss = shieldResult.loss;
+  nativeDirectShieldAbsorbed(state, target, absorbed.absorbed, events);
   if (!phaseZeroStatsReady && shieldBefore > 0 && target.shield <= 0 && absorbed.absorbed > 0 && equipped(target, "fieldbrace-coupler")) n.fieldbraceRound = state.round + 1;
   for (const [id, amount] of absorbed.native) {
     const owner = state.allies.find((ally) => ally.id === id);
@@ -13826,11 +13998,12 @@ function nextWave(previous) {
 
 // src/content/banner-materials.ts
 var bannerMaterialTiers = [
-  { rarity: "Common", weight: 50, amount: 10 },
-  { rarity: "Uncommon", weight: 30, amount: 6 },
-  { rarity: "Rare", weight: 17, amount: 3 }
+  { rarity: "Common", weight: 50, amount: materialRewardAmount(10) },
+  { rarity: "Uncommon", weight: 30, amount: materialRewardAmount(6) },
+  { rarity: "Rare", weight: 17, amount: materialRewardAmount(3) }
 ];
-var bannerDuplicateMaterialAmount = 15;
+var authoredBannerDuplicateMaterialAmount = 15;
+var bannerDuplicateMaterialAmount = materialRewardAmount(authoredBannerDuplicateMaterialAmount);
 function materialFamilies() {
   return ["rosethorn", ...moonSunshadeEvents.map((event2) => event2.family)];
 }
@@ -13840,7 +14013,7 @@ function bannerMaterialDefinition(id) {
   if (!tier || !materialFamilies().includes(family) && !elements.some((element) => element.id === family)) {
     throw new Error("Unknown banner material.");
   }
-  return { id, ...tier };
+  return { id, ...tier, authoredAmount: [10, 6, 3][bannerMaterialTiers.indexOf(tier)] };
 }
 function bannerMaterialPool(event2, remaining) {
   const families = event2 ? ["rosethorn"] : elements.map((element) => element.id);
@@ -14007,10 +14180,10 @@ function eventBanner(index) {
     cost: 10,
     available: true,
     artwork: {
-      path: null,
+      path: definition.bannerArt,
       aspectRatio: "16:9",
       direction: "Omnic",
-      alt: `${definition.bannerName} artwork pending.`
+      alt: definition.bannerArt ? `${definition.bannerName} lunar harbor.` : `${definition.bannerName} artwork pending.`
     },
     pool
   };
@@ -14727,7 +14900,14 @@ function drawBanner(account, banner, random) {
   account.bannerPity = { ...account.bannerPity, [banner.id]: result.pity };
   const bonusConduit = bannerConduitBonus(random);
   if (bonusConduit) account.conduits = { ...account.conduits, [bonusConduit]: (account.conduits?.[bonusConduit] ?? 0) + 1 };
-  return { entry: result.entry, materials, duplicate, guarantee: result.guarantee, bonusConduit };
+  return {
+    entry: result.entry,
+    materials,
+    duplicate,
+    guarantee: result.guarantee,
+    bonusConduit,
+    ...materials ? { materialRewardVersion: 1 } : {}
+  };
 }
 function drawNewEventBanner(account, banner, random) {
   if (!isNewEventId(banner.id)) throw new Error("Invalid event banner.");
@@ -14751,7 +14931,7 @@ function drawNewEventBanner(account, banner, random) {
     ...account.eventBannerPity,
     [event2.id]: entry.kind === "character" ? 0 : pity + 1
   };
-  return { entry, materials, duplicate, guarantee: entry.kind === "character" && pity >= moonSunshadePityLimit - 1 ? "event pity" : "none" };
+  return { entry, materials, duplicate, guarantee: entry.kind === "character" && pity >= moonSunshadePityLimit - 1 ? "event pity" : "none", ...materials ? { materialRewardVersion: 1 } : {} };
 }
 function purchaseEventDevourer(storage, id, now) {
   if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before using the event shop.");
@@ -15293,7 +15473,7 @@ function saveAccountRewards(storage, result, runId) {
       }
       for (const [id, amount] of Object.entries(reward.materials)) {
         const drop = materialPool.find((entry) => entry.id === id);
-        if (!drop || !count(amount) || amount < drop.minimum || amount > drop.maximum || amount % multiplier !== 0) throw new Error("Invalid Story material drop.");
+        if (!drop || !count(amount) || !validDropAmount(drop, amount)) throw new Error("Invalid Story material drop.");
         account.materials[id] = (account.materials[id] ?? 0) + amount;
       }
       account.fractalis += reward.amount;
@@ -16226,7 +16406,8 @@ function resolveOperation(previous, operation, entropy) {
           calamiticTokens: reward.calamiticTokens,
           masterChests: reward.masterChests,
           devourerCopies: reward.devourerCopies,
-          calamiticMaterialVersion: reward.calamiticMaterialVersion
+          calamiticMaterialVersion: reward.calamiticMaterialVersion,
+          materialRewardVersion: reward.materialRewardVersion
         };
         break;
       }

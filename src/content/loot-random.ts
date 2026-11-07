@@ -61,6 +61,37 @@ export interface ScaledDrop {
   maximum: number;
   chance: number;
   quantityMultiplier?: number;
+  quantitySource?: { minimum: number; maximum: number; multiplier: number; factor: number };
+}
+
+export function materialRewardAmount(amount: number, factor = .5): number {
+  if (!Number.isSafeInteger(amount) || amount < 1 || ![.5, .85].includes(factor)) {
+    throw new Error('Invalid material reward quantity or factor.');
+  }
+  return Math.max(1, Math.round(amount * factor));
+}
+
+/** Display the reduced bounds, but sample the authored range before rounding the saved reward. */
+export function materialRewardRange<T extends ScaledDrop>(drop: T, factor = .5):
+  Omit<T, 'quantityMultiplier'> & { quantitySource: NonNullable<ScaledDrop['quantitySource']> } {
+  if (drop.quantitySource) throw new Error('Material reward range is already reduced.');
+  const minimum = materialRewardAmount(drop.minimum, factor);
+  const maximum = materialRewardAmount(drop.maximum, factor);
+  const { quantityMultiplier = 1, ...rest } = drop;
+  if (!Number.isSafeInteger(quantityMultiplier) || quantityMultiplier < 1 ||
+      drop.minimum % quantityMultiplier !== 0 || drop.maximum % quantityMultiplier !== 0 ||
+      drop.maximum < drop.minimum) throw new Error('Invalid material reward range.');
+  return { ...rest, minimum, maximum,
+    quantitySource: { minimum: drop.minimum, maximum: drop.maximum, multiplier: quantityMultiplier, factor } };
+}
+
+export function validDropAmount(drop: ScaledDrop, amount: number): boolean {
+  if (!Number.isSafeInteger(amount) || amount < drop.minimum || amount > drop.maximum) return false;
+  if (!drop.quantitySource) return amount % (drop.quantityMultiplier ?? 1) === 0;
+  const { minimum, maximum, multiplier, factor } = drop.quantitySource;
+  const first = Math.max(minimum, amount === 1 ? 1 : Math.ceil((amount - .5) / factor));
+  const candidate = Math.ceil(first / multiplier) * multiplier;
+  return candidate <= maximum && materialRewardAmount(candidate, factor) === amount;
 }
 
 export function scaledDrop(level: number, startingLevel: number, unlockLevel: number,
@@ -81,6 +112,17 @@ export function scaledDrop(level: number, startingLevel: number, unlockLevel: nu
 }
 
 export function rollDrop(drop: ScaledDrop, random: () => number): number | undefined {
+  if (drop.quantitySource) {
+    const source = drop.quantitySource;
+    if (drop.quantityMultiplier !== undefined ||
+        drop.minimum !== materialRewardAmount(source.minimum, source.factor) ||
+        drop.maximum !== materialRewardAmount(source.maximum, source.factor)) {
+      throw new Error('Invalid reduced material reward range.');
+    }
+    const amount = rollDrop({ minimum: source.minimum, maximum: source.maximum, chance: drop.chance,
+      quantityMultiplier: source.multiplier }, random);
+    return amount === undefined ? undefined : materialRewardAmount(amount, source.factor);
+  }
   const multiplier = drop.quantityMultiplier ?? 1;
   if (!Number.isSafeInteger(drop.minimum) || !Number.isSafeInteger(drop.maximum) ||
       !Number.isSafeInteger(multiplier) || multiplier < 1 || drop.minimum % multiplier !== 0 || drop.maximum % multiplier !== 0 ||

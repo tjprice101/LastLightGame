@@ -259,7 +259,7 @@ describe('all Master rules and frozen sessions', () => {
     for (const entry of masterConduits) {
       expect(entry.art !== '' && existsSync(`public/assets/${entry.art}`)).toBe(entry.id in masterConduitArtRevisions);
     }
-    expect(masterConduits.filter(entry => entry.id in masterConduitArtRevisions)).toHaveLength(66);
+    expect(masterConduits.filter(entry => entry.id in masterConduitArtRevisions)).toHaveLength(84);
     expect(existsSync('public/assets/master-conduits/grand-master-chest.png') && existsSync('public/assets/master-conduits/astral-reserve.png')).toBe(true);
     expect(team).not.toMatch(/assets\/conduits\/master-/);
   });

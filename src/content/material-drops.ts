@@ -1,4 +1,5 @@
 import { materialDropLevel, materialRarities as rarityNames } from './activities';
+import { materialRewardRange } from './loot-random';
 
 export const materialRarities = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic'] as const;
 export type MaterialRarity = (typeof materialRarities)[number];
@@ -12,8 +13,8 @@ export function linearMaterialRange(rarity: MaterialRarity, stage: number, first
       firstStage < 1 || firstStage >= lastStage || stage < firstStage || stage > lastStage) throw new Error('Invalid linear material stage.');
   const [minimum, maximum] = linearMaterialFinalRanges[rarity];
   const progress = (stage - firstStage) / (lastStage - firstStage);
-  return { minimum: Math.round(1 + (minimum - 1) * progress),
-    maximum: Math.round(2 + (maximum - 2) * progress), chance: 1 };
+  return materialRewardRange({ minimum: Math.round(1 + (minimum - 1) * progress),
+    maximum: Math.round(2 + (maximum - 2) * progress), chance: 1 });
 }
 
 const bracketRanges: readonly Partial<Record<MaterialRarity, readonly [number, number]>>[] = [

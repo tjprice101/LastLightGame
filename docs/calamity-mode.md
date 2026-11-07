@@ -1,5 +1,22 @@
 # Calamity Mode (D-308 / D-315)
 
+## Material-only chest reduction (2026-11-07)
+
+Only future chest **material** quantities reduce15%:
+`max(1, round(authoredQuantity * .85))`, separately for every selected bundle.
+The six family ranges30-60/20-40/15-30/10-20/6-12/3-6 now display
+26-51/17-34/13-26/9-17/5-10/3-5. Soar/Delve evolution9 becomes8;
+leveling10-20 becomes9-17. Guaranteed Calamitic material1/2/3 still rounds
+to1/2/3. Authored bundle weights, quantity draws/order and3/5/7 bundle counts
+remain intact; repeated bundles aggregate their already-rounded amounts.
+
+Calamity encounter rewards/recruitment, sealed chest counts, Master Chests,
+currencies, components, Conduits, tokens and copies are unchanged.
+Unopened chests use this table at opening; saved holdings and historical
+opening receipts are never rewritten. Ordinary defeated-enemy material rewards
+use the [separate50% rule](summoning-and-economy.md#future-material-reward-reduction-2026-11-07),
+not a second reduction here. This overrides older material quantity claims below.
+
 **D-416 presentation pilot:** activity and Inventory chest View Loot share
 [polished bounded loot dialogs](menus-and-inventory.md#calamity-chest-loot-presentation-d-416):
 one font, explicit guarantee/random headings, exact tabular rates/quantities,

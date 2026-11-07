@@ -7,6 +7,26 @@
  },
  "thumbWidth": 384,
  "files": {
+  "abilities/asteriel-passive.png": {
+   "source": "d8f93309dd4efb0e3ef88635fe7b1038b1c8595ac68ceb924ca966b8bd9743bb",
+   "bytes": 75578,
+   "avif": 43510
+  },
+  "abilities/asteriel-skill1.png": {
+   "source": "76a93ec972f98320d2d5b883e1aea77fea5506f92ea1d42b49aa0427d594a575",
+   "bytes": 80820,
+   "avif": 44083
+  },
+  "abilities/asteriel-skill2.png": {
+   "source": "65171a68ce610e81f39fea60ad79d5d2cbede8a690c61232c0ee830db8dda5f9",
+   "bytes": 79388,
+   "avif": 41546
+  },
+  "abilities/asteriel-ultimate.png": {
+   "source": "159fc03ad390e5c7a0aada54f0cc148e62bd8669f311eb2b4b42d5bf504fdae7",
+   "bytes": 96558,
+   "avif": 48673
+  },
   "abilities/atmoso-defend.png": {
    "source": "3bddbe0004cf1b075ba4619e518d06f5f9dfd75a883caec73146ada46d45e0f3",
    "bytes": 61118,
@@ -126,6 +146,26 @@
    "source": "399d280b0665ea261173b9006c047c93bac66c3d20b834bc6bd459ae955783df",
    "bytes": 65747,
    "avif": 33056
+  },
+  "abilities/caevren-passive.png": {
+   "source": "5c131b1da4a1de21f6b0b9b63794eac1e0b593b58175d019e0b84ec4af469044",
+   "bytes": 91581,
+   "avif": 38275
+  },
+  "abilities/caevren-skill1.png": {
+   "source": "0003e046609a240433762c0aa24b4433233f0b2d8b1a926e1d0229c0ea9c6beb",
+   "bytes": 79988,
+   "avif": 41120
+  },
+  "abilities/caevren-skill2.png": {
+   "source": "3f485fba9e442be6982670c670608cff144aabf6948277bfcfd76d06c3e42aa1",
+   "bytes": 84535,
+   "avif": 41111
+  },
+  "abilities/caevren-ultimate.png": {
+   "source": "5a7949c3a64ac6e53c602a92d759b3fff6262170e3de8cf129d2c8db3bb34ad6",
+   "bytes": 79341,
+   "avif": 39906
   },
   "abilities/caldrex-passive.png": {
    "source": "bba18199611cf242300ab79ba2a94b627f631115f9050024f94506d40ff906f9",
@@ -282,6 +322,26 @@
    "bytes": 82425,
    "avif": 45285
   },
+  "abilities/ilyss-passive.png": {
+   "source": "6ebc5ca9db856b4a1a7b7edee29083913d3fb712e766820e8ecf45533a8e6e60",
+   "bytes": 66836,
+   "avif": 40038
+  },
+  "abilities/ilyss-skill1.png": {
+   "source": "3e623b410496124780b077c9d361a7c9ccdbac4676e12524a313fb20571668ec",
+   "bytes": 74612,
+   "avif": 37696
+  },
+  "abilities/ilyss-skill2.png": {
+   "source": "5a693ec94472ad07ea943a1a2600cbb672ddecaa998ca24483bad90fdf58feb3",
+   "bytes": 69756,
+   "avif": 40549
+  },
+  "abilities/ilyss-ultimate.png": {
+   "source": "83763aa106ab77449aee798d795a4e86a506f6ff30e3ee6298e86e6b15f17b0e",
+   "bytes": 73942,
+   "avif": 30764
+  },
   "abilities/infernis-cinder-cleave.png": {
    "source": "b2d863ad528dffcff2fde27739d0f45861ffb5b0d3d16d1cccc3429d80026f58",
    "bytes": 73733,
@@ -331,6 +391,26 @@
    "source": "70b4c29c06cdcadba03d337aa9a175c483057ebc5e7f32433cbfa37b9a13e165",
    "bytes": 66037,
    "avif": 40513
+  },
+  "abilities/maerion-passive.png": {
+   "source": "a4c42a298912d4054b77a1bc26a88ed65f43c31b4a2f68e003077d5e7b308537",
+   "bytes": 89193,
+   "avif": 39933
+  },
+  "abilities/maerion-skill1.png": {
+   "source": "707dd990201a2758da654059e3de086f3473cb68d804867aa4c6421dadba8fe0",
+   "bytes": 74543,
+   "avif": 40732
+  },
+  "abilities/maerion-skill2.png": {
+   "source": "1b951d9f2ed3520ca28eba14f07f0b6069f7997253a0980f925a6b1c49e7ee6c",
+   "bytes": 75046,
+   "avif": 31924
+  },
+  "abilities/maerion-ultimate.png": {
+   "source": "45c67aa22545ddb0e275b340f0c28dc918db3bfee6d77c2484f192b6f0b77b7a",
+   "bytes": 81174,
+   "avif": 40921
   },
   "abilities/myrthen-passive.png": {
    "source": "3a74e7d78bd6219f71508363834efe2303aee26236a2797cdf6c6cf2fe291d0c",
@@ -482,6 +562,26 @@
    "bytes": 107670,
    "avif": 58459
   },
+  "abilities/serapha-passive.png": {
+   "source": "105992695c69a568056333b4e5f755ef7c9725522d56d3471858272219fc70c7",
+   "bytes": 72042,
+   "avif": 33326
+  },
+  "abilities/serapha-skill1.png": {
+   "source": "93509f6c1cf958d0e7be35cc7d769a3d017d25a0e3d75658ed222c9df36b4ea3",
+   "bytes": 59207,
+   "avif": 36313
+  },
+  "abilities/serapha-skill2.png": {
+   "source": "c3de7778003e6463a0c77f022abc09f07c885a9089ec58b7741850b4ab417aa1",
+   "bytes": 73692,
+   "avif": 41363
+  },
+  "abilities/serapha-ultimate.png": {
+   "source": "5cc90d43db294826a0d51b5671b21226cfb4bf9cf45ba558a36f977a304b07fe",
+   "bytes": 72180,
+   "avif": 33895
+  },
   "abilities/solenne-passive.png": {
    "source": "968311b6fb79eeff1d98a9c83a271e92f3c4f63c69ff93267a4c9f28d962d4f9",
    "bytes": 78266,
@@ -501,6 +601,61 @@
    "source": "d3bfb011321a6a61b4d61f6b39a51237205f91fdaf2c3f4816697a2dd8e8bfcd",
    "bytes": 87599,
    "avif": 36916
+  },
+  "abilities/statuses/moon-status-asteriel-flourish.png": {
+   "source": "a95e83d4e33deef644d9b1f6fff513f24434de2825013c60bfe490a6d9468f8d",
+   "bytes": 84341,
+   "avif": 45762
+  },
+  "abilities/statuses/moon-status-asteriel-moonflower.png": {
+   "source": "55303bff01e502c8decd16495285e69ad166d221fc602965a034f83fc7768fd2",
+   "bytes": 59088,
+   "avif": 34942
+  },
+  "abilities/statuses/moon-status-asteriel-promise.png": {
+   "source": "98d48039e824e055e9fb0d767c805cd2eef9212a1a80f09cab8b0542577429a3",
+   "bytes": 85538,
+   "avif": 42580
+  },
+  "abilities/statuses/moon-status-asteriel-shelter.png": {
+   "source": "fff9c909fb3bd63d35b881fbe21be5eef3075522c4e48a955b29e6ebb59df399",
+   "bytes": 77331,
+   "avif": 40040
+  },
+  "abilities/statuses/moon-status-caevren-load.png": {
+   "source": "8cc416602dafc1ff41a2372cf820d368d8664337f10050642bf3a83e4ff64dd3",
+   "bytes": 74091,
+   "avif": 35455
+  },
+  "abilities/statuses/moon-status-ilyss-severance.png": {
+   "source": "bc9d6c2aaefb5cc3b2552066f2e8670310e2d3182f283eb30d5b6af3247d6ea8",
+   "bytes": 79665,
+   "avif": 43073
+  },
+  "abilities/statuses/moon-status-maerion-unreturned.png": {
+   "source": "9c07401d04f52e47f1bc5200a967d6aac507900b8c29f3fdd30eee0f4956b7e7",
+   "bytes": 85379,
+   "avif": 32992
+  },
+  "abilities/statuses/moon-status-serapha-ceasefire.png": {
+   "source": "0bc2263d825f8daccec06fe3030da818daa18b42f18f68898bc7415cd85adc13",
+   "bytes": 82513,
+   "avif": 42985
+  },
+  "abilities/statuses/moon-status-serapha-interval.png": {
+   "source": "207626cf0581c964aab7b308c8cb724f5179894b81ec82e624eb973f7ed8818e",
+   "bytes": 60533,
+   "avif": 34751
+  },
+  "abilities/statuses/moon-status-vespera-beacon.png": {
+   "source": "18ab2a504be5814d49f9602f1ec666e017314cc39e11582b1af6d363792c9b76",
+   "bytes": 59747,
+   "avif": 36928
+  },
+  "abilities/statuses/moon-status-vespera-signal.png": {
+   "source": "9131fb7f17b8a5a72a50f8e2ef4d84d1ed3706b4cd6cb87ccc5e9f940b39dd85",
+   "bytes": 66278,
+   "avif": 30782
   },
   "abilities/statuses/status-bloom.png": {
    "source": "5460f876814de10477caef414dec35a7c3cb686ded9af6860f495d9ff7802021",
@@ -792,6 +947,26 @@
    "bytes": 74990,
    "avif": 45785
   },
+  "abilities/vespera-passive.png": {
+   "source": "34cafbecd82cc33054223a4a791802966e6d3702f57fcd685014b624b6afce72",
+   "bytes": 70838,
+   "avif": 32654
+  },
+  "abilities/vespera-skill1.png": {
+   "source": "51bf466f26ca26c2075b0e9fa1a1c929b198e42f793e57240366047f629f4272",
+   "bytes": 67546,
+   "avif": 40590
+  },
+  "abilities/vespera-skill2.png": {
+   "source": "43ecf9470443f714c93d1b857bf42a6337b72dd6f846de9e3cef93da84640bed",
+   "bytes": 64850,
+   "avif": 31610
+  },
+  "abilities/vespera-ultimate.png": {
+   "source": "32a0ae26accfe6213a366a9647646f1fecb515b7decef760d44854e3ded1b0e5",
+   "bytes": 65424,
+   "avif": 34570
+  },
   "backgrounds/abyss-arena.png": {
    "source": "b8e2ee0dae3989583d18a2d78d52f55d0dd8209c3cbbd5207566ba277ae06ac3",
    "bytes": 1543203,
@@ -881,6 +1056,11 @@
    "source": "414546a5a2c59e6e6b34e137932b292298bd606a5f936ed8b42ed0ae240d9acb",
    "bytes": 1764397,
    "avif": 341018
+  },
+  "backgrounds/moon-arena.png": {
+   "source": "acbfe2efe8659b68e697e6e6f21716154a3bf8fa454aeb087bc65ad7c5d3d73f",
+   "bytes": 2027467,
+   "avif": 490076
   },
   "backgrounds/oblivion-arena.png": {
    "source": "c64d200fe3feb907d6660c867af76a8f8245b00bb877a2d5b3b318aa20171844",
@@ -1052,6 +1232,16 @@
    "bytes": 1468050,
    "avif": 279413
   },
+  "banners/moon-banner.png": {
+   "source": "b703eb3a4424c4de0b2006bc1f871c1bea198004484c477118400b7cbd49fd15",
+   "bytes": 1945846,
+   "avif": 430643
+  },
+  "banners/moon-header.png": {
+   "source": "b461689dcfc6f3d34834b2cd56ed310d016f7fd81b6e364247f6ad2fe559f99f",
+   "bytes": 1975404,
+   "avif": 477280
+  },
   "banners/oblivion-banner.png": {
    "source": "bba20f969371d694beb1d67b7e515270663060fd8fc328a891b9090da29b19e9",
    "bytes": 1751234,
@@ -1106,6 +1296,42 @@
    "source": "f5d07ac666edc9cd6508f65199410d5e60912a5ec90e39e475ed9fdebe86a2dd",
    "bytes": 1127763,
    "avif": 156379
+  },
+  "characters/asteriel-evo-2.png": {
+   "source": "122017f83ef1f87662683a84c6f7b16fec4227460ee24c7c7d61b5d6e4579f2c",
+   "bytes": 792976,
+   "avif": 228713,
+   "thumb": 59425
+  },
+  "characters/asteriel-evo-3.png": {
+   "source": "747a4b03eda4d3bf50b72a3cfb373e6ff9d5fb6e52a2da52d4cb1431d32033fd",
+   "bytes": 712276,
+   "avif": 190420,
+   "thumb": 54688
+  },
+  "characters/asteriel-evo-4.png": {
+   "source": "56f6f136ab6debde777f4b8d917862e1680c7a3a10c202192a90234a8dfc270b",
+   "bytes": 730155,
+   "avif": 219168,
+   "thumb": 64808
+  },
+  "characters/asteriel-evo-5.png": {
+   "source": "667815304686093a30d0e161cfc8a7fac413fee5e451cf299bbf8b4bae98b4dc",
+   "bytes": 881410,
+   "avif": 237651,
+   "thumb": 70231
+  },
+  "characters/asteriel-evo-6.png": {
+   "source": "1e0f02af385d21ca05493d9dcbc6c7613c65b00aed0c093889d8c5b96f4aa4ce",
+   "bytes": 948112,
+   "avif": 275208,
+   "thumb": 73120
+  },
+  "characters/asteriel.png": {
+   "source": "431c26605e1bcf7158c8cf40ec288f7da790d63f029a6796691d29be17ab056d",
+   "bytes": 661595,
+   "avif": 176448,
+   "thumb": 49926
   },
   "characters/atmoso-evo-2.png": {
    "source": "2ce28d8ae33b7e610fe204dd4a2f6ef19494117d04f0f600f0d05abb730f20ea",
@@ -1250,6 +1476,42 @@
    "bytes": 609369,
    "avif": 118767,
    "thumb": 39893
+  },
+  "characters/caevren-evo-2.png": {
+   "source": "f545664370765672d0437b2c461efd324553cbd143de142a5b1369e22f0e377d",
+   "bytes": 627237,
+   "avif": 156893,
+   "thumb": 47043
+  },
+  "characters/caevren-evo-3.png": {
+   "source": "0de687a95bd739f4ec7b6bbc87bec9092abd2065587e57b1af8268cb88d3cd3c",
+   "bytes": 679895,
+   "avif": 192423,
+   "thumb": 54654
+  },
+  "characters/caevren-evo-4.png": {
+   "source": "8764ad082a6d7380c44166234ea79f56f612adf043790524edc0bf03ae8c7ee0",
+   "bytes": 675710,
+   "avif": 216237,
+   "thumb": 62159
+  },
+  "characters/caevren-evo-5.png": {
+   "source": "a5aee7f602789a0c8668926e395ce81a006855c4cc423d373ae6f8018dec292a",
+   "bytes": 850720,
+   "avif": 246796,
+   "thumb": 69170
+  },
+  "characters/caevren-evo-6.png": {
+   "source": "507e1231f11bd6526e66104d49f90bdfe8d176f4160854d5f15868e73b3b74bb",
+   "bytes": 891270,
+   "avif": 253036,
+   "thumb": 70062
+  },
+  "characters/caevren.png": {
+   "source": "1fa7e4b4f9b40f5185d64c566cd1ecd1e8932bbcb3c67b766afa465b9d55bc5c",
+   "bytes": 700328,
+   "avif": 169944,
+   "thumb": 45211
   },
   "characters/caldrex-evo-2.png": {
    "source": "6c3c560b5345cc5193cc22fba47960ca5ba48d8c5957af39bceb1b3111ae4e87",
@@ -1467,6 +1729,42 @@
    "avif": 196988,
    "thumb": 58522
   },
+  "characters/ilyss-evo-2.png": {
+   "source": "3c6b213b7d89859c1a0fa8574efc9abf2e73f6b7467a5bd075f28fd115a2e306",
+   "bytes": 595897,
+   "avif": 170214,
+   "thumb": 50706
+  },
+  "characters/ilyss-evo-3.png": {
+   "source": "0bf5d1e0821f6be8d2ecebd2869c128af4cf23d2018ab982860ef92743686898",
+   "bytes": 597138,
+   "avif": 179960,
+   "thumb": 49938
+  },
+  "characters/ilyss-evo-4.png": {
+   "source": "3145157d99bb26bd4c39f9e83e99d2da0890641f3e8e4f8c93d1c7cda7593caf",
+   "bytes": 878807,
+   "avif": 221539,
+   "thumb": 62079
+  },
+  "characters/ilyss-evo-5.png": {
+   "source": "5f96fc7780fcdb6c72c6ed7a0686eb6f68fffdac59adee648cef06526feeba5a",
+   "bytes": 819114,
+   "avif": 240718,
+   "thumb": 69982
+  },
+  "characters/ilyss-evo-6.png": {
+   "source": "fe50ea97eeaef6eeb09df608980000a797c298fa54afd44cc48b05dd90c3dbc2",
+   "bytes": 1043221,
+   "avif": 288213,
+   "thumb": 79928
+  },
+  "characters/ilyss.png": {
+   "source": "64fefcf60d10a08d33e56f762d5ee5ddd801b61ec2a5c7e1f7ff10bacd5223fb",
+   "bytes": 640189,
+   "avif": 174903,
+   "thumb": 47480
+  },
   "characters/infernis-evo-2.png": {
    "source": "a07e754b46ec0c044ac0184d0c6689b01ccc283290a85bb4906eb084393a52c1",
    "bytes": 608650,
@@ -1538,6 +1836,42 @@
    "bytes": 591831,
    "avif": 138889,
    "thumb": 39080
+  },
+  "characters/maerion-evo-2.png": {
+   "source": "bd322529e50cc6f2fb89094ddd75c25989ac9d1ed437d4bbee082b5812d3630b",
+   "bytes": 582770,
+   "avif": 179923,
+   "thumb": 54371
+  },
+  "characters/maerion-evo-3.png": {
+   "source": "c28b055bb4bafcc3bde545bc34adad74966af8a0a5f5b6c73000c4e950422535",
+   "bytes": 637818,
+   "avif": 191343,
+   "thumb": 55873
+  },
+  "characters/maerion-evo-4.png": {
+   "source": "93290682a03d9e1b035ba6dd20d943b10968a0f5f31ae43f53bc18eecfeeb08f",
+   "bytes": 687199,
+   "avif": 207495,
+   "thumb": 62388
+  },
+  "characters/maerion-evo-5.png": {
+   "source": "3186d8b11acb86650e7ce8fe8e4ffd894331bb582cd43e7f1c2493843d947103",
+   "bytes": 896920,
+   "avif": 267801,
+   "thumb": 77291
+  },
+  "characters/maerion-evo-6.png": {
+   "source": "8543db58ccf42b2017d895eabcac49b0797d8569ffde897478d5ee6201f9d601",
+   "bytes": 959004,
+   "avif": 256938,
+   "thumb": 77090
+  },
+  "characters/maerion.png": {
+   "source": "91db4f82d958bb85b4eeb9564d8164d0890de9991a4b986757c29eb20754adda",
+   "bytes": 584230,
+   "avif": 162806,
+   "thumb": 45670
   },
   "characters/myrthen-evo-2.png": {
    "source": "24db1c220f85aa6b7def2740c5072c4912ffd29a0f86950627b0d1d79654dade",
@@ -1791,6 +2125,42 @@
    "avif": 176204,
    "thumb": 46890
   },
+  "characters/serapha-evo-2.png": {
+   "source": "f1396a5493f63f1dff1a5c0153ce3e37411a584a3f9a387bda6f519aec00e146",
+   "bytes": 672354,
+   "avif": 183153,
+   "thumb": 56904
+  },
+  "characters/serapha-evo-3.png": {
+   "source": "37bb6cb58f2f93530bba20d21358ec1304972c80eae7e716f5d3fef9d1b0d8b7",
+   "bytes": 738026,
+   "avif": 202369,
+   "thumb": 58786
+  },
+  "characters/serapha-evo-4.png": {
+   "source": "fba8bf206f28bd3bb7e7da3f7e9b2aa12a9c5765eb82430e0abbf1284213576e",
+   "bytes": 800229,
+   "avif": 249630,
+   "thumb": 71849
+  },
+  "characters/serapha-evo-5.png": {
+   "source": "076d8323f9e42962621743db5b6f4b11156cb78748d47d72fdadb75446266491",
+   "bytes": 841619,
+   "avif": 264534,
+   "thumb": 76475
+  },
+  "characters/serapha-evo-6.png": {
+   "source": "7162a9df57c674e25a5609abff4b451507187befcb6f1d8079b62b7e93408f79",
+   "bytes": 906090,
+   "avif": 246148,
+   "thumb": 73886
+  },
+  "characters/serapha.png": {
+   "source": "252eae9e8a94a51aac78dceed03d378e91cd005027c990279fbf1e56d34a4b3e",
+   "bytes": 615340,
+   "avif": 164246,
+   "thumb": 50699
+  },
   "characters/seravelle-evo-2.png": {
    "source": "f1d4235ab6ba9de32bdad2f81a412f95b7c6f447e5f994b9359d04e1a9f2e5c2",
    "bytes": 620578,
@@ -2042,6 +2412,42 @@
    "bytes": 558604,
    "avif": 117056,
    "thumb": 35330
+  },
+  "characters/vespera-evo-2.png": {
+   "source": "f665ba310ce70f2fa97362f009888ffd32aa281651f2ce4781343f6cec7f484f",
+   "bytes": 630515,
+   "avif": 189596,
+   "thumb": 55990
+  },
+  "characters/vespera-evo-3.png": {
+   "source": "3db73eda42195c71728784e16778db8e8f0ca12b7450de8d0580e55e2e15009b",
+   "bytes": 632660,
+   "avif": 183229,
+   "thumb": 57448
+  },
+  "characters/vespera-evo-4.png": {
+   "source": "67b6ce72dbc8a43b4c150e8f24ab896b2eb7c4b588c4849ad67f14d5f8cf8408",
+   "bytes": 755896,
+   "avif": 253671,
+   "thumb": 74630
+  },
+  "characters/vespera-evo-5.png": {
+   "source": "3b14b4aad9f9d6cef67060e2966b3b309962a2290b2484edbc9d0a42949fc86c",
+   "bytes": 865028,
+   "avif": 235663,
+   "thumb": 74595
+  },
+  "characters/vespera-evo-6.png": {
+   "source": "45be7e173b9bd76dbc38738769b57e94b578c1977b576b31b6c36abd5ef33608",
+   "bytes": 945751,
+   "avif": 247097,
+   "thumb": 69243
+  },
+  "characters/vespera.png": {
+   "source": "d62de6b0fe3ef5b4dd6e1a54e54b96ac1854d1af9d1f97de6e43fb224e3f69d3",
+   "bytes": 606320,
+   "avif": 163118,
+   "thumb": 54250
   },
   "conduits/aegis-capacitor.png": {
    "source": "a0a88a2f4c5b0363c7df52399f46149911a78c7674023814646e768368513db3",
@@ -3064,6 +3470,42 @@
    "avif": 164389,
    "thumb": 50719
   },
+  "enemies/moon-vesperwing-1.png": {
+   "source": "4f39280481145dd4fd2cd3c7b67fac4c9c7b4055e712f3f4aa88e01d02fc4b18",
+   "bytes": 618711,
+   "avif": 201765,
+   "thumb": 64418
+  },
+  "enemies/moon-vesperwing-2.png": {
+   "source": "fcaae9065fab95dd92b9a7eb6c2bc4ddbfe90bd67c0163acc71055cecd9baea3",
+   "bytes": 556945,
+   "avif": 154597,
+   "thumb": 50346
+  },
+  "enemies/moon-vesperwing-3.png": {
+   "source": "b5e8c907a0f0f51ac24bdfd24d39f5eb63829a2a0e7e9401039cb09d7f8216d6",
+   "bytes": 577622,
+   "avif": 143839,
+   "thumb": 42369
+  },
+  "enemies/moon-vesperwing-4.png": {
+   "source": "0dacb8e0c58324bf8ddbf272ba2849aad96675f37930be8dbefef4ea271fc148",
+   "bytes": 588593,
+   "avif": 163506,
+   "thumb": 51081
+  },
+  "enemies/moon-vesperwing-5.png": {
+   "source": "fdeab7670c920fa16ad81699cb519535161a83c986810613ffb63b338a9aa90d",
+   "bytes": 584852,
+   "avif": 177514,
+   "thumb": 55684
+  },
+  "enemies/moon-vesperwing-6.png": {
+   "source": "7334eedf0b5cef7d5a7f1ea9fe5379eed73bc648bd1309a2cfee7ac8e26bb1eb",
+   "bytes": 636761,
+   "avif": 226283,
+   "thumb": 70523
+  },
   "enemies/moonbloom-dryad.png": {
    "source": "bea085705a0b0b2e78a14c14dcd032a8fba295bd21ce60ace1661b33a52d9fe6",
    "bytes": 681090,
@@ -3676,6 +4118,21 @@
    "bytes": 86585,
    "avif": 32081
   },
+  "master-conduits/master-asteriel-1.png": {
+   "source": "a6700da619ebaf3d5404f9b1e51d1bca2b6b14b26980539e0c8f8a708624be0a",
+   "bytes": 98392,
+   "avif": 39319
+  },
+  "master-conduits/master-asteriel-2.png": {
+   "source": "9e39c4c63b9b941463336181b186f3d7e83e29e323cd2a5c2b0056e50af9528b",
+   "bytes": 92111,
+   "avif": 46134
+  },
+  "master-conduits/master-asteriel-3.png": {
+   "source": "468cae01dcf38087f89d6972bc0322dbba62d11490a9377a28e4e9835c625ed8",
+   "bytes": 108468,
+   "avif": 46124
+  },
   "master-conduits/master-atmoso-1.png": {
    "source": "8d40ff8839e063bc948590da0f0e396cd28b62525a76a2c89bb893f355f1a0df",
    "bytes": 64174,
@@ -3735,6 +4192,21 @@
    "source": "8391fbb8776f9493e277f4ecb9e8f51cbcda938ba151bf9f1fa63c406814a18a",
    "bytes": 88714,
    "avif": 33759
+  },
+  "master-conduits/master-caevren-1.png": {
+   "source": "6ade2b00f452b751925ab1c2ec3d12d3daf30013f62911538cd9bca60613047d",
+   "bytes": 94988,
+   "avif": 43718
+  },
+  "master-conduits/master-caevren-2.png": {
+   "source": "3f36a1a41d44571473b028f5e13610b6bd22693a951cb09e44315aab5d5bc1e3",
+   "bytes": 83778,
+   "avif": 33942
+  },
+  "master-conduits/master-caevren-3.png": {
+   "source": "f1601b0a6219423bd293e5b3d3c1fab5e787d95ed59759abe69be6ed1aa15c13",
+   "bytes": 91986,
+   "avif": 54846
   },
   "master-conduits/master-caldrex-1.png": {
    "source": "d01c4c15eb04066cc5f7f9bba692cd3a435d87747ea930566ccde23ddbc11a89",
@@ -3826,6 +4298,21 @@
    "bytes": 88877,
    "avif": 38470
   },
+  "master-conduits/master-ilyss-1.png": {
+   "source": "2d3460c27c49ea66cb5affd1aa93b815e4de56e05e02bd03fd399f4dcd00bbad",
+   "bytes": 76218,
+   "avif": 36045
+  },
+  "master-conduits/master-ilyss-2.png": {
+   "source": "a606a0b2b99be9498a954fe3764f66d703f75bb38404376a61f3d99ddf56c060",
+   "bytes": 84268,
+   "avif": 40818
+  },
+  "master-conduits/master-ilyss-3.png": {
+   "source": "e56b07643aa91c1ed913f163cc344c043826cc9c73298964ba28cfad1755f57f",
+   "bytes": 85081,
+   "avif": 43880
+  },
   "master-conduits/master-kaelith-1.png": {
    "source": "02241fcb8aa3574a8f4d8c0f03dfd95d84318fb571349cf72cfd64bfbc151132",
    "bytes": 68192,
@@ -3840,6 +4327,21 @@
    "source": "f2a4a0ce1e48f772d5d0e3a2b6ca7cb709965c3c400a3f48ca5856266d9be0a2",
    "bytes": 88019,
    "avif": 46880
+  },
+  "master-conduits/master-maerion-1.png": {
+   "source": "14ea04087d68073340acb739da4605e3b3596547a6b04c176413b0627b944100",
+   "bytes": 105570,
+   "avif": 50226
+  },
+  "master-conduits/master-maerion-2.png": {
+   "source": "ec390d6f816b08869167d36827d17fa67e63500bb6385b172fb34a3ac61e8eb8",
+   "bytes": 81920,
+   "avif": 38290
+  },
+  "master-conduits/master-maerion-3.png": {
+   "source": "951cba7b7725e9d1ba4365596b7c25907dd0956c963be01f8189a8a81fa633ac",
+   "bytes": 85826,
+   "avif": 38815
   },
   "master-conduits/master-myrthen-1.png": {
    "source": "0bbec3dc25ba4cabc764b8acae9e7653d950503128845a14628ad2b240a03cab",
@@ -3931,6 +4433,21 @@
    "bytes": 90120,
    "avif": 42363
   },
+  "master-conduits/master-serapha-1.png": {
+   "source": "fb46fae73b479fa7ca7b7687be4bea187194563a60139eba01322df42056b4b0",
+   "bytes": 72121,
+   "avif": 32733
+  },
+  "master-conduits/master-serapha-2.png": {
+   "source": "8d6ee490a2efbef57fbb3ec768cdd54e896a93b041fd94e611acf5c23f8c8b09",
+   "bytes": 70062,
+   "avif": 31053
+  },
+  "master-conduits/master-serapha-3.png": {
+   "source": "52c1b7b95da6808e2230dc2e45d0efc95a5e2b179b0350349ca7f085ff640943",
+   "bytes": 67655,
+   "avif": 39341
+  },
   "master-conduits/master-solenne-1.png": {
    "source": "7566ae1aff847aa4f5082104bbd3ea69ddc79ff5abfe6494798bdd8d97a46ba3",
    "bytes": 92293,
@@ -4005,6 +4522,21 @@
    "source": "9fb44dd852b6d06ebc51295d863f680bee3f512d5727c2afa6f0015c8dbd0a33",
    "bytes": 69150,
    "avif": 31463
+  },
+  "master-conduits/master-vespera-1.png": {
+   "source": "91909fc33998d9635873d3d8f4ff5126d228c8484b5ee709097d1c62d53ef0e5",
+   "bytes": 88235,
+   "avif": 45908
+  },
+  "master-conduits/master-vespera-2.png": {
+   "source": "333ef48a2968fa979578b671575b2649d333717ed7d244bd0a70ad0044127e9c",
+   "bytes": 63790,
+   "avif": 32675
+  },
+  "master-conduits/master-vespera-3.png": {
+   "source": "fa049ca9f8b142721997d6939fb855afe6a01182cd7967688e61ff80d9f8c1ab",
+   "bytes": 88986,
+   "avif": 44646
   },
   "materials/abyss-heart-shattered-void.png": {
    "source": "e5ebe90cc608bc4dec6941eac5bfe65b2d8535bb134bede86335a4b1a322c355",
@@ -4255,6 +4787,36 @@
    "source": "4bf09bf4318edf65570d3c913990875499a670db815efc7335ad6538f024f793",
    "bytes": 87336,
    "avif": 49516
+  },
+  "materials/moonwake-bloom.png": {
+   "source": "9c437efd3cab8842a21ff3221c21420e9efd166376e57840c3ac24319771f3c6",
+   "bytes": 58938,
+   "avif": 24660
+  },
+  "materials/moonwake-bud.png": {
+   "source": "6fd5edceae6b6a33745fda7f23af17ab90143292120b567ea929450c5db9d212",
+   "bytes": 69372,
+   "avif": 28615
+  },
+  "materials/moonwake-crest.png": {
+   "source": "2ac3f2824ebcaf747f5d5d3a5c83969680c2f323820299662a91d5f534871956",
+   "bytes": 68431,
+   "avif": 32178
+  },
+  "materials/moonwake-heart.png": {
+   "source": "0daa3b8944a7d6387d361f5b495bdaa39247e83273017700f6050315c594ceea",
+   "bytes": 59226,
+   "avif": 24519
+  },
+  "materials/moonwake-seed.png": {
+   "source": "57e9f098c4eac6b3b93ce80da4057cbe84a0b8773dc269aadaaaa59ea4cdb6cc",
+   "bytes": 52302,
+   "avif": 19959
+  },
+  "materials/moonwake-soul.png": {
+   "source": "09046a25d10e1a9ab3fae597e04e2b0028be88a279577ab9e5caf648575580ab",
+   "bytes": 76785,
+   "avif": 41669
   },
   "materials/ominous-bloom.png": {
    "source": "a1b4977fd38eddc41100b9e11e3ca847d7158bc14e0311a830525984753b270c",

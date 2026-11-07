@@ -3,7 +3,8 @@ import { starters, getStarter, type StarterId } from '../src/content/starters';
 import { characterLevelCap, characterLevelCost, characterEvolutionCost, type CharacterProgress } from '../src/content/progression';
 import { conduits, getConduit, conduitUpgradeCost, validateConduitElement, validateConduitSlots, type ConduitId, type ConduitSlots } from '../src/content/conduits';
 import { masterConduits, type MasterConduitId } from '../src/content/master-conduits';
-import { act, createBattle, actionUnavailable, withMasterLoadouts, type BattleState, type BattleEvent } from '../src/game/battle';
+import { act, createBattle, actionUnavailable, withMasterLoadouts, type BattleState, type BattleEvent,
+  type Combatant } from '../src/game/battle';
 import { nativeBurnPhase, nativePhaseEnd, nativeTurnStart } from '../src/game/native-kits';
 import { conduitTurnStart, refreshConduitStats, expireNativeShields, effectiveDefense, conduitIncoming } from '../src/game/conduit-runtime';
 import { settleCalamiticDebt } from '../src/game/calamitic-conduits';
@@ -107,7 +108,10 @@ export function auditBoundary(state: BattleState): BattleEvent[] {
   return events;
 }
 
-export function measureCapability(initial: BattleState, profile: AuditProfile, mode: AuditRow['mode'] = 'output', rounds = auditRounds): Capability {
+export type CapabilityPriorities = (state: BattleState, actor: Combatant, mode: AuditRow['mode']) => ActionId[];
+
+export function measureCapability(initial: BattleState, profile: AuditProfile, mode: AuditRow['mode'] = 'output',
+  rounds = auditRounds, prioritiesFor?: CapabilityPriorities): Capability {
   let state = structuredClone(initial);
   const contributions = Object.fromEntries(state.allies.map(unit => [unit.id, { damage: 0, healing: 0, shields: 0 }]));
   let damage = 0, healing = 0, shields = 0, opening = 0, bestRound = 0, lateDamage = 0;
@@ -142,8 +146,9 @@ export function measureCapability(initial: BattleState, profile: AuditProfile, m
         disciple: ['ultimate', 'skill2', 'light'], bruno: ['ultimate', 'skill2', 'light'],
       };
       const priorities: ActionId[] = normalOnly ? ['light'] : [
-        ...(mode === 'support' ? supportPriority[actor.definitionId as StarterId] ?? benchmarkPriorities(state, actor)
-          : benchmarkPriorities(state, actor)), ...actionIds];
+        ...(prioritiesFor ? prioritiesFor(state, actor, mode) :
+          mode === 'support' ? supportPriority[actor.definitionId as StarterId] ?? benchmarkPriorities(state, actor)
+            : benchmarkPriorities(state, actor)), ...actionIds];
       const choice = priorities.map(action => ({ action, target: benchmarkTarget(state, actor, action) }))
         .find(({ action, target }) => !actionUnavailable(state, actor, action, target));
       if (!choice) break;

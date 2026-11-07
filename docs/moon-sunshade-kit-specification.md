@@ -8,22 +8,37 @@ effects, values and acquisition rules below are unchanged.
 
 ## Review status
 
-**Native kits and36 Masters wired art-neutral; flagged strength values unchanged.
-See [handoff](handoff.md) for integration validation and publication status.**
+**Measured tuning pass (2026-11-07):** reviewed all six Moon kits, their three
+personal Masters apiece, and shared per-owner clocks. No direct-damage, healing,
+Shield, action-cost, recovery, or Master-effect coefficients changed: the
+bounded evidence did not justify broad numerical buffs. Ability summaries were
+clarified, duplicate native resource rows removed, and Vespera's documented
+once-per-player-turn [Beacon] limit is now enforced when several allies spend
+[Signal] in one turn. Typed Moon status icons are wired through the native
+readout/marker state; artwork, URL resolution, recruitment and launch remain
+separate work.
+
+The original design review below predates the owner's explicit request for
+measured tuning and remains historical where it asks for flag-only review.
+See the bounded evidence below and [handoff](handoff.md) for integration
+validation and publication status.
 Owner approves the [twelve identities and all six-form appearances](moon-sunshade-character-design.md),
 then authorizes kit/Conduit design. Confirmed scope: **three alternative
 personal Master Conduits per character,36 total; no added ordinary Conduits**.
-Owner accepts the kits subject to avoiding weak buffs, then explicitly requests
-**flagging questionable values only, without changing any numbers**. Preserve
-the owner's Maerion/Caevren edits. The strength review below is not a balance
-certification or permission to increase numbers automatically.
+The original review preserves the owner's Maerion/Caevren edits and flags
+questionable values without making numeric changes. The newer measured pass
+below supersedes that scope but still requires encounter evidence for each
+coefficient change.
 One personal Master can be equipped at a time. Acquisition, final strength approval,
 art prompts/delivery and playable release remain separate decisions.
 
 Latest implementation authorization: all twelve bearers are now six-star;
 owner requests art-neutral wiring of both inactive banners and approves all36
 personal Masters in the existing chest-choice pool, without changing drops
-or automatic equipment. Preserve every coefficient below and flagged values.
+or automatic equipment. That earlier coefficient freeze is superseded only for
+the owner's current measured Moon-tuning request; no numerical change is made
+unless the bounded evidence below justifies one. Master acquisition/equipment
+rules remain unchanged.
 [Current event/account rules](moon-sunshade-events.md) and
 [completed prompt inventory](Future%20Plans/remaining-expansion-art.md) supersede earlier
 unresolved acquisition/art-count gates, not actual artwork delivery.
@@ -33,14 +48,76 @@ Numbers are authored final base coefficients at100% Skill Power, before role
 and equipment bonuses. They are not inputs for another global1.6x skill/3x
 Last Flare multiplication. See [current combat conventions](combat.md).
 
-## Buff-strength flags for owner review
+## Measured Moon tuning evidence (2026-11-07)
 
-**No numbers changed by this review.** Small increments are not automatically
-weak: examine the complete effect, its targeting, frequency, existing role perk
-and Master stat package. The following are specific concerns, not proven
-encounter failures. Suggested review directions are not approved replacements.
+Reproduce the bounded paper and encounter comparisons with
+`npx vitest run tools\seasonal-experiments.test.ts --maxWorkers=1 --reporter=dot`.
+Paper checks are isolated Lv105, Common+0, six-round, seed1729 measurements
+against a zero-Defense target with no incoming damage. Generic priorities are
+compared with a deterministic Moon-role policy; table pairs are generic / Moon
+policy (G/M). Damage, effective healing and Shield creation are separate
+totals, not DPR or a real encounter clear rate.
 
-| Character / effect | Current value and full payoff | Why review it | Review direction, not a numeric change |
+| Character | Damage G/M | Effective heal G/M | Shield G/M | Separate packet / Shield |
+|---|---:|---:|---:|---:|
+| Maerion |30048 /30048|24166.8 /24166.8|0 /0|15641.5 /0|
+| Caevren |33849 /33849|0 /0|0 /0|33780.5 /16805.25|
+| Vespera |51151 /51151|1878 /1878|0 /0|15641.5 /0|
+| Ilyss |32316 /32316|1878 /1878|0 /0|15641.5 /0|
+| Asteriel |7377 /13343|1878 /1878|22288.8 /22288.8|29014.5 /13373.27|
+| Serapha |34582 /34582|1878 /1878|0 /0|19551.9 /0|
+
+The Moon-role paper priorities changed only Asteriel's isolated six-round
+damage (by using her authored [Moonflower] attack instead of the default
+rotation); they did not change the separate support totals. The packet probe
+is one incoming direct packet with listed Shield held separate, not a
+multi-round survival test or a universal survivable-hit limit.
+
+Actual pressure used the explicitly conditional owned trio
+`[new Moon character, Tizu, Flora]`, all Lv105 with mixed+0 ordinary
+non-Calamitic gear, against each Moon Stage35 Lv140 event boss. Only one
+personal Master was equipped at a time; each no-Master/Master1/Master2/Master3
+configuration ran seeds1/1729/104729. The generic policy is compared with the
+Moon-role policy; outcomes are wins/defeats/timeouts, followed by mean rounds
+across each character's12 encounters:
+
+| Character | Generic W/D/T; mean rounds | Moon-role W/D/T; mean rounds |
+|---|---:|---:|
+| Maerion |9/3/0;38.9|9/3/0;38.9|
+| Caevren |12/0/0;35.0|12/0/0;45.5|
+| Vespera |12/0/0;18.4|12/0/0;18.4|
+| Ilyss |12/0/0;43.3|12/0/0;42.8|
+| Asteriel |12/0/0;51.0|12/0/0;48.3|
+| Serapha |12/0/0;40.8|12/0/0;54.3|
+
+For each character, each policy had the same per-configuration result:
+Maerion had2 wins/1 defeat for no Master and Masters1-2, then3 wins with
+Master3; each other character had3 wins in every configuration. Maerion's
+three defeats are retained and justify follow-up review, but this three-seed,
+one-composition sample cannot isolate a coefficient deficiency from team
+composition or strategy. The two policies also show that turn count is
+policy-sensitive; they are bounded heuristics, not optimized play. Ownership
+of all three tested characters is conditional, not an observed average
+account. Zero-Defense paper output, Shield creation, one-packet protection and
+pressured clears are distinct experiments.
+
+No direct-damage, healing, Shield, cost, recovery or Master-effect coefficient
+change was justified by these bounded results. The pass instead clarifies
+ability descriptions and shared owner-specific clock wording, enforces
+Vespera's once-per-player-turn [Beacon] limit, applies Asteriel's authored
+four-[Promise] Master1 capacity, and counts directly absorbed Shield damage
+for Maerion's Master1 [Unreturned] accounting while excluding redirected
+damage. Typed icon IDs are attached to native Moon readout/marker state; no
+presentation text parsing is used. The recent changes do not alter
+reward/economy rules, combat RNG, or Master effects.
+
+### Historical cross-roster coefficient flags
+
+These questions came from the earlier design review. They are not proven
+encounter failures or approved replacements; the bounded Moon data above does
+not automatically validate or invalidate concerns outside its scope.
+
+| Character / effect | Current value and full payoff | Why it was flagged | Historical review direction |
 |---|---|---|---|
 | Oryn / Last Flare [Accord] Defense | Skill2 grants one ally +30%; Last Flare replaces it with +20% for all allies. | The existing holder loses10 percentage points when the stronger-cost ability replaces the buff. Team coverage improves, but personal protection falls. | Decide whether Last Flare should retain at least the single-target Defense strength. |
 | Asteriel / Moonflower Seedworld Orrery | +5 Skill Power points per [Promise], up to4: +20 points fully charged, in addition to the Master's static +30 points. | The charge bonus vanishes when the payoff spends [Promise]. Under the current text, the consuming Last Flare might lose the very bonus earned for it. | Specify whether it snapshots before spending; then assess the fully charged bonus rather than just the per-stack number. |
@@ -56,7 +133,7 @@ encounter failures. Suggested review directions are not approved replacements.
 | Conditional Gauge Masters / Vespera, Asteriel, Serapha, Rhaziel, Oryn, Aureth | Current grants10/8/10/8/10/8 Gauge respectively, with distinct per-turn/phase limits. | Fixed grants become a smaller fraction of an expanded maximum Gauge. At capacity200,8/10 Gauge is4%/5% capacity before Gain. Conditional spend/removal/absorption requirements also differ. Maerion's owner-edited grant is15% capacity, not15 flat Gauge. | Decide which conditional receipts should remain flat versus capacity-based; do not silently convert them to percentages. |
 | Thessara / Droughtbreak Delivery Dynamo | Skill2 grant8→10 Gauge per Reserve:32→40 at native cap4. Last Flare6→8 per Reserve:24→32 to each other ally. | Increment is8 Gauge per recipient at full stacks; it is not just a2-Gauge effect. Existing +20 Efficiency and +40% Health also contribute. At expanded capacity, the relative improvement shrinks. | Review full-stack delivery before deciding whether this specialized Gauge alternative is too modest. |
 
-### Values not automatically flagged as weak
+### Interpretation notes retained from the original review
 
 - Vespera's single-target35% [Signal] and Asteriel's team30% [Moonflower]
   have different coverage; their charged Last Flares reach80% natively.
@@ -72,11 +149,6 @@ encounter failures. Suggested review directions are not approved replacements.
   Caevren Load5/+10% Defense per charge and Skill2 Shield/redirection55% are
   preserved exactly. These do not certify survivability: greater redirection
   also increases Caevren's incoming load.
-
-**Next decision:** owner selects flagged effects to revise and approves exact
-replacement values. Until then, retain every listed coefficient, scope,
-duration and cap. Actual pressured-encounter and paper checks remain required
-before activation; this documentation review does not supply those results.
 
 ## Shared actions and role perks
 
@@ -112,24 +184,23 @@ it never resets charges or replays an expired payoff.
 
 **Passive - Names Still Carried**
 
-While Maerion lives, record direct Health damage taken by squad members as
-[Unreturned], up to 45% of Maerion's maximum Health. Redirected damage and
-damage-over-time do not contribute.
+While Maerion lives, store allies' direct Health loss as [Unreturned], up to
+45% of his maximum Health. Redirected damage and damage-over-time do not count.
 
 **Skill1 - Crescent Triage |25 Gauge**
 
-Deal 200% Direct Attack to one enemy. Heal the living squad member with the
+Deal 200% Direct Attack damage to one enemy and heal the living ally with the
 lowest Health percentage for 25% of their maximum Health.
 
 **Skill2 - A Place on the Ferry |40 Gauge**
 
-Heal one chosen living ally for 45% of their maximum Health, plus all stored
-[Unreturned]. Spends [Unreturned].
+Heal one chosen living ally for 45% of maximum Health plus all stored
+[Unreturned], then spend it.
 
 **Last Flare - Bring Every Name Home |100 Gauge**
 
-Heal all living squad members for 70% of their maximum Health. Divide stored
-[Unreturned] equally among them as additional healing, then spend it.
+Heal all living squad members for 70% of maximum Health. Split stored
+[Unreturned] evenly among them as extra healing, then spend it.
 Recover next player turn.
 
 **Master - Unreturned Voyage Worldpump**
@@ -164,19 +235,20 @@ When an enemy's direct attack damages Caevren's Health or Shield, gain 1
 
 **Skill1 - Hold the Meridian |25 Gauge**
 
-Deal 280% Direct Attack to one enemy. Taunt enemies for the next enemy phase.
+Deal 280% Direct Attack damage to one enemy and taunt eligible attacks through
+the next enemy phase.
 
 **Skill2 - Counterweight Covenant |40 Gauge**
 
-Grant one chosen other living ally a Shield equal to 30% of their maximum
-Health. For 2 enemy phases, redirect 30% of their incoming enemy direct damage
-to Caevren while he lives.
+Give one chosen other living ally Shield equal to 30% of maximum Health. For
+two enemy phases, redirect 30% of their incoming enemy direct damage to Caevren
+while he lives.
 
 **Last Flare - The Night Shall Not Fall |100 Gauge**
 
-Spend all [Load]. Grant Caevren a Shield equal to 60% of his maximum Health,
-plus 12% per [Load] spent. For 2 enemy phases, redirect 30% of incoming enemy
-direct damage from every other living ally to Caevren.
+Spend all [Load]. Shield Caevren for 60% of maximum Health plus 12% per [Load]
+spent. For two enemy phases, redirect 30% of every other living ally's incoming
+enemy direct damage to Caevren.
 Recover next player turn.
 
 **Master - Meridian Counterweight Atlas**
@@ -206,25 +278,25 @@ strike. Redirected damage qualifies.
 
 **Passive - Someone Still Beyond the Walls**
 
-When another living ally spends Vespera's [Signal], gain 1 [Beacon], up to 3.
-Once per player turn.
+When another living ally spends Vespera's [Signal], gain 1 [Beacon] (max 3),
+once per player turn.
 
 **Skill1 - Whitefire Dispatch |25 Gauge**
 
-Deal 220% Direct Attack to one enemy. Apply [Burn] dealing 25% of Vespera's
-Direct Attack per enemy phase for 3 enemy phases.
+Deal 220% Direct Attack damage to one enemy and Burn it for 25% of Vespera's
+Direct Attack per enemy phase for three enemy phases. Burn ignores Defense.
 
 **Skill2 - Keep the Last Beacon |40 Gauge**
 
-Give one chosen other living ally [Signal]: their next damaging Skill or
-Last Flare deals 35% more direct damage. Lasts through the next player turn;
-refreshes rather than stacks.
+Give one other living ally [Signal]: their next damaging Skill or Last Flare
+deals 35% more direct damage, through the next player turn. Reapplying refreshes
+it rather than stacking.
 
 **Last Flare - None Left in the Dark |100 Gauge**
 
-Spend all [Beacon]. Deal 480% Direct Attack to all enemies. Give each other
-living ally [Signal] for 50% more direct damage, plus 10% per [Beacon] spent.
-Lasts through the next player turn. Recover next player turn.
+Spend all [Beacon]. Deal 480% Direct Attack damage to all enemies, then Signal
+every other living ally for 50% more direct damage plus 10% per [Beacon] spent,
+through the next player turn. Recover next player turn.
 
 **Master - Whitefire Procession Transmitter**
 
@@ -253,23 +325,24 @@ after the attack resolves. Once per player turn.
 
 **Passive - What Need Not Remain**
 
-When Ilyss removes [Burn] or [Weaken] with her Skills or Last Flare, gain1
-[Severance], up to3. Once per player turn.
+When Ilyss removes one [Burn] or [Weaken] application with a Skill or Last
+Flare, gain 1 [Severance] (max 3), once per player turn.
 
 **Skill1 - Cut the Harmful Thread |25 Gauge**
 
-Deal220% Direct Attack to one enemy. Apply25% [Weaken] for2 enemy phases.
+Deal 220% Direct Attack damage to one enemy and Weaken it by 25% for two enemy
+phases.
 
 **Skill2 - Unbind the Living |40 Gauge**
 
-Heal one chosen living ally for45% of their maximum Health. Remove one
-chosen [Burn] or [Weaken] application from them, if present.
+Heal one chosen living ally for 45% of maximum Health. Remove one chosen
+[Burn] or [Weaken] application from them, if present.
 
 **Last Flare - No Promise of Resurrection |100 Gauge**
 
-Spend all [Severance]. Heal every living squad member for65% of their maximum
-Health, plus10% per [Severance] spent. Remove one [Burn] or [Weaken] application
-from each healed member, if present. Recover next player turn.
+Spend all [Severance]. Heal every living squad member for 65% of maximum Health
+plus 10% per [Severance] spent. Remove one [Burn] from each member, if present;
+otherwise remove one [Weaken]. Recover next player turn.
 
 **Master - Crescent-Link Severance Loom**
 
@@ -298,28 +371,26 @@ points Skill Power for2 player turns. Refreshes rather than stacks.
 
 **Passive - Futures Given Freely**
 
-[Shelter] and [Flourish] are cultivation paths. Begin without a path.
-Using Skill1 enters [Shelter]; Skill2 enters [Flourish]. Changing from one
-path to the other grants1 [Promise], up to3.
+Begin without a path. Skill1 enters [Shelter]; Skill2 enters [Flourish].
+Switching between paths grants 1 [Promise] (max 3).
 
 **Skill1 - Lend the Quiet Seed |25 Gauge**
 
-Enter [Shelter]. Grant every living squad member a Shield equal to25% of
-their maximum Health.
+Enter [Shelter] and Shield every living squad member for 25% of maximum
+Health.
 
 **Skill2 - Open the Night Library |40 Gauge**
 
-Enter [Flourish]. Give every living squad member [Moonflower]: their next
-damaging Skill or Last Flare deals30% more direct damage. Lasts through the
-next player turn; refreshes rather than stacks.
+Enter [Flourish] and give every living squad member [Moonflower]: their next
+damaging Skill or Last Flare deals 30% more direct damage, through the next
+player turn. Reapplying refreshes it rather than stacking.
 
 **Last Flare - Every Orbit Bears a Future |100 Gauge**
 
-Spend all [Promise]. In [Shelter], grant every living squad member a Shield
-equal to45% of their maximum Health, plus8% per [Promise] spent. In [Flourish],
-give every living member [Moonflower] for50% more direct damage, plus10%
-per [Promise] spent. Without a path, use [Shelter]'s effect.
-Preserve the current path. Recover next player turn.
+Spend all [Promise]. In [Shelter], Shield every living squad member for 45% of
+maximum Health plus 8% per [Promise] spent. In [Flourish], give every living
+member [Moonflower] for 50% more direct damage plus 10% per [Promise] spent.
+With no path, use [Shelter]. Keep the current path. Recover next player turn.
 
 **Master - Moonflower Seedworld Orrery**
 
@@ -348,24 +419,25 @@ Gauge after the attack resolves. Once per player turn.
 
 **Passive - An Interval Without Surrender**
 
-When an enemy carrying Serapha's [Weaken] uses a direct attack, gain1
-[Interval], up to3. Once per enemy phase.
+When an enemy carrying Serapha's [Weaken] uses a direct attack, gain 1
+[Interval] (max 3), once per enemy phase.
 
 **Skill1 - Terms of Mercy |25 Gauge**
 
-Deal240% Direct Attack to one enemy. Apply20% [Weaken] for2 enemy phases.
+Deal 240% Direct Attack damage to one enemy and Weaken it by 20% for two enemy
+phases.
 
 **Skill2 - A Passage Left Open |40 Gauge**
 
-Heal every living squad member for30% of their maximum Health. Give each
-[Ceasefire], reducing the next enemy direct hit they take by20%.
-Expires after the next enemy phase; refreshes rather than stacks.
+Heal every living squad member for 30% of maximum Health. Give each
+[Ceasefire], reducing their next enemy direct hit by 20%. It expires after the
+next enemy phase; reapplying refreshes it rather than stacking.
 
 **Last Flare - Let Them Leave Alive |100 Gauge**
 
-Spend all [Interval]. Heal every living squad member for70% of their maximum
-Health. Give each [Ceasefire] for20% damage reduction, plus5% per [Interval]
-spent, expiring after2 enemy phases. Recover next player turn.
+Spend all [Interval]. Heal every living squad member for 70% of maximum Health.
+Give each [Ceasefire] to reduce one next enemy direct hit by 20% plus 5% per
+[Interval] spent; it expires after two enemy phases. Recover next player turn.
 
 **Master - Open-Arc Sanctuary Regulator**
 

@@ -53,7 +53,7 @@ describe('roster, squad and summon screens', () => {
     expect(html.match(/data-banner-entry=/g)).toHaveLength(28);
     expect(html).toContain('5-star · 1%');
     expect(html).toContain('0.166667% per draw');
-    expect(html).toContain('15 Rare materials');
+    expect(html).toContain('8 Rare materials');
     expect(summonHub({ ...account, lycalis: 9 })).toContain('disabled');
     expect(summonHub({ ...account, characters: { ...account.characters, sprout: { level: 0, evolution: 1 } } }))
       .toContain('Summon · 10 Null-Prismatica');

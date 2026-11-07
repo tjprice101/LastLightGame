@@ -12,7 +12,7 @@ import type { MachineFocusRarity } from '../content/machines';
 import { elements, type ElementId, type InfusionModeId } from '../content/activities';
 import type { WarCharacterId } from '../content/elemental-war';
 import type { SummonBannerId } from '../content/summon-banners';
-import { bannerMaterialDefinition, bannerDuplicateMaterialAmount } from '../content/banner-materials';
+import { authoredBannerDuplicateMaterialAmount, bannerMaterialDefinition, bannerDuplicateMaterialAmount } from '../content/banner-materials';
 import { onlineClient } from './account-client';
 import { validateAccount } from '../game/account';
 import type { SaveFile } from '../game/save-file';
@@ -154,6 +154,9 @@ function validCalamityOpening(value: unknown): boolean {
     const currentCalamiticMaterials = reward.calamiticMaterialVersion === 1;
     if ('calamiticMaterialVersion' in reward && !currentCalamiticMaterials) return false;
     if (currentCalamiticMaterials) fields.push('calamiticMaterialVersion');
+    const reducedMaterials = reward.materialRewardVersion === 1;
+    if ('materialRewardVersion' in reward && !reducedMaterials) return false;
+    if (reducedMaterials) fields.push('materialRewardVersion');
     // Historical idempotent receipts retain their saved contents, not new rewards.
     const historical = !('devourerCopies' in reward);
     if (!historical) {
@@ -191,7 +194,9 @@ function validCalamityOpening(value: unknown): boolean {
         elements.some(element => element.infusion === activity && ['epic', 'legendary', 'omnic'].some(rarity => id === `${element.id}-${rarity}`));
       const row = rows.find(row => row.kind === 'material' && row.id === id) ??
         (legacyMaterial ? { max: id.endsWith('-epic') ? 20 : id.endsWith('-legendary') ? 12 : 6 } : undefined);
-      if (!row || !safeCount(count) || count === 0 || (count as number) > row.max * chest.bundles) return false;
+      const maximum = row && !reducedMaterials && 'quantitySource' in row && row.quantitySource
+        ? row.quantitySource.maximum : row?.max;
+      if (maximum === undefined || !safeCount(count) || count === 0 || (count as number) > maximum * chest.bundles) return false;
     }
     return Object.entries(reward.conduits).every(([id, count]) => isConduitId(id) && safeCount(count) && count !== 0 &&
       (count as number) <= chest.bundles && rows.some(row => row.kind === 'conduit' && row.id === id));
@@ -201,16 +206,20 @@ const profileFrames: readonly string[] = ['default', 'thin-outline', 'double-out
 function validSummonDraw(draw: unknown): boolean {
   if (!object(draw) || !object(draw.entry) || !['character', 'creature', 'material'].includes(String(draw.entry.kind)) ||
     typeof draw.entry.id !== 'string' || typeof draw.duplicate !== 'boolean' || typeof draw.guarantee !== 'string') return false;
+  const reducedMaterials = draw.materialRewardVersion === 1;
+  if ('materialRewardVersion' in draw && (!reducedMaterials || !object(draw.materials))) return false;
   if (draw.materials !== undefined && (!object(draw.materials) || typeof draw.materials.id !== 'string' ||
     !safeCount(draw.materials.amount) || draw.materials.amount === 0)) return false;
   if (draw.entry.kind === 'material' && !object(draw.materials)) return false;
   if (!object(draw.materials)) return true;
   try {
     const material = bannerMaterialDefinition(String(draw.materials.id));
+    const duplicateAmount = reducedMaterials ? bannerDuplicateMaterialAmount : authoredBannerDuplicateMaterialAmount;
+    const amount = reducedMaterials ? material.amount : material.authoredAmount;
     return draw.copy === undefined && (draw.duplicate
-      ? draw.entry.kind === 'character' && material.rarity === 'Rare' && draw.materials.amount === bannerDuplicateMaterialAmount
+      ? draw.entry.kind === 'character' && material.rarity === 'Rare' && draw.materials.amount === duplicateAmount
       : draw.entry.kind === 'material' && draw.entry.id === material.id &&
-        draw.entry.amount === material.amount && draw.materials.amount === material.amount);
+        draw.entry.amount === amount && draw.materials.amount === amount);
   } catch { return false; }
 }
 function peer(value: unknown): boolean {

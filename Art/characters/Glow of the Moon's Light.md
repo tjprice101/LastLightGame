@@ -2,6 +2,8 @@
 
 **98 copy-ready prompt proposals; no images installed by this generator.**
 
+**Delivery addendum (2026-11-07):** all92 required images in this pack and the12 Moon enemy/material sources are installed via tools/intake_moon_art.py. Six standalone equipment illustrations remain optional and undelivered. Prompt reproduction does not repaint installed pixels or activate the event.
+
 Owner authorizes Moon-first titles, art inventory and prompts. Approved appearances are retained; new titles, icon compositions and shared scene proposals require review. Flagged kit values remain unchanged.
 
 [Approved appearances](../../docs/moon-sunshade-character-design.md) | [Kits and strength flags](../../docs/moon-sunshade-kit-specification.md)

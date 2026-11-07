@@ -94,7 +94,7 @@ describe('unified Archives', () => {
     expect(html).toContain('Owned 3');
     const conduitsSection = html.slice(html.indexOf('id="archive-conduits"'), html.indexOf('id="archive-creatures"'));
     expect(conduitsSection).not.toContain('Master Conduit artwork pending');
-    expect(conduitsSection.match(/assets\/master-conduits\/master-[a-z]+-[123]\.png\?v=[0-9a-f]{16}/g)).toHaveLength(66);
+    expect(conduitsSection.match(/assets\/master-conduits\/master-[a-z]+-[123]\.png\?v=[0-9a-f]{16}/g)).toHaveLength(84);
     expect(conduitsSection.match(/data-archive-master=/g)).toHaveLength(masterConduits.length);
     for (const conduit of conduits) {
       if (conduit.art) expect(html).toContain(`assets/conduits/${conduit.art}.png`);

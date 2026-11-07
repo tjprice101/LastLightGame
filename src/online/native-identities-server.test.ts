@@ -22,7 +22,7 @@ function ready(roster: StarterId[]) {
 }
 
 describe('native identity authoritative parity and restart', () => {
-  it.each([8, 9, 10])('rebuilds a rules%s late Training encounter with current enemies and unchanged frozen allies/holdings', version => {
+  it.each([8, 9, 10, 16])('rebuilds a rules%s late Training encounter with current enemies and unchanged frozen allies/holdings', version => {
     const game = ready(['ember', 'tide']);
     const session = game.run!.session;
     session.state.conduitRulesVersion = version;
@@ -32,7 +32,7 @@ describe('native identity authoritative parity and restart', () => {
     expect(result.game.account).toEqual(before.account);
     const restored = result.game.run!.session;
     expect(restored.state.wave).toBe(120);
-    expect(restored.state.conduitRulesVersion).toBe(16);
+    expect(restored.state.conduitRulesVersion).toBe(17);
     for (const enemy of restored.state.enemies) {
       expect(enemy.level).toBe(120);
       expect(enemy.stats).toEqual(enemyCombatStats(120, false));
@@ -80,7 +80,7 @@ describe('native identity authoritative parity and restart', () => {
     expect(game).toEqual(before);
   });
 
-  it.each([2, 3, 7, 8, 9, 10, 11, 12].flatMap(version => (['read', 'checkpoint', 'act'] as const).map(kind => ({ version, kind }))))(
+  it.each([2, 3, 7, 8, 9, 10, 11, 12, 16].flatMap(version => (['read', 'checkpoint', 'act'] as const).map(kind => ({ version, kind }))))(
     'restarts version$version through $kind without applying stale commands or replacing frozen squad', ({ version, kind }) => {
     const game = ready(['crinso', 'tide']);
     const runId = game.run!.session.runId;

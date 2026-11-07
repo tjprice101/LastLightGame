@@ -3,7 +3,7 @@ import { type Stats } from './combat';
 import { elementAccents } from './dungeon-art';
 import { storyStageLayout } from './activities';
 import { enemyCombatStats } from './stat-growth';
-import { rollDrop } from './loot-random';
+import { materialRewardRange, rollDrop } from './loot-random';
 import { activityPrismaticaDrop } from './prismatica';
 import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
 import { storyRegionArt } from './story-art';
@@ -94,7 +94,7 @@ export function storyMaterialLoot(stage: number) {
     { id: `${element}-common`, minimum, maximum: minimum * 2, chance: 1 },
     { id: `${element}-uncommon`, minimum, maximum: minimum * 2, chance: .25 + .55 * (level - 1) / 54 },
   ];
-  return drops.map(drop => bossLootRange(drop, bossLootMultiplier({ story: { storyStage: stage } })));
+  return drops.map(drop => materialRewardRange(bossLootRange(drop, bossLootMultiplier({ story: { storyStage: stage } }))));
 }
 
 export function storyDrops(stage: number, random: () => number): Record<string, number> {
@@ -104,7 +104,7 @@ export function storyDrops(stage: number, random: () => number): Record<string, 
   }));
 }
 
-export const storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common and Uncommon materials of their region; no captures. Prismatica per kill grows linearly from 8-16 at Stage 1 to 750-1,500 at Stage ${storyRules.stages}, with no regional-boss multiplier. Regional bosses keep 5x materials on every clear and their one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
+export const storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common and Uncommon materials of their region; no captures. Material rewards are halved after the quantity roll, rounded to the nearest whole unit with a minimum of 1. Prismatica per kill grows linearly from 8-16 at Stage 1 to 750-1,500 at Stage ${storyRules.stages}, with no regional-boss multiplier. Regional bosses give 5x materials before the reduction and a one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
 
 export function storyLoot(stage: number) {
   const encounter = storyEncounter(stage);

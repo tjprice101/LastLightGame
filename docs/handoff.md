@@ -1,5 +1,62 @@
 # Current state and handoff
 
+## Moon delivery, kit review and material rewards (2026-11-07)
+
+All104 Moon delivery PNGs are archived byte-exact under `Art/source/moon`,
+reviewed on dark/light backgrounds and installed:36 portraits,24 abilities,
+18 personal Masters,11 statuses,6 Vesperwing enemies,6 Moonwake materials and
+banner/header/arena. `tools/intake_moon_art.py` owns per-source keys, enclosed
+gap seeds, four frame corrections, export/source hashes and reproduction.
+Supplied alpha remains authoritative; scenery remains opaque and uncropped.
+Root duplicates were removed only after archive/export verification. Shared
+revisioned URLs, portrait availability, status IDs, facing and enemy scaling
+cover existing menus, Collections, reward previews, field and cut-ins.
+Moon has a schedule-gated Events card; no Moon/Sunshade launch window was added.
+
+All six Moon kits were reviewed with separate paper, single-packet and actual
+pressured-encounter checks. No arbitrary coefficient buffs were justified.
+Corrected three discrepancies: Maerion Master1 banks direct Shield absorption,
+not redirected absorption; Vespera gains Beacon at most once per player turn;
+Asteriel Master1 allows4 Promise while the base remains3. Concise native
+descriptions and typed icons explain the actual loops. Rules17 restarts older
+encounters through the existing frozen-loadout/saved-reward preservation path.
+The [kit specification](moon-sunshade-kit-specification.md) records limits and
+reproduction: conditional Moon/Tizu/Flora ownership, not an average account;
+Maerion9 wins/3 defeats and each other Moon character12 wins in the bounded
+sample, not a universal clear guarantee or permission to hide losses.
+
+Future material rewards are50% lower, rounded after the original quantity roll
+to the nearest whole unit with minimum1. Calamity encounter rewards are
+unchanged; Calamity chest material bundles receive only15% reduction.
+Currencies, holdings, costs, rates, RNG draw counts and nonmaterial/copy rewards
+are preserved. Versioned new receipts use reduced quantities; unmarked cached
+historical summons/chest receipts retain their original saved quantities without
+rerolls, new grants or wallet migration. Summon presentation validates both.
+
+The [remaining image checklist](Future%20Plans/remaining-expansion-art.md) and
+[budget audit](Future%20Plans/image-budget-audit.md) now require147 images:
+103 Sunshade plus44 reclaimed War associated images;159 with optional equipment,
+222 with paused Story,239 with production options and247 with experiments.
+Local intake reproduction passes4 Python tests; seasonal/Future Plans checks
+pass12. Focused art/rules regression passes232 tests; economy/receipt/copy
+follow-up passes70. Final
+`npx vitest run --maxWorkers=2 --reporter=dot` passes8,358 tests in253 files
+(340.77s). `npm run build`, authority bundle regeneration, authority TypeScript
+and Deno checks pass; the existing large-chunk warning remains. All104
+revisioned Moon images decode in the isolated browser fixture. A narrow
+488px viewport has no horizontal overflow; this is not a claimed390px test.
+Matching authority is deployed with fresh explicit consent.
+`node tools\smoke_server_game.mjs --moon-materials` passes seven disposable
+hosted fixtures: three exact rule corrections, dungeon/Story material rewards,
+Calamity material chest reductions, existing holdings/currencies, saved reads
+and idempotent retries. All identities/cascading records were removed.
+Initial smoke failures were fixture-only mistakes (session run ID and absent
+chest action result), corrected without gameplay changes.
+Client push/Pages version verification is recorded in the publication follow-up.
+Known unrelated Python debt: `test_art_library.py` freezes the provenance count
+at26, although baseline HEAD already tracks57 JSON records (current59). Its
+count failure was not masked or fixed as part of this intake.
+
 ## Reclaimed War intuitiveness follow-up (2026-11-07)
 
 Owner authorizes necessary follow-up after the kit review. Corrected shared
