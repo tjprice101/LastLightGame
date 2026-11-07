@@ -16,6 +16,7 @@ import { assetUrl } from './portrait';
 import { authoredBannerDuplicateMaterialAmount, bannerMaterialDefinition, bannerDuplicateMaterialAmount } from '../content/banner-materials';
 import { rarities, type Rarity } from '../content/rarity';
 import { type CinematicTier } from './bubble-ui';
+import { isNewEventId } from '../content/moon-sunshade-events';
 
 function summonTier(stars: number): CinematicTier {
   return stars >= 6 ? 'prismatic' : stars === 5 ? 'gold' : 'normal';
@@ -94,7 +95,8 @@ export function summonReward(result: SummonResult, bannerId: SummonBannerId): Re
   reward.cinematic = { kind: 'summon', eyebrow: banner.name, title: 'Summon', subtitle: '1 draw', tier: summonTier(drawStars(result)) };
   reward.details += `<p>${escapeDialogText(banner.name)} · ${banner.cost} Null-Prismatica spent</p>`;
   if (result.guarantee !== 'none') {
-    const guarantee = result.guarantee === 'unowned-character' ? 'Unowned Element-Bearer'
+    const guarantee = result.guarantee === 'event pity' && isNewEventId(banner.id) ? 'Event Element-Bearer'
+      : result.guarantee === 'unowned-character' ? 'Unowned Element-Bearer'
       : result.guarantee === 'all-owned-character' ? 'Element-Bearer · All already owned'
       : result.guarantee === 'highest-star' ? 'Highest-star character'
       : result.guarantee === 'unowned-highest-star' ? 'Unowned highest-star character'

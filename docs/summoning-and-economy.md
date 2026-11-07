@@ -1,5 +1,20 @@
 # Summoning and economy
 
+## Seasonal pity reveal repair (2026-11-07)
+
+Moon's80th-draw guarantee returns the saved receipt label `event pity`.
+The shared presenter now recognizes it for seasonal banners and displays
+`Pity guarantee: Event Element-Bearer`, preserving the six-star/prismatic
+cinematic before showing the actual character or duplicate material conversion.
+Previously that label threw after persistence, leaving the reward saved but
+preventing the reveal. Unknown/cross-banner labels still reject explicitly.
+Single and10-pull presentation share the fix; no cost, odds, pity counters,
+ownership, reward quantities or authority behavior changes.
+
+Validate `src/presentation/summon-presentation.test.ts` and
+`src/presentation/reward-screen.test.ts`: every seasonal character, new/duplicate
+receipt and multi-draw reveal retains its tier and does not mutate the receipt.
+
 ## Future material reward reduction (2026-11-07)
 
 Owner clarifies the global50% reduction applies to **future material rewards**,

@@ -8,8 +8,43 @@ import { rewardScreenMarkup, summonRevealTier } from './reward-screen';
 import { conduitReward } from './conduit-presentation';
 import { conduitEffect, getConduit } from '../content/conduits';
 import { referencedEffect } from './effect-copy';
+import { newEventDuplicateMaterials } from '../content/banner-materials';
 
 describe('saved summon reward presentation', () => {
+  it.each(['moon', 'sunshade'] as const)('presents every saved %s event-pity character and duplicate without losing its reveal tier', bannerId => {
+    const characters = getSummonBanner(bannerId).pool().filter(entry => entry.kind === 'character');
+    expect(characters).toHaveLength(6);
+    const draws: SummonDraw[] = [];
+    for (const entry of characters) {
+      for (const duplicate of [false, true]) {
+        const materials = duplicate ? newEventDuplicateMaterials(bannerId === 'moon' ? 'moonwake' : 'dawnforge') : undefined;
+        const result: SummonResult = { account: emptyAccount(), entry, duplicate, guarantee: 'event pity',
+          ...(materials ? { materials, materialRewardVersion: 1 } : {}) };
+        const before = structuredClone(result);
+        const reward = summonReward(result, bannerId);
+        expect(reward.tier).toBe('six-star');
+        expect(reward.cinematic).toMatchObject({ kind: 'summon', tier: 'prismatic' });
+        expect(reward.details).toContain('Pity guarantee: Event Element-Bearer');
+        expect(rewardScreenMarkup(reward)).toContain('Prismatic radiance erupts!');
+        if (bannerId === 'moon') expect(reward.art).toContain(duplicate ? 'materials/' : 'characters/');
+        else expect(reward.art).toContain(duplicate ? 'Material artwork pending' : 'data-character=');
+        expect(result).toEqual(before);
+        draws.push(result);
+      }
+    }
+    const ten = summonTenReward(emptyAccount(), draws.slice(0, 10), bannerId);
+    expect(ten.tier).toBe('six-star');
+    expect(ten.art.match(/class="summon-ten-result/g)).toHaveLength(10);
+  });
+
+  it('rejects unknown and cross-banner guarantee labels explicitly', () => {
+    const entry = getSummonBanner('standard').pool().find(item => item.kind === 'character');
+    if (!entry) throw new Error('Character receipt fixture is missing.');
+    for (const guarantee of ['event pity', 'unknown guarantee']) {
+      expect(() => summonReward({ account: emptyAccount(), entry, duplicate: false, guarantee }, 'standard'))
+        .toThrow('Unknown summon guarantee.');
+    }
+  });
   it.each(['standard', 'roses'] as const)('preserves historical and versioned %s material receipts without mutation', bannerId => {
     const pool = getSummonBanner(bannerId).pool();
     const character = pool.find(entry => entry.kind === 'character');
