@@ -1,5 +1,40 @@
 # Current state and handoff
 
+## Radiant battle face/charge surface and impact preview (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; prior manual preparation `e493553e`.
+No live flag/deployment/account/schema/combat-math change.
+
+**Implemented:** six-member saved-session HTML surface with stable per-form
+faces, actor/target/actions, personal layers/shared Eternal, four frozen raw
+stats, basic kit reference and actual impact-ordered HP/total Shield readouts.
+Exact event replay groups same-packet AoE; repeated/generated/periodic hits
+stay separate. Save precedes windup, Skip generation guards prevent late
+overwrites, Settings pauses owned effects, explicit Reduce motion settles
+and disposal removes effects/listeners. Default finite brightening/rings plus
+an authored-effect seam; **not final character-specific VFX**.
+An in-memory, explicit conditional Lv105/six-owned/precleared fixture preview
+is bundled at `radiant-battle-preview.html`; no player storage/network writes.
+[Contract/preview/evidence](Future%20Plans/radiant-combat-system-specification.md#saved-six-member-battle-surface-and-impact-preview-2026-11-08).
+
+**Verified:** `npx vitest run src\presentation\radiant-impact.test.ts src\presentation\radiant-battle-view.test.ts src\online\radiant-run.test.ts src\online\radiant-session.test.ts src\online\radiant-run-progression.test.ts src\presentation\compact-portrait.test.ts src\presentation\battle-impact.test.ts src\game\radiant-combat.test.ts --maxWorkers=2 --testTimeout=60000`:
+**565 tests/8 files pass**. All32 released characters' three tiers plus incoming/
+round packets reproduce readouts. `npm run build` includes client typecheck,
+passes with existing large-chunk advisory. No dependencies added.
+Built browser temporal samples: windup retains520/520 enemyHP, grouped AoE
+sets both0, finite430ms rings expand/fade; Skip cleans effects and saved victory.
+Fixed end-fill flash and rounded HP ceilings without changing raw stats.
+At effective390px two columns/no horizontal overflow/all visible controls>=44px.
+3x uses playback3 and base260ms windup. Integrated tab hidden: controlled
+animation-time checks, not claimed real-time frame-rate performance.
+Temporary local preview server is stopped after verification.
+
+**Next:** actual DB/production routing and results,174 remaining reviewed face
+crops, source-owned statuses, supplied enemy/scenery field, polished overlapping
+battle composition/cinematic Home, unique tiered radiant shaders/VFX, full temporal/
+GPU/accessibility tests, final enemy/network-economy/journal tuning and final
+single art file. Rejected unrelated mock-ups remain preserved/unpublished.
+
 ## Radiant manual preparation and saved selection receipts (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; prior recovery stage `c82fad85`.

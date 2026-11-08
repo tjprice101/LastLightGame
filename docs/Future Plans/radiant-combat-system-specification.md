@@ -1,5 +1,67 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Saved six-member battle surface and impact preview (2026-11-08)
+
+[RadiantBattleView](../../src/presentation/radiant-battle-view.ts) now consumes
+the saved session for six per-form face controls, explicit actor/enemy selection,
+Normal Attack/Defense/highest-ready-Flare actions, one or two personal charge
+layers, shared Eternal threshold, four frozen raw stats and basic kit reference.
+It preserves portrait DOM while readouts change. Unreviewed faces stay named
+pending tiles; no invented crops or unrelated artwork. Layout is six columns
+on wide screens, three on intermediate screens and two on phones.
+
+[Ordered impact ledger](../../src/presentation/radiant-impact.ts) reproduces
+saved HP, total Shield, personal/shared charge, round and combat earnings from
+actual typed events before any animation begins. Distinct targets in the same
+authored packet update together; repeated hits/generated/periodic packets stay
+separate. Flare spend occurs at the cast boundary. Fractional raw stats are
+preserved; HP readout ceilings use the engine's rounded combat HP ceiling.
+Incomplete/mismatched histories fail explicitly, never fake successful replay.
+
+The view awaits committed authority responses before windup. It holds prior HP
+through windup, updates each group at impact, then retains action locking until
+presentation finishes. Exact unresolved action retries use the session receipt.
+Skip settles the saved result once; generation guards prevent old cancelled
+visual promises from overwriting a newer action. Settings pauses tracked WAAPI
+and optional authored effects without replacing the view; closing resumes.
+Explicit Reduce motion skips finite effects immediately and leaves static text.
+Live1/2/3x modifies tracked animation playback only. Disposal cancels effects/
+listeners and suppresses late DOM updates; callers own run/session disposal.
+
+Current default visuals are a finite face-brightening windup and expanding
+pointer-transparent impact rings. Accepted selections reuse rarity feedback.
+The authored-effect interface is an integration seam, **not completed unique
+character Flare shaders/bloom/VFX**. Enemy art/scenery, source-owned status
+readouts, polished overlapping battlefield composition, cinematic Home and
+production routing/results integration still remain.
+
+**Browser preview:** `npm run dev`, then open
+`http://localhost:5173/LastLightGame/radiant-battle-preview.html`.
+The built preview is also included by Vite. It resolves actual combat/rewards
+entirely in memory; no network saves, player account load/storage writes or
+production authority activation. Its acquired six-member Lv105 squad and
+precleared Story access are explicitly conditional fixtures, not free/average
+accounts. Reset and charge-cycle controls are preview-only; Glowing/Lustrous/
+Eternal readiness fixtures do not grant player resources or change live math.
+
+Validation:565 tests across8 focused battle/impact/portrait/session/authority
+files; client typecheck/build pass. All32 released bearers' three tiers and
+incoming multi-hit/shield refresh/heal/round packets reproduce final readouts.
+Timed DOM tests cover save/windup/impact/finish, lost acknowledgements, Skip
+races, Settings/Reduce motion and disposal. Browser checked the built page:
+old enemy520HP remains through windup, same AoE impact updates both to0,
+430ms ring opacity decreases/scale expands, Skip removes both effects and
+settles the saved victory. End opacity stays0 (forwards fill) to prevent a
+one-frame cleanup flash. Browser automation ran in a hidden integrated tab,
+so controlled WAAPI-time samples are **not real-time FPS/performance evidence**.
+At an effective390px viewport, two columns fit with no horizontal overflow;
+all visible buttons/summaries are at least44px. Tracked windup uses playback3
+at3x without changing260ms base duration. Preview localStorage remained empty.
+
+No authority/schema/reward coefficient changes or hosted deployment. Actual
+Radiant DB proof,174 remaining reviewed crops, complete UI/VFX, final performance/
+enemy/economy/journal cadence and the final single art file remain release gates.
+
 ## Manual squad and saved-loadout preparation bridge (2026-11-08)
 
 The gated authority now accepts `{ "radiantStudy": { "kind": "prepare",

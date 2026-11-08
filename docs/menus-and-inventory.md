@@ -1,5 +1,20 @@
 # Menus and inventory
 
+## Saved radiant battle surface preview (2026-11-08)
+
+[Six-member surface/preview](Future%20Plans/radiant-combat-system-specification.md#saved-six-member-battle-surface-and-impact-preview-2026-11-08)
+now renders per-form faces, personal layers/shared Eternal, explicit choices and
+saved ordered HP/total-Shield impact readouts. Face DOM remains stable.
+Save precedes windup; repeated/generated/periodic packets remain ordered and
+same-packet AoE targets update together. Skip/Reduce motion settle the saved
+receipt, and cancelled old visuals cannot overwrite a newer action.
+Keep the same view through Settings so its paused animations/frozen readouts
+resume; disposal is owned by leaving the run, not opening Settings.
+The in-memory developer preview is not a production account route. Unreviewed
+faces stay named pending tiles. Default finite rings are not the final unique
+VFX; source-owned status presentation, battlefield art/composition and complete
+result/navigation integration remain pending.
+
 ## Radiant manual preparation boundary (2026-11-08)
 
 The [gated preparation bridge](Future%20Plans/radiant-combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08)

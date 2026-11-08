@@ -1,5 +1,12 @@
 # Documentation hub
 
+## Radiant six-member battle and browser preview (2026-11-08)
+
+[Saved face/charge/impact surface](Future%20Plans/radiant-combat-system-specification.md#saved-six-member-battle-surface-and-impact-preview-2026-11-08)
+and an in-memory browser preview now exercise actual combat with save-first
+motion, grouped AoE, Skip/Settings/reduced-motion/disposal. No player writes or
+production activation; remaining art, unique VFX and complete routing still pending.
+
 ## Radiant manual squad and loadout preparation (2026-11-08)
 
 [Gated preparation/session bridge](Future%20Plans/radiant-combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08):

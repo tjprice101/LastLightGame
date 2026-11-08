@@ -1,5 +1,17 @@
 # Decision log
 
+## Present saved radiant impacts without optimistic combat (2026-11-08)
+
+Under the delegated overhaul, build the six-member face/charge/action surface
+on validated saved sessions. Reproduce exact HP/Shield/charge readouts from
+events, group authored AoE targets and retain separate repeated/generated/
+periodic impacts. Skip must settle the existing saved receipt, not cancel
+rewards or let late visuals overwrite new choices. Keep frozen view through
+Settings; explicit Reduce motion settles finite effects. Use a labelled
+conditional in-memory developer fixture for preview, never fund/load a player
+account for layout checks. Generic rings are a foundation, not unique VFX completion.
+[Contract/evidence](Future%20Plans/radiant-combat-system-specification.md#saved-six-member-battle-surface-and-impact-preview-2026-11-08).
+
 ## Prepare radiant squads manually without account auto-repair (2026-11-08)
 
 Under the delegated overhaul, reuse existing named squad/Conduit configuration

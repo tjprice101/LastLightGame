@@ -1,0 +1,63 @@
+.radiant-battle {
+  font-family: var(--ui-font, Georgia, serif);
+  color: #f2f2f2;
+  background: radial-gradient(ellipse at 50% 70%, #32343a, #111216 75%);
+  padding: clamp(12px, 2vw, 28px);
+  border: 1px solid #72747a;
+  border-radius: 20px;
+}
+.radiant-preview-heading { color: #eee; font-family: var(--ui-font, Georgia, serif); max-width: 1100px; margin: 20px auto; padding: 12px; }
+.radiant-preview-heading p { line-height: 1.5; }
+.radiant-preview-heading label { display: inline-block; padding: 12px; }
+.radiant-preview-heading button, .radiant-preview-heading select { min-height: 44px; font: inherit; }
+body:has(#radiant-preview) { margin: 0; background: #0c0d11; }
+#radiant-preview { max-width: 1500px; margin: 0 auto; padding: 12px; }
+.radiant-battle-heading, .radiant-actions, .radiant-shared {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.radiant-battle button, .radiant-battle summary {
+  font: inherit;
+  font-weight: 700;
+  min-height: 44px;
+  cursor: pointer;
+}
+.radiant-battle button { color: inherit; background: #25262c; border: 1px solid #898b92; border-radius: 12px; padding: 10px; }
+.radiant-battle button:disabled { opacity: .55; cursor: default; }
+.radiant-battle button:focus-visible, .radiant-battle summary:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.radiant-enemies { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px; margin: 20px 0; }
+.radiant-enemy { text-align: left; position: relative; }
+.radiant-enemy > span, .radiant-enemy > strong { display: block; }
+.radiant-enemy[aria-pressed="true"] { border-color: #fff; box-shadow: inset 0 0 0 1px #fff; }
+.radiant-squad { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); margin: 24px 0; gap: 8px; align-items: start; }
+.radiant-member { min-width: 0; background: #1b1c22d9; border: 1px solid #646770; border-radius: 16px; padding: 8px; }
+.radiant-member.is-selected { border-color: #fff; box-shadow: 0 0 22px #ffffff18; }
+.radiant-face { width: 100%; text-align: left; position: relative; overflow: hidden; }
+.radiant-face .compact-portrait { display: block; aspect-ratio: 1; width: 100%; }
+.radiant-face img { width: 100%; height: 100%; object-fit: contain; }
+.radiant-face img[data-mirrored="true"] { scale: -1 1; }
+.radiant-face strong, .radiant-face > span:not(.compact-portrait), .radiant-identity { display: block; overflow-wrap: anywhere; }
+.radiant-face strong { font-size: clamp(12px, 1.2vw, 18px); }
+.radiant-identity { margin: 8px 0; text-transform: capitalize; }
+.radiant-health { position: relative; }
+.radiant-health span:not(.radiant-impact-ring), [data-radiant-charge-text] { display: block; overflow-wrap: anywhere; font-size: 13px; }
+.radiant-battle meter { width: 100%; height: 12px; accent-color: #ddd; }
+.radiant-battle meter::-webkit-meter-bar { background: #454650; border: 0; }
+.radiant-battle meter::-webkit-meter-optimum-value { background: #d8dde7; }
+.radiant-battle meter::-moz-meter-bar { background: #d8dde7; }
+.radiant-charge-layers { display: grid; gap: 2px; margin-top: 8px; }
+.radiant-charge-layers meter[data-layer="2"] { accent-color: #c8d6ef; }
+.radiant-shared { justify-content: center; border: 1px solid #949bac; padding: 12px; border-radius: 12px; }
+.radiant-shared meter { flex: 1 1 200px; max-width: 450px; accent-color: #e3eaff; }
+.radiant-battle [hidden] { display: none !important; }
+.radiant-member details { margin-top: 10px; font-size: 13px; overflow-wrap: anywhere; }
+.radiant-member dl div { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
+.radiant-member dd { margin: 0; overflow-wrap: anywhere; }
+.radiant-actions { justify-content: center; }
+[data-radiant-error] { color: #ffd4d4; }
+.radiant-impact-ring { position: absolute; opacity: 0; width: 60px; height: 60px; border: 2px solid #fff; border-radius: 50%; left: calc(50% - 30px); top: calc(50% - 30px); pointer-events: none; box-shadow: 0 0 12px #fff8, inset 0 0 10px #fff5; }
+@media (max-width: 1000px) { .radiant-squad { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .radiant-squad { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
