@@ -1,5 +1,22 @@
 # Summoning and economy
 
+## Radiant fresh-entry request-cost experiment (2026-11-08)
+
+[Measured study and full cohort table](Future%20Plans/radiant-combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08)
+now checks actual saved authority outcomes rather than a proxy damage total:
+411 bounded cycles plus1236 explicit denials,1098 repeated identical-prefix
+Retry attempts, zero extra currency/kill loot and no exit reward changes.
+Early/final fresh-entry sampling has strict ownership/access controls and
+separate genuinely free one-starter accounts.
+
+The metric is Prismatica per accepted request, including start/action/exit,
+not player income/minute. First Story bonuses are marked nonrepeatable;
+developed Story fixtures exclude them. Same-encounter partial-reset efficiency
+can beat full clearing by up to11.1% in the small sample, but this is not a
+duplicate-payout exploit or a final accepted income calibration. No cap,
+forfeiture, stamina, cost, currency/RNG curve or animation delay added.
+Actual hosted database and client duration/cadence checks remain pending.
+
 ## Isolated radiant damage-paid reward integration (2026-11-08)
 
 On `overhaul/radiant-foundation` only, the gated Radiant authority now preserves

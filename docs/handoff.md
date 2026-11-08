@@ -1,5 +1,49 @@
 # Current state and handoff
 
+## Radiant fresh-entry economy experiment (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; prior authored-reward bridge `d023153c`.
+No gameplay coefficients, payout curves, caps, costs, RNG or authority/client
+activation/deployment changed.
+
+**Implemented:** bounded read-only actual-authority economic study, screening
+every paying prefix in chosen action sequence and comparing full vs fresh
+partial start/actions/exit costs. Strongest prefix replayed via quit/Retry
+three times; same reward/currency budgets retained. Explicit per-sample,
+denied-access, source/hash/metadata and aggregate report, safe new-file output
+and cleaned per-run temp bundle.
+[Contract/table/caveats](Future%20Plans/radiant-combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08).
+
+**Measured:**61 anchors/three seeds/nine cohorts:411 measured,1236 explicit
+access denials,30 exercised families.366 strongest prefixes/1098 Retry
+attempts/17703 extra requests pay **zero** extra Prismatica/loot.411 exits
+retain/dispose with no reward changes. Free starters separate; Normal-only
+Training clears all three seeds for each starter. Conservative Tizu-policy
+stalemate remains visible, not interpreted as player inability or hidden
+through retuning. Developed3/6 accounts/gear/Masters/clears conditional.
+
+Paying partial prefix beats same-seed full fresh cycle in15/72 Common-trio and
+108/177 farmed-six victories, worst+11.1%/+10.2%. Free first-clear premium is
+explicitly nonrepeatable. Request efficiency is NOT income/minute/GPU/network
+timing/global optimization/final balance approval; no invented cap.
+
+**Validation:**135 tests across four focused files pass:
+`npx vitest run src\online\radiant-economy.test.ts src\online\radiant-run.test.ts src\online\radiant-run-progression.test.ts src\online\radiant-dispatch.test.ts --maxWorkers=2 --testTimeout=60000`.
+`npx tsc --noEmit` and `git diff --check` pass.
+Executed `node tools\run_radiant_economy.mjs <new-report.jsonl>`; independently
+recomputed cohort counts/invariants from saved report. Verified JSONL under
+session files `radiant-economy-publication.jsonl`, source/bundle/report hashes in
+spec. Final publication report reproduces every prior measured/denied outcome;
+cohort summaries independently recomputed. Tooling-only stage: no client/
+authority rebuild, real database/server write or hosted verification.
+
+**Next:** actual Radiant database transaction verification, production
+bearer-only manual squad/equipment and frozen Settings/run UI,174 face crops,
+cinematic actual Home/Battle six-member controls/Gauges/statuses/finite VFX.
+Measure client/network duration before final income/cadence/enemy tuning.
+Final single art brief remains provisional; preserve rejected dirty mockups.
+
+
 ## Radiant authored reward/progression and retry-safe lifecycle (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; prior gated authority `e6abe3b1`.

@@ -1,5 +1,21 @@
 # Global character benchmarks and enemy calibration (D-404)
 
+## Radiant fresh-entry economy controls (2026-11-08)
+
+[Actual-authority request-cost experiment](Future%20Plans/radiant-combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08)
+measures411 virtual-authority cycles,1236 explicit locked/inactive denials and
+1098 repeated strongest-prefix Retry attempts. Zero repeated payout/kill loot;
+fresh exits preserve earnings. Single free starters remain separate accounts,
+larger squads/gear/Masters/progression explicitly conditional.
+
+Request efficiency is not a clear-rate population or observed income/minute.
+Free Tizu's conservative-policy Training stalemate is refuted as player
+inability by Normal-only victories at all three seeds. No tuning changes to
+hide losses/stalemates. Same-encounter partial reset advantage reaches11.1%
+in the small Common-trio sample; preserved requested partial payouts do not
+justify imposing an unapproved cap. Client duration/access/final economy and
+actual Radiant database verification remain separate release gates.
+
 ## Isolated radiant-overhaul pressure experiment (2026-11-08)
 
 [Latest study](Future%20Plans/radiant-combat-system-specification.md#actual-pressured-encounters-experimental-calibration-2026-11-08)

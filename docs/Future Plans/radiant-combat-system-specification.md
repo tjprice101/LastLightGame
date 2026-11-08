@@ -1,5 +1,100 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Fresh-entry economy and retry measurements (2026-11-08)
+
+The reward/lifecycle bridge now has a reproducible **read-only actual-authority
+economy experiment**, not just unit-tested ledger arithmetic. No gameplay RNG,
+currency curves, rates, entry caps or production deployment changed.
+[Study](../../tools/radiant-economy-study.ts) executes the current
+`resolveRadiantRun` start/action/exit operations with actual authored rewards
+and frozen loadouts. It screens every paying nonterminal prefix of its bounded
+chosen action sequence, verifies partial/full exits preserve banked rewards,
+and replays the strongest identical prefix via quit/Retry three times.
+
+Reproduce with `node tools\run_radiant_economy.mjs <new-report.jsonl>`.
+Output exclusively creates a new file, includes source-commit/bundleSHA256/
+start time, explicit metadata, every measured or denied fixture and independently
+checkable cohort summaries. No network/database/account funding or new tooling
+dependencies. Scratch bundle has an individually allocated temporary directory
+and is cleaned up; existing report files are never overwritten.
+
+**Metric:** actual saved Prismatica per accepted authority operation, counting
+start + player actions + exit. The existing SQL limit is120 attempted operations
+in a60-second server-time window anchored to the first request; retries/rejections
+also consume attempts. Enemy phases resolved inside one player operation do
+not become fictional extra requests. These rates are **not real-time income**:
+no animation/speed/latency/GPU/browser or production database execution is
+measured. Multiplying by120 is only an idealized sustained request ceiling,
+not an observed player rate or a claim about window-edge bursts.
+
+Final cohort:61 early/final anchors, seeds1/1729/104729,9 account/policy cohorts,
+**411 measured encounters +1236 explicit access denials** across30 exercised
+families. Calamity's zero-Prismatica bosses and ownership-gated Oblivion are
+excluded; inactive Sunshade remains denied, never certified accessible.
+Training fresh entry is wave1 only, not the high-wave pressure fixture.
+Maximum300 player actions and120 stagnant actions; timeout/stalemate explicit.
+
+| Conditional account / policy | Measured | Victory | Defeat | Stalemate | Denied | Paying partial faster than same-encounter victory |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| One free Infernis Lv0, balanced |6|6|0|0|177|0|
+| One free Tizu Lv0, balanced |6|3|0|3|177|0|
+| One free Flora Lv0, balanced |6|6|0|0|177|3|
+| One free Infernis Lv0, Normal-only |6|6|0|0|177|0|
+| One free Tizu Lv0, Normal-only |6|6|0|0|177|3|
+| One free Flora Lv0, Normal-only |6|6|0|0|177|3|
+| Owned Infernis Lv30, no gear |93|30|63|0|90|0|
+| Acquired starter trio Lv60, Common+0 |105|72|33|0|78|15|
+| Acquired ordinary six Lv105, farmed gear/Masters |177|177|0|0|6|108|
+
+Free controls are **separate one-starter accounts**, not three granted starters.
+They contain no precleared stages; only initial Story/Training are accessible.
+First Story results166 Prismatica/2 Null-Prismatica include150/2 first-clear
+bonuses and are marked `firstClearSensitive`, not repeatable premium income.
+Developed fixtures assume the reported acquired progress/gear/Masters and
+authored stage prerequisites. Their Story was precleared to exclude first-clear
+premium/regional bonuses from repeat farming. They are not average accounts.
+
+Free Tizu's conservative balanced policy stagnated on Training; **Normal-only
+cleared all three seeds**, earning15 Prismatica in9 actions. Infernis/Flora
+Normal-only likewise clear, in6/9 actions respectively. This demonstrates a
+policy artifact, not inability of the starter or approval to retune him.
+No character/gear/enemy stats changed to hide that result.
+
+**Invariants:**366 strongest-prefix sequences replayed1098 times,17703 additional
+accepted resolver operations: **zero extra Prismatica and zero extra kill loot**.
+All411 measured final exits retained banked rewards and disposed the study with
+zero new reward events. Primary complete/bounded cycles used7437 operations.
+These are direct reducer/virtual-wallet tests, not SQL transaction proof.
+
+**Observed incentive:** among victorious developed fixtures, best partial
+prefix rate exceeded the same-seed full fresh-cycle rate in15/72 Common-trio
+and108/177 farmed-six samples. Maximum ratios1.111111 and1.101852 respectively.
+The strongest farmed-six Treasury-final partial sample pays28709/45 requests
+(637.98 per request), versus full30000/49 (612.24): about4.2% higher rate while
+forgoing that boss's kill/capture outcome. This is not a duplicated reward or
+a global optimal strategy. Rounding, overkill, action ordering and fresh-reset
+overhead produce modest prefix-efficiency differences; no claim all strategies
+or roster permutations were exhaustively searched.
+
+Do not impose a hidden forfeiture, timed cap, stamina charge, nonlinear damage
+payment or artificial animation delay from this experiment. Preserve requested
+partial rewards and linear lowest-HP accounting. Final economy tuning still
+needs network/presentation duration and access/cadence comparisons; these
+request rates alone cannot establish an acceptable income/minute target.
+
+Validation:135 tests across four focused economy/run/progression/dispatch
+files and `npx tsc --noEmit` pass. Report cohort counts independently
+recomputed from every JSONL sample/denial; zero-repeat/exit invariants checked.
+Recorded verified report SHA256:
+`9fdac97bd9d5fb74efbecff30db171fb1a0192dd69ab4270e1ef35a7a4bc31e7`;
+study bundleSHA256:
+`6eef4ffdeec08ea62023f022e3a13ebbb2838cfb778282762ee229f9c926ac72`,
+based on `d023153c` plus this isolated study code. A later reproduction includes
+its own source metadata, not an invented matching hash.
+The publication report independently reproduces every prior verified sample/
+denial after making free-starter profile identity consistent. This tooling-only
+stage does not rebuild/deploy the client or shared authority.
+
 ## Authored kill rewards and progression bridge (2026-11-08)
 
 The gated authority now connects real Radiant actions to the existing authored

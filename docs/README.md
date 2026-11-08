@@ -1,5 +1,14 @@
 # Documentation hub
 
+## Radiant fresh-entry economy measurements (2026-11-08)
+
+[Reproducible actual-authority experiment](Future%20Plans/radiant-combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08):
+411 cycles/1236 access denials and1098 identical-prefix Retry attempts with
+zero duplicate currency/loot. Free starter policy controls are separate from
+conditional trio/six accounts. Recorded partial-reset request advantages are
+not measured real-time income or final tuning approval. No gameplay/deploy changes.
+
+
 ## Radiant authored loot and progression (2026-11-08)
 
 [Gated reward/lifecycle bridge](Future%20Plans/radiant-combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08):

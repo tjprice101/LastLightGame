@@ -1,5 +1,21 @@
 # Decision log
 
+## Measure radiant fresh entry without inventing an economy cap (2026-11-08)
+
+Under the delegated overhaul, verify actual reducer/account payout and request
+cost, including fresh partial exit, final clear and repeated identical Retry
+prefixes. Separate free one-starter ownership and first-clear rewards from
+conditionally developed cohorts and repeat farming. Record all access denials.
+[Measured results](Future%20Plans/radiant-combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08).
+
+No cap, forfeiture, stamina fee, nonlinear HP reward curve or artificial
+presentation delay approved/implemented. Keep requested saved partial rewards
+and linear lowest-HP accounting. Small same-encounter request-rate advantages
+are not duplicate payouts or observed player income/minute. Final network/UI
+cadence/access/economy tuning and actual Radiant DB checks remain necessary;
+do not replace them with theoretical120-request throughput.
+
+
 ## Preserve authored loot under damage-paid radiant combat (2026-11-08)
 
 Under the delegated overhaul, reuse existing kill roll/validation/account
