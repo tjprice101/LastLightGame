@@ -1,5 +1,15 @@
 # Character combat refresh: audit and proposed direction
 
+## Six-member scope and rejected mock-up (2026-11-08)
+
+[Latest expanded contract](radiant-combat-system-specification.md#expanded-scope-six-bearer-progression-and-integrated-ui-2026-11-08):
+1-6 bearers allowed everywhere; larger squads/gear expected with rising
+difficulty, optimized six-member benchmark for Calamity. Audit all enemy
+stats/mechanics at current authored levels/gates and all Conduits/Masters.
+Rework squad/equipment, necessary Home/Team/Battle UI and cinematic saved full
+squad Home art. Previous alternate menu design is rejected/retired; no separate
+named presets selected after clarification. No runtime implementation yet.
+
 ## Shared compact evolution portraits (2026-11-08)
 
 Owner requests consistently framed face/upper-body portraits derived from

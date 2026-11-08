@@ -1,5 +1,16 @@
 # Current state and handoff
 
+## Expanded overhaul: six-member teams/all gear/enemies (2026-11-08)
+
+[Owner scope](Future%20Plans/radiant-combat-system-specification.md#expanded-scope-six-bearer-progression-and-integrated-ui-2026-11-08):
+1-6 bearers allowed, later content expects more owned members/better gear,
+Calamity benchmark six. All activities' enemy stats/mechanics audited at current
+levels/gates; all ordinary Conduits/Masters/loadouts adapted. Actual full-art
+squad cinematic Home plus compact battle controls; rejected alternate mock-up
+is historical only. No new named preset system; rework existing setup.
+No runtime changes. Next consolidate contradictory older draft sections and
+review exact systems/starter kits before isolated six-capable combat study.
+
 ## Shared evolution face-portrait requirement (2026-11-08)
 
 Owner requests dedicated consistent face/upper-body crops from existing artwork

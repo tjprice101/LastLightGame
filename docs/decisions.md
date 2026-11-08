@@ -1,5 +1,17 @@
 # Decision log
 
+## Six-member squads and full integrated overhaul scope (2026-11-08)
+
+Owner raises maximum to6, allows1-6 in all activities and wants difficulty/gear/
+team-size expectations to grow, Calamity calibrated for optimized six-member
+teams. Audit/rebalance every enemy activity at existing levels/gates; changes
+to authored levels require separate proposals. All Conduits/Masters/loadouts
+need coherent redesign. Home uses actual complete full-art squad, battle compact
+portraits may slightly overlap art only. Previous alternate menu design rejected;
+redefine necessary UI instead. Loadout clarification means current squad/
+equipment editing; no separately named presets selected.
+[Scope and validation gates](Future%20Plans/radiant-combat-system-specification.md#expanded-scope-six-bearer-progression-and-integrated-ui-2026-11-08).
+
 ## Shared face portraits per evolution (2026-11-08)
 
 Owner selects dedicated formatted face-area portraits derived from every

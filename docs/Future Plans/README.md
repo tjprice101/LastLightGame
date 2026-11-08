@@ -18,6 +18,14 @@ inside older plans remain delivery history; current status below takes priority.
 
 ## Audited work register
 
+**Latest scope clarification2026-11-08:** the prior alternate menu mock-up is
+rejected/retired, not the design authority for resumed work. Historical rows
+below retain its old review evidence only; no further rollout of that concept.
+Necessary Home/Team/Battle UI belongs to the
+[six-bearer combat overhaul](radiant-combat-system-specification.md#expanded-scope-six-bearer-progression-and-integrated-ui-2026-11-08),
+including full Conduit/Master and all-activity enemy calibration. No named
+preset feature selected; existing squad/equipment editing is reworked.
+
 **Character combat refresh (2026-11-07):**
 [Detailed comparison,32 released-kit audit and phased proposal](character-combat-refresh-audit.md).
 Owner-selected four stats, bearer-only squads, single evolved Flare, two-step

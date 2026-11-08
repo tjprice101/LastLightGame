@@ -1,5 +1,78 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Expanded scope: six-bearer progression and integrated UI (2026-11-08)
+
+Latest owner revision **supersedes all three/five-member maximums**:
+
+- Allow **1-6 owned distinct Element-Bearers** in every activity; size is not
+  an entry requirement. No free team or captured combat members.
+- Progressive difficulty should increasingly demand more bearers and better
+  Conduits. Calamity-tier encounters are calibrated for optimized six-member
+  squads, not against a solo starter or an assumed average six-member account.
+- Audit/rebalance **all activities' enemy stats/mechanics at existing authored
+  levels/gates**. Escalating/exponential difficulty is a design goal, not an
+  approved arbitrary new multiplier. Propose level/gate changes separately.
+- Rework all ordinary Conduits, all Masters and squad/equipment loadouts to
+  match four stats, six members, shared charge and attunements. Each equipped
+  bearer's investment and actual tactical contribution must matter.
+- Owner rejects the previous alternate menu mock-up/design. Retire it as an
+  active design authority; do not copy its composition or resume its rollout.
+  Retain local files/history rather than interpreting "scrap planning" as
+  permission for broad deletion. Replace only UI needed for this overhaul.
+- Home presents the **actual complete equipped squad's full-body evolution
+  art** in a cinematic formation. Compact shared face portraits serve controls;
+  no demo team, auto-grants or unwanted bottom navigation bar.
+- Battle's compact portrait strip can slightly overlap art frames, but focus
+  outlines, controls, names, HP/Gauge and status information must not overlap
+  or become occluded. Adapt layout to six members and small viewports.
+- Loadouts mean the existing squad/equipment setup reworked for these systems.
+  Following clarification, **no separate named-preset feature is selected**.
+  The intermediate preset form choice is not sufficient approval after the
+  owner rejected/queried that feature.
+
+### Required coherent surfaces
+
+Squad save/validation, all battle formations/target selection, action and
+reward events, Team/equipment/Collections references, Home composition, compact
+portrait controls, authority requests, legacy accounts, frozen snapshots and
+Continue/Retry must share the same1-6 eligibility. No old three-slot path may
+truncate members. Leader is first; each instance acts once per round.
+Ordinary eight-slot and one matching Master remain unless separately revised.
+
+Shared charge normalization must cover starting counts1-6. The earlier
+sixth-point proposal only represented divisors1/2/3: propose **sixtieth-point
+units** (divisible by1/2/3/4/5/6) or another exact rational representation.
+Benchmark whether equal normalized round charge across squad sizes remains
+appropriate when larger formations have more actions, healing and buff coverage.
+No formula is approved solely by extending a divisor.
+
+Difficulty calibration must model **access and ownership** alongside mechanics:
+one starter is free; bigger tested squads require acquired bearers. Track
+ordinary progression distributions, obtainable gear, expected team size and
+time-to-build. Do not use an optimized six-unit paper ceiling as the target for
+ordinary early/midgame enemies. Exponential curves need inspected level anchors,
+packet survival, encounter duration and resistance/burst limits; not just DPR.
+Preserve saved unlocks/rewards and published gates during this calibration.
+
+### Updated review/implementation sequence
+
+1. Consolidate the specification: remove superseded mode/timer, single-tier,
+   Shield-cap and old squad-size clauses from operative formulas.
+2. Present exact starter kits/subtypes/Masters and representative1/3/6-member
+   pressured benchmark plans for owner approval.
+3. Implement isolated non-account combat study with six-member-capable shared
+   rules, portrait controls and measured charge/VFX.
+4. Review full released roster/all gear effects plus all-activity enemy
+   calibration. Include separate Calamity expectations and real ownership gates.
+5. Implement approved coherent client/authority/squad/equipment migration and
+   necessary Home/Team/Battle surfaces. No unrelated global menu redesign.
+6. Validate old1-3-member accounts, six-member save/reload/gear restrictions,
+   captured-ineligible manual selection, frozen run transition and atomic
+   payouts; deploy matching client/authority and verify hosted behavior.
+
+Nothing in this expanded planning section claims implemented six-member
+combat, completed portrait exports, new loadout saves or measured enemy curves.
+
 ## Owner-selected shared evolution portraits (2026-11-08)
 
 Battle portrait controls use a dedicated **face/upper-body portrait derived
