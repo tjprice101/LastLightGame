@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { freshGame } from '../../supabase/functions/game-operation/engine';
 import { RadiantSession } from './radiant-session';
+import { resolveRadiantPreparation, type RadiantPreparationRequest } from './radiant-preparation';
 import { RadiantRunError, resolveRadiantRun, type RadiantRunSnapshot, type RadiantRunRequest,
   type RadiantRunResponse, type RadiantRunAuthority } from './radiant-run';
 
@@ -13,12 +14,20 @@ function fixture() {
   let snapshot: RadiantRunSnapshot = { revision: 0, state: game };
   const receipts = new Map<string, RadiantRunResponse>();
   const entries = new Map<string, ReturnType<RadiantRunAuthority['entry']>>();
+  const preparations = new Map<string, ReturnType<typeof resolveRadiantPreparation>['response']>();
   const authority: RadiantRunAuthority = { capability: 'isolated-radiant-study', now: Date.UTC(2026, 10, 8),
     entry: request => {
       if (!entries.has(request)) entries.set(request, { runId: uuid(), encounterSeed: 1729, chargeSeed: 7, targetSeed: 104729 });
       return entries.get(request)!;
     } };
-  const transport = { read: vi.fn(async () => ({ revision: snapshot.revision,
+  const transport = { prepare: vi.fn(async (request: RadiantPreparationRequest) => {
+    const cached = preparations.get(request.requestId);
+    if (cached) return structuredClone(cached);
+    const result = resolveRadiantPreparation(snapshot, request);
+    snapshot = { revision: result.response.revision, state: result.state };
+    preparations.set(request.requestId, structuredClone(result.response));
+    return structuredClone(result.response);
+  }), read: vi.fn(async () => ({ revision: snapshot.revision,
     account: structuredClone(snapshot.state.account), run: structuredClone(snapshot.state.radiantStudy ?? null) })),
     execute: vi.fn(async (request: RadiantRunRequest) => {
       const cached = receipts.get(request.requestId);
@@ -44,6 +53,70 @@ function normal(session: RadiantSession) {
     targetId: session.view().saved.run!.state.enemies.find(enemy => enemy.hp > 0)!.id } } as const;
 }
 describe('saved-only Radiant client run controller', () => {
+  it('preparation waits for the saved checkpoint; lost acknowledgements retain exact IDs and never change frozen state', async () => {
+    const { session, transport, snapshot } = fixture(); await enter(session);
+    session.dismissResults(true); session.setSettings(true);
+    const before = session.view(), prepare = transport.prepare.getMockImplementation()!;
+    let release!: () => void;
+    transport.prepare.mockImplementationOnce(async request => {
+      await new Promise<void>(resolve => { release = resolve; });
+      await prepare(request); throw new RadiantRunError('unavailable', 'Preparation acknowledgement lost.');
+    });
+    const pending = session.prepare({ kind: 'setSquad', ids: ['ember'] });
+    expect(session.view().saved).toEqual(before.saved);
+    await expect(session.perform({ kind: 'quit' })).rejects.toThrow('pending');
+    await expect(session.prepare({ kind: 'setSquad', ids: ['ember'] })).rejects.toThrow('pending');
+    release(); await expect(pending).rejects.toThrow('acknowledgement');
+    expect(session.view().saved).toEqual(before.saved); expect(session.view().preparationPresentation).toBeNull();
+    const request = session.view().preparationPending!, committed = snapshot();
+    await expect(session.refresh()).rejects.toThrow('pending');
+    await session.retryPreparation();
+    expect(transport.prepare.mock.calls.at(-1)![0]).toEqual(request); expect(snapshot()).toEqual(committed);
+    expect(session.view().saved.revision).toBe(before.saved.revision + 1);
+    expect(session.view().saved.run).toEqual(before.saved.run);
+    expect(session.view().events).toEqual(before.events); expect(session.view().rewards).toEqual(before.rewards);
+    expect(session.view().settingsOpen).toBe(true); expect(session.view().resultsDismissed).toBe(true);
+    expect(session.view().presentation).toBeNull();
+    await expect(session.prepare({ kind: 'setSquad', ids: ['ember'] })).rejects.toThrow('presentation');
+    expect(() => session.finishPreparation(uuid())).toThrow('receipt');
+    session.finishPreparation(request.requestId);
+    expect(session.view().preparationPresentation).toBeNull();
+    await expect(session.retryPreparation()).rejects.toThrow('No unresolved');
+  });
+  it('definite preparation rejection preserves ownership and requires refresh after revision conflict', async () => {
+    const { session, transport } = fixture();
+    const before = session.view().saved;
+    await expect(session.prepare({ kind: 'setSquad', ids: ['tide'] })).rejects.toMatchObject({ code: 'manual-squad' });
+    expect(session.view().saved).toEqual(before); expect(session.view().preparationPending).toBeNull();
+    transport.prepare.mockRejectedValueOnce(new RadiantRunError('stale-revision', 'Changed elsewhere.'));
+    await expect(session.prepare({ kind: 'setSquad', ids: ['ember'] })).rejects.toMatchObject({ code: 'stale-revision' });
+    await expect(session.prepare({ kind: 'setSquad', ids: ['ember'] })).rejects.toThrow('Refresh');
+    await session.refresh(); await session.prepare({ kind: 'setSquad', ids: ['ember'] });
+    expect(session.view().preparationPresentation).not.toBeNull();
+  });
+  it('a preparation response cannot erase the frozen run, and disposal suppresses a late saved celebration', async () => {
+    const { session, transport, snapshot } = fixture(); await enter(session);
+    const before = session.view().saved, prepare = transport.prepare.getMockImplementation()!;
+    transport.prepare.mockImplementationOnce(async request => {
+      const saved = await prepare(request); return { ...saved, run: null };
+    });
+    await expect(session.prepare({ kind: 'setSquad', ids: ['ember'] })).rejects.toThrow('does not match');
+    expect(session.view().saved).toEqual(before); expect(session.view().preparationPresentation).toBeNull();
+    await session.retryPreparation();
+    session.finishPreparation(session.view().preparationPresentation!.requestId);
+    const acknowledged = session.view().saved;
+    let release!: () => void;
+    transport.prepare.mockImplementationOnce(async request => {
+      await new Promise<void>(resolve => { release = resolve; }); return prepare(request);
+    });
+    const pending = session.prepare({ kind: 'setSquad', ids: ['ember'] });
+    session.dispose(); release();
+    const saved = await pending;
+    expect(saved.revision).toBe(acknowledged.revision + 1);
+    expect(snapshot().revision).toBe(saved.revision);
+    expect(session.view().saved).toEqual(acknowledged);
+    expect(session.view().preparationPresentation).toBeNull();
+  });
   it('start is not optimistic; exactly saved receipt gates entrance/actions and consumers cannot mutate it', async () => {
     const { session, transport } = fixture();
     const execute = transport.execute.getMockImplementation()!;

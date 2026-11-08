@@ -1,5 +1,16 @@
 # Menus and inventory
 
+## Radiant manual preparation boundary (2026-11-08)
+
+The [gated preparation bridge](Future%20Plans/radiant-combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08)
+connects manual six-member bearer selection and named equipment libraries to
+saved-only session receipts. Captured holdings are preserved, not automatically
+replaced or equipped. Pending preparations lock concurrent combat/choices;
+feedback starts only after a validated save. Settings/dismissal/frozen combat
+remain unchanged. No production routed UI activation yet.
+Named squad capacity labels use the shared six-member limit, without changing
+the three per-character saved Conduit configuration slots.
+
 ## Isolated radiant session lifecycle (2026-11-08)
 
 The [saved-only controller](Future%20Plans/radiant-combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08)

@@ -1,5 +1,12 @@
 # Documentation hub
 
+## Radiant manual squad and loadout preparation (2026-11-08)
+
+[Gated preparation/session bridge](Future%20Plans/radiant-combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08):
+manual acquired six-bearer squads, named equipment restoration and safe exact
+pending retries. Captured/raw holdings and frozen runs stay unchanged; no
+automatic replacement/grants. Production routed UI and live activation remain pending.
+
 ## Radiant saved sessions and recovery (2026-11-08)
 
 [Saved-only client/checkpoint contract](Future%20Plans/radiant-combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08):

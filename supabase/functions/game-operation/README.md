@@ -1,5 +1,25 @@
 # Authoritative game operation
 
+## Radiant manual preparation (2026-11-08)
+
+Dedicated gated `{ "radiantStudy": { "kind": "prepare", "requestId": "<UUID>",
+"expectedRevision": 0, "operation": <choice> } }` supports manual one-to-six
+acquired released bearer squads, named squad libraries/three character
+configurations and owned matching ordinary/Master equipment changes.
+Existing account helpers and atomic CAS/immutable receipts are reused.
+Captures stay holdings/fodder; no automatic replacement/grants or rewriting
+unrelated raw gear/progress. Historical capture squad libraries remain
+renameable/deletable, not equip-eligible for Radiant combat.
+An explicit unequip-all may clear an owned capture's historical ordinary gear
+without deleting the copy or libraries; captures can never receive new gear.
+
+Returns a validated checkpoint; exact-request replay writes once, conflicts
+deny, failures preserve holdings. Preparation never changes frozen legacy/
+Radiant combat or its journal/seeds. Client controller holds a pending exact
+request and explicit post-save preparation receipt without replaying rewards.
+[Full boundaries](../../../docs/Future%20Plans/radiant-combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08).
+Still disabled/undeployed; no production screen caller or real DB proof.
+
 ## Radiant checkpoint and encounter journal (2026-11-08)
 
 Dedicated authenticated `{ "radiantStudy": { "kind": "read" } }` now returns

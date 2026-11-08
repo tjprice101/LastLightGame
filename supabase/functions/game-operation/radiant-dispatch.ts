@@ -1,7 +1,9 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { freshGame } from './engine';
 import { executeRadiantRun, radiantRpcRepository, RadiantRunError, validateRadiantRunRequest,
-  validateRadiantRunSnapshot, type RadiantRunAuthority } from '../../../src/online/radiant-run';
+  validateRadiantRunSnapshot, validateRadiantCheckpoint, radiantRpcRepositoryFor,
+  type RadiantRunAuthority } from '../../../src/online/radiant-run';
+import { executeRadiantPreparation, validateRadiantPreparationRequest } from '../../../src/online/radiant-preparation';
 
 export interface RadiantServerConfig {
   enabled?: string;
@@ -62,6 +64,16 @@ export async function handleRadiantRequest(value: object, user: string,
       const snapshot = await load();
       const run = snapshot.state.radiantStudy ?? null;
       return { status: 200, body: { revision: snapshot.revision, account: snapshot.state.account, run } };
+    }
+    if (operation && typeof operation === 'object' && !Array.isArray(operation) &&
+      'kind' in operation && operation.kind === 'prepare') {
+      const input = validateRadiantPreparationRequest(operation);
+      const { data: allowed, error: limitError } = await admin.rpc('consume_game_attempt', { p_user: user });
+      if (limitError) throw new RadiantRunError('unavailable', 'Game rate-limit storage unavailable.');
+      if (!allowed) return { status: 429, body: { error: 'Too many game operations. Wait one minute.' } };
+      const result = await executeRadiantPreparation(
+        radiantRpcRepositoryFor(admin, user, load, validateRadiantCheckpoint), input);
+      return { status: 200, body: result };
     }
     const input = validateRadiantRunRequest(value.radiantStudy);
     const calibration = config.calibration ?? 'authored-control';

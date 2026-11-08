@@ -18376,6 +18376,16 @@ var RadiantRunError = class extends Error {
   }
   code;
 };
+function validateRadiantCheckpoint(value2) {
+  try {
+    if (!record4(value2) || typeof value2.revision !== "number" || !Number.isSafeInteger(value2.revision) || value2.revision < 0) throw new Error();
+    validateAccount(value2.account);
+    if (value2.run !== null) validateFrozenRadiantRun(value2.run);
+    return structuredClone(value2);
+  } catch {
+    throw new RadiantRunError("unavailable", "Invalid saved Radiant checkpoint.");
+  }
+}
 var uuid2 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 function invalid(message) {
   throw new RadiantRunError("invalid-input", message);
@@ -18763,11 +18773,14 @@ function validateRadiantRunResponse(value2) {
     throw new RadiantRunError("unavailable", "Invalid stored study response.");
   }
 }
+async function radiantRequestFingerprint(value2) {
+  const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(canonical(value2)));
+  return Array.from(new Uint8Array(hash), (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
 async function executeRadiantRun(repository, request, authority) {
   validateRadiantRunRequest(request);
   if (authority.capability !== "isolated-radiant-study") invalid("Study capability is required.");
-  const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(canonical(request)));
-  const fingerprint = Array.from(new Uint8Array(hash), (byte) => byte.toString(16).padStart(2, "0")).join("");
+  const fingerprint = await radiantRequestFingerprint(request);
   const cached = await repository.find(request.requestId, fingerprint);
   if (cached) return structuredClone(cached);
   const snapshot = await repository.load();
@@ -18790,10 +18803,13 @@ function receiptConflict(error) {
   return record4(error) && (error.code === "LL409" || error.code === "P0001" && error.message === "Request ID reused with different input");
 }
 function radiantRpcRepository(rpc, userId, load) {
+  return radiantRpcRepositoryFor(rpc, userId, load, validateRadiantRunResponse);
+}
+function radiantRpcRepositoryFor(rpc, userId, load, validate) {
   const response2 = (data) => {
     if (!record4(data)) throw new RadiantRunError("unavailable", "Missing commit response.");
     if ("conflict" in data) throw new RadiantRunError("stale-revision", "Concurrent account update; nothing committed.");
-    return validateRadiantRunResponse(data);
+    return validate(data);
   };
   return {
     load,
@@ -18826,6 +18842,160 @@ function radiantRpcRepository(rpc, userId, load) {
       return response2(result.data);
     }
   };
+}
+
+// src/online/radiant-preparation.ts
+var kinds = [
+  "setSquad",
+  "saveSquadLoadout",
+  "renameSquadLoadout",
+  "equipSquadLoadout",
+  "deleteSquadLoadout",
+  "saveConduitConfiguration",
+  "renameConduitConfiguration",
+  "equipConduitConfiguration",
+  "equipConduit",
+  "unequipAllConduits",
+  "equipMasterConduit"
+];
+function validateRadiantPreparationRequest(value2) {
+  if (!value2 || typeof value2 !== "object" || Array.isArray(value2) || !("kind" in value2) || value2.kind !== "prepare" || Object.keys(value2).some((key) => !["kind", "requestId", "expectedRevision", "operation"].includes(key)) || !("operation" in value2) || !value2.operation || typeof value2.operation !== "object" || !("kind" in value2.operation) || !kinds.includes(String(value2.operation.kind)))
+    throw new RadiantRunError("invalid-input", "Invalid Radiant preparation request.");
+  try {
+    const request = validateRequest({
+      requestId: "requestId" in value2 ? value2.requestId : void 0,
+      expectedRevision: "expectedRevision" in value2 ? value2.expectedRevision : void 0,
+      operation: value2.operation
+    });
+    return {
+      kind: "prepare",
+      requestId: request.requestId,
+      expectedRevision: request.expectedRevision,
+      operation: request.operation
+    };
+  } catch (error) {
+    throw new RadiantRunError("invalid-input", error instanceof Error ? error.message : "Invalid preparation choice.");
+  }
+}
+function resolveRadiantPreparation(value2, input) {
+  const snapshot = validateRadiantRunSnapshot(value2), request = validateRadiantPreparationRequest(input);
+  if (snapshot.revision !== request.expectedRevision)
+    throw new RadiantRunError("stale-revision", "Concurrent account update; refresh before preparing your squad.");
+  if (!Number.isSafeInteger(snapshot.revision + 1))
+    throw new RadiantRunError("overflow", "Account revision capacity reached.");
+  const state = snapshot.state, raw = structuredClone(state.account);
+  if (!state.starterId || !raw.characters[state.starterId])
+    throw new RadiantRunError("manual-squad", "Choose an acquired starter before preparing your squad.");
+  const acquired = (id) => {
+    if (!Object.hasOwn(radiantBearerKits, id) || !raw.characters[id])
+      throw new RadiantRunError("manual-squad", "Manually choose an acquired, released Element-Bearer; captures remain holdings and fodder.");
+    return id;
+  };
+  const op = request.operation;
+  const capturedCleanup = op.kind === "unequipAllConduits" && raw.capturedCharacters?.some((copy) => copy.instanceId === op.character);
+  if ("character" in op && !capturedCleanup) acquired(op.character);
+  if (op.kind === "setSquad") {
+    if (!op.ids.length || op.ids.length > squadMemberLimit || new Set(op.ids).size !== op.ids.length)
+      throw new RadiantRunError("manual-squad", "Choose one to six distinct acquired Element-Bearers.");
+    op.ids.forEach(acquired);
+  }
+  if (op.kind === "equipSquadLoadout") {
+    const entry = raw.squadLoadouts?.find((entry2) => entry2.id === op.id);
+    if (!entry) throw new RadiantRunError("invalid-input", "Choose a saved squad loadout.");
+    entry.members.forEach((member) => acquired(member.character));
+  }
+  const data = /* @__PURE__ */ new Map([
+    [ACCOUNT_KEY, JSON.stringify(raw)],
+    [SAVE_KEY, JSON.stringify({ version: 1, starterId: state.starterId })]
+  ]);
+  const storage = {
+    getItem: (key) => data.get(key) ?? null,
+    setItem: (key, value3) => {
+      data.set(key, value3);
+    },
+    removeItem: (key) => {
+      data.delete(key);
+    }
+  };
+  const before = loadAccount(storage);
+  try {
+    if (op.kind === "saveSquadLoadout") radiantAccountLoadouts(before);
+    switch (op.kind) {
+      case "setSquad":
+        setSquad(storage, op.ids);
+        break;
+      case "saveSquadLoadout":
+        saveSquadLoadout(storage, op.id, op.name);
+        break;
+      case "renameSquadLoadout":
+        renameSquadLoadout(storage, op.id, op.name);
+        break;
+      case "equipSquadLoadout":
+        equipSquadLoadout(storage, op.id);
+        break;
+      case "deleteSquadLoadout":
+        deleteSquadLoadout(storage, op.id);
+        break;
+      case "saveConduitConfiguration":
+        saveConduitConfiguration(storage, op.character, op.index, op.name);
+        break;
+      case "renameConduitConfiguration":
+        renameConduitConfiguration(storage, op.character, op.index, op.name);
+        break;
+      case "equipConduitConfiguration":
+        equipConduitConfiguration(storage, op.character, op.index);
+        break;
+      case "equipConduit":
+        equipConduit(storage, op.character, op.slot, op.conduit);
+        break;
+      case "unequipAllConduits":
+        unequipAllConduits(storage, op.character);
+        break;
+      case "equipMasterConduit":
+        equipMasterConduit(storage, acquired(op.character), op.conduit);
+        break;
+    }
+    const saved = loadAccount(storage);
+    if (op.kind === "equipSquadLoadout") radiantAccountLoadouts(saved);
+    if ("character" in op && !capturedCleanup) radiantAccountLoadouts({ ...saved, squad: [op.character] });
+    if (JSON.stringify(before.squad) !== JSON.stringify(saved.squad)) raw.squad = structuredClone(saved.squad);
+    if (JSON.stringify(before.squadLoadouts) !== JSON.stringify(saved.squadLoadouts)) {
+      raw.squadLoadouts = saved.squadLoadouts?.map((entry) => {
+        const prior = before.squadLoadouts?.find((prior2) => prior2.id === entry.id);
+        const original = raw.squadLoadouts?.find((original2) => original2.id === entry.id);
+        return structuredClone(original && JSON.stringify(prior) === JSON.stringify(entry) ? original : entry);
+      });
+    }
+    for (const key of ["conduitConfigurations", "conduitEquipment", "masterEquipment"]) {
+      const prior = new Map(Object.entries(before[key] ?? {}));
+      const changed = Object.fromEntries(Object.entries(saved[key] ?? {}).filter(([id, entry]) => JSON.stringify(entry) !== JSON.stringify(prior.get(id))));
+      if (Object.keys(changed).length) Object.assign(raw, { [key]: { ...raw[key], ...structuredClone(changed) } });
+    }
+    state.account = raw;
+    const response2 = validateRadiantCheckpoint({
+      revision: snapshot.revision + 1,
+      account: raw,
+      run: state.radiantStudy ?? null
+    });
+    return { state, response: response2 };
+  } catch (error) {
+    if (error instanceof RadiantRunError) throw error;
+    throw new RadiantRunError("invalid-input", error instanceof Error ? error.message : "Invalid preparation choice.");
+  }
+}
+async function executeRadiantPreparation(repository, input) {
+  const request = validateRadiantPreparationRequest(input);
+  const fingerprint = await radiantRequestFingerprint(["radiant-preparation:v1", request]);
+  const cached = await repository.find(request.requestId, fingerprint);
+  if (cached) return validateRadiantCheckpoint(cached);
+  const resolved = resolveRadiantPreparation(await repository.load(), request);
+  return repository.commit({
+    requestId: request.requestId,
+    fingerprint,
+    expectedRevision: request.expectedRevision,
+    state: resolved.state,
+    response: resolved.response
+  });
 }
 
 // supabase/functions/game-operation/radiant-dispatch.ts
@@ -18889,6 +19059,17 @@ async function handleRadiantRequest(value2, user, admin, config, identityOf) {
       const snapshot = await load();
       const run = snapshot.state.radiantStudy ?? null;
       return { status: 200, body: { revision: snapshot.revision, account: snapshot.state.account, run } };
+    }
+    if (operation && typeof operation === "object" && !Array.isArray(operation) && "kind" in operation && operation.kind === "prepare") {
+      const input2 = validateRadiantPreparationRequest(operation);
+      const { data: allowed2, error: limitError2 } = await admin.rpc("consume_game_attempt", { p_user: user });
+      if (limitError2) throw new RadiantRunError("unavailable", "Game rate-limit storage unavailable.");
+      if (!allowed2) return { status: 429, body: { error: "Too many game operations. Wait one minute." } };
+      const result2 = await executeRadiantPreparation(
+        radiantRpcRepositoryFor(admin, user, load, validateRadiantCheckpoint),
+        input2
+      );
+      return { status: 200, body: result2 };
     }
     const input = validateRadiantRunRequest(value2.radiantStudy);
     const calibration = config.calibration ?? "authored-control";

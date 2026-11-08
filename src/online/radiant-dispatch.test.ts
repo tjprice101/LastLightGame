@@ -83,6 +83,45 @@ async function send(handler: ReturnType<SupabaseMock['handler']>, radiantStudy: 
 }
 
 describe('authenticated actual game-operation dispatch with mocked Supabase boundary', () => {
+  it('gated preparation commits manual six-member loadout changes once and preserves frozen encounters', async () => {
+    const db = new SupabaseMock(105), handler = db.handler();
+    for (const id of ['tide', 'sprout', 'rosetta', 'thornia', 'crinso'] as const)
+      db.state.account.characters[id] = { level: 0, evolution: 1, weaponRank: 0 };
+    await send(handler, entry());
+    const frozen = structuredClone(db.state.radiantStudy), holdings = structuredClone(db.state.account);
+    const ids = ['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'crinso'];
+    const request = { kind: 'prepare', requestId: uuid(), expectedRevision: db.revision,
+      operation: { kind: 'setSquad', ids } };
+    const result = await send(handler, request), writes = db.writes;
+    expect(result.status).toBe(200); expect(result.body.account).toEqual({ ...holdings, squad: ids });
+    expect(result.body.run).toEqual(frozen); expect(db.state.radiantStudy).toEqual(frozen);
+    expect((await send(handler, request)).body).toEqual(result.body); expect(db.writes).toBe(writes);
+    const reordered = { operation: { ids, kind: 'setSquad' }, expectedRevision: request.expectedRevision,
+      requestId: request.requestId, kind: 'prepare' };
+    expect((await send(handler, reordered)).body).toEqual(result.body); expect(db.writes).toBe(writes);
+    expect((await send(handler, { ...request, operation: { kind: 'setSquad', ids: ['tide'] } })).status).toBe(409);
+    expect((await send(handler, { ...request, requestId: uuid() })).status).toBe(409);
+    expect(db.writes).toBe(writes);
+  });
+  it('preparation fails closed for disabled/auth/rate/storage and retries a denied commit without losing holdings', async () => {
+    const db = new SupabaseMock(), handler = db.handler();
+    const request = { kind: 'prepare', requestId: uuid(), expectedRevision: 0,
+      operation: { kind: 'setSquad', ids: ['ember'] } };
+    expect((await send(db.handler({}), request)).status).toBe(503); expect(db.rpc).not.toHaveBeenCalled();
+    expect((await send(handler, request, 'bad')).status).toBe(401); expect(db.writes).toBe(0);
+    db.limited = true; expect((await send(handler, request)).status).toBe(429);
+    db.limited = false;
+    const before = structuredClone(db.state);
+    db.denied = 'commit_game_operation';
+    expect((await send(handler, request)).body.code).toBe('denied-write');
+    expect(db.state).toEqual(before); expect(db.writes).toBe(0);
+    db.denied = undefined;
+    expect((await send(handler, request)).status).toBe(200); expect(db.writes).toBe(1);
+    expect((await send(handler, request)).status).toBe(200); expect(db.writes).toBe(1);
+    expect((await send(handler, { ...request, requestId: uuid(), expectedRevision: 1,
+      operation: { kind: 'setSquad', ids: ['tide'] } })).body.code).toBe('manual-squad');
+    expect(db.writes).toBe(1);
+  });
   it('dedicated authenticated read restores the frozen aggregate without committing, earning or replaying events', async () => {
     const db = new SupabaseMock(105), handler = db.handler();
     const empty = await send(handler, { kind: 'read' });

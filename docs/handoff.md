@@ -1,5 +1,41 @@
 # Current state and handoff
 
+## Radiant manual preparation and saved selection receipts (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; prior recovery stage `c82fad85`.
+No gate enablement, deployment, account migration or automatic replacement.
+
+**Implemented:** authenticated gated preparation for manual acquired released
+one-to-six bearer squads, named squad save/rename/equip/delete, three named
+character configurations and matching owned ordinary/Master gear. Reuses
+existing account helpers/atomic revision/immutable response receipts.
+Preserves captures, unrelated raw holdings/libraries and both frozen run types.
+Historical capture squad libraries remain maintenance-only, not combat eligible.
+Controller holds exact pending requests/revisions, blocks concurrency and
+exposes post-save preparation receipts without combat/reward/entrance replay.
+Named-squad capacity labels now use the shared six-member limit.
+[Contract](Future%20Plans/radiant-combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08).
+
+**Validation:** matching authority bundle regeneration, authority TypeScript
+and client `npm run build` passed; final focused/full counts below.
+`npx vitest run src\online\radiant-preparation.test.ts src\online\radiant-dispatch.test.ts src\online\radiant-run.test.ts src\online\radiant-session.test.ts src\online\radiant-transport.test.ts src\online\saved-loadouts.test.ts src\presentation\saved-loadouts.test.ts src\online\server-game.test.ts --maxWorkers=2 --testTimeout=60000`:
+**281 tests/8 files passed**, including the final explicit capture gear cleanup,
+raw legacy equipment preservation, late-save disposal and six-member DOM checks.
+Full `npx vitest run --exclude src/radiant-ui.test.ts --exclude src/ui-design-lab.test.ts --maxWorkers=2 --testTimeout=60000`:
+**9935 tests/269 files passed** before the final cleanup refinement/two additional
+focused tests. Only preserved unpublished mock-up tests excluded. Final bundle,
+authority typecheck and build were rerun after the refinement; existing Vite
+large-chunk advisory remains. No dependencies added.
+An owned capture's old gear can be explicitly unequipped without erasing its
+copy/progress/locks/libraries; assigning new gear remains rejected.
+
+**Next:** actual Radiant DB transaction proof and production route/caller
+integration using the prepared controller; bearer-only menus/captured holdings
+UX,174 remaining reviewed face crops, cinematic six-member Home/battle/ordered
+impact UI, finite unique tiered radiant VFX, temporal/accessibility/performance
+tests, final network/enemy/economy and journal-payload tuning, final single art
+file. Existing rejected/unpublished mock-up work is preserved and not published.
+
 ## Radiant saved client controller and recovery (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; prior economy study `fa848be6`.

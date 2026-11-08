@@ -1,6 +1,7 @@
 import { onlineClient } from './account-client';
 import { RadiantRunError, isRadiantRunErrorCode, validateRadiantRunRequest, validateRadiantRunResponse,
   validateRadiantCheckpoint, type RadiantCheckpoint, type RadiantRunRequest, type RadiantRunResponse } from './radiant-run';
+import { validateRadiantPreparationRequest, type RadiantPreparationRequest } from './radiant-preparation';
 
 export interface RadiantStudyTransportRequest { radiantStudy: RadiantRunRequest }
 /** Dedicated transport only. No menu, capability auto-discovery or live battle caller. */
@@ -11,7 +12,11 @@ export async function radiantStudyOperation(request: RadiantRunRequest): Promise
 export async function readRadiantStudy(): Promise<RadiantCheckpoint> {
   return validateRadiantCheckpoint(await invokeRadiantStudy({ radiantStudy: { kind: 'read' } }));
 }
-async function invokeRadiantStudy(body: RadiantStudyTransportRequest | { radiantStudy: { kind: 'read' } }): Promise<unknown> {
+export async function prepareRadiantStudy(request: RadiantPreparationRequest): Promise<RadiantCheckpoint> {
+  return validateRadiantCheckpoint(await invokeRadiantStudy({ radiantStudy: validateRadiantPreparationRequest(request) }));
+}
+async function invokeRadiantStudy(body: RadiantStudyTransportRequest |
+  { radiantStudy: { kind: 'read' } | RadiantPreparationRequest }): Promise<unknown> {
   const { data, error } = await onlineClient().functions.invoke('game-operation', { body, timeout: 30_000 });
   if (error) {
     if ('context' in error && error.context instanceof Response) {

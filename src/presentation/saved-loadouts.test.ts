@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { emptyAccount, type Account } from '../game/account';
+import { releasedRadiantIds } from '../content/radiant-combat';
+import { getStarter } from '../content/starters';
 import { conduitConfigurationsPanel, savedLoadoutOperation, squadLoadoutsPanel } from './saved-loadouts';
 import { gameConfirm } from './game-dialog';
 import { createCreatureCopy } from '../game/character-instances';
@@ -25,6 +27,21 @@ function action(kind: string): HTMLButtonElement {
 }
 describe('saved loadout controls', () => {
   beforeEach(() => { document.body.innerHTML = ''; vi.mocked(gameConfirm).mockReset(); });
+  it('renders every member and shared six-member capacity for current and saved squads', () => {
+    const saved = account(), ids = releasedRadiantIds.slice(0, 6);
+    for (const member of ids) saved.characters[member] = { level: 0, evolution: 1 };
+    saved.squad = ids;
+    saved.squadLoadouts![0].members = [...ids].reverse().map(character => ({
+      character, name: getStarter(character).name, element: getStarter(character).elementId,
+      conduits: Array<null>(8).fill(null), master: null,
+    }));
+    document.body.innerHTML = squadLoadoutsPanel(saved);
+    for (const card of Array.from(document.querySelectorAll('[data-saved-entry]'))) {
+      expect(card.querySelector('.saved-loadout-card-heading')?.textContent).toContain('6 / 6 members');
+      expect(card.querySelectorAll('.saved-loadout-member')).toHaveLength(6);
+    }
+    expect(document.querySelectorAll('.saved-loadout-slots li')).toHaveLength(96);
+  });
   it('provides a Team destination, named current squad, saved equipment and unlimited list semantics without HTML injection', () => {
     document.body.innerHTML = referenceTeam(account(), { view: 'loadouts', selected: 'ember', element: '', sort: 'name' });
     expect(document.querySelector('[data-team-view="loadouts"]')?.getAttribute('aria-pressed')).toBe('true');

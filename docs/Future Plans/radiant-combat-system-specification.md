@@ -1,5 +1,60 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Manual squad and saved-loadout preparation bridge (2026-11-08)
+
+The gated authority now accepts `{ "radiantStudy": { "kind": "prepare",
+"requestId": "<UUID>", "expectedRevision": 0, "operation": <choice> } }`.
+[Preparation](../../src/online/radiant-preparation.ts) reuses the existing
+account/save-library operations, not a second wallet or new loadout schema.
+Supported choices: set squad; save/rename/equip/delete squad loadout;
+save/rename/equip one of three Conduit configurations; equip ordinary Conduit,
+unequip all and equip personal Master. Client-authored stats/gear snapshots,
+bootstrap/grants, reward operations and unknown fields are rejected.
+
+Squad selection accepts one to six distinct **acquired released Element-Bearers**,
+in explicit leader-first order. Captures remain byte-preserved holdings/fodder
+with old equipment retained; captured/unowned/hidden targets cannot be selected
+or equipped through this route. A historical capture-containing squad library
+can be renamed/deleted but cannot be equipped for Radiant combat. Nothing
+auto-replaces a member, auto-grants a missing profile starter or erases a library.
+An owned capture's old ordinary equipment can be removed only by an explicit
+unequip-all choice; its copy/locks/progress/libraries remain intact. This allows
+manual clearing of gear protection for fodder without making captures equip-eligible.
+
+Manual squad selection is allowed before gear repair; entry still checks the
+entire selected squad. Equipment operations validate the affected bearer and
+matching Master/owned ranks/ordinary uniqueness/element and tier slot limits.
+Saving a squad requires a valid full Radiant loadout; applying a named squad
+validates every member and its saved equipment before the real commit.
+Saving/applying a character configuration likewise checks its target.
+
+Only changed preparation fields/character map entries are merged into raw
+holdings. Compatibility-normalized unrelated gear, captures, progress, balances,
+reward seeds and other libraries are not rewritten as a side effect. No account
+version migration, costs, RNG or new inventory grants are introduced.
+Both legacy and Radiant frozen runs remain untouched by preparation; new menu
+selections apply to a fresh entry, never a mid-run reread or automatic restart.
+
+Preparation shares Auth, disabled gate, secret/calibration/rate checks, canonical
+domain-separated fingerprints and the existing atomic account/run/revision/
+immutable-response transaction. Exact retries pay/write once; reused IDs with
+different choices and stale new requests fail explicitly. No new SQL schema.
+
+`RadiantSession.prepare`/`retryPreparation` retain the last saved checkpoint
+until acknowledgement, lock out simultaneous combat/preparation and resend the
+same UUID/revision on ambiguity. A committed preparation has its own explicit
+presentation receipt, suitable for post-save selection feedback, not combat
+reward replay. Settings, result dismissal, entrance and journal stay unchanged.
+Responses cannot erase/change the frozen run; disposal suppresses late effects.
+No production caller or completed cinematic UI is claimed by this bridge.
+Existing named-squad headings now use the shared six-member capacity; the
+separate three named character configurations remain three.
+
+Validation commands and final counts are in the current handoff. Actual Radiant
+DB execution, production routed UI/portrait/VFX work, remaining crops, long-run
+payload/cadence/final tuning and the final consolidated art brief remain gates.
+The authority is still disabled and undeployed.
+
 ## Saved client sessions and durable checkpoint reads (2026-11-08)
 
 [RadiantSession](../../src/online/radiant-session.ts) is the isolated client

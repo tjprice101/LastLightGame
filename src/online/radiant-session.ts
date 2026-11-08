@@ -1,12 +1,14 @@
-import { RadiantRunError, validateRadiantCheckpoint, validateRadiantRunRequest, validateRadiantRunResponse,
+import { RadiantRunError, radiantRequestFingerprint, validateRadiantCheckpoint, validateRadiantRunRequest, validateRadiantRunResponse,
   type RadiantCheckpoint, type RadiantRunOperation, type RadiantRunRequest, type RadiantRunResponse } from './radiant-run';
-import { radiantStudyOperation, readRadiantStudy } from './radiant-transport';
+import { radiantStudyOperation, readRadiantStudy, prepareRadiantStudy } from './radiant-transport';
+import { validateRadiantPreparationRequest, type RadiantPreparationOperation, type RadiantPreparationRequest } from './radiant-preparation';
 import type { RadiantCombatEvent } from '../game/radiant-combat';
 import type { BattleEvent } from '../game/battle';
 
 export interface RadiantSessionView {
   saved: RadiantCheckpoint;
   pending: RadiantRunRequest | null;
+  preparationPending: RadiantPreparationRequest | null;
   busy: boolean;
   settingsOpen: boolean;
   entrancePending: boolean;
@@ -14,20 +16,27 @@ export interface RadiantSessionView {
   events: RadiantCombatEvent[];
   rewards: BattleEvent[];
   presentation: { requestId: string; response: RadiantRunResponse } | null;
+  preparationPresentation: { requestId: string; checkpoint: RadiantCheckpoint } | null;
   error: { code: string; message: string } | null;
+}
+interface RadiantSessionTransport {
+  read(): Promise<RadiantCheckpoint>;
+  execute(request: RadiantRunRequest): Promise<RadiantRunResponse>;
+  prepare?(request: RadiantPreparationRequest): Promise<RadiantCheckpoint>;
 }
 /** In-memory presentation state only; authority owns every combat/reward change.
  * No production caller or automatic capability enablement. */
 export class RadiantSession {
   private value: RadiantSessionView;
   private disposed = false;
-  constructor(checkpoint: RadiantCheckpoint, private readonly transport = {
-    read: readRadiantStudy, execute: radiantStudyOperation,
+  constructor(checkpoint: RadiantCheckpoint, private readonly transport: RadiantSessionTransport = {
+    read: readRadiantStudy, execute: radiantStudyOperation, prepare: prepareRadiantStudy,
   }, private readonly uuid: () => string = () => crypto.randomUUID()) {
-    this.value = { saved: validateRadiantCheckpoint(checkpoint), pending: null, busy: false,
+    this.value = { saved: validateRadiantCheckpoint(checkpoint), pending: null, preparationPending: null, busy: false,
       settingsOpen: false, entrancePending: !!checkpoint.run, resultsDismissed: false,
       events: structuredClone(checkpoint.run?.journal.events ?? []),
-      rewards: structuredClone(checkpoint.run?.journal.rewards ?? []), presentation: null, error: null };
+      rewards: structuredClone(checkpoint.run?.journal.rewards ?? []), presentation: null,
+      preparationPresentation: null, error: null };
   }
   view(): RadiantSessionView { return structuredClone(this.value); }
   private active(): void {
@@ -42,10 +51,20 @@ export class RadiantSession {
       throw new RadiantRunError('invalid-input', 'Presentation receipt does not match.');
     this.value.presentation = null;
   }
-  async refresh(): Promise<RadiantCheckpoint> {
+  finishPreparation(requestId: string): void {
     this.active();
-    if (this.value.busy || this.value.pending || this.value.presentation)
-      throw new RadiantRunError('invalid-input', 'Resolve the pending operation/presentation before refreshing.');
+    if (this.value.preparationPresentation?.requestId !== requestId)
+      throw new RadiantRunError('invalid-input', 'Preparation receipt does not match.');
+    this.value.preparationPresentation = null;
+  }
+  private available(): void {
+    this.active();
+    if (this.value.busy || this.value.pending || this.value.preparationPending ||
+      this.value.presentation || this.value.preparationPresentation)
+      throw new RadiantRunError('invalid-input', 'Resolve the pending operation/presentation before another choice.');
+  }
+  async refresh(): Promise<RadiantCheckpoint> {
+    this.available();
     this.value.busy = true; this.value.error = null;
     try {
       const saved = validateRadiantCheckpoint(await this.transport.read());
@@ -64,9 +83,7 @@ export class RadiantSession {
     finally { this.value.busy = false; }
   }
   async perform(operation: RadiantRunOperation): Promise<RadiantRunResponse> {
-    this.active();
-    if (this.value.busy || this.value.pending || this.value.presentation)
-      throw new RadiantRunError('invalid-input', 'Resolve the pending operation/presentation before another choice.');
+    this.available();
     if (this.value.error && ['stale-revision', 'stale-run', 'receipt-conflict'].includes(this.value.error.code))
       throw new RadiantRunError('stale-revision', 'Refresh the saved checkpoint before another choice.');
     if (operation.kind === 'action' && (this.value.settingsOpen || this.value.entrancePending))
@@ -83,6 +100,43 @@ export class RadiantSession {
     if (this.value.busy || !this.value.pending)
       throw new RadiantRunError('invalid-input', 'No unresolved operation is available to retry.');
     return this.send();
+  }
+  async prepare(operation: RadiantPreparationOperation): Promise<RadiantCheckpoint> {
+    this.available();
+    if (!this.transport.prepare) throw new RadiantRunError('unavailable', 'Radiant preparation transport is unavailable.');
+    if (this.value.error && ['stale-revision', 'stale-run', 'receipt-conflict'].includes(this.value.error.code))
+      throw new RadiantRunError('stale-revision', 'Refresh the saved checkpoint before another choice.');
+    this.value.preparationPending = validateRadiantPreparationRequest({ kind: 'prepare', requestId: this.uuid(),
+      expectedRevision: this.value.saved.revision, operation });
+    return this.sendPreparation();
+  }
+  async retryPreparation(): Promise<RadiantCheckpoint> {
+    this.active();
+    if (this.value.busy || !this.value.preparationPending)
+      throw new RadiantRunError('invalid-input', 'No unresolved preparation is available to retry.');
+    return this.sendPreparation();
+  }
+  private async sendPreparation(): Promise<RadiantCheckpoint> {
+    const request = structuredClone(this.value.preparationPending!);
+    this.value.busy = true; this.value.error = null;
+    try {
+      if (!this.transport.prepare) throw new RadiantRunError('unavailable', 'Radiant preparation transport is unavailable.');
+      const saved = validateRadiantCheckpoint(await this.transport.prepare(structuredClone(request)));
+      if (saved.revision !== request.expectedRevision + 1 ||
+        await radiantRequestFingerprint(saved.run) !== await radiantRequestFingerprint(this.value.saved.run))
+        throw new RadiantRunError('unavailable', 'Saved preparation does not match the pending operation.');
+      if (!this.disposed) {
+        this.value.saved = saved;
+        this.value.preparationPending = null;
+        this.value.preparationPresentation = { requestId: request.requestId, checkpoint: structuredClone(saved) };
+      }
+      return structuredClone(saved);
+    } catch (error) {
+      this.failure(error);
+      if (error instanceof RadiantRunError && ['manual-squad', 'invalid-input', 'stale-revision',
+        'stale-run', 'receipt-conflict', 'overflow'].includes(error.code)) this.value.preparationPending = null;
+      throw error;
+    } finally { this.value.busy = false; }
   }
   private failure(error: unknown): void {
     if (this.disposed) return;
@@ -120,5 +174,5 @@ export class RadiantSession {
       throw error;
     } finally { this.value.busy = false; }
   }
-  dispose(): void { this.disposed = true; this.value.presentation = null; }
+  dispose(): void { this.disposed = true; this.value.presentation = null; this.value.preparationPresentation = null; }
 }

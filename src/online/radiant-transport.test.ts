@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createClient } from '@supabase/supabase-js';
 import { freshGame } from '../../supabase/functions/game-operation/engine';
 import { resolveRadiantRun, type RadiantRunRequest, type RadiantCheckpoint } from './radiant-run';
-import { radiantStudyOperation, readRadiantStudy } from './radiant-transport';
+import { radiantStudyOperation, readRadiantStudy, prepareRadiantStudy } from './radiant-transport';
 
 const mocks = vi.hoisted(() => ({ onlineClient: vi.fn() }));
 vi.mock('./account-client', () => ({ onlineClient: mocks.onlineClient }));
@@ -20,6 +20,20 @@ function savedResponse() {
 }
 afterEach(() => { vi.useRealTimers(); vi.clearAllMocks(); });
 describe('dedicated typed Radiant transport, not a production gameOperation', () => {
+  it('sends only manual preparation choices and validates the committed checkpoint before use', async () => {
+    const response = savedResponse();
+    const checkpoint = { revision: response.revision, account: response.account, run: response.run };
+    const invoke = vi.fn(async () => ({ data: checkpoint, error: null }));
+    mocks.onlineClient.mockReturnValue({ functions: { invoke } });
+    const request = { kind: 'prepare', requestId: id, expectedRevision: 0,
+      operation: { kind: 'setSquad', ids: ['ember'] } } as const;
+    await expect(prepareRadiantStudy({ ...request, operation: { ...request.operation, ids: ['ember'] } }))
+      .resolves.toEqual(checkpoint);
+    expect(invoke).toHaveBeenCalledWith('game-operation', { body: { radiantStudy: request }, timeout: 30_000 });
+    invoke.mockResolvedValueOnce({ data: { ...checkpoint, account: [] } as never, error: null });
+    await expect(prepareRadiantStudy({ ...request, operation: { kind: 'setSquad', ids: ['ember'] } }))
+      .rejects.toMatchObject({ code: 'unavailable' });
+  });
   it('reads a dedicated saved checkpoint without a new action ID or replay reward payload', async () => {
     const saved = savedResponse();
     const checkpoint: RadiantCheckpoint = { revision: saved.revision, account: saved.account, run: saved.run };

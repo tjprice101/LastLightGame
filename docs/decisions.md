@@ -1,5 +1,16 @@
 # Decision log
 
+## Prepare radiant squads manually without account auto-repair (2026-11-08)
+
+Under the delegated overhaul, reuse existing named squad/Conduit configuration
+operations behind the dedicated disabled preparation gate and atomic receipts.
+Select one-to-six acquired released bearers explicitly, preserving leader order,
+captures/fodder/raw holdings and historical libraries. Captured squads require
+manual replacement; never fabricate starter ownership or erase old equipment.
+Preparation changes fresh-entry menu choices, not frozen encounters.
+Keep exact ambiguous request retries and post-save-only feedback receipts.
+[Contract and validation](Future%20Plans/radiant-combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08).
+
 ## Recover radiant sessions from saved outcomes only (2026-11-08)
 
 Under the delegated overhaul, isolate client transitions behind validated

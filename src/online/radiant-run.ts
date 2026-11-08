@@ -87,16 +87,16 @@ export function validateRadiantCheckpoint(value: unknown): RadiantCheckpoint {
     throw new RadiantRunError('unavailable', 'Invalid saved Radiant checkpoint.');
   }
 }
-export interface RadiantRunCommit {
+export interface RadiantRunCommit<Response = RadiantRunResponse> {
   requestId: string; fingerprint: string; expectedRevision: number;
-  state: RadiantStudyGame; response: RadiantRunResponse;
+  state: RadiantStudyGame; response: Response;
 }
-export interface RadiantRunRepository {
+export interface RadiantRunRepository<Response = RadiantRunResponse> {
   load(): Promise<RadiantRunSnapshot>;
-  find(requestId: string, fingerprint: string): Promise<RadiantRunResponse | null>;
+  find(requestId: string, fingerprint: string): Promise<Response | null>;
   /** Must atomically CAS the whole account/run aggregate and insert the immutable
    * request response. Duplicate lookup occurs under the same lock BEFORE CAS. */
-  commit(input: RadiantRunCommit): Promise<RadiantRunResponse>;
+  commit(input: RadiantRunCommit<Response>): Promise<Response>;
 }
 export interface RadiantRunAuthority {
   capability: 'isolated-radiant-study';
@@ -437,12 +437,15 @@ export function validateRadiantRunResponse(value: unknown): RadiantRunResponse {
     throw new RadiantRunError('unavailable', 'Invalid stored study response.');
   }
 }
+export async function radiantRequestFingerprint(value: unknown): Promise<string> {
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(canonical(value)));
+  return Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2, '0')).join('');
+}
 export async function executeRadiantRun(repository: RadiantRunRepository, request: RadiantRunRequest,
   authority: RadiantRunAuthority): Promise<RadiantRunResponse> {
   validateRadiantRunRequest(request);
   if (authority.capability !== 'isolated-radiant-study') invalid('Study capability is required.');
-  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(canonical(request)));
-  const fingerprint = Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2, '0')).join('');
+  const fingerprint = await radiantRequestFingerprint(request);
   const cached = await repository.find(request.requestId, fingerprint);
   if (cached) return structuredClone(cached);
   const snapshot = await repository.load();
@@ -468,10 +471,14 @@ function receiptConflict(error: unknown): boolean {
  * load callback and immutable response, with duplicate-before-CAS owned by SQL. */
 export function radiantRpcRepository(rpc: RadiantGameRpc, userId: string,
   load: RadiantRunRepository['load']): RadiantRunRepository {
-  const response = (data: unknown): RadiantRunResponse => {
+  return radiantRpcRepositoryFor(rpc, userId, load, validateRadiantRunResponse);
+}
+export function radiantRpcRepositoryFor<Response>(rpc: RadiantGameRpc, userId: string,
+  load: RadiantRunRepository['load'], validate: (data: unknown) => Response): RadiantRunRepository<Response> {
+  const response = (data: unknown): Response => {
     if (!record(data)) throw new RadiantRunError('unavailable', 'Missing commit response.');
     if ('conflict' in data) throw new RadiantRunError('stale-revision', 'Concurrent account update; nothing committed.');
-    return validateRadiantRunResponse(data);
+    return validate(data);
   };
   return { load,
     async find(requestId, fingerprint) {
