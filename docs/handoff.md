@@ -1,5 +1,15 @@
 # Current state and handoff
 
+## Sub-type clarification: mechanical fixed profiles (2026-11-08)
+
+Owner corrects the tactical-label interpretation: sub-types grant innate stat
+strengths/penalties. Fixed by character/role; replace old role stat bonuses.
+[Proposed profiles and review requirements](Future%20Plans/character-combat-refresh-audit.md#corrected-sub-type-contract-innate-stat-profiles-owner-clarification)
+are Corona/Aegis/Solstice/Prism/Equinox, not approved names or percentages.
+Review targeting/Support healing separately. Coherent naming families permitted
+for direct advancements. No gameplay implementation or randomized Types.
+Interrupted broad questionnaire defaults remain unresolved.
+
 ## Radiant Discipline subtype draft (2026-11-07)
 
 Owner requests unique sub-types and varied light-themed naming/philosophy.

@@ -1,5 +1,15 @@
 # Decision log
 
+## Corrected sub-types: fixed stat profiles replace role stat bonuses
+
+Owner clarifies sub-types are innate stat strengths/trade-offs, not just poetic
+tactical labels. Selects fixed assignment by character identity/role and
+replacement of existing role stat bonuses. Tank targeting/Support healing
+remain separate review decisions. [Corrected contract and profile proposals](Future%20Plans/character-combat-refresh-audit.md#corrected-sub-type-contract-innate-stat-profiles-owner-clarification)
+supersede the previous cosmetic Discipline interpretation. Names/percentages/
+roster mapping remain proposals. Direct advancements may share naming families.
+The interrupted implementation questionnaire did not approve its defaults.
+
 ## Unique sub-types and varied radiant language requested (2026-11-07)
 
 Owner requests character-specific sub-types in the same refresh plan and

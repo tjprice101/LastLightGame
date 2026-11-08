@@ -36,9 +36,50 @@ remain character-specific within these common categories. Light-themed system
 language does not convert Infernic/Oceanic/Botanic/Atmospheric/Tranquilitic/
 Chaotic characters into a single combat element.
 
-### Character sub-types: proposed Radiant Disciplines
+### Corrected sub-type contract: innate stat profiles (owner clarification)
 
-Owner requests unique character sub-types and light-themed systems/philosophy
+Owner clarifies that sub-types mean **mechanical stat strengths and trade-offs**,
+like higher Attack/lower Health, not unique poetic tactical labels alone.
+Owner selects **fixed assignment by character identity and combat role** and
+**replacement of current role stat bonuses** with the new profiles. Existing
+Tank targeting and Support role healing need separate review; neither is
+implicitly removed or retained.
+
+No random acquisition Type, reroll, subtype lottery or player-selected profile.
+The individual Discipline titles below are historical tactical-name proposals,
+not the selected mechanical subtype system. They may remain optional identity
+descriptors only if useful; no extra modifier layer is implied.
+
+| Proposed subtype | Innate stat direction | Intended use |
+| --- | --- | --- |
+| Corona | Higher Direct Attack, lower Health | Aggressive damage dealer. |
+| Aegis | Higher Defense, lower Direct Attack | Defensive protector. |
+| Solstice | Higher Health, lower Direct Attack | Endurance specialist. |
+| Prism | Higher Skill Power, lower Defense | Ability-focused attacker or support. |
+| Equinox | Balanced stats, no bonus or penalty | Generalist. |
+
+These names, profile count and directions are proposals; no numerical
+coefficients or per-character assignments are approved yet. Test each profile
+against actual native stats, skills, level growth and gear before fixing values.
+An increased Attack stat need not offset reduced HP in value or survival.
+Avoid multiplying current Attacker/Tank/Support stat bonuses by these modifiers.
+Document the shared raw-stat pool, scaling order and menu/battle parity.
+Stat penalties must preserve viable solo starters and useful support identities.
+Captured parity and fixed-form subtype assignments remain to be specified.
+
+**Naming rule:** light-themed terminology should be varied across unrelated
+systems, but direct advancements may share a coherent wording family.
+Do not invent a new unrelated noun for each evolved version of the same idea.
+Glowing Flare / Lustrous Flare / Eternal Radiant Flare stay owner-selected.
+No evolving subtype bonuses or new subtype tiers are implied by this rule.
+
+The previous broad implementation questionnaire was interrupted. None of its
+defaults constitutes approval; charge, recovery, controls/stats, leader death,
+Calamitic/captured mapping and investment policy still need decisions.
+
+### Historical tactical labels: proposed Radiant Disciplines
+
+The initial interpretation proposed unique tactical labels and light-themed systems/philosophy
 without repetitive "Light this / Light that" naming. **Radiant Discipline** is
 the proposed name for a fixed tactical sub-type beneath the familiar role.
 The owner requests the draft; the individual names and mechanics below remain
