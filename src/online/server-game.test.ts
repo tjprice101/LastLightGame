@@ -116,10 +116,11 @@ describe('server authoritative game engine', () => {
     expect(() => op(result, operation)).toThrow('changed');
   });
 
-  it('separates the three-member squad limit from the fifteen-copy evolution request limit', () => {
+  it('separates the six-member squad limit from the fifteen-copy evolution request limit', () => {
     const request = (operation: unknown) => ({ requestId: crypto.randomUUID(), expectedRevision: 0, operation });
     const ids = Array.from({ length: 16 }, (_, index) => `capture:${index}`);
-    expect(() => validateRequest(request({ kind: 'setSquad', ids: ids.slice(0, 4) }))).toThrow('Invalid character IDs');
+    expect(() => validateRequest(request({ kind: 'setSquad', ids: ids.slice(0, 7) }))).toThrow('Invalid character IDs');
+    expect(validateRequest(request({ kind: 'setSquad', ids: ['ember', 'tide', 'sprout', 'atmoso', 'elise', 'bruno'] })).operation.kind).toBe('setSquad');
     expect(validateRequest(request({ kind: 'setSquad', ids: ['ember', 'tide', 'sprout'] })).operation.kind).toBe('setSquad');
     for (const fodderIds of [ids, 'not-an-array', [null], [''], ['x'.repeat(101)]]) {
       expect(() => validateRequest(request({ kind: 'upgradeCharacter', id: 'ember', upgradeKind: 'evolve',

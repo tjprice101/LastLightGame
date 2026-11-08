@@ -1,4 +1,5 @@
 import type { Account, MaxLevelPlan, ConduitMaxLevelPlan, summonCharacter, SummonDraw } from '../game/account';
+import { squadMemberLimit } from '../content/squad-rules';
 import { calamityChest, calamityLootTable, isCalamityActivityId, isCalamityTier, parseCalamityChestId, type CalamityActivityId, type CalamityTier, type CalamityOpening } from '../content/calamity';
 import { calamiticCharacterByTier } from '../content/calamitic-characters';
 import { isConduitId } from '../content/conduits';
@@ -252,7 +253,7 @@ function battleState(value: unknown): boolean {
     (value.oblivion === undefined || object(value.oblivion) && Object.keys(value.oblivion).length === 1 &&
       isOblivionStage(value.oblivion.stage) && !value.dungeon && !value.infusion && !value.story && !value.war && !value.calamity) &&
     safeCount(value.wave) && safeCount(value.round) && typeof value.seed === 'number' &&
-    Array.isArray(value.allies) && value.allies.length > 0 && value.allies.length <= 3 &&
+    Array.isArray(value.allies) && value.allies.length > 0 && value.allies.length <= squadMemberLimit &&
     Array.isArray(value.enemies) && value.enemies.length > 0 &&
     [...value.allies, ...value.enemies].every(unit => object(unit) && typeof unit.id === 'string' &&
       typeof unit.name === 'string' && typeof unit.hp === 'number' && Number.isFinite(unit.hp) &&

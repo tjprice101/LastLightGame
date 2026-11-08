@@ -12,9 +12,9 @@ describe('roster, squad and summon screens', () => {
     expect(html).toContain('Lv.30 · Evo.2');
     expect(html).not.toContain('data-owned-character="sprout"');
   });
-  it('renders three ordered slots, optional removal and no starter lock', () => {
+  it('renders six ordered slots, optional removal and no starter lock', () => {
     const html = squadHub(account);
-    expect(html.match(/class="squad-slot(?: squad-slot-leader)?"/g)).toHaveLength(3);
+    expect(html.match(/class="squad-slot(?: squad-slot-leader)?"/g)).toHaveLength(6);
     expect(html.match(/class="squad-slot squad-slot-leader"/g)).toHaveLength(1);
     expect(html).toContain('<option value="tide" selected>');
     expect(html).toContain('Choose leader');
@@ -32,11 +32,11 @@ describe('roster, squad and summon screens', () => {
   it('places Save beside the filled-slot count while retaining the same submitted form fields', () => {
     const html = squadHub(account);
     const header = html.slice(0, html.indexOf('<form id="squad-form">'));
-    expect(header).toContain('2 / 3 slots filled');
+    expect(header).toContain('2 / 6 slots filled');
     expect(header).toContain('form="squad-form"');
     expect(html.match(/>Save squad<\/button>/g)).toHaveLength(1);
-    expect(html.match(/class="squad-member-preview"/g)).toHaveLength(3);
-    for (let index = 0; index < 3; index++) expect(html).toContain(`name="slot-${index}"`);
+    expect(html.match(/class="squad-member-preview"/g)).toHaveLength(6);
+    for (let index = 0; index < 6; index++) expect(html).toContain(`name="slot-${index}"`);
   });
   it('renders an explicit empty state instead of throwing when there are no owned members', () => {
     const html = squadHub(emptyAccount());
@@ -96,17 +96,18 @@ describe('roster, squad and summon screens', () => {
     expect(picker).toContain(`data-squad-pick="${id}" data-squad-kind="creatures"`);
     expect(picker).toContain('data-squad-open="0"');
     const owned = ['tide', 'ember', id];
-    const slots = ['tide', 'ember', ''];
-    expect(assignSquadSlot(slots, 0, 'ember', owned)).toEqual(['ember', 'tide', '']);
-    expect(assignSquadSlot(slots, 2, id, owned)).toEqual(['tide', 'ember', id]);
-    expect(assignSquadSlot(slots, 1, '', owned)).toEqual(['tide', '', '']);
+    const slots = ['tide', 'ember', '', '', '', ''];
+    expect(assignSquadSlot(slots, 0, 'ember', owned)).toEqual(['ember', 'tide', '', '', '', '']);
+    expect(assignSquadSlot(slots, 2, id, owned)).toEqual(['tide', 'ember', id, '', '', '']);
+    expect(assignSquadSlot(slots, 1, '', owned)).toEqual(['tide', '', '', '', '', '']);
+    expect(assignSquadSlot(slots, 5, id, owned)).toEqual(['tide', 'ember', '', '', '', id]);
     expect(assignSquadSlot(slots, 0, 'tide', owned)).toEqual(slots);
     expect(() => assignSquadSlot(slots, 2, 'tide', owned)).toThrow('replacement leader');
     expect(() => assignSquadSlot(slots, 0, '', owned)).toThrow('leader');
     expect(() => assignSquadSlot(slots, 1, 'unowned', owned)).toThrow('owned');
-    expect(() => assignSquadSlot(slots, 3, id, owned)).toThrow('three squad slots');
-    expect(() => assignSquadSlot([], 0, id, owned)).toThrow('three squad slots');
-    expect(slots).toEqual(['tide', 'ember', '']);
+    expect(() => assignSquadSlot(slots, 6, id, owned)).toThrow('six squad slots');
+    expect(() => assignSquadSlot([], 0, id, owned)).toThrow('six squad slots');
+    expect(slots).toEqual(['tide', 'ember', '', '', '', '']);
   });
   it('shows exact pity values and every real rate without mutating the account', () => {
     const wallet = { ...account, bannerPity: { standard: { highestStar: 199, unownedHighestStar: 499 } } };

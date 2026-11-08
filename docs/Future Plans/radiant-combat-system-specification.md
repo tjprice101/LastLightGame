@@ -1,5 +1,41 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Delegated implementation and first foundation (2026-11-08)
+
+Owner delegates remaining design decisions **and implementation**, with
+validated staged releases and one final consolidated art request. This
+supersedes the old requirement to await specification approval before coding.
+It does not authorize shipping an incoherent partially converted combat engine.
+
+First implementation is isolated on the overhaul branch:
+- Shared six-member limit across account/equipped-squad/loadout validation,
+  server request/response validation, battle roster construction and current
+  squad/Home/Team/Profile lists; old1-3-member accounts remain valid.
+- Pure staged layered-charge module with form-based personal layers, highest
+  ready tier, retained partial charge, one shared Eternal spend, exact1-6-member
+  normalized grants and bounded attacker bonus rolls. Not wired into the
+  current battle engine, not a live Flare rewrite.
+- Matching authority bundle regenerated. No authority deployment yet.
+
+Validation:244 targeted existing-path tests;21 charge-foundation tests;
+full tracked production suite257 files/8401 tests; client and authority
+TypeScript checks; production build. Build retains its existing chunk warning.
+No new VFX/portrait visual-performance claim from these tests.
+
+[Single consolidated art brief](../../Art/ui/Radiant%20Combat%20Overhaul.md)
+separates192 available released-form crop candidates, reused art, optional
+scenery and unresolved future kit art. It is provisional until the complete
+roster/status conversion fixes the final intake list; no mandatory new images
+are currently established by the inspected foundation. Do not label that as
+the final completed overhaul art inventory.
+
+Remaining implementation: four-stat/native/gear/Master conversion; captured
+ineligibility/manual-selection compatibility; actual damage-payout ledger;
+face crop exports/wiring; six-member cinematic Home/Battle UI; shader Flare VFX;
+all-activity pressured enemy calibration and coherent hosted rollout.
+Captured playability intentionally remains in the old engine until its
+reviewed compatibility path lands; no false claim that bearer-only squads ship.
+
 ## Global Conduit direction and rarity progression (2026-11-08)
 
 Owner requires the catalog **as a whole** to change/amplify the breadth of

@@ -272,7 +272,7 @@ describe('visible UI copy', () => {
       expect(text).not.toMatch(/\b(?:levels?|forms?|stage|quantities|separate|Rare|Legendary|Omnic)\d/i);
     }
     expect(textContent(characterHub(openingStarters[0], 'upgrade-1', account))).toMatch(/Owned \/ Required/);
-    expect(textContent(squadHub(account))).toContain('1 / 3 slots filled');
+    expect(textContent(squadHub(account))).toContain('1 / 6 slots filled');
     expect(textContent(characterHub(openingStarters[0], 'overview', account))).toContain('Lv.0 · Evo.1');
   });
   it('fixes the exact event caption and preserves numeric values and asset paths', () => {

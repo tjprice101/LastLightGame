@@ -1,4 +1,5 @@
 import { rolePerkRow } from './intrinsic-perks';
+import { squadMemberLimit } from '../content/squad-rules';
 import { getStarter, isStarterId, starterVow, type Starter } from '../content/starters';
 import { resolveFighter, formatStat, shatterGauge } from '../content/combat';
 import { artifactSlots, characterGrowth, characterLevelCap, characterRarity, displayEvolution, evolutionRarity, upgradePaths, characterLevelCost, characterEvolutionCost, characterEvolutionRequirement, levelingMaterialTiers, type CharacterProgress } from '../content/progression';
@@ -153,8 +154,8 @@ export function homeHub(starter: Starter, firstArrival: boolean, account: Accoun
       </section>
       <aside class="home-squad" aria-label="Current squad">
         <div class="hub-info">
-          <div class="team-heading"><h2>Squad</h2><span>${squad.length} / 3</span></div>
-          ${Array.from({ length: 3 }, (_, index) => {
+          <div class="team-heading"><h2>Squad</h2><span>${squad.length} / ${squadMemberLimit}</span></div>
+          ${Array.from({ length: squadMemberLimit }, (_, index) => {
             const id = squad[index];
             if (!id) return `<button class="team-companion team-empty" data-page="squad"><span aria-hidden="true">+</span><strong>Add member</strong></button>`;
             if (!account || (isStarterId(id) && !account.characters[id])) return `<button class="team-companion" data-page="squad">${portrait(isStarterId(id) ? getStarter(id) : starter)}<span>${characterName(starter.id)} · Progress unavailable</span></button>`;

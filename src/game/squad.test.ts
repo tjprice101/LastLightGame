@@ -78,6 +78,18 @@ describe('owned roster, summoning and saved squads', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
     expect(equippedSquad(loadAccount(saved))).toEqual(['ember']);
   });
+  it('saves all six owned members, rejects seven and preserves the wallet on rejection', () => {
+    const saved = storage();
+    const account = fund(saved);
+    const ids: StarterId[] = ['ember', 'tide', 'sprout', 'atmoso', 'elise', 'bruno'];
+    for (const id of [...ids, 'aurora'] as StarterId[]) account.characters[id] = { level: 0, evolution: 1 };
+    saveAccount(saved, account);
+    setSquad(saved, ids);
+    expect(equippedSquad(loadAccount(saved))).toEqual(ids);
+    const before = saved.getItem(ACCOUNT_KEY);
+    expect(() => setSquad(saved, [...ids, 'aurora'])).toThrow('one to six');
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
+  });
   it('rejects empty, duplicate, over-cap, unowned and malformed squads without changing saves', () => {
     const saved = storage();
     fund(saved);
@@ -115,6 +127,18 @@ describe('owned roster, summoning and saved squads', () => {
 });
 
 describe('full-team battle snapshots', () => {
+  it('freezes all six members through waves and rejects a seventh combatant', () => {
+    const roster: StarterId[] = ['ember', 'tide', 'sprout', 'atmoso', 'elise', 'bruno'];
+    const battle = createBattle(42, roster);
+    roster.reverse();
+    expect(battle.allies.map(ally => ally.definitionId)).toEqual(['ember', 'tide', 'sprout', 'atmoso', 'elise', 'bruno']);
+    battle.phase = 'cleared';
+    battle.allies.forEach((ally, index) => { ally.shatter = index * 10; });
+    const continued = nextWave(battle).state;
+    expect(continued.allies.map(ally => ally.definitionId)).toEqual(battle.allies.map(ally => ally.definitionId));
+    expect(continued.allies.map(ally => ally.shatter)).toEqual([0, 10, 20, 30, 40, 50]);
+    expect(() => createBattle(42, [...roster, 'aurora'])).toThrow('Battle roster');
+  });
   const ids: StarterId[] = ['sprout', 'tide', 'ember'];
   const progress = { sprout: { level: 8, evolution: 1, weaponRank: 1 }, tide: { level: 30, evolution: 2, weaponRank: 2 },
     ember: { level: 105, evolution: 6, weaponRank: 3 } };

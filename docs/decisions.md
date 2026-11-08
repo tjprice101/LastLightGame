@@ -1,5 +1,15 @@
 # Decision log
 
+## Owner delegates implementation; isolated foundation (2026-11-08)
+
+Owner selects delegated remaining design/implementation with validated staged
+release and one consolidated art brief, superseding the pre-coding approval gate.
+[Foundation](Future%20Plans/radiant-combat-system-specification.md#delegated-implementation-and-first-foundation-2026-11-08)
+is staged on an overhaul branch, not deployed: six-member capacity paths,
+isolated layered charge, matching bundled authority and8401 passing tests.
+Keep incomplete combat/gear/enemy/UI conversion out of the live release.
+Art intake remains provisional until complete roster/status designs settle.
+
 ## Conduit breadth, simplicity and upgrades (2026-11-08)
 
 Owner wants the global catalog to influence all aspects of combat/team

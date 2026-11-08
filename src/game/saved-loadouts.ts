@@ -1,4 +1,5 @@
 import type { Account } from './account';
+import { squadMemberLimit } from '../content/squad-rules';
 import { getStarter, isStarterId } from '../content/starters';
 import { getCreature } from '../content/creatures';
 import { elements, type ElementId } from '../content/activities';
@@ -68,8 +69,8 @@ export function validateSquadLoadouts(account: Account, value: unknown): SquadLo
     validateLoadoutId(entry.id);
     if (ids.has(entry.id)) throw new Error('Duplicate squad loadout ID.');
     ids.add(entry.id);
-    if (!Array.isArray(entry.members) || !entry.members.length || entry.members.length > 3)
-      throw new Error('A squad loadout needs one to three members.');
+    if (!Array.isArray(entry.members) || !entry.members.length || entry.members.length > squadMemberLimit)
+      throw new Error('A squad loadout needs one to six members.');
     const members = new Set<string>();
     return { id: entry.id, name: loadoutName(entry.name), members: entry.members.map(member => {
       if (!record(member) || typeof member.character !== 'string' ||

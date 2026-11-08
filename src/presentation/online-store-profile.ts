@@ -1,4 +1,5 @@
 import { elements } from '../content/activities';
+import { squadMemberLimit } from '../content/squad-rules';
 import { characterName } from '../content/character-art';
 import { getStarter, isStarterId, starters as allStarters, type StarterId } from '../content/starters';
 import { type Account, ownedCharacters, ownedProgress, equippedSquad } from '../game/account';
@@ -232,7 +233,7 @@ function profileStatistics(account: Account, profile: ProfileView, friendsMetric
 function profileSidePanels(account: Account, profile: ProfileView, readOnly: boolean): string {
   const ids = ownedCharacters(account);
   const squad = ids.length || account.capturedCharacters?.length ? equippedSquad(account) : [];
-  return `<section class="ref-panel profile-squad"><header class="ref-panel-heading">Squad · ${squad.length} of 3</header>${Array.from({ length: 3 }, (_, index) => {
+  return `<section class="ref-panel profile-squad"><header class="ref-panel-heading">Squad · ${squad.length} of ${squadMemberLimit}</header>${Array.from({ length: squadMemberLimit }, (_, index) => {
       const id = squad[index];
       if (!id) return readOnly ? '<div class="ref-member-row ref-empty-row">Empty slot</div>' : '<button type="button" class="ref-member-row ref-empty-row" data-team-view="formation">+ Add a member</button>';
       const member = ownedCompanion(account, id);

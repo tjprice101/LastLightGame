@@ -1,5 +1,12 @@
 # Documentation hub
 
+## Radiant overhaul implementation branch (2026-11-08)
+
+Owner delegates design and implementation. [Foundation status](Future%20Plans/radiant-combat-system-specification.md#delegated-implementation-and-first-foundation-2026-11-08)
+distinguishes tested six-member/charge foundations from unfinished live systems.
+[Single art intake brief](../Art/ui/Radiant%20Combat%20Overhaul.md) is provisional
+until the full kit conversion settles new assets; existing sources are reused.
+
 ## Radiant combat exact review draft (2026-11-08)
 
 [Four-stat system, charge rules, starter kits and Masters](Future%20Plans/radiant-combat-system-specification.md).

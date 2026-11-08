@@ -128,10 +128,10 @@ describe('online profile presentation', () => {
     account.squad = ['ember'];
     const before = structuredClone(account);
     document.body.innerHTML = onlineProfile(account, profile);
-    expect(document.querySelector('.profile-squad .ref-panel-heading')?.textContent).toBe('Squad · 1 of 3');
+    expect(document.querySelector('.profile-squad .ref-panel-heading')?.textContent).toBe('Squad · 1 of 6');
     expect(document.querySelector('.profile-squad .ref-panel-heading button')).toBeNull();
     expect(document.querySelector('.profile-squad [data-team-detail="ember"]')).not.toBeNull();
-    expect(document.querySelectorAll('.profile-squad [data-team-view="formation"]')).toHaveLength(2);
+    expect(document.querySelectorAll('.profile-squad [data-team-view="formation"]')).toHaveLength(5);
     expect(account).toEqual(before);
   });
   it('omits the redundant Requests navigation button while retaining request controls', () => {

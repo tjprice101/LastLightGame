@@ -270,6 +270,9 @@ function rollDrop(drop, random) {
   return (drop.minimum / multiplier + Math.floor(lootRoll(random) * ((drop.maximum - drop.minimum) / multiplier + 1))) * multiplier;
 }
 
+// src/content/squad-rules.ts
+var squadMemberLimit = 6;
+
 // src/content/phase-zero-stats.ts
 var phaseZeroStatsReady = true;
 var phaseZeroStatDefaults = {
@@ -13158,7 +13161,7 @@ function spawnWave(wave) {
 }
 function createBattle(seed2 = 1729, roster = ["ember"], progress = {}, equipment = {}, captures = [], upgrades = {}) {
   if (!Number.isInteger(seed2) || seed2 < 1 || seed2 > 4294967295) throw new Error("Battle seed must be a nonzero uint32.");
-  if (!roster.length || roster.length > 3 || new Set(roster).size !== roster.length || !roster.every((id) => isStarterId(id) || captures.some((copy) => copy.instanceId === id))) {
+  if (!roster.length || roster.length > squadMemberLimit || new Set(roster).size !== roster.length || !roster.every((id) => isStarterId(id) || captures.some((copy) => copy.instanceId === id))) {
     throw new Error("Battle roster requires distinct valid starters.");
   }
   const snapshot = validateConduitUpgrades(upgrades);
@@ -14456,8 +14459,8 @@ function validateSquadLoadouts(account, value2) {
     validateLoadoutId(entry.id);
     if (ids.has(entry.id)) throw new Error("Duplicate squad loadout ID.");
     ids.add(entry.id);
-    if (!Array.isArray(entry.members) || !entry.members.length || entry.members.length > 3)
-      throw new Error("A squad loadout needs one to three members.");
+    if (!Array.isArray(entry.members) || !entry.members.length || entry.members.length > squadMemberLimit)
+      throw new Error("A squad loadout needs one to six members.");
     const members = /* @__PURE__ */ new Set();
     return { id: entry.id, name: loadoutName(entry.name), members: entry.members.map((member) => {
       if (!record(member) || typeof member.character !== "string" || !isStarterId(member.character) && !(member.character.startsWith("capture:") && uuid.test(member.character.slice(8))) || typeof member.element !== "string" || !elements.some((element2) => element2.id === member.element) || members.has(member.character)) throw new Error("Invalid saved squad loadout member.");
@@ -14697,8 +14700,8 @@ function validateAccount(value2) {
   }
   if (value2.characterLocks !== void 0) account.characterLocks = validateCharacterLocks(value2.characterLocks, account.characters);
   if (value2.squad !== void 0) {
-    if (!Array.isArray(value2.squad) || value2.squad.length < 1 || value2.squad.length > 3 || new Set(value2.squad).size !== value2.squad.length || !value2.squad.every((id) => typeof id === "string" && ownedCharacterInstances(account).includes(id))) {
-      throw new Error("Invalid saved squad. Equip one to three distinct owned characters.");
+    if (!Array.isArray(value2.squad) || value2.squad.length < 1 || value2.squad.length > squadMemberLimit || new Set(value2.squad).size !== value2.squad.length || !value2.squad.every((id) => typeof id === "string" && ownedCharacterInstances(account).includes(id))) {
+      throw new Error("Invalid saved squad. Equip one to six distinct owned characters.");
     }
     account.squad = [...value2.squad];
   }
@@ -14830,8 +14833,8 @@ function setCharacterLock(storage, id, locked) {
 }
 function equippedSquad(account) {
   const ids = account.squad ?? ownedCharacters(account).slice(0, 1);
-  if (!ids.length || ids.length > 3 || new Set(ids).size !== ids.length || ids.some((id) => !ownedCharacterInstances(account).includes(id))) {
-    throw new Error("Equip one to three distinct owned characters before entering battle.");
+  if (!ids.length || ids.length > squadMemberLimit || new Set(ids).size !== ids.length || ids.some((id) => !ownedCharacterInstances(account).includes(id))) {
+    throw new Error("Equip one to six distinct owned characters before entering battle.");
   }
   return [...ids];
 }
@@ -16096,7 +16099,7 @@ function validateRequest(value2) {
   }
   if ("locked" in op && typeof op.locked !== "boolean") throw new Error("Invalid lock.");
   for (const field of ["ids", "fodderIds"]) if (field in op) {
-    const maximum = field === "fodderIds" ? 15 : 3;
+    const maximum = field === "fodderIds" ? 15 : squadMemberLimit;
     if (!Array.isArray(op[field]) || op[field].length > maximum || !op[field].every((id) => typeof id === "string" && id.length > 0 && id.length <= 100)) throw new Error("Invalid character IDs.");
   }
   if (op.kind === "upgradeCharacter" || op.kind === "ascendCharacter") {

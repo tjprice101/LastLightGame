@@ -1,5 +1,25 @@
 # Current state and handoff
 
+## Implementing radiant overhaul: foundation only (2026-11-08)
+
+Owner now delegates design and implementation; no further generic pre-coding
+approval gate. [Current foundation/remaining scope](Future%20Plans/radiant-combat-system-specification.md#delegated-implementation-and-first-foundation-2026-11-08)
+must stay isolated until coherent combat/gear/enemy migration is ready.
+Six-member limit shared across account/loadout/battle/server/UI lists, with
+six saves/seven rejection and frozen-wave tests. New pure radiant charge module
+is tested but not wired into old combat. Captured old playability unchanged.
+Client/authority typechecks pass; build passes with existing large-chunk warning.
+Full tracked suite257 files/8401 tests passes;21 isolated charge tests pass.
+No hosted deployment/new art/VFX claimed.
+
+[Single art brief](../Art/ui/Radiant%20Combat%20Overhaul.md) inventories192 released
+forms and114 authored Masters (hidden seasonal excluded from player-facing art).
+Zero confirmed mandatory new images at foundation; one optional Home scene.
+It explicitly remains provisional pending finalized roster/status conversion.
+Next: coherent four-stat/kit/gear conversion and migration, derived portrait
+review, necessary UI/VFX and all-activity pressured calibration. Preserve
+unpublished rejected mock-up files; no accidental staging of their old notes.
+
 ## Global Conduit design direction clarified (2026-11-08)
 
 Owner requires broad combat/team-composition influence, simple meaningful

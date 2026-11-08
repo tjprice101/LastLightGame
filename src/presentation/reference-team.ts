@@ -1,4 +1,5 @@
 import { resonanceBadge } from './intrinsic-perks';
+import { squadMemberLimit } from '../content/squad-rules';
 import { elements, isCurrencyMode } from '../content/activities';
 import { getStarter, isStarterId, starterVow, type StarterId } from '../content/starters';
 import { characterName } from '../content/character-art';
@@ -33,8 +34,8 @@ export interface ReferenceTeamState {
 export function referenceTeamSidebar(account: Account, state: ReferenceTeamState): string {
   const squad = equippedSquad(account);
   return `<aside class="ref-team-sidebar">
-    <section class="ref-panel"><header class="ref-panel-heading">Squad · ${squad.length} of 3<button type="button" data-team-view="formation">Edit squad</button></header>
-      ${Array.from({ length: 3 }, (_, index) => {
+    <section class="ref-panel"><header class="ref-panel-heading">Squad · ${squad.length} of ${squadMemberLimit}<button type="button" data-team-view="formation">Edit squad</button></header>
+      ${Array.from({ length: squadMemberLimit }, (_, index) => {
         const id = squad[index];
         if (!id) return '<button class="ref-member-row ref-empty-row" data-team-view="formation">+ Choose a member</button>';
         const member = ownedCompanion(account, id);

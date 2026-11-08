@@ -1,5 +1,6 @@
 import { elementalMaterials, dungeonStageCount, elementalEnemyLevel, infusionStageCount, isCurrencyMode, evolutionRequirement, isResizedActivity, migrateLegacyActivityStage, migratePreviousMachineStage, previousMachineStageCount, migratePreviousInfusionStage, previousInfusionStageCount, type ElementId, type ResizedActivityId } from '../content/activities';
 import { stagedLycalisOdds, validDropAmount } from '../content/loot-random';
+import { squadMemberLimit } from '../content/squad-rules';
 import { activityPrismaticaDrop } from '../content/prismatica';
 import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, characterEvolutionRequirement, fractureRules, characterLevelCost, type CharacterProgress, type UpgradeCost } from '../content/progression';
 import { isInfusionMode, specialtyMaterials } from '../content/infusions';
@@ -287,10 +288,10 @@ export function validateAccount(value: unknown): Account {
   }
   if (value.characterLocks !== undefined) account.characterLocks = validateCharacterLocks(value.characterLocks, account.characters);
   if (value.squad !== undefined) {
-    if (!Array.isArray(value.squad) || value.squad.length < 1 || value.squad.length > 3 ||
+    if (!Array.isArray(value.squad) || value.squad.length < 1 || value.squad.length > squadMemberLimit ||
         new Set(value.squad).size !== value.squad.length ||
         !value.squad.every((id) => typeof id === 'string' && ownedCharacterInstances(account).includes(id))) {
-      throw new Error('Invalid saved squad. Equip one to three distinct owned characters.');
+      throw new Error('Invalid saved squad. Equip one to six distinct owned characters.');
     }
     account.squad = [...value.squad];
   }
@@ -432,9 +433,9 @@ export function setCharacterLock(storage: ProfileStorage, id: string, locked: bo
 }
 export function equippedSquad(account: Account): string[] {
   const ids = account.squad ?? ownedCharacters(account).slice(0, 1);
-  if (!ids.length || ids.length > 3 || new Set(ids).size !== ids.length ||
+  if (!ids.length || ids.length > squadMemberLimit || new Set(ids).size !== ids.length ||
       ids.some((id) => !ownedCharacterInstances(account).includes(id))) {
-    throw new Error('Equip one to three distinct owned characters before entering battle.');
+    throw new Error('Equip one to six distinct owned characters before entering battle.');
   }
   return [...ids];
 }

@@ -64,7 +64,7 @@ export function sanctuaryContext(page: MenuPage, area: TeamArea = 'squad'): stri
 
 function sanctuaryHelp(page: MenuPage): string {
   const destination = sanctuaryDestination(page);
-  if (destination === 'team') return '<h3>Squad</h3><p>Pick one to three owned members and save. Slot one leads.</p><h3>Element-Bearers</h3><p>Level, evolve and equip Conduits. Every upgrade shows its cost and asks to confirm.</p><h3>Captured Elemental-Devourers</h3><p>Each copy has its own level, skills, lock and Conduits. Locked copies, squad members and copies with Conduits cannot be sold or consumed.</p>';
+  if (destination === 'team') return '<h3>Squad</h3><p>Pick one to six owned members and save. Slot one leads.</p><h3>Element-Bearers</h3><p>Level, evolve and equip Conduits. Every upgrade shows its cost and asks to confirm.</p><h3>Captured Elemental-Devourers</h3><p>Each copy has its own level, skills, lock and Conduits. Locked copies, squad members and copies with Conduits cannot be sold or consumed.</p>';
   if (destination === 'summon') return '<p>Pick a banner and draw. Check Rates & Information for rewards and guarantees. Each banner has its own pity counter.</p>';
   if (destination === 'gameplay' || destination === 'events') return '<p>Activities unlock by your highest-level Element-Bearer; captures don\'t count. Rewards save per kill, even if you quit.</p>';
   if (destination === 'home') return '<p>Choose a destination around your leader. The Story card shows your next stage; select a squad portrait to view that member. Currency balances open Inventory. Collections, Settings and Profile are in the top bar.</p>';

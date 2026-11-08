@@ -9,6 +9,7 @@ import {
   saveConduitConfiguration, renameConduitConfiguration, equipConduitConfiguration,
 } from '../../../src/game/account';
 import { SAVE_KEY, type ProfileStorage } from '../../../src/game/profile';
+import { squadMemberLimit } from '../../../src/content/squad-rules';
 import { createBattle, createCalamityBattle, createStoryBattle, createDungeonBattle, createOblivionBattle, createInfusionBattle, createWarBattle,
   actAndAdvanceTurn, endTurn, advanceUnavailableTurns, nextStage, nextWave, actionUnavailable,
   withMasterLoadouts, capCapturedBattleLevels, type BattleResult } from '../../../src/game/battle';
@@ -171,7 +172,7 @@ export function validateRequest(value: unknown): GameRequest {
   }
   if ('locked' in op && typeof op.locked !== 'boolean') throw new Error('Invalid lock.');
   for (const field of ['ids', 'fodderIds']) if (field in op) {
-    const maximum = field === 'fodderIds' ? 15 : 3;
+    const maximum = field === 'fodderIds' ? 15 : squadMemberLimit;
     if (!Array.isArray(op[field]) || op[field].length > maximum || !op[field].every(id => typeof id === 'string' && id.length > 0 && id.length <= 100)) throw new Error('Invalid character IDs.');
   }
   if (op.kind === 'upgradeCharacter' || op.kind === 'ascendCharacter') {

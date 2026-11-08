@@ -56,7 +56,7 @@ describe('game-specific hub layouts', () => {
     expect(equipped).toContain('Before Conduits:');
     expect(before.characters).toEqual(account.characters);
   });
-  it('composes Home with left banners, a central portrait and three squad slots', () => {
+  it('composes Home with left banners, a central portrait and six squad slots', () => {
     const html = homeHub(starters[0], false);
     expect(html).toContain('class="home-banner home-summon-banner"');
     expect(html).toContain('class="home-banner home-summon-banner home-special-banner"');
@@ -66,8 +66,8 @@ describe('game-specific hub layouts', () => {
     expect(html).not.toContain('home-event-banner');
     expect(html).not.toContain('35 stages · Lv.80-140');
     expect(html).toContain('class="home-squad" aria-label="Current squad"');
-    expect(html.match(/class="team-companion/g)).toHaveLength(3);
-    expect(html.match(/team-empty/g)).toHaveLength(2);
+    expect(html.match(/class="team-companion/g)).toHaveLength(6);
+    expect(html.match(/team-empty/g)).toHaveLength(5);
     expect(html.indexOf('class="home-destinations"')).toBeLessThan(html.indexOf('class="hub-showcase'));
     expect(html.indexOf('class="hub-showcase')).toBeLessThan(html.indexOf('class="home-squad"'));
     expect(html).not.toContain('class="hub-rail"');

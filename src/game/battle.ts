@@ -1,4 +1,5 @@
 import { intrinsicRole, roleTarget } from '../content/role-perks';
+import { squadMemberLimit } from '../content/squad-rules';
 import { elementResonance } from './element-resonance';
 import { actionIds, enemies, formatStat, resolveFighter, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats, type FighterDefinition } from '../content/combat';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
@@ -251,7 +252,7 @@ function spawnWave(wave: number): Combatant[] {
 
 export function createBattle(seed = 1729, roster: readonly string[] = ['ember'], progress: Partial<Record<StarterId, CharacterProgress>> = {}, equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = [], upgrades: ConduitUpgrades = {}): BattleState {
   if (!Number.isInteger(seed) || seed < 1 || seed > 0xffffffff) throw new Error('Battle seed must be a nonzero uint32.');
-  if (!roster.length || roster.length > 3 || new Set(roster).size !== roster.length || !roster.every((id) => isStarterId(id) || captures.some((copy) => copy.instanceId === id))) {
+  if (!roster.length || roster.length > squadMemberLimit || new Set(roster).size !== roster.length || !roster.every((id) => isStarterId(id) || captures.some((copy) => copy.instanceId === id))) {
     throw new Error('Battle roster requires distinct valid starters.');
   }
 
