@@ -19,18 +19,19 @@ coefficients, migration policy, resource formulas, copied terminology or an
 immediate production release. The all-screen UI mock-up remains paused;
 the requested battle layout is part of this new combat specification.
 
-### Proposed original vocabulary
+### Selected Flare names and proposed supporting vocabulary
 
-| Layer | Candidate wording | Intended meaning |
+| Layer | Wording | Intended meaning |
 | --- | --- | --- |
 | Personal passive | Inner Light | Automatic character identity; active irrespective of leader position. |
 | Leader ability | Guiding Light | One explicitly leader-only squad benefit. |
-| Tier1 signature | Light Art | Dependable expression of the character's role. |
-| Tier2 signature | Lustre Art | Enhanced version with a meaningful tactical improvement. |
-| Tier3 signature | Last Radiance | Final-form climax; Ascension strengthens it. |
+| Tier1 signature | Glowing Flare | Selected name; dependable expression of the character's role. |
+| Tier2 signature | Lustrous Flare | Selected name; enhanced version with a meaningful tactical improvement. |
+| Tier3 signature | Eternal Radiant Flare | Selected name; final-form climax; Ascension strengthens it. |
 | Personal charge | Lustre Gauge | Candidate replacement display name for Elemental Gauge, if personal charge is retained. |
 
-Names are **proposals**, not selected final strings. Authored skill names can
+The three Flare tier names are **owner-selected**. Passive/leader/Gauge names
+remain proposals. Authored skill names can
 remain character-specific within these common categories. Light-themed system
 language does not convert Infernic/Oceanic/Botanic/Atmospheric/Tranquilitic/
 Chaotic characters into a single combat element.
@@ -112,6 +113,68 @@ review, then a full-roster plan and equipment/investment mapping. Update the
 pilot to compare the old four-action structure with the selected single-active
 structure, not merely rename the current skills. No live rework is implemented
 by this document update.
+
+### Owner-selected live Gauge feedback and enhanced Flare VFX
+
+Owner additionally requires Gauge to visibly increase during attack
+presentation, rather than snapping to its final value after the sequence, and
+substantially stronger signature animation with enhanced shaders and VFX.
+This is a new combat-presentation acceptance requirement, not completed work.
+
+**Impact-timed Gauge ledger:**
+- Present the accepted action's ordered, actual Gauge events at their relevant
+  attack impacts/trigger beats alongside HP, Shield and status updates.
+- Start from pre-action Gauge; include spend, refunds, incoming-hit gains and
+  other genuine source events; finish at the exact authoritative value.
+- Do not increase at every cosmetic strike unless that strike has a real
+  corresponding grant. Multi-hit/AoE animations must not multiply resources.
+- A short eased fill may connect the exact values; affordability still follows
+  engine action availability, never the interpolated bar or particles.
+- Gain and spend remain legible even within one sequence. Show caps/overflow
+  honestly, including grants that cannot fit; don't imply extra stored charge.
+- Skip reaches the exact final ledger; Settings/resume, battle speed changes
+  and disposal never replay a grant or duplicate a transaction.
+- Under Reduce motion, update values at the same logical beats without
+  traveling particles, pulsing blooms or animated fills.
+
+**Proposed radiant escalation:**
+
+| Tier | Proposed presentation character |
+| --- | --- |
+| Glowing Flare | Distinct elemental charge, luminous core, readable attack trail, concentrated impact bloom and a finite dispersal. |
+| Lustrous Flare | Layered refractive trails, shaped light geometry, richer secondary impacts, broader bloom and a character-specific field response. |
+| Eternal Radiant Flare | Signature elemental light architecture, shader-enhanced radiance/distortion, layered rays and a multi-beat climax with a clear final impact and dissipation. |
+| Ascended enhancement | Refine and intensify the final tier's established motif, not another unapproved tier or permanent full-screen glare. |
+
+All characters need distinct motion/silhouettes and elemental expression, not
+the same particle explosion recolored. Tank/healing Flare VFX express protection
+and restoration; new damage is not added to justify spectacle.
+Reuse installed portraits/scenery and existing VFX/impact/cut-in foundations,
+including [battle effects](../../src/presentation/battle-effects.ts) and
+[cut-ins](../../src/presentation/battle-cutin.ts), before introducing another
+renderer. Evaluate GPU bloom, distortion and light-ray passes against the
+existing rendering lifecycle; no engine change is selected.
+
+Preserve authored artwork/facing and keep portrait controls, HP/Gauge, statuses
+and action text readable above effects. Use finite pointer-transparent overlays.
+Do not achieve intensity through rapid full-screen flashes/strobing, sustained
+whiteouts or mandatory camera shake. Keep explicit in-game Reduce motion,
+immediate Skip where supported, playback-speed scaling and complete cleanup.
+Cosmetic randomness stays separate from gameplay/reward RNG. No new delay to
+reward persistence or artificial transaction wait.
+
+**Required validation before declaring this delivered:**
+- Sample pre-impact/impact/post-impact/final Gauge against ordered real events,
+  including spend+refund, capped gains, AoE, periodic and defensive triggers.
+- Observe all three tiers over time, not just screenshots; verify distinct
+  charge, readable impact and dissipation.
+- Profile sustained and repeated Flare casts on a declared mid-range laptop;
+  target60fps with bounded particle/overdraw/GPU cost, adaptive quality and no
+  growing memory/listener counts. Record actual measurements, not a guarantee.
+- Exercise reduced motion, low-quality/GPU fallback, unsupported shaders,
+  Skip,1x/2x/3x, Settings interruption and repeated disposal.
+- The strongest tier must remain visually impressive at reduced quality,
+  without covering actionable/readable battle information.
 
 ## Status and decision boundary
 

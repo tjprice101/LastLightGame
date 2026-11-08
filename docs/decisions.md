@@ -1,5 +1,15 @@
 # Decision log
 
+## Flare tier names and live Gauge/VFX requirements (2026-11-07)
+
+Owner selects **Glowing Flare**, **Lustrous Flare**, **Eternal Radiant Flare**
+for the three signature tiers. Requires real-time visible Gauge gain during
+attacks and much stronger character-specific Flare animations, enhanced shaders
+and radiant VFX. [Presentation contract](Future%20Plans/character-combat-refresh-audit.md#owner-selected-live-gauge-feedback-and-enhanced-flare-vfx)
+requires actual event-aligned charge, exact final state, readable portrait/status
+controls, finite effects, Reduce motion, Skip and measured performance.
+Passive/leader/Gauge supporting names remain proposals. No runtime rollout yet.
+
 ## Selected character refresh architecture (2026-11-07)
 
 Owner selects Passive Ability + Leader Ability + one evolution-upgraded

@@ -1,5 +1,15 @@
 # Current state and handoff
 
+## Selected Flare names, live Gauge and stronger VFX (2026-11-07)
+
+Owner selects Glowing Flare / Lustrous Flare / Eternal Radiant Flare.
+[New combat-presentation requirements](Future%20Plans/character-combat-refresh-audit.md#owner-selected-live-gauge-feedback-and-enhanced-flare-vfx)
+include attack-impact Gauge updates and stronger unique shader/VFX escalation.
+Only documentation updated: implement/test ordered actual Gauge ledger, tier
+motifs, shader quality/fallback and repeat-cast performance after exact system
+specification. Preserve readouts, Reduce motion, Skip, speed and saved outcomes.
+General UI mock-up remains paused; no live visuals claimed.
+
 ## Owner-selected single-signature combat direction (2026-11-07)
 
 [Selected architecture](Future%20Plans/character-combat-refresh-audit.md#owner-selected-direction-2026-11-07-follow-up):
