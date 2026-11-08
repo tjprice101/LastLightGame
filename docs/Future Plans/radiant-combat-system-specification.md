@@ -1,5 +1,131 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Released-roster combat study: operative expansion (2026-11-08)
+
+This section supersedes the starter-only scope below. The isolated study now
+implements **32 released canonical Element-Bearers,96 progressive Flare offers
+and96 matching fixed personal Masters**. Sunshade's six bearers and18 Masters
+are excluded. It is still **not connected to account/authority/live battles**;
+ordinary gear, actual ownership adapters, migration, UI and pressured enemy
+calibration remain release prerequisites.
+
+### Complete kit and Master coverage
+
+[Content definitions](../../src/content/radiant-combat.ts) define each released
+bearer's four base stats, personal cost, precise passive rule, first-member
+leader and signature. [Engine](../../src/game/radiant-combat.ts) executes every
+passive, not the old native skill tooltip. Native skill text/counters are not
+silently left attached to an unrelated new implementation.
+
+| Identity | Signature family | Passive purpose | Master1 /2 /3 attunements |
+| --- | --- | --- | --- |
+| Infernis |Cinderwake |Normal ignition against own Burn. |Corona /Corona /Solstice |
+| Tizu |Tideglass |Actual full native Shield absorption charge, once per phase. |Aegis /Solstice /Corona |
+| Flora |Dawnseed |Normal HP damage plants delayed Recovery Seed. |Prism /Corona /Solstice |
+| Rosetta |Rose Meridian |Normal hit exposes enemy. |Corona /Corona /Prism |
+| Thornia |Thorn Aegis |Guard protects wounded ally. |Aegis /Solstice /Corona |
+| Crinso |Blossoming Edge |Normal follow-up against Burn. |Corona /Solstice /Prism |
+| Atmoso |Sky Without End |Normal hit empowers next unacted ally. |Corona /Prism /Solstice |
+| Aurora |Final Dawn |Flare cleanses strongest allied Weaken. |Prism /Solstice /Aegis |
+| Bliss |Thousandfeather |Later Normal heals wounded ally. |Prism /Corona /Solstice |
+| Bruno |Worldwall Mantle |After actual HP loss, self-Shield once per round. |Aegis /Solstice /Corona |
+| Disciple |Mindcrown Resolve |Guard empowers next unacted ally. |Prism /Corona /Solstice |
+| Elise |Thunderwheel Recall |Normal follow-up against exposure. |Corona /Corona /Aegis |
+| Razor |Unbroken Midnight |Guard Weakens strongest attacking enemy. |Aegis /Corona /Solstice |
+| Maerion |Unreturned Voyage |Effective Flare healing returns personal charge. |Prism /Solstice /Aegis |
+| Caevren |Meridian Counterweight |Actual absorbed Shield damage enables self-heal once per round. |Aegis /Solstice /Prism |
+| Vespera |Beacon Signal |Normal applies short source-owned Burn. |Corona /Prism /Solstice |
+| Ilyss |Severance Mercy |Guard cleanses strongest allied Weaken. |Prism /Solstice /Aegis |
+| Asteriel |Moonflower Promise |Normal plants two-round Recovery Seed. |Prism /Prism /Solstice |
+| Serapha |Sanctuary Interval |After HP loss, maxHP self-Shield once per round. |Solstice /Aegis /Prism |
+| Nerithe |Ocean Beyond the Map |Normal-only fixed additional personal charge. |Corona /Corona /Prism |
+| Orvella |Faultline Foundation |Guard builds own Defense Shield. |Aegis /Solstice /Corona |
+| Vaelor |Final Chord |Normal against exposure returns personal charge. |Corona /Corona /Solstice |
+| Caldrex |Closed Kiln |Actual own-Shield absorption applies retaliatory Burn once per round. |Aegis /Solstice /Corona |
+| Solenne |Last Reverberation |Guard adds next-phase mitigation. |Aegis /Solstice /Prism |
+| Myrthen |All That Ripens |Normal against Burn restores own HP. |Corona /Corona /Prism |
+| Neralis |No Crossing Left Empty |Effective Flare healing also grants one wounded ally a Shield. |Prism /Solstice /Aegis |
+| Varkhel |Bridge Holds |Normal hit protects next unacted ally. |Aegis /Solstice /Corona |
+| Seravelle |Road Belongs to Everyone |Guard protects wounded ally with Recovery Shield. |Prism /Corona /Solstice |
+| Velmira |Leave the Doorway Standing |Normal against Weaken exposes enemy. |Corona /Corona /Aegis |
+| Ozriel |Unbroken Refusal |Actual low-HP damage enables self-Shield once per round; no revival. |Solstice /Aegis /Corona |
+| Ilvaris |Fate-seared Hymn |Normal plants sourced Recovery Renewal. |Prism /Solstice /Corona |
+| Kaelith |Glass Meridian |Normal follow-up against enemies starting above half HP. |Corona /Corona /Aegis |
+
+Every signature keeps its authored target set across all three tiers. Starter
+names/numerical Flare offers remain as in the previous study. Other families
+advance with Ascendant/Everlasting suffixes,1.35/1.8 direct-damage scaling and
+1.25/1.55 support scaling. Exact base coefficients/clocks are in typed content.
+These are delegated **study values**, not measured ordinary/enemy difficulty.
+
+Equinox remains the unequipped default. Every equipped matching Master now
+actually attunes to Corona/Aegis/Solstice/Prism; none falsely remains Equinox.
+The nine starter Masters retain their specific prior payoffs, including
+additional Burn/Renewal clock, specific Shield/healing boosts, personal Shield,
+and explicit selected-enemy generated strike. Generated strikes never roll
+bonus motes or recursively trigger native packets.
+
+Other bearers' Master1 enhances that bearer's named passive by15%; Master2
+enhances its signature by15%; Master3 adds five percentage points to its living
+first-member leader. Cleanse passives instead gain15% Recovery healing per
+actually cleansed recipient under Master1. Fixed values, no Master ranks,
+new items or acquisition changes. Source predicates, exact effective healing
+and once-per-round absorption/HP-loss limits prevent success-shaped fake procs.
+Removing the Master restores neutral stats and removes its personal modifier.
+
+### Frozen compatibility and source semantics
+
+Loadouts use canonical IDs (`ember`/`tide`/`sprout`, not display names) plus a
+distinct encounter instance ID. `validateRadiantParty` rejects duplicate
+bearer identities and sizes outside1-6. The pure study constructor remains
+available for synthetic duplicate-owner stress tests; the eventual account
+adapter **must** use that eligibility validator and actual saved ownership.
+No claim that this pure validator itself establishes account ownership.
+
+Saved `CharacterAscension` flags replace the initial invented aggregate Imbue
+counter: `stats` retains the1.5 stat multiplier and actual cap; `skill1` maps
+to passive potency +50%; `skill2` maps to leader potency +50%; `lastFlare` maps
+to signature magnitude +50%. Binary cleanse `skill1` adds50% Recovery healing
+on an actual cleanse. Saved weapon rank uses existing0-10/+2% Attack rules.
+No conversion write or new cost/paid upgrade is implemented here.
+
+Only the frozen first living leader applies its aura; death does not promote
+another. Defensive leader bonuses use Defense, not an HP aura that increases
+the displayed maximum without a corresponding current-HP ledger. No hidden
+generic role bonuses. Strongest-source Weaken/exposure/Attack/mitigation effects
+are separate clocks; unlimited Shields remain independent ordered sources.
+Generated follow-ups, retaliation and periodic packets are not mechanical bonus
+mote hits. HP-loss passives do not trigger on fully Shielded Normals.
+
+Study schema advances to **version2** for new timed/source/guard-trigger ledgers
+and canonical loadouts. Prior isolated version1 snapshots explicitly fail and
+must restart; there are no persisted live-study accounts to migrate or saved
+rewards to discard. Production encounter restart/receipt handling is still
+unimplemented and must preserve actual saved rewards.
+
+### Validation and next gates
+
+```
+npx vitest run src\game\radiant-combat.test.ts src\game\radiant-gauge.test.ts src\game\squad.test.ts src\game\saved-loadouts.test.ts src\presentation\compact-portrait.test.ts src\presentation\image-format.test.ts --maxWorkers=2 --testTimeout=60000
+npx tsc --noEmit
+npx tsc --project supabase\functions\game-operation\tsconfig.json
+npm run build
+```
+
+508 tests across six files pass, including all96 actual Flare executions,
+all32 executed passives,96 Master compatibility/stat mappings and29
+non-starter passive-Master interaction cases. Client/authority typechecks pass;
+build passes with the existing chunk warning. Initial interrupted draft issues
+(readiness assertion, Equinox-only Masters, unwired native passive descriptions)
+were corrected before publication.
+
+These are deterministic mechanics/compatibility checks, **not pressured clear
+rates or a proof of a calibrated96-Master power ladder**. Next implement the
+ordinary-Conduit conversion/upgrade matrix and full loadout adapter, run actual
+1/3/6-member progression pressure checks, then coherent account/authority/
+captured-ineligible migration and presentation. No VFX/hosted overhaul release,
+new face intake or final commissioned-art list is claimed by this stage.
+
 ## Current implemented starter study and portrait intake (2026-11-08)
 
 This is the **operative implementation status**. The numbered initial draft

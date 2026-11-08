@@ -1,5 +1,40 @@
 # Current state and handoff
 
+## Released radiant roster and Master study completed (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; prior starter/portrait commit
+`69b40fc7`. This stage remains isolated from live account/authority/battle UI.
+
+**Implemented:**32 canonical released bearers,96 progressive Flare offers,
+32 precise executed passives and96 fixed matching Master attunements. Default
+Equinox restores on removal; every compatible equipped Master changes subtype.
+Nine prior starter payoffs retained. Shared bounded status/Shield/heal/
+generated-packet primitives preserve sources, actual HP/absorption predicates,
+once-per-round guards and no recursive charge. Sunshade six/18 excluded.
+
+Actual saved binary ascension/Imbue flags and weapon rank now freeze using
+existing caps/rank rules instead of invented aggregate study investment fields.
+First-member living leader only; no automatic promotion or hidden role buffs.
+Schema2 explicitly rejects earlier isolated snapshots. Party validator covers
+distinct canonical identities1-6; pure constructor permits duplicate synthetic
+stress tests, not account eligibility. Account ownership adapter still required.
+[Contracts/table/remaining release gates](Future%20Plans/radiant-combat-system-specification.md#released-roster-combat-study-operative-expansion-2026-11-08).
+
+**Verified:**508 focused Vitest tests across radiant combat/Gauge/squad/saved
+loadouts/compact portraits/image-format pass. Includes96 actual Flare casts,
+32 passive payoffs,96 Master mappings and29 non-starter passive-Master cases.
+Client and authority typechecks pass. Production build passes with existing
+chunk warning. No new full-suite/pressured enemy/performance result claimed.
+
+**Remaining:** ordinary-Conduit exact-ID/rank conversion and frozen gear
+adapter; actual pressure/rarity/charge-loop calibration; captured-ineligible
+manual selection and existing loadout migration; authority damage receipts/
+partial payout persistence;174 face crops, cinematic Home/Battle layered
+readouts/Gauges and stronger finite accessible VFX. No live deployment or new
+art commissions. Single final art file remains provisional. Preserve rejected
+dirty mockups/notes and stage only this stage's new documentation sections.
+
+
 ## Radiant starter combat study and eighteen face crops (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; earlier foundation committed/pushed

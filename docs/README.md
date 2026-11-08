@@ -1,5 +1,14 @@
 # Documentation hub
 
+## Released radiant roster and Master study (2026-11-08)
+
+[Operative expansion](Future%20Plans/radiant-combat-system-specification.md#released-roster-combat-study-operative-expansion-2026-11-08):
+32 released canonical kits,96 executed progressive Flare offers,32 implemented
+passives and96 fixed attuning Masters. Saved ascension/weapon flags map into
+frozen four-stat study contracts; Sunshade stays excluded.508 focused tests
+and client/authority typechecks/build pass. Still isolated, no live migration.
+
+
 ## Radiant starter combat study and face intake (2026-11-08)
 
 [Current operative study](Future%20Plans/radiant-combat-system-specification.md#current-implemented-starter-study-and-portrait-intake-2026-11-08):

@@ -1,5 +1,22 @@
 # Decision log
 
+## Delegated released-roster radiant study (2026-11-08)
+
+Under the owner-delegated overhaul mandate, complete32 released identities
+with precise executed passives, progressive signatures and96 matching fixed
+Master attunements/enhancements. Default remains Equinox; equipped Masters
+must actually change subtype. Keep the nine prior starter Master payoffs.
+Source-owned bounded generated packets never recursively grant bonus motes.
+[Operative study table](Future%20Plans/radiant-combat-system-specification.md#released-roster-combat-study-operative-expansion-2026-11-08)
+records delegated numerical values, not owner-approved measured enemy tuning.
+
+Preserve actual binary saved ascension/Imbue investments: stats/first/second/
+last flags map to stats/passive/leader/signature, without new upgrade writes.
+Study schema2 rejects obsolete isolated snapshots explicitly. No live account,
+captured-unit migration, ordinary-Conduit rewrite or released difficulty/VFX
+claim from this stage. Hidden Sunshade six/18 Masters remain excluded.
+
+
 ## Delegated starter combat and portrait pilot implemented (2026-11-08)
 
 Under the existing delegated overhaul mandate, implement the isolated four-stat
