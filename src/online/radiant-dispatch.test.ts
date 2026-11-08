@@ -83,6 +83,22 @@ async function send(handler: ReturnType<SupabaseMock['handler']>, radiantStudy: 
 }
 
 describe('authenticated actual game-operation dispatch with mocked Supabase boundary', () => {
+  it('dedicated authenticated read restores the frozen aggregate without committing, earning or replaying events', async () => {
+    const db = new SupabaseMock(105), handler = db.handler();
+    const empty = await send(handler, { kind: 'read' });
+    expect(empty.status).toBe(200); expect(empty.body.run).toBeNull(); expect(db.writes).toBe(0);
+    await send(handler, entry());
+    await send(handler, db.normal());
+    const before = structuredClone(db.state), writes = db.writes;
+    const read = await send(handler, { kind: 'read' });
+    expect(read.status).toBe(200);
+    expect(read.body).toEqual({ revision: db.revision, account: db.state.account, run: db.state.radiantStudy });
+    expect(read.body.events).toBeUndefined(); expect(read.body.rewards).toBeUndefined();
+    expect(db.state).toEqual(before); expect(db.writes).toBe(writes);
+    expect((await send(handler, { kind: 'read', seed: 1 })).status).toBe(400);
+    expect((await send(handler, { kind: 'read' }, 'bad')).status).toBe(401);
+    expect((await send(db.handler({}), { kind: 'read' })).status).toBe(503);
+  });
   it.each([{}, { enabled: 'false' }, { enabled: '1' }, { enabled: 'TRUE' }])('is off by default: %j', async config => {
     const db = new SupabaseMock();
     const result = await send(db.handler(config), entry());

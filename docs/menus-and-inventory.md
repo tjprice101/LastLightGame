@@ -1,5 +1,15 @@
 # Menus and inventory
 
+## Isolated radiant session lifecycle (2026-11-08)
+
+The [saved-only controller](Future%20Plans/radiant-combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08)
+now provides request-keyed presentation/entrance completion, exact ambiguous
+request retry and checkpoint recovery without replaying earned rewards.
+Settings retains frozen squads/gear, encounter totals, pending presentation and
+dismissed results; closing it does not restart combat. Disposal suppresses late
+local effects, never cancels a saved authority outcome. No production screen
+is wired yet. Existing live menus and motion contracts remain unchanged.
+
 ## Shared living-world foundation pilot (2026-11-07)
 
 The first [UI rollout tranche](Future%20Plans/living-world-ui-audit-plan.md#first-shared-foundation-tranche-2026-11-07)

@@ -22,7 +22,7 @@ function record(value: unknown): value is Record<string, unknown> {
 function count(value: unknown): value is number {
   return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
 }
-export function validateRadiantRewardEvents(value: unknown, ledger: RadiantRewardLedger): void {
+export function validateRadiantRewardEvents(value: unknown, ledger: RadiantRewardLedger): asserts value is BattleEvent[] {
   if (!Array.isArray(value)) throw new Error('Invalid saved Radiant rewards.');
   const sources = new Set<string>();
   const allowed = ['kind', 'source', 'target', 'amount', 'critical', 'message', 'materials', 'capture',

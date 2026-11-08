@@ -31,7 +31,7 @@ export class RadiantRunError extends Error {
   constructor(public readonly code: RadiantRunErrorCode, message: string) { super(message); }
 }
 export interface FrozenRadiantRun {
-  version: 2;
+  version: 3;
   id: string;
   encounter: number;
   anchor: RadiantPressureAnchor;
@@ -45,6 +45,7 @@ export interface FrozenRadiantRun {
   state: RadiantCombatState;
   quit: boolean;
   rewards: RadiantRewardLedger;
+  journal: { events: RadiantCombatEvent[]; rewards: BattleEvent[] };
 }
 /** Optional server aggregate extension, not a new wallet or production battle schema.
  * The existing commit_game_operation RPC locks/commits this entire aggregate.
@@ -70,6 +71,22 @@ export interface RadiantRunResponse {
   rewards: BattleEvent[];
 }
 export interface RadiantRunSnapshot { revision: number; state: RadiantStudyGame }
+export interface RadiantCheckpoint {
+  revision: number;
+  account: Account;
+  run: FrozenRadiantRun | null;
+}
+export function validateRadiantCheckpoint(value: unknown): RadiantCheckpoint {
+  try {
+    if (!record(value) || typeof value.revision !== 'number' ||
+      !Number.isSafeInteger(value.revision) || value.revision < 0) throw new Error();
+    validateAccount(value.account);
+    if (value.run !== null) validateFrozenRadiantRun(value.run);
+    return structuredClone(value) as unknown as RadiantCheckpoint;
+  } catch {
+    throw new RadiantRunError('unavailable', 'Invalid saved Radiant checkpoint.');
+  }
+}
 export interface RadiantRunCommit {
   requestId: string; fingerprint: string; expectedRevision: number;
   state: RadiantStudyGame; response: RadiantRunResponse;
@@ -120,11 +137,11 @@ function initialize(anchor: RadiantPressureAnchor, calibration: FrozenRadiantRun
   const enemies = adaptRadiantPressureEncounter(anchor, entropy.encounterSeed,
     calibration === 'authored-control' ? authoredRadiantCalibration : pressureRadiantCalibration);
   const initial = createRadiantCombat(loadouts, enemies, entropy.chargeSeed);
-  return { version: 2, id: entropy.runId, encounter, anchor, calibration,
+  return { version: 3, id: entropy.runId, encounter, anchor, calibration,
     encounterSeed: entropy.encounterSeed, initialChargeSeed: entropy.chargeSeed,
     initialTargetSeed: entropy.targetSeed, targetSeed: entropy.targetSeed, enemies,
     initial: structuredClone(initial), state: initial, quit: false,
-    rewards: initialRadiantRewards(anchor, entropy.encounterSeed) };
+    rewards: initialRadiantRewards(anchor, entropy.encounterSeed), journal: { events: [], rewards: [] } };
 }
 function exactKeys(value: object, keys: string[]): void {
   if (Object.keys(value).some(key => !keys.includes(key))) invalid('Unexpected study request field.');
@@ -238,7 +255,7 @@ export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: Radiant
     discover = true;
   } else {
     const run = game.radiantStudy;
-    if (!run || run.version !== 2 || run.id !== request.runId || run.encounter !== request.encounter)
+    if (!run || run.version !== 3 || run.id !== request.runId || run.encounter !== request.encounter)
       throw new RadiantRunError('stale-run', 'Prior frozen study encounter does not match.');
     validateFrozenRadiantRun(run);
     if (run.enemies.length !== run.state.enemies.length ||
@@ -302,6 +319,8 @@ export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: Radiant
       return base.slice(0, -8) + suffix.toString(16).padStart(8, '0');
     });
   game.account = settled.account; run.rewards = settled.ledger;
+  run.journal.events.push(...structuredClone(events));
+  run.journal.rewards.push(...structuredClone(settled.rewards));
   if (op.kind === 'exit') delete game.radiantStudy;
   return { state: game, response: { revision: snapshot.revision + 1,
     account: structuredClone(game.account), run: structuredClone(run), events, rewards: settled.rewards } };
@@ -314,7 +333,7 @@ function canonical(value: unknown): string {
 }
 export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
   try {
-    if (!record(value) || value.version !== 2 || typeof value.id !== 'string' || !uuid.test(value.id) ||
+    if (!record(value) || value.version !== 3 || typeof value.id !== 'string' || !uuid.test(value.id) ||
       typeof value.encounter !== 'number' || !Number.isSafeInteger(value.encounter) || value.encounter < 1 ||
       typeof value.quit !== 'boolean' || !record(value.anchor) ||
       !['authored-control', 'radiant-pressure-v2'].includes(String(value.calibration)) ||
@@ -331,6 +350,15 @@ export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
     validateRadiantCombat(run.initial);
     validateRadiantCombat(run.state);
     validateRadiantRewards(run.rewards, run.state);
+    if (!record(run.journal) || Object.keys(run.journal).some(key => !['events', 'rewards'].includes(key)) ||
+      !Array.isArray(run.journal.events) || !run.journal.events.every(validEvent))
+      throw new Error();
+    if (run.journal.events.reduce((sum, event) => sum + (event.type === 'currency' ? event.amount : 0), 0)
+      !== run.state.currencyEarned) throw new Error();
+    // Historical batches may share a source when a delayed clear pays after a
+    // prior kill. Validate entries individually, not as one new kill batch.
+    if (!Array.isArray(run.journal.rewards)) throw new Error();
+    for (const reward of run.journal.rewards) validateRadiantRewardEvents([reward], run.rewards);
     const expected = initialize(run.anchor, run.calibration, run.initial.bearers.map(unit => unit.loadout),
       { runId: run.id, encounterSeed: run.encounterSeed, chargeSeed: run.initialChargeSeed,
         targetSeed: run.initialTargetSeed }, run.encounter);
@@ -398,6 +426,12 @@ export function validateRadiantRunResponse(value: unknown): RadiantRunResponse {
     validateAccount(value.account);
     const run = validateFrozenRadiantRun(value.run);
     validateRadiantRewardEvents(value.rewards, run.rewards);
+    if (value.events.length > 0 &&
+      canonical(value.events) !== canonical(run.journal.events.slice(-value.events.length)))
+      throw new Error();
+    if (value.rewards.length > 0 &&
+      canonical(value.rewards) !== canonical(run.journal.rewards.slice(-value.rewards.length)))
+      throw new Error();
     return structuredClone(value) as unknown as RadiantRunResponse;
   } catch {
     throw new RadiantRunError('unavailable', 'Invalid stored study response.');

@@ -18418,7 +18418,7 @@ function initialize(anchor, calibration, loadouts, entropy, encounter2 = 1) {
   );
   const initial = createRadiantCombat(loadouts, enemies2, entropy.chargeSeed);
   return {
-    version: 2,
+    version: 3,
     id: entropy.runId,
     encounter: encounter2,
     anchor,
@@ -18431,7 +18431,8 @@ function initialize(anchor, calibration, loadouts, entropy, encounter2 = 1) {
     initial: structuredClone(initial),
     state: initial,
     quit: false,
-    rewards: initialRadiantRewards(anchor, entropy.encounterSeed)
+    rewards: initialRadiantRewards(anchor, entropy.encounterSeed),
+    journal: { events: [], rewards: [] }
   };
 }
 function exactKeys(value2, keys2) {
@@ -18567,7 +18568,7 @@ function resolveRadiantRun(snapshot, request, authority) {
     discover = true;
   } else {
     const run2 = game.radiantStudy;
-    if (!run2 || run2.version !== 2 || run2.id !== request.runId || run2.encounter !== request.encounter)
+    if (!run2 || run2.version !== 3 || run2.id !== request.runId || run2.encounter !== request.encounter)
       throw new RadiantRunError("stale-run", "Prior frozen study encounter does not match.");
     validateFrozenRadiantRun(run2);
     if (run2.enemies.length !== run2.state.enemies.length || run2.enemies.some((enemy2, i) => enemy2.id !== run2.state.enemies[i].id || enemy2.currencyBudget !== run2.state.enemies[i].currency.budget || enemy2.currencyBudget !== run2.initial.enemies[i]?.currency.budget))
@@ -18651,6 +18652,8 @@ function resolveRadiantRun(snapshot, request, authority) {
   );
   game.account = settled.account;
   run.rewards = settled.ledger;
+  run.journal.events.push(...structuredClone(events));
+  run.journal.rewards.push(...structuredClone(settled.rewards));
   if (op.kind === "exit") delete game.radiantStudy;
   return { state: game, response: {
     revision: snapshot.revision + 1,
@@ -18667,7 +18670,7 @@ function canonical(value2) {
 }
 function validateFrozenRadiantRun(value2) {
   try {
-    if (!record4(value2) || value2.version !== 2 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !["authored-control", "radiant-pressure-v2"].includes(String(value2.calibration)) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
+    if (!record4(value2) || value2.version !== 3 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !["authored-control", "radiant-pressure-v2"].includes(String(value2.calibration)) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
       throw new Error();
     for (const key of ["encounterSeed", "initialChargeSeed", "initialTargetSeed"])
       seed2(value2[key]);
@@ -18678,6 +18681,11 @@ function validateFrozenRadiantRun(value2) {
     validateRadiantCombat(run.initial);
     validateRadiantCombat(run.state);
     validateRadiantRewards(run.rewards, run.state);
+    if (!record4(run.journal) || Object.keys(run.journal).some((key) => !["events", "rewards"].includes(key)) || !Array.isArray(run.journal.events) || !run.journal.events.every(validEvent))
+      throw new Error();
+    if (run.journal.events.reduce((sum, event2) => sum + (event2.type === "currency" ? event2.amount : 0), 0) !== run.state.currencyEarned) throw new Error();
+    if (!Array.isArray(run.journal.rewards)) throw new Error();
+    for (const reward of run.journal.rewards) validateRadiantRewardEvents([reward], run.rewards);
     const expected = initialize(
       run.anchor,
       run.calibration,
@@ -18746,6 +18754,10 @@ function validateRadiantRunResponse(value2) {
     validateAccount(value2.account);
     const run = validateFrozenRadiantRun(value2.run);
     validateRadiantRewardEvents(value2.rewards, run.rewards);
+    if (value2.events.length > 0 && canonical(value2.events) !== canonical(run.journal.events.slice(-value2.events.length)))
+      throw new Error();
+    if (value2.rewards.length > 0 && canonical(value2.rewards) !== canonical(run.journal.rewards.slice(-value2.rewards.length)))
+      throw new Error();
     return structuredClone(value2);
   } catch {
     throw new RadiantRunError("unavailable", "Invalid stored study response.");
@@ -18854,15 +18866,8 @@ async function handleRadiantRequest(value2, user, admin, config, identityOf) {
   try {
     if (Object.keys(value2).length !== 1 || !("radiantStudy" in value2))
       throw new RadiantRunError("invalid-input", "Use only the dedicated radiantStudy request.");
-    const input = validateRadiantRunRequest(value2.radiantStudy);
-    const calibration = config.calibration ?? "authored-control";
-    if (input.operation.kind === "start" && input.operation.calibration !== calibration)
-      throw new RadiantRunError("unavailable", "Requested study calibration is not enabled by the authority.");
-    const { data: allowed, error: limitError } = await admin.rpc("consume_game_attempt", { p_user: user });
-    if (limitError) throw new RadiantRunError("unavailable", "Game rate-limit storage unavailable.");
-    if (!allowed) return { status: 429, body: { error: "Too many game operations. Wait one minute." } };
-    const entropy = await deriveRadiantEntry(config.secret, user, input.requestId);
-    const repository = radiantRpcRepository(admin, user, async () => {
+    const operation = value2.radiantStudy;
+    const load = async () => {
       const profile = await identityOf(user);
       if (!profile) throw new RadiantRunError("unavailable", "Online identity unavailable.");
       const { data, error } = await admin.rpc("load_game_account", {
@@ -18871,10 +18876,29 @@ async function handleRadiantRequest(value2, user, admin, config, identityOf) {
       });
       if (error) throw new RadiantRunError("unavailable", "Online account storage unavailable.");
       const snapshot = validateRadiantRunSnapshot(data);
-      if (snapshot.state.radiantStudy && snapshot.state.radiantStudy.calibration !== calibration)
+      if (snapshot.state.radiantStudy && snapshot.state.radiantStudy.calibration !== (config.calibration ?? "authored-control"))
         throw new RadiantRunError("unavailable", "Frozen study calibration is not enabled by the authority.");
       return snapshot;
-    });
+    };
+    if (operation && typeof operation === "object" && !Array.isArray(operation) && "kind" in operation && operation.kind === "read") {
+      if (Object.keys(operation).length !== 1)
+        throw new RadiantRunError("invalid-input", "Unexpected Radiant checkpoint field.");
+      const { data: allowed2, error: limitError2 } = await admin.rpc("consume_game_attempt", { p_user: user });
+      if (limitError2) throw new RadiantRunError("unavailable", "Game rate-limit storage unavailable.");
+      if (!allowed2) return { status: 429, body: { error: "Too many game operations. Wait one minute." } };
+      const snapshot = await load();
+      const run = snapshot.state.radiantStudy ?? null;
+      return { status: 200, body: { revision: snapshot.revision, account: snapshot.state.account, run } };
+    }
+    const input = validateRadiantRunRequest(value2.radiantStudy);
+    const calibration = config.calibration ?? "authored-control";
+    if (input.operation.kind === "start" && input.operation.calibration !== calibration)
+      throw new RadiantRunError("unavailable", "Requested study calibration is not enabled by the authority.");
+    const { data: allowed, error: limitError } = await admin.rpc("consume_game_attempt", { p_user: user });
+    if (limitError) throw new RadiantRunError("unavailable", "Game rate-limit storage unavailable.");
+    if (!allowed) return { status: 429, body: { error: "Too many game operations. Wait one minute." } };
+    const entropy = await deriveRadiantEntry(config.secret, user, input.requestId);
+    const repository = radiantRpcRepository(admin, user, load);
     const result = await executeRadiantRun(repository, input, {
       capability: "isolated-radiant-study",
       now: Date.now(),

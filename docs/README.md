@@ -1,5 +1,12 @@
 # Documentation hub
 
+## Radiant saved sessions and recovery (2026-11-08)
+
+[Saved-only client/checkpoint contract](Future%20Plans/radiant-combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08):
+exact unresolved-request retry, Settings/entrance/presentation lifecycle and
+schema3 durable encounter totals without reward-animation replay. Authenticated
+read remains disabled by default; production UI and actual DB proof still pending.
+
 ## Radiant fresh-entry economy measurements (2026-11-08)
 
 [Reproducible actual-authority experiment](Future%20Plans/radiant-combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08):

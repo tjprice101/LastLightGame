@@ -1,5 +1,50 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Saved client sessions and durable checkpoint reads (2026-11-08)
+
+[RadiantSession](../../src/online/radiant-session.ts) is the isolated client
+transition foundation, not a production menu/battle rollout. It holds the
+last saved checkpoint until a validated committed response arrives. Pending
+operations prevent concurrent commands; ambiguous network failures retain the
+exact request ID, expected revision, run and encounter for explicit retry.
+Definite rejection never changes the saved account. Stale revisions require
+checkpoint refresh, not an invented local merge.
+
+Each saved batch has a request-keyed presentation receipt which must finish
+before another action. Entrance likewise explicitly finishes before combat.
+Settings preserves frozen state, pending saved presentation and result
+dismissal. Continue, Retry and exit use authority operations; disposal suppresses
+late local presentation without pretending an in-flight server save was undone.
+No optimistic rewards, artificial transaction delays or gameplay RNG added.
+
+Dedicated authenticated POST `{ "radiantStudy": { "kind": "read" } }` returns
+validated revision/account/run-or-null through `readRadiantStudy`. It shares
+the disabled-by-default gate, secret/calibration checks and attempt rate limit.
+It does not call the operation commit or replay a reward animation. Existing
+`load_game_account` can initialize an absent account; this is not a promise of
+zero database writes for a first-ever account read.
+
+Frozen study schema3 adds a durable per-encounter combat/reward journal.
+Accepted operation batches append once inside the same atomic saved aggregate;
+cached duplicate responses cannot append twice. Retry retains the journal,
+Continue starts a new encounter journal. Checkpoints/reconstructed controllers
+restore all earned encounter totals with **no presentation replay**. Combat
+currency event sums must match the saved combat earnings; reward events and
+response batch journal suffixes are validated. Malformed/missing journals and
+old undeployed schemas fail explicitly, never reset a wallet. Production wallet
+version and legacy combat are unchanged.
+
+Validation:556 focused tests across9 files, regenerated authority bundle,
+authority TypeScript and client `npm run build` pass. Full-suite result is
+recorded in the current handoff after completion. No new dependencies.
+
+**Still gated off and undeployed:** actual Radiant database transaction proof,
+production six-member/manual bearer-only UI, ordered impact/portrait/VFX wiring,
+full remaining crop review, enemy/economy cadence tuning and final consolidated
+art brief are not completed by this controller. The journal is deliberately
+not silently truncated; long Training payload/latency testing remains a release
+gate before any production rollout.
+
 ## Fresh-entry economy and retry measurements (2026-11-08)
 
 The reward/lifecycle bridge now has a reproducible **read-only actual-authority

@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createClient } from '@supabase/supabase-js';
 import { freshGame } from '../../supabase/functions/game-operation/engine';
-import { resolveRadiantRun, type RadiantRunRequest } from './radiant-run';
-import { radiantStudyOperation } from './radiant-transport';
+import { resolveRadiantRun, type RadiantRunRequest, type RadiantCheckpoint } from './radiant-run';
+import { radiantStudyOperation, readRadiantStudy } from './radiant-transport';
 
 const mocks = vi.hoisted(() => ({ onlineClient: vi.fn() }));
 vi.mock('./account-client', () => ({ onlineClient: mocks.onlineClient }));
@@ -20,6 +20,18 @@ function savedResponse() {
 }
 afterEach(() => { vi.useRealTimers(); vi.clearAllMocks(); });
 describe('dedicated typed Radiant transport, not a production gameOperation', () => {
+  it('reads a dedicated saved checkpoint without a new action ID or replay reward payload', async () => {
+    const saved = savedResponse();
+    const checkpoint: RadiantCheckpoint = { revision: saved.revision, account: saved.account, run: saved.run };
+    const invoke = vi.fn(async () => ({ data: checkpoint, error: null }));
+    mocks.onlineClient.mockReturnValue({ functions: { invoke } });
+    await expect(readRadiantStudy()).resolves.toEqual(checkpoint);
+    expect(invoke).toHaveBeenCalledWith('game-operation', { body: { radiantStudy: { kind: 'read' } }, timeout: 30_000 });
+    invoke.mockResolvedValueOnce({ data: { ...checkpoint, run: null }, error: null });
+    await expect(readRadiantStudy()).resolves.toMatchObject({ run: null });
+    invoke.mockResolvedValueOnce({ data: { ...checkpoint, run: [] } as never, error: null });
+    await expect(readRadiantStudy()).rejects.toMatchObject({ code: 'unavailable' });
+  });
   it('uses real authenticated SDK function request with the dedicated envelope and parses a saved response', async () => {
     const response = savedResponse(), bodies: unknown[] = [], auth: string[] = [];
     const client = createClient('https://fixture.supabase.co', 'fixture-key', {

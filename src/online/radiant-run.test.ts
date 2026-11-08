@@ -354,6 +354,7 @@ describe('authority-ready frozen run and exact partial Prismatica', () => {
     const paid = depleteRadiantCurrency(enemy.currency, 1);
     enemy.hp = 1; enemy.currency = paid.ledger;
     run.state.currencyEarned = paid.amount;
+    run.journal.events.push({ type: 'currency', enemyId: enemy.id, amount: paid.amount, totalPaid: paid.amount });
     before.state.account.fractalis = paid.amount;
     const after = step(before, normal(before));
     const defeated = after.state.radiantStudy!.state.enemies[0];
@@ -369,7 +370,7 @@ describe('authority-ready frozen run and exact partial Prismatica', () => {
     const budget = structuredClone(value);
     budget.state.radiantStudy!.enemies[0].currencyBudget++;
     expect(() => resolveRadiantRun(budget, req, authority())).toThrow();
-    expect(value.state.radiantStudy!.version).toBe(2);
+    expect(value.state.radiantStudy!.version).toBe(3);
   });
   it('explicit client outcome, HP, budget, enemy-action and seed injection are rejected', () => {
     const value = entered(), req = request(value, normal(value));

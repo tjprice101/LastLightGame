@@ -1,5 +1,26 @@
 # Authoritative game operation
 
+## Radiant checkpoint and encounter journal (2026-11-08)
+
+Dedicated authenticated `{ "radiantStudy": { "kind": "read" } }` now returns
+validated revision/account/schema3 run-or-null. It uses the same disabled gate,
+server secret/calibration check and attempt rate limiter as mutations. No
+operation commit/reward replay occurs; existing account load can initialize
+an absent account. Do not advertise first-ever reads as zero database writes.
+
+Schema3 persists combat/reward encounter history atomically with each accepted
+batch. Exact-request duplicate lookup preserves one journal append; Retry keeps
+history, Continue resets the new encounter journal. Invalid/missing journals
+and older undeployed study schemas fail explicitly. Currency sums and response
+batch suffixes are checked; no production wallet migration or SQL change.
+[Saved client session contract](../../../docs/Future%20Plans/radiant-combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08)
+restores totals without replaying animations and retains exact pending retries.
+
+**Still disabled/undeployed; no production UI caller.** Local mocked RPC tests
+are not proof of actual Radiant database atomicity. Production UI/manual
+bearer-only migration, full portrait/VFX work and long-journal request/latency
+measurements remain release gates.
+
 ## Radiant authored rewards and run lifecycle (2026-11-08)
 
 The disabled dedicated route now saves full authored kill loot, discovery,
@@ -8,7 +29,7 @@ run/response receipt. Shared legacy roll/validation code is reused, not legacy
 combat. Only base enemy Prismatica is suppressed after range validation;
 actual damage and non-kill bonuses are not paid twice.
 
-Study schema2 stores defeat/completion/RNG ledgers. Retry preserves old loot
+Study schema3 stores defeat/completion/RNG ledgers and encounter journals. Retry preserves old loot
 and lowest-HP earnings; Continue carries reward seeds/frozen loadouts, permits
 newly unlocked stages and real next Training wave. Final stages/Calamity end.
 Dedicated `exit` disposes the aggregate but preserves the immutable banked
@@ -24,7 +45,7 @@ All284 authored anchors have loot/account parity checks—not clear-rate evidenc
 
 **Still disabled and undeployed.** Old undeployed schema1 study fixtures fail
 explicitly, never silently erase/rewrite saved production data. Actual DB
-verification, fresh-entry farming/economic tuning and production UI/manual
+verification, final real-time economic tuning and production UI/manual
 bearer-only migration remain gates. Do not enable based only on local tests.
 
 ## Disabled-by-default radiant study dispatch (2026-11-08)
@@ -43,9 +64,9 @@ No current menu/battle caller sends this shape.
   `radiant-pressure-v2` requires explicit server configuration. Client choice
   alone cannot select a different enemy calibration.
 
-**Do not enable/deploy this as the completed overhaul.** Full kill/material/
-chest/recruitment/progression rewards and production run/UI migration remain
-unfinished; this is an authenticated isolated study path with partial currency.
+**Do not enable/deploy this as the completed overhaul.** Full authored rewards
+are connected; actual DB proof and production run/UI migration remain unfinished.
+This is an authenticated isolated study path, not an active client release.
 
 `radiant-dispatch.ts` validates the dedicated unknown-JSON body, authenticates
 through the common handler, enforces rate limit/config/access, and derives

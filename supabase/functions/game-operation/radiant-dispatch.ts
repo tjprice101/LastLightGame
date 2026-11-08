@@ -38,6 +38,31 @@ export async function handleRadiantRequest(value: object, user: string,
   try {
     if (Object.keys(value).length !== 1 || !('radiantStudy' in value))
       throw new RadiantRunError('invalid-input', 'Use only the dedicated radiantStudy request.');
+    const operation = value.radiantStudy;
+    const load = async () => {
+      const profile = await identityOf(user);
+      if (!profile) throw new RadiantRunError('unavailable', 'Online identity unavailable.');
+      const { data, error } = await admin.rpc('load_game_account', {
+        p_user: user, p_initial: freshGame(profile.username, profile.created_at),
+      });
+      if (error) throw new RadiantRunError('unavailable', 'Online account storage unavailable.');
+      const snapshot = validateRadiantRunSnapshot(data);
+      if (snapshot.state.radiantStudy &&
+        snapshot.state.radiantStudy.calibration !== (config.calibration ?? 'authored-control'))
+        throw new RadiantRunError('unavailable', 'Frozen study calibration is not enabled by the authority.');
+      return snapshot;
+    };
+    if (operation && typeof operation === 'object' && !Array.isArray(operation) &&
+      'kind' in operation && operation.kind === 'read') {
+      if (Object.keys(operation).length !== 1)
+        throw new RadiantRunError('invalid-input', 'Unexpected Radiant checkpoint field.');
+      const { data: allowed, error: limitError } = await admin.rpc('consume_game_attempt', { p_user: user });
+      if (limitError) throw new RadiantRunError('unavailable', 'Game rate-limit storage unavailable.');
+      if (!allowed) return { status: 429, body: { error: 'Too many game operations. Wait one minute.' } };
+      const snapshot = await load();
+      const run = snapshot.state.radiantStudy ?? null;
+      return { status: 200, body: { revision: snapshot.revision, account: snapshot.state.account, run } };
+    }
     const input = validateRadiantRunRequest(value.radiantStudy);
     const calibration = config.calibration ?? 'authored-control';
     if (input.operation.kind === 'start' && input.operation.calibration !== calibration)
@@ -46,18 +71,7 @@ export async function handleRadiantRequest(value: object, user: string,
     if (limitError) throw new RadiantRunError('unavailable', 'Game rate-limit storage unavailable.');
     if (!allowed) return { status: 429, body: { error: 'Too many game operations. Wait one minute.' } };
     const entropy = await deriveRadiantEntry(config.secret, user, input.requestId);
-    const repository = radiantRpcRepository(admin, user, async () => {
-      const profile = await identityOf(user);
-      if (!profile) throw new RadiantRunError('unavailable', 'Online identity unavailable.');
-      const { data, error } = await admin.rpc('load_game_account', {
-        p_user: user, p_initial: freshGame(profile.username, profile.created_at),
-      });
-      if (error) throw new RadiantRunError('unavailable', 'Online account storage unavailable.');
-      const snapshot = validateRadiantRunSnapshot(data);
-      if (snapshot.state.radiantStudy && snapshot.state.radiantStudy.calibration !== calibration)
-        throw new RadiantRunError('unavailable', 'Frozen study calibration is not enabled by the authority.');
-      return snapshot;
-    });
+    const repository = radiantRpcRepository(admin, user, load);
     const result = await executeRadiantRun(repository, input, {
       capability: 'isolated-radiant-study', now: Date.now(), entry: () => entropy,
     });

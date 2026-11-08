@@ -1,5 +1,33 @@
 # Current state and handoff
 
+## Radiant saved client controller and recovery (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; prior economy study `fa848be6`.
+No production flag, authority deployment, wallet migration or live UI change.
+
+**Implemented:** saved-response-only client session, exact pending-ID/revision
+retry, explicit errors/stale refresh, presentation and entrance receipts,
+Settings/result-dismissal persistence and late-response disposal. Authenticated
+checkpoint read shares the gate/rate/calibration validation and does not commit
+an operation. Existing account loading can initialize an absent account.
+Schema3 durable encounter journal restores totals without replay; Retry retains
+history, Continue resets it; corrupt journals and mismatched currency sums deny.
+[Detailed contract](Future%20Plans/radiant-combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08).
+
+**Verified:**556 focused tests/9 files; `node tools\bundle_server_game.mjs`,
+`npx tsc --project supabase\functions\game-operation\tsconfig.json` and
+`npm run build` passed. Vite retains its existing >500kB chunk advisory.
+Full `npx vitest run --exclude src/radiant-ui.test.ts --exclude src/ui-design-lab.test.ts --maxWorkers=2 --testTimeout=60000`:
+**268 files/9916 tests passed**. Only preserved unpublished mock-up tests were
+excluded; all production regressions ran.
+
+**Next:** actual Radiant DB transaction proof, production manual bearer-only
+squad/equipment and frozen-session integration,174 remaining reviewed face
+crops, six-member Home/battle/ordered impact rendering, finite tiered radiant
+VFX and timed/accessibility/performance tests, final enemy/network-economy
+cadence and journal payload tests, final single art brief. No journal truncation
+or currency cap introduced. Full overhaul is not release-ready.
+
 ## Radiant fresh-entry economy experiment (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; prior authored-reward bridge `d023153c`.

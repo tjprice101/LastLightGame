@@ -1,5 +1,16 @@
 # Decision log
 
+## Recover radiant sessions from saved outcomes only (2026-11-08)
+
+Under the delegated overhaul, isolate client transitions behind validated
+committed responses and gated checkpoint reads. Keep identical request IDs and
+expected revisions after ambiguous failures; never guess success or reroll.
+Persist per-encounter combat/reward history with the atomic aggregate so reload
+restores totals without replaying celebrations. Preserve history on Retry, reset
+it on Continue, and retain Settings dismissal/frozen state. Do not silently
+truncate receipts or deploy this partial controller as completed production UI.
+[Contract and remaining gates](Future%20Plans/radiant-combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08).
+
 ## Measure radiant fresh entry without inventing an economy cap (2026-11-08)
 
 Under the delegated overhaul, verify actual reducer/account payout and request

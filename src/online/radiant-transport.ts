@@ -1,11 +1,17 @@
 import { onlineClient } from './account-client';
 import { RadiantRunError, isRadiantRunErrorCode, validateRadiantRunRequest, validateRadiantRunResponse,
-  type RadiantRunRequest, type RadiantRunResponse } from './radiant-run';
+  validateRadiantCheckpoint, type RadiantCheckpoint, type RadiantRunRequest, type RadiantRunResponse } from './radiant-run';
 
 export interface RadiantStudyTransportRequest { radiantStudy: RadiantRunRequest }
 /** Dedicated transport only. No menu, capability auto-discovery or live battle caller. */
 export async function radiantStudyOperation(request: RadiantRunRequest): Promise<RadiantRunResponse> {
   const body: RadiantStudyTransportRequest = { radiantStudy: validateRadiantRunRequest(request) };
+  return validateRadiantRunResponse(await invokeRadiantStudy(body));
+}
+export async function readRadiantStudy(): Promise<RadiantCheckpoint> {
+  return validateRadiantCheckpoint(await invokeRadiantStudy({ radiantStudy: { kind: 'read' } }));
+}
+async function invokeRadiantStudy(body: RadiantStudyTransportRequest | { radiantStudy: { kind: 'read' } }): Promise<unknown> {
   const { data, error } = await onlineClient().functions.invoke('game-operation', { body, timeout: 30_000 });
   if (error) {
     if ('context' in error && error.context instanceof Response) {
@@ -19,5 +25,5 @@ export async function radiantStudyOperation(request: RadiantRunRequest): Promise
     }
     throw new RadiantRunError('unavailable', 'Connection failed; retry the same study request ID.');
   }
-  return validateRadiantRunResponse(data);
+  return data;
 }
