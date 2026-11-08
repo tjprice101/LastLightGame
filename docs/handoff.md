@@ -1,5 +1,16 @@
 # Current state and handoff
 
+## Overhaul questionnaire answered: specification first (2026-11-08)
+
+[Selections](Future%20Plans/character-combat-refresh-audit.md#implementation-questionnaire-owner-decisions-2026-11-08):
+four stats including Recovery; personal/shared final charge; current-tier Flare,
+Normal/Defense; first-member leader stops on defeat; equivalent Calamitic gates;
+no playable captured Devourers. Roles may be removed; old effects redesigned
+under delegated scope, not raw ownership deletion. Subtype names/numbers/table
+and exact starter kits require review before implementation. No runtime edits.
+Clarify temporary charge mode, recovery, reference feature scope and captured
+team transition; retain general menu/UI hold and hidden unreleased content.
+
 ## Sub-type clarification: mechanical fixed profiles (2026-11-08)
 
 Owner corrects the tactical-label interpretation: sub-types grant innate stat

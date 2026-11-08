@@ -1,5 +1,17 @@
 # Decision log
 
+## Owner overhaul questionnaire selections (2026-11-08)
+
+Owner selects four stats HP/Attack/Defense/Recovery, personal plus shared final
+Flare charge, Normal/Defense/current-Flare controls, first-member leader effect
+ending on leader defeat, equivalent Calamitic saved-form gates and bearer-only
+playable squads. Permits role removal and delegates equipment/Imbue redesign
+and subtype drafting. Partial currency earnings persist. Exact system and
+starter kits must be approved before implementation and reviewed batches.
+[Selections and unresolved reference mechanics](Future%20Plans/character-combat-refresh-audit.md#implementation-questionnaire-owner-decisions-2026-11-08)
+separate described reference items/advantage/drop mechanics from selected scope.
+Recovery skip and captured-save transition still require clarification.
+
 ## Corrected sub-types: fixed stat profiles replace role stat bonuses
 
 Owner clarifies sub-types are innate stat strengths/trade-offs, not just poetic

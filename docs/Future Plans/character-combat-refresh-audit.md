@@ -1,5 +1,80 @@
 # Character combat refresh: audit and proposed direction
 
+## Implementation questionnaire: owner decisions (2026-11-08)
+
+This section supersedes conflicting earlier recommendations. **Exact system
+and three-starter kits require owner approval before implementation**, followed
+by reviewed roster batches. No production mechanics change in this planning pass.
+
+### Selected scope
+
+- Replace visible combat stat architecture with **HP, Attack, Defense, Recovery**,
+  with explicit old-stat/equipment mappings. Recovery's delivered/received
+  healing formula still needs an exact specification.
+- One fixed mechanical sub-type per bearer. Owner delegates final radiant names,
+  percentages and assignments, with a **review table before implementation**.
+- Normal Attack and Defense remain; only the current evolved Flare is selectable.
+- Passive Ability and one first-member Leader Ability remain. Leader effect
+  works solo and stops while the leader is defeated; no automatic replacement.
+- Owner permits removing DPS/Tank/Support roles to avoid duplication with
+  sub-types. Keep a consistent simple architecture, not old role stat/perk
+  layers secretly stacked behind the four-stat model.
+- Ordinary tiers remain forms1-3 /4-5 /6. Calamitic tiers use **equivalent saved
+  forms1-3 /4-5 /6**, despite displayed Evo.2-7. Ascension enhances final tier.
+- **Elemental-Devourers are no longer equippable as playable squad members.**
+  Preserve capture inventories/fodder unless separately directed; exact legacy
+  squad/gear repair, capture UI and future capture rules remain to specify.
+- Owner delegates redesign of old skill Imbues/Conduits/Masters rather than
+  requiring preserved numerical investment value. Do not infer permission to
+  delete owned assets, balances, upgrades or progress. Publish an explicit
+  compatibility table with the reviewed specification.
+- Partial damage-based Prismatica remains saved on defeat/quit. Fixed per-enemy
+  budgets and repeat-entry farming tests remain mandatory; safeguards require
+  approval rather than silently forfeiting already-earned currency.
+- Flare spectacle is bounded, speed-scaled, skippable and Reduce-motion-aware.
+  Real-time Gauge presentation and the selected three Flare names remain.
+
+### Shared/personal charge reference supplied by owner
+
+Owner selects **personal Gauge plus a shared squad resource for Eternal Radiant
+Flare**, and describes the reference's two-step climax: fill team charge,
+activate one eligible bearer, empty/recharge its personal bar, then cast within
+a four-turn window. Subsequent activations become more expensive.
+
+Translate this into original terminology and shared definitions rather than
+copying names, item designs or a proprietary implementation. Candidate team
+resource **Concord Gauge**, activation **Radiant Ascendancy** and charge motes
+**Lustre Motes** remain proposals, not approved final strings. Combat Ascendancy
+is temporary and must be distinguished from permanent Stat Ascension.
+
+The reference also describes per-hit/random crystal drops, elemental advantage,
+fill gear, consumables and stacked personal bars. These are not all implicitly
+approved as features. Clarify exact two-step behavior, resource sources and
+scope before specifying them. The reference's dual lower-tier bar conflicts
+with the selected one-current-Flare control model if lower tiers are selectable.
+Prefer one current-tier bar unless the owner revises that selection.
+
+No answer explicitly resolves the old forced next-turn recovery skip: the
+recovery answer explains charge mechanics instead. Specify recovery separately.
+Likewise, a four-turn mode timer requires a clock, expiry rules, death handling,
+retry/reset/Continue behavior and accessible confirmation/controls.
+
+Common beneficial stat buffs should follow a simple strongest-wins, no-additive
+stacking contract if selected. Exact refresh/duration behavior still matters:
+do not let a weak short buff erase a stronger long buff, or imply a single rule
+for independent damage-over-time sources and owned Shields.
+
+### Remaining review gates
+
+1. Confirm two-step climax/timer/escalation and old recovery disposition.
+2. Select charge sources/allocation: predictable actual combat events versus
+   per-hit RNG drops. Cosmetic hit counts cannot become mechanical grants.
+3. Clarify imported-feature scope (items, elemental advantage, gear fill).
+4. Approve legacy captured-team repair and noncombat capture retention.
+5. Review four-stat scaling, subtype table and three exact starter kits.
+6. Review full gear/Imbue/status/leader rules, currency ledger and save/rules
+   migration before a public release.
+
 ## Owner-selected direction (2026-11-07, follow-up)
 
 The owner selects a simpler full-roster architecture:
