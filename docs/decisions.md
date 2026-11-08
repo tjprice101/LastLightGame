@@ -1,5 +1,15 @@
 # Decision log
 
+## Unique sub-types and varied radiant language requested (2026-11-07)
+
+Owner requests character-specific sub-types in the same refresh plan and
+light-themed systems/philosophy without repetitive "Light this/that" labels.
+[Radiant Discipline draft](Future%20Plans/character-combat-refresh-audit.md#character-sub-types-proposed-radiant-disciplines)
+provides32 released-character names/tactical meanings. Fixed identity labels,
+Radiant Signature/Luminary Covenant terminology and named principles are
+proposals, not approved stat perks, random Types or a new progression system.
+Exact kits must make alternating-skill identities work with the single active.
+
 ## Flare tier names and live Gauge/VFX requirements (2026-11-07)
 
 Owner selects **Glowing Flare**, **Lustrous Flare**, **Eternal Radiant Flare**

@@ -1,5 +1,16 @@
 # Current state and handoff
 
+## Radiant Discipline subtype draft (2026-11-07)
+
+Owner requests unique sub-types and varied light-themed naming/philosophy.
+[Draft](Future%20Plans/character-combat-refresh-audit.md#character-sub-types-proposed-radiant-disciplines)
+covers all32 released bearers with fixed tactical identities; supporting
+passive/leader proposals now Radiant Signature / Luminary Covenant.
+No randomized Types, new bonuses, acquisition changes or runtime edits.
+Next review: names and exact single-active kits, especially alternating
+characters and overlapping intercept/tank identities. Captured-family policy
+remains unresolved; hidden seasonal content remains hidden.
+
 ## Selected Flare names, live Gauge and stronger VFX (2026-11-07)
 
 Owner selects Glowing Flare / Lustrous Flare / Eternal Radiant Flare.

@@ -23,8 +23,8 @@ the requested battle layout is part of this new combat specification.
 
 | Layer | Wording | Intended meaning |
 | --- | --- | --- |
-| Personal passive | Inner Light | Automatic character identity; active irrespective of leader position. |
-| Leader ability | Guiding Light | One explicitly leader-only squad benefit. |
+| Personal passive | Radiant Signature | Automatic character identity; active irrespective of leader position. Display with the plain label "Passive Ability". |
+| Leader ability | Luminary Covenant | One explicitly leader-only squad benefit. Display with the plain label "Leader Ability". |
 | Tier1 signature | Glowing Flare | Selected name; dependable expression of the character's role. |
 | Tier2 signature | Lustrous Flare | Selected name; enhanced version with a meaningful tactical improvement. |
 | Tier3 signature | Eternal Radiant Flare | Selected name; final-form climax; Ascension strengthens it. |
@@ -35,6 +35,99 @@ remain proposals. Authored skill names can
 remain character-specific within these common categories. Light-themed system
 language does not convert Infernic/Oceanic/Botanic/Atmospheric/Tranquilitic/
 Chaotic characters into a single combat element.
+
+### Character sub-types: proposed Radiant Disciplines
+
+Owner requests unique character sub-types and light-themed systems/philosophy
+without repetitive "Light this / Light that" naming. **Radiant Discipline** is
+the proposed name for a fixed tactical sub-type beneath the familiar role.
+The owner requests the draft; the individual names and mechanics below remain
+proposals pending review.
+
+Keep distinct layers:
+- **Element:** existing canonical elemental identity; unchanged.
+- **Role:** readable Attacker, Tank or Support classification.
+- **Discipline:** what makes this character's approach distinctive.
+- **Radiant Signature:** its personal passive, not another separate passive slot.
+- **Luminary Covenant:** its leader ability, not an additional equipment aura.
+- **Flare:** its single evolution-upgraded active.
+
+Disciplines are not random Types, growth modifiers, rarity ranks or another
+unlock tree. A summon cannot roll a worse Discipline. No new RNG, saved subtype
+field, equipment restriction or matching bonus is proposed. Each character's
+catalog identity determines the label, which remains through evolution.
+Roles and exact perks must be reconciled in the kit specification; a Discipline
+does not automatically award new bonuses.
+
+The plain-English tactical explanation must accompany the poetic name.
+For example: **Tizu — Tank / Tideglass Custodian: shields allies against direct
+pressure.** Do not replace useful role/status/cost labels with unexplained lore.
+
+| Character | Proposed unique Discipline | Tactical identity to preserve in the single-active redesign |
+| --- | --- | --- |
+| Infernis | Cinderwake Vanguard | Offensive Burn pressure; a deliberate detonation payoff, not multiple ember counters. |
+| Tizu | Tideglass Custodian | Chosen-ally barrier protection with useful solo defense. |
+| Flora | Dawnseed Tender | Delayed healing that blossoms into timely recovery. |
+| Atmoso | Halozephyr Conductor | A gathering wind formation and a readable release. |
+| Elise | Fulgar Prismblade | Placed twin blades converge in a focused recall strike. |
+| Bliss | Opaline Virtuoso | Graceful action-order support woven into offense. |
+| Bruno | Ambermantle Bastion | Deliberately intercept damage intended for allies. |
+| Disciple | Mindstar Preceptor | Prepare an ally's next action for a clear damage or support payoff. |
+| Aurora | Horizon Augur | Forecast dangerous enemy skills and blunt their arrival. |
+| Razor | Eclipse Reprisal | Survive direct pressure and return stored Wounds as revenge. |
+| Rosetta | Aureole Huntress | Coordinate the squad against one designated quarry. |
+| Thornia | Gloamthorn Sentinel | Punish enemy actions through a visible retaliatory trap. |
+| Crinso | Twinflare Duelist | Preserve opposed-edge combo identity through passive/Normal/Flare interplay; do not require two removed skill buttons. |
+| Nerithe | Meridian Pathfinder | Survey a target with Normal Attacks, then exploit its defenses. |
+| Orvella | Facetbed Architect | Maintain a finite shared Foundation and convert its durability deliberately. |
+| Vaelor | Zenith Resonator | A readable rhythmic window for enhanced attacks. |
+| Ozriel | Cathedral Aegis | Emergency squad survival and powerful shielding, not automatic revival. |
+| Ilvaris | Starveil Cantor | Mark a priority enemy while sustaining the squad. |
+| Kaelith | Fracture Seraph | Build a bounded incision and release a precise rupture. |
+| Caldrex | Kilnstar Bulwark | Bank hostile pressure to fortify the squad or discharge Heat. |
+| Solenne | Vesperbell Warden | Spend finite Stillness carefully between defense and retaliation. |
+| Myrthen | Solstice Reaper | One seasonal cycle culminating in a Harvest window. |
+| Neralis | Afterglow Ferryman | Build Current through useful actions and rescue wounded allies. |
+| Varkhel | Faultsun Anchor | Hold enemy pressure, then release a piercing Tension payoff. |
+| Seravelle | Emberchorus Herald | Reward coordinated squad Normal Attacks with convoy momentum. |
+| Velmira | Parallax Fencer | Alternating attack cadence and precision piercing; distinguish it from Crinso's combo climax. |
+| Maerion | Moonwake Reclaimer | Gather actual lost Health into a clearly bounded recovery pool. |
+| Caevren | Penumbral Loadbearer | Intercept for allies and turn carried pressure into protection; explicitly differentiate from Bruno. |
+| Vespera | Beacon Cantor | Signal an ally and convert cooperation into an offensive support payoff. |
+| Ilyss | Argent Absolver | Cleanse harmful effects and restore allies without prerequisite stacks. |
+| Asteriel | Moonflower Paragon | Choose a protective or offensive support path with one visible state. |
+| Serapha | Eventide Arbiter | Use weakening to create a predictable protective window. |
+
+These32 entries cover the released roster, not the hidden six Sunshade bearers.
+Before final kit approval, verify each remaining owned mechanic against current
+runtime and map its investments. In particular, alternating-skill identities
+must be genuinely redesigned around the selected single active, not left with
+an impossible two-skill prerequisite.
+
+Captured Elemental-Devourers remain legal mixed-team members. Their subtype
+policy needs a separate fixed-family design, not32 copied bearer labels or
+automatic new abilities. Do not remove existing captured actions/ownership
+without a reviewed parity and migration contract.
+
+### Radiant design philosophy and vocabulary discipline
+
+| Principle | Design meaning / acceptance consequence |
+| --- | --- |
+| Lucidity | Every poetic label has a clear tactical explanation; target, cost, effect and duration remain literal. |
+| Refraction | One shared system expresses many elemental identities; no universal gold recolor or copied kit. |
+| Convergence | Passive, leader ability and Flare reinforce one identifiable play pattern without recursive trigger chains. |
+| Resonance | Squad cooperation creates deliberate choices, not mandatory rare-character ownership or subtype-matching bonuses. |
+| Radiance | Each Flare tier escalates silhouette, choreography and impact; power and clarity are not replaced by particle density. |
+| Afterglow | Finite effects settle into readable exact outcomes; no lingering glare obscures controls or repeats a saved grant. |
+| Continuity | Evolution deepens the same Discipline and preserves ownership, art and mapped investments. |
+
+Use related words deliberately: lustre, aureole, facet, prism, halo, dawn,
+zenith, glimmer, eclipse, corona, refraction and afterglow. Darker radiant terms
+belong to moon/night/Chaotic identities, not a newly introduced combat element.
+Do not rename Health, Defense, Burn, Weaken, costs or currency just to make
+every noun poetic. Existing Prismatica/Null-Prismatica terminology stays.
+Reserve "Eternal" for the selected final Flare category rather than every title.
+No new shared resource or mechanic is implied by naming a design principle.
 
 ### Revised functional model
 
