@@ -1,15 +1,15 @@
 import { isConduitId, validateConduitUpgrades, type ConduitId } from '../content/conduits';
-import { radiantBearerKits, validateRadiantLoadout, type RadiantLoadout } from '../content/radiant-combat';
+import { radiantBearerKits, radiantMasters, validateRadiantLoadout, type RadiantLoadout } from '../content/radiant-combat';
 import { validateRadiantGear, type RadiantGear } from '../content/radiant-conduits';
 import { validateRadiantParty } from './radiant-combat';
-import { isMasterConduitId } from '../content/master-conduits';
+import { isMasterConduitId, type MasterConduitId } from '../content/master-conduits';
 
 export interface RadiantAccountGear {
   conduits?: Partial<Record<ConduitId, number>>;
   conduitUpgrades?: Partial<Record<ConduitId, number>>;
   conduitEquipment?: Partial<Record<string, (ConduitId | null)[]>>;
   masterConduits?: Partial<Record<string, number>>;
-  masterEquipment?: Partial<Record<string, RadiantLoadout['masterId']>>;
+  masterEquipment?: Partial<Record<string, MasterConduitId | null>>;
 }
 export type RadiantLoadoutResult =
   | { ok: true; loadouts: RadiantLoadout[] }
@@ -50,7 +50,9 @@ export function adaptRadiantLoadouts(
           ? member.masterId : account.masterEquipment[member.id]!;
         if (masterId !== null && !(account.masterConduits?.[masterId]! > 0))
           throw new Error('Equipped Master is not owned.');
-        const frozen = structuredClone({ ...member, masterId, gear });
+        if (masterId !== null && !Object.hasOwn(radiantMasters, masterId))
+          throw new Error('Equipped Master is not released for radiant combat.');
+        const frozen = structuredClone({ ...member, masterId: masterId as RadiantLoadout['masterId'], gear });
         validateRadiantLoadout(frozen);
         loadouts.push(frozen);
       } catch (error) {

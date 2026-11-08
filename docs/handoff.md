@@ -1,5 +1,37 @@
 # Current state and handoff
 
+## Radiant saved-account and atomic receipt boundary (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; preceding pressure commit `c9dcc1de`.
+No production dispatch/deployment or actual DB transaction claim.
+
+**Implemented:** `radiantAccountLoadouts`, `resolveRadiantRun`,
+`executeRadiantRun`, `radiantRpcRepository`. Derive actual saved bearer
+progress/gear/Masters, preserve captured holdings/fodder, require manual
+invalid/captured squad replacement. Freeze run loadouts; recompute actions
+and scheduled enemies from trusted prior state. Existing RPC atomically
+commits whole account/run/revision/immutable response receipt; optional
+`radiantStudy`v1 aggregate field, no separate wallet/schema migration.
+
+Retry restores initial battle with banked lowestHP/paid currency ledgers;
+Quit/defeat retain saved partial payout. Duplicate receipts/idempotent response,
+stale CAS/run/encounter, denied writes and overflow are explicit. Stage Continue
+requires existing access and frozen loadouts, does not fabricate unlocks/loot.
+[Contracts/limits](Future%20Plans/radiant-combat-system-specification.md#account-derived-runs-and-atomic-receipt-boundary-2026-11-08).
+
+**Verified:**1259 tests across parent-selected run/combat/gear/Gauge/pressure/
+account/server suites pass. Client/authority typechecks and build pass,
+existing chunk warning. RPC atomicity exercised with transaction-contract mock,
+not hosted database. Fresh-start server identity/entropy and global farming
+measurements still pending; no claim partial farming is balanced.
+
+**Next:** gated authority dispatch+stable server entry entropy and actual DB
+verification; complete all-mode reward/progression/Continue/restart migration,
+final pressure/access tuning;174 portraits and real cinematic Home/Battle
+Gauge/status/VFX. Final single art brief remains provisional. Preserve unrelated
+rejected mockups/dirty notes and stage only new status sections.
+
+
 ## Radiant action-driven enemy pressure study (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; previous gear commit `2d351a3f`.

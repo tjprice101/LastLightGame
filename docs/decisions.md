@@ -1,5 +1,21 @@
 # Decision log
 
+## Radiant account/run transaction boundary (2026-11-08)
+
+Implement under the delegated overhaul mandate: derive frozen bearer squads
+from saved account holdings/progress and require manual invalid/captured
+replacement without raw holdings loss. Use the existing server aggregate/
+receipt RPC contract for one atomic account/run/revision/response commit;
+never award currency and save battle state separately.
+[Current implementation](Future%20Plans/radiant-combat-system-specification.md#account-derived-runs-and-atomic-receipt-boundary-2026-11-08)
+is not mounted live and DB atomicity is contract-mock-tested only.
+
+Retry restores combat with banked per-enemy lowestHP/paid budget ledgers;
+Quit/defeat retain already saved partial rewards. New entry entropy remains
+server-owned; no new global farming cap or approved fresh-entry economy is
+implied. Full dispatch/rewards/progression and actual DB validation remain gates.
+
+
 ## Radiant pressure experiment, not live tuning approval (2026-11-08)
 
 Under the delegated testing mandate, implement an actual authored-enemy

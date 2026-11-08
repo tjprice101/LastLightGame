@@ -1,5 +1,96 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Account-derived runs and atomic receipt boundary (2026-11-08)
+
+[radiant-run.ts](../../src/online/radiant-run.ts) now implements the real saved
+account-to-run boundary and an adapter to the existing server transaction RPC.
+This is **not mounted in production dispatch**: no live account migration,
+database execution, gameplay release or final difficulty activation is claimed.
+It supersedes the earlier absence of an account-derived/persistence contract,
+not the remaining dispatch/entropy/database validation requirements.
+
+### Actual saved loadouts and manual compatibility
+
+`radiantAccountLoadouts(account)` derives frozen1-6 distinct canonical bearers
+from actual saved squad/progress. It uses existing level/evolution, weapon and
+binary ascension flags, owned ordinary Conduits/global ranks/equipment and
+Masters through the read-only gear adapter. It does not accept a client-written
+battle outcome as proof of ownership.
+
+Captured, missing, unreleased or duplicate squad members return explicit
+manual-selection errors. No automatic starter/team grant or silent squad
+repair; captured copies, fodder and all other holdings remain in the raw
+account. The gear adapter now accepts actual saved Master holdings correctly.
+Freeze occurs at successful authorized entry; later menu gear/progress edits
+do not change the run's combatants.
+
+### Atomic operation contract
+
+`resolveRadiantRun` validates and recomputes a requested player action from the
+prior trusted frozen state, resolves scheduled enemy actions/phase completion,
+and returns the new account/run/revision/events as one aggregate.
+`executeRadiantRun` performs receipt lookup and delegates atomic compare-and-
+swap commit to `RadiantRunRepository`. Request fingerprint conflicts and stale
+account/run/encounter revisions are explicit failures.
+
+`radiantRpcRepository` adapts the existing service-role
+`find_game_request`/`commit_game_operation` functions. The existing RPC locks
+and commits the whole server aggregate plus immutable response receipt;
+wallet and run are **not** written separately. No new wallet store or SQL
+migration is added: optional server aggregate `radiantStudy` version1 contains
+the frozen run, whose combat state uses schema3.
+
+Repository atomicity is required by the interface and exercised through a
+transaction-contract mock, **not yet verified against an actual hosted DB**.
+The future gated authority dispatch must supply trusted authenticated load,
+the existing service-role transaction client and server-generated stable entry
+entropy; the caller cannot choose run IDs/seeds/budgets/HP or resolved events.
+
+Partial damage payouts use the actual enemy budget/lowestHP ledger generated
+from authored encounter snapshots. Integer currency progress and the account
+receipt update enter the same aggregate commit as run/charge/target seeds and
+revision. Denied writes, overflow and stale CAS return no partial award.
+Duplicate request IDs return the same saved response rather than reapplying
+combat or charging/earning again.
+
+### Quit, Retry, Continue and economic limits
+
+Quit retains already saved partial currency. Retry uses the same encounter's
+banked lowestHP/paid ledgers while restoring frozen initial combat state;
+re-damaging healed/reset HP cannot mint that budget twice. Defeat also retains
+saved progress. Separate charge and target seeds persist independently.
+
+Continue is allowed only after victory into an existing accessible next stage
+and preserves frozen initial loadouts. Final/locked stages are denied. This
+boundary does not fabricate stage unlocks, kill materials, chest/recruitment
+rolls or other live rewards. Training Continue and complete all-mode reward/
+progression transitions still require live integration.
+
+Fresh starts use explicit server-authorized run identity/entropy. This contract
+does **not** impose a new global farming lock or prove repeated fresh-entry
+partial farming is balanced. Server entry authorization/entropy and actual
+quit/retry farming measurements remain release gates.
+
+### Validation
+
+```
+npx vitest run src\online\radiant-run.test.ts src\game\radiant-combat.test.ts src\game\radiant-conduits.test.ts src\game\radiant-gauge.test.ts src\game\radiant-pressure.test.ts src\game\account.test.ts src\online\server-game.test.ts --maxWorkers=2 --testTimeout=60000
+npx tsc --project supabase\functions\game-operation\tsconfig.json
+npm run build
+```
+
+Parent validation:1259 tests across seven files pass. Client/authority types
+and build pass; existing chunk warning retained. Coverage includes actual
+account/captured preservation, frozen gear, retry/quit/receipt idempotence,
+recomputed actions, budget/HP/Shield boundaries, overflow/denied commit and
+mock atomic concurrency/CAS. Earlier agent validation used a broader selector;
+1259 is the exact parent command's result, not a new full-suite count.
+
+Remaining: gated dispatch and stable server-entry entropy, actual DB transaction
+verification, all real reward/progression/run migrations, final enemy/access
+tuning, remaining174 portraits and real cinematic Home/Battle Gauge/status/
+finite radiant VFX. Single art brief remains provisional; no live deployment.
+
 ## Actual pressured encounters: experimental calibration (2026-11-08)
 
 The new [encounter adapter](../../src/game/radiant-pressure-encounters.ts),

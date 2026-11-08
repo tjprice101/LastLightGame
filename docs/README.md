@@ -1,5 +1,14 @@
 # Documentation hub
 
+## Radiant saved-run and atomic receipt boundary (2026-11-08)
+
+[Account-derived run contract](Future%20Plans/radiant-combat-system-specification.md#account-derived-runs-and-atomic-receipt-boundary-2026-11-08):
+actual frozen saved loadouts, manual captured replacement, recomputed actions,
+partial currency/retry ledgers and existing atomic server RPC adapter.
+1259 parent-selected tests/types/build pass. Actual DB execution, gated
+dispatch, server entropy and full reward/migration/UI release remain pending.
+
+
 ## Radiant actual pressure study (2026-11-08)
 
 [Experimental encounter results](Future%20Plans/radiant-combat-system-specification.md#actual-pressured-encounters-experimental-calibration-2026-11-08):
