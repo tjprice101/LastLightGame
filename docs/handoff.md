@@ -1,5 +1,40 @@
 # Current state and handoff
 
+## Ordinary radiant Conduits and frozen gear completed (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; prior roster commit `3e46651c`.
+All work remains isolated from live account operations/authority/UI.
+
+**Implemented:** complete explicit99 ordinary-ID matrix (10Common/15Rare/
+15Legendary/45Omnic/14Calamitic), integrated four-stat and source-bounded combat
+effects, frozen ranks0-5 and existing costs/eligibility. Fixed96 Masters
+unchanged. Gear covers action offense, Recovery/sustain, unlimited Shields,
+guard, personal/shared/team charge, statuses, leadership/cooperation and
+nonrecursive reflection/leech. No critical/GaugeCapacity resurrection,
+currency modifier, new RNG, revival or extra turn.
+
+Read-only `adaptRadiantLoadouts` validates supplied acquired bearer IDs,
+ownership, saved ranks/equipment/Masters and returns frozen clones or explicit
+member/party errors. Captures require manual acquired-bearer replacement;
+no auto-repair/write/raw save loss. Eight slots/distinct IDs/four matching
+Omnic/five universal Calamitic restrictions retained. Typed study adapter
+still needs a real account/authority boundary. Study schema3 rejects obsolete
+isolated snapshots; production run/reward-retention migration remains pending.
+[Operative contracts](Future%20Plans/radiant-combat-system-specification.md#ordinary-conduit-conversion-and-frozen-gear-study-2026-11-08).
+
+**Verified:**1633 tests across radiant gear/combat/Gauge/live conduit-equipment/
+upgrade suites pass, including229 new gear tests and459 existing core checks.
+Authority typecheck and production build/client types pass. Existing chunk
+warning only. No new full-suite, real pressured encounter/GPU/hosted result.
+
+**Next:** actual1/3/6-member pressure and all-activity enemy calibration;
+authority-backed partial damage receipt persistence and captured/manual
+selection/existing saved-loadout/frozen-run migration;174 portrait crops;
+cinematic Home/Battle status/Gauge and finite strong shader/VFX presentation.
+Final single art brief remains provisional. Preserve unrelated rejected
+mockup files/dirty notes and stage only this stage's documentation sections.
+
+
 ## Released radiant roster and Master study completed (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; prior starter/portrait commit

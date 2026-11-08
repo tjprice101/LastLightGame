@@ -3,6 +3,8 @@ import { characterReleased } from './release-visibility';
 import { masterConduits, type MasterConduitId } from './master-conduits';
 import { starters, type StarterId } from './starters';
 import { characterLevelCap, weaponRules, type CharacterAscension } from './progression';
+import { radiantGearAmount, validateRadiantGear, type RadiantGear } from './radiant-conduits';
+import type { ElementId } from './activities';
 
 export type RadiantBearerId = StarterId & (
   | 'ember' | 'tide' | 'sprout' | 'rosetta' | 'thornia' | 'crinso'
@@ -22,6 +24,7 @@ export interface RadiantLoadout {
   masterId: RadiantMasterId | null;
   weaponRank: number;
   ascension: CharacterAscension;
+  gear?: RadiantGear;
 }
 
 export const radiantAttunements: Record<RadiantAttunement, RadiantStats> = {
@@ -57,6 +60,7 @@ export interface RadiantBearerKit {
   id: StarterId;
   name: string;
   element: string;
+  elementId: ElementId;
   weapon: string;
   base: RadiantStats;
   baseCost: number;
@@ -293,7 +297,7 @@ export const radiantBearerKits: Record<RadiantBearerId, RadiantBearerKit> = Obje
     const tuning = bearerTuning[id];
     if (!tuning) throw new Error(`Missing radiant kit for released Element-Bearer: ${id}`);
     return [id, {
-      id, name: character.name, element: character.element, weapon: character.weapon,
+      id, name: character.name, element: character.element, elementId: character.elementId, weapon: character.weapon,
       base: tuning.base, baseCost: tuning.baseCost,
       passive: radiantPassives[id],
       leader: tuning.leader, leaderStat: tuning.leaderStat, leaderBonus: tuning.leaderBonus,
@@ -441,6 +445,8 @@ export function validateRadiantLoadout(loadout: RadiantLoadout): void {
   if (loadout.masterId !== null && (!Object.hasOwn(radiantMasters, loadout.masterId) ||
       radiantMasters[loadout.masterId].starter !== loadout.starter))
     throw new Error('Radiant Master does not match this bearer or is unreleased.');
+  if (loadout.gear !== undefined)
+    validateRadiantGear(loadout.gear, radiantBearerKits[loadout.starter].elementId);
 }
 export function radiantAttunement(loadout: RadiantLoadout): RadiantAttunement {
   validateRadiantLoadout(loadout);
@@ -458,6 +464,8 @@ export function resolveRadiantStarterStats(loadout: RadiantLoadout): RadiantStat
     defense: base.defense * growth ** .7 * profile.defense * ascension,
     recovery: base.recovery * growth * profile.recovery * ascension,
   };
+  for (const key of ['hp', 'attack', 'defense', 'recovery'] as const)
+    stats[key] *= 1 + radiantGearAmount(loadout.gear, key);
   validateRadiantStats(stats);
   return stats;
 }

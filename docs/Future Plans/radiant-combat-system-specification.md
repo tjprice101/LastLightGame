@@ -1,5 +1,127 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Ordinary Conduit conversion and frozen gear study (2026-11-08)
+
+This is the latest operative isolated implementation status. The complete
+**99-ID ordinary catalog** now has an explicit typed conversion matrix in
+[radiant-conduits.ts](../../src/content/radiant-conduits.ts), integrated into
+[four-stat loadout resolution](../../src/content/radiant-combat.ts) and the
+[study engine](../../src/game/radiant-combat.ts). The96 fixed released personal
+Masters remain separate and unchanged. No items, artwork, ownership, prices,
+drop rates, gates or paid upgrade recipes were added or removed.
+
+Catalog verified against the current actual acquisition definitions:
+
+| Ordinary rarity | IDs |
+| --- | --- |
+| Common |10 |
+| Rare |15 |
+| Legendary |15 |
+| Omnic |45 |
+| Calamitic |14 |
+| Total |99 |
+
+The historical85-ID catalog is not the current conversion target. Each stable
+ID declares one main effect and, where useful, one related secondary effect.
+No hash/index-based arbitrary effect assignment or retired critical/Skill Power/
+Gauge Capacity stat remains in the new gear model. Existing names/art keep
+their identity; elemental eligibility still comes from the actual catalog.
+
+### Magnitudes, ranks and useful progression
+
+`radiantConduits` is the exhaustive base-rank matrix;
+`radiantConduitPrimitives` and `radiantGearAmount` resolve the exact frozen
+rank-adjusted effects. Ordinary ranks remain0-5 and use the existing upgrade
+validation/costs. Every listed magnitude scales by `1 + .1 * rank`: rank5 is
+1.5 times its base effect, not an extra proc, activation mode or probability.
+Integer personal charge is resolved through the tested bounded charge path;
+shared-normal amounts use exact60-unit shared charge.
+
+Representative same-purpose base-rank comparisons:
+
+| Purpose | Common | Rare | Legendary | Omnic | Calamitic |
+| --- | --- | --- | --- | --- | --- |
+| Normal amplification |Precision Escapement10% |Falcon Sight18% |Execution Orrery40% |Chaotic Fault Verdict60% |Comparable Calamitic design100% |
+| Defense amplification |Bastion Lock15% |Aegis Capacitor25% |Granite Hourglass40% |Tectonic Atlas Bastion50% |Monolith of the Unmoved Star80% |
+
+Related secondary effects and eligibility matter: this is not a claim that
+every higher-tier item dominates every lower-tier item in an unrelated job,
+nor that an optimized six-member Calamitic build is ordinary progression.
+Final pressured rarity/upgrade value and affordable early access still need
+measurement before release.
+
+### Implemented combat domains
+
+- HP/Attack/Defense/Recovery and deterministic Normal/Flare amplification,
+  Defense piercing, guarding and direct resilience.
+- Effective healing/sustain, source-owned unlimited-until-broken Shields,
+  guard/round/Flare/actual-HP-loss Shield creation.
+- Guaranteed personal Normal/guard gains, healing/absorption returns,
+  cooperating team grants and exact shared Normal contributions.
+- Source-owned Burn, Weaken, exposure, helpful Attack effects and status-linked
+  defensive payoffs; first-member leader/cooperation/next-unacted-ally utility.
+- Actual absorbed damage reflection and leech, bounded at their source/action
+  boundary. Generated output cannot recursively feed native/gear triggers.
+
+Gear is frozen per bearer. Processing distinguishes direct/mechanical hits,
+generated packets, effective HP restoration, actual absorption and Shield
+creation. Multi-target casts and six wearers have bounded source-owned
+action/round trigger ledgers and living-owner predicates. No added gameplay
+RNG, currency multipliers, reward rerolls, revival or extra turns.
+Personal cap remains C/2C; gear does not invent Gauge Capacity or a third bar.
+Shared gains require the frozen final-form eligibility and Eternal cannot
+fund its own shared meter.
+
+### Eligibility and read-only account boundary
+
+[adaptRadiantLoadouts](../../src/game/radiant-loadout.ts) returns an explicit
+`{ ok: true, loadouts }` or `{ ok: false, errors }` result. It reads supplied
+ownership, saved upgrade ranks/equipment and Masters, validates each equipped
+ID and freezes a cloned loadout. It performs **no account write, removal,
+auto-selection or acquisition grant**. Captured IDs require manual selection
+of an acquired Element-Bearer instead of a fabricated replacement.
+
+The caller must supply actual acquired canonical bearer IDs and actual saved
+progress. This typed study boundary is not an untrusted authority request
+parser or proof that caller-supplied ownership is genuine.
+
+`validateRadiantGear` retains eight ordinary slots, unique IDs per bearer,
+owned equipped IDs, at most four matching-element Omnic items and the existing
+five-universal-Calamitic restriction. Cross-bearer unlock sharing and existing
+saved global upgrade ranks are preserved. Personal Master ownership and
+matching-bearer validation remain separate from ordinary ranks.
+
+`RadiantLoadout.gear` is optional for existing zero-gear study callers; absent
+gear means no ordinary effects, not accepting malformed supplied gear.
+Study schema advances to **version3** for frozen gear and effect ledgers.
+Old isolated snapshots fail explicitly and require study restart; production
+run restart, reward retention and saved-loadout UI compatibility are still
+future migration work. No live saved account was rewritten by this study.
+
+### Verification and remaining release gates
+
+```
+npx vitest run src\game\radiant-conduits.test.ts src\game\radiant-combat.test.ts src\game\radiant-gauge.test.ts src\game\conduit-equipment.test.ts src\content\phase-zero-conduit-upgrades.test.ts --maxWorkers=2 --testTimeout=60000
+npx tsc --project supabase\functions\game-operation\tsconfig.json
+npm run build
+```
+
+**1633 tests across five files pass**, including229 new gear tests and the
+existing459 radiant core tests. Coverage includes exact catalog/ranks,
+comparable-purpose progression, actual domain effects, source/loop boundaries,
+six-wearer cases, gear eligibility, immutable frozen results and read-only
+adapter errors. Authority typecheck passes; build includes successful client
+typecheck and retains the existing large-chunk warning. Existing live conduit
+equipment/upgrade tests remain passing.
+
+Still no live deployment: next measure actual pressured1/3/6-member encounters,
+charge/sustain/Shield loops and all-activity authored enemy anchors. Then
+implement authority-backed partial damage receipt persistence, captured/manual
+selection and existing saved-loadout/frozen-run migration plus cinematic Home/
+Battle statuses/Gauges/VFX. Other174 face crops and final single art-intake
+confirmation remain outstanding. Mechanical tests are not enemy clear-rate,
+GPU performance or release verification.
+
 ## Released-roster combat study: operative expansion (2026-11-08)
 
 This section supersedes the starter-only scope below. The isolated study now

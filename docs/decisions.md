@@ -1,5 +1,22 @@
 # Decision log
 
+## Delegated ordinary Conduit conversion study (2026-11-08)
+
+Complete the actual99-ID ordinary catalog's explicit radiant conversion while
+preserving stable IDs, artwork, prices/access, owned ranks and upgrade costs.
+The catalog collectively supports offense, defense, Recovery/healing, Shields,
+charge, statuses and squad cooperation; each item stays understandable.
+Fixed96 personal Masters remain independent. Existing ordinary ranks0-5 scale
+effect magnitude by10% per rank; no rank-based extra proc probability/turn.
+[Matrix contracts and validation](Future%20Plans/radiant-combat-system-specification.md#ordinary-conduit-conversion-and-frozen-gear-study-2026-11-08)
+are delegated study tuning, not final measured live difficulty.
+
+Frozen gear schema3 and a read-only eligibility adapter preserve raw account
+data and return explicit errors/manual captured replacement instead of grants.
+No live account/authority/UI migration or deployment; actual pressured enemy/
+rarity/charge/sustain measurements remain release gates.
+
+
 ## Delegated released-roster radiant study (2026-11-08)
 
 Under the owner-delegated overhaul mandate, complete32 released identities

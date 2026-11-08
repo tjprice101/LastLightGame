@@ -1,5 +1,14 @@
 # Documentation hub
 
+## Radiant ordinary Conduits and frozen loadouts (2026-11-08)
+
+[Operative gear study](Future%20Plans/radiant-combat-system-specification.md#ordinary-conduit-conversion-and-frozen-gear-study-2026-11-08):
+all99 ordinary stable IDs, retained0-5 ranks/costs/eligibility, source-bounded
+four-stat/action/team effects and read-only owned-gear adapter.1633 focused
+tests and client/authority types/build pass. Still isolated; actual pressure
+calibration and live migration/presentation remain required.
+
+
 ## Released radiant roster and Master study (2026-11-08)
 
 [Operative expansion](Future%20Plans/radiant-combat-system-specification.md#released-roster-combat-study-operative-expansion-2026-11-08):
