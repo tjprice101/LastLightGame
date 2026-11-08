@@ -1,5 +1,14 @@
 # Current state and handoff
 
+## Master-driven subtype revision (2026-11-08)
+
+Owner selects Equinox default for all bearers; a personal Master changes subtype
+and grants a specific personal ability enhancement. [Latest contract](Future%20Plans/character-combat-refresh-audit.md#master-selected-sub-types-owner-revision-2026-11-08)
+supersedes fixed innate assignment. Review subtype stats and all Master mappings;
+use existing equipment slot/transactions, freeze subtype in encounter loadouts,
+return to Equinox on removal. No runtime implementation. Exact starter/system
+specification still requires owner approval; general UI remains paused.
+
 ## Remaining architecture questions resolved (2026-11-08)
 
 Owner confirms two-step final empowerment, emptied/refilled personal Gauge,

@@ -1,5 +1,65 @@
 # Character combat refresh: audit and proposed direction
 
+## Master-selected sub-types: owner revision (2026-11-08)
+
+**This replaces fixed innate subtype assignment.** Every Element-Bearer defaults
+to **Equinox**. Equipping a compatible personal Master Conduit changes its
+sub-type to the Master's declared profile and grants one character-specific
+ability enhancement. Changing or removing that Master changes the profile;
+no Master means Equinox. No permanent conversion, random Type or reroll.
+
+Use the existing one matching-bearer Master slot and owned-equipment transaction
+foundation, not another subtype menu, consumable or progression tree.
+The requested subtype vocabulary is Equinox / Corona / Aegis / Solstice / Prism.
+Exact stat bonuses/penalties, Master assignments and ability enhancements remain
+subject to the system/starter review before implementation.
+
+### Proposed player wording
+
+**"Attunes Tizu to Aegis."** Then list the actual stat changes and the actual
+ability enhancement. A generic template is:
+
+> Attunes this Element-Bearer to [sub-type].
+> [Exact stat bonuses and penalties.]
+> [Named ability]: [exact enhancement, scope, condition and duration].
+
+Do not say "turns into" as though the character's identity, element, rarity or
+evolution changes. "Attunement" is the proposed equipment-selected build concept,
+not a new combat buff or extra resource. Keep subtype names consistent across
+characters; poetic Master names and unique ability effects provide variety.
+
+### Mechanical boundaries for the exact specification
+
+- Equinox provides no subtype bonus/penalty. Baseline characters retain distinct
+  authored stats, passive, leader ability and Flare despite sharing Equinox.
+- Each Master selects exactly one profile plus one clearly scoped personal
+  enhancement. Its subtype modifiers are the Master's stat package, not extra
+  bonuses layered over another hidden personal Master stat package.
+- Replace old role stat bonuses. Reconcile ordinary gear, Ascension, subtype
+  percentages and conditional/leader effects through one documented stat order.
+- Prism must use the selected four-stat architecture: **higher Recovery / lower
+  Defense** is the proposed replacement for the earlier Skill Power profile.
+  Review numbers against real healing; don't retain a hidden fifth core stat.
+- One profile at a time; no profile stacks, owned-but-unequipped bonuses or
+  permanent residue after switching. No automatic unlock or equipment grant.
+- Existing three Master alternatives per character should offer meaningful
+  choices among selected profiles/enhancements; not every bearer needs every
+  subtype. Present the complete per-Master review table before implementation.
+- Clarify an enhancement's behavior across all three evolved Flare versions;
+  a final-tier-only effect must say so and remain a deliberate later-game choice.
+  No references to removed Skill1/Skill2 buttons.
+- Freeze the selected Master, subtype and enhancement in the encounter loadout.
+  Settings/resume/Continue never rereads a changed menu Master mid-run.
+- Gear switching in menus recomputes previews from base progress, not previously
+  modified stats. A temporary maxHP change never heals or revives a battle unit.
+- Preserve Master IDs/ownership and reviewed compatibility migration. Captured
+  Devourers are not playable/equippable and receive no new subtype system.
+- Accepted equipment selection must save before success effects; removal and
+  failed/stale saves must not celebrate a change that did not occur.
+
+The master-driven profile is the approved direction; these exact formula,
+wording and mapping details are specification proposals, not implemented behavior.
+
 ## Implementation questionnaire: owner decisions (2026-11-08)
 
 This section supersedes conflicting earlier recommendations. **Exact system
@@ -11,8 +71,9 @@ by reviewed roster batches. No production mechanics change in this planning pass
 - Replace visible combat stat architecture with **HP, Attack, Defense, Recovery**,
   with explicit old-stat/equipment mappings. Recovery's delivered/received
   healing formula still needs an exact specification.
-- One fixed mechanical sub-type per bearer. Owner delegates final radiant names,
-  percentages and assignments, with a **review table before implementation**.
+- Equinox by default; one equipped personal Master selects the mechanical
+  sub-type and a character-specific ability enhancement. See the latest owner
+  revision above. Percentages/assignments need a **review table before implementation**.
 - Normal Attack and Defense remain; only the current evolved Flare is selectable.
 - Passive Ability and one first-member Leader Ability remain. Leader effect
   works solo and stops while the leader is defeated; no automatic replacement.
@@ -140,12 +201,13 @@ Chaotic characters into a single combat element.
 
 Owner clarifies that sub-types mean **mechanical stat strengths and trade-offs**,
 like higher Attack/lower Health, not unique poetic tactical labels alone.
-Owner selects **fixed assignment by character identity and combat role** and
+Owner initially selected **fixed assignment by character identity and combat role** and
 **replacement of current role stat bonuses** with the new profiles. Existing
 Tank targeting and Support role healing need separate review; neither is
 implicitly removed or retained.
 
-No random acquisition Type, reroll, subtype lottery or player-selected profile.
+The later Master-selected revision above supersedes fixed assignment: players
+change profiles through equipment. No random acquisition Type, reroll or lottery.
 The individual Discipline titles below are historical tactical-name proposals,
 not the selected mechanical subtype system. They may remain optional identity
 descriptors only if useful; no extra modifier layer is implied.
@@ -165,7 +227,7 @@ An increased Attack stat need not offset reduced HP in value or survival.
 Avoid multiplying current Attacker/Tank/Support stat bonuses by these modifiers.
 Document the shared raw-stat pool, scaling order and menu/battle parity.
 Stat penalties must preserve viable solo starters and useful support identities.
-Captured parity and fixed-form subtype assignments remain to be specified.
+The later bearer-only squad decision removes captured subtype assignment.
 
 **Naming rule:** light-themed terminology should be varied across unrelated
 systems, but direct advancements may share a coherent wording family.

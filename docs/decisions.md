@@ -1,5 +1,15 @@
 # Decision log
 
+## Masters select sub-types; Equinox default (2026-11-08)
+
+Owner revises innate fixed profiles: every Element-Bearer defaults to Equinox;
+equipped personal Master selects a stat subtype plus a unique character-specific
+ability enhancement. Changing/removing it changes/restores the subtype.
+[Contract and proposed wording](Future%20Plans/character-combat-refresh-audit.md#master-selected-sub-types-owner-revision-2026-11-08)
+use "Attunes [character] to Aegis", not identity conversion. One existing Master
+slot; no new random Types/tree. Exact stats/Master effects require review before
+implementation. Four-stat Prism proposal uses Recovery, not removed Skill Power.
+
 ## Final charge, recovery and captured-team clarifications (2026-11-08)
 
 Owner selects two-step team empowerment, personal bar reset/refill and a
