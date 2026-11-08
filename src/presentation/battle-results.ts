@@ -40,6 +40,15 @@ export function encounterRewards(events: readonly BattleEvent[]) {
   return [...totals.values()];
 }
 
+export function battleRewardItemsMarkup(rewards: ReturnType<typeof encounterRewards>): string {
+  return rewards.length ? `<ul>${rewards.map((item) => {
+    const conduitId = item.id.startsWith('conduit:') ? item.id.slice('conduit:'.length) : null;
+    return `<li${item.rarity ? ` data-rarity="${item.rarity}"` : ''}${isChestLoot(item.id) ? ' class="result-chest-reward"' : (item.id.startsWith('recruitment:') || item.id.startsWith('calamitic-recruitment:')) ? ' class="result-recruitment-reward"' : ''} style="--reward-color:${item.color}">${isConduitId(conduitId) ? conduitIcon(conduitId, item.upgradeLevel) : item.id === 'mechanical-components' ? mechanicalComponentIcon() : lootArt(item)
+      ? `<img src="${lootArt(item)}" alt="" width="40" height="40">` : '<span class="result-reward-token" aria-hidden="true">+</span>'}
+      <span>${item.name}${isConduitId(conduitId) ? conduitElement(conduitId) : ''}</span><strong>+${formatStat(item.amount)}</strong></li>`;
+  }).join('')}</ul>` : '<p class="quiet">No rewards earned.</p>';
+}
+
 export function battleResults(state: BattleState, events: readonly BattleEvent[]): string {
   if (state.phase === 'player') return '';
   const victory = state.phase === 'cleared';
@@ -58,13 +67,7 @@ export function battleResults(state: BattleState, events: readonly BattleEvent[]
       ${victory ? state.calamity ? 'Open your chest in Inventory.' : complete ? 'All stages cleared.' : staged ? 'Continue with full HP; Elemental Gauge carries into the next stage. Replay starts this stage with fresh HP and Gauge; earned rewards are kept.' : 'Health, Gauge and recovery carry into the next wave.' : ''}</p>
     ${victory && state.story && storyEncounter(state.story.storyStage).boss ? `<p class="story-conclusion">${storyEncounter(state.story.storyStage).conclusion}</p><p class="story-codex-notice" role="status">Beacon record available in Collections · Story Codex.</p>` : ''}
     <div class="battle-result-rewards"><h3>Rewards earned this ${staged ? 'stage' : 'wave'}</h3>
-      ${rewards.length ? `<ul>${rewards.map((item) => {
-        const conduitId = item.id.startsWith('conduit:') ? item.id.slice('conduit:'.length) : null;
-        return `<li${item.rarity ? ` data-rarity="${item.rarity}"` : ''}${isChestLoot(item.id) ? ' class="result-chest-reward"' : (item.id.startsWith('recruitment:') || item.id.startsWith('calamitic-recruitment:')) ? ' class="result-recruitment-reward"' : ''} style="--reward-color:${item.color}">${isConduitId(conduitId) ? conduitIcon(conduitId, item.upgradeLevel) : item.id === 'mechanical-components' ? mechanicalComponentIcon() : lootArt(item)
-        ? `<img src="${lootArt(item)}" alt="" width="40" height="40">` : '<span class="result-reward-token" aria-hidden="true">+</span>'}
-        <span>${item.name}${isConduitId(conduitId) ? conduitElement(conduitId) : ''}</span><strong>+${formatStat(item.amount)}</strong></li>`;
-      }).join('')}</ul>`
-        : '<p class="quiet">No rewards earned.</p>'}
+      ${battleRewardItemsMarkup(rewards)}
       </div>
     <section class="battle-result-stats"><h3>Battle summary</h3>
       <p>Damage dealt ${formatStat(total('damage', true))} · Received ${formatStat(total('damage', false))}

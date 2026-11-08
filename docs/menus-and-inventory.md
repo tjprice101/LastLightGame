@@ -1,5 +1,19 @@
 # Menus and inventory
 
+## Radiant saved results and encounter transitions (2026-11-08)
+
+[Saved result/transition contract](Future%20Plans/radiant-combat-system-specification.md#saved-result-receipts-and-encounter-controls-2026-11-08)
+now exposes durable currency+loot receipts only after final saved impacts/Skip,
+with explicit Continue/Replay/exit. Reopening/Settings retain the result DOM
+without another save/celebration. Checkpoint restores display the existing
+journal, never replay rewards. Post-save victory reuses finite shared feedback.
+Continue respects every authored final-stage gate and replaces the field only
+after save; Replay preserves banked depletion/loot ledgers. Failed/lost transition
+replies expose the exact pending request retry. Exit routing is caller-owned and
+occurs only after successful saved disposal. Mid-battle exit uses the shared
+confirmation; cancellation/Escape writes nothing and restores actions/focus.
+Preview has an ended-state callback, not production activity routing.
+
 ## Radiant battlefield artwork and status timing (2026-11-08)
 
 [Canonical field/source-readout contract](Future%20Plans/radiant-combat-system-specification.md#canonical-battlefield-art-and-source-owned-readouts-2026-11-08):
@@ -13,7 +27,7 @@ without merging owners or substituting unrelated icons. During replay these
 are labelled as the last completed action snapshot, then settle after the
 saved presentation or Skip/Reduce motion. Full timed-status impact
 synchronization is not yet implemented. No optimistic status/expiry reveal.
-Production results/navigation and final cinematic VFX/composition remain pending.
+Production navigation and final cinematic VFX/composition remain pending.
 
 ## Saved radiant battle surface preview (2026-11-08)
 
@@ -28,7 +42,7 @@ resume; disposal is owned by leaving the run, not opening Settings.
 The in-memory developer preview is not a production account route. Unreviewed
 faces stay named pending tiles. Default finite rings are not the final unique
 VFX; full timed-status impact synchronization, battlefield composition and complete
-result/navigation integration remain pending.
+production navigation integration remains pending.
 
 ## Radiant manual preparation boundary (2026-11-08)
 

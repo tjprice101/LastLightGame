@@ -61,6 +61,10 @@ function build(): void {
       <form method="dialog"><button autofocus>Close</button></form>`;
     dialog.addEventListener('close', () => { dispose(); session.setSettings(false); view.render(); }, { once: true });
     dialog.showModal();
+  }, undefined, () => {
+    session.dispose();
+    notice.textContent = 'Saved encounter exited. Earned rewards retained in this in-memory fixture. Reset to start a new preview.';
+    battleHost.innerHTML = '<p role="status">Preview encounter ended. Use Reset preview encounter to start again.</p>';
   });
   notice.textContent = cycle ? `Explicit ${readyFlare(snapshot.state.radiantStudy!.state.gauge, 'ember')} charge fixture selected.` :
     'Normal charge fixture selected.';

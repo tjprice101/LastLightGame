@@ -7,20 +7,21 @@ import { releasedRadiantIds } from '../content/radiant-combat';
 import { RadiantBattleView, type RadiantBattleEffects } from './radiant-battle-view';
 import { applyMotion } from './settings';
 import type { RadiantImpactFrame } from './radiant-impact';
+import * as dialogs from './game-dialog';
 
 let serial = 0;
 const uuid = () => `00000000-0000-4000-8000-${(++serial).toString(16).padStart(12, '0')}`;
 const disposed: RadiantBattleView[] = [];
-function fixture(count = 6, form = 6, effects?: RadiantBattleEffects) {
+function fixture(count = 6, form = 6, effects?: RadiantBattleEffects, stage = 25, onExit?: () => void) {
   const state = freshGame('battle-surface'); state.starterId = 'ember';
-  state.account.storyCompleted = 24;
+  state.account.storyCompleted = stage - 1;
   state.account.squad = releasedRadiantIds.slice(0, count);
   for (const id of state.account.squad) state.account.characters[id as keyof typeof state.account.characters] =
     { level: form === 1 ? 30 : 105, evolution: form, weaponRank: 0 };
   const authority = { capability: 'isolated-radiant-study' as const, now: Date.UTC(2026, 10, 8),
     entry: () => ({ runId: uuid(), encounterSeed: 1729, chargeSeed: 7, targetSeed: 104729 }) };
   const entered = resolveRadiantRun({ revision: 0, state }, { requestId: uuid(), expectedRevision: 0,
-    runId: null, encounter: null, operation: { kind: 'start', activity: { kind: 'story', stage: 25 },
+    runId: null, encounter: null, operation: { kind: 'start', activity: { kind: 'story', stage },
       calibration: 'authored-control' } }, authority);
   let snapshot: RadiantRunSnapshot = { revision: 1, state: entered.state };
   const receipts = new Map<string, RadiantRunResponse>();
@@ -36,14 +37,19 @@ function fixture(count = 6, form = 6, effects?: RadiantBattleEffects) {
     run: snapshot.state.radiantStudy! }, transport, uuid);
   const host = document.createElement('div'); document.body.append(host);
   const settings = vi.fn();
-  const view = new RadiantBattleView(host, session, settings, effects); disposed.push(view);
+  const view = new RadiantBattleView(host, session, settings, effects, onExit); disposed.push(view);
   return { view, session, host, transport, settings };
 }
 function controls(host: HTMLElement, selector: string) { return host.querySelector<HTMLButtonElement>(selector)!; }
+async function clear(view: RadiantBattleView, session: RadiantSession) {
+  for (let turn = 0; turn < 40 && session.view().saved.run!.state.phase === 'player'; turn++) await view.act('normal');
+  expect(session.view().saved.run!.state.phase).toBe('victory');
+}
 afterEach(() => {
   for (const view of disposed.splice(0)) view.dispose();
   document.body.replaceChildren(); document.documentElement.dataset.motion = 'system';
   document.documentElement.dataset.battleSpeed = '1';
+  vi.restoreAllMocks();
 });
 describe('saved six-member Radiant battle surface', () => {
   it('renders six stable per-form face controls, four stats, two personal layers and exact shared charge', async () => {
@@ -156,5 +162,112 @@ describe('saved six-member Radiant battle surface', () => {
     view.dispose(); release(); await pending;
     expect(host.children).toHaveLength(0); expect(effects.impact).not.toHaveBeenCalled();
     expect(session.view().saved.revision).toBe(2);
+  });
+  it('saved results dismiss/reopen and Settings preserve the same receipt and sheet without new requests', async () => {
+    const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
+    await clear(view, session);
+    const results = host.querySelector<HTMLElement>('[data-radiant-results]')!;
+    const sheet = results.firstElementChild, before = session.view().saved;
+    expect(results.hidden).toBe(false); expect(document.activeElement).toBe(host.querySelector('[data-radiant-result-heading]'));
+    const requests = transport.execute.mock.calls.length;
+    controls(host, '[data-radiant-result-dismiss]').click();
+    expect(results.hidden).toBe(true); expect(document.activeElement).toBe(controls(host, '[data-radiant-results-show]'));
+    controls(host, '[data-radiant-results-show]').click(); expect(results.hidden).toBe(false);
+    controls(host, '[data-radiant-settings]').click(); expect(results.hidden).toBe(true);
+    session.setSettings(false); view.render();
+    expect(results.firstElementChild).toBe(sheet); expect(results.hidden).toBe(false);
+    expect(transport.execute).toHaveBeenCalledTimes(requests); expect(session.view().saved).toEqual(before);
+  });
+  it('Continue rebuilds only after save, freezes loadouts, resets encounter totals and keeps final stages terminal', async () => {
+    const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
+    await clear(view, session);
+    const before = session.view().saved.run!, oldImage = host.querySelector('.radiant-enemy-art');
+    const execute = transport.execute.getMockImplementation()!;
+    let save!: () => void;
+    transport.execute.mockImplementationOnce(async request => { await new Promise<void>(resolve => { save = resolve; }); return execute(request); });
+    const pending = view.transition('continue');
+    expect(host.querySelector('.radiant-enemy-art')).toBe(oldImage);
+    expect(session.view().saved.run!.encounter).toBe(before.encounter);
+    expect(controls(host, '[data-radiant-transition="retry"]').disabled).toBe(true);
+    save(); await pending;
+    const next = session.view();
+    expect(next.saved.run!.encounter).toBe(before.encounter + 1);
+    expect(next.saved.run!.state.bearers.map(unit => unit.loadout)).toEqual(before.initial.bearers.map(unit => unit.loadout));
+    expect(next.saved.run!.journal.events).toEqual([]); expect(next.entrancePending).toBe(false);
+    expect(next.presentation).toBeNull(); expect(host.querySelector('.radiant-enemy-art')).not.toBe(oldImage);
+    expect(host.querySelector<HTMLElement>('[data-radiant-results]')!.hidden).toBe(true);
+    const final = fixture(6, 6, undefined, 120); await final.view.finishEntrance(); await clear(final.view, final.session);
+    expect(final.host.querySelector('[data-radiant-transition="continue"]')).toBeNull();
+    expect(final.host.textContent).toContain('Activity complete');
+  });
+  it('Replay and lost exit acknowledgements retain earned rewards and retry the exact saved request once', async () => {
+    const exited = vi.fn(), { view, session, host, transport } = fixture(6, 6, undefined, 25, exited);
+    applyMotion('reduced'); await view.finishEntrance(); await clear(view, session);
+    const banked = session.view().saved.account.fractalis, journal = session.view().saved.run!.journal;
+    await view.transition('retry');
+    expect(session.view().saved.account.fractalis).toBe(banked);
+    expect(session.view().saved.run!.journal).toEqual(journal);
+    await clear(view, session);
+    expect(session.view().saved.account.fractalis).toBe(banked);
+    const execute = transport.execute.getMockImplementation()!;
+    transport.execute.mockImplementationOnce(async request => { await execute(request); throw new Error('Exit reply lost'); });
+    await expect(view.transition('exit')).rejects.toThrow('Exit reply lost');
+    expect(exited).not.toHaveBeenCalled(); expect(host.children.length).toBeGreaterThan(0);
+    const pending = session.view().pending!;
+    await view.retry();
+    expect(transport.execute.mock.calls.at(-1)![0]).toEqual(pending);
+    expect(exited).toHaveBeenCalledTimes(1); expect(session.view().saved.run).toBeNull();
+    expect(session.view().saved.account.fractalis).toBe(banked); expect(host.children).toHaveLength(0);
+  });
+  it('victory sheet waits for saved impact completion and Skip prevents late duplicate results', async () => {
+    let release!: () => void;
+    const effects = { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}), cancel: vi.fn() };
+    const { view, session, host } = fixture(6, 6, effects); await view.finishEntrance();
+    // This authored fixture has two targets; the first Normal defeats one.
+    await view.act('normal');
+    effects.windup.mockImplementationOnce(() => new Promise<void>(resolve => { release = resolve; }));
+    const pending = view.act('normal');
+    await vi.waitFor(() => expect(session.view().saved.run!.state.phase).toBe('victory'));
+    expect(host.querySelector<HTMLElement>('[data-radiant-results]')!.hidden).toBe(true);
+    expect(host.querySelector('[data-radiant-result-heading]')).toBeNull();
+    view.skip();
+    expect(host.querySelector<HTMLElement>('[data-radiant-results]')!.hidden).toBe(false);
+    const heading = host.querySelector('[data-radiant-result-heading]');
+    release(); await pending;
+    expect(host.querySelector('[data-radiant-result-heading]')).toBe(heading);
+    expect(host.querySelectorAll('[data-radiant-result-heading]')).toHaveLength(1);
+    expect(session.view().presentation).toBeNull();
+  });
+  it('restored terminal checkpoint shows durable totals without replaying any combat visuals', async () => {
+    const original = fixture(); applyMotion('reduced'); await original.view.finishEntrance(); await clear(original.view, original.session);
+    const checkpoint = original.session.view().saved;
+    original.view.dispose();
+    const session = new RadiantSession(checkpoint, original.transport, uuid);
+    const effects = { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}), cancel: vi.fn() };
+    const view = new RadiantBattleView(original.host, session, vi.fn(), effects); disposed.push(view);
+    await view.finishEntrance();
+    expect(original.host.querySelector<HTMLElement>('[data-radiant-results]')!.hidden).toBe(false);
+    expect(original.host.textContent).toContain('Saved encounter rewards');
+    expect(effects.windup).not.toHaveBeenCalled(); expect(effects.impact).not.toHaveBeenCalled();
+    expect(session.view().saved).toEqual(checkpoint);
+  });
+  it('mid-battle exit confirmation locks actions, cancellation saves nothing, acceptance exits once', async () => {
+    const exited = vi.fn(), { view, session, host, transport } = fixture(6, 6, undefined, 25, exited);
+    applyMotion('reduced'); await view.finishEntrance();
+    let choose!: (value: boolean) => void;
+    const confirm = vi.spyOn(dialogs, 'gameConfirm').mockImplementation(() => new Promise(resolve => { choose = resolve; }));
+    const saved = session.view().saved;
+    controls(host, '[data-radiant-leave]').click();
+    expect(session.view().settingsOpen).toBe(true);
+    expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(true);
+    expect(transport.execute).not.toHaveBeenCalled();
+    choose(false); await vi.waitFor(() => expect(session.view().settingsOpen).toBe(false));
+    expect(session.view().saved).toEqual(saved); expect(exited).not.toHaveBeenCalled();
+    confirm.mockResolvedValueOnce(true);
+    controls(host, '[data-radiant-leave]').click();
+    await vi.waitFor(() => expect(exited).toHaveBeenCalledTimes(1));
+    expect(transport.execute).toHaveBeenCalledTimes(1);
+    expect(transport.execute.mock.calls[0][0].operation.kind).toBe('exit');
+    expect(session.view().saved.run).toBeNull();
   });
 });

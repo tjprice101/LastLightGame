@@ -1,5 +1,58 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Saved result receipts and encounter controls (2026-11-08)
+
+[Saved results](../../src/presentation/radiant-results.ts) now appear after
+the saved final impact presentation (or Skip/Reduce motion), not merely when
+the authority first returns victory. They aggregate actual durable damage-paid
+Prismatica plus canonical loot/first-clear bonuses. The shared legacy reward
+item renderer supplies installed reward art, names and exact amounts; no
+second claim, reroll or grant. Totals include previous retries in the same
+encounter and remain available after checkpoint restoration without combat/
+victory-effect replay. Defeat/paused results retain earned receipts without
+victory celebration. HP damage/effective healing/Shield creation remain
+separate labelled summary measurements.
+
+View battlefield/reopen/Settings preserve the same result DOM and saved receipt;
+dismissal focuses the reopen button, while post-presentation/reopen focuses the
+heading. New saved victory uses finite shared Omnic feedback; dismissal/reopen/
+checkpoint load does not retrigger it. Owned feedback/loading/effects clean up
+with encounter replacement or disposal.
+
+Continue, Replay/Retry and Exit use existing saved session operations. Continue
+appears only before the actual authored endpoint (including current120-stage
+Story; Calamity has no Continue). No automatic advancement. Old field remains
+while a transition saves; only its accepted response replaces encounter art/
+readouts and runs the entrance. Frozen six-member loadouts stay unchanged.
+Continue uses the authority's new encounter and reset journal; Replay retains
+depletion/loot history and banked rewards. Lost transition acknowledgements
+expose the **same request ID/revision** retry, not a new transition. Exit routes
+only after its saved run disposal; failures retain the old field and earned
+receipt. A caller must supply exit routing to expose exit controls.
+
+Mid-battle Exit uses the shared in-game confirmation; while open, actions are
+locked and Escape/cancel performs no save. Confirmation retains all earned
+rewards and ends the run through existing authority semantics. The in-memory
+preview supplies an honest ended-state callback; Reset is a new conditional
+preview fixture, not a player grant. Production authenticated routing remains
+unfinished and the authority remains disabled.
+
+**Validation:** `npx vitest run src\presentation\radiant-results.test.ts src\presentation\radiant-battle-view.test.ts src\presentation\battle-results.test.ts src\presentation\game-dialog.test.ts src\presentation\radiant-impact.test.ts src\presentation\radiant-status.test.ts src\presentation\radiant-battle-art.test.ts src\online\radiant-session.test.ts src\online\radiant-run-progression.test.ts src\game\radiant-combat.test.ts --maxWorkers=2`:
+545 tests/10 files pass. `npm run build` passes client TypeScript/Vite with the
+existing large-chunk advisory. Tests cover deferred final-impact results/Skip,
+all activity endpoints, durable currency+bonus receipts, post-save Continue,
+Replay's no-repayment ledger, exact lost-exit retry, restored checkpoints,
+stable Settings/dismissal DOM and cancelled/confirmed mid-battle exit.
+Built browser effective390px: actual saved +466 Prismatica/+2 Null-Prismatica/
+two each Oceanic Seed/Bloom, no horizontal overflow; Continue advances to
+Stage26 with ready controls/focus restored. Confirmation locks actions, cancel
+returns unchanged Stage26, accepted exit removes battle/dialog controls;
+localStorage remains0. Integrated hidden tab uses programmatic controls, not a
+real-time frame-rate claim. Controlled saved-victory ring samples at0/250/850ms
+show opacity.9/.75/0 and scale.15/.964/1.25; effect is pointer-transparent.
+Full unique radiant VFX and timed-status impact
+synchronization remain unfinished.
+
 ## Canonical battlefield art and source-owned readouts (2026-11-08)
 
 The isolated saved battle now uses [canonical enemy/scenery resolvers](../../src/presentation/radiant-battle-art.ts)
@@ -76,7 +129,8 @@ pointer-transparent impact rings. Accepted selections reuse rarity feedback.
 The authored-effect interface is an integration seam, **not completed unique
 character Flare shaders/bloom/VFX**. Impact-synchronized timed statuses,
 polished overlapping battlefield composition, cinematic Home and
-production routing/results integration still remain.
+production routing integration still remain. Saved result/transition controls
+are now implemented above, not yet connected to the production activity router.
 
 **Browser preview:** `npm run dev`, then open
 `http://localhost:5173/LastLightGame/radiant-battle-preview.html`.

@@ -4,9 +4,9 @@ import { radiantFlares, radiantStarterKits, radiantAttunement } from '../content
 import { readyFlare, personalChargeMaximum, sharedChargeThreshold, sharedChargeUnit } from '../game/radiant-gauge';
 import type { RadiantCombatState } from '../game/radiant-combat';
 import { RadiantSession } from '../online/radiant-session';
-import { type RadiantPlayerAction, type RadiantRunResponse } from '../online/radiant-run';
+import { type RadiantPlayerAction, type RadiantRunResponse, type FrozenRadiantRun } from '../online/radiant-run';
 import { compactPortrait } from './compact-portrait';
-import { escapeDialogText as escape } from './game-dialog';
+import { escapeDialogText as escape, gameConfirm } from './game-dialog';
 import { rarityFeedback } from './rarity-feedback';
 import { reducedMotion } from './settings';
 import { battleSpeed } from './battle-speed';
@@ -15,6 +15,7 @@ import './radiant-battle.css';
 import { radiantArenaArt, radiantEnemyArt } from './radiant-battle-art';
 import { radiantStatusSnapshot, radiantStatusRows, radiantShieldRows } from './radiant-status';
 import { bindArtworkLoading } from './artwork-loading';
+import { radiantResultsMarkup, radiantEncounterLabel } from './radiant-results';
 
 export interface RadiantBattleEffects {
   windup(action: RadiantPlayerAction, state: RadiantCombatState): Promise<void>;
@@ -23,7 +24,7 @@ export interface RadiantBattleEffects {
   cancel(): void;
 }
 const tierNames = { glowing: 'Glowing Flare', lustrous: 'Lustrous Flare', eternal: 'Eternal Radiant Flare' };
-/** Saved-session battle surface. The caller owns routing/results and supplies
+/** Saved-session battle surface. The caller owns exit routing and supplies
  * authored effects; no local authority, account funding or feature activation. */
 export class RadiantBattleView {
   private displayed: RadiantReadout;
@@ -39,11 +40,14 @@ export class RadiantBattleView {
   private activeReceipt: RadiantRunResponse | null = null;
   private presentationGeneration = 0;
   private statuses: ReturnType<typeof radiantStatusSnapshot>;
-  private artworkCleanup: () => void;
+  private artworkCleanup!: () => void;
   private statusMarkup = new Map<string, string>();
   private shieldMarkup = new Map<string, string>();
+  private resultKey: string | null = null;
+  private resultCelebration: (() => void) | null = null;
   constructor(private readonly host: HTMLElement, private readonly session: RadiantSession,
-    private readonly openSettings: () => void, private readonly effects?: RadiantBattleEffects) {
+    private readonly openSettings: () => void, private readonly effects?: RadiantBattleEffects,
+    private readonly onExit?: () => void) {
     const run = session.view().saved.run;
     if (!run) throw new Error('A saved Radiant encounter is required.');
     this.displayed = radiantReadout(run.state);
@@ -51,10 +55,19 @@ export class RadiantBattleView {
     this.actor = run.state.bearers.find(unit => unit.hp > 0 && !run.state.acted.includes(unit.loadout.id))?.loadout.id
       ?? run.state.bearers[0].loadout.id;
     this.target = run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
-    host.innerHTML = `<section class="radiant-battle" aria-label="Radiant battle">
+    this.mount(run);
+    host.addEventListener('click', this.click);
+    window.addEventListener('last-light-motion-change', this.motion);
+    window.addEventListener('last-light-battle-speed-change', this.speed);
+    this.render();
+  }
+  private mount(run: FrozenRadiantRun): void {
+    this.host.innerHTML = `<section class="radiant-battle" aria-label="Radiant battle">
       <div class="radiant-arena">${radiantArenaArt(run.anchor.activity)}</div>
       <header class="radiant-battle-heading"><div><small>${escape(run.anchor.family)}</small><h2>Radiant battle</h2>
-        <span data-radiant-round></span></div><button type="button" data-radiant-settings>Settings</button></header>
+        <span data-radiant-progress>${radiantEncounterLabel(run)}</span> · <span data-radiant-round></span></div>
+        <button type="button" data-radiant-settings>Settings</button>
+        ${this.onExit ? '<button type="button" data-radiant-leave>Exit · Keep rewards</button>' : ''}</header>
       <div class="radiant-enemies" aria-label="Enemy targets">${run.enemies.map(enemy =>
         `<button type="button" class="radiant-enemy" data-radiant-target="${escape(enemy.id)}" aria-pressed="false">
           ${radiantEnemyArt(enemy)}<strong>${escape(enemy.name)}</strong><span>Lv.${enemy.level}</span>
@@ -82,15 +95,13 @@ export class RadiantBattleView {
         <button type="button" data-radiant-action="defense">Defense</button>
         <button type="button" data-radiant-action="flare">Glowing Flare</button>
         <button type="button" data-radiant-retry hidden>Retry pending request</button>
-        <button type="button" data-radiant-skip hidden>Skip presentation</button></div>
+        <button type="button" data-radiant-skip hidden>Skip presentation</button>
+        <button type="button" data-radiant-results-show hidden>View saved results</button></div>
+      <div data-radiant-results hidden></div>
       <p data-radiant-status role="status" aria-live="polite"></p>
       <p data-radiant-error role="alert"></p>
     </section>`;
-    host.addEventListener('click', this.click);
-    this.artworkCleanup = bindArtworkLoading(host);
-    window.addEventListener('last-light-motion-change', this.motion);
-    window.addEventListener('last-light-battle-speed-change', this.speed);
-    this.render();
+    this.artworkCleanup = bindArtworkLoading(this.host);
   }
   private healthMarkup(id: string): string {
     return `<div class="radiant-health" data-radiant-health="${escape(id)}"><meter min="0" aria-label="HP"></meter>
@@ -109,6 +120,17 @@ export class RadiantBattleView {
     if (!button || !this.host.contains(button) || button.disabled) return;
     if (button.hasAttribute('data-radiant-settings')) { this.session.setSettings(true); this.render(); this.openSettings(); return; }
     if (button.hasAttribute('data-radiant-skip')) { this.skip(); return; }
+    if (button.hasAttribute('data-radiant-leave')) { void this.confirmExit().catch(error => this.report(error)); return; }
+    if (button.hasAttribute('data-radiant-result-dismiss') || button.hasAttribute('data-radiant-results-show')) {
+      this.session.dismissResults(button.hasAttribute('data-radiant-result-dismiss')); this.render();
+      if (button.hasAttribute('data-radiant-result-dismiss')) this.element<HTMLElement>('[data-radiant-results-show]').focus();
+      else this.element<HTMLElement>('[data-radiant-result-heading]').focus();
+      return;
+    }
+    const transition = button.dataset.radiantTransition;
+    if (transition === 'continue' || transition === 'retry' || transition === 'exit') {
+      void this.transition(transition).catch(error => this.report(error)); return;
+    }
     if (button.dataset.radiantActor) {
       this.actor = button.dataset.radiantActor; this.render(); this.selection(button); return;
     }
@@ -199,6 +221,19 @@ export class RadiantBattleView {
     this.element<HTMLElement>('[data-radiant-action="flare"]').textContent = tier ? tierNames[tier] : 'Glowing Flare · charging';
     this.element<HTMLButtonElement>('[data-radiant-retry]').hidden = !view.pending || view.busy;
     this.element<HTMLButtonElement>('[data-radiant-skip]').hidden = !this.presenting;
+    const resultBlocked = view.busy || !!view.pending || !!view.preparationPending || !!view.presentation ||
+      !!view.preparationPresentation || view.settingsOpen || view.entrancePending || this.presenting;
+    const terminal = run.quit || run.state.phase === 'victory' || run.state.phase === 'defeat';
+    const leave = this.host.querySelector<HTMLButtonElement>('[data-radiant-leave]');
+    if (leave) { leave.disabled = resultBlocked; leave.hidden = terminal; }
+    const results = this.element<HTMLElement>('[data-radiant-results]');
+    if (terminal && !resultBlocked) {
+      const key = `${run.id}:${run.encounter}:${view.saved.revision}`;
+      if (this.resultKey !== key) { results.innerHTML = radiantResultsMarkup(run, !!this.onExit); this.resultKey = key; }
+    }
+    results.hidden = !terminal || resultBlocked || view.resultsDismissed;
+    this.element<HTMLButtonElement>('[data-radiant-results-show]').hidden = !terminal || resultBlocked || !view.resultsDismissed;
+    for (const button of Array.from(results.querySelectorAll<HTMLButtonElement>('button'))) button.disabled = resultBlocked;
     this.element<HTMLElement>('[data-radiant-error]').textContent = view.error?.message ?? this.presentationError ?? '';
     this.element<HTMLElement>('[data-radiant-status]').textContent = view.busy ? 'Awaiting saved outcome…' :
       this.presenting ? 'Presenting saved impacts…' : run.state.phase === 'victory' ? 'Victory · rewards saved.' :
@@ -226,10 +261,62 @@ export class RadiantBattleView {
   async retry(): Promise<void> {
     this.presentationError = null;
     const before = this.session.view().saved.run, request = this.session.view().pending;
-    if (!before || request?.operation.kind !== 'action') throw new Error('Only an unresolved battle action can be retried here.');
+    if (!before || !request) throw new Error('An unresolved battle request is required.');
     const pending = this.session.retryPending(); this.render();
-    try { await this.present(before.state, await pending, request.operation.action); }
+    try {
+      const response = await pending;
+      if (request.operation.kind === 'action') await this.present(before.state, response, request.operation.action);
+      else if (request.operation.kind === 'continue' || request.operation.kind === 'retry' || request.operation.kind === 'exit')
+        await this.finishTransition(request.operation.kind, response);
+      else throw new Error('Unsupported pending battle transition.');
+    }
     finally { this.render(); }
+  }
+  async transition(kind: 'continue' | 'retry' | 'exit'): Promise<void> {
+    if (kind === 'exit' && !this.onExit) throw new Error('Saved battle exit routing is unavailable.');
+    const view = this.session.view(), run = view.saved.run;
+    if (!run || this.presenting || view.settingsOpen || view.entrancePending ||
+      kind !== 'exit' && !(run.quit || run.state.phase === 'victory' || run.state.phase === 'defeat'))
+      throw new Error('Finish the saved battle presentation before leaving this encounter.');
+    this.presentationError = null;
+    const pending = this.session.perform({ kind }); this.render();
+    try { await this.finishTransition(kind, await pending); }
+    finally { this.render(); }
+  }
+  private async confirmExit(): Promise<void> {
+    this.session.setSettings(true); this.render();
+    let confirmed: boolean;
+    try {
+      confirmed = await gameConfirm('Leave this frozen encounter? Earned rewards are retained. The current run will end.',
+        { title: 'Exit battle', confirmLabel: 'Exit · Keep rewards' });
+    } finally { if (!this.disposed) { this.session.setSettings(false); this.render(); } }
+    if (confirmed && !this.disposed) await this.transition('exit');
+  }
+  private async finishTransition(kind: 'continue' | 'retry' | 'exit', response: RadiantRunResponse): Promise<void> {
+    if (this.disposed) return;
+    const receipt = this.session.view().presentation;
+    if (!receipt) throw new Error('Saved transition receipt is missing.');
+    this.session.finishPresentation(receipt.requestId);
+    if (kind === 'exit') {
+      this.dispose();
+      try { this.onExit!(); }
+      catch (error) {
+        console.error('Saved Radiant exit routing failed.', error);
+        const notice = this.host.ownerDocument.createElement('p'); notice.setAttribute('role', 'alert');
+        notice.textContent = 'Encounter exited and rewards retained, but the destination could not open.';
+        this.host.append(notice);
+        throw error;
+      }
+      return;
+    }
+    this.cancelEffects(); this.artworkCleanup(); this.resultCelebration?.(); this.resultCelebration = null;
+    this.displayed = radiantReadout(response.run.state); this.statuses = radiantStatusSnapshot(response.run.state);
+    this.statusMarkup.clear(); this.shieldMarkup.clear(); this.resultKey = null;
+    this.actor = response.run.state.bearers.find(unit => unit.hp > 0)?.loadout.id ?? response.run.state.bearers[0].loadout.id;
+    this.target = response.run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
+    this.mount(response.run); this.render();
+    await this.finishEntrance();
+    if (!this.disposed) this.element<HTMLElement>(`[data-radiant-actor="${this.actor}"]`).focus();
   }
   private async present(before: RadiantCombatState, response: RadiantRunResponse, action: RadiantPlayerAction): Promise<void> {
     if (this.disposed) return;
@@ -268,6 +355,14 @@ export class RadiantBattleView {
       !response.run.state.acted.includes(unit.loadout.id))?.loadout.id ?? this.actor;
     this.target = response.run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
     this.render();
+    const results = this.element<HTMLElement>('[data-radiant-results]');
+    if (!results.hidden) {
+      const heading = this.element<HTMLElement>('[data-radiant-result-heading]');
+      heading.focus();
+      if (response.run.state.phase === 'victory') {
+        this.resultCelebration?.(); this.resultCelebration = rarityFeedback(heading, 'Omnic');
+      }
+    }
   }
   skip(): void {
     this.skipped = true; this.presentationGeneration++; this.cancelEffects();
@@ -306,6 +401,7 @@ export class RadiantBattleView {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true; this.cancelEffects();
+    this.resultCelebration?.(); this.resultCelebration = null;
     this.artworkCleanup();
     this.host.removeEventListener('click', this.click);
     window.removeEventListener('last-light-motion-change', this.motion);

@@ -1,5 +1,43 @@
 # Current state and handoff
 
+## Radiant saved results and encounter controls (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; prior canonical field `17ff3f61`.
+No authority/schema/RNG/combat-math change or production activation/deployment.
+
+**Implemented:** post-impact/Skip saved results combine durable damage-paid
+Prismatica and actual canonical loot/bonus receipts using shared reward artwork.
+Separate HP damage/effective healing/Shield creation summaries; previous retry
+totals/checkpoint recovery never reroll/claim. Stable result DOM through
+dismiss/reopen/Settings, heading/reopen focus, finite once-per-saved-victory
+feedback (no checkpoint/reopen replay). Continue respects all current endpoints;
+save-first field replacement retains frozen gear/squad and starts new entrance.
+Replay preserves paid/loot ledgers. Failed/lost transition replies use exact
+pending request retry. Exit routes only after saved disposal; mid-battle
+confirmation blocks actions and cancel/Escape saves nothing. Preview exit
+ends honestly; Reset starts another explicit in-memory conditional fixture.
+
+**Verified:** [exact focused command/evidence](Future%20Plans/radiant-combat-system-specification.md#saved-result-receipts-and-encounter-controls-2026-11-08):
+545 tests/10 files pass; `npm run build` passes client TypeScript/Vite with
+existing chunk advisory. Deferred-impact/Skip, final-stage gates, receipt sums,
+stable Settings/dismissal, post-save Continue, no-repayment Replay, lost-exit
+retry, checkpoint results and cancel/confirm boundaries are tested.
+Built browser effective390px: saved +466/+2 currencies and2 each Oceanic
+Seed/Bloom, no overflow; Continue Stage26/focus/ready controls; cancellation
+retains Stage26, confirmed exit removes battle/dialogs; localStorage0.
+Hidden integrated tab uses programmatic controls, not real-time FPS. Controlled
+saved-victory ring0/250/850ms samples fade.9/.75/0 and expand.15/.964/1.25,
+pointer-transparent.
+Temporary validation server is stopped afterward.
+
+**Remaining:** production authenticated preparation/activity routing and exit
+destination integration (the result surface now exists), actual DB proof,
+full timed-status impact clocks,174 reviewed face crops, cinematic six-member
+Home/overlapping battlefield, detailed unique radiant Flare VFX, final cadence/
+network/economy calibration and journal payload gates. Art brief stays provisional.
+Authority remains disabled; don't merge/deploy this incomplete overhaul.
+Unrelated dirty mock-up/Future Plans/status-document content stays unstaged.
+
 ## Radiant canonical field art and source-owned readouts (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`, prior battle surface `eb336cf2`.

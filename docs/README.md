@@ -1,5 +1,13 @@
 # Documentation hub
 
+## Radiant saved result receipts and encounter controls (2026-11-08)
+
+[Durable reward results and saved Continue/Replay/exit](Future%20Plans/radiant-combat-system-specification.md#saved-result-receipts-and-encounter-controls-2026-11-08)
+are wired in the isolated preview: save-first field replacement, final-stage
+gates, exact lost-reply retries and in-game cancellable mid-battle exit.
+No duplicate claim/celebration or production activation. Full production
+navigation, unique VFX, face intake and synchronized timed-status impacts remain.
+
 ## Radiant battlefield art and owned status reference (2026-11-08)
 
 [Canonical supplied scenery/enemies and source-owned Shield/status rows](Future%20Plans/radiant-combat-system-specification.md#canonical-battlefield-art-and-source-owned-readouts-2026-11-08)

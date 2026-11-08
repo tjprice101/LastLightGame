@@ -1,5 +1,17 @@
 # Decision log
 
+## Render saved radiant results and route only accepted transitions (2026-11-08)
+
+Continue the delegated overhaul with durable currency/loot receipts after
+final impacts, never a second reward claim. Reuse shared reward-item art and
+finite saved-victory feedback. Preserve dismissal/Settings/checkpoint totals
+without celebration replay. Continue respects authored endpoints; Replay keeps
+paid/loot history. Replace the field/route exit only after a saved response,
+and retry an ambiguous transition with the same request. Use the native in-game
+confirmation for mid-battle exit; cancellation does not mutate the account.
+Keep production routing/activation separate from the in-memory preview.
+[Contract/evidence](Future%20Plans/radiant-combat-system-specification.md#saved-result-receipts-and-encounter-controls-2026-11-08).
+
 ## Preserve canonical field art and honest status timing (2026-11-08)
 
 Continue the delegated isolated overhaul using frozen canonical creature
