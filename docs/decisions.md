@@ -1,5 +1,14 @@
 # Decision log
 
+## Conduit breadth, simplicity and upgrades (2026-11-08)
+
+Owner wants the global catalog to influence all aspects of combat/team
+composition, creatively but without unnecessary complexity. Higher tiers should
+be stronger/do more. Confirms ordinary Conduits stay upgradeable and Masters
+stay fixed. [Coverage/rarity review policy](Future%20Plans/radiant-combat-system-specification.md#global-conduit-direction-and-rarity-progression-2026-11-08)
+is proposed; no new catalog counts, costs, probabilities or rank caps approved.
+All effects/upgrades require exact conversion and combination benchmarks.
+
 ## Six-member squads and full integrated overhaul scope (2026-11-08)
 
 Owner raises maximum to6, allows1-6 in all activities and wants difficulty/gear/

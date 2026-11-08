@@ -1,5 +1,85 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Global Conduit direction and rarity progression (2026-11-08)
+
+Owner requires the catalog **as a whole** to change/amplify the breadth of
+battle and team composition, with creative but understandable effects.
+**Ordinary Conduits remain upgradeable; personal Masters remain fixed**,
+confirmed separately. Higher-tier ordinary Conduits should provide stronger
+or broader useful effects than lower tiers, not merely more complicated text.
+No new catalog counts, upgrade costs/caps or acquisition rates selected here.
+
+### Proposed coverage matrix for the complete catalog review
+
+| Domain | Simple effect direction / illustrative name, not approved item |
+| --- | --- |
+| Normal offense |Prismedge Relay: strengthen Normal damage or a clear Defense-piercing opportunity. |
+| Flare offense |Corona Lens: amplify one named Flare tier or a readable full-charge payoff. |
+| Durability |Halo Bulwark: improve Defense or reduce a specified first incoming hit. |
+| Defense action |Vesper Brace: convert deliberate guarding into a modest Shield or charge grant. |
+| Healing |Dawnwell Manifold: improve Recovery or the effective healing of one clear action type. |
+| Shields |Facet Reservoir: improve generated Shields or reward genuine absorption, never count generation as absorption. |
+| Personal charge |Lustre Capacitor: improve a defined guaranteed gain or retain a bounded amount on cast. |
+| Shared Eternal charge |Concord Dynamo: one bounded shared-fill contribution from a clear manual-action trigger. |
+| Status application |Cinder Aperture: strengthen authored Burn without inventing missing Burn on every bearer. |
+| Status resilience |Argent Filter: shorten or remove a precisely named harmful effect under an explicit condition. |
+| Squad cooperation |Aureole Link: reward two different bearers acting on one target, at most once per round. |
+| Formation/leadership |Meridian Standard: enhance a defined leader contribution or first-member action, without granting another leader. |
+| Focus/area utility |Refraction Array: choose stronger single-target output or a bounded area follow-up, not unlimited hit-count procs. |
+| Sustain |Afterglow Engine: recover after an actual qualifying event with a clear per-round limit. |
+
+These are effect families and vocabulary examples, not additional approved
+Conduits, exact mechanics or a commitment to rename installed artwork.
+Across the catalog cover all selected combat domains; each individual item
+does **not** need to affect every system. Economy drops, new elements, revival,
+extra turns and bypassing eligibility are not automatically included.
+
+### Simplicity budget
+
+One primary job per ordinary Conduit. Prefer an unconditional stat bonus or
+one obvious trigger plus one payoff; higher tiers may add one closely related
+secondary effect. Keep short descriptions to two meaningful clauses where
+possible. Name actual target, amount and clock; put shared stacking/source
+definitions in the glossary instead of repeating implementation commentary.
+No item needs a bespoke hidden counter unless a visible simple mechanic
+genuinely cannot express its purpose.
+
+Test combinations, not only individual tooltips: six wearers' shared-charge/
+healing auras, shield absorption grants, multi-hit/AoE and generated follow-ups
+must not recursively feed their own triggers. Effects declare whether they
+modify stats, actual action magnitude, guaranteed charge or a separate packet.
+Maintain current eligibility/ownership/slot restrictions unless explicitly
+changed in the reviewed conversion table.
+
+### Rarity and upgrade review policy
+
+Use the actual acquisition catalog's Common/Rare/Legendary/Omnic/Calamitic
+tiers; do not invent an Epic ordinary tier from the character rarity ladder.
+
+- Common: reliable accessible fundamentals, still useful before higher gear.
+- Rare: stronger fundamentals or a simple action-linked benefit.
+- Legendary: substantial specialization or a clear two-part synergy.
+- Omnic: powerful eligible elemental/build-defining benefits.
+- Calamitic: strongest specialized endgame scope, calibrated separately from
+  ordinary progression rather than assumed early-account access.
+- Personal Master: fixed matching-bearer attunement plus one unique personal
+  enhancement, not another upgradeable ordinary rarity step.
+
+Higher rarity must demonstrate greater benefit in **comparable purpose and
+eligibility**, not beat every unrelated item in every situation. A max-upgraded
+lower item versus a base higher item requires an explicit benchmark rather than
+an assumed universal ordering. Keep costs/access honest. Upgrade growth should
+strengthen the existing identity; propose magnitude increases before proc odds,
+duration, trigger count or resource-loop changes. Penalties/conditions do not
+silently disappear. List exact per-rank values and retain owned upgrade ranks
+under the approved migration.
+
+Before release, provide a full stable-ID conversion matrix with domain, rarity,
+eligibility, effect/clock/source, per-rank values and six-member stacking behavior.
+Measure same-purpose rarity progression, early acquisition usefulness,
+overcharge/charge economy, pressured survival and exploit-loop bounds.
+No claim of completed catalog redesign or validated power ladder in this section.
+
 ## Expanded scope: six-bearer progression and integrated UI (2026-11-08)
 
 Latest owner revision **supersedes all three/five-member maximums**:

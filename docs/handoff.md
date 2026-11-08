@@ -1,5 +1,14 @@
 # Current state and handoff
 
+## Global Conduit design direction clarified (2026-11-08)
+
+Owner requires broad combat/team-composition influence, simple meaningful
+effects and stronger/broader higher tiers. Ordinary upgrades retained; Masters
+explicitly fixed. [Coverage and review policy](Future%20Plans/radiant-combat-system-specification.md#global-conduit-direction-and-rarity-progression-2026-11-08)
+adds domain matrix, complexity budget, exact-rank/rarity comparison and six-member
+loop testing. No catalog implementation or measured tuning yet; exact system/
+starter and full gear conversion remain review deliverables.
+
 ## Expanded overhaul: six-member teams/all gear/enemies (2026-11-08)
 
 [Owner scope](Future%20Plans/radiant-combat-system-specification.md#expanded-scope-six-bearer-progression-and-integrated-ui-2026-11-08):
