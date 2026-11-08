@@ -1,12 +1,12 @@
 import { characterName } from '../content/character-art';
 import { getStarter } from '../content/starters';
-import { radiantFlares, radiantStarterKits, radiantAttunement } from '../content/radiant-combat';
+import { radiantAttunement } from '../content/radiant-combat';
 import { readyFlare, personalChargeMaximum, sharedChargeThreshold, sharedChargeUnit } from '../game/radiant-gauge';
 import type { RadiantCombatState } from '../game/radiant-combat';
 import { RadiantSession } from '../online/radiant-session';
 import { type RadiantPlayerAction, type RadiantRunResponse, type FrozenRadiantRun } from '../online/radiant-run';
 import { compactPortrait } from './compact-portrait';
-import { escapeDialogText as escape, gameConfirm } from './game-dialog';
+import { escapeDialogText as escape, gameConfirm, createGameDialog } from './game-dialog';
 import { rarityFeedback } from './rarity-feedback';
 import { reducedMotion } from './settings';
 import { battleSpeed } from './battle-speed';
@@ -16,6 +16,7 @@ import { radiantArenaArt, radiantEnemyArt } from './radiant-battle-art';
 import { radiantStatusSnapshot, radiantStatusRows, radiantShieldRows } from './radiant-status';
 import { bindArtworkLoading } from './artwork-loading';
 import { radiantResultsMarkup, radiantEncounterLabel } from './radiant-results';
+import { radiantBattleReference, radiantLeaderReference, radiantFlareNeedsTarget } from './radiant-battle-reference';
 
 export interface RadiantBattleEffects {
   windup(action: RadiantPlayerAction, state: RadiantCombatState): Promise<void>;
@@ -45,6 +46,8 @@ export class RadiantBattleView {
   private shieldMarkup = new Map<string, string>();
   private resultKey: string | null = null;
   private resultCelebration: (() => void) | null = null;
+  private referenceCleanup: (() => void) | null = null;
+  private leaderMarkup: string | null = null;
   constructor(private readonly host: HTMLElement, private readonly session: RadiantSession,
     private readonly openSettings: () => void, private readonly effects?: RadiantBattleEffects,
     private readonly onExit?: () => void) {
@@ -68,6 +71,20 @@ export class RadiantBattleView {
         <span data-radiant-progress>${radiantEncounterLabel(run)}</span> · <span data-radiant-round></span></div>
         <button type="button" data-radiant-settings>Settings</button>
         ${this.onExit ? '<button type="button" data-radiant-leave>Exit · Keep rewards</button>' : ''}</header>
+      <details class="radiant-team-reference"><summary>Squad rules and frozen leader</summary>
+        <div data-radiant-leader-reference></div>
+        <p>Normal Attack and Defense each use this member’s action for the round. No random critical damage.
+        Normal direct hits grant20 personal charge; Defense grants10; living members gain5 each new round.
+        Surviving a direct enemy action that hits HP or Shields grants8 personal charge once, not once per hit.
+        Each eligible direct hit has a25% chance of5 bonus charge, at most two rolls per action; generated/periodic packets do not qualify.</p>
+        <p>Normal Attack uses100% effective Attack against one selected living enemy.
+        Direct damage is rounded once: Attack × Attack/(Attack + effective enemy Defense) × action coefficient × output modifiers, minimum1.
+        Burn/periodic and generated packets follow their authored rules, not this guaranteed direct-damage formula.
+        Defense halves direct enemy damage until the next round, with strongest reduction and gear enhancements; combined multiplier floor20%.
+        Shields absorb in creation order before HP.</p>
+        <p>Shared charge: Normal direct hits/Defense grant6 divided by frozen squad size, ordinary Flares12 divided by squad size;
+        each new round adds18. Eternal cannot refill itself. Defeated members are not replaced or promoted.</p>
+      </details>
       <div class="radiant-enemies" aria-label="Enemy targets">${run.enemies.map(enemy =>
         `<button type="button" class="radiant-enemy" data-radiant-target="${escape(enemy.id)}" aria-pressed="false">
           ${radiantEnemyArt(enemy)}<strong>${escape(enemy.name)}</strong><span>Lv.${enemy.level}</span>
@@ -85,10 +102,7 @@ export class RadiantBattleView {
           <div class="radiant-charge-layers" aria-label="Personal charge">${[1, ...(member.form >= 4 ? [2] : [])].map(layer =>
             `<meter data-radiant-charge="${escape(member.id)}" data-layer="${layer}" min="0" max="${run.state.gauge.members[index].baseCost}" aria-label="${layer === 1 ? 'Glowing' : 'Lustrous'} charge layer"></meter>`).join('')}</div>
           <span data-radiant-charge-text="${escape(member.id)}"></span>
-          <details><summary>Battle reference</summary><dl>${Object.entries(unit.stats).map(([name, value]) =>
-            `<div><dt>${name === 'hp' ? 'HP' : escape(name[0].toUpperCase() + name.slice(1))}</dt><dd>${value}</dd></div>`).join('')}</dl>
-            <p>${escape(radiantStarterKits[member.starter].passive.description)}</p>
-            ${Object.values(radiantFlares[member.starter]).map(offer => `<p><b>${escape(offer.name)}</b> · ${escape(offer.target)}</p>`).join('')}</details>
+          <button type="button" data-radiant-reference="${escape(member.id)}" aria-haspopup="dialog">Battle reference</button>
         </article>`;
       }).join('')}</div>
       <div class="radiant-actions"><button type="button" data-radiant-action="normal">Normal Attack</button>
@@ -120,6 +134,10 @@ export class RadiantBattleView {
     if (!button || !this.host.contains(button) || button.disabled) return;
     if (button.hasAttribute('data-radiant-settings')) { this.session.setSettings(true); this.render(); this.openSettings(); return; }
     if (button.hasAttribute('data-radiant-skip')) { this.skip(); return; }
+    if (button.dataset.radiantReference) {
+      try { this.openReference(button.dataset.radiantReference); } catch (error) { this.report(error); }
+      return;
+    }
     if (button.hasAttribute('data-radiant-leave')) { void this.confirmExit().catch(error => this.report(error)); return; }
     if (button.hasAttribute('data-radiant-result-dismiss') || button.hasAttribute('data-radiant-results-show')) {
       this.session.dismissResults(button.hasAttribute('data-radiant-result-dismiss')); this.render();
@@ -212,6 +230,9 @@ export class RadiantBattleView {
     this.element<HTMLElement>('[data-radiant-shared-text]').textContent =
       `${shared.value} / ${shared.max}`;
     this.element<HTMLElement>('[data-radiant-round]').textContent = `Round ${this.displayed.round}`;
+    const leader = this.element<HTMLElement>('[data-radiant-leader-reference]');
+    const leaderMarkup = radiantLeaderReference(run.state, this.displayed.units[run.state.bearers[0].loadout.id].hp > 0);
+    if (this.leaderMarkup !== leaderMarkup) { leader.innerHTML = leaderMarkup; this.leaderMarkup = leaderMarkup; }
     const actor = this.displayed.gauge.members.find(member => member.id === this.actor)!;
     const tier = actor.living ? readyFlare(this.displayed.gauge, this.actor) : null;
     for (const button of Array.from(this.host.querySelectorAll<HTMLButtonElement>('[data-radiant-action]')))
@@ -244,6 +265,40 @@ export class RadiantBattleView {
     await this.animate(this.element('.radiant-squad'), [{ opacity: .3, transform: 'translateY(16px)' }, { opacity: 1, transform: 'translateY(0)' }], 500);
     if (!this.disposed) { this.session.finishEntrance(); this.render(); }
   }
+  private openReference(id: string): void {
+    const run = this.session.view().saved.run;
+    if (!run) throw new Error('A frozen encounter is required for its reference.');
+    const unit = run.state.bearers.find(member => member.loadout.id === id);
+    const gauge = this.displayed.gauge.members.find(member => member.id === id);
+    if (!unit || !gauge) throw new Error('Frozen battle reference member is missing.');
+    const title = characterName(unit.loadout.starter, unit.loadout.form);
+    const { dialog, dispose } = createGameDialog(`${title} · Battle reference`);
+    dialog.classList.add('radiant-reference-dialog');
+    dialog.innerHTML = `<h2>${escape(title)}</h2><p>Four frozen stats (before dynamic leader/status modifiers)</p>
+      <dl>${Object.entries(unit.stats).map(([name, value]) =>
+        `<div><dt>${name === 'hp' ? 'HP' : escape(name[0].toUpperCase() + name.slice(1))}</dt><dd>${value}</dd></div>`).join('')}</dl>
+      ${radiantBattleReference(unit.loadout, gauge.baseCost)}
+      <form method="dialog"><button autofocus>Close reference</button></form>`;
+    this.session.setSettings(true); this.render();
+    const artwork = bindArtworkLoading(dialog);
+    let closed = false;
+    const cleanup = () => {
+      if (closed) return;
+      closed = true;
+      dialog.removeEventListener('close', cleanup);
+      this.referenceCleanup = null; artwork(); dispose();
+      if (!this.disposed) { this.session.setSettings(false); this.render(); }
+    };
+    this.referenceCleanup = cleanup;
+    dialog.addEventListener('close', cleanup, { once: true });
+    dialog.addEventListener('submit', event => { event.preventDefault(); cleanup(); });
+    dialog.addEventListener('cancel', event => { event.preventDefault(); cleanup(); });
+    dialog.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); cleanup(); }
+    });
+    try { dialog.showModal(); }
+    catch (error) { cleanup(); throw error; }
+  }
   async act(kind: 'normal' | 'defense' | 'flare'): Promise<void> {
     this.presentationError = null;
     const before = this.session.view().saved.run;
@@ -252,7 +307,7 @@ export class RadiantBattleView {
     const tier = member.hp > 0 ? readyFlare(before.state.gauge, this.actor) : null;
     const action: RadiantPlayerAction = kind === 'defense' ? { type: kind, bearerId: this.actor } :
       kind === 'normal' ? { type: kind, bearerId: this.actor, targetId: this.target ?? '' } :
-      { type: kind, bearerId: this.actor, ...(tier && radiantFlares[member.loadout.starter][tier].target === 'one-enemy'
+      { type: kind, bearerId: this.actor, ...(tier && radiantFlareNeedsTarget(member.loadout, tier)
         ? { targetId: this.target ?? '' } : {}) };
     const pending = this.session.perform({ kind: 'action', action }); this.render();
     try { const response = await pending; await this.present(before.state, response, action); }
@@ -311,7 +366,7 @@ export class RadiantBattleView {
     }
     this.cancelEffects(); this.artworkCleanup(); this.resultCelebration?.(); this.resultCelebration = null;
     this.displayed = radiantReadout(response.run.state); this.statuses = radiantStatusSnapshot(response.run.state);
-    this.statusMarkup.clear(); this.shieldMarkup.clear(); this.resultKey = null;
+    this.statusMarkup.clear(); this.shieldMarkup.clear(); this.resultKey = null; this.leaderMarkup = null;
     this.actor = response.run.state.bearers.find(unit => unit.hp > 0)?.loadout.id ?? response.run.state.bearers[0].loadout.id;
     this.target = response.run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
     this.mount(response.run); this.render();
@@ -401,6 +456,7 @@ export class RadiantBattleView {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true; this.cancelEffects();
+    this.referenceCleanup?.(); this.referenceCleanup = null;
     this.resultCelebration?.(); this.resultCelebration = null;
     this.artworkCleanup();
     this.host.removeEventListener('click', this.click);

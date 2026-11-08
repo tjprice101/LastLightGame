@@ -1,5 +1,21 @@
 # Menus and inventory
 
+## Radiant frozen mechanics reference (2026-11-08)
+
+[Complete reference/target contract](Future%20Plans/radiant-combat-system-specification.md#complete-frozen-bearer-reference-and-master-targeting-2026-11-08):
+each bearer has a contained native game-dialog reference for four frozen stats,
+passive, all three exact baseline Flare tiers/costs/unlocks, saved enhancements,
+personal Master/attunement and converted Conduit effects at frozen ranks.
+Do not substitute legacy descriptions or reread menu gear. Squad rules explain
+actual Normal/Defense/Gauge and frozen leader semantics. Displayed impact HP,
+not future saved death, controls the leader active label.
+Reference dialogs pause/lock the same view; explicit Close/Escape restores
+focus/resumes, with disposal and artwork retry cleanup. No reference save.
+Tizu/Flora strike-adding Masters now supply the selected-enemy target required
+by the actual combat engine, while retaining their authored allied effects.
+The developer preview's optional owned-Master fixture remains conditional and
+in-memory. Production routing/final VFX remain pending.
+
 ## Radiant saved results and encounter transitions (2026-11-08)
 
 [Saved result/transition contract](Future%20Plans/radiant-combat-system-specification.md#saved-result-receipts-and-encounter-controls-2026-11-08)

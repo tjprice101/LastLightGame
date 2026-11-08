@@ -1,5 +1,60 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Complete frozen bearer reference and Master targeting (2026-11-08)
+
+[Frozen battle reference](../../src/presentation/radiant-battle-reference.ts)
+now covers all32 released bearers'96 authored Flare offers, native passive,
+saved ascension multipliers, personal Master/attunement, weapon rank and all99
+converted ordinary Conduits. Each member opens a shared native game dialog
+with the four frozen stats, tier costs/unlocks/target sets, exact baseline
+coefficients, status clocks, healing/Shield bases and special starter Eternal
+rules. Saved enhancements are explicitly separate from baseline coefficients;
+these are not promises of final damage or effective healing.
+
+Gear text uses current Radiant primitives at the frozen rank (including caps,
+owner/trigger predicates and no generated recursion), **not legacy Conduit
+effect descriptions or current menu gear**. Independent status sources retain
+strongest-effect semantics, while Shields retain FIFO stacking. No loadout/
+account/authority mutation occurs when reading the reference.
+
+The squad reference exposes Normal/Defense/direct damage and personal/shared
+charge rules plus the frozen first-member leader bonus. Leader magnitude
+includes saved leader ascension/Master/gear. Its active/inactive presentation
+uses the displayed impact HP, not future final-state death; no new leader is
+promoted. The reference explains that leader HP multipliers do not refill or
+change the actual maximum-HP ledger.
+
+Per-member references are contained wide dialogs, not hundreds of lines in a
+narrow squad card. Opening pauses/locks the same battle through existing
+Settings semantics. Close/Escape restores focus and resumes; modal artwork
+loading/failure listeners and dialog lifecycle are disposed with the view.
+Opening/dismissing requires no save or reward effect.
+
+**Coupled target correction:** Tizu `master-tide-3` and Flora `master-sprout-2`
+add a selected-enemy strike to their all-allied Flares. The saved battle view
+now sends the selected living enemy for these Masters, rather than omitting
+it based solely on the baseline allied target set. No authored mechanics/RNG/
+server/schema change. The in-memory preview offers an explicit conditional
+owned-Master fixture so both real paths can be exercised without player writes.
+
+**Validation:** `npx vitest run src\presentation\radiant-battle-reference.test.ts src\presentation\radiant-battle-view.test.ts src\presentation\radiant-results.test.ts src\presentation\radiant-impact.test.ts src\presentation\radiant-status.test.ts src\presentation\radiant-battle-art.test.ts src\online\radiant-session.test.ts src\game\radiant-combat.test.ts --maxWorkers=2`:
+560 tests/8 files pass. All96 Master targeting predicates execute successfully
+against the actual combat reducer; both attack-adding starter Masters are also
+tested through the saved view/authority bridge. All99 Conduit rank5 primitive
+descriptions and32×3 Flare offers are covered; content/frozen inputs stay intact.
+Reference Escape/focus/locks and leader displayed-life behavior are tested.
+`npm run build` passes client TypeScript/Vite (existing large-chunk advisory).
+Built browser effective390px: modal333px wide,812px tall in844px viewport,
+contained scroll/no page overflow, four stats/three tiers/exact Tizu Master.
+Close removes dialog, restores Tizu reference focus/ready actions. Both Tizu/
+Flora selected-enemy Master casts defeat the selected520HP enemy while the
+other remains520; Tizu Shields still apply, no error text/localStorage writes.
+
+This is reference and targeting integration, not completion of the final
+cinematic unique radiant VFX, face intake, synchronized timed-status impacts,
+production routing/DB proof or final tuning. The single art brief stays
+provisional; this stage creates no new artwork commission.
+
 ## Saved result receipts and encounter controls (2026-11-08)
 
 [Saved results](../../src/presentation/radiant-results.ts) now appear after

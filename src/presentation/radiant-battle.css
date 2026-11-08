@@ -68,6 +68,14 @@ body:has(#radiant-preview) { margin: 0; background: #0c0d11; }
 .radiant-shared meter { flex: 1 1 200px; max-width: 450px; accent-color: #e3eaff; }
 .radiant-battle [hidden] { display: none !important; }
 .radiant-member details { margin-top: 10px; font-size: 13px; overflow-wrap: anywhere; }
+.radiant-member [data-radiant-reference] { width: 100%; margin-top: 10px; }
+.radiant-team-reference { padding: 12px; border: 1px solid #686c77; border-radius: 12px; margin-top: 16px; }
+.radiant-reference-dialog { width: min(900px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; overflow-wrap: anywhere; }
+.radiant-reference-dialog dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
+.radiant-reference-dialog dd { margin: 0; overflow-wrap: anywhere; }
+.radiant-reference h3 { border-bottom: 1px solid #737782; padding-bottom: 8px; }
+.radiant-reference section { border-left: 2px solid #969dad; padding: 8px 16px; margin: 12px 0; }
+.radiant-reference li { margin: 8px 0; line-height: 1.5; }
 .radiant-member dl div { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
 .radiant-member dd { margin: 0; overflow-wrap: anywhere; }
 .radiant-actions { justify-content: center; }

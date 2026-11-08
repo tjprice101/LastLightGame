@@ -8,21 +8,28 @@ import { RadiantBattleView, type RadiantBattleEffects } from './radiant-battle-v
 import { applyMotion } from './settings';
 import type { RadiantImpactFrame } from './radiant-impact';
 import * as dialogs from './game-dialog';
+import type { RadiantMasterId } from '../content/radiant-combat';
 
 let serial = 0;
 const uuid = () => `00000000-0000-4000-8000-${(++serial).toString(16).padStart(12, '0')}`;
 const disposed: RadiantBattleView[] = [];
-function fixture(count = 6, form = 6, effects?: RadiantBattleEffects, stage = 25, onExit?: () => void) {
+function fixture(count = 6, form = 6, effects?: RadiantBattleEffects, stage = 25, onExit?: () => void,
+  masterId?: RadiantMasterId, charged = false) {
   const state = freshGame('battle-surface'); state.starterId = 'ember';
   state.account.storyCompleted = stage - 1;
   state.account.squad = releasedRadiantIds.slice(0, count);
   for (const id of state.account.squad) state.account.characters[id as keyof typeof state.account.characters] =
     { level: form === 1 ? 30 : 105, evolution: form, weaponRank: 0 };
+  if (masterId) {
+    state.account.masterConduits = { [masterId]: 1 };
+    state.account.masterEquipment = { [masterId.split('-')[1]]: masterId };
+  }
   const authority = { capability: 'isolated-radiant-study' as const, now: Date.UTC(2026, 10, 8),
     entry: () => ({ runId: uuid(), encounterSeed: 1729, chargeSeed: 7, targetSeed: 104729 }) };
   const entered = resolveRadiantRun({ revision: 0, state }, { requestId: uuid(), expectedRevision: 0,
     runId: null, encounter: null, operation: { kind: 'start', activity: { kind: 'story', stage },
       calibration: 'authored-control' } }, authority);
+  if (charged) for (const member of entered.state.radiantStudy!.state.gauge.members) member.charge = member.baseCost;
   let snapshot: RadiantRunSnapshot = { revision: 1, state: entered.state };
   const receipts = new Map<string, RadiantRunResponse>();
   const transport = { read: vi.fn(async () => ({ revision: snapshot.revision, account: snapshot.state.account,
@@ -57,7 +64,7 @@ describe('saved six-member Radiant battle surface', () => {
     expect(host.querySelectorAll('[data-radiant-actor]')).toHaveLength(6);
     expect(host.querySelectorAll('.compact-portrait img')).toHaveLength(6);
     expect(host.querySelectorAll('[data-radiant-charge]')).toHaveLength(12);
-    expect(host.querySelectorAll('dl dt')).toHaveLength(24);
+    expect(host.querySelectorAll('[data-radiant-reference]')).toHaveLength(6);
     expect(host.textContent).not.toMatch(/Critical|Shatter|Elemental Damage/);
     expect(host.querySelector('[data-radiant-shared-text]')!.textContent).toBe('0 / 100');
     expect(host.querySelector<HTMLMeterElement>('[data-radiant-shared]')!.max).toBe(100);
@@ -269,5 +276,39 @@ describe('saved six-member Radiant battle surface', () => {
     expect(transport.execute).toHaveBeenCalledTimes(1);
     expect(transport.execute.mock.calls[0][0].operation.kind).toBe('exit');
     expect(session.view().saved.run).toBeNull();
+  });
+  it('opens exact frozen mechanics in a contained reference dialog, preserving focus and input locks', async () => {
+    const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
+    const create = dialogs.createGameDialog;
+    vi.spyOn(dialogs, 'createGameDialog').mockImplementation(title => {
+      const result = create(title);
+      result.dialog.showModal = () => result.dialog.setAttribute('open', '');
+      result.dialog.close = () => { result.dialog.removeAttribute('open'); result.dialog.dispatchEvent(new Event('close')); };
+      return result;
+    });
+    const button = controls(host, '[data-radiant-reference="ember"]'); button.focus(); button.click();
+    const dialog = document.querySelector<HTMLDialogElement>('.radiant-reference-dialog')!;
+    expect(dialog.open).toBe(true); expect(dialog.querySelectorAll('dl dt')).toHaveLength(4);
+    expect(dialog.querySelectorAll('[data-radiant-reference-tier]')).toHaveLength(3);
+    expect(dialog.textContent).toContain('140% caster Attack');
+    expect(dialog.textContent).toContain('First consumes all Infernis-owned Burns');
+    expect(dialog.textContent).toContain('No Master equipped');
+    expect(session.view().settingsOpen).toBe(true); expect(transport.execute).not.toHaveBeenCalled();
+    expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(true);
+    dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+    expect(document.querySelector('dialog')).toBeNull(); expect(session.view().settingsOpen).toBe(false);
+    expect(document.activeElement).toBe(button); expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(false);
+  });
+  it.each(['master-tide-3', 'master-sprout-2'] as const)('sends selected-enemy Flare target required by %s, preserving authored healing/shield targets', async masterId => {
+    const { view, host, transport } = fixture(3, 6, undefined, 25, undefined, masterId, true);
+    applyMotion('reduced'); await view.finishEntrance();
+    const bearer = masterId.includes('tide') ? 'tide' : 'sprout';
+    controls(host, `[data-radiant-actor="${bearer}"]`).click();
+    await view.act('flare');
+    const action = transport.execute.mock.calls.at(-1)![0].operation;
+    expect(action.kind).toBe('action');
+    if (action.kind !== 'action') throw new Error('Expected Flare action.');
+    expect(action.action).toMatchObject({ type: 'flare', bearerId: bearer, targetId: expect.any(String) });
+    expect(host.querySelector('[data-radiant-error]')!.textContent).toBe('');
   });
 });

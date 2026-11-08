@@ -1,5 +1,40 @@
 # Current state and handoff
 
+## Radiant complete frozen reference and Master targets (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; prior saved results `c657731c`.
+No production activation/authority/schema/RNG/combat-math or asset-byte change.
+
+**Implemented:** all32 released bearers/96 authored Flare offers plus saved
+passive/ascension/Master/attunement/weapon and99 converted ordinary Conduit
+references at frozen ranks. Contained per-member native dialogs expose four
+frozen stats, baseline coefficients/durations/target sets and tier costs/unlocks,
+separating enhancements from final damage/healing outcomes. Squad reference
+contains Normal/Defense/Gauge and frozen leader; active label follows displayed
+impact HP, no promotion/future death leak. Modal reading pauses/locks the
+same battle, Close/Escape restores focus and removes artwork/dialog handlers.
+No loadout/account writes. Coupled fix: Tizu/Flora strike-adding Masters now
+send their required selected-enemy target while retaining allied Flare effects.
+Developer preview has an explicit conditional owned-Master fixture.
+
+**Verified:** [exact command/evidence](Future%20Plans/radiant-combat-system-specification.md#complete-frozen-bearer-reference-and-master-targeting-2026-11-08):
+560 tests/8 files pass; all96 Master target predicates exercised against actual
+combat, both starter strike Masters through saved view/authority;32×3 Flare and
+99 converted Conduit rank5 references; modal Escape/focus/locks and leader-life
+label checked. `npm run build` passes TypeScript/Vite with existing chunk warning.
+Built browser effective390px:333px modal/812px height within844px viewport,
+contained scroll, no page overflow,4 stats/3 tiers/actual Master; explicit close
+restores reference focus and ready controls. Tizu/Flora Master attacks defeat
+only selected520HP target, no errors/storage writes. Temporary server stopped.
+
+**Remaining:** full timed-status impact synchronization,174 reviewed face crops,
+cinematic six-member Home/overlapping field composition, unique radiant Flare
+shaders/bloom/VFX, production authenticated activity/preparation routing and
+exit destination integration, actual DB atomicity proof, final cadence/network/
+economy calibration and long-journal payload gates. Single art brief stays
+provisional; no new commission arose here. Keep disabled authority/isolated
+branch unmerged until coherent. Unrelated dirty work remains unstaged.
+
 ## Radiant saved results and encounter controls (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; prior canonical field `17ff3f61`.

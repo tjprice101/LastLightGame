@@ -1,5 +1,17 @@
 # Decision log
 
+## Explain frozen radiant mechanics without legacy gear text (2026-11-08)
+
+Under delegated overhaul implementation, expose exact authored Flare baseline
+coefficients/targets/durations alongside saved passive/leader/signature
+enhancements, Master subtype and converted Conduit primitives at frozen ranks.
+Do not imply final combat damage from baseline ratios or use current menu/
+legacy effect text for a frozen run. Use contained native dialogs with battle
+pause/focus/Close/Escape/disposal, not oversized narrow squad-card disclosures.
+Leader status follows displayed impact HP. Fix the missing selected target for
+Tizu/Flora attack-adding Masters without changing their authored combat rules.
+[Contract/evidence](Future%20Plans/radiant-combat-system-specification.md#complete-frozen-bearer-reference-and-master-targeting-2026-11-08).
+
 ## Render saved radiant results and route only accepted transitions (2026-11-08)
 
 Continue the delegated overhaul with durable currency/loot receipts after

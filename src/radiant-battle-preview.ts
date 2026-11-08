@@ -18,6 +18,8 @@ host.innerHTML = `<header class="radiant-preview-heading"><h1>Radiant battle · 
   Generic impact motion is a foundation, not the final unique character VFX.</p>
   <label>Battle speed <select data-preview-speed><option>1</option><option>2</option><option>3</option></select></label>
   <label><input type="checkbox" data-preview-motion> Reduce motion</label>
+  <label>Conditional Master fixture <select data-preview-master><option value="none">No personal Masters</option>
+    <option value="strikes">Tizu / Flora selected-enemy Masters</option></select></label>
   <button type="button" data-preview-reset>Reset preview encounter</button>
   <button type="button" data-preview-cycle>Charge cycle: normal / Glowing / Lustrous / Eternal</button>
   <p data-preview-status role="status"></p></header><div data-preview-battle></div>`;
@@ -32,6 +34,10 @@ function build(): void {
   game.account.squad = ['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'crinso'];
   for (const id of ['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'crinso'] as const)
     game.account.characters[id] = { level: 105, evolution: 6, weaponRank: 0 };
+  if (host!.querySelector<HTMLSelectElement>('[data-preview-master]')!.value === 'strikes') {
+    game.account.masterConduits = { 'master-tide-3': 1, 'master-sprout-2': 1 };
+    game.account.masterEquipment = { tide: 'master-tide-3', sprout: 'master-sprout-2' };
+  }
   const authority = { capability: 'isolated-radiant-study' as const, now: Date.UTC(2026, 10, 8),
     entry: () => ({ runId: crypto.randomUUID(), encounterSeed: 1729, chargeSeed: 7, targetSeed: 104729 }) };
   const entry = resolveRadiantRun({ revision: 0, state: game }, { requestId: crypto.randomUUID(),
@@ -77,6 +83,7 @@ host.querySelector('[data-preview-motion]')!.addEventListener('change', event =>
   applyMotion((event.target as HTMLInputElement).checked ? 'reduced' : 'system');
 });
 host.querySelector('[data-preview-reset]')!.addEventListener('click', build);
+host.querySelector('[data-preview-master]')!.addEventListener('change', build);
 host.querySelector('[data-preview-cycle]')!.addEventListener('click', () => { cycle = (cycle + 1) % 4; build(); });
 window.addEventListener('pagehide', () => { view.dispose(); session.dispose(); }, { once: true });
 applyBattleSpeed(1); applyMotion('system'); build();

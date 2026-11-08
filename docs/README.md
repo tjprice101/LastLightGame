@@ -1,5 +1,13 @@
 # Documentation hub
 
+## Radiant complete frozen battle reference (2026-11-08)
+
+[Per-bearer exact mechanics/gear reference](Future%20Plans/radiant-combat-system-specification.md#complete-frozen-bearer-reference-and-master-targeting-2026-11-08)
+now uses contained pause-aware dialogs for passive, all Flare tiers, saved
+Master/ascensions and converted Conduits; squad rules show the frozen leader.
+Tizu/Flora strike-adding Master targeting is fixed and previewable through an
+explicit in-memory fixture. No production activation or new art commission.
+
 ## Radiant saved result receipts and encounter controls (2026-11-08)
 
 [Durable reward results and saved Continue/Replay/exit](Future%20Plans/radiant-combat-system-specification.md#saved-result-receipts-and-encounter-controls-2026-11-08)
