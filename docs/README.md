@@ -1,5 +1,15 @@
 # Documentation hub
 
+## Gated radiant authority dispatch (2026-11-08)
+
+[Current HTTP/entropy integration](Future%20Plans/radiant-combat-system-specification.md#gated-authenticated-authority-dispatch-2026-11-08)
+and [server configuration](../supabase/functions/game-operation/README.md#disabled-by-default-radiant-study-dispatch-2026-11-08):
+authenticated, disabled-by-default study route with server-owned HMAC entry
+seeds, typed transport and atomic RPC aggregate.1302 focused tests/types/build
+pass. No flags enabled/deployment or actual Radiant database proof; full
+rewards/progression/UI still pending.
+
+
 ## Radiant saved-run and atomic receipt boundary (2026-11-08)
 
 [Account-derived run contract](Future%20Plans/radiant-combat-system-specification.md#account-derived-runs-and-atomic-receipt-boundary-2026-11-08):

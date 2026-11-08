@@ -1,5 +1,20 @@
 # Decision log
 
+## Radiant authority integration stays gated (2026-11-08)
+
+Wire the delegated study through the real authenticated handler, but require
+explicit server-only enablement, stable secret and configured calibration.
+HMAC user/request namespace owns run/seeds; missing configuration fails closed.
+No player option enables experimental tuning or supplies raw combat outcomes.
+Existing atomic RPC receipt contract and frozen aggregate retention continue.
+[Current integration](Future%20Plans/radiant-combat-system-specification.md#gated-authenticated-authority-dispatch-2026-11-08).
+
+This is not a decision to ship the incomplete overhaul: no flags enabled/
+authority deployed. Actual Radiant DB verification and full rewards/progression/
+run/UI migration remain acceptance gates. Legacy hosted smoke is not evidence
+the new Radiant path is live or database-tested.
+
+
 ## Radiant account/run transaction boundary (2026-11-08)
 
 Implement under the delegated overhaul mandate: derive frozen bearer squads

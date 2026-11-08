@@ -16,6 +16,7 @@ import { calibratedRadiantEnemyStats, radiantEnemyFactors, type RadiantEnemyCali
 import { createBattle, createStoryBattle, createDungeonBattle, createInfusionBattle,
   createWarBattle, createCalamityBattle, createOblivionBattle, type BattleState } from './battle';
 import { assertActivityAccess } from './activity-access';
+import { assertRoseEventActive } from '../content/event-schedule';
 import { unlockedStoryStage, unlockedStage, unlockedInfusionStage, unlockedWarStage,
   type Account } from './account';
 import type { Activity } from '../online/server-game';
@@ -95,6 +96,7 @@ export function radiantPressureAnchors(): RadiantPressureAnchor[] {
 }
 export function assertRadiantPressureAccess(anchor: RadiantPressureAnchor, account: Account, now: number): void {
   const a = anchor.activity;
+  if (a.kind === 'infusion' && a.mode === 'roses') assertRoseEventActive(now);
   assertActivityAccess(account, a, now);
   const unlocked = a.kind === 'story' ? unlockedStoryStage(account)
     : a.kind === 'dungeon' ? unlockedStage(account, a.element)

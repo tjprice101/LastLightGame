@@ -1,5 +1,35 @@
 # Current state and handoff
 
+## Gated radiant HTTP authority and entry entropy (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; prior run boundary `f9bdbe75`.
+No live authority deployment or study flag enablement.
+
+**Implemented:** actual shared HTTP handler dispatches dedicated
+`{radiantStudy: request}` after authentication. Default gate503; enabled needs
+stable32-byte server secret and server calibration. HMAC authenticated user/
+request ID produces deterministic UUID/independent seeds, no client entropy
+or missing-config fallback. Runtime request/stored aggregate/response validation
+and typed client transport added; no production UI callers. Legacy routes and
+unrelated account ops preserve frozen study; entry cannot overwrite it.
+Rose timed-event access preserved. Shared bundle regenerated.
+[Contract/config/gates](Future%20Plans/radiant-combat-system-specification.md#gated-authenticated-authority-dispatch-2026-11-08).
+
+**Verified:**1302 tests across eight parent-selected dispatch/transport/run/
+server/combat/gear/Gauge/pressure files pass. Client/authority types and build
+pass, existing chunk warning. Real handler tested against mocked Auth/RPC for
+gate/config/auth, deterministic separation, malformed input, duplicates/CAS,
+quit/retry and aggregate retention. Actual Radiant DB execution unverified:
+no local Supabase/Docker/Deno. Agent ran legacy hosted disposable smoke with
+reported cleanup; it is not new-route DB/deployment proof.
+
+**Next:** actual Radiant database transaction validation; complete all kill/
+material/chest/recruitment/unlock/Continue/run lifecycle and captured manual
+selection migration, fresh-entry farming and final enemy/access tuning;
+174 face crops plus cinematic real Home/Battle Gauges/statuses/finite VFX.
+Final single art brief remains provisional. Preserve rejected mockup work.
+
+
 ## Radiant saved-account and atomic receipt boundary (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; preceding pressure commit `c9dcc1de`.

@@ -1,5 +1,62 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Gated authenticated authority dispatch (2026-11-08)
+
+The account/run API is now wired into the actual authenticated
+`game-operation` handler via a dedicated `{ radiantStudy: RadiantRunRequest }`
+body. It remains **disabled by default and undeployed**. This supersedes the
+earlier absence of dispatch/entropy integration, not the incomplete reward/
+progression/UI migration or actual database verification gates.
+
+[Handler](../../supabase/functions/game-operation/handler.ts) preserves legacy
+routes and authorization; [study dispatch](../../supabase/functions/game-operation/radiant-dispatch.ts)
+enforces unknown-JSON validation, rate limiting, saved account access and
+server-owned calibration. The thin Deno entrypoint imports the regenerated
+shared bundle, preserving the existing client/server resolver foundation.
+
+`RADIANT_STUDY_ENABLED` must equal `true`; otherwise503 without study DB commit.
+`RADIANT_STUDY_SECRET` must have at least32 UTF-8 bytes, remain server-only and
+stable across retries. Domain-separated HMAC-SHA256 of authenticated user/
+request ID derives UUIDv4 and independent encounter/charge/target seeds.
+No client seed/outcome/HP/budget authority or missing-secret random fallback.
+`RADIANT_STUDY_CALIBRATION` defaults `authored-control`; experimental
+`radiant-pressure-v2` requires explicit server opt-in. Never infer tuning
+approval from that available capability.
+
+Typed [radiant transport](../../src/online/radiant-transport.ts) validates
+requests/responses and surfaces server denial/stale/connection errors. It has
+no menu/battle callers or auto-enable behavior. Existing ordinary account
+operations preserve frozen `radiantStudy`; legacy entry cannot overwrite it.
+Stored frozen runs/responses and actual saved account snapshots are validated.
+Rose study entry also preserves the actual timed-event gate.
+
+Existing service-role `find_game_request`/`load_game_account`/
+`commit_game_operation` RPCs carry complete account/run/revision/receipt
+aggregates atomically; no new SQL schema migration. Tests now exercise the
+real HTTP handler with mocked Supabase Auth/RPC—not only the repository API.
+Actual hosted/local Radiant DB execution is still **unverified**; local
+Supabase/Docker/Deno unavailable. Legacy disposable-account hosted smoke does
+not prove this new route's persistence or justify enabling it.
+
+Validation:
+```
+npx vitest run src\online\radiant-dispatch.test.ts src\online\radiant-transport.test.ts src\online\radiant-run.test.ts src\online\server-game.test.ts src\game\radiant-combat.test.ts src\game\radiant-conduits.test.ts src\game\radiant-gauge.test.ts src\game\radiant-pressure.test.ts --maxWorkers=2 --testTimeout=60000
+npx tsc --project supabase\functions\game-operation\tsconfig.json
+node tools\bundle_server_game.mjs
+npm run build
+```
+1302 tests across eight parent-selected files pass. Client/authority types and
+build pass with existing chunk warning. Gate-off/Auth/fail-closed entropy,
+different-user seeds, calibration denial, invalid input, duplicates/CAS,
+quit/retry/frozen gear and aggregate preservation are tested. The generated
+bundle includes dispatch; it has not been deployed or activated.
+
+Remaining: actual DB verification; completed kill/material/chest/recruitment/
+unlock rewards, all-mode Continue and production frozen-run/manual captured
+selection migration; fresh-run lifecycle and farming measurements; final
+pressure/access tuning;174 portrait crops and real cinematic Home/Battle
+Gauge/status/finite shader VFX. Final art brief remains provisional.
+
 ## Account-derived runs and atomic receipt boundary (2026-11-08)
 
 [radiant-run.ts](../../src/online/radiant-run.ts) now implements the real saved

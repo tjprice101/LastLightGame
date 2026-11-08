@@ -64,6 +64,7 @@ export interface DurableGame {
   starterId: StarterId | null;
   profile: OnlineProfile;
   run: DurableRun | null;
+  radiantStudy?: import('../../../src/online/radiant-run').FrozenRadiantRun;
 }
 export function profileActivityFor(operation: GameOperation, previousStoryCompleted: number,
   resolved: { game: DurableGame; response: GameResponse }, uuid: () => string): Omit<ProfileActivity, 'at'> | null {
@@ -422,6 +423,8 @@ function encounter(game: DurableGame, run: DurableRun, seed: number, trainingWav
 export function resolveOperation(previous: DurableGame, operation: GameOperation,
   entropy: { seed(): number; uuid(): string; random(): number; now?(): number }): { game: DurableGame; response: GameResponse } {
   validateRequest({ requestId: '00000000-0000-4000-8000-000000000001', expectedRevision: 0, operation });
+  if (previous.radiantStudy && operation.kind === 'enter')
+    throw new Error('A frozen Radiant study run already exists. Use the dedicated study transport.');
   const now = entropy.now?.() ?? Date.now();
   if ((operation.kind === 'summon' || operation.kind === 'summonTen') && operation.bannerId === 'roses' ||
       operation.kind === 'enter' && operation.activity.kind === 'infusion' && operation.activity.mode === 'roses' ||
@@ -615,3 +618,4 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
   if (!isProfileIcon(game.profile.icon) || !profileIconUnlocked(game.account, game.profile.icon)) game.profile.icon = 'neutral';
   return { game, response: { ...publicGame(game, 0, now), ...(result ? { result } : {}), ...(summon ? { summon } : {}), ...(summons ? { summons } : {}), ...(calamityOpening ? { calamityOpening } : {}) } };
 }
+export { createGameOperationHandler } from './handler';

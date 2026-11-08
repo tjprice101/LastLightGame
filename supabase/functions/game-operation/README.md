@@ -1,5 +1,56 @@
 # Authoritative game operation
 
+## Disabled-by-default radiant study dispatch (2026-11-08)
+
+The shared bundle now exports `createGameOperationHandler`; the thin Deno
+entrypoint supplies the existing authenticated service client and optional
+server study configuration. Legacy requests retain their normal routes.
+Dedicated POST shape: `{ "radiantStudy": <RadiantRunRequest> }`.
+No current menu/battle caller sends this shape.
+
+- `RADIANT_STUDY_ENABLED`: only exact `true` enables the dedicated route;
+  absent/other values return503 and do not load/commit the study account.
+- `RADIANT_STUDY_SECRET`: server-only stable secret, at least32 UTF-8 bytes.
+  Missing/short secrets fail closed. Never expose/log it or commit a value.
+- `RADIANT_STUDY_CALIBRATION`: absent means `authored-control`; experimental
+  `radiant-pressure-v2` requires explicit server configuration. Client choice
+  alone cannot select a different enemy calibration.
+
+**Do not enable/deploy this as the completed overhaul.** Full kill/material/
+chest/recruitment/progression rewards and production run/UI migration remain
+unfinished; this is an authenticated isolated study path with partial currency.
+
+`radiant-dispatch.ts` validates the dedicated unknown-JSON body, authenticates
+through the common handler, enforces rate limit/config/access, and derives
+stable entry UUID/seeds via domain-separated HMAC-SHA256 of authenticated
+user+request ID. Retries derive the same server identity; users/requests differ.
+Client requests never contain raw loadouts/HP/budgets/outcomes/server seeds.
+Missing entropy has no random success-shaped fallback.
+
+`radiantRpcRepository` uses the existing `find_game_request`,
+`load_game_account` and atomic `commit_game_operation` RPC contract. Complete
+account/run/revision/receipt commit stays under one transaction. Existing
+unrelated operations preserve the optional `radiantStudy` aggregate; legacy
+battle entry refuses to overwrite a frozen study. No new SQL schema migration.
+Dedicated typed client transport exists but is not connected to production UI.
+
+Validation:
+```
+npx vitest run src\online\radiant-dispatch.test.ts src\online\radiant-transport.test.ts src\online\radiant-run.test.ts src\online\server-game.test.ts src\game\radiant-combat.test.ts src\game\radiant-conduits.test.ts src\game\radiant-gauge.test.ts src\game\radiant-pressure.test.ts --maxWorkers=2 --testTimeout=60000
+npx tsc --project supabase\functions\game-operation\tsconfig.json
+node tools\bundle_server_game.mjs
+npm run build
+```
+
+1302 parent-selected tests pass; client/authority typechecks and build pass,
+existing chunk warning. Tests exercise the real handler with mocked Auth/RPC,
+including gate-off, missing entropy, calibration refusal, authentication,
+idempotence/concurrent CAS, aggregate preservation and malformed input.
+Actual Radiant database transaction execution remains **unverified**: no local
+Supabase/Docker/Deno was available. Legacy hosted smoke is not Radiant DB proof.
+No server flags enabled, authority deployed or hosted overhaul claimed.
+See [current study contracts](../../../docs/Future%20Plans/radiant-combat-system-specification.md).
+
 ## Material reward quantities (2026-11-07)
 
 Rebuild the shared engine for the matching client: ordinary future material

@@ -64,7 +64,7 @@ class AtomicRpc implements RadiantGameRpc {
   async rpc(name: 'find_game_request' | 'commit_game_operation', args: Record<string, unknown>) {
     const cached = this.receipts.get(args.p_request as string);
     if (cached) return cached.hash !== args.p_fingerprint
-      ? { data: null, error: 'Request ID reused with different input' }
+      ? { data: null, error: { code: 'P0001', message: 'Request ID reused with different input' } }
       : { data: structuredClone(cached.response), error: null };
     if (name === 'find_game_request') return { data: null, error: null };
     if (this.denied) return { data: null, error: 'Denied before transaction commit' };
@@ -265,7 +265,6 @@ describe('authority-ready frozen run and exact partial Prismatica', () => {
     value = step(value, normal(value));
     const banked = value.state.account.fractalis;
     value.state.radiantStudy!.state.bearers[0].hp = 1;
-    value.state.radiantStudy!.state.enemies.forEach(enemy => { enemy.stats.attack = 100000; });
     value = step(value, { kind: 'action', action: { type: 'defense', bearerId: 'ember' } });
     expect(value.state.radiantStudy!.state.phase).toBe('defeat');
     value = step(value, { kind: 'retry' });
