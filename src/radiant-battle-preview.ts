@@ -8,6 +8,7 @@ import { applyMotion } from './presentation/settings';
 import { applyBattleSpeed, parseBattleSpeed } from './presentation/battle-speed';
 import { createGameDialog } from './presentation/game-dialog';
 import { readyFlare } from './game/radiant-gauge';
+import { RadiantCanvasEffects } from './vfx/radiant-battle-effects';
 
 const host = document.querySelector<HTMLElement>('#radiant-preview');
 if (!host) throw new Error('Radiant development preview host is missing.');
@@ -15,7 +16,7 @@ host.innerHTML = `<header class="radiant-preview-heading"><h1>Radiant battle · 
   <p>In-memory combat only. No sign-in, player account changes or network saves.
   This conditional six-member Lv.105 squad is a test fixture, not a free or average account.
   Starter face crops are installed; the three Rose face portraits are honestly marked pending.
-  Generic impact motion is a foundation, not the final unique character VFX.</p>
+  Canvas emission/bloom is a choreography integration pilot, not final unique Radiant art or GPU performance approval.</p>
   <label>Battle speed <select data-preview-speed><option>1</option><option>2</option><option>3</option></select></label>
   <label><input type="checkbox" data-preview-motion> Reduce motion</label>
   <label>Conditional Master fixture <select data-preview-master><option value="none">No personal Masters</option>
@@ -67,7 +68,7 @@ function build(): void {
       <form method="dialog"><button autofocus>Close</button></form>`;
     dialog.addEventListener('close', () => { dispose(); session.setSettings(false); view.render(); }, { once: true });
     dialog.showModal();
-  }, undefined, () => {
+  }, new RadiantCanvasEffects(battleHost), () => {
     session.dispose();
     notice.textContent = 'Saved encounter exited. Earned rewards retained in this in-memory fixture. Reset to start a new preview.';
     battleHost.innerHTML = '<p role="status">Preview encounter ended. Use Reset preview encounter to start again.</p>';

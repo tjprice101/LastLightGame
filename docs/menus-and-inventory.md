@@ -1,5 +1,18 @@
 # Menus and inventory
 
+## Radiant saved-impact bloom pilot (2026-11-08)
+
+[Emission/bloom contract](Future%20Plans/radiant-combat-system-specification.md#saved-impact-emission-and-bloom-pilot-2026-11-08):
+the isolated preview now has source-aligned charge light, finite particles/
+optical glares and effect-only bloom after saved impacts. Explicit progressive
+Flare tiers, separate support/generated cues and neutral enemy cues do not
+claim final cinematic art. Never dim/bloom supplied portraits or scenery.
+Keep pointer-transparent overlays, live speed, Settings pause, Skip, static
+Reduce motion and complete disposal/error reporting. Resize ends only the
+current visual; no save/reroll/control delay is added. Production remains
+disabled; final unique art, full status synchronization and field composition
+are not complete.
+
 ## Radiant frozen mechanics reference (2026-11-08)
 
 [Complete reference/target contract](Future%20Plans/radiant-combat-system-specification.md#complete-frozen-bearer-reference-and-master-targeting-2026-11-08):

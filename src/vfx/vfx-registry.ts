@@ -178,7 +178,7 @@ const eventArchetypes: Record<MoonSunshadeCharacterId, readonly [VFXArchetype, V
   aureth: ['slam', 'volley', 'cataclysm'],
 };
 
-function eventPalette(id: MoonSunshadeCharacterId, name: string, hex: string): VFXPalette {
+export function signaturePalette(id: string, name: string, hex: string): VFXPalette {
   const raw = hex.replace('#', '');
   const mid = { r: parseInt(raw.slice(0, 2), 16), g: parseInt(raw.slice(2, 4), 16), b: parseInt(raw.slice(4, 6), 16), a: .9 };
   const mix = (channel: number, toward: number, amount: number) => Math.round(channel + (toward - channel) * amount);
@@ -198,7 +198,7 @@ function eventPalette(id: MoonSunshadeCharacterId, name: string, hex: string): V
 function eventCharacterProfile(character: (typeof moonCharacters)[number] | (typeof sunshadeCharacters)[number]): CharacterVFXProfile {
   const id = character.id as MoonSunshadeCharacterId;
   const identity = nativeIdentities[id];
-  const palette = eventPalette(id, character.name, character.color);
+  const palette = signaturePalette(id, character.name, character.color);
   const [skill1, skill2, ultimate] = eventArchetypes[id];
   const make = (tier: 'light' | 'skill1' | 'skill2' | 'ultimate', archetype: VFXArchetype,
     name: string, description: string, duration: number): AbilityVFXDefinition =>

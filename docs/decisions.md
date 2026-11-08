@@ -1,5 +1,17 @@
 # Decision log
 
+## Integrate Radiant emission without claiming final cinematic art (2026-11-08)
+
+Continue delegated VFX work with a save-first source-aligned canvas pilot,
+explicit progressive Radiant offer names/tier selection, canonical source
+colors and effect-only bloom/glares. Missing legacy profiles receive explicit
+pilot archetypes, not another bearer fallback. Support/generated/periodic/
+neutral enemy cues remain distinct; no arena dimming/camera shake/gameplay RNG.
+Preserve finite pointer-transparent effects, live speed, pause, Skip, Reduce
+motion, resize/disposal and explicit failures. This is integration evidence,
+not owner approval of final character cinema or device-performance readiness.
+[Contract/evidence](Future%20Plans/radiant-combat-system-specification.md#saved-impact-emission-and-bloom-pilot-2026-11-08).
+
 ## Explain frozen radiant mechanics without legacy gear text (2026-11-08)
 
 Under delegated overhaul implementation, expose exact authored Flare baseline

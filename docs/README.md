@@ -1,5 +1,13 @@
 # Documentation hub
 
+## Radiant saved-impact emission/bloom pilot (2026-11-08)
+
+[Finite source-aligned particles/glares/bloom](Future%20Plans/radiant-combat-system-specification.md#saved-impact-emission-and-bloom-pilot-2026-11-08)
+now run in the isolated saved battle preview, with progressive tier mapping,
+support/neutral packet cues and explicit profiles for seven missing bearers.
+Save/impact order, speed/pause/Skip/Reduce motion and disposal remain intact.
+Not final cinematic artwork, GPU approval or production activation.
+
 ## Radiant complete frozen battle reference (2026-11-08)
 
 [Per-bearer exact mechanics/gear reference](Future%20Plans/radiant-combat-system-specification.md#complete-frozen-bearer-reference-and-master-targeting-2026-11-08)

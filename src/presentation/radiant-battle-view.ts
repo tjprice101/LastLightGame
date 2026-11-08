@@ -23,6 +23,7 @@ export interface RadiantBattleEffects {
   impact(frame: RadiantImpactFrame): Promise<void>;
   pause?(paused: boolean): void;
   cancel(): void;
+  dispose?(): void;
 }
 const tierNames = { glowing: 'Glowing Flare', lustrous: 'Lustrous Flare', eternal: 'Eternal Radiant Flare' };
 /** Saved-session battle surface. The caller owns exit routing and supplies
@@ -456,6 +457,7 @@ export class RadiantBattleView {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true; this.cancelEffects();
+    this.effects?.dispose?.();
     this.referenceCleanup?.(); this.referenceCleanup = null;
     this.resultCelebration?.(); this.resultCelebration = null;
     this.artworkCleanup();

@@ -1,5 +1,37 @@
 # Current state and handoff
 
+## Radiant saved-impact emission/bloom pilot (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; prior frozen reference `1a1b6a3f`.
+No production activation, authority/schema/combat-math or asset-byte change.
+
+**Implemented:** isolated preview integrates finite source-aligned canvas charge,
+particle/optical systems and effect-layer bloom after saved readout impacts.
+Explicit Glowing/Lustrous/Eternal mapping/names, separate support/small generated
+packet cues and neutral enemy cues. Seven missing released legacy profiles now
+have explicit canonical-color pilot archetypes, no character substitution.
+Shared renderer optionally suppresses arena dimming while preserving legacy
+defaults. Actual face/enemy anchors retain facing/DOM. Live speed, Settings
+pause, Skip, Reduce motion, resize and disposal clean scheduled frames/canvas/
+listener; renderer failures reject through existing saved-view reporting.
+
+**Verified:** [exact commands/temporal evidence](Future%20Plans/radiant-combat-system-specification.md#saved-impact-emission-and-bloom-pilot-2026-11-08):
+177 tests/7 files pass, all32×3 tiers against actual combat/impact frames with
+effective-healing fixtures; input state unchanged. Pause/live3x/cancel/resize/
+reduced-motion/error and legacy-background compatibility checks.
+`npm run build` passes with existing advisory. Controlled built-browser
+1440×1000 charge/impact samples show finite emission and impact HP order;
+Skip clears pixels/frames, reset retains one canvas, pointer-transparent,
+no game errors/storage writes. Hidden-tab samples are not FPS/GPU approval.
+Temporary preview server is stopped after validation.
+
+**Remaining:** final unique Radiant Flare cinema/shaders/device performance,
+full timed-status impact synchronization,174 reviewed face crops, cinematic
+six-member Home/overlapping field, authenticated routing, actual DB atomicity
+proof and final cadence/economy/network/long-journal gates. Buff-only status
+animation remains unwired. Single art brief stays provisional. Keep isolated/
+disabled until coherent; unrelated dirty work is not staged.
+
 ## Radiant complete frozen reference and Master targets (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; prior saved results `c657731c`.

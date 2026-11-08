@@ -1,5 +1,58 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Saved-impact emission and bloom pilot (2026-11-08)
+
+[Radiant canvas effects](../../src/vfx/radiant-battle-effects.ts) are wired only
+to the isolated saved battle preview. Accepted actions precede charge light;
+the view applies each durable HP/Shield/Gauge frame before its emission.
+Glowing/Lustrous/Eternal explicitly select progressive choreography tiers,
+renamed from the actual Radiant offer, rather than displaying legacy ability
+names or claiming that legacy choreography completes the redesign.
+
+Existing source palettes and seven system families provide particles, optical
+glares and two-resolution effect-layer bloom. Seven released bearers absent
+from the legacy registry have explicit pilot archetypes using their canonical
+character colors: Neralis, Varkhel, Seravelle, Velmira, Ozriel, Ilvaris, Kaelith.
+Support packets use non-projectile healing/Shield geometry; generated/periodic
+packets use small local cues, owned by their actual saved source. Enemy packets
+are explicitly neutral cues, not another bearer's signature. Buff-only status
+animation and final unique Radiant Flare artwork remain unfinished.
+
+Art/face anchors retain facing and DOM; no arena dimming, portrait/scenery
+bloom, camera shake, background replacement or gameplay RNG consumption is
+added. The shared renderer retains its legacy default but allows this pilot
+to suppress system backgrounds. The canvas is finite, aria-hidden and
+pointer-transparent. One system per ordered impact target, maximum six with
+explicit errors instead of silent truncation; DPR <=1.5 with a1600px long-axis
+budget. Charge lasts.2/.4/.6 seconds; direct impact lasts.55/.85/1.2 seconds,
+small packet cues.45 seconds, all scaled by live1x/2x/3x presentation speed.
+No authority/transaction delay is added.
+
+Settings pauses effect time; resume does not catch up elapsed wall time.
+Skip and resize cancel only current visuals, settling the already-saved view.
+Reduce motion uses the existing static receipts/readouts; disposal removes
+the canvas, scheduled frame and resize listener. Rendering errors reject to
+the saved-view explicit presentation-error path, never success-shaped resolve.
+
+Validation:
+`npx vitest run src/vfx/radiant-battle-effects.test.ts src/vfx/vfx-systems.test.ts src/presentation/radiant-battle-view.test.ts src/presentation/radiant-impact.test.ts src/presentation/radiant-status.test.ts src/presentation/radiant-battle-reference.test.ts src/online/radiant-session.test.ts`
+passes177 tests/7 files. All32×3 tiers run against actual combat/impact frames
+with wounded fixtures for effective healing; no mutation of the input combat.
+Tests cover pause/live3x, Skip/disposal, resize/reduced motion, explicit render
+failure and optional arena-dimming suppression with unchanged legacy default.
+`npm run build` passes TypeScript/Vite with the existing chunk-size advisory.
+
+Built-browser1440×1000 controlled samples (hidden tab, not an FPS benchmark):
+at20/120/220/360/460/660ms the overlay has0/19121/0/34740/37960/0
+nontransparent pixels. HP remains520 during charge and becomes0 before the
+impact emission. Skip clears all pixels/queued frames; reset retains exactly
+one canvas. Pointer events none, no game error/storage writes. Temporal
+readback is instrumented solely for validation. Final-build Tizu Glowing
+support playback/Skip retains the actual548 Shield, zero queued frames/errors/
+storage writes and exactly one canvas. Final cinematic identity,
+mobile composition, synchronized statuses and real GPU/device performance
+approval remain release gates; production stays disabled/unmerged.
+
 ## Complete frozen bearer reference and Master targeting (2026-11-08)
 
 [Frozen battle reference](../../src/presentation/radiant-battle-reference.ts)

@@ -39,12 +39,12 @@ export class VFXRenderer {
     return this.layerContext;
   }
 
-  render(system: BaseVFXSystem, context: VFXContext, optical = true): void {
+  render(system: BaseVFXSystem, context: VFXContext, optical = true, background = true): void {
     const opacity = effectOpacity(context.t, context.definition.duration);
     this.output.save();
     try {
       this.output.globalAlpha = opacity;
-      system.renderBackground?.({ ...context, ctx: this.output });
+      if (background) system.renderBackground?.({ ...context, ctx: this.output });
     } finally {
       this.output.restore();
     }
