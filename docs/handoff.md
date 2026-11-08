@@ -1,5 +1,14 @@
 # Current state and handoff
 
+## Shared evolution face-portrait requirement (2026-11-08)
+
+Owner requests dedicated consistent face/upper-body crops from existing artwork
+per evolution, reused in all compact portrait contexts. [Plan](Future%20Plans/radiant-combat-system-specification.md#owner-selected-shared-evolution-portraits-2026-11-08)
+keeps full art in Team/showcases/field and records shared helper/provenance/
+facing/cache/discovery requirements. Currently192 released-form candidates
+need individual intake review; no derived exports or runtime changes completed.
+Continue consolidated combat specification review before implementation.
+
 ## Owner clarified layered personal/shared Flare charge (2026-11-08)
 
 [Latest specification override](Future%20Plans/radiant-combat-system-specification.md#owner-revision-layered-charge-and-shared-eternal-readiness-2026-11-08):

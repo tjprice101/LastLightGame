@@ -1,5 +1,15 @@
 # Decision log
 
+## Shared face portraits per evolution (2026-11-08)
+
+Owner selects dedicated formatted face-area portraits derived from every
+existing character evolution artwork, shared wherever compact portrait art
+is needed, especially battle controls. Team/showcases retain full art.
+[Contract](Future%20Plans/radiant-combat-system-specification.md#owner-selected-shared-evolution-portraits-2026-11-08)
+requires per-form reviewed framing and shared resolver, preserves originals/
+facing/art identity and hidden/discovery gates. No art generation requested.
+Exports and runtime wiring await the approved overhaul implementation phase.
+
 ## Layered Flares replace temporary empowerment (2026-11-08)
 
 Owner clarifies two personal layers (Glowing/Lustrous), plus a shared Eternal

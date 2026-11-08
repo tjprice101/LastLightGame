@@ -1,5 +1,14 @@
 # Character combat refresh: audit and proposed direction
 
+## Shared compact evolution portraits (2026-11-08)
+
+Owner requests consistently framed face/upper-body portraits derived from
+each existing evolution artwork, reused across all compact portrait contexts.
+[Contract](radiant-combat-system-specification.md#owner-selected-shared-evolution-portraits-2026-11-08)
+preserves full art in Team/showcases/field, original bytes, reviewed per-form
+framing, facing, provenance/revisions and discovery/unreleased gates.
+No exports or runtime wiring completed in this planning update.
+
 ## Latest owner charge correction (2026-11-08)
 
 [Layered personal/shared contract](radiant-combat-system-specification.md#owner-revision-layered-charge-and-shared-eternal-readiness-2026-11-08)

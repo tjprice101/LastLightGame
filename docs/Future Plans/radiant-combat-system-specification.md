@@ -1,5 +1,61 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Owner-selected shared evolution portraits (2026-11-08)
+
+Battle portrait controls use a dedicated **face/upper-body portrait derived
+from each existing evolution artwork**, not a full-body image squeezed into a
+small tile. Every form has its own individually reviewed framing. The same
+derived portrait and framing are reused wherever a compact character portrait
+is needed across the game; no independently improvised per-screen crops.
+Team/details/showcases and battle-field units can retain full artwork.
+
+### Proposed asset and presentation contract
+
+- Use canonical bearer ID plus saved six-form evolution index. Calamitic
+  displayed Evo.2-7 maps to existing saved forms, not invented source images.
+- Reuse [character form resolution](../../src/content/character-art.ts) and
+  [portrait/asset helpers](../../src/presentation/portrait.ts); distinguish an
+  explicit compact-face variant from the existing full-art helper.
+- Proposed reproducible512px square derived exports with reviewed normalized
+  crop rectangles/face anchors and a common eye-line/face-size target. Exact
+  dimensions are an implementation choice subject to small-screen review.
+- Anchor on face/hair/head ornament and enough shoulder context to recognize
+  the form; do not use one center-crop or percentage zoom for all sprites.
+  Especially inspect small late-form bodies surrounded by large powers.
+- Preserve source/export originals, transparency, colors and actual facial
+  detail. Derived cropping never overwrites full-art assets, recolors portraits,
+  invents missing faces or claims to reconstruct source-clipped detail.
+- Record source hashes, crop/anchor settings and output hashes in provenance;
+  reproduce through a scoped offline exporter. No runtime background keying.
+- Crop coordinates belong to unmirrored source artwork. Define facing in the
+  shared compact variant once; never apply a screen-specific second mirror.
+  Animate the wrapper, not the image's facing transform.
+- Keep consistent frame geometry, face scale and alignment across forms while
+  preserving authored differences. Do not distort/widen faces to force uniformity.
+  Shared battle UI rim/glow/status layers sit outside the cropped asset.
+- Shared deployment-base URLs, format fallback and byte-derived revisions
+  cover every consumer. No guessed/missing PNG path for undelivered forms.
+- Discovery/ownership silhouettes and unreleased content gates remain intact.
+  Compact exports must not reveal a locked form or hidden Sunshade identity.
+- Names/alt text retain canonical evolved identity; redundant portrait buttons
+  have a useful accessible character/action label. Gauges/statuses remain HTML.
+- Ascension and Master attunement do not select a different face unless existing
+  artwork explicitly provides one; these states are UI metadata, not new art.
+
+### Coverage and review
+
+Inventory all released bearer forms (currently32 *6 =192) before export;
+verify actual source availability individually. Unreleased forms are excluded
+from player-facing coverage. Only portrait contexts receive the compact
+variant; no automatic replacement of full-body roster art, arenas or cut-ins.
+
+Review side-by-side contact sheets at native/96px/48px sizes on dark/light
+backgrounds, including every form transition, frontal/directional poses and
+late ornaments. Test one canonical compact URL/framing per ID/form across
+consumers, full-art unchanged, silhouette/accessibility gates, base-path/cache
+revisions and evolution refresh without stale portraits.
+This records the requirement, not192 completed exports or visual approvals.
+
 ## Owner revision: layered charge and shared Eternal readiness (2026-11-08)
 
 **This section supersedes conflicting draft rules below**, especially
