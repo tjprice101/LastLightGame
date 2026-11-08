@@ -1,5 +1,17 @@
 # Decision log
 
+## Selected character refresh architecture (2026-11-07)
+
+Owner selects Passive Ability + Leader Ability + one evolution-upgraded
+signature active, with original Light/Lustre-themed system language.
+Tier3 unlocks at ordinary Evo.6 without Ascension; Ascension enhances it.
+Actual damage-based Prismatica uses a fixed per-enemy budget, remainder on defeat.
+[Direction, candidate names and unresolved contracts](Future%20Plans/character-combat-refresh-audit.md#owner-selected-direction-2026-11-07-follow-up)
+supersede the earlier two-skill recommendation. Exact kits, costs, Calamitic
+gate mapping, existing Imbue/equipment investments and payout/migration behavior
+need specification before implementation. No gameplay release or general UI
+restart follows from this documentation update.
+
 ## Character combat refresh: audit requested, mechanics unresolved (2026-11-07)
 
 Owner requests a detailed audit and plan using the supplied Brave Frontier

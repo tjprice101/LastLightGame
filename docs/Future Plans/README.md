@@ -24,6 +24,9 @@ Audit only; no combat changes approved. Next gate: starter-only prototype scope,
 shared vocabulary and whether to experiment with a team climax resource.
 Random Types, Recovery, skill unlock changes and an enhancement tree remain proposals.
 The UI hold remains in force.
+Follow-up selects Passive + Leader + one evolution-tiered Light/Lustre signature,
+final tier at ordinary Evo.6 without Ascension, and bounded damage-based
+Prismatica earnings. Exact system/kits/investment mapping are the next review gate.
 
 | Workstream | Current status / what is done | Where to resume / next gate |
 |---|---|---|

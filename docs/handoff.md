@@ -1,5 +1,16 @@
 # Current state and handoff
 
+## Owner-selected single-signature combat direction (2026-11-07)
+
+[Selected architecture](Future%20Plans/character-combat-refresh-audit.md#owner-selected-direction-2026-11-07-follow-up):
+Passive + Leader + one evolution-tiered Light/Lustre signature. Final ordinary
+tier at Evo.6 without Ascension; Ascension enhances it. Damage earns actual
+Prismatica from a fixed enemy budget, remainder on defeat.
+Candidate names/Health-depletion payout ledger are proposals; no runtime edits.
+Next: exact system and starter examples, full roster and invested-gear/Imbue
+mapping, currency-farming checks and explicit Calamitic form gates.
+Battle portrait/status layout belongs to this new scope; general UI hold remains.
+
 ## Character combat refresh audit and proposal (2026-11-07)
 
 Owner requests comparison with the supplied Brave Frontier stat/ability model

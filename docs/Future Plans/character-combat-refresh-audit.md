@@ -1,9 +1,123 @@
 # Character combat refresh: audit and proposed direction
 
+## Owner-selected direction (2026-11-07, follow-up)
+
+The owner selects a simpler full-roster architecture:
+
+- One **Passive Ability**, one **Leader Ability**, and one evolution-upgraded
+  signature active, replacing the previous two-skill-plus-Last-Flare proposal.
+- System names and ability language should express **Light and Lustre** while
+  preserving each character's element, thematic role and original identity.
+- Signature tier1 below ordinary Evo.4, tier2 at Evo.4-5, tier3 at ordinary
+  Evo.6 **without Ascension**. Ascension enhances the final version further.
+- Actual Prismatica is earned as enemy Health is depleted, from a **fixed
+  per-enemy budget**; the unpaid remainder is awarded on defeat.
+
+These selections supersede the conflicting recommendations and open choices
+in the original audit below. They approve the design direction, not unreviewed
+coefficients, migration policy, resource formulas, copied terminology or an
+immediate production release. The all-screen UI mock-up remains paused;
+the requested battle layout is part of this new combat specification.
+
+### Proposed original vocabulary
+
+| Layer | Candidate wording | Intended meaning |
+| --- | --- | --- |
+| Personal passive | Inner Light | Automatic character identity; active irrespective of leader position. |
+| Leader ability | Guiding Light | One explicitly leader-only squad benefit. |
+| Tier1 signature | Light Art | Dependable expression of the character's role. |
+| Tier2 signature | Lustre Art | Enhanced version with a meaningful tactical improvement. |
+| Tier3 signature | Last Radiance | Final-form climax; Ascension strengthens it. |
+| Personal charge | Lustre Gauge | Candidate replacement display name for Elemental Gauge, if personal charge is retained. |
+
+Names are **proposals**, not selected final strings. Authored skill names can
+remain character-specific within these common categories. Light-themed system
+language does not convert Infernic/Oceanic/Botanic/Atmospheric/Tranquilitic/
+Chaotic characters into a single combat element.
+
+### Revised functional model
+
+Preserve Normal Attack as a free, dependable baseline in the proposed design.
+The owner selected one signature active, not a new skill button for each tier:
+evolution replaces its current version. Whether lower versions remain manually
+selectable is not approved. Defense and target controls need an explicit
+retained/removed decision in the complete input specification.
+
+Each signature must function as an attacker, tank or support action as
+appropriate. "Attack ability" must not force every healer to become a damage
+dealer. Exact targeting, Gauge spend/gain, recovery, leader-death behavior,
+passive/role-perk consolidation and captured-unit parity remain to be specified.
+No additional shared Overdrive-like resource is selected by this follow-up.
+
+Ordinary Evo.1-3/4-5/6 gates are selected. Calamitic characters display Evo.2-7
+from six saved forms: recommend equivalent form gates, with the final tier at
+their Calamitic final form, but obtain an explicit mapping before coding.
+Current stat Ascension and three separate25-Shard Imbues cannot simply be
+discarded or combined for free. Provide an approved mapping for all invested
+Skill1, Skill2 and Last Flare enhancements and their equipment references.
+
+### Damage-based currency contract to specify
+
+Keep each enemy's existing total currency distribution and activity exceptions.
+Resolve its budget once using the authority's reward stream; never reroll on
+each hit. Paying earlier changes when the reward stream is consumed, so this
+must be reviewed and versioned rather than described as an unchanged RNG path.
+
+Recommended integer payout model for budget `B` and maximum Health `H`:
+
+1. Track the lowest actual Health reached, `L`, initially `H`.
+2. Earned total is `floor(B * (H - L) / H)` using safe exact arithmetic.
+3. Pay only earned total minus the already-paid amount.
+4. On defeat, pay exactly the remaining budget once.
+
+Only actual Health depletion advances entitlement; damage numbers, overkill,
+Shield absorption, animation hit counts and repeat damage after enemy healing
+cannot expand the budget. An enemy with no eligible budget pays nothing.
+Ordinary damage and periodic effects need an explicit common eligibility rule;
+the recommended shared Health-depletion ledger avoids packet-count advantages.
+Enemy maxHP changes, scripted transformations and reinforcements require
+well-defined budget/Health baselines rather than resetting payout eligibility.
+
+All HP changes, payout-ledger changes, currency, reward-stream advances and
+other resolved outcomes save atomically through the accepted combat operation.
+On failure, none advance and no effect claims earned currency. Existing
+kill-only materials, captures, discoveries, premiums and first-clear bonuses
+remain kill-only unless separately approved. No extra reward on visual pickup.
+The final kill receipt must exclude currency already paid during combat.
+
+Defeat/quit retains already-saved currency; Retry creates a new encounter budget.
+This intentionally permits partial-encounter earnings. Before release, compare
+damage-and-quit farming against normal clears, especially Treasury, long bosses
+and repeated entry, without silently adding entry costs or forfeiting earnings.
+Separate prospective pacing decisions from preserving original per-enemy totals.
+
+### Requested battle presentation
+
+- Portrait-based squad controls beneath the arena, using existing artwork.
+- Visible HP/charge and compact ally buffs/debuffs with accessible full details.
+- Text commands for the signature active; no dedicated new ability icons.
+- Reuse existing status icons where semantics match. Historical ability art
+  may become a status asset only after per-icon meaning/readability review.
+- Standard descriptions: target, exact effect/value, condition, duration and
+  real cost/consequence. Do not hide multipliers behind "powerful" or "massive".
+- Distinguish real mechanically counted hits from cosmetic VFX. Neither grants
+  new crystals/resources without an approved mechanic.
+- Preserve current three-member formation, keyboard/focus, impact-ledger timing,
+  existing scenery, finite VFX and static Reduce motion feedback.
+
+### Next deliverable
+
+Create an exact original-system specification and starter kit examples for
+review, then a full-roster plan and equipment/investment mapping. Update the
+pilot to compare the old four-action structure with the selected single-active
+structure, not merely rename the current skills. No live rework is implemented
+by this document update.
+
 ## Status and decision boundary
 
-Requested2026-11-07. **Audit and proposal only; no kit, stat, Gauge, equipment,
-progression, acquisition or save changes are approved by this document.**
+Original audit requested2026-11-07. **The original recommendations below are
+historical where superseded by the owner-selected direction above. No exact
+kit, stat, Gauge, equipment, progression or save migration is approved here.**
 Audited against implementation release `d82015ba` and its rules18 authority.
 The paused UI redesign and Story work remain paused.
 
