@@ -1,5 +1,15 @@
 # Decision log
 
+## Exact radiant system/starter draft: owner review pending (2026-11-08)
+
+Owner requests continuation of the overhaul plan, not bypassing the selected
+specification approval gate. [Consolidated review draft](Future%20Plans/radiant-combat-system-specification.md)
+proposes four-stat scaling, Equinox/Master attunements, three starter kits/nine
+Masters, hybrid charge and temporary empowerment, Shield/buff rules and Imbue
+mapping. No numerical values newly approved. Final-form personal-only utility,
+critical remapping, Shield stacking change and paid Imbue conversion are explicit
+review questions. No runtime implementation or general UI restart.
+
 ## Masters select sub-types; Equinox default (2026-11-08)
 
 Owner revises innate fixed profiles: every Element-Bearer defaults to Equinox;

@@ -1,5 +1,15 @@
 # Character combat refresh: audit and proposed direction
 
+## Consolidated exact review draft (2026-11-08)
+
+[System and three-starter specification](radiant-combat-system-specification.md)
+is the next review deliverable: four-stat formulas, subtype values, charge/
+empowerment state machine, three complete starter kits, nine existing Master
+remaps, Imbue proposal and validation/migration gates. Numerical values are
+unmeasured proposals. Review final-form support access, critical remapping,
+Shield cap/refresh and paid Imbue conversion before implementation.
+The historical audit and owner decisions below remain provenance.
+
 ## Master-selected sub-types: owner revision (2026-11-08)
 
 **This replaces fixed innate subtype assignment.** Every Element-Bearer defaults

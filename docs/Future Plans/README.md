@@ -20,13 +20,12 @@ inside older plans remain delivery history; current status below takes priority.
 
 **Character combat refresh (2026-11-07):**
 [Detailed comparison,32 released-kit audit and phased proposal](character-combat-refresh-audit.md).
-Audit only; no combat changes approved. Next gate: starter-only prototype scope,
-shared vocabulary and whether to experiment with a team climax resource.
-Random Types, Recovery, skill unlock changes and an enhancement tree remain proposals.
-The UI hold remains in force.
-Follow-up selects Passive + Leader + one evolution-tiered Light/Lustre signature,
-final tier at ordinary Evo.6 without Ascension, and bounded damage-based
-Prismatica earnings. Exact system/kits/investment mapping are the next review gate.
+Owner-selected four stats, bearer-only squads, single evolved Flare, two-step
+shared/personal final charge, Equinox default with Master-selected subtype,
+and bounded damage-based Prismatica. [Exact system/starter review draft](radiant-combat-system-specification.md)
+contains proposed formulas, three kits and nine Master remaps. No implementation
+approved yet. Next gate: review values plus final-form support access, Shield
+stacking and critical/Imbue conversions. General UI hold remains in force.
 
 | Workstream | Current status / what is done | Where to resume / next gate |
 |---|---|---|

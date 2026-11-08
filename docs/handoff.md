@@ -1,5 +1,19 @@
 # Current state and handoff
 
+## Consolidated overhaul review specification (2026-11-08)
+
+[Exact draft](Future%20Plans/radiant-combat-system-specification.md) now contains
+four-stat formulas/base starters, Master-driven subtype multipliers, personal/
+shared charge state machine, all three starter Flare families and nine Master
+remaps. Also covers Imbue proposal, bearer-only migration, currency and VFX tests.
+Everything numerical is proposed/unmeasured. No gameplay code changed.
+
+Next: owner reviews final-form support access (strict current-tier gate versus
+lesser personal cast of same named ability), critical remaps, finite Shield
+refresh/cap, paid Imbue mapping and exact tables. Only after approval implement
+isolated starter study; full roster/ordinary gear/Master conversions precede
+production release. General UI hold and hidden seasonal boundaries preserved.
+
 ## Master-driven subtype revision (2026-11-08)
 
 Owner selects Equinox default for all bearers; a personal Master changes subtype

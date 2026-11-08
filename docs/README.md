@@ -1,5 +1,12 @@
 # Documentation hub
 
+## Radiant combat exact review draft (2026-11-08)
+
+[Four-stat system, charge rules, starter kits and Masters](Future%20Plans/radiant-combat-system-specification.md).
+Proposed numerical specification, not implemented or measured tuning.
+Approval gates include final-form support access, Shield rules and gear/Imbue
+mapping. General UI mock-up rollout remains paused.
+
 ## Character combat refresh audit (2026-11-07)
 
 [Current comparison and phased proposal](Future%20Plans/character-combat-refresh-audit.md):
