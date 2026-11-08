@@ -1,5 +1,15 @@
 # Decision log
 
+## Character combat refresh: audit requested, mechanics unresolved (2026-11-07)
+
+Owner requests a detailed audit and plan using the supplied Brave Frontier
+system description as a structural reference. [Proposal and open choices](Future%20Plans/character-combat-refresh-audit.md)
+separate current mechanics from a standardized combat grammar, possible leader
+bonus/team climax, optional Recovery and customization alternatives.
+No kit/stat/Gauge/equipment/progression migration is approved by this request.
+Recommended next gate is a three-starter isolated prototype, not a full-roster
+release. Existing acquisition, investments and the UI hold remain unchanged.
+
 ## Farm reduction, upgrade materials and all-evolution fodder (2026-11-07)
 
 Owner confirms another35% cut from already-reduced positive elemental dungeon,

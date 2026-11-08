@@ -18,6 +18,13 @@ inside older plans remain delivery history; current status below takes priority.
 
 ## Audited work register
 
+**Character combat refresh (2026-11-07):**
+[Detailed comparison,32 released-kit audit and phased proposal](character-combat-refresh-audit.md).
+Audit only; no combat changes approved. Next gate: starter-only prototype scope,
+shared vocabulary and whether to experiment with a team climax resource.
+Random Types, Recovery, skill unlock changes and an enhancement tree remain proposals.
+The UI hold remains in force.
+
 | Workstream | Current status / what is done | Where to resume / next gate |
 |---|---|---|
 | Living-world UI and menus | First shared-foundation tranche implemented2026-11-07: ordinary control/panel tokens, leading labels/44px targets, explicit outcome tones, neutral press feedback and motion cleanup. Not a completed global UI overhaul. | [Current evidence and rollout](living-world-ui-audit-plan.md#first-shared-foundation-tranche-2026-11-07). Finish populated/visible-temporal/device Phase0 evidence, extend measured Phase1/2 gaps, then Phase3 Home/navigation journeys. Preserve saved-success timing, Reduce motion, focus/history/Skip; phases3-10 still unfinished. |

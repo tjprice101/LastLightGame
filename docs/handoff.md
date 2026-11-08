@@ -1,5 +1,20 @@
 # Current state and handoff
 
+## Character combat refresh audit and proposal (2026-11-07)
+
+Owner requests comparison with the supplied Brave Frontier stat/ability model
+and a detailed plan before implementation. [Audit deliverable](Future%20Plans/character-combat-refresh-audit.md)
+records rules18 / release `d82015ba`, ten current labeled stats, personal Gauge,
+fixed roles, no dedicated leader/Overdrive layer,32 released identities and
+six internally defined unreleased identities. It proposes shared combat grammar,
+one personal hook, starter pilots, compatibility gates and measured climax
+alternatives. No live combat, progression, equipment or paused UI changes.
+
+Validation for this pass is read-only runtime/specification inspection and
+document link/inventory checks; no gameplay tests/build required for prose.
+Next: owner selects pilot scope and architecture; exact replacement kits need
+approval and fresh pressured/gear/migration validation before implementation.
+
 ## Farm, material costs and first-evolution access (2026-11-07)
 
 Owner-confirmed economy maintenance, separate from the paused UI redesign:

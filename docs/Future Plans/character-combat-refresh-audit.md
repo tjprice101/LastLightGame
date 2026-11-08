@@ -1,0 +1,522 @@
+# Character combat refresh: audit and proposed direction
+
+## Status and decision boundary
+
+Requested2026-11-07. **Audit and proposal only; no kit, stat, Gauge, equipment,
+progression, acquisition or save changes are approved by this document.**
+Audited against implementation release `d82015ba` and its rules18 authority.
+The paused UI redesign and Story work remain paused.
+
+The Brave Frontier description and screenshot supplied by the owner are a
+reference for understandable combat layers and presentation priorities, not
+an independently verified history of every version of that game. Use general
+design principles; do not copy its characters, artwork, skill names, terminology,
+logos, prose, exact kits or proprietary implementation.
+
+**Core finding:** Last Light already has a comparable special-attack skeleton.
+Its largest readability problem is not the number of skill buttons. It is the
+number of interacting rules behind each choice: personal state, role perks,
+equipment exceptions, variable Gauge, packet scaling and different clocks.
+Adding every reference system on top would make that problem worse.
+
+**Recommended direction:** keep character identities and the three-member
+formation; standardize the combat grammar; make each character understandable
+as one role, one personal hook and a clear basic/core/advanced/climax choice.
+Prototype a shared climax resource only after the simpler baseline is measured.
+Do not launch random summon Types, Recovery, skill-level grinding and a new
+enhancement tree simultaneously.
+
+## 1. What actually exists
+
+Primary evidence is runtime code, not older retained specification paragraphs:
+
+- [Stats and fighter resolution](../../src/content/combat.ts),
+  [current stat labels/defaults](../../src/content/phase-zero-stats.ts).
+- [Current native identities](../../src/content/native-identities.ts),
+  [seasonal identities](../../src/content/moon-sunshade-native-identities.ts),
+  [native runtime](../../src/game/native-kits.ts).
+- [Actions, turns and recovery](../../src/game/battle.ts),
+  [Gauge, effects and equipment integration](../../src/game/conduit-runtime.ts).
+- [Intrinsic roles](../../src/content/role-perks.ts),
+  [Masters](../../src/content/master-conduits.ts),
+  [ordinary Conduits](../../src/content/conduits.ts).
+- [Progression](../../src/content/progression.ts),
+  [captured instances](../../src/game/character-instances.ts),
+  [atomic account transactions](../../src/game/account.ts),
+  [authority](../../supabase/functions/game-operation/engine.ts).
+
+### Current structure
+
+| Layer | Implemented behavior | Important distinction |
+| --- | --- | --- |
+| Roster |38 authored bearers:32 released identities plus six unreleased Sunshade identities | Sunshade must remain hidden; being defined internally does not make it acquirable. |
+| Squad |1-3 owned distinct instances, mixed bearers/Devourers, leader first | Only one starter is free. A tested trio is conditional on ownership. |
+| Main stats | Health, Direct Attack, Defense | No Recovery stat or Heart Crystal system exists. |
+| Advanced stats | Critical Rate, Critical Damage Multiplier, Skill Power, Skill Duration, Skill Efficiency, Elemental Gauge Capacity, Elemental Gauge Gain | Ten current labeled stat keys total, not just the historical seven-field model. Internal fields are not all current player-facing mechanics. |
+| Actions | Normal Attack, Skill1, Skill2, Last Flare | All three actives are defined for base-form bearers; captured forms may lack some slots. |
+| Personal Gauge | Starts0; base capacity100; Normal Attack offers20, incoming direct hits offer10 | Effective gains/capacity depend on progress, gear and native rules. |
+| Base spend | Normal0, Skill1=25, Skill2=40, Last Flare=100 | Equipment/Skill Efficiency can alter costs; these are not universal effective prices. |
+| Last Flare | A powerful third active; normally skips the caster's next player turn | Recovery and ready-round/equipment exceptions are part of its price. |
+| Personal passive | Each bearer has an automatic native identity | Some passives affect allies, but they are not leader-only skills. |
+| Role perk | Tank: Defense/targeting; Attacker: Direct Attack/Skill Power; Support: Health/Skill Power and4% squad healing after skills | Fixed by character identity, not a randomized summon Type. Role healing is a separate source from the named skill. |
+| Equipment | Eight ordinary slots plus one matching personal Master; three Master alternatives per authored bearer | Masters overlap the customization role of extra passives/enhancements; they are owned equipment, not an SP tree. |
+| High-end progression | Evolution, leveling, stat Ascension and three ability Imbues |25-Shard steps; no BB-level10 unlock or free-form skill tree. |
+| Leader | First member drives composition/identity and relevant presentation | No dedicated leader-skill layer, guest mercenary slot or squad Overdrive resource found in the inspected implementation. |
+
+The live native identity replaces historical skill/passive text. For example,
+Tizu is now a targeted barrier protector, not the older fixed-shield/AoE-damage
+kit; Flora uses Seeds, not the old shared Bloom-charge kit. Designing against
+the obsolete tables would produce a second inconsistent rework.
+
+### Gauge example: why capacity is not the same as readiness
+
+At base stats, five Normal Attacks offer100 Gauge. Spending25 after two
+Normals leaves15, not a partially upgraded stronger skill. Skill1 and Skill2
+are independent tactical moves, not automatically BB and SBB tiers of one move.
+Capacity increases with character potency and equipment, while the base Last
+Flare spend remains100 before modifiers. A visually full bar therefore need
+not mean "this is the first instant Last Flare became affordable."
+
+Healing, taunt, shields, incoming hits and Gauge gear can change the cadence.
+There are no mechanically collectible Battle Crystals today. Reward pickup
+animation is not combat-resource collection.
+
+## 2. Comparison with the owner's reference
+
+| Reference concept | Last Light analogue | Gap | Recommendation |
+| --- | --- | --- | --- |
+| HP / ATK / DEF | Health / Direct Attack / Defense | Names are longer; advanced layers obscure the core | Present the three core stats first; retain advanced values in a clear secondary reference. |
+| REC | Skill Power and current healing rules cover part of its design space | Healing often depends on recipient maxHP, source Skill Power and effect-specific rules | Test a Recovery model separately; do not add it merely to reach four stats. |
+| Random Type | Fixed Tank/Attacker/Support role | No random growth identity per summon | Prefer chosen, reversible specializations later; avoid reroll pressure. |
+| Leader Skill | First squad position, plus some always-on squad effects | No exclusive leader passive | Add a small, explicit leader bonus as a later independent pilot, not a complete role rewrite. |
+| Extra Skill | Personal passive and personal Master effect | Identity already exists; gear adds substantial complexity | Keep a simple innate passive; let one equipped Master provide the advanced build direction. |
+| BB | Skill1 | Skill1 is not always offensive and may participate in a complex loop | A character's dependable core technique, not a compulsory damage button. |
+| SBB | Skill2 | Often a different utility move, not a stronger Skill1 | Advanced technique with a clear situational purpose; never force all supports into attack ladders. |
+| UBB / OD | Last Flare | Personal Gauge plus recovery, no team OD | Compare current individual climax against a replacement team resource in an isolated prototype. |
+| SP | Master alternatives and Ascension/Imbues | Already two investment systems; no point allocation | Use Master choices first. A separate tree is lower priority and must replace overlap, not stack on it. |
+| Crystal drops | Deterministic action/incoming-hit Gauge | No BC/HC distribution decisions | Cosmetic wisps can communicate actual resolved gains; do not turn them into a second collection transaction. |
+
+The reference's advantage is a recognizable vocabulary and repeated decision
+pattern, not proof that every historic subsystem is beginner-friendly.
+The screenshot's unit cards, visible HP/Gauge and central climax bar suggest
+information priority. Its dense battlefield and six-unit layout are not a
+requirement to enlarge this game's squad or restart the paused UI overhaul.
+
+## 3. Complexity and enjoyment audit
+
+Severity here means design risk, not a proven gameplay defect. No player
+telemetry or fresh population playtest was collected in this audit.
+
+| Finding | Evidence | Risk | Recommended response |
+| --- | --- | --- | --- |
+| Multiplicative rule burden | Personal passive + role perk + eight Conduits + Master + advanced stats | High: players cannot predict what their chosen action actually does | Standardize triggers/scaling and isolate one advanced build hook. |
+| Similar-looking actions, different meanings | Two25/40-cost skills can mean attack, stored-state spend, trap, cleanse, cover or stance | High: learning a new character means learning a new grammar | Consistent effect order and clear role labels, while preserving utility choice. |
+| Multiple clocks | Player turns, enemy phases, next action, per hit, per owner and encounter resets | High: wrong timing is hard to diagnose | Use one shared duration convention wherever mechanics permit; name exceptions explicitly. |
+| Layered amplification | Direct Attack, Skill Power, crit, pierce, native modifiers, role bonuses and gear | High: large numbers mask whether a synergy is skillful or accidental | Measure packet paths; provide a compact action-preview explanation. |
+| Recovery + Gauge + conditional resources | Last Flare spend and next-turn skip; bespoke prerequisites | High: a climax can feel like lost agency | Test cost alternatives, rather than removing recovery and keeping power unchanged. |
+| Unbounded shield accumulation | Shields persist until broken and repeated casts stack | High: stall/snowball tuning and complex ownership receipts | Compare bounded/refresh alternatives in a simulation; do not silently change the current owner-approved rule. |
+| Passive role healing outside the skill | Support skills also heal4% maxHP per living ally | Medium: skill text may not match perceived output | Attribute role contribution separately; retain or fold it into a future role contract deliberately. |
+| Random Type addition | Would add another acquisition-quality variable | High: duplicate disappointment and optimization pressure | Not recommended for first refresh. |
+| Duplicate customization systems | A new ES unlock/SP tree on top of Masters/Imbues | High: more menus and mandatory chores | Choose one build-choice owner before adding any tree. |
+| Progression rewards versus ability access | Expensive evolutions now consume protected Devourers | High: hiding essential healing until later can make starters nonviable | Keep basic role functionality at base form; evolution improves mastery, not permission to function. |
+| Rarity versus stars | Acquisition stars are separate from evolving rarity | Medium: a6-star base is not automatically Omnic | If unlocks are introduced, use evolution explicitly, never assumed star mappings. |
+
+### Proposed combat grammar
+
+Every short ability explanation should answer, in this order:
+
+1. **Target:** one enemy, all enemies, one ally or all living allies.
+2. **Immediate effect:** damage, healing, shielding or a named buff/debuff.
+3. **One signature interaction:** a bonus from the character's personal hook.
+4. **Cost and consequence:** Gauge, duration and recovery when relevant.
+
+Shared glossary entries own Burn, Weaken, Shield, cleanse, taunt and intercept.
+Do not repeat implementation provenance in every sentence. Exact source,
+stacking and clock rules remain available in the detailed reference.
+Do not hide information that is necessary to select a target or judge survival.
+
+**Proposed budgets, subject to review:**
+- One visible personal resource/state per character, beyond HP/Gauge.
+- One primary job and one secondary utility job.
+- One setup/payoff interaction per ordinary skill; a climax may summarize the hook.
+- No more than three effect clauses in the short description.
+- A fully functional zero-stack/no-mark outcome, unless setup is the explicit
+  purpose of the move and the interface says so before selection.
+- At most one special exception exposed by the selected Master in the core loop.
+- A new character should not require reading unrelated characters' kits to act.
+
+These are design targets, not a reason to erase source ownership or genuine
+combat safety rules from the engine.
+
+## 4. Roster disposition: preserve identity, reduce rules
+
+This table is a first-pass design audit of all32 released identities. It is not
+a replacement numeric kit specification. "Risk" describes cognitive burden,
+not strength, rarity or a clear-rate ranking. Older identities receive the same
+clarity goals as Moon/War; no universal buff is proposed.
+
+| Character | Keep as recognizable hook | Complexity risk / proposed simplification |
+| --- | --- | --- |
+| Infernis | Apply Burn, choose when to detonate | Medium: one Burn ownership rule; show remaining detonatable damage, not another counter. |
+| Tizu | Protect one ally, stronger team barrier | Medium: unify block-to-Gauge wording; basic protection must work when solo. |
+| Flora | Plant delayed healing, harvest when needed | Medium: one Seed state per target; remove unnecessary normal/empowered timing exceptions from the core move. |
+| Atmoso | Build a Cyclone, release early or wait | High: display one charge/timer; define one release trigger, no competing automatic/skill-reset surprises. |
+| Elise | Place and recall two shuriken | High: visual held/lodged state; one recall rule, optional convergence payoff. |
+| Bliss | Reward thoughtful action order | High: reduce opening/passing/closing branches to one clearly signaled timing bonus. |
+| Bruno | Intercept damage for another ally | Medium: shared intercept contract and explicit solo fallback; one-step prediction of transferred damage. |
+| Disciple | Empower an ally's next action | High: one Empower buff with a readable damage/support result rather than three names for nearly one intention. |
+| Aurora | Anticipate and suppress dangerous enemy skills | Medium: show forecasts in battle itself; consistent skill-suppression behavior, no normal-attack ambiguity. |
+| Razor | Endure hits, turn Wounds into revenge | High: bounded visible stored amount; simplify which losses count; avoid a tank who needs unsafe HP loss to function. |
+| Rosetta | Coordinate attacks on a marked target | High: one focus mark and a single squad-completion payoff; no repeated per-hit contributor grants. |
+| Thornia | Set a retaliating thorn trap | Medium: one trap state; normal/empowered distinction should be recognizable without reading damage values. |
+| Crinso | Alternate edges to earn a finisher | High: cap visible combo; repeating a move should lose a bonus, not obscure core functionality. |
+| Nerithe | Survey with Normal Attack, pierce with skills | Medium: preserve fixed Normal-only bonus; one survey target and clear spend rule. |
+| Orvella | Establish a defensive Foundation | High: unify its finite protection/payoff explanation; avoid multiple independent foundation clocks. |
+| Vaelor | Time attacks with a three-step Beat | High: passive advances without action; show the next Beat, or test an action-driven rhythm. |
+| Ozriel | Team shields and once-per-encounter lethal protection | Medium: preserve survival-not-revival distinction; don't split essential protection across new meters. |
+| Ilvaris | Mark enemies and support allies | High: Mark plus Hymn plus stat amplification; choose one signature mark hook and simpler support buff. |
+| Kaelith | Build incisions, spend on a focused strike | Medium: distinguish pre-hit stacks from newly earned stacks; cap and communicate the spend. |
+| Caldrex | Bank Heat from pressure, defend or discharge | Medium: one Heat gain/spend rule; shared taunt and shielding semantics. |
+| Solenne | Hold charges that soften hits | High: defensive charges also power offense; make the risk of spending all clearly predictable. |
+| Myrthen | Seasonal build-up and Harvest payoff | High: phase and mark both demand tracking; keep a single season indicator with a clear empowered next move. |
+| Neralis | Attack/heal to build Current, rescue the team | Medium: earning back a stack after spend is unintuitive; prototype spend-before-earn with an explicit post-action result. |
+| Varkhel | Build Tension through tanking, release it | Medium: unify personal versus redirected hits; Master refund must not obscure recovery cost. |
+| Seravelle | Squad Normal Attacks build team momentum | Medium: one per-round contribution cue; isolate Gauge donation from the spend loop. |
+| Velmira | Alternate attacks, build Crosscut | High: overlaps Crinso; retain a different tactical payoff, not just different reset rules. |
+| Maerion | Recover allies' lost Health through Unreturned | High: borrowed HP amount plus exclusions; one stored recovery pool and clear chosen/team spend. |
+| Caevren | Intercept damage and build Load | High: overlaps Bruno/Caldrex/Varkhel; distinguish an intercept specialist without another generic tank stack loop. |
+| Vespera | Signal an ally, earn a team-offense payoff | High: Signal plus Beacon plus next-damaging-skill expiry; simplify to one linked setup/payoff state. |
+| Ilyss | Cleanse and heal | Medium: cleanse should work without Severance; explicit choice only when both harmful effects exist. |
+| Asteriel | Choose protection or offensive support | High: two paths + Promise + Moonflower; preserve stance choice, fold the bonus into one path indicator. |
+| Serapha | Create safe windows through weakening | High: Weaken ownership + Interval + Ceasefire; one protective-window hook instead of three counters. |
+
+Unreleased Sunshade's six authored kits also need this grammar audit before a
+future release, but remain internal. Do not reveal their identities in live
+menus, produce acquisition guidance or interpret this plan as launch approval.
+Captured Devourers need a separate limited-kit audit: preserve fixed forms,
+owned UUIDs and unavailable skills; never invent a missing active slot.
+
+### Differentiation priorities
+
+The tank cluster should represent different readable jobs, not "gain a stack,
+spend it on a shield" eight times:
+- Tizu: direct barrier protection.
+- Bruno/Caevren: single-ally versus team interception, with a deliberate
+  differentiator agreed before replacement.
+- Caldrex/Varkhel: team defense versus retaliation; avoid duplicate stack loops.
+- Solenne: timing of finite defensive charges.
+- Ozriel: emergency lethal protection, not automatic revival.
+
+Likewise, Crinso/Velmira, Flora/Neralis/Maerion/Ilyss/Serapha, and
+Disciple/Vespera/Asteriel need distinct tactical purposes. Simplification
+should reduce rule differences while increasing meaningful role differences.
+
+## 5. Recommended system architecture
+
+### A. Stats: simple front, complete reference
+
+**First pilot:** keep current math. Core row = HP / Attack / Defense; advanced
+row = crit, Skill Power and Gauge properties. Use consistent visible names,
+but keep saved/internal IDs stable. Do not recalculate stats to fit the labels.
+Any actual presentation implementation waits for an approved bounded scope;
+this is not permission to resume the all-screen redesign.
+
+**Optional Recovery experiment:** if the owner specifically wants a fourth
+main stat, compare:
+- Source Recovery increases healing delivered, while recipient Health remains
+  the basis for survival and missing-HP caps.
+- Recipient Recovery increases healing received, affecting many balance paths
+  and potentially making tank/healer synergies harder to understand.
+
+Source Recovery is the clearer candidate, but it overlaps existing Skill Power
+for healing. Before adoption, decide which stat owns healing, what shields use,
+how Seeds/Unreturned/role healing/Conduit healing scale, and how every old healing
+investment maps. Never multiply old healing by both full Skill Power and a new
+Recovery bonus without an explicit rebalance. No coefficients are approved.
+
+### B. Abilities: consistent layers without stripping utility
+
+**Recommended first model:**
+
+| Action | Purpose | Availability proposal |
+| --- | --- | --- |
+| Normal Attack | Free dependable action and Gauge building | Always. |
+| Core Technique (Skill1) | Character's essential role action | Base form; healing/protection need not deal damage. |
+| Advanced Technique (Skill2) | Alternative utility or signature payoff | Keep currently owned access; future unlock policy requires separate approval. |
+| Last Flare | Character's climactic role expression | Existing access preserved in the first pilot; cost model tested separately. |
+
+"Core" and "Advanced" describe function, not proposed literal in-game names.
+Keep the actual authored ability names and artwork. Do not force Skill2 to be
+a strict stronger version of Skill1: that removes target/utility choices and
+can make optimal play simply "always press the highest affordable tier."
+
+Compare a strict upgrade ladder only for attack-focused pilot characters.
+Measure whether it improves understanding enough to justify removing a move.
+No fifth action, healing crystal mechanic or three nested charge bars in phase1.
+
+### C. Gauge: first make the existing bar understandable
+
+Before a team resource:
+- Clearly show each move's actual affordable threshold and cost.
+- Separate stored Gauge from maximum capacity; use percentage and exact values
+  consistently in tooltips, refunds and UI.
+- Compare fixed100-cost versus capacity-relative Last Flare as different
+  experiments. Normalizing percentages changes capacity gear's value.
+- Record gains from Normal, incoming hit, personal passive and gear separately.
+- Skills/refunds must not create recursive action/Gauge loops.
+- No visual particle count or cosmetic collision controls the actual grant.
+
+**Climax experiment, not initial rollout:** prototype one shared squad resource
+that replaces Last Flare's personal-Gauge spend rather than adding a second
+cost on top. Personal Gauge still pays for the two techniques.
+
+Candidate shape: actions by living squad members contribute a bounded fraction
+of one complete squad round; compare readiness after4/6/8 equivalent rounds.
+Normalize for legal1/2/3-member squads and define falling-member behavior.
+This is a measurement design, not a selected formula. Exclude generated hits,
+Burn ticks, animation hit counts, purchases and damage magnitude from earning
+the resource. Otherwise multi-hit/AoE/gear outliers dominate fill.
+
+Only one bearer uses the shared climax opportunity; choosing healer, protector
+or attacker makes the squad decision meaningful. No simultaneous automatic
+three-Last-Flare chain. Prototype these alternatives separately:
+1. Personal cost plus current recovery: baseline.
+2. Team cost plus current recovery: tests resource change alone.
+3. Team cost with no next-turn skip but reduced output/other measured limit:
+   tests more immediate agency, not a free power increase.
+
+Decide starting/reset/carryover rules for stages, retry, Settings, defeat and
+final-stage replay. A support climax must compete fairly with damage.
+Do not adopt75-100% universal mitigation or revival just because the reference
+listed it: these can negate authored danger and compound existing shields.
+
+### D. Leader bonus: later, small and legible
+
+Add at most one always-on squad bonus from the first member; no friend-slot
+stacking or second leader. Make it work with a solo starter and mixed squads.
+Candidate categories: durable protection, steady offense or reliable healing.
+Prefer one understandable benefit over element-restricted collections of buffs.
+No numbers selected; benchmark against existing role/Master auras first.
+
+Keep personal passives on every member. Define whether the leader bonus stops
+on death and how replacements/reordering affect a frozen run. New leaders
+cannot be selected mid-battle from current menu state.
+No ally revives/heals when a maxHP aura appears. If captured leaders are legal,
+they need an explicit usable leader contract, not an accidental disadvantage.
+
+### E. Types and enhancements: not first
+
+**Random Types: defer/reject for the first refresh.** Roles already provide
+identity. A bad random defensive roll would be especially unwelcome after
+expensive summons and the newly increased material/fodder investments.
+
+If specialization is later desired, offer a manually chosen reversible
+orientation with no paid rerolls, random permanent penalties or duplicate-only
+unlock. Preserve a balanced default on legacy accounts without load writes.
+
+**Enhancement tree: defer.** Masters already offer three character-specific
+directions, and Ascension/Imbues already provide late growth.
+The simplest near-term model is one selected Master and a readable innate
+passive. If an evolution mastery tree is later approved, let it replace redundant
+customization rather than add mandatory SP farming. Use a small mutually
+exclusive choice; never require a Master/fully-leveled skill to unlock the
+character's essential healer/tank role. Preserve/refund affected paid-in-game
+investments only under an owner-approved migration contract.
+
+## 6. Starter pilots: concrete functional sketches
+
+These describe intended play, not new coefficients or approved kits.
+
+| Pilot | Core technique | Advanced technique | Climax | One hook |
+| --- | --- | --- | --- | --- |
+| Infernis | Strike one enemy and apply Burn | Area strike; optionally cash out own Burn | Strong area Burn attack | Burn remaining damage and deliberate detonation. |
+| Tizu | Place a useful barrier on a chosen ally, including self | Strike/weaken to reduce next pressure | Team barrier against a dangerous phase | Successful protection reinforces readiness; no separate Tide minigame. |
+| Flora | Heal a wounded ally or plant useful team regeneration | Attack while reinforcing regeneration, or harvest as a deliberate rescue | Team recovery | One clearly visible delayed-heal state. |
+
+Tizu's core/advanced ordering is intentionally different from today's slots.
+That is an option to test, not a rename-only change: every Skill1/Skill2-bound
+Conduit, icon, target rule and saved snapshot would need a reviewed mapping.
+A lower-risk alternative keeps slots but labels their purposes explicitly.
+
+For all three:
+- Base form works solo, not only after acquiring a support trio.
+- No zero-resource "do nothing" turn forced by the pilot redesign.
+- A later evolution strengthens the same understandable role.
+- Reuse all installed art and relevant VFX; do not repaint portraits to justify
+  new mechanics. Motion communicates action/impact, not a new wait or RNG draw.
+- Exact new copy, costs and values are presented for approval after benchmarks.
+
+## 7. Compatibility and investment audit before implementation
+
+An accepted new kit is incomplete until all relevant surfaces agree:
+
+| Surface | Required work |
+| --- | --- |
+| Native catalog/runtime | Per-action targets, scaling, source/owner, caps, clocks, resets, death behavior and once-per-turn guards. |
+| Normal/advanced stats | Old-to-new mapping, cost/gain floors, critical eligibility, pierce, healing and Shield ownership. |
+| Ordinary Conduits | Audit all live entries for action-specific references, native counters, Gauge/capacity, role and trigger expectations. |
+|114 authored Masters | All three alternatives per character; distinguish released from internal seasonal content. No blanket text replacement. |
+| Ascension/Imbues | Preserve state/costs or obtain a precise conversion/refund decision. Skill1/Skill2 swapping must not silently move invested upgrades. |
+| Captured copies | Keep UUID, level/form, locks, kit snapshot, lack of unavailable skills and mixed-squad viability. |
+| Frozen runs | Rules-version restart with original frozen roster/gear/investments; saved rewards retained; stale actions do not execute on a replacement encounter. |
+| Authority/client | Pure shared definitions and matching deployment; historical idempotent receipts retain actual saved outcomes. |
+| Presentation | Character, Collections, Team, Battle menu, field statuses, cost preview, target preview, VFX/impact timing and accessibility. |
+| Saves/acquisition | No load-time writes, no auto-granted team, no inventory deductions for historical evolutions, no new banner rarity claim. |
+| Activities | Solo opening Story/Training and Lv.30 infusion; ordinary progression; optimized non-Calamitic late groups; Calamity separate. |
+
+Some generated compatibility documents show historical catalog counts. Inventory
+the current runtime catalogs when implementing; do not assume the older177-entry
+matrix fully includes current114 Masters and all newer ordinary effects.
+
+The just-released economy remains a fixed baseline for the first combat
+experiment: additional farm reduction,1.5x rounded upgrade materials and
+Value1/2/3/8/15 evolution fodder. Do not change costs simultaneously to make
+clear-rate comparisons look better. Measure pacing separately.
+
+## 8. Phased plan with review stops
+
+### Phase0: evidence and owner decision
+
+Deliver this audit, a current catalog inventory, and approval of the proposed
+direction. No implementation. Settle the decisions in section10.
+Current full-roster rankings are historical after newer mechanics/rosters;
+reuse the [non-Calamitic methods](../roster-capability-audit.md), not stale ceilings.
+
+### Phase1: controlled three-starter prototype
+
+Build an isolated gameplay simulation/playable study for Infernis/Tizu/Flora,
+using actual owned-like loadouts and the existing combat presentation foundation.
+Do not connect it to real-account mutations or resume the all-screen UI mock-up.
+Test consistent grammar first, keeping baseline stats/Gauge/economy.
+Compare readability-only and functional kit simplification separately.
+Owner reviews exact kits before a public migration.
+
+### Phase2: Gauge/climax A/B
+
+Only after phase1, compare the three cost/recovery alternatives above.
+Report first-use timing, defensive opportunity cost and repeat cadence across
+solo/duo/trio, base gear and advanced builds. Select one architecture.
+Do not include random Types, REC, leader bonuses or trees in this experiment.
+
+### Phase3: leader/passive/Master consolidation
+
+Pilot one leader bonus per starter if separately approved. Assign each passive
+and Master one clear responsibility. Audit all affected equipment and invested
+progress. Stop if support identity or solo viability depends on owning another
+rare character.
+
+### Phase4: released roster batches
+
+Rework by tactical clusters, not all32 at once:
+1. Accessible starters and Standard roster.
+2. Rose/War coordinated attackers and tanks.
+3. Released Moon healers/supports.
+4. Calamitic high-end rules, reviewed separately.
+
+Each batch requires identity sketches, exact approved kits, full gear matrix,
+readability review and pressured encounter results. Character art is reused.
+Sunshade remains an internal pre-launch audit; no marketing/availability changes.
+Overlapping tank/healer/alternation groups need explicit differentiation sign-off.
+
+### Phase5: optional progression features
+
+Only if players still need more build choice, compare a small mastery choice
+against existing Masters. Recovery, reversible specializations and consumables
+are independent proposals with their own tests; adding all is not the goal.
+New guest/friend combat features and squad-size expansion are out of scope.
+
+### Phase6: controlled release and observation
+
+Publish shared client/authority only after acceptance, with exact rules migration,
+historical receipt checks and hosted verification. Record which kits changed.
+Monitor ordinary progression/frustration and unintended loops before the next
+batch. Owner rollback policy must preserve new saved acquisitions and progress;
+never revert wallet data just to return to old combat rules.
+
+## 9. Validation and proposed acceptance gates
+
+These are proposed targets, not claims that testing has already occurred.
+
+### Comprehension/playtest
+
+Recruit5-8 consenting participants mixing new and experienced players; do not
+invent population averages from this small sample.
+- After60 seconds with a character reference, at least80% identify its job,
+  basic setup/payoff and defensive limitation without facilitator coaching.
+- At least80% predict the target/effect/cost of representative legal actions.
+- Track misclicks, misunderstood duration, wrong-resource waits and time spent
+  reopening references; aim for fewer than the same participants' baseline.
+- Ask whether a climax feels worth its cost and whether an ordinary turn offers
+  a meaningful choice. Record qualitative findings, not just damage output.
+- Keyboard/touch/Reduce motion users receive the same actionable state.
+
+### Simulation/mechanics
+
+- Separate zero-Defense DPR, realistic-Defense damage, effective healing,
+  Shield creation, actual absorbed damage and packet survival.
+- Compare1/2/3-member legal squads; only the single selected starter is free.
+- Cover Lv.0/30/45/60/75/90/105, applicable Calamitic110/Ascended115 and
+  captured60. Test no gear, ordinary progression and conditional optimized gear.
+- Use multiple fixed seeds and pressured encounters. The current five-seed
+  Lv.30 entry check is a regression baseline, not a complete clear-rate study.
+- Preserve native/Conduit origin distinctions, no recursion, no duplicated
+  Gauge from AoE/multi-hit/periodic packets and no heal-on-aura gain.
+- Check first/second evolution access against the current fodder requirements.
+- Test frozen-run resume/restart, Settings, Continue, Retry, defeat and final
+  replay; every saved reward remains exactly once.
+
+### Equipment and migration
+
+- Every released Conduit/Master gets a compatible mapped effect or an explicit
+  owner-approved conversion path; no hidden dead equipment.
+- Retain owned IDs/counts/upgrades/configurations/locks and skill investments.
+- Validate malformed/stale requests, overflow, denied saves and concurrent
+  revision conflicts through the authority.
+- Test unmarked historical receipts and new receipts without rewriting outcomes.
+- Never balance ordinary enemies against a strongest paper outlier or merge
+  Calamitic ceilings into ordinary expectations.
+
+### Presentation
+
+- Clear actual cost/target/readiness, one personal indicator and concise effect
+  feedback; detailed source/math remains reachable.
+- Measured animations over time, impact-aligned HP updates, immediate Skip,
+  pointer-transparent/disposable effects and static Reduce motion feedback.
+- No art/VFX flashes claim success before the save/accepted battle transaction.
+- Any prototype's performance is measured; no60fps guarantee from screenshots.
+
+## 10. Owner decisions before coding
+
+1. **Direction:** standardize/simplify the current four actions, or prototype a
+   strict two-tier upgrade ladder for selected characters?
+2. **Climax:** retain personal Last Flare or test a team resource replacing its
+   personal cost? Retain recovery in the first comparison?
+3. **Stats:** simplify display of existing stats first, or specifically explore
+   a true fourth Recovery stat and its investment conversion?
+4. **Leader:** add one small leader bonus later, or leave positional leadership
+   cosmetic and keep team influence in existing passives/Masters?
+5. **Unlocks:** keep every currently owned active usable, or approve staged
+   evolution unlocks with an explicit no-loss/compensation policy?
+6. **Customization:** Masters as the main choice, or a replacement mastery
+   system? Random summon Types are not recommended.
+7. **Pilot scope:** three starters only, with an isolated no-account prototype
+   and a review stop before roster rollout?
+8. **Complexity budget:** approve one main personal hook/indicator and a common
+   timing/scaling glossary, including a deliberate review of shield stacking?
+
+**Recommended approval package:** phase1 starter-only prototype, current core
+stats, no random Types/REC/tree/unlock loss, existing individual Gauge baseline,
+one-hook grammar and a later separately reviewed team-climax experiment.
+Do not begin all-roster implementation from a general preference for the reference.
+
+## 11. Audit conclusion
+
+Last Light does not need to become a clone or accumulate every historic system
+to feel more intuitive. It already has normal attacks, personal Gauge, two
+techniques, a climax, passives and deep equipment choices.
+
+The refresh should make a player say **"I know what this character is for, I
+know why this move is ready, and I know when to use it"**. Shared vocabulary,
+distinct roles, fewer simultaneous counters and a measured climax choice are
+more likely to achieve that than random Types and several new progression bars.
+This plan changes no live mechanics until the owner selects and approves a phase.

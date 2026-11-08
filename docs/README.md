@@ -1,5 +1,11 @@
 # Documentation hub
 
+## Character combat refresh audit (2026-11-07)
+
+[Current comparison and phased proposal](Future%20Plans/character-combat-refresh-audit.md):
+verified stats/Gauge/roles/progression,32 released-kit complexity review, starter
+pilots and owner gates. Audit only; no new systems or UI rollout approved.
+
 ## Moon launch (2026-11-07)
 
 [Release and visibility contract](moon-sunshade-events.md#moon-launch-and-sunshade-concealment-2026-11-07):
