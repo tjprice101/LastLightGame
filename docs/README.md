@@ -1,5 +1,13 @@
 # Documentation hub
 
+## Radiant battlefield art and owned status reference (2026-11-08)
+
+[Canonical supplied scenery/enemies and source-owned Shield/status rows](Future%20Plans/radiant-combat-system-specification.md#canonical-battlefield-art-and-source-owned-readouts-2026-11-08)
+now appear in the isolated saved preview. Shields consume/refresh at impact;
+timed effects are explicitly last-completed snapshots during replay.
+No production activation; finer timed-status synchronization and final VFX/
+composition/routing remain unfinished.
+
 ## Radiant six-member battle and browser preview (2026-11-08)
 
 [Saved face/charge/impact surface](Future%20Plans/radiant-combat-system-specification.md#saved-six-member-battle-surface-and-impact-preview-2026-11-08)

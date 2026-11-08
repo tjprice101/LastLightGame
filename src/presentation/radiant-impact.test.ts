@@ -63,4 +63,28 @@ describe('saved ordered Radiant impact ledger', () => {
     const result = applyRadiantCombatAction(state, { type: 'defense', bearerId: 'thornia' });
     expect(radiantImpactFrames(state, result.state, result.events).at(-1)!.readout.units.thornia.hp).toBe(7639);
   });
+  it('consumes independent Shield layers in engine order at impact, including multi-hit breaks', () => {
+    const before = battle(['ember']); before.phase = 'enemy'; before.acted = ['ember'];
+    before.bearers[0].shields = [
+      { id: 1, source: { kind: 'flare', bearerId: 'ember' }, remaining: 1 },
+      { id: 2, source: { kind: 'passive', bearerId: 'ember' }, remaining: 250 },
+    ]; before.nextShieldId = 3;
+    const result = applyRadiantCombatAction(before, { type: 'enemy-attack', enemyId: 'enemy-a',
+      targetIds: ['ember'], coefficient: 1, hits: 3 });
+    const frames = radiantImpactFrames(before, result.state, result.events);
+    const hits = frames.filter(frame => frame.events.some(event => event.type === 'damage'));
+    expect(hits).toHaveLength(3);
+    expect(hits[0].readout.units.ember.layers.map(layer => layer.id)).toEqual([2]);
+    expect(hits[0].readout.units.ember.layers[0].source).toEqual(before.bearers[0].shields[1].source);
+    for (const frame of hits) {
+      expect(frame.readout.units.ember.layers.reduce((sum, layer) => sum + layer.remaining, 0))
+        .toBe(frame.readout.units.ember.shield);
+    }
+    expect(before.bearers[0].shields[0].remaining).toBe(1);
+    const dishonest = structuredClone(result.events);
+    const damage = dishonest.find(event => event.type === 'damage');
+    if (!damage || damage.type !== 'damage') throw new Error('Expected a damage packet.');
+    damage.shields[0].source = { kind: 'normal', bearerId: 'ember' };
+    expect(() => radiantImpactFrames(before, result.state, dishonest)).toThrow('absorption');
+  });
 });

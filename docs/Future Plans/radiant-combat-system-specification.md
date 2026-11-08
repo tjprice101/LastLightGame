@@ -1,5 +1,48 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Canonical battlefield art and source-owned readouts (2026-11-08)
+
+The isolated saved battle now uses [canonical enemy/scenery resolvers](../../src/presentation/radiant-battle-art.ts)
+for the frozen encounter identity and activity. Catalog creatures retain their
+own supplied art; Elemental War uses its exact bearer/form character portrait,
+not a guessed enemy copy. Current Story includes supplied Infernic scenery.
+Undelivered War scenery remains explicitly pending. Shared deployment-base,
+byte revisions, facing and disposable artwork failure/retry handling apply.
+Enemy/scenery/face image DOM survives action readout updates.
+
+[Shield replay](../../src/presentation/radiant-impact.ts) now retains each
+ordered source-owned layer, consuming it at the actual saved impact and
+reproducing final layer IDs, provenance and amounts as well as aggregate
+Shield. Refreshes update the existing layer; there is no invented duration.
+[Status reference](../../src/presentation/radiant-status.ts) exposes separate
+Burn, Exposure, Weaken, Seed, Renewal, reduction, Attack buff and Guard rows
+with actual owner/origin, magnitude and remaining clock. It never combines
+independent native, Master or Conduit sources. Dead units hide active effects.
+Only matching installed Burn/Shield icons are reused; other kinds are text,
+not borrowed character-specific icons.
+
+**Timing boundary:** Shield layers update at each impact. Timed-effect rows
+retain the last completed action snapshot through save/windup/replay and are
+explicitly labelled during playback; they settle from the saved final state
+on completion/Skip/Reduce motion. The engine does not emit every expiration,
+so these rows do **not** claim impact-by-impact timed-status synchronization.
+That finer-grained presentation remains unfinished; no clock, combat math,
+RNG, save/schema or authority change was made to manufacture it.
+
+**Validation:** `npx vitest run src\presentation\radiant-status.test.ts src\presentation\radiant-battle-art.test.ts src\presentation\radiant-impact.test.ts src\presentation\radiant-battle-view.test.ts src\online\radiant-session.test.ts src\game\radiant-combat.test.ts --maxWorkers=2`:
+507 tests/6 files pass. `npx tsc --noEmit` and `npm run build` pass (existing
+large-chunk advisory). Resolver tests traverse every authored family anchor;
+layer tests cover multi-hit FIFO consumption and unchanged inputs; status tests
+cover independent sources, clocks/expiry, dead units and escaped source names.
+Built browser at effective390px: supplied scenery/enemies loaded, no horizontal
+overflow, saved Tizu Glowing Shield548 with named owner/until-broken label,
+no alert/error text and empty localStorage. Existing controlled temporal motion
+checks remain applicable; this is not a real-time GPU/FPS claim.
+
+Production routing/results, detailed per-character radiant VFX, final
+composition/Home, remaining face crops, actual DB proof and coherent deployment
+remain pending. The single art brief remains provisional.
+
 ## Saved six-member battle surface and impact preview (2026-11-08)
 
 [RadiantBattleView](../../src/presentation/radiant-battle-view.ts) now consumes
@@ -31,8 +74,8 @@ listeners and suppresses late DOM updates; callers own run/session disposal.
 Current default visuals are a finite face-brightening windup and expanding
 pointer-transparent impact rings. Accepted selections reuse rarity feedback.
 The authored-effect interface is an integration seam, **not completed unique
-character Flare shaders/bloom/VFX**. Enemy art/scenery, source-owned status
-readouts, polished overlapping battlefield composition, cinematic Home and
+character Flare shaders/bloom/VFX**. Impact-synchronized timed statuses,
+polished overlapping battlefield composition, cinematic Home and
 production routing/results integration still remain.
 
 **Browser preview:** `npm run dev`, then open

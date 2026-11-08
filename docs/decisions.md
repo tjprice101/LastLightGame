@@ -1,5 +1,18 @@
 # Decision log
 
+## Preserve canonical field art and honest status timing (2026-11-08)
+
+Continue the delegated isolated overhaul using frozen canonical creature
+identities and actual bearer/form portraits for Elemental War. Reuse supplied
+activity scenery, shared byte revisions/facing and explicit missing-art/error
+handling; never guess asset URLs or make replacement commissions for installed
+art. Replay source-owned Shield layers at saved impacts. Since current events
+do not report every effect expiration, label timed-effect rows as the last
+completed action during playback, settling from saved state afterward rather
+than showing future statuses/guessed clocks. This is an implementation boundary,
+not approval to omit eventual full synchronized status presentation or final VFX.
+[Contract/evidence](Future%20Plans/radiant-combat-system-specification.md#canonical-battlefield-art-and-source-owned-readouts-2026-11-08).
+
 ## Present saved radiant impacts without optimistic combat (2026-11-08)
 
 Under the delegated overhaul, build the six-member face/charge/action surface

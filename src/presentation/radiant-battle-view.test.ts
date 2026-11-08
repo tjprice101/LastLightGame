@@ -57,8 +57,13 @@ describe('saved six-member Radiant battle surface', () => {
     expect(host.querySelector<HTMLMeterElement>('[data-radiant-shared]')!.max).toBe(100);
     expect(host.getAttribute('aria-busy')).toBe('false');
     const image = host.querySelector('.compact-portrait img');
+    const enemyImage = host.querySelector('.radiant-enemy-art');
+    const scenery = host.querySelector('.radiant-arena-art');
+    expect(enemyImage).not.toBeNull(); expect(scenery).not.toBeNull();
     await view.act('normal');
     expect(host.querySelector('.compact-portrait img')).toBe(image);
+    expect(host.querySelector('.radiant-enemy-art')).toBe(enemyImage);
+    expect(host.querySelector('.radiant-arena-art')).toBe(scenery);
     expect(session.view().presentation).toBeNull();
     expect(host.querySelector('[data-radiant-charge-text="ember"]')!.textContent).toMatch(/2[05] \/ 60 charge/);
   });

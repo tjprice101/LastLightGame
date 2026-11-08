@@ -12,6 +12,9 @@ import { reducedMotion } from './settings';
 import { battleSpeed } from './battle-speed';
 import { radiantImpactFrames, radiantReadout, type RadiantImpactFrame, type RadiantReadout } from './radiant-impact';
 import './radiant-battle.css';
+import { radiantArenaArt, radiantEnemyArt } from './radiant-battle-art';
+import { radiantStatusSnapshot, radiantStatusRows, radiantShieldRows } from './radiant-status';
+import { bindArtworkLoading } from './artwork-loading';
 
 export interface RadiantBattleEffects {
   windup(action: RadiantPlayerAction, state: RadiantCombatState): Promise<void>;
@@ -35,20 +38,27 @@ export class RadiantBattleView {
   private presentationError: string | null = null;
   private activeReceipt: RadiantRunResponse | null = null;
   private presentationGeneration = 0;
+  private statuses: ReturnType<typeof radiantStatusSnapshot>;
+  private artworkCleanup: () => void;
+  private statusMarkup = new Map<string, string>();
+  private shieldMarkup = new Map<string, string>();
   constructor(private readonly host: HTMLElement, private readonly session: RadiantSession,
     private readonly openSettings: () => void, private readonly effects?: RadiantBattleEffects) {
     const run = session.view().saved.run;
     if (!run) throw new Error('A saved Radiant encounter is required.');
     this.displayed = radiantReadout(run.state);
+    this.statuses = radiantStatusSnapshot(run.state);
     this.actor = run.state.bearers.find(unit => unit.hp > 0 && !run.state.acted.includes(unit.loadout.id))?.loadout.id
       ?? run.state.bearers[0].loadout.id;
     this.target = run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
     host.innerHTML = `<section class="radiant-battle" aria-label="Radiant battle">
+      <div class="radiant-arena">${radiantArenaArt(run.anchor.activity)}</div>
       <header class="radiant-battle-heading"><div><small>${escape(run.anchor.family)}</small><h2>Radiant battle</h2>
         <span data-radiant-round></span></div><button type="button" data-radiant-settings>Settings</button></header>
       <div class="radiant-enemies" aria-label="Enemy targets">${run.enemies.map(enemy =>
         `<button type="button" class="radiant-enemy" data-radiant-target="${escape(enemy.id)}" aria-pressed="false">
-          <strong>${escape(enemy.name)}</strong><span>Lv.${enemy.level}</span>${this.healthMarkup(enemy.id)}</button>`).join('')}</div>
+          ${radiantEnemyArt(enemy)}<strong>${escape(enemy.name)}</strong><span>Lv.${enemy.level}</span>
+          ${this.healthMarkup(enemy.id)}</button>`).join('')}</div>
       <section class="radiant-shared" aria-label="Shared Eternal charge"><b>Eternal Radiant Flare</b>
         <meter data-radiant-shared min="0" aria-label="Shared Eternal charge"></meter><span data-radiant-shared-text></span></section>
       <div class="radiant-squad" aria-label="Equipped squad">${run.state.bearers.map((unit, index) => {
@@ -77,13 +87,16 @@ export class RadiantBattleView {
       <p data-radiant-error role="alert"></p>
     </section>`;
     host.addEventListener('click', this.click);
+    this.artworkCleanup = bindArtworkLoading(host);
     window.addEventListener('last-light-motion-change', this.motion);
     window.addEventListener('last-light-battle-speed-change', this.speed);
     this.render();
   }
   private healthMarkup(id: string): string {
     return `<div class="radiant-health" data-radiant-health="${escape(id)}"><meter min="0" aria-label="HP"></meter>
-      <span data-hp></span><span data-shield></span></div>`;
+      <span data-hp></span><span data-shield></span><ul class="radiant-shield-layers" data-radiant-layers></ul>
+      <span class="radiant-status-timing" data-radiant-status-timing></span>
+      <ul class="radiant-status-list" data-radiant-effects></ul></div>`;
   }
   private element<T extends Element>(selector: string): T {
     const result = this.host.querySelector<T>(selector);
@@ -137,6 +150,19 @@ export class RadiantBattleView {
       meter.max = value.maximum; meter.value = value.hp;
       unit.querySelector<HTMLElement>('[data-hp]')!.textContent = `HP ${value.hp} / ${value.maximum}`;
       unit.querySelector<HTMLElement>('[data-shield]')!.textContent = `Shield ${value.shield}`;
+      const layers = unit.querySelector<HTMLElement>('[data-radiant-layers]')!;
+      const id = unit.dataset.radiantHealth!;
+      const shieldMarkup = radiantShieldRows(value.hp > 0 ? value.layers : [], run);
+      if (this.shieldMarkup.get(id) !== shieldMarkup) {
+        layers.innerHTML = shieldMarkup; this.shieldMarkup.set(id, shieldMarkup);
+      }
+      const statuses = unit.querySelector<HTMLElement>('[data-radiant-effects]')!;
+      const statusMarkup = radiantStatusRows(value.hp > 0 ? this.statuses[unit.dataset.radiantHealth!] : [], run);
+      if (this.statusMarkup.get(id) !== statusMarkup) {
+        statuses.innerHTML = statusMarkup; this.statusMarkup.set(id, statusMarkup);
+      }
+      unit.querySelector<HTMLElement>('[data-radiant-status-timing]')!.textContent =
+        this.presenting && statusMarkup ? 'Effects at last completed action' : '';
     }
     for (const button of Array.from(this.host.querySelectorAll<HTMLButtonElement>('[data-radiant-actor]'))) {
       const id = button.dataset.radiantActor!;
@@ -233,6 +259,7 @@ export class RadiantBattleView {
   }
   private settle(response: RadiantRunResponse): void {
     this.displayed = radiantReadout(response.run.state);
+    this.statuses = radiantStatusSnapshot(response.run.state);
     this.presenting = false; this.activeReceipt = null;
     this.presentationError = null;
     const receipt = this.session.view().presentation;
@@ -279,6 +306,7 @@ export class RadiantBattleView {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true; this.cancelEffects();
+    this.artworkCleanup();
     this.host.removeEventListener('click', this.click);
     window.removeEventListener('last-light-motion-change', this.motion);
     window.removeEventListener('last-light-battle-speed-change', this.speed);

@@ -1,5 +1,39 @@
 # Current state and handoff
 
+## Radiant canonical field art and source-owned readouts (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`, prior battle surface `eb336cf2`.
+No production activation/deployment, combat math, RNG, schema or authority change.
+
+**Implemented:** supplied canonical creature/bearer-form enemy artwork and
+activity scenery, stable image DOM/shared facing/revisions, disposable
+artwork-loading retries. War identities are not catalog creatures: resolve
+their exact character/form art. Infernic Story art is currently installed;
+undelivered War arenas stay pending. Source-owned Shield layer FIFO/refresh
+replays at saved impact with final layer/provenance verification. Independent
+timed-effect rows preserve owner/origin, actual amount and clock; during replay
+these retain an explicitly labelled last-completed snapshot, then settle from
+the saved state on completion/Skip/Reduce motion. No guessed expiration events
+or unrelated status icons.
+
+**Verified:** focused command in
+[contract/evidence](Future%20Plans/radiant-combat-system-specification.md#canonical-battlefield-art-and-source-owned-readouts-2026-11-08):
+507 tests/6 files pass, including real all-character combat/session regressions,
+all authored art-family anchors, layer FIFO multi-hit/refresh and status-source/
+expiry/escaping tests. `npx tsc --noEmit` and `npm run build` pass with existing
+large-chunk advisory. Built browser effective390px: supplied art loads, no
+horizontal overflow, saved Tizu Shield548 shows owner and until-broken lifetime,
+no error text, localStorage0. Hidden integrated tab uses programmatic controls;
+no real-time FPS claim. Temporary server stopped after verification.
+
+**Remaining:** full timed-status impact synchronization, production routed
+preparation/results/Continue/Retry/exit, actual DB integration proof,174 face
+crops, cinematic Home/overlapping field composition, detailed unique finite
+Flare bloom/shader/VFX, final network/cadence/economy calibration and long-journal
+payload gates. Single consolidated art brief remains provisional until needs
+settle. Keep authority disabled and the isolated branch unmerged until coherent.
+Unrelated dirty mock-up/Future Plans/status-doc content stays unstaged.
+
 ## Radiant battle face/charge surface and impact preview (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; prior manual preparation `e493553e`.

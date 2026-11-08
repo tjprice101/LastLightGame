@@ -1,4 +1,6 @@
 .radiant-battle {
+  position: relative;
+  isolation: isolate;
   font-family: var(--ui-font, Georgia, serif);
   color: #f2f2f2;
   background: radial-gradient(ellipse at 50% 70%, #32343a, #111216 75%);
@@ -6,6 +8,18 @@
   border: 1px solid #72747a;
   border-radius: 20px;
 }
+.radiant-arena { position: absolute; inset: 0; z-index: -1; overflow: hidden; border-radius: inherit; pointer-events: none; }
+.radiant-arena::after { content: ""; position: absolute; inset: 0; background: linear-gradient(#111216b8, #111216de); }
+.radiant-arena-art { width: 100%; height: 100%; object-fit: cover; }
+.radiant-arena-pending { width: 100%; height: 100%; background: radial-gradient(ellipse, #454751, #17171f); }
+.radiant-enemy-art, .radiant-art-pending { display: block; height: clamp(130px, 20vw, 260px); width: 100%; object-fit: contain; }
+.radiant-enemy-art[data-mirrored="true"] { scale: -1 1; }
+.radiant-art-pending { align-content: center; text-align: center; background: #17171c; color: #ccc; }
+.radiant-status-list, .radiant-shield-layers { list-style: none; padding: 0; margin: 6px 0; }
+.radiant-status-list li, .radiant-shield-layers li { overflow-wrap: anywhere; border-left: 2px solid #a2a7b4; padding: 4px 6px; margin: 4px 0; font-size: 12px; }
+.radiant-status-list li strong, .radiant-shield-layers li strong, .radiant-status-list small, .radiant-shield-layers small { display: block; }
+.radiant-battle .status-icon { width: 26px; height: 26px; object-fit: contain; float: left; margin-right: 6px; }
+.radiant-status-timing { font-size: 11px; color: #d8d8de; }
 .radiant-preview-heading { color: #eee; font-family: var(--ui-font, Georgia, serif); max-width: 1100px; margin: 20px auto; padding: 12px; }
 .radiant-preview-heading p { line-height: 1.5; }
 .radiant-preview-heading label { display: inline-block; padding: 12px; }

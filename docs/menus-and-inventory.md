@@ -1,5 +1,20 @@
 # Menus and inventory
 
+## Radiant battlefield artwork and status timing (2026-11-08)
+
+[Canonical field/source-readout contract](Future%20Plans/radiant-combat-system-specification.md#canonical-battlefield-art-and-source-owned-readouts-2026-11-08):
+saved encounter identities select supplied enemy/form art and activity scenery;
+missing scenery stays pending. Preserve image DOM and shared facing/revisions.
+Dispose artwork loading/retry listeners with the view.
+Each Shield layer shows its actual amount, owner/Conduit/Master and indefinite
+until-broken lifetime; FIFO consumption/refresh is impact-ordered.
+Independent timed effects show their actual saved magnitude/clock/provenance,
+without merging owners or substituting unrelated icons. During replay these
+are labelled as the last completed action snapshot, then settle after the
+saved presentation or Skip/Reduce motion. Full timed-status impact
+synchronization is not yet implemented. No optimistic status/expiry reveal.
+Production results/navigation and final cinematic VFX/composition remain pending.
+
 ## Saved radiant battle surface preview (2026-11-08)
 
 [Six-member surface/preview](Future%20Plans/radiant-combat-system-specification.md#saved-six-member-battle-surface-and-impact-preview-2026-11-08)
@@ -12,7 +27,7 @@ Keep the same view through Settings so its paused animations/frozen readouts
 resume; disposal is owned by leaving the run, not opening Settings.
 The in-memory developer preview is not a production account route. Unreviewed
 faces stay named pending tiles. Default finite rings are not the final unique
-VFX; source-owned status presentation, battlefield art/composition and complete
+VFX; full timed-status impact synchronization, battlefield composition and complete
 result/navigation integration remain pending.
 
 ## Radiant manual preparation boundary (2026-11-08)
