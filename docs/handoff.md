@@ -1,5 +1,16 @@
 # Current state and handoff
 
+## Remaining architecture questions resolved (2026-11-08)
+
+Owner confirms two-step final empowerment, emptied/refilled personal Gauge,
+four-squad-round deadline and higher later activation costs. No forced Flare
+recovery. Hybrid guaranteed charge + capped random real-hit bonus to attacker;
+no new items or elemental advantage. Invalid captured squads require manual
+bearer selection; captures/fodder retained, no automatic team repair.
+[Contract](Future%20Plans/character-combat-refresh-audit.md#sharedpersonal-charge-reference-supplied-by-owner)
+updated; exact numbers/timer/compatibility and three starter kits are the next
+approval deliverable. Still no live mechanics or UI changes.
+
 ## Overhaul questionnaire answered: specification first (2026-11-08)
 
 [Selections](Future%20Plans/character-combat-refresh-audit.md#implementation-questionnaire-owner-decisions-2026-11-08):

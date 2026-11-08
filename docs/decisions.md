@@ -1,5 +1,16 @@
 # Decision log
 
+## Final charge, recovery and captured-team clarifications (2026-11-08)
+
+Owner selects two-step team empowerment, personal bar reset/refill and a
+four-squad-round casting deadline; subsequent activations cost more.
+Removes forced next-turn recovery for all Flare tiers. Selects guaranteed base
+charge plus capped random real-hit bonus motes to the attacker, no new items/
+elemental advantage. Invalid legacy captured squads require manual bearer
+selection; retained copies remain fodder, no auto-repair or grants.
+[Confirmed contract](Future%20Plans/character-combat-refresh-audit.md#sharedpersonal-charge-reference-supplied-by-owner)
+requires exact specification and starter review before implementation.
+
 ## Owner overhaul questionnaire selections (2026-11-08)
 
 Owner selects four stats HP/Attack/Defense/Recovery, personal plus shared final

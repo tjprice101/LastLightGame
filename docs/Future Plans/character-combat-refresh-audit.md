@@ -36,6 +36,31 @@ by reviewed roster batches. No production mechanics change in this planning pass
 
 ### Shared/personal charge reference supplied by owner
 
+**Follow-up decisions confirmed2026-11-08:**
+- Use the two-step final Flare model: spend full shared charge to empower one
+  eligible bearer, empty its personal bar, recharge and cast within **four squad
+  rounds**. Subsequent activations in a fight require more team charge.
+- **Remove forced next-turn recovery for every Flare tier.** Balance exact
+  costs, gain cadence and output; no inherited free power increase.
+- Hybrid charge: guaranteed action/round gains plus **capped random bonus motes
+  from real attack hits to the attacker**. No random squad allocation, no
+  cosmetic-hit rolls and no uncapped multi-hit advantage. Passive/leader/gear
+  fill effects remain reviewed. No new consumables or elemental advantage.
+- Retain captured copies and fodder, but require **manual bearer squad selection
+  before battle** when a legacy squad is invalid. No automatic team repair or
+  new bearer grants. Preserve gear ownership/upgrades; define how captured
+  equipment is cleared in the compatibility transaction.
+
+The exact guarantee/bonus amounts, chances/caps, timer counting, mode expiry,
+death/carryover and escalating shared thresholds require the specification.
+Use a dedicated persisted charge RNG stream so cosmetic, combat-critical,
+reward and capture randomness are not repurposed. Accepted combat state,
+charge rolls and outcomes commit atomically; failure advances none.
+Available healthy/non-damaging support actions need useful guaranteed charge
+paths so the new model does not force every healer to deal damage.
+These decisions resolve the corresponding questions below; the supplied
+reference remains explanatory history, not a broader import approval.
+
 Owner selects **personal Gauge plus a shared squad resource for Eternal Radiant
 Flare**, and describes the reference's two-step climax: fill team charge,
 activate one eligible bearer, empty/recharge its personal bar, then cast within
@@ -54,8 +79,8 @@ scope before specifying them. The reference's dual lower-tier bar conflicts
 with the selected one-current-Flare control model if lower tiers are selectable.
 Prefer one current-tier bar unless the owner revises that selection.
 
-No answer explicitly resolves the old forced next-turn recovery skip: the
-recovery answer explains charge mechanics instead. Specify recovery separately.
+The original recovery answer explained charging rather than skipping; the
+follow-up above explicitly removes the forced skip for all Flare tiers.
 Likewise, a four-turn mode timer requires a clock, expiry rules, death handling,
 retry/reset/Continue behavior and accessible confirmation/controls.
 
@@ -66,11 +91,11 @@ for independent damage-over-time sources and owned Shields.
 
 ### Remaining review gates
 
-1. Confirm two-step climax/timer/escalation and old recovery disposition.
-2. Select charge sources/allocation: predictable actual combat events versus
-   per-hit RNG drops. Cosmetic hit counts cannot become mechanical grants.
-3. Clarify imported-feature scope (items, elemental advantage, gear fill).
-4. Approve legacy captured-team repair and noncombat capture retention.
+1. Specify selected two-step climax/timer/escalation with no forced recovery.
+2. Specify guaranteed base and capped attacker-only random bonus charge.
+   Cosmetic hit counts cannot become mechanical grants.
+3. Review fill effects; new items and elemental advantage are out of scope.
+4. Specify manual invalid-squad selection and retained capture/fodder inventory.
 5. Review four-stat scaling, subtype table and three exact starter kits.
 6. Review full gear/Imbue/status/leader rules, currency ledger and save/rules
    migration before a public release.
