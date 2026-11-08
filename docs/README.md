@@ -1,5 +1,16 @@
 # Documentation hub
 
+## Radiant starter combat study and face intake (2026-11-08)
+
+[Current operative study](Future%20Plans/radiant-combat-system-specification.md#current-implemented-starter-study-and-portrait-intake-2026-11-08):
+pure four-stat starter combat, nine fixed Master attunements, layered charge,
+sourced indefinite Shields/healing and exact lowest-health currency ledger.
+[Portrait workflow](art-workflow.md#derived-compact-face-portraits-starter-pilot-2026-11-08)
+exports18 reviewed starter faces with provenance and shared versioned resolver.
+Isolated overhaul branch only; not live account/authority/UI conversion.
+Obsolete initial formulas are explicitly archived, not operative rules.
+
+
 ## Radiant overhaul implementation branch (2026-11-08)
 
 Owner delegates design and implementation. [Foundation status](Future%20Plans/radiant-combat-system-specification.md#delegated-implementation-and-first-foundation-2026-11-08)

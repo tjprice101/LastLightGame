@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "outputSize": 512,
+  "eyeLine": 0.45,
+  "forms": {
+    "infernis": { "eye": [594, 415], "size": 440, "sourceHash": "f1dfca73694210efa5b5bb44016d98880e5836594efe55ba85f8c43e03f9c49f" },
+    "infernis-evo-2": { "eye": [455, 365], "size": 420, "sourceHash": "a07e754b46ec0c044ac0184d0c6689b01ccc283290a85bb4906eb084393a52c1" },
+    "infernis-evo-3": { "eye": [395, 410], "size": 360, "sourceHash": "b7572f94e1cd788f47d90f53105e1700952b7a87a268695add8fc32bc9836c39" },
+    "infernis-evo-4": { "eye": [515, 430], "size": 240, "sourceHash": "90dc0720aa52226dd61fd8dacd7b0568ec7dcd32f9747952994fa1d92f1ce874" },
+    "infernis-evo-5": { "eye": [520, 390], "size": 220, "sourceHash": "2e54fc133f7ec7ba4008eecfd7d75d0a124905e601cb18e1d162086e870f8a83" },
+    "infernis-evo-6": { "eye": [500, 330], "size": 200, "sourceHash": "6069adb5b9240734839dbcfbb768779654238f80a36dfab2a3ea53371e15c6ef" },
+    "tizu": { "eye": [498, 376], "size": 420, "sourceHash": "9477f1092ff7d6e78ced159fed8def7b3d875a0a90e3a7d09895e1e050351c4e" },
+    "tizu-evo-2": { "eye": [590, 425], "size": 420, "sourceHash": "3d095999915d018d06d3aaa4916403c32d2527e757df72d1553682f94e2e30e3" },
+    "tizu-evo-3": { "eye": [657, 369], "size": 370, "sourceHash": "e3417167da89686fd13f4d13d834c2741e3ed5042cd1d17751accb184df7f5fd" },
+    "tizu-evo-4": { "eye": [288, 400], "size": 255, "sourceHash": "64d589e2815c9e500ceb627394a8d1d64ce3dea835d2381f65a144f91045ef47" },
+    "tizu-evo-5": { "eye": [465, 372], "size": 220, "sourceHash": "c94506b60dfd217ef4ae85443bc7ef70a3dd8cc2808753b32d25247507ce589f" },
+    "tizu-evo-6": { "eye": [504, 377], "size": 185, "sourceHash": "923f36b217b6b8a8564300eb70768ebfa5b95a300ac2be3b1ea2ca25c2fcb2da" },
+    "flora": { "eye": [419, 389], "size": 430, "sourceHash": "ed45fa0ff56d60cf57df8cdf15506309efdfea82dc6f67820fe82b6c1951f884" },
+    "flora-evo-2": { "eye": [429, 387], "size": 405, "sourceHash": "216d8fddf45f9bbcaeae63f2bf8c0e54cc37a9ef214781c8e2dba2d8ee1e96d8" },
+    "flora-evo-3": { "eye": [384, 430], "size": 335, "sourceHash": "f912f564390a3a618e8e2d45a5c7f8cbcf412115754d5a24bf8544a7c5febe00" },
+    "flora-evo-4": { "eye": [373, 376], "size": 225, "sourceHash": "9af2e488594034fc396163e2fed2347814b2c5e572bf0e64e3fd1aca4deae7ee" },
+    "flora-evo-5": { "eye": [453, 371], "size": 210, "sourceHash": "3a629be7a3171412743bf63763cd71c4566d0422b659c07ebc2164c949ec9240" },
+    "flora-evo-6": { "eye": [441, 331], "size": 210, "sourceHash": "a9f83022492fb0c7f28ada8db7a08bc4c65d6a5c92b23fec5a428a4a2640e6eb" }
+  }
+}

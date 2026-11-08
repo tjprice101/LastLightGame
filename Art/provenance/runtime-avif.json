@@ -1297,6 +1297,96 @@
    "bytes": 1127763,
    "avif": 156379
   },
+  "character-faces/flora-evo-2.png": {
+   "source": "c839ad55bbde1f1e1c446d7a353ed4c824c79167d557adf32a3cc65a6447922c",
+   "bytes": 450402,
+   "avif": 107055
+  },
+  "character-faces/flora-evo-3.png": {
+   "source": "75ab3b48c0a74f2600d96c63cc5d84868bb82a083048b118842966111cf08f1b",
+   "bytes": 432527,
+   "avif": 88580
+  },
+  "character-faces/flora-evo-4.png": {
+   "source": "f58f62684d4ddf89aec3ceabcd6473e9258e7e1ce8b3e2e3459fdba14245cfe9",
+   "bytes": 453061,
+   "avif": 91623
+  },
+  "character-faces/flora-evo-5.png": {
+   "source": "d06fb90244b53df06ccb668cde653613525643321521f1ba905391df600c712a",
+   "bytes": 457393,
+   "avif": 78335
+  },
+  "character-faces/flora-evo-6.png": {
+   "source": "339354ae0a72cca224acb1b3a6a927d2232d45e0c75fbd295bae8b43f17dcc71",
+   "bytes": 499706,
+   "avif": 83159
+  },
+  "character-faces/flora.png": {
+   "source": "4332daed868591b47f8ba15c4e8ec66f9caa39e23a6b9b8a45561c0a84ee8c3a",
+   "bytes": 420693,
+   "avif": 92045
+  },
+  "character-faces/infernis-evo-2.png": {
+   "source": "a4228a97a45ddecd70a7a949a2f965b6a9e713923052914d0be397767eee3837",
+   "bytes": 394767,
+   "avif": 101408
+  },
+  "character-faces/infernis-evo-3.png": {
+   "source": "c942d986536bfbd02b0afb2557756bacdcbfadc25801b830ca404080b5f6aa5c",
+   "bytes": 404582,
+   "avif": 90719
+  },
+  "character-faces/infernis-evo-4.png": {
+   "source": "c0484948587d0c1ae5c43cbaa235fed9f13acaa0c4510976f392d031f414b794",
+   "bytes": 421802,
+   "avif": 99412
+  },
+  "character-faces/infernis-evo-5.png": {
+   "source": "be9dec353c54a3b99691fc869d92d3106125f2768bfad30282297d43ed380457",
+   "bytes": 507067,
+   "avif": 91058
+  },
+  "character-faces/infernis-evo-6.png": {
+   "source": "d9862001089fdd6dd22dc14bd83e884ffdd683c4798a14ad98223d28ecb1f6b5",
+   "bytes": 519776,
+   "avif": 105247
+  },
+  "character-faces/infernis.png": {
+   "source": "caed37fcb60acd1ba24453f06b1a55e3c66a3a85644ff9c989a20774c48967b8",
+   "bytes": 428153,
+   "avif": 102999
+  },
+  "character-faces/tizu-evo-2.png": {
+   "source": "3426861d52832735356ca769b3c602d5004e3feab3bb37f51f203376a694e08f",
+   "bytes": 416156,
+   "avif": 110076
+  },
+  "character-faces/tizu-evo-3.png": {
+   "source": "46a0cbf586b101254435e8999027ddd36471c81b835cfaf6a60a89a9f158d14c",
+   "bytes": 400287,
+   "avif": 91554
+  },
+  "character-faces/tizu-evo-4.png": {
+   "source": "946b9b3212b84eec268b0fe4a01a4dab2ac68814b0ec9128898421d3457dd664",
+   "bytes": 458868,
+   "avif": 122104
+  },
+  "character-faces/tizu-evo-5.png": {
+   "source": "ceb8ed1dd5a80de9aeb2db50af1833925b954bfe2fdc72d65d6f80022f05d155",
+   "bytes": 488506,
+   "avif": 93519
+  },
+  "character-faces/tizu-evo-6.png": {
+   "source": "9588aefd650d020f03df4f33714bc3a0a7bd6cdb35403627bf619d457dd84dff",
+   "bytes": 478846,
+   "avif": 67285
+  },
+  "character-faces/tizu.png": {
+   "source": "f2a4b82d5ccdff99d4147fc2dc8ab2bf202c518bd8275357e6de3262be2267bb",
+   "bytes": 368519,
+   "avif": 83948
+  },
   "characters/asteriel-evo-2.png": {
    "source": "122017f83ef1f87662683a84c6f7b16fec4227460ee24c7c7d61b5d6e4579f2c",
    "bytes": 792976,

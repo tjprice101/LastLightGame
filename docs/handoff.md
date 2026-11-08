@@ -1,5 +1,40 @@
 # Current state and handoff
 
+## Radiant starter combat study and eighteen face crops (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; earlier foundation committed/pushed
+as `7da29c0e`. No overhaul deployment to live main/authority.
+
+**Implemented:** pure atomic four-stat starter combat, progressive signatures,
+first-member-only living leader, nine fixed personal Master mappings,
+existing layered charge with independent seed, sourced indefinite Shields,
+effective healing snapshots and exact persistable lowest-health currency
+depletion. Returned events are not yet account transactions.
+[Operative contracts and limitations](Future%20Plans/radiant-combat-system-specification.md#current-implemented-starter-study-and-portrait-intake-2026-11-08)
+explicitly archive obsolete initial formula/mode/Shield/approval clauses.
+
+**Art:** eighteen individually anchored starter face/upper-body crops exported;
+source hashes, rectangles and output hashes recorded. Shared compact helper/
+base/versioning/facing/AVIF fallback and unreached/pending handling tested.
+Dark/light48/96/512px sheets inspected. No source/full-art edits, generated
+facial detail, production portrait UI or VFX rollout claimed. Other174 released
+crops pending; consolidated art brief remains provisional.
+
+**Verification:** five Python reproduction/preflight/provenance tests pass;
+132 focused Vitest tests across combat/Gauge/shared portraits/image-format pass.
+`npm run build` passes client TypeScript and Vite, existing large-chunk warning.
+Initial format test correctly rejected18 missing AVIF siblings; encoded through
+the existing tool and reran successfully. Prior full suite8401 result belongs
+to the previous foundation, not a new full-suite run.
+
+**Next:** full released roster/ordinary-Conduit/Master/Imbue conversion, actual
+pressured1/3/6-member experiments, captured-ineligible manual-selection and
+saved-loadout/frozen-run migration; authority-backed partial damage receipts;
+remaining portrait review and necessary cinematic Home/Battle layered Gauge/
+status/VFX surfaces. Release only after those coherent acceptance gates.
+Preserve dirty rejected UI mock-up files/notes; do not stage them.
+
+
 ## Implementing radiant overhaul: foundation only (2026-11-08)
 
 Owner now delegates design and implementation; no further generic pre-coding

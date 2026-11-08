@@ -1,5 +1,23 @@
 # Decision log
 
+## Delegated starter combat and portrait pilot implemented (2026-11-08)
+
+Under the existing delegated overhaul mandate, implement the isolated four-stat
+starter study with two personal charge layers/shared Eternal spending, no
+random crit/forced recovery, source-owned indefinite Shields and lowest-health
+currency budgets. No extra owner decision or live activation is implied.
+[Current study values](Future%20Plans/radiant-combat-system-specification.md#current-implemented-starter-study-and-portrait-intake-2026-11-08)
+replace obsolete operative draft interpretations; old numbered formulas remain
+explicitly historical. Nine fixed starter Masters set attunement/personal
+enhancement, default Equinox; Tide Master2 enhances Shield magnitude instead of
+an expiry extension. These values require actual pressured calibration.
+
+Eighteen starter face crops derive from existing art with individual source-bound
+anchors, provenance and shared compact variant. Sources/full-art paths remain
+unchanged; all other crops, full roster/gear and coherent authority migration
+remain required before release. No new mandatory owner images established.
+
+
 ## Owner delegates implementation; isolated foundation (2026-11-08)
 
 Owner selects delegated remaining design/implementation with validated staged

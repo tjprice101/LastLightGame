@@ -10,6 +10,7 @@ import { statusArtRevisions } from '../content/status-art-revisions';
 import { calamityArtRevisions } from '../content/calamity-art-revisions';
 import { phase1WarArtRevisions } from '../content/phase1-war-art-revisions';
 import { moonArtRevisions } from '../content/moon-art-revisions';
+import { compactPortraitRevisions } from '../content/compact-portrait-revisions';
 import { runtimeArtPath } from './image-format';
 
 export function assetUrl(path: string): string {
@@ -18,7 +19,8 @@ export function assetUrl(path: string): string {
   const conduit = /^conduits\/([^/]+)\.png$/.exec(path);
   const ability = /^abilities\/([^/]+)\.png$/.exec(path);
   const master = /^master-conduits\/([^/]+)\.png$/.exec(path);
-  const revision = moonArtRevisions[path] ?? phase1WarArtRevisions[path] ?? (character
+  const face = /^character-faces\/([^/]+)\.png$/.exec(path);
+  const revision = (face ? compactPortraitRevisions[face[1]] : undefined) ?? moonArtRevisions[path] ?? phase1WarArtRevisions[path] ?? (character
     ? characterArtRevisions[character[1]]
     : conduit ? conduitArtRevisions[conduit[1]]
       : master ? masterConduitArtRevisions[master[1]]

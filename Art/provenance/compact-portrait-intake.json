@@ -1,0 +1,368 @@
+{
+  "version": 1,
+  "outputSize": 512,
+  "eyeLine": 0.45,
+  "settingsHash": "d7aaedf7edb6260c179010b1a8c966dfc4329e74f69e3e2f333d9b7bae593dde",
+  "files": {
+    "infernis": {
+      "source": "public/assets/characters/infernis.png",
+      "sourceHash": "f1dfca73694210efa5b5bb44016d98880e5836594efe55ba85f8c43e03f9c49f",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        594,
+        415
+      ],
+      "crop": [
+        374,
+        217,
+        440,
+        440
+      ],
+      "output": "public/assets/character-faces/infernis.png",
+      "outputHash": "caed37fcb60acd1ba24453f06b1a55e3c66a3a85644ff9c989a20774c48967b8"
+    },
+    "infernis-evo-2": {
+      "source": "public/assets/characters/infernis-evo-2.png",
+      "sourceHash": "a07e754b46ec0c044ac0184d0c6689b01ccc283290a85bb4906eb084393a52c1",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        455,
+        365
+      ],
+      "crop": [
+        245,
+        176,
+        420,
+        420
+      ],
+      "output": "public/assets/character-faces/infernis-evo-2.png",
+      "outputHash": "a4228a97a45ddecd70a7a949a2f965b6a9e713923052914d0be397767eee3837"
+    },
+    "infernis-evo-3": {
+      "source": "public/assets/characters/infernis-evo-3.png",
+      "sourceHash": "b7572f94e1cd788f47d90f53105e1700952b7a87a268695add8fc32bc9836c39",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        395,
+        410
+      ],
+      "crop": [
+        215,
+        248,
+        360,
+        360
+      ],
+      "output": "public/assets/character-faces/infernis-evo-3.png",
+      "outputHash": "c942d986536bfbd02b0afb2557756bacdcbfadc25801b830ca404080b5f6aa5c"
+    },
+    "infernis-evo-4": {
+      "source": "public/assets/characters/infernis-evo-4.png",
+      "sourceHash": "90dc0720aa52226dd61fd8dacd7b0568ec7dcd32f9747952994fa1d92f1ce874",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        515,
+        430
+      ],
+      "crop": [
+        395,
+        322,
+        240,
+        240
+      ],
+      "output": "public/assets/character-faces/infernis-evo-4.png",
+      "outputHash": "c0484948587d0c1ae5c43cbaa235fed9f13acaa0c4510976f392d031f414b794"
+    },
+    "infernis-evo-5": {
+      "source": "public/assets/characters/infernis-evo-5.png",
+      "sourceHash": "2e54fc133f7ec7ba4008eecfd7d75d0a124905e601cb18e1d162086e870f8a83",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        520,
+        390
+      ],
+      "crop": [
+        410,
+        291,
+        220,
+        220
+      ],
+      "output": "public/assets/character-faces/infernis-evo-5.png",
+      "outputHash": "be9dec353c54a3b99691fc869d92d3106125f2768bfad30282297d43ed380457"
+    },
+    "infernis-evo-6": {
+      "source": "public/assets/characters/infernis-evo-6.png",
+      "sourceHash": "6069adb5b9240734839dbcfbb768779654238f80a36dfab2a3ea53371e15c6ef",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        330
+      ],
+      "crop": [
+        400,
+        240,
+        200,
+        200
+      ],
+      "output": "public/assets/character-faces/infernis-evo-6.png",
+      "outputHash": "d9862001089fdd6dd22dc14bd83e884ffdd683c4798a14ad98223d28ecb1f6b5"
+    },
+    "tizu": {
+      "source": "public/assets/characters/tizu.png",
+      "sourceHash": "9477f1092ff7d6e78ced159fed8def7b3d875a0a90e3a7d09895e1e050351c4e",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        498,
+        376
+      ],
+      "crop": [
+        288,
+        187,
+        420,
+        420
+      ],
+      "output": "public/assets/character-faces/tizu.png",
+      "outputHash": "f2a4b82d5ccdff99d4147fc2dc8ab2bf202c518bd8275357e6de3262be2267bb"
+    },
+    "tizu-evo-2": {
+      "source": "public/assets/characters/tizu-evo-2.png",
+      "sourceHash": "3d095999915d018d06d3aaa4916403c32d2527e757df72d1553682f94e2e30e3",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        590,
+        425
+      ],
+      "crop": [
+        380,
+        236,
+        420,
+        420
+      ],
+      "output": "public/assets/character-faces/tizu-evo-2.png",
+      "outputHash": "3426861d52832735356ca769b3c602d5004e3feab3bb37f51f203376a694e08f"
+    },
+    "tizu-evo-3": {
+      "source": "public/assets/characters/tizu-evo-3.png",
+      "sourceHash": "e3417167da89686fd13f4d13d834c2741e3ed5042cd1d17751accb184df7f5fd",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        657,
+        369
+      ],
+      "crop": [
+        472,
+        202,
+        370,
+        370
+      ],
+      "output": "public/assets/character-faces/tizu-evo-3.png",
+      "outputHash": "46a0cbf586b101254435e8999027ddd36471c81b835cfaf6a60a89a9f158d14c"
+    },
+    "tizu-evo-4": {
+      "source": "public/assets/characters/tizu-evo-4.png",
+      "sourceHash": "64d589e2815c9e500ceb627394a8d1d64ce3dea835d2381f65a144f91045ef47",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        288,
+        400
+      ],
+      "crop": [
+        160,
+        285,
+        255,
+        255
+      ],
+      "output": "public/assets/character-faces/tizu-evo-4.png",
+      "outputHash": "946b9b3212b84eec268b0fe4a01a4dab2ac68814b0ec9128898421d3457dd664"
+    },
+    "tizu-evo-5": {
+      "source": "public/assets/characters/tizu-evo-5.png",
+      "sourceHash": "c94506b60dfd217ef4ae85443bc7ef70a3dd8cc2808753b32d25247507ce589f",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        465,
+        372
+      ],
+      "crop": [
+        355,
+        273,
+        220,
+        220
+      ],
+      "output": "public/assets/character-faces/tizu-evo-5.png",
+      "outputHash": "ceb8ed1dd5a80de9aeb2db50af1833925b954bfe2fdc72d65d6f80022f05d155"
+    },
+    "tizu-evo-6": {
+      "source": "public/assets/characters/tizu-evo-6.png",
+      "sourceHash": "923f36b217b6b8a8564300eb70768ebfa5b95a300ac2be3b1ea2ca25c2fcb2da",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        504,
+        377
+      ],
+      "crop": [
+        412,
+        294,
+        185,
+        185
+      ],
+      "output": "public/assets/character-faces/tizu-evo-6.png",
+      "outputHash": "9588aefd650d020f03df4f33714bc3a0a7bd6cdb35403627bf619d457dd84dff"
+    },
+    "flora": {
+      "source": "public/assets/characters/flora.png",
+      "sourceHash": "ed45fa0ff56d60cf57df8cdf15506309efdfea82dc6f67820fe82b6c1951f884",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        419,
+        389
+      ],
+      "crop": [
+        204,
+        196,
+        430,
+        430
+      ],
+      "output": "public/assets/character-faces/flora.png",
+      "outputHash": "4332daed868591b47f8ba15c4e8ec66f9caa39e23a6b9b8a45561c0a84ee8c3a"
+    },
+    "flora-evo-2": {
+      "source": "public/assets/characters/flora-evo-2.png",
+      "sourceHash": "216d8fddf45f9bbcaeae63f2bf8c0e54cc37a9ef214781c8e2dba2d8ee1e96d8",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        429,
+        387
+      ],
+      "crop": [
+        226,
+        205,
+        405,
+        405
+      ],
+      "output": "public/assets/character-faces/flora-evo-2.png",
+      "outputHash": "c839ad55bbde1f1e1c446d7a353ed4c824c79167d557adf32a3cc65a6447922c"
+    },
+    "flora-evo-3": {
+      "source": "public/assets/characters/flora-evo-3.png",
+      "sourceHash": "f912f564390a3a618e8e2d45a5c7f8cbcf412115754d5a24bf8544a7c5febe00",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        384,
+        430
+      ],
+      "crop": [
+        216,
+        279,
+        335,
+        335
+      ],
+      "output": "public/assets/character-faces/flora-evo-3.png",
+      "outputHash": "75ab3b48c0a74f2600d96c63cc5d84868bb82a083048b118842966111cf08f1b"
+    },
+    "flora-evo-4": {
+      "source": "public/assets/characters/flora-evo-4.png",
+      "sourceHash": "9af2e488594034fc396163e2fed2347814b2c5e572bf0e64e3fd1aca4deae7ee",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        373,
+        376
+      ],
+      "crop": [
+        260,
+        275,
+        225,
+        225
+      ],
+      "output": "public/assets/character-faces/flora-evo-4.png",
+      "outputHash": "f58f62684d4ddf89aec3ceabcd6473e9258e7e1ce8b3e2e3459fdba14245cfe9"
+    },
+    "flora-evo-5": {
+      "source": "public/assets/characters/flora-evo-5.png",
+      "sourceHash": "3a629be7a3171412743bf63763cd71c4566d0422b659c07ebc2164c949ec9240",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        453,
+        371
+      ],
+      "crop": [
+        348,
+        276,
+        210,
+        210
+      ],
+      "output": "public/assets/character-faces/flora-evo-5.png",
+      "outputHash": "d06fb90244b53df06ccb668cde653613525643321521f1ba905391df600c712a"
+    },
+    "flora-evo-6": {
+      "source": "public/assets/characters/flora-evo-6.png",
+      "sourceHash": "a9f83022492fb0c7f28ada8db7a08bc4c65d6a5c92b23fec5a428a4a2640e6eb",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        441,
+        331
+      ],
+      "crop": [
+        336,
+        236,
+        210,
+        210
+      ],
+      "output": "public/assets/character-faces/flora-evo-6.png",
+      "outputHash": "339354ae0a72cca224acb1b3a6a927d2232d45e0c75fbd295bae8b43f17dcc71"
+    }
+  }
+}

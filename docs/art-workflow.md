@@ -1,5 +1,41 @@
 # Art and asset workflow
 
+## Derived compact face portraits: starter pilot (2026-11-08)
+
+The radiant-overhaul branch contains18 reviewed crops (Infernis/Tizu/Flora,
+six forms each). These are derivatives of existing transparent canonical
+full-art exports, **not new owner commissions** or replacements for Team,
+field and cinematic Home full art. Other174 released forms and production
+compact-context wiring remain unfinished.
+
+`tools/build_compact_portraits.py` uses individually reviewed unmirrored eye
+anchors/crop sizes in `Art/provenance/compact-portrait-settings.json`, with
+exact source hashes. It refuses changed source bytes, invalid/outside/empty
+crops or non-RGBA inputs. It never keys/recolors/mirrors artwork or recreates
+detail absent from the source. Sources and full-art exports stay unchanged.
+
+```
+python tools\build_compact_portraits.py --apply
+python tools\build_compact_portraits.py --check
+python tools\build_compact_portraits.py --review <review-directory>
+python -W error::ResourceWarning -m unittest discover -s tools -p test_compact_portraits.py
+node tools\build_avif.mjs
+```
+
+Exports: `public/assets/character-faces/<form>.png`,512px squares with nominal
+eye line45%. Intake records source/output SHA256, source dimensions, eye/crop
+coordinates in `Art/provenance/compact-portrait-intake.json`. Generated
+`src/content/compact-portrait-revisions.ts` versions PNG/AVIF through the shared
+asset resolver. The existing AVIF tool encodes matching siblings.
+
+`src/presentation/compact-portrait.ts` is the explicit compact variant; existing
+`portrait.ts` stays full art. Shared facing applies once to the image, not a
+screen-specific mirror. Missing crop/undelivered form uses explicit neutral
+pending feedback; unreached forms retain silhouette markup. Review every
+new anchor at48/96/512px against both dark and light backgrounds before
+installation. The starter18 passed that inspection; late-form source softness
+is retained rather than claiming512px exports generate missing face detail.
+
 ## Delivered Moon artwork (2026-11-07)
 
 All104 required Moon sources are installed:36 portraits,24 abilities,18 personal

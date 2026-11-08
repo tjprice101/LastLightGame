@@ -1,5 +1,109 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Current implemented starter study and portrait intake (2026-11-08)
+
+This is the **operative implementation status**. The numbered initial draft
+under [Historical initial numerical draft](#historical-initial-numerical-draft)
+is retained solely as decision history, not a second rules authority. The
+owner delegates design/calibration; no further generic approval gate applies.
+Publication still requires the complete coherent migration and measured
+enemy/gear/roster coverage, not just passing starter tests.
+
+### Isolated combat study
+
+[Starter definitions](../../src/content/radiant-combat.ts) and
+[pure combat engine](../../src/game/radiant-combat.ts) are now implemented on
+`overhaul/radiant-foundation`, **not connected to the live account or authority**.
+They support up to six frozen starter-study instances, not a claim of six
+distinct released kits, an ordinary acquired six-member team or measured balance.
+Released roster IDs/ownership will be connected during the full conversion.
+
+- Four stats: HP, Attack, Defense, Recovery. Fractional stat growth is preserved.
+  Damage uses deterministic diminishing Defense mitigation; no random critical.
+- Normal Attack, Defense, passive, frozen first-member leader and progressively
+  stronger signature. Leader death stops the first leader's effect, without
+  promoting another member. No forced Flare recovery.
+- Native Shields stack with source ownership until genuinely absorbed/broken;
+  no percentage-of-HP cap or expiry extension. Healing and absorption events
+  retain actual effective amounts and source snapshots.
+- Existing layered-charge module supplies personal and shared spending/grants;
+  charge RNG is separate. No third personal layer, empowerment mode or timer.
+- Each enemy has a persistable fixed currency budget and lowest-health ledger.
+  Exact integer proportional depletion pays only new lowest-health progress;
+  defeat pays the remainder. Overkill or enemy healing cannot mint a second
+  budget. Returned events/state are atomic pure results, **not a persisted
+  transaction**. Authority receipt validation, retry/quit persistence and real
+  farming measurements remain required.
+
+Implemented starter table (study values, subject to pressured calibration):
+
+| Bearer | Base HP / Attack / Defense / Recovery | Base cost C | Leader |
+| --- | --- | --- | --- |
+| Infernis |240 /60 /16 /28 |30 |Hearthbound Oath: Attack +15% while first member lives. |
+| Tizu |300 /44 /22 /34 |25 |Harbor Covenant: Defense +20% while first member lives. |
+| Flora |220 /46 /14 /65 |20 |Garden Covenant: Recovery +15% while first member lives. |
+
+Infernis's Cinderwake family is offensive Burn; Tizu's Tideglass family protects
+the same squad at every tier; Flora's Dawnseed family heals/renews the same squad
+at every tier. Signature names follow a recognizable advancement family:
+
+| Bearer | Glowing | Lustrous | Eternal Radiant |
+| --- | --- | --- | --- |
+| Infernis |Cinderwake |Cinderwake Ascendant |Cinderwake Everlasting |
+| Tizu |Tideglass Shelter |Tideglass Dominion |Tideglass Eternity |
+| Flora |Dawnseed Renewal |Dawnseed Flourishing |Dawnseed Perennial |
+
+Personal cap C at forms1-3;2C at forms4-6. Glowing spends C; Lustrous spends2C.
+Eternal needs saved form6, full2C and the shared meter and spends both; others
+keep their personal charge. Shared threshold starts100 points and increases
+25 per Eternal cast up to200; the exact60-unit representation normalizes1-6
+members. These cadence values are study implementation, not calibrated live
+enemy targets.
+
+Nine existing starter Master IDs map to fixed matching-bearer attunements and
+personal enhancements. Equinox is neutral without a Master. Corona: Attack
++25%/HP -10%; Aegis: Defense +35%/Attack -10%; Solstice: HP +25%/Attack -10%;
+Prism: Recovery +30%/Defense -10%. This is not a second random innate subtype.
+`master-tide-2` adds8% recipient maxHP to its native Shield instead of the
+obsolete duration-extension proposal. All other Masters/ordinary gear are
+still pending conversion; existing owned IDs/ranks must be preserved.
+
+### Reviewed portrait pilot
+
+[Offline exporter](../../tools/build_compact_portraits.py) now derives18
+starter face/upper-body crops, six forms each, from the unchanged canonical
+transparent artwork. Every form has its own source-bound eye anchor and square
+crop,512px output and45% nominal eye line. No generic runtime center-crop,
+key cleanup, mirroring or invented facial detail.
+
+[Settings](../../Art/provenance/compact-portrait-settings.json) bind each anchor
+to exact source SHA256; changed sources fail until re-reviewed. Generated
+intake records source/output hashes, dimensions and exact rectangles; generated
+revisions feed [shared compact helper](../../src/presentation/compact-portrait.ts)
+through existing deployment-base AVIF/PNG fallback. Facing is applied once.
+Explicit unreached silhouettes remain available. Missing crop/hidden Sunshade
+forms resolve to a named neutral pending panel, never guessed asset URLs.
+
+All18 crops were inspected at48/96/512px against dark/light backgrounds.
+Small late-form source faces can be softer at512px; this preserves actual source
+resolution, not new detail generation. The other174 released-form crops and
+production compact-context wiring remain pending. Full-art Team/field/Home
+assets are unchanged; this pilot does not roll out a rejected menu mock-up.
+
+Validation:
+```
+python -W error::ResourceWarning -m unittest discover -s tools -p test_compact_portraits.py
+python tools\build_compact_portraits.py --check
+node tools\build_avif.mjs
+npx vitest run src\presentation\compact-portrait.test.ts src\presentation\portrait.test.ts src\presentation\image-format.test.ts src\game\radiant-combat.test.ts src\game\radiant-gauge.test.ts --maxWorkers=2 --testTimeout=60000
+npm run build
+```
+Five Python tests and132 focused Vitest tests pass. Build/typecheck passes with
+the existing chunk-size warning. The first image-format run correctly rejected
+18 unencoded crops; generating matching AVIF siblings fixed it. No VFX motion,
+full-roster/gear power ladder, pressured enemy clear rate or hosted release is
+claimed by these results.
+
 ## Delegated implementation and first foundation (2026-11-08)
 
 Owner delegates remaining design decisions **and implementation**, with
@@ -353,29 +457,19 @@ meter; first Eternal disabling only shared readiness of others; two consecutive
 attempts under stale revisions; no personal charge theft from other members;
 buff/Shield/crit remaps; exact visual layers at charge/impact/Skip/Reduce motion.
 
-## Status, precedence and scope
+## Historical initial numerical draft
 
-Draft2026-11-08. **Proposed exact specification for owner review, not implemented
-mechanics or measured balance.** This is the next deliverable from the
-[audit and owner decisions](character-combat-refresh-audit.md), not approval to
-start the public overhaul. The owner requested approval of exact systems and
-starter kits before implementation, followed by reviewed roster batches.
+**Everything below this heading is archived initial proposal material, not
+operative rules or an implementation checklist.** Retained for traceable
+decision history. In particular its single-tier cast gates, three-member
+normalization, temporary Ascendancy/refill/four-round timer, finite Shield cap,
+expiry-related Master proposal and additional pre-coding approval requirement
+are obsolete. Do not implement or test those as current requirements.
 
-The latest Master-selected Equinox/subtype decision supersedes the audit's
-older fixed innate/cosmetic subtype proposals. This document consolidates the
-selected architecture instead of adding another system on top.
-
-**Confirmed requirements:** four core stats; one passive, one first-member
-leader ability and one current evolved Flare; Normal Attack/Defense retained;
-bearer-only playable squads; Master-driven stat subtypes; two-step shared/
-personal final Flare charge; four-round deadline; increasing later shared
-costs; no forced recovery; hybrid guaranteed/capped random charge; actual
-damage-budget currency; portrait-strip battle controls; impact-timed Gauge;
-stronger finite accessible VFX. General menu redesign remains paused.
-
-**Everything numerical below is a starting proposal.** Source inspection is
-not a simulation, player test or clear-rate guarantee. All roster/gear values
-must be reviewed before publication, not inferred from starter results.
+Use the current implemented study at the top, the latest owner-selected
+personal/shared architecture and the full-conversion release gates instead.
+No paper draft, source inspection or starter test establishes real encounter
+balance, account eligibility, farming safety or complete-roster coverage.
 
 ## 1. Player-facing vocabulary
 
