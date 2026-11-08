@@ -1,5 +1,39 @@
 # Current state and handoff
 
+## Radiant action-driven enemy pressure study (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; previous gear commit `2d351a3f`.
+No live enemy/authority/account/UI deployment.
+
+**Implemented:** actual authored-spawn adapter with schedules/entry checks,
+central experimental level/category factors, finite action-driven runner,
+study CLI and atomic enemy multi-hit/heal/Shield support in the pure engine.
+44 activity families,284 anchors,245 enemy species/forms. No authored level/
+gate/reward edits. Full records persist in session files; CLI can reproduce.
+[Operative results/factors/limits](Future%20Plans/radiant-combat-system-specification.md#actual-pressured-encounters-experimental-calibration-2026-11-08).
+
+**Measured:**2001 encounters plus13 bounded Master-screening samples; parent
+reproduced tuned run. Three main seeds1/1729/104729,100-round limit and
+20-round stagnation guard. Conditional solo212wins/402defeats; Common trio
+501wins/111defeats/2timeouts; developed ordinary six614wins; Common six late
+control5wins/17defeats/7timeouts/10stalemates; separate screened Calamitic
+six108wins; free starter opening9wins; support-only3stalemates. Every trio/
+six and gear/progress assumption requires actual acquisition, not free access.
+
+**Verified:**1080 tests across pressure/combat/gear/Gauge pass; authority
+typecheck and production build/client types pass, existing chunk warning.
+Actual healing/Shield creation/absorption/HP damage recorded separately.
+Calamity study currency zero, no chest/recruitment reward rolls. Minimum HP/
+maximum Shield sampled at action boundaries; GPU/VFX still unmeasured.
+
+**Release blockers:** all-win developed/screened samples do not establish
+final difficulty; final comparative pressure/access/cadence tuning remains.
+Authority partial damage receipts/quit-retry farming and live run/loadout/
+captured-manual migration remain pending. Finish174 crops and real cinematic
+Home/Battle Gauge/status/VFX. Single art brief remains provisional. Preserve
+dirty unrelated rejected mockups and stage only new status sections.
+
+
 ## Ordinary radiant Conduits and frozen gear completed (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; prior roster commit `3e46651c`.

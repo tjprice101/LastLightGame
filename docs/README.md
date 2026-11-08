@@ -1,5 +1,14 @@
 # Documentation hub
 
+## Radiant actual pressure study (2026-11-08)
+
+[Experimental encounter results](Future%20Plans/radiant-combat-system-specification.md#actual-pressured-encounters-experimental-calibration-2026-11-08):
+44 families/284 anchors/245 species and2001 reproduced action-driven encounters.
+Explicit wins/defeats/timeouts/stalemates, conditional ownership and separate
+Calamitic scenarios; experimental factors are not approved live difficulty.
+1080 focused tests and types/build pass. Live migration/UI remain pending.
+
+
 ## Radiant ordinary Conduits and frozen loadouts (2026-11-08)
 
 [Operative gear study](Future%20Plans/radiant-combat-system-specification.md#ordinary-conduit-conversion-and-frozen-gear-study-2026-11-08):

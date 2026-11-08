@@ -1,5 +1,21 @@
 # Decision log
 
+## Radiant pressure experiment, not live tuning approval (2026-11-08)
+
+Under the delegated testing mandate, implement an actual authored-enemy
+adapter/action-driven radiant pressure study spanning44 families and245
+species/forms. Preserve levels/gates/reward rules; isolate experimental stat
+factors from live balance. Separate ordinary progression from acquired
+Calamitic six-member testing and record explicit timeout/stalemate outcomes.
+[Results and limitations](Future%20Plans/radiant-combat-system-specification.md#actual-pressured-encounters-experimental-calibration-2026-11-08).
+
+Developed six-member614/614 and screened Calamitic108/108 sampled wins are
+not approved final difficulty or population clear rates. Common late-wall
+control and support-only stalemates demonstrate separate survival/clear limits.
+Final factors/access distribution and authority/currency/run migration remain
+unresolved release gates, not new owner-approved numerical decisions.
+
+
 ## Delegated ordinary Conduit conversion study (2026-11-08)
 
 Complete the actual99-ID ordinary catalog's explicit radiant conversion while

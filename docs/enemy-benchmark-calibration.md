@@ -1,5 +1,23 @@
 # Global character benchmarks and enemy calibration (D-404)
 
+## Isolated radiant-overhaul pressure experiment (2026-11-08)
+
+[Latest study](Future%20Plans/radiant-combat-system-specification.md#actual-pressured-encounters-experimental-calibration-2026-11-08)
+uses the new four-stat roster/gear against authored enemy spawns and actual
+action schedules:44 families,284 anchors,245 species/forms and2001 encounters.
+`node tools\run_radiant_pressure.mjs <new-report.jsonl> --tuned-only` reproduces
+the bounded run with source/bundle provenance, explicit timeout/stalemate and
+separate healing/Shield creation/absorption/HP damage measurements.
+
+This is **not a replacement for the live D-404 reference yet**. Enemy scaling
+factors are isolated experimental declarations; current production combat
+and authored levels/gates remain unchanged. One starter is free; larger teams,
+gear/progress/Masters require conditional acquisition. Developed ordinary
+six614/614 and separately screened Calamitic108/108 wins do not prove final
+difficulty/access distributions. Common late-wall and support-only controls
+fail or stagnate explicitly. Final comparative pressure, economic migration
+and full presentation validation remain release gates.
+
 ## Bounded reclaimed War checks (2026-11-06)
 
 Reproduce `npx vitest run tools\phase2-war-experiments.test.ts --maxWorkers=1`.

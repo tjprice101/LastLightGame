@@ -1,5 +1,122 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Actual pressured encounters: experimental calibration (2026-11-08)
+
+The new [encounter adapter](../../src/game/radiant-pressure-encounters.ts),
+[action-driven runner](../../src/game/radiant-pressure.ts) and
+[enemy factor declaration](../../src/content/radiant-enemy-calibration.ts)
+now exercise the radiant roster/gear against **actual authored spawn data**.
+They remain isolated study tools, not live enemy changes or approved tuning.
+Levels, entry gates, authored ability schedules and saved progression stay
+unchanged. This supersedes the earlier status that no pressure study exists,
+not the requirement for a coherent authority/UI migration.
+
+The adapter covers44 current activity families,284 representative anchors and
+245 authored enemy species/forms. It includes ordinary/boss and existing
+seasonal/endgame activity definitions instead of only the historical activity
+list. Every currently authored live-spawn species/form is represented, **not
+every possible floor/level combination or all future content**. Actual access
+errors remain explicit; inactive/ownership-gated scenarios are laboratory
+coverage, not claims an ordinary account can enter them.
+
+### Reproducible experiment
+
+The harness resolves real player actions, progressive personal/shared Flares,
+enemy attacks/healing/Shields and authored mechanical hit packets through the
+pure engine. It records actual HP damage, effective healing, Shield creation
+and absorption separately, personal/shared charge, currency progress, death,
+rounds and surviving members. Atomic enemy multi-hit/heal/Shield actions were
+added to support schedules; invalid actions preserve the input snapshot.
+Cosmetic hits do not become bonus-mote rolls.
+
+Three main seeds:1/1729/104729; maximum100 rounds; explicit20-round stagnation
+bound. Species-completion and bounded Master screening use one seed each.
+Timeout and stalemate are separate outcomes, never success-shaped clears.
+Minimum team HP and maximum Shield are sampled at action boundaries, not
+within every split packet. No GPU or cinematic performance experiment.
+
+One starter is free. Every trio/six, developed progression, gear and Master
+configuration is **conditional acquired laboratory access**, not an observed
+average account or a free grant. Ordinary scenarios exclude Calamitic bearers/
+gear. A separately screened six-member Calamitic scenario does not determine
+ordinary enemy targets.
+
+Study-only multiplicative factors interpolate the current authored level:
+
+| Enemy level | HP | Attack | Defense |
+| --- | --- | --- | --- |
+|1 |1 |1 |1 |
+|30 |.70 |.75 |1 |
+|60 |.50 |.50 |.90 |
+|80 |.40 |.40 |.80 |
+|120 |.25 |.20 |.60 |
+|140 |.18 |.12 |.50 |
+|170 |.12 |.07 |.40 |
+|185 |.12 |.07 |.40 |
+
+Ordinary/boss category factors are1; Calamity additionally uses HP1.5,
+Attack3 and Defense1.1. These explicitly large experimental reductions convert
+the old combat scale for this study. They are **not a silently deployed balance
+decision**, and the winning developed-team sample below is not sufficient
+evidence to accept them as the final difficulty ladder.
+
+### Observed outcomes, not population estimates
+
+Parent reproduced the tuned run:2001 encounters plus13 Master-screening samples.
+
+| Scenario | Wins | Defeats | Timeouts | Stalemates |
+| --- | --- | --- | --- | --- |
+| Conditional solo progression |212 |402 |0 |0 |
+| Conditional Common trio |501 |111 |2 |0 |
+| Conditional developed ordinary six |614 |0 |0 |0 |
+| Common six late-wall control |5 |17 |7 |10 |
+| Separate screened Calamitic six |108 |0 |0 |0 |
+| Free starter opening tests, three seeds each |9 |0 |0 |0 |
+| Support-only control |0 |0 |0 |3 |
+
+The Common late-wall control demonstrates that sustained survival can still
+fail to clear; three support-only runs correctly terminate as stalemates.
+The developed ordinary six's614/614 and screened Calamitic108/108 successes
+are **not proof of balanced late content**. They establish functioning clears
+under the selected loadouts/policy, and require tougher comparative pressure/
+duration/access analysis before approving final factors.
+
+For a representative screened Calamitic result, the six survived47 completed
+rounds; minimum sampled teamHP122521 and maximum sampled Shield643493.
+This is a sourced sustained-defense result, not equivalent to packet survival,
+healing efficiency or zero-Defense DPR. The screened party includes
+Ozriel/Ilvaris/Kaelith/Tizu/Flora/Disciple at owned final-form105 with matching
+Masters and gear; it is neither a free squad nor an ordinary account.
+
+Ordinary study currency uses fixed minimum budgets; Calamity partial-currency
+budget is zero. Chest/recruitment/random reward tables are not rolled.
+Authority receipt persistence, quit/retry farming and live save safety remain
+separate pending work; pressure tooling makes no economic deployment claim.
+
+### Commands and release blockers
+
+```
+node tools\run_radiant_pressure.mjs <new-report.jsonl> --tuned-only
+npx vitest run src\game\radiant-pressure.test.ts src\game\radiant-combat.test.ts src\game\radiant-conduits.test.ts src\game\radiant-gauge.test.ts --maxWorkers=2 --testTimeout=60000
+npx tsc --project supabase\functions\game-operation\tsconfig.json
+npm run build
+```
+
+The CLI writes a new machine-readable report with source commit/bundle hash
+and refuses overwriting an existing report; its temporary compiled helper is
+removed on completion. Omit `--tuned-only` to include baseline comparisons.
+1080 tests across four files pass; client/authority typechecks/build pass,
+existing chunk warning retained. Parent reproduced the2001/13 aggregate.
+Full encounter records remain study artifacts, not thousands of committed
+balance snapshots or an invented public clear-rate estimate.
+
+Before release: settle final enemy factors against stronger comparative
+pressure and realistic acquisition distributions; preserve actual stage/gate/
+reward contracts; wire authority-backed partial damage receipts and frozen
+run/saved-loadout/captured-manual-selection compatibility; finish remaining
+portrait intake and real Home/Battle layered Gauge/status/VFX presentation.
+No hosted overhaul release or mandatory new art commission is claimed.
+
 ## Ordinary Conduit conversion and frozen gear study (2026-11-08)
 
 This is the latest operative isolated implementation status. The complete

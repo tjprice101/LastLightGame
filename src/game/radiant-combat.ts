@@ -70,7 +70,8 @@ export type RadiantCombatAction =
   | { type: 'normal'; bearerId: string; targetId: string }
   | { type: 'defense'; bearerId: string }
   | { type: 'flare'; bearerId: string; targetId?: string }
-  | { type: 'enemy-attack'; enemyId: string; targetIds: string[]; coefficient: number }
+  | { type: 'enemy-attack'; enemyId: string; targetIds: string[]; coefficient: number;
+      hits?: number; healBefore?: number; refreshShieldBefore?: number }
   | { type: 'enemy-heal'; enemyId: string; amount: number }
   | { type: 'finish-enemy-phase' };
 export type RadiantCombatEvent =
@@ -653,16 +654,40 @@ function enemyAttack(
   if (!Array.isArray(action.targetIds) || !action.targetIds.length ||
       new Set(action.targetIds).size !== action.targetIds.length) throw new Error('Invalid radiant enemy target set.');
   finite(action.coefficient, 'enemy coefficient', Number.MIN_VALUE);
+  const hits = action.hits ?? 1;
+  safe(hits, 'enemy hit count', 1);
+  if (hits > 16) throw new Error('Radiant enemy attack exceeds bounded packet count.');
   const targets = action.targetIds.map(id => { const target = bearer(state, id); living(target.hp); return target; });
+  const source: RadiantSource = { kind: 'enemy', enemyId: actor.id };
+  if (action.healBefore !== undefined) heal(state, events, actor, source, action.healBefore);
+  if (action.refreshShieldBefore !== undefined) {
+    const amount = rounded(action.refreshShieldBefore);
+    const old = actor.shields.find(layer => sourceEqual(layer.source, source));
+    const gained = Math.max(0, amount - (old?.remaining ?? 0));
+    if (gained > 0) {
+      const shieldId = old?.id ?? state.nextShieldId++;
+      if (old) old.remaining += gained;
+      else actor.shields.push({ id: shieldId, source, remaining: gained });
+      events.push({ type: 'shield', source, targetId: actor.id, amount: gained, shieldId });
+    }
+  }
   const returns = new Set<string>();
   for (const target of targets) {
     const stats = effectiveRadiantStats(state, target.loadout.id);
     const reduction = Math.max(0, ...target.reductions.map(effect => effect.magnitude));
     const weakening = Math.max(0, ...actor.weaken.map(effect => effect.magnitude));
-    const impact = packet(state, events, target, { kind: 'enemy', enemyId: actor.id }, 'direct',
-      radiantDirectDamage(actor.stats.attack * (1 - weakening), stats.defense, action.coefficient,
+    const total = radiantDirectDamage(actor.stats.attack * (1 - weakening), stats.defense, action.coefficient,
         Math.max(.2, (target.guarding ? .5 * (1 - Math.min(.6, radiantGearAmount(target.loadout.gear, 'guard'))) : 1) *
-          (1 - reduction))));
+          (1 - reduction)));
+    const impact: ReturnType<typeof packet> = { healthLoss: 0, absorbed: 0, shields: [] };
+    for (let hit = 0; hit < hits && target.hp > 0; hit++) {
+      const amount = Math.floor(total / hits) + (hit === hits - 1 ? total % hits : 0);
+      if (!amount) continue;
+      const part = packet(state, events, target, source, 'direct', amount);
+      impact.healthLoss += part.healthLoss;
+      impact.absorbed += part.absorbed;
+      impact.shields.push(...part.shields);
+    }
     if (target.hp > 0 && impact.healthLoss + impact.absorbed > 0) {
       state.gauge = grantRadiantIncomingAttack(state.gauge, target.loadout.id);
       events.push({ type: 'charge', bearerId: target.loadout.id,
