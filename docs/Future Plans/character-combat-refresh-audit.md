@@ -1,5 +1,18 @@
 # Character combat refresh: audit and proposed direction
 
+## Latest owner charge correction (2026-11-08)
+
+[Layered personal/shared contract](radiant-combat-system-specification.md#owner-revision-layered-charge-and-shared-eternal-readiness-2026-11-08)
+supersedes single-current-tier replacement and temporary empowerment.
+Two personal layers: Glowing at base cost, Lustrous at twice base; retain excess
+charge and offer highest ready tier. Evo.4 unlocks the second layer.
+Eternal uses a full shared team meter plus both personal layers, final-form
+bearers only; shared meter builds/displays only with a final-form squad member.
+One cast consumes team charge; others retain personal charge. No third personal
+bar, reset/refill mode or timer. Keep unlimited Shields; remove random crit.
+Old abilities may be replaced/folded per character rather than forced to survive.
+Exact costs/gains/starter/equipment mappings need revision/review before coding.
+
 ## Consolidated exact review draft (2026-11-08)
 
 [System and three-starter specification](radiant-combat-system-specification.md)

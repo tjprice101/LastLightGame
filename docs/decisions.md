@@ -1,5 +1,18 @@
 # Decision log
 
+## Layered Flares replace temporary empowerment (2026-11-08)
+
+Owner clarifies two personal layers (Glowing/Lustrous), plus a shared Eternal
+meter. Equivalent form4 unlocks layer2; final-form bearers alone cast Eternal.
+Team meter starts/display only with a final-form squad member. Full shared
+meter plus full personal layers authorizes one Eternal, consuming team charge
+without draining other members' personal bars. Highest ready tier, excess charge
+retained. No third personal layer, reset/refill mode or timer.
+Owner retains unlimited Shield stacking, removes random crit, and delegates
+per-character old-ability replacement/passive/leader folding.
+[Latest contract](Future%20Plans/radiant-combat-system-specification.md#owner-revision-layered-charge-and-shared-eternal-readiness-2026-11-08)
+supersedes contradictory older draft rules; exact numbers need revised review.
+
 ## Exact radiant system/starter draft: owner review pending (2026-11-08)
 
 Owner requests continuation of the overhaul plan, not bypassing the selected

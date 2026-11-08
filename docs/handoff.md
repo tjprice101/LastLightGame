@@ -1,5 +1,16 @@
 # Current state and handoff
 
+## Owner clarified layered personal/shared Flare charge (2026-11-08)
+
+[Latest specification override](Future%20Plans/radiant-combat-system-specification.md#owner-revision-layered-charge-and-shared-eternal-readiness-2026-11-08):
+Glowing/Lustrous personal layers, highest ready tier, retain unused points.
+Final-form bearer + full team bar + full personal layers enables Eternal.
+One cast spends shared opportunity, leaving other personal Gauges untouched.
+No temporary mode/timer/third personal bar. Unlimited Shields retained; random
+crit removed; old skills freely redesigned/folded. No runtime edits.
+Next: rewrite consolidated formulas/starter tables rather than implement the
+now-superseded draft; review exact charge cadence and Master/Imbue conversions.
+
 ## Consolidated overhaul review specification (2026-11-08)
 
 [Exact draft](Future%20Plans/radiant-combat-system-specification.md) now contains

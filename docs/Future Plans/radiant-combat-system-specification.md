@@ -1,5 +1,113 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Owner revision: layered charge and shared Eternal readiness (2026-11-08)
+
+**This section supersedes conflicting draft rules below**, especially
+single-current-tier availability, temporary Ascendancy, third personal layer,
+four-round timeout, personal reset on activation and finite/capped Shields.
+The consolidated lower sections must be rewritten before implementation; no
+old contradictory formula should become production behavior.
+
+### Confirmed charge architecture
+
+- Glowing Flare uses the first personal layer in the bearer's elemental color.
+- Equivalent saved form4 unlocks Lustrous Flare and a second personal layer,
+  visibly white-and-elemental, building over the first. Glowing remains castable
+  while the second layer is incomplete.
+- Each bearer has base personal cost `C`. Glowing is ready at `C`, Lustrous at
+  `2C`. Maximum personal storage is `C` before form4 and `2C` afterward.
+- **There is no third personal bar or3C threshold.** Eternal's third bar is the
+  shared team **Overcharge Radiant Flare meter** (owner wording; final display
+  terminology can be reviewed).
+- The team meter starts building and appears only when the equipped frozen
+  squad contains at least one final-form bearer. Ordinary final gate is Evo.6;
+  Calamitic uses equivalent saved final form, despite displayed Evo.7.
+- Only final-form bearers can cast **Eternal Radiant Flare**. It is ready when
+  that bearer has both personal layers full AND the shared team meter is full.
+- Automatically offer the **highest ready tier**; no manual lower-tier selector
+  once a higher eligible tier is ready. Evo.4-5 cannot cast Eternal, even with
+  a full team meter.
+- Glowing spends `C`; Lustrous and Eternal spend `2C`. Keep unspent personal
+  charge. At `1.5C`, Glowing leaves `0.5C`; full Lustrous/Eternal empties the two
+  personal layers. Generic cast refunds remain separately specified.
+- One Eternal cast consumes the shared meter atomically for the squad.
+  Other members keep all their unspent personal charge and immediately lose
+  Eternal readiness until the shared bar refills. Each must still have full
+  personal layers when attempting the next Eternal cast.
+- No separate activation, empty/refill mode, four-round expiry, timed empowered
+  state or forced next-turn recovery. A full shared meter waits until used.
+  Later-use shared fill escalation was selected earlier; exact threshold/cap
+  remains a proposed reviewed formula, not an additional activation system.
+
+The bearer/squad eligibility uses the frozen run loadout, not menu equipment
+read mid-battle. Starting a run without final-form members creates no hidden
+charge accumulation for future use. Settings/Continue preserve legal charge;
+new entry/Retry reset follows the reviewed run policy.
+
+**Readiness table** (`P` personal points, `S` shared readiness):
+
+| Bearer form | Condition | Offered Flare |
+| --- | --- | --- |
+|1-3 |`P < C` |None |
+|1-3 |`P >= C` |Glowing |
+|4-5 |`C <= P < 2C` |Glowing |
+|4-5 |`P >= 2C` |Lustrous |
+|6 |`C <= P < 2C` |Glowing |
+|6 |`P >= 2C`, shared not full |Lustrous |
+|6 |`P >= 2C`, shared full |Eternal Radiant |
+
+All forms remain below Glowing readiness at `P<C`. Personal overflow caps at
+the unlocked maximum. Shared fullness cannot bypass a partially filled personal
+bar. Authority validates/spends both ledgers in one action; stale client
+readiness cannot authorize a second Eternal from the consumed team meter.
+
+### Abilities and presentation
+
+The tiers are direct enhancements of one signature, preserving its core
+purpose. New targeting or utility must support that progression rather than
+act as three unrelated skills. Old abilities can be entirely replaced or
+folded into new passive/leader effects per character: do not force preservation
+of Skill1/Skill2/Last Flare designs where a new kit works better.
+Owned progression is not silently deleted; exact Imbue conversion remains a
+reviewed mapping, not the earlier suggested automatic old-skill-to-tier match.
+
+Expose tier/category names, exact current effect and cost. Render the two
+personal layers in the same portrait Gauge footprint with unambiguous numbers
+and accessible tier readiness. Team bar appears below the squad only when
+eligible. White/elemental overcharge is a presentation cue, not another element.
+Finite readiness glints/static Reduce motion states distinguish Glowing,
+Lustrous and Eternal without hiding portraits or depending on color alone.
+Actual spend/gains remain ordered at impact; no cosmetic-hit resource grants.
+
+### Other confirmed changes
+
+- **Keep current unlimited Shield stacking until broken**, balancing new
+  offers. The draft50%-HP total cap and forced finite native refresh are rejected.
+  Do not silently change owner/layer provenance, absorb order or authored expiry.
+- **Remove random critical damage** and explicitly map related gear to
+  deterministic effects in the four-core-stat model.
+- Owner delegates per-character old-skill replacement/folding into passive,
+  leader or Flare; this is not a mandate to preserve every previous skill.
+
+### Numeric draft corrections required
+
+Replace starter60/70/80-style separate tier costs with one base `C` per bearer.
+Proposed review candidates: Infernis `C=30`, Tizu `C=25`, Flora `C=20`, giving
+Lustrous/Eternal personal thresholds60/50/40 respectively. These numbers are
+**proposals**, not owner-approved tuning. The earlier charge gains would fill
+these rapidly; benchmark guaranteed/bonus cadence and revise coherently.
+
+Rewrite Tizu's Flare Shield offers without the rejected cap. Align Infernis
+and Flora tier targeting/effects as direct upgrades, then review output at
+their new repeat cadence. The earlier exact starter tables are not approved
+just because the resource architecture is now settled.
+
+Required tests: readiness for each form/threshold; partial-overcharge spend;
+shared gating with no eligible bearer, one/two eligible bearers and a full
+meter; first Eternal disabling only shared readiness of others; two consecutive
+attempts under stale revisions; no personal charge theft from other members;
+buff/Shield/crit remaps; exact visual layers at charge/impact/Skip/Reduce motion.
+
 ## Status, precedence and scope
 
 Draft2026-11-08. **Proposed exact specification for owner review, not implemented
