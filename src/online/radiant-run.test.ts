@@ -91,6 +91,40 @@ describe('actual saved Account to frozen radiant loadouts', () => {
     expect(members).toHaveLength(n);
     expect(value).toEqual(raw);
   });
+
+  describe('atomic captured kill loot through the radiant run', () => {
+    it('denied capture commit retries the identical deterministic UUID and saved outcome', async () => {
+      const value = snapshot();
+      value.state.account.characters.ember = { level: 105, evolution: 6, weaponRank: 0 };
+      const rpc = new AtomicRpc(value), repository = rpc.repository();
+      const auth = authority(), originalEntry = auth.entry;
+      auth.entry = requestId => ({ ...originalEntry(requestId), encounterSeed: 1 });
+      await executeRadiantRun(repository, request(rpc.current, {
+        kind: 'start', activity: { kind: 'infusion', mode: 'heavens', stage: 1 }, calibration: 'radiant-pressure-v2',
+      }), auth);
+      let captured = false;
+      for (let i = 0; i < 100 && rpc.current.state.radiantStudy!.state.phase === 'player'; i++) {
+        const req = request(rpc.current, normal(rpc.current));
+        const planned = resolveRadiantRun(rpc.current, req, auth);
+        if (planned.response.rewards.some(reward => reward.capture)) {
+          const raw = structuredClone(rpc.current);
+          rpc.denied = true;
+          await expect(executeRadiantRun(repository, req, auth)).rejects.toMatchObject({ code: 'denied-write' });
+          expect(rpc.current).toEqual(raw);
+          rpc.denied = false;
+          const saved = await executeRadiantRun(repository, req, auth);
+          expect(saved).toEqual(planned.response);
+          expect(saved.account.capturedCharacters).toHaveLength(1);
+          const cached = await executeRadiantRun(repository, req, auth);
+          expect(cached).toEqual(saved);
+          expect(rpc.current.state.account.capturedCharacters).toHaveLength(1);
+          captured = true; break;
+        }
+        await executeRadiantRun(repository, req, auth);
+      }
+      expect(captured).toBe(true);
+    });
+  });
   it('freezes actual binary ascensions, growth, ordinary ranks and personal Master', () => {
     const value = account();
     value.characters.ember = { level: 105, evolution: 6, weaponRank: 7,
@@ -186,7 +220,7 @@ describe('authority-ready frozen run and exact partial Prismatica', () => {
     const next = step({ state: result.state, revision: result.response.revision },
       normal({ state: result.state, revision: result.response.revision }));
     for (const [key, value] of Object.entries(before.state.account))
-      if (!['fractalis', 'receipts', 'acquisitionMarkers'].includes(key))
+      if (!['fractalis', 'receipts', 'acquisitionMarkers', 'creatures'].includes(key))
         expect(next.state.account[key as keyof Account], key).toEqual(value);
     expect(before.state.account.receipts).toEqual([]);
   });
@@ -335,7 +369,7 @@ describe('authority-ready frozen run and exact partial Prismatica', () => {
     const budget = structuredClone(value);
     budget.state.radiantStudy!.enemies[0].currencyBudget++;
     expect(() => resolveRadiantRun(budget, req, authority())).toThrow();
-    expect(value.state.radiantStudy!.version).toBe(1);
+    expect(value.state.radiantStudy!.version).toBe(2);
   });
   it('explicit client outcome, HP, budget, enemy-action and seed injection are rejected', () => {
     const value = entered(), req = request(value, normal(value));

@@ -7587,9 +7587,9 @@ function elementResonance(roster) {
     const element = getStarter(id).elementId;
     counts.set(element, (counts.get(element) ?? 0) + 1);
   }
-  for (const [element, count2] of counts) {
-    if (count2 === 3) return { element, health: 0.25, skillPower: 0.05 };
-    if (count2 === 2) return { element, health: 0.15, skillPower: 0 };
+  for (const [element, count3] of counts) {
+    if (count3 === 3) return { element, health: 0.25, skillPower: 0.05 };
+    if (count3 === 2) return { element, health: 0.15, skillPower: 0 };
   }
   return null;
 }
@@ -8399,14 +8399,14 @@ function validateCharacterLocks(value2, owned) {
   }
   return locks;
 }
-function createCreatureCopy(creatureId, stage, level, acquisition) {
+function createCreatureCopy(creatureId, stage, level, acquisition, instanceId = `capture:${crypto.randomUUID()}`) {
   const creature = getCreature(creatureId);
   if (!creature.mode) throw new Error("Elemental-Devourer ownership requires a playable game mode.");
   const capturedStage = stage ?? creature.stages[0];
   if (!creature.stages.includes(capturedStage)) throw new Error("Elemental-Devourer form does not occur at this stage.");
   const encounter2 = infusionEncounter(creature.mode, capturedStage);
   return validateCapturedCharacters([{
-    instanceId: `capture:${crypto.randomUUID()}`,
+    instanceId,
     creatureId,
     locked: false,
     level: level ?? Math.min(capturedLevelCap, encounter2.level),
@@ -8612,12 +8612,12 @@ function spendResource(actor2, key, events) {
   if (!nativeOwner(actor2)) return 0;
   const available = Math.max(0, actor2.pilot?.[key] ?? 0);
   const selective = key === "ember" && actor2.masterConduit === "master-ember-3" || key === "tempest" && actor2.masterConduit === "master-vaelor-2";
-  const count2 = selective && actor2.conduitRuntime?.numbers.ordinaryResourceSpend ? Math.min(1, available) : available;
-  if (count2 <= 0) return 0;
-  charges(actor2)[key] = available - count2;
+  const count3 = selective && actor2.conduitRuntime?.numbers.ordinaryResourceSpend ? Math.min(1, available) : available;
+  if (count3 <= 0) return 0;
+  charges(actor2)[key] = available - count3;
   const label = resourceLabel(key);
-  status(events, actor2, actor2, `${actor2.name} spends ${count2} ${label}.`, resourceEffect(actor2));
-  return count2;
+  status(events, actor2, actor2, `${actor2.name} spends ${count3} ${label}.`, resourceEffect(actor2));
+  return count3;
 }
 var outgoingResources = {
   ember: { key: "ember", skill: "skill2", ordinary: 0.08, ultimate: 0.12 },
@@ -8638,24 +8638,24 @@ function pilotPrepareStarter(actor2, action, events) {
   const bonus = { damage: 0, weaken: 0, shield: 0, healing: 1 };
   if (!nativeOwner(actor2)) return bonus;
   if (actor2.kit?.pilot === "ward" && (action === "skill1" || action === "ultimate")) {
-    const count2 = spendResource(actor2, "ward", events);
-    if (action === "skill1") bonus.weaken = count2 * 0.05;
-    else bonus.shield = actor2.stats.health * count2 * 0.05;
+    const count3 = spendResource(actor2, "ward", events);
+    if (action === "skill1") bonus.weaken = count3 * 0.05;
+    else bonus.shield = actor2.stats.health * count3 * 0.05;
   } else if (actor2.kit?.pilot === "bloom" && (action === "skill1" || action === "ultimate")) {
-    const count2 = spendResource(actor2, "bloom", events);
+    const count3 = spendResource(actor2, "bloom", events);
     if (actor2.definitionId === "sprout") {
-      if (action === "skill1") bonus.damage = count2 * 0.1;
-      else bonus.healing += count2 * 0.15;
+      if (action === "skill1") bonus.damage = count3 * 0.1;
+      else bonus.healing += count3 * 0.15;
     } else if (actor2.definitionId === "bliss") {
-      if (action === "skill1") bonus.damage = count2 * 0.08;
-      else bonus.shield = actor2.stats.health * count2 * 0.05;
+      if (action === "skill1") bonus.damage = count3 * 0.08;
+      else bonus.shield = actor2.stats.health * count3 * 0.05;
     }
   } else if (actor2.kit?.pilot === "rose-grace" && action === "skill1") {
     bonus.weaken = spendResource(actor2, "roseGrace", events) * 0.05;
   } else if (actor2.kit?.pilot === "thorn-aegis" && (action === "skill2" || action === "ultimate")) {
-    const count2 = spendResource(actor2, "thornAegis", events);
-    if (action === "skill2") bonus.weaken = count2 * 0.05;
-    else bonus.shield = actor2.stats.health * count2 * 0.05;
+    const count3 = spendResource(actor2, "thornAegis", events);
+    if (action === "skill2") bonus.weaken = count3 * 0.05;
+    else bonus.shield = actor2.stats.health * count3 * 0.05;
   }
   return bonus;
 }
@@ -8794,10 +8794,10 @@ function afterCalamiticAction(state, owner, action, events, _skillDamage = 0) {
     const bit = 1 << ["light", "skill1", "skill2", "ultimate"].indexOf(action);
     const previous = n.calamiticEquation ?? 0;
     const mask = previous & bit ? bit : previous | bit;
-    const count2 = mask.toString(2).replace(/0/g, "").length;
-    n.calamiticEquation = count2 === 3 ? 0 : mask;
-    status2(owner, count2, `${owner.name}'s Final Equation: ${count2} / 3 different actions${count2 === 3 ? " \u2001Edischarge" : ""}.`, events);
-    if (count2 === 3) {
+    const count3 = mask.toString(2).replace(/0/g, "").length;
+    n.calamiticEquation = count3 === 3 ? 0 : mask;
+    status2(owner, count3, `${owner.name}'s Final Equation: ${count3} / 3 different actions${count3 === 3 ? " \u2001Edischarge" : ""}.`, events);
+    if (count3 === 3) {
       const targets = state.enemies.filter((enemy2) => enemy2.hp > 0);
       const offer = owner.stats.damage * power(state, owner, "calamitic-cathedral-final-equation", 1.2, 2.4);
       for (const target of targets) generatedStrike(state, owner, target, offer / targets.length, events, false);
@@ -9140,10 +9140,10 @@ function setBranches(state, owner, target, amount, events) {
   memory.branches = Math.min(equipped(owner, "master-elaris-1") ? 4 : 3, current + amount);
   status3(state, events, owner, target, `${target.name}: Branch ${memory.branches}/${equipped(owner, "master-elaris-1") ? 4 : 3}.`);
 }
-function setVeyrFault(state, owner, target, count2, events) {
+function setVeyrFault(state, owner, target, count3, events) {
   const memory = nativeMemory(owner);
   memory.faultTarget = target.id;
-  memory.faultCount = Math.min(equipped(owner, "master-veyr-1") ? 4 : 3, count2);
+  memory.faultCount = Math.min(equipped(owner, "master-veyr-1") ? 4 : 3, count3);
   memory.faultThroughPhase = state.round + 2;
   status3(state, events, owner, target, `${target.name}: Fault ${memory.faultCount}/${equipped(owner, "master-veyr-1") ? 4 : 3} \xB7 Defense \u2212${Math.min(40, memory.faultCount * 8)}% through enemy phase ${memory.faultThroughPhase}.`);
 }
@@ -9642,9 +9642,9 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
         strike();
         return foes(state).filter((enemy2) => enemy2.hp + enemy2.shield < (before.get(enemy2.id) ?? 0));
       };
-      const setFaults = (enemy2, count2) => {
+      const setFaults = (enemy2, count3) => {
         const faults = memory.faults ??= {};
-        faults[enemy2.id] = Math.min(3, count2);
+        faults[enemy2.id] = Math.min(3, count3);
         status3(state, events, owner, enemy2, `${enemy2.name}: Fractalized Incision ${faults[enemy2.id]}/3 (+${faults[enemy2.id] * 10}% squad damage).`);
       };
       if (action === "skill1") {
@@ -11291,7 +11291,7 @@ function nativeTargetDefense(state, target) {
   const fractured = alive(state).reduce((total, owner) => total + (hasNativeIdentity(owner) && owner.definitionId === "veyr" && owner.native?.faultTarget === target.id && (owner.native.faultThroughPhase ?? -1) >= state.round ? Math.min(0.4, (owner.native.faultCount ?? 0) * 0.08) : 0), 0);
   multiplier *= 1 - Math.min(0.4, fractured);
   if (phaseZeroStatsReady && target.side === "enemy") {
-    const lodged = alive(state).filter((owner) => equipped(owner, "master-elise-1")).reduce((count2, owner) => count2 + (owner.native?.blades?.filter((id) => id === target.id).length ?? 0), 0);
+    const lodged = alive(state).filter((owner) => equipped(owner, "master-elise-1")).reduce((count3, owner) => count3 + (owner.native?.blades?.filter((id) => id === target.id).length ?? 0), 0);
     multiplier *= 1 - Math.min(2, lodged) * 0.15;
   }
   return effectiveDefense(state, target) * multiplier;
@@ -11599,9 +11599,9 @@ function prepareConduitAction(state, actor2, action, paid, nativeAll) {
   }
   if (!phaseZeroStatsReady && action === "skill2" && equipped(actor2, "master-crinso-2")) ctx.shieldBurn = payShield(actor2, actor2.shield) * 0.5;
   if (!phaseZeroStatsReady && action === "skill2" && equipped(actor2, "master-bliss-1")) {
-    const count2 = alive(state).filter((ally) => ally.id !== actor2.id).length;
-    if (count2 && actor2.hp - actor2.stats.health * 0.1 >= 1) {
-      ctx.healExtra = actor2.stats.health * 0.1 / count2;
+    const count3 = alive(state).filter((ally) => ally.id !== actor2.id).length;
+    if (count3 && actor2.hp - actor2.stats.health * 0.1 >= 1) {
+      ctx.healExtra = actor2.stats.health * 0.1 / count3;
       actor2.hp -= actor2.stats.health * 0.1;
     }
   }
@@ -14319,7 +14319,7 @@ function acquisitionKeys(holdings) {
     ...(holdings.capturedCharacters ?? []).map((copy) => acquisitionKey("form", copy.creatureId)),
     ...["material", "conduit", "master"].flatMap((kind, index) => {
       const counts = [holdings.materials, holdings.conduits, holdings.masterConduits][index];
-      return Object.entries(counts ?? {}).filter(([, count2]) => (count2 ?? 0) > 0).map(([id]) => acquisitionKey(kind, id));
+      return Object.entries(counts ?? {}).filter(([, count3]) => (count3 ?? 0) > 0).map(([id]) => acquisitionKey(kind, id));
     })
   ];
   return [...new Set(keys2)].sort();
@@ -14917,17 +14917,17 @@ function summonCharacter(storage, random = Math.random, bannerId = "standard", n
   const { account, draws } = summonCharacters(storage, random, bannerId, 1, now);
   return { account, ...draws[0] };
 }
-function summonCharacters(storage, random = Math.random, bannerId = "standard", count2 = multiSummonCount, now = Date.now()) {
+function summonCharacters(storage, random = Math.random, bannerId = "standard", count3 = multiSummonCount, now = Date.now()) {
   if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before summoning.");
   const banner = getSummonBanner(bannerId);
   const eventId = isNewEventId(banner.id) ? banner.id : void 0;
   if (eventId) assertNewEventActive(eventId, now);
-  if (count2 !== 1 && count2 !== multiSummonCount) throw new Error("Choose a single or 10-pull summon.");
+  if (count3 !== 1 && count3 !== multiSummonCount) throw new Error("Choose a single or 10-pull summon.");
   if (!banner.available) throw new Error("Banner unavailable.");
   const account = loadAccount(storage);
-  const cost = banner.cost * count2;
-  if (account.lycalis < cost) throw new Error(`${count2 === 1 ? "Summoning" : "A 10-pull"} requires ${cost} Null-Prismatica.`);
-  const draws = Array.from({ length: count2 }, () => drawBanner(account, banner, random));
+  const cost = banner.cost * count3;
+  if (account.lycalis < cost) throw new Error(`${count3 === 1 ? "Summoning" : "A 10-pull"} requires ${cost} Null-Prismatica.`);
+  const draws = Array.from({ length: count3 }, () => drawBanner(account, banner, random));
   account.lycalis -= cost;
   return { account: saveAccount(storage, account), draws };
 }
@@ -15374,6 +15374,12 @@ function rollCalamityShards(tier, initialSeed) {
   return { seed: seed3, amount };
 }
 function saveAccountRewards(storage, result, runId) {
+  return saveResolvedRewards(storage, result, runId, false);
+}
+function saveDamagePaidAccountRewards(storage, result, runId, captureUuid) {
+  return saveResolvedRewards(storage, result, runId, true, captureUuid);
+}
+function saveResolvedRewards(storage, result, runId, damagePaid, captureUuid) {
   const account = loadAccount(storage);
   if (result.state.calamity !== void 0) {
     const activity = result.state.calamity;
@@ -15459,6 +15465,7 @@ function saveAccountRewards(storage, result, runId) {
   let storyCompletion = null;
   let storyClearPay = storyClearReward(false);
   const story = result.state.story;
+  const baseCurrency = new Map(result.events.filter((event2) => event2.kind === "reward").map((event2) => [event2, event2.amount]));
   if (story) {
     const encounter2 = storyEncounter(story.storyStage);
     if (result.state.dungeon || result.state.infusion || result.state.war || result.state.oblivion || result.state.wave !== story.storyStage || story.storyStage > unlockedStoryStage(account) || result.state.enemies.length !== (encounter2.boss ? 1 : 2) || result.state.enemies.some((enemy2, index) => enemy2.id !== `story-${story.storyStage}-${index}` || enemy2.level !== encounter2.level || enemy2.element !== encounter2.element || enemy2.boss !== encounter2.boss || !Array.from({ length: encounter2.boss ? 1 : 4 }, (_, identity) => storyCreature(story.storyStage, identity).id).includes(enemy2.creatureId ?? ""))) {
@@ -15499,7 +15506,7 @@ function saveAccountRewards(storage, result, runId) {
       if (Object.keys(reward.materials).some((id) => !allowedMaterials.has(id))) throw new Error("Invalid Gates of Oblivion material source.");
       const receipt2 = `${runId}:${enemy2.id}`;
       if (account.receipts.includes(receipt2)) continue;
-      account.fractalis += reward.amount;
+      account.fractalis += damagePaid ? 0 : reward.amount;
       if (!count(account.fractalis)) throw new Error("Prismatica balance exceeds the supported maximum.");
       for (const [id, amount] of Object.entries(reward.materials)) {
         const total = (account.materials[id] ?? 0) + amount;
@@ -15532,7 +15539,7 @@ function saveAccountRewards(storage, result, runId) {
         if (!drop || !count(amount) || !validDropAmount(drop, amount)) throw new Error("Invalid Story material drop.");
         account.materials[id] = (account.materials[id] ?? 0) + amount;
       }
-      account.fractalis += reward.amount;
+      account.fractalis += damagePaid ? 0 : reward.amount;
       if (encounter2.boss && result.state.phase === "cleared" && (account.storyCompleted ?? 0) < stage) {
         const bonus = storyBossBonus(stage);
         account.fractalis += bonus.fractalis;
@@ -15551,7 +15558,7 @@ function saveAccountRewards(storage, result, runId) {
       if (result.state.dungeon || result.state.infusion || result.state.enemies.length !== 1 || stage > unlockedWarStage(account, character) || result.state.wave !== stage || result.state.phase !== "cleared" || enemy2.hp > 0 || enemy2.definitionId !== character || enemy2.id !== `war-${character}-${stage}` || enemy2.level !== encounter2.level || enemy2.element !== encounter2.element || enemy2.evolution !== encounter2.evolution || !enemy2.boss || enemy2.creatureId || reward.capture !== void 0 || reward.materials !== void 0 || reward.conduits !== void 0 || reward.mechanicalComponents !== void 0 || !count(reward.amount) || reward.amount < loot.fractalis.minimum || reward.amount > loot.fractalis.maximum || reward.lycalis !== void 0 && reward.lycalis !== loot.lycalis.quantity || reward.recruitmentOutcome !== void 0 || reward.recruitment !== void 0 && (stage !== warStageCount || reward.recruitment !== character)) {
         throw new Error("Invalid Elemental War reward.");
       }
-      account.fractalis += reward.amount;
+      account.fractalis += damagePaid ? 0 : reward.amount;
       account.lycalis += reward.lycalis ?? 0;
       if (reward.recruitment) {
         const outcome = account.characters[character] ? "duplicate" : "new";
@@ -15567,7 +15574,7 @@ function saveAccountRewards(storage, result, runId) {
     const range = activityPrismaticaDrop(result.state, enemy2.level);
     if (result.state.infusion && (isCurrencyMode(result.state.infusion.mode) || result.state.infusion.mode === "roses" || isNewEventId(result.state.infusion.mode) || result.state.infusion.mode === "machines") && (enemy2.hp > 0 || !enemy2.creatureId || getCreature(enemy2.creatureId).mode !== result.state.infusion.mode || !getCreature(enemy2.creatureId).stages.includes(result.state.infusion.stage) || enemy2.level !== infusionEncounter(result.state.infusion.mode, result.state.infusion.stage, result.state.infusion.schedule ?? "legacy").level)) throw new Error("Invalid currency-farm reward source.");
     if (!count(reward.amount) || reward.amount < range.minimum || reward.amount > range.maximum) throw new Error("Invalid enemy Prismatica drop.");
-    account.fractalis += reward.amount;
+    account.fractalis += damagePaid ? 0 : reward.amount;
     if (result.state.infusion?.mode === "machines" && reward.mechanicalComponents === void 0) {
       throw new Error("Awaken the Machines rewards require Broken Mechanical Components.");
     }
@@ -15650,7 +15657,15 @@ function saveAccountRewards(storage, result, runId) {
       if (!creature.mode || creature.mode === "machines" || !stage || creature.mode !== result.state.infusion?.mode || enemy2.hp > 0 || enemy2.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== (isNewEventId(creature.mode) ? 60 : Math.min(capturedLevelCap, enemy2.level)) || enemy2.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? "legacy").level) {
         throw new Error("Invalid captured enemy reward.");
       }
-      const copy = createCreatureCopy(creature.id, stage, reward.capture.level);
+      const copy = createCreatureCopy(
+        creature.id,
+        stage,
+        reward.capture.level,
+        void 0,
+        captureUuid ? `capture:${captureUuid(enemy2.id)}` : void 0
+      );
+      if (account.capturedCharacters?.some((existing) => existing.instanceId === copy.instanceId))
+        throw new Error("Captured Elemental-Devourer identity already exists.");
       account.capturedCharacters = validateCapturedCharacters([...account.capturedCharacters ?? [], copy]);
     }
     rewardedEnemies.add(enemy2.id);
@@ -15728,6 +15743,21 @@ function saveAccountRewards(storage, result, runId) {
     }
   }
   const saved = changed ? saveAccount(storage, account) : account;
+  if (damagePaid) for (const [reward, amount] of baseCurrency) {
+    reward.amount -= amount;
+    const loot = [
+      ...Object.entries(reward.materials ?? {}).map(([id, quantity]) => `${quantity} ${materialName(id)}`),
+      ...Object.entries(reward.conduits ?? {}).map(([id, quantity]) => {
+        if (!isConduitId(id)) throw new Error("Unknown saved Conduit reward.");
+        return `${quantity} ${getConduit(id).name}`;
+      }),
+      ...reward.lycalis ? [`${reward.lycalis} Null-Prismatica`] : [],
+      ...reward.mechanicalComponents ? [`${reward.mechanicalComponents} Broken Mechanical Components`] : [],
+      ...reward.masterChests ? [`${reward.masterChests} Master chest`] : [],
+      ...reward.capture ? [`captured ${getCreature(reward.capture.creatureId).name} Elemental-Devourer`] : []
+    ];
+    reward.message = `Enemy defeated${loot.length ? `; saved ${loot.join(", ")}` : ""}. Enemy Prismatica was paid from actual damage.`;
+  }
   for (const { reward, bonus } of storyBonuses) {
     reward.amount += bonus.fractalis;
     reward.lycalis = bonus.lycalis;
@@ -15941,6 +15971,294 @@ function atTrainingWave(state, wave) {
   state.wave = wave;
   state.enemies = spawned.state.enemies;
   return state;
+}
+
+// src/content/radiant-enemy-calibration.ts
+var unity = { hp: 1, attack: 1, defense: 1 };
+var authoredRadiantCalibration = {
+  id: "authored-control",
+  points: [{ level: 1, ...unity }, { level: 185, ...unity }],
+  categories: { ordinary: unity, boss: unity, calamity: unity }
+};
+var pressureRadiantCalibration = {
+  id: "radiant-pressure-v2",
+  points: [
+    { level: 1, hp: 1, attack: 1, defense: 1 },
+    { level: 30, hp: 0.7, attack: 0.75, defense: 1 },
+    { level: 60, hp: 0.5, attack: 0.5, defense: 0.9 },
+    { level: 80, hp: 0.4, attack: 0.4, defense: 0.8 },
+    { level: 120, hp: 0.25, attack: 0.2, defense: 0.6 },
+    { level: 140, hp: 0.18, attack: 0.12, defense: 0.5 },
+    { level: 170, hp: 0.12, attack: 0.07, defense: 0.4 },
+    { level: 185, hp: 0.12, attack: 0.07, defense: 0.4 }
+  ],
+  categories: { ordinary: unity, boss: unity, calamity: { hp: 1.5, attack: 3, defense: 1.1 } }
+};
+function radiantEnemyFactors(level, category, calibration) {
+  if (!Number.isInteger(level) || level < 1 || level > 185) throw new Error("Invalid authored enemy level.");
+  const points = calibration.points;
+  if (points.length < 2 || points[0].level !== 1 || points.at(-1).level !== 185 || points.some((point, i) => !Number.isInteger(point.level) || i > 0 && point.level <= points[i - 1].level))
+    throw new Error("Invalid radiant calibration anchors.");
+  const categoryFactor = calibration.categories[category];
+  if (!categoryFactor) throw new Error("Invalid radiant enemy category.");
+  for (const factor of [...points, ...Object.values(calibration.categories)])
+    for (const key of ["hp", "attack", "defense"])
+      if (!Number.isFinite(factor[key]) || factor[key] <= 0 || factor[key] > 10)
+        throw new Error("Invalid radiant calibration magnitude.");
+  const afterIndex = Math.max(1, points.findIndex((point) => point.level >= level));
+  const before = points[afterIndex - 1], after = points[afterIndex];
+  const t = (level - before.level) / (after.level - before.level);
+  return Object.fromEntries(["hp", "attack", "defense"].map((key) => [key, (before[key] + (after[key] - before[key]) * t) * categoryFactor[key]]));
+}
+function calibratedRadiantEnemyStats(authored, level, category, calibration) {
+  const factors = radiantEnemyFactors(level, category, calibration);
+  return {
+    hp: Math.max(1, Math.round(authored.health * factors.hp)),
+    attack: authored.damage * factors.attack,
+    defense: authored.defense * factors.defense,
+    recovery: 0
+  };
+}
+
+// src/game/radiant-pressure-encounters.ts
+function assertRadiantPressureAccess(anchor, account, now) {
+  const a = anchor.activity;
+  if (a.kind === "infusion" && a.mode === "roses") assertRoseEventActive(now);
+  assertActivityAccess(account, a, now);
+  const unlocked = a.kind === "story" ? unlockedStoryStage(account) : a.kind === "dungeon" ? unlockedStage(account, a.element) : a.kind === "infusion" ? unlockedInfusionStage(account, a.mode) : a.kind === "war" ? unlockedWarStage(account, a.character) : Infinity;
+  if ("stage" in a && a.stage > unlocked) throw new Error("Pressure study stage is locked.");
+}
+function createRadiantAuthoredEncounter(anchor, encounterSeed) {
+  const a = anchor.activity, progress = { level: 0, evolution: 1, weaponRank: 0 };
+  let live;
+  switch (a.kind) {
+    case "story":
+      live = createStoryBattle(a.stage, encounterSeed, "ember", progress);
+      break;
+    case "dungeon":
+      live = createDungeonBattle(a.element, a.stage, encounterSeed, "ember", progress);
+      break;
+    case "infusion":
+      live = createInfusionBattle(a.mode, a.stage, encounterSeed, "ember", progress);
+      break;
+    case "war":
+      live = createWarBattle(a.character, a.stage, encounterSeed, "ember", progress);
+      break;
+    case "oblivion":
+      live = createOblivionBattle(a.stage, encounterSeed, "ember", progress);
+      break;
+    case "calamity":
+      live = createCalamityBattle(a.activity, a.tier, encounterSeed, "ember", progress);
+      break;
+    case "training": {
+      const wave = anchor.trainingWave ?? 1;
+      if (!Number.isSafeInteger(wave) || wave < 1) throw new Error("Invalid Training wave.");
+      live = createBattle(encounterSeed);
+      live.wave = wave;
+      for (const unit of live.enemies) {
+        unit.level = Math.min(wave, 120);
+        unit.stats = enemyCombatStats(unit.level, false);
+        unit.hp = unit.stats.health;
+        unit.enemySkills = enemySkills(unit.level, false, unit.enemySkills[0].name, enemyAbilityMultiplier(unit.level));
+      }
+      break;
+    }
+  }
+  for (const unit of live.enemies) {
+    if (anchor.identitySelection !== void 0) {
+      if (a.kind === "story") {
+        const creature = storyCreature(a.stage, anchor.identitySelection);
+        unit.name = creature.name;
+        unit.creatureId = creature.id;
+        unit.enemySkills = enemySkills(unit.level, !!unit.boss, `${creature.name} Strike`, enemyAbilityMultiplier(unit.level));
+      } else if (a.kind === "dungeon") {
+        const variant = dungeonEncounter(a.element, a.stage, anchor.identitySelection);
+        unit.name = variant.enemy.name;
+        unit.creatureId = variant.creatureId;
+        unit.enemySkills = enemySkills(unit.level, !!unit.boss, variant.ability, variant.abilityMultiplier);
+      } else throw new Error("Invalid pressure identity selection.");
+    }
+  }
+  return live;
+}
+function adaptRadiantPressureEncounter(anchor, encounterSeed, calibration) {
+  const a = anchor.activity, live = createRadiantAuthoredEncounter(anchor, encounterSeed);
+  return live.enemies.map((unit) => {
+    const level = unit.level;
+    const category = a.kind === "calamity" ? "calamity" : unit.boss ? "boss" : "ordinary";
+    const currencyBudget = a.kind === "calamity" ? 0 : activityPrismaticaDrop(live, level).minimum;
+    return {
+      id: unit.id,
+      identity: a.kind === "war" ? `war:${a.character}:${unit.evolution}` : unit.creatureId ?? unit.definitionId,
+      name: unit.name,
+      level,
+      category,
+      authoredStats: structuredClone(unit.stats),
+      stats: calibratedRadiantEnemyStats(unit.stats, level, category, calibration),
+      factors: radiantEnemyFactors(level, category, calibration),
+      skills: structuredClone(unit.enemySkills ?? []),
+      ...a.kind === "calamity" ? { pattern: structuredClone(calamityPatterns[a.activity]) } : {},
+      currencyBudget
+    };
+  });
+}
+
+// src/online/radiant-rewards.ts
+var seedKeys = [
+  "rewardSeed",
+  "captureSeed",
+  "lycalisSeed",
+  "conduitSeed",
+  "componentSeed",
+  "masterChestSeed",
+  "recruitmentSeed",
+  "oblivionSeed"
+];
+function record3(value2) {
+  return !!value2 && typeof value2 === "object" && !Array.isArray(value2);
+}
+function count2(value2) {
+  return typeof value2 === "number" && Number.isSafeInteger(value2) && value2 >= 0;
+}
+function validateRadiantRewardEvents(value2, ledger) {
+  if (!Array.isArray(value2)) throw new Error("Invalid saved Radiant rewards.");
+  const sources = /* @__PURE__ */ new Set();
+  const allowed = [
+    "kind",
+    "source",
+    "target",
+    "amount",
+    "critical",
+    "message",
+    "materials",
+    "capture",
+    "lycalis",
+    "conduits",
+    "conduitUpgrades",
+    "mechanicalComponents",
+    "masterChests",
+    "calamityChest",
+    "recruitment",
+    "recruitmentOutcome",
+    "calamiticRecruitment",
+    "calamityShards",
+    "storyBonus"
+  ];
+  for (const event2 of value2) {
+    if (!record3(event2) || Object.keys(event2).some((key) => !allowed.includes(key)) || event2.kind !== "reward" || typeof event2.source !== "string" || !ledger.defeated.includes(event2.source) || sources.has(event2.source) || !["", event2.source].includes(String(event2.target)) || event2.critical !== false || !count2(event2.amount) || typeof event2.message !== "string" || !event2.message.length)
+      throw new Error("Invalid saved Radiant reward.");
+    sources.add(event2.source);
+    for (const key of ["lycalis", "mechanicalComponents", "masterChests", "calamityShards"])
+      if (event2[key] !== void 0 && (!count2(event2[key]) || event2[key] === 0))
+        throw new Error("Invalid saved Radiant reward quantity.");
+    for (const key of ["materials", "conduits", "conduitUpgrades"]) if (event2[key] !== void 0) {
+      const entries = event2[key];
+      if (!record3(entries) || Object.entries(entries).some(([id, amount]) => !(key === "materials" ? isMaterial(id) : isConduitId(id)) || !count2(amount) || (key === "conduits" ? amount !== 1 : key === "conduitUpgrades" ? amount > 5 : amount === 0)))
+        throw new Error("Invalid saved Radiant reward holdings.");
+    }
+    if (event2.capture !== void 0) {
+      const capture = event2.capture;
+      if (!record3(capture) || Object.keys(capture).some((key) => !["creatureId", "level"].includes(key)) || typeof capture.creatureId !== "string" || !getCreature(capture.creatureId).mode || !count2(capture.level) || capture.level > 120) throw new Error("Invalid saved Radiant capture.");
+    }
+    if (event2.recruitment !== void 0 && !isWarCharacter(event2.recruitment) || event2.recruitmentOutcome !== void 0 && (!event2.recruitment || !["new", "duplicate"].includes(String(event2.recruitmentOutcome))) || event2.calamiticRecruitment !== void 0 && !["ozriel", "ilvaris", "kaelith"].includes(String(event2.calamiticRecruitment)))
+      throw new Error("Invalid saved Radiant recruitment.");
+    if (event2.storyBonus !== void 0 && (!record3(event2.storyBonus) || Object.keys(event2.storyBonus).some((key) => !["fractalis", "lycalis"].includes(key)) || !count2(event2.storyBonus.fractalis) || !count2(event2.storyBonus.lycalis)))
+      throw new Error("Invalid saved Radiant Story bonus.");
+    if (event2.calamityChest !== void 0) {
+      if (typeof event2.calamityChest !== "string" || event2.amount !== 0)
+        throw new Error("Invalid saved Radiant chest.");
+      parseCalamityChestId(event2.calamityChest);
+    }
+  }
+}
+function seedsOf(state) {
+  const seeds = { rewardSeed: state.rewardSeed };
+  for (const key of seedKeys) if (state[key] !== void 0) seeds[key] = state[key];
+  return seeds;
+}
+function initialRadiantRewards(anchor, encounterSeed, previous) {
+  return { defeated: [], cleared: false, seeds: previous ? structuredClone(previous.seeds) : seedsOf(createRadiantAuthoredEncounter(anchor, encounterSeed)) };
+}
+function validateRadiantRewards(value2, combat) {
+  if (!value2 || typeof value2 !== "object" || Array.isArray(value2)) throw new Error("Invalid Radiant reward ledger.");
+  const ledger = value2;
+  if (Object.keys(ledger).some((key) => !["defeated", "seeds", "cleared"].includes(key)) || typeof ledger.cleared !== "boolean" || !Array.isArray(ledger.defeated) || new Set(ledger.defeated).size !== ledger.defeated.length || ledger.cleared && ledger.defeated.length !== combat.enemies.length || ledger.defeated.some((id) => typeof id !== "string" || !combat.enemies.some((enemy2) => enemy2.id === id && enemy2.currency.lowestHP === 0)) || !ledger.seeds || typeof ledger.seeds !== "object" || Array.isArray(ledger.seeds) || Object.keys(ledger.seeds).some((key) => !seedKeys.includes(key)) || ledger.seeds.rewardSeed === void 0 || Object.values(ledger.seeds).some((seed3) => !Number.isSafeInteger(seed3) || seed3 < 0 || seed3 > 4294967295)) {
+    throw new Error("Invalid Radiant reward ledger.");
+  }
+}
+function preserveUntouchedAccount(raw, before, saved) {
+  const result = structuredClone(raw);
+  for (const key of Object.keys(saved)) {
+    if (JSON.stringify(before[key]) === JSON.stringify(saved[key])) continue;
+    if (key === "characters") result.characters = {
+      ...raw.characters,
+      ...Object.fromEntries(Object.entries(saved.characters).filter(([id, progress]) => JSON.stringify(progress) !== JSON.stringify(before.characters[id])))
+    };
+    else if (key === "capturedCharacters") {
+      const existing = new Set((raw.capturedCharacters ?? []).map((copy) => copy.instanceId));
+      result.capturedCharacters = [
+        ...raw.capturedCharacters ?? [],
+        ...(saved.capturedCharacters ?? []).filter((copy) => !existing.has(copy.instanceId))
+      ];
+    } else Object.assign(result, { [key]: structuredClone(saved[key]) });
+  }
+  return result;
+}
+function resolveRadiantRewards(account, anchor, encounterSeed, ledger, combat, receiptNamespace, discover = false, captureUuid) {
+  validateRadiantRewards(ledger, combat);
+  const previous = createRadiantAuthoredEncounter(anchor, encounterSeed);
+  Object.assign(previous, ledger.seeds);
+  for (const enemy2 of previous.enemies) if (ledger.defeated.includes(enemy2.id)) enemy2.hp = 0;
+  previous.machineConduits = structuredClone(account.conduits ?? {});
+  previous.machineLootFocus = structuredClone(account.machineLootFocus ?? {});
+  const state = structuredClone(previous);
+  for (const enemy2 of state.enemies) {
+    const current = combat.enemies.find((unit) => unit.id === enemy2.id);
+    if (!current) throw new Error("Radiant reward source is missing.");
+    if (current.hp <= 0) enemy2.hp = 0;
+  }
+  const newlyDefeated = state.enemies.filter((enemy2) => enemy2.hp <= 0 && !ledger.defeated.includes(enemy2.id));
+  if (!newlyDefeated.length && !discover && (combat.phase !== "victory" || ledger.cleared))
+    return {
+      account: structuredClone(account),
+      ledger: structuredClone(ledger),
+      rewards: []
+    };
+  state.phase = combat.phase === "victory" ? "cleared" : combat.phase === "defeat" ? "defeat" : "player";
+  const rewards = [];
+  awardDefeats(previous, state, rewards);
+  const before = validateAccount(account);
+  const items = /* @__PURE__ */ new Map([[ACCOUNT_KEY, JSON.stringify(account)]]);
+  const storage = {
+    getItem: (key) => items.get(key) ?? null,
+    setItem: (key, value2) => {
+      items.set(key, value2);
+    },
+    removeItem: (key) => {
+      items.delete(key);
+    }
+  };
+  const saved = saveDamagePaidAccountRewards(storage, { state, events: rewards }, receiptNamespace, captureUuid);
+  if (!rewards.length && state.story && saved.fractalis > before.fractalis) {
+    rewards.push({
+      kind: "reward",
+      source: state.enemies.at(-1).id,
+      target: "",
+      amount: saved.fractalis - before.fractalis,
+      critical: false,
+      message: "Story stage clear rewards saved.",
+      ...saved.lycalis > before.lycalis ? { lycalis: saved.lycalis - before.lycalis } : {}
+    });
+  }
+  return {
+    account: preserveUntouchedAccount(account, before, saved),
+    ledger: {
+      defeated: [...ledger.defeated, ...newlyDefeated.map((enemy2) => enemy2.id)],
+      seeds: seedsOf(state),
+      cleared: ledger.cleared || combat.phase === "victory"
+    },
+    rewards
+  };
 }
 
 // src/content/radiant-conduits.ts
@@ -16860,53 +17178,6 @@ function resolveRadiantStarterStats(loadout) {
     stats[key] *= 1 + radiantGearAmount(loadout.gear, key);
   validateRadiantStats(stats);
   return stats;
-}
-
-// src/content/radiant-enemy-calibration.ts
-var unity = { hp: 1, attack: 1, defense: 1 };
-var authoredRadiantCalibration = {
-  id: "authored-control",
-  points: [{ level: 1, ...unity }, { level: 185, ...unity }],
-  categories: { ordinary: unity, boss: unity, calamity: unity }
-};
-var pressureRadiantCalibration = {
-  id: "radiant-pressure-v2",
-  points: [
-    { level: 1, hp: 1, attack: 1, defense: 1 },
-    { level: 30, hp: 0.7, attack: 0.75, defense: 1 },
-    { level: 60, hp: 0.5, attack: 0.5, defense: 0.9 },
-    { level: 80, hp: 0.4, attack: 0.4, defense: 0.8 },
-    { level: 120, hp: 0.25, attack: 0.2, defense: 0.6 },
-    { level: 140, hp: 0.18, attack: 0.12, defense: 0.5 },
-    { level: 170, hp: 0.12, attack: 0.07, defense: 0.4 },
-    { level: 185, hp: 0.12, attack: 0.07, defense: 0.4 }
-  ],
-  categories: { ordinary: unity, boss: unity, calamity: { hp: 1.5, attack: 3, defense: 1.1 } }
-};
-function radiantEnemyFactors(level, category, calibration) {
-  if (!Number.isInteger(level) || level < 1 || level > 185) throw new Error("Invalid authored enemy level.");
-  const points = calibration.points;
-  if (points.length < 2 || points[0].level !== 1 || points.at(-1).level !== 185 || points.some((point, i) => !Number.isInteger(point.level) || i > 0 && point.level <= points[i - 1].level))
-    throw new Error("Invalid radiant calibration anchors.");
-  const categoryFactor = calibration.categories[category];
-  if (!categoryFactor) throw new Error("Invalid radiant enemy category.");
-  for (const factor of [...points, ...Object.values(calibration.categories)])
-    for (const key of ["hp", "attack", "defense"])
-      if (!Number.isFinite(factor[key]) || factor[key] <= 0 || factor[key] > 10)
-        throw new Error("Invalid radiant calibration magnitude.");
-  const afterIndex = Math.max(1, points.findIndex((point) => point.level >= level));
-  const before = points[afterIndex - 1], after = points[afterIndex];
-  const t = (level - before.level) / (after.level - before.level);
-  return Object.fromEntries(["hp", "attack", "defense"].map((key) => [key, (before[key] + (after[key] - before[key]) * t) * categoryFactor[key]]));
-}
-function calibratedRadiantEnemyStats(authored, level, category, calibration) {
-  const factors = radiantEnemyFactors(level, category, calibration);
-  return {
-    hp: Math.max(1, Math.round(authored.health * factors.hp)),
-    attack: authored.damage * factors.attack,
-    defense: authored.defense * factors.defense,
-    recovery: 0
-  };
 }
 
 // src/game/radiant-gauge.ts
@@ -18036,12 +18307,12 @@ function adaptRadiantLoadouts(members, acquiredBearerIds, account) {
   const loadouts = [];
   try {
     const upgrades = validateConduitUpgrades(account.conduitUpgrades ?? {});
-    for (const [id, count2] of Object.entries(account.conduits ?? {})) {
-      if (!isConduitId(id) || !Number.isSafeInteger(count2) || count2 < 0)
+    for (const [id, count3] of Object.entries(account.conduits ?? {})) {
+      if (!isConduitId(id) || !Number.isSafeInteger(count3) || count3 < 0)
         throw new Error("Invalid ordinary Conduit ownership.");
     }
-    for (const [id, count2] of Object.entries(account.masterConduits ?? {})) {
-      if (!isMasterConduitId(id) || !Number.isSafeInteger(count2) || count2 < 0 || count2 > 1)
+    for (const [id, count3] of Object.entries(account.masterConduits ?? {})) {
+      if (!isMasterConduitId(id) || !Number.isSafeInteger(count3) || count3 < 0 || count3 > 1)
         throw new Error("Invalid radiant Master ownership.");
     }
     for (const id of Object.keys(upgrades))
@@ -18074,81 +18345,6 @@ function adaptRadiantLoadouts(members, acquiredBearerIds, account) {
     errors.push({ memberId: "party", reason: error instanceof Error ? error.message : "Invalid account gear." });
   }
   return errors.length ? { ok: false, errors } : { ok: true, loadouts };
-}
-
-// src/game/radiant-pressure-encounters.ts
-function assertRadiantPressureAccess(anchor, account, now) {
-  const a = anchor.activity;
-  if (a.kind === "infusion" && a.mode === "roses") assertRoseEventActive(now);
-  assertActivityAccess(account, a, now);
-  const unlocked = a.kind === "story" ? unlockedStoryStage(account) : a.kind === "dungeon" ? unlockedStage(account, a.element) : a.kind === "infusion" ? unlockedInfusionStage(account, a.mode) : a.kind === "war" ? unlockedWarStage(account, a.character) : Infinity;
-  if ("stage" in a && a.stage > unlocked) throw new Error("Pressure study stage is locked.");
-}
-function adaptRadiantPressureEncounter(anchor, encounterSeed, calibration) {
-  const a = anchor.activity, progress = { level: 0, evolution: 1, weaponRank: 0 };
-  let live;
-  switch (a.kind) {
-    case "story":
-      live = createStoryBattle(a.stage, encounterSeed, "ember", progress);
-      break;
-    case "dungeon":
-      live = createDungeonBattle(a.element, a.stage, encounterSeed, "ember", progress);
-      break;
-    case "infusion":
-      live = createInfusionBattle(a.mode, a.stage, encounterSeed, "ember", progress);
-      break;
-    case "war":
-      live = createWarBattle(a.character, a.stage, encounterSeed, "ember", progress);
-      break;
-    case "oblivion":
-      live = createOblivionBattle(a.stage, encounterSeed, "ember", progress);
-      break;
-    case "calamity":
-      live = createCalamityBattle(a.activity, a.tier, encounterSeed, "ember", progress);
-      break;
-    case "training": {
-      const wave = anchor.trainingWave ?? 1;
-      if (!Number.isSafeInteger(wave) || wave < 1) throw new Error("Invalid Training wave.");
-      live = createBattle(encounterSeed);
-      for (const unit of live.enemies) {
-        unit.level = Math.min(wave, 120);
-        unit.stats = enemyCombatStats(unit.level, false);
-        unit.enemySkills = enemySkills(unit.level, false, unit.enemySkills[0].name, enemyAbilityMultiplier(unit.level));
-      }
-      break;
-    }
-  }
-  return live.enemies.map((unit) => {
-    if (anchor.identitySelection !== void 0) {
-      if (a.kind === "story") {
-        const creature = storyCreature(a.stage, anchor.identitySelection);
-        unit.name = creature.name;
-        unit.creatureId = creature.id;
-        unit.enemySkills = enemySkills(unit.level, !!unit.boss, `${creature.name} Strike`, enemyAbilityMultiplier(unit.level));
-      } else if (a.kind === "dungeon") {
-        const variant = dungeonEncounter(a.element, a.stage, anchor.identitySelection);
-        unit.name = variant.enemy.name;
-        unit.creatureId = variant.creatureId;
-        unit.enemySkills = enemySkills(unit.level, !!unit.boss, variant.ability, variant.abilityMultiplier);
-      } else throw new Error("Invalid pressure identity selection.");
-    }
-    const level = unit.level;
-    const category = a.kind === "calamity" ? "calamity" : unit.boss ? "boss" : "ordinary";
-    const currencyBudget = a.kind === "calamity" ? 0 : activityPrismaticaDrop(live, level).minimum;
-    return {
-      id: unit.id,
-      identity: a.kind === "war" ? `war:${a.character}:${unit.evolution}` : unit.creatureId ?? unit.definitionId,
-      name: unit.name,
-      level,
-      category,
-      authoredStats: structuredClone(unit.stats),
-      stats: calibratedRadiantEnemyStats(unit.stats, level, category, calibration),
-      factors: radiantEnemyFactors(level, category, calibration),
-      skills: structuredClone(unit.enemySkills ?? []),
-      ...a.kind === "calamity" ? { pattern: structuredClone(calamityPatterns[a.activity]) } : {},
-      currencyBudget
-    };
-  });
 }
 
 // src/game/radiant-pressure.ts
@@ -18222,7 +18418,7 @@ function initialize(anchor, calibration, loadouts, entropy, encounter2 = 1) {
   );
   const initial = createRadiantCombat(loadouts, enemies2, entropy.chargeSeed);
   return {
-    version: 1,
+    version: 2,
     id: entropy.runId,
     encounter: encounter2,
     anchor,
@@ -18234,20 +18430,21 @@ function initialize(anchor, calibration, loadouts, entropy, encounter2 = 1) {
     enemies: enemies2,
     initial: structuredClone(initial),
     state: initial,
-    quit: false
+    quit: false,
+    rewards: initialRadiantRewards(anchor, entropy.encounterSeed)
   };
 }
 function exactKeys(value2, keys2) {
   if (Object.keys(value2).some((key) => !keys2.includes(key))) invalid("Unexpected study request field.");
 }
-function record3(value2) {
+function record4(value2) {
   return !!value2 && typeof value2 === "object" && !Array.isArray(value2);
 }
 function validId(value2) {
   return typeof value2 === "string" && /^[a-z0-9][a-z0-9:_-]{0,159}$/i.test(value2);
 }
 function validateRadiantActivity(value2) {
-  if (!record3(value2) || typeof value2.kind !== "string") invalid("Invalid study activity.");
+  if (!record4(value2) || typeof value2.kind !== "string") invalid("Invalid study activity.");
   const activityKeys = {
     training: ["kind"],
     story: ["kind", "stage"],
@@ -18290,7 +18487,7 @@ function validateRadiantActivity(value2) {
   return invalid("Invalid study activity or stage.");
 }
 function validateRadiantRunRequest(request) {
-  if (!record3(request) || typeof request.requestId !== "string" || !uuid2.test(request.requestId) || typeof request.expectedRevision !== "number" || !Number.isSafeInteger(request.expectedRevision) || request.expectedRevision < 0 || !record3(request.operation)) invalid("Invalid study request.");
+  if (!record4(request) || typeof request.requestId !== "string" || !uuid2.test(request.requestId) || typeof request.expectedRevision !== "number" || !Number.isSafeInteger(request.expectedRevision) || request.expectedRevision < 0 || !record4(request.operation)) invalid("Invalid study request.");
   exactKeys(request, ["requestId", "expectedRevision", "runId", "encounter", "operation"]);
   const op = request.operation;
   if (op.kind === "start") {
@@ -18301,12 +18498,12 @@ function validateRadiantRunRequest(request) {
     if (typeof request.runId !== "string" || !uuid2.test(request.runId) || typeof request.encounter !== "number" || !Number.isSafeInteger(request.encounter) || request.encounter < 1) invalid("Missing prior study encounter.");
     if (op.kind === "action") {
       exactKeys(op, ["kind", "action"]);
-      if (!record3(op.action) || typeof op.action.type !== "string" || !["normal", "defense", "flare"].includes(op.action.type)) invalid("Only player choices are accepted.");
+      if (!record4(op.action) || typeof op.action.type !== "string" || !["normal", "defense", "flare"].includes(op.action.type)) invalid("Only player choices are accepted.");
       exactKeys(op.action, op.action.type === "defense" ? ["type", "bearerId"] : ["type", "bearerId", "targetId"]);
       if (!validId(op.action.bearerId) || op.action.type === "normal" && !validId(op.action.targetId) || "targetId" in op.action && !validId(op.action.targetId))
         invalid("Invalid player choice.");
     } else {
-      if (typeof op.kind !== "string" || !["retry", "quit", "continue"].includes(op.kind)) invalid("Unknown study operation.");
+      if (typeof op.kind !== "string" || !["retry", "quit", "continue", "exit"].includes(op.kind)) invalid("Unknown study operation.");
       exactKeys(op, ["kind"]);
     }
   }
@@ -18351,6 +18548,7 @@ function resolveRadiantRun(snapshot, request, authority) {
   const game = structuredClone(snapshot.state), op = request.operation;
   validateAccount(game.account);
   let events = [];
+  let discover = false;
   if (op.kind === "start") {
     if (game.run || game.radiantStudy) throw new RadiantRunError("stale-run", "Existing run must not be replaced.");
     const anchor = {
@@ -18366,9 +18564,10 @@ function resolveRadiantRun(snapshot, request, authority) {
       radiantAccountLoadouts(game.account),
       authority.entry(request.requestId)
     );
+    discover = true;
   } else {
     const run2 = game.radiantStudy;
-    if (!run2 || run2.version !== 1 || run2.id !== request.runId || run2.encounter !== request.encounter)
+    if (!run2 || run2.version !== 2 || run2.id !== request.runId || run2.encounter !== request.encounter)
       throw new RadiantRunError("stale-run", "Prior frozen study encounter does not match.");
     validateFrozenRadiantRun(run2);
     if (run2.enemies.length !== run2.state.enemies.length || run2.enemies.some((enemy2, i) => enemy2.id !== run2.state.enemies[i].id || enemy2.currencyBudget !== run2.state.enemies[i].currency.budget || enemy2.currencyBudget !== run2.initial.enemies[i]?.currency.budget))
@@ -18392,7 +18591,7 @@ function resolveRadiantRun(snapshot, request, authority) {
         }
         if (run2.state.phase === "enemy") apply({ type: "finish-enemy-phase" });
       }
-    } else if (op.kind === "quit") run2.quit = true;
+    } else if (op.kind === "quit" || op.kind === "exit") run2.quit = true;
     else if (op.kind === "retry") {
       if (!run2.quit && !["defeat", "victory"].includes(run2.state.phase)) invalid("Retry requires a finished or quit encounter.");
       assertRadiantPressureAccess(run2.anchor, game.account, authority.now);
@@ -18407,9 +18606,11 @@ function resolveRadiantRun(snapshot, request, authority) {
     } else {
       if (run2.quit || run2.state.phase !== "victory") invalid("Continue requires victory.");
       const activity = run2.anchor.activity;
-      if (!("stage" in activity)) invalid("Study Continue is available only for staged activities.");
+      if (activity.kind === "calamity") invalid("Calamity ends after one boss.");
       const anchor = structuredClone(run2.anchor);
       if ("stage" in anchor.activity) anchor.activity.stage++;
+      else if (anchor.activity.kind === "training") anchor.trainingWave = (anchor.trainingWave ?? 1) + 1;
+      validateRadiantActivity(anchor.activity);
       assertRadiantPressureAccess(anchor, game.account, authority.now);
       game.radiantStudy = initialize(
         anchor,
@@ -18423,17 +18624,40 @@ function resolveRadiantRun(snapshot, request, authority) {
         },
         run2.encounter + 1
       );
+      game.radiantStudy.rewards = initialRadiantRewards(anchor, game.radiantStudy.encounterSeed, run2.rewards);
+      discover = true;
     }
   }
   const run = game.radiantStudy;
   validateRadiantCombat(run.state);
   const amount = events.reduce((sum, event2) => sum + (event2.type === "currency" ? event2.amount : 0), 0);
   saveCurrency(game, amount, `radiant-study:v1:${run.id}:${run.encounter}:${request.requestId}`);
+  const settled = resolveRadiantRewards(
+    game.account,
+    run.anchor,
+    run.encounterSeed,
+    run.rewards,
+    run.state,
+    `radiant-study:v1:${run.id}:${run.encounter}:loot`,
+    discover,
+    (enemyId) => {
+      const index = run.enemies.findIndex((enemy2) => enemy2.id === enemyId);
+      if (index < 0) invalid("Capture source is missing.");
+      const base = authority.entry(request.requestId).runId;
+      if (!uuid2.test(base)) invalid("Invalid authority capture identity.");
+      const suffix = (Number.parseInt(base.slice(-8), 16) ^ index) >>> 0;
+      return base.slice(0, -8) + suffix.toString(16).padStart(8, "0");
+    }
+  );
+  game.account = settled.account;
+  run.rewards = settled.ledger;
+  if (op.kind === "exit") delete game.radiantStudy;
   return { state: game, response: {
     revision: snapshot.revision + 1,
     account: structuredClone(game.account),
     run: structuredClone(run),
-    events
+    events,
+    rewards: settled.rewards
   } };
 }
 function canonical(value2) {
@@ -18443,7 +18667,7 @@ function canonical(value2) {
 }
 function validateFrozenRadiantRun(value2) {
   try {
-    if (!record3(value2) || value2.version !== 1 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record3(value2.anchor) || !["authored-control", "radiant-pressure-v2"].includes(String(value2.calibration)) || !Array.isArray(value2.enemies) || !record3(value2.initial) || !record3(value2.state))
+    if (!record4(value2) || value2.version !== 2 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !["authored-control", "radiant-pressure-v2"].includes(String(value2.calibration)) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
       throw new Error();
     for (const key of ["encounterSeed", "initialChargeSeed", "initialTargetSeed"])
       seed2(value2[key]);
@@ -18453,6 +18677,7 @@ function validateFrozenRadiantRun(value2) {
     const run = value2;
     validateRadiantCombat(run.initial);
     validateRadiantCombat(run.state);
+    validateRadiantRewards(run.rewards, run.state);
     const expected = initialize(
       run.anchor,
       run.calibration,
@@ -18473,7 +18698,7 @@ function validateFrozenRadiantRun(value2) {
 }
 function validateRadiantRunSnapshot(value2) {
   try {
-    if (!record3(value2) || typeof value2.revision !== "number" || !Number.isSafeInteger(value2.revision) || value2.revision < 0 || !record3(value2.state) || !record3(value2.state.profile) || !("run" in value2.state) || !("starterId" in value2.state))
+    if (!record4(value2) || typeof value2.revision !== "number" || !Number.isSafeInteger(value2.revision) || value2.revision < 0 || !record4(value2.state) || !record4(value2.state.profile) || !("run" in value2.state) || !("starterId" in value2.state))
       throw new Error();
     validateAccount(value2.state.account);
     if (value2.state.radiantStudy !== void 0) validateFrozenRadiantRun(value2.state.radiantStudy);
@@ -18494,14 +18719,14 @@ var eventFields = {
   status: { text: ["targetId", "status"], number: ["magnitude", "remaining"] }
 };
 function validSource(value2) {
-  return record3(value2) && (value2.kind === "enemy" ? validId(value2.enemyId) : ["normal", "flare", "passive", "master"].includes(String(value2.kind)) ? validId(value2.bearerId) : value2.kind === "gear" && validId(value2.bearerId) && validId(value2.conduitId));
+  return record4(value2) && (value2.kind === "enemy" ? validId(value2.enemyId) : ["normal", "flare", "passive", "master"].includes(String(value2.kind)) ? validId(value2.bearerId) : value2.kind === "gear" && validId(value2.bearerId) && validId(value2.conduitId));
 }
 function validEvent(value2) {
-  if (!record3(value2) || typeof value2.type !== "string" || !Object.hasOwn(eventFields, value2.type)) return false;
+  if (!record4(value2) || typeof value2.type !== "string" || !Object.hasOwn(eventFields, value2.type)) return false;
   const fields = eventFields[value2.type];
   if (!fields.text.every((key) => typeof value2[key] === "string" && value2[key].length > 0) || !fields.number.every((key) => typeof value2[key] === "number" && Number.isFinite(value2[key]) && Number(value2[key]) >= 0 && Number(value2[key]) <= Number.MAX_SAFE_INTEGER)) return false;
   if (["damage", "heal", "shield", "status"].includes(value2.type) && !validSource(value2.source)) return false;
-  if (value2.type === "damage" && (!["direct", "periodic", "generated"].includes(String(value2.origin)) || !Array.isArray(value2.shields) || !value2.shields.every((shield2) => record3(shield2) && validSource(shield2.source) && typeof shield2.amount === "number" && Number.isFinite(shield2.amount) && shield2.amount >= 0))) return false;
+  if (value2.type === "damage" && (!["direct", "periodic", "generated"].includes(String(value2.origin)) || !Array.isArray(value2.shields) || !value2.shields.every((shield2) => record4(shield2) && validSource(shield2.source) && typeof shield2.amount === "number" && Number.isFinite(shield2.amount) && shield2.amount >= 0))) return false;
   if (value2.type === "flare" && !["glowing", "lustrous", "eternal"].includes(String(value2.tier))) return false;
   if (value2.type === "status" && ![
     "burn",
@@ -18517,9 +18742,10 @@ function validEvent(value2) {
 }
 function validateRadiantRunResponse(value2) {
   try {
-    if (!record3(value2) || typeof value2.revision !== "number" || !Number.isSafeInteger(value2.revision) || value2.revision < 1 || !Array.isArray(value2.events) || !value2.events.every(validEvent)) throw new Error();
+    if (!record4(value2) || typeof value2.revision !== "number" || !Number.isSafeInteger(value2.revision) || value2.revision < 1 || !Array.isArray(value2.events) || !value2.events.every(validEvent)) throw new Error();
     validateAccount(value2.account);
-    validateFrozenRadiantRun(value2.run);
+    const run = validateFrozenRadiantRun(value2.run);
+    validateRadiantRewardEvents(value2.rewards, run.rewards);
     return structuredClone(value2);
   } catch {
     throw new RadiantRunError("unavailable", "Invalid stored study response.");
@@ -18549,11 +18775,11 @@ async function executeRadiantRun(repository, request, authority) {
   });
 }
 function receiptConflict(error) {
-  return record3(error) && (error.code === "LL409" || error.code === "P0001" && error.message === "Request ID reused with different input");
+  return record4(error) && (error.code === "LL409" || error.code === "P0001" && error.message === "Request ID reused with different input");
 }
 function radiantRpcRepository(rpc, userId, load) {
   const response2 = (data) => {
-    if (!record3(data)) throw new RadiantRunError("unavailable", "Missing commit response.");
+    if (!record4(data)) throw new RadiantRunError("unavailable", "Missing commit response.");
     if ("conflict" in data) throw new RadiantRunError("stale-revision", "Concurrent account update; nothing committed.");
     return validateRadiantRunResponse(data);
   };
@@ -18944,7 +19170,7 @@ function freshGame(username, createdAt = (/* @__PURE__ */ new Date()).toISOStrin
     statistics: { storyCompleted: 0, ownedBearers: 0, capturedCreatures: 0, discoveredCreatures: 0 }
   } };
 }
-function record4(value2) {
+function record5(value2) {
   return !!value2 && typeof value2 === "object" && !Array.isArray(value2);
 }
 function keys(value2, allowed) {
@@ -19005,18 +19231,18 @@ var operationKeys = {
   quit: ["runId"]
 };
 function validateRequest(value2) {
-  if (!record4(value2)) throw new Error("Request must be an object.");
+  if (!record5(value2)) throw new Error("Request must be an object.");
   keys(value2, ["requestId", "expectedRevision", "operation"]);
   if (typeof value2.requestId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value2.requestId)) {
     throw new Error("A UUID request ID is required.");
   }
   integer2(value2.expectedRevision);
-  if (!record4(value2.operation) || typeof value2.operation.kind !== "string" || !Object.hasOwn(operationKeys, value2.operation.kind)) throw new Error("Unknown game operation.");
+  if (!record5(value2.operation) || typeof value2.operation.kind !== "string" || !Object.hasOwn(operationKeys, value2.operation.kind)) throw new Error("Unknown game operation.");
   const op = value2.operation;
   if (op.kind === "sellCurrencyCreatures") {
     if (!Array.isArray(op.selections) || !op.selections.length) throw new Error("Choose at least one Elemental-Devourer to sell.");
     for (const selection of op.selections) {
-      if (!record4(selection)) throw new Error("Invalid sale selection.");
+      if (!record5(selection)) throw new Error("Invalid sale selection.");
       keys(selection, ["id", "saleOption"]);
       text(selection.id);
       text(selection.saleOption);
@@ -19046,32 +19272,32 @@ function validateRequest(value2) {
     if (!Array.isArray(op[field]) || op[field].length > maximum || !op[field].every((id) => typeof id === "string" && id.length > 0 && id.length <= 100)) throw new Error("Invalid character IDs.");
   }
   if (op.kind === "upgradeCharacter" || op.kind === "ascendCharacter") {
-    if (!record4(op.expected)) throw new Error("Invalid expected progress.");
+    if (!record5(op.expected)) throw new Error("Invalid expected progress.");
     keys(op.expected, ["level", "evolution", "weaponRank", "ascension"]);
     integer2(op.expected.level);
     integer2(op.expected.evolution);
     if ("weaponRank" in op.expected) integer2(op.expected.weaponRank);
-    if ("ascension" in op.expected && (!record4(op.expected.ascension) || Object.keys(op.expected.ascension).some((key) => !["stats", "skill1", "skill2", "lastFlare"].includes(key)) || Object.values(op.expected.ascension).some((flag) => typeof flag !== "boolean"))) throw new Error("Invalid expected Ascension state.");
+    if ("ascension" in op.expected && (!record5(op.expected.ascension) || Object.keys(op.expected.ascension).some((key) => !["stats", "skill1", "skill2", "lastFlare"].includes(key)) || Object.values(op.expected.ascension).some((flag) => typeof flag !== "boolean"))) throw new Error("Invalid expected Ascension state.");
   }
   if (op.kind === "ascendCharacter" && !["stats", "skill1", "skill2", "lastFlare"].includes(String(op.step))) throw new Error("Invalid Calamitic Ascension step");
   if (op.kind === "maxConduit") {
-    if (!record4(op.expected)) throw new Error("Invalid Conduit Max Level preview.");
+    if (!record5(op.expected)) throw new Error("Invalid Conduit Max Level preview.");
     keys(op.expected, ["id", "currentLevel", "targetLevel", "cost"]);
     text(op.expected.id);
     for (const field of ["currentLevel", "targetLevel", "cost"]) integer2(op.expected[field]);
   }
   if (op.kind === "levelMax") {
-    if (!record4(op.expected) || op.expected.id !== op.id) throw new Error("Invalid Max Level preview.");
+    if (!record5(op.expected) || op.expected.id !== op.id) throw new Error("Invalid Max Level preview.");
     keys(op.expected, ["id", "currentLevel", "targetLevel", "cap", "cost", "progressKey"]);
     for (const field of ["currentLevel", "targetLevel", "cap"]) integer2(op.expected[field]);
     text(op.expected.progressKey, 8192);
-    if (!record4(op.expected.cost) || !record4(op.expected.cost.materials)) throw new Error("Invalid Max Level cost.");
+    if (!record5(op.expected.cost) || !record5(op.expected.cost.materials)) throw new Error("Invalid Max Level cost.");
     keys(op.expected.cost, ["fractalis", "materials"]);
     integer2(op.expected.cost.fractalis);
     for (const amount of Object.values(op.expected.cost.materials)) integer2(amount);
   }
   if (op.kind === "enter") {
-    if (!record4(op.activity) || !["training", "story", "dungeon", "oblivion", "infusion", "war", "calamity"].includes(String(op.activity.kind))) throw new Error("Invalid activity.");
+    if (!record5(op.activity) || !["training", "story", "dungeon", "oblivion", "infusion", "war", "calamity"].includes(String(op.activity.kind))) throw new Error("Invalid activity.");
     if (op.activity.kind === "calamity") {
       keys(op.activity, ["kind", "activity", "tier"]);
       if (!isCalamityActivityId(op.activity.activity) || !isCalamityTier(op.activity.tier)) throw new Error("Invalid Calamity activity or tier.");
@@ -19109,13 +19335,13 @@ var chatKeys = {
 var uuid3 = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 var chatControl = /[\u0000-\u0008\u000b-\u001f\u007f]/;
 function validateChatRequest(value2) {
-  if (!record4(value2)) throw new Error("Request must be an object.");
+  if (!record5(value2)) throw new Error("Request must be an object.");
   keys(value2, ["requestId", "chat"]);
   if (typeof value2.requestId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value2.requestId)) {
     throw new Error("A UUID request ID is required.");
   }
   const op = value2.chat;
-  if (!record4(op) || typeof op.kind !== "string" || !Object.hasOwn(chatKeys, op.kind)) throw new Error("Unknown chat operation.");
+  if (!record5(op) || typeof op.kind !== "string" || !Object.hasOwn(chatKeys, op.kind)) throw new Error("Unknown chat operation.");
   const shape = chatKeys[op.kind];
   keys(op, ["kind", ...shape.required, ...shape.optional ?? []]);
   if (shape.required.some((key) => !(key in op))) throw new Error("Missing chat field.");
@@ -19141,24 +19367,24 @@ function validateChatRequest(value2) {
   return value2;
 }
 function validateFriendProfileRequest(value2) {
-  if (!record4(value2)) throw new Error("Request must be an object.");
+  if (!record5(value2)) throw new Error("Request must be an object.");
   keys(value2, ["requestId", "friendProfile"]);
   if (typeof value2.requestId !== "string" || !uuid3.test(value2.requestId)) throw new Error("A UUID request ID is required.");
-  if (!record4(value2.friendProfile)) throw new Error("Choose a friend.");
+  if (!record5(value2.friendProfile)) throw new Error("Choose a friend.");
   keys(value2.friendProfile, ["userId"]);
   if (typeof value2.friendProfile.userId !== "string" || !uuid3.test(value2.friendProfile.userId)) throw new Error("Invalid friend user ID.");
   return value2;
 }
 function friendProfileView(row) {
-  if (!record4(row) || typeof row.userId !== "string" || typeof row.username !== "string" || typeof row.createdAt !== "string") {
+  if (!record5(row) || typeof row.userId !== "string" || typeof row.username !== "string" || typeof row.createdAt !== "string") {
     throw new Error("Friend profile unavailable.");
   }
-  const stored = record4(row.state) ? row.state : freshGame(row.username, row.createdAt);
+  const stored = record5(row.state) ? row.state : freshGame(row.username, row.createdAt);
   const account = redactFriendAccount(stored.account);
-  const source = record4(stored.profile) ? stored.profile : freshGame(row.username, row.createdAt).profile;
-  const reference = record4(row.reference) ? row.reference : {};
+  const source = record5(stored.profile) ? stored.profile : freshGame(row.username, row.createdAt).profile;
+  const reference = record5(row.reference) ? row.reference : {};
   const icon = isProfileIcon(source.icon) && profileIconUnlocked(account, source.icon) ? source.icon : "neutral";
-  const recent = Array.isArray(reference.recentActivity) ? reference.recentActivity.filter((entry) => record4(entry) && typeof entry.id === "string" && typeof entry.message === "string" && typeof entry.detail === "string" && typeof entry.at === "string") : [];
+  const recent = Array.isArray(reference.recentActivity) ? reference.recentActivity.filter((entry) => record5(entry) && typeof entry.id === "string" && typeof entry.message === "string" && typeof entry.detail === "string" && typeof entry.at === "string") : [];
   return {
     userId: row.userId,
     account,
@@ -19246,7 +19472,7 @@ function validateRunActivity(run) {
     }
   } else if (oblivion !== void 0) throw new Error("Unsupported saved Gates of Oblivion encounter.");
   if (run.activity.kind === "calamity") {
-    if (!record4(calamity) || !isCalamityActivityId(calamity.activity) || !isCalamityTier(calamity.tier) || calamity.activity !== run.activity.activity || calamity.tier !== run.activity.tier) throw new Error("Unsupported saved Calamity encounter.");
+    if (!record5(calamity) || !isCalamityActivityId(calamity.activity) || !isCalamityTier(calamity.tier) || calamity.activity !== run.activity.activity || calamity.tier !== run.activity.tier) throw new Error("Unsupported saved Calamity encounter.");
   } else if (calamity !== void 0) throw new Error("Unsupported saved Calamity encounter.");
 }
 function gate(account, activity, entering, now) {

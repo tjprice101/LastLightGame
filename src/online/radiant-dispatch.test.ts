@@ -184,7 +184,7 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
     expect((await send(handler, db.normal())).status).toBe(200);
     expect(db.state.radiantStudy!.initial).toEqual(frozen!.initial);
   });
-  it('supports staged Continue only after victory and existing unlocks, without progression rewards', async () => {
+  it('supports staged Continue only after victory without repeating an already-completed Story unlock', async () => {
     const db = new SupabaseMock(105), handler = db.handler();
     db.state.account.storyCompleted = 1;
     expect((await send(handler, entry({ kind: 'story', stage: 1 }))).status).toBe(200);
@@ -197,6 +197,36 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
     expect(db.state.radiantStudy!.anchor.activity).toEqual({ kind: 'story', stage: 2 });
     expect(db.state.radiantStudy!.initial.bearers[0].loadout).toEqual(loadout);
     expect(db.state.account.storyCompleted).toBe(1);
+  });
+  it('actual HTTP Story victory unlocks Continue and exit receipts retain the banked outcome', async () => {
+    const db = new SupabaseMock(105), handler = db.handler();
+    expect((await send(handler, entry({ kind: 'story', stage: 1 }))).status).toBe(200);
+    let rewardCount = 0;
+    for (let i = 0; i < 20 && db.state.radiantStudy!.state.phase === 'player'; i++) {
+      const request = db.normal(), result = await send(handler, request);
+      expect(result.status).toBe(200);
+      rewardCount += result.body.rewards.length;
+      if (result.body.rewards.length) {
+        const writes = db.writes;
+        expect((await send(handler, request)).body).toEqual(result.body);
+        expect(db.writes).toBe(writes);
+      }
+    }
+    expect(db.state.radiantStudy!.state.phase).toBe('victory');
+    expect(rewardCount).toBe(2); expect(db.state.account.storyCompleted).toBe(1);
+    const frozen = structuredClone(db.state.radiantStudy!.initial.bearers[0].loadout);
+    expect((await send(handler, db.request({ kind: 'continue' }))).status).toBe(200);
+    expect(db.state.radiantStudy!.anchor.activity).toEqual({ kind: 'story', stage: 2 });
+    expect(db.state.radiantStudy!.initial.bearers[0].loadout).toEqual(frozen);
+    const banked = structuredClone(db.state.account), exit = db.request({ kind: 'exit' });
+    const result = await send(handler, exit);
+    expect(result.status).toBe(200); expect(result.body.run.quit).toBe(true);
+    expect(db.state.radiantStudy).toBeUndefined();
+    expect((await send(handler, exit)).body).toEqual(result.body);
+    expect(db.state.account.fractalis).toBe(banked.fractalis);
+    expect(db.state.account.materials).toEqual(banked.materials);
+    const fresh = entry(); fresh.expectedRevision = db.revision;
+    expect((await send(handler, fresh)).status).toBe(200);
   });
   it.each(['consume_game_attempt', 'load_game_account', 'find_game_request', 'commit_game_operation'])(
     'maps storage error %s without leaking DB text or secrets', async name => {

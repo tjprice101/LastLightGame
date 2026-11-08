@@ -176,13 +176,14 @@ export function appendCapturedCharacter(copies: readonly CapturedCharacter[], cr
   return validateCapturedCharacters([...copies, { instanceId, creatureId, locked: false }]);
 }
 
-export function createCreatureCopy(creatureId: string, stage?: number, level?: number, acquisition?: CapturedCharacter['acquisition']): CapturedCharacter {
+export function createCreatureCopy(creatureId: string, stage?: number, level?: number, acquisition?: CapturedCharacter['acquisition'],
+  instanceId = `capture:${crypto.randomUUID()}`): CapturedCharacter {
   const creature = getCreature(creatureId);
   if (!creature.mode) throw new Error('Elemental-Devourer ownership requires a playable game mode.');
   const capturedStage = stage ?? creature.stages[0];
   if (!creature.stages.includes(capturedStage)) throw new Error('Elemental-Devourer form does not occur at this stage.');
   const encounter = infusionEncounter(creature.mode, capturedStage);
-  return validateCapturedCharacters([{ instanceId: `capture:${crypto.randomUUID()}`, creatureId, locked: false,
+  return validateCapturedCharacters([{ instanceId, creatureId, locked: false,
     level: level ?? Math.min(capturedLevelCap, encounter.level), capturedStage,
     ...(acquisition ? { acquisition } : {}),
     skills: enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier) }])[0];

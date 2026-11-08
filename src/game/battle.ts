@@ -560,7 +560,7 @@ export function rollOblivionFragment(state: BattleState, boss: boolean): number 
   });
 }
 
-function awardDefeats(previous: BattleState, state: BattleState, events: BattleEvent[]): void {
+export function awardDefeats(previous: BattleState, state: BattleState, events: BattleEvent[]): void {
   for (const enemy of state.enemies) {
     if (enemy.hp > 0 || !previous.enemies.some((unit) => unit.id === enemy.id && unit.hp > 0)) continue;
     const rewardRoll = (): number => {

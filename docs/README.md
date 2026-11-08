@@ -1,5 +1,15 @@
 # Documentation hub
 
+## Radiant authored loot and progression (2026-11-08)
+
+[Gated reward/lifecycle bridge](Future%20Plans/radiant-combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08):
+full authored non-kill-currency loot, discovery/unlocks/first-clear grants now
+connect to real Radiant actions. Retry retains kill/completion/seeds; Continue
+unlocks real stages/Training waves; explicit exit retains banked receipts.
+All284 authored anchors have loot parity checks. Production UI, economy
+calibration and actual DB verification still pending; no live enable/deploy.
+
+
 ## Gated radiant authority dispatch (2026-11-08)
 
 [Current HTTP/entropy integration](Future%20Plans/radiant-combat-system-specification.md#gated-authenticated-authority-dispatch-2026-11-08)

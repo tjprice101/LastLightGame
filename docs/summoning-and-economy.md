@@ -1,5 +1,25 @@
 # Summoning and economy
 
+## Isolated radiant damage-paid reward integration (2026-11-08)
+
+On `overhaul/radiant-foundation` only, the gated Radiant authority now preserves
+authored kill materials, captures, premiums, Conduits/components/chests,
+recruitment, discovery/unlocks and Story first-clear grants. Only the sampled
+base enemy Prismatica is suppressed at kill time because actual damage already
+paid the fixed study budget. Normal production battle rewards, wallet fields,
+costs and chest-opening/summoning transactions retain their existing behavior.
+
+Retries retain kill/currency/completion ledgers and independent loot seeds;
+fresh authorized encounters remain distinct. Frozen run/schema2 plus all
+account changes and request receipt commit together. Raw capture holdings/
+fodder/gear/loadouts remain, with no automatic squad grants or repair.
+[Exact contract, tests and pending economic gates](Future%20Plans/radiant-combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08).
+
+This is **not live or final economy tuning**. Fresh-entry farming throughput,
+final damage budget/access calibration, actual Radiant DB verification and
+production UI integration remain pending. Never infer deployment from local
+parity tests or branch push.
+
 ## Additional farm reduction and upgrade costs (2026-11-07)
 
 Owner confirms a further **35% reduction from current positive material drops**

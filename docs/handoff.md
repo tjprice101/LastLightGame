@@ -1,5 +1,46 @@
 # Current state and handoff
 
+## Radiant authored reward/progression and retry-safe lifecycle (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; prior gated authority `e6abe3b1`.
+No production deployment or enable flag.
+
+**Implemented:** full existing authored kill loot/discovery/unlock/first Story
+clear/Calamity outcomes via shared `awardDefeats` and account validation.
+Suppressed only already-damage-paid base enemy Prismatica; existing bonuses/
+materials/captures/premiums/Conduits/components/chests/recruitment intact.
+Frozen schema2 adds defeat/completion/independent RNG ledgers, retained on
+Retry. Cross-attempt kills cannot falsely clear the next attempt; actual
+late completion still saves its first clear without rerolling kills.
+Response has validated ordered `rewards` separate from combat events.
+HMAC request namespace supplies deterministic captured-copy UUIDs even for
+denied writes. Raw old holdings/fodder/gear/progress/loadouts retained.
+
+Continue uses newly saved stage gates, frozen loadouts and carried reward
+seeds; Training wave increments correctly. Final stage/Calamity Continue denied.
+Explicit `exit` disposes the study, preserves banked account/receipt, allows
+fresh authorized entry; `quit` remains retryable. Schema1 isolated fixtures
+explicitly rejected; no production wallet/legacy run migration.
+[Detailed contract and exact commands](Future%20Plans/radiant-combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08).
+
+**Validation:** all284 anchors have authored non-Prismatica loot/progression
+parity checks, separate from combat benchmarks. Focused tests also cover
+first/replay Story bonuses, Retry completion exploit, favourable recruitment
+fixtures, real action-to-Story/Training transitions, final-boundary synthetic
+victories, denied capture UUID/save parity, exit idempotence and malformed
+reward rejection.693 focused tests/11 files pass after final changes. Full
+suite266 files/9883 tests passed (351.37s), excluding only preserved unpublished
+`radiant-ui`/`ui-design-lab` tests. Final shared bundle regenerated;
+client/authority build/types pass with existing chunk warning. No actual
+Radiant DB execution or hosted proof.
+
+**Next:** actual database/authority integration verification; fresh-entry farming
+and final damage budget/enemy/access tuning; production bearer-only manual
+squad/equipment migration and frozen Settings/run UX;174 reviewed face crops;
+real cinematic six-member Home/Battle Gauges/statuses and finite radiant VFX.
+Final single art brief remains provisional; preserve rejected dirty mockups.
+
+
 ## Gated radiant HTTP authority and entry entropy (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; prior run boundary `f9bdbe75`.

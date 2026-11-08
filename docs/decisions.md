@@ -1,5 +1,26 @@
 # Decision log
 
+## Preserve authored loot under damage-paid radiant combat (2026-11-08)
+
+Under the delegated overhaul, reuse existing kill roll/validation/account
+contracts rather than inventing substitute material/chest/recruitment rewards.
+Suppress only base enemy Prismatica after original range validation because
+the trusted damage ledger already pays it. Preserve Story stage/regional
+bonuses and complete existing acquisition/discovery/unlock behavior.
+[Exact authority integration](Future%20Plans/radiant-combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08).
+
+Study schema2 keeps independent kill/completion/loot RNG ledgers across Retry;
+physical re-kills never repay or prematurely grant victory unlocks. Continue
+uses saved unlocks/frozen loadouts and actual Training wave. Explicit exit
+disposes the study while retaining its immutable receipt and banked account.
+Capture UUIDs derive from stable authenticated request namespace, not new
+gameplay rolls. Captured holdings/fodder and raw existing gear/progress retained.
+
+No approval implied for final currency budget/pressure factors or fresh-entry
+farming throughput. Gate remains disabled/undeployed; actual DB, final economic/
+combat calibration and production UI/manual bearer-only migration still needed.
+
+
 ## Radiant authority integration stays gated (2026-11-08)
 
 Wire the delegated study through the real authenticated handler, but require

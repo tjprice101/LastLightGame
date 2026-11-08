@@ -1,5 +1,32 @@
 # Authoritative game operation
 
+## Radiant authored rewards and run lifecycle (2026-11-08)
+
+The disabled dedicated route now saves full authored kill loot, discovery,
+unlocks/first Story clears and Calamity outcomes with the damage-paid account/
+run/response receipt. Shared legacy roll/validation code is reused, not legacy
+combat. Only base enemy Prismatica is suppressed after range validation;
+actual damage and non-kill bonuses are not paid twice.
+
+Study schema2 stores defeat/completion/RNG ledgers. Retry preserves old loot
+and lowest-HP earnings; Continue carries reward seeds/frozen loadouts, permits
+newly unlocked stages and real next Training wave. Final stages/Calamity end.
+Dedicated `exit` disposes the aggregate but preserves the immutable banked
+response and account; `quit` remains retryable. HMAC user/request entropy also
+provides stable per-enemy capture UUIDs for failed-write retries. Production
+wallets/legacy routes unchanged; no new SQL migration.
+
+`RadiantRunResponse.rewards` is validated separately from combat events.
+Actual HTTP mocked-RPC tests include newly unlocked Story Continue, exit retry
+and fresh entry; denied capture writes reproduce the same UUID/outcome.
+All284 authored anchors have loot/account parity checks—not clear-rate evidence.
+[Detailed bridge and validation commands](../../../docs/Future%20Plans/radiant-combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08).
+
+**Still disabled and undeployed.** Old undeployed schema1 study fixtures fail
+explicitly, never silently erase/rewrite saved production data. Actual DB
+verification, fresh-entry farming/economic tuning and production UI/manual
+bearer-only migration remain gates. Do not enable based only on local tests.
+
 ## Disabled-by-default radiant study dispatch (2026-11-08)
 
 The shared bundle now exports `createGameOperationHandler`; the thin Deno

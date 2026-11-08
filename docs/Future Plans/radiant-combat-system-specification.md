@@ -1,5 +1,78 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Authored kill rewards and progression bridge (2026-11-08)
+
+The gated authority now connects real Radiant actions to the existing authored
+kill loot/account validation, discovery, stage unlocks and first-clear rewards.
+This supersedes the prior **partial-currency-only/no-progression** study
+limitation. It does not enable/deploy the overhaul or settle final balance/UI.
+
+[Reward bridge](../../src/online/radiant-rewards.ts) reconstructs the exact
+authored enemy source, not legacy combat. Shared `awardDefeats` retains material,
+capture, premium, Conduit/component/Master chest and War recruitment rolls.
+`saveDamagePaidAccountRewards` validates original reward ranges and atomically
+updates the account as before, but suppresses only base enemy Prismatica: the
+lowest-HP ledger has already paid it. The fixed-minimum study budget remains
+experimental, not the final published economy calibration. First Story
+stage/regional bonuses, Calamity chests/shards/recruitment and ordinary final
+clear evidence remain real authored grants, never replacement rolled loot.
+
+Frozen study **schema2** adds a saved per-enemy defeat ledger, independent reward
+RNG streams and an actual-victory completion flag. Retry restores physical
+combat but retains paid HP, kill loot, reward seeds and completion. A kill from
+a prior quit attempt cannot prematurely clear the current attempt; a later
+actual victory still awards its not-yet-paid stage clear without rerolling old
+kills. No duplicate currency/material/chest/capture/recruitment on Retry.
+This isolated aggregate has never been enabled/deployed: old schema1 study
+fixtures are explicitly rejected, not silently upgraded or erased. Existing
+production wallets/legacy battle schemas and ordinary reward paths unchanged.
+
+The authenticated HMAC request UUID additionally namespaces captures (stable
+enemy index XOR in its last32 bits, retaining UUID bits); denied commits retry
+the identical capture identity/outcome without extra gameplay RNG. Existing
+non-study callers keep their ordinary UUID generation. Capture holdings/fodder
+and old raw gear/progress/locks/loadouts are retained; only actual reward
+deltas are merged into raw holdings. Captures remain ineligible for study teams.
+
+Responses now contain ordered typed **`rewards: BattleEvent[]`** alongside
+combat `events`; validate both before presentation. Kill reward `amount` is
+only actual additional Prismatica (normally0; Story bonuses remain positive),
+not the obsolete sampled kill payout. Messages name saved loot and explain
+damage-paid currency; recruitment/clear decorations follow successful virtual
+account resolution and the response is only returned after the aggregate CAS.
+No production UI caller/presentation has been connected yet.
+
+Continue uses newly saved unlocks, carries independent reward seeds and frozen
+loadouts, and increments real Training waves instead of restarting wave1.
+Final staged encounters and single-boss Calamity deny Continue. `quit` retains
+the study for Retry; new explicit **`exit`** disposes it while returning the
+banked final receipt. A subsequent authorized fresh entry is allowed; duplicate
+exit requests still return their saved response. Fresh-entry farming throughput
+and final economy access/duration comparisons remain release gates.
+
+Validation:
+```
+npx vitest run src\online\radiant-rewards.test.ts src\online\radiant-run-progression.test.ts src\online\radiant-run.test.ts src\online\radiant-dispatch.test.ts src\online\radiant-transport.test.ts src\game\account.test.ts src\game\story.test.ts src\game\calamity-account.test.ts src\game\gates-of-oblivion.test.ts src\game\machines.test.ts src\game\elemental-war.test.ts --maxWorkers=2 --testTimeout=60000
+npx vitest run --exclude src/radiant-ui.test.ts --exclude src/ui-design-lab.test.ts --maxWorkers=2 --testTimeout=60000
+node tools\bundle_server_game.mjs
+npx tsc --project supabase\functions\game-operation\tsconfig.json
+npm run build
+```
+All284 authored anchors have exact non-Prismatica loot/progression parity tests,
+not combat clear-rate claims. Additional checks cover first/replay Story
+bonuses, partial-kill Retry completion, favourable new/duplicate War and
+Calamity recruitment fixtures, overflow, real action-to-Story unlock/Training
+Continue, deterministic denied-capture CAS, exit and malformed saved rewards.
+Late final-boundary checks use synthetic victory fixtures, not solo clear claims.
+Full-suite/build outcomes are recorded in the handoff. No actual Radiant DB
+execution or hosted release proof; authority remains disabled/undeployed.
+
+Verified693 focused tests across11 files; full suite266 files/9883 tests passed
+(351.37s), excluding only the two preserved unpublished mock-up test files.
+Final focused rerun covers the final message/validation changes. Matching
+server bundle regenerated; client/authority typechecks and build passed with
+the existing large-chunk warning.
+
 ## Gated authenticated authority dispatch (2026-11-08)
 
 The account/run API is now wired into the actual authenticated

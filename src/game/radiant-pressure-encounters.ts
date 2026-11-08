@@ -104,10 +104,8 @@ export function assertRadiantPressureAccess(anchor: RadiantPressureAnchor, accou
     : a.kind === 'war' ? unlockedWarStage(account, a.character) : Infinity;
   if ('stage' in a && a.stage > unlocked) throw new Error('Pressure study stage is locked.');
 }
-/** Uses real spawns but never runs the legacy engine, rewards or account transactions. */
-export function adaptRadiantPressureEncounter(
-  anchor: RadiantPressureAnchor, encounterSeed: number, calibration: RadiantEnemyCalibration,
-): RadiantPressureEnemy[] {
+/** Authored source for both study enemies and authority-only kill reward validation. */
+export function createRadiantAuthoredEncounter(anchor: RadiantPressureAnchor, encounterSeed: number): BattleState {
   const a = anchor.activity, progress = { level: 0, evolution: 1, weaponRank: 0 };
   let live: BattleState;
   switch (a.kind) {
@@ -121,15 +119,17 @@ export function adaptRadiantPressureEncounter(
       const wave = anchor.trainingWave ?? 1;
       if (!Number.isSafeInteger(wave) || wave < 1) throw new Error('Invalid Training wave.');
       live = createBattle(encounterSeed);
+      live.wave = wave;
       for (const unit of live.enemies) {
         unit.level = Math.min(wave, 120);
         unit.stats = enemyCombatStats(unit.level, false);
+        unit.hp = unit.stats.health;
         unit.enemySkills = enemySkills(unit.level, false, unit.enemySkills![0].name, enemyAbilityMultiplier(unit.level));
       }
       break;
     }
   }
-  return live.enemies.map(unit => {
+  for (const unit of live.enemies) {
     if (anchor.identitySelection !== undefined) {
       if (a.kind === 'story') {
         const creature = storyCreature(a.stage, anchor.identitySelection);
@@ -141,6 +141,15 @@ export function adaptRadiantPressureEncounter(
         unit.enemySkills = enemySkills(unit.level!, !!unit.boss, variant.ability, variant.abilityMultiplier);
       } else throw new Error('Invalid pressure identity selection.');
     }
+  }
+  return live;
+}
+/** Uses real spawns but never runs the legacy combat engine or account transactions. */
+export function adaptRadiantPressureEncounter(
+  anchor: RadiantPressureAnchor, encounterSeed: number, calibration: RadiantEnemyCalibration,
+): RadiantPressureEnemy[] {
+  const a = anchor.activity, live = createRadiantAuthoredEncounter(anchor, encounterSeed);
+  return live.enemies.map(unit => {
     const level = unit.level!;
     const category: RadiantEnemyCategory = a.kind === 'calamity' ? 'calamity' : unit.boss ? 'boss' : 'ordinary';
     // Budget is an explicitly fixed minimum, not a second reward roll or chest grant.

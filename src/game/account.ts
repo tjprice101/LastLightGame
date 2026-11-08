@@ -906,7 +906,7 @@ export function setMachineLootFocus(storage: ProfileStorage, rarity: MachineFocu
   account.machineLootFocus = focus;
   return saveAccount(storage, account);
 }
-function isMaterial(id: string): boolean {
+export function isMaterial(id: string): boolean {
   return elementalMaterials.some((material) => material.id === id) || specialtyMaterials.some((material) => material.id === id) ||
     roseMaterials.some((material) => material.id === id) || newEventMaterialDefinition(id) !== undefined || isCalamiticMaterialId(id);
 }
@@ -1004,6 +1004,16 @@ export function rollCalamityShards(tier: CalamityTier, initialSeed?: number): { 
 }
 
 export function saveAccountRewards(storage: ProfileStorage, result: BattleResult, runId: string): Account {
+  return saveResolvedRewards(storage, result, runId, false);
+}
+/** Trusted Radiant authority has already paid enemy Prismatica at damage time.
+ * Validate the authored kill payload unchanged; retain every non-kill bonus. */
+export function saveDamagePaidAccountRewards(storage: ProfileStorage, result: BattleResult, runId: string,
+  captureUuid?: (enemyId: string) => string): Account {
+  return saveResolvedRewards(storage, result, runId, true, captureUuid);
+}
+function saveResolvedRewards(storage: ProfileStorage, result: BattleResult, runId: string, damagePaid: boolean,
+  captureUuid?: (enemyId: string) => string): Account {
   const account = loadAccount(storage);
   if (result.state.calamity !== undefined) {
     const activity = result.state.calamity;
@@ -1105,6 +1115,8 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
   let storyCompletion: BattleResult['events'][number] | null = null;
   let storyClearPay: { fractalis: number; lycalis: number } = storyClearReward(false);
   const story = result.state.story;
+  const baseCurrency = new Map(result.events.filter(event => event.kind === 'reward')
+    .map(event => [event, event.amount]));
   if (story) {
     const encounter = storyEncounter(story.storyStage);
     if (result.state.dungeon || result.state.infusion || result.state.war || result.state.oblivion || result.state.wave !== story.storyStage ||
@@ -1155,7 +1167,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       if (Object.keys(reward.materials).some(id => !allowedMaterials.has(id))) throw new Error('Invalid Gates of Oblivion material source.');
       const receipt = `${runId}:${enemy.id}`;
       if (account.receipts.includes(receipt)) continue;
-      account.fractalis += reward.amount;
+      account.fractalis += damagePaid ? 0 : reward.amount;
       if (!count(account.fractalis)) throw new Error('Prismatica balance exceeds the supported maximum.');
       for (const [id, amount] of Object.entries(reward.materials)) {
         const total = (account.materials[id] ?? 0) + amount;
@@ -1196,7 +1208,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
         if (!drop || !count(amount) || !validDropAmount(drop, amount)) throw new Error('Invalid Story material drop.');
         account.materials[id] = (account.materials[id] ?? 0) + amount;
       }
-      account.fractalis += reward.amount;
+      account.fractalis += damagePaid ? 0 : reward.amount;
       if (encounter.boss && result.state.phase === 'cleared' && (account.storyCompleted ?? 0) < stage) {
         const bonus = storyBossBonus(stage);
         account.fractalis += bonus.fractalis;
@@ -1224,7 +1236,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
           (reward.recruitment !== undefined && (stage !== warStageCount || reward.recruitment !== character))) {
         throw new Error('Invalid Elemental War reward.');
       }
-      account.fractalis += reward.amount;
+      account.fractalis += damagePaid ? 0 : reward.amount;
       account.lycalis += reward.lycalis ?? 0;
       if (reward.recruitment) {
         const outcome = account.characters[character] ? 'duplicate' : 'new';
@@ -1244,7 +1256,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
           !getCreature(enemy.creatureId).stages.includes(result.state.infusion.stage) ||
           enemy.level !== infusionEncounter(result.state.infusion.mode, result.state.infusion.stage, result.state.infusion.schedule ?? 'legacy').level)) throw new Error('Invalid currency-farm reward source.');
     if (!count(reward.amount) || reward.amount < range.minimum || reward.amount > range.maximum) throw new Error('Invalid enemy Prismatica drop.');
-    account.fractalis += reward.amount;
+    account.fractalis += damagePaid ? 0 : reward.amount;
     if (result.state.infusion?.mode === 'machines' && reward.mechanicalComponents === undefined) {
       throw new Error('Awaken the Machines rewards require Broken Mechanical Components.');
     }
@@ -1338,7 +1350,10 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
           enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? 'legacy').level) {
         throw new Error('Invalid captured enemy reward.');
       }
-      const copy = createCreatureCopy(creature.id, stage, reward.capture.level);
+      const copy = createCreatureCopy(creature.id, stage, reward.capture.level, undefined,
+        captureUuid ? `capture:${captureUuid(enemy.id)}` : undefined);
+      if (account.capturedCharacters?.some(existing => existing.instanceId === copy.instanceId))
+        throw new Error('Captured Elemental-Devourer identity already exists.');
       account.capturedCharacters = validateCapturedCharacters([...(account.capturedCharacters ?? []), copy]);
     }
     rewardedEnemies.add(enemy.id);
@@ -1423,6 +1438,21 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     }
   }
   const saved = changed ? saveAccount(storage, account) : account;
+  if (damagePaid) for (const [reward, amount] of baseCurrency) {
+    reward.amount -= amount;
+    const loot = [
+      ...Object.entries(reward.materials ?? {}).map(([id, quantity]) => `${quantity} ${materialName(id)}`),
+      ...Object.entries(reward.conduits ?? {}).map(([id, quantity]) => {
+        if (!isConduitId(id)) throw new Error('Unknown saved Conduit reward.');
+        return `${quantity} ${getConduit(id).name}`;
+      }),
+      ...(reward.lycalis ? [`${reward.lycalis} Null-Prismatica`] : []),
+      ...(reward.mechanicalComponents ? [`${reward.mechanicalComponents} Broken Mechanical Components`] : []),
+      ...(reward.masterChests ? [`${reward.masterChests} Master chest`] : []),
+      ...(reward.capture ? [`captured ${getCreature(reward.capture.creatureId).name} Elemental-Devourer`] : []),
+    ];
+    reward.message = `Enemy defeated${loot.length ? `; saved ${loot.join(', ')}` : ''}. Enemy Prismatica was paid from actual damage.`;
+  }
   for (const { reward, bonus } of storyBonuses) {
     reward.amount += bonus.fractalis;
     reward.lycalis = bonus.lycalis;
