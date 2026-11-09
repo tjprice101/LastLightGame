@@ -1,5 +1,23 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Single-encounter database journal proof (2026-11-09)
+
+`node tools\smoke_radiant_db.mjs --actions=300 --single-encounter` passed
+against the actual hosted SQL RPCs through the local gated handler. After the
+initial hit, a conditional three-member Lv90 fixture repeatedly defended to
+hold one Training encounter open. Across 300 saved actions it reached 1,703
+journal events; a fresh read retained every event, and replaying the last
+action returned the identical response without advancing the revision. The
+run remained playable and its saved exit succeeded.
+
+The largest response was 184,482 bytes and stored aggregate 183,543 bytes.
+Commit latency was p50 315 ms, p95 391 ms and max 723 ms; the large-journal
+read took 153 ms. This deliberately stalled fixture supplements the earlier
+600-action multi-encounter test, not a population or production-traffic
+estimate. It adds no event limit or silent truncation and does not establish
+unbounded capacity. The disposable account and cascading records were removed;
+the hosted flag, function and client were not changed or deployed.
+
 ## Cinematic motion structures (2026-11-09)
 
 The identity pass now includes nine larger vector structures matched to its

@@ -1,18 +1,21 @@
 // Hosted database proof for the default-off Radiant authority. Runs the real
 // radiant-dispatch handler locally against the linked project's SQL RPCs with a
 // disposable identity. Deploys nothing and never enables the hosted authority.
+// --single-encounter uses Defense after the initial hit to grow one journal.
 import { spawnSync } from 'node:child_process';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { isDeepStrictEqual } from 'node:util';
 import assert from 'node:assert/strict';
 import { build } from 'esbuild';
 import { createClient } from '@supabase/supabase-js';
 
 const actionsArg = process.argv.find(arg => arg.startsWith('--actions='));
 const actionBudget = Math.min(Math.max(Number(actionsArg?.slice(10) ?? 240) || 240, 20), 600);
+const singleEncounter = process.argv.includes('--single-encounter');
 
 const work = mkdtempSync(join(tmpdir(), 'radiant-db-'));
 const bundle = join(work, 'radiant-dispatch.mjs');
@@ -150,26 +153,42 @@ try {
   // 5. Bounded long Training run through the actual database.
   run = acted.run; revision = acted.revision;
   let actions = 1, victories = 0, defeats = 0, maxEncounterEvents = run.journal.events.length;
+  const firstEncounter = run.encounter;
+  let lastRequest = null, lastResponse = null;
   let maxStored = 0;
   while (actions < actionBudget) {
     let operation;
-    if (run.state.phase === 'victory') { operation = { kind: 'continue' }; victories++; }
-    else if (run.state.phase === 'defeat') { operation = { kind: 'retry' }; defeats++; }
+    if (run.state.phase === 'victory') {
+      if (singleEncounter) throw new Error('Single-encounter fixture ended in victory before the requested action budget.');
+      operation = { kind: 'continue' }; victories++;
+    }
+    else if (run.state.phase === 'defeat') {
+      if (singleEncounter) throw new Error('Single-encounter fixture ended in defeat before the requested action budget.');
+      operation = { kind: 'retry' }; defeats++;
+    }
     else {
       const bearer = run.state.bearers.find(unit => unit.hp > 0 && !run.state.acted.includes(unit.loadout.id));
-      const target = run.state.enemies.find(unit => unit.hp > 0);
-      if (!bearer || !target) throw new Error('No legal player action in a player phase.');
-      operation = { kind: 'action', action: { type: 'normal', bearerId: bearer.loadout.id, targetId: target.id } };
+      if (!bearer) throw new Error('No legal player action in a player phase.');
+      if (singleEncounter) operation = { kind: 'action', action: { type: 'defense', bearerId: bearer.loadout.id } };
+      else {
+        const target = run.state.enemies.find(unit => unit.hp > 0);
+        if (!target) throw new Error('No living enemy in a player phase.');
+        operation = { kind: 'action', action: { type: 'normal', bearerId: bearer.loadout.id, targetId: target.id } };
+      }
       actions++;
     }
-    const result = await send({ requestId: randomUUID(), expectedRevision: revision, runId: run.id,
-      encounter: run.encounter, operation }, { timed: true });
+    const request = { requestId: randomUUID(), expectedRevision: revision, runId: run.id,
+      encounter: run.encounter, operation };
+    const result = await send(request, { timed: true });
     if (result.status !== 200) throw new Error(`Long run rejected ${JSON.stringify(operation)} in phase ` +
       `${run.state.phase}, round ${run.state.round}, acted ${JSON.stringify(run.state.acted)}: ${result.body?.error}`);
     const body = result.body;
     assert.equal(body.revision, revision + 1);
+    lastRequest = request; lastResponse = body;
     run = body.run; revision = body.revision;
     maxEncounterEvents = Math.max(maxEncounterEvents, run.journal.events.length);
+    if (singleEncounter && actions % 100 === 0)
+      console.log(`Single-encounter progress: ${actions} actions, ${run.journal.events.length} events.`);
     if (actions % 40 === 0) {
       const stored = await storedAggregate();
       if (stored) maxStored = Math.max(maxStored, JSON.stringify(stored.state).length);
@@ -180,9 +199,21 @@ try {
     assert.equal(stored.revision, revision, 'stored revision matches the last acknowledged response');
     maxStored = Math.max(maxStored, JSON.stringify(stored.state).length);
   }
+  if (singleEncounter) {
+    assert.equal(run.encounter, firstEncounter, 'the entire stress run must remain in one encounter');
+    assert.equal(run.state.phase, 'player', 'the stress encounter must still be playable');
+    assert.ok(lastRequest && lastResponse, 'the stress run must contain an action to replay');
+    assert.ok(isDeepStrictEqual(ok(await send(lastRequest)), lastResponse), 'large-journal action replay must remain identical');
+    const started = performance.now();
+    const restored = await read();
+    const readMs = performance.now() - started;
+    assert.equal(restored.revision, revision, 'large-journal replay must not advance the revision');
+    assert.ok(isDeepStrictEqual(restored.run.journal.events, run.journal.events), 'read must preserve the complete journal');
+    summary.longJournalRead = `${run.journal.events.length} events restored without truncation in ${readMs.toFixed(0)} ms; last action replay identical`;
+  }
   const sorted = latencies.map(entry => entry.ms).sort((a, b) => a - b);
   const pct = p => sorted[Math.min(sorted.length - 1, Math.floor(p * sorted.length))].toFixed(0);
-  summary.longRun = `${actions} actions, ${latencies.length} timed commits, ${victories} victories/${defeats} defeats, ` +
+  summary.longRun = `${singleEncounter ? 'single-encounter Defense stress; ' : ''}${actions} actions, ${latencies.length} timed commits, ${victories} victories/${defeats} defeats, ` +
     `encounter ${run.encounter}, max encounter journal ${maxEncounterEvents} events`;
   summary.latency = `p50 ${pct(.5)} ms, p95 ${pct(.95)} ms, max ${sorted.at(-1).toFixed(0)} ms (local handler + hosted RPCs)`;
   summary.payload = `max response ${Math.max(...latencies.map(entry => entry.bytes))} bytes` +

@@ -1,5 +1,30 @@
 # Current state and handoff
 
+## Single-encounter database journal proof (2026-11-09)
+
+**Branch and release:** `overhaul/radiant-foundation`; the authority remains
+disabled and deployment stays on hold for the existing review gates.
+
+**Implemented:** [smoke_radiant_db.mjs](../tools/smoke_radiant_db.mjs) now
+supports a bounded `--single-encounter` Defense fixture. It verifies exact
+large-journal replay, unchanged revision and full event restoration, without
+changing the game's persistence or truncating data.
+
+**Verified:** `node tools\smoke_radiant_db.mjs --actions=300
+--single-encounter` passed against the actual hosted SQL RPCs via the local
+handler. One deliberately stalled Training encounter retained 1,703 events
+across 300 actions; its final action replay and subsequent read matched exactly,
+and saved exit succeeded. The largest response was 184,482 bytes and largest
+stored aggregate 183,543 bytes; commits measured p50 315 ms, p95 391 ms and
+max 723 ms, with a 153 ms final read. The disposable account and cascading
+records were removed. This is bounded fixture evidence, not deployed-function,
+player-device or production-traffic validation, nor proof of unlimited growth.
+
+**Remaining:** owner in-game review, final bespoke cinema, physical desktop
+GPU/cadence and economy acceptance, deployed authenticated-route verification,
+explicit deployment approval, matching authority/client deployment and hosted
+verification. Preserve unrelated dirty documentation and rejected prototypes.
+
 ## Radiant cinematic motion structures (2026-11-09)
 
 **Branch and release:** `overhaul/radiant-foundation`; the authority remains
