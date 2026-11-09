@@ -1,5 +1,46 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Identity motion and offscreen windups (2026-11-09)
+
+The Radiant presentation now gives each released bearer a distinct ordered
+sequence of three procedural motifs, selected from 37 vector shapes and nine
+bounded motion families. Glowing introduces the first motif, Lustrous retains
+it and adds the second, and Eternal retains both and adds the third. Their
+colors and individual signature glyph remain tied to the saved source.
+Status cues stay local and do not receive the Flare satellites. These are
+finite presentation effects, not new source images or gameplay RNG.
+
+Radiant-only palettes now use deep-blue and vivid-purple energy for all six
+Moon bearers; cyan/amber, orange/violet, orange/gold and violet/gold for
+Neralis, Varkhel, Seravelle and Velmira respectively; crimson/white for the
+three Calamitic bearers; and silver-lilac for Solenne. Legacy VFX profiles and
+installed art are not mutated.
+
+When an accepted action must scroll an offscreen field into view, its windup
+starts after the resulting browser scroll event rather than being canceled by
+that event. The wait is presentation-only and occurs after persistence;
+another eligible squad member can still act, and Skip and Reduce motion remain
+available. Player-initiated scrolling still cancels effects using stale anchors.
+
+Headless Edge checks sampled the six Moon, four reclaimed-War, three Calamitic,
+Solenne and Infernis charge colors, four bearers' three tier progressions, and
+the saved enemy-impact phase. All 37 motif paths rasterized with nonzero pixels.
+After the motion refinement, five representative identities were sampled over
+time at 1366x768. At 1920x1080 and 1366x768, the automatic scroll preserved
+the saved windup, active Skip cleared the canvas, and a second portrait attack
+was accepted during the first windup; Reduce motion left the canvas clear.
+There were no browser page errors. These fixture checks do not establish
+physical desktop GPU/cadence performance or owner visual approval.
+
+`npx vitest run radiant --exclude src\radiant-ui.test.ts --maxWorkers=2
+--testTimeout=60000` passes 1,775 tests in 22 files. `npm run build` passes
+with the existing Vite chunk-size advisory.
+
+The underlying shared and seven fallback archetypes are still reused. The
+new identity layer is not a claim that final bespoke cinematic treatment
+or the owner's in-game review is complete. The authority remains disabled,
+and deployment and hosted-route verification remain gated.
+
 ## Shared enemy Gauge drops (2026-11-09)
 
 The owner clarified that the attacker receives the full dropped Gauge value and

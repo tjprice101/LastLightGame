@@ -304,16 +304,23 @@ describe('saved six-member Radiant battle surface', () => {
     Object.defineProperties(scroller, { scrollHeight: { value: 1600 }, clientHeight: { value: 800 } });
     document.body.append(scroller);
     scroller.scrollTop = 760;
+    let scrollDelivered = false;
+    const onScroll = () => { scrollDelivered = true; };
+    window.addEventListener('scroll', onScroll, { capture: true, once: true });
     let field!: HTMLElement;
     const effects = { windup: vi.fn(async () => {
       expect(field.getBoundingClientRect().top).toBe(100);
+      expect(scrollDelivered).toBe(true);
     }), impact: vi.fn(async () => {}), cancel: vi.fn() };
     const { view, host } = fixture(6, 6, effects); await view.finishEntrance();
     scroller.append(host);
     field = host.querySelector<HTMLElement>('.radiant-field')!;
     let fieldTop = -160;
     vi.spyOn(field, 'getBoundingClientRect').mockImplementation(() => new DOMRect(0, fieldTop, 400, 400));
-    const scrollIntoView = vi.fn(() => { fieldTop = 100; scroller.scrollTop = 420; });
+    const scrollIntoView = vi.fn(() => {
+      fieldTop = 100; scroller.scrollTop = 420;
+      window.requestAnimationFrame(() => window.dispatchEvent(new Event('scroll')));
+    });
     Object.defineProperty(field, 'scrollIntoView', { configurable: true, value: scrollIntoView });
 
     await view.act('normal');
@@ -321,6 +328,36 @@ describe('saved six-member Radiant battle surface', () => {
     expect(scrollIntoView).toHaveBeenCalledWith({ block: 'center', inline: 'nearest', behavior: 'instant' });
     expect(effects.windup).toHaveBeenCalledTimes(1);
     expect(scroller.scrollTop).toBe(760);
+    window.removeEventListener('scroll', onScroll, true);
+  });
+  it('keeps saved controls available and honors Skip while an automatic reveal waits for its scroll event', async () => {
+    const callbacks: FrameRequestCallback[] = [];
+    const effects = { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}), cancel: vi.fn() };
+    const { view, host, session, transport } = fixture(6, 6, effects); await view.finishEntrance();
+    const scroller = document.createElement('div');
+    scroller.style.overflowY = 'auto';
+    Object.defineProperties(scroller, { scrollHeight: { value: 1600 }, clientHeight: { value: 800 } });
+    document.body.append(scroller); scroller.append(host); scroller.scrollTop = 760;
+    const field = host.querySelector<HTMLElement>('.radiant-field')!;
+    let fieldTop = -160;
+    vi.spyOn(field, 'getBoundingClientRect').mockImplementation(() => new DOMRect(0, fieldTop, 400, 400));
+    Object.defineProperty(field, 'scrollIntoView', { configurable: true, value: () => { fieldTop = 100; scroller.scrollTop = 420; } });
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => { callbacks.push(callback); return callbacks.length; });
+
+    const first = view.act('normal');
+    await vi.waitFor(() => expect(callbacks).toHaveLength(1));
+    expect(session.view().saved.revision).toBe(2);
+    expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(false);
+    const second = view.act('normal');
+    await vi.waitFor(() => expect(session.view().saved.revision).toBe(3));
+    expect(transport.execute).toHaveBeenCalledTimes(2);
+    view.skip();
+    callbacks[0](performance.now());
+    await Promise.all([first, second]);
+    expect(effects.windup).not.toHaveBeenCalled();
+    expect(effects.impact).not.toHaveBeenCalled();
+    expect(session.view().presentation).toBeNull();
+    expect(session.view().saved.run!.state.acted).toEqual(['ember', 'tide']);
   });
   it('keeps the original viewport under Reduce motion when the battlefield is offscreen', async () => {
     const effects = { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}), cancel: vi.fn() };

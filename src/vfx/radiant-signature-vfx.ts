@@ -2,6 +2,7 @@ import { characterChoreography, characterSignaturePath } from '../presentation/b
 import type { RadiantBearerId } from '../content/radiant-combat';
 import type { AbilityTier, BaseVFXSystem, ColorStop, VFXContext } from './types';
 import { smoothstep } from './vfx-motion';
+import { radiantMotifMotions, radiantMotifPaths, radiantMotifPlacement, radiantMotifSequences } from './radiant-cinematic-motifs';
 
 export interface RadiantSignatureFrame {
   x: number;
@@ -11,6 +12,7 @@ export interface RadiantSignatureFrame {
   tier: AbilityTier;
   phase: 'charge' | 'impact' | 'status';
   color: ColorStop;
+  secondaryColor: ColorStop;
 }
 export const radiantSignatureLayers: Record<AbilityTier, number> = { light: 0, skill1: 1, skill2: 2, ultimate: 3 };
 
@@ -31,11 +33,13 @@ export function radiantStatusCueSystem(): BaseVFXSystem {
  * particle state. Glyphs are painted into emission, not supplied artwork. */
 export class RadiantSignatureVFX {
   private readonly path: Path2D;
+  private readonly motifs: readonly Path2D[];
   constructor(readonly bearer: RadiantBearerId) {
     this.path = new Path2D(characterSignaturePath(bearer));
+    this.motifs = radiantMotifSequences[bearer].map(motif => new Path2D(radiantMotifPaths[motif]));
   }
   render(context: CanvasRenderingContext2D, frame: RadiantSignatureFrame): void {
-    const { x, y, radius, progress: p, tier, phase, color } = frame;
+    const { x, y, radius, progress: p, tier, phase, color, secondaryColor } = frame;
     if (p <= 0 || p >= 1) return;
     const layers = phase === 'status' ? 0 : radiantSignatureLayers[tier];
     const reveal = smoothstep(p / .3);
@@ -68,7 +72,9 @@ export class RadiantSignatureVFX {
       for (let layer = 0; layer < layers; layer++) {
         const ring = 57 + layer * 12;
         const orbit = (layer % 2 ? -1 : 1) * p * .8;
-        context.strokeStyle = `rgba(${color.r},${color.g},${color.b},${.6 - layer * .1})`;
+        const accent = layer % 2 === 0 ? secondaryColor : color;
+        const opacity = layer % 2 === 0 ? .4 : .5;
+        context.strokeStyle = `rgba(${accent.r},${accent.g},${accent.b},${opacity})`;
         context.lineWidth = 1.5;
         const segments = 3 + layer;
         for (let segment = 0; segment < segments; segment++) {
@@ -77,6 +83,26 @@ export class RadiantSignatureVFX {
           const px = Math.cos(angle) * ring, py = Math.sin(angle) * ring;
           context.beginPath(); context.moveTo(px, py - 3); context.lineTo(px + 3, py);
           context.lineTo(px, py + 3); context.lineTo(px - 3, py); context.closePath(); context.stroke();
+        }
+        const count = 2 + layer;
+        for (let index = 0; index < count; index++) {
+          const [motifX, motifY, motifRotation] = radiantMotifPlacement(radiantMotifMotions[this.bearer],
+            index, count, layer, ring, phase === 'charge' ? p : smoothstep(p), phase === 'charge');
+          context.save();
+          try {
+            context.translate(motifX, motifY);
+            context.rotate(motifRotation);
+            context.scale(.3, .3);
+            context.translate(-50, -50);
+            context.strokeStyle = `rgba(${accent.r},${accent.g},${accent.b},.8)`;
+            context.lineWidth = 6;
+            context.stroke(this.motifs[layer]);
+            context.strokeStyle = 'rgba(255,255,255,.7)';
+            context.lineWidth = 2;
+            context.stroke(this.motifs[layer]);
+          } finally {
+            context.restore();
+          }
         }
       }
     } finally {
@@ -100,5 +126,6 @@ export function withRadiantSignature(system: BaseVFXSystem, signature: RadiantSi
 }
 function signatureFrame(context: VFXContext, phase: 'impact' | 'status'): RadiantSignatureFrame {
   return { x: context.targetX, y: context.targetY, radius: 70 * context.scale,
-    progress: context.progress, tier: context.definition.tier, phase, color: context.palette.mid };
+    progress: context.progress, tier: context.definition.tier, phase,
+    color: context.palette.mid, secondaryColor: context.palette.spectral };
 }

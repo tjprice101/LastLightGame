@@ -1,5 +1,41 @@
 # Current state and handoff
 
+## Radiant identity motion and scroll synchronization (2026-11-09)
+
+**Branch and release:** `overhaul/radiant-foundation`; the authority remains
+disabled and deployment stays on hold for the existing review gates.
+
+**Implemented:** each of the 32 released bearers has a distinct ordered
+three-motif sequence, using 37 procedural paths and nine bounded motion
+families. The three Flare tiers progressively retain and add motifs; local
+status cues remain small. Radiant-only palette corrections preserve all six
+Moon blue/purple identities, the four reclaimed-War palettes, Calamitic
+crimson/white and Solenne's silver-lilac. Legacy profiles and source art are
+unchanged. Shared/fallback base archetypes remain, so this is not a claim of
+finished bespoke cinematic art.
+
+Fixed a real desktop regression in which the browser's programmatic scroll
+to an offscreen battlefield canceled the freshly saved windup. The visual
+begins after that scroll's animation frame; saved action controls remain
+immediate, and Skip, Reduce motion and user-scroll cancellation are retained.
+
+**Verified:** `npx vitest run radiant --exclude src\radiant-ui.test.ts
+--maxWorkers=2 --testTimeout=60000` passes 1,775 tests across 22 files.
+`npm run build` passes with the existing Vite chunk-size advisory. Headless
+Edge rasterized all 37 motifs and sampled charge colors for 15
+representative bearers, all three tiers for four bearers, a saved enemy impact
+and five final motion profiles over time. At 1920x1080 and 1366x768, an
+offscreen windup remained visible, active Skip cleared the canvas, and a
+second real portrait attack was accepted during the first windup. Reduce
+motion produced no animated canvas pixels; no browser page errors appeared.
+These checks use in-memory fixtures, not a physical GPU or hosted authority.
+
+**Remaining:** final bespoke cinematic and owner in-game review, physical
+desktop GPU/cadence and economy acceptance, deployed authenticated-route
+verification, explicit deployment approval, matching authority/client
+deployment and hosted verification. Preserve unrelated dirty documentation and
+rejected local prototypes.
+
 ## Saved shared enemy Gauge drops (2026-11-09)
 
 **Branch and release:** `overhaul/radiant-foundation`; the Radiant authority

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { RadiantCanvasEffects } from './radiant-battle-effects';
+import { radiantVisualDefinition, RadiantCanvasEffects } from './radiant-battle-effects';
 import { releasedRadiantIds, radiantFlares, type RadiantLoadout } from '../content/radiant-combat';
 import { createRadiantCombat, applyRadiantCombatAction } from '../game/radiant-combat';
 import { radiantImpactFrames } from '../presentation/radiant-impact';
@@ -10,6 +10,7 @@ import { VFXRenderer } from './vfx-renderer';
 import { createVFXSystem, CHARACTER_PROFILES } from './vfx-registry';
 import type { VFXContext } from './types';
 import { RadiantSignatureVFX, radiantSignatureLayers, withRadiantSignature, radiantStatusCueSystem } from './radiant-signature-vfx';
+import { radiantMotifMotions, radiantMotifPaths, radiantMotifPlacement, radiantMotifSequences } from './radiant-cinematic-motifs';
 import { characterSignaturePath } from '../presentation/battle-effects';
 
 function context(): CanvasRenderingContext2D {
@@ -53,17 +54,69 @@ beforeEach(() => {
 });
 afterEach(() => { active.splice(0).forEach(effect => effect.dispose()); vi.restoreAllMocks(); vi.unstubAllGlobals(); document.body.replaceChildren(); delete document.documentElement.dataset.motion; });
 describe('saved Radiant emission/bloom pilot', () => {
+  it.each([
+    ['maerion', [53, 103, 217], [166, 78, 241]], ['caevren', [49, 91, 209], [151, 75, 250]],
+    ['vespera', [66, 107, 224], [189, 88, 239]], ['ilyss', [49, 95, 224], [195, 75, 233]],
+    ['asteriel', [40, 95, 215], [171, 77, 239]], ['serapha', [71, 116, 223], [181, 104, 245]],
+    ['neralis', [20, 184, 228], [231, 170, 73]], ['varkhel', [241, 103, 36], [161, 77, 216]],
+    ['seravelle', [241, 103, 42], [255, 206, 88]], ['velmira', [176, 67, 215], [233, 164, 60]],
+    ['solenne', [185, 164, 216], [238, 241, 255]],
+    ['ozriel', [221, 57, 80], [255, 240, 242]], ['ilvaris', [216, 55, 85], [255, 240, 242]],
+    ['kaelith', [199, 42, 77], [255, 240, 242]],
+  ] as const)('uses the authored Radiant primary and accent for %s on every tier', (id, primary, secondary) => {
+    for (const tier of ['light', 'skill1', 'skill2', 'ultimate'] as const) {
+      const palette = radiantVisualDefinition(id, tier).palette;
+      expect([palette.mid.r, palette.mid.g, palette.mid.b]).toEqual(primary);
+      expect([palette.spectral.r, palette.spectral.g, palette.spectral.b]).toEqual(secondary);
+      expect(palette.id).toBe(id);
+    }
+  });
+  it('does not mutate the legacy Moon palette while deriving the Radiant palette', () => {
+    const original = structuredClone(CHARACTER_PROFILES.maerion.abilities.skill1.palette);
+    radiantVisualDefinition('maerion', 'skill1');
+    expect(CHARACTER_PROFILES.maerion.abilities.skill1.palette).toEqual(original);
+  });
+  it('gives each released bearer a distinct progressive three-motif sequence', () => {
+    expect(Object.keys(radiantMotifSequences).sort()).toEqual([...releasedRadiantIds].sort());
+    expect(Object.keys(radiantMotifMotions).sort()).toEqual([...releasedRadiantIds].sort());
+    const sequences = releasedRadiantIds.map(id => radiantMotifSequences[id].join('/'));
+    expect(new Set(sequences).size).toBe(32);
+    expect(new Set(Object.values(radiantMotifMotions)).size).toBe(9);
+    for (const id of releasedRadiantIds) {
+      expect(new Set(radiantMotifSequences[id]).size).toBe(3);
+      for (const motif of radiantMotifSequences[id]) expect(radiantMotifPaths[motif]).toMatch(/^M/);
+    }
+  });
+  it('keeps every authored motif motion finite, bounded and moving in charge and impact', () => {
+    for (const motion of new Set(Object.values(radiantMotifMotions))) {
+      for (const charging of [true, false]) {
+        for (let layer = 0; layer < 3; layer++) {
+          const count = 2 + layer;
+          for (let index = 0; index < count; index++) {
+            const samples = [.1, .5, .9].map(progress =>
+              radiantMotifPlacement(motion, index, count, layer, 81, progress, charging));
+            expect(new Set(samples.map(sample => sample.join(','))).size).toBe(3);
+            for (const [x, y, rotation] of samples) {
+              expect([x, y, rotation].every(Number.isFinite)).toBe(true);
+              expect(Math.abs(x)).toBeLessThan(122);
+              expect(Math.abs(y)).toBeLessThan(122);
+            }
+          }
+        }
+      }
+    }
+  });
   it('uses all32 distinct authored identity paths without constructing one per animation frame', () => {
     const paths = new Set<string>();
     for (const id of releasedRadiantIds) {
       const output = context(), signature = new RadiantSignatureVFX(id);
       paths.add(characterSignaturePath(id));
       signature.render(output, { x: 30, y: 40, radius: 20, progress: .4, tier: 'skill1', phase: 'charge',
-        color: { r: 100, g: 200, b: 240, a: 1 } });
+        color: { r: 100, g: 200, b: 240, a: 1 }, secondaryColor: { r: 180, g: 80, b: 240, a: 1 } });
       const path = vi.mocked(output.stroke).mock.calls[0][0];
       for (let frame = 0; frame < 10; frame++)
         signature.render(output, { x: 30, y: 40, radius: 20, progress: .4, tier: 'skill1', phase: 'charge',
-          color: { r: 100, g: 200, b: 240, a: 1 } });
+          color: { r: 100, g: 200, b: 240, a: 1 }, secondaryColor: { r: 180, g: 80, b: 240, a: 1 } });
       expect(vi.mocked(output.stroke).mock.calls.filter(call => call[0] === path)).toHaveLength(22);
       expect(output.translate).toHaveBeenCalledWith(-50, -50);
     }
@@ -72,23 +125,43 @@ describe('saved Radiant emission/bloom pilot', () => {
   it('increases exact bounded tier architecture and gives statuses no celebration satellites', () => {
     expect(radiantSignatureLayers).toEqual({ light: 0, skill1: 1, skill2: 2, ultimate: 3 });
     const signature = new RadiantSignatureVFX('tide');
-    for (const [tier, arcs] of [['light', 0], ['skill1', 3], ['skill2', 7], ['ultimate', 12]] as const) {
+    for (const [tier, arcs, motifs, paths] of
+      [['light', 0, 0, 1], ['skill1', 3, 2, 2], ['skill2', 7, 5, 3], ['ultimate', 12, 9, 4]] as const) {
       const output = context();
       signature.render(output, { x: 0, y: 0, radius: 25, progress: .4, tier, phase: 'impact',
-        color: { r: 100, g: 200, b: 240, a: 1 } });
+        color: { r: 100, g: 200, b: 240, a: 1 }, secondaryColor: { r: 180, g: 80, b: 240, a: 1 } });
       expect(output.arc).toHaveBeenCalledTimes(arcs);
       expect(vi.mocked(output.arc).mock.calls.every(call => call[2] <= 81)).toBe(true);
-      expect(output.save).toHaveBeenCalledTimes(2); expect(output.restore).toHaveBeenCalledTimes(2);
+      const pathStrokes = vi.mocked(output.stroke).mock.calls.filter(call => call[0] !== undefined);
+      expect(pathStrokes).toHaveLength(2 + motifs * 2);
+      expect(new Set(pathStrokes.map(call => call[0])).size).toBe(paths);
+      expect(output.save).toHaveBeenCalledTimes(2 + motifs); expect(output.restore).toHaveBeenCalledTimes(2 + motifs);
     }
     const output = context();
     signature.render(output, { x: 0, y: 0, radius: 25, progress: .4, tier: 'ultimate', phase: 'status',
-      color: { r: 100, g: 200, b: 240, a: 1 } });
+      color: { r: 100, g: 200, b: 240, a: 1 }, secondaryColor: { r: 180, g: 80, b: 240, a: 1 } });
     expect(output.arc).not.toHaveBeenCalled(); expect(output.globalAlpha).toBeCloseTo(.45);
+  });
+  it('paints the secondary identity color on progressive motifs without changing status cues', () => {
+    const signature = new RadiantSignatureVFX('maerion'), output = context();
+    const colors: string[] = [];
+    vi.mocked(output.stroke).mockImplementation(() => { colors.push(String(output.strokeStyle)); });
+    const frame = { x: 0, y: 0, radius: 25, progress: .4,
+      color: { r: 40, g: 90, b: 210, a: 1 }, secondaryColor: { r: 180, g: 80, b: 240, a: 1 } };
+    for (const tier of ['skill1', 'skill2', 'ultimate'] as const) {
+      colors.length = 0;
+      signature.render(output, { ...frame, tier, phase: 'impact' });
+      expect(colors.filter(color => color.endsWith(',.8)')).slice(0, 2))
+        .toEqual(['rgba(180,80,240,.8)', 'rgba(180,80,240,.8)']);
+    }
+    colors.length = 0;
+    signature.render(output, { ...frame, tier: 'ultimate', phase: 'status' });
+    expect(colors).not.toContain('rgba(180,80,240,.8)');
   });
   it('reveals then fades to zero, preserves the base system and omits background rendering', () => {
     const signature = new RadiantSignatureVFX('ember'), output = context();
     const frame = { x: 0, y: 0, radius: 25, tier: 'ultimate' as const, phase: 'impact' as const,
-      color: { r: 255, g: 80, b: 20, a: 1 } };
+      color: { r: 255, g: 80, b: 20, a: 1 }, secondaryColor: { r: 255, g: 200, b: 80, a: 1 } };
     signature.render(output, { ...frame, progress: 0 });
     signature.render(output, { ...frame, progress: 1 });
     expect(output.stroke).not.toHaveBeenCalled();
@@ -201,6 +274,25 @@ describe('saved Radiant emission/bloom pilot', () => {
     expect(owners.every(owner => owner === 'seravelle')).toBe(true);
     expect(render.mock.calls.every(call => call[1].radius <= 27)).toBe(true);
     expect(callbacks.size).toBe(0);
+  });
+  it('carries Maerion\'s blue and purple identity through charge and saved healing impacts', async () => {
+    const { effects, state } = fixture('maerion');
+    state.gauge.members[0].charge = state.gauge.members[0].baseCost;
+    state.bearers[0].hp = Math.round(state.bearers[0].hp / 2);
+    const action: RadiantPlayerAction = { type: 'flare', bearerId: 'maerion' };
+    const render = vi.spyOn(RadiantSignatureVFX.prototype, 'render');
+    const windup = effects.windup(action, state); finish(); await windup;
+    const result = applyRadiantCombatAction(state, action);
+    for (const frame of radiantImpactFrames(state, result.state, result.events)) {
+      const pending = effects.impact(frame); finish(); await pending;
+    }
+    const samples = render.mock.calls.map(call => call[1]);
+    expect(samples.some(sample => sample.phase === 'charge')).toBe(true);
+    expect(samples.some(sample => sample.phase === 'impact')).toBe(true);
+    for (const sample of samples) {
+      expect([sample.color.r, sample.color.g, sample.color.b]).toEqual([53, 103, 217]);
+      expect([sample.secondaryColor.r, sample.secondaryColor.g, sample.secondaryColor.b]).toEqual([166, 78, 241]);
+    }
   });
   it('keeps native passive statuses local without replaying the acting bearer signature', async () => {
     const { effects, state } = fixture('ilvaris');

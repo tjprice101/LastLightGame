@@ -528,6 +528,10 @@ export class RadiantBattleView {
     this.presenting = true; this.skipped = false; this.activeReceipt = response; this.render();
     try {
       const frames = radiantImpactFrames(before, response.run.state, response.events);
+      if (restoreScroll) {
+        await new Promise<void>(resolve => window.requestAnimationFrame(() => resolve()));
+        if (this.disposed || this.skipped || generation !== this.presentationGeneration) return;
+      }
       if (!reducedMotion()) {
         const member = before.bearers.find(unit => unit.loadout.id === action.bearerId)!;
         const motion = action.type === 'defense' ? 'guard' : characterChoreography[member.loadout.starter].motion;

@@ -1,7 +1,7 @@
 import { CHARACTER_PROFILES, createVFXSystem, signaturePalette } from './vfx-registry';
 import { VFXRenderer } from './vfx-renderer';
 import { advanceVFX } from './vfx-motion';
-import type { AbilityTier, AbilityVFXDefinition, VFXContext, BaseVFXSystem, VFXArchetype } from './types';
+import type { AbilityTier, AbilityVFXDefinition, VFXContext, BaseVFXSystem, VFXArchetype, VFXPalette } from './types';
 import type { RadiantBattleEffects } from '../presentation/radiant-battle-view';
 import type { RadiantImpactFrame } from '../presentation/radiant-impact';
 import type { RadiantPlayerAction } from '../online/radiant-run';
@@ -18,13 +18,33 @@ const pilotArchetypes: Partial<Record<RadiantBearerId, readonly [VFXArchetype, V
   neralis: ['volley', 'mandala'], varkhel: ['slam', 'vortex'], seravelle: ['volley', 'mandala'],
   velmira: ['slash', 'slash'], ozriel: ['slam', 'vortex'], ilvaris: ['beam', 'mandala'], kaelith: ['slash', 'beam'],
 };
-function visualDefinition(id: RadiantBearerId, tier: AbilityTier): AbilityVFXDefinition {
+const radiantColors: Partial<Record<RadiantBearerId, readonly [string, string]>> = {
+  maerion: ['#3567d9', '#a64ef1'], caevren: ['#315bd1', '#974bfa'],
+  vespera: ['#426be0', '#bd58ef'], ilyss: ['#315fe0', '#c34be9'],
+  asteriel: ['#285fd7', '#ab4def'], serapha: ['#4774df', '#b568f5'],
+  neralis: ['#14b8e4', '#e7aa49'], varkhel: ['#f16724', '#a14dd8'],
+  seravelle: ['#f1672a', '#ffce58'], velmira: ['#b043d7', '#e9a43c'],
+  solenne: ['#b9a4d8', '#eef1ff'],
+  ozriel: ['#dd3950', '#fff0f2'], ilvaris: ['#d83755', '#fff0f2'], kaelith: ['#c72a4d', '#fff0f2'],
+};
+function radiantPalette(id: RadiantBearerId, original: VFXPalette): VFXPalette {
+  const colors = radiantColors[id];
+  if (!colors) return original;
+  const primary = signaturePalette(id, original.name, colors[0]);
+  const secondary = signaturePalette(id, original.name, colors[1]);
+  return { ...primary, name: original.name, spectral: { ...secondary.mid, a: .65 } };
+}
+export function radiantVisualDefinition(id: RadiantBearerId, tier: AbilityTier): AbilityVFXDefinition {
   const existing = CHARACTER_PROFILES[id];
-  if (existing) return existing.abilities[tier];
+  if (existing) {
+    const definition = existing.abilities[tier];
+    return { ...definition, palette: radiantPalette(id, definition.palette) };
+  }
   const authored = pilotArchetypes[id], character = starters.find(character => character.id === id);
   if (!authored || !character) throw new Error(`Radiant visual profile is missing for ${id}.`);
   return { name: character.name, tier, archetype: authored[tier === 'light' ? 0 : 1],
-    description: 'Radiant signature choreography pilot.', palette: signaturePalette(id, character.name, character.color),
+    description: 'Radiant signature choreography pilot.',
+    palette: radiantPalette(id, signaturePalette(id, character.name, character.color)),
     duration: 1, chargeDuration: .05, impactDuration: .5 };
 }
 /** Saved-impact pilot: source-aligned emission and bloom, never portrait bloom
@@ -106,7 +126,7 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
     if (!bearer) throw new Error('Radiant visual caster is missing.');
     const flare = action.type === 'flare' ? readyFlare(state.gauge, action.bearerId) : null;
     const tier: AbilityTier = flare === 'eternal' ? 'ultimate' : flare === 'lustrous' ? 'skill2' : flare === 'glowing' ? 'skill1' : 'light';
-    const original = visualDefinition(bearer.loadout.starter, tier);
+    const original = radiantVisualDefinition(bearer.loadout.starter, tier);
     this.ability = { ...original, name: flare ? radiantFlares[bearer.loadout.starter][flare].name : action.type === 'defense' ? 'Defense' : 'Normal Attack' };
     const size = this.size(), signature = this.signature(bearer.loadout.starter);
     const rect = this.anchor(action.bearerId);
@@ -114,7 +134,8 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
     const duration = flare === 'eternal' ? .6 : flare ? .4 : .2;
     const color = original.palette.mid;
     await this.play(duration, time => {
-      const p = time / duration, radius = Math.min(70, Math.min(rect.width, rect.height) * .4) * (.4 + p * .6);
+      const p = time / duration, extent = Math.min(rect.width, rect.height);
+      const radius = Math.min(flare ? 110 : 70, extent * (flare ? .45 : .4)) * (.4 + p * .6);
       const glow = this.context.createRadialGradient(x, y, 0, x, y, radius * 2);
       glow.addColorStop(0, `rgba(255,255,255,${.3 * Math.sin(p * Math.PI)})`);
       glow.addColorStop(.4, `rgba(${color.r},${color.g},${color.b},${.25 * Math.sin(p * Math.PI)})`);
@@ -125,8 +146,8 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
       this.context.beginPath(); this.context.arc(x, y, radius, p * 3, p * 3 + Math.PI * 1.6); this.context.stroke();
       const emission = this.renderer.begin(size.width, size.height, size.dpr);
       signature.render(emission, { x, y: rect.top + rect.height * .15,
-        radius: Math.min(32, Math.min(rect.width, rect.height) * .2), progress: p,
-        tier, phase: 'charge', color });
+        radius: Math.min(flare ? 52 : 32, extent * (flare ? .25 : .2)), progress: p,
+        tier, phase: 'charge', color, secondaryColor: original.palette.spectral });
       this.renderer.composite(size.width, size.height, { enabled: true, intensity: .7, radius: 12 });
     });
   }
@@ -154,7 +175,7 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
       const ownerId = packet.source.kind !== 'enemy' ? packet.source.bearerId : null;
       const source = ownerId ? this.state.bearers.find(unit => unit.loadout.id === ownerId) : null;
       if (ownerId && !source) throw new Error('Radiant visual packet owner is missing from the frozen squad.');
-      const palette = source ? visualDefinition(source.loadout.starter, 'light').palette : {
+      const palette = source ? radiantVisualDefinition(source.loadout.starter, 'light').palette : {
         ...this.ability.palette,
         id: 'radiant-neutral', name: 'Neutral enemy packet cue',
         core: { r: 255, g: 255, b: 255, a: 1 },
