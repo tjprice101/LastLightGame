@@ -20,6 +20,7 @@ import { radiantBattleReference, radiantLeaderReference, radiantFlareNeedsTarget
 import { bindRadiantPortraitGestures } from './radiant-portrait-gesture';
 import { characterChoreography } from './battle-effects';
 import { formatStat } from '../content/combat';
+import { lootArt, lootItems } from './battle-loot';
 
 export interface RadiantBattleEffects {
   windup(action: RadiantPlayerAction, state: RadiantCombatState): Promise<void>;
@@ -29,6 +30,22 @@ export interface RadiantBattleEffects {
   dispose?(): void;
 }
 const tierNames = { glowing: 'Glowing Flare', lustrous: 'Lustrous Flare', eternal: 'Eternal Radiant Flare' };
+function centre(element: Element, random?: () => number): { x: number; y: number } {
+  const box = element.getBoundingClientRect();
+  const jitter = (size: number) => random ? (random() - .5) * size * .35 : 0;
+  return { x: box.left + box.width / 2 + jitter(box.width), y: box.top + box.height / 2 + jitter(box.height) };
+}
+/** Deterministic presentation scatter keyed by the saved revision; never gameplay RNG. */
+function presentationRandom(key: string): () => number {
+  let seed = 2166136261;
+  for (let index = 0; index < key.length; index++) seed = Math.imul(seed ^ key.charCodeAt(index), 16777619);
+  return () => {
+    seed = (seed + 0x6D2B79F5) | 0;
+    let value = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    value = (value + Math.imul(value ^ (value >>> 7), 61 | value)) ^ value;
+    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+  };
+}
 /** Saved-session battle surface. The caller owns exit routing and supplies
  * authored effects; no local authority, account funding or feature activation. */
 export class RadiantBattleView {
@@ -86,20 +103,6 @@ export class RadiantBattleView {
         <span data-radiant-progress>${radiantEncounterLabel(run)}</span> · <span data-radiant-round></span></div>
         <div class="radiant-heading-tools"><button type="button" data-radiant-settings>Settings</button>
         ${this.onExit ? '<button type="button" data-radiant-leave>Exit · Keep rewards</button>' : ''}</div></header>
-      <details class="radiant-team-reference"><summary>Squad rules and frozen leader</summary>
-        <div data-radiant-leader-reference></div>
-        <p>Normal Attack and Defense each use this member’s action for the round. No random critical damage.
-        Normal direct hits grant20 personal charge; Defense grants10; living members gain5 each new round.
-        Surviving a direct enemy action that hits HP or Shields grants8 personal charge once, not once per hit.
-        Each eligible direct hit has a25% chance of5 bonus charge, at most two rolls per action; generated/periodic packets do not qualify.</p>
-        <p>Normal Attack uses100% effective Attack against one selected living enemy.
-        Direct damage is rounded once: Attack × Attack/(Attack + effective enemy Defense) × action coefficient × output modifiers, minimum1.
-        Burn/periodic and generated packets follow their authored rules, not this guaranteed direct-damage formula.
-        Defense halves direct enemy damage until the next round, with strongest reduction and gear enhancements; combined multiplier floor20%.
-        Shields absorb in creation order before HP.</p>
-        <p>Shared charge: Normal direct hits/Defense grant6 divided by frozen squad size, ordinary Flares12 divided by squad size;
-        each new round adds18. Eternal cannot refill itself. Defeated members are not replaced or promoted.</p>
-      </details>
       <section class="radiant-field" aria-label="Battlefield">
         <div class="radiant-arena">${radiantArenaArt(run.anchor.activity)}</div>
         <div class="radiant-allies" aria-label="Allied field formation">${run.state.bearers.map((unit, index) =>
@@ -132,12 +135,14 @@ export class RadiantBattleView {
             `<meter data-radiant-charge="${escape(member.id)}" data-layer="${layer}" min="0" max="${run.state.gauge.members[index].baseCost}" aria-label="${layer === 1 ? 'Glowing' : 'Lustrous'} charge layer"></meter>`).join('')}</div>
           <span data-radiant-charge-text="${escape(member.id)}"></span>
           <span data-radiant-readiness="${escape(member.id)}"></span>
-          <div class="radiant-member-actions"><button type="button" data-radiant-select="${escape(member.id)}" aria-pressed="false">Select · Actions</button>
-          <button type="button" data-radiant-reference="${escape(member.id)}" aria-haspopup="dialog">Battle reference</button></div>
+          <div class="radiant-member-actions"><button type="button" data-radiant-select="${escape(member.id)}" aria-pressed="false"
+            aria-label="Select ${escape(characterName(member.starter, member.form))} for Normal Attack, Defense and Flare">Select</button>
+          <button type="button" data-radiant-reference="${escape(member.id)}" aria-haspopup="dialog"
+            aria-label="${escape(characterName(member.starter, member.form))} battle reference">Kit</button></div>
         </article>`;
       }).join('')}</div>
-      <p id="radiant-gesture-help">Tap a portrait for Normal Attack. Hold350ms, drag upward32px and release for the highest ready Flare.
-        Select · Actions offers the same attacks and Defense without dragging.</p>
+      <p id="radiant-gesture-help">Tap a portrait to attack · Hold, then swipe up to release its highest ready Flare.
+        <span class="radiant-visually-hidden">Hold for350ms and drag upward32px. Select offers Normal Attack, Defense and Flares without dragging.</span></p>
       <p data-radiant-gesture-status role="status" aria-live="polite"></p>
       <div class="radiant-actions"><button type="button" data-radiant-action="normal">Normal Attack</button>
         <button type="button" data-radiant-action="defense">Defense</button>
@@ -148,6 +153,20 @@ export class RadiantBattleView {
       <div data-radiant-results hidden></div>
       <p data-radiant-status role="status" aria-live="polite"></p>
       <p data-radiant-error role="alert"></p>
+      <details class="radiant-team-reference"><summary>Battle rules and frozen leader</summary>
+        <div data-radiant-leader-reference></div>
+        <p>Normal Attack and Defense each use this member’s action for the round. No random critical damage.
+        Normal direct hits grant20 personal charge; Defense grants10; living members gain5 each new round.
+        Surviving a direct enemy action that hits HP or Shields grants8 personal charge once, not once per hit.
+        Each eligible direct hit has a25% chance of5 bonus charge, at most two rolls per action; generated/periodic packets do not qualify.</p>
+        <p>Normal Attack uses100% effective Attack against one selected living enemy.
+        Direct damage is rounded once: Attack × Attack/(Attack + effective enemy Defense) × action coefficient × output modifiers, minimum1.
+        Burn/periodic and generated packets follow their authored rules, not this guaranteed direct-damage formula.
+        Defense halves direct enemy damage until the next round, with strongest reduction and gear enhancements; combined multiplier floor20%.
+        Shields absorb in creation order before HP.</p>
+        <p>Shared charge: Normal direct hits/Defense grant6 divided by frozen squad size, ordinary Flares12 divided by squad size;
+        each new round adds18. Eternal cannot refill itself. Defeated members are not replaced or promoted.</p>
+      </details>
     </section>`;
     this.artworkCleanup = bindArtworkLoading(this.host);
   }
@@ -249,6 +268,7 @@ export class RadiantBattleView {
       button.disabled = blocked || this.displayed.units[id].hp === 0 || run.state.acted.includes(id);
       button.closest('.radiant-member')!.classList.toggle('is-selected', id === this.actor);
       button.closest('.radiant-member')!.classList.toggle('is-defeated', this.displayed.units[id].hp === 0);
+      button.closest('.radiant-member')!.classList.toggle('has-acted', run.state.acted.includes(id));
       const select = this.element<HTMLButtonElement>(`[data-radiant-select="${id}"]`);
       select.disabled = button.disabled; select.setAttribute('aria-pressed', String(id === this.actor));
       const tier = this.displayed.units[id].hp > 0 ? readyFlare(this.displayed.gauge, id) : null;
@@ -447,12 +467,26 @@ export class RadiantBattleView {
               [{ filter: 'brightness(1)' }, { filter: 'brightness(1.8)' }, { filter: 'brightness(1)' }], 260),
         ]);
       }
-      for (const frame of frames) {
+      const fx: Promise<void>[] = [], played = new Set<number>();
+      let shaken = action.type !== 'flare';
+      for (const [frameIndex, frame] of frames.entries()) {
         if (this.disposed || this.skipped || generation !== this.presentationGeneration) break;
+        const previous = this.displayed;
         this.displayed = structuredClone(frame.readout); this.statuses = structuredClone(frame.statuses); this.render();
         if (!reducedMotion()) {
+          const random = presentationRandom(`${response.revision}:${frameIndex}`);
+          fx.push(this.chargeOrbs(frame, previous, random));
+          for (const event of frame.events) if (event.type === 'defeated')
+            fx.push(this.lootDrops(response, played, event.targetId, random));
+          if (!shaken && frame.events.some(event => event.type === 'damage' && event.healthLoss + event.absorbed > 0)) {
+            shaken = true; fx.push(this.shakeField(frame));
+          }
           await Promise.all([this.fieldImpact(frame), this.effects ? this.effects.impact(structuredClone(frame)) : this.impact(frame)]);
         }
+      }
+      if (!reducedMotion() && !this.disposed && !this.skipped && generation === this.presentationGeneration) {
+        fx.push(this.lootDrops(response, played, null, presentationRandom(`${response.revision}:end`)));
+        await Promise.all(fx.map(effect => effect.catch(() => undefined)));
       }
       if (!this.disposed && generation === this.presentationGeneration) this.settle(response);
     } catch (error) {
@@ -496,9 +530,10 @@ export class RadiantBattleView {
     for (const cleanup of this.effectsCleanup) cleanup();
     this.effectsCleanup.clear();
   }
-  private async animate(target: Element, frames: Keyframe[], duration: number): Promise<void> {
+  private async animate(target: Element, frames: Keyframe[], duration: number,
+    options: { easing?: string; delay?: number } = {}): Promise<void> {
     if (this.disposed || this.skipped || reducedMotion() || !target.animate) return;
-    const animation = target.animate(frames, { duration, easing: 'ease-out', fill: 'forwards' });
+    const animation = target.animate(frames, { duration, easing: options.easing ?? 'ease-out', delay: options.delay ?? 0, fill: 'both' });
     animation.playbackRate = battleSpeed(); this.animations.add(animation);
     if (this.session.view().settingsOpen) animation.pause();
     try { await animation.finished; }
@@ -539,6 +574,112 @@ export class RadiantBattleView {
       finally { cleanup(); this.effectsCleanup.delete(cleanup); }
     }));
   }
+  private fxLayer(): HTMLElement {
+    let layer = this.host.querySelector<HTMLElement>(':scope > .radiant-fx-layer');
+    if (!layer) {
+      layer = document.createElement('div'); layer.className = 'radiant-fx-layer'; layer.setAttribute('aria-hidden', 'true');
+      this.host.append(layer);
+    }
+    return layer;
+  }
+  private spawn(className: string, x: number, y: number): HTMLElement {
+    const node = document.createElement('span'); node.className = className;
+    node.style.left = `${x}px`; node.style.top = `${y}px`;
+    this.fxLayer().append(node);
+    const cleanup = () => node.remove(); this.effectsCleanup.add(cleanup);
+    node.addEventListener('radiant-fx-done', () => { cleanup(); this.effectsCleanup.delete(cleanup); }, { once: true });
+    return node;
+  }
+  /** Presentation-only orbs sized from saved charge deltas; no gameplay RNG. */
+  private async chargeOrbs(frame: RadiantImpactFrame, previous: RadiantReadout, random: () => number): Promise<void> {
+    const run = this.session.view().saved.run!;
+    const enemies = new Set(run.state.enemies.map(unit => unit.id));
+    const sources = [...new Set(frame.events.flatMap(event =>
+      event.type === 'damage' && enemies.has(event.targetId) && event.healthLoss + event.absorbed > 0 ? [event.targetId] : []))];
+    const flights: Promise<void>[] = [];
+    const fly = (from: Element, to: Element, color: string, count: number, pulse: Element) => {
+      const end = centre(to);
+      for (let index = 0; index < count; index++) {
+        const start = centre(from, random);
+        const orb = this.spawn('radiant-orb', start.x, start.y);
+        orb.style.setProperty('--orb', color);
+        const pop = { x: (random() - .5) * 120, y: -40 - random() * 70 };
+        const dx = end.x - start.x, dy = end.y - start.y;
+        const lift = Math.min(-80, dy * .25 - 110 - random() * 60);
+        const at = (t: number) => {
+          const cx = (pop.x + dx) / 2, cy = lift, u = 1 - t;
+          return { x: u * u * pop.x + 2 * u * t * cx + t * t * dx, y: u * u * pop.y + 2 * u * t * cy + t * t * dy };
+        };
+        const point = (t: number, scale: number) => { const p = at(t); return `translate(${p.x}px, ${p.y}px) scale(${scale})`; };
+        flights.push(this.animate(orb, [
+          { offset: 0, opacity: 0, transform: 'translate(0, 0) scale(.2)', easing: 'cubic-bezier(.2,.9,.3,1)' },
+          { offset: .22, opacity: 1, transform: `translate(${pop.x}px, ${pop.y}px) scale(1.2)`, easing: 'ease-in-out' },
+          { offset: .34, opacity: 1, transform: `translate(${pop.x}px, ${pop.y + 6}px) scale(1)`, easing: 'cubic-bezier(.55,0,.85,.4)' },
+          { offset: .6, opacity: 1, transform: point(.35, .95), easing: 'linear' },
+          { offset: .8, opacity: 1, transform: point(.72, .8), easing: 'linear' },
+          { offset: 1, opacity: .2, transform: point(1, .45) },
+        ], 980, { easing: 'linear', delay: index * 70 + random() * 60 }).finally(() => orb.dispatchEvent(new Event('radiant-fx-done'))));
+      }
+      flights.push(this.animate(pulse, [{ filter: 'brightness(1)' }, { filter: 'brightness(2.1) saturate(1.4)', offset: .3 }, { filter: 'brightness(1)' }],
+        420, { delay: 820 + count * 70 }));
+    };
+    for (const member of frame.readout.gauge.members) {
+      const before = previous.gauge.members.find(entry => entry.id === member.id)?.charge ?? member.charge;
+      const gained = member.charge - before;
+      if (gained <= 0) continue;
+      const card = this.host.querySelector(`[data-radiant-unit="${member.id}"]`);
+      const meter = card?.querySelector('.radiant-charge-layers'), face = card?.querySelector('.radiant-face');
+      const own = this.host.querySelector(`[data-radiant-art="${member.id}"]`);
+      const source = sources.length ? this.host.querySelector(`[data-radiant-art="${sources[Math.floor(random() * sources.length)]}"]`) : own;
+      if (!card || !meter || !face || !source) continue;
+      fly(source, face, getComputedStyle(card).getPropertyValue('--accent').trim() || '#ffffff', Math.min(6, Math.max(1, Math.ceil(gained / 6))), meter);
+    }
+    const shared = frame.readout.gauge.sharedUnits - previous.gauge.sharedUnits;
+    const sharedMeter = this.host.querySelector('[data-radiant-shared]');
+    const origin = sources.length ? this.host.querySelector(`[data-radiant-art="${sources[0]}"]`) : null;
+    if (shared > 0 && sharedMeter && origin) fly(origin, sharedMeter, '#f4f1ff', Math.min(4, Math.max(1, Math.ceil(shared / 6))), sharedMeter);
+    await Promise.all(flights);
+  }
+  /** Saved kill rewards only; presentation follows the committed response. */
+  private async lootDrops(response: RadiantRunResponse, played: Set<number>, enemyId: string | null, random: () => number): Promise<void> {
+    const drops: Promise<void>[] = [];
+    response.rewards.forEach((reward, index) => {
+      if (played.has(index) || reward.kind !== 'reward' || (enemyId !== null && reward.source !== enemyId)) return;
+      played.add(index);
+      const origin = this.host.querySelector(`[data-radiant-art="${reward.source}"]`) ?? this.host.querySelector('.radiant-enemies');
+      if (!origin) return;
+      const bounds = origin.getBoundingClientRect();
+      lootItems(reward).slice(0, 6).forEach((item, slot, items) => {
+        const start = centre(origin);
+        const node = this.spawn('radiant-loot', start.x, start.y);
+        if (item.rarity) node.dataset.rarity = item.rarity;
+        node.style.setProperty('--loot', item.color);
+        const art = lootArt(item);
+        node.innerHTML = `${art ? `<img src="${escape(art)}" alt="" decoding="async">` : '<i></i>'}<b>×${formatStat(item.amount)}</b>`;
+        const spread = items.length > 1 ? (slot / (items.length - 1) - .5) * Math.min(220, items.length * 60) : 0;
+        const dx = spread + (random() - .5) * 26, dy = bounds.height * .42 - 12 + (random() - .5) * 18;
+        const peak = -60 - random() * 50;
+        drops.push(this.animate(node, [
+          { offset: 0, opacity: 0, transform: 'translate(0, 0) scale(.3)', easing: 'cubic-bezier(.15,.7,.4,1)' },
+          { offset: .16, opacity: 1, transform: `translate(${dx * .55}px, ${peak}px) scale(1.12)`, easing: 'cubic-bezier(.6,0,.9,.5)' },
+          { offset: .32, opacity: 1, transform: `translate(${dx}px, ${dy}px) scale(1)`, easing: 'ease-out' },
+          { offset: .4, opacity: 1, transform: `translate(${dx}px, ${dy - 14}px) scale(1.04)`, easing: 'ease-in' },
+          { offset: .48, opacity: 1, transform: `translate(${dx}px, ${dy}px) scale(1)`, easing: 'linear' },
+          { offset: .8, opacity: 1, transform: `translate(${dx}px, ${dy}px) scale(1)`, easing: 'cubic-bezier(.5,0,.75,0)' },
+          { offset: 1, opacity: 0, transform: `translate(${dx}px, ${dy - 90}px) scale(.55)` },
+        ], 1600, { easing: 'linear', delay: slot * 90 }).finally(() => node.dispatchEvent(new Event('radiant-fx-done'))));
+      });
+    });
+    await Promise.all(drops);
+  }
+  private shakeField(frame: RadiantImpactFrame): Promise<void> {
+    const heavy = frame.events.some(event => event.type === 'damage' && frame.readout.units[event.targetId]?.hp === 0);
+    const a = heavy ? 9 : 6;
+    return this.animate(this.element('.radiant-field'), [
+      { transform: 'translate(0, 0)' }, { transform: `translate(${-a}px, ${a * .5}px)` }, { transform: `translate(${a * .8}px, ${-a * .4}px)` },
+      { transform: `translate(${-a * .5}px, ${a * .3}px)` }, { transform: `translate(${a * .25}px, 0)` }, { transform: 'translate(0, 0)' },
+    ], 420, { easing: 'cubic-bezier(.3,.7,.4,1)' });
+  }
   private async fieldImpact(frame: RadiantImpactFrame): Promise<void> {
     const hits = new Map<string, { enemy: boolean; defeated: boolean }>();
     const run = this.session.view().saved.run!;
@@ -547,10 +688,20 @@ export class RadiantBattleView {
       hits.set(event.targetId, { enemy: run.state.enemies.some(unit => unit.id === event.targetId),
         defeated: frame.readout.units[event.targetId].hp === 0 });
     }
-    await Promise.all([...hits].map(([id, hit]) => this.animate(this.element(`[data-radiant-art="${id}"]`),
-      [{ transform: 'translateX(0)', opacity: 1 },
-        { transform: `translateX(${hit.enemy ? -8 : 8}px)`, opacity: .75 },
-        { transform: 'translateX(0)', opacity: hit.defeated ? .2 : 1 }], 220)));
+    await Promise.all([...hits].map(([id, hit]) => {
+      const recoil = hit.enemy ? -14 : 14;
+      return this.animate(this.element(`[data-radiant-art="${id}"]`), hit.defeated ? [
+        { transform: 'translate(0, 0)', filter: 'brightness(1)', opacity: 1, easing: 'cubic-bezier(.2,.8,.3,1)' },
+        { offset: .14, transform: `translate(${recoil}px, -4px)`, filter: 'brightness(2.4) saturate(.6)', opacity: 1, easing: 'ease-out' },
+        { offset: .4, transform: `translate(${recoil * .6}px, 0)`, filter: 'brightness(1.2) grayscale(.4)', opacity: .9, easing: 'cubic-bezier(.4,0,.6,1)' },
+        { transform: `translate(${recoil * .4}px, 14px) scale(.96)`, filter: 'brightness(.7) grayscale(1)', opacity: .2 },
+      ] : [
+        { transform: 'translate(0, 0)', filter: 'brightness(1)', easing: 'cubic-bezier(.2,.8,.3,1)' },
+        { offset: .2, transform: `translate(${recoil}px, -3px)`, filter: 'brightness(2.2) saturate(.7)', easing: 'cubic-bezier(.3,0,.3,1)' },
+        { offset: .55, transform: `translate(${recoil * -.15}px, 0)`, filter: 'brightness(1.05)', easing: 'ease-in-out' },
+        { transform: 'translate(0, 0)', filter: 'brightness(1)' },
+      ], hit.defeated ? 640 : 380, { easing: 'linear' });
+    }));
   }
   dispose(): void {
     if (this.disposed) return;

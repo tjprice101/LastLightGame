@@ -223,3 +223,53 @@ html[data-motion="reduced"] .radiant-field .radiant-enemy:hover .radiant-unit-mo
   .radiant-frozen-stats div { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 8px; text-align: left; }
   .radiant-member-actions button { font-size: 12px; }
 }
+/* Formation: two staggered, overlapping ranks of three (front = members1-3). */
+.radiant-battle { --radiant-unit-height: clamp(150px, 15vw, 280px); }
+.radiant-field { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); min-height: calc(var(--radiant-unit-height) * 1.75 + 40px); padding-top: 28px; }
+.radiant-field .radiant-enemy-art, .radiant-field .radiant-art-pending { height: var(--radiant-unit-height); }
+.radiant-allies { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: auto auto; align-items: end; gap: 0; row-gap: 0; }
+.radiant-field-ally { transform: none; grid-row: 2; z-index: 3; display: flex; flex-direction: column; align-items: center; }
+.radiant-field-ally:nth-child(1) { grid-column: 1 / span 2; }
+.radiant-field-ally:nth-child(2) { grid-column: 3 / span 2; z-index: 4; }
+.radiant-field-ally:nth-child(3) { grid-column: 5 / span 2; }
+.radiant-field-ally:nth-child(n+4) { grid-row: 1; z-index: 1; margin-bottom: calc(var(--radiant-unit-height) * -.5); filter: brightness(.9); }
+.radiant-field-ally:nth-child(4) { grid-column: 2 / span 2; }
+.radiant-field-ally:nth-child(5) { grid-column: 4 / span 2; z-index: 2; }
+.radiant-field-ally:nth-child(6) { grid-column: 6 / span 2; }
+.radiant-field-ally:nth-child(n+4) > span { order: -1; margin: 0 0 4px; }
+.radiant-field-ally .radiant-unit-motion { width: 135%; margin: 0 -17.5%; }
+.radiant-field .radiant-ally-art { height: var(--radiant-unit-height); width: 100%; }
+.radiant-field-ally.is-selected { z-index: 5; filter: none; }
+.radiant-field-ally.is-selected .radiant-unit-motion::after { content: ""; position: absolute; left: 22%; right: 22%; bottom: -6px; height: 20px; border-radius: 50%; z-index: -1; background: radial-gradient(transparent 45%, #ffffffc0 52%, #ffffff30 62%, transparent 72%); }
+.radiant-field-ally .radiant-unit-motion::before { content: ""; position: absolute; left: 20%; right: 20%; bottom: -2px; height: 14px; border-radius: 50%; background: radial-gradient(#000a, transparent 70%); z-index: -1; }
+.radiant-field-ally > span { position: relative; z-index: 6; white-space: nowrap; }
+.radiant-field .radiant-enemies { align-self: end; }
+@media (max-width: 1000px) {
+  .radiant-battle { --radiant-unit-height: clamp(90px, 16vw, 150px); }
+}
+.radiant-field-ally > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; padding: 0; border: 0; }
+.radiant-field-ally.is-selected > span { position: relative; width: auto; height: auto; overflow: visible; clip-path: none; order: 0; margin: 2px 0 0; padding: 2px 10px; border: 1px solid #fff; }
+.radiant-visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+#radiant-gesture-help { font-size: 13px; letter-spacing: .02em; color: #9fa3ad; margin: 0 0 12px; }
+.radiant-battle > .radiant-team-reference { margin: 18px 0 0; border: 0; border-top: 1px solid #ffffff1a; border-radius: 0; background: none; padding: 4px 2px; color: #b8bbc4; }
+.radiant-battle > .radiant-team-reference summary { font-size: 13px; color: #9fa3ad; }
+.radiant-battle > .radiant-team-reference p { font-size: 13px; line-height: 1.55; max-width: 110ch; }
+.radiant-member-actions { grid-template-columns: 1fr auto; }
+.radiant-member-actions [data-radiant-reference] { min-width: 52px; }
+.radiant-fx-layer { position: fixed; inset: 0; pointer-events: none; z-index: 6; overflow: hidden; contain: strict; }
+.radiant-orb { position: absolute; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; will-change: transform, opacity; opacity: 0;
+  background: radial-gradient(circle at 40% 35%, #fff 0 22%, color-mix(in srgb, var(--orb) 70%, #fff) 38%, var(--orb) 62%, transparent 72%);
+  box-shadow: 0 0 10px 2px color-mix(in srgb, var(--orb) 80%, transparent), 0 0 26px 6px color-mix(in srgb, var(--orb) 35%, transparent); }
+.radiant-orb::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--orb) 55%, transparent); }
+.radiant-loot { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 2px; transform-origin: 50% 80%; margin: -30px 0 0 -30px; width: 60px; will-change: transform, opacity; opacity: 0; }
+.radiant-loot::before { content: ""; position: absolute; left: 50%; bottom: 14px; width: 2px; height: 70px; margin-left: -1px; background: linear-gradient(transparent, color-mix(in srgb, var(--loot) 85%, #fff)); filter: blur(.5px); opacity: .75; }
+.radiant-loot img, .radiant-loot i { position: relative; width: 44px; height: 44px; object-fit: contain; filter: drop-shadow(0 0 8px color-mix(in srgb, var(--loot) 70%, transparent)) drop-shadow(0 4px 4px #0009); }
+.radiant-loot i { display: block; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #fff, var(--loot) 60%, #0000 72%); }
+.radiant-loot b { position: relative; font-size: 13px; color: #fff; text-shadow: 0 1px 2px #000, 0 0 6px #000; white-space: nowrap; }
+.radiant-loot[data-rarity="Legendary"] img, .radiant-loot[data-rarity="Omnic"] img, .radiant-loot[data-rarity="Calamitic"] img { width: 54px; height: 54px; }
+html[data-motion="reduced"] .radiant-fx-layer { display: none; }
+.radiant-battle .radiant-field .radiant-enemy:disabled, .radiant-battle .radiant-face:disabled { opacity: 1; }
+.radiant-battle .radiant-member.has-acted .radiant-face, .radiant-battle .radiant-member.is-defeated .radiant-face { opacity: .55; }
+.radiant-field .is-defeated .radiant-unit-motion { opacity: .18; filter: grayscale(1) brightness(.6); transform: translateY(14px) scale(.96); transition: opacity .4s ease, transform .4s ease; }
+.radiant-field .radiant-enemy.is-defeated .radiant-plate { opacity: .4; }
+.radiant-field .radiant-enemy.is-defeated .radiant-unit-motion::after { display: none; }

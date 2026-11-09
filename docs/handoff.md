@@ -1,5 +1,46 @@
 # Current state and handoff
 
+## Radiant battle feel and desktop screen polish (2026-11-09)
+
+**Work state:** this work is on branch `overhaul/radiant-foundation`. Nothing has been deployed, and the Radiant authority is still disabled. The owner's polish audit comes before any deployment.
+
+**What changed:**
+- **Battle field formation:** six allies stand in two overlapping, staggered rows of three. Members 1–3 are the front row and 4–6 the back row, offset half a column. Ally art is the same size as enemy art (`--radiant-unit-height`).
+- **Field labels:** ally name pills on the field are hidden except for the selected unit.
+- **Battle menu trim:**
+  - The rules disclosure moved to a quiet footer.
+  - The gesture help is one short line; the exact 350 ms / 32 px rules stay available to screen readers.
+  - Card buttons read Select and Kit, with full accessible names.
+- **Gauge orbs:** orbs fly from the enemies that were hit to each member's card, driven by the saved charge deltas. Shared-gauge orbs fly to the shared meter.
+- **Loot drops:** saved kill rewards (`RadiantRunResponse.rewards`) burst out of each defeated enemy using the existing loot art, then rise and fade.
+- **Hits and Flares:** Flares add a decaying field shake. Hit reactions recoil, flash and settle, and defeated units sink and grey out.
+- **Card dimming:** cards no longer dim during presentation. Only members who have already acted or been defeated dim.
+- **FX safety:** all effects are presentation-only and seeded per saved revision and frame. They are awaited before the battle settles, and they are cancelled by Skip and dispose. They are hidden under in-game Reduce motion.
+- **Desktop screens:**
+  - Home enlarges small squads (1–2 members) so the leader is no longer tiny.
+  - The Summon banner hero now scales to the viewport (up to 60rem) instead of a fixed 620px, removing the empty lower band.
+  - The Story world map fills the available height.
+  - The selected beacon number and name, which were dark on dark, are readable.
+
+**What was verified:**
+- `npx tsc --noEmit` passes.
+- 141 focused battle, VFX, impact and reference tests pass.
+- `npm run build` passes.
+- Headless Edge captures at 1920×1080 and 1366×768, over time, covered:
+  - battle: Normal Attack orbs and loot, Flare canvas VFX with shake and loot, victory results after loot;
+  - screens: title, Home, Team, Summon, Stores, Inventory, Collections and Story map.
+- No page errors appeared in any capture.
+- The full suite was run while the machine was under heavy external load:
+  - 5 s timeouts appeared in six files.
+  - Rerunning those six files with `--maxWorkers=1 --testTimeout=60000` passed 87/87.
+  - The only real failure is the untracked, rejected `src/ui-design-lab.test.ts`.
+
+**What remains:**
+1. The owner's own in-game look at the battle and screens.
+2. A GPU and cadence check on the owner's desktop.
+3. Final unique cinematic VFX.
+4. Deployment approval, then coherent gated deployment and hosted verification.
+
 ## Radiant hosted DB proof and desktop battle polish (2026-11-08)
 
 **Work state:** this work is on branch `overhaul/radiant-foundation`. Nothing has been deployed, and the Radiant authority is still disabled.

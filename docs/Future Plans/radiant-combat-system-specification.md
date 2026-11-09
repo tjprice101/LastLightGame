@@ -1,5 +1,24 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Battle feel and desktop polish pass (2026-11-09)
+
+**Formation.** Six allies stand in two staggered, overlapping rows of three. The front row is members 1–3 and the back row is members 4–6, offset half a column. Ally art matches enemy art size (`--radiant-unit-height`). Field name pills are shown only for the selected unit.
+
+**Menu.** The rules disclosure is a footer. The gesture help is one line; the exact 350 ms hold and 32 px upward release thresholds remain in screen-reader text.
+
+**Effects.** Every effect is driven only by saved data:
+- **Gauge orbs** come from the saved `charge` deltas. There are `ceil(delta/6)` orbs, at most 6, flying from the damaged enemies (or the member's own art) to the card or shared meter.
+- **Loot** comes from the saved `rewards` and pops at each enemy's `defeated` frame.
+- **Flare shake** plays on a Flare's first damaging frame.
+
+Effects have no gameplay RNG. They use a presentation PRNG keyed by revision and frame, are awaited before settle, are cancelled by Skip and dispose, and are hidden under Reduce motion. Cards dim only after a member has acted or been defeated.
+
+**Remaining gates (unchanged order):**
+1. The owner's in-game review.
+2. A desktop GPU and cadence check.
+3. Final unique cinematic VFX.
+4. Deployment approval, then coherent authority and client deployment and hosted verification.
+
 ## Hosted database proof and desktop battle polish (2026-11-08)
 
 **Database proof.** [smoke_radiant_db.mjs](../../tools/smoke_radiant_db.mjs)
