@@ -1,5 +1,19 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Cancellable offscreen reveal (2026-11-09)
+
+The post-save frame that waits for an automatic battlefield scroll now
+participates in normal presentation cleanup. Skip, Reduce motion and disposal
+cancel and resolve that frame even if the browser has suspended animation
+frames; a late callback cannot restart the windup or restore an old scroll
+position. Saved actions remain available immediately and settle in order.
+
+The isolated Radiant suite passes 1,777 tests in 22 files with `npx vitest run
+radiant --exclude src\radiant-ui.test.ts --maxWorkers=2 --testTimeout=60000`;
+`npm run build` passes with the existing chunk-size advisory. Headless Edge at
+1920x1080 and 1366x768 showed an active saved windup and a cleared canvas
+after Skip, without page errors. This is not physical-device acceptance.
+
 ## Single-encounter database journal proof (2026-11-09)
 
 `node tools\smoke_radiant_db.mjs --actions=300 --single-encounter` passed

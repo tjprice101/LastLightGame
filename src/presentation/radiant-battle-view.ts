@@ -529,7 +529,7 @@ export class RadiantBattleView {
     try {
       const frames = radiantImpactFrames(before, response.run.state, response.events);
       if (restoreScroll) {
-        await new Promise<void>(resolve => window.requestAnimationFrame(() => resolve()));
+        await this.nextPresentationFrame();
         if (this.disposed || this.skipped || generation !== this.presentationGeneration) return;
       }
       if (!reducedMotion()) {
@@ -623,6 +623,18 @@ export class RadiantBattleView {
     for (const animation of this.animations) animation.cancel();
     for (const cleanup of this.effectsCleanup) cleanup();
     this.effectsCleanup.clear();
+  }
+  private nextPresentationFrame(): Promise<void> {
+    return new Promise(resolve => {
+      let frame = 0, finished = false;
+      const finish = () => {
+        if (finished) return;
+        finished = true; window.cancelAnimationFrame(frame);
+        this.effectsCleanup.delete(finish); resolve();
+      };
+      this.effectsCleanup.add(finish);
+      frame = window.requestAnimationFrame(finish);
+    });
   }
   private async animate(target: Element, frames: Keyframe[], duration: number,
     options: { easing?: string; delay?: number } = {}): Promise<void> {

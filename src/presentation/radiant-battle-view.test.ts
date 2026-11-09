@@ -343,6 +343,7 @@ describe('saved six-member Radiant battle surface', () => {
     vi.spyOn(field, 'getBoundingClientRect').mockImplementation(() => new DOMRect(0, fieldTop, 400, 400));
     Object.defineProperty(field, 'scrollIntoView', { configurable: true, value: () => { fieldTop = 100; scroller.scrollTop = 420; } });
     vi.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => { callbacks.push(callback); return callbacks.length; });
+    const cancelFrame = vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {});
 
     const first = view.act('normal');
     await vi.waitFor(() => expect(callbacks).toHaveLength(1));
@@ -352,12 +353,43 @@ describe('saved six-member Radiant battle surface', () => {
     await vi.waitFor(() => expect(session.view().saved.revision).toBe(3));
     expect(transport.execute).toHaveBeenCalledTimes(2);
     view.skip();
-    callbacks[0](performance.now());
+    expect(cancelFrame).toHaveBeenCalledWith(1);
     await Promise.all([first, second]);
+    expect(scroller.scrollTop).toBe(760);
+    scroller.scrollTop = 520;
+    callbacks[0](performance.now());
+    await Promise.resolve();
+    expect(scroller.scrollTop).toBe(520);
     expect(effects.windup).not.toHaveBeenCalled();
     expect(effects.impact).not.toHaveBeenCalled();
     expect(session.view().presentation).toBeNull();
     expect(session.view().saved.run!.state.acted).toEqual(['ember', 'tide']);
+  });
+  it('cancels a pending automatic reveal frame when the battle is disposed', async () => {
+    const callbacks: FrameRequestCallback[] = [];
+    const effects = { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}), cancel: vi.fn() };
+    const { view, host } = fixture(6, 6, effects); await view.finishEntrance();
+    const scroller = document.createElement('div');
+    scroller.style.overflowY = 'auto';
+    Object.defineProperties(scroller, { scrollHeight: { value: 1600 }, clientHeight: { value: 800 } });
+    document.body.append(scroller); scroller.append(host); scroller.scrollTop = 760;
+    const field = host.querySelector<HTMLElement>('.radiant-field')!;
+    vi.spyOn(field, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, -160, 400, 400));
+    Object.defineProperty(field, 'scrollIntoView', { configurable: true, value: () => { scroller.scrollTop = 420; } });
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => { callbacks.push(callback); return callbacks.length; });
+    const cancelFrame = vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {});
+
+    const pending = view.act('normal');
+    await vi.waitFor(() => expect(callbacks).toHaveLength(1));
+    view.dispose();
+    expect(cancelFrame).toHaveBeenCalledWith(1);
+    await pending;
+    scroller.scrollTop = 520;
+    callbacks[0](performance.now());
+    await Promise.resolve();
+    expect(scroller.scrollTop).toBe(520);
+    expect(effects.windup).not.toHaveBeenCalled();
+    expect(effects.impact).not.toHaveBeenCalled();
   });
   it('keeps the original viewport under Reduce motion when the battlefield is offscreen', async () => {
     const effects = { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}), cancel: vi.fn() };

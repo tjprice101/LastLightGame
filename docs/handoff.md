@@ -1,5 +1,28 @@
 # Current state and handoff
 
+## Cancellable Radiant offscreen reveal (2026-11-09)
+
+**Branch and release:** `overhaul/radiant-foundation`; the authority remains
+disabled and deployment stays on hold for the existing review gates.
+
+**Implemented:** Skip, Reduce motion and disposal now cancel and resolve the
+post-save animation-frame wait for an automatically revealed battlefield.
+This prevents a suspended or late frame from restarting effects or restoring
+an obsolete scroll position; queued saved actions and immediate controls are
+unchanged.
+
+**Verified:** the isolated Radiant suite passes 1,777 tests in 22 files with
+`npx vitest run radiant --exclude src\radiant-ui.test.ts --maxWorkers=2
+--testTimeout=60000`; `npm run build` passes with the existing chunk-size
+advisory. Headless Edge at 1920x1080 and 1366x768 showed a saved windup and
+a cleared canvas after Skip, without page errors. This is not physical-device
+or owner visual acceptance.
+
+**Remaining:** owner in-game review, final bespoke cinema, physical desktop
+GPU/cadence and economy acceptance, deployed authenticated-route verification,
+explicit deployment approval, matching authority/client deployment and hosted
+verification. Preserve unrelated dirty documentation and rejected prototypes.
+
 ## Single-encounter database journal proof (2026-11-09)
 
 **Branch and release:** `overhaul/radiant-foundation`; the authority remains
