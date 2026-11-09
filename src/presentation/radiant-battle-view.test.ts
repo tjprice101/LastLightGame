@@ -66,6 +66,28 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 describe('saved six-member Radiant battle surface', () => {
+  it.each([
+    [0, '0%', '0%', false],
+    [15, '50%', '0%', false],
+    [30, '100%', '0%', false],
+    [30.1, '100%', `${.1 / 30 * 100}%`, true],
+    [45, '100%', '50%', true],
+    [60, '100%', '100%', true],
+  ] as const)('layers %s saved charge over one continuous energy track', async (charge, first, second, lustrous) => {
+    const { view, host } = fixture(1, 6, undefined, 25, undefined, undefined, false,
+      state => { state.gauge.members[0].charge = charge; });
+    applyMotion('reduced'); await view.finishEntrance();
+    const energy = host.querySelector<HTMLElement>('[data-radiant-energy="ember"]')!;
+    expect(energy.querySelectorAll('.radiant-energy-track')).toHaveLength(1);
+    expect(energy.querySelector('[data-energy-layer="1"]')!.getAttribute('style')).toContain(`width: ${first}`);
+    const overlay = energy.querySelector<HTMLElement>('[data-energy-layer="2"]')!;
+    if (charge === 30.1) expect(parseFloat(overlay.style.width)).toBeCloseTo(.1 / 30 * 100);
+    else expect(overlay.style.width).toBe(second);
+    expect(energy.classList.contains('is-lustrous')).toBe(lustrous);
+    expect(energy.classList.contains('is-flowing')).toBe(charge > 0);
+    expect(energy.querySelectorAll('meter.radiant-visually-hidden')).toHaveLength(2);
+    expect(energy.querySelector<HTMLMeterElement>('[data-layer="2"]')!.value).toBeCloseTo(Math.max(0, charge - 30));
+  });
   it('renders six stable per-form face controls, four stats, two personal layers and exact shared charge', async () => {
     const { view, host, session } = fixture(); applyMotion('reduced'); await view.finishEntrance();
     expect(host.querySelectorAll('[data-radiant-actor]')).toHaveLength(6);
@@ -103,6 +125,27 @@ describe('saved six-member Radiant battle surface', () => {
     expect(session.view().presentation).toBeNull();
     const savedCharge = session.view().saved.run!.state.gauge.members[0].charge;
     expect(host.querySelector('[data-radiant-charge-text="ember"]')!.textContent).toBe(`${savedCharge} / 60 charge`);
+    expect(parseFloat(host.querySelector<HTMLElement>('[data-radiant-energy="ember"] [data-energy-layer="1"]')!.style.width))
+      .toBeCloseTo(Math.min(savedCharge, 30) / 30 * 100);
+  });
+  it('renders shared charge in its own single liquid track without changing its accessible value', async () => {
+    const { view, host } = fixture(1, 6, undefined, 25, undefined, undefined, false,
+      state => { state.gauge.sharedUnits = 3000; });
+    applyMotion('reduced'); await view.finishEntrance();
+    const shared = host.querySelector<HTMLElement>('[data-radiant-shared-energy]')!;
+    expect(shared.querySelectorAll('.radiant-energy-liquid')).toHaveLength(1);
+    expect(shared.querySelector<HTMLElement>('.radiant-energy-liquid')!.style.width).toBe('50%');
+    expect(shared.classList.contains('is-flowing')).toBe(true);
+    expect(host.querySelector<HTMLMeterElement>('[data-radiant-shared]')!.value).toBe(50);
+  });
+  it('retains a defeated member’s stored charge without animating it', async () => {
+    const { view, host } = fixture(2, 6, undefined, 25, undefined, undefined, false, state => {
+      state.bearers[0].hp = 0; state.gauge.members[0].living = false; state.gauge.members[0].charge = 45;
+    });
+    applyMotion('reduced'); await view.finishEntrance();
+    const energy = host.querySelector<HTMLElement>('[data-radiant-energy="ember"]')!;
+    expect(energy.classList.contains('is-flowing')).toBe(false);
+    expect(energy.querySelector<HTMLElement>('[data-energy-layer="2"]')!.style.width).toBe('50%');
   });
   it('portrait tap saves exactly one Normal Attack for that member while selection remains a non-spending alternative', async () => {
     const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
@@ -195,6 +238,8 @@ describe('saved six-member Radiant battle surface', () => {
   it('form1 has one layer, no shared meter, and released forms use reviewed face art', async () => {
     const { view, host } = fixture(6, 1); applyMotion('reduced'); await view.finishEntrance();
     expect(host.querySelectorAll('[data-radiant-charge]')).toHaveLength(6);
+    expect(host.querySelectorAll('[data-energy-layer="1"]')).toHaveLength(6);
+    expect(host.querySelectorAll('[data-energy-layer="2"]')).toHaveLength(0);
     expect(host.querySelector<HTMLElement>('.radiant-shared')!.hidden).toBe(true);
     expect(host.querySelector<HTMLImageElement>('[data-character="rosetta"] img')!.alt).not.toContain('pending');
     expect(host.querySelector<HTMLImageElement>('[data-character="ember"] img')!.alt).not.toContain('pending');
@@ -268,6 +313,8 @@ describe('saved six-member Radiant battle surface', () => {
     expect(savedTide.charge).toBeGreaterThanOrEqual(savedTide.baseCost);
     expect(host.querySelector('[data-radiant-charge-text="tide"]')!.textContent)
       .toBe(`${tideBefore.charge} / ${tideBefore.baseCost * 2} charge`);
+    const tideLiquid = host.querySelector<HTMLElement>('[data-radiant-energy="tide"] [data-energy-layer="1"]')!;
+    expect(parseFloat(tideLiquid.style.width)).toBeCloseTo(tideBefore.charge / tideBefore.baseCost * 100);
     expect(action(host, 'tide', 'flare').disabled).toBe(false);
     expect(action(host, 'tide', 'flare').textContent).toBe('Glowing Flare');
     const second = view.act('flare');
@@ -279,6 +326,10 @@ describe('saved six-member Radiant battle surface', () => {
     await vi.waitFor(() => expect(windups).toHaveLength(2));
     windups[1]();
     await Promise.all([first, second]);
+    const remainingCharge = session.view().saved.run!.state.gauge.members.find(member => member.id === 'tide')!.charge;
+    expect(parseFloat(tideLiquid.style.width)).toBeCloseTo(remainingCharge / tideBefore.baseCost * 100);
+    expect(remainingCharge).toBeLessThan(tideBefore.charge);
+    expect(host.querySelector<HTMLElement>('[data-radiant-energy="tide"] [data-energy-layer="2"]')!.style.width).toBe('0%');
   });
   it('Skip settles queued actions to the latest saved state without replaying stale impacts', async () => {
     const windups: (() => void)[] = [];

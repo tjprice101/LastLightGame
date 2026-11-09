@@ -132,7 +132,10 @@ export class RadiantBattleView {
           ${this.healthMarkup(enemy.id)}</div></button>`).join('')}</div>
       </section>
       <section class="radiant-shared" aria-label="Shared Eternal charge"><b>Eternal Radiant Flare</b>
-        <meter data-radiant-shared min="0" aria-label="Shared Eternal charge"></meter><span data-radiant-shared-text></span></section>
+        <meter class="radiant-visually-hidden" data-radiant-shared min="0" aria-label="Shared Eternal charge"></meter>
+        <span class="radiant-charge-layers radiant-shared-energy" data-radiant-shared-energy aria-hidden="true">
+          <span class="radiant-energy-track"><span class="radiant-energy-liquid"></span></span>
+        </span><span data-radiant-shared-text></span></section>
       <div class="radiant-squad" role="group" aria-label="Squad portrait controls; scroll horizontally on narrow screens" tabindex="0">${run.state.bearers.map((unit, index) => {
         const member = unit.loadout, starter = getStarter(member.starter);
         return `<article class="radiant-member" data-radiant-unit="${escape(member.id)}" data-element="${starter.elementId}">
@@ -144,8 +147,12 @@ export class RadiantBattleView {
           <dl class="radiant-frozen-stats" aria-label="Frozen combat stats">${Object.entries(unit.stats).filter(([stat]) => stat !== 'hp').map(([stat, value]) =>
             `<div><dt>${escape(stat[0].toUpperCase() + stat.slice(1))}</dt><dd>${formatStat(value)}</dd></div>`).join('')}</dl>
           ${this.healthMarkup(member.id)}
-          <div class="radiant-charge-layers" aria-label="Personal charge">${[1, ...(member.form >= 4 ? [2] : [])].map(layer =>
-            `<meter data-radiant-charge="${escape(member.id)}" data-layer="${layer}" min="0" max="${run.state.gauge.members[index].baseCost}" aria-label="${layer === 1 ? 'Glowing' : 'Lustrous'} charge layer"></meter>`).join('')}</div>
+          <div class="radiant-charge-layers" data-radiant-energy="${escape(member.id)}" aria-label="Personal charge">
+            ${[1, ...(member.form >= 4 ? [2] : [])].map(layer =>
+              `<meter class="radiant-visually-hidden" data-radiant-charge="${escape(member.id)}" data-layer="${layer}" min="0" max="${run.state.gauge.members[index].baseCost}" aria-label="${layer === 1 ? 'Glowing' : 'Lustrous'} charge layer"></meter>`).join('')}
+            <span class="radiant-energy-track" aria-hidden="true">${[1, ...(member.form >= 4 ? [2] : [])].map(layer =>
+              `<span class="radiant-energy-liquid" data-energy-layer="${layer}"></span>`).join('')}</span>
+          </div>
           <span data-radiant-charge-text="${escape(member.id)}"></span>
           <span data-radiant-readiness="${escape(member.id)}"></span>
           <div class="radiant-member-actions"><button type="button" data-radiant-select="${escape(member.id)}" aria-pressed="false"
@@ -326,9 +333,14 @@ export class RadiantBattleView {
       button.setAttribute('aria-pressed', String(id === this.target));
     }
     for (const member of this.displayed.gauge.members) {
-      for (const meter of Array.from(this.host.querySelectorAll<HTMLMeterElement>('[data-radiant-charge]'))) {
-        if (meter.dataset.radiantCharge === member.id)
-          meter.value = Math.min(member.baseCost, Math.max(0, member.charge - (Number(meter.dataset.layer) - 1) * member.baseCost));
+      const energy = this.element<HTMLElement>(`[data-radiant-energy="${member.id}"]`);
+      energy.classList.toggle('is-flowing', member.charge > 0 && this.displayed.units[member.id].hp > 0);
+      energy.classList.toggle('is-lustrous', member.charge > member.baseCost);
+      for (const meter of Array.from(energy.querySelectorAll<HTMLMeterElement>('[data-radiant-charge]'))) {
+        meter.value = Math.min(member.baseCost, Math.max(0, member.charge - (Number(meter.dataset.layer) - 1) * member.baseCost));
+        const liquid = energy.querySelector<HTMLElement>(`[data-energy-layer="${meter.dataset.layer}"]`)!;
+        liquid.style.width = `${meter.value / member.baseCost * 100}%`;
+        liquid.classList.toggle('has-charge', meter.value > 0);
       }
       this.element<HTMLElement>(`[data-radiant-charge-text="${member.id}"]`).textContent =
         `${member.charge} / ${personalChargeMaximum(member)} charge`;
@@ -337,6 +349,12 @@ export class RadiantBattleView {
     shared.max = sharedChargeThreshold(this.displayed.gauge.eternalCasts) / sharedChargeUnit;
     shared.value = this.displayed.gauge.sharedUnits / sharedChargeUnit;
     shared.closest<HTMLElement>('.radiant-shared')!.hidden = !this.displayed.gauge.members.some(member => member.form === 6);
+    const sharedEnergy = this.element<HTMLElement>('[data-radiant-shared-energy]');
+    const sharedLiquid = sharedEnergy.querySelector<HTMLElement>('.radiant-energy-liquid')!;
+    sharedLiquid.style.width = `${shared.value / shared.max * 100}%`;
+    sharedLiquid.classList.toggle('has-charge', shared.value > 0);
+    sharedEnergy.classList.toggle('is-flowing', shared.value > 0 &&
+      this.displayed.gauge.members.some(member => this.displayed.units[member.id].hp > 0));
     this.element<HTMLElement>('[data-radiant-shared-text]').textContent =
       `${shared.value} / ${shared.max}`;
     this.element<HTMLElement>('[data-radiant-round]').textContent = `Round ${this.displayed.round}`;

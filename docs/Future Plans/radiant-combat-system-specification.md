@@ -1,5 +1,34 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Flowing layered Gauge presentation (2026-11-09)
+
+Personal Gauge now fills one full-width liquid-energy track, rather than two
+adjacent bars. The Glowing layer fills to the bearer's exact base cost; above
+that cost, the brighter Lustrous layer fills over the completed first layer
+on the same track. Early forms have no second layer. Element-colored waves
+oscillate and stream through charged layers, with faster, brighter motion
+and a stronger rim at the second tier. Shared Eternal charge uses its own
+single flowing track, without changing its threshold or tier rules.
+
+Native labeled meters and exact numeric text remain accessible. Every fill
+uses the displayed saved-impact Gauge state; Flare consumption, subsequent
+earned charge, readiness, teammate shares and receipts are unchanged. Empty
+layers and defeated members do not flow. Both in-game Reduce motion and the
+OS preference remove flow and fill transitions while retaining static color
+and layer distinction. Motion is CSS-only and leaves with the disposed view;
+no gameplay RNG, timers, artwork or commissions were added.
+
+Validation: `npx vitest run radiant --exclude src\radiant-ui.test.ts
+--maxWorkers=2 --testTimeout=60000` passes 1,785 tests in 22 files;
+`npm run build` passes with the existing chunk-size advisory. Tests cover
+exact layer fractions, the second-tier threshold, early forms, defeated
+members, shared values and queued saved-impact/consumption ordering. Browser
+preview at 1366x768 showed partial first and overlaid second fills, full
+layers, moving waves sampled over time, static in-game/OS reduced motion,
+an empty nonmoving track and no page-width overflow. This is local visual
+evidence, not physical GPU or owner acceptance. Existing release gates and
+the disabled authority remain unchanged.
+
 ## Condensed portrait actions (2026-11-09)
 
 Removed the persistent Normal Attack / Defense / Flare row and per-member

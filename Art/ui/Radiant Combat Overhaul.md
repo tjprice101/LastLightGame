@@ -26,6 +26,12 @@ The implemented 32-bearer study and its status/readout rules are documented in
 the system specification and typed content; do not infer further commissions
 from historical kit names or the separate pending-art queues.
 
+The personal Gauge is now one procedural flowing-energy track with a brighter
+second layer filling over the first; shared Eternal charge uses a matching
+single track. Element colors, wave masks and stream highlights are CSS-only,
+with static reduced-motion presentation. This adds **zero source images** and
+does not expand the commissioning budget or imply owner visual acceptance.
+
 ## Verified catalog and existing artwork
 
 This snapshot was checked against the actual content catalogs, release gate and

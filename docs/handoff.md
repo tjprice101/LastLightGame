@@ -1,5 +1,28 @@
 # Current state and handoff
 
+## Flowing layered Radiant Gauge (2026-11-09)
+
+**Implemented:** each personal Gauge is one continuous elemental liquid-energy
+track. Its brighter second layer fills over the completed first layer, with
+stronger, faster wave/stream motion. Shared Eternal charge uses a separate
+matching single track. Accessible native meters and exact values remain;
+display follows saved impact, including spending and subsequent earned charge.
+Empty layers and defeated members do not flow, and both reduced-motion
+settings keep readable static feedback. No mechanics or artwork changed.
+
+**Verified:** `npx vitest run radiant --exclude src\radiant-ui.test.ts
+--maxWorkers=2 --testTimeout=60000` passes 1,785 tests in 22 files;
+`npm run build` passes with the existing chunk-size advisory. Local browser
+preview at 1366x768 confirmed partial/full layers and second-layer overlay,
+wave movement over time, both reduced-motion modes, nonmoving empty tracks
+and no page-width overflow. The temporary preview server was stopped.
+
+**Remaining:** owner review, final bespoke cinema, physical desktop GPU/cadence
+and economy acceptance, deployed authenticated-route verification and explicit
+approval before matching authority/client deployment and hosted verification.
+Authority remains disabled. Unrelated dirty documentation and rejected
+prototypes remain untouched and excluded from this change.
+
 ## Condensed Radiant portrait actions (2026-11-09)
 
 The persistent Normal Attack / Defense / Flare row and per-member Kit buttons
