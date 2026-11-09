@@ -74,7 +74,7 @@ describe('Radiant charged portrait gestures', () => {
     vi.useFakeTimers();
     const host = document.createElement('div');
     host.innerHTML = `<article data-radiant-card><button data-radiant-actor="tide">Tizu</button>
-      <dl data-stats><dt>Attack</dt><dd>10</dd></dl><button data-radiant-menu="tide">Actions</button></article>`;
+      <dl data-stats><dt>Attack</dt><dd>10</dd></dl><button data-other-control>Other</button></article>`;
     document.body.append(host);
     const card = host.querySelector<HTMLElement>('[data-radiant-card]')!;
     const actor = host.querySelector<HTMLButtonElement>('[data-radiant-actor]')!;
@@ -92,7 +92,7 @@ describe('Radiant charged portrait gestures', () => {
     expect(binding.consumeClick(actor)).toBe(true);
     expect(card.classList.contains('is-held') || card.classList.contains('is-primed')).toBe(false);
     expect(card.style.getPropertyValue('--radiant-drag')).toBe('');
-    pointer(host.querySelector<HTMLElement>('[data-radiant-menu]')!, 'pointerdown');
+    pointer(host.querySelector<HTMLElement>('[data-other-control]')!, 'pointerdown');
     expect(card.classList.contains('is-arming')).toBe(false); expect(vi.getTimerCount()).toBe(0);
   });
   it('recovers from a release that never reached the host', () => {

@@ -38,7 +38,6 @@ interface QueuedRadiantPresentation {
   reject(error: unknown): void;
 }
 const tierNames = { glowing: 'Glowing Flare', lustrous: 'Lustrous Flare', eternal: 'Eternal Radiant Flare' };
-const actionNames = { normal: 'Normal Attack', defense: 'Defense', flare: 'Glowing Flare' };
 function centre(element: Element, random?: () => number): { x: number; y: number } {
   const box = element.getBoundingClientRect();
   const jitter = (size: number) => random ? (random() - .5) * size * .35 : 0;
@@ -60,7 +59,6 @@ function presentationRandom(key: string): () => number {
 export class RadiantBattleView {
   private displayed: RadiantReadout;
   private target: string | null;
-  private openActionsMember: string | null = null;
   private disposed = false;
   private presenting = false;
   private skipped = false;
@@ -102,6 +100,8 @@ export class RadiantBattleView {
       notice: text => { this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = text; },
     });
     host.addEventListener('click', this.click);
+    host.addEventListener('contextmenu', this.contextMenu);
+    host.addEventListener('keydown', this.keyDown);
     window.addEventListener('last-light-motion-change', this.motion);
     window.addEventListener('last-light-battle-speed-change', this.speed);
     this.render();
@@ -138,7 +138,7 @@ export class RadiantBattleView {
           <span class="radiant-card-burst" aria-hidden="true"></span>
           <span class="radiant-card-hint" aria-hidden="true"></span>
           <button type="button" class="radiant-face" data-radiant-actor="${escape(member.id)}"
-            aria-describedby="radiant-gesture-help" aria-label="${escape(characterName(member.starter, member.form))} · Normal Attack; hold the card and drag upward for ready Flare">
+            aria-describedby="radiant-gesture-help" aria-label="${escape(characterName(member.starter, member.form))} · Normal Attack; right click to defend; hold the card and drag upward for ready Flare">
             ${compactPortrait(starter, member.form)}<span>${index ? `Member ${index + 1}` : 'Leader'}</span>
             <strong>${escape(characterName(member.starter, member.form))}</strong></button>
           <span class="radiant-identity">Lv.${member.level} · ${escape(radiantAttunement(member))}</span>
@@ -153,20 +153,10 @@ export class RadiantBattleView {
           </div>
           <span data-radiant-charge-text="${escape(member.id)}"></span>
           <span data-radiant-readiness="${escape(member.id)}"></span>
-          <div class="radiant-member-actions"><button type="button" data-radiant-menu="${escape(member.id)}"
-            aria-expanded="false" aria-controls="radiant-member-actions-${escape(member.id)}"
-            aria-label="Actions for ${escape(characterName(member.starter, member.form))}">Actions</button></div>
-          <div class="radiant-action-menu" id="radiant-member-actions-${escape(member.id)}"
-            data-radiant-member-actions="${escape(member.id)}" role="group"
-            aria-label="Actions for ${escape(characterName(member.starter, member.form))}" hidden>
-            <button type="button" data-radiant-action="normal">${actionNames.normal}</button>
-            <button type="button" data-radiant-action="defense">${actionNames.defense}</button>
-            <button type="button" data-radiant-action="flare">${actionNames.flare}</button>
-          </div>
         </article>`;
       }).join('')}</div>
-      <p id="radiant-gesture-help">Click a character card to attack · Hold the card, then swipe up to release its highest ready Flare.
-        <span class="radiant-visually-hidden">Hold for350ms and drag upward32px. The Actions button opens Normal Attack, Defense and Flare controls.</span></p>
+      <p id="radiant-gesture-help">Left click a card to attack · Right click to defend · Hold, then swipe up for its highest ready Flare.
+        <span class="radiant-visually-hidden">Hold for350ms and drag upward32px. Keyboard: Enter attacks, D or the context-menu key defends, F or Up Arrow releases the highest ready Flare.</span></p>
       <p data-radiant-gesture-status role="status" aria-live="polite"></p>
       <div class="radiant-actions"><button type="button" data-radiant-retry hidden>Retry pending request</button>
         <button type="button" data-radiant-skip hidden>Skip presentation</button>
@@ -229,25 +219,32 @@ export class RadiantBattleView {
       if (this.gestures.consumeClick(button)) return;
       void this.act('normal', button.dataset.radiantActor).catch(error => this.report(error)); return;
     }
-    if (button.dataset.radiantMenu) {
-      const id = button.dataset.radiantMenu;
-      this.openActionsMember = this.openActionsMember === id ? null : id;
-      this.render(); this.selection(button); return;
-    }
     if (button.dataset.radiantTarget) {
       this.target = button.dataset.radiantTarget; this.render(); this.selection(button); return;
     }
     if (button.hasAttribute('data-radiant-retry')) {
       void this.retry().catch(error => this.report(error)); return;
     }
-    const kind = button.dataset.radiantAction;
-    if (kind === 'normal' || kind === 'defense' || kind === 'flare') {
-      const memberId = button.closest<HTMLElement>('[data-radiant-member-actions]')?.dataset.radiantMemberActions;
-      this.openActionsMember = null;
-      this.render();
-      if (memberId) this.element<HTMLButtonElement>(`[data-radiant-menu="${memberId}"]`).focus();
-      void this.act(kind, memberId ?? undefined).catch(error => this.report(error));
-    }
+  };
+  /** Right click (or the context-menu key) on an actionable card saves that member's Defense. */
+  private contextMenu = (event: MouseEvent): void => {
+    if (this.disposed || !(event.target instanceof Element)) return;
+    const actor = radiantGestureActor(event.target, this.host);
+    if (!actor) return;
+    event.preventDefault();
+    this.gestures?.cancel();
+    if (actor.disabled || !actor.dataset.radiantActor) return;
+    void this.act('defense', actor.dataset.radiantActor).catch(error => this.report(error));
+  };
+  private keyDown = (event: KeyboardEvent): void => {
+    if (this.disposed || event.altKey || event.ctrlKey || event.metaKey || !(event.target instanceof HTMLElement)) return;
+    const id = event.target.dataset.radiantActor;
+    if (!id || event.target.hasAttribute('disabled')) return;
+    const key = event.key.toLowerCase();
+    const kind = key === 'd' ? 'defense' : key === 'f' || event.key === 'ArrowUp' ? 'flare' : null;
+    if (!kind) return;
+    event.preventDefault();
+    void this.act(kind, id).catch(error => this.report(error));
   };
   private selection(button: HTMLElement): void {
     this.selectionCleanup?.();
@@ -299,18 +296,7 @@ export class RadiantBattleView {
       button.disabled = blocked || !savedMember || savedMember.hp === 0 || run.state.acted.includes(id);
       button.closest('.radiant-member')!.classList.toggle('is-defeated', !savedMember || savedMember.hp === 0);
       button.closest('.radiant-member')!.classList.toggle('has-acted', run.state.acted.includes(id));
-      const select = this.element<HTMLButtonElement>(`[data-radiant-menu="${id}"]`);
-      select.disabled = button.disabled;
-      const actionMenu = this.element<HTMLElement>(`[data-radiant-member-actions="${id}"]`);
-      actionMenu.hidden = this.openActionsMember !== id;
-      select.setAttribute('aria-expanded', String(!actionMenu.hidden));
       const tier = savedMember && savedMember.hp > 0 ? readyFlare(run.state.gauge, id) : null;
-      for (const actionButton of Array.from(actionMenu.querySelectorAll<HTMLButtonElement>('[data-radiant-action]'))) {
-        const kind = actionButton.dataset.radiantAction;
-        actionButton.disabled = blocked || !savedMember || savedMember.hp === 0 || run.state.acted.includes(id) ||
-          kind === 'normal' && !this.target || kind === 'flare' && !tier;
-        if (kind === 'flare') actionButton.textContent = tier ? tierNames[tier] : 'Glowing Flare · charging';
-      }
       button.dataset.readyTier = !button.disabled && tier ? tier : '';
       button.closest<HTMLElement>('.radiant-member')!.dataset.readyTier = button.dataset.readyTier;
       this.element<HTMLElement>(`[data-radiant-readiness="${id}"]`).textContent =
@@ -385,7 +371,6 @@ export class RadiantBattleView {
       this.target = run.state.enemies.find(enemy => enemy.hp > 0)?.id ?? null;
   }
   async act(kind: 'normal' | 'defense' | 'flare', bearerId?: string): Promise<void> {
-    this.openActionsMember = null;
     this.presentationError = null;
     this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = '';
     const before = this.session.view().saved.run;
@@ -860,6 +845,8 @@ export class RadiantBattleView {
     this.resultCelebration?.(); this.resultCelebration = null;
     this.artworkCleanup();
     this.host.removeEventListener('click', this.click);
+    this.host.removeEventListener('contextmenu', this.contextMenu);
+    this.host.removeEventListener('keydown', this.keyDown);
     window.removeEventListener('last-light-motion-change', this.motion);
     window.removeEventListener('last-light-battle-speed-change', this.speed);
     this.host.replaceChildren();

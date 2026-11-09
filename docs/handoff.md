@@ -1,5 +1,17 @@
 # Current state and handoff
 
+## Radiant Actions menu replaced by mouse controls (2026-11-09)
+
+**Implemented:** the per-card Actions button/menu is removed. Left click on a
+member card saves its Normal Attack, right click saves its Defense (browser
+context menu suppressed on cards), and hold then upward swipe casts its highest
+ready Flare. Keyboard alternatives on the focused face: Enter/Space attacks,
+D or the context-menu key defends, F or Up Arrow releases the Flare. Acted,
+defeated or blocked cards ignore all three.
+
+**Verified:** the Radiant suite passes 1,789 tests in 22 files and
+`npm run build` passes.
+
 ## No Radiant member selection step (2026-11-09)
 
 **Implemented:** squad members are never "selected". A click anywhere on a
