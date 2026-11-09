@@ -1,5 +1,29 @@
 # Current state and handoff
 
+## Radiant cinematic motion structures (2026-11-09)
+
+**Branch and release:** `overhaul/radiant-foundation`; the authority remains
+disabled and deployment stays on hold for the existing review gates.
+
+**Implemented:** nine cached vector structures add recognizable sweeps, tides,
+unfurling forms, spirals, orbits, braces, pulses, relays and fractures behind
+the existing individual bearer motifs. Glowing, Lustrous and Eternal add one,
+two and three animated layers in the existing authored palette. Saved status
+cues remain small; timing, cleanup, controls, combat state and artwork are
+unchanged. Existing base archetypes remain in use.
+
+**Verified:** the isolated Radiant suite passes 1,776 tests in 22 files with
+`npx vitest run radiant --exclude src\radiant-ui.test.ts --maxWorkers=2
+--testTimeout=60000`; `npm run build` passes with the existing chunk-size
+advisory. Headless Edge rasterized all nine structures and showed an Eternal
+windup in the actual in-memory battle view without page errors. This is not
+physical GPU/cadence validation or owner visual approval.
+
+**Remaining:** final bespoke cinema and owner in-game review, physical desktop
+GPU/cadence and economy acceptance, deployed authenticated-route verification,
+explicit deployment approval, matching authority/client deployment and hosted
+verification. Preserve unrelated dirty documentation and rejected prototypes.
+
 ## Radiant identity motion and scroll synchronization (2026-11-09)
 
 **Branch and release:** `overhaul/radiant-foundation`; the authority remains

@@ -95,10 +95,11 @@ owned by the system specification and typed content, not this visual brief.
   character's tiers should feel like a progression, not palette swaps or
   completely unrelated signatures. No sprite sheets or rendered videos are
   requested. The current Radiant-only identity pass adds a distinct progressive
-  motif sequence for each released bearer and restores their authored Moon,
-  reclaimed-War, Calamitic or silver-lilac energy colors where needed. It
-  reuses existing base archetypes and remains subject to final cinematic and
-  owner review; it does not change installed artwork.
+  motif sequence for each released bearer, nine larger animated motion
+  structures, and the authored Moon, reclaimed-War, Calamitic or silver-lilac
+  energy colors where needed. It reuses existing base archetypes and remains
+  subject to final cinematic and owner review; it does not change installed
+  artwork.
 - **Shader and fallback:** authored runtime shaders/particles may emit light
   and bloom, unlike keyed source artwork. Preserve element and individual
   color identity, establish bounded contrast and performance, dispose effects,

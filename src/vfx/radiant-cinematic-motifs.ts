@@ -63,6 +63,17 @@ export const radiantMotifSequences = {
 
 export type RadiantMotifMotion = 'sweep' | 'tide' | 'unfurl' | 'spiral' | 'orbit' |
   'brace' | 'pulse' | 'relay' | 'fracture';
+export const radiantMotionPaths: Record<RadiantMotifMotion, string> = {
+  sweep: 'M-94 42 C-58 -47 11 -92 90 -44 M-90 70 C-42 -12 23 -56 85 -18 M-82 -44 C-40 18 18 66 85 48',
+  tide: 'M-96 30 C-60 -34 -27 -36 2 0 C29 34 61 34 95 -24 M-94 57 C-58 3 -27 2 0 29 C29 57 62 59 95 8',
+  unfurl: 'M0 70 C-20 25 -75 20 -79 -35 C-42 -36 -13 -14 0 25 C13 -14 42 -36 79 -35 C75 20 20 25 0 70 M0 25 C-28 -4 -28 -55 0 -80 C28 -55 28 -4 0 25',
+  spiral: 'M-90 30 C-84 -62 -7 -92 57 -50 C100 -20 81 44 31 43 C-8 42 -25 8 0 -15 M-75 61 C-45 89 2 94 43 75',
+  orbit: 'M-94 0 C-94 -54 94 -54 94 0 C94 54 -94 54 -94 0 M-40 -85 C7 -102 83 63 40 85 C-7 102 -83 -63 -40 -85',
+  brace: 'M-86 62 V-22 L-54 -56 L-20 -70 M86 62 V-22 L54 -56 L20 -70 M-86 62 L-56 78 H-24 M86 62 L56 78 H24 M-71 40 V-16 L-48 -40 M71 40 V-16 L48 -40',
+  pulse: 'M-94 -45 Q-42 0 -94 45 M-70 -55 Q-6 0 -70 55 M94 -45 Q42 0 94 45 M70 -55 Q6 0 70 55 M-42 -76 Q0 -53 42 -76 M-42 76 Q0 53 42 76',
+  relay: 'M-94 -42 H48 L76 -60 M-94 0 H75 M-94 42 H48 L76 60 M55 -15 L78 0 L55 15 M-72 -55 L-54 -42 L-72 -29 M-72 29 L-54 42 L-72 55',
+  fracture: 'M0 -88 L-13 -50 L10 -27 L-18 0 L5 25 L-8 85 M-13 -50 L-65 -67 M10 -27 L75 -53 M-18 0 L-82 21 M5 25 L71 62 M-8 65 L-50 86',
+};
 export const radiantMotifMotions = {
   ember: 'sweep', tide: 'tide', sprout: 'unfurl', atmoso: 'spiral', aurora: 'orbit',
   bliss: 'unfurl', bruno: 'fracture', disciple: 'pulse', elise: 'spiral', razor: 'brace',

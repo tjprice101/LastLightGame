@@ -1,5 +1,23 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Cinematic motion structures (2026-11-09)
+
+The identity pass now includes nine larger vector structures matched to its
+motion families: sweeps, tides, unfurling forms, spirals, orbits, braces,
+pulses, relays and fractures. Each is cached with the bearer's existing
+signature and motifs. Flare tiers add one, two or three animated layers,
+alternating the authored colors; status cues do not gain these structures.
+The effects remain bounded to saved source/target presentation, share the
+existing finite timing and cleanup, and add no artwork or combat RNG.
+
+Headless Edge rasterized all nine structures and checked an Eternal windup in
+the actual in-memory battle view without page errors. The isolated suite
+passes 1,776 tests in 22 files with `npx vitest run radiant --exclude
+src\radiant-ui.test.ts --maxWorkers=2 --testTimeout=60000`; `npm run build`
+passes with the existing chunk-size advisory. This adds visual depth but does
+not replace owner review, final bespoke cinema, or physical GPU/cadence
+acceptance. The authority remains disabled and deployment remains gated.
+
 ## Identity motion and offscreen windups (2026-11-09)
 
 The Radiant presentation now gives each released bearer a distinct ordered

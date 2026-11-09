@@ -2,7 +2,8 @@ import { characterChoreography, characterSignaturePath } from '../presentation/b
 import type { RadiantBearerId } from '../content/radiant-combat';
 import type { AbilityTier, BaseVFXSystem, ColorStop, VFXContext } from './types';
 import { smoothstep } from './vfx-motion';
-import { radiantMotifMotions, radiantMotifPaths, radiantMotifPlacement, radiantMotifSequences } from './radiant-cinematic-motifs';
+import { radiantMotifMotions, radiantMotifPaths, radiantMotifPlacement, radiantMotifSequences,
+  radiantMotionPaths } from './radiant-cinematic-motifs';
 
 export interface RadiantSignatureFrame {
   x: number;
@@ -34,9 +35,11 @@ export function radiantStatusCueSystem(): BaseVFXSystem {
 export class RadiantSignatureVFX {
   private readonly path: Path2D;
   private readonly motifs: readonly Path2D[];
+  private readonly architecture: Path2D;
   constructor(readonly bearer: RadiantBearerId) {
     this.path = new Path2D(characterSignaturePath(bearer));
     this.motifs = radiantMotifSequences[bearer].map(motif => new Path2D(radiantMotifPaths[motif]));
+    this.architecture = new Path2D(radiantMotionPaths[radiantMotifMotions[bearer]]);
   }
   render(context: CanvasRenderingContext2D, frame: RadiantSignatureFrame): void {
     const { x, y, radius, progress: p, tier, phase, color, secondaryColor } = frame;
@@ -69,6 +72,27 @@ export class RadiantSignatureVFX {
       } finally {
         context.restore();
       }
+      const motifMotion = radiantMotifMotions[this.bearer];
+      for (let layer = 0; layer < layers; layer++) {
+        const direction = layer % 2 ? -1 : 1;
+        const twist = motifMotion === 'orbit' || motifMotion === 'spiral' ? .35 :
+          motifMotion === 'sweep' || motifMotion === 'tide' ? .16 : .05;
+        const architectureColor = layer % 2 ? secondaryColor : color;
+        context.save();
+        try {
+          context.rotate(direction * p * twist);
+          context.scale(.75 + layer * .13, .75 + layer * .13);
+          context.globalAlpha *= layer ? .35 : .5;
+          context.strokeStyle = `rgb(${architectureColor.r},${architectureColor.g},${architectureColor.b})`;
+          context.lineWidth = 3;
+          context.stroke(this.architecture);
+          context.strokeStyle = 'rgba(255,255,255,.7)';
+          context.lineWidth = 1;
+          context.stroke(this.architecture);
+        } finally {
+          context.restore();
+        }
+      }
       for (let layer = 0; layer < layers; layer++) {
         const ring = 57 + layer * 12;
         const orbit = (layer % 2 ? -1 : 1) * p * .8;
@@ -86,7 +110,7 @@ export class RadiantSignatureVFX {
         }
         const count = 2 + layer;
         for (let index = 0; index < count; index++) {
-          const [motifX, motifY, motifRotation] = radiantMotifPlacement(radiantMotifMotions[this.bearer],
+          const [motifX, motifY, motifRotation] = radiantMotifPlacement(motifMotion,
             index, count, layer, ring, phase === 'charge' ? p : smoothstep(p), phase === 'charge');
           context.save();
           try {

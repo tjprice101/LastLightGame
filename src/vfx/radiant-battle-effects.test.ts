@@ -10,7 +10,8 @@ import { VFXRenderer } from './vfx-renderer';
 import { createVFXSystem, CHARACTER_PROFILES } from './vfx-registry';
 import type { VFXContext } from './types';
 import { RadiantSignatureVFX, radiantSignatureLayers, withRadiantSignature, radiantStatusCueSystem } from './radiant-signature-vfx';
-import { radiantMotifMotions, radiantMotifPaths, radiantMotifPlacement, radiantMotifSequences } from './radiant-cinematic-motifs';
+import { radiantMotifMotions, radiantMotifPaths, radiantMotifPlacement, radiantMotifSequences,
+  radiantMotionPaths } from './radiant-cinematic-motifs';
 import { characterSignaturePath } from '../presentation/battle-effects';
 
 function context(): CanvasRenderingContext2D {
@@ -82,9 +83,11 @@ describe('saved Radiant emission/bloom pilot', () => {
     const sequences = releasedRadiantIds.map(id => radiantMotifSequences[id].join('/'));
     expect(new Set(sequences).size).toBe(32);
     expect(new Set(Object.values(radiantMotifMotions)).size).toBe(9);
+    expect(new Set(Object.values(radiantMotionPaths)).size).toBe(9);
     for (const id of releasedRadiantIds) {
       expect(new Set(radiantMotifSequences[id]).size).toBe(3);
       for (const motif of radiantMotifSequences[id]) expect(radiantMotifPaths[motif]).toMatch(/^M/);
+      expect(radiantMotionPaths[radiantMotifMotions[id]]).toMatch(/^M/);
     }
   });
   it('keeps every authored motif motion finite, bounded and moving in charge and impact', () => {
@@ -122,6 +125,26 @@ describe('saved Radiant emission/bloom pilot', () => {
     }
     expect(paths.size).toBe(32);
   });
+  it('reuses and animates each cinematic architecture across sampled frames', () => {
+    for (const motion of new Set(Object.values(radiantMotifMotions))) {
+      const id = releasedRadiantIds.find(candidate => radiantMotifMotions[candidate] === motion);
+      if (!id) throw new Error(`Missing bearer for ${motion}.`);
+      const signature = new RadiantSignatureVFX(id);
+      const rotations: number[] = [];
+      let architecture: Path2D | undefined;
+      for (const progress of [.2, .5, .8]) {
+        const output = context();
+        signature.render(output, { x: 0, y: 0, radius: 25, progress, tier: 'ultimate', phase: 'impact',
+          color: { r: 100, g: 200, b: 240, a: 1 }, secondaryColor: { r: 180, g: 80, b: 240, a: 1 } });
+        const paths = vi.mocked(output.stroke).mock.calls.filter(call => call[0] !== undefined);
+        architecture ??= paths[2][0];
+        expect(architecture).toBeDefined();
+        expect(paths.slice(2, 8).every(call => call[0] === architecture)).toBe(true);
+        rotations.push(vi.mocked(output.rotate).mock.calls[1][0]);
+      }
+      expect(new Set(rotations).size).toBe(3);
+    }
+  });
   it('increases exact bounded tier architecture and gives statuses no celebration satellites', () => {
     expect(radiantSignatureLayers).toEqual({ light: 0, skill1: 1, skill2: 2, ultimate: 3 });
     const signature = new RadiantSignatureVFX('tide');
@@ -133,9 +156,11 @@ describe('saved Radiant emission/bloom pilot', () => {
       expect(output.arc).toHaveBeenCalledTimes(arcs);
       expect(vi.mocked(output.arc).mock.calls.every(call => call[2] <= 81)).toBe(true);
       const pathStrokes = vi.mocked(output.stroke).mock.calls.filter(call => call[0] !== undefined);
-      expect(pathStrokes).toHaveLength(2 + motifs * 2);
-      expect(new Set(pathStrokes.map(call => call[0])).size).toBe(paths);
-      expect(output.save).toHaveBeenCalledTimes(2 + motifs); expect(output.restore).toHaveBeenCalledTimes(2 + motifs);
+      const layers = radiantSignatureLayers[tier];
+      expect(pathStrokes).toHaveLength(2 + motifs * 2 + layers * 2);
+      expect(new Set(pathStrokes.map(call => call[0])).size).toBe(paths + (layers ? 1 : 0));
+      expect(output.save).toHaveBeenCalledTimes(2 + motifs + layers);
+      expect(output.restore).toHaveBeenCalledTimes(2 + motifs + layers);
     }
     const output = context();
     signature.render(output, { x: 0, y: 0, radius: 25, progress: .4, tier: 'ultimate', phase: 'status',
