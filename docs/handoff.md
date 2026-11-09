@@ -1,5 +1,51 @@
 # Current state and handoff
 
+## Recovering field formation and portrait gestures (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`; recovered committed baseline
+`aa329588`. Pending signature-VFX edits were preserved and integrated; unrelated
+rejected UI/design-lab and dirty documentation remain unstaged.
+
+**Implemented:** owner-corrected full-form allied field (right, facing left)
+with canonical enemies (left, facing right), separate lower face controls.
+Health/Shield, other three stats via existing presentation formatter, sourced
+effect lists, personal layers/highest-tier readiness and shared meter remain.
+Tap portraits saves a Normal Attack;350ms hold/upward32px release saves the
+highest ready Flare. Cancel/early/diagonal/downward/unavailable never fall back
+to Normal. Non-spending Select · Actions supports keyboard/text buttons and
+Defense. Capture/timer cancellation covers Escape/blur/Settings/transition/
+disposal; compatibility clicks cannot double-spend. Narrow-screen rail is
+horizontal/focusable. Saved field/portrait DOM stays stable through actions.
+
+Recovered VFX includes all32 authored source motifs in centered light filaments,
+exact progressive satellite layers, small buff-only status cues, effective-only
+feedback and correct six-target heal+attached-status frames. Generated/native
+follow-ups do not impersonate the acting character's signature. Existing field
+facing is untouched; stance/recoil runs in parallel with finite emission and
+idle respects Reduce motion. Resize/scroll clears stale-anchor effects.
+
+**Verified:** [exact command/evidence](Future%20Plans/radiant-combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08):
+210 tests/10 files and TypeScript/Vite build pass (existing chunk advisory).
+Browser390px: all6 field allies/2 enemies/6 portraits, canonical source pixels,
+correct side placement and no page-width overflow. Instrumented pointer/capture
+shim saves Tizu Glowing/548 Shield once; portrait click updates520 enemyHP to0,
+Gauge25/50, same field image, no errors/storage. Hidden browser did not deliver
+native injected mouse events, so physical touch/GPU approval is not claimed.
+Temporary server is stopped after checks.
+
+**Recovery error:** VS Code host logs confirm session subscription string-length
+failures at19:02/19:04, outside game code. Exact serialized payload cause is not
+proven; do not rewrite gameplay, erase history or dump huge logs to fix it.
+Git/worktree plus this compact persistent entry preserve continuation.
+
+**Remaining / do next:** timed-status creation/expiration/guard impact replay;
+review remaining face crops/compact contexts; cinematic actual-squad Home;
+production authenticated entry/preparation/exit/captured-holdings UI; real DB
+CAS/atomic/idempotent proof and long-journal latency/payload checks; final bespoke
+VFX/physical device/touch/performance/cadence/economy calibration; final single
+art brief; only then coherent gated client/authority release/hosted verification.
+Do not claim the whole overhaul complete or activate it from preview evidence.
+
 ## Radiant saved-impact emission/bloom pilot (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; prior frozen reference `1a1b6a3f`.

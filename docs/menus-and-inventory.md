@@ -1,5 +1,22 @@
 # Menus and inventory
 
+## Radiant field units and charged portrait controls (2026-11-08)
+
+[Owner clarification and saved interaction contract](Future%20Plans/radiant-combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08):
+full-form allies and enemies remain on the upper scenery field; separate face
+portraits below hold Health/Shield, three other frozen stats, sourced effects
+and personal Gauge/readiness. Tap a portrait to attack; hold350ms, drag upward
+at least32px and release for its highest ready Flare. Cancel/unavailable/early
+drags spend nothing and never silently attack instead.
+Select · Actions retains keyboard-accessible Normal/Defense/Flare alternatives.
+Narrow screens have a focusable horizontal portrait rail, not cropped controls.
+Use existing facing/source art, save-first receipts, parallel bounded stance/
+recoil effects, static Reduce motion and complete timer/pointer/DOM disposal.
+All32 authored signature motifs now join finite emission; small buff-only status
+pulses do not celebrate ineffective healing or generated follow-ups.
+Full status clocks, production routing and final cinematic/device release
+validation remain unfinished; this does not activate the overhaul.
+
 ## Radiant saved-impact bloom pilot (2026-11-08)
 
 [Emission/bloom contract](Future%20Plans/radiant-combat-system-specification.md#saved-impact-emission-and-bloom-pilot-2026-11-08):

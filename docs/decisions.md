@@ -1,5 +1,19 @@
 # Decision log
 
+## Keep full battle units above interactive portrait readouts (2026-11-08)
+
+Owner explicitly confirms full-form characters still fight with enemies in
+the field; portraits below are Health/stats/status/Gauge and action controls.
+Implement tap Normal Attack and held/upward-drag highest-ready Flare using the
+same saved operation, with no cancelled/unavailable fallback attack. Keep
+Select · Actions/Defense/Flare buttons accessible without dragging, pointer/
+timer lifecycle, static Reduce motion, source-facing field artwork and an
+intentional narrow-screen portrait rail. Complete recovered identity-signature
+VFX work without claiming final bespoke cinematic/GPU approval.
+The request to finish the whole overhaul retains its actual release gates:
+no incomplete merge/default activation or mocked-DB proof presented as live.
+[Contract/evidence and continuation gates](Future%20Plans/radiant-combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08).
+
 ## Integrate Radiant emission without claiming final cinematic art (2026-11-08)
 
 Continue delegated VFX work with a save-first source-aligned canvas pilot,

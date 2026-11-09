@@ -5,12 +5,13 @@ import type { AbilityTier, AbilityVFXDefinition, VFXContext, BaseVFXSystem, VFXA
 import type { RadiantBattleEffects } from '../presentation/radiant-battle-view';
 import type { RadiantImpactFrame } from '../presentation/radiant-impact';
 import type { RadiantPlayerAction } from '../online/radiant-run';
-import type { RadiantCombatState } from '../game/radiant-combat';
+import type { RadiantCombatState, RadiantCombatEvent } from '../game/radiant-combat';
 import { readyFlare } from '../game/radiant-gauge';
 import { radiantFlares, type RadiantBearerId } from '../content/radiant-combat';
 import { starters } from '../content/starters';
 import { battleSpeed } from '../presentation/battle-speed';
 import { reducedMotion } from '../presentation/settings';
+import { RadiantSignatureVFX, withRadiantSignature, radiantStatusCueSystem } from './radiant-signature-vfx';
 
 interface Effect { system: BaseVFXSystem; context: VFXContext }
 const pilotArchetypes: Partial<Record<RadiantBearerId, readonly [VFXArchetype, VFXArchetype]>> = {
@@ -39,6 +40,7 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
   private action: RadiantPlayerAction | null = null;
   private state: RadiantCombatState | null = null;
   private ability: AbilityVFXDefinition | null = null;
+  private signatures = new Map<RadiantBearerId, RadiantSignatureVFX>();
   private readonly resized = () => this.cancel();
   constructor(private readonly host: HTMLElement) {
     this.canvas = host.ownerDocument.createElement('canvas');
@@ -50,11 +52,17 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
     this.context = context; this.renderer = new VFXRenderer(context);
     host.ownerDocument.body.append(this.canvas);
     window.addEventListener('resize', this.resized);
+    window.addEventListener('scroll', this.resized, { capture: true, passive: true });
   }
   pause(paused: boolean): void { this.paused = paused; }
+  private signature(id: RadiantBearerId): RadiantSignatureVFX {
+    let signature = this.signatures.get(id);
+    if (!signature) { signature = new RadiantSignatureVFX(id); this.signatures.set(id, signature); }
+    return signature;
+  }
   private anchor(id: string): DOMRect {
-    const element = Array.from(this.host.querySelectorAll<HTMLElement>('[data-radiant-actor], [data-radiant-target]'))
-      .find(element => element.dataset.radiantActor === id || element.dataset.radiantTarget === id);
+    const element = Array.from(this.host.querySelectorAll<HTMLElement>('[data-radiant-art]'))
+      .find(element => element.dataset.radiantArt === id);
     if (!element) throw new Error('Radiant effect target is missing from the saved field.');
     const rect = (element.querySelector('img') ?? element).getBoundingClientRect();
     if (rect.width <= 0 || rect.height <= 0) throw new Error('Radiant effect target has no visible area.');
@@ -100,13 +108,13 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
     const tier: AbilityTier = flare === 'eternal' ? 'ultimate' : flare === 'lustrous' ? 'skill2' : flare === 'glowing' ? 'skill1' : 'light';
     const original = visualDefinition(bearer.loadout.starter, tier);
     this.ability = { ...original, name: flare ? radiantFlares[bearer.loadout.starter][flare].name : action.type === 'defense' ? 'Defense' : 'Normal Attack' };
-    this.size();
+    const size = this.size(), signature = this.signature(bearer.loadout.starter);
     const rect = this.anchor(action.bearerId);
     const x = rect.left + rect.width / 2, y = rect.top + rect.height / 2;
     const duration = flare === 'eternal' ? .6 : flare ? .4 : .2;
     const color = original.palette.mid;
     await this.play(duration, time => {
-      const p = time / duration, radius = Math.min(70, rect.width * .4) * (.4 + p * .6);
+      const p = time / duration, radius = Math.min(70, Math.min(rect.width, rect.height) * .4) * (.4 + p * .6);
       const glow = this.context.createRadialGradient(x, y, 0, x, y, radius * 2);
       glow.addColorStop(0, `rgba(255,255,255,${.3 * Math.sin(p * Math.PI)})`);
       glow.addColorStop(.4, `rgba(${color.r},${color.g},${color.b},${.25 * Math.sin(p * Math.PI)})`);
@@ -115,13 +123,23 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
       this.context.strokeStyle = `rgba(${color.r},${color.g},${color.b},${Math.sin(p * Math.PI)})`;
       this.context.lineWidth = 2;
       this.context.beginPath(); this.context.arc(x, y, radius, p * 3, p * 3 + Math.PI * 1.6); this.context.stroke();
+      const emission = this.renderer.begin(size.width, size.height, size.dpr);
+      signature.render(emission, { x, y: rect.top + rect.height * .15,
+        radius: Math.min(32, Math.min(rect.width, rect.height) * .2), progress: p,
+        tier, phase: 'charge', color });
+      this.renderer.composite(size.width, size.height, { enabled: true, intensity: .7, radius: 12 });
     });
   }
   async impact(frame: RadiantImpactFrame): Promise<void> {
     if (!this.ability || !this.action || !this.state) throw new Error('Radiant effects have no saved action context.');
-    const packets = frame.events.filter(event => event.type === 'damage' || event.type === 'heal' || event.type === 'shield');
+    const packets = frame.events.filter((event): event is Extract<RadiantCombatEvent,
+      { type: 'damage' | 'heal' | 'shield' | 'status' }> =>
+      event.type === 'damage' && event.healthLoss + event.absorbed > 0 ||
+      event.type === 'heal' && event.effective > 0 ||
+      event.type === 'shield' && event.amount > 0 || event.type === 'status');
     if (!packets.length) return;
-    if (packets.length > 6) throw new Error('Radiant visual impact exceeds the six-target frame bound.');
+    if (new Set(packets.map(packet => packet.targetId)).size > 6)
+      throw new Error('Radiant visual impact exceeds the six-target frame bound.');
     const size = this.size(), effects: Effect[] = [];
     for (const packet of packets) {
       const rect = this.anchor(packet.targetId);
@@ -129,10 +147,12 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
       const own = packet.source.kind !== 'enemy' && packet.source.bearerId === this.action.bearerId;
       // Support and periodic packets never borrow offensive projectile choreography.
       const support = packet.type !== 'damage';
-      const simple = !own || packet.source.kind === 'gear' || packet.type === 'damage' && packet.origin !== 'direct';
-      const duration = simple ? .45 : this.ability.tier === 'ultimate' ? 1.2 : this.ability.tier === 'light' ? .55 : .85;
+      const authored = own && ['normal', 'flare', 'master'].includes(packet.source.kind);
+      const simple = !authored || packet.type === 'damage' && packet.origin !== 'direct';
+      const duration = packet.type === 'status' ? .35 : simple ? .45 : this.ability.tier === 'ultimate' ? 1.2 : this.ability.tier === 'light' ? .55 : .85;
       const ownerId = packet.source.kind !== 'enemy' ? packet.source.bearerId : null;
       const source = ownerId ? this.state.bearers.find(unit => unit.loadout.id === ownerId) : null;
+      if (ownerId && !source) throw new Error('Radiant visual packet owner is missing from the frozen squad.');
       const palette = source ? visualDefinition(source.loadout.starter, 'light').palette : {
         ...this.ability.palette,
         id: 'radiant-neutral', name: 'Neutral enemy packet cue',
@@ -145,13 +165,15 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
       const definition: AbilityVFXDefinition = { ...this.ability, palette,
         archetype: support ? packet.type === 'shield' ? 'vortex' : 'mandala' : simple ? 'mandala' : this.ability.archetype,
         chargeDuration: .05, impactDuration: duration * .5, duration };
-      const system = createVFXSystem(definition.archetype);
+      const baseSystem = packet.type === 'status' ? radiantStatusCueSystem() : createVFXSystem(definition.archetype);
+      const system = source && !simple ? withRadiantSignature(baseSystem, this.signature(source.loadout.starter),
+        packet.type === 'status' ? 'status' : 'impact') : baseSystem;
       const caster = own ? this.anchor(this.action.bearerId) : rect;
       const context: VFXContext = { ctx: this.context, ...size, t: 0, dt: 0, progress: 0,
         casterX: support || simple ? targetX : caster.left + caster.width / 2,
         casterY: support || simple ? targetY : caster.top + caster.height / 2,
         targetX, targetY, definition, palette: definition.palette, secondaryTarget: effects.length > 0,
-        scale: Math.min(.75, Math.max(.2, rect.width / 300)) * (simple ? .5 : 1), shakeCallback: () => {} };
+        scale: Math.min(.75, Math.max(.2, Math.min(rect.width, rect.height) / 300)) * (simple || packet.type === 'status' ? .5 : 1), shakeCallback: () => {} };
       system.reset(); effects.push({ system, context });
     }
     const duration = Math.max(...effects.map(effect => effect.context.definition.duration));
@@ -171,5 +193,7 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
   }
   dispose(): void {
     this.disposed = true; this.cancel(); window.removeEventListener('resize', this.resized); this.canvas.remove();
+    window.removeEventListener('scroll', this.resized, true);
+    this.signatures.clear();
   }
 }

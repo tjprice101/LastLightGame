@@ -1,5 +1,99 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Recovered field formation and portrait actions (2026-11-08)
+
+Owner clarifies that full-form Element-Bearers still fight on the scenery field
+with the enemies; face portraits below are the stat/status/Gauge and gesture
+controls, not replacement battle sprites. This supersedes any portrait-only
+field interpretation. The isolated saved view now keeps up to six frozen
+full-form allies on the right and canonical enemies on the left, using existing
+ally-left/enemy-right facing metadata. Portrait crops remain separate below.
+No new or substituted art, account grants, stats, RNG or authority writes.
+
+The lower portrait rail retains Health/Shield, Attack/Defense/Recovery (shared
+two-decimal presentation formatting only), source-owned effect rows, personal
+layers and actual highest-tier readiness. Exact Health/Shield/Gauge ledgers
+remain whole combat values. Narrow screens use an intentional keyboard-focusable
+horizontal rail, not a stack that pushes the field and controls thousands of
+pixels apart. Full names/effects remain accessible; effect lists are contained,
+not silently discarded. Reference dialogs retain exact frozen raw stats.
+
+[Portrait gestures](../../src/presentation/radiant-portrait-gesture.ts):
+tap/click/keyboard activation attacks the selected living enemy with that
+portrait's member. A350ms hold followed by an upward-dominant drag of at least
+32px and release casts that member's highest currently ready Flare. No hold-time
+spending, third layer, lower-tier reroll or separate transaction is introduced.
+Readiness is checked again on release. Early/short/diagonal/downward/unavailable
+gestures cancel without a fallback Normal Attack. Pointer capture, cancellation,
+Escape, focus loss, Settings/action locks, transition and disposal clear the
+hold timer; compatibility clicks cannot double-spend. Keyboard activation stays
+usable after cancellation.
+
+Select · Actions is the non-spending, keyboard/touch-accessible route to the
+existing Normal/Defense/Flare buttons. Targets remain explicit and specialized
+Tizu/Flora strike Masters retain their required enemy. All gestures feed the
+same saved operation and receipt presentation; old Health/Shield/Gauge and
+field artwork remain until save succeeds.
+
+Field idle is sparse breathing on an inner wrapper. Authored slash/thrust,
+bow recoil, caster lift, hammer preparation, twin tilt or guard stance runs
+alongside existing windup, not as an extra delayed transaction. Impact recoil/
+defeat fade runs alongside effect emission after the saved readout frame.
+Images keep their facing transforms; VFX anchors now use full field art, never
+the portrait rail. Static Reduce motion disables field idle and action effects.
+
+Recovered pending VFX work also adds all32 distinct existing identity paths as
+centered, double-stroked light filaments in charge/impact emission. Glowing has
+one satellite layer/3 arcs, Lustrous two/7 arcs, Eternal three/12 arcs; no random
+geometry, copied characters or per-frame Path2D allocation. Native/gear/periodic
+follow-ups do not replay the acting bearer's signature. Buff-only saved statuses
+now get small local source-owned rings/glyphs; zero-effective heals and zero-
+damage packets get no success-shaped feedback. Six-target frames can include
+their attached statuses without incorrectly treating packet count as target
+count. Resize/scroll cancels stale-anchor visuals only. Final bespoke cinema/
+shaders/device-performance approval remains unfinished.
+
+Validation command:
+`npx vitest run src/presentation/radiant-portrait-gesture.test.ts src/presentation/radiant-battle-view.test.ts src/presentation/radiant-battle-art.test.ts src/presentation/radiant-impact.test.ts src/presentation/radiant-status.test.ts src/presentation/radiant-battle-reference.test.ts src/presentation/battle-effects.test.ts src/vfx/radiant-battle-effects.test.ts src/vfx/vfx-systems.test.ts src/online/radiant-session.test.ts`
+passes210 tests/10 files. `npm run build` passes TypeScript/Vite with the
+existing chunk-size advisory. Tests verify exact350ms/32px thresholds,
+cancel/keyboard/locks/disposal, one saved tap/Flare operation, stable distinct
+field/face DOM,32 unique paths, bounded layers and actual six-target heal/status
+frames without state mutation.
+
+Built-browser checks: six field allies/two enemies plus six separate portraits,
+loaded canonical source pixels, left/right placement and no page-width overflow
+at390px. Native mouse injection did not deliver pointer events in the hidden
+integrated browser; instrumented PointerEvents (capture shim only) exercise
+Tizu's actual in-memory authority save and retain548 Shield with no duplicate
+attack/error/storage write. DOM portrait click updates actual enemy520HP to0,
+Tizu Gauge25/50 and preserves the full-field image node. This is not a physical
+touch-device or FPS claim.
+
+### Remaining coherent-release gates
+
+The whole overhaul is **not yet release-complete**. Continue from these actual
+gates, not from historical proposal sections or rejected mock-ups:
+
+1. Full timed-status creation/expiration/guard synchronization at every impact;
+   current clocks remain explicitly last-completed snapshots during replay.
+2. Individually reviewed remaining face crops and production compact contexts;
+   current crop/art-pending ownership must remain honest.
+3. Cinematic actual-squad Home and authenticated activity/preparation/exit/
+   captured-holdings routes; this preview remains in-memory.
+4. Actual database atomicity/CAS/idempotency proof and long-journal payload/
+   latency gate, not mocked authority evidence alone.
+5. Final bespoke cinematic VFX, physical device/touch/GPU/cadence/economy
+   calibration, final singular art brief and then matching gated client/
+   authority deployment plus hosted verification.
+
+The owner's request to finish the remaining overhaul does not make incomplete
+gates pass. Preserve the isolated branch and default-disabled authority until
+these are validated. The reported VS Code string-length failure is confirmed
+on session subscription, outside game code; its exact serialized payload cause
+is not proven. Git/worktree and this handoff recover the project work without
+dumping or deleting the oversized conversation.
+
 ## Saved-impact emission and bloom pilot (2026-11-08)
 
 [Radiant canvas effects](../../src/vfx/radiant-battle-effects.ts) are wired only

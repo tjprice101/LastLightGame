@@ -90,6 +90,10 @@ const signaturePaths: Record<Signature, string> = {
   'unfastened-court': 'M18 18 C54 24 76 40 82 82 M82 18 C46 24 24 40 18 82 M28 30 L72 70 M72 30 L28 70 M50 8 V28 M50 72 V92 M8 50 H28 M72 50 H92',
 };
 
+export function characterSignaturePath(id: StarterId): string {
+  return signaturePaths[characterChoreography[id].signature];
+}
+
 export interface AttackFlair {
   power: number;
   rings: number;

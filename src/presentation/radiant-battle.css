@@ -10,6 +10,48 @@
 }
 .radiant-arena { position: absolute; inset: 0; z-index: -1; overflow: hidden; border-radius: inherit; pointer-events: none; }
 .radiant-arena::after { content: ""; position: absolute; inset: 0; background: linear-gradient(#111216b8, #111216de); }
+.radiant-field .radiant-arena::after { background: linear-gradient(#10121b28, #10121b10 50%, #10121b85); }
+.radiant-field { position: relative; isolation: isolate; box-sizing: border-box; min-height: clamp(300px, 28vw, 400px); border: 1px solid #737984; border-radius: 18px; margin: 18px 0; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(8px, 4vw, 64px); align-items: end; padding: clamp(10px, 2vw, 24px); overflow: hidden; }
+.radiant-allies { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: 0; grid-column: 2; grid-row: 1; }
+.radiant-field-ally { min-width: 0; position: relative; text-align: center; transform: translateY(calc((var(--formation) - 2) * 3px)); }
+.radiant-field-ally > span { font-size: 12px; text-shadow: 0 2px 3px #000; }
+.radiant-field-ally.is-selected > span { text-decoration: underline; text-underline-offset: 4px; }
+.radiant-unit-motion { position: relative; will-change: transform; }
+.radiant-unit-idle { animation: radiant-field-breathe 4s ease-in-out infinite; animation-delay: calc(var(--formation, 0) * -550ms); transform-origin: 50% 90%; }
+.radiant-ally-art { display: block; object-fit: contain; width: 100%; height: clamp(90px, 10vw, 140px); }
+.radiant-ally-art[data-mirrored="true"] { scale: -1 1; }
+.radiant-field .radiant-enemies { margin: 0; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; grid-column: 1; grid-row: 1; }
+.radiant-field .radiant-enemy { border: 1px solid transparent; background: #10131b40; padding: 6px; min-width: 0; }
+.radiant-field .radiant-enemy-art, .radiant-field .radiant-art-pending { height: clamp(130px, 18vw, 240px); }
+.radiant-field .radiant-enemy > strong { font-size: 13px; overflow-wrap: anywhere; }
+.radiant-field .is-defeated .radiant-unit-motion { opacity: .2; filter: grayscale(1); }
+.radiant-field .is-defeated .radiant-unit-idle { animation: none; }
+.radiant-frozen-stats { margin: 6px 0; font-size: 12px; }
+.radiant-frozen-stats div { display: flex; gap: 6px; flex-wrap: wrap; justify-content: space-between; }
+.radiant-frozen-stats dd { margin: 0; overflow-wrap: anywhere; }
+.radiant-face { touch-action: none; user-select: none; -webkit-user-select: none; }
+.radiant-face img { -webkit-user-drag: none; }
+.radiant-face .compact-portrait { transition: transform 140ms ease-out; transform: translateY(var(--radiant-drag, 0px)); }
+.radiant-face[data-ready-tier="glowing"] { border-color: #b8daf8; box-shadow: inset 0 0 15px #b8daf822; }
+.radiant-face[data-ready-tier="lustrous"] { border-color: #dacdff; box-shadow: inset 0 0 18px #dacdff33; }
+.radiant-face[data-ready-tier="eternal"] { border-color: #fff; box-shadow: inset 0 0 22px #ffffff44; }
+.radiant-face.is-held::after { content: ""; position: absolute; inset: 5px; border: 2px solid #fff; border-radius: 9px; pointer-events: none; }
+.radiant-member [data-radiant-select] { width: 100%; margin-top: 8px; }
+.radiant-member.is-defeated .compact-portrait { filter: grayscale(1); }
+[data-radiant-readiness] { display: block; font-size: 12px; margin-top: 6px; overflow-wrap: anywhere; }
+#radiant-gesture-help, [data-radiant-gesture-status] { font-size: 13px; line-height: 1.5; }
+@keyframes radiant-field-breathe { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2px) scale(1.015); } }
+html[data-motion="reduced"] .radiant-unit-idle { animation: none; }
+html[data-motion="reduced"] .radiant-face .compact-portrait { transition: none; }
+@media (prefers-reduced-motion: reduce) { .radiant-unit-idle { animation: none; } .radiant-face .compact-portrait { transition: none; } }
+@media (max-width: 520px) {
+  .radiant-field { padding: 8px; gap: 8px; min-height: 330px; grid-template-columns: 1fr 1fr; }
+  .radiant-field .radiant-enemies { grid-template-columns: 1fr; gap: 4px; }
+  .radiant-field .radiant-enemy-art { height: 80px; }
+  .radiant-allies { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .radiant-ally-art { height: 82px; }
+  .radiant-field .radiant-health span, .radiant-field .radiant-enemy > strong { font-size: 10px; }
+}
 .radiant-arena-art { width: 100%; height: 100%; object-fit: cover; }
 .radiant-arena-pending { width: 100%; height: 100%; background: radial-gradient(ellipse, #454751, #17171f); }
 .radiant-enemy-art, .radiant-art-pending { display: block; height: clamp(130px, 20vw, 260px); width: 100%; object-fit: contain; }
@@ -50,7 +92,7 @@ body:has(#radiant-preview) { margin: 0; background: #0c0d11; }
 .radiant-member { min-width: 0; background: #1b1c22d9; border: 1px solid #646770; border-radius: 16px; padding: 8px; }
 .radiant-member.is-selected { border-color: #fff; box-shadow: 0 0 22px #ffffff18; }
 .radiant-face { width: 100%; text-align: left; position: relative; overflow: hidden; }
-.radiant-face .compact-portrait { display: block; aspect-ratio: 1; width: 100%; }
+.radiant-face .compact-portrait { display: block; aspect-ratio: 1.25; width: 100%; max-width: 112px; margin-inline: auto; }
 .radiant-face img { width: 100%; height: 100%; object-fit: contain; }
 .radiant-face img[data-mirrored="true"] { scale: -1 1; }
 .radiant-face strong, .radiant-face > span:not(.compact-portrait), .radiant-identity { display: block; overflow-wrap: anywhere; }
@@ -69,6 +111,7 @@ body:has(#radiant-preview) { margin: 0; background: #0c0d11; }
 .radiant-battle [hidden] { display: none !important; }
 .radiant-member details { margin-top: 10px; font-size: 13px; overflow-wrap: anywhere; }
 .radiant-member [data-radiant-reference] { width: 100%; margin-top: 10px; }
+.radiant-member .radiant-status-list, .radiant-member .radiant-shield-layers { max-height: 108px; overflow-y: auto; scrollbar-width: thin; }
 .radiant-team-reference { padding: 12px; border: 1px solid #686c77; border-radius: 12px; margin-top: 16px; }
 .radiant-reference-dialog { width: min(900px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; overflow-wrap: anywhere; }
 .radiant-reference-dialog dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
@@ -89,5 +132,9 @@ body:has(#radiant-preview) { margin: 0; background: #0c0d11; }
 .radiant-results li img { width: 48px; height: 48px; object-fit: contain; }
 [data-radiant-error] { color: #ffd4d4; }
 .radiant-impact-ring { position: absolute; opacity: 0; width: 60px; height: 60px; border: 2px solid #fff; border-radius: 50%; left: calc(50% - 30px); top: calc(50% - 30px); pointer-events: none; box-shadow: 0 0 12px #fff8, inset 0 0 10px #fff5; }
-@media (max-width: 1000px) { .radiant-squad { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 520px) { .radiant-squad { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.radiant-squad:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
+@media (max-width: 1000px) {
+  .radiant-squad { display: flex; overflow-x: auto; align-items: flex-start; padding: 6px 2px 12px; scrollbar-width: thin; }
+  .radiant-member { flex: 0 0 clamp(160px, 35vw, 200px); box-sizing: border-box; }
+  .radiant-member button { font-size: 13px; }
+}

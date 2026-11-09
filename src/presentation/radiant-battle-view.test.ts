@@ -65,6 +65,10 @@ describe('saved six-member Radiant battle surface', () => {
     expect(host.querySelectorAll('.compact-portrait img')).toHaveLength(6);
     expect(host.querySelectorAll('[data-radiant-charge]')).toHaveLength(12);
     expect(host.querySelectorAll('[data-radiant-reference]')).toHaveLength(6);
+    expect(host.querySelectorAll('.radiant-allies .radiant-ally-art')).toHaveLength(6);
+    expect(host.querySelectorAll('.radiant-field [data-radiant-art]')).toHaveLength(8);
+    expect(host.querySelectorAll('.radiant-allies .compact-portrait')).toHaveLength(0);
+    expect(host.querySelector('.radiant-squad .radiant-ally-art')).toBeNull();
     expect(host.textContent).not.toMatch(/Critical|Shatter|Elemental Damage/);
     expect(host.querySelector('[data-radiant-shared-text]')!.textContent).toBe('0 / 100');
     expect(host.querySelector<HTMLMeterElement>('[data-radiant-shared]')!.max).toBe(100);
@@ -72,13 +76,42 @@ describe('saved six-member Radiant battle surface', () => {
     const image = host.querySelector('.compact-portrait img');
     const enemyImage = host.querySelector('.radiant-enemy-art');
     const scenery = host.querySelector('.radiant-arena-art');
+    const ally = host.querySelector('.radiant-ally-art');
     expect(enemyImage).not.toBeNull(); expect(scenery).not.toBeNull();
     await view.act('normal');
     expect(host.querySelector('.compact-portrait img')).toBe(image);
     expect(host.querySelector('.radiant-enemy-art')).toBe(enemyImage);
     expect(host.querySelector('.radiant-arena-art')).toBe(scenery);
+    expect(host.querySelector('.radiant-ally-art')).toBe(ally);
     expect(session.view().presentation).toBeNull();
     expect(host.querySelector('[data-radiant-charge-text="ember"]')!.textContent).toMatch(/2[05] \/ 60 charge/);
+  });
+  it('portrait tap saves exactly one Normal Attack for that member while selection remains a non-spending alternative', async () => {
+    const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
+    controls(host, '[data-radiant-select="sprout"]').click();
+    expect(transport.execute).not.toHaveBeenCalled();
+    controls(host, '[data-radiant-actor="tide"]').click();
+    await vi.waitFor(() => expect(session.view().presentation).toBeNull());
+    expect(transport.execute).toHaveBeenCalledTimes(1);
+    expect(transport.execute.mock.calls[0][0].operation).toEqual({ kind: 'action',
+      action: { type: 'normal', bearerId: 'tide', targetId: 'story-25-0' } });
+    expect(host.querySelector('[data-radiant-field-unit="tide"]')).not.toBeNull();
+  });
+  it('a held upward portrait release sends one saved Flare and suppresses its compatibility click', async () => {
+    const { view, session, host, transport } = fixture(6, 6, undefined, 25, undefined, undefined, true);
+    applyMotion('reduced'); await view.finishEntrance();
+    vi.useFakeTimers();
+    const button = controls(host, '[data-radiant-actor="tide"]');
+    const pointer = (type: string, y: number) => {
+      const event = new Event(type, { bubbles: true, cancelable: true });
+      Object.assign(event, { button: 0, isPrimary: true, pointerId: 1, clientX: 50, clientY: y });
+      button.dispatchEvent(event);
+    };
+    pointer('pointerdown', 100); vi.advanceTimersByTime(350); pointer('pointerup', 50); button.click();
+    vi.useRealTimers();
+    await vi.waitFor(() => expect(session.view().presentation).toBeNull());
+    expect(transport.execute).toHaveBeenCalledTimes(1);
+    expect(transport.execute.mock.calls[0][0].operation).toEqual({ kind: 'action', action: { type: 'flare', bearerId: 'tide' } });
   });
   it('form1 has one layer and no shared meter; unavailable faces use honest pending art', async () => {
     const { view, host } = fixture(6, 1); applyMotion('reduced'); await view.finishEntrance();
@@ -303,7 +336,7 @@ describe('saved six-member Radiant battle surface', () => {
     const { view, host, transport } = fixture(3, 6, undefined, 25, undefined, masterId, true);
     applyMotion('reduced'); await view.finishEntrance();
     const bearer = masterId.includes('tide') ? 'tide' : 'sprout';
-    controls(host, `[data-radiant-actor="${bearer}"]`).click();
+    controls(host, `[data-radiant-select="${bearer}"]`).click();
     await view.act('flare');
     const action = transport.execute.mock.calls.at(-1)![0].operation;
     expect(action.kind).toBe('action');

@@ -6,9 +6,11 @@ import { resolveRadiantRun, type RadiantRunRequest, type RadiantRunResponse, typ
 import { RadiantBattleView } from './presentation/radiant-battle-view';
 import { applyMotion } from './presentation/settings';
 import { applyBattleSpeed, parseBattleSpeed } from './presentation/battle-speed';
-import { createGameDialog } from './presentation/game-dialog';
+import { createGameDialog, escapeDialogText } from './presentation/game-dialog';
 import { readyFlare } from './game/radiant-gauge';
 import { RadiantCanvasEffects } from './vfx/radiant-battle-effects';
+import { releasedRadiantIds, type RadiantBearerId } from './content/radiant-combat';
+import { getStarter } from './content/starters';
 
 const host = document.querySelector<HTMLElement>('#radiant-preview');
 if (!host) throw new Error('Radiant development preview host is missing.');
@@ -19,6 +21,8 @@ host.innerHTML = `<header class="radiant-preview-heading"><h1>Radiant battle · 
   Canvas emission/bloom is a choreography integration pilot, not final unique Radiant art or GPU performance approval.</p>
   <label>Battle speed <select data-preview-speed><option>1</option><option>2</option><option>3</option></select></label>
   <label><input type="checkbox" data-preview-motion> Reduce motion</label>
+  <label>Conditional leader VFX fixture <select data-preview-leader>${releasedRadiantIds.map(id =>
+    `<option value="${id}">${escapeDialogText(getStarter(id).name)}</option>`).join('')}</select></label>
   <label>Conditional Master fixture <select data-preview-master><option value="none">No personal Masters</option>
     <option value="strikes">Tizu / Flora selected-enemy Masters</option></select></label>
   <button type="button" data-preview-reset>Reset preview encounter</button>
@@ -32,8 +36,13 @@ function build(): void {
   view?.dispose(); session?.dispose();
   const game = freshGame('in-memory-preview', '2026-11-08T00:00:00Z');
   game.starterId = 'ember'; game.account.storyCompleted = 24;
-  game.account.squad = ['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'crinso'];
-  for (const id of ['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'crinso'] as const)
+  const selected = host!.querySelector<HTMLSelectElement>('[data-preview-leader]')!.value;
+  const leader = releasedRadiantIds.find(id => id === selected);
+  if (!leader) throw new Error('Preview leader is not a released Radiant Element-Bearer.');
+  const defaults: RadiantBearerId[] = ['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'crinso'];
+  const squad = [leader, ...defaults.filter(id => id !== leader)].slice(0, 6);
+  game.account.squad = squad;
+  for (const id of squad)
     game.account.characters[id] = { level: 105, evolution: 6, weaponRank: 0 };
   if (host!.querySelector<HTMLSelectElement>('[data-preview-master]')!.value === 'strikes') {
     game.account.masterConduits = { 'master-tide-3': 1, 'master-sprout-2': 1 };
@@ -73,7 +82,7 @@ function build(): void {
     notice.textContent = 'Saved encounter exited. Earned rewards retained in this in-memory fixture. Reset to start a new preview.';
     battleHost.innerHTML = '<p role="status">Preview encounter ended. Use Reset preview encounter to start again.</p>';
   });
-  notice.textContent = cycle ? `Explicit ${readyFlare(snapshot.state.radiantStudy!.state.gauge, 'ember')} charge fixture selected.` :
+  notice.textContent = cycle ? `Explicit ${readyFlare(snapshot.state.radiantStudy!.state.gauge, leader)} charge fixture selected.` :
     'Normal charge fixture selected.';
   void view.finishEntrance().catch(error => { notice.textContent = error instanceof Error ? error.message : 'Preview entrance failed.'; });
 }
@@ -85,6 +94,7 @@ host.querySelector('[data-preview-motion]')!.addEventListener('change', event =>
 });
 host.querySelector('[data-preview-reset]')!.addEventListener('click', build);
 host.querySelector('[data-preview-master]')!.addEventListener('change', build);
+host.querySelector('[data-preview-leader]')!.addEventListener('change', build);
 host.querySelector('[data-preview-cycle]')!.addEventListener('click', () => { cycle = (cycle + 1) % 4; build(); });
 window.addEventListener('pagehide', () => { view.dispose(); session.dispose(); }, { once: true });
 applyBattleSpeed(1); applyMotion('system'); build();

@@ -12,11 +12,14 @@ import { reducedMotion } from './settings';
 import { battleSpeed } from './battle-speed';
 import { radiantImpactFrames, radiantReadout, type RadiantImpactFrame, type RadiantReadout } from './radiant-impact';
 import './radiant-battle.css';
-import { radiantArenaArt, radiantEnemyArt } from './radiant-battle-art';
+import { radiantArenaArt, radiantEnemyArt, radiantAllyArt } from './radiant-battle-art';
 import { radiantStatusSnapshot, radiantStatusRows, radiantShieldRows } from './radiant-status';
 import { bindArtworkLoading } from './artwork-loading';
 import { radiantResultsMarkup, radiantEncounterLabel } from './radiant-results';
 import { radiantBattleReference, radiantLeaderReference, radiantFlareNeedsTarget } from './radiant-battle-reference';
+import { bindRadiantPortraitGestures } from './radiant-portrait-gesture';
+import { characterChoreography } from './battle-effects';
+import { formatStat } from '../content/combat';
 
 export interface RadiantBattleEffects {
   windup(action: RadiantPlayerAction, state: RadiantCombatState): Promise<void>;
@@ -49,6 +52,7 @@ export class RadiantBattleView {
   private resultCelebration: (() => void) | null = null;
   private referenceCleanup: (() => void) | null = null;
   private leaderMarkup: string | null = null;
+  private gestures: ReturnType<typeof bindRadiantPortraitGestures>;
   constructor(private readonly host: HTMLElement, private readonly session: RadiantSession,
     private readonly openSettings: () => void, private readonly effects?: RadiantBattleEffects,
     private readonly onExit?: () => void) {
@@ -60,6 +64,17 @@ export class RadiantBattleView {
       ?? run.state.bearers[0].loadout.id;
     this.target = run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
     this.mount(run);
+    this.gestures = bindRadiantPortraitGestures(host, {
+      select: id => { this.actor = id; this.render(); },
+      ready: id => {
+        const member = this.displayed.gauge.members.find(member => member.id === id);
+        const button = this.host.querySelector<HTMLButtonElement>(`[data-radiant-actor="${id}"]`);
+        const tier = member?.living && button && !button.disabled ? readyFlare(this.displayed.gauge, id) : null;
+        return tier ? tierNames[tier] : null;
+      },
+      cast: id => { this.actor = id; void this.act('flare').catch(error => this.report(error)); },
+      notice: text => { this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = text; },
+    });
     host.addEventListener('click', this.click);
     window.addEventListener('last-light-motion-change', this.motion);
     window.addEventListener('last-light-battle-speed-change', this.speed);
@@ -67,7 +82,6 @@ export class RadiantBattleView {
   }
   private mount(run: FrozenRadiantRun): void {
     this.host.innerHTML = `<section class="radiant-battle" aria-label="Radiant battle">
-      <div class="radiant-arena">${radiantArenaArt(run.anchor.activity)}</div>
       <header class="radiant-battle-heading"><div><small>${escape(run.anchor.family)}</small><h2>Radiant battle</h2>
         <span data-radiant-progress>${radiantEncounterLabel(run)}</span> · <span data-radiant-round></span></div>
         <button type="button" data-radiant-settings>Settings</button>
@@ -86,26 +100,45 @@ export class RadiantBattleView {
         <p>Shared charge: Normal direct hits/Defense grant6 divided by frozen squad size, ordinary Flares12 divided by squad size;
         each new round adds18. Eternal cannot refill itself. Defeated members are not replaced or promoted.</p>
       </details>
+      <section class="radiant-field" aria-label="Battlefield">
+        <div class="radiant-arena">${radiantArenaArt(run.anchor.activity)}</div>
+        <div class="radiant-allies" aria-label="Allied field formation">${run.state.bearers.map((unit, index) =>
+          `<div class="radiant-field-ally" data-radiant-field-unit="${escape(unit.loadout.id)}" style="--formation:${index}">
+            <div class="radiant-unit-motion" data-radiant-art="${escape(unit.loadout.id)}">
+              <div class="radiant-unit-idle">${radiantAllyArt(unit.loadout)}</div>
+            </div><span>${escape(getStarter(unit.loadout.starter).name)}</span>
+          </div>`).join('')}</div>
       <div class="radiant-enemies" aria-label="Enemy targets">${run.enemies.map(enemy =>
-        `<button type="button" class="radiant-enemy" data-radiant-target="${escape(enemy.id)}" aria-pressed="false">
-          ${radiantEnemyArt(enemy)}<strong>${escape(enemy.name)}</strong><span>Lv.${enemy.level}</span>
+        `<button type="button" class="radiant-enemy" data-radiant-target="${escape(enemy.id)}"
+          data-radiant-field-unit="${escape(enemy.id)}" aria-pressed="false">
+          <div class="radiant-unit-motion" data-radiant-art="${escape(enemy.id)}"><div class="radiant-unit-idle">${radiantEnemyArt(enemy)}</div></div>
+          <strong>${escape(enemy.name)}</strong><span>Lv.${enemy.level}</span>
           ${this.healthMarkup(enemy.id)}</button>`).join('')}</div>
+      </section>
       <section class="radiant-shared" aria-label="Shared Eternal charge"><b>Eternal Radiant Flare</b>
         <meter data-radiant-shared min="0" aria-label="Shared Eternal charge"></meter><span data-radiant-shared-text></span></section>
-      <div class="radiant-squad" aria-label="Equipped squad">${run.state.bearers.map((unit, index) => {
+      <div class="radiant-squad" role="group" aria-label="Squad portrait controls; scroll horizontally on narrow screens" tabindex="0">${run.state.bearers.map((unit, index) => {
         const member = unit.loadout, starter = getStarter(member.starter);
         return `<article class="radiant-member" data-radiant-unit="${escape(member.id)}" data-element="${starter.elementId}">
-          <button type="button" class="radiant-face" data-radiant-actor="${escape(member.id)}" aria-pressed="false">
+          <button type="button" class="radiant-face" data-radiant-actor="${escape(member.id)}"
+            aria-describedby="radiant-gesture-help" aria-label="${escape(characterName(member.starter, member.form))} · Normal Attack; hold and drag upward for ready Flare">
             ${compactPortrait(starter, member.form)}<span>${index ? `Member ${index + 1}` : 'Leader'}</span>
             <strong>${escape(characterName(member.starter, member.form))}</strong></button>
           <span class="radiant-identity">Lv.${member.level} · ${escape(radiantAttunement(member))}</span>
+          <dl class="radiant-frozen-stats" aria-label="Frozen combat stats">${Object.entries(unit.stats).filter(([stat]) => stat !== 'hp').map(([stat, value]) =>
+            `<div><dt>${escape(stat[0].toUpperCase() + stat.slice(1))}</dt><dd>${formatStat(value)}</dd></div>`).join('')}</dl>
           ${this.healthMarkup(member.id)}
           <div class="radiant-charge-layers" aria-label="Personal charge">${[1, ...(member.form >= 4 ? [2] : [])].map(layer =>
             `<meter data-radiant-charge="${escape(member.id)}" data-layer="${layer}" min="0" max="${run.state.gauge.members[index].baseCost}" aria-label="${layer === 1 ? 'Glowing' : 'Lustrous'} charge layer"></meter>`).join('')}</div>
           <span data-radiant-charge-text="${escape(member.id)}"></span>
+          <span data-radiant-readiness="${escape(member.id)}"></span>
+          <button type="button" data-radiant-select="${escape(member.id)}" aria-pressed="false">Select · Actions</button>
           <button type="button" data-radiant-reference="${escape(member.id)}" aria-haspopup="dialog">Battle reference</button>
         </article>`;
       }).join('')}</div>
+      <p id="radiant-gesture-help">Tap a portrait for Normal Attack. Hold350ms, drag upward32px and release for the highest ready Flare.
+        Select · Actions offers the same attacks and Defense without dragging.</p>
+      <p data-radiant-gesture-status role="status" aria-live="polite"></p>
       <div class="radiant-actions"><button type="button" data-radiant-action="normal">Normal Attack</button>
         <button type="button" data-radiant-action="defense">Defense</button>
         <button type="button" data-radiant-action="flare">Glowing Flare</button>
@@ -151,7 +184,12 @@ export class RadiantBattleView {
       void this.transition(transition).catch(error => this.report(error)); return;
     }
     if (button.dataset.radiantActor) {
-      this.actor = button.dataset.radiantActor; this.render(); this.selection(button); return;
+      if (this.gestures.consumeClick(button)) return;
+      this.actor = button.dataset.radiantActor;
+      void this.act('normal').catch(error => this.report(error)); return;
+    }
+    if (button.dataset.radiantSelect) {
+      this.actor = button.dataset.radiantSelect; this.render(); this.selection(button); return;
     }
     if (button.dataset.radiantTarget) {
       this.target = button.dataset.radiantTarget; this.render(); this.selection(button); return;
@@ -179,6 +217,7 @@ export class RadiantBattleView {
     const blocked = view.busy || !!view.pending || !!view.preparationPending || !!view.presentation ||
       !!view.preparationPresentation || view.settingsOpen || view.entrancePending || this.presenting ||
       run.quit || run.state.phase !== 'player';
+    if (blocked) this.gestures?.cancel();
     this.host.setAttribute('aria-busy', String(view.busy || this.presenting || view.entrancePending));
     for (const animation of this.animations) {
       if (view.settingsOpen) animation.pause();
@@ -208,8 +247,20 @@ export class RadiantBattleView {
     for (const button of Array.from(this.host.querySelectorAll<HTMLButtonElement>('[data-radiant-actor]'))) {
       const id = button.dataset.radiantActor!;
       button.disabled = blocked || this.displayed.units[id].hp === 0 || run.state.acted.includes(id);
-      button.setAttribute('aria-pressed', String(id === this.actor));
       button.closest('.radiant-member')!.classList.toggle('is-selected', id === this.actor);
+      button.closest('.radiant-member')!.classList.toggle('is-defeated', this.displayed.units[id].hp === 0);
+      const select = this.element<HTMLButtonElement>(`[data-radiant-select="${id}"]`);
+      select.disabled = button.disabled; select.setAttribute('aria-pressed', String(id === this.actor));
+      const tier = this.displayed.units[id].hp > 0 ? readyFlare(this.displayed.gauge, id) : null;
+      button.dataset.readyTier = !button.disabled && tier ? tier : '';
+      this.element<HTMLElement>(`[data-radiant-readiness="${id}"]`).textContent =
+        this.displayed.units[id].hp === 0 ? 'Defeated' : run.state.acted.includes(id) ? 'Acted this round' :
+          tier ? `${tierNames[tier]} ready` : 'Flare charging';
+    }
+    for (const unit of Array.from(this.host.querySelectorAll<HTMLElement>('[data-radiant-field-unit]'))) {
+      const id = unit.dataset.radiantFieldUnit!;
+      unit.classList.toggle('is-defeated', this.displayed.units[id].hp === 0);
+      unit.classList.toggle('is-selected', id === this.actor);
     }
     for (const button of Array.from(this.host.querySelectorAll<HTMLButtonElement>('[data-radiant-target]'))) {
       const id = button.dataset.radiantTarget!;
@@ -302,6 +353,7 @@ export class RadiantBattleView {
   }
   async act(kind: 'normal' | 'defense' | 'flare'): Promise<void> {
     this.presentationError = null;
+    this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = '';
     const before = this.session.view().saved.run;
     if (!before) throw new Error('A saved encounter is required.');
     const member = before.state.bearers.find(unit => unit.loadout.id === this.actor)!;
@@ -365,7 +417,7 @@ export class RadiantBattleView {
       }
       return;
     }
-    this.cancelEffects(); this.artworkCleanup(); this.resultCelebration?.(); this.resultCelebration = null;
+    this.gestures.cancel(); this.cancelEffects(); this.artworkCleanup(); this.resultCelebration?.(); this.resultCelebration = null;
     this.displayed = radiantReadout(response.run.state); this.statuses = radiantStatusSnapshot(response.run.state);
     this.statusMarkup.clear(); this.shieldMarkup.clear(); this.resultKey = null; this.leaderMarkup = null;
     this.actor = response.run.state.bearers.find(unit => unit.hp > 0)?.loadout.id ?? response.run.state.bearers[0].loadout.id;
@@ -381,16 +433,24 @@ export class RadiantBattleView {
     try {
       const frames = radiantImpactFrames(before, response.run.state, response.events);
       if (!reducedMotion()) {
-        if (this.effects) await this.effects.windup(action, structuredClone(before));
-        else await this.animate(this.element(`[data-radiant-actor="${action.bearerId}"]`),
-          [{ filter: 'brightness(1)' }, { filter: 'brightness(1.8)' }, { filter: 'brightness(1)' }], 260);
+        const member = before.bearers.find(unit => unit.loadout.id === action.bearerId)!;
+        const motion = action.type === 'defense' ? 'guard' : characterChoreography[member.loadout.starter].motion;
+        const poised = motion === 'cast' ? 'translateY(-4px)' : motion === 'bow' ? 'translateX(5px)' :
+          motion === 'hammer' ? 'translate(-5px, -4px) rotate(3deg)' : motion === 'guard' ? 'translateX(-3px)' :
+            motion === 'twin' ? 'translateX(-8px) rotate(-2deg)' : 'translateX(-12px)';
+        await Promise.all([
+          this.animate(this.element(`[data-radiant-art="${action.bearerId}"]`),
+            [{ transform: 'none' }, { transform: poised }, { transform: 'none' }], 180),
+          this.effects ? this.effects.windup(action, structuredClone(before)) :
+            this.animate(this.element(`[data-radiant-art="${action.bearerId}"]`),
+              [{ filter: 'brightness(1)' }, { filter: 'brightness(1.8)' }, { filter: 'brightness(1)' }], 260),
+        ]);
       }
       for (const frame of frames) {
         if (this.disposed || this.skipped || generation !== this.presentationGeneration) break;
         this.displayed = structuredClone(frame.readout); this.render();
         if (!reducedMotion()) {
-          if (this.effects) await this.effects.impact(structuredClone(frame));
-          else await this.impact(frame);
+          await Promise.all([this.fieldImpact(frame), this.effects ? this.effects.impact(structuredClone(frame)) : this.impact(frame)]);
         }
       }
       if (!this.disposed && generation === this.presentationGeneration) this.settle(response);
@@ -454,10 +514,24 @@ export class RadiantBattleView {
       finally { cleanup(); this.effectsCleanup.delete(cleanup); }
     }));
   }
+  private async fieldImpact(frame: RadiantImpactFrame): Promise<void> {
+    const hits = new Map<string, { enemy: boolean; defeated: boolean }>();
+    const run = this.session.view().saved.run!;
+    for (const event of frame.events) {
+      if (event.type !== 'damage' || event.healthLoss + event.absorbed <= 0) continue;
+      hits.set(event.targetId, { enemy: run.state.enemies.some(unit => unit.id === event.targetId),
+        defeated: frame.readout.units[event.targetId].hp === 0 });
+    }
+    await Promise.all([...hits].map(([id, hit]) => this.animate(this.element(`[data-radiant-art="${id}"]`),
+      [{ transform: 'translateX(0)', opacity: 1 },
+        { transform: `translateX(${hit.enemy ? -8 : 8}px)`, opacity: .75 },
+        { transform: 'translateX(0)', opacity: hit.defeated ? .2 : 1 }], 220)));
+  }
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true; this.cancelEffects();
     this.effects?.dispose?.();
+    this.gestures.dispose();
     this.referenceCleanup?.(); this.referenceCleanup = null;
     this.resultCelebration?.(); this.resultCelebration = null;
     this.artworkCleanup();

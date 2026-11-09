@@ -1,5 +1,14 @@
 # Documentation hub
 
+## Radiant recovered battlefield and portrait gestures (2026-11-08)
+
+[Recovery state, implemented field/portrait split and remaining release gates](Future%20Plans/radiant-combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08):
+full-form characters remain beside enemies on the upper field. Separate lower
+portraits hold stats/effects/Gauge, tap attacks and hold/upward-drag Flares,
+with non-drag action alternatives. Recovered pending32-identity signature VFX
+and small saved-status cues are integrated. Whole-overhaul production release
+still requires the enumerated validation/art/routing gates.
+
 ## Radiant saved-impact emission/bloom pilot (2026-11-08)
 
 [Finite source-aligned particles/glares/bloom](Future%20Plans/radiant-combat-system-specification.md#saved-impact-emission-and-bloom-pilot-2026-11-08)

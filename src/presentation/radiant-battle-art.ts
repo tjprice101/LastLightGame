@@ -11,6 +11,16 @@ import { assetUrl } from './portrait';
 import { unitFacingAttributes } from './unit-facing';
 import { escapeDialogText as escape } from './game-dialog';
 import type { Activity } from '../online/server-game';
+import type { RadiantLoadout } from '../content/radiant-combat';
+import { getStarter } from '../content/starters';
+import { portraitAttributes, characterFacingAttributes } from './portrait';
+
+export function radiantAllyArt(member: RadiantLoadout): string {
+  const attributes = portraitAttributes(getStarter(member.starter), member.form);
+  return `<img class="radiant-ally-art" draggable="false" loading="eager"
+    src="${escape(attributes.src)}" alt="${escape(attributes.alt)}"
+    ${characterFacingAttributes(member.starter, member.form)} width="960" height="960">`;
+}
 
 export function radiantEnemyArt(enemy: FrozenRadiantRun['enemies'][number]): string {
   if (enemy.identity.startsWith('war:')) {
