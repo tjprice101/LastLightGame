@@ -212,7 +212,10 @@ export function bindInventory(host: HTMLElement, onSelect: (tab: InventoryTab) =
     const result = host.querySelector<HTMLElement>('[data-inventory-results]');
     if (!result) throw new Error('Inventory results status is missing.');
     result.textContent = count ? `${count} of ${items.length} owned item types${active ? ' match' : ''}.`
-      : active ? 'No owned items match. Change your search or filters.' : 'No owned items yet.';
+      : active ? 'No owned items match. Change your search or filters.' : '';
+    // With nothing owned, the panel's own empty heading already says so; an unavailable save shows its alert instead.
+    const unavailable = host.querySelector<HTMLInputElement>('[data-inventory-query]')?.disabled ?? false;
+    result.hidden = unavailable || (!count && !active);
     onFilter?.(state);
   };
   host.querySelector('[data-inventory-query]')?.addEventListener('input', update);

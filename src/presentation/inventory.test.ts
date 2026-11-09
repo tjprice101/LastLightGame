@@ -271,6 +271,23 @@ describe('reference Inventory layout', () => {
     expect(host.querySelector('[data-inventory-results]')?.hasAttribute('hidden')).toBe(true);
   });
 
+  it('shows a single empty-state message when nothing is owned, restoring the status for filters', () => {
+    const host = document.createElement('main');
+    host.innerHTML = inventoryView(emptyAccount());
+    bindInventory(host, vi.fn());
+    const result = host.querySelector<HTMLElement>('[data-inventory-results]')!;
+    expect(result.hidden).toBe(true);
+    expect(result.textContent).toBe('');
+    const visibleText = Array.from(host.querySelectorAll<HTMLElement>('.inventory-empty h3'))
+      .filter(heading => !heading.closest('[hidden]')).map(heading => heading.textContent);
+    expect(visibleText).toEqual(['No resources yet']);
+    const query = host.querySelector<HTMLInputElement>('[data-inventory-query]')!;
+    query.value = 'seed';
+    query.dispatchEvent(new Event('input'));
+    expect(result.hidden).toBe(false);
+    expect(result.textContent).toContain('No owned items match');
+  });
+
   it('organizes Inventory help into five optional topics with short paragraphs', () => {
     const host = document.createElement('main');
     host.innerHTML = inventoryView(emptyAccount());
