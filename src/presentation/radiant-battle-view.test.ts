@@ -52,6 +52,9 @@ function fixture(count = 6, form = 6, effects?: RadiantBattleEffects, stage = 25
   return { view, session, host, transport, settings };
 }
 function controls(host: HTMLElement, selector: string) { return host.querySelector<HTMLButtonElement>(selector)!; }
+function action(host: HTMLElement, bearerId: string, kind: 'normal' | 'defense' | 'flare') {
+  return controls(host, `[data-radiant-member-actions="${bearerId}"] [data-radiant-action="${kind}"]`);
+}
 async function clear(view: RadiantBattleView, session: RadiantSession) {
   for (let turn = 0; turn < 40 && session.view().saved.run!.state.phase === 'player'; turn++) await view.act('normal');
   expect(session.view().saved.run!.state.phase).toBe('victory');
@@ -74,7 +77,11 @@ describe('saved six-member Radiant battle surface', () => {
       expect(image.alt).not.toContain('pending');
     }
     expect(host.querySelectorAll('[data-radiant-charge]')).toHaveLength(12);
-    expect(host.querySelectorAll('[data-radiant-reference]')).toHaveLength(6);
+    expect(host.querySelectorAll('[data-radiant-reference]')).toHaveLength(0);
+    expect(host.querySelectorAll('[data-radiant-select]')).toHaveLength(6);
+    expect(host.querySelectorAll('[data-radiant-member-actions]:not([hidden])')).toHaveLength(0);
+    expect(host.querySelectorAll('.radiant-actions [data-radiant-action]')).toHaveLength(0);
+    expect(host.textContent).not.toContain('Kit');
     expect(host.querySelectorAll('.radiant-allies .radiant-ally-art')).toHaveLength(6);
     expect(host.querySelectorAll('.radiant-field [data-radiant-art]')).toHaveLength(8);
     expect(host.querySelectorAll('.radiant-allies .compact-portrait')).toHaveLength(0);
@@ -215,7 +222,7 @@ describe('saved six-member Radiant battle surface', () => {
     expect(session.view().saved.revision).toBe(2);
     windup(); await vi.waitFor(() => expect(effects.impact).toHaveBeenCalledTimes(1));
     expect(host.querySelector('.radiant-enemy [data-hp]')!.textContent).not.toBe(enemyHP);
-    expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(false);
+    expect(action(host, 'tide', 'normal').disabled).toBe(false);
     impact(); await pending;
     expect(session.view().presentation).toBeNull(); expect(host.getAttribute('aria-busy')).toBe('false');
   });
@@ -229,7 +236,7 @@ describe('saved six-member Radiant battle surface', () => {
     const first = view.act('normal');
     await vi.waitFor(() => expect(windups).toHaveLength(1));
     expect(session.view().saved.revision).toBe(2);
-    expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(false);
+    expect(action(host, 'tide', 'normal').disabled).toBe(false);
     expect(host.querySelector('[data-radiant-status]')?.textContent).toContain('other members can act');
 
     const second = view.act('normal');
@@ -261,8 +268,8 @@ describe('saved six-member Radiant battle surface', () => {
     expect(savedTide.charge).toBeGreaterThanOrEqual(savedTide.baseCost);
     expect(host.querySelector('[data-radiant-charge-text="tide"]')!.textContent)
       .toBe(`${tideBefore.charge} / ${tideBefore.baseCost * 2} charge`);
-    expect(controls(host, '[data-radiant-action="flare"]').disabled).toBe(false);
-    expect(controls(host, '[data-radiant-action="flare"]').textContent).toBe('Glowing Flare');
+    expect(action(host, 'tide', 'flare').disabled).toBe(false);
+    expect(action(host, 'tide', 'flare').textContent).toBe('Glowing Flare');
     const second = view.act('flare');
     await vi.waitFor(() => expect(session.view().saved.revision).toBe(3));
     expect(transport.execute.mock.calls[1][0].operation).toMatchObject({
@@ -348,7 +355,7 @@ describe('saved six-member Radiant battle surface', () => {
     const first = view.act('normal');
     await vi.waitFor(() => expect(callbacks).toHaveLength(1));
     expect(session.view().saved.revision).toBe(2);
-    expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(false);
+    expect(action(host, 'tide', 'normal').disabled).toBe(false);
     const second = view.act('normal');
     await vi.waitFor(() => expect(session.view().saved.revision).toBe(3));
     expect(transport.execute).toHaveBeenCalledTimes(2);
@@ -431,7 +438,7 @@ describe('saved six-member Radiant battle surface', () => {
     const { view, session, host, transport, settings } = fixture(6, 6, effects); await view.finishEntrance();
     controls(host, '[data-radiant-settings]').click();
     expect(settings).toHaveBeenCalledTimes(1); expect(session.view().settingsOpen).toBe(true);
-    expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(true);
+    expect(action(host, 'ember', 'normal').disabled).toBe(true);
     expect(transport.execute).not.toHaveBeenCalled();
     session.setSettings(false); view.render();
     const pending = view.act('normal'); await vi.waitFor(() => expect(effects.windup).toHaveBeenCalled());
@@ -557,7 +564,7 @@ describe('saved six-member Radiant battle surface', () => {
     const saved = session.view().saved;
     controls(host, '[data-radiant-leave]').click();
     expect(session.view().settingsOpen).toBe(true);
-    expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(true);
+    expect(action(host, 'ember', 'normal').disabled).toBe(true);
     expect(transport.execute).not.toHaveBeenCalled();
     choose(false); await vi.waitFor(() => expect(session.view().settingsOpen).toBe(false));
     expect(session.view().saved).toEqual(saved); expect(exited).not.toHaveBeenCalled();
@@ -568,27 +575,28 @@ describe('saved six-member Radiant battle surface', () => {
     expect(transport.execute.mock.calls[0][0].operation.kind).toBe('exit');
     expect(session.view().saved.run).toBeNull();
   });
-  it('opens exact frozen mechanics in a contained reference dialog, preserving focus and input locks', async () => {
+  it('keeps Normal, Defense and Flare in a compact per-member Actions menu instead of a persistent row', async () => {
     const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
-    const create = dialogs.createGameDialog;
-    vi.spyOn(dialogs, 'createGameDialog').mockImplementation(title => {
-      const result = create(title);
-      result.dialog.showModal = () => result.dialog.setAttribute('open', '');
-      result.dialog.close = () => { result.dialog.removeAttribute('open'); result.dialog.dispatchEvent(new Event('close')); };
-      return result;
+    const button = controls(host, '[data-radiant-select="ember"]');
+    button.focus(); button.click();
+    const menu = host.querySelector<HTMLElement>('[data-radiant-member-actions="ember"]')!;
+    expect(menu.hidden).toBe(false);
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+    expect(menu.textContent).toContain('Normal Attack');
+    expect(menu.textContent).toContain('Defense');
+    expect(menu.textContent).toContain('Glowing Flare');
+    expect(transport.execute).not.toHaveBeenCalled();
+    action(host, 'ember', 'defense').click();
+    await vi.waitFor(() => expect(session.view().presentation).toBeNull());
+    expect(transport.execute).toHaveBeenCalledTimes(1);
+    expect(transport.execute.mock.calls[0][0].operation).toMatchObject({
+      kind: 'action', action: { type: 'defense', bearerId: 'ember' },
     });
-    const button = controls(host, '[data-radiant-reference="ember"]'); button.focus(); button.click();
-    const dialog = document.querySelector<HTMLDialogElement>('.radiant-reference-dialog')!;
-    expect(dialog.open).toBe(true); expect(dialog.querySelectorAll('dl dt')).toHaveLength(4);
-    expect(dialog.querySelectorAll('[data-radiant-reference-tier]')).toHaveLength(3);
-    expect(dialog.textContent).toContain('140% caster Attack');
-    expect(dialog.textContent).toContain('First consumes all Infernis-owned Burns');
-    expect(dialog.textContent).toContain('No Master equipped');
-    expect(session.view().settingsOpen).toBe(true); expect(transport.execute).not.toHaveBeenCalled();
-    expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(true);
-    dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
-    expect(document.querySelector('dialog')).toBeNull(); expect(session.view().settingsOpen).toBe(false);
-    expect(document.activeElement).toBe(button); expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(false);
+    expect(menu.hidden).toBe(true);
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(button);
+    expect(host.querySelector('.radiant-actions [data-radiant-action]')).toBeNull();
+    expect(host.querySelector('[data-radiant-reference]')).toBeNull();
   });
   it.each(['master-tide-3', 'master-sprout-2'] as const)('sends selected-enemy Flare target required by %s, preserving authored healing/shield targets', async masterId => {
     const { view, host, transport } = fixture(3, 6, undefined, 25, undefined, masterId, true);

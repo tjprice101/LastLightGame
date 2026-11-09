@@ -1,5 +1,19 @@
 # Current state and handoff
 
+## Condensed Radiant portrait actions (2026-11-09)
+
+The persistent Normal Attack / Defense / Flare row and per-member Kit buttons
+are removed. Portrait tap and the charged hold/swipe remain direct controls.
+Each member's compact Actions button opens that member's Normal Attack,
+Defense and highest-ready Flare menu on demand; choosing an action closes it
+and returns keyboard focus. Retry, Skip and saved results remain conditional
+utilities. The battle-rules and frozen-leader disclosure remains available.
+
+Verified with `npx vitest run src\presentation\radiant-battle-view.test.ts
+src\presentation\radiant-battle-reference.test.ts --maxWorkers=2
+--testTimeout=60000` (65 tests) and `npm run build` (passed with the existing
+chunk-size advisory).
+
 ## Cancellable Radiant offscreen reveal (2026-11-09)
 
 **Branch and release:** `overhaul/radiant-foundation`; the authority remains

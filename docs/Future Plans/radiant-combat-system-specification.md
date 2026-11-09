@@ -1,5 +1,23 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Condensed portrait actions (2026-11-09)
+
+Removed the persistent Normal Attack / Defense / Flare row and per-member
+Kit buttons. Portrait tap and the charged hold/swipe remain direct controls.
+Each card's Actions button opens its own small keyboard- and touch-operable
+Normal Attack, Defense and highest-ready Flare menu; it closes when an action
+is chosen and returns focus to Actions. Saved result, Skip and retry controls
+remain separate and conditional. The existing battle-rules disclosure remains
+the concise source for mechanics and the frozen leader, without a repeated
+per-character reference dialog.
+
+Validation: `npx vitest run src\presentation\radiant-battle-view.test.ts
+src\presentation\radiant-battle-reference.test.ts --maxWorkers=2
+--testTimeout=60000` passes 65 tests; `npm run build` passes with the existing
+chunk-size advisory. Tests cover the absence of the permanent action row and
+Kit buttons, the hidden-by-default member menu, its Defense save, and its
+keyboard focus return.
+
 ## Cancellable offscreen reveal (2026-11-09)
 
 The post-save frame that waits for an automatic battlefield scroll now

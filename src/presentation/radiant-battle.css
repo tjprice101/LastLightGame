@@ -36,7 +36,11 @@
 .radiant-face[data-ready-tier="lustrous"] { border-color: #dacdff; box-shadow: inset 0 0 18px #dacdff33; }
 .radiant-face[data-ready-tier="eternal"] { border-color: #fff; box-shadow: inset 0 0 22px #ffffff44; }
 .radiant-face.is-held::after { content: ""; position: absolute; inset: 5px; border: 2px solid #fff; border-radius: 9px; pointer-events: none; }
-.radiant-member [data-radiant-select] { width: 100%; margin-top: 8px; }
+.radiant-member-actions { margin-top: 8px; }
+.radiant-member-actions [data-radiant-select] { width: 100%; }
+.radiant-member-actions [data-radiant-select][aria-expanded="true"] { border-color: #fff; }
+.radiant-action-menu { display: grid; gap: 6px; margin-top: 8px; }
+.radiant-action-menu button { min-height: 40px; padding: 6px 8px; }
 .radiant-member.is-defeated .compact-portrait { filter: grayscale(1); }
 [data-radiant-readiness] { display: block; font-size: 12px; margin-top: 6px; overflow-wrap: anywhere; }
 #radiant-gesture-help, [data-radiant-gesture-status] { font-size: 13px; line-height: 1.5; }
@@ -109,12 +113,8 @@ body:has(#radiant-preview) { margin: 0; background: #0c0d11; }
 .radiant-shared meter { flex: 1 1 200px; max-width: 450px; accent-color: #e3eaff; }
 .radiant-battle [hidden] { display: none !important; }
 .radiant-member details { margin-top: 10px; font-size: 13px; overflow-wrap: anywhere; }
-.radiant-member [data-radiant-reference] { width: 100%; margin-top: 10px; }
 .radiant-member .radiant-status-list, .radiant-member .radiant-shield-layers { max-height: 108px; overflow-y: auto; scrollbar-width: thin; }
 .radiant-team-reference { padding: 12px; border: 1px solid #686c77; border-radius: 12px; margin-top: 16px; }
-.radiant-reference-dialog { width: min(900px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; overflow-wrap: anywhere; }
-.radiant-reference-dialog dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
-.radiant-reference-dialog dd { margin: 0; overflow-wrap: anywhere; }
 .radiant-reference h3 { border-bottom: 1px solid #737782; padding-bottom: 8px; }
 .radiant-reference section { border-left: 2px solid #969dad; padding: 8px 16px; margin: 12px 0; }
 .radiant-reference li { margin: 8px 0; line-height: 1.5; }
@@ -197,8 +197,6 @@ body:has(#radiant-preview) { margin: 0; background: #0c0d11; }
 .radiant-charge-layers meter::-moz-meter-bar { background: var(--accent); }
 .radiant-member [data-radiant-charge-text] { font-size: 12px; color: #c9ccd4; margin-top: 4px; }
 [data-radiant-readiness] { margin-top: 2px; color: #e8e9ee; }
-.radiant-member-actions { margin-top: auto; padding-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.radiant-member-actions button { margin: 0 !important; font-size: 13px; padding: 6px; }
 .radiant-member [data-radiant-select][aria-pressed="true"] { background: #f2f2f2; color: #111216; border-color: #fff; }
 #radiant-gesture-help { color: #b8bbc4; text-align: center; margin: 4px 0 10px; }
 .radiant-actions { gap: 10px; }
@@ -207,7 +205,6 @@ body:has(#radiant-preview) { margin: 0; background: #0c0d11; }
   .radiant-squad { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 1000px) {
-  .radiant-member-actions { grid-template-columns: 1fr; }
   .radiant-field .radiant-enemy-art { height: clamp(90px, 18vw, 160px); }
 }
 html[data-motion="reduced"] .radiant-field .radiant-enemy:hover .radiant-unit-motion { filter: none; }
@@ -221,7 +218,6 @@ html[data-motion="reduced"] .radiant-field .radiant-enemy:hover .radiant-unit-mo
   .radiant-face strong { grid-column: 1 / -1; font-size: 13px; -webkit-line-clamp: 3; }
   .radiant-frozen-stats { grid-template-columns: 1fr; gap: 2px; }
   .radiant-frozen-stats div { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 8px; text-align: left; }
-  .radiant-member-actions button { font-size: 12px; }
 }
 /* Formation: two staggered, overlapping ranks of three (front = members1-3). */
 .radiant-battle { --radiant-unit-height: clamp(150px, 15vw, 280px); }
@@ -254,8 +250,6 @@ html[data-motion="reduced"] .radiant-field .radiant-enemy:hover .radiant-unit-mo
 .radiant-battle > .radiant-team-reference { margin: 18px 0 0; border: 0; border-top: 1px solid #ffffff1a; border-radius: 0; background: none; padding: 4px 2px; color: #b8bbc4; }
 .radiant-battle > .radiant-team-reference summary { font-size: 13px; color: #9fa3ad; }
 .radiant-battle > .radiant-team-reference p { font-size: 13px; line-height: 1.55; max-width: 110ch; }
-.radiant-member-actions { grid-template-columns: 1fr auto; }
-.radiant-member-actions [data-radiant-reference] { min-width: 52px; }
 .radiant-fx-layer { position: fixed; inset: 0; pointer-events: none; z-index: 6; overflow: hidden; contain: strict; }
 .radiant-orb { position: absolute; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; will-change: transform, opacity; opacity: 0;
   background: radial-gradient(circle at 40% 35%, #fff 0 22%, color-mix(in srgb, var(--orb) 70%, #fff) 38%, var(--orb) 62%, transparent 72%);
