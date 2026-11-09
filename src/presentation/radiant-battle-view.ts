@@ -1,7 +1,8 @@
 import { characterName } from '../content/character-art';
 import { getStarter } from '../content/starters';
 import { radiantAttunement } from '../content/radiant-combat';
-import { readyFlare, personalChargeMaximum, sharedChargeThreshold, sharedChargeUnit } from '../game/radiant-gauge';
+import { grantRadiantDrop, personalChargeMaximum, personalChargeUnit, radiantChargeRules,
+  readyFlare, sharedChargeThreshold, sharedChargeUnit } from '../game/radiant-gauge';
 import type { RadiantCombatState } from '../game/radiant-combat';
 import { RadiantSession } from '../online/radiant-session';
 import { type RadiantPlayerAction, type RadiantRunResponse, type FrozenRadiantRun } from '../online/radiant-run';
@@ -167,9 +168,15 @@ export class RadiantBattleView {
       <details class="radiant-team-reference"><summary>Battle rules and frozen leader</summary>
         <div data-radiant-leader-reference></div>
         <p>Normal Attack and Defense each use this member’s action for the round. No random critical damage.
-        Normal direct hits grant20 personal charge; Defense grants10; living members gain5 each new round.
-        Surviving a direct enemy action that hits HP or Shields grants8 personal charge once, not once per hit.
-        Each eligible direct hit has a25% chance of5 bonus charge, at most two rolls per action; generated/periodic packets do not qualify.</p>
+        A Normal direct hit on HP or Shields drops ${radiantChargeRules.normal} Gauge; a Flare direct hit drops ${radiantChargeRules.flareHit}.
+        An enemy defeated by squad damage drops ${radiantChargeRules.defeatedEnemy} more.
+        Each drop grants its full value to its living attacker and ${radiantChargeRules.otherMemberPercent}% to each other living member.
+        Fractions carry over; personal caps apply. A defeated source cannot gain charge, but other living members still share its defeat drop.</p>
+        <p>Defense grants ${radiantChargeRules.defense} personal charge; living members gain ${radiantChargeRules.round} each new round.
+        Surviving a direct enemy action that hits HP or Shields grants ${radiantChargeRules.incomingAttack} personal charge once, not once per hit.
+        Each Normal/Flare direct hit has a ${radiantChargeRules.bonusChance * 100}% chance to add ${radiantChargeRules.bonusAmount} to its drop,
+        at most ${radiantChargeRules.maximumBonusRolls} rolls per action.
+        Generated/periodic hits do not drop Gauge unless they defeat an enemy.</p>
         <p>Normal Attack uses100% effective Attack against one selected living enemy.
         Direct damage is rounded once: Attack × Attack/(Attack + effective enemy Defense) × action coefficient × output modifiers, minimum1.
         Burn/periodic and generated packets follow their authored rules, not this guaranteed direct-damage formula.
@@ -319,7 +326,7 @@ export class RadiantBattleView {
     const leaderMarkup = radiantLeaderReference(run.state, this.displayed.units[run.state.bearers[0].loadout.id].hp > 0);
     if (this.leaderMarkup !== leaderMarkup) { leader.innerHTML = leaderMarkup; this.leaderMarkup = leaderMarkup; }
     const actor = run.state.gauge.members.find(member => member.id === this.actor)!;
-    const tier = actor.living ? readyFlare(this.displayed.gauge, this.actor) : null;
+    const tier = actor.living ? readyFlare(run.state.gauge, this.actor) : null;
     for (const button of Array.from(this.host.querySelectorAll<HTMLButtonElement>('[data-radiant-action]')))
       button.disabled = blocked || !actor.living || run.state.acted.includes(this.actor) ||
         button.dataset.radiantAction === 'normal' && !this.target ||
@@ -535,7 +542,8 @@ export class RadiantBattleView {
               [{ filter: 'brightness(1)' }, { filter: 'brightness(1.8)' }, { filter: 'brightness(1)' }], 260),
         ]);
       }
-      const fx: Promise<void>[] = [], played = new Set<number>();
+      const fx: Promise<void>[] = [], failures: unknown[] = [], played = new Set<number>();
+      const track = (effect: Promise<void>) => { fx.push(effect.catch(error => { failures.push(error); })); };
       let shaken = action.type !== 'flare';
       for (const [frameIndex, frame] of frames.entries()) {
         if (this.disposed || this.skipped || generation !== this.presentationGeneration) break;
@@ -543,18 +551,19 @@ export class RadiantBattleView {
         this.displayed = structuredClone(frame.readout); this.statuses = structuredClone(frame.statuses); this.render();
         if (!reducedMotion()) {
           const random = presentationRandom(`${response.revision}:${frameIndex}`);
-          fx.push(this.chargeOrbs(frame, previous, random));
+          track(this.chargeOrbs(frame, previous, random));
           for (const event of frame.events) if (event.type === 'defeated')
-            fx.push(this.lootDrops(response, played, event.targetId, random));
+            track(this.lootDrops(response, played, event.targetId, random));
           if (!shaken && frame.events.some(event => event.type === 'damage' && event.healthLoss + event.absorbed > 0)) {
-            shaken = true; fx.push(this.shakeField(frame));
+            shaken = true; track(this.shakeField(frame));
           }
           await Promise.all([this.fieldImpact(frame), this.effects ? this.effects.impact(structuredClone(frame)) : this.impact(frame)]);
         }
       }
       if (!reducedMotion() && !this.disposed && !this.skipped && generation === this.presentationGeneration) {
-        fx.push(this.lootDrops(response, played, null, presentationRandom(`${response.revision}:end`)));
-        await Promise.all(fx.map(effect => effect.catch(() => undefined)));
+        track(this.lootDrops(response, played, null, presentationRandom(`${response.revision}:end`)));
+        await Promise.all(fx);
+        if (failures.length) throw failures[0];
       }
       if (!this.disposed && generation === this.presentationGeneration) this.settle(response);
     } catch (error) {
@@ -671,7 +680,7 @@ export class RadiantBattleView {
     node.addEventListener('radiant-fx-done', () => { cleanup(); this.effectsCleanup.delete(cleanup); }, { once: true });
     return node;
   }
-  /** Presentation-only orbs sized from saved charge deltas; no gameplay RNG. */
+  /** Presentation-only orbs follow the saved enemy drop and charge deltas. */
   private async chargeOrbs(frame: RadiantImpactFrame, previous: RadiantReadout, random: () => number): Promise<void> {
     const run = this.session.view().saved.run!;
     const enemies = new Set(run.state.enemies.map(unit => unit.id));
@@ -704,16 +713,39 @@ export class RadiantBattleView {
       flights.push(this.animate(pulse, [{ filter: 'brightness(1)' }, { filter: 'brightness(2.1) saturate(1.4)', offset: .3 }, { filter: 'brightness(1)' }],
         420, { delay: 820 + count * 70 }));
     };
+    const flyToMember = (id: string, units: number, source: Element) => {
+      if (units <= 0) return;
+      const card = this.host.querySelector(`[data-radiant-unit="${id}"]`);
+      const meter = card?.querySelector('.radiant-charge-layers'), face = card?.querySelector('.radiant-face');
+      if (!card || !meter || !face) throw new Error('Saved Gauge-drop recipient is missing from the battle view.');
+      fly(source, face, getComputedStyle(card).getPropertyValue('--accent').trim() || '#ffffff',
+        Math.min(6, Math.max(1, Math.ceil(units / (6 * personalChargeUnit)))), meter);
+    };
+    const dropUnits = new Map<string, number>();
+    let simulated = structuredClone(previous.gauge);
+    for (const event of frame.events) {
+      if (event.type !== 'gauge-drop') continue;
+      const after = grantRadiantDrop(simulated, event.bearerId, event.amount);
+      const source = this.host.querySelector(`[data-radiant-art="${event.enemyId}"]`);
+      if (!source) throw new Error('Saved Gauge-drop enemy is missing from the battle view.');
+      for (const member of after.members) {
+        const before = simulated.members.find(entry => entry.id === member.id)!;
+        const units = Math.round(member.charge * personalChargeUnit) - Math.round(before.charge * personalChargeUnit);
+        dropUnits.set(member.id, (dropUnits.get(member.id) ?? 0) + units);
+        flyToMember(member.id, units, source);
+      }
+      simulated = after;
+    }
     for (const member of frame.readout.gauge.members) {
       const before = previous.gauge.members.find(entry => entry.id === member.id)?.charge ?? member.charge;
-      const gained = member.charge - before;
-      if (gained <= 0) continue;
+      const units = Math.round(member.charge * personalChargeUnit) - Math.round(before * personalChargeUnit) -
+        (dropUnits.get(member.id) ?? 0);
+      if (units <= 0) continue;
       const card = this.host.querySelector(`[data-radiant-unit="${member.id}"]`);
-      const meter = card?.querySelector('.radiant-charge-layers'), face = card?.querySelector('.radiant-face');
       const own = this.host.querySelector(`[data-radiant-art="${member.id}"]`);
       const source = sources.length ? this.host.querySelector(`[data-radiant-art="${sources[Math.floor(random() * sources.length)]}"]`) : own;
-      if (!card || !meter || !face || !source) continue;
-      fly(source, face, getComputedStyle(card).getPropertyValue('--accent').trim() || '#ffffff', Math.min(6, Math.max(1, Math.ceil(gained / 6))), meter);
+      if (!card || !source) throw new Error('Saved charge source is missing from the battle view.');
+      flyToMember(member.id, units, source);
     }
     const shared = frame.readout.gauge.sharedUnits - previous.gauge.sharedUnits;
     const sharedMeter = this.host.querySelector('[data-radiant-shared]');

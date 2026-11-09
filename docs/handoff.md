@@ -1,5 +1,50 @@
 # Current state and handoff
 
+## Saved shared enemy Gauge drops (2026-11-09)
+
+**Branch and release:** `overhaul/radiant-foundation`; the Radiant authority
+remains disabled and no deployment is authorized before the existing gates.
+
+**Implemented:** a Normal direct hit drops 20 Gauge, a Flare direct hit drops
+1 and a squad-owned enemy defeat drops 5. The first two qualifying direct hits
+per action retain the 25% chance for a +5 drop. Each drop grants its full value
+to its living attacker and an additional 10% to every other living member,
+with individual caps and exact saved tenths. A defeated source gains nothing,
+but living allies still receive their own shares. Other personal/shared Gauge
+sources and independent RNG remain intact.
+
+Saved events identify the enemy, owner, trigger and amount, validate against
+their damage/defeat provenance, and replay atomically without double grants.
+Orbs fly from the actual enemy to all members whose saved Gauge increased.
+The latest saved Gauge permits a teammate's action or Flare during an earlier
+member's windup; its readout still replays the saved impacts in order.
+
+**Verified:** `npx vitest run radiant --exclude src\radiant-ui.test.ts
+--maxWorkers=2 --testTimeout=60000` passes 1,755 tests across 22 files;
+client and authority TypeScript checks and `npm run build` pass, with the
+existing Vite chunk-size advisory. `node tools\smoke_radiant_db.mjs
+--actions=600` passes the disposable actual-database proof, including Gauge
+shares, identical replay, stale CAS, single-winner concurrency and saved exit.
+Across 669 timed commits and 70 encounters it recorded p50 279 ms, p95 355 ms,
+max 1,658 ms, 158 events in the largest encounter journal, a 104,758-byte
+largest response and 93,231-byte largest stored aggregate. The test account and
+cascading records were removed; no hosted function or flag was changed.
+The conditional pressure study
+compares 2,001 paired cases with fixed seeds: developed-six paired victories
+average 10.59 to 10.11 rounds; common-trio paired victories average 12.76 to
+12.67 rounds. These are bounded acquired-squad experiments, not population
+averages or final balance approval. At 1920x1080 and 1366x768, headless Edge
+checked enemy-origin flights over time, all six saved readouts, active-effect
+Skip, Reduce motion and a second attack saved while the first was playing.
+No browser page errors appeared; this is not physical GPU/cadence acceptance.
+
+**Remaining:** the owner's in-game review, desktop GPU/cadence and economy
+acceptance, final bespoke per-character cinematic VFX, explicit deployment
+approval, matching authority/client deployment and hosted verification.
+The [single art brief](../Art/ui/Radiant%20Combat%20Overhaul.md) requests no
+new mandatory image; its optional Home scenery is still unapproved. Preserve
+all unrelated dirty documentation and rejected local prototypes.
+
 ## Radiant battle feel and desktop screen polish (2026-11-09)
 
 **Work state:** this work is on branch `overhaul/radiant-foundation`. Nothing has been deployed, and the Radiant authority is still disabled. The owner's polish audit comes before any deployment.

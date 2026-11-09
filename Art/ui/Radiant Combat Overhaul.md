@@ -70,6 +70,12 @@ owned by the system specification and typed content, not this visual brief.
   six. Present actual unlock/readiness/values in accessible text, not color
   alone; the team gauge appears under the rules in the system specification.
   Never invent a third personal meter or draw readiness before it exists.
+- **Enemy Gauge drops:** use procedural colored orbs from the actual enemy to
+  every living recipient of a saved gain; no new source image is required.
+  Show exact personal values, including tenths, and retain static saved
+  feedback when Reduce motion or Skip removes the flights. The attacker's
+  full drop and each teammate's additional 10% are gameplay values, not
+  separate visual reward claims.
 - **Stats and attunement:** use HTML text and procedural geometry or existing
   suitable art for the four stats and five subtype labels. Preserve text,
   numeric values, focus, contrast and readable layout at phone sizes; no image

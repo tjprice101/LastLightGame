@@ -335,7 +335,7 @@ describe('bounded source-owned effect ledger', () => {
     state.enemies[0].shields.push({ id: state.nextShieldId++, source: { kind: 'enemy', enemyId: 'enemy' }, remaining: 10000 });
     const result = normal(state);
     expect(result.state.gauge.members[0].charge).toBe(28);
-    expect(result.state.gauge.members[1].charge).toBe(18);
+    expect(result.state.gauge.members[1].charge).toBe(20.5);
     expect(result.state.gauge.sharedUnits).toBe(420);
     const chargeEvents = result.events.filter(event => event.type === 'charge' && event.gearSource?.kind === 'gear');
     expect(chargeEvents).toHaveLength(3);

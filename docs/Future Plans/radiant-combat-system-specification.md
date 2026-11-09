@@ -1,5 +1,59 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Shared enemy Gauge drops (2026-11-09)
+
+The owner clarified that the attacker receives the full dropped Gauge value and
+**each** other living squad member independently receives 10% of that same
+value; the shares are additional, not deducted from or divided out of the
+attacker's amount. Drops occur on qualifying direct hits and on enemy defeat.
+The numerical drop amounts below are developer-tuned for the existing pacing,
+not a claim of final production balance.
+
+- A Normal hit that damages Health or absorbs Shield drops 20. A Flare direct
+  hit drops 1 per qualifying target. A player-owned finishing packet drops 5
+  more, including a periodic, generated, Conduit or Master finish.
+- The first two qualifying direct hits in each action retain independent 25%
+  rolls for a +5 drop bonus. A defeated source gains nothing, but the other
+  living members still receive their shares. Existing personal caps apply
+  independently and capped shares are not redistributed.
+- Personal Gauge is saved as exact tenths in the existing numeric field: a
+  drop of 25 offers 25 to the attacker and 2.5 to each other living member.
+  Prior integer values remain valid; no load-time rewrite or new hidden
+  accumulator is introduced. Defense, new-round, incoming-hit, authored
+  passive/gear and shared Eternal charge remain separate.
+- The authority saves each enemy ID, bearer ID, trigger and amount with the
+  action, and validates its damage/defeat provenance before replay. Gauge,
+  rewards and the event receipt remain one atomic result; retries do not
+  roll or distribute again. Visual orbs originate at that actual enemy and
+  travel to each recipient with a positive saved gain; capped and defeated
+  members produce no false gain. Skip and Reduce motion retain the saved
+  values without requiring animated effects.
+- Actions remain available as soon as the previous action is saved. Flare
+  eligibility reads the newest saved Gauge even while an earlier impact's
+  readout is still playing.
+
+The pressure study compares 2,001 paired conditional scenarios across 284
+anchors and 44 families, using the existing small fixed seed set. The six-member
+developed condition remained 614/614 victories and averaged 10.59 to 10.11
+rounds among paired victories; the common trio remained 501/614 victories and
+averaged 12.76 to 12.67 rounds among paired victories. These are bounded owned-
+squad experiments, not ordinary-account population averages or final balance
+approval; separate Calamitic loadout screening can select different Masters.
+
+`node tools\smoke_radiant_db.mjs --actions=600` passed against the actual
+hosted SQL RPCs with a disposable identity, including exact full-attacker and
+10%-per-teammate values after read and idempotent replay, stale-CAS rejection,
+one-winner concurrency and saved exit. The run made 669 timed commits across
+70 encounters; the largest encounter journal was 158 events, the largest
+response 104,758 bytes and largest stored aggregate 93,231 bytes. Local-handler
+plus hosted-RPC latency measured p50 279 ms, p95 355 ms and max 1,658 ms.
+The identity and cascading records were removed. This is not a deployed-function,
+player-device or production-traffic test; no hosted flag or code was changed.
+
+This work remains on the isolated branch; the owner review, desktop GPU and
+cadence check, final unique cinematic VFX and art brief, deployment approval,
+coherent deployment and hosted verification are still release gates.
+
 ## Battle feel and desktop polish pass (2026-11-09)
 
 **Formation.** Six allies stand in two staggered, overlapping rows of three. The front row is members 1–3 and the back row is members 4–6, offset half a column. Ally art matches enemy art size (`--radiant-unit-height`). Field name pills are shown only for the selected unit.
@@ -7,7 +61,9 @@
 **Menu.** The rules disclosure is a footer. The gesture help is one line; the exact 350 ms hold and 32 px upward release thresholds remain in screen-reader text.
 
 **Effects.** Every effect is driven only by saved data:
-- **Gauge orbs** come from the saved `charge` deltas. There are `ceil(delta/6)` orbs, at most 6, flying from the damaged enemies (or the member's own art) to the card or shared meter.
+- **Gauge orbs** follow saved enemy-drop events to each recipient, or existing
+  non-drop charge deltas from the applicable source. Each positive gain uses
+  `ceil(gain/6)` orbs, at most 6, toward the card or shared meter.
 - **Loot** comes from the saved `rewards` and pops at each enemy's `defeated` frame.
 - **Flare shake** plays on a Flare's first damaging frame.
 
@@ -165,8 +221,8 @@ No new or substituted art, account grants, stats, RNG or authority writes.
 
 The lower portrait rail retains Health/Shield, Attack/Defense/Recovery (shared
 two-decimal presentation formatting only), source-owned effect rows, personal
-layers and actual highest-tier readiness. Exact Health/Shield/Gauge ledgers
-remain whole combat values. Narrow screens use an intentional keyboard-focusable
+layers and actual highest-tier readiness. Exact Health/Shield remain whole
+combat values; personal Gauge retains exact tenths. Narrow screens use an intentional keyboard-focusable
 horizontal rail, not a stack that pushes the field and controls thousands of
 pixels apart. Full names/effects remain accessible; effect lists are contained,
 not silently discarded. Reference dialogs retain exact frozen raw stats.
@@ -1095,8 +1151,8 @@ their identity; elemental eligibility still comes from the actual catalog.
 rank-adjusted effects. Ordinary ranks remain0-5 and use the existing upgrade
 validation/costs. Every listed magnitude scales by `1 + .1 * rank`: rank5 is
 1.5 times its base effect, not an extra proc, activation mode or probability.
-Integer personal charge is resolved through the tested bounded charge path;
-shared-normal amounts use exact60-unit shared charge.
+Personal charge uses the tested bounded tenth-unit path; shared-normal amounts
+use exact60-unit shared charge.
 
 Representative same-purpose base-rank comparisons:
 
@@ -1927,30 +1983,36 @@ the requirement; the display shows exact current/required values.
 
 | Accepted event | Personal charge |
 | --- | --- |
-| Normal Attack causing positive Health loss or Shield absorption |20 to actor, once per action |
+| Normal Attack causing positive Health loss or Shield absorption |Enemy drops 20, once per action |
+| Flare direct hit causing positive Health loss or Shield absorption |Enemy drops 1 per hit |
+| Enemy defeated by squad-owned damage |Enemy drops 5 more, including generated or periodic finishes |
 | Defense |10 to actor |
 | Round completion |5 to each living bearer after the enemy phase |
 | Enemy direct attack causing Health loss or Shield absorption |8 to recipient, once per enemy action, not per packet |
-| Ordinary Flare use |No generic personal refund; specific reviewed effects only |
+| Nondamaging Flare use |No generic personal refund; specific reviewed effects only |
 
 Support Flare users receive round/defensive charge without having to fabricate
-damage. Passive/Master/ordinary-gear grants declare their own bounded trigger.
-No grant from clicking, animation contacts, overkill, corpse targets or
-replayed events. Round grants occur only after a completed enemy phase, not
-after ending a modal or revisiting Settings.
+damage. Each enemy drop offers its full value to its living attacker and 10%
+of that value separately to each other living member, subject to individual
+caps. Defeated members receive nothing; a defeated source's other living allies
+still receive their shares. Tenths carry exactly in saved personal charge.
+Passive/Master/ordinary-gear grants declare their own bounded trigger. No grant
+comes from clicking, animation contacts, overkill, corpse targets or replayed
+events. Round grants occur only after a completed enemy phase, not after ending
+a modal or revisiting Settings.
 
 ### Random bonus motes
 
 For a qualifying manually initiated offensive action, roll independently for
 each **actual direct hit** with positive Health loss/Shield absorption:
-25% chance of +5 personal points to the attacker, with at most **two rolls and
-two successful bonuses per action**. Total generic random bonus is at most10.
+25% chance of +5 to that hit's drop, with at most **two rolls and two
+successful bonuses per action**. Total generic random drop bonus is at most10.
 Normal has one eligible hit. For AoE, consider targets in stable field order
 and only the first two qualifying target impacts. This deliberately caps AoE.
 
 Burn, generated retaliation, detonation/follow-up packets and healed Health
-alone do not roll. Such effects can still have explicit guaranteed charge
-effects if a reviewed kit says so. One dedicated persisted bonus-charge seed
+alone do not roll. A squad-owned finishing packet still generates the defeat
+drop above; other guaranteed charge effects require an authored trigger. One dedicated persisted bonus-charge seed
 is separate from combat/reward/capture/encounter seeds. Full Gauge still consumes
 the same eligible rolls; received charge caps honestly rather than changing
 future RNG because of gear or current bar fullness.

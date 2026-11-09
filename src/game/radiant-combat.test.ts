@@ -111,7 +111,8 @@ describe('released Element-Bearer catalog and frozen account compatibility', () 
       });
       validateRadiantCombat(result.state);
       expect(before.gauge.members[0].charge).toBe(before.gauge.members[0].baseCost * (tier === 'glowing' ? 1 : 2));
-      expect(result.state.gauge.members[1].charge).toBe(0);
+      const drops = result.events.filter(event => event.type === 'gauge-drop');
+      expect(result.state.gauge.members[1].charge).toBe(drops.reduce((sum, event) => sum + event.amount, 0) / 10);
       expect(result.state.gauge.eternalCasts).toBe(tier === 'eternal' ? 1 : 0);
       if (tier === 'eternal') expect(result.state.gauge.sharedUnits).toBe(0);
       expect(result.events.filter(event => event.type === 'charge').every(event => event.bonusRolls <= 2)).toBe(true);
@@ -227,6 +228,85 @@ describe('deterministic diminishing direct damage', () => {
     expect(a.state.chargeSeed).not.toBe(b.state.chargeSeed);
     expect(a.state.gauge.members[0].charge).toBe(25);
     expect(first.chargeSeed).toBe(0);
+  });
+});
+
+describe('saved enemy Gauge drops', () => {
+  const squad = ['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'crinso'] as const;
+  it('gives the full Normal hit drop to its attacker and ten percent to every other member', () => {
+    const state = fixture([...squad], 6);
+    const before = structuredClone(state);
+    const result = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' });
+    expect(result.events.filter(event => event.type === 'gauge-drop')).toEqual([
+      { type: 'gauge-drop', enemyId: 'enemy', bearerId: 'ally-0', trigger: 'hit', amount: 25 },
+    ]);
+    expect(result.state.gauge.members.map(member => member.charge)).toEqual([25, 2.5, 2.5, 2.5, 2.5, 2.5]);
+    expect(result.state.gauge.sharedUnits).toBe(60);
+    expect(result.state.chargeSeed).toBe(1013904223);
+    expect(state).toEqual(before);
+  });
+  it('treats a fully absorbed direct hit as an enemy drop without awarding currency', () => {
+    const state = fixture(['ember', 'tide'], 6);
+    state.enemies[0].shields.push({ id: state.nextShieldId++, source: { kind: 'enemy', enemyId: 'enemy' }, remaining: 10000 });
+    const result = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' });
+    expect(result.state.enemies[0].hp).toBe(state.enemies[0].hp);
+    expect(result.state.currencyEarned).toBe(0);
+    expect(result.state.gauge.members.map(member => member.charge)).toEqual([25, 2.5]);
+    expect(result.events.filter(event => event.type === 'gauge-drop')).toHaveLength(1);
+  });
+  it('awards a separate defeat drop without another bonus roll or extra currency', () => {
+    const state = fixture([...squad], 6, 1);
+    const result = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' });
+    expect(result.events.filter(event => event.type === 'gauge-drop')).toEqual([
+      { type: 'gauge-drop', enemyId: 'enemy', bearerId: 'ally-0', trigger: 'hit', amount: 25 },
+      { type: 'gauge-drop', enemyId: 'enemy', bearerId: 'ally-0', trigger: 'defeat', amount: 5 },
+    ]);
+    expect(result.state.gauge.members.map(member => member.charge)).toEqual([30, 3, 3, 3, 3, 3]);
+    expect(result.state.chargeSeed).toBe(1013904223);
+    expect(result.state.currencyEarned).toBe(101);
+  });
+  it('drops on each Flare target while retaining the two-roll action cap', () => {
+    const loadouts = squad.map((starter, index) => loadout(starter, { id: `ally-${index}`, form: 6 }));
+    const enemies = Array.from({ length: 6 }, (_, index) => ({ id: `enemy-${index}`,
+      stats: { hp: 10000, attack: 20, defense: 10, recovery: 0 }, currencyBudget: 100 }));
+    const state = charged(createRadiantCombat(loadouts, enemies, 0), 'lustrous');
+    const result = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ally-0' });
+    const drops = result.events.filter(event => event.type === 'gauge-drop');
+    expect(drops.map(drop => [drop.enemyId, drop.trigger, drop.amount])).toEqual([
+      ['enemy-0', 'hit', 6], ['enemy-1', 'hit', 1], ['enemy-2', 'hit', 1],
+      ['enemy-3', 'hit', 1], ['enemy-4', 'hit', 1], ['enemy-5', 'hit', 1],
+    ]);
+    expect(result.state.gauge.members.map(member => member.charge)).toEqual([11, 1.1, 1.1, 1.1, 1.1, 1.1]);
+    expect(result.events.find(event => event.type === 'charge')).toMatchObject({ bonusRolls: 2, bonusOffered: 5 });
+    expect(result.state.chargeSeed).toBe(1196435762);
+  });
+  it('credits a generated finishing strike once, without granting a direct-hit drop or consuming RNG', () => {
+    const state = createRadiantCombat([
+      loadout('tide', { id: 'ally-0', form: 6, masterId: 'master-tide-3' }),
+      loadout('ember', { id: 'ally-1', form: 6 }),
+    ], [{ id: 'enemy', stats: { hp: 1, attack: 20, defense: 10, recovery: 0 }, currencyBudget: 100 }], 0);
+    const result = applyRadiantCombatAction(charged(state, 'glowing'), {
+      type: 'flare', bearerId: 'ally-0', targetId: 'enemy',
+    });
+    expect(result.events.filter(event => event.type === 'damage')).toMatchObject([{ origin: 'generated' }]);
+    expect(result.events.filter(event => event.type === 'gauge-drop')).toEqual([
+      { type: 'gauge-drop', enemyId: 'enemy', bearerId: 'ally-0', trigger: 'defeat', amount: 5 },
+    ]);
+    expect(result.state.gauge.members.map(member => member.charge)).toEqual([5, .5]);
+    expect(result.state.chargeSeed).toBe(0);
+  });
+  it('shares a defeated owner’s periodic finishing drop only with surviving teammates', () => {
+    const state = fixture(['ember', 'tide', 'sprout'], 6, 1);
+    state.bearers[0].hp = 0; state.gauge.members[0].living = false;
+    state.phase = 'enemy'; state.acted = ['ally-1', 'ally-2']; state.enemyActed = ['enemy'];
+    state.enemies[0].burns.push({ source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: 1, remaining: 1 });
+    const result = applyRadiantCombatAction(state, { type: 'finish-enemy-phase' });
+    expect(result.events.filter(event => event.type === 'gauge-drop')).toEqual([
+      { type: 'gauge-drop', enemyId: 'enemy', bearerId: 'ally-0', trigger: 'defeat', amount: 5 },
+    ]);
+    expect(result.state.gauge.members.map(member => member.charge)).toEqual([0, .5, .5]);
+    expect(result.state.chargeSeed).toBe(0);
+    expect(result.state.phase).toBe('victory');
   });
 });
 
@@ -347,7 +427,7 @@ describe('six-member action rounds, fixed leader and state isolation', () => {
     const result = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' });
     expect(result.state.phase).toBe('victory');
     expect(result.events.filter(event => event.type === 'defeated')).toHaveLength(1);
-    expect(result.state.gauge.members[0].charge).toBe(25);
+    expect(result.state.gauge.members[0].charge).toBe(30);
     expect(() => apply(result.state, { type: 'finish-enemy-phase' })).toThrow('finished');
     state = passPlayers(fixture());
     state = apply(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ally-0'], coefficient: 1000 });
@@ -433,7 +513,7 @@ describe('progressive signatures and layered shared readiness', () => {
     ]);
     expect(result.events.find(event => event.type === 'charge')).toMatchObject({ bonusRolls: 0 });
     expect(result.state.gauge.sharedUnits).toBe(0);
-    expect(result.state.gauge.members[0].charge).toBe(0);
+    expect(result.state.gauge.members[0].charge).toBe(5);
     expect(result.state.chargeSeed).toBe(0);
     expect(result.state.currencyEarned).toBe(101);
   });
@@ -475,7 +555,7 @@ describe('Infernis sourced Burn signature', () => {
     const result = applyRadiantCombatAction(state, { type: 'finish-enemy-phase' });
     expect(result.state.phase).toBe('victory');
     expect(result.events.some(event => event.type === 'round')).toBe(false);
-    expect(result.state.gauge.members[0].charge).toBe(10);
+    expect(result.state.gauge.members[0].charge).toBe(15);
     expect(result.state.currencyEarned).toBe(101);
   });
 });
@@ -797,10 +877,12 @@ describe('distinct bearer signature interactions', () => {
       } else {
         const sourceEvent = result.events.find(event => 'source' in event && event.source.kind === 'passive' &&
           'bearerId' in event.source && event.source.bearerId === 'owner');
-        if (['charted-charge', 'exposed-charge', 'heal-charge'].includes(rule))
+        if (['charted-charge', 'exposed-charge', 'heal-charge'].includes(rule)) {
+          const drops = result.events.reduce((sum, event) =>
+            sum + (event.type === 'gauge-drop' && event.bearerId === 'owner' ? event.amount : 0), 0);
           expect(result.events.filter(event => event.type === 'charge').find(event => event.bearerId === 'owner')?.personal)
-            .toBe(Math.round(radiantBearerKits[id].passive.magnitude * 1.15));
-        else {
+            .toBe(drops + Math.round(radiantBearerKits[id].passive.magnitude * 1.15));
+        } else {
           expect(sourceEvent).toBeDefined();
           const stats = effectiveRadiantStats(before, 'owner');
           const magnitude = radiantBearerKits[id].passive.magnitude * 1.15;

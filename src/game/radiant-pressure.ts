@@ -2,7 +2,7 @@ import { radiantFlares, radiantMasters, type RadiantLoadout } from '../content/r
 import { scheduledEnemySkill } from '../content/enemy-skills';
 import { applyRadiantCombatAction, createRadiantCombat, type RadiantCombatState,
   type RadiantCombatEvent, type RadiantCombatAction } from './radiant-combat';
-import { readyFlare, sharedChargeThreshold } from './radiant-gauge';
+import { personalChargeUnit, readyFlare, sharedChargeThreshold } from './radiant-gauge';
 import type { RadiantPressureEnemy } from './radiant-pressure-encounters';
 
 export type RadiantPressurePolicy = 'balanced' | 'normal-only' | 'support-only';
@@ -88,7 +88,8 @@ export function runRadiantPressure(
   const hp = () => state.bearers.reduce((sum, member) => sum + member.hp, 0);
   const shield = () => state.bearers.reduce((sum, member) => sum + member.shields.reduce((s, layer) => s + layer.remaining, 0), 0);
   const lowWater = () => state.enemies.reduce((sum, enemy) => sum + enemy.currency.lowestHP, 0);
-  const personal = () => state.gauge.members.reduce((sum, member) => sum + member.charge, 0);
+  const personal = () => state.gauge.members.reduce((sum, member) =>
+    sum + Math.round(member.charge * personalChargeUnit), 0) / personalChargeUnit;
   const initialHP = hp(), rounds: RadiantPressureResult['rounds'] = [];
   let minimumTeamHP = initialHP, maximumShield = shield(), actions = 0, completedRounds = 0;
   let lastProgress = 0, lowest = lowWater(), stalemate = false;
@@ -115,7 +116,9 @@ export function runRadiantPressure(
     }
     const result = applyRadiantCombatAction(state, action);
     state = result.state; result.events.forEach(record);
-    metrics.personalSpent += spent; metrics.personalGranted += personal() - beforePersonal + spent;
+    metrics.personalSpent += spent;
+    metrics.personalGranted = Math.round((metrics.personalGranted + personal() - beforePersonal + spent) *
+      personalChargeUnit) / personalChargeUnit;
     metrics.sharedSpentUnits += sharedSpent; metrics.sharedGrantedUnits += state.gauge.sharedUnits - beforeShared + sharedSpent;
     if (action.type === 'normal') metrics.normals++;
     if (action.type === 'defense') metrics.defenses++;

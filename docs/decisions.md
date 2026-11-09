@@ -1,5 +1,17 @@
 # Decision log
 
+## Share each enemy Gauge drop with the living squad (2026-11-09)
+
+The owner clarifies that a drop's full value goes to its attacker and an
+additional 10% of that same value goes to each other living squad member,
+not 10% divided between them. Drop on qualifying direct hits and defeat while
+retaining the separate pre-existing Gauge sources and pacing. Exact tenths,
+individual caps, player-owned defeat attribution, independent bonus RNG,
+save-first idempotent receipts and immediate post-save action availability
+are part of the [current contract](Future%20Plans/radiant-combat-system-specification.md#shared-enemy-gauge-drops-2026-11-09).
+Tuned drop amounts are implementation values, not final balance approval.
+The branch remains isolated and the authority default-disabled.
+
 ## Keep full battle units above interactive portrait readouts (2026-11-08)
 
 Owner explicitly confirms full-form characters still fight with enemies in

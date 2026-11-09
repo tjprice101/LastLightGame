@@ -1,5 +1,6 @@
-import { validateRadiantCombat, type RadiantCombatEvent, type RadiantCombatState, type RadiantShield, type RadiantSource } from '../game/radiant-combat';
-import { spendReadyFlare, type RadiantGaugeState } from '../game/radiant-gauge';
+import { validateRadiantCombat, validateRadiantDropEvents, type RadiantCombatEvent, type RadiantCombatState,
+  type RadiantShield, type RadiantSource } from '../game/radiant-combat';
+import { grantRadiantDrop, spendReadyFlare, type RadiantGaugeState } from '../game/radiant-gauge';
 import { applyRadiantStatusEvent, radiantStatusSnapshot, type RadiantStatusSnapshot } from './radiant-status';
 
 export interface RadiantReadout {
@@ -69,6 +70,9 @@ function apply(readout: RadiantReadout, event: RadiantCombatEvent): void {
     const spent = spendReadyFlare(readout.gauge, event.bearerId);
     if (spent.tier !== event.tier) throw new Error('Saved Flare tier does not match displayed charge.');
     readout.gauge = spent.state;
+  } else if (event.type === 'gauge-drop') {
+    if (!readout.units[event.enemyId]) throw new Error('Saved Gauge-drop enemy is missing.');
+    readout.gauge = grantRadiantDrop(readout.gauge, event.bearerId, event.amount);
   } else if (event.type === 'charge') {
     const member = readout.gauge.members.find(member => member.id === event.bearerId);
     if (!member) throw new Error('Saved charge owner is missing.');
@@ -81,6 +85,8 @@ function apply(readout: RadiantReadout, event: RadiantCombatEvent): void {
 export function radiantImpactFrames(before: RadiantCombatState, after: RadiantCombatState,
   events: readonly RadiantCombatEvent[]): RadiantImpactFrame[] {
   const displayed = radiantReadout(before), expected = radiantReadout(after);
+  const enemyIds = new Set(before.enemies.map(enemy => enemy.id));
+  validateRadiantDropEvents(events, enemyIds, new Set(before.bearers.map(member => member.loadout.id)));
   const statuses = radiantStatusSnapshot(before), expectedStatuses = radiantStatusSnapshot(after);
   const frames: RadiantImpactFrame[] = [];
   for (let index = 0; index < events.length;) {
@@ -95,6 +101,7 @@ export function radiantImpactFrames(before: RadiantCombatState, after: RadiantCo
       const next = events[index];
       if (!next || key === null) break;
       if (next.type === 'currency' || next.type === 'defeated') continue;
+      if (next.type === 'gauge-drop' && targets.has(next.enemyId)) continue;
       if (next.type === 'status' && targets.has(next.targetId)) continue;
       if (sourceKey(next) !== key || !('targetId' in next) || targets.has(next.targetId)) break;
     } while (index < events.length);

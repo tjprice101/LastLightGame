@@ -48,6 +48,39 @@ describe('saved ordered Radiant impact ledger', () => {
     expect(aoe.readout.units['enemy-b'].hp).toBeLessThan(before.enemies[1].hp);
     expect(before).toEqual(original);
   });
+  it('replays hit and defeat drops for every living member at their enemy impact', () => {
+    const before = battle(['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'crinso']);
+    const target = before.enemies[0];
+    target.hp = 1;
+    target.currency.lowestHP = 1;
+    target.currency.paid = Math.floor(target.currency.budget * (target.currency.baselineHP - 1) / target.currency.baselineHP);
+    before.currencyEarned = target.currency.paid;
+    const result = applyRadiantCombatAction(before, { type: 'normal', bearerId: 'ember', targetId: target.id });
+    const frames = radiantImpactFrames(before, result.state, result.events);
+    const hit = frames.find(frame => frame.events.some(event => event.type === 'damage' && event.targetId === target.id))!;
+    const drops = hit.events.filter(event => event.type === 'gauge-drop');
+    expect(drops.map(drop => drop.trigger)).toEqual(['hit', 'defeat']);
+    const total = drops.reduce((sum, drop) => sum + drop.amount, 0);
+    expect(hit.readout.units[target.id].hp).toBe(0);
+    expect(hit.readout.gauge.members.map(member => member.charge)).toEqual([total, ...Array(5).fill(total / 10)]);
+    expect(frames.at(-1)!.readout).toEqual(radiantReadout(result.state));
+  });
+  it('rejects a falsified drop source or amount instead of showing an unsaved team gain', () => {
+    const before = battle(['ember', 'tide']);
+    const result = applyRadiantCombatAction(before, { type: 'normal', bearerId: 'ember', targetId: 'enemy-a' });
+    const source = structuredClone(result.events), wrongSource = source.find(event => event.type === 'gauge-drop')!;
+    if (wrongSource.type === 'gauge-drop') wrongSource.enemyId = 'tide';
+    expect(() => radiantImpactFrames(before, result.state, source)).toThrow('not an enemy');
+    const otherEnemy = structuredClone(result.events), wrongEnemy = otherEnemy.find(event => event.type === 'gauge-drop')!;
+    if (wrongEnemy.type === 'gauge-drop') wrongEnemy.enemyId = 'enemy-b';
+    expect(() => radiantImpactFrames(before, result.state, otherEnemy)).toThrow('does not match');
+    const otherBearer = structuredClone(result.events), wrongBearer = otherBearer.find(event => event.type === 'gauge-drop')!;
+    if (wrongBearer.type === 'gauge-drop') wrongBearer.bearerId = 'tide';
+    expect(() => radiantImpactFrames(before, result.state, otherBearer)).toThrow('does not match');
+    const amount = structuredClone(result.events), wrongAmount = amount.find(event => event.type === 'gauge-drop')!;
+    if (wrongAmount.type === 'gauge-drop') wrongAmount.amount++;
+    expect(() => radiantImpactFrames(before, result.state, amount)).toThrow('amount');
+  });
   it('rejects missing or dishonest event batches rather than jumping to success-shaped final readouts', () => {
     const before = battle(['ember']);
     const result = applyRadiantCombatAction(before, { type: 'normal', bearerId: 'ember', targetId: 'enemy-a' });

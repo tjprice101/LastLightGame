@@ -134,7 +134,18 @@ try {
   checkpoint = await read();
   assert.equal(checkpoint.revision, acted.revision);
   assert.equal(checkpoint.account.fractalis, acted.account.fractalis, 'replay must not pay twice');
+  const drops = acted.events.filter(event => event.type === 'gauge-drop' && event.bearerId === 'ember');
+  assert.ok(drops.length, 'the saved hit must contain an enemy Gauge drop');
+  const dropped = drops.reduce((sum, event) => sum + event.amount, 0);
+  for (const member of acted.run.state.gauge.members) {
+    const beforeCharge = run.state.gauge.members.find(entry => entry.id === member.id).charge;
+    const capacity = member.baseCost * (member.form >= 4 ? 2 : 1);
+    const share = member.id === 'ember' ? dropped : dropped / 10;
+    assert.equal(member.charge, Math.min(capacity, beforeCharge + share), `saved Gauge share for ${member.id}`);
+  }
+  assert.deepEqual(checkpoint.run.state.gauge, acted.run.state.gauge, 'read must preserve every saved Gauge share');
   summary.idempotency = 'action replay identical; revision/currency unchanged by replay';
+  summary.gauge = 'enemy drop saved once; full attacker gain and ten percent to each teammate survive replay/read';
 
   // 5. Bounded long Training run through the actual database.
   run = acted.run; revision = acted.revision;

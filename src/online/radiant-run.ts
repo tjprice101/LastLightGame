@@ -18,7 +18,7 @@ import { adaptRadiantLoadouts } from '../game/radiant-loadout';
 import { adaptRadiantPressureEncounter, assertRadiantPressureAccess,
   type RadiantPressureAnchor, type RadiantPressureEnemy } from '../game/radiant-pressure-encounters';
 import { radiantPressureEnemyAction } from '../game/radiant-pressure';
-import { applyRadiantCombatAction, createRadiantCombat, validateRadiantCombat,
+import { applyRadiantCombatAction, createRadiantCombat, validateRadiantCombat, validateRadiantDropEvents,
   type RadiantCombatAction, type RadiantCombatEvent, type RadiantCombatState } from '../game/radiant-combat';
 
 export type RadiantRunErrorCode = 'manual-squad' | 'invalid-input' | 'stale-revision' |
@@ -353,6 +353,9 @@ export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
     if (!record(run.journal) || Object.keys(run.journal).some(key => !['events', 'rewards'].includes(key)) ||
       !Array.isArray(run.journal.events) || !run.journal.events.every(validEvent))
       throw new Error();
+    const enemyIds = new Set(run.state.enemies.map(enemy => enemy.id));
+    const bearerIds = new Set(run.state.bearers.map(member => member.loadout.id));
+    validateRadiantDropEvents(run.journal.events, enemyIds, bearerIds);
     if (run.journal.events.reduce((sum, event) => sum + (event.type === 'currency' ? event.amount : 0), 0)
       !== run.state.currencyEarned) throw new Error();
     // Historical batches may share a source when a delayed clear pays after a
@@ -394,6 +397,7 @@ const eventFields = {
   shield: { text: ['targetId'], number: ['amount', 'shieldId'] },
   currency: { text: ['enemyId'], number: ['amount', 'totalPaid'] },
   defeated: { text: ['targetId'], number: [] },
+  'gauge-drop': { text: ['enemyId', 'bearerId', 'trigger'], number: ['amount'] },
   flare: { text: ['bearerId', 'tier', 'name'], number: [] },
   charge: { text: ['bearerId'], number: ['personal', 'sharedUnits', 'bonusRolls', 'bonusOffered'] },
   round: { text: [], number: ['round'] },
@@ -416,6 +420,9 @@ function validEvent(value: unknown): boolean {
     !Array.isArray(value.shields) || !value.shields.every(shield => record(shield) && validSource(shield.source) &&
       typeof shield.amount === 'number' && Number.isFinite(shield.amount) && shield.amount >= 0))) return false;
   if (value.type === 'flare' && !['glowing', 'lustrous', 'eternal'].includes(String(value.tier))) return false;
+  if (value.type === 'gauge-drop' && (!['hit', 'defeat'].includes(String(value.trigger)) ||
+    !Number.isSafeInteger(value.amount) || Number(value.amount) < 1 ||
+    !Number.isSafeInteger(Number(value.amount) * 10))) return false;
   if (value.type === 'status' && !['burn', 'seed', 'renewal', 'reduction', 'weaken', 'attack-buff',
     'exposure', 'weaken-removed'].includes(String(value.status))) return false;
   if (value.type === 'status' && value.clockOnly !== undefined && value.clockOnly !== true) return false;

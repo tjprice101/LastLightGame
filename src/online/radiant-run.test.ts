@@ -431,6 +431,40 @@ describe('bounded study journal payload', () => {
 });
 
 describe('existing aggregate+revision+request RPC atomicity', () => {
+  it('saves and replays the exact full-attacker and ten-percent team drops atomically', async () => {
+    const value = entered(6);
+    value.state.radiantStudy!.state.chargeSeed = 0;
+    const rpc = new AtomicRpc(value), req = request(value, normal(value)), raw = structuredClone(value);
+    const expected = resolveRadiantRun(raw, req, authority()).response;
+    rpc.denied = true;
+    await expect(executeRadiantRun(rpc.repository(), req, authority())).rejects.toMatchObject({ code: 'denied-write' });
+    expect(rpc.current).toEqual(raw);
+    rpc.denied = false;
+    const saved = await executeRadiantRun(rpc.repository(), req, authority());
+    const drops = saved.events.filter(event => event.type === 'gauge-drop');
+    const total = drops.reduce((sum, event) => sum + event.amount, 0);
+    expect(drops.length).toBeGreaterThan(0);
+    expect(saved).toEqual(expected);
+    expect(saved.run.state.gauge.members.map(member => member.charge)).toEqual([
+      Math.min(total, saved.run.state.gauge.members[0].baseCost),
+      ...Array(5).fill(total / 10),
+    ]);
+    expect(validateRadiantRunResponse(JSON.parse(JSON.stringify(saved)))).toEqual(saved);
+    expect(await executeRadiantRun(rpc.repository(), req, authority())).toEqual(saved);
+    expect(rpc.writes).toBe(1);
+    expect(rpc.current.state.radiantStudy!.state.gauge).toEqual(saved.run.state.gauge);
+    for (const change of [
+      { enemyId: 'missing' }, { enemyId: saved.run.state.enemies[1].id },
+      { bearerId: 'missing' }, { bearerId: saved.run.state.bearers[1].loadout.id },
+      { trigger: 'other' }, { amount: .5 }, { amount: -1 }, { amount: 999 },
+    ]) {
+      const corrupt = structuredClone(saved);
+      const invalid = corrupt.run.journal.events.find(event => event.type === 'gauge-drop')!;
+      Object.assign(invalid, change);
+      Object.assign(corrupt.events.find(event => event.type === 'gauge-drop')!, change);
+      expect(() => validateRadiantRunResponse(corrupt)).toThrow('Invalid');
+    }
+  });
   it('saves exactly once and identical receipt retries return the immutable prior outcome', async () => {
     const rpc = new AtomicRpc(entered()), req = request(rpc.current, normal(rpc.current)), raw = structuredClone(rpc.current);
     const first = await executeRadiantRun(rpc.repository(), req, authority());

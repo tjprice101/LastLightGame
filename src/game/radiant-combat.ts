@@ -4,8 +4,8 @@ import {
   type RadiantLoadout, type RadiantStats,
 } from '../content/radiant-combat';
 import {
-  grantRadiantAction, grantRadiantIncomingAttack, grantRadiantRound, personalChargeMaximum,
-  spendReadyFlare, validateRadiantGauge, type FlareTier, type RadiantGaugeState,
+  addRadiantPersonalCharge, grantRadiantAction, grantRadiantDrop, grantRadiantIncomingAttack, grantRadiantRound,
+  radiantChargeRules, radiantHitDrop, spendReadyFlare, validateRadiantGauge, type FlareTier, type RadiantGaugeState,
 } from './radiant-gauge';
 import { squadMemberLimit } from '../content/squad-rules';
 import { type ConduitId } from '../content/conduits';
@@ -83,6 +83,7 @@ export type RadiantCombatEvent =
   | { type: 'shield'; source: RadiantSource; targetId: string; amount: number; shieldId: number }
   | { type: 'currency'; enemyId: string; amount: number; totalPaid: number }
   | { type: 'defeated'; targetId: string }
+  | { type: 'gauge-drop'; enemyId: string; bearerId: string; trigger: 'hit' | 'defeat'; amount: number }
   | { type: 'flare'; bearerId: string; tier: FlareTier; name: string }
   | { type: 'charge'; bearerId: string; personal: number; sharedUnits: number; bonusRolls: number; bonusOffered: number;
       gearSource?: Extract<RadiantSource, { kind: 'gear' }> }
@@ -90,6 +91,47 @@ export type RadiantCombatEvent =
   | { type: 'guard'; targetId: string; guarding: boolean }
   | { type: 'status'; targetId: string;
       status: RadiantTimedStatus; source: RadiantSource; magnitude: number; remaining: number; clockOnly?: true };
+
+export function validateRadiantDropEvents(
+  events: readonly RadiantCombatEvent[], enemyIds: ReadonlySet<string>, bearerIds: ReadonlySet<string>,
+): void {
+  for (const [index, event] of events.entries()) {
+    if (event.type !== 'gauge-drop') continue;
+    if (!enemyIds.has(event.enemyId)) throw new Error('Saved Gauge-drop source is not an enemy.');
+    if (!bearerIds.has(event.bearerId)) throw new Error('Saved Gauge-drop owner is not a squad member.');
+    if (event.trigger !== 'hit' && event.trigger !== 'defeat') throw new Error('Invalid saved Gauge-drop trigger.');
+    let position = index - 1;
+    if (event.trigger === 'defeat') {
+      const defeated = events[position--];
+      if (defeated?.type !== 'defeated' || defeated.targetId !== event.enemyId)
+        throw new Error('Saved Gauge-drop defeat does not match the defeated enemy.');
+      const hitDrop = events[position];
+      if (hitDrop?.type === 'gauge-drop') {
+        if (hitDrop.trigger !== 'hit' || hitDrop.enemyId !== event.enemyId || hitDrop.bearerId !== event.bearerId)
+          throw new Error('Saved Gauge-drop hit does not match the defeat.');
+        position--;
+      }
+    }
+    const currency = events[position];
+    if (currency?.type === 'currency') {
+      if (currency.enemyId !== event.enemyId) throw new Error('Saved Gauge-drop currency source does not match.');
+      position--;
+    }
+    const damage = events[position];
+    if (damage?.type !== 'damage' || damage.targetId !== event.enemyId || damage.source.kind === 'enemy' ||
+      damage.source.bearerId !== event.bearerId)
+      throw new Error('Saved Gauge-drop source does not match its damage.');
+    if (event.trigger === 'defeat') {
+      if (event.amount !== radiantChargeRules.defeatedEnemy) throw new Error('Invalid saved defeat Gauge-drop amount.');
+    } else {
+      if (damage.origin !== 'direct' || (damage.source.kind !== 'normal' && damage.source.kind !== 'flare') ||
+        damage.healthLoss + damage.absorbed <= 0) throw new Error('Saved Gauge-drop hit is not a qualifying direct hit.');
+      const base = damage.source.kind === 'normal' ? radiantChargeRules.normal : radiantChargeRules.flareHit;
+      if (event.amount !== base && event.amount !== base + radiantChargeRules.bonusAmount)
+        throw new Error('Invalid saved hit Gauge-drop amount.');
+    }
+  }
+}
 
 function safe(value: number, name: string, minimum = 0): void {
   if (!Number.isSafeInteger(value) || value < minimum) throw new Error(`Invalid radiant ${name}.`);
@@ -324,9 +366,20 @@ function sync(state: RadiantCombatState): void {
   if (state.enemies.every(member => member.hp === 0)) state.phase = 'victory';
   else if (state.bearers.every(member => member.hp === 0)) state.phase = 'defeat';
 }
+interface RadiantHitCharge {
+  bonusRolls: number;
+  bonusOffered: number;
+}
+function gaugeDrop(
+  state: RadiantCombatState, events: RadiantCombatEvent[], enemyId: string, bearerId: string,
+  trigger: 'hit' | 'defeat', amount: number,
+): void {
+  state.gauge = grantRadiantDrop(state.gauge, bearerId, amount);
+  events.push({ type: 'gauge-drop', enemyId, bearerId, trigger, amount });
+}
 function packet(
   state: RadiantCombatState, events: RadiantCombatEvent[], target: RadiantBearer | RadiantEnemy,
-  source: RadiantSource, origin: 'direct' | 'periodic' | 'generated', offered: number,
+  source: RadiantSource, origin: 'direct' | 'periodic' | 'generated', offered: number, hitCharge?: RadiantHitCharge,
 ): { healthLoss: number; absorbed: number; shields: { source: RadiantSource; amount: number }[] } {
   safe(offered, 'damage packet', 1);
   living(target.hp);
@@ -350,8 +403,19 @@ function packet(
     safe(state.currencyEarned, 'earned currency');
     if (payout.amount > 0) events.push({ type: 'currency', enemyId: target.id,
       amount: payout.amount, totalPaid: target.currency.paid });
+    if (origin === 'direct' && (source.kind === 'normal' || source.kind === 'flare') && healthLoss + absorbed > 0) {
+      if (!hitCharge) throw new Error('Radiant direct hit is missing its charge context.');
+      const drop = radiantHitDrop(source.kind, hitCharge.bonusRolls, () => rollCharge(state));
+      hitCharge.bonusRolls += drop.bonusRolls;
+      hitCharge.bonusOffered += drop.bonusOffered;
+      gaugeDrop(state, events, target.id, source.bearerId, 'hit', drop.amount);
+    }
   }
-  if (target.hp === 0) events.push({ type: 'defeated', targetId });
+  if (target.hp === 0) {
+    events.push({ type: 'defeated', targetId });
+    if ('currency' in target && source.kind !== 'enemy')
+      gaugeDrop(state, events, target.id, source.bearerId, 'defeat', radiantChargeRules.defeatedEnemy);
+  }
   sync(state);
   return { healthLoss, absorbed, shields };
 }
@@ -395,7 +459,7 @@ function rollCharge(state: RadiantCombatState): number {
 function addPassiveCharge(state: RadiantCombatState, events: RadiantCombatEvent[], id: string, amount: number): void {
   safe(amount, 'passive charge');
   const member = state.gauge.members.find(m => m.id === id)!;
-  member.charge += Math.min(amount, personalChargeMaximum(member) - member.charge);
+  addRadiantPersonalCharge(member, amount);
   events.push({ type: 'charge', bearerId: id, personal: member.charge, sharedUnits: state.gauge.sharedUnits,
     bonusRolls: 0, bonusOffered: 0 });
 }
@@ -479,7 +543,9 @@ function defensePassive(state: RadiantCombatState, events: RadiantCombatEvent[],
       break;
   }
 }
-function normal(state: RadiantCombatState, events: RadiantCombatEvent[], actor: RadiantBearer, targetId: string): number {
+function normal(
+  state: RadiantCombatState, events: RadiantCombatEvent[], actor: RadiantBearer, targetId: string, hitCharge: RadiantHitCharge,
+): number {
   const target = enemy(state, targetId);
   living(target.hp);
   const stats = effectiveRadiantStats(state, actor.loadout.id);
@@ -489,7 +555,7 @@ function normal(state: RadiantCombatState, events: RadiantCombatEvent[], actor: 
   const aboveHalf = target.hp > rounded(target.stats.hp) / 2;
   const impact = packet(state, events, target, source, 'direct',
     radiantDirectDamage(stats.attack, gearDefense(actor, target.stats.defense),
-      1 + radiantGearAmount(actor.loadout.gear, 'normal') + cooperation(state, actor), 1 + exposure(target)));
+      1 + radiantGearAmount(actor.loadout.gear, 'normal') + cooperation(state, actor), 1 + exposure(target)), hitCharge);
   const power = passivePower(actor);
   if (impact.healthLoss > 0 && actor.loadout.starter === 'ember' && burning && target.hp > 0)
     packet(state, events, target, { kind: 'passive', bearerId: actor.loadout.id },
@@ -542,6 +608,7 @@ function normal(state: RadiantCombatState, events: RadiantCombatEvent[], actor: 
 }
 function flare(
   state: RadiantCombatState, events: RadiantCombatEvent[], actor: RadiantBearer, targetId: string | undefined,
+  hitCharge: RadiantHitCharge,
 ): { tier: FlareTier; hits: number } {
   const master = actor.loadout.masterId === null ? null : radiantMasters[actor.loadout.masterId];
   const spent = spendReadyFlare(state.gauge, actor.loadout.id);
@@ -575,7 +642,7 @@ function flare(
     const impact = packet(state, events, target, source, 'direct', radiantDirectDamage(stats.attack,
       gearDefense(actor, target.stats.defense), offer.damage * signaturePower *
       (1 + radiantGearAmount(actor.loadout.gear, 'flare') + cooperation(state, actor)) *
-      (master?.rule === 'flare-damage' ? 1.15 : 1), 1 + exposure(target)));
+      (master?.rule === 'flare-damage' ? 1.15 : 1), 1 + exposure(target)), hitCharge);
     if (impact.healthLoss + impact.absorbed > 0) hits++;
     if (target.hp > 0 && offer.burn > 0) {
       const magnitude = offer.burn * stats.attack * signaturePower;
@@ -954,22 +1021,23 @@ export function applyRadiantCombatAction(
     living(actor.hp);
     if (state.acted.includes(action.bearerId)) throw new Error('This bearer already acted this round.');
     let hits = 0, chargeAction: 'normal' | 'defense' | 'flare' | 'eternal' = action.type;
-    if (action.type === 'normal') hits = normal(state, events, actor, action.targetId);
+    const hitCharge: RadiantHitCharge = { bonusRolls: 0, bonusOffered: 0 };
+    if (action.type === 'normal') hits = normal(state, events, actor, action.targetId, hitCharge);
     else if (action.type === 'defense') {
       actor.guarding = true;
       events.push({ type: 'guard', targetId: actor.loadout.id, guarding: true });
       defensePassive(state, events, actor);
     }
     else {
-      const cast = flare(state, events, actor, action.targetId);
+      const cast = flare(state, events, actor, action.targetId, hitCharge);
       hits = cast.hits;
       chargeAction = cast.tier === 'eternal' ? 'eternal' : 'flare';
     }
-    const charge = grantRadiantAction(state.gauge, action.bearerId, chargeAction, hits, () => rollCharge(state));
+    const charge = grantRadiantAction(state.gauge, action.bearerId, chargeAction, hits);
     state.gauge = charge.state;
     events.push({ type: 'charge', bearerId: action.bearerId,
       personal: state.gauge.members.find(m => m.id === action.bearerId)!.charge,
-      sharedUnits: state.gauge.sharedUnits, bonusRolls: charge.bonusRolls, bonusOffered: charge.bonusOffered });
+      sharedUnits: state.gauge.sharedUnits, bonusRolls: hitCharge.bonusRolls, bonusOffered: hitCharge.bonusOffered });
     processRadiantGear(state, events, action);
     state.acted.push(action.bearerId);
     if (state.phase === 'player' && state.bearers.filter(m => m.hp > 0).every(m => state.acted.includes(m.loadout.id)))
