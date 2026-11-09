@@ -100,7 +100,7 @@ describe('saved six-member Radiant battle surface', () => {
     }
     expect(host.querySelectorAll('[data-radiant-charge]')).toHaveLength(12);
     expect(host.querySelectorAll('[data-radiant-reference]')).toHaveLength(0);
-    expect(host.querySelectorAll('[data-radiant-select]')).toHaveLength(6);
+    expect(host.querySelectorAll('[data-radiant-menu]')).toHaveLength(6);
     expect(host.querySelectorAll('[data-radiant-member-actions]:not([hidden])')).toHaveLength(0);
     expect(host.querySelectorAll('.radiant-actions [data-radiant-action]')).toHaveLength(0);
     expect(host.textContent).not.toContain('Kit');
@@ -147,9 +147,9 @@ describe('saved six-member Radiant battle surface', () => {
     expect(energy.classList.contains('is-flowing')).toBe(false);
     expect(energy.querySelector<HTMLElement>('[data-energy-layer="2"]')!.style.width).toBe('50%');
   });
-  it('portrait tap saves exactly one Normal Attack for that member while selection remains a non-spending alternative', async () => {
+  it('portrait tap saves exactly one Normal Attack for that member with no selection step', async () => {
     const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
-    controls(host, '[data-radiant-select="sprout"]').click();
+    controls(host, '[data-radiant-menu="sprout"]').click();
     expect(transport.execute).not.toHaveBeenCalled();
     controls(host, '[data-radiant-actor="tide"]').click();
     await vi.waitFor(() => expect(session.view().presentation).toBeNull());
@@ -157,6 +157,7 @@ describe('saved six-member Radiant battle surface', () => {
     expect(transport.execute.mock.calls[0][0].operation).toEqual({ kind: 'action',
       action: { type: 'normal', bearerId: 'tide', targetId: 'story-25-0' } });
     expect(host.querySelector('[data-radiant-field-unit="tide"]')).not.toBeNull();
+    expect(host.querySelector('.is-selected, [aria-pressed][data-radiant-menu]')).toBeNull();
   });
   it('shows every saved teammate share and preserves static feedback under Reduce motion', async () => {
     const { view, session, host } = fixture(); applyMotion('reduced'); await view.finishEntrance();
@@ -221,7 +222,7 @@ describe('saved six-member Radiant battle surface', () => {
   });
   it('clicking anywhere on a member card saves its Normal Attack; the Actions control does not attack', async () => {
     const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
-    controls(host, '[data-radiant-select="sprout"]').click();
+    controls(host, '[data-radiant-menu="sprout"]').click();
     expect(transport.execute).not.toHaveBeenCalled();
     host.querySelector<HTMLElement>('[data-radiant-card][data-radiant-unit="tide"] .radiant-frozen-stats dd')!
       .dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -643,7 +644,7 @@ describe('saved six-member Radiant battle surface', () => {
   });
   it('keeps Normal, Defense and Flare in a compact per-member Actions menu instead of a persistent row', async () => {
     const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
-    const button = controls(host, '[data-radiant-select="ember"]');
+    const button = controls(host, '[data-radiant-menu="ember"]');
     button.focus(); button.click();
     const menu = host.querySelector<HTMLElement>('[data-radiant-member-actions="ember"]')!;
     expect(menu.hidden).toBe(false);
@@ -668,8 +669,7 @@ describe('saved six-member Radiant battle surface', () => {
     const { view, host, transport } = fixture(3, 6, undefined, 25, undefined, masterId, true);
     applyMotion('reduced'); await view.finishEntrance();
     const bearer = masterId.includes('tide') ? 'tide' : 'sprout';
-    controls(host, `[data-radiant-select="${bearer}"]`).click();
-    await view.act('flare');
+    await view.act('flare', bearer);
     const action = transport.execute.mock.calls.at(-1)![0].operation;
     expect(action.kind).toBe('action');
     if (action.kind !== 'action') throw new Error('Expected Flare action.');

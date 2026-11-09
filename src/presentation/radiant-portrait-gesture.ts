@@ -29,7 +29,6 @@ export function radiantGestureActor(target: Element, host: HTMLElement): HTMLBut
 /** Pointer capture keeps a charged release on its original card. A tap
  * remains a native button click; all deliberate/cancelled drags suppress it. */
 export function bindRadiantPortraitGestures(host: HTMLElement, options: {
-  select(id: string): void;
   cast(id: string): void;
   ready(id: string): string | null;
   notice(text: string): void;
@@ -61,7 +60,6 @@ export function bindRadiantPortraitGestures(host: HTMLElement, options: {
     if (!button || button.disabled) return;
     const surface = button.closest<HTMLElement>('[data-radiant-card]') ?? button;
     suppressed = null;
-    options.select(button.dataset.radiantActor!);
     drag = { button, surface, tier: null, id: button.dataset.radiantActor!, pointer: event.pointerId,
       x: event.clientX, y: event.clientY, started: performance.now(), held: false };
     try { surface.setPointerCapture?.(event.pointerId); } catch { /* Inactive pointer: host listeners still track it. */ }

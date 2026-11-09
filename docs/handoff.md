@@ -1,5 +1,18 @@
 # Current state and handoff
 
+## No Radiant member selection step (2026-11-09)
+
+**Implemented:** squad members are never "selected". A click anywhere on a
+member card immediately saves that member's Normal Attack; hold plus upward
+swipe casts its highest ready Flare; the per-card Actions menu
+(`data-radiant-menu`) offers Defense and explicit actions for that member.
+Selected-member state, rings and `aria-pressed` were removed; only the enemy
+target persists. Status copy reads "Click a card to attack ? hold and swipe up
+for Flare."
+
+**Verified:** the same Radiant suite passes 1,789 tests in 22 files and
+`npm run build` passes.
+
 ## Whole-card Radiant attack and Flare gestures (2026-11-09)
 
 **Implemented:** clicking anywhere on an actionable squad member card saves

@@ -59,7 +59,6 @@ function presentationRandom(key: string): () => number {
  * authored effects; no local authority, account funding or feature activation. */
 export class RadiantBattleView {
   private displayed: RadiantReadout;
-  private actor: string;
   private target: string | null;
   private openActionsMember: string | null = null;
   private disposed = false;
@@ -89,12 +88,9 @@ export class RadiantBattleView {
     if (!run) throw new Error('A saved Radiant encounter is required.');
     this.displayed = radiantReadout(run.state);
     this.statuses = radiantStatusSnapshot(run.state);
-    this.actor = run.state.bearers.find(unit => unit.hp > 0 && !run.state.acted.includes(unit.loadout.id))?.loadout.id
-      ?? run.state.bearers[0].loadout.id;
     this.target = run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
     this.mount(run);
     this.gestures = bindRadiantPortraitGestures(host, {
-      select: id => { this.actor = id; this.render(); },
       ready: id => {
         const gauge = this.session.view().saved.run?.state.gauge;
         const member = gauge?.members.find(member => member.id === id);
@@ -102,7 +98,7 @@ export class RadiantBattleView {
         const tier = member?.living && button && !button.disabled && gauge ? readyFlare(gauge, id) : null;
         return tier ? tierNames[tier] : null;
       },
-      cast: id => { this.actor = id; void this.act('flare').catch(error => this.report(error)); },
+      cast: id => { void this.act('flare', id).catch(error => this.report(error)); },
       notice: text => { this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = text; },
     });
     host.addEventListener('click', this.click);
@@ -157,7 +153,7 @@ export class RadiantBattleView {
           </div>
           <span data-radiant-charge-text="${escape(member.id)}"></span>
           <span data-radiant-readiness="${escape(member.id)}"></span>
-          <div class="radiant-member-actions"><button type="button" data-radiant-select="${escape(member.id)}" aria-pressed="false"
+          <div class="radiant-member-actions"><button type="button" data-radiant-menu="${escape(member.id)}"
             aria-expanded="false" aria-controls="radiant-member-actions-${escape(member.id)}"
             aria-label="Actions for ${escape(characterName(member.starter, member.form))}">Actions</button></div>
           <div class="radiant-action-menu" id="radiant-member-actions-${escape(member.id)}"
@@ -231,12 +227,10 @@ export class RadiantBattleView {
     }
     if (button.dataset.radiantActor) {
       if (this.gestures.consumeClick(button)) return;
-      this.actor = button.dataset.radiantActor;
-      void this.act('normal').catch(error => this.report(error)); return;
+      void this.act('normal', button.dataset.radiantActor).catch(error => this.report(error)); return;
     }
-    if (button.dataset.radiantSelect) {
-      const id = button.dataset.radiantSelect;
-      this.actor = id;
+    if (button.dataset.radiantMenu) {
+      const id = button.dataset.radiantMenu;
       this.openActionsMember = this.openActionsMember === id ? null : id;
       this.render(); this.selection(button); return;
     }
@@ -249,11 +243,10 @@ export class RadiantBattleView {
     const kind = button.dataset.radiantAction;
     if (kind === 'normal' || kind === 'defense' || kind === 'flare') {
       const memberId = button.closest<HTMLElement>('[data-radiant-member-actions]')?.dataset.radiantMemberActions;
-      if (memberId) this.actor = memberId;
       this.openActionsMember = null;
       this.render();
-      if (memberId) this.element<HTMLButtonElement>(`[data-radiant-select="${memberId}"]`).focus();
-      void this.act(kind).catch(error => this.report(error));
+      if (memberId) this.element<HTMLButtonElement>(`[data-radiant-menu="${memberId}"]`).focus();
+      void this.act(kind, memberId ?? undefined).catch(error => this.report(error));
     }
   };
   private selection(button: HTMLElement): void {
@@ -269,7 +262,7 @@ export class RadiantBattleView {
     if (this.disposed) return;
     const view = this.session.view(), run = view.saved.run;
     if (!run) { this.host.setAttribute('aria-busy', 'false'); return; }
-    this.syncSelection(run);
+    this.syncTarget(run);
     const blocked = view.busy || !!view.pending || !!view.preparationPending || !!view.presentation ||
       !!view.preparationPresentation || view.settingsOpen || view.entrancePending ||
       run.quit || run.state.phase !== 'player';
@@ -304,11 +297,10 @@ export class RadiantBattleView {
       const id = button.dataset.radiantActor!;
       const savedMember = run.state.bearers.find(member => member.loadout.id === id);
       button.disabled = blocked || !savedMember || savedMember.hp === 0 || run.state.acted.includes(id);
-      button.closest('.radiant-member')!.classList.toggle('is-selected', id === this.actor);
       button.closest('.radiant-member')!.classList.toggle('is-defeated', !savedMember || savedMember.hp === 0);
       button.closest('.radiant-member')!.classList.toggle('has-acted', run.state.acted.includes(id));
-      const select = this.element<HTMLButtonElement>(`[data-radiant-select="${id}"]`);
-      select.disabled = button.disabled; select.setAttribute('aria-pressed', String(id === this.actor));
+      const select = this.element<HTMLButtonElement>(`[data-radiant-menu="${id}"]`);
+      select.disabled = button.disabled;
       const actionMenu = this.element<HTMLElement>(`[data-radiant-member-actions="${id}"]`);
       actionMenu.hidden = this.openActionsMember !== id;
       select.setAttribute('aria-expanded', String(!actionMenu.hidden));
@@ -328,7 +320,6 @@ export class RadiantBattleView {
     for (const unit of Array.from(this.host.querySelectorAll<HTMLElement>('[data-radiant-field-unit]'))) {
       const id = unit.dataset.radiantFieldUnit!;
       unit.classList.toggle('is-defeated', this.displayed.units[id].hp === 0);
-      unit.classList.toggle('is-selected', id === this.actor);
     }
     for (const button of Array.from(this.host.querySelectorAll<HTMLButtonElement>('[data-radiant-target]'))) {
       const id = button.dataset.radiantTarget!;
@@ -382,33 +373,31 @@ export class RadiantBattleView {
     this.element<HTMLElement>('[data-radiant-error]').textContent = view.error?.message ?? this.presentationError ?? '';
     this.element<HTMLElement>('[data-radiant-status]').textContent = view.busy ? 'Awaiting saved outcome…' :
       this.presenting ? 'Impacts playing · other members can act.' : run.state.phase === 'victory' ? 'Victory · rewards saved.' :
-      run.state.phase === 'defeat' ? 'Defeat · earned rewards retained.' : 'Choose a squad member and action.';
+      run.state.phase === 'defeat' ? 'Defeat · earned rewards retained.' : 'Click a card to attack · hold and swipe up for Flare.';
   }
   async finishEntrance(): Promise<void> {
     this.skipped = false;
     await this.animate(this.element('.radiant-squad'), [{ opacity: .3, transform: 'translateY(16px)' }, { opacity: 1, transform: 'translateY(0)' }], 500);
     if (!this.disposed) { this.session.finishEntrance(); this.render(); }
   }
-  private syncSelection(run: FrozenRadiantRun): void {
-    const selected = run.state.bearers.find(member => member.loadout.id === this.actor);
-    if (!selected || selected.hp === 0 || run.state.acted.includes(this.actor)) {
-      const next = run.state.bearers.find(member => member.hp > 0 && !run.state.acted.includes(member.loadout.id));
-      if (next) this.actor = next.loadout.id;
-    }
+  private syncTarget(run: FrozenRadiantRun): void {
     if (!this.target || !run.state.enemies.some(enemy => enemy.id === this.target && enemy.hp > 0))
       this.target = run.state.enemies.find(enemy => enemy.hp > 0)?.id ?? null;
   }
-  async act(kind: 'normal' | 'defense' | 'flare'): Promise<void> {
+  async act(kind: 'normal' | 'defense' | 'flare', bearerId?: string): Promise<void> {
     this.openActionsMember = null;
     this.presentationError = null;
     this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = '';
     const before = this.session.view().saved.run;
     if (!before) throw new Error('A saved encounter is required.');
-    const member = before.state.bearers.find(unit => unit.loadout.id === this.actor)!;
-    const tier = member.hp > 0 ? readyFlare(before.state.gauge, this.actor) : null;
-    const action: RadiantPlayerAction = kind === 'defense' ? { type: kind, bearerId: this.actor } :
-      kind === 'normal' ? { type: kind, bearerId: this.actor, targetId: this.target ?? '' } :
-      { type: kind, bearerId: this.actor, ...(tier && radiantFlareNeedsTarget(member.loadout, tier)
+    // Programmatic callers may omit the member; every card action passes its own.
+    const actor = bearerId ?? (before.state.bearers.find(unit => unit.hp > 0 && !before.state.acted.includes(unit.loadout.id))
+      ?? before.state.bearers[0]).loadout.id;
+    const member = before.state.bearers.find(unit => unit.loadout.id === actor)!;
+    const tier = member.hp > 0 ? readyFlare(before.state.gauge, actor) : null;
+    const action: RadiantPlayerAction = kind === 'defense' ? { type: kind, bearerId: actor } :
+      kind === 'normal' ? { type: kind, bearerId: actor, targetId: this.target ?? '' } :
+      { type: kind, bearerId: actor, ...(tier && radiantFlareNeedsTarget(member.loadout, tier)
         ? { targetId: this.target ?? '' } : {}) };
     const pending = this.session.perform({ kind: 'action', action }); this.render();
     try {
@@ -518,11 +507,11 @@ export class RadiantBattleView {
     this.gestures.cancel(); this.cancelEffects(); this.artworkCleanup(); this.resultCelebration?.(); this.resultCelebration = null;
     this.displayed = radiantReadout(response.run.state); this.statuses = radiantStatusSnapshot(response.run.state);
     this.statusMarkup.clear(); this.shieldMarkup.clear(); this.resultKey = null; this.leaderMarkup = null;
-    this.actor = response.run.state.bearers.find(unit => unit.hp > 0)?.loadout.id ?? response.run.state.bearers[0].loadout.id;
     this.target = response.run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
     this.mount(response.run); this.render();
     await this.finishEntrance();
-    if (!this.disposed) this.element<HTMLElement>(`[data-radiant-actor="${this.actor}"]`).focus();
+    const first = response.run.state.bearers.find(unit => unit.hp > 0)?.loadout.id ?? response.run.state.bearers[0].loadout.id;
+    if (!this.disposed) this.element<HTMLElement>(`[data-radiant-actor="${first}"]`).focus();
   }
   private async present(before: RadiantCombatState, response: RadiantRunResponse, action: RadiantPlayerAction): Promise<void> {
     if (this.disposed) return;
@@ -589,7 +578,7 @@ export class RadiantBattleView {
     const receipt = this.session.view().presentation;
     if (receipt?.response.revision === response.revision) this.session.finishPresentation(receipt.requestId);
     const latest = this.session.view().saved.run;
-    if (latest) this.syncSelection(latest);
+    if (latest) this.syncTarget(latest);
     this.render();
     this.focusTerminalResult(response.run);
   }
@@ -613,7 +602,7 @@ export class RadiantBattleView {
       this.displayed = radiantReadout(latest.state);
       this.statuses = radiantStatusSnapshot(latest.state);
       this.presenting = false; this.activeReceipt = null; this.presentationError = null;
-      this.syncSelection(latest);
+      this.syncTarget(latest);
       this.render();
       this.focusTerminalResult(latest);
     }

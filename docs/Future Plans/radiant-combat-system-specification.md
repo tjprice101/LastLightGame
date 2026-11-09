@@ -2,6 +2,9 @@
 
 ## Whole-card attack and Flare gestures (2026-11-09)
 
+- There is no member-selection step: card click = that member's Normal Attack,
+  hold + upward swipe = its highest ready Flare, its Actions menu = Defense and
+  explicit actions. Only the enemy target persists between actions.
 - The entire actionable member card is the Normal Attack control; the face
   button remains the accessible keyboard target. Actions/menus, links, inputs
   and `[data-radiant-gesture-ignore]` never attack or start a gesture.
