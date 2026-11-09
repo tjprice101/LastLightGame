@@ -8,7 +8,7 @@ import { characterArt } from '../content/character-art';
 import { compactPortraitRevisions } from '../content/compact-portrait-revisions';
 import { RadiantBattleView, type RadiantBattleEffects } from './radiant-battle-view';
 import { applyMotion } from './settings';
-import type { RadiantImpactFrame } from './radiant-impact';
+import { radiantReadout, type RadiantImpactFrame } from './radiant-impact';
 import * as dialogs from './game-dialog';
 import type { RadiantMasterId } from '../content/radiant-combat';
 
@@ -158,9 +158,60 @@ describe('saved six-member Radiant battle surface', () => {
     expect(session.view().saved.revision).toBe(2);
     windup(); await vi.waitFor(() => expect(effects.impact).toHaveBeenCalledTimes(1));
     expect(host.querySelector('.radiant-enemy [data-hp]')!.textContent).not.toBe(enemyHP);
-    expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(true);
+    expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(false);
     impact(); await pending;
     expect(session.view().presentation).toBeNull(); expect(host.getAttribute('aria-busy')).toBe('false');
+  });
+  it('saves another member action while the previous member is still winding up', async () => {
+    const windups: (() => void)[] = [];
+    const effects = { windup: vi.fn(() => new Promise<void>(resolve => { windups.push(resolve); })),
+      impact: vi.fn(async () => {}), cancel: vi.fn() };
+    const { view, session, transport, host } = fixture(6, 6, effects);
+    await view.finishEntrance();
+
+    const first = view.act('normal');
+    await vi.waitFor(() => expect(windups).toHaveLength(1));
+    expect(session.view().saved.revision).toBe(2);
+    expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(false);
+    expect(host.querySelector('[data-radiant-status]')?.textContent).toContain('other members can act');
+
+    const second = view.act('normal');
+    await vi.waitFor(() => expect(session.view().saved.revision).toBe(3));
+    expect(transport.execute).toHaveBeenCalledTimes(2);
+    expect(session.view().saved.run!.state.acted).toEqual(['ember', 'tide']);
+    expect(windups).toHaveLength(1);
+
+    windups[0]();
+    await vi.waitFor(() => expect(windups).toHaveLength(2));
+    windups[1]();
+    await Promise.all([first, second]);
+    expect(session.view().presentation).toBeNull();
+    expect(session.view().saved.revision).toBe(3);
+  });
+  it('Skip settles queued actions to the latest saved state without replaying stale impacts', async () => {
+    const windups: (() => void)[] = [];
+    const effects = { windup: vi.fn(() => new Promise<void>(resolve => { windups.push(resolve); })),
+      impact: vi.fn(async () => {}), cancel: vi.fn() };
+    const { view, session, host } = fixture(6, 6, effects);
+    await view.finishEntrance();
+
+    const first = view.act('normal');
+    await vi.waitFor(() => expect(windups).toHaveLength(1));
+    const second = view.act('normal');
+    await vi.waitFor(() => expect(session.view().saved.revision).toBe(3));
+    const latest = session.view().saved.run!;
+    const target = latest.state.enemies[0];
+    const expected = radiantReadout(latest.state).units[target.id];
+    view.skip();
+    const hp = host.querySelector(`[data-radiant-health="${target.id}"] [data-hp]`)!;
+    expect(hp.textContent).toBe(`HP ${expected.hp} / ${expected.maximum}`);
+    expect(latest.state.acted).toEqual(['ember', 'tide']);
+
+    await Promise.all([first, second]);
+    windups[0]();
+    await Promise.resolve();
+    expect(hp.textContent).toBe(`HP ${expected.hp} / ${expected.maximum}`);
+    expect(effects.windup).toHaveBeenCalledTimes(1);
   });
   it('reveals an offscreen battlefield for saved action effects and restores the portrait scroll position', async () => {
     const scroller = document.createElement('div');
@@ -214,9 +265,9 @@ describe('saved six-member Radiant battle surface', () => {
     view.skip(); expect(session.view().presentation).toBeNull();
     const next = view.act('normal'); await vi.waitFor(() => expect(releases).toHaveLength(2));
     releases[0](); await old;
-    expect(session.view().presentation).not.toBeNull();
+    expect(session.view().saved.revision).toBe(3);
+    expect(session.view().presentation).toBeNull();
     expect(host.querySelector('[data-radiant-error]')!.textContent).toBe('');
-    expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(true);
     releases[1](); await next; expect(session.view().presentation).toBeNull();
   });
   it('Settings locks controls without a new request and Reduce motion settles saved effects immediately', async () => {

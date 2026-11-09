@@ -16896,3 +16896,18 @@ Validation:
 No combat, rewards, RNG, unlocks or save changes. Existing user-requested localhost
 server remains running. Broad text-icon coverage/grammar request is not completed
 by this art-only intake;25 reborn kit Conduit images remain undelivered.
+
+# Independent actions during presentation (2026-11-09)
+
+Radiant battle controls now unlock after each action is saved, rather than
+waiting for its windup, impact or loot animations. Saves remain sequential and
+revision-checked; saved presentations queue in revision order. While an earlier
+receipt plays, actor eligibility, enemy targets and Flare readiness follow the
+latest saved state, so acted/dead members and defeated targets cannot be chosen
+from a stale visual frame. Skip settles directly to the latest saved run.
+
+Validation:
+- `npx vitest run src\presentation\radiant-battle-view.test.ts src\online\radiant-session.test.ts --maxWorkers=2 --testTimeout=60000`:43 passed.
+- Regressions save a second member's action while the first member's windup is
+  held, then verify saved presentations remain ordered and Skip settles to the
+  latest saved state without replaying stale impacts.

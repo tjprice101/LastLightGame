@@ -13,6 +13,8 @@
 
 Effects have no gameplay RNG. They use a presentation PRNG keyed by revision and frame, are awaited before settle, are cancelled by Skip and dispose, and are hidden under Reduce motion. Cards dim only after a member has acted or been defeated.
 
+**Action availability.** Once an action is saved, the next eligible living member may act immediately; the previous member's windup, impact or loot animation does not lock the controls. Saves still commit one at a time against the latest revision, and their visual receipts play in saved revision order. Actor eligibility, targets and Flare readiness use the latest saved combat state, not a readout that is still replaying older impacts. Skip settles all saved actions to the latest state without discarding them.
+
 **Remaining gates (unchanged order):**
 1. The owner's in-game review.
 2. A desktop GPU and cadence check.
