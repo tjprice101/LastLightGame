@@ -219,6 +219,21 @@ describe('saved six-member Radiant battle surface', () => {
     await view.act('normal');
     expect(host.querySelector('[data-radiant-health="ember"] [data-radiant-effect="guard"]')).toBeNull();
   });
+  it('clicking anywhere on a member card saves its Normal Attack; the Actions control does not attack', async () => {
+    const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
+    controls(host, '[data-radiant-select="sprout"]').click();
+    expect(transport.execute).not.toHaveBeenCalled();
+    host.querySelector<HTMLElement>('[data-radiant-card][data-radiant-unit="tide"] .radiant-frozen-stats dd')!
+      .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await vi.waitFor(() => expect(session.view().presentation).toBeNull());
+    expect(transport.execute).toHaveBeenCalledTimes(1);
+    expect(transport.execute.mock.calls[0][0].operation).toEqual({ kind: 'action',
+      action: { type: 'normal', bearerId: 'tide', targetId: 'story-25-0' } });
+    host.querySelector<HTMLElement>('[data-radiant-card][data-radiant-unit="tide"] [data-radiant-charge-text]')!
+      .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await Promise.resolve();
+    expect(transport.execute).toHaveBeenCalledTimes(1);
+  });
   it('a held upward portrait release sends one saved Flare and suppresses its compatibility click', async () => {
     const { view, session, host, transport } = fixture(6, 6, undefined, 25, undefined, undefined, true);
     applyMotion('reduced'); await view.finishEntrance();

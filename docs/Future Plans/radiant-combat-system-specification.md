@@ -1,5 +1,21 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Whole-card attack and Flare gestures (2026-11-09)
+
+- The entire actionable member card is the Normal Attack control; the face
+  button remains the accessible keyboard target. Actions/menus, links, inputs
+  and `[data-radiant-gesture-ignore]` never attack or start a gesture.
+- Holding anywhere on the card for 350ms, then releasing after a mostly vertical
+  upward drag of at least 32px casts the highest ready Flare. Early release,
+  sideways/downward drags, unready Flare and Escape spend nothing.
+- Presentation: hold-progress line while arming, held accent glow and lift that
+  follows the drag, "Drag up" → "Release" cue when primed, "Flare charging" when
+  unready, and a subtle ready shimmer. Strike/launch bursts start only after the
+  saved response; failures never celebrate.
+- A new primary press or window-level release clears any stale gesture, and
+  pointer capture failures are tolerated. Reduced motion removes lift, progress,
+  shimmer and cue animation while keeping static state.
+
 ## Flowing layered Gauge presentation (2026-11-09)
 
 Personal Gauge now fills one full-width liquid-energy track, rather than two

@@ -1,5 +1,27 @@
 # Current state and handoff
 
+## Whole-card Radiant attack and Flare gestures (2026-11-09)
+
+**Implemented:** clicking anywhere on an actionable squad member card saves
+its Normal Attack; holding anywhere on the card for 350ms then dragging up
+32px releases its highest ready Flare. Actions, menus and other controls are
+excluded. The card shows a hold-progress line, held glow, lifting drag,
+"Drag up"/"Release"/"Flare charging" cue and ready shimmer; strike and Flare
+launch bursts play only after the action save succeeds. Missed releases and
+inactive pointer capture can no longer leave the gesture stuck. Keyboard
+alternatives remain, and both reduced-motion settings keep static feedback.
+
+**Verified:** `npx vitest run radiant --exclude src\radiant-ui.test.ts
+--maxWorkers=2 --testTimeout=60000` passes 1,789 tests in 22 files;
+`npm run build` passes with the existing chunk-size advisory. Local preview at
+1366x768 confirmed card-body attack, Actions exclusion, hold progress,
+unready/primed cues, saved Flare launch and burst sampled over time, and
+static reduced motion. The temporary preview server was stopped.
+
+**Remaining:** physical touch/trackpad feel, owner review, final bespoke
+cinema, GPU/cadence/economy acceptance, deployed route verification and
+explicit approval before matching deployment. Authority remains disabled.
+
 ## Flowing layered Radiant Gauge (2026-11-09)
 
 **Implemented:** each personal Gauge is one continuous elemental liquid-energy

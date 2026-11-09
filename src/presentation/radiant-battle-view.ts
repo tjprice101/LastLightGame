@@ -18,7 +18,7 @@ import { radiantStatusSnapshot, radiantStatusRows, radiantShieldRows } from './r
 import { bindArtworkLoading } from './artwork-loading';
 import { radiantResultsMarkup, radiantEncounterLabel } from './radiant-results';
 import { radiantLeaderReference, radiantFlareNeedsTarget } from './radiant-battle-reference';
-import { bindRadiantPortraitGestures } from './radiant-portrait-gesture';
+import { bindRadiantPortraitGestures, radiantGestureActor } from './radiant-portrait-gesture';
 import { characterChoreography } from './battle-effects';
 import { formatStat } from '../content/combat';
 import { lootArt, lootItems } from './battle-loot';
@@ -138,9 +138,11 @@ export class RadiantBattleView {
         </span><span data-radiant-shared-text></span></section>
       <div class="radiant-squad" role="group" aria-label="Squad portrait controls; scroll horizontally on narrow screens" tabindex="0">${run.state.bearers.map((unit, index) => {
         const member = unit.loadout, starter = getStarter(member.starter);
-        return `<article class="radiant-member" data-radiant-unit="${escape(member.id)}" data-element="${starter.elementId}">
+        return `<article class="radiant-member" data-radiant-card data-radiant-unit="${escape(member.id)}" data-element="${starter.elementId}">
+          <span class="radiant-card-burst" aria-hidden="true"></span>
+          <span class="radiant-card-hint" aria-hidden="true"></span>
           <button type="button" class="radiant-face" data-radiant-actor="${escape(member.id)}"
-            aria-describedby="radiant-gesture-help" aria-label="${escape(characterName(member.starter, member.form))} · Normal Attack; hold and drag upward for ready Flare">
+            aria-describedby="radiant-gesture-help" aria-label="${escape(characterName(member.starter, member.form))} · Normal Attack; hold the card and drag upward for ready Flare">
             ${compactPortrait(starter, member.form)}<span>${index ? `Member ${index + 1}` : 'Leader'}</span>
             <strong>${escape(characterName(member.starter, member.form))}</strong></button>
           <span class="radiant-identity">Lv.${member.level} · ${escape(radiantAttunement(member))}</span>
@@ -167,7 +169,7 @@ export class RadiantBattleView {
           </div>
         </article>`;
       }).join('')}</div>
-      <p id="radiant-gesture-help">Tap a portrait to attack · Hold, then swipe up to release its highest ready Flare.
+      <p id="radiant-gesture-help">Click a character card to attack · Hold the card, then swipe up to release its highest ready Flare.
         <span class="radiant-visually-hidden">Hold for350ms and drag upward32px. The Actions button opens Normal Attack, Defense and Flare controls.</span></p>
       <p data-radiant-gesture-status role="status" aria-live="polite"></p>
       <div class="radiant-actions"><button type="button" data-radiant-retry hidden>Retry pending request</button>
@@ -212,7 +214,7 @@ export class RadiantBattleView {
   }
   private click = (event: MouseEvent): void => {
     if (this.disposed || !(event.target instanceof Element)) return;
-    const button = event.target.closest<HTMLButtonElement>('button');
+    const button = event.target.closest<HTMLButtonElement>('button') ?? radiantGestureActor(event.target, this.host);
     if (!button || !this.host.contains(button) || button.disabled) return;
     if (button.hasAttribute('data-radiant-settings')) { this.session.setSettings(true); this.render(); this.openSettings(); return; }
     if (button.hasAttribute('data-radiant-skip')) { this.skip(); return; }
@@ -318,6 +320,7 @@ export class RadiantBattleView {
         if (kind === 'flare') actionButton.textContent = tier ? tierNames[tier] : 'Glowing Flare · charging';
       }
       button.dataset.readyTier = !button.disabled && tier ? tier : '';
+      button.closest<HTMLElement>('.radiant-member')!.dataset.readyTier = button.dataset.readyTier;
       this.element<HTMLElement>(`[data-radiant-readiness="${id}"]`).textContent =
         !savedMember || savedMember.hp === 0 ? 'Defeated' : run.state.acted.includes(id) ? 'Acted this round' :
           tier ? `${tierNames[tier]} ready` : 'Flare charging';
@@ -408,7 +411,11 @@ export class RadiantBattleView {
       { type: kind, bearerId: this.actor, ...(tier && radiantFlareNeedsTarget(member.loadout, tier)
         ? { targetId: this.target ?? '' } : {}) };
     const pending = this.session.perform({ kind: 'action', action }); this.render();
-    try { const response = await pending; await this.queuePresentation(before.state, response, action); }
+    try {
+      const response = await pending;
+      if (kind !== 'defense') this.cardFeedback(action.bearerId, kind === 'flare' ? 'flare' : 'strike');
+      await this.queuePresentation(before.state, response, action);
+    }
     finally { this.render(); }
   }
   async retry(): Promise<void> {
@@ -612,6 +619,32 @@ export class RadiantBattleView {
     }
   }
   private motion = (): void => { if (reducedMotion()) this.skip(); };
+  /** Immediate, finite card acknowledgement of an accepted input; the saved
+   * action's field VFX follow separately. Static under Reduce motion. */
+  private cardFeedback(id: string, kind: 'strike' | 'flare'): void {
+    if (this.disposed || reducedMotion()) return;
+    const card = this.host.querySelector<HTMLElement>(`[data-radiant-card][data-radiant-unit="${id}"]`);
+    const burst = card?.querySelector<HTMLElement>('.radiant-card-burst');
+    if (!card?.animate || !burst) return;
+    const run = (target: HTMLElement, frames: Keyframe[], duration: number) => {
+      const animation = target.animate(frames, { duration, easing: 'cubic-bezier(.2,.8,.2,1)' });
+      animation.playbackRate = battleSpeed(); this.animations.add(animation);
+      void animation.finished.catch(() => {}).finally(() => this.animations.delete(animation));
+    };
+    if (kind === 'strike') {
+      run(card, [{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(2px) scale(.965)', offset: .3 },
+        { transform: 'translateY(-4px) scale(1.015)', offset: .65 }, { transform: 'translateY(0) scale(1)' }], 360);
+      run(burst, [{ opacity: 0, transform: 'scale(.6)' }, { opacity: .75, transform: 'scale(1)', offset: .35 },
+        { opacity: 0, transform: 'scale(1.25)' }], 420);
+    } else {
+      run(card, [{ transform: 'translateY(-18px) scale(1.02)', filter: 'brightness(1.6) saturate(1.3)' },
+        { transform: 'translateY(-30px) scale(1.05)', filter: 'brightness(2) saturate(1.5)', offset: .25 },
+        { transform: 'translateY(4px) scale(.99)', filter: 'brightness(1.15)', offset: .7 },
+        { transform: 'translateY(0) scale(1)', filter: 'none' }], 760);
+      run(burst, [{ opacity: 0, transform: 'scale(.5)' }, { opacity: 1, transform: 'scale(1.1)', offset: .25 },
+        { opacity: 0, transform: 'scale(1.7) translateY(-30%)' }], 820);
+    }
+  }
   private speed = (): void => { for (const animation of this.animations) animation.playbackRate = battleSpeed(); };
   private cancelEffects(): void {
     this.effects?.cancel();

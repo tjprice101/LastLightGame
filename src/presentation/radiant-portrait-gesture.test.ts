@@ -70,6 +70,61 @@ describe('Radiant charged portrait gestures', () => {
     pointer(button, 'pointerdown'); pointer(button, 'pointerup');
     expect(binding.consumeClick(button)).toBe(false);
   });
+  it('accepts a held upward drag anywhere on the member card, but never from its other controls', () => {
+    vi.useFakeTimers();
+    const host = document.createElement('div');
+    host.innerHTML = `<article data-radiant-card><button data-radiant-actor="tide">Tizu</button>
+      <dl data-stats><dt>Attack</dt><dd>10</dd></dl><button data-radiant-select="tide">Actions</button></article>`;
+    document.body.append(host);
+    const card = host.querySelector<HTMLElement>('[data-radiant-card]')!;
+    const actor = host.querySelector<HTMLButtonElement>('[data-radiant-actor]')!;
+    const options = { select: vi.fn(), cast: vi.fn(), ready: vi.fn((): string | null => 'Glowing Flare'), notice: vi.fn() };
+    const binding = bindRadiantPortraitGestures(host, options); bindings.push(binding);
+    const stats = host.querySelector<HTMLElement>('[data-stats] dd')!;
+    pointer(stats, 'pointerdown');
+    expect(card.classList.contains('is-arming')).toBe(true);
+    vi.advanceTimersByTime(radiantHoldMilliseconds);
+    expect(card.classList.contains('is-held')).toBe(true);
+    pointer(stats, 'pointermove', 50, 100 - gestureThreshold);
+    expect(card.classList.contains('is-primed')).toBe(true);
+    pointer(stats, 'pointerup', 50, 100 - gestureThreshold);
+    expect(options.cast).toHaveBeenCalledWith('tide');
+    expect(binding.consumeClick(actor)).toBe(true);
+    expect(card.classList.contains('is-held') || card.classList.contains('is-primed')).toBe(false);
+    expect(card.style.getPropertyValue('--radiant-drag')).toBe('');
+    pointer(host.querySelector<HTMLElement>('[data-radiant-select]')!, 'pointerdown');
+    expect(options.select).toHaveBeenCalledTimes(1); expect(vi.getTimerCount()).toBe(0);
+  });
+  it('recovers from a release that never reached the host', () => {
+    vi.useFakeTimers();
+    const host = document.createElement('div');
+    host.innerHTML = '<article data-radiant-card><button data-radiant-actor="tide">Tizu</button><p>Body</p></article>';
+    document.body.append(host);
+    const options = { select: vi.fn(), cast: vi.fn(), ready: vi.fn((): string | null => 'Glowing Flare'), notice: vi.fn() };
+    bindings.push(bindRadiantPortraitGestures(host, options));
+    const body = host.querySelector<HTMLElement>('p')!, card = host.querySelector<HTMLElement>('article')!;
+    pointer(body, 'pointerdown'); vi.advanceTimersByTime(radiantHoldMilliseconds);
+    window.dispatchEvent(new PointerEvent('pointerup', { pointerId: 1, isPrimary: true }));
+    expect(card.classList.contains('is-held')).toBe(false);
+    pointer(body, 'pointerdown'); vi.advanceTimersByTime(radiantHoldMilliseconds);
+    pointer(body, 'pointerdown'); expect(card.classList.contains('is-arming')).toBe(true);
+    vi.advanceTimersByTime(radiantHoldMilliseconds);
+    pointer(body, 'pointermove', 50, 100 - gestureThreshold); pointer(body, 'pointerup', 50, 100 - gestureThreshold);
+    expect(options.cast).toHaveBeenCalledTimes(1); expect(vi.getTimerCount()).toBe(0);
+  });
+  it('marks a held card unready without priming when no Flare is available', () => {
+    vi.useFakeTimers();
+    const host = document.createElement('div');
+    host.innerHTML = '<article data-radiant-card><button data-radiant-actor="tide">Tizu</button><p>Body</p></article>';
+    document.body.append(host);
+    const options = { select: vi.fn(), cast: vi.fn(), ready: vi.fn((): string | null => null), notice: vi.fn() };
+    bindings.push(bindRadiantPortraitGestures(host, options));
+    const body = host.querySelector<HTMLElement>('p')!, card = host.querySelector<HTMLElement>('article')!;
+    pointer(body, 'pointerdown'); vi.advanceTimersByTime(radiantHoldMilliseconds);
+    pointer(body, 'pointermove', 50, 40);
+    expect(card.classList.contains('is-unready')).toBe(true); expect(card.classList.contains('is-primed')).toBe(false);
+    pointer(body, 'pointerup', 50, 40); expect(options.cast).not.toHaveBeenCalled();
+  });
   it('keeps keyboard activation usable immediately after an Escape-cancelled hold', () => {
     const { button, binding } = fixture();
     pointer(button, 'pointerdown'); vi.advanceTimersByTime(350);

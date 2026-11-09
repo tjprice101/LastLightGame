@@ -299,3 +299,49 @@ html[data-motion="reduced"] .radiant-fx-layer { display: none; }
 .radiant-field .is-defeated .radiant-unit-motion { opacity: .18; filter: grayscale(1) brightness(.6); transform: translateY(14px) scale(.96); transition: opacity .4s ease, transform .4s ease; }
 .radiant-field .radiant-enemy.is-defeated .radiant-plate { opacity: .4; }
 .radiant-field .radiant-enemy.is-defeated .radiant-unit-motion::after { display: none; }
+
+/* Whole-card controls: click attacks; hold anywhere, then drag upward to release the ready Flare. */
+.radiant-member[data-radiant-card] { position: relative; isolation: isolate; touch-action: pan-x; user-select: none; -webkit-user-select: none;
+  transform: translateY(calc(var(--radiant-drag, 0px) * .45)); transition: transform 160ms ease-out, box-shadow 200ms ease, border-color 200ms ease; }
+.radiant-member[data-radiant-card] img { -webkit-user-drag: none; }
+.radiant-member:has(.radiant-face:not(:disabled)) { cursor: pointer; }
+.radiant-member:has(.radiant-face:not(:disabled)):hover { box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent), 0 12px 26px -12px var(--accent); }
+.radiant-member:has(.radiant-face:not(:disabled)):active:not(.is-held) { transform: translateY(1px) scale(.985); transition-duration: 70ms; }
+.radiant-member.is-held, .radiant-member.is-dragging { cursor: grabbing; transition-duration: 0ms, 200ms, 200ms; z-index: 4; }
+.radiant-member .radiant-face .compact-portrait { transform: translateY(calc(var(--radiant-drag, 0px) * .35)); }
+.radiant-card-burst { position: absolute; inset: -8px; border-radius: 18px; pointer-events: none; opacity: 0; z-index: -1;
+  background: radial-gradient(ellipse at 50% 35%, color-mix(in srgb, var(--accent) 70%, #fff) 0, color-mix(in srgb, var(--accent) 45%, transparent) 38%, transparent 70%); }
+.radiant-member[data-radiant-card]::before { content: ""; position: absolute; left: 10px; right: 10px; top: -3px; height: 3px; border-radius: 3px; pointer-events: none;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 60%, #fff), #fff); transform: scaleX(0); transform-origin: left; opacity: 0; }
+.radiant-member.is-arming::before { opacity: 1; animation: radiant-card-arm 350ms linear 70ms both; }
+.radiant-member.is-held::before { opacity: 1; transform: scaleX(1); box-shadow: 0 0 10px var(--accent); }
+.radiant-member[data-radiant-card].is-held:not(.is-unready) { border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 calc(18px + 22px * var(--radiant-lift, 0)) color-mix(in srgb, var(--accent) 70%, transparent),
+    inset 0 0 calc(10px + 20px * var(--radiant-lift, 0)) color-mix(in srgb, var(--accent) 30%, transparent); }
+.radiant-member.is-primed { filter: brightness(1.12) saturate(1.15); }
+.radiant-card-hint { position: absolute; left: 50%; top: 8px; z-index: 5; translate: -50% 0; pointer-events: none; opacity: 0; white-space: nowrap;
+  padding: 3px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: #111216; background: color-mix(in srgb, var(--accent) 75%, #fff); box-shadow: 0 0 14px var(--accent); transition: opacity 140ms ease; }
+.radiant-card-hint::before { content: "↑ Drag up" / ""; }
+.radiant-member.is-held .radiant-card-hint { opacity: 1; }
+.radiant-member.is-held:not(.is-unready) .radiant-card-hint { animation: radiant-card-hint 900ms ease-in-out infinite; }
+.radiant-member.is-primed .radiant-card-hint::before { content: "Release ✦" / ""; }
+.radiant-member.is-primed .radiant-card-hint { background: #fff; }
+.radiant-member.is-unready .radiant-card-hint { background: #3a3d46; color: #e4e6eb; box-shadow: none; }
+.radiant-member.is-unready .radiant-card-hint::before { content: "Flare charging" / ""; }
+.radiant-member[data-ready-tier]:not([data-ready-tier=""]) { border-top-color: color-mix(in srgb, var(--accent) 65%, #fff); }
+.radiant-member[data-ready-tier]:not([data-ready-tier=""]) .radiant-face { background:
+  linear-gradient(110deg, transparent 30%, color-mix(in srgb, var(--accent) 22%, transparent) 46%, transparent 62%) -100% 0 / 220% 100% no-repeat, #0f1016; animation: radiant-card-ready 2.6s ease-in-out infinite; }
+@keyframes radiant-card-arm { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes radiant-card-hint { 0%, 100% { translate: -50% 0; } 50% { translate: -50% -4px; } }
+@keyframes radiant-card-ready { 0%, 35% { background-position: 120% 0, 0 0; } 100% { background-position: -120% 0, 0 0; } }
+html[data-motion="reduced"] .radiant-member[data-radiant-card] { transform: none; transition: none; }
+html[data-motion="reduced"] .radiant-member .radiant-face .compact-portrait { transform: none; }
+html[data-motion="reduced"] .radiant-member.is-arming::before { animation: none; opacity: 0; }
+html[data-motion="reduced"] .radiant-member .radiant-card-hint, html[data-motion="reduced"] .radiant-member .radiant-face { animation: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .radiant-member[data-radiant-card] { transform: none; transition: none; }
+  .radiant-member .radiant-face .compact-portrait { transform: none; }
+  .radiant-member.is-arming::before { animation: none; opacity: 0; }
+  .radiant-member .radiant-card-hint, .radiant-member .radiant-face { animation: none !important; }
+}
