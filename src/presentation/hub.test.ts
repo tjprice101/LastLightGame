@@ -4,7 +4,7 @@ import { characterDetail, characterHub, characterInformation, characterTabs, hom
 import { emptyAccount } from '../game/account';
 import { storyRules } from '../content/story';
 import { abilityIcons } from './ability-icon';
-import { characterName } from '../content/character-art';
+import { characterArt, characterName } from '../content/character-art';
 import { nativeIdentities } from '../content/native-identities';
 import { formatStat, resolveFighter } from '../content/combat';
 import { createCreatureCopy } from '../game/character-instances';
@@ -76,6 +76,15 @@ describe('game-specific hub layouts', () => {
     for (const page of ['squad', 'summon']) {
       expect(html).toContain(`data-page="${page}"`);
     }
+  });
+  it('uses a compact face only in the saved squad thumbnail and preserves the full-form centerpiece', () => {
+    const account = emptyAccount();
+    account.characters.tide = { level: 45, evolution: 3 };
+    account.squad = ['tide'];
+    const art = characterArt('tide', 3).art;
+    const html = homeHub(getStarter('tide'), false, account);
+    expect(html).toContain(`characters/${art}.png`);
+    expect(html).toContain(`character-faces/${art}.png`);
   });
   it('retains exact endgame stats and large inventory counts without abbreviated values', () => {
     const account = emptyAccount();

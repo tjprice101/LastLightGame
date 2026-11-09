@@ -397,6 +397,7 @@ const eventFields = {
   flare: { text: ['bearerId', 'tier', 'name'], number: [] },
   charge: { text: ['bearerId'], number: ['personal', 'sharedUnits', 'bonusRolls', 'bonusOffered'] },
   round: { text: [], number: ['round'] },
+  guard: { text: ['targetId'], number: [] },
   status: { text: ['targetId', 'status'], number: ['magnitude', 'remaining'] },
 };
 function validSource(value: unknown): boolean {
@@ -417,6 +418,8 @@ function validEvent(value: unknown): boolean {
   if (value.type === 'flare' && !['glowing', 'lustrous', 'eternal'].includes(String(value.tier))) return false;
   if (value.type === 'status' && !['burn', 'seed', 'renewal', 'reduction', 'weaken', 'attack-buff',
     'exposure', 'weaken-removed'].includes(String(value.status))) return false;
+  if (value.type === 'status' && value.clockOnly !== undefined && value.clockOnly !== true) return false;
+  if (value.type === 'guard' && typeof value.guarding !== 'boolean') return false;
   return value.gearSource === undefined || validSource(value.gearSource);
 }
 export function validateRadiantRunResponse(value: unknown): RadiantRunResponse {

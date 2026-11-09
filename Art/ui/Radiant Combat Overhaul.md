@@ -1,28 +1,30 @@
-# Radiant combat overhaul — consolidated art request
+# Radiant combat overhaul — consolidated art brief
 
-**Provisional inventory and art brief, 2026-11-08.** The owner has selected the
-overhaul direction, not a finished design for every bearer, status, Master or
-ordinary Conduit. This document does not approve mechanics, commission an
-image, launch hidden content or claim that the art work below is implemented.
-Reconcile it with the [system and starter review](../../docs/Future%20Plans/radiant-combat-system-specification.md)
-as roster batches are finalized. Count **one accepted original source image**
-once, regardless of crops, exports, animation or reuse.
+**Consolidated art scope and delivery record, 2026-11-08.** This is the single
+visual-scope reference for the implemented Radiant study. It records current
+art reuse, completed derived portraits and genuine art-pending assets; it does
+not approve hidden-content release, a new commission or deployment. Mechanics
+and exact bearer/Master assignments belong to the
+[system specification](../../docs/Future%20Plans/radiant-combat-system-specification.md).
+Count **one accepted original source image** once, regardless of crops, exports,
+animation or reuse.
 
 ## What is actually requested
 
 | Classification | New owner-delivered source images | Disposition |
 | --- | ---: | --- |
-| Confirmed mandatory for this overhaul | **0 currently specified** | Existing artwork plus procedural UI and effects can fulfill the specified visual direction. This is not a promise that later approved kits will require no art. |
+| Mandatory new original source images | **0 currently specified** | Existing artwork plus procedural UI and effects fulfill the current visual scope. No new image order is authorized by this brief. |
 | Optional recommendation | **1** | Original neutral cinematic Home scenery below, **only if the owner separately approves it**. Home must work without it. |
-| Existing outstanding queues | **Not added to the overhaul count** | See the existing War and Sunshade plans below; their status must be reconciled, not duplicated or automatically ordered. |
-| Derived/engine work | **0 commissions** | Up to 192 reviewed compact portrait derivatives, procedural gauges, UI and shader VFX; no new original images. |
+| Existing outstanding queues | **Not added to the overhaul count** | See the existing War and hidden-Sunshade plans below; retain their separate scope and do not duplicate or automatically order them. |
+| Derived/engine work | **192 compact portrait derivatives completed; 0 original-image commissions** | Procedural gauges, UI and shader VFX use existing artwork; no new original images are required for the current study. |
 
 The owner explicitly requests **no ability icons**. Do not generate replacement
 ability, character, ordinary Conduit or personal Master art simply because
 mechanics, effects or attunement change. Existing art remains available for
 reuse, while irrelevant or undelivered ability art must not become a blocker.
-Unspecified future status designs are not a completed icon list and must not
-be guessed from old kit names.
+The implemented 32-bearer study and its status/readout rules are documented in
+the system specification and typed content; do not infer further commissions
+from historical kit names or the separate pending-art queues.
 
 ## Verified catalog and existing artwork
 
@@ -36,7 +38,7 @@ for older packages; its historical character tuple is **not** the live roster.
 | Bearers and forms | 38 authored; **32 released**, six hidden Sunshade. All **192 released form PNGs** exist, six per bearer. | Use the released gate and saved form identity; no new portrait generation. Calamitic displayed Evo.2–7 maps to six saved forms. |
 | Personal Masters | **114 authored**, three per bearer, including 18 hidden Sunshade. **96 released** entries: **84** have installed PNGs and **12** reclaimed-War entries have no installed art. | Reuse existing Master art; do not claim all released Masters have images. Missing War Masters remain neutral pending separate review, not new overhaul requests. |
 | Mapped status art | **54** typed entries: **50 installed PNG mappings** and **four** neutral inline placeholders for reclaimed War. | Reuse only where the finalized state still matches its meaning. No inferred mapping or replacement request. |
-| Installed status groups | Nine shared family/Rose, 27 native, 11 Moon and three Calamitic symbols; 9 + 27 + 11 + 3 = 50. | Keep provenance, character-specific colors and accurate text. Some old meanings may change; installed bytes are not proof that future kits are finalized. |
+| Installed status groups | Nine shared family/Rose, 27 native, 11 Moon and three Calamitic symbols; 9 + 27 + 11 + 3 = 50. | Keep provenance, character-specific colors and accurate text. Typed mappings determine active use; historical icon appearance does not define a mechanic. |
 | Reclaimed War | Neralis, Varkhel, Seravelle and Velmira have **24 installed form portraits**; existing plan lists 44 other undelivered sources. | See below; do not mistake their older source filenames for Moon identities. |
 | Moon | Six released Moon bearers have their **36 portraits**, 18 Masters and 11 status images in the installed 104-source Moon intake. | Reuse installed sources. Availability and release gating are separate from an event's timed schedule. |
 
@@ -60,8 +62,8 @@ not three unrelated new ability images. Four displayed core stats are HP,
 Attack, Defense and Recovery. The unequipped Master default is Equinox;
 personal Masters select an attunement from Corona, Aegis, Solstice and Prism
 where specified. Do not imply that Equinox, attunement or a Master changes a
-bearer's element, original image or form. Exact assignments, figures and
-per-bearer effects remain review work.
+bearer's element, original image or form. Exact assignments and mechanics are
+owned by the system specification and typed content, not this visual brief.
 
 - **Personal and shared meters:** render two clearly labeled personal layers
   for Glowing/Lustrous and a separate shared Eternal Gauge for a squad of up to
@@ -76,7 +78,10 @@ per-bearer effects remain review work.
   member's existing **full-body current evolution** art. Respect source
   facing, layering, silhouette and screen bounds; do not substitute a demo
   lineup or compact head crops. Existing scenery or a generated backdrop and
-  procedural ground light suffice. Do not copy the rejected alternate mock-up.
+  procedural ground light suffice. The current Home composition has
+  been visually checked with a six-member saved-squad fixture at
+  desktop and narrow browser sizes; this is not physical-device acceptance.
+  Do not copy the rejected alternate mock-up.
 - **Flare presentation:** build finite, layered light effects procedurally:
   an identifiable elemental charge, clear travel/impact and dispersal;
   Lustrous and Eternal can escalate scale, density and orchestration without
@@ -109,35 +114,24 @@ legitimate elemental hues or impose Moon colors on reclaimed War characters.
 Use original Last Light visual language, never copy another game's characters,
 effects, art or interface.
 
-## Compact evolution portraits: derived-work handoff
+## Compact evolution portraits: completed derived-art record
 
-These are **not 192 owner commissions**, not complete exports, and not new
-source portraits. Derive a reusable face/upper-body view from each available
-released form using the [existing form resolver](../../src/content/character-art.ts)
-and reviewed full-art assets. One canonical crop per bearer/form serves all
-compact contexts; do not improvise a separate crop for each screen. Full art
-remains in Home, Team/showcases and the battle field.
+These are **not 192 owner commissions** and are not new source portraits.
+One canonical, source-bound face/upper-body crop per released bearer/form is
+exported from the reviewed full-art assets and serves all compact contexts.
+Full art remains in Home, Team/showcases and the battle field.
 
-1. Inventory the 192 source/form pairs and record original/export hashes.
-   The proposed 512px square transparent output is an implementation starting
-   point, not an already completed asset or a mandated visual result.
-2. Record individual normalized crop rectangles and face anchors on the
-   **unmirrored** artwork. Review face/eye scale, hair, head ornaments and
-   enough shoulders to identify each form; late forms can have a tiny body
-   inside a much larger effect silhouette. Do not blindly center-crop.
-3. Keep transparency, palette, facial detail and proportions. Preserve
-   original full images and supplied alpha; do not recolor, invent missing
-   detail, reconstruct already clipped tips or apply runtime background
-   removal. Treat facing once in the shared variant; animate wrappers rather
-   than overriding facing or mirroring twice.
-4. Record source/crop/output provenance and byte revisions; use deployment-base
-   aware URLs and supported format fallback. Do not invent file paths before
-   export. Keep silhouettes, discovery and ownership checks, and keep hidden
-   Sunshade out of all player-facing views.
-5. Review contact sheets at native, 96px and 48px against dark and light
-   backgrounds, every form transition, front/directional poses and late-form
-   ornaments. Verify consistent face framing across contexts, current
-   evolution refresh, accessible names and unmodified full artwork.
+The offline exporter records individual eye anchors, normalized crop bounds,
+source and output hashes, and byte-derived revisions. All192 crops have been
+reviewed from contact sheets; the174 new forms were additionally checked at
+48px on dark and96px on light backgrounds. The shared resolver applies facing
+once and serves compact Team, Profile, saved-loadout, Home-squad and Radiant
+portrait contexts. Full-form Home, character detail, collections/showcases and
+battlefield artwork remain unchanged. Preserve supplied alpha, original source
+bytes, ownership/discovery silhouettes and the hidden-Sunshade release gate;
+do not key, recolor, invent detail, reconstruct clipped tips or add per-screen
+crop variants. Source/settings/provenance and compact-context tests remain the
+reproduction and regression contract.
 
 ## Optional owner commission: one cinematic Home environment
 
@@ -200,29 +194,27 @@ is invented. The optional art must not overwrite installed arenas or sources.
 
 ## Single checklist and unresolved items
 
-- [ ] **No mandatory original-image order currently specified.** Obtain explicit
-      owner approval before ordering the one optional Home environment.
-- [ ] Complete and review the 32 released kits, all relevant ordinary Conduit
-      and Master remaps, and their actual status/readout needs. Record any
-      genuinely new illustration only after its meaning and reuse are clear;
-      no invented final status list or ability icon commission.
-- [ ] Reconcile the independent War and hidden Sunshade queues with final
-      owner decisions; do not silently delete their existing planning records,
-      count them twice, or expose hidden content.
-- [ ] Derive and review up to 192 released form crops with provenance, source
-      facing, gating and shared consumers; do not replace the original art.
-- [ ] Implement and validate the actual-saved-squad Home, four-stat and
-      attunement readouts, two personal layers, shared Eternal Gauge and
-      tiered VFX as procedural/derived work, with accessible static and
-      non-shader fallbacks and time-based motion checks.
+- [x] The current overhaul has no mandatory original-image order. The optional
+      Home environment remains unapproved and is not required for release.
+- [x] Record the 32 released-bearer study's current kit, ordinary-Conduit,
+      Master, status and readout implementation in the system specification;
+      keep historical and independently art-pending queues separate.
+- [x] Derive, source-bind and review all192 released-form compact portraits;
+      preserve full artwork, facing, discovery/ownership gating and shared
+      compact-context use.
+- [x] Implement the saved-squad Home, four-stat and attunement readouts,
+      personal layers, shared Eternal Gauge and tiered signature VFX with
+      accessible static/non-shader fallbacks. Browser fixtures and automated
+      checks do not replace final GPU, physical-device, cadence or economy
+      validation.
 - [ ] If an optional scene is approved, review the actual full-bleed source
       against the composition and delivery requirements before intake.
 
-Open decisions include final per-bearer kits/status meanings and Master
-assignments, whether any finalized state truly needs distinctive art, the
-exact crop/export dimensions after review, shader/fallback implementation,
-and whether the optional Home scene is wanted. This brief remains
-**provisional until the released roster redesign is finalized**.
+The optional Home environment remains an owner choice and is not required for
+the overhaul. No new ability-icon, character, Conduit, Master or status-image
+commission is currently specified. Final GPU/physical-device/cadence/economy
+acceptance remains a release gate for the implemented presentation, not an
+unresolved image order.
 
 For intake, source preservation, transparency and review follow the
 [art workflow](../../docs/art-workflow.md),

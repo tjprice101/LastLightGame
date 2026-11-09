@@ -160,7 +160,7 @@ export function homeHub(starter: Starter, firstArrival: boolean, account: Accoun
             if (!id) return `<button class="team-companion team-empty" data-page="squad"><span aria-hidden="true">+</span><strong>Add member</strong></button>`;
             if (!account || (isStarterId(id) && !account.characters[id])) return `<button class="team-companion" data-page="squad">${portrait(isStarterId(id) ? getStarter(id) : starter)}<span>${characterName(starter.id)} · Progress unavailable</span></button>`;
             const companion = ownedCompanion(account, id);
-            return `<button class="team-companion" data-page="squad">${companion.art}<span><strong>${companion.name}</strong><small>${index === 0 ? 'Leader · ' : ''}${companion.progress}</small></span></button>`;
+            return `<button class="team-companion" data-page="squad">${companion.compactArt}<span><strong>${companion.name}</strong><small>${index === 0 ? 'Leader · ' : ''}${companion.progress}</small></span></button>`;
           }).join('')}
         </div>
       </aside>

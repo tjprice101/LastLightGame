@@ -3,9 +3,9 @@ import { readFileSync } from 'node:fs';
 import { emptyAccount, type Account } from '../game/account';
 import { getStarter } from '../content/starters';
 import { createCreatureCopy } from '../game/character-instances';
-import { characterName } from '../content/character-art';
+import { characterArt, characterName } from '../content/character-art';
 import { referenceHome } from './reference-home';
-import { referenceTeam } from './reference-team';
+import { referenceTeam, referenceTeamSidebar } from './reference-team';
 import { summonHub } from './roster';
 import { conduitStore } from './conduit-store';
 import { conduitUpgradeMenu } from './conduit-upgrade';
@@ -108,6 +108,18 @@ describe('replacement reference screen structures', () => {
     expect(html).toContain('Edits save when you finish a field.');
     expect(html).toContain('data-profile-retry hidden');
     expect(html).not.toContain('>Save profile<');
+    expect(html).toContain(`character-faces/${characterArt('tide', 1).art}.png`);
+  });
+
+  it('uses face crops in compact squad rows while Home keeps canonical full-form artwork', () => {
+    const wallet = account();
+    const state = { view: 'detail' as const, selected: 'tide' as const, element: '', sort: 'name' as const };
+    const sidebar = referenceTeamSidebar(wallet, state);
+    expect(sidebar).toContain(`character-faces/${characterArt('tide', 1).art}.png`);
+    const home = referenceHome(getStarter('tide'), wallet);
+    const formation = home.slice(home.indexOf('class="bubble-squad-formation"'), home.indexOf('class="ref-home-identity"'));
+    expect(formation).toContain(`characters/${characterArt('tide', 1).art}.png`);
+    expect(formation).not.toContain('character-faces/');
   });
 
   it('uses the actual leader and the reference Home panels without promoted banners or writes', () => {
@@ -116,6 +128,10 @@ describe('replacement reference screen structures', () => {
     const before = structuredClone(wallet);
     const html = referenceHome(getStarter('tide'), wallet);
     expect(html).toContain('ref-home-leader');
+    expect(html).toContain('bubble-squad-formation');
+    expect(html).toContain('data-team-detail="tide"');
+    expect(html).toContain('data-team-detail="ember"');
+    expect(html).toContain('Frozen squad · 2 of 6');
     expect(html).toContain('<h2>Tizu</h2>');
     expect(html).toContain('Glasswater Reach');
     expect(html).toContain(`25 / ${storyRules.stages} stages cleared`);
@@ -141,6 +157,7 @@ describe('replacement reference screen structures', () => {
     const before = structuredClone(wallet);
     const html = referenceHome(getStarter('ember'), wallet);
     expect(html).toContain(`data-team-capture-detail="${copy.instanceId}"`);
+    expect(html).toContain('bubble-squad-figure');
     expect(html).not.toContain('<h2>Infernis</h2>');
     expect(wallet).toEqual(before);
   });

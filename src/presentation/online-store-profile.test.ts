@@ -131,6 +131,7 @@ describe('online profile presentation', () => {
     expect(document.querySelector('.profile-squad .ref-panel-heading')?.textContent).toBe('Squad · 1 of 6');
     expect(document.querySelector('.profile-squad .ref-panel-heading button')).toBeNull();
     expect(document.querySelector('.profile-squad [data-team-detail="ember"]')).not.toBeNull();
+    expect(document.querySelector('.profile-squad .compact-portrait img')?.getAttribute('src')).toContain('character-faces/');
     expect(document.querySelectorAll('.profile-squad [data-team-view="formation"]')).toHaveLength(5);
     expect(account).toEqual(before);
   });
@@ -220,7 +221,7 @@ describe('online profile presentation', () => {
     expect(html).toContain(`<h2>Element-Bearers</h2><p><strong>1</strong><span> / ${starters.length}</span>`);
     expect(html).toContain('<span>Conduit types</span><progress value="1" max="99"');
     expect(html).toContain('<dt>Total summons</dt><dd>17</dd>');
-    expect(html).toContain('characters/infernis');
+    expect(html).toContain('character-faces/infernis.png');
     expect(html).toContain('draggable="false"');
     const host = document.createElement('div');
     host.innerHTML = html;

@@ -1,4 +1,4 @@
-import type { RadiantCombatState, RadiantShield, RadiantSource, RadiantTimedEffect } from '../game/radiant-combat';
+import type { RadiantCombatEvent, RadiantCombatState, RadiantShield, RadiantSource, RadiantTimedEffect } from '../game/radiant-combat';
 import { characterName } from '../content/character-art';
 import { getConduit } from '../content/conduits';
 import { getMasterConduit } from '../content/master-conduits';
@@ -14,7 +14,8 @@ export interface RadiantStatusRow {
   remaining: number | null;
   source: RadiantSource | null;
 }
-export function radiantStatusSnapshot(state: RadiantCombatState): Record<string, RadiantStatusRow[]> {
+export type RadiantStatusSnapshot = Record<string, RadiantStatusRow[]>;
+export function radiantStatusSnapshot(state: RadiantCombatState): RadiantStatusSnapshot {
   const result: Record<string, RadiantStatusRow[]> = {};
   for (const unit of [...state.bearers, ...state.enemies]) {
     const rows: RadiantStatusRow[] = [];
@@ -30,6 +31,37 @@ export function radiantStatusSnapshot(state: RadiantCombatState): Record<string,
     result['loadout' in unit ? unit.loadout.id : unit.id] = unit.hp > 0 ? rows : [];
   }
   return result;
+}
+function sameSource(a: RadiantSource, b: RadiantSource): boolean {
+  if (a.kind !== b.kind) return false;
+  return 'enemyId' in a && 'enemyId' in b ? a.enemyId === b.enemyId :
+    'bearerId' in a && 'bearerId' in b && a.bearerId === b.bearerId &&
+      (a.kind !== 'gear' || b.kind === 'gear' && a.conduitId === b.conduitId);
+}
+export function applyRadiantStatusEvent(
+  snapshot: RadiantStatusSnapshot, event: Extract<RadiantCombatEvent, { type: 'status' | 'guard' }>,
+): void {
+  const rows = snapshot[event.targetId];
+  if (!rows) throw new Error('Saved status target is missing.');
+  if (event.type === 'guard') {
+    snapshot[event.targetId] = event.guarding
+      ? [...rows.filter(row => row.kind !== 'guard'), { kind: 'guard', magnitude: .5,
+        remaining: null, source: null }]
+      : rows.filter(row => row.kind !== 'guard');
+    return;
+  }
+  if (event.status === 'weaken-removed') {
+    if (!event.source) throw new Error('Saved removed status has no source.');
+    snapshot[event.targetId] = rows.filter(row => row.kind !== 'weaken' || !row.source ||
+      !sameSource(row.source, event.source!));
+    return;
+  }
+  if (!event.source) throw new Error('Saved timed status has no source.');
+  const kind = event.status;
+  const retained = rows.filter(row => row.kind !== kind || !row.source || !sameSource(row.source, event.source!));
+  if (event.remaining > 0)
+    retained.push({ kind, magnitude: event.magnitude, remaining: event.remaining, source: structuredClone(event.source) });
+  snapshot[event.targetId] = retained;
 }
 export function radiantSourceLabel(source: RadiantSource, run: FrozenRadiantRun): string {
   if (source.kind === 'enemy') {

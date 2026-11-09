@@ -66,9 +66,12 @@ describe('shared interaction feedback lifecycle', () => {
     document.querySelector<HTMLButtonElement>('button')!.click();
     applyMotion('reduced');
     expect(document.querySelector('.click-burst')).toBeNull();
+    expect(document.querySelector<HTMLElement>('.bubble-backdrop')!.dataset.motionPaused).toBe('true');
     document.querySelector<HTMLButtonElement>('button')!.click();
     expect(bubbleMotionAllowed()).toBe(false);
     expect(document.querySelector('.click-burst')).toBeNull();
+    applyMotion('system');
+    expect(document.querySelector<HTMLElement>('.bubble-backdrop')!.dataset.motionPaused).toBe('false');
   });
 
   it('pauses hidden ambient motion and resumes when the document returns', () => {

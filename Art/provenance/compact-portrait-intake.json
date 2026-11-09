@@ -2,7 +2,7 @@
   "version": 1,
   "outputSize": 512,
   "eyeLine": 0.45,
-  "settingsHash": "d7aaedf7edb6260c179010b1a8c966dfc4329e74f69e3e2f333d9b7bae593dde",
+  "settingsHash": "d095b3f7ba5c336d052bb77f91ee619ecd9ef2b7ca9ea60311700dfa0ec1ff3d",
   "files": {
     "infernis": {
       "source": "public/assets/characters/infernis.png",
@@ -363,6 +363,3486 @@
       ],
       "output": "public/assets/character-faces/flora-evo-6.png",
       "outputHash": "339354ae0a72cca224acb1b3a6a927d2232d45e0c75fbd295bae8b43f17dcc71"
+    },
+    "asteriel": {
+      "source": "public/assets/characters/asteriel.png",
+      "sourceHash": "431c26605e1bcf7158c8cf40ec288f7da790d63f029a6796691d29be17ab056d",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        509,
+        385
+      ],
+      "crop": [
+        379,
+        268,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/asteriel.png",
+      "outputHash": "7ff57b046916f6499e9e2049cafc3374e7176b3067ca32db0176217ab9c6ff23"
+    },
+    "asteriel-evo-2": {
+      "source": "public/assets/characters/asteriel-evo-2.png",
+      "sourceHash": "122017f83ef1f87662683a84c6f7b16fec4227460ee24c7c7d61b5d6e4579f2c",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        506,
+        369
+      ],
+      "crop": [
+        376,
+        252,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/asteriel-evo-2.png",
+      "outputHash": "9352c304d977430050e6ea251dd324dd54a81f78cf80b4a3ed726259e71f9dc3"
+    },
+    "asteriel-evo-3": {
+      "source": "public/assets/characters/asteriel-evo-3.png",
+      "sourceHash": "747a4b03eda4d3bf50b72a3cfb373e6ff9d5fb6e52a2da52d4cb1431d32033fd",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        462,
+        352
+      ],
+      "crop": [
+        332,
+        235,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/asteriel-evo-3.png",
+      "outputHash": "4d5797bdd393a48ed437cdf81c0e5d213672b074e2f7053b642a6278ba12e2dd"
+    },
+    "asteriel-evo-4": {
+      "source": "public/assets/characters/asteriel-evo-4.png",
+      "sourceHash": "56f6f136ab6debde777f4b8d917862e1680c7a3a10c202192a90234a8dfc270b",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        480,
+        340
+      ],
+      "crop": [
+        350,
+        223,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/asteriel-evo-4.png",
+      "outputHash": "dc49336e513314ebc407170107c77ad0e24fcd0a25ea014eb9e75e0d8f97b61c"
+    },
+    "asteriel-evo-5": {
+      "source": "public/assets/characters/asteriel-evo-5.png",
+      "sourceHash": "667815304686093a30d0e161cfc8a7fac413fee5e451cf299bbf8b4bae98b4dc",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        442,
+        312
+      ],
+      "crop": [
+        312,
+        195,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/asteriel-evo-5.png",
+      "outputHash": "81fbd8ee18f7b8b5239899c117590f8adcdc433eec6144da73b12857740fcb74"
+    },
+    "asteriel-evo-6": {
+      "source": "public/assets/characters/asteriel-evo-6.png",
+      "sourceHash": "1e0f02af385d21ca05493d9dcbc6c7613c65b00aed0c093889d8c5b96f4aa4ce",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        520,
+        360
+      ],
+      "crop": [
+        390,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/asteriel-evo-6.png",
+      "outputHash": "7789afc336186609348d5b69a1e8c40c2b9e28364f8354db0eecc20de131a31d"
+    },
+    "atmoso": {
+      "source": "public/assets/characters/atmoso.png",
+      "sourceHash": "cfde8f588b10180a1a9b55976b4851c1e671f587e75645be379f5d33aff57a94",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        531,
+        374
+      ],
+      "crop": [
+        401,
+        257,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/atmoso.png",
+      "outputHash": "56b6ac26bd0e59d33745237b975f37d564db0fd9f08600e9fa7d4065da6fc67d"
+    },
+    "atmoso-evo-2": {
+      "source": "public/assets/characters/atmoso-evo-2.png",
+      "sourceHash": "2ce28d8ae33b7e610fe204dd4a2f6ef19494117d04f0f600f0d05abb730f20ea",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        481,
+        396
+      ],
+      "crop": [
+        351,
+        279,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/atmoso-evo-2.png",
+      "outputHash": "d11ca99c68e5f11e4b545c31a30d0c4b10bb8038e4a1eaf4812dca8e75776628"
+    },
+    "atmoso-evo-3": {
+      "source": "public/assets/characters/atmoso-evo-3.png",
+      "sourceHash": "549cfafa329d259f4b62100e4aa4aea58c8fc0c9be3c792d1c1ddef85aa8d295",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        489,
+        399
+      ],
+      "crop": [
+        359,
+        282,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/atmoso-evo-3.png",
+      "outputHash": "ee14d990a3f1dfccfd82ff8e04566931721e99f0f59851d5da52fda264547ae8"
+    },
+    "atmoso-evo-4": {
+      "source": "public/assets/characters/atmoso-evo-4.png",
+      "sourceHash": "5a0e7c22e72714de46e2e3cfc5be7f25887f42801d311514aeb0b234c7b9de17",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        466,
+        426
+      ],
+      "crop": [
+        336,
+        309,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/atmoso-evo-4.png",
+      "outputHash": "d9a88ee16f89aff339b7663fca827476d80c33b3f946b061f79cbddb7421a04d"
+    },
+    "atmoso-evo-5": {
+      "source": "public/assets/characters/atmoso-evo-5.png",
+      "sourceHash": "45f429409d04a250616f233fd4b78b713a06d65c434da172d43242514f7e4fd8",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        480,
+        360
+      ],
+      "crop": [
+        350,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/atmoso-evo-5.png",
+      "outputHash": "fe4e22719fc9ee9c187455aa978d6fabd98746d999cdeafba0be6a0c2563652c"
+    },
+    "atmoso-evo-6": {
+      "source": "public/assets/characters/atmoso-evo-6.png",
+      "sourceHash": "db6a7123993286794a0cdc3df2ef4ac8381a4a1eed588ca0a88badcdfb6d049b",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        430,
+        420
+      ],
+      "crop": [
+        335,
+        334,
+        190,
+        190
+      ],
+      "output": "public/assets/character-faces/atmoso-evo-6.png",
+      "outputHash": "fbd3a0408c1d57f1aa0038e445bf7633a8629b596288b8f564f3bfb12c7545c7"
+    },
+    "aurora": {
+      "source": "public/assets/characters/aurora.png",
+      "sourceHash": "66b88060766d97270c1bbcd91c17912cdfa71c49eda5bbba61448f96a5218d44",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        380,
+        382
+      ],
+      "crop": [
+        220,
+        238,
+        320,
+        320
+      ],
+      "output": "public/assets/character-faces/aurora.png",
+      "outputHash": "e4d52ee21e4dca9ce396c62f99ac266d9a471e5b9021decb5d55bc60e4d55b53"
+    },
+    "aurora-evo-2": {
+      "source": "public/assets/characters/aurora-evo-2.png",
+      "sourceHash": "a6b2aeafc4e266bdefe53ded033ed731d85dda07bbc1522dbb03de19511b6e72",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        460,
+        300
+      ],
+      "crop": [
+        330,
+        183,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/aurora-evo-2.png",
+      "outputHash": "321ee4abeefc526949fca21f46aa46a9dfae015e1a46359857c14eccb51d284b"
+    },
+    "aurora-evo-3": {
+      "source": "public/assets/characters/aurora-evo-3.png",
+      "sourceHash": "433a550a84def8cf57710cbd0834b2660a35c493fb038866a52eff9844226e5d",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        520,
+        330
+      ],
+      "crop": [
+        390,
+        213,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/aurora-evo-3.png",
+      "outputHash": "704f14a47a4ff63b94cd55f56f91d28928c5d1bc80f9b70b75e3a35c95707a85"
+    },
+    "aurora-evo-4": {
+      "source": "public/assets/characters/aurora-evo-4.png",
+      "sourceHash": "ef22341a2d224ff35f630e0dd337d26c23dac0a4ecabd4253cb73668a7c4d72d",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        430,
+        330
+      ],
+      "crop": [
+        300,
+        213,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/aurora-evo-4.png",
+      "outputHash": "d44a49aac58024012f90b81d5845714c932c8dcc6c83f1b07ca06672305a3657"
+    },
+    "aurora-evo-5": {
+      "source": "public/assets/characters/aurora-evo-5.png",
+      "sourceHash": "5ec590317bf60c2df003aca4a0152bd51eb110ce96d4ce296fd8d78b5487986c",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        460,
+        390
+      ],
+      "crop": [
+        330,
+        273,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/aurora-evo-5.png",
+      "outputHash": "016416637435f9fba0f399139874652acb55960df7a66b73d0d36c788033e65b"
+    },
+    "aurora-evo-6": {
+      "source": "public/assets/characters/aurora-evo-6.png",
+      "sourceHash": "869244833556d346c34623bc86c86feb0008c6537200ba21853c97cc4cd399c4",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        520,
+        420
+      ],
+      "crop": [
+        390,
+        303,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/aurora-evo-6.png",
+      "outputHash": "7be39d64ded58329f253938b85ef0ea7e52dbc900e3515eea8cdde5d2a65dca2"
+    },
+    "bliss": {
+      "source": "public/assets/characters/bliss.png",
+      "sourceHash": "55bf8ea7c8f7ccd1d67a560b64edca938c0aa2c9614c1693834609cf3bf336cb",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        360
+      ],
+      "crop": [
+        370,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/bliss.png",
+      "outputHash": "425b70b7fcff359f25c719609559a132145432e6a6ba9f8a3ad2748d8dd0b757"
+    },
+    "bliss-evo-2": {
+      "source": "public/assets/characters/bliss-evo-2.png",
+      "sourceHash": "7e5910319dc7a478f7b2e5a1fce60f37ac305f085b5728abba0fd2c9bfb193af",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        490,
+        360
+      ],
+      "crop": [
+        360,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/bliss-evo-2.png",
+      "outputHash": "dfa95475100952206e58d56b189b3818bee82bfe5af90636cab23225c0737dcf"
+    },
+    "bliss-evo-3": {
+      "source": "public/assets/characters/bliss-evo-3.png",
+      "sourceHash": "7ce51292bfff2027987a3136f2f897d76e80b16c64074f62d4d479b46c38c4c1",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        460,
+        360
+      ],
+      "crop": [
+        330,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/bliss-evo-3.png",
+      "outputHash": "cf95e5f7a6827afd2ab20b4072846f46b35584f445a2b63b65f81cbebf24db78"
+    },
+    "bliss-evo-4": {
+      "source": "public/assets/characters/bliss-evo-4.png",
+      "sourceHash": "d42ced7ce943dd21c9c29cb311eaa9173884b30b74c9b47d426de67d9ac28ed8",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        469,
+        340
+      ],
+      "crop": [
+        339,
+        223,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/bliss-evo-4.png",
+      "outputHash": "f61c48963a3ba7c82807db5f3fb7f20eae669e9a14f8530fddb684bb567d8c7a"
+    },
+    "bliss-evo-5": {
+      "source": "public/assets/characters/bliss-evo-5.png",
+      "sourceHash": "07b0a2a7ff144ece0768fc2e205c2503ecc953ab3d8e81b68e69559c76bf064a",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        421,
+        373
+      ],
+      "crop": [
+        291,
+        256,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/bliss-evo-5.png",
+      "outputHash": "d1151f9bf19173dc8da109868a4f210774b988f4f0e3fd788cc358e862f4337f"
+    },
+    "bliss-evo-6": {
+      "source": "public/assets/characters/bliss-evo-6.png",
+      "sourceHash": "79f182d07a32e76aeb40d93480ba5864ccc37e78aee6f625fa9661e06003724d",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        434,
+        369
+      ],
+      "crop": [
+        304,
+        252,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/bliss-evo-6.png",
+      "outputHash": "1379ed9978ae624cba6a768d66b8c865f41908638478ab8cc04b363e046b12ed"
+    },
+    "bruno": {
+      "source": "public/assets/characters/bruno.png",
+      "sourceHash": "a69c7a0abb1660e975d737425b2bdda12596c6ad942f531209ee1cee22b246c5",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        600,
+        300
+      ],
+      "crop": [
+        470,
+        183,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/bruno.png",
+      "outputHash": "6f129c1f756e28fb86a938c6be74cbde8e8e6972b068200ad8cc8d25170557b9"
+    },
+    "bruno-evo-2": {
+      "source": "public/assets/characters/bruno-evo-2.png",
+      "sourceHash": "482cd40169c692bc67720307c1daaae1fb73c63b6f0b77d91c104920e208ddb2",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        472,
+        368
+      ],
+      "crop": [
+        342,
+        251,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/bruno-evo-2.png",
+      "outputHash": "bfc5e6e7b96f2780a008832bdf943c600be853cde52ef06d379f6c10c3b935a2"
+    },
+    "bruno-evo-3": {
+      "source": "public/assets/characters/bruno-evo-3.png",
+      "sourceHash": "31ea6bd55f44880605d3e830fcb97f3bd05a4402d7848d7e86c62bbcea428bf4",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        541,
+        354
+      ],
+      "crop": [
+        411,
+        237,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/bruno-evo-3.png",
+      "outputHash": "5c5ed6fee82ceb276c44785814ac7421d9a0effb92b698824179dd5957341d42"
+    },
+    "bruno-evo-4": {
+      "source": "public/assets/characters/bruno-evo-4.png",
+      "sourceHash": "c60a4be9569c5c81c24167da2e2609542ba43f2f9f1f6a253f7ddef1ca196c7a",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        515,
+        389
+      ],
+      "crop": [
+        385,
+        272,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/bruno-evo-4.png",
+      "outputHash": "24039a1d2c68955c56addd3242be5337bba657b17df89bc7113569346ec0e148"
+    },
+    "bruno-evo-5": {
+      "source": "public/assets/characters/bruno-evo-5.png",
+      "sourceHash": "aa9ee38ad228b3c37dba740d21c3e8a8d42bca7b0ec47888065fbe3264c2261f",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        480,
+        360
+      ],
+      "crop": [
+        350,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/bruno-evo-5.png",
+      "outputHash": "af0988e0b522eeac9fa2ee6e8fdbef8a5c4d5eca34f74315f2e4332a43164bd8"
+    },
+    "bruno-evo-6": {
+      "source": "public/assets/characters/bruno-evo-6.png",
+      "sourceHash": "b15b77686f0220cffd318d48f8feb4ba61b7c9e931e41a9a721e8b90f8ea7ec3",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        380
+      ],
+      "crop": [
+        370,
+        263,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/bruno-evo-6.png",
+      "outputHash": "0d8a9b916745ee31899ca5bba0ac8fae436fc527ec3f4af8561092274a9dfaee"
+    },
+    "caevren": {
+      "source": "public/assets/characters/caevren.png",
+      "sourceHash": "1fa7e4b4f9b40f5185d64c566cd1ecd1e8932bbcb3c67b766afa465b9d55bc5c",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        517,
+        361
+      ],
+      "crop": [
+        387,
+        244,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/caevren.png",
+      "outputHash": "78ed66a7105394f6e7f3ed425cbd099171382e1a6a62ab4bdfa45ca4ec49bf6c"
+    },
+    "caevren-evo-2": {
+      "source": "public/assets/characters/caevren-evo-2.png",
+      "sourceHash": "f545664370765672d0437b2c461efd324553cbd143de142a5b1369e22f0e377d",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        501,
+        354
+      ],
+      "crop": [
+        371,
+        237,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/caevren-evo-2.png",
+      "outputHash": "8bc5386868b51f80c4dde4593b8a11a5e569ecf40f6d37c45dfc093a2cf05173"
+    },
+    "caevren-evo-3": {
+      "source": "public/assets/characters/caevren-evo-3.png",
+      "sourceHash": "0de687a95bd739f4ec7b6bbc87bec9092abd2065587e57b1af8268cb88d3cd3c",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        518,
+        377
+      ],
+      "crop": [
+        388,
+        260,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/caevren-evo-3.png",
+      "outputHash": "153c8829da8a711b7c15d9968c5037a38496bffe15aea2a043e3c1d14924cfa2"
+    },
+    "caevren-evo-4": {
+      "source": "public/assets/characters/caevren-evo-4.png",
+      "sourceHash": "8764ad082a6d7380c44166234ea79f56f612adf043790524edc0bf03ae8c7ee0",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        527,
+        379
+      ],
+      "crop": [
+        397,
+        262,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/caevren-evo-4.png",
+      "outputHash": "31c2572b230edd71c0499803a4211d450d0b10f08db88b2d96cbcd59d4e5bf7b"
+    },
+    "caevren-evo-5": {
+      "source": "public/assets/characters/caevren-evo-5.png",
+      "sourceHash": "a5aee7f602789a0c8668926e395ce81a006855c4cc423d373ae6f8018dec292a",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        527,
+        460
+      ],
+      "crop": [
+        397,
+        343,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/caevren-evo-5.png",
+      "outputHash": "554f86a0b43bd62cdb07972551fc5f6593356123bb4a2fc17938787ef3c805c3"
+    },
+    "caevren-evo-6": {
+      "source": "public/assets/characters/caevren-evo-6.png",
+      "sourceHash": "507e1231f11bd6526e66104d49f90bdfe8d176f4160854d5f15868e73b3b74bb",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        553,
+        393
+      ],
+      "crop": [
+        423,
+        276,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/caevren-evo-6.png",
+      "outputHash": "f813887dac1dca85ea59739d624050e1a300139b215a36faa698a611fd26959c"
+    },
+    "caldrex": {
+      "source": "public/assets/characters/caldrex.png",
+      "sourceHash": "5ce3884150a4a7cf419faff01a14ce995761b02f6034e0474c70dbca9eeb8b20",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        480,
+        360
+      ],
+      "crop": [
+        350,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/caldrex.png",
+      "outputHash": "85bc41ae71f4009744b9fec987c2a54f79d47ae05b996486bb610cbd575ecb84"
+    },
+    "caldrex-evo-2": {
+      "source": "public/assets/characters/caldrex-evo-2.png",
+      "sourceHash": "6c3c560b5345cc5193cc22fba47960ca5ba48d8c5957af39bceb1b3111ae4e87",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        460,
+        360
+      ],
+      "crop": [
+        330,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/caldrex-evo-2.png",
+      "outputHash": "c16e358c22a8ad60430e2787cd318e78f96ac09e3d994e3c95ecce056246b37c"
+    },
+    "caldrex-evo-3": {
+      "source": "public/assets/characters/caldrex-evo-3.png",
+      "sourceHash": "a0179a1d66e38721590720235107edb08c4d771d01b21081a48a0ff2807d1687",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        430,
+        360
+      ],
+      "crop": [
+        300,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/caldrex-evo-3.png",
+      "outputHash": "b71c55cfc8480bb12c822e861fbcd1aab2193c8603a0e4994ad01ce814aabbce"
+    },
+    "caldrex-evo-4": {
+      "source": "public/assets/characters/caldrex-evo-4.png",
+      "sourceHash": "9694c7a340d5699b0329ce38d4d975ed8fbdb8f1b52e31eeb39251051dc2c941",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        520,
+        350
+      ],
+      "crop": [
+        390,
+        233,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/caldrex-evo-4.png",
+      "outputHash": "c35a0b9f39e493d356f9557731974c402ba9896d14c5bd24f20143ac0f6f6f68"
+    },
+    "caldrex-evo-5": {
+      "source": "public/assets/characters/caldrex-evo-5.png",
+      "sourceHash": "aa062779efbc2e05c6c8a0e6d27a8d680aed43682af321e4d8b340479c09fe14",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        360
+      ],
+      "crop": [
+        370,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/caldrex-evo-5.png",
+      "outputHash": "6ca50cd9079fa3a204f17a5ebef5f6560105d75bc3d3e9f557012216be5ca4d3"
+    },
+    "caldrex-evo-6": {
+      "source": "public/assets/characters/caldrex-evo-6.png",
+      "sourceHash": "b6773723f02738c941d5bffb6b0dde39044401c0218252d4455cdbc3ecf047df",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        520,
+        350
+      ],
+      "crop": [
+        390,
+        233,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/caldrex-evo-6.png",
+      "outputHash": "eff966a9595278427d4eb1efc57792abe1caa1750301285a715fd1f1643c382a"
+    },
+    "crinso": {
+      "source": "public/assets/characters/crinso.png",
+      "sourceHash": "9b759987d8f4f59ff0179b698a3280749e216aa98de0843d268287450aad70b8",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        250,
+        390
+      ],
+      "crop": [
+        120,
+        273,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/crinso.png",
+      "outputHash": "8f64310156017168bd32cce5851d59c5e2baff111e7271676f6e14a1d5b857d7"
+    },
+    "crinso-evo-2": {
+      "source": "public/assets/characters/crinso-evo-2.png",
+      "sourceHash": "63034dd8c3006c4b707c30e869a5e89473c84b141b858ce19e6ab7e9bf15c13d",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        430,
+        371
+      ],
+      "crop": [
+        300,
+        254,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/crinso-evo-2.png",
+      "outputHash": "db3ec4b218d7cb52eed241b61a52c2dc65113b01294429d53958d17413d0a55f"
+    },
+    "crinso-evo-3": {
+      "source": "public/assets/characters/crinso-evo-3.png",
+      "sourceHash": "6d954c2574b36e5f98098b1dce2f5fa8333a2ba328bd1aba4f4343648f08c422",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        364,
+        385
+      ],
+      "crop": [
+        234,
+        268,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/crinso-evo-3.png",
+      "outputHash": "9c6cc0d3c3d107efce6a8d9f67248bc63edef94cf306db5f1e26071a0083346a"
+    },
+    "crinso-evo-4": {
+      "source": "public/assets/characters/crinso-evo-4.png",
+      "sourceHash": "67e41c27f4f90cd7c531ee28ff9f15e831141b14a50b6dce62068b2996e6e240",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        420,
+        369
+      ],
+      "crop": [
+        290,
+        252,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/crinso-evo-4.png",
+      "outputHash": "7be9882453233c398b82e9dcde44ba3e26a55f259187ffcde83f6c13bbe129c0"
+    },
+    "crinso-evo-5": {
+      "source": "public/assets/characters/crinso-evo-5.png",
+      "sourceHash": "156d8b1de23be864cbefe248acdff48763c2b62dc6eed66a7ecc62ece9e7a7aa",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        447,
+        412
+      ],
+      "crop": [
+        317,
+        295,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/crinso-evo-5.png",
+      "outputHash": "eeef289059edac02cfdf39a6d86c1d116589d81f12132095cb15768871b6d3c6"
+    },
+    "crinso-evo-6": {
+      "source": "public/assets/characters/crinso-evo-6.png",
+      "sourceHash": "72a4da87e9a9339eda4442496aa1d0da7993ffb4f642ea7045b58a37e8d58d81",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        450,
+        380
+      ],
+      "crop": [
+        320,
+        263,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/crinso-evo-6.png",
+      "outputHash": "c75e80e36c2dff447276e3d88a69523bb30071f6c70b3bffc862d1bbd9916de4"
+    },
+    "disciple": {
+      "source": "public/assets/characters/disciple.png",
+      "sourceHash": "a248147a68c9b7f8b7f2067c78397c8968a77e7ba9d8c01d0474f77c7447d8e0",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        478,
+        384
+      ],
+      "crop": [
+        348,
+        267,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/disciple.png",
+      "outputHash": "f6070988dcc338edb20be0ddc0d81f62ae57b61e3339b3a87ecc978e545d90db"
+    },
+    "disciple-evo-2": {
+      "source": "public/assets/characters/disciple-evo-2.png",
+      "sourceHash": "fa136526df4044a507b9d22fdca71e7eeaa653dd9d1ca11d1b6fd5227432766c",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        363,
+        365
+      ],
+      "crop": [
+        233,
+        248,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/disciple-evo-2.png",
+      "outputHash": "018122d8c5a2b1213e376172fcf0dadb8925d82f0b38c4c8b5eb93bbf804780f"
+    },
+    "disciple-evo-3": {
+      "source": "public/assets/characters/disciple-evo-3.png",
+      "sourceHash": "261fa2b6753cb04b78d09f73d96c16f73db75a0639997aa4696b7582caeb1d86",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        489,
+        388
+      ],
+      "crop": [
+        359,
+        271,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/disciple-evo-3.png",
+      "outputHash": "7dffa3de9c18946b3834a6a039535174b013f7ee6f80e029357dc63f6f6b5e1f"
+    },
+    "disciple-evo-4": {
+      "source": "public/assets/characters/disciple-evo-4.png",
+      "sourceHash": "bed3ce50fc70493bd18a86ce74d827e33e201ffd0249c2cd6273ac560709bcd1",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        497,
+        440
+      ],
+      "crop": [
+        367,
+        323,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/disciple-evo-4.png",
+      "outputHash": "39a368dec6c3cad059201c3ff29abc0bad0b0a2f96af805fcac4416db02bdf8f"
+    },
+    "disciple-evo-5": {
+      "source": "public/assets/characters/disciple-evo-5.png",
+      "sourceHash": "e87f847bdbe78d37da1bc074de967f508ca1a667ef60e05d2238902057dbca57",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        485,
+        415
+      ],
+      "crop": [
+        355,
+        298,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/disciple-evo-5.png",
+      "outputHash": "65054299f2ea848af31b95dc327c5ad285b925996e84d2454310d73289e2a0ba"
+    },
+    "disciple-evo-6": {
+      "source": "public/assets/characters/disciple-evo-6.png",
+      "sourceHash": "505a5a96b2c38231741e6a976939d2b7bf6179fe07ff13cc5f78478368989769",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        370
+      ],
+      "crop": [
+        370,
+        253,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/disciple-evo-6.png",
+      "outputHash": "02c8211740fca01002eebbfc77e457b5549edc2daa39352263d52a9cbc2c0cb9"
+    },
+    "elise": {
+      "source": "public/assets/characters/elise.png",
+      "sourceHash": "5c46be99251dd18cab84a208095665ab9d006e80e6d0b4243cb1fbf1d0c92553",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        463,
+        390
+      ],
+      "crop": [
+        333,
+        273,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/elise.png",
+      "outputHash": "c122d61b49b44608569ffa963ab69b9ad96590735d38109b8a1d65c68b1b2c25"
+    },
+    "elise-evo-2": {
+      "source": "public/assets/characters/elise-evo-2.png",
+      "sourceHash": "eeb7fc2461ca67a0a74cb76e926dcd458e26486de38d8dcaf723d0efa587a585",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        512,
+        387
+      ],
+      "crop": [
+        382,
+        270,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/elise-evo-2.png",
+      "outputHash": "417c047b05496bafbab0b7605a23a7e46e10ccae69d64d468247c6f833347e54"
+    },
+    "elise-evo-3": {
+      "source": "public/assets/characters/elise-evo-3.png",
+      "sourceHash": "fb64faf69c69f0ac5b4dee972d93b6b417dd8c4a075ec6dfcacc527ac4107e50",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        444,
+        395
+      ],
+      "crop": [
+        314,
+        278,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/elise-evo-3.png",
+      "outputHash": "43685eba97995c6b692ef4455bf591aea7316dfd4ecac262cc4f07de7d7f211e"
+    },
+    "elise-evo-4": {
+      "source": "public/assets/characters/elise-evo-4.png",
+      "sourceHash": "0ba0f56289a3b3af18b220b3b2f15c8716c108ae7a92377e89a1204c38d63bfe",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        443,
+        450
+      ],
+      "crop": [
+        313,
+        333,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/elise-evo-4.png",
+      "outputHash": "1ef2f6b3a4b9a0219097c61dfded6684ba377ca3d4ad567903ffb170febcb66c"
+    },
+    "elise-evo-5": {
+      "source": "public/assets/characters/elise-evo-5.png",
+      "sourceHash": "b24f59839d20170b4eae26f7b5953827c71023bb8efaccf66107ce54f04d1387",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        360
+      ],
+      "crop": [
+        370,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/elise-evo-5.png",
+      "outputHash": "feee515a2c58a02aa7e5296f464aa505f63b9ec51a71063346e4a35c8abe57da"
+    },
+    "elise-evo-6": {
+      "source": "public/assets/characters/elise-evo-6.png",
+      "sourceHash": "b1c35595ea23eeed9aed52dedb515596a0d5f68464da9fc9e6baaa99ed14554b",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        380
+      ],
+      "crop": [
+        370,
+        263,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/elise-evo-6.png",
+      "outputHash": "35b5dbd7f209cf72c2c09d91ba0eb9b1ab1e4d8895512435f29168b070237325"
+    },
+    "ilvaris": {
+      "source": "public/assets/characters/ilvaris.png",
+      "sourceHash": "ab5328000ae75ec664fabe9ea5ba3cef295a6e2682e08fc3bc90b0a93ccaf2db",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        600,
+        400
+      ],
+      "crop": [
+        470,
+        283,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ilvaris.png",
+      "outputHash": "79a78234adcd977ecd2d8b100e12f49138ae72b4878f766c93d364e2f994cbc6"
+    },
+    "ilvaris-evo-2": {
+      "source": "public/assets/characters/ilvaris-evo-2.png",
+      "sourceHash": "2c0550f7e13460274a5ba0efc19fa0fd958541f274e4faa755f6296e5cf90300",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        421,
+        393
+      ],
+      "crop": [
+        291,
+        276,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ilvaris-evo-2.png",
+      "outputHash": "216ee0128b3526525731d58900ff1af3ef629d222b570553cc6cd30bcb02be5b"
+    },
+    "ilvaris-evo-3": {
+      "source": "public/assets/characters/ilvaris-evo-3.png",
+      "sourceHash": "3b241870ff6b0c93b2f453b042ef66155d03700509b38f995898f9a5067a7939",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        428,
+        408
+      ],
+      "crop": [
+        298,
+        291,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ilvaris-evo-3.png",
+      "outputHash": "8dd0e982accac55142d8683a183ebf20f770c55fbc821555ee3dc2b1effe019c"
+    },
+    "ilvaris-evo-4": {
+      "source": "public/assets/characters/ilvaris-evo-4.png",
+      "sourceHash": "690f4ff375b8ac2f9ff6bc7b2e825e7291292334ddfdafe5af9636e025f2a2fd",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        430,
+        360
+      ],
+      "crop": [
+        300,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ilvaris-evo-4.png",
+      "outputHash": "2d679bfdfb71f512ca200a0094aec76f31a2ee68e7efc22297311978ac71fef3"
+    },
+    "ilvaris-evo-5": {
+      "source": "public/assets/characters/ilvaris-evo-5.png",
+      "sourceHash": "98605048fdd8e8739c0bbc1312e47421da3e83506ced332f1cf1368564986ce0",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        495,
+        357
+      ],
+      "crop": [
+        365,
+        240,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ilvaris-evo-5.png",
+      "outputHash": "f941907ca973181c2c3da5825571277e7847830075f9966292cd9390626475da"
+    },
+    "ilvaris-evo-6": {
+      "source": "public/assets/characters/ilvaris-evo-6.png",
+      "sourceHash": "9282abe2c3ad325278316ebe5bb9c12b8b03535c9034a7e7fd189b7f0c02a431",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        480,
+        380
+      ],
+      "crop": [
+        350,
+        263,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ilvaris-evo-6.png",
+      "outputHash": "41ecb87f6136f24236ac15734d8174ed9c3b8024f1600bba37350c4be828cfc9"
+    },
+    "ilyss": {
+      "source": "public/assets/characters/ilyss.png",
+      "sourceHash": "64fefcf60d10a08d33e56f762d5ee5ddd801b61ec2a5c7e1f7ff10bacd5223fb",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        474,
+        326
+      ],
+      "crop": [
+        344,
+        209,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ilyss.png",
+      "outputHash": "4614b0f22ebc45a9065069d3ea2362c7a5e36b045fd628a42383ec2da914ff8c"
+    },
+    "ilyss-evo-2": {
+      "source": "public/assets/characters/ilyss-evo-2.png",
+      "sourceHash": "3c6b213b7d89859c1a0fa8574efc9abf2e73f6b7467a5bd075f28fd115a2e306",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        380
+      ],
+      "crop": [
+        370,
+        263,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ilyss-evo-2.png",
+      "outputHash": "a3c7b11004648cb0bca12889edeea298849d84bb73fd04015c8724b84d9cc4cf"
+    },
+    "ilyss-evo-3": {
+      "source": "public/assets/characters/ilyss-evo-3.png",
+      "sourceHash": "0bf5d1e0821f6be8d2ecebd2869c128af4cf23d2018ab982860ef92743686898",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        497,
+        321
+      ],
+      "crop": [
+        367,
+        204,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ilyss-evo-3.png",
+      "outputHash": "f39e20dcd559c8304efaa39a846518f3de70b5d6d7fc52b4560e6cf65b46a19c"
+    },
+    "ilyss-evo-4": {
+      "source": "public/assets/characters/ilyss-evo-4.png",
+      "sourceHash": "3145157d99bb26bd4c39f9e83e99d2da0890641f3e8e4f8c93d1c7cda7593caf",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        483,
+        345
+      ],
+      "crop": [
+        353,
+        228,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ilyss-evo-4.png",
+      "outputHash": "e8de4c0beb2c6997d34d437daf66aea2b796692625c5ceab9d8d5a31b6c5c5f0"
+    },
+    "ilyss-evo-5": {
+      "source": "public/assets/characters/ilyss-evo-5.png",
+      "sourceHash": "5f96fc7780fcdb6c72c6ed7a0686eb6f68fffdac59adee648cef06526feeba5a",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        490,
+        340
+      ],
+      "crop": [
+        360,
+        223,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ilyss-evo-5.png",
+      "outputHash": "5f7dbef065f8d59c41b74b3538014ab90a755ed9e77ee6be50fcdf5770ab5d13"
+    },
+    "ilyss-evo-6": {
+      "source": "public/assets/characters/ilyss-evo-6.png",
+      "sourceHash": "fe50ea97eeaef6eeb09df608980000a797c298fa54afd44cc48b05dd90c3dbc2",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        508,
+        305
+      ],
+      "crop": [
+        378,
+        188,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ilyss-evo-6.png",
+      "outputHash": "3936abbf52da400d4f7300465f808e5fa40fed7b6539fd126036a72ce36c0e17"
+    },
+    "kaelith": {
+      "source": "public/assets/characters/kaelith.png",
+      "sourceHash": "843c3a86c50b8a43a903c2186734f75f8dda63fcaa66e9541f42caed0b480d31",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        466,
+        397
+      ],
+      "crop": [
+        336,
+        280,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/kaelith.png",
+      "outputHash": "f64eeddb7c3ebd2a7409512bd26cc7287991e9e2e11214d9d891217a60e959ae"
+    },
+    "kaelith-evo-2": {
+      "source": "public/assets/characters/kaelith-evo-2.png",
+      "sourceHash": "cf5d538e39e228685d24cd7997b552f11b78024dcf6dcd3612c2e3721a593bfd",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        439,
+        386
+      ],
+      "crop": [
+        309,
+        269,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/kaelith-evo-2.png",
+      "outputHash": "2ba37b93ae4af8ba03335c0b5856345899826013f92eb0fbf3418227421ee6e2"
+    },
+    "kaelith-evo-3": {
+      "source": "public/assets/characters/kaelith-evo-3.png",
+      "sourceHash": "410749adeed626a1154c53900947d13a889e27323a4a04297e3574ff7e54cab7",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        490,
+        380
+      ],
+      "crop": [
+        360,
+        263,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/kaelith-evo-3.png",
+      "outputHash": "8b4f3816867746becd19f77dd4a720fefef7dda92bcbfd9b1f521879cdc97e8d"
+    },
+    "kaelith-evo-4": {
+      "source": "public/assets/characters/kaelith-evo-4.png",
+      "sourceHash": "87b7bb27b1fd9c83eca8b0abfeb82f9c88c32a5b5bc4250bbf8c2bc035646f15",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        493,
+        365
+      ],
+      "crop": [
+        363,
+        248,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/kaelith-evo-4.png",
+      "outputHash": "55ca9275838976c867d9763869edd2c892cce7a4f3ea657bcc5466ea0486fd2b"
+    },
+    "kaelith-evo-5": {
+      "source": "public/assets/characters/kaelith-evo-5.png",
+      "sourceHash": "53ae0f197ebefe2e3f3b33bf45d36c20584006f03b78ee69fd0137cb847007d9",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        476,
+        398
+      ],
+      "crop": [
+        346,
+        281,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/kaelith-evo-5.png",
+      "outputHash": "45053fb4b993535b7f77a8bd3c1771415e6fefa22b7eb672e60b3314821e7eca"
+    },
+    "kaelith-evo-6": {
+      "source": "public/assets/characters/kaelith-evo-6.png",
+      "sourceHash": "46172bd38ae8193b5cd5a0f6d743d5f8fffd08618ed755c885b78a8c7bd542f2",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        390
+      ],
+      "crop": [
+        370,
+        273,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/kaelith-evo-6.png",
+      "outputHash": "33d43bb611c1fa2a42b412db1a4bba644efe7d6bffdd076f1b1b95bd107a49b7"
+    },
+    "maerion": {
+      "source": "public/assets/characters/maerion.png",
+      "sourceHash": "91db4f82d958bb85b4eeb9564d8164d0890de9991a4b986757c29eb20754adda",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        510,
+        352
+      ],
+      "crop": [
+        380,
+        235,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/maerion.png",
+      "outputHash": "811d98dbc58077efcceca5f9323e61371714da1b3c0572887af5361cd76a394f"
+    },
+    "maerion-evo-2": {
+      "source": "public/assets/characters/maerion-evo-2.png",
+      "sourceHash": "bd322529e50cc6f2fb89094ddd75c25989ac9d1ed437d4bbee082b5812d3630b",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        540,
+        364
+      ],
+      "crop": [
+        410,
+        247,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/maerion-evo-2.png",
+      "outputHash": "5d02802ad7d9f3b25b1f8288bf0c8498d9e8ecae9fece14bb41dbee2f60a8bd9"
+    },
+    "maerion-evo-3": {
+      "source": "public/assets/characters/maerion-evo-3.png",
+      "sourceHash": "c28b055bb4bafcc3bde545bc34adad74966af8a0a5f5b6c73000c4e950422535",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        540,
+        310
+      ],
+      "crop": [
+        410,
+        193,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/maerion-evo-3.png",
+      "outputHash": "2392406f9a16745f190b5d3d0f0e3149803aa504760f44142e313e0c70f3c49a"
+    },
+    "maerion-evo-4": {
+      "source": "public/assets/characters/maerion-evo-4.png",
+      "sourceHash": "93290682a03d9e1b035ba6dd20d943b10968a0f5f31ae43f53bc18eecfeeb08f",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        503,
+        384
+      ],
+      "crop": [
+        373,
+        267,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/maerion-evo-4.png",
+      "outputHash": "4f0772e36b2c2c1ec6e9a0244390af26d82117e8dcbf3d074fe4bdff6bb4f4c3"
+    },
+    "maerion-evo-5": {
+      "source": "public/assets/characters/maerion-evo-5.png",
+      "sourceHash": "3186d8b11acb86650e7ce8fe8e4ffd894331bb582cd43e7f1c2493843d947103",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        565,
+        377
+      ],
+      "crop": [
+        435,
+        260,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/maerion-evo-5.png",
+      "outputHash": "dae2eb5b99d91248b78801743ae1ce82b31f37215e8d1ad06f21efee35ce32b2"
+    },
+    "maerion-evo-6": {
+      "source": "public/assets/characters/maerion-evo-6.png",
+      "sourceHash": "8543db58ccf42b2017d895eabcac49b0797d8569ffde897478d5ee6201f9d601",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        529,
+        398
+      ],
+      "crop": [
+        399,
+        281,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/maerion-evo-6.png",
+      "outputHash": "d9786f943127f33e9002290cc458b63cfe81e9978c47d4d4a30c1bc0c6e3ee62"
+    },
+    "myrthen": {
+      "source": "public/assets/characters/myrthen.png",
+      "sourceHash": "631b1d3cf69214d1bf772b668aefed91afcc486a94f23a0da2b96b2c4021b60a",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        443,
+        437
+      ],
+      "crop": [
+        313,
+        320,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/myrthen.png",
+      "outputHash": "db3a8e7c103ace7d53ca251e0423a1b3a3ea678283006ba0f4d560f9541cb3ae"
+    },
+    "myrthen-evo-2": {
+      "source": "public/assets/characters/myrthen-evo-2.png",
+      "sourceHash": "24db1c220f85aa6b7def2740c5072c4912ffd29a0f86950627b0d1d79654dade",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        450,
+        395
+      ],
+      "crop": [
+        320,
+        278,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/myrthen-evo-2.png",
+      "outputHash": "0f07cf9a237a6cc1a7efba15d6c21c2feed4c331a5cd4ef10f95f19b012af7a4"
+    },
+    "myrthen-evo-3": {
+      "source": "public/assets/characters/myrthen-evo-3.png",
+      "sourceHash": "e3ac6844dcdbfea904e13bb8f939e072da962f7de48b61431668565c9f23f3d2",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        468,
+        399
+      ],
+      "crop": [
+        338,
+        282,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/myrthen-evo-3.png",
+      "outputHash": "88977c9cfd65805b5f626939b8c58782c6ecb1806c4410e9178c982af5551ac9"
+    },
+    "myrthen-evo-4": {
+      "source": "public/assets/characters/myrthen-evo-4.png",
+      "sourceHash": "4acc5353ab7b727be6696c903dcfca81399c123286a4e11e22b79b8ad0500d40",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        492,
+        381
+      ],
+      "crop": [
+        362,
+        264,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/myrthen-evo-4.png",
+      "outputHash": "a151b732ef98c8f17f530a7b6b9430970d3f12fce193ea7f941eff285f02d3f7"
+    },
+    "myrthen-evo-5": {
+      "source": "public/assets/characters/myrthen-evo-5.png",
+      "sourceHash": "ee1494f7badc10c8bb84f988d224c3fe20986351939559fd91dc273dd304f296",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        462,
+        383
+      ],
+      "crop": [
+        332,
+        266,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/myrthen-evo-5.png",
+      "outputHash": "974c3734473eddc1092a5a35079106dd184dce2c339227c35ed4868dd90b73d0"
+    },
+    "myrthen-evo-6": {
+      "source": "public/assets/characters/myrthen-evo-6.png",
+      "sourceHash": "d660d4cd282c6e4c8d4d569521071516f1eaaa8f71ff0102a8f54ff24239039b",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        490,
+        380
+      ],
+      "crop": [
+        360,
+        263,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/myrthen-evo-6.png",
+      "outputHash": "13739ad3db3201bc66c3e5ce5ca506a318608e8f18f97d46856169fea59d1d55"
+    },
+    "neralis": {
+      "source": "public/assets/characters/neralis.png",
+      "sourceHash": "00d59a54eb7aee33bbcb34026d9ea2ac13179f205bdad60594bc3fe0fa286181",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        478,
+        353
+      ],
+      "crop": [
+        348,
+        236,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/neralis.png",
+      "outputHash": "27a3fdf54ec17cdfb6adb69eb062bc000e60386e4e238558e342640d0211553a"
+    },
+    "neralis-evo-2": {
+      "source": "public/assets/characters/neralis-evo-2.png",
+      "sourceHash": "158b70e7af91591c9365d43027b17044dfebbf05e789032a3f716185314a1d71",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        506,
+        360
+      ],
+      "crop": [
+        376,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/neralis-evo-2.png",
+      "outputHash": "f5f0d5f3f7a98c90c4b3d087b59fecc1419a53e59bf64c6b0bd16f310489cef5"
+    },
+    "neralis-evo-3": {
+      "source": "public/assets/characters/neralis-evo-3.png",
+      "sourceHash": "22a724bc752357b1f27a7c14ea6a656b4537e12a5746491b2bd7a53555a22ee3",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        438,
+        386
+      ],
+      "crop": [
+        308,
+        269,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/neralis-evo-3.png",
+      "outputHash": "cbe2dd1cee80d79e78bdfb2e791c2277c6dab2536ebb40c8e856b60c99dcd38d"
+    },
+    "neralis-evo-4": {
+      "source": "public/assets/characters/neralis-evo-4.png",
+      "sourceHash": "78faf179f658849b21b64eebac6c08007c67930614bd23bde6cbcc3ca5483e5a",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        540,
+        380
+      ],
+      "crop": [
+        410,
+        263,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/neralis-evo-4.png",
+      "outputHash": "4ee17227111cfdab45ef7301a7536e3ccc783758b145b446167681e4408a2283"
+    },
+    "neralis-evo-5": {
+      "source": "public/assets/characters/neralis-evo-5.png",
+      "sourceHash": "94a6ce94db9c8695e2847c45630788e23ec860ad9e4250dfe41939a60fbdba8e",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        360
+      ],
+      "crop": [
+        370,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/neralis-evo-5.png",
+      "outputHash": "ac74ef8a2d5ba696b5a9c0ca306570e8c50a02def5bdcb6645529ad0ed6e5786"
+    },
+    "neralis-evo-6": {
+      "source": "public/assets/characters/neralis-evo-6.png",
+      "sourceHash": "63207164f7f539554c2902a55fdb1568f6d9bb7b752468094b9b6e1dec483739",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        467,
+        327
+      ],
+      "crop": [
+        337,
+        210,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/neralis-evo-6.png",
+      "outputHash": "f284943405b90d503f9e4db0e745456d59478d547461d821d3b31b4ae75b7c50"
+    },
+    "nerithe": {
+      "source": "public/assets/characters/nerithe.png",
+      "sourceHash": "627959c92fc4b377c202289e478b05d5a09dad65a121a2a733b3d3ff3b923d80",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        532,
+        384
+      ],
+      "crop": [
+        402,
+        267,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/nerithe.png",
+      "outputHash": "3995a00385b6f1d426bfb6d6f67e5df961a37624b1bf6896a931785169396891"
+    },
+    "nerithe-evo-2": {
+      "source": "public/assets/characters/nerithe-evo-2.png",
+      "sourceHash": "42b693d24a1aa78706d9d01c2da969caf7f08c681aa564e2c75dc75b482e5b50",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        529,
+        399
+      ],
+      "crop": [
+        399,
+        282,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/nerithe-evo-2.png",
+      "outputHash": "01b47c0607e555bcb3f405c19578cb0b21ed182bdba0208ed0e2d279f4a837df"
+    },
+    "nerithe-evo-3": {
+      "source": "public/assets/characters/nerithe-evo-3.png",
+      "sourceHash": "22ff8fd31c8c3dcfd72918d8f05223ee81decc34d5b510d6372f036a06b69454",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        498,
+        430
+      ],
+      "crop": [
+        368,
+        313,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/nerithe-evo-3.png",
+      "outputHash": "5f6ca9ed0d2921c4b159c87664387335e88920532cf1830fb18721cb22de3e2e"
+    },
+    "nerithe-evo-4": {
+      "source": "public/assets/characters/nerithe-evo-4.png",
+      "sourceHash": "aeb989705886eee5a51a7029ad90c31546122d4664bdea130e81a26c53a54143",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        442,
+        351
+      ],
+      "crop": [
+        312,
+        234,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/nerithe-evo-4.png",
+      "outputHash": "c4bfffe5dbcdd0b761f71f6641ad9055c18b14932a5e56f11aba77b448b2a358"
+    },
+    "nerithe-evo-5": {
+      "source": "public/assets/characters/nerithe-evo-5.png",
+      "sourceHash": "831535e0e83ff89638f3f9e8914e5b8957c57935258c580058df839e162b6332",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        590,
+        386
+      ],
+      "crop": [
+        460,
+        269,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/nerithe-evo-5.png",
+      "outputHash": "76f7960c392906c281d1cec0711a9ab1e426ab7ed1b4a57ba3e8a39f27348e60"
+    },
+    "nerithe-evo-6": {
+      "source": "public/assets/characters/nerithe-evo-6.png",
+      "sourceHash": "606070da88ffa2b1fcd8f53c917264b6f99cb3c98aa88d4554801650a37e16b9",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        480,
+        380
+      ],
+      "crop": [
+        350,
+        263,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/nerithe-evo-6.png",
+      "outputHash": "86ab899a7394eaec19fca9f222d21ab7750c39caa694ea80a54a313a8e52cf32"
+    },
+    "orvella": {
+      "source": "public/assets/characters/orvella.png",
+      "sourceHash": "1c5b09a5d9665af31a08341cf3c4400b862cd40a564eae9480d133afcc46b308",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        480,
+        360
+      ],
+      "crop": [
+        350,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/orvella.png",
+      "outputHash": "e8461c492a353ea6b231af3a690f900820922ad4fbe53cb69ee8f8a8a7208fb3"
+    },
+    "orvella-evo-2": {
+      "source": "public/assets/characters/orvella-evo-2.png",
+      "sourceHash": "589ef0daa278f16fe03c851569372fead81058206f313ab2efcf940f92f1be38",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        456,
+        356
+      ],
+      "crop": [
+        326,
+        239,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/orvella-evo-2.png",
+      "outputHash": "5a73cbd325bb6c198bb9c2f1f36f9aa0cc82303768b1d9fb4070622361980974"
+    },
+    "orvella-evo-3": {
+      "source": "public/assets/characters/orvella-evo-3.png",
+      "sourceHash": "7089d0e31d0a293d0625651fce0e6b00f8df5708eec89a815a3a8043dc48a8e2",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        462,
+        372
+      ],
+      "crop": [
+        332,
+        255,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/orvella-evo-3.png",
+      "outputHash": "79bebdbd69e8a275471a6c0d0e34557917ffb6855ef968dbbbc411eb65832013"
+    },
+    "orvella-evo-4": {
+      "source": "public/assets/characters/orvella-evo-4.png",
+      "sourceHash": "30c6905eb5f430b2614b53031f69ae761a645f410d2da2e3778af865568b3549",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        470,
+        360
+      ],
+      "crop": [
+        340,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/orvella-evo-4.png",
+      "outputHash": "8c09ada8f12dc2acb73ca79461ffd798f5226cdf3b3350114b21307fc2c6686b"
+    },
+    "orvella-evo-5": {
+      "source": "public/assets/characters/orvella-evo-5.png",
+      "sourceHash": "50f2aba47556b8ce909f74c6caab64548fff607a9e71164028ea06ee28cc4c9e",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        360
+      ],
+      "crop": [
+        370,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/orvella-evo-5.png",
+      "outputHash": "3ad145086d5f316de5458314b5de4e714c3322d154c75d815873d49235412555"
+    },
+    "orvella-evo-6": {
+      "source": "public/assets/characters/orvella-evo-6.png",
+      "sourceHash": "f8559943b59dc31e68fe8a06ff019f91df6e1e6caa8ae5f6bf1fd09fd1ef446e",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        491,
+        377
+      ],
+      "crop": [
+        361,
+        260,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/orvella-evo-6.png",
+      "outputHash": "39bc90c1c4704f080983927563f1e926c5c4c9539b629942139ebc94a103fa9a"
+    },
+    "ozriel": {
+      "source": "public/assets/characters/ozriel.png",
+      "sourceHash": "e3d4eae830152488df31cc6367bdfcb973c26930c0e3ea5e95771073163feb34",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        480,
+        360
+      ],
+      "crop": [
+        350,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ozriel.png",
+      "outputHash": "42d2bc2e32f20ed6f92eba730c46b365d3e4160c5c279aed455e53b22f3c13f2"
+    },
+    "ozriel-evo-2": {
+      "source": "public/assets/characters/ozriel-evo-2.png",
+      "sourceHash": "e9a831b48e7437e5c58c3cb57614baf73b5dae37523e15266b0d6a4efee24c97",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        360
+      ],
+      "crop": [
+        370,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ozriel-evo-2.png",
+      "outputHash": "0f409d070ebd8e1a397c35899f3510dd186e406f084e4b107ac91ecae34a0c7c"
+    },
+    "ozriel-evo-3": {
+      "source": "public/assets/characters/ozriel-evo-3.png",
+      "sourceHash": "f973129b376e2ffcb80723ae9bfacba184f6558f150f4d7f343babb3780915ae",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        360
+      ],
+      "crop": [
+        370,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ozriel-evo-3.png",
+      "outputHash": "3844ca80c33f5219488c03f8530d83ec6c032810b86445678d0cdfe718eb5fb7"
+    },
+    "ozriel-evo-4": {
+      "source": "public/assets/characters/ozriel-evo-4.png",
+      "sourceHash": "f0ae51800b5aac3177bc70aa45d9ff8f205d02fa9eb66cff806f29828b5ac29a",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        360
+      ],
+      "crop": [
+        370,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ozriel-evo-4.png",
+      "outputHash": "af93a6230121f3b2af53c9c7f113e847c886862298e95ef66c93330f6fbc54c2"
+    },
+    "ozriel-evo-5": {
+      "source": "public/assets/characters/ozriel-evo-5.png",
+      "sourceHash": "b9fb35e686bb6b5391d71907dc7c3ff2dc3c28c72322a22cd73f150fa56620e6",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        414,
+        357
+      ],
+      "crop": [
+        284,
+        240,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ozriel-evo-5.png",
+      "outputHash": "b3fdca2983f5900d766f492cd275025fe5faf4ea9a94b8a09bf54fc8e5f5ef3b"
+    },
+    "ozriel-evo-6": {
+      "source": "public/assets/characters/ozriel-evo-6.png",
+      "sourceHash": "aeb2060d26e522998ff2ce524861ab240dc2d0340351e1af8f59ee58d17db57c",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        463,
+        358
+      ],
+      "crop": [
+        333,
+        241,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/ozriel-evo-6.png",
+      "outputHash": "a456421d9b0bfaea90522bd831afd77b292c6cd0b653af89e416c6c6e1861735"
+    },
+    "razor": {
+      "source": "public/assets/characters/razor.png",
+      "sourceHash": "fc35234b9a6dee09393695d5e9fdfdfbfdb7aa0c2af7d9fedd71c54ec5409443",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        539,
+        358
+      ],
+      "crop": [
+        409,
+        241,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/razor.png",
+      "outputHash": "d56795fb69031a216afd8359b2ca4d8fad59625bd0adc73868d891251ef3bc7e"
+    },
+    "razor-evo-2": {
+      "source": "public/assets/characters/razor-evo-2.png",
+      "sourceHash": "41555b93d77ac38de1e23ecdf290fe1a4f795df72c59b94a15c546827d185577",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        471,
+        340
+      ],
+      "crop": [
+        341,
+        223,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/razor-evo-2.png",
+      "outputHash": "817fa3feb0ec7ae7426097b1f8befe21b763dbb3571dac2e8ac16d5056574f31"
+    },
+    "razor-evo-3": {
+      "source": "public/assets/characters/razor-evo-3.png",
+      "sourceHash": "845663f0e59a231dd65c6c2c9686aa3416807cd8397f1abe5956f0dd9f8ce2b1",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        443,
+        372
+      ],
+      "crop": [
+        313,
+        255,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/razor-evo-3.png",
+      "outputHash": "92ec49ddb23d028d0db0a1649a1b8930ddb56307778aa2355c7b8e7e171ad439"
+    },
+    "razor-evo-4": {
+      "source": "public/assets/characters/razor-evo-4.png",
+      "sourceHash": "f99513463db60d657bc1fd8e9bb8729c0ac30c60db62310d5a6104a1bb097b2a",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        380,
+        333
+      ],
+      "crop": [
+        250,
+        216,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/razor-evo-4.png",
+      "outputHash": "31a1a24a8c8f2e3d06c818d1918531c576280ed0b1eb9e01cec704f0d6f0c364"
+    },
+    "razor-evo-5": {
+      "source": "public/assets/characters/razor-evo-5.png",
+      "sourceHash": "a4bb6e20e763c0c84cda1f6510c5733a79d44d6f899e8a42496b161014ba2db4",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        455,
+        349
+      ],
+      "crop": [
+        325,
+        232,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/razor-evo-5.png",
+      "outputHash": "aaa1b2884080578228d870f2a8748a3599d95b7b7bbae419ba0f1a4a10c6f627"
+    },
+    "razor-evo-6": {
+      "source": "public/assets/characters/razor-evo-6.png",
+      "sourceHash": "37d017080c2c0f2819707c513c05b84d759159e3f58845ae2d5eedec6f1ea2ce",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        475,
+        404
+      ],
+      "crop": [
+        345,
+        287,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/razor-evo-6.png",
+      "outputHash": "cb6f5b1c25ec616691ebc835caf516ec2c4ac804d9137c72e36c877f0a847fb5"
+    },
+    "rosetta": {
+      "source": "public/assets/characters/rosetta.png",
+      "sourceHash": "d8ff7d16d061bbb01ac65a560bdfb2736252bf8772d3f2c348717586da54c7dc",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        427,
+        389
+      ],
+      "crop": [
+        297,
+        272,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/rosetta.png",
+      "outputHash": "85ef2551a3fd71511983c822019deb9c73ad3de3dc3e97a412051a64b70d4668"
+    },
+    "rosetta-evo-2": {
+      "source": "public/assets/characters/rosetta-evo-2.png",
+      "sourceHash": "3d81a22802dc46fcb26037df4ea9af1bdd2662dc0a069cf404ef45ddc55371a3",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        454,
+        378
+      ],
+      "crop": [
+        324,
+        261,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/rosetta-evo-2.png",
+      "outputHash": "d868c5d06be56567d43652562a87821cd3a1d58886d8c550352d9429e8a0345a"
+    },
+    "rosetta-evo-3": {
+      "source": "public/assets/characters/rosetta-evo-3.png",
+      "sourceHash": "32faced143e30ea7796ce709c3fde1c48dd9b3685e261c201f4174f8ba12fd24",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        369,
+        409
+      ],
+      "crop": [
+        239,
+        292,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/rosetta-evo-3.png",
+      "outputHash": "e4cb586ebd371bbd11e38af3678b57d9e2d9308fc7714d7838a12795860e3eee"
+    },
+    "rosetta-evo-4": {
+      "source": "public/assets/characters/rosetta-evo-4.png",
+      "sourceHash": "4cfce11a15a9e80fce9386cdca8c5065540df955f0cbe02f1861c68f8c8b871c",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        524,
+        393
+      ],
+      "crop": [
+        394,
+        276,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/rosetta-evo-4.png",
+      "outputHash": "9b1f594c00df084d6d88a4cdf692ea43f932aeb62de5ba65c03e02e51958a004"
+    },
+    "rosetta-evo-5": {
+      "source": "public/assets/characters/rosetta-evo-5.png",
+      "sourceHash": "7a55634293c3333e9b972b16ee0e20046a42e3970f831dc955aa783f7a81c0dc",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        468,
+        388
+      ],
+      "crop": [
+        338,
+        271,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/rosetta-evo-5.png",
+      "outputHash": "d38110b1f0e215e79373ce534af49d3890d0b82bd636cb4fae12d205b1e0e1fb"
+    },
+    "rosetta-evo-6": {
+      "source": "public/assets/characters/rosetta-evo-6.png",
+      "sourceHash": "4ece321929b4d36917fdaf2cde998dccbac2cc552bf6ba754767fddd66984ca4",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        520,
+        420
+      ],
+      "crop": [
+        390,
+        303,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/rosetta-evo-6.png",
+      "outputHash": "d0b4b893aafd6e1864d8bd73eed7f56af4b7b0a299aa77e90d74b86480ebd9e4"
+    },
+    "serapha": {
+      "source": "public/assets/characters/serapha.png",
+      "sourceHash": "252eae9e8a94a51aac78dceed03d378e91cd005027c990279fbf1e56d34a4b3e",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        495,
+        391
+      ],
+      "crop": [
+        365,
+        274,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/serapha.png",
+      "outputHash": "de5f341ef37830506fc73aeae93e3463c0d599855772fa60a0212bb69988c8d5"
+    },
+    "serapha-evo-2": {
+      "source": "public/assets/characters/serapha-evo-2.png",
+      "sourceHash": "f1396a5493f63f1dff1a5c0153ce3e37411a584a3f9a387bda6f519aec00e146",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        498,
+        370
+      ],
+      "crop": [
+        368,
+        253,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/serapha-evo-2.png",
+      "outputHash": "b1800a9eb56a0067475e17870e63e76234104d47f359f77d87ed7354fca5a2fb"
+    },
+    "serapha-evo-3": {
+      "source": "public/assets/characters/serapha-evo-3.png",
+      "sourceHash": "37bb6cb58f2f93530bba20d21358ec1304972c80eae7e716f5d3fef9d1b0d8b7",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        444,
+        391
+      ],
+      "crop": [
+        314,
+        274,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/serapha-evo-3.png",
+      "outputHash": "94bc2db91a0e2bee4982d923aacd15c8ede273173e0703a1b2c389f1eaac8cb9"
+    },
+    "serapha-evo-4": {
+      "source": "public/assets/characters/serapha-evo-4.png",
+      "sourceHash": "fba8bf206f28bd3bb7e7da3f7e9b2aa12a9c5765eb82430e0abbf1284213576e",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        492,
+        376
+      ],
+      "crop": [
+        362,
+        259,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/serapha-evo-4.png",
+      "outputHash": "fb82c456ed6736464bc83ae41b6b72b4a64cadb29a0720d7c285c3462820c019"
+    },
+    "serapha-evo-5": {
+      "source": "public/assets/characters/serapha-evo-5.png",
+      "sourceHash": "076d8323f9e42962621743db5b6f4b11156cb78748d47d72fdadb75446266491",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        529,
+        342
+      ],
+      "crop": [
+        399,
+        225,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/serapha-evo-5.png",
+      "outputHash": "f1435bd284d4b79e6fb942e4912e4028791b18cd780c7168a1f40c796b036225"
+    },
+    "serapha-evo-6": {
+      "source": "public/assets/characters/serapha-evo-6.png",
+      "sourceHash": "7162a9df57c674e25a5609abff4b451507187befcb6f1d8079b62b7e93408f79",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        487,
+        381
+      ],
+      "crop": [
+        357,
+        264,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/serapha-evo-6.png",
+      "outputHash": "aa008ed22590866676e4af4d561650e31cdcb094726e1b1a8103bab7bfd30179"
+    },
+    "seravelle": {
+      "source": "public/assets/characters/seravelle.png",
+      "sourceHash": "03b1d09f32e3fdaf0c479a8be99412a87cf143ef209479071f9f5f52f55ce34d",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        530,
+        390
+      ],
+      "crop": [
+        400,
+        273,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/seravelle.png",
+      "outputHash": "c8ad2ae1ea67ac9c91f97e12eafbc27367b2f31cfbe244802402dacca97cc45c"
+    },
+    "seravelle-evo-2": {
+      "source": "public/assets/characters/seravelle-evo-2.png",
+      "sourceHash": "f1d4235ab6ba9de32bdad2f81a412f95b7c6f447e5f994b9359d04e1a9f2e5c2",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        480,
+        380
+      ],
+      "crop": [
+        350,
+        263,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/seravelle-evo-2.png",
+      "outputHash": "09b6b6f1402a4dce2ce8977c5dec156f9059ab453f629029e4cc6d38f8997469"
+    },
+    "seravelle-evo-3": {
+      "source": "public/assets/characters/seravelle-evo-3.png",
+      "sourceHash": "c343a34b5a72e8226ee3bceb61993bad6085c54e4d8c88a92c910e367dabee0a",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        575,
+        400
+      ],
+      "crop": [
+        445,
+        283,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/seravelle-evo-3.png",
+      "outputHash": "35253ea3941cef1d5d66d3f387379ddcb0cad43bbe571e71dfa03264b1aebdd2"
+    },
+    "seravelle-evo-4": {
+      "source": "public/assets/characters/seravelle-evo-4.png",
+      "sourceHash": "233164e645e8f69b283b5babed833d3d400b51707f2be4a98d72fbf011813df9",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        448,
+        395
+      ],
+      "crop": [
+        318,
+        278,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/seravelle-evo-4.png",
+      "outputHash": "d8e30430b8fe998fa2f5765baa082498bb5002ac6c316f5da89a8236b7ceabbf"
+    },
+    "seravelle-evo-5": {
+      "source": "public/assets/characters/seravelle-evo-5.png",
+      "sourceHash": "3a2c9c27d880ae1e0fbe77f473bf33f715a409636c99e36c8ef8f49133154a3a",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        380
+      ],
+      "crop": [
+        370,
+        263,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/seravelle-evo-5.png",
+      "outputHash": "69864c78357d252c6813a4c34bc5967846c37fea5de73b4663e9a172eeeb70b4"
+    },
+    "seravelle-evo-6": {
+      "source": "public/assets/characters/seravelle-evo-6.png",
+      "sourceHash": "57f143c518051719ccecdead073af65b9a6860c19520c1022e18aefd313d1138",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        450,
+        380
+      ],
+      "crop": [
+        320,
+        263,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/seravelle-evo-6.png",
+      "outputHash": "750a2b4d168d970002acfa0b0db4b08d77313ceb300fef7929bffdfbc5c3b8c3"
+    },
+    "solenne": {
+      "source": "public/assets/characters/solenne.png",
+      "sourceHash": "8477678b4ab5ce2bb7fed6202290abbf768e07424a909dbf3da4a1fe5ef25332",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        400,
+        260
+      ],
+      "crop": [
+        270,
+        143,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/solenne.png",
+      "outputHash": "ab5cb55d52b0eb5e7d0f928643f6dffe200271ccd18236d7741b4b90d9f35744"
+    },
+    "solenne-evo-2": {
+      "source": "public/assets/characters/solenne-evo-2.png",
+      "sourceHash": "b795f51136f2953fe769fefb4f14b10ee48afa89298ccdd0b4c77021c08ae382",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        450,
+        320
+      ],
+      "crop": [
+        320,
+        203,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/solenne-evo-2.png",
+      "outputHash": "ed61d85a19e4f73b4f82f5fede4795b0f25803ba05e5a8982a15bdf36c9ba790"
+    },
+    "solenne-evo-3": {
+      "source": "public/assets/characters/solenne-evo-3.png",
+      "sourceHash": "715d13a75c8d6d4cd6ba1da5b26db924570a3b4967e7a242da15ce5ffaa154d4",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        516,
+        355
+      ],
+      "crop": [
+        386,
+        238,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/solenne-evo-3.png",
+      "outputHash": "19edfdeb6ad305e25cde52bb79138056f38c17cc394ef15fec7b5a198a7b9698"
+    },
+    "solenne-evo-4": {
+      "source": "public/assets/characters/solenne-evo-4.png",
+      "sourceHash": "8f6d3a7ea88dd6851c4a0a2125a667ad8c5ffb2f728f1c8bd84968a2e0c99d85",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        562,
+        340
+      ],
+      "crop": [
+        432,
+        223,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/solenne-evo-4.png",
+      "outputHash": "1b5404cf3f7fe78e3710748df8760a58a6dfff5ba675b9096a922da62b6d1288"
+    },
+    "solenne-evo-5": {
+      "source": "public/assets/characters/solenne-evo-5.png",
+      "sourceHash": "4996b1957896d98e50d5fbbed792343ba6bcfef99dbbf55db9ae0e823007b304",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        500,
+        380
+      ],
+      "crop": [
+        370,
+        263,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/solenne-evo-5.png",
+      "outputHash": "7110cafd870c7cc845550e785b7edafa4eeae24fd11a489633f67c127a5c9afb"
+    },
+    "solenne-evo-6": {
+      "source": "public/assets/characters/solenne-evo-6.png",
+      "sourceHash": "dd6b20a50f646bc72db42c4c7496095dc9948e26d9873c128fb688461676075c",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        480,
+        400
+      ],
+      "crop": [
+        350,
+        283,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/solenne-evo-6.png",
+      "outputHash": "b20ce57b8f126411cc861f4e2cccd8858533adcdc9b747cc64520552b40fa846"
+    },
+    "thornia": {
+      "source": "public/assets/characters/thornia.png",
+      "sourceHash": "303a03220438219ed980f006583cc759f7c02dce42420577657d29c00d3f9a36",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        680,
+        340
+      ],
+      "crop": [
+        550,
+        223,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/thornia.png",
+      "outputHash": "b304dd59366d038508b9611bcd12d805ba6a889dd7fbf830b606311332005f3c"
+    },
+    "thornia-evo-2": {
+      "source": "public/assets/characters/thornia-evo-2.png",
+      "sourceHash": "ab02f91914b2dcdc1b7378d9b165f21023d39bf2b44ddf20a28f071944c4346c",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        515,
+        388
+      ],
+      "crop": [
+        385,
+        271,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/thornia-evo-2.png",
+      "outputHash": "061d047cd1e20080721ab4497d7fdfc391383a0086c09da4c11447a6a227a2c9"
+    },
+    "thornia-evo-3": {
+      "source": "public/assets/characters/thornia-evo-3.png",
+      "sourceHash": "28412484ed5bfcd3cd30cfeae750391956e876d9a3c55c7c7f823f14e322a78a",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        555,
+        371
+      ],
+      "crop": [
+        425,
+        254,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/thornia-evo-3.png",
+      "outputHash": "e0acffdd5a98711de85b23884d35e4f3d7055a5eac527b4e1f405fdf7361bb8e"
+    },
+    "thornia-evo-4": {
+      "source": "public/assets/characters/thornia-evo-4.png",
+      "sourceHash": "8473d4b7f7a8f7826fbe5c99cbd001c89fb8b4d4fef3e0304b26dc7430a73f6b",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        512,
+        434
+      ],
+      "crop": [
+        382,
+        317,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/thornia-evo-4.png",
+      "outputHash": "a5d4bc64b37e36ca08b1700416d5e9b1a4bf8b1511ac4b2d3bdd55848f708873"
+    },
+    "thornia-evo-5": {
+      "source": "public/assets/characters/thornia-evo-5.png",
+      "sourceHash": "65cfc6a35e7e2e8141dd2dcadd71b18addc052504da8e6c256bdd89ea96bd3ee",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        495,
+        367
+      ],
+      "crop": [
+        365,
+        250,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/thornia-evo-5.png",
+      "outputHash": "b544e94d5d9b876a7c3c07809c4b99bf8ea1734f7ee9022e5045445dce673ea4"
+    },
+    "thornia-evo-6": {
+      "source": "public/assets/characters/thornia-evo-6.png",
+      "sourceHash": "f8357e7ec49ef08067ea7fe18bd944cb5d772403a5305e5453e19582d9417694",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        469,
+        425
+      ],
+      "crop": [
+        339,
+        308,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/thornia-evo-6.png",
+      "outputHash": "49aa70f03a7e41dc434aceae1019c93aba5c88dc103cffed2d97249e569bea65"
+    },
+    "vaelor": {
+      "source": "public/assets/characters/vaelor.png",
+      "sourceHash": "d8ddb1074e7c896bb0e288d9d8a1fb55663b789811c84b1f82f4c86f1c2f1b66",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        437,
+        350
+      ],
+      "crop": [
+        307,
+        233,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/vaelor.png",
+      "outputHash": "51bf6b3cebc7e73cbc6a5da9de6eff25937191d7b5f349e02c0f7c984e643aa2"
+    },
+    "vaelor-evo-2": {
+      "source": "public/assets/characters/vaelor-evo-2.png",
+      "sourceHash": "ff7c89d01a2f7e80de70410077dd0207a47045b6948fc70a2c60bb9c372c5c72",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        562,
+        324
+      ],
+      "crop": [
+        432,
+        207,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/vaelor-evo-2.png",
+      "outputHash": "0dc3b465b818c451c4bb721a1a12bd0a53f681c41dbd23d19c75a7861e80a3fb"
+    },
+    "vaelor-evo-3": {
+      "source": "public/assets/characters/vaelor-evo-3.png",
+      "sourceHash": "d443cb8b715d20aec7ae8dc4d42bd65901cd491b4c75f268ecbbf5e8ca49624a",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        459,
+        357
+      ],
+      "crop": [
+        329,
+        240,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/vaelor-evo-3.png",
+      "outputHash": "affe4179ec461ca75c5b5353d25920a2bab98a2bac1258186ffb404e35445bd9"
+    },
+    "vaelor-evo-4": {
+      "source": "public/assets/characters/vaelor-evo-4.png",
+      "sourceHash": "3f2512287aa428a83fb7a5f61002f83501fa545f286f207423adb9bd0c385d74",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        458,
+        325
+      ],
+      "crop": [
+        328,
+        208,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/vaelor-evo-4.png",
+      "outputHash": "58294ca89f7ad8de44241abd0f5d4dfa4c0634eb1fc9a8c57858e4a326148e7b"
+    },
+    "vaelor-evo-5": {
+      "source": "public/assets/characters/vaelor-evo-5.png",
+      "sourceHash": "6a7acb768e20219012c405dbd31f249929fdc41edbf569994bd1eb151129b307",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        476,
+        366
+      ],
+      "crop": [
+        346,
+        249,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/vaelor-evo-5.png",
+      "outputHash": "8503dbd4a273becbcb8b89107b0d7d65abb7af0efd050e40b0b98390a15a15f3"
+    },
+    "vaelor-evo-6": {
+      "source": "public/assets/characters/vaelor-evo-6.png",
+      "sourceHash": "59a769e9b1c7d2ef5c5b0db32e6cd240bb635367deaced57654c5eabc364f8c5",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        470,
+        360
+      ],
+      "crop": [
+        340,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/vaelor-evo-6.png",
+      "outputHash": "2e217bf227da1f2e85fe86955e0ac0f84a29faff7ea2deabfacb7acb9e3ba19f"
+    },
+    "varkhel": {
+      "source": "public/assets/characters/varkhel.png",
+      "sourceHash": "8d8d6bada42137380c78aa82a1f6691fe2a89dbac0127b5aa254da16aef87d67",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        558,
+        400
+      ],
+      "crop": [
+        428,
+        283,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/varkhel.png",
+      "outputHash": "a5cd8818c6fba90f89ab3c0ba3dea2402203e0fb035f4b49b9e896d280d6cf41"
+    },
+    "varkhel-evo-2": {
+      "source": "public/assets/characters/varkhel-evo-2.png",
+      "sourceHash": "bf0c4b506f03012aee0bba7b2e2b029f251b6aad8b6ed37b901f22864937aa50",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        636,
+        375
+      ],
+      "crop": [
+        506,
+        258,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/varkhel-evo-2.png",
+      "outputHash": "9f10c3801c32605e5833ca61b5d77e6fca515b9ee575cd20d4f28e0a3f50f65a"
+    },
+    "varkhel-evo-3": {
+      "source": "public/assets/characters/varkhel-evo-3.png",
+      "sourceHash": "9db5d759a571268598d8f91df74c52f58e69d1ca18414a9978385f9b18ca749d",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        480,
+        370
+      ],
+      "crop": [
+        350,
+        253,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/varkhel-evo-3.png",
+      "outputHash": "b86386bf96c9176b31488a9ef2a7dbca7b09fc8c62890b83dda3aad9a2457f44"
+    },
+    "varkhel-evo-4": {
+      "source": "public/assets/characters/varkhel-evo-4.png",
+      "sourceHash": "8c9f576f59b2b03d147bd21c7a9fbd3b3251c90add0e50fe92d436438f1ba8a0",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        550,
+        393
+      ],
+      "crop": [
+        420,
+        276,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/varkhel-evo-4.png",
+      "outputHash": "bf032128f231accdd8c096958e85ecb7635df025b2f29d8a03b276f046964c29"
+    },
+    "varkhel-evo-5": {
+      "source": "public/assets/characters/varkhel-evo-5.png",
+      "sourceHash": "fc83029577482215ddb11f40f6bf48c92c87f38088fe9a622e60464d74681300",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        468,
+        384
+      ],
+      "crop": [
+        338,
+        267,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/varkhel-evo-5.png",
+      "outputHash": "a71b2fd54db9fe21499bac884e2df29ef42cfd0930b6d7f98141435671b483af"
+    },
+    "varkhel-evo-6": {
+      "source": "public/assets/characters/varkhel-evo-6.png",
+      "sourceHash": "28f0dd89a996d39e2f370ccb10a02b77ec200f011ab273d808400eca9ed4c725",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        470,
+        400
+      ],
+      "crop": [
+        340,
+        283,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/varkhel-evo-6.png",
+      "outputHash": "ae24775850092d92e44e7d94bbaf3b369f4b6ad1cd38c92a06220f393daa79c3"
+    },
+    "velmira": {
+      "source": "public/assets/characters/velmira.png",
+      "sourceHash": "6af7658174430f25bb5864cd75184b0c422955c63d65d8833ee67d43303ab1e5",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        479,
+        371
+      ],
+      "crop": [
+        349,
+        254,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/velmira.png",
+      "outputHash": "3e306f80f3b0d89b1682a4bcd8f2a874a4ed3c9a5cde33cd951cddf40c3b33f9"
+    },
+    "velmira-evo-2": {
+      "source": "public/assets/characters/velmira-evo-2.png",
+      "sourceHash": "54b89baef441fb88b867f84140acdd04aa2bcc0d0d38aa1ed7d2a03eaa0f97c0",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        446,
+        392
+      ],
+      "crop": [
+        316,
+        275,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/velmira-evo-2.png",
+      "outputHash": "98e02513afabf0449afa82a1eb56457958aaa414b0ba28d7c29d8f53c9d9916e"
+    },
+    "velmira-evo-3": {
+      "source": "public/assets/characters/velmira-evo-3.png",
+      "sourceHash": "f0dab9bdb5e385bb9c980e8168399921c433d26d14e804db44d740debf340459",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        470,
+        360
+      ],
+      "crop": [
+        340,
+        243,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/velmira-evo-3.png",
+      "outputHash": "cf66aca3bd081988e95a99e3e2f0f0cd507caadfcc7c4fbb7551a8de98d814ff"
+    },
+    "velmira-evo-4": {
+      "source": "public/assets/characters/velmira-evo-4.png",
+      "sourceHash": "afd1cbd5e4fe82c78ad949c6efc4309ce47898f05cd7b003cf0b3d2fafc59f21",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        490,
+        357
+      ],
+      "crop": [
+        360,
+        240,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/velmira-evo-4.png",
+      "outputHash": "a98e5764418d37207f696415f1afa7f4a7d35df084cbbf8e1def498369905481"
+    },
+    "velmira-evo-5": {
+      "source": "public/assets/characters/velmira-evo-5.png",
+      "sourceHash": "d4bd4a528fb21bed93be6662a6ebc628790989a88f58e65ca65bb16748637afb",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        560,
+        350
+      ],
+      "crop": [
+        430,
+        233,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/velmira-evo-5.png",
+      "outputHash": "b121215f5dda2d42d8f250837d1eaec282bbe34fa0a050987bae40f05a0be84e"
+    },
+    "velmira-evo-6": {
+      "source": "public/assets/characters/velmira-evo-6.png",
+      "sourceHash": "aeca68533b5f79ae51f603e7eab4647f17ac0072b79247ca2523df4c27225023",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        480,
+        310
+      ],
+      "crop": [
+        350,
+        193,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/velmira-evo-6.png",
+      "outputHash": "fc2513896e8362f4f6feb9a3dc128237d5af73468a6763a737aae363cc368218"
+    },
+    "vespera": {
+      "source": "public/assets/characters/vespera.png",
+      "sourceHash": "d62de6b0fe3ef5b4dd6e1a54e54b96ac1854d1af9d1f97de6e43fb224e3f69d3",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        436,
+        406
+      ],
+      "crop": [
+        306,
+        289,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/vespera.png",
+      "outputHash": "c31bb0093a2e157f94b45ffc0b4314042f04ad8dd0c1a5f26a4f42b19feeae04"
+    },
+    "vespera-evo-2": {
+      "source": "public/assets/characters/vespera-evo-2.png",
+      "sourceHash": "f665ba310ce70f2fa97362f009888ffd32aa281651f2ce4781343f6cec7f484f",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        530,
+        420
+      ],
+      "crop": [
+        400,
+        303,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/vespera-evo-2.png",
+      "outputHash": "f68af330934eedf09fe1c8009d558b41b93c633a2cc40c3c50785cddad85c58b"
+    },
+    "vespera-evo-3": {
+      "source": "public/assets/characters/vespera-evo-3.png",
+      "sourceHash": "3db73eda42195c71728784e16778db8e8f0ca12b7450de8d0580e55e2e15009b",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        480,
+        390
+      ],
+      "crop": [
+        350,
+        273,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/vespera-evo-3.png",
+      "outputHash": "3aca1d825d5c551f5de354bf1eb51894fe02423acaf7f780bc331d89d4be837b"
+    },
+    "vespera-evo-4": {
+      "source": "public/assets/characters/vespera-evo-4.png",
+      "sourceHash": "67b6ce72dbc8a43b4c150e8f24ab896b2eb7c4b588c4849ad67f14d5f8cf8408",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        551,
+        407
+      ],
+      "crop": [
+        421,
+        290,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/vespera-evo-4.png",
+      "outputHash": "d314c5a3b736593e2a4caf9a712f6fbdc72b20757ed1ee1d3abb3890d6b6704d"
+    },
+    "vespera-evo-5": {
+      "source": "public/assets/characters/vespera-evo-5.png",
+      "sourceHash": "3b14b4aad9f9d6cef67060e2966b3b309962a2290b2484edbc9d0a42949fc86c",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        583,
+        402
+      ],
+      "crop": [
+        453,
+        285,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/vespera-evo-5.png",
+      "outputHash": "f93cd515db0102d6d807cb92abdd4ab47f7b9b6b188459781a4fd344f600f236"
+    },
+    "vespera-evo-6": {
+      "source": "public/assets/characters/vespera-evo-6.png",
+      "sourceHash": "45be7e173b9bd76dbc38738769b57e94b578c1977b576b31b6c36abd5ef33608",
+      "sourceSize": [
+        960,
+        960
+      ],
+      "eye": [
+        496,
+        357
+      ],
+      "crop": [
+        366,
+        240,
+        260,
+        260
+      ],
+      "output": "public/assets/character-faces/vespera-evo-6.png",
+      "outputHash": "8fd617d11c365635c58e8e2e927862721b5bd43fe46530051a8cbd8cda7ac3d3"
     }
   }
 }

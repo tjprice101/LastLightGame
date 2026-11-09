@@ -210,6 +210,50 @@ let playerInfoOpen = false;
 let onlineRevision = 0;
 let onlinePending: { operation: GameOperation; requestId: string; revision: number } | null = null;
 let onlineBusy = false;
+const radiantStudyUiEnabled = import.meta.env.VITE_RADIANT_STUDY_UI === 'true';
+type RadiantClientController = import('./presentation/radiant-client').RadiantClient;
+let radiantClient: RadiantClientController | null = null;
+let radiantClientHost: HTMLElement | null = null;
+
+function disposeRadiantClient(): void {
+  radiantClient?.dispose();
+  radiantClient = null;
+  radiantClientHost = null;
+}
+
+async function leaveRadiantBeforeNavigation(): Promise<boolean> {
+  if (menuPage !== 'radiant' || !radiantClient) return true;
+  if (!await radiantClient.beforeLeave()) return false;
+  disposeRadiantClient();
+  return true;
+}
+
+function mountRadiantClient(host: HTMLElement): void {
+  void import('./presentation/radiant-client').then(({ RadiantClient }) => {
+    if (!host.isConnected || menuPage !== 'radiant' || playMode !== 'online' || !radiantStudyUiEnabled) return;
+    if (radiantClient && radiantClientHost === host) return;
+    disposeRadiantClient();
+    radiantClientHost = host;
+    radiantClient = new RadiantClient(host, () => {
+      const drawer = app.querySelector<HTMLDialogElement>('#settings-drawer');
+      if (!drawer) throw new Error('Radiant Settings drawer is missing.');
+      drawer.showModal();
+    }, () => eventAccess().now, area => {
+      void transitionActivity(async () => {
+        if (!await leaveRadiantBeforeNavigation()) return;
+        visitMenu('team');
+        characterCategory = area;
+        renderMenu();
+      }).catch(error => {
+        console.error('Radiant navigation failed', error);
+        showError(errorMessage(error));
+      });
+    });
+  }).catch(error => {
+    console.error('Could not load authenticated Radiant UI', error);
+    showError(`Radiant preview could not open. ${errorMessage(error)}`);
+  });
+}
 
 function openOnlineAccount(onPlay?: () => Promise<void>): void {
   if (gameStorage.active) {
@@ -407,7 +451,8 @@ function menuSnapshot(): MenuSnapshot {
   };
 }
 
-const updateBlocked = (): boolean => (journey.screen === 'menu' && menuPage === 'battle') || Boolean(app.querySelector('#battle-root'));
+const updateBlocked = (): boolean => (journey.screen === 'menu' && (menuPage === 'battle' || menuPage === 'radiant')) ||
+  Boolean(app.querySelector('#battle-root'));
 function checkUpdates(force = false): void {
   void checkForUpdate({ blocked: updateBlocked, force });
 }
@@ -415,6 +460,8 @@ window.setInterval(() => checkUpdates(), 5 * 60_000);
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkUpdates(); });
 
 function visitMenu(page: MenuPage): void {
+  if (page === 'radiant' && (playMode !== 'online' || !radiantStudyUiEnabled))
+    throw new Error('Radiant preview requires the enabled study UI and an authenticated online account.');
   checkUpdates();
   const destination = sanctuaryDestination(page);
   viewedFriend = null;
@@ -429,6 +476,7 @@ function visitMenu(page: MenuPage): void {
 async function backMenu(): Promise<void> {
   if (activityTransitionPending()) return;
   await transitionActivity(async () => {
+    if (!await leaveRadiantBeforeNavigation()) return;
     const fallback: MenuSnapshot = {
       ...menuSnapshot(), page: menuPage === 'battle' ? 'gameplay' : 'home', hash: '', gallery: undefined,
       activities: [], difficulties: [], calamityTiers: [], controls: [], panels: [], scroll: 0,
@@ -563,7 +611,7 @@ function frame(body: string, battle = false, sanctuary = false): void {
   document.body.classList.toggle('in-battle', battle);
   const backgroundScreen: AmbientScreen = battle ? 'battle' : !sanctuary
     ? journey.screen === 'selection' ? 'selection' : 'title'
-    : menuPage === 'conduit-store' || menuPage === 'conduit-upgrade' ? 'stores' : menuPage === 'archives' || menuPage === 'glossary' ? 'collections' : menuPage === 'special-banner-archive' ? 'summon' : menuPage === 'profile' ? 'home' : menuPage === 'team' ? characterCategory === 'squad' ? 'squad' : 'character' : menuPage;
+    : menuPage === 'radiant' ? 'battle' : menuPage === 'conduit-store' || menuPage === 'conduit-upgrade' ? 'stores' : menuPage === 'archives' || menuPage === 'glossary' ? 'collections' : menuPage === 'special-banner-archive' ? 'summon' : menuPage === 'profile' ? 'home' : menuPage === 'team' ? characterCategory === 'squad' ? 'squad' : 'character' : menuPage;
   app.innerHTML = battle ? `<div class="battle-screen">${body}${ambientBackground(backgroundScreen)}<p id="status" class="status" role="alert"></p></div>` : `<div class="shell ${sanctuary ? 'sanctuary-shell' : ''}">
     ${ambientBackground(backgroundScreen)}
     ${sanctuary ? '' : '<header class="masthead"><span class="brand-mark">L · L</span><span>LAST LIGHT</span><span class="build-label">PRELUDE &middot; 0.1</span></header>'}
@@ -800,7 +848,8 @@ function renderMenu(firstArrival = false): void {
   const homeLeader = account && menuPage === 'home' ? account.squad?.[0] ?? starter.id : starter.id;
   const sanctuary = `${sanctuaryHeader(menuPage, fractalis, account?.lycalis ?? null)}<section class="menu-screen sanctuary-content" data-menu-screen="${menuPage}">
     ${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
-    ${menuPage !== 'home' ? menuContent(menuPage) : referenceHome(isStarterId(homeLeader) ? getStarter(homeLeader) : starter, account)}
+    ${menuPage !== 'home' ? menuContent(menuPage) : referenceHome(isStarterId(homeLeader) ? getStarter(homeLeader) : starter, account,
+      playMode === 'online' && radiantStudyUiEnabled)}
   </section>`;
   frame(`${menuPage === 'battle' ? `<header class="battle-toolbar">
     <button class="battle-chrome-button" data-menu-back>${uiIcon('back')}<span>Leave</span></button>
@@ -815,6 +864,11 @@ function renderMenu(firstArrival = false): void {
     <p id="settings-error" class="status" role="alert"></p>
   </dialog>
   ${menuPage === 'battle' ? '' : '<dialog id="max-level-dialog" class="information-modal" aria-labelledby="max-level-heading"><header class="drawer-heading"><button class="drawer-close" type="button" data-close-information aria-label="Close Max Level">&times;</button></header><div data-max-level-content></div><p data-max-level-error role="alert"></p></dialog>'}`, menuPage === 'battle', menuPage !== 'battle');
+  if (menuPage === 'radiant') {
+    const host = app.querySelector<HTMLElement>('#radiant-client-host');
+    if (!host) throw new Error('Radiant client host is missing.');
+    mountRadiantClient(host);
+  }
   pendingMaxLevel = null;
   app.querySelector(`[data-character-category="${characterCategory}"]`)?.setAttribute('aria-current', 'page');
   applyConduitSearch(app, conduitSearch);
@@ -991,6 +1045,9 @@ function renderMenu(firstArrival = false): void {
         if (!isMenuPage(page)) throw new Error('Unknown menu page.');
         if (page === menuPage) return;
         await transitionActivity(async () => {
+          if (!await leaveRadiantBeforeNavigation()) return;
+          if (page === 'radiant' && (playMode !== 'online' || !radiantStudyUiEnabled))
+            throw new Error('Radiant preview requires the enabled study UI and an authenticated online account.');
           if (page === 'profile' && playMode === 'online') await performOnline({ kind: 'read' });
           if (page === 'stores' && button.hasAttribute('data-market-cosmetics')) storeTab = 'cosmetics';
           if (page === 'battle' && menuPage !== 'battle') {
@@ -1181,11 +1238,13 @@ function renderMenu(firstArrival = false): void {
     if (activityTransitionPending() || app.querySelector('#battle-root')?.getAttribute('aria-busy') === 'true') return;
     battleView?.destroy();
     battleView = null;
+    if (menuPage === 'radiant') radiantClient?.settingsOpened();
     drawer.showModal();
     if (settingsError || hotkeyError) showError([settingsError, hotkeyError].filter(Boolean).join(' '));
   });
   const closeSettings = (): void => {
     drawer.close();
+    if (menuPage === 'radiant') radiantClient?.settingsClosed();
     if (menuPage === 'battle') renderMenu();
     app.querySelector<HTMLButtonElement>('#open-settings')?.focus();
   };
@@ -1529,6 +1588,11 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
   if (!journey.profile) throw new Error('A saved Element-Bearer is required.');
   const starter = getStarter(journey.profile.starterId);
   if (page === 'battle') return '<div id="battle-root"></div>';
+  if (page === 'radiant') {
+    if (playMode !== 'online' || !radiantStudyUiEnabled)
+      return '<section class="radiant-client-message"><h2>Radiant is unavailable</h2><p role="alert">This authenticated study preview is disabled.</p></section>';
+    return '<div id="radiant-client-host" aria-live="polite"></div>';
+  }
   if ((page === 'character' || page === 'team' || page === 'squad') && (teamView === 'capture' || teamView === 'capture-conduits')
       && !account?.capturedCharacters?.some(copy => copy.instanceId === selectedCapture)) {
     // A sold or otherwise removed copy (including one restored from Back history) returns to the list.

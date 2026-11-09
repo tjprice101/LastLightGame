@@ -66,6 +66,8 @@ export interface RadiantCombatState {
   nextShieldId: number;
   currencyEarned: number;
 }
+export type RadiantTimedStatus = 'burn' | 'seed' | 'renewal' | 'reduction' | 'weaken' | 'attack-buff' |
+  'exposure' | 'weaken-removed';
 export type RadiantCombatAction =
   | { type: 'normal'; bearerId: string; targetId: string }
   | { type: 'defense'; bearerId: string }
@@ -85,9 +87,9 @@ export type RadiantCombatEvent =
   | { type: 'charge'; bearerId: string; personal: number; sharedUnits: number; bonusRolls: number; bonusOffered: number;
       gearSource?: Extract<RadiantSource, { kind: 'gear' }> }
   | { type: 'round'; round: number }
+  | { type: 'guard'; targetId: string; guarding: boolean }
   | { type: 'status'; targetId: string;
-      status: 'burn' | 'seed' | 'renewal' | 'reduction' | 'weaken' | 'attack-buff' | 'exposure' | 'weaken-removed';
-      source: RadiantSource; magnitude: number; remaining: number };
+      status: RadiantTimedStatus; source: RadiantSource; magnitude: number; remaining: number; clockOnly?: true };
 
 function safe(value: number, name: string, minimum = 0): void {
   if (!Number.isSafeInteger(value) || value < minimum) throw new Error(`Invalid radiant ${name}.`);
@@ -417,7 +419,7 @@ function nextAlly(state: RadiantCombatState, actor: RadiantBearer): RadiantBeare
 }
 function applyStatus(
   events: RadiantCombatEvent[], targetId: string, effects: RadiantTimedEffect[],
-  source: RadiantSource, status: Extract<RadiantCombatEvent, { type: 'status' }>['status'],
+  source: RadiantSource, status: RadiantTimedStatus,
   magnitude: number, remaining: number,
 ): void {
   refresh(effects, source, magnitude, remaining);
@@ -430,7 +432,7 @@ function cleanse(
   const strongest = target.weaken.reduce((a, b) => a.magnitude >= b.magnitude ? a : b);
   target.weaken.splice(target.weaken.indexOf(strongest), 1);
   events.push({ type: 'status', targetId: target.loadout.id, status: 'weaken-removed',
-    source: strongest.source, magnitude: strongest.magnitude, remaining: strongest.remaining });
+    source: strongest.source, magnitude: strongest.magnitude, remaining: 0 });
   const master = actor.loadout.masterId === null ? null : radiantMasters[actor.loadout.masterId];
   if (master?.rule === 'standard' && master.enhancement === 'passive')
     heal(state, events, target, { kind: 'master', bearerId: actor.loadout.id }, .15 * recovery);
@@ -563,8 +565,11 @@ function flare(
     if (actor.loadout.starter === 'ember' && tier === 'eternal') {
       const burns = target.burns.filter(effect => 'bearerId' in effect.source && effect.source.bearerId === actor.loadout.id);
       target.burns = target.burns.filter(effect => !burns.includes(effect));
-      for (const burn of burns) if (target.hp > 0)
+      for (const burn of burns) if (target.hp > 0) {
+        events.push({ type: 'status', targetId: target.id, status: 'burn', source: burn.source,
+          magnitude: burn.magnitude, remaining: 0 });
         packet(state, events, target, burn.source, 'periodic', Math.max(1, rounded(burn.magnitude) * burn.remaining));
+      }
     }
     if (target.hp === 0) continue;
     const impact = packet(state, events, target, source, 'direct', radiantDirectDamage(stats.attack,
@@ -612,7 +617,7 @@ function flare(
         const strongest = ally.weaken.reduce((a, b) => a.magnitude >= b.magnitude ? a : b);
         ally.weaken.splice(ally.weaken.indexOf(strongest), 1);
         events.push({ type: 'status', targetId: ally.loadout.id, status: 'weaken-removed',
-          source: strongest.source, magnitude: strongest.magnitude, remaining: strongest.remaining });
+          source: strongest.source, magnitude: strongest.magnitude, remaining: 0 });
       }
     }
     if (offer.renewal > 0) {
@@ -743,25 +748,49 @@ function finishRound(state: RadiantCombatState, events: RadiantCombatEvent[]): v
     for (const burn of target.burns) if (target.hp > 0) {
       packet(state, events, target, burn.source, 'periodic', Math.max(1, rounded(burn.magnitude)));
       burn.remaining--;
+      if (target.hp > 0) events.push({ type: 'status', targetId: target.id, status: 'burn', source: burn.source,
+        magnitude: burn.magnitude, remaining: burn.remaining, clockOnly: true });
     }
     target.burns = target.burns.filter(burn => burn.remaining > 0);
   }
   for (const target of state.enemies) {
-    for (const effect of [...target.weaken, ...target.exposures]) effect.remaining--;
+    for (const [status, effects] of [['weaken', target.weaken], ['exposure', target.exposures]] as const) {
+      for (const effect of effects) {
+        effect.remaining--;
+        if (target.hp > 0) events.push({ type: 'status', targetId: target.id, status, source: effect.source,
+          magnitude: effect.magnitude, remaining: effect.remaining, clockOnly: true });
+      }
+    }
     target.weaken = target.weaken.filter(effect => effect.remaining > 0);
     target.exposures = target.exposures.filter(effect => effect.remaining > 0);
   }
   if (state.phase === 'victory' || state.phase === 'defeat') return;
   for (const target of state.bearers) {
-    target.guarding = false;
-    for (const effects of [target.weaken, target.reductions]) effects.forEach(effect => { effect.remaining--; });
+    if (target.guarding) {
+      target.guarding = false;
+      events.push({ type: 'guard', targetId: target.loadout.id, guarding: false });
+    }
+    for (const [status, effects] of [['weaken', target.weaken], ['reduction', target.reductions]] as const) {
+      for (const effect of effects) {
+        effect.remaining--;
+        if (target.hp > 0) events.push({ type: 'status', targetId: target.loadout.id, status, source: effect.source,
+          magnitude: effect.magnitude, remaining: effect.remaining, clockOnly: true });
+      }
+    }
     target.weaken = target.weaken.filter(effect => effect.remaining > 0);
     target.reductions = target.reductions.filter(effect => effect.remaining > 0);
-    target.attackBuffs.forEach(effect => { effect.remaining--; });
+    for (const effect of target.attackBuffs) {
+      effect.remaining--;
+      if (target.hp > 0) events.push({ type: 'status', targetId: target.loadout.id, status: 'attack-buff',
+        source: effect.source, magnitude: effect.magnitude, remaining: effect.remaining, clockOnly: true });
+    }
     target.attackBuffs = target.attackBuffs.filter(effect => effect.remaining > 0);
     for (const effects of [target.seeds, target.renewal]) for (const effect of effects) {
       heal(state, events, target, effect.source, effect.magnitude);
       effect.remaining--;
+      if (target.hp > 0) events.push({ type: 'status', targetId: target.loadout.id,
+        status: effects === target.seeds ? 'seed' : 'renewal', source: effect.source,
+        magnitude: effect.magnitude, remaining: effect.remaining, clockOnly: true });
     }
     target.seeds = target.seeds.filter(effect => effect.remaining > 0);
     target.renewal = target.renewal.filter(effect => effect.remaining > 0);
@@ -928,6 +957,7 @@ export function applyRadiantCombatAction(
     if (action.type === 'normal') hits = normal(state, events, actor, action.targetId);
     else if (action.type === 'defense') {
       actor.guarding = true;
+      events.push({ type: 'guard', targetId: actor.loadout.id, guarding: true });
       defensePassive(state, events, actor);
     }
     else {

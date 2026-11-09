@@ -17,7 +17,7 @@ if (!host) throw new Error('Radiant development preview host is missing.');
 host.innerHTML = `<header class="radiant-preview-heading"><h1>Radiant battle · development preview</h1>
   <p>In-memory combat only. No sign-in, player account changes or network saves.
   This conditional six-member Lv.105 squad is a test fixture, not a free or average account.
-  Starter face crops are installed; the three Rose face portraits are honestly marked pending.
+  All 192 released face crops use reviewed source-bound artwork; unreleased faces keep a neutral pending tile.
   Canvas emission/bloom is a choreography integration pilot, not final unique Radiant art or GPU performance approval.</p>
   <label>Battle speed <select data-preview-speed><option>1</option><option>2</option><option>3</option></select></label>
   <label><input type="checkbox" data-preview-motion> Reduce motion</label>

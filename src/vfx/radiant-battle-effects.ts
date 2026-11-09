@@ -136,7 +136,8 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
       { type: 'damage' | 'heal' | 'shield' | 'status' }> =>
       event.type === 'damage' && event.healthLoss + event.absorbed > 0 ||
       event.type === 'heal' && event.effective > 0 ||
-      event.type === 'shield' && event.amount > 0 || event.type === 'status');
+      event.type === 'shield' && event.amount > 0 ||
+      event.type === 'status' && !event.clockOnly && event.remaining > 0 && event.status !== 'weaken-removed');
     if (!packets.length) return;
     if (new Set(packets.map(packet => packet.targetId)).size > 6)
       throw new Error('Radiant visual impact exceeds the six-target frame bound.');

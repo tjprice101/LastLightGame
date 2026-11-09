@@ -237,7 +237,7 @@ function profileSidePanels(account: Account, profile: ProfileView, readOnly: boo
       const id = squad[index];
       if (!id) return readOnly ? '<div class="ref-member-row ref-empty-row">Empty slot</div>' : '<button type="button" class="ref-member-row ref-empty-row" data-team-view="formation">+ Add a member</button>';
       const member = ownedCompanion(account, id);
-      const body = `<span class="ref-thumb">${member.art}</span><span><b>${member.name}</b><small>${index ? 'Member' : 'Leader'} · Lv.${member.level}</small></span>`;
+      const body = `<span class="ref-thumb">${member.compactArt}</span><span><b>${member.name}</b><small>${index ? 'Member' : 'Leader'} · Lv.${member.level}</small></span>`;
       if (readOnly) return `<div class="ref-member-line"><div class="ref-member-row">${body}</div></div>`;
       return `<div class="ref-member-line"><button type="button" class="ref-member-row" ${isStarterId(id) ? `data-team-detail="${id}"` : `data-team-capture-detail="${id}"`}>${body}</button>${index ? `<button type="button" class="ref-chip" data-make-leader="${id}" aria-label="Make ${member.name} the leader">Lead</button>` : ''}</div>`;
     }).join('')}</section><section class="ref-panel profile-recent"><h2>Recent activity</h2>${profile.recentActivity?.length ? `<ul>${profile.recentActivity.slice(0, 5).map(entry => `<li><b>${escape(entry.message)}</b><small>${escape(entry.detail)}</small><time datetime="${escape(entry.at)}">${escape(new Date(entry.at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))}</time></li>`).join('')}</ul>` : `<p>${readOnly ? 'No recent activity yet.' : 'New activity will appear here as you play. Earlier history is not reconstructed.'}</p>`}</section>`;

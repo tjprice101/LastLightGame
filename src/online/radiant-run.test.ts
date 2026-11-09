@@ -7,6 +7,7 @@ import { adaptRadiantPressureEncounter } from '../game/radiant-pressure-encounte
 import { pressureRadiantCalibration } from '../content/radiant-enemy-calibration';
 import { releasedRadiantIds } from '../content/radiant-combat';
 import { executeRadiantRun, radiantAccountLoadouts, radiantRpcRepository, resolveRadiantRun,
+  validateRadiantRunResponse, validateRadiantRunSnapshot,
   type RadiantGameRpc, type RadiantRunAuthority, type RadiantRunOperation, type RadiantRunRequest,
   type RadiantRunResponse, type RadiantRunSnapshot } from './radiant-run';
 
@@ -384,6 +385,48 @@ describe('authority-ready frozen run and exact partial Prismatica', () => {
     expect(() => resolveRadiantRun(value, { ...req, operation: { kind: 'action',
       action: { ...(req.operation as Extract<RadiantRunOperation, { kind: 'action' }>).action, hp: 0 } } } as never,
     authority())).toThrow();
+  });
+});
+
+describe('bounded study journal payload', () => {
+  it('round-trips 5000 typed events without truncation and reports local payload cost', () => {
+    const before = entered(6);
+    const operation = normal(before);
+    const resolved = resolveRadiantRun(before, request(before, operation), authority());
+    const run = structuredClone(resolved.state.radiantStudy!);
+    const exemplar = run.journal.events.find(event => event.type === 'damage');
+    expect(exemplar).toBeDefined();
+    const events = [...run.journal.events];
+    while (events.length < 5000) events.push(structuredClone(exemplar!));
+    run.journal.events = events;
+    const state = structuredClone(resolved.state);
+    state.radiantStudy = run;
+    const response = { ...structuredClone(resolved.response), run,
+      events: events.slice(-resolved.response.events.length) };
+    const started = performance.now();
+    const payload = JSON.stringify({ state, response });
+    const bytes = new TextEncoder().encode(payload).byteLength;
+    const parsed = JSON.parse(payload);
+    const checkedState = validateRadiantRunSnapshot({
+      revision: resolved.response.revision, state: parsed.state,
+    });
+    const checkedResponse = validateRadiantRunResponse(parsed.response);
+    const roundTripElapsed = performance.now() - started;
+    expect(checkedState.state.radiantStudy?.journal.events).toHaveLength(5000);
+    expect(checkedResponse.run.journal.events).toHaveLength(5000);
+    const actionStarted = performance.now();
+    const combat = checkedState.state.radiantStudy!.state;
+    const bearer = combat.bearers.find(unit => unit.hp > 0 && !combat.acted.includes(unit.loadout.id));
+    const target = combat.enemies.find(unit => unit.hp > 0);
+    expect(bearer).toBeDefined();
+    expect(target).toBeDefined();
+    const next = resolveRadiantRun(checkedState, request(checkedState, { kind: 'action', action: {
+      type: 'normal', bearerId: bearer!.loadout.id, targetId: target!.id,
+    } }), authority());
+    const actionElapsed = performance.now() - actionStarted;
+    expect(next.state.radiantStudy?.journal.events.length).toBeGreaterThan(5000);
+    console.info(`Synthetic Radiant journal: 5000 events, ${bytes} aggregate+response bytes, ` +
+      `${roundTripElapsed.toFixed(1)} ms serialize/parse/validate, ${actionElapsed.toFixed(1)} ms next-action resolve.`);
   });
 });
 

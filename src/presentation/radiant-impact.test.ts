@@ -3,6 +3,7 @@ import { createRadiantCombat, applyRadiantCombatAction, type RadiantCombatState 
 import { radiantFlares, releasedRadiantIds, type RadiantBearerId, type RadiantLoadout } from '../content/radiant-combat';
 import { sharedChargeThreshold } from '../game/radiant-gauge';
 import { radiantImpactFrames, radiantReadout } from './radiant-impact';
+import { radiantStatusSnapshot } from './radiant-status';
 
 function loadout(starter: RadiantBearerId): RadiantLoadout {
   return { id: starter, starter, level: 105, form: 6, weaponRank: 0, masterId: null, ascension: {} };
@@ -86,5 +87,55 @@ describe('saved ordered Radiant impact ledger', () => {
     if (!damage || damage.type !== 'damage') throw new Error('Expected a damage packet.');
     damage.shields[0].source = { kind: 'normal', bearerId: 'ember' };
     expect(() => radiantImpactFrames(before, result.state, dishonest)).toThrow('absorption');
+  });
+  it('replays guard activation, each timed clock decrement, and expirations at their saved boundary', () => {
+    const guarded = battle(['ember']);
+    const defense = applyRadiantCombatAction(guarded, { type: 'defense', bearerId: 'ember' });
+    const defenseFrames = radiantImpactFrames(guarded, defense.state, defense.events);
+    expect(defenseFrames.some(frame => frame.statuses.ember.some(row => row.kind === 'guard'))).toBe(true);
+
+    const before = battle(['ember']);
+    before.phase = 'enemy'; before.acted = ['ember']; before.enemyActed = before.enemies.map(enemy => enemy.id);
+    const enemy = before.enemies[0], ally = before.bearers[0];
+    enemy.burns = [{ source: { kind: 'flare', bearerId: 'ember' }, magnitude: 25, remaining: 1 }];
+    enemy.weaken = [{ source: { kind: 'enemy', enemyId: enemy.id }, magnitude: .1, remaining: 1 }];
+    enemy.exposures = [{ source: { kind: 'flare', bearerId: 'ember' }, magnitude: .2, remaining: 2 }];
+    ally.hp -= 100; ally.guarding = true;
+    ally.weaken = [{ source: { kind: 'enemy', enemyId: enemy.id }, magnitude: .1, remaining: 2 }];
+    ally.reductions = [{ source: { kind: 'flare', bearerId: 'ember' }, magnitude: .2, remaining: 1 }];
+    ally.attackBuffs = [{ source: { kind: 'master', bearerId: 'ember' }, magnitude: .1, remaining: 2 }];
+    ally.seeds = [{ source: { kind: 'passive', bearerId: 'ember' }, magnitude: 10, remaining: 1 }];
+    ally.renewal = [{ source: { kind: 'flare', bearerId: 'ember' }, magnitude: 10, remaining: 2 }];
+    const round = applyRadiantCombatAction(before, { type: 'finish-enemy-phase' });
+    const frames = radiantImpactFrames(before, round.state, round.events);
+    const settled = radiantStatusSnapshot(round.state);
+    for (const [id, rows] of Object.entries(settled)) {
+      expect(frames.at(-1)!.statuses[id]).toHaveLength(rows.length);
+      expect(frames.at(-1)!.statuses[id]).toEqual(expect.arrayContaining(rows));
+    }
+    expect(frames.some(frame => frame.events.some(event => event.type === 'guard' && !event.guarding) &&
+      !frame.statuses.ember.some(row => row.kind === 'guard'))).toBe(true);
+    expect(frames.some(frame => frame.events.some(event => event.type === 'status' &&
+      event.status === 'burn' && event.clockOnly && event.remaining === 0) &&
+      !frame.statuses[enemy.id].some(row => row.kind === 'burn'))).toBe(true);
+    expect(frames.at(-1)!.statuses[enemy.id].find(row => row.kind === 'exposure')?.remaining).toBe(1);
+    expect(frames.at(-1)!.statuses.ember.find(row => row.kind === 'attack-buff')?.remaining).toBe(1);
+    expect(frames.at(-1)!.statuses.ember.find(row => row.kind === 'renewal')?.remaining).toBe(1);
+    expect(frames.at(-1)!.statuses.ember.some(row => row.kind === 'reduction' || row.kind === 'seed')).toBe(false);
+  });
+  it('removes Ember Eternal Flare burn before replaying its saved periodic packet', () => {
+    const before = battle(['ember']);
+    before.gauge.members[0].charge = before.gauge.members[0].baseCost * 2;
+    before.gauge.sharedUnits = sharedChargeThreshold(0);
+    before.enemies[0].burns = [{ source: { kind: 'flare', bearerId: 'ember' }, magnitude: 25, remaining: 2 }];
+    const result = applyRadiantCombatAction(before, { type: 'flare', bearerId: 'ember' });
+    const frames = radiantImpactFrames(before, result.state, result.events);
+    const consumed = frames.findIndex(frame => frame.events.some(event =>
+      event.type === 'status' && event.status === 'burn' && event.remaining === 0));
+    const periodic = frames.findIndex(frame => frame.events.some(event =>
+      event.type === 'damage' && event.origin === 'periodic'));
+    expect(consumed).toBeGreaterThan(-1);
+    expect(periodic).toBeGreaterThan(consumed);
+    expect(frames[consumed].statuses['enemy-a'].some(row => row.kind === 'burn')).toBe(false);
   });
 });

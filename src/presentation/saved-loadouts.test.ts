@@ -7,6 +7,7 @@ import { conduitConfigurationsPanel, savedLoadoutOperation, squadLoadoutsPanel }
 import { gameConfirm } from './game-dialog';
 import { createCreatureCopy } from '../game/character-instances';
 import { referenceTeam } from './reference-team';
+import { characterArt } from '../content/character-art';
 import { conduitLoadout, refreshConduitLoadout } from './conduit-loadout';
 
 vi.mock('./game-dialog', async importOriginal => ({
@@ -36,6 +37,8 @@ describe('saved loadout controls', () => {
       conduits: Array<null>(8).fill(null), master: null,
     }));
     document.body.innerHTML = squadLoadoutsPanel(saved);
+    expect(document.querySelector('.saved-loadout-member .compact-portrait img')?.getAttribute('src'))
+      .toContain(`character-faces/${characterArt(ids[0], 1).art}.png`);
     for (const card of Array.from(document.querySelectorAll('[data-saved-entry]'))) {
       expect(card.querySelector('.saved-loadout-card-heading')?.textContent).toContain('6 / 6 members');
       expect(card.querySelectorAll('.saved-loadout-member')).toHaveLength(6);

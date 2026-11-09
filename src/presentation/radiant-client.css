@@ -1,0 +1,34 @@
+.radiant-client { --radiant-accent: color-mix(in srgb, var(--accent, #8ca9ff) 62%, #fff); display: grid; gap: 18px; width: min(1120px, 100%); margin: 0 auto; padding: clamp(16px, 3vw, 36px); color: #f4f2ee; }
+.radiant-client-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: clamp(18px, 3vw, 32px); border: 1px solid #ffffff20; border-radius: 24px; background: radial-gradient(ellipse at 86% 16%, color-mix(in srgb, var(--radiant-accent) 18%, transparent), transparent 44%), linear-gradient(135deg, #242734, #10131bdc); box-shadow: inset 0 1px #ffffff18, 0 18px 48px #0005; animation: bubble-rise .65s cubic-bezier(.2,1,.3,1) both; }
+.radiant-client-heading p { margin: 0 0 8px; color: var(--radiant-accent); font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.radiant-client-heading h2 { margin: 0; font-size: clamp(1.7rem, 3.2vw, 2.8rem); }
+.radiant-client-heading span { display: block; margin-top: 6px; color: #c9cbd4; }
+.radiant-client-tabs { display: flex; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid #ffffff20; }
+.radiant-client-tabs button, .radiant-client button { min-height: 44px; padding: 9px 16px; border: 1px solid #ffffff22; border-radius: 14px; background: #171a24; color: #f5f3ee; cursor: pointer; }
+.radiant-client-tabs button[aria-pressed="true"] { border-color: color-mix(in srgb, var(--radiant-accent) 65%, #fff); background: linear-gradient(135deg, color-mix(in srgb, var(--radiant-accent) 28%, #242734), #171a24); box-shadow: 0 0 20px color-mix(in srgb, var(--radiant-accent) 17%, transparent); }
+.radiant-client-panel { display: grid; gap: 14px; padding: clamp(16px, 3vw, 28px); border: 1px solid #ffffff1a; border-radius: 22px; background: linear-gradient(150deg, #20232de8, #11131bdc); box-shadow: 0 16px 38px #0004; animation: bubble-rise .45s cubic-bezier(.2,1,.3,1) both; }
+.radiant-client-panel h3 { margin: 0; font-size: 1.25rem; }
+.radiant-client-panel p { margin: 0; max-width: 76ch; color: #c9cbd4; line-height: 1.55; }
+.radiant-client-panel label { display: grid; gap: 6px; color: #e4e3df; font-weight: 700; }
+.radiant-client-panel select { min-height: 44px; width: 100%; padding: 8px 12px; border: 1px solid #ffffff2a; border-radius: 10px; background: #10131b; color: #fff; }
+.radiant-client-panel [data-radiant-squad-form] { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr)); gap: 12px; }
+.radiant-client-panel [data-radiant-squad-form] > button { justify-self: start; }
+.radiant-client .primary-button { border-color: color-mix(in srgb, var(--radiant-accent) 58%, #fff); background: linear-gradient(135deg, color-mix(in srgb, var(--radiant-accent) 46%, #242734), #171a24); font-weight: 700; }
+.radiant-client button:disabled { opacity: .56; cursor: not-allowed; }
+.radiant-client button:focus-visible, .radiant-client select:focus-visible { outline: 3px solid var(--radiant-accent); outline-offset: 3px; }
+.radiant-client-status, .radiant-client-error { min-height: 1.2em; margin: 0; }
+.radiant-client-error { color: #ffb6b6; }
+.radiant-client-message { display: grid; justify-items: start; gap: 12px; max-width: 720px; margin: 10vh auto; padding: 28px; border: 1px solid #ffffff24; border-radius: 22px; background: #171a24; }
+.radiant-holdings { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.radiant-holdings li { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 8px 12px; border: 1px solid #ffffff18; border-radius: 14px; background: #10131b; }
+.radiant-holding-art { display: grid; flex: 0 0 54px; place-items: center; width: 54px; height: 54px; overflow: hidden; border-radius: 10px; background: radial-gradient(circle, color-mix(in srgb, var(--radiant-accent) 15%, transparent), transparent); }
+.radiant-holding-art img { width: 100%; height: 100%; object-fit: contain; }
+.radiant-holdings li b, .radiant-holdings li small { display: block; overflow-wrap: anywhere; }
+.radiant-holdings li small { margin-top: 3px; color: #c3c6d0; font-size: .75rem; }
+.radiant-client .radiant-battle { width: 100%; }
+@media (max-width: 700px) {
+  .radiant-client-heading { align-items: flex-start; flex-direction: column; }
+  .radiant-client-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .radiant-client-tabs button { padding-inline: 8px; }
+}
+html[data-motion="reduced"] .radiant-client-heading, html[data-motion="reduced"] .radiant-client-panel { animation: none; }

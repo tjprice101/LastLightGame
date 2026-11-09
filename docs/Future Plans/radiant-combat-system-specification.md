@@ -1,5 +1,137 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Hosted database proof and desktop battle polish (2026-11-08)
+
+**Database proof.** [smoke_radiant_db.mjs](../../tools/smoke_radiant_db.mjs)
+bundles the real gated handler ([radiant-dispatch.ts](../../supabase/functions/game-operation/radiant-dispatch.ts))
+and runs it locally against the linked hosted LastLight project's actual SQL
+RPCs. It uses a disposable `rdb_` account (three Lv90 Evo6 starters) and always
+deletes it. The service key is read in memory through the logged-in Supabase
+CLI (`npx --yes supabase`), and the study secret is a local random value. The
+hosted `RADIANT_STUDY_ENABLED` flag, function and client are **not** changed or
+deployed. This replaces the earlier note that Supabase was unavailable: only the
+global binary was missing.
+
+```
+node tools/smoke_radiant_db.mjs --actions=600
+```
+Both runs passed (40 and 600 actions):
+
+- **Preparation:** commit, identical replay, and 409 for a reused request ID with different input.
+- **Stale revision:** 409, with the stored aggregate byte-identical afterward.
+- **Concurrent starts:** 200/409, a single winner persisted at revision2.
+- **Action replay:** identical response; revision and currency unchanged.
+- **Saved exit:** clears the run at the acknowledged revision.
+
+The600-action Training run made669 timed commits across70 encounters
+(69 victories, 0 defeats).
+
+| Measure (600 actions) | Result |
+| --- | --- |
+| Latency, local handler plus hosted RPCs | p50 308 ms, p95 408 ms, max 975 ms |
+| Largest single-encounter journal | 130 events |
+| Largest response | 102,198 bytes |
+| Largest stored aggregate | 90,026 bytes |
+
+The journal resets on each Continue, so growth is per encounter, not
+per run. No event cap was added. This proves the database contract and the
+persistence path. It is not a test of the deployed Edge function, network
+latency from player devices, or production traffic.
+
+**Desktop polish.** Browser captures at 1920×1080 and 1366×768 now show:
+
+- **Field:** enemies stand free on the field, each with a translucent nameplate (name, level, HP and Shield). The selected target gets a ground ring and a lit plate. Allies have larger full-form art and pill nameplates, and the field is taller.
+- **Squad dock:** six cards in one row on desktop. Each card has an element-accent top edge, a face crop with role and name, stat tiles (a stat list below 1600px), HP, layered charge and paired action buttons.
+- **Header and empty states:** the activity eyebrow is capitalized, the tools are grouped on the right, and empty status, Shield and timing lists no longer reserve space.
+- **Narrow screens:** below 1000px the horizontal squad rail is retained.
+
+Markup changes are grouping wrappers only. Selectors, labels, the gesture and
+keyboard contract, and accessibility names are unchanged. These are headless
+Edge captures of the in-memory preview, not physical device or GPU acceptance.
+
+Validation: `npx tsc --noEmit` passes, and the focused
+`npm test -- --run src/presentation/radiant-battle-view.test.ts src/vfx/radiant-battle-effects.test.ts src/presentation/radiant-impact.test.ts --maxWorkers=2`
+passes 105 of 105.
+
+### Remaining coherent-release gates (supersedes the lists below)
+
+1. Owner decision: whether release targets desktop only, which would waive physical touch acceptance, and approval to enable and deploy.
+2. Desktop GPU and cadence acceptance on the owner's own machine.
+3. Final unique per-character cinematic VFX beyond the shared emission and bloom pilot.
+4. Coherent deployment, in this order: set the hosted study secret and flag, deploy the matching function, build the client with `VITE_RADIANT_STUDY_UI=true`, merge, then verify the hosted client.
+
+Until then, keep the authority disabled and the branch isolated.
+
+## Impact-synchronized timed statuses and guard (2026-11-08)
+
+Saved impact frames now replay source-owned status changes alongside HP,
+Shield and Gauge: status application/removal, each authored clock decrement
+(including expiration), Guard activation, and Guard clearing. The battle view
+shows each validated snapshot at its ordered event boundary instead of holding
+the last completed action's clocks until the whole action ends. Defeated units
+remain free of visible effects; periodic ticks and simultaneous status events
+retain combat order. Clock-only events do not trigger success-shaped VFX.
+
+This adds no combat math, RNG, save-state fields, authority decisions, Shield
+duration, or reward changes. The authority event validator and generated
+server bundle accept the new replay events.
+
+Validation:
+```
+npx vitest run src/presentation/radiant-impact.test.ts src/presentation/radiant-status.test.ts src/presentation/radiant-battle-view.test.ts src/game/radiant-combat.test.ts src/online/radiant-run.test.ts src/online/radiant-dispatch.test.ts src/online/radiant-transport.test.ts src/vfx/radiant-battle-effects.test.ts --maxWorkers=2 --testTimeout=60000
+npx tsc --project supabase/functions/game-operation/tsconfig.json
+node tools/bundle_server_game.mjs
+npm run build
+```
+The focused set passes 670 tests/eight files; authority TypeScript and client
+TypeScript/Vite build pass with the existing chunk-size advisory. Full
+`npm test -- --maxWorkers=2` reports 10,133 passed and one failed across 279
+files. Its only failure is the existing motion test in
+[settings.test.ts](../../src/presentation/settings.test.ts) expecting no
+`prefers-reduced-motion` rule in [radiant-battle.css](../../src/presentation/radiant-battle.css);
+that rule is already present at `f4225d12`, and neither file was changed here.
+This baseline disagreement is left untouched.
+
+Subsequent motion-contract follow-up removed the independent device-query
+animation overrides from Radiant battle/client CSS; the explicit in-game
+setting remains authoritative and `settings.test.ts` now passes. The latest
+`npm test -- --maxWorkers=2` run reports 279 files passed, 1 failed; 10,171
+tests passed, 1 failed. Its sole failure is the untracked, rejected
+`src/ui-design-lab.test.ts`, whose prototype inventory expects the gated
+`radiant` route; that file remains untouched.
+
+### Remaining coherent-release gates
+
+This does not complete the overhaul. Home now renders the saved squad's actual
+full-form artwork, and a default-off authenticated route implements activity
+selection, manual bearer-only squad preparation, captured-holdings navigation,
+saved entry and explicit saved exit. Focused UI tests use an in-memory authority
+fixture; they are not production authentication, live database or hosted proof.
+The192 released face crops are now source-bound and wired into compact
+squad/profile/loadout thumbnails and the Radiant portrait rail. Home formation,
+battlefield, character-detail and collection art remain full-form. Desktop and
+narrow browser fixtures now confirm the actual saved-squad Home composition
+keeps full forms visible without covering the identity panel or overflowing
+the page. Explicit in-game Reduce motion pauses the Home/backdrop CSS movement
+and clears generated effects. These are fixture/browser checks, not physical
+device acceptance.
+
+[The consolidated art brief](../../Art/ui/Radiant%20Combat%20Overhaul.md) now
+records the completed192 crops, current art-pending queues and optional
+unapproved Home scene; no mandatory new original image is specified. Remaining
+work includes final cinematic Home/VFX polish; live authenticated route
+verification; actual database CAS/atomicity/idempotency proof; bounded
+long-Training payload/latency checks against the actual database; physical
+touch/GPU/cadence/economy validation; then matching gated client/authority
+deployment and hosted verification. A synthetic repeated-damage probe verifies
+that5,000 valid journal entries survive serialization/validation and a next
+local action:1,619,235 aggregate+response JSON bytes,87.6 ms
+serialize/parse/validation and53.8 ms action resolution in this run. This is
+not a realistic Training history, database payload/latency or a threshold; no
+event cap was added. Supabase CLI, Docker and Deno are unavailable in this
+checkout, so no local database proof or deploy was attempted. Keep the study
+authority disabled and the branch isolated.
+
 ## Recovered field formation and portrait actions (2026-11-08)
 
 Owner clarifies that full-form Element-Bearers still fight on the scenery field
@@ -41,6 +173,12 @@ alongside existing windup, not as an extra delayed transaction. Impact recoil/
 defeat fade runs alongside effect emission after the saved readout frame.
 Images keep their facing transforms; VFX anchors now use full field art, never
 the portrait rail. Static Reduce motion disables field idle and action effects.
+If an action presentation begins while the battlefield is outside the visible
+viewport, the saved receipt is presented only after temporarily revealing the
+field; the prior scroll position is restored after nonterminal presentation if
+the user has not scrolled elsewhere. Terminal result focus takes precedence.
+Reduced motion does not move the viewport, and this framing adds no transaction
+delay or combat state.
 
 Recovered pending VFX work also adds all32 distinct existing identity paths as
 centered, double-stroked light filaments in charge/impact emission. Glowing has
@@ -70,22 +208,30 @@ attack/error/storage write. DOM portrait click updates actual enemy520HP to0,
 Tizu Gauge25/50 and preserves the full-field image node. This is not a physical
 touch-device or FPS claim.
 
+The narrow offscreen-field reveal is covered by
+`npm test -- --run src\presentation\radiant-battle-view.test.ts
+src\vfx\radiant-battle-effects.test.ts src\presentation\radiant-impact.test.ts
+--maxWorkers=2` (105 tests/3 files). `npx tsc --noEmit` and `npm run build`
+pass; the in-memory Eternal preview exposed the battlefield and nonempty
+emission canvas during action presentation. These remain browser/fixture
+observations, not touch-device or GPU-performance acceptance.
+
 ### Remaining coherent-release gates
 
-The whole overhaul is **not yet release-complete**. Continue from these actual
-gates, not from historical proposal sections or rejected mock-ups:
+The whole overhaul is **not yet release-complete**. Timed-status and Guard
+impact synchronization, reviewed compact portraits, and the authenticated
+activity/preparation/exit/captured-holdings client route are implemented in
+the newer entries above. Continue from these remaining gates, not historical
+proposal sections or rejected mock-ups:
 
-1. Full timed-status creation/expiration/guard synchronization at every impact;
-   current clocks remain explicitly last-completed snapshots during replay.
-2. Individually reviewed remaining face crops and production compact contexts;
-   current crop/art-pending ownership must remain honest.
-3. Cinematic actual-squad Home and authenticated activity/preparation/exit/
-   captured-holdings routes; this preview remains in-memory.
-4. Actual database atomicity/CAS/idempotency proof and long-journal payload/
-   latency gate, not mocked authority evidence alone.
-5. Final bespoke cinematic VFX, physical device/touch/GPU/cadence/economy
-   calibration, final singular art brief and then matching gated client/
-   authority deployment plus hosted verification.
+1. Final cinematic Home/VFX polish and physical device/touch/GPU/cadence/economy
+   calibration; browser fixture checks are not device or performance approval.
+2. Production authenticated route verification and actual database
+   atomicity/CAS/idempotency proof, not mocked authority evidence alone.
+3. Long-journal payload/latency measurement and an explicit bounded behavior
+   decision if a limit proves necessary; do not silently truncate.
+4. Matching gated client/authority deployment plus hosted verification, only
+   after the preceding release gates pass.
 
 The owner's request to finish the remaining overhaul does not make incomplete
 gates pass. Preserve the isolated branch and default-disabled authority until
@@ -1212,39 +1358,40 @@ still pending conversion; existing owned IDs/ranks must be preserved.
 
 ### Reviewed portrait pilot
 
-[Offline exporter](../../tools/build_compact_portraits.py) now derives18
-starter face/upper-body crops, six forms each, from the unchanged canonical
-transparent artwork. Every form has its own source-bound eye anchor and square
-crop,512px output and45% nominal eye line. No generic runtime center-crop,
-key cleanup, mirroring or invented facial detail.
+[Offline exporter](../../tools/build_compact_portraits.py) now derives192
+released face/upper-body crops: all18 starter forms plus174 forms across the
+other29 released characters. Every form has its own source-bound eye anchor and
+square crop,512px output and45% nominal eye line. No generic runtime
+center-crop, key cleanup, mirroring or invented facial detail.
 
 [Settings](../../Art/provenance/compact-portrait-settings.json) bind each anchor
 to exact source SHA256; changed sources fail until re-reviewed. Generated
 intake records source/output hashes, dimensions and exact rectangles; generated
 revisions feed [shared compact helper](../../src/presentation/compact-portrait.ts)
-through existing deployment-base AVIF/PNG fallback. Facing is applied once.
-Explicit unreached silhouettes remain available. Missing crop/hidden Sunshade
-forms resolve to a named neutral pending panel, never guessed asset URLs.
+through the existing deployment-base AVIF/PNG fallback. The Radiant portrait
+rail uses the same helper for all released members; Home and the field retain
+their canonical full-form art. Facing is applied once. Explicit unreached
+silhouettes remain available. Hidden Sunshade forms resolve to a named neutral
+pending panel, never guessed asset URLs.
 
-All18 crops were inspected at48/96/512px against dark/light backgrounds.
-Small late-form source faces can be softer at512px; this preserves actual source
-resolution, not new detail generation. The other174 released-form crops and
-production compact-context wiring remain pending. Full-art Team/field/Home
-assets are unchanged; this pilot does not roll out a rejected menu mock-up.
+All192 crops were visually reviewed from generated contact sheets; the174 new
+forms were also checked at48px on dark and96px on light backgrounds. Off-center
+anchors were individually corrected and source-bound. Small late-form source
+faces can be softer at512px; this preserves actual source resolution, not new
+detail generation. Full-art Team/field/Home assets are unchanged; this does not
+roll out a rejected menu mock-up.
 
 Validation:
 ```
 python -W error::ResourceWarning -m unittest discover -s tools -p test_compact_portraits.py
 python tools\build_compact_portraits.py --check
 node tools\build_avif.mjs
-npx vitest run src\presentation\compact-portrait.test.ts src\presentation\portrait.test.ts src\presentation\image-format.test.ts src\game\radiant-combat.test.ts src\game\radiant-gauge.test.ts --maxWorkers=2 --testTimeout=60000
+npx vitest run src\presentation\compact-portrait.test.ts src\presentation\radiant-battle-view.test.ts src\presentation\portrait.test.ts src\presentation\image-format.test.ts --maxWorkers=2 --testTimeout=60000
 npm run build
 ```
-Five Python tests and132 focused Vitest tests pass. Build/typecheck passes with
-the existing chunk-size warning. The first image-format run correctly rejected
-18 unencoded crops; generating matching AVIF siblings fixed it. No VFX motion,
-full-roster/gear power ladder, pressured enemy clear rate or hosted release is
-claimed by these results.
+Five Python tests and96 focused Vitest tests pass. All174 missing AVIF outputs
+were generated; source PNGs remain unchanged. The production database and hosted
+compact-context route have not been verified.
 
 ## Delegated implementation and first foundation (2026-11-08)
 

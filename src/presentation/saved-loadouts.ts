@@ -29,7 +29,7 @@ export function squadLoadoutsPanel(account: Account): string {
   const owned = new Set(ownedCharacterInstances(account));
   const memberPreview = (id: string, index: number, equipment: SavedEquipment): string => {
     const member = ownedCompanion(account, id);
-    return `<article class="saved-loadout-member"><header class="saved-loadout-member-heading"><span class="ref-thumb">${member.art}</span><div><small>${index ? `Member ${index + 1}` : 'Leader'}</small><b>${escape(member.name)}</b><small>${escape(member.element)} · Lv.${member.level}</small></div></header>${equipmentPreview(equipment, account)}</article>`;
+    return `<article class="saved-loadout-member"><header class="saved-loadout-member-heading"><span class="ref-thumb">${member.compactArt}</span><div><small>${index ? `Member ${index + 1}` : 'Leader'}</small><b>${escape(member.name)}</b><small>${escape(member.element)} · Lv.${member.level}</small></div></header>${equipmentPreview(equipment, account)}</article>`;
   };
   return `<section class="ref-panel saved-loadouts" data-saved-loadouts aria-labelledby="saved-loadouts-title">
     <header class="ref-panel-heading"><h2 id="saved-loadouts-title">Loadouts</h2><span>${account.squadLoadouts?.length ?? 0} saved</span></header>

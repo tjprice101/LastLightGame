@@ -17672,7 +17672,7 @@ function cleanse(state, events, actor2, target, recovery) {
     status: "weaken-removed",
     source: strongest.source,
     magnitude: strongest.magnitude,
-    remaining: strongest.remaining
+    remaining: 0
   });
   const master2 = actor2.loadout.masterId === null ? null : radiantMasters[actor2.loadout.masterId];
   if (master2?.rule === "standard" && master2.enhancement === "passive")
@@ -17827,8 +17827,17 @@ function flare(state, events, actor2, targetId) {
     if (actor2.loadout.starter === "ember" && tier === "eternal") {
       const burns = target.burns.filter((effect2) => "bearerId" in effect2.source && effect2.source.bearerId === actor2.loadout.id);
       target.burns = target.burns.filter((effect2) => !burns.includes(effect2));
-      for (const burn of burns) if (target.hp > 0)
+      for (const burn of burns) if (target.hp > 0) {
+        events.push({
+          type: "status",
+          targetId: target.id,
+          status: "burn",
+          source: burn.source,
+          magnitude: burn.magnitude,
+          remaining: 0
+        });
         packet(state, events, target, burn.source, "periodic", Math.max(1, rounded(burn.magnitude) * burn.remaining));
+      }
     }
     if (target.hp === 0) continue;
     const impact = packet(state, events, target, source, "direct", radiantDirectDamage(
@@ -17904,7 +17913,7 @@ function flare(state, events, actor2, targetId) {
           status: "weaken-removed",
           source: strongest.source,
           magnitude: strongest.magnitude,
-          remaining: strongest.remaining
+          remaining: 0
         });
       }
     }
@@ -18054,29 +18063,83 @@ function finishRound(state, events) {
     for (const burn of target.burns) if (target.hp > 0) {
       packet(state, events, target, burn.source, "periodic", Math.max(1, rounded(burn.magnitude)));
       burn.remaining--;
+      if (target.hp > 0) events.push({
+        type: "status",
+        targetId: target.id,
+        status: "burn",
+        source: burn.source,
+        magnitude: burn.magnitude,
+        remaining: burn.remaining,
+        clockOnly: true
+      });
     }
     target.burns = target.burns.filter((burn) => burn.remaining > 0);
   }
   for (const target of state.enemies) {
-    for (const effect2 of [...target.weaken, ...target.exposures]) effect2.remaining--;
+    for (const [status4, effects] of [["weaken", target.weaken], ["exposure", target.exposures]]) {
+      for (const effect2 of effects) {
+        effect2.remaining--;
+        if (target.hp > 0) events.push({
+          type: "status",
+          targetId: target.id,
+          status: status4,
+          source: effect2.source,
+          magnitude: effect2.magnitude,
+          remaining: effect2.remaining,
+          clockOnly: true
+        });
+      }
+    }
     target.weaken = target.weaken.filter((effect2) => effect2.remaining > 0);
     target.exposures = target.exposures.filter((effect2) => effect2.remaining > 0);
   }
   if (state.phase === "victory" || state.phase === "defeat") return;
   for (const target of state.bearers) {
-    target.guarding = false;
-    for (const effects of [target.weaken, target.reductions]) effects.forEach((effect2) => {
-      effect2.remaining--;
-    });
+    if (target.guarding) {
+      target.guarding = false;
+      events.push({ type: "guard", targetId: target.loadout.id, guarding: false });
+    }
+    for (const [status4, effects] of [["weaken", target.weaken], ["reduction", target.reductions]]) {
+      for (const effect2 of effects) {
+        effect2.remaining--;
+        if (target.hp > 0) events.push({
+          type: "status",
+          targetId: target.loadout.id,
+          status: status4,
+          source: effect2.source,
+          magnitude: effect2.magnitude,
+          remaining: effect2.remaining,
+          clockOnly: true
+        });
+      }
+    }
     target.weaken = target.weaken.filter((effect2) => effect2.remaining > 0);
     target.reductions = target.reductions.filter((effect2) => effect2.remaining > 0);
-    target.attackBuffs.forEach((effect2) => {
+    for (const effect2 of target.attackBuffs) {
       effect2.remaining--;
-    });
+      if (target.hp > 0) events.push({
+        type: "status",
+        targetId: target.loadout.id,
+        status: "attack-buff",
+        source: effect2.source,
+        magnitude: effect2.magnitude,
+        remaining: effect2.remaining,
+        clockOnly: true
+      });
+    }
     target.attackBuffs = target.attackBuffs.filter((effect2) => effect2.remaining > 0);
     for (const effects of [target.seeds, target.renewal]) for (const effect2 of effects) {
       heal(state, events, target, effect2.source, effect2.magnitude);
       effect2.remaining--;
+      if (target.hp > 0) events.push({
+        type: "status",
+        targetId: target.loadout.id,
+        status: effects === target.seeds ? "seed" : "renewal",
+        source: effect2.source,
+        magnitude: effect2.magnitude,
+        remaining: effect2.remaining,
+        clockOnly: true
+      });
     }
     target.seeds = target.seeds.filter((effect2) => effect2.remaining > 0);
     target.renewal = target.renewal.filter((effect2) => effect2.remaining > 0);
@@ -18264,6 +18327,7 @@ function applyRadiantCombatAction(input, action) {
     if (action.type === "normal") hits = normal(state, events, actor2, action.targetId);
     else if (action.type === "defense") {
       actor2.guarding = true;
+      events.push({ type: "guard", targetId: actor2.loadout.id, guarding: true });
       defensePassive(state, events, actor2);
     } else {
       const cast = flare(state, events, actor2, action.targetId);
@@ -18734,6 +18798,7 @@ var eventFields = {
   flare: { text: ["bearerId", "tier", "name"], number: [] },
   charge: { text: ["bearerId"], number: ["personal", "sharedUnits", "bonusRolls", "bonusOffered"] },
   round: { text: [], number: ["round"] },
+  guard: { text: ["targetId"], number: [] },
   status: { text: ["targetId", "status"], number: ["magnitude", "remaining"] }
 };
 function validSource(value2) {
@@ -18756,6 +18821,8 @@ function validEvent(value2) {
     "exposure",
     "weaken-removed"
   ].includes(String(value2.status))) return false;
+  if (value2.type === "status" && value2.clockOnly !== void 0 && value2.clockOnly !== true) return false;
+  if (value2.type === "guard" && typeof value2.guarding !== "boolean") return false;
   return value2.gearSource === void 0 || validSource(value2.gearSource);
 }
 function validateRadiantRunResponse(value2) {

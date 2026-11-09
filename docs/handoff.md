@@ -1,5 +1,148 @@
 # Current state and handoff
 
+## Radiant hosted DB proof and desktop battle polish (2026-11-08)
+
+**Work state:** this work is on branch `overhaul/radiant-foundation`. Nothing has been deployed, and the Radiant authority is still disabled.
+
+**What changed:**
+- [smoke_radiant_db.mjs](../tools/smoke_radiant_db.mjs) runs the real gated handler against the linked hosted LastLight database. It uses a disposable account that is always removed.
+- The battle field now shows free-standing enemies with nameplates and larger allies.
+- On desktop, the six-card squad dock fits in one row, with element accents and compact stat tiles.
+- The header tools are grouped, and empty lists no longer reserve space.
+
+**What was verified:**
+- `node tools/smoke_radiant_db.mjs --actions=600` passed:
+  - preparation and request-ID replay
+  - stale-revision rejection with the stored aggregate byte-identical
+  - single-winner concurrency
+  - action replay idempotency
+  - saved exit
+- That run made 669 timed commits across 70 encounters. Latency was p95 408 ms (maximum 975 ms). The largest per-encounter journal was 130 events, with a largest response of 102 KB and a largest stored aggregate of 90 KB.
+- `npx tsc --noEmit` passes, and 105 focused battle, VFX and impact tests pass.
+- Headless Edge captures at 1920×1080 and 1366×768 show no horizontal overflow.
+
+The Supabase CLI works through `npx --yes supabase`; it is logged in and linked. The earlier "Supabase unavailable" note came from checking only for a global binary.
+
+**What remains:**
+1. Owner decision: desktop-only target, and deployment approval.
+2. Desktop GPU and cadence check on the owner's machine.
+3. Final unique cinematic VFX.
+4. Coherent gated deployment followed by hosted verification.
+
+The full gate order is in [the specification](Future%20Plans/radiant-combat-system-specification.md).
+
+## Radiant Home formation and authenticated route (2026-11-08)
+
+**Implemented:** Home now uses the saved squad's actual full-form artwork as a
+clickable formation, with an authenticated Radiant entry visible only when the
+separate `VITE_RADIANT_STUDY_UI` flag is enabled. The new route lists currently
+unlocked activities, manually saves an acquired bearer-only squad through the
+existing preparation authority, opens existing captured holdings without
+granting or consuming copies, enters a saved encounter, and requires a saved
+exit before navigation. Ordinary Home remains available when the study flag is
+off; server authority remains independently disabled.
+
+**Verified:** authenticated/unavailable entry, locked-stage filtering, captured
+holdings navigation, manual squad persistence, saved entry and explicit exit
+pass with the Home/navigation selectors:49 tests/3 files. Radiant client,
+battle-view, session, dispatch and transport selectors pass119 tests/5 files.
+`npx tsc --noEmit`, server-function TypeScript, and `npm run build` pass; Vite
+retains its existing large-chunk advisory. The route tests use an in-memory
+authority fixture and mocked battle shell, not live authentication or DB.
+
+**Completed:** all192 released-form face crops are individually source-bound,
+generated and reviewed at compact display sizes. The shared resolver now serves
+compact Team, Profile, saved-loadout, legacy Home squad and Radiant portrait
+thumbnails; six-member view tests verify versioned crops. Home formation,
+battlefield, character-detail and collection artwork remain full-form.
+
+**Visual/Reduce motion:** the current Home renderer was checked in an
+in-memory six-member fixture at desktop and narrow browser sizes; full-form
+art remains visible, the squad does not cover its identity panel, and the page
+has no horizontal overflow. The explicit in-game Reduce motion setting now
+pauses the CSS living backdrop and Home motion as well as clearing generated
+effects; the runtime test covers pausing and resuming. This is browser/fixture
+evidence, not physical-device acceptance.
+
+When a saved battle action starts while its battlefield is outside the visible
+viewport, the view temporarily reveals the field for full-form-anchored impact
+effects, then restores the prior scroll after nonterminal presentation unless
+the player scrolls or result focus moves. Reduced motion keeps the original
+position. This is post-save presentation only; it changes no action, reward or
+authority behavior. `npm test -- --run src\presentation\radiant-battle-view.test.ts
+src\vfx\radiant-battle-effects.test.ts src\presentation\radiant-impact.test.ts
+--maxWorkers=2` passes105 tests/3 files; `npx tsc --noEmit` and `npm run build`
+pass, with the existing chunk advisory. The in-memory Eternal preview showed
+the battlefield and nonempty effect canvas during presentation. Neither is
+physical touch/GPU/cadence approval.
+
+**Latest validation:** focused Home/motion/compact-art selectors pass149 tests
+across six files; compact-portrait provenance tests pass5 tests; `npm run
+build` and `git diff --check` pass. The build retains the existing large-chunk
+advisory. `npm test -- --run src\online\radiant-run.test.ts --reporter=verbose
+--silent=false` passes49 tests. Its bounded probe round-trips a synthetic
+5,000-event repeated-damage journal without truncation at1,619,235
+aggregate+response JSON bytes; this run measured87.6 ms
+serialize/parse/validation and53.8 ms for the next local action resolution.
+Those timings are observations, not thresholds or realistic Training/database
+measurements.
+
+**Still pending:** final cinematic Home/VFX polish and physical-device review;
+real hosted authenticated flow; actual DB CAS/atomicity/idempotency and
+realistic long-Training payload/latency checks; final GPU/cadence/economy
+validation; and gated coherent deployment. The single consolidated art scope now records the
+192 completed crops, existing pending art and optional unapproved Home scene;
+no mandatory original image order is currently specified. Keep the study
+authority disabled and do not stage the pre-existing unrelated dirty docs or
+rejected `radiant-ui`/design-lab files.
+
+## Radiant timed-status and Guard impact replay (2026-11-08)
+
+**Branch:** `overhaul/radiant-foundation`, starting from `f4225d12`. The
+pre-existing unrelated dirty docs and rejected radiant-ui/design-lab files
+remain untouched and unstaged.
+
+**Implemented:** Combat emits source-owned timer transitions/decrements and
+expiry events at the existing phase boundary, plus explicit Guard activation
+and clearing. Ordered impact frames replay those transitions into timed-status
+snapshots; the battle view refreshes each snapshot with the corresponding
+impact, including exact expiry and Guard loss. Defeated units do not regain
+visible effects. Clock-only replay events do not produce success-shaped VFX.
+Damage, timing, Shield rules, RNG, rewards and saved combat state are unchanged.
+The HTTP event validator and regenerated server bundle include the new events.
+
+**Verified:** the eight-file Radiant impact/status/view/combat/run/dispatch/
+transport/VFX set passes 670 tests. The client `npm run build` and authority
+`npx tsc --project supabase\functions\game-operation\tsconfig.json` pass; build
+retains its existing large-chunk advisory. Full `npm test -- --maxWorkers=2`
+reports 10,133 passed and one failed across 279 files; the sole failure is the
+unchanged [settings.test.ts](../src/presentation/settings.test.ts) check that
+rejects the existing `prefers-reduced-motion` rule in
+[radiant-battle.css](../src/presentation/radiant-battle.css), present at
+`f4225d12`. Neither file was changed. Local Supabase CLI, Docker and Deno
+are unavailable, so no DB proof, hosted verification or deployment is claimed.
+
+**Full-suite follow-up:** the motion-contract mismatch is resolved: the
+independent device-query animation overrides were removed from the Radiant
+battle and client styles, leaving the explicit in-game setting authoritative.
+`src/presentation/settings.test.ts` now passes. The latest
+`npm test -- --maxWorkers=2` run reports 279 files passed, 1 failed; 10,171
+tests passed, 1 failed. The sole failure is in untracked, rejected
+`src/ui-design-lab.test.ts`, which expects the gated `radiant` route in its
+prototype route inventory; it remains untouched. The other untracked UI suite
+also passed.
+
+**Still pending from that checkpoint:** reviewed face crops/compact contexts,
+final cinematic Home polish, production verification of the now-implemented
+authenticated run/preparation/exit/captured-holdings route, actual database
+CAS/atomicity/idempotency, long-journal size/latency limits, final bespoke VFX
+and physical-device/touch/GPU/cadence/economy validation, the final art brief,
+and coherent gated deployment/hosted verification. The newer Home/route entry
+above supersedes its earlier "not implemented" status.
+Preserve the disabled authority and isolated branch. Exact focused commands and
+the release gate contract are in
+[the Radiant combat specification](Future%20Plans/radiant-combat-system-specification.md#impact-synchronized-timed-statuses-and-guard-2026-11-08).
+
 ## Recovering field formation and portrait gestures (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; recovered committed baseline

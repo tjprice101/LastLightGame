@@ -1297,6 +1297,306 @@
    "bytes": 1127763,
    "avif": 156379
   },
+  "character-faces/asteriel-evo-2.png": {
+   "source": "9352c304d977430050e6ea251dd324dd54a81f78cf80b4a3ed726259e71f9dc3",
+   "bytes": 440149,
+   "avif": 81997
+  },
+  "character-faces/asteriel-evo-3.png": {
+   "source": "4d5797bdd393a48ed437cdf81c0e5d213672b074e2f7053b642a6278ba12e2dd",
+   "bytes": 434965,
+   "avif": 79716
+  },
+  "character-faces/asteriel-evo-4.png": {
+   "source": "dc49336e513314ebc407170107c77ad0e24fcd0a25ea014eb9e75e0d8f97b61c",
+   "bytes": 430940,
+   "avif": 73603
+  },
+  "character-faces/asteriel-evo-5.png": {
+   "source": "81fbd8ee18f7b8b5239899c117590f8adcdc433eec6144da73b12857740fcb74",
+   "bytes": 486775,
+   "avif": 98618
+  },
+  "character-faces/asteriel-evo-6.png": {
+   "source": "7789afc336186609348d5b69a1e8c40c2b9e28364f8354db0eecc20de131a31d",
+   "bytes": 499224,
+   "avif": 98336
+  },
+  "character-faces/asteriel.png": {
+   "source": "7ff57b046916f6499e9e2049cafc3374e7176b3067ca32db0176217ab9c6ff23",
+   "bytes": 461208,
+   "avif": 85483
+  },
+  "character-faces/atmoso-evo-2.png": {
+   "source": "d11ca99c68e5f11e4b545c31a30d0c4b10bb8038e4a1eaf4812dca8e75776628",
+   "bytes": 433881,
+   "avif": 82956
+  },
+  "character-faces/atmoso-evo-3.png": {
+   "source": "ee14d990a3f1dfccfd82ff8e04566931721e99f0f59851d5da52fda264547ae8",
+   "bytes": 418255,
+   "avif": 89889
+  },
+  "character-faces/atmoso-evo-4.png": {
+   "source": "d9a88ee16f89aff339b7663fca827476d80c33b3f946b061f79cbddb7421a04d",
+   "bytes": 449642,
+   "avif": 106358
+  },
+  "character-faces/atmoso-evo-5.png": {
+   "source": "fe4e22719fc9ee9c187455aa978d6fabd98746d999cdeafba0be6a0c2563652c",
+   "bytes": 576844,
+   "avif": 137814
+  },
+  "character-faces/atmoso-evo-6.png": {
+   "source": "fbd3a0408c1d57f1aa0038e445bf7633a8629b596288b8f564f3bfb12c7545c7",
+   "bytes": 467013,
+   "avif": 92193
+  },
+  "character-faces/atmoso.png": {
+   "source": "56b6ac26bd0e59d33745237b975f37d564db0fd9f08600e9fa7d4065da6fc67d",
+   "bytes": 387014,
+   "avif": 65983
+  },
+  "character-faces/aurora-evo-2.png": {
+   "source": "321ee4abeefc526949fca21f46aa46a9dfae015e1a46359857c14eccb51d284b",
+   "bytes": 317876,
+   "avif": 46417
+  },
+  "character-faces/aurora-evo-3.png": {
+   "source": "704f14a47a4ff63b94cd55f56f91d28928c5d1bc80f9b70b75e3a35c95707a85",
+   "bytes": 370250,
+   "avif": 69648
+  },
+  "character-faces/aurora-evo-4.png": {
+   "source": "d44a49aac58024012f90b81d5845714c932c8dcc6c83f1b07ca06672305a3657",
+   "bytes": 380710,
+   "avif": 94175
+  },
+  "character-faces/aurora-evo-5.png": {
+   "source": "016416637435f9fba0f399139874652acb55960df7a66b73d0d36c788033e65b",
+   "bytes": 485617,
+   "avif": 100604
+  },
+  "character-faces/aurora-evo-6.png": {
+   "source": "7be39d64ded58329f253938b85ef0ea7e52dbc900e3515eea8cdde5d2a65dca2",
+   "bytes": 548517,
+   "avif": 129063
+  },
+  "character-faces/aurora.png": {
+   "source": "e4d52ee21e4dca9ce396c62f99ac266d9a471e5b9021decb5d55bc60e4d55b53",
+   "bytes": 320325,
+   "avif": 47800
+  },
+  "character-faces/bliss-evo-2.png": {
+   "source": "dfa95475100952206e58d56b189b3818bee82bfe5af90636cab23225c0737dcf",
+   "bytes": 334646,
+   "avif": 63222
+  },
+  "character-faces/bliss-evo-3.png": {
+   "source": "cf95e5f7a6827afd2ab20b4072846f46b35584f445a2b63b65f81cbebf24db78",
+   "bytes": 343251,
+   "avif": 52625
+  },
+  "character-faces/bliss-evo-4.png": {
+   "source": "f61c48963a3ba7c82807db5f3fb7f20eae669e9a14f8530fddb684bb567d8c7a",
+   "bytes": 438745,
+   "avif": 76556
+  },
+  "character-faces/bliss-evo-5.png": {
+   "source": "d1151f9bf19173dc8da109868a4f210774b988f4f0e3fd788cc358e862f4337f",
+   "bytes": 463937,
+   "avif": 84057
+  },
+  "character-faces/bliss-evo-6.png": {
+   "source": "1379ed9978ae624cba6a768d66b8c865f41908638478ab8cc04b363e046b12ed",
+   "bytes": 538298,
+   "avif": 120919
+  },
+  "character-faces/bliss.png": {
+   "source": "425b70b7fcff359f25c719609559a132145432e6a6ba9f8a3ad2748d8dd0b757",
+   "bytes": 357887,
+   "avif": 50937
+  },
+  "character-faces/bruno-evo-2.png": {
+   "source": "bfc5e6e7b96f2780a008832bdf943c600be853cde52ef06d379f6c10c3b935a2",
+   "bytes": 362398,
+   "avif": 67172
+  },
+  "character-faces/bruno-evo-3.png": {
+   "source": "5c5ed6fee82ceb276c44785814ac7421d9a0effb92b698824179dd5957341d42",
+   "bytes": 416811,
+   "avif": 116946
+  },
+  "character-faces/bruno-evo-4.png": {
+   "source": "24039a1d2c68955c56addd3242be5337bba657b17df89bc7113569346ec0e148",
+   "bytes": 464129,
+   "avif": 101292
+  },
+  "character-faces/bruno-evo-5.png": {
+   "source": "af0988e0b522eeac9fa2ee6e8fdbef8a5c4d5eca34f74315f2e4332a43164bd8",
+   "bytes": 519760,
+   "avif": 99534
+  },
+  "character-faces/bruno-evo-6.png": {
+   "source": "0d8a9b916745ee31899ca5bba0ac8fae436fc527ec3f4af8561092274a9dfaee",
+   "bytes": 531796,
+   "avif": 110859
+  },
+  "character-faces/bruno.png": {
+   "source": "6f129c1f756e28fb86a938c6be74cbde8e8e6972b068200ad8cc8d25170557b9",
+   "bytes": 215251,
+   "avif": 32379
+  },
+  "character-faces/caevren-evo-2.png": {
+   "source": "8bc5386868b51f80c4dde4593b8a11a5e569ecf40f6d37c45dfc093a2cf05173",
+   "bytes": 355990,
+   "avif": 57771
+  },
+  "character-faces/caevren-evo-3.png": {
+   "source": "153c8829da8a711b7c15d9968c5037a38496bffe15aea2a043e3c1d14924cfa2",
+   "bytes": 420926,
+   "avif": 77338
+  },
+  "character-faces/caevren-evo-4.png": {
+   "source": "31c2572b230edd71c0499803a4211d450d0b10f08db88b2d96cbcd59d4e5bf7b",
+   "bytes": 406026,
+   "avif": 77276
+  },
+  "character-faces/caevren-evo-5.png": {
+   "source": "554f86a0b43bd62cdb07972551fc5f6593356123bb4a2fc17938787ef3c805c3",
+   "bytes": 479878,
+   "avif": 87823
+  },
+  "character-faces/caevren-evo-6.png": {
+   "source": "f813887dac1dca85ea59739d624050e1a300139b215a36faa698a611fd26959c",
+   "bytes": 493304,
+   "avif": 83220
+  },
+  "character-faces/caevren.png": {
+   "source": "78ed66a7105394f6e7f3ed425cbd099171382e1a6a62ab4bdfa45ca4ec49bf6c",
+   "bytes": 411955,
+   "avif": 66704
+  },
+  "character-faces/caldrex-evo-2.png": {
+   "source": "c16e358c22a8ad60430e2787cd318e78f96ac09e3d994e3c95ecce056246b37c",
+   "bytes": 411863,
+   "avif": 66998
+  },
+  "character-faces/caldrex-evo-3.png": {
+   "source": "b71c55cfc8480bb12c822e861fbcd1aab2193c8603a0e4994ad01ce814aabbce",
+   "bytes": 396450,
+   "avif": 66048
+  },
+  "character-faces/caldrex-evo-4.png": {
+   "source": "c35a0b9f39e493d356f9557731974c402ba9896d14c5bd24f20143ac0f6f6f68",
+   "bytes": 493444,
+   "avif": 117371
+  },
+  "character-faces/caldrex-evo-5.png": {
+   "source": "6ca50cd9079fa3a204f17a5ebef5f6560105d75bc3d3e9f557012216be5ca4d3",
+   "bytes": 464341,
+   "avif": 89018
+  },
+  "character-faces/caldrex-evo-6.png": {
+   "source": "eff966a9595278427d4eb1efc57792abe1caa1750301285a715fd1f1643c382a",
+   "bytes": 476348,
+   "avif": 97628
+  },
+  "character-faces/caldrex.png": {
+   "source": "85bc41ae71f4009744b9fec987c2a54f79d47ae05b996486bb610cbd575ecb84",
+   "bytes": 406018,
+   "avif": 57803
+  },
+  "character-faces/crinso-evo-2.png": {
+   "source": "db3ec4b218d7cb52eed241b61a52c2dc65113b01294429d53958d17413d0a55f",
+   "bytes": 406425,
+   "avif": 73330
+  },
+  "character-faces/crinso-evo-3.png": {
+   "source": "9c6cc0d3c3d107efce6a8d9f67248bc63edef94cf306db5f1e26071a0083346a",
+   "bytes": 405661,
+   "avif": 66036
+  },
+  "character-faces/crinso-evo-4.png": {
+   "source": "7be9882453233c398b82e9dcde44ba3e26a55f259187ffcde83f6c13bbe129c0",
+   "bytes": 441298,
+   "avif": 97246
+  },
+  "character-faces/crinso-evo-5.png": {
+   "source": "eeef289059edac02cfdf39a6d86c1d116589d81f12132095cb15768871b6d3c6",
+   "bytes": 526878,
+   "avif": 104461
+  },
+  "character-faces/crinso-evo-6.png": {
+   "source": "c75e80e36c2dff447276e3d88a69523bb30071f6c70b3bffc862d1bbd9916de4",
+   "bytes": 513807,
+   "avif": 94519
+  },
+  "character-faces/crinso.png": {
+   "source": "8f64310156017168bd32cce5851d59c5e2baff111e7271676f6e14a1d5b857d7",
+   "bytes": 353924,
+   "avif": 57440
+  },
+  "character-faces/disciple-evo-2.png": {
+   "source": "018122d8c5a2b1213e376172fcf0dadb8925d82f0b38c4c8b5eb93bbf804780f",
+   "bytes": 379128,
+   "avif": 70736
+  },
+  "character-faces/disciple-evo-3.png": {
+   "source": "7dffa3de9c18946b3834a6a039535174b013f7ee6f80e029357dc63f6f6b5e1f",
+   "bytes": 396696,
+   "avif": 83382
+  },
+  "character-faces/disciple-evo-4.png": {
+   "source": "39a368dec6c3cad059201c3ff29abc0bad0b0a2f96af805fcac4416db02bdf8f",
+   "bytes": 477604,
+   "avif": 123022
+  },
+  "character-faces/disciple-evo-5.png": {
+   "source": "65054299f2ea848af31b95dc327c5ad285b925996e84d2454310d73289e2a0ba",
+   "bytes": 496754,
+   "avif": 117149
+  },
+  "character-faces/disciple-evo-6.png": {
+   "source": "02c8211740fca01002eebbfc77e457b5549edc2daa39352263d52a9cbc2c0cb9",
+   "bytes": 562137,
+   "avif": 132464
+  },
+  "character-faces/disciple.png": {
+   "source": "f6070988dcc338edb20be0ddc0d81f62ae57b61e3339b3a87ecc978e545d90db",
+   "bytes": 393751,
+   "avif": 64946
+  },
+  "character-faces/elise-evo-2.png": {
+   "source": "417c047b05496bafbab0b7605a23a7e46e10ccae69d64d468247c6f833347e54",
+   "bytes": 361997,
+   "avif": 76486
+  },
+  "character-faces/elise-evo-3.png": {
+   "source": "43685eba97995c6b692ef4455bf591aea7316dfd4ecac262cc4f07de7d7f211e",
+   "bytes": 374355,
+   "avif": 82508
+  },
+  "character-faces/elise-evo-4.png": {
+   "source": "1ef2f6b3a4b9a0219097c61dfded6684ba377ca3d4ad567903ffb170febcb66c",
+   "bytes": 465640,
+   "avif": 98559
+  },
+  "character-faces/elise-evo-5.png": {
+   "source": "feee515a2c58a02aa7e5296f464aa505f63b9ec51a71063346e4a35c8abe57da",
+   "bytes": 481390,
+   "avif": 85368
+  },
+  "character-faces/elise-evo-6.png": {
+   "source": "35b5dbd7f209cf72c2c09d91ba0eb9b1ab1e4d8895512435f29168b070237325",
+   "bytes": 536738,
+   "avif": 108339
+  },
+  "character-faces/elise.png": {
+   "source": "c122d61b49b44608569ffa963ab69b9ad96590735d38109b8a1d65c68b1b2c25",
+   "bytes": 364681,
+   "avif": 78025
+  },
   "character-faces/flora-evo-2.png": {
    "source": "c839ad55bbde1f1e1c446d7a353ed4c824c79167d557adf32a3cc65a6447922c",
    "bytes": 450402,
@@ -1326,6 +1626,66 @@
    "source": "4332daed868591b47f8ba15c4e8ec66f9caa39e23a6b9b8a45561c0a84ee8c3a",
    "bytes": 420693,
    "avif": 92045
+  },
+  "character-faces/ilvaris-evo-2.png": {
+   "source": "216ee0128b3526525731d58900ff1af3ef629d222b570553cc6cd30bcb02be5b",
+   "bytes": 355106,
+   "avif": 58030
+  },
+  "character-faces/ilvaris-evo-3.png": {
+   "source": "8dd0e982accac55142d8683a183ebf20f770c55fbc821555ee3dc2b1effe019c",
+   "bytes": 386799,
+   "avif": 64506
+  },
+  "character-faces/ilvaris-evo-4.png": {
+   "source": "2d679bfdfb71f512ca200a0094aec76f31a2ee68e7efc22297311978ac71fef3",
+   "bytes": 440820,
+   "avif": 95779
+  },
+  "character-faces/ilvaris-evo-5.png": {
+   "source": "f941907ca973181c2c3da5825571277e7847830075f9966292cd9390626475da",
+   "bytes": 501258,
+   "avif": 93519
+  },
+  "character-faces/ilvaris-evo-6.png": {
+   "source": "41ecb87f6136f24236ac15734d8174ed9c3b8024f1600bba37350c4be828cfc9",
+   "bytes": 513150,
+   "avif": 102246
+  },
+  "character-faces/ilvaris.png": {
+   "source": "79a78234adcd977ecd2d8b100e12f49138ae72b4878f766c93d364e2f994cbc6",
+   "bytes": 391838,
+   "avif": 59249
+  },
+  "character-faces/ilyss-evo-2.png": {
+   "source": "a3c7b11004648cb0bca12889edeea298849d84bb73fd04015c8724b84d9cc4cf",
+   "bytes": 325587,
+   "avif": 62472
+  },
+  "character-faces/ilyss-evo-3.png": {
+   "source": "f39e20dcd559c8304efaa39a846518f3de70b5d6d7fc52b4560e6cf65b46a19c",
+   "bytes": 350783,
+   "avif": 83055
+  },
+  "character-faces/ilyss-evo-4.png": {
+   "source": "e8de4c0beb2c6997d34d437daf66aea2b796692625c5ceab9d8d5a31b6c5c5f0",
+   "bytes": 439074,
+   "avif": 74824
+  },
+  "character-faces/ilyss-evo-5.png": {
+   "source": "5f7dbef065f8d59c41b74b3538014ab90a755ed9e77ee6be50fcdf5770ab5d13",
+   "bytes": 423990,
+   "avif": 81564
+  },
+  "character-faces/ilyss-evo-6.png": {
+   "source": "3936abbf52da400d4f7300465f808e5fa40fed7b6539fd126036a72ce36c0e17",
+   "bytes": 433836,
+   "avif": 92199
+  },
+  "character-faces/ilyss.png": {
+   "source": "4614b0f22ebc45a9065069d3ea2362c7a5e36b045fd628a42383ec2da914ff8c",
+   "bytes": 413358,
+   "avif": 71224
   },
   "character-faces/infernis-evo-2.png": {
    "source": "a4228a97a45ddecd70a7a949a2f965b6a9e713923052914d0be397767eee3837",
@@ -1357,6 +1717,396 @@
    "bytes": 428153,
    "avif": 102999
   },
+  "character-faces/kaelith-evo-2.png": {
+   "source": "2ba37b93ae4af8ba03335c0b5856345899826013f92eb0fbf3418227421ee6e2",
+   "bytes": 365959,
+   "avif": 56641
+  },
+  "character-faces/kaelith-evo-3.png": {
+   "source": "8b4f3816867746becd19f77dd4a720fefef7dda92bcbfd9b1f521879cdc97e8d",
+   "bytes": 397631,
+   "avif": 68971
+  },
+  "character-faces/kaelith-evo-4.png": {
+   "source": "55ca9275838976c867d9763869edd2c892cce7a4f3ea657bcc5466ea0486fd2b",
+   "bytes": 435676,
+   "avif": 84638
+  },
+  "character-faces/kaelith-evo-5.png": {
+   "source": "45053fb4b993535b7f77a8bd3c1771415e6fefa22b7eb672e60b3314821e7eca",
+   "bytes": 520754,
+   "avif": 98876
+  },
+  "character-faces/kaelith-evo-6.png": {
+   "source": "33d43bb611c1fa2a42b412db1a4bba644efe7d6bffdd076f1b1b95bd107a49b7",
+   "bytes": 546352,
+   "avif": 106040
+  },
+  "character-faces/kaelith.png": {
+   "source": "f64eeddb7c3ebd2a7409512bd26cc7287991e9e2e11214d9d891217a60e959ae",
+   "bytes": 354672,
+   "avif": 59132
+  },
+  "character-faces/maerion-evo-2.png": {
+   "source": "5d02802ad7d9f3b25b1f8288bf0c8498d9e8ecae9fece14bb41dbee2f60a8bd9",
+   "bytes": 373403,
+   "avif": 74313
+  },
+  "character-faces/maerion-evo-3.png": {
+   "source": "2392406f9a16745f190b5d3d0f0e3149803aa504760f44142e313e0c70f3c49a",
+   "bytes": 356990,
+   "avif": 67864
+  },
+  "character-faces/maerion-evo-4.png": {
+   "source": "4f0772e36b2c2c1ec6e9a0244390af26d82117e8dcbf3d074fe4bdff6bb4f4c3",
+   "bytes": 407588,
+   "avif": 83257
+  },
+  "character-faces/maerion-evo-5.png": {
+   "source": "dae2eb5b99d91248b78801743ae1ce82b31f37215e8d1ad06f21efee35ce32b2",
+   "bytes": 492553,
+   "avif": 94127
+  },
+  "character-faces/maerion-evo-6.png": {
+   "source": "d9786f943127f33e9002290cc458b63cfe81e9978c47d4d4a30c1bc0c6e3ee62",
+   "bytes": 515369,
+   "avif": 94633
+  },
+  "character-faces/maerion.png": {
+   "source": "811d98dbc58077efcceca5f9323e61371714da1b3c0572887af5361cd76a394f",
+   "bytes": 440373,
+   "avif": 78106
+  },
+  "character-faces/myrthen-evo-2.png": {
+   "source": "0f07cf9a237a6cc1a7efba15d6c21c2feed4c331a5cd4ef10f95f19b012af7a4",
+   "bytes": 384211,
+   "avif": 81930
+  },
+  "character-faces/myrthen-evo-3.png": {
+   "source": "88977c9cfd65805b5f626939b8c58782c6ecb1806c4410e9178c982af5551ac9",
+   "bytes": 408660,
+   "avif": 92527
+  },
+  "character-faces/myrthen-evo-4.png": {
+   "source": "a151b732ef98c8f17f530a7b6b9430970d3f12fce193ea7f941eff285f02d3f7",
+   "bytes": 454616,
+   "avif": 110321
+  },
+  "character-faces/myrthen-evo-5.png": {
+   "source": "974c3734473eddc1092a5a35079106dd184dce2c339227c35ed4868dd90b73d0",
+   "bytes": 526508,
+   "avif": 105751
+  },
+  "character-faces/myrthen-evo-6.png": {
+   "source": "13739ad3db3201bc66c3e5ce5ca506a318608e8f18f97d46856169fea59d1d55",
+   "bytes": 539739,
+   "avif": 147279
+  },
+  "character-faces/myrthen.png": {
+   "source": "db3a8e7c103ace7d53ca251e0423a1b3a3ea678283006ba0f4d560f9541cb3ae",
+   "bytes": 376604,
+   "avif": 75207
+  },
+  "character-faces/neralis-evo-2.png": {
+   "source": "f5f0d5f3f7a98c90c4b3d087b59fecc1419a53e59bf64c6b0bd16f310489cef5",
+   "bytes": 414632,
+   "avif": 70343
+  },
+  "character-faces/neralis-evo-3.png": {
+   "source": "cbe2dd1cee80d79e78bdfb2e791c2277c6dab2536ebb40c8e856b60c99dcd38d",
+   "bytes": 399307,
+   "avif": 71922
+  },
+  "character-faces/neralis-evo-4.png": {
+   "source": "4ee17227111cfdab45ef7301a7536e3ccc783758b145b446167681e4408a2283",
+   "bytes": 416929,
+   "avif": 91206
+  },
+  "character-faces/neralis-evo-5.png": {
+   "source": "ac74ef8a2d5ba696b5a9c0ca306570e8c50a02def5bdcb6645529ad0ed6e5786",
+   "bytes": 430680,
+   "avif": 84577
+  },
+  "character-faces/neralis-evo-6.png": {
+   "source": "f284943405b90d503f9e4db0e745456d59478d547461d821d3b31b4ae75b7c50",
+   "bytes": 523115,
+   "avif": 107683
+  },
+  "character-faces/neralis.png": {
+   "source": "27a3fdf54ec17cdfb6adb69eb062bc000e60386e4e238558e342640d0211553a",
+   "bytes": 399618,
+   "avif": 62252
+  },
+  "character-faces/nerithe-evo-2.png": {
+   "source": "01b47c0607e555bcb3f405c19578cb0b21ed182bdba0208ed0e2d279f4a837df",
+   "bytes": 407735,
+   "avif": 71554
+  },
+  "character-faces/nerithe-evo-3.png": {
+   "source": "5f6ca9ed0d2921c4b159c87664387335e88920532cf1830fb18721cb22de3e2e",
+   "bytes": 367244,
+   "avif": 90972
+  },
+  "character-faces/nerithe-evo-4.png": {
+   "source": "c4bfffe5dbcdd0b761f71f6641ad9055c18b14932a5e56f11aba77b448b2a358",
+   "bytes": 432655,
+   "avif": 87996
+  },
+  "character-faces/nerithe-evo-5.png": {
+   "source": "76f7960c392906c281d1cec0711a9ab1e426ab7ed1b4a57ba3e8a39f27348e60",
+   "bytes": 501079,
+   "avif": 102238
+  },
+  "character-faces/nerithe-evo-6.png": {
+   "source": "86ab899a7394eaec19fca9f222d21ab7750c39caa694ea80a54a313a8e52cf32",
+   "bytes": 535444,
+   "avif": 117878
+  },
+  "character-faces/nerithe.png": {
+   "source": "3995a00385b6f1d426bfb6d6f67e5df961a37624b1bf6896a931785169396891",
+   "bytes": 344781,
+   "avif": 77531
+  },
+  "character-faces/orvella-evo-2.png": {
+   "source": "5a73cbd325bb6c198bb9c2f1f36f9aa0cc82303768b1d9fb4070622361980974",
+   "bytes": 392951,
+   "avif": 78274
+  },
+  "character-faces/orvella-evo-3.png": {
+   "source": "79bebdbd69e8a275471a6c0d0e34557917ffb6855ef968dbbbc411eb65832013",
+   "bytes": 385143,
+   "avif": 75259
+  },
+  "character-faces/orvella-evo-4.png": {
+   "source": "8c09ada8f12dc2acb73ca79461ffd798f5226cdf3b3350114b21307fc2c6686b",
+   "bytes": 468286,
+   "avif": 100702
+  },
+  "character-faces/orvella-evo-5.png": {
+   "source": "3ad145086d5f316de5458314b5de4e714c3322d154c75d815873d49235412555",
+   "bytes": 517875,
+   "avif": 96516
+  },
+  "character-faces/orvella-evo-6.png": {
+   "source": "39bc90c1c4704f080983927563f1e926c5c4c9539b629942139ebc94a103fa9a",
+   "bytes": 501664,
+   "avif": 95499
+  },
+  "character-faces/orvella.png": {
+   "source": "e8461c492a353ea6b231af3a690f900820922ad4fbe53cb69ee8f8a8a7208fb3",
+   "bytes": 350837,
+   "avif": 65070
+  },
+  "character-faces/ozriel-evo-2.png": {
+   "source": "0f409d070ebd8e1a397c35899f3510dd186e406f084e4b107ac91ecae34a0c7c",
+   "bytes": 384844,
+   "avif": 66090
+  },
+  "character-faces/ozriel-evo-3.png": {
+   "source": "3844ca80c33f5219488c03f8530d83ec6c032810b86445678d0cdfe718eb5fb7",
+   "bytes": 376792,
+   "avif": 66381
+  },
+  "character-faces/ozriel-evo-4.png": {
+   "source": "af93a6230121f3b2af53c9c7f113e847c886862298e95ef66c93330f6fbc54c2",
+   "bytes": 440631,
+   "avif": 80922
+  },
+  "character-faces/ozriel-evo-5.png": {
+   "source": "b3fdca2983f5900d766f492cd275025fe5faf4ea9a94b8a09bf54fc8e5f5ef3b",
+   "bytes": 495100,
+   "avif": 87317
+  },
+  "character-faces/ozriel-evo-6.png": {
+   "source": "a456421d9b0bfaea90522bd831afd77b292c6cd0b653af89e416c6c6e1861735",
+   "bytes": 471337,
+   "avif": 106449
+  },
+  "character-faces/ozriel.png": {
+   "source": "42d2bc2e32f20ed6f92eba730c46b365d3e4160c5c279aed455e53b22f3c13f2",
+   "bytes": 352455,
+   "avif": 57773
+  },
+  "character-faces/razor-evo-2.png": {
+   "source": "817fa3feb0ec7ae7426097b1f8befe21b763dbb3571dac2e8ac16d5056574f31",
+   "bytes": 419428,
+   "avif": 68787
+  },
+  "character-faces/razor-evo-3.png": {
+   "source": "92ec49ddb23d028d0db0a1649a1b8930ddb56307778aa2355c7b8e7e171ad439",
+   "bytes": 365560,
+   "avif": 70673
+  },
+  "character-faces/razor-evo-4.png": {
+   "source": "31a1a24a8c8f2e3d06c818d1918531c576280ed0b1eb9e01cec704f0d6f0c364",
+   "bytes": 409604,
+   "avif": 80585
+  },
+  "character-faces/razor-evo-5.png": {
+   "source": "aaa1b2884080578228d870f2a8748a3599d95b7b7bbae419ba0f1a4a10c6f627",
+   "bytes": 471280,
+   "avif": 98127
+  },
+  "character-faces/razor-evo-6.png": {
+   "source": "cb6f5b1c25ec616691ebc835caf516ec2c4ac804d9137c72e36c877f0a847fb5",
+   "bytes": 508936,
+   "avif": 90031
+  },
+  "character-faces/razor.png": {
+   "source": "d56795fb69031a216afd8359b2ca4d8fad59625bd0adc73868d891251ef3bc7e",
+   "bytes": 358583,
+   "avif": 59597
+  },
+  "character-faces/rosetta-evo-2.png": {
+   "source": "d868c5d06be56567d43652562a87821cd3a1d58886d8c550352d9429e8a0345a",
+   "bytes": 411505,
+   "avif": 81494
+  },
+  "character-faces/rosetta-evo-3.png": {
+   "source": "e4cb586ebd371bbd11e38af3678b57d9e2d9308fc7714d7838a12795860e3eee",
+   "bytes": 367740,
+   "avif": 64767
+  },
+  "character-faces/rosetta-evo-4.png": {
+   "source": "9b1f594c00df084d6d88a4cdf692ea43f932aeb62de5ba65c03e02e51958a004",
+   "bytes": 459739,
+   "avif": 92036
+  },
+  "character-faces/rosetta-evo-5.png": {
+   "source": "d38110b1f0e215e79373ce534af49d3890d0b82bd636cb4fae12d205b1e0e1fb",
+   "bytes": 493753,
+   "avif": 92101
+  },
+  "character-faces/rosetta-evo-6.png": {
+   "source": "d0b4b893aafd6e1864d8bd73eed7f56af4b7b0a299aa77e90d74b86480ebd9e4",
+   "bytes": 572955,
+   "avif": 126667
+  },
+  "character-faces/rosetta.png": {
+   "source": "85ef2551a3fd71511983c822019deb9c73ad3de3dc3e97a412051a64b70d4668",
+   "bytes": 417114,
+   "avif": 67892
+  },
+  "character-faces/serapha-evo-2.png": {
+   "source": "b1800a9eb56a0067475e17870e63e76234104d47f359f77d87ed7354fca5a2fb",
+   "bytes": 367372,
+   "avif": 66127
+  },
+  "character-faces/serapha-evo-3.png": {
+   "source": "94bc2db91a0e2bee4982d923aacd15c8ede273173e0703a1b2c389f1eaac8cb9",
+   "bytes": 365623,
+   "avif": 61337
+  },
+  "character-faces/serapha-evo-4.png": {
+   "source": "fb82c456ed6736464bc83ae41b6b72b4a64cadb29a0720d7c285c3462820c019",
+   "bytes": 440602,
+   "avif": 91472
+  },
+  "character-faces/serapha-evo-5.png": {
+   "source": "f1435bd284d4b79e6fb942e4912e4028791b18cd780c7168a1f40c796b036225",
+   "bytes": 446817,
+   "avif": 84321
+  },
+  "character-faces/serapha-evo-6.png": {
+   "source": "aa008ed22590866676e4af4d561650e31cdcb094726e1b1a8103bab7bfd30179",
+   "bytes": 511217,
+   "avif": 96315
+  },
+  "character-faces/serapha.png": {
+   "source": "de5f341ef37830506fc73aeae93e3463c0d599855772fa60a0212bb69988c8d5",
+   "bytes": 350955,
+   "avif": 54645
+  },
+  "character-faces/seravelle-evo-2.png": {
+   "source": "09b6b6f1402a4dce2ce8977c5dec156f9059ab453f629029e4cc6d38f8997469",
+   "bytes": 378422,
+   "avif": 81127
+  },
+  "character-faces/seravelle-evo-3.png": {
+   "source": "35253ea3941cef1d5d66d3f387379ddcb0cad43bbe571e71dfa03264b1aebdd2",
+   "bytes": 403217,
+   "avif": 84187
+  },
+  "character-faces/seravelle-evo-4.png": {
+   "source": "d8e30430b8fe998fa2f5765baa082498bb5002ac6c316f5da89a8236b7ceabbf",
+   "bytes": 438170,
+   "avif": 83283
+  },
+  "character-faces/seravelle-evo-5.png": {
+   "source": "69864c78357d252c6813a4c34bc5967846c37fea5de73b4663e9a172eeeb70b4",
+   "bytes": 462987,
+   "avif": 96173
+  },
+  "character-faces/seravelle-evo-6.png": {
+   "source": "750a2b4d168d970002acfa0b0db4b08d77313ceb300fef7929bffdfbc5c3b8c3",
+   "bytes": 462755,
+   "avif": 92695
+  },
+  "character-faces/seravelle.png": {
+   "source": "c8ad2ae1ea67ac9c91f97e12eafbc27367b2f31cfbe244802402dacca97cc45c",
+   "bytes": 361977,
+   "avif": 60823
+  },
+  "character-faces/solenne-evo-2.png": {
+   "source": "ed61d85a19e4f73b4f82f5fede4795b0f25803ba05e5a8982a15bdf36c9ba790",
+   "bytes": 288278,
+   "avif": 53252
+  },
+  "character-faces/solenne-evo-3.png": {
+   "source": "19edfdeb6ad305e25cde52bb79138056f38c17cc394ef15fec7b5a198a7b9698",
+   "bytes": 412661,
+   "avif": 77034
+  },
+  "character-faces/solenne-evo-4.png": {
+   "source": "1b5404cf3f7fe78e3710748df8760a58a6dfff5ba675b9096a922da62b6d1288",
+   "bytes": 471291,
+   "avif": 92694
+  },
+  "character-faces/solenne-evo-5.png": {
+   "source": "7110cafd870c7cc845550e785b7edafa4eeae24fd11a489633f67c127a5c9afb",
+   "bytes": 519525,
+   "avif": 97469
+  },
+  "character-faces/solenne-evo-6.png": {
+   "source": "b20ce57b8f126411cc861f4e2cccd8858533adcdc9b747cc64520552b40fa846",
+   "bytes": 561420,
+   "avif": 109278
+  },
+  "character-faces/solenne.png": {
+   "source": "ab5cb55d52b0eb5e7d0f928643f6dffe200271ccd18236d7741b4b90d9f35744",
+   "bytes": 403586,
+   "avif": 56532
+  },
+  "character-faces/thornia-evo-2.png": {
+   "source": "061d047cd1e20080721ab4497d7fdfc391383a0086c09da4c11447a6a227a2c9",
+   "bytes": 367480,
+   "avif": 72198
+  },
+  "character-faces/thornia-evo-3.png": {
+   "source": "e0acffdd5a98711de85b23884d35e4f3d7055a5eac527b4e1f405fdf7361bb8e",
+   "bytes": 420051,
+   "avif": 69632
+  },
+  "character-faces/thornia-evo-4.png": {
+   "source": "a5d4bc64b37e36ca08b1700416d5e9b1a4bf8b1511ac4b2d3bdd55848f708873",
+   "bytes": 475732,
+   "avif": 106383
+  },
+  "character-faces/thornia-evo-5.png": {
+   "source": "b544e94d5d9b876a7c3c07809c4b99bf8ea1734f7ee9022e5045445dce673ea4",
+   "bytes": 553370,
+   "avif": 135198
+  },
+  "character-faces/thornia-evo-6.png": {
+   "source": "49aa70f03a7e41dc434aceae1019c93aba5c88dc103cffed2d97249e569bea65",
+   "bytes": 525083,
+   "avif": 93011
+  },
+  "character-faces/thornia.png": {
+   "source": "b304dd59366d038508b9611bcd12d805ba6a889dd7fbf830b606311332005f3c",
+   "bytes": 392816,
+   "avif": 69022
+  },
   "character-faces/tizu-evo-2.png": {
    "source": "3426861d52832735356ca769b3c602d5004e3feab3bb37f51f203376a694e08f",
    "bytes": 416156,
@@ -1386,6 +2136,126 @@
    "source": "f2a4b82d5ccdff99d4147fc2dc8ab2bf202c518bd8275357e6de3262be2267bb",
    "bytes": 368519,
    "avif": 83948
+  },
+  "character-faces/vaelor-evo-2.png": {
+   "source": "0dc3b465b818c451c4bb721a1a12bd0a53f681c41dbd23d19c75a7861e80a3fb",
+   "bytes": 405515,
+   "avif": 65255
+  },
+  "character-faces/vaelor-evo-3.png": {
+   "source": "affe4179ec461ca75c5b5353d25920a2bab98a2bac1258186ffb404e35445bd9",
+   "bytes": 415241,
+   "avif": 92960
+  },
+  "character-faces/vaelor-evo-4.png": {
+   "source": "58294ca89f7ad8de44241abd0f5d4dfa4c0634eb1fc9a8c57858e4a326148e7b",
+   "bytes": 455208,
+   "avif": 92764
+  },
+  "character-faces/vaelor-evo-5.png": {
+   "source": "8503dbd4a273becbcb8b89107b0d7d65abb7af0efd050e40b0b98390a15a15f3",
+   "bytes": 505988,
+   "avif": 102106
+  },
+  "character-faces/vaelor-evo-6.png": {
+   "source": "2e217bf227da1f2e85fe86955e0ac0f84a29faff7ea2deabfacb7acb9e3ba19f",
+   "bytes": 546457,
+   "avif": 101274
+  },
+  "character-faces/vaelor.png": {
+   "source": "51bf6b3cebc7e73cbc6a5da9de6eff25937191d7b5f349e02c0f7c984e643aa2",
+   "bytes": 391527,
+   "avif": 66630
+  },
+  "character-faces/varkhel-evo-2.png": {
+   "source": "9f10c3801c32605e5833ca61b5d77e6fca515b9ee575cd20d4f28e0a3f50f65a",
+   "bytes": 375754,
+   "avif": 66002
+  },
+  "character-faces/varkhel-evo-3.png": {
+   "source": "b86386bf96c9176b31488a9ef2a7dbca7b09fc8c62890b83dda3aad9a2457f44",
+   "bytes": 366821,
+   "avif": 69281
+  },
+  "character-faces/varkhel-evo-4.png": {
+   "source": "bf032128f231accdd8c096958e85ecb7635df025b2f29d8a03b276f046964c29",
+   "bytes": 447238,
+   "avif": 81788
+  },
+  "character-faces/varkhel-evo-5.png": {
+   "source": "a71b2fd54db9fe21499bac884e2df29ef42cfd0930b6d7f98141435671b483af",
+   "bytes": 493387,
+   "avif": 92913
+  },
+  "character-faces/varkhel-evo-6.png": {
+   "source": "ae24775850092d92e44e7d94bbaf3b369f4b6ad1cd38c92a06220f393daa79c3",
+   "bytes": 515695,
+   "avif": 99251
+  },
+  "character-faces/varkhel.png": {
+   "source": "a5cd8818c6fba90f89ab3c0ba3dea2402203e0fb035f4b49b9e896d280d6cf41",
+   "bytes": 343860,
+   "avif": 55466
+  },
+  "character-faces/velmira-evo-2.png": {
+   "source": "98e02513afabf0449afa82a1eb56457958aaa414b0ba28d7c29d8f53c9d9916e",
+   "bytes": 291650,
+   "avif": 44610
+  },
+  "character-faces/velmira-evo-3.png": {
+   "source": "cf66aca3bd081988e95a99e3e2f0f0cd507caadfcc7c4fbb7551a8de98d814ff",
+   "bytes": 418474,
+   "avif": 72374
+  },
+  "character-faces/velmira-evo-4.png": {
+   "source": "a98e5764418d37207f696415f1afa7f4a7d35df084cbbf8e1def498369905481",
+   "bytes": 454086,
+   "avif": 80297
+  },
+  "character-faces/velmira-evo-5.png": {
+   "source": "b121215f5dda2d42d8f250837d1eaec282bbe34fa0a050987bae40f05a0be84e",
+   "bytes": 462853,
+   "avif": 101277
+  },
+  "character-faces/velmira-evo-6.png": {
+   "source": "fc2513896e8362f4f6feb9a3dc128237d5af73468a6763a737aae363cc368218",
+   "bytes": 499660,
+   "avif": 101227
+  },
+  "character-faces/velmira.png": {
+   "source": "3e306f80f3b0d89b1682a4bcd8f2a874a4ed3c9a5cde33cd951cddf40c3b33f9",
+   "bytes": 307020,
+   "avif": 40466
+  },
+  "character-faces/vespera-evo-2.png": {
+   "source": "f68af330934eedf09fe1c8009d558b41b93c633a2cc40c3c50785cddad85c58b",
+   "bytes": 421775,
+   "avif": 81464
+  },
+  "character-faces/vespera-evo-3.png": {
+   "source": "3aca1d825d5c551f5de354bf1eb51894fe02423acaf7f780bc331d89d4be837b",
+   "bytes": 396585,
+   "avif": 69224
+  },
+  "character-faces/vespera-evo-4.png": {
+   "source": "d314c5a3b736593e2a4caf9a712f6fbdc72b20757ed1ee1d3abb3890d6b6704d",
+   "bytes": 501932,
+   "avif": 112299
+  },
+  "character-faces/vespera-evo-5.png": {
+   "source": "f93cd515db0102d6d807cb92abdd4ab47f7b9b6b188459781a4fd344f600f236",
+   "bytes": 526266,
+   "avif": 101468
+  },
+  "character-faces/vespera-evo-6.png": {
+   "source": "8fd617d11c365635c58e8e2e927862721b5bd43fe46530051a8cbd8cda7ac3d3",
+   "bytes": 516530,
+   "avif": 89437
+  },
+  "character-faces/vespera.png": {
+   "source": "c31bb0093a2e157f94b45ffc0b4314042f04ad8dd0c1a5f26a4f42b19feeae04",
+   "bytes": 376815,
+   "avif": 65866
   },
   "characters/asteriel-evo-2.png": {
    "source": "122017f83ef1f87662683a84c6f7b16fec4227460ee24c7c7d61b5d6e4579f2c",

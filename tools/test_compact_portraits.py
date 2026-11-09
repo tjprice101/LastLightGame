@@ -84,11 +84,22 @@ class CompactPortraitTests(unittest.TestCase):
                 self.assertEqual((root / path).read_bytes(), data)
             self.assertFalse((root / OUTPUT / "tizu.png").exists())
 
-    def test_installed_starter_forms_have_exact_source_bound_provenance(self):
+    def test_all_released_forms_have_exact_source_bound_provenance(self):
         manifest = build(ROOT, check=True)
-        expected = {name if form == 1 else f"{name}-evo-{form}"
-                    for name in ("infernis", "tizu", "flora") for form in range(1, 7)}
+        released = {
+            "asteriel", "atmoso", "aurora", "bliss", "bruno", "caevren",
+            "caldrex", "crinso", "disciple", "elise", "ilvaris", "ilyss",
+            "kaelith", "maerion", "myrthen", "neralis", "nerithe", "orvella",
+            "ozriel", "razor", "rosetta", "serapha", "seravelle", "solenne",
+            "thornia", "vaelor", "varkhel", "velmira", "vespera",
+        }
+        expected = {
+            name if form == 1 else f"{name}-evo-{form}"
+            for name in ("infernis", "tizu", "flora", *released)
+            for form in range(1, 7)
+        }
         self.assertEqual(set(manifest["files"]), expected)
+        self.assertEqual(len(expected), 192)
         for entry in manifest["files"].values():
             self.assertEqual(digest((ROOT / entry["source"]).read_bytes()), entry["sourceHash"])
             self.assertEqual(digest((ROOT / entry["output"]).read_bytes()), entry["outputHash"])

@@ -5,7 +5,7 @@ import { informationTopics } from './information';
 import { worldLore } from './world-lore';
 import { storyRules } from '../content/story';
 
-export const sanctuaryPages = ['home', 'team', 'character', 'gameplay', 'events', 'inventory', 'stores', 'collections', 'squad', 'summon', 'special-banner-archive', 'story', 'battle', 'glossary', 'archives', 'conduit-store', 'conduit-upgrade', 'profile'] as const;
+export const sanctuaryPages = ['home', 'team', 'character', 'gameplay', 'events', 'inventory', 'stores', 'collections', 'squad', 'summon', 'special-banner-archive', 'story', 'battle', 'radiant', 'glossary', 'archives', 'conduit-store', 'conduit-upgrade', 'profile'] as const;
 export type MenuPage = (typeof sanctuaryPages)[number];
 export type TeamArea = 'squad' | 'bearers' | 'creatures';
 
@@ -25,6 +25,7 @@ const headings: Record<MenuPage, readonly [string, string]> = {
   summon: ['SUMMONING', 'Summon'], story: ['SIX BEACONS', 'Story'],
   'special-banner-archive': ['SPECIAL BANNERS', 'Special Banner Archive'],
   battle: ['YOUR SQUAD · GRASSY FIELD', 'Training'],
+  radiant: ['AUTHENTICATED SAVED COMBAT', 'Radiant Encounters'],
   glossary: ['COLLECTIONS · DISCOVERIES', 'Archives'],
   archives: ['COLLECTIONS · DISCOVERIES', 'Archives'],
   'conduit-store': ['STORES', 'Conduit Store'],
@@ -68,6 +69,7 @@ function sanctuaryHelp(page: MenuPage): string {
   if (destination === 'summon') return '<p>Pick a banner and draw. Check Rates & Information for rewards and guarantees. Each banner has its own pity counter.</p>';
   if (destination === 'gameplay' || destination === 'events') return '<p>Activities unlock by your highest-level Element-Bearer; captures don\'t count. Rewards save per kill, even if you quit.</p>';
   if (destination === 'home') return '<p>Choose a destination around your leader. The Story card shows your next stage; select a squad portrait to view that member. Currency balances open Inventory. Collections, Settings and Profile are in the top bar.</p>';
+  if (destination === 'radiant') return '<p>Radiant is an authenticated saved-combat preview. Entry, rewards, preparation and exit are authority-owned. The study remains unavailable until its server gate is enabled.</p>';
   if (destination === 'story') return `<p>Six regions of ${storyRules.regionStages} stages. Each clear opens the next stage. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Regional bosses add a one-time bonus.</p>`;
   if (destination === 'inventory') return '<p>Browse owned materials, Conduits and chests. Select an item for its uses or effects. Open chests here; equip Conduits in Team.</p>';
   if (destination === 'collections' || destination === 'archives' || destination === 'glossary') return '<p>Browse Element-Bearer forms, Conduits and enemy discoveries. Filters narrow the catalog. Encounter enemies to reveal their identity and lore; defeat them to reveal loot.</p>';

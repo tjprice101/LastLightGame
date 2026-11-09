@@ -3,6 +3,7 @@ import { getCreature } from '../content/creatures';
 import { type Account, ownedProgress } from '../game/account';
 import { capturedProgress } from '../game/character-instances';
 import { portrait, assetUrl } from './portrait';
+import { compactPortrait } from './compact-portrait';
 import { characterRating, starBadge } from './character-rating';
 import { materialRarities, getElement } from '../content/activities';
 import { elementAccents } from '../content/dungeon-art';
@@ -28,6 +29,7 @@ export function ownedCompanion(account: Account, id: string) {
     const progress = ownedProgress(account, id);
     const name = characterName(id, progress.evolution, progress.ascension?.stats === true);
     return { name, label: name, color: starter.color, element: starter.element, level: progress.level, art: portrait(starter, progress.evolution, progress.ascension?.stats === true),
+      compactArt: compactPortrait(starter, progress.evolution, { riseBlessed: progress.ascension?.stats === true }),
       rarity: characterRarity(id, progress.evolution), rating: characterRating(id, progress.evolution, progress.ascension?.stats === true), progress: `Lv.${progress.level} · Evo.${displayEvolution(id, progress.evolution)}` };
   }
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
@@ -36,7 +38,8 @@ export function ownedCompanion(account: Account, id: string) {
   const index = (account.capturedCharacters ?? []).findIndex((entry) => entry.instanceId === id) + 1;
   const level = capturedProgress(copy).level;
   const element = getElement(creature.element);
+  const art = creature.art ? `<img src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${creature.name}" width="960" height="960">` : '<span>Artwork pending</span>';
   return { name: creature.name, label: `${creature.name} · Copy ${index}`, color: elementAccents[creature.element], element: element.name, level,
-    art: creature.art ? `<img src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${creature.name}" width="960" height="960">` : '<span>Artwork pending</span>',
+    art, compactArt: art,
     rarity: capturedRarity(creature.id), rating: capturedRating(creature.id), progress: `Lv.${level} · Copy ${index}` };
 }

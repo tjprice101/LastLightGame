@@ -420,8 +420,9 @@ export function installBubbleUi(app: HTMLElement): () => void {
   };
   document.addEventListener('keydown', escape, true);
   const updateMotion = (): void => {
-    backdrop.dataset.motionPaused = String(document.hidden);
-    if (!bubbleMotionAllowed()) clearMotion();
+    const motionAllowed = bubbleMotionAllowed();
+    backdrop.dataset.motionPaused = String(!motionAllowed);
+    if (!motionAllowed) clearMotion();
   };
   window.addEventListener('last-light-motion-change', updateMotion);
   document.addEventListener('visibilitychange', updateMotion);

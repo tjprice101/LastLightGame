@@ -2,16 +2,20 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { afterEach, describe, expect, it } from 'vitest';
 import { characterArt, characterName } from '../content/character-art';
-import { getStarter, openingStarters, starters } from '../content/starters';
+import { getStarter, starters } from '../content/starters';
 import { compactPortraitRevisions } from '../content/compact-portrait-revisions';
 import { characterFacing } from './portrait';
 import { compactPortrait, compactPortraitAttributes } from './compact-portrait';
+import { emptyAccount } from '../game/account';
+import { ownedCompanion } from './owned-companion';
 import { pngFallback, setAvifPreferred, thumbnailSrcset } from './image-format';
 
 afterEach(() => setAvifPreferred(false));
 
 describe('reviewed compact faces', () => {
-  it.each(openingStarters)('$name shares the exact reviewed derived face for every saved form', starter => {
+  const released = starters.filter(starter => characterArt(starter.id, 1).available);
+
+  it.each(released)('$name shares the exact reviewed derived face for every saved form', starter => {
     for (let formIndex = 1; formIndex <= 6; formIndex++) {
       const form = characterArt(starter.id, formIndex);
       const revision = createHash('sha256').update(readFileSync(`public/assets/character-faces/${form.art}.png`))
@@ -31,8 +35,8 @@ describe('reviewed compact faces', () => {
     }
   });
 
-  it('keeps unknown derived crops and undelivered Sunshade forms explicitly pending', () => {
-    for (const starter of starters.filter(value => !openingStarters.some(pilot => pilot.id === value.id))) {
+  it('keeps unreleased artwork and undelivered Sunshade forms explicitly pending', () => {
+    for (const starter of starters.filter(value => !characterArt(value.id, 1).available)) {
       for (let form = 1; form <= 6; form++) {
         const attributes = compactPortraitAttributes(starter, form);
         expect(attributes.available).toBe(false);
@@ -51,6 +55,15 @@ describe('reviewed compact faces', () => {
     expect(html).toContain('alt="Unreached form;');
     expect(html.match(/data-mirrored=/g)).toHaveLength(1);
     expect(html).not.toContain('transform');
+  });
+
+  it('exposes reviewed face crops separately from canonical full-form art', () => {
+    const account = emptyAccount();
+    account.characters.ember = { level: 45, evolution: 3 };
+    const member = ownedCompanion(account, 'ember');
+    const art = characterArt('ember', 3).art;
+    expect(member.art).toContain(`characters/${art}.png`);
+    expect(member.compactArt).toContain(`character-faces/${art}.png`);
   });
 
   it('uses deployment-base versioned AVIF with the existing PNG fallback, never guessed thumbnails', () => {

@@ -1,5 +1,6 @@
 import { validateRadiantCombat, type RadiantCombatEvent, type RadiantCombatState, type RadiantShield, type RadiantSource } from '../game/radiant-combat';
 import { spendReadyFlare, type RadiantGaugeState } from '../game/radiant-gauge';
+import { applyRadiantStatusEvent, radiantStatusSnapshot, type RadiantStatusSnapshot } from './radiant-status';
 
 export interface RadiantReadout {
   units: Record<string, { hp: number; maximum: number; shield: number; layers: RadiantShield[] }>;
@@ -10,6 +11,7 @@ export interface RadiantReadout {
 export interface RadiantImpactFrame {
   events: RadiantCombatEvent[];
   readout: RadiantReadout;
+  statuses: RadiantStatusSnapshot;
 }
 export function radiantReadout(state: RadiantCombatState): RadiantReadout {
   validateRadiantCombat(state);
@@ -79,6 +81,7 @@ function apply(readout: RadiantReadout, event: RadiantCombatEvent): void {
 export function radiantImpactFrames(before: RadiantCombatState, after: RadiantCombatState,
   events: readonly RadiantCombatEvent[]): RadiantImpactFrame[] {
   const displayed = radiantReadout(before), expected = radiantReadout(after);
+  const statuses = radiantStatusSnapshot(before), expectedStatuses = radiantStatusSnapshot(after);
   const frames: RadiantImpactFrame[] = [];
   for (let index = 0; index < events.length;) {
     const batch: RadiantCombatEvent[] = [], first = events[index], key = sourceKey(first);
@@ -86,6 +89,8 @@ export function radiantImpactFrames(before: RadiantCombatState, after: RadiantCo
     do {
       const event = events[index++];
       batch.push(structuredClone(event)); apply(displayed, event);
+      if (event.type === 'status' || event.type === 'guard') applyRadiantStatusEvent(statuses, event);
+      else if (event.type === 'defeated') statuses[event.targetId] = [];
       if ('targetId' in event && sourceKey(event) !== null) targets.add(event.targetId);
       const next = events[index];
       if (!next || key === null) break;
@@ -93,7 +98,7 @@ export function radiantImpactFrames(before: RadiantCombatState, after: RadiantCo
       if (next.type === 'status' && targets.has(next.targetId)) continue;
       if (sourceKey(next) !== key || !('targetId' in next) || targets.has(next.targetId)) break;
     } while (index < events.length);
-    frames.push({ events: batch, readout: structuredClone(displayed) });
+    frames.push({ events: batch, readout: structuredClone(displayed), statuses: structuredClone(statuses) });
   }
   for (const [id, unit] of Object.entries(expected.units)) {
     const actual = displayed.units[id];
@@ -108,5 +113,10 @@ export function radiantImpactFrames(before: RadiantCombatState, after: RadiantCo
     JSON.stringify(displayed.gauge) !== JSON.stringify(expected.gauge) ||
     displayed.currency !== expected.currency || displayed.round !== expected.round)
     throw new Error('Saved impact history does not reproduce final charge and earnings.');
+  const normalizeStatuses = (value: RadiantStatusSnapshot) => Object.fromEntries(Object.entries(value).map(([id, rows]) =>
+    [id, rows.map(row => ({ kind: row.kind, magnitude: row.magnitude, remaining: row.remaining, source: row.source }))
+      .sort((a, b) => `${a.kind}:${JSON.stringify(a.source)}`.localeCompare(`${b.kind}:${JSON.stringify(b.source)}`))]));
+  if (JSON.stringify(normalizeStatuses(statuses)) !== JSON.stringify(normalizeStatuses(expectedStatuses)))
+    throw new Error('Saved impact history does not reproduce final timed statuses and guard.');
   return frames;
 }

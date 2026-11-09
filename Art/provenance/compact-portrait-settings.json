@@ -3,23 +3,1541 @@
   "outputSize": 512,
   "eyeLine": 0.45,
   "forms": {
-    "infernis": { "eye": [594, 415], "size": 440, "sourceHash": "f1dfca73694210efa5b5bb44016d98880e5836594efe55ba85f8c43e03f9c49f" },
-    "infernis-evo-2": { "eye": [455, 365], "size": 420, "sourceHash": "a07e754b46ec0c044ac0184d0c6689b01ccc283290a85bb4906eb084393a52c1" },
-    "infernis-evo-3": { "eye": [395, 410], "size": 360, "sourceHash": "b7572f94e1cd788f47d90f53105e1700952b7a87a268695add8fc32bc9836c39" },
-    "infernis-evo-4": { "eye": [515, 430], "size": 240, "sourceHash": "90dc0720aa52226dd61fd8dacd7b0568ec7dcd32f9747952994fa1d92f1ce874" },
-    "infernis-evo-5": { "eye": [520, 390], "size": 220, "sourceHash": "2e54fc133f7ec7ba4008eecfd7d75d0a124905e601cb18e1d162086e870f8a83" },
-    "infernis-evo-6": { "eye": [500, 330], "size": 200, "sourceHash": "6069adb5b9240734839dbcfbb768779654238f80a36dfab2a3ea53371e15c6ef" },
-    "tizu": { "eye": [498, 376], "size": 420, "sourceHash": "9477f1092ff7d6e78ced159fed8def7b3d875a0a90e3a7d09895e1e050351c4e" },
-    "tizu-evo-2": { "eye": [590, 425], "size": 420, "sourceHash": "3d095999915d018d06d3aaa4916403c32d2527e757df72d1553682f94e2e30e3" },
-    "tizu-evo-3": { "eye": [657, 369], "size": 370, "sourceHash": "e3417167da89686fd13f4d13d834c2741e3ed5042cd1d17751accb184df7f5fd" },
-    "tizu-evo-4": { "eye": [288, 400], "size": 255, "sourceHash": "64d589e2815c9e500ceb627394a8d1d64ce3dea835d2381f65a144f91045ef47" },
-    "tizu-evo-5": { "eye": [465, 372], "size": 220, "sourceHash": "c94506b60dfd217ef4ae85443bc7ef70a3dd8cc2808753b32d25247507ce589f" },
-    "tizu-evo-6": { "eye": [504, 377], "size": 185, "sourceHash": "923f36b217b6b8a8564300eb70768ebfa5b95a300ac2be3b1ea2ca25c2fcb2da" },
-    "flora": { "eye": [419, 389], "size": 430, "sourceHash": "ed45fa0ff56d60cf57df8cdf15506309efdfea82dc6f67820fe82b6c1951f884" },
-    "flora-evo-2": { "eye": [429, 387], "size": 405, "sourceHash": "216d8fddf45f9bbcaeae63f2bf8c0e54cc37a9ef214781c8e2dba2d8ee1e96d8" },
-    "flora-evo-3": { "eye": [384, 430], "size": 335, "sourceHash": "f912f564390a3a618e8e2d45a5c7f8cbcf412115754d5a24bf8544a7c5febe00" },
-    "flora-evo-4": { "eye": [373, 376], "size": 225, "sourceHash": "9af2e488594034fc396163e2fed2347814b2c5e572bf0e64e3fd1aca4deae7ee" },
-    "flora-evo-5": { "eye": [453, 371], "size": 210, "sourceHash": "3a629be7a3171412743bf63763cd71c4566d0422b659c07ebc2164c949ec9240" },
-    "flora-evo-6": { "eye": [441, 331], "size": 210, "sourceHash": "a9f83022492fb0c7f28ada8db7a08bc4c65d6a5c92b23fec5a428a4a2640e6eb" }
+    "infernis": {
+      "eye": [
+        594,
+        415
+      ],
+      "size": 440,
+      "sourceHash": "f1dfca73694210efa5b5bb44016d98880e5836594efe55ba85f8c43e03f9c49f"
+    },
+    "infernis-evo-2": {
+      "eye": [
+        455,
+        365
+      ],
+      "size": 420,
+      "sourceHash": "a07e754b46ec0c044ac0184d0c6689b01ccc283290a85bb4906eb084393a52c1"
+    },
+    "infernis-evo-3": {
+      "eye": [
+        395,
+        410
+      ],
+      "size": 360,
+      "sourceHash": "b7572f94e1cd788f47d90f53105e1700952b7a87a268695add8fc32bc9836c39"
+    },
+    "infernis-evo-4": {
+      "eye": [
+        515,
+        430
+      ],
+      "size": 240,
+      "sourceHash": "90dc0720aa52226dd61fd8dacd7b0568ec7dcd32f9747952994fa1d92f1ce874"
+    },
+    "infernis-evo-5": {
+      "eye": [
+        520,
+        390
+      ],
+      "size": 220,
+      "sourceHash": "2e54fc133f7ec7ba4008eecfd7d75d0a124905e601cb18e1d162086e870f8a83"
+    },
+    "infernis-evo-6": {
+      "eye": [
+        500,
+        330
+      ],
+      "size": 200,
+      "sourceHash": "6069adb5b9240734839dbcfbb768779654238f80a36dfab2a3ea53371e15c6ef"
+    },
+    "tizu": {
+      "eye": [
+        498,
+        376
+      ],
+      "size": 420,
+      "sourceHash": "9477f1092ff7d6e78ced159fed8def7b3d875a0a90e3a7d09895e1e050351c4e"
+    },
+    "tizu-evo-2": {
+      "eye": [
+        590,
+        425
+      ],
+      "size": 420,
+      "sourceHash": "3d095999915d018d06d3aaa4916403c32d2527e757df72d1553682f94e2e30e3"
+    },
+    "tizu-evo-3": {
+      "eye": [
+        657,
+        369
+      ],
+      "size": 370,
+      "sourceHash": "e3417167da89686fd13f4d13d834c2741e3ed5042cd1d17751accb184df7f5fd"
+    },
+    "tizu-evo-4": {
+      "eye": [
+        288,
+        400
+      ],
+      "size": 255,
+      "sourceHash": "64d589e2815c9e500ceb627394a8d1d64ce3dea835d2381f65a144f91045ef47"
+    },
+    "tizu-evo-5": {
+      "eye": [
+        465,
+        372
+      ],
+      "size": 220,
+      "sourceHash": "c94506b60dfd217ef4ae85443bc7ef70a3dd8cc2808753b32d25247507ce589f"
+    },
+    "tizu-evo-6": {
+      "eye": [
+        504,
+        377
+      ],
+      "size": 185,
+      "sourceHash": "923f36b217b6b8a8564300eb70768ebfa5b95a300ac2be3b1ea2ca25c2fcb2da"
+    },
+    "flora": {
+      "eye": [
+        419,
+        389
+      ],
+      "size": 430,
+      "sourceHash": "ed45fa0ff56d60cf57df8cdf15506309efdfea82dc6f67820fe82b6c1951f884"
+    },
+    "flora-evo-2": {
+      "eye": [
+        429,
+        387
+      ],
+      "size": 405,
+      "sourceHash": "216d8fddf45f9bbcaeae63f2bf8c0e54cc37a9ef214781c8e2dba2d8ee1e96d8"
+    },
+    "flora-evo-3": {
+      "eye": [
+        384,
+        430
+      ],
+      "size": 335,
+      "sourceHash": "f912f564390a3a618e8e2d45a5c7f8cbcf412115754d5a24bf8544a7c5febe00"
+    },
+    "flora-evo-4": {
+      "eye": [
+        373,
+        376
+      ],
+      "size": 225,
+      "sourceHash": "9af2e488594034fc396163e2fed2347814b2c5e572bf0e64e3fd1aca4deae7ee"
+    },
+    "flora-evo-5": {
+      "eye": [
+        453,
+        371
+      ],
+      "size": 210,
+      "sourceHash": "3a629be7a3171412743bf63763cd71c4566d0422b659c07ebc2164c949ec9240"
+    },
+    "flora-evo-6": {
+      "eye": [
+        441,
+        331
+      ],
+      "size": 210,
+      "sourceHash": "a9f83022492fb0c7f28ada8db7a08bc4c65d6a5c92b23fec5a428a4a2640e6eb"
+    },
+    "asteriel": {
+      "eye": [
+        509,
+        385
+      ],
+      "size": 260,
+      "sourceHash": "431c26605e1bcf7158c8cf40ec288f7da790d63f029a6796691d29be17ab056d"
+    },
+    "asteriel-evo-2": {
+      "eye": [
+        506,
+        369
+      ],
+      "size": 260,
+      "sourceHash": "122017f83ef1f87662683a84c6f7b16fec4227460ee24c7c7d61b5d6e4579f2c"
+    },
+    "asteriel-evo-3": {
+      "eye": [
+        462,
+        352
+      ],
+      "size": 260,
+      "sourceHash": "747a4b03eda4d3bf50b72a3cfb373e6ff9d5fb6e52a2da52d4cb1431d32033fd"
+    },
+    "asteriel-evo-4": {
+      "eye": [
+        480,
+        340
+      ],
+      "size": 260,
+      "sourceHash": "56f6f136ab6debde777f4b8d917862e1680c7a3a10c202192a90234a8dfc270b"
+    },
+    "asteriel-evo-5": {
+      "eye": [
+        442,
+        312
+      ],
+      "size": 260,
+      "sourceHash": "667815304686093a30d0e161cfc8a7fac413fee5e451cf299bbf8b4bae98b4dc"
+    },
+    "asteriel-evo-6": {
+      "eye": [
+        520,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "1e0f02af385d21ca05493d9dcbc6c7613c65b00aed0c093889d8c5b96f4aa4ce"
+    },
+    "atmoso": {
+      "eye": [
+        531,
+        374
+      ],
+      "size": 260,
+      "sourceHash": "cfde8f588b10180a1a9b55976b4851c1e671f587e75645be379f5d33aff57a94"
+    },
+    "atmoso-evo-2": {
+      "eye": [
+        481,
+        396
+      ],
+      "size": 260,
+      "sourceHash": "2ce28d8ae33b7e610fe204dd4a2f6ef19494117d04f0f600f0d05abb730f20ea"
+    },
+    "atmoso-evo-3": {
+      "eye": [
+        489,
+        399
+      ],
+      "size": 260,
+      "sourceHash": "549cfafa329d259f4b62100e4aa4aea58c8fc0c9be3c792d1c1ddef85aa8d295"
+    },
+    "atmoso-evo-4": {
+      "eye": [
+        466,
+        426
+      ],
+      "size": 260,
+      "sourceHash": "5a0e7c22e72714de46e2e3cfc5be7f25887f42801d311514aeb0b234c7b9de17"
+    },
+    "atmoso-evo-5": {
+      "eye": [
+        480,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "45f429409d04a250616f233fd4b78b713a06d65c434da172d43242514f7e4fd8"
+    },
+    "atmoso-evo-6": {
+      "eye": [
+        430,
+        420
+      ],
+      "size": 190,
+      "sourceHash": "db6a7123993286794a0cdc3df2ef4ac8381a4a1eed588ca0a88badcdfb6d049b"
+    },
+    "aurora": {
+      "eye": [
+        380,
+        382
+      ],
+      "size": 320,
+      "sourceHash": "66b88060766d97270c1bbcd91c17912cdfa71c49eda5bbba61448f96a5218d44"
+    },
+    "aurora-evo-2": {
+      "eye": [
+        460,
+        300
+      ],
+      "size": 260,
+      "sourceHash": "a6b2aeafc4e266bdefe53ded033ed731d85dda07bbc1522dbb03de19511b6e72"
+    },
+    "aurora-evo-3": {
+      "eye": [
+        520,
+        330
+      ],
+      "size": 260,
+      "sourceHash": "433a550a84def8cf57710cbd0834b2660a35c493fb038866a52eff9844226e5d"
+    },
+    "aurora-evo-4": {
+      "eye": [
+        430,
+        330
+      ],
+      "size": 260,
+      "sourceHash": "ef22341a2d224ff35f630e0dd337d26c23dac0a4ecabd4253cb73668a7c4d72d"
+    },
+    "aurora-evo-5": {
+      "eye": [
+        460,
+        390
+      ],
+      "size": 260,
+      "sourceHash": "5ec590317bf60c2df003aca4a0152bd51eb110ce96d4ce296fd8d78b5487986c"
+    },
+    "aurora-evo-6": {
+      "eye": [
+        520,
+        420
+      ],
+      "size": 260,
+      "sourceHash": "869244833556d346c34623bc86c86feb0008c6537200ba21853c97cc4cd399c4"
+    },
+    "bliss": {
+      "eye": [
+        500,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "55bf8ea7c8f7ccd1d67a560b64edca938c0aa2c9614c1693834609cf3bf336cb"
+    },
+    "bliss-evo-2": {
+      "eye": [
+        490,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "7e5910319dc7a478f7b2e5a1fce60f37ac305f085b5728abba0fd2c9bfb193af"
+    },
+    "bliss-evo-3": {
+      "eye": [
+        460,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "7ce51292bfff2027987a3136f2f897d76e80b16c64074f62d4d479b46c38c4c1"
+    },
+    "bliss-evo-4": {
+      "eye": [
+        469,
+        340
+      ],
+      "size": 260,
+      "sourceHash": "d42ced7ce943dd21c9c29cb311eaa9173884b30b74c9b47d426de67d9ac28ed8"
+    },
+    "bliss-evo-5": {
+      "eye": [
+        421,
+        373
+      ],
+      "size": 260,
+      "sourceHash": "07b0a2a7ff144ece0768fc2e205c2503ecc953ab3d8e81b68e69559c76bf064a"
+    },
+    "bliss-evo-6": {
+      "eye": [
+        434,
+        369
+      ],
+      "size": 260,
+      "sourceHash": "79f182d07a32e76aeb40d93480ba5864ccc37e78aee6f625fa9661e06003724d"
+    },
+    "bruno": {
+      "eye": [
+        600,
+        300
+      ],
+      "size": 260,
+      "sourceHash": "a69c7a0abb1660e975d737425b2bdda12596c6ad942f531209ee1cee22b246c5"
+    },
+    "bruno-evo-2": {
+      "eye": [
+        472,
+        368
+      ],
+      "size": 260,
+      "sourceHash": "482cd40169c692bc67720307c1daaae1fb73c63b6f0b77d91c104920e208ddb2"
+    },
+    "bruno-evo-3": {
+      "eye": [
+        541,
+        354
+      ],
+      "size": 260,
+      "sourceHash": "31ea6bd55f44880605d3e830fcb97f3bd05a4402d7848d7e86c62bbcea428bf4"
+    },
+    "bruno-evo-4": {
+      "eye": [
+        515,
+        389
+      ],
+      "size": 260,
+      "sourceHash": "c60a4be9569c5c81c24167da2e2609542ba43f2f9f1f6a253f7ddef1ca196c7a"
+    },
+    "bruno-evo-5": {
+      "eye": [
+        480,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "aa9ee38ad228b3c37dba740d21c3e8a8d42bca7b0ec47888065fbe3264c2261f"
+    },
+    "bruno-evo-6": {
+      "eye": [
+        500,
+        380
+      ],
+      "size": 260,
+      "sourceHash": "b15b77686f0220cffd318d48f8feb4ba61b7c9e931e41a9a721e8b90f8ea7ec3"
+    },
+    "caevren": {
+      "eye": [
+        517,
+        361
+      ],
+      "size": 260,
+      "sourceHash": "1fa7e4b4f9b40f5185d64c566cd1ecd1e8932bbcb3c67b766afa465b9d55bc5c"
+    },
+    "caevren-evo-2": {
+      "eye": [
+        501,
+        354
+      ],
+      "size": 260,
+      "sourceHash": "f545664370765672d0437b2c461efd324553cbd143de142a5b1369e22f0e377d"
+    },
+    "caevren-evo-3": {
+      "eye": [
+        518,
+        377
+      ],
+      "size": 260,
+      "sourceHash": "0de687a95bd739f4ec7b6bbc87bec9092abd2065587e57b1af8268cb88d3cd3c"
+    },
+    "caevren-evo-4": {
+      "eye": [
+        527,
+        379
+      ],
+      "size": 260,
+      "sourceHash": "8764ad082a6d7380c44166234ea79f56f612adf043790524edc0bf03ae8c7ee0"
+    },
+    "caevren-evo-5": {
+      "eye": [
+        527,
+        460
+      ],
+      "size": 260,
+      "sourceHash": "a5aee7f602789a0c8668926e395ce81a006855c4cc423d373ae6f8018dec292a"
+    },
+    "caevren-evo-6": {
+      "eye": [
+        553,
+        393
+      ],
+      "size": 260,
+      "sourceHash": "507e1231f11bd6526e66104d49f90bdfe8d176f4160854d5f15868e73b3b74bb"
+    },
+    "caldrex": {
+      "eye": [
+        480,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "5ce3884150a4a7cf419faff01a14ce995761b02f6034e0474c70dbca9eeb8b20"
+    },
+    "caldrex-evo-2": {
+      "eye": [
+        460,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "6c3c560b5345cc5193cc22fba47960ca5ba48d8c5957af39bceb1b3111ae4e87"
+    },
+    "caldrex-evo-3": {
+      "eye": [
+        430,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "a0179a1d66e38721590720235107edb08c4d771d01b21081a48a0ff2807d1687"
+    },
+    "caldrex-evo-4": {
+      "eye": [
+        520,
+        350
+      ],
+      "size": 260,
+      "sourceHash": "9694c7a340d5699b0329ce38d4d975ed8fbdb8f1b52e31eeb39251051dc2c941"
+    },
+    "caldrex-evo-5": {
+      "eye": [
+        500,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "aa062779efbc2e05c6c8a0e6d27a8d680aed43682af321e4d8b340479c09fe14"
+    },
+    "caldrex-evo-6": {
+      "eye": [
+        520,
+        350
+      ],
+      "size": 260,
+      "sourceHash": "b6773723f02738c941d5bffb6b0dde39044401c0218252d4455cdbc3ecf047df"
+    },
+    "crinso": {
+      "eye": [
+        250,
+        390
+      ],
+      "size": 260,
+      "sourceHash": "9b759987d8f4f59ff0179b698a3280749e216aa98de0843d268287450aad70b8"
+    },
+    "crinso-evo-2": {
+      "eye": [
+        430,
+        371
+      ],
+      "size": 260,
+      "sourceHash": "63034dd8c3006c4b707c30e869a5e89473c84b141b858ce19e6ab7e9bf15c13d"
+    },
+    "crinso-evo-3": {
+      "eye": [
+        364,
+        385
+      ],
+      "size": 260,
+      "sourceHash": "6d954c2574b36e5f98098b1dce2f5fa8333a2ba328bd1aba4f4343648f08c422"
+    },
+    "crinso-evo-4": {
+      "eye": [
+        420,
+        369
+      ],
+      "size": 260,
+      "sourceHash": "67e41c27f4f90cd7c531ee28ff9f15e831141b14a50b6dce62068b2996e6e240"
+    },
+    "crinso-evo-5": {
+      "eye": [
+        447,
+        412
+      ],
+      "size": 260,
+      "sourceHash": "156d8b1de23be864cbefe248acdff48763c2b62dc6eed66a7ecc62ece9e7a7aa"
+    },
+    "crinso-evo-6": {
+      "eye": [
+        450,
+        380
+      ],
+      "size": 260,
+      "sourceHash": "72a4da87e9a9339eda4442496aa1d0da7993ffb4f642ea7045b58a37e8d58d81"
+    },
+    "disciple": {
+      "eye": [
+        478,
+        384
+      ],
+      "size": 260,
+      "sourceHash": "a248147a68c9b7f8b7f2067c78397c8968a77e7ba9d8c01d0474f77c7447d8e0"
+    },
+    "disciple-evo-2": {
+      "eye": [
+        363,
+        365
+      ],
+      "size": 260,
+      "sourceHash": "fa136526df4044a507b9d22fdca71e7eeaa653dd9d1ca11d1b6fd5227432766c"
+    },
+    "disciple-evo-3": {
+      "eye": [
+        489,
+        388
+      ],
+      "size": 260,
+      "sourceHash": "261fa2b6753cb04b78d09f73d96c16f73db75a0639997aa4696b7582caeb1d86"
+    },
+    "disciple-evo-4": {
+      "eye": [
+        497,
+        440
+      ],
+      "size": 260,
+      "sourceHash": "bed3ce50fc70493bd18a86ce74d827e33e201ffd0249c2cd6273ac560709bcd1"
+    },
+    "disciple-evo-5": {
+      "eye": [
+        485,
+        415
+      ],
+      "size": 260,
+      "sourceHash": "e87f847bdbe78d37da1bc074de967f508ca1a667ef60e05d2238902057dbca57"
+    },
+    "disciple-evo-6": {
+      "eye": [
+        500,
+        370
+      ],
+      "size": 260,
+      "sourceHash": "505a5a96b2c38231741e6a976939d2b7bf6179fe07ff13cc5f78478368989769"
+    },
+    "elise": {
+      "eye": [
+        463,
+        390
+      ],
+      "size": 260,
+      "sourceHash": "5c46be99251dd18cab84a208095665ab9d006e80e6d0b4243cb1fbf1d0c92553"
+    },
+    "elise-evo-2": {
+      "eye": [
+        512,
+        387
+      ],
+      "size": 260,
+      "sourceHash": "eeb7fc2461ca67a0a74cb76e926dcd458e26486de38d8dcaf723d0efa587a585"
+    },
+    "elise-evo-3": {
+      "eye": [
+        444,
+        395
+      ],
+      "size": 260,
+      "sourceHash": "fb64faf69c69f0ac5b4dee972d93b6b417dd8c4a075ec6dfcacc527ac4107e50"
+    },
+    "elise-evo-4": {
+      "eye": [
+        443,
+        450
+      ],
+      "size": 260,
+      "sourceHash": "0ba0f56289a3b3af18b220b3b2f15c8716c108ae7a92377e89a1204c38d63bfe"
+    },
+    "elise-evo-5": {
+      "eye": [
+        500,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "b24f59839d20170b4eae26f7b5953827c71023bb8efaccf66107ce54f04d1387"
+    },
+    "elise-evo-6": {
+      "eye": [
+        500,
+        380
+      ],
+      "size": 260,
+      "sourceHash": "b1c35595ea23eeed9aed52dedb515596a0d5f68464da9fc9e6baaa99ed14554b"
+    },
+    "ilvaris": {
+      "eye": [
+        600,
+        400
+      ],
+      "size": 260,
+      "sourceHash": "ab5328000ae75ec664fabe9ea5ba3cef295a6e2682e08fc3bc90b0a93ccaf2db"
+    },
+    "ilvaris-evo-2": {
+      "eye": [
+        421,
+        393
+      ],
+      "size": 260,
+      "sourceHash": "2c0550f7e13460274a5ba0efc19fa0fd958541f274e4faa755f6296e5cf90300"
+    },
+    "ilvaris-evo-3": {
+      "eye": [
+        428,
+        408
+      ],
+      "size": 260,
+      "sourceHash": "3b241870ff6b0c93b2f453b042ef66155d03700509b38f995898f9a5067a7939"
+    },
+    "ilvaris-evo-4": {
+      "eye": [
+        430,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "690f4ff375b8ac2f9ff6bc7b2e825e7291292334ddfdafe5af9636e025f2a2fd"
+    },
+    "ilvaris-evo-5": {
+      "eye": [
+        495,
+        357
+      ],
+      "size": 260,
+      "sourceHash": "98605048fdd8e8739c0bbc1312e47421da3e83506ced332f1cf1368564986ce0"
+    },
+    "ilvaris-evo-6": {
+      "eye": [
+        480,
+        380
+      ],
+      "size": 260,
+      "sourceHash": "9282abe2c3ad325278316ebe5bb9c12b8b03535c9034a7e7fd189b7f0c02a431"
+    },
+    "ilyss": {
+      "eye": [
+        474,
+        326
+      ],
+      "size": 260,
+      "sourceHash": "64fefcf60d10a08d33e56f762d5ee5ddd801b61ec2a5c7e1f7ff10bacd5223fb"
+    },
+    "ilyss-evo-2": {
+      "eye": [
+        500,
+        380
+      ],
+      "size": 260,
+      "sourceHash": "3c6b213b7d89859c1a0fa8574efc9abf2e73f6b7467a5bd075f28fd115a2e306"
+    },
+    "ilyss-evo-3": {
+      "eye": [
+        497,
+        321
+      ],
+      "size": 260,
+      "sourceHash": "0bf5d1e0821f6be8d2ecebd2869c128af4cf23d2018ab982860ef92743686898"
+    },
+    "ilyss-evo-4": {
+      "eye": [
+        483,
+        345
+      ],
+      "size": 260,
+      "sourceHash": "3145157d99bb26bd4c39f9e83e99d2da0890641f3e8e4f8c93d1c7cda7593caf"
+    },
+    "ilyss-evo-5": {
+      "eye": [
+        490,
+        340
+      ],
+      "size": 260,
+      "sourceHash": "5f96fc7780fcdb6c72c6ed7a0686eb6f68fffdac59adee648cef06526feeba5a"
+    },
+    "ilyss-evo-6": {
+      "eye": [
+        508,
+        305
+      ],
+      "size": 260,
+      "sourceHash": "fe50ea97eeaef6eeb09df608980000a797c298fa54afd44cc48b05dd90c3dbc2"
+    },
+    "kaelith": {
+      "eye": [
+        466,
+        397
+      ],
+      "size": 260,
+      "sourceHash": "843c3a86c50b8a43a903c2186734f75f8dda63fcaa66e9541f42caed0b480d31"
+    },
+    "kaelith-evo-2": {
+      "eye": [
+        439,
+        386
+      ],
+      "size": 260,
+      "sourceHash": "cf5d538e39e228685d24cd7997b552f11b78024dcf6dcd3612c2e3721a593bfd"
+    },
+    "kaelith-evo-3": {
+      "eye": [
+        490,
+        380
+      ],
+      "size": 260,
+      "sourceHash": "410749adeed626a1154c53900947d13a889e27323a4a04297e3574ff7e54cab7"
+    },
+    "kaelith-evo-4": {
+      "eye": [
+        493,
+        365
+      ],
+      "size": 260,
+      "sourceHash": "87b7bb27b1fd9c83eca8b0abfeb82f9c88c32a5b5bc4250bbf8c2bc035646f15"
+    },
+    "kaelith-evo-5": {
+      "eye": [
+        476,
+        398
+      ],
+      "size": 260,
+      "sourceHash": "53ae0f197ebefe2e3f3b33bf45d36c20584006f03b78ee69fd0137cb847007d9"
+    },
+    "kaelith-evo-6": {
+      "eye": [
+        500,
+        390
+      ],
+      "size": 260,
+      "sourceHash": "46172bd38ae8193b5cd5a0f6d743d5f8fffd08618ed755c885b78a8c7bd542f2"
+    },
+    "maerion": {
+      "eye": [
+        510,
+        352
+      ],
+      "size": 260,
+      "sourceHash": "91db4f82d958bb85b4eeb9564d8164d0890de9991a4b986757c29eb20754adda"
+    },
+    "maerion-evo-2": {
+      "eye": [
+        540,
+        364
+      ],
+      "size": 260,
+      "sourceHash": "bd322529e50cc6f2fb89094ddd75c25989ac9d1ed437d4bbee082b5812d3630b"
+    },
+    "maerion-evo-3": {
+      "eye": [
+        540,
+        310
+      ],
+      "size": 260,
+      "sourceHash": "c28b055bb4bafcc3bde545bc34adad74966af8a0a5f5b6c73000c4e950422535"
+    },
+    "maerion-evo-4": {
+      "eye": [
+        503,
+        384
+      ],
+      "size": 260,
+      "sourceHash": "93290682a03d9e1b035ba6dd20d943b10968a0f5f31ae43f53bc18eecfeeb08f"
+    },
+    "maerion-evo-5": {
+      "eye": [
+        565,
+        377
+      ],
+      "size": 260,
+      "sourceHash": "3186d8b11acb86650e7ce8fe8e4ffd894331bb582cd43e7f1c2493843d947103"
+    },
+    "maerion-evo-6": {
+      "eye": [
+        529,
+        398
+      ],
+      "size": 260,
+      "sourceHash": "8543db58ccf42b2017d895eabcac49b0797d8569ffde897478d5ee6201f9d601"
+    },
+    "myrthen": {
+      "eye": [
+        443,
+        437
+      ],
+      "size": 260,
+      "sourceHash": "631b1d3cf69214d1bf772b668aefed91afcc486a94f23a0da2b96b2c4021b60a"
+    },
+    "myrthen-evo-2": {
+      "eye": [
+        450,
+        395
+      ],
+      "size": 260,
+      "sourceHash": "24db1c220f85aa6b7def2740c5072c4912ffd29a0f86950627b0d1d79654dade"
+    },
+    "myrthen-evo-3": {
+      "eye": [
+        468,
+        399
+      ],
+      "size": 260,
+      "sourceHash": "e3ac6844dcdbfea904e13bb8f939e072da962f7de48b61431668565c9f23f3d2"
+    },
+    "myrthen-evo-4": {
+      "eye": [
+        492,
+        381
+      ],
+      "size": 260,
+      "sourceHash": "4acc5353ab7b727be6696c903dcfca81399c123286a4e11e22b79b8ad0500d40"
+    },
+    "myrthen-evo-5": {
+      "eye": [
+        462,
+        383
+      ],
+      "size": 260,
+      "sourceHash": "ee1494f7badc10c8bb84f988d224c3fe20986351939559fd91dc273dd304f296"
+    },
+    "myrthen-evo-6": {
+      "eye": [
+        490,
+        380
+      ],
+      "size": 260,
+      "sourceHash": "d660d4cd282c6e4c8d4d569521071516f1eaaa8f71ff0102a8f54ff24239039b"
+    },
+    "neralis": {
+      "eye": [
+        478,
+        353
+      ],
+      "size": 260,
+      "sourceHash": "00d59a54eb7aee33bbcb34026d9ea2ac13179f205bdad60594bc3fe0fa286181"
+    },
+    "neralis-evo-2": {
+      "eye": [
+        506,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "158b70e7af91591c9365d43027b17044dfebbf05e789032a3f716185314a1d71"
+    },
+    "neralis-evo-3": {
+      "eye": [
+        438,
+        386
+      ],
+      "size": 260,
+      "sourceHash": "22a724bc752357b1f27a7c14ea6a656b4537e12a5746491b2bd7a53555a22ee3"
+    },
+    "neralis-evo-4": {
+      "eye": [
+        540,
+        380
+      ],
+      "size": 260,
+      "sourceHash": "78faf179f658849b21b64eebac6c08007c67930614bd23bde6cbcc3ca5483e5a"
+    },
+    "neralis-evo-5": {
+      "eye": [
+        500,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "94a6ce94db9c8695e2847c45630788e23ec860ad9e4250dfe41939a60fbdba8e"
+    },
+    "neralis-evo-6": {
+      "eye": [
+        467,
+        327
+      ],
+      "size": 260,
+      "sourceHash": "63207164f7f539554c2902a55fdb1568f6d9bb7b752468094b9b6e1dec483739"
+    },
+    "nerithe": {
+      "eye": [
+        532,
+        384
+      ],
+      "size": 260,
+      "sourceHash": "627959c92fc4b377c202289e478b05d5a09dad65a121a2a733b3d3ff3b923d80"
+    },
+    "nerithe-evo-2": {
+      "eye": [
+        529,
+        399
+      ],
+      "size": 260,
+      "sourceHash": "42b693d24a1aa78706d9d01c2da969caf7f08c681aa564e2c75dc75b482e5b50"
+    },
+    "nerithe-evo-3": {
+      "eye": [
+        498,
+        430
+      ],
+      "size": 260,
+      "sourceHash": "22ff8fd31c8c3dcfd72918d8f05223ee81decc34d5b510d6372f036a06b69454"
+    },
+    "nerithe-evo-4": {
+      "eye": [
+        442,
+        351
+      ],
+      "size": 260,
+      "sourceHash": "aeb989705886eee5a51a7029ad90c31546122d4664bdea130e81a26c53a54143"
+    },
+    "nerithe-evo-5": {
+      "eye": [
+        590,
+        386
+      ],
+      "size": 260,
+      "sourceHash": "831535e0e83ff89638f3f9e8914e5b8957c57935258c580058df839e162b6332"
+    },
+    "nerithe-evo-6": {
+      "eye": [
+        480,
+        380
+      ],
+      "size": 260,
+      "sourceHash": "606070da88ffa2b1fcd8f53c917264b6f99cb3c98aa88d4554801650a37e16b9"
+    },
+    "orvella": {
+      "eye": [
+        480,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "1c5b09a5d9665af31a08341cf3c4400b862cd40a564eae9480d133afcc46b308"
+    },
+    "orvella-evo-2": {
+      "eye": [
+        456,
+        356
+      ],
+      "size": 260,
+      "sourceHash": "589ef0daa278f16fe03c851569372fead81058206f313ab2efcf940f92f1be38"
+    },
+    "orvella-evo-3": {
+      "eye": [
+        462,
+        372
+      ],
+      "size": 260,
+      "sourceHash": "7089d0e31d0a293d0625651fce0e6b00f8df5708eec89a815a3a8043dc48a8e2"
+    },
+    "orvella-evo-4": {
+      "eye": [
+        470,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "30c6905eb5f430b2614b53031f69ae761a645f410d2da2e3778af865568b3549"
+    },
+    "orvella-evo-5": {
+      "eye": [
+        500,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "50f2aba47556b8ce909f74c6caab64548fff607a9e71164028ea06ee28cc4c9e"
+    },
+    "orvella-evo-6": {
+      "eye": [
+        491,
+        377
+      ],
+      "size": 260,
+      "sourceHash": "f8559943b59dc31e68fe8a06ff019f91df6e1e6caa8ae5f6bf1fd09fd1ef446e"
+    },
+    "ozriel": {
+      "eye": [
+        480,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "e3d4eae830152488df31cc6367bdfcb973c26930c0e3ea5e95771073163feb34"
+    },
+    "ozriel-evo-2": {
+      "eye": [
+        500,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "e9a831b48e7437e5c58c3cb57614baf73b5dae37523e15266b0d6a4efee24c97"
+    },
+    "ozriel-evo-3": {
+      "eye": [
+        500,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "f973129b376e2ffcb80723ae9bfacba184f6558f150f4d7f343babb3780915ae"
+    },
+    "ozriel-evo-4": {
+      "eye": [
+        500,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "f0ae51800b5aac3177bc70aa45d9ff8f205d02fa9eb66cff806f29828b5ac29a"
+    },
+    "ozriel-evo-5": {
+      "eye": [
+        414,
+        357
+      ],
+      "size": 260,
+      "sourceHash": "b9fb35e686bb6b5391d71907dc7c3ff2dc3c28c72322a22cd73f150fa56620e6"
+    },
+    "ozriel-evo-6": {
+      "eye": [
+        463,
+        358
+      ],
+      "size": 260,
+      "sourceHash": "aeb2060d26e522998ff2ce524861ab240dc2d0340351e1af8f59ee58d17db57c"
+    },
+    "razor": {
+      "eye": [
+        539,
+        358
+      ],
+      "size": 260,
+      "sourceHash": "fc35234b9a6dee09393695d5e9fdfdfbfdb7aa0c2af7d9fedd71c54ec5409443"
+    },
+    "razor-evo-2": {
+      "eye": [
+        471,
+        340
+      ],
+      "size": 260,
+      "sourceHash": "41555b93d77ac38de1e23ecdf290fe1a4f795df72c59b94a15c546827d185577"
+    },
+    "razor-evo-3": {
+      "eye": [
+        443,
+        372
+      ],
+      "size": 260,
+      "sourceHash": "845663f0e59a231dd65c6c2c9686aa3416807cd8397f1abe5956f0dd9f8ce2b1"
+    },
+    "razor-evo-4": {
+      "eye": [
+        380,
+        333
+      ],
+      "size": 260,
+      "sourceHash": "f99513463db60d657bc1fd8e9bb8729c0ac30c60db62310d5a6104a1bb097b2a"
+    },
+    "razor-evo-5": {
+      "eye": [
+        455,
+        349
+      ],
+      "size": 260,
+      "sourceHash": "a4bb6e20e763c0c84cda1f6510c5733a79d44d6f899e8a42496b161014ba2db4"
+    },
+    "razor-evo-6": {
+      "eye": [
+        475,
+        404
+      ],
+      "size": 260,
+      "sourceHash": "37d017080c2c0f2819707c513c05b84d759159e3f58845ae2d5eedec6f1ea2ce"
+    },
+    "rosetta": {
+      "eye": [
+        427,
+        389
+      ],
+      "size": 260,
+      "sourceHash": "d8ff7d16d061bbb01ac65a560bdfb2736252bf8772d3f2c348717586da54c7dc"
+    },
+    "rosetta-evo-2": {
+      "eye": [
+        454,
+        378
+      ],
+      "size": 260,
+      "sourceHash": "3d81a22802dc46fcb26037df4ea9af1bdd2662dc0a069cf404ef45ddc55371a3"
+    },
+    "rosetta-evo-3": {
+      "eye": [
+        369,
+        409
+      ],
+      "size": 260,
+      "sourceHash": "32faced143e30ea7796ce709c3fde1c48dd9b3685e261c201f4174f8ba12fd24"
+    },
+    "rosetta-evo-4": {
+      "eye": [
+        524,
+        393
+      ],
+      "size": 260,
+      "sourceHash": "4cfce11a15a9e80fce9386cdca8c5065540df955f0cbe02f1861c68f8c8b871c"
+    },
+    "rosetta-evo-5": {
+      "eye": [
+        468,
+        388
+      ],
+      "size": 260,
+      "sourceHash": "7a55634293c3333e9b972b16ee0e20046a42e3970f831dc955aa783f7a81c0dc"
+    },
+    "rosetta-evo-6": {
+      "eye": [
+        520,
+        420
+      ],
+      "size": 260,
+      "sourceHash": "4ece321929b4d36917fdaf2cde998dccbac2cc552bf6ba754767fddd66984ca4"
+    },
+    "serapha": {
+      "eye": [
+        495,
+        391
+      ],
+      "size": 260,
+      "sourceHash": "252eae9e8a94a51aac78dceed03d378e91cd005027c990279fbf1e56d34a4b3e"
+    },
+    "serapha-evo-2": {
+      "eye": [
+        498,
+        370
+      ],
+      "size": 260,
+      "sourceHash": "f1396a5493f63f1dff1a5c0153ce3e37411a584a3f9a387bda6f519aec00e146"
+    },
+    "serapha-evo-3": {
+      "eye": [
+        444,
+        391
+      ],
+      "size": 260,
+      "sourceHash": "37bb6cb58f2f93530bba20d21358ec1304972c80eae7e716f5d3fef9d1b0d8b7"
+    },
+    "serapha-evo-4": {
+      "eye": [
+        492,
+        376
+      ],
+      "size": 260,
+      "sourceHash": "fba8bf206f28bd3bb7e7da3f7e9b2aa12a9c5765eb82430e0abbf1284213576e"
+    },
+    "serapha-evo-5": {
+      "eye": [
+        529,
+        342
+      ],
+      "size": 260,
+      "sourceHash": "076d8323f9e42962621743db5b6f4b11156cb78748d47d72fdadb75446266491"
+    },
+    "serapha-evo-6": {
+      "eye": [
+        487,
+        381
+      ],
+      "size": 260,
+      "sourceHash": "7162a9df57c674e25a5609abff4b451507187befcb6f1d8079b62b7e93408f79"
+    },
+    "seravelle": {
+      "eye": [
+        530,
+        390
+      ],
+      "size": 260,
+      "sourceHash": "03b1d09f32e3fdaf0c479a8be99412a87cf143ef209479071f9f5f52f55ce34d"
+    },
+    "seravelle-evo-2": {
+      "eye": [
+        480,
+        380
+      ],
+      "size": 260,
+      "sourceHash": "f1d4235ab6ba9de32bdad2f81a412f95b7c6f447e5f994b9359d04e1a9f2e5c2"
+    },
+    "seravelle-evo-3": {
+      "eye": [
+        575,
+        400
+      ],
+      "size": 260,
+      "sourceHash": "c343a34b5a72e8226ee3bceb61993bad6085c54e4d8c88a92c910e367dabee0a"
+    },
+    "seravelle-evo-4": {
+      "eye": [
+        448,
+        395
+      ],
+      "size": 260,
+      "sourceHash": "233164e645e8f69b283b5babed833d3d400b51707f2be4a98d72fbf011813df9"
+    },
+    "seravelle-evo-5": {
+      "eye": [
+        500,
+        380
+      ],
+      "size": 260,
+      "sourceHash": "3a2c9c27d880ae1e0fbe77f473bf33f715a409636c99e36c8ef8f49133154a3a"
+    },
+    "seravelle-evo-6": {
+      "eye": [
+        450,
+        380
+      ],
+      "size": 260,
+      "sourceHash": "57f143c518051719ccecdead073af65b9a6860c19520c1022e18aefd313d1138"
+    },
+    "solenne": {
+      "eye": [
+        400,
+        260
+      ],
+      "size": 260,
+      "sourceHash": "8477678b4ab5ce2bb7fed6202290abbf768e07424a909dbf3da4a1fe5ef25332"
+    },
+    "solenne-evo-2": {
+      "eye": [
+        450,
+        320
+      ],
+      "size": 260,
+      "sourceHash": "b795f51136f2953fe769fefb4f14b10ee48afa89298ccdd0b4c77021c08ae382"
+    },
+    "solenne-evo-3": {
+      "eye": [
+        516,
+        355
+      ],
+      "size": 260,
+      "sourceHash": "715d13a75c8d6d4cd6ba1da5b26db924570a3b4967e7a242da15ce5ffaa154d4"
+    },
+    "solenne-evo-4": {
+      "eye": [
+        562,
+        340
+      ],
+      "size": 260,
+      "sourceHash": "8f6d3a7ea88dd6851c4a0a2125a667ad8c5ffb2f728f1c8bd84968a2e0c99d85"
+    },
+    "solenne-evo-5": {
+      "eye": [
+        500,
+        380
+      ],
+      "size": 260,
+      "sourceHash": "4996b1957896d98e50d5fbbed792343ba6bcfef99dbbf55db9ae0e823007b304"
+    },
+    "solenne-evo-6": {
+      "eye": [
+        480,
+        400
+      ],
+      "size": 260,
+      "sourceHash": "dd6b20a50f646bc72db42c4c7496095dc9948e26d9873c128fb688461676075c"
+    },
+    "thornia": {
+      "eye": [
+        680,
+        340
+      ],
+      "size": 260,
+      "sourceHash": "303a03220438219ed980f006583cc759f7c02dce42420577657d29c00d3f9a36"
+    },
+    "thornia-evo-2": {
+      "eye": [
+        515,
+        388
+      ],
+      "size": 260,
+      "sourceHash": "ab02f91914b2dcdc1b7378d9b165f21023d39bf2b44ddf20a28f071944c4346c"
+    },
+    "thornia-evo-3": {
+      "eye": [
+        555,
+        371
+      ],
+      "size": 260,
+      "sourceHash": "28412484ed5bfcd3cd30cfeae750391956e876d9a3c55c7c7f823f14e322a78a"
+    },
+    "thornia-evo-4": {
+      "eye": [
+        512,
+        434
+      ],
+      "size": 260,
+      "sourceHash": "8473d4b7f7a8f7826fbe5c99cbd001c89fb8b4d4fef3e0304b26dc7430a73f6b"
+    },
+    "thornia-evo-5": {
+      "eye": [
+        495,
+        367
+      ],
+      "size": 260,
+      "sourceHash": "65cfc6a35e7e2e8141dd2dcadd71b18addc052504da8e6c256bdd89ea96bd3ee"
+    },
+    "thornia-evo-6": {
+      "eye": [
+        469,
+        425
+      ],
+      "size": 260,
+      "sourceHash": "f8357e7ec49ef08067ea7fe18bd944cb5d772403a5305e5453e19582d9417694"
+    },
+    "vaelor": {
+      "eye": [
+        437,
+        350
+      ],
+      "size": 260,
+      "sourceHash": "d8ddb1074e7c896bb0e288d9d8a1fb55663b789811c84b1f82f4c86f1c2f1b66"
+    },
+    "vaelor-evo-2": {
+      "eye": [
+        562,
+        324
+      ],
+      "size": 260,
+      "sourceHash": "ff7c89d01a2f7e80de70410077dd0207a47045b6948fc70a2c60bb9c372c5c72"
+    },
+    "vaelor-evo-3": {
+      "eye": [
+        459,
+        357
+      ],
+      "size": 260,
+      "sourceHash": "d443cb8b715d20aec7ae8dc4d42bd65901cd491b4c75f268ecbbf5e8ca49624a"
+    },
+    "vaelor-evo-4": {
+      "eye": [
+        458,
+        325
+      ],
+      "size": 260,
+      "sourceHash": "3f2512287aa428a83fb7a5f61002f83501fa545f286f207423adb9bd0c385d74"
+    },
+    "vaelor-evo-5": {
+      "eye": [
+        476,
+        366
+      ],
+      "size": 260,
+      "sourceHash": "6a7acb768e20219012c405dbd31f249929fdc41edbf569994bd1eb151129b307"
+    },
+    "vaelor-evo-6": {
+      "eye": [
+        470,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "59a769e9b1c7d2ef5c5b0db32e6cd240bb635367deaced57654c5eabc364f8c5"
+    },
+    "varkhel": {
+      "eye": [
+        558,
+        400
+      ],
+      "size": 260,
+      "sourceHash": "8d8d6bada42137380c78aa82a1f6691fe2a89dbac0127b5aa254da16aef87d67"
+    },
+    "varkhel-evo-2": {
+      "eye": [
+        636,
+        375
+      ],
+      "size": 260,
+      "sourceHash": "bf0c4b506f03012aee0bba7b2e2b029f251b6aad8b6ed37b901f22864937aa50"
+    },
+    "varkhel-evo-3": {
+      "eye": [
+        480,
+        370
+      ],
+      "size": 260,
+      "sourceHash": "9db5d759a571268598d8f91df74c52f58e69d1ca18414a9978385f9b18ca749d"
+    },
+    "varkhel-evo-4": {
+      "eye": [
+        550,
+        393
+      ],
+      "size": 260,
+      "sourceHash": "8c9f576f59b2b03d147bd21c7a9fbd3b3251c90add0e50fe92d436438f1ba8a0"
+    },
+    "varkhel-evo-5": {
+      "eye": [
+        468,
+        384
+      ],
+      "size": 260,
+      "sourceHash": "fc83029577482215ddb11f40f6bf48c92c87f38088fe9a622e60464d74681300"
+    },
+    "varkhel-evo-6": {
+      "eye": [
+        470,
+        400
+      ],
+      "size": 260,
+      "sourceHash": "28f0dd89a996d39e2f370ccb10a02b77ec200f011ab273d808400eca9ed4c725"
+    },
+    "velmira": {
+      "eye": [
+        479,
+        371
+      ],
+      "size": 260,
+      "sourceHash": "6af7658174430f25bb5864cd75184b0c422955c63d65d8833ee67d43303ab1e5"
+    },
+    "velmira-evo-2": {
+      "eye": [
+        446,
+        392
+      ],
+      "size": 260,
+      "sourceHash": "54b89baef441fb88b867f84140acdd04aa2bcc0d0d38aa1ed7d2a03eaa0f97c0"
+    },
+    "velmira-evo-3": {
+      "eye": [
+        470,
+        360
+      ],
+      "size": 260,
+      "sourceHash": "f0dab9bdb5e385bb9c980e8168399921c433d26d14e804db44d740debf340459"
+    },
+    "velmira-evo-4": {
+      "eye": [
+        490,
+        357
+      ],
+      "size": 260,
+      "sourceHash": "afd1cbd5e4fe82c78ad949c6efc4309ce47898f05cd7b003cf0b3d2fafc59f21"
+    },
+    "velmira-evo-5": {
+      "eye": [
+        560,
+        350
+      ],
+      "size": 260,
+      "sourceHash": "d4bd4a528fb21bed93be6662a6ebc628790989a88f58e65ca65bb16748637afb"
+    },
+    "velmira-evo-6": {
+      "eye": [
+        480,
+        310
+      ],
+      "size": 260,
+      "sourceHash": "aeca68533b5f79ae51f603e7eab4647f17ac0072b79247ca2523df4c27225023"
+    },
+    "vespera": {
+      "eye": [
+        436,
+        406
+      ],
+      "size": 260,
+      "sourceHash": "d62de6b0fe3ef5b4dd6e1a54e54b96ac1854d1af9d1f97de6e43fb224e3f69d3"
+    },
+    "vespera-evo-2": {
+      "eye": [
+        530,
+        420
+      ],
+      "size": 260,
+      "sourceHash": "f665ba310ce70f2fa97362f009888ffd32aa281651f2ce4781343f6cec7f484f"
+    },
+    "vespera-evo-3": {
+      "eye": [
+        480,
+        390
+      ],
+      "size": 260,
+      "sourceHash": "3db73eda42195c71728784e16778db8e8f0ca12b7450de8d0580e55e2e15009b"
+    },
+    "vespera-evo-4": {
+      "eye": [
+        551,
+        407
+      ],
+      "size": 260,
+      "sourceHash": "67b6ce72dbc8a43b4c150e8f24ab896b2eb7c4b588c4849ad67f14d5f8cf8408"
+    },
+    "vespera-evo-5": {
+      "eye": [
+        583,
+        402
+      ],
+      "size": 260,
+      "sourceHash": "3b14b4aad9f9d6cef67060e2966b3b309962a2290b2484edbc9d0a42949fc86c"
+    },
+    "vespera-evo-6": {
+      "eye": [
+        496,
+        357
+      ],
+      "size": 260,
+      "sourceHash": "45be7e173b9bd76dbc38738769b57e94b578c1977b576b31b6c36abd5ef33608"
+    }
   }
 }

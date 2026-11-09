@@ -41,7 +41,7 @@ export function referenceTeamSidebar(account: Account, state: ReferenceTeamState
         const member = ownedCompanion(account, id);
         const active = isStarterId(id) ? state.view === 'detail' && state.selected === id : state.view === 'capture' && state.capture === id;
         return `<div class="ref-member-line"><button class="ref-member-row ${active ? 'is-selected' : ''}" data-reference-member="${id}" ${isStarterId(id) ? `data-team-detail="${id}"` : `data-team-capture-detail="${id}"`}>
-          <span class="ref-thumb">${member.art}</span><span><b>${member.name}</b><small>${index ? 'Member' : 'Leader'}</small></span></button>
+          <span class="ref-thumb">${member.compactArt}</span><span><b>${member.name}</b><small>${index ? 'Member' : 'Leader'}</small></span></button>
           ${index ? `<button class="ref-chip" data-make-leader="${id}" aria-label="Make ${member.name} the leader">♛ Lead</button>` : ''}</div>`;
       }).join('')}
       ${resonanceBadge(squad)}

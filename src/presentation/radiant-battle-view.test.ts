@@ -4,6 +4,8 @@ import { freshGame } from '../../supabase/functions/game-operation/engine';
 import { resolveRadiantRun, type RadiantRunRequest, type RadiantRunResponse, type RadiantRunSnapshot } from '../online/radiant-run';
 import { RadiantSession } from '../online/radiant-session';
 import { releasedRadiantIds } from '../content/radiant-combat';
+import { characterArt } from '../content/character-art';
+import { compactPortraitRevisions } from '../content/compact-portrait-revisions';
 import { RadiantBattleView, type RadiantBattleEffects } from './radiant-battle-view';
 import { applyMotion } from './settings';
 import type { RadiantImpactFrame } from './radiant-impact';
@@ -63,6 +65,12 @@ describe('saved six-member Radiant battle surface', () => {
     const { view, host, session } = fixture(); applyMotion('reduced'); await view.finishEntrance();
     expect(host.querySelectorAll('[data-radiant-actor]')).toHaveLength(6);
     expect(host.querySelectorAll('.compact-portrait img')).toHaveLength(6);
+    for (const id of releasedRadiantIds.slice(0, 6)) {
+      const art = characterArt(id, 6).art;
+      const image = host.querySelector<HTMLImageElement>(`.compact-portrait[data-character="${id}"] img`)!;
+      expect(image.getAttribute('src')).toContain(`character-faces/${art}.png?v=${compactPortraitRevisions[art]}`);
+      expect(image.alt).not.toContain('pending');
+    }
     expect(host.querySelectorAll('[data-radiant-charge]')).toHaveLength(12);
     expect(host.querySelectorAll('[data-radiant-reference]')).toHaveLength(6);
     expect(host.querySelectorAll('.radiant-allies .radiant-ally-art')).toHaveLength(6);
@@ -97,6 +105,13 @@ describe('saved six-member Radiant battle surface', () => {
       action: { type: 'normal', bearerId: 'tide', targetId: 'story-25-0' } });
     expect(host.querySelector('[data-radiant-field-unit="tide"]')).not.toBeNull();
   });
+  it('updates the visible Guard row from each saved status impact, including round expiry', async () => {
+    const { view, host } = fixture(2); applyMotion('reduced'); await view.finishEntrance();
+    await view.act('defense');
+    expect(host.querySelector('[data-radiant-health="ember"] [data-radiant-effect="guard"]')).not.toBeNull();
+    await view.act('normal');
+    expect(host.querySelector('[data-radiant-health="ember"] [data-radiant-effect="guard"]')).toBeNull();
+  });
   it('a held upward portrait release sends one saved Flare and suppresses its compatibility click', async () => {
     const { view, session, host, transport } = fixture(6, 6, undefined, 25, undefined, undefined, true);
     applyMotion('reduced'); await view.finishEntrance();
@@ -113,11 +128,11 @@ describe('saved six-member Radiant battle surface', () => {
     expect(transport.execute).toHaveBeenCalledTimes(1);
     expect(transport.execute.mock.calls[0][0].operation).toEqual({ kind: 'action', action: { type: 'flare', bearerId: 'tide' } });
   });
-  it('form1 has one layer and no shared meter; unavailable faces use honest pending art', async () => {
+  it('form1 has one layer, no shared meter, and released forms use reviewed face art', async () => {
     const { view, host } = fixture(6, 1); applyMotion('reduced'); await view.finishEntrance();
     expect(host.querySelectorAll('[data-radiant-charge]')).toHaveLength(6);
     expect(host.querySelector<HTMLElement>('.radiant-shared')!.hidden).toBe(true);
-    expect(host.querySelector<HTMLImageElement>('[data-character="rosetta"] img')!.alt).toContain('pending');
+    expect(host.querySelector<HTMLImageElement>('[data-character="rosetta"] img')!.alt).not.toContain('pending');
     expect(host.querySelector<HTMLImageElement>('[data-character="ember"] img')!.alt).not.toContain('pending');
   });
   it('keeps old HP while save and windup are pending, then shows the saved impact before visuals finish', async () => {
@@ -146,6 +161,44 @@ describe('saved six-member Radiant battle surface', () => {
     expect(controls(host, '[data-radiant-action="normal"]').disabled).toBe(true);
     impact(); await pending;
     expect(session.view().presentation).toBeNull(); expect(host.getAttribute('aria-busy')).toBe('false');
+  });
+  it('reveals an offscreen battlefield for saved action effects and restores the portrait scroll position', async () => {
+    const scroller = document.createElement('div');
+    scroller.style.overflowY = 'auto';
+    Object.defineProperties(scroller, { scrollHeight: { value: 1600 }, clientHeight: { value: 800 } });
+    document.body.append(scroller);
+    scroller.scrollTop = 760;
+    let field!: HTMLElement;
+    const effects = { windup: vi.fn(async () => {
+      expect(field.getBoundingClientRect().top).toBe(100);
+    }), impact: vi.fn(async () => {}), cancel: vi.fn() };
+    const { view, host } = fixture(6, 6, effects); await view.finishEntrance();
+    scroller.append(host);
+    field = host.querySelector<HTMLElement>('.radiant-field')!;
+    let fieldTop = -160;
+    vi.spyOn(field, 'getBoundingClientRect').mockImplementation(() => new DOMRect(0, fieldTop, 400, 400));
+    const scrollIntoView = vi.fn(() => { fieldTop = 100; scroller.scrollTop = 420; });
+    Object.defineProperty(field, 'scrollIntoView', { configurable: true, value: scrollIntoView });
+
+    await view.act('normal');
+
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: 'center', inline: 'nearest', behavior: 'instant' });
+    expect(effects.windup).toHaveBeenCalledTimes(1);
+    expect(scroller.scrollTop).toBe(760);
+  });
+  it('keeps the original viewport under Reduce motion when the battlefield is offscreen', async () => {
+    const effects = { windup: vi.fn(async () => {}), impact: vi.fn(async () => {}), cancel: vi.fn() };
+    const { view, host } = fixture(6, 6, effects); await view.finishEntrance();
+    const field = host.querySelector<HTMLElement>('.radiant-field')!;
+    vi.spyOn(field, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, -160, 400, 400));
+    const scrollIntoView = vi.fn();
+    Object.defineProperty(field, 'scrollIntoView', { configurable: true, value: scrollIntoView });
+    applyMotion('reduced');
+
+    await view.act('normal');
+
+    expect(scrollIntoView).not.toHaveBeenCalled();
+    expect(effects.windup).not.toHaveBeenCalled();
   });
   it('Skip settles exactly once and late old visuals cannot overwrite a newer action', async () => {
     const releases: (() => void)[] = [];

@@ -7,7 +7,7 @@ import { equippedSquad, ownedProgress, unlockedStoryStage, type Account } from '
 import { capturedProgress } from '../game/character-instances';
 import { uiIcon } from './ui-icon';
 import { ownedCompanion } from './owned-companion';
-import { assetUrl, portrait } from './portrait';
+import { assetUrl } from './portrait';
 
 
 type HubIcon = Parameters<typeof uiIcon>[0];
@@ -24,15 +24,14 @@ function hubBubbles(): readonly (readonly [string, string, string, HubIcon])[] {
   ];
 }
 
-function squadRail(account: Account): string {
+function squadRail(account: Account, radiantEnabled: boolean): string {
   const squad = equippedSquad(account);
-  return `<div class="bubble-squad-rail" aria-label="Your squad"><span class="bubble-rail-label">Your squad</span>${squad.map((id, index) => {
-    const member = ownedCompanion(account, id);
-    return `<button type="button" class="bubble-mini-member" ${isStarterId(id) ? `data-team-detail="${id}"` : `data-team-capture-detail="${id}"`} aria-label="Open ${member.name}">${member.art}<span><b>${isStarterId(id) ? member.name.split(', ').at(-1) : member.name}</b><small>${index === 0 ? 'Leader' : 'Member'} &middot; Lv.${member.level}</small></span></button>`;
-  }).join('')}<button type="button" class="text-button bubble-rail-edit" data-page="squad">${uiIcon('squad')}Edit squad</button></div>`;
+  return `<div class="bubble-squad-rail"><span class="bubble-rail-label">Frozen squad · ${squad.length} of 6</span>
+    ${radiantEnabled ? '<button type="button" class="text-button" data-page="radiant">Radiant Encounters · Preview</button>' : ''}
+    <button type="button" class="text-button bubble-rail-edit" data-page="squad">${uiIcon('squad')}Edit squad</button></div>`;
 }
 
-export function referenceHome(starter: Starter, account: Account | null): string {
+export function referenceHome(starter: Starter, account: Account | null, radiantEnabled = false): string {
   if (!account) return '<p role="alert">Home unavailable. Resolve the account error.</p>';
   const squad = equippedSquad(account);
   const id = squad[0];
@@ -47,6 +46,16 @@ export function referenceHome(starter: Starter, account: Account | null): string
   const stars = copy ? capturedProgress(copy).tier + 1 : starter.stars;
   const rarity = copy ? evolutionRarity(capturedProgress(copy).tier + 1) : characterRarity(id as StarterId, progress?.evolution ?? 1);
   const storyPercent = Math.round(completed / storyRules.stages * 100);
+  const formation = squad.map((memberId, index) => {
+    const bearer = ownedCompanion(account, memberId);
+    return `<button type="button" class="bubble-squad-figure" style="--formation-index:${index}" ${isStarterId(memberId)
+      ? `data-team-detail="${memberId}"` : `data-team-capture-detail="${memberId}"`}
+      aria-label="Open ${bearer.name}, ${index === 0 ? 'leader' : `squad member ${index + 1}`}">
+      <span class="bubble-squad-art">${bearer.art}</span>
+      <span class="bubble-squad-caption"><b>${isStarterId(memberId) ? bearer.name.split(', ').at(-1) : bearer.name}</b>
+        <small>${index === 0 ? 'Leader' : 'Member'} · Lv.${bearer.level}</small></span>
+    </button>`;
+  }).join('');
   return `<div class="ref-screen ref-home bubble-home">
     <section class="bubble-home-intro">
       <button class="ref-panel ref-home-story" data-page="story">${encounter.background ? `<img class="ref-home-story-arena" src="${assetUrl(`backgrounds/${encounter.background}`)}" alt="" draggable="false" />` : ''}<span class="ref-panel-heading">${completed === 0 ? 'Story · Chapter 1' : 'Continue story · Chapter 1'}</span><span><small>${chapterOneTitle}</small><strong>${completed === storyRules.stages ? 'Chapter 1 complete' : region?.name ?? encounter.name}</strong><small>${completed < storyRules.stages ? `Stage ${encounter.regionStage} &middot; Enemies Lv.${encounter.level} &middot; ` : ''}${completed} / ${storyRules.stages} stages cleared</small><span class="bubble-story-meter" role="meter" aria-label="Chapter 1 progress" aria-valuemin="0" aria-valuemax="${storyRules.stages}" aria-valuenow="${completed}"><i style="width:${storyPercent}%"></i></span><small>Drops Prismatica and Common/Uncommon materials.</small></span><span class="ref-go" aria-hidden="true">&rarr;</span></button>
@@ -54,12 +63,12 @@ export function referenceHome(starter: Starter, account: Account | null): string
     <section class="ref-home-leader bubble-home-orbit" aria-label="Destinations">
       <div class="bubble-portrait-universe"><span class="bubble-orbit-ring" aria-hidden="true"></span><span class="bubble-orbit-ring inner" aria-hidden="true"></span>
         <span class="bubble-orbit-star one" aria-hidden="true">&#10022;</span><span class="bubble-orbit-star two" aria-hidden="true">&#10023;</span>
-        <button class="ref-home-art" ${isStarterId(id) ? `data-team-detail="${id}"` : `data-team-capture-detail="${id}"`} aria-label="Open ${member.name}">${isStarterId(id) ? portrait(starter, progress?.evolution) : member.art}</button>
+        <div class="bubble-squad-formation" style="--squad-count:${squad.length}" aria-label="Your saved squad">${formation}</div>
         <div class="ref-home-identity"><p>${prefix} &middot; ${member.element}${isStarterId(id) ? ` &middot; ${starter.weapon}` : ''}</p><h2>${displayName}</h2>
           <div class="ref-tags"><span class="ref-stars" aria-label="${stars}-star ${copy ? 'Elemental-Devourer' : 'Element-Bearer'}">${'&#9733;'.repeat(stars)}</span>${isStarterId(id) ? `<span class="ref-chip">${starter.role}</span>` : ''}<span class="ref-chip" data-rarity="${rarity}">${rarity}</span><span class="ref-chip">Lv.${member.level}${progress ? ` &middot; Evo.${displayEvolution(id as StarterId, progress.evolution)}` : ''}</span></div></div>
       </div>
       ${hubBubbles().map(([page, label, detail, icon], index) => `<button type="button" class="hub-bubble hub-slot-${index}" data-page="${page}" style="--delay:${(index * -.77).toFixed(2)}s"><span class="hub-bubble-symbol">${uiIcon(icon)}</span><strong>${label}</strong><small>${detail}</small></button>`).join('')}
     </section>
-    ${squadRail(account)}
+    ${squadRail(account, radiantEnabled)}
   </div>`;
 }
