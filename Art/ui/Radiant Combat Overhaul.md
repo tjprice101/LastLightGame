@@ -20,7 +20,7 @@ animation or reuse.
 | New vendor package | **6 proposed original portraits** | One original knee-up cutout for each shop/service host below. The owner requested the designs; actual likenesses still need review and intake. |
 | Optional environments | **2** | One cinematic Home scene and one shared Market scene. Neither is required for functional shops or combat. |
 | Existing outstanding queues | **Not added to the overhaul count** | See the existing War and hidden-Sunshade plans below; retain their separate scope and do not duplicate or automatically order them. |
-| Derived/engine work | **192 compact portrait derivatives completed; 0 additional original sources** | Formation templates, portrait controls, dialogue and gauges are implemented; individual contact-anchor review and final cinematic VFX remain. None requires new source images. |
+| Derived/engine work | **192 compact portrait derivatives completed; 0 additional original sources** | Formation templates, portrait controls, dialogue, gauges and all 32 bearers' four-tier VFX are implemented. Contact anchors and cinematic presentation still need owner and physical-device review. None requires new source images. |
 
 **Delivery total for this package: six vendor sources; eight sources if both
 optional environments are chosen.** No new enemy, playable-bearer, ability-icon,

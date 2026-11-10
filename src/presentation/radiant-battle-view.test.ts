@@ -79,7 +79,10 @@ describe('saved six-member Radiant battle surface', () => {
     expect(enemies.every(enemy => enemy.style.getPropertyValue('--formation-x'))).toBe(true);
     expect(new Set(enemies.map(enemy => enemy.style.getPropertyValue('--formation-y'))).size).toBeGreaterThan(1);
     expect(host.querySelectorAll('.radiant-enemy .radiant-health')).toHaveLength(0);
+    expect(host.querySelector('.radiant-battle-heading .radiant-target-strip')).not.toBeNull();
+    expect(host.querySelector('.radiant-field .radiant-target-strip')).toBeNull();
     expect(host.querySelectorAll('[data-radiant-target-detail]')).toHaveLength(6);
+    expect(Array.from(host.querySelectorAll<HTMLElement>('[data-radiant-target-detail]')).every(detail => detail.tabIndex === 0)).toBe(true);
     expect(host.querySelectorAll('[data-radiant-target-detail]:not([hidden])')).toHaveLength(1);
     const target = session.view().saved.run!.state.enemies[2].id;
     enemies[2].click();

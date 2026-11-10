@@ -1,5 +1,61 @@
 # Current state and handoff
 
+## Radiant release-gate review and desktop diagnostics (2026-11-09)
+
+**Implemented:** the isolated review preview now offers all 32 released leaders
+in all six valid forms, seven authored encounter fixtures, the real six shop
+host dialogue components and a foreground-only 15-second frame sampler. Lower
+forms respect their actual Gauge capacity. The selected-enemy readout now
+occupies a fixed-height area in the heading, rather than covering enemy
+targets; each visible status list is keyboard-scrollable. Non-percentage
+status amounts use the standard presentation formatter without changing combat math.
+Radiant reuses its output canvas and stops drawing expired impact cues. Slash
+fissures keep every branch and bloom but batch their blurred strokes in this
+mode; overlapping glow blends slightly differently. Legacy VFX keeps its
+original separate-stroke behavior.
+
+**Verified:** `npx vitest run radiant src\vfx\vfx-systems.test.ts --exclude
+src\radiant-ui.test.ts --maxWorkers=2 --testTimeout=60000` passed 1,859 tests
+in 26 files.
+`npm run build` passed with the existing large-chunk advisory. In the local
+browser, all six enemies were individually selectable at 1708x960 and 390x844,
+the target panel had no overlap, the field did not shift as statuses appeared,
+and the narrow portrait rail remained scrollable without page-width overflow.
+Card-body attack and a held upward Flare changed the saved in-memory outcome;
+all six host Talk controls changed dialogue. No account storage or network
+writes occurred in those checks.
+
+A focused automated browser sample used a six-enemy Infernic floor, six Flare
+inputs, 1x and system motion at 1708x960 CSS pixels. Before batching,
+1,968 intervals over 15 seconds averaged 131.1 fps, with 34.70 ms p99,
+48.70 ms maximum and 31 intervals over 16.67 ms. With final Radiant-only
+batching, 2,073 intervals averaged 138.2 fps, with 7.10 ms p95, 13.90 ms
+p99, 41.70 ms maximum and 10 intervals over 16.67 ms. A concurrent test-run
+sample had 20.60 ms p99 and 21 intervals over 16.67 ms. An idle comparison
+had 7.10 ms p99 and no intervals over 16.67 ms. The final sample's JavaScript
+heap was 22.0 to 24.0 MiB; that is GC-sensitive, not GPU memory or a leak
+measurement. A seeded impact pixel comparison retained the shapes and
+showed small changes at overlapping fissures. These are diagnostic samples,
+not owner approval or physical-device/GPU acceptance; long frames remain.
+
+**Economy and hosted evidence:** at base commit `44d54159`, the bounded
+economy report reproduced 411 encounters and 1,236 access denials. Three
+retries of each of 369 strongest prefixes paid no additional Prismatica or
+loot; exits paid nothing new. Some partial prefixes were faster per accepted
+request, and the conservative Tizu policy had three stalemates although its
+Normal-only control won all six cases. These are not real-time income or final
+balance approval. The existing hosted client is the older `e401fa6c` revision;
+the existing deployed function rejected an authenticated Radiant read with
+HTTP 400. The disposable identity was removed. No deployment or authority
+flag change was made.
+
+**Remaining:** owner review of field contacts, hosts and VFX; delivery of the
+six portraits or explicit acceptance of neutral pending tiles; physical desktop
+GPU/cadence and economy acceptance (plus touch if included); authenticated
+verification on an approved isolated staging target; explicit deployment
+approval; then matching authority/client deployment and hosted verification.
+Keep the production authority disabled and the branch isolated.
+
 ## Completing Radiant identity-specific VFX (2026-11-09)
 
 **Implemented:** replaced the seven two-state fallback profiles with complete

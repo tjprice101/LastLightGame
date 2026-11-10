@@ -101,7 +101,7 @@ export class SlashVFXSystem implements BaseVFXSystem {
   }
 
   render(ctx: VFXContext): void {
-    const { ctx: c, t, definition, casterX, casterY, targetX, targetY, palette } = ctx;
+    const { ctx: c, t, definition, casterX, casterY, targetX, targetY, palette, batchFissureShadows } = ctx;
     const impactTime = definition.chargeDuration;
     const isCharge = t < impactTime;
     const isSlashActive = t >= impactTime && t < impactTime + 0.45;
@@ -120,21 +120,23 @@ export class SlashVFXSystem implements BaseVFXSystem {
         c.shadowColor = `rgb(${palette.mid.r}, ${palette.mid.g}, ${palette.mid.b})`;
         c.shadowBlur = 12;
 
+        if (batchFissureShadows) c.beginPath();
         for (const crack of this.fissureCracks) {
-          c.beginPath();
+          if (!batchFissureShadows) c.beginPath();
           c.moveTo(crack.x, crack.y);
           const endX = crack.x + Math.cos(crack.angle) * crack.length;
           const endY = crack.y + Math.sin(crack.angle) * crack.length;
           c.lineTo(endX, endY);
-          c.stroke();
+          if (!batchFissureShadows) c.stroke();
 
           for (const branch of crack.branches) {
-            c.beginPath();
+            if (!batchFissureShadows) c.beginPath();
             c.moveTo(branch.x, branch.y);
             c.lineTo(branch.x + Math.cos(branch.angle) * branch.length, branch.y + Math.sin(branch.angle) * branch.length);
-            c.stroke();
+            if (!batchFissureShadows) c.stroke();
           }
         }
+        if (batchFissureShadows) c.stroke();
         c.restore();
       }
     }

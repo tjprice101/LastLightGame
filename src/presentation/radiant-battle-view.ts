@@ -119,17 +119,17 @@ export class RadiantBattleView {
     this.host.innerHTML = `<section class="radiant-battle" aria-label="Radiant battle">
       <header class="radiant-battle-heading"><div class="radiant-heading-title"><small class="radiant-eyebrow">${escape(run.anchor.family)}</small><h2>Radiant battle</h2>
         <span data-radiant-progress>${radiantEncounterLabel(run)}</span> · <span data-radiant-round></span></div>
-        <div class="radiant-heading-tools"><button type="button" data-radiant-settings>Settings</button>
-        ${this.onExit ? '<button type="button" data-radiant-leave>Exit · Keep rewards</button>' : ''}</div></header>
-      <section class="radiant-field" aria-label="Battlefield">
-        <div class="radiant-arena">${radiantArenaArt(run.anchor.activity)}</div>
         <div class="radiant-target-strip" role="region" aria-label="Selected enemy">
-          ${run.enemies.map(enemy => `<div class="radiant-target-detail" data-radiant-target-detail="${escape(enemy.id)}" hidden>
+          ${run.enemies.map(enemy => `<div class="radiant-target-detail" data-radiant-target-detail="${escape(enemy.id)}" tabindex="0" hidden>
             <small class="radiant-target-state" data-radiant-target-state></small>
             <div class="radiant-target-name"><strong>${escape(enemy.name)}</strong><span>Lv.${enemy.level}</span></div>
             ${this.healthMarkup(enemy.id)}</div>`).join('')}
           <p data-radiant-no-target hidden>No enemy target remains.</p>
         </div>
+        <div class="radiant-heading-tools"><button type="button" data-radiant-settings>Settings</button>
+        ${this.onExit ? '<button type="button" data-radiant-leave>Exit · Keep rewards</button>' : ''}</div></header>
+      <section class="radiant-field" aria-label="Battlefield">
+        <div class="radiant-arena">${radiantArenaArt(run.anchor.activity)}</div>
         <div class="radiant-allies" aria-label="Allied field formation">${run.state.bearers.map((unit, index) =>
           `<div class="radiant-field-ally" data-radiant-field-unit="${escape(unit.loadout.id)}"
             style="${radiantFormationStyle(allies[index], index, true)}">

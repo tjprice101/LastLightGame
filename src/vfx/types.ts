@@ -70,6 +70,8 @@ export interface VFXContext {
   palette: VFXPalette;
   definition: AbilityVFXDefinition;
   secondaryTarget?: boolean;
+  /** Group slash fissures into one shadow pass; overlapping glow blends differently. */
+  batchFissureShadows?: boolean;
   shakeCallback: (magnitude: number) => void;
 }
 

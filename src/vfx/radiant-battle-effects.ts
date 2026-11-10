@@ -97,7 +97,10 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
   private size(): { width: number; height: number; dpr: number } {
     const width = innerWidth, height = innerHeight;
     const dpr = Math.min(devicePixelRatio || 1, 1.5, 1600 / Math.max(width, height));
-    this.canvas.width = Math.round(width * dpr); this.canvas.height = Math.round(height * dpr);
+    const pixelWidth = Math.round(width * dpr), pixelHeight = Math.round(height * dpr);
+    if (this.canvas.width !== pixelWidth || this.canvas.height !== pixelHeight) {
+      this.canvas.width = pixelWidth; this.canvas.height = pixelHeight;
+    }
     this.context.setTransform(dpr, 0, 0, dpr, 0, 0);
     return { width, height, dpr };
   }
@@ -201,14 +204,16 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
         casterX: support || simple ? targetX : caster.left + caster.width / 2,
         casterY: support || simple ? targetY : caster.top + caster.height / 2,
         targetX, targetY, definition, palette: definition.palette, secondaryTarget: effects.length > 0,
-        scale: Math.min(.75, Math.max(.2, Math.min(rect.width, rect.height) / 300)) * (simple || packet.type === 'status' ? .5 : 1), shakeCallback: () => {} };
+        scale: Math.min(.75, Math.max(.2, Math.min(rect.width, rect.height) / 300)) * (simple || packet.type === 'status' ? .5 : 1),
+        batchFissureShadows: true, shakeCallback: () => {} };
       system.reset(); effects.push({ system, context });
     }
     const duration = Math.max(...effects.map(effect => effect.context.definition.duration));
     await this.play(duration, time => {
       this.renderer.begin(size.width, size.height, size.dpr);
       for (const effect of effects) {
-        advanceVFX(effect.system, effect.context, Math.min(time, effect.context.definition.duration));
+        if (time >= effect.context.definition.duration) continue;
+        advanceVFX(effect.system, effect.context, time);
         this.renderer.render(effect.system, effect.context, true, false);
       }
       this.renderer.composite(size.width, size.height, { enabled: true, intensity: 1.1, radius: 18 });

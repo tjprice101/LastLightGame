@@ -17,6 +17,71 @@ verification, and explicit release approval before matching authority/client
 deployment and hosted verification. Keep the production authority disabled
 and the branch isolated until those gates pass.
 
+## Isolated release-gate review and desktop diagnostics (2026-11-09)
+
+The in-memory battle preview now exposes each of the 32 released leaders at
+all six saved forms and seven actual encounter fixtures: Story stages 1, 20
+and 25, Training wave 1, Infernic floor 34, Machines stage 34 and Nerithe's
+final War fight. Their one-, two-, three- and six-enemy formations use the
+normal run resolver and authored content. The selected form uses its valid
+level cap and personal Gauge limit; higher-tier charge fixtures never unlock
+a Flare unavailable to that form. All six existing host components and their
+Talk lines can be reviewed without opening a shop or purchasing anything.
+Host portraits remain honestly pending. These are conditional fixtures, not
+acquired player holdings, and perform no network or account writes.
+
+The selected enemy's Health/effect readout is in a fixed-height heading region,
+outside the battlefield. It cannot cover a target, and adding statuses does
+not move the field. Simultaneous selected and impact readouts have separate
+keyboard-focusable scroll areas. Non-percentage status magnitudes use the existing
+two-decimal stat formatter at presentation only; stored potency and combat rounding are
+unchanged. Browser checks selected each of six enemies at 1708x960 and
+390x844, with no target-panel overlap or page-width overflow.
+
+The Radiant canvas reuses its output surface and stops rendering individual
+impact cues when their own opacity reaches zero. Its slash fissures now batch
+all branches into one blurred stroke instead of drawing a separate shadow for
+each segment. Geometry and bloom remain, although overlapping fissures blend
+slightly differently. The batching is explicitly enabled only for Radiant;
+legacy VFX retains separate strokes. A seeded browser impact comparison showed
+the overlap difference; tests cover the geometry, opt-in and unchanged legacy
+path. Owner review remains necessary.
+
+The preview's 15-second sampler records foreground frame-interval median,
+p95, p99, maximum, average cadence and the count above 16.67 ms, plus browser
+JavaScript heap before/after when available. It stops on hidden tabs, lost
+focus, changed fixtures/settings, cancellation or frame-delivery timeout.
+The sample is local and is not GPU timing, GPU memory, a leak test or approval.
+At 1708x960 CSS pixels, one automated 1x six-enemy/six-Flare run before
+shadow batching produced 1,968 intervals, 131.1 fps average, 34.70 ms p99,
+48.70 ms maximum and 31 intervals above 16.67 ms. A final Radiant-only
+batched run produced 2,073 intervals, 138.2 fps average, 7.10 ms p95,
+13.90 ms p99, 41.70 ms maximum and 10 intervals above 16.67 ms; JS heap was
+22.0 to 24.0 MiB. A second run while automated tests were executing had
+20.60 ms p99 and 21 intervals above 16.67 ms. An idle sample had 7.10 ms p99
+and no intervals above 16.67 ms. The machine/browser, physical interaction,
+repeat-cast memory and GPU budget still need review; do not treat these
+averages as proof of the 60 fps target.
+
+The bounded economy rerun at `44d54159` produced 411 encounters, 1,236
+access denials and 369 strongest-prefix sequences replayed three times, with
+zero additional Prismatica or loot and zero exit payout. The conditional
+Common trio had 12/72 victorious cases with a faster partial prefix, maximum
+ratio 1.111111; the conditional farmed six had 96/177, maximum 1.101852.
+Balanced Tizu had three wins and three stalemates; its Normal-only control
+won all six. Request efficiency is not real-time income or an accepted final
+balance. Reproduce in a new file with
+`node tools\run_radiant_economy.mjs <new-report.jsonl>`; the measured report's
+SHA-256 was `c02cad7050daa264dfd5e34b6bd40d8173d2289c4f412bb50570cda215533c10`.
+
+The currently hosted client reported older commit `e401fa6c`; its existing
+deployed function returned HTTP 401 for invalid authentication and HTTP 400
+for an authenticated Radiant read. The disposable identity and profile were
+removed. This is not a successful deployed Radiant-route test. No staging
+branch was available, and no function, feature flag or client was deployed
+or changed. An approved isolated staging target, physical/owner review and
+explicit release approval remain required.
+
 ## Original framed portrait and field presentation (2026-11-09)
 
 The owner's screenshots inform compact portrait-card hierarchy and restrained

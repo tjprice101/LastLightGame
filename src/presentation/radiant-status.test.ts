@@ -42,6 +42,17 @@ describe('source-owned Radiant status reference', () => {
     expect(html.match(/Until broken/g)).toHaveLength(2); expect(html).not.toContain('phase');
     expect(html).toContain('Shield · 78'); expect(html).toContain('Shield · 91');
   });
+  it('formats fractional healing amounts at the presentation boundary without changing stored effects', () => {
+    const frozen = run(), unit = frozen.state.bearers[0];
+    unit.renewal = [{ source: { kind: 'flare', bearerId: 'sprout' }, magnitude: 359.38500000000005, remaining: 1 }];
+    unit.seeds = [{ source: { kind: 'flare', bearerId: 'sprout' }, magnitude: 1.2361, remaining: 2 }];
+    const before = structuredClone(frozen);
+    const html = radiantStatusRows(radiantStatusSnapshot(frozen.state).ember, frozen);
+    expect(html).toContain('Renewal · 359.39');
+    expect(html).toContain('Seed · 1.24');
+    expect(html).not.toContain('00000000000005');
+    expect(frozen).toEqual(before);
+  });
   it('round expiration and defeated units use actual settled state, not parsed messages or guessed clocks', () => {
     const frozen = run(), unit = frozen.state.bearers[0];
     unit.weaken = [{ source: { kind: 'enemy', enemyId: frozen.enemies[0].id }, magnitude: .1, remaining: 1 }];

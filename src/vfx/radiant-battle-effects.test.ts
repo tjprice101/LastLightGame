@@ -55,6 +55,19 @@ beforeEach(() => {
 });
 afterEach(() => { active.splice(0).forEach(effect => effect.dispose()); vi.restoreAllMocks(); vi.unstubAllGlobals(); document.body.replaceChildren(); delete document.documentElement.dataset.motion; });
 describe('saved Radiant signature choreography', () => {
+  it('reuses the output surface between effects and resizes it only when the viewport changes', async () => {
+    const { effects, state } = fixture();
+    const canvas = document.querySelector<HTMLCanvasElement>('.radiant-vfx-canvas')!;
+    const widths = vi.spyOn(canvas, 'width', 'set'), heights = vi.spyOn(canvas, 'height', 'set');
+    const action: RadiantPlayerAction = { type: 'normal', bearerId: 'ember', targetId: 'enemy' };
+    const first = effects.windup(action, state); finish(); await first;
+    expect(widths).toHaveBeenCalledTimes(1); expect(heights).toHaveBeenCalledTimes(1);
+    const second = effects.windup(action, state); finish(); await second;
+    expect(widths).toHaveBeenCalledTimes(1); expect(heights).toHaveBeenCalledTimes(1);
+    vi.stubGlobal('innerWidth', innerWidth + 100);
+    const resized = effects.windup(action, state); finish(); await resized;
+    expect(widths).toHaveBeenCalledTimes(2); expect(heights).toHaveBeenCalledTimes(2);
+  });
   it.each([
     ['maerion', [53, 103, 217], [166, 78, 241]], ['caevren', [49, 91, 209], [151, 75, 250]],
     ['vespera', [66, 107, 224], [189, 88, 239]], ['ilyss', [49, 95, 224], [195, 75, 233]],
@@ -375,6 +388,42 @@ describe('saved Radiant signature choreography', () => {
     expect(frames.some(frame => frame.events.filter(event => event.type === 'heal' || event.type === 'status').length > 6)).toBe(true);
     for (const frame of frames) { const pending = effects.impact(frame); finish(); await pending; }
     expect(callbacks.size).toBe(0); expect(state).toEqual(before);
+  });
+  it('stops rendering expired status cues while longer saved impact effects continue', async () => {
+    const { effects, state } = fixture('seravelle', ['seravelle', 'ember', 'tide', 'sprout', 'rosetta', 'thornia']);
+    state.gauge.members[0].charge = state.gauge.members[0].baseCost;
+    for (const bearer of state.bearers) bearer.hp = Math.round(bearer.hp / 2);
+    const action: RadiantPlayerAction = { type: 'flare', bearerId: 'seravelle' };
+    const windup = effects.windup(action, state); finish(); await windup;
+    const result = applyRadiantCombatAction(state, action);
+    const frame = radiantImpactFrames(state, result.state, result.events).find(value =>
+      value.events.some(event => event.type === 'heal' && event.effective > 0) &&
+      value.events.some(event => event.type === 'status' && event.remaining > 0));
+    expect(frame).toBeDefined();
+    const render = vi.spyOn(VFXRenderer.prototype, 'render');
+    const pending = effects.impact(frame!);
+    for (let i = 0; i < 10; i++) tick();
+    const statusCalls = render.mock.calls.filter(call => call[0].id === 'radiant-status-cue').length;
+    const allCalls = render.mock.calls.length;
+    expect(statusCalls).toBeGreaterThan(0);
+    for (let i = 0; i < 5; i++) tick();
+    expect(render.mock.calls.filter(call => call[0].id === 'radiant-status-cue')).toHaveLength(statusCalls);
+    expect(render.mock.calls.length).toBeGreaterThan(allCalls);
+    finish(); await pending;
+  });
+  it('opts Radiant slash impacts into batched fissure shadows', async () => {
+    const { effects, state } = fixture();
+    const action: RadiantPlayerAction = { type: 'normal', bearerId: 'ember', targetId: 'enemy' };
+    const windup = effects.windup(action, state); finish(); await windup;
+    const result = applyRadiantCombatAction(state, action);
+    const frame = radiantImpactFrames(state, result.state, result.events).find(value =>
+      value.events.some(event => event.type === 'damage' && event.healthLoss > 0));
+    expect(frame).toBeDefined();
+    const render = vi.spyOn(VFXRenderer.prototype, 'render');
+    const pending = effects.impact(frame!); finish(); await pending;
+    const slashCalls = render.mock.calls.filter(call => call[0].id === 'slash');
+    expect(slashCalls.length).toBeGreaterThan(0);
+    expect(slashCalls.every(call => call[1].batchFissureShadows === true)).toBe(true);
   });
   it('render failures reject rather than resolve successfully and never leave an animation frame running', async () => {
     const { effects, state, host } = fixture();

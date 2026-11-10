@@ -1,5 +1,6 @@
 import type { RadiantCombatEvent, RadiantCombatState, RadiantShield, RadiantSource, RadiantTimedEffect } from '../game/radiant-combat';
 import { characterName } from '../content/character-art';
+import { formatStat } from '../content/combat';
 import { getConduit } from '../content/conduits';
 import { getMasterConduit } from '../content/master-conduits';
 import { radiantMasters } from '../content/radiant-combat';
@@ -93,7 +94,7 @@ const descriptions: Record<RadiantStatusRow['kind'], { label: string; clock: str
 export function radiantStatusRows(rows: readonly RadiantStatusRow[], run: FrozenRadiantRun): string {
   return rows.map(row => {
     const definition = descriptions[row.kind];
-    const amount = definition.percent ? `${Number((row.magnitude * 100).toPrecision(12))}%` : String(row.magnitude);
+    const amount = definition.percent ? `${Number((row.magnitude * 100).toPrecision(12))}%` : formatStat(row.magnitude);
     const clock = row.remaining === null ? definition.clock :
       `${row.remaining} ${definition.clock}${row.remaining === 1 ? '' : 's'} remaining`;
     return `<li data-radiant-effect="${row.kind}">${definition.icon ? statusIcon(definition.icon) : ''}

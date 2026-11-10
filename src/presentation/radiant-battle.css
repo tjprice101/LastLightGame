@@ -63,6 +63,9 @@ html[data-motion="reduced"] .radiant-face .compact-portrait { transition: none; 
 .radiant-preview-heading p { line-height: 1.5; }
 .radiant-preview-heading label { display: inline-block; padding: 12px; }
 .radiant-preview-heading button, .radiant-preview-heading select { min-height: 44px; font: inherit; }
+.radiant-preview-heading details summary { min-height: 44px; align-content: center; cursor: pointer; }
+.radiant-preview-heading details summary:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.radiant-preview-host-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 12px; }
 body:has(#radiant-preview) { margin: 0; background: #0c0d11; }
 #radiant-preview { max-width: 1500px; margin: 0 auto; padding: 12px; }
 .radiant-battle-heading, .radiant-actions, .radiant-shared {
@@ -257,11 +260,12 @@ html[data-motion="reduced"] .radiant-field .radiant-enemy:hover .radiant-unit-mo
   translate: 0 calc(var(--radiant-contact-gap, 0) * min(var(--radiant-unit-width), var(--radiant-unit-height)));
 }
 .radiant-field-ally .radiant-unit-motion::before { content: ""; position: absolute; left: 20%; right: 20%; bottom: -2px; height: 14px; border-radius: 50%; background: radial-gradient(#000a, transparent 70%); z-index: -1; }
-.radiant-target-strip { position: absolute; z-index: 150; top: 12px; left: 12px; width: min(340px, calc(100% - 24px));
-  max-height: 38%; overflow-y: auto; box-sizing: border-box; padding: 8px 12px; border: 1px solid #ffffff50;
+.radiant-target-strip { display: flex; gap: 8px; flex: 1 1 240px; min-width: 0; max-width: 340px;
+  height: 106px; overflow: hidden; box-sizing: border-box; padding: 8px 12px; border: 1px solid #ffffff50;
   border-radius: 11px; background: #10131bdc; box-shadow: 0 8px 24px #0005; }
+.radiant-target-detail:not([hidden]) { flex: 1 1 0; min-width: 0; overflow-y: auto; overscroll-behavior: contain; }
+.radiant-target-detail:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
 .radiant-target-name { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
-.radiant-target-detail + .radiant-target-detail:not([hidden]) { margin-top: 8px; padding-top: 8px; border-top: 1px solid #ffffff30; }
 .radiant-target-state { display: block; color: #c9ccd4; font-size: 11px; }
 .radiant-target-state:empty { display: none; }
 .radiant-target-name strong { min-width: 0; overflow-wrap: anywhere; }

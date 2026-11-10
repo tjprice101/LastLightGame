@@ -262,6 +262,22 @@ describe('BattleVFXRunner Integration', () => {
       expect(update).toHaveBeenCalledTimes(36);
     });
 
+    it.each([[true, 1], [undefined, 24]] as const)(
+      'draws every slash fissure branch with batched shadows %s in %i strokes', (batchFissureShadows, strokes) => {
+        vi.spyOn(Math, 'random').mockReturnValue(.5);
+        const definition = { ...CHARACTER_PROFILES.ember.abilities.skill2, chargeDuration: .05 };
+        const ctx = createMockContext2D();
+        const frame: VFXContext = { ctx, t: 0, dt: 0, progress: 0, width: 960, height: 540,
+          scale: 1, casterX: 700, casterY: 300, targetX: 200, targetY: 300,
+          definition, palette: definition.palette, batchFissureShadows, shakeCallback: vi.fn() };
+        const system = new SlashVFXSystem();
+        advanceVFX(system, frame, .6); system.render(frame);
+        expect(ctx.moveTo).toHaveBeenCalledTimes(24);
+        expect(ctx.lineTo).toHaveBeenCalledTimes(24);
+        expect(ctx.stroke).toHaveBeenCalledTimes(strokes);
+        expect(ctx.shadowBlur).toBe(12);
+      });
+
     it('rewinds scrubbed particle simulations and keeps separate studio instances independent', () => {
       vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(() => createMockContext2D());
       const render = vi.spyOn(SlashVFXSystem.prototype, 'render');
