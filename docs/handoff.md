@@ -1,5 +1,18 @@
 # Current state and handoff
 
+## Vendor portrait prompt revision (2026-11-09)
+
+The six vendor prompts in `Art/ui/Radiant Combat Overhaul.md` now describe
+explicit adults aged 18 to 25: three women (Mirel 22, Edda 21, Nimra 19) and
+three men (Veylin 24, Torven 23, Sarev 25). They wear glamorous hard-light
+couture in refined hand-drawn anime style, tasteful and non-explicit. Veylin is
+no longer described as nonbinary, and Edda is no longer an older engineer.
+Their dialogue is unchanged. `tools/test_radiant_art_brief.py` now enforces
+ages, a three/three split, dresses for women, anti-AI negatives and the absence
+of explicit terms. Five Radiant brief and four Future Plans tests pass. The
+broad prompt suite remains at the same 315 unrelated pre-existing failures,
+with no failures in the Radiant brief. The portraits remain undelivered.
+
 ## Radiant owner review disposition (2026-11-09)
 
 The owner approves neutral pending tiles for the six vendor portraits in the

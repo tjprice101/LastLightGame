@@ -51,6 +51,28 @@ class RadiantArtBriefTests(unittest.TestCase):
                 self.assertNotIn("--sw", body)
         self.assertEqual(len(set(prompts)), len(VENDORS))
 
+    def test_vendor_portraits_are_explicit_adults_and_tasteful(self):
+        genders = []
+        for name, destination in VENDORS.items():
+            with self.subTest(vendor=name):
+                body = BLOCK.findall(self.vendor_section(name, destination))[0]
+                positive = body.split(" --", 1)[0]
+                match = re.match(r"Single adult (woman|man) .*?, (\d+) years old,", positive)
+                self.assertIsNotNone(match)
+                genders.append(match.group(1))
+                self.assertTrue(18 <= int(match.group(2)) <= 25)
+                self.assertRegex(positive, r"strikingly (?:beautiful|handsome)")
+                self.assertIn("hard-light", positive)
+                if match.group(1) == "woman":
+                    self.assertRegex(positive, r"\b(?:gown|dress|sundress)\b")
+                self.assertIn("Hand-drawn refined anime illustration", positive)
+                self.assertNotRegex(positive.lower(),
+                                    r"\b(?:young|child|teen|older|nude|naked|lingerie|sexy|seductive|sensual|cleavage|bust)\b")
+                negatives = body.split("--no ", 1)[1].split(" --", 1)[0]
+                for exclusion in ("airbrushed gloss", "plastic skin", "over-rendered", "extra fingers"):
+                    self.assertIn(exclusion, negatives)
+        self.assertEqual(sorted(genders), ["man"] * 3 + ["woman"] * 3)
+
     def test_source_count_and_optional_scenes_are_explicit(self):
         prompts = BLOCK.findall(self.text)
         self.assertEqual(len(prompts), 8)

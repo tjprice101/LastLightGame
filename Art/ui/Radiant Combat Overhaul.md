@@ -128,6 +128,18 @@ These are adult non-combatant NPCs; their natural portrait proportions are a
 deliberate exception to the compact full-body Element-Bearer sprite format.
 Each design below is original and proposed for owner review.
 
+**Owner direction (2026-11-09):** every host is explicitly a woman or a man
+aged 18 to 25, three of each, and strikingly beautiful or handsome. Women wear
+gowns or dresses; men wear fitted, tailored looks. The outfits are futuristic
+couture made from hard light, with glamorous jewelry and finishing touches.
+Exposure is tasteful and never explicit: bare shoulders, open backs, high leg
+slits and open collars, with no nudity, lingerie or sexualized posing. The
+style is refined, hand-drawn premium anime, not glossy, airbrushed or
+"AI-looking" rendering. Light-based clothing is painted as crisp opaque
+hard-light panels and photon-thread trim with sharp highlights, not blurry
+glow, so the flat key background can still be removed. This direction applies
+only to the six vendor portraits, not to Element-Bearer or enemy art.
+
 Generate **one image per prompt**, not a six-person collage. Keep the whole
 head, hair, hands and props inside a clear background margin; an intentional
 lower-leg crop near the knees is part of this portrait format. No scenery,
@@ -146,12 +158,14 @@ The shop hosts use neutral named portrait-pending tiles and text dialogue.
 
 | Host | Existing destination | Character and visual signature | Proposed source |
 | --- | --- | --- | --- |
-| Mirel | Material Exchange | Patient, observant stockkeeper; sage apron, dark bob, ledger and jar | `vendor-mirel.png` |
-| Veylin | Cosmetic Store | Playful, exacting designer; plum tailoring, silver braid and hand mirror | `vendor-veylin.png` |
-| Torven | Ordinary Conduit Store | Enthusiastic, candid dealer; navy work coat and articulated mechanism | `vendor-torven.png` |
-| Edda | Conduit Upgrade service | Experienced, dry-witted engineer; orange apron, high silver knot and wrench | `vendor-edda.png` |
-| Sarev | Calamitic Conduits | Measured, reflective curator; ivory hair, black/ivory coat and crimson-seamed case | `vendor-sarev.png` |
-| Nimra | Event Elemental-Devourers | Curious, gentle field guide; blue jacket, pale scarf and field notes | `vendor-nimra.png` |
+| Host | Existing destination | Character and visual signature | Proposed source |
+| --- | --- | --- | --- |
+| Mirel (woman, 22) | Material Exchange | Patient, observant stockkeeper; off-shoulder sage light-silk gown, dark bob, ledger and jar | `vendor-mirel.png` |
+| Veylin (man, 24) | Cosmetic Store | Playful, exacting designer; open-collar plum hard-light tailcoat, silver braid and hand mirror | `vendor-veylin.png` |
+| Torven (man, 23) | Ordinary Conduit Store | Enthusiastic, candid dealer; sleeveless navy vest, amber hard-light pauldron and mechanism | `vendor-torven.png` |
+| Edda (woman, 21) | Conduit Upgrade service | Prodigy, dry-witted engineer; indigo halter dress, orange hard-light skirt, silver knot and wrench | `vendor-edda.png` |
+| Sarev (man, 25) | Calamitic Conduits | Measured, reflective curator; open charcoal/ivory coat, crimson light seams and sealed case | `vendor-sarev.png` |
+| Nimra (woman, 19) | Event Elemental-Devourers | Curious, gentle field guide; off-shoulder dusk-blue dress, hard-light jacket and field map | `vendor-nimra.png` |
 
 These six hosts cover the five current shop destinations and the existing
 upgrade service; they do not create six new shops. Sarev is a proposed
@@ -174,13 +188,13 @@ She is calm, practical and gently amused by overambitious packing lists.
 - **Cancel:** "No rush. I'll keep the shelves exactly as they are."
 
 ```text
-Single adult woman merchant portrait, head to knees, warm deep-brown skin, hazel eyes and a neat dark moss-brown bob with one copper hairpin. She wears an ivory cross-neck blouse, a sage wrap apron with deep-teal quilted pockets, an umber belt and small copper clasps; she holds an open unlettered ledger and a small opaque frosted jar, with a patient, knowing smile. Refined anime linework, crisp cel shading, richly painted fabric folds, original fantasy game NPC illustration. Head, hair, hands and props fully visible with clear side and top margins; intentionally crop the legs near the knees. Plain flat saturated magenta background filling every gap --no scene, other people, text, lettering, logo, watermark, frame, extra arms, glow, photorealism, 3d render --ar 2:3 --niji 6 --s 100 --q 1
+Single adult woman merchant portrait, 22 years old, strikingly beautiful, head to knees, warm deep-brown skin, hazel eyes with long lashes and a glossy dark moss-brown bob with a copper hairpin. She wears an elegant off-shoulder sage gown of futuristic light-silk, a fitted bodice traced with crisp teal hard-light seams, a flowing skirt with a high side slit and an umber jeweled belt; copper ear cuffs and a delicate collarbone chain. She holds an open unlettered ledger and a small frosted jar, with a patient, knowing smile. Hand-drawn refined anime illustration, confident clean lineart, restrained cel shading, painted fabric folds, natural proportions, original fantasy game NPC. Head, hair, hands and props fully visible with clear side and top margins; intentionally crop the legs near the knees. Plain flat saturated magenta background filling every gap --no scene, other people, text, lettering, logo, watermark, frame, extra arms, extra fingers, glow, blur, airbrushed gloss, plastic skin, over-rendered, photorealism, 3d render --ar 2:3 --niji 6 --s 100 --q 1
 ```
 
 ### Veylin — Cosmetic Store
 
 Veylin sees presentation as a way to make someone's story recognizable, not a
-way to make them stronger. Their dry little jokes soften a perfectionist streak.
+way to make them stronger. His dry little jokes soften a perfectionist streak.
 
 - **Welcome:** "A good frame should introduce you, not shout over you."
 - **Idle 1:** "I keep every offcut. Someday one of them will become the perfect finishing touch."
@@ -193,7 +207,7 @@ way to make them stronger. Their dry little jokes soften a perfectionist streak.
 - **Cancel:** "An excellent decision can wait until you're certain."
 
 ```text
-Single adult nonbinary fashion artisan portrait, head to knees, rich brown skin, violet eyes, short silver hair with one long asymmetrical braid, a mischievous thoughtful smile. Tailored deep-plum coat with an off-center pearl-white lapel, fine silver geometric stitching, a long lilac sash and fitted dark trousers; one hand holds a small oval pewter hand mirror while the other adjusts the sash. Refined anime linework, crisp cel shading, elegant painted textiles, original fantasy game NPC illustration. Head, braid, hands and mirror fully visible with clear side and top margins; intentionally crop the legs near the knees. Plain flat bright green background filling every gap --no scene, other people, text, lettering, logo, watermark, frame, extra arms, glow, photorealism, 3d render --ar 2:3 --niji 6 --s 100 --q 1
+Single adult man fashion designer portrait, 24 years old, strikingly handsome with refined features, head to knees, rich brown skin, violet eyes, tousled short silver hair with one long asymmetrical braid, a mischievous thoughtful smile. He wears a tailored deep-plum hard-light tailcoat with a pearl-white lapel, the collar open to show his collarbones, sleeves edged in crisp lilac photon-thread embroidery, a fitted black waistcoat and slim trousers; silver rings, a pearl ear drop and a long lilac sash. One hand holds a small oval pewter hand mirror while the other adjusts the sash. Hand-drawn refined anime illustration, confident clean lineart, restrained cel shading, elegant painted textiles, natural proportions, original fantasy game NPC. Head, braid, hands and mirror fully visible with clear side and top margins; intentionally crop the legs near the knees. Plain flat bright green background filling every gap --no scene, other people, text, lettering, logo, watermark, frame, extra arms, extra fingers, glow, blur, airbrushed gloss, plastic skin, over-rendered, photorealism, 3d render --ar 2:3 --niji 6 --s 100 --q 1
 ```
 
 ### Torven — Conduit Store
@@ -212,12 +226,12 @@ than sell someone the shiniest thing. He is welcoming, direct and animated.
 - **Cancel:** "Fair enough. A machine worth choosing is worth thinking about."
 
 ```text
-Single adult man Conduit dealer portrait, head to knees, broad build, warm bronze skin, amber eyes and short swept-back chestnut hair with one gray streak. He wears a midnight-navy work coat with one blue-gray padded shoulder, rolled sleeves and precise bronze fasteners; he presents a palm-sized mechanical sculpture with an armored housing, visible interlocking gears, articulated pivots and a faceted amber crystal. Open, confident grin. Refined anime linework, crisp cel shading, polished painted metal, original fantasy game NPC illustration. Head, hands and the complete mechanism inside clear side and top margins; intentionally crop the legs near the knees. Plain flat bright green background filling every gap --no scene, other people, text, lettering, logo, watermark, frame, extra arms, glow, photorealism, 3d render --ar 2:3 --niji 6 --s 100 --q 1
+Single adult man Conduit dealer portrait, 23 years old, strikingly handsome, head to knees, athletic broad-shouldered build, warm bronze skin, amber eyes and swept-back chestnut hair with one silver streak. He wears a fitted sleeveless midnight-navy vest open at the collar, showing toned arms and collarbones, one crisp amber hard-light pauldron with bronze fasteners, fingerless gloves and tailored dark trousers trimmed with photon-thread seams; a bronze ear cuff. He presents a palm-sized mechanical sculpture with an armored housing, interlocking gears, articulated pivots and a faceted amber crystal, with an open, confident grin. Hand-drawn refined anime illustration, confident clean lineart, restrained cel shading, polished painted metal, natural proportions, original fantasy game NPC. Head, hands and the complete mechanism inside clear side and top margins; intentionally crop the legs near the knees. Plain flat bright green background filling every gap --no scene, other people, text, lettering, logo, watermark, frame, extra arms, extra fingers, glow, blur, airbrushed gloss, plastic skin, over-rendered, photorealism, 3d render --ar 2:3 --niji 6 --s 100 --q 1
 ```
 
 ### Edda — Conduit Upgrade service
 
-Edda is an experienced engineer who finds satisfaction in small adjustments.
+Edda is a prodigy engineer who finds satisfaction in small adjustments.
 She teases gently, explains costs plainly and never pretends an upgrade happened
 before it is saved.
 
@@ -232,7 +246,7 @@ before it is saved.
 - **Cancel:** "Tools down, then. We can come back to it."
 
 ```text
-Single older adult woman engineer portrait, head to knees, warm olive-brown skin, keen dark eyes and silver hair arranged in a high braided knot, protective goggles resting above her forehead. She wears rolled indigo sleeves, a burnt-orange asymmetrical work apron, silver tool straps and sturdy gloves; one hand holds a slender wrench and the other steadies a compact steel-blue gear. Relaxed stance and dry, friendly grin. Refined anime linework, crisp cel shading, carefully painted cloth and metal, original fantasy game NPC illustration. Head, knot, hands, wrench and gear fully visible with clear side and top margins; intentionally crop the legs near the knees. Plain flat saturated magenta background filling every gap --no scene, other people, text, lettering, logo, watermark, frame, extra arms, glow, photorealism, 3d render --ar 2:3 --niji 6 --s 100 --q 1
+Single adult woman engineer portrait, 21 years old, strikingly beautiful, head to knees, warm olive-brown skin, keen dark eyes and silver hair in a high braided knot, sleek goggles resting above her forehead. She wears a fitted indigo halter dress with an open back and bare shoulders, a layered burnt-orange hard-light overskirt split at the front, crisp photon-thread seams, silver tool straps worn like jewelry and elbow-length work gloves; small gear earrings. One hand holds a slender wrench and the other steadies a compact steel-blue gear, relaxed stance and dry, friendly grin. Hand-drawn refined anime illustration, confident clean lineart, restrained cel shading, carefully painted cloth and metal, natural proportions, original fantasy game NPC. Head, knot, hands, wrench and gear fully visible with clear side and top margins; intentionally crop the legs near the knees. Plain flat saturated magenta background filling every gap --no scene, other people, text, lettering, logo, watermark, frame, extra arms, extra fingers, glow, blur, airbrushed gloss, plastic skin, over-rendered, photorealism, 3d render --ar 2:3 --niji 6 --s 100 --q 1
 ```
 
 ### Sarev — Calamitic Conduits
@@ -251,7 +265,7 @@ He treats power as a responsibility and speaks without threats or pressure.
 - **Cancel:** "A closed case can wait."
 
 ```text
-Single adult man curator portrait, head to knees, deep-brown skin, silver eyes and short ivory hair swept behind one ear. He wears a charcoal and ivory high-collared coat with one draped shoulder, a narrow wine-red sash and fine crimson seams; both hands hold a closed palm-sized black mechanical case with restrained red inlays. Composed expression with a subtle kind smile. Refined anime linework, crisp cel shading, polished matte cloth and painted metal, original fantasy game NPC illustration. Head, hair, hands and complete case fully visible with clear side and top margins; intentionally crop the legs near the knees. Plain flat bright green background filling every gap --no scene, other people, text, lettering, logo, watermark, frame, extra arms, glow, photorealism, 3d render --ar 2:3 --niji 6 --s 100 --q 1
+Single adult man curator portrait, 25 years old, strikingly handsome and elegant, head to knees, tall slender build, deep-brown skin, silver eyes and ivory hair swept behind one ear. He wears a long charcoal and ivory coat worn open over a bare-collared black silk shirt unbuttoned at the throat, one shoulder draped in a sheer hard-light mantle, crisp crimson light seams, a narrow wine-red sash and a silver chain brooch. Both hands hold a closed palm-sized black mechanical case with restrained red inlays, composed expression with a subtle kind smile. Hand-drawn refined anime illustration, confident clean lineart, restrained cel shading, polished matte cloth and painted metal, natural proportions, original fantasy game NPC. Head, hair, hands and complete case fully visible with clear side and top margins; intentionally crop the legs near the knees. Plain flat bright green background filling every gap --no scene, other people, text, lettering, logo, watermark, frame, extra arms, extra fingers, glow, blur, airbrushed gloss, plastic skin, over-rendered, photorealism, 3d render --ar 2:3 --niji 6 --s 100 --q 1
 ```
 
 ### Nimra — Event Elemental-Devourers
@@ -271,7 +285,7 @@ and small observations, not promises about an event's schedule.
 - **Cancel:** "All right. There's always more to learn while you decide."
 
 ```text
-Single adult woman field guide portrait, head to knees, warm freckled skin, brown eyes and lively cinnamon-brown curls held with one pale-blue hairclip. She wears a fitted dusk-blue field jacket, an ivory scarf, a tan crossbody satchel and a small brass compass; she holds a folded unmarked field map in one hand and gestures openly with the other, smiling with curious warmth. Refined anime linework, crisp cel shading, detailed painted cloth and leather, original fantasy game NPC illustration. Head, curls, hands and map fully visible with clear side and top margins; intentionally crop the legs near the knees. Plain flat bright green background filling every gap --no scene, creatures, other people, text, lettering, logo, watermark, frame, extra arms, glow, photorealism, 3d render --ar 2:3 --niji 6 --s 100 --q 1
+Single adult woman field guide portrait, 19 years old, strikingly beautiful, head to knees, warm freckled skin, bright brown eyes and lively cinnamon-brown curls held with a pale-blue crystal hairclip. She wears an off-shoulder dusk-blue sundress with a short flared hem, a cropped ivory hard-light field jacket slipping off both shoulders, crisp pale-blue photon-thread trim, a tan crossbody satchel and a small brass compass pendant; dainty star earrings. She holds a folded unmarked field map in one hand and gestures openly with the other, smiling with curious warmth. Hand-drawn refined anime illustration, confident clean lineart, restrained cel shading, detailed painted cloth and leather, natural proportions, original fantasy game NPC. Head, curls, hands and map fully visible with clear side and top margins; intentionally crop the legs near the knees. Plain flat saturated magenta background filling every gap --no scene, creatures, other people, text, lettering, logo, watermark, frame, extra arms, extra fingers, glow, blur, airbrushed gloss, plastic skin, over-rendered, photorealism, 3d render --ar 2:3 --niji 6 --s 100 --q 1
 ```
 
 ### Dialogue and shop integration requirements

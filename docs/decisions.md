@@ -1,5 +1,18 @@
 # Decision log
 
+## Glamorous adult vendor portrait direction (2026-11-09)
+
+The owner revises the six proposed vendor portraits. Each host is explicitly a
+woman or a man aged 18 to 25: Mirel, Edda and Nimra are women; Veylin, Torven
+and Sarev are men. All six are strikingly attractive and wear glamorous
+futuristic hard-light couture, with dresses for the women. Exposure stays
+tasteful and non-explicit: bare shoulders, open backs, leg slits and open
+collars, with no nudity, lingerie or sexualized posing. The style is refined
+hand-drawn anime rather than glossy "AI-looking" rendering. This is a scoped
+exception to the covered-design wording (D-104) for these six non-combatant
+portraits only. Dialogue, shop behavior, the 2:3 cutout format and the approved
+neutral pending tiles are unchanged; no artwork has been delivered.
+
 ## Allow neutral vendor portraits for the initial Radiant release (2026-11-09)
 
 The owner approves the six existing named, neutral portrait-pending tiles for
