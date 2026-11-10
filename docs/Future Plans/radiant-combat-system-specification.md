@@ -14,12 +14,16 @@ The owner approves the existing neutral vendor portrait-pending tiles for the
 initial release. The six original portraits remain deferred, with no paid
 generation or unrelated-art substitution authorized.
 
-Remaining gates are owner review of field contact/formation and vendor
-presentations, representative in-game review of the completed VFX, physical
-desktop GPU/cadence and economy checks, deployed authenticated-route
-verification, and explicit release approval before matching authority/client
-deployment and hosted verification. Keep the production authority disabled
-and the branch isolated until those gates pass.
+**Deployed 2026-11-09 with explicit owner approval.** `main` now contains this
+branch; the live Pages build has `VITE_RADIANT_STUDY_UI=true`, and Supabase runs
+`game-operation` v100 with `RADIANT_STUDY_ENABLED=true` and a server-only
+secret. Radiant is a signed-in Home preview entry; ordinary battles are still
+legacy. This supersedes "keep the authority disabled and the branch isolated".
+
+Remaining work: owner play-review of field contact/formation, vendors and VFX
+on the live site; the first real signed-in hosted Radiant run (database CAS and
+receipt behavior in production); physical desktop GPU/cadence and economy
+checks; making Radiant the default battle entry; and vendor portrait delivery.
 
 ## Isolated release-gate review and desktop diagnostics (2026-11-09)
 

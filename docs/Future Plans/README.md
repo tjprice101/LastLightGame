@@ -3,8 +3,8 @@
 ## Current Radiant work and art scope (2026-11-09)
 
 The [handoff](../handoff.md) and [Radiant specification](radiant-combat-system-specification.md)
-record the implemented isolated-branch foundation and its remaining release
-gates. The [consolidated art brief](../../Art/ui/Radiant%20Combat%20Overhaul.md)
+record the Radiant foundation, deployed to production on 2026-11-09 as a
+signed-in Home preview entry, and its remaining open work. The [consolidated art brief](../../Art/ui/Radiant%20Combat%20Overhaul.md)
 records implemented staggered battle staging and six text-based shop/service
 hosts, plus six pending portrait prompts and two optional environments.
 The portraits are not delivered. The separate historical

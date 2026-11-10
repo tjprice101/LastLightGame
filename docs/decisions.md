@@ -1,5 +1,17 @@
 # Decision log
 
+## Deploy the Radiant preview to production (2026-11-09)
+
+The owner explicitly approved deploying the overhaul to play and evaluate it
+on their desktop. `main` now contains the overhaul branch; Supabase runs
+`game-operation` v100 with `RADIANT_STUDY_ENABLED=true` and a server-only
+secret; the Pages build sets `VITE_RADIANT_STUDY_UI=true`. This supersedes
+earlier entries requiring a disabled authority and an isolated branch.
+Radiant remains a signed-in Home preview entry, not the replacement for
+ordinary battles. A signed-in hosted run, desktop performance, the economy
+review and default-battle integration remain open. The rejected local UI
+mock-ups stay unpublished.
+
 ## Glamorous adult vendor portrait direction (2026-11-09)
 
 The owner revises the six proposed vendor portraits. Each host is explicitly a

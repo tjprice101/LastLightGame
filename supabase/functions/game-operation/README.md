@@ -1,5 +1,23 @@
 # Authoritative game operation
 
+## Radiant route enabled in production (2026-11-09)
+
+With owner approval, version 100 of this function is deployed with the rebuilt
+`engine.bundle.js`, `RADIANT_STUDY_ENABLED=true` and a generated server-only
+`RADIANT_STUDY_SECRET`. `RADIANT_STUDY_CALIBRATION` is unset (authored-control).
+Unauthenticated legacy and `radiantStudy` requests return 401. A signed-in
+hosted Radiant run has not yet been observed, so real database execution is
+still unverified. Sections below saying "still disabled and undeployed" are
+historical. Redeploy after authority changes:
+
+```
+node tools\bundle_server_game.mjs
+npx --yes supabase@3.0.0 functions deploy game-operation --use-api --remote=ohtfgwomdfteaxubndww --yes
+```
+
+Disable by setting `RADIANT_STUDY_ENABLED` to any other value
+(`npx --yes supabase@3.0.0 secrets set RADIANT_STUDY_ENABLED=false --remote=ohtfgwomdfteaxubndww --yes`).
+
 ## Radiant manual preparation (2026-11-08)
 
 Dedicated gated `{ "radiantStudy": { "kind": "prepare", "requestId": "<UUID>",

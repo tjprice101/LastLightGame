@@ -27,6 +27,22 @@ To disable quickly, set the Supabase secret `RADIANT_STUDY_ENABLED` to anything
 other than `true`. Setting the GitHub variable to `false` and redeploying
 hides the client entry.
 
+Documentation was synchronized for future agents after deployment: AGENTS.md,
+README.md, docs/README.md, Future Plans/README.md, the specification, the
+authority README, the decision log and the art brief now describe the live
+preview state. The working tree intentionally keeps uncommitted notes about
+the paused/rejected local UI mock-ups (lower docs/README.md, decisions.md and
+handoff.md, Future Plans/README.md and living-world-ui-audit-plan.md) and the
+untracked `radiant-ui.html`, `ui-design-lab*` and `src/radiant-ui.test.ts`
+files. Do not stage or publish them unless the owner revives that work.
+
+Recommended next steps: (1) the owner signs in on the live site and plays
+Radiant encounters, reporting issues; (2) make Radiant the default battle
+entry for all activities, replacing the preview button; (3) physical desktop
+GPU/cadence measurement and economy review; (4) install vendor portraits when
+delivered, via reviewed offline intake. Keep `main` and
+`overhaul/radiant-foundation` identical, pushing both.
+
 ## Vendor portrait prompt revision (2026-11-09)
 
 The six vendor prompts in `Art/ui/Radiant Combat Overhaul.md` now describe

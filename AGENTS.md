@@ -1,5 +1,31 @@
 # Last Light: AI agent entry point
 
+## Radiant overhaul is live as a signed-in preview (2026-11-09)
+
+Owner approved production deployment. `main` contains the former
+`overhaul/radiant-foundation` branch (kept in sync; both pushed). Live state:
+Supabase `RADIANT_STUDY_ENABLED=true` plus a server-only
+`RADIANT_STUDY_SECRET` (never print/commit), `game-operation` v100, GitHub
+variable `VITE_RADIANT_STUDY_UI=true` passed by `.github/workflows/deploy.yml`.
+Radiant is reached from Home "Radiant Encounters · Preview" by signed-in
+accounts; ordinary battles still use the legacy system. This supersedes
+older "authority disabled / branch isolated / no deployment" wording below
+and in dated docs. Open work: a real signed-in hosted Radiant run, desktop
+GPU/cadence check, economy review, making Radiant the default battle entry,
+and six vendor portraits (prompts ready; neutral tiles approved meanwhile).
+Rollback: set the Supabase secret `RADIANT_STUDY_ENABLED` to anything else;
+set the GitHub variable to `false` and redeploy to hide the entry.
+Server changes need `node tools\bundle_server_game.mjs` then
+`npx --yes supabase@3.0.0 functions deploy game-operation --use-api
+--remote=ohtfgwomdfteaxubndww --yes` (agent runs require `--yes`, only after
+owner approval), matching the client deployed from `main`.
+Never stage or publish the rejected local mock-ups (`radiant-ui.html`,
+`ui-design-lab*`, `src/radiant-ui.test.ts`) or the uncommitted mock-up notes in
+`docs/Future Plans/living-world-ui-audit-plan.md` and lower docs sections.
+Vendor prompts: three women/three men aged 18-25, glamorous hard-light couture,
+tasteful, refined hand-drawn anime (see Art/ui/Radiant Combat Overhaul.md).
+Current state and next steps: docs/handoff.md top entries.
+
 ## Reclaimed War integration and recruitment override (2026-11-06)
 
 Owner approves Neralis/Varkhel/Seravelle/Velmira playable kits,12 personal

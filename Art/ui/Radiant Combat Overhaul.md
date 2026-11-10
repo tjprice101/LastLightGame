@@ -9,7 +9,10 @@ delivered or installed. The owner approves the existing neutral pending tiles
 for the initial release; the six portraits remain deferred. This revision
 supersedes the older zero-new-source description for the newly requested
 vendor feature only.
-It does not approve hidden-content release, paid generation or deployment. Mechanics
+The vendor prompts were revised on 2026-11-09 to glamorous adult hosts (see
+the owner direction below). The overhaul client and authority are deployed
+as a signed-in preview; this brief itself does not approve hidden-content
+release or paid generation. Mechanics
 and exact bearer/Master assignments belong to the
 [system specification](../../docs/Future%20Plans/radiant-combat-system-specification.md).
 Count **one accepted original source image** once, regardless of crops, exports,

@@ -4,17 +4,19 @@ An original cinematic 2D gacha RPG inspired by Brave Frontier.
 
 ## Current development status (2026-11-09)
 
-The six-member Radiant combat overhaul remains isolated on
-`overhaul/radiant-foundation`; its authority is disabled and it has not been
-deployed as a complete release. The current branch includes saved combat,
-full-form battlefield art, portrait gestures, 192 derived face crops and the
-one-to-six-enemy formation-size retune. Final battlefield staging, bespoke
-cinema and release validation remain unfinished.
+The six-member Radiant combat overhaul is merged into `main` and deployed to
+the live site and Supabase authority (`game-operation` v100) as a signed-in
+**Radiant Encounters · Preview** entry on Home. It includes saved combat,
+full-form battlefield art, tap/hold-and-drag portrait gestures, flowing
+layered Gauge, shared Gauge drops, 32 identity VFX paths, 192 derived face
+crops, one-to-six-enemy formations and six text-based shop hosts. Ordinary
+battles still use the legacy system. A signed-in hosted Radiant run, desktop
+performance, economy review and making Radiant the default battle remain open.
 
-The [consolidated art brief](Art/ui/Radiant%20Combat%20Overhaul.md) compares
-the owner's battle references and proposes six original shop/service hosts,
-their dialogue and one portrait prompt each. Those hosts and portraits are
-not yet implemented or delivered. The [handoff](docs/handoff.md) owns current
+The [consolidated art brief](Art/ui/Radiant%20Combat%20Overhaul.md) holds the
+six shop-host portrait prompts (three women and three men aged 18-25) and two
+optional environments. The hosts and dialogue are implemented; their portraits
+are not yet delivered, so approved neutral tiles are shown. The [handoff](docs/handoff.md) owns current
 verification and remaining gates; dated material below is historical where
 superseded.
 

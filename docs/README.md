@@ -8,9 +8,15 @@ staggered field and six text-based shop hosts. The
 [single art brief](../Art/ui/Radiant%20Combat%20Overhaul.md)
 contains six new portrait prompts and two optional environments; no vendor art
 has been delivered. The 192 compact portraits are reviewed existing-art
-derivatives. Per-source grounding review, physical desktop acceptance,
-deployed-route verification and coherent release remain gates; the authority is
-disabled.
+derivatives. The vendor prompts now describe three women and three men aged
+18-25 in glamorous hard-light couture.
+
+**Deployed 2026-11-09:** `main` contains the overhaul, and the live site and
+Supabase authority (`game-operation` v100) run Radiant as a signed-in Home
+preview entry. Ordinary battles remain legacy. A signed-in hosted run, desktop
+GPU/cadence, the economy review, default-battle integration and vendor
+portraits remain open. Older "authority disabled" notes are historical.
+Agents start at [AGENTS.md](../AGENTS.md) and the top of the handoff.
 
 Current Story has 120 stages and all 30 regional creature images, six arenas
 and its map installed; older 150-stage and pending-art notes are historical.
