@@ -33,6 +33,14 @@ describe('replacement reference screen structures', () => {
     expect(css).toContain(`${selector}:not(:has(> .ability-icon)) { grid-template-columns: minmax(0, 1fr) !important; }`);
     expect(css).not.toMatch(/\.bubble-skill-summary\s*\{[^}]*-webkit-line-clamp/);
   });
+  it('keeps six formation slots and picker filtering usable over the existing bubble layer', () => {
+    const main = readFileSync(new URL('../main.ts', import.meta.url), 'utf8');
+    const css = readFileSync(new URL('./celestial-panels.css', import.meta.url), 'utf8');
+    expect(main.indexOf("import './presentation/celestial-panels.css'")).toBeGreaterThan(main.indexOf("import './presentation/bubble-ui.css'"));
+    expect(css).toMatch(/\.squad-pick-card\[hidden\]:not\(#_\)\s*\{\s*display:\s*none\s*!important/);
+    expect(css).toContain('grid-template-rows: repeat(2, minmax(max-content, 1fr)) !important');
+    expect(css).toMatch(/\.squad-card-art > img\s*\{[^}]*position:\s*absolute/);
+  });
   it('gives Training its own scenery header, compact facts and real entry without a location picker', () => {
     const wallet = account();
     const before = structuredClone(wallet);
@@ -116,6 +124,12 @@ describe('replacement reference screen structures', () => {
     const state = { view: 'detail' as const, selected: 'tide' as const, element: '', sort: 'name' as const };
     const sidebar = referenceTeamSidebar(wallet, state);
     expect(sidebar).toContain(`character-faces/${characterArt('tide', 1).art}.png`);
+    const gallery = referenceTeam(wallet, { ...state, view: 'bearers' });
+    const grid = gallery.slice(gallery.indexOf('class="ref-bearer-grid"'));
+    expect(grid).toContain(`character-faces/${characterArt('tide', 1).art}.png`);
+    expect(grid).toContain(`character-faces/${characterArt('ember', 1).art}.png`);
+    expect(grid).toContain('Leader');
+    expect(grid).toContain('In squad');
     const home = referenceHome(getStarter('tide'), wallet);
     const formation = home.slice(home.indexOf('class="bubble-squad-formation"'), home.indexOf('class="ref-home-identity"'));
     expect(formation).toContain(`characters/${characterArt('tide', 1).art}.png`);

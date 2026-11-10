@@ -1,5 +1,22 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Original framed portrait and field presentation (2026-11-09)
+
+The owner's screenshots inform compact portrait-card hierarchy and restrained
+layered framing, not copied art, branding or additional battle mechanics.
+The field retains the actual full-form frozen squad and canonical enemies.
+The six portrait controls retain exact Health, Shield, Attack, Defense,
+Recovery, status and personal Gauge data, with element-colored frames and
+separate stat cells. The shared Eternal bar remains separate.
+
+Home and the squad editor stage only the actual saved members on subtle
+platforms; compact owned-bearer and picker cards use the existing reviewed
+face resolver, while captured copies use their own creature art. Picker
+search/filter visibility and Escape/focus restoration are preserved. No
+attack, Gauge, targeting, persistence, enemy, reward or authority behavior
+changes. Local in-memory browser checks do not replace physical-device, GPU,
+economy, deployed-route or owner acceptance; the coherent-release gates remain.
+
 ## Reference comparison, shop hosts and field staging (2026-11-09)
 
 The owner's screenshots identified a staging problem, not merely a different

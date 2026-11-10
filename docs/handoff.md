@@ -1,5 +1,35 @@
 # Current state and handoff
 
+## Reference-informed original UI pass (2026-11-09)
+
+**Implemented:** the actual owned-bearer grid and squad picker now use reviewed
+compact portraits, while Home and the six-slot editor retain the saved squad's
+full forms and captured creatures' own art. Neutral metallic frames, real
+element accents, grounded platforms, compact stat cells and clearer growth
+sections connect those surfaces with the isolated Radiant field. The desktop
+formation's two rows no longer crush one another; captured images are contained.
+Picker filter/search visibility, Escape and opener focus are restored. An
+unmatched rating span that displaced formation progress was corrected.
+
+**Verified:** the following command passed 340 tests in 11 files:
+
+```powershell
+npx vitest run src/presentation/character-rating.test.ts src/presentation/reference-ui.test.ts src/presentation/roster.test.ts src/presentation/squad-picker.test.ts src/presentation/archives.test.ts src/presentation/hub.test.ts src/presentation/upgrade-reference.test.ts src/presentation/summon-presentation.test.ts src/presentation/ui-copy.test.ts src/presentation/radiant-battle-view.test.ts src/presentation/radiant-portrait-gesture.test.ts --maxWorkers=2 --testTimeout=15000
+```
+
+`npm run build` passed with the existing large-chunk advisory. Local in-memory
+browser checks covered mixed and sparse squads, desktop and narrow layouts,
+picker filtering/swapping/Escape, an attack followed by another member's
+action during presentation, a held upward Glowing Flare, Skip and reduced
+motion. The fixture did not write the player's wallet. These checks are not
+physical-device, GPU, economy or deployed-authority acceptance.
+
+**Remaining:** the existing vendor portrait deliveries, per-source grounding
+and owner review, final bespoke cinema, physical desktop GPU/cadence and economy
+acceptance (and touch testing if touch is included), deployed authenticated
+route checks and approved coherent authority/client deployment. Authority
+remains disabled; the isolated branch is not a hosted release.
+
 ## Battlefield staging and original shop hosts (2026-11-09)
 
 **Implemented:** the isolated Radiant field now uses deterministic staggered

@@ -123,6 +123,7 @@ import './presentation/debug-profile.css';
 import './presentation/conduit-loadout.css';
 import './presentation/status-toast.css';
 import './presentation/bubble-ui.css';
+import './presentation/celestial-panels.css';
 import { celebrate, installBubbleUi, rarityPalette } from './presentation/bubble-ui';
 import { saleLabel } from './presentation/creature-sale';
 import { applyConduitSearch, bindConduitLoadout, refreshConduitLoadout, resetConduitLoadoutView } from './presentation/conduit-loadout';

@@ -48,7 +48,7 @@ export function referenceHome(starter: Starter, account: Account | null, radiant
   const storyPercent = Math.round(completed / storyRules.stages * 100);
   const formation = squad.map((memberId, index) => {
     const bearer = ownedCompanion(account, memberId);
-    return `<button type="button" class="bubble-squad-figure" style="--formation-index:${index}" ${isStarterId(memberId)
+    return `<button type="button" class="bubble-squad-figure" style="--formation-index:${index};--member-accent:${bearer.color}" ${isStarterId(memberId)
       ? `data-team-detail="${memberId}"` : `data-team-capture-detail="${memberId}"`}
       aria-label="Open ${bearer.name}, ${index === 0 ? 'leader' : `squad member ${index + 1}`}">
       <span class="bubble-squad-art">${bearer.art}</span>

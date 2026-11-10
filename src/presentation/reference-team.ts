@@ -68,7 +68,7 @@ function bearerGrid(account: Account, state: ReferenceTeamState): string {
       const starter = getStarter(id);
       const progress = ownedProgress(account, id);
       const position = squad.indexOf(id);
-      return `<button class="ref-collection-card" data-team-detail="${id}"><span class="ref-card-art">${portrait(starter, progress.evolution)}</span><span class="ref-card-caption"><b>${starter.name}</b><small>★${starter.stars} · ${starter.element} · Lv.${progress.level}</small>${position >= 0 ? `<span class="ref-chip ref-white">${position === 0 ? 'Leader' : 'In squad'}</span>` : ''}</span></button>`;
+      return `<button class="ref-collection-card ref-bearer-card" data-team-detail="${id}" style="--member-accent:${starter.color}"><span class="ref-card-art">${ownedCompanion(account, id).compactArt}</span><span class="ref-card-caption"><b>${starter.name}</b><small>★${starter.stars} · ${starter.element} · Lv.${progress.level}</small>${position >= 0 ? `<span class="ref-chip ref-white">${position === 0 ? 'Leader' : 'In squad'}</span>` : ''}</span></button>`;
     }).join('')}<button class="ref-collection-card ref-add-card" data-page="summon">+ Summon more</button></div></div></section>`;
 }
 

@@ -102,7 +102,7 @@ function squadPickCard(account: Account, id: string, squad: readonly (string | u
   const slot = squad.indexOf(id);
   const kind = isStarterId(id) ? 'bearers' : 'creatures';
   return `<button type="button" class="squad-pick-card" data-squad-pick="${id}" data-squad-kind="${kind}" data-squad-search="${member.label.toLowerCase()}" aria-pressed="false" style="--member-accent:${member.color}">
-    <span class="squad-pick-art">${member.art}</span>
+    <span class="squad-pick-art">${member.compactArt}</span>
     <span class="squad-pick-copy"><strong>${member.label}</strong><small>${member.element} · ${squadProgress(member.progress)}</small></span>
     <span class="squad-pick-tag" data-squad-tag>${slot >= 0 ? squadSlotNames[slot] : ''}</span></button>`;
 }
@@ -205,6 +205,12 @@ export function bindSquadPreview(host: HTMLElement, account: Account | null): vo
     open(Number(button.dataset.squadAssign ?? button.dataset.squadOpen), button)));
   dialog.querySelector('[data-squad-close]')?.addEventListener('click', () => dialog.close());
   dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+  dialog.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    event.preventDefault();
+    event.stopPropagation();
+    dialog.close();
+  });
   dialog.addEventListener('close', () => { if (opener && host.contains(opener)) opener.focus({ preventScroll: true }); opener = null; });
   dialog.querySelectorAll<HTMLButtonElement>('[data-squad-filter]').forEach((button) => button.addEventListener('click', () => { filter = button.dataset.squadFilter ?? 'all'; applyFilter(); }));
   search?.addEventListener('input', applyFilter);

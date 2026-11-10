@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { emptyAccount } from '../game/account';
 import { assignSquadSlot, bannerCharacters, characterCopyManagement, characterRoster, squadHub, summonHub } from './roster';
 import { standardBannerPool } from '../content/standard-banner';
+import { characterArt } from '../content/character-art';
+import { ownedCompanion } from './owned-companion';
 
 describe('roster, squad and summon screens', () => {
   const account = { ...emptyAccount(), characters: { ember: { level: 30, evolution: 2 }, tide: { level: 0, evolution: 1 } },
@@ -94,6 +96,9 @@ describe('roster, squad and summon screens', () => {
     expect(picker).toContain('data-squad-filter="creatures"');
     expect(picker).toContain('data-squad-search-input');
     expect(picker).toContain(`data-squad-pick="${id}" data-squad-kind="creatures"`);
+    const capturedCard = picker.slice(picker.indexOf(`data-squad-pick="${id}"`), picker.indexOf('</button>', picker.indexOf(`data-squad-pick="${id}"`)));
+    expect(capturedCard).toContain(ownedCompanion(mixed, id).art);
+    expect(capturedCard).not.toContain('character-faces/');
     expect(picker).toContain('data-squad-open="0"');
     const owned = ['tide', 'ember', id];
     const slots = ['tide', 'ember', '', '', '', ''];
@@ -108,6 +113,16 @@ describe('roster, squad and summon screens', () => {
     expect(() => assignSquadSlot(slots, 6, id, owned)).toThrow('six squad slots');
     expect(() => assignSquadSlot([], 0, id, owned)).toThrow('six squad slots');
     expect(slots).toEqual(['tide', 'ember', '', '', '', '']);
+  });
+  it('uses compact bearer portraits only in the picker while formation keeps full figures', () => {
+    const before = structuredClone(account);
+    const html = squadHub(account);
+    const formation = html.slice(0, html.indexOf('<dialog class="information-modal squad-picker"'));
+    const picker = html.slice(html.indexOf('<dialog class="information-modal squad-picker"'));
+    expect(formation).toContain(`characters/${characterArt('tide', 1).art}.png`);
+    expect(picker).toContain(`character-faces/${characterArt('tide', 1).art}.png`);
+    expect(picker).toContain(`character-faces/${characterArt('ember', 2).art}.png`);
+    expect(account).toEqual(before);
   });
   it('shows exact pity values and every real rate without mutating the account', () => {
     const wallet = { ...account, bannerPity: { standard: { highestStar: 199, unownedHighestStar: 499 } } };

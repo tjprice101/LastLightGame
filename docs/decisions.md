@@ -1,5 +1,16 @@
 # Decision log
 
+## Adapt reference hierarchy using original Last Light surfaces (2026-11-09)
+
+The owner supplies visual references for Home, formation, collection, growth,
+character and battle presentation. Use compact reviewed faces for owned
+Element-Bearer grids and the squad picker, full-form actual squad members for
+Home and formation, and neutral framed panels with their real elemental
+accents. Keep captured creatures' own art, ownership, labels, filters,
+transactions and direct Radiant controls. References do not authorize copying
+another game's proprietary artwork, branding or mechanics, and do not lift
+the isolated branch's coherent-release gates.
+
 ## Compare battle staging and design shop hosts (2026-11-09)
 
 The owner requests a concrete comparison with the supplied battle reference,

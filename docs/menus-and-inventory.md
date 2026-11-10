@@ -1,5 +1,28 @@
 # Menus and inventory
 
+## Framed roster, formation and growth presentation (2026-11-09)
+
+The owner's supplied references guide information hierarchy and compact portrait
+cards, not the use of another game's characters, assets, branding or mechanics.
+The owned Element-Bearer gallery and squad picker use the reviewed compact
+portrait for each actual owned form. Captured copies retain their own creature
+art or honest pending presentation. Names, elements, levels, stars, leader and
+squad labels, filters and routes still come from the account.
+
+Home and the six-slot editor retain actual full-form squad figures, now staged
+on restrained element-accented platforms. The desktop editor has two usable
+rows and scrolls when necessary; captured art remains inside its own slot.
+Filtering and searching hide nonmatching picker cards, while Escape closes the
+picker and returns focus to its opener without saving the draft. Character
+detail and growth panels use neutral framed stat and resource sections without
+changing costs, previews, transactions or missing-resource emphasis.
+
+The isolated Radiant field and portrait controls use matching neutral frames
+and individual element accents. The full-form battlefield, exact saved-impact
+readouts, layered Gauge, direct card gestures, keyboard alternatives and
+Reduce motion behavior remain unchanged. This presentation pass adds no
+artwork commission, economy rule or authority activation.
+
 ## Vendor hosts and Radiant battle staging (2026-11-09)
 
 The [Radiant art brief](../Art/ui/Radiant%20Combat%20Overhaul.md) proposes

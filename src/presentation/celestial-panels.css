@@ -1,0 +1,215 @@
+/* Original Last Light chrome: neutral metal, elemental accents and readable art. */
+html body #app .sanctuary-shell .sanctuary-header {
+  border-bottom: 1px solid #d5d9e05c !important;
+  background: linear-gradient(180deg, #343a46b8, #151921e8 48%, #0c0f17ee) !important;
+  box-shadow: inset 0 1px #ffffff30, 0 7px 22px #0007 !important;
+}
+
+html body #app .sanctuary-shell :is(.ref-team-sidebar .ref-panel, .ref-team-collection, .ref-formation) {
+  border: 1px solid #aeb8c870 !important;
+  border-radius: 14px !important;
+  background: linear-gradient(155deg, #ffffff10, transparent 30%), #11151ceF !important;
+  box-shadow: inset 0 1px #ffffff30, inset 0 0 0 3px #ffffff08, 0 14px 32px #0006 !important;
+}
+html body #app .sanctuary-shell :is(.ref-team-collection, .ref-team-sidebar) .ref-panel-heading {
+  gap: 8px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #ffffff36;
+  color: #f7f8fb;
+}
+html body #app .sanctuary-shell .ref-team-sidebar .ref-panel-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  flex-wrap: wrap !important;
+  white-space: normal !important;
+}
+html body #app .sanctuary-shell .ref-team-sidebar .ref-member-row b { overflow-wrap: anywhere !important; }
+html body #app .sanctuary-shell .ref-roster-toolbar {
+  align-items: center;
+  padding: 8px;
+  border: 1px solid #ffffff24;
+  border-radius: 10px;
+  background: #070a10a6;
+}
+
+html body #app .sanctuary-shell .ref-bearer-grid {
+  grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
+  gap: 10px;
+}
+html body #app .sanctuary-shell .ref-bearer-card .ref-card-art {
+  box-sizing: border-box;
+  height: auto;
+  aspect-ratio: 1;
+  padding: 4px;
+  border: 1px solid color-mix(in srgb, var(--member-accent) 70%, #f6f7fa);
+  border-radius: 10px 10px 5px 5px;
+  background: radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--member-accent) 42%, #373c48), #0c1019 78%);
+  box-shadow: inset 0 1px #ffffff80, inset 0 0 0 3px #111722;
+  overflow: hidden;
+}
+html body #app .sanctuary-shell .ref-bearer-card .compact-portrait {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+html body #app .sanctuary-shell .ref-bearer-card .compact-portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+html body #app .sanctuary-shell .ref-bearer-card .ref-card-caption {
+  gap: 4px;
+  padding: 8px 9px 10px;
+  border-top: 1px solid color-mix(in srgb, var(--member-accent) 55%, #ffffff38);
+}
+html body #app .sanctuary-shell .ref-bearer-card .ref-card-caption b {
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+html body #app .sanctuary-shell .ref-bearer-card .ref-card-caption small { color: #d3d8e1; }
+html body #app .sanctuary-shell .ref-bearer-card .ref-chip {
+  padding: 2px 8px;
+  font-size: .68rem;
+}
+
+html body #app .sanctuary-shell .squad-picker-grid {
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)) !important;
+  gap: 10px !important;
+}
+html body #app .sanctuary-shell .squad-picker-grid .squad-pick-card[hidden]:not(#_) {
+  display: none !important;
+}
+html body #app .sanctuary-shell .squad-picker-grid .squad-pick-art:not(#_) {
+  border: 1px solid color-mix(in srgb, var(--member-accent, #cdd4df) 65%, #fff);
+  border-radius: 10px !important;
+  box-shadow: inset 0 1px #ffffff70, inset 0 0 0 3px #141a25;
+}
+html body #app .sanctuary-shell .squad-picker-grid .squad-pick-art .compact-portrait img {
+  object-fit: cover !important;
+  padding: 0 !important;
+}
+html body #app .sanctuary-shell .squad-hub.squad-formation .squad-slot {
+  border-color: #bec9d544;
+  background: linear-gradient(180deg, #2c333dc9, #10141cf2);
+  box-shadow: inset 0 1px #ffffff27, 0 8px 18px #0004;
+}
+html body #app .sanctuary-shell .squad-hub.squad-formation .squad-card-art::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  width: min(80%, 12rem);
+  height: 12%;
+  translate: -50% 0;
+  border: 2px solid color-mix(in srgb, var(--member-accent, #cdd4df) 45%, #e8edf7);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--member-accent, #cdd4df) 22%, #1a1e2a), #080b10 72%);
+  box-shadow: inset 0 0 0 3px #ffffff20, 0 5px 14px #0009;
+  pointer-events: none;
+}
+html body #app .sanctuary-shell .squad-card-art .character-idle { z-index: 1; }
+html body #app .sanctuary-shell .squad-card-art > img {
+  position: absolute;
+  z-index: 1;
+  inset: 6px;
+  width: calc(100% - 12px);
+  height: calc(100% - 12px);
+  object-fit: contain;
+}
+
+html body #app .sanctuary-shell .bubble-squad-formation::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 14% 0 4%;
+  border-bottom: 1px solid #d5deeb38;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 80%, #a9bfd522, transparent 70%);
+  pointer-events: none;
+}
+html body #app .sanctuary-shell .bubble-squad-art { position: relative; isolation: isolate; }
+html body #app .sanctuary-shell .bubble-squad-art img { object-position: center bottom; }
+html body #app .sanctuary-shell .bubble-squad-art::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 12%;
+  right: 12%;
+  bottom: 0;
+  height: 8%;
+  border: 1px solid color-mix(in srgb, var(--member-accent, #dce5f0) 58%, #fff);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--member-accent, #dce5f0) 30%, #121827), #080b13 72%);
+  box-shadow: 0 4px 12px #0008;
+  pointer-events: none;
+}
+html body #app .sanctuary-shell .bubble-squad-caption {
+  border-color: color-mix(in srgb, var(--member-accent, #dce5f0) 55%, #ffffff50);
+  border-radius: 7px;
+  background: linear-gradient(#38414cd9, #10151deF);
+  box-shadow: inset 0 1px #ffffff42, 0 4px 10px #0007;
+}
+html body #app .sanctuary-shell .bubble-squad-caption :is(b, small) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity {
+  border-color: color-mix(in srgb, var(--accent) 45%, #e4e9f260);
+  border-radius: 14px;
+  box-shadow: inset 0 1px #ffffff40, inset 0 0 0 3px #ffffff08, 0 18px 44px #0008;
+}
+html body #app .sanctuary-shell .ref-bearer-detail .ref-bar {
+  border: 1px solid #e6edf36b;
+  box-shadow: inset 0 2px 5px #000b;
+}
+html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .ref-character-panels {
+  border: 1px solid #b5c5d68c !important;
+  border-radius: 14px !important;
+  background: linear-gradient(150deg, #343d4cbd, #111720f2 32%, #0c1018f7) !important;
+  box-shadow: inset 0 1px #ffffff42, inset 0 0 0 3px #ffffff08, 0 20px 50px #0009 !important;
+}
+html body #app .sanctuary-shell .ref-character-panels .character-upgrade-grid > .character-category {
+  border: 1px solid #b8c5d34d;
+  border-radius: 10px;
+  background: linear-gradient(160deg, #202a35e8, #090e16f5);
+  box-shadow: inset 0 1px #ffffff24, 0 8px 18px #0005;
+}
+html body #app .sanctuary-shell .ref-character-panels .upgrade-stat-preview > span {
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid #d7e1ed24;
+  border-radius: 5px;
+  background: #070b12a6;
+  overflow-wrap: anywhere;
+}
+html body #app .sanctuary-shell .ref-character-panels .upgrade-stat-preview strong {
+  font-size: 1rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+html body #app .sanctuary-shell .ref-character-panels .upgrade-resources > li {
+  border-radius: 7px;
+}
+
+@media (min-width: 961px) {
+  html body #app .sanctuary-shell .squad-hub.squad-formation .squad-slots {
+    grid-template-rows: repeat(2, minmax(max-content, 1fr)) !important;
+    min-height: 0 !important;
+    overflow-y: auto;
+  }
+  html body #app .sanctuary-shell .squad-hub.squad-formation .squad-slot { min-height: max-content !important; }
+  html body #app .sanctuary-shell .squad-hub.squad-formation .squad-member-preview { flex: 1 0 auto !important; }
+  html body #app .sanctuary-shell .bubble-home-orbit :is(.hub-slot-0, .hub-slot-5) { top: 12%; }
+  html body #app .sanctuary-shell .bubble-home-orbit :is(.hub-slot-1, .hub-slot-4) { top: 36%; }
+  html body #app .sanctuary-shell .bubble-home-orbit :is(.hub-slot-2, .hub-slot-3) { top: 84%; }
+}
+@media (max-width: 640px) {
+  html body #app .sanctuary-shell .ref-bearer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html body #app .sanctuary-shell .squad-picker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
