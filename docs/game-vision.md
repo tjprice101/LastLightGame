@@ -56,7 +56,7 @@ stacks and meaningful buff/debuff setup/payoff choices work without equipment.
 
 **Current D-160 rollout:** six canonical types are implemented: Infernic,
 Oceanic, Atmospheric, Botanic, Tranquilitic and Chaotic. Material dungeons have
-35 floorsLv38-120 and retain all legacy enemy families. The150-stage
+35 floorsLv38-120 and retain all legacy enemy families. The120-stage
 linear [Story/Training split](story-and-training.md) is implemented (D-164);
 the desktop contextual navigation pass is implemented (D-166).
 The25 further [kit Conduits](kit-conduits.md) are implemented, with imagery

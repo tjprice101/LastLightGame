@@ -1,5 +1,21 @@
 # Combat specification
 
+## Encounter rules 19 and Radiant presentation proposal (2026-11-09)
+
+On the current Radiant branch, ordinary staged formations grow from two to six
+enemies; Training grows from three to six, while Story ordinary encounters
+remain capped at two for single-starter progression. Heaven/Abyss stages1-4
+also retain solo encounters on the current caps schedule, with historical
+schedules/layouts differing. Stage bosses remain solo and receive 10% more
+Health without an Attack increase; the separately calibrated Calamity bosses
+remain unchanged. Existing reward-roll totals are
+preserved through fixed carriers, and all defeated authored enemies still
+count for discovery. The current encounter-rules version is 19.
+
+The [battlefield comparison and proposed staging](../Art/ui/Radiant%20Combat%20Overhaul.md#screenshot-comparison-and-corrected-battle-composition-target)
+are presentation design, not an implemented combat-rule change. Prior rules17
+and other dated entries below remain historical.
+
 ## Moon authored-rule corrections: rules17 (2026-11-07)
 
 Maerion's first Master now counts direct Shield absorption in [Unreturned],

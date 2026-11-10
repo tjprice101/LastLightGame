@@ -21,8 +21,6 @@
 .radiant-ally-art[data-mirrored="true"] { scale: -1 1; }
 .radiant-field .radiant-enemies { margin: 0; gap: 8px; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; grid-column: 1; grid-row: 1; }
 .radiant-field .radiant-enemy { border: 1px solid transparent; background: #10131b40; padding: 6px; min-width: 0; }
-.radiant-field .radiant-enemies:has(.radiant-enemy:nth-child(4)) .radiant-enemy-art,
-.radiant-field .radiant-enemies:has(.radiant-enemy:nth-child(4)) .radiant-art-pending { height: clamp(72px, 8vw, 118px); }
 .radiant-field .radiant-enemy-art, .radiant-field .radiant-art-pending { height: clamp(130px, 18vw, 240px); }
 .radiant-field .radiant-enemy > strong { font-size: 13px; overflow-wrap: anywhere; }
 .radiant-field .is-defeated .radiant-unit-motion { opacity: .2; filter: grayscale(1); }
@@ -87,7 +85,7 @@ body:has(#radiant-preview) { margin: 0; background: #0c0d11; }
 .radiant-enemy { text-align: left; position: relative; }
 .radiant-enemy > span, .radiant-enemy > strong { display: block; }
 .radiant-enemy[aria-pressed="true"] { border-color: #fff; box-shadow: inset 0 0 0 1px #fff; }
-.radiant-squad { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); margin: 24px 0; gap: 8px; align-items: start; }
+.radiant-squad { box-sizing: border-box; display: grid; grid-template-columns: repeat(var(--squad-size), minmax(0, 1fr)); width: min(100%, var(--squad-max-width)); margin: 24px auto; gap: 8px; align-items: start; }
 .radiant-member { min-width: 0; background: #1b1c22d9; border: 1px solid #646770; border-radius: 16px; padding: 8px; }
 .radiant-face { width: 100%; text-align: left; position: relative; overflow: hidden; }
 .radiant-face .compact-portrait { display: block; aspect-ratio: 1.25; width: 100%; max-width: 112px; margin-inline: auto; }
@@ -201,7 +199,7 @@ html[data-motion="reduced"] .radiant-charge-layers.is-flowing .radiant-energy-li
 .radiant-field-ally > span { display: inline-block; margin-top: 2px; padding: 2px 10px; border-radius: 999px; background: #0d0f15b0; border: 1px solid #ffffff1f; font-size: 12px; }
 .radiant-shared { background: #15161cb0; padding: 8px 16px; gap: 16px; }
 .radiant-shared meter { height: 8px; }
-.radiant-squad { gap: 10px; align-items: stretch; margin: 18px 0 14px; }
+.radiant-squad { gap: 10px; align-items: stretch; margin: 18px auto 14px; }
 .radiant-member { display: flex; flex-direction: column; padding: 10px; border-radius: 14px; background: linear-gradient(#1d1f27e8, #15161cf0); border-color: #4c4f59; border-top: 3px solid var(--accent); }
 .radiant-face { display: grid; grid-template-columns: 64px minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: 10px; align-items: start; padding: 6px; background: #0f1016; border-color: #3b3e47; }
 .radiant-face .compact-portrait { grid-row: 1 / 3; width: 64px; height: 64px; aspect-ratio: 1; max-width: none; margin: 0; border-radius: 10px; overflow: hidden; background: #1a1c24; }
@@ -221,7 +219,7 @@ html[data-motion="reduced"] .radiant-charge-layers.is-flowing .radiant-energy-li
 .radiant-actions { gap: 10px; }
 .radiant-actions button { min-width: 150px; padding: 10px 20px; }
 @media (max-width: 1280px) and (min-width: 1001px) {
-  .radiant-squad { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .radiant-squad { grid-template-columns: repeat(var(--squad-compact-size), minmax(0, 1fr)); }
 }
 @media (max-width: 1000px) {
   .radiant-field .radiant-enemy-art { height: clamp(90px, 18vw, 160px); }
@@ -238,27 +236,38 @@ html[data-motion="reduced"] .radiant-field .radiant-enemy:hover .radiant-unit-mo
   .radiant-frozen-stats { grid-template-columns: 1fr; gap: 2px; }
   .radiant-frozen-stats div { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 8px; text-align: left; }
 }
-/* Formation: two staggered, overlapping ranks of three (front = members1-3). */
-.radiant-battle { --radiant-unit-height: clamp(150px, 15vw, 280px); }
-.radiant-field { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); min-height: calc(var(--radiant-unit-height) * 1.75 + 40px); padding-top: 28px; }
-.radiant-field .radiant-enemy-art, .radiant-field .radiant-art-pending { height: var(--radiant-unit-height); }
-.radiant-allies { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: auto auto; align-items: end; gap: 0; row-gap: 0; }
-.radiant-field-ally { transform: none; grid-row: 2; z-index: 3; display: flex; flex-direction: column; align-items: center; }
-.radiant-field-ally:nth-child(1) { grid-column: 1 / span 2; }
-.radiant-field-ally:nth-child(2) { grid-column: 3 / span 2; z-index: 4; }
-.radiant-field-ally:nth-child(3) { grid-column: 5 / span 2; }
-.radiant-field-ally:nth-child(n+4) { grid-row: 1; z-index: 1; margin-bottom: calc(var(--radiant-unit-height) * -.5); filter: brightness(.9); }
-.radiant-field-ally:nth-child(4) { grid-column: 2 / span 2; }
-.radiant-field-ally:nth-child(5) { grid-column: 4 / span 2; z-index: 2; }
-.radiant-field-ally:nth-child(6) { grid-column: 6 / span 2; }
-.radiant-field-ally:nth-child(n+4) > span { order: -1; margin: 0 0 4px; }
-.radiant-field-ally .radiant-unit-motion { width: 135%; margin: 0 -17.5%; }
-.radiant-field .radiant-ally-art { height: var(--radiant-unit-height); width: 100%; }
+/* Stable ground positions are chosen by formation size, not combat RNG. */
+.radiant-battle { --radiant-unit-height: clamp(150px, 15vw, 240px); --radiant-unit-width: clamp(90px, 12vw, 170px); }
+.radiant-field { display: block; min-height: clamp(360px, 28vw, 500px); padding: 0; }
+.radiant-field .radiant-allies, .radiant-field .radiant-enemies {
+  position: absolute; display: block; top: 62px; bottom: 10px; width: 44%; margin: 0;
+}
+.radiant-field .radiant-enemies { left: 2%; }
+.radiant-field .radiant-allies { right: 2%; }
+.radiant-field .radiant-field-ally, .radiant-field .radiant-enemy {
+  position: absolute; display: block; box-sizing: border-box; left: var(--formation-x); top: var(--formation-y);
+  z-index: var(--formation-depth); width: var(--radiant-unit-width); height: var(--radiant-unit-height);
+  transform: translate(-50%, -100%) scale(var(--formation-scale)); transform-origin: 50% 100%;
+}
+.radiant-field .radiant-unit-motion, .radiant-field .radiant-unit-idle { width: 100%; height: 100%; }
+.radiant-field .radiant-ally-art, .radiant-field .radiant-enemy-art, .radiant-field .radiant-art-pending {
+  width: 100%; height: 100%; object-fit: contain; object-position: center bottom;
+}
 .radiant-field-ally .radiant-unit-motion::before { content: ""; position: absolute; left: 20%; right: 20%; bottom: -2px; height: 14px; border-radius: 50%; background: radial-gradient(#000a, transparent 70%); z-index: -1; }
-.radiant-field-ally > span { position: relative; z-index: 6; white-space: nowrap; }
-.radiant-field .radiant-enemies { align-self: end; }
+.radiant-target-strip { position: absolute; z-index: 150; top: 12px; left: 12px; width: min(340px, calc(100% - 24px));
+  max-height: 38%; overflow-y: auto; box-sizing: border-box; padding: 8px 12px; border: 1px solid #ffffff50;
+  border-radius: 11px; background: #10131bdc; box-shadow: 0 8px 24px #0005; }
+.radiant-target-name { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.radiant-target-detail + .radiant-target-detail:not([hidden]) { margin-top: 8px; padding-top: 8px; border-top: 1px solid #ffffff30; }
+.radiant-target-state { display: block; color: #c9ccd4; font-size: 11px; }
+.radiant-target-state:empty { display: none; }
+.radiant-target-name strong { min-width: 0; overflow-wrap: anywhere; }
+.radiant-target-name span { flex: none; color: #c9ccd4; font-size: 12px; }
+.radiant-target-strip .radiant-health meter { height: 8px; }
+.radiant-target-strip .radiant-health span:not(.radiant-impact-ring) { display: inline; margin-right: 8px; font-size: 12px; }
+.radiant-target-strip p { margin: 0; }
 @media (max-width: 1000px) {
-  .radiant-battle { --radiant-unit-height: clamp(90px, 16vw, 150px); }
+  .radiant-battle { --radiant-unit-height: clamp(90px, 16vw, 150px); --radiant-unit-width: clamp(64px, 15vw, 120px); }
 }
 .radiant-field-ally > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; padding: 0; border: 0; }
 .radiant-visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
@@ -281,7 +290,6 @@ html[data-motion="reduced"] .radiant-fx-layer { display: none; }
 .radiant-battle .radiant-field .radiant-enemy:disabled, .radiant-battle .radiant-face:disabled { opacity: 1; }
 .radiant-battle .radiant-member.has-acted .radiant-face, .radiant-battle .radiant-member.is-defeated .radiant-face { opacity: .55; }
 .radiant-field .is-defeated .radiant-unit-motion { opacity: .18; filter: grayscale(1) brightness(.6); transform: translateY(14px) scale(.96); transition: opacity .4s ease, transform .4s ease; }
-.radiant-field .radiant-enemy.is-defeated .radiant-plate { opacity: .4; }
 .radiant-field .radiant-enemy.is-defeated .radiant-unit-motion::after { display: none; }
 
 /* Whole-card controls: click attacks; hold anywhere, then drag upward to release the ready Flare. */

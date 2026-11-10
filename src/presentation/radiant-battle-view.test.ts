@@ -12,14 +12,16 @@ import { radiantReadout, type RadiantImpactFrame } from './radiant-impact';
 import * as dialogs from './game-dialog';
 import type { RadiantMasterId } from '../content/radiant-combat';
 import type { RadiantCombatState } from '../game/radiant-combat';
+import type { Activity } from '../online/server-game';
 
 let serial = 0;
 const uuid = () => `00000000-0000-4000-8000-${(++serial).toString(16).padStart(12, '0')}`;
 const disposed: RadiantBattleView[] = [];
 function fixture(count = 6, form = 6, effects?: RadiantBattleEffects, stage = 25, onExit?: () => void,
-  masterId?: RadiantMasterId, charged = false, setup?: (state: RadiantCombatState) => void) {
+  masterId?: RadiantMasterId, charged = false, setup?: (state: RadiantCombatState) => void, activity?: Activity) {
   const state = freshGame('battle-surface'); state.starterId = 'ember';
   state.account.storyCompleted = stage - 1;
+  if (activity?.kind === 'dungeon') state.account.dungeonStages[activity.element] = activity.stage;
   state.account.squad = releasedRadiantIds.slice(0, count);
   for (const id of state.account.squad) state.account.characters[id as keyof typeof state.account.characters] =
     { level: form === 1 ? 30 : 105, evolution: form, weaponRank: 0 };
@@ -30,7 +32,7 @@ function fixture(count = 6, form = 6, effects?: RadiantBattleEffects, stage = 25
   const authority = { capability: 'isolated-radiant-study' as const, now: Date.UTC(2026, 10, 8),
     entry: () => ({ runId: uuid(), encounterSeed: 1729, chargeSeed: 7, targetSeed: 104729 }) };
   const entered = resolveRadiantRun({ revision: 0, state }, { requestId: uuid(), expectedRevision: 0,
-    runId: null, encounter: null, operation: { kind: 'start', activity: { kind: 'story', stage },
+    runId: null, encounter: null, operation: { kind: 'start', activity: activity ?? { kind: 'story', stage },
       calibration: 'authored-control' } }, authority);
   if (charged) for (const member of entered.state.radiantStudy!.state.gauge.members) member.charge = member.baseCost;
   setup?.(entered.state.radiantStudy!.state);
@@ -66,6 +68,103 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 describe('saved six-member Radiant battle surface', () => {
+  it('grounds six actual enemies and six allies while keeping one selected enemy readout', async () => {
+    const { view, host, session, transport } = fixture(6, 6, undefined, 34, undefined, undefined, false,
+      undefined, { kind: 'dungeon', element: 'infernic', stage: 34 });
+    applyMotion('reduced'); await view.finishEntrance();
+    const enemies = Array.from(host.querySelectorAll<HTMLButtonElement>('[data-radiant-target]'));
+    const allies = Array.from(host.querySelectorAll<HTMLElement>('.radiant-allies [data-radiant-field-unit]'));
+    expect(enemies).toHaveLength(6);
+    expect(allies).toHaveLength(6);
+    expect(enemies.every(enemy => enemy.style.getPropertyValue('--formation-x'))).toBe(true);
+    expect(new Set(enemies.map(enemy => enemy.style.getPropertyValue('--formation-y'))).size).toBeGreaterThan(1);
+    expect(host.querySelectorAll('.radiant-enemy .radiant-health')).toHaveLength(0);
+    expect(host.querySelectorAll('[data-radiant-target-detail]')).toHaveLength(6);
+    expect(host.querySelectorAll('[data-radiant-target-detail]:not([hidden])')).toHaveLength(1);
+    const target = session.view().saved.run!.state.enemies[2].id;
+    enemies[2].click();
+    expect(enemies[2].getAttribute('aria-pressed')).toBe('true');
+    expect(host.querySelector<HTMLElement>(`[data-radiant-target-detail="${target}"]`)!.hidden).toBe(false);
+    const positions = enemies.map(enemy => enemy.getAttribute('style'));
+    await view.act('normal', 'ember');
+    expect(transport.execute.mock.calls.at(-1)?.[0].operation).toMatchObject({
+      kind: 'action', action: { type: 'normal', bearerId: 'ember', targetId: target },
+    });
+    expect(enemies.map(enemy => enemy.getAttribute('style'))).toEqual(positions);
+  });
+
+  it('switches the focused target when the selected enemy is defeated without moving the others', async () => {
+    const { view, host, session } = fixture(2, 6, undefined, 1);
+    applyMotion('reduced'); await view.finishEntrance();
+    const enemies = Array.from(host.querySelectorAll<HTMLButtonElement>('[data-radiant-target]'));
+    const positions = enemies.map(enemy => enemy.getAttribute('style'));
+    await view.act('normal', 'ember');
+    expect(session.view().saved.run!.state.enemies[0].hp).toBe(0);
+    expect(enemies[0].disabled).toBe(true);
+    expect(enemies[1].getAttribute('aria-pressed')).toBe('true');
+    expect(host.querySelectorAll('[data-radiant-target-detail]:not([hidden])')).toHaveLength(1);
+    expect(enemies.map(enemy => enemy.getAttribute('style'))).toEqual(positions);
+  });
+
+  it('does not show an enemy impact for a support-only Flare after changing targets', async () => {
+    let releaseWindup!: () => void;
+    const effects = {
+      windup: vi.fn(() => new Promise<void>(resolve => { releaseWindup = resolve; })),
+      impact: vi.fn(() => Promise.resolve()),
+      cancel: vi.fn(),
+    };
+    const { view, host, session } = fixture(2, 6, effects, 1, undefined, undefined, true);
+    await view.finishEntrance();
+    const [oldTarget, nextTarget] = session.view().saved.run!.state.enemies.map(enemy => enemy.id);
+    const oldDetail = host.querySelector<HTMLElement>(`[data-radiant-target-detail="${oldTarget}"]`)!;
+    const nextDetail = host.querySelector<HTMLElement>(`[data-radiant-target-detail="${nextTarget}"]`)!;
+    const flare = view.act('flare', 'tide');
+    await vi.waitFor(() => expect(effects.windup).toHaveBeenCalledTimes(1));
+    controls(host, `[data-radiant-target="${nextTarget}"]`).click();
+    expect(oldDetail.hidden).toBe(true);
+    expect(nextDetail.hidden).toBe(false);
+    expect(nextDetail.textContent).not.toContain('Resolving impact');
+    releaseWindup();
+    await flare;
+  });
+
+  it('keeps a defeated target visible through its saved impact while another member may target the survivor', async () => {
+    let windup!: () => void, impact!: () => void, target = '', blockedImpact = false;
+    const effects = {
+      windup: vi.fn(() => new Promise<void>(resolve => { windup = resolve; })),
+      impact: vi.fn((frame: RadiantImpactFrame) => {
+        if (frame.readout.units[target].hp !== 0 || blockedImpact) return Promise.resolve();
+        blockedImpact = true;
+        return new Promise<void>(resolve => { impact = resolve; });
+      }),
+      cancel: vi.fn(),
+    };
+    const { view, host, session } = fixture(2, 6, effects, 1);
+    await view.finishEntrance();
+    target = session.view().saved.run!.state.enemies[0].id;
+    const survivor = session.view().saved.run!.state.enemies[1].id;
+    const oldDetail = host.querySelector<HTMLElement>(`[data-radiant-target-detail="${target}"]`)!;
+    const newDetail = host.querySelector<HTMLElement>(`[data-radiant-target-detail="${survivor}"]`)!;
+    const oldHP = oldDetail.querySelector('[data-hp]')!.textContent;
+    const pending = view.act('normal', 'ember');
+    await vi.waitFor(() => expect(effects.windup).toHaveBeenCalledTimes(1));
+    expect(session.view().saved.run!.state.enemies[0].hp).toBe(0);
+    expect(oldDetail.hidden).toBe(false);
+    expect(oldDetail.querySelector('[data-hp]')!.textContent).toBe(oldHP);
+    expect(oldDetail.textContent).toContain('Resolving impact');
+    expect(newDetail.hidden).toBe(false);
+    expect(newDetail.textContent).toContain('Selected target');
+    expect(action(host, 'tide').disabled).toBe(false);
+    windup();
+    await vi.waitFor(() => expect(impact).toBeTypeOf('function'));
+    expect(oldDetail.hidden).toBe(false);
+    expect(oldDetail.querySelector('[data-hp]')!.textContent).toContain('HP 0 /');
+    impact();
+    await pending;
+    expect(oldDetail.hidden).toBe(true);
+    expect(newDetail.hidden).toBe(false);
+  });
+
   it.each([
     [0, '0%', '0%', false],
     [15, '50%', '0%', false],
@@ -268,15 +367,17 @@ describe('saved six-member Radiant battle surface', () => {
     transport.execute.mockImplementationOnce(async request => {
       await new Promise<void>(resolve => { save = resolve; }); return execute(request);
     });
-    const enemyHP = host.querySelector('.radiant-enemy [data-hp]')!.textContent;
+    const target = session.view().saved.run!.state.enemies[0].id;
+    const readout = host.querySelector<HTMLElement>(`[data-radiant-target-detail="${target}"]`)!;
+    const enemyHP = readout.querySelector('[data-hp]')!.textContent;
     const pending = view.act('normal');
-    expect(host.querySelector('.radiant-enemy [data-hp]')!.textContent).toBe(enemyHP);
+    expect(readout.querySelector('[data-hp]')!.textContent).toBe(enemyHP);
     expect(effects.windup).not.toHaveBeenCalled(); expect(host.getAttribute('aria-busy')).toBe('true');
     save(); await vi.waitFor(() => expect(effects.windup).toHaveBeenCalledTimes(1));
-    expect(host.querySelector('.radiant-enemy [data-hp]')!.textContent).toBe(enemyHP);
+    expect(readout.querySelector('[data-hp]')!.textContent).toBe(enemyHP);
     expect(session.view().saved.revision).toBe(2);
     windup(); await vi.waitFor(() => expect(effects.impact).toHaveBeenCalledTimes(1));
-    expect(host.querySelector('.radiant-enemy [data-hp]')!.textContent).not.toBe(enemyHP);
+    expect(readout.querySelector('[data-hp]')!.textContent).not.toBe(enemyHP);
     expect(action(host, 'tide').disabled).toBe(false);
     impact(); await pending;
     expect(session.view().presentation).toBeNull(); expect(host.getAttribute('aria-busy')).toBe('false');

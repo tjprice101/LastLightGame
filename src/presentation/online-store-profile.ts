@@ -29,6 +29,7 @@ import { roseEventActive, type EventAccess } from '../content/event-schedule';
 import { infusionEncounter } from '../content/infusions';
 import { capturedLevelCap } from '../game/character-instances';
 import { enemySkills } from '../content/enemy-skills';
+import { shopHost } from './shop-host';
 import './event-devourers.css';
 
 export interface OnlineProfileDisplay {
@@ -134,7 +135,7 @@ export function materialExchange(account: Account | null, selected: string, navi
       <button data-market-category="event" aria-pressed="${category === 'event'}">Event Materials</button></nav>
     ${category === 'event' ? `<p class="ref-exchange-note" role="note">Event materials are only for ${restricted}.</p>` : ''}
     <div class="ref-scroll"><div class="ref-product-grid">${products.map(entry => `<button class="ref-product" data-market-material="${entry.id}" aria-pressed="${product.id === entry.id}"><div class="ref-product-art">${exchangeArt(entry.materialId)}</div><b>${materialName(entry.materialId)}</b><small>${entry.rarity} · Owned ${owned(entry.materialId)}${exchangeProductUnlocked(entry, account) ? '' : ` · Unlock at owned Element-Bearer Lv.${entry.unlockLevel ?? 0}`}</small><span class="ref-chip">${entry.price.toLocaleString('en-US')} Prismatica</span></button>`).join('')}</div></div></section>
-    <aside class="ref-panel ref-store-detail"><header class="ref-panel-heading">Details</header>
+    <aside class="ref-panel ref-store-detail">${shopHost('mirel')}<header class="ref-panel-heading">Details</header>
     ${itemShowcase([{ id: product.materialId, amount: account?.materials[product.materialId] ?? 0 }], materialName(product.materialId))}
     <h2>${materialName(product.materialId)}</h2>
     <p>${product.category === 'event' ? `${product.rarity} ${product.eventName} event material. <strong>Only for ${restricted}.</strong>` : `${product.rarity} ${elements.find(element => product.materialId.startsWith(`${element.id}-`))?.name ?? ''} upgrade material. Usable by normal Element-Bearers.`}</p>
@@ -162,6 +163,7 @@ export function onlineStores(account: Account | null, profile: OnlineProfileDisp
   if (tab === 'materials') return materialExchange(account, selectedMaterial, navigation);
   if (tab === 'event-devourers') {
     return `<section class="online-market ref-screen ref-market ref-event-devourer-store">${navigation}<section class="ref-panel">
+      ${shopHost('nimra', access.online ? 'welcome' : 'offline')}
       <header class="ref-panel-heading">Event Elemental-Devourers</header>
       <h2>Event-family copies</h2>
       <p role="status">Copies are available only after their event has actually completed a scheduled window, and never during an active rerun. Launches remain subject to authoritative event schedules.</p>
@@ -188,7 +190,7 @@ export function onlineStores(account: Account | null, profile: OnlineProfileDisp
   return `<section class="online-market ref-screen ref-market">${navigation}<section class="ref-panel"><header class="ref-panel-heading">Cosmetic Store · Profile frames</header><div class="ref-scroll"><div class="ref-product-grid">${profileFrames.map(frame => {
     const owned = frame.id === 'default' || profile?.ownedFrames.includes(frame.id);
     return `<button class="ref-product" data-market-frame="${frame.id}" aria-pressed="${choice.id === frame.id}"><div class="profile-frame-preview" data-profile-frame="${frame.id}"><span>L/L</span></div><b>${frame.name}</b><small>For Profile</small><span class="ref-chip">${owned ? 'Owned' : `${frame.price} Null-Prismatica`}</span></button>`;
-  }).join('')}</div></div></section><aside class="ref-panel ref-store-detail"><header class="ref-panel-heading">Details</header><div class="profile-frame-preview ref-frame-hero" data-profile-frame="${choice.id}"><span>L/L</span></div><h2>${choice.name}</h2><p>Profile decoration only. No gameplay effects.</p><dl class="ref-detail-facts"><div><dt>Price</dt><dd>${choice.price ? `${choice.price} Null-Prismatica` : 'Free default frame'}</dd></div><div><dt>Ownership</dt><dd>${owned ? 'Owned permanently' : 'Not owned'}</dd></div></dl>${notice}<footer><button ${owned ? `data-equip-frame="${choice.id}"` : `data-buy-frame="${choice.id}"`} ${!online || profile?.frame === choice.id ? 'disabled' : ''}>${profile?.frame === choice.id ? 'Equipped' : owned ? 'Equip' : 'Buy frame'}</button></footer></aside></section>`;
+  }).join('')}</div></div></section><aside class="ref-panel ref-store-detail">${shopHost('veylin', online ? 'welcome' : 'offline')}<header class="ref-panel-heading">Details</header><div class="profile-frame-preview ref-frame-hero" data-profile-frame="${choice.id}"><span>L/L</span></div><h2>${choice.name}</h2><p>Profile decoration only. No gameplay effects.</p><dl class="ref-detail-facts"><div><dt>Price</dt><dd>${choice.price ? `${choice.price} Null-Prismatica` : 'Free default frame'}</dd></div><div><dt>Ownership</dt><dd>${owned ? 'Owned permanently' : 'Not owned'}</dd></div></dl>${notice}<footer><button ${owned ? `data-equip-frame="${choice.id}"` : `data-buy-frame="${choice.id}"`} ${!online || profile?.frame === choice.id ? 'disabled' : ''}>${profile?.frame === choice.id ? 'Equipped' : owned ? 'Equip' : 'Buy frame'}</button></footer></aside></section>`;
 }
 
 function profilePlayTime(seconds: number | undefined): string {

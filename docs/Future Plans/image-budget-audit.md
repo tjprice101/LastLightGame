@@ -1,5 +1,16 @@
 # Audited image queue and Midjourney budget
 
+## Radiant vendor scope added (2026-11-09)
+
+The [single Radiant art brief](../../Art/ui/Radiant%20Combat%20Overhaul.md)
+proposes **six new vendor portraits**, with **two optional environments**.
+No vendor source is delivered; this work did not generate or purchase images.
+These sources are separate from the 2026-11-07 seasonal/War snapshot below.
+That older queue includes ability icons and other work outside the Radiant
+request; the owner requested no new ability icons for the Radiant overhaul.
+Do not silently treat the combined historical and proposed counts as one
+approved purchase order.
+
 **Snapshot: 2026-11-07. USD, before tax; no purchase or generation authorized.**
 
 **147 required new images remain.** The owner's104 Moon sources are now
@@ -35,8 +46,9 @@ are installed, leaving103 Sunshade images.
 All six Moon bearers use the latest matching blue-purple lunar direction.
 The older24 Moon-labeled portraits are **not** delivery for this redesigned
 queue: they belong to the separate War reuse plan. The new104 Moon delivery is
-separately preserved in `Art/source/moon`. Both event schedules remain
-inactive; intake does not implicitly approve activation.
+separately preserved in `Art/source/moon`. Event availability follows the
+actual authoritative schedule and release gates; intake does not itself
+activate an event.
 
 ## 2. Four approved reclaimed War bearers:44 new,24 reused
 

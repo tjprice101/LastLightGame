@@ -1,4 +1,4 @@
-"""Validate the exact pending Calamitic queue without touching runtime content."""
+"""Validate the reproducible Calamitic prompt packs without touching runtime content."""
 import re
 import unittest
 from unittest.mock import Mock, patch
@@ -67,10 +67,14 @@ class CalamiticArtTests(unittest.TestCase):
         for path, expected in generated.items():
             self.assertEqual(path.read_text(encoding="utf-8"), expected, path.name)
             installed = path.name == "Calamitic Master Conduits.md"
-            self.assertIn("All nine Master images delivered and installed" if installed else "All artwork pending owner delivery", expected)
+            self.assertIn("All nine Master images delivered and installed" if installed else
+                          "All Phase 0 images in this pack were delivered and installed", expected)
             blocks = BLOCK.findall(expected)
-            self.assertEqual(expected.count("Target runtime asset ID:"), len(blocks))
-            self.assertEqual(expected.count("Installed export:" if installed else "Target export:"), len(blocks))
+            self.assertEqual(expected.count("Target runtime asset ID:" if installed else "Original prompt art ID:"), len(blocks))
+            self.assertEqual(expected.count("Installed export:"), len(blocks) if installed else 0)
+            if not installed:
+                self.assertIn("actual runtime mappings", expected)
+                self.assertNotIn("pending delivery; not an installed URL", expected)
             self.assertEqual(expected.count("Filename:"), len(blocks))
 
     def test_complete_roster_titles_abilities_and_materials(self):
@@ -92,7 +96,8 @@ class CalamiticArtTests(unittest.TestCase):
         self.assertEqual(len(STATUSES), 3)
         self.assertEqual(len(MATERIALS), 10)
         self.assertEqual(len(CONDUITS), 9)
-        ids = re.findall(r"Target runtime asset ID: `([^`]+)`", "\n".join(outputs().values()))
+        ids = re.findall(r"(?:Target runtime asset ID|Original prompt art ID): `([^`]+)`",
+                         "\n".join(outputs().values()))
         self.assertEqual(len(ids), len(set(ids)))
         for name, _, _ in MATERIALS:
             self.assertIn(name, "\n".join(outputs().values()))

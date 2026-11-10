@@ -159,14 +159,15 @@ or new rarity forms.
 provide all30 exact creature identities and six empty side-view battle arenas
 matching the elemental dungeon renderer and standing-lane composition.
 [World map prompt](../Art/ui/Story%20World%20Map.md) covers six connected regional
-terrains; names, locks and150 stage controls remain accessible HTML, not baked
+terrains; names, locks and120 stage controls remain accessible HTML, not baked
 into generated art. Individual palettes/reference-free enemy cutouts keep
 complete silhouettes and unlit solid keys; scenery stays opaque/full-bleed.
 These prompts do not register nonexistent files or change rewards/rarity/forms.
 Deliver originals under Art/source/story, never the repository root.
 Validate `python -m unittest discover -s tools -p test_story_art_prompts.py`;
-D-171 installs the actual reviewed31-image delivery; remaining Infernic imagery
-stays pending. Prompt files remain the generation reference, not source images.
+D-171 installed the reviewed31-image delivery; D-178 subsequently installed the
+Infernic creatures and arena. Prompt files remain the generation reference,
+not source images.
 
 - Every ordinary stage has two enemies, each uniformly sampled from its
   region's four identities; duplicates are allowed. Stage25 of each region has
@@ -280,7 +281,7 @@ Captured character galleries/pools are unchanged because Story cannot capture.
 
 ## Validation
 
-- `src/game/story.test.ts`: all150 stages, exact six reward pairs,30 unique
+- `src/game/story.test.ts`: all120 stages, exact six reward pairs,30 unique
   identities, actual loot gates/ranges, equal-level/rank encounter parity,
   separate continuing RNG, mixed/all-captured snapshots, legacy read-only
   behavior, partial clears, atomic first/replay/deduplicated rewards, overflow,

@@ -1,0 +1,52 @@
+.shop-host {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  align-items: start;
+  gap: .75rem;
+  padding: .75rem;
+  border: 1px solid #ffffff2e;
+  border-radius: .85rem;
+  background: linear-gradient(120deg, #ffffff10, #ffffff03 70%), #15171c;
+  overflow: hidden;
+}
+.shop-host::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, #ffffff12 48%, transparent 65%);
+  transform: translateX(-120%);
+  animation: shop-host-arrival 1.1s ease-out both;
+}
+.shop-host-mark {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  aspect-ratio: 2 / 3;
+  border: 1px solid #ffffff50;
+  border-radius: .6rem;
+  background: radial-gradient(ellipse at 50% 35%, #ffffff24, transparent 62%), #272b33;
+  color: #f6f7fa;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.shop-host-copy { min-width: 0; }
+.shop-host-heading { display: flex; justify-content: space-between; align-items: start; gap: .5rem; }
+.shop-host-heading strong, .shop-host-heading small { display: block; }
+.shop-host-heading small { margin-top: .15rem; color: #bfc2cd; font-size: .72rem; }
+.shop-host p { margin: .45rem 0 0; color: #eef0f5; font-size: .8rem; line-height: 1.45; }
+html body .sanctuary-shell .shop-host .shop-host-talk {
+  flex: none;
+  min-width: 3.5rem;
+  min-height: 44px;
+  padding: .35rem .65rem;
+  border: 1px solid #ffffff59;
+  border-radius: .55rem;
+  color: #fff;
+  background: #ffffff10;
+}
+.shop-host-talk:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@keyframes shop-host-arrival { to { transform: translateX(120%); } }
+@media (prefers-reduced-motion: reduce) { .shop-host::after { animation: none; } }
+html[data-motion="reduced"] .shop-host::after { animation: none; }

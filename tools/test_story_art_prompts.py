@@ -19,12 +19,14 @@ REGIONS = (
 class StoryArtPromptTests(unittest.TestCase):
     def test_complete_runtime_region_and_creature_coverage(self):
         source = (ROOT / "src" / "content" / "story.ts").read_text(encoding="utf-8")
+        activities = (ROOT / "src" / "content" / "activities.ts").read_text(encoding="utf-8")
+        self.assertRegex(activities, r"storyStageLayout = \{ regionStages: 20, stages: 120,")
         records = re.findall(
             r"element: '([^']+)', name: '([^']+)'.*?enemies: \[(.*?)\], boss: '([^']+)'",
             source, re.S,
         )
         self.assertEqual([(element, name) for element, name, _, _ in records], list(REGIONS))
-        for element, name, enemies, boss in records:
+        for region_index, (element, name, enemies, boss) in enumerate(records):
             text = (PACKS / f"{name}.md").read_text(encoding="utf-8")
             names = re.findall(r"'([^']+)'", enemies) + [boss]
             self.assertEqual(len(names), 5)
@@ -32,8 +34,18 @@ class StoryArtPromptTests(unittest.TestCase):
             for index, creature in enumerate(names):
                 with self.subTest(region=name, creature=creature):
                     self.assertIn(creature, text)
-                    self.assertIn(f"story:{element}:{index if index < 4 else 'boss'}", text)
-            self.assertIn("pending", text.lower())
+                    suffix = index if index < 4 else "boss"
+                    self.assertIn(f"story:{element}:{suffix}", text)
+                    self.assertTrue((ROOT / "public" / "assets" / "enemies" /
+                                     f"story-{element}-{suffix}.png").is_file())
+            first, last = region_index * 20 + 1, (region_index + 1) * 20
+            self.assertIn(f"global stages **{first}\u2013{last}**", text)
+            self.assertIn("local stages **1\u201320**", text)
+            self.assertIn(f"boss is stage {last} only", text)
+            self.assertIn("delivered and installed", text.lower())
+            self.assertTrue((ROOT / "Art" / "source" / "story" / element).is_dir())
+            arena = f"story-{name.lower().replace(' ', '-')}-arena.png"
+            self.assertTrue((ROOT / "public" / "assets" / "backgrounds" / arena).is_file())
 
     def test_all_prompts_have_single_reference_free_renderer_flags(self):
         paths = [PACKS / f"{name}.md" for _, name in REGIONS]
@@ -99,7 +111,8 @@ class StoryArtPromptTests(unittest.TestCase):
                      ("cinder march", "glasswater coast", "stormspan heights",
                       "rootstone wilderness", "stillhalo vale", "riftbound frontier")]
         self.assertEqual(positions, sorted(positions))
-        self.assertIn("150 miniature nodes", text)
+        self.assertIn("120-stage Story campaign", text)
+        self.assertIn("miniature stage nodes", text)
         self.assertIn("accessible HTML", text)
         self.assertIn("stage nodes", body.split(" --no ", 1)[1])
         self.assertIn("do **not** background-remove", text)

@@ -1,15 +1,75 @@
 # Current state and handoff
 
+## Battlefield staging and original shop hosts (2026-11-09)
+
+**Implemented:** the isolated Radiant field now uses deterministic staggered
+one-to-six-unit formations with full-form allies, canonical enemies, stable
+vacated positions, a focused enemy strip and centered smaller squad decks.
+If the saved target changes before its hit plays, a labeled temporary readout
+keeps that target's Health visible through impact while the selected next
+target and other eligible members remain actionable. Exact Health, Attack,
+Defense, Recovery, effects, Gauge, direct controls and saved ordering remain.
+
+Mirel, Veylin, Torven, Edda, Sarev and Nimra now host the six existing shop
+or service surfaces with accessible Talk controls, deterministic idle lines
+and contextual text. Neutral named tiles identify their pending portraits;
+there are no guessed image URLs. Cancellation never saves, and success dialogue
+and rewards follow confirmed persistence. The previously unreachable Event
+Elemental-Devourer purchase button now reaches its existing authenticated
+warning, purchase and receipt flow; an ambiguous response keeps its original
+request for retry and a confirmed retry presents the saved copy.
+
+The [consolidated art brief](../Art/ui/Radiant%20Combat%20Overhaul.md) compares
+the owner's battle references and supplies six original 2:3 portrait prompts
+plus two optional environments. The 192 existing compact crops are
+derivatives, not new commissions; the separate seasonal/War queue is not an
+implicit Radiant order. Current Story and art-intake descriptions were also
+reconciled without altering unrelated prompt bodies or installed artwork.
+
+**Verified:** `npx vitest run radiant --exclude src\radiant-ui.test.ts
+--maxWorkers=2 --testTimeout=60000` passed 1,808 tests in 23 files. The
+focused shop, warning and saved-purchase command covering
+`shop-host.test.ts`, `event-devourer-purchase.test.ts`,
+`online-store-profile.test.ts`, `conduit-store.test.ts`,
+`conduit-upgrade.test.ts`, `conduit-menu-update.test.ts` and
+`event-lifecycle.test.ts` passed 63 tests in seven files. With
+`PYTHONPATH=tools`, `python -m unittest -v test_radiant_art_brief
+test_future_plans test_story_art_prompts test_conduit_expansion_art
+test_calamitic_art` passed 22 tests. `npm run build` passed with the existing
+large-chunk advisory. The older shared art suite has 315 pre-existing
+failures, including subtests, with identical sets with and without this brief.
+
+Local browser fixtures used actual authored one-, three- and six-enemy
+encounters, including a solo boss. Six enemy centers remained individually
+clickable; a saved killing hit retained its old Health until impact while
+another member stayed enabled. A narrow emulated viewport and the actual
+shop CSS/Talk control were inspected. These are not physical-device or GPU
+approval. The host browser reported a WebGL framebuffer error while a live
+Phaser page was torn down for a synthetic fixture; it does not establish a
+production failure or a clean physical-GPU result.
+
+**Remaining:** individual source foot/hover anchors and owner review of
+formation and vendor identities; six delivered/reviewed vendor portraits;
+final bespoke per-character cinema; physical desktop GPU/cadence and economy
+acceptance (and touch testing if touch is included); deployed authenticated
+route verification; explicit approval followed by coherent matching
+authority/client deployment and hosted verification. Prior actual-database
+checks use the local handler and are bounded, not deployed-function or
+production-traffic proof. Keep the authority disabled and the branch isolated
+until those gates pass.
+
 ## Dynamic enemy formations (2026-11-09)
 
 **Implemented:** staged ordinary encounters scale from two to six enemies;
 Training waves scale from three to six. Story skirmishes cap at two to preserve
-the verified single-starter progression path, while every stage boss remains
-alone. War stages also remain solo boss fights; Calamity keeps its separately
+the verified single-starter progression path; Heaven/Abyss stages1-4 retain
+solo encounters on the current caps schedule. Every stage boss remains alone.
+War stages also remain solo boss fights; Calamity keeps its separately
 calibrated solo encounters. Staged bosses receive 10% more Health without an
-Attack increase. Reward totals stay at two ordinary carriers, one boss/War/
-Calamity carrier, or three Training carriers; extra enemies still count for
-discovery but do not add loot rolls. The encounter-rules version is 19.
+Attack increase. Reward totals stay at two ordinary carriers, one for the
+current early Heaven/Abyss solo encounters or boss/War/Calamity, and three
+for Training; extra enemies still count for discovery but do not add loot
+rolls. The encounter-rules version is 19.
 
 **Verified:** the complete suite passes with the unrelated untracked
 `src/ui-design-lab.test.ts` excluded; `npx tsc --noEmit -p .` and
@@ -33,6 +93,9 @@ defeated or blocked cards ignore all three.
 `npm run build` passes.
 
 ## No Radiant member selection step (2026-11-09)
+
+**Historical intermediate:** the later mouse-controls entry above removes the
+Actions menu described in this entry.
 
 **Implemented:** squad members are never "selected". A click anywhere on a
 member card immediately saves that member's Normal Attack; hold plus upward
@@ -453,8 +516,9 @@ Health/Shield, other three stats via existing presentation formatter, sourced
 effect lists, personal layers/highest-tier readiness and shared meter remain.
 Tap portraits saves a Normal Attack;350ms hold/upward32px release saves the
 highest ready Flare. Cancel/early/diagonal/downward/unavailable never fall back
-to Normal. Non-spending Select · Actions supports keyboard/text buttons and
-Defense. Capture/timer cancellation covers Escape/blur/Settings/transition/
+to Normal. At this recovery stage non-spending Select · Actions supported
+keyboard/text buttons and Defense; later direct controls removed that menu.
+Capture/timer cancellation covers Escape/blur/Settings/transition/
 disposal; compatibility clicks cannot double-spend. Narrow-screen rail is
 horizontal/focusable. Saved field/portrait DOM stays stable through actions.
 

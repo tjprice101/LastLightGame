@@ -1,5 +1,28 @@
 # Menus and inventory
 
+## Vendor hosts and Radiant battle staging (2026-11-09)
+
+The [Radiant art brief](../Art/ui/Radiant%20Combat%20Overhaul.md) proposes
+Mirel for Material Exchange, Veylin for Cosmetic Store, Torven for ordinary
+Conduits, Edda for Conduit Upgrade, Sarev for Calamitic Conduits and Nimra
+for Event Elemental-Devourers. Each existing surface now has its named,
+keyboard-accessible Talk control and transient text dialogue. Neutral named
+tiles honestly indicate the six pending portraits. Greeting/selection,
+offline/locked, cancellation and confirmed-save lines never replace real
+prices, warnings or errors. Dialogue uses no account writes or gameplay RNG.
+These are the existing five shop destinations plus an existing upgrade
+service, not new shops or changes to prices, gates or event schedules.
+The previously unreachable Event Elemental-Devourer purchase button now
+calls its authenticated authority, preserving confirmation and retry.
+
+The isolated Radiant field now uses deterministic staggered formations and a
+selected-enemy strip instead of prominent enemy cards. A temporary labeled
+impact readout preserves the previous target's saved Health until its hit.
+Individual artwork foot/hover anchor review and owner visual acceptance remain.
+Keep exact bearer Health, Attack, Defense, Recovery, effects and Gauge visible
+on their portrait controls. Direct card attacks, Defense and Flare gestures
+remain; the older Actions-menu descriptions below are historical.
+
 ## Radiant field units and charged portrait controls (2026-11-08)
 
 [Owner clarification and saved interaction contract](Future%20Plans/radiant-combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08):
@@ -8,14 +31,16 @@ portraits below hold Health/Shield, three other frozen stats, sourced effects
 and personal Gauge/readiness. Tap a portrait to attack; hold350ms, drag upward
 at least32px and release for its highest ready Flare. Cancel/unavailable/early
 drags spend nothing and never silently attack instead.
-Select · Actions retains keyboard-accessible Normal/Defense/Flare alternatives.
+There is no member selection or Actions menu: right-click defends, while
+Enter/Space, D/context-menu and F/Up provide keyboard attack, Defense and Flare.
 Narrow screens have a focusable horizontal portrait rail, not cropped controls.
 Use existing facing/source art, save-first receipts, parallel bounded stance/
 recoil effects, static Reduce motion and complete timer/pointer/DOM disposal.
 All32 authored signature motifs now join finite emission; small buff-only status
 pulses do not celebrate ineffective healing or generated follow-ups.
-Full status clocks, production routing and final cinematic/device release
-validation remain unfinished; this does not activate the overhaul.
+Status clocks and gated isolated routing are implemented; deployed-route,
+final cinematic and physical-device release validation remain unfinished.
+This does not activate the overhaul.
 
 ## Radiant saved-impact bloom pilot (2026-11-08)
 

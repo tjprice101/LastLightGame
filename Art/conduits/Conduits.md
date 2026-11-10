@@ -47,15 +47,16 @@ For clean source cutouts, depict swirling energy as bounded, opaque, hard-edged
 painted ribbons/facets with generous padding. Keep the contrasting solid key
 background and current no-bloom/no-spill contract; a luminous finished
 presentation can add reviewed runtime shine/glow without contaminating the matte.
-Rare/Legendary/Omnic now have authored prompts and rarity presentation in D-124;
-actual new PNG generation/intake remains pending.
+Rare/Legendary/Omnic gained authored prompts and rarity presentation in D-124;
+their later reviewed image intake supersedes the former pending-art status.
 
 The five supplied Common icons are registered at
 `public/assets/conduits/<id>.png`; the supplied store banner is registered at
 `public/assets/banners/conduit-store.png`. Their original RGB files are retained
 under `Art/source/conduits` and provenance/keying is recorded in
-`Art/provenance/root-art-intake.json`. New higher-rarity prompts are in the linked machine
-pack; their20 runtime icons intentionally remain pending artwork.
+`Art/provenance/root-art-intake.json`. The linked Machines pack's 20
+higher-rarity Conduit icons are delivered and installed (D-128); later
+replacements preserve their reviewed provenance.
 
 ## Vigil Core
 

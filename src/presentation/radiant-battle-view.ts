@@ -22,6 +22,7 @@ import { bindRadiantPortraitGestures, radiantGestureActor } from './radiant-port
 import { characterChoreography } from './battle-effects';
 import { formatStat } from '../content/combat';
 import { lootArt, lootItems } from './battle-loot';
+import { radiantFormation, radiantFormationStyle } from './radiant-formation';
 
 export interface RadiantBattleEffects {
   windup(action: RadiantPlayerAction, state: RadiantCombatState): Promise<void>;
@@ -34,8 +35,13 @@ interface QueuedRadiantPresentation {
   before: RadiantCombatState;
   response: RadiantRunResponse;
   action: RadiantPlayerAction;
+  focusedTarget: string | null;
   resolve(): void;
   reject(error: unknown): void;
+}
+
+function affectedEnemyTarget(response: RadiantRunResponse, target: string | null): string | null {
+  return target && response.events.some(event => 'targetId' in event && event.targetId === target) ? target : null;
 }
 const tierNames = { glowing: 'Glowing Flare', lustrous: 'Lustrous Flare', eternal: 'Eternal Radiant Flare' };
 function centre(element: Element, random?: () => number): { x: number; y: number } {
@@ -67,6 +73,7 @@ export class RadiantBattleView {
   private selectionCleanup: (() => void) | null = null;
   private presentationError: string | null = null;
   private activeReceipt: RadiantRunResponse | null = null;
+  private impactTarget: string | null = null;
   private presentationGeneration = 0;
   private presentationQueue: QueuedRadiantPresentation[] = [];
   private presentationRunning = false;
@@ -107,6 +114,8 @@ export class RadiantBattleView {
     this.render();
   }
   private mount(run: FrozenRadiantRun): void {
+    const allies = radiantFormation(run.state.bearers.length);
+    const enemies = radiantFormation(run.enemies.length);
     this.host.innerHTML = `<section class="radiant-battle" aria-label="Radiant battle">
       <header class="radiant-battle-heading"><div class="radiant-heading-title"><small class="radiant-eyebrow">${escape(run.anchor.family)}</small><h2>Radiant battle</h2>
         <span data-radiant-progress>${radiantEncounterLabel(run)}</span> · <span data-radiant-round></span></div>
@@ -114,25 +123,35 @@ export class RadiantBattleView {
         ${this.onExit ? '<button type="button" data-radiant-leave>Exit · Keep rewards</button>' : ''}</div></header>
       <section class="radiant-field" aria-label="Battlefield">
         <div class="radiant-arena">${radiantArenaArt(run.anchor.activity)}</div>
+        <div class="radiant-target-strip" role="region" aria-label="Selected enemy">
+          ${run.enemies.map(enemy => `<div class="radiant-target-detail" data-radiant-target-detail="${escape(enemy.id)}" hidden>
+            <small class="radiant-target-state" data-radiant-target-state></small>
+            <div class="radiant-target-name"><strong>${escape(enemy.name)}</strong><span>Lv.${enemy.level}</span></div>
+            ${this.healthMarkup(enemy.id)}</div>`).join('')}
+          <p data-radiant-no-target hidden>No enemy target remains.</p>
+        </div>
         <div class="radiant-allies" aria-label="Allied field formation">${run.state.bearers.map((unit, index) =>
-          `<div class="radiant-field-ally" data-radiant-field-unit="${escape(unit.loadout.id)}" style="--formation:${index}">
+          `<div class="radiant-field-ally" data-radiant-field-unit="${escape(unit.loadout.id)}"
+            style="${radiantFormationStyle(allies[index], index, true)}">
             <div class="radiant-unit-motion" data-radiant-art="${escape(unit.loadout.id)}">
               <div class="radiant-unit-idle">${radiantAllyArt(unit.loadout)}</div>
             </div><span>${escape(getStarter(unit.loadout.starter).name)}</span>
           </div>`).join('')}</div>
-      <div class="radiant-enemies" aria-label="Enemy targets">${run.enemies.map(enemy =>
+      <div class="radiant-enemies" aria-label="Enemy targets">${run.enemies.map((enemy, index) =>
         `<button type="button" class="radiant-enemy" data-radiant-target="${escape(enemy.id)}"
-          data-radiant-field-unit="${escape(enemy.id)}" aria-pressed="false">
+          data-radiant-field-unit="${escape(enemy.id)}" aria-pressed="false"
+          aria-label="Target ${escape(enemy.name)}, level ${enemy.level}"
+          style="${radiantFormationStyle(enemies[index], index, false)}">
           <div class="radiant-unit-motion" data-radiant-art="${escape(enemy.id)}"><div class="radiant-unit-idle">${radiantEnemyArt(enemy)}</div></div>
-          <div class="radiant-plate"><span class="radiant-plate-name"><strong>${escape(enemy.name)}</strong><span>Lv.${enemy.level}</span></span>
-          ${this.healthMarkup(enemy.id)}</div></button>`).join('')}</div>
+        </button>`).join('')}</div>
       </section>
       <section class="radiant-shared" aria-label="Shared Eternal charge"><b>Eternal Radiant Flare</b>
         <meter class="radiant-visually-hidden" data-radiant-shared min="0" aria-label="Shared Eternal charge"></meter>
         <span class="radiant-charge-layers radiant-shared-energy" data-radiant-shared-energy aria-hidden="true">
           <span class="radiant-energy-track"><span class="radiant-energy-liquid"></span></span>
         </span><span data-radiant-shared-text></span></section>
-      <div class="radiant-squad" role="group" aria-label="Squad portrait controls; scroll horizontally on narrow screens" tabindex="0">${run.state.bearers.map((unit, index) => {
+      <div class="radiant-squad" role="group" aria-label="Squad portrait controls; scroll horizontally on narrow screens" tabindex="0"
+        style="--squad-size:${run.state.bearers.length};--squad-compact-size:${Math.min(run.state.bearers.length, 3)};--squad-max-width:${run.state.bearers.length * 270 + (run.state.bearers.length - 1) * 10}px">${run.state.bearers.map((unit, index) => {
         const member = unit.loadout, starter = getStarter(member.starter);
         return `<article class="radiant-member" data-radiant-card data-radiant-unit="${escape(member.id)}" data-element="${starter.elementId}">
           <span class="radiant-card-burst" aria-hidden="true"></span>
@@ -312,6 +331,14 @@ export class RadiantBattleView {
       button.disabled = blocked || !run.state.enemies.some(enemy => enemy.id === id && enemy.hp > 0);
       button.setAttribute('aria-pressed', String(id === this.target));
     }
+    const impactTarget = this.presenting && this.impactTarget !== this.target ? this.impactTarget : null;
+    for (const detail of Array.from(this.host.querySelectorAll<HTMLElement>('[data-radiant-target-detail]'))) {
+      const id = detail.dataset.radiantTargetDetail;
+      detail.hidden = id !== this.target && id !== impactTarget;
+      detail.querySelector<HTMLElement>('[data-radiant-target-state]')!.textContent =
+        id === impactTarget ? 'Resolving impact' : impactTarget && id === this.target ? 'Selected target' : '';
+    }
+    this.element<HTMLElement>('[data-radiant-no-target]').hidden = this.target !== null || impactTarget !== null;
     for (const member of this.displayed.gauge.members) {
       const energy = this.element<HTMLElement>(`[data-radiant-energy="${member.id}"]`);
       energy.classList.toggle('is-flowing', member.charge > 0 && this.displayed.units[member.id].hp > 0);
@@ -380,15 +407,16 @@ export class RadiantBattleView {
       ?? before.state.bearers[0]).loadout.id;
     const member = before.state.bearers.find(unit => unit.loadout.id === actor)!;
     const tier = member.hp > 0 ? readyFlare(before.state.gauge, actor) : null;
+    const focusedTarget = kind === 'defense' ? null : this.target;
     const action: RadiantPlayerAction = kind === 'defense' ? { type: kind, bearerId: actor } :
-      kind === 'normal' ? { type: kind, bearerId: actor, targetId: this.target ?? '' } :
+      kind === 'normal' ? { type: kind, bearerId: actor, targetId: focusedTarget ?? '' } :
       { type: kind, bearerId: actor, ...(tier && radiantFlareNeedsTarget(member.loadout, tier)
-        ? { targetId: this.target ?? '' } : {}) };
+        ? { targetId: focusedTarget ?? '' } : {}) };
     const pending = this.session.perform({ kind: 'action', action }); this.render();
     try {
       const response = await pending;
       if (kind !== 'defense') this.cardFeedback(action.bearerId, kind === 'flare' ? 'flare' : 'strike');
-      await this.queuePresentation(before.state, response, action);
+      await this.queuePresentation(before.state, response, action, affectedEnemyTarget(response, focusedTarget));
     }
     finally { this.render(); }
   }
@@ -399,7 +427,11 @@ export class RadiantBattleView {
     const pending = this.session.retryPending(); this.render();
     try {
       const response = await pending;
-      if (request.operation.kind === 'action') await this.queuePresentation(before.state, response, request.operation.action);
+      if (request.operation.kind === 'action') {
+        const action = request.operation.action;
+        const focusedTarget = action.type === 'defense' ? null : 'targetId' in action ? action.targetId ?? this.target : this.target;
+        await this.queuePresentation(before.state, response, action, affectedEnemyTarget(response, focusedTarget));
+      }
       else if (request.operation.kind === 'continue' || request.operation.kind === 'retry' || request.operation.kind === 'exit')
         await this.finishTransition(request.operation.kind, response);
       else throw new Error('Unsupported pending battle transition.');
@@ -418,7 +450,7 @@ export class RadiantBattleView {
     finally { this.render(); }
   }
   private queuePresentation(before: RadiantCombatState, response: RadiantRunResponse,
-    action: RadiantPlayerAction): Promise<void> {
+    action: RadiantPlayerAction, focusedTarget: string | null): Promise<void> {
     const receipt = this.session.view().presentation;
     if (!receipt || receipt.response.revision !== response.revision)
       throw new Error('Saved action presentation receipt is missing.');
@@ -427,7 +459,7 @@ export class RadiantBattleView {
     this.presenting = true;
     const promise = new Promise<void>((resolve, reject) => {
       this.presentationQueue.push({ before: structuredClone(before), response: structuredClone(response),
-        action: structuredClone(action), resolve, reject });
+        action: structuredClone(action), focusedTarget, resolve, reject });
     });
     this.render();
     void this.drainPresentations();
@@ -443,7 +475,7 @@ export class RadiantBattleView {
         const cancelled = new Promise<void>(resolve => { cancel = resolve; });
         this.cancelActivePresentation = cancel;
         try {
-          await Promise.race([this.present(queued.before, queued.response, queued.action), cancelled]);
+          await Promise.race([this.present(queued.before, queued.response, queued.action, queued.focusedTarget), cancelled]);
           queued.resolve();
         } catch (error) {
           this.settle(queued.response);
@@ -493,16 +525,18 @@ export class RadiantBattleView {
     this.displayed = radiantReadout(response.run.state); this.statuses = radiantStatusSnapshot(response.run.state);
     this.statusMarkup.clear(); this.shieldMarkup.clear(); this.resultKey = null; this.leaderMarkup = null;
     this.target = response.run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
+    this.impactTarget = null;
     this.mount(response.run); this.render();
     await this.finishEntrance();
     const first = response.run.state.bearers.find(unit => unit.hp > 0)?.loadout.id ?? response.run.state.bearers[0].loadout.id;
     if (!this.disposed) this.element<HTMLElement>(`[data-radiant-actor="${first}"]`).focus();
   }
-  private async present(before: RadiantCombatState, response: RadiantRunResponse, action: RadiantPlayerAction): Promise<void> {
+  private async present(before: RadiantCombatState, response: RadiantRunResponse, action: RadiantPlayerAction,
+    focusedTarget: string | null): Promise<void> {
     if (this.disposed) return;
     const generation = ++this.presentationGeneration;
     const restoreScroll = this.revealBattlefield();
-    this.presenting = true; this.skipped = false; this.activeReceipt = response; this.render();
+    this.presenting = true; this.skipped = false; this.activeReceipt = response; this.impactTarget = focusedTarget; this.render();
     try {
       const frames = radiantImpactFrames(before, response.run.state, response.events);
       if (restoreScroll) {
@@ -558,7 +592,7 @@ export class RadiantBattleView {
   private settle(response: RadiantRunResponse): void {
     this.displayed = radiantReadout(response.run.state);
     this.statuses = radiantStatusSnapshot(response.run.state);
-    this.presenting = this.presentationQueue.length > 0; this.activeReceipt = null;
+    this.presenting = this.presentationQueue.length > 0; this.activeReceipt = null; this.impactTarget = null;
     this.presentationError = null;
     const receipt = this.session.view().presentation;
     if (receipt?.response.revision === response.revision) this.session.finishPresentation(receipt.requestId);
@@ -586,7 +620,7 @@ export class RadiantBattleView {
     if (latest) {
       this.displayed = radiantReadout(latest.state);
       this.statuses = radiantStatusSnapshot(latest.state);
-      this.presenting = false; this.activeReceipt = null; this.presentationError = null;
+      this.presenting = false; this.activeReceipt = null; this.impactTarget = null; this.presentationError = null;
       this.syncTarget(latest);
       this.render();
       this.focusTerminalResult(latest);
@@ -675,7 +709,8 @@ export class RadiantBattleView {
     const targets = new Set(frame.events.filter(event => event.type === 'damage' || event.type === 'heal' || event.type === 'shield')
       .map(event => event.targetId));
     await Promise.all([...targets].map(async id => {
-      const target = this.element<HTMLElement>(`[data-radiant-health="${id}"]`);
+      const target = this.host.querySelector<HTMLElement>(`[data-radiant-target="${id}"] .radiant-unit-motion`) ??
+        this.element<HTMLElement>(`[data-radiant-health="${id}"]`);
       const ring = document.createElement('span'); ring.className = 'radiant-impact-ring'; ring.setAttribute('aria-hidden', 'true');
       target.append(ring);
       const cleanup = () => ring.remove(); this.effectsCleanup.add(cleanup);

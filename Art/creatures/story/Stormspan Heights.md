@@ -1,23 +1,23 @@
 # Stormspan Heights — Atmospheric Story art pack
 
-**Status:** prompt-only / art pending. Five original, distinct enemies and one
-empty arena; no images generated, delivered, exported or installed. Not
-evolutions, rarity assignments, playable characters or acquisition promises.
+**Status:** five distinct creatures and the arena are delivered and installed
+(D-171). The prompts remain a historical generation reference, not new
+commissions, evolutions, playable characters or acquisition promises.
 Names, IDs and stages follow `src/content/story.ts` and
 [Story specification](../../../docs/story-and-training.md).
 
-Region 3: global stages **51–75**, local stages **1–25**, enemy levels **19–28**.
-Ordinary identities occupy global stages 51–74; the boss is stage 75 only.
+Region 3: global stages **41–60**, local stages **1–20**, enemy levels **19–28**.
+Ordinary identities occupy global stages 41–59; the boss is stage 60 only.
 All five creatures have the canonical **Atmospheric** combat element.
 
-| Identity | Exact Story ID | Reserved PNG export filename |
+| Identity | Exact Story ID | Installed PNG export filename |
 | --- | --- | --- |
 | Cloudhorn Ram | `story:atmospheric:0` | `story-atmospheric-0.png` |
 | Staticwing Kite | `story:atmospheric:1` | `story-atmospheric-1.png` |
 | Gusttail Lynx | `story:atmospheric:2` | `story-atmospheric-2.png` |
 | Thundercoil Serpent | `story:atmospheric:3` | `story-atmospheric-3.png` |
 | Tempest Crown Roc | `story:atmospheric:boss` | `story-atmospheric-boss.png` |
-| Regional arena, stages 51–75 | Not a creature/discovery ID | `story-stormspan-heights-arena.png` |
+| Regional arena, stages 41–60 | Not a creature/discovery ID | `story-stormspan-heights-arena.png` |
 
 ## Direction and intake contract
 
@@ -29,19 +29,12 @@ palette locks never negate the green key. Boss grandeur adds no gameplay tier.
 The arena follows [Sky-bound Rift](../dungeons/Sky-bound%20Rift.md)'s clear
 level terrace, recessed floating ridges and quiet cloud backing.
 
-Reserved names are future intake targets, not installed asset URLs. Preserve
-delivered originals under `Art\source\creatures\story\stormspan-heights\` and
-arena originals under `Art\source\backgrounds\story\`.
-Review full-resolution species, palette, complete wings/horns/tails, flat key
-openings and continuous margins; reject clipping rather than concealing it
-with export padding. Authoritative supplied alpha receives trim/resize/pad
-only, never re-keying. RGB keyed sources require explicit reviewed offline
-chroma support protecting white feathers/cloud wool; no global pale removal
-or runtime keying. Approved files may export to
-`public\assets\creatures\story\` and `public\assets\backgrounds\story\`
-using the exact table filenames. Scenery stays opaque/full-bleed and bypasses
-cutout processing. Review lane contrast and desktop/mobile framing before
-separate deployment-base catalog wiring. This pack installs nothing.
+Originals are archived under `Art/source/story/atmospheric`; reviewed cutouts
+are in `public/assets/enemies` and the opaque arena is in `public/assets/backgrounds`.
+Reproduce source-specific settings with `tools/intake_story_art.py` and the
+[D-171 intake](../../../docs/art-workflow.md#delivered-story-art-intake-d-171).
+Preserve supplied alpha and authored colors; never key scenery or remove colors
+globally. Prompt text does not replace reviewed source pixels.
 
 ## 1. Cloudhorn Ram
 

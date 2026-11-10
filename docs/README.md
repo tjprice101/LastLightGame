@@ -1,5 +1,20 @@
 # Documentation hub
 
+## Current Radiant design and release status (2026-11-09)
+
+The [handoff](handoff.md) and [Radiant specification](Future%20Plans/radiant-combat-system-specification.md)
+record the implemented saved-combat/portrait foundation, encounter-size retune,
+staggered field and six text-based shop hosts. The
+[single art brief](../Art/ui/Radiant%20Combat%20Overhaul.md)
+contains six new portrait prompts and two optional environments; no vendor art
+has been delivered. The 192 compact portraits are reviewed existing-art
+derivatives. Per-source grounding review, physical desktop acceptance,
+deployed-route verification and coherent release remain gates; the authority is
+disabled.
+
+Current Story has 120 stages and all 30 regional creature images, six arenas
+and its map installed; older 150-stage and pending-art notes are historical.
+
 ## Radiant recovered battlefield and portrait gestures (2026-11-08)
 
 [Recovery state, implemented field/portrait split and remaining release gates](Future%20Plans/radiant-combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08):
@@ -438,9 +453,10 @@ It is intended to make features easy to locate, extend, and hand off.
 share chest-scale victory art. [Unowned Masters](archives-and-elements.md#master-silhouettes-retain-artwork-transparency-d-420)
 retain actual transparent silhouettes instead of filtered background rectangles.
 
-**Guaranteed War recruitment (D-414):** [each Elemental War final stage](elemental-war.md#guaranteed-final-stage-recruitment-d-414)
-now guarantees its own Element-Bearer; already-owned results retain100
-Null-Prismatica conversion. Earlier stages never recruit.
+**War recruitment:** [each Elemental War final-boss clear](elemental-war.md#ten-trials-and-5-final-boss-recruitment-2026-11-06)
+has a5% chance to recruit its bearer; only successful owned results convert
+to100 Null-Prismatica. Earlier stages never recruit. This supersedes D-414's
+historical guarantee.
 
 **Targeted modal correction (D-413):** [only the Master choice panel is widened](menus-and-inventory.md#targeted-modal-sizing-d-413),
 with three desktop columns and bounded scrolling. Existing small modals,

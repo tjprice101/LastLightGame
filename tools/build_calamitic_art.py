@@ -1,4 +1,4 @@
-"""Generate the pending Phase 0 Calamitic cutout art queue, never runtime assets."""
+"""Generate the historical Calamitic prompt packs, never runtime assets."""
 from pathlib import Path
 import re
 
@@ -164,11 +164,14 @@ def cutout(description, *, character=None, evolution=None, icon=False):
 
 
 def block(heading, asset, folder, prompt, installed=False):
-    status = "installed after reviewed D-448 intake" if installed else "pending delivery; not an installed URL"
-    destination = "Installed export" if installed else "Target export"
+    if installed:
+        identity = (f"Target runtime asset ID: `{asset}` (installed after reviewed D-448 intake).\n"
+                    f"Installed export: `public/assets/{folder}/{asset}.png`.\n\n")
+    else:
+        identity = (f"Original prompt art ID: `{asset}` (historical proposal; "
+                    "the D-441 intake records the installed ID and path).\n\n")
     return (f"### {heading}\n\nFilename: `{asset}.png`\n"
-            f"Target runtime asset ID: `{asset}` ({status}).\n"
-            f"{destination}: `public/assets/{folder}/{asset}.png` after reviewed intake.\n\n"
+            f"{identity}"
             f"```text\n{prompt}\n```\n")
 
 
@@ -176,7 +179,10 @@ def document(title, summary, blocks, installed=False):
     status = ("**All nine Master images delivered and installed (D-448).** "
               "Originals and reviewed keys/gaps/hashes are preserved by tools/intake_calamitic_master_art.py. "
               "The prompts below are the generation record. " if installed else
-              "**All artwork pending owner delivery.** These are copy-ready original designs, not installed assets. ")
+              "**All Phase 0 images in this pack were delivered and installed (D-441).** "
+              "Originals, actual runtime mappings and reviewed keys/gaps/hashes are preserved by "
+              "tools/intake_calamity_phase0_art.py and its provenance manifest. "
+              "The proposed filenames and prompts below are generation history, not new commissions. ")
     return (f"# {title}\n\n{summary}\n\n"
             f"{status}"
             "Names, titles, rarity and mechanics are metadata outside image prose. "
@@ -188,10 +194,10 @@ def document(title, summary, blocks, installed=False):
             + "\n## Export and intake\n\n"
             "Portraits: transparent 960px canvas. Icons/items/emblem/Conduits: transparent 256px canvas, "
             "up to 224px reviewed content; emblem must read at small badge size beside an Element Medal. "
-            "Preserve original PNG bytes under Art/source after delivery; record hashes, source-specific keys, "
+            "Preserve archived original PNG bytes and the recorded hashes, source-specific keys, "
             "enclosed gaps and facing under Art/provenance. Supplied alpha is authoritative; never key it again. "
-            "No runtime background removal or missing-image URLs. Review dark/light backgrounds, thumbnail clarity, "
-            "all tips and corners, opaque powers and per-form architecture before installation. "
+            "Use the reviewed intake and runtime mapping rather than historical proposed names. "
+            "No runtime background removal or missing-image URLs. "
             "Passing prompt tests is not visual approval or a guarantee that a signed reference URL remains available.\n\n"
             "Regenerate: `python tools\\build_calamitic_art.py`. "
             "Validate: `python -m unittest discover -s tools -p test_calamitic_art.py`; "

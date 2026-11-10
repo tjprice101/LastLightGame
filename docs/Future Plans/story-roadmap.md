@@ -50,7 +50,7 @@ opening exposition that settles the moral question. The early papers convey
 Rise's account; later discoveries complicate the founding rivalry. The final
 resolution is coexistence, not replacing one absolute ruler with another.
 
-## Owner's chapter sequence
+## Owner's original chapter sequence (historical outline)
 
 | Part | Confirmed narrative direction | Confirmed regional scope |
 | --- | --- | --- |
@@ -66,10 +66,11 @@ resolution is coexistence, not replacing one absolute ruler with another.
 ### Chapter 1 pacing boundary
 
 "Six stages" in the narrative outline refers to the six existing regional
-sections, not replacing the current150-stage campaign with six encounters.
+sections, not replacing the current120-stage campaign with six encounters.
 Rise's transcription trail spans Emberwake March, Glasswater Reach, Stormspan
 Heights, Rootstone Wilds, Stillhalo Vale and Riftbound Frontier. Exact paper
-text, quantity, placement, discovery timing and presentation are unauthored.
+texts were subsequently approved under D-452; placement and optional reactions
+remain future design work.
 
 The existing final boss still does not yield a soul in runtime. The future
 machine/note/wisp transition is recorded here only; do not retrofit it into
@@ -110,6 +111,6 @@ invent gameplay. No chapter content or migration is implemented by this document
 ## Related material
 
 - [Founding canon](../world-lore.md)
-- [Current150-stage Story](../story-and-training.md)
+- [Current120-stage Story](../story-and-training.md)
 - [Game vision](../game-vision.md)
 - [Instrumental music library](../../Music/README.md)

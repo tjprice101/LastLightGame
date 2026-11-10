@@ -1,5 +1,13 @@
 # Remaining artwork: current generation queue
 
+## Radiant vendor package (2026-11-09)
+
+The [consolidated Radiant brief](ui/Radiant%20Combat%20Overhaul.md) proposes
+six original vendor portraits and two optional shared environments. These are
+not delivered, installed or included in the historical seasonal/War totals
+below. The existing battlefield artwork and 192 derived face crops are reused;
+no new ability icons are requested for the Radiant overhaul.
+
 ## Audited all-plan queue (2026-11-07)
 
 Use the [Future Plans source-image audit](../docs/Future%20Plans/image-budget-audit.md)
@@ -16,8 +24,9 @@ queue. See [the consolidated expansion checklist](../docs/Future%20Plans/remaini
 **103 required Sunshade images,12 optional seasonal equipment illustrations,
 115 including optional**. Both complete character packs and the two signature
 enemy/material chains are linked there. All104 Moon images are installed.
-Feature implementation is authorized without waiting for generation; both
-events remain inactive until explicit launch approval.
+Feature implementation is authorized without waiting for generation. Event
+availability follows the authoritative schedules and release gates; artwork
+intake alone does not activate an event.
 
 ## Copy-ready packs
 

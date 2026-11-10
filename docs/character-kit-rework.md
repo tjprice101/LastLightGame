@@ -50,9 +50,11 @@ Every Last Flare retains next-turn Recover. Mark/Fault provenance belongs to
 its source and remains on a living enemy after that source falls; Mark still
 expires on schedule. Refusal/Hymn/Mark/Fault memory resets per encounter.
 Native snapshots expose text-only statuses in the existing field/reference
-readouts. Character/passive icons and profile artwork remain pending; no new
-asset paths/hashes or Calamitic Master Conduits are introduced. Existing VFX
-signatures/motions cover the three six-form kits up to Lv.110.
+readouts at this historical implementation stage. D-441 subsequently installed
+the Calamitic portraits, ability icons and three status icons; Hymn remains
+text-only. The existing profile-picture set remains unchanged, and D-448
+installed the nine personal Master images. Existing VFX signatures/motions
+cover the three six-form kits up to Lv.110.
 
 Validate with `npx vitest run src/game/calamitic-kits.test.ts
 src/content/native-identities.test.ts src/presentation/battle-effects.test.ts

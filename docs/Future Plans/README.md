@@ -1,5 +1,15 @@
 # Future Plans: unfinished work and restart guide
 
+## Current Radiant work and art scope (2026-11-09)
+
+The [handoff](../handoff.md) and [Radiant specification](radiant-combat-system-specification.md)
+record the implemented isolated-branch foundation and its remaining release
+gates. The [consolidated art brief](../../Art/ui/Radiant%20Combat%20Overhaul.md)
+records implemented staggered battle staging and six text-based shop/service
+hosts, plus six pending portrait prompts and two optional environments.
+The portraits are not delivered. The separate historical
+147-source seasonal/War queue is not automatically part of the Radiant order.
+
 **Audited 2026-11-06. Filing is not approval to resume, launch or spend.**
 
 This is the canonical home for standalone unfinished plans and experiments.
@@ -26,20 +36,22 @@ Necessary Home/Team/Battle UI belongs to the
 including full Conduit/Master and all-activity enemy calibration. No named
 preset feature selected; existing squad/equipment editing is reworked.
 
-**Character combat refresh (2026-11-07):**
+**Historical character combat refresh draft (2026-11-07):**
 [Detailed comparison,32 released-kit audit and phased proposal](character-combat-refresh-audit.md).
 Owner-selected four stats, bearer-only squads, single evolved Flare, two-step
 shared/personal final charge, Equinox default with Master-selected subtype,
 and bounded damage-based Prismatica. [Exact system/starter review draft](radiant-combat-system-specification.md)
-contains proposed formulas, three kits and nine Master remaps. No implementation
-approved yet. Next gate: review values plus final-form support access, Shield
-stacking and critical/Imbue conversions. General UI hold remains in force.
+contained proposed formulas, three kits and nine Master remaps at that time.
+The Radiant branch has since implemented and tested substantially more; see
+the current specification and handoff instead of treating this historical
+draft as the implementation status.
 
 | Workstream | Current status / what is done | Where to resume / next gate |
 |---|---|---|
+| Radiant battlefield staging and vendor hosts | Staggered field templates, target-impact readouts and six text hosts implemented; vendor portraits remain pending. Existing 192 face crops are derivatives; two environments are optional. | [Consolidated brief](../../Art/ui/Radiant%20Combat%20Overhaul.md); review source anchors and host likenesses, then complete the [release gates](radiant-combat-system-specification.md#remaining-coherent-release-gates-supersedes-the-lists-below). |
 | Living-world UI and menus | First shared-foundation tranche implemented2026-11-07: ordinary control/panel tokens, leading labels/44px targets, explicit outcome tones, neutral press feedback and motion cleanup. Not a completed global UI overhaul. | [Current evidence and rollout](living-world-ui-audit-plan.md#first-shared-foundation-tranche-2026-11-07). Finish populated/visible-temporal/device Phase0 evidence, extend measured Phase1/2 gaps, then Phase3 Home/navigation journeys. Preserve saved-success timing, Reduce motion, focus/history/Skip; phases3-10 still unfinished. |
 | Four artwork-led Elemental War characters | Owner approves integration2026-11-06;24 reviewed portraits installed and duplicate roots removed after hash checks; current kit contract replaces proposal-only scope | [Designs/lore/kits](phase-2-war-designs.md), [44 pending-art prompts](Elemental%20War%20Phase%202.md), [intake](../../Art/provenance/phase2-war-art-intake.json), [live War rules](../elemental-war.md), [handoff](../handoff.md). Finish/review undelivered icons/Masters/status/header/arena art later; current shared neutral presentation supports gameplay. All ten trials use5% final-boss recruitment, not guaranteed or1%. Release/validation evidence comes from the handoff, not this plan alone. |
-| Moon and Sunshade artwork/intake | Twelve bearers,36 Masters and signature activity mechanics implemented;104 Moon images installed,103 Sunshade required images pending; both schedules inactive | [Current seasonal checklist](remaining-expansion-art.md), [Moon intake](../art-workflow.md#delivered-moon-artwork-2026-11-07), [original phase plan](remaining-expansion-phases.md), [live appearances](../moon-sunshade-character-design.md), [kits](../moon-sunshade-kit-specification.md), [events](../moon-sunshade-events.md). Sunshade intake and any launch window remain separate gates. Do not repeat released mailbox/calendar/shop/QoL implementation. |
+| Moon and Sunshade artwork/intake | Twelve bearers,36 Masters and signature activity mechanics implemented;104 Moon images installed,103 Sunshade required images pending; event availability follows the authority schedule | [Current seasonal checklist](remaining-expansion-art.md), [Moon intake](../art-workflow.md#delivered-moon-artwork-2026-11-07), [original phase plan](remaining-expansion-phases.md), [live appearances](../moon-sunshade-character-design.md), [kits](../moon-sunshade-kit-specification.md), [events](../moon-sunshade-events.md). Sunshade intake and any launch window remain separate gates. Do not repeat released mailbox/calendar/shop/QoL implementation. |
 | Story Chapters2-3 and pursuit/core puzzle | D-451 region foundations and D-452 scenes/core/replay/reward baseline approved; implementation explicitly paused | [Chapter design](chapters-2-3-design.md), [75 art concepts](Chapters%202-3%20Draft.md), [long-term narrative](story-roadmap.md). Resume only on owner instruction. Preserve125/75/75 future stages and875 NP budget; author unresolved reactions/placement before schema/migration/content integration. No creator recruitment or full-soul discovery is currently implemented. |
 | Chapters4-7 / creator kits | Narrative direction only; encounters, counts, creator combat/acquisition unspecified | [Story roadmap](story-roadmap.md). Requires author interview and approval. Images are **unquantified**, not zero and not a fabricated total. |
 | Real-money purchases | PayPal/provider/fulfillment proposal only; no checkout, grants or live charges | [Microtransactions design](microtransactions-design.md). Resolve provider eligibility/platform/tax/age/prices; approve scope, then sandbox verified receipts/refunds/idempotent authority. No paid service or live credentials authorized by filing. |

@@ -1,23 +1,23 @@
 # Stillhalo Vale — Tranquilitic Story art pack
 
-**Status:** prompt-only / art pending. Five original, distinct enemies and one
-empty arena; no images generated, delivered, exported or installed. Not
-evolutions, rarity assignments, playable characters or acquisition promises.
+**Status:** five distinct creatures and the arena are delivered and installed
+(D-171). The prompts remain a historical generation reference, not new
+commissions, evolutions, playable characters or acquisition promises.
 Names, IDs and stages follow `src/content/story.ts` and
 [Story specification](../../../docs/story-and-training.md).
 
-Region 5: global stages **101–125**, local stages **1–25**, enemy levels **37–46**.
-Ordinary identities occupy global stages 101–124; the boss is stage 125 only.
+Region 5: global stages **81–100**, local stages **1–20**, enemy levels **37–46**.
+Ordinary identities occupy global stages 81–99; the boss is stage 100 only.
 All five creatures have the canonical **Tranquilitic** combat element.
 
-| Identity | Exact Story ID | Reserved PNG export filename |
+| Identity | Exact Story ID | Installed PNG export filename |
 | --- | --- | --- |
 | Ivoryveil Moth | `story:tranquilitic:0` | `story-tranquilitic-0.png` |
 | Dewhalo Hart | `story:tranquilitic:1` | `story-tranquilitic-1.png` |
 | Vowcrest Crane | `story:tranquilitic:2` | `story-tranquilitic-2.png` |
 | Opalward Lion | `story:tranquilitic:3` | `story-tranquilitic-3.png` |
 | Serene Oathkeeper | `story:tranquilitic:boss` | `story-tranquilitic-boss.png` |
-| Regional arena, stages 101–125 | Not a creature/discovery ID | `story-stillhalo-vale-arena.png` |
+| Regional arena, stages 81–100 | Not a creature/discovery ID | `story-stillhalo-vale-arena.png` |
 
 ## Direction and intake contract
 
@@ -30,19 +30,12 @@ colors. Halos are solid open rings, not emitted light. Boss grandeur adds no
 gameplay tier. The arena follows [Valley of Solitude](../dungeons/Valley%20of%20Solitude.md)'s
 level shrine floor and recessed arches, adapted to a pale abandoned sanctuary.
 
-Reserved names are future intake targets, not installed URLs. Preserve
-delivered originals under `Art\source\creatures\story\stillhalo-vale\` and
-arena originals under `Art\source\backgrounds\story\`.
-Review full-resolution species, palettes, all antlers/wing/ring tips, continuous
-margins and flat green openings; reject clipping rather than masking it with
-padding. Authoritative supplied alpha receives trim/resize/pad only, never
-re-keying. RGB keyed sources require explicit reviewed offline chroma support
-protecting ivory wings, pearl facets and open halos; no global pale removal
-or runtime keying. Approved files may export to
-`public\assets\creatures\story\` and `public\assets\backgrounds\story\`
-using the exact table filenames. Scenery stays opaque/full-bleed and bypasses
-cutout processing. Review lane contrast and desktop/mobile framing before
-separate deployment-base catalog integration. This pack installs nothing.
+Originals are archived under `Art/source/story/tranquilitic`; reviewed cutouts
+are in `public/assets/enemies` and the opaque arena is in `public/assets/backgrounds`.
+Reproduce source-specific settings with `tools/intake_story_art.py` and the
+[D-171 intake](../../../docs/art-workflow.md#delivered-story-art-intake-d-171).
+Preserve supplied alpha and authored colors; never key scenery or remove colors
+globally. Prompt text does not replace reviewed source pixels.
 
 ## 1. Ivoryveil Moth
 

@@ -1,5 +1,18 @@
 # Art library
 
+## Current Radiant art package (2026-11-09)
+
+The [single Radiant brief](ui/Radiant%20Combat%20Overhaul.md) now contains
+the battle-layout comparison, six proposed original vendor portraits and
+dialogue, and two optional shared environments. No vendor images are delivered
+or installed. All 192 released-form compact portraits are reviewed derivatives
+of existing artwork, not new commissions. The separately audited seasonal/War
+queue remains 147 historical pending sources, not another Radiant order.
+
+The older Moon/Sunshade counts and undelivered statements below are historical:
+104 Moon sources are installed; 103 Sunshade sources remain pending. Event
+availability is governed by actual schedules and release gates, not art intake.
+
 ## Reclaimed War portrait intake (2026-11-06)
 
 All24 older root portraits are now reviewed and installed for Neralis,
@@ -17,13 +30,15 @@ images still need delivery from [Future Plans](../docs/Future%20Plans/Elemental%
 unfinished queues. Four-War, future Story and experiments moved there; linked
 production packs and preserved source/provenance remain here. All D-441
 Calamitic/Gates and D-448 Master artwork is installed: older "pending" labels
-below are historical, not new generation requests. Current required seasonal/
-proposed-War queue is251 new images;24 War portraits are already supplied.
+below are historical, not new generation requests. The prior 251-source
+seasonal/War estimate preceded the 104-source Moon intake; the corresponding
+audited historical queue is now 147. The 24 War portraits are already supplied.
 
 ## Remaining Moon/Sunshade art: full prompt inventory
 
 [Complete delivery checklist](../docs/Future%20Plans/remaining-expansion-art.md):
-**207 required images plus12 optional equipment showcases,219 total**.
+The original inventory covered **207 required images plus12 optional equipment
+showcases,219 total**; 104 required Moon images are now installed.
 The [Moon98-prompt pack](characters/Glow%20of%20the%20Moon's%20Light.md),
 [Sunshade97-prompt pack](characters/The%20Angel-blazened%20Sunshade.md) and
 [signature event24-prompt pack](creatures/Moon%20and%20Sunshade%20Events.md)
@@ -31,19 +46,19 @@ cover all named sources exactly once. All twelve bearers are six-star.
 Six Vesperwing/Moonwake and six Solcarapace/Dawnforge forms/materials each
 complete the previously TBD event inventory. Bosses/captures share form art;
 no extra specialty chain, map, Profile picture or chest is required.
-No new artwork has been delivered or installed. Native art-neutral controls
-permit feature implementation before delivery; events remain inactive until
-explicit launch approval. Historical Moon-first status below is superseded
-for inventory coverage, not permission to repaint installed images.
+All 104 Moon sources are delivered and installed; 103 Sunshade sources remain
+pending. Native art-neutral controls allow implementation without new images.
+Scheduling and release remain separate from intake. Historical Moon-first
+status below does not authorize repainting installed images.
 
-## Moon banner design and prompt review
+## Historical Moon banner design and prompt review
 
 [Glow of the Moon's Light](characters/Glow%20of%20the%20Moon's%20Light.md)
 contains98 copy-ready proposals:36 portraits,24 ability icons,18 personal
 Masters,6 standalone equipment illustrations,11 native status pictograms and
 3 shared scenes. Appearances approved; titles, new icon/scene compositions
-and prompt lock await review. Event enemies/materials/map/reward assets remain
-explicitly TBD, not silently omitted. No delivery or runtime registration.
+and prompt lock awaited review at that stage. The later Moon intake above
+supersedes the former pending-delivery and enemy/material inventory statements.
 Reproduce with `tools/build_moon_banner_art.py`; validate
 `python -m unittest discover -s tools -p test_moon_banner_art.py`.
 Flagged kit numbers remain unchanged; Sunshade prompts remain pending.

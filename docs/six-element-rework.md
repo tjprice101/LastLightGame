@@ -1,5 +1,12 @@
 # Six-element, Story and desktop UI rework
 
+**Current scope note:** this document records the original D-160 baseline.
+Later decisions changed Story to six20-stage regions (120 total), completed all
+30 Story creature images and six arenas, and replaced the25 kit Conduits with
+Omnic designs. Use [Story](story-and-training.md) and
+[kit Conduits](kit-conduits.md) for current behavior; old baseline numbers
+and pending labels below are historical.
+
 **Art phase update (D-159):** owner explicitly approves the successful Rosetta
 palette-control format across all character art. All16 lines now have tailored
 subject locks, unwanted-color negatives and preserved portrait URLs at150;
@@ -22,14 +29,15 @@ to identify what is actually complete.
 | Six-element migration | Implemented | Six canonical types/36 materials; walletv4 migration, merged enemy families, recipes/equipment/Archives |
 |25 additional kit Conduits | Implemented (D-162) |5 Common/8 Rare/6 Legendary/6 Omnic; fixed kit effects,85 total;25 icon prompts, imagery pending |
 | Intrinsic character abilities | All16 implemented (D-163/D-170/D-172) | Owner clarifies buffs/debuffs/stacks belong to abilities, not equipment; phased starters, Standard flagships, Roses then War complete with bounded native loops without Conduits |
-| Story/dungeon rebalance | Implemented (D-164) |35-floor dungeons Lv38-120; six25-stage Story regions Lv1-55, retained Training and atomic first-clear bosses; campaign art pending |
+| Story/dungeon rebalance | Implemented (D-164; later layout D-347) |35-floor dungeons Lv38-120; six20-stage Story regions Lv1-55, retained Training and atomic first-clear bosses; Story creature and arena art installed |
 | Desktop menu overhaul | Contextual pass implemented (D-166) | Actual Back target, secondary-only Menu, Title only in Settings, retained menu DOM and page scrolling; existing animations/reduced motion |
 
-Runtime uses the six-element systems,150-stage Story and retained endless Training.
+Runtime uses the six-element systems,120-stage Story and retained endless Training.
 The25 [kit-focused Conduits](kit-conduits.md) are live with unchanged machine
 tier totals/banner eligibility. [Story rules/validation](story-and-training.md).
 [Desktop contextual rules](menus-and-inventory.md#contextual-desktop-navigation-d-166)
-are implemented; owner defers remaining intrinsic kit batches.
+are implemented. The original16 intrinsic kit batches are complete; the
+separate Radiant refresh remains on its isolated branch.
 
 ## Implemented elemental migration contract
 

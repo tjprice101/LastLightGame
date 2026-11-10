@@ -55,7 +55,7 @@ describe('Conduit Upgrade and account-aware icons', () => {
     expect(html).toContain('Penalties, thresholds, costs, fixed caps and whole-turn Duration do not scale');
     expect(html).toContain('id="mechanical-components-balance">250');
     expect(html).toContain('data-machine-activity');
-    expect(html).not.toContain('artwork pending');
+    expect(html).not.toContain('class="conduit-icon conduit-art-pending"');
     expect(html).toContain('currencies/mechanical-components.png');
     expect(conduitIcon('worldbreaker-drive', 4)).toContain('aria-label="Worldbreaker Drive · Upgrade +4 of 5"');
     expect(conduitIcon('worldbreaker-drive', 4)).toContain('class="conduit-upgrade-meter" data-upgrade-level="4" aria-hidden="true"');

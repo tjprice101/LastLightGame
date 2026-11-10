@@ -13,6 +13,8 @@ class ConduitExpansionArtTests(unittest.TestCase):
         self.assertEqual(len({row[3] for row in rows if row[1] == "Omnic"}), 10)
         text = (art_path("Conduit Expansion.md", root=ROOT)).read_text(encoding="utf-8")
         self.assertEqual(text, document())
+        self.assertIn("All35 delivered images are installed", text)
+        self.assertTrue((ROOT / "Art" / "source" / "delivered-root-art" / "conduits").is_dir())
         blocks = re.findall(r"```text\n(.*?)\n```", text, re.S)
         self.assertEqual(len(blocks), 35)
         for row, block in zip(rows, blocks):
@@ -25,6 +27,8 @@ class ConduitExpansionArtTests(unittest.TestCase):
             self.assertIn("flat unlit color edge to edge and through all openings", block)
             self.assertLess(len(block.split(" --ar ")[0].split()), 250)
         self.assertIn("not URLs", text)
+        for asset in re.findall(r"Proposed art ID: `([^`]+)`", text):
+            self.assertTrue((ROOT / "public" / "assets" / "conduits" / f"{asset}.png").is_file(), asset)
 
 
 if __name__ == "__main__":

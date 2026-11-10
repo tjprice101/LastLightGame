@@ -88,7 +88,9 @@ chances/counts, owned-recruit conversion100 Null-Prismatica
 and separate one-time Story regional bonuses are unchanged. Live Collections
 loot tables, Gameplay Information and Battle menu explain the same rule.
 
-D-414 separately makes War final-stage recruitment guaranteed on every clear.
+The later [War recruitment contract](elemental-war.md#ten-trials-and-5-final-boss-recruitment-2026-11-06)
+supersedes D-414: final-boss clears have a5% recruitment chance, with the
+100 Null-Prismatica conversion only on a successful already-owned result.
 
 Shared implementation: [classifier/range helper](../src/content/final-boss-loot.ts),
 [reward engine](../src/game/battle.ts), [atomic validator](../src/game/account.ts).
@@ -98,7 +100,7 @@ disposable identities and near-defeated final-boss fixtures.
 
 **D-164:** the existing endless engine described below is now presented as
 Training, with stable legacy IDs and unchanged wave/loot/Continue rules.
-Home's campaign is the separate [150-stage Story map](story-and-training.md),
+Home's campaign is the separate [120-stage Story map](story-and-training.md),
 with first-clear bosses and limited elemental materials. Historical Adventure
 wording below refers only to retained Training, not the campaign.
 

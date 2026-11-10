@@ -7,8 +7,9 @@ plus nine new designs. Each new item costs 100 Calamitic Tokens in the existing
 Rise shop. All use ordinary slots and the existing +0..+5 upgrade system; each
 upgrade adds 10% of the +0 base value. The [approved effects](conduit-catalog.txt)
 are displayed consistently in Store, Inventory, Character equipment, upgrades
-and Collections. New artwork is pending; neutral placeholders are used with no
-asset URLs.
+and Collections. The nine Phase 0 images were delivered and installed in
+[D-441](art-workflow.md#delivered-phase-0-calamity-artwork-d-441); use the
+reviewed actual asset mappings rather than historical proposed filenames.
 
 At most five Calamitic Conduits may be equipped per character across all fourteen.
 This replaces D-324's original no-extra-limit choice; the four matching-element

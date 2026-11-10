@@ -2,6 +2,22 @@
 
 An original cinematic 2D gacha RPG inspired by Brave Frontier.
 
+## Current development status (2026-11-09)
+
+The six-member Radiant combat overhaul remains isolated on
+`overhaul/radiant-foundation`; its authority is disabled and it has not been
+deployed as a complete release. The current branch includes saved combat,
+full-form battlefield art, portrait gestures, 192 derived face crops and the
+one-to-six-enemy formation-size retune. Final battlefield staging, bespoke
+cinema and release validation remain unfinished.
+
+The [consolidated art brief](Art/ui/Radiant%20Combat%20Overhaul.md) compares
+the owner's battle references and proposes six original shop/service hosts,
+their dialogue and one portrait prompt each. Those hosts and portraits are
+not yet implemented or delivered. The [handoff](docs/handoff.md) owns current
+verification and remaining gates; dated material below is historical where
+superseded.
+
 ## Current state and art direction
 
 Caldrex, Solenne and Myrthen now have playable kits, nine personal Masters,
@@ -35,9 +51,11 @@ not the current feature checklist.
   and [description audit](docs/conduits.md#complete-description-and-keyword-audit-d-415).
 - D-412/D-414/D-419: each banner has its own independent80-pull pity.
   Natural5/6-star duplicates advance it; new recruits and completed guarantees
-  reset it. Elemental War final stages guarantee their own Element-Bearer.
+  reset it. Each Elemental War final-boss clear has a separate5% chance to
+  recruit its bearer; only a successful owned result converts to100
+  Null-Prismatica. The older D-414 guarantee is superseded.
   See [summoning](docs/summoning-and-economy.md#duplicate-safe-per-banner-pity-d-419)
-  and [War recruitment](docs/elemental-war.md#guaranteed-final-stage-recruitment-d-414).
+  and [War recruitment](docs/elemental-war.md#ten-trials-and-5-final-boss-recruitment-2026-11-06).
 - D-404: the [non-Calamitic character report](docs/roster-capability-audit.md)
   and [global benchmark declaration](docs/enemy-benchmark-calibration.md)
   define the calibration method, but their full-roster numerical rankings

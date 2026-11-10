@@ -92,8 +92,8 @@ import './sanctuary-reference.css';
 import { openOnlineAccount as showOnlineAccount } from './presentation/online-account';
 import { onlineStores, onlineProfile, friendProfileScreen, bindProfileEditor, refreshProfileTracking, refreshFriendPresence, type StoreTab, type OnlineProfileDisplay, type SocialDisplay } from './presentation/online-store-profile';
 import { assertRoseEventActive, type EventAccess } from './content/event-schedule';
-import { eventDevourerProduct, eventDevourerWarning } from './content/event-devourers';
-import { ownedCompanion } from './presentation/owned-companion';
+import { bindEventDevourerPurchases, presentSavedEventDevourer } from './presentation/event-devourer-purchase';
+import { bindShopHosts, setShopHostLine } from './presentation/shop-host';
 import { gameOperation, friendProfile, GameOperationError, type GameOperation, type GameResponse, type Activity, type FriendProfileResponse } from './online/server-game';
 import { onlineClient, onlineUsername } from './online/account-client';
 import { saveOfflineProgress } from './game/save-file';
@@ -144,6 +144,7 @@ import.meta.hot?.dispose(() => music.dispose());
 const root = document.querySelector<HTMLElement>('#app');
 if (!root) throw new Error('Application root is missing.');
 const app = root;
+bindShopHosts(app);
 bindArtworkLoading(document.body);
 void detectAvif();
 bindInformation(app);
@@ -1639,10 +1640,15 @@ function bindConduitPurchases(): void {
         const conduit = getConduit(id);
         const current = currentAccount();
         const cost = isCalamiticConduitId(id) ? `${calamiticTokenPrice} Calamitic Tokens` : `${conduit.price} Prismatica`;
-        if (!await gameConfirm(`Buy one ${conduit.name} for ${cost}? ${conduitEffect(conduit, current.conduitUpgrades?.[id])} when equipped. One owned copy unlocks it for every character; extra copies add no equipment benefit.`, { title: 'Purchase Conduit', confirmLabel: 'Buy one' })) return;
+        const host = isCalamiticConduitId(id) ? 'sarev' : 'torven';
+        if (!await gameConfirm(`Buy one ${conduit.name} for ${cost}? ${conduitEffect(conduit, current.conduitUpgrades?.[id])} when equipped. One owned copy unlocks it for every character; extra copies add no equipment benefit.`, { title: 'Purchase Conduit', confirmLabel: 'Buy one' })) {
+          setShopHostLine(app, host, 'cancel');
+          return;
+        }
         account = playMode === 'online' ? (await performOnline({ kind: 'purchaseConduit', id })).account : purchaseConduit(gameStorage, id);
         saved = true;
         refreshConduitMenu();
+        setShopHostLine(app, host, 'saved');
         const result = app.querySelector('#conduit-purchase-result');
         if (!result) throw new Error('Conduit purchase status is missing.');
         result.textContent = `${conduit.name} purchased. Owned ${account.conduits?.[id]}.`;
@@ -1766,6 +1772,7 @@ app.addEventListener('click', async event => {
   else upgradeConduitSelection = id;
   try {
     refreshConduitMenu();
+    if (id) setShopHostLine(app, menuPage === 'conduit-upgrade' ? 'edda' : storeRarity === 'Calamitic' ? 'sarev' : 'torven', 'inspect');
     if (id && isConduitId(id)) {
       const target = app.querySelector<HTMLElement>('.ref-store-hero, .conduit-upgrade-hero');
       if (target) rarityFeedback(target, getConduit(id).rarity);
@@ -1905,6 +1912,8 @@ app.addEventListener('click', async event => {
   try {
     if (!onlinePending) throw new Error('There is no pending operation.');
     const operation = onlinePending.operation;
+    const previousCopies = operation.kind === 'purchaseEventDevourer'
+      ? new Set(currentAccount().capturedCharacters?.map(copy => copy.instanceId)) : null;
     const response = await performOnline(operation);
     if (response.starterId) {
       journey.profile = { version: 1, starterId: response.starterId };
@@ -1918,15 +1927,31 @@ app.addEventListener('click', async event => {
     if (response.summon && operation.kind === 'summon') await presentReward(summonReward(response.summon, operation.bannerId));
     if (response.summons && operation.kind === 'summonTen') await presentReward(summonTenReward(response.account, response.summons, operation.bannerId));
     if (response.calamityOpening && operation.kind === 'openCalamityChest') await presentReward(calamityOpeningReward(operation.id, response.calamityOpening));
+    if (operation.kind === 'purchaseEventDevourer' && previousCopies) {
+      try { await presentSavedEventDevourer(app, operation.id, response.account, previousCopies, showError); }
+      catch (error) {
+        console.error('Saved Event Elemental-Devourer reveal failed', error);
+        showError(`Purchase saved, but its presentation could not complete. ${errorMessage(error)}`);
+      }
+    }
   } catch (error) {
     console.error('Pending online operation retry failed', error);
     showError(errorMessage(error));
   }
 });
 
+bindEventDevourerPurchases(app, {
+  online: () => eventAccess().online,
+  account: currentAccount,
+  purchase: async id => (await performOnline({ kind: 'purchaseEventDevourer', id })).account,
+  refresh: renderMenu,
+  report: showError,
+  errorMessage,
+});
+
 app.addEventListener('click', async event => {
   if (!(event.target instanceof Element)) return;
-  const button = event.target.closest<HTMLButtonElement>('[data-store-tab], [data-market-category], [data-market-material], [data-market-frame], [data-buy-material], [data-buy-event-devourer], [data-buy-frame], [data-equip-frame], [data-open-online-account], [data-online-signout]');
+  const button = event.target.closest<HTMLButtonElement>('[data-store-tab], [data-market-category], [data-market-material], [data-market-frame], [data-buy-material], [data-buy-frame], [data-equip-frame], [data-open-online-account], [data-online-signout]');
   if (!button || button.disabled) return;
   try {
     if (button.hasAttribute('data-open-online-account')) {
@@ -1951,6 +1976,7 @@ app.addEventListener('click', async event => {
       if (button.dataset.marketMaterial) marketMaterial = button.dataset.marketMaterial;
       if (button.dataset.marketFrame) marketFrame = button.dataset.marketFrame;
       renderMenu();
+      setShopHostLine(app, button.dataset.marketFrame ? 'veylin' : 'mirel', 'inspect');
       return;
     }
     if (button.dataset.buyMaterial) {
@@ -1963,7 +1989,10 @@ app.addEventListener('click', async event => {
       const noEventBearer = !(product.restrictedTo ?? []).some(name => Object.entries(currentAccount().characters)
         .some(([id, progress]) => progress && isStarterId(id) && getStarter(id).name === name));
       if (product.category === 'event' && noEventBearer) {
-        if (!await gameConfirm(eventMaterialWarning(product, quantity), { title: 'Event warning', confirmLabel: 'Purchase' })) return;
+        if (!await gameConfirm(eventMaterialWarning(product, quantity), { title: 'Event warning', confirmLabel: 'Purchase' })) {
+          setShopHostLine(app, 'mirel', 'cancel');
+          return;
+        }
       } else if (eventMaterialWarningRequired(product, !noEventBearer, eventMaterialWarningHidden(gameStorage))) {
         const choice = await gameChoose(eventMaterialWarning(product, quantity), [
           { value: 'hide', label: 'Do not show again' }, { value: 'back', label: 'Back' },
@@ -1971,34 +2000,22 @@ app.addEventListener('click', async event => {
         ] as const, 'back', { title: 'Event materials only' });
         if (choice === 'hide') {
           hideEventMaterialWarning(gameStorage);
+          setShopHostLine(app, 'mirel', 'cancel');
           showError('Event material warnings hidden. Nothing was purchased.', 'info');
           return;
         }
-        if (button.dataset.buyEventDevourer) {
-          if (gameDialogPending()) return;
-          if (!eventAccess().online) throw new Error('Sign in online to purchase Event Elemental-Devourers.');
-          const product = eventDevourerProduct(button.dataset.buyEventDevourer);
-          const noEventBearer = !product.bearerIds.some(id => currentAccount().characters[id]);
-          if (!await gameConfirm(`${noEventBearer ? `${eventDevourerWarning(product)}\n\n` : ''}Buy one ${product.creature.name} for ${product.price.toLocaleString('en-US')} Prismatica?`, {
-            title: noEventBearer ? 'Event warning' : 'Event Elemental-Devourers', confirmLabel: 'Purchase',
-          })) return;
-          const before = new Set(currentAccount().capturedCharacters?.map(copy => copy.instanceId));
-          const response = await performOnline({ kind: 'purchaseEventDevourer', id: product.id });
-          renderMenu();
-          const copy = response.account.capturedCharacters?.find(entry => entry.creatureId === product.id && !before.has(entry.instanceId));
-          if (!copy) throw new Error('Purchase saved, but the new copy could not be displayed. Check Team.');
-          showError(`${product.creature.name} purchased and saved.`, 'success');
-          await presentReward({ title: 'Event Elemental-Devourer acquired', name: product.creature.name,
-            art: ownedCompanion(response.account, copy.instanceId).art, rarity: product.rarity,
-            details: `<p>One copy saved at Lv.${copy.level}. Not automatically equipped or added to your squad.</p>`,
-            accent: '#ffffff', animationLabel: 'Your saved purchase arrives.' });
+        if (choice !== 'purchase') {
+          setShopHostLine(app, 'mirel', 'cancel');
           return;
         }
-        if (choice !== 'purchase') return;
-      } else if (!await gameConfirm(`Buy ${quantity} ${name} for ${cost} Prismatica?`, { title: 'Material Exchange', confirmLabel: 'Buy materials' })) return;
+      } else if (!await gameConfirm(`Buy ${quantity} ${name} for ${cost} Prismatica?`, { title: 'Material Exchange', confirmLabel: 'Buy materials' })) {
+        setShopHostLine(app, 'mirel', 'cancel');
+        return;
+      }
       if (playMode === 'online') await performOnline({ kind: 'purchaseMaterial', element: product.id, quantity });
       else account = purchaseExchangeMaterial(gameStorage, product.id, quantity);
       renderMenu();
+      setShopHostLine(app, 'mirel', 'saved');
       showError(`${quantity} ${name} purchased and saved.`, 'success');
       return;
     }
@@ -2023,7 +2040,10 @@ app.addEventListener('click', async event => {
     const frame = button.dataset.buyFrame ?? button.dataset.equipFrame;
     if (frame !== 'default' && frame !== 'thin-outline' && frame !== 'double-outline' && frame !== 'corner-brackets') throw new Error('Unknown profile frame.');
     if (button.dataset.buyFrame) {
-      if (!await gameConfirm('Permanently unlock this profile frame for 10 Null-Prismatica? It has no gameplay effects.', { title: 'Cosmetic Store', confirmLabel: 'Buy frame' })) return;
+      if (!await gameConfirm('Permanently unlock this profile frame for 10 Null-Prismatica? It has no gameplay effects.', { title: 'Cosmetic Store', confirmLabel: 'Buy frame' })) {
+        setShopHostLine(app, 'veylin', 'cancel');
+        return;
+      }
       await performOnline({ kind: 'purchaseFrame', frame });
     } else {
       const icon = playerProfile.icon;
@@ -2031,6 +2051,7 @@ app.addEventListener('click', async event => {
       await performOnline({ kind: 'updateProfile', displayName: playerProfile.displayName, bio: playerProfile.bio, icon, frame });
     }
     renderMenu();
+    setShopHostLine(app, 'veylin', button.dataset.buyFrame ? 'saved' : 'equipped');
     showError(button.dataset.buyFrame ? 'Profile frame purchased and saved. Equip it at any time.' : 'Profile frame equipped.', 'success');
   } catch (error) {
     console.error('Online store or profile operation failed', error);

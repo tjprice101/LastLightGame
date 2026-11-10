@@ -43,14 +43,13 @@ def document():
         "# Expanded Conduit icon prompts",
         "Copy-ready reference-free1:1 prompts for all35 approved additions. "
         "[Catalog, mechanics and acquisition](../../docs/conduit-expansion-plan.md) "
-        "are separate from these icon designs. Runtime entries are art-pending; "
-        "these proposed IDs are not URLs and generation is not installed artwork.",
-        "Preserve original bytes under Art/source/conduit-expansion. Review each "
-        "background, enclosed opening, pale metal, crystal facet and intentional "
-        "shadow individually. Export transparent256px icons with224px content, "
-        "keeping originals and provenance; do not reuse an unrelated device icon "
-        "or register a missing PNG. All levels keep this icon until separately approved "
-        "art changes; restoration meters are runtime UI, not generated text.",
+        "are separate from these icon designs. All35 delivered images are installed "
+        "(D-167); the original prompt IDs below are not URLs or new commissions.",
+        "Original bytes are archived under Art/source/delivered-root-art/conduits; "
+        "tools/intake_delivered_art.py and Art/provenance/delivered-root-art-intake.json "
+        "own the reviewed source-specific keys, gaps, hashes and transparent exports. "
+        "Preserve supplied alpha and authored details; no runtime keying or unrelated "
+        "replacement art. Restoration meters are runtime UI, not generated text.",
     ]
     materials = {
         "Common": "a small recovered bronze mechanism with compact restrained ceramic and crystal details",

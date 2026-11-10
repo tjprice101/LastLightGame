@@ -1,5 +1,18 @@
 # Decision log
 
+## Compare battle staging and design shop hosts (2026-11-09)
+
+The owner requests a concrete comparison with the supplied battle reference,
+original shop personalities and dialogue, and one complete copy-ready art brief
+using the supplied portrait's vertical NPC format. The
+[brief](../Art/ui/Radiant%20Combat%20Overhaul.md) records grounded staggered
+formations, a focused enemy readout, six original hosts with contextual text,
+six pending portrait prompts and two optional environments. The field and text
+hosts are now implemented on the isolated branch; full battlefield art and
+exact bearer card readouts remain. Individual grounding and vendor likenesses
+still need review. This is not permission to launch, buy images or copy the
+reference's art.
+
 ## Retune enemy formations without multiplying rewards (2026-11-09)
 
 The owner requests dynamic one-to-six-enemy battles across the modes, with
@@ -35,6 +48,8 @@ Select · Actions/Defense/Flare buttons accessible without dragging, pointer/
 timer lifecycle, static Reduce motion, source-facing field artwork and an
 intentional narrow-screen portrait rail. Complete recovered identity-signature
 VFX work without claiming final bespoke cinematic/GPU approval.
+The later 2026-11-09 direct-card mouse/keyboard controls removed Select and
+the per-member Actions menu; this paragraph records the earlier design.
 The request to finish the whole overhaul retains its actual release gates:
 no incomplete merge/default activation or mocked-DB proof presented as live.
 [Contract/evidence and continuation gates](Future%20Plans/radiant-combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08).

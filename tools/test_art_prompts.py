@@ -7,6 +7,7 @@ from art_library import art_path
 
 ROOT = Path(__file__).resolve().parent.parent
 BLOCK = re.compile(r"```(?:text)?\n(.*?)\n```", re.S)
+RADIANT_BRIEF = ROOT / "Art" / "ui" / "Radiant Combat Overhaul.md"
 
 
 def prompts():
@@ -851,9 +852,19 @@ class ArtPromptTests(unittest.TestCase):
         for path, index, body in entries:
             with self.subTest(file=str(path.relative_to(ROOT)), block=index):
                 positive = body.split(" --", 1)[0]
-                for anchor in ("contours", "cel shading", "painted highlights", "jewel-like"):
-                    self.assertIn(anchor, positive)
-                self.assertNotRegex(positive, r"\b(?:cinematic|splotchy|ink.paint|broken brush)\b")
+                # The requested NPC portraits and optional scenes use distinct framing.
+                if path == RADIANT_BRIEF and "--ar 2:3" in body:
+                    for anchor in ("anime", "cel shading", "painted"):
+                        self.assertIn(anchor, positive.lower())
+                    self.assertNotRegex(positive, r"\b(?:cinematic|splotchy|ink.paint|broken brush)\b")
+                elif path == RADIANT_BRIEF and "--ar 16:9" in body:
+                    for anchor in ("anime", "painted", "full-bleed"):
+                        self.assertIn(anchor, positive.lower())
+                    self.assertNotRegex(positive, r"\b(?:splotchy|ink.paint|broken brush)\b")
+                else:
+                    for anchor in ("contours", "cel shading", "painted highlights", "jewel-like"):
+                        self.assertIn(anchor, positive)
+                    self.assertNotRegex(positive, r"\b(?:cinematic|splotchy|ink.paint|broken brush)\b")
                 for flag in ("--ar", "--niji", "--s", "--q", "--no"):
                     self.assertEqual(len(re.findall(re.escape(flag) + r"\s", body)), 1)
                 self.assertIn("--niji 6", body)
@@ -879,8 +890,22 @@ class ArtPromptTests(unittest.TestCase):
         for path, index, body in prompts():
             with self.subTest(file=str(path.relative_to(ROOT)), block=index):
                 ratio = re.search(r"--ar (\S+)", body).group(1)
-                self.assertIn(ratio, ("4:3", "1:1", "3:2", "3:1", "16:9"))
                 positive = body.split(" --", 1)[0]
+                if ratio == "2:3":
+                    self.assertEqual(path, RADIANT_BRIEF)
+                    self.assertRegex(positive.lower(), r"^single (?:older )?adult\b")
+                    for anchor in ("head to knees", "side and top margins",
+                                   "intentionally crop the legs near the knees",
+                                   "plain flat ", "background filling every gap"):
+                        self.assertIn(anchor, positive.lower())
+                    negatives = body.split("--no ", 1)[1].split(" --", 1)[0]
+                    for exclusion in ("scene", "other people", "text", "lettering",
+                                      "logo", "watermark", "glow"):
+                        self.assertIn(exclusion, negatives)
+                    self.assertNotIn("--sref", body)
+                    self.assertNotIn("--sw", body)
+                    continue
+                self.assertIn(ratio, ("4:3", "1:1", "3:2", "3:1", "16:9"))
                 if ratio in ("3:1", "16:9"):
                     self.assertIn("full-bleed", positive)
                     continue

@@ -1,23 +1,23 @@
 # Rootstone Wilds — Botanic Story art pack
 
-**Status:** prompt-only / art pending. Five original, distinct enemies and one
-empty arena; no images generated, delivered, exported or installed. Not
-evolutions, rarity assignments, playable characters or acquisition promises.
+**Status:** five distinct creatures and the arena are delivered and installed
+(D-171). The prompts remain a historical generation reference, not new
+commissions, evolutions, playable characters or acquisition promises.
 Names, IDs and stages follow `src/content/story.ts` and
 [Story specification](../../../docs/story-and-training.md).
 
-Region 4: global stages **76–100**, local stages **1–25**, enemy levels **28–37**.
-Ordinary identities occupy global stages 76–99; the boss is stage 100 only.
+Region 4: global stages **61–80**, local stages **1–20**, enemy levels **28–37**.
+Ordinary identities occupy global stages 61–79; the boss is stage 80 only.
 All five creatures have the canonical **Botanic** combat element.
 
-| Identity | Exact Story ID | Reserved PNG export filename |
+| Identity | Exact Story ID | Installed PNG export filename |
 | --- | --- | --- |
 | Mossplate Beetle | `story:botanic:0` | `story-botanic-0.png` |
 | Briarback Stag | `story:botanic:1` | `story-botanic-1.png` |
 | Loamjaw Mole | `story:botanic:2` | `story-botanic-2.png` |
 | Fernmantle Basilisk | `story:botanic:3` | `story-botanic-3.png` |
 | Heartwood Colossus | `story:botanic:boss` | `story-botanic-boss.png` |
-| Regional arena, stages 76–100 | Not a creature/discovery ID | `story-rootstone-wilds-arena.png` |
+| Regional arena, stages 61–80 | Not a creature/discovery ID | `story-rootstone-wilds-arena.png` |
 
 ## Direction and intake contract
 
@@ -30,19 +30,12 @@ and never negate blue in the exclusion list. Boss grandeur adds no tier.
 The arena follows [Garden of Beauty](../dungeons/Garden%20of%20Beauty.md)'s
 clear level garden floor and recessed trees/arches, with rootstone road identity.
 
-Reserved names are future intake targets, not installed URLs. Preserve delivered
-original bytes under `Art\source\creatures\story\rootstone-wilds\` and arena
-originals under `Art\source\backgrounds\story\`. Review full-resolution species,
-subject palette, branches/claws/leaf tips, continuous margins and flat blue
-openings; reject clipped sources rather than padding over the error.
-Authoritative supplied alpha receives trim/resize/pad only, never re-keying.
-RGB keyed sources require explicit reviewed offline blue-key support protecting
-ivory and leaf edges; no global pale removal or runtime keying.
-Approved files may export to `public\assets\creatures\story\` and
-`public\assets\backgrounds\story\` using the exact table filenames.
-Scenery stays opaque/full-bleed and bypasses cutout processing.
-Review standing-lane contrast and desktop/mobile framing before separate
-deployment-base catalog integration. This pack installs nothing.
+Originals are archived under `Art/source/story/botanic`; reviewed cutouts are
+in `public/assets/enemies` and the opaque arena is in `public/assets/backgrounds`.
+Reproduce source-specific settings with `tools/intake_story_art.py` and the
+[D-171 intake](../../../docs/art-workflow.md#delivered-story-art-intake-d-171).
+Preserve supplied alpha and authored colors; never key scenery or remove colors
+globally. Prompt text does not replace reviewed source pixels.
 
 ## 1. Mossplate Beetle
 

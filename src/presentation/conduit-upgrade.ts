@@ -12,6 +12,7 @@ import { presentReward } from './reward-screen';
 import { conduitReward } from './conduit-presentation';
 import { referencedEffect as readableEffect } from './effect-copy';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
+import { setShopHostLine, shopHost } from './shop-host';
 
 const pageSize = 6;
 interface CatalogState { query: string; rarity: string; status: string; sort: string; page: number }
@@ -72,7 +73,7 @@ function renderConduitUpgradeMenu(account: Account | null, selected: string | un
     + '<p>Max Level previews the highest affordable upgrade and its total cost.</p>';
   return `<section class="conduit-upgrade-menu ref-screen ref-conduit-upgrade" data-upgrade-owned="${escapeAttribute(JSON.stringify(entries))}" data-upgrade-components="${account?.mechanicalComponents ?? 0}">
     <nav class="ref-market-tabs"><button aria-current="page">Conduit Upgrade</button><button data-page="conduit-store">Conduit Store →</button></nav>
-    <aside class="ref-panel ref-upgrade-owned"><header class="ref-panel-heading">Owned · ${owned.length}</header>
+    <aside class="ref-panel ref-upgrade-owned">${shopHost('edda')}<header class="ref-panel-heading">Owned · ${owned.length}</header>
       <div class="ref-upgrade-tools"><label class="ref-upgrade-search"><span class="ref-sr-only">Search owned Conduits</span><input type="search" data-upgrade-search placeholder="Search Conduits…" value="${escapeAttribute(state.query)}"></label>
       <label class="ref-upgrade-sort"><span class="ref-sr-only">Sort owned Conduits</span><select data-upgrade-sort>${[['name', 'Name A–Z'], ['rarity', 'Rarity highest'], ['level', 'Upgrade highest']].map(([value, label]) => `<option value="${value}" ${state.sort === value ? 'selected' : ''}>${label}</option>`).join('')}</select></label></div>
       <div class="ref-upgrade-filters">
@@ -123,7 +124,10 @@ export function bindConduitUpgrades(host: HTMLElement, storage: ProfileStorage,
         const cost = maximum ? Number(button.dataset.totalCost) : conduitUpgradeCost(conduit, level);
         if (cost === null) throw new Error('This Conduit is already fully upgraded.');
         if (!Number.isSafeInteger(cost) || cost <= 0 || !Number.isInteger(targetLevel) || targetLevel <= level || targetLevel > conduitUpgradeCap) throw new Error('Invalid Conduit upgrade preview.');
-        if (!await gameConfirm(`Spend ${cost} Broken Mechanical Components to upgrade ${conduit.name} from +${level} to +${targetLevel} account-wide? Current: ${readableEffect(conduitEffect(conduit, level), false).replace(/\.$/, '')}. ${maximum ? 'Target' : 'Next'}: ${readableEffect(conduitEffect(conduit, targetLevel), false).replace(/\.$/, '')}. Penalties also grow. No copies or other currency are spent.${maximum ? ' This is the highest affordable level, up to +5.' : ''}`, { title: maximum ? 'Max Level Conduit' : 'Upgrade Conduit', confirmLabel: maximum ? 'Max Level' : 'Upgrade' })) return;
+        if (!await gameConfirm(`Spend ${cost} Broken Mechanical Components to upgrade ${conduit.name} from +${level} to +${targetLevel} account-wide? Current: ${readableEffect(conduitEffect(conduit, level), false).replace(/\.$/, '')}. ${maximum ? 'Target' : 'Next'}: ${readableEffect(conduitEffect(conduit, targetLevel), false).replace(/\.$/, '')}. Penalties also grow. No copies or other currency are spent.${maximum ? ' This is the highest affordable level, up to +5.' : ''}`, { title: maximum ? 'Max Level Conduit' : 'Upgrade Conduit', confirmLabel: maximum ? 'Max Level' : 'Upgrade' })) {
+          setShopHostLine(host, 'edda', 'cancel');
+          return;
+        }
         const plan: ConduitMaxLevelPlan = { id, currentLevel: level, targetLevel, cost };
         if (maximum && performUpgrade && !performMaximum) throw new Error('Online Conduit Max Level is unavailable.');
         const account = maximum
@@ -131,6 +135,7 @@ export function bindConduitUpgrades(host: HTMLElement, storage: ProfileStorage,
           : performUpgrade ? await performUpgrade(id, level) : upgradeConduit(storage, id, level);
         saved = true;
         refresh(account);
+        setShopHostLine(host, 'edda', 'saved');
         const status = host.querySelector<HTMLElement>('#conduit-upgrade-result');
         if (!status) throw new Error('Conduit upgrade status is missing.');
         status.textContent = `${conduit.name} upgraded to +${targetLevel}. ${cost} Broken Mechanical Components spent. Applies account-wide to new runs.`;

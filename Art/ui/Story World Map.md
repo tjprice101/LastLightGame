@@ -2,7 +2,7 @@
 
 **Status:** generation reference; D-171 owner-delivered World Map.png is
 preserved under Art/source/story/world-map and installed as opaque Story scenery. This is the background for the implemented
-150-stage Story campaign, not a new activity or an alternate stage layout.
+120-stage Story campaign, not a new activity or an alternate stage layout.
 [Campaign rules](../../docs/story-and-training.md) /
 [Region creatures and arenas](../creatures/story/README.md).
 
@@ -12,7 +12,7 @@ Six regions follow the canonical order: Infernic **Emberwake March**, Oceanic
 **Glasswater Reach**, Atmospheric **Stormspan Heights**, Botanic **Rootstone
 Wilds**, Tranquilitic **Stillhalo Vale**, Chaotic **Riftbound Frontier**.
 The image contains six landforms and six architectural beacon landmarks, not
-150 miniature nodes. Names, stage numbers, paths, current selection, locks and
+miniature stage nodes. Names, stage numbers, paths, current selection, locks and
 progress remain accessible HTML controls above the image.
 
 **Proposed export:** `story-world-map.png` at16:9, at least1920x1080.

@@ -2,8 +2,9 @@
 
 **Current owner override (2026-11-07):** Heaven/Abyss open at Lv.30;
 the first four live stages are30/38/46/54 with one enemy each, supporting
-the only free starter's first evolution. Stage5+ and historical layouts remain
-unchanged. Every evolution now requires Value1/2/3/8/15 protected-safe Devourers.
+the only free starter's first evolution. Stage5+ and historical layouts retain
+their level anchors; the later encounter-size retune changes formations elsewhere.
+Every evolution now requires Value1/2/3/8/15 protected-safe Devourers.
 See [early access](evolution-fodder.md#all-evolutions-and-early-access-2026-11-07).
 Elemental dungeon, Heaven/Abyss specialty and Oblivion Seed-Soul material drops
 receive another35% cut after previous rounding; leveling/evolution material
@@ -36,7 +37,7 @@ normalized Lv.50-120 curve and giving both used specialties1-2->11-23 each.
 Weapon drops stop; currencies, captures, EX+ and owned holdings remain unchanged.
 Walletv10 preserves historical unlocks and captured-copy kits read-only.
 
-**Status:**150-stage Story, retained endless Training, all six elemental
+**Status:**120-stage Story, retained endless Training, all six elemental
 material dungeons and the Calamitic-gated Gates of Oblivion are playable.
 See [D-435 Section 2](gates-of-oblivion.md) for its 25 floors, late enemy
 levels, Calamity-material loot and independent Fragment of Rise stream.

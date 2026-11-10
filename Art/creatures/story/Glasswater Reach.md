@@ -1,23 +1,23 @@
 # Glasswater Reach — Oceanic Story art pack
 
-**Status:** prompt-only / art pending. Five original, distinct enemies and one
-empty arena; no images generated, delivered, exported or installed. Not
-evolutions, rarity assignments, playable characters or acquisition promises.
+**Status:** five distinct creatures and the arena are delivered and installed
+(D-171). The prompts remain a historical generation reference, not new
+commissions, evolutions, playable characters or acquisition promises.
 Names, IDs and stages follow `src/content/story.ts` and
 [Story specification](../../../docs/story-and-training.md).
 
-Region 2: global stages **26–50**, local stages **1–25**, enemy levels **10–19**.
-Ordinary identities occupy global stages 26–49; the boss is stage 50 only.
+Region 2: global stages **21–40**, local stages **1–20**, enemy levels **10–19**.
+Ordinary identities occupy global stages 21–39; the boss is stage 40 only.
 All five creatures have the canonical **Oceanic** combat element.
 
-| Identity | Exact Story ID | Reserved PNG export filename |
+| Identity | Exact Story ID | Installed PNG export filename |
 | --- | --- | --- |
 | Tideglass Crab | `story:oceanic:0` | `story-oceanic-0.png` |
 | Foamfin Drake | `story:oceanic:1` | `story-oceanic-1.png` |
 | Pearlshell Turtle | `story:oceanic:2` | `story-oceanic-2.png` |
 | Current Ray | `story:oceanic:3` | `story-oceanic-3.png` |
 | Deepbell Leviathan | `story:oceanic:boss` | `story-oceanic-boss.png` |
-| Regional arena, stages 26–50 | Not a creature/discovery ID | `story-glasswater-reach-arena.png` |
+| Regional arena, stages 21–40 | Not a creature/discovery ID | `story-glasswater-reach-arena.png` |
 
 ## Direction and intake contract
 
@@ -30,19 +30,12 @@ The arena follows [Oceanic Valley](../dungeons/Oceanic%20Valley.md)'s level
 stone lanes, quiet backing and recessed aquatic architecture, adapted to the
 region's causeways and submerged bells.
 
-Reserved names are future intake targets, not installed URLs. Preserve delivered
-original bytes under `Art\source\creatures\story\glasswater-reach\` and arena
-originals under `Art\source\backgrounds\story\`. Review full-resolution species,
-palette, every fin/claw/tail tip, continuous margins and flat key openings;
-reject clipped sources rather than repairing them with export padding.
-Authoritative supplied alpha receives trim/resize/pad only, never re-keying.
-RGB sources require explicit reviewed offline chroma-key support and protected
-pale pearl/foam details; no global pale removal or runtime keying.
-Approved PNGs may export to `public\assets\creatures\story\` and
-`public\assets\backgrounds\story\` using the exact filenames above.
-The arena stays opaque/full-bleed and bypasses cutout processing.
-Review standing-lane contrast and desktop/mobile framing before separate
-deployment-base catalog integration. This file installs nothing.
+Originals are archived under `Art/source/story/oceanic`; reviewed cutouts are
+in `public/assets/enemies` and the opaque arena is in `public/assets/backgrounds`.
+Reproduce source-specific settings with `tools/intake_story_art.py` and the
+[D-171 intake](../../../docs/art-workflow.md#delivered-story-art-intake-d-171).
+Preserve supplied alpha and authored colors; never key scenery or remove colors
+globally. Prompt text does not replace reviewed source pixels.
 
 ## 1. Tideglass Crab
 

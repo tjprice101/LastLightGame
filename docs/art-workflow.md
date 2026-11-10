@@ -1,12 +1,13 @@
 # Art and asset workflow
 
-## Derived compact face portraits: starter pilot (2026-11-08)
+## Derived compact face portraits: 192 released forms (2026-11-09)
 
-The radiant-overhaul branch contains18 reviewed crops (Infernis/Tizu/Flora,
-six forms each). These are derivatives of existing transparent canonical
-full-art exports, **not new owner commissions** or replacements for Team,
-field and cinematic Home full art. Other174 released forms and production
-compact-context wiring remain unfinished.
+The Radiant branch contains 192 reviewed crops for 32 released bearers, six
+forms each. These are derivatives of existing transparent canonical full-art
+exports, **not new owner commissions** or replacements for Team, field and
+cinematic Home full art. The shared compact resolver is wired to the branch's
+portrait contexts; hosted-release verification remains a separate gate.
+The original 18-starter pilot and the later 174-form pass are both complete.
 
 `tools/build_compact_portraits.py` uses individually reviewed unmirrored eye
 anchors/crop sizes in `Art/provenance/compact-portrait-settings.json`, with
@@ -33,8 +34,22 @@ asset resolver. The existing AVIF tool encodes matching siblings.
 screen-specific mirror. Missing crop/undelivered form uses explicit neutral
 pending feedback; unreached forms retain silhouette markup. Review every
 new anchor at48/96/512px against both dark and light backgrounds before
-installation. The starter18 passed that inspection; late-form source softness
-is retained rather than claiming512px exports generate missing face detail.
+installation. All192 crops were reviewed from contact sheets, with the later
+174 additionally checked at48px on dark and96px on light. Late-form source
+softness is retained rather than claiming512px exports generate missing detail.
+
+## Proposed Radiant vendor portraits (2026-11-09)
+
+The [consolidated art brief](../Art/ui/Radiant%20Combat%20Overhaul.md) proposes
+six original, individually prompted shop/service hosts and two optional
+environments. None has been delivered or installed. Vendor NPC portraits use
+the owner's requested vertical, expressive knee-up format, rather than the
+compact full-body combat-sprite format. Preserve any supplied alpha; otherwise
+review and key each source offline without deleting subject colors. Do not
+create runtime URLs or substitute other characters before reviewed intake.
+Validate with `python -m unittest discover -s tools -p test_radiant_art_brief.py`;
+the vertical NPC exception does not change full-body framing rules for playable
+characters or enemies.
 
 ## Delivered Moon artwork (2026-11-07)
 
@@ -66,8 +81,9 @@ Archive/export verification preceded removal of104 hash-matched root originals.
 Shared artwork resolves portraits, skills, personal Masters, typed native
 counters/markers, captures/catalog entries, recipes/holdings/rewards, summoning
 and the Moon activity card/arena. This installs artwork, **not a launch schedule**:
-Moon and Sunshade remain inactive. No ownership grants or artwork-triggered
-saves. Sunshade103 and reclaimed War44 required sources remain undelivered;
+event availability follows the authoritative schedules and gates. There are no
+ownership grants or artwork-triggered saves. Sunshade103 and reclaimed War44
+required sources remain undelivered;
 the immediate image queue is147, plus12 optional equipment showcases.
 
 Validate with `python -m unittest discover -s tools -p test_moon_art_intake.py`

@@ -1,23 +1,23 @@
 # Riftbound Frontier — Chaotic Story art pack
 
-**Status:** prompt-only / art pending. Five original, distinct enemies and one
-empty arena; no images generated, delivered, exported or installed. Not
-evolutions, rarity assignments, playable characters or acquisition promises.
+**Status:** five distinct creatures and the arena are delivered and installed
+(D-171). The prompts remain a historical generation reference, not new
+commissions, evolutions, playable characters or acquisition promises.
 Names, IDs and stages follow `src/content/story.ts` and
 [Story specification](../../../docs/story-and-training.md).
 
-Region 6: global stages **126–150**, local stages **1–25**, enemy levels **46–55**.
-Ordinary identities occupy global stages 126–149; the boss is stage 150 only.
+Region 6: global stages **101–120**, local stages **1–20**, enemy levels **46–55**.
+Ordinary identities occupy global stages 101–119; the boss is stage 120 only.
 All five creatures have the canonical **Chaotic** combat element.
 
-| Identity | Exact Story ID | Reserved PNG export filename |
+| Identity | Exact Story ID | Installed PNG export filename |
 | --- | --- | --- |
 | Riftfang Hound | `story:chaotic:0` | `story-chaotic-0.png` |
 | Splinterhide Lizard | `story:chaotic:1` | `story-chaotic-1.png` |
 | Voidcrest Raven | `story:chaotic:2` | `story-chaotic-2.png` |
 | Faultcoil Wyrm | `story:chaotic:3` | `story-chaotic-3.png` |
 | Fracture Sovereign | `story:chaotic:boss` | `story-chaotic-boss.png` |
-| Regional arena, stages 126–150 | Not a creature/discovery ID | `story-riftbound-frontier-arena.png` |
+| Regional arena, stages 101–120 | Not a creature/discovery ID | `story-riftbound-frontier-arena.png` |
 
 ## Direction and intake contract
 
@@ -30,19 +30,12 @@ cores. Boss grandeur adds no gameplay tier. The arena follows
 [Ruins of Chaos](../dungeons/Ruins%20of%20Chaos.md)'s intact level floor and
 recessed impossible architecture; fractures never split the standing plane.
 
-Reserved names are future intake targets, not installed asset URLs. Preserve
-delivered originals under `Art\source\creatures\story\riftbound-frontier\` and
-arena originals under `Art\source\backgrounds\story\`.
-Review full-resolution species, palette, every wing/fragment/tail tip,
-continuous margins and green openings; reject clipping rather than concealing
-it with padding. Authoritative supplied alpha receives trim/resize/pad only,
-never re-keying. RGB keyed sources require explicit reviewed offline chroma
-support protecting ivory seams and dark faceted edges; no global pale removal
-or runtime keying. Approved files may export to
-`public\assets\creatures\story\` and `public\assets\backgrounds\story\`
-using the exact table filenames. Scenery stays opaque/full-bleed and bypasses
-cutout processing. Review lane contrast and desktop/mobile framing before
-separate deployment-base catalog wiring. This pack installs nothing.
+Originals are archived under `Art/source/story/chaotic`; reviewed cutouts are
+in `public/assets/enemies` and the opaque arena is in `public/assets/backgrounds`.
+Reproduce source-specific settings with `tools/intake_story_art.py` and the
+[D-171 intake](../../../docs/art-workflow.md#delivered-story-art-intake-d-171).
+Preserve supplied alpha and authored colors; never key scenery or remove colors
+globally. Prompt text does not replace reviewed source pixels.
 
 ## 1. Riftfang Hound
 

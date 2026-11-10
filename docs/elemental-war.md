@@ -54,9 +54,11 @@ playable roster with their kits, nine personal Masters and three
 additional trials. All45 images are [delivered and installed](art-workflow.md#delivered-phase1-war-artwork-2026-11-03);
 see the [handoff](handoff.md) for validation/publication.
 The family now has six trials; all retain10 stages from90 to140, free
-sequential entry, frozen runs and current shared currency rules. Stage10
-guarantees that trial's Lv.0/Evo.1 Element-Bearer, or100 Null-Prismatica if
-already owned. No summon-pool additions, captures or automatic grants.
+sequential entry, frozen runs and current shared currency rules. The original
+stage10 guarantee was superseded: each final-boss clear now has a5% chance to
+recruit that trial's Lv.0/Evo.1 Element-Bearer, with100 Null-Prismatica only
+for a successful already-owned result. No summon-pool additions, captures or
+automatic grants.
 New acquisition uses the same atomic kill/recruitment receipt transaction.
 Original Nerithe/Orvella/Vaelor behavior remains unchanged.
 
@@ -296,7 +298,12 @@ Caps remain30/45/60/75/90/105. No retroactive costs or auto-granted materials.
 Every boss uses its authored Skill1 every2 turns and ultimate every6 turns;
 the ultimate replaces a due primary attack. Boss140 HP is1,183,360.
 
-## Approved currency tuning
+## Historical approved currency tuning
+
+The later [D-428 currency curve](summoning-and-economy.md#smooth-prismatica-growth-across-activities-d-428)
+and [5% recruitment contract](#ten-trials-and-5-final-boss-recruitment-2026-11-06)
+supersede the old quantities and guaranteed recruitment described in this
+historical section.
 
 With `t = (stage - 1) / 9`:
 

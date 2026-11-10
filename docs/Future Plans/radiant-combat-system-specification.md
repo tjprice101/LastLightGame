@@ -1,24 +1,47 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Reference comparison, shop hosts and field staging (2026-11-09)
+
+The owner's screenshots identified a staging problem, not merely a different
+screen orientation. The isolated field now places full-form allies and
+canonical enemies in stable staggered one-to-six-unit formations, with a
+focused enemy readout and face-led controls. When a saved hit defeats or changes
+the current target, its labeled readout remains until its visual impact while
+the selected next target and other eligible members remain actionable. Health,
+stats, effects, Gauge, direct controls and save ordering are preserved. The
+[consolidated art brief](../../Art/ui/Radiant%20Combat%20Overhaul.md) compares
+the original reference without copying its art or adding Items or Auto.
+
+Six distinct shop/service hosts now offer transient contextual text and a
+keyboard-accessible Talk control on their existing destinations. Portraits
+remain pending; Home and Market scenery are optional. The Event
+Elemental-Devourer purchase button now reaches its authenticated purchase flow,
+with warnings and exact-request retries preserved. Per-source ground anchors,
+owner visual review and the existing release gates remain unfinished. No event
+schedule, authority flag or economy rule changes as a result of this work.
+
 ## Dynamic enemy formations (2026-11-09)
 
 Ordinary staged encounters scale from two to six enemies as stages progress.
 Training starts with three and rises to six. Story is intentionally capped at
 two enemies per ordinary skirmish so every free starter retains the established
-solo-progression viability; its bosses remain solo. War stages are authored as
-solo boss fights, and the separately calibrated Calamity encounters remain
-solo. All other staged bosses remain solo and receive 10% additional Health;
-their Attack is unchanged.
+solo-progression viability; its bosses remain solo. Heaven/Abyss stages1-4
+also retain solo encounters on the current caps schedule; historical
+schedules/layouts differ. War stages are authored as solo boss fights, and the
+separately calibrated Calamity encounters remain solo. War and all other staged
+bosses receive 10% additional Health with unchanged Attack; Calamity is
+unchanged.
 
 Additional enemies do not multiply existing rewards: ordinary encounters keep
-two evenly distributed loot carriers, bosses and War/Calamity keep one, and
-Training keeps three. Non-carrier enemies still have to be defeated and their
+two evenly distributed loot carriers, the current early Heaven/Abyss solo
+encounters and bosses/War/Calamity keep one, and Training keeps three.
+Non-carrier enemies still have to be defeated and their
 authored creature discoveries are recorded, but they produce no additional
 loot rolls. Encounter sizing and reward provenance are checked at the account
 boundary. The encounter-rules version is 19 so historical runs are rebuilt
-under the current formation rules. The Radiant field supports three desktop
-enemy columns and two narrow-screen columns, reducing art height for formations
-of four or more.
+under the current formation rules. The Radiant field uses depth-sorted,
+size-specific templates rather than fixed enemy columns; narrow screens retain
+the accessible horizontal portrait rail.
 
 The bounded progression regression covers all 120 Story stages with each free
 starter at the stage-matched level and Store Commons. It is not a population
@@ -58,9 +81,9 @@ single flowing track, without changing its threshold or tier rules.
 Native labeled meters and exact numeric text remain accessible. Every fill
 uses the displayed saved-impact Gauge state; Flare consumption, subsequent
 earned charge, readiness, teammate shares and receipts are unchanged. Empty
-layers and defeated members do not flow. Both in-game Reduce motion and the
-OS preference remove flow and fill transitions while retaining static color
-and layer distinction. Motion is CSS-only and leaves with the disposed view;
+layers and defeated members do not flow. The explicit in-game Reduce motion
+setting removes flow and fill transitions while retaining static color and
+layer distinction. Motion is CSS-only and leaves with the disposed view;
 no gameplay RNG, timers, artwork or commissions were added.
 
 Validation: `npx vitest run radiant --exclude src\radiant-ui.test.ts
@@ -69,12 +92,15 @@ Validation: `npx vitest run radiant --exclude src\radiant-ui.test.ts
 exact layer fractions, the second-tier threshold, early forms, defeated
 members, shared values and queued saved-impact/consumption ordering. Browser
 preview at 1366x768 showed partial first and overlaid second fills, full
-layers, moving waves sampled over time, static in-game/OS reduced motion,
+layers, moving waves sampled over time, static in-game reduced motion,
 an empty nonmoving track and no page-width overflow. This is local visual
 evidence, not physical GPU or owner acceptance. Existing release gates and
 the disabled authority remain unchanged.
 
 ## Condensed portrait actions (2026-11-09)
+
+**Historical intermediate:** the Actions menu described here was subsequently
+removed; direct mouse and keyboard controls above are current.
 
 Removed the persistent Normal Attack / Defense / Flare row and per-member
 Kit buttons. Portrait tap and the charged hold/swipe remain direct controls.
@@ -315,10 +341,18 @@ passes 105 of 105.
 
 ### Remaining coherent-release gates (supersedes the lists below)
 
-1. Owner decision: whether release targets desktop only, which would waive physical touch acceptance, and approval to enable and deploy.
-2. Desktop GPU and cadence acceptance on the owner's own machine.
-3. Final unique per-character cinematic VFX beyond the shared emission and bloom pilot.
-4. Coherent deployment, in this order: set the hosted study secret and flag, deploy the matching function, build the client with `VITE_RADIANT_STUDY_UI=true`, merge, then verify the hosted client.
+1. Review the implemented staggered battle composition against additional
+   authored encounters, including individual foot/hover anchors, and obtain
+   owner review of the six implemented text hosts and their pending portraits.
+   Preserve exact card stats and controls.
+2. Complete final unique per-character cinematic VFX beyond the existing shared
+   foundations, and obtain owner desktop visual, GPU/cadence and economy review.
+   Physical touch acceptance is needed if touch devices are included in release.
+3. Verify deployed authenticated routes and retain bounded real-database
+   CAS/idempotency and long-journal evidence; local-handler SQL-RPC checks do
+   not prove the deployed function, production traffic or unlimited growth.
+4. Obtain explicit deployment approval. Deploy the matching authority and
+   client coherently, in the intended order, and verify the hosted release.
 
 Until then, keep the authority disabled and the branch isolated.
 
@@ -362,6 +396,11 @@ tests passed, 1 failed. Its sole failure is the untracked, rejected
 
 ### Remaining coherent-release gates
 
+**Historical recovery list:** later entries above record actual-database
+SQL-RPC and bounded journal checks through the local handler. Those checks do
+not replace deployed-route or production-traffic validation. The current gate
+list above supersedes this earlier snapshot.
+
 This does not complete the overhaul. Home now renders the saved squad's actual
 full-form artwork, and a default-off authenticated route implements activity
 selection, manual bearer-only squad preparation, captured-holdings navigation,
@@ -377,8 +416,9 @@ and clears generated effects. These are fixture/browser checks, not physical
 device acceptance.
 
 [The consolidated art brief](../../Art/ui/Radiant%20Combat%20Overhaul.md) now
-records the completed192 crops, current art-pending queues and optional
-unapproved Home scene; no mandatory new original image is specified. Remaining
+records the completed192 crops, six proposed vendor portraits and optional
+Home/Market scenes. At the time of this recovery no vendor package had yet
+been requested. Remaining
 work includes final cinematic Home/VFX polish; live authenticated route
 verification; actual database CAS/atomicity/idempotency proof; bounded
 long-Training payload/latency checks against the actual database; physical
@@ -421,11 +461,11 @@ Escape, focus loss, Settings/action locks, transition and disposal clear the
 hold timer; compatibility clicks cannot double-spend. Keyboard activation stays
 usable after cancellation.
 
-Select · Actions is the non-spending, keyboard/touch-accessible route to the
-existing Normal/Defense/Flare buttons. Targets remain explicit and specialized
-Tizu/Flora strike Masters retain their required enemy. All gestures feed the
-same saved operation and receipt presentation; old Health/Shield/Gauge and
-field artwork remain until save succeeds.
+At this recovery stage Select · Actions provided the non-spending alternative;
+the later direct mouse/keyboard controls above removed that menu. Targets remain
+explicit and specialized Tizu/Flora strike Masters retain their required enemy.
+All gestures feed the same saved operation and receipt presentation; old
+Health/Shield/Gauge and field artwork remain until save succeeds.
 
 Field idle is sparse breathing on an inner wrapper. Authored slash/thrust,
 bow recoil, caster lift, hammer preparation, twin tilt or guard stance runs
