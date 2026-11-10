@@ -18,7 +18,8 @@ host.innerHTML = `<header class="radiant-preview-heading"><h1>Radiant battle · 
   <p>In-memory combat only. No sign-in, player account changes or network saves.
   This conditional six-member Lv.105 squad is a test fixture, not a free or average account.
   All 192 released face crops use reviewed source-bound artwork; unreleased faces keep a neutral pending tile.
-  Canvas emission/bloom is a choreography integration pilot, not final unique Radiant art or GPU performance approval.</p>
+  All 32 bearers use authored identity paths, motifs and tier-specific choreography.
+  This in-memory preview is not physical GPU/cadence or owner visual approval.</p>
   <label>Battle speed <select data-preview-speed><option>1</option><option>2</option><option>3</option></select></label>
   <label><input type="checkbox" data-preview-motion> Reduce motion</label>
   <label>Conditional leader VFX fixture <select data-preview-leader>${releasedRadiantIds.map(id =>

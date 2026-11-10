@@ -7,16 +7,21 @@ import type { RadiantImpactFrame } from '../presentation/radiant-impact';
 import type { RadiantPlayerAction } from '../online/radiant-run';
 import type { RadiantCombatState, RadiantCombatEvent } from '../game/radiant-combat';
 import { readyFlare } from '../game/radiant-gauge';
-import { radiantFlares, type RadiantBearerId } from '../content/radiant-combat';
+import { radiantBearerKits, radiantFlares, type RadiantBearerId } from '../content/radiant-combat';
 import { starters } from '../content/starters';
 import { battleSpeed } from '../presentation/battle-speed';
 import { reducedMotion } from '../presentation/settings';
 import { RadiantSignatureVFX, withRadiantSignature, radiantStatusCueSystem } from './radiant-signature-vfx';
 
 interface Effect { system: BaseVFXSystem; context: VFXContext }
-const pilotArchetypes: Partial<Record<RadiantBearerId, readonly [VFXArchetype, VFXArchetype]>> = {
-  neralis: ['volley', 'mandala'], varkhel: ['slam', 'vortex'], seravelle: ['volley', 'mandala'],
-  velmira: ['slash', 'slash'], ozriel: ['slam', 'vortex'], ilvaris: ['beam', 'mandala'], kaelith: ['slash', 'beam'],
+const radiantArchetypes: Partial<Record<RadiantBearerId, Record<AbilityTier, VFXArchetype>>> = {
+  neralis: { light: 'volley', skill1: 'beam', skill2: 'vortex', ultimate: 'mandala' },
+  varkhel: { light: 'slam', skill1: 'slash', skill2: 'vortex', ultimate: 'cataclysm' },
+  seravelle: { light: 'volley', skill1: 'slash', skill2: 'beam', ultimate: 'mandala' },
+  velmira: { light: 'slash', skill1: 'vortex', skill2: 'volley', ultimate: 'cataclysm' },
+  ozriel: { light: 'slam', skill1: 'beam', skill2: 'vortex', ultimate: 'mandala' },
+  ilvaris: { light: 'beam', skill1: 'mandala', skill2: 'volley', ultimate: 'cataclysm' },
+  kaelith: { light: 'slash', skill1: 'beam', skill2: 'slam', ultimate: 'vortex' },
 };
 const radiantColors: Partial<Record<RadiantBearerId, readonly [string, string]>> = {
   maerion: ['#3567d9', '#a64ef1'], caevren: ['#315bd1', '#974bfa'],
@@ -40,15 +45,16 @@ export function radiantVisualDefinition(id: RadiantBearerId, tier: AbilityTier):
     const definition = existing.abilities[tier];
     return { ...definition, palette: radiantPalette(id, definition.palette) };
   }
-  const authored = pilotArchetypes[id], character = starters.find(character => character.id === id);
+  const authored = radiantArchetypes[id], character = starters.find(character => character.id === id);
   if (!authored || !character) throw new Error(`Radiant visual profile is missing for ${id}.`);
-  return { name: character.name, tier, archetype: authored[tier === 'light' ? 0 : 1],
-    description: 'Radiant signature choreography pilot.',
+  const flare = tier === 'skill1' ? 'glowing' : tier === 'skill2' ? 'lustrous' : tier === 'ultimate' ? 'eternal' : null;
+  const signature = flare ? radiantFlares[id][flare].name : 'Normal Attack';
+  return { name: character.name, tier, archetype: authored[tier],
+    description: `${signature}: ${radiantBearerKits[id].signatureFamily} signature choreography.`,
     palette: radiantPalette(id, signaturePalette(id, character.name, character.color)),
     duration: 1, chargeDuration: .05, impactDuration: .5 };
 }
-/** Saved-impact pilot: source-aligned emission and bloom, never portrait bloom
- * or a second combat simulation. The owning view controls motion/receipts. */
+/** Saved-impact signature VFX; the owning view controls motion and receipts. */
 export class RadiantCanvasEffects implements RadiantBattleEffects {
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;

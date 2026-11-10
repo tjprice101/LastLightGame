@@ -54,7 +54,7 @@ beforeEach(() => {
   document.documentElement.dataset.battleSpeed = '1';
 });
 afterEach(() => { active.splice(0).forEach(effect => effect.dispose()); vi.restoreAllMocks(); vi.unstubAllGlobals(); document.body.replaceChildren(); delete document.documentElement.dataset.motion; });
-describe('saved Radiant emission/bloom pilot', () => {
+describe('saved Radiant signature choreography', () => {
   it.each([
     ['maerion', [53, 103, 217], [166, 78, 241]], ['caevren', [49, 91, 209], [151, 75, 250]],
     ['vespera', [66, 107, 224], [189, 88, 239]], ['ilyss', [49, 95, 224], [195, 75, 233]],
@@ -71,6 +71,21 @@ describe('saved Radiant emission/bloom pilot', () => {
       expect([palette.spectral.r, palette.spectral.g, palette.spectral.b]).toEqual(secondary);
       expect(palette.id).toBe(id);
     }
+  });
+  it.each([
+    ['neralis', ['volley', 'beam', 'vortex', 'mandala']],
+    ['varkhel', ['slam', 'slash', 'vortex', 'cataclysm']],
+    ['seravelle', ['volley', 'slash', 'beam', 'mandala']],
+    ['velmira', ['slash', 'vortex', 'volley', 'cataclysm']],
+    ['ozriel', ['slam', 'beam', 'vortex', 'mandala']],
+    ['ilvaris', ['beam', 'mandala', 'volley', 'cataclysm']],
+    ['kaelith', ['slash', 'beam', 'slam', 'vortex']],
+  ] as const)('uses a complete authored four-tier choreography for %s', (id, archetypes) => {
+    const definitions = (['light', 'skill1', 'skill2', 'ultimate'] as const)
+      .map(tier => radiantVisualDefinition(id, tier));
+    expect(definitions.map(definition => definition.archetype)).toEqual(archetypes);
+    expect(new Set(archetypes).size).toBe(4);
+    expect(definitions.every(definition => !definition.description.includes('pilot'))).toBe(true);
   });
   it('does not mutate the legacy Moon palette while deriving the Radiant palette', () => {
     const original = structuredClone(CHARACTER_PROFILES.maerion.abilities.skill1.palette);

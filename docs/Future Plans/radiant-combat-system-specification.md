@@ -1,5 +1,22 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Current completion and release gates (2026-11-09)
+
+The implementation now covers the complete saved-impact VFX path for all 32
+released bearers: distinct identity paths, ordered motif sequences and motion,
+four authored effect tiers for each bearer (including the seven without legacy
+registry profiles), source-aligned charge/impact/status cues, bounded timing
+and disposal, and accessible Reduce motion receipts. This closes the code-
+implementation gate for unique per-bearer Radiant choreography; it does not
+claim final owner-approved art or physical-device performance.
+
+Remaining gates are owner review of field contact/formation and vendor
+presentations, representative in-game review of the completed VFX, physical
+desktop GPU/cadence and economy checks, deployed authenticated-route
+verification, and explicit release approval before matching authority/client
+deployment and hosted verification. Keep the production authority disabled
+and the branch isolated until those gates pass.
+
 ## Original framed portrait and field presentation (2026-11-09)
 
 The owner's screenshots inform compact portrait-card hierarchy and restrained
@@ -8,6 +25,14 @@ The field retains the actual full-form frozen squad and canonical enemies.
 The six portrait controls retain exact Health, Shield, Attack, Defense,
 Recovery, status and personal Gauge data, with element-colored frames and
 separate stat cells. The shared Eternal bar remains separate.
+
+All 371 current full-form character and enemy PNGs have source-specific
+ground-contact offsets derived from each image's visible alpha boundary. The
+image itself is moved to meet the formation baseline; source pixels are not
+cropped, repainted or rescaled. The manifest is reproducible and checked
+against the current runtime art. These measured anchors still need owner visual
+review in representative encounters; pixel bounds do not certify every
+character's intended foot or hover contact point.
 
 Home and the squad editor stage only the actual saved members on subtle
 platforms; compact owned-bearer and picker cards use the existing reviewed
@@ -208,23 +233,13 @@ another eligible squad member can still act, and Skip and Reduce motion remain
 available. Player-initiated scrolling still cancels effects using stale anchors.
 
 Headless Edge checks sampled the six Moon, four reclaimed-War, three Calamitic,
-Solenne and Infernis charge colors, four bearers' three tier progressions, and
-the saved enemy-impact phase. All 37 motif paths rasterized with nonzero pixels.
-After the motion refinement, five representative identities were sampled over
-time at 1366x768. At 1920x1080 and 1366x768, the automatic scroll preserved
-the saved windup, active Skip cleared the canvas, and a second portrait attack
-was accepted during the first windup; Reduce motion left the canvas clear.
-There were no browser page errors. These fixture checks do not establish
-physical desktop GPU/cadence performance or owner visual approval.
-
-`npx vitest run radiant --exclude src\radiant-ui.test.ts --maxWorkers=2
---testTimeout=60000` passes 1,775 tests in 22 files. `npm run build` passes
-with the existing Vite chunk-size advisory.
-
-The underlying shared and seven fallback archetypes are still reused. The
-new identity layer is not a claim that final bespoke cinematic treatment
-or the owner's in-game review is complete. The authority remains disabled,
-and deployment and hosted-route verification remain gated.
+Solenne and Infernis charge colors, the saved enemy-impact phase and all 37
+motif paths. The seven bearers absent from the legacy registry now have
+complete distinct archetypes across Normal/Glowing/Lustrous/Eternal, covered by
+regressions for each exact progression. Existing visual checks and the expanded
+suite do not establish physical desktop GPU/cadence performance or owner
+approval. The authority remains disabled, and deployment and hosted-route
+verification remain gated.
 
 ## Shared enemy Gauge drops (2026-11-09)
 
@@ -276,9 +291,9 @@ plus hosted-RPC latency measured p50 279 ms, p95 355 ms and max 1,658 ms.
 The identity and cascading records were removed. This is not a deployed-function,
 player-device or production-traffic test; no hosted flag or code was changed.
 
-This work remains on the isolated branch; the owner review, desktop GPU and
-cadence check, final unique cinematic VFX and art brief, deployment approval,
-coherent deployment and hosted verification are still release gates.
+This work remains on the isolated branch; owner review, desktop GPU/cadence
+checks, the final art brief, deployment approval, coherent deployment and
+hosted verification are still release gates.
 
 ## Battle feel and desktop polish pass (2026-11-09)
 
@@ -297,10 +312,10 @@ Effects have no gameplay RNG. They use a presentation PRNG keyed by revision and
 
 **Action availability.** Once an action is saved, the next eligible living member may act immediately; the previous member's windup, impact or loot animation does not lock the controls. Saves still commit one at a time against the latest revision, and their visual receipts play in saved revision order. Actor eligibility, targets and Flare readiness use the latest saved combat state, not a readout that is still replaying older impacts. Skip settles all saved actions to the latest state without discarding them.
 
-**Remaining gates (unchanged order):**
+**Remaining gates:**
 1. The owner's in-game review.
 2. A desktop GPU and cadence check.
-3. Final unique cinematic VFX.
+3. Owner review of the implemented unique per-bearer cinematic VFX.
 4. Deployment approval, then coherent authority and client deployment and hosted verification.
 
 ## Hosted database proof and desktop battle polish (2026-11-08)
@@ -359,12 +374,13 @@ passes 105 of 105.
 ### Remaining coherent-release gates (supersedes the lists below)
 
 1. Review the implemented staggered battle composition against additional
-   authored encounters, including individual foot/hover anchors, and obtain
-   owner review of the six implemented text hosts and their pending portraits.
-   Preserve exact card stats and controls.
-2. Complete final unique per-character cinematic VFX beyond the existing shared
-   foundations, and obtain owner desktop visual, GPU/cadence and economy review.
-   Physical touch acceptance is needed if touch devices are included in release.
+   authored encounters and owner-review the 371 measured per-image contact
+   offsets, including foot/hover poses. Obtain owner review of the six
+   implemented text hosts and their pending portraits. Preserve exact card
+   stats and controls.
+2. The unique per-bearer VFX implementation is complete. Obtain owner desktop
+   visual, physical GPU/cadence and economy review. Physical touch acceptance
+   is needed if touch devices are included in release.
 3. Verify deployed authenticated routes and retain bounded real-database
    CAS/idempotency and long-journal evidence; local-handler SQL-RPC checks do
    not prove the deployed function, production traffic or unlimited growth.
@@ -559,6 +575,9 @@ dumping or deleting the oversized conversation.
 
 ## Saved-impact emission and bloom pilot (2026-11-08)
 
+Historical heading retained for existing documentation links. The current
+implementation status is summarized at the top of this specification.
+
 [Radiant canvas effects](../../src/vfx/radiant-battle-effects.ts) are wired only
 to the isolated saved battle preview. Accepted actions precede charge light;
 the view applies each durable HP/Shield/Gauge frame before its emission.
@@ -566,19 +585,22 @@ Glowing/Lustrous/Eternal explicitly select progressive choreography tiers,
 renamed from the actual Radiant offer, rather than displaying legacy ability
 names or claiming that legacy choreography completes the redesign.
 
-Existing source palettes and seven system families provide particles, optical
-glares and two-resolution effect-layer bloom. Seven released bearers absent
-from the legacy registry have explicit pilot archetypes using their canonical
-character colors: Neralis, Varkhel, Seravelle, Velmira, Ozriel, Ilvaris, Kaelith.
-Support packets use non-projectile healing/Shield geometry; generated/periodic
-packets use small local cues, owned by their actual saved source. Enemy packets
-are explicitly neutral cues, not another bearer's signature. Buff-only status
-animation and final unique Radiant Flare artwork remain unfinished.
+All32 released bearers use their authored identity paths, progressive motif
+sequences and motion. The seven bearers absent from the legacy registry now
+also have complete, distinct four-tier archetype progressions and canonical
+palette/signature-family descriptions: Neralis, Varkhel, Seravelle, Velmira,
+Ozriel, Ilvaris and Kaelith. Glowing, Lustrous and Eternal select each bearer's
+own progressively richer system. Support packets use non-projectile healing/
+Shield geometry; generated/periodic packets use small local cues, owned by
+their actual saved source. Status packets retain their saved source identity
+glyph and a bounded local ring; enemy packets are explicitly neutral cues,
+not another bearer's signature. Final effect timing/composition and visual
+acceptance remain owner/device review gates, not claims established by tests.
 
 Art/face anchors retain facing and DOM; no arena dimming, portrait/scenery
 bloom, camera shake, background replacement or gameplay RNG consumption is
-added. The shared renderer retains its legacy default but allows this pilot
-to suppress system backgrounds. The canvas is finite, aria-hidden and
+added. The shared renderer retains its legacy default but suppresses system
+backgrounds for Radiant effects. The canvas is finite, aria-hidden and
 pointer-transparent. One system per ordered impact target, maximum six with
 explicit errors instead of silent truncation; DPR <=1.5 with a1600px long-axis
 budget. Charge lasts.2/.4/.6 seconds; direct impact lasts.55/.85/1.2 seconds,

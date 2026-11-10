@@ -1,5 +1,62 @@
 # Current state and handoff
 
+## Completing Radiant identity-specific VFX (2026-11-09)
+
+**Implemented:** replaced the seven two-state fallback profiles with complete
+four-tier Normal/Glowing/Lustrous/Eternal choreography for Neralis, Varkhel,
+Seravelle, Velmira, Ozriel, Ilvaris and Kaelith. Each tier now selects its
+authored effect system; signature-family descriptions, canonical colors and
+the existing unique identity path, three-motif sequence and motion stay
+bearer-specific. Source-owned status cues remain bounded and local. The
+development preview reflects the completed implementation. The dated initial-
+pilot heading in the specification is retained to preserve existing links.
+
+**Verified:** the focused VFX suite passes 73 tests. The isolated Radiant suite
+passes 1,817 tests in 23 files; the ground-anchor generator test and `--check`
+match all 371 current full-form assets. `npm run build` passes TypeScript and
+Vite with the existing large-chunk advisory.
+`python -m unittest discover -s tools -p test_future_plans.py` passes 4 tests.
+In the local in-memory browser, Neralis's updated Normal choreography produced
+visible canvas emission and then cleared; the overlay remained singular and no
+game error was reported. This is not a GPU/cadence measurement.
+
+**Still required:** owner review of representative field contacts, vendor
+presentations and completed cinematic effects; physical desktop GPU/cadence
+and economy checks; deployed authenticated-route verification; explicit
+approval; then matching authority/client deployment and hosted verification.
+These are real release gates, not conclusions from an in-memory preview. Keep
+the production authority disabled and the branch isolated until they pass.
+
+## Per-image Radiant field contact alignment (2026-11-09)
+
+**Implemented:** every available full-form field sprite now has its own
+contact offset, derived from that image's alpha bounds. A reproducible manifest
+covers the current character and enemy PNGs. The field positions the visible
+lower edge at the formation baseline without modifying or cropping the image.
+Unavailable art remains explicitly pending; there is no guessed URL or
+success-shaped fallback.
+
+**Verified:** the manifest check matches all 371 current full-form PNGs.
+The isolated Radiant suite passes 1,817 tests in 23 files. The production
+build passes with the existing large-chunk advisory:
+
+```powershell
+python -m unittest discover -s tools -p test_radiant_ground_anchors.py
+python tools\build_radiant_ground_anchors.py --check
+npx vitest run radiant --exclude src\radiant-ui.test.ts --maxWorkers=2 --testTimeout=60000
+npm run build
+```
+
+The local in-memory six-bearer/two-enemy preview was inspected with actual
+decoded artwork. All eight sprites received their per-image offset; during
+idle motion their visible lower pixels remained within 4.7 CSS pixels of
+their slot baselines, with no horizontal page overflow. This fixture is not
+physical GPU, cadence or owner visual acceptance.
+
+**Still required:** owner review of representative foot/hover anchors and
+additional authored encounters, plus the separate physical desktop GPU/cadence,
+economy, deployed-route and explicit coherent-release approval gates.
+
 ## Reference-informed original UI pass (2026-11-09)
 
 **Implemented:** the actual owned-bearer grid and squad picker now use reviewed
@@ -606,12 +663,11 @@ Skip clears pixels/frames, reset retains one canvas, pointer-transparent,
 no game errors/storage writes. Hidden-tab samples are not FPS/GPU approval.
 Temporary preview server is stopped after validation.
 
-**Remaining:** final unique Radiant Flare cinema/shaders/device performance,
-full timed-status impact synchronization,174 reviewed face crops, cinematic
-six-member Home/overlapping field, authenticated routing, actual DB atomicity
-proof and final cadence/economy/network/long-journal gates. Buff-only status
-animation remains unwired. Single art brief stays provisional. Keep isolated/
-disabled until coherent; unrelated dirty work is not staged.
+**Superseded status:** the seven fallback profiles and unique four-tier
+choreography are now implemented; see the current completion entry above.
+Saved status cues are source-owned. Owner visual review, physical GPU/cadence
+and economy checks, deployed authenticated-route verification, and approval
+before coherent release remain open. The production authority stays disabled.
 
 ## Radiant complete frozen reference and Master targets (2026-11-08)
 
