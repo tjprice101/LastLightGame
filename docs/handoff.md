@@ -1,5 +1,32 @@
 # Current state and handoff
 
+## Radiant production deployment (2026-11-09)
+
+The owner explicitly approved a production deployment so they can play and
+evaluate the overhaul on their desktop. Before deploying, the full committed
+suite was run: 285 files and 10,259 tests passed. That run excluded the
+untracked prototype tests. Client build, authority typecheck and server bundle
+also passed. Three real regressions were fixed first: the shop-host CSS
+followed the device motion query instead of the game setting, and the Sarev
+host had been placed inside the Calamitic lock region. The committed authority
+bundle was stale (it lacked the 1-6 enemy encounter sizes) and was rebuilt.
+Vitest `testTimeout` is now 60s because heavy DOM suites time out under full
+parallel load.
+
+Live state: Supabase `RADIANT_STUDY_ENABLED=true` plus a generated server-only
+`RADIANT_STUDY_SECRET` (never displayed or committed); `game-operation` v100
+deployed, and unauthenticated legacy and Radiant requests return 401. GitHub
+variable `VITE_RADIANT_STUDY_UI=true` feeds the Pages build. `main` was
+fast-forwarded to `c6c9c2bb`, and Pages run 42755780059 succeeded. The hosted
+`version.json` reports that build, and the flag compiled as true.
+
+Still unverified: a signed-in hosted Radiant run against the real database,
+desktop GPU/cadence and the economy review. Radiant remains a signed-in Home
+"Radiant Encounters · Preview" entry, not the replacement for ordinary battles.
+To disable quickly, set the Supabase secret `RADIANT_STUDY_ENABLED` to anything
+other than `true`. Setting the GitHub variable to `false` and redeploying
+hides the client entry.
+
 ## Vendor portrait prompt revision (2026-11-09)
 
 The six vendor prompts in `Art/ui/Radiant Combat Overhaul.md` now describe
