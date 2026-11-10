@@ -1,5 +1,26 @@
 # Current state and handoff
 
+## Radiant owner review disposition (2026-11-09)
+
+The owner approves neutral pending tiles for the six vendor portraits in the
+initial release; the original artwork remains deferred. The owner's preliminary
+reaction was "Looks good I guess"; they want to see the overhaul in the live
+game. No device/GPU measurements or final economy acceptance were provided.
+
+The existing GitHub Pages workflow deploys to the live site, not a separate
+preview, and the existing hosted authority rejects the new Radiant route.
+There is no configured separate deployment environment, and local Supabase,
+Docker and PostgreSQL tools are unavailable. A safe isolated authenticated
+test target and explicit production approval remain necessary; do not replace
+the live client or enable its authority to simulate a staging test.
+
+The focused Radiant art-brief test passes. The broader
+`python -m unittest discover -s tools -p test_art_prompts.py` currently fails
+315 subtests in existing unrelated art packs, including older War and Master
+Conduit prompts; none of the reported failures is in the Radiant brief. Its
+eight prompt blocks are unchanged by this approval. This baseline failure is
+not a completed art-audit pass.
+
 ## Radiant release-gate review and desktop diagnostics (2026-11-09)
 
 **Implemented:** the isolated review preview now offers all 32 released leaders
@@ -49,8 +70,7 @@ the existing deployed function rejected an authenticated Radiant read with
 HTTP 400. The disposable identity was removed. No deployment or authority
 flag change was made.
 
-**Remaining:** owner review of field contacts, hosts and VFX; delivery of the
-six portraits or explicit acceptance of neutral pending tiles; physical desktop
+**Remaining:** owner review of field contacts, hosts and VFX; physical desktop
 GPU/cadence and economy acceptance (plus touch if included); authenticated
 verification on an approved isolated staging target; explicit deployment
 approval; then matching authority/client deployment and hosted verification.

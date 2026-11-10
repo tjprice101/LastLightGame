@@ -10,6 +10,10 @@ and disposal, and accessible Reduce motion receipts. This closes the code-
 implementation gate for unique per-bearer Radiant choreography; it does not
 claim final owner-approved art or physical-device performance.
 
+The owner approves the existing neutral vendor portrait-pending tiles for the
+initial release. The six original portraits remain deferred, with no paid
+generation or unrelated-art substitution authorized.
+
 Remaining gates are owner review of field contact/formation and vendor
 presentations, representative in-game review of the completed VFX, physical
 desktop GPU/cadence and economy checks, deployed authenticated-route

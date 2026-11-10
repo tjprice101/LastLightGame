@@ -1,5 +1,14 @@
 # Decision log
 
+## Allow neutral vendor portraits for the initial Radiant release (2026-11-09)
+
+The owner approves the six existing named, neutral portrait-pending tiles for
+the initial release. The six proposed vendor portraits remain undelivered and
+may be reviewed and installed later; do not substitute another character's
+art or invent image URLs. This approval does not authorize paid artwork,
+production deployment, authority activation or skipping the other release
+checks.
+
 ## Adapt reference hierarchy using original Last Light surfaces (2026-11-09)
 
 The owner supplies visual references for Home, formation, collection, growth,

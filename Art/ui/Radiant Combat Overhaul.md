@@ -5,8 +5,10 @@ visual-scope reference for the Radiant overhaul. The owner now requests original
 shop hosts, dialogue and a complete delivery brief, using the supplied third
 image's portrait format. The six vendor identities and text interactions are
 implemented in the existing shops; their portrait artwork has not been
-delivered or installed. This revision supersedes the older
-zero-new-source description for the newly requested vendor feature only.
+delivered or installed. The owner approves the existing neutral pending tiles
+for the initial release; the six portraits remain deferred. This revision
+supersedes the older zero-new-source description for the newly requested
+vendor feature only.
 It does not approve hidden-content release, paid generation or deployment. Mechanics
 and exact bearer/Master assignments belong to the
 [system specification](../../docs/Future%20Plans/radiant-combat-system-specification.md).
@@ -17,14 +19,15 @@ animation or reuse.
 
 | Classification | New owner-delivered source images | Disposition |
 | --- | ---: | --- |
-| New vendor package | **6 proposed original portraits** | One original knee-up cutout for each shop/service host below. The owner requested the designs; actual likenesses still need review and intake. |
+| New vendor package | **6 proposed original portraits** | One original knee-up cutout for each shop/service host below. The owner approved neutral pending tiles for initial release; likeness review and intake are deferred. |
 | Optional environments | **2** | One cinematic Home scene and one shared Market scene. Neither is required for functional shops or combat. |
 | Existing outstanding queues | **Not added to the overhaul count** | See the existing War and hidden-Sunshade plans below; retain their separate scope and do not duplicate or automatically order them. |
 | Derived/engine work | **192 compact portrait derivatives completed; 0 additional original sources** | Formation templates, portrait controls, dialogue, gauges and all 32 bearers' four-tier VFX are implemented. Contact anchors and cinematic presentation still need owner and physical-device review. None requires new source images. |
 
-**Delivery total for this package: six vendor sources; eight sources if both
-optional environments are chosen.** No new enemy, playable-bearer, ability-icon,
-Flare-tier, currency, frame or status set is added. Generate each source
+**Future delivery total for this package: six vendor sources; eight sources if both
+optional environments are chosen.** None is required for the initial
+release using the approved neutral vendor tiles. No new enemy, playable-bearer,
+ability-icon, Flare-tier, currency, frame or status set is added. Generate each source
 independently, not a collage of this entire brief. One source serves all of
 that vendor's shop appearances; no expression sheets or voice files are required.
 

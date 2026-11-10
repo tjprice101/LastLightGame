@@ -65,6 +65,9 @@ class RadiantArtBriefTests(unittest.TestCase):
         self.assertIn("six vendor sources; eight sources if both", self.text)
         self.assertIn("no ability icons", self.text)
         self.assertIn("portrait artwork has not been", self.text)
+        normalized = " ".join(self.text.split())
+        self.assertIn("owner approves the existing neutral pending tiles for the initial release", normalized)
+        self.assertIn("None is required for the initial release", normalized)
 
     def test_composition_and_saved_outcome_requirements_remain_visible(self):
         text = " ".join(self.text.split())
