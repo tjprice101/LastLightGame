@@ -1,5 +1,12 @@
 # Last Light: AI agent entry point
 
+## Live-first implementation, never demos (2026-11-10)
+
+Build every new system, rework, character/ability, Conduit and UI change
+directly into the live game and workspace first, with complete information.
+Never create demos, previews, prototypes, study flags or side-by-side pages
+unless the owner explicitly asks for one. Make the real change instead.
+
 ## Radiant is THE live battle system (2026-11-09)
 
 The owner rejected the preview-only rollout: the overhaul replaces the live game.
