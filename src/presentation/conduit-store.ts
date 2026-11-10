@@ -48,7 +48,7 @@ export function conduitInventory(account: Account | null): string {
 export function conduitStore(account: Account | null, selected?: string, rarity = ''): string {
   const calamitic = rarity === 'Calamitic';
   const navigation = `<nav class="ref-market-tabs"><button data-page="stores">Material Exchange</button><button data-page="stores" data-market-cosmetics>Cosmetic Store</button><button data-store-rarity="" ${calamitic ? '' : 'aria-current="page"'}>Conduit Store</button><button data-store-rarity="Calamitic" ${calamitic ? 'aria-current="page"' : ''}>Calamitic Conduits</button><button data-page="conduit-upgrade">Upgrade &rarr;</button></nav>`;
-  if (calamitic && !calamiticStoreUnlocked(account)) return `<section class="conduit-store ref-screen ref-conduit-store" data-store-mode="locked">${navigation}<div class="calamitic-store-lock" role="region" aria-label="Calamitic Conduits locked">${shopHost('sarev', 'locked')}<span class="calamitic-lock-symbol" aria-hidden="true"></span><p>${calamiticLockMessage}</p></div></section>`;
+  if (calamitic && !calamiticStoreUnlocked(account)) return `<section class="conduit-store ref-screen ref-conduit-store" data-store-mode="locked">${navigation}${shopHost('sarev', 'locked')}<div class="calamitic-store-lock" role="region" aria-label="Calamitic Conduits locked"><span class="calamitic-lock-symbol" aria-hidden="true"></span><p>${calamiticLockMessage}</p></div></section>`;
   const catalog = conduits.filter(entry => calamitic ? entry.rarity === 'Calamitic' : entry.price !== null && (!rarity || entry.rarity === rarity));
   const choice = catalog.find(entry => entry.id === selected) ?? catalog[0];
   const cost = calamitic ? calamiticTokenPrice : choice?.price;

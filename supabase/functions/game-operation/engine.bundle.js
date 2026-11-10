@@ -6703,6 +6703,42 @@ function scheduledEnemySkill(skills, round) {
   return skills.find((skill) => skill.action === "ultimate" && round % skill.every === 0) ?? skills.find((skill) => skill.action === "skill2" && round % skill.every === 0) ?? skills.find((skill) => round % skill.every === 0);
 }
 
+// src/content/encounter-size.ts
+var maximumEncounterSize = 6;
+var stageBossFactors = { health: 1.1, damage: 1 };
+var ordinaryRewardDrops = 2;
+var trainingRewardDrops = 3;
+var storyEncounterMaximum = 2;
+var rhythm = [0, 1, -1, 0, 1];
+function clampSize(size, minimum) {
+  return Math.max(minimum, Math.min(maximumEncounterSize, size));
+}
+function stagedEncounterSize(stage, stages, boss, minimum = ordinaryRewardDrops, maximum = maximumEncounterSize) {
+  if (!Number.isInteger(stage) || !Number.isInteger(stages) || stages < 1 || stage < 1 || stage > stages) {
+    throw new Error("Invalid encounter stage.");
+  }
+  if (!Number.isInteger(minimum) || !Number.isInteger(maximum) || minimum < 1 || maximum < minimum || maximum > maximumEncounterSize) {
+    throw new Error("Invalid encounter size bounds.");
+  }
+  if (boss) return 1;
+  const progress = stages === 1 ? 1 : (stage - 1) / (stages - 1);
+  const variation = progress >= 0.5 ? rhythm[stage % 5] : 0;
+  return Math.max(minimum, Math.min(maximum, clampSize(1 + Math.round(progress * 4) + variation, minimum)));
+}
+function trainingWaveSize(wave) {
+  if (!Number.isSafeInteger(wave) || wave < 1) throw new Error("Invalid Training wave.");
+  const progress = Math.min(1, (wave - 1) / 119);
+  const variation = progress >= 0.75 ? rhythm[(wave - 1) % 5] : 0;
+  return clampSize(3 + Math.round(progress * 3) + variation, trainingRewardDrops);
+}
+function isRewardCarrier(index, size, drops) {
+  if (!Number.isInteger(index) || !Number.isInteger(size) || !Number.isInteger(drops) || index < 0 || index >= size || drops < 1) {
+    throw new Error("Invalid reward carrier query.");
+  }
+  const carriers = Math.min(drops, size);
+  return Math.ceil((index + 1) * carriers / size) > Math.ceil(index * carriers / size);
+}
+
 // src/content/roses.ts
 var roseMaterialNames = ["Seed", "Bud", "Bloom", "Crest", "Heart", "Soul"];
 var roseMaterials = materialRarities.map((rarity, tier) => ({
@@ -6952,7 +6988,9 @@ function infusionEncounter(mode, stage, schedule = "caps", layout) {
   const maximumLevel = "maximumLevel" in definition ? definition.maximumLevel : 120;
   const level = mode === "heavens" || mode === "abyss" ? schedule === "legacy" ? Math.round(80 + (stage - 1) * 40 / (stages - 1)) : layout ? infusionLevelForLayout(stage, stages) : infusionEnemyLevel(stage) : Math.round(startingLevel + (stage - 1) * (maximumLevel - startingLevel) / (stages - 1));
   const boss = stage % 5 === 0;
-  const enemyCount = boss || (mode === "heavens" || mode === "abyss") && schedule === "caps" && !layout && stage < 5 ? 1 : 2;
+  const rewardDrops = boss || (mode === "heavens" || mode === "abyss") && schedule === "caps" && !layout && stage < 5 ? 1 : 2;
+  const earlySingle = (mode === "heavens" || mode === "abyss") && schedule === "caps" && !layout && stage < 5;
+  const enemyCount = earlySingle ? 1 : stagedEncounterSize(stage, stages, boss, rewardDrops);
   const stats = mode === "treasury" ? treasuryEnemyStats(level, boss) : mode === "sanctuary" ? sanctuaryEnemyStats(level, boss) : mode === "roses" ? roseEnemyStats(level, boss) : isNewEventId(mode) ? eventEnemyStats(mode, level, boss) : mode === "machines" ? creatureEnemyStats(level, boss) : infusionEnemyStats(level, boss);
   const [name, art] = infusionEnemies[mode][tier];
   return {
@@ -6961,6 +6999,7 @@ function infusionEncounter(mode, stage, schedule = "caps", layout) {
     level,
     boss,
     enemyCount,
+    rewardDrops,
     stats,
     tier,
     forms: 6,
@@ -10887,7 +10926,7 @@ function nativeCleanup(state) {
 }
 
 // src/game/conduit-runtime.ts
-var conduitRulesVersion = phaseZeroStatsReady ? 18 : 4;
+var conduitRulesVersion = phaseZeroStatsReady ? 19 : 4;
 function gear(unit) {
   return unit.conduitRuntime ??= { numbers: {}, owners: {} };
 }
@@ -13081,7 +13120,7 @@ function withMasterLoadouts(state, masters = {}) {
 function createWarBattle(character, stage, seed3, starter, progress, roster = [starter], teamProgress = { [starter]: progress }, equipment = {}, captures = [], upgrades = {}) {
   const encounter2 = warEncounter(character, stage);
   const state = createBattle(seed3, roster, teamProgress, equipment, captures, upgrades);
-  const unit = combatant(`war-${character}-${stage}`, character, encounter2.enemyName, "enemy", encounter2.stats, encounter2.element);
+  const unit = combatant(`war-${character}-${stage}`, character, encounter2.enemyName, "enemy", stageBossStats(encounter2.stats, true), encounter2.element);
   Object.assign(unit, {
     level: encounter2.level,
     evolution: encounter2.evolution,
@@ -13147,9 +13186,27 @@ function capCapturedBattleLevels(state) {
     unit.level = capturedLevelCap;
   }
 }
+function stageBossStats(stats, boss) {
+  return boss ? {
+    ...stats,
+    health: Math.round(stats.health * stageBossFactors.health),
+    damage: Math.round(stats.damage * stageBossFactors.damage)
+  } : stats;
+}
+function encounterRewardDrops(state) {
+  if (state.war || state.calamity) return 1;
+  if (state.infusion) return infusionEncounter(state.infusion.mode, state.infusion.stage, state.infusion.schedule ?? "legacy").rewardDrops;
+  if (state.dungeon || state.story || state.oblivion) return state.enemies.length === 1 && state.enemies[0].boss ? 1 : ordinaryRewardDrops;
+  return trainingRewardDrops;
+}
+function isEncounterRewardCarrier(state, enemyId) {
+  const index = state.enemies.findIndex((unit) => unit.id === enemyId);
+  return index >= 0 && isRewardCarrier(index, state.enemies.length, encounterRewardDrops(state));
+}
 function spawnWave(wave) {
   const level = Math.min(wave, enemyGrowth.maximumLevel);
-  return ["goblin", "imp", "golem"].map((id, index) => {
+  const species = ["goblin", "imp", "golem"];
+  return Array.from({ length: trainingWaveSize(wave) }, (_, index) => species[index % species.length]).map((id, index) => {
     const definition = enemies[id];
     const unit = combatant(`enemy-${wave}-${index}`, id, definition.name, "enemy", enemyCombatStats(level, false), definition.element);
     unit.level = level;
@@ -13229,7 +13286,7 @@ function createDungeonBattle(element, stage, seed3, starter, progress, roster = 
   const encounter2 = dungeonEncounter(element, stage);
   state.wave = stage;
   state.dungeon = { element, stage };
-  state.enemies = Array.from({ length: encounter2.boss ? 1 : 2 }, (_, index) => {
+  state.enemies = Array.from({ length: stagedEncounterSize(stage, dungeonStageCount, encounter2.boss) }, (_, index) => {
     familySeed ^= familySeed << 13;
     familySeed ^= familySeed >>> 17;
     familySeed ^= familySeed << 5;
@@ -13237,7 +13294,7 @@ function createDungeonBattle(element, stage, seed3, starter, progress, roster = 
     state.encounterSeed = familySeed;
     const family = Math.floor(familySeed / 4294967296 * elementSources[element].length);
     const selected = dungeonEncounter(element, stage, family);
-    const unit = combatant(`dungeon-${element}-${stage}-${index}`, "goblin", selected.enemy.name, "enemy", selected.stats, element);
+    const unit = combatant(`dungeon-${element}-${stage}-${index}`, "goblin", selected.enemy.name, "enemy", stageBossStats(selected.stats, selected.boss), element);
     unit.level = selected.level;
     unit.creatureId = selected.creatureId;
     unit.art = selected.enemy.art;
@@ -13255,8 +13312,8 @@ function createOblivionBattle(stage, seed3, starter, progress, roster = [starter
   state.wave = stage;
   state.oblivion = { stage };
   state.oblivionSeed = (seed3 ^ 1831565813) >>> 0 || 1;
-  state.enemies = Array.from({ length: encounter2.boss ? 1 : 2 }, (_, index) => {
-    const unit = combatant(`oblivion-${stage}-${index}`, encounter2.construct.id, encounter2.construct.name, "enemy", encounter2.stats, encounter2.construct.element);
+  state.enemies = Array.from({ length: stagedEncounterSize(stage, gatesOfOblivionRules.stages, encounter2.boss) }, (_, index) => {
+    const unit = combatant(`oblivion-${stage}-${index}`, encounter2.construct.id, encounter2.construct.name, "enemy", stageBossStats(encounter2.stats, encounter2.boss), encounter2.construct.element);
     unit.level = encounter2.level;
     unit.creatureId = encounter2.construct.id;
     unit.art = oblivionConstructArt(encounter2.construct);
@@ -13277,7 +13334,7 @@ function createStoryBattle(stage, seed3, starter, progress, roster = [starter], 
   if (!Number.isInteger(familySeed) || familySeed < 1 || familySeed > 4294967295) throw new Error("Invalid Story encounter seed.");
   state.wave = stage;
   state.story = { storyStage: stage };
-  state.enemies = Array.from({ length: encounter2.boss ? 1 : 2 }, (_, index) => {
+  state.enemies = Array.from({ length: stagedEncounterSize(stage, storyRules.stages, encounter2.boss, ordinaryRewardDrops, storyEncounterMaximum) }, (_, index) => {
     familySeed ^= familySeed << 13;
     familySeed ^= familySeed >>> 17;
     familySeed ^= familySeed << 5;
@@ -13285,7 +13342,7 @@ function createStoryBattle(stage, seed3, starter, progress, roster = [starter], 
     state.encounterSeed = familySeed;
     const identity = encounter2.boss ? 0 : Math.floor(familySeed / 4294967296 * 4);
     const creature = storyCreature(stage, identity);
-    const unit = combatant(`story-${stage}-${index}`, creature.id, creature.name, "enemy", encounter2.stats, encounter2.element);
+    const unit = combatant(`story-${stage}-${index}`, creature.id, creature.name, "enemy", stageBossStats(encounter2.stats, encounter2.boss), encounter2.element);
     unit.level = encounter2.level;
     unit.creatureId = creature.id;
     unit.art = creature.art;
@@ -13311,7 +13368,7 @@ function createInfusionBattle(mode, stage, seed3, starter, progress, roster = [s
   state.wave = stage;
   state.infusion = { mode, stage, schedule };
   state.enemies = Array.from({ length: encounter2.enemyCount }, (_, index) => {
-    const unit = combatant(`infusion-${mode}-${stage}-${index}`, "goblin", encounter2.enemy.name, "enemy", encounter2.stats, encounter2.enemy.element);
+    const unit = combatant(`infusion-${mode}-${stage}-${index}`, "goblin", encounter2.enemy.name, "enemy", stageBossStats(encounter2.stats, encounter2.boss), encounter2.enemy.element);
     unit.level = encounter2.level;
     unit.creatureId = `infusion:${mode}:${encounter2.tier}`;
     unit.art = encounter2.enemy.art;
@@ -13477,6 +13534,7 @@ function rollOblivionFragment(state, boss) {
 function awardDefeats(previous, state, events) {
   for (const enemy2 of state.enemies) {
     if (enemy2.hp > 0 || !previous.enemies.some((unit) => unit.id === enemy2.id && unit.hp > 0)) continue;
+    if (!isEncounterRewardCarrier(state, enemy2.id)) continue;
     const rewardRoll = () => {
       let seed3 = state.rewardSeed;
       seed3 ^= seed3 << 13;
@@ -15454,7 +15512,7 @@ function saveResolvedRewards(storage, result, runId, damagePaid, captureUuid) {
       throw new Error("Invalid or locked Gates of Oblivion encounter.");
     }
     const encounter2 = oblivionEncounter(oblivion.stage);
-    if (result.state.enemies.length !== (encounter2.boss ? 1 : 2) || result.state.enemies.some((enemy2, index) => !enemy2 || enemy2.side !== "enemy" || enemy2.id !== `oblivion-${oblivion.stage}-${index}` || enemy2.definitionId !== encounter2.construct.id || enemy2.creatureId !== encounter2.construct.id || enemy2.name !== encounter2.construct.name || enemy2.level !== encounter2.level || enemy2.element !== encounter2.construct.element || enemy2.boss !== encounter2.boss || !Number.isFinite(enemy2.hp))) {
+    if (result.state.enemies.length !== stagedEncounterSize(oblivion.stage, gatesOfOblivionRules.stages, encounter2.boss) || result.state.enemies.some((enemy2, index) => !enemy2 || enemy2.side !== "enemy" || enemy2.id !== `oblivion-${oblivion.stage}-${index}` || enemy2.definitionId !== encounter2.construct.id || enemy2.creatureId !== encounter2.construct.id || enemy2.name !== encounter2.construct.name || enemy2.level !== encounter2.level || enemy2.element !== encounter2.construct.element || enemy2.boss !== encounter2.boss || !Number.isFinite(enemy2.hp))) {
       throw new Error("Invalid Gates of Oblivion enemy source.");
     }
   }
@@ -15468,14 +15526,14 @@ function saveResolvedRewards(storage, result, runId, damagePaid, captureUuid) {
   const baseCurrency = new Map(result.events.filter((event2) => event2.kind === "reward").map((event2) => [event2, event2.amount]));
   if (story) {
     const encounter2 = storyEncounter(story.storyStage);
-    if (result.state.dungeon || result.state.infusion || result.state.war || result.state.oblivion || result.state.wave !== story.storyStage || story.storyStage > unlockedStoryStage(account) || result.state.enemies.length !== (encounter2.boss ? 1 : 2) || result.state.enemies.some((enemy2, index) => enemy2.id !== `story-${story.storyStage}-${index}` || enemy2.level !== encounter2.level || enemy2.element !== encounter2.element || enemy2.boss !== encounter2.boss || !Array.from({ length: encounter2.boss ? 1 : 4 }, (_, identity) => storyCreature(story.storyStage, identity).id).includes(enemy2.creatureId ?? ""))) {
+    if (result.state.dungeon || result.state.infusion || result.state.war || result.state.oblivion || result.state.wave !== story.storyStage || story.storyStage > unlockedStoryStage(account) || result.state.enemies.length !== stagedEncounterSize(story.storyStage, storyRules.stages, encounter2.boss, storyEncounterMaximum, storyEncounterMaximum) || result.state.enemies.some((enemy2, index) => enemy2.id !== `story-${story.storyStage}-${index}` || enemy2.level !== encounter2.level || enemy2.element !== encounter2.element || enemy2.boss !== encounter2.boss || !Array.from({ length: encounter2.boss ? 1 : 4 }, (_, identity) => storyCreature(story.storyStage, identity).id).includes(enemy2.creatureId ?? ""))) {
       throw new Error("Invalid or locked Story encounter.");
     }
   }
   for (const enemy2 of result.state.enemies) {
     if (!enemy2.creatureId) continue;
     getCreature(enemy2.creatureId);
-    const defeated = result.events.some((event2) => event2.kind === "reward" && event2.source === enemy2.id);
+    const defeated = enemy2.hp <= 0 || result.events.some((event2) => event2.kind === "reward" && event2.source === enemy2.id);
     const current = account.creatures[enemy2.creatureId];
     if (!current || defeated && !current.defeated) {
       account.creatures[enemy2.creatureId] = { defeated: defeated || current?.defeated === true };
@@ -15488,6 +15546,7 @@ function saveResolvedRewards(storage, result, runId, damagePaid, captureUuid) {
     if (account.receipts.includes(receipt) && !oblivion) continue;
     const enemy2 = result.state.enemies.find((unit) => unit.id === reward.source);
     if (!enemy2 || enemy2.level === null) throw new Error("Enemy reward source is missing.");
+    if (!isEncounterRewardCarrier(result.state, enemy2.id)) throw new Error("Only loot-carrying enemies drop rewards.");
     const multiplier = bossLootMultiplier(result.state, enemy2.boss === true);
     if (oblivion) {
       const stage = oblivion.stage;
@@ -15674,7 +15733,7 @@ function saveResolvedRewards(storage, result, runId, damagePaid, captureUuid) {
   }
   const dungeon = result.state.dungeon;
   if (oblivion && result.state.phase === "cleared") {
-    if (result.state.enemies.some((enemy2) => enemy2.hp > 0 || !rewardedEnemies.has(enemy2.id) && !account.receipts.includes(`${runId}:${enemy2.id}`))) {
+    if (result.state.enemies.some((enemy2) => enemy2.hp > 0 || isEncounterRewardCarrier(result.state, enemy2.id) && !rewardedEnemies.has(enemy2.id) && !account.receipts.includes(`${runId}:${enemy2.id}`))) {
       throw new Error("Gates of Oblivion floor clear requires saved rewards for every defeated enemy.");
     }
     const unlocked = Math.min(gatesOfOblivionRules.stages, oblivion.stage + 1);
@@ -15707,7 +15766,7 @@ function saveResolvedRewards(storage, result, runId, damagePaid, captureUuid) {
     }
   }
   if (story && result.state.phase === "cleared") {
-    if (result.state.enemies.some((enemy2) => enemy2.hp > 0 || !account.receipts.includes(`${runId}:${enemy2.id}`))) {
+    if (result.state.enemies.some((enemy2) => enemy2.hp > 0 || isEncounterRewardCarrier(result.state, enemy2.id) && !account.receipts.includes(`${runId}:${enemy2.id}`))) {
       throw new Error("Story clear requires saved rewards for every defeated enemy.");
     }
     const firstClear = (account.storyCompleted ?? 0) < story.storyStage;
@@ -16055,12 +16114,7 @@ function createRadiantAuthoredEncounter(anchor, encounterSeed) {
       if (!Number.isSafeInteger(wave) || wave < 1) throw new Error("Invalid Training wave.");
       live = createBattle(encounterSeed);
       live.wave = wave;
-      for (const unit of live.enemies) {
-        unit.level = Math.min(wave, 120);
-        unit.stats = enemyCombatStats(unit.level, false);
-        unit.hp = unit.stats.health;
-        unit.enemySkills = enemySkills(unit.level, false, unit.enemySkills[0].name, enemyAbilityMultiplier(unit.level));
-      }
+      live.enemies = spawnWave(wave);
       break;
     }
   }

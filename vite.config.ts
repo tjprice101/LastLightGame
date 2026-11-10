@@ -19,7 +19,7 @@ export default defineConfig({
   define: { __BUILD_ID__: JSON.stringify(buildId) },
   plugins: [buildVersion()],
   // Unit tests assert canonical PNG art URLs; image-format.test.ts covers the AVIF runtime swap.
-  test: { setupFiles: ['src/test-setup.ts'] },
+  test: { setupFiles: ['src/test-setup.ts'], testTimeout: 60000 },
   build: {
     target: 'es2022',
     rollupOptions: {

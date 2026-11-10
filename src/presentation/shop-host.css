@@ -48,5 +48,4 @@ html body .sanctuary-shell .shop-host .shop-host-talk {
 }
 .shop-host-talk:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 @keyframes shop-host-arrival { to { transform: translateX(120%); } }
-@media (prefers-reduced-motion: reduce) { .shop-host::after { animation: none; } }
 html[data-motion="reduced"] .shop-host::after { animation: none; }
