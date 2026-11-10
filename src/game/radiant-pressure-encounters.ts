@@ -14,7 +14,7 @@ import { activityPrismaticaDrop } from '../content/prismatica';
 import { calibratedRadiantEnemyStats, radiantEnemyFactors, type RadiantEnemyCalibration,
   type RadiantEnemyCategory } from '../content/radiant-enemy-calibration';
 import { createBattle, createStoryBattle, createDungeonBattle, createInfusionBattle,
-  createWarBattle, createCalamityBattle, createOblivionBattle, type BattleState } from './battle';
+  createWarBattle, createCalamityBattle, createOblivionBattle, spawnWave, type BattleState } from './battle';
 import { assertActivityAccess } from './activity-access';
 import { assertRoseEventActive } from '../content/event-schedule';
 import { unlockedStoryStage, unlockedStage, unlockedInfusionStage, unlockedWarStage,
@@ -120,12 +120,7 @@ export function createRadiantAuthoredEncounter(anchor: RadiantPressureAnchor, en
       if (!Number.isSafeInteger(wave) || wave < 1) throw new Error('Invalid Training wave.');
       live = createBattle(encounterSeed);
       live.wave = wave;
-      for (const unit of live.enemies) {
-        unit.level = Math.min(wave, 120);
-        unit.stats = enemyCombatStats(unit.level, false);
-        unit.hp = unit.stats.health;
-        unit.enemySkills = enemySkills(unit.level, false, unit.enemySkills![0].name, enemyAbilityMultiplier(unit.level));
-      }
+      live.enemies = spawnWave(wave);
       break;
     }
   }

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { standardBanner, standardBannerPool, bannerPercent } from '../content/standard-banner';
 import { infusionLycalisOdds, rollInfusionLycalis } from '../content/loot-random';
 import { creatureLoot, getCreature } from '../content/creatures';
-import { act, createBattle, createDungeonBattle, createInfusionBattle, endTurn } from './battle';
+import { act, createBattle, createDungeonBattle, createInfusionBattle, endTurn, isEncounterRewardCarrier } from './battle';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, summonCharacter } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { lootArt, lootItems } from '../presentation/battle-loot';
@@ -110,8 +110,9 @@ describe('Phase8 Null-Prismatica rewards and gated Standard Banner', () => {
   it('advances the premium stream once per new kill and never rerolls an already-dead enemy', () => {
     const { state } = kills('heavens');
     state.allies[0].hp = state.allies[0].stats.health = 1_000_000;
-    state.enemies[1].hp = state.enemies[1].stats.health;
-    state.enemies[1].burn = { damage: 0, turns: 0 };
+    const remainingCarrier = state.enemies.find(enemy => isEncounterRewardCarrier(state, enemy.id))!;
+    remainingCarrier.hp = remainingCarrier.stats.health;
+    remainingCarrier.burn = { damage: 0, turns: 0 };
     const result = endTurn(state);
     let expected = 15872;
     expected ^= expected << 13;

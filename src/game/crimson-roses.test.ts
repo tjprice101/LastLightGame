@@ -14,7 +14,7 @@ import { characterLevelCap, characterLevelCost, characterEvolutionCost, characte
 import { materialArt, materialName } from '../content/dungeon-art';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { activityPrismaticaDrop } from '../content/prismatica';
-import { createBattle, createInfusionBattle, act, endTurn, nextStage, withMasterLoadouts } from './battle';
+import { createBattle, createInfusionBattle, act, endTurn, isEncounterRewardCarrier, nextStage, withMasterLoadouts } from './battle';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, summonCharacter, sellCurrencyCreature,
   creatureSaleOffer, setSquad, evolutionFodderOptions, upgradeCharacter, maxLevelPlan, levelCharacterToMaximum } from './account';
 import { SAVE_KEY, saveStarter, type ProfileStorage } from './profile';
@@ -246,7 +246,7 @@ describe('Passion of Crimson Roses integration', () => {
       const result = defeat(stage, true);
       expect(result.state.phase).toBe('cleared');
       const rewards = result.events.filter(event => event.kind === 'reward');
-      expect(rewards).toHaveLength(result.state.enemies.length);
+      expect(rewards).toHaveLength(result.state.enemies.filter(enemy => isEncounterRewardCarrier(result.state, enemy.id)).length);
       const pool = infusionLoot('roses', stage).specialties;
       for (const reward of rewards) {
         expect(Object.keys(reward.materials!)).toEqual(pool.map(drop => drop.id));

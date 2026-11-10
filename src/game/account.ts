@@ -8,7 +8,8 @@ import { type InfusionModeId } from '../content/activities';
 import { getStarter, isStarterId, starters, type StarterId } from '../content/starters';
 import { isPlayableDungeon, playableDungeons, materialLoot, dungeonVariants, type PlayableDungeon } from '../content/dungeons';
 import { loadProfile, type ProfileStorage } from './profile';
-import { type BattleResult } from './battle';
+import { isEncounterRewardCarrier, type BattleResult } from './battle';
+import { stagedEncounterSize, storyEncounterMaximum } from '../content/encounter-size';
 import { materialName } from '../content/dungeon-art';
 import { getCreature } from '../content/creatures';
 import { getConduit, isConduitId, validateConduitSlots, normalizeLegacyKitSlots, normalizeLegacyCalamiticSlots, validateConduitElement, conduitSlotCount, validateConduitUpgrades, conduitUpgradeCost, conduitUpgradeCap, type ConduitId, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
@@ -1100,7 +1101,7 @@ function saveResolvedRewards(storage: ProfileStorage, result: BattleResult, runI
       throw new Error('Invalid or locked Gates of Oblivion encounter.');
     }
     const encounter = oblivionEncounter(oblivion.stage);
-    if (result.state.enemies.length !== (encounter.boss ? 1 : 2) || result.state.enemies.some((enemy, index) =>
+    if (result.state.enemies.length !== stagedEncounterSize(oblivion.stage, gatesOfOblivionRules.stages, encounter.boss) || result.state.enemies.some((enemy, index) =>
         !enemy || enemy.side !== 'enemy' || enemy.id !== `oblivion-${oblivion.stage}-${index}` ||
         enemy.definitionId !== encounter.construct.id || enemy.creatureId !== encounter.construct.id ||
         enemy.name !== encounter.construct.name || enemy.level !== encounter.level || enemy.element !== encounter.construct.element ||
@@ -1121,7 +1122,7 @@ function saveResolvedRewards(storage: ProfileStorage, result: BattleResult, runI
     const encounter = storyEncounter(story.storyStage);
     if (result.state.dungeon || result.state.infusion || result.state.war || result.state.oblivion || result.state.wave !== story.storyStage ||
         story.storyStage > unlockedStoryStage(account) ||
-        result.state.enemies.length !== (encounter.boss ? 1 : 2) ||
+        result.state.enemies.length !== stagedEncounterSize(story.storyStage, storyRules.stages, encounter.boss, storyEncounterMaximum, storyEncounterMaximum) ||
         result.state.enemies.some((enemy, index) => enemy.id !== `story-${story.storyStage}-${index}` ||
           enemy.level !== encounter.level || enemy.element !== encounter.element || enemy.boss !== encounter.boss ||
           !Array.from({ length: encounter.boss ? 1 : 4 }, (_, identity) => storyCreature(story.storyStage, identity).id).includes(enemy.creatureId ?? ''))) {
@@ -1131,7 +1132,7 @@ function saveResolvedRewards(storage: ProfileStorage, result: BattleResult, runI
   for (const enemy of result.state.enemies) {
     if (!enemy.creatureId) continue;
     getCreature(enemy.creatureId);
-    const defeated = result.events.some((event) => event.kind === 'reward' && event.source === enemy.id);
+    const defeated = enemy.hp <= 0 || result.events.some((event) => event.kind === 'reward' && event.source === enemy.id);
     const current = account.creatures[enemy.creatureId];
     if (!current || (defeated && !current.defeated)) {
       account.creatures[enemy.creatureId] = { defeated: defeated || current?.defeated === true };
@@ -1144,6 +1145,7 @@ function saveResolvedRewards(storage: ProfileStorage, result: BattleResult, runI
     if (account.receipts.includes(receipt) && !oblivion) continue;
     const enemy = result.state.enemies.find((unit) => unit.id === reward.source);
     if (!enemy || enemy.level === null) throw new Error('Enemy reward source is missing.');
+    if (!isEncounterRewardCarrier(result.state, enemy.id)) throw new Error('Only loot-carrying enemies drop rewards.');
     const multiplier = bossLootMultiplier(result.state, enemy.boss === true);
     if (oblivion) {
       const stage = oblivion.stage;
@@ -1363,7 +1365,7 @@ function saveResolvedRewards(storage: ProfileStorage, result: BattleResult, runI
 
   const dungeon = result.state.dungeon;
   if (oblivion && result.state.phase === 'cleared') {
-    if (result.state.enemies.some(enemy => enemy.hp > 0 ||
+    if (result.state.enemies.some(enemy => enemy.hp > 0 || isEncounterRewardCarrier(result.state, enemy.id) &&
         !rewardedEnemies.has(enemy.id) && !account.receipts.includes(`${runId}:${enemy.id}`))) {
       throw new Error('Gates of Oblivion floor clear requires saved rewards for every defeated enemy.');
     }
@@ -1395,7 +1397,8 @@ function saveResolvedRewards(storage: ProfileStorage, result: BattleResult, runI
     }
   }
   if (story && result.state.phase === 'cleared') {
-    if (result.state.enemies.some((enemy) => enemy.hp > 0 || !account.receipts.includes(`${runId}:${enemy.id}`))) {
+    if (result.state.enemies.some((enemy) => enemy.hp > 0 ||
+        isEncounterRewardCarrier(result.state, enemy.id) && !account.receipts.includes(`${runId}:${enemy.id}`))) {
       throw new Error('Story clear requires saved rewards for every defeated enemy.');
     }
     const firstClear = (account.storyCompleted ?? 0) < story.storyStage;

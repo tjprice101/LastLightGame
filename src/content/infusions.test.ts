@@ -16,6 +16,8 @@ import { unitFacing } from '../presentation/unit-facing';
 import { defaultBindings } from '../game/hotkeys';
 import { creatureLoot, creatures } from './creatures';
 import { materialLoot } from './dungeons';
+import { stagedEncounterSize } from './encounter-size';
+import { stageBossStats } from '../game/battle';
 
 vi.mock('../presentation/activity-transition', () => ({
   activityTransitionPending: () => false,
@@ -80,13 +82,15 @@ describe('playable Heaven and Abyss', () => {
       const encounter = infusionEncounter(mode, stage);
       expect(encounter.level).toBe(infusionEnemyLevel(stage));
       expect(encounter.boss).toBe(stage % 5 === 0);
-      expect(encounter.enemyCount).toBe(stage < 5 ? 1 : encounter.boss ? 1 : 2);
+      const earlySingle = (mode === 'heavens' || mode === 'abyss') && stage < 5;
+      expect(encounter.enemyCount).toBe(earlySingle ? 1 :
+        stagedEncounterSize(stage, stageCount, encounter.boss, encounter.rewardDrops));
       const tier = Math.floor((stage - 1) * 6 / stageCount);
       expect(encounter.enemy.name).toBe(infusionEnemies[mode][tier][0]);
       const session = createSession('ember', { level: 105, evolution: 6 }, { mode, stage });
       expect(session.entrancePending).toBe(true);
       expect(session.state.enemies).toHaveLength(encounter.enemyCount);
-      expect(session.state.enemies[0].stats).toEqual(encounter.stats);
+      expect(session.state.enemies[0].stats).toEqual(stageBossStats(encounter.stats, encounter.boss));
       expect(session.state.enemies[0].enemySkills?.[0].every).toBe(encounter.boss ? 2 : 3);
       expect(session.state.enemies[0].enemySkills).toHaveLength(encounter.level < 50 ? 1 : 2);
       expect(session.state.enemies[0].art).toBe(encounter.enemy.art);

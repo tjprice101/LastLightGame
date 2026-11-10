@@ -1,5 +1,18 @@
 # Decision log
 
+## Retune enemy formations without multiplying rewards (2026-11-09)
+
+The owner requests dynamic one-to-six-enemy battles across the modes, with
+solo bosses allowed to be harder. Use two-to-six enemies for ordinary staged
+encounters, three-to-six in Training, and at most two for Story skirmishes so
+the verified single-starter progression contract remains viable. Keep War's
+authored stages and Calamity's calibrated encounters as solo bosses. Give
+staged non-Calamity bosses 10% additional Health, with no Attack multiplier.
+Keep existing reward totals by limiting ordinary encounters to two loot
+carriers and Training to three; one solo boss is its own carrier. Record
+discovery for every defeated authored enemy. See the [Radiant combat system
+specification](Future%20Plans/radiant-combat-system-specification.md#dynamic-enemy-formations-2026-11-09).
+
 ## Share each enemy Gauge drop with the living squad (2026-11-09)
 
 The owner clarifies that a drop's full value goes to its attacker and an

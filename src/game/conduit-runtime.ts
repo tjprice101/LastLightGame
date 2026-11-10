@@ -20,7 +20,8 @@ import { hasNativeIdentity, nativeAbsorbedHit, nativeAuthoredShieldAbsorbed, nat
 import { prepareCalamiticAction, afterCalamiticAction, afterCalamiticMark, calamiticSiegeBonus, deferCalamiticDamage,
   bankCalamiticDamage, calamiticSkillDefenseIgnore, calamiticSkillPowerBonus, calamiticSkillEfficiencyBonus } from './calamitic-conduits';
 
-export const conduitRulesVersion = phaseZeroStatsReady ? 18 : 4;
+/** 19: encounters hold 1-6 enemies and stage bosses are harder, so older saved runs restart. */
+export const conduitRulesVersion = phaseZeroStatsReady ? 19 : 4;
 export interface ConduitShieldLayer {
   amount: number;
   owner: string;

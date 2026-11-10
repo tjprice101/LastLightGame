@@ -3,6 +3,8 @@
 .battle-screen .battle-side.enemies > .battle-unit:nth-child(3n + 2) { grid-column: 2; grid-row: span 2; align-self: center; }
 .battle-screen .battle-side.enemies > .battle-unit:nth-child(3n) { grid-column: 1; }
 .battle-screen .battle-side.enemies > .battle-unit:only-child { grid-column: 1 / -1; }
+.battle-screen .battle-side.enemies:has(> .battle-unit:nth-child(4)) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.battle-screen .battle-side.enemies:has(> .battle-unit:nth-child(4)) > .battle-unit:nth-child(n) { grid-column: auto; grid-row: auto; }
 .battle-screen .battle-side.allies { grid-template-columns: repeat(2, minmax(0, 1fr)); align-self: center; align-items: center; gap: 18px 6px; }
 .battle-screen .battle-side.allies > .battle-unit:nth-child(3n + 1) { grid-column: 2; }
 .battle-screen .battle-side.allies > .battle-unit:nth-child(3n + 2) { grid-column: 1; grid-row: span 2; }

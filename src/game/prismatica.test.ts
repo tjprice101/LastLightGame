@@ -4,7 +4,7 @@ import { storyRules, storyCompletionReward } from '../content/story';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { elementalWars } from '../content/elemental-war';
 import { infusionStageCount } from '../content/activities';
-import { createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, endTurn, type BattleState } from './battle';
+import { createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, endTurn, isEncounterRewardCarrier, type BattleState } from './battle';
 import { ACCOUNT_KEY, emptyAccount, saveAccountRewards } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 
@@ -55,7 +55,7 @@ describe('D-428 smooth Prismatica without currency boss multipliers', () => {
       const result = clear(state);
       expect(result.state.phase).toBe('cleared');
       const rewards = result.events.filter(event => event.kind === 'reward');
-      expect(rewards).toHaveLength(state.enemies.length);
+      expect(rewards).toHaveLength(state.enemies.filter(enemy => isEncounterRewardCarrier(state, enemy.id)).length);
       rewards.forEach(reward => {
         expect(reward.amount).toBeGreaterThanOrEqual(drop.minimum);
         expect(reward.amount).toBeLessThanOrEqual(drop.maximum);

@@ -1,5 +1,30 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Dynamic enemy formations (2026-11-09)
+
+Ordinary staged encounters scale from two to six enemies as stages progress.
+Training starts with three and rises to six. Story is intentionally capped at
+two enemies per ordinary skirmish so every free starter retains the established
+solo-progression viability; its bosses remain solo. War stages are authored as
+solo boss fights, and the separately calibrated Calamity encounters remain
+solo. All other staged bosses remain solo and receive 10% additional Health;
+their Attack is unchanged.
+
+Additional enemies do not multiply existing rewards: ordinary encounters keep
+two evenly distributed loot carriers, bosses and War/Calamity keep one, and
+Training keeps three. Non-carrier enemies still have to be defeated and their
+authored creature discoveries are recorded, but they produce no additional
+loot rolls. Encounter sizing and reward provenance are checked at the account
+boundary. The encounter-rules version is 19 so historical runs are rebuilt
+under the current formation rules. The Radiant field supports three desktop
+enemy columns and two narrow-screen columns, reducing art height for formations
+of four or more.
+
+The bounded progression regression covers all 120 Story stages with each free
+starter at the stage-matched level and Store Commons. It is not a population
+balance claim. The higher formation sizes and boss durability are a challenge
+pass, not final balance approval.
+
 ## Whole-card attack and Flare gestures (2026-11-09)
 
 - There is no member-selection step or Actions menu: left click = that member's

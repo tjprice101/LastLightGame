@@ -8,7 +8,7 @@ import { machineConduitDrops, machineConduitLoot, bannerConduitBonus, machineEne
 import { creatureLoot, getCreature } from '../content/creatures';
 import { getStarter, starters } from '../content/starters';
 import { resolveFighter, shatterGauge } from '../content/combat';
-import { act, endTurn, nextStage, damageAmount, actionUnavailable, createBattle, createInfusionBattle, type BattleState } from './battle';
+import { act, endTurn, nextStage, damageAmount, actionUnavailable, createBattle, createInfusionBattle, isEncounterRewardCarrier, type BattleState } from './battle';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, equipConduit, summonCharacter, purchaseConduit, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { createCreatureCopy, validateCapturedCharacters, resolveCapturedFighter } from './character-instances';
@@ -198,7 +198,7 @@ describe('machine rewards and atomic saves', () => {
     state.machineConduits = Object.fromEntries(conduits.filter(c => c.id !== 'duplex-heart').map(c => [c.id, 1]));
     const result = attack(state, 'skill2');
     const rewards = result.events.filter(event => event.kind === 'reward');
-    expect(rewards).toHaveLength(state.enemies.length);
+    expect(rewards).toHaveLength(state.enemies.filter(enemy => isEncounterRewardCarrier(state, enemy.id)).length);
     expect(rewards[0].conduits).toEqual({ 'duplex-heart': 1 });
     expect(rewards.slice(1).every(reward => Object.keys(reward.conduits ?? {}).length === 0)).toBe(true);
     expect(result.state.machineConduits?.['duplex-heart']).toBe(1);

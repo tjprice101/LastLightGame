@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { enemyCombatStats } from '../content/stat-growth';
 import { resolveFighter } from '../content/combat';
-import { act, actAndAdvanceTurn, createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, damageAmount, endTurn, actionUnavailable, nextWave, withMasterLoadouts, type BattleState } from './battle';
+import { act, actAndAdvanceTurn, createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, damageAmount, endTurn, actionUnavailable, nextWave, stageBossStats, withMasterLoadouts, type BattleState } from './battle';
 import { elementalEnemyLevel, infusionStageCount } from '../content/activities';
 import { resolveCapturedFighter, createCreatureCopy, capturedProgress } from './character-instances';
 import { capturedEnemyStats, infusionEncounter } from '../content/infusions';
@@ -184,7 +184,8 @@ describe('hostile progression balance', () => {
       for (const enemy of state.enemies) {
         const level = enemy.level!;
         const boss = enemy.boss ?? false;
-        expect(enemy.stats, `${enemy.name} Lv.${level}`).toEqual(enemyCombatStats(level, boss));
+        expect(enemy.stats, `${enemy.name} Lv.${level}`).toEqual(
+          state.calamity ? enemyCombatStats(level, boss) : stageBossStats(enemyCombatStats(level, boss), boss));
         expect(enemy.hp).toBe(enemy.stats.health);
         const first = enemy.enemySkills![0];
         const expected = enemySkills(level, boss, first.name, enemyAbilityMultiplier(level));

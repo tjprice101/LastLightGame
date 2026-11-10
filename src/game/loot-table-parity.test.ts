@@ -4,7 +4,7 @@ import { infusionStageCount, type InfusionModeId } from '../content/activities';
 import { playableDungeons } from '../content/dungeons';
 import { elementalWars, warLoot } from '../content/elemental-war';
 import { storyRules } from '../content/story';
-import { act, createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, type BattleState } from './battle';
+import { act, createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, isEncounterRewardCarrier, type BattleState } from './battle';
 
 const progress = { level: 105, evolution: 6 };
 const modes: InfusionModeId[] = ['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines'];
@@ -38,7 +38,7 @@ describe('live enemy drops match published per-stage loot tables', () => {
       const state = create(stage);
       const result = kill(state, seed);
       const rewards = result.events.filter(event => event.kind === 'reward');
-      expect(rewards).toHaveLength(state.enemies.length);
+      expect(rewards).toHaveLength(state.enemies.filter(enemy => isEncounterRewardCarrier(state, enemy.id)).length);
       for (const reward of rewards) {
         const enemy = state.enemies.find(unit => unit.id === reward.source)!;
         const table = creatureLoot(getCreature(enemy.creatureId!), stage).filter(drop => !drop.note?.includes('Account first clear'));

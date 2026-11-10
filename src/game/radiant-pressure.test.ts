@@ -55,7 +55,7 @@ describe('radiant authored pressure adapter', () => {
   it('preserves actual Story, Training and EX+3 levels/stats', () => {
     expect(opponents()[0].authoredStats).toEqual(storyEncounter(1).stats);
     const training = adaptRadiantPressureEncounter(anchors.find(a => a.id === 'training:120')!, 1, authoredRadiantCalibration);
-    expect(training).toHaveLength(3);
+    expect(training).toHaveLength(6);
     expect(training[0].authoredStats).toEqual(enemyCombatStats(120, false));
     const boss = adaptRadiantPressureEncounter(anchors.find(a => a.id === 'calamity:machines:3')!, 1, authoredRadiantCalibration)[0];
     expect(boss.level).toBe(170);

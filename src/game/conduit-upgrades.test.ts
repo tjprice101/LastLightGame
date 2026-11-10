@@ -16,7 +16,7 @@ import { creatureLoot, getCreature } from '../content/creatures';
 import { infusionEncounter } from '../content/infusions';
 import { playableDungeons } from '../content/dungeons';
 import { createSession } from '../presentation/battle-view';
-import { act, createInfusionBattle, createBattle, nextStage, nextWave } from './battle';
+import { act, createInfusionBattle, createBattle, isEncounterRewardCarrier, nextStage, nextWave } from './battle';
 
 function storage(): ProfileStorage {
   const values = new Map([[SAVE_KEY, '{"version":1,"starterId":"ember"}']]);
@@ -108,11 +108,11 @@ describe('component progression and isolated rewards', () => {
       state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
       const result = act(state, 'ember', 'skill2', state.enemies[0].id);
       const rewards = result.events.filter(event => event.kind === 'reward');
-      expect(rewards).toHaveLength(state.enemies.length);
+      expect(rewards).toHaveLength(state.enemies.filter(enemy => isEncounterRewardCarrier(state, enemy.id)).length);
       for (const reward of rewards) expect(reward.mechanicalComponents).toBe(machineComponentDrop(stage).minimum);
       const saved = storage();
       const account = saveAccountRewards(saved, result, `area-${stage}`);
-      expect(account.mechanicalComponents).toBe(state.enemies.length * machineComponentDrop(stage).minimum);
+      expect(account.mechanicalComponents).toBe(rewards.length * machineComponentDrop(stage).minimum);
       expect(saveAccountRewards(saved, result, `area-${stage}`)).toEqual(account);
     }
   });

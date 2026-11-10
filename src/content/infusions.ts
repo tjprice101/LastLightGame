@@ -5,6 +5,7 @@ import { phaseZeroStatDefaults, type ResolvedStats } from './phase-zero-stats';
 import { furtherMaterialRewardRange, materialRewardRange, rollDrop, type ScaledDrop } from './loot-random';
 import { capturedGrowth, enemyCombatStats, playableGrowth } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
+import { stagedEncounterSize } from './encounter-size';
 import { roseMaterials, roseSaleQuantities, roseFormStages, roseCaptureAllowed, roseMaterialUnlocks } from './roses';
 import { isNewEventId, newEventDefinition, newEventMaterialIds } from './moon-sunshade-events';
 import { linearMaterialRange, materialRarities, type MaterialRarity } from './material-drops';
@@ -205,14 +206,16 @@ export function infusionEncounter(mode: InfusionModeId, stage: number, schedule:
     : layout ? infusionLevelForLayout(stage, stages) : infusionEnemyLevel(stage)
     : Math.round(startingLevel + (stage - 1) * (maximumLevel - startingLevel) / (stages - 1));
   const boss = stage % 5 === 0;
-  const enemyCount = boss || (mode === 'heavens' || mode === 'abyss') && schedule === 'caps' && !layout && stage < 5 ? 1 : 2;
+  const rewardDrops = boss || (mode === 'heavens' || mode === 'abyss') && schedule === 'caps' && !layout && stage < 5 ? 1 : 2;
+  const earlySingle = (mode === 'heavens' || mode === 'abyss') && schedule === 'caps' && !layout && stage < 5;
+  const enemyCount = earlySingle ? 1 : stagedEncounterSize(stage, stages, boss, rewardDrops);
   const stats = mode === 'treasury' ? treasuryEnemyStats(level, boss)
     : mode === 'sanctuary' ? sanctuaryEnemyStats(level, boss)
     : mode === 'roses' ? roseEnemyStats(level, boss)
     : isNewEventId(mode) ? eventEnemyStats(mode, level, boss)
     : mode === 'machines' ? creatureEnemyStats(level, boss) : infusionEnemyStats(level, boss);
   const [name, art] = infusionEnemies[mode][tier];
-  return { name: definition.name, stage, level, boss, enemyCount, stats, tier, forms: 6,
+  return { name: definition.name, stage, level, boss, enemyCount, rewardDrops, stats, tier, forms: 6,
     enemy: { name, ...(art ? { art } : {}), element: mode === 'machines' ? machineEnemies[tier].element : infusionEnemyElements[mode] },
     color: mode === 'machines' ? '#dddddd' : mode === 'heavens' ? '#ff6565' : mode === 'abyss' ? '#f464d4' : mode === 'sanctuary' ? '#e7a7bf'
       : mode === 'roses' ? '#d36b7d' : mode === 'moon' ? '#cbd2d8' : mode === 'sunshade' ? '#d9a64c' : '#eed78b',

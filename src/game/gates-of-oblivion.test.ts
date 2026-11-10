@@ -13,6 +13,8 @@ import {
   oblivionMaterialIds, oblivionMaterialLoot,
 } from '../content/gates-of-oblivion';
 import { rollDrop } from '../content/loot-random';
+import { stagedEncounterSize } from '../content/encounter-size';
+import { stageBossStats } from './battle';
 import { freshGame, resolveOperation } from '../../supabase/functions/game-operation/engine';
 
 function memoryStorage(initial?: string) {
@@ -53,10 +55,10 @@ describe('Gates of Oblivion', () => {
         health: expect.any(Number), damage: expect.any(Number), defense: expect.any(Number),
       });
       const state = createOblivionBattle(stage, 21, 'ember', { level: 0, evolution: 1 });
-      expect(state.enemies).toHaveLength(stage % 5 === 0 ? 1 : 2);
+      expect(state.enemies).toHaveLength(stagedEncounterSize(stage, gatesOfOblivionRules.stages, stage % 5 === 0));
       for (const enemy of state.enemies) {
         expect(enemy.level).toBe(oblivionEnemyLevel(stage));
-        expect(enemy.stats).toEqual(enemyCombatStats(oblivionEnemyLevel(stage), stage % 5 === 0));
+        expect(enemy.stats).toEqual(stageBossStats(enemyCombatStats(oblivionEnemyLevel(stage), stage % 5 === 0), stage % 5 === 0));
       }
     }
     expect(new Set(Array.from({ length: 25 }, (_, index) => oblivionConstructAtStage(index + 1).id)).size).toBe(10);

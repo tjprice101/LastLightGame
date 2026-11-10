@@ -41,6 +41,7 @@ import { calamiticActionReason, calamiticExtraActionAvailable, calamiticNoLastFl
 import { hasNativeIdentity, nativeAction, nativeAfterAction, nativePrimaryHit, nativeInstructionDamage, nativeCleanup,
   nativeBurnPhase, nativeEnemyCompleted, nativeTrace, nativeStillnessMultiplier, nativePhaseEnd, nativeTurnStart, attachNativeView, type NativeView, type NativeKitState, type NativeDamageKind } from './native-kits';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
+import { isRewardCarrier, ordinaryRewardDrops, stagedEncounterSize, stageBossFactors, storyEncounterMaximum, trainingRewardDrops, trainingWaveSize } from '../content/encounter-size';
 
 export interface Combatant {
   id: string;
@@ -187,7 +188,7 @@ export function createWarBattle(character: WarCharacterId, stage: number, seed: 
   equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = [], upgrades: ConduitUpgrades = {}): BattleState {
   const encounter = warEncounter(character, stage);
   const state = createBattle(seed, roster, teamProgress, equipment, captures, upgrades);
-  const unit = combatant(`war-${character}-${stage}`, character, encounter.enemyName, 'enemy', encounter.stats, encounter.element);
+  const unit = combatant(`war-${character}-${stage}`, character, encounter.enemyName, 'enemy', stageBossStats(encounter.stats, true), encounter.element);
   Object.assign(unit, { level: encounter.level, evolution: encounter.evolution, art: encounter.art,
     color: encounter.color, boss: true, enemySkills: encounter.skills });
   state.wave = stage;
@@ -237,9 +238,32 @@ export function capCapturedBattleLevels(state: BattleState): void {
   }
 }
 
-function spawnWave(wave: number): Combatant[] {
+/** Stage bosses fight alone but with stageBossFactors more Health and Attack. */
+export function stageBossStats(stats: Stats, boss: boolean): Stats {
+  return boss ? {
+    ...stats,
+    health: Math.round(stats.health * stageBossFactors.health),
+    damage: Math.round(stats.damage * stageBossFactors.damage),
+  } : stats;
+}
+
+/** Legacy loot carriers per encounter; extra enemies beyond these drop no loot, preserving stage totals. */
+export function encounterRewardDrops(state: BattleState): number {
+  if (state.war || state.calamity) return 1;
+  if (state.infusion) return infusionEncounter(state.infusion.mode, state.infusion.stage, state.infusion.schedule ?? 'legacy').rewardDrops;
+  if (state.dungeon || state.story || state.oblivion) return state.enemies.length === 1 && state.enemies[0].boss ? 1 : ordinaryRewardDrops;
+  return trainingRewardDrops;
+}
+
+export function isEncounterRewardCarrier(state: BattleState, enemyId: string): boolean {
+  const index = state.enemies.findIndex((unit) => unit.id === enemyId);
+  return index >= 0 && isRewardCarrier(index, state.enemies.length, encounterRewardDrops(state));
+}
+
+export function spawnWave(wave: number): Combatant[] {
   const level = Math.min(wave, enemyGrowth.maximumLevel);
-  return (['goblin', 'imp', 'golem'] as const).map((id, index) => {
+  const species = ['goblin', 'imp', 'golem'] as const;
+  return Array.from({ length: trainingWaveSize(wave) }, (_, index) => species[index % species.length]).map((id, index) => {
     const definition = enemies[id];
     const unit = combatant(`enemy-${wave}-${index}`, id, definition.name, 'enemy', enemyCombatStats(level, false), definition.element);
     unit.level = level;
@@ -315,7 +339,7 @@ export function createDungeonBattle(element: PlayableDungeon, stage: number, see
   const encounter = dungeonEncounter(element, stage);
   state.wave = stage;
   state.dungeon = { element, stage };
-  state.enemies = Array.from({ length: encounter.boss ? 1 : 2 }, (_, index) => {
+  state.enemies = Array.from({ length: stagedEncounterSize(stage, dungeonStageCount, encounter.boss) }, (_, index) => {
     familySeed ^= familySeed << 13;
     familySeed ^= familySeed >>> 17;
     familySeed ^= familySeed << 5;
@@ -323,7 +347,7 @@ export function createDungeonBattle(element: PlayableDungeon, stage: number, see
     state.encounterSeed = familySeed;
     const family = Math.floor(familySeed / 0x100000000 * elementSources[element].length);
     const selected = dungeonEncounter(element, stage, family);
-    const unit = combatant(`dungeon-${element}-${stage}-${index}`, 'goblin', selected.enemy.name, 'enemy', selected.stats, element);
+    const unit = combatant(`dungeon-${element}-${stage}-${index}`, 'goblin', selected.enemy.name, 'enemy', stageBossStats(selected.stats, selected.boss), element);
     unit.level = selected.level;
     unit.creatureId = selected.creatureId;
     unit.art = selected.enemy.art;
@@ -343,8 +367,8 @@ export function createOblivionBattle(stage: number, seed: number, starter: Start
   state.wave = stage;
   state.oblivion = { stage };
   state.oblivionSeed = ((seed ^ 0x6d2b79f5) >>> 0) || 1;
-  state.enemies = Array.from({ length: encounter.boss ? 1 : 2 }, (_, index) => {
-    const unit = combatant(`oblivion-${stage}-${index}`, encounter.construct.id, encounter.construct.name, 'enemy', encounter.stats, encounter.construct.element);
+  state.enemies = Array.from({ length: stagedEncounterSize(stage, gatesOfOblivionRules.stages, encounter.boss) }, (_, index) => {
+    const unit = combatant(`oblivion-${stage}-${index}`, encounter.construct.id, encounter.construct.name, 'enemy', stageBossStats(encounter.stats, encounter.boss), encounter.construct.element);
     unit.level = encounter.level;
     unit.creatureId = encounter.construct.id;
     unit.art = oblivionConstructArt(encounter.construct);
@@ -369,7 +393,7 @@ export function createStoryBattle(stage: number, seed: number, starter: StarterI
   if (!Number.isInteger(familySeed) || familySeed < 1 || familySeed > 0xffffffff) throw new Error('Invalid Story encounter seed.');
   state.wave = stage;
   state.story = { storyStage: stage };
-  state.enemies = Array.from({ length: encounter.boss ? 1 : 2 }, (_, index) => {
+  state.enemies = Array.from({ length: stagedEncounterSize(stage, storyRules.stages, encounter.boss, ordinaryRewardDrops, storyEncounterMaximum) }, (_, index) => {
     familySeed ^= familySeed << 13;
     familySeed ^= familySeed >>> 17;
     familySeed ^= familySeed << 5;
@@ -377,7 +401,7 @@ export function createStoryBattle(stage: number, seed: number, starter: StarterI
     state.encounterSeed = familySeed;
     const identity = encounter.boss ? 0 : Math.floor(familySeed / 0x100000000 * 4);
     const creature = storyCreature(stage, identity);
-    const unit = combatant(`story-${stage}-${index}`, creature.id, creature.name, 'enemy', encounter.stats, encounter.element);
+    const unit = combatant(`story-${stage}-${index}`, creature.id, creature.name, 'enemy', stageBossStats(encounter.stats, encounter.boss), encounter.element);
     unit.level = encounter.level;
     unit.creatureId = creature.id;
     unit.art = creature.art;
@@ -406,7 +430,7 @@ export function createInfusionBattle(mode: InfusionModeId, stage: number, seed: 
   state.wave = stage;
   state.infusion = { mode, stage, schedule };
   state.enemies = Array.from({ length: encounter.enemyCount }, (_, index) => {
-    const unit = combatant(`infusion-${mode}-${stage}-${index}`, 'goblin', encounter.enemy.name, 'enemy', encounter.stats, encounter.enemy.element);
+    const unit = combatant(`infusion-${mode}-${stage}-${index}`, 'goblin', encounter.enemy.name, 'enemy', stageBossStats(encounter.stats, encounter.boss), encounter.enemy.element);
     unit.level = encounter.level;
     unit.creatureId = `infusion:${mode}:${encounter.tier}`;
     unit.art = encounter.enemy.art;
@@ -563,6 +587,7 @@ export function rollOblivionFragment(state: BattleState, boss: boolean): number 
 export function awardDefeats(previous: BattleState, state: BattleState, events: BattleEvent[]): void {
   for (const enemy of state.enemies) {
     if (enemy.hp > 0 || !previous.enemies.some((unit) => unit.id === enemy.id && unit.hp > 0)) continue;
+    if (!isEncounterRewardCarrier(state, enemy.id)) continue;
     const rewardRoll = (): number => {
       let seed = state.rewardSeed;
       seed ^= seed << 13;

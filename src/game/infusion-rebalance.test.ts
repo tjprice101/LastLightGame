@@ -5,8 +5,9 @@ import { infusionEncounter, infusionLoot } from '../content/infusions';
 import { enemySkills } from '../content/enemy-skills';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, setMachineLootFocus, validateAccount } from './account';
 import { acquisitionView } from './acquisition-markers';
-import { createDungeonBattle, createInfusionBattle, endTurn } from './battle';
+import { createDungeonBattle, createInfusionBattle, endTurn, isEncounterRewardCarrier } from './battle';
 import { creatureLoot, getCreature } from '../content/creatures';
+import { stagedEncounterSize } from '../content/encounter-size';
 import { capturedProgress, resolveCapturedFighter } from './character-instances';
 import { freshGame, publicGame, resolveOperation } from '../../supabase/functions/game-operation/engine';
 import { SAVE_KEY, type ProfileStorage } from './profile';
@@ -67,7 +68,10 @@ describe('D-425 material rewards and historical compatibility', () => {
         (position - anchors[index - 1][0]) * (anchors[index][1] - anchors[index - 1][1]) / (anchors[index][0] - anchors[index - 1][0]));
       const expectedLevel = stage < 5 ? Math.round(oldLevel - 20 * (5 - stage) / 4) : oldLevel;
       expect(infusionEncounter(mode, stage)).toMatchObject({
-        level: expectedLevel, boss: stage % 5 === 0, enemyCount: stage < 5 || stage % 5 === 0 ? 1 : 2,
+        level: expectedLevel, boss: stage % 5 === 0,
+        enemyCount: stage < 5 ? 1 :
+          stagedEncounterSize(stage, 15, stage % 5 === 0, stage < 5 || stage % 5 === 0 ? 1 : 2),
+        rewardDrops: stage < 5 || stage % 5 === 0 ? 1 : 2,
       });
       for (const schedule of ['caps', 'legacy'] as const) {
         expect(infusionLoot(mode, stage, schedule)).toMatchObject({ bonuses: [], specialties:
@@ -115,7 +119,7 @@ describe('D-425 material rewards and historical compatibility', () => {
       const saved = storage(JSON.stringify(emptyAccount()));
       const before = saved.getItem(ACCOUNT_KEY);
       const rewards = result.events.filter(event => event.kind === 'reward');
-      expect(rewards).toHaveLength(state.enemies.length);
+      expect(rewards).toHaveLength(state.enemies.filter(enemy => isEncounterRewardCarrier(state, enemy.id)).length);
       const forged = structuredClone(result);
       forged.events.find(event => event.kind === 'reward')!.amount = dungeonFractalisDrop(stage).maximum + 1;
       expect(() => saveAccountRewards(saved, forged, 'bad-currency')).toThrow('Prismatica');

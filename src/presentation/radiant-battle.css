@@ -19,8 +19,10 @@
 .radiant-unit-idle { animation: radiant-field-breathe 4s ease-in-out infinite; animation-delay: calc(var(--formation, 0) * -550ms); transform-origin: 50% 90%; }
 .radiant-ally-art { display: block; object-fit: contain; width: 100%; height: clamp(90px, 10vw, 140px); }
 .radiant-ally-art[data-mirrored="true"] { scale: -1 1; }
-.radiant-field .radiant-enemies { margin: 0; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; grid-column: 1; grid-row: 1; }
+.radiant-field .radiant-enemies { margin: 0; gap: 8px; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; grid-column: 1; grid-row: 1; }
 .radiant-field .radiant-enemy { border: 1px solid transparent; background: #10131b40; padding: 6px; min-width: 0; }
+.radiant-field .radiant-enemies:has(.radiant-enemy:nth-child(4)) .radiant-enemy-art,
+.radiant-field .radiant-enemies:has(.radiant-enemy:nth-child(4)) .radiant-art-pending { height: clamp(72px, 8vw, 118px); }
 .radiant-field .radiant-enemy-art, .radiant-field .radiant-art-pending { height: clamp(130px, 18vw, 240px); }
 .radiant-field .radiant-enemy > strong { font-size: 13px; overflow-wrap: anywhere; }
 .radiant-field .is-defeated .radiant-unit-motion { opacity: .2; filter: grayscale(1); }
@@ -42,9 +44,9 @@
 html[data-motion="reduced"] .radiant-unit-idle { animation: none; }
 html[data-motion="reduced"] .radiant-face .compact-portrait { transition: none; }
 @media (max-width: 520px) {
-  .radiant-field { padding: 8px; gap: 8px; min-height: 330px; grid-template-columns: 1fr 1fr; }
-  .radiant-field .radiant-enemies { grid-template-columns: 1fr; gap: 4px; }
-  .radiant-field .radiant-enemy-art { height: 80px; }
+  .radiant-field { padding: 8px; gap: 8px; min-height: 390px; grid-template-columns: 1fr 1fr; }
+  .radiant-field .radiant-enemies { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+  .radiant-field .radiant-enemy-art, .radiant-field .radiant-art-pending { height: 60px; }
   .radiant-allies { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .radiant-ally-art { height: 82px; }
   .radiant-field .radiant-health span, .radiant-field .radiant-enemy > strong { font-size: 10px; }
@@ -132,11 +134,6 @@ body:has(#radiant-preview) { margin: 0; background: #0c0d11; }
 html[data-motion="reduced"] .radiant-energy-liquid { transition: none; }
 html[data-motion="reduced"] .radiant-charge-layers.is-flowing .radiant-energy-liquid.has-charge::before,
 html[data-motion="reduced"] .radiant-charge-layers.is-flowing .radiant-energy-liquid.has-charge::after { animation: none; }
-@media (prefers-reduced-motion: reduce) {
-  .radiant-energy-liquid { transition: none; }
-  .radiant-charge-layers.is-flowing .radiant-energy-liquid.has-charge::before,
-  .radiant-charge-layers.is-flowing .radiant-energy-liquid.has-charge::after { animation: none; }
-}
 .radiant-shared { justify-content: center; border: 1px solid #949bac; padding: 12px; border-radius: 12px; }
 .radiant-shared meter { flex: 1 1 200px; max-width: 450px; accent-color: #e3eaff; }
 .radiant-shared .radiant-shared-energy { --accent: #e3eaff; flex: 1 1 200px; max-width: 450px; margin: 0; }
@@ -326,9 +323,3 @@ html[data-motion="reduced"] .radiant-member[data-radiant-card] { transform: none
 html[data-motion="reduced"] .radiant-member .radiant-face .compact-portrait { transform: none; }
 html[data-motion="reduced"] .radiant-member.is-arming::before { animation: none; opacity: 0; }
 html[data-motion="reduced"] .radiant-member .radiant-card-hint, html[data-motion="reduced"] .radiant-member .radiant-face { animation: none !important; }
-@media (prefers-reduced-motion: reduce) {
-  .radiant-member[data-radiant-card] { transform: none; transition: none; }
-  .radiant-member .radiant-face .compact-portrait { transform: none; }
-  .radiant-member.is-arming::before { animation: none; opacity: 0; }
-  .radiant-member .radiant-card-hint, .radiant-member .radiant-face { animation: none !important; }
-}

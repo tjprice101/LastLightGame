@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { conduits, getConduit, type ConduitId } from '../content/conduits';
 import { machineConduitDrops, machineConduitLoot, machineConduitChance, machineFocusRarities, machineRules, validateMachineLootFocus, type MachineLootFocus } from '../content/machines';
-import { act, createInfusionBattle, nextStage } from './battle';
+import { act, createInfusionBattle, isEncounterRewardCarrier, nextStage } from './battle';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, setMachineLootFocus, summonCharacter, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { freshGame, resolveOperation, validateRequest } from '../../supabase/functions/game-operation/engine';
@@ -136,7 +136,7 @@ describe('saved one-shot Machines Focus Loot', () => {
     state.allies[0].shatter = 100; state.conduitSeed = 8; state.machineLootFocus = { ...focus };
     const result = act(state, 'ember', 'skill2', state.enemies[0].id);
     const rewards = result.events.filter(event => event.kind === 'reward');
-    expect(rewards).toHaveLength(state.enemies.length);
+    expect(rewards).toHaveLength(state.enemies.filter(enemy => isEncounterRewardCarrier(state, enemy.id)).length);
     expect(rewards[0].conduits?.[focus.Rare!]).toBe(1);
     expect(rewards.slice(1).every(reward => !(focus.Rare! in (reward.conduits ?? {})))).toBe(true);
     expect(state.machineLootFocus).toEqual(focus);

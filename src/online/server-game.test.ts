@@ -4,7 +4,7 @@ import { freshGame, profileActivityFor, profileIconUnlocked as engineProfileIcon
 import { isProfileIcon, profileIconUnlocked, validateChatResponse, validateGameResponse, type GameOperation } from './server-game';
 import { profilePictures } from '../content/profile-pictures';
 import { createCreatureCopy } from '../game/character-instances';
-import { actAndAdvanceTurn } from '../game/battle';
+import { actAndAdvanceTurn, isEncounterRewardCarrier, stageBossStats } from '../game/battle';
 import { maxLevelPlan } from '../game/account';
 import { validateSaveFile } from '../game/save-file';
 import { getSummonBanner } from '../content/summon-banners';
@@ -145,9 +145,9 @@ describe('server authoritative game engine', () => {
     if (level === null) throw new Error('Missing Sanctuary enemy level.');
     const expected = Math.round(1 + 4 * (level - 65) / 55) * (stage === 25 ? 5 : 1);
     const rewards = result.response.result!.events.filter(event => event.kind === 'reward');
-    expect(rewards).toHaveLength(state.enemies.length);
+    expect(rewards).toHaveLength(state.enemies.filter(enemy => isEncounterRewardCarrier(state, enemy.id)).length);
     expect(rewards.every(reward => reward.lycalis === expected)).toBe(true);
-    expect(result.game.account.lycalis).toBe(game.account.lycalis + expected * state.enemies.length);
+    expect(result.game.account.lycalis).toBe(game.account.lycalis + expected * rewards.length);
     expect(entered).toEqual(before);
   });
 
@@ -388,9 +388,9 @@ describe('server authoritative game engine', () => {
       actorId: 'ember', action: 'skill2', targetId: state.enemies[0].id });
     const quantity = Math.round(3 + 122 * (stage - 1) / (machineRules.stages - 1)) * (stage === machineRules.stages ? 5 : 1);
     const rewards = result.response.result!.events.filter(event => event.kind === 'reward');
-    expect(rewards).toHaveLength(state.enemies.length);
+    expect(rewards).toHaveLength(state.enemies.filter(enemy => isEncounterRewardCarrier(state, enemy.id)).length);
     for (const reward of rewards) expect(reward.mechanicalComponents).toBe(quantity);
-    expect(result.game.account.mechanicalComponents).toBe(quantity * state.enemies.length);
+    expect(result.game.account.mechanicalComponents).toBe(quantity * rewards.length);
     expect(validateGameResponse(result.response)).toEqual(result.response);
     expect(entered.account.mechanicalComponents ?? 0).toBe(0);
   });
@@ -409,7 +409,7 @@ describe('server authoritative game engine', () => {
     ] as const) {
       const result = op(game, { kind: 'enter', activity });
       for (const enemy of result.game.run!.session.state.enemies) {
-        expect(enemy.stats).toEqual(enemyCombatStats(enemy.level!, enemy.boss ?? false));
+        expect(enemy.stats).toEqual(stageBossStats(enemyCombatStats(enemy.level!, enemy.boss ?? false), enemy.boss ?? false));
         const skills = enemySkills(enemy.level!, enemy.boss ?? false, enemy.enemySkills![0].name, enemyAbilityMultiplier(enemy.level!));
         expect(enemy.enemySkills).toEqual(skills);
       }

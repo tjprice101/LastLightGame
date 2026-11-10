@@ -1,5 +1,25 @@
 # Current state and handoff
 
+## Dynamic enemy formations (2026-11-09)
+
+**Implemented:** staged ordinary encounters scale from two to six enemies;
+Training waves scale from three to six. Story skirmishes cap at two to preserve
+the verified single-starter progression path, while every stage boss remains
+alone. War stages also remain solo boss fights; Calamity keeps its separately
+calibrated solo encounters. Staged bosses receive 10% more Health without an
+Attack increase. Reward totals stay at two ordinary carriers, one boss/War/
+Calamity carrier, or three Training carriers; extra enemies still count for
+discovery but do not add loot rolls. The encounter-rules version is 19.
+
+**Verified:** the complete suite passes with the unrelated untracked
+`src/ui-design-lab.test.ts` excluded; `npx tsc --noEmit -p .` and
+`npm run build` pass. The untracked UI lab test still expects a route inventory
+that does not match the user's untracked prototype files, and was not changed.
+Formation sizing, carrier validation and boss viability are covered by targeted
+tests. A headless browser six-card DOM fixture confirmed the three-column
+desktop layout with no horizontal overflow; it was not a live six-enemy battle
+or physical-device performance check. No deployment was performed.
+
 ## Radiant Actions menu replaced by mouse controls (2026-11-09)
 
 **Implemented:** the per-card Actions button/menu is removed. Left click on a
