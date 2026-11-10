@@ -1,5 +1,5 @@
-import { resonanceBadge } from './intrinsic-perks';
 import { squadMemberLimit } from '../content/squad-rules';
+import { isRadiantBearer, radiantAttunementChip, radiantCharacterLoadout } from './radiant-character';
 import { elements, isCurrencyMode } from '../content/activities';
 import { getStarter, isStarterId, starterVow, type StarterId } from '../content/starters';
 import { characterName } from '../content/character-art';
@@ -33,18 +33,19 @@ export interface ReferenceTeamState {
 
 export function referenceTeamSidebar(account: Account, state: ReferenceTeamState): string {
   const squad = equippedSquad(account);
+  const bearers = squad.filter(isRadiantBearer);
   return `<aside class="ref-team-sidebar">
-    <section class="ref-panel"><header class="ref-panel-heading">Squad · ${squad.length} of ${squadMemberLimit}<button type="button" data-team-view="formation">Edit squad</button></header>
+    <section class="ref-panel"><header class="ref-panel-heading">Squad · ${bearers.length} of ${squadMemberLimit}<button type="button" data-team-view="formation">Edit squad</button></header>
       ${Array.from({ length: squadMemberLimit }, (_, index) => {
         const id = squad[index];
         if (!id) return '<button class="ref-member-row ref-empty-row" data-team-view="formation">+ Choose a member</button>';
         const member = ownedCompanion(account, id);
-        const active = isStarterId(id) ? state.view === 'detail' && state.selected === id : state.view === 'capture' && state.capture === id;
-        return `<div class="ref-member-line"><button class="ref-member-row ${active ? 'is-selected' : ''}" data-reference-member="${id}" ${isStarterId(id) ? `data-team-detail="${id}"` : `data-team-capture-detail="${id}"`}>
+        if (!isRadiantBearer(id)) return `<div class="ref-member-line"><button class="ref-member-row is-invalid" data-team-view="formation"><span class="ref-thumb">${member.compactArt}</span><span><b>${member.name}</b><small>${isStarterId(id) ? 'Not yet available for combat' : 'Captured Elemental-Devourers cannot join the squad'} · Replace</small></span></button></div>`;
+        const active = state.view === 'detail' && state.selected === id;
+        return `<div class="ref-member-line"><button class="ref-member-row ${active ? 'is-selected' : ''}" data-reference-member="${id}" data-team-detail="${id}">
           <span class="ref-thumb">${member.compactArt}</span><span><b>${member.name}</b><small>${index ? 'Member' : 'Leader'}</small></span></button>
           ${index ? `<button class="ref-chip" data-make-leader="${id}" aria-label="Make ${member.name} the leader">♛ Lead</button>` : ''}</div>`;
       }).join('')}
-      ${resonanceBadge(squad)}
       <button type="button" data-team-view="loadouts" aria-pressed="${state.view === 'loadouts'}">Loadouts</button>
     </section>
     <section class="ref-panel ref-collection-sidebar"><header class="ref-panel-heading">Collection</header>
@@ -114,7 +115,7 @@ function captureDetail(account: Account, id: string, tab = 'overview'): string {
         <div class="ref-tags">${elementLabel(creature.element)}<span class="ref-stars" aria-label="${progress.tier + 1}-star Elemental-Devourer">${'★'.repeat(progress.tier + 1)}</span><span class="ref-chip">${evolutionRarity(progress.tier + 1)}</span></div>
         <div class="ref-character-progress"><div>Level ${formatStat(progress.level)} / ${capturedLevelCap}<div class="ref-bar"><i style="width:${progress.level / capturedLevelCap * 100}%"></i></div></div><div>Fixed form · Cannot evolve</div></div>
       <div class="ref-character-header-actions">
-        ${squad[0] === id ? '<span class="ref-chip ref-white">Squad leader</span>' : squad.includes(id) ? `<button class="ref-chip" data-make-leader="${id}">♛ Make leader</button>` : '<button class="ref-chip" data-team-view="formation">Add to squad</button>'}
+        ${squad.includes(id) ? '<button class="ref-chip" data-team-view="formation">Replace in squad</button>' : '<span class="ref-chip">Holding only · cannot join the squad</span>'}
         <button class="ref-chip" data-character-lock="${id}" data-lock-value="${!protection.locked}" aria-pressed="${protection.locked}">${protection.locked ? 'Unlock' : 'Lock'} copy</button>
         ${information(`capture-lore-${id}`, creature.name, `<p>${creatureLore(creature)}</p>`, 'Lore')}</div></div>
     </header>
@@ -196,17 +197,18 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
     const squad = equippedSquad(account);
     const title = characterName(state.selected, progress.evolution).split(', ')[0];
     const cap = characterLevelCap(progress.evolution, state.selected);
+    const radiant = radiantCharacterLoadout(account, starter.id);
     content = `<section class="ref-team-detail ref-bearer-detail" data-acquisition-character="${starter.id}">
       <header class="ref-panel ref-character-header hub-showcase"><div class="ref-character-portrait hub-portrait">${portrait(starter, progress.evolution)}</div>
         <div class="ref-character-identity"><p data-reference-prefix>${title} · ${starter.weapon}</p><h2 data-reference-name>${starter.name}</h2>
-          <div class="ref-tags">${elementLabel(starter.elementId)}<span class="ref-stars" aria-label="${starter.stars}-star Element-Bearer">${'★'.repeat(starter.stars)}</span><span class="ref-chip">${starter.role}</span><span class="ref-chip" data-reference-rarity data-rarity="${characterRarity(starter.id, progress.evolution)}">${characterRarity(starter.id, progress.evolution)}</span></div>
+          <div class="ref-tags">${elementLabel(starter.elementId)}<span class="ref-stars" aria-label="${starter.stars}-star Element-Bearer">${'★'.repeat(starter.stars)}</span>${radiant ? `<span data-reference-attunement>${radiantAttunementChip(radiant.loadout)}</span>` : ''}<span class="ref-chip" data-reference-rarity data-rarity="${characterRarity(starter.id, progress.evolution)}">${characterRarity(starter.id, progress.evolution)}</span></div>
           <div class="ref-character-progress"><div>Level <span data-reference-level>${formatStat(progress.level)} / ${cap}</span><div class="ref-bar"><i style="width:${progress.level / cap * 100}%"></i></div></div>
           <div><span data-reference-evolution>Evolution ${displayEvolution(starter.id, progress.evolution)} / ${displayEvolution(starter.id, 6)}</span><div class="ref-pips">${Array.from({ length: 6 }, (_, index) => `<i class="${index < progress.evolution ? 'is-filled' : ''}"></i>`).join('')}</div></div></div>
           <span data-owned-progress class="ref-sr-only">Lv.${progress.level} · Evo.${displayEvolution(starter.id, progress.evolution)}</span>
-          <div class="ref-character-header-actions">${squad[0] === starter.id ? '<span class="ref-chip ref-white">Squad leader</span>' : squad.includes(starter.id) ? `<button class="ref-chip" data-make-leader="${starter.id}">♛ Make leader</button>` : '<button class="ref-chip" data-team-view="formation">Add to squad</button>'}
+          <div class="ref-character-header-actions">${squad[0] === starter.id ? '<span class="ref-chip ref-white">Squad leader</span>'           : squad.includes(starter.id) ? `<button class="ref-chip" data-make-leader="${starter.id}">♛ Make leader</button>` : radiant ? '<button class="ref-chip" data-team-view="formation">Add to squad</button>' : ''}
           ${information(`bearer-lore-${starter.id}`, starter.name, `<p>${starter.description}</p><h3>${starter.lore.origin}</h3><p>${starter.lore.story}</p><blockquote>${starterVow(starter)}</blockquote>`, 'Lore')}</div></div>
       </header><nav class="ref-character-submenus" aria-label="Character sub-menus">${[
-        ['overview', 'Stats & Skills'], ['upgrade-1', 'Level'], ['upgrade-0', 'Evolution'], ['equipment', 'Conduits'],
+        ['overview', 'Stats & Abilities'], ['upgrade-1', 'Level'], ['upgrade-0', 'Evolution'], ['equipment', 'Conduits'],
       ].map(([tab, label]) => `<button type="button" data-character-tab="${tab}" aria-pressed="${tab === (state.tab ?? 'overview')}">${label}</button>`).join('')}</nav>
       <section class="hub-detail ref-character-panels" aria-label="Character details and upgrades">${characterDetail(starter, state.tab ?? 'overview', account, true)}</section></section>`;
   }

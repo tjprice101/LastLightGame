@@ -139,7 +139,9 @@ describe('Conduit loadouts', () => {
     session.state.phase = 'cleared';
     expect(nextWave(session.state).state.allies[0].conduits).toEqual(slots);
     expect(homeHub(getStarter('ember'), false, account)).toContain('<strong class="stat-change stat-change--increase">233.2</strong>');
-    expect(characterDetail(getStarter('ember'), 'overview', account)).toContain('Before Conduits: 220');
+    const overview = characterDetail(getStarter('ember'), 'overview', account);
+    expect(overview).toContain('data-radiant-stat="hp"');
+    expect(overview).toContain('Before Conduits: 240');
     const html = characterDetail(getStarter('ember'), 'equipment', account);
     expect(html.match(/data-conduit-slot=/g)).toHaveLength(8);
     expect(html).toContain('Vigil Core');

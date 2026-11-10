@@ -33,7 +33,7 @@ describe('fixed summon stars and evolving rarity', () => {
       expect(label).toContain(`<span class="rarity-medallion" aria-hidden="true"><span>${displayEvolution(starter.id, evolution)}</span>`);
       const account = { ...emptyAccount(), characters: { [starter.id]: { level: 0, evolution } }, squad: [starter.id] };
       for (const html of [homeHub(starter, false, account), characterHub(starter, 'overview', account),
-        characterRoster(account, starter.id), squadHub(account)]) expect(html).toContain(label);
+        characterRoster(account, starter.id), ...characterReleased(starter.id) ? [squadHub(account)] : []]) expect(html).toContain(label);
     }
     const event = moonSunshadeEvents.find(event => event.characters.some(id => id === starter.id));
     const summon = summonHub(emptyAccount(), event?.bannerId ?? (isRoseCharacter(starter.id) ? 'roses' : 'standard'));

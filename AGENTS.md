@@ -1,24 +1,30 @@
 # Last Light: AI agent entry point
 
-## Radiant overhaul is live as a signed-in preview (2026-11-09)
+## Radiant is THE live battle system (2026-11-09)
 
-Owner approved production deployment. `main` contains the former
-`overhaul/radiant-foundation` branch (kept in sync; both pushed). Live state:
-Supabase `RADIANT_STUDY_ENABLED=true` plus a server-only
-`RADIANT_STUDY_SECRET` (never print/commit), `game-operation` v100, GitHub
-variable `VITE_RADIANT_STUDY_UI=true` passed by `.github/workflows/deploy.yml`.
-Radiant is reached from Home "Radiant Encounters · Preview" by signed-in
-accounts; ordinary battles still use the legacy system. This supersedes
-older "authority disabled / branch isolated / no deployment" wording below
-and in dated docs. Open work: a real signed-in hosted Radiant run, desktop
-GPU/cadence check, economy review, making Radiant the default battle entry,
-and six vendor portraits (prompts ready; neutral tiles approved meanwhile).
-Rollback: set the Supabase secret `RADIANT_STUDY_ENABLED` to anything else;
-set the GitHub variable to `false` and redeploy to hide the entry.
+The owner rejected the preview-only rollout: the overhaul replaces the live game.
+- Every activity's battle uses Radiant, both online and local
+  (`src/online/radiant-local.ts`).
+- Calibration is `authored-control`.
+- Squads have 1–6 acquired Element-Bearers, with no captures.
+- Team/Character, Conduit/Master and Home UIs present Radiant kits, attunement
+  subtypes (Equinox/Corona/Aegis/Solstice/Prism) and Radiant Conduit effects.
+- Legacy battle operations are rejected server-side, and in-flight legacy
+  runs end with saved rewards kept.
+- Dispatch no longer reads `RADIANT_STUDY_ENABLED`, but still requires
+  `RADIANT_STUDY_SECRET` (never print/commit it).
+- `VITE_RADIANT_STUDY_UI` is obsolete.
+- Never reintroduce a preview/demo gate or route battles back to the legacy
+  engine.
+- Open work: economy review, desktop GPU/cadence check, pending icon art,
+  removing the dead legacy battle code, and six vendor portraits (prompts ready;
+  neutral tiles approved meanwhile).
+
 Server changes need `node tools\bundle_server_game.mjs` then
 `npx --yes supabase@3.0.0 functions deploy game-operation --use-api
 --remote=ohtfgwomdfteaxubndww --yes` (agent runs require `--yes`, only after
-owner approval), matching the client deployed from `main`.
+owner approval), matching the client deployed from `main`. `main` and
+`overhaul/radiant-foundation` are kept in sync; both are pushed.
 Never stage or publish the rejected local mock-ups (`radiant-ui.html`,
 `ui-design-lab*`, `src/radiant-ui.test.ts`) or the uncommitted mock-up notes in
 `docs/Future Plans/living-world-ui-audit-plan.md` and lower docs sections.

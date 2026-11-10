@@ -13,7 +13,7 @@ import { calamiticShieldBypass } from './calamitic-conduits';
 import { nativeAction, nativeAfterAction, nativeEnemyCompleted, nativeIncomingMultiplier, nativePhaseEnd,
   nativeRouteDamage, nativeTurnStart } from './native-kits';
 import { applyPhaseZeroStaticBonuses, phaseZeroSkillCost } from '../content/phase-zero-conduit-stats';
-import { conduits, conduitEffect, type Conduit, type ConduitSlots } from '../content/conduits';
+import { conduits, legacyConduitEffect, type Conduit, type ConduitSlots } from '../content/conduits';
 import { conduitHitModifiers } from './conduit-runtime';
 import { nativeTargetDefense } from './conduit-runtime';
 import { nativeBalance } from '../content/native-balance';
@@ -50,7 +50,7 @@ describe('Phase 0 shared runtime math', () => {
       const slots: ConduitSlots = [id, null, null, null, null, null, null, null];
       const result = applyPhaseZeroStaticBonuses(base, slots, { [id]: level });
       expect(result.skillEfficiency).toBeCloseTo(.2 + level * .02);
-      const effect = conduitEffect(conduits.find(entry => entry.id === id)!, level);
+      const effect = legacyConduitEffect(conduits.find(entry => entry.id === id)!, level);
       expect(effect).toContain(`+${50 + 2 * level}% [Skill Efficiency]`);
       expect(effect).toContain(`+${125 * (1 + level * .1)}% [Direct Damage]`);
     }
@@ -66,7 +66,7 @@ describe('Phase 0 shared runtime math', () => {
       }
       expect(approvedConduitCatalog[entry.id]?.name, entry.id).toBe(entry.name);
       if (entry.rarity === 'Calamitic') continue;
-      const effect = 'character' in entry ? entry.effect : conduitEffect(entry as Conduit, 0);
+      const effect = 'character' in entry ? entry.effect : legacyConduitEffect(entry as Conduit, 0);
       expect(effect, entry.id).toBe(approvedConduitCatalog[entry.id]?.ability);
     }
   });

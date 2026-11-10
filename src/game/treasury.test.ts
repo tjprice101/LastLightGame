@@ -4,7 +4,7 @@ import { activityPrismaticaDrop } from '../content/prismatica';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { standardBannerPool } from '../content/standard-banner';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, sellTreasuryCreature, treasurySaleOffer,
-  summonCharacter, validateAccount, setSquad, setCharacterLock, equipConduit } from './account';
+  summonCharacter, validateAccount, setCharacterLock, equipConduit } from './account';
 import { createCreatureCopy, capturedProgress, resolveCapturedFighter, validateCapturedCharacters } from './character-instances';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { createInfusionBattle, act, endTurn, nextStage } from './battle';
@@ -229,7 +229,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     saveAccount(saved, account);
     for (const protection of ['lock', 'squad', 'conduit'] as const) {
       if (protection === 'lock') setCharacterLock(saved, copy.instanceId, true);
-      if (protection === 'squad') setSquad(saved, [copy.instanceId]);
+      if (protection === 'squad') saveAccount(saved, { ...loadAccount(saved), squad: [copy.instanceId] }); // legacy saved squad
       if (protection === 'conduit') equipConduit(saved, copy.instanceId, 0, conduits[0].id);
       const before = saved.getItem(ACCOUNT_KEY);
       expect(() => sellTreasuryCreature(saved, copy.instanceId)).toThrow('cannot be sold');

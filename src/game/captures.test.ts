@@ -180,9 +180,11 @@ describe('50% capture rewards and retained fixed-form Elemental-Devourers', () =
     account.capturedCharacters = [copy(1), copy(1, false, 2)];
     saveAccount(saved, account);
     const ids = account.capturedCharacters!.map((entry) => entry.instanceId);
-    const mixed = setSquad(saved, [ids[0], 'ember', ids[1]]);
+    expect(() => setSquad(saved, [ids[0], 'ember', ids[1]])).toThrow('Captured Elemental-Devourers cannot join the squad');
+    expect(() => setSquad(saved, ['ember', 'ember'])).toThrow('distinct');
+    // Legacy saves may still hold captured squad entries; the legacy engine keeps reading them.
+    const mixed = saveAccount(saved, { ...account, squad: [ids[0], 'ember', ids[1]] });
     expect(characterProtection(mixed, ids[0]).protected).toBe(true);
-    expect(() => setSquad(saved, [ids[0], ids[0]])).toThrow('distinct');
     const captures = mixed.capturedCharacters!;
     const destinations = [undefined, ...playableDungeons.map((element) => ({ element, stage: 1 })), { mode: 'heavens' as const, stage: 1 }, { mode: 'abyss' as const, stage: 1 }];
     for (const destination of destinations) {
@@ -204,8 +206,9 @@ describe('50% capture rewards and retained fixed-form Elemental-Devourers', () =
       expect(advanced.state.allies.map((ally) => ally.id)).toEqual(mixed.squad);
       expect(advanced.state.allies[0].captured).toEqual(actor.captured);
     }
-    expect(squadHub(mixed)).toContain('Copy 1');
-    expect(squadHub(mixed)).toContain('Copy 2');
+    expect(squadHub(mixed)).not.toContain('Copy 1');
+    expect(squadHub(mixed)).toContain('squad-replaced');
+    expect(squadHub(mixed)).toContain('data-squad-pick="ember"');
   });
   it('levels/equips one copy independently, preserves the other, and rejects stale/overflow levels', () => {
     const { saved, account } = seeded();

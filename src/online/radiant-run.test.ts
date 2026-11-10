@@ -306,12 +306,16 @@ describe('authority-ready frozen run and exact partial Prismatica', () => {
     expect(value.state.account.fractalis).toBe(banked);
     validateRadiantCombat(value.state.radiantStudy!.state);
   });
-  it('does not replace a retained quit run or a live legacy run', () => {
+  it('does not replace a retained quit run; a retired legacy run ends and keeps saved rewards', () => {
     const value = step(entered(), { kind: 'quit' });
     expect(() => resolveRadiantRun(value, request(value, start), authority())).toThrow();
     const legacy = snapshot();
     legacy.state.run = {} as never;
-    expect(() => resolveRadiantRun(legacy, request(legacy, start), authority())).toThrow();
+    legacy.state.account.fractalis = 777;
+    const result = resolveRadiantRun(legacy, request(legacy, start), authority());
+    expect(result.state.run).toBeNull();
+    expect(result.state.radiantStudy).toBeTruthy();
+    expect(result.state.account.fractalis).toBe(777);
   });
   it('Continue denies fresh budgets without victory and accessible next authored entry', () => {
     const value = entered();

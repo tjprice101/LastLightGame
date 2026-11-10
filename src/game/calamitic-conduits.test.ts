@@ -6,7 +6,7 @@ vi.mock('../content/phase-zero-stats', async importOriginal => ({
   phaseZeroStatsReady: false,
 }));
 import { calamiticConduits, calamiticEffect, calamiticPower, type CalamiticConduitId } from '../content/calamitic-conduits';
-import { conduitEffect, conduitEquipReason, conduitUpgradeCost, conduits, getConduit, validateConduitSlots, type ConduitId } from '../content/conduits';
+import { legacyConduitEffect, conduitEquipReason, conduitUpgradeCost, conduits, getConduit, validateConduitSlots, type ConduitId } from '../content/conduits';
 import { elements } from '../content/activities';
 import { starters } from '../content/starters';
 import { act, actionUnavailable, createBattle, endTurn, nextWave, type BattleEvent } from './battle';
@@ -35,7 +35,7 @@ describe('Calamitic universal equipment', () => {
       expect(entry.lore).not.toContain('shared prototype');
       for (const element of elements) expect(conduitEquipReason(entry, element.id, Array(8).fill(null), 0)).toBeNull();
       expect([0, 1, 2, 3, 4].map(level => conduitUpgradeCost(entry, level))).toEqual([10000, 20000, 40000, 70000, 100000]);
-      for (let level = 0; level <= 5; level++) expect(conduitEffect(entry, level)).toBe(calamiticEffect(design.id, level));
+      for (let level = 0; level <= 5; level++) expect(legacyConduitEffect(entry, level)).toBe(calamiticEffect(design.id, level));
       expect(conduitUpgradeCost(entry, 5)).toBeNull();
     }
     const ids: (ConduitId | null)[] = [...calamiticConduits.slice(0, 5).map(entry => entry.id), null, null, null];

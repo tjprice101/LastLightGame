@@ -131,7 +131,8 @@ describe('replacement reference screen structures', () => {
     expect(grid).toContain('Leader');
     expect(grid).toContain('In squad');
     const home = referenceHome(getStarter('tide'), wallet);
-    const formation = home.slice(home.indexOf('class="bubble-squad-formation"'), home.indexOf('class="ref-home-identity"'));
+    const formation = home.slice(home.indexOf('class="bubble-squad-formation'), home.indexOf('class="ref-home-identity"'));
+    expect(formation).toContain('class="radiant-ally-art"');
     expect(formation).toContain(`characters/${characterArt('tide', 1).art}.png`);
     expect(formation).not.toContain('character-faces/');
   });
@@ -145,7 +146,13 @@ describe('replacement reference screen structures', () => {
     expect(html).toContain('bubble-squad-formation');
     expect(html).toContain('data-team-detail="tide"');
     expect(html).toContain('data-team-detail="ember"');
-    expect(html).toContain('Frozen squad · 2 of 6');
+    expect(html).toContain('Squad · 2 of 6');
+    expect(html).toContain('radiant-home-figure is-leader');
+    expect(html.indexOf('data-team-detail="tide"')).toBeLessThan(html.indexOf('data-team-detail="ember"'));
+    expect(html).toContain('--formation-x:');
+    expect(html).toContain('radiant-attunement-chip');
+    expect(html).toContain('radiant-home-leader-skill');
+    for (const wording of ['Frozen', 'Preview', 'preview', 'study', 'Radiant Encounters', 'data-page="radiant"']) expect(html).not.toContain(wording);
     expect(html).toContain('<h2>Tizu</h2>');
     expect(html).toContain('Glasswater Reach');
     expect(html).toContain(`25 / ${storyRules.stages} stages cleared`);
@@ -163,15 +170,27 @@ describe('replacement reference screen structures', () => {
     expect(wallet).toEqual(before);
   });
 
-  it('supports captured leaders without substituting the starter or changing ownership', () => {
+  it('shows all six acquired squad members in the staggered formation', () => {
+    const wallet = account();
+    const ids = ['tide', 'ember', 'sprout', 'atmoso', 'bruno', 'elise'] as const;
+    for (const id of ids) wallet.characters[id] ??= { level: 1, evolution: 1 };
+    wallet.squad = [...ids];
+    const html = referenceHome(getStarter('tide'), wallet);
+    expect(html.match(/class="bubble-squad-figure radiant-home-figure/g)).toHaveLength(6);
+    expect(html).toContain('data-squad-size="6"');
+    expect(html).toContain('Squad · 6 of 6');
+  });
+  it('never shows captured Elemental-Devourers in the Home squad and asks for a replacement', () => {
     const wallet = account();
     const copy = createCreatureCopy('infusion:treasury:0', 1, 65);
     wallet.capturedCharacters = [copy];
     wallet.squad = [copy.instanceId];
     const before = structuredClone(wallet);
     const html = referenceHome(getStarter('ember'), wallet);
-    expect(html).toContain(`data-team-capture-detail="${copy.instanceId}"`);
-    expect(html).toContain('bubble-squad-figure');
+    expect(html).not.toContain(`data-team-capture-detail="${copy.instanceId}"`);
+    expect(html).not.toContain('bubble-squad-figure');
+    expect(html).toContain('bubble-rail-note');
+    expect(html).toContain('<h2>Choose your squad</h2>');
     expect(html).not.toContain('<h2>Infernis</h2>');
     expect(wallet).toEqual(before);
   });
@@ -199,9 +218,12 @@ describe('replacement reference screen structures', () => {
     expect(html).toContain('ref-character-header');
     expect(html).toContain('data-reference-level>12 / 30');
     expect(html.match(/class="is-filled"/g)).toHaveLength(1);
-    for (const heading of ['Stats', 'Skills']) expect(html).toContain(`>${heading}</h3>`);
+    for (const heading of ['Stats', 'Abilities', 'Flares']) expect(html).toContain(`>${heading}</h3>`);
+    expect(html).not.toContain('>Skills</h3>');
+    expect(html).toContain('Attunement · Equinox');
     for (const tab of ['overview', 'upgrade-1', 'upgrade-0', 'equipment']) expect(html).toContain(`data-character-tab="${tab}"`);
-    expect(html.match(/aria-haspopup="dialog"/g)).toHaveLength(5);
+    expect(html.match(/aria-haspopup="dialog"/g)).toHaveLength(1);
+    expect(html.match(/class="hub-ability radiant-flare/g)).toHaveLength(3);
     expect(html).not.toContain('data-conduit-slot=');
     expect(html).not.toContain('loadout-summary');
     expect(html).toContain('data-team-view="formation">Edit squad');
@@ -254,7 +276,8 @@ describe('replacement reference screen structures', () => {
     expect(header).not.toContain('data-conduit-count');
     expect(html).toContain('data-team-view="bearers"');
     expect(html).toContain('data-character-tab="equipment"');
-    expect(html.match(/aria-haspopup="dialog"/g)).toHaveLength(5);
+    expect(html.match(/aria-haspopup="dialog"/g)).toHaveLength(1);
+    expect(html.match(/class="hub-ability radiant-flare/g)).toHaveLength(3);
     expect(html).not.toContain('Select an ability to see');
     expect(header).toContain(selected === 'tide' ? 'Squad leader' : selected === 'ember' ? 'data-make-leader="ember"' : 'Add to squad');
     expect(wallet).toEqual(before);

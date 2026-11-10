@@ -72,7 +72,7 @@ describe('Max Level plans and transactions', () => {
     expect(account).toEqual(before);
     expect(store.writes()).toBe(writes);
     expect(maxLevelPreview(account, 'ember').html).toContain('Level 0 &rarr; 30 · Cap 30');
-    expect(maxLevelPreview(account, 'ember').html.match(/<span><small>/g)).toHaveLength(10);
+    expect(maxLevelPreview(account, 'ember').html.match(/data-radiant-stat="/g)).toHaveLength(4);
     expect(maxLevelPreview(account, 'ember').html).toContain('stat-change--increase');
     const html = maxLevelPreview(account, 'ember').html;
     expect(html).toContain('class="max-level-workspace"');
@@ -175,7 +175,7 @@ describe('Max Level plans and transactions', () => {
     account.fractalis = 0;
     const preview = maxLevelPreview(account, 'ember').html;
     expect(preview).toContain('disabled>Confirm leveling');
-    expect(preview.match(/stat-change--unchanged/g)).toHaveLength(10);
+    expect(preview.match(/stat-change--unchanged/g)).toHaveLength(4);
     expect(preview).not.toContain('stat-change--increase');
   });
   it('does not persist partial spending when the save fails', () => {

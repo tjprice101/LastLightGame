@@ -6,7 +6,8 @@ const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 if (!url || !serviceKey) throw new Error('Game service configuration missing.');
 const admin = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } });
 Deno.serve(createGameOperationHandler(admin, {
-  enabled: Deno.env.get('RADIANT_STUDY_ENABLED'),
+  // Radiant is the live battle system; it still requires the entropy secret.
+  enabled: 'true',
   secret: Deno.env.get('RADIANT_STUDY_SECRET'),
   calibration: Deno.env.get('RADIANT_STUDY_CALIBRATION'),
 }));

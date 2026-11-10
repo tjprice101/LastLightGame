@@ -84,21 +84,18 @@ describe('roster, squad and summon screens', () => {
     expect(dialog).toContain('Natural duplicates advance it instead');
     expect(dialog).toContain("restarts this banner's pity cycle");
   });
-  it('offers a real roster including each captured UUID and keeps draft assignments distinct', () => {
+  it('offers only acquired Element-Bearers, never captured copies, and keeps draft assignments distinct', () => {
     const id = 'capture:00000000-0000-4000-8000-000000000001';
     const mixed = { ...account, capturedCharacters: [{ instanceId: id, creatureId: 'infusion:treasury:0', locked: false }] };
-    expect(squadHub(mixed)).toContain(`data-squad-pick="${id}"`);
-    expect(squadHub(mixed)).toContain('data-squad-assign="0"');
-    expect(squadHub(mixed)).toContain('data-squad-remove="2"');
-    expect(squadHub(mixed)).not.toContain('data-owned-character');
     const picker = squadHub(mixed);
+    expect(picker).not.toContain(`data-squad-pick="${id}"`);
+    expect(picker).toContain('data-squad-pick="tide" data-squad-kind="bearers"');
+    expect(picker).toContain('data-squad-assign="0"');
+    expect(picker).toContain('data-squad-remove="2"');
+    expect(picker).not.toContain('data-owned-character');
     expect(picker).toContain('<dialog class="information-modal squad-picker" id="squad-picker"');
-    expect(picker).toContain('data-squad-filter="creatures"');
+    expect(picker).not.toContain('data-squad-filter="creatures"');
     expect(picker).toContain('data-squad-search-input');
-    expect(picker).toContain(`data-squad-pick="${id}" data-squad-kind="creatures"`);
-    const capturedCard = picker.slice(picker.indexOf(`data-squad-pick="${id}"`), picker.indexOf('</button>', picker.indexOf(`data-squad-pick="${id}"`)));
-    expect(capturedCard).toContain(ownedCompanion(mixed, id).art);
-    expect(capturedCard).not.toContain('character-faces/');
     expect(picker).toContain('data-squad-open="0"');
     const owned = ['tide', 'ember', id];
     const slots = ['tide', 'ember', '', '', '', ''];

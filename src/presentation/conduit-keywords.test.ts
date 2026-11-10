@@ -39,11 +39,11 @@ describe('Conduit keyword presentation', () => {
   it('uses the same bracketed rules in Store, Inventory and the equipment formatter', () => {
     const account = emptyAccount();
     account.conduits = { 'vigil-core': 1, 'siege-cantilever': 1 };
-    const expected = 'Your [Global] damaging [Skills] gain +150% [Skill Power].';
+    const expected = referencedEffect(conduitEffect(conduits.find(entry => entry.id === 'siege-cantilever')!));
     expect(conduitRuleText(conduits.find(entry => entry.id === 'siege-cantilever')!)).toBe(expected);
     expect(inventoryView(account, 'conduits')).toContain(expected);
     expect(conduitInventory(account)).toContain(expected);
-    expect(conduitStore(account)).toContain('+100% [Health].');
+    expect(conduitStore(account)).toContain('Maximum [Health] +20%.');
     for (const conduit of conduits) {
       const rendered = referencedEffect(conduitEffect(conduit, 5));
       expect(referencedEffect(rendered)).toBe(rendered);

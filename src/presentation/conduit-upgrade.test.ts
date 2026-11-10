@@ -21,6 +21,11 @@ import { conduitEffect, getConduit } from '../content/conduits';
 import { resolveFighter, formatStat } from '../content/combat';
 import { referencedEffect } from './effect-copy';
 
+const effectText = (conduit: Parameters<typeof conduitEffect>[0], level: number): string => {
+  const host = document.createElement('div');
+  host.innerHTML = referencedEffect(conduitEffect(conduit, level));
+  return (host.textContent ?? '').replace(/[[\]]/g, '');
+};
 vi.mock('./game-dialog', async (importOriginal) => ({
   ...await importOriginal<typeof import('./game-dialog')>(), gameConfirm: vi.fn(),
 }));
@@ -43,7 +48,7 @@ describe('Conduit Upgrade and account-aware icons', () => {
     expect(html).toContain(referencedEffect(conduitEffect(getConduit('worldbreaker-drive'), 4)));
     const host = document.createElement('div');
     host.innerHTML = html;
-    expect(host.textContent?.replace(/[[\]]/g, '')).toContain(conduitEffect(getConduit('worldbreaker-drive'), 5).replace(/[[\]]/g, ''));
+    expect(host.textContent?.replace(/[[\]]/g, '')).toContain(effectText(getConduit('worldbreaker-drive'), 5));
     expect(html).toContain('Upgrade to +5 · 1000 components');
     expect(html).toMatch(/data-upgrade-conduit="worldbreaker-drive"[^>]+disabled/);
     account.mechanicalComponents = 1000;
@@ -51,8 +56,7 @@ describe('Conduit Upgrade and account-aware icons', () => {
     for (const row of ['Common: 25 / 50 / 100 / 175 / 250',
       'Rare: 50 / 100 / 200 / 350 / 500', 'Legendary: 100 / 200 / 400 / 700 / 1000',
       'Omnic: 5000 / 10000 / 20000 / 35000 / 50000']) expect(html).toContain(row);
-    expect(html).toContain('+5 gives 1.5x');
-    expect(html).toContain('Penalties, thresholds, costs, fixed caps and whole-turn Duration do not scale');
+    expect(html).toContain('Each rank multiplies every Radiant effect value by 1 + 0.1 × rank; +5 gives 1.5×.');
     expect(html).toContain('id="mechanical-components-balance">250');
     expect(html).toContain('data-machine-activity');
     expect(html).not.toContain('class="conduit-icon conduit-art-pending"');
@@ -88,7 +92,7 @@ describe('Conduit Upgrade and account-aware icons', () => {
       expect(html).toContain('data-conduit-upgrade="5"');
       const host = document.createElement('div');
       host.innerHTML = html;
-      expect(host.textContent?.replace(/[[\]]/g, '')).toContain(conduitEffect(getConduit('worldbreaker-drive'), 5).replace(/[[\]]/g, ''));
+      expect(host.textContent?.replace(/[[\]]/g, '')).toContain(effectText(getConduit('worldbreaker-drive'), 5));
     }
     expect(conduitStore(equipped)).toContain(referencedEffect(conduitEffect(getConduit('vigil-core'), 3)));
     expect(homeHub(getStarter('ember'), false, equipped)).toContain(formatStat(resolveFighter('ember',

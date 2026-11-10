@@ -49,47 +49,47 @@ function harness(historical = true) {
     method: 'POST', headers: { authorization: 'Bearer test', 'content-type': 'application/json' },
     body: JSON.stringify({ requestId: id, expectedRevision: revision, operation: { kind } }),
   }));
-  return { send, rpc, original: game, stored: () => stored,
+  const sendRaw = (operation: Record<string, unknown>, revision: number) => handler(new Request('http://localhost/game-operation', {
+    method: 'POST', headers: { authorization: 'Bearer test', 'content-type': 'application/json' },
+    body: JSON.stringify({ requestId: '00000000-0000-4000-8000-000000000099', expectedRevision: revision, operation }),
+  }));
+  return { send, sendRaw, rpc, original: game, stored: () => stored,
     fail: () => { failCommit = true; }, conflict: () => { conflictCommit = true; } };
 }
 
-describe('HTTP historical Conduit read/checkpoint persistence', () => {
-  it.each(['read', 'checkpoint'] as const)('commits %s restart once and replays the same request result', async kind => {
+describe('HTTP retired legacy battles', () => {
+  it.each(['read', 'checkpoint'] as const)('%s hides a stored legacy run without committing or touching saved rewards', async kind => {
     const h = harness();
     const response = await h.send(kind, kind === 'read' ? 0 : 7);
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.revision).toBe(8);
-    expect(body.session.state.conduitRulesVersion).toBe(engine.conduitRulesVersion);
-    expect(body.session.runId).not.toBe(h.original.run!.session.runId);
+    expect(body.session).toBeNull();
     expect(body.account).toEqual(h.original.account);
     expect(body.social).toEqual({ friends: [], incoming: [], outgoing: [] });
-    expect(h.stored().state.run!.session.runId).toBe(body.session.runId);
-    const retry = await h.send(kind, kind === 'read' ? 0 : 7);
-    expect(await retry.json()).toEqual(body);
-    expect(h.rpc.mock.calls.filter(([name]) => name === 'commit_game_operation')).toHaveLength(1);
-  });
-
-  it.each(['read', 'checkpoint'] as const)('does not commit current-version %s', async kind => {
-    const h = harness(false);
-    expect((await h.send(kind, 7)).status).toBe(200);
     expect(h.rpc.mock.calls.some(([name]) => name === 'commit_game_operation')).toBe(false);
     expect(h.stored().revision).toBe(7);
   });
 
-  it('rejects stale checkpoint revisions before attempting a restart', async () => {
+  it('rejects stale checkpoint revisions', async () => {
     const h = harness();
     expect((await h.send('checkpoint', 6)).status).toBe(409);
     expect(h.rpc.mock.calls.some(([name]) => name === 'commit_game_operation')).toBe(false);
     expect(h.stored().state).toEqual(h.original);
   });
 
-  it.each(['fail', 'conflict'] as const)('does not expose an uncommitted replacement when commit returns %s', async mode => {
+  it.each(['enter', 'act', 'endTurn', 'continue', 'retry'])('rejects the legacy %s battle operation', async kind => {
+    const h = harness(false);
+    const response = await h.sendRaw(kind === 'enter' ? { kind, activity: { kind: 'training' } } : { kind }, 7);
+    expect(response.status).toBe(400);
+    if (kind === 'enter') expect((await response.json()).error).toMatch(/Radiant/);
+    expect(h.rpc.mock.calls.some(([name]) => name === 'commit_game_operation')).toBe(false);
+  });
+
+  it('persists the cleared legacy run with the next committed operation', async () => {
     const h = harness();
-    h[mode]();
-    const response = await h.send('read');
-    expect(response.status).toBe(mode === 'fail' ? 503 : 409);
-    expect(await response.json()).not.toHaveProperty('session');
-    expect(h.stored().state).toEqual(h.original);
+    const response = await h.sendRaw({ kind: 'setMachineLootFocus', rarity: 'Rare', id: null }, 7);
+    expect(response.status).toBe(200);
+    expect(h.stored().state.run).toBeNull();
+    expect(h.stored().state.account.fractalis).toBe(123);
   });
 });

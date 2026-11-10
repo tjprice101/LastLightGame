@@ -443,6 +443,8 @@ export function equippedSquad(account: Account): string[] {
 export function setSquad(storage: ProfileStorage, ids: readonly string[]): Account {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before editing a squad.');
   const account = loadAccount(storage);
+  if (ids.some(id => !isStarterId(id) || !characterReleased(id)))
+    throw new Error('Choose acquired Element-Bearers only. Captured Elemental-Devourers cannot join the squad.');
   account.squad = [...ids];
   return saveAccount(storage, account);
 }

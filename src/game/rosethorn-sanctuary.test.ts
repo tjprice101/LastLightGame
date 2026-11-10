@@ -8,7 +8,7 @@ import { getCreature, creatureLoot } from '../content/creatures';
 import { standardBannerPool } from '../content/standard-banner';
 import { conduits } from '../content/conduits';
 import { ACCOUNT_KEY, loadAccount, saveAccount, saveAccountRewards, creatureSaleOffer, sellCurrencyCreature,
-  setCharacterLock, setSquad, equipConduit, validateAccount, summonCharacter, evolutionFodderOptions, levelCapturedCharacter } from './account';
+  setCharacterLock, equipConduit, validateAccount, summonCharacter, evolutionFodderOptions, levelCapturedCharacter } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { createCreatureCopy, resolveCapturedFighter, capturedProgress, validateCapturedCharacters } from './character-instances';
 import { createInfusionBattle, act, endTurn, nextStage } from './battle';
@@ -205,7 +205,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     saveAccount(saved, account);
     for (const protection of ['lock', 'squad', 'conduit'] as const) {
       if (protection === 'lock') setCharacterLock(saved, copy.instanceId, true);
-      if (protection === 'squad') setSquad(saved, [copy.instanceId]);
+      if (protection === 'squad') saveAccount(saved, { ...loadAccount(saved), squad: [copy.instanceId] }); // legacy saved squad
       if (protection === 'conduit') equipConduit(saved, copy.instanceId, 0, conduits[0].id);
       const before = saved.getItem(ACCOUNT_KEY);
       expect(() => sellCurrencyCreature(saved, copy.instanceId)).toThrow('cannot be sold');

@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 import { additionalCommonConduits, commonConduits as conduits, conduits as allConduits } from '../content/conduits';
+import { radiantConduitEffectText } from '../content/radiant-conduit-text';
 import { emptyAccount } from '../game/account';
 import { conduitStore, conduitInventory, conduitDetails, conduitLore } from './conduit-store';
 import { masterConduits } from '../content/master-conduits';
@@ -39,7 +40,7 @@ describe('Conduit Store and discovery routes', () => {
     for (const conduit of conduits) {
       expect(conduit.rarity).toBe('Common');
       expect(html).toContain(conduit.name);
-      expect(html).toContain(referencedEffect(conduit.effect));
+      expect(html).toContain(referencedEffect(radiantConduitEffectText(conduit.id)));
       expect(html).toContain(`${conduit.price} Prismatica`);
     }
     expect(html).not.toContain('Elemental Light core');

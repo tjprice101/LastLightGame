@@ -1,5 +1,28 @@
 # Decision log
 
+## Radiant is the live battle system for every activity (2026-11-09)
+
+The owner rejected the preview-only rollout: the overhaul was always meant to
+replace the live game, not ship as a demo. Every battle entry (Training,
+Story, dungeons, infusions, events, War, Calamity, Gates) now starts a Radiant
+encounter. That applies online (the server authority) and locally (the same
+pure resolver through `LocalRadiantTransport`). The owner chose:
+- Local play is live as well.
+- In-flight legacy battles end, and rewards already saved per kill are kept.
+- Calibration is `authored-control`.
+- Team/Character shows Radiant kits, stats and attunement subtypes
+  (Equinox/Corona/Aegis/Solstice/Prism).
+- Conduit/Master text uses Radiant effects.
+- Squads have 1–6 acquired Element-Bearers everywhere, with no captures.
+- Home shows the full squad formation.
+- All preview/study wording is removed.
+
+The authority rejects the legacy `enter`/`act`/`endTurn`/`continue`/`retry`
+operations and clears stored legacy runs. Radiant dispatch no longer depends on
+`RADIANT_STUDY_ENABLED`; the server-only secret is still required. This
+supersedes the 2026-11-09 preview deployment entry below and every earlier
+"study only/not default battles" restriction.
+
 ## Deploy the Radiant preview to production (2026-11-09)
 
 The owner explicitly approved deploying the overhaul to play and evaluate it

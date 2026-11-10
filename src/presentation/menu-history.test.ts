@@ -15,14 +15,14 @@ describe('menu traversal history', () => {
     expect(main).toContain('bindEnemyStrength(app);');
     expect(main).toContain("[data-dungeon-stage], [data-oblivion-stage], [data-infusion-stage], [data-war-stage]')) control.dispatchEvent(new Event('change', { bubbles: true }))");
   });
-  it('wires toolbar and result exits to the same server-owning Back flow with a resume fallback', () => {
+  it('wires battle exits to the shared Radiant exit and Back flow with a resume fallback', () => {
     const main = readFileSync(new URL('../main.ts', import.meta.url), 'utf8');
     const back = main.slice(main.indexOf('async function backMenu('), main.indexOf('\ntry {', main.indexOf('async function backMenu(')));
     expect(back).toContain("page: menuPage === 'battle' ? 'gameplay' : 'home'");
     expect(back).toContain('menuHistory.back(fallback)');
-    expect(back).toContain("await performOnline({ kind: 'quit', runId: battleSession.runId })");
+    expect(back).toContain("if (menuPage === 'battle' && !await exitRadiantRun(true)) return;");
     expect(main).toContain("try { await backMenu(); }");
-    expect(main).toContain("}, backMenu, playMode === 'online' ? battleAuthority()");
+    expect(main).toContain('new RadiantBattleView(');
   });
   it('opens character detail on a fresh Team visit without changing Back restoration', () => {
     const main = readFileSync(new URL('../main.ts', import.meta.url), 'utf8');

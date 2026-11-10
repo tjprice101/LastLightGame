@@ -1,5 +1,38 @@
 # Current state and handoff
 
+## Radiant goes live everywhere (2026-11-09)
+
+The owner rejected the preview-only rollout. Radiant now replaces ordinary
+battles across every activity, both online and in local play.
+
+- `src/main.ts`:
+  - `enterBattle(activity)` exits any saved Radiant run, then starts a new one
+    with `authored-control` calibration.
+  - The battle page mounts `RadiantBattleView`.
+  - Settings, Back and Return to title exit with rewards kept.
+  - Online sign-in resumes a saved run.
+- `src/online/radiant-local.ts` is the local authority:
+  - It stores `last-light.radiant-run` as `{revision, run}`.
+  - It reuses `resolveRadiantRun` with idempotent receipts.
+  - The account and run are written together; a failed write rolls the account
+    back.
+- Starting a run clears a legacy `game.run` instead of refusing.
+- `handler.ts` rejects legacy battle operations and clears stored legacy runs.
+- `index.ts` always enables Radiant dispatch; the secret is still required.
+- The Home "Radiant Encounters · Preview" page and `VITE_RADIANT_STUDY_UI` gating
+  are removed.
+- Team/Character/Home and Conduit/Master surfaces now present Radiant kits,
+  attunement subtypes and Radiant Conduit effects, with squads of 1–6 Element-Bearers.
+- Remaining:
+  - Art for pending Radiant icons and statuses.
+  - Economy review.
+  - Desktop GPU/cadence check.
+  - Legacy battle code (`BattleView`, legacy engine ops) is now unreachable but
+    still in the repository.
+- Validate with `npx vitest run src/online/radiant-local.test.ts
+  src/online/radiant-run.test.ts`, the full suite, `npm run build` and
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`.
+
 ## Radiant production deployment (2026-11-09)
 
 The owner explicitly approved a production deployment so they can play and

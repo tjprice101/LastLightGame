@@ -35,11 +35,18 @@ import { readableEffect, referencedEffect } from './effect-copy';
 import { masterEquipment } from './master-conduits';
 import { applyConduitSearch, conduitLoadout, filledConduitSlots } from './conduit-loadout';
 import { phaseZeroStatsReady, statDisplayUnit } from '../content/phase-zero-stats';
-import { displayStatLabels, statPreview, type DisplayStatKey } from './stat-preview';
+import { displayStatLabels, type DisplayStatKey } from './stat-preview';
+import { radiantAttunementChip, radiantAttunementSection, radiantCharacterLoadout, radiantFlareArticle, radiantKitSections, radiantLeaderArticle, radiantPassiveArticle,
+  radiantStatPreview, radiantStatsPanel, radiantUnavailable } from './radiant-character';
+import { escapeDialogText } from './game-dialog';
+
+const radiantTabLabels: Partial<Record<string, string>> = {
+  'upgrade-3': 'Passive & leader', 'upgrade-4': 'Glowing Flare', 'upgrade-5': 'Lustrous Flare', 'upgrade-6': 'Eternal Radiant Flare',
+};
 
 export const characterTabs = [
   { id: 'overview', label: 'Overview', symbol: '01' },
-  ...upgradePaths.map((path, index) => ({ id: path.id, label: path.name, symbol: `0${index + 2}` })),
+  ...upgradePaths.map((path, index) => ({ id: path.id, label: radiantTabLabels[path.id] ?? path.name, symbol: `0${index + 2}` })),
   { id: 'equipment', label: 'Conduits', symbol: '09' },
 ] as const;
 
@@ -169,12 +176,6 @@ export function homeHub(starter: Starter, firstArrival: boolean, account: Accoun
     </div>`;
 }
 
-function ability(starter: Starter, action: 'skill1' | 'skill2' | 'ultimate', progress?: CharacterProgress, equipment?: ConduitSlots, upgrades?: ConduitUpgrades): string {
-  const content = resolveFighter(starter.id, progress, equipment, upgrades).abilities[action];
-  return `<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, action)}<span>${content.name}</span></h3>${abilityStatuses(content.strength, starter.id, action)}<p>${readableEffect(content.description)}</p>
-    <p class="hub-cost">Costs ${shatterGauge.costs[action]} Elemental Gauge${content.cooldown ? ` · ${content.cooldown}-turn cooldown` : ''}.</p></article>`;
-}
-
 export function referenceEquipment(id: string, name: string, element: ElementId, account: Account | null): string {
   return conduitLoadout(id, name, element, account);
 }
@@ -201,7 +202,10 @@ function equipment(starter: Starter, account: Account | null, compact = false): 
     }).join('')}</div></section></div>
     ${!account ? '<p role="alert">Equipment unavailable. Resolve the save error.</p>' : ''}
     <p>Omnic Conduits must match this character's element; at most four may be equipped.</p>
-    <p id="conduit-equipment-result" role="status"></p>${stats(starter, account ? ownedProgress(account, starter.id) : undefined, true, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades, account?.masterEquipment?.[starter.id] ?? undefined)}</section>`;
+    <p id="conduit-equipment-result" role="status"></p>${(() => {
+      const radiant = radiantCharacterLoadout(account, starter.id);
+      return radiant ? radiantStatsPanel(radiant.loadout) : radiantUnavailable();
+    })()}</section>`;
 }
 
 function materialIcon(id: string): string {
@@ -225,8 +229,9 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
   const cost = evolve ? characterEvolutionCost(starter.id, current) : characterLevelCost(starter.id, current);
   const next = evolve ? { ...current, evolution: current.evolution + 1 } : { ...current, level: current.level + 1 };
   const nextPortrait = evolve ? portraitAttributes(starter, next.evolution) : null;
-  const before = resolveFighter(starter.id, current, account.conduitEquipment?.[starter.id], account.conduitUpgrades, account.masterEquipment?.[starter.id] ?? undefined).stats;
-  const after = resolveFighter(starter.id, next, account.conduitEquipment?.[starter.id], account.conduitUpgrades, account.masterEquipment?.[starter.id] ?? undefined).stats;
+  const before = radiantCharacterLoadout(account, starter.id)?.loadout;
+  const after = radiantCharacterLoadout(account, starter.id, next)?.loadout;
+  const preview = (row: 'span' | 'div'): string => before && after ? radiantStatPreview(before, after, row) : radiantUnavailable();
   const resources = [{ name: 'Prismatica', owned: account.fractalis, needed: cost.fractalis, icon: currencyIcon('fractalis') },
     ...Object.entries(cost.materials).map(([id, needed]) => {
       return { name: materialName(id), owned: account.materials[id] ?? 0, needed,
@@ -256,14 +261,14 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
   if (compact) return `<p class="ref-growth-summary">${evolve ? `Evo.${displayEvolution(starter.id, current.evolution)} → ${displayEvolution(starter.id, next.evolution)} · Level cap ${characterLevelCap(next.evolution, starter.id, false)}` : `Lv.${current.level} → ${next.level} · Cap ${cap}`}</p>
     <p class="ref-growth-cost">${currencyIcon('fractalis')}${cost.fractalis} Prismatica</p>
     <ul class="ref-growth-materials">${resources.slice(1).map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<span>${resource.needed} ${resource.name}<small>Owned ${resource.owned}</small></span></li>`).join('')}</ul>
-    <section class="ref-growth-preview"><h3 class="ref-growth-preview-heading">Stat preview</h3><div>${statPreview(before, after, 'div')}</div></section>
+    <section class="ref-growth-preview"><h3 class="ref-growth-preview-heading">Stat changes</h3><div>${preview('div')}</div></section>
     ${selection}<button class="primary-button" data-upgrade="${evolve ? 'evolve' : 'level'}" data-fodder-value-required="${count}" data-upgrade-blocked="${!!reason}" ${reason || count ? 'disabled' : ''}>${evolve ? 'Evolve' : 'Level up'}</button>
     ${!evolve ? `<button class="ref-link" data-max-level="${starter.id}">Max Level</button>` : ''}<p class="quiet">${reason}</p>`;
   return `${organized ? '' : `<p class="upgrade-progress">Lv.${current.level} / ${cap} &middot; Evo.${displayEvolution(starter.id, current.evolution)} / ${displayEvolution(starter.id, characterGrowth.forms)}</p>`}
     <div class="character-upgrade-grid"><section class="character-category upgrade-benefits">${organized ? `<div class="ref-growth-preview"><h3 class="ref-growth-preview-heading">${evolve ? 'Stat &amp; form preview' : 'Level &amp; stat preview'}</h3>` : ''}${organized ? '' : `<h3>${evolve ? 'Evolution preview' : 'Level preview'}</h3>`}
     <div class="hub-comparison"><div><small>CURRENT</small><strong>${evolve ? `Evo.${displayEvolution(starter.id, current.evolution)}` : `Lv.${current.level}`}</strong></div>
     <div><small>NEXT</small>${nextPortrait ? `<div class="evolution-silhouette unreached-character-art"><span class="character-idle" data-character="${starter.id}"><img draggable="false" src="${nextPortrait.src}" alt="${characterName(starter.id, next.evolution, false)} next evolution silhouette" ${characterFacingAttributes(starter.id, next.evolution)} width="150" height="150"></span></div>` : ''}<strong>${evolve ? `Evo.${displayEvolution(starter.id, next.evolution)} · Cap ${characterLevelCap(next.evolution, starter.id)}` : `Lv.${next.level}`}</strong></div></div>
-    <div class="upgrade-stat-preview">${statPreview(before, after)}</div>
+    <div class="upgrade-stat-preview">${preview('span')}</div>
     ${organized ? '</div>' : ''}</section><section class="character-category upgrade-payment"><h3>Required resources${organized ? ' <small class="resource-key">Owned / Required</small>' : ''}</h3>${organized ? '' : '<p class="resource-key">Owned / Required</p>'}
     <ul class="upgrade-resources">${resources.map((resource) => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${resource.name}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>
     ${evolve && !account.firstFracture ? `<p class="currency-reward">${currencyIcon('lycalis')}<span>First Fracture reward: +10 Null-Prismatica.</span></p>` : ''}
@@ -312,22 +317,14 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
   const tab = characterTabs.find((entry) => entry.id === selectedTab);
   if (!tab) throw new Error('Unknown character upgrade area.');
   const progress = account ? ownedProgress(account, starter.id) : undefined;
-  const kit = resolveFighter(starter.id, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades, account?.masterEquipment?.[starter.id] ?? undefined);
+  const radiant = radiantCharacterLoadout(account, starter.id);
+  const issue = radiant?.issue ? `<p role="note" class="radiant-loadout-issue">${escapeDialogText(radiant.issue)}</p>` : '';
+  const radiantOverview = radiant ? `${radiantAttunementSection(radiant.loadout)}<section class="character-category"><h3>Stats</h3>${radiantStatsPanel(radiant.loadout)}${issue}</section>${radiantKitSections(radiant.loadout)}` : radiantUnavailable();
   let detail: string;
   if (selectedTab === 'overview' && organized) {
-    detail = `<div class="ref-character-overview"><section class="character-category"><h3>Stats</h3>${stats(starter, progress, false, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades, account?.masterEquipment?.[starter.id] ?? undefined)}</section>
-      <section class="character-category"><h3>Skills</h3><div class="ref-ability-buttons">
-      ${(['passive', 'skill1', 'skill2', 'ultimate'] as const).map(action => {
-        const label = action === 'passive' ? 'Passive' : action === 'skill1' ? 'Skill 1' : action === 'skill2' ? 'Skill 2' : 'Last Flare';
-        const content = action === 'passive' ? `<article class="hub-ability"><h3>${kit.passive.name}</h3><p>${readableEffect(kit.passive.description)}</p>${rolePerkRow(starter.id)}${kitResource(kit, starter.id)}<p>Passive: automatic while alive. No action or Gauge cost.</p></article>`
-          : ability(starter, action, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades);
-        return information(`character-${starter.id}-${action}`, `${label} · ${action === 'passive' ? kit.passive.name : kit.abilities[action].name}`, content, `${label} details`,
-          `${abilityIcon(starter.id, action)}<span><strong>${action === 'passive' ? kit.passive.name : kit.abilities[action].name}</strong><small>${label} · View details</small></span>`);
-      }).join('')}</div></section></div>`;
+    detail = `<div class="ref-character-overview radiant-character-overview">${radiantOverview}</div>`;
   } else if (selectedTab === 'overview') {
-    detail = `<div class="mono-character-quad"><section class="character-category mono-character-stats"><h3>Stats</h3>${stats(starter, progress, false, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades, account?.masterEquipment?.[starter.id] ?? undefined)}</section><section class="character-category character-combat"><h3>Skills</h3><div class="character-ability-grid">
-      <article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name} · Passive</span></h3><p>${readableEffect(kit.passive.description)}</p>${rolePerkRow(starter.id)}${kitResource(kit, starter.id)}</article>
-      ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => ability(starter, action, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)).join('')}</div></section>
+    detail = `<div class="mono-character-quad radiant-character-overview">${radiantOverview}
       <section class="character-category mono-character-growth"><h3>Growth</h3><div class="mono-growth-options"><article><h4>Level up</h4>${upgradePanel(starter, false, account, false, true)}</article><article><h4>Evolve</h4>${upgradePanel(starter, true, account, false, true)}</article></div><p id="upgrade-result" role="status"></p></section>
       <section class="character-category mono-character-conduits"><h3>Conduits</h3>${equipment(starter, account, true)}</section></div>`;
   } else if (selectedTab === 'equipment') {
@@ -337,8 +334,8 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
       (selectedTab === 'upgrade-0' ? ascensionEntry(starter, account, progress) : '');
   } else {
     if (!upgradePaths.some((path) => path.id === selectedTab)) throw new Error('Unknown upgrade definition.');
-    const specific = selectedTab === 'upgrade-3' ? `<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name}</span></h3><p>${readableEffect(kit.passive.description)}</p>${rolePerkRow(starter.id)}${kitResource(kit, starter.id)}</article>`
-      : ability(starter, selectedTab === 'upgrade-4' ? 'skill1' : selectedTab === 'upgrade-5' ? 'skill2' : 'ultimate', progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades);
+    const specific = !radiant ? radiantUnavailable() : selectedTab === 'upgrade-3' ? radiantPassiveArticle(radiant.loadout) + radiantLeaderArticle(radiant.loadout)
+      : radiantFlareArticle(radiant.loadout, selectedTab === 'upgrade-4' ? 'glowing' : selectedTab === 'upgrade-5' ? 'lustrous' : 'eternal');
     detail = `<section class="character-category"><h3>Current effect</h3>${specific}</section>`;
   }
   return `<h2 id="upgrade-heading" tabindex="-1">${tab.label}</h2><div class="character-detail-content${organized ? ' ref-organized-detail' : ''}${organized && (selectedTab === 'upgrade-0' || selectedTab === 'upgrade-1') ? ' ref-growth-detail' : ''}${organized && selectedTab === 'upgrade-0' ? ' ref-evolution-detail' : ''}">${detail}</div>`;
@@ -379,6 +376,9 @@ export function updateCharacterTab(host: HTMLElement, starter: Starter, selected
     if (level) level.textContent = `${progress.level} / ${cap}`;
     if (evolution) evolution.textContent = `Evolution ${displayEvolution(starter.id, progress.evolution)} / ${displayEvolution(starter.id, characterGrowth.forms)}`;
     if (bar) bar.style.width = `${progress.level / cap * 100}%`;
+    const attunement = host.querySelector('[data-reference-attunement]');
+    const radiant = radiantCharacterLoadout(account, starter.id);
+    if (attunement && radiant) attunement.innerHTML = radiantAttunementChip(radiant.loadout);
     host.querySelectorAll('.ref-pips i').forEach((pip, index) => pip.classList.toggle('is-filled', index < progress.evolution));
     host.querySelectorAll<HTMLElement>(`[data-reference-member="${starter.id}"]`).forEach(member => {
       const label = member.querySelector('b');

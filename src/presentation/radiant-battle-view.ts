@@ -24,6 +24,19 @@ import { formatStat } from '../content/combat';
 import { lootArt, lootItems } from './battle-loot';
 import { radiantFormation, radiantFormationStyle } from './radiant-formation';
 
+const titleCase = (value: string) => value.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+export function radiantActivityTitle(activity: FrozenRadiantRun['anchor']['activity']): { eyebrow: string; title: string } {
+  switch (activity.kind) {
+    case 'training': return { eyebrow: 'Squad Training', title: 'Training' };
+    case 'story': return { eyebrow: 'Story Campaign', title: 'Story' };
+    case 'dungeon': return { eyebrow: 'Elemental Dungeon', title: `${titleCase(activity.element)} Dungeon` };
+    case 'infusion': return { eyebrow: activity.mode === 'roses' ? 'Event' : 'Trial', title: titleCase(activity.mode) };
+    case 'war': return { eyebrow: 'Elemental War', title: titleCase(activity.character) };
+    case 'oblivion': return { eyebrow: 'Calamity', title: 'Gates of Oblivion' };
+    case 'calamity': return { eyebrow: 'Calamity', title: titleCase(activity.activity) };
+  }
+}
+
 export interface RadiantBattleEffects {
   windup(action: RadiantPlayerAction, state: RadiantCombatState): Promise<void>;
   impact(frame: RadiantImpactFrame): Promise<void>;
@@ -116,8 +129,9 @@ export class RadiantBattleView {
   private mount(run: FrozenRadiantRun): void {
     const allies = radiantFormation(run.state.bearers.length);
     const enemies = radiantFormation(run.enemies.length);
-    this.host.innerHTML = `<section class="radiant-battle" aria-label="Radiant battle">
-      <header class="radiant-battle-heading"><div class="radiant-heading-title"><small class="radiant-eyebrow">${escape(run.anchor.family)}</small><h2>Radiant battle</h2>
+    const heading = radiantActivityTitle(run.anchor.activity);
+    this.host.innerHTML = `<section class="radiant-battle" aria-label="${escape(heading.title)} battle">
+      <header class="radiant-battle-heading"><div class="radiant-heading-title"><small class="radiant-eyebrow">${escape(heading.eyebrow)}</small><h2>${escape(heading.title)}</h2>
         <span data-radiant-progress>${radiantEncounterLabel(run)}</span> · <span data-radiant-round></span></div>
         <div class="radiant-target-strip" role="region" aria-label="Selected enemy">
           ${run.enemies.map(enemy => `<div class="radiant-target-detail" data-radiant-target-detail="${escape(enemy.id)}" tabindex="0" hidden>
@@ -160,8 +174,8 @@ export class RadiantBattleView {
             aria-describedby="radiant-gesture-help" aria-label="${escape(characterName(member.starter, member.form))} · Normal Attack; right click to defend; hold the card and drag upward for ready Flare">
             ${compactPortrait(starter, member.form)}<span>${index ? `Member ${index + 1}` : 'Leader'}</span>
             <strong>${escape(characterName(member.starter, member.form))}</strong></button>
-          <span class="radiant-identity">Lv.${member.level} · ${escape(radiantAttunement(member))}</span>
-          <dl class="radiant-frozen-stats" aria-label="Frozen combat stats">${Object.entries(unit.stats).filter(([stat]) => stat !== 'hp').map(([stat, value]) =>
+          <span class="radiant-identity">Lv.${member.level} · ${escape(radiantAttunement(member).replace(/^./, letter => letter.toUpperCase()))}</span>
+          <dl class="radiant-frozen-stats" aria-label="Combat stats">${Object.entries(unit.stats).filter(([stat]) => stat !== 'hp').map(([stat, value]) =>
             `<div><dt>${escape(stat[0].toUpperCase() + stat.slice(1))}</dt><dd>${formatStat(value)}</dd></div>`).join('')}</dl>
           ${this.healthMarkup(member.id)}
           <div class="radiant-charge-layers" data-radiant-energy="${escape(member.id)}" aria-label="Personal charge">
@@ -183,7 +197,7 @@ export class RadiantBattleView {
       <div data-radiant-results hidden></div>
       <p data-radiant-status role="status" aria-live="polite"></p>
       <p data-radiant-error role="alert"></p>
-      <details class="radiant-team-reference"><summary>Battle rules and frozen leader</summary>
+      <details class="radiant-team-reference"><summary>Battle rules and leader</summary>
         <div data-radiant-leader-reference></div>
         <p>Normal Attack and Defense each use this member’s action for the round. No random critical damage.
         A Normal direct hit on HP or Shields drops ${radiantChargeRules.normal} Gauge; a Flare direct hit drops ${radiantChargeRules.flareHit}.
@@ -196,11 +210,11 @@ export class RadiantBattleView {
         at most ${radiantChargeRules.maximumBonusRolls} rolls per action.
         Generated/periodic hits do not drop Gauge unless they defeat an enemy.</p>
         <p>Normal Attack uses100% effective Attack against one selected living enemy.
-        Direct damage is rounded once: Attack × Attack/(Attack + effective enemy Defense) × action coefficient × output modifiers, minimum1.
+        Direct damage is rounded once: Attack ÁEAttack/(Attack + effective enemy Defense) ÁEaction coefficient ÁEoutput modifiers, minimum1.
         Burn/periodic and generated packets follow their authored rules, not this guaranteed direct-damage formula.
         Defense halves direct enemy damage until the next round, with strongest reduction and gear enhancements; combined multiplier floor20%.
         Shields absorb in creation order before HP.</p>
-        <p>Shared charge: Normal direct hits/Defense grant6 divided by frozen squad size, ordinary Flares12 divided by squad size;
+        <p>Shared charge: Normal direct hits/Defense grant6 divided by squad size, ordinary Flares12 divided by squad size;
         each new round adds18. Eternal cannot refill itself. Defeated members are not replaced or promoted.</p>
       </details>
     </section>`;
@@ -499,7 +513,7 @@ export class RadiantBattleView {
     this.session.setSettings(true); this.render();
     let confirmed: boolean;
     try {
-      confirmed = await gameConfirm('Leave this frozen encounter? Earned rewards are retained. The current run will end.',
+      confirmed = await gameConfirm('Leave this encounter? Earned rewards are retained. The current run will end.',
         { title: 'Exit battle', confirmLabel: 'Exit · Keep rewards' });
     } finally { if (!this.disposed) { this.session.setSettings(false); this.render(); } }
     if (confirmed && !this.disposed) await this.transition('exit');
@@ -822,7 +836,7 @@ export class RadiantBattleView {
         if (item.rarity) node.dataset.rarity = item.rarity;
         node.style.setProperty('--loot', item.color);
         const art = lootArt(item);
-        node.innerHTML = `${art ? `<img src="${escape(art)}" alt="" decoding="async">` : '<i></i>'}<b>×${formatStat(item.amount)}</b>`;
+        node.innerHTML = `${art ? `<img src="${escape(art)}" alt="" decoding="async">` : '<i></i>'}<b>ÁE{formatStat(item.amount)}</b>`;
         const spread = items.length > 1 ? (slot / (items.length - 1) - .5) * Math.min(220, items.length * 60) : 0;
         const dx = spread + (random() - .5) * 26, dy = bounds.height * .42 - 12 + (random() - .5) * 18;
         const peak = -60 - random() * 50;

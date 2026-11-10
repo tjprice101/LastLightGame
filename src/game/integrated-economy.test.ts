@@ -116,7 +116,7 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(() => levelCapturedCharacter(saved, copy.instanceId, 60)).toThrow('Maximum');
     purchaseConduit(saved, 'vigil-core');
     equipConduit(saved, copy.instanceId, 0, 'vigil-core');
-    setSquad(saved, [copy.instanceId, 'ember']);
+    saveAccount(saved, { ...loadAccount(saved), squad: [copy.instanceId, 'ember'] }); // legacy pre-Radiant mixed squad
     const current = loadAccount(saved);
     const ids = equippedSquad(current);
     const captures = current.capturedCharacters!;

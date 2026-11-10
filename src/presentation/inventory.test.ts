@@ -7,6 +7,7 @@ import { masterChest, masterConduits as allMasters } from '../content/master-con
 import { characterReleased } from '../content/release-visibility';
 const masterConduits = allMasters.filter(master => characterReleased(master.character));
 import { conduits, conduitEffect, getConduit } from '../content/conduits';
+import { radiantMasterEffect } from './radiant-master-text';
 import { bindInformation } from './information';
 import { bracketReferences } from './reference-text';
 import { referencedEffect } from './effect-copy';
@@ -169,9 +170,9 @@ describe('reference Inventory layout', () => {
       const ordinary = 'power' in entry;
       const card = host.querySelector(`[data-inventory-${ordinary ? 'conduit' : 'master'}="${entry.id}"]`)!;
       const dialog = card.querySelector('dialog')!;
-      const effect = ordinary ? conduitEffect(entry, 5) : entry.effect;
+      const effect = ordinary ? conduitEffect(entry, 5) : radiantMasterEffect(entry.id);
       const expected = document.createElement('div');
-      expected.innerHTML = bracketReferences(effect);
+      expected.innerHTML = referencedEffect(effect);
       expect(dialog.textContent).toContain(expected.textContent);
       if (ordinary) expect(dialog.textContent?.replace(/[[\]]/g, '')).toContain(bracketReferences(entry.lore, false).replace(/[[\]]/g, ''));
       expect(card.querySelector('[data-information]')?.textContent).toBe('Details');

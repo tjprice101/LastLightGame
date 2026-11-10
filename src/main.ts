@@ -55,6 +55,12 @@ import { createBackdrop } from './presentation/backdrop';
 import { applyMotion, loadMotion, saveMotion, reducedMotion, type MotionPreference } from './presentation/settings';
 import { commands, defaultBindings, loadBindings, saveBindings, validateBindings } from './game/hotkeys';
 import { BattleView, createSession, type BattleSession, type BattleAuthority, type BattleAuthorityResponse } from './presentation/battle-view';
+import { RadiantSession } from './online/radiant-session';
+import { LocalRadiantTransport } from './online/radiant-local';
+import { readRadiantStudy } from './online/radiant-transport';
+import type { RadiantCheckpoint } from './online/radiant-run';
+import { RadiantBattleView } from './presentation/radiant-battle-view';
+import { RadiantCanvasEffects } from './vfx/radiant-battle-effects';
 import { restartHistoricalConduitSession } from './presentation/conduit-compatibility';
 import { assertActivityAccess } from './game/activity-access';
 import { characterHub, characterInformation, homeHub, inventoryHub, isCharacterTab, updateCharacterTab, updateEvolutionSelection } from './presentation/hub';
@@ -212,49 +218,78 @@ let playerInfoOpen = false;
 let onlineRevision = 0;
 let onlinePending: { operation: GameOperation; requestId: string; revision: number } | null = null;
 let onlineBusy = false;
-const radiantStudyUiEnabled = import.meta.env.VITE_RADIANT_STUDY_UI === 'true';
-type RadiantClientController = import('./presentation/radiant-client').RadiantClient;
-let radiantClient: RadiantClientController | null = null;
-let radiantClientHost: HTMLElement | null = null;
+const localRadiant = new LocalRadiantTransport(gameStorage, () => journey.profile?.starterId ?? null);
+let radiantSession: RadiantSession | null = null;
+let radiantView: RadiantBattleView | null = null;
 
-function disposeRadiantClient(): void {
-  radiantClient?.dispose();
-  radiantClient = null;
-  radiantClientHost = null;
+function disposeRadiantBattle(): void {
+  radiantView?.dispose();
+  radiantView = null;
+  radiantSession?.dispose();
+  radiantSession = null;
 }
 
-async function leaveRadiantBeforeNavigation(): Promise<boolean> {
-  if (menuPage !== 'radiant' || !radiantClient) return true;
-  if (!await radiantClient.beforeLeave()) return false;
-  disposeRadiantClient();
+async function readRadiantCheckpoint(): Promise<RadiantCheckpoint> {
+  return playMode === 'online' ? readRadiantStudy() : localRadiant.read();
+}
+
+function createRadiantSession(checkpoint: RadiantCheckpoint): RadiantSession {
+  return playMode === 'online' ? new RadiantSession(checkpoint) : new RadiantSession(checkpoint, localRadiant);
+}
+
+async function refreshAfterRadiant(): Promise<void> {
+  if (playMode === 'online') applyOnline(await gameOperation({ kind: 'read' }));
+  else account = loadAccount(gameStorage);
+  fractalis = account?.fractalis ?? fractalis;
+}
+
+function finishRadiantReceipt(session: RadiantSession): void {
+  const receipt = session.view().presentation;
+  if (receipt) session.finishPresentation(receipt.requestId);
+}
+
+/** Ends the saved Radiant encounter (rewards already committed). False keeps the battle open. */
+async function exitRadiantRun(confirm: boolean): Promise<boolean> {
+  const session = radiantSession;
+  if (!session) return true;
+  const view = session.view();
+  if (view.saved.run) {
+    if (view.busy || view.pending || view.presentation) {
+      showError('Wait for the saved action to finish before leaving this battle.');
+      return false;
+    }
+    if (confirm && !await gameConfirm('Leave this battle? Earned rewards are kept; the current encounter ends.',
+      { title: 'Exit battle', confirmLabel: 'Exit · Keep rewards' })) return false;
+    await session.perform({ kind: 'exit' });
+    finishRadiantReceipt(session);
+  }
+  disposeRadiantBattle();
+  await refreshAfterRadiant();
   return true;
 }
 
-function mountRadiantClient(host: HTMLElement): void {
-  void import('./presentation/radiant-client').then(({ RadiantClient }) => {
-    if (!host.isConnected || menuPage !== 'radiant' || playMode !== 'online' || !radiantStudyUiEnabled) return;
-    if (radiantClient && radiantClientHost === host) return;
-    disposeRadiantClient();
-    radiantClientHost = host;
-    radiantClient = new RadiantClient(host, () => {
-      const drawer = app.querySelector<HTMLDialogElement>('#settings-drawer');
-      if (!drawer) throw new Error('Radiant Settings drawer is missing.');
-      drawer.showModal();
-    }, () => eventAccess().now, area => {
-      void transitionActivity(async () => {
-        if (!await leaveRadiantBeforeNavigation()) return;
-        visitMenu('team');
-        characterCategory = area;
-        renderMenu();
-      }).catch(error => {
-        console.error('Radiant navigation failed', error);
-        showError(errorMessage(error));
-      });
+function openSettingsDrawer(): void {
+  const drawer = app.querySelector<HTMLDialogElement>('#settings-drawer');
+  if (!drawer) throw new Error('Settings drawer is missing.');
+  drawer.showModal();
+}
+
+function mountRadiantBattle(host: HTMLElement): void {
+  const session = radiantSession;
+  if (!session?.view().saved.run) throw new Error('No battle is in progress.');
+  radiantView?.dispose();
+  radiantView = new RadiantBattleView(host, session, () => {
+    try { openSettingsDrawer(); } catch (error) { showError(errorMessage(error)); }
+  }, new RadiantCanvasEffects(host), () => {
+    radiantView = null;
+    session.dispose();
+    if (radiantSession === session) radiantSession = null;
+    void refreshAfterRadiant().then(() => backMenu()).catch(error => {
+      console.error('Battle exit navigation failed', error);
+      showError(errorMessage(error));
     });
-  }).catch(error => {
-    console.error('Could not load authenticated Radiant UI', error);
-    showError(`Radiant preview could not open. ${errorMessage(error)}`);
   });
+  if (session.view().entrancePending) void radiantView.finishEntrance().catch(error => showError(errorMessage(error)));
 }
 
 function openOnlineAccount(onPlay?: () => Promise<void>): void {
@@ -327,7 +362,15 @@ async function enterOnline(progressReady = false): Promise<void> {
   applyOnline(response);
   menuHistory.clear();
   resetConduitLoadoutView();
-  menuPage = response.session ? 'battle' : (response.account.storyCompleted ?? 0) < storyRules.regionStages ? 'story' : 'home';
+  disposeRadiantBattle();
+  let resumed = false;
+  if (response.starterId) {
+    try {
+      const checkpoint = await readRadiantStudy();
+      if (checkpoint.run) { radiantSession = new RadiantSession(checkpoint); resumed = true; }
+    } catch (error) { console.error('Saved battle could not be resumed', error); }
+  }
+  menuPage = resumed ? 'battle' : (response.account.storyCompleted ?? 0) < storyRules.regionStages ? 'story' : 'home';
   selectedCharacter = null;
   journey.selected = null;
   journey.profile = response.starterId ? { version: 1, starterId: response.starterId } : null;
@@ -337,15 +380,26 @@ async function enterOnline(progressReady = false): Promise<void> {
   focusHeading();
 }
 
-async function enterBattle(activity: Activity, destination?: Parameters<typeof createSession>[2]): Promise<void> {
+async function enterBattle(activity: Activity): Promise<void> {
   if (activity.kind === 'infusion' && activity.mode === 'roses') assertTimedEventAccess();
   assertActivityAccess(currentAccount(), activity);
-  if (playMode === 'online') {
-    const response = await performOnline({ kind: 'enter', activity });
-    if (!response.session) throw new Error('The server did not return a battle session.');
-  } else {
-    battleSession = squadSession(currentAccount(), destination);
+  disposeRadiantBattle();
+  const session = createRadiantSession(await readRadiantCheckpoint());
+  try {
+    // A previous saved encounter ends here; its rewards were committed per kill.
+    if (session.view().saved.run) {
+      await session.perform({ kind: 'exit' });
+      finishRadiantReceipt(session);
+    }
+    await session.perform({ kind: 'start', activity, calibration: 'authored-control' });
+    finishRadiantReceipt(session);
+  } catch (error) {
+    session.dispose();
+    await refreshAfterRadiant().catch(() => undefined);
+    throw error;
   }
+  radiantSession = session;
+  await refreshAfterRadiant();
 }
 
 async function authorityReply(operation: GameOperation): Promise<BattleAuthorityResponse> {
@@ -453,7 +507,7 @@ function menuSnapshot(): MenuSnapshot {
   };
 }
 
-const updateBlocked = (): boolean => (journey.screen === 'menu' && (menuPage === 'battle' || menuPage === 'radiant')) ||
+const updateBlocked = (): boolean => (journey.screen === 'menu' && menuPage === 'battle') ||
   Boolean(app.querySelector('#battle-root'));
 function checkUpdates(force = false): void {
   void checkForUpdate({ blocked: updateBlocked, force });
@@ -462,8 +516,6 @@ window.setInterval(() => checkUpdates(), 5 * 60_000);
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkUpdates(); });
 
 function visitMenu(page: MenuPage): void {
-  if (page === 'radiant' && (playMode !== 'online' || !radiantStudyUiEnabled))
-    throw new Error('Radiant preview requires the enabled study UI and an authenticated online account.');
   checkUpdates();
   const destination = sanctuaryDestination(page);
   viewedFriend = null;
@@ -478,14 +530,14 @@ function visitMenu(page: MenuPage): void {
 async function backMenu(): Promise<void> {
   if (activityTransitionPending()) return;
   await transitionActivity(async () => {
-    if (!await leaveRadiantBeforeNavigation()) return;
+    if (menuPage === 'battle' && !await exitRadiantRun(true)) return;
     const fallback: MenuSnapshot = {
       ...menuSnapshot(), page: menuPage === 'battle' ? 'gameplay' : 'home', hash: '', gallery: undefined,
       activities: [], difficulties: [], calamityTiers: [], controls: [], panels: [], scroll: 0,
     };
-    if (menuPage === 'battle' && playMode === 'online' && battleSession) await performOnline({ kind: 'quit', runId: battleSession.runId });
     const previous = menuHistory.back(fallback);
     battleSession = null;
+    disposeRadiantBattle();
     viewedFriend = null;
     menuPage = previous.page;
     characterTab = previous.characterTab;
@@ -613,7 +665,7 @@ function frame(body: string, battle = false, sanctuary = false): void {
   document.body.classList.toggle('in-battle', battle);
   const backgroundScreen: AmbientScreen = battle ? 'battle' : !sanctuary
     ? journey.screen === 'selection' ? 'selection' : 'title'
-    : menuPage === 'radiant' ? 'battle' : menuPage === 'conduit-store' || menuPage === 'conduit-upgrade' ? 'stores' : menuPage === 'archives' || menuPage === 'glossary' ? 'collections' : menuPage === 'special-banner-archive' ? 'summon' : menuPage === 'profile' ? 'home' : menuPage === 'team' ? characterCategory === 'squad' ? 'squad' : 'character' : menuPage;
+    : menuPage === 'conduit-store' || menuPage === 'conduit-upgrade' ? 'stores' : menuPage === 'archives' || menuPage === 'glossary' ? 'collections' : menuPage === 'special-banner-archive' ? 'summon' : menuPage === 'profile' ? 'home' : menuPage === 'team' ? characterCategory === 'squad' ? 'squad' : 'character' : menuPage;
   app.innerHTML = battle ? `<div class="battle-screen">${body}${ambientBackground(backgroundScreen)}<p id="status" class="status" role="alert"></p></div>` : `<div class="shell ${sanctuary ? 'sanctuary-shell' : ''}">
     ${ambientBackground(backgroundScreen)}
     ${sanctuary ? '' : '<header class="masthead"><span class="brand-mark">L · L</span><span>LAST LIGHT</span><span class="build-label">PRELUDE &middot; 0.1</span></header>'}
@@ -673,7 +725,8 @@ function frame(body: string, battle = false, sanctuary = false): void {
       window.removeEventListener('focus', focused);
     };
   }
-  music.setTrack(battle ? battleSession ? battleMusic(battleSession.state) : null : 'main-theme');
+  const radiantActivity = radiantSession?.view().saved.run?.anchor.activity;
+  music.setTrack(battle ? radiantActivity ? battleMusic({ story: radiantActivity.kind === 'story' ? { storyStage: radiantActivity.stage } : undefined, dungeon: radiantActivity.kind === 'dungeon' ? { element: radiantActivity.element } : undefined } as Parameters<typeof battleMusic>[0]) : null : 'main-theme');
 }
 
 function focusHeading(): void {
@@ -829,6 +882,8 @@ function renderSelection(): void {
 function renderMenu(firstArrival = false): void {
   battleView?.destroy();
   battleView = null;
+  radiantView?.dispose();
+  radiantView = null;
   if (!journey.profile) throw new Error('The opening menu requires a saved Element-Bearer.');
   const starter = getStarter(journey.profile.starterId);
   try {
@@ -850,15 +905,9 @@ function renderMenu(firstArrival = false): void {
   const homeLeader = account && menuPage === 'home' ? account.squad?.[0] ?? starter.id : starter.id;
   const sanctuary = `${sanctuaryHeader(menuPage, fractalis, account?.lycalis ?? null)}<section class="menu-screen sanctuary-content" data-menu-screen="${menuPage}">
     ${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
-    ${menuPage !== 'home' ? menuContent(menuPage) : referenceHome(isStarterId(homeLeader) ? getStarter(homeLeader) : starter, account,
-      playMode === 'online' && radiantStudyUiEnabled)}
+    ${menuPage !== 'home' ? menuContent(menuPage) : referenceHome(isStarterId(homeLeader) ? getStarter(homeLeader) : starter, account)}
   </section>`;
-  frame(`${menuPage === 'battle' ? `<header class="battle-toolbar">
-    <button class="battle-chrome-button" data-menu-back>${uiIcon('back')}<span>Leave</span></button>
-    <div class="battle-speed-buttons" role="group" aria-label="Battle animation speed">${battleSpeeds.map(value => `<button type="button" data-battle-speed-choice="${value}" aria-pressed="${speed === value}">${value}&times;</button>`).join('')}</div>
-    <select id="battle-speed" data-battle-speed data-native-select hidden aria-label="Battle animation speed">${battleSpeeds.map((value) => `<option value="${value}" ${speed === value ? 'selected' : ''}>${value}&times;</option>`).join('')}</select>
-    <button id="open-settings" class="battle-chrome-button" aria-haspopup="dialog">${uiIcon('settings')}<span>Settings</span></button>
-    </header>${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
+  frame(`${menuPage === 'battle' ? `${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
     <div id="battle-root"></div>` : sanctuary}
     <dialog id="settings-drawer" class="settings-drawer" aria-labelledby="settings-heading">
     ${settingsPanel(motionPreference, bindings, speed, musicPreferences)}
@@ -866,11 +915,6 @@ function renderMenu(firstArrival = false): void {
     <p id="settings-error" class="status" role="alert"></p>
   </dialog>
   ${menuPage === 'battle' ? '' : '<dialog id="max-level-dialog" class="information-modal" aria-labelledby="max-level-heading"><header class="drawer-heading"><button class="drawer-close" type="button" data-close-information aria-label="Close Max Level">&times;</button></header><div data-max-level-content></div><p data-max-level-error role="alert"></p></dialog>'}`, menuPage === 'battle', menuPage !== 'battle');
-  if (menuPage === 'radiant') {
-    const host = app.querySelector<HTMLElement>('#radiant-client-host');
-    if (!host) throw new Error('Radiant client host is missing.');
-    mountRadiantClient(host);
-  }
   pendingMaxLevel = null;
   app.querySelector(`[data-character-category="${characterCategory}"]`)?.setAttribute('aria-current', 'page');
   applyConduitSearch(app, conduitSearch);
@@ -1047,19 +1091,13 @@ function renderMenu(firstArrival = false): void {
         if (!isMenuPage(page)) throw new Error('Unknown menu page.');
         if (page === menuPage) return;
         await transitionActivity(async () => {
-          if (!await leaveRadiantBeforeNavigation()) return;
-          if (page === 'radiant' && (playMode !== 'online' || !radiantStudyUiEnabled))
-            throw new Error('Radiant preview requires the enabled study UI and an authenticated online account.');
           if (page === 'profile' && playMode === 'online') await performOnline({ kind: 'read' });
           if (page === 'stores' && button.hasAttribute('data-market-cosmetics')) storeTab = 'cosmetics';
           if (page === 'battle' && menuPage !== 'battle') {
             if (!account) throw new Error('Progression save unavailable. Resolve the save error before battling.');
             await enterBattle({ kind: 'training' });
           }
-          if (page !== 'battle' && menuPage === 'battle') {
-            if (playMode === 'online' && battleSession) await performOnline({ kind: 'quit', runId: battleSession.runId });
-            battleSession = null;
-          }
+          if (page !== 'battle' && menuPage === 'battle' && !await exitRadiantRun(true)) return;
           visitMenu(page);
           if (page === 'team' && button.dataset.teamArea) {
             const area = button.dataset.teamArea;
@@ -1097,7 +1135,7 @@ function renderMenu(firstArrival = false): void {
         if (stage > unlockedStoryStage(current)) throw new Error('Complete the earlier Story stages first.');
         await transitionActivity(async () => {
           account = current;
-          await enterBattle({ kind: 'story', stage }, { storyStage: stage });
+          await enterBattle({ kind: 'story', stage });
           visitMenu('battle');
           renderMenu();
         });
@@ -1119,7 +1157,7 @@ function renderMenu(firstArrival = false): void {
         if (!Number.isInteger(stage) || stage < 1 || stage > unlockedStage(current, element)) throw new Error('Complete the earlier stages first.');
         await transitionActivity(async () => {
           account = current;
-          await enterBattle({ kind: 'dungeon', element, stage }, { element, stage });
+          await enterBattle({ kind: 'dungeon', element, stage });
           visitMenu('battle');
           renderMenu();
         });
@@ -1133,7 +1171,7 @@ function renderMenu(firstArrival = false): void {
     await transitionActivity(async () => {
       account = currentAccount();
       assertActivityAccess(account, { kind: 'calamity', activity, tier });
-      await enterBattle({ kind: 'calamity', activity, tier }, { activity, tier });
+      await enterBattle({ kind: 'calamity', activity, tier });
       visitMenu('battle');
       renderMenu();
     });
@@ -1149,7 +1187,7 @@ function renderMenu(firstArrival = false): void {
         assertActivityAccess(current, { kind: 'oblivion', stage });
         await transitionActivity(async () => {
           account = current;
-          await enterBattle({ kind: 'oblivion', stage }, { oblivionStage: stage });
+          await enterBattle({ kind: 'oblivion', stage });
           visitMenu('battle');
           renderMenu();
         });
@@ -1168,7 +1206,7 @@ function renderMenu(firstArrival = false): void {
         if (!Number.isInteger(stage) || stage < 1 || stage > unlockedWarStage(current, character)) throw new Error('Complete earlier Elemental War stages first.');
         await transitionActivity(async () => {
           account = current;
-          await enterBattle({ kind: 'war', character, stage }, { character, stage });
+          await enterBattle({ kind: 'war', character, stage });
           visitMenu('battle');
           renderMenu();
         });
@@ -1195,7 +1233,7 @@ function renderMenu(firstArrival = false): void {
         if (!Number.isInteger(stage) || stage < 1 || stage > unlockedInfusionStage(current, mode)) throw new Error('Complete earlier infusion stages first.');
         await transitionActivity(async () => {
           account = current;
-          await enterBattle({ kind: 'infusion', mode, stage }, { mode, stage });
+          await enterBattle({ kind: 'infusion', mode, stage });
           visitMenu('battle');
           renderMenu();
         });
@@ -1240,14 +1278,17 @@ function renderMenu(firstArrival = false): void {
     if (activityTransitionPending() || app.querySelector('#battle-root')?.getAttribute('aria-busy') === 'true') return;
     battleView?.destroy();
     battleView = null;
-    if (menuPage === 'radiant') radiantClient?.settingsOpened();
     drawer.showModal();
     if (settingsError || hotkeyError) showError([settingsError, hotkeyError].filter(Boolean).join(' '));
   });
   const closeSettings = (): void => {
     drawer.close();
-    if (menuPage === 'radiant') radiantClient?.settingsClosed();
-    if (menuPage === 'battle') renderMenu();
+    if (menuPage === 'battle' && radiantSession) {
+      radiantSession.setSettings(false);
+      radiantView?.render();
+      app.querySelector<HTMLButtonElement>('[data-radiant-settings]')?.focus();
+      return;
+    }
     app.querySelector<HTMLButtonElement>('#open-settings')?.focus();
   };
   app.querySelector('#close-settings')?.addEventListener('click', closeSettings);
@@ -1258,43 +1299,8 @@ function renderMenu(firstArrival = false): void {
   if (menuPage === 'battle') {
     const host = app.querySelector<HTMLElement>('#battle-root');
     if (!host) throw new Error('Battle host is missing.');
-    if (!battleSession) {
-      if (!account) { showError('Progression save unavailable. Resolve the save error before battling.'); return; }
-      if (playMode === 'online') { showError('Online battle unavailable. Return to the title and reconnect.'); return; }
-      battleSession = squadSession(account);
-    }
-    try {
-      if (playMode === 'legacy') restartHistoricalConduitSession(battleSession);
-      if (playMode === 'legacy') account = saveAccountRewards(gameStorage, { state: battleSession.state, events: [] }, battleSession.runId);
-    } catch (error) {
-      console.error('Elemental-Devourer discovery could not be saved', error);
-      showError(`The encounter cannot start until discoveries can be saved. ${errorMessage(error)}`);
-      return;
-    }
-    battleView = new BattleView(host, battleSession, bindings, (result) => {
-      const balance = app.querySelector('#fractalis-balance');
-      if (!balance) throw new Error('Prismatica balance region is missing.');
-      try {
-        if (!battleSession) throw new Error('Battle session is missing.');
-        account = playMode === 'online' ? currentAccount() : saveAccountRewards(gameStorage, result, battleSession.runId);
-        fractalis = account.fractalis;
-      } catch (error) {
-        throw new Error(`Rewards could not be saved. The battle action was not applied; retry when storage is available. ${errorMessage(error)}`);
-      }
-      walletError = '';
-      balance.textContent = String(fractalis);
-      const premium = app.querySelector('#lycalis-balance');
-      if (premium) premium.textContent = String(account.lycalis);
-      const error = app.querySelector('#wallet-error');
-      if (error) error.textContent = '';
-    }, backMenu, playMode === 'online' ? battleAuthority() : undefined, (state) => {
-      if (playMode === 'legacy' && state.infusion?.mode === 'machines') {
-        const current = currentAccount();
-        state.machineConduits = { ...current.conduits };
-        state.machineLootFocus = { ...current.machineLootFocus };
-      }
-      music.setTrack(battleMusic(state));
-    });
+    try { mountRadiantBattle(host); }
+    catch (error) { showError(errorMessage(error)); }
   }
   const walletStatus = app.querySelector('#wallet-error');
   updateProfileAvatar();
@@ -1564,11 +1570,12 @@ function renderMenu(firstArrival = false): void {
   app.querySelector('#return-title')?.addEventListener('click', async () => {
     if (gameDialogPending()) return;
     try {
-      if (menuPage === 'battle' && !await gameConfirm('End this battle and return to the title? Saved rewards are kept; encounter progress is not.', { title: 'Leave battle', confirmLabel: 'Return to title' })) return;
-      if (menuPage === 'battle' && playMode === 'online' && battleSession) await performOnline({ kind: 'quit', runId: battleSession.runId });
+      if (menuPage === 'battle' && !await exitRadiantRun(true)) return;
+      disposeRadiantBattle();
       battleView?.destroy();
       battleView = null;
       battleSession = null;
+      disposeRadiantBattle();
       drawer.close();
       menuHistory.clear();
       resetConduitLoadoutView();
@@ -1590,11 +1597,6 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
   if (!journey.profile) throw new Error('A saved Element-Bearer is required.');
   const starter = getStarter(journey.profile.starterId);
   if (page === 'battle') return '<div id="battle-root"></div>';
-  if (page === 'radiant') {
-    if (playMode !== 'online' || !radiantStudyUiEnabled)
-      return '<section class="radiant-client-message"><h2>Radiant is unavailable</h2><p role="alert">This authenticated study preview is disabled.</p></section>';
-    return '<div id="radiant-client-host" aria-live="polite"></div>';
-  }
   if ((page === 'character' || page === 'team' || page === 'squad') && (teamView === 'capture' || teamView === 'capture-conduits')
       && !account?.capturedCharacters?.some(copy => copy.instanceId === selectedCapture)) {
     // A sold or otherwise removed copy (including one restored from Back history) returns to the list.
@@ -1850,6 +1852,7 @@ function offlineSaveChanged(change: OfflineChange): void {
   battleView?.destroy();
   battleView = null;
   battleSession = null;
+  disposeRadiantBattle();
   journey.profile = null;
   journey.screen = 'title';
   menuHistory.clear();
@@ -2028,6 +2031,7 @@ app.addEventListener('click', async event => {
       battleView?.destroy();
       battleView = null;
       battleSession = null;
+      disposeRadiantBattle();
       onlineWallet = null;
       playerProfile = null;
       playMode = 'legacy';
@@ -2528,6 +2532,7 @@ if (import.meta.env.DEV) bindDebugPhrase(document, () =>
       battleView?.destroy();
       battleView = null;
       battleSession = null;
+      disposeRadiantBattle();
       menuHistory.clear();
       resetConduitLoadoutView();
       journey.screen = 'title';

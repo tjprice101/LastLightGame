@@ -258,15 +258,14 @@ describe('isolated bubble UI concept', () => {
       click('[data-action="close"]');
     }
   });
-  it('connects captured details, locking, mixed squad leadership and actual retained skills', () => {
+  it('connects captured details and actual retained skills, but refuses captured squad leadership', () => {
     const copy = exampleAccount().capturedCharacters![7];
     visit('devourers'); click(`[data-person="${copy.instanceId}"]`);
     expect(root.querySelector('.hero-caption')?.textContent).toContain(memberDisplay(exampleAccount(), copy.instanceId).name);
     visit('skills'); expect(root.querySelector('.detail-content')?.textContent).toContain('Retained abilities');
     visit('team'); click('[data-action="lead"]');
     visit('squad');
-    expect(root.querySelector('.formation-slot h2')?.textContent).toBe(memberDisplay(exampleAccount(), copy.instanceId).name);
-    expect(root.dataset.leaderElement).toBe(memberDisplay(exampleAccount(), copy.instanceId).elementId);
+    expect(root.querySelector('.formation-slot h2')?.textContent).not.toBe(memberDisplay(exampleAccount(), copy.instanceId).name);
   });
   it('updates stage levels and reward tables instead of only highlighting stage bubbles', () => {
     visit('play');

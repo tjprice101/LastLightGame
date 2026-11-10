@@ -8,7 +8,8 @@ vi.mock('../content/phase-zero-stats', async importOriginal => ({
 }));
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, upgradeConduit, purchaseConduit, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
-import { conduits, getConduit, conduitBuffs, conduitEffect, conduitUpgradeCost, conduitUpgradeCosts, type ConduitSlots } from '../content/conduits';
+import { conduits, getConduit, conduitBuffs, conduitEffect, legacyConduitEffect, conduitUpgradeCost, conduitUpgradeCosts, type ConduitSlots } from '../content/conduits';
+import { radiantConduitEffectText } from '../content/radiant-conduit-text';
 import { resolveFighter, applyConduitBuffs } from '../content/combat';
 import { createCreatureCopy, resolveCapturedFighter } from './character-instances';
 import { machineComponentDrop, rollMachineComponents } from '../content/mechanical-components';
@@ -271,7 +272,7 @@ describe('account-wide five-step Conduit restoration', () => {
     const base = conduitBuffs(conduit);
     for (let level = 0; level <= 5; level++) {
       expect(conduitBuffs(conduit, level)).toEqual(base.map((buff) => ({ ...buff, amount: buff.amount * (1 + .5 * level) })));
-      if (conduit.mechanic) expect(conduitEffect(conduit, level)).toContain(conduit.effect.slice(conduit.effect.indexOf('. ') + 2));
+      if (conduit.mechanic) expect(legacyConduitEffect(conduit, level)).toContain(conduit.effect.slice(conduit.effect.indexOf('. ') + 2));
     }
     expect(conduit).toEqual(original);
   });
@@ -294,7 +295,8 @@ describe('account-wide five-step Conduit restoration', () => {
     expect(captured.damage).toBeCloseTo(capturedBase.damage);
     expect(captured.health).toBeCloseTo(capturedBase.health * .79);
     expect(resolveFighter('ember', progress).stats).toEqual(base);
-    expect(conduitEffect(conduits.find((c) => c.id === 'worldbreaker-drive')!, 5)).toContain('+70% [Last Flare] Direct Damage; -21% maximum HP.');
+    expect(legacyConduitEffect(conduits.find((c) => c.id === 'worldbreaker-drive')!, 5)).toContain('+70% [Last Flare] Direct Damage; -21% maximum HP.');
+    expect(conduitEffect(conduits.find((c) => c.id === 'worldbreaker-drive')!, 5)).toBe(radiantConduitEffectText('worldbreaker-drive', 5));
   });
   const destinations = [undefined, ...playableDungeons.map((element) => ({ element, stage: 1 })),
     ...(['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines'] as const).map((mode) => ({ mode, stage: 1 }))];

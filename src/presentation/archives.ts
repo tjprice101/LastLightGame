@@ -23,6 +23,8 @@ import { abilityStatuses, kitResource } from './ability-status';
 import './archives.css';
 import { masterChest, masterConduits as allMasters } from '../content/master-conduits';
 import { masterConduitIcon } from './master-conduits';
+import { radiantMasterEffect } from './radiant-master-text';
+import { escapeDialogText } from './game-dialog';
 import { getStarter } from '../content/starters';
 import { characterReleased } from '../content/release-visibility';
 
@@ -90,7 +92,7 @@ function conduitArchive(account: Account | null): string {
   const total = shown.length + masterConduits.length;
   const ownership = (owned: boolean) => !account ? 'unavailable' : owned ? 'owned' : 'unowned';
   return `<div class="archive-filters archive-conduit-filters" role="group" aria-label="Conduit archive filters">
-      <label class="archive-search">Search<input type="search" data-conduit-search placeholder="Name, effect, [Burn], [Skill 1]…" autocomplete="off"></label>
+      <label class="archive-search">Search<input type="search" data-conduit-search placeholder="Name, effect, [Burn], Flare…" autocomplete="off"></label>
       <label>Search in<select data-conduit-search-scope>${conduitSearchScopes.map(scope => `<option value="${scope.id}">${scope.name}</option>`).join('')}</select></label>
       <label>Rarity<select data-conduit-filter="rarity"><option value="">All rarities</option>${rarities.map(rarity => `<option>${rarity}</option>`).join('')}</select></label>
       <label>Ownership<select data-conduit-filter="ownership"><option value="">All Conduits</option><option value="owned">Owned</option><option value="unowned">Not owned</option></select></label>
@@ -106,8 +108,8 @@ function conduitArchive(account: Account | null): string {
     </article>`).join('')}${masterConduits.map(entry => `<article class="archive-card ${account?.masterConduits?.[entry.id] === 1 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" ${conduitElementTheme(getStarter(entry.character).elementId)} data-archive-master="${entry.id}" data-filter-rarity="Master" data-filter-ownership="${ownership(account?.masterConduits?.[entry.id] === 1)}">
       <div class="archive-mechanism">${masterConduitIcon(entry.id)}</div><h3>${entry.name}</h3>
       <p>Omnic Master · ${getStarter(entry.character).name}</p>${conduitElementLabel(getStarter(entry.character).elementId)}<p class="archive-ownership">${account ? account.masterConduits?.[entry.id] === 1 ? 'Owned' : 'Not owned' : 'Ownership unavailable'}</p>
-      <p class="archive-effect">${readableEffect(entry.effect)}</p><p>Choose from a ${masterChest.name}. Final Machines boss: ${masterChest.chance * 100}% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Character-specific; cannot be upgraded.</p>
-      ${information(`archive-master-${entry.id}`, entry.name, `${conduitElementLabel(getStarter(entry.character).elementId)}${conduitLore(entry.lore)}<p>${readableEffect(entry.effect)}</p>`, 'Details')}
+      <p class="archive-effect">${readableEffect(escapeDialogText(radiantMasterEffect(entry.id)))}</p><p>Choose from a ${masterChest.name}. Final Machines boss: ${masterChest.chance * 100}% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Character-specific; cannot be upgraded.</p>
+      ${information(`archive-master-${entry.id}`, entry.name, `${conduitElementLabel(getStarter(entry.character).elementId)}${conduitLore(entry.lore)}<p>${readableEffect(escapeDialogText(radiantMasterEffect(entry.id)))}</p>`, 'Details')}
     </article>`).join('')}</div>`;
 }
 

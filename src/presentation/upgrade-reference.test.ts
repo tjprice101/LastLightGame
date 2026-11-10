@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { radiantBearerKits } from '../content/radiant-combat';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { creatureSaleOffer, emptyAccount } from '../game/account';
 import { getStarter, starters } from '../content/starters';
@@ -255,7 +256,7 @@ describe('reference Team upgrade presentation', () => {
     expect(host.querySelector('[data-open-loadout]')).not.toBeNull();
     expect(account).toEqual(before);
   });
-  it('switches sub-menus in place and shows ability details only in their dialog', () => {
+  it('switches sub-menus in place and shows exact Radiant ability details inline', () => {
     const account = emptyAccount();
     account.characters.tide = { level: 0, evolution: 1 };
     account.squad = ['tide'];
@@ -266,18 +267,13 @@ describe('reference Team upgrade presentation', () => {
     const header = host.querySelector('.ref-character-header');
     const portrait = header?.querySelector('img');
     const navigation = host.querySelector('.ref-character-submenus');
-    const button = host.querySelector<HTMLButtonElement>('[data-information="character-tide-skill1"]')!;
-    const dialog = host.querySelector<HTMLDialogElement>('#character-tide-skill1')!;
-    dialog.showModal = vi.fn(() => dialog.setAttribute('open', ''));
-    dialog.close = vi.fn(() => dialog.removeAttribute('open'));
-    expect(button.textContent).not.toContain('Elemental Gauge');
-    button.click();
-    expect(dialog.showModal).toHaveBeenCalledOnce();
-    expect(dialog.textContent).toContain('Costs 25 [Elemental Gauge]');
-    expect(dialog.querySelector('[data-close-information]')?.getAttribute('aria-label')).toBe('Close Skill 1 details');
-    expect(dialog.querySelector('[data-close-information]')?.textContent).toBe('×');
-    dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
-    expect(dialog.close).toHaveBeenCalledOnce();
+    const glowing = host.querySelector<HTMLElement>('[data-radiant-flare="glowing"]')!;
+    expect(glowing.textContent).toContain(`Costs ${radiantBearerKits.tide.baseCost} personal charge.`);
+    expect(host.querySelector('[data-radiant-flare="lustrous"]')?.classList.contains('is-locked')).toBe(true);
+    expect(host.querySelector('.radiant-passive')?.textContent).toContain(radiantBearerKits.tide.passive.name);
+    expect(host.querySelector('.radiant-leader')?.textContent).toContain(radiantBearerKits.tide.leader);
+    expect(host.textContent).not.toContain('Elemental Gauge');
+    expect(host.querySelector('[data-information="character-tide-skill1"]')).toBeNull();
     updateCharacterTab(host, getStarter('tide'), 'upgrade-1', account);
     expect(host.querySelector('.ref-growth-detail')).not.toBeNull();
     expect(host.querySelector('.ref-growth-action [data-max-level]')).not.toBeNull();
@@ -318,11 +314,12 @@ describe('reference Team upgrade presentation', () => {
           const row = Array.from(resources.querySelectorAll('li')).find(row => row.querySelector('strong')?.textContent === materialName(id));
           expect(row?.querySelector('span')?.textContent).toBe(`0 / ${amount}`);
         }
-        expect(host.querySelectorAll('.upgrade-stat-preview > span')).toHaveLength(10);
+        const statRows = characterReleased(starter.id) ? 4 : 0;
+        expect(host.querySelectorAll('.upgrade-stat-preview > span')).toHaveLength(statRows);
         const preview = host.querySelector('.upgrade-benefits > .ref-growth-preview');
         expect(preview).not.toBeNull();
         expect(preview?.querySelector('.ref-growth-preview-heading')?.textContent).toBe(tab === 'upgrade-0' ? 'Stat & form preview' : 'Level & stat preview');
-        expect(preview?.querySelectorAll('.upgrade-stat-preview > span')).toHaveLength(10);
+        expect(preview?.querySelectorAll('.upgrade-stat-preview > span')).toHaveLength(statRows);
         expect(host.querySelector('.upgrade-benefits details')).toBeNull();
         expect(host.querySelector('.ref-growth-detail')).not.toBeNull();
         expect(host.querySelectorAll('.upgrade-benefits h3')).toHaveLength(1);

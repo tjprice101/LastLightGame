@@ -1,14 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import { emptyAccount, ownedProgress } from '../game/account';
 import { createCreatureCopy, resolveCapturedFighter } from '../game/character-instances';
-import { resolveFighter } from '../content/combat';
 import { upgradeResult } from './upgrade-result';
 import { statChange } from './stat-change';
 import { characterArt } from '../content/character-art';
-import { phaseZeroStatKeys } from '../content/phase-zero-stats';
+import { resolveRadiantStarterStats } from '../content/radiant-combat';
+import { radiantCharacterLoadout, radiantStatKeys } from './radiant-character';
+import type { Account } from '../game/account';
+
+const radiant = (account: Account, id: string) => resolveRadiantStarterStats(radiantCharacterLoadout(account, id)!.loadout);
 
 describe('saved upgrade stat results', () => {
-  it('shows all ten actual equipped stats for a single level without changing either account', () => {
+  it('shows the four actual equipped Radiant stats for a single level without changing either account', () => {
     const before = emptyAccount();
     before.characters.ember = { level: 0, evolution: 1, weaponRank: 2 };
     before.conduits = { 'vigil-core': 1 };
@@ -17,17 +20,18 @@ describe('saved upgrade stat results', () => {
     after.characters.ember = { ...ownedProgress(before, 'ember'), level: 1 };
     const snapshot = structuredClone({ before, after });
     const result = upgradeResult(before, after, 'ember', 'level');
-    const from = resolveFighter('ember', before.characters.ember, before.conduitEquipment.ember).stats;
-    const to = resolveFighter('ember', after.characters.ember, after.conduitEquipment?.ember).stats;
+    const from = radiant(before, 'ember');
+    const to = radiant(after, 'ember');
     expect(result.title).toBe('Level up!');
     expect(result.savedLabel).toBe('Upgrade saved');
     expect(result.details).toContain('Level 0 → 1');
-    const keys = phaseZeroStatKeys;
+    const keys = radiantStatKeys;
     const changed = keys.filter(key => from[key] !== to[key]);
     expect(changed.length).toBeGreaterThan(0);
     expect(result.details.match(/<article /g)).toHaveLength(changed.length);
-    expect(result.details.match(/<li>/g) ?? []).toHaveLength(10 - changed.length);
-    expect(result.details).toContain(statChange(from.health, to.health));
+    expect(result.details.match(/<li>/g) ?? []).toHaveLength(4 - changed.length);
+    expect(result.details).toContain(statChange(from.hp, to.hp));
+    expect(result.details).not.toContain('Skill Power');
     expect(result.details).not.toContain('&rarr; <b class="stat-change stat-change--unchanged"');
     expect(result.details).not.toContain('>+0x<');
     expect(result.details).not.toContain('>+0<');
@@ -54,8 +58,7 @@ describe('saved upgrade stat results', () => {
     after.characters.tide = { ...ownedProgress(before, 'tide'), level: 17 };
     const result = upgradeResult(before, after, 'tide', 'level');
     expect(result.details).toContain('Level 3 → 17');
-    expect(result.details).toContain(statChange(resolveFighter('tide', before.characters.tide).stats.damage,
-      resolveFighter('tide', after.characters.tide).stats.damage));
+    expect(result.details).toContain(statChange(radiant(before, 'tide').attack, radiant(after, 'tide').attack));
   });
 
   it('supports single and bulk captured-copy leveling with that copy’s actual stats and identity', () => {
@@ -87,8 +90,8 @@ describe('saved upgrade stat results', () => {
     expect(result.details).not.toContain('<article ');
     expect(result.details).toContain('No stat changes.');
     expect(result.details.match(/stat-change--unchanged">Unchanged/g)).toHaveLength(1);
-    expect(result.details.match(/<li>/g)).toHaveLength(10);
-    expect(result.details).toContain('<li><span>Critical Damage Multiplier</span>');
+    expect(result.details.match(/<li>/g)).toHaveLength(4);
+    expect(result.details).toContain('<li><span>Recovery</span>');
     expect(result.details).not.toContain('stat-change--increase');
   });
 

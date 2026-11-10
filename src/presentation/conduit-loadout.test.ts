@@ -1,4 +1,6 @@
 // @vitest-environment jsdom
+import { radiantConduitDescription, radiantConduitEffectLines, radiantSummedConduitEffects } from '../content/radiant-conduit-text';
+import { radiantGearAmount } from '../content/radiant-conduits';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { emptyAccount, type Account } from '../game/account';
 import { createCreatureCopy } from '../game/character-instances';
@@ -7,7 +9,7 @@ import { conduits, getConduit, conduitEffect } from '../content/conduits';
 import { referenceTeam } from './reference-team';
 import { updateCharacterTab } from './hub';
 import { getStarter } from '../content/starters';
-import { referencedEffect } from './effect-copy';
+import { readableEffect, referencedEffect } from './effect-copy';
 
 function account(): Account {
   return { ...emptyAccount(), characters: { ember: { level: 12, evolution: 1 }, tide: { level: 20, evolution: 1 } }, squad: ['ember', 'tide'],
@@ -74,7 +76,7 @@ describe('Conduit loadout (D-229)', () => {
     expect(html).toContain('Equipped on this character');
     expect(html).toContain('data-loadout-equip="vigil-core" data-loadout-owner="ember" data-loadout-target="1" >');
     expect(html).toMatch(/data-loadout-equip="ward-stitch-spool"[^>]*disabled/);
-    expect(html).toContain('Element mismatch');
+    expect(html).toContain('Requires Oceanic');
     const full = account();
     full.conduitEquipment = { ember: conduits.filter((entry) => !entry.element && entry.id !== 'vigil-core').slice(0, 8).map((entry) => entry.id) };
     const fullHtml = conduitLoadout('ember', 'Infernis', 'infernic', full);
@@ -83,46 +85,27 @@ describe('Conduit loadout (D-229)', () => {
     expect(fullHtml).toContain('All slots full');
   });
 
-  it('totals actual stat changes with before and after values', () => {
+  it('sums equipped Radiant effects at their saved ranks', () => {
     const wallet = account();
     wallet.conduitEquipment = { ember: ['vigil-core', null, null, null, null, null, null, null] };
-    const html = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
-    expect(html).toContain('Total bonuses');
-    expect(html).toMatch(/<span>Health<\/span><strong><span class="stat-change stat-change--increase">\+100%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--increase">[\d,.]+<\/span><\/strong>/);
-    expect(conduitLoadout('tide', 'Tizu', 'oceanic', account())).toContain('No stat changes yet');
-  });
-
-  it('marks actual penalties red and gains green without changing the displayed values', () => {
-    const wallet = account();
-    wallet.conduitEquipment = { ember: ['wardglass-transformer', 'siegebound-drive', null, null, null, null, null, null] };
-    wallet.conduitUpgrades = {};
-    const html = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
-    expect(html).toMatch(/<span>Direct Attack<\/span><strong><span class="stat-change stat-change--increase">\+17.5%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--increase">[\d,.]+<\/span><\/strong>/);
-    expect(html).toMatch(/<span>Defense<\/span><strong><span class="stat-change stat-change--decrease">-35%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--decrease">[\d,.]+<\/span><\/strong>/);
-  });
-
-  it('colors net results relative to the unequipped base, not an individual penalty', () => {
-    const wallet = account();
-    wallet.conduitEquipment = { ember: ['wardglass-transformer', 'bastion-lock', null, null, null, null, null, null] };
-    wallet.conduitUpgrades = { 'bastion-lock': 5, 'astral-prism': 5 };
     const dom = document.createElement('div');
     dom.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
-    const defense = Array.from(dom.querySelectorAll('.loadout-bonus-row')).find(row => row.firstElementChild?.textContent === 'Defense')!;
-    expect(defense.querySelectorAll('.stat-change--increase')).toHaveLength(2);
-    expect(defense.querySelector('.stat-change--decrease')).toBeNull();
-    expect(defense.querySelector('.loadout-base-stat')?.classList.contains('stat-change')).toBe(false);
-    wallet.conduitUpgrades = { 'bastion-lock': 0, 'astral-prism': 5 };
-    wallet.conduitEquipment = { ember: ['wardglass-transformer', null, null, null, null, null, null, null] };
-    const lower = document.createElement('div');
-    lower.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
-    const lowerDefense = Array.from(lower.querySelectorAll('.loadout-bonus-row')).find(row => row.firstElementChild?.textContent === 'Defense')!;
-    expect(lowerDefense.querySelectorAll('.stat-change--decrease')).toHaveLength(2);
-    wallet.conduitEquipment = {};
-    const equal = document.createElement('div');
-    equal.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
-    expect(equal.querySelectorAll('.stat-change')).toHaveLength(0);
+    expect(dom.querySelector('.loadout-bonus-heading')?.textContent).toBe('Combined effects');
+    expect(dom.querySelector('[data-radiant-effect="hp"]')?.textContent).toBe('Maximum [Health] +20%.');
+    expect(conduitLoadout('tide', 'Tizu', 'oceanic', account())).toContain('No combined modifiers yet');
+    wallet.conduitEquipment = { ember: ['wardglass-transformer', 'bastion-lock', null, null, null, null, null, null] };
+    wallet.conduitUpgrades = { 'bastion-lock': 5 };
+    dom.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
+    const gear = [{ id: 'wardglass-transformer', rank: 0 }, { id: 'bastion-lock', rank: 5 }] as const;
+    for (const kind of radiantSummedConduitEffects) {
+      const amount = radiantGearAmount([...gear], kind);
+      const row = dom.querySelector(`[data-radiant-effect="${kind}"]`);
+      if (!amount) expect(row).toBeNull();
+      else expect(row?.textContent?.replace(/[[\]]/g, '')).toBe(readableEffect(radiantConduitDescription({ kind, amount })));
+    }
+    expect(dom.querySelectorAll('[data-radiant-effect]').length).toBeGreaterThan(0);
+    expect(wallet.conduitUpgrades).toEqual({ 'bastion-lock': 5 });
   });
-
   it.each([
     ['siegebound-drive', '  SIEGEBOUND  ', true],
     ['siegebound-drive', 'interlocking gears', true],
@@ -182,9 +165,8 @@ describe('Conduit loadout (D-229)', () => {
   });
 
   it('formats compact buff lines and counts filled slots', () => {
-    expect(conduitBuffLine(getConduit('parallax-relay'))).toBe('+50% Health');
-    expect(conduitBuffLine(getConduit('precision-escapement'))).toBe('+10% Critical Damage Multiplier');
-    expect(conduitBuffLine(getConduit('vigil-core'), 2)).toBe('+120% Health');
+    expect(conduitBuffLine(getConduit('parallax-relay'))).toBe(radiantConduitEffectLines('parallax-relay').map(line => line.replace(/\.$/, '')).join(' · '));
+    expect(conduitBuffLine(getConduit('vigil-core'), 2)).toBe('Maximum Health +24%');
     expect(filledConduitSlots('ember', account())).toBe(1);
     expect(filledConduitSlots('tide', account())).toBe(0);
   });
@@ -276,7 +258,8 @@ describe('Conduit loadout (D-229)', () => {
     expect(loadout.querySelector('.ref-master-slot.loadout-master [data-master-equipment="ember"]')).not.toBeNull();
     expect(loadout.querySelector('[data-loadout-master-rule="master-ember-1"]')).not.toBeNull();
     expect(loadout.querySelectorAll('.loadout-grid > [data-loadout-slot]')).toHaveLength(8);
-    expect(loadout.querySelector('.loadout-bonuses')?.textContent).toContain('Direct Attack+21%');
+    expect(loadout.querySelector('.loadout-bonuses')?.textContent).toContain('Combined effects');
+    expect(loadout.querySelectorAll('.loadout-bonuses [data-radiant-effect]').length).toBeGreaterThan(0);
     expect(host.querySelectorAll('.loadout-slot.is-empty .loadout-slot-plus [data-conduit-slot]')).toHaveLength(7);
     expect(host.querySelector('[data-loadout-unequip="0"]')?.textContent).toBe('Remove');
     expect(host.querySelector('.loadout-owned-list.ref-scroll')).toBeNull();
@@ -410,7 +393,7 @@ describe('Conduit loadout (D-229)', () => {
     expect(vigil().disabled).toBe(false);
     const mismatch = host.querySelector<HTMLButtonElement>('[data-loadout-equip="ward-stitch-spool"]')!;
     expect(mismatch.disabled).toBe(true);
-    expect(mismatch.closest('[data-loadout-conduit]')?.querySelector('[data-loadout-reason]')?.textContent).toBe('Element mismatch');
+    expect(mismatch.closest('[data-loadout-conduit]')?.querySelector('[data-loadout-reason]')?.textContent).toBe('Requires Oceanic');
   });
 
   it('keeps no-account equip buttons disabled even when a target is chosen', () => {

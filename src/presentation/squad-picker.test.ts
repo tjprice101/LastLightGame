@@ -27,31 +27,30 @@ function setup() {
 }
 
 describe('squad member picker', () => {
-  it('keeps bearer and captured progress within their respective formation cards', () => {
+  it('leaves legacy captured members out of the draft and explains the replacement', () => {
     const { host } = setup();
     const cards = host.querySelectorAll<HTMLElement>('.squad-slot .squad-card-copy');
-    expect(cards[0].querySelector('small')?.textContent).toContain('Oceanic · Lv.0 · Evo.1');
-    expect(cards[1].querySelector('small')?.textContent).toContain('Infernic · Lv.5 · Evo.1');
-    expect(cards[2].querySelector('small')?.textContent).toContain('Tranquilitic · Lv.60');
+    expect(cards[0].querySelector('small')?.textContent).toContain('Lv.0');
+    expect(cards[1].querySelector('small')?.textContent).toContain('Lv.5');
+    expect(cards[2].textContent).toContain('Optional squad member');
+    expect(host.querySelector('.squad-replaced')?.textContent).toContain('captured Elemental-Devourers');
   });
 
-  it('filters captured copies by text without changing the saved squad', () => {
+  it('lists only acquired Element-Bearers and filters them by text without changing the saved squad', () => {
     const { host, dialog, account, capturedId } = setup();
     const before = structuredClone(account);
     host.querySelector<HTMLButtonElement>('[data-squad-open="0"]')!.click();
-    dialog.querySelector<HTMLButtonElement>('[data-squad-filter="creatures"]')!.click();
+    expect(dialog.querySelector('[data-squad-filter="creatures"]')).toBeNull();
+    const picks = Array.from(dialog.querySelectorAll<HTMLButtonElement>('[data-squad-pick]')).map(card => card.dataset.squadPick);
+    expect(picks).not.toContain(capturedId);
+    expect(picks).toEqual(expect.arrayContaining(['tide', 'ember']));
     const search = dialog.querySelector<HTMLInputElement>('[data-squad-search-input]')!;
     search.value = 'gleamstone';
-    search.dispatchEvent(new Event('input', { bubbles: true }));
-    const visible = Array.from(dialog.querySelectorAll<HTMLButtonElement>('[data-squad-pick]')).filter(card => !card.hidden);
-    expect(visible.map(card => card.dataset.squadPick)).toEqual([capturedId]);
-    search.value = 'no matching member';
     search.dispatchEvent(new Event('input', { bubbles: true }));
     expect(Array.from(dialog.querySelectorAll<HTMLButtonElement>('[data-squad-pick]')).every(card => card.hidden)).toBe(true);
     expect(dialog.querySelector<HTMLElement>('[data-squad-picker-empty]')!.hidden).toBe(false);
     expect(account).toEqual(before);
   });
-
   it('closes on Escape, restores the initiating control and leaves the draft unchanged', () => {
     const { host, dialog, account } = setup();
     const before = structuredClone(account);

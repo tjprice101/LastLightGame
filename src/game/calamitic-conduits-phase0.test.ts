@@ -9,7 +9,7 @@ vi.mock('../content/phase-zero-stats', async importOriginal => ({
 import { approvedConduitAbility } from '../content/phase-zero-conduit-catalog';
 import { applyPhaseZeroStaticBonuses } from '../content/phase-zero-conduit-stats';
 import { calamiticConduits, calamiticPower } from '../content/calamitic-conduits';
-import { conduitEffect, conduitEquipReason, conduits, normalizeLegacyCalamiticSlots,
+import { legacyConduitEffect, conduitEquipReason, conduits, normalizeLegacyCalamiticSlots,
   validateConduitSlots, type ConduitId, type ConduitSlots } from '../content/conduits';
 import { resolveFighter } from '../content/combat';
 import { ACCOUNT_KEY, emptyAccount, equipConduit, loadAccount, purchaseConduit,
@@ -80,7 +80,7 @@ for (const id of phaseFour) describe(`D-435 approved values: ${id}`, () => {
   });
 
   it.each([0, 1, 2, 3, 4, 5])('uses the approved effect text at +%i', level => {
-    const effect = conduitEffect(conduits.find(entry => entry.id === id)!, level);
+    const effect = legacyConduitEffect(conduits.find(entry => entry.id === id)!, level);
     expect(approvedConduitAbility(id)).toBeDefined();
     for (const maximum of maxValues[id]) {
       const expected = Number((maximum / 1.5 * (1 + level * .1)).toFixed(8));

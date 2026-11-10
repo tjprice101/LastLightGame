@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { approvedConduitCatalog } from './phase-zero-conduit-catalog';
 import { phaseZeroUpgradedAbility, phaseZeroUpgradePercentages } from './phase-zero-conduit-upgrades';
-import { conduits, conduitEffect } from './conduits';
+import { conduits, legacyConduitEffect } from './conduits';
 import { masterConduits } from './master-conduits';
 import { moonSunshadeMasters } from './moon-sunshade-masters';
 import { calamiticEffect, isCalamiticConduitId } from './calamitic-conduits';
@@ -56,7 +56,7 @@ describe('approved ability upgrade presentation', () => {
           : entry.id === 'calamitic-causality-funeral-engine' && index === 0 ? 50 + 2 * level
           : value * (expectedIndices.includes(index) ? 1 + level * .1 : 1), 8));
       expect(actual.replace(/([+-]?\d+(?:\.\d+)?)%/g, '%')).toBe(base.replace(/([+-]?\d+(?:\.\d+)?)%/g, '%'));
-      expect(conduitEffect(entry, level)).toBe(actual);
+      expect(legacyConduitEffect(entry, level)).toBe(actual);
       if (isCalamiticConduitId(entry.id)) expect(calamiticEffect(entry.id, level)).toBe(actual);
     });
   });

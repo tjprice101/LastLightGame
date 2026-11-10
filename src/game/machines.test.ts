@@ -1,6 +1,7 @@
 import { machineRules, machineConduitChance, machineDropRatesText } from '../content/machines';
 import { describe, expect, it, vi } from 'vitest';
-import { conduits, conduitBuffs, conduitEffect, validateConduitSlots, type ConduitId, type ConduitSlots } from '../content/conduits';
+import { conduits, conduitBuffs, conduitEffect, legacyConduitEffect, validateConduitSlots, type ConduitId, type ConduitSlots } from '../content/conduits';
+import { radiantConduitEffectText } from '../content/radiant-conduit-text';
 import { elements, infusionStageCount } from '../content/activities';
 import { enemyGrowth } from '../content/stat-growth';
 import { infusionEncounter } from '../content/infusions';
@@ -105,7 +106,8 @@ describe('machine content and exact probabilities', () => {
       for (const conduit of pool) {
         const buffs = conduitBuffs(conduit);
         expect(new Set(buffs.map((entry) => entry.stat)).size).toBe(buffs.length);
-        expect(conduitEffect(conduit)).toBe(conduit.effect);
+        expect(legacyConduitEffect(conduit)).toBe(conduit.effect);
+        expect(conduitEffect(conduit)).toBe(radiantConduitEffectText(conduit.id));
         if (rarity === 'Omnic') expect(buffs).toEqual([]);
         if (rarity !== 'Common') expect(conduit.price).toBeNull();
       }

@@ -1,3 +1,4 @@
+import { radiantMasterEffect } from './presentation/radiant-master-text';
 import { starters as allStarters, getStarter, isStarterId, starterVow, type StarterId } from './content/starters';
 import { characterArt, characterName } from './content/character-art';
 import { elementAccents, materialArt, materialName, dungeonArt } from './content/dungeon-art';
@@ -505,7 +506,7 @@ function equipment(): string {
   }).join('')}</div>`)}
     ${glass('Personal Master', state.capture ? '<p>Master Conduits are exclusive to their matching Element-Bearer.</p>' : `<div class="master-slot">${(() => {
       const master = masterConduits.find(entry => entry.id === account().masterEquipment?.[state.selected]);
-      return `${master ? image(master.art?.replace(/\.png$/, '') ?? '', master.name) : uiIcon('inventory')}<div><h3>${master?.name ?? 'Empty Master slot'}</h3><p>${esc(master?.effect ?? 'Equip one owned, character-specific Master separately from the eight ordinary slots.')}</p></div>`;
+      return `${master ? image(master.art?.replace(/\.png$/, '') ?? '', master.name) : uiIcon('inventory')}<div><h3>${master?.name ?? 'Empty Master slot'}</h3><p>${esc((master ? radiantMasterEffect(master.id) : null) ?? 'Equip one owned, character-specific Master separately from the eight ordinary slots.')}</p></div>`;
     })()}<button class="pill" data-action="master-picker">Choose Master</button></div>`)}${button('Your Conduits', 'loadouts')}`);
 }
 const activityCards: readonly [string, string, string, Screen][] = [
@@ -1062,7 +1063,7 @@ root.addEventListener('click', event => perform(() => {
       break;
     }
     case 'master-picker': dialog('Choose Personal Master', `<button class="pill" data-action="master-equip">Unequip Master</button><div class="equipment-picker">${masterConduits.filter(entry => entry.character === state.selected && account().masterConduits?.[entry.id]).map(entry =>
-      `<button class="item-card" data-action="master-equip" data-master="${entry.id}">${image(entry.art?.replace(/\.png$/, '') ?? '', entry.name)}<strong>${entry.name}</strong><small>${esc(entry.effect)}</small></button>`).join('') || '<p>No matching Master owned. Choose one from a Machine’s Master Chest.</p>'}</div>`); break;
+      `<button class="item-card" data-action="master-equip" data-master="${entry.id}">${image(entry.art?.replace(/\.png$/, '') ?? '', entry.name)}<strong>${entry.name}</strong><small>${esc(radiantMasterEffect(entry.id))}</small></button>`).join('') || '<p>No matching Master owned. Choose one from a Machine’s Master Chest.</p>'}</div>`); break;
     case 'master-equip': {
       const master = masterConduits.find(entry => entry.id === target.dataset.master);
       equipMasterConduit(session.storage, state.selected, master?.id ?? null);
@@ -1163,7 +1164,7 @@ root.addEventListener('click', event => perform(() => {
     case 'details': {
       const conduit = conduits.find(entry => entry.name === name);
       const master = masterConduits.find(entry => entry.name === name);
-      dialog(esc(name), `<p>${conduit ? readableEffect(conduitEffect(conduit, account().conduitUpgrades?.[conduit.id] ?? 0)) : esc(master?.effect ?? name)}</p>
+      dialog(esc(name), `<p>${conduit ? readableEffect(conduitEffect(conduit, account().conduitUpgrades?.[conduit.id] ?? 0)) : esc((master ? radiantMasterEffect(master.id) : null) ?? name)}</p>
         <p class="muted">${esc(conduit?.lore ?? master?.lore ?? 'Used for character growth. View owned quantities in Inventory.')}</p><button class="pill primary" data-action="close">Back to browsing</button>`);
       break;
     }
@@ -1198,7 +1199,7 @@ root.addEventListener('click', event => perform(() => {
     case 'master-claim': {
       const master = masterConduits.find(entry => entry.id === target.dataset.master);
       if (!master) throw new Error('Choose a valid Master.');
-      confirmAction(master.name, `<p>Use one Machine’s Master Chest to acquire this Master. It will not be automatically equipped.</p><p>${esc(master.effect)}</p>`, () => {
+      confirmAction(master.name, `<p>Use one Machine’s Master Chest to acquire this Master. It will not be automatically equipped.</p><p>${esc(radiantMasterEffect(master.id))}</p>`, () => {
         openMasterChest(session.storage, master.id);
         const art = master.art?.replace(/\.png$/, '') ?? '';
         state.revealItems = [{ art, name: master.name, detail: 'Personal Master acquired' }];

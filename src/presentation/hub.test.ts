@@ -8,6 +8,12 @@ import { characterArt, characterName } from '../content/character-art';
 import { nativeIdentities } from '../content/native-identities';
 import { formatStat, resolveFighter } from '../content/combat';
 import { createCreatureCopy } from '../game/character-instances';
+import { radiantBearerKits, resolveRadiantStarterStats } from '../content/radiant-combat';
+import { radiantCharacterLoadout } from './radiant-character';
+import type { Account } from '../game/account';
+
+const radiantStats = (account: Account | null, id: string, override?: { level?: number; evolution?: number }) =>
+  resolveRadiantStarterStats(radiantCharacterLoadout(account, id, override)!.loadout);
 
 describe('game-specific hub layouts', () => {
   it.each(['ozriel', 'ilvaris', 'kaelith'] as const)('%s displays Evo.2 as Uncommon and Evo.7 as Calamitic', (id) => {
@@ -41,8 +47,12 @@ describe('game-specific hub layouts', () => {
     const before = structuredClone(account);
     const level = characterDetail(starters[0], 'upgrade-1', account);
     expect(level).toContain('stat-change--increase');
-    expect(level).toContain('220 &rarr;');
-    expect(level).toContain('253</b>');
+    const from = radiantStats(account, 'ember');
+    const to = radiantStats(account, 'ember', { level: 1 });
+    expect(level).toContain(`${formatStat(from.hp)} &rarr;`);
+    expect(level).toContain(`${formatStat(to.hp)}</b>`);
+    expect(level).toContain('data-radiant-stat="recovery"');
+    expect(level).not.toContain('Critical Rate');
     expect(level).toContain('aria-label="Increased to');
     expect(level).toContain('resource-missing');
     account.fractalis = 10000;
@@ -92,11 +102,14 @@ describe('game-specific hub layouts', () => {
     account.fractalis = Number.MAX_SAFE_INTEGER;
     account.lycalis = Number.MAX_SAFE_INTEGER;
     account.materials = { 'infernic-common': Number.MAX_SAFE_INTEGER };
-    for (const html of [homeHub(starters[0], false, account), characterDetail(starters[0], 'overview', account)]) {
-      expect(html).toContain('<strong>5335</strong>');
-      expect(html).toContain('<strong>1843</strong>');
-      expect(html).toContain('<strong>93.17</strong>');
-    }
+    const legacy = homeHub(starters[0], false, account);
+    expect(legacy).toContain('<strong>5335</strong>');
+    expect(legacy).toContain('<strong>1843</strong>');
+    expect(legacy).toContain('<strong>93.17</strong>');
+    const radiant = radiantStats(account, 'ember');
+    const overview = characterDetail(starters[0], 'overview', account);
+    for (const key of ['hp', 'attack', 'defense', 'recovery'] as const) expect(overview).toContain(`<strong>${formatStat(radiant[key])}</strong>`);
+    expect(overview).not.toContain('e+');
     expect(inventoryHub(account).match(/9007199254740991/g)).toHaveLength(4);
   });
   it.each(starters)('$name uses its real art, stats, passive, and ability costs', (starter) => {
@@ -110,9 +123,13 @@ describe('game-specific hub layouts', () => {
     expect(home).toContain('data-page="squad"');
     expect(home).toContain('data-page="summon"');
     const overview = characterHub(starter, 'overview');
-    expect(overview).toContain('Costs 25 Elemental Gauge');
-    expect(overview).toContain('Costs 40 Elemental Gauge');
-    expect(overview).toContain('Costs 100 Elemental Gauge');
+    const kit = radiantBearerKits[starter.id as keyof typeof radiantBearerKits];
+    expect(overview).toContain(`Costs ${kit.baseCost} personal charge.`);
+    expect(overview).toContain(kit.passive.name);
+    expect(overview).toContain(kit.leader);
+    for (const tier of ['Glowing Flare', 'Lustrous Flare', 'Eternal Radiant Flare']) expect(overview).toContain(tier);
+    expect(overview).toContain('Unlocks at Evo.');
+    expect(overview).not.toContain('Elemental Gauge');
     if (starter.id === 'tide') expect(home).toContain(`<strong>${formatStat(resolveFighter('tide').stats.defense)}</strong>`);
   });
   it('offers overview, seven upgrade areas, and inventory with real progression costs', () => {
@@ -160,12 +177,14 @@ describe('game-specific hub layouts', () => {
     const home = homeHub(starter, false);
     expect(home.slice(0, home.indexOf('<dialog'))).not.toContain('Attack Damage');
     expect(home).toContain('data-information="home-information"');
-    for (const html of [homeHub(starter, false), characterDetail(starter, 'overview')]) {
-      for (const label of ['Elemental Gauge Capacity', 'Health', 'Defense', 'Direct Attack', 'Critical Rate', 'Critical Damage Multiplier', 'Skill Power', 'Skill Duration', 'Skill Efficiency', 'Elemental Gauge Gain']) {
-        expect(html).toContain(label);
-      }
-      expect(html).toContain('1.5x');
+    for (const label of ['Elemental Gauge Capacity', 'Health', 'Defense', 'Direct Attack', 'Critical Rate', 'Critical Damage Multiplier', 'Skill Power', 'Skill Duration', 'Skill Efficiency', 'Elemental Gauge Gain']) {
+      expect(home).toContain(label);
     }
+    const overview = characterDetail(starter, 'overview');
+    for (const label of ['HP', 'Attack', 'Defense', 'Recovery']) expect(overview).toContain(`<small>${label}</small>`);
+    for (const label of ['Critical Rate', 'Skill Power', 'Elemental Gauge Capacity']) expect(overview).not.toContain(label);
+    expect(overview).toContain('Attunement · Equinox');
+    expect(overview).toContain('Balanced: all four stats ×1. No personal Master equipped.');
   });
 
   it('renders tab details independently without replacing the character or navigation', () => {
@@ -208,17 +227,19 @@ describe('game-specific hub layouts', () => {
     expect(hub.indexOf('class="character-control-panel"')).toBeLessThan(hub.indexOf('class="hub-rail"'));
     expect(hub).toContain(`<span data-owned-title>${characterName(starter.id)}</span>`);
     const overview = characterDetail(starter, 'overview');
-    for (const heading of ['Stats', 'Skills', 'Growth', 'Conduits']) {
+    for (const heading of ['Stats', 'Abilities', 'Flares', 'Growth', 'Conduits']) {
       expect(overview).toContain(`>${heading}</h3>`);
     }
-    expect(overview.match(/class="hub-ability"/g)).toHaveLength(4);
+    expect(overview).not.toContain('>Skills</h3>');
+    expect(overview).not.toContain('Last Flare');
+    expect(overview.match(/class="hub-ability /g)).toHaveLength(7);
     for (const id of ['upgrade-0', 'upgrade-1']) {
       const detail = characterDetail(starter, id);
       expect(detail).toContain('class="character-upgrade-grid"');
       expect(detail).toContain('Required resources');
       expect(detail).toContain('Owned / Required');
       expect(detail.match(/id="upgrade-result"/g)).toHaveLength(1);
-      expect(detail.match(/<span><small>/g)).toHaveLength(10);
+      expect(detail.match(/data-radiant-stat="/g)).toHaveLength(4);
     }
     expect(isCharacterTab('upgrade-2')).toBe(false);
     expect(() => characterDetail(starter, 'upgrade-2')).toThrow('Unknown character upgrade area');
@@ -266,7 +287,8 @@ describe('game-specific hub layouts', () => {
     expect(evolve).not.toContain('PREVIEW');
     expect(evolve).not.toContain('Materials coming later');
     expect(characterDetail(starters[0], 'upgrade-1', account)).toContain('Level cap reached');
-    expect(characterDetail(starters[0], 'overview', account)).toContain(nativeIdentities.ember.abilities.skill1.description);
+    expect(characterDetail(starters[0], 'overview', account)).toContain(radiantBearerKits.ember.passive.description);
+    expect(characterDetail(starters[0], 'overview', account)).not.toContain(nativeIdentities.ember.abilities.skill1.description);
     expect(homeHub(starters[0], false, account)).toContain('Lv.30 · Evo.1');
     account.characters.ember = { level: 105, evolution: 6 };
     expect(characterDetail(starters[0], 'upgrade-0', account)).toContain('Final evolution reached');
@@ -291,11 +313,15 @@ describe('game-specific hub layouts', () => {
   it('shows fractional growth consistently on Home, Overview and upgrade previews', () => {
     const account = emptyAccount();
     const preview = characterDetail(starters[0], 'upgrade-1', account);
-    for (const change of ['10 &rarr; 11.03', '76 &rarr; 87.4', '150% &rarr; 150%']) expect(preview.replace(/<[^>]*>/g, '')).toContain(change);
+    const from = radiantStats(null, 'ember');
+    const to = radiantStats(null, 'ember', { level: 1 });
+    for (const key of ['hp', 'attack', 'defense', 'recovery'] as const)
+      expect(preview.replace(/<[^>]*>/g, '')).toContain(`${formatStat(from[key])} &rarr; ${formatStat(to[key])}`);
     account.characters.ember = { level: 1, evolution: 1 };
-    for (const html of [homeHub(starters[0], false, account), characterDetail(starters[0], 'overview', account)]) {
-      for (const value of ['11.03', '87.4', '150%']) expect(html).toContain(`<strong>${value}</strong>`);
-      expect(html).not.toContain('000000000');
-    }
+    const legacy = homeHub(starters[0], false, account);
+    for (const value of ['11.03', '87.4', '150%']) expect(legacy).toContain(`<strong>${value}</strong>`);
+    const overview = characterDetail(starters[0], 'overview', account);
+    for (const key of ['hp', 'attack', 'defense', 'recovery'] as const) expect(overview).toContain(`<strong>${formatStat(to[key])}</strong>`);
+    expect(overview).not.toContain('000000000');
   });
 });

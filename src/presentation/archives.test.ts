@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { archives } from './archives';
 import { emptyAccount } from '../game/account';
-import { conduits } from '../content/conduits';
+import { conduits, conduitEffect } from '../content/conduits';
 import { masterConduits as allMasters } from '../content/master-conduits';
 import { elements } from '../content/activities';
 import { starters as allStarters } from '../content/starters';
@@ -92,7 +92,7 @@ describe('unified Archives', () => {
     for (const conduit of conduits) {
       expect(html).toContain(`data-archive-conduit="${conduit.id}"`);
       expect(html).toContain(`class="archive-card ${conduit.id === 'bastion-lock' ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-conduit="${conduit.id}"`);
-      expect(html).toContain(readableEffect(conduit.effect));
+      expect(html).toContain(readableEffect(conduitEffect(conduit)));
     }
     expect(html).toContain('Owned 3');
     const conduitsSection = html.slice(html.indexOf('id="archive-conduits"'), html.indexOf('id="archive-creatures"'));

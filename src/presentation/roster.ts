@@ -1,5 +1,5 @@
-import { resonanceBadge } from './intrinsic-perks';
 import { squadMemberLimit } from '../content/squad-rules';
+import { isRadiantBearer, radiantAttunementName, radiantCharacterLoadout } from './radiant-character';
 import { referencedEffect } from './effect-copy';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { ownedCharacters, ownedProgress, creatureSaleOffer, isSellableCreatureMode, multiSummonCount, type Account } from '../game/account';
@@ -100,23 +100,29 @@ function squadMemberPreview(account: Account, id?: string, index = 0): string {
 function squadPickCard(account: Account, id: string, squad: readonly (string | undefined)[]): string {
   const member = ownedCompanion(account, id);
   const slot = squad.indexOf(id);
-  const kind = isStarterId(id) ? 'bearers' : 'creatures';
-  return `<button type="button" class="squad-pick-card" data-squad-pick="${id}" data-squad-kind="${kind}" data-squad-search="${member.label.toLowerCase()}" aria-pressed="false" style="--member-accent:${member.color}">
+  const radiant = radiantCharacterLoadout(account, id);
+  return `<button type="button" class="squad-pick-card" data-squad-pick="${id}" data-squad-kind="bearers" data-squad-search="${member.label.toLowerCase()}" aria-pressed="false" style="--member-accent:${member.color}">
     <span class="squad-pick-art">${member.compactArt}</span>
-    <span class="squad-pick-copy"><strong>${member.label}</strong><small>${member.element} · ${squadProgress(member.progress)}</small></span>
+    <span class="squad-pick-copy"><strong>${member.label}</strong><small>${member.element} · ${squadProgress(member.progress)}${radiant ? ` · ${radiantAttunementName(radiant.loadout)}` : ''}</small></span>
     <span class="squad-pick-tag" data-squad-tag>${slot >= 0 ? squadSlotNames[slot] : ''}</span></button>`;
+}
+
+/** Owned, combat-released Element-Bearers; captured Elemental-Devourers stay holdings and never join the squad. */
+export function squadEligibleMembers(account: Account): string[] {
+  return ownedCharacters(account).filter(isRadiantBearer);
 }
 
 export function squadHub(account: Account | null): string {
   if (!account) return '<p role="alert">Squad unavailable. Resolve the save error.</p>';
-  const owned = ownedCharacterInstances(account);
+  const owned = squadEligibleMembers(account);
   const savedSquad = account.squad ?? [];
-  const squad = savedSquad.length && savedSquad.every((id) => owned.includes(id)) ? savedSquad : owned.slice(0, 1);
-  const bearers = owned.filter((id) => isStarterId(id)).length;
+  const valid = savedSquad.filter((id) => owned.includes(id)).slice(0, squadMemberLimit);
+  const squad = valid.length ? valid : owned.slice(0, 1);
+  const replaced = savedSquad.length !== valid.length;
   return `<section class="squad-hub squad-formation"><header class="squad-heading"><div><h2>Squad formation</h2>
-    <p>Select a slot to choose who fills it.</p>${information('squad-information', 'Squad', '<p>Pick one to six owned members; slot one leads. Element-Bearers and captured Elemental-Devourers fit any slot, and copies of the same Elemental-Devourer can share a squad. Picking a member from another slot swaps them. Changes apply when you Save squad.</p>')}</div>
+    <p>Select a slot to choose who fills it.</p>${information('squad-information', 'Squad', `<p>Pick one to ${squadMemberLimit} distinct acquired Element-Bearers; slot one leads and grants its leader skill while alive. Captured Elemental-Devourers stay in your holdings and cannot join the squad. Picking a member from another slot swaps them. Changes apply when you Save squad.</p>`)}</div>
     <div class="squad-save"><span data-squad-count>${squad.length} / ${squadMemberLimit} slots filled</span><button class="primary-button" type="submit" form="squad-form" ${owned.length ? '' : 'disabled'}>Save squad</button></div></header>
-    ${resonanceBadge(squad)}<form id="squad-form"><div class="squad-slots">${squadSlotNames.map((_, index) => {
+    ${replaced ? '<p class="squad-replaced" role="note">Your saved squad included captured Elemental-Devourers or unavailable members. They were left out of this draft; Save squad to confirm the Element-Bearer lineup.</p>' : ''}<form id="squad-form"><div class="squad-slots">${squadSlotNames.map((_, index) => {
       const id = squad[index];
       return `<section class="squad-slot${index === 0 ? ' squad-slot-leader' : ''}"><h3>${squadSlotNames[index]}</h3>
         <button type="button" class="squad-member-preview" data-squad-assign="${index}" aria-haspopup="dialog" aria-label="${index === 0 ? 'Choose leader' : `Choose squad member ${index + 1}`}">${squadMemberPreview(account, id, index)}</button>
@@ -130,9 +136,7 @@ export function squadHub(account: Account | null): string {
     <dialog class="information-modal squad-picker" id="squad-picker" aria-labelledby="squad-picker-heading">
       <header class="drawer-heading"><h2 id="squad-picker-heading">Choose leader</h2><button type="button" class="drawer-close" data-squad-close aria-label="Close member picker">&times;</button></header>
       <div class="squad-picker-tools"><div class="squad-picker-filters" role="group" aria-label="Filter squad members">
-        <button type="button" data-squad-filter="all" aria-pressed="true">All · ${owned.length}</button>
-        <button type="button" data-squad-filter="bearers" aria-pressed="false">Element-Bearers · ${bearers}</button>
-        <button type="button" data-squad-filter="creatures" aria-pressed="false">Elemental-Devourers · ${owned.length - bearers}</button></div>
+        <button type="button" data-squad-filter="all" aria-pressed="true">Element-Bearers · ${owned.length}</button></div>
         <input type="search" class="squad-picker-search" data-squad-search-input placeholder="Search by name" aria-label="Search squad members"></div>
       <p class="squad-picker-error" data-squad-picker-error role="alert"></p>
       <div class="squad-picker-grid" role="list" aria-label="Owned squad members · ${owned.length}">${owned.map((id) => squadPickCard(account, id, squad)).join('')}</div>
@@ -145,7 +149,7 @@ export function bindSquadPreview(host: HTMLElement, account: Account | null): vo
   const form = host.querySelector<HTMLFormElement>('#squad-form');
   const dialog = host.querySelector<HTMLDialogElement>('#squad-picker');
   if (!form || !dialog || !account) return;
-  const owned = ownedCharacterInstances(account);
+  const owned = squadEligibleMembers(account);
   const controls = Array.from(form.querySelectorAll<HTMLSelectElement>('select[name^="slot-"]'));
   const cards = Array.from(dialog.querySelectorAll<HTMLButtonElement>('[data-squad-pick]'));
   const heading = dialog.querySelector<HTMLElement>('#squad-picker-heading');

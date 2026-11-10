@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { conduitRulesVersion, freshGame, friendProfileView, profileActivityFor, publicGame, resolveOperation, storyCompletedOf, validateChatRequest, validateFriendProfileRequest, validateRequest } from './engine';
+import { freshGame, friendProfileView, profileActivityFor, publicGame, resolveOperation, storyCompletedOf, validateChatRequest, validateFriendProfileRequest, validateRequest } from './engine';
 import { handleRadiantRequest, type RadiantServerConfig } from './radiant-dispatch';
 const maximumRequestBytes = 4 * 1024 * 1024 + 8192;
 
@@ -128,6 +128,11 @@ return async (request: Request): Promise<Response> => {
     if (!loaded) return response(503, { error: 'Online identity unavailable.' }, origin);
     const { data: stored, error: loadError } = loaded;
     if (loadError || !stored) return response(503, { error: 'Online account storage unavailable.' }, origin);
+    if (['enter', 'act', 'endTurn', 'continue', 'retry'].includes(input.operation.kind))
+      return response(400, { error: 'Battles now use Radiant encounters. Refresh the game to enter the current battle system.' }, origin);
+    // Legacy battles are retired: an in-flight run ends (its per-kill rewards were already saved)
+    // and the next committed operation persists the cleared run.
+    if (stored.state) stored.state.run = null;
     if (input.operation.kind === 'read' || input.operation.kind === 'checkpoint') {
       let snapshot = stored;
       if (input.operation.kind === 'checkpoint') {
@@ -145,25 +150,8 @@ return async (request: Request): Promise<Response> => {
       if (trackingError || !profileReference) return response(503, { error: 'Online profile tracking unavailable. Retry the same request.' }, origin);
       snapshot.state.profile = { ...snapshot.state.profile, ...profileReference };
       if (socialError) return response(503, { error: 'Social storage unavailable.' }, origin);
-      if (snapshot.state.run && snapshot.state.run.session.state.conduitRulesVersion !== conduitRulesVersion) {
-        const resolved = resolveOperation(snapshot.state, input.operation, {
-          seed: () => crypto.getRandomValues(new Uint32Array(1))[0] || 1,
-          uuid: () => crypto.randomUUID(),
-          random: () => crypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000,
-        });
-        resolved.response.social = social;
-        // Reads use the loaded revision; checkpoints already validated the caller's revision above.
-        const { data: committed, error: commitError } = await admin.rpc('commit_game_operation', {
-          p_user: user, p_request: input.requestId, p_fingerprint: hash, p_revision: snapshot.revision,
-          p_state: resolved.game, p_response: resolved.response, p_social: null, p_activity: null,
-        });
-        if (commitError) {
-          if (commitError.code === 'P0001') return response(400, { error: commitError.message }, origin);
-          return response(503, { error: 'The operation was not acknowledged. Retry the same request ID.' }, origin);
-        }
-        if (committed?.conflict) return response(409, { error: 'Account changed. Reload before issuing a new operation.', revision: committed.revision }, origin);
-        return response(200, committed, origin);
-      }
+      // Legacy runs are retired, so reads never restart them; the checkpoint path's own clone may still carry one.
+      snapshot.state.run = null;
       return response(200, { ...publicGame(snapshot.state, snapshot.revision), social }, origin);
     }
     if (input.expectedRevision !== stored.revision) {

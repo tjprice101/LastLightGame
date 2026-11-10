@@ -25,6 +25,14 @@ function expectCurrentLabels(html: string) {
   return host;
 }
 
+/** Element-Bearer surfaces use the four Radiant combat stats; captured holdings keep the ten-stat readout. */
+function expectRadiantLabels(html: string) {
+  const host = document.createElement('div');
+  host.innerHTML = html;
+  for (const label of ['HP', 'Attack', 'Defense', 'Recovery']) expect(host.textContent).toContain(label);
+  for (const label of ['Skill Power', 'Critical', 'Elemental Gauge']) expect(host.textContent).not.toContain(label);
+}
+
 describe('release-gated ten-stat surfaces', () => {
   it('shows all ten bearer/captured stats and correct baseline units in grouped and flat readouts', () => {
     const captured = createCreatureCopy('infusion:heavens:0');
@@ -48,16 +56,15 @@ describe('release-gated ten-stat surfaces', () => {
     const after = structuredClone(before);
     after.characters.ember = { level: 1, evolution: 1 };
     after.capturedCharacters![0].level = 60;
-    for (const id of ['ember', copy.instanceId]) {
-      expectCurrentLabels(maxLevelPreview(before, id).html);
-      expectCurrentLabels(upgradeResult(before, after, id, 'level').details ?? '');
-    }
+    expectCurrentLabels(maxLevelPreview(before, copy.instanceId).html);
+    expectCurrentLabels(upgradeResult(before, after, copy.instanceId, 'level').details ?? '');
+    for (const html of [maxLevelPreview(before, 'ember').html, upgradeResult(before, after, 'ember', 'level').details ?? '']) expectRadiantLabels(html);
   });
 
   it('includes all ten stats in bearer and captured growth previews', () => {
     const account = emptyAccount();
     account.characters.ember = { level: 0, evolution: 1 };
-    expectCurrentLabels(characterDetail(getStarter('ember'), 'upgrade-1', account));
+    expectRadiantLabels(characterDetail(getStarter('ember'), 'upgrade-1', account));
     const copy = createCreatureCopy('infusion:heavens:0');
     account.capturedCharacters = [copy];
     expectCurrentLabels(referenceTeam(account, { view: 'capture', selected: 'ember',

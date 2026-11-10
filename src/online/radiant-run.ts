@@ -120,7 +120,7 @@ export function radiantAccountLoadouts(account: Account): RadiantLoadout[] {
     throw new RadiantRunError('manual-squad', 'Manually select one to six distinct acquired Element-Bearers.');
   const members = ids.map(id => {
     if (typeof id !== 'string' || !Object.hasOwn(radiantBearerKits, id) || !account.characters[id as RadiantBearerId])
-      throw new RadiantRunError('manual-squad', 'Captured, missing or unreleased squad member requires manual replacement.');
+      throw new RadiantRunError('manual-squad', 'Your squad includes a captured Elemental-Devourer or unavailable member. Open Team › Squad and choose acquired Element-Bearers only.');
     const progress = account.characters[id as RadiantBearerId]!;
     return { id, starter: id as RadiantBearerId, level: progress.level, form: progress.evolution,
       weaponRank: progress.weaponRank ?? 0, ascension: structuredClone(progress.ascension ?? {}),
@@ -246,7 +246,9 @@ export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: Radiant
   let events: RadiantCombatEvent[] = [];
   let discover = false;
   if (op.kind === 'start') {
-    if (game.run || game.radiantStudy) throw new RadiantRunError('stale-run', 'Existing run must not be replaced.');
+    if (game.radiantStudy) throw new RadiantRunError('stale-run', 'Existing run must not be replaced.');
+    // Retired legacy battles end here; their per-kill rewards were already saved.
+    game.run = null;
     const anchor: RadiantPressureAnchor = { id: 'authority-entry', family: op.activity.kind,
       position: 'early', activity: structuredClone(op.activity) };
     assertRadiantPressureAccess(anchor, game.account, authority.now);

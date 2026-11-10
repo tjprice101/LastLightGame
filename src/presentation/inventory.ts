@@ -10,6 +10,7 @@ import { assetUrl } from './portrait';
 import { information, informationTopics } from './information';
 import './inventory.css';
 import { masterChest, masterConduits as allMasters } from '../content/master-conduits';
+import { radiantMasterEffect } from './radiant-master-text';
 import { characterReleased, materialReleased } from '../content/release-visibility';
 const masterConduits = allMasters.filter(master => characterReleased(master.character));
 import { masterChestIcon, masterConduitIcon } from './master-conduits';
@@ -50,7 +51,7 @@ function inventoryInformation(): string {
     { id: 'materials', title: 'Materials', summary: 'Sources and banner bundles', content: '<p>Earned in Story, elemental dungeons, Heaven, Abyss and Passion of Crimson Roses.</p><p>Summon bundles contain Common, Uncommon or Rare materials: one random element on Standard, Rosethorn on Roses. Duplicate Element-Bearers give larger Rare bundles.</p>' },
     { id: 'conduits', title: 'Conduits', summary: 'Where to get them', content: '<p>Common: Conduit Store. Rare, Legendary and Omnic: Awaken the Machines. Summons can also award a Legendary bonus.</p><p>Unlock once, equip across your squad. Upgrade with Broken Mechanical Components.</p>' },
     { id: 'conduit-terms', title: 'Conduit terms', summary: 'Words used in Conduit effects', content: `<dl class="conduit-glossary">${conduitGlossary.map(entry => `<dt>${entry.term}</dt><dd>${entry.definition}</dd>`).join('')}</dl>` },
-    { id: 'masters', title: 'Masters & chests', summary: 'Sources and selection', content: `<p>${masterChest.name}s: ` + masterChest.chance * 100 + '% from the stage ' + machineStageCount + ' Machines boss; two guaranteed in each Calamity EX+3 chest.</p><p>Choose any unowned released Master, even for an unowned Element-Bearer. Masters are character-specific and cannot be upgraded. Chests stay unopened once you own all ' + masterConduits.length + '.</p>' },
+    { id: 'masters', title: 'Masters & chests', summary: 'Sources and selection', content: `<p>${masterChest.name}s: ` + masterChest.chance * 100 + '% from the stage ' + machineStageCount + ' Machines boss; two guaranteed in each Calamity EX+3 chest.</p><p>Choose any unowned released Master, even for an unowned Element-Bearer. Masters are character-specific and cannot be upgraded. Each sets its bearer’s attunement stat profile (no Master: Equinox, all stats ×1) and enhances one of their abilities. Chests stay unopened once you own all ' + masterConduits.length + '.</p>' },
   ]));
 }
 export function isInventoryTab(value: unknown): value is InventoryTab {
@@ -108,7 +109,7 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
   }).join('');
   const masterItems = ownedMasters.map(entry => `<li class="inventory-item" ${conduitElementTheme(getStarter(entry.character).elementId)} data-inventory-master="${entry.id}" ${itemMetadata(`${entry.name} ${getStarter(entry.character).name}`, 'masters', entry.rarity, getStarter(entry.character).elementId)}><div class="inventory-item-art">${masterConduitIcon(entry.id)}</div><strong>${entry.name}</strong>
     <span class="conduit-identity-badges"><small>Omnic Master · ${getStarter(entry.character).name}</small>${conduitElementLabel(getStarter(entry.character).elementId)}</span><span class="inventory-quantity">Owned 1</span>
-    ${information(`inventory-${entry.id}-details`, entry.name, `<div class="inventory-detail-art">${masterConduitIcon(entry.id)}</div>${conduitElementLabel(getStarter(entry.character).elementId)}<p>Omnic Master for ${getStarter(entry.character).name}.</p><h3>Effect</h3><p>${referencedEffect(entry.effect)}</p><p>Always active while equipped to its named Element-Bearer. No upgrades; generated Conduit effects cannot trigger it. Existing caps, skill costs and recovery still apply.</p><h3>Origin</h3><p>${entry.lore}</p>`, 'Details')}</li>`).join('');
+    ${information(`inventory-${entry.id}-details`, entry.name, `<div class="inventory-detail-art">${masterConduitIcon(entry.id)}</div>${conduitElementLabel(getStarter(entry.character).elementId)}<p>Omnic Master for ${getStarter(entry.character).name}.</p><h3>Effect</h3><p>${referencedEffect(escapeDialogText(radiantMasterEffect(entry.id)))}</p><p>Always active while equipped to its named Element-Bearer. Cannot be upgraded.</p><h3>Origin</h3><p>${entry.lore}</p>`, 'Details')}</li>`).join('');
   const empty = (tab: InventoryTab) => `<div class="inventory-empty-slots" aria-hidden="true">${'<i></i>'.repeat(14)}</div>
     <div class="inventory-empty"><h3>${tab === 'materials' ? 'No resources yet' : 'No Conduits owned yet'}</h3></div>`;
   return `<section class="inventory-hub ref-screen ref-inventory" aria-label="Inventory holdings">

@@ -3269,6 +3269,134 @@ function calamiticEffect(id, level = 0) {
   return ability3;
 }
 
+// src/content/radiant-conduits.ts
+var effect = (kind, amount) => ({ kind, amount });
+var pair = (kind, amount, related, extra) => [effect(kind, amount), effect(related, extra)];
+var radiantConduits = {
+  "vigil-core": [effect("hp", 0.2)],
+  "siegebound-drive": pair("normal", 0.12, "attack", 0.04),
+  "bastion-lock": pair("defense", 0.15, "guard", 0.03),
+  "parallax-relay": pair("hp", 0.12, "flare", 0.05),
+  "fracture-reservoir": [effect("normal-charge", 3)],
+  "prism-splinter-socket": pair("normal-charge", 2, "guard-charge", 1),
+  "precision-escapement": [effect("normal", 0.1)],
+  "fieldbrace-coupler": [effect("resilience", 0.1)],
+  "reserve-torque-crank": pair("guard-charge", 3, "normal-charge", 1),
+  "crosspin-governor": [effect("flare", 0.12)],
+  "aegis-capacitor": pair("defense", 0.25, "hp", 0.18),
+  "duplex-heart": pair("heal-charge", 4, "recovery", 0.15),
+  "falcon-sight": pair("normal", 0.18, "hp", 0.12),
+  "spearwheel-engine": pair("pierce", 0.12, "flare", 0.08),
+  "springwell-pump": pair("healing", 0.2, "shielding", 0.2),
+  "twinpulse-bellows": pair("normal", 0.2, "leech", 0.04),
+  "glassroot-gimbal": pair("hp", 0.22, "flare", 0.16),
+  "lifeline-flywheel": [effect("leech", 0.1)],
+  "sentinel-aperture": [effect("flare", 0.24)],
+  "wardglass-transformer": pair("shielding", 0.25, "resilience", 0.12),
+  "hammerbalance-link": pair("normal", 0.25, "attack", 0.08),
+  "breach-pendulum": [effect("normal-expose", 0.12)],
+  "coilfeed-ratchet": pair("normal-charge", 5, "flare", 0.1),
+  "opal-indexer": pair("normal-weaken", 0.12, "flare", 0.16),
+  "resonance-crucible": pair("defense", 0.25, "hp", 0.2),
+  "astral-prism": pair("flare", 0.35, "normal-charge", 6),
+  "citadel-spine": pair("guard-shield", 0.6, "defense", 0.35),
+  "execution-orrery": pair("normal", 0.4, "pierce", 0.16),
+  "immortal-vessel": pair("hp", 0.4, "round-heal", 0.15),
+  "judgment-lens": pair("flare", 0.4, "normal", 0.2),
+  "worldbreaker-drive": pair("normal", 0.45, "attack", 0.15),
+  "siege-cantilever": pair("flare", 0.45, "pierce", 0.12),
+  "nullsong-transmission": pair("normal", 0.35, "resilience", 0.2),
+  "horizon-heartcase": pair("hp", 0.45, "hurt-shield", 0.05),
+  "stasis-reliquary": pair("guard", 0.12, "absorbed-charge", 6),
+  "granite-hourglass": pair("defense", 0.4, "guard", 0.08),
+  "pale-bulwark-diadem": pair("shielding", 0.4, "defense", 0.25),
+  "starvein-conductor": pair("team-charge", 4, "cooperation", 0.2),
+  "meridian-inverter": pair("recovery", 0.4, "healing", 0.25),
+  "verdict-caliper": pair("normal-heal", 0.4, "normal", 0.25),
+  "infernic-phoenix-reactor": pair("hp", 0.55, "round-heal", 0.3),
+  "aquatic-leviathan-pump": pair("absorbed-charge", 10, "defense", 0.4),
+  "tectonic-atlas-bastion": pair("guard-shield", 1, "defense", 0.5),
+  "efflorescent-worldtree-heart": pair("healing", 0.5, "flare-shield", 0.08),
+  "voltaic-thunderbird-coil": pair("normal", 0.55, "pierce", 0.25),
+  "atmospheric-griffin-turbine": pair("team-charge", 8, "normal", 0.4),
+  "luminous-seraph-mirror": pair("normal-heal", 0.7, "healing", 0.35),
+  "ominous-eclipse-mantle": pair("pierce", 0.3, "flare", 0.45),
+  "tranquilitic-kirin-cradle": pair("normal-heal", 1, "recovery", 0.4),
+  "chaotic-ouroboros-core": pair("flare-shield", 0.1, "normal-charge", 8),
+  "infernic-cinder-testament": pair("normal-burn", 0.25, "cooperation", 0.25),
+  "aquatic-undertide-chronometer": pair("normal-weaken", 0.2, "heal-charge", 8),
+  "tectonic-faultkeeper-loom": pair("leader", 0.12, "defense", 0.45),
+  "efflorescent-verdant-covenant": pair("heal-buff", 0.3, "healing", 0.4),
+  "voltaic-stormstep-dynamo": pair("normal-charge", 9, "flare", 0.45),
+  "atmospheric-skythread-rudder": pair("team-charge", 10, "cooperation", 0.3),
+  "luminous-dawn-witness-array": pair("next-buff", 0.3, "normal", 0.4),
+  "ominous-nightglass-archive": pair("normal-expose", 0.22, "cooperation", 0.3),
+  "tranquilitic-stillhour-carillon": pair("round-heal", 0.55, "recovery", 0.4),
+  "chaotic-paradox-spindle": pair("next-buff", 0.35, "shared-normal", 120),
+  "clearwater-manifold": pair("cooperation", 0.35, "healing", 0.35),
+  "tranquilitic-accord-bastion": pair("heal-buff", 0.35, "shielding", 0.45),
+  "aegis-return-spring": pair("reflect", 0.3, "shielding", 0.4),
+  "flare-focusing-iris": pair("normal-burn", 0.3, "flare", 0.4),
+  "cinder-metering-nozzle": pair("normal-burn", 0.35, "normal", 0.35),
+  "firstlight-cam": pair("team-charge", 12, "leader", 0.1),
+  "tension-governor": pair("status-shield", 0.8, "normal-weaken", 0.18),
+  "tidebound-reflector": pair("reflect", 0.4, "defense", 0.35),
+  "ward-stitch-spool": pair("shielding", 0.55, "healing", 0.35),
+  "emberlife-kiln": pair("normal-burn", 0.3, "round-heal", 0.4),
+  "tempered-strike-link": pair("heal-buff", 0.4, "normal", 0.35),
+  "infernic-pyre-census": pair("cooperation", 0.4, "flare", 0.4),
+  "chaotic-fault-verdict": pair("normal", 0.6, "guard-shield", 0.7),
+  "ruinselect-prism": pair("hp", 0.5, "flare", 0.5),
+  "secondbeat-rack": pair("cooperation", 0.45, "flare", 0.4),
+  "oceanic-shared-tide-pump": pair("flare-shield", 0.12, "shielding", 0.4),
+  "pulse-trigger-pawl": pair("team-charge", 12, "normal", 0.35),
+  "solace-anchor": pair("next-buff", 0.4, "leader", 0.1),
+  "sootwake-crucible": pair("normal-expose", 0.25, "normal-burn", 0.2),
+  "atmospheric-storm-clock": pair("shared-normal", 180, "normal-charge", 7),
+  "pressurecrest-governor": pair("normal-heal", 0.8, "normal-charge", 7),
+  "covercharge-drum": pair("next-buff", 0.4, "flare", 0.4),
+  "botanic-graft-covenant": pair("healing", 0.6, "heal-charge", 10),
+  "mending-valve": pair("leech", 0.2, "recovery", 0.4),
+  "rootbound-triage-vault": pair("round-shield", 1, "round-heal", 0.3),
+  "calamitic-world-eater-orrery": pair("flare", 0.8, "pierce", 0.4),
+  "calamitic-causality-funeral-engine": pair("normal-charge", 15, "flare", 0.6),
+  "calamitic-horizon-cleaving-godpress": pair("normal", 0.9, "pierce", 0.4),
+  "calamitic-throne-borrowed-tomorrows": pair("team-charge", 18, "shared-normal", 240),
+  "calamitic-cathedral-final-equation": pair("flare", 0.85, "cooperation", 0.5),
+  "calamitic-bulwark-of-the-last-horizon": pair("hp", 0.8, "round-shield", 1.5),
+  "calamitic-reliquary-of-unending-mercy": pair("healing", 0.9, "round-heal", 0.9),
+  "calamitic-aegis-engine-of-severed-fate": pair("shielding", 0.9, "reflect", 0.6),
+  "calamitic-monolith-of-the-unmoved-star": pair("defense", 0.8, "guard-shield", 1.5),
+  "calamitic-heartforge-of-the-sunless-dawn": pair("hp", 0.8, "hurt-shield", 0.1),
+  "calamitic-ruinmark-censer": pair("normal-burn", 0.6, "normal-expose", 0.3),
+  "calamitic-choir-array-of-branded-stars": pair("leader", 0.2, "next-buff", 0.6),
+  "calamitic-throne-of-the-lone-apostate": pair("attack", 0.6, "normal", 0.7),
+  "calamitic-worldbreaker-cannonade": pair("normal", 1, "flare", 0.6)
+};
+function validateRadiantGear(value2, element) {
+  if (!Array.isArray(value2)) throw new Error("Invalid radiant gear.");
+  const ids = value2.map((slot) => {
+    if (slot === null) return null;
+    if (!slot || typeof slot !== "object" || Object.keys(slot).length !== 2 || !Object.hasOwn(slot, "id") || !Object.hasOwn(slot, "rank"))
+      throw new Error("Invalid radiant gear slot.");
+    validateConduitUpgradeLevel(slot.rank);
+    return slot.id;
+  });
+  validateConduitElement(validateConduitSlots(ids), element);
+  return value2.map((slot) => slot === null ? null : { id: slot.id, rank: slot.rank });
+}
+function radiantConduitPrimitives(slot) {
+  getConduit(slot.id);
+  validateConduitUpgradeLevel(slot.rank);
+  return radiantConduits[slot.id].map((entry) => ({
+    kind: entry.kind,
+    amount: entry.amount * (1 + 0.1 * slot.rank)
+  }));
+}
+function radiantGearAmount(gear2, kind) {
+  return (gear2 ?? []).flatMap((slot) => slot === null ? [] : radiantConduitPrimitives(slot)).filter((entry) => entry.kind === kind).reduce((total, entry) => total + entry.amount, 0);
+}
+
 // src/content/conduits.ts
 var commonConduits = [
   {
@@ -14899,6 +15027,8 @@ function equippedSquad(account) {
 function setSquad(storage, ids) {
   if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before editing a squad.");
   const account = loadAccount(storage);
+  if (ids.some((id) => !isStarterId(id) || !characterReleased(id)))
+    throw new Error("Choose acquired Element-Bearers only. Captured Elemental-Devourers cannot join the squad.");
   account.squad = [...ids];
   return saveAccount(storage, account);
 }
@@ -16313,134 +16443,6 @@ function resolveRadiantRewards(account, anchor, encounterSeed, ledger, combat, r
     },
     rewards
   };
-}
-
-// src/content/radiant-conduits.ts
-var effect = (kind, amount) => ({ kind, amount });
-var pair = (kind, amount, related, extra) => [effect(kind, amount), effect(related, extra)];
-var radiantConduits = {
-  "vigil-core": [effect("hp", 0.2)],
-  "siegebound-drive": pair("normal", 0.12, "attack", 0.04),
-  "bastion-lock": pair("defense", 0.15, "guard", 0.03),
-  "parallax-relay": pair("hp", 0.12, "flare", 0.05),
-  "fracture-reservoir": [effect("normal-charge", 3)],
-  "prism-splinter-socket": pair("normal-charge", 2, "guard-charge", 1),
-  "precision-escapement": [effect("normal", 0.1)],
-  "fieldbrace-coupler": [effect("resilience", 0.1)],
-  "reserve-torque-crank": pair("guard-charge", 3, "normal-charge", 1),
-  "crosspin-governor": [effect("flare", 0.12)],
-  "aegis-capacitor": pair("defense", 0.25, "hp", 0.18),
-  "duplex-heart": pair("heal-charge", 4, "recovery", 0.15),
-  "falcon-sight": pair("normal", 0.18, "hp", 0.12),
-  "spearwheel-engine": pair("pierce", 0.12, "flare", 0.08),
-  "springwell-pump": pair("healing", 0.2, "shielding", 0.2),
-  "twinpulse-bellows": pair("normal", 0.2, "leech", 0.04),
-  "glassroot-gimbal": pair("hp", 0.22, "flare", 0.16),
-  "lifeline-flywheel": [effect("leech", 0.1)],
-  "sentinel-aperture": [effect("flare", 0.24)],
-  "wardglass-transformer": pair("shielding", 0.25, "resilience", 0.12),
-  "hammerbalance-link": pair("normal", 0.25, "attack", 0.08),
-  "breach-pendulum": [effect("normal-expose", 0.12)],
-  "coilfeed-ratchet": pair("normal-charge", 5, "flare", 0.1),
-  "opal-indexer": pair("normal-weaken", 0.12, "flare", 0.16),
-  "resonance-crucible": pair("defense", 0.25, "hp", 0.2),
-  "astral-prism": pair("flare", 0.35, "normal-charge", 6),
-  "citadel-spine": pair("guard-shield", 0.6, "defense", 0.35),
-  "execution-orrery": pair("normal", 0.4, "pierce", 0.16),
-  "immortal-vessel": pair("hp", 0.4, "round-heal", 0.15),
-  "judgment-lens": pair("flare", 0.4, "normal", 0.2),
-  "worldbreaker-drive": pair("normal", 0.45, "attack", 0.15),
-  "siege-cantilever": pair("flare", 0.45, "pierce", 0.12),
-  "nullsong-transmission": pair("normal", 0.35, "resilience", 0.2),
-  "horizon-heartcase": pair("hp", 0.45, "hurt-shield", 0.05),
-  "stasis-reliquary": pair("guard", 0.12, "absorbed-charge", 6),
-  "granite-hourglass": pair("defense", 0.4, "guard", 0.08),
-  "pale-bulwark-diadem": pair("shielding", 0.4, "defense", 0.25),
-  "starvein-conductor": pair("team-charge", 4, "cooperation", 0.2),
-  "meridian-inverter": pair("recovery", 0.4, "healing", 0.25),
-  "verdict-caliper": pair("normal-heal", 0.4, "normal", 0.25),
-  "infernic-phoenix-reactor": pair("hp", 0.55, "round-heal", 0.3),
-  "aquatic-leviathan-pump": pair("absorbed-charge", 10, "defense", 0.4),
-  "tectonic-atlas-bastion": pair("guard-shield", 1, "defense", 0.5),
-  "efflorescent-worldtree-heart": pair("healing", 0.5, "flare-shield", 0.08),
-  "voltaic-thunderbird-coil": pair("normal", 0.55, "pierce", 0.25),
-  "atmospheric-griffin-turbine": pair("team-charge", 8, "normal", 0.4),
-  "luminous-seraph-mirror": pair("normal-heal", 0.7, "healing", 0.35),
-  "ominous-eclipse-mantle": pair("pierce", 0.3, "flare", 0.45),
-  "tranquilitic-kirin-cradle": pair("normal-heal", 1, "recovery", 0.4),
-  "chaotic-ouroboros-core": pair("flare-shield", 0.1, "normal-charge", 8),
-  "infernic-cinder-testament": pair("normal-burn", 0.25, "cooperation", 0.25),
-  "aquatic-undertide-chronometer": pair("normal-weaken", 0.2, "heal-charge", 8),
-  "tectonic-faultkeeper-loom": pair("leader", 0.12, "defense", 0.45),
-  "efflorescent-verdant-covenant": pair("heal-buff", 0.3, "healing", 0.4),
-  "voltaic-stormstep-dynamo": pair("normal-charge", 9, "flare", 0.45),
-  "atmospheric-skythread-rudder": pair("team-charge", 10, "cooperation", 0.3),
-  "luminous-dawn-witness-array": pair("next-buff", 0.3, "normal", 0.4),
-  "ominous-nightglass-archive": pair("normal-expose", 0.22, "cooperation", 0.3),
-  "tranquilitic-stillhour-carillon": pair("round-heal", 0.55, "recovery", 0.4),
-  "chaotic-paradox-spindle": pair("next-buff", 0.35, "shared-normal", 120),
-  "clearwater-manifold": pair("cooperation", 0.35, "healing", 0.35),
-  "tranquilitic-accord-bastion": pair("heal-buff", 0.35, "shielding", 0.45),
-  "aegis-return-spring": pair("reflect", 0.3, "shielding", 0.4),
-  "flare-focusing-iris": pair("normal-burn", 0.3, "flare", 0.4),
-  "cinder-metering-nozzle": pair("normal-burn", 0.35, "normal", 0.35),
-  "firstlight-cam": pair("team-charge", 12, "leader", 0.1),
-  "tension-governor": pair("status-shield", 0.8, "normal-weaken", 0.18),
-  "tidebound-reflector": pair("reflect", 0.4, "defense", 0.35),
-  "ward-stitch-spool": pair("shielding", 0.55, "healing", 0.35),
-  "emberlife-kiln": pair("normal-burn", 0.3, "round-heal", 0.4),
-  "tempered-strike-link": pair("heal-buff", 0.4, "normal", 0.35),
-  "infernic-pyre-census": pair("cooperation", 0.4, "flare", 0.4),
-  "chaotic-fault-verdict": pair("normal", 0.6, "guard-shield", 0.7),
-  "ruinselect-prism": pair("hp", 0.5, "flare", 0.5),
-  "secondbeat-rack": pair("cooperation", 0.45, "flare", 0.4),
-  "oceanic-shared-tide-pump": pair("flare-shield", 0.12, "shielding", 0.4),
-  "pulse-trigger-pawl": pair("team-charge", 12, "normal", 0.35),
-  "solace-anchor": pair("next-buff", 0.4, "leader", 0.1),
-  "sootwake-crucible": pair("normal-expose", 0.25, "normal-burn", 0.2),
-  "atmospheric-storm-clock": pair("shared-normal", 180, "normal-charge", 7),
-  "pressurecrest-governor": pair("normal-heal", 0.8, "normal-charge", 7),
-  "covercharge-drum": pair("next-buff", 0.4, "flare", 0.4),
-  "botanic-graft-covenant": pair("healing", 0.6, "heal-charge", 10),
-  "mending-valve": pair("leech", 0.2, "recovery", 0.4),
-  "rootbound-triage-vault": pair("round-shield", 1, "round-heal", 0.3),
-  "calamitic-world-eater-orrery": pair("flare", 0.8, "pierce", 0.4),
-  "calamitic-causality-funeral-engine": pair("normal-charge", 15, "flare", 0.6),
-  "calamitic-horizon-cleaving-godpress": pair("normal", 0.9, "pierce", 0.4),
-  "calamitic-throne-borrowed-tomorrows": pair("team-charge", 18, "shared-normal", 240),
-  "calamitic-cathedral-final-equation": pair("flare", 0.85, "cooperation", 0.5),
-  "calamitic-bulwark-of-the-last-horizon": pair("hp", 0.8, "round-shield", 1.5),
-  "calamitic-reliquary-of-unending-mercy": pair("healing", 0.9, "round-heal", 0.9),
-  "calamitic-aegis-engine-of-severed-fate": pair("shielding", 0.9, "reflect", 0.6),
-  "calamitic-monolith-of-the-unmoved-star": pair("defense", 0.8, "guard-shield", 1.5),
-  "calamitic-heartforge-of-the-sunless-dawn": pair("hp", 0.8, "hurt-shield", 0.1),
-  "calamitic-ruinmark-censer": pair("normal-burn", 0.6, "normal-expose", 0.3),
-  "calamitic-choir-array-of-branded-stars": pair("leader", 0.2, "next-buff", 0.6),
-  "calamitic-throne-of-the-lone-apostate": pair("attack", 0.6, "normal", 0.7),
-  "calamitic-worldbreaker-cannonade": pair("normal", 1, "flare", 0.6)
-};
-function validateRadiantGear(value2, element) {
-  if (!Array.isArray(value2)) throw new Error("Invalid radiant gear.");
-  const ids = value2.map((slot) => {
-    if (slot === null) return null;
-    if (!slot || typeof slot !== "object" || Object.keys(slot).length !== 2 || !Object.hasOwn(slot, "id") || !Object.hasOwn(slot, "rank"))
-      throw new Error("Invalid radiant gear slot.");
-    validateConduitUpgradeLevel(slot.rank);
-    return slot.id;
-  });
-  validateConduitElement(validateConduitSlots(ids), element);
-  return value2.map((slot) => slot === null ? null : { id: slot.id, rank: slot.rank });
-}
-function radiantConduitPrimitives(slot) {
-  getConduit(slot.id);
-  validateConduitUpgradeLevel(slot.rank);
-  return radiantConduits[slot.id].map((entry) => ({
-    kind: entry.kind,
-    amount: entry.amount * (1 + 0.1 * slot.rank)
-  }));
-}
-function radiantGearAmount(gear2, kind) {
-  return (gear2 ?? []).flatMap((slot) => slot === null ? [] : radiantConduitPrimitives(slot)).filter((entry) => entry.kind === kind).reduce((total, entry) => total + entry.amount, 0);
 }
 
 // src/content/radiant-combat.ts
@@ -18614,7 +18616,7 @@ function radiantAccountLoadouts(account) {
     throw new RadiantRunError("manual-squad", "Manually select one to six distinct acquired Element-Bearers.");
   const members = ids.map((id) => {
     if (typeof id !== "string" || !Object.hasOwn(radiantBearerKits, id) || !account.characters[id])
-      throw new RadiantRunError("manual-squad", "Captured, missing or unreleased squad member requires manual replacement.");
+      throw new RadiantRunError("manual-squad", "Your squad includes a captured Elemental-Devourer or unavailable member. Open Team \u203A Squad and choose acquired Element-Bearers only.");
     const progress = account.characters[id];
     return {
       id,
@@ -18773,7 +18775,8 @@ function resolveRadiantRun(snapshot, request, authority) {
   let events = [];
   let discover = false;
   if (op.kind === "start") {
-    if (game.run || game.radiantStudy) throw new RadiantRunError("stale-run", "Existing run must not be replaced.");
+    if (game.radiantStudy) throw new RadiantRunError("stale-run", "Existing run must not be replaced.");
+    game.run = null;
     const anchor = {
       id: "authority-entry",
       family: op.activity.kind,
@@ -19449,6 +19452,9 @@ function createGameOperationHandler(admin, radiant = {}) {
       if (!loaded) return response(503, { error: "Online identity unavailable." }, origin);
       const { data: stored, error: loadError } = loaded;
       if (loadError || !stored) return response(503, { error: "Online account storage unavailable." }, origin);
+      if (["enter", "act", "endTurn", "continue", "retry"].includes(input.operation.kind))
+        return response(400, { error: "Battles now use Radiant encounters. Refresh the game to enter the current battle system." }, origin);
+      if (stored.state) stored.state.run = null;
       if (input.operation.kind === "read" || input.operation.kind === "checkpoint") {
         let snapshot = stored;
         if (input.operation.kind === "checkpoint") {
@@ -19467,30 +19473,7 @@ function createGameOperationHandler(admin, radiant = {}) {
         if (trackingError || !profileReference) return response(503, { error: "Online profile tracking unavailable. Retry the same request." }, origin);
         snapshot.state.profile = { ...snapshot.state.profile, ...profileReference };
         if (socialError) return response(503, { error: "Social storage unavailable." }, origin);
-        if (snapshot.state.run && snapshot.state.run.session.state.conduitRulesVersion !== conduitRulesVersion) {
-          const resolved2 = resolveOperation(snapshot.state, input.operation, {
-            seed: () => crypto.getRandomValues(new Uint32Array(1))[0] || 1,
-            uuid: () => crypto.randomUUID(),
-            random: () => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296
-          });
-          resolved2.response.social = social;
-          const { data: committed2, error: commitError2 } = await admin.rpc("commit_game_operation", {
-            p_user: user,
-            p_request: input.requestId,
-            p_fingerprint: hash,
-            p_revision: snapshot.revision,
-            p_state: resolved2.game,
-            p_response: resolved2.response,
-            p_social: null,
-            p_activity: null
-          });
-          if (commitError2) {
-            if (commitError2.code === "P0001") return response(400, { error: commitError2.message }, origin);
-            return response(503, { error: "The operation was not acknowledged. Retry the same request ID." }, origin);
-          }
-          if (committed2?.conflict) return response(409, { error: "Account changed. Reload before issuing a new operation.", revision: committed2.revision }, origin);
-          return response(200, committed2, origin);
-        }
+        snapshot.state.run = null;
         return response(200, { ...publicGame(snapshot.state, snapshot.revision), social }, origin);
       }
       if (input.expectedRevision !== stored.revision) {

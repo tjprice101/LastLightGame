@@ -4,6 +4,7 @@ import { kitConduitDesigns, convertedKitConduitIds } from './kit-conduits';
 import { conduitOrigin } from './world-lore';
 import { redesignEffect } from './conduit-redesign';
 import { calamiticConduits, calamiticEffect, isCalamiticConduitId } from './calamitic-conduits';
+import { radiantConduitEffectText } from './radiant-conduit-text';
 
 export interface ConduitBuff {
  stat: 'health' | 'damage' | 'defense' | 'crit' | 'critMultiplier' | 'elementalDamage' | 'shatterCapacity';
@@ -205,7 +206,13 @@ export function conduitBuffs(conduit: Conduit, level = 0): readonly ConduitBuff[
   validateConduitUpgradeLevel(level);
   return conduit.buffs.map((buff) => ({ ...buff, amount: buff.amount * (1 + .5 * level) }));
 }
+/** Live player-facing effect: the Radiant combat primitives at this upgrade rank. */
 export function conduitEffect(conduit: Conduit, level = 0): string {
+  validateConduitUpgradeLevel(level);
+  return radiantConduitEffectText(conduit.id, level);
+}
+/** Superseded pre-Radiant effect text, retained only for legacy engine compatibility tests. */
+export function legacyConduitEffect(conduit: Conduit, level = 0): string {
   validateConduitUpgradeLevel(level);
   return isCalamiticConduitId(conduit.id) ? calamiticEffect(conduit.id, level) : redesignEffect(conduit.id, level);
 }

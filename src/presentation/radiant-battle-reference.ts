@@ -1,7 +1,8 @@
 import { radiantFlares, radiantMasters, radiantStarterKits, radiantAttunement, radiantAttunements,
   type RadiantLoadout, type RadiantFlareOffer } from '../content/radiant-combat';
-import { radiantConduitPrimitives, radiantGearAmount, type RadiantConduitEffect,
-  type RadiantConduitPrimitive } from '../content/radiant-conduits';
+import { radiantConduitPrimitives, radiantGearAmount } from '../content/radiant-conduits';
+import { radiantConduitDescription } from '../content/radiant-conduit-text';
+export { radiantConduitDescription };
 import { getConduit } from '../content/conduits';
 import { getMasterConduit } from '../content/master-conduits';
 import { characterName } from '../content/character-art';
@@ -33,44 +34,6 @@ export function radiantFlareDescription(offer: RadiantFlareOffer): string[] {
   if (offer.renewal) lines.push(`All living allies: Renewal at ${percent(offer.renewal)} caster Recovery at each of the next ${offer.renewalRounds} round starts.`);
   if (offer.attackBuff) lines.push(`All living allies: ${percent(offer.attackBuff)} Attack boost for ${offer.attackBuffRounds} rounds.`);
   return lines;
-}
-const conduitDescriptions: Record<RadiantConduitEffect, (amount: number) => string> = {
-  hp: a => `Frozen maximum HP +${percent(a)}.`,
-  attack: a => `Frozen Attack +${percent(a)}.`,
-  defense: a => `Frozen Defense +${percent(a)}.`,
-  recovery: a => `Frozen Recovery +${percent(a)}.`,
-  normal: a => `Normal direct damage multiplier +${percent(a)}.`,
-  flare: a => `Flare direct damage multiplier +${percent(a)}.`,
-  pierce: a => `Normal/Flare ignore ${percent(a)} enemy Defense; combined pierce capped at80%.`,
-  healing: a => `Native/Flare/Master healing +${percent(a)}; does not amplify generated gear healing.`,
-  shielding: a => `Native/Flare/Master Shield creation +${percent(a)}; does not amplify generated gear Shields.`,
-  resilience: a => `Reduce the strongest incoming Weaken magnitude by ${percent(a)}; combined resistance capped at80%.`,
-  guard: a => `Defense's50% damage multiplier is further reduced by ${percent(a)}; combined enhancement capped at60%, final damage multiplier floor20%.`,
-  leader: a => `First living bearer only: leader stat bonus +${percent(a)} (percentage points). No promotion after leader defeat.`,
-  'normal-charge': a => `A Normal direct hit (HP or Shield) grants ${number(a)} additional personal charge, rounded once.`,
-  'guard-charge': a => `Defense grants ${number(a)} additional personal charge, rounded once.`,
-  'shared-normal': a => `A Normal direct hit adds ${number(a / 60)} shared charge (${number(a)} internal units, rounded once); requires a final-form squad member.`,
-  'team-charge': a => `A Normal direct hit grants each other living ally ${number(a)} personal charge, rounded once.`,
-  'guard-shield': a => `Defense creates a self-Shield at ${percent(a)} effective Defense.`,
-  'normal-heal': a => `Normal HP damage heals the most wounded living ally at ${percent(a)} effective Recovery.`,
-  leech: a => `Native Normal/Flare direct HP damage heals the bearer at ${percent(a)} total HP damage dealt.`,
-  'heal-charge': a => `Actual native healing grants ${number(a)} personal charge once per resolved action, rounded once; Eternal cannot refill itself.`,
-  'heal-buff': a => `Each living ally actually healed by native output gains ${percent(Math.min(.8, a))} Attack for one round (cap80%).`,
-  'absorbed-charge': a => `Direct enemy absorption of this bearer's native/Master Shields grants ${number(a)} personal charge, rounded once; once per Conduit per round.`,
-  reflect: a => `After direct enemy absorption of this bearer's native/Master Shields, reflect ${percent(a)} absorbed damage (cap effective Attack) to the first attacker; once per Conduit per round.`,
-  'hurt-shield': a => `Direct enemy HP loss on this bearer creates a self-Shield at ${percent(a)} frozen maximum HP; once per Conduit per round.`,
-  'flare-shield': a => `Casting any Flare creates Shields on living allies at ${percent(a)} each recipient's frozen maximum HP.`,
-  'round-heal': a => `New round: heal the most wounded living ally at ${percent(a)} effective Recovery.`,
-  'round-shield': a => `New round: Shield the most wounded living ally at ${percent(a)} effective Defense.`,
-  'normal-burn': a => `Normal HP damage applies Burn to the surviving target at ${percent(a)} effective Attack for one enemy phase.`,
-  'normal-expose': a => `Normal HP damage applies ${percent(Math.min(.8, a))} Exposure to the surviving target for one enemy phase (cap80%).`,
-  'normal-weaken': a => `Normal HP damage applies ${percent(Math.min(.8, a))} Weaken to the surviving target for one enemy phase (cap80%).`,
-  cooperation: a => `Normal/Flare direct damage multiplier +${percent(a)} after another squad member has acted this round.`,
-  'next-buff': a => `Normal HP damage grants the next living unacted ally ${percent(Math.min(.8, a))} Attack for the rest of this round (cap80%).`,
-  'status-shield': a => `Native Burn/Weaken/Exposure application Shields the most wounded living ally at ${percent(a)} effective Defense, once per resolved action.`,
-};
-export function radiantConduitDescription(primitive: RadiantConduitPrimitive): string {
-  return conduitDescriptions[primitive.kind](primitive.amount);
 }
 export function radiantLeaderReference(state: RadiantCombatState, living = state.bearers[0].hp > 0): string {
   const leader = state.bearers[0], loadout = leader.loadout, kit = radiantStarterKits[loadout.starter];

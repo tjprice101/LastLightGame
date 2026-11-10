@@ -12,6 +12,27 @@ import './upgrade-result.css';
 import { evolutionTier, imageSource, rarityTier } from './bubble-ui';
 import { phaseZeroStatsReady, statDisplayUnit, type ResolvedStats } from '../content/phase-zero-stats';
 import { displayStatKeys, displayStatLabels } from './stat-preview';
+import { resolveRadiantStarterStats, type RadiantStats } from '../content/radiant-combat';
+import { isRadiantBearer, radiantCharacterLoadout, radiantStatKeys, radiantStatLabels } from './radiant-character';
+
+function radiantStats(account: Account, id: string): RadiantStats | null {
+  const loadout = isRadiantBearer(id) && account.characters[id] ? radiantCharacterLoadout(account, id)?.loadout : undefined;
+  return loadout ? resolveRadiantStarterStats(loadout) : null;
+}
+
+function radiantStatMarkup(from: RadiantStats, to: RadiantStats): string {
+  const changed = radiantStatKeys.filter(stat => to[stat] !== from[stat]);
+  const unchanged = radiantStatKeys.filter(stat => to[stat] === from[stat]);
+  const rows = changed.map((stat, index) => {
+    const delta = to[stat] - from[stat];
+    return `<article class="upgrade-result-stat" style="--stat-delay:${index * 70}ms"><small>${radiantStatLabels[stat]}</small>
+      <strong>${statChange(from[stat], to[stat])}</strong>
+      <span class="stat-change stat-change--${statDirection(from[stat], to[stat])}">${delta > 0 ? '+' : ''}${formatStat(delta)}</span></article>`;
+  }).join('');
+  const rest = unchanged.map(stat => `<li><span>${radiantStatLabels[stat]}</span> <b>${formatStat(to[stat])}</b></li>`).join('');
+  return `${rows ? `<div class="upgrade-result-stats">${rows}</div>` : '<p class="upgrade-result-none">No stat changes.</p>'}
+    ${rest ? `<div class="upgrade-result-unchanged"><span class="stat-change stat-change--unchanged">Unchanged</span><ul>${rest}</ul></div>` : ''}`;
+}
 
 function stats(account: Account, id: string) {
   const equipment = account.conduitEquipment?.[id];
@@ -52,8 +73,9 @@ function statMarkup(from: ResolvedStats, to: ResolvedStats): string {
 export function upgradeResult(before: Account, after: Account, id: string, kind: UpgradeKind): RewardPresentation {
   const previous = ownedCompanion(before, id);
   const current = ownedCompanion(after, id);
-  const from = stats(before, id);
-  const to = stats(after, id);
+  const radiantFrom = radiantStats(before, id);
+  const radiantTo = radiantStats(after, id);
+  const statDetails = radiantFrom && radiantTo ? radiantStatMarkup(radiantFrom, radiantTo) : statMarkup(stats(before, id), stats(after, id));
   const levelChange = `Level ${previous.level} → ${current.level}`;
   const evolutionChange = kind === 'evolve' && isStarterId(id)
     ? ` · Evolution ${displayEvolution(id, ownedProgress(before, id).evolution)} → ${displayEvolution(id, ownedProgress(after, id).evolution)}` : '';
@@ -81,7 +103,7 @@ export function upgradeResult(before: Account, after: Account, id: string, kind:
     details: `<div class="upgrade-result-identity">
       <p class="upgrade-result-progress"><span class="upgrade-result-level">${escapeDialogText(levelChange + evolutionChange)}</span></p>
       ${current.rating}</div>
-      <h4>Stat changes</h4>${statMarkup(from, to)}`,
+      <h4>Stat changes</h4>${statDetails}`,
   };
 }
 
