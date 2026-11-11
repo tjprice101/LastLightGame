@@ -27,6 +27,8 @@ describe('saved Radiant result receipts', () => {
     expect(rewards.find(item => item.id === 'lycalis')!.amount).toBe(5);
     saved.state.phase = 'victory';
     expect(radiantResultsMarkup(saved, true)).toContain('+67');
+    expect(radiantResultsMarkup(saved, true)).toContain('data-outcome="victory"');
+    expect(radiantResultsMarkup(saved, true)).toContain('class="radiant-result-aura" aria-hidden="true"');
     expect(radiantResultsMarkup(saved, true)).toContain('data-radiant-transition="exit"');
     saved.state.phase = before.state.phase;
     expect(saved).toEqual(before);
@@ -46,10 +48,16 @@ describe('saved Radiant result receipts', () => {
   });
   it('defeat and paused runs retain receipts but never offer Continue or victory copy', () => {
     const saved = run(); saved.state.phase = 'defeat';
+    expect(radiantResultsMarkup(saved, true)).toContain('data-outcome="defeat"');
     expect(radiantResultsMarkup(saved, true)).not.toContain('Victory');
     expect(radiantResultsMarkup(saved, true)).not.toContain('data-radiant-transition="continue"');
     saved.quit = true; saved.state.phase = 'player';
     expect(radiantResultsMarkup(saved, true)).toContain('Encounter paused');
     expect(radiantResultsMarkup(saved, true)).not.toContain('data-radiant-transition="continue"');
+    expect(radiantResultsMarkup(saved, true)).toContain('data-outcome="paused"');
+    expect(radiantResultsMarkup(saved, true)).not.toContain('radiant-result-aura');
+    saved.state.phase = 'victory';
+    expect(radiantResultsMarkup(saved, true)).toContain('data-outcome="paused"');
+    expect(radiantResultsMarkup(saved, true)).not.toContain('Victory');
   });
 });

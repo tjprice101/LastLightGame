@@ -221,9 +221,6 @@ html[data-motion="reduced"] .radiant-charge-layers.is-flowing .radiant-energy-li
 #radiant-gesture-help { color: #b8bbc4; text-align: center; margin: 4px 0 10px; }
 .radiant-actions { gap: 10px; }
 .radiant-actions button { min-width: 150px; padding: 10px 20px; }
-@media (max-width: 1280px) and (min-width: 1001px) {
-  .radiant-squad { grid-template-columns: repeat(var(--squad-compact-size), minmax(0, 1fr)); }
-}
 @media (max-width: 1000px) {
   .radiant-field .radiant-enemy-art { height: clamp(90px, 18vw, 160px); }
 }
@@ -279,9 +276,9 @@ html[data-motion="reduced"] .radiant-field .radiant-enemy:hover .radiant-unit-mo
 .radiant-field-ally > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; padding: 0; border: 0; }
 .radiant-visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 #radiant-gesture-help { font-size: 13px; letter-spacing: .02em; color: #9fa3ad; margin: 0 0 12px; }
-.radiant-battle > .radiant-team-reference { margin: 18px 0 0; border: 0; border-top: 1px solid #ffffff1a; border-radius: 0; background: none; padding: 4px 2px; color: #b8bbc4; }
-.radiant-battle > .radiant-team-reference summary { font-size: 13px; color: #9fa3ad; }
-.radiant-battle > .radiant-team-reference p { font-size: 13px; line-height: 1.55; max-width: 110ch; }
+.radiant-battle-footer .radiant-team-reference { margin: 0; border: 0; border-top: 1px solid #ffffff1a; border-radius: 0; background: none; padding: 0 2px; color: #b8bbc4; }
+.radiant-battle-footer .radiant-team-reference summary { font-size: 12px; color: #9fa3ad; padding-block: 0; min-height: 44px; align-content: center; }
+.radiant-battle-footer .radiant-team-reference p { font-size: 13px; line-height: 1.55; max-width: 110ch; }
 .radiant-fx-layer { position: fixed; inset: 0; pointer-events: none; z-index: 6; overflow: hidden; contain: strict; }
 .radiant-orb { position: absolute; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; will-change: transform, opacity; opacity: 0;
   background: radial-gradient(circle at 40% 35%, #fff 0 22%, color-mix(in srgb, var(--orb) 70%, #fff) 38%, var(--orb) 62%, transparent 72%);
@@ -439,3 +436,107 @@ html[data-motion="reduced"] .radiant-member .radiant-face .compact-portrait { tr
 }
 html[data-motion="reduced"] .radiant-member.is-arming::before { animation: none; opacity: 0; }
 html[data-motion="reduced"] .radiant-member .radiant-card-hint, html[data-motion="reduced"] .radiant-member .radiant-face { animation: none !important; }
+
+/* The live Radiant surface must not inherit the legacy three-row viewport clip. */
+html body .battle-screen:has(.radiant-battle) { height: auto; min-height: 100dvh; overflow: visible; }
+html body .battle-screen #battle-root:has(.radiant-battle) { display: block; height: auto; min-width: 0; }
+.radiant-battle { padding: 8px; line-height: 1.3; }
+.radiant-battle-layout {
+  display: grid;
+  grid-template-rows: auto minmax(180px, 1fr) auto auto auto;
+  gap: 6px;
+  min-height: calc(100dvh - 18px);
+  min-width: 0;
+}
+.radiant-battle-heading { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(260px, 380px) auto; gap: 12px; }
+.radiant-heading-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+.radiant-heading-title h2 { margin: 0; font-size: clamp(15px, 1.3vw, 19px); }
+.radiant-heading-title .radiant-eyebrow { font-size: 10px; letter-spacing: .08em; }
+.radiant-heading-progress { font-size: 12px; white-space: nowrap; color: #c9ccd4; }
+.radiant-heading-tools { gap: 6px; flex-wrap: nowrap; }
+.radiant-heading-tools button { padding: 6px 10px; font-size: 12px; }
+.radiant-target-strip { width: 100%; max-width: none; height: auto; max-height: 84px; padding: 4px 8px; }
+.radiant-target-detail:not([hidden]) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(120px, 1fr); gap: 2px 8px; }
+.radiant-target-state, .radiant-target-name { grid-column: 1; }
+.radiant-target-name { gap: 4px; font-size: 12px; }
+.radiant-target-detail > .radiant-health { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.radiant-target-strip .radiant-health meter { display: block; }
+.radiant-field {
+  container-type: size;
+  min-height: 0;
+  margin: 0;
+  --radiant-unit-height: min(240px, 17vw, 52cqh);
+  --radiant-unit-width: min(170px, 12vw, 42cqh);
+}
+.radiant-field .radiant-allies, .radiant-field .radiant-enemies { top: 8px; bottom: 8px; }
+.radiant-shared { gap: 8px; padding: 4px 12px; font-size: 12px; }
+.radiant-shared .radiant-shared-energy { flex-basis: 100px; }
+.radiant-squad { margin: 0 auto; gap: 6px; }
+.radiant-member { padding: 6px; }
+.radiant-face { grid-template-columns: 44px minmax(0, 1fr); gap: 2px 6px; padding: 4px; }
+.radiant-face .compact-portrait { width: 44px; height: 44px; }
+.radiant-face strong { font-size: 12px; line-height: 1.2; }
+.radiant-identity { margin: 4px 0; font-size: 11px; }
+.radiant-frozen-stats { margin: 0 0 4px; }
+.radiant-member .radiant-frozen-stats div { display: block; padding: 3px 2px; }
+.radiant-frozen-stats dt { letter-spacing: 0; overflow-wrap: anywhere; }
+.radiant-member .radiant-health span:not(.radiant-impact-ring), .radiant-member [data-radiant-charge-text], [data-radiant-readiness] { font-size: 11px; }
+.radiant-battle-footer { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 12px; min-width: 0; }
+.radiant-battle-footer #radiant-gesture-help { margin: 0; text-align: left; font-size: 11px; }
+.radiant-battle-footer .radiant-team-reference { grid-column: 2; grid-row: 1 / span 4; max-width: 240px; border: 0; }
+.radiant-battle-footer .radiant-team-reference[open] { grid-column: 1 / -1; grid-row: auto; max-width: none; }
+.radiant-battle-footer > p { margin: 2px 0; font-size: 11px; }
+.radiant-battle-footer > p:empty { display: none; }
+.radiant-battle-footer .radiant-actions { justify-content: flex-start; }
+.radiant-battle-footer .radiant-actions:has(> button:not([hidden])) { margin-block: 4px; }
+.radiant-battle-footer .radiant-actions button { padding: 6px 12px; font-size: 12px; }
+@media (max-width: 1000px) {
+  .radiant-battle-heading { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 8px; }
+  .radiant-target-strip { grid-column: 1 / -1; grid-row: 2; }
+  .radiant-target-detail:not([hidden]) { grid-template-columns: minmax(0, 1fr) minmax(150px, 1fr); }
+  .radiant-field { --radiant-unit-height: min(170px, 25vw, 52cqh); --radiant-unit-width: min(120px, 18vw, 42cqh); }
+  .radiant-squad { width: 100%; padding: 2px 2px 8px; align-items: stretch; scroll-snap-type: x proximity; }
+  .radiant-member { flex-basis: 210px; scroll-snap-align: start; }
+}
+@media (max-width: 520px) {
+  .radiant-battle { padding: 5px; }
+  .radiant-battle-layout { min-height: calc(100dvh - 12px); }
+  .radiant-heading-title .radiant-eyebrow { width: 100%; }
+  .radiant-heading-tools button { padding-inline: 8px; }
+  .radiant-heading-tools [data-radiant-leave] { max-width: 85px; }
+  .radiant-shared { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 6px; padding-inline: 6px; }
+  .radiant-shared b { max-width: 110px; }
+  .radiant-battle-footer { grid-template-columns: minmax(0, 1fr); }
+  .radiant-battle-footer .radiant-team-reference { grid-column: 1; grid-row: auto; max-width: none; }
+}
+
+.radiant-battle [data-radiant-results] {
+  position: fixed; inset: 0; z-index: 20; display: grid; place-items: center;
+  padding: 12px; overflow-y: auto; background: #070a12b8; backdrop-filter: blur(6px);
+}
+.radiant-results {
+  --outcome-color: #efadbb;
+  position: relative; isolation: isolate; width: min(800px, 100%); max-height: calc(100dvh - 24px);
+  margin: auto; overflow: auto; padding: clamp(16px, 3vw, 28px);
+  border-color: color-mix(in srgb, var(--outcome-color) 60%, #75839b);
+  background: radial-gradient(ellipse at 50% 0, color-mix(in srgb, var(--outcome-color) 16%, transparent), transparent 60%), #10141cf5;
+  box-shadow: 0 20px 70px #000b, 0 0 36px color-mix(in srgb, var(--outcome-color) 18%, transparent);
+  animation: radiant-result-arrival 480ms cubic-bezier(.2, .8, .2, 1) both;
+}
+.radiant-results[data-outcome="victory"] { --outcome-color: #ffe6aa; }
+.radiant-results[data-outcome="paused"] { --outcome-color: #c9d4e5; }
+.radiant-results h2 { position: relative; margin: 0; color: var(--outcome-color); font-size: clamp(30px, 5vw, 48px); }
+.radiant-results > p { font-size: 13px; line-height: 1.5; }
+.radiant-results .battle-result-rewards ul { max-height: none; overflow: visible; }
+.radiant-result-actions { position: sticky; bottom: -28px; margin-top: 12px; padding: 12px 0; background: #10141cf5; }
+.radiant-result-actions button { flex: 1 1 150px; }
+.radiant-result-aura { position: absolute; inset: 0; z-index: -1; overflow: hidden; border-radius: inherit; pointer-events: none; }
+.radiant-result-aura span { position: absolute; top: 42px; left: calc(50% - 120px); width: 240px; height: 240px; border: 1px solid var(--outcome-color); border-radius: 50%; opacity: 0; animation: radiant-result-ring 1000ms ease-out both; }
+.radiant-result-aura i { position: absolute; top: 0; left: calc(10% + var(--ray) * 11%); width: 2px; height: 64px; background: linear-gradient(transparent, var(--outcome-color), transparent); opacity: 0; animation: radiant-result-fall 1200ms calc(var(--ray) * 45ms) ease-out both; }
+.radiant-results[data-outcome="victory"] .radiant-result-aura i { animation-name: radiant-result-rise; }
+@keyframes radiant-result-arrival { from { opacity: 0; transform: translateY(18px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes radiant-result-ring { 0% { opacity: 0; transform: scale(.2); } 30% { opacity: .5; } 100% { opacity: 0; transform: scale(2.4); } }
+@keyframes radiant-result-fall { 0% { opacity: 0; transform: translateY(-30px); } 25% { opacity: .6; } 100% { opacity: 0; transform: translateY(200px); } }
+@keyframes radiant-result-rise { 0% { opacity: 0; transform: translateY(180px) scaleY(.5); } 25% { opacity: .8; } 100% { opacity: 0; transform: translateY(-80px) scaleY(1.4); } }
+html[data-motion="reduced"] .radiant-results, html[data-motion="reduced"] .radiant-result-aura * { animation: none; }
+html[data-motion="reduced"] .radiant-result-aura { display: none; }

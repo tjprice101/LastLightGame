@@ -1,5 +1,42 @@
 # Current state and handoff
 
+## Live battle viewport and animated outcomes (2026-11-11)
+
+**Implemented:** The real battle header is compact, and a viewport-aware arena
+shares space with all six desktop squad readouts. Laptop squads no longer
+wrap into two tall rows. Sprite size follows the actual arena height.
+Narrow screens retain horizontal squad navigation; short screens scroll
+instead of inheriting the legacy viewport clip. Names, exact stats, Gauge,
+status details, formations, facing and 44px controls remain available.
+
+Victory and defeat now have centered, scrollable saved-result sheets with
+finite entrance/ring and outcome-specific rising/falling feedback. Defeat
+does not celebrate victory. Background controls are inert while results are
+open; Tab cycles through result actions, Escape/View battlefield dismisses,
+and View saved results restores the same sheet without a new transaction.
+Reduce motion is static. Reveals still wait for saved impacts or Skip.
+
+**Verified:** `npx vitest run src\presentation\radiant-battle-view.test.ts
+src\presentation\radiant-results.test.ts
+src\presentation\radiant-battle-art.test.ts` passed 56 tests.
+The related client, session and rarity-feedback suites passed another
+40 tests. `npm run build` passed client TypeScript and the production build
+with the existing large-chunk advisory; `git diff --check` passed.
+A fresh isolated headless Chrome tested the actual view and resolver in
+16 three-/six-member layouts from 320x568 to 1613x768, including short
+landscape. Desktop headers remained at most 84px and every full squad dock
+and footer fit at 1024x768, 1280x720, 1366x768 and 1613x768. Formation bounds,
+44px targets, exact-card containment and no horizontal page overflow passed.
+Real resolved victory and defeat animated over time and settled; Reduce
+motion, narrow result actions and dismiss/reopen passed. Actual screenshots
+were reviewed. These are isolated fixtures, not owner-account edits or
+claims about physical GPU/frame cadence.
+
+**Scope:** Client presentation only; no authority deployment or mechanics
+change is required. Pending artwork and prior performance-review limits are
+unchanged. No additional owner decision is needed for this correction.
+See [the live presentation contract](menus-and-inventory.md#live-battle-viewport-and-outcomes-2026-11-11).
+
 ## Live Radiant and Team release follow-through (2026-11-10)
 
 **Implemented:** The real Team editor saves all six slots, preserves draft and

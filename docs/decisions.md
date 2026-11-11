@@ -1,5 +1,17 @@
 # Decision log
 
+## Prioritize the live arena and squad; animate both outcomes (2026-11-11)
+
+The owner requests a properly formatted live battle page, explicitly allowing
+a very thin top bar to prioritize the arena and character stats. The live
+layout now allocates viewport space around the full squad dock instead of
+requiring a large fixed-height arena and header. Preserve exact information,
+artwork, 44px controls and intentional narrow/short-screen scrolling.
+Victory and defeat both retain animated presentation, with finite,
+outcome-specific motion and a static Reduce motion equivalent. Rewards must
+already be saved, and impacts must finish or be skipped, before results appear.
+This authorizes presentation corrections, not a combat/economy retune or demo.
+
 ## Live-first implementation; no demos (2026-11-10)
 
 The owner directs every game-system, character, ability and UI overhaul to be

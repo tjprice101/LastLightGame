@@ -131,8 +131,9 @@ export class RadiantBattleView {
     const enemies = radiantFormation(run.enemies.length);
     const heading = radiantActivityTitle(run.anchor.activity);
     this.host.innerHTML = `<section class="radiant-battle" aria-label="${escape(heading.title)} battle">
+      <div class="radiant-battle-layout">
       <header class="radiant-battle-heading"><div class="radiant-heading-title"><small class="radiant-eyebrow">${escape(heading.eyebrow)}</small><h2>${escape(heading.title)}</h2>
-        <span data-radiant-progress>${radiantEncounterLabel(run)}</span> · <span data-radiant-round></span></div>
+        <span class="radiant-heading-progress"><span data-radiant-progress>${radiantEncounterLabel(run)}</span> · <span data-radiant-round></span></span></div>
         <div class="radiant-target-strip" role="region" aria-label="Selected enemy">
           ${run.enemies.map(enemy => `<div class="radiant-target-detail" data-radiant-target-detail="${escape(enemy.id)}" tabindex="0" hidden>
             <small class="radiant-target-state" data-radiant-target-state></small>
@@ -165,7 +166,7 @@ export class RadiantBattleView {
           <span class="radiant-energy-track"><span class="radiant-energy-liquid"></span></span>
         </span><span data-radiant-shared-text></span></section>
       <div class="radiant-squad" role="group" aria-label="Squad portrait controls; scroll horizontally on narrow screens" tabindex="0"
-        style="--squad-size:${run.state.bearers.length};--squad-compact-size:${Math.min(run.state.bearers.length, 3)};--squad-max-width:${run.state.bearers.length * 270 + (run.state.bearers.length - 1) * 10}px">${run.state.bearers.map((unit, index) => {
+        style="--squad-size:${run.state.bearers.length};--squad-max-width:${run.state.bearers.length * 270 + (run.state.bearers.length - 1) * 10}px">${run.state.bearers.map((unit, index) => {
         const member = unit.loadout, starter = getStarter(member.starter);
         return `<article class="radiant-member" data-radiant-card data-radiant-unit="${escape(member.id)}" data-element="${starter.elementId}">
           <span class="radiant-card-burst" aria-hidden="true"></span>
@@ -188,13 +189,13 @@ export class RadiantBattleView {
           <span data-radiant-readiness="${escape(member.id)}"></span>
         </article>`;
       }).join('')}</div>
+      <div class="radiant-battle-footer">
       <p id="radiant-gesture-help">Left click a card to attack · Right click to defend · Hold, then swipe up for its highest ready Flare.
         <span class="radiant-visually-hidden">Hold for350ms and drag upward32px. Keyboard: Enter attacks, D or the context-menu key defends, F or Up Arrow releases the highest ready Flare.</span></p>
       <p data-radiant-gesture-status role="status" aria-live="polite"></p>
       <div class="radiant-actions"><button type="button" data-radiant-retry hidden>Retry pending request</button>
         <button type="button" data-radiant-skip hidden>Skip presentation</button>
         <button type="button" data-radiant-results-show hidden>View saved results</button></div>
-      <div data-radiant-results hidden></div>
       <p data-radiant-status role="status" aria-live="polite"></p>
       <p data-radiant-error role="alert"></p>
       <details class="radiant-team-reference"><summary>Battle rules and leader</summary>
@@ -217,6 +218,8 @@ export class RadiantBattleView {
         <p>Shared charge: Normal direct hits/Defense grant6 divided by squad size, ordinary Flares12 divided by squad size;
         each new round adds18. Eternal cannot refill itself. Defeated members are not replaced or promoted.</p>
       </details>
+      </div></div>
+      <div data-radiant-results hidden></div>
     </section>`;
     this.artworkCleanup = bindArtworkLoading(this.host);
   }
@@ -271,6 +274,22 @@ export class RadiantBattleView {
   };
   private keyDown = (event: KeyboardEvent): void => {
     if (this.disposed || event.altKey || event.ctrlKey || event.metaKey || !(event.target instanceof HTMLElement)) return;
+    const results = this.element<HTMLElement>('[data-radiant-results]');
+    if (!results.hidden) {
+      if (event.key === 'Escape') {
+        event.preventDefault(); event.stopPropagation();
+        this.element<HTMLButtonElement>('[data-radiant-result-dismiss]').click();
+      } else if (event.key === 'Tab') {
+        const controls = Array.from(results.querySelectorAll<HTMLButtonElement>('button:not(:disabled)'));
+        const first = controls[0], last = controls[controls.length - 1];
+        if (event.shiftKey && (document.activeElement === first || !controls.some(control => control === document.activeElement))) {
+          event.preventDefault(); last?.focus();
+        } else if (!event.shiftKey && (document.activeElement === last || !results.contains(document.activeElement))) {
+          event.preventDefault(); first?.focus();
+        }
+      }
+      return;
+    }
     const id = event.target.dataset.radiantActor;
     if (!id || event.target.hasAttribute('disabled')) return;
     const key = event.key.toLowerCase();
@@ -394,13 +413,16 @@ export class RadiantBattleView {
       const key = `${run.id}:${run.encounter}:${view.saved.revision}`;
       if (this.resultKey !== key) { results.innerHTML = radiantResultsMarkup(run, !!this.onExit); this.resultKey = key; }
     }
+    const wasHidden = results.hidden;
     results.hidden = !terminal || resultBlocked || view.resultsDismissed;
+    this.element<HTMLElement>('.radiant-battle-layout').inert = !results.hidden;
+    if (wasHidden && !results.hidden) this.element<HTMLElement>('[data-radiant-result-heading]').focus({ preventScroll: true });
     this.element<HTMLButtonElement>('[data-radiant-results-show]').hidden = !terminal || resultBlocked || !view.resultsDismissed;
     for (const button of Array.from(results.querySelectorAll<HTMLButtonElement>('button'))) button.disabled = resultBlocked;
     this.element<HTMLElement>('[data-radiant-error]').textContent = view.error?.message ?? this.presentationError ?? '';
     this.element<HTMLElement>('[data-radiant-status]').textContent = view.busy ? 'Awaiting saved outcome…' :
       this.presenting ? 'Impacts playing · other members can act.' : run.state.phase === 'victory' ? 'Victory · rewards saved.' :
-      run.state.phase === 'defeat' ? 'Defeat · earned rewards retained.' : 'Click a card to attack · hold and swipe up for Flare.';
+      run.state.phase === 'defeat' ? 'Defeat · earned rewards retained.' : '';
   }
   async finishEntrance(): Promise<void> {
     this.skipped = false;
@@ -620,7 +642,7 @@ export class RadiantBattleView {
     if (!results.hidden) {
       const heading = this.element<HTMLElement>('[data-radiant-result-heading]');
       heading.focus();
-      if (run.state.phase === 'victory') {
+      if (!run.quit && run.state.phase === 'victory') {
         this.resultCelebration?.(); this.resultCelebration = rarityFeedback(heading, 'Omnic');
       }
     }

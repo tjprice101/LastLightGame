@@ -29,14 +29,17 @@ export function radiantEncounterLabel(run: FrozenRadiantRun): string {
     'stage' in run.anchor.activity ? `Stage ${run.anchor.activity.stage}` : `Wave ${run.anchor.trainingWave ?? 1}`;
 }
 export function radiantResultsMarkup(run: FrozenRadiantRun, canExit: boolean): string {
-  const victory = run.state.phase === 'victory', complete = victory && !radiantHasNextEncounter(run);
+  const victory = !run.quit && run.state.phase === 'victory', complete = victory && !radiantHasNextEncounter(run);
+  const outcome = run.quit ? 'paused' : victory ? 'victory' : 'defeat';
   const progress = radiantEncounterLabel(run);
   const outgoing = (kind: 'damage' | 'heal' | 'shield') => run.journal.events.reduce((sum, event) =>
     sum + (event.type === kind && event.source.kind !== 'enemy' ?
       event.type === 'damage' ? event.healthLoss : event.type === 'heal' ? event.effective : event.amount : 0), 0);
   const incoming = run.journal.events.reduce((sum, event) =>
     sum + (event.type === 'damage' && event.source.kind === 'enemy' ? event.healthLoss : 0), 0);
-  return `<section class="radiant-results" aria-label="Saved battle results">
+  return `<section class="radiant-results" data-outcome="${outcome}" role="dialog" aria-modal="true" aria-label="Saved battle results">
+    ${run.quit ? '' : `<div class="radiant-result-aura" aria-hidden="true"><span></span>${Array.from({ length: 8 }, (_, index) =>
+      `<i style="--ray:${index}"></i>`).join('')}</div>`}
     <header><h2 data-radiant-result-heading tabindex="-1">${victory ? 'Victory!' : run.quit ? 'Encounter paused' : 'Defeat'}</h2>
       <button type="button" data-radiant-result-dismiss>View battlefield</button></header>
     <p>${progress}${complete ? ' · Activity complete' : ''} · Earned rewards saved and retained.</p>

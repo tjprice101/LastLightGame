@@ -68,6 +68,17 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 describe('saved six-member Radiant battle surface', () => {
+  it('keeps the arena and complete squad in one viewport layout, with results outside its sizing', () => {
+    const { host } = fixture();
+    const layout = host.querySelector('.radiant-battle-layout')!;
+    expect(Array.from(layout.children).map(child => child.className)).toEqual([
+      'radiant-battle-heading', 'radiant-field', 'radiant-shared', 'radiant-squad', 'radiant-battle-footer',
+    ]);
+    expect(layout.querySelectorAll('.radiant-member')).toHaveLength(6);
+    expect(layout.querySelectorAll('.radiant-frozen-stats dd')).toHaveLength(18);
+    expect(host.querySelector('[data-radiant-results]')!.parentElement).toBe(layout.parentElement);
+    expect(layout.querySelector('[data-radiant-results]')).toBeNull();
+  });
   it('grounds six actual enemies and six allies while keeping one selected enemy readout', async () => {
     const { view, host, session, transport } = fixture(6, 6, undefined, 34, undefined, undefined, false,
       undefined, { kind: 'dungeon', element: 'infernic', stage: 34 });
@@ -640,6 +651,17 @@ describe('saved six-member Radiant battle surface', () => {
     const sheet = results.firstElementChild, before = session.view().saved;
     expect(results.hidden).toBe(false); expect(document.activeElement).toBe(host.querySelector('[data-radiant-result-heading]'));
     const requests = transport.execute.mock.calls.length;
+    expect(host.querySelector<HTMLElement>('.radiant-battle-layout')!.inert).toBe(true);
+    const buttons = Array.from(results.querySelectorAll<HTMLButtonElement>('button'));
+    buttons.at(-1)!.focus();
+    buttons.at(-1)!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
+    expect(document.activeElement).toBe(buttons[0]);
+    buttons[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true }));
+    expect(document.activeElement).toBe(buttons.at(-1));
+    buttons.at(-1)!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    expect(results.hidden).toBe(true);
+    expect(host.querySelector<HTMLElement>('.radiant-battle-layout')!.inert).toBe(false);
+    controls(host, '[data-radiant-results-show]').click();
     controls(host, '[data-radiant-result-dismiss]').click();
     expect(results.hidden).toBe(true); expect(document.activeElement).toBe(controls(host, '[data-radiant-results-show]'));
     controls(host, '[data-radiant-results-show]').click(); expect(results.hidden).toBe(false);
@@ -647,6 +669,26 @@ describe('saved six-member Radiant battle surface', () => {
     session.setSettings(false); view.render();
     expect(results.firstElementChild).toBe(sheet); expect(results.hidden).toBe(false);
     expect(transport.execute).toHaveBeenCalledTimes(requests); expect(session.view().saved).toEqual(before);
+  });
+  it('reveals defeat feedback only after its saved impacts, without a victory celebration', async () => {
+    let release!: () => void;
+    const effects = { windup: vi.fn(() => new Promise<void>(resolve => { release = resolve; })),
+      impact: vi.fn(async () => {}), cancel: vi.fn() };
+    const { view, session, host } = fixture(1, 1, effects, 34, undefined, undefined, false,
+      state => { state.bearers[0].hp = 1; }, { kind: 'dungeon', element: 'infernic', stage: 34 });
+    await view.finishEntrance();
+    const pending = view.act('normal');
+    await vi.waitFor(() => expect(session.view().saved.run!.state.phase).toBe('defeat'));
+    expect(host.querySelector<HTMLElement>('[data-radiant-results]')!.hidden).toBe(true);
+    release(); await pending;
+    const results = host.querySelector<HTMLElement>('[data-radiant-results]')!;
+    expect(results.hidden).toBe(false);
+    expect(results.querySelector('[data-outcome="defeat"]')).not.toBeNull();
+    expect(results.querySelector('.radiant-result-aura[aria-hidden="true"]')).not.toBeNull();
+    expect(results.querySelector('.rarity-feedback')).toBeNull();
+    expect(document.activeElement).toBe(results.querySelector('[data-radiant-result-heading]'));
+    expect(results.querySelector('[data-radiant-transition="retry"]')).not.toBeNull();
+    expect(results.querySelector('[data-radiant-transition="continue"]')).toBeNull();
   });
   it('Continue rebuilds only after save, freezes loadouts, resets encounter totals and keeps final stages terminal', async () => {
     const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();

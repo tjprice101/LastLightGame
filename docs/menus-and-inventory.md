@@ -1,5 +1,28 @@
 # Menus and inventory
 
+## Live battle viewport and outcomes (2026-11-11)
+
+The real Radiant battle uses a compact activity/selected-enemy header with
+44px Settings and Exit targets. A viewport-aware grid gives the remaining
+space to the arena above the shared charge and complete squad readouts.
+Six-member desktop squads stay in one row, including laptop widths, instead
+of wrapping into two rows beneath a fixed-height arena. Artwork scales with
+the arena's actual dimensions without changing formations or facing.
+Names and exact Health, Shield, Attack, Defense, Recovery and charge remain
+available. Narrow screens have a labeled, keyboard-focusable horizontal squad
+strip; unusually short screens scroll vertically rather than clipping content.
+Expanded rules and longer status lists remain reachable.
+
+Saved victory and defeat appear in a centered, viewport-bounded results sheet
+after impacts finish. Both have finite entrance/ring feedback, with rising
+victory light and falling defeat trails; only victory uses the shared rarity
+celebration. Explicit Reduce motion shows the static outcome and controls.
+The sheet isolates background controls, cycles keyboard focus and lets Escape
+or View battlefield dismiss it without changing rewards. View saved results
+reopens the same receipt. Continue, Replay/Retry and Exit remain immediate,
+and results scroll on small screens without hiding their actions.
+No combat, reward, save, RNG or authority behavior changes.
+
 ## Live Team and Radiant information (2026-11-10)
 
 The squad editor saves all six supported Element-Bearer slots; draft changes
