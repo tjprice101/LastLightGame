@@ -39,7 +39,11 @@ beforeAll(async () => {
   routes = Object.keys((await import('./bubble-preview')).screens);
 });
 beforeEach(() => { visit('settings'); click('[data-action="reset-example"]'); });
-afterAll(() => { vi.restoreAllMocks(); });
+afterAll(async () => {
+  // Let delayed celebration bursts (up to 300ms) finish before jsdom teardown.
+  await new Promise(resolve => setTimeout(resolve, 500));
+  vi.restoreAllMocks();
+});
 
 describe('isolated bubble UI concept', () => {
   it('connects all 40 major screens and supporting layouts without a persistent top navigation', () => {
