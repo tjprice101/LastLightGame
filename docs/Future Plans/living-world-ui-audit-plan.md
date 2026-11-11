@@ -62,12 +62,13 @@ no owner account or production deployment was touched.
   sales. The compatible client was then published before authority version 102;
   hosted Radiant, event-lifecycle and loadout smoke tests passed and removed
   their disposable identities.
-- A scripted signed-in browser check loaded the shipped client through a
-  localhost proxy of the hosted assets and used the real authority with a
+- A scripted signed-in headless browser check loaded the shipped client from
+  the hosted origin in a fresh profile and used the real authority with a
   disposable, funded six-bearer fixture. It verified six-slot save/reload,
   Settings, a purchase and summon, Training victory/rewards, carried charge,
-  Retry without repeat loot, and exit/cancellation. The fixture and its local
-  test storage were removed. This was not a direct hosted-origin browser test.
+  Retry without repeat loot, and exit/cancellation. The fixture and isolated
+  browser data were removed. An earlier localhost-proxied check also covered
+  these journeys; neither used an owner account.
 - Continue, old-client compatibility, legacy loadouts, enemy previews,
   Character Archive and Calamitic Ascension were updated for Radiant. See the
   [handoff](../handoff.md) and [Radiant specification](radiant-combat-system-specification.md)

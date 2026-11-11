@@ -67,24 +67,26 @@ function is active at version 102. All three commands passed against it:
   delete, authoritative snapshots, idempotency and rejection paths.
 
 Each smoke removed its disposable identities and cascading records. A separate
-scripted browser check loaded the shipped client through a localhost proxy of
-the hosted assets and used the real authority with a disposable account, not
-the hosted origin or an owner account. It saved and reloaded a six-member
-squad, saved Reduce motion, purchased a material after testing Cancel, and
-completed a Standard summon. Two Training waves showed saved rewards; Continue
-preserved personal/shared charge, Retry restored the wave's initial charge and
-did not repay its loot, and exit retained the exact balance. A fresh battle
-also preserved controls through Settings and exit cancellation. The fixture
-used level-105 characters and test-only funds; its identity, profile and local
-test storage were removed.
+scripted headless Chrome check loaded the shipped client directly from the
+hosted origin in a fresh browser profile and used the real authority with a
+disposable account. It saved and reloaded a six-member squad, saved Reduce
+motion, purchased a material after testing Cancel, and completed a Standard
+summon. Two Training waves showed saved rewards; Continue preserved
+personal/shared charge, Retry restored the wave's initial charge and did not
+repay its loot, and exit retained the exact balance. Battle controls resumed
+after Settings and exit cancellation. The fixture used level-105 characters
+and test-only funds; its identity, profile and isolated browser data were
+removed. An earlier localhost-proxied check also covered these journeys; no
+owner account was used.
 
 **Remaining checks:** Six vendor portraits and other Radiant artwork remain
-pending with neutral presentation. The browser was backgrounded, so physical
-desktop GPU/frame cadence and owner visual review remain unverified. The
-economy results are conditional samples, not player income or final balance
-approval. The synthetic search-layout timing indicates possible jank and is
-not a visible-frame-rate measurement. Broader journeys and future timed-event
-boundaries still need review; these checks are not an exhaustive game audit.
+pending with neutral presentation. The browser used for the search stress
+check was backgrounded, so physical desktop GPU/frame cadence and owner visual
+review remain unverified. The economy results are conditional samples, not
+player income or final balance approval. The synthetic search-layout timing
+indicates possible jank and is not a visible-frame-rate measurement. Broader
+journeys and future timed-event boundaries still need review; these checks are
+not an exhaustive game audit.
 
 ## Radiant goes live everywhere (2026-11-09)
 
