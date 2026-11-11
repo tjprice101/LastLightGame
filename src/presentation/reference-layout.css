@@ -405,7 +405,8 @@ html body .sanctuary-shell .activity-entry .selection-trigger { width: 100%; }
 html body .sanctuary-shell .activity-entry .activity-unlock-hint { flex: 1 0 100%; min-width: 0; margin: 0; color: #b5b5bc; }
 html body .sanctuary-shell .ref-play :is(#gameplay-machines, #gameplay-events, #gameplay-oblivion) { grid-template-columns: minmax(0, 1fr); }
 html body .sanctuary-shell .ref-play :is(#gameplay-machines, #gameplay-events, #gameplay-oblivion) .activity-card { grid-column: 1; }
-html body .sanctuary-shell .ref-play #gameplay-events > .text-button { grid-column: 1; grid-row: 2; }
+html body .sanctuary-shell .ref-play #gameplay-events > .activity-card { grid-row: auto; }
+html body .sanctuary-shell .ref-play #gameplay-events > .text-button { grid-column: 1; grid-row: auto; }
 html body .sanctuary-shell .ref-play #gameplay-adventure { grid-template-columns: minmax(0, 1fr); height: auto; overflow: visible; align-self: start; }
 html body .sanctuary-shell .ref-play #gameplay-adventure .training-card { grid-column: 1; height: auto; min-height: 0; padding: 0; background: #131314; overflow: hidden; display: block; }
 html body .sanctuary-shell .ref-play #gameplay-adventure .training-card::before { content: none; }

@@ -1,4 +1,4 @@
-import { elements, elementalDungeonRules, elementalEnemyLevel, infusionModes, currencyModes, materialRarities, infusionModeStageCount } from '../content/activities';
+import { elements, elementalDungeonRules, elementalEnemyLevel, infusionModes, currencyModes, eventModes, materialRarities, infusionModeStageCount } from '../content/activities';
 /** Enemy level at the first Heaven/Abyss stage showing the given form tier. */
 function infusionFormLevel(tier: number): number {
   for (let stage = 1; stage <= infusionModeStageCount; stage++) { const encounter = infusionEncounter('heavens', stage); if (encounter.tier === tier) return encounter.level; }
@@ -64,8 +64,10 @@ const activityCategories = [
   ['machines', 'Awaken the Machines', 'Conduits', 'inventory'],
   ['oblivion', 'Gates of Oblivion', 'Calamitic Element-Bearer required · Calamity materials', 'gameplay'],
   ['war', 'Elemental War', 'Rival challengers', 'gameplay'],
-  ['events', 'Events', 'Crimson Roses', 'events'],
+  ['events', 'Events', 'Crimson Roses · Moon', 'events'],
 ] as const;
+
+const displayedEventModes = eventModes.filter((mode) => mode.id === 'roses' || mode.id === 'moon');
 
 const activitySections = [
   ['Story', ['story']],
@@ -209,7 +211,10 @@ export function gameplayHub(account: Account | null = emptyAccount(), eventAcces
     <section class="activity-group" id="gameplay-story"><h2>Story</h2>
       ${storyCampaign(account, account ? ownedCharacters(account)[0] ?? 'ember' : 'ember', false)}
       </section>
-    <section class="activity-group" id="gameplay-events"><h2>Events</h2>${roseEvent(account, false, eventAccess)}${moonEvent(account, eventAccess)}</section></div>`;
+    <section class="activity-group" id="gameplay-events"><h2>Events</h2>
+      ${activityPicker(displayedEventModes)}
+      ${displayedEventModes.map((mode) => mode.id === 'roses'
+        ? roseEvent(account, false, eventAccess) : moonEvent(account, eventAccess)).join('')}</section></div>`;
 }
 
 export function bindGameplayNavigation(host: HTMLElement): void {

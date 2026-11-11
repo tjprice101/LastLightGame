@@ -1,5 +1,28 @@
 # Current state and handoff
 
+## Special-event activity layout (2026-11-11)
+
+**Implemented:** The real Events activity page uses the shared picker to show
+Crimson Roses or the Moon activity separately instead of placing both cards
+in the same grid cell. Event choice is retained across screen rebuilds; current
+stage and difficulty selections survive switching cards. Both choices fit
+on phones, and the fallback layout also keeps the cards separate. Inactive
+Sunshade, event gates, schedules, rewards and account writes are unchanged.
+
+**Verified:** `npx vitest run src\presentation\event-activity-layout.test.ts
+src\presentation\activity-banner.test.ts src\presentation\sanctuary.test.ts
+src\presentation\calamity.test.ts src\content\release-visibility.test.ts
+src\online\event-lifecycle.test.ts --maxWorkers=3 --testTimeout=60000` passed
+128 tests in six files. `npm run build` passed with the existing large-chunk
+advisory. Isolated headless Chrome exercised both real cards at nine viewport
+sizes from 320x568 to 1800x900, including 960/961px: no overlap, horizontal
+page overflow, clipped picker labels or sub-44px choices; actual entry
+controls remained reachable. Pointer and keyboard selection, artwork loading,
+the stage selector, difficulty retention and unchanged in-memory account were
+checked, and desktop/phone screenshots were reviewed. Offline and closed
+event gates were covered by the focused tests. No authority deployment is
+required for this presentation-only correction.
+
 ## Battle feel and default file names (2026-11-11)
 
 Enemy selection now uses a small portrait hop and ground-lock ring instead of

@@ -1,5 +1,16 @@
 # Menus and inventory
 
+## Special-event activity selection (2026-11-11)
+
+The Events activity page offers Crimson Roses and the Moon activity through
+the shared activity picker, showing only the selected event's artwork, rewards,
+enemy strength and entry controls. The selected event survives a screen
+rebuild; switching between the existing cards preserves their current stage
+and difficulty selections. The picker fits both choices on narrow screens,
+and event cards auto-place separately even before selection is bound.
+Inactive Sunshade remains excluded. Event availability, schedules, rewards,
+gates and saves are unchanged.
+
 ## Live battle viewport and outcomes (2026-11-11)
 
 The real Radiant battle has no top bar. A small translucent title/progress
