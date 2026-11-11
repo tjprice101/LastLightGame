@@ -55,6 +55,10 @@ use the same sheet. Existing effects and transactions remain authoritative.
 The final production-renderer matrix contains 31 cases at 390x844, 768x1024
 and 1440x900: 93 cases with no page/internal horizontal overflow, clipped
 tested text, tested sibling overlap or effective touch target below 44px.
+The same 93 cases were repeated using compiled production stylesheets in
+their emitted order, with no layout or spacing failures. That check caught
+and corrected a legacy 6px Collection-filter gap hidden by development CSS
+ordering.
 All 24 original cases have paired before/after screenshots; seven additional
 interaction/stress cases have after-only evidence. Supplementary coverage
 includes picker/child-kit focus, unlocked Calamitic shop, receipt, pending
@@ -112,6 +116,8 @@ change. No authenticated hosted-battle claim is added.
 **Validation:** `npx vitest run --maxWorkers=3` passed 288 files / 10,311 tests.
 The focused template/receipt/store run passed 23 tests; the final
 reference/loadout/inventory/Calamitic integration run passed 93 tests.
+`npx vitest run archives reference-ui --maxWorkers=3` passed another 57 tests
+for the compiled-style filter correction.
 `npm run build` and `git diff --check` passed. There are no pre-existing test
 failures to exclude. Existing JSDOM canvas diagnostics and the Vite >500kB
 chunk advisory remain warnings, not failed gates. No authority deployment

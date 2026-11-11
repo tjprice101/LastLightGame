@@ -21,9 +21,21 @@ effective targets or non-scale padding/gaps. Minimum text is 13px; body is
 opaque body at least 8.62:1. Paired screenshots cover the original 24 cases;
 seven supplementary cases have after-only evidence.
 
-**Release gate / remaining:** Publish the matching client through the normal
-main/Pages workflow and verify its version/assets; no authority deploy is
-needed. This does not implement the unfinished 38-bearer Phase A kit designs,
+**Initial published release:** Client commit `6a1c13989878bb79b92db0cc49de9c55f5e10f59`
+passed [Pages run 42988303039](https://github.com/tjprice101/LastLightGame/actions/runs/42988303039).
+Hosted `version.json` matches; the main JavaScript contains the live screen
+scope and the linked shared stylesheet contains the offer template and 52ch
+reading measure. The hosted title loads. No authority deploy is needed.
+The active client version is available in
+[version.json](https://tjprice101.github.io/LastLightGame/version.json).
+
+**Compiled-style follow-up:** Repeated all 93 cases with emitted production
+stylesheet ordering: zero layout/spacing failures, same typography/contrast.
+Normalized a legacy Collection-filter gap that development CSS had masked.
+`npx vitest run archives reference-ui --maxWorkers=3` passed 57 tests;
+`npm run build` passed. This follow-up is presentation-only.
+
+**Remaining / exclusions:** This does not implement the unfinished 38-bearer Phase A kit designs,
 pending artwork, paused Story or inactive Sunshade. It is not a new
 authenticated hosted-battle verification. Detailed coverage, measurements
 and intentional control/rate-table exceptions are in
