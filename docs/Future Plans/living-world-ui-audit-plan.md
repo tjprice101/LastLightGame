@@ -59,8 +59,15 @@ no owner account or production deployment was touched.
 
 - The real local route was exercised with isolated debug data for purchases,
   draws, battle rewards, Continue, Retry, exit, Settings and filtered bulk
-  sales. A separate disposable-account smoke exercised the deployed authority
-  and removed both identities afterward; it did not test a signed-in browser.
+  sales. The compatible client was then published before authority version 102;
+  hosted Radiant, event-lifecycle and loadout smoke tests passed and removed
+  their disposable identities.
+- A scripted signed-in browser check loaded the shipped client through a
+  localhost proxy of the hosted assets and used the real authority with a
+  disposable, funded six-bearer fixture. It verified six-slot save/reload,
+  Settings, a purchase and summon, Training victory/rewards, carried charge,
+  Retry without repeat loot, and exit/cancellation. The fixture and its local
+  test storage were removed. This was not a direct hosted-origin browser test.
 - Continue, old-client compatibility, legacy loadouts, enemy previews,
   Character Archive and Calamitic Ascension were updated for Radiant. See the
   [handoff](../handoff.md) and [Radiant specification](radiant-combat-system-specification.md)
@@ -68,11 +75,10 @@ no owner account or production deployment was touched.
 
 ### Remaining live-game audit
 
-The whole-game audit is not complete. Verify the signed-in hosted browser and
-matching authority release without using an owner account. Live timed-event
-boundaries, broader social and failure-state journeys, visible animation
-cadence and owner visual review remain outside the completed checks. Record
-evidence and remaining gaps without claiming unseen flows were audited.
+The whole-game audit is not complete. Future timed-event boundaries, broader
+social and failure-state journeys, visible animation cadence and owner visual
+review remain outside the completed checks. Record evidence and remaining gaps
+without claiming unseen flows were audited.
 
 ## First shared-foundation tranche (2026-11-07)
 

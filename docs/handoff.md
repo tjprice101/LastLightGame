@@ -35,8 +35,8 @@ information correction passed 29 focused tests and client TypeScript.
 `node tools\bundle_server_game.mjs` and
 `npx tsc --project supabase\functions\game-operation\tsconfig.json` passed.
 An event smoke against the old authority exposed a retired legacy-entry test
-path; its disposable identity was removed, and the smoke now tests Radiant
-entry and must be rerun against the matching authority. Before updating
+path; its disposable identity was removed, and the corrected Radiant-entry
+smoke passed against the matching authority. Before updating
 the hosted authority, `node tools\smoke_server_game.mjs
 --radiant-legacy-authority` passed authenticated transactions and a real battle
 including legacy Continue/Retry using disposable accounts. The current client
@@ -49,15 +49,42 @@ through 126 debug-profile captures at 1800x1125 CSS pixels measured
 open. Forced-layout median/p95 were 12.9ms/57.8ms closed and 23.8ms/74.1ms open,
 with maxima 62.6ms and 79ms respectively.
 
-**Release and remaining checks:** Publish and verify the compatible client
-before deploying the matching `game-operation` authority; then run
-`node tools\smoke_server_game.mjs --radiant-live` against the deployed function.
-Do not infer a hosted release from a push. Six vendor portraits and other
-Radiant artwork remain pending with neutral presentation. The browser was
-backgrounded, so physical desktop GPU/frame cadence and owner visual review
-remain unverified. The economy results are conditional samples, not player
-income or final balance approval. The synthetic search-layout timing indicates
-possible jank and is not a visible-frame-rate measurement.
+**Release and hosted checks (2026-11-11 UTC):** The compatible client
+`4cfdd887ccc01faf3126c48a7fc2d616dcb360d1` passed Pages run `42942264793`;
+the hosted `version.json` confirmed that exact build before the matching
+`game-operation` authority was deployed with
+`npx --yes supabase functions deploy game-operation
+--remote=ohtfgwomdfteaxubndww --use-api --no-verify-jwt --yes`. The deployed
+function is active at version 102. All three commands passed against it:
+
+- `node tools\smoke_server_game.mjs --radiant-live` covered authenticated
+  purchases, summons, denials, friends/chat/gifts/mail, battle rewards and
+  Gauge, idempotency, old-client refresh, Continue, Retry and saved exit.
+- `node tools\smoke_server_game.mjs --event-lifecycle` covered authority time,
+  active-event shop denial, unreleased Sunshade entry/summon/shop denial,
+  client clock/price rejection and unchanged-account checks.
+- `node tools\smoke_server_game.mjs --loadouts` covered save, equip, rename,
+  delete, authoritative snapshots, idempotency and rejection paths.
+
+Each smoke removed its disposable identities and cascading records. A separate
+scripted browser check loaded the shipped client through a localhost proxy of
+the hosted assets and used the real authority with a disposable account, not
+the hosted origin or an owner account. It saved and reloaded a six-member
+squad, saved Reduce motion, purchased a material after testing Cancel, and
+completed a Standard summon. Two Training waves showed saved rewards; Continue
+preserved personal/shared charge, Retry restored the wave's initial charge and
+did not repay its loot, and exit retained the exact balance. A fresh battle
+also preserved controls through Settings and exit cancellation. The fixture
+used level-105 characters and test-only funds; its identity, profile and local
+test storage were removed.
+
+**Remaining checks:** Six vendor portraits and other Radiant artwork remain
+pending with neutral presentation. The browser was backgrounded, so physical
+desktop GPU/frame cadence and owner visual review remain unverified. The
+economy results are conditional samples, not player income or final balance
+approval. The synthetic search-layout timing indicates possible jank and is
+not a visible-frame-rate measurement. Broader journeys and future timed-event
+boundaries still need review; these checks are not an exhaustive game audit.
 
 ## Radiant goes live everywhere (2026-11-09)
 
