@@ -189,7 +189,9 @@ html[data-motion="reduced"] .radiant-charge-layers.is-flowing .radiant-energy-li
 .radiant-field .radiant-enemy .radiant-unit-motion { width: 100%; position: relative; }
 .radiant-field .radiant-enemy .radiant-unit-motion::after { content: ""; position: absolute; left: 18%; right: 18%; bottom: -2px; height: 14px; border-radius: 50%; background: radial-gradient(#000a, transparent 70%); z-index: -1; }
 .radiant-field .radiant-enemy[aria-pressed="true"] { box-shadow: none; }
-.radiant-field .radiant-enemy[aria-pressed="true"] .radiant-unit-motion::after { background: radial-gradient(transparent 45%, #ffffffd0 52%, #ffffff40 62%, transparent 72%); height: 22px; bottom: -8px; }
+.radiant-field .radiant-enemy[aria-pressed="true"] .radiant-unit-motion::after { background: radial-gradient(transparent 45%, #ffffffd0 52%, #ffffff40 62%, transparent 72%); height: 22px; bottom: -8px; animation: radiant-target-lock 300ms cubic-bezier(.2,.8,.2,1); }
+@keyframes radiant-target-lock { from { opacity: 0; transform: scale(1.6); } to { opacity: 1; transform: scale(1); } }
+html[data-motion="reduced"] .radiant-field .radiant-enemy[aria-pressed="true"] .radiant-unit-motion::after { animation: none; }
 .radiant-plate { box-sizing: border-box; width: min(100%, 240px); padding: 6px 10px 7px; border-radius: 10px; background: #0d0f15c7; border: 1px solid #ffffff26; backdrop-filter: blur(4px); text-align: left; }
 .radiant-enemy[aria-pressed="true"] .radiant-plate { border-color: #fff; box-shadow: 0 0 0 1px #fff4, 0 0 18px #ffffff30; }
 .radiant-plate-name { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; font-size: 13px; }

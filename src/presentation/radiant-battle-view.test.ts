@@ -409,7 +409,7 @@ describe('saved six-member Radiant battle surface', () => {
     await vi.waitFor(() => expect(windups).toHaveLength(1));
     expect(session.view().saved.revision).toBe(2);
     expect(action(host, 'tide').disabled).toBe(false);
-    expect(host.querySelector('[data-radiant-status]')?.textContent).toContain('other members can act');
+    expect(host.querySelector('[data-radiant-status]')?.textContent).toBe('');
 
     const second = view.act('normal');
     await vi.waitFor(() => expect(session.view().saved.revision).toBe(3));

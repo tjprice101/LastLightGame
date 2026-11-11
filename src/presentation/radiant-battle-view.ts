@@ -63,6 +63,14 @@ function radiantCardName(full: string): string {
 function affectedEnemyTarget(response: RadiantRunResponse, target: string | null): string | null {
   return target && response.events.some(event => 'targetId' in event && event.targetId === target) ? target : null;
 }
+const enemyLeadInMs = 320, enemyWindupMs = 420, enemyRecoveryMs = 260;
+/** The enemy whose direct authored packet this frame shows, if any. */
+function enemyActor(frame: RadiantImpactFrame): string | null {
+  for (const event of frame.events)
+    if ((event.type === 'damage' && event.origin === 'direct' || event.type === 'heal' || event.type === 'shield') &&
+      event.source.kind === 'enemy') return event.source.enemyId;
+  return null;
+}
 const tierNames = { glowing: 'Glowing Flare', lustrous: 'Lustrous Flare', eternal: 'Eternal Radiant Flare' };
 function centre(element: Element, random?: () => number): { x: number; y: number } {
   const box = element.getBoundingClientRect();
@@ -203,12 +211,12 @@ export class RadiantBattleView {
       }).join('')}</div>
       <div class="radiant-battle-footer">
       <p id="radiant-gesture-help">Left click a card to attack · Right click to defend · Hold, then swipe up for its highest ready Flare.
-        <span class="radiant-visually-hidden">Hold for350ms and drag upward32px. Keyboard: Enter attacks, D or the context-menu key defends, F or Up Arrow releases the highest ready Flare.</span></p>
+        <span class="radiant-visually-hidden">Hold for 350ms and drag upward 32px. Keyboard: Enter attacks, D or the context-menu key defends, F or Up Arrow releases the highest ready Flare.</span></p>
       <p data-radiant-gesture-status role="status" aria-live="polite"></p>
       <div class="radiant-actions"><button type="button" data-radiant-retry hidden>Retry pending request</button>
         <button type="button" data-radiant-skip hidden>Skip presentation</button>
         <button type="button" data-radiant-results-show hidden>View saved results</button></div>
-      <p data-radiant-status role="status" aria-live="polite"></p>
+      <p class="radiant-visually-hidden" data-radiant-status role="status" aria-live="polite"></p>
       <p data-radiant-error role="alert"></p>
       <details class="radiant-team-reference"><summary>Battle rules and leader</summary>
         <div data-radiant-leader-reference></div>
@@ -222,13 +230,13 @@ export class RadiantBattleView {
         Each Normal/Flare direct hit has a ${radiantChargeRules.bonusChance * 100}% chance to add ${radiantChargeRules.bonusAmount} to its drop,
         at most ${radiantChargeRules.maximumBonusRolls} rolls per action.
         Generated/periodic hits do not drop Gauge unless they defeat an enemy.</p>
-        <p>Normal Attack uses100% effective Attack against one selected living enemy.
-        Direct damage is rounded once: Attack ÁEAttack/(Attack + effective enemy Defense) ÁEaction coefficient ÁEoutput modifiers, minimum1.
+        <p>Normal Attack uses 100% effective Attack against one selected living enemy.
+        Direct damage is rounded once: Attack × Attack/(Attack + effective enemy Defense) × action coefficient × output modifiers, minimum 1.
         Burn/periodic and generated packets follow their authored rules, not this guaranteed direct-damage formula.
-        Defense halves direct enemy damage until the next round, with strongest reduction and gear enhancements; combined multiplier floor20%.
+        Defense halves direct enemy damage until the next round, with strongest reduction and gear enhancements; combined multiplier floor 20%.
         Shields absorb in creation order before HP.</p>
-        <p>Shared charge: Normal direct hits/Defense grant6 divided by squad size, ordinary Flares12 divided by squad size;
-        each new round adds18. Eternal cannot refill itself. Defeated members are not replaced or promoted.</p>
+        <p>Shared charge: Normal direct hits/Defense grant 6 divided by squad size, ordinary Flares 12 divided by squad size;
+        each new round adds 18. Eternal cannot refill itself. Defeated members are not replaced or promoted.</p>
       </details>
       </div></div>
       <div data-radiant-results hidden></div>
@@ -311,8 +319,14 @@ export class RadiantBattleView {
     void this.act(kind, id).catch(error => this.report(error));
   };
   private selection(button: HTMLElement): void {
-    this.selectionCleanup?.();
-    this.selectionCleanup = rarityFeedback(button, 'Common');
+    this.selectionCleanup?.(); this.selectionCleanup = null;
+    const art = button.querySelector<HTMLElement>('.radiant-unit-idle');
+    if (reducedMotion() || !art?.animate) return;
+    const animation = art.animate([
+      { transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-6px) scale(1.04)', offset: .4 },
+      { transform: 'translateY(0) scale(1)' },
+    ], { duration: 260, easing: 'cubic-bezier(.3,.7,.3,1)' });
+    this.selectionCleanup = () => animation.cancel();
   }
   private report(error: unknown): void {
     if (this.disposed) return;
@@ -433,8 +447,8 @@ export class RadiantBattleView {
     this.element<HTMLButtonElement>('[data-radiant-results-show]').hidden = !terminal || resultBlocked || !view.resultsDismissed;
     for (const button of Array.from(results.querySelectorAll<HTMLButtonElement>('button'))) button.disabled = resultBlocked;
     this.element<HTMLElement>('[data-radiant-error]').textContent = view.error?.message ?? this.presentationError ?? '';
-    this.element<HTMLElement>('[data-radiant-status]').textContent = view.busy ? 'Awaiting saved outcome…' :
-      this.presenting ? 'Impacts playing · other members can act.' : run.state.phase === 'victory' ? 'Victory · rewards saved.' :
+    this.element<HTMLElement>('[data-radiant-status]').textContent = view.busy || this.presenting ? '' :
+      run.state.phase === 'victory' ? 'Victory · rewards saved.' :
       run.state.phase === 'defeat' ? 'Defeat · earned rewards retained.' : '';
   }
   async finishEntrance(): Promise<void> {
@@ -609,8 +623,15 @@ export class RadiantBattleView {
       const fx: Promise<void>[] = [], failures: unknown[] = [], played = new Set<number>();
       const track = (effect: Promise<void>) => { fx.push(effect.catch(error => { failures.push(error); })); };
       let shaken = action.type !== 'flare';
+      let previousActor: string | null = null;
       for (const [frameIndex, frame] of frames.entries()) {
         if (this.disposed || this.skipped || generation !== this.presentationGeneration) break;
+        const actor = enemyActor(frame);
+        if (actor && !reducedMotion()) {
+          await this.enemyWindup(actor, actor !== previousActor);
+          if (this.disposed || this.skipped || generation !== this.presentationGeneration) break;
+        }
+        previousActor = actor;
         const previous = this.displayed;
         this.displayed = structuredClone(frame.readout); this.statuses = structuredClone(frame.statuses); this.render();
         if (!reducedMotion()) {
@@ -622,6 +643,7 @@ export class RadiantBattleView {
             shaken = true; track(this.shakeField(frame));
           }
           await Promise.all([this.fieldImpact(frame), this.effects ? this.effects.impact(structuredClone(frame)) : this.impact(frame)]);
+          if (actor) await this.pause(enemyRecoveryMs);
         }
       }
       if (!reducedMotion() && !this.disposed && !this.skipped && generation === this.presentationGeneration) {
@@ -701,6 +723,22 @@ export class RadiantBattleView {
       run(burst, [{ opacity: 0, transform: 'scale(.5)' }, { opacity: 1, transform: 'scale(1.1)', offset: .25 },
         { opacity: 0, transform: 'scale(1.7) translateY(-30%)' }], 820);
     }
+  }
+  /** Paces enemy turns: a short beat before a new attacker, then a readable
+   * anticipation pull-back and lunge toward the squad before the impact. */
+  private async enemyWindup(enemyId: string, newAttacker: boolean): Promise<void> {
+    const art = this.host.querySelector<HTMLElement>(`[data-radiant-art="${enemyId}"]`);
+    if (newAttacker) await this.pause(enemyLeadInMs);
+    if (!art) return;
+    await this.animate(art, [
+      { transform: 'none', filter: 'brightness(1)' },
+      { transform: 'translateX(10px) scale(.97)', filter: 'brightness(1.25)', offset: .45 },
+      { transform: 'translateX(-22px) scale(1.04)', filter: 'brightness(1.4)', offset: .85 },
+      { transform: 'none', filter: 'brightness(1)' },
+    ], enemyWindupMs, { easing: 'cubic-bezier(.4,0,.2,1)' });
+  }
+  private pause(duration: number): Promise<void> {
+    return this.animate(this.element('.radiant-field'), [], duration);
   }
   private speed = (): void => { for (const animation of this.animations) animation.playbackRate = battleSpeed(); };
   private cancelEffects(): void {
@@ -871,7 +909,7 @@ export class RadiantBattleView {
         if (item.rarity) node.dataset.rarity = item.rarity;
         node.style.setProperty('--loot', item.color);
         const art = lootArt(item);
-        node.innerHTML = `${art ? `<img src="${escape(art)}" alt="" decoding="async">` : '<i></i>'}<b>ÁE{formatStat(item.amount)}</b>`;
+        node.innerHTML = `${art ? `<img src="${escape(art)}" alt="" decoding="async">` : '<i></i>'}<b>×${formatStat(item.amount)}</b>`;
         const spread = items.length > 1 ? (slot / (items.length - 1) - .5) * Math.min(220, items.length * 60) : 0;
         const dx = spread + (random() - .5) * 26, dy = bounds.height * .42 - 12 + (random() - .5) * 18;
         const peak = -60 - random() * 50;

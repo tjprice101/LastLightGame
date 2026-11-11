@@ -311,7 +311,7 @@ export class RadiantClient {
         }).join('')}</ul>` : '<p>No captured holdings yet.</p>'}
         <button type="button" data-radiant-nav="creatures">Open captured holdings in Team</button>
       </section>`}
-      <p class="radiant-client-status" role="status">${state.busy ? 'Awaiting the saved authority response…' : ''}</p>
+      <p class="radiant-client-status" role="status"></p>
       <p class="radiant-client-error" data-radiant-error role="alert">${escape(this.error || state.error?.message || '')}</p>
     </section>`;
   }
