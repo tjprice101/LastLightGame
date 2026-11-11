@@ -332,7 +332,7 @@ export class RadiantClient {
     }
     if (!view.saved.run) return true;
     if (view.entrancePending || view.settingsOpen) {
-      this.error = 'Finish the pending saved action and its presentation, then use Exit · Keep rewards.';
+      this.error = 'Finish the pending saved action and its presentation, then use Exit.';
       const error = this.host.querySelector<HTMLElement>('[data-radiant-error]');
       if (error) error.textContent = this.error;
       return false;

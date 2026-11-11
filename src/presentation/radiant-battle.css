@@ -440,72 +440,123 @@ html[data-motion="reduced"] .radiant-member .radiant-card-hint, html[data-motion
 /* The live Radiant surface must not inherit the legacy three-row viewport clip. */
 html body .battle-screen:has(.radiant-battle) { height: auto; min-height: 100dvh; overflow: visible; }
 html body .battle-screen #battle-root:has(.radiant-battle) { display: block; height: auto; min-width: 0; }
-.radiant-battle { padding: 8px; line-height: 1.3; }
+.radiant-battle { padding: 6px; line-height: 1.3; }
+/* Compact battle HUD: no top bar; arena first, then a long enemy banner and dense squad tiles. */
 .radiant-battle-layout {
   display: grid;
-  grid-template-rows: auto minmax(180px, 1fr) auto auto auto;
-  gap: 6px;
-  min-height: calc(100dvh - 18px);
+  grid-template-rows: minmax(200px, 1fr) auto auto auto;
+  gap: 5px;
+  min-height: calc(100dvh - 14px);
   min-width: 0;
 }
-.radiant-battle-heading { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(260px, 380px) auto; gap: 12px; }
-.radiant-heading-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
-.radiant-heading-title h2 { margin: 0; font-size: clamp(15px, 1.3vw, 19px); }
-.radiant-heading-title .radiant-eyebrow { font-size: 10px; letter-spacing: .08em; }
-.radiant-heading-progress { font-size: 12px; white-space: nowrap; color: #c9ccd4; }
-.radiant-heading-tools { gap: 6px; flex-wrap: nowrap; }
-.radiant-heading-tools button { padding: 6px 10px; font-size: 12px; }
-.radiant-target-strip { width: 100%; max-width: none; height: auto; max-height: 84px; padding: 4px 8px; }
-.radiant-target-detail:not([hidden]) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(120px, 1fr); gap: 2px 8px; }
-.radiant-target-state, .radiant-target-name { grid-column: 1; }
-.radiant-target-name { gap: 4px; font-size: 12px; }
-.radiant-target-detail > .radiant-health { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
-.radiant-target-strip .radiant-health meter { display: block; }
 .radiant-field {
   container-type: size;
   min-height: 0;
   margin: 0;
-  --radiant-unit-height: min(240px, 17vw, 52cqh);
-  --radiant-unit-width: min(170px, 12vw, 42cqh);
+  --radiant-unit-height: min(250px, 17vw, 56cqh);
+  --radiant-unit-width: min(180px, 12vw, 44cqh);
 }
-.radiant-field .radiant-allies, .radiant-field .radiant-enemies { top: 8px; bottom: 8px; }
-.radiant-shared { gap: 8px; padding: 4px 12px; font-size: 12px; }
-.radiant-shared .radiant-shared-energy { flex-basis: 100px; }
-.radiant-squad { margin: 0 auto; gap: 6px; }
-.radiant-member { padding: 6px; }
-.radiant-face { grid-template-columns: 44px minmax(0, 1fr); gap: 2px 6px; padding: 4px; }
-.radiant-face .compact-portrait { width: 44px; height: 44px; }
-.radiant-face strong { font-size: 12px; line-height: 1.2; }
-.radiant-identity { margin: 4px 0; font-size: 11px; }
-.radiant-frozen-stats { margin: 0 0 4px; }
-.radiant-member .radiant-frozen-stats div { display: block; padding: 3px 2px; }
-.radiant-frozen-stats dt { letter-spacing: 0; overflow-wrap: anywhere; }
-.radiant-member .radiant-health span:not(.radiant-impact-ring), .radiant-member [data-radiant-charge-text], [data-radiant-readiness] { font-size: 11px; }
+.radiant-field .radiant-allies, .radiant-field .radiant-enemies { top: 40px; bottom: 6px; }
+.radiant-hud { position: absolute; z-index: 8; inset: 5px 5px auto; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; pointer-events: none; }
+.radiant-hud > * { pointer-events: auto; }
+.radiant-hud-title { min-width: 0; padding: 3px 10px; border: 1px solid #ffffff24; border-radius: 7px; background: #0a0d14b3; backdrop-filter: blur(3px); }
+.radiant-hud-title h2 { margin: 0; font-size: 12px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.radiant-hud-title .radiant-eyebrow { display: inline; font-size: 10px; letter-spacing: .08em; color: #a9adb8; }
+.radiant-hud-progress { display: block; font-size: 11px; line-height: 1.25; color: #c9ccd4; white-space: nowrap; }
+.radiant-hud-tools { display: flex; gap: 6px; flex: none; }
+.radiant-battle .radiant-hud-tools button { position: relative; min-height: 32px; min-width: 40px; padding: 4px 12px; font-size: 12px; line-height: 1;
+  border-radius: 7px; border-color: #ffffff40; background: #0a0d14c2; backdrop-filter: blur(3px); }
+/* Keeps a 44px touch target around the visually small controls. */
+.radiant-battle .radiant-hud-tools button::after { content: ""; position: absolute; inset: -6px -2px; }
+.radiant-battle .radiant-hud-tools [data-radiant-settings] { font-size: 16px; padding-inline: 10px; }
+.radiant-battle .radiant-hud-tools button:not(:disabled):hover { background: #1c2230e6; border-color: #ffffff80; }
+
+.radiant-enemy-banner { display: flex; gap: 5px; align-items: stretch; min-width: 0; }
+.radiant-target-strip { flex: 1 1 auto; width: auto; max-width: none; height: auto; max-height: none; min-width: 0; overflow: visible;
+  padding: 4px 12px; border-radius: 6px; border-left: 3px solid #ff8f8f; }
+.radiant-target-detail:not([hidden]) { display: grid; grid-template-columns: minmax(110px, max-content) minmax(0, 1fr); align-items: center; gap: 2px 12px; overflow: visible; }
+.radiant-target-name { grid-column: 1; display: flex; align-items: baseline; gap: 8px; min-width: 0; max-width: 320px; font-size: 13px; white-space: nowrap; }
+.radiant-target-name strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; overflow-wrap: normal; }
+.radiant-target-state { font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: #ffd0a8; }
+.radiant-target-detail > .radiant-health { grid-column: 2; grid-row: 1; align-self: center; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 8px; }
+.radiant-battle .radiant-health meter { grid-area: 1 / 1; display: block; appearance: none; height: 12px; }
+.radiant-battle .radiant-health meter::-webkit-meter-bar { height: 100%; box-sizing: border-box; border: 1px solid #a8b7c773; border-radius: 999px; background: #080d15; }
+.radiant-target-strip .radiant-health meter { height: 14px; }
+.radiant-target-strip .radiant-health meter::-webkit-meter-optimum-value, .radiant-target-strip .radiant-health meter::-webkit-meter-suboptimum-value { border-radius: 999px; background: linear-gradient(#ffe2d6, #f0605a 45%, #9b1f2a); }
+.radiant-target-strip .radiant-health meter::-moz-meter-bar { border-radius: 999px; background: linear-gradient(#ffe2d6, #f0605a 45%, #9b1f2a); }
+.radiant-battle .radiant-health [data-hp] { grid-area: 1 / 1; z-index: 1; position: relative; display: block; margin: 0; text-align: center; font-size: 10px; line-height: 1;
+  white-space: nowrap; overflow: hidden; text-shadow: 0 1px 2px #000, 0 0 3px #000, 0 0 1px #000; pointer-events: none; }
+.radiant-target-strip .radiant-health [data-hp] { font-size: 11px; }
+.radiant-battle .radiant-health [data-shield] { grid-area: 1 / 2; display: block; margin: 0; font-size: 10px; color: #bfe3ff; white-space: nowrap; }
+.radiant-battle .radiant-health .radiant-status-timing { grid-column: 1 / -1; font-size: 9px; }
+.radiant-battle .radiant-health .radiant-status-list, .radiant-battle .radiant-health .radiant-shield-layers {
+  grid-column: 1 / -1; display: flex; gap: 4px; margin: 2px 0 0; max-height: none; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+.radiant-battle .radiant-health li { flex: none; display: flex; align-items: center; gap: 4px; margin: 0; padding: 1px 7px 1px 2px; border: 1px solid #ffffff2a;
+  border-radius: 999px; background: #0a0d14d0; font-size: 10px; line-height: 1.3; white-space: nowrap; }
+.radiant-battle .radiant-health li .status-icon { float: none; width: 16px; height: 16px; margin: 0; }
+.radiant-battle .radiant-health li strong, .radiant-battle .radiant-health li small, .radiant-battle .radiant-health li span { display: inline; color: inherit; }
+.radiant-battle .radiant-health li small { color: #b8bbc4; }
+.radiant-enemy-banner .radiant-shared { flex: 0 1 300px; flex-wrap: nowrap; gap: 6px; padding: 3px 10px; font-size: 11px; }
+.radiant-enemy-banner .radiant-shared b { white-space: nowrap; }
+.radiant-enemy-banner .radiant-shared .radiant-shared-energy { flex: 1 1 60px; }
+.radiant-enemy-banner .radiant-shared .radiant-energy-track { height: 10px; }
+
+.radiant-squad { display: grid; grid-template-columns: repeat(var(--squad-columns, 3), minmax(0, 1fr)); width: min(100%, calc(var(--squad-columns, 3) * 380px));
+  margin: 0 auto; padding: 0; gap: 5px; overflow: visible; align-items: stretch; }
+.radiant-squad .radiant-member { display: grid; grid-template-columns: 54px minmax(0, 1fr); grid-template-areas: "face head" "face hp" "face charge" "foot foot";
+  align-items: center; gap: 2px 8px; padding: 5px 8px 4px 5px; min-width: 0; flex: none; }
+.radiant-squad .radiant-face { grid-area: face; align-self: start; display: block; box-sizing: border-box; width: 54px; height: 54px; min-height: 44px; padding: 0; border-radius: 8px; overflow: hidden; }
+.radiant-squad .radiant-face .compact-portrait { width: 100%; height: 100%; margin: 0; border: 0; border-radius: inherit; }
+.radiant-squad .radiant-face > span:not(.compact-portrait) { position: absolute; inset: auto 0 0; padding: 1px 0; font-size: 8px; line-height: 1.2; letter-spacing: .06em; text-align: center; background: #000b; color: var(--accent); }
+.radiant-member-head { grid-area: head; display: flex; align-items: baseline; justify-content: space-between; gap: 6px; min-width: 0; }
+.radiant-member-head strong { display: flex; gap: .3em; min-width: 0; overflow: hidden; white-space: nowrap; font-size: 12px; }
+.radiant-name-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.radiant-name-own { flex: none; }
+.radiant-squad .radiant-identity { flex: none; margin: 0; font-size: 10px; white-space: nowrap; color: #c9ccd4; }
+.radiant-squad .radiant-member .radiant-health { grid-area: hp; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 6px; }
+.radiant-squad .radiant-member .radiant-health meter { height: 13px; }
+.radiant-member-charge { grid-area: charge; display: grid; min-width: 0; }
+.radiant-member-charge > * { grid-area: 1 / 1; }
+.radiant-squad .radiant-member .radiant-charge-layers { margin: 0; }
+.radiant-squad .radiant-member .radiant-energy-track { height: 11px; }
+.radiant-squad .radiant-member [data-radiant-charge-text] { position: relative; z-index: 1; margin: 0; text-align: center; font-size: 9px; line-height: 11px; color: #fff;
+  white-space: nowrap; overflow: hidden; text-shadow: 0 1px 2px #000, 0 0 3px #000; pointer-events: none; }
+.radiant-member-foot { grid-area: foot; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 8px; min-width: 0; font-size: 10px; }
+.radiant-squad [data-radiant-readiness] { margin: 0; font-size: 10px; white-space: nowrap; color: #e8e9ee; }
+.radiant-squad .radiant-member[data-ready-tier]:not([data-ready-tier=""]) [data-radiant-readiness] { color: color-mix(in srgb, var(--accent) 55%, #fff); font-weight: 700; }
+.radiant-squad .radiant-frozen-stats { display: flex; flex-wrap: wrap; gap: 0 8px; margin: 0; }
+.radiant-squad .radiant-frozen-stats div { display: flex; gap: 3px; padding: 0; border: 0; background: none; }
+.radiant-squad .radiant-frozen-stats dt { font-size: 9px; letter-spacing: .04em; white-space: nowrap; color: #9a9ea9; }
+.radiant-squad .radiant-frozen-stats dd { font-size: 10px; white-space: nowrap; }
+
 .radiant-battle-footer { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 12px; min-width: 0; }
-.radiant-battle-footer #radiant-gesture-help { margin: 0; text-align: left; font-size: 11px; }
+.radiant-battle-footer #radiant-gesture-help { margin: 0; text-align: left; font-size: 10px; }
 .radiant-battle-footer .radiant-team-reference { grid-column: 2; grid-row: 1 / span 4; max-width: 240px; border: 0; }
 .radiant-battle-footer .radiant-team-reference[open] { grid-column: 1 / -1; grid-row: auto; max-width: none; }
-.radiant-battle-footer > p { margin: 2px 0; font-size: 11px; }
+.radiant-battle-footer .radiant-team-reference summary { min-height: 32px; font-size: 11px; }
+.radiant-battle-footer > p { margin: 1px 0; font-size: 11px; }
 .radiant-battle-footer > p:empty { display: none; }
 .radiant-battle-footer .radiant-actions { justify-content: flex-start; }
 .radiant-battle-footer .radiant-actions:has(> button:not([hidden])) { margin-block: 4px; }
 .radiant-battle-footer .radiant-actions button { padding: 6px 12px; font-size: 12px; }
 @media (max-width: 1000px) {
-  .radiant-battle-heading { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 8px; }
-  .radiant-target-strip { grid-column: 1 / -1; grid-row: 2; }
-  .radiant-target-detail:not([hidden]) { grid-template-columns: minmax(0, 1fr) minmax(150px, 1fr); }
-  .radiant-field { --radiant-unit-height: min(170px, 25vw, 52cqh); --radiant-unit-width: min(120px, 18vw, 42cqh); }
-  .radiant-squad { width: 100%; padding: 2px 2px 8px; align-items: stretch; scroll-snap-type: x proximity; }
-  .radiant-member { flex-basis: 210px; scroll-snap-align: start; }
+  .radiant-field { --radiant-unit-height: min(180px, 26vw, 56cqh); --radiant-unit-width: min(130px, 19vw, 44cqh); }
 }
-@media (max-width: 520px) {
-  .radiant-battle { padding: 5px; }
-  .radiant-battle-layout { min-height: calc(100dvh - 12px); }
-  .radiant-heading-title .radiant-eyebrow { width: 100%; }
-  .radiant-heading-tools button { padding-inline: 8px; }
-  .radiant-heading-tools [data-radiant-leave] { max-width: 85px; }
-  .radiant-shared { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 6px; padding-inline: 6px; }
-  .radiant-shared b { max-width: 110px; }
+@media (max-width: 620px) {
+  .radiant-battle { padding: 4px; }
+  .radiant-battle-layout { min-height: calc(100dvh - 10px); gap: 4px; }
+  .radiant-hud-title h2 .radiant-eyebrow { display: none; }
+  .radiant-enemy-banner { flex-wrap: wrap; }
+  .radiant-enemy-banner .radiant-shared { flex: 1 1 100%; }
+  .radiant-target-strip { padding: 3px 8px; }
+  .radiant-target-detail:not([hidden]) { grid-template-columns: minmax(0, 1fr); }
+  .radiant-target-detail > .radiant-health { grid-column: 1; grid-row: auto; }
+  .radiant-squad { grid-template-columns: repeat(var(--squad-phone-columns, 2), minmax(0, 1fr)); width: 100%; gap: 4px; }
+  .radiant-squad .radiant-member { grid-template-columns: 46px minmax(0, 1fr); gap: 2px 6px; padding: 4px 6px 3px 4px; }
+  .radiant-squad .radiant-face { width: 46px; height: 46px; }
+  .radiant-member-head { flex-wrap: wrap; gap: 0 6px; }
+  .radiant-squad .radiant-frozen-stats { gap: 0 5px; }
+  .radiant-squad .radiant-frozen-stats dt { font-size: 8px; }
   .radiant-battle-footer { grid-template-columns: minmax(0, 1fr); }
   .radiant-battle-footer .radiant-team-reference { grid-column: 1; grid-row: auto; max-width: none; }
 }

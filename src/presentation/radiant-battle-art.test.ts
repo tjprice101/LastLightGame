@@ -18,6 +18,18 @@ describe('canonical Radiant battlefield artwork', () => {
       'translate: 0 calc(var(--radiant-contact-gap, 0) * min(var(--radiant-unit-width), var(--radiant-unit-height)));',
     );
   });
+  it('keeps compact squad stat labels and values on one line, never breaking mid-word', () => {
+    const css = readFileSync(new URL('./radiant-battle.css', import.meta.url), 'utf8');
+    expect(css).toContain('.radiant-squad .radiant-frozen-stats dt { font-size: 9px; letter-spacing: .04em; white-space: nowrap; color: #9a9ea9; }');
+    expect(css).toContain('.radiant-squad .radiant-frozen-stats dd { font-size: 10px; white-space: nowrap; }');
+    expect(css).not.toMatch(/\.radiant-frozen-stats dt \{[^}]*overflow-wrap: anywhere/);
+  });
+  it('replaces the battle top bar with small arena controls that keep a 44px touch target', () => {
+    const css = readFileSync(new URL('./radiant-battle.css', import.meta.url), 'utf8');
+    expect(css).toContain('grid-template-rows: minmax(200px, 1fr) auto auto auto;');
+    expect(css).toContain('.radiant-battle .radiant-hud-tools button::after { content: ""; position: absolute; inset: -6px -2px; }');
+    expect(css).toMatch(/\.radiant-battle \.radiant-hud-tools button \{[^}]*min-height: 32px;/);
+  });
   it('resolves an alpha-derived contact offset for each available bearer form', () => {
     for (const starter of starters) {
       for (let form = 1; form <= 6; form++) {

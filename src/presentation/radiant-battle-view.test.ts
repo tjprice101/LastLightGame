@@ -72,8 +72,10 @@ describe('saved six-member Radiant battle surface', () => {
     const { host } = fixture();
     const layout = host.querySelector('.radiant-battle-layout')!;
     expect(Array.from(layout.children).map(child => child.className)).toEqual([
-      'radiant-battle-heading', 'radiant-field', 'radiant-shared', 'radiant-squad', 'radiant-battle-footer',
+      'radiant-field', 'radiant-enemy-banner', 'radiant-squad', 'radiant-battle-footer',
     ]);
+    expect(host.querySelector('.radiant-battle-heading')).toBeNull();
+    expect(host.querySelector('.radiant-field .radiant-hud [data-radiant-settings]')!.getAttribute('aria-label')).toBe('Settings');
     expect(layout.querySelectorAll('.radiant-member')).toHaveLength(6);
     expect(layout.querySelectorAll('.radiant-frozen-stats dd')).toHaveLength(18);
     expect(host.querySelector('[data-radiant-results]')!.parentElement).toBe(layout.parentElement);
@@ -90,7 +92,7 @@ describe('saved six-member Radiant battle surface', () => {
     expect(enemies.every(enemy => enemy.style.getPropertyValue('--formation-x'))).toBe(true);
     expect(new Set(enemies.map(enemy => enemy.style.getPropertyValue('--formation-y'))).size).toBeGreaterThan(1);
     expect(host.querySelectorAll('.radiant-enemy .radiant-health')).toHaveLength(0);
-    expect(host.querySelector('.radiant-battle-heading .radiant-target-strip')).not.toBeNull();
+    expect(host.querySelector('.radiant-enemy-banner .radiant-target-strip')).not.toBeNull();
     expect(host.querySelector('.radiant-field .radiant-target-strip')).toBeNull();
     expect(host.querySelectorAll('[data-radiant-target-detail]')).toHaveLength(6);
     expect(Array.from(host.querySelectorAll<HTMLElement>('[data-radiant-target-detail]')).every(detail => detail.tabIndex === 0)).toBe(true);
@@ -769,6 +771,7 @@ describe('saved six-member Radiant battle surface', () => {
     let choose!: (value: boolean) => void;
     const confirm = vi.spyOn(dialogs, 'gameConfirm').mockImplementation(() => new Promise(resolve => { choose = resolve; }));
     const saved = session.view().saved;
+    expect(host.querySelector('.radiant-field .radiant-hud [data-radiant-leave]')!.textContent).toBe('Exit');
     controls(host, '[data-radiant-leave]').click();
     expect(session.view().settingsOpen).toBe(true);
     expect(action(host, 'ember').disabled).toBe(true);

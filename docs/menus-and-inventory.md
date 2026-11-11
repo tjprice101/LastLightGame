@@ -2,16 +2,19 @@
 
 ## Live battle viewport and outcomes (2026-11-11)
 
-The real Radiant battle uses a compact activity/selected-enemy header with
-44px Settings and Exit targets. A viewport-aware grid gives the remaining
-space to the arena above the shared charge and complete squad readouts.
-Six-member desktop squads stay in one row, including laptop widths, instead
-of wrapping into two rows beneath a fixed-height arena. Artwork scales with
-the arena's actual dimensions without changing formations or facing.
-Names and exact Health, Shield, Attack, Defense, Recovery and charge remain
-available. Narrow screens have a labeled, keyboard-focusable horizontal squad
-strip; unusually short screens scroll vertically rather than clipping content.
-Expanded rules and longer status lists remain reachable.
+The real Radiant battle has no top bar. A small translucent title/progress
+chip and compact Settings (⚙) and Exit controls sit on the arena's top edge;
+each keeps a 44px touch target and Exit keeps its styled confirmation. The
+arena takes most of the viewport. Below it, a long enemy banner shows the
+selected enemy's name, level, Health bar and exact Health/Shield, with any
+statuses as compact chips, beside the Eternal Radiant Flare bar when present.
+Squad members use dense portrait tiles, three per row on desktop and two on
+phones: portrait and role, name, level/attunement, Health bar with exact
+numbers, charge bar with exact charge, readiness and abbreviated exact
+Attack/Defense/Recovery. A long evolution title truncates before the
+bearer's own name. A zero Shield readout is hidden rather than repeated.
+Artwork scales with the arena's actual dimensions without changing
+formations or facing. Expanded rules and longer status lists remain reachable.
 
 Saved victory and defeat appear in a centered, viewport-bounded results sheet
 after impacts finish. Both have finite entrance/ring feedback, with rising

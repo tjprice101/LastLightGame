@@ -1,13 +1,27 @@
 # Current state and handoff
 
+## Compact battle HUD (2026-11-11)
+
+**Implemented:** At the owner's request the live battle top bar is removed.
+A small title/progress chip plus compact Settings (?) and Exit controls float
+on the arena edge (44px touch targets, unchanged Exit confirmation). A long
+Brave Frontier-style enemy banner below the arena shows the selected enemy's
+name, level, Health bar and exact numbers, with the Eternal Flare bar beside
+it. Squad members are dense portrait tiles (3 per row desktop, 2 phone) with
+name, level/attunement, Health and charge bars carrying exact values,
+readiness and abbreviated exact Attack/Defense/Recovery; evolution titles
+truncate before the bearer's own name. Headless Chrome measured the arena at
+594 of 768px (3 members) and 504px (6 members) at 1366/1613x768, with no
+clipped names/values, horizontal overflow or broken stat
+labels at 1280x600 and 390x844. See docs/menus-and-inventory.md.
+
 ## Live battle viewport and animated outcomes (2026-11-11)
 
-**Implemented:** The real battle header is compact, and a viewport-aware arena
-shares space with all six desktop squad readouts. Laptop squads no longer
-wrap into two tall rows. Sprite size follows the actual arena height.
-Narrow screens retain horizontal squad navigation; short screens scroll
-instead of inheriting the legacy viewport clip. Names, exact stats, Gauge,
-status details, formations, facing and 44px controls remain available.
+**Implemented:** The real battle header was made compact (superseded by the
+compact battle HUD above), and a viewport-aware arena shares space with the
+squad readouts. Sprite size follows the actual arena height. Short screens
+scroll instead of inheriting the legacy viewport clip. Names, exact stats,
+Gauge, status details, formations, facing and 44px controls remain available.
 
 Victory and defeat now have centered, scrollable saved-result sheets with
 finite entrance/ring and outcome-specific rising/falling feedback. Defeat
