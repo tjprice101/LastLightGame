@@ -2,6 +2,7 @@ export const resetTimezone = 'America/New_York';
 export const roseEventEndsAt = Date.parse('2026-12-01T01:00:00Z');
 export interface EventWindow { opensAt: number | null; closesAt: number }
 export const roseEventWindows: readonly EventWindow[] = [{ opensAt: null, closesAt: roseEventEndsAt }];
+export class RoseEventInactiveError extends Error {}
 const localClock = new Intl.DateTimeFormat('en-US', {
   timeZone: resetTimezone, year: 'numeric', month: '2-digit', day: '2-digit',
   hour: '2-digit', hourCycle: 'h23',
@@ -32,7 +33,7 @@ export function roseEventActive(now: number): boolean {
 }
 
 export function assertRoseEventActive(now: number): void {
-  if (!roseEventActive(now)) throw new Error('Roses Under Sunny Skies has ended. Browse Special Banner Archive; event shops remain available.');
+  if (!roseEventActive(now)) throw new RoseEventInactiveError('Roses Under Sunny Skies has ended. Browse Special Banner Archive; event shops remain available.');
 }
 
 export interface EventAccess {

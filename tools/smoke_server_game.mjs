@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import assert from 'node:assert/strict';
+import { build } from 'esbuild';
 import { conduitRulesVersion, freshGame, resolveOperation } from '../supabase/functions/game-operation/engine.bundle.js';
 
 // Secrets are captured in memory, never printed or persisted.
@@ -55,7 +56,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--moon-launch')) {
+  if (process.argv.includes('--radiant-live') || process.argv.includes('--radiant-legacy-authority')) {
+    await smokeRadiantLive(client, created.user.id, username, call, callAs);
+  } else if (process.argv.includes('--moon-launch')) {
     const entropy = { seed: () => 1729, random: () => .9, uuid: () => randomUUID() };
     const game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
     game.account.characters.ember = { level: 105, evolution: 6 };
@@ -490,6 +493,198 @@ try {
   }
   if (failures.length) throw new Error(`Hosted smoke cleanup failed for disposable identity IDs: ${failures.join(', ')}`);
   console.log('Hosted smoke identities and cascading gameplay records removed.');
+}
+
+async function smokeRadiantLive(client, userId, username, call, callAs) {
+  const legacyAuthority = process.argv.includes('--radiant-legacy-authority');
+  const bundle = await build({ stdin: {
+    contents: "export { validateRadiantCheckpoint, validateRadiantRunResponse } from './src/online/radiant-run';",
+    resolveDir: process.cwd(), loader: 'ts',
+  }, bundle: true, platform: 'node', format: 'esm', target: 'es2022', write: false, logLevel: 'silent' });
+  const validators = await import(`data:text/javascript;base64,${Buffer.from(bundle.outputFiles[0].contents).toString('base64')}`);
+  const entropy = { seed: () => 1729, random: () => .5, uuid: () => randomUUID() };
+  const game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
+  for (const id of ['ember', 'tide', 'sprout']) game.account.characters[id] = { level: 105, evolution: 6 };
+  game.account.squad = ['ember', 'tide', 'sprout'];
+  game.account.fractalis = 100_000;
+  game.account.lycalis = 50;
+  assert.ok(ids.includes(userId), 'Only a disposable identity may receive a fixture.');
+  const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+  if (seeded.error) throw new Error('Disposable Radiant fixture could not be seeded.');
+
+  const peerName = `smoke_${randomUUID().slice(0, 8)}`;
+  const peerPassword = randomUUID() + randomUUID();
+  const peerEmail = `${peerName}@example.invalid`;
+  const made = await admin.auth.admin.createUser({ email: peerEmail, password: peerPassword, email_confirm: true,
+    user_metadata: { username: peerName } });
+  if (made.error || !made.data.user) throw new Error('Disposable social identity creation failed.');
+  const peerId = made.data.user.id;
+  ids.push(peerId);
+  const peer = createClient(url, clientKey, { auth: { persistSession: false } });
+  if ((await peer.auth.signInWithPassword({ email: peerEmail, password: peerPassword })).error)
+    throw new Error('Disposable social identity authentication failed.');
+
+  let owner = await call({ kind: 'read' }, 0);
+  let friend = await callAs(peer, { kind: 'bootstrap', starterId: 'tide' }, 0);
+  const material = { kind: 'purchaseMaterial', element: 'infernic-common', quantity: 1 };
+  const materialId = randomUUID(), materialRevision = owner.revision;
+  owner = await call(material, materialRevision, materialId);
+  assert.equal(owner.account.fractalis, 99_920);
+  assertSameSavedResponse(await call(material, materialRevision, materialId), owner);
+  await assert.rejects(call({ ...material, quantity: 10_000_000 }, owner.revision), error => error.status === 400);
+  const draw = { kind: 'summon', bannerId: 'standard' };
+  const drawId = randomUUID(), drawRevision = owner.revision;
+  owner = await call(draw, drawRevision, drawId);
+  assert.equal(owner.account.lycalis, 40);
+  assertSameSavedResponse(await call(draw, drawRevision, drawId), owner);
+  await assert.rejects(call({ kind: 'summon', bannerId: 'sunshade' }, owner.revision), error => error.status === 400);
+  assert.deepEqual((await call({ kind: 'read' }, 0)).account, owner.account);
+
+  owner = await call({ kind: 'friendRequest', friendCode: friend.profile.friendCode }, owner.revision);
+  friend = await callAs(peer, { kind: 'acceptFriendRequest', userId }, friend.revision);
+  assert.ok(friend.social.friends.some(entry => entry.userId === userId));
+  async function chat(asClient, command, requestId = randomUUID()) {
+    const result = await asClient.functions.invoke('game-operation', { body: { requestId, chat: command } });
+    if (result.error) throw new Error(`Hosted chat ${command.kind} failed (${result.error.context?.status ?? 'transport'}).`);
+    return result.data;
+  }
+  const conversation = (await chat(client, { kind: 'direct', userId: peerId })).conversationId;
+  const messageId = randomUUID(), message = { kind: 'send', conversationId: conversation, text: 'Disposable smoke check' };
+  const sent = await chat(client, message, messageId);
+  const resent = await chat(client, message, messageId);
+  assert.deepEqual(resent.messages.map(item => item.id), sent.messages.map(item => item.id));
+  assert.equal((await chat(peer, { kind: 'read', conversationId: conversation })).messages.at(-1).text, message.text);
+
+  async function calendar(asClient, command, requestId = randomUUID()) {
+    const { data, error } = await asClient.rpc('social_calendar', {
+      p_command: command, p_request: command.kind === 'read' ? null : requestId,
+    });
+    if (error) throw new Error(`Hosted social ${command.kind} failed (${error.code ?? 'transport'}).`);
+    return data;
+  }
+  const ownerBeforeGift = await call({ kind: 'read' }, 0);
+  const giftId = randomUUID(), gift = { kind: 'sendGift', userId: peerId, gift: 'fractalis' };
+  const gifted = await calendar(client, gift, giftId);
+  assert.equal(gifted.giftSentToday, true);
+  assert.deepEqual(await calendar(client, gift, giftId), gifted);
+  assert.deepEqual((await call({ kind: 'read' }, 0)).account, ownerBeforeGift.account);
+  const inbox = await calendar(peer, { kind: 'read' });
+  const mail = inbox.mail.find(item => !item.informational && !item.claimed && item.attachment.fractalis === 1_000);
+  assert.ok(mail, 'The free gift must reach the accepted friend.');
+  const beforeClaim = await callAs(peer, { kind: 'read' }, 0);
+  const claimId = randomUUID(), claim = { kind: 'claimMail', id: mail.id };
+  const claimed = await calendar(peer, claim, claimId);
+  assert.deepEqual(await calendar(peer, claim, claimId), claimed);
+  const afterClaim = await callAs(peer, { kind: 'read' }, 0);
+  assert.equal(afterClaim.account.fractalis, beforeClaim.account.fractalis + 1_000);
+
+  async function radiant(operation, supportsContinuation = true) {
+    const { data, error } = await client.functions.invoke('game-operation', {
+      body: { radiantStudy: operation },
+      headers: supportsContinuation ? { Accept: 'application/json, application/vnd.lastlight.radiant-continuation-v1+json' } : {},
+    });
+    if (error) {
+      const body = await error.context?.clone().json().catch(() => null);
+      const detail = typeof body?.error === 'string' ? body.error
+        .replaceAll(serviceKey, '[redacted]').replaceAll(clientKey, '[redacted]')
+        .replace(/\beyJ[\w-]+\.[\w-]+\.[\w-]+\b/g, '[redacted token]')
+        .replace(/[\u0000-\u001f\u007f]/g, ' ').slice(0, 300) : 'No server error detail.';
+      const failure = new Error(`Hosted Radiant request rejected (${error.context?.status ?? 'transport'}): ${detail}`);
+      failure.status = error.context?.status;
+      throw failure;
+    }
+    try {
+      if (operation.kind === 'read' || operation.kind === 'prepare') validators.validateRadiantCheckpoint(data);
+      else validators.validateRadiantRunResponse(data);
+    } catch (error) {
+      throw new Error(`Current client rejected hosted ${operation.kind}: ${error.message}`);
+    }
+    return data;
+  }
+  let checkpoint = await radiant({ kind: 'read' });
+  const locked = { requestId: randomUUID(), expectedRevision: checkpoint.revision, runId: null, encounter: null,
+    operation: { kind: 'start', activity: { kind: 'story', stage: 2 }, calibration: 'authored-control' } };
+  await assert.rejects(radiant(locked), error => error.status === 400 &&
+    (legacyAuthority || error.message.includes('Clear the previous stage first')));
+  assert.equal((await radiant({ kind: 'read' })).revision, checkpoint.revision);
+  const start = { ...locked, requestId: randomUUID(),
+    operation: { kind: 'start', activity: { kind: 'training' }, calibration: 'authored-control' } };
+  let response = await radiant(start);
+  assert.equal(response.run.calibration, 'authored-control');
+  assert.deepEqual(await radiant(start), response);
+  let run = response.run, revision = response.revision;
+  const request = operation => ({ requestId: randomUUID(), expectedRevision: revision, runId: run.id,
+    encounter: run.encounter, operation });
+  const action = request({ kind: 'action', action: { type: 'normal', bearerId: 'ember',
+    targetId: run.state.enemies.find(enemy => enemy.hp > 0).id } });
+  const beforeGauge = structuredClone(run.state.gauge);
+  response = await radiant(action);
+  assert.deepEqual(await radiant(action), response);
+  const drops = response.events.filter(event => event.type === 'gauge-drop' && event.bearerId === 'ember');
+  assert.ok(drops.length);
+  const total = drops.reduce((sum, event) => sum + event.amount, 0);
+  for (const member of response.run.state.gauge.members) {
+    const previous = beforeGauge.members.find(item => item.id === member.id);
+    const capacity = member.baseCost * (member.form >= 4 ? 2 : 1);
+    assert.equal(member.charge, Math.min(capacity, previous.charge + (member.id === 'ember' ? total : total / 10)));
+  }
+  await assert.rejects(radiant({ ...action, operation: { kind: 'quit' } }), error => error.status === 409);
+  run = response.run; revision = response.revision;
+  for (let count = 0; count < 30 && run.state.phase === 'player'; count++) {
+    const bearer = run.state.bearers.find(item => item.hp > 0 && !run.state.acted.includes(item.loadout.id));
+    const target = run.state.enemies.find(item => item.hp > 0);
+    assert.ok(bearer && target);
+    response = await radiant(request({ kind: 'action', action: { type: 'normal', bearerId: bearer.loadout.id, targetId: target.id } }));
+    run = response.run; revision = response.revision;
+  }
+  assert.equal(run.state.phase, 'victory');
+  const previous = structuredClone(run.state);
+  const continueRequest = request({ kind: 'continue' });
+  if (!legacyAuthority) {
+    await assert.rejects(radiant(continueRequest, false),
+      error => error.status === 400 && error.message.includes('Refresh the page'));
+    assert.equal((await radiant({ kind: 'read' })).revision, revision);
+  }
+  response = await radiant(continueRequest);
+  assert.deepEqual(await radiant(continueRequest), response);
+  run = response.run; revision = response.revision;
+  assert.equal(run.anchor.trainingWave, 2);
+  if (legacyAuthority) {
+    assert.equal(run.continuation, undefined);
+    assert.deepEqual(run.state.gauge, run.initial.gauge);
+  } else {
+    assert.deepEqual(run.state.gauge, previous.gauge);
+    assert.deepEqual(run.state.bearers, previous.bearers);
+    assert.equal(run.state.nextShieldId, previous.nextShieldId);
+    await assert.rejects(radiant({ kind: 'read' }, false),
+      error => error.status === 400 && error.message.includes('Refresh the page'));
+  }
+  checkpoint = await radiant({ kind: 'read' });
+  assert.deepEqual(checkpoint.run.state, run.state);
+
+  const firstWaveTwoHit = () => ({ kind: 'action', action: { type: 'normal', bearerId: 'ember',
+    targetId: run.state.enemies.find(enemy => enemy.hp > 0).id } });
+  response = await radiant(request(firstWaveTwoHit()));
+  run = response.run; revision = response.revision;
+  const banked = structuredClone(response.account);
+  response = await radiant(request({ kind: 'quit' }));
+  run = response.run; revision = response.revision;
+  response = await radiant(request({ kind: 'retry' }));
+  run = response.run; revision = response.revision;
+  assert.deepEqual(run.state.gauge, run.initial.gauge);
+  assert.deepEqual(run.state.bearers, run.initial.bearers);
+  response = await radiant(request(firstWaveTwoHit()));
+  run = response.run; revision = response.revision;
+  assert.equal(response.account.fractalis, banked.fractalis);
+  assert.deepEqual(response.account.materials, banked.materials);
+  assert.deepEqual(response.rewards, []);
+  await radiant(request({ kind: 'exit' }));
+  checkpoint = await radiant({ kind: 'read' });
+  assert.equal(checkpoint.run, null);
+  assert.equal(checkpoint.account.fractalis, banked.fractalis);
+  console.log(legacyAuthority
+    ? 'Hosted legacy-authority compatibility passed: current client validation, authenticated transactions, battle, legacy Continue, Retry and saved exit.'
+    : 'Hosted Radiant passed: authenticated purchases/draws and denials, friend/chat/gift/mail, battle rewards and Gauge, idempotency, old-client refresh, Continue, Retry and saved exit.');
 }
 
 async function smokePhaseOneWar(firstClient, firstId, firstUsername) {

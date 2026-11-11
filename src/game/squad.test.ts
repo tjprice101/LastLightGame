@@ -94,8 +94,12 @@ describe('owned roster, summoning and saved squads', () => {
     const saved = storage();
     fund(saved);
     const before = saved.getItem(ACCOUNT_KEY);
-    for (const ids of [[], ['ember', 'ember'], ['tide'], ['ember', 'tide', 'sprout', 'ember']] as StarterId[][]) {
-      expect(() => setSquad(saved, ids)).toThrow('Invalid saved squad');
+    const invalid: [StarterId[], string][] = [
+      [[], 'one to six'], [['ember', 'ember'], 'distinct'],
+      [['tide'], 'no longer owned'], [['ember', 'tide', 'sprout', 'ember'], 'distinct'],
+    ];
+    for (const [ids, message] of invalid) {
+      expect(() => setSquad(saved, ids)).toThrow(message);
       expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
     }
     for (const squad of [null, 'ember', ['missing'], [4]]) {

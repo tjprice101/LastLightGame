@@ -2,27 +2,34 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { emptyAccount } from '../game/account';
 import { elements, infusionModeStageCount, machineStageCount } from '../content/activities';
-import { dungeonEncounter, isPlayableDungeon } from '../content/dungeons';
-import { infusionEncounter, isInfusionMode } from '../content/infusions';
-import { isWarCharacter, warEncounter } from '../content/elemental-war';
-import { storyEncounter, storyRules } from '../content/story';
-import { calamityActivities, calamityEncounter } from '../content/calamity';
+import { isPlayableDungeon } from '../content/dungeons';
+import { isInfusionMode } from '../content/infusions';
+import { isWarCharacter } from '../content/elemental-war';
+import { storyRules } from '../content/story';
+import { calamityActivities } from '../content/calamity';
 import { enemyCombatStats } from '../content/stat-growth';
 import { formatStat } from '../content/combat';
+import { authoredRadiantCalibration } from '../content/radiant-enemy-calibration';
+import { adaptRadiantPressureEncounter } from '../game/radiant-pressure-encounters';
+import type { Activity } from '../online/server-game';
 import { gameplayHub } from './gameplay';
 import { storyCampaign, bindStoryNavigation } from './story';
 import { bindActivityDifficulties } from './calamity';
 import { bindEnemyStrength, enemyStrength } from './enemy-strength';
 import { unitReadout } from './unit-readout';
-import { createBattle, createCalamityBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle } from '../game/battle';
+import { createBattle, createCalamityBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, stageBossStats } from '../game/battle';
 import { playableDungeons } from '../content/dungeons';
 
 afterEach(() => document.body.replaceChildren());
 
-function expectStats(panel: Element, encounter: { level: number; boss: boolean; stats: ReturnType<typeof enemyCombatStats> }): void {
-  expect(panel.querySelector('h4')!.textContent).toBe(`Lv.${encounter.level} · ${encounter.boss ? 'Boss' : 'Standard enemy'}`);
+function expectStats(panel: Element, activity: Activity): void {
+  const enemies = adaptRadiantPressureEncounter({ id: 'preview', family: 'preview', position: 'early', activity }, 1729, authoredRadiantCalibration);
+  const enemy = enemies[0];
+  for (const other of enemies) expect(other.stats).toEqual(enemy.stats);
+  expect(panel.querySelector('h4')!.textContent).toBe(`Lv.${enemy.level} · ${enemy.category === 'ordinary' ? 'Standard enemy' : 'Boss'}`);
+  expect(Array.from(panel.querySelectorAll('dt')).map(cell => cell.textContent)).toEqual(['HP', 'Attack', 'Defense']);
   expect(Array.from(panel.querySelectorAll('dd')).map(cell => cell.textContent)).toEqual(
-    [encounter.stats.health, encounter.stats.damage, encounter.stats.defense].map(value => formatStat(value)));
+    [enemy.stats.hp, enemy.stats.attack, enemy.stats.defense].map(value => formatStat(value)));
 }
 
 describe('visible enemy strength', () => {
@@ -81,7 +88,9 @@ describe('visible enemy strength', () => {
       for (const boss of [false, true]) {
         const stats = enemyCombatStats(level, boss);
         document.body.innerHTML = enemyStrength({ level, boss, stats });
-        expectStats(document.body, { level, boss, stats });
+        const actual = stageBossStats(stats, boss);
+        expect(Array.from(document.querySelectorAll('dd')).map(cell => cell.textContent)).toEqual(
+          [actual.health, actual.damage, actual.defense].map(value => formatStat(value)));
         expect(document.body.textContent).toContain(boss ? `Boss scaling vs standard Lv.${level} enemy` : `Standard Lv.${level} stats`);
       }
     }
@@ -98,35 +107,36 @@ describe('visible enemy strength', () => {
     account.infusionStages = { heavens: infusionModeStageCount, abyss: infusionModeStageCount, treasury: 25, sanctuary: 25, machines: machineStageCount, roses: 35, moon: 35 };
     account.warStages = { nerithe: 10, orvella: 10, vaelor: 10, caldrex: 10, solenne: 10, myrthen: 10,
       neralis: 10, varkhel: 10, seravelle: 10, velmira: 10 };
+    account.oblivionStage = 5;
     const before = structuredClone(account);
     document.body.innerHTML = gameplayHub(account);
     bindEnemyStrength(document.body);
     bindActivityDifficulties(document.body);
-    const controls = document.querySelectorAll<HTMLSelectElement>('[data-dungeon-stage], [data-infusion-stage], [data-war-stage]');
-    expect(controls).toHaveLength(23);
+    const controls = document.querySelectorAll<HTMLSelectElement>('[data-dungeon-stage], [data-infusion-stage], [data-war-stage], [data-oblivion-stage]');
+    expect(controls).toHaveLength(24);
     for (const control of Array.from(controls)) {
       const panel = control.closest('[data-difficulty-panel], .activity-card')!;
       for (const stage of [Number(control.value), 1, 5, Number(control.options[control.options.length - 1].value)]) {
         control.value = String(stage);
         control.dispatchEvent(new Event('change', { bubbles: true }));
         const { dungeonStage, infusionStage, warStage } = control.dataset;
-        const encounter = isPlayableDungeon(dungeonStage) ? dungeonEncounter(dungeonStage, stage)
-          : isInfusionMode(infusionStage) ? infusionEncounter(infusionStage, stage)
-          : isWarCharacter(warStage) ? warEncounter(warStage, stage) : null;
-        if (!encounter) throw new Error('Unexpected stage selector in enemy strength test.');
-        expect(encounter.stats).toEqual(enemyCombatStats(encounter.level, encounter.boss));
-        expectStats(panel.querySelector('[data-enemy-strength]')!, encounter);
+        const activity: Activity | null = isPlayableDungeon(dungeonStage) ? { kind: 'dungeon', element: dungeonStage, stage }
+          : isInfusionMode(infusionStage) ? { kind: 'infusion', mode: infusionStage, stage }
+          : isWarCharacter(warStage) ? { kind: 'war', character: warStage, stage }
+          : control.hasAttribute('data-oblivion-stage') ? { kind: 'oblivion', stage } : null;
+        if (!activity) throw new Error('Unexpected stage selector in enemy strength test.');
+        expectStats(panel.querySelector('[data-enemy-strength]')!, activity);
         expect(panel.querySelectorAll('[data-enemy-strength]')).toHaveLength(1);
       }
     }
     document.querySelector<HTMLButtonElement>('#difficulty-heavens-calamity-tab')!.click();
     document.querySelector<HTMLButtonElement>('#difficulty-heavens-normal-tab')!.click();
-    expectStats(document.querySelector('#difficulty-heavens-normal [data-enemy-strength]')!, infusionEncounter('heavens', infusionModeStageCount));
+    expectStats(document.querySelector('#difficulty-heavens-normal [data-enemy-strength]')!, { kind: 'infusion', mode: 'heavens', stage: infusionModeStageCount });
     for (const activity of calamityActivities) {
       const panel = document.querySelector(`[data-activity-difficulty="${activity.id}"] [data-difficulty-panel="calamity"]`)!;
       for (const tier of [1, 2, 3] as const) {
         expectStats(panel.querySelector(`[data-calamity-tier="${tier}"]`)!.closest('.calamity-tier')!.querySelector('[data-enemy-strength]')!,
-          { ...calamityEncounter(activity.id, tier), boss: true });
+          { kind: 'calamity', activity: activity.id, tier });
       }
     }
     expect(account).toEqual(before);
@@ -140,7 +150,7 @@ describe('visible enemy strength', () => {
     for (const stage of [storyRules.regionStages, 1, storyRules.regionStages]) {
       document.querySelector<HTMLButtonElement>(`[data-story-select="${stage}"]`)!.click();
       const detail = document.querySelector('[data-story-detail]')!;
-      expectStats(detail.querySelector('[data-enemy-strength]')!, storyEncounter(stage));
+      expectStats(detail.querySelector('[data-enemy-strength]')!, { kind: 'story', stage });
     }
   });
 });

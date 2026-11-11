@@ -2,6 +2,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { bubbleMotionAllowed, cinematic, glyphBurst, installBubbleUi } from './bubble-ui';
 import { applyMotion } from './settings';
+import { emptyAccount } from '../game/account';
+import { filterTeamCollection, referenceTeam } from './reference-team';
 
 describe('shared interaction feedback lifecycle', () => {
   let dispose: (() => void) | undefined;
@@ -84,6 +86,37 @@ describe('shared interaction feedback lifecycle', () => {
     document.dispatchEvent(new Event('visibilitychange'));
     expect(document.querySelector<HTMLElement>('.bubble-backdrop')!.dataset.motionPaused).toBe('false');
     expect(bubbleMotionAllowed()).toBe(true);
+  });
+
+  it('keeps owned-character details available in the initial Team view', async () => {
+    const app = install();
+    app.innerHTML = referenceTeam({ ...emptyAccount(), characters: { ember: { level: 0, evolution: 1 } } }, {
+      view: 'detail', selected: 'ember', element: '', sort: 'level',
+    });
+    await Promise.resolve();
+    const detail = app.querySelector<HTMLElement>('.ref-bearer-detail');
+    const panels = detail?.querySelector<HTMLElement>('.ref-character-panels');
+    expect(detail?.hasAttribute('data-orbit')).toBe(false);
+    expect(detail?.hasAttribute('data-zoom')).toBe(false);
+    expect(detail?.querySelector('.bubble-zoom-back')).toBeNull();
+    expect(panels).not.toBeNull();
+    expect(panels?.hasAttribute('inert')).toBe(false);
+    expect(panels?.hidden).toBe(false);
+  });
+
+  it('filters collection cards and reports the visible count without changing data', () => {
+    const host = document.createElement('section');
+    host.innerHTML = '<span data-collection-count data-collection-total="2"></span><button data-collection-item data-collection-search="ember infernic"></button><button data-collection-item data-collection-search="tide oceanic"></button><p data-collection-empty hidden></p>';
+    filterTeamCollection(host, 'tide');
+    const items = host.querySelectorAll<HTMLElement>('[data-collection-item]');
+    expect(items[0].hidden).toBe(true);
+    expect(items[1].hidden).toBe(false);
+    expect(host.querySelector('[data-collection-count]')?.textContent).toBe('1 shown · 2 match current filters');
+    expect(host.querySelector<HTMLElement>('[data-collection-empty]')?.hidden).toBe(true);
+    filterTeamCollection(host, 'no match');
+    expect(items[0].hidden).toBe(true);
+    expect(items[1].hidden).toBe(true);
+    expect(host.querySelector<HTMLElement>('[data-collection-empty]')?.hidden).toBe(false);
   });
 
   it('cancels tracked saved-success particles when motion is reduced', () => {

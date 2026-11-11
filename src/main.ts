@@ -23,14 +23,15 @@ import { ambientBackground, type AmbientScreen } from './presentation/ambient-ba
 import { bindCreatureGlossary } from './presentation/creature-glossary';
 import { archives, bindArchives } from './presentation/archives';
 import { getStarter, isStarterId, type StarterId } from './content/starters';
-import { characterCopyManagement, squadHub, summonHub, bindSquadPreview, bindSummonRates } from './presentation/roster';
+import { liveRadiantCalibrationId } from './content/radiant-enemy-calibration';
+import { characterCopyManagement, squadHub, summonHub, bindSquadPreview, bindSummonRates, squadSelectionFromForm } from './presentation/roster';
 import { Journey } from './game/flow';
 import { SAVE_KEY } from './game/profile';
 import { portrait, portraitAttributes, characterFacing } from './presentation/portrait';
 import { conduitStore, updateConduitStore } from './presentation/conduit-store';
 import { conduitUpgradeMenu, bindConduitUpgrades, updateConduitUpgradeMenu } from './presentation/conduit-upgrade';
 import { getConduit, isConduitId, conduitEffect } from './content/conduits';
-import { purchaseConduit, setMachineLootFocus, equipConduit, setCharacterLock, ownedCharacterInstances, levelCapturedCharacter } from './game/account';
+import { purchaseConduit, setMachineLootFocus, equipConduit, setCharacterLock, levelCapturedCharacter } from './game/account';
 import { bindMachineLootFocus } from './presentation/machine-loot-focus';
 import { openMasterChests, openCalamityChest, equipMasterConduit, unequipAllConduits } from './game/account';
 import { calamiticTokenPrice, isCalamiticConduitId } from './content/calamitic-conduits';
@@ -116,7 +117,7 @@ import { acknowledgeAcquisitions, type AcquisitionMarkers } from './game/acquisi
 import { saveAccount } from './game/account';
 import './presentation/mono-reference.css';
 import { referenceHome } from './presentation/reference-home';
-import { bindCaptureTabs, referenceTeam, type ReferenceTeamView } from './presentation/reference-team';
+import { bindCaptureTabs, filterTeamCollection, referenceTeam, type ReferenceTeamView } from './presentation/reference-team';
 import './presentation/reference-layout.css';
 import './presentation/leader-theme.css';
 import './presentation/button-style.css';
@@ -164,6 +165,7 @@ let characterCategory: TeamArea = 'squad';
 let teamView: ReferenceTeamView = 'detail';
 let teamElement = '';
 let teamSort: 'level' | 'name' | 'element' = 'level';
+let teamQuery = '';
 let conduitSearch = '';
 let selectedCapture: string | undefined;
 let pendingMaxLevel: MaxLevelPlan | null = null;
@@ -391,7 +393,7 @@ async function enterBattle(activity: Activity): Promise<void> {
       await session.perform({ kind: 'exit' });
       finishRadiantReceipt(session);
     }
-    await session.perform({ kind: 'start', activity, calibration: 'authored-control' });
+    await session.perform({ kind: 'start', activity, calibration: liveRadiantCalibrationId });
     finishRadiantReceipt(session);
   } catch (error) {
     session.dispose();
@@ -448,6 +450,7 @@ interface MenuSnapshot {
   teamView: ReferenceTeamView;
   teamElement: string;
   teamSort: 'level' | 'name' | 'element';
+  teamQuery: string;
   storeConduit: string | undefined;
   upgradeConduitSelection: string | undefined;
   storeRarity: string;
@@ -478,7 +481,7 @@ let inventoryFilterState: InventoryFilters = { ...defaultInventoryFilters };
 
 function menuSnapshot(): MenuSnapshot {
   return {
-    page: menuPage, hash: location.hash, characterTab, characterCategory, teamView, teamElement, teamSort,
+    page: menuPage, hash: location.hash, characterTab, characterCategory, teamView, teamElement, teamSort, teamQuery,
     storeConduit, upgradeConduitSelection, storeRarity, storeTab, marketMaterial, marketFrame, profileTab, friendRequestTab,
     selectedCharacter, selectedCapture, selectedBanner, inventoryTab,
     inventoryExpanded: menuPage === 'inventory' ? inventorySections(app) : { ...inventoryExpanded },
@@ -545,6 +548,7 @@ async function backMenu(): Promise<void> {
     teamView = previous.teamView;
     teamElement = previous.teamElement;
     teamSort = previous.teamSort;
+    teamQuery = previous.teamQuery;
     storeConduit = previous.storeConduit;
     upgradeConduitSelection = previous.upgradeConduitSelection;
     storeRarity = previous.storeRarity;
@@ -1050,6 +1054,7 @@ function renderMenu(firstArrival = false): void {
   bindCreatureGlossary(app, account?.conduitUpgrades);
   bindArchives(app);
   bindSquadPreview(app, account);
+  filterTeamCollection(app, teamQuery);
   bindSummonRates(app);
   bindConduitUpgrades(app, gameStorage, (updated) => { account = updated; refreshConduitMenu(); }, showError,
     playMode === 'online' ? async (id, expectedLevel) => (await performOnline({ kind: 'upgradeConduit', id, expectedLevel })).account : undefined,
@@ -1425,14 +1430,7 @@ function renderMenu(firstArrival = false): void {
   squadForm?.addEventListener('submit', async (event) => {
     event.preventDefault();
     try {
-      const form = new FormData(squadForm);
-      const ids: string[] = [];
-      for (let slot = 0; slot < 3; slot++) {
-        const id = form.get(`slot-${slot}`);
-        if (id === '' && slot > 0) continue;
-        if (typeof id !== 'string' || !ownedCharacterInstances(currentAccount()).includes(id)) throw new Error('Choose a valid squad member.');
-        ids.push(id);
-      }
+      const ids = squadSelectionFromForm(new FormData(squadForm), currentAccount());
       account = playMode === 'online' ? (await performOnline({ kind: 'setSquad', ids })).account : setSquad(gameStorage, ids);
       renderMenu();
       const status = app.querySelector('#squad-result');
@@ -1604,7 +1602,7 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
     selectedCapture = undefined;
   }
   if (page === 'character' || page === 'team' || page === 'squad') return referenceTeam(account, {
-    view: teamView, selected: selectedCharacter ?? starter.id, capture: selectedCapture, element: teamElement, sort: teamSort, tab: characterTab,
+    view: teamView, selected: selectedCharacter ?? starter.id, capture: selectedCapture, element: teamElement, sort: teamSort, query: teamQuery, tab: characterTab,
   });
   if (page === 'inventory') return inventoryHub(account, inventoryTab, inventoryExpanded, inventoryFilterState);
   if (page === 'stores') return onlineStores(account, playerProfile, storeTab, marketMaterial, marketFrame, eventAccess());
@@ -1805,7 +1803,7 @@ app.addEventListener('click', async event => {
       characterTab = 'overview';
       if (button.hasAttribute('data-team-element')) {
         teamElement = button.dataset.teamElement ?? '';
-        teamView = 'bearers';
+        teamView = button.closest('[data-team-collection="creatures"]') ? 'creatures' : 'bearers';
       } else if (button.dataset.teamDetail) {
         const id = button.dataset.teamDetail;
         if (!isStarterId(id) || !account?.characters[id]) throw new Error('Choose an owned Element-Bearer.');
@@ -1839,6 +1837,11 @@ app.addEventListener('change', event => {
   }
   teamSort = sort;
   renderMenu();
+});
+app.addEventListener('input', event => {
+  if (!(event.target instanceof HTMLInputElement) || !event.target.matches('[data-team-search]')) return;
+  teamQuery = event.target.value;
+  filterTeamCollection(app, teamQuery);
 });
 
 function offlineSaveChanged(change: OfflineChange): void {

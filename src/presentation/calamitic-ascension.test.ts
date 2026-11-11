@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getStarter } from '../content/starters';
 import { characterName } from '../content/character-art';
+import { radiantBearerKits } from '../content/radiant-combat';
 import { emptyAccount, ownedProgress, ascendCharacter, saveAccount, type Account } from '../game/account';
 import { SAVE_KEY, type ProfileStorage } from '../game/profile';
 import { ascensionEntry, ascensionContents, openCalamiticAscension } from './calamitic-ascension';
@@ -63,15 +64,25 @@ describe('Calamitic Ascension presentation', () => {
     expect(document.body.textContent).not.toMatch(/before|Requires|unlock/i);
     expect(writes).toBe(0);
   });
-  it('reveals actual ability names and icons only after stats are saved', () => {
+  it('reveals the live Radiant passive, leader and Flare imbues only after stats are saved', () => {
     account.characters.ember!.ascension = { stats: true };
     const html = ascensionContents(starter, account);
-    expect(html).toContain('Cinder Cleave');
-    expect(html).toContain('Flame Arc');
-    expect(html).toContain('Last Flare: Dawnfire');
-    expect(html).toContain('infernis-cinder-cleave.png');
+    expect(html).toContain(radiantBearerKits.ember.passive.name);
+    expect(html).toContain(radiantBearerKits.ember.leader);
+    expect(html).toContain('All Flares');
+    expect(html).toContain('50% of the passive');
+    expect(html).toContain('50% of the base leader-skill stat bonus');
+    expect(html).toContain('50% of the base effect magnitudes of all Flares');
+    expect(html).not.toContain('Cinder Cleave');
+    expect(html).not.toContain('Skill Efficiency');
     expect(html).not.toContain('Requires');
     expect(html).not.toContain('before');
+  });
+  it('describes the actual extra healing for a cleanse passive instead of extra removals', () => {
+    account.characters.aurora = { level: 105, evolution: 6, ascension: { stats: true } };
+    const html = ascensionContents(getStarter('aurora'), account);
+    expect(html).toContain('When this passive removes a Weaken, heal that ally for 50% of caster Recovery.');
+    expect(html).not.toContain('50% of the passive’s base effect magnitude');
   });
   it('shows insufficient funds without attempting a transaction', () => {
     account.materials['shard-of-calamity'] = 24;
@@ -108,7 +119,7 @@ describe('Calamitic Ascension presentation', () => {
     launch(); click('[data-ascension-select="skill1"]'); click('[data-ascension-confirm]'); await settle();
     expect(writes).toBe(1);
     expect(document.querySelector('[data-ascension-step="skill1"]')!.textContent).toContain('Done');
-    expect(document.querySelector('.ascension-result')!.textContent).toBe('Cinder Cleave imbued');
+    expect(document.querySelector('.ascension-result')!.textContent).toBe(`${radiantBearerKits.ember.passive.name} imbued`);
   });
   it('does not celebrate or reveal imbues when persistence fails', async () => {
     storage.setItem = () => { throw new Error('Storage unavailable'); };

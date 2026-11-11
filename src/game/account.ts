@@ -440,11 +440,22 @@ export function equippedSquad(account: Account): string[] {
   }
   return [...ids];
 }
+export function squadEligibilityIssue(account: Account, ids: readonly string[]): string | null {
+  if (!ids.length || ids.length > squadMemberLimit || new Set(ids).size !== ids.length)
+    return 'Choose one to six distinct owned Element-Bearers.';
+  const owned = new Set(ownedCharacterInstances(account));
+  for (const id of ids) {
+    if (!owned.has(id)) return 'A squad member is no longer owned.';
+    if (!isStarterId(id)) return 'Captured Elemental-Devourers cannot join the squad.';
+    if (!characterReleased(id)) return 'A squad member is not currently released for Radiant combat.';
+  }
+  return null;
+}
 export function setSquad(storage: ProfileStorage, ids: readonly string[]): Account {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before editing a squad.');
   const account = loadAccount(storage);
-  if (ids.some(id => !isStarterId(id) || !characterReleased(id)))
-    throw new Error('Choose acquired Element-Bearers only. Captured Elemental-Devourers cannot join the squad.');
+  const issue = squadEligibilityIssue(account, ids);
+  if (issue) throw new Error(issue);
   account.squad = [...ids];
   return saveAccount(storage, account);
 }
@@ -455,7 +466,10 @@ function loadLoadoutAccount(storage: ProfileStorage): Account {
 export function saveSquadLoadout(storage: ProfileStorage, id: string, name: string): Account {
   validateLoadoutId(id);
   const account = loadLoadoutAccount(storage), title = loadoutName(name);
-  const members = equippedSquad(account).map(character => {
+  const squad = equippedSquad(account);
+  const issue = squadEligibilityIssue(account, squad);
+  if (issue) throw new Error(issue);
+  const members = squad.map(character => {
     const copy = account.capturedCharacters?.find(copy => copy.instanceId === character);
     const memberName = isStarterId(character) ? getStarter(character).name : copy ? getCreature(copy.creatureId).name : undefined;
     if (!memberName) throw new Error('Choose an owned squad member.');
@@ -479,6 +493,8 @@ export function equipSquadLoadout(storage: ProfileStorage, id: string): Account 
   const account = loadLoadoutAccount(storage);
   const entry = account.squadLoadouts?.find(entry => entry.id === id);
   if (!entry) throw new Error('Choose a saved squad loadout.');
+  const issue = squadEligibilityIssue(account, entry.members.map(member => member.character));
+  if (issue) throw new Error(issue);
   for (const member of entry.members) applySavedEquipment(account, member.character, member);
   account.squad = entry.members.map(member => member.character);
   return saveAccount(storage, account);

@@ -112,6 +112,21 @@ export function squadEligibleMembers(account: Account): string[] {
   return ownedCharacters(account).filter(isRadiantBearer);
 }
 
+export function squadSelectionFromForm(form: Pick<FormData, 'get'>, account: Account): string[] {
+  const eligible = new Set(squadEligibleMembers(account));
+  const slots = squadSlotNames.map((_, index) => {
+    const value = form.get(`slot-${index}`);
+    if (typeof value !== 'string') throw new Error('Choose a valid squad member.');
+    if (value && !eligible.has(value)) throw new Error('Choose an owned, combat-eligible Element-Bearer.');
+    return value;
+  });
+  if (!slots[0]) throw new Error('A squad requires a leader.');
+  const ids = slots.filter(Boolean);
+  if (!ids.length) throw new Error('A squad requires a leader.');
+  if (new Set(ids).size !== ids.length) throw new Error('Squad members must be distinct.');
+  return ids;
+}
+
 export function squadHub(account: Account | null): string {
   if (!account) return '<p role="alert">Squad unavailable. Resolve the save error.</p>';
   const owned = squadEligibleMembers(account);
@@ -119,9 +134,10 @@ export function squadHub(account: Account | null): string {
   const valid = savedSquad.filter((id) => owned.includes(id)).slice(0, squadMemberLimit);
   const squad = valid.length ? valid : owned.slice(0, 1);
   const replaced = savedSquad.length !== valid.length;
+  const matchesSaved = savedSquad.length === squad.length && savedSquad.every((id, index) => id === squad[index]);
   return `<section class="squad-hub squad-formation"><header class="squad-heading"><div><h2>Squad formation</h2>
     <p>Select a slot to choose who fills it.</p>${information('squad-information', 'Squad', `<p>Pick one to ${squadMemberLimit} distinct acquired Element-Bearers; slot one leads and grants its leader skill while alive. Captured Elemental-Devourers stay in your holdings and cannot join the squad. Picking a member from another slot swaps them. Changes apply when you Save squad.</p>`)}</div>
-    <div class="squad-save"><span data-squad-count>${squad.length} / ${squadMemberLimit} slots filled</span><button class="primary-button" type="submit" form="squad-form" ${owned.length ? '' : 'disabled'}>Save squad</button></div></header>
+    <div class="squad-save"><span data-squad-count>${squad.length} / ${squadMemberLimit} slots filled</span><button class="text-button" type="button" data-squad-cancel ${matchesSaved ? 'disabled' : ''}>Cancel changes</button><button class="primary-button" type="submit" form="squad-form" data-squad-save ${owned.length && !matchesSaved ? '' : 'disabled'}>Save squad</button></div></header>
     ${replaced ? '<p class="squad-replaced" role="note">Your saved squad included captured Elemental-Devourers or unavailable members. They were left out of this draft; Save squad to confirm the Element-Bearer lineup.</p>' : ''}<form id="squad-form"><div class="squad-slots">${squadSlotNames.map((_, index) => {
       const id = squad[index];
       return `<section class="squad-slot${index === 0 ? ' squad-slot-leader' : ''}"><h3>${squadSlotNames[index]}</h3>
@@ -132,12 +148,13 @@ export function squadHub(account: Account | null): string {
           ${!index && !owned.length ? '<option value="" selected disabled>No owned squad members</option>' : ''}
           ${owned.map((option) => `<option value="${option}" ${id === option ? 'selected' : ''}>${ownedCompanion(account, option).label}</option>`).join('')}</select></section>`;
     }).join('')}</div>
-      <p id="squad-result" role="status"></p></form>
+      <p id="squad-result" role="status">${matchesSaved ? 'Draft matches the saved squad.' : 'Unsaved squad draft. Save squad to apply it.'}</p></form>
     <dialog class="information-modal squad-picker" id="squad-picker" aria-labelledby="squad-picker-heading">
       <header class="drawer-heading"><h2 id="squad-picker-heading">Choose leader</h2><button type="button" class="drawer-close" data-squad-close aria-label="Close member picker">&times;</button></header>
       <div class="squad-picker-tools"><div class="squad-picker-filters" role="group" aria-label="Filter squad members">
         <button type="button" data-squad-filter="all" aria-pressed="true">Element-Bearers · ${owned.length}</button></div>
         <input type="search" class="squad-picker-search" data-squad-search-input placeholder="Search by name" aria-label="Search squad members"></div>
+      <p>Only owned Element-Bearers released for combat can join. Captured Elemental-Devourers remain in holdings.</p>
       <p class="squad-picker-error" data-squad-picker-error role="alert"></p>
       <div class="squad-picker-grid" role="list" aria-label="Owned squad members · ${owned.length}">${owned.map((id) => squadPickCard(account, id, squad)).join('')}</div>
       <p class="squad-picker-empty" data-squad-picker-empty hidden>No squad members match.</p>
@@ -157,9 +174,21 @@ export function bindSquadPreview(host: HTMLElement, account: Account | null): vo
   const empty = dialog.querySelector<HTMLElement>('[data-squad-picker-empty]');
   const search = dialog.querySelector<HTMLInputElement>('[data-squad-search-input]');
   const status = host.querySelector<HTMLElement>('#squad-result');
+  const saveButton = host.querySelector<HTMLButtonElement>('[data-squad-save]');
+  const cancelButton = host.querySelector<HTMLButtonElement>('[data-squad-cancel]');
+  const savedSquad = account.squad ?? [];
+  const initialSlots = controls.map((control) => control.value);
   let activeSlot = 0;
   let filter = 'all';
   let opener: HTMLElement | null = null;
+  const updateDirtyState = (): void => {
+    const ids = controls.map((control) => control.value).filter(Boolean);
+    const matchesSaved = ids.length === savedSquad.length && ids.every((id, index) => id === savedSquad[index]);
+    const valid = Boolean(controls[0]?.value) && new Set(ids).size === ids.length && ids.every((id) => owned.includes(id));
+    if (saveButton) saveButton.disabled = matchesSaved || !valid;
+    if (cancelButton) cancelButton.disabled = matchesSaved;
+    if (status) status.textContent = matchesSaved ? 'Draft matches the saved squad.' : 'Unsaved squad draft. Save squad to apply it.';
+  };
   const refresh = (): void => {
     controls.forEach((control, index) => {
       if (control.value && !owned.includes(control.value)) throw new Error('Squad preview member is not owned.');
@@ -181,6 +210,7 @@ export function bindSquadPreview(host: HTMLElement, account: Account | null): vo
       const tag = card.querySelector('[data-squad-tag]');
       if (tag) tag.textContent = slot >= 0 ? squadSlotNames[slot] : '';
     });
+    updateDirtyState();
   };
   const applyFilter = (): void => {
     const query = (search?.value ?? '').trim().toLowerCase();
@@ -223,7 +253,6 @@ export function bindSquadPreview(host: HTMLElement, account: Account | null): vo
       control.value = slots[slot];
       control.dispatchEvent(new Event('change', { bubbles: true }));
     });
-    if (status) status.textContent = 'Squad draft changed. Save squad to apply it.';
   };
   cards.forEach((card) => card.addEventListener('click', () => {
     const picked = card.dataset.squadPick;
@@ -238,6 +267,15 @@ export function bindSquadPreview(host: HTMLElement, account: Account | null): vo
   host.querySelectorAll<HTMLButtonElement>('[data-squad-remove]').forEach((button) => button.addEventListener('click', () => {
     write(assignSquadSlot(controls.map((control) => control.value), Number(button.dataset.squadRemove), '', owned));
   }));
+  cancelButton?.addEventListener('click', () => {
+    controls.forEach((control, index) => {
+      control.value = initialSlots[index];
+      control.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    refresh();
+    if (status) status.textContent = 'Changes discarded. The saved squad was not changed.';
+    host.querySelector<HTMLButtonElement>('[data-squad-assign="0"]')?.focus({ preventScroll: true });
+  });
   refresh();
 }
 

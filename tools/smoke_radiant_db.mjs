@@ -60,7 +60,7 @@ async function identityOf(user) {
 async function send(radiantStudy, { timed = false } = {}) {
   await paced();
   const started = performance.now();
-  const result = await handleRadiantRequest({ radiantStudy }, userId, admin, config, identityOf);
+  const result = await handleRadiantRequest({ radiantStudy }, userId, admin, config, identityOf, true);
   const elapsed = performance.now() - started;
   if (timed && result.status === 200) latencies.push({ ms: elapsed, bytes: JSON.stringify(result.body).length });
   return result;

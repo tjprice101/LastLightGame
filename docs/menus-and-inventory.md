@@ -1,5 +1,25 @@
 # Menus and inventory
 
+## Live Team and Radiant information (2026-11-10)
+
+The squad editor saves all six supported Element-Bearer slots; draft changes
+remain unsaved until Save and Cancel restores the saved squad. Character
+details are available immediately. Both owned collections have search and
+counts, with their existing relevant filters and sorting. In captured-copy
+multi-select sales, Select available selects only search-visible eligible
+copies. Earlier selections remain selected when hidden, and the summary
+explicitly counts them before any confirmation. Search does not rewrite
+unchanged cards or unrelated sale controls.
+
+The Character Archive and Calamitic Ascension describe the actual Radiant
+passive, leader and Flare effects. Captured Elemental-Devourer combat details
+are marked archived rather than implying those copies can join Radiant squads.
+Activity strength previews show calibrated Radiant statistics. Old saved squad
+loadouts stay visible, renameable and deletable, but cannot be equipped if a
+member is no longer owned or eligible. Conduit search, Details and Equip
+controls retain at least 44px targets. None of these presentation changes grants
+characters, changes equipment or silently saves a draft.
+
 ## Framed roster, formation and growth presentation (2026-11-09)
 
 The owner's supplied references guide information hierarchy and compact portrait

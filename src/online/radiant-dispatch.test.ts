@@ -3,7 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { createGameOperationHandler } from '../../supabase/functions/game-operation/handler';
 import { freshGame } from '../../supabase/functions/game-operation/engine';
 import { deriveRadiantEntry, type RadiantServerConfig } from '../../supabase/functions/game-operation/radiant-dispatch';
-import { validateRadiantRunRequest, validateRadiantRunResponse,
+import { radiantClientAccept, validateRadiantRunRequest, validateRadiantRunResponse,
   type RadiantRunRequest, type RadiantRunOperation } from './radiant-run';
 import { createCreatureCopy } from '../game/character-instances';
 
@@ -75,9 +75,11 @@ class SupabaseMock {
       targetId: this.state.radiantStudy!.state.enemies.find(enemy => enemy.hp > 0)!.id } });
   }
 }
-async function send(handler: ReturnType<SupabaseMock['handler']>, radiantStudy: unknown, token = 'valid') {
+async function send(handler: ReturnType<SupabaseMock['handler']>, radiantStudy: unknown, token = 'valid',
+  supportsContinuation = true) {
   const response = await handler(new Request('http://localhost/game-operation', { method: 'POST',
-    headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+    headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json',
+      ...(supportsContinuation ? { accept: radiantClientAccept } : {}) },
     body: JSON.stringify({ radiantStudy }) }));
   return { status: response.status, body: await response.json() };
 }
@@ -253,6 +255,39 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
     expect(db.state.radiantStudy!.initial.bearers[0].loadout).toEqual(loadout);
     expect(db.state.account.storyCompleted).toBe(1);
   });
+  it('lets older clients finish existing fights but requires a refresh before incompatible continuations', async () => {
+    const db = new SupabaseMock(105), handler = db.handler();
+    expect((await send(handler, entry(), 'valid', false)).status).toBe(200);
+    expect((await send(handler, { kind: 'read' }, 'valid', false)).status).toBe(200);
+    for (let i = 0; i < 10 && db.state.radiantStudy!.state.phase === 'player'; i++)
+      expect((await send(handler, db.normal(), 'valid', false)).status).toBe(200);
+    expect(db.state.radiantStudy!.state.phase).toBe('victory');
+    const before = structuredClone(db.state), writes = db.writes, continued = db.request({ kind: 'continue' });
+    const denied = await send(handler, continued, 'valid', false);
+    expect(denied.status).toBe(400);
+    expect(denied.body.error).toContain('Refresh the page');
+    expect(db.state).toEqual(before); expect(db.writes).toBe(writes);
+
+    const saved = await send(handler, continued);
+    expect(saved.status).toBe(200);
+    expect(saved.body.run.continuation).toBeTruthy();
+    expect((await send(handler, continued)).body).toEqual(saved.body);
+    const after = structuredClone(db.state), afterWrites = db.writes;
+    for (const operation of [
+      { kind: 'read' },
+      db.normal(),
+      { kind: 'prepare', requestId: uuid(), expectedRevision: db.revision,
+        operation: { kind: 'setSquad', ids: ['ember'] } },
+    ]) {
+      const stale = await send(handler, operation, 'valid', false);
+      expect(stale.status).toBe(400);
+      expect(stale.body.error).toContain('Refresh the page');
+    }
+    expect(db.state).toEqual(after); expect(db.writes).toBe(afterWrites);
+    expect((await send(handler, { kind: 'read' })).body.run).toEqual(saved.body.run);
+    expect((await send(handler, db.request({ kind: 'quit' }))).status).toBe(200);
+    expect((await send(handler, db.request({ kind: 'retry' }))).status).toBe(200);
+  });
   it('actual HTTP Story victory unlocks Continue and exit receipts retain the banked outcome', async () => {
     const db = new SupabaseMock(105), handler = db.handler();
     expect((await send(handler, entry({ kind: 'story', stage: 1 }))).status).toBe(200);
@@ -297,7 +332,7 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
         const unavailable = await send(thrown.handler(), entry());
         expect(unavailable.status).toBe(503); expect(thrown.writes).toBe(0);
         expect(log).toHaveBeenCalledExactlyOnceWith(
-          'Unexpected Radiant study authority failure; no successful commit acknowledged.');
+          'Unexpected Radiant authority failure; no successful commit acknowledged.');
         expect(JSON.stringify(unavailable.body)).not.toContain(secret);
         expect(JSON.stringify(log.mock.calls)).not.toContain(secret);
       } finally { log.mockRestore(); }
@@ -330,8 +365,14 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
   });
   it('denies locked access/captured squads and corrupt stored snapshots', async () => {
     const db = new SupabaseMock(), handler = db.handler();
-    expect((await send(handler, entry({ kind: 'story', stage: 2 }))).status).toBe(400);
-    expect((await send(handler, entry({ kind: 'dungeon', element: 'infernic', stage: 1 }))).status).toBe(400);
+    const stage = await send(handler, entry({ kind: 'story', stage: 2 }));
+    expect(stage.status).toBe(400);
+    expect(stage.body.error).toContain('Clear the previous stage first');
+    const dungeon = await send(handler, entry({ kind: 'dungeon', element: 'infernic', stage: 1 }));
+    expect(dungeon.status).toBe(400);
+    expect(dungeon.body.error).toContain('Activity locked.');
+    expect(dungeon.body.error).toContain('Lv.30');
+    expect(db.writes).toBe(0);
     const copy = createCreatureCopy('infusion:heavens:0');
     db.state.account.capturedCharacters = [copy];
     db.state.account.squad = [copy.instanceId];
@@ -340,6 +381,18 @@ describe('authenticated actual game-operation dispatch with mocked Supabase boun
     db.state.radiantStudy!.enemies[0].currencyBudget++;
     expect((await send(handler, db.request({ kind: 'quit' }))).status).toBe(503);
     expect(db.writes).toBe(1);
+  });
+  it('explains an expired Rose event without writing the account', async () => {
+    const now = vi.spyOn(Date, 'now').mockReturnValue(Date.UTC(2026, 11, 2));
+    try {
+      const db = new SupabaseMock(105);
+      const before = structuredClone(db.state);
+      const result = await send(db.handler(), entry({ kind: 'infusion', mode: 'roses', stage: 1 }));
+      expect(result.status).toBe(400);
+      expect(result.body.error).toContain('Roses Under Sunny Skies has ended');
+      expect(db.state).toEqual(before);
+      expect(db.writes).toBe(0);
+    } finally { now.mockRestore(); }
   });
   it('preserves CORS/preflight/body size policy before study dispatch', async () => {
     const db = new SupabaseMock(), handler = db.handler();

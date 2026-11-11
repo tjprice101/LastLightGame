@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { freshGame, resolveOperation, validateRequest, type DurableGame } from '../../supabase/functions/game-operation/engine';
 import { validateGameResponse, type GameOperation } from './server-game';
+import { createCreatureCopy } from '../game/character-instances';
+import { getCreature } from '../content/creatures';
+import { starters } from '../content/starters';
+import { characterReleased } from '../content/release-visibility';
 
 const id = '00000000-0000-4000-8000-000000000001';
 const entropy = { seed: () => 7321, random: () => .9, uuid: () => crypto.randomUUID() };
@@ -49,6 +53,28 @@ describe('authoritative saved loadout operations', () => {
     game = op(game, { kind: 'equipConduitConfiguration', character: 'ember', index: 1 }).game;
     expect(game.run).toEqual(run);
     expect(game.account.conduitEquipment?.ember?.[0]).toBe('vigil-core');
+  });
+  it('preserves historical capture and unreleased templates while refusing invalid authority operations', () => {
+    for (const kind of ['capture', 'unreleased'] as const) {
+      const game = started(), copy = createCreatureCopy('infusion:treasury:0');
+      const hidden = starters.find(starter => !characterReleased(starter.id))!;
+      const creature = getCreature(copy.creatureId);
+      if (kind === 'capture') game.account.capturedCharacters = [copy];
+      else game.account.characters[hidden.id] = { level: 0, evolution: 1 };
+      const character = kind === 'capture' ? copy.instanceId : hidden.id;
+      game.account.squad = [character];
+      game.account.squadLoadouts = [{ id, name: 'Historical', members: [{ character,
+        name: kind === 'capture' ? creature.name : hidden.name,
+        element: kind === 'capture' ? creature.element : hidden.elementId,
+        conduits: Array<null>(8).fill(null), master: null }] }];
+      const before = structuredClone(game);
+      expect(() => op(game, { kind: 'saveSquadLoadout', id, name: 'Overwrite' })).toThrow();
+      expect(() => op(game, { kind: 'equipSquadLoadout', id })).toThrow();
+      expect(game).toEqual(before);
+      const renamed = op(game, { kind: 'renameSquadLoadout', id, name: 'Reference' }).game;
+      expect(renamed.account.squadLoadouts?.[0].members).toEqual(before.account.squadLoadouts?.[0].members);
+      expect(op(renamed, { kind: 'deleteSquadLoadout', id }).game.account.squadLoadouts).toEqual([]);
+    }
   });
   it.each([
     { kind: 'saveSquadLoadout', id, name: 'A', members: ['tide'] },

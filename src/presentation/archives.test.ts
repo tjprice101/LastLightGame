@@ -14,7 +14,9 @@ import { sanctuaryHeader, sanctuaryContext, isMenuPage } from './sanctuary';
 import { inventoryHub, characterHub } from './hub';
 import { elementLabel } from './element-label';
 import { elementAssetIds } from '../content/element-migration';
-import { formatStat, resolveFighter } from '../content/combat';
+import { formatStat } from '../content/combat';
+import { radiantFlares, resolveRadiantStarterStats } from '../content/radiant-combat';
+import { radiantAttunementName, radiantCharacterLoadout } from './radiant-character';
 import { referencedEffect as readableEffect } from './effect-copy';
 
 describe('unified Archives', () => {
@@ -58,6 +60,8 @@ describe('unified Archives', () => {
     account.characters.ember = { level: 0, evolution: 2, weaponRank: 0 };
     account.conduits = { 'vigil-core': 1 };
     account.conduitEquipment = { ember: ['vigil-core', null, null, null, null, null, null, null] };
+    account.masterConduits = { 'master-ember-1': 1 };
+    account.masterEquipment = { ember: 'master-ember-1' };
     const before = structuredClone(account);
     const html = archives(account);
     for (const starter of starters) expect(html).toContain(`data-archive-character="${starter.id}"`);
@@ -79,7 +83,16 @@ describe('unified Archives', () => {
     expect(html).toContain('aria-label="Uncommon rarity"');
     expect(html).toContain('aria-label="5-star character"');
     expect(html).toContain('aria-label="7-star character"');
-    expect(html).toContain(`<dd>${formatStat(resolveFighter('ember', account.characters.ember, account.conduitEquipment.ember).stats.health)}</dd>`);
+    const current = html.match(/<dialog\b[^>]*id="archive-kit-ember-2"[\s\S]*?<\/dialog>/)?.[0];
+    const preview = html.match(/<dialog\b[^>]*id="archive-kit-ember-1"[\s\S]*?<\/dialog>/)?.[0];
+    const loadout = radiantCharacterLoadout(account, 'ember')!.loadout;
+    const previewLoadout = radiantCharacterLoadout(null, 'ember', { level: 0, evolution: 1, weaponRank: 0 })!.loadout;
+    for (const value of Object.values(resolveRadiantStarterStats(loadout))) expect(current).toContain(formatStat(value));
+    for (const value of Object.values(resolveRadiantStarterStats(previewLoadout))) expect(preview).toContain(formatStat(value));
+    expect(current).toContain(radiantAttunementName(loadout));
+    expect(preview).toContain('Equinox');
+    expect(current).toContain(radiantFlares.ember.glowing.name);
+    expect(current).not.toContain('Cinder Cleave');
     expect(html).toContain('Current combat kit');
     expect(account).toEqual(before);
   });

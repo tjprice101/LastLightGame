@@ -8,6 +8,10 @@ import { currentEquipment } from './saved-loadouts';
 import { conduits } from '../content/conduits';
 import { createCreatureCopy } from './character-instances';
 import { offlineSave, parseSaveFile } from './save-file';
+import { getCreature } from '../content/creatures';
+import { starters } from '../content/starters';
+import { characterReleased } from '../content/release-visibility';
+import { releasedRadiantIds } from '../content/radiant-combat';
 
 const id = '00000000-0000-4000-8000-000000000001';
 function storage(): ProfileStorage {
@@ -31,9 +35,13 @@ describe('saved squad and Conduit configurations', () => {
     saveConduitConfiguration(saved, 'ember', 0, 'First config');
     expect(parseSaveFile(JSON.stringify(offlineSave(saved))).account).toEqual(loadAccount(saved));
   });
-  it.each([1, 2, 3])('snapshots %i ordered members and restores exact ordinary/Master equipment in one write', count => {
+  it.each([1, 2, 3, 6])('snapshots %i ordered members and restores exact ordinary/Master equipment in one write', count => {
     const saved = storage();
-    setSquad(saved, ['tide', 'ember', 'sprout'].slice(0, count));
+    const account = loadAccount(saved);
+    for (const member of releasedRadiantIds.slice(0, 6)) account.characters[member] = { level: 0, evolution: 1 };
+    saveAccount(saved, account);
+    const squad = ['tide', 'ember', 'sprout', ...releasedRadiantIds.filter(member => !['tide', 'ember', 'sprout'].includes(member))].slice(0, count);
+    setSquad(saved, squad);
     equipConduit(saved, 'tide', 7, 'vigil-core');
     equipMasterConduit(saved, 'tide', 'master-tide-1');
     const before = saveSquadLoadout(saved, id, 'Water lead');
@@ -95,23 +103,49 @@ describe('saved squad and Conduit configurations', () => {
     expect(writes).toHaveBeenCalledTimes(1);
     expect(after).toEqual({ ...before, squadLoadouts: before.squadLoadouts?.slice(1) });
   });
-  it('supports captured configurations and retains an explicitly unavailable team template after sale', () => {
+  it('preserves historical capture templates but rejects saving or equipping them before and after sale', () => {
     const saved = storage();
     const copy = createCreatureCopy('infusion:treasury:0');
     saveAccount(saved, { ...loadAccount(saved), capturedCharacters: [copy], squad: [copy.instanceId] });
     equipConduit(saved, copy.instanceId, 0, 'vigil-core');
     saveConduitConfiguration(saved, copy.instanceId, 0, 'Captured build');
-    saveSquadLoadout(saved, id, 'Captured squad');
+    const account = loadAccount(saved);
+    account.squadLoadouts = [{ id, name: 'Captured squad', members: [{ character: copy.instanceId,
+      name: getCreature(copy.creatureId).name, element: getCreature(copy.creatureId).element,
+      ...currentEquipment(account, copy.instanceId) }] }];
+    saveAccount(saved, account);
+    const before = saved.getItem(ACCOUNT_KEY), writes = vi.spyOn(saved, 'setItem');
+    expect(() => saveSquadLoadout(saved, id, 'Overwrite')).toThrow('Captured Elemental-Devourers cannot join the squad');
+    expect(() => equipSquadLoadout(saved, id)).toThrow('Captured Elemental-Devourers cannot join the squad');
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
+    expect(writes).not.toHaveBeenCalled();
     setSquad(saved, ['ember']);
     equipConduit(saved, copy.instanceId, 0, null);
     const sold = sellCurrencyCreature(saved, copy.instanceId);
     expect(sold.conduitConfigurations?.[copy.instanceId]).toBeUndefined();
     expect(sold.squadLoadouts?.[0].members[0].character).toBe(copy.instanceId);
-    const raw = saved.getItem(ACCOUNT_KEY), writes = vi.spyOn(saved, 'setItem');
+    const raw = saved.getItem(ACCOUNT_KEY);
+    writes.mockClear();
     expect(() => equipSquadLoadout(saved, id)).toThrow('no longer owned');
     expect(writes).not.toHaveBeenCalled();
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     expect(loadAccount(saved).squad).toEqual(['ember']);
+    expect(deleteSquadLoadout(saved, id).squadLoadouts).toEqual([]);
+  });
+  it('keeps unreleased members in historical templates without allowing save or equip', () => {
+    const saved = storage(), hidden = starters.find(starter => !characterReleased(starter.id))!;
+    const account = loadAccount(saved);
+    account.characters[hidden.id] = { level: 0, evolution: 1 };
+    account.squad = [hidden.id];
+    account.squadLoadouts = [{ id, name: 'Hidden', members: [{ character: hidden.id, name: hidden.name,
+      element: hidden.elementId, conduits: Array<null>(8).fill(null), master: null }] }];
+    saveAccount(saved, account);
+    const raw = saved.getItem(ACCOUNT_KEY), writes = vi.spyOn(saved, 'setItem');
+    expect(() => saveSquadLoadout(saved, id, 'Overwrite')).toThrow('not currently released');
+    expect(() => equipSquadLoadout(saved, id)).toThrow('not currently released');
+    expect(writes).not.toHaveBeenCalled();
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
+    expect(renameSquadLoadout(saved, id, 'Historical').squadLoadouts?.[0].members[0].character).toBe(hidden.id);
     expect(deleteSquadLoadout(saved, id).squadLoadouts).toEqual([]);
   });
   it.each(['', '   ', 'x'.repeat(41), 'bad\nname', '<script>\u0000'])('rejects invalid name %j without a write', name => {

@@ -1,9 +1,10 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { freshGame } from './engine';
-import { executeRadiantRun, radiantRpcRepository, RadiantRunError, validateRadiantRunRequest,
+import { executeRadiantRun, RadiantRunError, validateRadiantRunRequest, validateRadiantRunResponse,
   validateRadiantRunSnapshot, validateRadiantCheckpoint, radiantRpcRepositoryFor,
-  type RadiantRunAuthority } from '../../../src/online/radiant-run';
+  type FrozenRadiantRun, type RadiantRunAuthority } from '../../../src/online/radiant-run';
 import { executeRadiantPreparation, validateRadiantPreparationRequest } from '../../../src/online/radiant-preparation';
+import { liveRadiantCalibrationId } from '../../../src/content/radiant-enemy-calibration';
 
 export interface RadiantServerConfig {
   enabled?: string;
@@ -15,7 +16,7 @@ const encoder = new TextEncoder();
 export async function deriveRadiantEntry(secret: string, user: string, requestId: string):
   Promise<ReturnType<RadiantRunAuthority['entry']>> {
   if (!secret || encoder.encode(secret).length < 32)
-    throw new RadiantRunError('unavailable', 'Radiant study entropy is not configured.');
+    throw new RadiantRunError('unavailable', 'Radiant authority entropy is not configured.');
   const key = await crypto.subtle.importKey('raw', encoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' },
     false, ['sign']);
   const bytes = new Uint8Array(await crypto.subtle.sign('HMAC', key,
@@ -30,16 +31,33 @@ export async function deriveRadiantEntry(secret: string, user: string, requestId
 }
 export async function handleRadiantRequest(value: object, user: string,
   admin: Pick<SupabaseClient, 'rpc'>, config: RadiantServerConfig,
-  identityOf: (user: string) => Promise<{ username: string; created_at: string } | null>):
+  identityOf: (user: string) => Promise<{ username: string; created_at: string } | null>,
+  supportsContinuation = false):
   Promise<{ status: number; body: unknown }> {
   if (config.enabled !== 'true') return { status: 503,
-    body: { code: 'unavailable', error: 'Radiant study authority is unavailable.' } };
+    body: { code: 'unavailable', error: 'Radiant authority is unavailable.' } };
   if (!config.secret || encoder.encode(config.secret).length < 32 ||
     config.calibration !== undefined && !['authored-control', 'radiant-pressure-v2'].includes(config.calibration))
-    return { status: 503, body: { code: 'unavailable', error: 'Radiant study authority is not configured.' } };
+    return { status: 503, body: { code: 'unavailable', error: 'Radiant authority is not configured.' } };
   try {
     if (Object.keys(value).length !== 1 || !('radiantStudy' in value))
-      throw new RadiantRunError('invalid-input', 'Use only the dedicated radiantStudy request.');
+      throw new RadiantRunError('invalid-input', 'Use only the Radiant request.');
+    const requireUpdatedClient = () => {
+      throw new RadiantRunError('invalid-input', 'A game update is required. Refresh the page to continue; saved rewards are safe.');
+    };
+    const requireCompatibleRun = (run: FrozenRadiantRun | null | undefined) => {
+      if (!supportsContinuation && run?.continuation) requireUpdatedClient();
+    };
+    const compatibleCheckpoint = (value: unknown) => {
+      const checkpoint = validateRadiantCheckpoint(value);
+      requireCompatibleRun(checkpoint.run);
+      return checkpoint;
+    };
+    const compatibleResponse = (value: unknown) => {
+      const result = validateRadiantRunResponse(value);
+      requireCompatibleRun(result.run);
+      return result;
+    };
     const operation = value.radiantStudy;
     const load = async () => {
       const profile = await identityOf(user);
@@ -49,9 +67,10 @@ export async function handleRadiantRequest(value: object, user: string,
       });
       if (error) throw new RadiantRunError('unavailable', 'Online account storage unavailable.');
       const snapshot = validateRadiantRunSnapshot(data);
+      requireCompatibleRun(snapshot.state.radiantStudy);
       if (snapshot.state.radiantStudy &&
-        snapshot.state.radiantStudy.calibration !== (config.calibration ?? 'authored-control'))
-        throw new RadiantRunError('unavailable', 'Frozen study calibration is not enabled by the authority.');
+        snapshot.state.radiantStudy.calibration !== (config.calibration ?? liveRadiantCalibrationId))
+        throw new RadiantRunError('unavailable', 'The saved encounter calibration is not enabled by the authority.');
       return snapshot;
     };
     if (operation && typeof operation === 'object' && !Array.isArray(operation) &&
@@ -72,27 +91,28 @@ export async function handleRadiantRequest(value: object, user: string,
       if (limitError) throw new RadiantRunError('unavailable', 'Game rate-limit storage unavailable.');
       if (!allowed) return { status: 429, body: { error: 'Too many game operations. Wait one minute.' } };
       const result = await executeRadiantPreparation(
-        radiantRpcRepositoryFor(admin, user, load, validateRadiantCheckpoint), input);
+        radiantRpcRepositoryFor(admin, user, load, compatibleCheckpoint), input);
       return { status: 200, body: result };
     }
     const input = validateRadiantRunRequest(value.radiantStudy);
-    const calibration = config.calibration ?? 'authored-control';
+    const calibration = config.calibration ?? liveRadiantCalibrationId;
     if (input.operation.kind === 'start' && input.operation.calibration !== calibration)
-      throw new RadiantRunError('unavailable', 'Requested study calibration is not enabled by the authority.');
+      throw new RadiantRunError('unavailable', 'Requested encounter calibration is not enabled by the authority.');
     const { data: allowed, error: limitError } = await admin.rpc('consume_game_attempt', { p_user: user });
     if (limitError) throw new RadiantRunError('unavailable', 'Game rate-limit storage unavailable.');
     if (!allowed) return { status: 429, body: { error: 'Too many game operations. Wait one minute.' } };
+    if (!supportsContinuation && input.operation.kind === 'continue') requireUpdatedClient();
     const entropy = await deriveRadiantEntry(config.secret, user, input.requestId);
-    const repository = radiantRpcRepository(admin, user, load);
+    const repository = radiantRpcRepositoryFor(admin, user, load, compatibleResponse);
     const result = await executeRadiantRun(repository, input, {
       capability: 'isolated-radiant-study', now: Date.now(), entry: () => entropy,
     });
     return { status: 200, body: result };
   } catch (error) {
     if (!(error instanceof RadiantRunError)) {
-      console.error('Unexpected Radiant study authority failure; no successful commit acknowledged.');
+      console.error('Unexpected Radiant authority failure; no successful commit acknowledged.');
       return { status: 503,
-        body: { code: 'unavailable', error: 'Study authority was not acknowledged; retry the same request ID.' } };
+        body: { code: 'unavailable', error: 'Radiant authority was not acknowledged; retry the same request ID.' } };
     }
     const status = ['stale-revision', 'stale-run', 'receipt-conflict'].includes(error.code) ? 409 :
       ['unavailable', 'denied-write'].includes(error.code) ? 503 : 400;

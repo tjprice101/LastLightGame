@@ -20,6 +20,7 @@ import { elementLabel } from './element-label';
 import { statPreview } from './stat-preview';
 import { bulkSaleControls, bulkSaleCopy } from './creature-bulk-sale';
 import { squadLoadoutsPanel } from './saved-loadouts';
+import { escapeDialogText } from './game-dialog';
 
 export type ReferenceTeamView = 'detail' | 'bearers' | 'creatures' | 'capture' | 'formation' | 'loadouts' | 'conduits' | 'capture-conduits';
 export interface ReferenceTeamState {
@@ -28,7 +29,26 @@ export interface ReferenceTeamState {
   capture?: string;
   element: string;
   sort: 'level' | 'name' | 'element';
+  query?: string;
   tab?: string;
+}
+
+export function filterTeamCollection(host: HTMLElement, query: string): void {
+  const normalized = query.trim().toLowerCase();
+  const items = Array.from(host.querySelectorAll<HTMLElement>('[data-collection-item]'));
+  let visible = 0;
+  items.forEach((item) => {
+    const matches = !normalized || (item.dataset.collectionSearch ?? '').includes(normalized);
+    const hidden = !matches;
+    if (item.hidden !== hidden) item.hidden = hidden;
+    if (matches) visible++;
+  });
+  const count = host.querySelector<HTMLElement>('[data-collection-count]');
+  if (count) count.textContent = `${visible} shown · ${count.dataset.collectionTotal ?? items.length} match current filters`;
+  const empty = host.querySelector<HTMLElement>('[data-collection-empty]');
+  if (empty) empty.hidden = visible > 0;
+  host.querySelector<HTMLElement>('[data-team-collection="creatures"]')
+    ?.dispatchEvent(new Event('team-collection-filtered'));
 }
 
 export function referenceTeamSidebar(account: Account, state: ReferenceTeamState): string {
@@ -62,29 +82,48 @@ function bearerGrid(account: Account, state: ReferenceTeamState): string {
     state.sort === 'level' ? ownedProgress(account, b).level - ownedProgress(account, a).level || getStarter(a).name.localeCompare(getStarter(b).name)
       : state.sort === 'element' ? getStarter(a).elementId.localeCompare(getStarter(b).elementId) || getStarter(a).name.localeCompare(getStarter(b).name)
         : getStarter(a).name.localeCompare(getStarter(b).name));
-  return `<section class="ref-panel ref-team-collection"><header class="ref-panel-heading">Element-Bearers · ${list.length} of ${ids.length}</header>
+  return `<section class="ref-panel ref-team-collection"><header class="ref-panel-heading">Owned Element-Bearers <span data-collection-count data-collection-total="${list.length}">${list.length} shown · ${list.length} match current filters</span></header>
     <div class="ref-roster-toolbar"><nav class="ref-segment" aria-label="Filter owned Element-Bearers"><button data-team-element="" aria-pressed="${!state.element}">All</button>${elements.filter(element => ids.some(id => getStarter(id).elementId === element.id)).map(element => `<button data-team-element="${element.id}" aria-pressed="${state.element === element.id}">${element.name}</button>`).join('')}</nav>
+    <label class="ref-collection-search">Search <input type="search" data-team-search value="${escapeDialogText(state.query ?? '')}" placeholder="Name, element or level" aria-label="Search owned Element-Bearers"></label>
     <label>Sort by <select data-team-sort data-native-select aria-label="Sort owned Element-Bearers"><option value="level" ${state.sort === 'level' ? 'selected' : ''}>Level</option><option value="name" ${state.sort === 'name' ? 'selected' : ''}>Name</option><option value="element" ${state.sort === 'element' ? 'selected' : ''}>Element</option></select></label></div>
     <div class="ref-scroll"><div class="ref-bearer-grid">${list.map(id => {
       const starter = getStarter(id);
       const progress = ownedProgress(account, id);
       const position = squad.indexOf(id);
-      return `<button class="ref-collection-card ref-bearer-card" data-team-detail="${id}" style="--member-accent:${starter.color}"><span class="ref-card-art">${ownedCompanion(account, id).compactArt}</span><span class="ref-card-caption"><b>${starter.name}</b><small>★${starter.stars} · ${starter.element} · Lv.${progress.level}</small>${position >= 0 ? `<span class="ref-chip ref-white">${position === 0 ? 'Leader' : 'In squad'}</span>` : ''}</span></button>`;
-    }).join('')}<button class="ref-collection-card ref-add-card" data-page="summon">+ Summon more</button></div></div></section>`;
+      const search = `${characterName(id, progress.evolution)} ${starter.name} ${starter.element} ${starter.elementId} ${progress.level} ${starter.stars}`.toLowerCase();
+      return `<button class="ref-collection-card ref-bearer-card" data-collection-item data-collection-search="${escapeDialogText(search)}" data-team-detail="${id}" style="--member-accent:${starter.color}"><span class="ref-card-art">${ownedCompanion(account, id).compactArt}</span><span class="ref-card-caption"><b>${characterName(id, progress.evolution)}</b><small>★${starter.stars} · ${starter.element} · Lv.${progress.level}</small>${position >= 0 ? `<span class="ref-chip ref-white">${position === 0 ? 'Leader' : 'In squad'}</span>` : ''}</span></button>`;
+    }).join('')}<button class="ref-collection-card ref-add-card" data-page="summon">+ Summon more</button>
+    <p class="ref-empty" data-collection-empty ${list.length ? 'hidden' : ''}>No Element-Bearers match the current search and filters.</p></div></div></section>`;
 }
 
-function captureGrid(account: Account): string {
+function captureGrid(account: Account, state: ReferenceTeamState): string {
   const copies = account.capturedCharacters ?? [];
-  return `<section class="ref-panel ref-team-collection"><header class="ref-panel-heading">Captured Elemental-Devourers · ${copies.length}<span>Lock the ones you want to keep. Storage has no limit.</span></header>
-    ${copies.length ? `${bulkSaleControls()}<div class="ref-scroll"><div class="ref-capture-grid">${copies.map((copy, index) => {
+  const squad = equippedSquad(account);
+  const list = copies.map((copy, index) => ({ copy, index }))
+    .filter(({ copy }) => !state.element || getCreature(copy.creatureId).element === state.element)
+    .sort(({ copy: a }, { copy: b }) => {
+    const aCreature = getCreature(a.creatureId);
+    const bCreature = getCreature(b.creatureId);
+    if (state.sort === 'level') return capturedProgress(b).level - capturedProgress(a).level || aCreature.name.localeCompare(bCreature.name);
+    if (state.sort === 'element') return aCreature.element.localeCompare(bCreature.element) || aCreature.name.localeCompare(bCreature.name);
+    return aCreature.name.localeCompare(bCreature.name);
+  });
+  const filters = elements.filter((element) => copies.some((copy) => getCreature(copy.creatureId).element === element.id));
+  return `<section class="ref-panel ref-team-collection" data-team-collection="creatures"><header class="ref-panel-heading">Captured Elemental-Devourers <span data-collection-count data-collection-total="${list.length}">${list.length} shown · ${list.length} match current filters</span><span>Lock the ones you want to keep. Storage has no limit.</span></header>
+    ${copies.length ? `<div class="ref-roster-toolbar"><nav class="ref-segment" aria-label="Filter captured Elemental-Devourers"><button data-team-element="" aria-pressed="${!state.element}">All</button>${filters.map((element) => `<button data-team-element="${element.id}" aria-pressed="${state.element === element.id}">${element.name}</button>`).join('')}</nav>
+    <label class="ref-collection-search">Search <input type="search" data-team-search value="${escapeDialogText(state.query ?? '')}" placeholder="Name, element, form or level" aria-label="Search captured Elemental-Devourers"></label>
+    <label>Sort by <select data-team-sort data-native-select aria-label="Sort captured Elemental-Devourers"><option value="level" ${state.sort === 'level' ? 'selected' : ''}>Level</option><option value="name" ${state.sort === 'name' ? 'selected' : ''}>Name</option><option value="element" ${state.sort === 'element' ? 'selected' : ''}>Element</option></select></label></div>
+    ${bulkSaleControls()}<div class="ref-scroll"><div class="ref-capture-grid">${list.map(({ copy, index }) => {
       const member = ownedCompanion(account, copy.instanceId);
       const protection = characterProtection(account, copy.instanceId);
-      const position = equippedSquad(account).indexOf(copy.instanceId);
+      const position = squad.indexOf(copy.instanceId);
       const progress = capturedProgress(copy);
+      const creature = getCreature(copy.creatureId);
       const sale = isSellableCreatureMode(getCreature(copy.creatureId).mode) ? creatureSaleOffer(account, copy.instanceId) : null;
-      return `<article class="ref-collection-card"><button class="ref-card-art" data-team-capture-detail="${copy.instanceId}" aria-label="Open ${member.name}, copy ${index + 1}">${member.art}</button><div class="ref-card-caption"><b>${member.name}</b><small>★${progress.tier + 1} · ${member.element} · Lv.${progress.level} · Copy ${index + 1}</small>${position >= 0 ? `<span class="ref-chip ref-white">${position === 0 ? 'Leader' : 'In squad'}</span>` : ''}<button class="ref-chip ${protection.locked ? 'ref-white' : ''}" data-character-lock="${copy.instanceId}" data-lock-value="${!protection.locked}" aria-pressed="${protection.locked}">${protection.locked ? 'Locked' : 'Lock'}</button>
+      const search = `${member.name} ${creature.name} ${member.element} ${progress.tier + 1} ${progress.level} ${index + 1}`.toLowerCase();
+      return `<article class="ref-collection-card" data-collection-item data-collection-search="${escapeDialogText(search)}"><button class="ref-card-art" data-team-capture-detail="${copy.instanceId}" aria-label="Open ${member.name}, copy ${index + 1}">${member.art}</button><div class="ref-card-caption"><b>${member.name}</b><small>★${progress.tier + 1} · ${member.element} · Lv.${progress.level} · Copy ${index + 1}</small>${position >= 0 ? `<span class="ref-chip ref-white">${position === 0 ? 'Leader' : 'In squad'}</span>` : ''}<button class="ref-chip ${protection.locked ? 'ref-white' : ''}" data-character-lock="${copy.instanceId}" data-lock-value="${!protection.locked}" aria-pressed="${protection.locked}">${protection.locked ? 'Locked' : 'Lock'}</button>
         ${sale ? information(`quick-sale-${copy.instanceId}`, `${member.name} · Copy ${index + 1}`, `<p>Sales are permanent.</p>${saleControls(sale, copy.instanceId, 'Sell')}`, 'Quick Sell') : ''}</div>${sale ? bulkSaleCopy(account, copy.instanceId) : ''}</article>`;
-    }).join('')}</div></div>` : '<div class="ref-empty"><b>No captured Elemental-Devourers yet</b><p>Defeat eligible enemies in Heaven, Abyss, Crownfall Treasury, Rosethorn Sanctuary or Passion of Crimson Roses.</p><button class="ref-button ref-outline" data-page="gameplay">Go to Play</button></div>'}
+    }).join('')}<p class="ref-empty" data-collection-empty ${list.length ? 'hidden' : ''}>No Elemental-Devourers match the current search and filters.</p></div></div>` : '<div class="ref-empty"><b>No captured Elemental-Devourers yet</b><p>Defeat eligible enemies in Heaven, Abyss, Crownfall Treasury, Rosethorn Sanctuary or Passion of Crimson Roses.</p><button class="ref-button ref-outline" data-page="gameplay">Go to Play</button></div>'}
     <p id="character-lock-result" role="status"></p></section>`;
 }
 
@@ -119,20 +158,22 @@ function captureDetail(account: Account, id: string, tab = 'overview'): string {
         <button class="ref-chip" data-character-lock="${id}" data-lock-value="${!protection.locked}" aria-pressed="${protection.locked}">${protection.locked ? 'Unlock' : 'Lock'} copy</button>
         ${information(`capture-lore-${id}`, creature.name, `<p>${creatureLore(creature)}</p>`, 'Lore')}</div></div>
     </header>
-    <nav class="ref-character-submenus" aria-label="Elemental-Devourer sub-menus">${[['overview', 'Stats & Skills'], ['upgrade-1', 'Level'], ['sale', 'Sale']].map(([key, label]) => `<button type="button" data-capture-tab="${key}" aria-pressed="${tab === key}" aria-controls="capture-panel-${key}">${label}</button>`).join('')}<button type="button" data-open-loadout>Conduits</button></nav>
+    <nav class="ref-character-submenus" aria-label="Elemental-Devourer sub-menus">${[['overview', 'Archived Stats & Skills'], ['upgrade-1', 'Level'], ['sale', 'Sale']].map(([key, label]) => `<button type="button" data-capture-tab="${key}" aria-pressed="${tab === key}" aria-controls="capture-panel-${key}">${label}</button>`).join('')}<button type="button" data-open-loadout>Conduits</button></nav>
     <section class="hub-detail ref-character-panels" aria-label="Elemental-Devourer details and upgrades"><div class="character-detail-content ref-organized-detail${tab === 'upgrade-1' ? ' ref-growth-detail' : ''}">
     <div id="capture-panel-overview" class="ref-character-overview ref-capture-panel" ${tab === 'overview' ? '' : 'hidden'}>
-      <section class="character-category mono-character-stats"><h3>Stats</h3>${stats(copy, undefined, false, account.conduitEquipment?.[id], account.conduitUpgrades)}</section>
-      <section class="character-category character-combat"><h3>Skills</h3><div class="ref-ability-buttons">${(['skill1', 'skill2', 'ultimate'] as const).map(action => {
+      <p>Captured Elemental-Devourers cannot join Radiant squads. These archived stats, skills and Conduits do not affect live battles.</p>
+      <section class="character-category mono-character-stats"><h3>Archived stats</h3>${stats(copy, undefined, false, account.conduitEquipment?.[id], account.conduitUpgrades)}</section>
+      <section class="character-category character-combat"><h3>Archived skills</h3><div class="ref-ability-buttons">${(['skill1', 'skill2', 'ultimate'] as const).map(action => {
         const ability = kit.abilities[action];
         const label = action === 'skill1' ? 'Skill 1' : action === 'skill2' ? 'Skill 2' : 'Last Flare';
         const unavailable = kit.unavailableActions?.includes(action);
         return information(`creature-${id}-${action}`, unavailable ? label : ability.name,
-          `<article class="hub-ability"><h3>${unavailable ? label : ability.name}</h3><p>${ability.description}</p>${unavailable ? '<p>This slot is unavailable for this Elemental-Devourer.</p>' : `<p class="hub-cost">${label} · Costs ${shatterGauge.costs[action]} Elemental Gauge · ${ability.cooldown ? `${ability.cooldown}-turn cooldown` : 'No cooldown'}.</p>`}</article>`, `${label} details`,
+          `<article class="hub-ability"><h3>${unavailable ? label : ability.name}</h3><p>Archived skill · not usable in Radiant combat.</p><p>${ability.description}</p>${unavailable ? '<p>This slot was unavailable for this Elemental-Devourer.</p>' : `<p class="hub-cost">Former cost: ${shatterGauge.costs[action]} Elemental Gauge · ${ability.cooldown ? `${ability.cooldown}-turn cooldown` : 'No cooldown'}.</p>`}</article>`, `${label} details`,
           `<span><strong>${unavailable ? label : ability.name}</strong><small>${label} · ${unavailable ? 'Unavailable · ' : ''}View details</small></span>`);
       }).join('')}</div></section>
     </div><div id="capture-panel-upgrade-1" class="ref-capture-panel" ${tab === 'upgrade-1' ? '' : 'hidden'}>
-      ${next ? `<div class="character-upgrade-grid"><section class="character-category upgrade-benefits"><div class="ref-growth-preview"><h3 class="ref-growth-preview-heading">Level &amp; stat preview</h3>
+      <p>Leveling does not enable squad combat. Sale and evolution values depend on form, not level.</p>
+      ${next ? `<div class="character-upgrade-grid"><section class="character-category upgrade-benefits"><div class="ref-growth-preview"><h3 class="ref-growth-preview-heading">Level &amp; archived stat preview</h3>
         <div class="hub-comparison"><div><small>CURRENT</small><strong>Lv.${progress.level}</strong></div><div><small>NEXT</small><strong>Lv.${progress.level + 1}</strong></div></div>
         <div class="upgrade-stat-preview">${statPreview(kit.stats, next)}</div></div></section>
         <section class="character-category upgrade-payment"><h3>Required resources <small class="resource-key">Owned / Required</small></h3><ul class="upgrade-resources">${resources.map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${resource.name}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>` : `<section class="character-category"><p class="ref-growth-summary">Maximum level ${capturedLevelCap}</p>`}
@@ -169,7 +210,7 @@ function conduitPage(account: Account, state: ReferenceTeamState): string {
     const copy = account.capturedCharacters?.find(entry => entry.instanceId === state.capture);
     if (!copy) throw new Error('Choose an owned captured Elemental-Devourer.');
     const creature = getCreature(copy.creatureId);
-    panel = `<div class="character-detail-content ref-organized-detail"><div class="ref-equipment-workspace">${referenceEquipment(copy.instanceId, creature.name, creature.element, account)}</div></div>`;
+    panel = `<div class="character-detail-content ref-organized-detail"><p>Captured Elemental-Devourers cannot join Radiant squads; their equipped Conduits do not affect live battles.</p><div class="ref-equipment-workspace">${referenceEquipment(copy.instanceId, creature.name, creature.element, account)}</div></div>`;
   } else {
     if (!account.characters[state.selected]) throw new Error('Choose an owned Element-Bearer.');
     panel = characterDetail(getStarter(state.selected), 'equipment', account, true);
@@ -182,7 +223,7 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
   if (!account) return '<p role="alert">Team unavailable. Resolve the account error.</p>';
   let content: string;
   if (state.view === 'bearers') content = bearerGrid(account, state);
-  else if (state.view === 'creatures') content = captureGrid(account);
+  else if (state.view === 'creatures') content = captureGrid(account, state);
   else if (state.view === 'formation') content = `<section class="ref-panel ref-scroll ref-formation">${squadHub(account)}</section>`;
   else if (state.view === 'loadouts') content = squadLoadoutsPanel(account);
   else if (state.view === 'conduits' || state.view === 'capture-conduits') return conduitPage(account, state);

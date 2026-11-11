@@ -7,6 +7,8 @@ import { characterGrowthFactor } from '../content/progression';
 import { gatesOfOblivionRules, isOblivionStage } from '../content/gates-of-oblivion';
 import { isNewEventId, newEventDefinition, newEventWindowActive } from '../content/moon-sunshade-events';
 
+export class ActivityAccessError extends Error {}
+
 export function highestBearerLevel(account: Account): number {
   let highest = 0;
   for (const { id } of starters) {
@@ -49,8 +51,8 @@ export function activityAccess(account: Account, activity: Activity, now = Date.
 
 export function assertActivityAccess(account: Account, activity: Activity, now = Date.now()): void {
   if (activity.kind === 'oblivion' && !isOblivionStage(activity.stage)) {
-    throw new Error(`Gates of Oblivion floor must be an integer from 1 to ${gatesOfOblivionRules.stages}.`);
+    throw new ActivityAccessError(`Gates of Oblivion floor must be an integer from 1 to ${gatesOfOblivionRules.stages}.`);
   }
   const access = activityAccess(account, activity, now);
-  if (!access.unlocked) throw new Error(`Activity locked. Requires ${access.requirement}. Your highest Element-Bearer is Lv.${access.level}.`);
+  if (!access.unlocked) throw new ActivityAccessError(`Activity locked. Requires ${access.requirement}. Your highest Element-Bearer is Lv.${access.level}.`);
 }

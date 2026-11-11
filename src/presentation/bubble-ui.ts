@@ -337,59 +337,6 @@ function screenIdentity(app: HTMLElement): string {
     app.querySelector('[data-team-view]')?.getAttribute('data-team-view') ?? ''].join('|');
 }
 
-let zoomKey = '';
-
-function detailKey(detail: HTMLElement): string {
-  return detail.dataset.capturedCopy ?? detail.querySelector('[data-reference-name]')?.textContent?.trim() ?? '';
-}
-
-function setZoom(detail: HTMLElement, open: boolean): void {
-  detail.dataset.zoom = open ? 'open' : 'closed';
-  const panels = detail.querySelector<HTMLElement>('.ref-character-panels');
-  const stage = detail.querySelector<HTMLElement>('.ref-character-header');
-  if (panels) panels.inert = !open;
-  if (stage) stage.inert = open;
-  zoomKey = open ? detailKey(detail) : '';
-}
-
-/** D-433 Team orbit: portrait-centred stage, sub-menus orbit as bubbles and zoom into a detail panel. */
-function orbitTeamDetail(app: HTMLElement): void {
-  app.querySelectorAll<HTMLElement>('.ref-bearer-detail:not([data-orbit])').forEach(detail => {
-    detail.dataset.orbit = '';
-    const panels = detail.querySelector<HTMLElement>('.ref-character-panels');
-    if (!panels) return;
-    const back = document.createElement('button');
-    back.type = 'button';
-    back.className = 'bubble-zoom-back';
-    back.innerHTML = '<span aria-hidden="true">&larr;</span> Portrait';
-    back.setAttribute('aria-label', 'Back to portrait');
-    back.addEventListener('click', () => {
-      setZoom(detail, false);
-      detail.querySelector<HTMLElement>('.ref-character-submenus button[aria-pressed="true"]')?.focus({ preventScroll: true });
-    });
-    panels.before(back);
-    setZoom(detail, zoomKey !== '' && zoomKey === detailKey(detail));
-    detail.querySelectorAll<HTMLButtonElement>('.ref-character-submenus button').forEach(button => button.addEventListener('click', () => {
-      if (button.matches('[data-open-loadout], [data-character-tab="equipment"]')) return;
-      if (detail.dataset.zoom === 'open') return;
-      const rect = button.getBoundingClientRect();
-      if (bubbleMotionAllowed()) {
-        const portal = document.createElement('div');
-        portal.className = 'bubble-portal';
-        portal.setAttribute('aria-hidden', 'true');
-        portal.style.left = `${rect.left + rect.width / 2}px`;
-        portal.style.top = `${rect.top + rect.height / 2}px`;
-        layer().append(portal);
-        expire(portal, 700);
-      }
-      detail.style.setProperty('--zoom-x', `${rect.left + rect.width / 2 - detail.getBoundingClientRect().left}px`);
-      detail.style.setProperty('--zoom-y', `${rect.top + rect.height / 2 - detail.getBoundingClientRect().top}px`);
-      setZoom(detail, true);
-      back.focus({ preventScroll: true });
-    }));
-  });
-}
-
 export function installBubbleUi(app: HTMLElement): () => void {
   if (disposeInstalled) return disposeInstalled;
   const backdrop = document.createElement('div');
@@ -410,15 +357,6 @@ export function installBubbleUi(app: HTMLElement): () => void {
     if (target && !target.matches(':disabled, [aria-disabled="true"]')) homeZoomStart(target);
   };
   document.addEventListener('click', zoom, true);
-  const escape = (event: KeyboardEvent): void => {
-    if (event.key !== 'Escape' || document.querySelector('dialog[open], .cine')) return;
-    const open = app.querySelector<HTMLElement>('.ref-bearer-detail[data-zoom="open"]');
-    if (!open) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    open.querySelector<HTMLButtonElement>(':scope > .bubble-zoom-back, .bubble-zoom-back')?.click();
-  };
-  document.addEventListener('keydown', escape, true);
   const updateMotion = (): void => {
     const motionAllowed = bubbleMotionAllowed();
     backdrop.dataset.motionPaused = String(!motionAllowed);
@@ -428,7 +366,6 @@ export function installBubbleUi(app: HTMLElement): () => void {
   document.addEventListener('visibilitychange', updateMotion);
   updateMotion();
   const observer = new MutationObserver(() => {
-    orbitTeamDetail(app);
     const identity = screenIdentity(app);
     if (identity === lastScreen) return;
     lastScreen = identity;
@@ -449,14 +386,13 @@ export function installBubbleUi(app: HTMLElement): () => void {
     battleObserver.disconnect();
     document.removeEventListener('click', press);
     document.removeEventListener('click', zoom, true);
-    document.removeEventListener('keydown', escape, true);
     window.removeEventListener('last-light-motion-change', updateMotion);
     document.removeEventListener('visibilitychange', updateMotion);
     clearMotion();
     backdrop.remove();
     effects?.remove();
     effects = null;
-    lastScreen = zoomKey = '';
+    lastScreen = '';
     screenZoom = null;
     disposeInstalled = null;
   };

@@ -7,6 +7,7 @@ import { radiantConduits, radiantConduitPrimitives } from '../content/radiant-co
 import { type ConduitId } from '../content/conduits';
 import { createRadiantCombat, applyRadiantCombatAction } from '../game/radiant-combat';
 import { escapeDialogText } from './game-dialog';
+import { radiantPassiveArticle } from './radiant-character';
 
 function loadout(starter: RadiantLoadout['starter'], masterId: RadiantMasterId | null = null): RadiantLoadout {
   return { id: starter, starter, masterId, form: 6, level: 105, weaponRank: 0, ascension: {} };
@@ -74,5 +75,13 @@ describe('complete frozen Radiant battle reference', () => {
     expect(html).toContain('one additional round');
     expect(html).toContain('even if immediate healing restores no HP');
     expect(html).toContain('not guaranteed final damage/healing amounts');
+  });
+  it.each(['aurora', 'ilyss'] as const)('shows %s cleanse Imbue healing in both character and battle references', id => {
+    const member = loadout(id);
+    member.ascension.skill1 = true;
+    for (const html of [radiantPassiveArticle(member), radiantBattleReference(member, radiantStarterKits[id].baseCost)]) {
+      expect(html).toContain('heals each ally whose Weaken this passive removes for 50% of caster Recovery');
+      expect(html).not.toContain('Passive effect magnitude ×1.5');
+    }
   });
 });

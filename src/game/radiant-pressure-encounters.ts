@@ -15,8 +15,8 @@ import { calibratedRadiantEnemyStats, radiantEnemyFactors, type RadiantEnemyCali
   type RadiantEnemyCategory } from '../content/radiant-enemy-calibration';
 import { createBattle, createStoryBattle, createDungeonBattle, createInfusionBattle,
   createWarBattle, createCalamityBattle, createOblivionBattle, spawnWave, type BattleState } from './battle';
-import { assertActivityAccess } from './activity-access';
-import { assertRoseEventActive } from '../content/event-schedule';
+import { ActivityAccessError, assertActivityAccess } from './activity-access';
+import { RoseEventInactiveError, assertRoseEventActive } from '../content/event-schedule';
 import { unlockedStoryStage, unlockedStage, unlockedInfusionStage, unlockedWarStage,
   type Account } from './account';
 import type { Activity } from '../online/server-game';
@@ -42,6 +42,9 @@ export interface RadiantPressureEnemy {
   skills: EnemySkill[];
   pattern?: (typeof calamityPatterns)[keyof typeof calamityPatterns];
   currencyBudget: number;
+}
+export function isRadiantAccessError(error: unknown): error is ActivityAccessError | RoseEventInactiveError {
+  return error instanceof ActivityAccessError || error instanceof RoseEventInactiveError;
 }
 export function radiantPressureAnchors(): RadiantPressureAnchor[] {
   const anchors: RadiantPressureAnchor[] = [];
@@ -102,9 +105,9 @@ export function assertRadiantPressureAccess(anchor: RadiantPressureAnchor, accou
     : a.kind === 'dungeon' ? unlockedStage(account, a.element)
     : a.kind === 'infusion' ? unlockedInfusionStage(account, a.mode)
     : a.kind === 'war' ? unlockedWarStage(account, a.character) : Infinity;
-  if ('stage' in a && a.stage > unlocked) throw new Error('Pressure study stage is locked.');
+  if ('stage' in a && a.stage > unlocked) throw new ActivityAccessError('Activity stage is locked. Clear the previous stage first.');
 }
-/** Authored source for both study enemies and authority-only kill reward validation. */
+/** Authored source for live encounters and authority-only kill reward validation. */
 export function createRadiantAuthoredEncounter(anchor: RadiantPressureAnchor, encounterSeed: number): BattleState {
   const a = anchor.activity, progress = { level: 0, evolution: 1, weaponRank: 0 };
   let live: BattleState;

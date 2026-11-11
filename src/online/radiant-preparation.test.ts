@@ -86,6 +86,22 @@ describe('gated manual bearer-only squad and saved equipment preparation', () =>
     expect(step(renamed, { kind: 'deleteSquadLoadout', id }).state.account.capturedCharacters)
       .toEqual(snapshot.state.account.capturedCharacters);
   });
+  it('rejects saving legacy captured or unreleased squads without mutating authority', () => {
+    for (const kind of ['capture', 'unreleased'] as const) {
+      const snapshot = fixture(), copy = snapshot.state.account.capturedCharacters![0];
+      const hidden = starters.find(entry => !releasedRadiantIds.some(id => id === entry.id))!;
+      snapshot.state.account.characters[hidden.id] = { level: 0, evolution: 1 };
+      const member = kind === 'capture' ? copy.instanceId : hidden.id;
+      const element = kind === 'capture' ? getCreature(copy.creatureId).element : hidden.elementId;
+      snapshot.state.account.squad = [member];
+      snapshot.state.account.squadLoadouts = [{ id, name: 'Historical', members: [{
+        character: member, element, name: 'Legacy', conduits: Array<null>(8).fill(null), master: null }] }];
+      const before = structuredClone(snapshot);
+      expect(() => step(snapshot, { kind: 'saveSquadLoadout', id, name: 'Overwrite' })).toThrow();
+      expect(() => step(snapshot, { kind: 'equipSquadLoadout', id })).toThrow();
+      expect(snapshot).toEqual(before);
+    }
+  });
   it('menu preparation never restarts or changes frozen combat/journal/reward seeds', () => {
     const snapshot = fixture();
     const entered = resolveRadiantRun(snapshot, { requestId: id, expectedRevision: 0, runId: null, encounter: null,

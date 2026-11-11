@@ -1,6 +1,8 @@
 import { getStarter } from '../content/starters';
 import { releasedRadiantIds, radiantBearerKits, type RadiantBearerId } from '../content/radiant-combat';
-import { radiantPressureAnchors, assertRadiantPressureAccess, type RadiantPressureAnchor } from '../game/radiant-pressure-encounters';
+import { liveRadiantCalibrationId } from '../content/radiant-enemy-calibration';
+import { radiantPressureAnchors, assertRadiantPressureAccess, isRadiantAccessError,
+  type RadiantPressureAnchor } from '../game/radiant-pressure-encounters';
 import { capturedProgress } from '../game/character-instances';
 import { ownedCompanion } from './owned-companion';
 import { RadiantRunError, type RadiantCheckpoint } from '../online/radiant-run';
@@ -49,9 +51,7 @@ function availableAnchors(account: RadiantCheckpoint['account'], now: number): R
   return anchors.filter(anchor => {
     try { assertRadiantPressureAccess(anchor, account, now); return true; }
     catch (error) {
-      if (error instanceof Error && (error.message.startsWith('Activity locked.') ||
-        error.message === 'Pressure study stage is locked.' ||
-        error.message.startsWith('Roses Under Sunny Skies has ended.'))) return false;
+      if (isRadiantAccessError(error)) return false;
       throw error;
     }
   });
@@ -144,7 +144,7 @@ export class RadiantClient {
     }
     this.error = '';
     try {
-      const pending = session.perform({ kind: 'start', activity: anchor.activity, calibration: 'authored-control' });
+      const pending = session.perform({ kind: 'start', activity: anchor.activity, calibration: liveRadiantCalibrationId });
       this.render();
       await pending;
       this.openSavedRun();

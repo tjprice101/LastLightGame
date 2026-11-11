@@ -1,4 +1,4 @@
-import { equippedSquad, ownedCharacterInstances, type Account } from '../game/account';
+import { equippedSquad, ownedCharacterInstances, squadEligibilityIssue, type Account } from '../game/account';
 import { squadMemberLimit } from '../content/squad-rules';
 import { currentEquipment, equipmentMatches, loadoutNameLimit, type SavedEquipment } from '../game/saved-loadouts';
 import { getConduit } from '../content/conduits';
@@ -27,6 +27,8 @@ function button(action: SavedLoadoutOperation['kind'], label: string, disabled =
 }
 export function squadLoadoutsPanel(account: Account): string {
   const owned = new Set(ownedCharacterInstances(account));
+  const current = equippedSquad(account);
+  const currentIssue = squadEligibilityIssue(account, current);
   const memberPreview = (id: string, index: number, equipment: SavedEquipment): string => {
     const member = ownedCompanion(account, id);
     return `<article class="saved-loadout-member"><header class="saved-loadout-member-heading"><span class="ref-thumb">${member.compactArt}</span><div><small>${index ? `Member ${index + 1}` : 'Leader'}</small><b>${escape(member.name)}</b><small>${escape(member.element)} · Lv.${member.level}</small></div></header>${equipmentPreview(equipment, account)}</article>`;
@@ -36,22 +38,24 @@ export function squadLoadoutsPanel(account: Account): string {
     <p class="saved-loadout-intro">Your squad and its equipped Conduits, ready to swap together. Other characters and saved configurations stay unchanged.</p>
     <div class="ref-scroll saved-loadout-scroll">
     <section class="saved-loadout-card" data-saved-entry data-saved-id="" aria-label="Save a new squad loadout">
-      <header class="saved-loadout-card-heading"><h3>Current squad</h3><span>${equippedSquad(account).length} / ${squadMemberLimit} members</span></header>
-      <div class="saved-loadout-editor">${nameInput('', 'New loadout name')}<div class="saved-loadout-actions">${button('saveSquadLoadout', 'Save new loadout')}</div></div>
-      <div class="saved-loadout-members">${equippedSquad(account).map((id, index) => memberPreview(id, index, currentEquipment(account, id))).join('')}</div>
+      <header class="saved-loadout-card-heading"><h3>Current squad</h3><span>${current.length} / ${squadMemberLimit} members</span></header>
+      <div class="saved-loadout-editor">${nameInput('', 'New loadout name')}<div class="saved-loadout-actions">${button('saveSquadLoadout', 'Save new loadout', !!currentIssue)}</div></div>
+      ${currentIssue ? `<p role="note">Cannot save: ${escape(currentIssue)} Update your current squad first.</p>` : ''}
+      <div class="saved-loadout-members">${current.map((id, index) => memberPreview(id, index, currentEquipment(account, id))).join('')}</div>
     </section>
     <h3 class="saved-loadout-library-title">Saved loadouts</h3><div class="saved-loadout-list">${(account.squadLoadouts ?? []).map(entry => {
-      const available = entry.members.every(member => owned.has(member.character));
-      const equipped = available && equippedSquad(account).join('|') === entry.members.map(member => member.character).join('|') &&
+      const issue = squadEligibilityIssue(account, entry.members.map(member => member.character));
+      const available = !issue;
+      const equipped = available && current.join('|') === entry.members.map(member => member.character).join('|') &&
         entry.members.every(member => equipmentMatches(member, currentEquipment(account, member.character)));
       return `<article class="saved-loadout-card" data-saved-entry data-saved-id="${entry.id}">
         <header class="saved-loadout-card-heading"><h3>${escape(entry.name)}</h3>${equipped ? '<span class="saved-loadout-match">Matches current</span>' : `<span>${entry.members.length} / ${squadMemberLimit} members</span>`}</header>
         ${nameInput(entry.name, 'Loadout name')}<div class="saved-loadout-actions">${button('equipSquadLoadout', 'Equip', !available)}
-          ${button('saveSquadLoadout', 'Overwrite with current squad')}${button('renameSquadLoadout', 'Rename')}${button('deleteSquadLoadout', 'Delete')}</div>
+          ${button('saveSquadLoadout', 'Overwrite with current squad', !!currentIssue)}${button('renameSquadLoadout', 'Rename')}${button('deleteSquadLoadout', 'Delete')}</div>
         <div class="saved-loadout-members">${entry.members.map((member, index) => owned.has(member.character)
           ? memberPreview(member.character, index, member)
           : `<article class="saved-loadout-member"><header class="saved-loadout-member-heading"><span class="ref-thumb" aria-hidden="true">—</span><div><b>${escape(member.name)}</b><p>Member no longer owned</p></div></header>${equipmentPreview(member, account)}</article>`).join('')}</div>
-        ${!available ? '<p role="note">Cannot equip: a captured member was sold or consumed. Overwrite this loadout with your current squad, or delete it.</p>' : ''}
+        ${issue ? `<p role="note">Cannot equip: ${escape(issue)} ${currentIssue ? 'Update your current squad before overwriting.' : 'Overwrite with your current squad, or delete it.'}</p>` : ''}
       </article>`;
     }).join('') || '<p class="saved-loadout-empty-library">No saved loadouts yet. Name your current squad above to get started.</p>'}</div></div>
     <p data-saved-loadout-status role="status" aria-live="polite"></p></section>`;

@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { freshGame, friendProfileView, profileActivityFor, publicGame, resolveOperation, storyCompletedOf, validateChatRequest, validateFriendProfileRequest, validateRequest } from './engine';
 import { handleRadiantRequest, type RadiantServerConfig } from './radiant-dispatch';
+import { radiantContinuationMediaType } from '../../../src/online/radiant-run';
 const maximumRequestBytes = 4 * 1024 * 1024 + 8192;
 
 const origins = new Set(['http://127.0.0.1:5173', 'http://localhost:5173', 'https://tjprice101.github.io']);
@@ -66,7 +67,9 @@ return async (request: Request): Promise<Response> => {
     try { parsed = JSON.parse(body); } catch { parseFailed = true; }
     if (!parseFailed && parsed && typeof parsed === 'object' && !Array.isArray(parsed) && 'radiantStudy' in parsed) {
       if (body.length > 8192) return response(400, { error: 'Request too large.' }, origin);
-      const result = await handleRadiantRequest(parsed, user, admin, radiant, identityOf);
+      const supportsContinuation = request.headers.get('accept')?.split(',')
+        .some(value => value.trim().split(';')[0].toLowerCase() === radiantContinuationMediaType) === true;
+      const result = await handleRadiantRequest(parsed, user, admin, radiant, identityOf, supportsContinuation);
       return response(result.status, result.body, origin);
     }
     // Chat is a separate service-authoritative path: it never loads, revises or commits the game account.

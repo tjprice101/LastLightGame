@@ -1,6 +1,6 @@
 import { type Starter } from '../content/starters';
 import { characterRarity, displayEvolution, type CharacterProgress } from '../content/progression';
-import { fighters } from '../content/combat';
+import { radiantBearerKits } from '../content/radiant-combat';
 import { characterName } from '../content/character-art';
 import { materialArt } from '../content/dungeon-art';
 import { ownedProgress, canAscendCharacter, calamiticAscensionCost, type Account, type CalamiticAscensionStep } from '../game/account';
@@ -8,19 +8,37 @@ import { portrait, assetUrl } from './portrait';
 import { abilityIcon } from './ability-icon';
 import { createGameDialog, escapeDialogText as escape, gameDialogPending } from './game-dialog';
 import { celebrateAscension } from './upgrade-celebration';
+import { isRadiantBearer } from './radiant-character';
 import './calamitic-ascension.css';
 
 const steps = ['stats', 'skill1', 'skill2', 'lastFlare'] as const;
 const crown = '<span class="ascension-crown" aria-hidden="true">♛</span>';
 
 export function ascensionEntry(starter: Starter, account: Account | null, progress?: CharacterProgress): string {
-  if (!account || !progress || (!progress.ascension?.stats && !canAscendCharacter(starter.id, progress, 'stats'))) return '';
+  if (!account || !progress || !isRadiantBearer(starter.id) || (!progress.ascension?.stats && !canAscendCharacter(starter.id, progress, 'stats'))) return '';
   const count = steps.filter(step => progress.ascension?.[step]).length;
   return `<button type="button" class="calamitic-ascension-entry" data-button-surface="art" data-calamitic-ascension="${starter.id}" aria-haspopup="dialog">${crown}<span><strong>Calamitic Ascension</strong><small>${count === 4 ? 'Ascended' : `${count}/4`}</small></span><span aria-hidden="true">↗</span></button>`;
 }
 
 function stepName(starter: Starter, step: CalamiticAscensionStep): string {
-  return step === 'stats' ? 'Ascend' : fighters[starter.id].abilities[step === 'lastFlare' ? 'ultimate' : step].name;
+  if (step === 'stats') return 'Ascend';
+  if (!isRadiantBearer(starter.id)) throw new Error('This Element-Bearer has no available Radiant combat kit.');
+  const kit = radiantBearerKits[starter.id];
+  return step === 'skill1' ? kit.passive.name : step === 'skill2' ? kit.leader : 'All Flares';
+}
+
+function stepDescription(starter: Starter, step: CalamiticAscensionStep): string {
+  if (step === 'stats') return 'HP, Attack, Defense and Recovery ×1.5 · Level cap 115';
+  if (!isRadiantBearer(starter.id)) throw new Error('This Element-Bearer has no available Radiant combat kit.');
+  if (step === 'skill1') {
+    const rule = radiantBearerKits[starter.id].passive.rule;
+    return rule === 'flare-cleanse' || rule === 'guard-cleanse'
+      ? 'When this passive removes a Weaken, heal that ally for 50% of caster Recovery.'
+      : 'Add 50% of the passive’s base effect magnitude; durations do not change.';
+  }
+  return step === 'skill2'
+    ? 'Add 50% of the base leader-skill stat bonus while leading and alive.'
+    : 'Add 50% of the base effect magnitudes of all Flares; durations do not change.';
 }
 
 export function ascensionContents(starter: Starter, account: Account): string {
@@ -32,7 +50,10 @@ export function ascensionContents(starter: Starter, account: Account): string {
       const done = progress.ascension?.[step] === true;
       const action = step === 'stats' ? 'Ascend' : 'Imbue';
       const available = canAscendCharacter(starter.id, progress, step) && shards >= calamiticAscensionCost;
-      return `<article class="ascension-step${done ? ' is-done' : ''}" data-ascension-step="${step}"><div class="ascension-step-icon">${step === 'stats' ? crown : abilityIcon(starter.id, step === 'lastFlare' ? 'ultimate' : step) || '<span aria-hidden="true">◆</span>'}</div><div class="ascension-step-copy"><small>${step === 'stats' ? 'Ascension' : step === 'lastFlare' ? 'Last Flare' : step === 'skill1' ? 'Skill 1' : 'Skill 2'}</small><h3>${escape(stepName(starter, step))}</h3><p>${step === 'stats' ? 'All stats +50% · Level cap 115' : '+50% Skill Power · +5% Skill Efficiency'}</p><small>${calamiticAscensionCost} Shards</small></div>${done ? '<strong class="ascension-done">✓ Done</strong>' : `<button type="button" class="ascension-action" data-button-surface="art" data-ascension-select="${step}"${available ? '' : ' disabled'}>${available ? action : 'Not enough Shards'}</button>`}</article>`;
+      const icon = step === 'stats' ? crown : step === 'skill2' ? '<span aria-hidden="true">★</span>'
+        : abilityIcon(starter.id, step === 'skill1' ? 'passive' : 'ultimate') || '<span aria-hidden="true">◆</span>';
+      const label = step === 'stats' ? 'Ascension' : step === 'skill1' ? 'Passive' : step === 'skill2' ? 'Leader skill' : 'Flares';
+      return `<article class="ascension-step${done ? ' is-done' : ''}" data-ascension-step="${step}"><div class="ascension-step-icon">${icon}</div><div class="ascension-step-copy"><small>${label}</small><h3>${escape(stepName(starter, step))}</h3><p>${escape(stepDescription(starter, step))}</p><small>${calamiticAscensionCost} Shards</small></div>${done ? '<strong class="ascension-done">✓ Done</strong>' : `<button type="button" class="ascension-action" data-button-surface="art" data-ascension-select="${step}"${available ? '' : ' disabled'}>${available ? action : 'Not enough Shards'}</button>`}</article>`;
     }).join('')}</div>`;
 }
 

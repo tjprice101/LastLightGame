@@ -15,11 +15,14 @@ import { squadMemberLimit } from '../content/squad-rules';
 import { radiantBearerKits, type RadiantBearerId, type RadiantLoadout } from '../content/radiant-combat';
 import { authoredRadiantCalibration, pressureRadiantCalibration } from '../content/radiant-enemy-calibration';
 import { adaptRadiantLoadouts } from '../game/radiant-loadout';
-import { adaptRadiantPressureEncounter, assertRadiantPressureAccess,
+import { adaptRadiantPressureEncounter, assertRadiantPressureAccess, isRadiantAccessError,
   type RadiantPressureAnchor, type RadiantPressureEnemy } from '../game/radiant-pressure-encounters';
 import { radiantPressureEnemyAction } from '../game/radiant-pressure';
 import { applyRadiantCombatAction, createRadiantCombat, validateRadiantCombat, validateRadiantDropEvents,
   type RadiantCombatAction, type RadiantCombatEvent, type RadiantCombatState } from '../game/radiant-combat';
+
+export const radiantContinuationMediaType = 'application/vnd.lastlight.radiant-continuation-v1+json';
+export const radiantClientAccept = `application/json, ${radiantContinuationMediaType}`;
 
 export type RadiantRunErrorCode = 'manual-squad' | 'invalid-input' | 'stale-revision' |
   'stale-run' | 'receipt-conflict' | 'denied-write' | 'overflow' | 'unavailable';
@@ -29,6 +32,12 @@ export function isRadiantRunErrorCode(value: unknown): value is RadiantRunErrorC
 }
 export class RadiantRunError extends Error {
   constructor(public readonly code: RadiantRunErrorCode, message: string) { super(message); }
+}
+export interface RadiantContinuation {
+  anchor: RadiantPressureAnchor;
+  encounterSeed: number;
+  targetSeed: number;
+  state: RadiantCombatState;
 }
 export interface FrozenRadiantRun {
   version: 3;
@@ -43,13 +52,12 @@ export interface FrozenRadiantRun {
   enemies: RadiantPressureEnemy[];
   initial: RadiantCombatState;
   state: RadiantCombatState;
+  continuation?: RadiantContinuation;
   quit: boolean;
   rewards: RadiantRewardLedger;
   journal: { events: RadiantCombatEvent[]; rewards: BattleEvent[] };
 }
-/** Optional server aggregate extension, not a new wallet or production battle schema.
- * The existing commit_game_operation RPC locks/commits this entire aggregate.
- * Only the explicitly gated dedicated transport may resolve this extension. */
+/** The existing commit_game_operation RPC locks and commits this account/run aggregate. */
 export type RadiantStudyGame = DurableGame & { radiantStudy?: FrozenRadiantRun };
 export type RadiantPlayerAction = Extract<RadiantCombatAction, { type: 'normal' | 'defense' | 'flare' }>;
 export type RadiantRunOperation =
@@ -114,6 +122,14 @@ function seed(value: number): void {
 }
 function nextSeed(value: number): number { return (Math.imul(value, 1664525) + 1013904223) >>> 0; }
 
+function assertRunAccess(anchor: RadiantPressureAnchor, account: Account, now: number): void {
+  try { assertRadiantPressureAccess(anchor, account, now); }
+  catch (error) {
+    if (isRadiantAccessError(error)) throw new RadiantRunError('invalid-input', error.message);
+    throw error;
+  }
+}
+
 export function radiantAccountLoadouts(account: Account): RadiantLoadout[] {
   const ids = account.squad;
   if (!Array.isArray(ids) || ids.length < 1 || ids.length > squadMemberLimit || new Set(ids).size !== ids.length)
@@ -131,20 +147,44 @@ export function radiantAccountLoadouts(account: Account): RadiantLoadout[] {
   return result.loadouts;
 }
 function initialize(anchor: RadiantPressureAnchor, calibration: FrozenRadiantRun['calibration'],
-  loadouts: RadiantLoadout[], entropy: ReturnType<RadiantRunAuthority['entry']>, encounter = 1): FrozenRadiantRun {
+  loadouts: RadiantLoadout[], entropy: ReturnType<RadiantRunAuthority['entry']>, encounter = 1,
+  continuation?: RadiantContinuation): FrozenRadiantRun {
   if (!uuid.test(entropy.runId)) invalid('Invalid authority run ID.');
   [entropy.encounterSeed, entropy.chargeSeed, entropy.targetSeed].forEach(seed);
   const enemies = adaptRadiantPressureEncounter(anchor, entropy.encounterSeed,
     calibration === 'authored-control' ? authoredRadiantCalibration : pressureRadiantCalibration);
   const initial = createRadiantCombat(loadouts, enemies, entropy.chargeSeed);
+  if (continuation) {
+    const previous = continuation.state;
+    if (previous.phase !== 'victory' || !previous.bearers.some(member => member.hp > 0))
+      invalid('Continue requires a victorious squad.');
+    initial.gauge = structuredClone(previous.gauge);
+    if (anchor.activity.kind === 'training') {
+      initial.bearers = structuredClone(previous.bearers);
+      initial.nextShieldId = previous.nextShieldId;
+      initial.round = previous.round + 1;
+    } else {
+      initial.gauge.members.forEach(member => { member.living = true; });
+    }
+    validateRadiantCombat(initial);
+  }
   return { version: 3, id: entropy.runId, encounter, anchor, calibration,
     encounterSeed: entropy.encounterSeed, initialChargeSeed: entropy.chargeSeed,
     initialTargetSeed: entropy.targetSeed, targetSeed: entropy.targetSeed, enemies,
-    initial: structuredClone(initial), state: initial, quit: false,
+    initial: structuredClone(initial), state: initial,
+    ...(continuation ? { continuation: structuredClone(continuation) } : {}), quit: false,
     rewards: initialRadiantRewards(anchor, entropy.encounterSeed), journal: { events: [], rewards: [] } };
 }
+function nextRadiantAnchor(previous: RadiantPressureAnchor): RadiantPressureAnchor {
+  if (previous.activity.kind === 'calamity') invalid('Calamity ends after one boss.');
+  const anchor = structuredClone(previous);
+  if ('stage' in anchor.activity) anchor.activity.stage++;
+  else if (anchor.activity.kind === 'training') anchor.trainingWave = (anchor.trainingWave ?? 1) + 1;
+  validateRadiantActivity(anchor.activity);
+  return anchor;
+}
 function exactKeys(value: object, keys: string[]): void {
-  if (Object.keys(value).some(key => !keys.includes(key))) invalid('Unexpected study request field.');
+  if (Object.keys(value).some(key => !keys.includes(key))) invalid('Unexpected Radiant request field.');
 }
 function record(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === 'object' && !Array.isArray(value);
@@ -153,21 +193,21 @@ function validId(value: unknown): value is string {
   return typeof value === 'string' && /^[a-z0-9][a-z0-9:_-]{0,159}$/i.test(value);
 }
 export function validateRadiantActivity(value: unknown): Activity {
-  if (!record(value) || typeof value.kind !== 'string') invalid('Invalid study activity.');
+  if (!record(value) || typeof value.kind !== 'string') invalid('Invalid Radiant activity.');
   const activityKeys: Record<Activity['kind'], string[]> = {
     training: ['kind'], story: ['kind', 'stage'], dungeon: ['kind', 'element', 'stage'],
     infusion: ['kind', 'mode', 'stage'], war: ['kind', 'character', 'stage'],
     oblivion: ['kind', 'stage'], calamity: ['kind', 'activity', 'tier'],
   };
-  if (!Object.hasOwn(activityKeys, value.kind)) invalid('Invalid study activity.');
+  if (!Object.hasOwn(activityKeys, value.kind)) invalid('Invalid Radiant activity.');
   exactKeys(value, activityKeys[value.kind as Activity['kind']]);
   if (value.kind === 'training') return { kind: 'training' };
   if (value.kind === 'calamity') {
-    if (!isCalamityActivityId(value.activity) || !isCalamityTier(value.tier)) invalid('Invalid study Calamity.');
+    if (!isCalamityActivityId(value.activity) || !isCalamityTier(value.tier)) invalid('Invalid Radiant Calamity.');
     return { kind: 'calamity', activity: value.activity, tier: value.tier };
   }
   if (typeof value.stage !== 'number' || !Number.isSafeInteger(value.stage) || value.stage < 1)
-    invalid('Invalid study stage.');
+    invalid('Invalid Radiant stage.');
   const stage = value.stage;
   switch (value.kind) {
     case 'story': if (stage <= storyStageLayout.stages) return { kind: 'story', stage }; break;
@@ -179,23 +219,23 @@ export function validateRadiantActivity(value: unknown): Activity {
     case 'war': if (isWarCharacter(value.character) && stage <= warStageCount)
       return { kind: 'war', character: value.character, stage }; break;
   }
-  return invalid('Invalid study activity or stage.');
+  return invalid('Invalid Radiant activity or stage.');
 }
 export function validateRadiantRunRequest(request: unknown): RadiantRunRequest {
   if (!record(request) || typeof request.requestId !== 'string' || !uuid.test(request.requestId) ||
     typeof request.expectedRevision !== 'number' || !Number.isSafeInteger(request.expectedRevision) ||
-    request.expectedRevision < 0 || !record(request.operation)) invalid('Invalid study request.');
+    request.expectedRevision < 0 || !record(request.operation)) invalid('Invalid Radiant request.');
   exactKeys(request, ['requestId', 'expectedRevision', 'runId', 'encounter', 'operation']);
   const op = request.operation;
   if (op.kind === 'start') {
     exactKeys(op, ['kind', 'activity', 'calibration']);
     if (typeof op.calibration !== 'string' || !['authored-control', 'radiant-pressure-v2'].includes(op.calibration) ||
-      request.runId !== null || request.encounter !== null) invalid('Invalid explicit study entry.');
+      request.runId !== null || request.encounter !== null) invalid('Invalid Radiant entry.');
     validateRadiantActivity(op.activity);
   } else {
     if (typeof request.runId !== 'string' || !uuid.test(request.runId) ||
       typeof request.encounter !== 'number' || !Number.isSafeInteger(request.encounter) ||
-      request.encounter < 1) invalid('Missing prior study encounter.');
+      request.encounter < 1) invalid('Missing prior Radiant encounter.');
     if (op.kind === 'action') {
       exactKeys(op, ['kind', 'action']);
       if (!record(op.action) || typeof op.action.type !== 'string' ||
@@ -205,7 +245,7 @@ export function validateRadiantRunRequest(request: unknown): RadiantRunRequest {
         'targetId' in op.action && !validId(op.action.targetId))
         invalid('Invalid player choice.');
     } else {
-      if (typeof op.kind !== 'string' || !['retry', 'quit', 'continue', 'exit'].includes(op.kind)) invalid('Unknown study operation.');
+      if (typeof op.kind !== 'string' || !['retry', 'quit', 'continue', 'exit'].includes(op.kind)) invalid('Unknown Radiant operation.');
       exactKeys(op, ['kind']);
     }
   }
@@ -236,7 +276,7 @@ function saveCurrency(game: RadiantStudyGame, amount: number, receipt: string): 
 export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: RadiantRunRequest,
   authority: RadiantRunAuthority): { state: RadiantStudyGame; response: RadiantRunResponse } {
   validateRadiantRunRequest(request);
-  if (authority.capability !== 'isolated-radiant-study') invalid('Study capability is required.');
+  if (authority.capability !== 'isolated-radiant-study') invalid('Radiant authority capability is required.');
   if (snapshot.revision !== request.expectedRevision)
     throw new RadiantRunError('stale-revision', 'Account changed; refresh before a new operation.');
   if (snapshot.revision === Number.MAX_SAFE_INTEGER)
@@ -251,14 +291,14 @@ export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: Radiant
     game.run = null;
     const anchor: RadiantPressureAnchor = { id: 'authority-entry', family: op.activity.kind,
       position: 'early', activity: structuredClone(op.activity) };
-    assertRadiantPressureAccess(anchor, game.account, authority.now);
+    assertRunAccess(anchor, game.account, authority.now);
     game.radiantStudy = initialize(anchor, op.calibration, radiantAccountLoadouts(game.account),
       authority.entry(request.requestId));
     discover = true;
   } else {
     const run = game.radiantStudy;
     if (!run || run.version !== 3 || run.id !== request.runId || run.encounter !== request.encounter)
-      throw new RadiantRunError('stale-run', 'Prior frozen study encounter does not match.');
+      throw new RadiantRunError('stale-run', 'The saved Radiant encounter does not match.');
     validateFrozenRadiantRun(run);
     if (run.enemies.length !== run.state.enemies.length ||
       run.enemies.some((enemy, i) => enemy.id !== run.state.enemies[i].id ||
@@ -285,7 +325,7 @@ export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: Radiant
     } else if (op.kind === 'quit' || op.kind === 'exit') run.quit = true;
     else if (op.kind === 'retry') {
       if (!run.quit && !['defeat', 'victory'].includes(run.state.phase)) invalid('Retry requires a finished or quit encounter.');
-      assertRadiantPressureAccess(run.anchor, game.account, authority.now);
+      assertRunAccess(run.anchor, game.account, authority.now);
       const ledgers = run.state.enemies.map(enemy => structuredClone(enemy.currency));
       run.state = structuredClone(run.initial);
       run.state.enemies.forEach((enemy, i) => { enemy.currency = ledgers[i]; });
@@ -293,16 +333,14 @@ export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: Radiant
       run.targetSeed = run.initialTargetSeed; run.quit = false;
     } else {
       if (run.quit || run.state.phase !== 'victory') invalid('Continue requires victory.');
-      const activity = run.anchor.activity;
-      if (activity.kind === 'calamity') invalid('Calamity ends after one boss.');
-      const anchor = structuredClone(run.anchor);
-      if ('stage' in anchor.activity) anchor.activity.stage++;
-      else if (anchor.activity.kind === 'training') anchor.trainingWave = (anchor.trainingWave ?? 1) + 1;
-      validateRadiantActivity(anchor.activity);
-      assertRadiantPressureAccess(anchor, game.account, authority.now);
+      const anchor = nextRadiantAnchor(run.anchor);
+      assertRunAccess(anchor, game.account, authority.now);
+      if (!Number.isSafeInteger(run.encounter + 1)) invalid('Encounter count exceeds the supported limit.');
+      const continuation: RadiantContinuation = { anchor: structuredClone(run.anchor),
+        encounterSeed: run.encounterSeed, targetSeed: run.targetSeed, state: structuredClone(run.state) };
       game.radiantStudy = initialize(anchor, run.calibration, run.initial.bearers.map(unit => unit.loadout),
         { runId: run.id, encounterSeed: nextSeed(run.encounterSeed) || 1,
-          chargeSeed: run.state.chargeSeed || 1, targetSeed: run.targetSeed || 1 }, run.encounter + 1);
+          chargeSeed: run.state.chargeSeed || 1, targetSeed: run.targetSeed || 1 }, run.encounter + 1, continuation);
       game.radiantStudy.rewards = initialRadiantRewards(anchor, game.radiantStudy.encounterSeed, run.rewards);
       discover = true;
     }
@@ -364,9 +402,32 @@ export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
     // prior kill. Validate entries individually, not as one new kill batch.
     if (!Array.isArray(run.journal.rewards)) throw new Error();
     for (const reward of run.journal.rewards) validateRadiantRewardEvents([reward], run.rewards);
+    const continuation = run.continuation;
+    if (continuation !== undefined) {
+      if (!record(continuation) || Object.keys(continuation).some(key => !['anchor', 'encounterSeed', 'targetSeed', 'state'].includes(key)) ||
+        !record(continuation.anchor) || !record(continuation.state) || run.encounter < 2 ||
+        !Number.isSafeInteger(continuation.targetSeed) || continuation.targetSeed < 0 ||
+        continuation.targetSeed > 0xffffffff) throw new Error();
+      seed(continuation.encounterSeed);
+      validateRadiantActivity(continuation.anchor.activity);
+      if (typeof continuation.anchor.id !== 'string' || typeof continuation.anchor.family !== 'string' ||
+        !['early', 'mid', 'final', 'boss', 'species'].includes(continuation.anchor.position)) throw new Error();
+      validateRadiantCombat(continuation.state);
+      if (continuation.state.phase !== 'victory' ||
+        canonical(nextRadiantAnchor(continuation.anchor)) !== canonical(run.anchor) ||
+        run.encounterSeed !== (nextSeed(continuation.encounterSeed) || 1) ||
+        run.initialChargeSeed !== (continuation.state.chargeSeed || 1) ||
+        run.initialTargetSeed !== (continuation.targetSeed || 1)) throw new Error();
+      const previousEnemies = adaptRadiantPressureEncounter(continuation.anchor, continuation.encounterSeed,
+        run.calibration === 'authored-control' ? authoredRadiantCalibration : pressureRadiantCalibration);
+      if (continuation.state.enemies.length !== previousEnemies.length ||
+        continuation.state.enemies.some((unit, i) => unit.id !== previousEnemies[i].id ||
+          canonical(unit.stats) !== canonical(previousEnemies[i].stats) ||
+          unit.currency.budget !== previousEnemies[i].currencyBudget)) throw new Error();
+    }
     const expected = initialize(run.anchor, run.calibration, run.initial.bearers.map(unit => unit.loadout),
       { runId: run.id, encounterSeed: run.encounterSeed, chargeSeed: run.initialChargeSeed,
-        targetSeed: run.initialTargetSeed }, run.encounter);
+        targetSeed: run.initialTargetSeed }, run.encounter, continuation);
     if (canonical(expected.enemies) !== canonical(run.enemies) ||
       canonical(expected.initial) !== canonical(run.initial) ||
       run.state.bearers.length !== run.initial.bearers.length ||
@@ -377,7 +438,7 @@ export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
         unit.currency.budget !== run.enemies[i].currencyBudget)) throw new Error();
     return structuredClone(run);
   } catch {
-    throw new RadiantRunError('unavailable', 'Invalid frozen study snapshot; nothing was saved.');
+    throw new RadiantRunError('unavailable', 'Invalid saved Radiant encounter; nothing was saved.');
   }
 }
 export function validateRadiantRunSnapshot(value: unknown): RadiantRunSnapshot {
@@ -390,7 +451,7 @@ export function validateRadiantRunSnapshot(value: unknown): RadiantRunSnapshot {
     if (value.state.radiantStudy !== undefined) validateFrozenRadiantRun(value.state.radiantStudy);
     return structuredClone(value) as unknown as RadiantRunSnapshot;
   } catch {
-    throw new RadiantRunError('unavailable', 'Invalid stored study account; nothing was saved.');
+    throw new RadiantRunError('unavailable', 'Invalid saved Radiant account; nothing was saved.');
   }
 }
 const eventFields = {
@@ -446,7 +507,7 @@ export function validateRadiantRunResponse(value: unknown): RadiantRunResponse {
       throw new Error();
     return structuredClone(value) as unknown as RadiantRunResponse;
   } catch {
-    throw new RadiantRunError('unavailable', 'Invalid stored study response.');
+    throw new RadiantRunError('unavailable', 'Invalid saved Radiant response.');
   }
 }
 export async function radiantRequestFingerprint(value: unknown): Promise<string> {
@@ -456,7 +517,7 @@ export async function radiantRequestFingerprint(value: unknown): Promise<string>
 export async function executeRadiantRun(repository: RadiantRunRepository, request: RadiantRunRequest,
   authority: RadiantRunAuthority): Promise<RadiantRunResponse> {
   validateRadiantRunRequest(request);
-  if (authority.capability !== 'isolated-radiant-study') invalid('Study capability is required.');
+  if (authority.capability !== 'isolated-radiant-study') invalid('Radiant authority capability is required.');
   const fingerprint = await radiantRequestFingerprint(request);
   const cached = await repository.find(request.requestId, fingerprint);
   if (cached) return structuredClone(cached);
@@ -465,7 +526,7 @@ export async function executeRadiantRun(repository: RadiantRunRepository, reques
   try { resolved = resolveRadiantRun(snapshot, request, authority); }
   catch (error) {
     if (error instanceof RadiantRunError) throw error;
-    throw new RadiantRunError('invalid-input', 'Invalid or locked study operation.');
+    throw new RadiantRunError('invalid-input', 'Invalid or locked Radiant operation.');
   }
   return repository.commit({ requestId: request.requestId, fingerprint,
     expectedRevision: request.expectedRevision, state: resolved.state, response: resolved.response });
@@ -498,7 +559,7 @@ export function radiantRpcRepositoryFor<Response>(rpc: RadiantGameRpc, userId: s
         { p_user: userId, p_request: requestId, p_fingerprint: fingerprint });
       if (result.error) {
         const conflict = receiptConflict(result.error);
-        throw new RadiantRunError(conflict ? 'receipt-conflict' : 'unavailable', 'Study receipt lookup unavailable or conflicting.');
+        throw new RadiantRunError(conflict ? 'receipt-conflict' : 'unavailable', 'Radiant receipt lookup unavailable or conflicting.');
       }
       return result.data === null ? null : response(result.data);
     },
@@ -509,7 +570,7 @@ export function radiantRpcRepositoryFor<Response>(rpc: RadiantGameRpc, userId: s
         p_social: null, p_activity: null,
       });
       if (result.error) throw new RadiantRunError(receiptConflict(result.error) ? 'receipt-conflict' : 'denied-write',
-        'Atomic study commit denied; retry the same request.');
+        'Radiant save was not acknowledged; retry the same request.');
       return response(result.data);
     },
   };

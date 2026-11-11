@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createClient } from '@supabase/supabase-js';
 import { freshGame } from '../../supabase/functions/game-operation/engine';
-import { resolveRadiantRun, type RadiantRunRequest, type RadiantCheckpoint } from './radiant-run';
+import { radiantClientAccept, resolveRadiantRun, type RadiantRunRequest, type RadiantCheckpoint } from './radiant-run';
 import { radiantStudyOperation, readRadiantStudy, prepareRadiantStudy } from './radiant-transport';
 
 const mocks = vi.hoisted(() => ({ onlineClient: vi.fn() }));
@@ -19,7 +19,7 @@ function savedResponse() {
   }).response;
 }
 afterEach(() => { vi.useRealTimers(); vi.clearAllMocks(); });
-describe('dedicated typed Radiant transport, not a production gameOperation', () => {
+describe('dedicated typed Radiant transport for live game operations', () => {
   it('sends only manual preparation choices and validates the committed checkpoint before use', async () => {
     const response = savedResponse();
     const checkpoint = { revision: response.revision, account: response.account, run: response.run };
@@ -29,7 +29,9 @@ describe('dedicated typed Radiant transport, not a production gameOperation', ()
       operation: { kind: 'setSquad', ids: ['ember'] } } as const;
     await expect(prepareRadiantStudy({ ...request, operation: { ...request.operation, ids: ['ember'] } }))
       .resolves.toEqual(checkpoint);
-    expect(invoke).toHaveBeenCalledWith('game-operation', { body: { radiantStudy: request }, timeout: 30_000 });
+    expect(invoke).toHaveBeenCalledWith('game-operation', {
+      body: { radiantStudy: request }, headers: { Accept: radiantClientAccept }, timeout: 30_000,
+    });
     invoke.mockResolvedValueOnce({ data: { ...checkpoint, account: [] } as never, error: null });
     await expect(prepareRadiantStudy({ ...request, operation: { kind: 'setSquad', ids: ['ember'] } }))
       .rejects.toMatchObject({ code: 'unavailable' });
@@ -40,19 +42,22 @@ describe('dedicated typed Radiant transport, not a production gameOperation', ()
     const invoke = vi.fn(async () => ({ data: checkpoint, error: null }));
     mocks.onlineClient.mockReturnValue({ functions: { invoke } });
     await expect(readRadiantStudy()).resolves.toEqual(checkpoint);
-    expect(invoke).toHaveBeenCalledWith('game-operation', { body: { radiantStudy: { kind: 'read' } }, timeout: 30_000 });
+    expect(invoke).toHaveBeenCalledWith('game-operation', {
+      body: { radiantStudy: { kind: 'read' } }, headers: { Accept: radiantClientAccept }, timeout: 30_000,
+    });
     invoke.mockResolvedValueOnce({ data: { ...checkpoint, run: null }, error: null });
     await expect(readRadiantStudy()).resolves.toMatchObject({ run: null });
     invoke.mockResolvedValueOnce({ data: { ...checkpoint, run: [] } as never, error: null });
     await expect(readRadiantStudy()).rejects.toMatchObject({ code: 'unavailable' });
   });
   it('uses real authenticated SDK function request with the dedicated envelope and parses a saved response', async () => {
-    const response = savedResponse(), bodies: unknown[] = [], auth: string[] = [];
+    const response = savedResponse(), bodies: unknown[] = [], auth: string[] = [], accept: (string | null)[] = [];
     const client = createClient('https://fixture.supabase.co', 'fixture-key', {
       accessToken: async () => 'fixture-token',
       global: { fetch: async (_url, init) => {
         bodies.push(JSON.parse(String(init?.body)));
         auth.push(new Headers(init?.headers).get('authorization')!);
+        accept.push(new Headers(init?.headers).get('accept'));
         return new Response(JSON.stringify(response), { headers: { 'content-type': 'application/json' } });
       } }, auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
     });
@@ -60,6 +65,7 @@ describe('dedicated typed Radiant transport, not a production gameOperation', ()
     await expect(radiantStudyOperation(request)).resolves.toEqual(response);
     expect(bodies).toEqual([{ radiantStudy: request }]);
     expect(auth).toEqual(['Bearer fixture-token']);
+    expect(accept).toEqual([radiantClientAccept]);
   });
   it.each([[503, 'unavailable'], [409, 'receipt-conflict'], [400, 'manual-squad']])(
     'preserves explicit authority error %i/%s', async (status, code) => {
@@ -68,7 +74,9 @@ describe('dedicated typed Radiant transport, not a production gameOperation', ()
       } }));
       mocks.onlineClient.mockReturnValue({ functions: { invoke } });
       await expect(radiantStudyOperation(request)).rejects.toMatchObject({ code, message: 'Authority denial.' });
-      expect(invoke).toHaveBeenCalledWith('game-operation', { body: { radiantStudy: request }, timeout: 30_000 });
+      expect(invoke).toHaveBeenCalledWith('game-operation', {
+        body: { radiantStudy: request }, headers: { Accept: radiantClientAccept }, timeout: 30_000,
+      });
     });
   it('rejects malformed request before transport and malformed RPC responses before use', async () => {
     const invoke = vi.fn(async () => ({ data: { revision: 1, run: [] }, error: null }));
@@ -96,7 +104,7 @@ describe('dedicated typed Radiant transport, not a production gameOperation', ()
     });
     mocks.onlineClient.mockReturnValue(client);
     const pending = expect(radiantStudyOperation(request)).rejects.toMatchObject({
-      code: 'unavailable', message: expect.stringContaining('same study request ID'),
+      code: 'unavailable', message: expect.stringContaining('same Radiant request ID'),
     });
     await vi.advanceTimersByTimeAsync(30_000); await pending;
     expect(signal?.aborted).toBe(true);

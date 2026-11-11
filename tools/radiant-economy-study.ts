@@ -3,9 +3,10 @@ import { chooseRadiantPressureAction, type RadiantPressurePolicy } from '../src/
 import { resolveRadiantRun, type RadiantPlayerAction, type RadiantRunAuthority,
   type RadiantRunOperation, type RadiantRunSnapshot } from '../src/online/radiant-run';
 import { pressureStudyLoadouts, pressureStudyNow, pressureStudySeeds } from './radiant-pressure-study';
-import { radiantPressureAnchors, assertRadiantPressureAccess,
+import { radiantPressureAnchors, assertRadiantPressureAccess, isRadiantAccessError,
   type RadiantPressureAnchor } from '../src/game/radiant-pressure-encounters';
 import type { RadiantBearerId } from '../src/content/radiant-combat';
+import { liveRadiantCalibrationId } from '../src/content/radiant-enemy-calibration';
 import type { Account } from '../src/game/account';
 import { storyRules } from '../src/content/story';
 import { isStarterId } from '../src/content/starters';
@@ -22,6 +23,7 @@ export interface EconomyPoint {
   prismaticaPerRequest: number;
 }
 export interface EconomyCycle {
+  calibration: string;
   policy: RadiantPressurePolicy;
   firstClearSensitive: boolean;
   outcome: 'victory' | 'defeat' | 'timeout' | 'stalemate';
@@ -63,7 +65,8 @@ export function measureRadiantEconomyCycle(account: Account, anchor: RadiantPres
     return { snapshot: { revision: result.response.revision, state: result.state },
       rewardCount: result.response.rewards.length };
   };
-  let snapshot = step(initial, { kind: 'start', activity: anchor.activity, calibration: 'radiant-pressure-v2' }).snapshot;
+  let snapshot = step(initial, { kind: 'start', activity: anchor.activity, calibration: liveRadiantCalibrationId }).snapshot;
+  const calibration = snapshot.state.radiantStudy!.calibration;
   const baseline = structuredClone(snapshot.state.account);
   const budget = snapshot.state.radiantStudy!.enemies.reduce((sum, enemy) => sum + enemy.currencyBudget, 0);
   const point = (value: RadiantRunSnapshot, actions: number): EconomyPoint => {
@@ -124,7 +127,7 @@ export function measureRadiantEconomyCycle(account: Account, anchor: RadiantPres
   const outcome = halted ?? snapshot.state.radiantStudy!.state.phase;
   if (outcome !== 'victory' && outcome !== 'defeat' && outcome !== 'timeout' && outcome !== 'stalemate')
     throw new Error('Invalid economy terminal outcome.');
-  return { policy, firstClearSensitive: anchor.activity.kind === 'story' &&
+  return { calibration, policy, firstClearSensitive: anchor.activity.kind === 'story' &&
       (account.storyCompleted ?? 0) < anchor.activity.stage,
     outcome, budget, requests: actions + 2, actions, full, bestPartial,
     partialToFullRatio: full.prismaticaPerRequest > 0 && bestPartial
@@ -150,7 +153,7 @@ export function executeRadiantEconomyStudy(emit: (row: unknown) => void): void {
     { id: 'conditional-farmed-six105', ids: ['ember', 'tide', 'sprout', 'disciple', 'aurora', 'razor'],
       level: 105, gear: 'farmed' },
   ];
-  emit({ metadata: { schema: 1, seeds: pressureStudySeeds, now: pressureStudyNow,
+  emit({ metadata: { schema: 2, calibration: liveRadiantCalibrationId, seeds: pressureStudySeeds, now: pressureStudyNow,
     maximumActions: 300, stagnationActions: 120, authorityAttemptsPerMinute: 120,
     assumptions: ['Read-only virtual account authority, no database/network/live player writes.',
       'One starter free; larger squads, levels, gear/Masters and activity prerequisites are conditional laboratory holdings.',
@@ -203,9 +206,7 @@ export function executeRadiantEconomyStudy(emit: (row: unknown) => void): void {
         cohort.retryLoot += result.repeatPrefix.additionalLoot;
       }
     } catch (error) {
-      if (!(error instanceof Error) || !error.message.startsWith('Activity locked.') &&
-        error.message !== 'Pressure study stage is locked.')
-        throw error;
+      if (!isRadiantAccessError(error)) throw error;
       emit({ denied: { profile: profile.id, anchor: anchor.id, seed, reason: error.message } }); denied++;
       cohorts[profile.id].denied++;
     }

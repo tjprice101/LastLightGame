@@ -35,6 +35,19 @@ export function radiantFlareDescription(offer: RadiantFlareOffer): string[] {
   if (offer.attackBuff) lines.push(`All living allies: ${percent(offer.attackBuff)} Attack boost for ${offer.attackBuffRounds} rounds.`);
   return lines;
 }
+export function radiantPassiveEnhancements(loadout: RadiantLoadout): string[] {
+  const passive = radiantStarterKits[loadout.starter].passive;
+  const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
+  const passiveMaster = master?.rule === 'standard' && master.enhancement === 'passive';
+  if (passive.rule === 'flare-cleanse' || passive.rule === 'guard-cleanse') {
+    return [
+      ...(loadout.ascension.skill1 ? ['Passive Imbue heals each ally whose Weaken this passive removes for 50% of caster Recovery.'] : []),
+      ...(passiveMaster ? ['The Master separately heals each ally whose Weaken this passive removes for 15% of caster Recovery.'] : []),
+    ];
+  }
+  const power = 1 + (passiveMaster ? master.magnitude : 0) + (loadout.ascension.skill1 ? .5 : 0);
+  return power === 1 ? [] : [`Passive effect magnitude ×${number(power)} from the saved Passive Imbue and Master; durations do not change.`];
+}
 export function radiantLeaderReference(state: RadiantCombatState, living = state.bearers[0].hp > 0): string {
   const leader = state.bearers[0], loadout = leader.loadout, kit = radiantStarterKits[loadout.starter];
   const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
@@ -48,8 +61,6 @@ export function radiantLeaderReference(state: RadiantCombatState, living = state
 export function radiantBattleReference(loadout: RadiantLoadout, baseCost: number): string {
   const kit = radiantStarterKits[loadout.starter], attunement = radiantAttunement(loadout);
   const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
-  const passivePower = 1 + (master?.rule === 'standard' && master.enhancement === 'passive' ? master.magnitude : 0) +
-    (loadout.ascension.skill1 ? .5 : 0);
   const signaturePower = 1 + (master?.rule === 'standard' && master.enhancement === 'signature' ? master.magnitude : 0) +
     (loadout.ascension.lastFlare ? .5 : 0);
   return `<section class="radiant-reference"><h3>Frozen loadout</h3>
@@ -59,9 +70,7 @@ export function radiantBattleReference(loadout: RadiantLoadout, baseCost: number
     (${percent(.02 * loadout.weaponRank)} grown Attack). Frozen four-stat values above include these and equipped stat Conduits;
     leader/Weaken/Attack boosts are applied dynamically in combat.</p>
     <h3>Passive · ${escape(kit.passive.name)}</h3><p>${escape(kit.passive.description)}</p>
-    <p>Native passive magnitude ×${number(passivePower)} from the saved passive ascension/Master.
-    Cleanse rules still remove only one strongest Weaken per recipient; passive ascension adds50% caster Recovery healing
-    to each actually cleansed recipient, and a standard passive Master adds15%, rather than extra removals.</p>
+    ${radiantPassiveEnhancements(loadout).map(line => `<p>${escape(line)}</p>`).join('')}
     <h3>Progressive Flares</h3><p>The highest ready tier is cast automatically; spending retains personal remainder.
     Lustrous unlocks at form4; Eternal requires form6 and a full shared meter as well as two full personal layers.
     Shared threshold starts100, rises25 after each Eternal, capped200; Eternal empties it. No third personal layer.</p>

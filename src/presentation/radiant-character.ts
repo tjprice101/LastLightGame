@@ -7,7 +7,7 @@ import { getMasterConduit } from '../content/master-conduits';
 import { formatStat } from '../content/combat';
 import { displayEvolution, type CharacterProgress } from '../content/progression';
 import { ownedProgress, type Account } from '../game/account';
-import { radiantFlareDescription, radiantFlareNeedsTarget } from './radiant-battle-reference';
+import { radiantFlareDescription, radiantFlareNeedsTarget, radiantPassiveEnhancements } from './radiant-battle-reference';
 import { abilityIcon } from './ability-icon';
 import { assetUrl } from './portrait';
 import { statChange, statDirection } from './stat-change';
@@ -69,10 +69,10 @@ export function radiantAttunementChip(loadout: RadiantLoadout): string {
   return `<span class="radiant-attunement-chip" data-radiant-attunement="${radiantAttunement(loadout)}" title="${escape(radiantAttunementProfile(loadout))}">${name}</span>`;
 }
 
-export function radiantStatsPanel(loadout: RadiantLoadout): string {
+export function radiantStatsPanel(loadout: RadiantLoadout, label = 'Current combat stats'): string {
   const values = resolveRadiantStarterStats(loadout);
   const base = resolveRadiantStarterStats({ ...loadout, gear: undefined });
-  return `<div class="hub-stats radiant-stats" aria-label="Current combat stats">${radiantStatKeys.map(key => {
+  return `<div class="hub-stats radiant-stats" aria-label="${escape(label)}">${radiantStatKeys.map(key => {
     const direction = statDirection(base[key], values[key]);
     const modified = direction !== 'unchanged';
     return `<div data-radiant-stat="${key}"><small>${radiantStatLabels[key]}</small><strong${modified ? ` class="stat-change stat-change--${direction}"` : ''}>${formatStat(values[key])}</strong>${modified ? `<small>Before Conduits: ${formatStat(base[key])}</small>` : ''}</div>`;
@@ -101,12 +101,10 @@ export function radiantLeaderText(loadout: RadiantLoadout): string {
   return `Every squad member gains +${percent(radiantLeaderAmount(loadout))} ${radiantStatLabels[kit.leaderStat]} while this Element-Bearer is first in the squad and alive.`;
 }
 
-function powers(loadout: RadiantLoadout): { passive: number; signature: number } {
+function signaturePower(loadout: RadiantLoadout): number {
   const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
-  return {
-    passive: 1 + (master?.rule === 'standard' && master.enhancement === 'passive' ? master.magnitude : 0) + (loadout.ascension.skill1 ? .5 : 0),
-    signature: 1 + (master?.rule === 'standard' && master.enhancement === 'signature' ? master.magnitude : 0) + (loadout.ascension.lastFlare ? .5 : 0),
-  };
+  return 1 + (master?.rule === 'standard' && master.enhancement === 'signature' ? master.magnitude : 0) +
+    (loadout.ascension.lastFlare ? .5 : 0);
 }
 
 export function radiantFlareTierUnlocked(loadout: RadiantLoadout, tier: FlareTier): boolean {
@@ -124,7 +122,7 @@ export function radiantFlareArticle(loadout: RadiantLoadout, tier: FlareTier): s
   if (!radiantFlareTierUnlocked(loadout, tier))
     return `<article class="hub-ability radiant-flare is-locked" data-radiant-flare="${tier}"><h3 class="ability-heading">${icon}<span>${escape(offer.name)} · ${radiantFlareTierNames[tier]}</span></h3>
       <p>Unlocks at Evo.${displayEvolution(loadout.starter, tierForm[tier])}.</p></article>`;
-  const power = powers(loadout).signature;
+  const power = signaturePower(loadout);
   const extra = loadout.starter === 'ember' && tier === 'eternal' ? '<li>First consumes all Infernis-owned Burns on each target, paying each remaining phase as periodic damage; surviving targets then receive the new Burn.</li>'
     : loadout.starter === 'sprout' && tier === 'eternal' ? '<li>Also removes each living ally’s strongest Weaken.</li>' : '';
   return `<article class="hub-ability radiant-flare" data-radiant-flare="${tier}"><h3 class="ability-heading">${icon}<span>${escape(offer.name)} · ${radiantFlareTierNames[tier]}</span></h3>
@@ -134,9 +132,8 @@ export function radiantFlareArticle(loadout: RadiantLoadout, tier: FlareTier): s
 
 export function radiantPassiveArticle(loadout: RadiantLoadout): string {
   const passive = radiantBearerKits[loadout.starter].passive;
-  const power = powers(loadout).passive;
   return `<article class="hub-ability radiant-passive"><h3 class="ability-heading">${abilityIcon(loadout.starter, 'passive')}<span>${escape(passive.name)} · Passive</span></h3>
-    <p>${escape(passive.description)}</p>${power !== 1 ? `<p class="hub-cost">Magnitude ×${multiplier(power)}.</p>` : ''}</article>`;
+    <p>${escape(passive.description)}</p>${radiantPassiveEnhancements(loadout).map(line => `<p class="hub-cost">${escape(line)}</p>`).join('')}</article>`;
 }
 
 export function radiantLeaderArticle(loadout: RadiantLoadout): string {

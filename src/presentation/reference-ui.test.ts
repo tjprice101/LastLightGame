@@ -259,7 +259,7 @@ describe('replacement reference screen structures', () => {
     expect(grid.indexOf('data-team-detail="tide"')).toBeLessThan(grid.indexOf('data-team-detail="ember"'));
     expect(html).toContain('data-team-sort data-native-select');
     const filtered = referenceTeam(wallet, { ...state, element: 'infernic' });
-    expect(filtered).toContain('Element-Bearers · 1 of 2');
+    expect(filtered).toContain('data-collection-total="1">1 shown · 1 match current filters</span>');
     expect(filtered.slice(filtered.indexOf('class="ref-bearer-grid"'))).not.toContain('data-team-detail="tide"');
     expect(filtered).toContain('data-reference-member="tide"');
     expect(wallet.squad).toEqual(['tide', 'ember']);
@@ -290,6 +290,11 @@ describe('replacement reference screen structures', () => {
     wallet.capturedCharacters = [first, second];
     const html = referenceTeam(wallet, { view: 'creatures', selected: 'ember', element: '', sort: 'level' });
     for (const copy of [first, second]) expect(html).toContain(`data-team-capture-detail="${copy.instanceId}"`);
+    expect(html).toContain('data-team-collection="creatures"');
+    expect(html).toContain('Search captured Elemental-Devourers');
+    expect(html).toContain('data-team-sort');
+    expect(html).toContain('data-collection-item');
+    expect(html).toContain('Filter captured Elemental-Devourers');
     expect(html).toContain(`data-character-lock="${first.instanceId}" data-lock-value="true" aria-pressed="false"`);
     expect(html).toContain(`data-character-lock="${second.instanceId}" data-lock-value="false" aria-pressed="true"`);
     expect(html.match(/Copy [12]/g)).toHaveLength(4);
@@ -314,6 +319,18 @@ describe('replacement reference screen structures', () => {
     expect(detail).not.toContain(`data-level-capture="${first.instanceId}"`);
     expect(detail).toContain('Maximum level 60');
     expect(detail).toContain(`data-max-level="${first.instanceId}"`);
+  });
+
+  it('searches and filters the owned Element-Bearer collection without mutating account data', () => {
+    const wallet = account();
+    const before = structuredClone(wallet);
+    const html = referenceTeam(wallet, { view: 'bearers', selected: 'ember', element: '', sort: 'level', query: '" <tag>' });
+    expect(html).toContain('Search owned Element-Bearers');
+    expect(html).toContain('Filter owned Element-Bearers');
+    expect(html).toContain('value="&quot; &lt;tag&gt;"');
+    expect(html).toContain('data-collection-search=');
+    expect(html).toContain('data-collection-empty');
+    expect(wallet).toEqual(before);
   });
 
   it('rejects invalid selected ownership and explicitly distinguishes account errors from empty collections', () => {

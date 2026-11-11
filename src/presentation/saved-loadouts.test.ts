@@ -3,6 +3,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { emptyAccount, type Account } from '../game/account';
 import { releasedRadiantIds } from '../content/radiant-combat';
 import { getStarter } from '../content/starters';
+import { starters } from '../content/starters';
+import { characterReleased } from '../content/release-visibility';
+import { getCreature } from '../content/creatures';
 import { conduitConfigurationsPanel, savedLoadoutOperation, squadLoadoutsPanel } from './saved-loadouts';
 import { gameConfirm } from './game-dialog';
 import { createCreatureCopy } from '../game/character-instances';
@@ -118,6 +121,32 @@ describe('saved loadout controls', () => {
     expect(document.body.textContent).toContain('Member no longer owned');
     expect(document.body.textContent).toContain('Cannot equip');
     expect(saved.squad).toEqual(['ember']);
+  });
+  it('explains owned captured members and disables save, overwrite and equip until the squad is replaced', () => {
+    const saved = account(), copy = createCreatureCopy('infusion:treasury:0'), creature = getCreature(copy.creatureId);
+    saved.capturedCharacters = [copy];
+    saved.squad = [copy.instanceId];
+    saved.squadLoadouts![0].members.push({ character: copy.instanceId, name: creature.name,
+      element: creature.element, conduits: Array<null>(8).fill(null), master: null });
+    const before = JSON.stringify(saved);
+    document.body.innerHTML = squadLoadoutsPanel(saved);
+    expect(document.querySelector<HTMLButtonElement>('[data-saved-id=""] [data-saved-loadout-action="saveSquadLoadout"]')?.disabled).toBe(true);
+    expect(action('equipSquadLoadout').disabled).toBe(true);
+    expect(document.querySelector<HTMLButtonElement>(`[data-saved-id="${id}"] [data-saved-loadout-action="saveSquadLoadout"]`)?.disabled).toBe(true);
+    expect(action('renameSquadLoadout').disabled).toBe(false);
+    expect(action('deleteSquadLoadout').disabled).toBe(false);
+    expect(document.body.textContent).toContain('Captured Elemental-Devourers cannot join the squad');
+    expect(JSON.stringify(saved)).toBe(before);
+  });
+  it('disables an unreleased member without hiding or changing the saved entry', () => {
+    const saved = account(), hidden = starters.find(starter => !characterReleased(starter.id))!;
+    saved.characters[hidden.id] = { level: 0, evolution: 1 };
+    saved.squadLoadouts![0].members.push({ character: hidden.id, name: hidden.name,
+      element: hidden.elementId, conduits: Array<null>(8).fill(null), master: null });
+    document.body.innerHTML = squadLoadoutsPanel(saved);
+    expect(action('equipSquadLoadout').disabled).toBe(true);
+    expect(document.body.textContent).toContain('not currently released for Radiant combat');
+    expect(document.querySelector<HTMLButtonElement>(`[data-saved-id="${id}"] [data-saved-loadout-action="saveSquadLoadout"]`)?.disabled).toBe(false);
   });
   it('creates only an ID/name command and cancels destructive overwrites/deletion without a command', async () => {
     document.body.innerHTML = squadLoadoutsPanel(account());

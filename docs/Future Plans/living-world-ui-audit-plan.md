@@ -1,5 +1,79 @@
 # Living-world UI audit and implementation plan
 
+## Live-first audit resumed (2026-11-10)
+
+The owner explicitly resumes work on the actual game and rejects a demo-first
+workflow. Implement each approved change in the existing live routes and
+systems; do not create or revive a mock-up, preview, study route or parallel
+prototype unless the owner asks for one. Previous standalone demo files were
+removed after owner approval. This direction does not bypass existing account,
+combat, economy, accessibility or release contracts.
+
+### Completed live Team tranche
+
+- Fixed Team submission to read and validate all six supported squad slots.
+  The editor remains a draft until Save; Cancel restores the saved squad.
+  Only distinct, owned, combat-released Element-Bearers are eligible; captures
+  remain holdings-only.
+- Removed the Team portrait orbit/zoom gate so character details are available
+  on first view. Added collection search/result counts, Element-Bearer element
+  filters, and captured-copy element filters plus level/name/element sorting.
+  Search/filter state survives opening a detail and returning to the collection.
+- Responsive browser checks used the actual `/LastLightGame/` route and the
+  isolated in-memory debug profile. Saving six members updated the live Team
+  display to six; cancelling a six-member draft restored the original saved
+  trio. Search/filter/detail/return retained the one-result Asteriel selection.
+  Home, Team formation, character details, collections, Store, Summon,
+  Gameplay, Settings-panel layout, Conduit loadouts and Inventory were checked
+  at CSS viewports390x844,768x1024 and1440x900 with no horizontal overflow. All
+  sampled interactive targets were at least44px after the Conduit-loadout
+  sizing correction. Home destination bubbles measured94-124px after disabling
+  entrance animation for the browser measurement. Settings was scrollable at
+ 390px and its visible controls met the target size; no preference was changed.
+- The black-portrait issue could not be reproduced: the current portrait loads
+  with opacity1 and no filter, and its rendered pixels contain visible color.
+  The earlier capture is unconfirmed; no portrait-art or URL change was needed.
+- Browsing the Moon banner showed the offline sign-in gate and disabled draw
+  actions. No draw, purchase, or activity entry was started; this does not
+  verify online authority or transaction behavior.
+
+Validation commands and exact outcomes are recorded in the current
+[handoff](../handoff.md). Browser checks changed only the isolated debug profile;
+no owner account or production deployment was touched.
+
+### Continued audit tranche
+
+- Reviewed growth/evolution, Store/Summon/event, Settings, activity access and
+  battle-result paths through their live implementations and focused tests.
+  Atomic-save, stale-state, funds, storage failure, protected fodder, event
+  boundaries, result aggregation, social privacy/retry, dialogs and reduced
+  motion tests all passed; no defect was identified in this tranche.
+- Test outcomes: growth 59, Store/Summon/events 98, Settings/music/speed 50,
+  activity/results/exits 46, social/mail/chat 28, shared dialogs/rewards/
+  transitions/motion 49. Exact commands are in the [handoff](../handoff.md).
+- In this tranche, no purchase, draw, activity entry, Settings save or
+  authenticated online account was used. Unit coverage does not substitute
+  for hosted authority or in-game transaction presentation.
+
+### Live Radiant follow-through
+
+- The real local route was exercised with isolated debug data for purchases,
+  draws, battle rewards, Continue, Retry, exit, Settings and filtered bulk
+  sales. A separate disposable-account smoke exercised the deployed authority
+  and removed both identities afterward; it did not test a signed-in browser.
+- Continue, old-client compatibility, legacy loadouts, enemy previews,
+  Character Archive and Calamitic Ascension were updated for Radiant. See the
+  [handoff](../handoff.md) and [Radiant specification](radiant-combat-system-specification.md)
+  for the exact validation and deployment state.
+
+### Remaining live-game audit
+
+The whole-game audit is not complete. Verify the signed-in hosted browser and
+matching authority release without using an owner account. Live timed-event
+boundaries, broader social and failure-state journeys, visible animation
+cadence and owner visual review remain outside the completed checks. Record
+evidence and remaining gaps without claiming unseen flows were audited.
+
 ## First shared-foundation tranche (2026-11-07)
 
 Owner authorizes starting the rollout. This tranche implements the shared

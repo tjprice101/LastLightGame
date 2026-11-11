@@ -24,8 +24,7 @@ interface RadiantSessionTransport {
   execute(request: RadiantRunRequest): Promise<RadiantRunResponse>;
   prepare?(request: RadiantPreparationRequest): Promise<RadiantCheckpoint>;
 }
-/** In-memory presentation state only; authority owns every combat/reward change.
- * No production caller or automatic capability enablement. */
+/** In-memory presentation state only; authority owns every combat/reward change. */
 export class RadiantSession {
   private value: RadiantSessionView;
   private disposed = false;

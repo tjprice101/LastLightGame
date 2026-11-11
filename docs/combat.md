@@ -1,5 +1,23 @@
 # Combat specification
 
+## Live Radiant encounters and continuity (2026-11-10)
+
+Radiant combat is used by normal online and local encounters throughout the
+game. Its actual enemy statistics use the `authored-control` calibration;
+activity strength panels display those calibrated Health, Attack and Defense
+values. Earlier legacy-combat and preview-only sections below are historical
+where they conflict with the current
+[Radiant specification](Future%20Plans/radiant-combat-system-specification.md).
+
+On Continue, personal and shared Gauge and the frozen squad/loadout persist.
+Staged encounters restore squad Health, revive defeated members and clear
+encounter effects. Training instead carries forward Health, defeated members,
+Shields, statuses, guard and Shield ordering. Retry restores the encounter's
+frozen initial state without paying an already-rewarded kill or damage prefix
+again. Quitting or exiting never removes saved rewards. Legacy version-3
+snapshots remain readable, and an incompatible older online client is asked to
+refresh before a continuation can be committed.
+
 ## Encounter rules 19 and Radiant presentation proposal (2026-11-09)
 
 On the current Radiant branch, ordinary staged formations grow from two to six

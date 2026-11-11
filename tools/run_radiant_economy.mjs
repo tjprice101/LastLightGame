@@ -18,6 +18,7 @@ try {
   file = await open(resolve(output), 'wx');
   const emit = row => writeSync(file.fd, JSON.stringify(row) + '\n');
   emit({ source: { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+    worktreeDirty: execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim().length > 0,
     bundleSHA256: createHash('sha256').update(readFileSync(bundle)).digest('hex'), startedAt: new Date().toISOString() } });
   const api = await import(pathToFileURL(bundle).href);
   api.executeRadiantEconomyStudy(emit);

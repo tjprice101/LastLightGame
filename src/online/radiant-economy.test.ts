@@ -3,6 +3,7 @@ import { measureRadiantEconomyCycle } from '../../tools/radiant-economy-study';
 import { pressureStudyLoadouts } from '../../tools/radiant-pressure-study';
 import { storyRules } from '../content/story';
 import type { RadiantPressureAnchor } from '../game/radiant-pressure-encounters';
+import { liveRadiantCalibrationId } from '../content/radiant-enemy-calibration';
 
 const anchor: RadiantPressureAnchor = { id: 'story', family: 'story', position: 'early',
   activity: { kind: 'story', stage: 1 } };
@@ -12,6 +13,7 @@ describe('fresh-entry economy uses accepted authority actions and exact output s
     account.squad = ['ember']; account.storyCompleted = storyRules.stages;
     const raw = structuredClone(account);
     const result = measureRadiantEconomyCycle(account, anchor, seed);
+    expect(result.calibration).toBe(liveRadiantCalibrationId);
     expect(result.outcome).toBe('victory');
     expect(result.full.damagePrismatica).toBe(result.budget);
     expect(result.full.bonusPrismatica).toBe(150); expect(result.full.nullPrismatica).toBe(0);

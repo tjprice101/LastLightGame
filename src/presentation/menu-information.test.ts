@@ -45,7 +45,8 @@ describe('shared menu information', () => {
     const rules = characterInformation();
     expect(rules.match(/data-information=/g)).toHaveLength(1);
     expect(rules).toContain('Evolving requires max level and keeps it');
-    expect(rules).toContain('never evolve');
+    expect(plain(rules)).toContain('they cannot evolve or join Radiant squads');
+    expect(plain(rules)).toContain('archived combat stats');
     expect(rules).toContain('No duplicate names on the same member');
     for (const tab of characterTabs) {
       const html = characterHub(starters[0], tab.id);
@@ -62,7 +63,8 @@ describe('shared menu information', () => {
     expect(plain(html)).toContain('guaranteed 1 per enemy at Stage 1 (Lv.65)');
     expect(plain(html)).toContain('the final boss gives 25 guaranteed.');
     expect(plain(html)).toContain('30,000-60,000 at Stage 25');
-    expect(plain(html)).toContain('Staged activities: Health restores; Elemental Gauge carries over.');
+    expect(plain(html)).toContain('Staged activities: Health restores; personal charge and the shared Eternal charge carry over.');
+    expect(plain(html)).toContain('Training: Health, Shields, status effects, personal charge, the shared Eternal charge and defeated members carry over.');
     const disclosures = html.match(/<details\b[^>]*>/g) ?? [];
     expect(disclosures.filter(tag => tag !== '<details class="conduit-lore-disclosure">')).toEqual(['<details class="story-prologue">']);
     expect(html.match(/data-information="machine-loot-focus"/g)).toHaveLength(1);

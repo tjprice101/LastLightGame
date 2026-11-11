@@ -435,6 +435,27 @@ describe('bounded study journal payload', () => {
 });
 
 describe('existing aggregate+revision+request RPC atomicity', () => {
+  it('commits carried Training resources exactly once after a denied Continue retry', async () => {
+    const value = snapshot();
+    value.state.account.characters.ember = { level: 105, evolution: 6, weaponRank: 0 };
+    const rpc = new AtomicRpc(value), auth = authority();
+    await executeRadiantRun(rpc.repository(), request(rpc.current, start), auth);
+    for (let i = 0; i < 100 && rpc.current.state.radiantStudy!.state.phase === 'player'; i++)
+      await executeRadiantRun(rpc.repository(), request(rpc.current, normal(rpc.current)), auth);
+    expect(rpc.current.state.radiantStudy!.state.phase).toBe('victory');
+    const before = structuredClone(rpc.current), req = request(before, { kind: 'continue' });
+    const expected = resolveRadiantRun(before, req, auth).response, writes = rpc.writes;
+    rpc.denied = true;
+    await expect(executeRadiantRun(rpc.repository(), req, auth)).rejects.toMatchObject({ code: 'denied-write' });
+    expect(rpc.current).toEqual(before);
+    expect(rpc.writes).toBe(writes);
+    rpc.denied = false;
+    const saved = await executeRadiantRun(rpc.repository(), req, auth);
+    expect(saved).toEqual(expected);
+    expect(saved.run.state.gauge).toEqual(before.state.radiantStudy!.state.gauge);
+    expect(await executeRadiantRun(rpc.repository(), req, auth)).toEqual(saved);
+    expect(rpc.writes).toBe(writes + 1);
+  });
   it('saves and replays the exact full-attacker and ten-percent team drops atomically', async () => {
     const value = entered(6);
     value.state.radiantStudy!.state.chargeSeed = 0;

@@ -31,6 +31,14 @@ html body #app .sanctuary-shell .ref-roster-toolbar {
   border-radius: 10px;
   background: #070a10a6;
 }
+html body #app .sanctuary-shell .ref-roster-toolbar .ref-collection-search {
+  display: flex;
+  flex: 1 1 16rem;
+  min-width: min(100%, 16rem);
+}
+html body #app .sanctuary-shell .ref-roster-toolbar .ref-collection-search input { width: 100%; min-width: 0; }
+html body #app .sanctuary-shell .ref-team-collection [data-collection-item][hidden],
+html body #app .sanctuary-shell .ref-team-collection [data-collection-empty][hidden] { display: none !important; }
 
 html body #app .sanctuary-shell .ref-bearer-grid {
   grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
@@ -159,20 +167,9 @@ html body #app .sanctuary-shell .bubble-squad-caption :is(b, small) {
   overflow-wrap: anywhere;
 }
 
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity {
-  border-color: color-mix(in srgb, var(--accent) 45%, #e4e9f260);
-  border-radius: 14px;
-  box-shadow: inset 0 1px #ffffff40, inset 0 0 0 3px #ffffff08, 0 18px 44px #0008;
-}
 html body #app .sanctuary-shell .ref-bearer-detail .ref-bar {
   border: 1px solid #e6edf36b;
   box-shadow: inset 0 2px 5px #000b;
-}
-html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .ref-character-panels {
-  border: 1px solid #b5c5d68c !important;
-  border-radius: 14px !important;
-  background: linear-gradient(150deg, #343d4cbd, #111720f2 32%, #0c1018f7) !important;
-  box-shadow: inset 0 1px #ffffff42, inset 0 0 0 3px #ffffff08, 0 20px 50px #0009 !important;
 }
 html body #app .sanctuary-shell .ref-character-panels .character-upgrade-grid > .character-category {
   border: 1px solid #b8c5d34d;

@@ -10,8 +10,9 @@ export interface RadiantEnemyCalibration {
   categories: Record<RadiantEnemyCategory, RadiantEnemyFactors>;
 }
 const unity = { hp: 1, attack: 1, defense: 1 };
+export const liveRadiantCalibrationId = 'authored-control' as const;
 export const authoredRadiantCalibration: RadiantEnemyCalibration = {
-  id: 'authored-control', points: [{ level: 1, ...unity }, { level: 185, ...unity }],
+  id: liveRadiantCalibrationId, points: [{ level: 1, ...unity }, { level: 185, ...unity }],
   categories: { ordinary: unity, boss: unity, calamity: unity },
 };
 // Experimental overlay only: never feeds live spawn, progression or rewards.

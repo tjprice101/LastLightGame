@@ -41,10 +41,23 @@ export function bindCreatureBulkSale(host: HTMLElement, account: Account,
   const protectedBoxes = new Set(boxes.filter(box => box.disabled));
   let active = false;
   let busy = false;
+  const visible = (box: HTMLInputElement): boolean =>
+    !box.closest<HTMLElement>('[data-collection-item]')?.hidden;
   const selections = (): { id: string; saleOption: string }[] => boxes.filter(box => box.checked).map(box => {
     const select = box.closest('[data-bulk-sale-copy]')!.querySelector<HTMLSelectElement>('[data-bulk-sale-payout]')!;
     return { id: box.dataset.bulkSaleId!, saleOption: select.value };
   });
+  const refreshSelection = (): void => {
+    const chosen = selections();
+    confirm.disabled = busy || !chosen.length;
+    confirm.textContent = `Review sale${chosen.length ? ` (${chosen.length})` : ''}`;
+    clear.disabled = busy || !chosen.length;
+    all.disabled = busy || !boxes.some(box => !box.disabled && !box.checked && visible(box));
+    const hiddenSelections = boxes.filter(box => box.checked && !visible(box)).length;
+    summary.textContent = chosen.length
+      ? `${chosen.length} selected${hiddenSelections ? ` · ${hiddenSelections} hidden by search` : ''} · ${saleLabel(creatureBatchSaleOffer(account, chosen))}`
+      : 'Choose copies to sell. Locked, squad-assigned and equipped copies are protected. Choose a payout separately for each selected copy.';
+  };
   const refresh = (): void => {
     for (const box of boxes) {
       box.disabled = busy || protectedBoxes.has(box);
@@ -55,25 +68,21 @@ export function bindCreatureBulkSale(host: HTMLElement, account: Account,
       box.closest('.ref-collection-card')?.classList.toggle('is-sale-selected', box.checked);
     }
     all.hidden = clear.hidden = confirm.hidden = summary.hidden = !active;
-    const chosen = selections();
-    confirm.disabled = busy || !chosen.length;
-    confirm.textContent = `Review sale${chosen.length ? ` (${chosen.length})` : ''}`;
-    clear.disabled = busy || !chosen.length;
-    all.disabled = busy || !boxes.some(box => !box.disabled && !box.checked);
     toggle.disabled = busy;
     toggle.textContent = active ? 'Cancel multi-select' : 'Multi-select sell';
     toggle.setAttribute('aria-pressed', String(active));
-    summary.textContent = chosen.length
-      ? `${chosen.length} selected · ${saleLabel(creatureBatchSaleOffer(account, chosen))}`
-      : 'Choose copies to sell. Locked, squad-assigned and equipped copies are protected. Choose a payout separately for each selected copy.';
+    refreshSelection();
   };
-  const guarded = (action: () => void): void => {
+  const guarded = (action: () => void, update: () => void = refresh): void => {
     if (busy) return;
-    try { action(); refresh(); } catch (cause) { error(cause); }
+    try { action(); update(); } catch (cause) { error(cause); }
   };
   toggle.addEventListener('click', () => guarded(() => { active = !active; if (!active) boxes.forEach(box => { box.checked = false; }); }));
-  all.addEventListener('click', () => guarded(() => { boxes.forEach(box => { if (!box.disabled) box.checked = true; }); rarityFeedback(toolbar, 'Omnic'); }));
+  all.addEventListener('click', () => guarded(() => { boxes.forEach(box => { if (!box.disabled && visible(box)) box.checked = true; }); rarityFeedback(toolbar, 'Omnic'); }));
   clear.addEventListener('click', () => guarded(() => boxes.forEach(box => { box.checked = false; })));
+  collection.addEventListener('team-collection-filtered', () => {
+    if (active) guarded(() => {}, refreshSelection);
+  });
   for (const box of boxes) {
     box.addEventListener('change', () => guarded(() => {
       if (box.checked) {

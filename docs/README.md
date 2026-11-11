@@ -1,5 +1,14 @@
 # Documentation hub
 
+## Live Radiant and Team follow-through (2026-11-10)
+
+Radiant is the actual online and local battle system across game activities;
+the earlier preview-only description below is historical. The
+[current handoff](handoff.md#live-radiant-and-team-release-follow-through-2026-11-10)
+and [Radiant specification](Future%20Plans/radiant-combat-system-specification.md#live-implementation-and-continuation-compatibility-2026-11-10)
+describe live Team and information surfaces, save/continuation compatibility,
+bounded economy evidence and the remaining artwork and desktop checks.
+
 ## Current Radiant design and release status (2026-11-09)
 
 The [handoff](handoff.md) and [Radiant specification](Future%20Plans/radiant-combat-system-specification.md)

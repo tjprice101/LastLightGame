@@ -1,11 +1,8 @@
-import { rolePerkRow } from './intrinsic-perks';
 import { storyCodex } from './story-codex';
 import { starters as allStarters, starterVow } from '../content/starters';
 import { characterName } from '../content/character-art';
 import { characterRarity, displayEvolution } from '../content/progression';
 import { elements, materialRarities } from '../content/activities';
-import { resolveFighter, formatStat } from '../content/combat';
-import { phaseZeroStatsReady } from '../content/phase-zero-stats';
 import { conduits, conduitEffect } from '../content/conduits';
 import { referencedEffect as readableEffect } from './effect-copy';
 import { ownedProgress, type Account } from '../game/account';
@@ -19,7 +16,7 @@ import { calamiticStoreUnlocked } from '../content/calamitic-conduits';
 import { creatureGlossary } from './creature-glossary';
 import { elementLabel } from './element-label';
 import { information } from './information';
-import { abilityStatuses, kitResource } from './ability-status';
+import { radiantAttunementSection, radiantCharacterLoadout, radiantKitSections, radiantStatsPanel, radiantUnavailable } from './radiant-character';
 import './archives.css';
 import { masterChest, masterConduits as allMasters } from '../content/master-conduits';
 import { masterConduitIcon } from './master-conduits';
@@ -57,8 +54,8 @@ function characterArchive(account: Account | null): string {
       const evolution = index + 1;
       const revealed = !!progress && progress.evolution >= evolution;
       const current = progress?.evolution === evolution;
-      const kit = resolveFighter(starter.id, current ? progress : { level: 0, evolution, weaponRank: 0 }, current ? account?.conduitEquipment?.[starter.id] : undefined, current ? account?.conduitUpgrades : undefined,
-        current ? account?.masterEquipment?.[starter.id] ?? undefined : undefined);
+      const radiant = current ? radiantCharacterLoadout(account, starter.id)
+        : radiantCharacterLoadout(null, starter.id, { level: 0, evolution, weaponRank: 0 });
       return `<article class="archive-card ${revealed ? 'archive-form-revealed' : 'archive-form-locked'}" data-archive-character="${starter.id}" data-form="${evolution}" data-filter-element="${starter.elementId}" data-filter-rarity="${characterRarity(starter.id, evolution)}" data-filter-ownership="${!account ? 'unavailable' : owned ? 'owned' : 'unowned'}" data-filter-discovery="${!account ? 'unavailable' : revealed ? 'revealed' : 'locked'}" data-filter-stars="${starter.stars}">
         <div class="archive-portrait${revealed ? '' : ' unreached-character-art'}">${portrait(starter, evolution, current && progress?.ascension?.stats === true)}</div>
         <h3>${characterName(starter.id, evolution, current && progress?.ascension?.stats === true)} · Evo.${displayEvolution(starter.id, evolution)}</h3>
@@ -69,10 +66,10 @@ function characterArchive(account: Account | null): string {
         <p>${starter.weapon}</p>
         <h3>Origin</h3><p>${starter.description}</p><p>${starter.lore.story}</p><blockquote>${starterVow(starter)}</blockquote>
         ${current ? '' : '<p class="quiet">Level 0 preview</p>'}
-        <dl class="archive-stats"><div><dt>Health</dt><dd>${formatStat(kit.stats.health)}</dd></div>
-          <div><dt>${phaseZeroStatsReady ? 'Direct Attack' : 'Attack'}</dt><dd>${formatStat(kit.stats.damage)}</dd></div><div><dt>Defense</dt><dd>${formatStat(kit.stats.defense)}</dd></div></dl>
-        <h3>${current ? 'Current combat kit' : 'Form combat-kit preview'}</h3><p><strong>${kit.passive.name} · Passive</strong><br>${readableEffect(kit.passive.description)}</p>${rolePerkRow(starter.id)}${kitResource(kit, starter.id)}
-          ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => `<p><strong>${kit.abilities[action].name}</strong>${abilityStatuses(kit.abilities[action].strength, starter.id, action)}<br>${readableEffect(kit.abilities[action].description)}</p>`).join('')}`, 'Combat kit')}
+        <h3>${current ? 'Current combat kit' : 'Form combat-kit preview'}</h3>
+        ${radiant ? `${radiant.issue ? `<p role="alert">${escapeDialogText(radiant.issue)}</p>` : ''}
+          ${radiantStatsPanel(radiant.loadout, current ? 'Current combat stats' : 'Level 0 combat stats')}
+          ${radiantAttunementSection(radiant.loadout)}${radiantKitSections(radiant.loadout)}` : radiantUnavailable()}`, 'Combat kit')}
       </article>`;
       });
     }).join('')}</div>`;

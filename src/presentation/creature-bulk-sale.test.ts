@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { emptyAccount } from '../game/account';
 import { createCreatureCopy } from '../game/character-instances';
 import { bulkSaleControls, bulkSaleCopy, bindCreatureBulkSale } from './creature-bulk-sale';
+import { filterTeamCollection } from './reference-team';
 import { clearRarityFeedback } from './rarity-feedback';
 
 afterEach(() => { clearRarityFeedback(document.body); document.body.replaceChildren(); });
@@ -14,8 +15,8 @@ function fixture() {
   account.capturedCharacters = copies;
   const host = document.createElement('section');
   document.body.append(host);
-  host.innerHTML = `${bulkSaleControls()}${copies.map(copy => `<article class="ref-collection-card"><button data-team-capture-detail="${copy.instanceId}">Portrait</button>${bulkSaleCopy(account, copy.instanceId)}</article>`).join('')}`;
-  const sell = vi.fn(async () => {});
+  host.innerHTML = `<div data-team-collection="creatures">${bulkSaleControls()}${copies.map(copy => `<article class="ref-collection-card" data-collection-item data-collection-search="${copy.creatureId}"><button data-team-capture-detail="${copy.instanceId}">Portrait</button>${bulkSaleCopy(account, copy.instanceId)}</article>`).join('')}</div>`;
+  const sell = vi.fn(async (_selections: { id: string; saleOption: string }[]) => {});
   const error = vi.fn();
   bindCreatureBulkSale(host, account, sell, error);
   const boxes = Array.from(host.querySelectorAll<HTMLInputElement>('[data-bulk-sale-id]'));
@@ -61,6 +62,44 @@ describe('multi-select sale UI', () => {
     expect(boxes.every(box => !box.checked)).toBe(true);
     expect(host.querySelector('.is-sale-selected')).toBeNull();
     expect(button('confirm').hidden).toBe(true);
+  });
+
+  it('selects only visible search results and explicitly reports previously selected hidden copies', async () => {
+    const { host, copies, sell, boxes, button } = fixture();
+    filterTeamCollection(host, 'treasury');
+    button('toggle').click();
+    button('all').click();
+    expect(boxes.map(box => box.checked)).toEqual([false, false, true, false]);
+    filterTeamCollection(host, 'heavens');
+    expect(host.querySelector('[data-bulk-sale-summary]')?.textContent).toContain('1 hidden by search');
+    expect(button('all').disabled).toBe(false);
+    button('all').click();
+    expect(boxes.map(box => box.checked)).toEqual([true, false, true, false]);
+    filterTeamCollection(host, 'no match');
+    expect(button('all').disabled).toBe(true);
+    expect(host.querySelector('[data-bulk-sale-summary]')?.textContent).toContain('2 hidden by search');
+    button('confirm').click();
+    await Promise.resolve();
+    expect(sell.mock.calls[0]?.[0].map(selection => selection.id)).toEqual([copies[0].instanceId, copies[2].instanceId]);
+  });
+
+  it('updates search visibility without rewriting unchanged cards or sale controls', () => {
+    const { host, button } = fixture();
+    const observer = new MutationObserver(() => {});
+    observer.observe(host, { attributes: true, subtree: true });
+    const saleControlChanges = () => observer.takeRecords().filter(record =>
+      record.target instanceof Element && record.target.closest('[data-bulk-sale-copy]'));
+    filterTeamCollection(host, 'treasury');
+    expect(saleControlChanges()).toHaveLength(0);
+    button('toggle').click();
+    observer.takeRecords();
+    filterTeamCollection(host, 'heavens');
+    expect(saleControlChanges()).toHaveLength(0);
+    expect(button('all').disabled).toBe(false);
+    filterTeamCollection(host, 'heavens');
+    expect(observer.takeRecords().filter(record =>
+      record.target instanceof Element && record.target.matches('[data-collection-item]'))).toHaveLength(0);
+    observer.disconnect();
   });
 
   it('toggles portrait selection instead of opening details while multi-select is active', () => {

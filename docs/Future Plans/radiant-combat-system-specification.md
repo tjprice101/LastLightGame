@@ -1,5 +1,64 @@
 # Radiant combat overhaul: system and starter review specification
 
+## Live implementation and continuation compatibility (2026-11-10)
+
+Radiant is the actual online and local battle system for every activity, not a
+separate preview. The current live calibration is `authored-control`; older
+preview-only and disabled-authority statements below are historical. Squads
+use one to six owned, released Element-Bearers. Captured Elemental-Devourers
+remain in the collection but cannot join a Radiant squad. Existing saved
+loadouts remain readable, renameable and deletable; saving or equipping one
+rejects unavailable or ineligible members without altering the account.
+
+After victory, Continue retains personal and shared Gauge and the frozen
+loadout. Staged activities restore Health and revive the squad, clearing the
+encounter effects; Training instead carries Health, defeated members, Shields,
+statuses, guard and Shield ordering forward. Retry restores the new encounter's
+frozen initial state but keeps the paid-reward ledger. Version-3 saves without
+continuation provenance remain readable. New continuation snapshots keep only
+the immediately preceding state and authority seeds, not an expanding chain.
+
+The current online client advertises continuation support using an additional
+media type in the standard `Accept` header; this is not an authorization
+credential. An older client can finish an existing compatible encounter, but
+the new authority rejects its Continue without committing and asks it to
+refresh. It likewise rejects incompatible saved snapshots or cached receipts
+for older clients. Publish the compatible client before the matching authority;
+the new client accepts the older authority's version-3 snapshots. This avoids
+silently resetting resources or delivering unreadable snapshots to open tabs.
+
+### Bounded economy review
+
+`node tools\run_radiant_economy.mjs <report-path>` ran the real resolver with
+`authored-control`, three seeds and conditional account/loadout fixtures. It
+measured 411 encounters and 1,236 access denials: 240 victories, 168 defeats
+and three stalemates. Across 1,116 identical-prefix Retry attempts, no extra
+Prismatica or loot was paid. Among victorious conditional fixtures, a stronger
+partial prefix had a higher Prismatica-per-request ratio in 30 of 72 Common
+trio runs and 42 of 108 farmed-six runs; the largest ratio was 1.1208. These
+are bounded request-count comparisons, not elapsed-time income, observed player
+clear rates or final balance approval. First-clear rewards are not repeatable
+farm income. No economy tuning was changed.
+
+The report SHA-256 is
+`6DC5FCD2E3A0E5F3D12B47C3A63071C37EB21C42D345D91C65DA77E48D09BCDD`.
+
+### Bounded desktop responsiveness check
+
+Search now avoids rewriting unchanged cards and, while filtering, updates only
+the sale controls affected by visibility. On the actual local route with the
+isolated debug profile, 80 alternating searches over 126 captured copies at
+1800x1125 CSS pixels measured 0.7ms median/1.1ms p95 in the input handler
+with multi-select closed and 0.8ms/1.2ms with it open. Forcing layout after
+every search measured 12.9ms median/57.8ms p95, maximum 62.6ms closed, and
+23.8ms/74.1ms, maximum 79ms open. This synthetic stress sequence indicates
+potential search-layout jank, not measured frame rate. The integrated browser
+reported the page hidden, so it cannot establish visible animation cadence
+or physical-desktop performance.
+
+Pending Radiant artwork remains neutral rather than borrowed or missing;
+visible desktop GPU/frame-cadence and owner visual review remain unverified.
+
 ## Current completion and release gates (2026-11-09)
 
 The implementation now covers the complete saved-impact VFX path for all 32

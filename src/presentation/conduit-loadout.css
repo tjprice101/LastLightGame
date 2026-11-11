@@ -11,7 +11,7 @@ html body .sanctuary-shell .ref-organized-detail > .ref-equipment-workspace { al
 #app .sanctuary-shell .ref-loadout-page #upgrade-heading { display: none; }
 #app .sanctuary-shell .ref-conduit-page :is(.ref-loadout-page, .ref-character-panels, .ref-equipment-workspace) { gap: 0; }
 #app .sanctuary-shell .loadout-owned-text small { line-height: 1.25; }
-#app .sanctuary-shell .loadout-tools :is(input, .selection-trigger) { height: 36px; min-height: 36px; padding: .25rem .6rem; }
+#app .sanctuary-shell .loadout-tools :is(input, .selection-trigger) { height: auto; min-height: 44px; padding: .25rem .6rem; }
 #app .sanctuary-shell .conduit-loadout .ref-panel-heading { padding-bottom: .25rem; }
 #app .sanctuary-shell .conduit-loadout .loadout-owned { gap: .3rem; }
 #app .sanctuary-shell .conduit-loadout .loadout-slot { gap: .2rem; padding: .35rem; }
@@ -119,7 +119,7 @@ html body .sanctuary-shell .conduit-loadout .ref-equipment-note { margin: 0; col
 /* Your Conduits: search/sort, filters, cue, paginated rows (no scroll region). */
 html body .sanctuary-shell .conduit-loadout .loadout-tools { display: grid; grid-template-columns: minmax(0, 1fr) minmax(8rem, 11rem); gap: .4rem; }
 html body .sanctuary-shell .loadout-search { display: block; min-width: 0; }
-html body .sanctuary-shell .loadout-search input { box-sizing: border-box; width: 100%; min-width: 0; min-height: 36px; border: 1px solid #3a3a3f; border-radius: .5rem; padding: .35rem .6rem; background: #1a1a1c; color: #f4f4f5; font: inherit; }
+html body .sanctuary-shell .loadout-search input { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; border: 1px solid #3a3a3f; border-radius: .5rem; padding: .35rem .6rem; background: #1a1a1c; color: #f4f4f5; font: inherit; }
 html body .sanctuary-shell .loadout-search input::placeholder { color: #a9a9ae; }
 html body .sanctuary-shell .loadout-search input:focus-visible { outline: 2px solid #f4f4f5; outline-offset: 2px; }
 html body .sanctuary-shell .conduit-loadout .loadout-sort { min-width: 0; }
@@ -140,11 +140,11 @@ html body .sanctuary-shell .loadout-owned-text { display: grid; gap: 0; min-widt
 html body .sanctuary-shell .loadout-owned-text b { font-size: .875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 html body .sanctuary-shell .loadout-owned-text small { font-size: .75rem; color: var(--menu-muted, #a9a9ae); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 html body .sanctuary-shell .loadout-owned-text .loadout-reason { color: #c9c9ce; }
-html body .sanctuary-shell .conduit-loadout .loadout-owned-row > button { min-height: 32px; padding: .2rem .7rem; border: 1px solid #3a3a3f; border-radius: .5rem; background: transparent; color: #f4f4f5; font-size: .8rem; white-space: nowrap; }
+html body .sanctuary-shell .conduit-loadout .loadout-owned-row > button { min-height: 44px; padding: .2rem .7rem; border: 1px solid #3a3a3f; border-radius: .5rem; background: transparent; color: #f4f4f5; font-size: .8rem; white-space: nowrap; }
 html body .sanctuary-shell .conduit-loadout .loadout-owned-row > .ref-white { display: inline-flex; align-items: center; min-height: 28px; padding: .1rem .7rem; border: 1px solid #f4f4f5; border-radius: 999px; background: #f4f4f5; color: #0b0b0c; font-size: .78rem; white-space: nowrap; }
 html body .sanctuary-shell .conduit-loadout :is(.loadout-actions, .loadout-owned-row) > button:hover:not(:disabled),
 html body .sanctuary-shell .conduit-loadout .loadout-rule-button:hover:not(:disabled) { border-color: #8a8a90; background: #1f1f22; }
-html body .sanctuary-shell .conduit-loadout .loadout-rule-button { min-height: 32px; padding: .2rem .5rem; border: 1px solid #3a3a3f; border-radius: .5rem; background: transparent; color: #d4d4d8; font-size: .75rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-rule-button { min-height: 44px; padding: .2rem .5rem; border: 1px solid #3a3a3f; border-radius: .5rem; background: transparent; color: #d4d4d8; font-size: .75rem; }
 html body .sanctuary-shell .conduit-loadout .loadout-pager { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: auto; padding-top: .4rem; border-top: 1px solid #242427; font-size: .8rem; }
 html body .sanctuary-shell .conduit-loadout .loadout-pager button { min-height: 32px; padding: .2rem .8rem; border: 1px solid #3a3a3f; border-radius: .5rem; background: transparent; color: #f4f4f5; font-size: .8rem; }
 html body .sanctuary-shell .conduit-loadout .loadout-pager [data-loadout-page-status] { color: #d4d4d8; font-variant-numeric: tabular-nums; }

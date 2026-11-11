@@ -1,5 +1,60 @@
 # Current state and handoff
 
+## Live Radiant and Team release follow-through (2026-11-10)
+
+**Implemented:** The real Team editor saves all six slots, preserves draft and
+Cancel behavior, and exposes character details immediately. Collections have
+search and filters; multi-select sales affect only visible available copies and
+report any earlier selections hidden by search. Conduit controls have 44px
+targets. Enemy-strength previews, Character Archive and Calamitic Ascension
+describe Radiant combat. Captured Elemental-Devourer combat information is
+explicitly archived. Old saved loadouts remain readable, renameable and
+deletable; unavailable or ineligible members cannot be newly saved or equipped.
+
+Continue preserves personal/shared Gauge and the frozen loadout. Training also
+carries Health, defeated members, Shields, statuses and guard; staged encounters
+restore Health and revive the squad. Retry restores the new encounter's
+initial state while retaining paid-reward ledgers. Old version-3 snapshots
+remain readable. The online client declares continuation support in the
+standard `Accept` header; older clients can finish an existing compatible fight
+but receive a refresh message before Continue or an incompatible saved state.
+The [Radiant specification](Future%20Plans/radiant-combat-system-specification.md)
+records the bounded economy study, compatibility and remaining review limits.
+
+**Verified:** The real local route was exercised only with the isolated in-memory
+debug profile: purchase and summon confirmations, Training victory/rewards,
+Continue, Retry, exit, Settings and filtered multi-select. No owner account was
+used. `npx vitest run src\online\radiant-dispatch.test.ts
+src\online\radiant-transport.test.ts src\online\radiant-run-progression.test.ts
+src\online\radiant-session.test.ts src\presentation\creature-bulk-sale.test.ts`
+passed 115 tests; client and authority TypeScript checks passed.
+`npx vitest run --maxWorkers=2 --testTimeout=60000` passed all 286 files and
+10,286 tests after the collection-filter optimization. `npm run build` passed
+with the existing large-chunk advisory; `node tools\bundle_server_game.mjs`
+and `npx tsc --project supabase\functions\game-operation\tsconfig.json` passed.
+Before updating
+the hosted authority, `node tools\smoke_server_game.mjs
+--radiant-legacy-authority` passed authenticated transactions and a real battle
+including legacy Continue/Retry using disposable accounts. The current client
+validated those older snapshots. Both identities and their records were
+removed. A real browser's cross-origin request with the new `Accept` header
+also reached the older authority and received the expected unauthenticated 401.
+After removing redundant card and sale-control writes, 80 alternating searches
+through 126 debug-profile captures at 1800x1125 CSS pixels measured
+0.7ms median/1.1ms p95 handler time with multi-select closed and 0.8ms/1.2ms
+open. Forced-layout median/p95 were 12.9ms/57.8ms closed and 23.8ms/74.1ms open,
+with maxima 62.6ms and 79ms respectively.
+
+**Release and remaining checks:** Publish and verify the compatible client
+before deploying the matching `game-operation` authority; then run
+`node tools\smoke_server_game.mjs --radiant-live` against the deployed function.
+Do not infer a hosted release from a push. Six vendor portraits and other
+Radiant artwork remain pending with neutral presentation. The browser was
+backgrounded, so physical desktop GPU/frame cadence and owner visual review
+remain unverified. The economy results are conditional samples, not player
+income or final balance approval. The synthetic search-layout timing indicates
+possible jank and is not a visible-frame-rate measurement.
+
 ## Radiant goes live everywhere (2026-11-09)
 
 The owner rejected the preview-only rollout. Radiant now replaces ordinary

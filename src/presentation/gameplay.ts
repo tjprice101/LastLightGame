@@ -112,7 +112,7 @@ function gameplayInformation(): string {
     { id: 'roses', title: 'Passion of Crimson Roses', summary: 'Rosethorn materials', content: roseEventRules },
     { id: 'machines', title: 'Awaken the Machines', summary: 'Conduits, components and Masters', content: machineRulesText },
     { id: 'war', title: 'Elemental War', summary: 'Defeat challengers for a chance to recruit them', content: `<p>${warLore}</p><p>${warRulesText}</p>` },
-    { id: 'continuing', title: 'Between battles', summary: 'What carries over', content: `<ul><li>Staged activities: HP restores; Elemental Gauge carries over.</li><li>Training: HP, Elemental Gauge and recovery carry over.</li><li>Settings keeps your run. Quitting ends it, but keeps earned rewards.</li></ul>` },
+    { id: 'continuing', title: 'Between battles', summary: 'What carries over', content: `<ul><li>Staged activities: Health restores; personal charge and the shared Eternal charge carry over.</li><li>Training: Health, Shields, status effects, personal charge, the shared Eternal charge and defeated members carry over.</li><li>Settings keeps your run. Quitting ends it, but keeps earned rewards.</li></ul>` },
   ]);
 }
 

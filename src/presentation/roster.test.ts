@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { emptyAccount } from '../game/account';
-import { assignSquadSlot, bannerCharacters, characterCopyManagement, characterRoster, squadHub, summonHub } from './roster';
+import { assignSquadSlot, bannerCharacters, characterCopyManagement, characterRoster, squadEligibleMembers, squadHub, squadSelectionFromForm, summonHub } from './roster';
 import { standardBannerPool } from '../content/standard-banner';
 import { characterArt } from '../content/character-art';
 import { ownedCompanion } from './owned-companion';
+import { releasedRadiantIds } from '../content/radiant-combat';
+import { squadMemberLimit } from '../content/squad-rules';
 
 describe('roster, squad and summon screens', () => {
   const account = { ...emptyAccount(), characters: { ember: { level: 30, evolution: 2 }, tide: { level: 0, evolution: 1 } },
@@ -22,7 +24,9 @@ describe('roster, squad and summon screens', () => {
     expect(html).toContain('Choose leader');
     expect(html).toContain('Empty slot');
     expect(html).toContain('Save squad');
-    expect(html).not.toContain('disabled');
+    expect(html).toContain('Cancel changes');
+    expect(html).toContain('Draft matches the saved squad.');
+    expect(html).toContain('data-squad-save disabled');
   });
   it('keeps the squad editor available when no squad is saved yet', () => {
     const accountWithoutSquad = { ...account, squad: undefined };
@@ -37,13 +41,14 @@ describe('roster, squad and summon screens', () => {
     expect(header).toContain('2 / 6 slots filled');
     expect(header).toContain('form="squad-form"');
     expect(html.match(/>Save squad<\/button>/g)).toHaveLength(1);
+    expect(html).toContain('data-squad-cancel disabled');
     expect(html.match(/class="squad-member-preview"/g)).toHaveLength(6);
     for (let index = 0; index < 6; index++) expect(html).toContain(`name="slot-${index}"`);
   });
   it('renders an explicit empty state instead of throwing when there are no owned members', () => {
     const html = squadHub(emptyAccount());
     expect(html).toContain('No owned squad members');
-    expect(html).toContain('<button class="primary-button" type="submit" form="squad-form" disabled>Save squad</button>');
+    expect(html).toContain('<button class="primary-button" type="submit" form="squad-form" data-squad-save disabled>Save squad</button>');
   });
   it('displays the active Standard Banner and honest cost/pool/duplicate rules', () => {
     const html = summonHub(account);
@@ -110,6 +115,36 @@ describe('roster, squad and summon screens', () => {
     expect(() => assignSquadSlot(slots, 6, id, owned)).toThrow('six squad slots');
     expect(() => assignSquadSlot([], 0, id, owned)).toThrow('six squad slots');
     expect(slots).toEqual(['tide', 'ember', '', '', '', '']);
+  });
+  it('reads all six saved slots and rejects missing, duplicate or ineligible members', () => {
+    const members = releasedRadiantIds.slice(0, squadMemberLimit);
+    const fullAccount = {
+      ...emptyAccount(),
+      characters: Object.fromEntries(members.map((id) => [id, { level: 0, evolution: 1 }])),
+    };
+    const values = [...members];
+    const fullForm = new FormData();
+    values.forEach((id, index) => fullForm.set(`slot-${index}`, id));
+    expect(squadEligibleMembers(fullAccount)).toEqual(values);
+    expect(squadSelectionFromForm(fullForm, fullAccount)).toEqual(values);
+
+    const oneMember = new FormData();
+    ['tide', '', '', '', '', ''].forEach((id, index) => oneMember.set(`slot-${index}`, id));
+    expect(squadSelectionFromForm(oneMember, account)).toEqual(['tide']);
+
+    const duplicate = new FormData();
+    ['tide', 'tide', '', '', '', ''].forEach((id, index) => duplicate.set(`slot-${index}`, id));
+    expect(() => squadSelectionFromForm(duplicate, account)).toThrow('distinct');
+
+    const missingLeader = new FormData();
+    ['', 'tide', '', '', '', ''].forEach((id, index) => missingLeader.set(`slot-${index}`, id));
+    expect(() => squadSelectionFromForm(missingLeader, account)).toThrow('leader');
+
+    const captureId = 'capture:00000000-0000-4000-8000-000000000001';
+    const capturedAccount = { ...account, capturedCharacters: [{ instanceId: captureId, creatureId: 'infusion:treasury:0', locked: false }] };
+    const ineligible = new FormData();
+    ['tide', captureId, '', '', '', ''].forEach((id, index) => ineligible.set(`slot-${index}`, id));
+    expect(() => squadSelectionFromForm(ineligible, capturedAccount)).toThrow('combat-eligible');
   });
   it('uses compact bearer portraits only in the picker while formation keeps full figures', () => {
     const before = structuredClone(account);

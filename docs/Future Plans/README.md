@@ -1,5 +1,14 @@
 # Future Plans: unfinished work and restart guide
 
+## Live Radiant follow-through (2026-11-10)
+
+Radiant runs in the real online and local game across activities; the older
+preview-only release description below is historical. The
+[current handoff](../handoff.md#live-radiant-and-team-release-follow-through-2026-11-10)
+and [Radiant specification](radiant-combat-system-specification.md#live-implementation-and-continuation-compatibility-2026-11-10)
+record remaining artwork, physical desktop/owner review, conditional economy
+findings and the compatible client/authority release procedure.
+
 ## Current Radiant work and art scope (2026-11-09)
 
 The [handoff](../handoff.md) and [Radiant specification](radiant-combat-system-specification.md)

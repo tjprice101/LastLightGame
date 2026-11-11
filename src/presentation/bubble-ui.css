@@ -313,7 +313,6 @@ html body .sanctuary-shell .bubble-rail-edit { margin-left: auto; min-height: 48
 @keyframes bubble-portrait-float { 0%, 100% { transform: translateY(0) rotate(-.4deg); } 50% { transform: translateY(-12px) rotate(.4deg); } }
 @keyframes bubble-arena-pan { from { transform: scale(1.06) translateX(-1.5%); } to { transform: scale(1.12) translateX(1.5%); } }
 
-/* ===== D-433 Team orbit: portrait stage, sub-menu bubbles, zoomed detail panel ===== */
 @media (min-width: 961px) {
   html body #app .sanctuary-shell .ref-team { height: calc(100dvh - 146px) !important; min-height: 540px !important; align-items: stretch !important; }
   html body #app .sanctuary-shell .ref-team > .ref-team-sidebar { max-height: 100%; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
@@ -327,51 +326,10 @@ html body #app .sanctuary-shell .ref-team-sidebar .ref-member-row b { overflow-w
 html body #app .sanctuary-shell .ref-team-sidebar .ref-member-line > [data-make-leader] { position: absolute !important; right: 8px; top: 50%; translate: 0 -50%; width: 44px !important; height: 44px !important; min-height: 44px !important; padding: 0 !important; margin: 0 !important; border-radius: 50% !important; display: grid !important; place-items: center; font-size: 0 !important; z-index: 2; }
 html body #app .sanctuary-shell .ref-team-sidebar .ref-member-line > [data-make-leader]::after { content: "\265B" !important; position: static !important; inset: auto !important; display: block !important; width: auto !important; height: auto !important; opacity: 1 !important; background: none !important; font-size: 1.1rem !important; line-height: 1; color: color-mix(in srgb, var(--accent) 60%, #fff); animation: none !important; }
 html body #app .sanctuary-shell .ref-team-sidebar .ref-member-row b { font-size: .84rem !important; line-height: 1.2 !important; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > :is(.ref-character-header, .ref-character-submenus, .ref-character-panels) { align-self: stretch !important; justify-self: stretch !important; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] { overflow: clip !important; position: relative !important; display: block !important; height: 100% !important; min-height: 0 !important; isolation: isolate; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-header { position: absolute !important; inset: 0 !important; display: block !important; width: auto !important; height: auto !important; min-height: 0 !important; padding: 0 !important; margin: 0 !important; background: none !important; border: 0 !important; box-shadow: none !important; overflow: visible !important; transition: opacity .45s ease, transform .6s cubic-bezier(.2,1,.3,1); transform-origin: var(--zoom-x, 50%) var(--zoom-y, 45%); }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-portrait { position: absolute !important; left: 50% !important; top: 1% !important; width: min(54%, 64dvh) !important; height: 70% !important; max-width: none !important; translate: -50% 0; display: grid !important; place-items: center; background: none !important; border: 0 !important; box-shadow: none !important; overflow: visible !important; animation: bubble-portrait-float 9s ease-in-out infinite; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-portrait::before { content: ''; position: absolute; left: 50%; top: 52%; width: 82%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; z-index: -1; background: radial-gradient(circle, color-mix(in srgb, var(--accent) 32%, transparent), color-mix(in srgb, var(--accent) 9%, transparent) 46%, transparent 70%); animation: bubble-glow-breathe 6s ease-in-out infinite; pointer-events: none; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-portrait::after { content: ''; position: absolute; left: 50%; top: 52%; width: 96%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; z-index: -1; border: 1px dashed color-mix(in srgb, var(--accent) 22%, transparent); animation: bubble-spin 60s linear infinite; pointer-events: none; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-portrait :is(.character-idle, .portrait-frame, picture, span, div) { width: 100% !important; height: 100% !important; max-width: none !important; max-height: none !important; display: grid; place-items: center; background: none !important; border: 0 !important; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-portrait img { width: 100% !important; height: 100% !important; max-width: none !important; max-height: none !important; object-fit: contain !important; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity { position: absolute !important; left: 50% !important; bottom: 0 !important; translate: -50% 0; width: min(720px, 92%) !important; text-align: center !important; display: grid !important; justify-items: center; gap: 6px; padding: 14px 22px 16px !important; border-radius: 28px; border: 1px solid color-mix(in srgb, var(--accent) 22%, #ffffff1a); background: radial-gradient(ellipse at 50% -40%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 70%), linear-gradient(160deg, #20232bcc, #0f1218d9); box-shadow: inset 0 1px #ffffff22, 0 18px 44px #0008; backdrop-filter: blur(10px); animation: bubble-rise .8s .1s cubic-bezier(.2,1,.3,1) both; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity { grid-template-columns: minmax(0, 1fr) !important; grid-template-areas: none !important; grid-auto-flow: row !important; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity > * { grid-column: 1 !important; grid-row: auto !important; grid-area: auto !important; justify-self: center !important; text-align: center !important; margin: 0 !important; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity > .ref-character-progress { justify-self: stretch !important; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-submenus > button[aria-pressed="true"] { color: #f4f1ec !important; -webkit-text-fill-color: currentColor; }
 html body #app .sanctuary-shell .ref-team-sidebar .ref-panel-heading { flex-wrap: nowrap !important; white-space: nowrap; gap: 8px; }
 html body #app .sanctuary-shell .ref-team-sidebar .ref-panel-heading > button { white-space: nowrap; flex: none; min-height: var(--control-target); padding: 6px 14px; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity > p { margin: 0; font-size: .76rem; letter-spacing: .14em; font-variant: small-caps; color: color-mix(in srgb, var(--accent) 55%, #fff); }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity h2 { margin: 0 !important; font-size: clamp(2rem, 3vw, 3.2rem) !important; line-height: 1.02; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity :is(.ref-tags, .ref-character-header-actions) { display: flex !important; flex-wrap: wrap; justify-content: center !important; gap: 6px; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-progress { display: grid !important; grid-template-columns: repeat(2, minmax(0, 220px)) !important; justify-content: center; gap: 4px 24px; width: 100%; text-align: left; }
 
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-submenus { position: absolute !important; inset: 0 !important; display: block !important; z-index: 3; pointer-events: none; margin: 0 !important; padding: 0 !important; background: none !important; border: 0 !important; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-submenus > button { --delay: 0s; position: absolute !important; translate: -50% -50%; width: clamp(108px, 8.4vw, 136px) !important; height: auto !important; aspect-ratio: 1; min-height: 0 !important; padding: 12px !important; border-radius: 50% !important; pointer-events: auto; display: grid !important; place-items: center; text-align: center !important; font-weight: 700; font-size: .95rem; line-height: 1.15; color: #f4f1ec;
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, #ffffff26) !important;
-  background: radial-gradient(ellipse at 29% 14%, #ffffff4a 0%, #ffffff18 12%, transparent 30%), radial-gradient(ellipse at 48% 115%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 66%), linear-gradient(145deg, #34363cc4, #151820c4 52%, #252933d6) !important;
-  box-shadow: inset 0 1px 2px #ffffff66, inset 0 -3px 9px #ffffff0c, 0 16px 35px #0007, 0 0 22px color-mix(in srgb, var(--accent) 7%, transparent) !important;
-  backdrop-filter: blur(6px); animation: bubble-pop-in .7s cubic-bezier(.2,1.5,.4,1) backwards, bubble-float 7s var(--delay) ease-in-out infinite; transition: border-color .3s, box-shadow .3s, scale .6s cubic-bezier(.34,1.56,.64,1); }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-submenus > button:is(:hover, :focus-visible) { scale: 1.1; border-color: var(--accent) !important; box-shadow: inset 0 1px 3px #ffffff88, 0 15px 45px #0009, 0 0 38px color-mix(in srgb, var(--accent) 34%, transparent) !important; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-submenus > button:nth-child(1) { left: 14%; top: 18%; --delay: -1s; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-submenus > button:nth-child(2) { left: 86%; top: 18%; --delay: -3s; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-submenus > button:nth-child(3) { left: 9%; top: 50%; --delay: -5s; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-submenus > button:nth-child(4) { left: 91%; top: 50%; --delay: -2s; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-submenus > button:nth-child(5) { left: 50%; top: 4%; --delay: -4s; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .bubble-zoom-back,
-html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-panels { display: none !important; }
-
-html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .ref-character-header { opacity: .1; transform: scale(1.35); pointer-events: none; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .ref-character-submenus { inset: 0 0 auto 150px !important; height: 52px !important; display: flex !important; flex-wrap: nowrap; gap: 8px; overflow: visible !important; align-items: center; pointer-events: auto; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .ref-character-submenus > button { position: relative !important; left: auto !important; top: auto !important; translate: none !important; scale: 1 !important; flex: none; white-space: nowrap; width: auto !important; aspect-ratio: auto; min-height: 44px !important; padding: 8px 20px !important; border-radius: 99px !important; animation: bubble-pop-in .45s cubic-bezier(.2,1.5,.4,1) backwards; font-size: .9rem; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .ref-character-submenus > button[aria-pressed="true"] { border-color: var(--accent) !important; background: radial-gradient(ellipse at 30% 0%, #ffffff55, transparent 45%), linear-gradient(160deg, color-mix(in srgb, var(--accent) 80%, #fff), color-mix(in srgb, var(--accent) 70%, #000)) !important; color: #120d0a !important; -webkit-text-fill-color: currentColor; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .bubble-zoom-back { display: inline-flex !important; position: absolute; left: 0; top: 4px; z-index: 4; min-height: 44px; padding: 8px 18px; gap: 8px; align-items: center; border-radius: 99px; font-weight: 700; animation: bubble-pop-in .45s cubic-bezier(.2,1.5,.4,1) backwards; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .ref-character-panels { display: block !important; position: absolute !important; inset: 64px 0 0 0 !important; height: auto !important; max-height: none !important; overflow-y: auto !important; overscroll-behavior: contain; padding: 14px !important; border-radius: 28px !important; border: 1px solid color-mix(in srgb, var(--accent) 24%, #ffffff1c) !important; background: radial-gradient(ellipse at 50% -20%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%), linear-gradient(160deg, #1c1f27e8, #0d1016f0) !important; box-shadow: inset 0 1px #ffffff1e, 0 24px 60px #000a !important; transform-origin: var(--zoom-x, 50%) var(--zoom-y, 50%); animation: bubble-zoom-in .55s cubic-bezier(.2,1.1,.3,1) both; }
-html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .ref-character-panels > * { animation: bubble-rise .6s .18s cubic-bezier(.2,1,.3,1) both; }
 html body .bubble-portal { position: fixed; z-index: 60; width: 120px; height: 120px; margin: -60px; border-radius: 50%; pointer-events: none; border: 1px solid var(--accent, #e88); background: radial-gradient(ellipse at 30% 20%, #ffffff66, transparent 35%), radial-gradient(circle, #161c28f5 30%, color-mix(in srgb, var(--accent, #e88) 40%, #151923) 95%); box-shadow: 0 0 35px var(--accent, #e88), inset 0 0 25px #ffffff25; animation: bubble-portal-zoom .65s cubic-bezier(.55,.02,.4,1) both; }
-html[data-motion="reduced"] body #app .sanctuary-shell .ref-bearer-detail[data-orbit] :is(.ref-character-portrait, .ref-character-portrait::before, .ref-character-portrait::after, .ref-character-identity, .ref-character-submenus > button, .ref-character-panels, .ref-character-panels > *, .bubble-zoom-back) { animation: none !important; }
-html[data-motion="reduced"] body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-header { transition: none; }
 html[data-motion="reduced"] .bubble-backdrop,
 html[data-motion="reduced"] .bubble-backdrop *,
 html[data-motion="reduced"] .bubble-backdrop *::before,
@@ -380,24 +338,9 @@ html[data-motion="reduced"] body #app .sanctuary-shell .bubble-home,
 html[data-motion="reduced"] body #app .sanctuary-shell .bubble-home *,
 html[data-motion="reduced"] body #app .sanctuary-shell .bubble-home *::before,
 html[data-motion="reduced"] body #app .sanctuary-shell .bubble-home *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-@keyframes bubble-zoom-in { from { opacity: 0; transform: scale(.35); border-radius: 50%; } 60% { opacity: 1; } to { opacity: 1; transform: none; } }
 @keyframes bubble-portal-zoom { 0% { opacity: .5; transform: scale(.7); } 48% { opacity: .85; } 70% { opacity: .4; } 100% { opacity: 0; transform: scale(27); } }
 
-@media (max-width: 960px) {
-  html body #app .sanctuary-shell .ref-team:has(> .ref-bearer-detail[data-orbit]) { height: auto !important; min-height: 0 !important; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] { display: flex !important; flex-direction: column; gap: 12px; height: auto !important; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-header { position: relative !important; inset: auto !important; display: flex !important; flex-direction: column; align-items: center; gap: 10px; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] :is(.ref-character-portrait, .ref-character-identity) { position: relative !important; left: auto !important; top: auto !important; bottom: auto !important; translate: none; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-portrait { width: min(88vw, 420px) !important; height: min(48vh, 400px) !important; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-progress { grid-template-columns: 1fr !important; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-submenus { position: relative !important; inset: auto !important; display: flex !important; flex-wrap: wrap; justify-content: center; gap: 10px; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-submenus > button { position: relative !important; left: auto !important; top: auto !important; translate: none; width: min(96px, calc((100% - 30px) / 4)) !important; font-size: .8rem; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .ref-character-header { display: none !important; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .ref-character-submenus { inset: auto !important; height: auto; overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; order: 2; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .ref-character-submenus > button { width: auto !important; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .bubble-zoom-back { position: relative; order: 1; align-self: flex-start; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-zoom="open"] > .ref-character-panels { position: relative !important; inset: auto !important; order: 3; overflow: visible !important; }
-}
+
 
 html body #app .sanctuary-shell .ref-story-region-heading { flex-wrap: nowrap !important; align-items: center !important; gap: 8px !important; }
 html body #app .sanctuary-shell .ref-story-region-heading > span { white-space: nowrap; }
@@ -567,16 +510,7 @@ html body .game-dialog .game-destructive:not(:disabled):not(#_) { color: var(--c
   html body .sanctuary-shell .currency-strip:not(#_) > button :is(strong, span) { white-space: nowrap; overflow-wrap: normal; word-break: keep-all; }
 }
 
-/* Team orbit identity: compact card below the art, never covering it */
-@media (min-width: 961px) {
-  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-portrait:not(#_) { height: 72% !important; top: 0 !important; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity:not(#_) { width: min(480px, 46%) !important; gap: 2px !important; padding: 8px 18px 10px !important; border-radius: 22px; bottom: 6px !important; background: radial-gradient(ellipse at 50% -40%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%), linear-gradient(160deg, #1a1d24a6, #0d1016bf) !important; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity:not(#_) > p { font-size: .66rem !important; letter-spacing: .1em; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity:not(#_) h2 { font-size: clamp(1.35rem, 1.9vw, 1.9rem) !important; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity:not(#_) :is(.ref-tags, .ref-character-header-actions) { gap: 4px !important; font-size: .8rem; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity:not(#_) .ref-character-progress { grid-template-columns: repeat(2, minmax(0, 170px)) !important; gap: 2px 16px !important; font-size: .76rem; }
-  html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] .ref-character-identity:not(#_) .ref-character-header-actions :is(button, .ref-chip, span) { min-height: 36px; }
-}
+
 
 /* Stats & Skills: mock-up glass ability cards and stat bubbles */
 html body #app .sanctuary-shell .ref-character-overview .hub-stats:not(#_) { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important; gap: 10px !important; }
@@ -621,7 +555,7 @@ html body #app .sanctuary-shell .conduit-loadout .loadout-pager:not(#_) button {
 html body #app .sanctuary-shell .conduit-loadout .loadout-owned-row:not(#_) { grid-template-columns: 56px minmax(0, 1fr) auto auto !important; grid-template-areas: none !important; grid-template-rows: auto !important; align-items: center !important; column-gap: 10px !important; row-gap: 0 !important; }
 html body #app .sanctuary-shell .conduit-loadout .loadout-owned-row:not(#_) > * { grid-row: 1 !important; grid-area: auto !important; }
 html body #app .sanctuary-shell .conduit-loadout .loadout-owned-row:not(#_) > .loadout-owned-art { width: 56px !important; height: 56px !important; }
-html body #app .sanctuary-shell .conduit-loadout .loadout-owned-row:not(#_) > button { min-height: 40px !important; height: 40px !important; padding: 0 14px !important; align-self: center !important; }
+html body #app .sanctuary-shell .conduit-loadout .loadout-owned-row:not(#_) > button { min-height: 44px !important; height: 44px !important; padding: 0 14px !important; align-self: center !important; }
 html body #app .sanctuary-shell .conduit-loadout :is(.loadout-target-cue, .loadout-search-status):not(#_) { margin: 0 !important; }
 
 /* ---------- Palette-matched celebrations (owner request): banners and cinematics use the obtained thing's colours ---------- */
@@ -728,7 +662,7 @@ html[data-motion="reduced"] body #app .sanctuary-shell .squad-picker-grid .squad
 /* D-433 perf pass: compositor-only ambient motion (owner: animations jitter/lag). */
 .bubble-backdrop { contain: strict; }
 .bubble-glow, .bubble-current, .bubble-drift, .bubble-orbit, .bubble-spark, .bubble-twinkle { will-change: transform, opacity; backface-visibility: hidden; }
-html body .sanctuary-shell .hub-bubble, html body #app .sanctuary-shell .ref-bearer-detail[data-orbit] > .ref-character-submenus > button { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; will-change: transform; }
+html body .sanctuary-shell .hub-bubble { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; will-change: transform; }
 @keyframes bubble-primary-pulse { 0%, 100% { outline: 2px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 0; } 60% { outline: 2px solid transparent; outline-offset: 9px; } }
 @keyframes bubble-dialog-in { from { opacity: 0; transform: scale(.86) translateY(18px); } to { opacity: 1; transform: none; } }
 @keyframes bubble-rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }

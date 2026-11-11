@@ -1,5 +1,16 @@
 # Decision log
 
+## Live-first implementation; no demos (2026-11-10)
+
+The owner directs every game-system, character, ability and UI overhaul to be
+formulated and implemented directly in Last Light's real workspace and live
+game routes. Do not build a demo, preview, prototype, study flag or parallel
+mock-up first unless the owner explicitly asks for one. Historical mock-up
+notes remain records only; their demo files were retired. This changes the
+implementation target, not gameplay contracts or release gates: preserve
+authoritative account behavior, validate the real flows, and do not claim a
+production release before it has actually been deployed and verified.
+
 ## Radiant is the live battle system for every activity (2026-11-09)
 
 The owner rejected the preview-only rollout: the overhaul was always meant to
