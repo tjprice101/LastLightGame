@@ -907,7 +907,8 @@ function renderMenu(firstArrival = false): void {
     walletError = errorMessage(error);
   }
   const homeLeader = account && menuPage === 'home' ? account.squad?.[0] ?? starter.id : starter.id;
-  const sanctuary = `${sanctuaryHeader(menuPage, fractalis, account?.lycalis ?? null)}<section class="menu-screen sanctuary-content" data-menu-screen="${menuPage}">
+  const informationPage = ['team', 'character', 'squad', 'inventory', 'stores', 'conduit-store', 'conduit-upgrade', 'collections', 'archives', 'glossary', 'summon', 'special-banner-archive'].includes(menuPage);
+  const sanctuary = `${sanctuaryHeader(menuPage, fractalis, account?.lycalis ?? null)}<section class="menu-screen sanctuary-content${informationPage ? ' info-surface' : ''}" data-menu-screen="${menuPage}">
     ${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
     ${menuPage !== 'home' ? menuContent(menuPage) : referenceHome(isStarterId(homeLeader) ? getStarter(homeLeader) : starter, account)}
   </section>`;

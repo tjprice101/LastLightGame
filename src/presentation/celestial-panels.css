@@ -12,8 +12,8 @@ html body #app .sanctuary-shell :is(.ref-team-sidebar .ref-panel, .ref-team-coll
   box-shadow: inset 0 1px #ffffff30, inset 0 0 0 3px #ffffff08, 0 14px 32px #0006 !important;
 }
 html body #app .sanctuary-shell :is(.ref-team-collection, .ref-team-sidebar) .ref-panel-heading {
-  gap: 8px;
-  padding-bottom: 9px;
+  gap: var(--space-2);
+  padding-bottom: var(--space-2);
   border-bottom: 1px solid #ffffff36;
   color: #f7f8fb;
 }
@@ -42,13 +42,13 @@ html body #app .sanctuary-shell .ref-team-collection [data-collection-empty][hid
 
 html body #app .sanctuary-shell .ref-bearer-grid {
   grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
-  gap: 10px;
+  gap: var(--space-2);
 }
 html body #app .sanctuary-shell .ref-bearer-card .ref-card-art {
   box-sizing: border-box;
   height: auto;
   aspect-ratio: 1;
-  padding: 4px;
+  padding: var(--space-1);
   border: 1px solid color-mix(in srgb, var(--member-accent) 70%, #f6f7fa);
   border-radius: 10px 10px 5px 5px;
   background: radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--member-accent) 42%, #373c48), #0c1019 78%);
@@ -71,8 +71,8 @@ html body #app .sanctuary-shell .ref-bearer-card .compact-portrait img {
   object-fit: cover;
 }
 html body #app .sanctuary-shell .ref-bearer-card .ref-card-caption {
-  gap: 4px;
-  padding: 8px 9px 10px;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-2) var(--space-2);
   border-top: 1px solid color-mix(in srgb, var(--member-accent) 55%, #ffffff38);
 }
 html body #app .sanctuary-shell .ref-bearer-card .ref-card-caption b {
@@ -81,13 +81,13 @@ html body #app .sanctuary-shell .ref-bearer-card .ref-card-caption b {
 }
 html body #app .sanctuary-shell .ref-bearer-card .ref-card-caption small { color: #d3d8e1; }
 html body #app .sanctuary-shell .ref-bearer-card .ref-chip {
-  padding: 2px 8px;
-  font-size: .68rem;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--ui-label);
 }
 
 html body #app .sanctuary-shell .squad-picker-grid {
   grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)) !important;
-  gap: 10px !important;
+  gap: var(--space-2) !important;
 }
 html body #app .sanctuary-shell .squad-picker-grid .squad-pick-card[hidden]:not(#_) {
   display: none !important;
@@ -179,14 +179,14 @@ html body #app .sanctuary-shell .ref-character-panels .character-upgrade-grid > 
 }
 html body #app .sanctuary-shell .ref-character-panels .upgrade-stat-preview > span {
   min-width: 0;
-  padding: 8px;
+  padding: var(--space-2);
   border: 1px solid #d7e1ed24;
   border-radius: 5px;
   background: #070b12a6;
   overflow-wrap: anywhere;
 }
 html body #app .sanctuary-shell .ref-character-panels .upgrade-stat-preview strong {
-  font-size: 1rem;
+  font-size: 16px;
   line-height: 1.35;
   overflow-wrap: anywhere;
 }

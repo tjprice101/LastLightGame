@@ -1,5 +1,122 @@
 # Menus and inventory
 
+## Information-design audit and contract (2026-11-11)
+
+Baseline production presentation functions were rendered under the live shell
+with isolated holdings at 390x844, 768x1024 and 1440x900. This is a measurement
+fixture, not a new game mode or implementation target. Screenshots and raw
+computed-style/background samples are session evidence, not account data.
+
+| Screen | Problem | Baseline measurement | Required correction |
+|---|---|---|---|
+| Character | Small effects, scattered hierarchy | 13.12-14px effects, 9.92px labels; 16 visible sections | One profile/stats/leader/Flares/passive/equipment/lore path |
+| Locked Flares / Archive detail | Opacity reduces readability | 3.76-3.78:1 computed contrast | Full-contrast locked descriptions and explicit unlock labels |
+| Material / event exchange | Small prices and separated offer information | Minimum 11.2px; product and quantity prices in separate panels | Shared aligned offer grid |
+| Conduit selection / upgrade | Small effects and long lines | 12-14px effects; up to approximately 135 characters per line | Shared catalog template with bounded text width |
+| Inventory | Small metadata and quantities | 11px badges, 12px quantities | Shared item hierarchy and count role |
+| Shops / summon information | Inconsistent type and measure | Minimum 10.4-12.16px; some prose over 140 characters per line | Shared type, spacing and price roles |
+| Battle reference | Separate duplicated kit structure | 15.2px desktop body; approximately 94 characters per line | Shared character-sheet sections |
+
+No horizontal page overflow occurred in the 72 baseline cases. Most ordinary
+body text already exceeds 4.5:1; do not describe all gray copy as a contrast
+failure. Gradient text and image-backed surfaces require pixel review rather
+than treating transparent computed text as the actual foreground. Counts of
+sections are visible structural sections, not a claim that every section must
+be opened. Locked tiers previously omitted effects; they now show them.
+
+The owner requires one existing-system token source: Georgia at 600 normal /
+700 headings; desktop/mobile type roles 32/26 display, 24/21 title, 18/17
+section, 16/15 body, 14 label and 13 caption, with no text below 12px.
+Effects and lore use body; stats and prices at least 16px. Spacing uses
+4/8/12/16/24/32px; cards at least 16px desktop or 12px mobile.
+Exact values wrap rather than abbreviate. Six-element frames retain named
+element labels. All changes remain presentation-only.
+
+### Implemented information system and acceptance
+
+`src/interface.css` owns the existing-system typography, text/surface,
+six-element accent, border/radius and spacing tokens. No new CSS override
+file, demo route or study flag was added. `information-layout.ts` provides
+the shared ordered sheet, catalog and five-column offer templates.
+`combat-description.ts` supplies the same exact Flare/passive descriptions
+to menus and the frozen battle reference.
+
+The real Team profile has adjacent portrait/profile information, attached
+Stats & Abilities / Level / Evolution / Conduits actions, and one full-width
+reading path: stats, Leader, all three Flares, passive, equipment and collapsed
+lore. Using the full reading width keeps three desktop Flare columns readable;
+at 1100px and below they stack. Locked tiers retain costs, targets, exact
+effects and unlock conditions. Artwork is above the sheet on phones.
+Shared catalogs/offers cover inventory, exchange, Conduit stores/details/
+upgrades, personal Masters, cosmetic and event-creature shops and saved
+Conduit receipts. Character Collection details and squad-picker kit dialogs
+use the same sheet. Existing effects and transactions remain authoritative.
+
+The final production-renderer matrix contains 31 cases at 390x844, 768x1024
+and 1440x900: 93 cases with no page/internal horizontal overflow, clipped
+tested text, tested sibling overlap or effective touch target below 44px.
+All 24 original cases have paired before/after screenshots; seven additional
+interaction/stress cases have after-only evidence. Supplementary coverage
+includes picker/child-kit focus, unlocked Calamitic shop, receipt, pending
+Master art, longest released owned name and maximum-safe-integer inventory.
+The original maximum-safe exchange, empty inventory, multiple currencies and
+locked/unlocked kits are retained. Real Home-to-Team navigation, portrait
+stability across tabs, Escape/focus restoration and unchanged read-time
+wallet state were checked with isolated data, not the owner's account.
+
+| Role / representative rendered size | 390px | 768px / 1440px | Role line-height token |
+|---|---|---|---|
+| Display | Not rendered in these cases; 26px token | 32px | 1.2 |
+| Title | 21px | 24px | 1.25 |
+| Section | 17px | 18px | 1.3 |
+| Body/effects/lore | 15px | 16px | 1.5 |
+| Label | 14px | 14px | 1.4 |
+| Caption | 13px; existing secondary shell captions 13.6px | Same | 1.4 |
+| Stats/prices | At least 16px | At least 16px | Numeric role |
+
+The smallest rendered text is 13px; measured weights are 600/700. Existing
+larger currency/header sizes, including 17.6px and 20px, remain where they
+already meet their role minimum. Opaque text backgrounds measure at least
+6.67:1; body/effects on opaque backgrounds at least 8.62:1. Actual underlying
+pixels on complex surfaces measure at least 5.10:1 for small text and 3.50:1
+for large text. The 276 on-screen SVG control samples measure at least
+9.65:1 against their actual underlying button backgrounds, exceeding 3:1.
+Sampling excludes ancestor scroll clips and temporarily
+hides text fill without changing layout. Rarity medallion interiors and
+receipt status plates now protect text from bright reward effects; rarity
+frames and finite, reduced-motion-aware reward choreography remain.
+These text measurements are not a blanket contrast certification of painted
+character/item artwork, which retains its accompanying names and labels.
+
+Measured full prose lines reach at most 72 characters. The 52ch maximum was
+chosen from actual Georgia glyph ranges, not an assumption that CSS ch equals
+literal characters. Short effects, list fragments and final lines naturally
+contain fewer than 45 characters; desktop sheet/Flare reading capacities
+meet the intended measure without padding descriptions with extra words.
+All measured information/chrome padding and explicit gaps use
+4/8/12/16/24/32px, or zero where no additional inset is needed. Standalone
+panels/cards have at least 12px mobile / 16px desktop padding. The squad
+leader action has a real 44px grid column rather than overlaid controls and
+nonstandard reserved padding.
+
+**Intentional structural exceptions:** compact slot/equip and gallery
+navigation controls remain selectors, not full catalog cards; their detail
+views use the shared descriptions/sheets. Summon probability tables remain
+semantic rate tables, not purchase offers. Specialized upgrade comparisons,
+cost/resource grids and saved loot breakdowns retain their exact structures
+inside shared identity/detail presentation rather than being mislabeled as
+one effect bullet. Title/onboarding, Home, social conversations, activity
+maps and the battle arena are not redesigned by this information-sheet
+change. No authenticated hosted-battle claim is added.
+
+**Validation:** `npx vitest run --maxWorkers=3` passed 288 files / 10,311 tests.
+The focused template/receipt/store run passed 23 tests; the final
+reference/loadout/inventory/Calamitic integration run passed 93 tests.
+`npm run build` and `git diff --check` passed. There are no pre-existing test
+failures to exclude. Existing JSDOM canvas diagnostics and the Vite >500kB
+chunk advisory remain warnings, not failed gates. No authority deployment
+is required for these presentation-only changes.
+
 ## Special-event activity selection (2026-11-11)
 
 The Events activity page offers Crimson Roses and the Moon activity through

@@ -1,34 +1,34 @@
-.conduit-store-banner { position: relative; isolation: isolate; overflow: hidden; padding: clamp(18px, 3vw, 32px); border: 1px solid #ffffff30; border-radius: 18px; background-image: linear-gradient(90deg, #111b 0%, #1119 45%, #1114 100%), var(--conduit-store-art); background-size: cover; background-position: center; }
-.conduit-store-banner h2 { font: 600 clamp(24px, 3vw, 36px) Georgia, serif; margin: 8px 0 14px; }
+.conduit-store-banner { position: relative; isolation: isolate; overflow: hidden; padding: clamp(var(--space-4), 3vw, var(--space-8)); border: 1px solid #ffffff30; border-radius: 18px; background-image: linear-gradient(90deg, #111b 0%, #1119 45%, #1114 100%), var(--conduit-store-art); background-size: cover; background-position: center; }
+.conduit-store-banner h2 { font: 600 clamp(24px, 3vw, 36px) Georgia, serif; margin: var(--space-2) 0 var(--space-3); }
 .conduit-store p { line-height: 1.6; }
-.conduit-lore-disclosure > summary { min-height: 44px; box-sizing: border-box; padding: 12px 8px; cursor: pointer; }
+.conduit-lore-disclosure > summary { min-height: 44px; box-sizing: border-box; padding: var(--space-3) var(--space-2); cursor: pointer; }
 .conduit-lore-disclosure > summary:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
-.conduit-catalog { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; margin-top: 20px; }
-.conduit-card { min-width: 0; display: flex; flex-direction: column; padding: 20px; border: 1px solid #ffffff25; border-radius: 16px; background: #1b1b1ee8; }
-.conduit-card h3 { margin: 12px 0 6px; font: 600 22px Georgia, serif; }
-.conduit-card p { font-size: 13px; overflow-wrap: anywhere; }
-.conduit-card-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.conduit-catalog { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: var(--space-4); margin-top: var(--space-4); }
+.conduit-card { min-width: 0; display: flex; flex-direction: column; padding: var(--space-4); border: 1px solid #ffffff25; border-radius: 16px; background: #1b1b1ee8; }
+.conduit-card h3 { margin: var(--space-3) 0 var(--space-1); font: 600 22px Georgia, serif; }
+.conduit-card p { font-size: var(--ui-body); overflow-wrap: anywhere; }
+.conduit-card-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); }
 .conduit-card-heading small { color: #c3c3ca; }
-.conduit-mechanism { display: grid; justify-items: center; gap: 12px; padding: 22px; margin-bottom: 18px; border: 1px dashed #ffffff25; border-radius: 12px; background: #ffffff03; color: #bfc5cf; }
-.conduit-mechanism span { font-size: 11px; letter-spacing: .08em; }
+.conduit-mechanism { display: grid; justify-items: center; gap: var(--space-3); padding: var(--space-6); margin-bottom: var(--space-4); border: 1px dashed #ffffff25; border-radius: 12px; background: #ffffff03; color: #bfc5cf; }
+.conduit-mechanism span { font-size: var(--ui-label); letter-spacing: .08em; }
 .conduit-icon { display: block; width: 80px; height: 80px; max-width: 100%; flex: 0 0 80px; object-fit: contain; }
 .conduit-icon-frame { position: relative; display: inline-block; width: 80px; height: 80px; max-width: 100%; flex: 0 0 80px; aspect-ratio: 1; }
 .conduit-icon-frame .conduit-icon { width: 100%; height: 100%; }
 .conduit-mechanism .conduit-icon-frame, .archive-mechanism .conduit-icon-frame { width: min(100%, 200px); height: auto; }
 .inventory-item-art .conduit-icon-frame { width: 100%; height: 100%; max-width: 160px; max-height: 160px; }
-.conduit-art-pending { display: grid; place-items: center; font-size: 12px; text-align: center; color: #bcbcbc; border: 1px dashed #ffffff30; border-radius: 12px; }
+.conduit-art-pending { display: grid; place-items: center; font-size: var(--ui-label); text-align: center; color: #bcbcbc; border: 1px dashed #ffffff30; border-radius: 12px; }
 .conduit-common { color: #c39874; border-color: #c39874; }
 .conduit-rare { color: #c7cbd1; border-color: #c7cbd1; }
 .conduit-legendary { color: #f1f0e9; border-color: #f1f0e9; }
 .conduit-omnic { color: #fff; background: linear-gradient(110deg, #dca1a144, #d7c98544, #91c5a744, #8cbbdb44, #c6a3dd44); border-color: #ded0ff; box-shadow: inset 0 0 8px #fff3; }
 .conduit-calamitic { color: #fff; border-color: #ff1744; background: linear-gradient(115deg, #09090b, #39393e 45%, #6b1025 70%, #111114); box-shadow: inset 0 0 8px #fff2; }
-.calamitic-store-lock { grid-column: 1 / -1; display: grid; place-content: center; justify-items: center; gap: 2rem; min-width: 0; min-height: min(68vh, 38rem); padding: clamp(1rem, 4vw, 4rem); background: #101012; border: 1px solid #ffffff30; text-align: center; }
+.calamitic-store-lock { grid-column: 1 / -1; display: grid; place-content: center; justify-items: center; gap: var(--space-8); min-width: 0; min-height: min(68vh, 38rem); padding: var(--space-4); background: #101012; border: 1px solid #ffffff30; text-align: center; }
 .calamitic-store-lock p { max-width: 28ch; margin: 0; font-size: clamp(1.4rem, 4vw, 2.6rem); overflow-wrap: anywhere; }
 .calamitic-lock-symbol { position: relative; width: 4rem; height: 3.5rem; border: 2px solid #ddd; border-radius: .4rem; margin-top: 2rem; }
 .calamitic-lock-symbol::before { content: ""; position: absolute; width: 2.5rem; height: 2.5rem; left: .6rem; top: -2.2rem; border: 2px solid #ddd; border-bottom: 0; border-radius: 2rem 2rem 0 0; }
 html body .sanctuary-shell .ref-conduit-store[data-store-mode="calamitic"] .ref-store-hero { flex-shrink: 0; height: 9rem; }
 html body .sanctuary-shell .ref-conduit-store[data-store-mode="calamitic"] .ref-detail-facts > div:not(:last-child) { display: block; }
-html body .sanctuary-shell .ref-conduit-store[data-store-mode="calamitic"] .ref-detail-facts > div:not(:last-child) dt { margin-bottom: .4rem; font-weight: 700; }
+html body .sanctuary-shell .ref-conduit-store[data-store-mode="calamitic"] .ref-detail-facts > div:not(:last-child) dt { margin-bottom: var(--space-2); font-weight: 700; }
 html body .sanctuary-shell .ref-conduit-store[data-store-mode="calamitic"] .ref-detail-facts > div:not(:last-child) dd { text-align: left; }
 .conduit-omnic { position: relative; isolation: isolate; overflow: hidden; }
 .conduit-omnic::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 18% 25%, #fff 0 1px, transparent 2px), radial-gradient(circle at 80% 70%, #fff 0 1px, transparent 2px), linear-gradient(115deg, transparent 25%, #fff8 48%, transparent 65%); background-size: auto, auto, 300% 100%; animation: conduit-prismatic-shine 5s ease-in-out infinite; }
@@ -36,21 +36,21 @@ html body .sanctuary-shell .ref-conduit-store[data-store-mode="calamitic"] .ref-
 html[data-motion="reduced"] .conduit-omnic::after { animation: none; opacity: .3; }
 :root[data-motion="reduced"] .conduit-omnic::after { animation: none; opacity: .3; }
 .conduit-mechanism .conduit-icon { width: min(100%, 200px); height: auto; aspect-ratio: 1; }
-.conduit-effect { padding: 8px 12px; border-left: 2px solid #ddd; background: #ffffff06; color: #fff; }
+.conduit-effect { padding: var(--space-2) var(--space-3); border-left: 2px solid #ddd; background: #ffffff06; color: #fff; }
 .conduit-quantity { margin-top: auto; font-variant-numeric: tabular-nums; }
-.conduit-price { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.conduit-card .primary-button { min-height: 44px; padding: 12px; white-space: normal; }
-.conduit-section-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
-.conduit-owned-list { list-style: none; padding: 0; display: grid; gap: 12px; }
-.conduit-owned-list li { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 12px; border: 1px solid #ffffff25; border-radius: 12px; }
+.conduit-price { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.conduit-card .primary-button { min-height: 44px; padding: var(--space-3); white-space: normal; }
+.conduit-section-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.conduit-owned-list { list-style: none; padding: 0; display: grid; gap: var(--space-3); }
+.conduit-owned-list li { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; padding: var(--space-3); border: 1px solid #ffffff25; border-radius: 12px; }
 .conduit-owned-list li > div { flex: 1 1 140px; min-width: 0; }
 .conduit-owned-list strong, .conduit-owned-list small { display: block; overflow-wrap: anywhere; }
 .conduit-owned-list li > span { overflow-wrap: anywhere; max-width: 100%; font-variant-numeric: tabular-nums; }
 .conduit-equipment-slot { min-width: 0; }
-.conduit-equipment-slot select { width: 100%; min-width: 0; min-height: 44px; padding: 6px; border: 1px solid #ffffff40; border-radius: 8px; background: #252529; color: #fff; font: 12px "Segoe UI", sans-serif; }
-.conduit-equipment-slot label { display: block; margin-bottom: 8px; }
-.conduit-equipment-slot > span { display: block; white-space: normal; overflow-wrap: anywhere; margin-top: 8px; }
+.conduit-equipment-slot select { width: 100%; min-width: 0; min-height: 44px; padding: var(--space-1); border: 1px solid #ffffff40; border-radius: 8px; background: #252529; color: #fff; font: 12px "Segoe UI", sans-serif; }
+.conduit-equipment-slot label { display: block; margin-bottom: var(--space-2); }
+.conduit-equipment-slot > span { display: block; white-space: normal; overflow-wrap: anywhere; margin-top: var(--space-2); }
 .sanctuary-shell .character-hub .artifact-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); }
 
-html body .sanctuary-shell .ref-conduit-store .ref-product > .conduit-icon-frame { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); width: 100%; height: 7rem; min-width: 0; min-height: 0; flex: none; overflow: hidden; padding-bottom: 10px; box-sizing: border-box; }
+html body .sanctuary-shell .ref-conduit-store .ref-product > .conduit-icon-frame { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); width: 100%; height: 7rem; min-width: 0; min-height: 0; flex: none; overflow: hidden; padding-bottom: var(--space-2); box-sizing: border-box; }
 html body .sanctuary-shell .ref-conduit-store .ref-product .conduit-icon { width: 100%; height: 100%; min-width: 0; min-height: 0; max-width: 100%; max-height: 100%; object-fit: contain; }

@@ -142,8 +142,8 @@ html[data-motion="reduced"] .radiant-charge-layers.is-flowing .radiant-energy-li
 .radiant-member details { margin-top: 10px; font-size: 13px; overflow-wrap: anywhere; }
 .radiant-member .radiant-status-list, .radiant-member .radiant-shield-layers { max-height: 108px; overflow-y: auto; scrollbar-width: thin; }
 .radiant-team-reference { padding: 12px; border: 1px solid #686c77; border-radius: 12px; margin-top: 16px; }
-.radiant-reference h3 { border-bottom: 1px solid #737782; padding-bottom: 8px; }
-.radiant-reference section { border-left: 2px solid #969dad; padding: 8px 16px; margin: 12px 0; }
+.radiant-reference h3 { border-bottom: 1px solid #737782; padding-bottom: var(--space-2); }
+.radiant-reference section { border-left: 2px solid #969dad; padding: var(--card-padding); margin: 12px 0; }
 .radiant-reference li { margin: 8px 0; line-height: 1.5; }
 .radiant-member dl div { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
 .radiant-member dd { margin: 0; overflow-wrap: anywhere; }

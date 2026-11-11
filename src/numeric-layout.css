@@ -11,7 +11,7 @@
 .sanctuary-shell .character-hub .hub-stats strong {
   display: block;
   max-width: 100%;
-  font-size: clamp(16px, 15cqi, 22px);
+  font-size: 16px;
   line-height: 1.25;
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;

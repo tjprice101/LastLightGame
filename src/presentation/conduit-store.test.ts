@@ -20,11 +20,11 @@ describe('Conduit Store and discovery routes', () => {
       expect(lore.open).toBe(false);
       expect(lore.querySelector('summary')?.textContent).toBe('Lore');
       expect(lore.textContent).toContain(entry.lore);
-      expect(host.querySelector('dd, .master-reference > p')).not.toBeNull();
+      expect(host.querySelector('.info-effects')).not.toBeNull();
       expect(lore.querySelector('dd')).toBeNull();
       lore.open = true;
       expect(lore.open).toBe(true);
-      expect(lore.querySelector('.conduit-lore')?.textContent).toBe(entry.lore);
+      expect(lore.querySelector('.conduit-lore')?.textContent).toContain(entry.lore);
     }
     host.innerHTML = conduitStore({ ...emptyAccount(), fractalis: 10000 });
     expect(host.querySelector<HTMLDetailsElement>('.ref-store-detail details')?.open).toBe(false);

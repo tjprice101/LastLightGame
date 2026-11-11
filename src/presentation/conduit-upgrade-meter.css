@@ -1,8 +1,8 @@
 .conduit-upgrade-meter {
   --meter-square: 8px;
-  --meter-gap: 3px;
-  position: absolute; bottom: 0; right: 0; display: inline-flex; gap: var(--meter-gap);
-  padding: 4px; border: 1px solid #ffffff45; border-radius: 4px;
+  --meter-gap: var(--space-1);
+  position: absolute; bottom: 0; right: 0; display: inline-flex; gap: var(--space-1);
+  padding: var(--space-1); border: 1px solid #ffffff45; border-radius: 4px;
   background: #111e; box-sizing: border-box; pointer-events: none;
 }
 .conduit-upgrade-meter .conduit-upgrade-square {

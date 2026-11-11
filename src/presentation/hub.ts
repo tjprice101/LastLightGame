@@ -36,7 +36,7 @@ import { masterEquipment } from './master-conduits';
 import { applyConduitSearch, conduitLoadout, filledConduitSlots } from './conduit-loadout';
 import { phaseZeroStatsReady, statDisplayUnit } from '../content/phase-zero-stats';
 import { displayStatLabels, type DisplayStatKey } from './stat-preview';
-import { radiantAttunementChip, radiantAttunementSection, radiantCharacterLoadout, radiantFlareArticle, radiantKitSections, radiantLeaderArticle, radiantPassiveArticle,
+import { radiantAttunementChip, radiantAttunementSection, radiantCharacterLoadout, radiantCharacterSheet, radiantFlareArticle, radiantKitSections, radiantLeaderArticle, radiantPassiveArticle,
   radiantStatPreview, radiantStatsPanel, radiantUnavailable } from './character-combat';
 import { escapeDialogText } from './game-dialog';
 
@@ -319,7 +319,7 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
   const progress = account ? ownedProgress(account, starter.id) : undefined;
   const radiant = radiantCharacterLoadout(account, starter.id);
   const issue = radiant?.issue ? `<p role="note" class="radiant-loadout-issue">${escapeDialogText(radiant.issue)}</p>` : '';
-  const radiantOverview = radiant ? `${radiantAttunementSection(radiant.loadout)}<section class="character-category"><h3>Stats</h3>${radiantStatsPanel(radiant.loadout)}${issue}</section>${radiantKitSections(radiant.loadout)}` : radiantUnavailable();
+  const radiantOverview = radiant ? `${issue}${radiantCharacterSheet(radiant.loadout, false)}` : radiantUnavailable();
   let detail: string;
   if (selectedTab === 'overview' && organized) {
     detail = `<div class="ref-character-overview radiant-character-overview">${radiantOverview}</div>`;

@@ -90,7 +90,7 @@ describe('Calamitic market and shared surfaces', () => {
     const upgrade = render(conduitUpgradeMenu(account, first));
     expect(upgrade.querySelector('[data-upgrade-rarity-chip="Calamitic"]')).not.toBeNull();
     expect(upgrade.textContent).toContain('10000 / 20000 / 40000 / 70000 / 100000');
-    expect(conduitDetails(first)).toContain("Rise's Conduit Store");
+    expect(render(conduitDetails(first)).textContent).toContain("Rise's Conduit Store");
     expect(conduitDetails(first)).not.toContain('Awaken the Machines drop');
     expect(conduitIcon(first)).toContain(`${first}.png?v=${conduitArtRevisions[first]}`);
     expect(archives(emptyAccount(), 'conduits')).not.toContain(first);

@@ -16,24 +16,24 @@ html body .sanctuary-shell :is(.primary-button,.hub-battle-button) { background:
 html body .sanctuary-shell button:disabled { background: #242427; color: var(--mono-quiet); cursor: default; }
 html body .sanctuary-shell .text-button { border: 1px solid var(--mono-line); border-radius: .65rem; background: transparent; }
 html body .sanctuary-shell .eyebrow { color: var(--mono-quiet); font-size: .66rem; font-weight: 600; letter-spacing: .12em; }
-html body .sanctuary-shell .sanctuary-header { grid-template-columns: minmax(170px,1fr) auto minmax(280px,1fr); min-height: 3.6rem; padding: .45rem 1.25rem; gap: .8rem; border-bottom: 1px solid var(--mono-line); background: var(--mono-bg); }
+html body .sanctuary-shell .sanctuary-header { grid-template-columns: minmax(170px,1fr) auto minmax(280px,1fr); min-height: 3.6rem; padding: var(--space-2) var(--space-4); gap: var(--space-3); border-bottom: 1px solid var(--mono-line); background: var(--mono-bg); }
 html body .sanctuary-shell .sanctuary-brand { gap: .7rem; }
 html body .sanctuary-shell .sanctuary-brand strong { font-size: .8rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
 html body .sanctuary-shell .sanctuary-brand .brand-mark { transform: none; width: 2rem; min-width: 2rem; height: 2rem; border-radius: .4rem; border: 1.5px solid var(--mono-text); font-size: .6rem; }
 html body .sanctuary-shell .sanctuary-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 html body .sanctuary-shell .sanctuary-wallet { grid-column: 3; gap: .45rem; }
-html body .sanctuary-shell .currency-strip > button { min-height: 44px; border-color: var(--mono-line); padding: .3rem .7rem; background: var(--mono-panel); }
+html body .sanctuary-shell .currency-strip > button { min-height: 44px; border-color: var(--mono-line); padding: var(--space-1) var(--space-3); background: var(--mono-panel); }
 html body .sanctuary-shell .currency-strip small { display: none; }
 html body .sanctuary-shell .currency-strip .currency-icon { width: 20px; height: 20px; flex-basis: 20px; }
 html body .sanctuary-shell .currency-strip strong { font-size: .8rem; font-variant-numeric: tabular-nums; }
-html body .sanctuary-shell .sanctuary-wallet > button { min-width: 44px; min-height: 44px; border: 1px solid var(--mono-line); border-radius: 50%; padding: .55rem; background: var(--mono-panel); }
+html body .sanctuary-shell .sanctuary-wallet > button { min-width: 44px; min-height: 44px; border: 1px solid var(--mono-line); border-radius: 50%; padding: var(--space-2); background: var(--mono-panel); }
 html body .sanctuary-shell .sanctuary-back { padding: .25rem .5rem; font-size: .72rem; }
 html body .sanctuary-shell .sanctuary-back small { display: none; }
 html body .sanctuary-shell .sanctuary-dock { position: absolute; top: .45rem; bottom: auto; left: 50%; transform: translateX(-50%); display: flex; gap: .25rem; padding: 0; width: auto; border: 0; border-radius: 0; box-shadow: none; background: none; backdrop-filter: none; }
 html body .sanctuary-shell .sanctuary-dock button { display: flex; gap: .5rem; min-height: 44px; border-radius: .6rem; padding: .55rem 1rem; font-size: .9rem; color: var(--mono-muted); }
 html body .sanctuary-shell .sanctuary-dock button[aria-current] { background: white; color: #0b0b0c; }
 html body .sanctuary-shell .sanctuary-dock .ui-icon { width: 1.1rem; height: 1.1rem; }
-html body .sanctuary-shell .sanctuary-content { padding: 1rem 1.25rem; }
+html body .sanctuary-shell .sanctuary-content { padding: var(--space-4) var(--space-4); }
 html body .sanctuary-shell .hub-heading { display: none; }
 html body .sanctuary-shell :is(.sanctuary-team-tabs,.section-navigation,.character-sections,.summon-banner-navigation,.archive-navigation) button { border-radius: .6rem; background: var(--mono-raised); border: 1px solid var(--mono-line); color: var(--mono-muted); }
 html body .sanctuary-shell :is(.sanctuary-team-tabs,.section-navigation,.character-sections,.summon-banner-navigation,.archive-navigation) button:is([aria-pressed=true],[aria-current=page]) { background: white; color: #0b0b0c; border-color: white; }
@@ -120,7 +120,7 @@ html body .sanctuary-shell .artifact-slot .conduit-icon-frame { width: 48px; hei
 html body .sanctuary-shell .artifact-slot select { width: 100%; }
 html body .sanctuary-shell .master-relic { padding: .5rem; border: 1px solid var(--mono-line); border-radius: .6rem; background: var(--mono-raised); }
 html body .sanctuary-shell :is(.inventory-currency,.inventory-panel,.conduit-card,.conduit-upgrade-card,.archive-card,.activity-card,.summon-sidebar,.summon-rates) { background: var(--mono-panel); border: 1px solid var(--mono-line); border-radius: .9rem; box-shadow: none; }
-html body .sanctuary-shell .inventory-currencies { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .9rem; }
+html body .sanctuary-shell .inventory-currencies { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: var(--space-4); }
 html body .sanctuary-shell .inventory-item-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(115px,1fr)); gap: .6rem; }
 html body .sanctuary-shell .inventory-item { border: 1px solid var(--mono-line); border-radius: .7rem; background: var(--mono-raised); padding: .7rem; }
 html body .sanctuary-shell .inventory-item-art { height: 80px; }
@@ -137,7 +137,7 @@ html body .sanctuary-shell .banner-characters { padding: 1rem; }
 html body .sanctuary-shell .banner-characters ul { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .5rem; }
 html body .sanctuary-shell .banner-characters li { border-color: var(--mono-line); background: var(--mono-raised); padding: .5rem; font-size: .74rem; }
 html body .sanctuary-shell .summon-sidebar { display: flex; flex-direction: column; gap: .7rem; padding: .95rem; }
-html body .sanctuary-shell .summon-rates { grid-column: 1/-1; padding: .95rem; }
+html body .sanctuary-shell .summon-rates { grid-column: 1/-1; padding: var(--space-4); }
 html body .sanctuary-shell .summon-drop-table { width: 100%; font-size: .78rem; }
 html body .sanctuary-shell .conduit-catalog { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: .9rem; }
 html body .sanctuary-shell .conduit-card { padding: .95rem; }
@@ -214,12 +214,12 @@ html body .sanctuary-shell #gameplay-story .mono-story-quick-enter { display: no
   html body .sanctuary-shell .conduit-catalog { grid-template-columns: repeat(3,minmax(0,1fr)); }
 }
 @media (max-width: 760px) {
-  html body .sanctuary-shell .sanctuary-header { padding: .5rem .75rem; }
+  html body .sanctuary-shell .sanctuary-header { padding: var(--space-2) var(--space-3); }
   html body .sanctuary-shell .sanctuary-brand > div, html body .sanctuary-shell .sanctuary-help-trigger { display: none; }
   html body .sanctuary-shell .sanctuary-back { font-size: .7rem; gap: .2rem; }
-  html body .sanctuary-shell .currency-strip > button { padding: .3rem .4rem; }
+  html body .sanctuary-shell .currency-strip > button { padding: var(--space-1) var(--space-2); }
   html body .sanctuary-shell .sanctuary-wallet { gap: .25rem; }
-  html body .sanctuary-shell .sanctuary-content { padding: .75rem; }
+  html body .sanctuary-shell .sanctuary-content { padding: var(--space-3); }
   html body .sanctuary-shell .home-hub { grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-areas: "identity identity" "story story" "squad squad" "destinations destinations" "stores stores"; min-height: 0; }
   html body .sanctuary-shell .home-hub .hub-portrait { min-height: 200px; height: 240px; max-height: 240px; }
   html body .sanctuary-shell .home-hub .hub-portrait img { max-height: 240px; }

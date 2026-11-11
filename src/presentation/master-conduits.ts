@@ -10,6 +10,7 @@ import { conduitElementLabel, conduitElementTheme } from './conduit-element';
 import { imageSource } from './bubble-ui';
 import { masterConduitArtRevisions } from '../content/master-conduit-art-revisions';
 import { isRadiantMaster, radiantMasterEffect, radiantMasterUnavailable } from './master-text';
+import { catalogInformation } from './information-layout';
 
 const pendingMasterArt = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect x="40" y="40" width="176" height="176" rx="28" fill="#171717" stroke="#999" stroke-width="4"/><text x="128" y="122" text-anchor="middle" fill="#ddd" font-size="22" font-family="Georgia">Artwork</text><text x="128" y="150" text-anchor="middle" fill="#ddd" font-size="22" font-family="Georgia">pending</text></svg>')}`;
 
@@ -30,7 +31,7 @@ export function masterChestIcon(): string {
 export function masterReference(id?: MasterConduitId | null): string {
   if (!id) return '';
   const entry = getMasterConduit(id);
-  return `<section class="master-reference" data-acquisition-master="${entry.id}"><h3>Master · ${entry.name}</h3>${conduitElementLabel(getStarter(entry.character).elementId)}<p>${referencedEffect(escapeDialogText(radiantMasterEffect(entry.id)))}</p><small>${getStarter(entry.character).name} only · Cannot be upgraded</small>${conduitLore(entry.lore)}</section>`;
+  return `<section class="master-reference" data-acquisition-master="${entry.id}">${catalogInformation({ name: `Master · ${entry.name}`, art: masterConduitIcon(entry.id), metadata: conduitElementLabel(getStarter(entry.character).elementId), effects: [referencedEffect(escapeDialogText(radiantMasterEffect(entry.id)))], state: `${getStarter(entry.character).name} only · Cannot be upgraded`, lore: entry.lore })}</section>`;
 }
 export function masterEquipment(character: string, account: Account | null): string {
   if (!isStarterId(character)) return '<div class="ref-master-slot"><strong>Master slot</strong><p>Character Masters are for their named Element-Bearer only.</p></div>';

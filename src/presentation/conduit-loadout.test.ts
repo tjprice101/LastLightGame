@@ -444,7 +444,8 @@ describe('Conduit loadout (D-229)', () => {
       expect(lore.open).toBe(false);
       expect(lore.querySelector('summary')?.textContent).toBe('Lore');
       expect(lore.querySelector('.conduit-lore')?.textContent).toBe(conduit.lore);
-      expect(dialog.querySelector('h3')?.textContent).toBe('Conduit Ability');
+      expect(dialog.querySelector('.info-item-header h3')?.textContent).toBe(conduit.name);
+      expect(dialog.querySelector('.info-effects')?.textContent).toContain(referencedEffect(conduitEffect(conduit, 5)));
       lore.open = true;
       expect(lore.open).toBe(true);
       dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));

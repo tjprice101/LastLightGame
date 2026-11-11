@@ -69,7 +69,7 @@
 .reward-screen[data-reward-revealed]:has(.calamity-reward-grid) .reward-stage { min-height: 0; }
 @media (max-width: 640px) { .summon-ten-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .reward-screen .game-dialog-actions { justify-content: center; flex-shrink: 0; margin-top: 16px; padding-top: 12px; border-top: 1px solid #ffffff26; }
-.reward-animation-label { font-size: clamp(20px, 4vw, 32px); margin: 14px 0; }
+.reward-animation-label { position: relative; z-index: 1; width: fit-content; max-width: 100%; box-sizing: border-box; font-size: var(--ui-body); margin: var(--space-3) auto; padding: var(--space-2) var(--space-3); border: 1px solid var(--panel-border); border-radius: var(--panel-radius); background: var(--surface-inset); }
 :root[data-motion="reduced"] .reward-halo { box-shadow: none; }
 body.reduced-motion .reward-halo { box-shadow: none; }
 /* Summon tier reveals (D-230): 5-star gold, 6-star prismatic. Decorative layers stay aria-hidden. */
@@ -78,9 +78,8 @@ body.reduced-motion .reward-halo { box-shadow: none; }
 .reward-screen[data-reward-tier="five-star"] { background: radial-gradient(circle at 50% 38%, #4a3208 0%, #160f04 55%, #0b0a08 100%); border-color: #ffd56a; box-shadow: 0 0 60px #ffb92e66, inset 0 0 0 1px #ffe39a55; }
 .reward-screen[data-reward-tier="six-star"] { background: radial-gradient(circle at 50% 38%, #2d1450 0%, #0d0820 55%, #05040c 100%); border-color: transparent;
   box-shadow: 0 0 0 2px #ffffffaa, 0 0 70px #ff5fd288, 0 0 120px #7ef9ff66; }
-.reward-screen[data-reward-tier] h2, .reward-screen[data-reward-tier] .reward-animation-label { color: var(--tier-b); text-shadow: 0 0 18px var(--tier-a); }
-.reward-screen[data-reward-tier="six-star"] .reward-animation-label { background: linear-gradient(90deg, #ff5fd2, #ffb36b, #fff27a, #7effa8, #7ef9ff, #a98bff, #ff5fd2); background-size: 200% 100%;
-  -webkit-background-clip: text; background-clip: text; color: transparent; animation: reward-prism-text 2.4s linear infinite; }
+.reward-screen[data-reward-tier] h2 { color: var(--tier-b); text-shadow: 0 0 18px var(--tier-a); }
+.reward-screen[data-reward-tier] .reward-animation-label { color: var(--tier-b); border-color: var(--tier-a); text-shadow: none; }
 .reward-screen[data-reward-tier] .reward-halo { border-color: var(--tier-a); box-shadow: 0 0 80px var(--tier-a), inset 0 0 50px var(--tier-c); opacity: .7; animation: reward-halo-pulse 1.4s ease-in-out infinite; }
 .reward-screen[data-reward-tier] .reward-portal { border-color: var(--tier-b); box-shadow: 0 0 80px var(--tier-a), inset 0 0 55px var(--tier-c); }
 .reward-screen[data-reward-tier] .reward-portal::before { border-color: var(--tier-a); }

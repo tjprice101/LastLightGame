@@ -2,12 +2,14 @@ import { createGameDialog, escapeDialogText } from './game-dialog';
 import { rarityFeedback, clearRarityFeedback, rarityMotionReduced } from './rarity-feedback';
 import { type Rarity, rarityColors, isRarity } from '../content/rarity';
 import { bubbleMotionAllowed, celebrate, cinematic, rarityPalette, type CinematicSpec } from './bubble-ui';
+import { catalogInformation, type CatalogInformation } from './information-layout';
 
 export interface RewardPresentation {
   title: string;
   name: string;
   art: string;
   details: string;
+  information?: Omit<CatalogInformation, 'name' | 'art'>;
   accent: string;
   animationLabel: string;
   savedLabel?: string;
@@ -47,7 +49,7 @@ export function rewardScreenMarkup(reward: RewardPresentation): string {
     <div class="reward-stage">${tierEffects(reward.tier)}<span class="reward-halo" aria-hidden="true"></span><span class="reward-portal" aria-hidden="true"></span>
       <div class="reward-art" hidden>${reward.art}</div></div>
     <p class="reward-animation-label" role="status">${escapeDialogText(label)}</p>
-    <section class="reward-details" hidden><h3>${escapeDialogText(reward.name)}</h3>${reward.details}</section>
+    <section class="reward-details" hidden>${catalogInformation({ name: reward.name, art: '', ...(reward.information ?? { details: reward.details }) })}</section>
     <p class="reward-art-error" role="alert" hidden></p></div>
     <div class="game-dialog-actions"><button class="text-button" data-skip-reward>Skip animation</button>
       <button class="primary-button" data-close-reward hidden>Continue</button></div>`;

@@ -247,11 +247,14 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
           <div><span data-reference-evolution>Evolution ${displayEvolution(starter.id, progress.evolution)} / ${displayEvolution(starter.id, 6)}</span><div class="ref-pips">${Array.from({ length: 6 }, (_, index) => `<i class="${index < progress.evolution ? 'is-filled' : ''}"></i>`).join('')}</div></div></div>
           <span data-owned-progress class="ref-sr-only">Lv.${progress.level} · Evo.${displayEvolution(starter.id, progress.evolution)}</span>
           <div class="ref-character-header-actions">${squad[0] === starter.id ? '<span class="ref-chip ref-white">Squad leader</span>'           : squad.includes(starter.id) ? `<button class="ref-chip" data-make-leader="${starter.id}">♛ Make leader</button>` : radiant ? '<button class="ref-chip" data-team-view="formation">Add to squad</button>' : ''}
-          ${information(`bearer-lore-${starter.id}`, starter.name, `<p>${starter.description}</p><h3>${starter.lore.origin}</h3><p>${starter.lore.story}</p><blockquote>${starterVow(starter)}</blockquote>`, 'Lore')}</div></div>
+          </div></div>
       </header><nav class="ref-character-submenus" aria-label="Character sub-menus">${[
         ['overview', 'Stats & Abilities'], ['upgrade-1', 'Level'], ['upgrade-0', 'Evolution'], ['equipment', 'Conduits'],
       ].map(([tab, label]) => `<button type="button" data-character-tab="${tab}" aria-pressed="${tab === (state.tab ?? 'overview')}">${label}</button>`).join('')}</nav>
       <section class="hub-detail ref-character-panels" aria-label="Character details and upgrades">${characterDetail(starter, state.tab ?? 'overview', account, true)}</section></section>`;
   }
-  return `<div class="ref-screen ref-team">${referenceTeamSidebar(account, state)}${content}</div>`;
+  const navigation = state.view === 'detail'
+    ? `<details class="ref-team-navigation"><summary>Squad and collection</summary>${referenceTeamSidebar(account, state)}</details>`
+    : referenceTeamSidebar(account, state);
+  return `<div class="ref-screen ref-team">${navigation}${content}</div>`;
 }

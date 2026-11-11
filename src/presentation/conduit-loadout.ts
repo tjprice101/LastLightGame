@@ -17,6 +17,7 @@ import { escapeDialogText, gameChoose } from './game-dialog';
 import { referencedEffect } from './effect-copy';
 import { rarityFeedback } from './rarity-feedback';
 import { isRarity } from '../content/rarity';
+import { catalogInformation } from './information-layout';
 
 export const conduitLoadoutPageSize = 4;
 const rarityOrder = ['Common', 'Rare', 'Legendary', 'Omnic', 'Calamitic'] as const;
@@ -182,7 +183,7 @@ export function bindConduitLoadout(host: HTMLElement): void {
           conduit.rarity === 'Calamitic' ? 'Maximum 5 Calamitic Conduits per character.' : ''].filter(Boolean).join(' ');
         void gameChoose(`${detail} ${rule ?? ''} ${restrictions}`, [{ value: 'close', label: 'Close', primary: true }], 'close', {
           title: conduit.name,
-          messageHtml: `<div class="loadout-detail"><div class="loadout-detail-art">${conduitIcon(conduit.id, level)}</div>${conduitElement(conduit.id)}<p>${escapeDialogText(detail)}</p><h3>Conduit Ability</h3><p>${escapeDialogText(rule)}</p>${restrictions ? `<p>${escapeDialogText(restrictions)}</p>` : ''}${conduitLore(conduit.lore)}</div>`,
+          messageHtml: `<div class="loadout-detail">${catalogInformation({ name: conduit.name, art: conduitIcon(conduit.id, level), metadata: `${conduit.rarity} · +${level} / ${conduitUpgradeCap} ${conduitElement(conduit.id)}`, effects: [escapeDialogText(detail), escapeDialogText(rule)], state: restrictions || undefined, lore: conduit.lore })}</div>`,
         });
       } else if (isMasterConduitId(id)) {
         const master = getMasterConduit(id);

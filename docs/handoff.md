@@ -1,5 +1,34 @@
 # Current state and handoff
 
+## Shared live information sheets, catalogs and offers (2026-11-11)
+
+**Implemented:** The actual Team, inventory, exchange, shops, Conduit/Master
+details and upgrades, squad kit dialogs, Character Collection details, frozen
+battle reference and receipts use shared information templates and existing
+system tokens. Complete locked/unlocked Flares remain readable. Floating
+character navigation is replaced by attached actions and a continuous sheet.
+Exact effects, counts, multiple prices, pending art and specialized saved
+breakdowns remain honest. Portrait/history/focus hooks and all mechanics,
+authority, transactions, rewards and saves are preserved.
+
+**Verified:** `npx vitest run --maxWorkers=3` passed 288 files / 10,311 tests;
+focused receipt/template tests passed 23 and final integration tests passed
+93. `npm run build` passed with the existing chunk advisory; `git diff --check`
+passed. The final isolated production-renderer matrix covers 93 cases across
+390x844, 768x1024 and 1440x900: no tested overflow/clipping/overlap, sub-44px
+effective targets or non-scale padding/gaps. Minimum text is 13px; body is
+15/16px. Small/large complex-surface text measures at least 5.10/3.50:1;
+opaque body at least 8.62:1. Paired screenshots cover the original 24 cases;
+seven supplementary cases have after-only evidence.
+
+**Release gate / remaining:** Publish the matching client through the normal
+main/Pages workflow and verify its version/assets; no authority deploy is
+needed. This does not implement the unfinished 38-bearer Phase A kit designs,
+pending artwork, paused Story or inactive Sunshade. It is not a new
+authenticated hosted-battle verification. Detailed coverage, measurements
+and intentional control/rate-table exceptions are in
+[Menus and inventory](menus-and-inventory.md#implemented-information-system-and-acceptance).
+
 ## Stable attacks and enlarged battle formations (2026-11-11)
 
 **Implemented:** Skip is now a permanently mounted, icon-only arena control,

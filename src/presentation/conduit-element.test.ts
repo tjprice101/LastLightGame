@@ -107,7 +107,8 @@ describe('Omnic element presentation (D-403)', () => {
       for (const card of cards) {
         expect(card.querySelector(':scope strong.conduit-element-label')).not.toBeNull();
         if (card.hasAttribute('data-inventory-conduit')) {
-          expect(card.querySelectorAll(':scope > :not(dialog)')).toHaveLength(5);
+          expect(card.querySelector(':scope > .info-catalog')).not.toBeNull();
+          expect(card.querySelector(':scope > .info-catalog .info-effects')).not.toBeNull();
           expect(card.querySelector('.conduit-identity-badges .conduit-rarity')).not.toBeNull();
         }
       }

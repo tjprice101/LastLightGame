@@ -227,7 +227,7 @@ describe('game-specific hub layouts', () => {
     expect(hub.indexOf('class="character-control-panel"')).toBeLessThan(hub.indexOf('class="hub-rail"'));
     expect(hub).toContain(`<span data-owned-title>${characterName(starter.id)}</span>`);
     const overview = characterDetail(starter, 'overview');
-    for (const heading of ['Stats', 'Abilities', 'Flares', 'Growth', 'Conduits']) {
+    for (const heading of ['Stats', 'Leader skill', 'Flares', 'Passive', 'Personal Master / Conduits']) {
       expect(overview).toContain(`>${heading}</h3>`);
     }
     expect(overview).not.toContain('>Skills</h3>');

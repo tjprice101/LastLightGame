@@ -16,7 +16,7 @@ import { calamiticStoreUnlocked } from '../content/calamitic-conduits';
 import { creatureGlossary } from './creature-glossary';
 import { elementLabel } from './element-label';
 import { information } from './information';
-import { radiantAttunementSection, radiantCharacterLoadout, radiantKitSections, radiantStatsPanel, radiantUnavailable } from './character-combat';
+import { radiantCharacterLoadout, radiantCharacterSheet, radiantUnavailable } from './character-combat';
 import './archives.css';
 import { masterChest, masterConduits as allMasters } from '../content/master-conduits';
 import { masterConduitIcon } from './master-conduits';
@@ -63,13 +63,10 @@ function characterArchive(account: Account | null): string {
         <p class="archive-ownership">${!account ? 'Ownership unavailable' : !owned ? 'Not owned' : current ? `Current form · Lv.${progress?.level}` : revealed ? 'Reached form' : 'Evolution not reached'}</p>
         ${information(`archive-kit-${starter.id}-${evolution}`, `${characterName(starter.id, evolution, current && progress?.ascension?.stats === true)} · Evo.${displayEvolution(starter.id, evolution)}`, `${characterRole(starter.id)}${elementLabel(starter.elementId)}${characterRating(starter.id, evolution, current && progress?.ascension?.stats === true)}
         <p class="archive-ownership">${!account ? 'Ownership unavailable' : !owned ? 'Not owned' : current ? `Current form · Lv.${progress?.level}` : revealed ? 'Reached form' : 'Evolution not reached'}</p>
-        <p>${starter.weapon}</p>
-        <h3>Origin</h3><p>${starter.description}</p><p>${starter.lore.story}</p><blockquote>${starterVow(starter)}</blockquote>
         ${current ? '' : '<p class="quiet">Level 0 preview</p>'}
         <h3>${current ? 'Current combat kit' : 'Form combat-kit preview'}</h3>
         ${radiant ? `${radiant.issue ? `<p role="alert">${escapeDialogText(radiant.issue)}</p>` : ''}
-          ${radiantStatsPanel(radiant.loadout, current ? 'Current combat stats' : 'Level 0 combat stats')}
-          ${radiantAttunementSection(radiant.loadout)}${radiantKitSections(radiant.loadout)}` : radiantUnavailable()}`, 'Combat kit')}
+          ${radiantCharacterSheet(radiant.loadout)}` : radiantUnavailable()}`, 'Combat kit')}
       </article>`;
       });
     }).join('')}</div>`;

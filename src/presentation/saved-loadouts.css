@@ -3,7 +3,7 @@
 .saved-loadout-intro { margin: 0 0 16px; }
 .saved-loadout-scroll { min-width: 0; }
 .saved-loadout-list { display: grid; gap: 20px; }
-.saved-loadout-card { min-width: 0; padding: 18px; border: 1px solid var(--ui-border, #555); border-radius: 16px; background: rgb(255 255 255 / 3%); }
+.saved-loadout-card { min-width: 0; padding: var(--space-4); border: 1px solid var(--ui-border, #555); border-radius: 16px; background: rgb(255 255 255 / 3%); }
 .saved-loadout-card-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-bottom: 16px; }
 .saved-loadout-card h3, .saved-loadout-card h4 { margin: 0; overflow-wrap: anywhere; }
 .saved-loadout-card-heading > span { font-size: .8rem; color: var(--ui-accent, #cce4df); }
@@ -32,7 +32,7 @@ html body .sanctuary-shell .saved-loadout-slot-art :is(.conduit-icon-frame, .con
 .saved-loadout-library-title { margin: 24px 0 12px; }
 .saved-loadout-empty-library { padding: 20px; margin: 0; border: 1px dashed #59616b; border-radius: 12px; line-height: 1.5; }
 .saved-loadout-name { display: grid; gap: 8px; min-width: 0; font-size: .9rem; }
-.saved-loadout-name input { width: 100%; min-width: 0; min-height: 44px; box-sizing: border-box; padding: 8px 12px; border: 1px solid #777; border-radius: 8px; background: #17191e; color: #fff; font: inherit; }
+.saved-loadout-name input { width: 100%; min-width: 0; min-height: 44px; box-sizing: border-box; padding: var(--space-2) var(--space-3); border: 1px solid #777; border-radius: 8px; background: #17191e; color: #fff; font: inherit; }
 html body #app .sanctuary-shell .saved-loadout-name input { border-radius: 10px !important; }
 .saved-loadout-name input:focus-visible { outline: 2px solid var(--ui-accent, #cce4df); outline-offset: 3px; }
 .saved-loadout-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
@@ -40,9 +40,9 @@ html body #app .sanctuary-shell .saved-loadout-name input { border-radius: 10px 
 html body #app .sanctuary-shell .saved-loadout-actions button { border-radius: 12px !important; }
 .saved-configuration-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .saved-configurations { margin-block: 16px; }
-.saved-configurations .saved-loadout-card { display: flex; flex-direction: column; gap: 16px; }
+.saved-configurations .saved-loadout-card { display: flex; flex-direction: column; gap: var(--space-4); }
 .saved-configurations .saved-loadout-card-heading { margin: 0; align-items: start; }
-.saved-configurations .saved-loadout-card h4 { display: flex; align-items: center; gap: 10px; font-size: 1rem; line-height: 1.4; }
+.saved-configurations .saved-loadout-card h4 { display: flex; align-items: center; gap: var(--space-2); font-size: 1rem; line-height: 1.4; }
 .saved-configuration-number { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border: 1px solid rgb(255 255 255 / 20%); border-radius: 10px; background: rgb(255 255 255 / 5%); color: var(--ui-accent, #cce4df); font-size: .8rem; }
 .saved-configurations .saved-loadout-actions { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .saved-configurations .saved-loadout-actions > :first-child { grid-column: 1 / -1; }
@@ -57,7 +57,7 @@ html body #app .sanctuary-shell .saved-loadout-actions button { border-radius: 1
 [data-saved-loadout-status]:empty { margin: 0; }
 @media (max-width: 800px) {
   .saved-configuration-grid { grid-template-columns: minmax(0, 1fr); }
-  .saved-loadout-card { padding: 12px; }
+  .saved-loadout-card { padding: var(--space-3); }
 }
 @media (max-width: 420px) {
   .saved-loadout-slots { grid-template-columns: minmax(0, 1fr); }

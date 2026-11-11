@@ -6,7 +6,6 @@ import { type Account, ownedCharacters, ownedProgress, equippedSquad } from '../
 import { currencyIcon } from './currency-icon';
 import { materialArt, materialName } from '../content/dungeon-art';
 import { assetUrl } from './portrait';
-import { itemShowcase } from './item-showcase';
 import { portrait } from './portrait';
 import { exchangeProducts as allProducts, exchangeProductUnlocked, exchangeQuantities } from '../content/material-exchange';
 import './online-store-profile.css';
@@ -31,6 +30,7 @@ import { capturedLevelCap } from '../game/character-instances';
 import { enemySkills } from '../content/enemy-skills';
 import { shopHost } from './shop-host';
 import './event-devourers.css';
+import { catalogInformation, offerInformation } from './information-layout';
 
 export interface OnlineProfileDisplay {
   username: string;
@@ -124,7 +124,6 @@ export function materialExchange(account: Account | null, selected: string, navi
   const product = exchangeProducts.find(entry => entry.id === selected) ?? exchangeProducts[0];
   const category = product.category;
   const products = exchangeProducts.filter(entry => entry.category === category);
-  const owned = (id: string) => (account?.materials[id] ?? 0).toLocaleString('en-US');
   const funds = account?.fractalis ?? 0;
   const unlocked = exchangeProductUnlocked(product, account);
   const restricted = product.restrictedTo ? product.restrictedTo.join(', ') : '';
@@ -134,16 +133,17 @@ export function materialExchange(account: Account | null, selected: string, navi
       <button data-market-category="normal" aria-pressed="${category === 'normal'}">Normal Game Materials</button>
       <button data-market-category="event" aria-pressed="${category === 'event'}">Event Materials</button></nav>
     ${category === 'event' ? `<p class="ref-exchange-note" role="note">Event materials are only for ${restricted}.</p>` : ''}
-    <div class="ref-scroll"><div class="ref-product-grid">${products.map(entry => `<button class="ref-product" data-market-material="${entry.id}" aria-pressed="${product.id === entry.id}"><div class="ref-product-art">${exchangeArt(entry.materialId)}</div><b>${materialName(entry.materialId)}</b><small>${entry.rarity} · Owned ${owned(entry.materialId)}${exchangeProductUnlocked(entry, account) ? '' : ` · Unlock at owned Element-Bearer Lv.${entry.unlockLevel ?? 0}`}</small><span class="ref-chip">${entry.price.toLocaleString('en-US')} Prismatica</span></button>`).join('')}</div></div></section>
+    <div class="ref-scroll"><div class="info-catalog-grid">${products.map(entry => `<button class="info-catalog-choice" data-market-material="${entry.id}" aria-pressed="${product.id === entry.id}">${catalogInformation({ name: materialName(entry.materialId), art: exchangeArt(entry.materialId), metadata: entry.rarity, owned: account?.materials[entry.materialId] ?? 0, state: exchangeProductUnlocked(entry, account) ? 'Unlocked' : `Requires an owned Element-Bearer at level ${entry.unlockLevel ?? 0}`, cost: `${currencyIcon('fractalis')}${entry.price.toLocaleString('en-US')} Prismatica` })}</button>`).join('')}</div></div></section>
     <aside class="ref-panel ref-store-detail">${shopHost('mirel')}<header class="ref-panel-heading">Details</header>
-    ${itemShowcase([{ id: product.materialId, amount: account?.materials[product.materialId] ?? 0 }], materialName(product.materialId))}
-    <h2>${materialName(product.materialId)}</h2>
+    ${catalogInformation({ name: materialName(product.materialId), art: `<span class="inventory-item-art" data-showcase-item="${product.materialId}">${exchangeArt(product.materialId)}</span>`, metadata: product.rarity,
+      owned: account?.materials[product.materialId] ?? 0,
+      cost: `${currencyIcon('fractalis')}<strong>${product.price.toLocaleString('en-US')} Prismatica per unit</strong>` })}
     <p>${product.category === 'event' ? `${product.rarity} ${product.eventName} event material. <strong>Only for ${restricted}.</strong>` : `${product.rarity} ${elements.find(element => product.materialId.startsWith(`${element.id}-`))?.name ?? ''} upgrade material. Usable by normal Element-Bearers.`}</p>
     ${product.category === 'normal' ? `<p role="status">${unlocked ? 'Unlocked' : 'Locked'} · Requires any owned Element-Bearer at level ${product.unlockLevel ?? 0}. Captured Elemental-Devourers do not unlock this tier.</p>` : ''}
-    <dl class="ref-detail-facts"><div><dt>Price per unit</dt><dd>${product.price.toLocaleString('en-US')} Prismatica</dd></div><div><dt>Owned</dt><dd>${owned(product.materialId)}</dd></div><div><dt>Prismatica</dt><dd>${funds.toLocaleString('en-US')}</dd></div></dl>
+    <p class="info-number">Prismatica: ${funds.toLocaleString('en-US')}</p>
     <footer><div class="ref-exchange-buy" role="group" aria-label="Buy quantity">${exchangeQuantities.map(quantity => {
       const cost = product.price * quantity;
-      return `<button data-buy-material="${product.id}" data-quantity="${quantity}" ${unlocked && funds >= cost ? '' : 'disabled'}><b>Buy ${quantity}</b><small>${cost.toLocaleString('en-US')} Prismatica</small></button>`;
+      return offerInformation({ name: `${materialName(product.materialId)} ×${quantity}`, art: exchangeArt(product.materialId), summary: `<p>${product.rarity} upgrade material${restricted ? ` · Only for ${escape(restricted)}` : ''}.</p>`, owned: account?.materials[product.materialId] ?? 0, price: `${currencyIcon('fractalis')}<strong>${cost.toLocaleString('en-US')} Prismatica</strong>`, action: `<button data-buy-material="${product.id}" data-quantity="${quantity}" ${unlocked && funds >= cost ? '' : 'disabled'}>Buy ${quantity}</button>`, reason: !account ? 'Account unavailable.' : !unlocked ? `Requires an owned Element-Bearer at level ${product.unlockLevel ?? 0}.` : funds < cost ? 'Not enough Prismatica.' : undefined });
     }).join('')}</div>
     ${account ? '' : '<p role="status">Material Exchange unavailable. Resolve the save error.</p>'}
     <p>No bulk discounts or daily limits.</p></footer></aside></section>`;
@@ -179,18 +179,28 @@ export function onlineStores(account: Account | null, profile: OnlineProfileDisp
               : 'Unavailable until this event has actually completed a scheduled launch window.';
         const encounter = infusionEncounter(product.eventId, product.creature.stages[0]);
         const owned = account?.capturedCharacters?.filter(copy => copy.creatureId === product.id).length ?? 0;
-        return `<article class="ref-panel event-devourer-card" data-event="${product.eventId}" data-creature="${product.id}"><div class="event-devourer-art">${product.creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${product.creature.art}.png`)}" alt="${product.creature.name}">` : '<span>Artwork pending</span>'}</div>
-          <h3>${product.eventName} · ${product.creature.name}</h3><p role="status">${status}</p><p>${product.rarity} · Lv.${Math.min(capturedLevelCap, encounter.level)} · Owned ${owned}</p>
-          <p>${enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier).map(skill => `${skill.name} · ${Math.round(skill.multiplier * 100)}% Direct Attack`).join(' / ')}</p>
-          <button data-buy-event-devourer="${product.id}" ${account && access.online && available && account.fractalis >= product.price ? '' : 'disabled'}>Buy · ${product.price.toLocaleString('en-US')} Prismatica</button></article>`;
+        return `<article class="event-devourer-card" data-event="${product.eventId}" data-creature="${product.id}">${offerInformation({
+          name: `${product.eventName} · ${product.creature.name}`,
+          art: product.creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${product.creature.art}.png`)}" alt="${product.creature.name}">` : '<span>Artwork pending</span>',
+          summary: `<p role="status">${status}</p><p>${product.rarity} · Lv.${Math.min(capturedLevelCap, encounter.level)}</p><ul>${enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier).map(skill => `<li>${skill.name} · ${Math.round(skill.multiplier * 100)}% Direct Attack</li>`).join('')}</ul>`,
+          owned, price: `${currencyIcon('fractalis')}<strong>${product.price.toLocaleString('en-US')} Prismatica</strong>`,
+          action: `<button data-buy-event-devourer="${product.id}" ${account && access.online && available && account.fractalis >= product.price ? '' : 'disabled'}>Buy</button>`,
+          reason: !account ? 'Account unavailable.' : !access.online ? 'Sign in online to purchase.' : !available ? status : account.fractalis < product.price ? 'Not enough Prismatica.' : undefined,
+        })}</article>`;
       }).join('')}</div></section></section>`;
   }
   const choice = profileFrames.find(frame => frame.id === selectedFrame) ?? profileFrames[0];
   const owned = choice.id === 'default' || profile?.ownedFrames.includes(choice.id);
   return `<section class="online-market ref-screen ref-market">${navigation}<section class="ref-panel"><header class="ref-panel-heading">Cosmetic Store · Profile frames</header><div class="ref-scroll"><div class="ref-product-grid">${profileFrames.map(frame => {
     const owned = frame.id === 'default' || profile?.ownedFrames.includes(frame.id);
-    return `<button class="ref-product" data-market-frame="${frame.id}" aria-pressed="${choice.id === frame.id}"><div class="profile-frame-preview" data-profile-frame="${frame.id}"><span>L/L</span></div><b>${frame.name}</b><small>For Profile</small><span class="ref-chip">${owned ? 'Owned' : `${frame.price} Null-Prismatica`}</span></button>`;
-  }).join('')}</div></div></section><aside class="ref-panel ref-store-detail">${shopHost('veylin', online ? 'welcome' : 'offline')}<header class="ref-panel-heading">Details</header><div class="profile-frame-preview ref-frame-hero" data-profile-frame="${choice.id}"><span>L/L</span></div><h2>${choice.name}</h2><p>Profile decoration only. No gameplay effects.</p><dl class="ref-detail-facts"><div><dt>Price</dt><dd>${choice.price ? `${choice.price} Null-Prismatica` : 'Free default frame'}</dd></div><div><dt>Ownership</dt><dd>${owned ? 'Owned permanently' : 'Not owned'}</dd></div></dl>${notice}<footer><button ${owned ? `data-equip-frame="${choice.id}"` : `data-buy-frame="${choice.id}"`} ${!online || profile?.frame === choice.id ? 'disabled' : ''}>${profile?.frame === choice.id ? 'Equipped' : owned ? 'Equip' : 'Buy frame'}</button></footer></aside></section>`;
+    return `<button class="info-catalog-choice" data-market-frame="${frame.id}" aria-pressed="${choice.id === frame.id}">${catalogInformation({ name: frame.name, art: `<div class="profile-frame-preview" data-profile-frame="${frame.id}"><span>L/L</span></div>`, metadata: 'For Profile', state: owned ? 'Owned' : 'Not owned', cost: `${currencyIcon('lycalis')}${frame.price} Null-Prismatica` })}</button>`;
+  }).join('')}</div></div></section><aside class="ref-panel ref-store-detail">${shopHost('veylin', online ? 'welcome' : 'offline')}<header class="ref-panel-heading">Details</header>${offerInformation({
+    name: choice.name, art: `<div class="profile-frame-preview ref-frame-hero" data-profile-frame="${choice.id}"><span>L/L</span></div>`,
+    summary: '<p>Profile decoration only. No gameplay effects.</p>', owned: owned ? 1 : 0,
+    price: choice.price ? `${currencyIcon('lycalis')}${choice.price} Null-Prismatica` : 'Free default frame',
+    action: `<button ${owned ? `data-equip-frame="${choice.id}"` : `data-buy-frame="${choice.id}"`} ${!online || profile?.frame === choice.id || (!owned && (account?.lycalis ?? 0) < choice.price) ? 'disabled' : ''}>${profile?.frame === choice.id ? 'Equipped' : owned ? 'Equip' : 'Buy frame'}</button>`,
+    reason: !online ? 'Sign in to buy or equip a frame.' : profile?.frame === choice.id ? 'Already equipped.' : !owned && (account?.lycalis ?? 0) < choice.price ? 'Not enough Null-Prismatica.' : undefined,
+  })}${notice}</aside></section>`;
 }
 
 function profilePlayTime(seconds: number | undefined): string {

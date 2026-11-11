@@ -1,7 +1,7 @@
 html body .selection-modal .master-selection-intro {
   grid-column: 1 / -1;
   margin: 0;
-  padding: 10px 12px;
+  padding: var(--space-2) var(--space-3);
   border-left: 3px solid var(--ui-accent, #aaa);
   border-radius: 6px;
   background: #ffffff0a;
@@ -45,7 +45,7 @@ html body .selection-modal .master-selection-details {
   position: relative;
   grid-column: 1 / -1;
   margin-top: 6px;
-  padding: 14px;
+  padding: var(--card-padding);
   border: 1px solid #ffffff24;
   border-radius: 12px;
   background: linear-gradient(145deg, #ffffff0c, #ffffff04);

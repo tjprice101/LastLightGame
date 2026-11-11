@@ -1,5 +1,6 @@
 import { squadMemberLimit } from '../content/squad-rules';
-import { isRadiantBearer, radiantAttunementName, radiantCharacterLoadout } from './character-combat';
+import { isRadiantBearer, radiantAttunementName, radiantCharacterLoadout, radiantCharacterSheet } from './character-combat';
+import { gameChoose } from './game-dialog';
 import { referencedEffect } from './effect-copy';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { ownedCharacters, ownedProgress, creatureSaleOffer, isSellableCreatureMode, multiSummonCount, type Account } from '../game/account';
@@ -101,10 +102,10 @@ function squadPickCard(account: Account, id: string, squad: readonly (string | u
   const member = ownedCompanion(account, id);
   const slot = squad.indexOf(id);
   const radiant = radiantCharacterLoadout(account, id);
-  return `<button type="button" class="squad-pick-card" data-squad-pick="${id}" data-squad-kind="bearers" data-squad-search="${member.label.toLowerCase()}" aria-pressed="false" style="--member-accent:${member.color}">
+  return `<div class="squad-pick-entry"><button type="button" class="squad-pick-card" data-squad-pick="${id}" data-squad-kind="bearers" data-squad-search="${member.label.toLowerCase()}" aria-pressed="false" style="--member-accent:${member.color}">
     <span class="squad-pick-art">${member.compactArt}</span>
     <span class="squad-pick-copy"><strong>${member.label}</strong><small>${member.element} · ${squadProgress(member.progress)}${radiant ? ` · ${radiantAttunementName(radiant.loadout)}` : ''}</small></span>
-    <span class="squad-pick-tag" data-squad-tag>${slot >= 0 ? squadSlotNames[slot] : ''}</span></button>`;
+    <span class="squad-pick-tag" data-squad-tag>${slot >= 0 ? squadSlotNames[slot] : ''}</span></button><button type="button" data-squad-details="${id}" aria-haspopup="dialog">Kit details</button></div>`;
 }
 
 /** Owned, combat-released Element-Bearers; captured Elemental-Devourers stay holdings and never join the squad. */
@@ -177,6 +178,18 @@ export function bindSquadPreview(host: HTMLElement, account: Account | null): vo
   const saveButton = host.querySelector<HTMLButtonElement>('[data-squad-save]');
   const cancelButton = host.querySelector<HTMLButtonElement>('[data-squad-cancel]');
   const savedSquad = account.squad ?? [];
+  dialog.querySelectorAll<HTMLButtonElement>('[data-squad-details]').forEach(button => button.addEventListener('click', () => {
+    const id = button.dataset.squadDetails;
+    if (!id || !owned.includes(id)) throw new Error('Choose an owned squad member.');
+    const resolved = radiantCharacterLoadout(account, id);
+    if (!resolved) throw new Error('The selected character has no combat loadout.');
+    void gameChoose('', [{ value: 'close', label: 'Close' }], 'close', {
+      title: ownedCompanion(account, id).label,
+      messageHtml: radiantCharacterSheet(resolved.loadout),
+    }).catch(failure => {
+      if (error) error.textContent = failure instanceof Error ? failure.message : 'Kit details could not open.';
+    });
+  }));
   const initialSlots = controls.map((control) => control.value);
   let activeSlot = 0;
   let filter = 'all';
@@ -218,6 +231,8 @@ export function bindSquadPreview(host: HTMLElement, account: Account | null): vo
     cards.forEach((card) => {
       const show = (filter === 'all' || card.dataset.squadKind === filter) && (!query || (card.dataset.squadSearch ?? '').includes(query));
       card.hidden = !show;
+      const entry = card.closest<HTMLElement>('.squad-pick-entry');
+      if (entry) entry.hidden = !show;
       if (show) visible++;
     });
     if (empty) empty.hidden = visible > 0;

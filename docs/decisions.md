@@ -1,5 +1,22 @@
 # Decision log
 
+## Shared live information hierarchy and measurable readability (2026-11-11)
+
+The owner approves a presentation-only overhaul in the actual game:
+one ordered character sheet, a shared item catalog and an aligned offer grid,
+driven by existing content functions. Show complete locked Flare effects and
+exact targets, values, clocks and meaningful limits. Replace floating
+character navigation with attached actions. Preserve all gameplay, currency,
+transactions, saves, stable hooks, artwork, focus/history and Reduce motion.
+
+Use the existing Georgia 600/700 system, 15px mobile / 16px desktop body,
+14px labels, 13px captions and at least 16px stats/prices. Existing larger
+type can remain if it meets its role. Require actual 4.5:1 small-text / 3:1
+large-text contrast, spacing tokens, 12/16px card insets, exact wrapping
+numbers and real 390x844 / 768x1024 / 1440x900 browser measurements.
+This approval is not permission for a demo, parallel style system, combat
+retune, invented artwork or completion claims before publication verification.
+
 ## Prioritize the live arena and squad; animate both outcomes (2026-11-11)
 
 The owner requests a properly formatted live battle page, explicitly allowing

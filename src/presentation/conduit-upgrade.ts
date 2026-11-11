@@ -12,6 +12,7 @@ import { presentReward } from './reward-screen';
 import { conduitReward } from './conduit-presentation';
 import { referencedEffect as readableEffect } from './effect-copy';
 import { setShopHostLine, shopHost } from './shop-host';
+import { catalogInformation } from './information-layout';
 
 const pageSize = 6;
 interface CatalogState { query: string; rarity: string; status: string; sort: string; page: number }
@@ -86,7 +87,7 @@ function renderConduitUpgradeMenu(account: Account | null, selected: string | un
       const cost = conduitUpgradeCost(choice, level);
       const affordable = cost !== null && (account.mechanicalComponents ?? 0) >= cost;
       const maximum = conduitMaxLevelPlan(account, choice.id);
-      return `<section class="ref-panel ref-upgrade-detail" data-upgrade-card="${choice.id}"><div class="ref-upgrade-identity"><div class="ref-store-hero">${conduitIcon(choice.id, level)}</div><div><h2>${choice.name}</h2>${conduitRarity(choice.id)}<p>Upgrade +${level} / ${conduitUpgradeCap} · Owned ${account.conduits?.[choice.id]}</p><div class="ref-pips" aria-hidden="true">${Array.from({ length: conduitUpgradeCap }, (_, index) => `<i class="${index < level ? 'is-filled' : ''}"></i>`).join('')}</div></div></div>
+      return `<section class="ref-panel ref-upgrade-detail" data-upgrade-card="${choice.id}"><div class="ref-upgrade-identity">${catalogInformation({ name: choice.name, art: `<div class="ref-store-hero">${conduitIcon(choice.id, level)}</div>`, metadata: `${conduitRarity(choice.id)} · Upgrade +${level} / ${conduitUpgradeCap}`, owned: account.conduits?.[choice.id], lore: choice.lore })}</div>
       <section class="conduit-upgrade-values"><div><h4>Current · +${level}</h4><p>${upgradeStatEffect(choice.id, level)}</p></div><span aria-hidden="true">→</span><div>${cost !== null ? `<h4>Next · +${level + 1}</h4><p>${upgradeStatEffect(choice.id, level + 1)}</p>` : '<h4>Maximum · +5</h4><p>Maximum upgrade reached.</p>'}</div></section>
       <header class="ref-panel-heading">Effect by upgrade</header><div class="ref-effect-progression">${Array.from({ length: conduitUpgradeCap + 1 }, (_, upgrade) => `<article class="${upgrade === level ? 'is-current' : ''}" ${upgrade === level ? 'aria-current="step"' : ''}><small>+${upgrade}${upgrade === level ? ' · Current' : ''}</small><p>${upgradeStatEffect(choice.id, upgrade)}</p></article>`).join('')}</div>
       <aside class="ref-panel ref-upgrade-resources"><header class="ref-panel-heading">Required resources</header><article class="component-balance">${mechanicalComponentIcon()}<div><strong id="mechanical-components-balance">${account.mechanicalComponents ?? 0}</strong><span>Broken Mechanical Components</span></div></article>

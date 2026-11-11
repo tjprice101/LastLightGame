@@ -43,7 +43,7 @@ html body [data-button-surface]:not([data-button-surface="art"]):not(#battle-roo
   text-align: left !important;
   justify-content: flex-start !important;
   justify-items: start !important;
-  padding-left: max(1rem, 14px) !important;
+  padding-left: var(--space-4) !important;
   background-image: var(--button-marker), var(--button-glow), var(--button-shade) !important;
   background-size: 3px 46%, auto, auto !important;
   background-position: 0 50%, 0 0, 0 0 !important;
@@ -60,7 +60,7 @@ html body [data-button-surface]:not([data-button-surface="art"]):not(#battle-roo
   text-align: left !important;
   justify-content: space-between !important;
   justify-items: start !important;
-  padding-left: max(1rem, 14px) !important;
+  padding-left: var(--space-4) !important;
 }
 
 /* Tiles: heading bold in the top-left corner, remaining copy left aligned. */

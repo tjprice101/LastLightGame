@@ -68,7 +68,7 @@ describe('shared menu information', () => {
     expect(plain(html)).toContain('Each run starts at wave 1. Health, Shields, guard, status effects, defeated members and charge carry between waves.');
     expect(plain(html)).not.toContain('HP and Elemental Gauge carry between waves.');
     const disclosures = html.match(/<details\b[^>]*>/g) ?? [];
-    expect(disclosures.filter(tag => tag !== '<details class="conduit-lore-disclosure">')).toEqual(['<details class="story-prologue">']);
+    expect(disclosures.filter(tag => !tag.includes('conduit-lore-disclosure'))).toEqual(['<details class="story-prologue">']);
     expect(html.match(/data-information="machine-loot-focus"/g)).toHaveLength(1);
     expect(plain(html)).toContain('<details class="story-prologue">');
   });
@@ -96,7 +96,7 @@ describe('shared menu information', () => {
     expect(rules).not.toContain('<details');
     const disclosures = html.match(/<details\b[^>]*>/g) ?? [];
     expect(disclosures.length).toBeGreaterThan(0);
-    expect(disclosures.filter(tag => tag !== '<details class="conduit-lore-disclosure">'))
+    expect(disclosures.filter(tag => !tag.includes('conduit-lore-disclosure') && !tag.includes('info-lore')))
       .toEqual(['<details data-story-codex-entry="founding">']);
   });
   it('keeps summon rules visible inside Rates & Information, without nested disclosures', () => {

@@ -27,7 +27,7 @@ describe('online Material Exchange and Cosmetic Store', () => {
     expect(buttons).toHaveLength(12);
     for (const button of buttons) {
       expect(button.disabled).toBe(true);
-      expect(button.matches('.event-devourer-card > button')).toBe(true);
+      expect(button.matches('.event-devourer-card .info-offer-action > button')).toBe(true);
       expect(button.closest('.event-devourer-card')?.getAttribute('data-creature')).toBeTruthy();
     }
     expect(document.querySelectorAll('.event-devourer-card[data-event="moon"]')).toHaveLength(6);

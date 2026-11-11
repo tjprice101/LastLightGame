@@ -42,7 +42,7 @@ describe('Conduit panel updates', () => {
     const card = root.querySelector('[data-store-conduit="vigil-core"]');
     updateConduitStore(root, { ...account, fractalis: 0, conduits: { ...account.conduits, 'vigil-core': 2 } }, 'vigil-core');
     expect(root.querySelector('[data-store-conduit="vigil-core"]')).toBe(card);
-    expect(card?.querySelector('.ref-chip')?.textContent).toBe('Owned 2');
+    expect(card?.querySelector('.info-number')?.textContent).toBe('Owned 2');
     expect(root.querySelector<HTMLButtonElement>('[data-buy-conduit]')?.disabled).toBe(true);
   });
 

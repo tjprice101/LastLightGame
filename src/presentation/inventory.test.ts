@@ -178,7 +178,7 @@ describe('reference Inventory layout', () => {
       expect(card.querySelector('[data-information]')?.textContent).toBe('Details');
       const compact = card.cloneNode(true) as HTMLElement;
       compact.querySelector('dialog')!.remove();
-      expect(compact.textContent?.replace(/[[\]]/g, '')).not.toContain(effect.replace(/[[\]]/g, ''));
+      expect(compact.querySelector('.info-effects')?.textContent).toContain(expected.textContent);
       expect(compact.textContent).toContain(entry.name);
       expect(compact.textContent).toContain('Owned 1');
     }
