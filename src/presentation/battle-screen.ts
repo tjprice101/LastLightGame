@@ -152,7 +152,8 @@ export class RadiantBattleView {
         <div class="radiant-hud">
           <div class="radiant-hud-title"><h2><small class="radiant-eyebrow">${escape(heading.eyebrow)}</small> ${escape(heading.title)}</h2>
             <span class="radiant-hud-progress"><span data-radiant-progress>${radiantEncounterLabel(run)}</span> · <span data-radiant-round></span></span></div>
-          <div class="radiant-hud-tools"><button type="button" data-radiant-settings aria-label="Settings"><span aria-hidden="true">⚙</span></button>
+          <div class="radiant-hud-tools"><button type="button" data-radiant-skip aria-label="Skip presentation" title="Skip presentation" disabled><svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4 5v14l11-7zM17 5h3v14h-3z"/></svg></button>
+          <button type="button" data-radiant-settings aria-label="Settings"><span aria-hidden="true">⚙</span></button>
           ${this.onExit ? '<button type="button" data-radiant-leave aria-label="Exit battle, keeping saved rewards">Exit</button>' : ''}</div>
         </div>
         <div class="radiant-allies" aria-label="Allied field formation">${run.state.bearers.map((unit, index) =>
@@ -173,7 +174,7 @@ export class RadiantBattleView {
       <div class="radiant-enemy-banner">
         <div class="radiant-target-strip" role="region" aria-label="Selected enemy">
           ${run.enemies.map(enemy => `<div class="radiant-target-detail" data-radiant-target-detail="${escape(enemy.id)}" tabindex="0" hidden>
-            <div class="radiant-target-name"><small class="radiant-target-state" data-radiant-target-state></small><strong>${escape(enemy.name)}</strong><span>Lv.${enemy.level}</span></div>
+            <div class="radiant-target-name"><strong>${escape(enemy.name)}</strong><span>Lv.${enemy.level}</span></div>
             ${this.healthMarkup(enemy.id)}</div>`).join('')}
           <p data-radiant-no-target hidden>No enemy target remains.</p>
         </div>
@@ -212,9 +213,8 @@ export class RadiantBattleView {
       <div class="radiant-battle-footer">
       <p id="radiant-gesture-help">Left click a card to attack · Right click to defend · Hold, then swipe up for its highest ready Flare.
         <span class="radiant-visually-hidden">Hold for 350ms and drag upward 32px. Keyboard: Enter attacks, D or the context-menu key defends, F or Up Arrow releases the highest ready Flare.</span></p>
-      <p data-radiant-gesture-status role="status" aria-live="polite"></p>
+      <p class="radiant-visually-hidden" data-radiant-gesture-status role="status" aria-live="polite"></p>
       <div class="radiant-actions"><button type="button" data-radiant-retry hidden>Retry pending request</button>
-        <button type="button" data-radiant-skip hidden>Skip presentation</button>
         <button type="button" data-radiant-results-show hidden>View saved results</button></div>
       <p class="radiant-visually-hidden" data-radiant-status role="status" aria-live="polite"></p>
       <p data-radiant-error role="alert"></p>
@@ -246,7 +246,6 @@ export class RadiantBattleView {
   private healthMarkup(id: string): string {
     return `<div class="radiant-health" data-radiant-health="${escape(id)}"><meter min="0" aria-label="HP"></meter>
       <span data-hp></span><span data-shield></span><ul class="radiant-shield-layers" data-radiant-layers></ul>
-      <span class="radiant-status-timing" data-radiant-status-timing></span>
       <ul class="radiant-status-list" data-radiant-effects></ul></div>`;
   }
   private element<T extends Element>(selector: string): T {
@@ -366,8 +365,6 @@ export class RadiantBattleView {
       if (this.statusMarkup.get(id) !== statusMarkup) {
         statuses.innerHTML = statusMarkup; this.statusMarkup.set(id, statusMarkup);
       }
-      unit.querySelector<HTMLElement>('[data-radiant-status-timing]')!.textContent =
-        this.presenting && statusMarkup ? 'Saved effects · replaying impacts' : '';
     }
     for (const button of Array.from(this.host.querySelectorAll<HTMLButtonElement>('[data-radiant-actor]'))) {
       const id = button.dataset.radiantActor!;
@@ -392,11 +389,10 @@ export class RadiantBattleView {
       button.setAttribute('aria-pressed', String(id === this.target));
     }
     const impactTarget = this.presenting && this.impactTarget !== this.target ? this.impactTarget : null;
+    const displayedTarget = impactTarget ?? this.target;
     for (const detail of Array.from(this.host.querySelectorAll<HTMLElement>('[data-radiant-target-detail]'))) {
       const id = detail.dataset.radiantTargetDetail;
-      detail.hidden = id !== this.target && id !== impactTarget;
-      detail.querySelector<HTMLElement>('[data-radiant-target-state]')!.textContent =
-        id === impactTarget ? 'Resolving impact' : impactTarget && id === this.target ? 'Selected target' : '';
+      detail.hidden = id !== displayedTarget;
     }
     this.element<HTMLElement>('[data-radiant-no-target]').hidden = this.target !== null || impactTarget !== null;
     for (const member of this.displayed.gauge.members) {
@@ -429,7 +425,7 @@ export class RadiantBattleView {
     const leaderMarkup = radiantLeaderReference(run.state, this.displayed.units[run.state.bearers[0].loadout.id].hp > 0);
     if (this.leaderMarkup !== leaderMarkup) { leader.innerHTML = leaderMarkup; this.leaderMarkup = leaderMarkup; }
     this.element<HTMLButtonElement>('[data-radiant-retry]').hidden = !view.pending || view.busy;
-    this.element<HTMLButtonElement>('[data-radiant-skip]').hidden = !this.presenting;
+    this.element<HTMLButtonElement>('[data-radiant-skip]').disabled = !this.presenting || view.settingsOpen;
     const resultBlocked = view.busy || !!view.pending || !!view.preparationPending || !!view.presentation ||
       !!view.preparationPresentation || view.settingsOpen || view.entrancePending || this.presenting;
     const terminal = run.quit || run.state.phase === 'victory' || run.state.phase === 'defeat';

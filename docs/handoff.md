@@ -1,5 +1,30 @@
 # Current state and handoff
 
+## Stable attacks and enlarged battle formations (2026-11-11)
+
+**Implemented:** Skip is now a permanently mounted, icon-only arena control,
+with fixed-size HUD buttons instead of an attack-only footer button. Gesture
+notices stay accessible without adding visible attack text. Saved impacts use
+one enemy readout, preserving impact-time Health; no temporary target labels.
+Acted portrait artwork becomes grayscale and resets next round. Much larger
+full-body sprites use staggered overlapping formations with reachable targets.
+Combat, authority, rewards, RNG, facing, Settings and animated outcomes remain
+unchanged.
+
+**Verified:** `npx vitest run src\presentation\battle-screen.test.ts
+src\presentation\battle-formation.test.ts src\presentation\battle-art.test.ts
+src\presentation\battle-outcome.test.ts
+src\presentation\battle-impact-frames.test.ts
+src\presentation\portrait-gesture.test.ts --maxWorkers=3 --testTimeout=60000`
+passed all 140 tests. `npm run build` passed with the existing chunk advisory.
+Isolated Chrome exercised 36 real-view layouts (one through six allies,
+six enemies, six viewport sizes from 320x568 to 1920x1080): no clipped sprite
+boxes, inaccessible enemy targets or page overflow. Attack-time arena, HUD,
+squad and footer bounds were identical; grayscale applied only to the acted
+member and reset next round. One impact readout remained visible.
+Phone and desktop screenshots were reviewed. These are isolated resolver/view
+checks, not a new authenticated hosted-battle claim. No authority deploy needed.
+
 ## Special-event activity layout (2026-11-11)
 
 **Implemented:** The real Events activity page uses the shared picker to show

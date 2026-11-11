@@ -80,6 +80,13 @@ describe('saved six-member Radiant battle surface', () => {
     expect(layout.querySelectorAll('.radiant-frozen-stats dd')).toHaveLength(18);
     expect(host.querySelector('[data-radiant-results]')!.parentElement).toBe(layout.parentElement);
     expect(layout.querySelector('[data-radiant-results]')).toBeNull();
+    const skip = controls(host, '[data-radiant-skip]');
+    expect(skip.closest('.radiant-hud-tools')).not.toBeNull();
+    expect(skip.disabled).toBe(true);
+    expect(skip.hidden).toBe(false);
+    expect(skip.textContent).toBe('');
+    expect(host.querySelector('[data-radiant-gesture-status]')!.classList.contains('radiant-visually-hidden')).toBe(true);
+    expect(host.querySelector('[data-radiant-status-timing]')).toBeNull();
   });
   it('grounds six actual enemies and six allies while keeping one selected enemy readout', async () => {
     const { view, host, session, transport } = fixture(6, 6, undefined, 34, undefined, undefined, false,
@@ -167,9 +174,11 @@ describe('saved six-member Radiant battle surface', () => {
     expect(session.view().saved.run!.state.enemies[0].hp).toBe(0);
     expect(oldDetail.hidden).toBe(false);
     expect(oldDetail.querySelector('[data-hp]')!.textContent).toBe(oldHP);
-    expect(oldDetail.textContent).toContain('Resolving impact');
-    expect(newDetail.hidden).toBe(false);
-    expect(newDetail.textContent).toContain('Selected target');
+    expect(oldDetail.textContent).not.toContain('Resolving impact');
+    expect(newDetail.hidden).toBe(true);
+    expect(host.querySelectorAll('[data-radiant-target-detail]:not([hidden])')).toHaveLength(1);
+    expect(controls(host, '[data-radiant-skip]').disabled).toBe(false);
+    expect(action(host, 'ember').closest('.radiant-member')!.classList.contains('has-acted')).toBe(true);
     expect(action(host, 'tide').disabled).toBe(false);
     windup();
     await vi.waitFor(() => expect(impact).toBeTypeOf('function'));
@@ -179,6 +188,24 @@ describe('saved six-member Radiant battle surface', () => {
     await pending;
     expect(oldDetail.hidden).toBe(true);
     expect(newDetail.hidden).toBe(false);
+    expect(controls(host, '[data-radiant-skip]').disabled).toBe(true);
+  });
+
+  it('marks only used portraits as acted and restores them on the next round', async () => {
+    const { view, host } = fixture(2, 6, undefined, 25);
+    applyMotion('reduced'); await view.finishEntrance();
+    const ember = action(host, 'ember').closest('.radiant-member')!;
+    const tide = action(host, 'tide').closest('.radiant-member')!;
+    await view.act('defense', 'ember');
+    expect(ember.classList.contains('has-acted')).toBe(true);
+    expect(tide.classList.contains('has-acted')).toBe(false);
+    expect(action(host, 'ember').disabled).toBe(true);
+    expect(action(host, 'tide').disabled).toBe(false);
+    await view.act('defense', 'tide');
+    expect(ember.classList.contains('has-acted')).toBe(false);
+    expect(tide.classList.contains('has-acted')).toBe(false);
+    expect(action(host, 'ember').disabled).toBe(false);
+    expect(action(host, 'tide').disabled).toBe(false);
   });
 
   it.each([

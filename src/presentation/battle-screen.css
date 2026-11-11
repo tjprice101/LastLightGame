@@ -35,7 +35,7 @@
 .radiant-face[data-ready-tier="lustrous"] { border-color: #dacdff; box-shadow: inset 0 0 18px #dacdff33; }
 .radiant-face[data-ready-tier="eternal"] { border-color: #fff; box-shadow: inset 0 0 22px #ffffff44; }
 .radiant-face.is-held::after { content: ""; position: absolute; inset: 5px; border: 2px solid #fff; border-radius: 9px; pointer-events: none; }
-.radiant-member.is-defeated .compact-portrait { filter: grayscale(1); }
+.radiant-member.has-acted .compact-portrait, .radiant-member.is-defeated .compact-portrait { filter: grayscale(1); }
 [data-radiant-readiness] { display: block; font-size: 12px; margin-top: 6px; overflow-wrap: anywhere; }
 #radiant-gesture-help, [data-radiant-gesture-status] { font-size: 13px; line-height: 1.5; }
 @keyframes radiant-field-breathe { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2px) scale(1.015); } }
@@ -455,8 +455,8 @@ html body .battle-screen #battle-root:has(.radiant-battle) { display: block; hei
   container-type: size;
   min-height: 0;
   margin: 0;
-  --radiant-unit-height: min(250px, 17vw, 56cqh);
-  --radiant-unit-width: min(180px, 12vw, 44cqh);
+  --radiant-unit-width: min(400px, 30cqw, 62cqh);
+  --radiant-unit-height: var(--radiant-unit-width);
 }
 .radiant-field .radiant-allies, .radiant-field .radiant-enemies { top: 40px; bottom: 6px; }
 .radiant-hud { position: absolute; z-index: 8; inset: 5px 5px auto; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; pointer-events: none; }
@@ -466,11 +466,13 @@ html body .battle-screen #battle-root:has(.radiant-battle) { display: block; hei
 .radiant-hud-title .radiant-eyebrow { display: inline; font-size: 10px; letter-spacing: .08em; color: #a9adb8; }
 .radiant-hud-progress { display: block; font-size: 11px; line-height: 1.25; color: #c9ccd4; white-space: nowrap; }
 .radiant-hud-tools { display: flex; gap: 6px; flex: none; }
-.radiant-battle .radiant-hud-tools button { position: relative; min-height: 32px; min-width: 40px; padding: 4px 12px; font-size: 12px; line-height: 1;
+.radiant-battle .radiant-hud-tools button { position: relative; box-sizing: border-box; flex: none; width: 40px; height: 32px; min-height: 32px; min-width: 40px; padding: 4px 12px; font-size: 12px; line-height: 1; white-space: nowrap; overflow-wrap: normal;
   border-radius: 7px; border-color: #ffffff40; background: #0a0d14c2; backdrop-filter: blur(3px); }
 /* Keeps a 44px touch target around the visually small controls. */
 .radiant-battle .radiant-hud-tools button::after { content: ""; position: absolute; inset: -6px -2px; }
 .radiant-battle .radiant-hud-tools [data-radiant-settings] { font-size: 16px; padding-inline: 10px; }
+.radiant-battle .radiant-hud-tools [data-radiant-skip] { display: grid; place-items: center; padding-inline: 10px; }
+.radiant-battle .radiant-hud-tools [data-radiant-leave] { width: 64px; }
 .radiant-battle .radiant-hud-tools button:not(:disabled):hover { background: #1c2230e6; border-color: #ffffff80; }
 
 .radiant-enemy-banner { display: flex; gap: 5px; align-items: stretch; min-width: 0; }
@@ -541,9 +543,6 @@ html body .battle-screen #battle-root:has(.radiant-battle) { display: block; hei
 .radiant-battle-footer .radiant-actions { justify-content: flex-start; }
 .radiant-battle-footer .radiant-actions:has(> button:not([hidden])) { margin-block: 4px; }
 .radiant-battle-footer .radiant-actions button { padding: 6px 12px; font-size: 12px; }
-@media (max-width: 1000px) {
-  .radiant-field { --radiant-unit-height: min(180px, 26vw, 56cqh); --radiant-unit-width: min(130px, 19vw, 44cqh); }
-}
 @media (max-width: 620px) {
   .radiant-battle { padding: 4px; }
   .radiant-battle-layout { min-height: calc(100dvh - 10px); gap: 4px; }

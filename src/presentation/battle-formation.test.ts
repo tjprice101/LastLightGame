@@ -25,10 +25,21 @@ describe('grounded Radiant formations', () => {
       .toBeGreaterThanOrEqual(28);
   });
 
+  it.each([1, 2, 3, 4, 5, 6])('contains enlarged artwork within the field for %i units', size => {
+    for (const slot of radiantFormation(size)) {
+      const centre = .02 + .44 * slot.x / 100;
+      const halfWidth = .30 * slot.scale / 2;
+      expect(centre - halfWidth).toBeGreaterThanOrEqual(0);
+      expect(centre + halfWidth).toBeLessThanOrEqual(1);
+      expect(1 - centre - halfWidth).toBeGreaterThanOrEqual(0);
+      expect(1 - centre + halfWidth).toBeLessThanOrEqual(1);
+    }
+  });
+
   it('mirrors positions rather than mirroring sprites or changing depth', () => {
     const slot = radiantFormation(3)[0];
-    expect(radiantFormationStyle(slot, 0, false)).toContain('--formation-x:20%');
-    expect(radiantFormationStyle(slot, 0, true)).toContain('--formation-x:80%');
+    expect(radiantFormationStyle(slot, 0, false)).toContain('--formation-x:34%');
+    expect(radiantFormationStyle(slot, 0, true)).toContain('--formation-x:66%');
     expect(radiantFormationStyle(slot, 0, true)).toContain('--formation-depth:84');
   });
 

@@ -14,7 +14,7 @@ gates and saves are unchanged.
 ## Live battle viewport and outcomes (2026-11-11)
 
 The real Radiant battle has no top bar. A small translucent title/progress
-chip and compact Settings (⚙) and Exit controls sit on the arena's top edge;
+chip and compact icon-only Skip, Settings (⚙) and Exit controls sit on the arena's top edge;
 each keeps a 44px touch target and Exit keeps its styled confirmation. The
 arena takes most of the viewport. Below it, a long enemy banner shows the
 selected enemy's name, level, Health bar and exact Health/Shield, with any
@@ -24,8 +24,18 @@ phones: portrait and role, name, level/attunement, Health bar with exact
 numbers, charge bar with exact charge, readiness and abbreviated exact
 Attack/Defense/Recovery. A long evolution title truncates before the
 bearer's own name. A zero Shield readout is hidden rather than repeated.
-Artwork scales with the arena's actual dimensions without changing
-formations or facing. Expanded rules and longer status lists remain reachable.
+Artwork is substantially enlarged and scales with the arena's actual
+dimensions. Staggered formations overlap intentionally while keeping enemy
+targets reachable and complete artwork inside the field; facing is unchanged.
+Acted portrait tiles turn grayscale until the next round restores eligibility.
+Expanded rules and longer status lists remain reachable.
+
+Attacking adds no visible gesture/status text or temporary target heading.
+Only one enemy readout remains visible during saved impacts, retaining the
+impact target's presented Health until playback settles. Skip stays mounted
+in the arena with fixed control dimensions, disabled outside presentation;
+it never inserts a footer row or shifts the arena or squad during an attack.
+Accessible announcements and explicit errors remain available.
 
 Saved victory and defeat appear in a centered, viewport-bounded results sheet
 after impacts finish. Both have finite entrance/ring feedback, with rising
