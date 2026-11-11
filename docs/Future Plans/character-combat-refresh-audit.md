@@ -1,5 +1,41 @@
 # Character combat refresh: audit and proposed direction
 
+## Phase A kit-copy contract (2026-11-11)
+
+Owner requires concise, formulaic player-facing wording throughout the full
+38-bearer proposal: every Leader Ability, Passive, each of the three distinct
+Flare tiers, and each of the three individually tailored personal Masters.
+Use original Last Light names and mechanics, not copied Brave Frontier text.
+
+- Format: **[Ability type]: [Name]** followed by a compact effect list.
+- Keep clause order consistent: target/scope, exact effect and value,
+  duration, trigger and meaningful limit. Omit inapplicable fields.
+- Use consistent terms and notation: Health, Attack, Defense, Recovery,
+  personal charge and shared charge; distinguish percentages from percentage
+  points. Identify any damage/healing/Shield basis and whose stat it uses.
+- State conditions, clocks, stack caps and exceptions when they affect a
+  decision. Never replace them with "greatly," "powerful" or similar vague copy.
+- Give each Flare tier its own complete concise line; do not make readers
+  reconstruct Lustrous or Eternal by combining earlier tiers.
+- Keep detailed ordering, stacking, ownership and engine interactions in
+  adjacent design notes, not padded into player-facing effect lists. Shared
+  rules belong in the glossary; genuinely different exceptions stay inline.
+- Preserve each Master's individual attunement and enhancement. Concise
+  wording does not authorize generic effects or identical kits.
+
+Writing pattern only, not an approved mechanic or balance value:
+
+> **Leader Ability: [Original name]**
+> All allies: +20% Health, +15% Attack; personal Flare charge cost -10%.
+>
+> **Passive: [Original name]**
+> After this bearer Defends, grant self a Shield equal to 15% maximum Health
+> (once per round; lasts until broken).
+
+Numbers above illustrate copy structure only. Complete exact kit sheets,
+interaction notes and owner approval remain required; this wording decision
+does not authorize gameplay changes or satisfy the unfinished Phase A sheets.
+
 ## Six-member scope and rejected mock-up (2026-11-08)
 
 [Latest expanded contract](combat-system-specification.md#expanded-scope-six-bearer-progression-and-integrated-ui-2026-11-08):
