@@ -3269,7 +3269,7 @@ function calamiticEffect(id, level = 0) {
   return ability3;
 }
 
-// src/content/radiant-conduits.ts
+// src/content/conduit-effects.ts
 var effect = (kind, amount) => ({ kind, amount });
 var pair = (kind, amount, related, extra) => [effect(kind, amount), effect(related, extra)];
 var radiantConduits = {
@@ -16182,7 +16182,7 @@ function atTrainingWave(state, wave) {
   return state;
 }
 
-// src/content/radiant-enemy-calibration.ts
+// src/content/enemy-calibration.ts
 var unity = { hp: 1, attack: 1, defense: 1 };
 var liveRadiantCalibrationId = "authored-control";
 var authoredRadiantCalibration = {
@@ -16230,7 +16230,7 @@ function calibratedRadiantEnemyStats(authored, level, category, calibration) {
   };
 }
 
-// src/game/radiant-pressure-encounters.ts
+// src/game/enemy-pressure-encounters.ts
 function isRadiantAccessError(error) {
   return error instanceof ActivityAccessError || error instanceof RoseEventInactiveError;
 }
@@ -16311,7 +16311,7 @@ function adaptRadiantPressureEncounter(anchor, encounterSeed, calibration) {
   });
 }
 
-// src/online/radiant-rewards.ts
+// src/online/battle-rewards.ts
 var seedKeys = [
   "rewardSeed",
   "captureSeed",
@@ -16469,7 +16469,7 @@ function resolveRadiantRewards(account, anchor, encounterSeed, ledger, combat, r
   };
 }
 
-// src/content/radiant-combat.ts
+// src/content/combat-kits.ts
 var radiantAttunements = {
   equinox: { hp: 1, attack: 1, defense: 1, recovery: 1 },
   corona: { hp: 0.9, attack: 1.25, defense: 1, recovery: 1 },
@@ -17260,7 +17260,7 @@ function resolveRadiantStarterStats(loadout) {
   return stats;
 }
 
-// src/game/radiant-gauge.ts
+// src/game/combat-gauge.ts
 var personalChargeUnit = 10;
 var sharedChargeUnit = 60;
 var radiantChargeRules = {
@@ -17422,7 +17422,7 @@ function grantRadiantRound(state) {
   return next;
 }
 
-// src/game/radiant-combat.ts
+// src/game/combat-engine.ts
 function validateRadiantDropEvents(events, enemyIds2, bearerIds) {
   for (const [index, event2] of events.entries()) {
     if (event2.type !== "gauge-drop") continue;
@@ -18539,7 +18539,7 @@ function applyRadiantCombatAction(input, action) {
   return { state, events: structuredClone(events) };
 }
 
-// src/game/radiant-loadout.ts
+// src/game/combat-loadout.ts
 function adaptRadiantLoadouts(members, acquiredBearerIds, account) {
   const errors = [];
   const loadouts = [];
@@ -18585,7 +18585,7 @@ function adaptRadiantLoadouts(members, acquiredBearerIds, account) {
   return errors.length ? { ok: false, errors } : { ok: true, loadouts };
 }
 
-// src/game/radiant-pressure.ts
+// src/game/enemy-pressure.ts
 function radiantPressureEnemyAction(state, enemy2, targetRandom) {
   const targets = state.bearers.filter((member) => member.hp > 0);
   const targeting = enemy2.pattern?.targeting;
@@ -18606,7 +18606,7 @@ function radiantPressureEnemyAction(state, enemy2, targetRandom) {
   };
 }
 
-// src/online/radiant-run.ts
+// src/online/battle-run.ts
 var radiantContinuationMediaType = "application/vnd.lastlight.radiant-continuation-v1+json";
 var radiantClientAccept = `application/json, ${radiantContinuationMediaType}`;
 var RadiantRunError = class extends Error {
@@ -19142,7 +19142,7 @@ function radiantRpcRepositoryFor(rpc, userId, load, validate) {
   };
 }
 
-// src/online/radiant-preparation.ts
+// src/online/battle-preparation.ts
 var kinds = [
   "setSquad",
   "saveSquadLoadout",
@@ -19296,7 +19296,7 @@ async function executeRadiantPreparation(repository, input) {
   });
 }
 
-// supabase/functions/game-operation/radiant-dispatch.ts
+// supabase/functions/game-operation/battle-dispatch.ts
 var encoder = new TextEncoder();
 async function deriveRadiantEntry(secret, user, requestId) {
   if (!secret || encoder.encode(secret).length < 32)

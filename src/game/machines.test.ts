@@ -1,7 +1,7 @@
 import { machineRules, machineConduitChance, machineDropRatesText } from '../content/machines';
 import { describe, expect, it, vi } from 'vitest';
 import { conduits, conduitBuffs, conduitEffect, legacyConduitEffect, validateConduitSlots, type ConduitId, type ConduitSlots } from '../content/conduits';
-import { radiantConduitEffectText } from '../content/radiant-conduit-text';
+import { radiantConduitEffectText } from '../content/conduit-effect-text';
 import { elements, infusionStageCount } from '../content/activities';
 import { enemyGrowth } from '../content/stat-growth';
 import { infusionEncounter } from '../content/infusions';

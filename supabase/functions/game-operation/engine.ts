@@ -64,7 +64,7 @@ export interface DurableGame {
   starterId: StarterId | null;
   profile: OnlineProfile;
   run: DurableRun | null;
-  radiantStudy?: import('../../../src/online/radiant-run').FrozenRadiantRun;
+  radiantStudy?: import('../../../src/online/battle-run').FrozenRadiantRun;
 }
 export function profileActivityFor(operation: GameOperation, previousStoryCompleted: number,
   resolved: { game: DurableGame; response: GameResponse }, uuid: () => string): Omit<ProfileActivity, 'at'> | null {

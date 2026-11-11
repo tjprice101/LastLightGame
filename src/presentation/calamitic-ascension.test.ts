@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getStarter } from '../content/starters';
 import { characterName } from '../content/character-art';
-import { radiantBearerKits } from '../content/radiant-combat';
+import { radiantBearerKits } from '../content/combat-kits';
 import { emptyAccount, ownedProgress, ascendCharacter, saveAccount, type Account } from '../game/account';
 import { SAVE_KEY, type ProfileStorage } from '../game/profile';
 import { ascensionEntry, ascensionContents, openCalamiticAscension } from './calamitic-ascension';

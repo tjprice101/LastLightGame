@@ -4,7 +4,7 @@ import { dungeonEncounter, isPlayableDungeon } from '../content/dungeons';
 import { infusionEncounter, isInfusionMode } from '../content/infusions';
 import { isWarCharacter, warEncounter } from '../content/elemental-war';
 import { oblivionEncounter } from '../content/gates-of-oblivion';
-import { authoredRadiantCalibration, calibratedRadiantEnemyStats } from '../content/radiant-enemy-calibration';
+import { authoredRadiantCalibration, calibratedRadiantEnemyStats } from '../content/enemy-calibration';
 import { stageBossStats } from '../game/battle';
 import './enemy-strength.css';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';

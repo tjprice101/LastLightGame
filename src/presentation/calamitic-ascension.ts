@@ -1,6 +1,6 @@
 import { type Starter } from '../content/starters';
 import { characterRarity, displayEvolution, type CharacterProgress } from '../content/progression';
-import { radiantBearerKits } from '../content/radiant-combat';
+import { radiantBearerKits } from '../content/combat-kits';
 import { characterName } from '../content/character-art';
 import { materialArt } from '../content/dungeon-art';
 import { ownedProgress, canAscendCharacter, calamiticAscensionCost, type Account, type CalamiticAscensionStep } from '../game/account';
@@ -8,7 +8,7 @@ import { portrait, assetUrl } from './portrait';
 import { abilityIcon } from './ability-icon';
 import { createGameDialog, escapeDialogText as escape, gameDialogPending } from './game-dialog';
 import { celebrateAscension } from './upgrade-celebration';
-import { isRadiantBearer } from './radiant-character';
+import { isRadiantBearer } from './character-combat';
 import './calamitic-ascension.css';
 
 const steps = ['stats', 'skill1', 'skill2', 'lastFlare'] as const;

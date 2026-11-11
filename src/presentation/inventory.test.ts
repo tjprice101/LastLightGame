@@ -7,7 +7,7 @@ import { masterChest, masterConduits as allMasters } from '../content/master-con
 import { characterReleased } from '../content/release-visibility';
 const masterConduits = allMasters.filter(master => characterReleased(master.character));
 import { conduits, conduitEffect, getConduit } from '../content/conduits';
-import { radiantMasterEffect } from './radiant-master-text';
+import { radiantMasterEffect } from './master-text';
 import { bindInformation } from './information';
 import { bracketReferences } from './reference-text';
 import { referencedEffect } from './effect-copy';

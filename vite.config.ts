@@ -29,7 +29,7 @@ export default defineConfig({
         vfxPreview: 'vfx-preview.html',
         bubblePreview: 'bubble-preview.html',
         bubbleBattle: 'bubble-battle.html',
-        radiantBattlePreview: 'radiant-battle-preview.html',
+        battlePreview: 'battle-preview.html',
       },
     },
   },

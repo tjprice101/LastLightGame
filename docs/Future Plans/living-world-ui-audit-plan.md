@@ -71,7 +71,7 @@ no owner account or production deployment was touched.
   these journeys; neither used an owner account.
 - Continue, old-client compatibility, legacy loadouts, enemy previews,
   Character Archive and Calamitic Ascension were updated for Radiant. See the
-  [handoff](../handoff.md) and [Radiant specification](radiant-combat-system-specification.md)
+  [handoff](../handoff.md) and [Radiant specification](combat-system-specification.md)
   for the exact validation and deployment state.
 
 ### Remaining live-game audit

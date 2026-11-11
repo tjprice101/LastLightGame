@@ -2,7 +2,7 @@
 
 ## Radiant fresh-entry economy controls (2026-11-08)
 
-[Actual-authority request-cost experiment](Future%20Plans/radiant-combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08)
+[Actual-authority request-cost experiment](Future%20Plans/combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08)
 measures411 virtual-authority cycles,1236 explicit locked/inactive denials and
 1098 repeated strongest-prefix Retry attempts. Zero repeated payout/kill loot;
 fresh exits preserve earnings. Single free starters remain separate accounts,
@@ -18,10 +18,10 @@ actual Radiant database verification remain separate release gates.
 
 ## Isolated radiant-overhaul pressure experiment (2026-11-08)
 
-[Latest study](Future%20Plans/radiant-combat-system-specification.md#actual-pressured-encounters-experimental-calibration-2026-11-08)
+[Latest study](Future%20Plans/combat-system-specification.md#actual-pressured-encounters-experimental-calibration-2026-11-08)
 uses the new four-stat roster/gear against authored enemy spawns and actual
 action schedules:44 families,284 anchors,245 species/forms and2001 encounters.
-`node tools\run_radiant_pressure.mjs <new-report.jsonl> --tuned-only` reproduces
+`node tools\run_pressure_study.mjs <new-report.jsonl> --tuned-only` reproduces
 the bounded run with source/bundle provenance, explicit timeout/stalemate and
 separate healing/Shield creation/absorption/HP damage measurements.
 

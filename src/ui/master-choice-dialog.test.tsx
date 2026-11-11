@@ -9,7 +9,7 @@ import { characterReleased } from '../content/release-visibility';
 import { getElement } from '../content/activities';
 import { elementAccents } from '../content/dungeon-art';
 import { referencedEffect } from '../presentation/effect-copy';
-import { radiantMasterEffect } from '../presentation/radiant-master-text';
+import { radiantMasterEffect } from '../presentation/master-text';
 
 beforeEach(() => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);

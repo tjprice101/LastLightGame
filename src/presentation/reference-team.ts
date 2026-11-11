@@ -1,5 +1,5 @@
 import { squadMemberLimit } from '../content/squad-rules';
-import { isRadiantBearer, radiantAttunementChip, radiantCharacterLoadout } from './radiant-character';
+import { isRadiantBearer, radiantAttunementChip, radiantCharacterLoadout } from './character-combat';
 import { elements, isCurrencyMode } from '../content/activities';
 import { getStarter, isStarterId, starterVow, type StarterId } from '../content/starters';
 import { characterName } from '../content/character-art';

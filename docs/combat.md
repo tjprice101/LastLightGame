@@ -7,7 +7,7 @@ game. Its actual enemy statistics use the `authored-control` calibration;
 activity strength panels display those calibrated Health, Attack and Defense
 values. Earlier legacy-combat and preview-only sections below are historical
 where they conflict with the current
-[Radiant specification](Future%20Plans/radiant-combat-system-specification.md).
+[Radiant specification](Future%20Plans/combat-system-specification.md).
 
 On Continue, personal and shared Gauge and the frozen squad/loadout persist.
 Staged encounters restore squad Health, revive defeated members and clear
@@ -30,7 +30,7 @@ remain unchanged. Existing reward-roll totals are
 preserved through fixed carriers, and all defeated authored enemies still
 count for discovery. The current encounter-rules version is 19.
 
-The [battlefield comparison and proposed staging](../Art/ui/Radiant%20Combat%20Overhaul.md#screenshot-comparison-and-corrected-battle-composition-target)
+The [battlefield comparison and proposed staging](../Art/ui/Combat%20Overhaul.md#screenshot-comparison-and-corrected-battle-composition-target)
 are presentation design, not an implemented combat-rule change. Prior rules17
 and other dated entries below remain historical.
 

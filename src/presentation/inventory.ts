@@ -10,7 +10,7 @@ import { assetUrl } from './portrait';
 import { information, informationTopics } from './information';
 import './inventory.css';
 import { masterChest, masterConduits as allMasters } from '../content/master-conduits';
-import { radiantMasterEffect } from './radiant-master-text';
+import { radiantMasterEffect } from './master-text';
 import { characterReleased, materialReleased } from '../content/release-visibility';
 const masterConduits = allMasters.filter(master => characterReleased(master.character));
 import { masterChestIcon, masterConduitIcon } from './master-conduits';

@@ -7,7 +7,7 @@ from art_library import art_path
 
 ROOT = Path(__file__).resolve().parent.parent
 BLOCK = re.compile(r"```(?:text)?\n(.*?)\n```", re.S)
-RADIANT_BRIEF = ROOT / "Art" / "ui" / "Radiant Combat Overhaul.md"
+RADIANT_BRIEF = ROOT / "Art" / "ui" / "Combat Overhaul.md"
 
 
 def prompts():

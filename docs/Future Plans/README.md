@@ -5,15 +5,15 @@
 Radiant runs in the real online and local game across activities; the older
 preview-only release description below is historical. The
 [current handoff](../handoff.md#live-radiant-and-team-release-follow-through-2026-11-10)
-and [Radiant specification](radiant-combat-system-specification.md#live-implementation-and-continuation-compatibility-2026-11-10)
+and [Radiant specification](combat-system-specification.md#live-implementation-and-continuation-compatibility-2026-11-10)
 record remaining artwork, physical desktop/owner review, conditional economy
 findings and the compatible client/authority release procedure.
 
 ## Current Radiant work and art scope (2026-11-09)
 
-The [handoff](../handoff.md) and [Radiant specification](radiant-combat-system-specification.md)
+The [handoff](../handoff.md) and [Radiant specification](combat-system-specification.md)
 record the Radiant foundation, deployed to production on 2026-11-09 as a
-signed-in Home preview entry, and its remaining open work. The [consolidated art brief](../../Art/ui/Radiant%20Combat%20Overhaul.md)
+signed-in Home preview entry, and its remaining open work. The [consolidated art brief](../../Art/ui/Combat%20Overhaul.md)
 records implemented staggered battle staging and six text-based shop/service
 hosts, plus six pending portrait prompts and two optional environments.
 The portraits are not delivered. The separate historical
@@ -41,7 +41,7 @@ inside older plans remain delivery history; current status below takes priority.
 rejected/retired, not the design authority for resumed work. Historical rows
 below retain its old review evidence only; no further rollout of that concept.
 Necessary Home/Team/Battle UI belongs to the
-[six-bearer combat overhaul](radiant-combat-system-specification.md#expanded-scope-six-bearer-progression-and-integrated-ui-2026-11-08),
+[six-bearer combat overhaul](combat-system-specification.md#expanded-scope-six-bearer-progression-and-integrated-ui-2026-11-08),
 including full Conduit/Master and all-activity enemy calibration. No named
 preset feature selected; existing squad/equipment editing is reworked.
 
@@ -49,7 +49,7 @@ preset feature selected; existing squad/equipment editing is reworked.
 [Detailed comparison,32 released-kit audit and phased proposal](character-combat-refresh-audit.md).
 Owner-selected four stats, bearer-only squads, single evolved Flare, two-step
 shared/personal final charge, Equinox default with Master-selected subtype,
-and bounded damage-based Prismatica. [Exact system/starter review draft](radiant-combat-system-specification.md)
+and bounded damage-based Prismatica. [Exact system/starter review draft](combat-system-specification.md)
 contained proposed formulas, three kits and nine Master remaps at that time.
 The Radiant branch has since implemented and tested substantially more; see
 the current specification and handoff instead of treating this historical
@@ -57,7 +57,7 @@ draft as the implementation status.
 
 | Workstream | Current status / what is done | Where to resume / next gate |
 |---|---|---|
-| Radiant battlefield staging and vendor hosts | Staggered field templates, target-impact readouts and six text hosts implemented; vendor portraits remain pending. Existing 192 face crops are derivatives; two environments are optional. | [Consolidated brief](../../Art/ui/Radiant%20Combat%20Overhaul.md); review source anchors and host likenesses, then complete the [release gates](radiant-combat-system-specification.md#remaining-coherent-release-gates-supersedes-the-lists-below). |
+| Radiant battlefield staging and vendor hosts | Staggered field templates, target-impact readouts and six text hosts implemented; vendor portraits remain pending. Existing 192 face crops are derivatives; two environments are optional. | [Consolidated brief](../../Art/ui/Combat%20Overhaul.md); review source anchors and host likenesses, then complete the [release gates](combat-system-specification.md#remaining-coherent-release-gates-supersedes-the-lists-below). |
 | Living-world UI and menus | First shared-foundation tranche implemented2026-11-07: ordinary control/panel tokens, leading labels/44px targets, explicit outcome tones, neutral press feedback and motion cleanup. Not a completed global UI overhaul. | [Current evidence and rollout](living-world-ui-audit-plan.md#first-shared-foundation-tranche-2026-11-07). Finish populated/visible-temporal/device Phase0 evidence, extend measured Phase1/2 gaps, then Phase3 Home/navigation journeys. Preserve saved-success timing, Reduce motion, focus/history/Skip; phases3-10 still unfinished. |
 | Four artwork-led Elemental War characters | Owner approves integration2026-11-06;24 reviewed portraits installed and duplicate roots removed after hash checks; current kit contract replaces proposal-only scope | [Designs/lore/kits](phase-2-war-designs.md), [44 pending-art prompts](Elemental%20War%20Phase%202.md), [intake](../../Art/provenance/phase2-war-art-intake.json), [live War rules](../elemental-war.md), [handoff](../handoff.md). Finish/review undelivered icons/Masters/status/header/arena art later; current shared neutral presentation supports gameplay. All ten trials use5% final-boss recruitment, not guaranteed or1%. Release/validation evidence comes from the handoff, not this plan alone. |
 | Moon and Sunshade artwork/intake | Twelve bearers,36 Masters and signature activity mechanics implemented;104 Moon images installed,103 Sunshade required images pending; event availability follows the authority schedule | [Current seasonal checklist](remaining-expansion-art.md), [Moon intake](../art-workflow.md#delivered-moon-artwork-2026-11-07), [original phase plan](remaining-expansion-phases.md), [live appearances](../moon-sunshade-character-design.md), [kits](../moon-sunshade-kit-specification.md), [events](../moon-sunshade-events.md). Sunshade intake and any launch window remain separate gates. Do not repeat released mailbox/calendar/shop/QoL implementation. |

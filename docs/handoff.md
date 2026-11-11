@@ -1,5 +1,31 @@
 # Current state and handoff
 
+## Battle feel and default file names (2026-11-11)
+
+Enemy selection now uses a small portrait hop and ground-lock ring instead of
+acquisition shimmer. Enemy direct packets have readable lead-in, anticipation
+and recovery, governed by existing battle speed and presentation controls.
+Pending-save wait text is removed; errors and saved outcome announcements
+remain. Garbled multiplication signs and the loot quantity interpolation are
+corrected. No combat, reward, save or RNG rules change.
+
+All 75 tracked Radiant-named files now use default-purpose names, with imports,
+tooling, documentation references and the authority bundle updated. Existing
+protocol/save keys, identifiers, CSS hooks and authored Flare names remain
+compatible; this is a file rename, not a save migration.
+
+**Verified:** The 165 focused suites passed 4,046 tests. Client and authority
+TypeScript checks and `npm run build` passed (existing large-chunk advisory).
+`python -m unittest discover -s tools -p "test_ground_anchors.py"` passed one
+test; `python -m unittest discover -s tools -p "test_combat_art_brief.py"`
+passed five. `npx vitest run --maxWorkers=3 --testTimeout=60000` passed
+286 files and 10,290 tests; the subsequent battle-screen suite passed 46
+tests, including explicit 1x/3x enemy pacing checks, and client TypeScript.
+The broad `test_art_prompts.py` run has 315 pre-existing failures across
+28 tests, reproduced with the HEAD test and the renamed document location;
+those unrelated prompt assertions are unchanged. Publication verification
+is pending.
+
 ## Compact battle HUD (2026-11-11)
 
 **Implemented:** At the owner's request the live battle top bar is removed.
@@ -30,9 +56,9 @@ open; Tab cycles through result actions, Escape/View battlefield dismisses,
 and View saved results restores the same sheet without a new transaction.
 Reduce motion is static. Reveals still wait for saved impacts or Skip.
 
-**Verified:** `npx vitest run src\presentation\radiant-battle-view.test.ts
-src\presentation\radiant-results.test.ts
-src\presentation\radiant-battle-art.test.ts` passed 56 tests.
+**Verified:** `npx vitest run src\presentation\battle-screen.test.ts
+src\presentation\battle-outcome.test.ts
+src\presentation\battle-art.test.ts` passed 56 tests.
 The related client, session and rarity-feedback suites passed another
 40 tests. `npm run build` passed client TypeScript and the production build
 with the existing large-chunk advisory; `git diff --check` passed.
@@ -69,15 +95,15 @@ initial state while retaining paid-reward ledgers. Old version-3 snapshots
 remain readable. The online client declares continuation support in the
 standard `Accept` header; older clients can finish an existing compatible fight
 but receive a refresh message before Continue or an incompatible saved state.
-The [Radiant specification](Future%20Plans/radiant-combat-system-specification.md)
+The [Radiant specification](Future%20Plans/combat-system-specification.md)
 records the bounded economy study, compatibility and remaining review limits.
 
 **Verified:** The real local route was exercised only with the isolated in-memory
 debug profile: purchase and summon confirmations, Training victory/rewards,
 Continue, Retry, exit, Settings and filtered multi-select. No owner account was
-used. `npx vitest run src\online\radiant-dispatch.test.ts
-src\online\radiant-transport.test.ts src\online\radiant-run-progression.test.ts
-src\online\radiant-session.test.ts src\presentation\creature-bulk-sale.test.ts`
+used. `npx vitest run src\online\battle-dispatch.test.ts
+src\online\battle-transport.test.ts src\online\battle-run-progression.test.ts
+src\online\battle-session.test.ts src\presentation\creature-bulk-sale.test.ts`
 passed 115 tests; client and authority TypeScript checks passed.
 `npx vitest run --maxWorkers=2 --testTimeout=60000` passed all 286 files and
 10,286 tests after the collection-filter optimization. The subsequent Training
@@ -150,7 +176,7 @@ battles across every activity, both online and in local play.
   - The battle page mounts `RadiantBattleView`.
   - Settings, Back and Return to title exit with rewards kept.
   - Online sign-in resumes a saved run.
-- `src/online/radiant-local.ts` is the local authority:
+- `src/online/battle-local.ts` is the local authority:
   - It stores `last-light.radiant-run` as `{revision, run}`.
   - It reuses `resolveRadiantRun` with idempotent receipts.
   - The account and run are written together; a failed write rolls the account
@@ -168,8 +194,8 @@ battles across every activity, both online and in local play.
   - Desktop GPU/cadence check.
   - Legacy battle code (`BattleView`, legacy engine ops) is now unreachable but
     still in the repository.
-- Validate with `npx vitest run src/online/radiant-local.test.ts
-  src/online/radiant-run.test.ts`, the full suite, `npm run build` and
+- Validate with `npx vitest run src/online/battle-local.test.ts
+  src/online/battle-run.test.ts`, the full suite, `npm run build` and
   `npx tsc --project supabase\functions\game-operation\tsconfig.json`.
 
 ## Radiant production deployment (2026-11-09)
@@ -217,12 +243,12 @@ delivered, via reviewed offline intake. Keep `main` and
 
 ## Vendor portrait prompt revision (2026-11-09)
 
-The six vendor prompts in `Art/ui/Radiant Combat Overhaul.md` now describe
+The six vendor prompts in `Art/ui/Combat Overhaul.md` now describe
 explicit adults aged 18 to 25: three women (Mirel 22, Edda 21, Nimra 19) and
 three men (Veylin 24, Torven 23, Sarev 25). They wear glamorous hard-light
 couture in refined hand-drawn anime style, tasteful and non-explicit. Veylin is
 no longer described as nonbinary, and Edda is no longer an older engineer.
-Their dialogue is unchanged. `tools/test_radiant_art_brief.py` now enforces
+Their dialogue is unchanged. `tools/test_combat_art_brief.py` now enforces
 ages, a three/three split, dresses for women, anti-AI negatives and the absence
 of explicit terms. Five Radiant brief and four Future Plans tests pass. The
 broad prompt suite remains at the same 315 unrelated pre-existing failures,
@@ -345,8 +371,8 @@ The isolated Radiant suite passes 1,817 tests in 23 files. The production
 build passes with the existing large-chunk advisory:
 
 ```powershell
-python -m unittest discover -s tools -p test_radiant_ground_anchors.py
-python tools\build_radiant_ground_anchors.py --check
+python -m unittest discover -s tools -p test_ground_anchors.py
+python tools\build_ground_anchors.py --check
 npx vitest run radiant --exclude src\radiant-ui.test.ts --maxWorkers=2 --testTimeout=60000
 npm run build
 ```
@@ -375,7 +401,7 @@ unmatched rating span that displaced formation progress was corrected.
 **Verified:** the following command passed 340 tests in 11 files:
 
 ```powershell
-npx vitest run src/presentation/character-rating.test.ts src/presentation/reference-ui.test.ts src/presentation/roster.test.ts src/presentation/squad-picker.test.ts src/presentation/archives.test.ts src/presentation/hub.test.ts src/presentation/upgrade-reference.test.ts src/presentation/summon-presentation.test.ts src/presentation/ui-copy.test.ts src/presentation/radiant-battle-view.test.ts src/presentation/radiant-portrait-gesture.test.ts --maxWorkers=2 --testTimeout=15000
+npx vitest run src/presentation/character-rating.test.ts src/presentation/reference-ui.test.ts src/presentation/roster.test.ts src/presentation/squad-picker.test.ts src/presentation/archives.test.ts src/presentation/hub.test.ts src/presentation/upgrade-reference.test.ts src/presentation/summon-presentation.test.ts src/presentation/ui-copy.test.ts src/presentation/battle-screen.test.ts src/presentation/portrait-gesture.test.ts --maxWorkers=2 --testTimeout=15000
 ```
 
 `npm run build` passed with the existing large-chunk advisory. Local in-memory
@@ -410,7 +436,7 @@ Elemental-Devourer purchase button now reaches its existing authenticated
 warning, purchase and receipt flow; an ambiguous response keeps its original
 request for retry and a confirmed retry presents the saved copy.
 
-The [consolidated art brief](../Art/ui/Radiant%20Combat%20Overhaul.md) compares
+The [consolidated art brief](../Art/ui/Combat%20Overhaul.md) compares
 the owner's battle references and supplies six original 2:3 portrait prompts
 plus two optional environments. The 192 existing compact crops are
 derivatives, not new commissions; the separate seasonal/War queue is not an
@@ -424,7 +450,7 @@ focused shop, warning and saved-purchase command covering
 `online-store-profile.test.ts`, `conduit-store.test.ts`,
 `conduit-upgrade.test.ts`, `conduit-menu-update.test.ts` and
 `event-lifecycle.test.ts` passed 63 tests in seven files. With
-`PYTHONPATH=tools`, `python -m unittest -v test_radiant_art_brief
+`PYTHONPATH=tools`, `python -m unittest -v test_combat_art_brief
 test_future_plans test_story_art_prompts test_conduit_expansion_art
 test_calamitic_art` passed 22 tests. `npm run build` passed with the existing
 large-chunk advisory. The older shared art suite has 315 pre-existing
@@ -553,8 +579,8 @@ Defense and highest-ready Flare menu on demand; choosing an action closes it
 and returns keyboard focus. Retry, Skip and saved results remain conditional
 utilities. The battle-rules and frozen-leader disclosure remains available.
 
-Verified with `npx vitest run src\presentation\radiant-battle-view.test.ts
-src\presentation\radiant-battle-reference.test.ts --maxWorkers=2
+Verified with `npx vitest run src\presentation\battle-screen.test.ts
+src\presentation\battle-reference.test.ts --maxWorkers=2
 --testTimeout=60000` (65 tests) and `npm run build` (passed with the existing
 chunk-size advisory).
 
@@ -586,12 +612,12 @@ verification. Preserve unrelated dirty documentation and rejected prototypes.
 **Branch and release:** `overhaul/radiant-foundation`; the authority remains
 disabled and deployment stays on hold for the existing review gates.
 
-**Implemented:** [smoke_radiant_db.mjs](../tools/smoke_radiant_db.mjs) now
+**Implemented:** [smoke_battle_db.mjs](../tools/smoke_battle_db.mjs) now
 supports a bounded `--single-encounter` Defense fixture. It verifies exact
 large-journal replay, unchanged revision and full event restoration, without
 changing the game's persistence or truncating data.
 
-**Verified:** `node tools\smoke_radiant_db.mjs --actions=300
+**Verified:** `node tools\smoke_battle_db.mjs --actions=300
 --single-encounter` passed against the actual hosted SQL RPCs via the local
 handler. One deliberately stalled Training encounter retained 1,703 events
 across 300 actions; its final action replay and subsequent read matched exactly,
@@ -688,7 +714,7 @@ member's windup; its readout still replays the saved impacts in order.
 **Verified:** `npx vitest run radiant --exclude src\radiant-ui.test.ts
 --maxWorkers=2 --testTimeout=60000` passes 1,755 tests across 22 files;
 client and authority TypeScript checks and `npm run build` pass, with the
-existing Vite chunk-size advisory. `node tools\smoke_radiant_db.mjs
+existing Vite chunk-size advisory. `node tools\smoke_battle_db.mjs
 --actions=600` passes the disposable actual-database proof, including Gauge
 shares, identical replay, stale CAS, single-winner concurrency and saved exit.
 Across 669 timed commits and 70 encounters it recorded p50 279 ms, p95 355 ms,
@@ -707,7 +733,7 @@ No browser page errors appeared; this is not physical GPU/cadence acceptance.
 **Remaining:** the owner's in-game review, desktop GPU/cadence and economy
 acceptance, final bespoke per-character cinematic VFX, explicit deployment
 approval, matching authority/client deployment and hosted verification.
-The [single art brief](../Art/ui/Radiant%20Combat%20Overhaul.md) requests no
+The [single art brief](../Art/ui/Combat%20Overhaul.md) requests no
 new mandatory image; its optional Home scenery is still unapproved. Preserve
 all unrelated dirty documentation and rejected local prototypes.
 
@@ -757,13 +783,13 @@ all unrelated dirty documentation and rejected local prototypes.
 **Work state:** this work is on branch `overhaul/radiant-foundation`. Nothing has been deployed, and the Radiant authority is still disabled.
 
 **What changed:**
-- [smoke_radiant_db.mjs](../tools/smoke_radiant_db.mjs) runs the real gated handler against the linked hosted LastLight database. It uses a disposable account that is always removed.
+- [smoke_battle_db.mjs](../tools/smoke_battle_db.mjs) runs the real gated handler against the linked hosted LastLight database. It uses a disposable account that is always removed.
 - The battle field now shows free-standing enemies with nameplates and larger allies.
 - On desktop, the six-card squad dock fits in one row, with element accents and compact stat tiles.
 - The header tools are grouped, and empty lists no longer reserve space.
 
 **What was verified:**
-- `node tools/smoke_radiant_db.mjs --actions=600` passed:
+- `node tools/smoke_battle_db.mjs --actions=600` passed:
   - preparation and request-ID replay
   - stale-revision rejection with the stored aggregate byte-identical
   - single-winner concurrency
@@ -781,7 +807,7 @@ The Supabase CLI works through `npx --yes supabase`; it is logged in and linked.
 3. Final unique cinematic VFX.
 4. Coherent gated deployment followed by hosted verification.
 
-The full gate order is in [the specification](Future%20Plans/radiant-combat-system-specification.md).
+The full gate order is in [the specification](Future%20Plans/combat-system-specification.md).
 
 ## Radiant Home formation and authenticated route (2026-11-08)
 
@@ -821,8 +847,8 @@ viewport, the view temporarily reveals the field for full-form-anchored impact
 effects, then restores the prior scroll after nonterminal presentation unless
 the player scrolls or result focus moves. Reduced motion keeps the original
 position. This is post-save presentation only; it changes no action, reward or
-authority behavior. `npm test -- --run src\presentation\radiant-battle-view.test.ts
-src\vfx\radiant-battle-effects.test.ts src\presentation\radiant-impact.test.ts
+authority behavior. `npm test -- --run src\presentation\battle-screen.test.ts
+src\vfx\battle-effects.test.ts src\presentation\battle-impact-frames.test.ts
 --maxWorkers=2` passes105 tests/3 files; `npx tsc --noEmit` and `npm run build`
 pass, with the existing chunk advisory. The in-memory Eternal preview showed
 the battlefield and nonempty effect canvas during presentation. Neither is
@@ -831,7 +857,7 @@ physical touch/GPU/cadence approval.
 **Latest validation:** focused Home/motion/compact-art selectors pass149 tests
 across six files; compact-portrait provenance tests pass5 tests; `npm run
 build` and `git diff --check` pass. The build retains the existing large-chunk
-advisory. `npm test -- --run src\online\radiant-run.test.ts --reporter=verbose
+advisory. `npm test -- --run src\online\battle-run.test.ts --reporter=verbose
 --silent=false` passes49 tests. Its bounded probe round-trips a synthetic
 5,000-event repeated-damage journal without truncation at1,619,235
 aggregate+response JSON bytes; this run measured87.6 ms
@@ -870,7 +896,7 @@ retains its existing large-chunk advisory. Full `npm test -- --maxWorkers=2`
 reports 10,133 passed and one failed across 279 files; the sole failure is the
 unchanged [settings.test.ts](../src/presentation/settings.test.ts) check that
 rejects the existing `prefers-reduced-motion` rule in
-[radiant-battle.css](../src/presentation/radiant-battle.css), present at
+[battle-screen.css](../src/presentation/battle-screen.css), present at
 `f4225d12`. Neither file was changed. Local Supabase CLI, Docker and Deno
 are unavailable, so no DB proof, hosted verification or deployment is claimed.
 
@@ -893,7 +919,7 @@ and coherent gated deployment/hosted verification. The newer Home/route entry
 above supersedes its earlier "not implemented" status.
 Preserve the disabled authority and isolated branch. Exact focused commands and
 the release gate contract are in
-[the Radiant combat specification](Future%20Plans/radiant-combat-system-specification.md#impact-synchronized-timed-statuses-and-guard-2026-11-08).
+[the Radiant combat specification](Future%20Plans/combat-system-specification.md#impact-synchronized-timed-statuses-and-guard-2026-11-08).
 
 ## Recovering field formation and portrait gestures (2026-11-08)
 
@@ -920,7 +946,7 @@ follow-ups do not impersonate the acting character's signature. Existing field
 facing is untouched; stance/recoil runs in parallel with finite emission and
 idle respects Reduce motion. Resize/scroll clears stale-anchor effects.
 
-**Verified:** [exact command/evidence](Future%20Plans/radiant-combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08):
+**Verified:** [exact command/evidence](Future%20Plans/combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08):
 210 tests/10 files and TypeScript/Vite build pass (existing chunk advisory).
 Browser390px: all6 field allies/2 enemies/6 portraits, canonical source pixels,
 correct side placement and no page-width overflow. Instrumented pointer/capture
@@ -957,7 +983,7 @@ defaults. Actual face/enemy anchors retain facing/DOM. Live speed, Settings
 pause, Skip, Reduce motion, resize and disposal clean scheduled frames/canvas/
 listener; renderer failures reject through existing saved-view reporting.
 
-**Verified:** [exact commands/temporal evidence](Future%20Plans/radiant-combat-system-specification.md#saved-impact-emission-and-bloom-pilot-2026-11-08):
+**Verified:** [exact commands/temporal evidence](Future%20Plans/combat-system-specification.md#saved-impact-emission-and-bloom-pilot-2026-11-08):
 177 tests/7 files pass, all32×3 tiers against actual combat/impact frames with
 effective-healing fixtures; input state unchanged. Pause/live3x/cancel/resize/
 reduced-motion/error and legacy-background compatibility checks.
@@ -990,7 +1016,7 @@ No loadout/account writes. Coupled fix: Tizu/Flora strike-adding Masters now
 send their required selected-enemy target while retaining allied Flare effects.
 Developer preview has an explicit conditional owned-Master fixture.
 
-**Verified:** [exact command/evidence](Future%20Plans/radiant-combat-system-specification.md#complete-frozen-bearer-reference-and-master-targeting-2026-11-08):
+**Verified:** [exact command/evidence](Future%20Plans/combat-system-specification.md#complete-frozen-bearer-reference-and-master-targeting-2026-11-08):
 560 tests/8 files pass; all96 Master target predicates exercised against actual
 combat, both starter strike Masters through saved view/authority;32×3 Flare and
 99 converted Conduit rank5 references; modal Escape/focus/locks and leader-life
@@ -1025,7 +1051,7 @@ pending request retry. Exit routes only after saved disposal; mid-battle
 confirmation blocks actions and cancel/Escape saves nothing. Preview exit
 ends honestly; Reset starts another explicit in-memory conditional fixture.
 
-**Verified:** [exact focused command/evidence](Future%20Plans/radiant-combat-system-specification.md#saved-result-receipts-and-encounter-controls-2026-11-08):
+**Verified:** [exact focused command/evidence](Future%20Plans/combat-system-specification.md#saved-result-receipts-and-encounter-controls-2026-11-08):
 545 tests/10 files pass; `npm run build` passes client TypeScript/Vite with
 existing chunk advisory. Deferred-impact/Skip, final-stage gates, receipt sums,
 stable Settings/dismissal, post-save Continue, no-repayment Replay, lost-exit
@@ -1063,7 +1089,7 @@ the saved state on completion/Skip/Reduce motion. No guessed expiration events
 or unrelated status icons.
 
 **Verified:** focused command in
-[contract/evidence](Future%20Plans/radiant-combat-system-specification.md#canonical-battlefield-art-and-source-owned-readouts-2026-11-08):
+[contract/evidence](Future%20Plans/combat-system-specification.md#canonical-battlefield-art-and-source-owned-readouts-2026-11-08):
 507 tests/6 files pass, including real all-character combat/session regressions,
 all authored art-family anchors, layer FIFO multi-hit/refresh and status-source/
 expiry/escaping tests. `npx tsc --noEmit` and `npm run build` pass with existing
@@ -1094,10 +1120,10 @@ overwrites, Settings pauses owned effects, explicit Reduce motion settles
 and disposal removes effects/listeners. Default finite brightening/rings plus
 an authored-effect seam; **not final character-specific VFX**.
 An in-memory, explicit conditional Lv105/six-owned/precleared fixture preview
-is bundled at `radiant-battle-preview.html`; no player storage/network writes.
-[Contract/preview/evidence](Future%20Plans/radiant-combat-system-specification.md#saved-six-member-battle-surface-and-impact-preview-2026-11-08).
+is bundled at `battle-preview.html`; no player storage/network writes.
+[Contract/preview/evidence](Future%20Plans/combat-system-specification.md#saved-six-member-battle-surface-and-impact-preview-2026-11-08).
 
-**Verified:** `npx vitest run src\presentation\radiant-impact.test.ts src\presentation\radiant-battle-view.test.ts src\online\radiant-run.test.ts src\online\radiant-session.test.ts src\online\radiant-run-progression.test.ts src\presentation\compact-portrait.test.ts src\presentation\battle-impact.test.ts src\game\radiant-combat.test.ts --maxWorkers=2 --testTimeout=60000`:
+**Verified:** `npx vitest run src\presentation\battle-impact-frames.test.ts src\presentation\battle-screen.test.ts src\online\battle-run.test.ts src\online\battle-session.test.ts src\online\battle-run-progression.test.ts src\presentation\compact-portrait.test.ts src\presentation\battle-impact.test.ts src\game\combat-engine.test.ts --maxWorkers=2 --testTimeout=60000`:
 **565 tests/8 files pass**. All32 released characters' three tiers plus incoming/
 round packets reproduce readouts. `npm run build` includes client typecheck,
 passes with existing large-chunk advisory. No dependencies added.
@@ -1129,11 +1155,11 @@ Historical capture squad libraries remain maintenance-only, not combat eligible.
 Controller holds exact pending requests/revisions, blocks concurrency and
 exposes post-save preparation receipts without combat/reward/entrance replay.
 Named-squad capacity labels now use the shared six-member limit.
-[Contract](Future%20Plans/radiant-combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08).
+[Contract](Future%20Plans/combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08).
 
 **Validation:** matching authority bundle regeneration, authority TypeScript
 and client `npm run build` passed; final focused/full counts below.
-`npx vitest run src\online\radiant-preparation.test.ts src\online\radiant-dispatch.test.ts src\online\radiant-run.test.ts src\online\radiant-session.test.ts src\online\radiant-transport.test.ts src\online\saved-loadouts.test.ts src\presentation\saved-loadouts.test.ts src\online\server-game.test.ts --maxWorkers=2 --testTimeout=60000`:
+`npx vitest run src\online\battle-preparation.test.ts src\online\battle-dispatch.test.ts src\online\battle-run.test.ts src\online\battle-session.test.ts src\online\battle-transport.test.ts src\online\saved-loadouts.test.ts src\presentation\saved-loadouts.test.ts src\online\server-game.test.ts --maxWorkers=2 --testTimeout=60000`:
 **281 tests/8 files passed**, including the final explicit capture gear cleanup,
 raw legacy equipment preservation, late-save disposal and six-member DOM checks.
 Full `npx vitest run --exclude src/radiant-ui.test.ts --exclude src/ui-design-lab.test.ts --maxWorkers=2 --testTimeout=60000`:
@@ -1163,7 +1189,7 @@ checkpoint read shares the gate/rate/calibration validation and does not commit
 an operation. Existing account loading can initialize an absent account.
 Schema3 durable encounter journal restores totals without replay; Retry retains
 history, Continue resets it; corrupt journals and mismatched currency sums deny.
-[Detailed contract](Future%20Plans/radiant-combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08).
+[Detailed contract](Future%20Plans/combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08).
 
 **Verified:**556 focused tests/9 files; `node tools\bundle_server_game.mjs`,
 `npx tsc --project supabase\functions\game-operation\tsconfig.json` and
@@ -1191,7 +1217,7 @@ partial start/actions/exit costs. Strongest prefix replayed via quit/Retry
 three times; same reward/currency budgets retained. Explicit per-sample,
 denied-access, source/hash/metadata and aggregate report, safe new-file output
 and cleaned per-run temp bundle.
-[Contract/table/caveats](Future%20Plans/radiant-combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08).
+[Contract/table/caveats](Future%20Plans/combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08).
 
 **Measured:**61 anchors/three seeds/nine cohorts:411 measured,1236 explicit
 access denials,30 exercised families.366 strongest prefixes/1098 Retry
@@ -1207,9 +1233,9 @@ explicitly nonrepeatable. Request efficiency is NOT income/minute/GPU/network
 timing/global optimization/final balance approval; no invented cap.
 
 **Validation:**135 tests across four focused files pass:
-`npx vitest run src\online\radiant-economy.test.ts src\online\radiant-run.test.ts src\online\radiant-run-progression.test.ts src\online\radiant-dispatch.test.ts --maxWorkers=2 --testTimeout=60000`.
+`npx vitest run src\online\battle-economy.test.ts src\online\battle-run.test.ts src\online\battle-run-progression.test.ts src\online\battle-dispatch.test.ts --maxWorkers=2 --testTimeout=60000`.
 `npx tsc --noEmit` and `git diff --check` pass.
-Executed `node tools\run_radiant_economy.mjs <new-report.jsonl>`; independently
+Executed `node tools\run_economy_study.mjs <new-report.jsonl>`; independently
 recomputed cohort counts/invariants from saved report. Verified JSONL under
 session files `radiant-economy-publication.jsonl`, source/bundle/report hashes in
 spec. Final publication report reproduces every prior measured/denied outcome;
@@ -1244,7 +1270,7 @@ seeds; Training wave increments correctly. Final stage/Calamity Continue denied.
 Explicit `exit` disposes the study, preserves banked account/receipt, allows
 fresh authorized entry; `quit` remains retryable. Schema1 isolated fixtures
 explicitly rejected; no production wallet/legacy run migration.
-[Detailed contract and exact commands](Future%20Plans/radiant-combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08).
+[Detailed contract and exact commands](Future%20Plans/combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08).
 
 **Validation:** all284 anchors have authored non-Prismatica loot/progression
 parity checks, separate from combat benchmarks. Focused tests also cover
@@ -1277,7 +1303,7 @@ or missing-config fallback. Runtime request/stored aggregate/response validation
 and typed client transport added; no production UI callers. Legacy routes and
 unrelated account ops preserve frozen study; entry cannot overwrite it.
 Rose timed-event access preserved. Shared bundle regenerated.
-[Contract/config/gates](Future%20Plans/radiant-combat-system-specification.md#gated-authenticated-authority-dispatch-2026-11-08).
+[Contract/config/gates](Future%20Plans/combat-system-specification.md#gated-authenticated-authority-dispatch-2026-11-08).
 
 **Verified:**1302 tests across eight parent-selected dispatch/transport/run/
 server/combat/gear/Gauge/pressure files pass. Client/authority types and build
@@ -1311,7 +1337,7 @@ Retry restores initial battle with banked lowestHP/paid currency ledgers;
 Quit/defeat retain saved partial payout. Duplicate receipts/idempotent response,
 stale CAS/run/encounter, denied writes and overflow are explicit. Stage Continue
 requires existing access and frozen loadouts, does not fabricate unlocks/loot.
-[Contracts/limits](Future%20Plans/radiant-combat-system-specification.md#account-derived-runs-and-atomic-receipt-boundary-2026-11-08).
+[Contracts/limits](Future%20Plans/combat-system-specification.md#account-derived-runs-and-atomic-receipt-boundary-2026-11-08).
 
 **Verified:**1259 tests across parent-selected run/combat/gear/Gauge/pressure/
 account/server suites pass. Client/authority typechecks and build pass,
@@ -1336,7 +1362,7 @@ central experimental level/category factors, finite action-driven runner,
 study CLI and atomic enemy multi-hit/heal/Shield support in the pure engine.
 44 activity families,284 anchors,245 enemy species/forms. No authored level/
 gate/reward edits. Full records persist in session files; CLI can reproduce.
-[Operative results/factors/limits](Future%20Plans/radiant-combat-system-specification.md#actual-pressured-encounters-experimental-calibration-2026-11-08).
+[Operative results/factors/limits](Future%20Plans/combat-system-specification.md#actual-pressured-encounters-experimental-calibration-2026-11-08).
 
 **Measured:**2001 encounters plus13 bounded Master-screening samples; parent
 reproduced tuned run. Three main seeds1/1729/104729,100-round limit and
@@ -1380,7 +1406,7 @@ no auto-repair/write/raw save loss. Eight slots/distinct IDs/four matching
 Omnic/five universal Calamitic restrictions retained. Typed study adapter
 still needs a real account/authority boundary. Study schema3 rejects obsolete
 isolated snapshots; production run/reward-retention migration remains pending.
-[Operative contracts](Future%20Plans/radiant-combat-system-specification.md#ordinary-conduit-conversion-and-frozen-gear-study-2026-11-08).
+[Operative contracts](Future%20Plans/combat-system-specification.md#ordinary-conduit-conversion-and-frozen-gear-study-2026-11-08).
 
 **Verified:**1633 tests across radiant gear/combat/Gauge/live conduit-equipment/
 upgrade suites pass, including229 new gear tests and459 existing core checks.
@@ -1413,7 +1439,7 @@ First-member living leader only; no automatic promotion or hidden role buffs.
 Schema2 explicitly rejects earlier isolated snapshots. Party validator covers
 distinct canonical identities1-6; pure constructor permits duplicate synthetic
 stress tests, not account eligibility. Account ownership adapter still required.
-[Contracts/table/remaining release gates](Future%20Plans/radiant-combat-system-specification.md#released-roster-combat-study-operative-expansion-2026-11-08).
+[Contracts/table/remaining release gates](Future%20Plans/combat-system-specification.md#released-roster-combat-study-operative-expansion-2026-11-08).
 
 **Verified:**508 focused Vitest tests across radiant combat/Gauge/squad/saved
 loadouts/compact portraits/image-format pass. Includes96 actual Flare casts,
@@ -1440,7 +1466,7 @@ first-member-only living leader, nine fixed personal Master mappings,
 existing layered charge with independent seed, sourced indefinite Shields,
 effective healing snapshots and exact persistable lowest-health currency
 depletion. Returned events are not yet account transactions.
-[Operative contracts and limitations](Future%20Plans/radiant-combat-system-specification.md#current-implemented-starter-study-and-portrait-intake-2026-11-08)
+[Operative contracts and limitations](Future%20Plans/combat-system-specification.md#current-implemented-starter-study-and-portrait-intake-2026-11-08)
 explicitly archive obsolete initial formula/mode/Shield/approval clauses.
 
 **Art:** eighteen individually anchored starter face/upper-body crops exported;
@@ -1468,7 +1494,7 @@ Preserve dirty rejected UI mock-up files/notes; do not stage them.
 ## Implementing radiant overhaul: foundation only (2026-11-08)
 
 Owner now delegates design and implementation; no further generic pre-coding
-approval gate. [Current foundation/remaining scope](Future%20Plans/radiant-combat-system-specification.md#delegated-implementation-and-first-foundation-2026-11-08)
+approval gate. [Current foundation/remaining scope](Future%20Plans/combat-system-specification.md#delegated-implementation-and-first-foundation-2026-11-08)
 must stay isolated until coherent combat/gear/enemy migration is ready.
 Six-member limit shared across account/loadout/battle/server/UI lists, with
 six saves/seven rejection and frozen-wave tests. New pure radiant charge module
@@ -1477,7 +1503,7 @@ Client/authority typechecks pass; build passes with existing large-chunk warning
 Full tracked suite257 files/8401 tests passes;21 isolated charge tests pass.
 No hosted deployment/new art/VFX claimed.
 
-[Single art brief](../Art/ui/Radiant%20Combat%20Overhaul.md) inventories192 released
+[Single art brief](../Art/ui/Combat%20Overhaul.md) inventories192 released
 forms and114 authored Masters (hidden seasonal excluded from player-facing art).
 Zero confirmed mandatory new images at foundation; one optional Home scene.
 It explicitly remains provisional pending finalized roster/status conversion.
@@ -1489,14 +1515,14 @@ unpublished rejected mock-up files; no accidental staging of their old notes.
 
 Owner requires broad combat/team-composition influence, simple meaningful
 effects and stronger/broader higher tiers. Ordinary upgrades retained; Masters
-explicitly fixed. [Coverage and review policy](Future%20Plans/radiant-combat-system-specification.md#global-conduit-direction-and-rarity-progression-2026-11-08)
+explicitly fixed. [Coverage and review policy](Future%20Plans/combat-system-specification.md#global-conduit-direction-and-rarity-progression-2026-11-08)
 adds domain matrix, complexity budget, exact-rank/rarity comparison and six-member
 loop testing. No catalog implementation or measured tuning yet; exact system/
 starter and full gear conversion remain review deliverables.
 
 ## Expanded overhaul: six-member teams/all gear/enemies (2026-11-08)
 
-[Owner scope](Future%20Plans/radiant-combat-system-specification.md#expanded-scope-six-bearer-progression-and-integrated-ui-2026-11-08):
+[Owner scope](Future%20Plans/combat-system-specification.md#expanded-scope-six-bearer-progression-and-integrated-ui-2026-11-08):
 1-6 bearers allowed, later content expects more owned members/better gear,
 Calamity benchmark six. All activities' enemy stats/mechanics audited at current
 levels/gates; all ordinary Conduits/Masters/loadouts adapted. Actual full-art
@@ -1508,7 +1534,7 @@ review exact systems/starter kits before isolated six-capable combat study.
 ## Shared evolution face-portrait requirement (2026-11-08)
 
 Owner requests dedicated consistent face/upper-body crops from existing artwork
-per evolution, reused in all compact portrait contexts. [Plan](Future%20Plans/radiant-combat-system-specification.md#owner-selected-shared-evolution-portraits-2026-11-08)
+per evolution, reused in all compact portrait contexts. [Plan](Future%20Plans/combat-system-specification.md#owner-selected-shared-evolution-portraits-2026-11-08)
 keeps full art in Team/showcases/field and records shared helper/provenance/
 facing/cache/discovery requirements. Currently192 released-form candidates
 need individual intake review; no derived exports or runtime changes completed.
@@ -1516,7 +1542,7 @@ Continue consolidated combat specification review before implementation.
 
 ## Owner clarified layered personal/shared Flare charge (2026-11-08)
 
-[Latest specification override](Future%20Plans/radiant-combat-system-specification.md#owner-revision-layered-charge-and-shared-eternal-readiness-2026-11-08):
+[Latest specification override](Future%20Plans/combat-system-specification.md#owner-revision-layered-charge-and-shared-eternal-readiness-2026-11-08):
 Glowing/Lustrous personal layers, highest ready tier, retain unused points.
 Final-form bearer + full team bar + full personal layers enables Eternal.
 One cast spends shared opportunity, leaving other personal Gauges untouched.
@@ -1527,7 +1553,7 @@ now-superseded draft; review exact charge cadence and Master/Imbue conversions.
 
 ## Consolidated overhaul review specification (2026-11-08)
 
-[Exact draft](Future%20Plans/radiant-combat-system-specification.md) now contains
+[Exact draft](Future%20Plans/combat-system-specification.md) now contains
 four-stat formulas/base starters, Master-driven subtype multipliers, personal/
 shared charge state machine, all three starter Flare families and nine Master
 remaps. Also covers Imbue proposal, bearer-only migration, currency and VFX tests.
@@ -17618,7 +17644,7 @@ latest saved state, so acted/dead members and defeated targets cannot be chosen
 from a stale visual frame. Skip settles directly to the latest saved run.
 
 Validation:
-- `npx vitest run src\presentation\radiant-battle-view.test.ts src\online\radiant-session.test.ts --maxWorkers=2 --testTimeout=60000`:43 passed.
+- `npx vitest run src\presentation\battle-screen.test.ts src\online\battle-session.test.ts --maxWorkers=2 --testTimeout=60000`:43 passed.
 - Regressions save a second member's action while the first member's windup is
   held, then verify saved presentations remain ordered and Skip settles to the
   latest saved state without replaying stale impacts.

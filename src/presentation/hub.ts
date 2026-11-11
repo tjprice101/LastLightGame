@@ -37,7 +37,7 @@ import { applyConduitSearch, conduitLoadout, filledConduitSlots } from './condui
 import { phaseZeroStatsReady, statDisplayUnit } from '../content/phase-zero-stats';
 import { displayStatLabels, type DisplayStatKey } from './stat-preview';
 import { radiantAttunementChip, radiantAttunementSection, radiantCharacterLoadout, radiantFlareArticle, radiantKitSections, radiantLeaderArticle, radiantPassiveArticle,
-  radiantStatPreview, radiantStatsPanel, radiantUnavailable } from './radiant-character';
+  radiantStatPreview, radiantStatsPanel, radiantUnavailable } from './character-combat';
 import { escapeDialogText } from './game-dialog';
 
 const radiantTabLabels: Partial<Record<string, string>> = {

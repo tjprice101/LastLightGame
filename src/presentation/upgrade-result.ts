@@ -12,8 +12,8 @@ import './upgrade-result.css';
 import { evolutionTier, imageSource, rarityTier } from './bubble-ui';
 import { phaseZeroStatsReady, statDisplayUnit, type ResolvedStats } from '../content/phase-zero-stats';
 import { displayStatKeys, displayStatLabels } from './stat-preview';
-import { resolveRadiantStarterStats, type RadiantStats } from '../content/radiant-combat';
-import { isRadiantBearer, radiantCharacterLoadout, radiantStatKeys, radiantStatLabels } from './radiant-character';
+import { resolveRadiantStarterStats, type RadiantStats } from '../content/combat-kits';
+import { isRadiantBearer, radiantCharacterLoadout, radiantStatKeys, radiantStatLabels } from './character-combat';
 
 function radiantStats(account: Account, id: string): RadiantStats | null {
   const loadout = isRadiantBearer(id) && account.characters[id] ? radiantCharacterLoadout(account, id)?.loadout : undefined;

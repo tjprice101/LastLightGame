@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { emptyAccount, type Account } from '../game/account';
-import { releasedRadiantIds } from '../content/radiant-combat';
+import { releasedRadiantIds } from '../content/combat-kits';
 import { getStarter } from '../content/starters';
 import { starters } from '../content/starters';
 import { characterReleased } from '../content/release-visibility';

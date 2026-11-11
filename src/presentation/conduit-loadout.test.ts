@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { radiantConduitDescription, radiantConduitEffectLines, radiantSummedConduitEffects } from '../content/radiant-conduit-text';
-import { radiantGearAmount } from '../content/radiant-conduits';
+import { radiantConduitDescription, radiantConduitEffectLines, radiantSummedConduitEffects } from '../content/conduit-effect-text';
+import { radiantGearAmount } from '../content/conduit-effects';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { emptyAccount, type Account } from '../game/account';
 import { createCreatureCopy } from '../game/character-instances';

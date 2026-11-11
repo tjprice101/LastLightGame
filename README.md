@@ -13,7 +13,7 @@ crops, one-to-six-enemy formations and six text-based shop hosts. Ordinary
 battles still use the legacy system. A signed-in hosted Radiant run, desktop
 performance, economy review and making Radiant the default battle remain open.
 
-The [consolidated art brief](Art/ui/Radiant%20Combat%20Overhaul.md) holds the
+The [consolidated art brief](Art/ui/Combat%20Overhaul.md) holds the
 six shop-host portrait prompts (three women and three men aged 18-25) and two
 optional environments. The hosts and dialogue are implemented; their portraits
 are not yet delivered, so approved neutral tiles are shown. The [handoff](docs/handoff.md) owns current

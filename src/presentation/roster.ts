@@ -1,5 +1,5 @@
 import { squadMemberLimit } from '../content/squad-rules';
-import { isRadiantBearer, radiantAttunementName, radiantCharacterLoadout } from './radiant-character';
+import { isRadiantBearer, radiantAttunementName, radiantCharacterLoadout } from './character-combat';
 import { referencedEffect } from './effect-copy';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { ownedCharacters, ownedProgress, creatureSaleOffer, isSellableCreatureMode, multiSummonCount, type Account } from '../game/account';

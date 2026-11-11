@@ -40,14 +40,14 @@ softness is retained rather than claiming512px exports generate missing detail.
 
 ## Proposed Radiant vendor portraits (2026-11-09)
 
-The [consolidated art brief](../Art/ui/Radiant%20Combat%20Overhaul.md) proposes
+The [consolidated art brief](../Art/ui/Combat%20Overhaul.md) proposes
 six original, individually prompted shop/service hosts and two optional
 environments. None has been delivered or installed. Vendor NPC portraits use
 the owner's requested vertical, expressive knee-up format, rather than the
 compact full-body combat-sprite format. Preserve any supplied alpha; otherwise
 review and key each source offline without deleting subject colors. Do not
 create runtime URLs or substitute other characters before reviewed intake.
-Validate with `python -m unittest discover -s tools -p test_radiant_art_brief.py`;
+Validate with `python -m unittest discover -s tools -p test_combat_art_brief.py`;
 the vertical NPC exception does not change full-body framing rules for playable
 characters or enemies.
 

@@ -6,7 +6,7 @@ import { resolveCapturedFighter } from '../game/character-instances';
 import { itemShowcase } from './item-showcase';
 import { statPreview } from './stat-preview';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
-import { isRadiantBearer, radiantCharacterLoadout, radiantStatPreview } from './radiant-character';
+import { isRadiantBearer, radiantCharacterLoadout, radiantStatPreview } from './character-combat';
 import { escapeDialogText } from './game-dialog';
 import './growth-layout.css';
 

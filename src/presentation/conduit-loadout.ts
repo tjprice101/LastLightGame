@@ -1,9 +1,9 @@
 import { morphElement } from './dom-morph';
 import { conduitConfigurationsPanel } from './saved-loadouts';
 import { conduits, conduitEffect, conduitColor, conduitEquipReason, conduitSlotCount, conduitUpgradeCap, getConduit, isConduitId, type Conduit, type ConduitSlots } from '../content/conduits';
-import { radiantGearAmount, type RadiantGear } from '../content/radiant-conduits';
-import { radiantConduitDescription, radiantConduitEffectLines, radiantSummedConduitEffects } from '../content/radiant-conduit-text';
-import { isRadiantMaster, radiantMasterAttunement, radiantMasterEffect, radiantMasterUnavailable, radiantNoMasterEffect } from './radiant-master-text';
+import { radiantGearAmount, type RadiantGear } from '../content/conduit-effects';
+import { radiantConduitDescription, radiantConduitEffectLines, radiantSummedConduitEffects } from '../content/conduit-effect-text';
+import { isRadiantMaster, radiantMasterAttunement, radiantMasterEffect, radiantMasterUnavailable, radiantNoMasterEffect } from './master-text';
 import { getStarter, isStarterId } from '../content/starters';
 import { getElement, type ElementId } from '../content/activities';
 import { artifactSlots } from '../content/progression';

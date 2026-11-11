@@ -2,7 +2,7 @@
 
 ## Six-member scope and rejected mock-up (2026-11-08)
 
-[Latest expanded contract](radiant-combat-system-specification.md#expanded-scope-six-bearer-progression-and-integrated-ui-2026-11-08):
+[Latest expanded contract](combat-system-specification.md#expanded-scope-six-bearer-progression-and-integrated-ui-2026-11-08):
 1-6 bearers allowed everywhere; larger squads/gear expected with rising
 difficulty, optimized six-member benchmark for Calamity. Audit all enemy
 stats/mechanics at current authored levels/gates and all Conduits/Masters.
@@ -14,14 +14,14 @@ named presets selected after clarification. No runtime implementation yet.
 
 Owner requests consistently framed face/upper-body portraits derived from
 each existing evolution artwork, reused across all compact portrait contexts.
-[Contract](radiant-combat-system-specification.md#owner-selected-shared-evolution-portraits-2026-11-08)
+[Contract](combat-system-specification.md#owner-selected-shared-evolution-portraits-2026-11-08)
 preserves full art in Team/showcases/field, original bytes, reviewed per-form
 framing, facing, provenance/revisions and discovery/unreleased gates.
 No exports or runtime wiring completed in this planning update.
 
 ## Latest owner charge correction (2026-11-08)
 
-[Layered personal/shared contract](radiant-combat-system-specification.md#owner-revision-layered-charge-and-shared-eternal-readiness-2026-11-08)
+[Layered personal/shared contract](combat-system-specification.md#owner-revision-layered-charge-and-shared-eternal-readiness-2026-11-08)
 supersedes single-current-tier replacement and temporary empowerment.
 Two personal layers: Glowing at base cost, Lustrous at twice base; retain excess
 charge and offer highest ready tier. Evo.4 unlocks the second layer.
@@ -34,7 +34,7 @@ Exact costs/gains/starter/equipment mappings need revision/review before coding.
 
 ## Consolidated exact review draft (2026-11-08)
 
-[System and three-starter specification](radiant-combat-system-specification.md)
+[System and three-starter specification](combat-system-specification.md)
 is the next review deliverable: four-stat formulas, subtype values, charge/
 empowerment state machine, three complete starter kits, nine existing Master
 remaps, Imbue proposal and validation/migration gates. Numerical values are

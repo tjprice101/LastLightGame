@@ -35,7 +35,7 @@ Returns a validated checkpoint; exact-request replay writes once, conflicts
 deny, failures preserve holdings. Preparation never changes frozen legacy/
 Radiant combat or its journal/seeds. Client controller holds a pending exact
 request and explicit post-save preparation receipt without replaying rewards.
-[Full boundaries](../../../docs/Future%20Plans/radiant-combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08).
+[Full boundaries](../../../docs/Future%20Plans/combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08).
 Still disabled/undeployed; no production screen caller or real DB proof.
 
 ## Radiant checkpoint and encounter journal (2026-11-08)
@@ -51,7 +51,7 @@ batch. Exact-request duplicate lookup preserves one journal append; Retry keeps
 history, Continue resets the new encounter journal. Invalid/missing journals
 and older undeployed study schemas fail explicitly. Currency sums and response
 batch suffixes are checked; no production wallet migration or SQL change.
-[Saved client session contract](../../../docs/Future%20Plans/radiant-combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08)
+[Saved client session contract](../../../docs/Future%20Plans/combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08)
 restores totals without replaying animations and retains exact pending retries.
 
 **Still disabled/undeployed; no production UI caller.** Local mocked RPC tests
@@ -79,7 +79,7 @@ wallets/legacy routes unchanged; no new SQL migration.
 Actual HTTP mocked-RPC tests include newly unlocked Story Continue, exit retry
 and fresh entry; denied capture writes reproduce the same UUID/outcome.
 All284 authored anchors have loot/account parity checks—not clear-rate evidence.
-[Detailed bridge and validation commands](../../../docs/Future%20Plans/radiant-combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08).
+[Detailed bridge and validation commands](../../../docs/Future%20Plans/combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08).
 
 **Still disabled and undeployed.** Old undeployed schema1 study fixtures fail
 explicitly, never silently erase/rewrite saved production data. Actual DB
@@ -106,7 +106,7 @@ No current menu/battle caller sends this shape.
 are connected; actual DB proof and production run/UI migration remain unfinished.
 This is an authenticated isolated study path, not an active client release.
 
-`radiant-dispatch.ts` validates the dedicated unknown-JSON body, authenticates
+`battle-dispatch.ts` validates the dedicated unknown-JSON body, authenticates
 through the common handler, enforces rate limit/config/access, and derives
 stable entry UUID/seeds via domain-separated HMAC-SHA256 of authenticated
 user+request ID. Retries derive the same server identity; users/requests differ.
@@ -122,7 +122,7 @@ Dedicated typed client transport exists but is not connected to production UI.
 
 Validation:
 ```
-npx vitest run src\online\radiant-dispatch.test.ts src\online\radiant-transport.test.ts src\online\radiant-run.test.ts src\online\server-game.test.ts src\game\radiant-combat.test.ts src\game\radiant-conduits.test.ts src\game\radiant-gauge.test.ts src\game\radiant-pressure.test.ts --maxWorkers=2 --testTimeout=60000
+npx vitest run src\online\battle-dispatch.test.ts src\online\battle-transport.test.ts src\online\battle-run.test.ts src\online\server-game.test.ts src\game\combat-engine.test.ts src\game\conduit-effects.test.ts src\game\combat-gauge.test.ts src\game\enemy-pressure.test.ts --maxWorkers=2 --testTimeout=60000
 npx tsc --project supabase\functions\game-operation\tsconfig.json
 node tools\bundle_server_game.mjs
 npm run build
@@ -135,7 +135,7 @@ idempotence/concurrent CAS, aggregate preservation and malformed input.
 Actual Radiant database transaction execution remains **unverified**: no local
 Supabase/Docker/Deno was available. Legacy hosted smoke is not Radiant DB proof.
 No server flags enabled, authority deployed or hosted overhaul claimed.
-See [current study contracts](../../../docs/Future%20Plans/radiant-combat-system-specification.md).
+See [current study contracts](../../../docs/Future%20Plans/combat-system-specification.md).
 
 ## Material reward quantities (2026-11-07)
 

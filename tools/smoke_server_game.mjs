@@ -504,7 +504,7 @@ try {
 async function smokeRadiantLive(client, userId, username, call, callAs) {
   const legacyAuthority = process.argv.includes('--radiant-legacy-authority');
   const bundle = await build({ stdin: {
-    contents: "export { validateRadiantCheckpoint, validateRadiantRunResponse } from './src/online/radiant-run';",
+    contents: "export { validateRadiantCheckpoint, validateRadiantRunResponse } from './src/online/battle-run';",
     resolveDir: process.cwd(), loader: 'ts',
   }, bundle: true, platform: 'node', format: 'esm', target: 'es2022', write: false, logLevel: 'silent' });
   const validators = await import(`data:text/javascript;base64,${Buffer.from(bundle.outputFiles[0].contents).toString('base64')}`);

@@ -15,8 +15,8 @@ import { inventoryHub, characterHub } from './hub';
 import { elementLabel } from './element-label';
 import { elementAssetIds } from '../content/element-migration';
 import { formatStat } from '../content/combat';
-import { radiantFlares, resolveRadiantStarterStats } from '../content/radiant-combat';
-import { radiantAttunementName, radiantCharacterLoadout } from './radiant-character';
+import { radiantFlares, resolveRadiantStarterStats } from '../content/combat-kits';
+import { radiantAttunementName, radiantCharacterLoadout } from './character-combat';
 import { referencedEffect as readableEffect } from './effect-copy';
 
 describe('unified Archives', () => {

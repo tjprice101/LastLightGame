@@ -2,7 +2,7 @@ import { getStarter, type Starter } from '../content/starters';
 import { characterName } from '../content/character-art';
 import { characterRarity, displayEvolution } from '../content/progression';
 import { squadMemberLimit } from '../content/squad-rules';
-import { radiantBearerKits, type RadiantLoadout } from '../content/radiant-combat';
+import { radiantBearerKits, type RadiantLoadout } from '../content/combat-kits';
 import { storyEncounter, storyRegions, storyRules } from '../content/story';
 import { chapterOneTitle } from '../content/story-codex';
 import { equippedSquad, unlockedStoryStage, type Account } from '../game/account';
@@ -10,10 +10,10 @@ import { uiIcon } from './ui-icon';
 import { ownedCompanion } from './owned-companion';
 import { assetUrl } from './portrait';
 import { escapeDialogText as escape } from './game-dialog';
-import { radiantFormation, radiantFormationStyle, type RadiantFormationSlot } from './radiant-formation';
-import { radiantAllyArt } from './radiant-battle-art';
-import { isRadiantBearer, radiantAttunementChip, radiantAttunementName, radiantCharacterLoadout, radiantLeaderText } from './radiant-character';
-import './radiant-home.css';
+import { radiantFormation, radiantFormationStyle, type RadiantFormationSlot } from './battle-formation';
+import { radiantAllyArt } from './battle-art';
+import { isRadiantBearer, radiantAttunementChip, radiantAttunementName, radiantCharacterLoadout, radiantLeaderText } from './character-combat';
+import './home-formation.css';
 
 
 type HubIcon = Parameters<typeof uiIcon>[0];

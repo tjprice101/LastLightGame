@@ -96,7 +96,7 @@ the isolated branch's coherent-release gates.
 The owner requests a concrete comparison with the supplied battle reference,
 original shop personalities and dialogue, and one complete copy-ready art brief
 using the supplied portrait's vertical NPC format. The
-[brief](../Art/ui/Radiant%20Combat%20Overhaul.md) records grounded staggered
+[brief](../Art/ui/Combat%20Overhaul.md) records grounded staggered
 formations, a focused enemy readout, six original hosts with contextual text,
 six pending portrait prompts and two optional environments. The field and text
 hosts are now implemented on the isolated branch; full battlefield art and
@@ -115,7 +115,7 @@ staged non-Calamity bosses 10% additional Health, with no Attack multiplier.
 Keep existing reward totals by limiting ordinary encounters to two loot
 carriers and Training to three; one solo boss is its own carrier. Record
 discovery for every defeated authored enemy. See the [Radiant combat system
-specification](Future%20Plans/radiant-combat-system-specification.md#dynamic-enemy-formations-2026-11-09).
+specification](Future%20Plans/combat-system-specification.md#dynamic-enemy-formations-2026-11-09).
 
 ## Share each enemy Gauge drop with the living squad (2026-11-09)
 
@@ -125,7 +125,7 @@ not 10% divided between them. Drop on qualifying direct hits and defeat while
 retaining the separate pre-existing Gauge sources and pacing. Exact tenths,
 individual caps, player-owned defeat attribution, independent bonus RNG,
 save-first idempotent receipts and immediate post-save action availability
-are part of the [current contract](Future%20Plans/radiant-combat-system-specification.md#shared-enemy-gauge-drops-2026-11-09).
+are part of the [current contract](Future%20Plans/combat-system-specification.md#shared-enemy-gauge-drops-2026-11-09).
 Tuned drop amounts are implementation values, not final balance approval.
 The branch remains isolated and the authority default-disabled.
 
@@ -143,7 +143,7 @@ The later 2026-11-09 direct-card mouse/keyboard controls removed Select and
 the per-member Actions menu; this paragraph records the earlier design.
 The request to finish the whole overhaul retains its actual release gates:
 no incomplete merge/default activation or mocked-DB proof presented as live.
-[Contract/evidence and continuation gates](Future%20Plans/radiant-combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08).
+[Contract/evidence and continuation gates](Future%20Plans/combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08).
 
 ## Integrate Radiant emission without claiming final cinematic art (2026-11-08)
 
@@ -155,7 +155,7 @@ neutral enemy cues remain distinct; no arena dimming/camera shake/gameplay RNG.
 Preserve finite pointer-transparent effects, live speed, pause, Skip, Reduce
 motion, resize/disposal and explicit failures. This is integration evidence,
 not owner approval of final character cinema or device-performance readiness.
-[Contract/evidence](Future%20Plans/radiant-combat-system-specification.md#saved-impact-emission-and-bloom-pilot-2026-11-08).
+[Contract/evidence](Future%20Plans/combat-system-specification.md#saved-impact-emission-and-bloom-pilot-2026-11-08).
 
 ## Explain frozen radiant mechanics without legacy gear text (2026-11-08)
 
@@ -167,7 +167,7 @@ legacy effect text for a frozen run. Use contained native dialogs with battle
 pause/focus/Close/Escape/disposal, not oversized narrow squad-card disclosures.
 Leader status follows displayed impact HP. Fix the missing selected target for
 Tizu/Flora attack-adding Masters without changing their authored combat rules.
-[Contract/evidence](Future%20Plans/radiant-combat-system-specification.md#complete-frozen-bearer-reference-and-master-targeting-2026-11-08).
+[Contract/evidence](Future%20Plans/combat-system-specification.md#complete-frozen-bearer-reference-and-master-targeting-2026-11-08).
 
 ## Render saved radiant results and route only accepted transitions (2026-11-08)
 
@@ -179,7 +179,7 @@ paid/loot history. Replace the field/route exit only after a saved response,
 and retry an ambiguous transition with the same request. Use the native in-game
 confirmation for mid-battle exit; cancellation does not mutate the account.
 Keep production routing/activation separate from the in-memory preview.
-[Contract/evidence](Future%20Plans/radiant-combat-system-specification.md#saved-result-receipts-and-encounter-controls-2026-11-08).
+[Contract/evidence](Future%20Plans/combat-system-specification.md#saved-result-receipts-and-encounter-controls-2026-11-08).
 
 ## Preserve canonical field art and honest status timing (2026-11-08)
 
@@ -192,7 +192,7 @@ do not report every effect expiration, label timed-effect rows as the last
 completed action during playback, settling from saved state afterward rather
 than showing future statuses/guessed clocks. This is an implementation boundary,
 not approval to omit eventual full synchronized status presentation or final VFX.
-[Contract/evidence](Future%20Plans/radiant-combat-system-specification.md#canonical-battlefield-art-and-source-owned-readouts-2026-11-08).
+[Contract/evidence](Future%20Plans/combat-system-specification.md#canonical-battlefield-art-and-source-owned-readouts-2026-11-08).
 
 ## Present saved radiant impacts without optimistic combat (2026-11-08)
 
@@ -204,7 +204,7 @@ rewards or let late visuals overwrite new choices. Keep frozen view through
 Settings; explicit Reduce motion settles finite effects. Use a labelled
 conditional in-memory developer fixture for preview, never fund/load a player
 account for layout checks. Generic rings are a foundation, not unique VFX completion.
-[Contract/evidence](Future%20Plans/radiant-combat-system-specification.md#saved-six-member-battle-surface-and-impact-preview-2026-11-08).
+[Contract/evidence](Future%20Plans/combat-system-specification.md#saved-six-member-battle-surface-and-impact-preview-2026-11-08).
 
 ## Prepare radiant squads manually without account auto-repair (2026-11-08)
 
@@ -215,7 +215,7 @@ captures/fodder/raw holdings and historical libraries. Captured squads require
 manual replacement; never fabricate starter ownership or erase old equipment.
 Preparation changes fresh-entry menu choices, not frozen encounters.
 Keep exact ambiguous request retries and post-save-only feedback receipts.
-[Contract and validation](Future%20Plans/radiant-combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08).
+[Contract and validation](Future%20Plans/combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08).
 
 ## Recover radiant sessions from saved outcomes only (2026-11-08)
 
@@ -226,7 +226,7 @@ Persist per-encounter combat/reward history with the atomic aggregate so reload
 restores totals without replaying celebrations. Preserve history on Retry, reset
 it on Continue, and retain Settings dismissal/frozen state. Do not silently
 truncate receipts or deploy this partial controller as completed production UI.
-[Contract and remaining gates](Future%20Plans/radiant-combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08).
+[Contract and remaining gates](Future%20Plans/combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08).
 
 ## Measure radiant fresh entry without inventing an economy cap (2026-11-08)
 
@@ -234,7 +234,7 @@ Under the delegated overhaul, verify actual reducer/account payout and request
 cost, including fresh partial exit, final clear and repeated identical Retry
 prefixes. Separate free one-starter ownership and first-clear rewards from
 conditionally developed cohorts and repeat farming. Record all access denials.
-[Measured results](Future%20Plans/radiant-combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08).
+[Measured results](Future%20Plans/combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08).
 
 No cap, forfeiture, stamina fee, nonlinear HP reward curve or artificial
 presentation delay approved/implemented. Keep requested saved partial rewards
@@ -251,7 +251,7 @@ contracts rather than inventing substitute material/chest/recruitment rewards.
 Suppress only base enemy Prismatica after original range validation because
 the trusted damage ledger already pays it. Preserve Story stage/regional
 bonuses and complete existing acquisition/discovery/unlock behavior.
-[Exact authority integration](Future%20Plans/radiant-combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08).
+[Exact authority integration](Future%20Plans/combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08).
 
 Study schema2 keeps independent kill/completion/loot RNG ledgers across Retry;
 physical re-kills never repay or prematurely grant victory unlocks. Continue
@@ -272,7 +272,7 @@ explicit server-only enablement, stable secret and configured calibration.
 HMAC user/request namespace owns run/seeds; missing configuration fails closed.
 No player option enables experimental tuning or supplies raw combat outcomes.
 Existing atomic RPC receipt contract and frozen aggregate retention continue.
-[Current integration](Future%20Plans/radiant-combat-system-specification.md#gated-authenticated-authority-dispatch-2026-11-08).
+[Current integration](Future%20Plans/combat-system-specification.md#gated-authenticated-authority-dispatch-2026-11-08).
 
 This is not a decision to ship the incomplete overhaul: no flags enabled/
 authority deployed. Actual Radiant DB verification and full rewards/progression/
@@ -287,7 +287,7 @@ from saved account holdings/progress and require manual invalid/captured
 replacement without raw holdings loss. Use the existing server aggregate/
 receipt RPC contract for one atomic account/run/revision/response commit;
 never award currency and save battle state separately.
-[Current implementation](Future%20Plans/radiant-combat-system-specification.md#account-derived-runs-and-atomic-receipt-boundary-2026-11-08)
+[Current implementation](Future%20Plans/combat-system-specification.md#account-derived-runs-and-atomic-receipt-boundary-2026-11-08)
 is not mounted live and DB atomicity is contract-mock-tested only.
 
 Retry restores combat with banked per-enemy lowestHP/paid budget ledgers;
@@ -303,7 +303,7 @@ adapter/action-driven radiant pressure study spanning44 families and245
 species/forms. Preserve levels/gates/reward rules; isolate experimental stat
 factors from live balance. Separate ordinary progression from acquired
 Calamitic six-member testing and record explicit timeout/stalemate outcomes.
-[Results and limitations](Future%20Plans/radiant-combat-system-specification.md#actual-pressured-encounters-experimental-calibration-2026-11-08).
+[Results and limitations](Future%20Plans/combat-system-specification.md#actual-pressured-encounters-experimental-calibration-2026-11-08).
 
 Developed six-member614/614 and screened Calamitic108/108 sampled wins are
 not approved final difficulty or population clear rates. Common late-wall
@@ -320,7 +320,7 @@ The catalog collectively supports offense, defense, Recovery/healing, Shields,
 charge, statuses and squad cooperation; each item stays understandable.
 Fixed96 personal Masters remain independent. Existing ordinary ranks0-5 scale
 effect magnitude by10% per rank; no rank-based extra proc probability/turn.
-[Matrix contracts and validation](Future%20Plans/radiant-combat-system-specification.md#ordinary-conduit-conversion-and-frozen-gear-study-2026-11-08)
+[Matrix contracts and validation](Future%20Plans/combat-system-specification.md#ordinary-conduit-conversion-and-frozen-gear-study-2026-11-08)
 are delegated study tuning, not final measured live difficulty.
 
 Frozen gear schema3 and a read-only eligibility adapter preserve raw account
@@ -336,7 +336,7 @@ with precise executed passives, progressive signatures and96 matching fixed
 Master attunements/enhancements. Default remains Equinox; equipped Masters
 must actually change subtype. Keep the nine prior starter Master payoffs.
 Source-owned bounded generated packets never recursively grant bonus motes.
-[Operative study table](Future%20Plans/radiant-combat-system-specification.md#released-roster-combat-study-operative-expansion-2026-11-08)
+[Operative study table](Future%20Plans/combat-system-specification.md#released-roster-combat-study-operative-expansion-2026-11-08)
 records delegated numerical values, not owner-approved measured enemy tuning.
 
 Preserve actual binary saved ascension/Imbue investments: stats/first/second/
@@ -352,7 +352,7 @@ Under the existing delegated overhaul mandate, implement the isolated four-stat
 starter study with two personal charge layers/shared Eternal spending, no
 random crit/forced recovery, source-owned indefinite Shields and lowest-health
 currency budgets. No extra owner decision or live activation is implied.
-[Current study values](Future%20Plans/radiant-combat-system-specification.md#current-implemented-starter-study-and-portrait-intake-2026-11-08)
+[Current study values](Future%20Plans/combat-system-specification.md#current-implemented-starter-study-and-portrait-intake-2026-11-08)
 replace obsolete operative draft interpretations; old numbered formulas remain
 explicitly historical. Nine fixed starter Masters set attunement/personal
 enhancement, default Equinox; Tide Master2 enhances Shield magnitude instead of
@@ -368,7 +368,7 @@ remain required before release. No new mandatory owner images established.
 
 Owner selects delegated remaining design/implementation with validated staged
 release and one consolidated art brief, superseding the pre-coding approval gate.
-[Foundation](Future%20Plans/radiant-combat-system-specification.md#delegated-implementation-and-first-foundation-2026-11-08)
+[Foundation](Future%20Plans/combat-system-specification.md#delegated-implementation-and-first-foundation-2026-11-08)
 is staged on an overhaul branch, not deployed: six-member capacity paths,
 isolated layered charge, matching bundled authority and8401 passing tests.
 Keep incomplete combat/gear/enemy/UI conversion out of the live release.
@@ -379,7 +379,7 @@ Art intake remains provisional until complete roster/status designs settle.
 Owner wants the global catalog to influence all aspects of combat/team
 composition, creatively but without unnecessary complexity. Higher tiers should
 be stronger/do more. Confirms ordinary Conduits stay upgradeable and Masters
-stay fixed. [Coverage/rarity review policy](Future%20Plans/radiant-combat-system-specification.md#global-conduit-direction-and-rarity-progression-2026-11-08)
+stay fixed. [Coverage/rarity review policy](Future%20Plans/combat-system-specification.md#global-conduit-direction-and-rarity-progression-2026-11-08)
 is proposed; no new catalog counts, costs, probabilities or rank caps approved.
 All effects/upgrades require exact conversion and combination benchmarks.
 
@@ -393,14 +393,14 @@ need coherent redesign. Home uses actual complete full-art squad, battle compact
 portraits may slightly overlap art only. Previous alternate menu design rejected;
 redefine necessary UI instead. Loadout clarification means current squad/
 equipment editing; no separately named presets selected.
-[Scope and validation gates](Future%20Plans/radiant-combat-system-specification.md#expanded-scope-six-bearer-progression-and-integrated-ui-2026-11-08).
+[Scope and validation gates](Future%20Plans/combat-system-specification.md#expanded-scope-six-bearer-progression-and-integrated-ui-2026-11-08).
 
 ## Shared face portraits per evolution (2026-11-08)
 
 Owner selects dedicated formatted face-area portraits derived from every
 existing character evolution artwork, shared wherever compact portrait art
 is needed, especially battle controls. Team/showcases retain full art.
-[Contract](Future%20Plans/radiant-combat-system-specification.md#owner-selected-shared-evolution-portraits-2026-11-08)
+[Contract](Future%20Plans/combat-system-specification.md#owner-selected-shared-evolution-portraits-2026-11-08)
 requires per-form reviewed framing and shared resolver, preserves originals/
 facing/art identity and hidden/discovery gates. No art generation requested.
 Exports and runtime wiring await the approved overhaul implementation phase.
@@ -415,13 +415,13 @@ without draining other members' personal bars. Highest ready tier, excess charge
 retained. No third personal layer, reset/refill mode or timer.
 Owner retains unlimited Shield stacking, removes random crit, and delegates
 per-character old-ability replacement/passive/leader folding.
-[Latest contract](Future%20Plans/radiant-combat-system-specification.md#owner-revision-layered-charge-and-shared-eternal-readiness-2026-11-08)
+[Latest contract](Future%20Plans/combat-system-specification.md#owner-revision-layered-charge-and-shared-eternal-readiness-2026-11-08)
 supersedes contradictory older draft rules; exact numbers need revised review.
 
 ## Exact radiant system/starter draft: owner review pending (2026-11-08)
 
 Owner requests continuation of the overhaul plan, not bypassing the selected
-specification approval gate. [Consolidated review draft](Future%20Plans/radiant-combat-system-specification.md)
+specification approval gate. [Consolidated review draft](Future%20Plans/combat-system-specification.md)
 proposes four-stat scaling, Equinox/Master attunements, three starter kits/nine
 Masters, hybrid charge and temporary empowerment, Shield/buff rules and Imbue
 mapping. No numerical values newly approved. Final-form personal-only utility,

@@ -9,7 +9,7 @@ vi.mock('../content/phase-zero-stats', async importOriginal => ({
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, upgradeConduit, purchaseConduit, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { conduits, getConduit, conduitBuffs, conduitEffect, legacyConduitEffect, conduitUpgradeCost, conduitUpgradeCosts, type ConduitSlots } from '../content/conduits';
-import { radiantConduitEffectText } from '../content/radiant-conduit-text';
+import { radiantConduitEffectText } from '../content/conduit-effect-text';
 import { resolveFighter, applyConduitBuffs } from '../content/combat';
 import { createCreatureCopy, resolveCapturedFighter } from './character-instances';
 import { machineComponentDrop, rollMachineComponents } from '../content/mechanical-components';

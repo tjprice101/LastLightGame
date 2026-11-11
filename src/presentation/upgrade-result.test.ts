@@ -4,8 +4,8 @@ import { createCreatureCopy, resolveCapturedFighter } from '../game/character-in
 import { upgradeResult } from './upgrade-result';
 import { statChange } from './stat-change';
 import { characterArt } from '../content/character-art';
-import { resolveRadiantStarterStats } from '../content/radiant-combat';
-import { radiantCharacterLoadout, radiantStatKeys } from './radiant-character';
+import { resolveRadiantStarterStats } from '../content/combat-kits';
+import { radiantCharacterLoadout, radiantStatKeys } from './character-combat';
 import type { Account } from '../game/account';
 
 const radiant = (account: Account, id: string) => resolveRadiantStarterStats(radiantCharacterLoadout(account, id)!.loadout);

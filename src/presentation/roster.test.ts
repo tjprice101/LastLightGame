@@ -4,7 +4,7 @@ import { assignSquadSlot, bannerCharacters, characterCopyManagement, characterRo
 import { standardBannerPool } from '../content/standard-banner';
 import { characterArt } from '../content/character-art';
 import { ownedCompanion } from './owned-companion';
-import { releasedRadiantIds } from '../content/radiant-combat';
+import { releasedRadiantIds } from '../content/combat-kits';
 import { squadMemberLimit } from '../content/squad-rules';
 
 describe('roster, squad and summon screens', () => {

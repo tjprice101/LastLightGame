@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { radiantBearerKits } from '../content/radiant-combat';
+import { radiantBearerKits } from '../content/combat-kits';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { creatureSaleOffer, emptyAccount } from '../game/account';
 import { getStarter, starters } from '../content/starters';

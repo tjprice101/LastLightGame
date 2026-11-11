@@ -5,7 +5,7 @@ import { conduitEffect, getConduit, type ConduitSlots } from '../content/conduit
 import { masterConduits } from '../content/master-conduits';
 import { getStarter } from '../content/starters';
 import { masterReference } from './master-conduits';
-import { radiantMasterEffect } from './radiant-master-text';
+import { radiantMasterEffect } from './master-text';
 import { escapeDialogText } from './game-dialog';
 import { createSession, BattleView } from './battle-view';
 import { referencedEffect as readableEffect } from './effect-copy';

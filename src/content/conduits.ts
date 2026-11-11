@@ -4,7 +4,7 @@ import { kitConduitDesigns, convertedKitConduitIds } from './kit-conduits';
 import { conduitOrigin } from './world-lore';
 import { redesignEffect } from './conduit-redesign';
 import { calamiticConduits, calamiticEffect, isCalamiticConduitId } from './calamitic-conduits';
-import { radiantConduitEffectText } from './radiant-conduit-text';
+import { radiantConduitEffectText } from './conduit-effect-text';
 
 export interface ConduitBuff {
  stat: 'health' | 'damage' | 'defense' | 'crit' | 'critMultiplier' | 'elementalDamage' | 'shatterCapacity';

@@ -8,8 +8,8 @@ import { characterArt, characterName } from '../content/character-art';
 import { nativeIdentities } from '../content/native-identities';
 import { formatStat, resolveFighter } from '../content/combat';
 import { createCreatureCopy } from '../game/character-instances';
-import { radiantBearerKits, resolveRadiantStarterStats } from '../content/radiant-combat';
-import { radiantCharacterLoadout } from './radiant-character';
+import { radiantBearerKits, resolveRadiantStarterStats } from '../content/combat-kits';
+import { radiantCharacterLoadout } from './character-combat';
 import type { Account } from '../game/account';
 
 const radiantStats = (account: Account | null, id: string, override?: { level?: number; evolution?: number }) =>

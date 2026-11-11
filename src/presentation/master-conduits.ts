@@ -9,7 +9,7 @@ import { conduitLore } from './conduit-store';
 import { conduitElementLabel, conduitElementTheme } from './conduit-element';
 import { imageSource } from './bubble-ui';
 import { masterConduitArtRevisions } from '../content/master-conduit-art-revisions';
-import { isRadiantMaster, radiantMasterEffect, radiantMasterUnavailable } from './radiant-master-text';
+import { isRadiantMaster, radiantMasterEffect, radiantMasterUnavailable } from './master-text';
 
 const pendingMasterArt = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect x="40" y="40" width="176" height="176" rx="28" fill="#171717" stroke="#999" stroke-width="4"/><text x="128" y="122" text-anchor="middle" fill="#ddd" font-size="22" font-family="Georgia">Artwork</text><text x="128" y="150" text-anchor="middle" fill="#ddd" font-size="22" font-family="Georgia">pending</text></svg>')}`;
 

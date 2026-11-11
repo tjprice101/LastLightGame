@@ -2,7 +2,7 @@
 
 ## Current Radiant art package (2026-11-09)
 
-The [single Radiant brief](ui/Radiant%20Combat%20Overhaul.md) now contains
+The [single Radiant brief](ui/Combat%20Overhaul.md) now contains
 the battle-layout comparison, six proposed original vendor portraits and
 dialogue, and two optional shared environments. No vendor images are delivered
 or installed. All 192 released-form compact portraits are reviewed derivatives

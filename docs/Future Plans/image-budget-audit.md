@@ -2,7 +2,7 @@
 
 ## Radiant vendor scope added (2026-11-09)
 
-The [single Radiant art brief](../../Art/ui/Radiant%20Combat%20Overhaul.md)
+The [single Radiant art brief](../../Art/ui/Combat%20Overhaul.md)
 proposes **six new vendor portraits**, with **two optional environments**.
 No vendor source is delivered; this work did not generate or purchase images.
 These sources are separate from the 2026-11-07 seasonal/War snapshot below.

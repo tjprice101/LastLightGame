@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 import { additionalCommonConduits, commonConduits as conduits, conduits as allConduits } from '../content/conduits';
-import { radiantConduitEffectText } from '../content/radiant-conduit-text';
+import { radiantConduitEffectText } from '../content/conduit-effect-text';
 import { emptyAccount } from '../game/account';
 import { conduitStore, conduitInventory, conduitDetails, conduitLore } from './conduit-store';
 import { masterConduits } from '../content/master-conduits';

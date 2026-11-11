@@ -2,7 +2,7 @@
 
 ## Radiant vendor package (2026-11-09)
 
-The [consolidated Radiant brief](ui/Radiant%20Combat%20Overhaul.md) proposes
+The [consolidated Radiant brief](ui/Combat%20Overhaul.md) proposes
 six original vendor portraits and two optional shared environments. These are
 not delivered, installed or included in the historical seasonal/War totals
 below. The existing battlefield artwork and 192 derived face crops are reused;

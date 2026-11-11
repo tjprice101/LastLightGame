@@ -9,7 +9,7 @@ import type { Account } from '../game/account';
 import { Button, Dialog, Status } from './components';
 import { masterArtUrl } from '../presentation/master-conduits';
 import { referencedEffect } from '../presentation/effect-copy';
-import { radiantMasterEffect } from '../presentation/radiant-master-text';
+import { radiantMasterEffect } from '../presentation/master-text';
 import '../styles/ui.css';
 import { getElement } from '../content/activities';
 import { elementAccents } from '../content/dungeon-art';

@@ -5,16 +5,16 @@
 Radiant is the actual online and local battle system across game activities;
 the earlier preview-only description below is historical. The
 [current handoff](handoff.md#live-radiant-and-team-release-follow-through-2026-11-10)
-and [Radiant specification](Future%20Plans/radiant-combat-system-specification.md#live-implementation-and-continuation-compatibility-2026-11-10)
+and [Radiant specification](Future%20Plans/combat-system-specification.md#live-implementation-and-continuation-compatibility-2026-11-10)
 describe live Team and information surfaces, save/continuation compatibility,
 bounded economy evidence and the remaining artwork and desktop checks.
 
 ## Current Radiant design and release status (2026-11-09)
 
-The [handoff](handoff.md) and [Radiant specification](Future%20Plans/radiant-combat-system-specification.md)
+The [handoff](handoff.md) and [Radiant specification](Future%20Plans/combat-system-specification.md)
 record the implemented saved-combat/portrait foundation, encounter-size retune,
 staggered field and six text-based shop hosts. The
-[single art brief](../Art/ui/Radiant%20Combat%20Overhaul.md)
+[single art brief](../Art/ui/Combat%20Overhaul.md)
 contains six new portrait prompts and two optional environments; no vendor art
 has been delivered. The 192 compact portraits are reviewed existing-art
 derivatives. The vendor prompts now describe three women and three men aged
@@ -32,7 +32,7 @@ and its map installed; older 150-stage and pending-art notes are historical.
 
 ## Radiant recovered battlefield and portrait gestures (2026-11-08)
 
-[Recovery state, implemented field/portrait split and remaining release gates](Future%20Plans/radiant-combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08):
+[Recovery state, implemented field/portrait split and remaining release gates](Future%20Plans/combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08):
 full-form characters remain beside enemies on the upper field. Separate lower
 portraits hold stats/effects/Gauge, tap attacks and hold/upward-drag Flares,
 with non-drag action alternatives. Recovered pending32-identity signature VFX
@@ -41,7 +41,7 @@ still requires the enumerated validation/art/routing gates.
 
 ## Radiant saved-impact emission/bloom pilot (2026-11-08)
 
-[Finite source-aligned particles/glares/bloom](Future%20Plans/radiant-combat-system-specification.md#saved-impact-emission-and-bloom-pilot-2026-11-08)
+[Finite source-aligned particles/glares/bloom](Future%20Plans/combat-system-specification.md#saved-impact-emission-and-bloom-pilot-2026-11-08)
 now run in the isolated saved battle preview, with progressive tier mapping,
 support/neutral packet cues and explicit profiles for seven missing bearers.
 Save/impact order, speed/pause/Skip/Reduce motion and disposal remain intact.
@@ -49,7 +49,7 @@ Not final cinematic artwork, GPU approval or production activation.
 
 ## Radiant complete frozen battle reference (2026-11-08)
 
-[Per-bearer exact mechanics/gear reference](Future%20Plans/radiant-combat-system-specification.md#complete-frozen-bearer-reference-and-master-targeting-2026-11-08)
+[Per-bearer exact mechanics/gear reference](Future%20Plans/combat-system-specification.md#complete-frozen-bearer-reference-and-master-targeting-2026-11-08)
 now uses contained pause-aware dialogs for passive, all Flare tiers, saved
 Master/ascensions and converted Conduits; squad rules show the frozen leader.
 Tizu/Flora strike-adding Master targeting is fixed and previewable through an
@@ -57,7 +57,7 @@ explicit in-memory fixture. No production activation or new art commission.
 
 ## Radiant saved result receipts and encounter controls (2026-11-08)
 
-[Durable reward results and saved Continue/Replay/exit](Future%20Plans/radiant-combat-system-specification.md#saved-result-receipts-and-encounter-controls-2026-11-08)
+[Durable reward results and saved Continue/Replay/exit](Future%20Plans/combat-system-specification.md#saved-result-receipts-and-encounter-controls-2026-11-08)
 are wired in the isolated preview: save-first field replacement, final-stage
 gates, exact lost-reply retries and in-game cancellable mid-battle exit.
 No duplicate claim/celebration or production activation. Full production
@@ -65,7 +65,7 @@ navigation, unique VFX, face intake and synchronized timed-status impacts remain
 
 ## Radiant battlefield art and owned status reference (2026-11-08)
 
-[Canonical supplied scenery/enemies and source-owned Shield/status rows](Future%20Plans/radiant-combat-system-specification.md#canonical-battlefield-art-and-source-owned-readouts-2026-11-08)
+[Canonical supplied scenery/enemies and source-owned Shield/status rows](Future%20Plans/combat-system-specification.md#canonical-battlefield-art-and-source-owned-readouts-2026-11-08)
 now appear in the isolated saved preview. Shields consume/refresh at impact;
 timed effects are explicitly last-completed snapshots during replay.
 No production activation; finer timed-status synchronization and final VFX/
@@ -73,28 +73,28 @@ composition/routing remain unfinished.
 
 ## Radiant six-member battle and browser preview (2026-11-08)
 
-[Saved face/charge/impact surface](Future%20Plans/radiant-combat-system-specification.md#saved-six-member-battle-surface-and-impact-preview-2026-11-08)
+[Saved face/charge/impact surface](Future%20Plans/combat-system-specification.md#saved-six-member-battle-surface-and-impact-preview-2026-11-08)
 and an in-memory browser preview now exercise actual combat with save-first
 motion, grouped AoE, Skip/Settings/reduced-motion/disposal. No player writes or
 production activation; remaining art, unique VFX and complete routing still pending.
 
 ## Radiant manual squad and loadout preparation (2026-11-08)
 
-[Gated preparation/session bridge](Future%20Plans/radiant-combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08):
+[Gated preparation/session bridge](Future%20Plans/combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08):
 manual acquired six-bearer squads, named equipment restoration and safe exact
 pending retries. Captured/raw holdings and frozen runs stay unchanged; no
 automatic replacement/grants. Production routed UI and live activation remain pending.
 
 ## Radiant saved sessions and recovery (2026-11-08)
 
-[Saved-only client/checkpoint contract](Future%20Plans/radiant-combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08):
+[Saved-only client/checkpoint contract](Future%20Plans/combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08):
 exact unresolved-request retry, Settings/entrance/presentation lifecycle and
 schema3 durable encounter totals without reward-animation replay. Authenticated
 read remains disabled by default; production UI and actual DB proof still pending.
 
 ## Radiant fresh-entry economy measurements (2026-11-08)
 
-[Reproducible actual-authority experiment](Future%20Plans/radiant-combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08):
+[Reproducible actual-authority experiment](Future%20Plans/combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08):
 411 cycles/1236 access denials and1098 identical-prefix Retry attempts with
 zero duplicate currency/loot. Free starter policy controls are separate from
 conditional trio/six accounts. Recorded partial-reset request advantages are
@@ -103,7 +103,7 @@ not measured real-time income or final tuning approval. No gameplay/deploy chang
 
 ## Radiant authored loot and progression (2026-11-08)
 
-[Gated reward/lifecycle bridge](Future%20Plans/radiant-combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08):
+[Gated reward/lifecycle bridge](Future%20Plans/combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08):
 full authored non-kill-currency loot, discovery/unlocks/first-clear grants now
 connect to real Radiant actions. Retry retains kill/completion/seeds; Continue
 unlocks real stages/Training waves; explicit exit retains banked receipts.
@@ -113,7 +113,7 @@ calibration and actual DB verification still pending; no live enable/deploy.
 
 ## Gated radiant authority dispatch (2026-11-08)
 
-[Current HTTP/entropy integration](Future%20Plans/radiant-combat-system-specification.md#gated-authenticated-authority-dispatch-2026-11-08)
+[Current HTTP/entropy integration](Future%20Plans/combat-system-specification.md#gated-authenticated-authority-dispatch-2026-11-08)
 and [server configuration](../supabase/functions/game-operation/README.md#disabled-by-default-radiant-study-dispatch-2026-11-08):
 authenticated, disabled-by-default study route with server-owned HMAC entry
 seeds, typed transport and atomic RPC aggregate.1302 focused tests/types/build
@@ -123,7 +123,7 @@ rewards/progression/UI still pending.
 
 ## Radiant saved-run and atomic receipt boundary (2026-11-08)
 
-[Account-derived run contract](Future%20Plans/radiant-combat-system-specification.md#account-derived-runs-and-atomic-receipt-boundary-2026-11-08):
+[Account-derived run contract](Future%20Plans/combat-system-specification.md#account-derived-runs-and-atomic-receipt-boundary-2026-11-08):
 actual frozen saved loadouts, manual captured replacement, recomputed actions,
 partial currency/retry ledgers and existing atomic server RPC adapter.
 1259 parent-selected tests/types/build pass. Actual DB execution, gated
@@ -132,7 +132,7 @@ dispatch, server entropy and full reward/migration/UI release remain pending.
 
 ## Radiant actual pressure study (2026-11-08)
 
-[Experimental encounter results](Future%20Plans/radiant-combat-system-specification.md#actual-pressured-encounters-experimental-calibration-2026-11-08):
+[Experimental encounter results](Future%20Plans/combat-system-specification.md#actual-pressured-encounters-experimental-calibration-2026-11-08):
 44 families/284 anchors/245 species and2001 reproduced action-driven encounters.
 Explicit wins/defeats/timeouts/stalemates, conditional ownership and separate
 Calamitic scenarios; experimental factors are not approved live difficulty.
@@ -141,7 +141,7 @@ Calamitic scenarios; experimental factors are not approved live difficulty.
 
 ## Radiant ordinary Conduits and frozen loadouts (2026-11-08)
 
-[Operative gear study](Future%20Plans/radiant-combat-system-specification.md#ordinary-conduit-conversion-and-frozen-gear-study-2026-11-08):
+[Operative gear study](Future%20Plans/combat-system-specification.md#ordinary-conduit-conversion-and-frozen-gear-study-2026-11-08):
 all99 ordinary stable IDs, retained0-5 ranks/costs/eligibility, source-bounded
 four-stat/action/team effects and read-only owned-gear adapter.1633 focused
 tests and client/authority types/build pass. Still isolated; actual pressure
@@ -150,7 +150,7 @@ calibration and live migration/presentation remain required.
 
 ## Released radiant roster and Master study (2026-11-08)
 
-[Operative expansion](Future%20Plans/radiant-combat-system-specification.md#released-roster-combat-study-operative-expansion-2026-11-08):
+[Operative expansion](Future%20Plans/combat-system-specification.md#released-roster-combat-study-operative-expansion-2026-11-08):
 32 released canonical kits,96 executed progressive Flare offers,32 implemented
 passives and96 fixed attuning Masters. Saved ascension/weapon flags map into
 frozen four-stat study contracts; Sunshade stays excluded.508 focused tests
@@ -159,7 +159,7 @@ and client/authority typechecks/build pass. Still isolated, no live migration.
 
 ## Radiant starter combat study and face intake (2026-11-08)
 
-[Current operative study](Future%20Plans/radiant-combat-system-specification.md#current-implemented-starter-study-and-portrait-intake-2026-11-08):
+[Current operative study](Future%20Plans/combat-system-specification.md#current-implemented-starter-study-and-portrait-intake-2026-11-08):
 pure four-stat starter combat, nine fixed Master attunements, layered charge,
 sourced indefinite Shields/healing and exact lowest-health currency ledger.
 [Portrait workflow](art-workflow.md#derived-compact-face-portraits-starter-pilot-2026-11-08)
@@ -170,14 +170,14 @@ Obsolete initial formulas are explicitly archived, not operative rules.
 
 ## Radiant overhaul implementation branch (2026-11-08)
 
-Owner delegates design and implementation. [Foundation status](Future%20Plans/radiant-combat-system-specification.md#delegated-implementation-and-first-foundation-2026-11-08)
+Owner delegates design and implementation. [Foundation status](Future%20Plans/combat-system-specification.md#delegated-implementation-and-first-foundation-2026-11-08)
 distinguishes tested six-member/charge foundations from unfinished live systems.
-[Single art intake brief](../Art/ui/Radiant%20Combat%20Overhaul.md) is provisional
+[Single art intake brief](../Art/ui/Combat%20Overhaul.md) is provisional
 until the full kit conversion settles new assets; existing sources are reused.
 
 ## Radiant combat exact review draft (2026-11-08)
 
-[Four-stat system, charge rules, starter kits and Masters](Future%20Plans/radiant-combat-system-specification.md).
+[Four-stat system, charge rules, starter kits and Masters](Future%20Plans/combat-system-specification.md).
 Proposed numerical specification, not implemented or measured tuning.
 Approval gates include final-form support access, Shield rules and gear/Imbue
 mapping. General UI mock-up rollout remains paused.

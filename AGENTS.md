@@ -11,7 +11,7 @@ unless the owner explicitly asks for one. Make the real change instead.
 
 The owner rejected the preview-only rollout: the overhaul replaces the live game.
 - Every activity's battle uses Radiant, both online and local
-  (`src/online/radiant-local.ts`).
+  (`src/online/battle-local.ts`).
 - Calibration is `authored-control`.
 - Squads have 1–6 acquired Element-Bearers, with no captures.
 - Team/Character, Conduit/Master and Home UIs present Radiant kits, attunement
@@ -36,7 +36,7 @@ Never stage or publish the rejected local mock-ups (`radiant-ui.html`,
 `ui-design-lab*`, `src/radiant-ui.test.ts`) or the uncommitted mock-up notes in
 `docs/Future Plans/living-world-ui-audit-plan.md` and lower docs sections.
 Vendor prompts: three women/three men aged 18-25, glamorous hard-light couture,
-tasteful, refined hand-drawn anime (see Art/ui/Radiant Combat Overhaul.md).
+tasteful, refined hand-drawn anime (see Art/ui/Combat Overhaul.md).
 Current state and next steps: docs/handoff.md top entries.
 
 ## Reclaimed War integration and recruitment override (2026-11-06)

@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { freshGame, friendProfileView, profileActivityFor, publicGame, resolveOperation, storyCompletedOf, validateChatRequest, validateFriendProfileRequest, validateRequest } from './engine';
-import { handleRadiantRequest, type RadiantServerConfig } from './radiant-dispatch';
-import { radiantContinuationMediaType } from '../../../src/online/radiant-run';
+import { handleRadiantRequest, type RadiantServerConfig } from './battle-dispatch';
+import { radiantContinuationMediaType } from '../../../src/online/battle-run';
 const maximumRequestBytes = 4 * 1024 * 1024 + 8192;
 
 const origins = new Set(['http://127.0.0.1:5173', 'http://localhost:5173', 'https://tjprice101.github.io']);

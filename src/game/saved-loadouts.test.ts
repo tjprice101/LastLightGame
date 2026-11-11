@@ -11,7 +11,7 @@ import { offlineSave, parseSaveFile } from './save-file';
 import { getCreature } from '../content/creatures';
 import { starters } from '../content/starters';
 import { characterReleased } from '../content/release-visibility';
-import { releasedRadiantIds } from '../content/radiant-combat';
+import { releasedRadiantIds } from '../content/combat-kits';
 
 const id = '00000000-0000-4000-8000-000000000001';
 function storage(): ProfileStorage {

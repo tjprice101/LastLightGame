@@ -26,6 +26,13 @@ reopens the same receipt. Continue, Replay/Retry and Exit remain immediate,
 and results scroll on small screens without hiding their actions.
 No combat, reward, save, RNG or authority behavior changes.
 
+Enemy selection uses a brief portrait hop and a settling ground ring, not
+the acquisition shimmer. At 1x speed, an enemy's direct packet has a 320ms
+lead-in for a new attacker, a 420ms anticipation/lunge and a 260ms recovery
+after impact. The existing battle-speed, Skip, Settings pause, disposal and
+Reduce motion controls apply. Pending saves do not display wait-status text;
+errors remain explicit and saved outcomes retain their accessible announcement.
+
 ## Live Team and Radiant information (2026-11-10)
 
 The squad editor saves all six supported Element-Bearer slots; draft changes
@@ -71,7 +78,7 @@ artwork commission, economy rule or authority activation.
 
 ## Vendor hosts and Radiant battle staging (2026-11-09)
 
-The [Radiant art brief](../Art/ui/Radiant%20Combat%20Overhaul.md) proposes
+The [Radiant art brief](../Art/ui/Combat%20Overhaul.md) proposes
 Mirel for Material Exchange, Veylin for Cosmetic Store, Torven for ordinary
 Conduits, Edda for Conduit Upgrade, Sarev for Calamitic Conduits and Nimra
 for Event Elemental-Devourers. Each existing surface now has its named,
@@ -94,7 +101,7 @@ remain; the older Actions-menu descriptions below are historical.
 
 ## Radiant field units and charged portrait controls (2026-11-08)
 
-[Owner clarification and saved interaction contract](Future%20Plans/radiant-combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08):
+[Owner clarification and saved interaction contract](Future%20Plans/combat-system-specification.md#recovered-field-formation-and-portrait-actions-2026-11-08):
 full-form allies and enemies remain on the upper scenery field; separate face
 portraits below hold Health/Shield, three other frozen stats, sourced effects
 and personal Gauge/readiness. Tap a portrait to attack; hold350ms, drag upward
@@ -113,7 +120,7 @@ This does not activate the overhaul.
 
 ## Radiant saved-impact bloom pilot (2026-11-08)
 
-[Emission/bloom contract](Future%20Plans/radiant-combat-system-specification.md#saved-impact-emission-and-bloom-pilot-2026-11-08):
+[Emission/bloom contract](Future%20Plans/combat-system-specification.md#saved-impact-emission-and-bloom-pilot-2026-11-08):
 the isolated preview now has source-aligned charge light, finite particles/
 optical glares and effect-only bloom after saved impacts. Explicit progressive
 Flare tiers, separate support/generated cues and neutral enemy cues do not
@@ -126,7 +133,7 @@ are not complete.
 
 ## Radiant frozen mechanics reference (2026-11-08)
 
-[Complete reference/target contract](Future%20Plans/radiant-combat-system-specification.md#complete-frozen-bearer-reference-and-master-targeting-2026-11-08):
+[Complete reference/target contract](Future%20Plans/combat-system-specification.md#complete-frozen-bearer-reference-and-master-targeting-2026-11-08):
 each bearer has a contained native game-dialog reference for four frozen stats,
 passive, all three exact baseline Flare tiers/costs/unlocks, saved enhancements,
 personal Master/attunement and converted Conduit effects at frozen ranks.
@@ -142,7 +149,7 @@ in-memory. Production routing/final VFX remain pending.
 
 ## Radiant saved results and encounter transitions (2026-11-08)
 
-[Saved result/transition contract](Future%20Plans/radiant-combat-system-specification.md#saved-result-receipts-and-encounter-controls-2026-11-08)
+[Saved result/transition contract](Future%20Plans/combat-system-specification.md#saved-result-receipts-and-encounter-controls-2026-11-08)
 now exposes durable currency+loot receipts only after final saved impacts/Skip,
 with explicit Continue/Replay/exit. Reopening/Settings retain the result DOM
 without another save/celebration. Checkpoint restores display the existing
@@ -156,7 +163,7 @@ Preview has an ended-state callback, not production activity routing.
 
 ## Radiant battlefield artwork and status timing (2026-11-08)
 
-[Canonical field/source-readout contract](Future%20Plans/radiant-combat-system-specification.md#canonical-battlefield-art-and-source-owned-readouts-2026-11-08):
+[Canonical field/source-readout contract](Future%20Plans/combat-system-specification.md#canonical-battlefield-art-and-source-owned-readouts-2026-11-08):
 saved encounter identities select supplied enemy/form art and activity scenery;
 missing scenery stays pending. Preserve image DOM and shared facing/revisions.
 Dispose artwork loading/retry listeners with the view.
@@ -171,7 +178,7 @@ Production navigation and final cinematic VFX/composition remain pending.
 
 ## Saved radiant battle surface preview (2026-11-08)
 
-[Six-member surface/preview](Future%20Plans/radiant-combat-system-specification.md#saved-six-member-battle-surface-and-impact-preview-2026-11-08)
+[Six-member surface/preview](Future%20Plans/combat-system-specification.md#saved-six-member-battle-surface-and-impact-preview-2026-11-08)
 now renders per-form faces, personal layers/shared Eternal, explicit choices and
 saved ordered HP/total-Shield impact readouts. Face DOM remains stable.
 Save precedes windup; repeated/generated/periodic packets remain ordered and
@@ -186,7 +193,7 @@ production navigation integration remains pending.
 
 ## Radiant manual preparation boundary (2026-11-08)
 
-The [gated preparation bridge](Future%20Plans/radiant-combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08)
+The [gated preparation bridge](Future%20Plans/combat-system-specification.md#manual-squad-and-saved-loadout-preparation-bridge-2026-11-08)
 connects manual six-member bearer selection and named equipment libraries to
 saved-only session receipts. Captured holdings are preserved, not automatically
 replaced or equipped. Pending preparations lock concurrent combat/choices;
@@ -197,7 +204,7 @@ the three per-character saved Conduit configuration slots.
 
 ## Isolated radiant session lifecycle (2026-11-08)
 
-The [saved-only controller](Future%20Plans/radiant-combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08)
+The [saved-only controller](Future%20Plans/combat-system-specification.md#saved-client-sessions-and-durable-checkpoint-reads-2026-11-08)
 now provides request-keyed presentation/entrance completion, exact ambiguous
 request retry and checkpoint recovery without replaying earned rewards.
 Settings retains frozen squads/gear, encounter totals, pending presentation and

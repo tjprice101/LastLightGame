@@ -1,4 +1,4 @@
-import { radiantMasterEffect } from './presentation/radiant-master-text';
+import { radiantMasterEffect } from './presentation/master-text';
 import { starters as allStarters, getStarter, isStarterId, starterVow, type StarterId } from './content/starters';
 import { characterArt, characterName } from './content/character-art';
 import { elementAccents, materialArt, materialName, dungeonArt } from './content/dungeon-art';

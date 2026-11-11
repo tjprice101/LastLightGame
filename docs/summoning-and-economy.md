@@ -2,7 +2,7 @@
 
 ## Radiant fresh-entry request-cost experiment (2026-11-08)
 
-[Measured study and full cohort table](Future%20Plans/radiant-combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08)
+[Measured study and full cohort table](Future%20Plans/combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08)
 now checks actual saved authority outcomes rather than a proxy damage total:
 411 bounded cycles plus1236 explicit denials,1098 repeated identical-prefix
 Retry attempts, zero extra currency/kill loot and no exit reward changes.
@@ -30,7 +30,7 @@ Retries retain kill/currency/completion ledgers and independent loot seeds;
 fresh authorized encounters remain distinct. Frozen run/schema2 plus all
 account changes and request receipt commit together. Raw capture holdings/
 fodder/gear/loadouts remain, with no automatic squad grants or repair.
-[Exact contract, tests and pending economic gates](Future%20Plans/radiant-combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08).
+[Exact contract, tests and pending economic gates](Future%20Plans/combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08).
 
 This is **not live or final economy tuning**. Fresh-entry farming throughput,
 final damage budget/access calibration, actual Radiant DB verification and
