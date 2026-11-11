@@ -29,10 +29,14 @@ src\online\radiant-transport.test.ts src\online\radiant-run-progression.test.ts
 src\online\radiant-session.test.ts src\presentation\creature-bulk-sale.test.ts`
 passed 115 tests; client and authority TypeScript checks passed.
 `npx vitest run --maxWorkers=2 --testTimeout=60000` passed all 286 files and
-10,286 tests after the collection-filter optimization. `npm run build` passed
-with the existing large-chunk advisory; `node tools\bundle_server_game.mjs`
-and `npx tsc --project supabase\functions\game-operation\tsconfig.json` passed.
-Before updating
+10,286 tests after the collection-filter optimization. The subsequent Training
+information correction passed 29 focused tests and client TypeScript.
+`npm run build` passed with the existing large-chunk advisory;
+`node tools\bundle_server_game.mjs` and
+`npx tsc --project supabase\functions\game-operation\tsconfig.json` passed.
+An event smoke against the old authority exposed a retired legacy-entry test
+path; its disposable identity was removed, and the smoke now tests Radiant
+entry and must be rerun against the matching authority. Before updating
 the hosted authority, `node tools\smoke_server_game.mjs
 --radiant-legacy-authority` passed authenticated transactions and a real battle
 including legacy Continue/Retry using disposable accounts. The current client

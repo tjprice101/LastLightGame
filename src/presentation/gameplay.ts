@@ -112,7 +112,7 @@ function gameplayInformation(): string {
     { id: 'roses', title: 'Passion of Crimson Roses', summary: 'Rosethorn materials', content: roseEventRules },
     { id: 'machines', title: 'Awaken the Machines', summary: 'Conduits, components and Masters', content: machineRulesText },
     { id: 'war', title: 'Elemental War', summary: 'Defeat challengers for a chance to recruit them', content: `<p>${warLore}</p><p>${warRulesText}</p>` },
-    { id: 'continuing', title: 'Between battles', summary: 'What carries over', content: `<ul><li>Staged activities: Health restores; personal charge and the shared Eternal charge carry over.</li><li>Training: Health, Shields, status effects, personal charge, the shared Eternal charge and defeated members carry over.</li><li>Settings keeps your run. Quitting ends it, but keeps earned rewards.</li></ul>` },
+    { id: 'continuing', title: 'Between battles', summary: 'What carries over', content: `<ul><li>Staged activities: Health restores; personal charge and the shared Eternal charge carry over.</li><li>Training: Health, Shields, status effects, guard, personal charge, the shared Eternal charge and defeated members carry over.</li><li>Settings keeps your run. Quitting ends it, but keeps earned rewards.</li></ul>` },
   ]);
 }
 
@@ -131,7 +131,7 @@ export function gameplayHub(account: Account | null = emptyAccount(), eventAcces
       <article class="activity-card training-card">
         <header class="training-hero"><img src="${assetUrl('backgrounds/grassy-field.png')}" alt="" width="1456" height="816"><div><p class="eyebrow">Practice · Endless battles</p><h3>Training · Grassy Field</h3></div></header>
         <div class="training-details">${activityFacts('Endless waves', '1-120', 'Prismatica')}
-          <div class="training-summary"><p>${trainingLore}</p><p>Each run starts at wave 1. HP and Elemental Gauge carry between waves.</p>${itemShowcase([{ id: 'fractalis' }], 'Rewards')}</div>
+          <div class="training-summary"><p>${trainingLore}</p><p>Each run starts at wave 1. Health, Shields, guard, status effects, defeated members and charge carry between waves.</p>${itemShowcase([{ id: 'fractalis' }], 'Rewards')}</div>
           <div><h4>First wave</h4>${enemyStrength({ level: 1, boss: false, stats: enemyCombatStats(1, false) })}</div>
           <footer class="training-entry"><p class="quiet">Leaving keeps earned rewards and ends the run.</p><button class="primary-button" data-page="battle">Enter Training</button></footer>
         </div></article></section>

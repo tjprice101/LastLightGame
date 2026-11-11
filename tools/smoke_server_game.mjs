@@ -100,8 +100,14 @@ try {
     for (const event of ['sunshade']) {
       await assert.rejects(call({ kind: 'summon', bannerId: event }, response.revision),
         error => error.status === 400 && error.message.includes('not active'));
-      await assert.rejects(call({ kind: 'enter', activity: { kind: 'infusion', mode: event, stage: 1 } }, response.revision),
-        error => error.status === 400 && error.message.includes('not active'));
+      const entry = await client.functions.invoke('game-operation', {
+        body: { radiantStudy: { requestId: randomUUID(), expectedRevision: response.revision, runId: null, encounter: null,
+          operation: { kind: 'start', activity: { kind: 'infusion', mode: event, stage: 1 }, calibration: 'authored-control' } } },
+        headers: { Accept: 'application/json, application/vnd.lastlight.radiant-continuation-v1+json' },
+      });
+      assert.equal(entry.error?.context?.status, 400, 'Inactive event entry must be rejected.');
+      const denial = await entry.error.context.clone().json();
+      assert.match(denial.error, /not active/i);
       await assert.rejects(call({ kind: 'purchaseEventDevourer', id: `infusion:${event}:0` }, response.revision),
         error => error.status === 400 && error.message.includes('after an actually completed event window'));
     }
