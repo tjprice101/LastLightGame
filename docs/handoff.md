@@ -1,5 +1,167 @@
 # Current state and handoff
 
+## Publishing redesigned menus to the main game (2026-11-12)
+
+The owner now approves deployment to GitHub Pages, superseding the
+local-only restriction recorded below. The normal application renders the
+redesigned desktop menus and Units navigation for real local/online accounts.
+DEV-only memory saves, forced Home startup and online-service restrictions
+remain isolated behind `?workspace=menu`; production ignores that flag.
+The standalone HTML mock-up and unrelated proposal/mock-up notes remain
+unpublished. No server behavior changed; no Supabase deployment is required.
+
+Release validation: `npm run build` passes TypeScript/Vite (existing
+large-chunk advisory). The focused menu/motion run passes 90 tests across
+nine files. The initial full run passed 10,323 tests but failed the new
+source-contract test, the motion contract and a 20-second acquisition
+surface timeout. The source-test path and explicit in-game motion contract
+were corrected; rerunning those three files passed all 10 tests without
+changing the acquisition test or its timeout. Require the GitHub workflow's
+full suite to pass before treating the release as complete.
+
+Production browser validation passed 30 states at 1024x768, 1440x900 and
+1920x1080 with zero console/page errors and zero backend mutations. Normal
+title entry, no test grants, real leveling/save/reload, nested navigation,
+Social access and attendance CTA/Leader Skill scroll clearance were checked.
+The attendance fixture was rendered without claiming rewards or accessing
+a real online account. Temporary browsers and servers closed after the run.
+Pages publication is next through the existing `deploy.yml` workflow.
+The hosted version must match the pushed commit; a local build or push alone
+is not proof of deployment. See the [live menu contract](menus-and-inventory.md#live-redesigned-desktop-menus-2026-11-12).
+
+## Requested menu mock-up connected to the real local game (2026-11-12)
+
+**Owner-approved scope:** real game locally with the redesigned desktop UI;
+isolated test data only. Do not commit/push/deploy this work or access a real
+account as part of this design pass.
+
+Implemented `?workspace=menu` in Vite development mode. Launch with
+`npm run dev` and add that query to the displayed `/LastLightGame/` URL.
+Without the flag, normal startup is unchanged; production ignores it.
+The single-file HTML remains a visual reference. The functional workspace
+uses the existing application, transactions, content, menus and local Radiant.
+
+- Memory-only account and preferences; reset/reload discards test changes.
+  All released bearers are available, including Calamitic ownership-gated
+  content. The starter trio starts at Lv.15/Evo.2 and Vigil Core at +0.
+- Real Home art bars, split utility row, manual carousel and Leader Skill.
+  Units opens the requested submenu; Level/Evolve select an owned bearer
+  before using actual upgrade screens. Nested Back and reopening Units
+  from the dock preserve the intended navigation.
+- Existing Play/activity categories, Summon, shops, Collections, Inventory,
+  equipment, Loadouts, help/settings and local combat remain wired.
+  Online-only social/account services are explicitly unavailable, not faked.
+- Desktop screenshots exposed clipped Home utility buttons and dock overlap;
+  scoped width/short-height rules corrected both.
+
+Verified: 56 real-browser states with no console/page errors or external
+requests. Actual operations covered leveling, Max Level, evolution with
+consumed fodder, saving a squad Loadout, summoning/cost, Material Exchange,
+Vigil Core restoration, equipment, local Training victory/results/exit,
+and reload resetting the memory save. All nine Play categories opened.
+The browser denied account/auth/preference storage access; the only storage
+attempt was the imported SDK's random-key capability probe, not saved data.
+Temporary Vite and Chrome closed after each run.
+
+`npx vitest run src\game\menu-workspace.test.ts src\presentation\menu-workspace.test.ts src\game\debug-profile.test.ts src\presentation\menu-history.test.ts src\presentation\reference-ui.test.ts src\presentation\home-carousel.test.ts src\presentation\saved-loadouts.test.ts src\presentation\sanctuary.test.ts --maxWorkers=2`
+passed 85 tests across eight files. `npm run build` passed TypeScript/Vite
+with the existing large-chunk advisory. A subsequent layout-only run passed
+17 states, including five screens at each of 1024x768, 1440x900 and 1920x1080;
+header controls stayed in bounds and Home's Leader Skill cleared the dock.
+Carousel arrival was measured progressing to completion; both OS and actual
+in-game Reduce motion produced immediate static feedback.
+
+Remaining: no exhaustive validation of every nested dialog/action, no real
+online-service transactions, no hosted publication and no mobile work.
+Keep those distinctions rather than claiming every possible game action
+has been browser-tested. See the [workspace contract](menus-and-inventory.md#isolated-real-game-design-workspace-2026-11-12).
+
+## Desktop Collections, Loadouts and Home attendance (2026-11-12)
+
+Implemented in the actual game routes, not a demo:
+
+- Collections uses a gold filter sidebar and compact artwork gallery with
+  category tabs. Existing filters, silhouettes and full detail dialogs remain.
+- Loadouts uses selectable saved configurations beside one detail workspace.
+  Selection preserves drafts and portrait DOM without account writes; existing
+  Save/Equip/Update/Rename/Delete operations retain their authority and checks.
+  All six member slots remain available in the horizontally scrollable preview.
+- Home's manual carousel includes the authoritative monthly attendance preview.
+  Review & claim opens the existing calendar transaction dialog; rendering never
+  grants rewards. Local accounts see a sign-in requirement. Loadouts opens the
+  actual Loadouts workspace rather than squad formation.
+
+Owner direction: scalable desktop layouts only for current/future UI work;
+mobile-specific design and validation are deferred until explicitly resumed.
+
+Validation: `npm run build` passed (existing large-chunk advisory).
+The isolated Chrome check covered Characters, Conduits, Creatures, Loadouts and
+Home attendance at 1024x768, 1440x900 and 1920x1080: all 15 cases passed width
+and minimum-text checks, with visible portraits decoded. Screenshot review
+identified additional legacy CSS overrides; their specificity was corrected
+and all 15 desktop cases passed again. Final screenshot review confirms the
+horizontal Team navigation and compact Collection artwork.
+Both temporary browser and Vite server closed after validation.
+`git diff --check` passed for the changed menu surfaces and documentation.
+The focused five-file Vitest run passed 71/74 tests, but three existing
+Collections controls cases exceeded their 30-second timeout on the serial
+retry. No assertion mismatch was reported. Do not describe this as a green
+test run or publish until the timeout failures are resolved.
+
+No commit, push or hosted release for this change yet. The checkout still
+contains unrelated work and excluded mock-up notes; staging must be selective.
+
+## Live Home dashboard responsive follow-up (2026-11-11)
+
+The reference-inspired Home dashboard remains live-data-only: it shows the
+acquired six-slot squad and leader effect, quick routes, and a manual
+Story/Summon/Activities carousel. Carousel and Team/Home navigation were
+exercised in-browser; the wallet was unchanged.
+
+Final isolated-browser screenshots and measurements now cover CSS viewports
+390x844, 768x1024 and 1440x900. All three pages match their viewport widths,
+show no visible text below 12px, and have no Home-card/dock overlap. At 390px,
+the Story card is 232px high; its CTA ends at y=737 inside the card (bottom
+y=744), 14px above the dock (top y=758). At 768px the card ends at y=844 with
+the CTA inside; at 1440px it ends at y=745, also with the CTA inside. The
+mobile squad and quick-action rows scroll internally. Header sizing and the
+44x44px profile control remain unchanged. Home-specific contrast ratios and
+line lengths were not audited.
+
+`npx vitest run --maxWorkers=3`: 288 files / 10,313 tests passed.
+`npm run build`: TypeScript and Vite passed; the existing >500kB chunk advisory
+remains. `git diff --check` passed (Git emitted only CRLF notices).
+No gameplay, account, or release data was changed. Do not publish this worktree
+without a selective release review: unrelated local changes and the explicitly
+excluded Future Plans mock-up notes are present.
+
+## Phase A kit sheets and social dialog follow-up (2026-11-11)
+
+**Kit Phase A complete as a proposal only:** the canonical
+[combat refresh audit](Future%20Plans/character-combat-refresh-audit.md)
+now contains source-derived current kits for 32 released bearers, 6 explicitly
+inactive Sunshade identities, a problem audit, terminology/glossary and numeric
+intensity ladder, new-mechanic ledger, 38 uniquely-archetyped proposed sheets,
+114 complete tier-specific Flares, 114 individually named/tailored existing
+Masters, compatibility/interaction notes, coverage matrix and focused approval
+questions. A source-check script verified all counts, unchanged live costs and
+attunements, inactive release gates and unique primary mechanics. The external
+25-example foundation referenced in the original brief was not supplied; these
+are original proposals based on current Last Light systems and reviewed
+identity/artwork. Gameplay and authority remain unchanged pending the explicit
+kit/mechanic approval requested at the end of Phase A.
+
+**Social/calendar UI follow-up:** completed a measured 24-case isolated fixture
+matrix (attendance, mailbox, gifts, empty, reading, pending, rejection and
+uncertain/retry across 390x844, 768x1024 and 1440x900). Fixed the demonstrated
+long-friend-name radio-group overflow and replaced one-off dialog/form spacing
+with shared tokens. Exact maximum-safe-integer mail rewards now use the shared
+numeric role. Added a focused preservation test. No account or authority data
+was mutated. Focused validation passed 7 files / 62 tests; production build
+passed with the repository's existing large-chunk advisory. Additional
+production-CSS and full-suite results are pending below before publication.
+See [the social/calendar measurement notes](menus-and-inventory.md#remaining-social-dialog-audit-2026-11-11).
+
 ## Shared live information sheets, catalogs and offers (2026-11-11)
 
 **Implemented:** The actual Team, inventory, exchange, shops, Conduit/Master
@@ -253,6 +415,58 @@ player income or final balance approval. The synthetic search-layout timing
 indicates possible jank and is not a visible-frame-rate measurement. Broader
 journeys and future timed-event boundaries still need review; these checks are
 not an exhaustive game audit.
+
+## Live-game Team UX audit (2026-11-10)
+
+The owner directs all overhaul work into the actual game and workspace, never
+a demo-first workflow. The live Team routes now save all six supported squad
+slots through the existing account transaction, keep edits as drafts until
+Save, and restore the saved draft on Cancel. Eligibility remains limited to
+distinct, owned Element-Bearers released for combat; captured copies stay out
+of squads. Team details are available immediately, and both collections have
+search and result counts; Element-Bearer and captured-copy filters/sorting are
+available without changing ownership or transactions.
+
+The Conduit loadout's search, Details and Equip controls now meet the44px
+minimum target. Responsive checks covered Home, Team formation, character
+details, collections, Store, Summon, Gameplay, Settings-panel layout, Conduit
+loadouts and Inventory at390x844,768x1024 and1440x900 with no horizontal
+overflow. All sampled interactive targets were at least44px; Home destination
+bubbles measured94-124px after disabling entrance animation for the browser
+measurement. Settings was scrollable at390px and its visible controls met the
+target size; no preference was changed. The actual `/LastLightGame/` route used
+only the isolated in-memory debug profile:
+Save persisted six members in that fixture, Cancel restored the original trio,
+and collection search/filter state survived detail navigation. Browsing the
+Moon banner showed the offline sign-in gate and disabled draw actions; no draw,
+purchase or activity was started. No owner account or production deployment
+was touched.
+
+Focused validation:
+- `npx vitest run src\presentation\roster.test.ts src\presentation\reference-ui.test.ts src\presentation\bubble-ui.test.ts src\presentation\conduit-loadout.test.ts` — 99 tests passed.
+- `npx tsc --noEmit` — passed.
+- `npm run build` — passed; the existing large-chunk advisory remains.
+- `git diff --check` — passed after this handoff update.
+
+Additional audit validation on 2026-11-10:
+- `npx vitest run src\game\account.test.ts src\game\evolution-fodder.test.ts src\game\captured-level-cap.test.ts src\game\economy-rebalance.test.ts` — 59 tests passed.
+- `npx vitest run src\game\conduits.test.ts src\game\squad.test.ts src\game\integrated-economy.test.ts src\online\event-lifecycle.test.ts src\online\material-shop-server.test.ts src\presentation\event-devourer-purchase.test.ts src\presentation\summon-presentation.test.ts` — 98 tests passed.
+- `npx vitest run src\presentation\settings.test.ts src\presentation\settings-panel.test.ts src\presentation\music.test.ts src\presentation\battle-speed.test.ts` — 50 tests passed; jsdom printed its existing unimplemented canvas `getContext()` notices.
+- `npx vitest run src\game\activity-access.test.ts src\presentation\activity-transition.test.ts src\presentation\battle-entrance.test.ts src\presentation\battle-results.test.ts src\presentation\battle-exit.test.ts` — 46 tests passed.
+- `npx vitest run src\online\social-calendar.test.ts src\online\social-calendar-privacy.test.ts src\presentation\social-calendar.test.ts src\online\friend-profile.test.ts src\presentation\friend-chat.test.ts` — 28 tests passed.
+- `npx vitest run src\presentation\game-dialog.test.ts src\presentation\reward-screen.test.ts src\presentation\activity-transition.test.ts src\presentation\battle-animations.test.ts src\presentation\battle-outcome.test.ts` — 49 tests passed.
+
+The black-portrait issue could not be reproduced: the current image loads with
+opacity1 and no CSS filter, and sampled rendered pixels contain visible color;
+the earlier capture is unconfirmed. The code and tests cover atomic growth,
+Store/Summon/event transactions, activity gates/results, Settings persistence,
+social privacy/retries, and shared dialog/reduced-motion paths; no defect was
+identified in this tranche. Browser checks only browsed Store/Summon/Gameplay
+and Settings; they did not perform a purchase/draw, enter battle, save a
+preference, or connect an online account. Hosted authority and full transaction
+presentation therefore remain unverified. Continue the live audit through
+those flows, including error/pending and temporal states; do not create a demo
+or claim the entire audit complete.
 
 ## Radiant goes live everywhere (2026-11-09)
 

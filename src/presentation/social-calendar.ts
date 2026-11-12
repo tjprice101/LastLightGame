@@ -51,7 +51,7 @@ function mailboxMarkup(view: SocialCalendarView): string {
     <ul class="social-mail-list">${view.mail.map(mail => `<li>
       <button type="button" data-calendar-mail="${escape(mail.id)}"><b>${escape(mail.title)}</b>
       <span>${escape(mail.sender)} · ${mail.read ? 'Read' : 'Unread'} · ${mail.informational ? 'Patch notes' : mail.claimed ? 'Claimed' : 'Unclaimed attachment'}</span>
-      <small>${escape(socialRewardText(mail.attachment))}</small></button>
+      <span class="info-number">${escape(socialRewardText(mail.attachment))}</span></button>
       ${!mail.informational && !mail.claimed ? `<button type="button" data-calendar-claim="${escape(mail.id)}">Claim attachment</button>` : ''}
     </li>`).join('')}</ul>${view.mail.length ? '' : '<p>Your mailbox is empty.</p>'}</section>`;
 }
@@ -61,9 +61,9 @@ function giftsMarkup(view: SocialCalendarView, friends: readonly SocialPeerDispl
     ${view.giftSentToday ? '<p role="status">Your free gift is already sent for this reset day.</p>' : friends.length ? `<form data-calendar-gift>
     <fieldset><legend>Accepted friend</legend>${friends.map(friend => `<label><input type="radio" name="friend" value="${escape(friend.userId)}" required><span>${escape(friend.displayName)} (@${escape(friend.username)})</span></label>`).join('')}</fieldset>
     <fieldset><legend>Gift attachment (choose one)</legend>
-      <label><input type="radio" name="gift" value="fractalis" checked>${currencyIcon('fractalis')} 1,000 Prismatica</label>
-      <label><input type="radio" name="gift" value="lycalis">${currencyIcon('lycalis')} 10 Null-Prismatica</label>
-      ${view.seedChoices.map(id => `<label><input type="radio" name="gift" value="${escape(id)}">10 ${escape(materialName(id))}</label>`).join('')}
+      <label><input type="radio" name="gift" value="fractalis" checked><span class="social-gift-attachment">${currencyIcon('fractalis')}<span class="info-number">1,000 Prismatica</span></span></label>
+      <label><input type="radio" name="gift" value="lycalis"><span class="social-gift-attachment">${currencyIcon('lycalis')}<span class="info-number">10 Null-Prismatica</span></span></label>
+      ${view.seedChoices.map(id => `<label><input type="radio" name="gift" value="${escape(id)}"><span class="info-number">10 ${escape(materialName(id))}</span></label>`).join('')}
     </fieldset><button type="submit">Send free gift</button></form>` : '<p>No accepted friends yet. Add and accept a friend first.</p>'}</section>`;
 }
 export function socialCalendarMarkup(view: SocialCalendarView, tab: string, friends: readonly SocialPeerDisplay[]): string {

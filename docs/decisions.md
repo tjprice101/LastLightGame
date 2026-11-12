@@ -1,5 +1,41 @@
 # Decision log
 
+## Publish the redesigned menus in the main game (2026-11-12)
+
+The owner requests deployment of the connected desktop menus to the main
+game on GitHub Pages. This supersedes the earlier local-only restriction.
+The redesigned Home, Units, Collections and Loadouts use normal offline and
+online accounts and existing transactions without a presentation flag.
+Only the development test account remains gated by `?workspace=menu`;
+production must ignore that query and never grant test holdings.
+Keep the standalone HTML mock-up and unrelated proposals unpublished.
+Push the matching release to `main` and `overhaul/radiant-foundation`,
+and verify the Pages workflow and hosted client before reporting it live.
+No authority behavior changes or Supabase deployment are needed.
+
+## Requested mock-up connected to isolated real local gameplay (2026-11-12)
+
+After explicitly requesting a single-file HTML menu mock-up, the owner asked
+for all existing functionality and screens. They selected the real local game
+with the redesigned UI, an isolated test account, and no hosted changes.
+Use existing transactions and Radiant rather than reimplementing simplified
+mock mechanics. Development-only `?workspace=menu` opts into memory-backed
+test holdings/preferences. Reload resets them; real saves/authentication
+must remain untouched. Online-only operations remain honestly unavailable
+without online authority. This scoped request does not change the default
+live-first policy or authorize deployment.
+
+## Live Home follows the supplied reference composition (2026-11-12)
+
+The supplied screenshot is the visual direction for the live Home route:
+compact gold header with the current squad leader, large six-slot formation,
+direct-action row, wide featured carousel and six-item bottom dock. The owner
+selected the current Element-Bearer leader as the top-left card's content.
+Preserve Last Light's real values, routes, artwork and account state; omit the
+reference's sample-data toggle and fictional rank, level, energy and locked
+slot values. No stamina system, login reward, extra squad restriction or
+gameplay change is approved by this visual direction.
+
 ## Shared live information hierarchy and measurable readability (2026-11-11)
 
 The owner approves a presentation-only overhaul in the actual game:

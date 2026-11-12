@@ -69,3 +69,95 @@ html body .sanctuary-shell .archive-filters .archive-search input:focus-visible 
 .archive-card summary { min-height: 44px; padding-block: 12px; cursor: pointer; }
 .archive-card li { margin-bottom: 8px; }
 .archive-card p, .archive-card li, .archive-banner, .archive-gallery-button { overflow-wrap: anywhere; }
+
+html body #app .sanctuary-shell .archives:not(#_) {
+  display: grid !important;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: var(--space-3) var(--space-4) !important;
+  align-items: start;
+  height: auto !important;
+  overflow: visible !important;
+}
+html body #app .sanctuary-shell .archives .archive-toolbar { grid-column: 1 / -1; margin: 0; }
+html body #app .sanctuary-shell .archives .archive-navigation {
+  grid-column: 2; display: flex !important; flex-wrap: wrap; gap: var(--space-1);
+  margin: 0 !important; padding: 0 !important;
+}
+html body #app .sanctuary-shell .archives .archive-gallery-button {
+  display: block !important; min-height: 44px !important; width: auto !important; padding: var(--space-2) var(--space-4) !important;
+  border: 1px solid #78602f !important; border-radius: 8px !important;
+  background: #19150e !important; color: #e8d9b7 !important; font-size: 14px !important;
+}
+html body #app .sanctuary-shell .archives .archive-gallery-button[aria-pressed="true"] { background: #ffda78 !important; color: #241a07 !important; border-color: #ffda78 !important; }
+html body #app .sanctuary-shell .archives > .archive-panel:not([hidden]):not(#_) {
+  grid-column: 1 / -1; display: grid !important; grid-template-columns: 220px minmax(0, 1fr);
+  grid-template-rows: max-content max-content 1fr;
+  gap: var(--space-3) var(--space-4) !important; align-items: start;
+  padding: 0 !important; margin: 0 !important; height: auto !important; overflow: visible !important;
+}
+html body #app .sanctuary-shell .archives .archive-panel[hidden] { display: none !important; }
+html body #app .sanctuary-shell .archives .archive-panel > .archive-filters,
+html body #app .sanctuary-shell .archives .archive-panel > .glossary-heading {
+  grid-column: 1 !important; grid-row: 1 !important; display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: var(--space-4) !important;
+  min-width: 0; width: 100% !important; margin: 0 !important; padding: var(--space-4) !important;
+  border: 1px solid #78602f; border-radius: 16px; background: #17130caa !important;
+}
+.archives .archive-filters::before { content: "Filters"; color: #e8d9b7; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+html body #app .sanctuary-shell .archives .archive-filters > * { grid-column: 1 !important; min-width: 0; }
+html body #app .sanctuary-shell .archives .archive-filters label { font-size: 14px; color: #e2d0aa; }
+html body #app .sanctuary-shell .archives .archive-filters .selection-trigger,
+html body #app .sanctuary-shell .archives .glossary-heading .selection-trigger {
+  width: 100%; min-width: 0; border-radius: 8px !important; border-color: #78602f !important;
+  background: #231d11 !important; color: #fff3d3 !important; box-shadow: none !important;
+}
+html body #app .sanctuary-shell .archives .archive-results-toolbar {
+  grid-column: 1 !important; grid-row: 2 !important; display: grid; gap: var(--space-2);
+  min-width: 0; margin: 0; padding: var(--space-3); font-size: 14px;
+}
+html body #app .sanctuary-shell .archives .archive-panel > :is(.archive-grid, .glossary-grid) {
+  grid-column: 2 !important; grid-row: 1 / 4 !important;
+  display: grid !important; grid-template-columns: repeat(auto-fill, minmax(min(100%, 112px), 1fr)) !important;
+  grid-auto-rows: auto !important; gap: var(--space-2) !important; align-content: start !important;
+  margin: 0 !important; padding: var(--space-4) !important; width: 100% !important; min-width: 0;
+  height: auto !important; max-height: none !important; overflow: visible !important;
+  border: 1px solid #78602f; border-radius: 16px; background: #17130c88;
+}
+html body #app .sanctuary-shell .archives #archive-conduits > .archive-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr)) !important; }
+html body #app .sanctuary-shell .archives .archive-form-label { font-size: 13px; color: #e2d0aa; }
+html body #app .sanctuary-shell .archives :is(.archive-grid > .archive-card, .glossary-grid > .glossary-card):not(#_) {
+  display: flex !important; flex-direction: column !important; align-items: stretch !important;
+  gap: var(--space-1) !important; height: auto !important; min-height: 0 !important;
+  padding: var(--space-3) !important; border: 1px solid #78602f !important; border-radius: 12px !important;
+  background: #231d11bb !important; color: #fff3d3; text-align: left !important; box-shadow: none !important;
+  transform: none !important;
+}
+html body #app .sanctuary-shell .archives :is(.archive-card, .glossary-card)[hidden] { display: none !important; }
+html body #app .sanctuary-shell .archives :is(.archive-portrait, .archive-mechanism, .glossary-art):not(#_) {
+  display: grid !important; place-items: center; width: 100% !important; height: 88px !important; min-height: 0 !important;
+  margin: 0 !important; padding: 0 !important; background: transparent !important; border-radius: 8px;
+}
+html body #app .sanctuary-shell .archives :is(.archive-portrait, .archive-mechanism, .glossary-art):not(#_) :is(img, .character-idle, .conduit-icon-frame, .conduit-icon, .master-art, svg) {
+  width: 100% !important; height: 88px !important; max-width: 100% !important; max-height: 88px !important;
+  min-width: 0 !important; object-fit: contain; margin: 0 !important;
+}
+html body #app .sanctuary-shell .archives :is(.archive-card > h3, .glossary-card > h2) { font-size: 14px !important; line-height: 1.4 !important; margin: 0 !important; }
+html body #app .sanctuary-shell .archives .glossary-card > * { min-width: 0; overflow-wrap: anywhere; }
+html body #app .sanctuary-shell .archives :is(.archive-card, .glossary-card) > :is(p, strong, .quiet) { font-size: 13px !important; line-height: 1.4; margin: 0 !important; color: #e2d0aa; opacity: 1 !important; }
+html body #app .sanctuary-shell .archives .archive-card > :is(.character-rating, .element-label, .archive-effect),
+html body #app .sanctuary-shell .archives .archive-card[data-archive-master] > p:not(.archive-ownership) { display: none !important; }
+html body #app .sanctuary-shell .archives :is(.archive-card, .glossary-card) > button.text-button:not(#_) {
+  min-height: 44px !important; width: 100% !important; padding: var(--space-2) !important; margin-top: auto !important;
+  font-size: 14px !important; border-radius: 8px !important;
+}
+html body #app .sanctuary-shell .archives #archive-story { display: block !important; }
+html body #app .sanctuary-shell .archives #archive-story[hidden] { display: none !important; }
+@media (max-width: 700px) {
+  html body #app .sanctuary-shell .archives:not(#_),
+  html body #app .sanctuary-shell .archives > .archive-panel:not([hidden]):not(#_) { grid-template-columns: minmax(0, 1fr); }
+  html body #app .sanctuary-shell .archives .archive-navigation { grid-column: 1; }
+  html body #app .sanctuary-shell .archives .archive-panel > .archive-filters { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; padding: var(--space-3) !important; gap: var(--space-3) !important; }
+  html body #app .sanctuary-shell .archives .archive-filters > * { grid-column: auto !important; }
+  .archives .archive-filters::before { grid-column: 1 / -1; }
+  html body #app .sanctuary-shell .archives .archive-panel > .archive-results-toolbar { grid-column: 1 !important; grid-row: 2 !important; }
+  html body #app .sanctuary-shell .archives .archive-panel > :is(.archive-grid, .glossary-grid) { grid-column: 1 !important; grid-row: 3 !important; padding: var(--space-3) !important; }
+}

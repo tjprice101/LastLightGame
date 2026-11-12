@@ -1,5 +1,121 @@
 # Menus and inventory
 
+## Live redesigned desktop menus (2026-11-12)
+
+The owner approved publishing the connected redesign to the main game.
+Home's slim squad bars, split utilities and activity/attendance carousel,
+the Units submenu, Collections gallery and Loadouts workspace now render
+for normal local and online accounts. Existing authority, saves, ownership,
+upgrade costs, summon rates, battle rules and online services are unchanged.
+The presentation requires no query flag. The historical `menu-workspace`
+module/attribute names scope the styling, not account access or test grants.
+
+The attendance card grows with its actual reward content; Home's content
+scrolls with bottom space reserved for the fixed dock. Carousel arrival is
+finite and follows the existing explicit in-game Reduce motion preference.
+
+### Isolated real-game design workspace (2026-11-12)
+
+Run `npm run dev`, then open the displayed local `/LastLightGame/` URL with
+`?workspace=menu`. The option requires Vite development mode and is ignored
+in production. It changes only test storage/startup and service availability;
+normal startup and persistent accounts are retained without the query.
+
+The workspace starts at Home with a Map-backed account. Reload or **Reset
+test save** discards that session. Released characters, Conduits, materials
+and captured copies are test holdings, not grants to a real account. The
+starter trio begins at Lv.15/Evo.2; Vigil Core starts at +0 for upgrade tests.
+Music, motion, speed and other local preferences remain isolated too.
+
+| Area | Actual implementation retained |
+|---|---|
+| Home | Saved squad, slim art bars, Leader Skill, manual activity carousel, split quick actions |
+| Units | Owned roster, details/kits, Level/Evolve selection, real upgrade previews/confirmations, formation, captured copies, equipment and Loadouts |
+| Play | Story, Training, elemental dungeons, infusions, Machines, Oblivion, War, currency activities and scheduled events |
+| Battle | Existing local Radiant authority, frozen run, actions, results, saved rewards and exit |
+| Shop | Material Exchange, Conduit Store/restoration, existing cosmetic/event gates |
+| Summon | Existing banners, rates, pity, single/ten-pull transactions, duplicate outcomes and Special Banner Archive |
+| Collections | Characters, Conduits, enemy discoveries and Story Codex; legacy Archives/Glossary aliases retained |
+| Inventory | Actual item/Conduit holdings, chest choices and existing protection rules |
+| Utilities | Help, Settings, caller-based Back and dock; title/selection remain existing real-game screens |
+| Online-only | Social/profile editing, friends/chat, attendance, gifts, mail and cosmetics remain explicitly unavailable offline |
+
+Units uses the real Team route. Level and Evolve first select an owned
+Element-Bearer; Back restores that selection view and then the Units submenu.
+The dock can reopen Units from a nested Team view. Existing IDs, transactions,
+artwork, unlocks and event schedules are unchanged. No fictional social data
+or offline attendance rewards are substituted. The standalone
+`last-light-menu-mockup.html` remains a visual reference, not the functional
+workspace.
+
+Validation uses a temporary isolated Chrome profile and self-closing Vite
+server. Check browser errors and account/preferences storage access, actual
+saved transactions, Back/dock, reload reset, and desktop screenshots at
+1024x768, 1440x900 and 1920x1080. The imported authentication SDK performs a
+generic random-key storage capability probe; no account/auth/preferences
+records are read or written and no backend requests are allowed.
+
+Production validation uses a fresh browser profile with a validated ordinary
+local save, including the ignored `?workspace=menu` query. Check normal title
+entry, no debug banner/test grants, actual saved leveling and reload
+persistence, nested Back/dock, normal Social availability, desktop widths
+1024/1440/1920 and attendance CTA/Leader Skill access above the dock.
+Online mutations are not exercised against a real player account.
+
+## Desktop reference layouts (2026-11-12)
+
+The owner now prioritizes scalable desktop UI throughout Last Light. New
+layout work targets desktop window sizes; mobile-specific design and
+validation are deferred until explicitly resumed. Existing narrow-screen
+behavior is not intentionally removed.
+
+Collections follows the supplied reference: left-hand filters and reset,
+compact category tabs above a dense artwork grid, gold frames and a shared
+ring-pattern surface. Characters, Conduits and creatures keep their existing
+filter/discovery rules and detail dialogs. Story Codex remains a fourth tab,
+not removed to imitate the reference's three sample categories. Compact
+Conduit tiles put full effects and acquisition rules in their existing Details
+dialog; character kits remain in Combat kit. Real names, ownership counts,
+pending art and silhouettes remain authoritative.
+
+Loadouts uses a selectable current-setup/saved-loadout sidebar and one
+corresponding detail workspace. Selection preserves DOM, name drafts and
+equipment snapshots without writing. Equipped state requires the squad order
+and all ordinary/Master equipment to match. The existing Save, Equip, Update,
+Rename and Delete operations and confirmations are unchanged. Saved layouts
+show the real six-member capacity; there is no invented ten-loadout limit,
+timestamp or Duplicate action unsupported by existing transactions.
+
+Home's manual carousel includes Story, attendance, summoning, War and Events.
+Its attendance panel reads the authenticated calendar service and shows a
+seven-entry window into the actual monthly ladder, exact currency rewards,
+saved-day labels and the next claim including its streak bonus. It does not
+replace monthly attendance with a seven-day reset. Review & claim opens the
+existing server-authorized attendance dialog; it never grants a reward on
+render, invents a claim or bypasses uncertain-action retry. Local accounts see
+an explicit online requirement instead of sample rewards. Daily opens the
+same attendance dialog online; Loadouts opens the actual Loadouts workspace.
+
+## Remaining social-dialog audit (2026-11-11)
+
+Measured the actual Attendance/Mailbox/Free gift dialog implementation with
+isolated transport fixtures, without account or authority mutations, at
+390x844, 768x1024 and 1440x900 before making this follow-up change.
+
+| Screen | Problem | Measurement | Fix |
+|---|---|---|---|
+| Free gift | Unbroken friend names force the fieldset wider than the dialog | At 390px, 296px content scrolls to 706px; three overflow ancestors, also reproduced at 768px | Zero-minimum fieldset/grid and wrapping friend/attachment content |
+| Gift choices | Browser-default fieldset padding and one-off gaps differ from shared spacing | 5.25/11.25/9.375px default padding, 6px gap, 10px label gap | Explicit shared spacing tokens |
+| All calendar tabs | Shared dialog source retains non-scale padding | 26px top, 28px sides, 22px bottom | Existing responsive card-padding token in the owning rule |
+| Mail attachment summary | Small caption contains exact reward quantities | 13px caption; body otherwise 15px mobile / 16px larger | Reward summary uses existing numeric role |
+
+Settled controls meet 44px targets; sampling during the 320ms dialog entrance
+temporarily measures scaled bounds and is not the final-layout measurement.
+Pending/rejected/uncertain operations are separate states. A late successful
+response must not reopen a dismissed celebration; uncertain Retry retains its
+original request ID. Future server-time boundaries are tested with injected
+authority time, never by changing production schedules or machine time.
+
 ## Information-design audit and contract (2026-11-11)
 
 Baseline production presentation functions were rendered under the live shell
@@ -122,6 +238,51 @@ for the compiled-style filter correction.
 failures to exclude. Existing JSDOM canvas diagnostics and the Vite >500kB
 chunk advisory remain warnings, not failed gates. No authority deployment
 is required for these presentation-only changes.
+
+## Live Home reference composition (2026-11-12)
+
+The supplied Home reference now defines the composition of the real Home
+route, not a mock-up: a compact current-leader card, centered gold wordmark,
+live currency controls, six large squad slots, a row of direct actions, a
+wide manually controlled featured carousel and a six-destination bottom dock.
+The leader card uses the actual first eligible squad member, form, level,
+element and attunement, and opens that bearer in Team. Story progress, banner
+cost, event destinations and squad membership remain sourced from live game
+content/account state.
+
+The reference's sample-data switch, fictional player rank/level/energy values
+and locked slots are intentionally not copied. Last Light has no account
+stamina/energy or profile-level fields, and its real formation supports six
+acquired Element-Bearers; all six unfilled slots remain actionable rather
+than displaying invented locks. Attendance links to the existing Social
+profile; event and War cards navigate to their real routes. The quick actions
+open existing Help, Collections, Team/Loadouts, Stores, Inventory and Profile
+surfaces. No reward, currency, route or save behavior is added.
+
+At desktop widths the squad is a single six-card row. Tablet uses three
+columns, and narrow phones retain the reference's horizontal formation
+scroller while keeping the page itself within the viewport. The six dock
+destinations are Home, Team, Play, Shop, Summon and Social; other routes keep
+their existing selected-state mappings. Navigation and carousel controls
+retain 44px targets, and all featured slides are user-controlled.
+
+Validation uses the actual Home route at 390x844, 768x1024 and 1440x900,
+checking the leader card, all six slots, eight quick actions, all five
+featured destinations, no page-level horizontal overflow, exact currency
+values, current live artwork/pending states, route actions and the six-item
+dock. The corresponding implementation is in
+[`reference-home.ts`](../src/presentation/reference-home.ts),
+[`sanctuary.ts`](../src/presentation/sanctuary.ts),
+[`main.ts`](../src/main.ts) and
+[`sanctuary-reference.css`](../src/sanctuary-reference.css).
+
+The mobile Story CTA is contained inside its card rather than clipped: at
+390x844 the 232px card ends at y=744, the CTA at y=737, and the dock begins at
+y=758. At 768x1024 the card ends at y=844 with the CTA inside; at 1440x900 it
+ends at y=745, also with the CTA inside. All three rendered pages match their
+viewport widths, with no card/dock overlap and no visible text below 12px.
+Final isolated screenshots were captured at all three sizes. This responsive
+pass does not constitute a contrast-ratio or line-length audit.
 
 ## Special-event activity selection (2026-11-11)
 

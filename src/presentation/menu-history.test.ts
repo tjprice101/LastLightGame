@@ -60,6 +60,13 @@ describe('menu traversal history', () => {
     history.clear();
     expect(history.previous).toBeUndefined();
   });
+  it('restores explicitly visited same-page subviews and selection tabs', () => {
+    const history = new MenuHistory<{ page: string; view: string; tab?: string }>();
+    history.visit({ page: 'team', view: 'menu' }, 'team', true);
+    history.visit({ page: 'team', view: 'bearers', tab: 'upgrade-0' }, 'team', true);
+    expect(history.back()).toEqual({ page: 'team', view: 'bearers', tab: 'upgrade-0' });
+    expect(history.back()).toEqual({ page: 'team', view: 'menu' });
+  });
   it('uses a battle-resume destination only when there is no actual caller', () => {
     const history = new MenuHistory<{ page: string; stage?: number }>();
     const fallback = { page: 'gameplay' };

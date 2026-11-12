@@ -53,7 +53,7 @@ describe('visible UI copy', () => {
   });
   it('gives each menu useful Help instead of one generic browsing paragraph', () => {
     for (const [page, phrase] of [
-      ['home', 'Choose a destination around your leader'],
+      ['home', 'Home shows your current Squad leader, six Squad slots and featured destinations'],
       ['team', 'cannot be sold or consumed'],
       ['inventory', 'Open chests here; equip Conduits in Team'],
       ['collections', 'defeat them to reveal loot'],

@@ -163,6 +163,23 @@ describe('real social/calendar dialogs', () => {
     expect(host.querySelector('input[value="moonwake-common"]')).toBeNull();
     expect(host.querySelector('input[value="dawnforge-common"]')).toBeNull();
   });
+  it('uses shared numeric labels and wrapping attachment groups without changing gift values', () => {
+    const host = document.createElement('div');
+    host.innerHTML = socialCalendarMarkup(fixture(), 'gifts', friends);
+    expect(Array.from(host.querySelectorAll<HTMLInputElement>('input[name="gift"]'), input => input.value))
+      .toEqual(['fractalis', 'lycalis', 'infernic-common']);
+    expect(host.querySelectorAll('.social-gift-attachment .currency-icon')).toHaveLength(2);
+    expect(Array.from(host.querySelectorAll('.info-number'), node => node.textContent))
+      .toEqual(['1,000 Prismatica', '10 Null-Prismatica', '10 Seed of Infernic']);
+    host.innerHTML = socialCalendarMarkup({ ...fixture(), mail: [{
+      id: 'large-reward', title: 'Saved gift', sender: 'Friend', body: 'Mail', read: false, createdAt: '2026-11-04T12:00:00Z',
+      informational: false, claimed: false,
+      attachment: { fractalis: Number.MAX_SAFE_INTEGER, lycalis: 0, materials: {} },
+    }] }, 'mail', friends);
+    expect(host.querySelector('[data-calendar-mail] .info-number')?.textContent)
+      .toBe('9,007,199,254,740,991 Prismatica');
+    expect(host.querySelector('[data-calendar-claim]')?.getAttribute('data-calendar-claim')).toBe('large-reward');
+  });
   it('restores initiating focus and closes immediately with Escape', async () => {
     const button = document.createElement('button');
     button.textContent = 'Attendance';

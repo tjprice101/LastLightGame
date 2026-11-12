@@ -1,5 +1,7 @@
 import './style.css';
-import { savedLoadoutOperation, type SavedLoadoutOperation } from './presentation/saved-loadouts';
+import '@fontsource/sora/600.css';
+import '@fontsource/sora/700.css';
+import { bindSquadLoadouts, selectSquadLoadout, savedLoadoutOperation, type SavedLoadoutOperation } from './presentation/saved-loadouts';
 import { saveSquadLoadout, renameSquadLoadout, equipSquadLoadout, deleteSquadLoadout,
   saveConduitConfiguration, renameConduitConfiguration, equipConduitConfiguration } from './game/account';
 import { showStatusToast, type ToastTone } from './presentation/status-toast';
@@ -82,7 +84,7 @@ import { storyCampaign, bindStoryNavigation } from './presentation/story';
 import { storyEncounter, storyRules } from './content/story';
 import { unlockedStoryStage } from './game/account';
 import { roseEvent } from './presentation/rose-event';
-import { isMenuPage, sanctuaryHeader, sanctuaryContext, sanctuaryDestination, type MenuPage, type TeamArea } from './presentation/sanctuary';
+import { isMenuPage, sanctuaryHeader, sanctuaryContext, sanctuaryDestination, sanctuaryDock, type MenuPage, type TeamArea } from './presentation/sanctuary';
 import { MenuHistory } from './presentation/menu-history';
 import { gameChoose, gameConfirm, gameDialogPending, escapeDialogText } from './presentation/game-dialog';
 import { bindCreatureBulkSale } from './presentation/creature-bulk-sale';
@@ -95,7 +97,6 @@ import { exchangeCategory, exchangeProduct, exchangeProducts, isExchangeQuantity
 import { presentReward } from './presentation/reward-screen';
 import { summonReward, summonTenReward } from './presentation/summon-presentation';
 import { conduitReward } from './presentation/conduit-presentation';
-import './sanctuary-reference.css';
 import { openOnlineAccount as showOnlineAccount } from './presentation/online-account';
 import { onlineStores, onlineProfile, friendProfileScreen, bindProfileEditor, refreshProfileTracking, refreshFriendPresence, type StoreTab, type OnlineProfileDisplay, type SocialDisplay } from './presentation/online-store-profile';
 import { assertRoseEventActive, type EventAccess } from './content/event-schedule';
@@ -110,13 +111,13 @@ import { profilePicture } from './presentation/profile-picture';
 import { chooseProfilePicture } from './presentation/profile-picture-browser';
 import { bindFriendChat, onlineChatTransport, type ChatUiState } from './presentation/friend-chat';
 import { bindSocialCalendar, type SocialCalendarUiState } from './presentation/social-calendar';
-import { socialCalendarOperation } from './online/social-calendar';
+import { socialCalendarOperation, type SocialCalendarCommand } from './online/social-calendar';
 import { acquisitionMarkerOperation } from './online/acquisition-markers';
 import { bindAcquisitionMarkers } from './presentation/acquisition-markers';
 import { acknowledgeAcquisitions, type AcquisitionMarkers } from './game/acquisition-markers';
 import { saveAccount } from './game/account';
 import './presentation/mono-reference.css';
-import { referenceHome } from './presentation/reference-home';
+import { bindHomeCarousel, referenceHome, referenceHomeProfile, updateHomeAttendance } from './presentation/reference-home';
 import { bindCaptureTabs, filterTeamCollection, referenceTeam, type ReferenceTeamView } from './presentation/reference-team';
 import './presentation/reference-layout.css';
 import './presentation/leader-theme.css';
@@ -131,17 +132,23 @@ import './presentation/conduit-loadout.css';
 import './presentation/status-toast.css';
 import './presentation/bubble-ui.css';
 import './presentation/celestial-panels.css';
+import './sanctuary-reference.css';
 import { celebrate, installBubbleUi, rarityPalette } from './presentation/bubble-ui';
 import { saleLabel } from './presentation/creature-sale';
 import { applyConduitSearch, bindConduitLoadout, refreshConduitLoadout, resetConduitLoadoutView } from './presentation/conduit-loadout';
 import { BackgroundMusic, battleMusic, defaultMusicPreferences, loadMusicPreferences, saveMusicPreferences } from './presentation/music';
+import { createMenuWorkspaceStorage, menuWorkspace } from './game/menu-workspace';
+import { formatMenuWorkspace, workspaceUnitsMenu } from './presentation/menu-workspace';
+import './presentation/menu-workspace.css';
 
-const gameStorage = new DebugProfileStorage(window.localStorage, import.meta.env.DEV);
+const gameStorage = menuWorkspace ? createMenuWorkspaceStorage() : new DebugProfileStorage(window.localStorage, import.meta.env.DEV);
+const preferencesStorage = menuWorkspace ? gameStorage : window.localStorage;
+document.documentElement.dataset.menuWorkspace = '';
 let musicPreferences = { ...defaultMusicPreferences };
 let musicSettingsError = '';
 const music = new BackgroundMusic(new Audio(), document, showError);
 try {
-  musicPreferences = loadMusicPreferences(window.localStorage);
+  musicPreferences = loadMusicPreferences(preferencesStorage);
 } catch (error) {
   console.error('Could not load Last Light music settings', error);
   musicSettingsError = `Music settings could not be loaded. ${errorMessage(error)} Save a music setting to repair them.`;
@@ -357,6 +364,7 @@ async function performOnline(operation: GameOperation): Promise<GameResponse> {
 }
 
 async function enterOnline(progressReady = false): Promise<void> {
+  if (menuWorkspace) throw new Error('Online accounts are disabled in the isolated local menu workspace. Your real account is unchanged.');
   if (gameStorage.active) throw new Error('Exit the debug profile before playing online.');
   const response = await gameOperation({ kind: 'read' });
   playMode = 'online';
@@ -522,7 +530,7 @@ function visitMenu(page: MenuPage): void {
   checkUpdates();
   const destination = sanctuaryDestination(page);
   viewedFriend = null;
-  menuHistory.visit(menuSnapshot(), destination);
+  menuHistory.visit(menuSnapshot(), destination, destination === 'team');
   if (destination === 'team') characterCategory = 'bearers';
   if (page === 'team' || page === 'character') teamView = 'detail';
   if (page === 'squad') { characterCategory = 'squad'; teamView = 'formation'; }
@@ -677,7 +685,8 @@ function frame(body: string, battle = false, sanctuary = false): void {
     <p id="status" class="status" role="alert"></p>
     ${sanctuary ? '' : '<footer><span>AN ORIGINAL GACHA RPG</span><span>A WORLD WAITING TO AWAKEN</span></footer>'}
   </div>`;
-  if (gameStorage.active) app.insertAdjacentHTML('beforeend', '<aside class="debug-profile-banner" aria-label="Debug profile"><strong>DEBUG · Isolated test profile</strong><button type="button" class="text-button" data-exit-debug>Exit debug</button></aside>');
+  if (gameStorage.active) app.insertAdjacentHTML('beforeend', `<aside class="debug-profile-banner" aria-label="Debug profile"><strong>${menuWorkspace ? 'LOCAL DESIGN WORKSPACE · Isolated test save · Online features unavailable' : 'DEBUG · Isolated test profile'}</strong><button type="button" class="text-button" data-exit-debug>${menuWorkspace ? 'Reset test save' : 'Exit debug'}</button></aside>`);
+  if (sanctuary) formatMenuWorkspace(app, account);
   if (sanctuary && !battle && !viewedFriend && journey.profile && account) {
     const markerIdentity = playMode === 'online' ? playerProfile?.username : null;
     const mergeMarkers = (markers: AcquisitionMarkers): AcquisitionMarkers => {
@@ -908,10 +917,11 @@ function renderMenu(firstArrival = false): void {
   }
   const homeLeader = account && menuPage === 'home' ? account.squad?.[0] ?? starter.id : starter.id;
   const informationPage = ['team', 'character', 'squad', 'inventory', 'stores', 'conduit-store', 'conduit-upgrade', 'collections', 'archives', 'glossary', 'summon', 'special-banner-archive'].includes(menuPage);
-  const sanctuary = `${sanctuaryHeader(menuPage, fractalis, account?.lycalis ?? null)}<section class="menu-screen sanctuary-content${informationPage ? ' info-surface' : ''}" data-menu-screen="${menuPage}">
+  const homeProfile = menuPage === 'home' ? referenceHomeProfile(starter, account) : '';
+  const sanctuary = `${sanctuaryHeader(menuPage, fractalis, account?.lycalis ?? null, homeProfile)}<section class="menu-screen sanctuary-content${informationPage ? ' info-surface' : ''}${menuPage === 'home' ? ' home-shell' : ''}" data-menu-screen="${menuPage}">
     ${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
-    ${menuPage !== 'home' ? menuContent(menuPage) : referenceHome(isStarterId(homeLeader) ? getStarter(homeLeader) : starter, account)}
-  </section>`;
+    ${menuPage !== 'home' ? menuContent(menuPage) : referenceHome(isStarterId(homeLeader) ? getStarter(homeLeader) : starter, account, playMode === 'online' && !!playerProfile)}
+  </section>${sanctuaryDock(menuPage)}`;
   frame(`${menuPage === 'battle' ? `${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
     <div id="battle-root"></div>` : sanctuary}
     <dialog id="settings-drawer" class="settings-drawer" aria-labelledby="settings-heading">
@@ -921,6 +931,8 @@ function renderMenu(firstArrival = false): void {
   </dialog>
   ${menuPage === 'battle' ? '' : '<dialog id="max-level-dialog" class="information-modal" aria-labelledby="max-level-heading"><header class="drawer-heading"><button class="drawer-close" type="button" data-close-information aria-label="Close Max Level">&times;</button></header><div data-max-level-content></div><p data-max-level-error role="alert"></p></dialog>'}`, menuPage === 'battle', menuPage !== 'battle');
   pendingMaxLevel = null;
+  if (menuPage === 'home') bindHomeCarousel(app);
+  bindSquadLoadouts(app);
   app.querySelector(`[data-character-category="${characterCategory}"]`)?.setAttribute('aria-current', 'page');
   applyConduitSearch(app, conduitSearch);
   bindConduitLoadout(app);
@@ -966,11 +978,11 @@ function renderMenu(firstArrival = false): void {
       return response;
     }, error => showError(errorMessage(error)));
   }
-  if (playMode === 'online' && playerProfile && menuPage === 'profile') {
+  if (playMode === 'online' && playerProfile && (menuPage === 'profile' || menuPage === 'home')) {
     const identity = playerProfile.username;
-    disposeSocialCalendar = bindSocialCalendar(app, {
+    const calendarOptions = {
       identity, state: socialCalendarUiState, friends: () => socialDisplay?.friends ?? [],
-      transport: async (command, requestId) => {
+      transport: async (command: SocialCalendarCommand, requestId?: string) => {
         if (gameStorage.active || playMode !== 'online' || playerProfile?.username !== identity) throw new Error('Sign in again to use attendance and mail.');
         if (onlineBusy || onlinePending || onlineCheckpointBusy) throw new Error('Finish or retry the pending online operation first.');
         onlineBusy = true;
@@ -985,11 +997,28 @@ function renderMenu(firstArrival = false): void {
               throw new Error(`Your social/calendar action was saved, but the account refresh could not finish. Retry this same action to reload its saved result. ${errorMessage(error)}`);
             }
           }
+          if (playMode !== 'online' || playerProfile?.username !== identity) throw new Error('Your account changed. Open attendance again.');
+          updateHomeAttendance(app, result);
           return result;
         } finally { onlineBusy = false; }
       },
-      onError: message => showError(message),
-    });
+      onError: (message: string) => showError(message),
+    };
+    disposeSocialCalendar = bindSocialCalendar(app, calendarOptions);
+    if (menuPage === 'home') {
+      const attendance = app.querySelector<HTMLElement>('[data-home-attendance]');
+      if (attendance) {
+        attendance.querySelector('p')!.textContent = 'Loading your attendance from the server…';
+        void calendarOptions.transport({ kind: 'read' }).catch(error => {
+          if (!attendance.isConnected) return;
+          const message = attendance.querySelector('p');
+          if (message) {
+            message.setAttribute('role', 'alert');
+            message.textContent = `Attendance could not load. Open attendance to retry. ${errorMessage(error)}`;
+          }
+        });
+      }
+    }
   }
   bindInventory(app, (tab) => { inventoryTab = tab; }, (sections) => { inventoryExpanded = sections; }, (filters) => { inventoryFilterState = filters; });
   app.querySelectorAll<HTMLButtonElement>('[data-open-calamity-chest]').forEach(button => button.addEventListener('click', async () => {
@@ -1095,7 +1124,7 @@ function renderMenu(firstArrival = false): void {
       try {
         const page = button.dataset.page;
         if (!isMenuPage(page)) throw new Error('Unknown menu page.');
-        if (page === menuPage) return;
+        if (page === menuPage && !(page === 'team' && teamView !== 'menu')) return;
         await transitionActivity(async () => {
           if (page === 'profile' && playMode === 'online') await performOnline({ kind: 'read' });
           if (page === 'stores' && button.hasAttribute('data-market-cosmetics')) storeTab = 'cosmetics';
@@ -1105,10 +1134,14 @@ function renderMenu(firstArrival = false): void {
           }
           if (page !== 'battle' && menuPage === 'battle' && !await exitRadiantRun(true)) return;
           visitMenu(page);
+          if (page === 'team' && !button.dataset.teamArea) teamView = 'menu';
           if (page === 'team' && button.dataset.teamArea) {
             const area = button.dataset.teamArea;
             if (area !== 'squad' && area !== 'bearers' && area !== 'creatures') throw new Error('Unknown Team area.');
             characterCategory = area;
+            teamView = area === 'squad' ? button.hasAttribute('data-home-loadouts') ? 'loadouts' : 'formation'
+              : area === 'creatures' ? button.dataset.teamCapture ? 'capture' : 'creatures'
+                : button.dataset.teamCharacter ? 'detail' : 'bearers';
             if (button.dataset.teamCharacter) {
               const id = button.dataset.teamCharacter;
               if (!isStarterId(id) || !account || !ownedCharacters(account).includes(id)) throw new Error('Choose an owned Element-Bearer.');
@@ -1503,7 +1536,7 @@ function renderMenu(firstArrival = false): void {
     if (!musicVolume || !musicMuted) throw new Error('Music settings controls are missing.');
     try {
       const next = { volume: Number(musicVolume.value), muted: musicMuted.checked };
-      saveMusicPreferences(window.localStorage, next);
+      saveMusicPreferences(preferencesStorage, next);
       musicPreferences = next;
       music.configure(next);
       musicSettingsError = '';
@@ -1593,6 +1626,7 @@ function renderMenu(firstArrival = false): void {
 }
 
 function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
+  if ((page === 'team' || page === 'character' || page === 'squad') && teamView === 'menu') return workspaceUnitsMenu();
   if (!journey.profile) throw new Error('A saved Element-Bearer is required.');
   const starter = getStarter(journey.profile.starterId);
   if (page === 'battle') return '<div id="battle-root"></div>';
@@ -1607,7 +1641,9 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
   });
   if (page === 'inventory') return inventoryHub(account, inventoryTab, inventoryExpanded, inventoryFilterState);
   if (page === 'stores') return onlineStores(account, playerProfile, storeTab, marketMaterial, marketFrame, eventAccess());
-  if (page === 'profile') return gameStorage.active
+  if (page === 'profile') return menuWorkspace
+    ? '<section class="ref-panel"><h1 tabindex="-1">Social · Online account required</h1><p>Friends, chat, attendance, gifts, mail and public profile editing require a signed-in online account. They are unavailable in this isolated local workspace; no real account is accessed.</p><p>Local gameplay and settings use the temporary test save. Resetting or reloading discards only this test session.</p><button class="text-button" data-exit-debug>Reset test save</button></section>'
+    : gameStorage.active
     ? '<section class="ref-panel"><h1 tabindex="-1">Debug Player info</h1><p>This test profile lives only in memory. Real save-data management and online accounts are disabled here.</p><p>Exit debug or reload to return to your real progress.</p><button class="text-button" data-exit-debug>Exit debug</button></section>'
     : viewedFriend ? friendProfileScreen(viewedFriend.account, { ...viewedFriend.profile, userId: viewedFriend.userId })
     : onlineProfile(account, playerProfile, socialDisplay, profileTab, friendRequestTab);
@@ -1800,7 +1836,9 @@ app.addEventListener('click', async event => {
     }
     await transitionActivity(() => {
       if (menuPage !== 'team') visitMenu('team');
+      else if (!button.hasAttribute('data-team-element')) menuHistory.visit(menuSnapshot(), 'team', true);
       const loadout = button.dataset.teamTab === 'equipment';
+      const selectionTab = teamView === 'bearers' ? characterTab : 'overview';
       characterTab = 'overview';
       if (button.hasAttribute('data-team-element')) {
         teamElement = button.dataset.teamElement ?? '';
@@ -1809,7 +1847,8 @@ app.addEventListener('click', async event => {
         const id = button.dataset.teamDetail;
         if (!isStarterId(id) || !account?.characters[id]) throw new Error('Choose an owned Element-Bearer.');
         selectedCharacter = id;
-        teamView = loadout ? 'conduits' : 'detail';
+        teamView = loadout || selectionTab === 'equipment' ? 'conduits' : 'detail';
+        if (selectionTab === 'upgrade-0' || selectionTab === 'upgrade-1') characterTab = selectionTab;
       } else if (button.dataset.teamCaptureDetail) {
         const id = button.dataset.teamCaptureDetail;
         if (!account?.capturedCharacters?.some(copy => copy.instanceId === id)) throw new Error('Choose an owned captured Elemental-Devourer.');
@@ -1817,8 +1856,10 @@ app.addEventListener('click', async event => {
         teamView = loadout ? 'capture-conduits' : 'capture';
       } else {
         const view = button.dataset.teamView;
-        if (view !== 'detail' && view !== 'bearers' && view !== 'creatures' && view !== 'capture' && view !== 'formation' && view !== 'loadouts') throw new Error('Unknown Team view.');
+        if (view !== 'detail' && view !== 'bearers' && view !== 'creatures' && view !== 'capture' && view !== 'formation' && view !== 'loadouts' && view !== 'menu') throw new Error('Unknown Team view.');
         teamView = view;
+        const tab = button.dataset.workspaceTab;
+        if (tab === 'upgrade-0' || tab === 'upgrade-1' || tab === 'equipment') characterTab = tab;
       }
       characterCategory = teamView === 'formation' ? 'squad' : teamView === 'creatures' || teamView === 'capture' || teamView === 'capture-conduits' ? 'creatures' : 'bearers';
       renderMenu();
@@ -2371,6 +2412,9 @@ app.addEventListener('click', async event => {
       const loadoutScroll = app.querySelector('.saved-loadout-scroll')?.scrollTop ?? 0;
       if ('character' in operation) refreshLoadout(operation.character);
       else renderMenu();
+      if (!('character' in operation) && app.querySelector('[data-saved-loadouts]')) {
+        selectSquadLoadout(app, operation.kind === 'deleteSquadLoadout' ? '' : operation.id);
+      }
       window.scrollTo({ top: scroll });
       const loadoutList = app.querySelector('.saved-loadout-scroll');
       if (loadoutList) loadoutList.scrollTop = loadoutScroll;
@@ -2580,8 +2624,13 @@ window.addEventListener('pagehide', () => {
   document.querySelector('.autosave-notice')?.remove();
 });
 window.addEventListener('pageshow', syncAutosave);
+if (menuWorkspace) {
+  journey.enter(gameStorage);
+  menuPage = 'home';
+  teamView = 'menu';
+}
 render();
-if (new URLSearchParams(location.hash.slice(1)).get('type') === 'recovery') openOnlineAccount();
+if (!menuWorkspace && new URLSearchParams(location.hash.slice(1)).get('type') === 'recovery') openOnlineAccount();
 else if (!gameStorage.active && import.meta.env.VITE_SUPABASE_URL) {
   void onlineUsername().then(async user => {
     if (user && journey.screen === 'title' && !gameStorage.active) await enterOnline();

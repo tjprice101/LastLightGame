@@ -22,7 +22,7 @@ import { bulkSaleControls, bulkSaleCopy } from './creature-bulk-sale';
 import { squadLoadoutsPanel } from './saved-loadouts';
 import { escapeDialogText } from './game-dialog';
 
-export type ReferenceTeamView = 'detail' | 'bearers' | 'creatures' | 'capture' | 'formation' | 'loadouts' | 'conduits' | 'capture-conduits';
+export type ReferenceTeamView = 'menu' | 'detail' | 'bearers' | 'creatures' | 'capture' | 'formation' | 'loadouts' | 'conduits' | 'capture-conduits';
 export interface ReferenceTeamState {
   view: ReferenceTeamView;
   selected: StarterId;
@@ -225,7 +225,9 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
   if (state.view === 'bearers') content = bearerGrid(account, state);
   else if (state.view === 'creatures') content = captureGrid(account, state);
   else if (state.view === 'formation') content = `<section class="ref-panel ref-scroll ref-formation">${squadHub(account)}</section>`;
-  else if (state.view === 'loadouts') content = squadLoadoutsPanel(account);
+  else if (state.view === 'loadouts') return `<div class="ref-screen ref-team ref-saved-loadouts-page">
+    <nav class="saved-loadout-page-navigation" aria-label="Team areas"><button type="button" data-team-view="formation">Squad</button><button type="button" data-team-view="bearers">Element-Bearers</button><button type="button" data-team-view="loadouts" aria-pressed="true">Loadouts</button></nav>
+    ${squadLoadoutsPanel(account)}</div>`;
   else if (state.view === 'conduits' || state.view === 'capture-conduits') return conduitPage(account, state);
   else if (state.view === 'capture') {
     const copy = account.capturedCharacters?.find(entry => entry.instanceId === state.capture);

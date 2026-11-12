@@ -4,7 +4,7 @@ import { emptyAccount, type Account } from '../game/account';
 import { getStarter } from '../content/starters';
 import { createCreatureCopy } from '../game/character-instances';
 import { characterArt, characterName } from '../content/character-art';
-import { referenceHome } from './reference-home';
+import { referenceHome, referenceHomeProfile } from './reference-home';
 import { referenceTeam, referenceTeamSidebar } from './reference-team';
 import { summonHub } from './roster';
 import { conduitStore } from './conduit-store';
@@ -37,6 +37,7 @@ describe('replacement reference screen structures', () => {
     const main = readFileSync(new URL('../main.ts', import.meta.url), 'utf8');
     const css = readFileSync(new URL('./celestial-panels.css', import.meta.url), 'utf8');
     expect(main.indexOf("import './presentation/celestial-panels.css'")).toBeGreaterThan(main.indexOf("import './presentation/bubble-ui.css'"));
+    expect(main.indexOf("import './sanctuary-reference.css'")).toBeGreaterThan(main.indexOf("import './presentation/celestial-panels.css'"));
     expect(css).toMatch(/\.squad-pick-card\[hidden\]:not\(#_\)\s*\{\s*display:\s*none\s*!important/);
     expect(css).toContain('grid-template-rows: repeat(2, minmax(max-content, 1fr)) !important');
     expect(css).toMatch(/\.squad-card-art > img\s*\{[^}]*position:\s*absolute/);
@@ -131,56 +132,66 @@ describe('replacement reference screen structures', () => {
     expect(grid).toContain('Leader');
     expect(grid).toContain('In squad');
     const home = referenceHome(getStarter('tide'), wallet);
-    const formation = home.slice(home.indexOf('class="bubble-squad-formation'), home.indexOf('class="ref-home-identity"'));
+    const formation = home.slice(home.indexOf('class="home-squad-grid"'), home.indexOf('class="home-leader-skill"'));
     expect(formation).toContain('class="radiant-ally-art"');
     expect(formation).toContain(`characters/${characterArt('tide', 1).art}.png`);
     expect(formation).not.toContain('character-faces/');
   });
 
-  it('uses the actual leader and the reference Home panels without promoted banners or writes', () => {
+  it('uses the acquired leader, real destinations and manually controlled featured panels without writes', () => {
     const wallet = account();
     wallet.storyCompleted = 25;
     const before = structuredClone(wallet);
     const html = referenceHome(getStarter('tide'), wallet);
-    expect(html).toContain('ref-home-leader');
-    expect(html).toContain('bubble-squad-formation');
-    expect(html).toContain('data-team-detail="tide"');
-    expect(html).toContain('data-team-detail="ember"');
-    expect(html).toContain('Squad · 2 of 6');
-    expect(html).toContain('radiant-home-figure is-leader');
-    expect(html.indexOf('data-team-detail="tide"')).toBeLessThan(html.indexOf('data-team-detail="ember"'));
-    expect(html).toContain('--formation-x:');
+    expect(html).toContain('class="ref-screen ref-home home-dashboard"');
+    expect(html).toContain('data-team-character="tide"');
+    expect(html).toContain('data-team-character="ember"');
+    expect(html).toContain('2 / 6 Element-Bearers');
+    expect(html).toContain('class="home-squad-member is-leader"');
+    expect(html.indexOf('data-team-character="tide"')).toBeLessThan(html.indexOf('data-team-character="ember"'));
     expect(html).toContain('radiant-attunement-chip');
-    expect(html).toContain('radiant-home-leader-skill');
+    expect(html).toContain('class="home-leader-skill"');
     for (const wording of ['Frozen', 'Preview', 'preview', 'study', 'Radiant Encounters', 'data-page="radiant"']) expect(html).not.toContain(wording);
-    expect(html).toContain('<h2>Tizu</h2>');
+    expect(html).toContain('Squad');
+    expect(html).toContain('Manage squad');
+    expect(referenceHomeProfile(getStarter('tide'), wallet)).toContain('Current squad leader · Oceanic');
+    expect(referenceHomeProfile(getStarter('tide'), wallet)).toContain('data-team-character="tide"');
     expect(html).toContain('Glasswater Reach');
     expect(html).toContain(`25 / ${storyRules.stages} stages cleared`);
-    expect(html).not.toContain('data-make-leader');
-    expect(html).not.toContain('ref-home-squad');
-    expect(html).not.toContain('ref-home-slot');
-    expect(html).not.toContain('data-team-view="formation"');
-    expect(html).not.toContain('home-banner');
-    expect(html).not.toContain('ref-stat-strip');
-    expect(html.match(/class="hub-bubble /g)).toHaveLength(6);
-    for (const page of ['gameplay', 'summon', 'stores', 'inventory', 'collections', 'team']) expect(html).toContain(`data-page="${page}" style=`);
-    for (const page of ['events', 'profile']) expect(html).not.toContain(`data-page="${page}" style=`);
-    expect(html).toContain('ref-home-story" data-page="story"');
-    expect(html).toContain('data-page="squad"');
+    expect(html.match(/class="home-squad-member is-empty"/g)).toHaveLength(4);
+    for (const page of ['events', 'stores', 'inventory', 'collections', 'team', 'story', 'summon', 'gameplay']) expect(html).toContain(`data-page="${page}"`);
+    expect(html.match(/class="home-feature-slide(?: is-active)?"/g)).toHaveLength(5);
+    for (const index of [0, 1, 2, 3, 4]) expect(html).toContain(`data-home-slide="${index}"`);
+    expect(html).toContain('class="home-quick-action"');
+    expect(html).toContain('Attendance and mailbox');
+    expect(html).toContain('data-home-carousel-step="-1"');
+    expect(html).toContain('data-home-carousel-index="4"');
     expect(wallet).toEqual(before);
   });
 
-  it('shows all six acquired squad members in the staggered formation', () => {
+  it('keeps the reference Home formation and actions compact at tablet and mobile widths', () => {
+    const css = readFileSync(new URL('../sanctuary-reference.css', import.meta.url), 'utf8');
+    expect(css).toContain('grid-template-rows: max-content max-content max-content;');
+    expect(css).toContain('grid-auto-columns: minmax(190px, 220px);');
+    expect(css).toContain('grid-auto-columns: 82px;');
+    expect(css).toContain('border-radius: 12px !important;');
+    expect(css).toContain('.home-feature-copy { gap: 4px; }');
+    expect(css).toContain('.home-feature-eyebrow { line-height: 1.2; }');
+    expect(css).toContain('.home-leader-skill { display: none; }');
+    expect(css).toContain('.home-feature-indicators { display: flex; }');
+  });
+
+
+  it('shows all six acquired squad members in the dashboard formation', () => {
     const wallet = account();
     const ids = ['tide', 'ember', 'sprout', 'atmoso', 'bruno', 'elise'] as const;
     for (const id of ids) wallet.characters[id] ??= { level: 1, evolution: 1 };
     wallet.squad = [...ids];
     const html = referenceHome(getStarter('tide'), wallet);
-    expect(html.match(/class="bubble-squad-figure radiant-home-figure/g)).toHaveLength(6);
-    expect(html).toContain('data-squad-size="6"');
-    expect(html).toContain('Squad · 6 of 6');
+    expect(html.match(/class="home-squad-member(?: is-leader)?"/g)).toHaveLength(6);
+    expect(html).toContain('6 / 6 Element-Bearers');
   });
-  it('never shows captured Elemental-Devourers in the Home squad and asks for a replacement', () => {
+  it('never shows captured Elemental-Devourers as Home squad members and asks for a replacement', () => {
     const wallet = account();
     const copy = createCreatureCopy('infusion:treasury:0', 1, 65);
     wallet.capturedCharacters = [copy];
@@ -188,10 +199,9 @@ describe('replacement reference screen structures', () => {
     const before = structuredClone(wallet);
     const html = referenceHome(getStarter('ember'), wallet);
     expect(html).not.toContain(`data-team-capture-detail="${copy.instanceId}"`);
-    expect(html).not.toContain('bubble-squad-figure');
-    expect(html).toContain('bubble-rail-note');
-    expect(html).toContain('<h2>Choose your squad</h2>');
-    expect(html).not.toContain('<h2>Infernis</h2>');
+    expect(html).not.toContain(`data-team-character="${copy.instanceId}"`);
+    expect(html).toContain('One saved member is not an acquired Element-Bearer and cannot fight.');
+    expect(html.match(/class="home-squad-member is-empty"/g)).toHaveLength(6);
     expect(wallet).toEqual(before);
   });
 
@@ -201,9 +211,9 @@ describe('replacement reference screen structures', () => {
     const before = structuredClone(wallet);
     const encounter = storyEncounter(Math.min(storyRules.stages, completed + 1));
     const html = referenceHome(getStarter('tide'), wallet);
-    const card = html.slice(html.indexOf('<button class="ref-panel ref-home-story"'), html.indexOf('</section>'));
+    const card = html.slice(html.indexOf('data-home-slide="0"'), html.indexOf('data-home-slide="1"'));
     expect(card).toContain(`src="${assetUrl(`backgrounds/${encounter.background}`)}"`);
-    expect(card).toContain('class="ref-home-story-arena"');
+    expect(card).toContain('class="home-feature-art"');
     expect(card).toContain('alt="" draggable="false"');
     expect(card).toContain('data-page="story"');
     expect(card).toContain(`${completed} / ${storyRules.stages} stages cleared`);

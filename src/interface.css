@@ -1,5 +1,7 @@
 :root {
   --ui-font: Georgia, "Times New Roman", serif;
+  --menu-font: "Sora", Arial, sans-serif;
+  --accent-warm: #e8c36a;
   --ui-display: 32px;
   --ui-title: 24px;
   --ui-section: 18px;

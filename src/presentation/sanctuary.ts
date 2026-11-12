@@ -32,25 +32,53 @@ const headings: Record<MenuPage, readonly [string, string]> = {
   profile: ['PLAYER', 'Profile'],
 };
 
-export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycalis: number | null = null): string {
+export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycalis: number | null = null, homeProfile = ''): string {
   const [eyebrow, title] = headings[sanctuaryDestination(page)];
   const leading = page === 'home'
-    ? '<span class="bubble-title-mark" aria-hidden="true"><i></i>Last Light</span>'
+    ? homeProfile || `<span class="sanctuary-home-emblem" aria-hidden="true">${uiIcon('home')}</span>`
     : `<button type="button" class="text-button bubble-back" data-menu-back aria-label="Back"><span class="bubble-back-orb">${uiIcon('back')}</span><span>Back</span></button>`;
-  return `<header class="sanctuary-header" data-eyebrow="${eyebrow}">
-    ${leading}<h1 class="ref-sr-only" tabindex="-1">${title}</h1>
+  const profileButton = page === 'home' ? '' : `<button type="button" class="text-button sanctuary-profile-trigger" data-page="profile" aria-label="Open profile">${uiIcon('squad')}</button>`;
+  return `<header class="sanctuary-header${page === 'home' ? ' home-menu-header' : ''}" data-eyebrow="${eyebrow}">
+    ${leading}<h1 class="ref-sr-only" tabindex="-1">${title}</h1><span class="sanctuary-wordmark" aria-hidden="true">Last Light</span>
     <div class="sanctuary-wallet"><div class="currency-strip" aria-label="Currencies">${currencies.map((currency) =>
       `<button type="button" data-page="inventory" aria-label="View ${currency.name} in Inventory">${currencyIcon(currency.id)}<strong><span id="${currency.id}-balance">${(currency.id === 'fractalis' ? fractalis : lycalis) ?? 'Unavailable'}</span><small>${currency.name}</small></strong></button>`).join('')}</div>
       <button type="button" class="text-button sanctuary-help-trigger" data-information="sanctuary-help" aria-label="Help for ${title}" aria-haspopup="dialog" aria-controls="sanctuary-help">?</button>
       <button type="button" class="text-button" data-page="collections" aria-label="Open Collections">${uiIcon('story')}</button>
       <button id="open-settings" type="button" class="text-button" aria-label="Open Settings" aria-haspopup="dialog" aria-controls="settings-drawer">${uiIcon('settings')}</button>
-      <button type="button" class="text-button sanctuary-profile-trigger" data-page="profile" aria-label="Open profile">${uiIcon('squad')}</button>
+      ${profileButton}
       <dialog class="information-modal sanctuary-help-drawer" id="sanctuary-help" aria-labelledby="sanctuary-help-heading"><header class="drawer-heading"><h2 id="sanctuary-help-heading">${title}</h2><button type="button" class="drawer-close" data-close-information aria-label="Close Help">&times;</button></header><div class="information-content">${informationTopics('sanctuary-help', [
         { id: 'screen', title: `${title} help`, summary: 'Controls and game rules', content: sanctuaryHelp(page) },
         { id: 'origins', title: 'Let and Rise', summary: 'Origins of the world and the creators\' souls', content: worldLore() },
       ])}</div></dialog>
       </div>
   </header>`;
+}
+
+const primaryDestinations = [
+  ['home', 'Home', 'home', 'Sanctuary'],
+  ['team', 'Team', 'squad', 'Squad and Element-Bearers'],
+  ['gameplay', 'Play', 'gameplay', 'Activities and events'],
+  ['stores', 'Shop', 'weapon', 'Materials and Conduits'],
+  ['summon', 'Summon', 'summon', 'Banners and rates'],
+  ['profile', 'Social', 'squad', 'Friends and attendance'],
+] as const;
+
+function primaryDestination(page: MenuPage): MenuPage | null {
+  if (page === 'home') return 'home';
+  if (page === 'team' || page === 'character' || page === 'squad' || page === 'conduit-store' || page === 'conduit-upgrade') return 'team';
+  if (page === 'summon' || page === 'special-banner-archive') return 'summon';
+  if (page === 'stores' || page === 'inventory') return 'stores';
+  if (page === 'profile') return 'profile';
+  if (page === 'gameplay' || page === 'events' || page === 'story' || page === 'battle') return 'gameplay';
+  return null;
+}
+
+export function sanctuaryDock(page: MenuPage): string {
+  const active = primaryDestination(page);
+  return `<nav class="sanctuary-dock" aria-label="Primary navigation">${primaryDestinations.map(([destination, label, icon, detail]) =>
+    `<button type="button" data-page="${destination}" aria-label="${detail}" aria-current="${active === destination ? 'page' : 'false'}">
+      <span class="nav-symbol" aria-hidden="true">${uiIcon(icon)}</span><span class="nav-copy"><strong>${label}</strong><span>${detail}</span></span>
+    </button>`).join('')}</nav>`;
 }
 
 export function sanctuaryContext(page: MenuPage, area: TeamArea = 'squad'): string {
@@ -67,7 +95,7 @@ function sanctuaryHelp(page: MenuPage): string {
   if (destination === 'team') return '<h3>Squad</h3><p>Pick one to six owned members and save. Slot one leads.</p><h3>Element-Bearers</h3><p>Level, evolve and equip Conduits. Every upgrade shows its cost and asks to confirm.</p><h3>Captured Elemental-Devourers</h3><p>Each copy has its own level, skills, lock and Conduits. Locked copies, squad members and copies with Conduits cannot be sold or consumed.</p>';
   if (destination === 'summon') return '<p>Pick a banner and draw. Check Rates & Information for rewards and guarantees. Each banner has its own pity counter.</p>';
   if (destination === 'gameplay' || destination === 'events') return '<p>Activities unlock by your highest-level Element-Bearer; captures don\'t count. Rewards save per kill, even if you quit.</p>';
-  if (destination === 'home') return '<p>Choose a destination around your leader. The Story card shows your next stage; select a squad portrait to view that member. Currency balances open Inventory. Collections, Settings and Profile are in the top bar.</p>';
+  if (destination === 'home') return '<p>Home shows your current squad leader, six squad slots and featured destinations. Use the quick actions for Archives, Loadouts, Items, Friends and Attendance; the primary navigation opens Home, Team, Play, Shop, Summon and Social.</p>';
   if (destination === 'story') return `<p>Six regions of ${storyRules.regionStages} stages. Each clear opens the next stage. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Regional bosses add a one-time bonus.</p>`;
   if (destination === 'inventory') return '<p>Browse owned materials, Conduits and chests. Select an item for its uses or effects. Open chests here; equip Conduits in Team.</p>';
   if (destination === 'collections' || destination === 'archives' || destination === 'glossary') return '<p>Browse Element-Bearer forms, Conduits and enemy discoveries. Filters narrow the catalog. Encounter enemies to reveal their identity and lore; defeat them to reveal loot.</p>';

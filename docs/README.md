@@ -1,5 +1,13 @@
 # Documentation hub
 
+## Redesigned desktop menus and publication (2026-11-12)
+
+The [live menu contract](menus-and-inventory.md#live-redesigned-desktop-menus-2026-11-12)
+and [publication handoff](handoff.md#publishing-redesigned-menus-to-the-main-game-2026-11-12)
+cover the normal Home/Units presentation, Collections/Loadouts layouts,
+attendance carousel, development-only isolated test saves and release checks.
+The owner approves publishing through the existing GitHub Pages workflow.
+
 ## Live Radiant and Team follow-through (2026-11-10)
 
 Radiant is the actual online and local battle system across game activities;

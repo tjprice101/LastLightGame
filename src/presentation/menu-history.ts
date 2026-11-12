@@ -5,8 +5,8 @@ export class MenuHistory<T extends { page: string }> {
     return this.entries.at(-1);
   }
 
-  visit(current: T, destination: string): void {
-    if (current.page !== destination && current.page !== 'battle') this.entries.push(current);
+  visit(current: T, destination: string, subview = false): void {
+    if ((current.page !== destination || subview) && current.page !== 'battle') this.entries.push(current);
   }
 
   back(fallback?: T): T {

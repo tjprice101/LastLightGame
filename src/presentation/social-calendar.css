@@ -1,13 +1,13 @@
 .social-calendar-dialog {
-  width: min(850px, calc(100vw - 24px));
-  max-height: calc(100dvh - 24px);
+  width: min(850px, calc(100vw - 2 * var(--space-3)));
+  max-height: calc(100dvh - 2 * var(--space-3));
   overflow-y: auto;
 }
 .social-calendar-dialog nav,
 .social-calendar-dialog .game-dialog-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
 }
 .social-calendar-dialog button,
 .social-calendar-dialog fieldset label {
@@ -21,14 +21,14 @@
 .attendance-ladder {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
-  gap: 8px;
+  gap: var(--space-2);
   list-style: none;
   padding: 0;
 }
 .attendance-ladder li {
-  padding: 12px;
-  border: 1px solid #8886;
-  border-radius: 10px;
+  padding: var(--card-padding);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--panel-radius);
 }
 .attendance-ladder li[data-saved] { background: #8882; }
 .attendance-ladder b,
@@ -36,10 +36,15 @@
 .social-mail-list span,
 .social-mail-list small { display: block; }
 .social-mail-list { list-style: none; padding: 0; }
-.social-mail-list li { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-.social-mail-list [data-calendar-mail] { flex: 1 1 250px; text-align: left; padding: 12px; }
-.social-calendar-dialog fieldset { display: grid; gap: 6px; margin: 16px 0; }
-.social-calendar-dialog fieldset label { display: flex; align-items: center; gap: 10px; padding: 6px; }
+.social-mail-list li { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-3) 0; }
+.social-mail-list [data-calendar-mail] { flex: 1 1 250px; min-width: 0; text-align: left; padding: var(--card-padding); }
+.social-calendar-dialog fieldset { display: grid; grid-template-columns: minmax(0, 1fr); min-inline-size: 0; gap: var(--space-2); margin: var(--space-4) 0; padding: var(--space-3); border: 1px solid var(--panel-border); border-radius: var(--panel-radius); }
+.social-calendar-dialog fieldset legend { padding-inline: var(--space-1); }
+.social-calendar-dialog fieldset label { display: flex; align-items: center; min-width: 0; gap: var(--space-2); padding: var(--space-2); }
+.social-calendar-dialog fieldset label > input[type="radio"] { flex: 0 0 20px; width: 20px; height: 20px; min-width: 0; min-height: 0; margin: 0; padding: 0; }
+.social-calendar-dialog fieldset label span { min-width: 0; overflow-wrap: anywhere; }
+.social-gift-attachment { display: flex; align-items: center; gap: var(--space-2); }
+.social-gift-attachment .currency-icon { flex: 0 0 auto; }
 .social-mail-body { white-space: pre-wrap; overflow-wrap: anywhere; }
-.social-reward-art { display: flex; justify-content: center; gap: 16px; }
+.social-reward-art { display: flex; justify-content: center; gap: var(--space-4); }
 .social-reward-art .currency-icon { width: 80px; height: 80px; }

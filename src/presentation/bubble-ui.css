@@ -498,7 +498,7 @@ html body .settings-drawer .settings-panel input[type="checkbox"] { width: 22px;
 html[data-motion="reduced"] .settings-drawer .settings-panel { animation: none !important; }
 html body :is(.settings-drawer, .information-modal, .selection-modal, .game-dialog) { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--accent) 45%, #ffffff30) transparent; }
 /* Game confirmations */
-html body dialog.game-dialog[open]:not(#_) { padding: 26px 28px 22px !important; }
+html body dialog.game-dialog[open]:not(#_) { padding: var(--card-padding) !important; }
 html body .game-dialog .game-dialog-actions { gap: 12px !important; }
 html body .game-dialog .game-dialog-actions button:not(#_) { min-width: 120px; justify-content: center !important; }
 html body .game-dialog .game-destructive:not(:disabled):not(#_) { color: var(--control-danger) !important; border-color: #e58c7980 !important; background: #bf59451a !important; box-shadow: none !important; text-shadow: none; }

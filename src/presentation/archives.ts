@@ -29,10 +29,10 @@ const starters = allStarters.filter(character => characterReleased(character.id)
 const masterConduits = allMasters.filter(master => characterReleased(master.character));
 
 const galleries = [
-  { id: 'characters', name: 'Character Archive', subtitle: 'Element-Bearers · Forms · Combat kits' },
-  { id: 'conduits', name: 'Conduit Archive', subtitle: 'Conduit effects · Ownership' },
-  { id: 'creatures', name: 'Elemental-Devourer &amp; Machine Glossary', subtitle: 'Discoveries · Elements · Enemy loot' },
-  { id: 'story', name: 'Story Codex', subtitle: 'Chapters · Beacons · Discovered lore' },
+  { id: 'characters', tab: 'Characters', name: 'Character Archive', subtitle: 'Element-Bearers · Forms · Combat kits' },
+  { id: 'conduits', tab: 'Conduits', name: 'Conduit Archive', subtitle: 'Conduit effects · Ownership' },
+  { id: 'creatures', tab: 'Creatures', name: 'Elemental-Devourer &amp; Machine Glossary', subtitle: 'Discoveries · Elements · Enemy loot' },
+  { id: 'story', tab: 'Story Codex', name: 'Story Codex', subtitle: 'Chapters · Beacons · Discovered lore' },
 ] as const;
 export type ArchiveGallery = (typeof galleries)[number]['id'];
 
@@ -58,7 +58,7 @@ function characterArchive(account: Account | null): string {
         : radiantCharacterLoadout(null, starter.id, { level: 0, evolution, weaponRank: 0 });
       return `<article class="archive-card ${revealed ? 'archive-form-revealed' : 'archive-form-locked'}" data-archive-character="${starter.id}" data-form="${evolution}" data-filter-element="${starter.elementId}" data-filter-rarity="${characterRarity(starter.id, evolution)}" data-filter-ownership="${!account ? 'unavailable' : owned ? 'owned' : 'unowned'}" data-filter-discovery="${!account ? 'unavailable' : revealed ? 'revealed' : 'locked'}" data-filter-stars="${starter.stars}">
         <div class="archive-portrait${revealed ? '' : ' unreached-character-art'}">${portrait(starter, evolution, current && progress?.ascension?.stats === true)}</div>
-        <h3>${characterName(starter.id, evolution, current && progress?.ascension?.stats === true)} · Evo.${displayEvolution(starter.id, evolution)}</h3>
+        <h3>${starter.name}</h3><span class="archive-form-label">Evo.${displayEvolution(starter.id, evolution)}</span>
         ${elementLabel(starter.elementId)}${characterRating(starter.id, evolution, current && progress?.ascension?.stats === true)}
         <p class="archive-ownership">${!account ? 'Ownership unavailable' : !owned ? 'Not owned' : current ? `Current form · Lv.${progress?.level}` : revealed ? 'Reached form' : 'Evolution not reached'}</p>
         ${information(`archive-kit-${starter.id}-${evolution}`, `${characterName(starter.id, evolution, current && progress?.ascension?.stats === true)} · Evo.${displayEvolution(starter.id, evolution)}`, `${characterRole(starter.id)}${elementLabel(starter.elementId)}${characterRating(starter.id, evolution, current && progress?.ascension?.stats === true)}
@@ -113,7 +113,7 @@ export function archives(account: Account | null, selected: ArchiveGallery = 'ch
     <h3>Captures</h3><p>50% per kill in Heaven, Abyss, Treasury and Sanctuary. Crimson Roses has the same chance up to enemy Lv.120. No captures in Story, Training or elemental dungeons.</p><p>Captures keep their form and skills, cap at Lv.60 and sell by form, not level.</p>
     `)}</header>
     <nav class="archive-navigation" aria-label="Archive galleries">${galleries.map((gallery) =>
-      `<button class="archive-gallery-button" data-archive-gallery="${gallery.id}" aria-controls="archive-${gallery.id}" aria-pressed="${selected === gallery.id}"><strong>${gallery.name}</strong><small>${gallery.subtitle}</small></button>`).join('')}</nav>
+      `<button class="archive-gallery-button" data-archive-gallery="${gallery.id}" aria-label="${gallery.name}" aria-controls="archive-${gallery.id}" aria-pressed="${selected === gallery.id}"><strong>${gallery.tab}</strong><small class="ref-sr-only">${gallery.subtitle}</small></button>`).join('')}</nav>
     ${!account ? '<p role="alert">Ownership and discoveries unavailable. Check the save error. You can still browse the catalog.</p>' : ''}
     ${galleries.map((gallery) => `<section id="archive-${gallery.id}" class="archive-panel" aria-labelledby="archive-${gallery.id}-heading" ${selected === gallery.id ? '' : 'hidden'}>
       <h2 class="ref-sr-only" id="archive-${gallery.id}-heading" tabindex="-1">${gallery.name}</h2>

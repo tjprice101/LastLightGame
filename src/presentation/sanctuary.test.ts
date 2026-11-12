@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { sanctuaryHeader, sanctuaryContext, sanctuaryPages, isMenuPage, sanctuaryDestination } from './sanctuary';
+import { sanctuaryDock, sanctuaryHeader, sanctuaryContext, sanctuaryPages, isMenuPage, sanctuaryDestination } from './sanctuary';
 import { inventoryHub } from './hub';
 import { gameplayHub } from './gameplay';
 import { elements, infusionModes } from '../content/activities';
@@ -16,11 +16,12 @@ describe('full sanctuary UI', () => {
       expect(html).not.toContain('sanctuary-menu');
       expect(html).toContain('id="open-settings"');
       expect(html).not.toContain('id="return-title"');
-      for (const destination of ['inventory', 'collections', 'profile']) {
+      for (const destination of ['inventory', 'collections']) {
         expect(html).toContain(`data-page="${destination}"`);
       }
-      expect(html).not.toContain('sanctuary-home');
-      expect(html).not.toContain('sanctuary-dock');
+      if (page !== 'home') expect(html).toContain('data-page="profile"');
+      expect(html).not.toContain('class="sanctuary-home"');
+      expect(html).not.toContain('class="sanctuary-dock"');
     }
     for (const page of ['home', 'team', 'character', 'gameplay', 'events', 'inventory', 'stores', 'collections', 'squad', 'summon', 'story', 'battle', 'profile']) {
       expect(isMenuPage(page)).toBe(true);
@@ -28,8 +29,13 @@ describe('full sanctuary UI', () => {
     expect(isMenuPage('settings')).toBe(false);
     expect(isMenuPage(undefined)).toBe(false);
   });
-  it('has no navigation bar or dock and normalizes old Character/Squad links to Team (D-433)', () => {
+  it('keeps the dock separate from the contextual header and normalizes old Character/Squad links to Team', () => {
     for (const page of sanctuaryPages) expect(sanctuaryHeader(page, 0, 0)).not.toMatch(/sanctuary-dock|sanctuary-brand|Main destinations/);
+    for (const page of ['home', 'team', 'gameplay', 'stores', 'summon', 'profile'] as const) {
+      expect(sanctuaryDock(page)).toContain('aria-label="Primary navigation"');
+      expect(sanctuaryDock(page)).toMatch(new RegExp(`data-page="${page}"[^>]+aria-current="page"`));
+    }
+    expect(sanctuaryDock('events')).toMatch(/data-page="gameplay"[^>]+aria-current="page"/);
     expect(sanctuaryDestination('character')).toBe('team');
     expect(sanctuaryDestination('squad')).toBe('team');
     expect(sanctuaryDestination('conduit-upgrade')).toBe('conduit-upgrade');
@@ -74,9 +80,10 @@ describe('full sanctuary UI', () => {
     expect(sanctuaryContext('story')).toBe('');
     expect(sanctuaryContext('home')).toBe('');
   });
-  it('floats one Back bubble on every non-Home screen and a title mark on Home (D-433)', () => {
+  it('uses a Last Light home emblem and one Back control on every non-Home screen', () => {
     expect(sanctuaryHeader('home', 0, 0)).not.toContain('data-menu-back');
-    expect(sanctuaryHeader('home', 0, 0)).toContain('bubble-title-mark');
+    expect(sanctuaryHeader('home', 0, 0)).toContain('sanctuary-home-emblem');
+    expect(sanctuaryHeader('home', 0, 0)).toContain('sanctuary-wordmark');
     for (const page of sanctuaryPages.filter(page => page !== 'battle' && page !== 'home')) {
       const header = sanctuaryHeader(page, 0, 0);
       expect(header.match(/data-menu-back/g)).toHaveLength(1);
