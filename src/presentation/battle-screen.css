@@ -108,24 +108,24 @@ body:has(#radiant-preview) { margin: 0; background: #0c0d11; }
   border: 1px solid color-mix(in srgb, var(--accent) 40%, #40434f); border-radius: 999px;
   background: linear-gradient(#090c14, #202532); box-shadow: inset 0 2px 5px #0008; }
 .radiant-energy-liquid { position: absolute; inset: 0 auto 0 0; width: 0; overflow: hidden; border-radius: inherit;
-  background: linear-gradient(0deg, color-mix(in srgb, var(--accent) 60%, #151c30), var(--accent) 55%, color-mix(in srgb, var(--accent) 60%, #fff));
-  box-shadow: inset 0 -2px 4px #0004, 0 0 9px var(--accent); transition: width 280ms ease-out; }
+  background: linear-gradient(0deg, #9d143c, #f13969 40%, #ff95b5 75%, #ffe1ec);
+  box-shadow: inset 0 -2px 4px #820b35, 0 0 9px #ff5c8c; transition: width 280ms ease-out; }
 .radiant-energy-liquid::before { content: ""; position: absolute; inset: -9px -120px -9px 0;
   background: linear-gradient(0deg, transparent, #ffffff80 65%, #fff);
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='32' viewBox='0 0 120 32'%3E%3Cpath fill='white' d='M0 10 Q15 0 30 10 T60 10 T90 10 T120 10 V32 H0Z'/%3E%3C/svg%3E") repeat-x 0 0 / 120px 32px;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='32' viewBox='0 0 120 32'%3E%3Cpath fill='white' d='M0 30 Q7 18 12 4 Q13 20 24 24 Q30 8 38 0 Q33 20 48 28 Q56 12 65 4 Q60 24 76 27 Q85 12 92 0 Q90 24 104 26 Q112 14 120 3 V32 H0Z'/%3E%3C/svg%3E") repeat-x 0 0 / 120px 32px;
   opacity: .55; }
 .radiant-energy-liquid::after { content: ""; position: absolute; inset: 0 -120px 0 0;
   background: repeating-linear-gradient(110deg, transparent 0 26px, #ffffff55 29px, transparent 33px 60px);
   opacity: .4; }
 .radiant-energy-liquid[data-energy-layer="2"] { z-index: 1;
-  background: linear-gradient(0deg, var(--accent), color-mix(in srgb, var(--accent) 45%, #fff) 50%, #fff);
-  box-shadow: inset 0 0 5px #fff9, 0 0 14px 3px var(--accent); }
+  background: linear-gradient(0deg, #08090d, #fdfdff 38%, #9799a6 62%, #101117 83%, #fff);
+  box-shadow: inset 0 0 5px #fff9, 0 0 14px 3px #f4f3ff88; }
 .radiant-energy-liquid[data-energy-layer="2"]::before { opacity: .95; }
 .radiant-energy-liquid[data-energy-layer="2"]::after {
   background: radial-gradient(ellipse at 12px 50%, #fff 0 1px, transparent 3px) 0 0 / 36px 12px,
     repeating-linear-gradient(115deg, transparent 0 15px, #ffffffb0 18px, transparent 24px 45px); opacity: .8; }
-.radiant-charge-layers.is-lustrous .radiant-energy-track { border-color: var(--accent);
-  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 45%, transparent), inset 0 0 5px #fff5; }
+.radiant-charge-layers.is-lustrous .radiant-energy-track { border-color: #e8e7ed;
+  box-shadow: 0 0 12px #f0ecff66, inset 0 0 5px #fff5; }
 .radiant-charge-layers.is-flowing .radiant-energy-liquid.has-charge::before { animation: radiant-energy-wave 3.2s linear infinite; }
 .radiant-charge-layers.is-flowing .radiant-energy-liquid.has-charge::after { animation: radiant-energy-stream 2.4s linear infinite; }
 .radiant-charge-layers.is-flowing .radiant-energy-liquid.has-charge[data-energy-layer="2"]::before { animation-duration: 1.8s; animation-direction: reverse; }
@@ -138,6 +138,12 @@ html[data-motion="reduced"] .radiant-charge-layers.is-flowing .radiant-energy-li
 .radiant-shared { justify-content: center; border: 1px solid #949bac; padding: 12px; border-radius: 12px; }
 .radiant-shared meter { flex: 1 1 200px; max-width: 450px; accent-color: #e3eaff; }
 .radiant-shared .radiant-shared-energy { --accent: #e3eaff; flex: 1 1 200px; max-width: 450px; margin: 0; }
+.radiant-shared-energy .radiant-energy-liquid {
+  background: linear-gradient(0deg, #fff, #ffffff88 50%, #fff), linear-gradient(100deg, #ff6d9d, #ffd978, #88ffc9, #7cbdff, #d6a0ff, #ff6d9d);
+  background-blend-mode: soft-light, normal;
+  box-shadow: inset 0 0 5px #fff, 0 0 14px #f6e5ffcc;
+}
+.radiant-shared-energy .radiant-energy-liquid::before { background: linear-gradient(95deg, #fff, #ffc2dc, #ffeaad, #c0ffe0, #c4deff, #e8caff, #fff); opacity: .95; }
 .radiant-battle [hidden] { display: none !important; }
 .radiant-member details { margin-top: 10px; font-size: 13px; overflow-wrap: anywhere; }
 .radiant-member .radiant-status-list, .radiant-member .radiant-shield-layers { max-height: 108px; overflow-y: auto; scrollbar-width: thin; }
@@ -507,7 +513,7 @@ html body .battle-screen #battle-root:has(.radiant-battle) { display: block; hei
 
 .radiant-squad { display: grid; grid-template-columns: repeat(var(--squad-columns, 3), minmax(0, 1fr)); width: min(100%, calc(var(--squad-columns, 3) * 380px));
   margin: 0 auto; padding: 0; gap: 5px; overflow: visible; align-items: stretch; }
-.radiant-squad .radiant-member { display: grid; grid-template-columns: 54px minmax(0, 1fr); grid-template-areas: "face head" "face hp" "face charge" "foot foot";
+.radiant-squad .radiant-member { display: grid; grid-template-columns: 54px minmax(0, 1fr); grid-template-areas: "face hp" "face charge";
   align-items: center; gap: 2px 8px; padding: 5px 8px 4px 5px; min-width: 0; flex: none; }
 .radiant-squad .radiant-face { grid-area: face; align-self: start; display: block; box-sizing: border-box; width: 54px; height: 54px; min-height: 44px; padding: 0; border-radius: 8px; overflow: hidden; }
 .radiant-squad .radiant-face .compact-portrait { width: 100%; height: 100%; margin: 0; border: 0; border-radius: inherit; }
@@ -517,12 +523,18 @@ html body .battle-screen #battle-root:has(.radiant-battle) { display: block; hei
 .radiant-name-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .radiant-name-own { flex: none; }
 .radiant-squad .radiant-identity { flex: none; margin: 0; font-size: 10px; white-space: nowrap; color: #c9ccd4; }
-.radiant-squad .radiant-member .radiant-health { grid-area: hp; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 6px; }
+.radiant-squad .radiant-member .radiant-health { grid-area: hp; position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 0; height: 30px; }
+.radiant-squad .radiant-member .radiant-health [data-hp] { font-size: 12px; line-height: 14px; }
+.radiant-squad .radiant-member .radiant-health [data-shield] { position: absolute; top: 16px; right: 2px; font-size: 11px; line-height: 12px; }
+.radiant-member-references { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.radiant-member-references h3 { margin: 4px 0; font-size: 14px; }
+.radiant-battle.is-settings-open .radiant-charge-layers.is-flowing .radiant-energy-liquid.has-charge::before,
+.radiant-battle.is-settings-open .radiant-charge-layers.is-flowing .radiant-energy-liquid.has-charge::after { animation-play-state: paused; }
 .radiant-squad .radiant-member .radiant-health meter { height: 13px; }
 .radiant-member-charge { grid-area: charge; display: grid; min-width: 0; }
 .radiant-member-charge > * { grid-area: 1 / 1; }
 .radiant-squad .radiant-member .radiant-charge-layers { margin: 0; }
-.radiant-squad .radiant-member .radiant-energy-track { height: 11px; }
+.radiant-squad .radiant-member .radiant-energy-track { height: 14px; border-color: #e46c91; }
 .radiant-squad .radiant-member [data-radiant-charge-text] { position: relative; z-index: 1; margin: 0; text-align: center; font-size: 9px; line-height: 11px; color: #fff;
   white-space: nowrap; overflow: hidden; text-shadow: 0 1px 2px #000, 0 0 3px #000; pointer-events: none; }
 .radiant-member-foot { grid-area: foot; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 8px; min-width: 0; font-size: 10px; }

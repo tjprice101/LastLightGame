@@ -248,7 +248,9 @@ describe('saved six-member Radiant battle surface', () => {
     expect(host.querySelectorAll('.radiant-field [data-radiant-art]')).toHaveLength(8);
     expect(host.querySelectorAll('.radiant-allies .compact-portrait')).toHaveLength(0);
     expect(host.querySelector('.radiant-squad .radiant-ally-art')).toBeNull();
-    expect(host.textContent).not.toMatch(/Critical|Shatter|Elemental Damage/);
+    expect(host.textContent).not.toMatch(/Critical|Shatter Damage|Elemental Damage/);
+    expect(host.querySelector('.radiant-shared b')!.textContent).toBe('Shattering Light');
+    expect(host.querySelectorAll('.radiant-member-head.radiant-visually-hidden, .radiant-member-foot.radiant-visually-hidden')).toHaveLength(12);
     expect(host.querySelector('[data-radiant-shared-text]')!.textContent).toBe('0 / 100');
     expect(host.querySelector<HTMLMeterElement>('[data-radiant-shared]')!.max).toBe(100);
     expect(host.getAttribute('aria-busy')).toBe('false');
@@ -382,12 +384,14 @@ describe('saved six-member Radiant battle surface', () => {
     expect(session.view().saved.run!.state.gauge.members[1].charge).toBeGreaterThan(0);
     expect(host.querySelector('[data-radiant-error]')!.textContent).toContain('Gauge-drop recipient is missing');
   });
-  it('updates the visible Guard row from each saved status impact, including round expiry', async () => {
+  it('keeps Guard in the optional reference and updates it through round expiry without filling the card', async () => {
     const { view, host } = fixture(2); applyMotion('reduced'); await view.finishEntrance();
     await view.act('defense');
-    expect(host.querySelector('[data-radiant-health="ember"] [data-radiant-effect="guard"]')).not.toBeNull();
-    await view.act('normal');
     expect(host.querySelector('[data-radiant-health="ember"] [data-radiant-effect="guard"]')).toBeNull();
+    expect(host.querySelector('[data-radiant-member-reference="ember"] [data-radiant-effect="guard"]')).not.toBeNull();
+    expect(host.querySelector('[data-radiant-member-reference="ember"] [data-radiant-no-effects]')!.hasAttribute('hidden')).toBe(true);
+    await view.act('normal');
+    expect(host.querySelector('[data-radiant-member-reference="ember"] [data-radiant-effect="guard"]')).toBeNull();
   });
   it('clicking anywhere on a member card saves its Normal Attack', async () => {
     const { view, session, host, transport } = fixture(); applyMotion('reduced'); await view.finishEntrance();
@@ -674,9 +678,11 @@ describe('saved six-member Radiant battle surface', () => {
     const { view, session, host, transport, settings } = fixture(6, 6, effects); await view.finishEntrance();
     controls(host, '[data-radiant-settings]').click();
     expect(settings).toHaveBeenCalledTimes(1); expect(session.view().settingsOpen).toBe(true);
+    expect(host.querySelector('.radiant-battle')!.classList.contains('is-settings-open')).toBe(true);
     expect(action(host, 'ember').disabled).toBe(true);
     expect(transport.execute).not.toHaveBeenCalled();
     session.setSettings(false); view.render();
+    expect(host.querySelector('.radiant-battle')!.classList.contains('is-settings-open')).toBe(false);
     const pending = view.act('normal'); await vi.waitFor(() => expect(effects.windup).toHaveBeenCalled());
     applyMotion('reduced');
     expect(effects.cancel).toHaveBeenCalled(); expect(session.view().presentation).toBeNull();

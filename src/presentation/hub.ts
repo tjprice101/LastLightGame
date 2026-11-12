@@ -39,9 +39,11 @@ import { displayStatLabels, type DisplayStatKey } from './stat-preview';
 import { radiantAttunementChip, radiantAttunementSection, radiantCharacterLoadout, radiantCharacterSheet, radiantFlareArticle, radiantKitSections, radiantLeaderArticle, radiantPassiveArticle,
   radiantStatPreview, radiantStatsPanel, radiantUnavailable } from './character-combat';
 import { escapeDialogText } from './game-dialog';
+import { bindMenuPagination, menuPager } from './menu-pagination';
+import { formatMenuWorkspace } from './menu-workspace';
 
 const radiantTabLabels: Partial<Record<string, string>> = {
-  'upgrade-3': 'Passive & leader', 'upgrade-4': 'Glowing Flare', 'upgrade-5': 'Lustrous Flare', 'upgrade-6': 'Eternal Radiant Flare',
+  'upgrade-3': 'Passive & leader', 'upgrade-4': 'Glowing Flare', 'upgrade-5': 'Lustrous Flare', 'upgrade-6': 'Shattering Light',
 };
 
 export const characterTabs = [
@@ -247,17 +249,17 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
   const accepted = requirement?.infusion ? acceptedFodderValues(requirement.infusion) : '';
   const shown = options.filter((entry) => entry.creature.mode === requirement?.infusion);
   const selection = count ? `<fieldset class="evolution-fodder" data-selection-state="incomplete" style="--element:${starter.color}"><legend>Elemental-Devourers to consume · ${count} Evolution Value</legend>
-    ${missing > 0 ? `<p class="evolution-fodder-empty">You need ${missing} more Evolution Value. Capture more in [${modeName}].</p>` : `<p>Choose exactly ${count} Evolution Value · [${modeName}] · Copy value = form (1–6).</p>`}
+    ${missing > 0 ? `<p class="evolution-fodder-empty">Need ${missing} more Evolution Value from [${modeName}].</p>` : `<p>Choose copies from [${modeName}]. Each copy contributes its form number.</p>`}
     ${information(`evolution-values-${starter.id}`, 'Evolution Values', `<p>Each captured Elemental-Devourer contributes its form number: ${accepted}.</p><p>Combine copies from [${modeName}] to reach exactly ${count} Evolution Value. Chosen copies are permanently consumed only after a confirmed evolution.</p><p>Locked, squad and Conduit-equipped Elemental-Devourers can't be used until they are unlocked, removed from your squad and have their Conduits unequipped.</p>`, 'View form values')}
     <div class="evolution-fodder-progress"><meter data-fodder-progress min="0" max="${count}" value="0" aria-label="Chosen Evolution Value"></meter>
     <p data-fodder-status data-eligible-count="${eligibleCount}" role="status">0 / ${count} value chosen · ${eligibleCount} available</p></div>
-    <p class="evolution-fodder-warning">Chosen Elemental-Devourers are permanently consumed when you confirm the evolution.</p>
-    <div class="evolution-fodder-list" role="region" aria-label="Evolution Devourer copies" tabindex="0">${shown.length ? [...shown].sort((a, b) => Number(b.eligible) - Number(a.eligible)).map(({ copy, creature, reasons, eligible, value }) =>
-      `<label class="evolution-fodder-copy" data-rarity="${evolutionRarity(value)}"><input type="checkbox" data-evolution-fodder="${copy.instanceId}" data-fodder-value="${value}" ${!eligible ? 'disabled' : ''}>
+    <p class="evolution-fodder-warning">Selected copies are permanently consumed on confirmed evolution.</p>
+    <div class="evolution-fodder-pages" data-menu-page-size="2"><div class="evolution-fodder-list" role="region" aria-label="Evolution Devourer copies" tabindex="0">${shown.length ? [...shown].sort((a, b) => Number(b.eligible) - Number(a.eligible)).map(({ copy, creature, reasons, eligible, value }) =>
+      `<label class="evolution-fodder-copy" data-menu-page-item data-rarity="${evolutionRarity(value)}"><input type="checkbox" data-evolution-fodder="${copy.instanceId}" data-fodder-value="${value}" ${!eligible ? 'disabled' : ''}>
       ${creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${creature.name}" width="96" height="96">` : ''}
       <span class="evolution-fodder-info"><strong>${creature.name}</strong><small>Lv.${capturedProgress(copy).level} · Value ${value}</small>${capturedRating(creature.id)}<small class="evolution-fodder-reason">${eligible ? '' : reasons.join(' · ')}</small>
       <span class="evolution-fodder-state">${eligible ? '<span class="fodder-unselected">Choose</span><span class="fodder-selected">Chosen</span>' : 'Unavailable'}</span></span></label>`).join('') : `<p>No Elemental-Devourers from [${modeName}] captured yet.</p>`}</div>
-    </fieldset>` : '';
+    ${menuPager('Evolution materials')}</div></fieldset>` : '';
   if (compact) return `<p class="ref-growth-summary">${evolve ? `Evo.${displayEvolution(starter.id, current.evolution)} → ${displayEvolution(starter.id, next.evolution)} · Level cap ${characterLevelCap(next.evolution, starter.id, false)}` : `Lv.${current.level} → ${next.level} · Cap ${cap}`}</p>
     <p class="ref-growth-cost">${currencyIcon('fractalis')}${cost.fractalis} Prismatica</p>
     <ul class="ref-growth-materials">${resources.slice(1).map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<span>${resource.needed} ${resource.name}<small>Owned ${resource.owned}</small></span></li>`).join('')}</ul>
@@ -275,7 +277,7 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
     ${organized ? '' : selection}${organized ? `<div class="ref-growth-action${evolve ? ' ref-evolution-action' : ''}">` : ''}<button class="primary-button" data-upgrade="${evolve ? 'evolve' : 'level'}" data-fodder-value-required="${count}" data-upgrade-blocked="${!!reason}" ${reason || count ? 'disabled' : ''}>${evolve ? 'Evolve' : 'Level up'}</button>
     ${!evolve ? `<button class="text-button" type="button" data-max-level="${starter.id}">Max Level</button>` : ''}
     <p class="quiet">${reason}</p>${organized ? '</div>' : ''}
-    ${organized ? selection : ''}${result ? '<p id="upgrade-result" role="status"></p>' : ''}</section></div>`;
+    ${result ? '<p id="upgrade-result" role="status"></p>' : ''}</section>${organized ? selection : ''}</div>`;
 }
 
 export function updateEvolutionSelection(host: HTMLElement): void {
@@ -347,6 +349,7 @@ export function updateCharacterTab(host: HTMLElement, starter: Starter, selected
   const panel = host.querySelector<HTMLElement>('.hub-detail');
   if (!panel) throw new Error('Character detail panel is missing.');
   panel.innerHTML = content;
+  bindMenuPagination(panel);
   applyConduitSearch(host, conduitSearch);
   const image = host.querySelector<HTMLImageElement>('.hub-showcase .hub-portrait img');
   if (image && account) {
@@ -428,6 +431,7 @@ export function updateCharacterTab(host: HTMLElement, starter: Starter, selected
   host.querySelectorAll<HTMLButtonElement>('[data-character-section-tab]').forEach((button) => {
     button.setAttribute('aria-pressed', String(characterSection(button.dataset.characterSectionTab ?? '') === characterSection(selectedTab)));
   });
+  formatMenuWorkspace(host, account);
   panel.querySelector<HTMLElement>('#upgrade-heading')?.focus({ preventScroll: true });
 }
 

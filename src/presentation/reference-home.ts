@@ -1,11 +1,9 @@
 import { getStarter, type Starter } from '../content/starters';
 import { characterName } from '../content/character-art';
-import { characterRarity, displayEvolution } from '../content/progression';
 import { squadMemberLimit } from '../content/squad-rules';
 import { getSummonBanner } from '../content/summon-banners';
 import { radiantBearerKits, type RadiantLoadout } from '../content/combat-kits';
 import { storyEncounter, storyRegions, storyRules } from '../content/story';
-import { chapterOneTitle } from '../content/story-codex';
 import { equippedSquad, unlockedStoryStage, type Account } from '../game/account';
 import { uiIcon } from './ui-icon';
 import { ownedCompanion } from './owned-companion';
@@ -17,27 +15,25 @@ import { attendanceReward } from '../content/social-calendar';
 import type { SocialCalendarView } from '../online/social-calendar';
 import { socialRewardText } from './social-calendar';
 import { currencyIcon } from './currency-icon';
+import { chapterOneTitle } from '../content/story-codex';
 
 type HubIcon = Parameters<typeof uiIcon>[0];
 
 function squadCard(account: Account, loadout: RadiantLoadout, index: number): string {
   const member = ownedCompanion(account, loadout.starter);
-  const bearer = getStarter(loadout.starter);
-  const rarity = characterRarity(loadout.starter, loadout.form);
   const leader = index === 0;
   const name = characterName(loadout.starter, loadout.form, loadout.ascension.stats === true);
   return `<button type="button" class="home-squad-member${leader ? ' is-leader' : ''}" style="--member-accent:${member.color}"
       data-page="team" data-team-area="bearers" data-team-character="${loadout.starter}" aria-label="Open ${escape(member.name)} in Team, ${leader ? 'squad leader' : `squad member ${index + 1}`}">
-      <span class="home-squad-art">${radiantAllyArt(loadout)}</span>
-      <span class="home-squad-caption"><small>${leader ? 'Leader' : 'Member'} · ${bearer.element} · ${rarity}</small>
-        <b>${escape(name)}</b><small>Lv.${loadout.level} · Evo.${displayEvolution(loadout.starter, loadout.form)}</small>
-        <span class="home-squad-attunement">${radiantAttunementChip(loadout)}<span>${radiantAttunementName(loadout)}</span></span></span>
+      <span class="home-element-light" aria-hidden="true"></span><span class="home-squad-art">${radiantAllyArt(loadout)}</span>
+      <span class="home-squad-caption"><b>${escape(getStarter(loadout.starter).name)}</b><small>${leader ? 'Leader · ' : ''}Lv.${loadout.level}</small></span>
+      <span class="ref-sr-only">${escape(name)}</span>
     </button>`;
 }
 
 function emptySquadSlot(index: number): string {
   return `<button type="button" class="home-squad-member is-empty" data-page="team" data-team-area="squad" aria-label="Add an Element-Bearer to squad slot ${index + 1}">
-    <span class="home-squad-add" aria-hidden="true">+</span><b>Empty slot</b><small>Add an Element-Bearer</small></button>`;
+    <span class="home-squad-add" aria-hidden="true">+</span><b>Empty</b></button>`;
 }
 
 function quickAccess(online: boolean): string {
@@ -85,8 +81,8 @@ export function referenceHomeProfile(starter: Starter, account: Account | null):
   return `<button type="button" class="home-profile-card" style="--member-accent:${member.color}"
       data-page="team" data-team-area="bearers" data-team-character="${leader.starter}" aria-label="Open squad leader ${escape(name)} in Team">
     <span class="home-profile-art">${radiantAllyArt(leader)}</span>
-    <span class="home-profile-copy"><small>Current squad leader · ${bearer.element}</small><b>${escape(name)}</b>
-      <small>Lv.${leader.level} · Evo.${displayEvolution(leader.starter, leader.form)}</small>
+    <span class="home-profile-copy"><small>Leader · ${bearer.element}</small><b>${escape(bearer.name)}</b>
+      <small>Lv.${leader.level}</small>
       <span class="home-profile-attunement">${radiantAttunementChip(leader)}${radiantAttunementName(leader)}</span></span></button>`;
 }
 
@@ -101,22 +97,21 @@ export function referenceHome(starter: Starter, account: Account | null, online 
   const squadCards = loadouts.map((loadout, index) => squadCard(account, loadout, index))
     .concat(Array.from({ length: squadMemberLimit - loadouts.length }, (_, index) => emptySquadSlot(loadouts.length + index))).join('');
   const storyFeature = `<article class="home-feature-slide is-active" data-home-slide="0">
-    <button type="button" class="ref-panel ref-home-story home-feature-link" data-page="story">
+    <button type="button" class="ref-panel ref-home-story home-feature-link" data-page="story" aria-label="${escape(chapterOneTitle)}">
       ${encounter.background ? `<img class="home-feature-art" src="${assetUrl(`backgrounds/${encounter.background}`)}" alt="" draggable="false" />` : ''}
       <span class="home-feature-scrim" aria-hidden="true"></span>
-      <span class="home-feature-copy"><small class="home-feature-eyebrow">Continue Story · ${chapterOneTitle}</small>
+      <span class="home-feature-copy"><small class="home-feature-eyebrow">Story · Chapter 1</small>
         <strong>${region?.name ?? encounter.name}</strong>
-        <span>Stage ${encounter.regionStage} · Enemies Lv.${encounter.level}</span>
-        <span>${completed} / ${storyRules.stages} stages cleared</span>
+        <span>Stage ${encounter.regionStage} · Lv.${encounter.level} · ${completed} / ${storyRules.stages} cleared</span>
         <span class="home-story-meter" role="meter" aria-label="Story progress" aria-valuemin="0" aria-valuemax="${storyRules.stages}" aria-valuenow="${completed}"><i style="width:${storyPercent}%"></i></span>
-        <span class="home-feature-cta">Continue Story <span aria-hidden="true">&rarr;</span></span></span>
+        <span class="home-feature-cta">Play <span aria-hidden="true">&rarr;</span></span></span>
     </button>
   </article>`;
   const attendanceFeature = `<article class="home-feature-slide" data-home-slide="1" hidden>
     <div class="home-feature-link home-feature-attendance">
       <div class="home-feature-copy" data-home-attendance>
-        <small class="home-feature-eyebrow">Daily login bonus</small><strong>Attendance rewards</strong>
-        <p>${online ? 'Loading your attendance from the server…' : 'Sign in online to view your saved attendance and claim rewards.'}</p>
+        <small class="home-feature-eyebrow">Daily rewards</small><strong>Attendance</strong>
+        <p>${online ? 'Loading attendance…' : 'Sign in online to claim.'}</p>
         <button type="button" class="home-feature-cta" ${online ? 'data-social-calendar="attendance"' : 'data-page="profile"'}>${online ? 'Review attendance' : 'Open Social'}</button>
       </div>
     </div>
@@ -127,23 +122,21 @@ export function referenceHome(starter: Starter, account: Account | null, online 
       <span class="home-feature-scrim" aria-hidden="true"></span>
       <span class="home-feature-copy"><small class="home-feature-eyebrow">Summoning</small><strong>${escape(banner.name)}</strong>
         <span>Single draw · ${banner.cost.toLocaleString('en-US')} Null-Prismatica</span>
-        <span class="home-feature-cta">View banners and rates <span aria-hidden="true">&rarr;</span></span></span>
+        <span class="home-feature-cta">Summon <span aria-hidden="true">&rarr;</span></span></span>
     </button>
   </article>`;
   const warFeature = `<article class="home-feature-slide" data-home-slide="3" hidden>
     <button type="button" class="home-feature-link home-feature-war" data-page="gameplay">
       <span class="home-feature-glyph" aria-hidden="true">${uiIcon('gameplay')}</span>
       <span class="home-feature-copy"><small class="home-feature-eyebrow">Endgame activity</small><strong>Elemental War</strong>
-        <span>Choose a War mode and continue your campaign.</span>
-        <span class="home-feature-cta">Browse Play <span aria-hidden="true">&rarr;</span></span></span>
+        <span class="home-feature-cta">Choose a trial <span aria-hidden="true">&rarr;</span></span></span>
     </button>
   </article>`;
   const eventsFeature = `<article class="home-feature-slide" data-home-slide="4" hidden>
     <button type="button" class="home-feature-link home-feature-events" data-page="events">
       <span class="home-feature-glyph" aria-hidden="true">${uiIcon('story')}</span>
-      <span class="home-feature-copy"><small class="home-feature-eyebrow">Events</small><strong>Explore live events</strong>
-        <span>See currently available event activities and rewards.</span>
-        <span class="home-feature-cta">View events <span aria-hidden="true">&rarr;</span></span></span>
+      <span class="home-feature-copy"><small class="home-feature-eyebrow">Limited activities</small><strong>Events</strong>
+        <span class="home-feature-cta">Explore <span aria-hidden="true">&rarr;</span></span></span>
     </button>
   </article>`;
   const leaderSkill = leader ? `<p class="home-leader-skill"><strong>Leader Skill · ${escape(radiantBearerKits[leader.starter].leader)}</strong> ${radiantLeaderText(leader)}</p>` : '';
@@ -151,7 +144,7 @@ export function referenceHome(starter: Starter, account: Account | null, online 
   return `<div class="ref-screen ref-home home-dashboard">
     <section class="home-squad-panel" aria-labelledby="home-squad-heading">
       <header class="home-section-heading"><div><p class="home-feature-eyebrow">Your formation</p><h2 id="home-squad-heading">Squad</h2></div>
-        <span>${loadouts.length} / ${squadMemberLimit} Element-Bearers</span><button type="button" class="home-manage-squad" data-page="team" data-team-area="squad">${uiIcon('squad')}Manage squad</button></header>
+        <span class="ref-sr-only">${loadouts.length} / ${squadMemberLimit} Element-Bearers</span></header>
       ${squad.length > eligible.length ? `<p class="home-squad-note" role="note">${squad.length - eligible.length === 1 ? 'One saved member is' : `${squad.length - eligible.length} saved members are`} not an acquired Element-Bearer and cannot fight. Replace them in Manage squad.</p>` : ''}
       <div class="home-squad-grid" aria-label="Your squad">${squadCards}</div>${leaderSkill}
     </section>

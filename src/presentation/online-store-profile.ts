@@ -31,6 +31,7 @@ import { enemySkills } from '../content/enemy-skills';
 import { shopHost } from './shop-host';
 import './event-devourers.css';
 import { catalogInformation, offerInformation } from './information-layout';
+import { menuPager } from './menu-pagination';
 
 export interface OnlineProfileDisplay {
   username: string;
@@ -127,14 +128,14 @@ export function materialExchange(account: Account | null, selected: string, navi
   const funds = account?.fractalis ?? 0;
   const unlocked = exchangeProductUnlocked(product, account);
   const restricted = product.restrictedTo ? product.restrictedTo.join(', ') : '';
-  return `<section class="online-market ref-screen ref-market ref-exchange" data-exchange-category="${category}">${navigation}
-    <section class="ref-panel"><header class="ref-panel-heading">Material Exchange</header>
+  return `<section class="online-market ref-screen ref-market ref-exchange" data-exchange-category="${category}" data-menu-page-size="8" data-menu-current-page="${Math.floor(products.indexOf(product) / 8)}">${navigation}
+    <section class="ref-panel exchange-catalog"><header class="ref-panel-heading">Materials</header>
     <nav class="ref-exchange-categories" aria-label="Material categories">
       <button data-market-category="normal" aria-pressed="${category === 'normal'}">Normal Game Materials</button>
       <button data-market-category="event" aria-pressed="${category === 'event'}">Event Materials</button></nav>
     ${category === 'event' ? `<p class="ref-exchange-note" role="note">Event materials are only for ${restricted}.</p>` : ''}
     <div class="ref-scroll"><div class="info-catalog-grid">${products.map(entry => `<button class="info-catalog-choice" data-market-material="${entry.id}" aria-pressed="${product.id === entry.id}">${catalogInformation({ name: materialName(entry.materialId), art: exchangeArt(entry.materialId), metadata: entry.rarity, owned: account?.materials[entry.materialId] ?? 0, state: exchangeProductUnlocked(entry, account) ? 'Unlocked' : `Requires an owned Element-Bearer at level ${entry.unlockLevel ?? 0}`, cost: `${currencyIcon('fractalis')}${entry.price.toLocaleString('en-US')} Prismatica` })}</button>`).join('')}</div></div></section>
-    <aside class="ref-panel ref-store-detail">${shopHost('mirel')}<header class="ref-panel-heading">Details</header>
+    ${menuPager('Materials')}<aside class="ref-panel ref-store-detail">${shopHost('mirel')}<header class="ref-panel-heading">Details</header>
     ${catalogInformation({ name: materialName(product.materialId), art: `<span class="inventory-item-art" data-showcase-item="${product.materialId}">${exchangeArt(product.materialId)}</span>`, metadata: product.rarity,
       owned: account?.materials[product.materialId] ?? 0,
       cost: `${currencyIcon('fractalis')}<strong>${product.price.toLocaleString('en-US')} Prismatica per unit</strong>` })}

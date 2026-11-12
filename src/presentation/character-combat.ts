@@ -29,7 +29,7 @@ export const radiantAttunementNames: Record<RadiantAttunement, string> = {
   equinox: 'Equinox', corona: 'Corona', aegis: 'Aegis', solstice: 'Solstice', prism: 'Prism',
 };
 export const radiantFlareTierNames: Record<FlareTier, string> = {
-  glowing: 'Glowing Flare', lustrous: 'Lustrous Flare', eternal: 'Eternal Radiant Flare',
+  glowing: 'Glowing Flare', lustrous: 'Lustrous Flare', eternal: 'Shattering Light',
 };
 const tierForm: Record<FlareTier, number> = { glowing: 1, lustrous: 4, eternal: 6 };
 const percent = (value: number): string => `${Number((value * 100).toPrecision(12))}%`;
@@ -189,7 +189,7 @@ export function radiantCharacterSheet(loadout: RadiantLoadout, includeProfile = 
       ${gear.some(Boolean) ? `<ul class="info-effects">${gear.flatMap(entry => entry ? [`<li><strong>${escape(getConduit(entry.id).name)} +${entry.rank}</strong><ul>${radiantConduitPrimitives(entry).map(rule => `<li>${escape(radiantConduitDescription(rule))}</li>`).join('')}</ul></li>`] : []).join('')}</ul>` : ''}
     ` }])}
     <details class="info-lore"><summary>Lore</summary><p>${bracketReferences(escape(`${starter.description} ${starter.lore.story}`))}</p></details>
-    <details class="info-lore"><summary>Shared combat rules</summary>${radiantBasicArticles(loadout)}<p>Personal charge builds from actions; the highest ready tier is cast. The Eternal shared meter starts at 100, rises 25 after each Eternal Radiant Flare and caps at 200.</p></details></div>`;
+    <details class="info-lore"><summary>Shared combat rules</summary>${radiantBasicArticles(loadout)}<p>Personal charge builds from actions; the highest ready tier is cast. The Shattering Light shared meter starts at 100, rises 25 after each Shattering Light and caps at 200.</p></details></div>`;
 }
 
 export function radiantUnavailable(): string {

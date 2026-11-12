@@ -7,6 +7,7 @@ import { archives } from './archives';
 import { masterConduits } from '../content/master-conduits';
 import { bindAcquisitionMarkers } from './acquisition-markers';
 import { acknowledgeAcquisitions } from '../game/acquisition-markers';
+import { workspaceUnitsMenu } from './menu-workspace';
 
 let release: (() => void) | undefined;
 afterEach(() => { release?.(); document.body.innerHTML = ''; });
@@ -21,7 +22,7 @@ describe('actual Inventory, Team and Collections acquisition surfaces', () => {
       'character:ember': true, 'character:tide': false, 'material:oceanic-common': false,
       'conduit:vigil-core': false, [`master:${master.id}`]: false,
     };
-    document.body.innerHTML = inventoryView(account) + referenceTeam(account, { view: 'bearers', selected: 'ember', element: '', sort: 'name' }) + archives(account);
+    document.body.innerHTML = inventoryView(account) + workspaceUnitsMenu() + referenceTeam(account, { view: 'bearers', selected: 'ember', element: '', sort: 'name' }) + archives(account);
     release = bindAcquisitionMarkers(document.body, {
       account: () => account,
       acknowledge: async keys => {

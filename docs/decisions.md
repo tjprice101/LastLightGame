@@ -1,5 +1,29 @@
 # Decision log
 
+## Compact desktop menus and Shattering Light presentation (2026-11-12)
+
+The owner requests a desktop-scalable compacting pass on the actual game:
+rectangular element-lit Home portraits, concise copy, smaller level-only
+collection tiles, no repeated squad sidebars, viewport-fitted growth,
+formation, Conduit and Market layouts, and independently collapsible header
+and dock frames. Native information/configuration dialogs and pagination
+retain complete mechanics and existing transaction protections.
+
+Battle cards prioritize Health and stable-position Shields. Personal charge
+uses the same red/pink first tier and black/white second tier for every
+element. Rename the shared Eternal tier to **Shattering Light** and use
+white/rainbow flame presentation. This is a visible-name/presentation change,
+not a save migration, threshold change or combat rebalance. Keep live status
+and Shield details accessible through Battle reference.
+
+Complete assigned work in order: compact menus, battle presentation, then
+the newly requested character/combat consolidation. Prism-base naming,
+simplified equipped passives/leader effects, enhanceable Final Flare,
+25-per-hit Luminosity with same-element sharing, and the proposed elemental
+cycle are the next mechanics request, not implemented behavior in this UI
+release. Unspecified tier/enhancement/cadence/advantage rules require owner
+decisions before replacing live character kits.
+
 ## Publish the redesigned menus in the main game (2026-11-12)
 
 The owner requests deployment of the connected desktop menus to the main

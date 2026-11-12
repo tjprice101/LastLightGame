@@ -63,8 +63,8 @@ describe('shared menu information', () => {
     expect(plain(html)).toContain('guaranteed 1 per enemy at Stage 1 (Lv.65)');
     expect(plain(html)).toContain('the final boss gives 25 guaranteed.');
     expect(plain(html)).toContain('30,000-60,000 at Stage 25');
-    expect(plain(html)).toContain('Staged activities: Health restores; personal charge and the shared Eternal charge carry over.');
-    expect(plain(html)).toContain('Training: Health, Shields, status effects, guard, personal charge, the shared Eternal charge and defeated members carry over.');
+    expect(plain(html)).toContain('Staged activities: Health restores; personal charge and the shared Shattering Light charge carry over.');
+    expect(plain(html)).toContain('Training: Health, Shields, status effects, guard, personal charge, the shared Shattering Light charge and defeated members carry over.');
     expect(plain(html)).toContain('Each run starts at wave 1. Health, Shields, guard, status effects, defeated members and charge carry between waves.');
     expect(plain(html)).not.toContain('HP and Elemental Gauge carry between waves.');
     const disclosures = html.match(/<details\b[^>]*>/g) ?? [];

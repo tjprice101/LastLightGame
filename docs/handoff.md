@@ -1,5 +1,45 @@
 # Current state and handoff
 
+## Compact desktop menus and battle presentation follow-through (2026-11-12)
+
+The next UI pass implements compact Home portraits/copy, level-only paginated
+Element-Bearer tiles, sidebar-free Team/growth/formation, full-width paginated
+evolution fodder, compact Conduit equipment with configuration/effect dialogs,
+an eight-product Material Exchange page, and separate collapsible header/dock
+rows. Real configuration save/rename/equip behavior remains atomic; no grants,
+costs, ownership rules or account schema change.
+
+Battle cards show Health and fixed-space Shields; the optional Battle reference
+retains actual status and Shield-layer details. Personal charge is uniformly
+red/pink then black/white; shared charge is named Shattering Light and uses
+white/rainbow flames. Internal IDs, Gauge mechanics, saved runs and gestures
+are unchanged. Charge flames pause in Settings; explicit in-game Reduce motion
+is static, preserving the existing device-independent preference. Home/icon
+effects are finite.
+
+Local validation is complete; publication is pending. Isolated Chrome checks
+passed at 1024x768, 1440x900 and 1920x1080, including real configuration
+save/rename/equip, no content overflow, stable Shield geometry, animated charge,
+Settings pause and explicit Reduce motion. A final page-two Market selection
+check exposed a Team filter resetting unrelated pagers; scoping that reset to
+the Team collection fixes it. The focused regression run passed 59 tests
+across four files, and the 1024x768 browser rerun passed.
+
+The initial full local run passed 282 files but failed ten (obsolete UI
+contracts, redundant filter writes and five resource-related timeouts).
+All failed files passed their subsequent targeted reruns after the coupled
+fixes. The final `npm run build` passed TypeScript/Vite (existing chunk-size
+advisory). `node tools\bundle_server_game.mjs` produces no authority bundle
+diff: no Supabase deployment is required for this pass. A full green Pages
+run and matching hosted check are still required before claiming publication.
+
+Assignment order remains compact menus, battle presentation, then core
+character/combat consolidation. The new core request has not been silently
+substituted with terminology-only changes. Clarify Final Flare tiers and
+enhancement progression, hit/drop eligibility and capacities, passive
+stacking/alive rules, and elemental advantage multipliers before implementation.
+Keep unrelated mock-up/proposal edits and the standalone HTML unpublished.
+
 ## Publishing redesigned menus to the main game (2026-11-12)
 
 **Published and verified:** runtime commit `7a54c726c5b4414716a2bcd2b3c1f53a71c87a85`

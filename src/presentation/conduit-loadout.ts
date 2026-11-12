@@ -18,6 +18,7 @@ import { referencedEffect } from './effect-copy';
 import { rarityFeedback } from './rarity-feedback';
 import { isRarity } from '../content/rarity';
 import { catalogInformation } from './information-layout';
+import { information } from './information';
 
 export const conduitLoadoutPageSize = 4;
 const rarityOrder = ['Common', 'Rare', 'Legendary', 'Omnic', 'Calamitic'] as const;
@@ -239,9 +240,10 @@ function totalBonuses(id: string, account: Account | null): string {
     const amount = radiantGearAmount(gear, kind);
     return amount ? [`<div class="loadout-bonus-row" data-radiant-effect="${kind}"><span>${referencedEffect(escapeDialogText(radiantConduitDescription({ kind, amount })))}</span></div>`] : [];
   });
-  return `<section class="loadout-bonuses" aria-label="Combined Conduit effects"><h4 class="loadout-bonus-heading">Combined effects</h4>
+  return information(`conduit-totals-${id}`, 'Combined Conduit effects', `<section class="loadout-bonuses" aria-label="Combined Conduit effects"><h4 class="loadout-bonus-heading">Combined effects</h4>
     <div class="loadout-bonus-strip">${rows.length ? rows.join('') : '<p class="quiet">No combined modifiers yet. Equip a Conduit to see them here.</p>'}</div>
-    ${rows.length ? '<p class="quiet">Totals of all equipped ranks. Triggered effects resolve separately for each Conduit; see each slot.</p>' : ''}</section>`;
+    ${rows.length ? '<p class="quiet">Totals of all equipped ranks. Triggered effects resolve separately for each Conduit; see each slot.</p>' : ''}
+    <p>Up to four matching Omnic and five Calamitic Conduits across fourteen designs. Calamitic Conduits work on every element and use ordinary slots. One name per character.</p></section>`, 'Combined effects & rules');
 }
 function masterRow(owner: string, account: Account | null): string {
   if (!isStarterId(owner)) return masterEquipment(owner, account);
@@ -336,18 +338,17 @@ export function conduitLoadout(owner: string, name: string, element: ElementId, 
   const hasEquipment = filled > 0 || !!(isStarterId(owner) && account?.masterEquipment?.[owner]);
   return `<section class="ref-equipment conduit-loadout" aria-label="${name} equipment" data-character-equipment="${owner}" data-loadout-signature="${slots.map(entry => entry ?? '').join(',')}" data-loadout-first-empty="${slots.indexOf(null)}">
     <header class="loadout-header"><button type="button" class="loadout-back" ${captured ? `data-team-capture-detail="${owner}"` : `data-team-detail="${owner}"`}>← Back to ${shortName}</button>
-      <div class="loadout-title"><h3>${shortName} · Conduits</h3><p>${filled} of ${conduitSlotCount} slots filled</p></div>${memberTabs(owner, account)}</header>
+      <div class="loadout-title"><h3>${shortName} · Conduits</h3><p>${filled} of ${conduitSlotCount} slots filled</p><p id="conduit-equipment-result" role="status"></p></div>${memberTabs(owner, account)}</header>
     ${account ? conduitConfigurationsPanel(account, owner) : ''}
     <div class="loadout-layout">
       <section class="ref-panel loadout-slots" aria-label="Loadout"><header class="ref-panel-heading"><span>Loadout · ${filled} of ${conduitSlotCount}</span><button type="button" class="text-button loadout-clear" data-loadout-clear data-loadout-owner="${owner}" aria-label="Unequip all Conduits${captured ? '' : ', including Master'} from ${escapeDialogText(shortName)}" ${hasEquipment && account ? '' : 'disabled'}>Unequip All</button></header>
         ${masterRow(owner, account)}
         <div class="ref-equipment-grid loadout-grid">${artifactSlots.map((_, index) => slotCard(owner, captured, element, slots, index, account)).join('')}</div>
         ${account ? totalBonuses(owner, account) : ''}
-        <p class="ref-equipment-note">Up to four matching Omnic and five Calamitic Conduits across fourteen designs. Calamitic Conduits work on every element and use ordinary slots. One name per character.</p>
       </section>
       ${ownedList(owner, element, slots, account)}
     </div>
-    ${!account ? '<p role="alert">Equipment unavailable. Resolve the save error.</p>' : ''}<p id="conduit-equipment-result" role="status"></p></section>`;
+    ${!account ? '<p role="alert">Equipment unavailable. Resolve the save error.</p>' : ''}</section>`;
 }
 /**
  * Updates a rendered loadout in place after an equipment change: unchanged artwork, filters, search,
@@ -359,7 +360,11 @@ export function refreshConduitLoadout(host: HTMLElement, owner: string, name: st
   if (!current) return false;
   const expandedConfigurations = Array.from(current.querySelectorAll<HTMLDetailsElement>('.saved-configuration-equipment[open]'))
     .map(details => details.closest<HTMLElement>('[data-config-index]')?.dataset.configIndex);
-  morphElement(current, conduitLoadout(owner, name, element, account));
+  const next = document.createElement('template');
+  next.innerHTML = conduitLoadout(owner, name, element, account);
+  const openDialogs = new Set(Array.from(current.querySelectorAll<HTMLDialogElement>('dialog[open]')).map(dialog => dialog.id));
+  next.content.querySelectorAll<HTMLDialogElement>('dialog').forEach(dialog => { dialog.open = openDialogs.has(dialog.id); });
+  morphElement(current, next.innerHTML);
   current.querySelectorAll<HTMLDetailsElement>('.saved-configuration-equipment').forEach(details => {
     details.open = expandedConfigurations.includes(details.closest<HTMLElement>('[data-config-index]')?.dataset.configIndex);
   });

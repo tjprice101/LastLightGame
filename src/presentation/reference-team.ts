@@ -21,6 +21,7 @@ import { statPreview } from './stat-preview';
 import { bulkSaleControls, bulkSaleCopy } from './creature-bulk-sale';
 import { squadLoadoutsPanel } from './saved-loadouts';
 import { escapeDialogText } from './game-dialog';
+import { menuPager } from './menu-pagination';
 
 export type ReferenceTeamView = 'menu' | 'detail' | 'bearers' | 'creatures' | 'capture' | 'formation' | 'loadouts' | 'conduits' | 'capture-conduits';
 export interface ReferenceTeamState {
@@ -40,6 +41,7 @@ export function filterTeamCollection(host: HTMLElement, query: string): void {
   items.forEach((item) => {
     const matches = !normalized || (item.dataset.collectionSearch ?? '').includes(normalized);
     const hidden = !matches;
+    if (item.dataset.menuFiltered !== String(hidden)) item.dataset.menuFiltered = String(hidden);
     if (item.hidden !== hidden) item.hidden = hidden;
     if (matches) visible++;
   });
@@ -47,6 +49,7 @@ export function filterTeamCollection(host: HTMLElement, query: string): void {
   if (count) count.textContent = `${visible} shown · ${count.dataset.collectionTotal ?? items.length} match current filters`;
   const empty = host.querySelector<HTMLElement>('[data-collection-empty]');
   if (empty) empty.hidden = visible > 0;
+  host.querySelectorAll('.ref-team-collection[data-menu-page-size]').forEach(panel => panel.dispatchEvent(new Event('menu-list-filtered')));
   host.querySelector<HTMLElement>('[data-team-collection="creatures"]')
     ?.dispatchEvent(new Event('team-collection-filtered'));
 }
@@ -77,23 +80,21 @@ export function referenceTeamSidebar(account: Account, state: ReferenceTeamState
 
 function bearerGrid(account: Account, state: ReferenceTeamState): string {
   const ids = ownedCharacters(account);
-  const squad = equippedSquad(account);
   const list = ids.filter(id => !state.element || getStarter(id).elementId === state.element).sort((a, b) =>
     state.sort === 'level' ? ownedProgress(account, b).level - ownedProgress(account, a).level || getStarter(a).name.localeCompare(getStarter(b).name)
       : state.sort === 'element' ? getStarter(a).elementId.localeCompare(getStarter(b).elementId) || getStarter(a).name.localeCompare(getStarter(b).name)
         : getStarter(a).name.localeCompare(getStarter(b).name));
-  return `<section class="ref-panel ref-team-collection"><header class="ref-panel-heading">Owned Element-Bearers <span data-collection-count data-collection-total="${list.length}">${list.length} shown · ${list.length} match current filters</span></header>
+  return `<section class="ref-panel ref-team-collection" data-menu-page-size="24"><header class="ref-panel-heading">Element-Bearers <span data-collection-count data-collection-total="${list.length}">${list.length} owned</span></header>
     <div class="ref-roster-toolbar"><nav class="ref-segment" aria-label="Filter owned Element-Bearers"><button data-team-element="" aria-pressed="${!state.element}">All</button>${elements.filter(element => ids.some(id => getStarter(id).elementId === element.id)).map(element => `<button data-team-element="${element.id}" aria-pressed="${state.element === element.id}">${element.name}</button>`).join('')}</nav>
     <label class="ref-collection-search">Search <input type="search" data-team-search value="${escapeDialogText(state.query ?? '')}" placeholder="Name, element or level" aria-label="Search owned Element-Bearers"></label>
     <label>Sort by <select data-team-sort data-native-select aria-label="Sort owned Element-Bearers"><option value="level" ${state.sort === 'level' ? 'selected' : ''}>Level</option><option value="name" ${state.sort === 'name' ? 'selected' : ''}>Name</option><option value="element" ${state.sort === 'element' ? 'selected' : ''}>Element</option></select></label></div>
     <div class="ref-scroll"><div class="ref-bearer-grid">${list.map(id => {
       const starter = getStarter(id);
       const progress = ownedProgress(account, id);
-      const position = squad.indexOf(id);
       const search = `${characterName(id, progress.evolution)} ${starter.name} ${starter.element} ${starter.elementId} ${progress.level} ${starter.stars}`.toLowerCase();
-      return `<button class="ref-collection-card ref-bearer-card" data-collection-item data-collection-search="${escapeDialogText(search)}" data-team-detail="${id}" style="--member-accent:${starter.color}"><span class="ref-card-art">${ownedCompanion(account, id).compactArt}</span><span class="ref-card-caption"><b>${characterName(id, progress.evolution)}</b><small>★${starter.stars} · ${starter.element} · Lv.${progress.level}</small>${position >= 0 ? `<span class="ref-chip ref-white">${position === 0 ? 'Leader' : 'In squad'}</span>` : ''}</span></button>`;
+      return `<button class="ref-collection-card ref-bearer-card" data-collection-item data-menu-page-item data-collection-search="${escapeDialogText(search)}" data-team-detail="${id}" style="--member-accent:${starter.color}" aria-label="${escapeDialogText(characterName(id, progress.evolution))}, level ${progress.level}" title="${escapeDialogText(characterName(id, progress.evolution))}"><span class="ref-card-art">${ownedCompanion(account, id).compactArt}</span><span class="ref-card-caption"><small>Lv.${progress.level}</small></span></button>`;
     }).join('')}<button class="ref-collection-card ref-add-card" data-page="summon">+ Summon more</button>
-    <p class="ref-empty" data-collection-empty ${list.length ? 'hidden' : ''}>No Element-Bearers match the current search and filters.</p></div></div></section>`;
+    <p class="ref-empty" data-collection-empty ${list.length ? 'hidden' : ''}>No matches.</p></div></div>${menuPager('Element-Bearers')}</section>`;
 }
 
 function captureGrid(account: Account, state: ReferenceTeamState): string {
@@ -255,8 +256,5 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
       ].map(([tab, label]) => `<button type="button" data-character-tab="${tab}" aria-pressed="${tab === (state.tab ?? 'overview')}">${label}</button>`).join('')}</nav>
       <section class="hub-detail ref-character-panels" aria-label="Character details and upgrades">${characterDetail(starter, state.tab ?? 'overview', account, true)}</section></section>`;
   }
-  const navigation = state.view === 'detail'
-    ? `<details class="ref-team-navigation"><summary>Squad and collection</summary>${referenceTeamSidebar(account, state)}</details>`
-    : referenceTeamSidebar(account, state);
-  return `<div class="ref-screen ref-team">${navigation}${content}</div>`;
+  return `<div class="ref-screen ref-team ref-team-focused">${content}</div>`;
 }

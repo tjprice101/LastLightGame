@@ -51,6 +51,7 @@ export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycali
         { id: 'origins', title: 'Let and Rise', summary: 'Origins of the world and the creators\' souls', content: worldLore() },
       ])}</div></dialog>
       </div>
+    <button type="button" class="menu-frame-toggle menu-header-toggle" data-menu-frame="header" aria-expanded="true" aria-label="Collapse top bar" title="Collapse top bar">&and;</button>
   </header>`;
 }
 
@@ -75,7 +76,7 @@ function primaryDestination(page: MenuPage): MenuPage | null {
 
 export function sanctuaryDock(page: MenuPage): string {
   const active = primaryDestination(page);
-  return `<nav class="sanctuary-dock" aria-label="Primary navigation">${primaryDestinations.map(([destination, label, icon, detail]) =>
+  return `<nav class="sanctuary-dock" aria-label="Primary navigation"><button type="button" class="menu-frame-toggle menu-dock-toggle" data-menu-frame="dock" aria-expanded="true" aria-label="Collapse bottom bar" title="Collapse bottom bar">&or;</button>${primaryDestinations.map(([destination, label, icon, detail]) =>
     `<button type="button" data-page="${destination}" aria-label="${detail}" aria-current="${active === destination ? 'page' : 'false'}">
       <span class="nav-symbol" aria-hidden="true">${uiIcon(icon)}</span><span class="nav-copy"><strong>${label}</strong><span>${detail}</span></span>
     </button>`).join('')}</nav>`;

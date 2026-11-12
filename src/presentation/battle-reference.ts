@@ -28,7 +28,7 @@ export function radiantBattleReference(loadout: RadiantLoadout, baseCost: number
     (loadout.ascension.lastFlare ? .5 : 0);
   return `<section class="radiant-reference info-surface">${radiantCharacterSheet(loadout, true, 'Frozen battle loadout')}
     <details class="info-lore"><summary>Frozen loadout interactions</summary>
-    <p>Personal base cost: ${baseCost} charge. ${loadout.form < 4 ? 'Future form tier: Lustrous unlocks at form4.' : ''} ${loadout.form < 6 ? 'Future form tier: Eternal unlocks at form6.' : ''}</p>
+    <p>Personal base cost: ${baseCost} charge. ${loadout.form < 4 ? 'Future form tier: Lustrous unlocks at form4.' : ''} ${loadout.form < 6 ? 'Future form tier: Shattering Light unlocks at form6.' : ''}</p>
     <p>Stat ascension ${loadout.ascension.stats ? '×1.5 active' : 'inactive'}; weapon rank ${loadout.weaponRank}
     (${percent(.02 * loadout.weaponRank)} grown Attack). Frozen four-stat values include equipped stat Conduits;
     leader, Weaken and Attack boosts apply dynamically in combat.</p>
@@ -40,6 +40,6 @@ export function radiantBattleReference(loadout: RadiantLoadout, baseCost: number
     Gear-generated output never triggers native or further gear effects. Charge respects personal/shared caps.
     Independent timed sources are retained; strongest Weaken/Exposure/Attack boost/reduction applies, rather than summing those statuses.
     Shields stack in creation order until broken. Healing and Shields round at the combat packet boundary.</p>
-    ${loadout.starter === 'sprout' && loadout.form >= 1 ? '<p>Eternal removes each living ally’s strongest Weaken even if immediate healing restores no HP.</p>' : ''}
+    ${loadout.starter === 'sprout' && loadout.form >= 1 ? '<p>Shattering Light removes each living ally’s strongest Weaken even if immediate healing restores no HP.</p>' : ''}
     </details></section>`;
 }

@@ -71,7 +71,7 @@ function enemyActor(frame: RadiantImpactFrame): string | null {
       event.source.kind === 'enemy') return event.source.enemyId;
   return null;
 }
-const tierNames = { glowing: 'Glowing Flare', lustrous: 'Lustrous Flare', eternal: 'Eternal Radiant Flare' };
+const tierNames = { glowing: 'Glowing Flare', lustrous: 'Lustrous Flare', eternal: 'Shattering Light' };
 function centre(element: Element, random?: () => number): { x: number; y: number } {
   const box = element.getBoundingClientRect();
   const jitter = (size: number) => random ? (random() - .5) * size * .35 : 0;
@@ -178,8 +178,8 @@ export class RadiantBattleView {
             ${this.healthMarkup(enemy.id)}</div>`).join('')}
           <p data-radiant-no-target hidden>No enemy target remains.</p>
         </div>
-      <section class="radiant-shared" aria-label="Shared Eternal charge"><b>Eternal Radiant Flare</b>
-        <meter class="radiant-visually-hidden" data-radiant-shared min="0" aria-label="Shared Eternal charge"></meter>
+      <section class="radiant-shared" aria-label="Shattering Light charge"><b>Shattering Light</b>
+        <meter class="radiant-visually-hidden" data-radiant-shared min="0" aria-label="Shattering Light charge"></meter>
         <span class="radiant-charge-layers radiant-shared-energy" data-radiant-shared-energy aria-hidden="true">
           <span class="radiant-energy-track"><span class="radiant-energy-liquid"></span></span>
         </span><span data-radiant-shared-text></span></section>
@@ -192,10 +192,10 @@ export class RadiantBattleView {
           <span class="radiant-card-hint" aria-hidden="true"></span>
           <button type="button" class="radiant-face" data-radiant-actor="${escape(member.id)}"
             aria-describedby="radiant-gesture-help" aria-label="${escape(characterName(member.starter, member.form))} · Normal Attack; right click to defend; hold the card and drag upward for ready Flare">
-            ${compactPortrait(starter, member.form)}<span>${index ? `Member ${index + 1}` : 'Leader'}</span></button>
-          <div class="radiant-member-head">${radiantCardName(characterName(member.starter, member.form))}
+            ${compactPortrait(starter, member.form)}<span class="radiant-visually-hidden">${index ? `Member ${index + 1}` : 'Leader'}</span></button>
+          <div class="radiant-member-head radiant-visually-hidden">${radiantCardName(characterName(member.starter, member.form))}
             <span class="radiant-identity">Lv.${member.level} · ${escape(radiantAttunement(member).replace(/^./, letter => letter.toUpperCase()))}</span></div>
-          ${this.healthMarkup(member.id)}
+          ${this.healthMarkup(member.id, true)}
           <div class="radiant-member-charge">
           <div class="radiant-charge-layers" data-radiant-energy="${escape(member.id)}" aria-label="Personal charge">
             ${[1, ...(member.form >= 4 ? [2] : [])].map(layer =>
@@ -203,9 +203,9 @@ export class RadiantBattleView {
             <span class="radiant-energy-track" aria-hidden="true">${[1, ...(member.form >= 4 ? [2] : [])].map(layer =>
               `<span class="radiant-energy-liquid" data-energy-layer="${layer}"></span>`).join('')}</span>
           </div>
-          <span data-radiant-charge-text="${escape(member.id)}"></span>
+          <span class="radiant-visually-hidden" data-radiant-charge-text="${escape(member.id)}"></span>
           </div>
-          <div class="radiant-member-foot"><span data-radiant-readiness="${escape(member.id)}"></span>
+          <div class="radiant-member-foot radiant-visually-hidden"><span data-radiant-readiness="${escape(member.id)}"></span>
           <dl class="radiant-frozen-stats" aria-label="Combat stats">${Object.entries(unit.stats).filter(([stat]) => stat !== 'hp').map(([stat, value]) =>
             `<div><dt><span aria-hidden="true">${escape(stat.slice(0, 3).toUpperCase())}</span><span class="radiant-visually-hidden">${escape(stat[0].toUpperCase() + stat.slice(1))}</span></dt><dd>${formatStat(value)}</dd></div>`).join('')}</dl></div>
         </article>`;
@@ -218,8 +218,12 @@ export class RadiantBattleView {
         <button type="button" data-radiant-results-show hidden>View saved results</button></div>
       <p class="radiant-visually-hidden" data-radiant-status role="status" aria-live="polite"></p>
       <p data-radiant-error role="alert"></p>
-      <details class="radiant-team-reference"><summary>Battle rules and leader</summary>
+      <details class="radiant-team-reference"><summary>Battle reference</summary>
         <div data-radiant-leader-reference></div>
+        <div class="radiant-member-references">${run.state.bearers.map(unit => `<section data-radiant-member-reference="${escape(unit.loadout.id)}">
+          <h3>${escape(characterName(unit.loadout.starter, unit.loadout.form))}</h3>
+          <ul class="radiant-shield-layers" data-radiant-layers></ul><ul class="radiant-status-list" data-radiant-effects></ul>
+          <p data-radiant-no-effects>No active effects.</p></section>`).join('')}</div>
         <p>Normal Attack and Defense each use this member’s action for the round. No random critical damage.
         A Normal direct hit on HP or Shields drops ${radiantChargeRules.normal} Gauge; a Flare direct hit drops ${radiantChargeRules.flareHit}.
         An enemy defeated by squad damage drops ${radiantChargeRules.defeatedEnemy} more.
@@ -236,17 +240,17 @@ export class RadiantBattleView {
         Defense halves direct enemy damage until the next round, with strongest reduction and gear enhancements; combined multiplier floor 20%.
         Shields absorb in creation order before HP.</p>
         <p>Shared charge: Normal direct hits/Defense grant 6 divided by squad size, ordinary Flares 12 divided by squad size;
-        each new round adds 18. Eternal cannot refill itself. Defeated members are not replaced or promoted.</p>
+        each new round adds 18. Shattering Light cannot refill itself. Defeated members are not replaced or promoted.</p>
       </details>
       </div></div>
       <div data-radiant-results hidden></div>
     </section>`;
     this.artworkCleanup = bindArtworkLoading(this.host);
   }
-  private healthMarkup(id: string): string {
+  private healthMarkup(id: string, compact = false): string {
     return `<div class="radiant-health" data-radiant-health="${escape(id)}"><meter min="0" aria-label="HP"></meter>
-      <span data-hp></span><span data-shield></span><ul class="radiant-shield-layers" data-radiant-layers></ul>
-      <ul class="radiant-status-list" data-radiant-effects></ul></div>`;
+      <span data-hp></span><span data-shield></span>${compact ? '' : `<ul class="radiant-shield-layers" data-radiant-layers></ul>
+      <ul class="radiant-status-list" data-radiant-effects></ul>`}</div>`;
   }
   private element<T extends Element>(selector: string): T {
     const result = this.host.querySelector<T>(selector);
@@ -342,6 +346,7 @@ export class RadiantBattleView {
       run.quit || run.state.phase !== 'player';
     if (blocked) this.gestures?.cancel();
     this.host.setAttribute('aria-busy', String(view.busy || view.entrancePending));
+    this.element<HTMLElement>('.radiant-battle').classList.toggle('is-settings-open', view.settingsOpen);
     for (const animation of this.animations) {
       if (view.settingsOpen) animation.pause();
       else if (animation.playState === 'paused') animation.play();
@@ -354,17 +359,20 @@ export class RadiantBattleView {
       unit.querySelector<HTMLElement>('[data-hp]')!.textContent = `HP ${value.hp} / ${value.maximum}`;
       unit.querySelector<HTMLElement>('[data-shield]')!.textContent = `Shield ${value.shield}`;
       unit.querySelector<HTMLElement>('[data-shield]')!.hidden = value.shield === 0;
-      const layers = unit.querySelector<HTMLElement>('[data-radiant-layers]')!;
       const id = unit.dataset.radiantHealth!;
+      const effectHost = this.host.querySelector<HTMLElement>(`[data-radiant-member-reference="${id}"]`) ?? unit;
+      const layers = effectHost.querySelector<HTMLElement>('[data-radiant-layers]')!;
       const shieldMarkup = radiantShieldRows(value.hp > 0 ? value.layers : [], run);
       if (this.shieldMarkup.get(id) !== shieldMarkup) {
         layers.innerHTML = shieldMarkup; this.shieldMarkup.set(id, shieldMarkup);
       }
-      const statuses = unit.querySelector<HTMLElement>('[data-radiant-effects]')!;
+      const statuses = effectHost.querySelector<HTMLElement>('[data-radiant-effects]')!;
       const statusMarkup = radiantStatusRows(value.hp > 0 ? this.statuses[unit.dataset.radiantHealth!] : [], run);
       if (this.statusMarkup.get(id) !== statusMarkup) {
         statuses.innerHTML = statusMarkup; this.statusMarkup.set(id, statusMarkup);
       }
+      const noEffects = effectHost.querySelector<HTMLElement>('[data-radiant-no-effects]');
+      if (noEffects) noEffects.hidden = !!(shieldMarkup || statusMarkup);
     }
     for (const button of Array.from(this.host.querySelectorAll<HTMLButtonElement>('[data-radiant-actor]'))) {
       const id = button.dataset.radiantActor!;

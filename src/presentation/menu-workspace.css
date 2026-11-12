@@ -144,3 +144,264 @@ html[data-menu-workspace] body #app .debug-profile-banner button { min-height: 2
 }
 @keyframes workspace-arrival { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
 html[data-menu-workspace]:not([data-motion="reduced"]) .home-feature-slide.is-active { animation: workspace-arrival .45s ease-out both; }
+
+/* The frames occupy their own rows; content never sits underneath navigation. */
+html[data-menu-workspace] body #app .sanctuary-shell:not(#_):not(#_) {
+  --menu-header-height: 68px;
+  --menu-dock-height: 72px;
+  display: grid !important;
+  grid-template-rows: var(--menu-header-height) minmax(0, 1fr) var(--menu-dock-height) !important;
+  height: 100dvh !important; padding: 0 !important;
+}
+html[data-menu-workspace] body #app .sanctuary-shell[data-header-collapsed="true"]:not(#_):not(#_) { --menu-header-height: 44px; }
+html[data-menu-workspace] body #app .sanctuary-shell[data-dock-collapsed="true"]:not(#_):not(#_) { --menu-dock-height: 44px; }
+html[data-menu-workspace] body #app .sanctuary-header:not(#_):not(#_) {
+  grid-row: 1; height: 100% !important; min-height: 0 !important; padding: 4px 54px 4px 16px !important;
+  grid-template-columns: minmax(150px, 1fr) auto minmax(460px, 1fr) !important;
+}
+html[data-menu-workspace] body #app .sanctuary-content:not(#_):not(#_) {
+  grid-row: 2; height: 100% !important; min-height: 0 !important;
+  padding: 12px clamp(16px, 2vw, 36px) !important; overflow: auto;
+}
+html[data-menu-workspace] body #app .sanctuary-dock:not(#_):not(#_) {
+  grid-row: 3; position: relative !important; inset: auto !important; transform: none !important;
+  width: 100% !important; height: 100% !important; margin: 0 !important; padding: 6px max(56px, calc((100% - 1040px) / 2)) !important;
+  display: grid !important; grid-template-columns: repeat(6, minmax(0, 1fr)) !important; gap: 6px !important;
+  border-radius: 0 !important; border-width: 1px 0 0 !important; z-index: 20;
+}
+html[data-menu-workspace] body #app .sanctuary-dock > [data-page]:not(#_):not(#_) {
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  gap: 10px !important; height: 100% !important; min-height: 44px !important; padding: 4px 10px !important;
+}
+html[data-menu-workspace] body #app .sanctuary-dock .nav-symbol:not(#_) { width: 28px !important; height: 28px !important; flex: 0 0 28px; }
+html[data-menu-workspace] body #app .sanctuary-dock .nav-copy > span { display: none !important; }
+html[data-menu-workspace] body #app .sanctuary-dock .nav-copy strong { font-size: 15px !important; }
+html[data-menu-workspace] body #app .menu-frame-toggle:not(#_):not(#_) {
+  position: absolute !important; right: 4px !important; top: 50% !important; transform: translateY(-50%) !important;
+  display: grid !important; place-items: center !important; width: 44px !important; height: 44px !important;
+  min-width: 44px !important; min-height: 44px !important; padding: 0 !important; border-radius: 8px !important;
+  background: #211e15 !important; color: #ffe4a0 !important; font-size: 22px !important; z-index: 2;
+}
+html[data-menu-workspace] body #app .sanctuary-shell[data-dock-collapsed="true"] .sanctuary-dock > [data-page] { display: none !important; }
+html[data-menu-workspace] body #app .sanctuary-shell[data-dock-collapsed="true"] .sanctuary-dock::before { content: "Navigation"; color: #dfc681; align-self: center; font-size: 13px; }
+html[data-menu-workspace] body #app .sanctuary-shell[data-header-collapsed="true"] .sanctuary-wallet,
+html[data-menu-workspace] body #app .sanctuary-shell[data-header-collapsed="true"] .home-profile-card { display: none !important; }
+html[data-menu-workspace] body #app .sanctuary-shell[data-header-collapsed="true"] .sanctuary-header:not(#_) { display: flex !important; justify-content: space-between; }
+html[data-menu-workspace] body #app .sanctuary-header .currency-strip > button:not(#_) { min-height: 44px !important; padding: 4px 8px !important; }
+html[data-menu-workspace] body #app .sanctuary-header .sanctuary-wallet { gap: 6px !important; }
+html[data-menu-workspace] body #app .sanctuary-header .sanctuary-wallet > button { width: 44px !important; height: 44px !important; min-width: 44px !important; }
+html[data-menu-workspace] body #app .home-menu-header > .home-profile-card:not(#_):not(#_) { height: 56px !important; min-height: 0 !important; padding: 2px 6px !important; }
+html[data-menu-workspace] body #app .home-menu-header .sanctuary-wordmark:not(#_) { font-size: 18px !important; }
+
+html[data-menu-workspace] body #app .home-dashboard:not(#_):not(#_) { max-width: 1380px; gap: 10px !important; }
+html[data-menu-workspace] body #app .home-section-heading { display: none !important; }
+html[data-menu-workspace] body #app .home-squad-grid:not(#_):not(#_) { grid-template-columns: repeat(6, minmax(0, 170px)) !important; gap: 10px !important; }
+html[data-menu-workspace] body #app .home-squad-member:not(#_):not(#_) {
+  height: clamp(190px, 28vh, 290px) !important; min-height: 0 !important; border-radius: 5px !important;
+  background: linear-gradient(160deg, #17191c, #080a0d) !important; isolation: isolate;
+}
+html[data-menu-workspace] body #app .home-squad-art:not(#_) { z-index: 1; }
+html[data-menu-workspace] body #app .home-squad-art :is(img, .character-idle):not(#_):not(#_) { object-fit: contain !important; object-position: center !important; }
+html[data-menu-workspace] body #app .home-squad-caption:not(#_) { z-index: 2; padding: 24px 6px 6px !important; text-align: center; }
+.home-element-light { position: absolute; inset: -20%; z-index: 0; background: radial-gradient(ellipse at 50% 70%, var(--member-accent) 0%, transparent 58%), repeating-conic-gradient(from 25deg at 50% 100%, transparent 0deg 14deg, color-mix(in srgb, var(--member-accent) 65%, transparent) 18deg 24deg, transparent 30deg 50deg); opacity: .7; filter: blur(7px); transform-origin: 50% 100%; }
+html[data-menu-workspace]:not([data-motion="reduced"]) .home-element-light { animation: elemental-sway 5s ease-in-out 4 alternate; }
+@keyframes elemental-sway { from { transform: skewX(-12deg) translateX(-6%); opacity: .45; } to { transform: skewX(12deg) translateX(6%); opacity: .85; } }
+html[data-menu-workspace] body #app .home-shortcuts:not(#_):not(#_) { padding: 6px 0 !important; }
+html[data-menu-workspace] body #app .home-feature-copy > strong:not(#_) { font-family: Georgia, serif !important; letter-spacing: .04em; font-size: clamp(26px, 2.5vw, 38px) !important; text-shadow: 0 2px 12px #000; }
+html[data-menu-workspace] body #app .home-feature-copy { gap: 5px !important; }
+html[data-menu-workspace] body #app .home-feature-eyebrow { letter-spacing: .12em !important; font-size: 12px !important; }
+html[data-menu-workspace] body #app .home-leader-skill:not(#_) { font-size: 13px !important; line-height: 1.4; }
+html[data-menu-workspace]:not([data-motion="reduced"]) :is(.home-shortcut-icon, .sanctuary-dock .nav-symbol) { animation: menu-icon-shimmer 3s ease-in-out 4; }
+html[data-menu-workspace]:not([data-motion="reduced"]) .home-feature-slide.is-active .home-feature-copy > strong { animation: menu-title-arrival .65s ease-out both; }
+@keyframes menu-icon-shimmer { 0%, 100% { filter: drop-shadow(0 0 2px #8ce2f633); } 50% { filter: drop-shadow(0 0 8px #8ce2f6aa); } }
+@keyframes menu-title-arrival { from { letter-spacing: .12em; opacity: .3; } to { letter-spacing: .04em; opacity: 1; } }
+
+html[data-menu-workspace] body #app .ref-team-focused:not(#_):not(#_) { display: block !important; width: 100%; height: auto !important; max-width: 1560px; margin: 0 auto; }
+html[data-menu-workspace] body #app .ref-team-focused .ref-team-collection { padding: 10px !important; gap: 8px !important; }
+html[data-menu-workspace] body #app .ref-roster-toolbar { display: grid !important; grid-template-columns: minmax(0, 1fr) 170px; gap: 8px !important; align-items: center; }
+html[data-menu-workspace] body #app .ref-roster-toolbar .ref-segment { grid-column: 1 / -1; }
+html[data-menu-workspace] body #app .ref-bearer-grid:not(#_):not(#_) { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)) !important; gap: 10px !important; align-items: start; }
+html[data-menu-workspace] body #app .ref-bearer-card:not(#_):not(#_) { display: block !important; position: relative; height: 96px !important; padding: 0 !important; border-radius: 6px !important; overflow: hidden; }
+html[data-menu-workspace] body #app .ref-bearer-card .ref-card-art:not(#_):not(#_) { display: block !important; width: 100% !important; height: 100% !important; }
+html[data-menu-workspace] body #app .ref-bearer-card .ref-card-art img:not(#_):not(#_) { width: 100% !important; height: 100% !important; max-height: none !important; object-fit: cover; }
+html[data-menu-workspace] body #app .ref-bearer-card .ref-card-caption { position: absolute; inset: auto 0 0; background: linear-gradient(transparent, #000e); padding: 8px 4px 3px !important; text-align: center; }
+html[data-menu-workspace] body #app .ref-bearer-card .ref-card-caption small { color: white; font-size: 13px !important; }
+html[data-menu-workspace] body #app .ref-add-card { min-height: 96px !important; font-size: 13px !important; padding: 4px !important; }
+.menu-pager { display: flex; justify-content: center; align-items: center; gap: 12px; }
+.menu-pager button { min-width: 44px; min-height: 44px; padding: 0 12px; }
+html[data-menu-workspace] body #app [data-menu-page-item][hidden]:not(#_):not(#_) { display: none !important; }
+html[data-menu-workspace] body #app .ref-roster-toolbar label { white-space: nowrap; overflow-wrap: normal; }
+
+html[data-menu-workspace] body #app .ref-team-detail:has(> .ref-character-header):not(#_):not(#_) { grid-template-columns: minmax(140px, 17%) minmax(0, 1fr) !important; gap: 8px !important; }
+html[data-menu-workspace] body #app .ref-team-detail > .ref-character-header { display: contents !important; }
+html[data-menu-workspace] body #app .ref-team-detail > .ref-character-submenus:not(#_) { grid-column: 2 !important; grid-row: 1 !important; }
+html[data-menu-workspace] body #app .ref-team-detail > .ref-character-panels:not(#_) { grid-column: 2 !important; grid-row: 3 !important; }
+html[data-menu-workspace] body #app .ref-team-detail:has(.ref-growth-detail):not(#_):not(#_) { grid-template-columns: 100px minmax(0, 1fr) !important; }
+html[data-menu-workspace] body #app .ref-team-detail:has(.ref-growth-detail) > .ref-character-panels:not(#_) { grid-column: 1 / -1 !important; }
+html[data-menu-workspace] body #app .ref-team-detail:has(.ref-growth-detail) .ref-character-header .ref-character-portrait:not(#_):not(#_) { height: 100px !important; width: 100px !important; grid-row: 1 / 3 !important; }
+html[data-menu-workspace] body #app .ref-team-detail .ref-character-header .ref-character-portrait:not(#_):not(#_) { height: 220px !important; grid-row: 1 / 4 !important; }
+html[data-menu-workspace] body #app .ref-character-identity:not(#_):not(#_) { display: grid !important; grid-template-columns: minmax(0, 1fr) auto !important; grid-column: 2 !important; grid-row: 2 !important; padding: 8px 12px !important; gap: 4px !important; }
+html[data-menu-workspace] body #app .ref-character-identity h2 { grid-column: 1 !important; grid-row: 1 !important; margin: 0 !important; }
+html[data-menu-workspace] body #app .ref-character-identity .ref-tags { grid-column: 2 !important; grid-row: 1 !important; }
+html[data-menu-workspace] body #app .ref-character-identity .ref-character-progress { grid-column: 1 / -1 !important; grid-row: 2 !important; }
+html[data-menu-workspace] body #app .ref-character-identity .workspace-leader-skill { grid-column: 1 / -1 !important; grid-row: 3 !important; }
+html[data-menu-workspace] body #app .ref-character-identity > [data-reference-prefix] { display: none; }
+html[data-menu-workspace] body #app .ref-character-identity h2 { font-size: 22px !important; }
+html[data-menu-workspace] body #app .ref-character-identity .ref-tags { gap: 5px !important; }
+html[data-menu-workspace] body #app .ref-character-identity .element-emblem { width: 20px !important; height: 20px !important; flex-basis: 20px !important; }
+html[data-menu-workspace] body #app .ref-character-progress { margin: 2px 0 !important; font-size: 13px !important; }
+html[data-menu-workspace] body #app .ref-character-header-actions { display: none !important; }
+html[data-menu-workspace] body #app .workspace-leader-skill { margin: 2px 0 !important; font-size: 12px !important; line-height: 1.2 !important; max-width: none !important; }
+html[data-menu-workspace] body #app .ref-character-panels:not(#_) { padding: 0 !important; border: 0 !important; }
+html[data-menu-workspace] body #app .ref-character-panels #upgrade-heading { display: none; }
+html[data-menu-workspace] body #app .ref-growth-detail .character-upgrade-grid:not(#_):not(#_) { display: grid !important; grid-template-columns: minmax(180px, .7fr) minmax(0, 1.3fr) !important; gap: 8px !important; align-items: start !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .character-upgrade-grid > .evolution-fodder { grid-column: 1 / -1 !important; }
+html[data-menu-workspace] body #app .ref-growth-detail :is(.upgrade-benefits, .upgrade-payment):not(#_) { padding: 8px !important; margin: 0 !important; }
+html[data-menu-workspace] body #app .ref-growth-detail h3 { font-size: 15px !important; margin: 0 !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .upgrade-stat-preview { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 4px !important; height: auto !important; grid-auto-rows: max-content !important; align-content: start !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .upgrade-stat-preview > span { display: grid !important; gap: 4px !important; height: auto !important; min-height: 0 !important; padding: 4px !important; font-size: 14px !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .hub-comparison { margin: 4px 0 !important; gap: 4px !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .hub-comparison > div { padding: 4px !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-silhouette { width: 48px !important; height: 48px !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .hub-comparison > div:last-child { grid-template-columns: 48px minmax(0, 1fr) !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .upgrade-resources:not(#_) { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 4px !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .upgrade-resources li:not(#_) { display: grid !important; grid-template-columns: 20px minmax(0, 1fr) !important; padding: 4px 6px !important; gap: 2px 5px !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .upgrade-resources li strong { font-size: 12px !important; line-height: 1.15 !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .upgrade-resources li > span { font-size: 14px !important; line-height: 1.2 !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .upgrade-resources li :is(img, .currency-icon) { width: 20px !important; height: 20px !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder:not(#_) { display: grid !important; grid-template-columns: auto minmax(0, 1fr) !important; grid-template-rows: none !important; height: auto !important; align-content: start !important; padding: 6px !important; margin: 4px 0 !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder > :is(p, .evolution-fodder-pages) { grid-column: 1 / -1 !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder > button { justify-self: start !important; height: 44px !important; min-height: 44px !important; padding: 4px 8px !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder :is(legend, p, small) { font-size: 12px !important; line-height: 1.2 !important; margin: 2px 0 !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder > p { max-width: none !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder-list:not(#_) { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; max-height: none !important; overflow: visible !important; gap: 4px !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder-copy:not(#_) { min-height: 44px !important; padding: 3px !important; gap: 3px !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder-copy:not(#_) { grid-template-columns: 24px 28px minmax(0, 1fr) !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder-copy > input { position: static !important; width: 24px; height: 24px; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder-info { grid-column: 3 !important; gap: 2px !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder-copy > img { width: 28px !important; height: 28px !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder-progress { display: flex !important; align-items: center; gap: 8px; margin: 4px 0 !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder-progress > button { flex: 0 0 auto; min-height: 44px !important; padding: 4px 8px !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .ref-evolution-action { grid-column: 1 / -1 !important; grid-row: auto !important; padding: 4px !important; }
+html[data-menu-workspace] body #app .evolution-fodder-copy .character-rating { display: none; }
+html[data-menu-workspace] body #app .evolution-fodder-pages .menu-pager { height: 44px; }
+html[data-menu-workspace] body #app .evolution-fodder-pages { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder-info > strong { font-size: 13px !important; line-height: 1.15 !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .evolution-fodder-state { font-size: 12px !important; line-height: 1.2 !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .ref-growth-action { gap: 6px !important; }
+html[data-menu-workspace] body #app .ref-growth-detail .quiet:empty { display: none; }
+html[data-menu-workspace] body #app .ref-growth-detail .currency-reward { font-size: 12px !important; margin: 2px 0 !important; }
+
+html[data-menu-workspace] body #app .ref-formation:not(#_) { padding: 10px !important; overflow: visible !important; }
+html[data-menu-workspace] body #app .squad-heading { margin: 0 0 8px !important; }
+html[data-menu-workspace] body #app .squad-heading h2 { font-size: 22px !important; }
+html[data-menu-workspace] body #app .squad-slots:not(#_):not(#_) { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; grid-template-rows: auto auto !important; gap: 10px !important; }
+html[data-menu-workspace] body #app .squad-slot:not(#_):not(#_) { padding: 8px !important; min-height: 0 !important; gap: 4px !important; }
+html[data-menu-workspace] body #app .squad-slot h3 { font-size: 13px !important; margin: 0 !important; }
+html[data-menu-workspace] body #app .squad-member-preview:not(#_) { min-height: 0 !important; padding: 6px !important; gap: 4px !important; }
+html[data-menu-workspace] body #app .squad-card-art:not(#_):not(#_) { width: 80px !important; height: 80px !important; min-height: 0 !important; margin: 0 auto !important; }
+html[data-menu-workspace] body #app .squad-card-copy > strong { font-size: 13px !important; line-height: 1.2; }
+html[data-menu-workspace] body #app .squad-card-copy .character-rating { display: none !important; }
+html[data-menu-workspace] body #app .squad-card-copy small { font-size: 12px !important; }
+html[data-menu-workspace] body #app .squad-slot-actions { gap: 4px !important; }
+html[data-menu-workspace] body #app .squad-slot-actions > button { min-height: 44px !important; padding: 4px 8px !important; }
+
+html[data-menu-workspace] body #app .ref-exchange:not(#_):not(#_) { display: grid !important; height: 100% !important; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) !important; grid-template-rows: auto minmax(0, 1fr) 44px !important; gap: 8px !important; }
+html[data-menu-workspace] body #app .ref-exchange > .online-store-tabs { grid-column: 1 / -1; margin: 0 !important; }
+html[data-menu-workspace] body #app .ref-exchange .exchange-catalog { grid-column: 1; grid-row: 2; padding: 8px !important; gap: 6px !important; }
+html[data-menu-workspace] body #app .ref-exchange > .menu-pager { grid-column: 1; grid-row: 3; }
+html[data-menu-workspace] body #app .ref-exchange > .ref-store-detail { grid-column: 2; grid-row: 2 / 4; display: block !important; height: auto !important; padding: 10px !important; overflow: visible !important; }
+html[data-menu-workspace] body #app .ref-exchange > .ref-store-detail > * { margin-block: 0 8px !important; }
+html[data-menu-workspace] body #app .exchange-catalog .ref-scroll { overflow: visible !important; }
+html[data-menu-workspace] body #app .exchange-catalog .info-catalog-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 6px !important; }
+html[data-menu-workspace] body #app .exchange-catalog .info-catalog-choice { padding: 6px !important; gap: 2px !important; min-height: 90px !important; height: auto !important; }
+html[data-menu-workspace] body #app .exchange-catalog .info-catalog { display: grid !important; gap: 2px !important; min-height: 0 !important; height: auto !important; padding: 0 !important; }
+html[data-menu-workspace] body #app .exchange-catalog .info-item-header { grid-template-columns: 32px minmax(0, 1fr) !important; gap: 6px !important; }
+html[data-menu-workspace] body #app .exchange-catalog .info-item-art { width: 32px !important; height: 32px !important; }
+html[data-menu-workspace] body #app .exchange-catalog .info-catalog-choice h3 { font-size: 13px !important; line-height: 1.2 !important; }
+html[data-menu-workspace] body #app .exchange-catalog .info-catalog-choice :is(.info-label, .info-number, .info-price) { font-size: 12px !important; margin: 0 !important; line-height: 1.2 !important; }
+html[data-menu-workspace] body #app .exchange-catalog .info-acquisition { padding: 0 !important; border: 0; }
+html[data-menu-workspace] body #app .ref-exchange .shop-host { padding: 4px 6px !important; min-height: 0 !important; }
+html[data-menu-workspace] body #app .ref-exchange .shop-host-mark { width: 44px !important; height: 44px !important; min-height: 0 !important; }
+html[data-menu-workspace] body #app .ref-exchange .shop-host p { display: none; }
+html[data-menu-workspace] body #app .ref-exchange .ref-store-detail > .info-catalog { min-height: 0 !important; padding: 8px !important; gap: 4px !important; }
+html[data-menu-workspace] body #app .ref-exchange .ref-store-detail > .info-catalog .info-item-art { width: 48px !important; height: 48px !important; }
+html[data-menu-workspace] body #app .ref-exchange .ref-store-detail > :is(p, footer) { margin: 0 !important; font-size: 13px !important; line-height: 1.3; }
+html[data-menu-workspace] body #app .ref-exchange .ref-exchange-buy { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 6px !important; }
+html[data-menu-workspace] body #app .ref-exchange .info-offer { display: grid !important; grid-template-columns: 1fr auto !important; padding: 6px !important; gap: 4px !important; }
+html[data-menu-workspace] body #app .ref-exchange .info-offer > :is(.info-item-art, .info-offer-description, .info-offer-owned) { display: none !important; }
+html[data-menu-workspace] body #app .ref-exchange .info-offer .info-price { font-size: 14px !important; }
+html[data-menu-workspace] body #app .ref-exchange .info-offer .info-offer-action button { min-height: 44px !important; }
+html[data-menu-workspace] body #app .ref-exchange .info-offer .info-price { grid-column: 1 / -1 !important; grid-row: 1 !important; text-align: center; overflow-wrap: anywhere; }
+html[data-menu-workspace] body #app .ref-exchange .info-offer .info-offer-action { grid-column: 1 / -1 !important; grid-row: 2 !important; justify-self: center; }
+html[data-menu-workspace] body #app .exchange-catalog .info-catalog { grid-template-columns: 1fr 1fr !important; }
+html[data-menu-workspace] body #app .exchange-catalog .info-catalog > :is(header, .info-acquisition) { grid-column: 1 / -1; }
+html[data-menu-workspace] body #app .exchange-catalog .info-catalog-choice { min-height: 90px !important; }
+
+html[data-menu-workspace] body #app .conduit-loadout:not(#_) { gap: 8px !important; grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+html[data-menu-workspace] body #app .conduit-loadout > .loadout-header { grid-column: 1; display: flex !important; flex-wrap: nowrap !important; gap: 8px !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-title { min-width: 0; }
+html[data-menu-workspace] body #app .conduit-loadout > [data-information] { grid-column: 2; grid-row: 1; min-height: 44px; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-layout { grid-column: 1 / -1; display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; gap: 10px !important; min-height: 0 !important; height: auto !important; align-items: start !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-header :is(h3, p) { font-size: 15px !important; margin: 0 !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-member-tabs { gap: 4px !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-member-tabs button { padding: 3px 6px !important; font-size: 12px !important; }
+html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .ref-panel:not(#_) { padding: 8px !important; gap: 5px !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-grid:not(#_):not(#_) { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 5px !important; }
+html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-slot:not(#_):not(#_) { min-height: 110px !important; height: auto !important; padding: 4px !important; gap: 2px !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-slot-main { display: flex !important; gap: 4px !important; align-items: center; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-slot-art { width: 28px !important; height: 28px !important; flex: 0 0 28px; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-slot-controls { display: flex; flex-wrap: wrap; gap: 2px; }
+html[data-menu-workspace] body #app .conduit-loadout :is(.loadout-slot-target, .loadout-rule-button) { font-size: 12px !important; padding: 2px 4px !important; min-height: 32px !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-slot-body :is(b, small, .conduit-element-label) { font-size: 12px !important; line-height: 1.15 !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-actions { flex-wrap: wrap; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-actions button { min-height: 32px !important; font-size: 12px !important; padding: 2px 4px !important; }
+html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-master-art:not(#_) { width: 36px !important; height: 36px !important; padding: 0 !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-master-text :is(b, small) { font-size: 12px !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-master-text > small:last-child { display: none; }
+html[data-menu-workspace] body #app .conduit-loadout :is(.loadout-bonuses, .ref-equipment-note) { font-size: 12px !important; line-height: 1.25; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-bonus-row > span { font-size: 12px !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-bonuses p { font-size: 12px !important; margin: 0 !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-owned-row:not(#_) { grid-template-columns: 28px minmax(0, 1fr) auto auto !important; gap: 4px !important; padding: 0 !important; min-height: 44px !important; }
+html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-owned-row:not(#_) > .loadout-owned-art { width: 28px !important; height: 28px !important; grid-row: 1 !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-owned-text :is(b, small) { font-size: 12px !important; line-height: 1.15 !important; }
+html[data-menu-workspace] body #app .conduit-loadout [data-loadout-equip] { grid-column: auto !important; font-size: 12px !important; padding: 3px 6px !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-filters button { font-size: 12px !important; }
+html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout:not(#_) .loadout-filters button { min-width: 44px !important; min-height: 44px !important; font-size: 12px !important; padding: 4px !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-filter-group { gap: 3px !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-grid:not(#_):not(#_) { grid-template-rows: repeat(2, minmax(110px, max-content)) !important; height: auto !important; min-height: 0 !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-slot-plus { flex: 0 0 44px !important; height: 44px !important; }
+html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-slot-plus .selection-trigger { width: 44px !important; height: 44px !important; min-height: 44px !important; }
+html[data-menu-workspace] body #app .conduit-loadout :is(.loadout-target-cue, .loadout-search-status) { font-size: 12px !important; }
+html[data-menu-workspace] body .information-modal:has(.saved-configurations) { width: min(1050px, calc(100vw - 48px)); }
+html[data-menu-workspace] body .saved-configurations .saved-loadout-card { padding: 10px; gap: 8px; }
+html[data-menu-workspace] body .saved-configurations .saved-loadout-card-heading h4 { font-size: 15px; }
+html[data-menu-workspace] body .saved-configurations .saved-loadout-actions { display: flex; flex-wrap: wrap; gap: 5px; }
+html[data-menu-workspace] body .saved-configurations .saved-loadout-actions button { min-height: 44px; padding: 4px 8px; font-size: 13px; }
+html[data-menu-workspace] body #app .ref-screen { box-sizing: border-box !important; }
+html[data-menu-workspace] body #app .ref-team-collection { min-height: 0 !important; height: auto !important; }
+html[data-menu-workspace] body #app .ref-team-collection .ref-bearer-grid { gap: 6px !important; }
+html[data-menu-workspace] body #app .ref-conduit-page:not(#_):not(#_) { height: auto !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-layout .ref-panel { align-content: start !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-owned { gap: 4px !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-search { margin-block: 0 !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-filters { gap: 4px !important; }
+html[data-menu-workspace] body #app .ref-exchange .shop-host { max-height: none !important; height: auto !important; }
+html[data-menu-workspace] body #app .ref-exchange .ref-store-detail h2 { font-size: 18px !important; margin: 4px 0 !important; }
+html[data-menu-workspace] body #app .ref-exchange .info-offer .info-price { display: flex !important; align-items: center; justify-content: center; gap: 4px !important; min-height: 0 !important; height: auto !important; font-size: 13px !important; letter-spacing: normal !important; }
+html[data-menu-workspace] body #app .ref-exchange .info-offer .currency-icon { width: 24px !important; height: 24px !important; }
+html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-master { grid-template-columns: 36px minmax(0, 1fr) minmax(130px, .75fr) !important; grid-template-rows: auto !important; padding: 6px !important; gap: 4px 8px !important; }
+html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-master-art { grid-column: 1; grid-row: 1; }
+html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-master-text { grid-column: 2; grid-row: 1; }
+html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-master-select { grid-column: 3 !important; grid-row: 1; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-master:has(> .loadout-rule-button) { grid-template-columns: 36px minmax(0, 1fr) minmax(130px, .75fr) auto !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-master > .loadout-rule-button { grid-column: 4 !important; grid-row: 1 !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-master-select > .selection-trigger:not(#_):not(#_) { height: 44px !important; min-height: 44px !important; }
+html[data-menu-workspace] body #app .ref-exchange > .ref-store-detail > footer { padding-top: 8px !important; }
+html[data-menu-workspace] body #app #conduit-equipment-result:empty { display: none; }
+html[data-menu-workspace] body #app .conduit-loadout #conduit-equipment-result { margin: 0 !important; font-size: 12px !important; line-height: 14px; }
+html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-sort .selection-trigger:not(#_):not(#_) { min-height: 44px !important; height: 44px !important; padding: 4px 8px !important; }
+html[data-menu-workspace] body #app .conduit-loadout :is(.loadout-target-cue, .loadout-search-status) { margin: 0 !important; }
+html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout :is(.loadout-sort, .loadout-master-select) > .selection-trigger:not(#_):not(#_) { margin: 0 !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-pager { padding-top: 0 !important; margin: 0 !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-slots > [data-information] { min-height: 44px; margin: 0; }

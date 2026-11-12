@@ -2557,7 +2557,7 @@ app.addEventListener('click', async (event) => {
     account = playMode === 'online' ? (await performOnline({ kind: 'equipConduit', character: owner, slot, conduit })).account : equipConduit(gameStorage, owner, slot, conduit);
     refreshLoadout(owner);
     const status = app.querySelector('#conduit-equipment-result');
-    if (status) status.textContent = conduit ? `${getConduit(conduit).name} equipped in slot ${slot + 1}.` : `Slot ${slot + 1} cleared.`;
+    if (status) status.textContent = conduit ? `Equipped in slot ${slot + 1}.` : `Slot ${slot + 1} cleared.`;
     if (conduit && isConduitId(conduit)) {
       const target = app.querySelector<HTMLElement>(`[data-loadout-slot="${slot}"]`);
       if (target) rarityFeedback(target, getConduit(conduit).rarity, 'Conduit equipped');

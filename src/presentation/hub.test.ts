@@ -127,7 +127,7 @@ describe('game-specific hub layouts', () => {
     expect(overview).toContain(`Costs ${kit.baseCost} personal charge.`);
     expect(overview).toContain(kit.passive.name);
     expect(overview).toContain(kit.leader);
-    for (const tier of ['Glowing Flare', 'Lustrous Flare', 'Eternal Radiant Flare']) expect(overview).toContain(tier);
+    for (const tier of ['Glowing Flare', 'Lustrous Flare', 'Shattering Light']) expect(overview).toContain(tier);
     expect(overview).toContain('Unlocks at Evo.');
     expect(overview).not.toContain('Elemental Gauge');
     if (starter.id === 'tide') expect(home).toContain(`<strong>${formatStat(resolveFighter('tide').stats.defense)}</strong>`);

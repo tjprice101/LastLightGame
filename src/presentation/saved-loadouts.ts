@@ -9,6 +9,7 @@ import { masterConduitIcon } from './master-conduits';
 import { escapeDialogText as escape, gameConfirm } from './game-dialog';
 import type { GameOperation } from '../online/server-game';
 import './saved-loadouts.css';
+import { information } from './information';
 
 export type SavedLoadoutOperation = Extract<GameOperation, { kind:
   'saveSquadLoadout' | 'renameSquadLoadout' | 'equipSquadLoadout' | 'deleteSquadLoadout' |
@@ -101,9 +102,9 @@ export function bindSquadLoadouts(root: ParentNode): void {
 export function conduitConfigurationsPanel(account: Account, character: string): string {
   if (!ownedCharacterInstances(account).includes(character)) return '<p>Conduit configurations are available for owned characters.</p>';
   const current = currentEquipment(account, character);
-  return `<section class="ref-panel saved-configurations" data-saved-configurations aria-label="Three named Conduit configurations">
+  const content = `<section class="ref-panel saved-configurations" data-saved-configurations aria-label="Three named Conduit configurations">
     <header class="ref-panel-heading"><h3>Conduit configurations</h3><span>${account.conduitConfigurations?.[character]?.filter(Boolean).length ?? 0} / 3 saved</span></header>
-    <p>Save your equipped Conduits and Master, then swap back anytime. Changing equipment never overwrites a saved configuration.</p>
+    <p>Save or equip a configuration. Equipment changes leave saved configurations unchanged.</p>
     <div class="saved-configuration-grid">${[0, 1, 2].map(index => {
       const entry = account.conduitConfigurations?.[character]?.[index];
       const matches = !!entry && equipmentMatches(current, entry);
@@ -111,9 +112,11 @@ export function conduitConfigurationsPanel(account: Account, character: string):
         <header class="saved-loadout-card-heading"><h4><span class="saved-configuration-number" aria-hidden="true">0${index + 1}</span>Configuration ${index + 1}</h4><span${matches ? ' class="saved-loadout-match"' : ''}>${matches ? 'Matches current' : entry ? 'Saved' : 'Empty slot'}</span></header>
         ${nameInput(entry?.name ?? `Configuration ${index + 1}`, `Configuration ${index + 1} name`)}
         <div class="saved-loadout-actions">${button('saveConduitConfiguration', entry ? 'Overwrite with current' : 'Save current')}${button('equipConduitConfiguration', 'Equip', !entry)}${button('renameConduitConfiguration', 'Rename', !entry)}</div>
-        ${entry ? `<details class="saved-configuration-equipment"><summary>Saved equipment <span>${entry.conduits.filter(Boolean).length} / 8 Conduits${entry.master ? ' + Master' : ''}</span></summary>${equipmentPreview(entry, account)}</details>` : '<div class="saved-configuration-empty"><strong>No equipment saved</strong><p>Save your current equipment here to create a quick-swap configuration.</p></div>'}
+        ${entry ? `<details class="saved-configuration-equipment"><summary>Saved equipment <span>${entry.conduits.filter(Boolean).length} / 8 Conduits${entry.master ? ' + Master' : ''}</span></summary>${equipmentPreview(entry, account)}</details>` : '<div class="saved-configuration-empty">Empty configuration</div>'}
       </article>`;
     }).join('')}</div><p data-saved-loadout-status role="status" aria-live="polite"></p></section>`;
+  return information(`conduit-configurations-${character}`, 'Conduit configurations', content,
+    `Configurations · ${account.conduitConfigurations?.[character]?.filter(Boolean).length ?? 0} / 3`);
 }
 export async function savedLoadoutOperation(button: HTMLButtonElement): Promise<SavedLoadoutOperation | null> {
   const entry = button.closest<HTMLElement>('[data-saved-entry]');

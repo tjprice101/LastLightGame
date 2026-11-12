@@ -1,5 +1,13 @@
 # Documentation hub
 
+## Compact desktop menus and battle presentation (2026-11-12)
+
+The [compact desktop contract](menus-and-inventory.md#compact-desktop-menus-and-battle-charge-presentation-2026-11-12)
+covers collapsible frames, compact portraits/growth/equipment/Market,
+pagination and configuration dialogs, Health/Shield readouts and Shattering
+Light flame presentation. The [current handoff](handoff.md#compact-desktop-menus-and-battle-presentation-follow-through-2026-11-12)
+tracks validation/publication and the subsequent core-combat request.
+
 ## Redesigned desktop menus and publication (2026-11-12)
 
 The [live menu contract](menus-and-inventory.md#live-redesigned-desktop-menus-2026-11-12)

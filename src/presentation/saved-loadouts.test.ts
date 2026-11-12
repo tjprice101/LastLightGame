@@ -65,9 +65,17 @@ describe('saved loadout controls', () => {
     expect(document.querySelector('[data-config-index="0"] .saved-loadout-match')?.textContent).toBe('Matches current');
     expect(document.querySelector<HTMLButtonElement>('[data-config-index="1"] [data-saved-loadout-action="equipConduitConfiguration"]')?.disabled).toBe(true);
     document.querySelector<HTMLDetailsElement>('.saved-configuration-equipment')!.open = true;
+    const dialog = document.querySelector<HTMLDialogElement>('dialog[id^="conduit-configurations-"]')!;
+    dialog.open = true;
+    const rename = dialog.querySelector<HTMLInputElement>('[data-saved-name]')!;
+    rename.value = 'Unsaved name';
     const art = document.querySelector('[data-loadout-slot="0"] img');
     saved.conduitEquipment!.ember = Array<null>(8).fill(null);
     expect(refreshConduitLoadout(document.body, 'ember', 'Infernis', 'infernic', saved)).toBe(true);
+    expect(document.querySelector(`dialog#${dialog.id}`)).toBe(dialog);
+    expect(dialog.open).toBe(true);
+    expect(dialog.querySelector('[data-saved-name]')).toBe(rename);
+    expect(rename.value).toBe('Unsaved name');
     expect(document.querySelector('[data-config-index="0"] .saved-loadout-match')).toBeNull();
     expect(saved.conduitConfigurations?.ember[0]?.conduits[0]).toBe('vigil-core');
     expect(document.querySelector<HTMLDetailsElement>('.saved-configuration-equipment')?.open).toBe(true);

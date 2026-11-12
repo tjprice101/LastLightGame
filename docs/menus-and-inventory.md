@@ -1,5 +1,52 @@
 # Menus and inventory
 
+## Compact desktop menus and battle charge presentation (2026-11-12)
+
+Desktop scaling is the current design scope; no mobile redesign is included.
+The header and bottom dock occupy separate viewport rows and each has a
+44px arrow control to collapse it. Their state survives navigation for the
+current session, never changing an account save or covering menu content.
+
+Home uses rectangular squad portraits with element-colored light behind the
+art, shorter captions and a more expressive carousel. There is no separate
+Home Manage squad button. Element-Bearer collections use small portrait tiles
+with level-only captions; names remain accessible. Team collection, detail,
+growth and formation screens no longer repeat the left squad sidebar.
+
+The collection has 24 entries per page. Evolution fodder has two entries per
+page, preserving checked copies when paging or filtering. Level/Evolution
+keep costs, eligibility, stat deltas and permanent-consumption warnings in
+the screen. Squad editing retains six slots and all existing protection rules.
+Team filtering resets only the Team collection pager, preserving unrelated
+selected-product and growth pages. Material Exchange uses an eight-product
+page beside the selected item's
+exact description, unlock rule, price and Buy 1/5/10 controls.
+
+Conduits keep eight ordinary slots and the Master selector beside the
+searchable, filtered, paginated owned list. Three saved configurations and
+combined effects/rules open in native in-game dialogs instead of occupying
+the whole equipment screen. Saves, rename, equip, unsaved input, dialog state
+and artwork nodes survive in-place updates. Accepted equipment feedback is
+concise and still runs only after persistence succeeds.
+
+Battle cards show Health, a fixed-space Shield amount when present, portrait
+controls and personal charge; repeated identity/stats/readiness text is
+visually hidden. Live Shield layers and status details remain in the optional
+Battle reference, including their exact owners, values and expiry rules.
+The first personal tier uses common red/pink wispy flames; the second uses
+black/white radiant flames. The shared tier is now **Shattering Light** with
+white/rainbow flames. Internal `eternal` IDs and all charge thresholds,
+sharing rules, saved runs, gestures and combat math remain unchanged in this
+presentation pass. Settings pauses charge flames. Explicit in-game Reduce
+motion provides static equivalents; the existing device-independent motion
+policy is unchanged. Home/icon effects are finite and disposable.
+
+Validation uses Vitest presentation suites and `npm run build`, plus isolated
+Chrome checks at 1024x768, 1440x900 and 1920x1080: content/dock bounds,
+pagination, saved configuration operations, Shield geometry, charge colors,
+animation over time, Settings pause and the in-game motion preference. No real
+online account or authority mutation is part of these browser checks.
+
 ## Live redesigned desktop menus (2026-11-12)
 
 The owner approved publishing the connected redesign to the main game.

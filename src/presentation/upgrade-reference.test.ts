@@ -21,6 +21,7 @@ import { archives } from './archives';
 import { characterName } from '../content/character-art';
 import { elementLabel } from './element-label';
 import { phaseZeroStatKeys, statDisplayUnit } from '../content/phase-zero-stats';
+import { bindMenuPagination } from './menu-pagination';
 
 vi.mock('./reward-screen', () => ({ presentReward: vi.fn().mockResolvedValue(undefined) }));
 vi.mock('./settings', () => ({ reducedMotion: vi.fn(() => false) }));
@@ -75,10 +76,9 @@ describe('reference Team upgrade presentation', () => {
     const host = document.createElement('main');
     host.innerHTML = referenceTeam(account, { view: 'detail', selected: 'rosetta', tab: 'upgrade-0', element: '', sort: 'level' });
     const picker = host.querySelector<HTMLElement>('.evolution-fodder')!;
-    expect(picker.parentElement?.classList.contains('upgrade-payment')).toBe(true);
-    expect(picker.closest('.upgrade-payment')?.querySelector('.upgrade-resources')).not.toBeNull();
-    expect(picker.closest('.upgrade-payment')?.querySelector('[data-upgrade="evolve"]')).not.toBeNull();
-    expect(picker.previousElementSibling?.classList.contains('ref-evolution-action')).toBe(true);
+    expect(picker.parentElement?.classList.contains('character-upgrade-grid')).toBe(true);
+    expect(picker.parentElement?.querySelector('.upgrade-payment .upgrade-resources')).not.toBeNull();
+    expect(picker.parentElement?.querySelector('.upgrade-payment [data-upgrade="evolve"]')).not.toBeNull();
     expect(picker.querySelector('[data-information]')?.textContent).toBe('View form values');
     expect(host.querySelectorAll('[data-evolution-fodder]')).toHaveLength(3);
     const checkboxes = Array.from(host.querySelectorAll<HTMLInputElement>('[data-evolution-fodder]'));
@@ -88,7 +88,7 @@ describe('reference Team upgrade presentation', () => {
     expect(checkboxes.map(input => input.disabled)).toEqual([false, false, true]);
     expect(picker.querySelector('.evolution-fodder-list')?.textContent).not.toMatch(/Copy \d|Form \d/);
     expect(picker.querySelector('legend')?.textContent).toBe('Elemental-Devourers to consume \u00b7 3 Evolution Value');
-    expect(picker.querySelector('p')?.textContent).toContain('Choose exactly 3 Evolution Value');
+    expect(picker.querySelector('p')?.textContent).toContain('Choose copies from [Passion of Crimson Roses]');
     expect(picker.textContent).toContain('Locked');
     expect(picker.textContent).toContain('permanently consumed');
     const button = host.querySelector<HTMLButtonElement>('[data-upgrade="evolve"]')!;
@@ -124,7 +124,7 @@ describe('reference Team upgrade presentation', () => {
     expect(() => updateEvolutionSelection(document.createElement('div'))).toThrow('controls are missing');
   });
 
-  it('renders every copy in a named scrollable region while retaining selection and protection', () => {
+  it('pages copies in a named region while retaining selection and protection', () => {
     const account = emptyAccount();
     account.characters.rosetta = { level: 60, evolution: 3 };
     account.fractalis = 100000;
@@ -138,15 +138,17 @@ describe('reference Team upgrade presentation', () => {
     const host = document.createElement('main');
     host.innerHTML = referenceTeam(account, { view: 'detail', selected: 'rosetta', tab: 'upgrade-0', element: '', sort: 'level' });
     document.body.append(host);
+    bindMenuPagination(host);
     const cards = Array.from(host.querySelectorAll<HTMLElement>('.evolution-fodder-copy'));
     const inputs = Array.from(host.querySelectorAll<HTMLInputElement>('[data-evolution-fodder]'));
     const grid = host.querySelector<HTMLElement>('.evolution-fodder-list')!;
     expect(grid.getAttribute('role')).toBe('region');
     expect(grid.getAttribute('aria-label')).toBe('Evolution Devourer copies');
     expect(grid.tabIndex).toBe(0);
-    expect(host.querySelector('.ref-team-sidebar')).not.toBeNull();
+    expect(host.querySelector('.ref-team-sidebar')).toBeNull();
+    expect(host.querySelector('[data-menu-page-size="2"]')).not.toBeNull();
     expect(host.querySelector('[data-fodder-page]')).toBeNull();
-    expect(cards.map(card => card.hidden)).toEqual([false, false, false]);
+    expect(cards.map(card => card.hidden)).toEqual([false, false, true]);
     expect(cards.map(card => card.dataset.rarity)).toEqual(['Common', 'Uncommon', 'Rare']);
     inputs[0].checked = true;
     grid.scrollTop = 500;
@@ -155,6 +157,10 @@ describe('reference Team upgrade presentation', () => {
     expect(host.querySelector<HTMLButtonElement>('[data-upgrade="evolve"]')!.disabled).toBe(false);
     expect(host.querySelector('[data-fodder-status]')?.textContent).toContain('3 / 3 value chosen');
     expect(inputs[2].disabled).toBe(true);
+    host.querySelector<HTMLButtonElement>('[data-menu-page="1"]')!.click();
+    expect(cards.map(card => card.hidden)).toEqual([true, true, false]);
+    host.querySelector<HTMLButtonElement>('[data-menu-page="-1"]')!.click();
+    expect(cards.map(card => card.hidden)).toEqual([false, false, true]);
     grid.focus();
     expect(document.activeElement).toBe(grid);
     grid.scrollTop = 0;
@@ -168,7 +174,7 @@ describe('reference Team upgrade presentation', () => {
     account.capturedCharacters = [{ ...createCreatureCopy('infusion:roses:3'), locked: true }];
     const host = document.createElement('main');
     host.innerHTML = referenceTeam(account, { view: 'detail', selected: 'rosetta', tab: 'upgrade-0', element: '', sort: 'level' });
-    expect(host.querySelector('.evolution-fodder-empty')?.textContent).toContain('You need 8 more Evolution Value. Capture more in [Passion of Crimson Roses].');
+    expect(host.querySelector('.evolution-fodder-empty')?.textContent).toContain('Need 8 more Evolution Value from [Passion of Crimson Roses].');
     expect(host.querySelectorAll('[data-evolution-fodder]:disabled')).toHaveLength(1);
     expect(host.querySelector('.evolution-fodder-list')?.textContent).toContain('Locked');
     expect(host.querySelector('[data-fodder-status]')?.textContent).toBe('0 / 8 value chosen \u00b7 0 available');

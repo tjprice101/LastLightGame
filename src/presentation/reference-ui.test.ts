@@ -129,8 +129,10 @@ describe('replacement reference screen structures', () => {
     const grid = gallery.slice(gallery.indexOf('class="ref-bearer-grid"'));
     expect(grid).toContain(`character-faces/${characterArt('tide', 1).art}.png`);
     expect(grid).toContain(`character-faces/${characterArt('ember', 1).art}.png`);
-    expect(grid).toContain('Leader');
-    expect(grid).toContain('In squad');
+    expect(grid).not.toContain('>Leader<');
+    expect(grid).not.toContain('>In squad<');
+    expect(gallery).not.toContain('ref-team-sidebar');
+    expect(grid).toContain(`aria-label="${characterName('tide', 1)}, level 20"`);
     const home = referenceHome(getStarter('tide'), wallet);
     const formation = home.slice(home.indexOf('class="home-squad-grid"'), home.indexOf('class="home-leader-skill"'));
     expect(formation).toContain('class="radiant-ally-art"');
@@ -149,15 +151,15 @@ describe('replacement reference screen structures', () => {
     expect(html).toContain('2 / 6 Element-Bearers');
     expect(html).toContain('class="home-squad-member is-leader"');
     expect(html.indexOf('data-team-character="tide"')).toBeLessThan(html.indexOf('data-team-character="ember"'));
-    expect(html).toContain('radiant-attunement-chip');
+    expect(referenceHomeProfile(getStarter('tide'), wallet)).toContain('radiant-attunement-chip');
     expect(html).toContain('class="home-leader-skill"');
     for (const wording of ['Frozen', 'Preview', 'preview', 'study', 'Radiant Encounters', 'data-page="radiant"']) expect(html).not.toContain(wording);
     expect(html).toContain('Squad');
-    expect(html).toContain('Manage squad');
-    expect(referenceHomeProfile(getStarter('tide'), wallet)).toContain('Current squad leader · Oceanic');
+    expect(html).not.toContain('Manage squad');
+    expect(referenceHomeProfile(getStarter('tide'), wallet)).toContain('Leader · Oceanic');
     expect(referenceHomeProfile(getStarter('tide'), wallet)).toContain('data-team-character="tide"');
     expect(html).toContain('Glasswater Reach');
-    expect(html).toContain(`25 / ${storyRules.stages} stages cleared`);
+    expect(html).toContain(`25 / ${storyRules.stages} cleared`);
     expect(html.match(/class="home-squad-member is-empty"/g)).toHaveLength(4);
     for (const page of ['events', 'stores', 'inventory', 'collections', 'team', 'story', 'summon', 'gameplay']) expect(html).toContain(`data-page="${page}"`);
     expect(html.match(/class="home-feature-slide(?: is-active)?"/g)).toHaveLength(5);
@@ -216,7 +218,7 @@ describe('replacement reference screen structures', () => {
     expect(card).toContain('class="home-feature-art"');
     expect(card).toContain('alt="" draggable="false"');
     expect(card).toContain('data-page="story"');
-    expect(card).toContain(`${completed} / ${storyRules.stages} stages cleared`);
+    expect(card).toContain(`${completed} / ${storyRules.stages} cleared`);
     expect(card).not.toContain('story-world-map.png');
     expect(wallet).toEqual(before);
   });
@@ -224,7 +226,7 @@ describe('replacement reference screen structures', () => {
   it('separates Team growth and equipment into persistent sub-menus and ability dialogs', () => {
     const wallet = account();
     const html = referenceTeam(wallet, { view: 'detail', selected: 'ember', element: '', sort: 'level' });
-    expect(html).toContain('ref-team-sidebar');
+    expect(html).not.toContain('ref-team-sidebar');
     expect(html).toContain('ref-character-header');
     expect(html).toContain('data-reference-level>12 / 30');
     expect(html.match(/class="is-filled"/g)).toHaveLength(1);
@@ -236,7 +238,7 @@ describe('replacement reference screen structures', () => {
     expect(html.match(/class="hub-ability radiant-flare/g)).toHaveLength(3);
     expect(html).not.toContain('data-conduit-slot=');
     expect(html).not.toContain('loadout-summary');
-    expect(html).toContain('data-team-view="formation">Edit squad');
+    expect(html).not.toContain('data-team-view="formation">Edit squad');
     expect(html).not.toContain('data-upgrade=');
     expect(html).toContain('data-make-leader="ember"');
     expect(html).not.toContain('character-upgrade-grid');
@@ -260,7 +262,7 @@ describe('replacement reference screen structures', () => {
     }
   });
 
-  it('filters and sorts only actual owned Element-Bearers while keeping the squad visible', () => {
+  it('filters and sorts only actual owned Element-Bearers without a squad sidebar', () => {
     const wallet = account();
     const state = { view: 'bearers', selected: 'ember', element: '', sort: 'level' } as const;
     const html = referenceTeam(wallet, state);
@@ -269,9 +271,9 @@ describe('replacement reference screen structures', () => {
     expect(grid.indexOf('data-team-detail="tide"')).toBeLessThan(grid.indexOf('data-team-detail="ember"'));
     expect(html).toContain('data-team-sort data-native-select');
     const filtered = referenceTeam(wallet, { ...state, element: 'infernic' });
-    expect(filtered).toContain('data-collection-total="1">1 shown · 1 match current filters</span>');
+    expect(filtered).toContain('data-collection-total="1">1 owned</span>');
     expect(filtered.slice(filtered.indexOf('class="ref-bearer-grid"'))).not.toContain('data-team-detail="tide"');
-    expect(filtered).toContain('data-reference-member="tide"');
+    expect(filtered).not.toContain('data-reference-member="tide"');
     expect(wallet.squad).toEqual(['tide', 'ember']);
   });
 
@@ -284,7 +286,7 @@ describe('replacement reference screen structures', () => {
     expect(header).not.toContain('data-team-view="bearers"');
     expect(header).not.toContain('data-open-loadout');
     expect(header).not.toContain('data-conduit-count');
-    expect(html).toContain('data-team-view="bearers"');
+    expect(html).not.toContain('ref-team-sidebar');
     expect(html).toContain('data-character-tab="equipment"');
     expect(html).not.toContain('data-information="bearer-lore-');
     expect(html.match(/class="hub-ability radiant-flare/g)).toHaveLength(3);
@@ -324,7 +326,7 @@ describe('replacement reference screen structures', () => {
     expect(detail).not.toContain('data-capture-conduit=');
     expect(detail).not.toContain('loadout-summary');
     expect(detail.match(/data-open-loadout/g)).toHaveLength(1);
-    expect(detail).toContain('data-team-view="formation">Edit squad');
+    expect(detail).not.toContain('data-team-view="formation">Edit squad');
     expect(detail.match(/aria-haspopup="dialog"/g)).toHaveLength(4);
     expect(detail).not.toContain(`data-level-capture="${first.instanceId}"`);
     expect(detail).toContain('Maximum level 60');

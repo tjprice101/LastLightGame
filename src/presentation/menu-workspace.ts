@@ -3,6 +3,39 @@ import type { Account } from '../game/account';
 import { radiantBearerKits } from '../content/combat-kits';
 import { radiantCharacterLoadout, radiantLeaderText } from './character-combat';
 import { escapeDialogText } from './game-dialog';
+import { bindMenuPagination } from './menu-pagination';
+
+const collapsedFrames = { header: false, dock: false };
+
+function bindMenuFrames(root: HTMLElement): void {
+  const shell = root.querySelector<HTMLElement>('.sanctuary-shell');
+  if (!shell) return;
+  const apply = (): void => {
+    shell.dataset.headerCollapsed = String(collapsedFrames.header);
+    shell.dataset.dockCollapsed = String(collapsedFrames.dock);
+    shell.querySelectorAll<HTMLButtonElement>('[data-menu-frame]').forEach(button => {
+      const frame = button.dataset.menuFrame;
+      if (frame !== 'header' && frame !== 'dock') throw new Error('Unknown menu frame.');
+      const collapsed = collapsedFrames[frame];
+      const label = `${collapsed ? 'Expand' : 'Collapse'} ${frame === 'header' ? 'top' : 'bottom'} bar`;
+      button.setAttribute('aria-expanded', String(!collapsed));
+      button.setAttribute('aria-label', label);
+      button.title = label;
+      button.innerHTML = frame === 'header' ? collapsed ? '&or;' : '&and;' : collapsed ? '&and;' : '&or;';
+    });
+  };
+  shell.querySelectorAll<HTMLButtonElement>('[data-menu-frame]').forEach(button => {
+    if (button.dataset.menuFrameBound) return;
+    button.dataset.menuFrameBound = 'true';
+    button.addEventListener('click', () => {
+      const frame = button.dataset.menuFrame;
+      if (frame !== 'header' && frame !== 'dock') throw new Error('Unknown menu frame.');
+      collapsedFrames[frame] = !collapsedFrames[frame];
+      apply();
+    });
+  });
+  apply();
+}
 
 export function workspaceUnitsMenu(): string {
   const actions = [
@@ -20,6 +53,9 @@ export function workspaceUnitsMenu(): string {
 }
 
 export function formatMenuWorkspace(root: HTMLElement, account: Account | null = null): void {
+  bindMenuFrames(root);
+  root.querySelectorAll<HTMLElement>('.exchange-catalog [data-market-material]').forEach(item => { item.dataset.menuPageItem = ''; });
+  bindMenuPagination(root);
   root.querySelectorAll<HTMLElement>('.sanctuary-dock [data-page="team"] .nav-copy > strong').forEach(label => {
     label.textContent = 'Units';
   });

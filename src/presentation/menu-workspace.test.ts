@@ -4,8 +4,39 @@ import { formatMenuWorkspace, workspaceUnitsMenu } from './menu-workspace';
 import { emptyAccount } from '../game/account';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { filterTeamCollection } from './reference-team';
+import { menuPager } from './menu-pagination';
 
 describe('live redesigned menus', () => {
+  it('does not reset the selected Market product page while applying Team collection filters', () => {
+    const root = document.createElement('div');
+    root.innerHTML = `<section class="ref-exchange" data-menu-page-size="8" data-menu-current-page="1">
+      <div class="exchange-catalog">${Array.from({ length: 16 }, (_, i) => `<button data-market-material="${i}">${i}</button>`).join('')}</div>${menuPager('Materials')}</section>
+      <section class="ref-team-collection" data-menu-page-size="1" data-menu-current-page="1">
+        <button data-collection-item data-menu-page-item></button><button data-collection-item data-menu-page-item></button>${menuPager('Units')}</section>`;
+    formatMenuWorkspace(root);
+    filterTeamCollection(root, '');
+    expect(root.querySelector('.ref-exchange')!.getAttribute('data-menu-current-page')).toBe('1');
+    expect(root.querySelector('.ref-exchange [data-menu-page-status]')!.textContent).toBe('2 / 2');
+    expect(root.querySelector('.ref-team-collection')!.getAttribute('data-menu-current-page')).toBe('0');
+  });
+  it('collapses either frame once after repeated formatting and retains state across navigation without save writes', () => {
+    const root = document.createElement('div');
+    const markup = '<div class="sanctuary-shell"><button data-menu-frame="header"></button><button data-menu-frame="dock"></button></div>';
+    root.innerHTML = markup;
+    formatMenuWorkspace(root);
+    formatMenuWorkspace(root);
+    root.querySelector<HTMLButtonElement>('[data-menu-frame="header"]')!.click();
+    expect(root.querySelector('.sanctuary-shell')!.getAttribute('data-header-collapsed')).toBe('true');
+    root.innerHTML = markup;
+    formatMenuWorkspace(root);
+    expect(root.querySelector('[data-menu-frame="header"]')!.getAttribute('aria-expanded')).toBe('false');
+    root.querySelector<HTMLButtonElement>('[data-menu-frame="header"]')!.click();
+    root.querySelector<HTMLButtonElement>('[data-menu-frame="dock"]')!.click();
+    expect(root.querySelector('.sanctuary-shell')!.getAttribute('data-dock-collapsed')).toBe('true');
+    root.querySelector<HTMLButtonElement>('[data-menu-frame="dock"]')!.click();
+    expect(root.querySelector('[data-menu-frame="dock"]')!.getAttribute('aria-label')).toBe('Collapse bottom bar');
+  });
   it('uses the production presentation without enabling the isolated test account', () => {
     const main = readFileSync(join(process.cwd(), 'src', 'main.ts'), 'utf8');
     expect(main).toContain("document.documentElement.dataset.menuWorkspace = '';");
