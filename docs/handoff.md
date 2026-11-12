@@ -2,7 +2,14 @@
 
 ## Compact desktop menus and battle presentation follow-through (2026-11-12)
 
-The next UI pass implements compact Home portraits/copy, level-only paginated
+**Published and verified:** runtime `835fae66561f109c509f54525689859841e732eb`
+is live at <https://tjprice101.github.io/LastLightGame/>.
+[Pages run 43184735465](https://github.com/tjprice101/LastLightGame/actions/runs/43184735465)
+passed all 292 test files, the configured build and deployment. Hosted
+`version.json` reports that exact runtime commit. Both release branches
+were pushed; this receipt changes documentation only.
+
+The published UI pass implements compact Home portraits/copy, level-only paginated
 Element-Bearer tiles, sidebar-free Team/growth/formation, full-width paginated
 evolution fodder, compact Conduit equipment with configuration/effect dialogs,
 an eight-product Material Exchange page, and separate collapsible header/dock
@@ -17,7 +24,7 @@ are unchanged. Charge flames pause in Settings; explicit in-game Reduce motion
 is static, preserving the existing device-independent preference. Home/icon
 effects are finite.
 
-Local validation is complete; publication is pending. Isolated Chrome checks
+Local validation is complete. Isolated Chrome checks
 passed at 1024x768, 1440x900 and 1920x1080, including real configuration
 save/rename/equip, no content overflow, stable Shield geometry, animated charge,
 Settings pause and explicit Reduce motion. A final page-two Market selection
@@ -30,8 +37,12 @@ contracts, redundant filter writes and five resource-related timeouts).
 All failed files passed their subsequent targeted reruns after the coupled
 fixes. The final `npm run build` passed TypeScript/Vite (existing chunk-size
 advisory). `node tools\bundle_server_game.mjs` produces no authority bundle
-diff: no Supabase deployment is required for this pass. A full green Pages
-run and matching hosted check are still required before claiming publication.
+diff: no Supabase deployment is required for this pass. The subsequent full
+Pages run passed all 292 files. The hosted normal application passed 31 browser
+states across all three desktop sizes, including selected Market pages,
+configuration save/rename/equip and collapsible frames, with zero browser
+errors and zero backend mutations. Browser fixtures used an isolated profile
+and disposable local save, not a real online account.
 
 Assignment order remains compact menus, battle presentation, then core
 character/combat consolidation. The new core request has not been silently
