@@ -2,6 +2,13 @@
 
 ## Publishing redesigned menus to the main game (2026-11-12)
 
+**Published and verified:** runtime commit `7a54c726c5b4414716a2bcd2b3c1f53a71c87a85`
+is live at <https://tjprice101.github.io/LastLightGame/>.
+[Pages run 43171155071](https://github.com/tjprice101/LastLightGame/actions/runs/43171155071)
+passed all 291 test files, the configured build and deployment. Hosted
+`version.json` reports that exact commit. Both release branches were pushed
+to the runtime commit; this receipt changes documentation only.
+
 The owner now approves deployment to GitHub Pages, superseding the
 local-only restriction recorded below. The normal application renders the
 redesigned desktop menus and Units navigation for real local/online accounts.
@@ -16,8 +23,8 @@ nine files. The initial full run passed 10,323 tests but failed the new
 source-contract test, the motion contract and a 20-second acquisition
 surface timeout. The source-test path and explicit in-game motion contract
 were corrected; rerunning those three files passed all 10 tests without
-changing the acquisition test or its timeout. Require the GitHub workflow's
-full suite to pass before treating the release as complete.
+changing the acquisition test or its timeout. The subsequent GitHub full
+suite passed all 291 files.
 
 Production browser validation passed 30 states at 1024x768, 1440x900 and
 1920x1080 with zero console/page errors and zero backend mutations. Normal
@@ -25,9 +32,11 @@ title entry, no test grants, real leveling/save/reload, nested navigation,
 Social access and attendance CTA/Leader Skill scroll clearance were checked.
 The attendance fixture was rendered without claiming rewards or accessing
 a real online account. Temporary browsers and servers closed after the run.
-Pages publication is next through the existing `deploy.yml` workflow.
-The hosted version must match the pushed commit; a local build or push alone
-is not proof of deployment. See the [live menu contract](menus-and-inventory.md#live-redesigned-desktop-menus-2026-11-12).
+The same browser check then passed all 30 states on the actual hosted client,
+again with zero errors or backend mutations, persistent normal local progress
+and no debug grants. Existing real online transactions were not exercised;
+no mobile validation or exhaustive all-dialog/action claim is implied.
+See the [live menu contract](menus-and-inventory.md#live-redesigned-desktop-menus-2026-11-12).
 
 ## Requested menu mock-up connected to the real local game (2026-11-12)
 
