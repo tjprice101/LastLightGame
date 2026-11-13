@@ -189,7 +189,7 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(loaded.capturedCharacters).toBeUndefined();
     const draw = summonCharacter(saved, () => 0);
     expect(write).toHaveBeenCalledTimes(1);
-    expect(draw.account).toMatchObject({ version: 11, fractalis: 12345, lycalis: 0, materials: { ...legacy.materials, 'infernic-rare': 8 },
+    expect(draw.account).toMatchObject({ version: 12, fractalis: 12345, lycalis: 0, materials: { ...legacy.materials, 'infernic-rare': 8 },
       characters: legacy.characters, firstFracture: true, receipts: legacy.receipts,
       creatures: legacy.creatures, squad: legacy.squad, dungeonStages: { infernic: 35 }, infusionStages: { heavens: 15 } });
     expect(draw.copy).toBeUndefined();

@@ -30,8 +30,7 @@ describe('isolated Radiant review fixtures', () => {
       for (let cycle = 0; cycle <= 3; cycle++) {
         const gauge = structuredClone(run.state.gauge);
         setRadiantReviewCharge(gauge, cycle);
-        const expected = cycle === 0 ? null : form < 4 || cycle === 1 ? 'glowing'
-          : form === 6 && cycle === 3 ? 'eternal' : 'lustrous';
+        const expected = cycle === 0 ? null : 'sparkling';
         expect(readyFlare(gauge, leader), `${leader} form ${form}, cycle ${cycle}`).toBe(expected);
       }
     }

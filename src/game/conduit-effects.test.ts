@@ -12,13 +12,12 @@ import {
   type RadiantCombatState, type RadiantCombatAction, type RadiantSource,
 } from './combat-engine';
 import { adaptRadiantLoadouts, type RadiantAccountGear } from './combat-loadout';
-import { personalChargeMaximum, sharedChargeThreshold } from './combat-gauge';
 
 function gear(...ids: ConduitId[]): RadiantGear {
   return Array.from({ length: 8 }, (_, index) => ids[index] ? { id: ids[index], rank: 0 } : null);
 }
 function member(starter: RadiantBearerId = 'ember', equipment?: RadiantGear, form = 6): RadiantLoadout {
-  return { id: starter, starter, level: 0, form, weaponRank: 0, masterId: null, ascension: {}, gear: equipment };
+  return { id: starter, starter, level: 0, form, convergenceRank: 1, weaponRank: 0, masterId: null, ascension: {}, gear: equipment };
 }
 function fixture(ids: ConduitId[] = [], starter: RadiantBearerId = 'ember', others: RadiantBearerId[] = []): RadiantCombatState {
   return createRadiantCombat([member(starter, gear(...ids)), ...others.map(id => member(id))],
@@ -27,9 +26,8 @@ function fixture(ids: ConduitId[] = [], starter: RadiantBearerId = 'ember', othe
 function act(state: RadiantCombatState, action: RadiantCombatAction) {
   return applyRadiantCombatAction(state, action);
 }
-function ready(state: RadiantCombatState, eternal = false): RadiantCombatState {
-  for (const gauge of state.gauge.members) gauge.charge = personalChargeMaximum(gauge);
-  if (eternal) state.gauge.sharedUnits = sharedChargeThreshold(state.gauge.eternalCasts);
+function ready(state: RadiantCombatState): RadiantCombatState {
+  for (const gauge of state.gauge.members) gauge.charge = gauge.baseCost;
   return state;
 }
 function defend(state: RadiantCombatState): RadiantCombatState {
@@ -200,8 +198,6 @@ describe('simple modifiers without incidental triggered effects', () => {
       targetIds: [starter, partner], coefficient: 1, hits: 3 });
     expect(incoming.state.gauge.members[0].charge).toBe(40);
     const finished = round(incoming.state);
-    expect(finished.state.gauge.members[0].charge).toBe(40);
-    expect(finished.state.gauge.sharedUnits).toBe(24 * 60);
     state = ready(finished.state);
     const flare = act(state, { type: 'flare', bearerId: starter,
       ...(radiantBearerKits[starter].signature.target === 'one-enemy' ? { targetId: 'enemy' } : {}) });

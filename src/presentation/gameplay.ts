@@ -114,7 +114,7 @@ function gameplayInformation(): string {
     { id: 'roses', title: 'Passion of Crimson Roses', summary: 'Rosethorn materials', content: roseEventRules },
     { id: 'machines', title: 'Awaken the Machines', summary: 'Conduits, components and Masters', content: machineRulesText },
     { id: 'war', title: 'Elemental War', summary: 'Defeat challengers for a chance to recruit them', content: `<p>${warLore}</p><p>${warRulesText}</p>` },
-    { id: 'continuing', title: 'Between battles', summary: 'What carries over', content: `<ul><li>Staged activities: Health restores; personal charge and the shared Shattering Light charge carry over.</li><li>Training: Health, Shields, status effects, guard, personal charge, the shared Shattering Light charge and defeated members carry over.</li><li>Settings keeps your run. Quitting ends it, but keeps earned rewards.</li></ul>` },
+    { id: 'continuing', title: 'Between battles', summary: 'What carries over', content: `<ul><li>Staged activities: Health restores; personal Luminosity carries over.</li><li>Training: Health, Shields, status effects, guard, personal Luminosity and defeated members carry over.</li><li>Settings keeps your run. Quitting ends it, but keeps earned rewards.</li></ul>` },
   ]);
 }
 

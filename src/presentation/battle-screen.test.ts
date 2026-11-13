@@ -215,7 +215,7 @@ describe('saved six-member Radiant battle surface', () => {
     [100.1, '100%', '.1%', true],
     [150, '100%', '50%', true],
     [200, '100%', '100%', true],
-  ] as const)('layers %s saved charge over one continuous energy track', async (charge, first, second, lustrous) => {
+  ] as const)('layers %s personal charge over one continuous energy track', async (charge, first, second, secondLayer) => {
     const { view, host } = fixture(1, 6, undefined, 25, undefined, undefined, false,
       state => { state.gauge.members[0].charge = charge; });
     applyMotion('reduced'); await view.finishEntrance();
@@ -225,12 +225,12 @@ describe('saved six-member Radiant battle surface', () => {
     const overlay = energy.querySelector<HTMLElement>('[data-energy-layer="2"]')!;
     if (charge === 100.1) expect(parseFloat(overlay.style.width)).toBeCloseTo(.1);
     else expect(overlay.style.width).toBe(second);
-    expect(energy.classList.contains('is-lustrous')).toBe(lustrous);
+    expect(energy.classList.contains('has-second-layer')).toBe(secondLayer);
     expect(energy.classList.contains('is-flowing')).toBe(charge > 0);
     expect(energy.querySelectorAll('meter.radiant-visually-hidden')).toHaveLength(2);
     expect(energy.querySelector<HTMLMeterElement>('[data-layer="2"]')!.value).toBeCloseTo(Math.max(0, charge - 100));
   });
-  it('renders six stable per-form face controls, four stats, two personal layers and exact shared charge', async () => {
+  it('renders six stable per-form face controls, four stats, personal layers and exact Luminosity', async () => {
     const { view, host, session } = fixture(); applyMotion('reduced'); await view.finishEntrance();
     expect(host.querySelectorAll('[data-radiant-actor]')).toHaveLength(6);
     expect(host.querySelectorAll('.compact-portrait img')).toHaveLength(6);
@@ -249,10 +249,8 @@ describe('saved six-member Radiant battle surface', () => {
     expect(host.querySelectorAll('.radiant-allies .compact-portrait')).toHaveLength(0);
     expect(host.querySelector('.radiant-squad .radiant-ally-art')).toBeNull();
     expect(host.textContent).not.toMatch(/Critical|Shatter Damage|Elemental Damage/);
-    expect(host.querySelector('.radiant-shared b')!.textContent).toBe('Shattering Light');
+    expect(host.querySelector('[data-radiant-shared]')).toBeNull();
     expect(host.querySelectorAll('.radiant-member-head.radiant-visually-hidden, .radiant-member-foot.radiant-visually-hidden')).toHaveLength(12);
-    expect(host.querySelector('[data-radiant-shared-text]')!.textContent).toBe('0 / 100');
-    expect(host.querySelector<HTMLMeterElement>('[data-radiant-shared]')!.max).toBe(100);
     expect(host.getAttribute('aria-busy')).toBe('false');
     const image = host.querySelector('.compact-portrait img');
     const enemyImage = host.querySelector('.radiant-enemy-art');
@@ -270,15 +268,13 @@ describe('saved six-member Radiant battle surface', () => {
     expect(parseFloat(host.querySelector<HTMLElement>('[data-radiant-energy="ember"] [data-energy-layer="1"]')!.style.width))
       .toBeCloseTo(Math.min(savedCharge, 100));
   });
-  it('renders shared charge in its own single liquid track without changing its accessible value', async () => {
+  it('renders no shared meter and exposes the full personal Luminosity capacity accessibly', async () => {
     const { view, host } = fixture(1, 6, undefined, 25, undefined, undefined, false,
-      state => { state.gauge.sharedUnits = 3000; });
+      state => { state.gauge.members[0].charge = 150; });
     applyMotion('reduced'); await view.finishEntrance();
-    const shared = host.querySelector<HTMLElement>('[data-radiant-shared-energy]')!;
-    expect(shared.querySelectorAll('.radiant-energy-liquid')).toHaveLength(1);
-    expect(shared.querySelector<HTMLElement>('.radiant-energy-liquid')!.style.width).toBe('50%');
-    expect(shared.classList.contains('is-flowing')).toBe(true);
-    expect(host.querySelector<HTMLMeterElement>('[data-radiant-shared]')!.value).toBe(50);
+    expect(host.querySelector('[data-radiant-shared-energy]')).toBeNull();
+    expect(host.querySelector('[data-radiant-shared]')).toBeNull();
+    expect(host.querySelector('[data-radiant-charge-text="ember"]')!.textContent).toBe('150 / 200 Luminosity');
   });
   it('retains a defeated member’s stored charge without animating it', async () => {
     const { view, host } = fixture(2, 6, undefined, 25, undefined, undefined, false, state => {
@@ -422,12 +418,12 @@ describe('saved six-member Radiant battle surface', () => {
     expect(transport.execute).toHaveBeenCalledTimes(1);
     expect(transport.execute.mock.calls[0][0].operation).toEqual({ kind: 'action', action: { type: 'flare', bearerId: 'tide' } });
   });
-  it('form1 has one layer, no shared meter, and released forms use reviewed face art', async () => {
+  it('form1 has one personal layer and released forms use reviewed face art', async () => {
     const { view, host } = fixture(6, 1); applyMotion('reduced'); await view.finishEntrance();
     expect(host.querySelectorAll('[data-radiant-charge]')).toHaveLength(6);
     expect(host.querySelectorAll('[data-energy-layer="1"]')).toHaveLength(6);
     expect(host.querySelectorAll('[data-energy-layer="2"]')).toHaveLength(0);
-    expect(host.querySelector<HTMLElement>('.radiant-shared')!.hidden).toBe(true);
+    expect(host.querySelector('.radiant-shared')).toBeNull();
     expect(host.querySelector<HTMLImageElement>('[data-character="rosetta"] img')!.alt).not.toContain('pending');
     expect(host.querySelector<HTMLImageElement>('[data-character="ember"] img')!.alt).not.toContain('pending');
   });
@@ -505,7 +501,7 @@ describe('saved six-member Radiant battle surface', () => {
     const caldrexLiquid = host.querySelector<HTMLElement>('[data-radiant-energy="caldrex"] [data-energy-layer="1"]')!;
     expect(parseFloat(caldrexLiquid.style.width)).toBeCloseTo(caldrexBefore.charge / caldrexBefore.baseCost * 100);
     expect(action(host, 'caldrex').disabled).toBe(false);
-    expect(host.querySelector('[data-radiant-readiness="caldrex"]')!.textContent).toBe('Final Flare · Sparkle ready');
+    expect(host.querySelector('[data-radiant-readiness="caldrex"]')!.textContent).toBe('Sparkling Convergent Light ready');
     const second = view.act('flare');
     await vi.waitFor(() => expect(session.view().saved.revision).toBe(3));
     expect(transport.execute.mock.calls[1][0].operation).toMatchObject({

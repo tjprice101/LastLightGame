@@ -47,7 +47,7 @@ describe('Max Level plans and transactions', () => {
     const writes = store.writes();
     const after = levelCharacterToMaximum(store.saved, plan);
     expect(store.writes()).toBe(writes + 1);
-    expect(after.characters[character.id]).toEqual({ level: 90, evolution: 5 });
+    expect(after.characters[character.id]).toEqual({ level: 90, evolution: 5, convergenceRank: 1 });
     expect(after.materials['rosethorn-omnic']).toBeUndefined();
     after.characters[character.id] = { level: 90, evolution: 6 };
     after.materials = { 'rosethorn-common': 12, 'rosethorn-uncommon': 3, 'rosethorn-rare': 3,
@@ -109,7 +109,7 @@ describe('Max Level plans and transactions', () => {
     const after = levelCharacterToMaximum(store.saved, plan);
     expect(store.writes()).toBe(writes + 1);
     expect(loadAccount(store.saved)).toEqual(after);
-    expect(after.characters.ember).toEqual({ level: 30, evolution: 1, weaponRank: 3 });
+    expect(after.characters.ember).toEqual({ level: 30, evolution: 1, weaponRank: 3, convergenceRank: 1 });
     expect(after.fractalis).toBe(before.fractalis - 1230);
     expect(after.materials['infernic-common']).toBe(940);
     for (const key of ['lycalis', 'squad', 'receipts', 'firstFracture'] as const) expect(after[key]).toEqual(before[key]);

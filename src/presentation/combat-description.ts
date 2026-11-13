@@ -1,17 +1,17 @@
 import { radiantFlares, radiantMasters, type RadiantLoadout, type RadiantFlareOffer } from '../content/combat-kits';
-import type { FlareTier } from '../game/combat-gauge';
+import type { ConvergentLightTier } from '../content/progression';
 
 const percent = (value: number): string => `${Number((value * 100).toPrecision(12))}%`;
 const number = (value: number): string => String(Number(value.toPrecision(12)));
 
-export function radiantFlareNeedsTarget(loadout: RadiantLoadout, tier: FlareTier): boolean {
+export function radiantFlareNeedsTarget(loadout: RadiantLoadout, tier: ConvergentLightTier): boolean {
   return radiantFlares[loadout.starter][tier].target === 'one-enemy';
 }
 export function radiantFlareDescription(offer: RadiantFlareOffer, element = ''): string[] {
   const lines: string[] = [];
   const enemies = offer.target === 'all-enemies' ? 'All living enemies' : 'Selected living enemy';
-  const grade = offer.comboHits === 4 ? 'Sparkle' : offer.comboHits === 8 ? 'Shimmer' : 'Lustrous';
-  if (offer.damage) lines.push(`${grade} ${offer.comboHits} Combo${element ? ` ${element}` : ''} damage to ${offer.target === 'all-enemies' ? 'all enemies' : 'one enemy'}: ${percent(offer.damage)} Attack total.`);
+  const grade = offer.comboHits === 4 ? 'Sparkling' : offer.comboHits === 8 ? 'Glimmering' : 'Ultimate';
+  if (offer.damage) lines.push(`${grade} Convergent Light: ${offer.comboHits} ${element ? `${element} ` : ''}hits on ${offer.target === 'all-enemies' ? 'all enemies' : 'one enemy'} for ${percent(offer.damage)} Attack total.`);
   if (offer.burn) lines.push(`${enemies} surviving impact: Burn at ${percent(offer.burn)} caster Attack per enemy phase for ${offer.burnPhases} phases.`);
   if (offer.weaken) lines.push(`${enemies} surviving impact: ${percent(offer.weaken)} Weaken for ${offer.weakenPhases} enemy phases.`);
   if (offer.exposure) lines.push(`${enemies} surviving impact: ${percent(offer.exposure)} Exposure (increased direct damage taken) for ${offer.exposurePhases} enemy phases.`);

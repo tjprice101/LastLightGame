@@ -198,7 +198,6 @@ describe('Calamity atomic preattack and split packets', () => {
     expect(split.result.events.filter(e => e.type === 'damage')).toHaveLength(4);
     expect(single.result.state.gauge.members[0].charge).toBe(10);
     expect(split.result.state.gauge.members[0].charge).toBe(40);
-    expect(split.result.state.gauge.sharedUnits).toBe(single.result.state.gauge.sharedUnits);
     expect(() => applyRadiantCombatAction(split.before, { type: 'enemy-attack', enemyId: 'foe',
       targetIds: ['ember'], coefficient: 1, hits: 17 })).toThrow('bounded');
   });

@@ -2,22 +2,22 @@ import { radiantFlares, radiantMasters, type RadiantLoadout } from '../content/c
 import { scheduledEnemySkill } from '../content/enemy-skills';
 import { applyRadiantCombatAction, createRadiantCombat, type RadiantCombatState,
   type RadiantCombatEvent, type RadiantCombatAction } from './combat-engine';
-import { personalChargeUnit, readyFlare, sharedChargeThreshold } from './combat-gauge';
+import { personalChargeUnit, readyFlare } from './combat-gauge';
 import type { RadiantPressureEnemy } from './enemy-pressure-encounters';
 
 export type RadiantPressurePolicy = 'balanced' | 'normal-only' | 'support-only';
 export interface RadiantPressureMetrics {
   outgoingHPDamage: number; outgoingAbsorbed: number; incomingHPDamage: number; incomingAbsorbed: number;
   effectiveHealing: number; enemyHealing: number; shieldCreated: number; enemyShieldCreated: number;
-  personalGranted: number; personalSpent: number; sharedGrantedUnits: number; sharedSpentUnits: number;
-  normals: number; defenses: number; flares: number; eternalFlares: number; statuses: number;
+  personalGranted: number; personalSpent: number;
+  normals: number; defenses: number; flares: number; ultimateFlares: number; statuses: number;
   currency: number;
 }
 export interface RadiantPressureResult {
   outcome: 'victory' | 'defeat' | 'timeout' | 'stalemate';
   completedRounds: number; roundsExecuted: number; displayedRound: number; actions: number; surviving: number;
   initialHP: number; finalHP: number; minimumTeamHP: number; finalShield: number; maximumShield: number;
-  enemyHP: number; enemyLowestHP: number; finalPersonalCharge: number; finalSharedUnits: number;
+  enemyHP: number; enemyLowestHP: number; finalPersonalCharge: number;
   metrics: RadiantPressureMetrics;
   rounds: { round: number; teamHP: number; shield: number; enemiesHP: number; living: number }[];
 }
@@ -36,8 +36,7 @@ export function chooseRadiantPressureAction(
     const useful = masterStrike || offer.damage > 0 || offer.burn > 0 || wounded ||
       (offer.shieldDefense > 0 || offer.shieldHP > 0) && state.bearers.some(member => member.hp > 0 && !member.shields.length) ||
       offer.attackBuff > 0 || offer.reduction > 0;
-    // Hold the first bar for a stronger Flare unless healing/guarding is urgent.
-    if (useful && (tier !== 'glowing' || actor.loadout.form < 4 || wounded || endangered))
+    if (useful)
       return { type: 'flare', bearerId: id, ...(offer.target === 'one-enemy' || masterStrike ? { targetId: target.id } : {}) };
   }
   return policy === 'support-only' || policy === 'balanced' && endangered
@@ -82,8 +81,8 @@ export function runRadiantPressure(
   const metrics: RadiantPressureMetrics = {
     outgoingHPDamage: 0, outgoingAbsorbed: 0, incomingHPDamage: 0, incomingAbsorbed: 0,
     effectiveHealing: 0, enemyHealing: 0, shieldCreated: 0, enemyShieldCreated: 0,
-    personalGranted: 0, personalSpent: 0, sharedGrantedUnits: 0, sharedSpentUnits: 0,
-    normals: 0, defenses: 0, flares: 0, eternalFlares: 0, statuses: 0, currency: 0,
+    personalGranted: 0, personalSpent: 0,
+    normals: 0, defenses: 0, flares: 0, ultimateFlares: 0, statuses: 0, currency: 0,
   };
   const hp = () => state.bearers.reduce((sum, member) => sum + member.hp, 0);
   const shield = () => state.bearers.reduce((sum, member) => sum + member.shields.reduce((s, layer) => s + layer.remaining, 0), 0);
@@ -103,23 +102,21 @@ export function runRadiantPressure(
     else if (event.type === 'shield') metrics[event.source.kind === 'enemy' ? 'enemyShieldCreated' : 'shieldCreated'] += event.amount;
     else if (event.type === 'currency') metrics.currency += event.amount;
     else if (event.type === 'status') metrics.statuses++;
-    else if (event.type === 'flare') { metrics.flares++; if (event.tier === 'eternal') metrics.eternalFlares++; }
+    else if (event.type === 'flare') { metrics.flares++; if (event.tier === 'ultimate') metrics.ultimateFlares++; }
   };
   const apply = (action: RadiantCombatAction) => {
-    const beforePersonal = personal(), beforeShared = state.gauge.sharedUnits;
-    let spent = 0, sharedSpent = 0;
+    const beforePersonal = personal();
+    let spent = 0;
     if (action.type === 'flare') {
       const member = state.gauge.members.find(member => member.id === action.bearerId)!;
       const tier = readyFlare(state.gauge, member.id)!;
-      spent = member.baseCost * (tier === 'glowing' ? 1 : 2);
-      sharedSpent = tier === 'eternal' ? sharedChargeThreshold(state.gauge.eternalCasts) : 0;
+      spent = member.baseCost * (tier === 'sparkling' ? 1 : 2);
     }
     const result = applyRadiantCombatAction(state, action);
     state = result.state; result.events.forEach(record);
     metrics.personalSpent += spent;
     metrics.personalGranted = Math.round((metrics.personalGranted + personal() - beforePersonal + spent) *
       personalChargeUnit) / personalChargeUnit;
-    metrics.sharedSpentUnits += sharedSpent; metrics.sharedGrantedUnits += state.gauge.sharedUnits - beforeShared + sharedSpent;
     if (action.type === 'normal') metrics.normals++;
     if (action.type === 'defense') metrics.defenses++;
     minimumTeamHP = Math.min(minimumTeamHP, hp()); maximumShield = Math.max(maximumShield, shield());
@@ -153,5 +150,5 @@ export function runRadiantPressure(
     surviving: state.bearers.filter(member => member.hp > 0).length,
     initialHP, finalHP: hp(), minimumTeamHP, finalShield: shield(), maximumShield,
     enemyHP: state.enemies.reduce((sum, enemy) => sum + enemy.hp, 0), enemyLowestHP: lowWater(),
-    finalPersonalCharge: personal(), finalSharedUnits: state.gauge.sharedUnits, metrics, rounds };
+    finalPersonalCharge: personal(), metrics, rounds };
 }

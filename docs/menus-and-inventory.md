@@ -30,16 +30,14 @@ and artwork nodes survive in-place updates. Accepted equipment feedback is
 concise and still runs only after persistence succeeds.
 
 Battle cards show Health, a fixed-space Shield amount when present, portrait
-controls and personal charge; repeated identity/stats/readiness text is
-visually hidden. Live Shield layers and status details remain in the optional
-Battle reference, including their exact owners, values and expiry rules.
-The first personal tier uses common red/pink wispy flames; the second uses
-black/white radiant flames. The shared tier is now **Shattering Light** with
-white/rainbow flames. Internal `eternal` IDs and all charge thresholds,
-sharing rules, saved runs, gestures and combat math remain unchanged in this
-presentation pass. Settings pauses charge flames. Explicit in-game Reduce
-motion provides static equivalents; the existing device-independent motion
-policy is unchanged. Home/icon effects are finite and disposable.
+controls and each member's personal Luminosity/readiness; repeated
+identity/stats/readiness text is visually hidden. Readiness follows the
+member's saved Convergent Light rank; no shared charge meter remains. Live
+Shield layers and status details remain in the optional Battle reference,
+including their exact owners, values and expiry rules. Settings pauses charge
+flames. Explicit in-game Reduce motion provides static equivalents; the
+existing device-independent motion policy is unchanged. Home/icon effects are
+finite and disposable.
 
 Validation uses Vitest presentation suites and `npm run build`, plus isolated
 Chrome checks at 1024x768, 1440x900 and 1920x1080: content/dock bounds,
@@ -2895,9 +2893,13 @@ latest HTML, including its subviews and interactions, supersedes historical
 layout conventions in this document. See the [screen-by-screen replacement
 status](mono-ui-and-cloud-saves.md#reference-structure-replacement-d-183).
 
-Home has no promotional banner panels. Desktop owns the viewport with contained
-panel scrolling; at 960px and below it stacks into page scrolling and bottom
-navigation. Team uses the persistent Squad/Collection sidebar and simultaneous
+Home has no promotional banner panels: it shows the acquired six-slot squad
+and exact leader effect, quick routes, and a manually controlled Story/Summon/
+Activities carousel driven by current story progress and real banner data.
+Empty slots open Team, and carousel/navigation actions do not write account data.
+Desktop owns the viewport with contained panel scrolling; at 960px and below
+it stacks into page scrolling and bottom navigation. Team uses the persistent
+Squad/Collection sidebar and simultaneous
 four-panel detail, not the historical horizontal categories/tab rail. Collection
 and selected-product views are separate. Inventory shows both holdings panels.
 Summon separates left pity, central hero, right action and bottom rate tiers.

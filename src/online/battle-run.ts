@@ -21,7 +21,7 @@ import { radiantPressureEnemyAction } from '../game/enemy-pressure';
 import { applyRadiantCombatAction, createRadiantCombat, validateRadiantCombat, validateRadiantDropEvents,
   type RadiantCombatAction, type RadiantCombatEvent, type RadiantCombatState } from '../game/combat-engine';
 
-export const radiantContinuationMediaType = 'application/vnd.lastlight.radiant-continuation-v1+json';
+export const radiantContinuationMediaType = 'application/vnd.lastlight.radiant-continuation-v2+json';
 export const radiantClientAccept = `application/json, ${radiantContinuationMediaType}`;
 
 export type RadiantRunErrorCode = 'manual-squad' | 'invalid-input' | 'stale-revision' |
@@ -40,7 +40,7 @@ export interface RadiantContinuation {
   state: RadiantCombatState;
 }
 export interface FrozenRadiantRun {
-  version: 4;
+  version: 5;
   id: string;
   encounter: number;
   anchor: RadiantPressureAnchor;
@@ -92,8 +92,9 @@ export function validateRadiantCheckpoint(value: unknown): RadiantCheckpoint {
       !Number.isSafeInteger(value.revision) || value.revision < 0) throw new Error();
     validateAccount(value.account);
     if (value.notice !== undefined && typeof value.notice !== 'string') throw new Error();
-    if (value.run !== null) validateFrozenRadiantRun(value.run);
-    return structuredClone(value) as unknown as RadiantCheckpoint;
+    const retired = value.run !== null && record(value.run) && (value.run.version === 3 || value.run.version === 4);
+    if (value.run !== null && !retired) validateFrozenRadiantRun(value.run);
+    return { ...structuredClone(value), ...(retired ? { run: null, notice: retiredRadiantRunNotice } : {}) } as unknown as RadiantCheckpoint;
   } catch {
     throw new RadiantRunError('unavailable', 'Invalid saved Radiant checkpoint.');
   }
@@ -142,6 +143,7 @@ export function radiantAccountLoadouts(account: Account): RadiantLoadout[] {
       throw new RadiantRunError('manual-squad', 'Your squad includes a captured Elemental-Devourer or unavailable member. Open Team › Squad and choose acquired Element-Bearers only.');
     const progress = account.characters[id as RadiantBearerId]!;
     return { id, starter: id as RadiantBearerId, level: progress.level, form: progress.evolution,
+      convergenceRank: progress.convergenceRank ?? 1,
       weaponRank: progress.weaponRank ?? 0, ascension: structuredClone(progress.ascension ?? {}),
       masterId: null } satisfies RadiantLoadout;
   });
@@ -171,7 +173,7 @@ function initialize(anchor: RadiantPressureAnchor, calibration: FrozenRadiantRun
     }
     validateRadiantCombat(initial);
   }
-  return { version: 4, id: entropy.runId, encounter, anchor, calibration,
+  return { version: 5, id: entropy.runId, encounter, anchor, calibration,
     encounterSeed: entropy.encounterSeed, initialChargeSeed: entropy.chargeSeed,
     initialTargetSeed: entropy.targetSeed, targetSeed: entropy.targetSeed, enemies,
     initial: structuredClone(initial), state: initial,
@@ -300,7 +302,7 @@ export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: Radiant
     discover = true;
   } else {
     const run = game.radiantStudy;
-    if (!run || run.version !== 4 || run.id !== request.runId || run.encounter !== request.encounter)
+    if (!run || run.version !== 5 || run.id !== request.runId || run.encounter !== request.encounter)
       throw new RadiantRunError('stale-run', 'The saved Radiant encounter does not match.');
     validateFrozenRadiantRun(run);
     if (run.enemies.length !== run.state.enemies.length ||
@@ -376,7 +378,7 @@ function canonical(value: unknown): string {
 }
 export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
   try {
-    if (!record(value) || value.version !== 4 || typeof value.id !== 'string' || !uuid.test(value.id) ||
+    if (!record(value) || value.version !== 5 || typeof value.id !== 'string' || !uuid.test(value.id) ||
       typeof value.encounter !== 'number' || !Number.isSafeInteger(value.encounter) || value.encounter < 1 ||
       typeof value.quit !== 'boolean' || !record(value.anchor) ||
       !['authored-control', 'radiant-pressure-v2'].includes(String(value.calibration)) ||
@@ -454,7 +456,7 @@ export function validateRadiantRunSnapshot(value: unknown): RadiantRunSnapshot {
       throw new Error();
     validateAccount(value.state.account);
     const state = structuredClone(value.state);
-    const retired = record(state.radiantStudy) && state.radiantStudy.version === 3;
+    const retired = record(state.radiantStudy) && (state.radiantStudy.version === 3 || state.radiantStudy.version === 4);
     if (retired) delete state.radiantStudy;
     else if (state.radiantStudy !== undefined) validateFrozenRadiantRun(state.radiantStudy);
     return { ...structuredClone(value), state, ...(retired ? { notice: retiredRadiantRunNotice } : {}) } as unknown as RadiantRunSnapshot;
@@ -470,7 +472,7 @@ const eventFields = {
   defeated: { text: ['targetId'], number: [] },
   'gauge-drop': { text: ['enemyId', 'bearerId', 'trigger'], number: ['amount'] },
   flare: { text: ['bearerId', 'tier', 'name'], number: [] },
-  charge: { text: ['bearerId'], number: ['personal', 'sharedUnits', 'bonusRolls', 'bonusOffered'] },
+  charge: { text: ['bearerId'], number: ['personal', 'bonusRolls', 'bonusOffered'] },
   round: { text: [], number: ['round'] },
   guard: { text: ['targetId'], number: [] },
   status: { text: ['targetId', 'status'], number: ['magnitude', 'remaining'] },
@@ -490,7 +492,7 @@ function validEvent(value: unknown): boolean {
   if (value.type === 'damage' && (!['direct', 'periodic', 'generated'].includes(String(value.origin)) ||
     !Array.isArray(value.shields) || !value.shields.every(shield => record(shield) && validSource(shield.source) &&
       typeof shield.amount === 'number' && Number.isFinite(shield.amount) && shield.amount >= 0))) return false;
-  if (value.type === 'flare' && !['glowing', 'lustrous', 'eternal'].includes(String(value.tier))) return false;
+  if (value.type === 'flare' && !['sparkling', 'glimmering', 'ultimate'].includes(String(value.tier))) return false;
   if (value.type === 'gauge-drop' && (!['hit', 'defeat'].includes(String(value.trigger)) ||
     !Number.isSafeInteger(value.amount) || Number(value.amount) < 1 ||
     !Number.isSafeInteger(Number(value.amount) * 10))) return false;

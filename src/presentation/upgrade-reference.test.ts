@@ -273,9 +273,9 @@ describe('reference Team upgrade presentation', () => {
     const header = host.querySelector('.ref-character-header');
     const portrait = header?.querySelector('img');
     const navigation = host.querySelector('.ref-character-submenus');
-    const glowing = host.querySelector<HTMLElement>('[data-radiant-flare="glowing"]')!;
-    expect(glowing.textContent).toContain(`Costs ${radiantBearerKits.tide.baseCost} Luminosity.`);
-    expect(host.querySelector('[data-radiant-flare="lustrous"]')?.classList.contains('is-locked')).toBe(true);
+    const sparkling = host.querySelector<HTMLElement>('[data-radiant-flare="sparkling"]')!;
+    expect(sparkling.textContent).toContain(`Costs ${radiantBearerKits.tide.baseCost} Luminosity to activate.`);
+    expect(host.querySelector('[data-radiant-flare="glimmering"]')?.classList.contains('is-locked')).toBe(true);
     expect(host.querySelector('.radiant-passive')?.textContent).toContain(radiantBearerKits.tide.passive.name);
     expect(host.querySelector('.radiant-leader')?.textContent).toContain(radiantBearerKits.tide.leader);
     expect(host.textContent).not.toContain('Elemental Gauge');
@@ -374,6 +374,9 @@ describe('reference Team upgrade presentation', () => {
     const image = portrait.querySelector('img');
     updateCharacterTab(host, getStarter('ember'), 'overview', after);
     expect(portrait.querySelector('img')).toBe(image);
+    expect(host.querySelector('[data-reference-name]')?.textContent).toBe(characterName('ember', after.characters.ember.evolution));
+    expect(host.querySelector('.ref-portrait-stats')?.textContent).toContain(`Level${after.characters.ember.level}`);
+    expect(host.querySelector('.ref-bearer-detail')?.getAttribute('data-character-view')).toBe('overview');
     celebrateUpgrade(host, getStarter('ember'), kind, after.characters.ember);
     expect(portrait.classList.contains(`celebrating-${kind}`)).toBe(true);
     expect(portrait.querySelector('.upgrade-aura-ring')).not.toBeNull();

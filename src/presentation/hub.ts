@@ -36,14 +36,15 @@ import { masterEquipment } from './master-conduits';
 import { applyConduitSearch, conduitLoadout, filledConduitSlots } from './conduit-loadout';
 import { phaseZeroStatsReady, statDisplayUnit } from '../content/phase-zero-stats';
 import { displayStatLabels, type DisplayStatKey } from './stat-preview';
-import { radiantAttunementChip, radiantAttunementSection, radiantCharacterLoadout, radiantCharacterSheet, radiantFlareArticle, radiantKitSections, radiantLeaderArticle, radiantPassiveArticle,
-  radiantStatPreview, radiantStatsPanel, radiantUnavailable } from './character-combat';
+import { radiantAttunementChip, radiantAttunementSection, radiantCharacterLoadout, radiantCharacterSheet, radiantConvergenceRankPanel, radiantFlareArticle, radiantKitSections, radiantLeaderArticle, radiantPassiveArticle,
+  radiantStatPreview, radiantStatsPanel, radiantUnavailable, radiantCompactOverview, radiantPortraitStats } from './character-combat';
 import { escapeDialogText } from './game-dialog';
 import { bindMenuPagination, menuPager } from './menu-pagination';
 import { formatMenuWorkspace } from './menu-workspace';
 
 const radiantTabLabels: Partial<Record<string, string>> = {
-  'upgrade-3': 'Passive & Leader Skills', 'upgrade-4': 'Final Flare · Sparkle', 'upgrade-5': 'Final Flare · Shimmer', 'upgrade-6': 'Shattering Light',
+  'upgrade-3': 'Passive & Leader Skills', 'upgrade-4': 'Sparkling Convergent Light',
+  'upgrade-5': 'Glimmering Convergent Light', 'upgrade-6': 'Ultimate Convergence Light',
 };
 
 export const characterTabs = [
@@ -305,7 +306,7 @@ export function characterInformation(): string {
   return information('character-information', 'Character information', `<h3>Levels and evolution</h3>
     <p>Level caps by form: ordinary Element-Bearers ${Array.from({ length: characterGrowth.forms }, (_, index) => characterLevelCap(index + 1)).join(' / ')}; Calamitic Element-Bearers ${Array.from({ length: characterGrowth.forms }, (_, index) => characterLevelCap(index + 1, 'ozriel')).join(' / ')}. Evolving requires max level and keeps it.</p>
     <p>Each level costs Common materials plus one of each higher rarity unlocked at the destination level: ${levelingMaterialTiers.map(tier => `${tier.rarity} at ${tier.destination}+`).join(', ')}. Materials match the member's element (Rosethorn for Rosetta, Thornia, Crinso and Roselius); Calamitic Element-Bearers use the Calamity chain and Fragment of Rise for destinations Lv.91-110; late-form specialty costs are extra.</p>
-    <p>Core growth: 1 + 0.15 &times; level + 1.5 &times; (evolution - 1). HP, Attack and Recovery use core growth; Defense uses core growth^0.7. Flares use their stated stats and effects; fixed percentages, charge costs and durations do not increase from levels alone.</p>
+    <p>Core growth: 1 + 0.15 &times; level + 1.5 &times; (evolution - 1). HP, Attack and Recovery use core growth; Defense uses core growth^0.7. Convergent Light's rank is separately raised from the Growth panel: Rank 1–5 is Sparkling, 6–10 is Glimmering (Evo.4+), and 11–20 is Ultimate (Evo.6+). Each rank needs five character levels and adds 1% effect magnitude above Rank 1.</p>
     <h3>Evolution fodder</h3><ul><li>Ordinary Element-Bearers: Evo.3 to 4 needs 3 Evolution Value, Evo.4 to 5 needs 8, and Evo.5 to 6 needs 15. Calamitic Element-Bearers: Evo.4 to 5 needs 3, Evo.5 to 6 needs 8, and Evo.6 to 7 needs 15.</li><li>Each Elemental-Devourer is worth its form number (1-6). Combine copies to meet the exact total.</li><li>Use copies from the matching infusion mode; Rosetta, Thornia and Crinso use Roselius. Selected copies are consumed permanently.</li></ul>
     <h3>Rose event growth</h3><p>Rosetta, Thornia and Crinso use Rosethorn materials instead of elemental and specialty materials: Seed for levels, plus Soul at Evo.5–6 and for late evolutions with Roselius. Roselius are capturable at Lv.120 or below, enter the collection at up to Lv.60 and sell for their form's material.</p>
     <h3>Captured Elemental-Devourers</h3><p>Copies retain their fixed form and cap at Lv.60; they cannot evolve or join Radiant squads. Their archived combat stats, skills and equipped Conduits do not affect live battles. Leveling does not change their sale or evolution value.</p>
@@ -324,7 +325,7 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
   const radiantOverview = radiant ? `${issue}${radiantCharacterSheet(radiant.loadout, false)}` : radiantUnavailable();
   let detail: string;
   if (selectedTab === 'overview' && organized) {
-    detail = `<div class="ref-character-overview radiant-character-overview">${radiantOverview}</div>`;
+    detail = `<div class="ref-character-overview radiant-character-overview">${radiant ? `${issue}${radiantCompactOverview(radiant.loadout)}` : radiantUnavailable()}</div>`;
   } else if (selectedTab === 'overview') {
     detail = `<div class="mono-character-quad radiant-character-overview">${radiantOverview}
       <section class="character-category mono-character-growth"><h3>Growth</h3><div class="mono-growth-options"><article><h4>Level up</h4>${upgradePanel(starter, false, account, false, true)}</article><article><h4>Evolve</h4>${upgradePanel(starter, true, account, false, true)}</article></div><p id="upgrade-result" role="status"></p></section>
@@ -333,17 +334,20 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
     detail = organized ? `<div class="ref-equipment-workspace">${referenceEquipment(starter.id, characterName(starter.id, progress?.evolution, progress?.ascension?.stats === true), starter.elementId, account)}</div>` : equipment(starter, account);
   } else if (selectedTab === 'upgrade-0' || selectedTab === 'upgrade-1') {
     detail = upgradePanel(starter, selectedTab === 'upgrade-0', account, true, false, organized) +
-      (selectedTab === 'upgrade-0' ? ascensionEntry(starter, account, progress) : '');
+      (selectedTab === 'upgrade-0' ? ascensionEntry(starter, account, progress) :
+        radiant && account ? radiantConvergenceRankPanel(radiant.loadout, account) : '');
   } else {
     if (!upgradePaths.some((path) => path.id === selectedTab)) throw new Error('Unknown upgrade definition.');
     const specific = !radiant ? radiantUnavailable() : selectedTab === 'upgrade-3' ? radiantPassiveArticle(radiant.loadout) + radiantLeaderArticle(radiant.loadout)
-      : radiantFlareArticle(radiant.loadout, selectedTab === 'upgrade-4' ? 'glowing' : selectedTab === 'upgrade-5' ? 'lustrous' : 'eternal');
+      : radiantFlareArticle(radiant.loadout, selectedTab === 'upgrade-4' ? 'sparkling' : selectedTab === 'upgrade-5' ? 'glimmering' : 'ultimate');
     detail = `<section class="character-category"><h3>Current effect</h3>${specific}</section>`;
   }
   return `<h2 id="upgrade-heading" tabindex="-1">${tab.label}</h2><div class="character-detail-content${organized ? ' ref-organized-detail' : ''}${organized && (selectedTab === 'upgrade-0' || selectedTab === 'upgrade-1') ? ' ref-growth-detail' : ''}${organized && selectedTab === 'upgrade-0' ? ' ref-evolution-detail' : ''}">${detail}</div>`;
 }
 
 export function updateCharacterTab(host: HTMLElement, starter: Starter, selectedTab: string, account: Account | null = emptyAccount()): void {
+  const referenceDetail = host.querySelector<HTMLElement>('.ref-bearer-detail');
+  if (referenceDetail) referenceDetail.dataset.characterView = selectedTab;
   const conduitSearch = host.querySelector<HTMLInputElement>('[data-loadout-search]')?.value ?? '';
   const content = characterDetail(starter, selectedTab, account, !!host.querySelector('.ref-character-panels'));
   const panel = host.querySelector<HTMLElement>('.hub-detail');
@@ -370,17 +374,21 @@ export function updateCharacterTab(host: HTMLElement, starter: Starter, selected
     const progress = ownedProgress(account, starter.id);
     const cap = characterLevelCap(progress.evolution, starter.id);
     const prefix = host.querySelector('[data-reference-prefix]');
+    const name = host.querySelector('[data-reference-name]');
     const rarity = host.querySelector('[data-reference-rarity]');
     const level = host.querySelector('[data-reference-level]');
     const evolution = host.querySelector('[data-reference-evolution]');
     const bar = host.querySelector<HTMLElement>('.ref-bar i');
     if (prefix) prefix.textContent = `${characterName(starter.id, progress.evolution, progress.ascension?.stats === true).split(', ')[0]} · ${starter.weapon}`;
+    if (name) name.textContent = characterName(starter.id, progress.evolution, progress.ascension?.stats === true);
     if (rarity) rarity.textContent = characterRarity(starter.id, progress.evolution);
     if (level) level.textContent = `${progress.level} / ${cap}`;
     if (evolution) evolution.textContent = `Evolution ${displayEvolution(starter.id, progress.evolution)} / ${displayEvolution(starter.id, characterGrowth.forms)}`;
     if (bar) bar.style.width = `${progress.level / cap * 100}%`;
     const attunement = host.querySelector('[data-reference-attunement]');
     const radiant = radiantCharacterLoadout(account, starter.id);
+    const portraitStats = host.querySelector('.ref-portrait-stat-overlay');
+    if (portraitStats && radiant) portraitStats.innerHTML = radiantPortraitStats(radiant.loadout);
     if (attunement && radiant) attunement.innerHTML = radiantAttunementChip(radiant.loadout);
     host.querySelectorAll('.ref-pips i').forEach((pip, index) => pip.classList.toggle('is-filled', index < progress.evolution));
     host.querySelectorAll<HTMLElement>(`[data-reference-member="${starter.id}"]`).forEach(member => {

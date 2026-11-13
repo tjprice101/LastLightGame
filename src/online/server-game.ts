@@ -99,7 +99,7 @@ export type GameOperation =
   | { kind: 'equipMasterConduit'; character: StarterId; conduit: MasterConduitId | null }
   | { kind: 'upgradeConduit'; id: ConduitId; expectedLevel: number }
   | { kind: 'maxConduit'; expected: ConduitMaxLevelPlan }
-  | { kind: 'upgradeCharacter'; id: StarterId; upgradeKind: 'level' | 'evolve' | 'weapon'; expected: CharacterProgress; fodderIds?: string[] }
+  | { kind: 'upgradeCharacter'; id: StarterId; upgradeKind: 'level' | 'evolve' | 'convergence' | 'weapon'; expected: CharacterProgress; fodderIds?: string[] }
   | { kind: 'ascendCharacter'; id: StarterId; step: 'stats' | 'skill1' | 'skill2' | 'lastFlare'; expected: CharacterProgress }
   | { kind: 'levelCaptured'; id: string; expectedLevel: number }
   | { kind: 'levelMax'; id: string; expected: MaxLevelPlan }

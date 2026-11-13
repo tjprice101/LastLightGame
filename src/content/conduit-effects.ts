@@ -7,7 +7,7 @@ import type { ElementId } from './activities';
 export type RadiantConduitEffect =
   | 'hp' | 'attack' | 'defense' | 'recovery' | 'normal' | 'flare' | 'pierce'
   | 'healing' | 'shielding' | 'resilience' | 'guard' | 'leader'
-  | 'normal-charge' | 'guard-charge' | 'shared-normal' | 'team-charge'
+  | 'normal-charge' | 'guard-charge' | 'team-charge'
   | 'guard-shield' | 'normal-heal' | 'leech' | 'heal-charge' | 'heal-buff'
   | 'absorbed-charge' | 'reflect' | 'hurt-shield' | 'flare-shield'
   | 'round-heal' | 'round-shield' | 'normal-burn' | 'normal-expose'
@@ -18,8 +18,7 @@ const effect = (kind: RadiantConduitEffect, amount: number): RadiantConduitPrimi
 const pair = (kind: RadiantConduitEffect, amount: number, related: RadiantConduitEffect, extra: number): Design =>
   [effect(kind, amount), effect(related, extra)];
 
-// Stable-ID design decisions. Fractions are ratios, charge values are whole personal
-// charge, and shared-normal values are exact 60-unit shared-charge increments.
+// Stable-ID design decisions. Fractions are ratios and charge values are whole personal charge.
 export const radiantConduits = {
   'vigil-core': [effect('hp', .2)],
   'siegebound-drive': pair('normal', .12, 'attack', .04),

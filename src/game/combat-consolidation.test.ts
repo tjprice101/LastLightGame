@@ -10,8 +10,9 @@ import { applyRadiantCombatAction, createRadiantCombat, effectiveRadiantStats, r
   validateRadiantCombat } from './combat-engine';
 import { grantRadiantDrop, grantRadiantRound, personalChargeMaximum, radiantHitDrop, readyFlare } from './combat-gauge';
 
-function loadout(id: RadiantBearerId, form = 6): RadiantLoadout {
-  return { id, starter: id, level: 0, form, masterId: null, weaponRank: 0, ascension: {} };
+function loadout(id: RadiantBearerId, form = 6, convergenceRank = 1): RadiantLoadout {
+  return { id, starter: id, level: (convergenceRank - 1) * 5, form, convergenceRank,
+    masterId: null, weaponRank: 0, ascension: {} };
 }
 function fixture(ids: RadiantBearerId[] = ['ember'], form = 6, enemyHP = 100000) {
   return createRadiantCombat(ids.map(id => loadout(id, form)), [{
@@ -32,10 +33,10 @@ describe('consolidated live combat contract', () => {
       const state = fixture([id], form), member = state.gauge.members[0];
       expect(personalChargeMaximum(member)).toBe(form < 4 ? 100 : 200);
       member.charge = 100;
-      expect(readyFlare(state.gauge, id)).toBe('glowing');
+      expect(readyFlare(state.gauge, id)).toBe('sparkling');
       if (form >= 4) {
         member.charge = 200;
-        expect(readyFlare(state.gauge, id)).toBe('lustrous');
+        expect(readyFlare(state.gauge, id)).toBe('sparkling');
       }
     }
   });
@@ -79,12 +80,13 @@ describe('consolidated live combat contract', () => {
     expect(next.events.filter(event => event.type === 'charge')).toHaveLength(3);
   });
 
-  it.each([['glowing', 100, 4], ['lustrous', 200, 8], ['eternal', 200, 12]] as const)(
-    '%s splits one authored total across %i charge / %i actual hits without refilling itself',
-    (tier, charge, hits) => {
-      const state = fixture();
+  it.each([['sparkling', 1, 1, 100, 4], ['glimmering', 4, 6, 200, 8], ['ultimate', 6, 11, 200, 12]] as const)(
+    '%s rank splits one authored total across %i charge / %i actual hits without refilling itself',
+    (tier, form, rank, charge, hits) => {
+      const state = createRadiantCombat([loadout('ember', form, rank)], [{
+        id: 'enemy', elementId: null, stats: { hp: 100000, attack: 100, defense: 0, recovery: 0 }, currencyBudget: 10,
+      }], 1);
       state.gauge.members[0].charge = charge;
-      if (tier === 'eternal') state.gauge.sharedUnits = 100 * 60;
       const offer = radiantFinalFlare(state.bearers[0].loadout, tier);
       const expected = radiantDirectDamage(effectiveRadiantStats(state, 'ember').attack, 0, offer.damage,
         1 + radiantLeaderBonus(state.bearers[0].loadout));
@@ -144,19 +146,22 @@ describe('consolidated live combat contract', () => {
       radiantDirectDamage(100, stats.defense, 1, 1.5));
   });
 
-  it.each(releasedRadiantIds)('%s enhances its Final Flare through evolution without a purchase', id => {
-    const first = radiantFinalFlare(loadout(id, 1), 'glowing');
-    const final = radiantFinalFlare(loadout(id, 6), 'glowing');
+  it.each(releasedRadiantIds)('%s enhances Convergent Light through evolution and rank without a separate purchase', id => {
+    const first = radiantFinalFlare(loadout(id, 1), 'sparkling');
+    const final = radiantFinalFlare(loadout(id, 6), 'sparkling');
     for (const key of ['damage', 'heal', 'shieldDefense', 'shieldHP', 'attackBuff', 'burn'] as const)
       expect(final[key]).toBeCloseTo(first[key] * 1.5);
     expect(final.comboHits).toBe(first.comboHits);
+    const higherRank = radiantFinalFlare(loadout(id, 6, 20), 'ultimate');
+    const sameTier = radiantFinalFlare(loadout(id, 6, 11), 'ultimate');
+    expect(higherRank.damage).toBeCloseTo(sameTier.damage * 1.19 / 1.1);
   });
 
   it('snapshots elemental and living-leader modifiers into Burn once, without periodic Luminosity', () => {
     const state = fixture(['ember', 'crinso']);
     state.enemies[0].elementId = 'oceanic';
     state.gauge.members[0].charge = 100;
-    const offer = radiantFinalFlare(state.bearers[0].loadout, 'glowing');
+    const offer = radiantFinalFlare(state.bearers[0].loadout, 'sparkling');
     const cast = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ember' });
     const magnitude = offer.burn * effectiveRadiantStats(state, 'ember').attack *
       (1 + radiantLeaderBonus(state.bearers[0].loadout)) * .75;
@@ -178,21 +183,21 @@ describe('consolidated live combat contract', () => {
     const masters = [null, ...(Object.keys(radiantMasters) as RadiantMasterId[])
       .filter(masterId => radiantMasters[masterId].starter === id)];
     for (let form = 1; form <= 6; form++) for (const masterId of masters) {
-      for (const tier of ['glowing', 'lustrous', 'eternal'] as const) {
-        const owner = { ...loadout(id, form), masterId,
+      for (const tier of ['sparkling', 'glimmering', 'ultimate'] as const) {
+        const rank = tier === 'sparkling' ? 1 : tier === 'glimmering' ? 6 : 11;
+        const owner = { ...loadout(id, form, rank), masterId,
           ascension: { stats: true, skill1: true, skill2: true, lastFlare: true } };
         const offer = radiantFinalFlare(owner, tier);
         for (const key of ['reduction', 'weaken', 'exposure', 'attackBuff'] as const) {
           expect(offer[key]).toBeGreaterThanOrEqual(0);
           expect(offer[key]).toBeLessThanOrEqual(.8);
         }
-        if ((tier === 'lustrous' && form < 4) || (tier === 'eternal' && form < 6)) continue;
+        if ((tier === 'glimmering' && form < 4) || (tier === 'ultimate' && form < 6)) continue;
         const state = createRadiantCombat([owner], [{
           id: 'enemy', elementId: 'botanic', stats: { hp: 1000000, attack: 10, defense: 100, recovery: 0 },
           currencyBudget: 10,
         }], 1);
-        state.gauge.members[0].charge = tier === 'glowing' ? 100 : 200;
-        if (tier === 'eternal') state.gauge.sharedUnits = 100 * 60;
+        state.gauge.members[0].charge = tier === 'sparkling' ? 100 : 200;
         const result = applyRadiantCombatAction(state, {
           type: 'flare', bearerId: id, ...(offer.target === 'one-enemy' ? { targetId: 'enemy' } : {}),
         });

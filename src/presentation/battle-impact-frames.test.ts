@@ -1,25 +1,24 @@
 import { describe, expect, it } from 'vitest';
 import { createRadiantCombat, applyRadiantCombatAction, type RadiantCombatState } from '../game/combat-engine';
 import { radiantFlares, releasedRadiantIds, type RadiantBearerId, type RadiantLoadout } from '../content/combat-kits';
-import { sharedChargeThreshold } from '../game/combat-gauge';
 import { radiantImpactFrames, radiantReadout } from './battle-impact-frames';
 import { radiantStatusSnapshot } from './battle-timed-status';
 
-function loadout(starter: RadiantBearerId): RadiantLoadout {
-  return { id: starter, starter, level: 105, form: 6, weaponRank: 0, masterId: null, ascension: {} };
+function loadout(starter: RadiantBearerId, convergenceRank = 1): RadiantLoadout {
+  return { id: starter, starter, level: 105, form: 6, convergenceRank, weaponRank: 0, masterId: null, ascension: {} };
 }
-function battle(ids: RadiantBearerId[] = ['ember', 'tide', 'sprout']): RadiantCombatState {
-  return createRadiantCombat(ids.map(loadout), ['enemy-a', 'enemy-b'].map(id => ({ elementId: null,
+function battle(ids: RadiantBearerId[] = ['ember', 'tide', 'sprout'], convergenceRank = 1): RadiantCombatState {
+  return createRadiantCombat(ids.map(id => loadout(id, convergenceRank)), ['enemy-a', 'enemy-b'].map(id => ({ elementId: null,
     id, stats: { hp: 1000000, attack: 100, defense: 100, recovery: 100 }, currencyBudget: 30000,
   })), 1729);
 }
 describe('saved ordered Radiant impact ledger', () => {
   it.each(releasedRadiantIds.map(id => ({ id })))('reproduces all tiers and incoming/round packets for $id', ({ id }) => {
-    for (const tier of ['glowing', 'lustrous', 'eternal'] as const) {
-      const before = battle([id]);
+    for (const tier of ['sparkling', 'glimmering', 'ultimate'] as const) {
+      const rank = tier === 'sparkling' ? 1 : tier === 'glimmering' ? 6 : 11;
+      const before = battle([id], rank);
       before.bearers[0].hp = Math.floor(before.bearers[0].hp * .6);
-      before.gauge.members[0].charge = before.gauge.members[0].baseCost * (tier === 'glowing' ? 1 : 2);
-      before.gauge.sharedUnits = tier === 'eternal' ? sharedChargeThreshold(0) : 0;
+      before.gauge.members[0].charge = before.gauge.members[0].baseCost * (tier === 'sparkling' ? 1 : 2);
       const result = applyRadiantCombatAction(before, { type: 'flare', bearerId: id,
         ...(radiantFlares[id][tier].target === 'one-enemy' ? { targetId: 'enemy-a' } : {}) });
       const frames = radiantImpactFrames(before, result.state, result.events);
@@ -157,10 +156,9 @@ describe('saved ordered Radiant impact ledger', () => {
     expect(frames.at(-1)!.statuses.ember.find(row => row.kind === 'renewal')?.remaining).toBe(1);
     expect(frames.at(-1)!.statuses.ember.some(row => row.kind === 'reduction' || row.kind === 'seed')).toBe(false);
   });
-  it('does not replay a retired Burn detonation during Shattering Light', () => {
-    const before = battle(['ember']);
+  it('does not replay a retired Burn detonation during Ultimate Convergent Light', () => {
+    const before = battle(['ember'], 11);
     before.gauge.members[0].charge = before.gauge.members[0].baseCost * 2;
-    before.gauge.sharedUnits = sharedChargeThreshold(0);
     before.enemies[0].burns = [{ source: { kind: 'flare', bearerId: 'ember' }, magnitude: 25, remaining: 2 }];
     const result = applyRadiantCombatAction(before, { type: 'flare', bearerId: 'ember' });
     const frames = radiantImpactFrames(before, result.state, result.events);

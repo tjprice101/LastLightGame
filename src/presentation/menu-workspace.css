@@ -404,4 +404,82 @@ html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-s
 html[data-menu-workspace] body #app .conduit-loadout :is(.loadout-target-cue, .loadout-search-status) { margin: 0 !important; }
 html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout :is(.loadout-sort, .loadout-master-select) > .selection-trigger:not(#_):not(#_) { margin: 0 !important; }
 html[data-menu-workspace] body #app .conduit-loadout .loadout-pager { padding-top: 0 !important; margin: 0 !important; }
+.ref-portrait-stat-overlay, .ref-portrait-caption { display: none; }
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"]:not(#_):not(#_):not(#_) {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) !important;
+  grid-template-rows: auto minmax(0, 1fr) auto !important;
+  gap: 12px 20px !important; height: 100% !important;
+}
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-portrait:not(#_):not(#_):not(#_) {
+  grid-column: 1 !important; grid-row: 1 / 4 !important; position: relative !important;
+  display: grid !important; place-items: center; width: 100% !important; height: 100% !important;
+  min-height: 380px !important; padding: 26px !important; overflow: hidden; isolation: isolate;
+  border: 1px solid var(--workspace-line) !important; border-radius: 18px !important;
+  background: radial-gradient(ellipse at 55% 45%, color-mix(in srgb, var(--unit-accent) 22%, transparent), transparent 65%), #17140c !important;
+}
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-portrait::before {
+  content: ""; position: absolute; inset: -35%; z-index: -1; pointer-events: none;
+  background: repeating-conic-gradient(from 20deg at 50% 50%, transparent 0deg 16deg, color-mix(in srgb, var(--unit-accent) 9%, transparent) 17deg 30deg);
+}
+html[data-menu-workspace]:not([data-motion="reduced"]) body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-portrait::before { animation: elemental-sway 5s ease-in-out 4 alternate; }
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-portrait > :is(.character-idle, img):not(#_):not(#_),
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-portrait > .character-idle > img:not(#_):not(#_) {
+  width: 100% !important; height: 100% !important; max-height: 100% !important;
+  object-fit: contain !important; position: relative !important;
+}
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-identity:not(#_):not(#_):not(#_) {
+  grid-row: 1 !important; padding: 6px 10px !important; grid-template-columns: minmax(0, 1fr) !important; min-height: 0 !important;
+}
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-identity .ref-tags { grid-column: 1 !important; grid-row: 2 !important; }
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-identity [data-reference-attunement] { display: none; }
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-progress { grid-row: 3 !important; }
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-progress > div:first-child { display: none; }
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-panels:not(#_):not(#_) { grid-row: 2 !important; overflow: visible !important; }
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-submenus:not(#_):not(#_) {
+  grid-row: 3 !important; margin: 0 !important; display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-submenus > button { min-width: 0 !important; min-height: 44px !important; padding: 4px 6px !important; }
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-portrait-stat-overlay {
+  display: block; position: absolute; top: 16px; left: 16px; z-index: 2; max-width: 55%;
+}
+.ref-portrait-stats { display: grid; gap: 7px; margin: 0; }
+.ref-portrait-stats > div { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 6px 9px; border: 1px solid var(--workspace-line); border-radius: 5px; background: #100e09ed; }
+.ref-portrait-stats dt { font-size: 13px; }
+.ref-portrait-stats dd { margin: 0; font-size: 17px; font-weight: 700; overflow-wrap: anywhere; }
+.ref-portrait-stats .radiant-attunement-chip { font-size: 14px; padding: 0; border: 0; background: transparent; }
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-portrait-caption {
+  position: absolute; bottom: 16px; left: 16px; display: flex; align-items: center; gap: 8px;
+  padding: 6px 10px; background: #100e09ed; border: 1px solid var(--workspace-line); border-radius: 8px;
+}
+html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-portrait-caption .element-emblem:not(#_):not(#_) { width: 24px !important; height: 24px !important; flex-basis: 24px !important; }
+.ref-compact-kit { display: grid; gap: 12px; }
+html[data-menu-workspace] body #app .ref-compact-kit > :is(.hub-ability, .ref-flare-summary):not(#_):not(#_) {
+  margin: 0 !important; padding: 0 !important; border: 1px solid var(--workspace-line) !important;
+  border-radius: 8px !important; background: #100e09e6 !important; overflow: hidden;
+}
+html[data-menu-workspace] body #app .ref-compact-kit > :is(.hub-ability, .ref-flare-summary) > :is(h3, h4, header):not(#_):not(#_) {
+  display: block !important; margin: 0 !important; padding: 8px 12px !important; font-size: 15px !important;
+  background: linear-gradient(90deg, #665025a6, #32261488); border-bottom: 1px solid var(--workspace-line);
+}
+html[data-menu-workspace] body #app .ref-compact-kit > .hub-ability .ability-heading > :is(img, .radiant-leader-mark) { display: none; }
+html[data-menu-workspace] body #app .ref-compact-kit > .hub-ability > p { margin: 0 !important; padding: 10px 12px !important; font-size: 14px !important; line-height: 1.4 !important; }
+.ref-flare-summary > ul { margin: 0; padding: 10px 12px 4px 28px; font-size: 14px; line-height: 1.4; }
+.ref-flare-actions { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 12px 10px; }
+.ref-flare-actions > button { flex: 1; min-height: 44px; }
+html[data-menu-workspace] body #app .ref-compact-kit .ref-flare-heading:not(#_):not(#_):not(#_) { display: flex !important; align-items: center; justify-content: space-between; gap: 8px; padding: 0 8px 0 12px !important; }
+html[data-menu-workspace] body #app .ref-flare-heading > h3 { margin: 0 !important; font-size: 15px !important; }
+html[data-menu-workspace] body #app .ref-flare-heading > button { min-height: 44px !important; padding: 4px 8px !important; font-size: 13px !important; }
+html[data-menu-workspace] body #app .ref-flare-summary > ul > li { font-size: 14px !important; line-height: 1.4 !important; }
+html[data-menu-workspace] body #app .ref-flare-actions > button:not(#_):not(#_) { min-height: 44px !important; padding: 4px 8px !important; font-size: 13px !important; }
+@media (prefers-reduced-motion: reduce) {
+  html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-portrait::before { animation: none !important; }
+}
+@media (max-height: 800px) {
+  html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"]:not(#_):not(#_):not(#_) { gap: 6px 14px !important; }
+  .ref-compact-kit { gap: 6px; }
+  html[data-menu-workspace] body #app .ref-compact-kit > .hub-ability > p { padding: 7px 10px !important; }
+  html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-identity .ref-tags { font-size: 13px !important; min-height: 0 !important; }
+  html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-progress { font-size: 12px !important; }
+  html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-pips { margin: 0 !important; }
+}
 html[data-menu-workspace] body #app .conduit-loadout .loadout-slots > [data-information] { min-height: 44px; margin: 0; }

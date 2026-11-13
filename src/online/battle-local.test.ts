@@ -49,7 +49,7 @@ describe('local Radiant authority', () => {
     expect(storage.values).toEqual(before);
     const fresh = await send(transport, { kind: 'start', activity: { kind: 'training' }, calibration: 'authored-control' });
     expect(fresh.revision).toBe(started.revision + 1);
-    expect(fresh.run.version).toBe(4);
+    expect(fresh.run.version).toBe(5);
     expect((await transport.read()).notice).toBeUndefined();
   });
 
@@ -65,7 +65,7 @@ describe('local Radiant authority', () => {
     expect(result.state.radiantStudy).toBeUndefined();
     expect(result.state.account).toEqual(started.account);
     expect(snapshot).toEqual(before);
-    snapshot.state.radiantStudy.version = 4;
+    snapshot.state.radiantStudy.version = 5;
     snapshot.state.radiantStudy.state.enemies[0].elementId = null;
     expect(() => validateRadiantRunSnapshot(snapshot)).toThrow('Invalid saved Radiant account');
   });

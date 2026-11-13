@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { artifactSlots, currencies, fractureRules, characterLevelCap, characterGrowthFactor, upgradePaths,
-  characterEvolutionCost, evolutionCost, characterLevelCost, levelingMaterials, evolutionBalance, displayEvolution, rarityRank } from './progression';
+  characterEvolutionCost, evolutionCost, characterLevelCost, levelingMaterials, evolutionBalance, displayEvolution, rarityRank,
+  convergentLightRankCap, convergentLightRankCost, convergentLightRules, convergentLightTier } from './progression';
 import { evolutionRecipes } from './activities';
 import { availableStarters, starters, isRoseCharacter, roseCharacters } from './starters';
 import { isCalamiticCharacter, calamiticCharacters } from './calamitic-characters';
@@ -96,9 +97,25 @@ describe('confirmed game foundation', () => {
   it('defines eight distinct artifact slots and six upgrade paths without weapons', () => {
     expect(artifactSlots).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
     expect(upgradePaths.map((path) => path.name)).toEqual([
-      'Fracture & Evolution', 'Character level', 'Unique passive', 'Ability 1', 'Ability 2', 'Last Flare',
+      'Fracture & Evolution', 'Character level', 'Unique passive', 'Ability 1', 'Ability 2', 'Convergent Light',
     ]);
-    expect(upgradePaths[5].detail).toContain('Last Flare: <character-specific name>');
+    expect(upgradePaths[5].detail).toContain('saved Convergent Light rank');
+  });
+  it('caps saved Convergent Light ranks by level and evolution and calculates milestone costs', () => {
+    expect(convergentLightRules).toEqual({ maximumRank: 20, levelsPerRank: 5, glimmeringEvolution: 4, ultimateEvolution: 6 });
+    expect(convergentLightTier(1)).toBe('sparkling');
+    expect(convergentLightTier(5)).toBe('sparkling');
+    expect(convergentLightTier(6)).toBe('glimmering');
+    expect(convergentLightTier(10)).toBe('glimmering');
+    expect(convergentLightTier(11)).toBe('ultimate');
+    expect(convergentLightTier(20)).toBe('ultimate');
+    expect(convergentLightRankCap({ level: 20, evolution: 3 }, 'ember')).toBe(5);
+    expect(convergentLightRankCap({ level: 25, evolution: 4 }, 'ember')).toBe(6);
+    expect(convergentLightRankCap({ level: 50, evolution: 6 }, 'ember')).toBe(11);
+    expect(convergentLightRankCap({ level: 105, evolution: 6 }, 'ember')).toBe(20);
+    const progress = { level: 5, evolution: 1, convergenceRank: 1 };
+    expect(convergentLightRankCost('ember', progress)).toEqual(characterLevelCost('ember', { level: 0, evolution: 1 }));
+    expect(() => convergentLightRankCost('ember', { level: 4, evolution: 1, convergenceRank: 1 })).toThrow('Reach');
   });
   it('defines additive linear growth, preserved levels and six increasing caps', () => {
     expect(fractureRules).toEqual({

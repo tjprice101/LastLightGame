@@ -13,7 +13,7 @@ import { enemyAbilityMultiplier, enemySkills } from '../content/enemy-skills';
 import { playableDungeons } from '../content/dungeons';
 import { infusionStageCount, type InfusionModeId } from '../content/activities';
 import { elementalWars } from '../content/elemental-war';
-import { characterLevelCap, characterLevelCost, characterEvolutionCost } from '../content/progression';
+import { characterLevelCap, characterLevelCost, characterEvolutionCost, convergentLightRankCost } from '../content/progression';
 import { capturedLevelCost } from '../game/character-instances';
 import { conduits } from '../content/conduits';
 import { storyCompletionReward, storyRules } from '../content/story';
@@ -112,6 +112,22 @@ describe('server authoritative game engine', () => {
     expect(result.account.capturedCharacters).toEqual([]);
     expect(result.account.fractalis).toBe(game.account.fractalis - cost.fractalis);
     for (const material of Object.keys(cost.materials)) expect(result.account.materials[material] ?? 0).toBe(0);
+    expect(game).toEqual(before);
+    expect(() => op(result, operation)).toThrow('changed');
+  });
+  it('validates and atomically raises a saved Convergent Light rank online', () => {
+    const game = rich();
+    const progress = { level: 5, evolution: 1, convergenceRank: 1 };
+    game.account.characters.ember = progress;
+    const cost = convergentLightRankCost('ember', progress);
+    game.account.materials = { ...cost.materials };
+    const operation: GameOperation = { kind: 'upgradeCharacter', id: 'ember', upgradeKind: 'convergence', expected: progress };
+    const request = { requestId: crypto.randomUUID(), expectedRevision: 0, operation };
+    expect(validateRequest(request).operation).toEqual(operation);
+    const before = structuredClone(game);
+    const result = op(game, operation).game;
+    expect(result.account.characters.ember).toEqual({ ...progress, convergenceRank: 2 });
+    expect(result.account.fractalis).toBe(game.account.fractalis - cost.fractalis);
     expect(game).toEqual(before);
     expect(() => op(result, operation)).toThrow('changed');
   });
@@ -251,7 +267,7 @@ describe('server authoritative game engine', () => {
     expect(expected.cost.materials).toEqual(game.account.materials);
     const bulk = op(game, { kind: 'levelMax', id, expected }).game;
     expect(bulk.account).toEqual(single.account);
-    expect(bulk.account.characters[id]).toEqual({ level: 76, evolution: 5 });
+    expect(bulk.account.characters[id]).toEqual({ level: 76, evolution: 5, convergenceRank: 1 });
     expect(bulk.account.materials['rosethorn-omnic']).toBeUndefined();
     expect(game).toEqual(before);
   });
@@ -641,7 +657,7 @@ describe('server authoritative game engine', () => {
     expect(legacy).toEqual(before);
     expect(read.game.run).toBeNull();
     expect(read.response.session).toBeNull();
-    expect(read.response.account.version).toBe(11);
+    expect(read.response.account.version).toBe(12);
     expect(publicGame(legacy, 3).session).toBeNull();
   });
   it('discards a saved Story run from a pre-v6 account and converts its Story count', () => {
@@ -655,7 +671,7 @@ describe('server authoritative game engine', () => {
     expect(legacy).toEqual(before);
     expect(response.game.run).toBeNull();
     expect(response.response.session).toBeNull();
-    expect(response.response.account.version).toBe(11);
+    expect(response.response.account.version).toBe(12);
     expect(response.response.account.storyCompleted).toBe(24);
     expect(storyCompletedOf(legacy)).toBe(24);
     expect(publicGame(legacy, 3).session).toBeNull();

@@ -60,8 +60,6 @@ function variedVictory(activity: 'story' | 'training'): RadiantRunSnapshot {
   state.gauge.members[0].charge = 20.3;
   state.gauge.members[1].charge = 6.7;
   state.gauge.members[2].charge = 4.1;
-  state.gauge.eternalCasts = 1;
-  state.gauge.sharedUnits = 2400;
   state.nextShieldId = 4;
   validateFrozenRadiantRun(victory.state.radiantStudy);
   return victory;
@@ -109,7 +107,7 @@ describe('actual Radiant action-to-reward and progression authority', () => {
     expect(next.state.account.fractalis).toBe(victory.state.account.fractalis);
     expect(clear(next).snapshot.state.account.fractalis).toBeGreaterThan(victory.state.account.fractalis);
   });
-  it('staged Continue revives/restores HP and resets effects while preserving exact personal and shared charge', () => {
+  it('staged Continue revives/restores HP and resets effects while preserving exact personal charge', () => {
     const victory = variedVictory('story'), prior = structuredClone(victory.state.radiantStudy!.state);
     const next = step(victory, { kind: 'continue' }).snapshot.state.radiantStudy!;
     expect(next.initial.gauge).toEqual({ ...prior.gauge,

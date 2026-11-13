@@ -7199,6 +7199,36 @@ var fractureRules = {
   lycalisReward: 10
 };
 var weaponRules = { maximumRank: 10, attackPerRank: 0.02 };
+var convergentLightRules = {
+  maximumRank: 20,
+  levelsPerRank: 5,
+  glimmeringEvolution: 4,
+  ultimateEvolution: 6
+};
+function convergentLightTier(rank) {
+  if (!Number.isSafeInteger(rank) || rank < 1 || rank > convergentLightRules.maximumRank)
+    throw new Error("Convergent Light rank must be from 1 to 20.");
+  return rank <= 5 ? "sparkling" : rank <= 10 ? "glimmering" : "ultimate";
+}
+function convergentLightRankCap(progress, id) {
+  characterGrowthFactor(progress, id);
+  const evolutionCap = progress.evolution >= convergentLightRules.ultimateEvolution ? 20 : progress.evolution >= convergentLightRules.glimmeringEvolution ? 10 : 5;
+  const levelCap = Math.floor(progress.level / convergentLightRules.levelsPerRank) + 1;
+  return Math.min(evolutionCap, levelCap);
+}
+function convergentLightRankCost(id, progress) {
+  const rank = progress.convergenceRank ?? 1;
+  const cap = convergentLightRankCap(progress, id);
+  if (!Number.isSafeInteger(rank) || rank < 1 || rank > cap)
+    throw new Error("Saved Convergent Light rank is unavailable at this level and evolution.");
+  if (rank === convergentLightRules.maximumRank || rank >= cap)
+    throw new Error("Reach the required level and evolution to raise Convergent Light rank.");
+  const costLevel = Math.min(
+    (rank - 1) * convergentLightRules.levelsPerRank,
+    characterLevelCap(progress.evolution, id, progress.ascension?.stats === true) - 1
+  );
+  return characterLevelCost(id, { ...progress, level: costLevel });
+}
 function increasedMaterialCost(cost) {
   return { fractalis: cost.fractalis, materials: Object.fromEntries(Object.entries(cost.materials).map(([id, amount]) => {
     if (!Number.isSafeInteger(amount) || amount < 1) throw new Error("Invalid upgrade material quantity.");
@@ -14693,7 +14723,7 @@ function applySavedEquipment(account, character, equipment) {
 // src/game/account.ts
 var ACCOUNT_KEY = "last-light.wallet";
 function emptyAccount() {
-  return { version: 11, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
+  return { version: 12, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
 function count(value2) {
   return typeof value2 === "number" && Number.isSafeInteger(value2) && value2 >= 0;
@@ -14718,7 +14748,7 @@ function hasHistoricalBossReceipt(receipts, boss) {
   return receipts.some((receipt) => receipt.length === 37 + boss.length && uuid4.test(receipt.slice(0, 36)) && receipt.slice(36) === `:${boss}`);
 }
 function validateAccount(value2) {
-  if (!record2(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 && value2.version !== 7 && value2.version !== 8 && value2.version !== 9 && value2.version !== 10 && value2.version !== 11 || !count(value2.fractalis) || !count(value2.lycalis) || !record2(value2.materials) || !record2(value2.characters) || !record2(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
+  if (!record2(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 && value2.version !== 7 && value2.version !== 8 && value2.version !== 9 && value2.version !== 10 && value2.version !== 11 && value2.version !== 12 || !count(value2.fractalis) || !count(value2.lycalis) || !record2(value2.materials) || !record2(value2.characters) || !record2(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
     throw new Error("The local progression save is invalid or unsupported. It has not been overwritten.");
   }
   const account = emptyAccount();
@@ -14868,6 +14898,7 @@ function validateAccount(value2) {
       throw new Error("Invalid saved character progress.");
     }
     if (progress.weaponRank !== void 0 && typeof progress.weaponRank !== "number") throw new Error("Invalid saved weapon rank.");
+    if (progress.convergenceRank !== void 0 && typeof progress.convergenceRank !== "number") throw new Error("Invalid saved Convergent Light rank.");
     if (progress.ascension !== void 0) {
       if (!record2(progress.ascension) || Object.keys(progress.ascension).length === 0 || Object.keys(progress.ascension).some((key) => !["stats", "skill1", "skill2", "lastFlare"].includes(key)) || Object.values(progress.ascension).some((flag) => flag !== true) || (progress.ascension.skill1 === true || progress.ascension.skill2 === true || progress.ascension.lastFlare === true) && progress.ascension.stats !== true || progress.ascension.stats === true && (progress.evolution !== 6 || progress.level < characterLevelCap(6, id))) {
         throw new Error("Invalid saved Calamitic Ascension state.");
@@ -14877,9 +14908,13 @@ function validateAccount(value2) {
       level: progress.level,
       evolution: progress.evolution,
       ...progress.weaponRank !== void 0 ? { weaponRank: progress.weaponRank } : {},
+      ...progress.convergenceRank !== void 0 ? { convergenceRank: progress.convergenceRank } : {},
       ...progress.ascension !== void 0 ? { ascension: { ...progress.ascension } } : {}
     };
     characterGrowthFactor(entry, id);
+    if (entry.convergenceRank !== void 0 && (!Number.isSafeInteger(entry.convergenceRank) || entry.convergenceRank < 1 || entry.convergenceRank > convergentLightRankCap(entry, id))) {
+      throw new Error("Invalid saved Convergent Light rank for this level and evolution.");
+    }
     account.characters[id] = entry;
   }
   if (value2.capturedCharacters !== void 0) {
@@ -15283,7 +15318,8 @@ function sellCurrencyCreatures(storage, selections) {
   return saveAccount(storage, account);
 }
 function ownedProgress(account, id) {
-  return account.characters[id] ?? { level: 0, evolution: 1 };
+  const progress = account.characters[id] ?? { level: 0, evolution: 1 };
+  return { ...progress, convergenceRank: progress.convergenceRank ?? 1 };
 }
 function purchaseConduit(storage, id) {
   if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before visiting the Conduit Store.");
@@ -15490,13 +15526,13 @@ function isMaterial(id) {
 function upgradeCharacter(storage, id, kind, expected, fodderIds = []) {
   if (kind === "weapon") throw new Error("Weapon upgrades are unavailable. Existing weapon bonuses are preserved.");
   if (!loadProfile(storage)) throw new Error("Choose your Owned Element-Bearer to upgrade.");
-  if (kind !== "level" && kind !== "evolve") throw new Error("Unknown character upgrade.");
+  if (kind !== "level" && kind !== "evolve" && kind !== "convergence") throw new Error("Unknown character upgrade.");
   const account = loadAccount(storage);
   if (account.characters[id] === void 0) throw new Error("Choose your Owned Element-Bearer to upgrade.");
   const current = ownedProgress(account, id);
   if (!sameCharacterProgress(current, expected)) throw new Error("Character progress changed. Reopen this tab before upgrading.");
   const element = getStarter(id).elementId;
-  const cost = kind === "level" ? characterLevelCost(id, current) : characterEvolutionCost(id, current);
+  const cost = kind === "level" ? characterLevelCost(id, current) : kind === "evolve" ? characterEvolutionCost(id, current) : convergentLightRankCost(id, current);
   if (kind === "evolve" && current.level !== characterLevelCap(current.evolution, id)) throw new Error("Reach this form level cap before evolving.");
   const requiredValue = kind === "evolve" ? characterEvolutionRequirement(id, current.evolution).fodderValue : 0;
   if (new Set(fodderIds).size !== fodderIds.length) throw new Error("Choose each captured Elemental-Devourer only once.");
@@ -15525,7 +15561,7 @@ function upgradeCharacter(storage, id, kind, expected, fodderIds = []) {
     for (const id2 of fodderIds) if (account.conduitEquipment) delete account.conduitEquipment[id2];
     for (const id2 of fodderIds) if (account.conduitConfigurations) delete account.conduitConfigurations[id2];
   }
-  account.characters[id] = kind === "level" ? { ...current, level: current.level + 1 } : { ...current, evolution: current.evolution + 1 };
+  account.characters[id] = kind === "level" ? { ...current, level: current.level + 1 } : kind === "evolve" ? { ...current, evolution: current.evolution + 1 } : { ...current, convergenceRank: (current.convergenceRank ?? 1) + 1 };
   if (kind === "evolve" && !account.firstFracture) {
     account.lycalis += fractureRules.lycalisReward;
     account.firstFracture = true;
@@ -15539,7 +15575,7 @@ function canAscendCharacter(id, progress, step2) {
   return ascension.stats === true && !ascension[step2];
 }
 function sameCharacterProgress(left, right) {
-  return left.level === right.level && left.evolution === right.evolution && (left.weaponRank ?? 0) === (right.weaponRank ?? 0) && ["stats", "skill1", "skill2", "lastFlare"].every((key) => left.ascension?.[key] === right.ascension?.[key]);
+  return left.level === right.level && left.evolution === right.evolution && (left.weaponRank ?? 0) === (right.weaponRank ?? 0) && (left.convergenceRank ?? 1) === (right.convergenceRank ?? 1) && ["stats", "skill1", "skill2", "lastFlare"].every((key) => left.ascension?.[key] === right.ascension?.[key]);
 }
 function ascendCharacter(storage, id, step2, expected) {
   if (!loadProfile(storage)) throw new Error("Choose an owned Element-Bearer for Calamitic Ascension.");
@@ -16873,9 +16909,9 @@ var bearerTuning = {
   }
 };
 var flareTiers = {
-  glowing: { damage: 4, support: 2, suffix: "" },
-  lustrous: { damage: 8, support: 3, suffix: " Ascendant" },
-  eternal: { damage: 12, support: 4, suffix: " Resplendent" }
+  sparkling: { damage: 4, support: 2, comboHits: 4 },
+  glimmering: { damage: 8, support: 3, comboHits: 8 },
+  ultimate: { damage: 12, support: 4, comboHits: 12 }
 };
 function baseSignature(tuning) {
   return {
@@ -16936,9 +16972,9 @@ var radiantBearerKits = Object.fromEntries(
 var radiantFlares = Object.fromEntries(releasedRadiantIds.map((id) => {
   const kit = radiantBearerKits[id];
   return [id, Object.fromEntries(Object.entries(flareTiers).map(([tier, scale]) => [tier, {
-    name: `${kit.signatureFamily}${scale.suffix}`,
+    name: "Convergent Light",
     ...kit.signature,
-    comboHits: tier === "glowing" ? 4 : tier === "lustrous" ? 8 : 12,
+    comboHits: scale.comboHits,
     damage: kit.signature.damage * scale.damage,
     burn: kit.signature.burn * scale.support,
     shieldDefense: kit.signature.shieldDefense * scale.support,
@@ -17011,7 +17047,8 @@ function radiantLeaderBonus(loadout) {
 }
 function radiantFinalFlare(loadout, tier) {
   const master2 = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
-  const power2 = (1 + 0.1 * (loadout.form - 1)) * (1 + (master2?.enhancement === "signature" ? master2.magnitude : 0) + (loadout.ascension.lastFlare ? 0.5 : 0));
+  const rankPower = 1 + 0.01 * (loadout.convergenceRank - 1);
+  const power2 = (1 + 0.1 * (loadout.form - 1)) * rankPower * (1 + (master2?.enhancement === "signature" ? master2.magnitude : 0) + (loadout.ascension.lastFlare ? 0.5 : 0));
   const offer = { ...radiantFlares[loadout.starter][tier] };
   for (const key of ["damage", "burn", "shieldDefense", "shieldHP", "reduction", "weaken", "exposure", "heal", "renewal", "attackBuff"])
     offer[key] *= power2;
@@ -17024,7 +17061,12 @@ function validateRadiantStats(stats) {
     throw new Error("Invalid radiant four-stat snapshot.");
 }
 function validateRadiantLoadout(loadout) {
-  if (!loadout || typeof loadout.id !== "string" || !loadout.id || !Object.hasOwn(radiantBearerKits, loadout.starter) || !Number.isSafeInteger(loadout.level) || loadout.level < 0 || !Number.isSafeInteger(loadout.form) || loadout.form < 1 || loadout.form > 6 || loadout.level > characterLevelCap(loadout.form, loadout.starter, loadout.ascension?.stats === true) || !Number.isSafeInteger(loadout.weaponRank) || loadout.weaponRank < 0 || loadout.weaponRank > weaponRules.maximumRank || !loadout.ascension || typeof loadout.ascension !== "object" || Array.isArray(loadout.ascension) || Object.keys(loadout.ascension).some((key) => !["stats", "skill1", "skill2", "lastFlare"].includes(key)) || Object.values(loadout.ascension).some((value2) => typeof value2 !== "boolean"))
+  if (!loadout || typeof loadout.id !== "string" || !loadout.id || !Object.hasOwn(radiantBearerKits, loadout.starter) || !Number.isSafeInteger(loadout.level) || loadout.level < 0 || !Number.isSafeInteger(loadout.form) || loadout.form < 1 || loadout.form > 6 || loadout.level > characterLevelCap(loadout.form, loadout.starter, loadout.ascension?.stats === true) || !Number.isSafeInteger(loadout.convergenceRank) || loadout.convergenceRank < 1 || loadout.convergenceRank > convergentLightRankCap({
+    level: loadout.level,
+    evolution: loadout.form,
+    convergenceRank: loadout.convergenceRank,
+    ascension: loadout.ascension
+  }, loadout.starter) || !Number.isSafeInteger(loadout.weaponRank) || loadout.weaponRank < 0 || loadout.weaponRank > weaponRules.maximumRank || !loadout.ascension || typeof loadout.ascension !== "object" || Array.isArray(loadout.ascension) || Object.keys(loadout.ascension).some((key) => !["stats", "skill1", "skill2", "lastFlare"].includes(key)) || Object.values(loadout.ascension).some((value2) => typeof value2 !== "boolean"))
     throw new Error("Invalid radiant bearer loadout.");
   if (loadout.masterId !== null && (!Object.hasOwn(radiantMasters, loadout.masterId) || radiantMasters[loadout.masterId].starter !== loadout.starter))
     throw new Error("Radiant Master does not match this bearer or is unreleased.");
@@ -17073,7 +17115,6 @@ function elementDamageMultiplier(attacker, defender) {
 
 // src/game/combat-gauge.ts
 var personalChargeUnit = 10;
-var sharedChargeUnit = 60;
 var radiantChargeRules = {
   normal: 10,
   flareHit: 0,
@@ -17095,10 +17136,6 @@ function personalUnits(value2) {
     throw new Error("Invalid radiant personal charge.");
   return units;
 }
-function sharedChargeThreshold(casts) {
-  integer(casts, 0, "cast count");
-  return (100 + 25 * Math.min(casts, 4)) * sharedChargeUnit;
-}
 function personalChargeMaximum(member) {
   integer(member.form, 1, "form");
   if (member.form > 6) throw new Error("Radiant form must use the saved six-form index.");
@@ -17116,14 +17153,12 @@ function validateRadiantGauge(state) {
     if (typeof member.id !== "string" || !member.id || ids.has(member.id) || typeof member.living !== "boolean" || !isCombatElement(member.elementId))
       throw new Error("Invalid radiant squad member.");
     ids.add(member.id);
+    integer(member.convergenceRank, 1, "Convergent Light rank");
+    if (member.convergenceRank > convergentLightRules.maximumRank || member.convergenceRank > 10 && member.form < convergentLightRules.ultimateEvolution || member.convergenceRank > 5 && member.form < convergentLightRules.glimmeringEvolution)
+      throw new Error("Convergent Light rank exceeds its evolution unlock.");
     personalUnits(member.charge);
     if (member.charge > personalChargeMaximum(member)) throw new Error("Personal charge exceeds its unlocked layers.");
   }
-  integer(state.sharedUnits, 0, "shared charge");
-  if (state.sharedUnits > sharedChargeThreshold(state.eternalCasts))
-    throw new Error("Shared charge exceeds its current threshold.");
-  if (!state.members.some((member) => member.form === 6) && state.sharedUnits !== 0)
-    throw new Error("Shared charge is unavailable without a final-form squad member.");
 }
 function actor(state, id) {
   const member = state.members.find((entry) => entry.id === id);
@@ -17131,24 +17166,20 @@ function actor(state, id) {
   if (!member.living) throw new Error("A defeated bearer cannot receive or spend action charge.");
   return member;
 }
+function flareCost(member) {
+  return member.baseCost * (convergentLightTier(member.convergenceRank) === "sparkling" ? 1 : 2);
+}
 function readyFlare(state, id) {
   validateRadiantGauge(state);
   const member = actor(state, id);
-  if (member.charge < member.baseCost) return null;
-  if (member.form < 4 || member.charge < member.baseCost * 2) return "glowing";
-  return member.form === 6 && state.sharedUnits === sharedChargeThreshold(state.eternalCasts) ? "eternal" : "lustrous";
+  return member.charge >= flareCost(member) ? convergentLightTier(member.convergenceRank) : null;
 }
 function spendReadyFlare(state, id) {
   const tier = readyFlare(state, id);
-  if (!tier) throw new Error("This bearer has no ready Flare.");
+  if (!tier) throw new Error("This bearer has no ready Convergent Light.");
   const next = structuredClone(state);
   const member = actor(next, id);
-  member.charge = (personalUnits(member.charge) - member.baseCost * (tier === "glowing" ? 1 : 2) * personalChargeUnit) / personalChargeUnit;
-  if (tier === "eternal") {
-    integer(next.eternalCasts + 1, 1, "cast count");
-    next.eternalCasts += 1;
-    next.sharedUnits = 0;
-  }
+  member.charge = (personalUnits(member.charge) - flareCost(member) * personalChargeUnit) / personalChargeUnit;
   validateRadiantGauge(next);
   return { state: next, tier };
 }
@@ -17172,7 +17203,7 @@ function grantRadiantDrop(state, id, amount) {
   if (!owner) throw new Error("Radiant drop owner is not in this squad.");
   if (!owner.living) throw new Error("A defeated bearer cannot generate Luminosity.");
   const allyUnits = amount * (personalChargeUnit * radiantChargeRules.otherMemberPercent / 100);
-  integer(allyUnits, 0, "shared drop units");
+  integer(allyUnits, 0, "same-element drop units");
   for (const member of next.members) {
     if (!member.living || member.elementId !== owner.elementId) continue;
     const units = member.id === id ? amount * personalChargeUnit : allyUnits;
@@ -17198,25 +17229,14 @@ function radiantHitDrop(action, previousRolls, roll2) {
     bonusOffered
   };
 }
-function addShared(state, units) {
-  if (!state.members.some((member) => member.form === 6)) return;
-  state.sharedUnits += Math.min(sharedChargeThreshold(state.eternalCasts) - state.sharedUnits, units);
-}
 function grantRadiantAction(state, id, action, qualifyingDirectHits) {
   validateRadiantGauge(state);
   actor(state, id);
   integer(qualifyingDirectHits, 0, "direct hit count");
-  if (!["normal", "defense", "flare", "eternal"].includes(action)) throw new Error("Invalid radiant charge action.");
+  if (!["normal", "defense", "flare"].includes(action)) throw new Error("Invalid radiant charge action.");
   if (action === "normal" && qualifyingDirectHits > 1) throw new Error("Normal Attack has one mechanical charge hit.");
   if (action === "defense" && qualifyingDirectHits !== 0) throw new Error("Defense cannot generate attack-hit motes.");
-  const next = structuredClone(state);
-  const member = actor(next, id);
-  const qualifies = qualifyingDirectHits > 0;
-  if (action === "defense") addRadiantPersonalCharge(member, radiantChargeRules.defense);
-  if (action !== "eternal" && (action !== "normal" || qualifies))
-    addShared(next, (action === "flare" ? 12 : 6) * sharedChargeUnit / next.members.length);
-  validateRadiantGauge(next);
-  return { state: next };
+  return { state: structuredClone(state) };
 }
 function grantRadiantIncomingAttack(state, id) {
   validateRadiantGauge(state);
@@ -17228,11 +17248,7 @@ function grantRadiantIncomingAttack(state, id) {
 function grantRadiantRound(state) {
   validateRadiantGauge(state);
   if (!state.members.some((member) => member.living)) throw new Error("A defeated squad cannot earn round charge.");
-  const next = structuredClone(state);
-  next.members.filter((member) => member.living).forEach((member) => addRadiantPersonalCharge(member, radiantChargeRules.round));
-  addShared(next, 18 * sharedChargeUnit);
-  validateRadiantGauge(next);
-  return next;
+  return structuredClone(state);
 }
 
 // src/game/combat-engine.ts
@@ -17356,7 +17372,7 @@ function validateEffects(state, effects, fractional = false) {
   }
 }
 function validateRadiantCombat(state) {
-  if (!state || state.version !== 4 || !Array.isArray(state.bearers) || !state.bearers.length || state.bearers.length > squadMemberLimit || !Array.isArray(state.enemies) || !state.enemies.length || !["player", "enemy", "victory", "defeat"].includes(state.phase))
+  if (!state || state.version !== 5 || !Array.isArray(state.bearers) || !state.bearers.length || state.bearers.length > squadMemberLimit || !Array.isArray(state.enemies) || !state.enemies.length || !["player", "enemy", "victory", "defeat"].includes(state.phase))
     throw new Error("Invalid radiant combat roster or version.");
   safe(state.round, "round", 1);
   safe(state.chargeSeed, "charge seed");
@@ -17395,7 +17411,7 @@ function validateRadiantCombat(state) {
     if (Object.keys(expected).some((key) => expected[key] !== member.stats[key]))
       throw new Error("Radiant frozen stats do not match their loadout.");
     const gauge = state.gauge.members[index];
-    if (gauge.id !== member.loadout.id || gauge.form !== member.loadout.form || gauge.baseCost !== radiantStarterKits[member.loadout.starter].baseCost || gauge.living !== member.hp > 0 || gauge.elementId !== radiantStarterKits[member.loadout.starter].elementId)
+    if (gauge.id !== member.loadout.id || gauge.form !== member.loadout.form || gauge.convergenceRank !== member.loadout.convergenceRank || gauge.baseCost !== radiantStarterKits[member.loadout.starter].baseCost || gauge.living !== member.hp > 0 || gauge.elementId !== radiantStarterKits[member.loadout.starter].elementId)
       throw new Error("Radiant Gauge member mismatch.");
     if (typeof member.guarding !== "boolean") throw new Error("Invalid radiant guard.");
     validateEffects(state, member.renewal);
@@ -17453,7 +17469,7 @@ function validateRadiantParty(loadouts) {
 }
 function createRadiantCombat(loadouts, enemies2, chargeSeed) {
   const state = {
-    version: 4,
+    version: 5,
     bearers: loadouts.map((loadout) => {
       const stats = resolveRadiantStarterStats(loadout);
       return {
@@ -17484,18 +17500,15 @@ function createRadiantCombat(loadouts, enemies2, chargeSeed) {
         currency: { budget: input.currencyBudget, baselineHP: hp, lowestHP: hp, paid: 0 }
       };
     }),
-    gauge: {
-      members: loadouts.map((loadout) => ({
-        id: loadout.id,
-        form: loadout.form,
-        elementId: radiantStarterKits[loadout.starter].elementId,
-        baseCost: radiantStarterKits[loadout.starter].baseCost,
-        charge: 0,
-        living: true
-      })),
-      sharedUnits: 0,
-      eternalCasts: 0
-    },
+    gauge: { members: loadouts.map((loadout) => ({
+      id: loadout.id,
+      form: loadout.form,
+      convergenceRank: loadout.convergenceRank,
+      elementId: radiantStarterKits[loadout.starter].elementId,
+      baseCost: radiantStarterKits[loadout.starter].baseCost,
+      charge: 0,
+      living: true
+    })) },
     phase: "player",
     round: 1,
     acted: [],
@@ -17606,7 +17619,6 @@ function addPassiveCharge(state, events, id, amount) {
     type: "charge",
     bearerId: id,
     personal: member.charge,
-    sharedUnits: state.gauge.sharedUnits,
     bonusRolls: 0,
     bonusOffered: 0
   });
@@ -17890,7 +17902,6 @@ function enemyAttack(state, events, action) {
           type: "charge",
           bearerId: target.loadout.id,
           personal: state.gauge.members.find((m) => m.id === target.loadout.id).charge,
-          sharedUnits: state.gauge.sharedUnits,
           bonusRolls: 0,
           bonusOffered: 0
         });
@@ -18027,7 +18038,6 @@ function finishRound(state, events) {
       type: "charge",
       bearerId: member.id,
       personal: member.charge,
-      sharedUnits: state.gauge.sharedUnits,
       bonusRolls: 0,
       bonusOffered: 0
     });
@@ -18040,7 +18050,6 @@ function cooperation(state, actor2) {
 }
 function processRadiantGear(state, events, action) {
   const native = events.filter((event2) => "source" in event2 && event2.source.kind !== "gear");
-  const eternal = events.some((event2) => event2.type === "flare" && event2.tier === "eternal");
   const snapshots = new Map(state.bearers.filter((owner) => owner.hp > 0).map((owner) => [owner.loadout.id, effectiveRadiantStats(state, owner.loadout.id)]));
   for (const owner of state.bearers) {
     if (owner.hp === 0) continue;
@@ -18081,21 +18090,6 @@ function processRadiantGear(state, events, action) {
           case "guard-charge":
             if (guarding) grant(owner, amount);
             break;
-          case "shared-normal":
-            if (normalDirect && !eternal && state.gauge.members.some((member) => member.form === 6)) {
-              const units = rounded(amount);
-              state.gauge.sharedUnits += Math.min(units, sharedChargeThreshold(state.gauge.eternalCasts) - state.gauge.sharedUnits);
-              events.push({
-                type: "charge",
-                bearerId: id,
-                personal: state.gauge.members.find((member) => member.id === id).charge,
-                sharedUnits: state.gauge.sharedUnits,
-                bonusRolls: 0,
-                bonusOffered: 0,
-                gearSource: source
-              });
-            }
-            break;
           case "team-charge":
             if (normalDirect) {
               for (const ally of state.bearers) if (ally !== owner) grant(ally, amount);
@@ -18111,7 +18105,7 @@ function processRadiantGear(state, events, action) {
             if (direct.length) heal(state, events, owner, source, amount * direct.reduce((sum, event2) => sum + event2.healthLoss, 0));
             break;
           case "heal-charge":
-            if (restored.length && !eternal) grant(owner, amount);
+            if (restored.length) grant(owner, amount);
             break;
           case "heal-buff":
             for (const targetId of new Set(restored.map((event2) => event2.targetId))) {
@@ -18191,7 +18185,7 @@ function applyRadiantCombatAction(input, action) {
     const actor2 = bearer(state, action.bearerId);
     living2(actor2.hp);
     if (state.acted.includes(action.bearerId)) throw new Error("This bearer already acted this round.");
-    let hits = 0, chargeAction = action.type;
+    let hits = 0;
     const hitCharge = { bonusRolls: 0, bonusOffered: 0 };
     if (action.type === "normal") hits = normal(state, events, actor2, action.targetId, hitCharge);
     else if (action.type === "defense") {
@@ -18201,15 +18195,13 @@ function applyRadiantCombatAction(input, action) {
     } else {
       const cast = flare(state, events, actor2, action.targetId, hitCharge);
       hits = cast.hits;
-      chargeAction = cast.tier === "eternal" ? "eternal" : "flare";
     }
-    const charge = grantRadiantAction(state.gauge, action.bearerId, chargeAction, hits);
+    const charge = grantRadiantAction(state.gauge, action.bearerId, action.type, hits);
     state.gauge = charge.state;
     events.push({
       type: "charge",
       bearerId: action.bearerId,
       personal: state.gauge.members.find((m) => m.id === action.bearerId).charge,
-      sharedUnits: state.gauge.sharedUnits,
       bonusRolls: hitCharge.bonusRolls,
       bonusOffered: hitCharge.bonusOffered
     });
@@ -18302,7 +18294,7 @@ function radiantPressureEnemyAction(state, enemy2, targetRandom) {
 }
 
 // src/online/battle-run.ts
-var radiantContinuationMediaType = "application/vnd.lastlight.radiant-continuation-v1+json";
+var radiantContinuationMediaType = "application/vnd.lastlight.radiant-continuation-v2+json";
 var radiantClientAccept = `application/json, ${radiantContinuationMediaType}`;
 var RadiantRunError = class extends Error {
   constructor(code, message) {
@@ -18317,8 +18309,9 @@ function validateRadiantCheckpoint(value2) {
     if (!record4(value2) || typeof value2.revision !== "number" || !Number.isSafeInteger(value2.revision) || value2.revision < 0) throw new Error();
     validateAccount(value2.account);
     if (value2.notice !== void 0 && typeof value2.notice !== "string") throw new Error();
-    if (value2.run !== null) validateFrozenRadiantRun(value2.run);
-    return structuredClone(value2);
+    const retired = value2.run !== null && record4(value2.run) && (value2.run.version === 3 || value2.run.version === 4);
+    if (value2.run !== null && !retired) validateFrozenRadiantRun(value2.run);
+    return { ...structuredClone(value2), ...retired ? { run: null, notice: retiredRadiantRunNotice } : {} };
   } catch {
     throw new RadiantRunError("unavailable", "Invalid saved Radiant checkpoint.");
   }
@@ -18354,6 +18347,7 @@ function radiantAccountLoadouts(account) {
       starter: id,
       level: progress.level,
       form: progress.evolution,
+      convergenceRank: progress.convergenceRank ?? 1,
       weaponRank: progress.weaponRank ?? 0,
       ascension: structuredClone(progress.ascension ?? {}),
       masterId: null
@@ -18389,7 +18383,7 @@ function initialize(anchor, calibration, loadouts, entropy, encounter2 = 1, cont
     validateRadiantCombat(initial);
   }
   return {
-    version: 4,
+    version: 5,
     id: entropy.runId,
     encounter: encounter2,
     anchor,
@@ -18549,7 +18543,7 @@ function resolveRadiantRun(snapshot, request, authority) {
     discover = true;
   } else {
     const run2 = game.radiantStudy;
-    if (!run2 || run2.version !== 4 || run2.id !== request.runId || run2.encounter !== request.encounter)
+    if (!run2 || run2.version !== 5 || run2.id !== request.runId || run2.encounter !== request.encounter)
       throw new RadiantRunError("stale-run", "The saved Radiant encounter does not match.");
     validateFrozenRadiantRun(run2);
     if (run2.enemies.length !== run2.state.enemies.length || run2.enemies.some((enemy2, i) => enemy2.id !== run2.state.enemies[i].id || enemy2.currencyBudget !== run2.state.enemies[i].currency.budget || enemy2.currencyBudget !== run2.initial.enemies[i]?.currency.budget))
@@ -18654,7 +18648,7 @@ function canonical(value2) {
 }
 function validateFrozenRadiantRun(value2) {
   try {
-    if (!record4(value2) || value2.version !== 4 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !["authored-control", "radiant-pressure-v2"].includes(String(value2.calibration)) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
+    if (!record4(value2) || value2.version !== 5 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !["authored-control", "radiant-pressure-v2"].includes(String(value2.calibration)) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
       throw new Error();
     for (const key of ["encounterSeed", "initialChargeSeed", "initialTargetSeed"])
       seed2(value2[key]);
@@ -18713,7 +18707,7 @@ function validateRadiantRunSnapshot(value2) {
       throw new Error();
     validateAccount(value2.state.account);
     const state = structuredClone(value2.state);
-    const retired = record4(state.radiantStudy) && state.radiantStudy.version === 3;
+    const retired = record4(state.radiantStudy) && (state.radiantStudy.version === 3 || state.radiantStudy.version === 4);
     if (retired) delete state.radiantStudy;
     else if (state.radiantStudy !== void 0) validateFrozenRadiantRun(state.radiantStudy);
     return { ...structuredClone(value2), state, ...retired ? { notice: retiredRadiantRunNotice } : {} };
@@ -18729,7 +18723,7 @@ var eventFields = {
   defeated: { text: ["targetId"], number: [] },
   "gauge-drop": { text: ["enemyId", "bearerId", "trigger"], number: ["amount"] },
   flare: { text: ["bearerId", "tier", "name"], number: [] },
-  charge: { text: ["bearerId"], number: ["personal", "sharedUnits", "bonusRolls", "bonusOffered"] },
+  charge: { text: ["bearerId"], number: ["personal", "bonusRolls", "bonusOffered"] },
   round: { text: [], number: ["round"] },
   guard: { text: ["targetId"], number: [] },
   status: { text: ["targetId", "status"], number: ["magnitude", "remaining"] }
@@ -18743,7 +18737,7 @@ function validEvent(value2) {
   if (!fields.text.every((key) => typeof value2[key] === "string" && value2[key].length > 0) || !fields.number.every((key) => typeof value2[key] === "number" && Number.isFinite(value2[key]) && Number(value2[key]) >= 0 && Number(value2[key]) <= Number.MAX_SAFE_INTEGER)) return false;
   if (["damage", "heal", "shield", "status"].includes(value2.type) && !validSource(value2.source)) return false;
   if (value2.type === "damage" && (!["direct", "periodic", "generated"].includes(String(value2.origin)) || !Array.isArray(value2.shields) || !value2.shields.every((shield2) => record4(shield2) && validSource(shield2.source) && typeof shield2.amount === "number" && Number.isFinite(shield2.amount) && shield2.amount >= 0))) return false;
-  if (value2.type === "flare" && !["glowing", "lustrous", "eternal"].includes(String(value2.tier))) return false;
+  if (value2.type === "flare" && !["sparkling", "glimmering", "ultimate"].includes(String(value2.tier))) return false;
   if (value2.type === "gauge-drop" && (!["hit", "defeat"].includes(String(value2.trigger)) || !Number.isSafeInteger(value2.amount) || Number(value2.amount) < 1 || !Number.isSafeInteger(Number(value2.amount) * 10))) return false;
   if (value2.type === "status" && ![
     "burn",
@@ -19480,12 +19474,15 @@ function validateRequest(value2) {
   }
   if (op.kind === "upgradeCharacter" || op.kind === "ascendCharacter") {
     if (!record5(op.expected)) throw new Error("Invalid expected progress.");
-    keys(op.expected, ["level", "evolution", "weaponRank", "ascension"]);
+    keys(op.expected, ["level", "evolution", "weaponRank", "convergenceRank", "ascension"]);
     integer2(op.expected.level);
     integer2(op.expected.evolution);
     if ("weaponRank" in op.expected) integer2(op.expected.weaponRank);
+    if ("convergenceRank" in op.expected) integer2(op.expected.convergenceRank);
     if ("ascension" in op.expected && (!record5(op.expected.ascension) || Object.keys(op.expected.ascension).some((key) => !["stats", "skill1", "skill2", "lastFlare"].includes(key)) || Object.values(op.expected.ascension).some((flag) => typeof flag !== "boolean"))) throw new Error("Invalid expected Ascension state.");
   }
+  if (op.kind === "upgradeCharacter" && !["level", "evolve", "convergence", "weapon"].includes(String(op.upgradeKind)))
+    throw new Error("Unknown character upgrade.");
   if (op.kind === "ascendCharacter" && !["stats", "skill1", "skill2", "lastFlare"].includes(String(op.step))) throw new Error("Invalid Calamitic Ascension step");
   if (op.kind === "maxConduit") {
     if (!record5(op.expected)) throw new Error("Invalid Conduit Max Level preview.");

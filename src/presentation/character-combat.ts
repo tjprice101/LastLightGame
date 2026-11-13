@@ -1,14 +1,17 @@
 import { radiantAttunement, radiantAttunements, radiantBearerKits, radiantFinalFlare, radiantLeaderBonus, radiantPassiveAmount, radiantMasters, resolveRadiantStarterStats,
   type RadiantAttunement, type RadiantBearerId, type RadiantLoadout, type RadiantStats } from '../content/combat-kits';
 import { adaptRadiantLoadouts } from '../game/combat-loadout';
-import { radiantChargeRules, type FlareTier } from '../game/combat-gauge';
+import { radiantChargeRules } from '../game/combat-gauge';
 import { getMasterConduit } from '../content/master-conduits';
 import { formatStat } from '../content/combat';
-import { displayEvolution, type CharacterProgress } from '../content/progression';
+import { convergentLightRankCap, convergentLightRankCost, convergentLightTier, displayEvolution,
+  type CharacterProgress, type ConvergentLightTier } from '../content/progression';
 import { ownedProgress, type Account } from '../game/account';
 import { radiantFlareDescription } from './combat-description';
 import { abilityIcon } from './ability-icon';
 import { assetUrl, portrait } from './portrait';
+import { currencyIcon } from './currency-icon';
+import { materialArt, materialName } from '../content/dungeon-art';
 import { statChange, statDirection } from './stat-change';
 import { escapeDialogText as escape } from './game-dialog';
 import './character-combat.css';
@@ -21,16 +24,19 @@ import { getConduit } from '../content/conduits';
 import { radiantConduitDescription } from '../content/conduit-effect-text';
 import { bracketReferences } from './reference-text';
 import { radiantConduitPrimitives } from '../content/conduit-effects';
+import { information } from './information';
 
 export const radiantStatKeys = ['hp', 'attack', 'defense', 'recovery'] as const;
 export const radiantStatLabels: Record<keyof RadiantStats, string> = { hp: 'HP', attack: 'Attack', defense: 'Defense', recovery: 'Recovery' };
 export const radiantAttunementNames: Record<RadiantAttunement, string> = {
   equinox: 'Equinox', corona: 'Corona', aegis: 'Aegis', solstice: 'Solstice', prism: 'Prism',
 };
-export const radiantFlareTierNames: Record<FlareTier, string> = {
-  glowing: 'Final Flare · Sparkle', lustrous: 'Final Flare · Shimmer', eternal: 'Shattering Light · Lustrous',
+export const radiantFlareTierNames: Record<ConvergentLightTier, string> = {
+  sparkling: 'Sparkling Convergent Light', glimmering: 'Glimmering Convergent Light',
+  ultimate: 'Ultimate Convergence Light',
 };
-const tierForm: Record<FlareTier, number> = { glowing: 1, lustrous: 4, eternal: 6 };
+const tierForm: Record<ConvergentLightTier, number> = { sparkling: 1, glimmering: 4, ultimate: 6 };
+const tierRank: Record<ConvergentLightTier, number> = { sparkling: 1, glimmering: 6, ultimate: 11 };
 const percent = (value: number): string => `${Number((value * 100).toPrecision(12))}%`;
 const multiplier = (value: number): string => String(Number(value.toPrecision(12)));
 
@@ -45,6 +51,7 @@ export function radiantCharacterLoadout(account: Account | null, id: string, ove
   if (!isRadiantBearer(id)) return null;
   const progress = { ...(account?.characters[id] ? ownedProgress(account, id) : { level: 0, evolution: 1 }), ...override } as CharacterProgress;
   const member: RadiantLoadout = { id, starter: id, level: progress.level, form: progress.evolution,
+    convergenceRank: progress.convergenceRank ?? 1,
     weaponRank: progress.weaponRank ?? 0, ascension: structuredClone(progress.ascension ?? {}), masterId: null };
   if (account?.characters[id]) {
     const result = adaptRadiantLoadouts([member], Object.keys(account.characters), account);
@@ -106,24 +113,54 @@ export function radiantLeaderText(loadout: RadiantLoadout): string {
   return `${kit.element} squad members deal ${percent(radiantLeaderAmount(loadout))} more attack damage while this bearer is the living squad leader.`;
 }
 
-export function radiantFlareTierUnlocked(loadout: RadiantLoadout, tier: FlareTier): boolean {
-  return loadout.form >= tierForm[tier];
+export function radiantFlareTierUnlocked(loadout: RadiantLoadout, tier: ConvergentLightTier): boolean {
+  return loadout.form >= tierForm[tier] && loadout.convergenceRank >= tierRank[tier];
 }
 
-function flareCost(loadout: RadiantLoadout, tier: FlareTier): string {
-  const cost = radiantBearerKits[loadout.starter].baseCost * (tier === 'glowing' ? 1 : 2);
-  return `${cost} Luminosity${tier === 'eternal' ? ' + full Shattering Light meter' : ''}`;
+function flareCost(loadout: RadiantLoadout, tier: ConvergentLightTier): string {
+  const cost = radiantBearerKits[loadout.starter].baseCost * (tier === 'sparkling' ? 1 : 2);
+  return `${cost} Luminosity`;
 }
 
-export function radiantFlareArticle(loadout: RadiantLoadout, tier: FlareTier): string {
-  const offer = radiantFinalFlare(loadout, tier);
-  const icon = abilityIcon(loadout.starter, tier === 'glowing' ? 'skill1' : tier === 'lustrous' ? 'skill2' : 'ultimate');
+export function radiantFlareArticle(loadout: RadiantLoadout, tier: ConvergentLightTier): string {
+  const offer = radiantFinalFlare({ ...loadout, convergenceRank: Math.max(loadout.convergenceRank, tierRank[tier]) }, tier);
+  const icon = abilityIcon(loadout.starter, tier === 'sparkling' ? 'skill1' : tier === 'glimmering' ? 'skill2' : 'ultimate');
   const unlocked = radiantFlareTierUnlocked(loadout, tier);
-  return `<article class="hub-ability radiant-flare info-ability${unlocked ? '' : ' is-locked'}" data-radiant-flare="${tier}" data-radiant-reference-tier="${tier}"><h4 class="ability-heading">${icon}<span>${escape(offer.name)} · ${radiantFlareTierNames[tier]}</span></h4>
-    <p class="info-label">${unlocked ? 'Unlocked' : 'Locked'} · Unlocks at Evo.${displayEvolution(loadout.starter, tierForm[tier])}.</p>
+  return `<article class="hub-ability radiant-flare info-ability${unlocked ? '' : ' is-locked'}" data-radiant-flare="${tier}" data-radiant-reference-tier="${tier}"><h4 class="ability-heading">${icon}<span>${radiantFlareTierNames[tier]}</span></h4>
+    <p class="info-label">${unlocked ? 'Unlocked' : 'Locked'} · Rank ${tierRank[tier]}+ and Evo.${displayEvolution(loadout.starter, tierForm[tier])}.</p>
     <p class="info-label">Target: ${offer.target === 'all-enemies' ? 'all living enemies' : offer.target === 'one-enemy' ? 'selected living enemy' : 'all living allies'}.</p>
     <ul class="info-effects">${radiantFlareDescription(offer, radiantBearerKits[loadout.starter].element).map(line => `<li>${escape(line)}</li>`).join('')}</ul>
-    <p class="info-price">Costs ${flareCost(loadout, tier)}. Improves with evolution.</p></article>`;
+    <p class="info-price">Costs ${flareCost(loadout, tier)} to activate. Rank ${loadout.convergenceRank} of 20; potency rises 1% per rank above Rank 1.</p></article>`;
+}
+
+export function radiantConvergenceRankPanel(loadout: RadiantLoadout, account: Account): string {
+  const rank = loadout.convergenceRank;
+  const progress = { level: loadout.level, evolution: loadout.form, convergenceRank: rank, ascension: loadout.ascension };
+  const cap = convergentLightRankCap(progress, loadout.starter);
+  const tier = convergentLightTier(rank);
+  const canRank = rank < 20 && rank < cap;
+  const cost = canRank ? convergentLightRankCost(loadout.starter, progress) : null;
+  const resources = cost ? [
+    { id: 'fractalis', name: 'Prismatica', needed: cost.fractalis, owned: account.fractalis, icon: currencyIcon('fractalis') },
+    ...Object.entries(cost.materials).map(([id, needed]) => {
+      const art = materialArt(id);
+      return { id, name: materialName(id), needed, owned: account.materials[id] ?? 0,
+        icon: art ? `<img draggable="false" src="${assetUrl(`materials/${art}.png`)}" alt="" width="40" height="40">` : '' };
+    }),
+  ] : [];
+  const enough = resources.every(resource => resource.owned >= resource.needed);
+  const requiredEvolution = rank + 1 > 10 ? 6 : rank + 1 > 5 ? 4 : 1;
+  const requiredLevel = rank * 5;
+  const blocked = rank >= 20 ? 'Maximum Convergent Light rank reached.'
+    : rank >= cap ? `Reach Lv.${requiredLevel} and Evo.${displayEvolution(loadout.starter, requiredEvolution)} to unlock Rank ${rank + 1}.`
+      : enough ? '' : 'Insufficient resources.';
+  return `<section class="character-category convergent-rank-panel" data-convergent-rank="${rank}">
+    <h3>Convergent Light · Rank ${rank} of 20</h3>
+    <p>${radiantFlareTierNames[tier]}. Each rank above Rank 1 increases its effect magnitudes by 1%. Higher bands unlock at Rank 6 / Evo.4 and Rank 11 / Evo.6.</p>
+    ${resources.length ? `<ul class="upgrade-resources">${resources.map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${escape(resource.name)}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>` : ''}
+    <button class="primary-button" data-upgrade="convergence" data-upgrade-blocked="${!!blocked}" ${blocked ? 'disabled' : ''}>${rank < 20 ? `Raise to Rank ${rank + 1}` : 'Maximum Rank'}</button>
+    <p class="quiet">${escape(blocked)}</p>
+  </section>`;
 }
 
 export function radiantPassiveArticle(loadout: RadiantLoadout): string {
@@ -158,9 +195,34 @@ export function radiantAttunementSection(loadout: RadiantLoadout): string {
 export function radiantKitSections(loadout: RadiantLoadout): string {
   return informationSheet([
     { title: 'Leader Skill', kind: 'leader', content: radiantLeaderArticle(loadout) },
-    { title: 'Final Flare', kind: 'flares', content: `<div class="info-flare-grid">${(['glowing', 'lustrous', 'eternal'] as const).map(tier => radiantFlareArticle(loadout, tier)).join('')}</div>` },
+    { title: 'Convergent Light', kind: 'flares', content: `<div class="info-flare-grid">${(['sparkling', 'glimmering', 'ultimate'] as const).map(tier => radiantFlareArticle(loadout, tier)).join('')}</div>` },
     { title: 'Passive Skill', kind: 'passive', content: radiantPassiveArticle(loadout) },
   ]);
+}
+
+export function radiantPortraitStats(loadout: RadiantLoadout): string {
+  const values = resolveRadiantStarterStats(loadout);
+  return `<dl class="ref-portrait-stats" aria-label="Current combat stats">
+    <div><dt>Prism-base</dt><dd>${radiantAttunementChip(loadout)}</dd></div>
+    <div><dt>Level</dt><dd>${formatStat(loadout.level)}</dd></div>
+    ${radiantStatKeys.map(key => `<div><dt>${key === 'hp' ? 'Health' : radiantStatLabels[key]}</dt><dd>${formatStat(values[key])}</dd></div>`).join('')}</dl>`;
+}
+
+export function radiantCompactOverview(loadout: RadiantLoadout): string {
+  const kit = radiantBearerKits[loadout.starter];
+  const activeTier = convergentLightTier(loadout.convergenceRank);
+  const offer = radiantFinalFlare(loadout, activeTier);
+  return `<div class="ref-compact-kit">
+    ${radiantLeaderArticle(loadout)}${radiantPassiveArticle(loadout)}
+    <section class="ref-flare-summary"><header class="ref-flare-heading"><h3>${radiantFlareTierNames[activeTier]} · Rank ${loadout.convergenceRank}</h3>
+      ${information(`unit-reference-${loadout.id}`, characterName(loadout.starter, loadout.form),
+        radiantCharacterSheet(loadout, false), 'Full character information', 'Details')}</header>
+      <ul>${radiantFlareDescription(offer, kit.element).map(line => `<li>${escape(line)}</li>`).join('')}</ul>
+      <div class="ref-flare-actions" aria-label="Convergent Light rank bands">${(['sparkling', 'glimmering', 'ultimate'] as const).map(tier =>
+        information(`unit-flare-${loadout.id}-${tier}`, radiantFlareTierNames[tier], radiantFlareArticle(loadout, tier),
+          radiantFlareTierNames[tier], tier === 'sparkling' ? 'Sparkling' : tier === 'glimmering' ? 'Glimmering' : 'Ultimate')).join('')}</div>
+    </section>
+  </div>`;
 }
 
 export function radiantCharacterSheet(loadout: RadiantLoadout, includeProfile = true, squadState = 'Form preview'): string {
@@ -176,7 +238,7 @@ export function radiantCharacterSheet(loadout: RadiantLoadout, includeProfile = 
       ${gear.some(Boolean) ? `<ul class="info-effects">${gear.flatMap(entry => entry ? [`<li><strong>${escape(getConduit(entry.id).name)} +${entry.rank}</strong><ul>${radiantConduitPrimitives(entry).map(rule => `<li>${escape(radiantConduitDescription(rule))}</li>`).join('')}</ul></li>`] : []).join('')}</ul>` : ''}
     ` }])}
     <details class="info-lore"><summary>Lore</summary><p>${bracketReferences(escape(`${starter.description} ${starter.lore.story}`))}</p></details>
-    <details class="info-lore"><summary>Shared combat rules</summary>${radiantBasicArticles(loadout)}<p>Each surviving direct incoming hit, including Shield absorption, grants its recipient 10 Luminosity without sharing. The highest ready Final Flare tier is cast. The Shattering Light shared meter starts at 100, rises 25 after each Shattering Light and caps at 200.</p></details></div>`;
+    <details class="info-lore"><summary>Shared combat rules</summary>${radiantBasicArticles(loadout)}<p>Each surviving direct incoming hit, including Shield absorption, grants its recipient 10 Luminosity. Convergent Light rank is saved per Element-Bearer: ranks 1–5 are Sparkling, 6–10 are Glimmering (Evo.4+), and 11–20 are Ultimate (Evo.6+). Each rank requires five character levels; potency increases by 1% per rank above Rank 1.</p></details></div>`;
 }
 
 export function radiantUnavailable(): string {

@@ -91,7 +91,7 @@ describe('unified Archives', () => {
     for (const value of Object.values(resolveRadiantStarterStats(previewLoadout))) expect(preview).toContain(formatStat(value));
     expect(current).toContain(radiantAttunementName(loadout));
     expect(preview).toContain('Equinox');
-    expect(current).toContain(radiantFlares.ember.glowing.name);
+    expect(current).toContain(radiantFlares.ember.sparkling.name);
     expect(current).not.toContain('Cinder Cleave');
     expect(html).toContain('Current combat kit');
     expect(account).toEqual(before);

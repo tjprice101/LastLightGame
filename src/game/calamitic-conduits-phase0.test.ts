@@ -255,7 +255,7 @@ describe('D-435 Calamitic Conduit mechanics', () => {
     expect(() => saveAccount(saved.storage, invalid)).toThrow('five Calamitic');
   });
 
-  it('normalizes legacy saves in slot order without read-time writes, then saves v11 on transaction', () => {
+  it('normalizes legacy saves in slot order without read-time writes, then saves v12 on transaction', () => {
     const ids = phaseFour.slice(0, 6);
     const saved = testStorage();
     const account = { ...ownedCalamitics(ids), version: 10 as const,
@@ -265,12 +265,12 @@ describe('D-435 Calamitic Conduit mechanics', () => {
     const loaded = loadAccount(saved.storage);
     expect(saved.values.get(ACCOUNT_KEY)).toBe(raw);
     expect(saved.writes()).toBe(0);
-    expect(loaded.version).toBe(11);
+    expect(loaded.version).toBe(12);
     expect(loaded.conduitEquipment!.ember).toEqual(slotsWith(...ids.slice(0, 5)));
     expect(normalizeLegacyCalamiticSlots(slotsWith(...ids))).toEqual(slotsWith(...ids.slice(0, 5)));
     equipConduit(saved.storage, 'ember', 7, null);
     expect(saved.writes()).toBe(1);
-    expect(JSON.parse(saved.values.get(ACCOUNT_KEY)!).version).toBe(11);
+    expect(JSON.parse(saved.values.get(ACCOUNT_KEY)!).version).toBe(12);
   });
 
   it('purchases a new design for exactly 100 Tokens in one atomic account write', () => {

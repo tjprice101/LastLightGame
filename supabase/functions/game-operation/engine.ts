@@ -178,13 +178,16 @@ export function validateRequest(value: unknown): GameRequest {
   }
   if (op.kind === 'upgradeCharacter' || op.kind === 'ascendCharacter') {
     if (!record(op.expected)) throw new Error('Invalid expected progress.');
-    keys(op.expected, ['level', 'evolution', 'weaponRank', 'ascension']);
+    keys(op.expected, ['level', 'evolution', 'weaponRank', 'convergenceRank', 'ascension']);
     integer(op.expected.level); integer(op.expected.evolution);
     if ('weaponRank' in op.expected) integer(op.expected.weaponRank);
+    if ('convergenceRank' in op.expected) integer(op.expected.convergenceRank);
     if ('ascension' in op.expected && (!record(op.expected.ascension) ||
         Object.keys(op.expected.ascension).some(key => !['stats', 'skill1', 'skill2', 'lastFlare'].includes(key)) ||
         Object.values(op.expected.ascension).some(flag => typeof flag !== 'boolean'))) throw new Error('Invalid expected Ascension state.');
   }
+  if (op.kind === 'upgradeCharacter' && !['level', 'evolve', 'convergence', 'weapon'].includes(String(op.upgradeKind)))
+    throw new Error('Unknown character upgrade.');
   if (op.kind === 'ascendCharacter' && !['stats', 'skill1', 'skill2', 'lastFlare'].includes(String(op.step))) throw new Error('Invalid Calamitic Ascension step');
   if (op.kind === 'maxConduit') {
     if (!record(op.expected)) throw new Error('Invalid Conduit Max Level preview.');

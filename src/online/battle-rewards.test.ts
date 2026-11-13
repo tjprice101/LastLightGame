@@ -34,7 +34,7 @@ function fixture(): Account {
 function killed(anchor: RadiantPressureAnchor, seed = 1729) {
   const enemies = adaptRadiantPressureEncounter(anchor, seed, authoredRadiantCalibration);
   const combat = createRadiantCombat([{ id: 'ember', starter: 'ember', level: 105, form: 6,
-    weaponRank: 0, masterId: null, ascension: {} }], enemies, 7);
+    convergenceRank: 1, weaponRank: 0, masterId: null, ascension: {} }], enemies, 7);
   combat.enemies.forEach(enemy => {
     enemy.hp = 0; enemy.currency = depleteRadiantCurrency(enemy.currency, 0).ledger;
   });

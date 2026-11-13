@@ -57,7 +57,7 @@ describe('shared information templates', () => {
         expect(tier.querySelector('.info-effects li')).not.toBeNull();
         expect(tier.textContent).toContain('Target:');
         expect(tier.textContent).toContain('Costs');
-        expect(tier.textContent).toContain('Unlocks at');
+        expect(tier.textContent).toMatch(/(?:Locked|Unlocked) · Rank \d+\+ and Evo\.\d+/);
       }
     }
   });

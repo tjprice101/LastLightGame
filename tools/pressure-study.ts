@@ -15,7 +15,7 @@ export function pressureStudyLoadouts(ids: RadiantBearerId[], level: number, pro
   const members: RadiantLoadout[] = ids.map(id => {
     const form = Math.max(1, Array.from({ length: 6 }, (_, index) => index + 1).find(form => characterLevelCap(form, id) >= level) ?? 6);
     account.characters[id] = { level, evolution: form, weaponRank: 0 };
-    return { id, starter: id, level, form, masterId: null, weaponRank: 0,
+    return { id, starter: id, level, form, convergenceRank: 1, masterId: null, weaponRank: 0,
       ascension: { stats: false, skill1: false, skill2: false, lastFlare: false } };
   });
   const common: ConduitId[] = ['vigil-core', 'siegebound-drive', 'bastion-lock', 'parallax-relay',

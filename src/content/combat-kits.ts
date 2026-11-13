@@ -1,8 +1,8 @@
-import type { FlareTier } from '../game/combat-gauge';
 import { characterReleased } from './release-visibility';
 import { masterConduits, type MasterConduitId } from './master-conduits';
 import { starters, type StarterId } from './starters';
-import { characterLevelCap, weaponRules, type CharacterAscension } from './progression';
+import { characterLevelCap, convergentLightRankCap, convergentLightTier, weaponRules,
+  type CharacterAscension, type ConvergentLightTier } from './progression';
 import { radiantGearAmount, validateRadiantGear, type RadiantGear } from './conduit-effects';
 import type { ElementId } from './activities';
 
@@ -21,6 +21,7 @@ export interface RadiantLoadout {
   starter: RadiantBearerId;
   level: number;
   form: number;
+  convergenceRank: number;
   masterId: RadiantMasterId | null;
   weaponRank: number;
   ascension: CharacterAscension;
@@ -208,10 +209,10 @@ const bearerTuning: Record<RadiantBearerId, {
     target: 'one-enemy', damage: 2.35, weaken: .15, weakenPhases: 1 },
 };
 
-const flareTiers: Record<FlareTier, { damage: number; support: number; suffix: string }> = {
-  glowing: { damage: 4, support: 2, suffix: '' },
-  lustrous: { damage: 8, support: 3, suffix: ' Ascendant' },
-  eternal: { damage: 12, support: 4, suffix: ' Resplendent' },
+const flareTiers: Record<ConvergentLightTier, { damage: number; support: number; comboHits: number }> = {
+  sparkling: { damage: 4, support: 2, comboHits: 4 },
+  glimmering: { damage: 8, support: 3, comboHits: 8 },
+  ultimate: { damage: 12, support: 4, comboHits: 12 },
 };
 function baseSignature(tuning: typeof bearerTuning[RadiantBearerId]): Omit<RadiantFlareOffer, 'name'> {
   return {
@@ -250,14 +251,14 @@ export const radiantBearerKits: Record<RadiantBearerId, RadiantBearerKit> = Obje
   }),
 ) as Record<RadiantBearerId, RadiantBearerKit>;
 
-export const radiantFlares: Record<RadiantBearerId, Record<FlareTier, RadiantFlareOffer>> =
+export const radiantFlares: Record<RadiantBearerId, Record<ConvergentLightTier, RadiantFlareOffer>> =
   Object.fromEntries(releasedRadiantIds.map(id => {
     const kit = radiantBearerKits[id];
-    return [id, Object.fromEntries((Object.entries(flareTiers) as [FlareTier, typeof flareTiers.glowing][]).map(([tier, scale]) =>
+    return [id, Object.fromEntries((Object.entries(flareTiers) as [ConvergentLightTier, typeof flareTiers.sparkling][]).map(([tier, scale]) =>
       [tier, {
-        name: `${kit.signatureFamily}${scale.suffix}`,
+        name: 'Convergent Light',
         ...kit.signature,
-        comboHits: tier === 'glowing' ? 4 : tier === 'lustrous' ? 8 : 12,
+        comboHits: scale.comboHits,
         damage: kit.signature.damage * scale.damage,
         burn: kit.signature.burn * scale.support,
         shieldDefense: kit.signature.shieldDefense * scale.support,
@@ -269,7 +270,7 @@ export const radiantFlares: Record<RadiantBearerId, Record<FlareTier, RadiantFla
         renewal: kit.signature.renewal * scale.support,
         attackBuff: kit.signature.attackBuff * scale.support,
       }]))];
-  })) as Record<RadiantBearerId, Record<FlareTier, RadiantFlareOffer>>;
+  })) as Record<RadiantBearerId, Record<ConvergentLightTier, RadiantFlareOffer>>;
 
 export type RadiantMasterId = `master-${RadiantBearerId}-${1 | 2 | 3}` & MasterConduitId;
 export type RadiantMasterEnhancement = 'passive' | 'leader' | 'signature';
@@ -334,9 +335,10 @@ export function radiantLeaderBonus(loadout: RadiantLoadout): number {
     radiantGearAmount(loadout.gear, 'leader');
 }
 
-export function radiantFinalFlare(loadout: RadiantLoadout, tier: FlareTier): RadiantFlareOffer {
+export function radiantFinalFlare(loadout: RadiantLoadout, tier: ConvergentLightTier): RadiantFlareOffer {
   const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
-  const power = (1 + .1 * (loadout.form - 1)) *
+  const rankPower = 1 + .01 * (loadout.convergenceRank - 1);
+  const power = (1 + .1 * (loadout.form - 1)) * rankPower *
     (1 + (master?.enhancement === 'signature' ? master.magnitude : 0) + (loadout.ascension.lastFlare ? .5 : 0));
   const offer = { ...radiantFlares[loadout.starter][tier] };
   for (const key of ['damage', 'burn', 'shieldDefense', 'shieldHP', 'reduction', 'weaken', 'exposure', 'heal', 'renewal', 'attackBuff'] as const)
@@ -359,6 +361,11 @@ export function validateRadiantLoadout(loadout: RadiantLoadout): void {
       !Number.isSafeInteger(loadout.level) || loadout.level < 0 ||
       !Number.isSafeInteger(loadout.form) || loadout.form < 1 || loadout.form > 6 ||
       loadout.level > characterLevelCap(loadout.form, loadout.starter, loadout.ascension?.stats === true) ||
+      !Number.isSafeInteger(loadout.convergenceRank) || loadout.convergenceRank < 1 ||
+      loadout.convergenceRank > convergentLightRankCap({
+        level: loadout.level, evolution: loadout.form, convergenceRank: loadout.convergenceRank,
+        ascension: loadout.ascension,
+      }, loadout.starter) ||
       !Number.isSafeInteger(loadout.weaponRank) || loadout.weaponRank < 0 ||
       loadout.weaponRank > weaponRules.maximumRank ||
       !loadout.ascension || typeof loadout.ascension !== 'object' || Array.isArray(loadout.ascension) ||

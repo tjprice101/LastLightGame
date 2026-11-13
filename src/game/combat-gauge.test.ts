@@ -1,78 +1,72 @@
 import { describe, expect, it, vi } from 'vitest';
 import { addRadiantPersonalCharge, grantRadiantAction, grantRadiantDrop, grantRadiantRound, personalChargeMaximum,
-  radiantHitDrop, readyFlare, sharedChargeThreshold, sharedChargeUnit, spendReadyFlare, validateRadiantGauge,
+  radiantHitDrop, readyFlare, spendReadyFlare, validateRadiantGauge,
   type RadiantGaugeState } from './combat-gauge';
 
-function fixture(form = 6, size = 1): RadiantGaugeState {
+function fixture(form = 6, size = 1, convergenceRank = 1): RadiantGaugeState {
   return { members: Array.from({ length: size }, (_, index) => ({
-    id: `member-${index}`, elementId: 'infernic', form, baseCost: 30, charge: 0, living: true,
-  })), sharedUnits: 0, eternalCasts: 0 };
+    id: `member-${index}`, elementId: 'infernic', form, convergenceRank, baseCost: 30, charge: 0, living: true,
+  })) };
 }
 describe('isolated radiant charge foundation', () => {
-  it.each([1, 2, 3, 4, 5, 6])('unlocks the correct personal layers at saved form%i', form => {
+  it.each([1, 2, 3, 4, 5, 6])('preserves personal capacity at saved form%i without unlocking higher ranks', form => {
     const state = fixture(form);
     expect(personalChargeMaximum(state.members[0])).toBe(form < 4 ? 30 : 60);
     expect(readyFlare(state, 'member-0')).toBeNull();
     state.members[0].charge = 30;
-    expect(readyFlare(state, 'member-0')).toBe('glowing');
+    expect(readyFlare(state, 'member-0')).toBe('sparkling');
     if (form >= 4) {
       state.members[0].charge = 60;
-      expect(readyFlare(state, 'member-0')).toBe('lustrous');
+      expect(readyFlare(state, 'member-0')).toBe('sparkling');
     }
   });
-  it('retains incomplete overcharge after a Glowing cast without mutating its input', () => {
+  it('unlocks tiers from saved rank and enforces their evolution requirements', () => {
+    const sparkling = fixture(6, 1, 5);
+    sparkling.members[0].charge = 30;
+    expect(readyFlare(sparkling, 'member-0')).toBe('sparkling');
+    const glimmering = fixture(4, 1, 6);
+    glimmering.members[0].charge = 60;
+    expect(readyFlare(glimmering, 'member-0')).toBe('glimmering');
+    const ultimate = fixture(6, 1, 11);
+    ultimate.members[0].charge = 60;
+    expect(readyFlare(ultimate, 'member-0')).toBe('ultimate');
+    expect(() => validateRadiantGauge(fixture(3, 1, 6))).toThrow('evolution unlock');
+    expect(() => validateRadiantGauge(fixture(5, 1, 11))).toThrow('evolution unlock');
+  });
+  it('retains incomplete charge after a Sparkling cast without mutating its input', () => {
     const state = fixture(4);
     state.members[0].charge = 45;
     const result = spendReadyFlare(state, 'member-0');
-    expect(result.tier).toBe('glowing');
+    expect(result.tier).toBe('sparkling');
     expect(result.state.members[0].charge).toBe(15);
     expect(state.members[0].charge).toBe(45);
   });
-  it('allows one Eternal and leaves other personal bars charged but not Eternal-ready', () => {
-    const state = fixture(6, 3);
+  it('spends each bearer’s personal saved rank independently', () => {
+    const state = fixture(6, 3, 11);
     state.members.forEach(member => { member.charge = 60; });
-    state.sharedUnits = sharedChargeThreshold(0);
     state.members[2].form = 4;
-    expect(readyFlare(state, 'member-2')).toBe('lustrous');
+    state.members[2].convergenceRank = 6;
+    expect(readyFlare(state, 'member-2')).toBe('glimmering');
     const cast = spendReadyFlare(state, 'member-0');
-    expect(cast.tier).toBe('eternal');
+    expect(cast.tier).toBe('ultimate');
     expect(cast.state.members.map(member => member.charge)).toEqual([0, 60, 60]);
-    expect(cast.state.sharedUnits).toBe(0);
-    expect(cast.state.eternalCasts).toBe(1);
-    expect(readyFlare(cast.state, 'member-1')).toBe('lustrous');
-    expect(state.sharedUnits).toBe(100 * sharedChargeUnit);
+    expect(readyFlare(cast.state, 'member-1')).toBe('ultimate');
+    expect(state.members[0].charge).toBe(60);
   });
-  it('does not use shared fullness to bypass an incomplete second personal layer', () => {
-    const state = fixture();
-    state.sharedUnits = sharedChargeThreshold(0);
-    state.members[0].charge = 59;
-    expect(spendReadyFlare(state, 'member-0').tier).toBe('glowing');
-  });
-  it.each([1, 2, 3, 4, 5, 6])('normalizes guaranteed shared charge for %i starting members exactly', size => {
-    let state = fixture(6, size);
-    for (const member of state.members) {
-      state = grantRadiantDrop(state, member.id, radiantHitDrop('normal', 0, () => .5).amount);
-      state = grantRadiantAction(state, member.id, 'normal', 1).state;
-    }
-    state = grantRadiantRound(state);
-    expect(state.sharedUnits).toBe(24 * sharedChargeUnit);
-    expect(state.members.every(member => member.charge === 10 + size - 1)).toBe(true);
-  });
-  it('uses the starting member count after death and gives no personal round grant to the defeated', () => {
+  it('grants incoming-hit Luminosity only to the living recipient and nothing at round end', () => {
     const state = fixture(6, 6);
     state.members[5].living = false;
     const drop = grantRadiantDrop(state, 'member-0', 20);
     const next = grantRadiantRound(grantRadiantAction(drop, 'member-0', 'normal', 1).state);
-    expect(next.sharedUnits).toBe(19 * sharedChargeUnit);
     expect(next.members.map(member => member.charge)).toEqual([20, 2, 2, 2, 2, 0]);
     expect(next.members[5].charge).toBe(0);
   });
-  it('does not accumulate hidden shared charge before any final-form member is equipped', () => {
+  it('does not create charge at round end', () => {
     const state = fixture(5, 6);
     const next = grantRadiantRound(grantRadiantAction(state, 'member-0', 'normal', 1).state);
-    expect(next.sharedUnits).toBe(0);
+    expect(next.members.every(member => member.charge === 0)).toBe(true);
   });
-  it('does not roll bonuses or generate personal charge from Final Flares', () => {
+  it('does not roll bonuses or generate personal charge from Convergent Light', () => {
     let state = fixture(6, 2);
     state.members[0].charge = 60;
     const roll = vi.fn(() => 0);
@@ -92,9 +86,9 @@ describe('isolated radiant charge foundation', () => {
     expect(() => radiantHitDrop('normal', 1, () => 0)).toThrow('roll');
     expect(state).toEqual(before);
   });
-  it('does not let Eternal fund its own shared resource and rejects cosmetic Normal multi-hits', () => {
+  it('does not let Convergent Light generate Luminosity and rejects cosmetic Normal multi-hits', () => {
     const state = fixture();
-    expect(grantRadiantAction(state, 'member-0', 'eternal', 1).state.sharedUnits).toBe(0);
+    expect(grantRadiantAction(state, 'member-0', 'flare', 1).state).toEqual(state);
     expect(() => grantRadiantAction(state, 'member-0', 'normal', 3)).toThrow('one mechanical');
   });
   it.each([1, 2, 3, 4, 5, 6])('gives the attacker the full drop and each of %i-member squad its own ten percent', size => {
@@ -109,7 +103,7 @@ describe('isolated radiant charge foundation', () => {
     state.members[2].charge = 59.9;
     state = grantRadiantDrop(state, 'member-0', 1);
     expect(state.members.map(member => member.charge)).toEqual([1, 30, 60]);
-    expect(readyFlare(state, 'member-1')).toBe('glowing');
+    expect(readyFlare(state, 'member-1')).toBe('sparkling');
     for (let index = 0; index < 9; index++) state = grantRadiantDrop(state, 'member-0', 1);
     expect(state.members.map(member => member.charge)).toEqual([10, 30.9, 60]);
     state = spendReadyFlare(state, 'member-1').state;
@@ -144,6 +138,5 @@ describe('isolated radiant charge foundation', () => {
     expect(() => readyFlare(state, 'member-0')).toThrow('defeated');
     state.members[0].charge = 61;
     expect(() => validateRadiantGauge(state)).toThrow('unlocked layers');
-    expect(() => sharedChargeThreshold(Number.MAX_SAFE_INTEGER + 1)).toThrow('cast count');
   });
 });

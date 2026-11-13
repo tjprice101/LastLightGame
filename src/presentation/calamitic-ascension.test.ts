@@ -23,7 +23,7 @@ beforeEach(() => {
   HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); this.dispatchEvent(new Event('close')); };
   HTMLElement.prototype.scrollIntoView = vi.fn();
   account = emptyAccount();
-  account.characters.ember = { level: 105, evolution: 6 };
+  account.characters.ember = { level: 105, evolution: 6, convergenceRank: 1 };
   account.materials['shard-of-calamity'] = 100;
   const values = new Map([[SAVE_KEY, '{"version":1,"starterId":"ember"}']]);
   storage = { getItem: key => values.get(key) ?? null, setItem: (key, value) => { writes++; values.set(key, value); }, removeItem: key => { values.delete(key); } };
@@ -69,10 +69,10 @@ describe('Calamitic Ascension presentation', () => {
     const html = ascensionContents(starter, account);
     expect(html).toContain(radiantBearerKits.ember.passive.name);
     expect(html).toContain(radiantBearerKits.ember.leader);
-    expect(html).toContain('Final Flare');
+    expect(html).toContain('Convergent Light');
     expect(html).toContain('50% of the evolution-enhanced Passive Skill bonus');
     expect(html).toContain('50% of the native Leader Skill damage bonus');
-    expect(html).toContain('50% of evolution-enhanced Final Flare effect magnitudes');
+    expect(html).toContain('50% of evolution- and rank-enhanced Convergent Light effect magnitudes');
     expect(html).not.toContain('Cinder Cleave');
     expect(html).not.toContain('Skill Efficiency');
     expect(html).not.toContain('Requires');

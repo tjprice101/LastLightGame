@@ -437,7 +437,7 @@ describe('stable server entry entropy and unknown transport validation', () => {
     { type: 'normal', bearerId: [], targetId: 'enemy' },
     { type: 'normal', bearerId: 'ember', targetId: 'enemy', amount: 999999 },
     { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ember'], coefficient: 99 },
-    { type: 'flare', bearerId: 'ember', tier: 'eternal' },
+    { type: 'flare', bearerId: 'ember', tier: 'ultimate' },
     { type: 'flare', bearerId: 'ember', targetId: undefined },
     { type: 'defense', bearerId: 'ember', targetId: 'enemy' },
     { type: 'normal', bearerId: '', targetId: 'enemy' }])('rejects hostile player choice %j', action => {

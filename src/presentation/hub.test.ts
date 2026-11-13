@@ -122,13 +122,14 @@ describe('game-specific hub layouts', () => {
     expect(home).not.toContain('Free Battle');
     expect(home).toContain('data-page="squad"');
     expect(home).toContain('data-page="summon"');
-    const overview = characterHub(starter, 'overview');
+    const overview = characterDetail(starter, 'overview');
     const kit = radiantBearerKits[starter.id as keyof typeof radiantBearerKits];
-    expect(overview).toContain(`Costs ${kit.baseCost} Luminosity.`);
+    expect(overview).toContain(`Costs ${kit.baseCost} Luminosity to activate.`);
     expect(overview).toContain(kit.passive.name);
     expect(overview).toContain(kit.leader);
-    for (const tier of ['Sparkle', 'Shimmer', 'Shattering Light']) expect(overview).toContain(tier);
-    expect(overview).toContain('Unlocks at Evo.');
+    for (const tier of ['Sparkling Convergent Light', 'Glimmering Convergent Light', 'Ultimate Convergence Light'])
+      expect(overview).toContain(tier);
+    expect(overview).toContain('Rank 6+ and Evo.4');
     expect(overview).not.toContain('Elemental Gauge');
     if (starter.id === 'tide') expect(home).toContain(`<strong>${formatStat(resolveFighter('tide').stats.defense)}</strong>`);
   });
@@ -227,7 +228,7 @@ describe('game-specific hub layouts', () => {
     expect(hub.indexOf('class="character-control-panel"')).toBeLessThan(hub.indexOf('class="hub-rail"'));
     expect(hub).toContain(`<span data-owned-title>${characterName(starter.id)}</span>`);
     const overview = characterDetail(starter, 'overview');
-    for (const heading of ['Stats', 'Leader Skill', 'Final Flare', 'Passive Skill', 'Personal Master / Conduits']) {
+    for (const heading of ['Stats', 'Leader Skill', 'Convergent Light', 'Passive Skill', 'Personal Master / Conduits']) {
       expect(overview).toContain(`>${heading}</h3>`);
     }
     expect(overview).not.toContain('>Skills</h3>');

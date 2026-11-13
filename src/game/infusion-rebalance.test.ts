@@ -160,7 +160,7 @@ describe('D-425 material rewards and historical compatibility', () => {
         const loaded = loadAccount(saved);
         const previous = stages === 35 ? 1 + Math.ceil((stage - 1) * 24 / 34) : stage;
         expect(loaded.infusionStages[mode]).toBe(migratePreviousInfusionStage(previous));
-        expect(loaded).toMatchObject({ version: 11, fractalis: 123, lycalis: 45, materials: source.materials });
+        expect(loaded).toMatchObject({ version: 12, fractalis: 123, lycalis: 45, materials: source.materials });
         expect(loaded.normalFinalClears?.[mode]).toBe(stage === stages ? true : undefined);
         expect(writes).not.toHaveBeenCalled();
         expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
@@ -208,7 +208,7 @@ describe('D-425 material rewards and historical compatibility', () => {
     vi.spyOn(saved, 'setItem').mockImplementationOnce(() => { throw new Error('Write denied'); });
     expect(() => setMachineLootFocus(saved, 'Rare', 'duplex-heart')).toThrow('denied');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
-    expect(setMachineLootFocus(saved, 'Rare', 'duplex-heart')).toMatchObject({ version: 11, infusionStages: { heavens: 15 },
+    expect(setMachineLootFocus(saved, 'Rare', 'duplex-heart')).toMatchObject({ version: 12, infusionStages: { heavens: 15 },
       materials: { 'heavens-weapon': 22 } });
   });
   it.each(modes)('%s discards obsolete online encounters, preserving saved rewards and read purity', mode => {
@@ -217,7 +217,7 @@ describe('D-425 material rewards and historical compatibility', () => {
     Object.assign(game.account, { version: 9, infusionStages: { [mode]: 25 }, fractalis: 321 });
     game.run!.activity = { kind: 'infusion', mode, stage: 25 };
     const before = structuredClone(game);
-    expect(publicGame(game, 1)).toMatchObject({ account: { version: 11, fractalis: 321, infusionStages: { [mode]: 15 } }, session: null });
+    expect(publicGame(game, 1)).toMatchObject({ account: { version: 12, fractalis: 321, infusionStages: { [mode]: 15 } }, session: null });
     expect(game).toEqual(before);
     expect(resolveOperation(game, { kind: 'read' }, entropy).game.run).toBeNull();
   });

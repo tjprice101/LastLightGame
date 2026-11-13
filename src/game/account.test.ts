@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, ownedProgress, saveAccount, saveAccountRewards, unlockedStage, upgradeCharacter, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { act, createDungeonBattle, endTurn } from './battle';
-import { characterLevelCap, evolutionCost, levelCost } from '../content/progression';
+import { characterLevelCap, convergentLightRankCost, evolutionCost, levelCost } from '../content/progression';
 import { playableDungeons } from '../content/dungeons';
 
 function storage(): ProfileStorage {
@@ -63,21 +63,22 @@ describe('persistent progression transactions', () => {
     const raw = JSON.stringify(legacy);
     saved.setItem(ACCOUNT_KEY, raw);
     const migrated = loadAccount(saved);
-    expect(migrated.version).toBe(11);
+    expect(migrated.version).toBe(12);
     expect(migrated.dungeonStages).toEqual({ infernic: 1, oceanic: 12, atmospheric: 35, tranquilitic: 35 });
     expect(migrated.infusionStages).toEqual({ heavens: 8, abyss: 15 });
     for (const field of ['fractalis', 'lycalis', 'firstFracture', 'materials', 'characters', 'creatures', 'receipts'] as const) {
       expect(migrated[field]).toEqual(legacy[field]);
     }
+    expect(ownedProgress(migrated, 'ember')).toMatchObject({ level: 90, evolution: 5, convergenceRank: 1 });
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     const persisted = saveAccount(saved, migrated);
     expect(loadAccount(saved)).toEqual(persisted);
     expect({ ...persisted, acquisitionMarkers: undefined }).toEqual({ ...migrated, acquisitionMarkers: undefined });
     expect(Object.values(persisted.acquisitionMarkers ?? {})).not.toContain(false);
-    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(11);
+    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(12);
     expect(validateAccount({ ...legacy, infusionStages: { heavens: 1 } }).infusionStages).toEqual({ heavens: 1 });
   });
-  it('migrates v6 resized activity unlocks read-only and persists v9 in the first transaction', () => {
+  it('migrates v6 resized activity unlocks read-only and persists v12 in the first transaction', () => {
     const saved = storage();
     const legacy = { ...emptyAccount(), version: 6, fractalis: 100,
       materials: { 'infernic-common': 2 }, infusionStages: { heavens: 35, abyss: 18, machines: 100 } };
@@ -87,14 +88,14 @@ describe('persistent progression transactions', () => {
     const write = saved.setItem;
     saved.setItem = (key, value) => { writes++; write(key, value); };
     const loaded = loadAccount(saved);
-    expect(loaded.version).toBe(11);
+    expect(loaded.version).toBe(12);
     expect(loaded.infusionStages).toEqual({ heavens: 15, abyss: 8, machines: 35 });
     expect(writes).toBe(0);
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     const upgraded = upgradeCharacter(saved, 'ember', 'level', { level: 0, evolution: 1 });
     expect(writes).toBe(1);
     expect(upgraded.characters.ember).toMatchObject({ level: 1, evolution: 1 });
-    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!)).toMatchObject({ version: 11, infusionStages: loaded.infusionStages });
+    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!)).toMatchObject({ version: 12, infusionStages: loaded.infusionStages });
     expect(loadAccount(saved)).toEqual(upgraded);
     expect(writes).toBe(1);
   });
@@ -169,7 +170,7 @@ describe('persistent progression transactions', () => {
     saved.setItem(ACCOUNT_KEY, raw);
     const account = loadAccount(saved);
     expect(account.fractalis).toBe(57);
-    expect(ownedProgress(account, 'ember')).toEqual({ level: 0, evolution: 1 });
+    expect(ownedProgress(account, 'ember')).toEqual({ level: 0, evolution: 1, convergenceRank: 1 });
     expect(account.materials).toEqual({});
     expect(account.lycalis).toBe(0);
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
@@ -180,9 +181,31 @@ describe('persistent progression transactions', () => {
     const result = upgradeCharacter(saved, 'ember', 'level', { level: 0, evolution: 1 });
     expect(result.fractalis).toBe(99988);
     expect(result.materials['infernic-common']).toBe(998);
-    expect(ownedProgress(loadAccount(saved), 'ember')).toEqual({ level: 1, evolution: 1 });
+    expect(ownedProgress(loadAccount(saved), 'ember')).toEqual({ level: 1, evolution: 1, convergenceRank: 1 });
     expect(() => upgradeCharacter(saved, 'ember', 'level', { level: 0, evolution: 1 })).toThrow('changed');
     expect(() => upgradeCharacter(saved, 'tide', 'level', { level: 0, evolution: 1 })).toThrow('Owned Element-Bearer');
+  });
+  it('raises a personal Convergent Light rank with one atomic cost and rejects a stale confirmation', () => {
+    const saved = storage();
+    const account = funded(saved);
+    account.characters.ember = { level: 5, evolution: 1 };
+    saveAccount(saved, account);
+    const expected = ownedProgress(account, 'ember');
+    const cost = convergentLightRankCost('ember', expected);
+    let writes = 0;
+    const write = saved.setItem;
+    saved.setItem = (key, value) => { writes++; write(key, value); };
+    const before = loadAccount(saved);
+    const upgraded = upgradeCharacter(saved, 'ember', 'convergence', expected);
+    expect(writes).toBe(1);
+    expect(upgraded.characters.ember).toMatchObject({ level: 5, evolution: 1, convergenceRank: 2 });
+    expect(upgraded.fractalis).toBe(before.fractalis - cost.fractalis);
+    for (const [material, amount] of Object.entries(cost.materials))
+      expect(upgraded.materials[material]).toBe(before.materials[material] - amount);
+    const committed = saved.getItem(ACCOUNT_KEY);
+    expect(() => upgradeCharacter(saved, 'ember', 'convergence', expected)).toThrow('changed');
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(committed);
+    expect(writes).toBe(1);
   });
   it('handles all six forms, retained levels, exact materials and a one-time first Fracture reward', () => {
     const saved = storage();
@@ -210,7 +233,7 @@ describe('persistent progression transactions', () => {
     expect(totalCost).toBe(21480);
     expect(spent).toEqual({ 'infernic-common': 661, 'infernic-uncommon': 248, 'infernic-rare': 255, 'infernic-epic': 240, 'infernic-legendary': 120, 'infernic-omnic': 45, 'heavens-evolution': 45, 'heavens-level': 90 });
     expect(account.fractalis).toBe(100000 - totalCost);
-    expect(account.characters.ember).toEqual({ level: 105, evolution: 6 });
+    expect(account.characters.ember).toMatchObject({ level: 105, evolution: 6, convergenceRank: 1 });
     expect(account.capturedCharacters).toHaveLength(0);
     for (const [id, amount] of Object.entries(spent)) expect(account.materials[id]).toBe(1000 - amount);
     expect(() => upgradeCharacter(saved, 'ember', 'evolve', { level: 105, evolution: 6 })).toThrow('final');

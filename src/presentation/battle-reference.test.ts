@@ -10,13 +10,13 @@ import { escapeDialogText } from './game-dialog';
 import { radiantPassiveArticle } from './character-combat';
 
 function loadout(starter: RadiantLoadout['starter'], masterId: RadiantMasterId | null = null): RadiantLoadout {
-  return { id: starter, starter, masterId, form: 6, level: 105, weaponRank: 0, ascension: {} };
+  return { id: starter, starter, masterId, form: 6, level: 105, convergenceRank: 1, weaponRank: 0, ascension: {} };
 }
 describe('complete frozen Radiant battle reference', () => {
   it.each(releasedRadiantIds.map(id => ({ id })))('covers all three authored Flare offers for $id without mutating content', ({ id }) => {
     const member = loadout(id), before = structuredClone(radiantFlares[id]);
     const html = radiantBattleReference(member, radiantStarterKits[id].baseCost);
-    for (const tier of ['glowing', 'lustrous', 'eternal'] as const) {
+    for (const tier of ['sparkling', 'glimmering', 'ultimate'] as const) {
       expect(html).toContain(radiantFlares[id][tier].name);
       const lines = radiantFlareDescription(radiantFlares[id][tier]);
       expect(lines.length).toBeGreaterThan(0);
@@ -37,7 +37,7 @@ describe('complete frozen Radiant battle reference', () => {
       expect(html).toContain(escapeDialogText(master.effect));
       const state = createRadiantCombat([member], [{ elementId: null, id: 'enemy', stats: { hp: 1000000, attack: 100, defense: 100, recovery: 100 }, currencyBudget: 30000 }], 1);
       state.gauge.members[0].charge = state.gauge.members[0].baseCost;
-      const targeted = radiantFlareNeedsTarget(member, 'glowing');
+      const targeted = radiantFlareNeedsTarget(member, 'sparkling');
       const result = applyRadiantCombatAction(state, { type: 'flare', bearerId: member.id, ...(targeted ? { targetId: 'enemy' } : {}) });
       expect(result.events.some(event => event.type === 'flare')).toBe(true);
       if (targeted) expect(() => applyRadiantCombatAction(state, { type: 'flare', bearerId: member.id })).toThrow('selected');
@@ -52,7 +52,7 @@ describe('complete frozen Radiant battle reference', () => {
         expect(description).not.toContain('undefined'); expect(description).not.toContain('NaN');
       }
     }
-    expect(radiantConduitDescription({ kind: 'shared-normal', amount: 270 })).toContain('4.5 shared charge');
+    expect(radiantConduitDescription({ kind: 'normal-charge', amount: 270 })).toContain('additional personal charge');
     expect(radiantConduitDescription({ kind: 'normal-weaken', amount: 1.2 })).toContain('80%');
     const member = loadout('ember'); member.gear = [{ id: 'vigil-core', rank: 5 }, ...Array.from({ length: 7 }, () => null)];
     expect(radiantBattleReference(member, 30)).toContain('Maximum Health +30%');
@@ -70,10 +70,10 @@ describe('complete frozen Radiant battle reference', () => {
     const member = loadout('sprout', 'master-sprout-3');
     member.form = 1; member.level = 30; member.ascension.lastFlare = true;
     const html = radiantBattleReference(member, 20);
-    expect(html.match(/Locked · Unlocks/g)).toHaveLength(2);
+    expect(html.match(/Locked · Rank/g)).toHaveLength(2);
     expect(html).toContain('240% caster Recovery');
-    expect(radiantFinalFlare(member, 'glowing').heal).toBeCloseTo(2.4);
-    expect(html).toContain('coefficients include evolution, saved Imbues and personal Master enhancements');
+    expect(radiantFinalFlare(member, 'sparkling').heal).toBeCloseTo(2.4);
+    expect(html).toContain('coefficients include evolution, rank, saved Imbues and personal Master enhancements');
     expect(html).not.toContain('Saved signature magnitude');
   });
   it.each(['aurora', 'ilyss'] as const)('shows %s actual enhanced squad passive, not retired cleanse effects', id => {

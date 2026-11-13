@@ -1,12 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { applyMotion, loadMotion, reducedMotion, saveMotion } from './settings';
 
 afterEach(() => vi.unstubAllGlobals());
 
 describe('explicit in-game motion preference', () => {
-  it.each([true, false])('plays animations by default even when device reduction is %s', (deviceReduced) => {
+  it.each([true, false])('keeps the in-game preference explicit when system reduction is %s', (deviceReduced) => {
     const dataset: Record<string, string> = {};
     const dispatchEvent = vi.fn();
     const matchMedia = vi.fn(() => ({ matches: deviceReduced }));
@@ -37,15 +37,11 @@ describe('explicit in-game motion preference', () => {
     expect(loadMotion(storage)).toBe('system');
   });
 
-  it('never lets a device media query suppress CSS animation independently of the game setting', () => {
-    function check(directory: string): void {
-      for (const entry of readdirSync(directory, { withFileTypes: true })) {
-        const path = join(directory, entry.name);
-        if (entry.isDirectory()) check(path);
-        else if (entry.name.endsWith('.css')) expect(readFileSync(path, 'utf8'), path).not.toContain('prefers-reduced-motion');
-      }
-    }
-    check(join(process.cwd(), 'src'));
+  it('supports both system and explicit in-game reduced motion for the portrait animation', () => {
+    const workspaceCss = readFileSync(join(process.cwd(), 'src', 'presentation', 'menu-workspace.css'), 'utf8');
+    expect(workspaceCss).toContain('html[data-menu-workspace]:not([data-motion="reduced"])');
+    expect(workspaceCss).toContain('@media (prefers-reduced-motion: reduce)');
+    expect(workspaceCss).toContain('.ref-character-portrait::before { animation: none !important; }');
     expect(readFileSync(join(process.cwd(), 'src', 'style.css'), 'utf8'))
       .toContain(':root[data-motion="reduced"] *::after { animation: none !important; transition: none !important; }');
   });

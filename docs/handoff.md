@@ -1,5 +1,92 @@
 # Current state and handoff
 
+## Convergent Light rank follow-through (2026-11-12)
+
+**In progress; not deployed.** The live game now uses saved per-Element-Bearer
+Convergent Light ranks (1–20) and personal Luminosity instead of the shared
+Shattering Light meter. Legacy missing ranks read as Rank 1 without a load
+write. Rank unlocks enforce five levels per rank and the Evo.4/Evo.6 tier
+gates; potency rises 1% per rank above Rank 1. Rank-ups use a single local or
+online atomic transaction. Normal hits grant 10 to the living attacker and 1
+to each other living same-element ally; each surviving direct incoming hit,
+including Shield absorption, grants 10 to its recipient. The current account
+schema is v12 and frozen combat/run schemas are v5.
+
+The archive's ability index now searches the live Convergent Light name rather
+than the retired Final Flare label. The relevant decision, combat, menu and
+documentation-index sections are aligned with the implementation.
+
+**Verified:** `npx tsc --noEmit` and `npm run build` pass; the build retains
+the existing large-chunk advisory. The focused 23-file regression set passed
+**2,198 tests**, and the final full suite passed **10,533 tests across 293
+files**. The motion-policy test now checks the character-screen animation
+against both system and explicit in-game reduced motion. The server bundle
+was regenerated with `node tools\bundle_server_game.mjs`; its diff contains
+the matching rank-up, account validation and combat snapshot logic, and
+`git diff --check` passes.
+
+**Remaining:** Obtain explicit owner approval before deploying the new
+authority behavior. No commit, push or release has been made. Keep the standalone
+`last-light-menu-mockup.html` and excluded `docs/Future Plans/living-world-ui-audit-plan.md`
+unstaged and unpublished.
+
+## Earlier core consolidation snapshot (superseded)
+
+This historical note's authority-deployment approval does not authorize
+deployment of the newer Convergent Light rank behavior above.
+
+**In progress, not published.** The compact UI release below remains live.
+The owner answered the remaining combat questions and explicitly approved
+matching authority deployment. See the [core approval](decisions.md).
+Do not revert the approved arrow direction or restore 25-per-hit charge:
+Normal hits and each incoming direct hit give 10; only Normal drops share
+1 with living same-element allies. Incoming Shield hits qualify; periodic
+damage does not. Keep 100/200 personal tiers and existing shared charging.
+
+Working source changes now include the first consolidated kit/Conduit data,
+evolution-enhanced split combo Flare offers, additive living squad stat
+passives, elemental leader damage bonuses, actual direct-damage matchups
+and cast-time elemental/leader Burn snapshots,
+explicit enemy/Gauge elements, and version-4 combat/run schemas. Neutral
+synthetic engine fixtures explicitly use `elementId: null`; real activity
+adapters always supply their authored element. All 99 ordinary Conduits now
+have one/two simple stat/action modifiers; all 96 released personal Masters
+use a single passive/leader/Final Flare enhancement and existing Prism-base.
+Four-stat base tuning, saved IDs, upgrades and inactive schedules remain.
+
+The coupled six-file regression command covering combat-consolidation,
+combat-gauge, combat-engine, conduit-effects, battle-reference and battle-local
+passes **948 tests**; `npx tsc --noEmit --pretty false` passes.
+This includes 1,280 actually executed unlocked form/tier/Master combinations
+with all saved Imbues, bounded status magnitudes, and source/life-state checks.
+Retired bespoke passive/Master/trigger expectations were migrated; stat/rank,
+targeting, turn, Shield/renewal, currency, ownership and atomic-save protection
+tests remain. Current-run enemy elements are checked against authored frozen
+enemies, including continuation state.
+
+Known version-3 encounters retire on a cloned read with an informational
+notice and no account/revision/storage writes. Corrupt current encounters
+reject explicitly rather than silently pretending to be empty. A new
+version-4 run can start after intentional retirement.
+
+`node tools\bundle_server_game.mjs` and `npm run build` pass; only the existing
+large-chunk advisory remains. Isolated Chrome checks pass 11 menu states at
+1440x900 with no overflow, console errors or backend mutations, plus the real
+battle renderer and charge-flame/Shield/reduced-motion checks.
+The [bounded before/after cadence checks](enemy-benchmark-calibration.md#core-consolidation-cadence-checks-2026-11-12-local-not-released)
+retain all nine single-free-starter opening clears and explicitly retain
+six conditional late-team defeats; no enemy retuning or grants.
+
+Full current suite: `node .\node_modules\vitest\vitest.mjs run --reporter=json
+--outputFile=<session>\core-full-final.json --maxWorkers=3` passes **10,536
+tests across 293 files**. The final type-safe sustained support fixture rerun
+passes all 393 enemy-pressure tests; `npm run build` passes. The synthetic
+fixture separately verifies effective healing and actual Shield absorption,
+not an ordinary-account clear rate. The disposable hosted-RPC proof passes
+20 actions with exact same-element sharing, CAS and receipt replay; cleanup
+succeeds. This uses the current local handler, not deployed-handler evidence.
+Final authority/hosted checks and publication remain pending.
+
 ## Compact desktop menus and battle presentation follow-through (2026-11-12)
 
 **Published and verified:** runtime `835fae66561f109c509f54525689859841e732eb`
@@ -882,7 +969,7 @@ member card immediately saves that member's Normal Attack; hold plus upward
 swipe casts its highest ready Flare; the per-card Actions menu
 (`data-radiant-menu`) offers Defense and explicit actions for that member.
 Selected-member state, rings and `aria-pressed` were removed; only the enemy
-target persists. Status copy reads "Click a card to attack ? hold and swipe up
+target persists. Status copy reads "Click a card to attack · hold and swipe up
 for Flare."
 
 **Verified:** the same Radiant suite passes 1,789 tests in 22 files and
@@ -897,14 +984,15 @@ excluded. The card shows a hold-progress line, held glow, lifting drag,
 "Drag up"/"Release"/"Flare charging" cue and ready shimmer; strike and Flare
 launch bursts play only after the action save succeeds. Missed releases and
 inactive pointer capture can no longer leave the gesture stuck. Keyboard
-alternatives remain, and both reduced-motion settings keep static feedback.
+alternatives remain, and explicit in-game Reduce motion keeps static feedback.
 
 **Verified:** `npx vitest run radiant --exclude src\radiant-ui.test.ts
 --maxWorkers=2 --testTimeout=60000` passes 1,789 tests in 22 files;
 `npm run build` passes with the existing chunk-size advisory. Local preview at
 1366x768 confirmed card-body attack, Actions exclusion, hold progress,
 unready/primed cues, saved Flare launch and burst sampled over time, and
-static reduced motion. The temporary preview server was stopped.
+static reduced motion. The temporary preview server was stopped. The explicit
+in-game setting is authoritative after the subsequent motion-contract fix.
 
 **Remaining:** physical touch/trackpad feel, owner review, final bespoke
 cinema, GPU/cadence/economy acceptance, deployed route verification and
@@ -917,15 +1005,16 @@ track. Its brighter second layer fills over the completed first layer, with
 stronger, faster wave/stream motion. Shared Eternal charge uses a separate
 matching single track. Accessible native meters and exact values remain;
 display follows saved impact, including spending and subsequent earned charge.
-Empty layers and defeated members do not flow, and both reduced-motion
-settings keep readable static feedback. No mechanics or artwork changed.
+Empty layers and defeated members do not flow, and explicit in-game Reduce
+motion keeps readable static feedback. No mechanics or artwork changed.
 
 **Verified:** `npx vitest run radiant --exclude src\radiant-ui.test.ts
 --maxWorkers=2 --testTimeout=60000` passes 1,785 tests in 22 files;
 `npm run build` passes with the existing chunk-size advisory. Local browser
 preview at 1366x768 confirmed partial/full layers and second-layer overlay,
-wave movement over time, both reduced-motion modes, nonmoving empty tracks
-and no page-width overflow. The temporary preview server was stopped.
+wave movement over time, reduced-motion feedback, nonmoving empty tracks and
+no page-width overflow. The temporary preview server was stopped; the current
+motion contract follows the explicit in-game setting.
 
 **Remaining:** owner review, final bespoke cinema, physical desktop GPU/cadence
 and economy acceptance, deployed authenticated-route verification and explicit
@@ -1611,7 +1700,6 @@ cinematic actual Home/Battle six-member controls/Gauges/statuses/finite VFX.
 Measure client/network duration before final income/cadence/enemy tuning.
 Final single art brief remains provisional; preserve rejected dirty mockups.
 
-
 ## Radiant authored reward/progression and retry-safe lifecycle (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; prior gated authority `e6abe3b1`.
@@ -1652,7 +1740,6 @@ squad/equipment migration and frozen Settings/run UX;174 reviewed face crops;
 real cinematic six-member Home/Battle Gauges/statuses and finite radiant VFX.
 Final single art brief remains provisional; preserve rejected dirty mockups.
 
-
 ## Gated radiant HTTP authority and entry entropy (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; prior run boundary `f9bdbe75`.
@@ -1681,7 +1768,6 @@ material/chest/recruitment/unlock/Continue/run lifecycle and captured manual
 selection migration, fresh-entry farming and final enemy/access tuning;
 174 face crops plus cinematic real Home/Battle Gauges/statuses/finite VFX.
 Final single art brief remains provisional. Preserve rejected mockup work.
-
 
 ## Radiant saved-account and atomic receipt boundary (2026-11-08)
 
@@ -1713,7 +1799,6 @@ verification; complete all-mode reward/progression/Continue/restart migration,
 final pressure/access tuning;174 portraits and real cinematic Home/Battle
 Gauge/status/VFX. Final single art brief remains provisional. Preserve unrelated
 rejected mockups/dirty notes and stage only new status sections.
-
 
 ## Radiant action-driven enemy pressure study (2026-11-08)
 
@@ -1747,7 +1832,6 @@ Authority partial damage receipts/quit-retry farming and live run/loadout/
 captured-manual migration remain pending. Finish174 crops and real cinematic
 Home/Battle Gauge/status/VFX. Single art brief remains provisional. Preserve
 dirty unrelated rejected mockups and stage only new status sections.
-
 
 ## Ordinary radiant Conduits and frozen gear completed (2026-11-08)
 
@@ -1783,7 +1867,6 @@ cinematic Home/Battle status/Gauge and finite strong shader/VFX presentation.
 Final single art brief remains provisional. Preserve unrelated rejected
 mockup files/dirty notes and stage only this stage's documentation sections.
 
-
 ## Released radiant roster and Master study completed (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; prior starter/portrait commit
@@ -1818,7 +1901,6 @@ readouts/Gauges and stronger finite accessible VFX. No live deployment or new
 art commissions. Single final art file remains provisional. Preserve rejected
 dirty mockups/notes and stage only this stage's new documentation sections.
 
-
 ## Radiant starter combat study and eighteen face crops (2026-11-08)
 
 **Branch:** `overhaul/radiant-foundation`; earlier foundation committed/pushed
@@ -1852,7 +1934,6 @@ saved-loadout/frozen-run migration; authority-backed partial damage receipts;
 remaining portrait review and necessary cinematic Home/Battle layered Gauge/
 status/VFX surfaces. Release only after those coherent acceptance gates.
 Preserve dirty rejected UI mock-up files/notes; do not stage them.
-
 
 ## Implementing radiant overhaul: foundation only (2026-11-08)
 
@@ -1899,9 +1980,11 @@ review exact systems/starter kits before isolated six-capable combat study.
 Owner requests dedicated consistent face/upper-body crops from existing artwork
 per evolution, reused in all compact portrait contexts. [Plan](Future%20Plans/combat-system-specification.md#owner-selected-shared-evolution-portraits-2026-11-08)
 keeps full art in Team/showcases/field and records shared helper/provenance/
-facing/cache/discovery requirements. Currently192 released-form candidates
-need individual intake review; no derived exports or runtime changes completed.
-Continue consolidated combat specification review before implementation.
+facing/cache/discovery requirements. Completed:192 source-bound crops cover all32 released characters and are
+generated under `public/assets/character-faces/`. The six-form contact sheets
+and48px dark/96px light previews were reviewed; test coverage now includes
+every released form and the shared Radiant portrait rail. Production/hosted
+route and physical-device verification remain separate release gates.
 
 ## Owner clarified layered personal/shared Flare charge (2026-11-08)
 
@@ -2056,8 +2139,135 @@ idempotency and next-level3/2 materials. `--evolution` verifies late15-Value
 4+4+4+3 consumption and75/30/30 costs. Both pass; disposable identities and
 cascading records are removed. The new smoke initially omitted quit's required
 runId; corrected test request passes without any authority change.
-Matching hosted client pipeline verification remains pending.
+Matching client release is verified: implementation run42426580185 and
+follow-up run42426692413 succeed; CI passes8,378 tests. Hosted version matches
+`d82015ba2a252c306353ee4dc342231df7bdb1f0`. Isolated Edge confirms sequential
+farm reduction and increased-cost helpers in the loaded hosted bundle,
+rendered startup and no page errors. No owner account was modified. Paused
+mock-up files and their existing dirty documentation remain local/unpublished.
 See [economy contract](summoning-and-economy.md#additional-farm-reduction-and-upgrade-costs-2026-11-07).
+
+## Owner UI hold and Moon pity reveal repair (2026-11-07)
+
+Owner pauses the local redesign and further living-world UI rollout. Retain
+the existing previews and implemented production foundations; no further UI
+iterations or mock-up publication are authorized. This does not pause the
+separately requested live Moon summon repair or resume paused Story work.
+
+The live saved-reward warning has a reproduced cause: Moon's80th-draw
+`event pity` receipt was rejected by the shared reward presenter before its
+cinematic. Seasonal labels now resolve correctly, preserving new-character
+and duplicate-material six-star reveals. Unknown/cross-banner guarantees still
+throw; no saved account, costs, RNG, pity or server behavior changes.
+
+Validation: `npx vitest run src\presentation\summon-presentation.test.ts
+src\presentation\reward-screen.test.ts src\online\server-game.test.ts`
+passes127 tests; `npm run build` passes TypeScript/Vite with the existing
+large-chunk warning. Isolated Edge receipt fixtures verify moving rays over
+time, loaded Moon artwork, six-star reveal, Escape skip, Reduce motion and
+dialog cleanup without account writes or page errors. Fix-only commit
+`e3b4880d` pushed and released. GitHub Actions run42423101947 passed all255
+files/8369 tests and the configured production build/Pages deployment.
+Hosted `version.json` matches `e3b4880d3ee0f28b5c7f5253e03d3d149af78409`;
+isolated Edge confirms the repaired presenter and strict guarantee validation
+in the hosted main bundle, rendered startup and no page errors. No live-account
+summon was performed. Dirty mock-up files/docs remain local and excluded from
+that commit; no authority deployment was needed for this client-only repair.
+
+Recommended next work is current full-roster remeasurement and pressured
+progression/pacing review. Remaining art is44 War associated images and103
+Sunshade images; Sunshade remains hidden/unreleased until a separate launch
+decision. Chapters2-3/core puzzle stay paused; later creator chapters and
+real-money purchases still need scope/approval. See the
+[unfinished-work register](Future%20Plans/README.md).
+
+## All-screen standalone Radiant mock-up (2026-11-07)
+
+Current revision adds the owner's requested categorized side view to menu
+families in [radiant-ui.html](../radiant-ui.html), retaining the cinematic squad
+Home and **no bottom bar**. Play has seven preview categories: Story, Training,
+Dungeons, Infusions, Elemental War, Events and Calamity. Selection updates art,
+summary and destination controls in place without spending, battle entry or
+history changes; explicit destination choice comes afterward. Other menus show
+contextual categories/current selection, replacing duplicate inline navigation.
+Colors gain teal atmosphere, mint/pearl actions and soft selected edges. Preview
+transitions settle6px over320ms; reduced motion remains static, with focus
+retained on keyboard-selected categories.
+
+All137 scenes remain reachable. Eight focused tests and TypeScript pass;
+local browser checks cover desktop no-scroll/mobile bounds and preview isolation.
+See the [latest evidence](Future%20Plans/living-world-ui-audit-plan.md#current-categorized-side-view-and-preview-first-play-2026-11-07).
+Same raw5195 preview, local-only/unpublished, no real save/account connection.
+
+### Previous main-menu correction
+
+Latest owner correction: **no bottom navigation on any screen**. This supersedes
+the earlier dock choice and highlighting. [radiant-ui.html](../radiant-ui.html)
+now uses Home as the main menu: a cinematic illustrative Infernis/Tizu/Flora
+formation (leader forward, staggered allies), basic squad/Story/event overview,
+Play, Moon Summon banner, Mailbox and Player Profile. Back and on-demand Menu
+retain all137 destinations; former dock space is reclaimed. No real account
+or squad data is read/written. The existing preview at5195 serves this revision.
+
+Latest checks:7 Vitest tests and TypeScript pass. Browser sweeps575/574/574 states
+at1280x640/1280x720/1920x1080 and703 at320x700 pass bounds/clipping and desktop
+no-scroll checks; all137 destinations remain reachable without a dock. Home
+contains three embedded formation portraits and the requested direct actions.
+Menu dismissal/focus, selection details, reduced-motion reveal and time-sampled
+transitions/Skip still pass, with no page errors. Local-only and unpublished.
+
+### Earlier quieter-hierarchy refinement (superseded navigation)
+
+Current owner feedback rejects the first pass as robotic, unpolished and
+convoluted. The local [mock-up](../radiant-ui.html) now uses a quieter
+charcoal/pearl system, fine fitted shapes, one primary Home action and a
+consistent on-demand area-menu dialog instead of the permanent destination
+rail. Dock highlighting follows nested sections; all137 scenes remain reachable.
+Numbered topic badges/redundant navigation arrows are removed; action-grid
+destinations move into the menu and inventory/roster selection shows its actual
+selected illustration and label. Scene transitions fade/settle8px without zoom,
+wipe or routine click bursts; ambient particles cap32, parallax4px/tilt2 degrees.
+Rewards retain celebratory effects/Skip but drop shake and spring overshoot.
+
+Current verification:6 focused Vitest tests and `npx tsc --noEmit` pass.
+Local headless Edge audits486/485/485 states at1280x640/1280x720/1920x1080 and582
+at320x700 without bounds/clipping/desktop scrolling failures.137-scene reachability,
+area-menu focus/navigation, section highlighting, selection updates, rejected
+noise and reduced-motion reveal pass with no page errors. Motion sampled over
+0/70/140/280ms settles smoothly to its final position. Integrated browser sharing
+was unavailable; the separate validation browser was closed. Preview remains
+`http://127.0.0.1:5195/`. Local-only; owner visual review is still needed.
+
+### Original all-screen baseline
+
+Owner authorizes continuing the premium single-file plan across every screen,
+not stopping after design system/Home. [radiant-ui.html](../radiant-ui.html)
+is the local review deliverable:137 reachable scenes,72 embedded installed-art
+images, fitted shapes, five-button dock/Back/minimal HUD, CSS lighting, one
+bounded particle canvas, manual carousels/pages, reward timeline/Skip/focus,
+OS/explicit Reduce motion and deterministic transient interactions. Open the
+file directly or visit `http://127.0.0.1:5195/`; the raw local server remains
+available for review. Old Vite mock-up stays untouched.
+
+`npx vitest run src\radiant-ui.test.ts` passes5 tests;
+`npx tsc --noEmit` passes. Final desktop sweeps cover517/516/516
+scene/page/carousel/navigation states at1280x640,1280x720 and1920x1080,
+respectively, without viewport/clipping/document or contained-scroll failures.
+Selected-banner sweeps additionally cover12/8/8 rate pages with exact authored
+pools, quantities and rarity/star labels. All137 routes are reachable and their
+initial screens pass320px horizontal bounds. Browser checks
+cover offline file/raw HTTP loading, time-sampled reveal states,300-particle
+cap/advancement/hidden pause, reduced-motion6-star result, Skip settlement/
+Continue focus, trigger focus restoration and rejected-draw isolation. Native/
+simulated-DPR2 canvas sizing, one Attendance claim/revisit, success-only result
+reveals and queued-pointer reduction cleanup pass; checked interactions report
+no browser errors.
+See [full contract/evidence](Future%20Plans/living-world-ui-audit-plan.md#standalone-all-screen-radiant-sanctuary-2026-11-07).
+
+No mock-up files are committed/pushed/deployed; no live UI, account or economy
+connection. CSS bloom is intentional; optional WebGL and a60fps physical-device
+benchmark are not implemented/verified. Next: owner visual notes and local
+iteration; production adoption requires separate approval.
 
 ## Moon release and Sunshade concealment (2026-11-07)
 
@@ -2107,8 +2317,230 @@ published to satisfy this release.
 
 Local mock-up files and earlier mock-up documentation remain unstaged; no
 mock-up implementation/publication is authorized by this release. The new
-single-file premium design remains at the plan/wait-for-go gate.
+single-file premium design was subsequently authorized for local all-screen
+implementation; the standalone section above owns its current review status.
 See [release contract](moon-sunshade-events.md#moon-launch-and-sunshade-concealment-2026-11-07).
+
+## Desktop mock-up fit, readability and radiance (2026-11-07)
+
+Owner requests one desktop window/no scrolling anywhere, detailed prominent
+lights/flares and ergonomic readable information/actions. Local game-mode scenes
+now use viewport-height grids, Back/Menu in the navigation band, compact screen
+identity/wallet and family-specific parallel stages. Play is map/routes, a larger
+banner carousel and all eight portals; growth is portrait/comparison/costs;
+equipment groups sockets/Master/actions; battle loot uses a single six-item row.
+Desktop primary text/actions14px, secondary12px; full-HD16/14px. No global
+scaling, text truncation, inventory mutation or overflow hiding as a substitute
+for fit. Exact numbers/art/ability wording remain. The validated desktop
+client-area baseline is1280x640; phones keep readable vertical page flow.
+
+All30 attendance days, all actual Standard rates and Collections galleries/
+discoveries are retained in manual pages. Inactive pages hidden/inert; selections
+survive paging, boundaries disable properly and focus remains on an enabled
+control. Header feedback replaces the subtitle instead of covering buttons or
+creating body scroll. Lens glares, luminous inlays/edge points, stronger aurora/
+orbit glow and220px localized input glares are more prominent. Slow ambient
+loops pause hidden/static under Reduce motion; finite accepted-input effects
+remain pointer-transparent/disposable, never successful-save animations.
+No account/API/save/reward/art-byte/production/push/deployment changes.
+See the [current retune contract](Future%20Plans/living-world-ui-audit-plan.md#desktop-no-scroll-ergonomic-retune).
+
+`npx vitest run src\ui-design-lab.test.ts src\presentation\settings.test.ts`
+passes26 tests/2 files (26.06s); `npx tsc --noEmit` and `git diff --check` pass
+(existing Future Plans README CRLF normalization warning only). All3,264
+view/direction/state combinations at each measured1280x640/1280x720 pass
+visible content/card/control bounds, no document scroll,44px buttons and populated
+input containment. Default408 combinations at1367x769/1920x1080 pass;320px
+default408 retain horizontal containment/44px buttons.344 additional ability/
+stat/lore/carousel/folio/Menu/rates-dialog/error checks pass at1280x640.
+Desktop-specific oversized/inherited panels and a two-row loot shelf were found
+and restructured before completion, not clipped. Lens opacity.35/.6/.85 at
+0/4.5/9s, edge.35/.625/.9 at0/3.5/7s; input flare fades.6/.189/0 at0/325/650ms,
+expanding.35/1.069/1.4. Reduce motion yields animation none and removed flares.
+The hidden-page gate was temporarily lifted only for controlled input sampling
+and restored. Static Play reviewed; no visible-device/frame-rate approval claim.
+Continue owner review locally; do not publish this mock-up.
+
+## Radiant realm mock-up layout rebuild (2026-11-07)
+
+Owner requests full dynamic layout overhauls rather than additional restrained
+effects on the same mock-up. All136 views now use21 composed scene identities,
+with a horizontal Sanctuary header, large crested screen titles, wide aurora/
+orbital horizons/prism fragments, pointer-reactive background light and
+artwork-window glimmers. Family geometries differ: sanctuary arch; map/voyage/
+portal Play; portrait/stat Team; overlapping Summon; open inventory/archive
+shelves; circular equipment; transformation/comparison growth; offset activity/
+store entry; communications/preferences; scenery/lore; dedicated opening/battle/
+outcome/receipt/dialog stages. Existing three palette directions remain.
+
+Full-map aspect/edges and artwork bytes/facing remain unchanged. Pointer updates
+are mouse-only/one pending frame, cancelled on navigation/leave/motion/hidden/
+disposal; all ambient loops pause hidden and become static under session Reduce
+motion. Immediate controls, carousel accessibility, Skip/Menu/Back and errors
+remain. No account/API/save/reward/production integration or publication.
+See the [current redesign contract](Future%20Plans/living-world-ui-audit-plan.md#radiant-realm-layout-rebuild).
+
+`npx tsc --noEmit` passes;
+`npx vitest run src\ui-design-lab.test.ts src\presentation\settings.test.ts`
+passes23 tests in2 files (21.81s); `git diff --check` passes.
+One mobile two-column specificity defect was found and corrected before
+completion. Final408 default view/direction checks at actual1500/390 CSS widths
+and all3,264 view/direction/state checks at320 pass horizontal overflow and44px
+visible controls. Controlled aurora samples at0/4.5/9/18s show translation/
+rotation/opacity changes; fragments at0/5.5/11s rise/rotate/fade. Reduce motion
+sets aurora/fragment/crest animation none and hides pointer light. Static Play
+composition reviewed; temporary wide body styling restored. This is not a
+visible60fps/device-performance approval. Owner reviews the new composition
+and fluidity next; continue only the isolated local mock-up.
+
+## Local light-current motion proposal (2026-11-07)
+
+Owner accepts Play/menu composition but requests more fluid, distinctive motion.
+The isolated mock-up adds bounded localized input flares, immediate directional
+screen currents/light seams, manual artwork-led Play/dungeon/War/event carousels,
+six authored ability/icon panels in a rotating light orrery, finite selection
+sheen and dialog unfold. Previous/Next/named choices/arrow keys/horizontal
+touch/pen swipes are available; inactive slides are inert/aria-hidden. No autoplay
+or reading deadlines, fake saves, gameplay changes, assets, publication or
+production imports. Confirm/destructive/failed operations do not get input flares.
+Reduce motion settles immediately, removes transient lighting and retains
+selection/status. Hidden-page/disposal clears finite effects; recurring inactive
+sigils pause. See the [motion proposal](Future%20Plans/living-world-ui-audit-plan.md#light-current-motion-proposal-local-only).
+
+Validation: `npx tsc --noEmit` passes;
+`npx vitest run src\ui-design-lab.test.ts src\presentation\settings.test.ts`
+passes21 tests in2 files (15.81s), including wraparound, direct choices,
+arrow-key focus, horizontal-vs-vertical/button/cancel gestures, inert panels,
+bounded flare cleanup, reduced motion and failed-operation non-celebration.
+`git diff --check` passes. All408 default view/direction combinations at actual
+1500/390/320 CSS widths retain no horizontal overflow and44px visible controls.
+Controlled browser samples show carousel travel0/-83.5/-97.8/-100% at
+0/200/400/620ms, screen settle16/2.07/0px at0/200/550ms, and the input ring
+fades.5/.224/0 at0/250/650ms. Reduce motion yields0s transitions, settled
+positions, no screen animation and removed flares. Keyboard and synthetic
+touch-browser interaction both advance the deck. Hidden-document suppression was
+temporarily lifted only for controlled flare sampling and restored.
+Integrated screenshot scroll/stability timed out; no new screenshot or visible
+device frame-pacing approval is claimed. User review of actual fluidity remains
+the acceptance gate; all changes remain local-only.
+
+## In-game mock-up presentation (2026-11-07)
+
+**Installed-menu-art follow-up:** owner requests existing game imagery on
+appropriate screens, with no further character-art requirement. Home journey/
+summoning invitation, Play activities, six dungeon banners, six delivered War
+headers, Rose/Moon activity headers, all three archive splashes, Conduit Store,
+Story scenery/map and battle arena now use installed assets. Wallet uses shared
+revisioned currency icons. Pending War/Sunshade headers stay neutral; no asset
+files, artwork bytes, production imports or gameplay rules change.
+Latest `npx tsc --noEmit` passes and
+`npx vitest run src\ui-design-lab.test.ts src\presentation\settings.test.ts`
+passes18 tests in2 files (16.16s). Local browser checks find all65 distinct
+default-view image URLs return HTTP200/image MIME. Updated408 default
+view/direction combinations at actual1500/390/320 CSS widths have no horizontal
+overflow or visible buttons below44px. HTTP/path checks are not an all-image-decode
+or device-performance claim. Preview is reset to Home/Astral/full motion.
+
+Owner rejects visible screen-switch/developer controls and requests an experience
+presented as the game. The local preview now defaults to a full-viewport Sanctuary,
+game Menu/contextual destinations/history-aware Back, player-facing copy and
+authored ability/lore content. Screen/direction/state/canvas/coverage/feedback
+tools are hidden and inert unless explicitly opened with `?review=1`.
+Alternative designs remain direct URLs (`?direction=sanctuary`, `?direction=ember`).
+No production integration, account/save/network transaction, commit, push or
+deployment. Synthetic numbers/fixed reveal remain presentation only; unconnected
+submissions report no account change rather than pretending persistence.
+See the [presentation addendum](Future%20Plans/living-world-ui-audit-plan.md#in-game-presentation-addendum).
+
+Validation: `npx tsc --noEmit` passes;
+`npx vitest run src\ui-design-lab.test.ts src\presentation\settings.test.ts`
+passes17 tests in2 files (15.31s); `git diff --check` passes.
+Browser DOM interaction verifies no visible review controls/development copy on
+Home, Menu opens, Inventory navigation closes it, Back returns Home and Escape
+restores Menu focus. Default408 view/direction combinations at measured1500,
+390 and320 CSS widths have no horizontal overflow or visible buttons below44px.
+Controlled cut-in rail sampling at0/600/2500/2800ms confirms arrival/stationary
+hold/fade; explicit Reduce motion reports animation none. These are layout and
+controlled timeline checks, not a real-device frame-pacing or live-account test.
+Preview returns HTTP200 and is left at Home/Astral/full motion for review.
+
+## Local animated UI design lab (2026-11-07)
+
+Owner requests local CSS animated mock-ups and easy iteration, **no push or
+deployment**. Three directions (Astral Observatory, Living Sanctuary, Ember
+Atelier) each cover Home/Team/Summon/Play. Existing character/banner/map URLs and
+facing are reused. CSS float/orbits/halo/motes/sheen/entrances and finite
+illustrative reveals provide motion. Explicit Reduce motion, hidden-loop
+pause, Skip/Escape, focus restoration and cleanup are included.
+
+Separate `ui-design-lab.html`/`src/ui-design-lab.ts`/`src/ui-design-lab.css`;
+no production entry/import/style/build-input edits, account API, storage,
+transactions, RNG, rewards, event schedules or new art. Sample numbers and
+fixed reveals are labeled. Give notes outlines the chosen area and tags notes
+with concept/screen/region. Copy/download before leaving; notes are in memory.
+[Canonical local review/startup instructions](Future%20Plans/living-world-ui-audit-plan.md#local-animated-design-lab-2026-11-07).
+
+Preview runs locally at
+`http://127.0.0.1:5193/LastLightGame/ui-design-lab.html`
+using detached shell `ui-design-lab-preview`, bound only to127.0.0.1. Restart:
+`npm run dev -- --host 127.0.0.1 --port 5193 --strictPort`.
+Browser checks cover all12 combinations at measured1500/390/320 CSS widths:
+no horizontal overflow, broken artwork or visible buttons below44px.
+Timed CSS sampling confirms float/orbit/halo changes; Reduce motion stays static.
+Browser hidden-loop pause was lifted only for the timed test; no real-device
+frame-pacing claim. Wide review screenshots used a temporary body width restored
+after capture.
+
+`npx tsc --noEmit` passes.
+`npx vitest run src\ui-design-lab.test.ts src\presentation\settings.test.ts`
+passes10 tests in2 files, including twelve combinations, safe tagged review
+text, clipboard denial/manual copy, finite reveal/Skip/focus, motion, artwork
+errors, cleanup and production isolation.
+`python -m unittest discover -s tools -p test_future_plans.py` passes4 tests;
+`git diff --check` passes. Browser manual export preserves the exact
+concept/screen/area/text and selects it for copying. Download-request code runs,
+but this integrated browser did not expose a completed download event; no
+filesystem download success is claimed. Manual review text works independently
+of clipboard/download permissions. Mock-up changes remain uncommitted/unpushed;
+the detached preview stays available for the owner to review.
+
+**Resume:** owner reviews directions/screens and supplies notes; iterate this
+isolated lab locally. No selected design is approved for production.
+
+### Complete screen-family expansion (owner follow-up)
+
+Owner requires all game screens in the mock-up. Lab now has136 views across12
+families, each in three directions: opening/account; character/squad/captures;
+growth/equipment; all six dungeons/ten War trials/other activities/Story; seasonal
+events/banners; inventory/stores/chests; collections/lore; profile/social/chat/mail/
+attendance/gifts; Settings/utilities; battle/outcomes; and13 shared dialogs.
+[Canonical coverage table and remaining limits](Future%20Plans/living-world-ui-audit-plan.md#local-animated-design-lab-2026-11-07).
+Grouped Screen picker, search/family filtering, Previous/Next, per-direction
+visited coverage and featured-character selection make every view reachable.
+Eight synthetic states include exact large numbers and neutral pending-art
+layouts. Review notes also capture the selected state; visits are not approval.
+Families have distinct compositions (roster, comparison, equipment, list/grid,
+form, calendar/chat, scene, field, result, modal), not a renamed Home layout.
+Real modal Cancel/Escape restores focus synchronously, including in hidden tabs.
+
+All408 default combinations pass browser overflow/44px-button checks at actual
+1500/390/320 CSS widths. All3,264 view/direction/state combinations pass320px
+overflow checks after fixing evolution's pending-art minimum width.
+All67 referenced installed assets return200/image MIME; local-path tests pass.
+The hidden image-decode sweep stalled and was aborted by reload; do not claim
+all browser decodes passed. Controlled CSS cut-in timeline sampling at
+0/600/2500/2800ms confirms arrival/stationary hold/finite settlement; Reduce motion
+disables it. Natural playback was frozen in the hidden browser; visible-device
+motion/frame pacing remains an owner review gate.
+
+Expanded validation: `npx tsc --noEmit` passes; focused
+`npx vitest run src\ui-design-lab.test.ts src\presentation\settings.test.ts`
+passes16 tests in2 files, including all136 views in three directions, every
+additional renderer in eight states, route coverage, valid assets/links, modal
+focus, state-aware actions, filtering/notes and isolated motion.
+`python -m unittest discover -s tools -p test_future_plans.py` passes4 tests.
+No production code/config/assets/authority were changed; no commit/push/deploy.
+Detached `ui-design-lab-preview` still serves the same local URL.
 
 ## Living-world shared-foundation tranche (2026-11-07)
 

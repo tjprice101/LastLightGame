@@ -40,8 +40,44 @@ export const fractureRules = {
   lycalisReward: 10,
 } as const;
 export interface CharacterAscension { stats?: boolean; skill1?: boolean; skill2?: boolean; lastFlare?: boolean }
-export interface CharacterProgress { level: number; evolution: number; weaponRank?: number; ascension?: CharacterAscension }
+export interface CharacterProgress {
+  level: number;
+  evolution: number;
+  weaponRank?: number;
+  convergenceRank?: number;
+  ascension?: CharacterAscension;
+}
 export const weaponRules = { maximumRank: 10, attackPerRank: .02 } as const;
+export type ConvergentLightTier = 'sparkling' | 'glimmering' | 'ultimate';
+export const convergentLightRules = {
+  maximumRank: 20,
+  levelsPerRank: 5,
+  glimmeringEvolution: 4,
+  ultimateEvolution: 6,
+} as const;
+export function convergentLightTier(rank: number): ConvergentLightTier {
+  if (!Number.isSafeInteger(rank) || rank < 1 || rank > convergentLightRules.maximumRank)
+    throw new Error('Convergent Light rank must be from 1 to 20.');
+  return rank <= 5 ? 'sparkling' : rank <= 10 ? 'glimmering' : 'ultimate';
+}
+export function convergentLightRankCap(progress: CharacterProgress, id: StarterId): number {
+  characterGrowthFactor(progress, id);
+  const evolutionCap = progress.evolution >= convergentLightRules.ultimateEvolution ? 20
+    : progress.evolution >= convergentLightRules.glimmeringEvolution ? 10 : 5;
+  const levelCap = Math.floor(progress.level / convergentLightRules.levelsPerRank) + 1;
+  return Math.min(evolutionCap, levelCap);
+}
+export function convergentLightRankCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
+  const rank = progress.convergenceRank ?? 1;
+  const cap = convergentLightRankCap(progress, id);
+  if (!Number.isSafeInteger(rank) || rank < 1 || rank > cap)
+    throw new Error('Saved Convergent Light rank is unavailable at this level and evolution.');
+  if (rank === convergentLightRules.maximumRank || rank >= cap)
+    throw new Error('Reach the required level and evolution to raise Convergent Light rank.');
+  const costLevel = Math.min((rank - 1) * convergentLightRules.levelsPerRank,
+    characterLevelCap(progress.evolution, id, progress.ascension?.stats === true) - 1);
+  return characterLevelCost(id, { ...progress, level: costLevel });
+}
 export function weaponCost(element: ElementId, progress: CharacterProgress): UpgradeCost {
   characterGrowthFactor(progress);
   const rank = (progress.weaponRank ?? 0) + 1;
@@ -217,5 +253,5 @@ export const upgradePaths = [
   { id: 'upgrade-3', name: 'Unique passive', detail: 'Upgrade the character\'s unique passive ability.' },
   { id: 'upgrade-4', name: 'Ability 1', detail: 'Upgrade the first active ability.' },
   { id: 'upgrade-5', name: 'Ability 2', detail: 'Upgrade the second active ability.' },
-  { id: 'upgrade-6', name: 'Last Flare', detail: 'Upgrade the ultimate. Naming format: Last Flare: <character-specific name>.' },
+  { id: 'upgrade-6', name: 'Convergent Light', detail: 'Review the ultimate effect unlocked by the saved Convergent Light rank.' },
 ] as const;

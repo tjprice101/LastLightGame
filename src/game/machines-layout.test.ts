@@ -87,7 +87,7 @@ describe('35-stage Machines layout and v9 migration', () => {
       expect(writes).not.toHaveBeenCalled();
       expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
       expect(loaded.infusionStages).toEqual({ machines: Math.max(1, Math.floor(stage * 35 / 75)), heavens: 8 });
-      expect(loaded).toMatchObject({ version: 11, fractalis: 123, lycalis: 45, mechanicalComponents: 99,
+      expect(loaded).toMatchObject({ version: 12, fractalis: 123, lycalis: 45, mechanicalComponents: 99,
         masterChests: 2, conduits: source.conduits, machineLootFocus: source.machineLootFocus,
         normalFinalClears: source.normalFinalClears, calamityClears: source.calamityClears });
       saveAccount(saved, loaded);
@@ -105,14 +105,14 @@ describe('35-stage Machines layout and v9 migration', () => {
       expect(validateAccount(loaded)).toEqual(loaded);
     }
   });
-  it('preserves raw legacy saves on failed first transactions and persists v9 on retry', () => {
+  it('preserves raw legacy saves on failed first transactions and persists the current version on retry', () => {
     const saved = storage();
     const raw = JSON.stringify({ ...emptyAccount(), version: 8, infusionStages: { machines: 56 } });
     saved.setItem(ACCOUNT_KEY, raw);
     const write = vi.spyOn(saved, 'setItem').mockImplementationOnce(() => { throw new Error('Storage denied'); });
     expect(() => setMachineLootFocus(saved, 'Rare', 'duplex-heart')).toThrow('denied');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
-    expect(setMachineLootFocus(saved, 'Rare', 'duplex-heart')).toMatchObject({ version: 11,
+    expect(setMachineLootFocus(saved, 'Rare', 'duplex-heart')).toMatchObject({ version: 12,
       infusionStages: { machines: 26 }, machineLootFocus: { Rare: 'duplex-heart' } });
     expect(loadAccount(saved).infusionStages.machines).toBe(26);
     expect(write).toHaveBeenCalledTimes(2);

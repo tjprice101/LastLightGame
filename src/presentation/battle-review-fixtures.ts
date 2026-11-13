@@ -1,7 +1,7 @@
 import { freshGame } from '../../supabase/functions/game-operation/engine';
 import { characterLevelCap } from '../content/progression';
 import { releasedRadiantIds, type RadiantBearerId } from '../content/combat-kits';
-import { personalChargeMaximum, sharedChargeThreshold, validateRadiantGauge, type RadiantGaugeState } from '../game/combat-gauge';
+import { personalChargeMaximum, validateRadiantGauge, type RadiantGaugeState } from '../game/combat-gauge';
 import type { Activity } from '../online/server-game';
 
 export const radiantReviewEncounters = [
@@ -48,7 +48,5 @@ export function setRadiantReviewCharge(gauge: RadiantGaugeState, cycle: number):
   const layers = cycle === 0 ? 0 : cycle === 1 ? 1 : 2;
   for (const member of gauge.members)
     member.charge = Math.min(personalChargeMaximum(member), member.baseCost * layers);
-  gauge.sharedUnits = cycle === 3 && gauge.members.some(member => member.form === 6)
-    ? sharedChargeThreshold(gauge.eternalCasts) : 0;
   validateRadiantGauge(gauge);
 }

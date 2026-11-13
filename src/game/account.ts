@@ -2,7 +2,8 @@ import { elementalMaterials, dungeonStageCount, elementalEnemyLevel, infusionSta
 import { stagedLycalisOdds, validDropAmount } from '../content/loot-random';
 import { squadMemberLimit } from '../content/squad-rules';
 import { activityPrismaticaDrop } from '../content/prismatica';
-import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, characterEvolutionRequirement, fractureRules, characterLevelCost, type CharacterProgress, type UpgradeCost } from '../content/progression';
+import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, characterEvolutionRequirement, fractureRules,
+  characterLevelCost, convergentLightRankCap, convergentLightRankCost, type CharacterProgress, type UpgradeCost } from '../content/progression';
 import { isInfusionMode, specialtyMaterials } from '../content/infusions';
 import { type InfusionModeId } from '../content/activities';
 import { getStarter, isStarterId, starters, type StarterId } from '../content/starters';
@@ -46,7 +47,7 @@ import { applySavedEquipment, characterElement, currentEquipment, loadoutName, v
 export const ACCOUNT_KEY = 'last-light.wallet';
 export interface Account {
   acquisitionMarkers?: import('./acquisition-markers').AcquisitionMarkers;
-  version: 11;
+  version: 12;
   fractalis: number;
   lycalis: number;
   bannerPity?: Partial<Record<SummonBannerId, BannerPity>>;
@@ -83,7 +84,7 @@ export interface Account {
   creatures: Record<string, { defeated: boolean }>;
 }
 export function emptyAccount(): Account {
-  return { version: 11, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
+  return { version: 12, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
 function count(value: unknown): value is number {
   return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
@@ -110,7 +111,7 @@ function hasHistoricalBossReceipt(receipts: readonly string[], boss: string): bo
     uuid.test(receipt.slice(0, 36)) && receipt.slice(36) === `:${boss}`);
 }
 export function validateAccount(value: unknown): Account {
-  if (!record(value) || (value.version !== 2 && value.version !== 3 && value.version !== 4 && value.version !== 5 && value.version !== 6 && value.version !== 7 && value.version !== 8 && value.version !== 9 && value.version !== 10 && value.version !== 11) || !count(value.fractalis) || !count(value.lycalis) ||
+  if (!record(value) || (value.version !== 2 && value.version !== 3 && value.version !== 4 && value.version !== 5 && value.version !== 6 && value.version !== 7 && value.version !== 8 && value.version !== 9 && value.version !== 10 && value.version !== 11 && value.version !== 12) || !count(value.fractalis) || !count(value.lycalis) ||
       !record(value.materials) || !record(value.characters) || !record(value.dungeonStages) ||
       typeof value.firstFracture !== 'boolean' || !Array.isArray(value.receipts) ||
       !value.receipts.every((receipt) => typeof receipt === 'string') || new Set(value.receipts).size !== value.receipts.length) {
@@ -268,6 +269,7 @@ export function validateAccount(value: unknown): Account {
       throw new Error('Invalid saved character progress.');
     }
     if (progress.weaponRank !== undefined && typeof progress.weaponRank !== 'number') throw new Error('Invalid saved weapon rank.');
+    if (progress.convergenceRank !== undefined && typeof progress.convergenceRank !== 'number') throw new Error('Invalid saved Convergent Light rank.');
     if (progress.ascension !== undefined) {
       if (!record(progress.ascension) || Object.keys(progress.ascension).length === 0 ||
           Object.keys(progress.ascension).some(key => !['stats', 'skill1', 'skill2', 'lastFlare'].includes(key)) ||
@@ -279,8 +281,14 @@ export function validateAccount(value: unknown): Account {
     }
     const entry: CharacterProgress = { level: progress.level, evolution: progress.evolution,
       ...(progress.weaponRank !== undefined ? { weaponRank: progress.weaponRank } : {}),
+      ...(progress.convergenceRank !== undefined ? { convergenceRank: progress.convergenceRank } : {}),
       ...(progress.ascension !== undefined ? { ascension: { ...progress.ascension } } : {}) };
     characterGrowthFactor(entry, id);
+    if (entry.convergenceRank !== undefined &&
+        (!Number.isSafeInteger(entry.convergenceRank) || entry.convergenceRank < 1 ||
+          entry.convergenceRank > convergentLightRankCap(entry, id))) {
+      throw new Error('Invalid saved Convergent Light rank for this level and evolution.');
+    }
     account.characters[id] = entry;
   }
   if (value.capturedCharacters !== undefined) {
@@ -706,7 +714,8 @@ export function sellCurrencyCreatures(storage: ProfileStorage, selections: reado
   return saveAccount(storage, account);
 }
 export function ownedProgress(account: Account, id: StarterId): CharacterProgress {
-  return account.characters[id] ?? { level: 0, evolution: 1 };
+  const progress = account.characters[id] ?? { level: 0, evolution: 1 };
+  return { ...progress, convergenceRank: progress.convergenceRank ?? 1 };
 }
 export function purchaseConduit(storage: ProfileStorage, id: ConduitId): Account {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before visiting the Conduit Store.');
@@ -929,16 +938,17 @@ export function isMaterial(id: string): boolean {
   return elementalMaterials.some((material) => material.id === id) || specialtyMaterials.some((material) => material.id === id) ||
     roseMaterials.some((material) => material.id === id) || newEventMaterialDefinition(id) !== undefined || isCalamiticMaterialId(id);
 }
-export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: 'level' | 'evolve' | 'weapon', expected: CharacterProgress, fodderIds: readonly string[] = []): Account {
+export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: 'level' | 'evolve' | 'convergence' | 'weapon', expected: CharacterProgress, fodderIds: readonly string[] = []): Account {
   if (kind === 'weapon') throw new Error('Weapon upgrades are unavailable. Existing weapon bonuses are preserved.');
   if (!loadProfile(storage)) throw new Error('Choose your Owned Element-Bearer to upgrade.');
-  if (kind !== 'level' && kind !== 'evolve') throw new Error('Unknown character upgrade.');
+  if (kind !== 'level' && kind !== 'evolve' && kind !== 'convergence') throw new Error('Unknown character upgrade.');
   const account = loadAccount(storage);
   if (account.characters[id] === undefined) throw new Error('Choose your Owned Element-Bearer to upgrade.');
   const current = ownedProgress(account, id);
   if (!sameCharacterProgress(current, expected)) throw new Error('Character progress changed. Reopen this tab before upgrading.');
   const element = getStarter(id).elementId;
-  const cost = kind === 'level' ? characterLevelCost(id, current) : characterEvolutionCost(id, current);
+  const cost = kind === 'level' ? characterLevelCost(id, current)
+    : kind === 'evolve' ? characterEvolutionCost(id, current) : convergentLightRankCost(id, current);
   if (kind === 'evolve' && current.level !== characterLevelCap(current.evolution, id)) throw new Error('Reach this form level cap before evolving.');
   const requiredValue = kind === 'evolve' ? characterEvolutionRequirement(id, current.evolution).fodderValue : 0;
   if (new Set(fodderIds).size !== fodderIds.length) throw new Error('Choose each captured Elemental-Devourer only once.');
@@ -967,7 +977,9 @@ export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: '
     for (const id of fodderIds) if (account.conduitEquipment) delete account.conduitEquipment[id];
     for (const id of fodderIds) if (account.conduitConfigurations) delete account.conduitConfigurations[id];
   }
-  account.characters[id] = kind === 'level' ? { ...current, level: current.level + 1 } : { ...current, evolution: current.evolution + 1 };
+  account.characters[id] = kind === 'level' ? { ...current, level: current.level + 1 }
+    : kind === 'evolve' ? { ...current, evolution: current.evolution + 1 }
+      : { ...current, convergenceRank: (current.convergenceRank ?? 1) + 1 };
   if (kind === 'evolve' && !account.firstFracture) {
     account.lycalis += fractureRules.lycalisReward;
     account.firstFracture = true;
@@ -983,6 +995,7 @@ export function canAscendCharacter(id: StarterId, progress: CharacterProgress, s
 }
 function sameCharacterProgress(left: CharacterProgress, right: CharacterProgress): boolean {
   return left.level === right.level && left.evolution === right.evolution && (left.weaponRank ?? 0) === (right.weaponRank ?? 0) &&
+    (left.convergenceRank ?? 1) === (right.convergenceRank ?? 1) &&
     ['stats', 'skill1', 'skill2', 'lastFlare'].every(key => left.ascension?.[key as keyof NonNullable<CharacterProgress['ascension']>] ===
       right.ascension?.[key as keyof NonNullable<CharacterProgress['ascension']>]);
 }

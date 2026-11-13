@@ -68,7 +68,7 @@ function apply(readout: RadiantReadout, event: RadiantCombatEvent): void {
   }
   if (event.type === 'flare') {
     const spent = spendReadyFlare(readout.gauge, event.bearerId);
-    if (spent.tier !== event.tier) throw new Error('Saved Flare tier does not match displayed charge.');
+    if (spent.tier !== event.tier) throw new Error('Saved Convergent Light rank does not match displayed charge.');
     readout.gauge = spent.state;
   } else if (event.type === 'gauge-drop') {
     if (!readout.units[event.enemyId]) throw new Error('Saved Gauge-drop enemy is missing.');
@@ -76,7 +76,7 @@ function apply(readout: RadiantReadout, event: RadiantCombatEvent): void {
   } else if (event.type === 'charge') {
     const member = readout.gauge.members.find(member => member.id === event.bearerId);
     if (!member) throw new Error('Saved charge owner is missing.');
-    member.charge = event.personal; readout.gauge.sharedUnits = event.sharedUnits;
+    member.charge = event.personal;
   } else if (event.type === 'currency') readout.currency += event.amount;
   else if (event.type === 'round') readout.round = event.round;
 }

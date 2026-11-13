@@ -73,7 +73,7 @@ describe('approved farm, upgrade and all-evolution economy', () => {
       const write = vi.spyOn(saved, 'setItem');
       const result = upgradeCharacter(saved, character.id, 'evolve', progress, ids);
       expect(write).toHaveBeenCalledOnce();
-      expect(result.characters[character.id]).toEqual({ ...progress, evolution: evolution + 1 });
+      expect(result.characters[character.id]).toEqual({ ...progress, evolution: evolution + 1, convergenceRank: 1 });
       expect(result.capturedCharacters).toHaveLength(4);
       expect(result.materials).toEqual(Object.fromEntries(Object.keys(cost.materials).map(id => [id, 0])));
       expect(result.fractalis).toBe(account.fractalis - cost.fractalis);

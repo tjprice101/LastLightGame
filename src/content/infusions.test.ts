@@ -270,7 +270,7 @@ describe('playable Heaven and Abyss', () => {
     }));
     saveAccount(saved, leveled);
     const evolved = upgradeCharacter(saved, 'ember', 'evolve', ownedProgress(leveled, 'ember'), leveled.capturedCharacters.map((copy) => copy.instanceId));
-    expect(evolved.characters.ember).toEqual({ level: 75, evolution: 5, weaponRank: 10 });
+    expect(evolved.characters.ember).toEqual({ level: 75, evolution: 5, weaponRank: 10, convergenceRank: 1 });
     const missing = emptyAccount();
     missing.fractalis = 1000;
     missing.materials['abyss-weapon'] = 100;

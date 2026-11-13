@@ -1,5 +1,5 @@
 import { squadMemberLimit } from '../content/squad-rules';
-import { isRadiantBearer, radiantAttunementChip, radiantCharacterLoadout } from './character-combat';
+import { isRadiantBearer, radiantAttunementChip, radiantCharacterLoadout, radiantPortraitStats } from './character-combat';
 import { elements, isCurrencyMode } from '../content/activities';
 import { getStarter, isStarterId, starterVow, type StarterId } from '../content/starters';
 import { characterName } from '../content/character-art';
@@ -242,9 +242,11 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
     const title = characterName(state.selected, progress.evolution).split(', ')[0];
     const cap = characterLevelCap(progress.evolution, state.selected);
     const radiant = radiantCharacterLoadout(account, starter.id);
-    content = `<section class="ref-team-detail ref-bearer-detail" data-acquisition-character="${starter.id}">
-      <header class="ref-panel ref-character-header hub-showcase"><div class="ref-character-portrait hub-portrait">${portrait(starter, progress.evolution)}</div>
-        <div class="ref-character-identity"><p data-reference-prefix>${title} · ${starter.weapon}</p><h2 data-reference-name>${starter.name}</h2>
+    content = `<section class="ref-team-detail ref-bearer-detail" data-acquisition-character="${starter.id}" data-character-view="${state.tab ?? 'overview'}" style="--unit-accent:${starter.color}">
+      <header class="ref-panel ref-character-header hub-showcase"><div class="ref-character-portrait hub-portrait">${portrait(starter, progress.evolution)}
+        <div class="ref-portrait-stat-overlay">${radiant ? radiantPortraitStats(radiant.loadout) : ''}</div>
+        <div class="ref-portrait-caption">${elementLabel(starter.elementId)}<span>${starter.weapon}</span></div></div>
+        <div class="ref-character-identity"><p data-reference-prefix>${title} · ${starter.weapon}</p><h2 data-reference-name>${characterName(starter.id, progress.evolution, progress.ascension?.stats === true)}</h2>
           <div class="ref-tags">${elementLabel(starter.elementId)}<span class="ref-stars" aria-label="${starter.stars}-star Element-Bearer">${'★'.repeat(starter.stars)}</span>${radiant ? `<span data-reference-attunement>${radiantAttunementChip(radiant.loadout)}</span>` : ''}<span class="ref-chip" data-reference-rarity data-rarity="${characterRarity(starter.id, progress.evolution)}">${characterRarity(starter.id, progress.evolution)}</span></div>
           <div class="ref-character-progress"><div>Level <span data-reference-level>${formatStat(progress.level)} / ${cap}</span><div class="ref-bar"><i style="width:${progress.level / cap * 100}%"></i></div></div>
           <div><span data-reference-evolution>Evolution ${displayEvolution(starter.id, progress.evolution)} / ${displayEvolution(starter.id, 6)}</span><div class="ref-pips">${Array.from({ length: 6 }, (_, index) => `<i class="${index < progress.evolution ? 'is-filled' : ''}"></i>`).join('')}</div></div></div>
@@ -252,7 +254,7 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
           <div class="ref-character-header-actions">${squad[0] === starter.id ? '<span class="ref-chip ref-white">Squad leader</span>'           : squad.includes(starter.id) ? `<button class="ref-chip" data-make-leader="${starter.id}">♛ Make leader</button>` : radiant ? '<button class="ref-chip" data-team-view="formation">Add to squad</button>' : ''}
           </div></div>
       </header><nav class="ref-character-submenus" aria-label="Character sub-menus">${[
-        ['overview', 'Stats & Abilities'], ['upgrade-1', 'Level'], ['upgrade-0', 'Evolution'], ['equipment', 'Conduits'],
+        ['overview', 'Overview'], ['upgrade-1', 'Level'], ['upgrade-0', 'Evolve'], ['equipment', 'Conduits'],
       ].map(([tab, label]) => `<button type="button" data-character-tab="${tab}" aria-pressed="${tab === (state.tab ?? 'overview')}">${label}</button>`).join('')}</nav>
       <section class="hub-detail ref-character-panels" aria-label="Character details and upgrades">${characterDetail(starter, state.tab ?? 'overview', account, true)}</section></section>`;
   }

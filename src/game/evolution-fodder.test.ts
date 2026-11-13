@@ -38,7 +38,7 @@ describe('protected-safe evolution Elemental-Devourer infusion', () => {
     storage.setItem = (key, value) => { writes++; write(key, value); };
     const result = upgradeCharacter(storage, 'ember', 'evolve', current, ids);
     expect(writes).toBe(1);
-    expect(result.characters.ember).toEqual({ ...current, evolution: evolution + 1 });
+    expect(result.characters.ember).toEqual({ ...current, evolution: evolution + 1, convergenceRank: 1 });
     expect(result.fractalis).toBe(account.fractalis - cost.fractalis);
     expect(result.lycalis).toBe(17);
     for (const [id, amount] of Object.entries(cost.materials)) expect(result.materials[id]).toBe(account.materials[id] - amount);

@@ -1,19 +1,18 @@
 # Documentation hub
 
-## Approved core combat consolidation (2026-11-12; in progress)
+## Convergent Light ranks and personal Luminosity (2026-11-12; in progress)
 
-The [approved combat contract](combat.md#approved-core-consolidation-2026-11-12-implementation-in-progress)
-covers Prism-base, simple living squad passives, elemental Leader Skills,
-evolution-enhanced Final Flares, real combos and exact Luminosity sources.
-The [handoff](handoff.md#approved-core-consolidation-implementation-2026-11-12)
+The [combat contract](combat.md#convergent-light-ranks-and-personal-luminosity-2026-11-12-implementation-in-progress)
+covers saved per-bearer ranks, tier unlocks, activation costs, and exact
+Luminosity sources. The [handoff](handoff.md#convergent-light-rank-follow-through-2026-11-12)
 tracks validation and publication; this is not yet a hosted release.
 
 ## Compact desktop menus and battle presentation (2026-11-12)
 
 The [compact desktop contract](menus-and-inventory.md#compact-desktop-menus-and-battle-charge-presentation-2026-11-12)
 covers collapsible frames, compact portraits/growth/equipment/Market,
-pagination and configuration dialogs, Health/Shield readouts and Shattering
-Light flame presentation. The [current handoff](handoff.md#compact-desktop-menus-and-battle-presentation-follow-through-2026-11-12)
+pagination and configuration dialogs, Health/Shield readouts and personal
+Convergent Light readiness. The [current handoff](handoff.md#compact-desktop-menus-and-battle-presentation-follow-through-2026-11-12)
 tracks validation/publication and the subsequent core-combat request.
 
 ## Redesigned desktop menus and publication (2026-11-12)
@@ -124,7 +123,6 @@ zero duplicate currency/loot. Free starter policy controls are separate from
 conditional trio/six accounts. Recorded partial-reset request advantages are
 not measured real-time income or final tuning approval. No gameplay/deploy changes.
 
-
 ## Radiant authored loot and progression (2026-11-08)
 
 [Gated reward/lifecycle bridge](Future%20Plans/combat-system-specification.md#authored-kill-rewards-and-progression-bridge-2026-11-08):
@@ -133,7 +131,6 @@ connect to real Radiant actions. Retry retains kill/completion/seeds; Continue
 unlocks real stages/Training waves; explicit exit retains banked receipts.
 All284 authored anchors have loot parity checks. Production UI, economy
 calibration and actual DB verification still pending; no live enable/deploy.
-
 
 ## Gated radiant authority dispatch (2026-11-08)
 
@@ -144,7 +141,6 @@ seeds, typed transport and atomic RPC aggregate.1302 focused tests/types/build
 pass. No flags enabled/deployment or actual Radiant database proof; full
 rewards/progression/UI still pending.
 
-
 ## Radiant saved-run and atomic receipt boundary (2026-11-08)
 
 [Account-derived run contract](Future%20Plans/combat-system-specification.md#account-derived-runs-and-atomic-receipt-boundary-2026-11-08):
@@ -152,7 +148,6 @@ actual frozen saved loadouts, manual captured replacement, recomputed actions,
 partial currency/retry ledgers and existing atomic server RPC adapter.
 1259 parent-selected tests/types/build pass. Actual DB execution, gated
 dispatch, server entropy and full reward/migration/UI release remain pending.
-
 
 ## Radiant actual pressure study (2026-11-08)
 
@@ -162,7 +157,6 @@ Explicit wins/defeats/timeouts/stalemates, conditional ownership and separate
 Calamitic scenarios; experimental factors are not approved live difficulty.
 1080 focused tests and types/build pass. Live migration/UI remain pending.
 
-
 ## Radiant ordinary Conduits and frozen loadouts (2026-11-08)
 
 [Operative gear study](Future%20Plans/combat-system-specification.md#ordinary-conduit-conversion-and-frozen-gear-study-2026-11-08):
@@ -171,7 +165,6 @@ four-stat/action/team effects and read-only owned-gear adapter.1633 focused
 tests and client/authority types/build pass. Still isolated; actual pressure
 calibration and live migration/presentation remain required.
 
-
 ## Released radiant roster and Master study (2026-11-08)
 
 [Operative expansion](Future%20Plans/combat-system-specification.md#released-roster-combat-study-operative-expansion-2026-11-08):
@@ -179,7 +172,6 @@ calibration and live migration/presentation remain required.
 passives and96 fixed attuning Masters. Saved ascension/weapon flags map into
 frozen four-stat study contracts; Sunshade stays excluded.508 focused tests
 and client/authority typechecks/build pass. Still isolated, no live migration.
-
 
 ## Radiant starter combat study and face intake (2026-11-08)
 
@@ -190,7 +182,6 @@ sourced indefinite Shields/healing and exact lowest-health currency ledger.
 exports18 reviewed starter faces with provenance and shared versioned resolver.
 Isolated overhaul branch only; not live account/authority/UI conversion.
 Obsolete initial formulas are explicitly archived, not operative rules.
-
 
 ## Radiant overhaul implementation branch (2026-11-08)
 
@@ -217,6 +208,16 @@ pilots and owner gates. Audit only; no new systems or UI rollout approved.
 [Release and visibility contract](moon-sunshade-events.md#moon-launch-and-sunshade-concealment-2026-11-07):
 Moon launches now through November30 at8PM New York time. Unreleased Sunshade
 is hidden from all player-facing catalogs and new acquisitions.
+
+## Local CSS animated redesign mock-ups (2026-11-07)
+
+Historical local UI experiments from2026-11-07 were retired after the owner
+explicitly rejected demo-first work and authorized removing the demo files.
+Their review notes below remain history only; do not recreate or use them as
+the current game or design authority. The owner has resumed the
+[live-first UI audit](Future%20Plans/living-world-ui-audit-plan.md#live-first-audit-resumed-2026-11-10),
+which implements changes in the real routes and records completed and
+unverified screens. No production release is implied by local implementation.
 
 ## Living-world UI foundation rollout (2026-11-07)
 
@@ -287,15 +288,11 @@ lunar trio and Sunshade retain their matching colored powers. All portraits,
 kits and names remain unchanged; the proposed new War repurposing was
 withdrawn. Moon8 + seasonal8 tests pass.
 
-**Living-world interface audit and implementation plan (2026-11-05):**
-[Full evidence-backed audit and phased plan](Future%20Plans/living-world-ui-audit-plan.md)
-covers every presentation screen family, current strengths, prioritized gaps,
-semantic surfaces/colors, intent-specific motion, concise information,
-transaction/focus/history safety, phased dependencies and measurable acceptance
-gates. Hosted title and safe in-memory renderer fixtures were sampled; exact
-320/390px layouts, visible temporal playback and device performance remain
-validation work. This is planning, not an implemented global UI redesign.
-The specified celestial prompt suites were reverified:15 tests passed.
+**Living-world interface audit and implementation (resumed2026-11-10):**
+[Current evidence and remaining phases](Future%20Plans/living-world-ui-audit-plan.md#live-first-audit-resumed-2026-11-10)
+tracks live-route changes, exact validation and unreviewed screens. The Team
+and collection tranche is implemented; the whole-game audit is not complete.
+Do not treat historical demo or preview checks as live-game implementation.
 
 **Current owner presentation/celestial direction (2026-11-05):**
 [Living-world vision](game-vision.md#living-world-quality-foundation-2026-11-05)

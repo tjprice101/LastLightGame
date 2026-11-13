@@ -481,7 +481,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
       store.reset();
       const result = upgradeCharacter(store.saved, character.id, 'evolve', { level: cap, evolution }, copies.map((copy) => copy.instanceId));
       expect(store.writes()).toBe(1);
-      expect(result.characters[character.id]).toEqual({ level: cap, evolution: evolution + 1 });
+      expect(result.characters[character.id]).toEqual({ level: cap, evolution: evolution + 1, convergenceRank: 1 });
       expect(result.capturedCharacters).toEqual([]);
       expect(Object.keys(characterEvolutionCost(character.id, { level: cap, evolution }).materials).every((id) => id.startsWith('rosethorn-'))).toBe(true);
     }
@@ -517,7 +517,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
       store.reset();
       const result = upgradeCharacter(store.saved, character.id, 'evolve', progress, ids);
       expect(store.writes()).toBe(1);
-      expect(result.characters[character.id]).toEqual({ ...progress, evolution: evolution + 1 });
+      expect(result.characters[character.id]).toEqual({ ...progress, evolution: evolution + 1, convergenceRank: 1 });
       for (const material of Object.keys(cost.materials)) expect(result.materials[material] ?? 0).toBe(0);
       expect(result.capturedCharacters).toEqual([]);
       expect(result.fractalis).toBe(account.fractalis - cost.fractalis);

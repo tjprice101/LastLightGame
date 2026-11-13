@@ -1,31 +1,37 @@
 # Decision log
 
-## Core combat consolidation approval (2026-11-12)
+## Convergent Light rank and personal Luminosity approval (2026-11-12)
 
-After publishing the compact UI pass, the owner confirmed the live replacement:
+The owner approved replacing the shared Shattering Light meter with a
+per-Element-Bearer Convergent Light rank and personal Luminosity:
 
-- Keep two personal Final Flare tiers at 100/200 Luminosity, plus shared
-  Shattering Light. Keep the existing shared charging rules.
-- A damaging Normal hit grants 10 Luminosity to its living attacker and a
-  separate 1 to each other living same-element ally.
-- Each surviving direct incoming hit, including Shield absorption, grants
-  its recipient 10 Luminosity, without sharing. Periodic damage does not qualify.
-- Remove other personal charge sources. Real 4/8/12-hit combos split one
-  authored total; Final Flares do not refill themselves.
-- Final Flare enhancement is automatic through evolution, without new spending.
+- Saved rank defaults to 1 and caps at 20. Each rank requires five character
+  levels; ranks 6 and 11 also require Evo.4 and Evo.6, respectively. Effect
+  magnitudes rise 1% per rank above Rank 1.
+- Rank 1–5 is Sparkling, 6–10 Glimmering and 11–20 Ultimate. Activation costs
+  100 Luminosity for Sparkling and 200 for Glimmering/Ultimate.
+- A damaging Normal hit grants 10 to its living attacker and a separate 1 to
+  each other living same-element ally. Each surviving direct incoming hit,
+  including Shield absorption, grants 10 to its recipient only.
+- Flares, defeats, Defense, round starts, Conduit-generated damage and periodic
+  damage do not grant Luminosity. No shared Shattering Light meter remains.
+- Rank-ups use the existing level-cost schedule at the rank's level milestone
+  and save the rank/payment atomically in local and online authority.
+- Real 4/8/12-hit combos split one authored total; Flares do not refill
+  Luminosity. Flare enhancement is automatic through evolution.
 - Squad passives stack additively while their sources live. Only the fixed
   first squad member provides the Leader Skill; defeat never promotes another.
 - Arrows mean **weak to**: Infernic -> Oceanic -> Botanic -> Atmospheric ->
   Infernic. Advantage is x1.5, reverse disadvantage x0.75, neutral x1.
   Tranquilitic and Chaotic deal x1.5 to each other. Keep Tranquilitic's name.
-- The owner authorizes remaining roster/Conduit values and matching authority
-  deployment after validation. Preserve base stats, ownership, progression,
-  artwork and inactive schedules; do not silently retune enemies.
+- Preserve base stats, ownership, progression, artwork and inactive schedules;
+  do not silently retune enemies. Deployment of this new authority behavior
+  requires explicit approval after validation.
 
 Implementation belongs in the real client and shared authority, not a demo.
-The [handoff](handoff.md) distinguishes published UI from pending core work.
+The [handoff](handoff.md) tracks implementation and publication separately.
 
-## Compact desktop menus and Shattering Light presentation (2026-11-12)
+## Compact desktop menus and personal charge presentation (2026-11-12)
 
 The owner requests a desktop-scalable compacting pass on the actual game:
 rectangular element-lit Home portraits, concise copy, smaller level-only
@@ -34,20 +40,16 @@ formation, Conduit and Market layouts, and independently collapsible header
 and dock frames. Native information/configuration dialogs and pagination
 retain complete mechanics and existing transaction protections.
 
-Battle cards prioritize Health and stable-position Shields. Personal charge
-uses the same red/pink first tier and black/white second tier for every
-element. Rename the shared Eternal tier to **Shattering Light** and use
-white/rainbow flame presentation. This is a visible-name/presentation change,
-not a save migration, threshold change or combat rebalance. Keep live status
-and Shield details accessible through Battle reference.
+Battle cards prioritize Health and stable-position Shields. Personal readiness
+shows each member's Luminosity and rank-derived Convergent Light tier; no
+shared meter or shared charge threshold is presented. Keep live status and
+Shield details accessible through Battle reference.
 
-Complete assigned work in order: compact menus, battle presentation, then
-the newly requested character/combat consolidation. Prism-base naming,
-simplified equipped passives/leader effects, enhanceable Final Flare,
-25-per-hit Luminosity with same-element sharing, and the proposed elemental
-cycle are the next mechanics request, not implemented behavior in this UI
-release. Unspecified tier/enhancement/cadence/advantage rules require owner
-decisions before replacing live character kits.
+Complete assigned work in order: compact menus, battle presentation, then the
+character/combat consolidation. Prism-base naming, simplified equipped
+passives/leader effects, rank-enhanced Final Flares and the approved elemental
+cycle are part of the live implementation. See the core approval above and
+the current validation/deployment state in the handoff.
 
 ## Publish the redesigned menus in the main game (2026-11-12)
 
@@ -345,7 +347,6 @@ are not duplicate payouts or observed player income/minute. Final network/UI
 cadence/access/economy tuning and actual Radiant DB checks remain necessary;
 do not replace them with theoretical120-request throughput.
 
-
 ## Preserve authored loot under damage-paid radiant combat (2026-11-08)
 
 Under the delegated overhaul, reuse existing kill roll/validation/account
@@ -366,7 +367,6 @@ No approval implied for final currency budget/pressure factors or fresh-entry
 farming throughput. Gate remains disabled/undeployed; actual DB, final economic/
 combat calibration and production UI/manual bearer-only migration still needed.
 
-
 ## Radiant authority integration stays gated (2026-11-08)
 
 Wire the delegated study through the real authenticated handler, but require
@@ -380,7 +380,6 @@ This is not a decision to ship the incomplete overhaul: no flags enabled/
 authority deployed. Actual Radiant DB verification and full rewards/progression/
 run/UI migration remain acceptance gates. Legacy hosted smoke is not evidence
 the new Radiant path is live or database-tested.
-
 
 ## Radiant account/run transaction boundary (2026-11-08)
 
@@ -397,7 +396,6 @@ Quit/defeat retain already saved partial rewards. New entry entropy remains
 server-owned; no new global farming cap or approved fresh-entry economy is
 implied. Full dispatch/rewards/progression and actual DB validation remain gates.
 
-
 ## Radiant pressure experiment, not live tuning approval (2026-11-08)
 
 Under the delegated testing mandate, implement an actual authored-enemy
@@ -412,7 +410,6 @@ not approved final difficulty or population clear rates. Common late-wall
 control and support-only stalemates demonstrate separate survival/clear limits.
 Final factors/access distribution and authority/currency/run migration remain
 unresolved release gates, not new owner-approved numerical decisions.
-
 
 ## Delegated ordinary Conduit conversion study (2026-11-08)
 
@@ -430,7 +427,6 @@ data and return explicit errors/manual captured replacement instead of grants.
 No live account/authority/UI migration or deployment; actual pressured enemy/
 rarity/charge/sustain measurements remain release gates.
 
-
 ## Delegated released-roster radiant study (2026-11-08)
 
 Under the owner-delegated overhaul mandate, complete32 released identities
@@ -446,7 +442,6 @@ last flags map to stats/passive/leader/signature, without new upgrade writes.
 Study schema2 rejects obsolete isolated snapshots explicitly. No live account,
 captured-unit migration, ordinary-Conduit rewrite or released difficulty/VFX
 claim from this stage. Hidden Sunshade six/18 Masters remain excluded.
-
 
 ## Delegated starter combat and portrait pilot implemented (2026-11-08)
 
@@ -464,7 +459,6 @@ Eighteen starter face crops derive from existing art with individual source-boun
 anchors, provenance and shared compact variant. Sources/full-art paths remain
 unchanged; all other crops, full roster/gear and coherent authority migration
 remain required before release. No new mandatory owner images established.
-
 
 ## Owner delegates implementation; isolated foundation (2026-11-08)
 
@@ -637,6 +631,61 @@ existing frozen-loadout restart and saved-reward-retention mechanism.
 See [current contract](summoning-and-economy.md#additional-farm-reduction-and-upgrade-costs-2026-11-07).
 UI redesign remains paused and local mock-ups remain unpublished.
 
+## Owner pause: UI redesign and further rollout (2026-11-07)
+
+Owner puts UI work on hold and requests the remaining gameplay planning queue.
+Preserve existing local mock-ups and shipped foundations without further
+iteration, production redesign or mock-up publication. Fixing the separately
+reported live Moon saved-reward presentation failure is authorized maintenance,
+not resumption of the redesign. Story's existing pause and unreleased Sunshade
+launch gates remain in force.
+
+## Categorized side view and preview-first browsing (2026-11-07)
+
+Owner requests visible side categorization so players can view an area before
+deciding what to do, plus richer colors and animation. Retain the explicit
+no-bottom-bar decision and cinematic Home. The local standalone mock-up adds
+contextual category rails to menu families rather than restoring the old
+unstructured destination rail. Play categories change the artwork/summary and
+available destinations in place; choosing a destination is a separate action,
+never an automatic battle entry or acquisition. Richer teal/mint light and
+soft animated transitions refine the restrained hierarchy, not a return to
+constant flashes. Account data, live UI and publication remain outside scope.
+
+## Main-menu hub, no bottom navigation (2026-11-07)
+
+Owner explicitly rejects the bottom navigation bar. Home must be the main menu:
+basic overview, cinematic squad pose formation, Play, a cinematic Summon banner,
+Mailbox and Player Profile. This supersedes the earlier five-button dock choice
+and its section-highlighting refinement. Remove the dock from every standalone
+screen, reclaim its layout space and retain Back plus a consistently placed
+on-demand Menu for primary and secondary destinations. Home now presents the
+existing illustrative Infernis/Tizu/Flora squad with the leader forward, overview
+facts and direct requested actions. This is local mock-up work only; no live UI,
+real squad/save connection, commit, push or deployment is authorized.
+
+## Quieter, clearer local mock-up refinement (2026-11-07)
+
+Owner rejects the animated baseline as robotic and unpolished, with too much
+competing content and unclear destination placement. Retain the broadly accepted
+layout but refine every screen toward a classier, modern hierarchy: restrained
+colors and shapes, purposeful motion and predictable navigation. This supersedes
+earlier instructions to maximize ambient flares everywhere. The new local pass
+uses on-demand area menus, section-aware dock highlighting and calmer motion;
+all existing mock-up destinations stay reachable. No production adoption,
+commit, push or deployment is authorized. Owner visual review remains pending.
+
+## Standalone premium mock-up, all screens (2026-11-07)
+
+Owner authorizes "Continue with the plan" and expands the single-file design
+from design system/Home to every game screen/subscreen/dialog. Choose the
+five-button bottom dock, top-left Back and minimal holdings/profile HUD; no top
+navigation or developer screen selector. Use original installed art, fitted
+shapes, CSS lighting plus one2D particle canvas, reusable rarity-scaled reveals,
+keyboard controls, Skip and reduced motion. Optional WebGL is not required.
+The137-scene implementation and [review evidence](Future%20Plans/living-world-ui-audit-plan.md#standalone-all-screen-radiant-sanctuary-2026-11-07)
+remain local/unpublished; production UI replacement needs a later approval.
+
 ## Moon launch and unreleased Sunshade concealment (2026-11-07)
 
 Owner authorizes deploying Moon now with the previously specified
@@ -647,7 +696,48 @@ explicit release approval. Preserve internal IDs and saved holdings; reject
 new Dawnforge purchases and unreleased personal Master chest selections.
 The [release contract](moon-sunshade-events.md#moon-launch-and-sunshade-concealment-2026-11-07)
 supersedes earlier both-inactive/inspectable directions. Local UI mock-ups
-remain unpublished and the new single-file design still awaits "go."
+remain unpublished; subsequent approval authorizes only the all-screen local
+single-file implementation recorded above.
+
+## Desktop no-scroll mock-up acceptance criteria (2026-11-07)
+
+Owner requests every mock-up screen fit one desktop window without scrolling,
+more detailed/prominent lighting and ergonomic readable information/controls.
+The local experiment is retuned around viewport-height scenes and manual pages
+for long lists, not smaller illegible text, removed entries or clipping. Tested
+desktop client-area baseline1280x640; phone page flow remains. Brighter neutral
+ambient/input effects keep artwork, Reduce motion and transaction isolation.
+This does not authorize production UI changes, commits, pushes or deployment.
+
+## Full local mock-up layout rebuild (2026-11-07)
+
+Owner rejects incremental motion-only passes and requests full dynamic
+compositions for all mocked screens. Radiant realm reconstructs21 screen-family
+identities across136 views, with associated existing art and stronger ambient/
+interaction motion. This is an approved local design experiment, not approval
+to replace the production UI or publish. Preserve motion reduction, immediate
+controls, account isolation and artwork; owner review remains the next gate.
+
+## Local mock-up presentation addendum (2026-11-07)
+
+Owner requests the animated redesign presented as an in-game experience, without
+screen switches or developer tools. The default local preview uses game navigation,
+Menu and Back, player-facing copy and no review overlays. Internal review controls
+require explicit `?review=1`. This does not approve production replacement or
+publication; all mock-up work remains local-only and disconnected from accounts.
+
+## Local animated UI design review (2026-11-07)
+
+**Approved scope:** owner requests CSS animated potential redesigns with easy
+feedback, explicitly without push/deployment. Build an isolated local mock-up
+tool using existing art. Sample values/actions are not real gameplay or saved
+outcomes. Selecting a direction is not production approval; collect owner notes
+before any integration. [Review workflow](Future%20Plans/living-world-ui-audit-plan.md#local-animated-design-lab-2026-11-07).
+
+**Expanded scope:** owner says to mock up all game screens. Include current
+routes, subscreens, social/account utilities, all activity entries, battle/outcomes
+and shared dialogs; expose a searchable coverage catalog and synthetic states.
+This extends local design review only, not production navigation or gameplay.
 
 ## Starting the shared living-world UI foundations (2026-11-07)
 

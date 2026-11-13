@@ -148,11 +148,11 @@ describe('Collections controls', { timeout: 30_000 }, () => {
     choose(scope, 'name');
     expect(shown().map(card => card.dataset.archiveConduit)).toEqual(['vigil-core']);
 
-    type('Final Flare');
+    type('Convergent Light');
     choose(scope, 'ability');
     const flares = shown();
     expect(flares.length).toBeGreaterThan(0);
-    expect(flares.every(card => /final flare/i.test(card.textContent ?? ''))).toBe(true);
+    expect(flares.every(card => /convergent light/i.test(card.textContent ?? ''))).toBe(true);
     choose(scope, 'effect');
     expect(shown().length).toBeGreaterThanOrEqual(flares.length);
 

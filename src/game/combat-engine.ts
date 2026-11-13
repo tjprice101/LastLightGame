@@ -10,7 +10,6 @@ import {
 import { squadMemberLimit } from '../content/squad-rules';
 import { type ConduitId } from '../content/conduits';
 import { radiantConduitPrimitives, radiantGearAmount } from '../content/conduit-effects';
-import { sharedChargeThreshold } from './combat-gauge';
 import type { ElementId } from '../content/activities';
 import { elementDamageMultiplier, isCombatElement } from '../content/element-matchups';
 
@@ -54,7 +53,7 @@ export interface RadiantEnemy {
   currency: RadiantCurrencyLedger;
 }
 export interface RadiantCombatState {
-  version: 4;
+  version: 5;
   bearers: RadiantBearer[];
   enemies: RadiantEnemy[];
   gauge: RadiantGaugeState;
@@ -88,7 +87,7 @@ export type RadiantCombatEvent =
   | { type: 'defeated'; targetId: string }
   | { type: 'gauge-drop'; enemyId: string; bearerId: string; trigger: 'hit' | 'defeat'; amount: number }
   | { type: 'flare'; bearerId: string; tier: FlareTier; name: string }
-  | { type: 'charge'; bearerId: string; personal: number; sharedUnits: number; bonusRolls: number; bonusOffered: number;
+  | { type: 'charge'; bearerId: string; personal: number; bonusRolls: number; bonusOffered: number;
       gearSource?: Extract<RadiantSource, { kind: 'gear' }> }
   | { type: 'round'; round: number }
   | { type: 'guard'; targetId: string; guarding: boolean }
@@ -229,7 +228,7 @@ function validateEffects(state: RadiantCombatState, effects: RadiantTimedEffect[
   }
 }
 export function validateRadiantCombat(state: RadiantCombatState): void {
-  if (!state || state.version !== 4 || !Array.isArray(state.bearers) || !state.bearers.length ||
+  if (!state || state.version !== 5 || !Array.isArray(state.bearers) || !state.bearers.length ||
       state.bearers.length > squadMemberLimit || !Array.isArray(state.enemies) || !state.enemies.length ||
       !['player', 'enemy', 'victory', 'defeat'].includes(state.phase))
     throw new Error('Invalid radiant combat roster or version.');
@@ -271,6 +270,7 @@ export function validateRadiantCombat(state: RadiantCombatState): void {
       throw new Error('Radiant frozen stats do not match their loadout.');
     const gauge = state.gauge.members[index];
     if (gauge.id !== member.loadout.id || gauge.form !== member.loadout.form ||
+        gauge.convergenceRank !== member.loadout.convergenceRank ||
         gauge.baseCost !== radiantStarterKits[member.loadout.starter].baseCost || gauge.living !== (member.hp > 0) ||
         gauge.elementId !== radiantStarterKits[member.loadout.starter].elementId)
       throw new Error('Radiant Gauge member mismatch.');
@@ -333,7 +333,7 @@ export function createRadiantCombat(
   loadouts: RadiantLoadout[], enemies: { id: string; elementId: ElementId | null; stats: RadiantStats; currencyBudget: number }[], chargeSeed: number,
 ): RadiantCombatState {
   const state: RadiantCombatState = {
-    version: 4,
+    version: 5,
     bearers: loadouts.map(loadout => {
       const stats = resolveRadiantStarterStats(loadout);
       return { loadout: structuredClone(loadout), stats, hp: rounded(stats.hp), shields: [],
@@ -347,9 +347,9 @@ export function createRadiantCombat(
         currency: { budget: input.currencyBudget, baselineHP: hp, lowestHP: hp, paid: 0 } };
     }),
     gauge: { members: loadouts.map(loadout => ({ id: loadout.id, form: loadout.form,
+      convergenceRank: loadout.convergenceRank,
       elementId: radiantStarterKits[loadout.starter].elementId,
-      baseCost: radiantStarterKits[loadout.starter].baseCost, charge: 0, living: true })),
-      sharedUnits: 0, eternalCasts: 0 },
+      baseCost: radiantStarterKits[loadout.starter].baseCost, charge: 0, living: true })) },
     phase: 'player', round: 1, acted: [], enemyActed: [], tideReturns: [], passiveTriggered: [], gearTriggered: [],
     chargeSeed, nextShieldId: 1, currencyEarned: 0,
   };
@@ -453,7 +453,7 @@ function addPassiveCharge(state: RadiantCombatState, events: RadiantCombatEvent[
   safe(amount, 'passive charge');
   const member = state.gauge.members.find(m => m.id === id)!;
   addRadiantPersonalCharge(member, amount);
-  events.push({ type: 'charge', bearerId: id, personal: member.charge, sharedUnits: state.gauge.sharedUnits,
+  events.push({ type: 'charge', bearerId: id, personal: member.charge,
     bonusRolls: 0, bonusOffered: 0 });
 }
 function passivePower(actor: RadiantBearer): number {
@@ -694,7 +694,7 @@ function enemyAttack(
         state.gauge = grantRadiantIncomingAttack(state.gauge, target.loadout.id);
         events.push({ type: 'charge', bearerId: target.loadout.id,
           personal: state.gauge.members.find(m => m.id === target.loadout.id)!.charge,
-          sharedUnits: state.gauge.sharedUnits, bonusRolls: 0, bonusOffered: 0 });
+          bonusRolls: 0, bonusOffered: 0 });
       }
     }
     const passive = radiantStarterKits[target.loadout.starter].passive;
@@ -792,7 +792,7 @@ function finishRound(state: RadiantCombatState, events: RadiantCombatEvent[]): v
   events.push({ type: 'round', round: state.round });
   for (const member of state.gauge.members.filter(m => m.living))
     events.push({ type: 'charge', bearerId: member.id, personal: member.charge,
-      sharedUnits: state.gauge.sharedUnits, bonusRolls: 0, bonusOffered: 0 });
+      bonusRolls: 0, bonusOffered: 0 });
 }
 function gearDefense(actor: RadiantBearer, defense: number): number {
   return defense * (1 - Math.min(.8, radiantGearAmount(actor.loadout.gear, 'pierce')));
@@ -809,7 +809,6 @@ function processRadiantGear(
 ): void {
   const native = events.filter(event =>
     'source' in event && event.source.kind !== 'gear');
-  const eternal = events.some(event => event.type === 'flare' && event.tier === 'eternal');
   const snapshots = new Map(state.bearers.filter(owner => owner.hp > 0)
     .map(owner => [owner.loadout.id, effectiveRadiantStats(state, owner.loadout.id)]));
   for (const owner of state.bearers) {
@@ -853,14 +852,6 @@ function processRadiantGear(
         switch (primitive.kind) {
           case 'normal-charge': if (normalDirect) grant(owner, amount); break;
           case 'guard-charge': if (guarding) grant(owner, amount); break;
-          case 'shared-normal':
-            if (normalDirect && !eternal && state.gauge.members.some(member => member.form === 6)) {
-              const units = rounded(amount);
-              state.gauge.sharedUnits += Math.min(units, sharedChargeThreshold(state.gauge.eternalCasts) - state.gauge.sharedUnits);
-              events.push({ type: 'charge', bearerId: id, personal: state.gauge.members.find(member => member.id === id)!.charge,
-                sharedUnits: state.gauge.sharedUnits, bonusRolls: 0, bonusOffered: 0, gearSource: source });
-            }
-            break;
           case 'team-charge':
             if (normalDirect) for (const ally of state.bearers) if (ally !== owner) grant(ally, amount);
             break;
@@ -870,7 +861,7 @@ function processRadiantGear(
             if (direct.length) heal(state, events, owner, source, amount * direct.reduce((sum, event) => sum + event.healthLoss, 0));
             break;
           case 'heal-charge':
-            if (restored.length && !eternal) grant(owner, amount);
+            if (restored.length) grant(owner, amount);
             break;
           case 'heal-buff':
             for (const targetId of new Set(restored.map(event => event.targetId))) {
@@ -938,7 +929,7 @@ export function applyRadiantCombatAction(
     const actor = bearer(state, action.bearerId);
     living(actor.hp);
     if (state.acted.includes(action.bearerId)) throw new Error('This bearer already acted this round.');
-    let hits = 0, chargeAction: 'normal' | 'defense' | 'flare' | 'eternal' = action.type;
+    let hits = 0;
     const hitCharge: RadiantHitCharge = { bonusRolls: 0, bonusOffered: 0 };
     if (action.type === 'normal') hits = normal(state, events, actor, action.targetId, hitCharge);
     else if (action.type === 'defense') {
@@ -949,13 +940,12 @@ export function applyRadiantCombatAction(
     else {
       const cast = flare(state, events, actor, action.targetId, hitCharge);
       hits = cast.hits;
-      chargeAction = cast.tier === 'eternal' ? 'eternal' : 'flare';
     }
-    const charge = grantRadiantAction(state.gauge, action.bearerId, chargeAction, hits);
+    const charge = grantRadiantAction(state.gauge, action.bearerId, action.type, hits);
     state.gauge = charge.state;
     events.push({ type: 'charge', bearerId: action.bearerId,
       personal: state.gauge.members.find(m => m.id === action.bearerId)!.charge,
-      sharedUnits: state.gauge.sharedUnits, bonusRolls: hitCharge.bonusRolls, bonusOffered: hitCharge.bonusOffered });
+      bonusRolls: hitCharge.bonusRolls, bonusOffered: hitCharge.bonusOffered });
     processRadiantGear(state, events, action);
     state.acted.push(action.bearerId);
     if (state.phase === 'player' && state.bearers.filter(m => m.hp > 0).every(m => state.acted.includes(m.loadout.id)))

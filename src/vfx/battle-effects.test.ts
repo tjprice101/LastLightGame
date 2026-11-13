@@ -4,7 +4,6 @@ import { radiantVisualDefinition, RadiantCanvasEffects } from './battle-effects'
 import { releasedRadiantIds, radiantFlares, type RadiantLoadout } from '../content/combat-kits';
 import { createRadiantCombat, applyRadiantCombatAction } from '../game/combat-engine';
 import { radiantImpactFrames } from '../presentation/battle-impact-frames';
-import { sharedChargeThreshold } from '../game/combat-gauge';
 import type { RadiantPlayerAction } from '../online/battle-run';
 import { VFXRenderer } from './vfx-renderer';
 import { createVFXSystem, CHARACTER_PROFILES } from './vfx-registry';
@@ -35,7 +34,8 @@ function tick(milliseconds = 50) {
 }
 function finish() { for (let i = 0; i < 100 && callbacks.size; i++) tick(); expect(callbacks.size).toBe(0); }
 function fixture(id: RadiantLoadout['starter'] = 'ember', squad: RadiantLoadout['starter'][] = [id]) {
-  const loadouts: RadiantLoadout[] = squad.map(id => ({ id, starter: id, form: 6, level: 105, weaponRank: 0, masterId: null, ascension: {} }));
+  const loadouts: RadiantLoadout[] = squad.map(id => ({ id, starter: id, form: 6, level: 105,
+    convergenceRank: 1, weaponRank: 0, masterId: null, ascension: {} }));
   const state = createRadiantCombat(loadouts, [{ elementId: null, id: 'enemy', stats: { hp: 1000000, attack: 100, defense: 100, recovery: 100 }, currencyBudget: 100 }], 1729);
   const host = document.createElement('div'); document.body.append(host);
   for (const unitId of [...squad, 'enemy']) {
@@ -256,10 +256,12 @@ describe('saved Radiant signature choreography', () => {
     renderer.render(system, frame); expect(backdrop).toHaveBeenCalledOnce();
   });
   it.each(releasedRadiantIds.map(id => ({ id })))('finishes all three tiers for $id without changing gameplay state', async ({ id }) => {
-    for (const tier of ['glowing', 'lustrous', 'eternal'] as const) {
+    for (const tier of ['sparkling', 'glimmering', 'ultimate'] as const) {
       const { effects, state } = fixture(id);
-      state.gauge.members[0].charge = state.gauge.members[0].baseCost * (tier === 'glowing' ? 1 : 2);
-      state.gauge.sharedUnits = tier === 'eternal' ? sharedChargeThreshold(0) : 0;
+      const rank = tier === 'sparkling' ? 1 : tier === 'glimmering' ? 6 : 11;
+      state.bearers[0].loadout.convergenceRank = rank;
+      state.gauge.members[0].convergenceRank = rank;
+      state.gauge.members[0].charge = state.gauge.members[0].baseCost * (tier === 'sparkling' ? 1 : 2);
       state.bearers[0].hp = Math.round(state.bearers[0].hp / 2);
       const action: RadiantPlayerAction = { type: 'flare', bearerId: id,
         ...(radiantFlares[id][tier].target === 'one-enemy' ? { targetId: 'enemy' } : {}) };

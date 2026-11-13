@@ -47,7 +47,7 @@ export function radiantVisualDefinition(id: RadiantBearerId, tier: AbilityTier):
   }
   const authored = radiantArchetypes[id], character = starters.find(character => character.id === id);
   if (!authored || !character) throw new Error(`Radiant visual profile is missing for ${id}.`);
-  const flare = tier === 'skill1' ? 'glowing' : tier === 'skill2' ? 'lustrous' : tier === 'ultimate' ? 'eternal' : null;
+  const flare = tier === 'skill1' ? 'sparkling' : tier === 'skill2' ? 'glimmering' : tier === 'ultimate' ? 'ultimate' : null;
   const signature = flare ? radiantFlares[id][flare].name : 'Normal Attack';
   return { name: character.name, tier, archetype: authored[tier],
     description: `${signature}: ${radiantBearerKits[id].signatureFamily} signature choreography.`,
@@ -134,13 +134,13 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
     const bearer = state.bearers.find(unit => unit.loadout.id === action.bearerId);
     if (!bearer) throw new Error('Radiant visual caster is missing.');
     const flare = action.type === 'flare' ? readyFlare(state.gauge, action.bearerId) : null;
-    const tier: AbilityTier = flare === 'eternal' ? 'ultimate' : flare === 'lustrous' ? 'skill2' : flare === 'glowing' ? 'skill1' : 'light';
+    const tier: AbilityTier = flare === 'ultimate' ? 'ultimate' : flare === 'glimmering' ? 'skill2' : flare === 'sparkling' ? 'skill1' : 'light';
     const original = radiantVisualDefinition(bearer.loadout.starter, tier);
     this.ability = { ...original, name: flare ? radiantFlares[bearer.loadout.starter][flare].name : action.type === 'defense' ? 'Defense' : 'Normal Attack' };
     const size = this.size(), signature = this.signature(bearer.loadout.starter);
     const rect = this.anchor(action.bearerId);
     const x = rect.left + rect.width / 2, y = rect.top + rect.height / 2;
-    const duration = flare === 'eternal' ? .6 : flare ? .4 : .2;
+    const duration = flare === 'ultimate' ? .6 : flare ? .4 : .2;
     const color = original.palette.mid;
     await this.play(duration, time => {
       const p = time / duration, extent = Math.min(rect.width, rect.height);

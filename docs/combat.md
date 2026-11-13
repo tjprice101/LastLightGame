@@ -1,27 +1,34 @@
 # Combat specification
 
-## Approved core consolidation (2026-11-12; implementation in progress)
+## Convergent Light ranks and personal Luminosity (2026-11-12; implementation in progress)
 
-The next live combat contract supersedes the older personal-charge,
-bespoke-passive and leader-stat rules below. Publication and validation
-status are tracked in the handoff; this heading is not a release claim.
+The live replacement supersedes earlier shared Shattering Light charging.
+Each Element-Bearer has a saved **Convergent Light** rank from 1 to 20; missing
+legacy ranks read as Rank 1 without a load-time write. A rank requires five
+character levels. Ranks 1–5 are Sparkling, 6–10 are Glimmering (Evo.4+), and
+11–20 are Ultimate (Evo.6+). The level/evolution cap is enforced by local and
+online transactions. Rank-ups use the existing level-cost schedule at that
+rank's level milestone and save the rank and payment atomically. Each rank
+above Rank 1 increases Convergent Light effect magnitudes by 1%.
 
-Each Element-Bearer has a unique evolution-dependent name, a **Prism-base**
-(Equinox/Corona/Aegis/Solstice/Prism), a simple **Passive Skill**, a fixed-first
-**Leader Skill** and an evolution-enhanced **Final Flare**. Preserve Health,
-Attack, Defense, Recovery, levels, evolutions, holdings and equipment.
+Luminosity is personal. A bearer holds up to its kit's 100 Luminosity capacity,
+doubled to 200 from form 4. A damaging Normal hit grants 10 to its living
+attacker and a separate 1 to each other living same-element ally. Each
+surviving direct incoming hit, including one fully absorbed by a Shield, grants
+10 to its recipient. Flares, defeats, Defense, round starts, Conduit-generated
+damage and periodic damage grant no Luminosity. Sparkling activations cost 100;
+Glimmering and Ultimate activations cost 200. The active tier is determined by
+the bearer's saved rank; no shared Shattering Light meter remains.
 
-Personal capacity is 100, or 200 from form 4. A damaging Normal hit grants
-10 Luminosity to its living attacker plus a separate 1 to each other living
-same-element ally. Each direct incoming hit survived, including Shield
-absorption, grants 10 to its recipient only. Final Flares, defeats, Defense,
-round starts, generated and periodic damage do not grant personal Luminosity.
-Shared Shattering Light charging and its final-form requirement are unchanged.
+Each Element-Bearer keeps its named evolution-enhanced Flare and Prism-base
+(Equinox/Corona/Aegis/Solstice/Prism), simple **Passive Skill**, and fixed-first
+**Leader Skill**. Preserve Health, Attack, Defense, Recovery, levels,
+evolutions, holdings and equipment.
 
 Sparkle/Shimmer/Lustrous attacks use 4/8/12 real hits. One authored total is
 split across those hits rather than repeated per hit, with a minimum of one
-damage per hit and no post-defeat hits. Enhancement is automatic with evolution,
-without new spending. Existing saved investments remain applied.
+damage per hit and no post-defeat hits. Enhancement is automatic with
+evolution, without new spending. Existing saved investments remain applied.
 
 Living squad passives add rather than multiply. The fixed first member's
 Leader Skill increases matching-element attack damage only while that
@@ -45,7 +52,7 @@ values. Earlier legacy-combat and preview-only sections below are historical
 where they conflict with the current
 [Radiant specification](Future%20Plans/combat-system-specification.md).
 
-On Continue, personal and shared Gauge and the frozen squad/loadout persist.
+On Continue, each member's personal Luminosity and the frozen squad/loadout persist.
 Staged encounters restore squad Health, revive defeated members and clear
 encounter effects. Training instead carries forward Health, defeated members,
 Shields, statuses, guard and Shield ordering. Retry restores the encounter's

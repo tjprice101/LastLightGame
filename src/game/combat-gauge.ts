@@ -1,24 +1,23 @@
 import { squadMemberLimit } from '../content/squad-rules';
 import type { ElementId } from '../content/activities';
 import { isCombatElement } from '../content/element-matchups';
+import { convergentLightRules, convergentLightTier, type ConvergentLightTier } from '../content/progression';
 
-export type FlareTier = 'glowing' | 'lustrous' | 'eternal';
+export type FlareTier = ConvergentLightTier;
 export interface RadiantGaugeMember {
   id: string;
   elementId: ElementId;
   form: number;
+  convergenceRank: number;
   baseCost: number;
   charge: number;
   living: boolean;
 }
 export interface RadiantGaugeState {
   members: RadiantGaugeMember[];
-  sharedUnits: number;
-  eternalCasts: number;
 }
 
 export const personalChargeUnit = 10;
-export const sharedChargeUnit = 60;
 export const radiantChargeRules = {
   normal: 10,
   flareHit: 0,
@@ -41,10 +40,6 @@ function personalUnits(value: number): number {
     throw new Error('Invalid radiant personal charge.');
   return units;
 }
-export function sharedChargeThreshold(casts: number): number {
-  integer(casts, 0, 'cast count');
-  return (100 + 25 * Math.min(casts, 4)) * sharedChargeUnit;
-}
 export function personalChargeMaximum(member: RadiantGaugeMember): number {
   integer(member.form, 1, 'form');
   if (member.form > 6) throw new Error('Radiant form must use the saved six-form index.');
@@ -62,14 +57,14 @@ export function validateRadiantGauge(state: RadiantGaugeState): void {
     if (typeof member.id !== 'string' || !member.id || ids.has(member.id) || typeof member.living !== 'boolean' || !isCombatElement(member.elementId))
       throw new Error('Invalid radiant squad member.');
     ids.add(member.id);
+    integer(member.convergenceRank, 1, 'Convergent Light rank');
+    if (member.convergenceRank > convergentLightRules.maximumRank ||
+        (member.convergenceRank > 10 && member.form < convergentLightRules.ultimateEvolution) ||
+        (member.convergenceRank > 5 && member.form < convergentLightRules.glimmeringEvolution))
+      throw new Error('Convergent Light rank exceeds its evolution unlock.');
     personalUnits(member.charge);
     if (member.charge > personalChargeMaximum(member)) throw new Error('Personal charge exceeds its unlocked layers.');
   }
-  integer(state.sharedUnits, 0, 'shared charge');
-  if (state.sharedUnits > sharedChargeThreshold(state.eternalCasts))
-    throw new Error('Shared charge exceeds its current threshold.');
-  if (!state.members.some(member => member.form === 6) && state.sharedUnits !== 0)
-    throw new Error('Shared charge is unavailable without a final-form squad member.');
 }
 function actor(state: RadiantGaugeState, id: string): RadiantGaugeMember {
   const member = state.members.find(entry => entry.id === id);
@@ -77,26 +72,20 @@ function actor(state: RadiantGaugeState, id: string): RadiantGaugeMember {
   if (!member.living) throw new Error('A defeated bearer cannot receive or spend action charge.');
   return member;
 }
+function flareCost(member: RadiantGaugeMember): number {
+  return member.baseCost * (convergentLightTier(member.convergenceRank) === 'sparkling' ? 1 : 2);
+}
 export function readyFlare(state: RadiantGaugeState, id: string): FlareTier | null {
   validateRadiantGauge(state);
   const member = actor(state, id);
-  if (member.charge < member.baseCost) return null;
-  if (member.form < 4 || member.charge < member.baseCost * 2) return 'glowing';
-  return member.form === 6 && state.sharedUnits === sharedChargeThreshold(state.eternalCasts)
-    ? 'eternal' : 'lustrous';
+  return member.charge >= flareCost(member) ? convergentLightTier(member.convergenceRank) : null;
 }
 export function spendReadyFlare(state: RadiantGaugeState, id: string): { state: RadiantGaugeState; tier: FlareTier } {
   const tier = readyFlare(state, id);
-  if (!tier) throw new Error('This bearer has no ready Flare.');
+  if (!tier) throw new Error('This bearer has no ready Convergent Light.');
   const next = structuredClone(state);
   const member = actor(next, id);
-  member.charge = (personalUnits(member.charge) -
-    member.baseCost * (tier === 'glowing' ? 1 : 2) * personalChargeUnit) / personalChargeUnit;
-  if (tier === 'eternal') {
-    integer(next.eternalCasts + 1, 1, 'cast count');
-    next.eternalCasts += 1;
-    next.sharedUnits = 0;
-  }
+  member.charge = (personalUnits(member.charge) - flareCost(member) * personalChargeUnit) / personalChargeUnit;
   validateRadiantGauge(next);
   return { state: next, tier };
 }
@@ -120,7 +109,7 @@ export function grantRadiantDrop(state: RadiantGaugeState, id: string, amount: n
   if (!owner) throw new Error('Radiant drop owner is not in this squad.');
   if (!owner.living) throw new Error('A defeated bearer cannot generate Luminosity.');
   const allyUnits = amount * (personalChargeUnit * radiantChargeRules.otherMemberPercent / 100);
-  integer(allyUnits, 0, 'shared drop units');
+  integer(allyUnits, 0, 'same-element drop units');
   for (const member of next.members) {
     if (!member.living || member.elementId !== owner.elementId) continue;
     const units = member.id === id ? amount * personalChargeUnit : allyUnits;
@@ -145,27 +134,16 @@ export function radiantHitDrop(
   return { amount: (action === 'normal' ? radiantChargeRules.normal : radiantChargeRules.flareHit) + bonusOffered,
     bonusRolls, bonusOffered };
 }
-function addShared(state: RadiantGaugeState, units: number): void {
-  if (!state.members.some(member => member.form === 6)) return;
-  state.sharedUnits += Math.min(sharedChargeThreshold(state.eternalCasts) - state.sharedUnits, units);
-}
 export function grantRadiantAction(
-  state: RadiantGaugeState, id: string, action: 'normal' | 'defense' | 'flare' | 'eternal', qualifyingDirectHits: number,
+  state: RadiantGaugeState, id: string, action: 'normal' | 'defense' | 'flare', qualifyingDirectHits: number,
 ): { state: RadiantGaugeState } {
   validateRadiantGauge(state);
   actor(state, id);
   integer(qualifyingDirectHits, 0, 'direct hit count');
-  if (!['normal', 'defense', 'flare', 'eternal'].includes(action)) throw new Error('Invalid radiant charge action.');
+  if (!['normal', 'defense', 'flare'].includes(action)) throw new Error('Invalid radiant charge action.');
   if (action === 'normal' && qualifyingDirectHits > 1) throw new Error('Normal Attack has one mechanical charge hit.');
   if (action === 'defense' && qualifyingDirectHits !== 0) throw new Error('Defense cannot generate attack-hit motes.');
-  const next = structuredClone(state);
-  const member = actor(next, id);
-  const qualifies = qualifyingDirectHits > 0;
-  if (action === 'defense') addRadiantPersonalCharge(member, radiantChargeRules.defense);
-  if (action !== 'eternal' && (action !== 'normal' || qualifies))
-    addShared(next, (action === 'flare' ? 12 : 6) * sharedChargeUnit / next.members.length);
-  validateRadiantGauge(next);
-  return { state: next };
+  return { state: structuredClone(state) };
 }
 export function grantRadiantIncomingAttack(state: RadiantGaugeState, id: string): RadiantGaugeState {
   validateRadiantGauge(state);
@@ -177,9 +155,5 @@ export function grantRadiantIncomingAttack(state: RadiantGaugeState, id: string)
 export function grantRadiantRound(state: RadiantGaugeState): RadiantGaugeState {
   validateRadiantGauge(state);
   if (!state.members.some(member => member.living)) throw new Error('A defeated squad cannot earn round charge.');
-  const next = structuredClone(state);
-  next.members.filter(member => member.living).forEach(member => addRadiantPersonalCharge(member, radiantChargeRules.round));
-  addShared(next, 18 * sharedChargeUnit);
-  validateRadiantGauge(next);
-  return next;
+  return structuredClone(state);
 }

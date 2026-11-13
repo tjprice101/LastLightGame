@@ -1,7 +1,7 @@
 import { formatStat, resolveFighter } from '../content/combat';
 import { isStarterId } from '../content/starters';
 import { type Account, ownedProgress } from '../game/account';
-import { displayEvolution } from '../content/progression';
+import { convergentLightTier, displayEvolution } from '../content/progression';
 import { resolveCapturedFighter } from '../game/character-instances';
 import { ownedCompanion } from './owned-companion';
 import { escapeDialogText } from './game-dialog';
@@ -76,7 +76,11 @@ export function upgradeResult(before: Account, after: Account, id: string, kind:
   const radiantFrom = radiantStats(before, id);
   const radiantTo = radiantStats(after, id);
   const statDetails = radiantFrom && radiantTo ? radiantStatMarkup(radiantFrom, radiantTo) : statMarkup(stats(before, id), stats(after, id));
-  const levelChange = `Level ${previous.level} → ${current.level}`;
+  const levelChange = kind === 'convergence' && isStarterId(id)
+    ? `Convergent Light Rank ${ownedProgress(before, id).convergenceRank ?? 1} → ${ownedProgress(after, id).convergenceRank ?? 1}`
+    : `Level ${previous.level} → ${current.level}`;
+  const rankTier = kind === 'convergence' && isStarterId(id)
+    ? convergentLightTier(ownedProgress(after, id).convergenceRank ?? 1) : null;
   const evolutionChange = kind === 'evolve' && isStarterId(id)
     ? ` · Evolution ${displayEvolution(id, ownedProgress(before, id).evolution)} → ${displayEvolution(id, ownedProgress(after, id).evolution)}` : '';
   const evolved = kind === 'evolve' && isStarterId(id);
@@ -92,12 +96,15 @@ export function upgradeResult(before: Account, after: Account, id: string, kind:
       kind: 'level', eyebrow: 'Level up', title: `Lv.${previous.level} \u2192 ${current.level}`, subtitle: current.label,
       art: imageSource(current.art), tier: rarityTier(current.rarity), palette: { accent: current.color },
     },
-    celebration: evolved ? 'Evolution complete' : 'Growth complete',
-    title: kind === 'evolve' ? 'Evolution complete' : 'Level up!',
+    celebration: evolved ? 'Evolution complete' : kind === 'convergence' ? 'Convergent Light rank increased' : 'Growth complete',
+    title: kind === 'evolve' ? 'Evolution complete' : kind === 'convergence' && isStarterId(id)
+      ? `Convergent Light Rank ${ownedProgress(after, id).convergenceRank ?? 1}` : 'Level up!',
     name: current.label,
     accent: current.color,
     rarity: current.rarity,
-    animationLabel: kind === 'evolve' ? 'A new form awakens' : 'Growing stronger',
+    animationLabel: kind === 'evolve' ? 'A new form awakens' : rankTier
+      ? `${rankTier === 'sparkling' ? 'Sparkling' : rankTier === 'glimmering' ? 'Glimmering' : 'Ultimate'} Convergent Light strengthened`
+      : 'Growing stronger',
     savedLabel: 'Upgrade saved',
     art: `<div class="upgrade-result-portrait">${current.art}</div>`,
     details: `<div class="upgrade-result-identity">

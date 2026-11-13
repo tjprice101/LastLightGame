@@ -2,7 +2,7 @@ import { characterName } from '../content/character-art';
 import { getStarter } from '../content/starters';
 import { radiantAttunement } from '../content/combat-kits';
 import { grantRadiantDrop, personalChargeMaximum, personalChargeUnit, radiantChargeRules,
-  readyFlare, sharedChargeThreshold, sharedChargeUnit } from '../game/combat-gauge';
+  readyFlare } from '../game/combat-gauge';
 import type { RadiantCombatState } from '../game/combat-engine';
 import { RadiantSession } from '../online/battle-session';
 import { type RadiantPlayerAction, type RadiantRunResponse, type FrozenRadiantRun } from '../online/battle-run';
@@ -71,7 +71,8 @@ function enemyActor(frame: RadiantImpactFrame): string | null {
       event.source.kind === 'enemy') return event.source.enemyId;
   return null;
 }
-const tierNames = { glowing: 'Final Flare · Sparkle', lustrous: 'Final Flare · Shimmer', eternal: 'Shattering Light · Lustrous' };
+const tierNames = { sparkling: 'Sparkling Convergent Light', glimmering: 'Glimmering Convergent Light',
+  ultimate: 'Ultimate Convergence Light' };
 function centre(element: Element, random?: () => number): { x: number; y: number } {
   const box = element.getBoundingClientRect();
   const jitter = (size: number) => random ? (random() - .5) * size * .35 : 0;
@@ -178,11 +179,6 @@ export class RadiantBattleView {
             ${this.healthMarkup(enemy.id)}</div>`).join('')}
           <p data-radiant-no-target hidden>No enemy target remains.</p>
         </div>
-      <section class="radiant-shared" aria-label="Shattering Light charge"><b>Shattering Light</b>
-        <meter class="radiant-visually-hidden" data-radiant-shared min="0" aria-label="Shattering Light charge"></meter>
-        <span class="radiant-charge-layers radiant-shared-energy" data-radiant-shared-energy aria-hidden="true">
-          <span class="radiant-energy-track"><span class="radiant-energy-liquid"></span></span>
-        </span><span data-radiant-shared-text></span></section>
       </div>
       <div class="radiant-squad" role="group" aria-label="Squad portrait controls" tabindex="0"
         style="--squad-size:${run.state.bearers.length};--squad-columns:${Math.min(3, run.state.bearers.length)};--squad-phone-columns:${Math.min(2, run.state.bearers.length)}">${run.state.bearers.map((unit, index) => {
@@ -191,7 +187,7 @@ export class RadiantBattleView {
           <span class="radiant-card-burst" aria-hidden="true"></span>
           <span class="radiant-card-hint" aria-hidden="true"></span>
           <button type="button" class="radiant-face" data-radiant-actor="${escape(member.id)}"
-            aria-describedby="radiant-gesture-help" aria-label="${escape(characterName(member.starter, member.form))} · Normal Attack; right click to defend; hold the card and drag upward for ready Flare">
+            aria-describedby="radiant-gesture-help" aria-label="${escape(characterName(member.starter, member.form))} · Normal Attack; right click to defend; hold the card and drag upward for ready Convergent Light">
             ${compactPortrait(starter, member.form)}<span class="radiant-visually-hidden">${index ? `Member ${index + 1}` : 'Leader'}</span></button>
           <div class="radiant-member-head radiant-visually-hidden">${radiantCardName(characterName(member.starter, member.form))}
             <span class="radiant-identity">Lv.${member.level} · ${escape(radiantAttunement(member).replace(/^./, letter => letter.toUpperCase()))}</span></div>
@@ -199,7 +195,7 @@ export class RadiantBattleView {
           <div class="radiant-member-charge">
           <div class="radiant-charge-layers" data-radiant-energy="${escape(member.id)}" aria-label="Personal charge">
             ${[1, ...(member.form >= 4 ? [2] : [])].map(layer =>
-              `<meter class="radiant-visually-hidden" data-radiant-charge="${escape(member.id)}" data-layer="${layer}" min="0" max="${run.state.gauge.members[index].baseCost}" aria-label="${layer === 1 ? 'Sparkle' : 'Shimmer'} Final Flare Luminosity"></meter>`).join('')}
+              `<meter class="radiant-visually-hidden" data-radiant-charge="${escape(member.id)}" data-layer="${layer}" min="0" max="${run.state.gauge.members[index].baseCost}" aria-label="Convergent Light Luminosity ${layer}"></meter>`).join('')}
             <span class="radiant-energy-track" aria-hidden="true">${[1, ...(member.form >= 4 ? [2] : [])].map(layer =>
               `<span class="radiant-energy-liquid" data-energy-layer="${layer}"></span>`).join('')}</span>
           </div>
@@ -211,8 +207,8 @@ export class RadiantBattleView {
         </article>`;
       }).join('')}</div>
       <div class="radiant-battle-footer">
-      <p id="radiant-gesture-help">Left click a card to attack · Right click to defend · Hold, then swipe up for its highest ready Flare.
-        <span class="radiant-visually-hidden">Hold for 350ms and drag upward 32px. Keyboard: Enter attacks, D or the context-menu key defends, F or Up Arrow releases the highest ready Flare.</span></p>
+      <p id="radiant-gesture-help">Left click a card to attack · Right click to defend · Hold, then swipe up to release Convergent Light.
+        <span class="radiant-visually-hidden">Hold for 350ms and drag upward 32px. Keyboard: Enter attacks, D or the context-menu key defends, F or Up Arrow releases ready Convergent Light.</span></p>
       <p class="radiant-visually-hidden" data-radiant-gesture-status role="status" aria-live="polite"></p>
       <div class="radiant-actions"><button type="button" data-radiant-retry hidden>Retry pending request</button>
         <button type="button" data-radiant-results-show hidden>View saved results</button></div>
@@ -227,17 +223,16 @@ export class RadiantBattleView {
         <p>Normal Attack and Defense each use this member’s action for the round. No random critical damage.
         A damaging Normal hit generates ${radiantChargeRules.normal} Luminosity for its attacker and a separate 1 for each other living same-element ally.
         Surviving each direct incoming hit on Health or Shields grants ${radiantChargeRules.incomingAttack} Luminosity to the recipient only.
-        Personal capacity is 100, or 200 from form 4. Final Flares, defeats, Defense, new rounds, generated and periodic damage grant no personal Luminosity.</p>
-        <p>Final Flares split their total damage across 4 Sparkle, 8 Shimmer or 12 Lustrous hits, with at least 1 damage per hit.
-        They improve automatically with evolution. Infernic is weak to Oceanic, Oceanic to Botanic, Botanic to Atmospheric, and Atmospheric to Infernic.
+        Personal capacity is 100, or 200 from form 4. Convergent Light, defeats, Defense, new rounds, generated and periodic damage grant no base personal Luminosity.</p>
+        <p>Convergent Light uses 4 Sparkling, 8 Glimmering or 12 Ultimate hits, with at least 1 damage per hit.
+        Rank 1–5 is Sparkling; rank 6–10 is Glimmering and requires Evo.4; rank 11–20 is Ultimate and requires Evo.6. Each rank after Rank 1 increases effect magnitudes by 1%. Infernic is weak to Oceanic, Oceanic to Botanic, Botanic to Atmospheric, and Atmospheric to Infernic.
         Advantage deals ×1.5 damage; disadvantage ×0.75. Tranquilitic and Chaotic deal ×1.5 to each other; other matchups are neutral.</p>
         <p>Normal Attack uses 100% effective Attack against one selected living enemy.
         Direct damage is rounded once: Attack × Attack/(Attack + effective enemy Defense) × action coefficient × output modifiers, minimum 1.
         Burn/periodic and generated packets follow their authored rules, not this guaranteed direct-damage formula.
         Defense halves direct enemy damage until the next round, with strongest reduction and gear enhancements; combined multiplier floor 20%.
         Shields absorb in creation order before HP.</p>
-        <p>Shared charge: Normal direct hits/Defense grant 6 divided by squad size, ordinary Flares 12 divided by squad size;
-        each new round adds 18. Shattering Light cannot refill itself. Defeated members are not replaced or promoted.</p>
+        <p>Defeated members are not replaced or promoted. Convergent Light ranks are individually saved for each Element-Bearer.</p>
       </details>
       </div></div>
       <div data-radiant-results hidden></div>
@@ -382,7 +377,7 @@ export class RadiantBattleView {
       button.closest<HTMLElement>('.radiant-member')!.dataset.readyTier = button.dataset.readyTier;
       this.element<HTMLElement>(`[data-radiant-readiness="${id}"]`).textContent =
         !savedMember || savedMember.hp === 0 ? 'Defeated' : run.state.acted.includes(id) ? 'Acted this round' :
-          tier ? `${tierNames[tier]} ready` : 'Flare charging';
+          tier ? `${tierNames[tier]} ready` : 'Convergent Light charging';
     }
     for (const unit of Array.from(this.host.querySelectorAll<HTMLElement>('[data-radiant-field-unit]'))) {
       const id = unit.dataset.radiantFieldUnit!;
@@ -403,7 +398,7 @@ export class RadiantBattleView {
     for (const member of this.displayed.gauge.members) {
       const energy = this.element<HTMLElement>(`[data-radiant-energy="${member.id}"]`);
       energy.classList.toggle('is-flowing', member.charge > 0 && this.displayed.units[member.id].hp > 0);
-      energy.classList.toggle('is-lustrous', member.charge > member.baseCost);
+      energy.classList.toggle('has-second-layer', member.charge > member.baseCost);
       for (const meter of Array.from(energy.querySelectorAll<HTMLMeterElement>('[data-radiant-charge]'))) {
         meter.value = Math.min(member.baseCost, Math.max(0, member.charge - (Number(meter.dataset.layer) - 1) * member.baseCost));
         const liquid = energy.querySelector<HTMLElement>(`[data-energy-layer="${meter.dataset.layer}"]`)!;
@@ -413,18 +408,6 @@ export class RadiantBattleView {
       this.element<HTMLElement>(`[data-radiant-charge-text="${member.id}"]`).textContent =
         `${member.charge} / ${personalChargeMaximum(member)} Luminosity`;
     }
-    const shared = this.element<HTMLMeterElement>('[data-radiant-shared]');
-    shared.max = sharedChargeThreshold(this.displayed.gauge.eternalCasts) / sharedChargeUnit;
-    shared.value = this.displayed.gauge.sharedUnits / sharedChargeUnit;
-    shared.closest<HTMLElement>('.radiant-shared')!.hidden = !this.displayed.gauge.members.some(member => member.form === 6);
-    const sharedEnergy = this.element<HTMLElement>('[data-radiant-shared-energy]');
-    const sharedLiquid = sharedEnergy.querySelector<HTMLElement>('.radiant-energy-liquid')!;
-    sharedLiquid.style.width = `${shared.value / shared.max * 100}%`;
-    sharedLiquid.classList.toggle('has-charge', shared.value > 0);
-    sharedEnergy.classList.toggle('is-flowing', shared.value > 0 &&
-      this.displayed.gauge.members.some(member => this.displayed.units[member.id].hp > 0));
-    this.element<HTMLElement>('[data-radiant-shared-text]').textContent =
-      `${shared.value} / ${shared.max}`;
     this.element<HTMLElement>('[data-radiant-round]').textContent = `Round ${this.displayed.round}`;
     const leader = this.element<HTMLElement>('[data-radiant-leader-reference]');
     const leaderMarkup = radiantLeaderReference(run.state, this.displayed.units[run.state.bearers[0].loadout.id].hp > 0);
@@ -889,10 +872,6 @@ export class RadiantBattleView {
       if (!card || !source) throw new Error('Saved charge source is missing from the battle view.');
       flyToMember(member.id, units, source);
     }
-    const shared = frame.readout.gauge.sharedUnits - previous.gauge.sharedUnits;
-    const sharedMeter = this.host.querySelector('[data-radiant-shared]');
-    const origin = sources.length ? this.host.querySelector(`[data-radiant-art="${sources[0]}"]`) : null;
-    if (shared > 0 && sharedMeter && origin) fly(origin, sharedMeter, '#f4f1ff', Math.min(4, Math.max(1, Math.ceil(shared / 6))), sharedMeter);
     await Promise.all(flights);
   }
   /** Saved kill rewards only; presentation follows the committed response. */
