@@ -2,7 +2,7 @@
 
 ## Convergent Light rank follow-through (2026-11-12)
 
-**In progress; not deployed.** The live game now uses saved per-Element-Bearer
+**Deployed and verified.** The live game now uses saved per-Element-Bearer
 Convergent Light ranks (1–20) and personal Luminosity instead of the shared
 Shattering Light meter. Legacy missing ranks read as Rank 1 without a load
 write. Rank unlocks enforce five levels per rank and the Evo.4/Evo.6 tier
@@ -25,8 +25,13 @@ was regenerated with `node tools\bundle_server_game.mjs`; its diff contains
 the matching rank-up, account validation and combat snapshot logic, and
 `git diff --check` passes.
 
-**Remaining:** Obtain explicit owner approval before deploying the new
-authority behavior. No commit, push or release has been made. Keep the standalone
+Implementation commit `7d2a7f80472de057d6345d9c3e04d636ef3b98f8` is pushed to
+both `main` and `overhaul/radiant-foundation`. [Pages run 43369250774](https://github.com/tjprice101/LastLightGame/actions/runs/43369250774)
+passed, and the hosted `version.json` matched that commit. The approved
+`game-operation` authority update was deployed to the production Supabase
+project with the documented CLI command.
+
+Keep the standalone
 `last-light-menu-mockup.html` and excluded `docs/Future Plans/living-world-ui-audit-plan.md`
 unstaged and unpublished.
 
