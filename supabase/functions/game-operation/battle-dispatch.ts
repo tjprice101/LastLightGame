@@ -82,7 +82,8 @@ export async function handleRadiantRequest(value: object, user: string,
       if (!allowed) return { status: 429, body: { error: 'Too many game operations. Wait one minute.' } };
       const snapshot = await load();
       const run = snapshot.state.radiantStudy ?? null;
-      return { status: 200, body: { revision: snapshot.revision, account: snapshot.state.account, run } };
+      return { status: 200, body: { revision: snapshot.revision, account: snapshot.state.account, run,
+        ...(snapshot.notice ? { notice: snapshot.notice } : {}) } };
     }
     if (operation && typeof operation === 'object' && !Array.isArray(operation) &&
       'kind' in operation && operation.kind === 'prepare') {

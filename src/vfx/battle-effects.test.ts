@@ -36,7 +36,7 @@ function tick(milliseconds = 50) {
 function finish() { for (let i = 0; i < 100 && callbacks.size; i++) tick(); expect(callbacks.size).toBe(0); }
 function fixture(id: RadiantLoadout['starter'] = 'ember', squad: RadiantLoadout['starter'][] = [id]) {
   const loadouts: RadiantLoadout[] = squad.map(id => ({ id, starter: id, form: 6, level: 105, weaponRank: 0, masterId: null, ascension: {} }));
-  const state = createRadiantCombat(loadouts, [{ id: 'enemy', stats: { hp: 1000000, attack: 100, defense: 100, recovery: 100 }, currencyBudget: 100 }], 1729);
+  const state = createRadiantCombat(loadouts, [{ elementId: null, id: 'enemy', stats: { hp: 1000000, attack: 100, defense: 100, recovery: 100 }, currencyBudget: 100 }], 1729);
   const host = document.createElement('div'); document.body.append(host);
   for (const unitId of [...squad, 'enemy']) {
     const target = document.createElement('div'); target.dataset.radiantArt = unitId;
@@ -347,18 +347,19 @@ describe('saved Radiant signature choreography', () => {
       expect([sample.secondaryColor.r, sample.secondaryColor.g, sample.secondaryColor.b]).toEqual([166, 78, 241]);
     }
   });
-  it('keeps native passive statuses local without replaying the acting bearer signature', async () => {
+  it('renders actual Normal impacts without fabricating passive status effects', async () => {
     const { effects, state } = fixture('ilvaris');
     state.bearers[0].hp = Math.round(state.bearers[0].hp / 2);
     const action: RadiantPlayerAction = { type: 'normal', bearerId: 'ilvaris', targetId: 'enemy' };
     const windup = effects.windup(action, state); finish(); await windup;
     const render = vi.spyOn(RadiantSignatureVFX.prototype, 'render');
     const result = applyRadiantCombatAction(state, action);
-    const frames = radiantImpactFrames(state, result.state, result.events).filter(frame =>
-      frame.events.some(event => event.type === 'status' && event.source.kind === 'passive'));
+    const frames = radiantImpactFrames(state, result.state, result.events);
+    expect(result.events.some(event => event.type === 'status' && event.source.kind === 'passive')).toBe(false);
     expect(frames.length).toBeGreaterThan(0);
     for (const frame of frames) { const pending = effects.impact(frame); finish(); await pending; }
-    expect(render).not.toHaveBeenCalled();
+    expect(render).toHaveBeenCalled();
+    expect(render.mock.calls.every(call => call[1].phase === 'impact' && call[1].tier === 'light')).toBe(true);
   });
   it('does not animate ineffective healing and rejects a missing source rather than substituting neutral light', async () => {
     const { effects, state } = fixture('seravelle');

@@ -10,20 +10,20 @@ import { portrait } from '../presentation/portrait';
 import { createBattle } from '../game/battle';
 
 describe('six-form character artwork', () => {
-  it('uses the owner-delivered Evo.1 titles without changing other forms or stable art IDs', () => {
-    expect(characterName('rosetta', 1)).toBe('Gilded Rose, Rosetta');
-    expect(characterName('thornia', 1)).toBe('Burdened by Thorns, Thornia');
+  it('uses identity-only base names without changing evolved titles or stable art IDs', () => {
+    expect(characterName('rosetta', 1)).toBe('Rosetta');
+    expect(characterName('thornia', 1)).toBe('Thornia');
     expect(characterArt('rosetta', 1).art).toBe('rosetta');
     expect(characterArt('thornia', 1).art).toBe('thornia');
     expect(characterName('rosetta', 2)).toBe('Gilded Vow, Rosetta');
     expect(characterName('thornia', 2)).toBe('Gilded Squire, Thornia');
-    expect(characterName('crinso', 1)).toBe('Rosebound Page, Crinso');
+    expect(characterName('crinso', 1)).toBe('Crinso');
   });
   it.each(starters)('$name maps shipped forms and keeps pending art neutral across portraits, Home, Character and battle state', (starter) => {
     expect(evolutionTitles[starter.id]).toHaveLength(characterGrowth.forms);
     for (let evolution = 1; evolution <= characterGrowth.forms; evolution++) {
       const form = characterArt(starter.id, evolution);
-      const name = `${form.title}, ${starter.name}`;
+      const name = evolution === 1 ? starter.name : `${form.title}, ${starter.name}`;
       expect(characterName(starter.id, evolution)).toBe(name);
       if (!form.available) {
         expect(existsSync(resolve('public', 'assets', 'characters', `${form.art}.png`))).toBe(false);
@@ -47,7 +47,8 @@ describe('six-form character artwork', () => {
       expect(battle.allies[0].evolution).toBe(evolution);
       expect(battle.allies[0].name).toBe(name);
       expect(homeHub(starter, false, account)).toContain(`<h2 aria-label="${name}">`);
-      expect(homeHub(starter, false, account)).toContain(`class="form-prefix">${form.title}</small>`);
+      if (evolution > 1) expect(homeHub(starter, false, account)).toContain(`class="form-prefix">${form.title}</small>`);
+      else expect(homeHub(starter, false, account)).not.toContain('class="form-prefix"');
       expect(characterHub(starter, 'overview', account)).toContain(`<span data-owned-title>${name}</span>`);
       expect(portrait(starter, evolution)).toContain(`alt="${name},`);
       if (evolution > 1) expect(portrait(starter, evolution)).toContain(form.title);

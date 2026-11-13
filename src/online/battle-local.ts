@@ -1,12 +1,12 @@
 import { ACCOUNT_KEY, loadAccount, saveAccount } from '../game/account';
 import type { ProfileStorage } from '../game/profile';
 import type { StarterId } from '../content/starters';
-import { RadiantRunError, resolveRadiantRun, validateFrozenRadiantRun, validateRadiantRunRequest,
+import { RadiantRunError, resolveRadiantRun, retiredRadiantRunNotice, validateFrozenRadiantRun, validateRadiantRunRequest,
   type FrozenRadiantRun, type RadiantCheckpoint, type RadiantRunAuthority, type RadiantRunRequest,
   type RadiantRunResponse, type RadiantStudyGame } from './battle-run';
 
 export const LOCAL_RADIANT_KEY = 'last-light.radiant-run';
-interface LocalRadiantRecord { revision: number; run: FrozenRadiantRun | null }
+interface LocalRadiantRecord { revision: number; run: FrozenRadiantRun | null; notice?: string }
 
 function seed(): number {
   const value = new Uint32Array(1);
@@ -28,16 +28,18 @@ export class LocalRadiantTransport {
     try {
       const value = JSON.parse(raw) as LocalRadiantRecord;
       if (!Number.isSafeInteger(value.revision) || value.revision < 0) throw new Error();
+      const version: unknown = value.run?.version;
+      if (version === 3) return { revision: value.revision, run: null, notice: retiredRadiantRunNotice };
       return { revision: value.revision, run: value.run === null ? null : validateFrozenRadiantRun(value.run) };
     } catch {
-      // An unreadable frozen encounter cannot be resumed; saved rewards live in the account.
-      return { revision: 0, run: null };
+      throw new RadiantRunError('unavailable', 'Invalid saved Radiant encounter; all saved rewards are kept.');
     }
   }
 
   async read(): Promise<RadiantCheckpoint> {
     const saved = this.record();
-    return { revision: saved.revision, account: loadAccount(this.storage), run: saved.run };
+    return { revision: saved.revision, account: loadAccount(this.storage), run: saved.run,
+      ...(saved.notice ? { notice: saved.notice } : {}) };
   }
 
   async execute(request: RadiantRunRequest): Promise<RadiantRunResponse> {

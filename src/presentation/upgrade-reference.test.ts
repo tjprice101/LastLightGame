@@ -274,7 +274,7 @@ describe('reference Team upgrade presentation', () => {
     const portrait = header?.querySelector('img');
     const navigation = host.querySelector('.ref-character-submenus');
     const glowing = host.querySelector<HTMLElement>('[data-radiant-flare="glowing"]')!;
-    expect(glowing.textContent).toContain(`Costs ${radiantBearerKits.tide.baseCost} personal charge.`);
+    expect(glowing.textContent).toContain(`Costs ${radiantBearerKits.tide.baseCost} Luminosity.`);
     expect(host.querySelector('[data-radiant-flare="lustrous"]')?.classList.contains('is-locked')).toBe(true);
     expect(host.querySelector('.radiant-passive')?.textContent).toContain(radiantBearerKits.tide.passive.name);
     expect(host.querySelector('.radiant-leader')?.textContent).toContain(radiantBearerKits.tide.leader);

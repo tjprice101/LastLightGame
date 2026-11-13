@@ -5,7 +5,7 @@ import { addRadiantPersonalCharge, grantRadiantAction, grantRadiantDrop, grantRa
 
 function fixture(form = 6, size = 1): RadiantGaugeState {
   return { members: Array.from({ length: size }, (_, index) => ({
-    id: `member-${index}`, form, baseCost: 30, charge: 0, living: true,
+    id: `member-${index}`, elementId: 'infernic', form, baseCost: 30, charge: 0, living: true,
   })), sharedUnits: 0, eternalCasts: 0 };
 }
 describe('isolated radiant charge foundation', () => {
@@ -56,7 +56,7 @@ describe('isolated radiant charge foundation', () => {
     }
     state = grantRadiantRound(state);
     expect(state.sharedUnits).toBe(24 * sharedChargeUnit);
-    expect(state.members.every(member => member.charge === 25 + 2 * (size - 1))).toBe(true);
+    expect(state.members.every(member => member.charge === 10 + size - 1)).toBe(true);
   });
   it('uses the starting member count after death and gives no personal round grant to the defeated', () => {
     const state = fixture(6, 6);
@@ -64,7 +64,7 @@ describe('isolated radiant charge foundation', () => {
     const drop = grantRadiantDrop(state, 'member-0', 20);
     const next = grantRadiantRound(grantRadiantAction(drop, 'member-0', 'normal', 1).state);
     expect(next.sharedUnits).toBe(19 * sharedChargeUnit);
-    expect(next.members.map(member => member.charge)).toEqual([25, 7, 7, 7, 7, 0]);
+    expect(next.members.map(member => member.charge)).toEqual([20, 2, 2, 2, 2, 0]);
     expect(next.members[5].charge).toBe(0);
   });
   it('does not accumulate hidden shared charge before any final-form member is equipped', () => {
@@ -72,7 +72,7 @@ describe('isolated radiant charge foundation', () => {
     const next = grantRadiantRound(grantRadiantAction(state, 'member-0', 'normal', 1).state);
     expect(next.sharedUnits).toBe(0);
   });
-  it('caps bonus rolls at two even at full personal charge without suppressing ally shares', () => {
+  it('does not roll bonuses or generate personal charge from Final Flares', () => {
     let state = fixture(6, 2);
     state.members[0].charge = 60;
     const roll = vi.fn(() => 0);
@@ -80,15 +80,16 @@ describe('isolated radiant charge foundation', () => {
     for (let index = 0; index < 6; index++) {
       const drop = radiantHitDrop('flare', rolls, roll);
       rolls += drop.bonusRolls; offered += drop.bonusOffered;
-      state = grantRadiantDrop(state, 'member-0', drop.amount);
+      expect(drop.amount).toBe(0);
     }
-    expect(roll).toHaveBeenCalledTimes(2);
-    expect(offered).toBe(10);
-    expect(state.members.map(member => member.charge)).toEqual([60, 1.6]);
+    expect(roll).not.toHaveBeenCalled();
+    expect(offered).toBe(0);
+    expect(state.members.map(member => member.charge)).toEqual([60, 0]);
   });
-  it('rejects invalid RNG and leaves input untouched', () => {
+  it('does not invoke unused RNG and leaves input untouched', () => {
     const state = fixture(), before = structuredClone(state);
-    expect(() => radiantHitDrop('normal', 0, () => 1)).toThrow('roll');
+    expect(radiantHitDrop('normal', 0, () => 1).amount).toBe(10);
+    expect(() => radiantHitDrop('normal', 1, () => 0)).toThrow('roll');
     expect(state).toEqual(before);
   });
   it('does not let Eternal fund its own shared resource and rejects cosmetic Normal multi-hits', () => {
@@ -117,13 +118,14 @@ describe('isolated radiant charge foundation', () => {
     expect(state.members[1].charge).toBe(5.9);
     validateRadiantGauge(state);
   });
-  it('credits other living members for a defeated source without reviving or redistributing capped shares', () => {
+  it('rejects defeated drop sources without reviving or redistributing their charge', () => {
     const state = fixture(6, 4);
     state.members[0].living = false;
     state.members[2].charge = 60;
     state.members[3].living = false;
-    const next = grantRadiantDrop(state, 'member-0', 5);
-    expect(next.members.map(member => member.charge)).toEqual([0, .5, 60, 0]);
+    const before = structuredClone(state);
+    expect(() => grantRadiantDrop(state, 'member-0', 5)).toThrow('defeated');
+    expect(state).toEqual(before);
     expect(() => grantRadiantDrop(state, 'missing', 5)).toThrow('not in');
     expect(() => grantRadiantDrop(state, 'member-0', 0)).toThrow('drop');
   });

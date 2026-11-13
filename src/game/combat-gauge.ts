@@ -1,8 +1,11 @@
 import { squadMemberLimit } from '../content/squad-rules';
+import type { ElementId } from '../content/activities';
+import { isCombatElement } from '../content/element-matchups';
 
 export type FlareTier = 'glowing' | 'lustrous' | 'eternal';
 export interface RadiantGaugeMember {
   id: string;
+  elementId: ElementId;
   form: number;
   baseCost: number;
   charge: number;
@@ -17,16 +20,16 @@ export interface RadiantGaugeState {
 export const personalChargeUnit = 10;
 export const sharedChargeUnit = 60;
 export const radiantChargeRules = {
-  normal: 20,
-  flareHit: 1,
-  defeatedEnemy: 5,
+  normal: 10,
+  flareHit: 0,
+  defeatedEnemy: 0,
   otherMemberPercent: 10,
-  defense: 10,
-  round: 5,
-  incomingAttack: 8,
-  bonusChance: .25,
-  bonusAmount: 5,
-  maximumBonusRolls: 2,
+  defense: 0,
+  round: 0,
+  incomingAttack: 10,
+  bonusChance: 0,
+  bonusAmount: 0,
+  maximumBonusRolls: 0,
 } as const;
 
 function integer(value: number, minimum: number, name: string): void {
@@ -56,7 +59,7 @@ export function validateRadiantGauge(state: RadiantGaugeState): void {
     throw new Error('Radiant charge requires one to six squad members.');
   const ids = new Set<string>();
   for (const member of state.members) {
-    if (typeof member.id !== 'string' || !member.id || ids.has(member.id) || typeof member.living !== 'boolean')
+    if (typeof member.id !== 'string' || !member.id || ids.has(member.id) || typeof member.living !== 'boolean' || !isCombatElement(member.elementId))
       throw new Error('Invalid radiant squad member.');
     ids.add(member.id);
     personalUnits(member.charge);
@@ -113,11 +116,13 @@ export function grantRadiantDrop(state: RadiantGaugeState, id: string, amount: n
   integer(amount, 1, 'enemy drop');
   integer(amount * personalChargeUnit, 1, 'enemy drop units');
   const next = structuredClone(state);
-  if (!next.members.some(member => member.id === id)) throw new Error('Radiant drop owner is not in this squad.');
+  const owner = next.members.find(member => member.id === id);
+  if (!owner) throw new Error('Radiant drop owner is not in this squad.');
+  if (!owner.living) throw new Error('A defeated bearer cannot generate Luminosity.');
   const allyUnits = amount * (personalChargeUnit * radiantChargeRules.otherMemberPercent / 100);
   integer(allyUnits, 0, 'shared drop units');
   for (const member of next.members) {
-    if (!member.living) continue;
+    if (!member.living || member.elementId !== owner.elementId) continue;
     const units = member.id === id ? amount * personalChargeUnit : allyUnits;
     addPersonalUnits(member, units);
   }

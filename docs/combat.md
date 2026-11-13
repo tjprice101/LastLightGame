@@ -1,5 +1,41 @@
 # Combat specification
 
+## Approved core consolidation (2026-11-12; implementation in progress)
+
+The next live combat contract supersedes the older personal-charge,
+bespoke-passive and leader-stat rules below. Publication and validation
+status are tracked in the handoff; this heading is not a release claim.
+
+Each Element-Bearer has a unique evolution-dependent name, a **Prism-base**
+(Equinox/Corona/Aegis/Solstice/Prism), a simple **Passive Skill**, a fixed-first
+**Leader Skill** and an evolution-enhanced **Final Flare**. Preserve Health,
+Attack, Defense, Recovery, levels, evolutions, holdings and equipment.
+
+Personal capacity is 100, or 200 from form 4. A damaging Normal hit grants
+10 Luminosity to its living attacker plus a separate 1 to each other living
+same-element ally. Each direct incoming hit survived, including Shield
+absorption, grants 10 to its recipient only. Final Flares, defeats, Defense,
+round starts, generated and periodic damage do not grant personal Luminosity.
+Shared Shattering Light charging and its final-form requirement are unchanged.
+
+Sparkle/Shimmer/Lustrous attacks use 4/8/12 real hits. One authored total is
+split across those hits rather than repeated per hit, with a minimum of one
+damage per hit and no post-defeat hits. Enhancement is automatic with evolution,
+without new spending. Existing saved investments remain applied.
+
+Living squad passives add rather than multiply. The fixed first member's
+Leader Skill increases matching-element attack damage only while that
+leader lives; another member is never promoted after defeat.
+
+Infernic is weak to Oceanic, Oceanic to Botanic, Botanic to Atmospheric,
+and Atmospheric to Infernic. Advantage is x1.5, reverse disadvantage x0.75,
+other pairings x1. Tranquilitic and Chaotic deal x1.5 to each other.
+Burn snapshots that matchup and the living leader's damage bonus when applied,
+without Defense mitigation or personal charge. Later leader defeats do not
+alter an existing Burn snapshot.
+Ordinary Conduits retain their IDs/ranks/eligibility and use one/two simple
+bonuses; personal Masters retain their existing Prism-base profiles.
+
 ## Live Radiant encounters and continuity (2026-11-10)
 
 Radiant combat is used by normal online and local encounters throughout the

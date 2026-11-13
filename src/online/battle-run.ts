@@ -40,7 +40,7 @@ export interface RadiantContinuation {
   state: RadiantCombatState;
 }
 export interface FrozenRadiantRun {
-  version: 3;
+  version: 4;
   id: string;
   encounter: number;
   anchor: RadiantPressureAnchor;
@@ -78,17 +78,20 @@ export interface RadiantRunResponse {
   events: RadiantCombatEvent[];
   rewards: BattleEvent[];
 }
-export interface RadiantRunSnapshot { revision: number; state: RadiantStudyGame }
+export const retiredRadiantRunNotice = 'Combat rules changed. The previous battle has ended; all saved rewards are kept.';
+export interface RadiantRunSnapshot { revision: number; state: RadiantStudyGame; notice?: string }
 export interface RadiantCheckpoint {
   revision: number;
   account: Account;
   run: FrozenRadiantRun | null;
+  notice?: string;
 }
 export function validateRadiantCheckpoint(value: unknown): RadiantCheckpoint {
   try {
     if (!record(value) || typeof value.revision !== 'number' ||
       !Number.isSafeInteger(value.revision) || value.revision < 0) throw new Error();
     validateAccount(value.account);
+    if (value.notice !== undefined && typeof value.notice !== 'string') throw new Error();
     if (value.run !== null) validateFrozenRadiantRun(value.run);
     return structuredClone(value) as unknown as RadiantCheckpoint;
   } catch {
@@ -168,7 +171,7 @@ function initialize(anchor: RadiantPressureAnchor, calibration: FrozenRadiantRun
     }
     validateRadiantCombat(initial);
   }
-  return { version: 3, id: entropy.runId, encounter, anchor, calibration,
+  return { version: 4, id: entropy.runId, encounter, anchor, calibration,
     encounterSeed: entropy.encounterSeed, initialChargeSeed: entropy.chargeSeed,
     initialTargetSeed: entropy.targetSeed, targetSeed: entropy.targetSeed, enemies,
     initial: structuredClone(initial), state: initial,
@@ -297,7 +300,7 @@ export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: Radiant
     discover = true;
   } else {
     const run = game.radiantStudy;
-    if (!run || run.version !== 3 || run.id !== request.runId || run.encounter !== request.encounter)
+    if (!run || run.version !== 4 || run.id !== request.runId || run.encounter !== request.encounter)
       throw new RadiantRunError('stale-run', 'The saved Radiant encounter does not match.');
     validateFrozenRadiantRun(run);
     if (run.enemies.length !== run.state.enemies.length ||
@@ -373,7 +376,7 @@ function canonical(value: unknown): string {
 }
 export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
   try {
-    if (!record(value) || value.version !== 3 || typeof value.id !== 'string' || !uuid.test(value.id) ||
+    if (!record(value) || value.version !== 4 || typeof value.id !== 'string' || !uuid.test(value.id) ||
       typeof value.encounter !== 'number' || !Number.isSafeInteger(value.encounter) || value.encounter < 1 ||
       typeof value.quit !== 'boolean' || !record(value.anchor) ||
       !['authored-control', 'radiant-pressure-v2'].includes(String(value.calibration)) ||
@@ -422,6 +425,7 @@ export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
         run.calibration === 'authored-control' ? authoredRadiantCalibration : pressureRadiantCalibration);
       if (continuation.state.enemies.length !== previousEnemies.length ||
         continuation.state.enemies.some((unit, i) => unit.id !== previousEnemies[i].id ||
+          unit.elementId !== previousEnemies[i].elementId ||
           canonical(unit.stats) !== canonical(previousEnemies[i].stats) ||
           unit.currency.budget !== previousEnemies[i].currencyBudget)) throw new Error();
     }
@@ -434,6 +438,7 @@ export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
       run.state.bearers.some((unit, i) => canonical(unit.loadout) !== canonical(run.initial.bearers[i].loadout)) ||
       run.state.enemies.length !== run.enemies.length ||
       run.state.enemies.some((unit, i) => unit.id !== run.enemies[i].id ||
+        unit.elementId !== run.enemies[i].elementId ||
         canonical(unit.stats) !== canonical(run.enemies[i].stats) ||
         unit.currency.budget !== run.enemies[i].currencyBudget)) throw new Error();
     return structuredClone(run);
@@ -448,8 +453,11 @@ export function validateRadiantRunSnapshot(value: unknown): RadiantRunSnapshot {
       !record(value.state.profile) || !('run' in value.state) || !('starterId' in value.state))
       throw new Error();
     validateAccount(value.state.account);
-    if (value.state.radiantStudy !== undefined) validateFrozenRadiantRun(value.state.radiantStudy);
-    return structuredClone(value) as unknown as RadiantRunSnapshot;
+    const state = structuredClone(value.state);
+    const retired = record(state.radiantStudy) && state.radiantStudy.version === 3;
+    if (retired) delete state.radiantStudy;
+    else if (state.radiantStudy !== undefined) validateFrozenRadiantRun(state.radiantStudy);
+    return { ...structuredClone(value), state, ...(retired ? { notice: retiredRadiantRunNotice } : {}) } as unknown as RadiantRunSnapshot;
   } catch {
     throw new RadiantRunError('unavailable', 'Invalid saved Radiant account; nothing was saved.');
   }

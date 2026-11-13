@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { elements } from '../content/activities';
 import { elementalWars } from '../content/elemental-war';
-import { calamityActivities, calamityEncounter } from '../content/calamity';
+import { calamityActivities, calamityEncounter, calamityPatterns } from '../content/calamity';
 import { storyEncounter } from '../content/story';
 import { storyCreature, storyRules } from '../content/story';
 import { dungeonVariants } from '../content/dungeons';
@@ -105,7 +105,7 @@ describe('actual bounded action-driven radiant pressure', () => {
     const id = radiantMasters[masterId].starter;
     const loadouts = pressureStudyLoadouts([id], 105, ['ozriel', 'ilvaris', 'kaelith'].includes(id) ? 'calamitic' : 'farmed').loadouts;
     loadouts[0].masterId = masterId;
-    const state = createRadiantCombat(loadouts, [{ id: 'foe', stats: { hp: 1000000, attack: 1, defense: 1, recovery: 0 }, currencyBudget: 0 }], 1);
+    const state = createRadiantCombat(loadouts, [{ elementId: null, id: 'foe', stats: { hp: 1000000, attack: 1, defense: 1, recovery: 0 }, currencyBudget: 0 }], 1);
     state.gauge.members[0].charge = state.gauge.members[0].baseCost * 2;
     state.bearers[0].hp -= 1;
     const action = chooseRadiantPressureAction(state, id, 'balanced');
@@ -114,8 +114,8 @@ describe('actual bounded action-driven radiant pressure', () => {
     if (radiantMasters[masterId].rule === 'tide-strike' || radiantMasters[masterId].rule === 'sprout-strike')
       expect(control.type).toBe('defense');
   });
-  it('is reproducible, finite, frozen and distinguishes actual healing/shield absorption', () => {
-    const loadouts = pressureStudyLoadouts(['ember', 'tide', 'sprout'], 60, 'common').loadouts;
+  it('is reproducible, finite and frozen on an authored encounter', () => {
+    const loadouts = pressureStudyLoadouts(['ember', 'tide', 'sprout'], 105, 'farmed').loadouts;
     const enemies = adaptRadiantPressureEncounter(anchors.find(a => a.id === 'training:60')!, 1729, pressureRadiantCalibration);
     const before = JSON.stringify({ loadouts, enemies });
     const result = runRadiantPressure(loadouts, enemies, options);
@@ -125,11 +125,18 @@ describe('actual bounded action-driven radiant pressure', () => {
     expect(result.metrics.incomingHPDamage).toBeGreaterThan(0);
     expect(result.metrics.outgoingHPDamage).toBeGreaterThan(0);
     expect(result.metrics.personalGranted).toBeGreaterThan(0);
+    expect(result.metrics.currency).toBeLessThanOrEqual(enemies.reduce((sum, e) => sum + e.currencyBudget, 0));
+  });
+  it('distinguishes effective healing and actual Shield absorption in a sustained support fixture', () => {
+    const loadouts = pressureStudyLoadouts(['ember', 'tide', 'sprout'], 0, 'empty').loadouts;
+    const enemies = [{ ...opponents()[0], pattern: { ...calamityPatterns.treasury, hits: 4 },
+      stats: { hp: 1000000, attack: 30, defense: 0, recovery: 0 } }];
+    const result = runRadiantPressure(loadouts, enemies, options);
+    expect(result.outcome).toBe('timeout');
     expect(result.metrics.effectiveHealing).toBeGreaterThan(0);
     expect(result.metrics.shieldCreated).toBeGreaterThan(0);
     expect(result.metrics.incomingAbsorbed).toBeGreaterThan(0);
     expect(result.metrics.incomingAbsorbed).toBeLessThanOrEqual(result.metrics.shieldCreated);
-    expect(result.metrics.currency).toBeLessThanOrEqual(enemies.reduce((sum, e) => sum + e.currencyBudget, 0));
   });
   it('reports defeat, timeout and support-only stalemate rather than fake clear', () => {
     const lethal = opponents().map(enemy => ({ ...enemy, stats: { hp: 1000000, attack: 100000, defense: 0, recovery: 0 } }));
@@ -178,18 +185,20 @@ describe('actual bounded action-driven radiant pressure', () => {
 
 describe('Calamity atomic preattack and split packets', () => {
   function attack(hits: number) {
-    let state = createRadiantCombat(solo(), [{ id: 'foe', stats: { hp: 10000, attack: 30, defense: 0, recovery: 0 }, currencyBudget: 0 }], 1);
+    let state = createRadiantCombat(solo(), [{ elementId: null, id: 'foe', stats: { hp: 10000, attack: 30, defense: 0, recovery: 0 }, currencyBudget: 0 }], 1);
     state = applyRadiantCombatAction(state, { type: 'defense', bearerId: 'ember' }).state;
     return { before: state, result: applyRadiantCombatAction(state, {
       type: 'enemy-attack', enemyId: 'foe', targetIds: ['ember'], coefficient: 1, hits,
     }) };
   }
-  it('splits one mitigated total and grants incoming charge once, not per hit', () => {
+  it('splits one mitigated total and grants ten Luminosity per surviving direct hit', () => {
     const single = attack(1), split = attack(4);
     const damage = (result: typeof single.result) => result.events.filter(e => e.type === 'damage').reduce((sum, e) => sum + e.healthLoss + e.absorbed, 0);
     expect(damage(split.result)).toBe(damage(single.result));
     expect(split.result.events.filter(e => e.type === 'damage')).toHaveLength(4);
-    expect(split.result.state.gauge).toEqual(single.result.state.gauge);
+    expect(single.result.state.gauge.members[0].charge).toBe(10);
+    expect(split.result.state.gauge.members[0].charge).toBe(40);
+    expect(split.result.state.gauge.sharedUnits).toBe(single.result.state.gauge.sharedUnits);
     expect(() => applyRadiantCombatAction(split.before, { type: 'enemy-attack', enemyId: 'foe',
       targetIds: ['ember'], coefficient: 1, hits: 17 })).toThrow('bounded');
   });

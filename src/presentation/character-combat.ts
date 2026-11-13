@@ -1,13 +1,12 @@
-import { radiantAttunement, radiantAttunements, radiantBearerKits, radiantFlares, radiantMasters, resolveRadiantStarterStats,
+import { radiantAttunement, radiantAttunements, radiantBearerKits, radiantFinalFlare, radiantLeaderBonus, radiantPassiveAmount, radiantMasters, resolveRadiantStarterStats,
   type RadiantAttunement, type RadiantBearerId, type RadiantLoadout, type RadiantStats } from '../content/combat-kits';
-import { radiantGearAmount } from '../content/conduit-effects';
 import { adaptRadiantLoadouts } from '../game/combat-loadout';
 import { radiantChargeRules, type FlareTier } from '../game/combat-gauge';
 import { getMasterConduit } from '../content/master-conduits';
 import { formatStat } from '../content/combat';
 import { displayEvolution, type CharacterProgress } from '../content/progression';
 import { ownedProgress, type Account } from '../game/account';
-import { radiantFlareDescription, radiantFlareNeedsTarget, radiantPassiveEnhancements } from './combat-description';
+import { radiantFlareDescription } from './combat-description';
 import { abilityIcon } from './ability-icon';
 import { assetUrl, portrait } from './portrait';
 import { statChange, statDirection } from './stat-change';
@@ -29,7 +28,7 @@ export const radiantAttunementNames: Record<RadiantAttunement, string> = {
   equinox: 'Equinox', corona: 'Corona', aegis: 'Aegis', solstice: 'Solstice', prism: 'Prism',
 };
 export const radiantFlareTierNames: Record<FlareTier, string> = {
-  glowing: 'Glowing Flare', lustrous: 'Lustrous Flare', eternal: 'Shattering Light',
+  glowing: 'Final Flare · Sparkle', lustrous: 'Final Flare · Shimmer', eternal: 'Shattering Light · Lustrous',
 };
 const tierForm: Record<FlareTier, number> = { glowing: 1, lustrous: 4, eternal: 6 };
 const percent = (value: number): string => `${Number((value * 100).toPrecision(12))}%`;
@@ -99,21 +98,12 @@ export function radiantStatPreview(before: RadiantLoadout, after: RadiantLoadout
 }
 
 export function radiantLeaderAmount(loadout: RadiantLoadout): number {
-  const kit = radiantBearerKits[loadout.starter];
-  const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
-  return kit.leaderBonus * (loadout.ascension.skill2 ? 1.5 : 1) + (master?.enhancement === 'leader' ? master.magnitude : 0) +
-    radiantGearAmount(loadout.gear, 'leader');
+  return radiantLeaderBonus(loadout);
 }
 
 export function radiantLeaderText(loadout: RadiantLoadout): string {
   const kit = radiantBearerKits[loadout.starter];
-  return `Every squad member gains +${percent(radiantLeaderAmount(loadout))} ${radiantStatLabels[kit.leaderStat]} while this Element-Bearer is first in the squad and alive.`;
-}
-
-function signaturePower(loadout: RadiantLoadout): number {
-  const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
-  return 1 + (master?.rule === 'standard' && master.enhancement === 'signature' ? master.magnitude : 0) +
-    (loadout.ascension.lastFlare ? .5 : 0);
+  return `${kit.element} squad members deal ${percent(radiantLeaderAmount(loadout))} more attack damage while this bearer is the living squad leader.`;
 }
 
 export function radiantFlareTierUnlocked(loadout: RadiantLoadout, tier: FlareTier): boolean {
@@ -122,40 +112,37 @@ export function radiantFlareTierUnlocked(loadout: RadiantLoadout, tier: FlareTie
 
 function flareCost(loadout: RadiantLoadout, tier: FlareTier): string {
   const cost = radiantBearerKits[loadout.starter].baseCost * (tier === 'glowing' ? 1 : 2);
-  return `${cost} personal charge${tier === 'eternal' ? ' + full shared meter' : ''}`;
+  return `${cost} Luminosity${tier === 'eternal' ? ' + full Shattering Light meter' : ''}`;
 }
 
 export function radiantFlareArticle(loadout: RadiantLoadout, tier: FlareTier): string {
-  const offer = radiantFlares[loadout.starter][tier];
+  const offer = radiantFinalFlare(loadout, tier);
   const icon = abilityIcon(loadout.starter, tier === 'glowing' ? 'skill1' : tier === 'lustrous' ? 'skill2' : 'ultimate');
   const unlocked = radiantFlareTierUnlocked(loadout, tier);
-  const power = signaturePower(loadout);
-  const extra = loadout.starter === 'ember' && tier === 'eternal' ? '<li>First consumes all Infernis-owned Burns on each target, paying each remaining phase as periodic damage; surviving targets then receive the new Burn.</li>'
-    : loadout.starter === 'sprout' && tier === 'eternal' ? '<li>Also removes each living ally’s strongest Weaken.</li>' : '';
   return `<article class="hub-ability radiant-flare info-ability${unlocked ? '' : ' is-locked'}" data-radiant-flare="${tier}" data-radiant-reference-tier="${tier}"><h4 class="ability-heading">${icon}<span>${escape(offer.name)} · ${radiantFlareTierNames[tier]}</span></h4>
     <p class="info-label">${unlocked ? 'Unlocked' : 'Locked'} · Unlocks at Evo.${displayEvolution(loadout.starter, tierForm[tier])}.</p>
-    <p class="info-label">Target: ${offer.target === 'all-enemies' ? 'all living enemies' : offer.target === 'one-enemy' ? 'selected living enemy' : 'all living allies'}${radiantFlareNeedsTarget(loadout, tier) && offer.target !== 'one-enemy' ? '; select a living enemy for the Master effect' : ''}.</p>
-    <ul class="info-effects">${radiantFlareDescription(offer).map(line => `<li>${escape(line)}</li>`).join('')}${extra}</ul>
-    <p class="info-price">Costs ${flareCost(loadout, tier)}.</p>${power !== 1 ? `<p>Effect magnitudes ×${multiplier(power)} (not durations).</p>` : ''}</article>`;
+    <p class="info-label">Target: ${offer.target === 'all-enemies' ? 'all living enemies' : offer.target === 'one-enemy' ? 'selected living enemy' : 'all living allies'}.</p>
+    <ul class="info-effects">${radiantFlareDescription(offer, radiantBearerKits[loadout.starter].element).map(line => `<li>${escape(line)}</li>`).join('')}</ul>
+    <p class="info-price">Costs ${flareCost(loadout, tier)}. Improves with evolution.</p></article>`;
 }
 
 export function radiantPassiveArticle(loadout: RadiantLoadout): string {
   const passive = radiantBearerKits[loadout.starter].passive;
-  return `<article class="hub-ability radiant-passive"><h3 class="ability-heading">${abilityIcon(loadout.starter, 'passive')}<span>${escape(passive.name)} · Passive</span></h3>
-    <p>${escape(passive.description)}</p>${radiantPassiveEnhancements(loadout).map(line => `<p class="hub-cost">${escape(line)}</p>`).join('')}</article>`;
+  return `<article class="hub-ability radiant-passive"><h3 class="ability-heading">${abilityIcon(loadout.starter, 'passive')}<span>${escape(passive.name)} · Passive Skill</span></h3>
+    <p>All squad members gain ${percent(radiantPassiveAmount(loadout))} ${radiantStatLabels[passive.stat]} while this bearer is alive. Stacks additively.</p></article>`;
 }
 
 export function radiantLeaderArticle(loadout: RadiantLoadout): string {
   const kit = radiantBearerKits[loadout.starter];
-  return `<article class="hub-ability radiant-leader"><h3 class="ability-heading"><span class="radiant-leader-mark" aria-hidden="true">★</span><span>${escape(kit.leader)} · Leader skill</span></h3>
+  return `<article class="hub-ability radiant-leader"><h3 class="ability-heading"><span class="radiant-leader-mark" aria-hidden="true">★</span><span>${escape(kit.leader)} · Leader Skill</span></h3>
     <p>${radiantLeaderText(loadout)}</p></article>`;
 }
 
 export function radiantBasicArticles(loadout: RadiantLoadout): string {
   return `<article class="hub-ability radiant-normal"><h3 class="ability-heading">${abilityIcon(loadout.starter, 'light')}<span>Normal Attack</span></h3>
-      <p>One selected living enemy: direct damage at 100% Attack before Defense mitigation. Grants ${radiantChargeRules.normal} personal charge on a hit.</p></article>
+      <p>100% Attack damage to one enemy. Generates ${radiantChargeRules.normal} Luminosity on a damaging hit; each other living same-element ally receives 1.</p></article>
     <article class="hub-ability radiant-defense"><h3 class="ability-heading"><img class="ability-icon" draggable="false" src="${assetUrl('abilities/universal-defense.png')}" alt="" width="48" height="48"><span>Defense</span></h3>
-      <p>Halves direct enemy damage taken until the next round (combined reduction floor: 20% damage taken). Grants ${radiantChargeRules.defense} personal charge.</p></article>`;
+      <p>Halves direct enemy damage taken until the next round (combined reduction floor: 20% damage taken).</p></article>`;
 }
 
 export function radiantMasterLine(loadout: RadiantLoadout): string {
@@ -164,15 +151,15 @@ export function radiantMasterLine(loadout: RadiantLoadout): string {
 }
 
 export function radiantAttunementSection(loadout: RadiantLoadout): string {
-  return `<section class="character-category radiant-attunement" data-radiant-attunement="${radiantAttunement(loadout)}"><h3>Attunement · ${radiantAttunementName(loadout)}</h3>
+  return `<section class="character-category radiant-attunement" data-radiant-attunement="${radiantAttunement(loadout)}"><h3>Prism-base · ${radiantAttunementName(loadout)}</h3>
     <p>${escape(radiantAttunementProfile(loadout))}</p>${radiantMasterLine(loadout)}</section>`;
 }
 
 export function radiantKitSections(loadout: RadiantLoadout): string {
   return informationSheet([
-    { title: 'Leader skill', kind: 'leader', content: radiantLeaderArticle(loadout) },
-    { title: 'Flares', kind: 'flares', content: `<div class="info-flare-grid">${(['glowing', 'lustrous', 'eternal'] as const).map(tier => radiantFlareArticle(loadout, tier)).join('')}</div>` },
-    { title: 'Passive', kind: 'passive', content: radiantPassiveArticle(loadout) },
+    { title: 'Leader Skill', kind: 'leader', content: radiantLeaderArticle(loadout) },
+    { title: 'Final Flare', kind: 'flares', content: `<div class="info-flare-grid">${(['glowing', 'lustrous', 'eternal'] as const).map(tier => radiantFlareArticle(loadout, tier)).join('')}</div>` },
+    { title: 'Passive Skill', kind: 'passive', content: radiantPassiveArticle(loadout) },
   ]);
 }
 
@@ -189,7 +176,7 @@ export function radiantCharacterSheet(loadout: RadiantLoadout, includeProfile = 
       ${gear.some(Boolean) ? `<ul class="info-effects">${gear.flatMap(entry => entry ? [`<li><strong>${escape(getConduit(entry.id).name)} +${entry.rank}</strong><ul>${radiantConduitPrimitives(entry).map(rule => `<li>${escape(radiantConduitDescription(rule))}</li>`).join('')}</ul></li>`] : []).join('')}</ul>` : ''}
     ` }])}
     <details class="info-lore"><summary>Lore</summary><p>${bracketReferences(escape(`${starter.description} ${starter.lore.story}`))}</p></details>
-    <details class="info-lore"><summary>Shared combat rules</summary>${radiantBasicArticles(loadout)}<p>Personal charge builds from actions; the highest ready tier is cast. The Shattering Light shared meter starts at 100, rises 25 after each Shattering Light and caps at 200.</p></details></div>`;
+    <details class="info-lore"><summary>Shared combat rules</summary>${radiantBasicArticles(loadout)}<p>Each surviving direct incoming hit, including Shield absorption, grants its recipient 10 Luminosity without sharing. The highest ready Final Flare tier is cast. The Shattering Light shared meter starts at 100, rises 25 after each Shattering Light and caps at 200.</p></details></div>`;
 }
 
 export function radiantUnavailable(): string {

@@ -510,8 +510,8 @@ async function smokeRadiantLive(client, userId, username, call, callAs) {
   const validators = await import(`data:text/javascript;base64,${Buffer.from(bundle.outputFiles[0].contents).toString('base64')}`);
   const entropy = { seed: () => 1729, random: () => .5, uuid: () => randomUUID() };
   const game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
-  for (const id of ['ember', 'tide', 'sprout']) game.account.characters[id] = { level: 105, evolution: 6 };
-  game.account.squad = ['ember', 'tide', 'sprout'];
+  for (const id of ['ember', 'tide', 'caldrex']) game.account.characters[id] = { level: 105, evolution: 6 };
+  game.account.squad = ['ember', 'tide', 'caldrex'];
   game.account.fractalis = 100_000;
   game.account.lycalis = 50;
   assert.ok(ids.includes(userId), 'Only a disposable identity may receive a fixture.');
@@ -629,10 +629,13 @@ async function smokeRadiantLive(client, userId, username, call, callAs) {
   const drops = response.events.filter(event => event.type === 'gauge-drop' && event.bearerId === 'ember');
   assert.ok(drops.length);
   const total = drops.reduce((sum, event) => sum + event.amount, 0);
+  assert.equal(total, 10, 'a Normal hit grants exactly ten Luminosity');
+  const attacker = beforeGauge.members.find(member => member.id === 'ember');
   for (const member of response.run.state.gauge.members) {
     const previous = beforeGauge.members.find(item => item.id === member.id);
     const capacity = member.baseCost * (member.form >= 4 ? 2 : 1);
-    assert.equal(member.charge, Math.min(capacity, previous.charge + (member.id === 'ember' ? total : total / 10)));
+    const share = member.id === 'ember' ? total : member.elementId === attacker.elementId ? total / 10 : 0;
+    assert.equal(member.charge, Math.min(capacity, previous.charge + share));
   }
   await assert.rejects(radiant({ ...action, operation: { kind: 'quit' } }), error => error.status === 409);
   run = response.run; revision = response.revision;

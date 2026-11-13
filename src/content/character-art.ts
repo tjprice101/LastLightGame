@@ -43,5 +43,5 @@ export function characterArt(id: StarterId, evolution = 1): { art: string; title
 }
 
 export function characterName(id: StarterId, evolution = 1, riseBlessed = false): string {
-  return `${characterArt(id, evolution).title}, ${getStarter(id).name}${riseBlessed ? ', Rise-blessed' : ''}`;
+  return `${evolution === 1 ? '' : `${characterArt(id, evolution).title}, `}${getStarter(id).name}${riseBlessed ? ', Rise-blessed' : ''}`;
 }

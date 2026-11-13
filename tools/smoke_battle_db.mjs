@@ -87,7 +87,7 @@ try {
 
   const entropy = { seed: () => 1729, random: () => .5, uuid: () => randomUUID() };
   const game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
-  for (const id of ['ember', 'tide', 'sprout']) game.account.characters[id] = { level: 90, evolution: 6 };
+  for (const id of ['ember', 'tide', 'caldrex']) game.account.characters[id] = { level: 90, evolution: 6 };
   seedGame = game;
   const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
   assert.equal(seeded.error, null, 'Disposable fixture seed failed.');
@@ -97,14 +97,14 @@ try {
   const r0 = checkpoint.revision;
   const prepId = randomUUID();
   const prepare = ids => ({ kind: 'prepare', requestId: prepId, expectedRevision: r0, operation: { kind: 'setSquad', ids } });
-  const prepared = ok(await send(prepare(['ember', 'tide', 'sprout'])));
+  const prepared = ok(await send(prepare(['ember', 'tide', 'caldrex'])));
   assert.equal(prepared.revision, r0 + 1);
-  assert.deepEqual(ok(await send(prepare(['ember', 'tide', 'sprout']))), prepared, 'preparation replay must be identical');
+  assert.deepEqual(ok(await send(prepare(['ember', 'tide', 'caldrex']))), prepared, 'preparation replay must be identical');
   const reuse = await send(prepare(['ember']));
   assert.equal(reuse.status, 409, 'request ID reuse with different input must conflict');
   checkpoint = await read();
   assert.equal(checkpoint.revision, r0 + 1);
-  assert.deepEqual(checkpoint.account.squad, ['ember', 'tide', 'sprout']);
+  assert.deepEqual(checkpoint.account.squad, ['ember', 'tide', 'caldrex']);
   summary.preparation = 'commit, identical replay, 409 conflicting reuse';
 
   // 2. Stale revision: rejected, nothing written.
@@ -140,15 +140,17 @@ try {
   const drops = acted.events.filter(event => event.type === 'gauge-drop' && event.bearerId === 'ember');
   assert.ok(drops.length, 'the saved hit must contain an enemy Gauge drop');
   const dropped = drops.reduce((sum, event) => sum + event.amount, 0);
+  assert.equal(dropped, 10, 'a Normal hit grants exactly ten Luminosity');
+  const attacker = run.state.gauge.members.find(member => member.id === 'ember');
   for (const member of acted.run.state.gauge.members) {
     const beforeCharge = run.state.gauge.members.find(entry => entry.id === member.id).charge;
     const capacity = member.baseCost * (member.form >= 4 ? 2 : 1);
-    const share = member.id === 'ember' ? dropped : dropped / 10;
+    const share = member.id === 'ember' ? dropped : member.elementId === attacker.elementId ? dropped / 10 : 0;
     assert.equal(member.charge, Math.min(capacity, beforeCharge + share), `saved Gauge share for ${member.id}`);
   }
   assert.deepEqual(checkpoint.run.state.gauge, acted.run.state.gauge, 'read must preserve every saved Gauge share');
   summary.idempotency = 'action replay identical; revision/currency unchanged by replay';
-  summary.gauge = 'enemy drop saved once; full attacker gain and ten percent to each teammate survive replay/read';
+  summary.gauge = 'Normal Luminosity saved once; only same-element teammates share ten percent through replay/read';
 
   // 5. Bounded long Training run through the actual database.
   run = acted.run; revision = acted.revision;

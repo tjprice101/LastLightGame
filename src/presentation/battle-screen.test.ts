@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { freshGame } from '../../supabase/functions/game-operation/engine';
 import { resolveRadiantRun, type RadiantRunRequest, type RadiantRunResponse, type RadiantRunSnapshot } from '../online/battle-run';
 import { RadiantSession } from '../online/battle-session';
-import { releasedRadiantIds } from '../content/combat-kits';
+import { releasedRadiantIds, type RadiantBearerId } from '../content/combat-kits';
 import { characterArt } from '../content/character-art';
 import { compactPortraitRevisions } from '../content/compact-portrait-revisions';
 import { RadiantBattleView, type RadiantBattleEffects } from './battle-screen';
@@ -17,12 +17,12 @@ import type { Activity } from '../online/server-game';
 let serial = 0;
 const uuid = () => `00000000-0000-4000-8000-${(++serial).toString(16).padStart(12, '0')}`;
 const disposed: RadiantBattleView[] = [];
-function fixture(count = 6, form = 6, effects?: RadiantBattleEffects, stage = 25, onExit?: () => void,
+function fixture(count: number | RadiantBearerId[] = 6, form = 6, effects?: RadiantBattleEffects, stage = 25, onExit?: () => void,
   masterId?: RadiantMasterId, charged = false, setup?: (state: RadiantCombatState) => void, activity?: Activity) {
   const state = freshGame('battle-surface'); state.starterId = 'ember';
   state.account.storyCompleted = stage - 1;
   if (activity?.kind === 'dungeon') state.account.dungeonStages[activity.element] = activity.stage;
-  state.account.squad = releasedRadiantIds.slice(0, count);
+  state.account.squad = Array.isArray(count) ? count : releasedRadiantIds.slice(0, count);
   for (const id of state.account.squad) state.account.characters[id as keyof typeof state.account.characters] =
     { level: form === 1 ? 30 : 105, evolution: form, weaponRank: 0 };
   if (masterId) {
@@ -210,11 +210,11 @@ describe('saved six-member Radiant battle surface', () => {
 
   it.each([
     [0, '0%', '0%', false],
-    [15, '50%', '0%', false],
-    [30, '100%', '0%', false],
-    [30.1, '100%', `${.1 / 30 * 100}%`, true],
-    [45, '100%', '50%', true],
-    [60, '100%', '100%', true],
+    [50, '50%', '0%', false],
+    [100, '100%', '0%', false],
+    [100.1, '100%', '.1%', true],
+    [150, '100%', '50%', true],
+    [200, '100%', '100%', true],
   ] as const)('layers %s saved charge over one continuous energy track', async (charge, first, second, lustrous) => {
     const { view, host } = fixture(1, 6, undefined, 25, undefined, undefined, false,
       state => { state.gauge.members[0].charge = charge; });
@@ -223,12 +223,12 @@ describe('saved six-member Radiant battle surface', () => {
     expect(energy.querySelectorAll('.radiant-energy-track')).toHaveLength(1);
     expect(energy.querySelector('[data-energy-layer="1"]')!.getAttribute('style')).toContain(`width: ${first}`);
     const overlay = energy.querySelector<HTMLElement>('[data-energy-layer="2"]')!;
-    if (charge === 30.1) expect(parseFloat(overlay.style.width)).toBeCloseTo(.1 / 30 * 100);
+    if (charge === 100.1) expect(parseFloat(overlay.style.width)).toBeCloseTo(.1);
     else expect(overlay.style.width).toBe(second);
     expect(energy.classList.contains('is-lustrous')).toBe(lustrous);
     expect(energy.classList.contains('is-flowing')).toBe(charge > 0);
     expect(energy.querySelectorAll('meter.radiant-visually-hidden')).toHaveLength(2);
-    expect(energy.querySelector<HTMLMeterElement>('[data-layer="2"]')!.value).toBeCloseTo(Math.max(0, charge - 30));
+    expect(energy.querySelector<HTMLMeterElement>('[data-layer="2"]')!.value).toBeCloseTo(Math.max(0, charge - 100));
   });
   it('renders six stable per-form face controls, four stats, two personal layers and exact shared charge', async () => {
     const { view, host, session } = fixture(); applyMotion('reduced'); await view.finishEntrance();
@@ -266,9 +266,9 @@ describe('saved six-member Radiant battle surface', () => {
     expect(host.querySelector('.radiant-ally-art')).toBe(ally);
     expect(session.view().presentation).toBeNull();
     const savedCharge = session.view().saved.run!.state.gauge.members[0].charge;
-    expect(host.querySelector('[data-radiant-charge-text="ember"]')!.textContent).toBe(`${savedCharge} / 60 charge`);
+    expect(host.querySelector('[data-radiant-charge-text="ember"]')!.textContent).toBe(`${savedCharge} / 200 Luminosity`);
     expect(parseFloat(host.querySelector<HTMLElement>('[data-radiant-energy="ember"] [data-energy-layer="1"]')!.style.width))
-      .toBeCloseTo(Math.min(savedCharge, 30) / 30 * 100);
+      .toBeCloseTo(Math.min(savedCharge, 100));
   });
   it('renders shared charge in its own single liquid track without changing its accessible value', async () => {
     const { view, host } = fixture(1, 6, undefined, 25, undefined, undefined, false,
@@ -282,7 +282,7 @@ describe('saved six-member Radiant battle surface', () => {
   });
   it('retains a defeated member’s stored charge without animating it', async () => {
     const { view, host } = fixture(2, 6, undefined, 25, undefined, undefined, false, state => {
-      state.bearers[0].hp = 0; state.gauge.members[0].living = false; state.gauge.members[0].charge = 45;
+      state.bearers[0].hp = 0; state.gauge.members[0].living = false; state.gauge.members[0].charge = 150;
     });
     applyMotion('reduced'); await view.finishEntrance();
     const energy = host.querySelector<HTMLElement>('[data-radiant-energy="ember"]')!;
@@ -300,16 +300,16 @@ describe('saved six-member Radiant battle surface', () => {
     expect(host.querySelector('[data-radiant-card].is-selected, [data-radiant-actor][aria-pressed]')).toBeNull();
   });
   it('shows every saved teammate share and preserves static feedback under Reduce motion', async () => {
-    const { view, session, host } = fixture(); applyMotion('reduced'); await view.finishEntrance();
+    const { view, session, host } = fixture(['ember', 'caldrex', 'tide']); applyMotion('reduced'); await view.finishEntrance();
     await view.act('normal');
     const run = session.view().saved.run!;
     const drops = session.view().events.filter(event => event.type === 'gauge-drop' && event.bearerId === 'ember');
     const total = drops.reduce((sum, event) => sum + (event.type === 'gauge-drop' ? event.amount : 0), 0);
     expect(total).toBeGreaterThan(0);
     for (const member of run.state.gauge.members.slice(1)) {
-      expect(member.charge).toBe(total / 10);
+      expect(member.charge).toBe(member.elementId === run.state.gauge.members[0].elementId ? total / 10 : 0);
       expect(host.querySelector(`[data-radiant-charge-text="${member.id}"]`)!.textContent)
-        .toBe(`${member.charge} / ${member.baseCost * 2} charge`);
+        .toBe(`${member.charge} / ${member.baseCost * 2} Luminosity`);
     }
     expect(host.querySelector('.radiant-orb')).toBeNull();
   });
@@ -326,7 +326,7 @@ describe('saved six-member Radiant battle surface', () => {
       return animation as Animation;
     } });
     try {
-      const { view, session, host } = fixture(); await view.finishEntrance();
+      const { view, session, host } = fixture(['ember', 'caldrex']); await view.finishEntrance();
       const enemyId = session.view().saved.run!.state.enemies[0].id;
       const enemy = host.querySelector<HTMLElement>(`[data-radiant-art="${enemyId}"]`)!;
       vi.spyOn(enemy, 'getBoundingClientRect').mockReturnValue(new DOMRect(100, 50, 0, 0));
@@ -377,8 +377,8 @@ describe('saved six-member Radiant battle surface', () => {
     }
   });
   it('surfaces a missing Gauge recipient without losing the saved action', async () => {
-    const { view, session, host } = fixture(); await view.finishEntrance();
-    host.querySelector('[data-radiant-unit="tide"] .radiant-face')!.remove();
+    const { view, session, host } = fixture(['ember', 'caldrex']); await view.finishEntrance();
+    host.querySelector('[data-radiant-unit="caldrex"] .radiant-face')!.remove();
     await expect(view.act('normal')).rejects.toThrow('Gauge-drop recipient is missing');
     expect(session.view().saved.revision).toBe(2);
     expect(session.view().saved.run!.state.gauge.members[1].charge).toBeGreaterThan(0);
@@ -490,35 +490,35 @@ describe('saved six-member Radiant battle surface', () => {
     const windups: (() => void)[] = [];
     const effects = { windup: vi.fn(() => new Promise<void>(resolve => { windups.push(resolve); })),
       impact: vi.fn(async () => {}), cancel: vi.fn() };
-    const { view, session, host, transport } = fixture(6, 6, effects, 25, undefined, undefined, false, state => {
-      const tide = state.gauge.members.find(member => member.id === 'tide')!;
-      tide.charge = tide.baseCost - 2;
+    const { view, session, host, transport } = fixture(['ember', 'caldrex'], 6, effects, 25, undefined, undefined, false, state => {
+      const caldrex = state.gauge.members.find(member => member.id === 'caldrex')!;
+      caldrex.charge = caldrex.baseCost - 1;
     });
     await view.finishEntrance();
-    const tideBefore = session.view().saved.run!.state.gauge.members.find(member => member.id === 'tide')!;
+    const caldrexBefore = session.view().saved.run!.state.gauge.members.find(member => member.id === 'caldrex')!;
     const first = view.act('normal');
     await vi.waitFor(() => expect(windups).toHaveLength(1));
-    const savedTide = session.view().saved.run!.state.gauge.members.find(member => member.id === 'tide')!;
+    const savedTide = session.view().saved.run!.state.gauge.members.find(member => member.id === 'caldrex')!;
     expect(savedTide.charge).toBeGreaterThanOrEqual(savedTide.baseCost);
-    expect(host.querySelector('[data-radiant-charge-text="tide"]')!.textContent)
-      .toBe(`${tideBefore.charge} / ${tideBefore.baseCost * 2} charge`);
-    const tideLiquid = host.querySelector<HTMLElement>('[data-radiant-energy="tide"] [data-energy-layer="1"]')!;
-    expect(parseFloat(tideLiquid.style.width)).toBeCloseTo(tideBefore.charge / tideBefore.baseCost * 100);
-    expect(action(host, 'tide').disabled).toBe(false);
-    expect(host.querySelector('[data-radiant-readiness="tide"]')!.textContent).toBe('Glowing Flare ready');
+    expect(host.querySelector('[data-radiant-charge-text="caldrex"]')!.textContent)
+      .toBe(`${caldrexBefore.charge} / ${caldrexBefore.baseCost * 2} Luminosity`);
+    const caldrexLiquid = host.querySelector<HTMLElement>('[data-radiant-energy="caldrex"] [data-energy-layer="1"]')!;
+    expect(parseFloat(caldrexLiquid.style.width)).toBeCloseTo(caldrexBefore.charge / caldrexBefore.baseCost * 100);
+    expect(action(host, 'caldrex').disabled).toBe(false);
+    expect(host.querySelector('[data-radiant-readiness="caldrex"]')!.textContent).toBe('Final Flare · Sparkle ready');
     const second = view.act('flare');
     await vi.waitFor(() => expect(session.view().saved.revision).toBe(3));
     expect(transport.execute.mock.calls[1][0].operation).toMatchObject({
-      kind: 'action', action: { type: 'flare', bearerId: 'tide' },
+      kind: 'action', action: { type: 'flare', bearerId: 'caldrex' },
     });
     windups[0]();
     await vi.waitFor(() => expect(windups).toHaveLength(2));
     windups[1]();
     await Promise.all([first, second]);
-    const remainingCharge = session.view().saved.run!.state.gauge.members.find(member => member.id === 'tide')!.charge;
-    expect(parseFloat(tideLiquid.style.width)).toBeCloseTo(remainingCharge / tideBefore.baseCost * 100);
-    expect(remainingCharge).toBeLessThan(tideBefore.charge);
-    expect(host.querySelector<HTMLElement>('[data-radiant-energy="tide"] [data-energy-layer="2"]')!.style.width).toBe('0%');
+    const remainingCharge = session.view().saved.run!.state.gauge.members.find(member => member.id === 'caldrex')!.charge;
+    expect(parseFloat(caldrexLiquid.style.width)).toBeCloseTo(remainingCharge / caldrexBefore.baseCost * 100);
+    expect(remainingCharge).toBeLessThan(caldrexBefore.charge);
+    expect(host.querySelector<HTMLElement>('[data-radiant-energy="caldrex"] [data-energy-layer="2"]')!.style.width).toBe('0%');
   });
   it('Skip settles queued actions to the latest saved state without replaying stale impacts', async () => {
     const windups: (() => void)[] = [];
@@ -877,7 +877,7 @@ describe('saved six-member Radiant battle surface', () => {
     expect(host.querySelector('.radiant-actions [data-radiant-action], [data-radiant-menu]')).toBeNull();
     expect(host.querySelector('[data-radiant-reference]')).toBeNull();
   });
-  it.each(['master-tide-3', 'master-sprout-2'] as const)('sends selected-enemy Flare target required by %s, preserving authored healing/shield targets', async masterId => {
+  it.each(['master-tide-3', 'master-sprout-2'] as const)('keeps %s support Flare ally-targeted without a retired generated strike', async masterId => {
     const { view, host, transport } = fixture(3, 6, undefined, 25, undefined, masterId, true);
     applyMotion('reduced'); await view.finishEntrance();
     const bearer = masterId.includes('tide') ? 'tide' : 'sprout';
@@ -885,7 +885,7 @@ describe('saved six-member Radiant battle surface', () => {
     const action = transport.execute.mock.calls.at(-1)![0].operation;
     expect(action.kind).toBe('action');
     if (action.kind !== 'action') throw new Error('Expected Flare action.');
-    expect(action.action).toMatchObject({ type: 'flare', bearerId: bearer, targetId: expect.any(String) });
+    expect(action.action).toEqual({ type: 'flare', bearerId: bearer });
     expect(host.querySelector('[data-radiant-error]')!.textContent).toBe('');
   });
 });

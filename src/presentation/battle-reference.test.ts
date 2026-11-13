@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { radiantBattleReference, radiantConduitDescription, radiantFlareDescription,
   radiantFlareNeedsTarget, radiantLeaderReference } from './battle-reference';
-import { radiantFlares, radiantMasters, radiantStarterKits, releasedRadiantIds,
+import { radiantFlares, radiantFinalFlare, radiantLeaderBonus, radiantPassiveAmount, radiantMasters, radiantStarterKits, releasedRadiantIds,
   type RadiantLoadout, type RadiantMasterId } from '../content/combat-kits';
 import { radiantConduits, radiantConduitPrimitives } from '../content/conduit-effects';
 import { type ConduitId } from '../content/conduits';
@@ -21,9 +21,9 @@ describe('complete frozen Radiant battle reference', () => {
       const lines = radiantFlareDescription(radiantFlares[id][tier]);
       expect(lines.length).toBeGreaterThan(0);
       expect(html).toContain(`data-radiant-reference-tier="${tier}"`);
-      if (radiantFlares[id][tier].damage) expect(lines.join(' ')).toContain('before Defense mitigation');
+      if (radiantFlares[id][tier].damage) expect(lines.join(' ')).toContain('Attack total');
       if (radiantFlares[id][tier].heal) expect(lines.join(' ')).toContain('no revival');
-      if (radiantFlares[id][tier].shieldHP) expect(lines.join(' ')).toContain('recipient maximum HP');
+      if (radiantFlares[id][tier].shieldHP) expect(lines.join(' ')).toContain('recipient maximum Health');
     }
     expect(radiantFlares[id]).toEqual(before);
     expect(html).not.toContain('undefined'); expect(html).not.toContain('NaN');
@@ -35,7 +35,7 @@ describe('complete frozen Radiant battle reference', () => {
       const html = radiantBattleReference(member, radiantStarterKits[master.starter].baseCost);
       expect(html).toContain('Personal Master');
       expect(html).toContain(escapeDialogText(master.effect));
-      const state = createRadiantCombat([member], [{ id: 'enemy', stats: { hp: 1000000, attack: 100, defense: 100, recovery: 100 }, currencyBudget: 30000 }], 1);
+      const state = createRadiantCombat([member], [{ elementId: null, id: 'enemy', stats: { hp: 1000000, attack: 100, defense: 100, recovery: 100 }, currencyBudget: 30000 }], 1);
       state.gauge.members[0].charge = state.gauge.members[0].baseCost;
       const targeted = radiantFlareNeedsTarget(member, 'glowing');
       const result = applyRadiantCombatAction(state, { type: 'flare', bearerId: member.id, ...(targeted ? { targetId: 'enemy' } : {}) });
@@ -59,29 +59,30 @@ describe('complete frozen Radiant battle reference', () => {
   });
   it('leader bonus reflects frozen ascension/Master/gear and displayed life state, never promotes another member', () => {
     const member = loadout('rosetta', 'master-rosetta-3'); member.ascension.skill2 = true;
-    const state = createRadiantCombat([member, loadout('tide')], [{ id: 'enemy', stats: { hp: 1000, attack: 1, defense: 1, recovery: 1 }, currencyBudget: 1 }], 1);
-    const bonus = radiantStarterKits.rosetta.leaderBonus * 1.5 + .05;
+    const state = createRadiantCombat([member, loadout('tide')], [{ elementId: null, id: 'enemy', stats: { hp: 1000, attack: 1, defense: 1, recovery: 1 }, currencyBudget: 1 }], 1);
+    const bonus = radiantLeaderBonus(member);
     expect(radiantLeaderReference(state)).toContain(`${Number((bonus * 100).toPrecision(12))}%`);
     expect(radiantLeaderReference(state, false)).toContain('Inactive: leader defeated');
     expect(radiantLeaderReference(state, false)).not.toContain('Tizu');
     expect(state.bearers[0].hp).toBeGreaterThan(0);
   });
-  it('future tiers and saved enhancements are explicitly separated from authored baseline coefficients', () => {
+  it('marks future tiers and shows already-enhanced coefficients without a second hidden multiplier', () => {
     const member = loadout('sprout', 'master-sprout-3');
     member.form = 1; member.level = 30; member.ascension.lastFlare = true;
     const html = radiantBattleReference(member, 20);
-    expect(html.match(/Future form tier/g)).toHaveLength(2);
-    expect(html).toContain('Saved signature magnitude ×1.5');
-    expect(html).toContain('one additional round');
-    expect(html).toContain('even if immediate healing restores no HP');
-    expect(html).toContain('not guaranteed final damage/healing amounts');
+    expect(html.match(/Locked · Unlocks/g)).toHaveLength(2);
+    expect(html).toContain('240% caster Recovery');
+    expect(radiantFinalFlare(member, 'glowing').heal).toBeCloseTo(2.4);
+    expect(html).toContain('coefficients include evolution, saved Imbues and personal Master enhancements');
+    expect(html).not.toContain('Saved signature magnitude');
   });
-  it.each(['aurora', 'ilyss'] as const)('shows %s cleanse Imbue healing in both character and battle references', id => {
+  it.each(['aurora', 'ilyss'] as const)('shows %s actual enhanced squad passive, not retired cleanse effects', id => {
     const member = loadout(id);
     member.ascension.skill1 = true;
     for (const html of [radiantPassiveArticle(member), radiantBattleReference(member, radiantStarterKits[id].baseCost)]) {
-      expect(html).toContain('heals each ally whose Weaken this passive removes for 50% of caster Recovery');
-      expect(html).not.toContain('Passive effect magnitude ×1.5');
+      expect(html).toContain(`${Number((radiantPassiveAmount(member) * 100).toPrecision(12))}%`);
+      expect(html).toContain('while this bearer is alive');
+      expect(html).not.toContain('Weaken this passive removes');
     }
   });
 });

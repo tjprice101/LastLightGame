@@ -1,5 +1,30 @@
 # Decision log
 
+## Core combat consolidation approval (2026-11-12)
+
+After publishing the compact UI pass, the owner confirmed the live replacement:
+
+- Keep two personal Final Flare tiers at 100/200 Luminosity, plus shared
+  Shattering Light. Keep the existing shared charging rules.
+- A damaging Normal hit grants 10 Luminosity to its living attacker and a
+  separate 1 to each other living same-element ally.
+- Each surviving direct incoming hit, including Shield absorption, grants
+  its recipient 10 Luminosity, without sharing. Periodic damage does not qualify.
+- Remove other personal charge sources. Real 4/8/12-hit combos split one
+  authored total; Final Flares do not refill themselves.
+- Final Flare enhancement is automatic through evolution, without new spending.
+- Squad passives stack additively while their sources live. Only the fixed
+  first squad member provides the Leader Skill; defeat never promotes another.
+- Arrows mean **weak to**: Infernic -> Oceanic -> Botanic -> Atmospheric ->
+  Infernic. Advantage is x1.5, reverse disadvantage x0.75, neutral x1.
+  Tranquilitic and Chaotic deal x1.5 to each other. Keep Tranquilitic's name.
+- The owner authorizes remaining roster/Conduit values and matching authority
+  deployment after validation. Preserve base stats, ownership, progression,
+  artwork and inactive schedules; do not silently retune enemies.
+
+Implementation belongs in the real client and shared authority, not a demo.
+The [handoff](handoff.md) distinguishes published UI from pending core work.
+
 ## Compact desktop menus and Shattering Light presentation (2026-11-12)
 
 The owner requests a desktop-scalable compacting pass on the actual game:

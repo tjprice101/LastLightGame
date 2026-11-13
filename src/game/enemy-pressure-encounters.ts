@@ -1,4 +1,4 @@
-import { elements, dungeonStageCount, infusionModes, currencyModes, eventModes, machineModes,
+import { elements, dungeonStageCount, infusionModes, currencyModes, eventModes, machineModes, type ElementId,
   storyStageLayout, warStageCount } from '../content/activities';
 import { elementalWars } from '../content/elemental-war';
 import { calamityActivities, calamityPatterns } from '../content/calamity';
@@ -32,6 +32,7 @@ export interface RadiantPressureAnchor {
 }
 export interface RadiantPressureEnemy {
   id: string;
+  elementId: ElementId;
   identity: string;
   name: string;
   level: number;
@@ -152,7 +153,7 @@ export function adaptRadiantPressureEncounter(
     const category: RadiantEnemyCategory = a.kind === 'calamity' ? 'calamity' : unit.boss ? 'boss' : 'ordinary';
     // Budget is an explicitly fixed minimum, not a second reward roll or chest grant.
     const currencyBudget = a.kind === 'calamity' ? 0 : activityPrismaticaDrop(live, level).minimum;
-    return { id: unit.id, identity: a.kind === 'war' ? `war:${a.character}:${unit.evolution}` :
+    return { id: unit.id, elementId: unit.element, identity: a.kind === 'war' ? `war:${a.character}:${unit.evolution}` :
       unit.creatureId ?? unit.definitionId, name: unit.name, level, category,
       authoredStats: structuredClone(unit.stats), stats: calibratedRadiantEnemyStats(unit.stats, level, category, calibration),
       factors: radiantEnemyFactors(level, category, calibration), skills: structuredClone(unit.enemySkills ?? []),

@@ -223,7 +223,7 @@ describe('roster, squad and summon screens', () => {
       ['ember', 'Infernis', 'infernic'], ['tide', 'Tizu', 'aquatic'], ['sprout', 'Flora', 'efflorescent'],
     ]) {
       expect(featured).toContain(`data-banner-character="${id}"`);
-      expect(featured).toContain(`<strong>Beginner, ${name}</strong>`);
+      expect(featured).toContain(`<strong>${name}</strong>`);
       expect(featured).toContain(`assets/elements/${element}.png`);
     }
     expect(featured.match(/aria-label="5-star character"/g)).toHaveLength(6);

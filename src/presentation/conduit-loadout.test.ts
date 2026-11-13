@@ -112,7 +112,7 @@ describe('Conduit loadout (D-229)', () => {
     ['siegebound-drive', 'attack mechanical', true],
     ['siegebound-drive', 'any element', true],
     ['siegebound-drive', 'oceanic', false],
-    ['infernic-cinder-testament', 'infernic burn', true],
+    ['infernic-cinder-testament', 'infernic attack', true],
     ['infernic-cinder-testament', 'omnic', true],
     ['infernic-cinder-testament', 'oceanic burn', false],
     ['siegebound-drive', '   ', true],

@@ -71,7 +71,7 @@ function enemyActor(frame: RadiantImpactFrame): string | null {
       event.source.kind === 'enemy') return event.source.enemyId;
   return null;
 }
-const tierNames = { glowing: 'Glowing Flare', lustrous: 'Lustrous Flare', eternal: 'Shattering Light' };
+const tierNames = { glowing: 'Final Flare · Sparkle', lustrous: 'Final Flare · Shimmer', eternal: 'Shattering Light · Lustrous' };
 function centre(element: Element, random?: () => number): { x: number; y: number } {
   const box = element.getBoundingClientRect();
   const jitter = (size: number) => random ? (random() - .5) * size * .35 : 0;
@@ -199,7 +199,7 @@ export class RadiantBattleView {
           <div class="radiant-member-charge">
           <div class="radiant-charge-layers" data-radiant-energy="${escape(member.id)}" aria-label="Personal charge">
             ${[1, ...(member.form >= 4 ? [2] : [])].map(layer =>
-              `<meter class="radiant-visually-hidden" data-radiant-charge="${escape(member.id)}" data-layer="${layer}" min="0" max="${run.state.gauge.members[index].baseCost}" aria-label="${layer === 1 ? 'Glowing' : 'Lustrous'} charge layer"></meter>`).join('')}
+              `<meter class="radiant-visually-hidden" data-radiant-charge="${escape(member.id)}" data-layer="${layer}" min="0" max="${run.state.gauge.members[index].baseCost}" aria-label="${layer === 1 ? 'Sparkle' : 'Shimmer'} Final Flare Luminosity"></meter>`).join('')}
             <span class="radiant-energy-track" aria-hidden="true">${[1, ...(member.form >= 4 ? [2] : [])].map(layer =>
               `<span class="radiant-energy-liquid" data-energy-layer="${layer}"></span>`).join('')}</span>
           </div>
@@ -225,15 +225,12 @@ export class RadiantBattleView {
           <ul class="radiant-shield-layers" data-radiant-layers></ul><ul class="radiant-status-list" data-radiant-effects></ul>
           <p data-radiant-no-effects>No active effects.</p></section>`).join('')}</div>
         <p>Normal Attack and Defense each use this member’s action for the round. No random critical damage.
-        A Normal direct hit on HP or Shields drops ${radiantChargeRules.normal} Gauge; a Flare direct hit drops ${radiantChargeRules.flareHit}.
-        An enemy defeated by squad damage drops ${radiantChargeRules.defeatedEnemy} more.
-        Each drop grants its full value to its living attacker and ${radiantChargeRules.otherMemberPercent}% to each other living member.
-        Fractions carry over; personal caps apply. A defeated source cannot gain charge, but other living members still share its defeat drop.</p>
-        <p>Defense grants ${radiantChargeRules.defense} personal charge; living members gain ${radiantChargeRules.round} each new round.
-        Surviving a direct enemy action that hits HP or Shields grants ${radiantChargeRules.incomingAttack} personal charge once, not once per hit.
-        Each Normal/Flare direct hit has a ${radiantChargeRules.bonusChance * 100}% chance to add ${radiantChargeRules.bonusAmount} to its drop,
-        at most ${radiantChargeRules.maximumBonusRolls} rolls per action.
-        Generated/periodic hits do not drop Gauge unless they defeat an enemy.</p>
+        A damaging Normal hit generates ${radiantChargeRules.normal} Luminosity for its attacker and a separate 1 for each other living same-element ally.
+        Surviving each direct incoming hit on Health or Shields grants ${radiantChargeRules.incomingAttack} Luminosity to the recipient only.
+        Personal capacity is 100, or 200 from form 4. Final Flares, defeats, Defense, new rounds, generated and periodic damage grant no personal Luminosity.</p>
+        <p>Final Flares split their total damage across 4 Sparkle, 8 Shimmer or 12 Lustrous hits, with at least 1 damage per hit.
+        They improve automatically with evolution. Infernic is weak to Oceanic, Oceanic to Botanic, Botanic to Atmospheric, and Atmospheric to Infernic.
+        Advantage deals ×1.5 damage; disadvantage ×0.75. Tranquilitic and Chaotic deal ×1.5 to each other; other matchups are neutral.</p>
         <p>Normal Attack uses 100% effective Attack against one selected living enemy.
         Direct damage is rounded once: Attack × Attack/(Attack + effective enemy Defense) × action coefficient × output modifiers, minimum 1.
         Burn/periodic and generated packets follow their authored rules, not this guaranteed direct-damage formula.
@@ -414,7 +411,7 @@ export class RadiantBattleView {
         liquid.classList.toggle('has-charge', meter.value > 0);
       }
       this.element<HTMLElement>(`[data-radiant-charge-text="${member.id}"]`).textContent =
-        `${member.charge} / ${personalChargeMaximum(member)} charge`;
+        `${member.charge} / ${personalChargeMaximum(member)} Luminosity`;
     }
     const shared = this.element<HTMLMeterElement>('[data-radiant-shared]');
     shared.max = sharedChargeThreshold(this.displayed.gauge.eternalCasts) / sharedChargeUnit;

@@ -5,7 +5,7 @@ import {
   type RadiantGear,
 } from '../content/conduit-effects';
 import {
-  radiantBearerKits, resolveRadiantStarterStats, type RadiantBearerId, type RadiantLoadout,
+  radiantBearerKits, radiantLeaderBonus, radiantPassiveAmount, resolveRadiantStarterStats, type RadiantBearerId, type RadiantLoadout,
 } from '../content/combat-kits';
 import {
   createRadiantCombat, applyRadiantCombatAction, effectiveRadiantStats, validateRadiantCombat,
@@ -22,7 +22,7 @@ function member(starter: RadiantBearerId = 'ember', equipment?: RadiantGear, for
 }
 function fixture(ids: ConduitId[] = [], starter: RadiantBearerId = 'ember', others: RadiantBearerId[] = []): RadiantCombatState {
   return createRadiantCombat([member(starter, gear(...ids)), ...others.map(id => member(id))],
-    ['enemy', 'enemy2'].map(id => ({ id, stats: { hp: 100000, attack: 60, defense: 50, recovery: 0 }, currencyBudget: 1000 })), 0);
+    ['enemy', 'enemy2'].map(id => ({ elementId: null, id, stats: { hp: 100000, attack: 60, defense: 50, recovery: 0 }, currencyBudget: 1000 })), 0);
 }
 function act(state: RadiantCombatState, action: RadiantCombatAction) {
   return applyRadiantCombatAction(state, action);
@@ -143,7 +143,9 @@ describe('real four-stat and action modifiers', () => {
     };
     const plain = cast(), boosted = cast('crosspin-governor');
     expect(boosted.state.enemies[0].hp).toBeLessThan(plain.state.enemies[0].hp);
-    expect(cast('springwell-pump', 'sprout').state.bearers[0].hp).toBeGreaterThan(cast(undefined, 'sprout').state.bearers[0].hp);
+    const healing = (id?: ConduitId) => cast(id, 'sprout').events
+      .filter(event => event.type === 'heal').reduce((sum, event) => sum + event.offered, 0);
+    expect(healing('springwell-pump')).toBeGreaterThan(healing());
     expect(cast('wardglass-transformer', 'tide').state.bearers[0].shields[0].remaining)
       .toBeGreaterThan(cast(undefined, 'tide').state.bearers[0].shields[0].remaining);
   });
@@ -161,10 +163,15 @@ describe('real four-stat and action modifiers', () => {
   });
   it('leader gear only applies while first and alive; cooperation requires a previous ally action', () => {
     let state = fixture(['calamitic-choir-array-of-branded-stars'], 'ember', ['rosetta']);
-    expect(effectiveRadiantStats(state, 'rosetta').attack).toBeGreaterThan(
-      effectiveRadiantStats(fixture([], 'ember', ['rosetta']), 'rosetta').attack);
+    const controlLeader = fixture([], 'ember', ['rosetta']);
+    expect(radiantLeaderBonus(state.bearers[0].loadout))
+      .toBeCloseTo(radiantLeaderBonus(controlLeader.bearers[0].loadout) + .2);
+    expect(effectiveRadiantStats(state, 'rosetta').attack)
+      .toBe(effectiveRadiantStats(controlLeader, 'rosetta').attack);
+    expect(normal(state).state.enemies[0].hp).toBeLessThan(normal(controlLeader).state.enemies[0].hp);
     state.bearers[0].hp = 0; state.gauge.members[0].living = false;
-    expect(effectiveRadiantStats(state, 'rosetta').attack).toBe(state.bearers[1].stats.attack);
+    expect(effectiveRadiantStats(state, 'rosetta').attack)
+      .toBeCloseTo(state.bearers[1].stats.attack * (1 + radiantPassiveAmount(state.bearers[1].loadout)));
     const control = normal(fixture(['clearwater-manifold'], 'tide', ['ember']));
     let after = fixture(['clearwater-manifold'], 'tide', ['ember']);
     after = normal(after, 'ember').state;
@@ -173,179 +180,47 @@ describe('real four-stat and action modifiers', () => {
   });
 });
 
-describe('bounded source-owned effect ledger', () => {
-  it('personal/guard/team/shared charge are deterministic, six-wearer safe, and never expand C/2C', () => {
-    let state = createRadiantCombat(['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'crinso'].map(starter =>
-      member(starter as RadiantBearerId, gear('fracture-reservoir', 'reserve-torque-crank',
-        'calamitic-throne-borrowed-tomorrows'))),
-    [{ id: 'enemy', stats: { hp: 1000000, attack: 20, defense: 20, recovery: 0 }, currencyBudget: 10 }], 0);
-    for (let iteration = 0; iteration < 6; iteration++) {
-      for (const ally of state.bearers) state = normal(state, ally.loadout.id).state;
-      state = round(state).state;
-      for (const gauge of state.gauge.members) expect(gauge.charge).toBeLessThanOrEqual(gauge.baseCost * 2);
-    }
-    expect(state.gauge.sharedUnits).toBeGreaterThan(0);
-    expect(state.bearers).toHaveLength(6);
-    const small = fixture(['fracture-reservoir']);
-    small.bearers[0].loadout.form = 1; small.gauge.members[0].form = 1;
-    small.bearers[0].stats = resolveRadiantStarterStats(small.bearers[0].loadout);
-    small.bearers[0].hp = Math.round(small.bearers[0].stats.hp);
-    expect(normal(small).state.gauge.members[0].charge).toBeLessThanOrEqual(small.gauge.members[0].baseCost);
-  });
-  it('shared gear gains require a frozen final form and Eternal never funds itself', () => {
-    const early = fixture(['calamitic-throne-borrowed-tomorrows'], 'ember', ['rosetta']);
-    for (const ally of early.bearers) {
-      ally.loadout.form = 5;
-      ally.stats = resolveRadiantStarterStats(ally.loadout); ally.hp = Math.round(ally.stats.hp);
-    }
-    early.gauge.members.forEach(gauge => { gauge.form = 5; });
-    expect(normal(early).state.gauge.sharedUnits).toBe(0);
-    const eternal = ready(fixture(['calamitic-throne-borrowed-tomorrows', 'duplex-heart'], 'sprout'), true);
-    eternal.bearers[0].hp = 1;
-    const result = act(eternal, { type: 'flare', bearerId: 'sprout' });
-    expect(result.state.gauge.sharedUnits).toBe(0);
-    expect(result.events.filter(event => event.type === 'charge' && event.gearSource?.kind === 'gear')).toHaveLength(0);
-  });
-  it('native effective healing triggers once per cast; full HP and generated healing do not', () => {
-    const run = (wounded: boolean) => {
-      const state = ready(fixture(['duplex-heart', 'lifeline-flywheel'], 'sprout', ['tide', 'rosetta']));
-      if (wounded) state.bearers.forEach(ally => { ally.hp = 1; });
-      return act(state, { type: 'flare', bearerId: 'sprout' });
-    };
-    const healed = run(true);
-    expect(healed.events.filter(event => event.type === 'charge' && event.gearSource?.kind === 'gear')).toHaveLength(1);
-    expect(run(false).events.filter(event => event.type === 'charge' && event.gearSource?.kind === 'gear')).toHaveLength(0);
-    const leech = normal(fixture(['lifeline-flywheel', 'duplex-heart']));
-    expect(leech.events.filter(event => event.type === 'charge' && event.gearSource?.kind === 'gear')).toHaveLength(0);
-  });
-  it('heal buffs use actual native recipients, never full-HP healing or gear-created healing', () => {
-    const state = ready(fixture(['efflorescent-verdant-covenant'], 'sprout', ['rosetta']));
-    state.bearers[1].hp = 1;
-    const result = act(state, { type: 'flare', bearerId: 'sprout' });
-    expect(result.state.bearers[0].attackBuffs).toEqual([]);
-    expect(result.state.bearers[1].attackBuffs).toHaveLength(1);
-    const generated = fixture(['lifeline-flywheel', 'tempered-strike-link'], 'ember', ['tide']);
-    generated.bearers[0].hp = 1;
-    expect(normal(generated).state.bearers[0].attackBuffs).toEqual([]);
-  });
-  it('native owned absorption—not creation or other-owner/gear Shields—funds charge and bounded reflection', () => {
-    let state = fixture(['tidebound-reflector', 'aquatic-leviathan-pump'], 'tide', ['rosetta']);
-    sourceShield(state, 1, { kind: 'flare', bearerId: 'tide' }, 1000);
+describe('simple modifiers without incidental triggered effects', () => {
+  it.each(ids)('%s preserves exact charge and never creates resource, sustain or retaliation chains', id => {
+    const conduit = conduits.find(item => item.id === id)!;
+    const starter = (Object.keys(radiantBearerKits) as RadiantBearerId[])
+      .find(key => !conduit.element || radiantBearerKits[key].elementId === conduit.element)!;
+    const partner = starter === 'tide' ? 'ember' : 'tide';
+    let state = fixture([id], starter, [partner]);
+    state.bearers.forEach(member => { member.hp = Math.floor(member.hp / 2); });
+    const normalResult = normal(state);
+    state = normalResult.state;
+    expect(state.gauge.members[0].charge).toBe(10);
+    expect(state.gauge.members[1].charge).toBe(radiantBearerKits[starter].elementId === radiantBearerKits[partner].elementId ? 1 : 0);
+    expect(normalResult.events.filter(event => event.type === 'damage').map(event => event.origin)).toEqual(['direct']);
+    expect(state.bearers.map(member => member.hp)).toEqual(fixture([id], starter, [partner]).bearers.map(member => Math.floor(member.hp / 2)));
+    state.bearers.forEach((_, index) => sourceShield(state, index, { kind: 'flare', bearerId: starter }, 100000));
     state = defend(state);
-    const before = structuredClone(state);
-    const hit = act(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['rosetta'], coefficient: 1 });
-    expect(hit.events.filter(event => event.type === 'damage' && event.source.kind === 'gear')).toHaveLength(1);
-    expect(hit.events.filter(event => event.type === 'charge' && event.gearSource?.kind === 'gear')).toHaveLength(1);
-    const repeat = act(hit.state, { type: 'enemy-attack', enemyId: 'enemy2', targetIds: ['rosetta'], coefficient: 1 });
-    expect(repeat.events.filter(event => 'source' in event && event.source?.kind === 'gear')).toHaveLength(0);
-    expect(before.gearTriggered).toEqual([]);
-    for (const source of [{ kind: 'flare', bearerId: 'rosetta' },
-      { kind: 'gear', bearerId: 'tide', conduitId: 'tidebound-reflector' }] as RadiantSource[]) {
-      let excluded = fixture(['tidebound-reflector', 'aquatic-leviathan-pump'], 'tide', ['rosetta']);
-      sourceShield(excluded, 1, source, 1000);
-      excluded = defend(excluded);
-      const result = act(excluded, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['rosetta'], coefficient: 1 });
-      expect(result.events.filter(event => 'source' in event && event.source?.kind === 'gear')).toHaveLength(0);
-    }
+    const incoming = act(state, { type: 'enemy-attack', enemyId: 'enemy',
+      targetIds: [starter, partner], coefficient: 1, hits: 3 });
+    expect(incoming.state.gauge.members[0].charge).toBe(40);
+    const finished = round(incoming.state);
+    expect(finished.state.gauge.members[0].charge).toBe(40);
+    expect(finished.state.gauge.sharedUnits).toBe(24 * 60);
+    state = ready(finished.state);
+    const flare = act(state, { type: 'flare', bearerId: starter,
+      ...(radiantBearerKits[starter].signature.target === 'one-enemy' ? { targetId: 'enemy' } : {}) });
+    expect(flare.state.gauge.members[0].charge).toBe(0);
+    const events = [...normalResult.events, ...incoming.events, ...finished.events, ...flare.events];
+    expect(events.filter(event => 'source' in event && event.source.kind === 'gear')).toEqual([]);
+    expect(events.filter(event => event.type === 'charge' && event.gearSource?.kind === 'gear')).toEqual([]);
+    expect(flare.state.gearTriggered).toEqual([]);
+    expect(flare.state.chargeSeed).toBe(0);
+    validateRadiantCombat(flare.state);
   });
-  it('dead source owners cannot reflect or receive absorption charge', () => {
-    let state = fixture(['tidebound-reflector', 'aquatic-leviathan-pump'], 'tide', ['rosetta']);
-    sourceShield(state, 1, { kind: 'flare', bearerId: 'tide' }, 1000);
-    state.bearers[0].hp = 0; state.gauge.members[0].living = false;
-    state = defend(state);
-    const result = act(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['rosetta'], coefficient: 1 });
-    expect(result.events.filter(event => 'source' in event && event.source?.kind === 'gear')).toHaveLength(0);
-  });
-  it('multi-target absorption grants and reflects once, while lethal recipients never revive', () => {
-    let state = fixture(['tidebound-reflector', 'aquatic-leviathan-pump'], 'tide', ['rosetta', 'ember']);
-    state.bearers.forEach((_, index) => sourceShield(state, index, { kind: 'flare', bearerId: 'tide' }, 1000));
-    state = defend(state);
-    const hit = act(state, { type: 'enemy-attack', enemyId: 'enemy',
-      targetIds: ['tide', 'rosetta', 'ember'], coefficient: 2 });
-    expect(hit.events.filter(event => event.type === 'charge' && event.gearSource?.kind === 'gear')).toHaveLength(1);
-    expect(hit.events.filter(event => event.type === 'damage' && event.source.kind === 'gear')).toHaveLength(1);
-    let doomed = fixture(['horizon-heartcase', 'immortal-vessel']);
-    doomed.bearers[0].hp = 1;
-    doomed = defend(doomed);
-    const death = act(doomed, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ember'], coefficient: 100 });
-    expect(death.state.bearers[0].hp).toBe(0);
-    expect(death.state.bearers[0].shields).toEqual([]);
-    expect(death.state.phase).toBe('defeat');
-  });
-  it('generated native attacks never multiply leech or action-charge triggers', () => {
-    const state = fixture(['lifeline-flywheel', 'fracture-reservoir'], 'crinso');
+  it('does not revive a lethal recipient through former sustain Conduits', () => {
+    let state = fixture(['horizon-heartcase', 'immortal-vessel']);
     state.bearers[0].hp = 1;
-    state.enemies[0].burns.push({ source: { kind: 'flare', bearerId: 'crinso' }, magnitude: 10, remaining: 2 });
-    const result = normal(state);
-    const direct = result.events.find(event => event.type === 'damage' && event.origin === 'direct')!;
-    expect(result.events.some(event => event.type === 'damage' && event.origin === 'generated')).toBe(true);
-    const recovery = result.events.filter(event => event.type === 'heal' && event.source.kind === 'gear');
-    expect(recovery).toHaveLength(1);
-    expect(recovery[0].type === 'heal' && recovery[0].offered)
-      .toBe(direct.type === 'damage' ? Math.round(direct.healthLoss * .1) : -1);
-    expect(result.events.filter(event => event.type === 'charge' && event.gearSource?.kind === 'gear')).toHaveLength(1);
-  });
-  it('guard, hurt, Flare and round Shields are finite unlimited-until-broken ledgers', () => {
-    const guard = act(fixture(['citadel-spine']), { type: 'defense', bearerId: 'ember' });
-    expect(guard.state.bearers[0].shields[0].remaining).toBeGreaterThan(0);
-    const incoming = act(defend(fixture(['horizon-heartcase'])), {
-      type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ember'], coefficient: 2 });
-    expect(incoming.state.bearers[0].shields.length).toBe(1);
-    const cast = act(ready(fixture(['chaotic-ouroboros-core'], 'crinso', ['tide'])),
-      { type: 'flare', bearerId: 'crinso', targetId: 'enemy' });
-    expect(cast.state.bearers.every(ally => ally.shields.some(shield => shield.source.kind === 'gear'))).toBe(true);
-    const shielded = round(fixture(['rootbound-triage-vault'], 'sprout'));
-    expect(shielded.state.bearers[0].shields).toHaveLength(1);
-    const saved = shielded.state.bearers[0].shields[0].remaining;
-    expect(round(shielded.state).state.bearers[0].shields[0].remaining).toBe(saved);
-  });
-  it('round healing and Normal sustain use actual health; generated heals never feed gear', () => {
-    const state = fixture(['immortal-vessel', 'verdict-caliper']);
-    state.bearers[0].hp = 1;
-    const sustained = normal(state);
-    expect(sustained.state.bearers[0].hp).toBeGreaterThan(1);
-    const reset = round(sustained.state);
-    expect(reset.state.bearers[0].hp).toBeGreaterThan(sustained.state.bearers[0].hp);
-    expect(reset.events.some(event => event.type === 'heal' && event.source.kind === 'gear')).toBe(true);
-  });
-  it('Burn/exposure/Weaken act on living targets; generated periodic packets cannot fund gear', () => {
-    let state = fixture(['infernic-cinder-testament', 'fracture-reservoir']);
-    const result = normal(state);
-    expect(result.state.enemies[0].burns).toHaveLength(1);
-    const finished = round(result.state);
-    expect(finished.events.some(event => event.type === 'damage' && event.source.kind === 'gear' && event.origin === 'periodic')).toBe(true);
-    expect(finished.events.filter(event => event.type === 'charge' && event.gearSource?.kind === 'gear')).toHaveLength(0);
-    expect(normal(fixture(['breach-pendulum', 'opal-indexer'])).state.enemies[0].exposures).toHaveLength(1);
-    expect(normal(fixture(['opal-indexer'])).state.enemies[0].weaken).toHaveLength(1);
-    state = fixture(['infernic-cinder-testament']);
-    state.enemies[0].hp = 1; state.enemies[0].currency.lowestHP = 1;
-    state.enemies[0].currency.paid = 999; state.currencyEarned = 999;
-    expect(normal(state).state.enemies[0].burns).toEqual([]);
-  });
-  it('native statuses shield once per cast; next-ally buffs preserve immediate action', () => {
-    const state = ready(fixture(['tension-governor'], 'crinso', ['rosetta']));
-    const result = act(state, { type: 'flare', bearerId: 'crinso', targetId: 'enemy' });
-    expect(result.events.filter(event => event.type === 'shield' && event.source.kind === 'gear')).toHaveLength(1);
-    const next = normal(fixture(['luminous-dawn-witness-array'], 'rosetta', ['tide']));
-    expect(next.state.bearers[1].attackBuffs).toHaveLength(1);
-    expect(next.state.acted).toEqual(['rosetta']);
-  });
-  it('records exact personal/team/shared grants on native Shield hits without healing or status farming', () => {
-    const state = fixture(['fracture-reservoir', 'calamitic-throne-borrowed-tomorrows'], 'ember', ['tide']);
-    state.enemies[0].shields.push({ id: state.nextShieldId++, source: { kind: 'enemy', enemyId: 'enemy' }, remaining: 10000 });
-    const result = normal(state);
-    expect(result.state.gauge.members[0].charge).toBe(28);
-    expect(result.state.gauge.members[1].charge).toBe(20.5);
-    expect(result.state.gauge.sharedUnits).toBe(420);
-    const chargeEvents = result.events.filter(event => event.type === 'charge' && event.gearSource?.kind === 'gear');
-    expect(chargeEvents).toHaveLength(3);
-    const control = normal(fixture([], 'ember', ['tide']));
-    expect(result.state.chargeSeed).toBe(control.state.chargeSeed);
-    const guard = act(fixture(['reserve-torque-crank']), { type: 'defense', bearerId: 'ember' });
-    expect(guard.state.gauge.members[0].charge).toBe(13);
-    const ranked = fixture(['calamitic-throne-borrowed-tomorrows'], 'ember', ['tide']);
-    ranked.bearers[0].loadout.gear![0]!.rank = 1;
-    expect(normal(ranked).state.gauge.sharedUnits).toBe(444);
+    const result = act(defend(state), { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ember'], coefficient: 100 });
+    expect(result.state.phase).toBe('defeat');
+    expect(result.state.bearers[0].hp).toBe(0);
+    expect(result.state.bearers[0].shields).toEqual([]);
+    expect(result.state.gauge.members[0].charge).toBe(0);
   });
 });
 
@@ -401,7 +276,7 @@ describe('eligibility, frozen identity and read-only account boundary', () => {
     expect(adapted.ok).toBe(true);
     if (!adapted.ok) return;
     const state = createRadiantCombat(adapted.loadouts,
-      [{ id: 'enemy', stats: { hp: 10000, attack: 10, defense: 20, recovery: 0 }, currencyBudget: 10 }], 0);
+      [{ elementId: null, id: 'enemy', stats: { hp: 10000, attack: 10, defense: 20, recovery: 0 }, currencyBudget: 10 }], 0);
     account.conduitUpgrades!['vigil-core'] = 0;
     adapted.loadouts[0].gear![0]!.rank = 0;
     expect(state.bearers[0].loadout.gear![0]!.rank).toBe(5);

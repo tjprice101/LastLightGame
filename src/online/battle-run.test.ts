@@ -375,7 +375,7 @@ describe('authority-ready frozen run and exact partial Prismatica', () => {
     const budget = structuredClone(value);
     budget.state.radiantStudy!.enemies[0].currencyBudget++;
     expect(() => resolveRadiantRun(budget, req, authority())).toThrow();
-    expect(value.state.radiantStudy!.version).toBe(3);
+    expect(value.state.radiantStudy!.version).toBe(4);
   });
   it('explicit client outcome, HP, budget, enemy-action and seed injection are rejected', () => {
     const value = entered(), req = request(value, normal(value));
@@ -472,7 +472,8 @@ describe('existing aggregate+revision+request RPC atomicity', () => {
     expect(saved).toEqual(expected);
     expect(saved.run.state.gauge.members.map(member => member.charge)).toEqual([
       Math.min(total, saved.run.state.gauge.members[0].baseCost),
-      ...Array(5).fill(total / 10),
+      ...saved.run.state.gauge.members.slice(1).map(member =>
+        member.elementId === saved.run.state.gauge.members[0].elementId ? total / 10 : 0),
     ]);
     expect(validateRadiantRunResponse(JSON.parse(JSON.stringify(saved)))).toEqual(saved);
     expect(await executeRadiantRun(rpc.repository(), req, authority())).toEqual(saved);

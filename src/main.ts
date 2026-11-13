@@ -239,7 +239,9 @@ function disposeRadiantBattle(): void {
 }
 
 async function readRadiantCheckpoint(): Promise<RadiantCheckpoint> {
-  return playMode === 'online' ? readRadiantStudy() : localRadiant.read();
+  const checkpoint = await (playMode === 'online' ? readRadiantStudy() : localRadiant.read());
+  if (checkpoint.notice) showError(checkpoint.notice, 'info');
+  return checkpoint;
 }
 
 function createRadiantSession(checkpoint: RadiantCheckpoint): RadiantSession {

@@ -3277,99 +3277,99 @@ var radiantConduits = {
   "siegebound-drive": pair("normal", 0.12, "attack", 0.04),
   "bastion-lock": pair("defense", 0.15, "guard", 0.03),
   "parallax-relay": pair("hp", 0.12, "flare", 0.05),
-  "fracture-reservoir": [effect("normal-charge", 3)],
-  "prism-splinter-socket": pair("normal-charge", 2, "guard-charge", 1),
+  "fracture-reservoir": [effect("attack", 0.08)],
+  "prism-splinter-socket": pair("recovery", 0.08, "defense", 0.04),
   "precision-escapement": [effect("normal", 0.1)],
   "fieldbrace-coupler": [effect("resilience", 0.1)],
-  "reserve-torque-crank": pair("guard-charge", 3, "normal-charge", 1),
+  "reserve-torque-crank": pair("defense", 0.08, "attack", 0.04),
   "crosspin-governor": [effect("flare", 0.12)],
   "aegis-capacitor": pair("defense", 0.25, "hp", 0.18),
-  "duplex-heart": pair("heal-charge", 4, "recovery", 0.15),
+  "duplex-heart": pair("healing", 0.15, "recovery", 0.15),
   "falcon-sight": pair("normal", 0.18, "hp", 0.12),
   "spearwheel-engine": pair("pierce", 0.12, "flare", 0.08),
   "springwell-pump": pair("healing", 0.2, "shielding", 0.2),
-  "twinpulse-bellows": pair("normal", 0.2, "leech", 0.04),
+  "twinpulse-bellows": pair("normal", 0.2, "recovery", 0.1),
   "glassroot-gimbal": pair("hp", 0.22, "flare", 0.16),
-  "lifeline-flywheel": [effect("leech", 0.1)],
+  "lifeline-flywheel": [effect("recovery", 0.25)],
   "sentinel-aperture": [effect("flare", 0.24)],
   "wardglass-transformer": pair("shielding", 0.25, "resilience", 0.12),
   "hammerbalance-link": pair("normal", 0.25, "attack", 0.08),
-  "breach-pendulum": [effect("normal-expose", 0.12)],
-  "coilfeed-ratchet": pair("normal-charge", 5, "flare", 0.1),
-  "opal-indexer": pair("normal-weaken", 0.12, "flare", 0.16),
+  "breach-pendulum": [effect("pierce", 0.12)],
+  "coilfeed-ratchet": pair("attack", 0.15, "flare", 0.1),
+  "opal-indexer": pair("resilience", 0.15, "flare", 0.16),
   "resonance-crucible": pair("defense", 0.25, "hp", 0.2),
-  "astral-prism": pair("flare", 0.35, "normal-charge", 6),
-  "citadel-spine": pair("guard-shield", 0.6, "defense", 0.35),
+  "astral-prism": pair("flare", 0.35, "attack", 0.2),
+  "citadel-spine": pair("hp", 0.25, "defense", 0.35),
   "execution-orrery": pair("normal", 0.4, "pierce", 0.16),
-  "immortal-vessel": pair("hp", 0.4, "round-heal", 0.15),
+  "immortal-vessel": pair("hp", 0.4, "recovery", 0.2),
   "judgment-lens": pair("flare", 0.4, "normal", 0.2),
   "worldbreaker-drive": pair("normal", 0.45, "attack", 0.15),
   "siege-cantilever": pair("flare", 0.45, "pierce", 0.12),
   "nullsong-transmission": pair("normal", 0.35, "resilience", 0.2),
-  "horizon-heartcase": pair("hp", 0.45, "hurt-shield", 0.05),
-  "stasis-reliquary": pair("guard", 0.12, "absorbed-charge", 6),
+  "horizon-heartcase": pair("hp", 0.45, "defense", 0.15),
+  "stasis-reliquary": pair("guard", 0.12, "recovery", 0.25),
   "granite-hourglass": pair("defense", 0.4, "guard", 0.08),
   "pale-bulwark-diadem": pair("shielding", 0.4, "defense", 0.25),
-  "starvein-conductor": pair("team-charge", 4, "cooperation", 0.2),
+  "starvein-conductor": pair("attack", 0.2, "cooperation", 0.2),
   "meridian-inverter": pair("recovery", 0.4, "healing", 0.25),
-  "verdict-caliper": pair("normal-heal", 0.4, "normal", 0.25),
-  "infernic-phoenix-reactor": pair("hp", 0.55, "round-heal", 0.3),
-  "aquatic-leviathan-pump": pair("absorbed-charge", 10, "defense", 0.4),
-  "tectonic-atlas-bastion": pair("guard-shield", 1, "defense", 0.5),
-  "efflorescent-worldtree-heart": pair("healing", 0.5, "flare-shield", 0.08),
+  "verdict-caliper": pair("recovery", 0.3, "normal", 0.25),
+  "infernic-phoenix-reactor": pair("hp", 0.55, "recovery", 0.3),
+  "aquatic-leviathan-pump": pair("hp", 0.4, "defense", 0.4),
+  "tectonic-atlas-bastion": pair("guard", 0.15, "defense", 0.5),
+  "efflorescent-worldtree-heart": pair("healing", 0.5, "shielding", 0.3),
   "voltaic-thunderbird-coil": pair("normal", 0.55, "pierce", 0.25),
-  "atmospheric-griffin-turbine": pair("team-charge", 8, "normal", 0.4),
-  "luminous-seraph-mirror": pair("normal-heal", 0.7, "healing", 0.35),
+  "atmospheric-griffin-turbine": pair("attack", 0.3, "normal", 0.4),
+  "luminous-seraph-mirror": pair("recovery", 0.4, "healing", 0.35),
   "ominous-eclipse-mantle": pair("pierce", 0.3, "flare", 0.45),
-  "tranquilitic-kirin-cradle": pair("normal-heal", 1, "recovery", 0.4),
-  "chaotic-ouroboros-core": pair("flare-shield", 0.1, "normal-charge", 8),
-  "infernic-cinder-testament": pair("normal-burn", 0.25, "cooperation", 0.25),
-  "aquatic-undertide-chronometer": pair("normal-weaken", 0.2, "heal-charge", 8),
+  "tranquilitic-kirin-cradle": pair("healing", 0.5, "recovery", 0.4),
+  "chaotic-ouroboros-core": pair("shielding", 0.4, "attack", 0.3),
+  "infernic-cinder-testament": pair("attack", 0.35, "cooperation", 0.25),
+  "aquatic-undertide-chronometer": pair("resilience", 0.3, "recovery", 0.4),
   "tectonic-faultkeeper-loom": pair("leader", 0.12, "defense", 0.45),
-  "efflorescent-verdant-covenant": pair("heal-buff", 0.3, "healing", 0.4),
-  "voltaic-stormstep-dynamo": pair("normal-charge", 9, "flare", 0.45),
-  "atmospheric-skythread-rudder": pair("team-charge", 10, "cooperation", 0.3),
-  "luminous-dawn-witness-array": pair("next-buff", 0.3, "normal", 0.4),
-  "ominous-nightglass-archive": pair("normal-expose", 0.22, "cooperation", 0.3),
-  "tranquilitic-stillhour-carillon": pair("round-heal", 0.55, "recovery", 0.4),
-  "chaotic-paradox-spindle": pair("next-buff", 0.35, "shared-normal", 120),
+  "efflorescent-verdant-covenant": pair("recovery", 0.3, "healing", 0.4),
+  "voltaic-stormstep-dynamo": pair("attack", 0.3, "flare", 0.45),
+  "atmospheric-skythread-rudder": pair("normal", 0.35, "cooperation", 0.3),
+  "luminous-dawn-witness-array": pair("attack", 0.3, "normal", 0.4),
+  "ominous-nightglass-archive": pair("pierce", 0.22, "cooperation", 0.3),
+  "tranquilitic-stillhour-carillon": pair("healing", 0.45, "recovery", 0.4),
+  "chaotic-paradox-spindle": pair("attack", 0.35, "flare", 0.4),
   "clearwater-manifold": pair("cooperation", 0.35, "healing", 0.35),
-  "tranquilitic-accord-bastion": pair("heal-buff", 0.35, "shielding", 0.45),
-  "aegis-return-spring": pair("reflect", 0.3, "shielding", 0.4),
-  "flare-focusing-iris": pair("normal-burn", 0.3, "flare", 0.4),
-  "cinder-metering-nozzle": pair("normal-burn", 0.35, "normal", 0.35),
-  "firstlight-cam": pair("team-charge", 12, "leader", 0.1),
-  "tension-governor": pair("status-shield", 0.8, "normal-weaken", 0.18),
-  "tidebound-reflector": pair("reflect", 0.4, "defense", 0.35),
+  "tranquilitic-accord-bastion": pair("recovery", 0.35, "shielding", 0.45),
+  "aegis-return-spring": pair("guard", 0.15, "shielding", 0.4),
+  "flare-focusing-iris": pair("attack", 0.3, "flare", 0.4),
+  "cinder-metering-nozzle": pair("attack", 0.35, "normal", 0.35),
+  "firstlight-cam": pair("attack", 0.3, "leader", 0.1),
+  "tension-governor": pair("shielding", 0.45, "resilience", 0.3),
+  "tidebound-reflector": pair("guard", 0.2, "defense", 0.35),
   "ward-stitch-spool": pair("shielding", 0.55, "healing", 0.35),
-  "emberlife-kiln": pair("normal-burn", 0.3, "round-heal", 0.4),
-  "tempered-strike-link": pair("heal-buff", 0.4, "normal", 0.35),
+  "emberlife-kiln": pair("attack", 0.3, "healing", 0.4),
+  "tempered-strike-link": pair("recovery", 0.4, "normal", 0.35),
   "infernic-pyre-census": pair("cooperation", 0.4, "flare", 0.4),
-  "chaotic-fault-verdict": pair("normal", 0.6, "guard-shield", 0.7),
+  "chaotic-fault-verdict": pair("normal", 0.6, "defense", 0.35),
   "ruinselect-prism": pair("hp", 0.5, "flare", 0.5),
   "secondbeat-rack": pair("cooperation", 0.45, "flare", 0.4),
-  "oceanic-shared-tide-pump": pair("flare-shield", 0.12, "shielding", 0.4),
-  "pulse-trigger-pawl": pair("team-charge", 12, "normal", 0.35),
-  "solace-anchor": pair("next-buff", 0.4, "leader", 0.1),
-  "sootwake-crucible": pair("normal-expose", 0.25, "normal-burn", 0.2),
-  "atmospheric-storm-clock": pair("shared-normal", 180, "normal-charge", 7),
-  "pressurecrest-governor": pair("normal-heal", 0.8, "normal-charge", 7),
-  "covercharge-drum": pair("next-buff", 0.4, "flare", 0.4),
-  "botanic-graft-covenant": pair("healing", 0.6, "heal-charge", 10),
-  "mending-valve": pair("leech", 0.2, "recovery", 0.4),
-  "rootbound-triage-vault": pair("round-shield", 1, "round-heal", 0.3),
+  "oceanic-shared-tide-pump": pair("hp", 0.35, "shielding", 0.4),
+  "pulse-trigger-pawl": pair("attack", 0.35, "normal", 0.35),
+  "solace-anchor": pair("recovery", 0.4, "leader", 0.1),
+  "sootwake-crucible": pair("pierce", 0.25, "attack", 0.35),
+  "atmospheric-storm-clock": pair("normal", 0.45, "attack", 0.3),
+  "pressurecrest-governor": pair("recovery", 0.4, "attack", 0.25),
+  "covercharge-drum": pair("attack", 0.4, "flare", 0.4),
+  "botanic-graft-covenant": pair("healing", 0.6, "recovery", 0.35),
+  "mending-valve": pair("healing", 0.35, "recovery", 0.4),
+  "rootbound-triage-vault": pair("shielding", 0.5, "healing", 0.3),
   "calamitic-world-eater-orrery": pair("flare", 0.8, "pierce", 0.4),
-  "calamitic-causality-funeral-engine": pair("normal-charge", 15, "flare", 0.6),
+  "calamitic-causality-funeral-engine": pair("attack", 0.6, "flare", 0.6),
   "calamitic-horizon-cleaving-godpress": pair("normal", 0.9, "pierce", 0.4),
-  "calamitic-throne-borrowed-tomorrows": pair("team-charge", 18, "shared-normal", 240),
+  "calamitic-throne-borrowed-tomorrows": pair("normal", 0.7, "flare", 0.5),
   "calamitic-cathedral-final-equation": pair("flare", 0.85, "cooperation", 0.5),
-  "calamitic-bulwark-of-the-last-horizon": pair("hp", 0.8, "round-shield", 1.5),
-  "calamitic-reliquary-of-unending-mercy": pair("healing", 0.9, "round-heal", 0.9),
-  "calamitic-aegis-engine-of-severed-fate": pair("shielding", 0.9, "reflect", 0.6),
-  "calamitic-monolith-of-the-unmoved-star": pair("defense", 0.8, "guard-shield", 1.5),
-  "calamitic-heartforge-of-the-sunless-dawn": pair("hp", 0.8, "hurt-shield", 0.1),
-  "calamitic-ruinmark-censer": pair("normal-burn", 0.6, "normal-expose", 0.3),
-  "calamitic-choir-array-of-branded-stars": pair("leader", 0.2, "next-buff", 0.6),
+  "calamitic-bulwark-of-the-last-horizon": pair("hp", 0.8, "shielding", 0.6),
+  "calamitic-reliquary-of-unending-mercy": pair("healing", 0.9, "recovery", 0.6),
+  "calamitic-aegis-engine-of-severed-fate": pair("shielding", 0.9, "guard", 0.25),
+  "calamitic-monolith-of-the-unmoved-star": pair("defense", 0.8, "shielding", 0.6),
+  "calamitic-heartforge-of-the-sunless-dawn": pair("hp", 0.8, "defense", 0.45),
+  "calamitic-ruinmark-censer": pair("attack", 0.65, "pierce", 0.3),
+  "calamitic-choir-array-of-branded-stars": pair("leader", 0.2, "attack", 0.6),
   "calamitic-throne-of-the-lone-apostate": pair("attack", 0.6, "normal", 0.7),
   "calamitic-worldbreaker-cannonade": pair("normal", 1, "flare", 0.6)
 };
@@ -8625,7 +8625,7 @@ function characterArt(id, evolution = 1) {
   };
 }
 function characterName(id, evolution = 1, riseBlessed = false) {
-  return `${characterArt(id, evolution).title}, ${getStarter(id).name}${riseBlessed ? ", Rise-blessed" : ""}`;
+  return `${evolution === 1 ? "" : `${characterArt(id, evolution).title}, `}${getStarter(id).name}${riseBlessed ? ", Rise-blessed" : ""}`;
 }
 
 // src/content/elemental-war.ts
@@ -16297,6 +16297,7 @@ function adaptRadiantPressureEncounter(anchor, encounterSeed, calibration) {
     const currencyBudget = a.kind === "calamity" ? 0 : activityPrismaticaDrop(live, level).minimum;
     return {
       id: unit.id,
+      elementId: unit.element,
       identity: a.kind === "war" ? `war:${a.character}:${unit.evolution}` : unit.creatureId ?? unit.definitionId,
       name: unit.name,
       level,
@@ -16476,200 +16477,6 @@ var radiantAttunements = {
   aegis: { hp: 1, attack: 0.9, defense: 1.35, recovery: 1 },
   solstice: { hp: 1.25, attack: 0.9, defense: 1, recovery: 1 },
   prism: { hp: 1, attack: 1, defense: 0.9, recovery: 1.3 }
-};
-var radiantPassives = {
-  ember: {
-    name: "Banked Cinder",
-    rule: "banked-cinder",
-    magnitude: 0.1,
-    description: "Normal HP damage against an enemy carrying Infernis\u2019s Burn adds one 10% Attack periodic packet. No bonus motes from that packet."
-  },
-  tide: {
-    name: "Tideglass Return",
-    rule: "tide-return",
-    magnitude: 8,
-    description: "A direct enemy hit fully absorbed by only Tizu\u2019s Flare Shields grants Tizu 8 personal charge, once per enemy phase while he lives."
-  },
-  sprout: {
-    name: "Dawnseed",
-    rule: "dawn-seed",
-    magnitude: 0.15,
-    description: "Normal HP damage plants a 15% Recovery Seed on the most wounded living ally; it heals at the next round start."
-  },
-  rosetta: {
-    name: "Gilded Sightline",
-    rule: "normal-expose",
-    magnitude: 0.08,
-    description: "Normal HP damage exposes that enemy to 8% more direct damage for one enemy phase."
-  },
-  thornia: {
-    name: "Gatekeeper\u2019s Offering",
-    rule: "guard-shelter",
-    magnitude: 0.25,
-    description: "Defense grants the most wounded living ally a Shield equal to 25% of Thornia\u2019s Defense."
-  },
-  crinso: {
-    name: "Twin-Edge Temper",
-    rule: "burning-strike",
-    magnitude: 0.18,
-    description: "Normal HP damage against a Burning enemy adds one 18% Attack generated packet, without bonus motes."
-  },
-  atmoso: {
-    name: "Passing Tailwind",
-    rule: "next-ally-focus",
-    magnitude: 0.1,
-    description: "Normal HP damage grants the next living unacted squad member 10% Attack for the rest of this round."
-  },
-  aurora: {
-    name: "Merciful Lens",
-    rule: "flare-cleanse",
-    magnitude: 1,
-    description: "Casting a Flare removes each living ally\u2019s strongest Weaken, once per cast."
-  },
-  bliss: {
-    name: "Feathered Encore",
-    rule: "late-heal",
-    magnitude: 0.18,
-    description: "After another squad member has acted, Normal HP damage heals the most wounded living ally for 18% of Bliss\u2019s Recovery."
-  },
-  bruno: {
-    name: "Remembered Impact",
-    rule: "hurt-bulwark",
-    magnitude: 0.3,
-    description: "After losing HP to a direct enemy hit, Bruno creates a 30% Defense self-Shield, once per round."
-  },
-  disciple: {
-    name: "Open Mindcrown",
-    rule: "guard-focus",
-    magnitude: 0.12,
-    description: "Defense grants the next living unacted squad member 12% Attack for the rest of this round."
-  },
-  elise: {
-    name: "Crosswheel Pursuit",
-    rule: "exposed-strike",
-    magnitude: 0.2,
-    description: "Normal HP damage against an exposed enemy adds one 20% Attack generated packet, without bonus motes."
-  },
-  razor: {
-    name: "Nightguard Verdict",
-    rule: "guard-weaken",
-    magnitude: 0.12,
-    description: "Defense Weakens the living enemy with the highest Attack by 12% for one enemy phase."
-  },
-  maerion: {
-    name: "Ferry Fare Returned",
-    rule: "heal-charge",
-    magnitude: 4,
-    description: "A Flare that restores actual allied HP returns 4 personal charge once per cast; full-HP healing does not qualify."
-  },
-  caevren: {
-    name: "Counterweight Repose",
-    rule: "absorbed-heal",
-    magnitude: 0.2,
-    description: "After a direct hit absorbs any Shield on Caevren, he heals for 20% Recovery, once per round while alive."
-  },
-  vespera: {
-    name: "Beacon Afterimage",
-    rule: "normal-burn",
-    magnitude: 0.06,
-    description: "Normal HP damage applies a 6% Attack Burn for one enemy phase to the surviving target."
-  },
-  ilyss: {
-    name: "Unknotted Passage",
-    rule: "guard-cleanse",
-    magnitude: 1,
-    description: "Defense removes the strongest Weaken from one living ally, selecting the greatest debuff first."
-  },
-  asteriel: {
-    name: "Borrowed Moonflower",
-    rule: "long-seed",
-    magnitude: 0.1,
-    description: "Normal HP damage plants a 10% Recovery Seed on the most wounded living ally, healing at the next two round starts."
-  },
-  serapha: {
-    name: "Unstruck Sanctuary",
-    rule: "hurt-shelter",
-    magnitude: 0.025,
-    description: "After losing HP to a direct enemy hit, Serapha creates a self-Shield equal to 2.5% maximum HP, once per round."
-  },
-  nerithe: {
-    name: "Charted Current",
-    rule: "charted-charge",
-    magnitude: 5,
-    description: "Each Normal Attack grants 5 additional guaranteed personal charge. Generated damage does not qualify."
-  },
-  orvella: {
-    name: "Foundation Recast",
-    rule: "guard-foundation",
-    magnitude: 0.4,
-    description: "Defense creates a self-Shield equal to 40% of Orvella\u2019s Defense."
-  },
-  vaelor: {
-    name: "Resonant Opening",
-    rule: "exposed-charge",
-    magnitude: 3,
-    description: "Normal HP damage against an exposed enemy grants 3 personal charge."
-  },
-  caldrex: {
-    name: "Kiln Reprisal",
-    rule: "absorbed-burn",
-    magnitude: 0.08,
-    description: "An enemy directly absorbing a Caldrex-owned Shield receives an 8% Attack Burn for one enemy phase, once per round while Caldrex lives."
-  },
-  solenne: {
-    name: "Vesper Stillness",
-    rule: "guard-stillness",
-    magnitude: 0.12,
-    description: "Defense grants Solenne 12% direct damage reduction for the next enemy phase, separate from guarding."
-  },
-  myrthen: {
-    name: "Season\u2019s Return",
-    rule: "burning-heal",
-    magnitude: 0.15,
-    description: "Normal HP damage against a Burning enemy heals Myrthen for 15% Recovery."
-  },
-  neralis: {
-    name: "Carried Ashore",
-    rule: "heal-shelter",
-    magnitude: 0.2,
-    description: "A Flare that restores actual allied HP grants the most wounded living ally a 20% Recovery Shield once per cast."
-  },
-  varkhel: {
-    name: "Tension Passed",
-    rule: "next-ally-shield",
-    magnitude: 0.3,
-    description: "Normal HP damage grants the next living unacted squad member a Shield equal to 30% of Varkhel\u2019s Defense."
-  },
-  seravelle: {
-    name: "Convoy Intercession",
-    rule: "guard-convoy",
-    magnitude: 0.2,
-    description: "Defense grants the most wounded living ally a Shield equal to 20% of Seravelle\u2019s Recovery."
-  },
-  velmira: {
-    name: "Doorway Fault",
-    rule: "weakened-expose",
-    magnitude: 0.1,
-    description: "Normal HP damage against a Weakened enemy exposes it to 10% more direct damage for one enemy phase."
-  },
-  ozriel: {
-    name: "Refusal Rekindled",
-    rule: "wounded-refusal",
-    magnitude: 0.04,
-    description: "After direct enemy HP damage leaves Ozriel below half HP, he creates a 4% maximum HP self-Shield, once per round. No revival."
-  },
-  ilvaris: {
-    name: "Afterglass Hymn",
-    rule: "normal-renewal",
-    magnitude: 0.12,
-    description: "Normal HP damage grants the most wounded living ally 12% Recovery Renewal at the next round start."
-  },
-  kaelith: {
-    name: "First Fractal Cut",
-    rule: "opening-incision",
-    magnitude: 0.16,
-    description: "Normal HP damage against an enemy that began the hit above half HP adds one 16% Attack generated packet, without bonus motes."
-  }
 };
 var bearerTuning = {
   ember: {
@@ -17066,12 +16873,13 @@ var bearerTuning = {
   }
 };
 var flareTiers = {
-  glowing: { damage: 1, support: 1, suffix: "" },
-  lustrous: { damage: 1.35, support: 1.25, suffix: " Ascendant" },
-  eternal: { damage: 1.8, support: 1.55, suffix: " Everlasting" }
+  glowing: { damage: 4, support: 2, suffix: "" },
+  lustrous: { damage: 8, support: 3, suffix: " Ascendant" },
+  eternal: { damage: 12, support: 4, suffix: " Resplendent" }
 };
 function baseSignature(tuning) {
   return {
+    comboHits: 4,
     target: tuning.target,
     damage: tuning.damage ?? 0,
     burn: tuning.burn ?? 0,
@@ -17092,6 +16900,17 @@ function baseSignature(tuning) {
   };
 }
 var releasedRadiantIds = starters.filter((entry) => characterReleased(entry.id)).map((entry) => entry.id);
+var radiantPassives = Object.fromEntries(releasedRadiantIds.map((id) => {
+  const tuning = bearerTuning[id], magnitude2 = tuning.leaderBonus / 2;
+  const stat = tuning.leaderStat;
+  return [id, {
+    name: `${tuning.family} Accord`,
+    rule: "squad-stat",
+    stat,
+    magnitude: magnitude2,
+    description: `All squad members gain ${Number((magnitude2 * 100).toPrecision(12))}% ${stat === "hp" ? "Health" : stat[0].toUpperCase() + stat.slice(1)} while this bearer is alive.`
+  }];
+}));
 var radiantBearerKits = Object.fromEntries(
   releasedRadiantIds.map((id) => {
     const character = starters.find((entry) => entry.id === id);
@@ -17104,11 +16923,11 @@ var radiantBearerKits = Object.fromEntries(
       elementId: character.elementId,
       weapon: character.weapon,
       base: tuning.base,
-      baseCost: tuning.baseCost,
+      baseCost: 100,
       passive: radiantPassives[id],
       leader: tuning.leader,
       leaderStat: tuning.leaderStat,
-      leaderBonus: tuning.leaderBonus,
+      leaderBonus: 0.2,
       signatureFamily: tuning.family,
       signature: baseSignature(tuning)
     }];
@@ -17119,6 +16938,7 @@ var radiantFlares = Object.fromEntries(releasedRadiantIds.map((id) => {
   return [id, Object.fromEntries(Object.entries(flareTiers).map(([tier, scale]) => [tier, {
     name: `${kit.signatureFamily}${scale.suffix}`,
     ...kit.signature,
+    comboHits: tier === "glowing" ? 4 : tier === "lustrous" ? 8 : 12,
     damage: kit.signature.damage * scale.damage,
     burn: kit.signature.burn * scale.support,
     shieldDefense: kit.signature.shieldDefense * scale.support,
@@ -17131,36 +16951,6 @@ var radiantFlares = Object.fromEntries(releasedRadiantIds.map((id) => {
     attackBuff: kit.signature.attackBuff * scale.support
   }]))];
 }));
-for (const [id, offers] of Object.entries({
-  ember: {
-    glowing: { damage: 1.4, burn: 0.12, burnPhases: 2 },
-    lustrous: { damage: 2, burn: 0.16, burnPhases: 2 },
-    eternal: { damage: 3, burn: 0.2, burnPhases: 3 }
-  },
-  tide: {
-    glowing: { shieldDefense: 0.9, shieldHP: 0.05 },
-    lustrous: { shieldDefense: 1.3, shieldHP: 0.07, reduction: 0.15, reductionPhases: 1 },
-    eternal: { shieldDefense: 1.8, shieldHP: 0.1, reduction: 0.25, reductionPhases: 2 }
-  },
-  sprout: {
-    glowing: { heal: 0.8, renewal: 0.15, renewalRounds: 2 },
-    lustrous: { heal: 1.1, renewal: 0.2, renewalRounds: 2 },
-    eternal: { heal: 1.8, renewal: 0.3, renewalRounds: 3 }
-  }
-})) {
-  for (const tier of ["glowing", "lustrous", "eternal"]) {
-    Object.assign(radiantFlares[id][tier], offers[tier]);
-  }
-}
-for (const [id, names] of Object.entries({
-  ember: ["Cinderwake", "Cinderwake Ascendant", "Cinderwake Everlasting"],
-  tide: ["Tideglass Shelter", "Tideglass Dominion", "Tideglass Eternity"],
-  sprout: ["Dawnseed Renewal", "Dawnseed Flourishing", "Dawnseed Perennial"]
-})) {
-  ["glowing", "lustrous", "eternal"].forEach((tier, index) => {
-    radiantFlares[id][tier].name = names[index];
-  });
-}
 var masterAttunements = {
   ember: ["corona", "corona", "solstice"],
   tide: ["aegis", "solstice", "corona"],
@@ -17210,22 +17000,25 @@ var radiantMasters = Object.fromEntries(
     }];
   })
 );
-var starterMasterRules = {
-  "master-ember-1": ["passive", "longer-burn", "Cinderwake Burn lasts one additional enemy phase."],
-  "master-ember-2": ["signature", "flare-damage", "Cinderwake direct damage increases by 15%."],
-  "master-ember-3": ["signature", "self-shield", "Casting Cinderwake grants Infernis a Shield equal to 8% of maximum HP."],
-  "master-tide-1": ["signature", "flare-shield", "Tideglass Shields increase by 15%."],
-  "master-tide-2": ["signature", "deep-shield", "Tideglass adds 8% of each recipient\u2019s maximum HP to its Shield."],
-  "master-tide-3": ["signature", "tide-strike", "Tideglass also strikes the selected enemy for 90% Attack."],
-  "master-sprout-1": ["signature", "flare-heal", "Dawnseed immediate healing increases by 15%."],
-  "master-sprout-2": ["signature", "sprout-strike", "Dawnseed also strikes the selected enemy for 75% Attack."],
-  "master-sprout-3": ["signature", "longer-renewal", "Dawnseed Renewal lasts one additional round."]
-};
-for (const id of Object.keys(starterMasterRules)) {
-  const [enhancement, rule, effect2] = starterMasterRules[id];
-  Object.assign(radiantMasters[id], { enhancement, rule, effect: effect2 });
-}
 var radiantStarterKits = radiantBearerKits;
+function radiantPassiveAmount(loadout) {
+  const master2 = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
+  return (radiantBearerKits[loadout.starter].passive.magnitude + 0.01 * (loadout.form - 1)) * (1 + (master2?.enhancement === "passive" ? master2.magnitude : 0) + (loadout.ascension.skill1 ? 0.5 : 0));
+}
+function radiantLeaderBonus(loadout) {
+  const master2 = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
+  return (radiantBearerKits[loadout.starter].leaderBonus + 0.02 * (loadout.form - 1)) * (loadout.ascension.skill2 ? 1.5 : 1) + (master2?.enhancement === "leader" ? master2.magnitude : 0) + radiantGearAmount(loadout.gear, "leader");
+}
+function radiantFinalFlare(loadout, tier) {
+  const master2 = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
+  const power2 = (1 + 0.1 * (loadout.form - 1)) * (1 + (master2?.enhancement === "signature" ? master2.magnitude : 0) + (loadout.ascension.lastFlare ? 0.5 : 0));
+  const offer = { ...radiantFlares[loadout.starter][tier] };
+  for (const key of ["damage", "burn", "shieldDefense", "shieldHP", "reduction", "weaken", "exposure", "heal", "renewal", "attackBuff"])
+    offer[key] *= power2;
+  for (const key of ["reduction", "weaken", "exposure", "attackBuff"])
+    offer[key] = Math.min(0.8, offer[key]);
+  return offer;
+}
 function validateRadiantStats(stats) {
   if (!stats || Object.keys(stats).length !== 4 || !["hp", "attack", "defense", "recovery"].every((key) => Number.isFinite(stats[key]) && stats[key] >= 0 && stats[key] <= Number.MAX_SAFE_INTEGER) || stats.hp < 1 || stats.attack <= 0)
     throw new Error("Invalid radiant four-stat snapshot.");
@@ -17260,20 +17053,38 @@ function resolveRadiantStarterStats(loadout) {
   return stats;
 }
 
+// src/content/element-matchups.ts
+var elementWeaknesses = {
+  infernic: "oceanic",
+  oceanic: "botanic",
+  botanic: "atmospheric",
+  atmospheric: "infernic",
+  tranquilitic: "chaotic",
+  chaotic: "tranquilitic"
+};
+function isCombatElement(value2) {
+  return elements.some((element) => element.id === value2);
+}
+function elementDamageMultiplier(attacker, defender) {
+  if (attacker === null || defender === null) return 1;
+  if (elementWeaknesses[defender] === attacker) return 1.5;
+  return elementWeaknesses[attacker] === defender ? 0.75 : 1;
+}
+
 // src/game/combat-gauge.ts
 var personalChargeUnit = 10;
 var sharedChargeUnit = 60;
 var radiantChargeRules = {
-  normal: 20,
-  flareHit: 1,
-  defeatedEnemy: 5,
+  normal: 10,
+  flareHit: 0,
+  defeatedEnemy: 0,
   otherMemberPercent: 10,
-  defense: 10,
-  round: 5,
-  incomingAttack: 8,
-  bonusChance: 0.25,
-  bonusAmount: 5,
-  maximumBonusRolls: 2
+  defense: 0,
+  round: 0,
+  incomingAttack: 10,
+  bonusChance: 0,
+  bonusAmount: 0,
+  maximumBonusRolls: 0
 };
 function integer(value2, minimum, name) {
   if (!Number.isSafeInteger(value2) || value2 < minimum) throw new Error(`Invalid radiant ${name}.`);
@@ -17302,7 +17113,7 @@ function validateRadiantGauge(state) {
     throw new Error("Radiant charge requires one to six squad members.");
   const ids = /* @__PURE__ */ new Set();
   for (const member of state.members) {
-    if (typeof member.id !== "string" || !member.id || ids.has(member.id) || typeof member.living !== "boolean")
+    if (typeof member.id !== "string" || !member.id || ids.has(member.id) || typeof member.living !== "boolean" || !isCombatElement(member.elementId))
       throw new Error("Invalid radiant squad member.");
     ids.add(member.id);
     personalUnits(member.charge);
@@ -17357,11 +17168,13 @@ function grantRadiantDrop(state, id, amount) {
   integer(amount, 1, "enemy drop");
   integer(amount * personalChargeUnit, 1, "enemy drop units");
   const next = structuredClone(state);
-  if (!next.members.some((member) => member.id === id)) throw new Error("Radiant drop owner is not in this squad.");
+  const owner = next.members.find((member) => member.id === id);
+  if (!owner) throw new Error("Radiant drop owner is not in this squad.");
+  if (!owner.living) throw new Error("A defeated bearer cannot generate Luminosity.");
   const allyUnits = amount * (personalChargeUnit * radiantChargeRules.otherMemberPercent / 100);
   integer(allyUnits, 0, "shared drop units");
   for (const member of next.members) {
-    if (!member.living) continue;
+    if (!member.living || member.elementId !== owner.elementId) continue;
     const units = member.id === id ? amount * personalChargeUnit : allyUnits;
     addPersonalUnits(member, units);
   }
@@ -17428,19 +17241,8 @@ function validateRadiantDropEvents(events, enemyIds2, bearerIds) {
     if (event2.type !== "gauge-drop") continue;
     if (!enemyIds2.has(event2.enemyId)) throw new Error("Saved Gauge-drop source is not an enemy.");
     if (!bearerIds.has(event2.bearerId)) throw new Error("Saved Gauge-drop owner is not a squad member.");
-    if (event2.trigger !== "hit" && event2.trigger !== "defeat") throw new Error("Invalid saved Gauge-drop trigger.");
+    if (event2.trigger !== "hit") throw new Error("Invalid saved Luminosity-drop trigger.");
     let position = index - 1;
-    if (event2.trigger === "defeat") {
-      const defeated = events[position--];
-      if (defeated?.type !== "defeated" || defeated.targetId !== event2.enemyId)
-        throw new Error("Saved Gauge-drop defeat does not match the defeated enemy.");
-      const hitDrop = events[position];
-      if (hitDrop?.type === "gauge-drop") {
-        if (hitDrop.trigger !== "hit" || hitDrop.enemyId !== event2.enemyId || hitDrop.bearerId !== event2.bearerId)
-          throw new Error("Saved Gauge-drop hit does not match the defeat.");
-        position--;
-      }
-    }
     const currency = events[position];
     if (currency?.type === "currency") {
       if (currency.enemyId !== event2.enemyId) throw new Error("Saved Gauge-drop currency source does not match.");
@@ -17449,14 +17251,8 @@ function validateRadiantDropEvents(events, enemyIds2, bearerIds) {
     const damage = events[position];
     if (damage?.type !== "damage" || damage.targetId !== event2.enemyId || damage.source.kind === "enemy" || damage.source.bearerId !== event2.bearerId)
       throw new Error("Saved Gauge-drop source does not match its damage.");
-    if (event2.trigger === "defeat") {
-      if (event2.amount !== radiantChargeRules.defeatedEnemy) throw new Error("Invalid saved defeat Gauge-drop amount.");
-    } else {
-      if (damage.origin !== "direct" || damage.source.kind !== "normal" && damage.source.kind !== "flare" || damage.healthLoss + damage.absorbed <= 0) throw new Error("Saved Gauge-drop hit is not a qualifying direct hit.");
-      const base = damage.source.kind === "normal" ? radiantChargeRules.normal : radiantChargeRules.flareHit;
-      if (event2.amount !== base && event2.amount !== base + radiantChargeRules.bonusAmount)
-        throw new Error("Invalid saved hit Gauge-drop amount.");
-    }
+    if (damage.origin !== "direct" || damage.source.kind !== "normal" || damage.healthLoss + damage.absorbed <= 0) throw new Error("Saved Luminosity drop requires a damaging Normal hit.");
+    if (event2.amount !== radiantChargeRules.normal) throw new Error("Invalid saved Luminosity-drop amount.");
   }
 }
 function safe(value2, name, minimum = 0) {
@@ -17522,16 +17318,20 @@ function living2(hp) {
 function effectiveRadiantStats(state, id) {
   const member = bearer(state, id);
   const stats = { ...member.stats };
-  const leader = state.bearers[0];
-  if (leader.hp > 0) {
-    const kit = radiantStarterKits[leader.loadout.starter];
-    const master2 = leader.loadout.masterId === null ? null : radiantMasters[leader.loadout.masterId];
-    stats[kit.leaderStat] *= 1 + kit.leaderBonus * (leader.loadout.ascension.skill2 ? 1.5 : 1) + (master2?.enhancement === "leader" ? master2.magnitude : 0) + radiantGearAmount(leader.loadout.gear, "leader");
+  for (const key of ["hp", "attack", "defense", "recovery"]) {
+    const bonus = state.bearers.filter((source) => source.hp > 0 && radiantStarterKits[source.loadout.starter].passive.stat === key).reduce((sum, source) => sum + radiantPassiveAmount(source.loadout), 0);
+    stats[key] *= 1 + bonus;
   }
   stats.attack *= 1 - Math.max(0, ...member.weaken.map((effect2) => effect2.magnitude)) * (1 - Math.min(0.8, radiantGearAmount(member.loadout.gear, "resilience")));
   stats.attack *= 1 + Math.max(0, ...member.attackBuffs.map((effect2) => effect2.magnitude));
   validateRadiantStats(stats);
   return stats;
+}
+function outgoingDamageMultiplier(state, actor2, target) {
+  const element = radiantStarterKits[actor2.loadout.starter].elementId;
+  const leader = state.bearers[0];
+  const bonus = leader.hp > 0 && radiantStarterKits[leader.loadout.starter].elementId === element ? radiantLeaderBonus(leader.loadout) : 0;
+  return (1 + bonus) * elementDamageMultiplier(element, target.elementId);
 }
 function validateSource(state, source) {
   if (!source || !["normal", "flare", "passive", "master", "gear", "enemy"].includes(source.kind))
@@ -17556,7 +17356,7 @@ function validateEffects(state, effects, fractional = false) {
   }
 }
 function validateRadiantCombat(state) {
-  if (!state || state.version !== 3 || !Array.isArray(state.bearers) || !state.bearers.length || state.bearers.length > squadMemberLimit || !Array.isArray(state.enemies) || !state.enemies.length || !["player", "enemy", "victory", "defeat"].includes(state.phase))
+  if (!state || state.version !== 4 || !Array.isArray(state.bearers) || !state.bearers.length || state.bearers.length > squadMemberLimit || !Array.isArray(state.enemies) || !state.enemies.length || !["player", "enemy", "victory", "defeat"].includes(state.phase))
     throw new Error("Invalid radiant combat roster or version.");
   safe(state.round, "round", 1);
   safe(state.chargeSeed, "charge seed");
@@ -17595,7 +17395,7 @@ function validateRadiantCombat(state) {
     if (Object.keys(expected).some((key) => expected[key] !== member.stats[key]))
       throw new Error("Radiant frozen stats do not match their loadout.");
     const gauge = state.gauge.members[index];
-    if (gauge.id !== member.loadout.id || gauge.form !== member.loadout.form || gauge.baseCost !== radiantStarterKits[member.loadout.starter].baseCost || gauge.living !== member.hp > 0)
+    if (gauge.id !== member.loadout.id || gauge.form !== member.loadout.form || gauge.baseCost !== radiantStarterKits[member.loadout.starter].baseCost || gauge.living !== member.hp > 0 || gauge.elementId !== radiantStarterKits[member.loadout.starter].elementId)
       throw new Error("Radiant Gauge member mismatch.");
     if (typeof member.guarding !== "boolean") throw new Error("Invalid radiant guard.");
     validateEffects(state, member.renewal);
@@ -17606,6 +17406,7 @@ function validateRadiantCombat(state) {
   }
   let paid = 0, budget = 0;
   for (const member of state.enemies) {
+    if (member.elementId !== null && !isCombatElement(member.elementId)) throw new Error("Invalid enemy combat element.");
     validateEffects(state, member.burns);
     validateEffects(state, member.exposures, true);
     validateEffects(state, member.weaken, true);
@@ -17652,7 +17453,7 @@ function validateRadiantParty(loadouts) {
 }
 function createRadiantCombat(loadouts, enemies2, chargeSeed) {
   const state = {
-    version: 3,
+    version: 4,
     bearers: loadouts.map((loadout) => {
       const stats = resolveRadiantStarterStats(loadout);
       return {
@@ -17673,6 +17474,7 @@ function createRadiantCombat(loadouts, enemies2, chargeSeed) {
       const hp = rounded(input.stats.hp);
       return {
         id: input.id,
+        elementId: input.elementId,
         stats: { ...input.stats },
         hp,
         shields: [],
@@ -17686,6 +17488,7 @@ function createRadiantCombat(loadouts, enemies2, chargeSeed) {
       members: loadouts.map((loadout) => ({
         id: loadout.id,
         form: loadout.form,
+        elementId: radiantStarterKits[loadout.starter].elementId,
         baseCost: radiantStarterKits[loadout.starter].baseCost,
         charge: 0,
         living: true
@@ -17745,7 +17548,7 @@ function packet(state, events, target, source, origin, offered, hitCharge) {
       amount: payout.amount,
       totalPaid: target.currency.paid
     });
-    if (origin === "direct" && (source.kind === "normal" || source.kind === "flare") && healthLoss + absorbed > 0) {
+    if (origin === "direct" && source.kind === "normal" && healthLoss + absorbed > 0) {
       if (!hitCharge) throw new Error("Radiant direct hit is missing its charge context.");
       const drop = radiantHitDrop(source.kind, hitCharge.bonusRolls, () => rollCharge(state));
       hitCharge.bonusRolls += drop.bonusRolls;
@@ -17755,8 +17558,6 @@ function packet(state, events, target, source, origin, offered, hitCharge) {
   }
   if (target.hp === 0) {
     events.push({ type: "defeated", targetId });
-    if ("currency" in target && source.kind !== "enemy")
-      gaugeDrop(state, events, target.id, source.bearerId, "defeat", radiantChargeRules.defeatedEnemy);
   }
   sync(state);
   return { healthLoss, absorbed, shields };
@@ -17893,9 +17694,6 @@ function normal(state, events, actor2, targetId, hitCharge) {
   living2(target.hp);
   const stats = effectiveRadiantStats(state, actor2.loadout.id);
   const source = { kind: "normal", bearerId: actor2.loadout.id };
-  const burning = target.burns.some((effect2) => "bearerId" in effect2.source && effect2.source.bearerId === actor2.loadout.id);
-  const anyBurn = target.burns.length > 0, exposed = exposure(target) > 0, weakened = target.weaken.length > 0;
-  const aboveHalf = target.hp > rounded(target.stats.hp) / 2;
   const impact = packet(
     state,
     events,
@@ -17906,85 +17704,17 @@ function normal(state, events, actor2, targetId, hitCharge) {
       stats.attack,
       gearDefense(actor2, target.stats.defense),
       1 + radiantGearAmount(actor2.loadout.gear, "normal") + cooperation(state, actor2),
-      1 + exposure(target)
+      (1 + exposure(target)) * outgoingDamageMultiplier(state, actor2, target)
     ),
     hitCharge
   );
-  const power2 = passivePower(actor2);
-  if (impact.healthLoss > 0 && actor2.loadout.starter === "ember" && burning && target.hp > 0)
-    packet(
-      state,
-      events,
-      target,
-      { kind: "passive", bearerId: actor2.loadout.id },
-      "periodic",
-      Math.max(1, rounded(0.1 * stats.attack * power2))
-    );
-  if (impact.healthLoss > 0 && actor2.loadout.starter === "sprout") {
-    let selected;
-    let largest = 0;
-    for (const ally of state.bearers.filter((member) => member.hp > 0)) {
-      const fraction = (rounded(ally.stats.hp) - ally.hp) / rounded(ally.stats.hp);
-      if (fraction > largest) {
-        selected = ally;
-        largest = fraction;
-      }
-    }
-    if (selected) {
-      const passive = { kind: "passive", bearerId: actor2.loadout.id };
-      refresh(selected.seeds, passive, 0.15 * stats.recovery * power2, 1);
-      events.push({
-        type: "status",
-        targetId: selected.loadout.id,
-        status: "seed",
-        source: passive,
-        magnitude: 0.15 * stats.recovery * power2,
-        remaining: 1
-      });
-    }
-  }
-  if (actor2.loadout.starter === "nerithe") {
-    addPassiveCharge(state, events, actor2.loadout.id, rounded(5 * power2));
-  }
-  if (impact.healthLoss > 0) {
-    const passive = radiantStarterKits[actor2.loadout.starter].passive;
-    const magnitude2 = passive.magnitude * power2;
-    const passiveSource = { kind: "passive", bearerId: actor2.loadout.id };
-    const wounded = woundedAlly(state);
-    const extraHit = passive.rule === "burning-strike" && anyBurn || passive.rule === "exposed-strike" && exposed || passive.rule === "opening-incision" && aboveHalf;
-    if (extraHit && target.hp > 0)
-      packet(state, events, target, passiveSource, "generated", Math.max(1, rounded(magnitude2 * stats.attack)));
-    if (target.hp > 0 && (passive.rule === "normal-expose" || passive.rule === "weakened-expose" && weakened))
-      applyStatus(events, target.id, target.exposures, passiveSource, "exposure", magnitude2, 1);
-    if (target.hp > 0 && passive.rule === "normal-burn")
-      applyStatus(events, target.id, target.burns, passiveSource, "burn", magnitude2 * stats.attack, 1);
-    if (wounded && wounded.hp < rounded(wounded.stats.hp) && (passive.rule === "long-seed" || passive.rule === "normal-renewal"))
-      applyStatus(
-        events,
-        wounded.loadout.id,
-        passive.rule === "long-seed" ? wounded.seeds : wounded.renewal,
-        passiveSource,
-        passive.rule === "long-seed" ? "seed" : "renewal",
-        magnitude2 * stats.recovery,
-        passive.rule === "long-seed" ? 2 : 1
-      );
-    if (passive.rule === "burning-heal" && anyBurn) heal(state, events, actor2, passiveSource, magnitude2 * stats.recovery);
-    if (passive.rule === "late-heal" && state.acted.length && wounded)
-      heal(state, events, wounded, passiveSource, magnitude2 * stats.recovery);
-    if (passive.rule === "exposed-charge" && exposed) addPassiveCharge(state, events, actor2.loadout.id, rounded(magnitude2));
-    if (passive.rule === "next-ally-focus" || passive.rule === "next-ally-shield") {
-      const next = nextAlly(state, actor2);
-      if (next && passive.rule === "next-ally-shield") shield(state, events, next, passiveSource, magnitude2 * stats.defense);
-      else if (next) applyStatus(events, next.loadout.id, next.attackBuffs, passiveSource, "attack-buff", magnitude2, 1);
-    }
-  }
   return impact.healthLoss + impact.absorbed > 0 ? 1 : 0;
 }
 function flare(state, events, actor2, targetId, hitCharge) {
   const master2 = actor2.loadout.masterId === null ? null : radiantMasters[actor2.loadout.masterId];
   const spent = spendReadyFlare(state.gauge, actor2.loadout.id);
   state.gauge = spent.state;
-  const tier = spent.tier, offer = radiantFlares[actor2.loadout.starter][tier];
+  const tier = spent.tier, offer = radiantFinalFlare(actor2.loadout, tier);
   const masterStrike = master2?.rule === "tide-strike" || master2?.rule === "sprout-strike";
   if (offer.target === "one-enemy" || masterStrike) {
     if (targetId === void 0) throw new Error("This signature requires a selected living enemy.");
@@ -17992,36 +17722,25 @@ function flare(state, events, actor2, targetId, hitCharge) {
   } else if (targetId !== void 0) throw new Error("This signature uses its authored target set.");
   const stats = effectiveRadiantStats(state, actor2.loadout.id);
   const source = { kind: "flare", bearerId: actor2.loadout.id };
-  const signaturePower = 1 + (master2?.rule === "standard" && master2.enhancement === "signature" ? master2.magnitude : 0) + (actor2.loadout.ascension.lastFlare ? 0.5 : 0);
+  const signaturePower = 1;
   events.push({ type: "flare", bearerId: actor2.loadout.id, tier, name: offer.name });
   let hits = 0;
   const enemyTargets = offer.target === "all-enemies" ? state.enemies.filter((member) => member.hp > 0) : offer.target === "one-enemy" && targetId !== void 0 ? [enemy(state, targetId)] : [];
   for (const target of enemyTargets) {
-    if (actor2.loadout.starter === "ember" && tier === "eternal") {
-      const burns = target.burns.filter((effect2) => "bearerId" in effect2.source && effect2.source.bearerId === actor2.loadout.id);
-      target.burns = target.burns.filter((effect2) => !burns.includes(effect2));
-      for (const burn of burns) if (target.hp > 0) {
-        events.push({
-          type: "status",
-          targetId: target.id,
-          status: "burn",
-          source: burn.source,
-          magnitude: burn.magnitude,
-          remaining: 0
-        });
-        packet(state, events, target, burn.source, "periodic", Math.max(1, rounded(burn.magnitude) * burn.remaining));
-      }
-    }
     if (target.hp === 0) continue;
-    const impact = packet(state, events, target, source, "direct", radiantDirectDamage(
+    const total = Math.max(offer.comboHits, radiantDirectDamage(
       stats.attack,
       gearDefense(actor2, target.stats.defense),
       offer.damage * signaturePower * (1 + radiantGearAmount(actor2.loadout.gear, "flare") + cooperation(state, actor2)) * (master2?.rule === "flare-damage" ? 1.15 : 1),
-      1 + exposure(target)
-    ), hitCharge);
-    if (impact.healthLoss + impact.absorbed > 0) hits++;
+      (1 + exposure(target)) * outgoingDamageMultiplier(state, actor2, target)
+    ));
+    for (let hit = 0; hit < offer.comboHits && target.hp > 0; hit++) {
+      const amount = Math.floor(total / offer.comboHits) + (hit === offer.comboHits - 1 ? total % offer.comboHits : 0);
+      const impact = packet(state, events, target, source, "direct", amount, hitCharge);
+      if (impact.healthLoss + impact.absorbed > 0) hits++;
+    }
     if (target.hp > 0 && offer.burn > 0) {
-      const magnitude2 = offer.burn * stats.attack * signaturePower;
+      const magnitude2 = offer.burn * stats.attack * signaturePower * outgoingDamageMultiplier(state, actor2, target);
       const remaining = offer.burnPhases + (master2?.rule === "longer-burn" ? 1 : 0);
       refresh(target.burns, source, magnitude2, remaining);
       events.push({ type: "status", targetId: target.id, status: "burn", source, magnitude: magnitude2, remaining });
@@ -18077,18 +17796,6 @@ function flare(state, events, actor2, targetId, hitCharge) {
         source,
         offer.heal * stats.recovery * signaturePower * (master2?.rule === "flare-heal" ? 1.15 : 1)
       );
-      if (actor2.loadout.starter === "sprout" && tier === "eternal" && ally.weaken.length) {
-        const strongest = ally.weaken.reduce((a, b) => a.magnitude >= b.magnitude ? a : b);
-        ally.weaken.splice(ally.weaken.indexOf(strongest), 1);
-        events.push({
-          type: "status",
-          targetId: ally.loadout.id,
-          status: "weaken-removed",
-          source: strongest.source,
-          magnitude: strongest.magnitude,
-          remaining: 0
-        });
-      }
     }
     if (offer.renewal > 0) {
       const magnitude2 = offer.renewal * stats.recovery * signaturePower;
@@ -18159,7 +17866,6 @@ function enemyAttack(state, events, action) {
       events.push({ type: "shield", source, targetId: actor2.id, amount: gained, shieldId });
     }
   }
-  const returns = /* @__PURE__ */ new Set();
   for (const target of targets) {
     const stats = effectiveRadiantStats(state, target.loadout.id);
     const reduction = Math.max(0, ...target.reductions.map((effect2) => effect2.magnitude));
@@ -18168,7 +17874,7 @@ function enemyAttack(state, events, action) {
       actor2.stats.attack * (1 - weakening),
       stats.defense,
       action.coefficient,
-      Math.max(0.2, (target.guarding ? 0.5 * (1 - Math.min(0.6, radiantGearAmount(target.loadout.gear, "guard"))) : 1) * (1 - reduction))
+      Math.max(0.2, (target.guarding ? 0.5 * (1 - Math.min(0.6, radiantGearAmount(target.loadout.gear, "guard"))) : 1) * (1 - reduction)) * elementDamageMultiplier(actor2.elementId, radiantStarterKits[target.loadout.starter].elementId)
     );
     const impact = { healthLoss: 0, absorbed: 0, shields: [] };
     for (let hit = 0; hit < hits && target.hp > 0; hit++) {
@@ -18178,17 +17884,17 @@ function enemyAttack(state, events, action) {
       impact.healthLoss += part.healthLoss;
       impact.absorbed += part.absorbed;
       impact.shields.push(...part.shields);
-    }
-    if (target.hp > 0 && impact.healthLoss + impact.absorbed > 0) {
-      state.gauge = grantRadiantIncomingAttack(state.gauge, target.loadout.id);
-      events.push({
-        type: "charge",
-        bearerId: target.loadout.id,
-        personal: state.gauge.members.find((m) => m.id === target.loadout.id).charge,
-        sharedUnits: state.gauge.sharedUnits,
-        bonusRolls: 0,
-        bonusOffered: 0
-      });
+      if (target.hp > 0 && part.healthLoss + part.absorbed > 0) {
+        state.gauge = grantRadiantIncomingAttack(state.gauge, target.loadout.id);
+        events.push({
+          type: "charge",
+          bearerId: target.loadout.id,
+          personal: state.gauge.members.find((m) => m.id === target.loadout.id).charge,
+          sharedUnits: state.gauge.sharedUnits,
+          bonusRolls: 0,
+          bonusOffered: 0
+        });
+      }
     }
     const passive = radiantStarterKits[target.loadout.starter].passive;
     if (target.hp > 0 && !state.passiveTriggered.includes(target.loadout.id)) {
@@ -18216,17 +17922,6 @@ function enemyAttack(state, events, action) {
         state.passiveTriggered.push(owner.loadout.id);
       }
     }
-    if (impact.healthLoss === 0 && impact.absorbed > 0 && impact.shields.every((entry) => entry.source.kind === "flare" && "bearerId" in entry.source && entry.source.bearerId === impact.shields[0].source.bearerId)) {
-      const source2 = impact.shields[0].source;
-      if ("bearerId" in source2) {
-        const owner = bearer(state, source2.bearerId);
-        if (owner.hp > 0 && owner.loadout.starter === "tide") returns.add(owner.loadout.id);
-      }
-    }
-  }
-  for (const id of returns) if (!state.tideReturns.includes(id) && bearer(state, id).hp > 0) {
-    state.tideReturns.push(id);
-    addPassiveCharge(state, events, id, rounded(8 * passivePower(bearer(state, id))));
   }
 }
 function finishRound(state, events) {
@@ -18616,10 +18311,12 @@ var RadiantRunError = class extends Error {
   }
   code;
 };
+var retiredRadiantRunNotice = "Combat rules changed. The previous battle has ended; all saved rewards are kept.";
 function validateRadiantCheckpoint(value2) {
   try {
     if (!record4(value2) || typeof value2.revision !== "number" || !Number.isSafeInteger(value2.revision) || value2.revision < 0) throw new Error();
     validateAccount(value2.account);
+    if (value2.notice !== void 0 && typeof value2.notice !== "string") throw new Error();
     if (value2.run !== null) validateFrozenRadiantRun(value2.run);
     return structuredClone(value2);
   } catch {
@@ -18692,7 +18389,7 @@ function initialize(anchor, calibration, loadouts, entropy, encounter2 = 1, cont
     validateRadiantCombat(initial);
   }
   return {
-    version: 3,
+    version: 4,
     id: entropy.runId,
     encounter: encounter2,
     anchor,
@@ -18852,7 +18549,7 @@ function resolveRadiantRun(snapshot, request, authority) {
     discover = true;
   } else {
     const run2 = game.radiantStudy;
-    if (!run2 || run2.version !== 3 || run2.id !== request.runId || run2.encounter !== request.encounter)
+    if (!run2 || run2.version !== 4 || run2.id !== request.runId || run2.encounter !== request.encounter)
       throw new RadiantRunError("stale-run", "The saved Radiant encounter does not match.");
     validateFrozenRadiantRun(run2);
     if (run2.enemies.length !== run2.state.enemies.length || run2.enemies.some((enemy2, i) => enemy2.id !== run2.state.enemies[i].id || enemy2.currencyBudget !== run2.state.enemies[i].currency.budget || enemy2.currencyBudget !== run2.initial.enemies[i]?.currency.budget))
@@ -18957,7 +18654,7 @@ function canonical(value2) {
 }
 function validateFrozenRadiantRun(value2) {
   try {
-    if (!record4(value2) || value2.version !== 3 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !["authored-control", "radiant-pressure-v2"].includes(String(value2.calibration)) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
+    if (!record4(value2) || value2.version !== 4 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !["authored-control", "radiant-pressure-v2"].includes(String(value2.calibration)) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
       throw new Error();
     for (const key of ["encounterSeed", "initialChargeSeed", "initialTargetSeed"])
       seed2(value2[key]);
@@ -18989,7 +18686,7 @@ function validateFrozenRadiantRun(value2) {
         continuation.encounterSeed,
         run.calibration === "authored-control" ? authoredRadiantCalibration : pressureRadiantCalibration
       );
-      if (continuation.state.enemies.length !== previousEnemies.length || continuation.state.enemies.some((unit, i) => unit.id !== previousEnemies[i].id || canonical(unit.stats) !== canonical(previousEnemies[i].stats) || unit.currency.budget !== previousEnemies[i].currencyBudget)) throw new Error();
+      if (continuation.state.enemies.length !== previousEnemies.length || continuation.state.enemies.some((unit, i) => unit.id !== previousEnemies[i].id || unit.elementId !== previousEnemies[i].elementId || canonical(unit.stats) !== canonical(previousEnemies[i].stats) || unit.currency.budget !== previousEnemies[i].currencyBudget)) throw new Error();
     }
     const expected = initialize(
       run.anchor,
@@ -19004,7 +18701,7 @@ function validateFrozenRadiantRun(value2) {
       run.encounter,
       continuation
     );
-    if (canonical(expected.enemies) !== canonical(run.enemies) || canonical(expected.initial) !== canonical(run.initial) || run.state.bearers.length !== run.initial.bearers.length || run.state.bearers.some((unit, i) => canonical(unit.loadout) !== canonical(run.initial.bearers[i].loadout)) || run.state.enemies.length !== run.enemies.length || run.state.enemies.some((unit, i) => unit.id !== run.enemies[i].id || canonical(unit.stats) !== canonical(run.enemies[i].stats) || unit.currency.budget !== run.enemies[i].currencyBudget)) throw new Error();
+    if (canonical(expected.enemies) !== canonical(run.enemies) || canonical(expected.initial) !== canonical(run.initial) || run.state.bearers.length !== run.initial.bearers.length || run.state.bearers.some((unit, i) => canonical(unit.loadout) !== canonical(run.initial.bearers[i].loadout)) || run.state.enemies.length !== run.enemies.length || run.state.enemies.some((unit, i) => unit.id !== run.enemies[i].id || unit.elementId !== run.enemies[i].elementId || canonical(unit.stats) !== canonical(run.enemies[i].stats) || unit.currency.budget !== run.enemies[i].currencyBudget)) throw new Error();
     return structuredClone(run);
   } catch {
     throw new RadiantRunError("unavailable", "Invalid saved Radiant encounter; nothing was saved.");
@@ -19015,8 +18712,11 @@ function validateRadiantRunSnapshot(value2) {
     if (!record4(value2) || typeof value2.revision !== "number" || !Number.isSafeInteger(value2.revision) || value2.revision < 0 || !record4(value2.state) || !record4(value2.state.profile) || !("run" in value2.state) || !("starterId" in value2.state))
       throw new Error();
     validateAccount(value2.state.account);
-    if (value2.state.radiantStudy !== void 0) validateFrozenRadiantRun(value2.state.radiantStudy);
-    return structuredClone(value2);
+    const state = structuredClone(value2.state);
+    const retired = record4(state.radiantStudy) && state.radiantStudy.version === 3;
+    if (retired) delete state.radiantStudy;
+    else if (state.radiantStudy !== void 0) validateFrozenRadiantRun(state.radiantStudy);
+    return { ...structuredClone(value2), state, ...retired ? { notice: retiredRadiantRunNotice } : {} };
   } catch {
     throw new RadiantRunError("unavailable", "Invalid saved Radiant account; nothing was saved.");
   }
@@ -19373,7 +19073,12 @@ async function handleRadiantRequest(value2, user, admin, config, identityOf, sup
       if (!allowed2) return { status: 429, body: { error: "Too many game operations. Wait one minute." } };
       const snapshot = await load();
       const run = snapshot.state.radiantStudy ?? null;
-      return { status: 200, body: { revision: snapshot.revision, account: snapshot.state.account, run } };
+      return { status: 200, body: {
+        revision: snapshot.revision,
+        account: snapshot.state.account,
+        run,
+        ...snapshot.notice ? { notice: snapshot.notice } : {}
+      } };
     }
     if (operation && typeof operation === "object" && !Array.isArray(operation) && "kind" in operation && operation.kind === "prepare") {
       const input2 = validateRadiantPreparationRequest(operation);

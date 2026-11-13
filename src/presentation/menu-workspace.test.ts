@@ -71,7 +71,7 @@ describe('live redesigned menus', () => {
     formatMenuWorkspace(root, emptyAccount());
     expect(root.querySelectorAll('.workspace-leader-skill')).toHaveLength(1);
     expect(root.textContent).toContain('Hearthbound Oath');
-    expect(root.textContent).toContain('+15% Attack');
+    expect(root.textContent).toContain('20% more attack damage');
   });
   it('keeps level and attunement together without repeating the subtype', () => {
     const root = document.createElement('div');

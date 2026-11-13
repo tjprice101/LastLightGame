@@ -38,6 +38,7 @@ export const radiantAttunements: Record<RadiantAttunement, RadiantStats> = {
 type SignatureTarget = 'all-enemies' | 'one-enemy' | 'all-allies';
 export interface RadiantFlareOffer {
   name: string;
+  comboHits: number;
   target: SignatureTarget;
   damage: number;
   burn: number;
@@ -73,7 +74,7 @@ export interface RadiantBearerKit {
 }
 
 export type RadiantPassiveRule =
-  | 'banked-cinder' | 'tide-return' | 'dawn-seed'
+  | 'squad-stat' | 'banked-cinder' | 'tide-return' | 'dawn-seed'
   | 'normal-expose' | 'guard-shelter' | 'burning-strike' | 'next-ally-focus'
   | 'flare-cleanse' | 'late-heal' | 'hurt-bulwark' | 'guard-focus'
   | 'exposed-strike' | 'guard-weaken' | 'heal-charge' | 'absorbed-heal'
@@ -81,74 +82,8 @@ export type RadiantPassiveRule =
   | 'charted-charge' | 'guard-foundation' | 'exposed-charge' | 'absorbed-burn'
   | 'guard-stillness' | 'burning-heal' | 'heal-shelter' | 'next-ally-shield'
   | 'guard-convoy' | 'weakened-expose' | 'wounded-refusal' | 'normal-renewal' | 'opening-incision';
-export interface RadiantPassive { name: string; description: string; rule: RadiantPassiveRule; magnitude: number }
+export interface RadiantPassive { name: string; description: string; rule: RadiantPassiveRule; magnitude: number; stat: keyof RadiantStats }
 
-export const radiantPassives: Record<RadiantBearerId, RadiantPassive> = {
-  ember: { name: 'Banked Cinder', rule: 'banked-cinder', magnitude: .1,
-    description: 'Normal HP damage against an enemy carrying Infernis’s Burn adds one 10% Attack periodic packet. No bonus motes from that packet.' },
-  tide: { name: 'Tideglass Return', rule: 'tide-return', magnitude: 8,
-    description: 'A direct enemy hit fully absorbed by only Tizu’s Flare Shields grants Tizu 8 personal charge, once per enemy phase while he lives.' },
-  sprout: { name: 'Dawnseed', rule: 'dawn-seed', magnitude: .15,
-    description: 'Normal HP damage plants a 15% Recovery Seed on the most wounded living ally; it heals at the next round start.' },
-  rosetta: { name: 'Gilded Sightline', rule: 'normal-expose', magnitude: .08,
-    description: 'Normal HP damage exposes that enemy to 8% more direct damage for one enemy phase.' },
-  thornia: { name: 'Gatekeeper’s Offering', rule: 'guard-shelter', magnitude: .25,
-    description: 'Defense grants the most wounded living ally a Shield equal to 25% of Thornia’s Defense.' },
-  crinso: { name: 'Twin-Edge Temper', rule: 'burning-strike', magnitude: .18,
-    description: 'Normal HP damage against a Burning enemy adds one 18% Attack generated packet, without bonus motes.' },
-  atmoso: { name: 'Passing Tailwind', rule: 'next-ally-focus', magnitude: .1,
-    description: 'Normal HP damage grants the next living unacted squad member 10% Attack for the rest of this round.' },
-  aurora: { name: 'Merciful Lens', rule: 'flare-cleanse', magnitude: 1,
-    description: 'Casting a Flare removes each living ally’s strongest Weaken, once per cast.' },
-  bliss: { name: 'Feathered Encore', rule: 'late-heal', magnitude: .18,
-    description: 'After another squad member has acted, Normal HP damage heals the most wounded living ally for 18% of Bliss’s Recovery.' },
-  bruno: { name: 'Remembered Impact', rule: 'hurt-bulwark', magnitude: .3,
-    description: 'After losing HP to a direct enemy hit, Bruno creates a 30% Defense self-Shield, once per round.' },
-  disciple: { name: 'Open Mindcrown', rule: 'guard-focus', magnitude: .12,
-    description: 'Defense grants the next living unacted squad member 12% Attack for the rest of this round.' },
-  elise: { name: 'Crosswheel Pursuit', rule: 'exposed-strike', magnitude: .2,
-    description: 'Normal HP damage against an exposed enemy adds one 20% Attack generated packet, without bonus motes.' },
-  razor: { name: 'Nightguard Verdict', rule: 'guard-weaken', magnitude: .12,
-    description: 'Defense Weakens the living enemy with the highest Attack by 12% for one enemy phase.' },
-  maerion: { name: 'Ferry Fare Returned', rule: 'heal-charge', magnitude: 4,
-    description: 'A Flare that restores actual allied HP returns 4 personal charge once per cast; full-HP healing does not qualify.' },
-  caevren: { name: 'Counterweight Repose', rule: 'absorbed-heal', magnitude: .2,
-    description: 'After a direct hit absorbs any Shield on Caevren, he heals for 20% Recovery, once per round while alive.' },
-  vespera: { name: 'Beacon Afterimage', rule: 'normal-burn', magnitude: .06,
-    description: 'Normal HP damage applies a 6% Attack Burn for one enemy phase to the surviving target.' },
-  ilyss: { name: 'Unknotted Passage', rule: 'guard-cleanse', magnitude: 1,
-    description: 'Defense removes the strongest Weaken from one living ally, selecting the greatest debuff first.' },
-  asteriel: { name: 'Borrowed Moonflower', rule: 'long-seed', magnitude: .1,
-    description: 'Normal HP damage plants a 10% Recovery Seed on the most wounded living ally, healing at the next two round starts.' },
-  serapha: { name: 'Unstruck Sanctuary', rule: 'hurt-shelter', magnitude: .025,
-    description: 'After losing HP to a direct enemy hit, Serapha creates a self-Shield equal to 2.5% maximum HP, once per round.' },
-  nerithe: { name: 'Charted Current', rule: 'charted-charge', magnitude: 5,
-    description: 'Each Normal Attack grants 5 additional guaranteed personal charge. Generated damage does not qualify.' },
-  orvella: { name: 'Foundation Recast', rule: 'guard-foundation', magnitude: .4,
-    description: 'Defense creates a self-Shield equal to 40% of Orvella’s Defense.' },
-  vaelor: { name: 'Resonant Opening', rule: 'exposed-charge', magnitude: 3,
-    description: 'Normal HP damage against an exposed enemy grants 3 personal charge.' },
-  caldrex: { name: 'Kiln Reprisal', rule: 'absorbed-burn', magnitude: .08,
-    description: 'An enemy directly absorbing a Caldrex-owned Shield receives an 8% Attack Burn for one enemy phase, once per round while Caldrex lives.' },
-  solenne: { name: 'Vesper Stillness', rule: 'guard-stillness', magnitude: .12,
-    description: 'Defense grants Solenne 12% direct damage reduction for the next enemy phase, separate from guarding.' },
-  myrthen: { name: 'Season’s Return', rule: 'burning-heal', magnitude: .15,
-    description: 'Normal HP damage against a Burning enemy heals Myrthen for 15% Recovery.' },
-  neralis: { name: 'Carried Ashore', rule: 'heal-shelter', magnitude: .2,
-    description: 'A Flare that restores actual allied HP grants the most wounded living ally a 20% Recovery Shield once per cast.' },
-  varkhel: { name: 'Tension Passed', rule: 'next-ally-shield', magnitude: .3,
-    description: 'Normal HP damage grants the next living unacted squad member a Shield equal to 30% of Varkhel’s Defense.' },
-  seravelle: { name: 'Convoy Intercession', rule: 'guard-convoy', magnitude: .2,
-    description: 'Defense grants the most wounded living ally a Shield equal to 20% of Seravelle’s Recovery.' },
-  velmira: { name: 'Doorway Fault', rule: 'weakened-expose', magnitude: .1,
-    description: 'Normal HP damage against a Weakened enemy exposes it to 10% more direct damage for one enemy phase.' },
-  ozriel: { name: 'Refusal Rekindled', rule: 'wounded-refusal', magnitude: .04,
-    description: 'After direct enemy HP damage leaves Ozriel below half HP, he creates a 4% maximum HP self-Shield, once per round. No revival.' },
-  ilvaris: { name: 'Afterglass Hymn', rule: 'normal-renewal', magnitude: .12,
-    description: 'Normal HP damage grants the most wounded living ally 12% Recovery Renewal at the next round start.' },
-  kaelith: { name: 'First Fractal Cut', rule: 'opening-incision', magnitude: .16,
-    description: 'Normal HP damage against an enemy that began the hit above half HP adds one 16% Attack generated packet, without bonus motes.' },
-};
 
 const bearerTuning: Record<RadiantBearerId, {
   base: RadiantStats;
@@ -274,12 +209,13 @@ const bearerTuning: Record<RadiantBearerId, {
 };
 
 const flareTiers: Record<FlareTier, { damage: number; support: number; suffix: string }> = {
-  glowing: { damage: 1, support: 1, suffix: '' },
-  lustrous: { damage: 1.35, support: 1.25, suffix: ' Ascendant' },
-  eternal: { damage: 1.8, support: 1.55, suffix: ' Everlasting' },
+  glowing: { damage: 4, support: 2, suffix: '' },
+  lustrous: { damage: 8, support: 3, suffix: ' Ascendant' },
+  eternal: { damage: 12, support: 4, suffix: ' Resplendent' },
 };
 function baseSignature(tuning: typeof bearerTuning[RadiantBearerId]): Omit<RadiantFlareOffer, 'name'> {
   return {
+    comboHits: 4,
     target: tuning.target, damage: tuning.damage ?? 0, burn: tuning.burn ?? 0,
     burnPhases: tuning.burnPhases ?? 0, shieldDefense: tuning.shieldDefense ?? 0,
     shieldHP: tuning.shieldHP ?? 0, reduction: tuning.reduction ?? 0,
@@ -291,6 +227,14 @@ function baseSignature(tuning: typeof bearerTuning[RadiantBearerId]): Omit<Radia
   };
 }
 export const releasedRadiantIds = starters.filter(entry => characterReleased(entry.id)).map(entry => entry.id) as RadiantBearerId[];
+export const radiantPassives = Object.fromEntries(releasedRadiantIds.map(id => {
+  const tuning = bearerTuning[id], magnitude = tuning.leaderBonus / 2;
+  const stat = tuning.leaderStat;
+  return [id, {
+    name: `${tuning.family} Accord`, rule: 'squad-stat', stat, magnitude,
+    description: `All squad members gain ${Number((magnitude * 100).toPrecision(12))}% ${stat === 'hp' ? 'Health' : stat[0].toUpperCase() + stat.slice(1)} while this bearer is alive.`,
+  } satisfies RadiantPassive];
+})) as Record<RadiantBearerId, RadiantPassive>;
 export const radiantBearerKits: Record<RadiantBearerId, RadiantBearerKit> = Object.fromEntries(
   releasedRadiantIds.map(id => {
     const character = starters.find(entry => entry.id === id)!;
@@ -298,9 +242,9 @@ export const radiantBearerKits: Record<RadiantBearerId, RadiantBearerKit> = Obje
     if (!tuning) throw new Error(`Missing radiant kit for released Element-Bearer: ${id}`);
     return [id, {
       id, name: character.name, element: character.element, elementId: character.elementId, weapon: character.weapon,
-      base: tuning.base, baseCost: tuning.baseCost,
+      base: tuning.base, baseCost: 100,
       passive: radiantPassives[id],
-      leader: tuning.leader, leaderStat: tuning.leaderStat, leaderBonus: tuning.leaderBonus,
+      leader: tuning.leader, leaderStat: tuning.leaderStat, leaderBonus: .2,
       signatureFamily: tuning.family, signature: baseSignature(tuning),
     }];
   }),
@@ -313,6 +257,7 @@ export const radiantFlares: Record<RadiantBearerId, Record<FlareTier, RadiantFla
       [tier, {
         name: `${kit.signatureFamily}${scale.suffix}`,
         ...kit.signature,
+        comboHits: tier === 'glowing' ? 4 : tier === 'lustrous' ? 8 : 12,
         damage: kit.signature.damage * scale.damage,
         burn: kit.signature.burn * scale.support,
         shieldDefense: kit.signature.shieldDefense * scale.support,
@@ -325,36 +270,6 @@ export const radiantFlares: Record<RadiantBearerId, Record<FlareTier, RadiantFla
         attackBuff: kit.signature.attackBuff * scale.support,
       }]))];
   })) as Record<RadiantBearerId, Record<FlareTier, RadiantFlareOffer>>;
-for (const [id, offers] of Object.entries({
-  ember: {
-    glowing: { damage: 1.4, burn: .12, burnPhases: 2 },
-    lustrous: { damage: 2, burn: .16, burnPhases: 2 },
-    eternal: { damage: 3, burn: .2, burnPhases: 3 },
-  },
-  tide: {
-    glowing: { shieldDefense: .9, shieldHP: .05 },
-    lustrous: { shieldDefense: 1.3, shieldHP: .07, reduction: .15, reductionPhases: 1 },
-    eternal: { shieldDefense: 1.8, shieldHP: .1, reduction: .25, reductionPhases: 2 },
-  },
-  sprout: {
-    glowing: { heal: .8, renewal: .15, renewalRounds: 2 },
-    lustrous: { heal: 1.1, renewal: .2, renewalRounds: 2 },
-    eternal: { heal: 1.8, renewal: .3, renewalRounds: 3 },
-  },
-} as const)) {
-  for (const tier of ['glowing', 'lustrous', 'eternal'] as const) {
-    Object.assign(radiantFlares[id as RadiantBearerId][tier], offers[tier]);
-  }
-}
-for (const [id, names] of Object.entries({
-  ember: ['Cinderwake', 'Cinderwake Ascendant', 'Cinderwake Everlasting'],
-  tide: ['Tideglass Shelter', 'Tideglass Dominion', 'Tideglass Eternity'],
-  sprout: ['Dawnseed Renewal', 'Dawnseed Flourishing', 'Dawnseed Perennial'],
-} as const)) {
-  (['glowing', 'lustrous', 'eternal'] as const).forEach((tier, index) => {
-    radiantFlares[id as RadiantBearerId][tier].name = names[index];
-  });
-}
 
 export type RadiantMasterId = `master-${RadiantBearerId}-${1 | 2 | 3}` & MasterConduitId;
 export type RadiantMasterEnhancement = 'passive' | 'leader' | 'signature';
@@ -403,24 +318,33 @@ export const radiantMasters: Record<RadiantMasterId, RadiantMasterDefinition> = 
     }];
   }),
 ) as Record<RadiantMasterId, RadiantMasterDefinition>;
-const starterMasterRules = {
-  'master-ember-1': ['passive', 'longer-burn', 'Cinderwake Burn lasts one additional enemy phase.'],
-  'master-ember-2': ['signature', 'flare-damage', 'Cinderwake direct damage increases by 15%.'],
-  'master-ember-3': ['signature', 'self-shield', 'Casting Cinderwake grants Infernis a Shield equal to 8% of maximum HP.'],
-  'master-tide-1': ['signature', 'flare-shield', 'Tideglass Shields increase by 15%.'],
-  'master-tide-2': ['signature', 'deep-shield', 'Tideglass adds 8% of each recipient’s maximum HP to its Shield.'],
-  'master-tide-3': ['signature', 'tide-strike', 'Tideglass also strikes the selected enemy for 90% Attack.'],
-  'master-sprout-1': ['signature', 'flare-heal', 'Dawnseed immediate healing increases by 15%.'],
-  'master-sprout-2': ['signature', 'sprout-strike', 'Dawnseed also strikes the selected enemy for 75% Attack.'],
-  'master-sprout-3': ['signature', 'longer-renewal', 'Dawnseed Renewal lasts one additional round.'],
-} as const satisfies Partial<Record<RadiantMasterId, readonly [
-  RadiantMasterEnhancement, RadiantMasterDefinition['rule'], string,
-]>>;
-for (const id of Object.keys(starterMasterRules) as (keyof typeof starterMasterRules)[]) {
-  const [enhancement, rule, effect] = starterMasterRules[id];
-  Object.assign(radiantMasters[id], { enhancement, rule, effect });
-}
+
 export const radiantStarterKits = radiantBearerKits;
+
+export function radiantPassiveAmount(loadout: RadiantLoadout): number {
+  const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
+  return (radiantBearerKits[loadout.starter].passive.magnitude + .01 * (loadout.form - 1)) *
+    (1 + (master?.enhancement === 'passive' ? master.magnitude : 0) + (loadout.ascension.skill1 ? .5 : 0));
+}
+
+export function radiantLeaderBonus(loadout: RadiantLoadout): number {
+  const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
+  return (radiantBearerKits[loadout.starter].leaderBonus + .02 * (loadout.form - 1)) *
+    (loadout.ascension.skill2 ? 1.5 : 1) + (master?.enhancement === 'leader' ? master.magnitude : 0) +
+    radiantGearAmount(loadout.gear, 'leader');
+}
+
+export function radiantFinalFlare(loadout: RadiantLoadout, tier: FlareTier): RadiantFlareOffer {
+  const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
+  const power = (1 + .1 * (loadout.form - 1)) *
+    (1 + (master?.enhancement === 'signature' ? master.magnitude : 0) + (loadout.ascension.lastFlare ? .5 : 0));
+  const offer = { ...radiantFlares[loadout.starter][tier] };
+  for (const key of ['damage', 'burn', 'shieldDefense', 'shieldHP', 'reduction', 'weaken', 'exposure', 'heal', 'renewal', 'attackBuff'] as const)
+    offer[key] *= power;
+  for (const key of ['reduction', 'weaken', 'exposure', 'attackBuff'] as const)
+    offer[key] = Math.min(.8, offer[key]);
+  return offer;
+}
 
 export function validateRadiantStats(stats: RadiantStats): void {
   if (!stats || Object.keys(stats).length !== 4 ||

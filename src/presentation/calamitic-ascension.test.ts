@@ -69,20 +69,20 @@ describe('Calamitic Ascension presentation', () => {
     const html = ascensionContents(starter, account);
     expect(html).toContain(radiantBearerKits.ember.passive.name);
     expect(html).toContain(radiantBearerKits.ember.leader);
-    expect(html).toContain('All Flares');
-    expect(html).toContain('50% of the passive');
-    expect(html).toContain('50% of the base leader-skill stat bonus');
-    expect(html).toContain('50% of the base effect magnitudes of all Flares');
+    expect(html).toContain('Final Flare');
+    expect(html).toContain('50% of the evolution-enhanced Passive Skill bonus');
+    expect(html).toContain('50% of the native Leader Skill damage bonus');
+    expect(html).toContain('50% of evolution-enhanced Final Flare effect magnitudes');
     expect(html).not.toContain('Cinder Cleave');
     expect(html).not.toContain('Skill Efficiency');
     expect(html).not.toContain('Requires');
     expect(html).not.toContain('before');
   });
-  it('describes the actual extra healing for a cleanse passive instead of extra removals', () => {
+  it('describes the current squad-stat passive instead of retired cleanse effects', () => {
     account.characters.aurora = { level: 105, evolution: 6, ascension: { stats: true } };
     const html = ascensionContents(getStarter('aurora'), account);
-    expect(html).toContain('When this passive removes a Weaken, heal that ally for 50% of caster Recovery.');
-    expect(html).not.toContain('50% of the passive’s base effect magnitude');
+    expect(html).toContain('50% of the evolution-enhanced Passive Skill bonus');
+    expect(html).not.toContain('When this passive removes a Weaken');
   });
   it('shows insufficient funds without attempting a transaction', () => {
     account.materials['shard-of-calamity'] = 24;

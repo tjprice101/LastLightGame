@@ -24,21 +24,16 @@ function stepName(starter: Starter, step: CalamiticAscensionStep): string {
   if (step === 'stats') return 'Ascend';
   if (!isRadiantBearer(starter.id)) throw new Error('This Element-Bearer has no available Radiant combat kit.');
   const kit = radiantBearerKits[starter.id];
-  return step === 'skill1' ? kit.passive.name : step === 'skill2' ? kit.leader : 'All Flares';
+  return step === 'skill1' ? kit.passive.name : step === 'skill2' ? kit.leader : 'Final Flare';
 }
 
 function stepDescription(starter: Starter, step: CalamiticAscensionStep): string {
-  if (step === 'stats') return 'HP, Attack, Defense and Recovery ×1.5 · Level cap 115';
+  if (step === 'stats') return 'Health, Attack, Defense and Recovery ×1.5 · Level cap 115';
   if (!isRadiantBearer(starter.id)) throw new Error('This Element-Bearer has no available Radiant combat kit.');
-  if (step === 'skill1') {
-    const rule = radiantBearerKits[starter.id].passive.rule;
-    return rule === 'flare-cleanse' || rule === 'guard-cleanse'
-      ? 'When this passive removes a Weaken, heal that ally for 50% of caster Recovery.'
-      : 'Add 50% of the passive’s base effect magnitude; durations do not change.';
-  }
+  if (step === 'skill1') return 'Add 50% of the evolution-enhanced Passive Skill bonus.';
   return step === 'skill2'
-    ? 'Add 50% of the base leader-skill stat bonus while leading and alive.'
-    : 'Add 50% of the base effect magnitudes of all Flares; durations do not change.';
+    ? 'Add 50% of the native Leader Skill damage bonus while leading and alive.'
+    : 'Add 50% of evolution-enhanced Final Flare effect magnitudes; durations do not change.';
 }
 
 export function ascensionContents(starter: Starter, account: Account): string {
@@ -52,7 +47,7 @@ export function ascensionContents(starter: Starter, account: Account): string {
       const available = canAscendCharacter(starter.id, progress, step) && shards >= calamiticAscensionCost;
       const icon = step === 'stats' ? crown : step === 'skill2' ? '<span aria-hidden="true">★</span>'
         : abilityIcon(starter.id, step === 'skill1' ? 'passive' : 'ultimate') || '<span aria-hidden="true">◆</span>';
-      const label = step === 'stats' ? 'Ascension' : step === 'skill1' ? 'Passive' : step === 'skill2' ? 'Leader skill' : 'Flares';
+      const label = step === 'stats' ? 'Ascension' : step === 'skill1' ? 'Passive Skill' : step === 'skill2' ? 'Leader Skill' : 'Final Flare';
       return `<article class="ascension-step${done ? ' is-done' : ''}" data-ascension-step="${step}"><div class="ascension-step-icon">${icon}</div><div class="ascension-step-copy"><small>${label}</small><h3>${escape(stepName(starter, step))}</h3><p>${escape(stepDescription(starter, step))}</p><small>${calamiticAscensionCost} Shards</small></div>${done ? '<strong class="ascension-done">✓ Done</strong>' : `<button type="button" class="ascension-action" data-button-surface="art" data-ascension-select="${step}"${available ? '' : ' disabled'}>${available ? action : 'Not enough Shards'}</button>`}</article>`;
     }).join('')}</div>`;
 }

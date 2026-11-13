@@ -44,7 +44,7 @@ describe('Organized opening starter selection', () => {
     expect(document.activeElement).toBe(card);
     expect(card.querySelector('img')).toBe(image);
     expect(card.getAttribute('aria-pressed')).toBe('true');
-    expect(host.querySelector('h2')?.textContent).toBe('Beginner, Tizu');
+    expect(host.querySelector('h2')?.textContent).toBe('Tizu');
     const lore = host.querySelector<HTMLDetailsElement>('details')!;
     expect(lore.open).toBe(false);
     expect(lore.textContent).toContain(availableStarters[1].lore.story);
@@ -62,7 +62,7 @@ describe('Organized opening starter selection', () => {
     await act(async () => root.render(<StarterSelection {...callbacks} initialSelected="ember" />));
     expect(host.querySelector('[data-starter="ember"]')?.getAttribute('aria-pressed')).toBe('true');
     expect(host.querySelector<HTMLButtonElement>('#begin')?.disabled).toBe(false);
-    expect(host.querySelector('h2')?.textContent).toBe('Beginner, Infernis');
+    expect(host.querySelector('h2')?.textContent).toBe('Infernis');
     const player = Array.from(host.querySelectorAll('button')).find(b => b.textContent === 'Player info')!;
     await act(async () => player.click());
     expect(callbacks.onPlayerInfo).toHaveBeenCalledOnce();

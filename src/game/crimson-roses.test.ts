@@ -452,7 +452,8 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
   it.each(roseCharacters)('uses six named forms, real combat kits, rose-only costs and max-level evolution gates for$name', (character) => {
     for (let evolution = 1; evolution <= 6; evolution++) {
       const cap = characterLevelCap(evolution);
-      expect(characterName(character.id, evolution)).toMatch(new RegExp(`, ${character.name}$`));
+      expect(characterName(character.id, evolution)).toBe(evolution === 1
+        ? character.name : `${characterArt(character.id, evolution).title}, ${character.name}`);
       expect(characterArt(character.id, evolution).available).toBe(true);
       for (let level = 0; level <= cap; level++) {
         const progress = { level, evolution };

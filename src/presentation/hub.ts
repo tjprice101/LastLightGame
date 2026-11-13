@@ -43,7 +43,7 @@ import { bindMenuPagination, menuPager } from './menu-pagination';
 import { formatMenuWorkspace } from './menu-workspace';
 
 const radiantTabLabels: Partial<Record<string, string>> = {
-  'upgrade-3': 'Passive & leader', 'upgrade-4': 'Glowing Flare', 'upgrade-5': 'Lustrous Flare', 'upgrade-6': 'Shattering Light',
+  'upgrade-3': 'Passive & Leader Skills', 'upgrade-4': 'Final Flare · Sparkle', 'upgrade-5': 'Final Flare · Shimmer', 'upgrade-6': 'Shattering Light',
 };
 
 export const characterTabs = [

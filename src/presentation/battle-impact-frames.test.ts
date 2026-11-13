@@ -9,7 +9,7 @@ function loadout(starter: RadiantBearerId): RadiantLoadout {
   return { id: starter, starter, level: 105, form: 6, weaponRank: 0, masterId: null, ascension: {} };
 }
 function battle(ids: RadiantBearerId[] = ['ember', 'tide', 'sprout']): RadiantCombatState {
-  return createRadiantCombat(ids.map(loadout), ['enemy-a', 'enemy-b'].map(id => ({
+  return createRadiantCombat(ids.map(loadout), ['enemy-a', 'enemy-b'].map(id => ({ elementId: null,
     id, stats: { hp: 1000000, attack: 100, defense: 100, recovery: 100 }, currencyBudget: 30000,
   })), 1729);
 }
@@ -48,7 +48,7 @@ describe('saved ordered Radiant impact ledger', () => {
     expect(aoe.readout.units['enemy-b'].hp).toBeLessThan(before.enemies[1].hp);
     expect(before).toEqual(original);
   });
-  it('replays hit and defeat drops for every living member at their enemy impact', () => {
+  it('replays Normal drops only to matching elements at impact without a defeat refund', () => {
     const before = battle(['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'crinso']);
     const target = before.enemies[0];
     target.hp = 1;
@@ -59,10 +59,11 @@ describe('saved ordered Radiant impact ledger', () => {
     const frames = radiantImpactFrames(before, result.state, result.events);
     const hit = frames.find(frame => frame.events.some(event => event.type === 'damage' && event.targetId === target.id))!;
     const drops = hit.events.filter(event => event.type === 'gauge-drop');
-    expect(drops.map(drop => drop.trigger)).toEqual(['hit', 'defeat']);
+    expect(drops.map(drop => drop.trigger)).toEqual(['hit']);
     const total = drops.reduce((sum, drop) => sum + drop.amount, 0);
     expect(hit.readout.units[target.id].hp).toBe(0);
-    expect(hit.readout.gauge.members.map(member => member.charge)).toEqual([total, ...Array(5).fill(total / 10)]);
+    expect(hit.readout.gauge.members.map(member => member.charge)).toEqual([total,
+      ...before.gauge.members.slice(1).map(member => member.elementId === before.gauge.members[0].elementId ? total / 10 : 0)]);
     expect(frames.at(-1)!.readout).toEqual(radiantReadout(result.state));
   });
   it('rejects a falsified drop source or amount instead of showing an unsaved team gain', () => {
@@ -156,7 +157,7 @@ describe('saved ordered Radiant impact ledger', () => {
     expect(frames.at(-1)!.statuses.ember.find(row => row.kind === 'renewal')?.remaining).toBe(1);
     expect(frames.at(-1)!.statuses.ember.some(row => row.kind === 'reduction' || row.kind === 'seed')).toBe(false);
   });
-  it('removes Ember Eternal Flare burn before replaying its saved periodic packet', () => {
+  it('does not replay a retired Burn detonation during Shattering Light', () => {
     const before = battle(['ember']);
     before.gauge.members[0].charge = before.gauge.members[0].baseCost * 2;
     before.gauge.sharedUnits = sharedChargeThreshold(0);
@@ -167,8 +168,8 @@ describe('saved ordered Radiant impact ledger', () => {
       event.type === 'status' && event.status === 'burn' && event.remaining === 0));
     const periodic = frames.findIndex(frame => frame.events.some(event =>
       event.type === 'damage' && event.origin === 'periodic'));
-    expect(consumed).toBeGreaterThan(-1);
-    expect(periodic).toBeGreaterThan(consumed);
-    expect(frames[consumed].statuses['enemy-a'].some(row => row.kind === 'burn')).toBe(false);
+    expect(consumed).toBe(-1);
+    expect(periodic).toBe(-1);
+    expect(frames.at(-1)!.readout).toEqual(radiantReadout(result.state));
   });
 });

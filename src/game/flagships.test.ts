@@ -49,7 +49,7 @@ describe('playable flagship roster', () => {
       const form = characterArt(character.id, evolution);
       expect(form.available).toBe(true);
       expect(existsSync(`public/assets/characters/${form.art}.png`)).toBe(true);
-      expect(characterName(character.id, evolution)).toBe(`${form.title}, ${character.name}`);
+      expect(characterName(character.id, evolution)).toBe(evolution === 1 ? character.name : `${form.title}, ${character.name}`);
     }
     for (const action of ['passive', 'light', 'skill1', 'skill2', 'ultimate'] as const) {
       const art = action === 'light' ? 'universal-normal-attack' : `${character.id}-${action}`;

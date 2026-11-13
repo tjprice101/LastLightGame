@@ -1,5 +1,31 @@
 # Global character benchmarks and enemy calibration (D-404)
 
+## Core consolidation cadence checks (2026-11-12; local, not released)
+
+Bounded comparisons use the published `20d9cc45` source as the before-contract
+and the consolidated engine as after-contract, with unchanged authored-control
+enemies, levels, equipment, targeting policy and seeds. These are conditional
+owned-team experiments, not ordinary-account averages or new global ceilings.
+
+All three single free starters at level 0 clear the opening Story encounter
+at seeds 1/1729/104729. Infernis changes from 2 to 4 executed rounds, Tizu
+from 9 to 4, and Flora from 7 to 4. At level 105, the conditional farmed +0
+starter trio and six-member Infernis/Tizu/Flora/Rosetta/Thornia/Disciple squad
+still lose Training 120, final Machines and Machines EX+3 in both contracts.
+Those six defeats are recorded, not hidden or relabeled clears. No hostile
+statistics, rewards, gates or event schedules were retuned.
+
+Separate neutral, zero-Defense, no-incoming paper checks use 6 and 20 rounds.
+With Common +0 gear at 6 rounds, damage changes 18,846 -> 17,448 solo,
+34,842 -> 37,578 trio and 67,696 -> 77,580 six-member. At 20 rounds those
+values are 59,618 -> 58,160; 113,976 -> 125,260; and 230,179 -> 254,918.
+The conservative policy holds for a higher Flare tier: no-incoming charging is
+deliberately slower under the approved 10/100/200 contract. At 20 rounds the
+six-member sample casts 2 Flares versus 31 previously, creates 27,646 Shield
+versus 69,352, and offers no healing on either full-Health paper target team.
+Shield creation, offered healing and zero-Defense damage are not survival,
+effective healing or encounter clear-rate measurements.
+
 ## Radiant fresh-entry economy controls (2026-11-08)
 
 [Actual-authority request-cost experiment](Future%20Plans/combat-system-specification.md#fresh-entry-economy-and-retry-measurements-2026-11-08)

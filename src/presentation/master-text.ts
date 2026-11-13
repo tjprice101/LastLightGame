@@ -21,7 +21,7 @@ export function radiantAttunementProfile(attunement: RadiantAttunement): string 
 export function radiantMasterAttunement(id: MasterConduitId): string | null {
   if (!isRadiantMaster(id)) return null;
   const attunement = radiantMasters[id].attunement;
-  return `${radiantAttunementNames[attunement]} attunement: ${radiantAttunementProfile(attunement)}.`;
+  return `${radiantAttunementNames[attunement]} Prism-base: ${radiantAttunementProfile(attunement)}.`;
 }
 export const radiantMasterUnavailable = 'Unavailable in combat: its Element-Bearer is not released.';
 /** Complete live Master effect: attunement subtype/stat profile plus its character-specific enhancement. */
@@ -30,4 +30,4 @@ export function radiantMasterEffect(id: MasterConduitId): string {
   return attunement === null ? radiantMasterUnavailable : `${attunement} ${radiantMasters[id as RadiantMasterId].effect}`;
 }
 /** Shown for an empty Master slot: Radiant combat uses the neutral Equinox profile. */
-export const radiantNoMasterEffect = `No Master: ${radiantAttunementNames.equinox} attunement, ${radiantAttunementProfile('equinox')}.`;
+export const radiantNoMasterEffect = `No Master: ${radiantAttunementNames.equinox} Prism-base, ${radiantAttunementProfile('equinox')}.`;

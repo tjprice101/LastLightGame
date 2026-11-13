@@ -1,5 +1,13 @@
 # Documentation hub
 
+## Approved core combat consolidation (2026-11-12; in progress)
+
+The [approved combat contract](combat.md#approved-core-consolidation-2026-11-12-implementation-in-progress)
+covers Prism-base, simple living squad passives, elemental Leader Skills,
+evolution-enhanced Final Flares, real combos and exact Luminosity sources.
+The [handoff](handoff.md#approved-core-consolidation-implementation-2026-11-12)
+tracks validation and publication; this is not yet a hosted release.
+
 ## Compact desktop menus and battle presentation (2026-11-12)
 
 The [compact desktop contract](menus-and-inventory.md#compact-desktop-menus-and-battle-charge-presentation-2026-11-12)

@@ -124,10 +124,10 @@ describe('game-specific hub layouts', () => {
     expect(home).toContain('data-page="summon"');
     const overview = characterHub(starter, 'overview');
     const kit = radiantBearerKits[starter.id as keyof typeof radiantBearerKits];
-    expect(overview).toContain(`Costs ${kit.baseCost} personal charge.`);
+    expect(overview).toContain(`Costs ${kit.baseCost} Luminosity.`);
     expect(overview).toContain(kit.passive.name);
     expect(overview).toContain(kit.leader);
-    for (const tier of ['Glowing Flare', 'Lustrous Flare', 'Shattering Light']) expect(overview).toContain(tier);
+    for (const tier of ['Sparkle', 'Shimmer', 'Shattering Light']) expect(overview).toContain(tier);
     expect(overview).toContain('Unlocks at Evo.');
     expect(overview).not.toContain('Elemental Gauge');
     if (starter.id === 'tide') expect(home).toContain(`<strong>${formatStat(resolveFighter('tide').stats.defense)}</strong>`);
@@ -183,7 +183,7 @@ describe('game-specific hub layouts', () => {
     const overview = characterDetail(starter, 'overview');
     for (const label of ['HP', 'Attack', 'Defense', 'Recovery']) expect(overview).toContain(`<small>${label}</small>`);
     for (const label of ['Critical Rate', 'Skill Power', 'Elemental Gauge Capacity']) expect(overview).not.toContain(label);
-    expect(overview).toContain('Attunement · Equinox');
+    expect(overview).toContain('Prism-base · Equinox');
     expect(overview).toContain('Balanced: all four stats ×1. No personal Master equipped.');
   });
 
@@ -227,7 +227,7 @@ describe('game-specific hub layouts', () => {
     expect(hub.indexOf('class="character-control-panel"')).toBeLessThan(hub.indexOf('class="hub-rail"'));
     expect(hub).toContain(`<span data-owned-title>${characterName(starter.id)}</span>`);
     const overview = characterDetail(starter, 'overview');
-    for (const heading of ['Stats', 'Leader skill', 'Flares', 'Passive', 'Personal Master / Conduits']) {
+    for (const heading of ['Stats', 'Leader Skill', 'Final Flare', 'Passive Skill', 'Personal Master / Conduits']) {
       expect(overview).toContain(`>${heading}</h3>`);
     }
     expect(overview).not.toContain('>Skills</h3>');

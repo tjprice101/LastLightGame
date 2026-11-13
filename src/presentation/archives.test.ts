@@ -9,7 +9,7 @@ import { starters as allStarters } from '../content/starters';
 import { characterReleased } from '../content/release-visibility';
 const starters = allStarters.filter(character => characterReleased(character.id));
 const masterConduits = allMasters.filter(master => characterReleased(master.character));
-import { characterArt } from '../content/character-art';
+import { characterArt, characterName } from '../content/character-art';
 import { sanctuaryHeader, sanctuaryContext, isMenuPage } from './sanctuary';
 import { inventoryHub, characterHub } from './hub';
 import { elementLabel } from './element-label';
@@ -77,7 +77,7 @@ describe('unified Archives', () => {
     expect(html.match(/archive-form-locked/g)).toHaveLength(starters.length * 6 - 2);
     for (const starter of starters) for (let evolution = 1; evolution <= 6; evolution++) {
       expect(html).toContain(`data-archive-character="${starter.id}" data-form="${evolution}"`);
-      expect(html).toContain(characterArt(starter.id, evolution).title);
+      expect(html).toContain(characterName(starter.id, evolution));
     }
     expect(html).toContain(characterArt('ember', 2).title);
     expect(html).toContain('aria-label="Uncommon rarity"');

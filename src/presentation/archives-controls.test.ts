@@ -148,13 +148,13 @@ describe('Collections controls', { timeout: 30_000 }, () => {
     choose(scope, 'name');
     expect(shown().map(card => card.dataset.archiveConduit)).toEqual(['vigil-core']);
 
-    type('[Burn]');
+    type('Final Flare');
     choose(scope, 'ability');
-    const burn = shown();
-    expect(burn.length).toBeGreaterThan(0);
-    expect(burn.every(card => /\[[^\]]*burn[^\]]*\]/i.test(card.textContent ?? ''))).toBe(true);
+    const flares = shown();
+    expect(flares.length).toBeGreaterThan(0);
+    expect(flares.every(card => /final flare/i.test(card.textContent ?? ''))).toBe(true);
     choose(scope, 'effect');
-    expect(shown().length).toBeGreaterThanOrEqual(burn.length);
+    expect(shown().length).toBeGreaterThanOrEqual(flares.length);
 
     const lore = vigil.lore.split(/\s+/).slice(0, 3).join(' ');
     type(lore);
