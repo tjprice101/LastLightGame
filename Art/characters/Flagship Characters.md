@@ -76,14 +76,13 @@ not current art-only status. Prompt bodies and weapon concepts remain unchanged.
 
 ## Global character display naming
 
-The owner approved **Prefix, Character name** for every character form, with
-the existing evolution title as its prefix. For example **Gale Wayfarer, Atmoso**
-becomes **Crosswind Adept, Atmoso** at Evo.2. All42 flagship form headings use
-this format. Starter forms follow it too: **Beginner, Infernis** becomes
-**Embersteel Knight, Infernis**. Identity names in filenames, prompt subject
-prose and narrative remain short; they are not separate display names.
-This naming convention is approved; proposed future art/lore/kit content does
-not become implemented or mechanically approved through a name change.
+The owner-approved global six-form slate (D-453) now names every Element-Bearer:
+character name; canonical element + name; element Queen + name; element Goddess
++ name; element Legend + name; and a unique Latin-inspired Evo.6 epithet +
+name. The older comma-separated evolution-title examples and historical
+per-form prompt headings in this file are not current display names. Prompt
+subject prose and filenames keep the short identity name. This naming
+convention does not approve proposed future art, lore or kits.
 
 ## Pack contents
 

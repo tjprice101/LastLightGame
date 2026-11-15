@@ -20,6 +20,17 @@ and captured Elemental-Devourer names; this is presentation-only and requires
 no migration. This supersedes D-098's prefix-comma format and existing-title
 selection.
 
+## Owner-supplied profile IDs for a new character concept (D-454, 2026-11-15)
+
+The owner supplied six Midjourney profile IDs for one new character's art
+proposal, mapped one-to-one from Evo.1 through Evo.6. Use the exact IDs and
+`--profile` parameter only in the [Calyra art proposal](Future%20Plans/Calyra-art-concept.md);
+do not infer the moodboard imagery, generalize this mapping to other
+characters, or treat prompt creation as image generation or integration.
+The current prompt draft retains the established Evo-matched `--sref`/`--sw 150`
+alongside the profiles; whether profiles should supplement or replace those
+references remains for owner review.
+
 ## Convergent Light rank and personal Luminosity approval (2026-11-12)
 
 The owner approved replacing the shared Shattering Light meter with a

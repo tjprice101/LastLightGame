@@ -1,5 +1,14 @@
 # Last Light — Character Art Midjourney Prompt Guide
 
+## Owner-supplied profiles for one character proposal (D-454; 2026-11-15)
+
+The six owner-supplied Midjourney profile IDs are mapped in order to Evo.1–6
+for the art-only [Calyra proposal](../../docs/Future%20Plans/Calyra-art-concept.md).
+Append the matching `--profile` after the existing evolution-matched
+`--sref`/`--sw 150` suffix. This is a scoped proposal, not a global reference
+policy change or approval to generate/install art; do not infer moodboard
+contents from profile IDs or reuse the IDs on existing characters.
+
 ## Latest all-Moon and reclaimed-War direction (2026-11-06)
 
 All six Moon characters now have blue-purple lunar portrait and associated
@@ -163,10 +172,13 @@ ornate weapons and opaque swirling powers; Rosetta's6-star finale is broader.
 Keep the same compact chibi/eyes-only renderer and cutout background contract.
 Their54 prompts do not mean images were generated/intaken. See the
 [implemented event rules](../../docs/crimson-roses.md) and focused rose prompt tests.
-Character form display names always use **Prefix, Character name**, with each
-evolution title as its prefix (D-098): **Gale Wayfarer, Atmoso**, then
-**Crosswind Adept, Atmoso**. Form headings carry full names; subject/prose may
-use short identity names without inventing a second display naming scheme.
+Character form display names follow the global six-form slate (D-453):
+character name; canonical element + name; element Queen + name; element Goddess
++ name; element Legend + name; and a unique Latin-inspired Evo.6 epithet +
+name. See the [current naming contract](../../docs/units-and-progression.md).
+Form headings carry full display names; prompt subject prose uses the short
+identity name, not a second display-name scheme. Older prompt headings may
+retain historical titles as art-generation labels.
 For the seven other elements' flagship Element-Bearers, see
 [Flagship Characters](../characters/Flagship%20Characters.md): Bruno, Elise, Aurora, Atmoso,
 Razor, Bliss and Disciple. Each new pack has a base plus five evolutions, six

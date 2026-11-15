@@ -21,6 +21,18 @@ Commit `6db0a545` was pushed to `main` and `overhaul/radiant-foundation`.
 Pages run `43681474522` succeeded, and the hosted `version.json` reported the
 same commit. No authority/server behavior changed.
 
+## Moodboard-led Calyra art proposal (D-454; 2026-11-15)
+
+An art-only proposal is filed at
+[Calyra-art-concept.md](Future%20Plans/Calyra-art-concept.md): six names and
+copy-ready portrait prompts use the owner's six profile IDs in Evo.1–6 order.
+The proposal retains the existing evolution-matched `--sref`/`--sw 150` style
+suffix pending owner review of whether profiles should supplement or replace
+it. The moodboards were not visually inspected from their IDs. No images were
+generated or reviewed, and no character, kit, banner, activity, acquisition or
+live integration was added. Await approval or requested revisions before
+generation/intake; keep the character art-only unless separately approved.
+
 ## Desktop menu and Convergent Light Max Level follow-through (2026-11-12)
 
 **Published and verified.** Character
