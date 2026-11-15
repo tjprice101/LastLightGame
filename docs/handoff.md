@@ -23,15 +23,14 @@ same commit. No authority/server behavior changed.
 
 ## Moodboard-led Calyra art proposal (D-454; 2026-11-15)
 
-An art-only proposal is filed at
-[Calyra-art-concept.md](Future%20Plans/Calyra-art-concept.md): six names and
-copy-ready portrait prompts use the owner's six profile IDs in Evo.1–6 order.
-The proposal retains the existing evolution-matched `--sref`/`--sw 150` style
-suffix pending owner review of whether profiles should supplement or replace
-it. The moodboards were not visually inspected from their IDs. No images were
-generated or reviewed, and no character, kit, banner, activity, acquisition or
-live integration was added. Await approval or requested revisions before
-generation/intake; keep the character art-only unless separately approved.
+The owner approved the art-only Calyra identity, six names and visual
+progression in [Calyra-art-concept.md](Future%20Plans/Calyra-art-concept.md).
+The six profile IDs are mapped Evo.1–6; the draft combines each with the
+existing `--sref`/`--sw 150` suffix. The owner plans to test that prompt formula
+later when Midjourney credits are available. Moodboard contents were not
+visually inspected from IDs alone. No images were generated or reviewed, and no
+kit, banner, activity, acquisition or live integration was added. Do no further
+prompt testing, generation or integration until the owner resumes.
 
 ## Desktop menu and Convergent Light Max Level follow-through (2026-11-12)
 

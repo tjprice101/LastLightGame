@@ -31,6 +31,16 @@ The current prompt draft retains the established Evo-matched `--sref`/`--sw 150`
 alongside the profiles; whether profiles should supplement or replace those
 references remains for owner review.
 
+## Calyra identity and six-form art concept approval (D-455, 2026-11-15)
+
+The owner approves the art-only Calyra identity, six display names and
+glass-glazier/petal-fan visual progression in the
+[Calyra proposal](Future%20Plans/Calyra-art-concept.md). The profile-plus-`--sref`
+prompt arrangement remains untested; the owner plans to test it later when
+Midjourney credits are available. This approval does not authorize image
+generation/intake or a kit, banner, activity, acquisition path or playable
+integration.
+
 ## Convergent Light rank and personal Luminosity approval (2026-11-12)
 
 The owner approved replacing the shared Shattering Light meter with a

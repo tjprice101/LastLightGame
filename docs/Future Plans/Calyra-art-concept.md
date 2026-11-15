@@ -1,6 +1,7 @@
 # Calyra: moodboard-led character art proposal
 
-**Status:** art-only proposal; identity, names and prompts await owner review.
+**Status:** owner-approved art-only concept. The prompt/reference combination
+remains untested in Midjourney until the owner resumes with available credits.
 No gameplay kit, banner, activity, generated image, intake or live character
 is included.
 
@@ -86,11 +87,12 @@ One full-body adult woman in her early 20s, compact 2.5-to-3-head chibi anime un
 One full-body adult woman in her early 20s, compact 2.5-to-3-head chibi anime unit, only amber eyes as facial features; preserve the same dark auburn double-loop braid and ivory glass hairpin. Final, fully realized kiln-glazier design, hovering with feet visible: exquisitely layered cinder-black and pearl-ivory regalia, deep vermilion enamel seams, copper craftsmanship and exactly twelve immense opaque kiln-glass petals arranged as a complex open radial sculpture around her. Retain the evolved double-ring blowing cane and add a single nested glass wheel with sharply separated amber facets. The composition is spectacular and densely designed but the face, cane and all twelve petals remain readable; do not grow the body. Precise anime contours, crisp cel shading, luxurious painted non-emissive highlights. Cinder black, vermilion, copper, pearl ivory and amber only. Complete artwork fully inside the canvas, every petal and tool tip visible, continuous clear solid-background margin on all sides and corners; nothing touches or crosses the edges. Plain solid green background (#00FF00), flat and unlit through all openings, subject colors unchanged, no glow; powers are opaque solid-color shapes with crisp edges. --ar 4:3 --niji 6 --s 100 --q 1 --no blue, cyan, teal, violet, purple, feather wings, extra tools, extra characters, nose, mouth, eyebrows, facial markings, scenery, text, lettering, logo, watermark, photorealism, 3d render, glow, glowing effects, aura, bloom, haze, light spill --sref https://media.discordapp.net/attachments/1006667219217952879/1557598570910060564/Unit_ills_full_10017.webp?ex=6ac86236&is=6ac710b6&hm=a25734b8c781314dc6db6923c2449ecf97638d2bfa73032b17862cfa75932654&=&format=webp&width=817&height=778 --sw 150 --profile m7520700357232046603
 ```
 
-## Owner review gate
+## Approval and remaining gate
 
-Please review the identity, name slate, glass-glazier signature, petal-fan
-evolution and the choice to combine each supplied `--profile` with the existing
-`--sref` suffix. No images have been generated or visually reviewed; the six
-profile IDs are used exactly as provided, not interpreted as visible samples.
-Do not add a kit, banner, acquisition path or playable integration until the
-character design is approved separately.
+The owner approved the identity, name slate, glass-glazier signature and
+petal-fan evolution on 2026-11-15. The `--profile` plus `--sref` arrangement
+is only a draft; the owner plans to test the prompts later when Midjourney
+credits are available. No images have been generated or visually reviewed;
+the six profile IDs are used exactly as provided, not interpreted as visible
+samples. Do not generate, intake or integrate art, or add a kit, banner or
+acquisition path, until the owner resumes that work.
