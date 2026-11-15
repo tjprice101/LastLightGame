@@ -91,7 +91,7 @@ export type GameOperation =
   | { kind: 'sellCurrencyCreatures'; selections: { id: string; saleOption: string }[] }
   | { kind: 'purchaseConduit'; id: ConduitId }
   | { kind: 'setMachineLootFocus'; rarity: MachineFocusRarity; id: ConduitId | null }
-  | { kind: 'equipConduit'; character: string; slot: number; conduit: ConduitId | null }
+  | { kind: 'equipConduit'; character: string; slot: number; conduit: ConduitId | null; fromSlot?: number }
   | { kind: 'unequipAllConduits'; character: string }
   | { kind: 'openMasterChest'; id: MasterConduitId }
   | { kind: 'openMasterChests'; ids: MasterConduitId[] }

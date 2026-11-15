@@ -6,6 +6,8 @@ import { radiantBearerKits } from '../content/combat-kits';
 import { radiantCharacterLoadout, radiantLeaderText } from './character-combat';
 import { escapeDialogText } from './game-dialog';
 import { bindMenuPagination } from './menu-pagination';
+import { information } from './information';
+import { readableEffect } from './effect-copy';
 
 const collapsedFrames = { header: false, dock: false };
 
@@ -79,9 +81,10 @@ export function formatMenuWorkspace(root: HTMLElement, account: Account | null =
   const loadout = detail && radiantCharacterLoadout(account, detail.dataset.acquisitionCharacter ?? '');
   const identity = detail?.querySelector('.ref-character-identity');
   if (identity && loadout && tab !== 'overview') {
-    const copy = `<strong>Leader Skill · ${escapeDialogText(radiantBearerKits[loadout.loadout.starter].leader)}</strong> ${escapeDialogText(radiantLeaderText(loadout.loadout))}`;
+    const kit = radiantBearerKits[loadout.loadout.starter];
+    const copy = `<span><strong>Leader Skill · ${escapeDialogText(kit.leader)}</strong><small>${kit.element} allies · While leading and alive</small></span>${information(`viewer-leader-${loadout.loadout.starter}`, `${escapeDialogText(kit.leader)} · Leader Skill`, `<p>${escapeDialogText(readableEffect(radiantLeaderText(loadout.loadout)))}</p>`, 'Effects')}`;
     const existing = identity.querySelector('.workspace-leader-skill');
     if (existing) existing.innerHTML = copy;
-    else identity.insertAdjacentHTML('beforeend', `<p class="workspace-leader-skill">${copy}</p>`);
+    else identity.insertAdjacentHTML('beforeend', `<section class="workspace-leader-skill">${copy}</section>`);
   }
 }

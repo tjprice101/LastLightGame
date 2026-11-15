@@ -1,6 +1,6 @@
 import { morphElement } from './dom-morph';
 import { conduitConfigurationsPanel } from './saved-loadouts';
-import { conduits, conduitEffect, conduitColor, conduitEquipReason, conduitSlotCount, conduitUpgradeCap, getConduit, isConduitId, type Conduit, type ConduitSlots } from '../content/conduits';
+import { conduits, conduitEffect, conduitColor, conduitEquipReason, conduitSlotCount, conduitUpgradeCap, getConduit, isConduitId, type Conduit, type ConduitId, type ConduitSlots } from '../content/conduits';
 import { radiantGearAmount, type RadiantGear } from '../content/conduit-effects';
 import { radiantConduitDescription, radiantConduitEffectLines, radiantSummedConduitEffects } from '../content/conduit-effect-text';
 import { isRadiantMaster, radiantMasterAttunement, radiantMasterEffect, radiantMasterUnavailable, radiantNoMasterEffect } from './master-text';
@@ -25,6 +25,7 @@ const rarityOrder = ['Common', 'Rare', 'Legendary', 'Omnic', 'Calamitic'] as con
 type RarityFilter = '' | (typeof rarityOrder)[number];
 type EquipmentFilter = 'all' | 'equipped' | 'unequipped';
 export type ConduitLoadoutSort = 'rarity' | 'level' | 'name' | 'ready';
+export interface ConduitLoadoutChange { owner: string; slot: number; conduit: ConduitId | null; fromSlot?: number }
 const sortLabels: Record<ConduitLoadoutSort, string> = { rarity: 'Rarity (highest first)', level: 'Upgrade level (highest first)', name: 'Name (A–Z)', ready: 'Ready to equip first' };
 
 /** Transient, in-memory Your Conduits view state; never saved to the account. */
@@ -89,6 +90,9 @@ function applyTarget(loadout: HTMLElement): void {
   const filledName = slotCard?.dataset.loadoutSlotName;
   loadout.querySelectorAll<HTMLElement>('[data-loadout-slot]').forEach((card) => card.classList.toggle('is-target', card === slotCard));
   loadout.querySelectorAll<HTMLButtonElement>('[data-loadout-select-slot]').forEach((button) => button.setAttribute('aria-pressed', String(Number(button.dataset.loadoutSelectSlot) === target)));
+  loadout.querySelectorAll<HTMLElement>('[data-loadout-actions-for]').forEach(group => { group.hidden = Number(group.dataset.loadoutActionsFor) !== target; });
+  const selected = loadout.querySelector<HTMLElement>('[data-loadout-selected-name]');
+  if (selected) selected.textContent = target < 0 ? 'Select a slot for actions' : `Slot ${target + 1}${filledName ? ' selected' : ' · Empty'}`;
   const cue = loadout.querySelector<HTMLElement>('[data-loadout-target-cue]');
   if (cue) cue.textContent = target < 0 ? 'All slots full · select a slot to replace'
     : filledName ? `Replacing Slot ${target + 1} · ${filledName}` : `Equipping to Slot ${target + 1}`;
@@ -162,15 +166,37 @@ async function showRule(title: string, rule: string, lore: string): Promise<void
  * Binds root-delegated filter, sort, pagination, replacement-target and rule-detail controls.
  * Idempotent per host: safe to call on every render; state survives re-renders and updateCharacterTab.
  */
-export function bindConduitLoadout(host: HTMLElement): void {
+export function bindConduitLoadout(host: HTMLElement, change?: (request: ConduitLoadoutChange) => void): void {
   applyLoadoutView(host);
   if (boundHosts.has(host)) return;
   boundHosts.add(host);
   host.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return;
-    const control = event.target.closest<HTMLButtonElement>('button[data-loadout-rarity], [data-loadout-equipment-filter], [data-loadout-page], [data-loadout-select-slot], [data-loadout-rule], [data-loadout-master-rule]');
+    const control = event.target.closest<HTMLButtonElement>('button[data-loadout-rarity], [data-loadout-equipment-filter], [data-loadout-page], [data-loadout-select-slot], [data-loadout-rule], [data-loadout-master-rule], [data-loadout-move]');
     if (!control || control.disabled || !host.contains(control)) return;
     const data = control.dataset;
+    if (data.loadoutMove !== undefined && change) {
+      const loadout = control.closest<HTMLElement>('.conduit-loadout');
+      const fromSlot = Number(data.loadoutMove);
+      const card = loadout?.querySelector<HTMLElement>(`[data-loadout-slot="${fromSlot}"]`);
+      const conduit = card?.dataset.conduitDrag;
+      if (!loadout || !isConduitId(conduit)) return;
+      const owner = loadout.dataset.characterEquipment ?? '';
+      const choices = Array.from(loadout.querySelectorAll<HTMLElement>('[data-loadout-slot]'))
+        .filter(slot => Number(slot.dataset.loadoutSlot) !== fromSlot)
+        .map(slot => ({ value: slot.dataset.loadoutSlot!, label: `Slot ${Number(slot.dataset.loadoutSlot) + 1} · ${slot.dataset.loadoutSlotName ?? 'Empty'}` }));
+      choices.push({ value: 'cancel', label: 'Cancel' });
+      void gameChoose('Choose a destination. Occupied slots swap; empty slots move the Conduit.', choices, 'cancel', { title: `Move ${getConduit(conduit).name}` }).then(slot => {
+        if (slot !== 'cancel') {
+          view.target = { owner, slot: Number(slot), signature: loadout.dataset.loadoutSignature ?? '' };
+          change({ owner, slot: Number(slot), conduit, fromSlot });
+        }
+      }).catch((error: unknown) => {
+        const status = host.querySelector<HTMLElement>('#conduit-equipment-result');
+        if (status) status.textContent = error instanceof Error ? error.message : 'Could not open Conduit move choices.';
+      });
+      return;
+    }
     if (data.loadoutRule !== undefined || data.loadoutMasterRule !== undefined) {
       const id = data.loadoutRule ?? data.loadoutMasterRule;
       if (data.loadoutRule !== undefined && isConduitId(id)) {
@@ -223,6 +249,55 @@ export function bindConduitLoadout(host: HTMLElement): void {
     view.page = 0;
     applyLoadoutView(host);
   });
+  let drag: { loadout: HTMLElement; conduit: ConduitId; fromSlot?: number; signature: string } | null = null;
+  const clearDrag = () => {
+    host.querySelectorAll('.is-dragging, .is-drop-target').forEach(node => node.classList.remove('is-dragging', 'is-drop-target'));
+    host.querySelectorAll<HTMLElement>('[data-drop-state]').forEach(node => { delete node.dataset.dropState; });
+    drag = null;
+    applyLoadoutView(host);
+  };
+  host.addEventListener('dragstart', event => {
+    const source = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-conduit-drag][draggable="true"]') : null;
+    const loadout = source?.closest<HTMLElement>('.conduit-loadout');
+    const conduit = source?.dataset.conduitDrag;
+    if (!change || !source || !loadout || !isConduitId(conduit) || !event.dataTransfer) { event.preventDefault(); return; }
+    drag = { loadout, conduit, signature: loadout.dataset.loadoutSignature ?? '',
+      ...(source.dataset.loadoutSlot !== undefined ? { fromSlot: Number(source.dataset.loadoutSlot) } : {}) };
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('application/x-last-light-conduit', conduit);
+    source.classList.add('is-dragging');
+  });
+  const destination = (event: DragEvent) => {
+    const slot = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-loadout-slot]') : null;
+    if (!drag || !slot || slot.closest('.conduit-loadout') !== drag.loadout ||
+        drag.loadout.dataset.loadoutSignature !== drag.signature || Number(slot.dataset.loadoutSlot) === drag.fromSlot) return null;
+    const row = drag.loadout.querySelector<HTMLElement>(`[data-loadout-conduit="${drag.conduit}"]`);
+    const reason = drag.fromSlot === undefined ? (row?.dataset.loadoutReasons ?? '').split('|')[Number(slot.dataset.loadoutSlot)] : '';
+    return reason ? null : slot;
+  };
+  host.addEventListener('dragover', event => {
+    host.querySelectorAll('.is-drop-target').forEach(node => node.classList.remove('is-drop-target'));
+    const slot = destination(event);
+    if (!slot || !drag) return;
+    event.preventDefault();
+    if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
+    slot.classList.add('is-drop-target');
+    slot.dataset.dropState = slot.dataset.loadoutSlotName ? drag.fromSlot === undefined ? 'Replace' : 'Swap' : 'Equip';
+    const cue = drag.loadout.querySelector<HTMLElement>('[data-loadout-target-cue]');
+    if (cue) cue.textContent = `${slot.dataset.dropState} in Slot ${Number(slot.dataset.loadoutSlot) + 1}`;
+  });
+  host.addEventListener('drop', event => {
+    const slot = destination(event);
+    const source = drag;
+    event.preventDefault();
+    clearDrag();
+    if (!slot || !source || !change) return;
+    const owner = source.loadout.dataset.characterEquipment ?? '';
+    const index = Number(slot.dataset.loadoutSlot);
+    view.target = { owner, slot: index, signature: source.signature };
+    change({ owner, slot: index, conduit: source.conduit, ...(source.fromSlot === undefined ? {} : { fromSlot: source.fromSlot }) });
+  });
+  host.addEventListener('dragend', clearDrag);
 }
 
 function slotsFor(id: string, account: Account | null): ConduitSlots {
@@ -243,7 +318,7 @@ function totalBonuses(id: string, account: Account | null): string {
   return information(`conduit-totals-${id}`, 'Combined Conduit effects', `<section class="loadout-bonuses" aria-label="Combined Conduit effects"><h4 class="loadout-bonus-heading">Combined effects</h4>
     <div class="loadout-bonus-strip">${rows.length ? rows.join('') : '<p class="quiet">No combined modifiers yet. Equip a Conduit to see them here.</p>'}</div>
     ${rows.length ? '<p class="quiet">Totals of all equipped ranks. Triggered effects resolve separately for each Conduit; see each slot.</p>' : ''}
-    <p>Up to four matching Omnic and five Calamitic Conduits across fourteen designs. Calamitic Conduits work on every element and use ordinary slots. One name per character.</p></section>`, 'Combined effects & rules');
+    <p>Up to four matching Omnic and five Calamitic Conduits across fourteen designs. Calamitic Conduits work on every element and use ordinary slots. One name per character.</p></section>`, 'Effects & rules');
 }
 function masterRow(owner: string, account: Account | null): string {
   if (!isStarterId(owner)) return masterEquipment(owner, account);
@@ -283,12 +358,10 @@ function slotCard(owner: string, captured: boolean, element: ElementId, slots: C
       <span class="loadout-slot-plus">${select}</span><small class="loadout-empty-label">Empty</small></article>`;
   }
   const next = level < conduitUpgradeCap ? `next level ${readableEffect(conduitEffect(conduit, level + 1))}` : 'Maximum';
-  return `<article class="ref-equipment-slot loadout-slot" data-loadout-slot="${index}" data-loadout-slot-name="${conduit.name}" style="--loadout-accent:${conduitColor(conduit)}">
-    <div class="loadout-slot-main"><span class="loadout-slot-art">${conduitIcon(conduit.id, level)}</span><div class="loadout-slot-controls">${target}<button type="button" class="loadout-rule-button" data-loadout-rule="${conduit.id}" data-loadout-detail-level="${level}" aria-label="${conduit.name} details">Details</button></div></div>
+  return `<article class="ref-equipment-slot loadout-slot" data-loadout-slot="${index}" data-loadout-slot-name="${conduit.name}" data-conduit-drag="${conduit.id}" draggable="${!!account}" style="--loadout-accent:${conduitColor(conduit)}">
+    <div class="loadout-slot-main"><span class="loadout-slot-art">${conduitIcon(conduit.id, level)}</span><div class="loadout-slot-controls">${target}</div></div>
     <span class="loadout-slot-body"><b class="loadout-slot-name">${conduit.name}</b>${conduitElement(conduit.id)}
-      <small class="loadout-level" title="Level ${level} of ${conduitUpgradeCap} · ${next}">${conduit.rarity} · Lv ${level} / ${conduitUpgradeCap}<span class="ref-sr-only"> · Level ${level} of ${conduitUpgradeCap} · ${next}</span></small></span>
-    <div class="loadout-actions"><button type="button" class="ref-chip" data-page="conduit-upgrade" data-upgrade-target="${conduit.id}">Upgrade</button>
-      <button type="button" class="ref-chip" data-loadout-unequip="${index}" data-loadout-owner="${owner}" ${!account ? 'disabled' : ''}>Remove</button></div>
+      <small class="loadout-level" title="Level ${level} of ${conduitUpgradeCap} · ${next}">${conduit.rarity} · +${level}<span class="ref-sr-only"> · Level ${level} of ${conduitUpgradeCap} · ${next}</span></small></span>
     <span class="loadout-swap" hidden>${select}</span></article>`;
 }
 
@@ -308,8 +381,8 @@ function ownedList(owner: string, element: ElementId, slots: ConduitSlots, accou
       const equipped = slots.includes(conduit.id);
       const reasons = artifactSlots.map((_, index) => equipReason(conduit, element, slots, index) ?? '');
       const reason = equipped ? null : firstEmpty < 0 ? 'All slots full' : reasons[firstEmpty] || null;
-      return `<article class="loadout-owned-row${equipped ? ' is-equipped' : ''}" ${omnicTheme(conduit.id)} data-loadout-conduit="${conduit.id}" data-loadout-name="${conduit.name}" data-loadout-rarity="${conduit.rarity}" data-loadout-level="${level}" data-loadout-order="${order}" data-loadout-reasons="${reasons.join('|')}"${order >= conduitLoadoutPageSize ? ' hidden' : ''}><span class="loadout-owned-art">${conduitIcon(conduit.id, level)}</span>
-        <span class="loadout-owned-text"><b>${conduit.name}</b><small>${conduit.rarity} · Lv ${level} / ${conduitUpgradeCap}</small>${conduitElement(conduit.id)}${equipped ? '<small>Equipped on this character</small>' : `<small class="loadout-reason" data-loadout-reason${reason ? '' : ' hidden'}>${reason ?? ''}</small>`}</span>
+      return `<article class="loadout-owned-row${equipped ? ' is-equipped' : ''}" ${omnicTheme(conduit.id)} data-loadout-conduit="${conduit.id}" data-conduit-drag="${conduit.id}" draggable="${!!account && !equipped}" data-loadout-name="${conduit.name}" data-loadout-rarity="${conduit.rarity}" data-loadout-level="${level}" data-loadout-order="${order}" data-loadout-reasons="${reasons.join('|')}"${order >= conduitLoadoutPageSize ? ' hidden' : ''}><span class="loadout-owned-art">${conduitIcon(conduit.id, level)}</span>
+        <span class="loadout-owned-text"><b>${conduit.name}</b><small>${conduit.rarity} · +${level}</small>${conduitElement(conduit.id)}${equipped ? '<small>Equipped on this character</small>' : `<small class="loadout-reason" data-loadout-reason${reason ? '' : ' hidden'}>${reason ?? ''}</small>`}</span>
         <button type="button" class="loadout-rule-button" data-loadout-rule="${conduit.id}" data-loadout-detail-level="${level}" aria-label="${conduit.name} details">Details</button>
         ${equipped ? '<span class="ref-chip ref-white">Equipped</span>'
           : `<button type="button" class="ref-chip" data-loadout-equip="${conduit.id}" data-loadout-owner="${owner}" data-loadout-target="${firstEmpty}" ${reason || !account ? 'disabled' : ''}${!account ? ' data-loadout-locked' : ''}>Equip</button>`}</article>`;
@@ -341,10 +414,15 @@ export function conduitLoadout(owner: string, name: string, element: ElementId, 
       <div class="loadout-title"><h3>${shortName} · Conduits</h3><p>${filled} of ${conduitSlotCount} slots filled</p><p id="conduit-equipment-result" role="status"></p></div>${memberTabs(owner, account)}</header>
     ${account ? conduitConfigurationsPanel(account, owner) : ''}
     <div class="loadout-layout">
-      <section class="ref-panel loadout-slots" aria-label="Loadout"><header class="ref-panel-heading"><span>Loadout · ${filled} of ${conduitSlotCount}</span><button type="button" class="text-button loadout-clear" data-loadout-clear data-loadout-owner="${owner}" aria-label="Unequip all Conduits${captured ? '' : ', including Master'} from ${escapeDialogText(shortName)}" ${hasEquipment && account ? '' : 'disabled'}>Unequip All</button></header>
+      <section class="ref-panel loadout-slots" aria-label="Loadout"><header class="ref-panel-heading"><span>Loadout · ${filled} of ${conduitSlotCount}</span>${account ? totalBonuses(owner, account) : ''}<button type="button" class="text-button loadout-clear" data-loadout-clear data-loadout-owner="${owner}" aria-label="Unequip all Conduits${captured ? '' : ', including Master'} from ${escapeDialogText(shortName)}" ${hasEquipment && account ? '' : 'disabled'}>Unequip All</button></header>
         ${masterRow(owner, account)}
         <div class="ref-equipment-grid loadout-grid">${artifactSlots.map((_, index) => slotCard(owner, captured, element, slots, index, account)).join('')}</div>
-        ${account ? totalBonuses(owner, account) : ''}
+        <div class="loadout-selection"><span data-loadout-selected-name>Select a slot for actions</span>${slots.map((id, index) => id ? `<div class="loadout-actions" data-loadout-actions-for="${index}" hidden>
+          <button type="button" class="text-button" data-loadout-rule="${id}" data-loadout-detail-level="${account?.conduitUpgrades?.[id] ?? 0}">Details</button>
+          <button type="button" class="text-button" data-loadout-move="${index}" ${account ? '' : 'disabled'}>Move / swap</button>
+          <button type="button" class="text-button" data-page="conduit-upgrade" data-upgrade-target="${id}">Upgrade</button>
+          <button type="button" class="text-button" data-loadout-unequip="${index}" data-loadout-owner="${owner}" ${account ? '' : 'disabled'}>Remove</button></div>` : '').join('')}</div>
+        <p class="loadout-drag-hint">Drag to equip or swap slots. Or select a slot and use Equip or Move / swap.</p>
       </section>
       ${ownedList(owner, element, slots, account)}
     </div>
@@ -365,6 +443,7 @@ export function refreshConduitLoadout(host: HTMLElement, owner: string, name: st
   const openDialogs = new Set(Array.from(current.querySelectorAll<HTMLDialogElement>('dialog[open]')).map(dialog => dialog.id));
   next.content.querySelectorAll<HTMLDialogElement>('dialog').forEach(dialog => { dialog.open = openDialogs.has(dialog.id); });
   morphElement(current, next.innerHTML);
+  if (view.target?.owner === owner) view.target.signature = current.dataset.loadoutSignature ?? '';
   current.querySelectorAll<HTMLDetailsElement>('.saved-configuration-equipment').forEach(details => {
     details.open = expandedConfigurations.includes(details.closest<HTMLElement>('[data-config-index]')?.dataset.configIndex);
   });

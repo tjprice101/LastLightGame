@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { radiantConduitDescription, radiantConduitEffectLines, radiantSummedConduitEffects } from '../content/conduit-effect-text';
 import { radiantGearAmount } from '../content/conduit-effects';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { emptyAccount, type Account } from '../game/account';
 import { createCreatureCopy } from '../game/character-instances';
 import { applyConduitSearch, bindConduitLoadout, conduitBuffLine, conduitLoadout, conduitLoadoutPageSize, conduitLoadoutView, conduitMatchesSearch, conduitRuleText, conduitSummary, filledConduitSlots, refreshConduitLoadout, resetConduitLoadoutView } from './conduit-loadout';
@@ -19,6 +19,53 @@ function account(): Account {
 
 describe('Conduit loadout (D-229)', () => {
   beforeEach(() => resetConduitLoadoutView());
+
+  it('replaces from inventory and swaps equipped slots without changing equipment during dragover', () => {
+    const wallet = account();
+    const before = structuredClone(wallet);
+    const host = document.createElement('div');
+    host.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
+    const change = vi.fn();
+    bindConduitLoadout(host, change);
+    const transfer = { setData: vi.fn(), effectAllowed: '', dropEffect: '' };
+    const dragEvent = (type: string, selector: string) => {
+      const event = new Event(type, { bubbles: true, cancelable: true });
+      Object.defineProperty(event, 'dataTransfer', { value: transfer });
+      host.querySelector(selector)!.dispatchEvent(event);
+      return event;
+    };
+    dragEvent('dragstart', '[data-loadout-conduit="vigil-core"]');
+    expect(dragEvent('dragover', '[data-loadout-slot="0"]').defaultPrevented).toBe(true);
+    expect(host.querySelector('[data-loadout-slot="0"]')?.getAttribute('data-drop-state')).toBe('Replace');
+    expect(change).not.toHaveBeenCalled();
+    expect(wallet).toEqual(before);
+    dragEvent('drop', '[data-loadout-slot="0"]');
+    expect(change).toHaveBeenLastCalledWith({ owner: 'ember', slot: 0, conduit: 'vigil-core' });
+    expect(host.querySelector('.is-dragging, .is-drop-target')).toBeNull();
+    dragEvent('dragstart', '[data-loadout-slot="0"]');
+    dragEvent('drop', '[data-loadout-slot="1"]');
+    expect(change).toHaveBeenLastCalledWith({ owner: 'ember', slot: 1, conduit: 'siegebound-drive', fromSlot: 0 });
+  });
+
+  it('ignores external and stale drops and cleans cancelled drags without a transaction', () => {
+    const host = document.createElement('div');
+    host.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', account());
+    const change = vi.fn();
+    bindConduitLoadout(host, change);
+    const event = (type: string, selector: string) => {
+      const drag = new Event(type, { bubbles: true, cancelable: true });
+      Object.defineProperty(drag, 'dataTransfer', { value: { setData: vi.fn() } });
+      host.querySelector(selector)!.dispatchEvent(drag);
+    };
+    event('drop', '[data-loadout-slot="0"]');
+    event('dragstart', '[data-loadout-conduit="vigil-core"]');
+    event('dragend', '[data-loadout-conduit="vigil-core"]');
+    expect(host.querySelector('.is-dragging')).toBeNull();
+    event('dragstart', '[data-loadout-conduit="vigil-core"]');
+    host.querySelector<HTMLElement>('.conduit-loadout')!.dataset.loadoutSignature = 'changed';
+    event('drop', '[data-loadout-slot="0"]');
+    expect(change).not.toHaveBeenCalled();
+  });
 
   it('offers Unequip All directly in the loadout and enables it for ordinary, Master-only and captured gear', () => {
     const wallet = account();
@@ -436,7 +483,8 @@ describe('Conduit loadout (D-229)', () => {
       this.dispatchEvent(new Event('close'));
     } });
     try {
-      bindConduitLoadout(host);
+      const change = vi.fn();
+      bindConduitLoadout(host, change);
       const button = host.querySelector<HTMLButtonElement>(`[data-loadout-rule="${conduit.id}"]`)!;
       button.focus();
       button.click();
@@ -457,6 +505,16 @@ describe('Conduit loadout (D-229)', () => {
       await Promise.resolve();
       expect(document.querySelector('.game-dialog')).toBeNull();
       expect(document.activeElement).toBe(button);
+      wallet.conduitEquipment = { ember: [conduit.id, null, null, null, null, null, null, null] };
+      refreshConduitLoadout(host, 'ember', 'Infernis', 'infernic', wallet);
+      host.querySelector<HTMLButtonElement>('[data-loadout-select-slot="0"]')!.click();
+      host.querySelector<HTMLButtonElement>('[data-loadout-move="0"]')!.click();
+      document.querySelector<HTMLButtonElement>('.game-dialog button[value="3"]')!.click();
+      await vi.waitFor(() => expect(change).toHaveBeenCalledWith({ owner: 'ember', slot: 3, conduit: conduit.id, fromSlot: 0 }));
+      wallet.conduitEquipment.ember = [null, null, null, conduit.id, null, null, null, null];
+      refreshConduitLoadout(host, 'ember', 'Infernis', 'infernic', wallet);
+      expect(host.querySelector('[data-loadout-select-slot="3"]')?.getAttribute('aria-pressed')).toBe('true');
+      expect(host.querySelector('[data-loadout-actions-for="3"]')?.hasAttribute('hidden')).toBe(false);
     } finally {
       if (show) Object.defineProperty(prototype, 'showModal', show);
       else Reflect.deleteProperty(prototype, 'showModal');

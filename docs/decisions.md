@@ -1,5 +1,19 @@
 # Decision log
 
+## Viewer, drag-and-drop equipment and Market cleanup (D-458, 2026-11-15)
+
+The owner requests better character artwork containment and wording, stable
+Conduit selection with drag-and-drop, lighter Material Exchange/Conduit Store
+copy, and portrait-sized Event Elemental-Devourer cards showing name and price
+instead of combat details.
+
+The explicitly approved equipment behavior is: **replace from inventory; swap
+between equipped slots**. Moving into an empty slot clears the source. The
+same action is available through keyboard-accessible Move / swap choices.
+Each rearrangement is one atomic transaction, preserving owned unlocks,
+equipment restrictions and frozen battle loadouts. No price, stat, reward,
+event scheduling or artwork changes are authorized by this presentation work.
+
 ## Game-wide reference theme rollout (D-457, 2026-11-15)
 
 The owner asks for the D-456 navy/plum/peach theme, colour scheme and

@@ -78,15 +78,17 @@ describe('live redesigned menus', () => {
     expect(root.querySelector('[data-workspace-tab="equipment"]')?.getAttribute('data-team-view')).toBe('bearers');
     expect(account).toEqual(before);
   });
-  it('keeps the actual Leader Skill visible alongside upgrade controls without duplication', () => {
+  it('keeps the Leader name compact and exact effects in one dialog alongside upgrade controls', () => {
     const root = document.createElement('div');
     root.innerHTML = '<section class="ref-bearer-detail" data-acquisition-character="ember"><div class="ref-character-identity"></div><button data-character-tab="upgrade-1" aria-pressed="true">Level</button></section>';
     formatMenuWorkspace(root, emptyAccount());
     formatMenuWorkspace(root, emptyAccount());
     expect(root.querySelectorAll('.workspace-leader-skill')).toHaveLength(1);
     expect(root.textContent).toContain('Hearthbound Oath');
-    expect(root.textContent).toContain('Normal Attacks deal 20% more damage');
-    expect(root.textContent).toContain('Burn applied by the recipient');
+    expect(root.querySelector('[data-information]')?.textContent).toBe('Effects');
+    const effects = root.querySelector('.information-content')!.textContent!.replace(/[[\]]/g, '');
+    expect(effects).toContain('Normal Attack deal 20% more damage');
+    expect(effects).toContain('Burn applied by the recipient');
   });
   it('keeps level and attunement together without repeating the subtype', () => {
     const root = document.createElement('div');

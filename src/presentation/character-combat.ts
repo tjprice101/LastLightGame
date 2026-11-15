@@ -160,7 +160,7 @@ export function radiantConvergenceRankPanel(loadout: RadiantLoadout, account: Ac
       : 'Not enough resources to raise Convergent Light rank.';
   return `<section class="character-category convergent-rank-panel" data-convergent-rank="${rank}">
     <header><h3>Convergent Light</h3><strong>Rank ${rank} / 20 · +${rank - 1}% effect</strong></header>
-    <p>Each rank above Rank 1 adds 1% to effect magnitudes. Higher tiers unlock as you rank up.</p>
+    <p>Effects gain 1% per rank above Rank 1. Higher ranks unlock stronger tiers.</p>
     <div class="convergent-rank-tiers" aria-label="${radiantFlareTierNames[tier]}"><span class="is-sparkling"><i style="--rank-fill:${Math.min(rank, 5) / 5 * 100}%"></i>Sparkling · 1–5</span><span class="is-glimmering"><i style="--rank-fill:${Math.max(0, Math.min(rank - 5, 5)) / 5 * 100}%"></i>Glimmering · 6–10</span><span class="is-ultimate"><i style="--rank-fill:${Math.max(0, rank - 10) / 10 * 100}%"></i>Ultimate · 11–20</span></div>
     <div class="convergent-rank-actions"><div>
     ${resources.length ? `<h4>Rank ${rank + 1} <small>Owned / Required</small></h4>` : ''}

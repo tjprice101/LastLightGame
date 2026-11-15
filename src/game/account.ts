@@ -739,13 +739,20 @@ export function purchaseConduit(storage: ProfileStorage, id: ConduitId): Account
   account.conduits = { ...account.conduits, [id]: quantity + 1 };
   return saveAccount(storage, account);
 }
-export function equipConduit(storage: ProfileStorage, character: string, slot: number, conduit: ConduitId | null): Account {
+export function equipConduit(storage: ProfileStorage, character: string, slot: number, conduit: ConduitId | null, fromSlot?: number): Account {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before equipping Conduits.');
   const account = loadAccount(storage);
   if (!ownedCharacterInstances(account).includes(character)) throw new Error('Choose an owned character.');
   if (!Number.isInteger(slot) || slot < 0 || slot >= conduitSlotCount) throw new Error('Choose an ordinary Conduit slot. The Master slot is reserved.');
   if (conduit !== null && (!isConduitId(conduit) || (account.conduits?.[conduit] ?? 0) < 1)) throw new Error('Choose an owned Conduit.');
   const slots = [...(account.conduitEquipment?.[character] ?? Array<ConduitId | null>(conduitSlotCount).fill(null))];
+  if (fromSlot !== undefined) {
+    if (!Number.isInteger(fromSlot) || fromSlot < 0 || fromSlot >= conduitSlotCount)
+      throw new Error('Choose an ordinary source Conduit slot.');
+    if (conduit === null || slots[fromSlot] !== conduit) throw new Error('The source Conduit changed. Choose it again.');
+    if (fromSlot === slot) return account;
+    slots[fromSlot] = slots[slot];
+  }
   slots[slot] = conduit;
   account.conduitEquipment = { ...account.conduitEquipment, [character]: validateConduitSlots(slots) };
   return saveAccount(storage, account);

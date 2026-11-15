@@ -15351,13 +15351,20 @@ function purchaseConduit(storage, id) {
   account.conduits = { ...account.conduits, [id]: quantity + 1 };
   return saveAccount(storage, account);
 }
-function equipConduit(storage, character, slot, conduit) {
+function equipConduit(storage, character, slot, conduit, fromSlot) {
   if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before equipping Conduits.");
   const account = loadAccount(storage);
   if (!ownedCharacterInstances(account).includes(character)) throw new Error("Choose an owned character.");
   if (!Number.isInteger(slot) || slot < 0 || slot >= conduitSlotCount) throw new Error("Choose an ordinary Conduit slot. The Master slot is reserved.");
   if (conduit !== null && (!isConduitId(conduit) || (account.conduits?.[conduit] ?? 0) < 1)) throw new Error("Choose an owned Conduit.");
   const slots = [...account.conduitEquipment?.[character] ?? Array(conduitSlotCount).fill(null)];
+  if (fromSlot !== void 0) {
+    if (!Number.isInteger(fromSlot) || fromSlot < 0 || fromSlot >= conduitSlotCount)
+      throw new Error("Choose an ordinary source Conduit slot.");
+    if (conduit === null || slots[fromSlot] !== conduit) throw new Error("The source Conduit changed. Choose it again.");
+    if (fromSlot === slot) return account;
+    slots[fromSlot] = slots[slot];
+  }
   slots[slot] = conduit;
   account.conduitEquipment = { ...account.conduitEquipment, [character]: validateConduitSlots(slots) };
   return saveAccount(storage, account);
@@ -19163,7 +19170,7 @@ function resolveRadiantPreparation(value2, input) {
         equipConduitConfiguration(storage, op.character, op.index);
         break;
       case "equipConduit":
-        equipConduit(storage, op.character, op.slot, op.conduit);
+        equipConduit(storage, op.character, op.slot, op.conduit, op.fromSlot);
         break;
       case "unequipAllConduits":
         unequipAllConduits(storage, op.character);
@@ -19633,7 +19640,7 @@ var operationKeys = {
   sellCurrencyCreatures: ["selections"],
   purchaseConduit: ["id"],
   setMachineLootFocus: ["rarity", "id"],
-  equipConduit: ["character", "slot", "conduit"],
+  equipConduit: ["character", "slot", "conduit", "fromSlot"],
   upgradeConduit: ["id", "expectedLevel"],
   maxConduit: ["expected"],
   unequipAllConduits: ["character"],
@@ -19678,7 +19685,11 @@ function validateRequest(value2) {
   keys(op, ["kind", ...operationKeys[op.kind]]);
   if ("cleanseChoice" in op && op.cleanseChoice !== "burn" && op.cleanseChoice !== "weaken")
     throw new Error("Invalid cleanse choice.");
-  if (operationKeys[op.kind].some((key) => key !== "fodderIds" && key !== "saleOption" && key !== "cleanseChoice" && !(op.kind === "friendRequest" && (key === "username" || key === "friendCode")) && !(key in op))) throw new Error("Missing operation field.");
+  if ("fromSlot" in op) {
+    integer2(op.fromSlot);
+    if (op.fromSlot >= conduitSlotCount) throw new Error("Choose an ordinary source Conduit slot.");
+  }
+  if (operationKeys[op.kind].some((key) => key !== "fodderIds" && key !== "saleOption" && key !== "cleanseChoice" && key !== "fromSlot" && !(op.kind === "friendRequest" && (key === "username" || key === "friendCode")) && !(key in op))) throw new Error("Missing operation field.");
   for (const field of ["id", "character", "runId", "actorId", "targetId", "bannerId", "starterId", "element", "frame", "upgradeKind", "action", "saleOption"]) {
     if (field in op && !(op.kind === "setMachineLootFocus" && field === "id" && op.id === null)) text(op[field]);
   }
@@ -20038,7 +20049,7 @@ function resolveOperation(previous, operation, entropy) {
         setMachineLootFocus(storage, operation.rarity, operation.id);
         break;
       case "equipConduit":
-        equipConduit(storage, operation.character, operation.slot, operation.conduit);
+        equipConduit(storage, operation.character, operation.slot, operation.conduit, operation.fromSlot);
         break;
       case "unequipAllConduits":
         unequipAllConduits(storage, operation.character);

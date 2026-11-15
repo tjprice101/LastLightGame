@@ -39,7 +39,7 @@ export function profileIconUnlocked(account: Account, icon: OnlineProfile['icon'
 }
 import type { CapturedCharacter } from '../../../src/game/character-instances';
 import type { ConduitLoadouts, ConduitUpgrades } from '../../../src/content/conduits';
-import { getConduit } from '../../../src/content/conduits';
+import { conduitSlotCount, getConduit } from '../../../src/content/conduits';
 import { isMachineFocusRarity, validateMachineLootFocus } from '../../../src/content/machines';
 import { assertActivityAccess } from '../../../src/game/activity-access';
 import { validateSaveFile } from '../../../src/game/save-file';
@@ -122,7 +122,7 @@ const operationKeys: Record<GameOperation['kind'], string[]> = {
   equipConduitConfiguration: ['character', 'index'],
   summon: ['bannerId'], summonTen: ['bannerId'], sellCurrencyCreature: ['id', 'saleOption'], sellCurrencyCreatures: ['selections'], purchaseConduit: ['id'],
   setMachineLootFocus: ['rarity', 'id'],
-  equipConduit: ['character', 'slot', 'conduit'], upgradeConduit: ['id', 'expectedLevel'],
+  equipConduit: ['character', 'slot', 'conduit', 'fromSlot'], upgradeConduit: ['id', 'expectedLevel'],
   maxConduit: ['expected'],
   unequipAllConduits: ['character'],
   openMasterChest: ['id'], openMasterChests: ['ids'], equipMasterConduit: ['character', 'conduit'],
@@ -156,7 +156,11 @@ export function validateRequest(value: unknown): GameRequest {
   keys(op, ['kind', ...operationKeys[op.kind as GameOperation['kind']]]);
   if ('cleanseChoice' in op && op.cleanseChoice !== 'burn' && op.cleanseChoice !== 'weaken')
     throw new Error('Invalid cleanse choice.');
-  if (operationKeys[op.kind as GameOperation['kind']].some(key => key !== 'fodderIds' && key !== 'saleOption' && key !== 'cleanseChoice' &&
+  if ('fromSlot' in op) {
+    integer(op.fromSlot);
+    if (op.fromSlot >= conduitSlotCount) throw new Error('Choose an ordinary source Conduit slot.');
+  }
+  if (operationKeys[op.kind as GameOperation['kind']].some(key => key !== 'fodderIds' && key !== 'saleOption' && key !== 'cleanseChoice' && key !== 'fromSlot' &&
       !(op.kind === 'friendRequest' && (key === 'username' || key === 'friendCode')) && !(key in op))) throw new Error('Missing operation field.');
   for (const field of ['id', 'character', 'runId', 'actorId', 'targetId', 'bannerId', 'starterId', 'element', 'frame', 'upgradeKind', 'action', 'saleOption']) {
     if (field in op && !(op.kind === 'setMachineLootFocus' && field === 'id' && op.id === null)) text(op[field]);
@@ -507,7 +511,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
       case 'sellCurrencyCreatures': sellCurrencyCreatures(storage, operation.selections); break;
       case 'purchaseConduit': purchaseConduit(storage, operation.id); break;
       case 'setMachineLootFocus': setMachineLootFocus(storage, operation.rarity, operation.id); break;
-      case 'equipConduit': equipConduit(storage, operation.character, operation.slot, operation.conduit); break;
+      case 'equipConduit': equipConduit(storage, operation.character, operation.slot, operation.conduit, operation.fromSlot); break;
       case 'unequipAllConduits': unequipAllConduits(storage, operation.character); break;
       case 'openMasterChest': openMasterChest(storage, operation.id); break;
       case 'openMasterChests': openMasterChests(storage, operation.ids); break;

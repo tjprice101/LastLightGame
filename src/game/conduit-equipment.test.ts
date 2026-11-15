@@ -26,6 +26,39 @@ function storage(): ProfileStorage {
 }
 const slots: ConduitSlots = [...conduits.map((conduit) => conduit.id), null, null, null];
 describe('Conduit loadouts', () => {
+  it('swaps occupied slots and moves to empty slots in one save while retaining ownership and other loadouts', () => {
+    const saved = storage();
+    equipConduit(saved, 'ember', 0, 'vigil-core');
+    equipConduit(saved, 'ember', 1, 'bastion-lock');
+    equipConduit(saved, 'tide', 0, 'vigil-core');
+    const before = loadAccount(saved);
+    const write = vi.spyOn(saved, 'setItem');
+    const swapped = equipConduit(saved, 'ember', 1, 'vigil-core', 0);
+    expect(write).toHaveBeenCalledTimes(1);
+    expect(swapped.conduitEquipment?.ember).toEqual(['bastion-lock', 'vigil-core', null, null, null, null, null, null]);
+    expect(swapped.conduitEquipment?.tide).toEqual(before.conduitEquipment?.tide);
+    expect(swapped.conduits).toEqual(before.conduits);
+    write.mockClear();
+    const moved = equipConduit(saved, 'ember', 7, 'vigil-core', 1);
+    expect(write).toHaveBeenCalledTimes(1);
+    expect(moved.conduitEquipment?.ember).toEqual(['bastion-lock', null, null, null, null, null, null, 'vigil-core']);
+    expect(loadAccount(saved)).toEqual(moved);
+    write.mockClear();
+    equipConduit(saved, 'ember', 7, 'vigil-core', 7);
+    expect(write).not.toHaveBeenCalled();
+  });
+  it('preserves the raw save for invalid or stale move sources and denied swap writes', () => {
+    const saved = storage();
+    equipConduit(saved, 'ember', 0, 'vigil-core');
+    const raw = saved.getItem(ACCOUNT_KEY);
+    for (const source of [-1, 8, 1.5, NaN]) expect(() => equipConduit(saved, 'ember', 1, 'vigil-core', source)).toThrow('source');
+    expect(() => equipConduit(saved, 'ember', 1, 'bastion-lock', 0)).toThrow('source Conduit changed');
+    expect(() => equipConduit(saved, 'ember', 1, null, 0)).toThrow('source Conduit changed');
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
+    vi.spyOn(saved, 'setItem').mockImplementation(() => { throw new Error('Write denied'); });
+    expect(() => equipConduit(saved, 'ember', 1, 'vigil-core', 0)).toThrow('Write denied');
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
+  });
   it('clears all ordinary slots and the selected Master in one write without touching ownership or another member', () => {
     const saved = storage();
     const before = loadAccount(saved);

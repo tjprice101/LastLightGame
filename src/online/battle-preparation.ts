@@ -81,7 +81,7 @@ export function resolveRadiantPreparation(value: RadiantRunSnapshot, input: Radi
       case 'saveConduitConfiguration': saveConduitConfiguration(storage, op.character, op.index, op.name); break;
       case 'renameConduitConfiguration': renameConduitConfiguration(storage, op.character, op.index, op.name); break;
       case 'equipConduitConfiguration': equipConduitConfiguration(storage, op.character, op.index); break;
-      case 'equipConduit': equipConduit(storage, op.character, op.slot, op.conduit); break;
+      case 'equipConduit': equipConduit(storage, op.character, op.slot, op.conduit, op.fromSlot); break;
       case 'unequipAllConduits': unequipAllConduits(storage, op.character); break;
       case 'equipMasterConduit': equipMasterConduit(storage, acquired(op.character), op.conduit); break;
     }

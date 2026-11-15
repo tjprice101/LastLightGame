@@ -25,13 +25,11 @@ const exchangeProducts = allProducts.filter(product => materialReleased(product.
 const eventDevourers = allDevourers.filter(product => eventReleased(product.eventId));
 import { newEventWindowActive } from '../content/moon-sunshade-events';
 import { roseEventActive, type EventAccess } from '../content/event-schedule';
-import { infusionEncounter } from '../content/infusions';
-import { capturedLevelCap } from '../game/character-instances';
-import { enemySkills } from '../content/enemy-skills';
 import { shopHost } from './shop-host';
 import './event-devourers.css';
 import { catalogInformation, offerInformation } from './information-layout';
 import { menuPager } from './menu-pagination';
+import { information } from './information';
 
 export interface OnlineProfileDisplay {
   username: string;
@@ -131,23 +129,22 @@ export function materialExchange(account: Account | null, selected: string, navi
   return `<section class="online-market ref-screen ref-market ref-exchange" data-exchange-category="${category}" data-menu-page-size="4" data-menu-current-page="${Math.floor(products.indexOf(product) / 4)}">${navigation}
     <section class="ref-panel exchange-catalog"><header class="ref-panel-heading">Materials</header>
     <nav class="ref-exchange-categories" aria-label="Material categories">
-      <button data-market-category="normal" aria-pressed="${category === 'normal'}">Normal Game Materials</button>
+      <button data-market-category="normal" aria-pressed="${category === 'normal'}">Elemental Materials</button>
       <button data-market-category="event" aria-pressed="${category === 'event'}">Event Materials</button></nav>
     ${category === 'event' ? `<p class="ref-exchange-note" role="note">Event materials are only for ${restricted}.</p>` : ''}
-    <div class="ref-scroll"><div class="info-catalog-grid">${products.map(entry => `<button class="info-catalog-choice" data-market-material="${entry.id}" aria-pressed="${product.id === entry.id}">${catalogInformation({ name: materialName(entry.materialId), art: exchangeArt(entry.materialId), metadata: entry.rarity, owned: account?.materials[entry.materialId] ?? 0, state: exchangeProductUnlocked(entry, account) ? 'Unlocked' : `Requires an owned Element-Bearer at level ${entry.unlockLevel ?? 0}`, cost: `${currencyIcon('fractalis')}${entry.price.toLocaleString('en-US')} Prismatica` })}</button>`).join('')}</div></div></section>
+    <div class="ref-scroll"><div class="info-catalog-grid">${products.map(entry => `<button class="info-catalog-choice" data-market-material="${entry.id}" aria-pressed="${product.id === entry.id}">${catalogInformation({ name: materialName(entry.materialId), art: exchangeArt(entry.materialId), metadata: entry.rarity, owned: account?.materials[entry.materialId] ?? 0, state: exchangeProductUnlocked(entry, account) ? undefined : `Requires a Lv.${entry.unlockLevel ?? 0} Element-Bearer`, cost: `${currencyIcon('fractalis')}${entry.price.toLocaleString('en-US')} Prismatica` })}</button>`).join('')}</div></div></section>
     ${menuPager('Materials')}<aside class="ref-panel ref-store-detail">${shopHost('mirel')}<header class="ref-panel-heading">Details</header>
     ${catalogInformation({ name: materialName(product.materialId), art: `<span class="inventory-item-art" data-showcase-item="${product.materialId}">${exchangeArt(product.materialId)}</span>`, metadata: product.rarity,
       owned: account?.materials[product.materialId] ?? 0,
       cost: `${currencyIcon('fractalis')}<strong>${product.price.toLocaleString('en-US')} Prismatica per unit</strong>` })}
-    <p>${product.category === 'event' ? `${product.rarity} ${product.eventName} event material. <strong>Only for ${restricted}.</strong>` : `${product.rarity} ${elements.find(element => product.materialId.startsWith(`${element.id}-`))?.name ?? ''} upgrade material. Usable by normal Element-Bearers.`}</p>
-    ${product.category === 'normal' ? `<p role="status">${unlocked ? 'Unlocked' : 'Locked'} · Requires any owned Element-Bearer at level ${product.unlockLevel ?? 0}. Captured Elemental-Devourers do not unlock this tier.</p>` : ''}
-    <p class="info-number">Prismatica: ${funds.toLocaleString('en-US')}</p>
+    <p>${product.category === 'event' ? `${product.eventName} upgrade material. <strong>Only for ${restricted}.</strong>` : `${elements.find(element => product.materialId.startsWith(`${element.id}-`))?.name ?? ''} leveling and evolution material.`}</p>
+    ${product.category === 'normal' ? `<p class="ref-exchange-unlock" role="status">${unlocked ? 'Available' : 'Locked'} · Requires a Lv.${product.unlockLevel ?? 0} Element-Bearer.</p>` : ''}
     <footer><div class="ref-exchange-buy" role="group" aria-label="Buy quantity">${exchangeQuantities.map(quantity => {
       const cost = product.price * quantity;
       return offerInformation({ name: `${materialName(product.materialId)} ×${quantity}`, art: exchangeArt(product.materialId), summary: `<p>${product.rarity} upgrade material${restricted ? ` · Only for ${escape(restricted)}` : ''}.</p>`, owned: account?.materials[product.materialId] ?? 0, price: `${currencyIcon('fractalis')}<strong>${cost.toLocaleString('en-US')} Prismatica</strong>`, action: `<button data-buy-material="${product.id}" data-quantity="${quantity}" ${unlocked && funds >= cost ? '' : 'disabled'}>Buy ${quantity}</button>`, reason: !account ? 'Account unavailable.' : !unlocked ? `Requires an owned Element-Bearer at level ${product.unlockLevel ?? 0}.` : funds < cost ? 'Not enough Prismatica.' : undefined });
     }).join('')}</div>
     ${account ? '' : '<p role="status">Material Exchange unavailable. Resolve the save error.</p>'}
-    <p>No bulk discounts or daily limits.</p></footer></aside></section>`;
+    ${information('material-exchange-rules', 'Material Exchange rules', '<p>Elemental material tiers unlock when any owned Element-Bearer reaches the required level. Captured Elemental-Devourers do not unlock tiers.</p><p>Event materials are restricted to their listed characters and remain available permanently. Prices are per unit; there are no bulk discounts or daily limits.</p>', 'Purchase rules')}</footer></aside></section>`;
 }
 
 export type StoreTab = 'materials' | 'cosmetics' | 'event-devourers';
@@ -163,12 +160,11 @@ export function onlineStores(account: Account | null, profile: OnlineProfileDisp
     <button data-page="conduit-store">Conduit Store</button><button data-page="conduit-store" data-market-calamitic>Calamitic Conduits</button></nav>`;
   if (tab === 'materials') return materialExchange(account, selectedMaterial, navigation);
   if (tab === 'event-devourers') {
-    return `<section class="online-market ref-screen ref-market ref-event-devourer-store">${navigation}<section class="ref-panel" data-menu-page-size="2" data-menu-current-page="0">
+    return `<section class="online-market ref-screen ref-market ref-event-devourer-store">${navigation}<section class="ref-panel" data-menu-page-size="6" data-menu-current-page="0">
       ${shopHost('nimra', access.online ? 'welcome' : 'offline')}
-      <header class="ref-panel-heading">Event Elemental-Devourers · Event-family copies</header>
-      <div class="event-devourer-rules"><p role="status">Copies are available only after their event has actually completed a scheduled window, and never during an active rerun. Launches remain subject to authoritative event schedules.</p>
-      ${access.online ? '' : '<p>Sign in online to purchase event copies. Browsing is available offline.</p>'}
-      <p>Each purchase gives one unlocked, unequipped copy with its authored skills at the listed level. No automatic squad changes. Event-family materials are sold permanently in Material Exchange.</p></div>
+      <header class="ref-panel-heading">Event Elemental-Devourers</header>
+      <div class="event-devourer-rules"><p role="status">${access.online ? 'Available after their event ends; closed during reruns.' : 'Sign in to buy. Copies unlock after their event ends.'}</p>
+      ${information('event-copy-rules', 'Event copy purchases', '<p>Copies become available only after an actual scheduled event window has completed, never during an active rerun. An event that has not launched does not unlock purchases.</p><p>Each purchase adds one unlocked, unequipped copy, capped at Lv.60. Copies cannot join Radiant squads; their form determines sale and evolution value. No automatic equipment or squad changes.</p><p>Event materials remain permanently available in Material Exchange.</p>', 'Purchase rules')}</div>
       <div class="event-devourer-grid">${eventDevourers.map(product => {
         const available = eventDevourerAvailable(product.eventId, access.now);
         const active = product.eventId === 'roses' ? roseEventActive(access.now) : newEventWindowActive(product.eventId, access.now);
@@ -177,16 +173,12 @@ export function onlineStores(account: Account | null, profile: OnlineProfileDisp
           : available ? 'A scheduled event window has completed. Purchases are available until a rerun begins.'
             : active ? 'Purchases are unavailable during an active rerun.'
               : 'Unavailable until this event has actually completed a scheduled launch window.';
-        const encounter = infusionEncounter(product.eventId, product.creature.stages[0]);
-        const owned = account?.capturedCharacters?.filter(copy => copy.creatureId === product.id).length ?? 0;
-        return `<article class="event-devourer-card" data-menu-page-item data-event="${product.eventId}" data-creature="${product.id}">${offerInformation({
-          name: `${product.eventName} · ${product.creature.name}`,
-          art: product.creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${product.creature.art}.png`)}" alt="${product.creature.name}">` : '<span>Artwork pending</span>',
-          summary: `<p role="status">${status}</p><p>${product.rarity} · Lv.${Math.min(capturedLevelCap, encounter.level)}</p><ul>${enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier).map(skill => `<li>${skill.name} · ${Math.round(skill.multiplier * 100)}% Direct Attack</li>`).join('')}</ul>`,
-          owned, price: `${currencyIcon('fractalis')}<strong>${product.price.toLocaleString('en-US')} Prismatica</strong>`,
-          action: `<button data-buy-event-devourer="${product.id}" ${account && access.online && available && account.fractalis >= product.price ? '' : 'disabled'}>Buy</button>`,
-          reason: !account ? 'Account unavailable.' : !access.online ? 'Sign in online to purchase.' : !available ? status : account.fractalis < product.price ? 'Not enough Prismatica.' : undefined,
-        })}</article>`;
+        const reason = !account ? 'Account unavailable.' : !access.online ? 'Sign in online to purchase.' : !available ? status : account.fractalis < product.price ? 'Not enough Prismatica.' : '';
+        return `<article class="event-devourer-card" data-menu-page-item data-event="${product.eventId}" data-creature="${product.id}">
+          <div class="event-card-art">${product.creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${product.creature.art}.png`)}" alt="${escape(product.creature.name)}" width="160" height="160">` : '<span>Artwork pending</span>'}</div>
+          <h3>${escape(product.creature.name)}</h3><div class="event-card-price">${currencyIcon('fractalis')}<strong>${product.price.toLocaleString('en-US')}</strong><span class="ref-sr-only">Prismatica</span></div>
+          <button data-buy-event-devourer="${product.id}" aria-label="Buy ${escape(product.creature.name)}" ${reason ? `disabled aria-describedby="event-copy-${product.id}-reason"` : ''}>Buy</button>
+          ${reason ? `<p class="ref-sr-only" id="event-copy-${product.id}-reason">${escape(reason)}</p>` : ''}</article>`;
       }).join('')}</div>${menuPager('Event Elemental-Devourers')}</section></section>`;
   }
   const choice = profileFrames.find(frame => frame.id === selectedFrame) ?? profileFrames[0];

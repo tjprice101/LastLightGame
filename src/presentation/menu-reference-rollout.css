@@ -1155,4 +1155,69 @@
     min-width: 0 !important;
     max-width: 100% !important;
   }
+
+  @media (min-width: 1200px) {
+    html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view^="upgrade-"] .ref-character-header { grid-template-rows: minmax(0, 1fr) auto !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view^="upgrade-"] .ref-character-portrait:not(#_) { min-height: 0 !important; aspect-ratio: auto !important; padding: 0 !important; overflow: hidden !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view^="upgrade-"] .ref-character-portrait > .character-idle { position: absolute !important; inset: 16px !important; display: block !important; width: auto !important; height: auto !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view^="upgrade-"] .ref-character-portrait > .character-idle img { display: block !important; width: 100% !important; height: 100% !important; object-fit: contain !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail .workspace-leader-skill { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 12px !important; padding: 12px !important; }
+    html[data-menu-workspace] .sanctuary-shell .workspace-leader-skill > span { min-width: 0 !important; }
+    html[data-menu-workspace] .sanctuary-shell .workspace-leader-skill small { display: block !important; font-size: 11px !important; color: var(--reference-muted) !important; }
+    html[data-menu-workspace] .sanctuary-shell .workspace-leader-skill > button { flex-shrink: 0 !important; padding: 6px 14px !important; min-height: 44px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail:not(#_) { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; grid-template-rows: auto auto !important; align-content: start !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .workspace-growth-summary { grid-column: 1 / -1 !important; grid-row: 1 !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .convergent-rank-panel { grid-column: 1 !important; grid-row: 2 !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] :is(.character-upgrade-grid, .workspace-growth-complete) { grid-column: 2 !important; grid-row: 2 !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .workspace-growth-complete { align-self: start !important; height: auto !important; min-height: 0 !important; justify-content: start !important; padding: 16px !important; }
+    html[data-menu-workspace] .sanctuary-shell .workspace-growth-summary .radiant-stats > div { padding: 8px 12px !important; }
+    html[data-menu-workspace] .sanctuary-shell .workspace-growth-summary .radiant-stats dd { overflow-wrap: normal !important; font-variant-numeric: tabular-nums !important; }
+    html[data-menu-workspace] .sanctuary-shell .workspace-growth-summary .radiant-stats dd strong { white-space: nowrap !important; font-size: clamp(14px, 1.2vw, 20px) !important; }
+    html[data-menu-workspace] .sanctuary-shell .workspace-growth-summary .radiant-stats .info-label { overflow-wrap: normal !important; font-size: 11px !important; line-height: 1.4 !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-layout { grid-template-columns: minmax(0, 1.45fr) minmax(340px, 1fr) !important; gap: 16px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slots:not(#_) { display: grid !important; grid-template-rows: auto auto minmax(192px, 1fr) auto auto !important; gap: 6px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-master { min-height: 72px !important; padding: 6px 10px !important; grid-template-columns: 56px minmax(0, 1fr) auto !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-master-art { width: 56px !important; height: 56px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-grid:not(#_):not(#_) { grid-template-rows: repeat(2, minmax(96px, 1fr)) !important; grid-auto-rows: minmax(96px, 1fr) !important; min-height: 192px !important; gap: 8px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slot:not(#_) { min-height: 0 !important; gap: 4px !important; padding: 8px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slot .loadout-slot-main { justify-content: center !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slot:not(#_) .loadout-slot-art { width: 40px !important; height: 40px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slots > .ref-panel-heading > button { min-height: 44px !important; padding: 6px 12px !important; font-size: 12px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slot-name { display: block !important; font-size: 12px !important; line-height: 1.3 !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-selection { display: flex !important; flex-wrap: wrap !important; align-items: center !important; justify-content: space-between !important; min-height: 44px !important; gap: 6px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-selection > span { font-size: 11px !important; color: var(--reference-muted) !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-selection .loadout-actions:not([hidden]) { display: flex !important; width: auto !important; flex: 0 0 auto !important; gap: 6px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-selection .loadout-actions[hidden] { display: none !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-selection button { min-height: 44px !important; padding: 6px 10px !important; font-size: 11px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-drag-hint { margin: 0 !important; max-width: none !important; font-size: 11px !important; color: var(--reference-muted) !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page [draggable="true"] { cursor: grab !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page [draggable="true"] :is(.loadout-owned-art, .loadout-slot-art) { pointer-events: none !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .is-dragging { opacity: .55 !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slot.is-drop-target { border-color: var(--reference-mint) !important; background: color-mix(in srgb, var(--reference-mint) 15%, transparent) !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slot.is-drop-target::after { content: attr(data-drop-state) !important; position: absolute !important; inset: auto 6px 6px !important; padding: 4px !important; border-radius: 8px !important; color: var(--reference-bg) !important; background: var(--reference-mint) !important; font-size: 12px !important; pointer-events: none !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-exchange .info-item-header:not(#_) { display: grid !important; grid-template-columns: 64px minmax(0, 1fr) !important; gap: 12px !important; align-items: center !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-exchange .exchange-catalog .info-catalog:not(#_) { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 6px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-exchange .exchange-catalog .info-catalog:not(#_) > * { grid-column: 1 !important; grid-row: auto !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-exchange .info-item-header .info-item-art { width: 64px !important; height: 64px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-exchange .info-item-art :is(img, .inventory-item-art) { width: 100% !important; height: 100% !important; object-fit: contain !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-exchange .info-catalog > .info-number { margin: 8px 0 2px !important; text-align: left !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-exchange .info-catalog > .info-label { margin: 0 !important; color: var(--reference-muted) !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-exchange .ref-exchange-unlock { color: var(--reference-muted) !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail .info-lore:not([open]) { min-height: 0 !important; padding: 8px 12px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail .info-lore summary { margin: 0 !important; min-height: 0 !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-rarity-filter button:not(#_) { white-space: nowrap !important; word-break: normal !important; gap: 4px !important; padding: 8px 10px !important; font-size: 12px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-rules { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 16px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-rules p { margin: 0 !important; font-size: 12px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store > .ref-panel:not(#_) { display: grid !important; grid-template-rows: auto auto auto minmax(0, 1fr) auto !important; gap: 6px !important; padding: 8px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store > .ref-panel > .menu-pager { position: static !important; margin: 0 !important; min-height: 44px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-grid:not(#_) { display: grid !important; grid-template-columns: repeat(6, minmax(0, 1fr)) !important; grid-template-rows: minmax(0, 1fr) !important; gap: 12px !important; align-content: start !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-card:not([hidden]) { display: flex !important; flex-direction: column !important; gap: 6px !important; align-items: center !important; min-height: 0 !important; padding: 8px !important; border: 1px solid var(--reference-line) !important; border-radius: 18px !important; background: var(--reference-raised) !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-card[hidden] { display: none !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-card-art { position: relative !important; flex: 1 1 0 !important; min-height: 0 !important; width: 100% !important; max-height: 160px !important; aspect-ratio: auto !important; display: grid !important; place-items: center !important; color: var(--reference-muted) !important; font-size: 12px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-card-art img { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: contain !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-card h3 { flex-shrink: 0 !important; margin: 0 !important; min-height: 3.9em !important; font-size: 13px !important; line-height: 1.3 !important; text-align: center !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-card-price { display: flex !important; align-items: center !important; gap: 6px !important; font-size: 13px !important; font-variant-numeric: tabular-nums !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-card-price .currency-icon { width: 24px !important; height: 24px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-card > button { flex-shrink: 0 !important; width: 100% !important; min-height: 44px !important; margin-top: auto !important; }
+  }
 }

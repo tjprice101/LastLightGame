@@ -26,6 +26,16 @@ function step(snapshot: RadiantRunSnapshot, operation: RadiantPreparationOperati
   return { state: resolved.state, revision: resolved.response.revision };
 }
 describe('gated manual bearer-only squad and saved equipment preparation', () => {
+  it('applies slot swaps through preparation while preserving the input snapshot', () => {
+    const before = fixture();
+    before.state.account.conduits = { 'vigil-core': 1, 'bastion-lock': 1 };
+    before.state.account.conduitEquipment = { ember: ['vigil-core', 'bastion-lock', null, null, null, null, null, null] };
+    const original = structuredClone(before);
+    const after = step(before, { kind: 'equipConduit', character: 'ember', slot: 1, conduit: 'vigil-core', fromSlot: 0 });
+    expect(after.state.account.conduitEquipment?.ember).toEqual(['bastion-lock', 'vigil-core', null, null, null, null, null, null]);
+    expect(after.state.account.conduits).toEqual(before.state.account.conduits);
+    expect(before).toEqual(original);
+  });
   it('manually replaces a captured squad with six acquired bearers without grants or holdings loss', () => {
     const before = fixture(), copy = before.state.account.capturedCharacters![0];
     before.state.account.squad = [copy.instanceId];

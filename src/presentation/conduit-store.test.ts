@@ -13,6 +13,17 @@ import { readableEffect } from './effect-copy';
 import { bindMenuPagination } from './menu-pagination';
 
 describe('Conduit Store and discovery routes', () => {
+  it('shows the current maximum effect once and retains acquisition information outside the Store', () => {
+    const account = { ...emptyAccount(), conduits: { 'vigil-core': 1 }, conduitUpgrades: { 'vigil-core': 5 } };
+    const host = document.createElement('div');
+    host.innerHTML = conduitStore(account, 'vigil-core');
+    const detail = host.querySelector('.ref-store-detail .info-catalog')!;
+    expect(detail.querySelectorAll('.info-effects li')).toHaveLength(1);
+    expect(detail.textContent).toContain('Maximum:');
+    expect(detail.querySelector('.info-acquisition')).toBeNull();
+    host.innerHTML = conduitDetails('vigil-core', 5);
+    expect(host.querySelector('.info-acquisition')).not.toBeNull();
+  });
   it('keeps upgrade navigation outside the Store and pages the complete catalog', () => {
     const host = document.createElement('div');
     host.innerHTML = conduitStore(emptyAccount());
@@ -63,7 +74,7 @@ describe('Conduit Store and discovery routes', () => {
     }
     expect(html).not.toContain('Elemental Light core');
     expect(html).not.toContain('Mechanical drive');
-    expect(html).toContain('Unlock once, equip across your [Squad]');
+    expect(html).toContain('Unlock once');
     expect(html).toContain('data-information="store-information"');
     expect(html).not.toContain('Recovered mechanism');
     for (const conduit of conduits) expect(html).toContain(`assets/conduits/${conduit.id}.png`);

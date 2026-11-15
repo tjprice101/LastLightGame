@@ -1,5 +1,39 @@
 # Current state and handoff
 
+## Viewer, Conduit dragging and Market refinements (2026-11-15)
+
+**Implemented (D-458):** contained Level/Evolve portraits, full-width exact
+stat summaries, compact Leader names with complete Effects dialogs, stable
+equipment tiles and a separate selection toolbar. Inventory drags replace;
+equipped-slot drags swap or move to empty slots. Keyboard-accessible Move /
+swap uses the same atomic optional-source transaction locally and online.
+Material Exchange copy is shorter; Event copies use six portrait/name/price/
+Buy cards per page; Conduit Store removes duplicate maximum effects and
+repeated acquisition/rounding text. See the [menu contract](menus-and-inventory.md#viewer-equipment-and-market-refinements-d-458).
+
+**Verified:**
+
+- `npx vitest run src\game\conduit-equipment.test.ts src\online\server-game.test.ts src\online\battle-preparation.test.ts src\presentation\conduit-loadout.test.ts src\presentation\conduit-store.test.ts src\presentation\online-store-profile.test.ts src\presentation\menu-workspace.test.ts src\presentation\upgrade-reference.test.ts src\presentation\reference-ui.test.ts --maxWorkers=2 --reporter=dot`: **334 passed**, 0 failed.
+- `npm run build`: passed, with the existing large-chunk advisory.
+- `node tools\bundle_server_game.mjs`: passed.
+- Isolated Chrome/CDP: Thornia Level at actual 1280x720, 1600x900 and
+  1920x1080 had loaded, fully contained art, no overflowing exact stat values
+  and no page overflow. Overview/Evolve and the refined equipment/stores were
+  viewed at 1280x720.
+- Real native pointer drags equipped Vigil Core, replaced it with Bastion
+  Lock, then swapped equipped slots. Move choices moved the same saved gear;
+  the destination stayed selected. Post-save banners disappeared within the
+  timed check. Both Event pages retained six cards and exact prices without
+  combat-stat blocks or overlapping pagination.
+
+**Unchanged/not exercised:** no artwork replacement, economy/battle retuning
+or event launch. Authenticated production purchases and online dragging were
+not executed; shared authority transactions have focused regression coverage.
+Unrelated Future Plans drafts and the local HTML mock-up remain excluded.
+
+**Publication:** pending matching client/authority deployment and hosted
+version verification.
+
 ## Game-wide reference theme rollout (2026-11-15; local-only)
 
 **Implemented (D-457):** `src/presentation/menu-reference-rollout.css`

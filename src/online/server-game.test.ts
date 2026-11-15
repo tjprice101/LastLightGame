@@ -26,6 +26,24 @@ function started() { return op(freshGame('tester'), { kind: 'bootstrap', starter
 function rich() { const game = started(); game.account.fractalis = 1000000; game.account.lycalis = 1000; return game; }
 
 describe('server authoritative game engine', () => {
+  it('accepts an optional source slot and atomically swaps equipment without changing ownership', () => {
+    const game = started();
+    game.account.conduits = { 'vigil-core': 1, 'bastion-lock': 1 };
+    game.account.conduitEquipment = { ember: ['vigil-core', 'bastion-lock', null, null, null, null, null, null] };
+    const before = structuredClone(game);
+    const operation = { kind: 'equipConduit', character: 'ember', slot: 1, conduit: 'vigil-core', fromSlot: 0 } as const;
+    expect(validateRequest({ requestId: crypto.randomUUID(), expectedRevision: 0, operation }).operation).toEqual(operation);
+    const after = op(game, operation).game;
+    expect(after.account.conduitEquipment?.ember).toEqual(['bastion-lock', 'vigil-core', null, null, null, null, null, null]);
+    expect(after.account.conduits).toEqual(before.account.conduits);
+    expect(game).toEqual(before);
+    expect(() => op(after, operation)).toThrow('source Conduit changed');
+    for (const fromSlot of [-1, 8, 1.5, null, '0']) {
+      expect(() => validateRequest({ requestId: crypto.randomUUID(), expectedRevision: 0, operation: { ...operation, fromSlot } })).toThrow();
+    }
+    const { fromSlot, ...legacyOperation } = operation;
+    expect(validateRequest({ requestId: crypto.randomUUID(), expectedRevision: 0, operation: legacyOperation }).operation).toEqual(legacyOperation);
+  });
   it('accepts and atomically applies one bulk Master chest operation without randomness or auto-equipping', () => {
     const game = started();
     game.account.masterChests = 2;

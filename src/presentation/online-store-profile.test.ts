@@ -26,15 +26,15 @@ describe('online Material Exchange and Cosmetic Store', () => {
     document.body.innerHTML = onlineStores(emptyAccount(), null, 'event-devourers');
     bindMenuPagination(document.body);
     const seen = new Set<string>();
-    for (let page = 1; page <= 6; page++) {
-      expect(document.querySelector('[data-menu-page-status]')?.textContent).toBe(`${page} / 6`);
+    for (let page = 1; page <= 2; page++) {
+      expect(document.querySelector('[data-menu-page-status]')?.textContent).toBe(`${page} / 2`);
       const cards = Array.from(document.querySelectorAll<HTMLElement>('.event-devourer-card:not([hidden])'));
-      expect(cards).toHaveLength(2);
+      expect(cards).toHaveLength(6);
       for (const card of cards) {
         expect(card.querySelector('[data-buy-event-devourer]')).not.toBeNull();
         seen.add(card.dataset.creature!);
       }
-      if (page < 6) document.querySelector<HTMLButtonElement>('[data-menu-page="1"]')!.click();
+      if (page < 2) document.querySelector<HTMLButtonElement>('[data-menu-page="1"]')!.click();
     }
     expect(seen.size).toBe(12);
     expect(document.querySelector<HTMLButtonElement>('[data-menu-page="1"]')!.disabled).toBe(true);
@@ -45,13 +45,22 @@ describe('online Material Exchange and Cosmetic Store', () => {
     expect(buttons).toHaveLength(12);
     for (const button of buttons) {
       expect(button.disabled).toBe(true);
-      expect(button.matches('.event-devourer-card .info-offer-action > button')).toBe(true);
+      expect(button.matches('.event-devourer-card > button')).toBe(true);
       expect(button.closest('.event-devourer-card')?.getAttribute('data-creature')).toBeTruthy();
     }
     expect(document.querySelectorAll('.event-devourer-card[data-event="moon"]')).toHaveLength(6);
     expect(document.querySelectorAll('.event-devourer-card[data-event="sunshade"]')).toHaveLength(0);
     expect(document.querySelectorAll('.event-devourer-card[data-event="roses"]')).toHaveLength(6);
     expect(document.querySelectorAll('.event-devourer-card[data-creature]')).toHaveLength(12);
+    for (const card of Array.from(document.querySelectorAll('.event-devourer-card'))) {
+      const product = eventDevourers.find(entry => entry.id === card.getAttribute('data-creature'))!;
+      expect(card.querySelector('h3')?.textContent).toBe(product.creature.name);
+      expect(card.querySelector('.event-card-price')?.textContent).toContain(product.price.toLocaleString('en-US'));
+      expect(card.querySelector('.info-effects, .info-stats, .info-encounter')).toBeNull();
+      const button = card.querySelector('button')!;
+      const reason = document.getElementById(button.getAttribute('aria-describedby')!);
+      expect(reason?.textContent).not.toBe('');
+    }
     expect(eventDevourers.filter(product => product.eventId === 'sunshade')
       .every(product => product.creature.art == null)).toBe(true);
     expect(eventDevourers.filter(product => product.eventId === 'moon')
@@ -116,7 +125,7 @@ describe('online Material Exchange and Cosmetic Store', () => {
     account.characters.ember = { level: 89, evolution: 6 };
     account.fractalis = 5500000;
     const locked = onlineStores(account, profile, 'materials', 'infernic-omnic');
-    expect(locked).toContain('Locked · Requires any owned Element-Bearer at level 90');
+    expect(locked).toContain('Requires a Lv.90 Element-Bearer');
     expect(locked).toMatch(/data-buy-material="infernic-omnic" data-quantity="1"[^>]*disabled/);
     expect(locked).toContain('data-market-material="infernic-omnic"');
     account.characters.ember.level = 90;

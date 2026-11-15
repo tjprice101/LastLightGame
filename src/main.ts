@@ -135,7 +135,7 @@ import './presentation/celestial-panels.css';
 import './sanctuary-reference.css';
 import { celebrate, installBubbleUi, rarityPalette } from './presentation/bubble-ui';
 import { saleLabel } from './presentation/creature-sale';
-import { applyConduitSearch, bindConduitLoadout, refreshConduitLoadout, resetConduitLoadoutView } from './presentation/conduit-loadout';
+import { applyConduitSearch, bindConduitLoadout, refreshConduitLoadout, resetConduitLoadoutView, type ConduitLoadoutChange } from './presentation/conduit-loadout';
 import { BackgroundMusic, battleMusic, defaultMusicPreferences, loadMusicPreferences, saveMusicPreferences } from './presentation/music';
 import { createMenuWorkspaceStorage, menuWorkspace } from './game/menu-workspace';
 import { formatMenuWorkspace, workspaceUnitsMenu } from './presentation/menu-workspace';
@@ -939,7 +939,7 @@ function renderMenu(firstArrival = false): void {
   bindSquadLoadouts(app);
   app.querySelector(`[data-character-category="${characterCategory}"]`)?.setAttribute('aria-current', 'page');
   applyConduitSearch(app, conduitSearch);
-  bindConduitLoadout(app);
+  bindConduitLoadout(app, request => { void changeConduitLoadout(request); });
   bindGameplayNavigation(app);
   bindMachineLootFocus(app, async (rarity, id) => {
     account = playMode === 'online'
@@ -2571,8 +2571,25 @@ app.addEventListener('click', async (event) => {
     if (equip !== undefined && !isConduitId(equip)) throw new Error('Unknown Conduit.');
     const slot = Number(equip !== undefined ? button.dataset.loadoutTarget : button.dataset.loadoutUnequip);
     if (!Number.isInteger(slot) || slot < 0) throw new Error('No empty Conduit slot is available.');
-    const conduit = equip ?? null;
-    account = playMode === 'online' ? (await performOnline({ kind: 'equipConduit', character: owner, slot, conduit })).account : equipConduit(gameStorage, owner, slot, conduit);
+    await changeConduitLoadout({ owner, slot, conduit: equip ?? null });
+  } catch (error) {
+    console.error('Conduit loadout change rejected', error);
+    if (account && (!starter || owner === selectedCharacter)) refreshLoadout(owner);
+    showError(`Equipment was not changed. ${errorMessage(error)}`);
+  }
+});
+
+let conduitLoadoutPending = false;
+async function changeConduitLoadout({ owner, slot, conduit, fromSlot }: ConduitLoadoutChange): Promise<void> {
+  if (onlineBusy || conduitLoadoutPending || fromSlot === slot) return;
+  const starter = isStarterId(owner);
+  conduitLoadoutPending = true;
+  try {
+    if (menuPage !== 'team' || (starter ? owner !== selectedCharacter : owner !== selectedCapture))
+      throw new Error('Choose an owned character before equipping.');
+    account = playMode === 'online'
+      ? (await performOnline({ kind: 'equipConduit', character: owner, slot, conduit, ...(fromSlot === undefined ? {} : { fromSlot }) })).account
+      : equipConduit(gameStorage, owner, slot, conduit, fromSlot);
     refreshLoadout(owner);
     const status = app.querySelector('#conduit-equipment-result');
     if (status) status.textContent = conduit ? `Equipped in slot ${slot + 1}.` : `Slot ${slot + 1} cleared.`;
@@ -2586,8 +2603,10 @@ app.addEventListener('click', async (event) => {
     console.error('Conduit loadout change rejected', error);
     if (account && (!starter || owner === selectedCharacter)) refreshLoadout(owner);
     showError(`Equipment was not changed. ${errorMessage(error)}`);
+  } finally {
+    conduitLoadoutPending = false;
   }
-});
+}
 
 if (import.meta.env.DEV) bindDebugPhrase(document, () =>
   !gameStorage.active && !onlineBusy && !onlinePending && !playerInfoOpen &&

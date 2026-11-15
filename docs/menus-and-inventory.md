@@ -1,5 +1,30 @@
 # Menus and inventory
 
+## Viewer, equipment and Market refinements (D-458)
+
+- Level/Evolve portraits contain the complete installed image in a bounded
+  frame. Level stats span the detail width; exact values and Before Conduits
+  labels remain readable. Leader names stay beside the portrait; Effects
+  opens the complete existing mechanics in a native dialog.
+- Equipped Conduits use stable four-by-two tiles and a separate selection
+  toolbar. Dragging from inventory replaces the destination; dragging between
+  equipped slots swaps them, or moves into an empty slot. Move / swap provides
+  the same operation through keyboard-accessible choices; ordinary click Equip,
+  Details, Upgrade and Remove remain available.
+- Moves use one validated `equipConduit` transaction with optional `fromSlot`.
+  Ownership, element/rarity limits and other members' gear are unchanged.
+  Stale sources, external/cross-owner drags and invalid destinations cannot
+  change equipment. Existing battles retain their frozen loadouts.
+- Material Exchange retains exact prices, quantities and unlock conditions
+  with less repeated text. Event Elemental-Devourers use six portrait/name/
+  price/Buy cards per page, without combat stat or skill panels. Availability
+  and copy restrictions remain in accessible reasons and Purchase rules.
+- Conduit Store shows current and maximum effects without repeating identical
+  text. Acquisition instructions remain in non-store detail views; rounding
+  and purchase rules are shared instead of repeated in every effect.
+- Shared saved-success effects remain finite and nonblocking. No artwork,
+  battle mechanics, prices or event schedules change.
+
 ## Game-wide reference theme (D-457; local-only)
 
 `src/presentation/menu-reference-rollout.css` extends the D-456 reference
@@ -22,7 +47,7 @@ Every rule is scoped to `html[data-menu-workspace] .sanctuary-shell`.
 - **Stores:** Conduit, Calamitic, Cosmetic, Material Exchange and Event
   stores use pill tabs, product grids and a fixed detail column. The Conduit
   catalog shows two entries per page across five pages; Event Elemental-
-  Devourer purchases show two per page across six pages. Compact desktop
+  Devourer purchases now show six per page across two pages. Compact desktop
   layouts keep product and Information/purchase controls within the panel.
 - **Covered screens:** Collections, Inventory, Summon, Events, the Captured
   gallery, View Unit, Loadouts, Squad and the squad picker use the same
