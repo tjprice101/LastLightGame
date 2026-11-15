@@ -186,7 +186,7 @@ export function validateRequest(value: unknown): GameRequest {
         Object.keys(op.expected.ascension).some(key => !['stats', 'skill1', 'skill2', 'lastFlare'].includes(key)) ||
         Object.values(op.expected.ascension).some(flag => typeof flag !== 'boolean'))) throw new Error('Invalid expected Ascension state.');
   }
-  if (op.kind === 'upgradeCharacter' && !['level', 'evolve', 'convergence', 'weapon'].includes(String(op.upgradeKind)))
+  if (op.kind === 'upgradeCharacter' && !['level', 'evolve', 'convergence', 'convergence-max', 'weapon'].includes(String(op.upgradeKind)))
     throw new Error('Unknown character upgrade.');
   if (op.kind === 'ascendCharacter' && !['stats', 'skill1', 'skill2', 'lastFlare'].includes(String(op.step))) throw new Error('Invalid Calamitic Ascension step');
   if (op.kind === 'maxConduit') {

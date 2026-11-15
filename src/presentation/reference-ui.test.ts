@@ -307,6 +307,9 @@ describe('replacement reference screen structures', () => {
     const html = referenceTeam(wallet, { view: 'creatures', selected: 'ember', element: '', sort: 'level' });
     for (const copy of [first, second]) expect(html).toContain(`data-team-capture-detail="${copy.instanceId}"`);
     expect(html).toContain('data-team-collection="creatures"');
+    expect(html).toContain('data-menu-page-size="8"');
+    expect(html).toContain('class="ref-collection-card ref-capture-card"');
+    expect(html).toContain('aria-label="Captured Elemental-Devourers pages"');
     expect(html).toContain('Search captured Elemental-Devourers');
     expect(html).toContain('data-team-sort');
     expect(html).toContain('data-collection-item');

@@ -218,6 +218,16 @@ html[data-menu-workspace]:not([data-motion="reduced"]) .home-feature-slide.is-ac
 
 html[data-menu-workspace] body #app .ref-team-focused:not(#_):not(#_) { display: block !important; width: 100%; height: auto !important; max-width: 1560px; margin: 0 auto; }
 html[data-menu-workspace] body #app .ref-team-focused .ref-team-collection { padding: 10px !important; gap: 8px !important; }
+@media (min-width: 961px) {
+  html[data-menu-workspace] body #app .sanctuary-content .ref-team-focused:has(> .ref-team-collection[data-team-collection="creatures"]):not(#_):not(#_) {
+    display: grid !important; height: 100% !important; min-height: 0 !important;
+    grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: minmax(0, 1fr) !important;
+    overflow: hidden !important;
+  }
+  html[data-menu-workspace] body #app .ref-team-focused:has(> .ref-team-collection[data-team-collection="creatures"]) > .ref-team-collection {
+    height: 100% !important; min-height: 0 !important;
+  }
+}
 html[data-menu-workspace] body #app .ref-roster-toolbar { display: grid !important; grid-template-columns: minmax(0, 1fr) 170px; gap: 8px !important; align-items: center; }
 html[data-menu-workspace] body #app .ref-roster-toolbar .ref-segment { grid-column: 1 / -1; }
 html[data-menu-workspace] body #app .ref-bearer-grid:not(#_):not(#_) { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)) !important; gap: 10px !important; align-items: start; }
@@ -316,8 +326,8 @@ html[data-menu-workspace] body #app .exchange-catalog .ref-scroll { overflow: vi
 html[data-menu-workspace] body #app .exchange-catalog .info-catalog-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 6px !important; }
 html[data-menu-workspace] body #app .exchange-catalog .info-catalog-choice { padding: 6px !important; gap: 2px !important; min-height: 90px !important; height: auto !important; }
 html[data-menu-workspace] body #app .exchange-catalog .info-catalog { display: grid !important; gap: 2px !important; min-height: 0 !important; height: auto !important; padding: 0 !important; }
-html[data-menu-workspace] body #app .exchange-catalog .info-item-header { grid-template-columns: 32px minmax(0, 1fr) !important; gap: 6px !important; }
-html[data-menu-workspace] body #app .exchange-catalog .info-item-art { width: 32px !important; height: 32px !important; }
+html[data-menu-workspace] body #app .exchange-catalog .info-item-header { grid-template-columns: 56px minmax(0, 1fr) !important; gap: 8px !important; }
+html[data-menu-workspace] body #app .exchange-catalog .info-item-art { width: 56px !important; height: 56px !important; }
 html[data-menu-workspace] body #app .exchange-catalog .info-catalog-choice h3 { font-size: 13px !important; line-height: 1.2 !important; }
 html[data-menu-workspace] body #app .exchange-catalog .info-catalog-choice :is(.info-label, .info-number, .info-price) { font-size: 12px !important; margin: 0 !important; line-height: 1.2 !important; }
 html[data-menu-workspace] body #app .exchange-catalog .info-acquisition { padding: 0 !important; border: 0; }
@@ -338,6 +348,67 @@ html[data-menu-workspace] body #app .exchange-catalog .info-catalog { grid-templ
 html[data-menu-workspace] body #app .exchange-catalog .info-catalog > :is(header, .info-acquisition) { grid-column: 1 / -1; }
 html[data-menu-workspace] body #app .exchange-catalog .info-catalog-choice { min-height: 90px !important; }
 
+html[data-menu-workspace] body #app .ref-conduit-store:not(#_):not(#_) {
+  grid-template-columns: 10rem minmax(0, 1fr) 18rem !important;
+  grid-template-rows: auto minmax(0, 1fr) 44px !important;
+  gap: 8px !important;
+}
+html[data-menu-workspace] body #app .ref-conduit-store > .ref-market-tabs { grid-column: 1 / -1; }
+html[data-menu-workspace] body #app .ref-conduit-store > .ref-panel:first-of-type { grid-column: 1; grid-row: 2 / 4; padding: 8px !important; gap: 6px !important; }
+html[data-menu-workspace] body #app .ref-conduit-store > .ref-store-catalog { grid-column: 2; grid-row: 2; min-height: 0; padding: 8px !important; gap: 6px !important; }
+html[data-menu-workspace] body #app .ref-conduit-store > .menu-pager { grid-column: 2; grid-row: 3; }
+html[data-menu-workspace] body #app .ref-conduit-store > .ref-store-detail { grid-column: 3; grid-row: 2 / 4; min-height: 0; padding: 8px !important; gap: 6px !important; overflow: auto !important; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-catalog .ref-scroll { min-height: 0; overflow: visible !important; }
+html[data-menu-workspace] body #app .ref-conduit-store .info-catalog-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 6px !important; }
+html[data-menu-workspace] body #app .ref-conduit-store .info-catalog-choice { min-width: 0; min-height: 0 !important; height: auto !important; padding: 6px !important; text-align: left !important; }
+html[data-menu-workspace] body #app .ref-conduit-store .info-catalog-choice .info-catalog { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 4px !important; min-height: 0 !important; height: auto !important; padding: 0 !important; }
+html[data-menu-workspace] body #app .ref-conduit-store .info-catalog-choice .info-item-header { grid-template-columns: 76px minmax(0, 1fr) !important; gap: 6px !important; align-items: center; }
+html[data-menu-workspace] body #app .ref-conduit-store .info-catalog-choice .info-item-art,
+html[data-menu-workspace] body #app .ref-conduit-store .info-catalog-choice .conduit-icon-frame { width: 76px !important; height: 76px !important; }
+html[data-menu-workspace] body #app .ref-conduit-store .info-catalog-choice .info-effects { display: none; }
+html[data-menu-workspace] body #app .ref-conduit-store .info-catalog-choice :is(h3, .info-label, .info-number, .info-price) { margin: 0 !important; font-size: 12px !important; line-height: 1.2 !important; overflow-wrap: anywhere; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail > .shop-host { min-height: 0 !important; padding: 4px 6px !important; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail .shop-host-mark { width: 44px !important; height: 44px !important; min-height: 0 !important; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail .shop-host p { display: none; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail > .ref-store-hero,
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail > .info-sheet { display: none !important; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail .conduit-details-art { display: grid; place-items: center; height: 76px; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail .conduit-details-art .conduit-icon-frame { width: 76px; height: 76px; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail .info-offer > .info-item-art { display: none; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail > :is(.info-catalog, .info-offer, [data-information], p) { margin: 0 !important; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail .info-offer { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px; padding: 6px; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail .info-offer-description { grid-column: 1 / -1; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail .info-offer-description h3 { margin: 0 0 4px; font-size: 13px; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail .info-offer-description .info-effects { margin: 0; font-size: 12px; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail .info-price { font-size: 12px; }
+html[data-menu-workspace] body #app .ref-conduit-store .ref-store-detail .info-offer-action button { min-height: 44px !important; }
+
+html[data-menu-workspace] body #app .ref-event-devourer-store > .ref-panel {
+  display: grid !important; grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr) 44px;
+  gap: 5px !important; min-height: 0; height: 100%; padding: 8px !important;
+}
+html[data-menu-workspace] body #app .ref-event-devourer-store > .ref-panel > .shop-host { min-height: 0 !important; padding: 4px 6px !important; }
+html[data-menu-workspace] body #app .ref-event-devourer-store > .ref-panel > .shop-host .shop-host-mark { width: 44px !important; height: 44px !important; min-height: 0 !important; }
+html[data-menu-workspace] body #app .ref-event-devourer-store > .ref-panel > .shop-host p { display: none; }
+html[data-menu-workspace] body #app .ref-event-devourer-store > .ref-panel > .event-devourer-rules { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+html[data-menu-workspace] body #app .ref-event-devourer-store > .ref-panel > .event-devourer-rules p { margin: 0 !important; font-size: 12px !important; line-height: 1.25 !important; }
+html[data-menu-workspace] body #app .ref-event-devourer-store .event-devourer-grid { grid-column: 1; display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 6px !important; min-height: 0; }
+html[data-menu-workspace] body #app .ref-event-devourer-store .event-devourer-card { min-width: 0; min-height: 0; padding: 6px !important; overflow: hidden; border: 1px solid #3a3a3f; border-radius: 8px; background: #111216; }
+html[data-menu-workspace] body #app .ref-event-devourer-store .event-devourer-card .info-offer { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; grid-template-rows: auto minmax(0, 1fr) auto; gap: 3px 6px; min-height: 0; height: 100%; }
+html[data-menu-workspace] body #app .ref-event-devourer-store .event-devourer-card .info-item-art { grid-column: 1; grid-row: 1 / 4; width: 72px; height: 80px; }
+html[data-menu-workspace] body #app .ref-event-devourer-store .event-devourer-card .info-item-art img { width: 100%; height: 100%; object-fit: contain; }
+html[data-menu-workspace] body #app .ref-event-devourer-store .event-devourer-card .info-offer-description { grid-column: 2 / 4; min-width: 0; }
+html[data-menu-workspace] body #app .ref-event-devourer-store .event-devourer-card .info-offer-description h3 { margin: 0; font-size: 12px; line-height: 1.2; }
+html[data-menu-workspace] body #app .ref-event-devourer-store .event-devourer-card .info-effects { min-width: 0; font-size: 10px; line-height: 1.2; }
+html[data-menu-workspace] body #app .ref-event-devourer-store .event-devourer-card .info-effects p { margin: 2px 0; }
+html[data-menu-workspace] body #app .ref-event-devourer-store .event-devourer-card .info-effects ul { margin: 2px 0 0; padding-left: 14px; }
+html[data-menu-workspace] body #app .ref-event-devourer-store .event-devourer-card .info-offer-owned { grid-column: 1; grid-row: 3; font-size: 10px; }
+html[data-menu-workspace] body #app .ref-event-devourer-store .event-devourer-card .info-price { grid-column: 2; grid-row: 3; align-self: center; font-size: 11px; }
+html[data-menu-workspace] body #app .ref-event-devourer-store .event-devourer-card .info-offer-action { grid-column: 3; grid-row: 3; }
+html[data-menu-workspace] body #app .ref-event-devourer-store .event-devourer-card .info-offer-action button { min-height: 44px !important; padding: 4px 10px !important; }
+html[data-menu-workspace] body #app .ref-event-devourer-store > .ref-panel > .menu-pager { justify-self: center; }
+
 html[data-menu-workspace] body #app .conduit-loadout:not(#_) { gap: 8px !important; grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
 html[data-menu-workspace] body #app .conduit-loadout > .loadout-header { grid-column: 1; display: flex !important; flex-wrap: nowrap !important; gap: 8px !important; }
 html[data-menu-workspace] body #app .conduit-loadout .loadout-title { min-width: 0; }
@@ -350,20 +421,20 @@ html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .ref-panel
 html[data-menu-workspace] body #app .conduit-loadout .loadout-grid:not(#_):not(#_) { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 5px !important; }
 html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-slot:not(#_):not(#_) { min-height: 110px !important; height: auto !important; padding: 4px !important; gap: 2px !important; }
 html[data-menu-workspace] body #app .conduit-loadout .loadout-slot-main { display: flex !important; gap: 4px !important; align-items: center; }
-html[data-menu-workspace] body #app .conduit-loadout .loadout-slot-art { width: 28px !important; height: 28px !important; flex: 0 0 28px; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-slot-art { width: 84px !important; height: 84px !important; flex: 0 0 84px; }
 html[data-menu-workspace] body #app .conduit-loadout .loadout-slot-controls { display: flex; flex-wrap: wrap; gap: 2px; }
 html[data-menu-workspace] body #app .conduit-loadout :is(.loadout-slot-target, .loadout-rule-button) { font-size: 12px !important; padding: 2px 4px !important; min-height: 32px !important; }
 html[data-menu-workspace] body #app .conduit-loadout .loadout-slot-body :is(b, small, .conduit-element-label) { font-size: 12px !important; line-height: 1.15 !important; }
 html[data-menu-workspace] body #app .conduit-loadout .loadout-actions { flex-wrap: wrap; }
 html[data-menu-workspace] body #app .conduit-loadout .loadout-actions button { min-height: 32px !important; font-size: 12px !important; padding: 2px 4px !important; }
-html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-master-art:not(#_) { width: 36px !important; height: 36px !important; padding: 0 !important; }
+html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-master-art:not(#_) { width: 88px !important; height: 88px !important; padding: 0 !important; }
 html[data-menu-workspace] body #app .conduit-loadout .loadout-master-text :is(b, small) { font-size: 12px !important; }
 html[data-menu-workspace] body #app .conduit-loadout .loadout-master-text > small:last-child { display: none; }
 html[data-menu-workspace] body #app .conduit-loadout :is(.loadout-bonuses, .ref-equipment-note) { font-size: 12px !important; line-height: 1.25; }
 html[data-menu-workspace] body #app .conduit-loadout .loadout-bonus-row > span { font-size: 12px !important; }
 html[data-menu-workspace] body #app .conduit-loadout .loadout-bonuses p { font-size: 12px !important; margin: 0 !important; }
-html[data-menu-workspace] body #app .conduit-loadout .loadout-owned-row:not(#_) { grid-template-columns: 28px minmax(0, 1fr) auto auto !important; gap: 4px !important; padding: 0 !important; min-height: 44px !important; }
-html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-owned-row:not(#_) > .loadout-owned-art { width: 28px !important; height: 28px !important; grid-row: 1 !important; }
+html[data-menu-workspace] body #app .conduit-loadout .loadout-owned-row:not(#_) { grid-template-columns: 80px minmax(0, 1fr) auto auto !important; gap: 6px !important; padding: 4px !important; min-height: 80px !important; }
+html[data-menu-workspace] body #app .sanctuary-shell .conduit-loadout .loadout-owned-row:not(#_) > .loadout-owned-art { width: 80px !important; height: 80px !important; grid-row: 1 !important; }
 html[data-menu-workspace] body #app .conduit-loadout .loadout-owned-text :is(b, small) { font-size: 12px !important; line-height: 1.15 !important; }
 html[data-menu-workspace] body #app .conduit-loadout [data-loadout-equip] { grid-column: auto !important; font-size: 12px !important; padding: 3px 6px !important; }
 html[data-menu-workspace] body #app .conduit-loadout .loadout-filters button { font-size: 12px !important; }
@@ -412,8 +483,9 @@ html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="over
 }
 html[data-menu-workspace] body #app .ref-bearer-detail[data-character-view="overview"] .ref-character-portrait:not(#_):not(#_):not(#_) {
   grid-column: 1 !important; grid-row: 1 / 4 !important; position: relative !important;
-  display: grid !important; place-items: center; width: 100% !important; height: 100% !important;
-  min-height: 380px !important; padding: 26px !important; overflow: hidden; isolation: isolate;
+  display: grid !important; place-items: center; justify-self: center !important;
+  width: min(100%, 360px) !important; height: clamp(220px, 30vh, 300px) !important;
+  min-height: 0 !important; padding: 18px !important; overflow: hidden; isolation: isolate;
   border: 1px solid var(--workspace-line) !important; border-radius: 18px !important;
   background: radial-gradient(ellipse at 55% 45%, color-mix(in srgb, var(--unit-accent) 22%, transparent), transparent 65%), #17140c !important;
 }

@@ -33,7 +33,7 @@ describe('real social/calendar dialogs', () => {
     host.innerHTML = attendanceMarkup(fixture());
     expect(host.querySelectorAll('.attendance-ladder li')).toHaveLength(30);
     expect(host.textContent).not.toContain('Attendance 31');
-    expect(host.textContent).toContain('No catch-up');
+    expect(host.textContent?.toLowerCase()).toContain('no catch-up');
     const transport = vi.fn(async () => fixture());
     opened = openSocialCalendar('attendance', { identity: 'self', state: {}, friends: () => friends, transport, onError: vi.fn() });
     await flush();
@@ -132,7 +132,7 @@ describe('real social/calendar dialogs', () => {
       ? { ...fixture(), giftSentToday: true } : fixture());
     opened = openSocialCalendar('gifts', { identity: 'self', state: {}, friends: () => friends, transport, onError: vi.fn() });
     await flush();
-    document.querySelector<HTMLInputElement>('input[name="friend"]')!.checked = true;
+    document.querySelector<HTMLSelectElement>('select[name="friend"]')!.value = 'friend-id';
     document.querySelector<HTMLFormElement>('[data-calendar-gift]')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     expect(document.querySelector('[data-calendar-gift-confirmation]')!.textContent).toContain('<Friend>');
     expect(document.querySelectorAll('dialog')).toHaveLength(1);
@@ -155,6 +155,29 @@ describe('real social/calendar dialogs', () => {
     expect(document.querySelector('script')).toBeNull();
     expect(document.querySelector('[data-calendar-claim]')).not.toBeNull();
     expect(document.querySelectorAll('dialog')).toHaveLength(1);
+  });
+  it('pages mailbox messages and long message bodies without dropping content', async () => {
+    const makeMail = (index: number) => ({
+      id: `mail-${index}`, title: `Message ${index}`, body: `${'A'.repeat(1201)}😀`, sender: 'System',
+      createdAt: '2026-11-04T12:00:00Z', read: true, claimed: true, informational: true,
+      attachment: { fractalis: 0, lycalis: 0, materials: {} },
+    });
+    const mails = Array.from({ length: 5 }, (_, index) => makeMail(index + 1));
+    const transport = vi.fn(async (command: SocialCalendarCommand) => command.kind === 'readMail'
+      ? { ...fixture(), mail: mails } : { ...fixture(), mail: mails });
+    opened = openSocialCalendar('mail', { identity: 'self', state: {}, friends: () => friends, transport, onError: vi.fn() });
+    await flush();
+    expect(document.querySelectorAll('[data-calendar-mail]')).toHaveLength(4);
+    document.querySelector<HTMLButtonElement>('[data-calendar-mail-page="1"]')!.click();
+    expect(document.querySelectorAll('[data-calendar-mail]')).toHaveLength(1);
+    expect(document.querySelector('[data-calendar-mail]')?.getAttribute('data-calendar-mail')).toBe('mail-5');
+    document.querySelector<HTMLButtonElement>('[data-calendar-mail-page="-1"]')!.click();
+    document.querySelector<HTMLButtonElement>('[data-calendar-mail="mail-1"]')!.click();
+    await flush();
+    expect(document.querySelector('[data-calendar-body-page]')).not.toBeNull();
+    expect(document.querySelector('.social-mail-body')?.textContent).toBe('A'.repeat(1200));
+    document.querySelector<HTMLButtonElement>('[data-calendar-body-page="1"]')!.click();
+    expect(document.querySelector('.social-mail-body')?.textContent).toBe(`A😀`);
   });
   it('keeps unlaunched event Seeds out of gift choices and uses factual static labels', () => {
     const host = document.createElement('div');

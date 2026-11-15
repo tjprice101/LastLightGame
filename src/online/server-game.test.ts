@@ -131,6 +131,30 @@ describe('server authoritative game engine', () => {
     expect(game).toEqual(before);
     expect(() => op(result, operation)).toThrow('changed');
   });
+  it('validates and atomically Max Levels Convergent Light to the highest affordable rank online', () => {
+    const game = rich();
+    const progress = { level: 10, evolution: 1, convergenceRank: 1 };
+    game.account.characters.ember = progress;
+    const total = { fractalis: 0, materials: {} as Record<string, number> };
+    for (let rank = 1; rank < 3; rank++) {
+      const step = convergentLightRankCost('ember', { ...progress, convergenceRank: rank });
+      total.fractalis += step.fractalis;
+      for (const [material, amount] of Object.entries(step.materials))
+        total.materials[material] = (total.materials[material] ?? 0) + amount;
+    }
+    game.account.fractalis = total.fractalis;
+    game.account.materials = total.materials;
+    const operation: GameOperation = { kind: 'upgradeCharacter', id: 'ember', upgradeKind: 'convergence-max', expected: progress };
+    const request = { requestId: crypto.randomUUID(), expectedRevision: 0, operation };
+    expect(validateRequest(request).operation).toEqual(operation);
+    const before = structuredClone(game);
+    const result = op(game, operation).game;
+    expect(result.account.characters.ember).toEqual({ ...progress, convergenceRank: 3 });
+    expect(result.account.fractalis).toBe(0);
+    expect(Object.values(result.account.materials).every(amount => amount === 0)).toBe(true);
+    expect(game).toEqual(before);
+    expect(() => op(result, operation)).toThrow('changed');
+  });
 
   it('separates the six-member squad limit from the fifteen-copy evolution request limit', () => {
     const request = (operation: unknown) => ({ requestId: crypto.randomUUID(), expectedRevision: 0, operation });

@@ -15523,16 +15523,43 @@ function setMachineLootFocus(storage, rarity, id) {
 function isMaterial(id) {
   return elementalMaterials.some((material) => material.id === id) || specialtyMaterials.some((material) => material.id === id) || roseMaterials.some((material) => material.id === id) || newEventMaterialDefinition(id) !== void 0 || isCalamiticMaterialId(id);
 }
+function convergentLightMaxPlan(account, id, expected) {
+  if (!account.characters[id]) throw new Error("Choose your Owned Element-Bearer to upgrade.");
+  const current = ownedProgress(account, id);
+  if (!sameCharacterProgress(current, expected)) throw new Error("Character progress changed. Reopen this tab before upgrading.");
+  const currentRank = current.convergenceRank ?? 1;
+  const cap = convergentLightRankCap(current, id);
+  const cost = { fractalis: 0, materials: {} };
+  let targetRank = currentRank;
+  while (targetRank < cap) {
+    const step2 = convergentLightRankCost(id, { ...current, convergenceRank: targetRank });
+    const nextCost = { fractalis: cost.fractalis + step2.fractalis, materials: { ...cost.materials } };
+    if (!Number.isSafeInteger(nextCost.fractalis)) throw new Error("Convergent Light cost overflow.");
+    for (const [material, amount] of Object.entries(step2.materials)) {
+      const total = (nextCost.materials[material] ?? 0) + amount;
+      if (!Number.isSafeInteger(total)) throw new Error("Convergent Light material cost overflow.");
+      nextCost.materials[material] = total;
+    }
+    if (account.fractalis < nextCost.fractalis || Object.entries(nextCost.materials).some(([material, amount]) => (account.materials[material] ?? 0) < amount)) break;
+    Object.assign(cost, nextCost);
+    targetRank++;
+  }
+  return { currentRank, targetRank, cost };
+}
 function upgradeCharacter(storage, id, kind, expected, fodderIds = []) {
   if (kind === "weapon") throw new Error("Weapon upgrades are unavailable. Existing weapon bonuses are preserved.");
   if (!loadProfile(storage)) throw new Error("Choose your Owned Element-Bearer to upgrade.");
-  if (kind !== "level" && kind !== "evolve" && kind !== "convergence") throw new Error("Unknown character upgrade.");
+  if (kind !== "level" && kind !== "evolve" && kind !== "convergence" && kind !== "convergence-max") throw new Error("Unknown character upgrade.");
   const account = loadAccount(storage);
   if (account.characters[id] === void 0) throw new Error("Choose your Owned Element-Bearer to upgrade.");
   const current = ownedProgress(account, id);
   if (!sameCharacterProgress(current, expected)) throw new Error("Character progress changed. Reopen this tab before upgrading.");
   const element = getStarter(id).elementId;
-  const cost = kind === "level" ? characterLevelCost(id, current) : kind === "evolve" ? characterEvolutionCost(id, current) : convergentLightRankCost(id, current);
+  const maximum = kind === "convergence-max" ? convergentLightMaxPlan(account, id, current) : null;
+  if (maximum && maximum.targetRank === maximum.currentRank) {
+    throw new Error(maximum.currentRank >= convergentLightRankCap(current, id) ? "Reach the required level and evolution to raise Convergent Light rank." : "Not enough resources to raise Convergent Light rank.");
+  }
+  const cost = kind === "level" ? characterLevelCost(id, current) : kind === "evolve" ? characterEvolutionCost(id, current) : maximum ? maximum.cost : convergentLightRankCost(id, current);
   if (kind === "evolve" && current.level !== characterLevelCap(current.evolution, id)) throw new Error("Reach this form level cap before evolving.");
   const requiredValue = kind === "evolve" ? characterEvolutionRequirement(id, current.evolution).fodderValue : 0;
   if (new Set(fodderIds).size !== fodderIds.length) throw new Error("Choose each captured Elemental-Devourer only once.");
@@ -15561,7 +15588,7 @@ function upgradeCharacter(storage, id, kind, expected, fodderIds = []) {
     for (const id2 of fodderIds) if (account.conduitEquipment) delete account.conduitEquipment[id2];
     for (const id2 of fodderIds) if (account.conduitConfigurations) delete account.conduitConfigurations[id2];
   }
-  account.characters[id] = kind === "level" ? { ...current, level: current.level + 1 } : kind === "evolve" ? { ...current, evolution: current.evolution + 1 } : { ...current, convergenceRank: (current.convergenceRank ?? 1) + 1 };
+  account.characters[id] = kind === "level" ? { ...current, level: current.level + 1 } : kind === "evolve" ? { ...current, evolution: current.evolution + 1 } : { ...current, convergenceRank: maximum?.targetRank ?? (current.convergenceRank ?? 1) + 1 };
   if (kind === "evolve" && !account.firstFracture) {
     account.lycalis += fractureRules.lycalisReward;
     account.firstFracture = true;
@@ -19481,7 +19508,7 @@ function validateRequest(value2) {
     if ("convergenceRank" in op.expected) integer2(op.expected.convergenceRank);
     if ("ascension" in op.expected && (!record5(op.expected.ascension) || Object.keys(op.expected.ascension).some((key) => !["stats", "skill1", "skill2", "lastFlare"].includes(key)) || Object.values(op.expected.ascension).some((flag) => typeof flag !== "boolean"))) throw new Error("Invalid expected Ascension state.");
   }
-  if (op.kind === "upgradeCharacter" && !["level", "evolve", "convergence", "weapon"].includes(String(op.upgradeKind)))
+  if (op.kind === "upgradeCharacter" && !["level", "evolve", "convergence", "convergence-max", "weapon"].includes(String(op.upgradeKind)))
     throw new Error("Unknown character upgrade.");
   if (op.kind === "ascendCharacter" && !["stats", "skill1", "skill2", "lastFlare"].includes(String(op.step))) throw new Error("Invalid Calamitic Ascension step");
   if (op.kind === "maxConduit") {

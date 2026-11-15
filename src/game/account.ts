@@ -938,17 +938,52 @@ export function isMaterial(id: string): boolean {
   return elementalMaterials.some((material) => material.id === id) || specialtyMaterials.some((material) => material.id === id) ||
     roseMaterials.some((material) => material.id === id) || newEventMaterialDefinition(id) !== undefined || isCalamiticMaterialId(id);
 }
-export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: 'level' | 'evolve' | 'convergence' | 'weapon', expected: CharacterProgress, fodderIds: readonly string[] = []): Account {
+export interface ConvergentLightMaxPlan {
+  currentRank: number;
+  targetRank: number;
+  cost: UpgradeCost;
+}
+export function convergentLightMaxPlan(account: Account, id: StarterId, expected: CharacterProgress): ConvergentLightMaxPlan {
+  if (!account.characters[id]) throw new Error('Choose your Owned Element-Bearer to upgrade.');
+  const current = ownedProgress(account, id);
+  if (!sameCharacterProgress(current, expected)) throw new Error('Character progress changed. Reopen this tab before upgrading.');
+  const currentRank = current.convergenceRank ?? 1;
+  const cap = convergentLightRankCap(current, id);
+  const cost: UpgradeCost = { fractalis: 0, materials: {} };
+  let targetRank = currentRank;
+  while (targetRank < cap) {
+    const step = convergentLightRankCost(id, { ...current, convergenceRank: targetRank });
+    const nextCost: UpgradeCost = { fractalis: cost.fractalis + step.fractalis, materials: { ...cost.materials } };
+    if (!Number.isSafeInteger(nextCost.fractalis)) throw new Error('Convergent Light cost overflow.');
+    for (const [material, amount] of Object.entries(step.materials)) {
+      const total = (nextCost.materials[material] ?? 0) + amount;
+      if (!Number.isSafeInteger(total)) throw new Error('Convergent Light material cost overflow.');
+      nextCost.materials[material] = total;
+    }
+    if (account.fractalis < nextCost.fractalis ||
+        Object.entries(nextCost.materials).some(([material, amount]) => (account.materials[material] ?? 0) < amount)) break;
+    Object.assign(cost, nextCost);
+    targetRank++;
+  }
+  return { currentRank, targetRank, cost };
+}
+export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: 'level' | 'evolve' | 'convergence' | 'convergence-max' | 'weapon', expected: CharacterProgress, fodderIds: readonly string[] = []): Account {
   if (kind === 'weapon') throw new Error('Weapon upgrades are unavailable. Existing weapon bonuses are preserved.');
   if (!loadProfile(storage)) throw new Error('Choose your Owned Element-Bearer to upgrade.');
-  if (kind !== 'level' && kind !== 'evolve' && kind !== 'convergence') throw new Error('Unknown character upgrade.');
+  if (kind !== 'level' && kind !== 'evolve' && kind !== 'convergence' && kind !== 'convergence-max') throw new Error('Unknown character upgrade.');
   const account = loadAccount(storage);
   if (account.characters[id] === undefined) throw new Error('Choose your Owned Element-Bearer to upgrade.');
   const current = ownedProgress(account, id);
   if (!sameCharacterProgress(current, expected)) throw new Error('Character progress changed. Reopen this tab before upgrading.');
   const element = getStarter(id).elementId;
+  const maximum = kind === 'convergence-max' ? convergentLightMaxPlan(account, id, current) : null;
+  if (maximum && maximum.targetRank === maximum.currentRank) {
+    throw new Error(maximum.currentRank >= convergentLightRankCap(current, id)
+      ? 'Reach the required level and evolution to raise Convergent Light rank.' : 'Not enough resources to raise Convergent Light rank.');
+  }
   const cost = kind === 'level' ? characterLevelCost(id, current)
-    : kind === 'evolve' ? characterEvolutionCost(id, current) : convergentLightRankCost(id, current);
+    : kind === 'evolve' ? characterEvolutionCost(id, current)
+      : maximum ? maximum.cost : convergentLightRankCost(id, current);
   if (kind === 'evolve' && current.level !== characterLevelCap(current.evolution, id)) throw new Error('Reach this form level cap before evolving.');
   const requiredValue = kind === 'evolve' ? characterEvolutionRequirement(id, current.evolution).fodderValue : 0;
   if (new Set(fodderIds).size !== fodderIds.length) throw new Error('Choose each captured Elemental-Devourer only once.');
@@ -979,7 +1014,7 @@ export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: '
   }
   account.characters[id] = kind === 'level' ? { ...current, level: current.level + 1 }
     : kind === 'evolve' ? { ...current, evolution: current.evolution + 1 }
-      : { ...current, convergenceRank: (current.convergenceRank ?? 1) + 1 };
+      : { ...current, convergenceRank: maximum?.targetRank ?? (current.convergenceRank ?? 1) + 1 };
   if (kind === 'evolve' && !account.firstFracture) {
     account.lycalis += fractureRules.lycalisReward;
     account.firstFracture = true;

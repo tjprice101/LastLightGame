@@ -17,7 +17,7 @@ import { bindInformation, information } from './presentation/information';
 import { bindSelectionPanels } from './presentation/selection-panel';
 import { bindStageLoot } from './presentation/stage-loot';
 import { maxLevelPreview } from './presentation/max-level';
-import { levelCharacterToMaximum, type MaxLevelPlan } from './game/account';
+import { convergentLightMaxPlan, levelCharacterToMaximum, type MaxLevelPlan } from './game/account';
 import './numeric-layout.css';
 import './sanctuary-layout.css';
 import './ambient-background.css';
@@ -2197,11 +2197,13 @@ app.addEventListener('click', async (event) => {
   try {
     if (!journey.profile || !account) throw new Error('Character progression is unavailable.');
     const kind = button.dataset.upgrade;
-    if (kind !== 'level' && kind !== 'evolve' && kind !== 'convergence') throw new Error('Unknown or unavailable character upgrade.');
+    if (kind !== 'level' && kind !== 'evolve' && kind !== 'convergence' && kind !== 'convergence-max') throw new Error('Unknown or unavailable character upgrade.');
     const starter = getStarter(selectedCharacter ?? journey.profile.starterId);
     const expected = ownedProgress(account, starter.id);
+    const maximum = kind === 'convergence-max' ? convergentLightMaxPlan(account, starter.id, expected) : null;
     const cost = kind === 'level' ? characterLevelCost(starter.id, expected)
-      : kind === 'evolve' ? characterEvolutionCost(starter.id, expected) : convergentLightRankCost(starter.id, expected);
+      : kind === 'evolve' ? characterEvolutionCost(starter.id, expected)
+        : maximum ? maximum.cost : convergentLightRankCost(starter.id, expected);
     const materials = Object.entries(cost.materials).map(([id, amount]) => `${amount} [${materialName(id)}]`).join(', ');
     const fodderIds = kind === 'evolve' ? Array.from(app.querySelectorAll<HTMLInputElement>('[data-evolution-fodder]:checked'))
       .map((input) => input.dataset.evolutionFodder ?? '') : [];
@@ -2211,9 +2213,12 @@ app.addEventListener('click', async (event) => {
       if (!option) throw new Error('Selected captured Elemental-Devourer is missing.');
       return `[${option.creature.name}] · Lv.${option.copy.level ?? capturedProgress(option.copy).level}`;
     });
-    const actionLabel = kind === 'level' ? 'Level up' : kind === 'evolve' ? 'Evolve' : 'Raise Convergent Light rank';
-    const confirmLabel = kind === 'level' ? 'Level up' : kind === 'evolve' ? 'Evolve' : 'Raise rank';
-    if (!await gameConfirm(`${actionLabel} [${characterName(starter.id, expected.evolution, expected.ascension?.stats === true)}] for ${cost.fractalis} [Prismatica]${materials ? ` and ${materials}` : ''}?${consumed.length ? `\n\nThese Elemental-Devourers will be permanently consumed:\n${consumed.join('\n')}\n\nThis cannot be undone.` : ''}`, { title: actionLabel, confirmLabel, danger: consumed.length > 0 })) return;
+    const actionLabel = kind === 'level' ? 'Level up' : kind === 'evolve' ? 'Evolve'
+      : kind === 'convergence-max' ? 'Max Level Convergent Light' : 'Raise Convergent Light rank';
+    const confirmLabel = kind === 'level' ? 'Level up' : kind === 'evolve' ? 'Evolve'
+      : kind === 'convergence-max' ? 'Max Level' : 'Raise rank';
+    const target = maximum ? ` to Rank ${maximum.targetRank}` : '';
+    if (!await gameConfirm(`${actionLabel} [${characterName(starter.id, expected.evolution, expected.ascension?.stats === true)}]${target} for ${cost.fractalis} [Prismatica]${materials ? ` and ${materials}` : ''}?${consumed.length ? `\n\nThese Elemental-Devourers will be permanently consumed:\n${consumed.join('\n')}\n\nThis cannot be undone.` : ''}`, { title: actionLabel, confirmLabel, danger: consumed.length > 0 })) return;
     const currency = app.querySelector('#fractalis-balance');
     const premium = app.querySelector('#lycalis-balance');
     if (!currency || !premium) throw new Error('Currency display is missing.');
@@ -2244,12 +2249,13 @@ app.addEventListener('click', async (event) => {
     premium.textContent = String(account.lycalis);
     if (fodderIds.length) renderMenu();
     const updatedProgress = ownedProgress(updatedAccount, starter.id);
-    celebrateUpgrade(app, starter, kind, updatedProgress);
+    const presentationKind = kind === 'convergence-max' ? 'convergence' : kind;
+    celebrateUpgrade(app, starter, presentationKind, updatedProgress);
     const result = app.querySelector('#upgrade-result');
     const completion = kind === 'level' ? `reached Level ${progress.level}` : kind === 'evolve' ? 'evolved' : `raised Convergent Light to Rank ${progress.convergenceRank ?? 1}`;
     if (result) result.textContent = `${characterName(starter.id, progress.evolution, progress.ascension?.stats === true)} ${completion}.`;
     else showError(`${characterName(starter.id, progress.evolution, progress.ascension?.stats === true)} ${completion}.`, 'success');
-    await presentUpgrade(before, updatedAccount, starter.id, kind);
+    await presentUpgrade(before, updatedAccount, starter.id, presentationKind);
   } catch (error) {
     console.error('Character upgrade rejected', error);
     showError(`${saved ? 'Upgrade is saved, but its presentation could not complete.' : 'Upgrade was not completed.'} ${errorMessage(error)}`);

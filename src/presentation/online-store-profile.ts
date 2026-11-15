@@ -165,12 +165,11 @@ export function onlineStores(account: Account | null, profile: OnlineProfileDisp
   if (tab === 'event-devourers') {
     return `<section class="online-market ref-screen ref-market ref-event-devourer-store">${navigation}<section class="ref-panel">
       ${shopHost('nimra', access.online ? 'welcome' : 'offline')}
-      <header class="ref-panel-heading">Event Elemental-Devourers</header>
-      <h2>Event-family copies</h2>
-      <p role="status">Copies are available only after their event has actually completed a scheduled window, and never during an active rerun. Launches remain subject to authoritative event schedules.</p>
+      <header class="ref-panel-heading">Event Elemental-Devourers · Event-family copies</header>
+      <div class="event-devourer-rules"><p role="status">Copies are available only after their event has actually completed a scheduled window, and never during an active rerun. Launches remain subject to authoritative event schedules.</p>
       ${access.online ? '' : '<p>Sign in online to purchase event copies. Browsing is available offline.</p>'}
-      <p>Each purchase gives one unlocked, unequipped copy with its authored skills at the listed level. No automatic squad changes. Event-family materials are sold permanently in Material Exchange.</p>
-      <div class="event-devourer-grid">${eventDevourers.map(product => {
+      <p>Each purchase gives one unlocked, unequipped copy with its authored skills at the listed level. No automatic squad changes. Event-family materials are sold permanently in Material Exchange.</p></div>
+      <div class="event-devourer-grid" data-menu-page-size="6" data-menu-current-page="0">${eventDevourers.map(product => {
         const available = eventDevourerAvailable(product.eventId, access.now);
         const active = product.eventId === 'roses' ? roseEventActive(access.now) : newEventWindowActive(product.eventId, access.now);
         const status = product.eventId === 'roses'
@@ -180,7 +179,7 @@ export function onlineStores(account: Account | null, profile: OnlineProfileDisp
               : 'Unavailable until this event has actually completed a scheduled launch window.';
         const encounter = infusionEncounter(product.eventId, product.creature.stages[0]);
         const owned = account?.capturedCharacters?.filter(copy => copy.creatureId === product.id).length ?? 0;
-        return `<article class="event-devourer-card" data-event="${product.eventId}" data-creature="${product.id}">${offerInformation({
+        return `<article class="event-devourer-card" data-menu-page-item data-event="${product.eventId}" data-creature="${product.id}">${offerInformation({
           name: `${product.eventName} · ${product.creature.name}`,
           art: product.creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${product.creature.art}.png`)}" alt="${product.creature.name}">` : '<span>Artwork pending</span>',
           summary: `<p role="status">${status}</p><p>${product.rarity} · Lv.${Math.min(capturedLevelCap, encounter.level)}</p><ul>${enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier).map(skill => `<li>${skill.name} · ${Math.round(skill.multiplier * 100)}% Direct Attack</li>`).join('')}</ul>`,
@@ -188,7 +187,7 @@ export function onlineStores(account: Account | null, profile: OnlineProfileDisp
           action: `<button data-buy-event-devourer="${product.id}" ${account && access.online && available && account.fractalis >= product.price ? '' : 'disabled'}>Buy</button>`,
           reason: !account ? 'Account unavailable.' : !access.online ? 'Sign in online to purchase.' : !available ? status : account.fractalis < product.price ? 'Not enough Prismatica.' : undefined,
         })}</article>`;
-      }).join('')}</div></section></section>`;
+      }).join('')}</div>${menuPager('Event Elemental-Devourers')}</section></section>`;
   }
   const choice = profileFrames.find(frame => frame.id === selectedFrame) ?? profileFrames[0];
   const owned = choice.id === 'default' || profile?.ownedFrames.includes(choice.id);

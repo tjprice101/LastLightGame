@@ -127,7 +127,7 @@ describe('game-specific hub layouts', () => {
     expect(overview).toContain(`Costs ${kit.baseCost} Luminosity to activate.`);
     expect(overview).toContain(kit.passive.name);
     expect(overview).toContain(kit.leader);
-    for (const tier of ['Sparkling Convergent Light', 'Glimmering Convergent Light', 'Ultimate Convergence Light'])
+    for (const tier of ['Sparkling Convergent Light', 'Glimmering Convergent Light', 'Ultimate Convergence of Light'])
       expect(overview).toContain(tier);
     expect(overview).toContain('Rank 6+ and Evo.4');
     expect(overview).not.toContain('Elemental Gauge');

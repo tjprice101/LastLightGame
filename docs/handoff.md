@@ -1,5 +1,30 @@
 # Current state and handoff
 
+## Desktop menu and Convergent Light Max Level follow-through (2026-11-12)
+
+**Implemented in the working tree; not published or deployed.** Character
+growth now previews and confirms a Convergent Light Max Level plan, applies
+consecutive affordable ranks through one atomic local/online operation, and
+validates that operation in the game-operation authority. The server bundle
+has been regenerated. The existing per-rank Convergent Light system described
+below remains deployed; this new Max Level operation does not.
+
+The desktop UI follow-through covers Attendance/Mailbox/Free gift dialogs,
+Story Codex, Loadouts, captured Elemental-Devourer and Inventory grids, and
+Store/Material Exchange presentation. Mail and long message bodies use
+pagination rather than dropping content. Production Conduit artwork is now
+80px in ordinary loadout slots and owned lists; Master artwork remains 112px.
+Social screens are unavailable offline, so no real player account or
+fabricated social state was used for browser validation.
+
+**Verified:** the 16-file focused Vitest run passed **394 tests**;
+`npx tsc --noEmit`, `npm run build`, `node tools\bundle_server_game.mjs` and
+`git diff --check` passed. The build retains the existing large-chunk advisory.
+No push, deployment or release verification occurred. Obtain owner approval
+before deploying the changed online authority. Keep
+`last-light-menu-mockup.html` and
+`docs/Future Plans/living-world-ui-audit-plan.md` unstaged and unpublished.
+
 ## Convergent Light rank follow-through (2026-11-12)
 
 **Deployed and verified.** The live game now uses saved per-Element-Bearer

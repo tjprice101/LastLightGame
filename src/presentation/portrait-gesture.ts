@@ -1,6 +1,6 @@
 import { gestureThreshold } from './battle-gesture';
 
-export const radiantHoldMilliseconds = 350;
+export const radiantHoldMilliseconds = 120;
 const otherControl = 'button, a, input, select, textarea, summary, details, [data-radiant-gesture-ignore]';
 interface Drag {
   button: HTMLButtonElement;
@@ -52,6 +52,19 @@ export function bindRadiantPortraitGestures(host: HTMLElement, options: {
     if (drag) suppressed = drag.button;
     reset();
   };
+  const activateHold = (notify: boolean) => {
+    if (!drag || drag.held) return;
+    drag.held = true; suppressed = drag.button;
+    if (timer !== null) clearTimeout(timer);
+    timer = null;
+    const tier = drag.tier = options.ready(drag.id);
+    drag.surface.classList.remove('is-arming');
+    drag.surface.classList.add('is-held');
+    drag.surface.classList.toggle('is-unready', !tier);
+    if (drag.surface !== drag.button) drag.button.classList.add('is-held');
+    if (notify) options.notice(tier ? `${tier} ready. Drag upward and release to cast; Escape cancels.` :
+      'Flare is not ready. Release to cancel; no action will be spent.');
+  };
   const down = (event: PointerEvent) => {
     if (event.button !== 0 || event.isPrimary === false || !(event.target instanceof Element)) return;
     // A fresh primary press means any earlier release was missed (detached surface, outside window).
@@ -64,17 +77,7 @@ export function bindRadiantPortraitGestures(host: HTMLElement, options: {
       x: event.clientX, y: event.clientY, started: performance.now(), held: false };
     try { surface.setPointerCapture?.(event.pointerId); } catch { /* Inactive pointer: host listeners still track it. */ }
     surface.classList.add('is-arming');
-    timer = setTimeout(() => {
-      if (!drag) return;
-      drag.held = true; suppressed = drag.button;
-      const tier = drag.tier = options.ready(drag.id);
-      drag.surface.classList.remove('is-arming');
-      drag.surface.classList.add('is-held');
-      drag.surface.classList.toggle('is-unready', !tier);
-      if (drag.surface !== drag.button) drag.button.classList.add('is-held');
-      options.notice(tier ? `${tier} ready. Drag upward and release to cast; Escape cancels.` :
-        'Flare is not ready. Release to cancel; no action will be spent.');
-    }, radiantHoldMilliseconds);
+    timer = setTimeout(() => activateHold(true), radiantHoldMilliseconds);
   };
   const move = (event: PointerEvent) => {
     if (!drag || drag.pointer !== event.pointerId) return;
@@ -83,6 +86,7 @@ export function bindRadiantPortraitGestures(host: HTMLElement, options: {
       suppressed = drag.button;
       drag.surface.classList.add('is-dragging');
     }
+    if (!drag.held && dy <= -gestureThreshold && Math.abs(dy) > Math.abs(dx)) activateHold(false);
     if (drag.held) {
       event.preventDefault();
       drag.surface.style.setProperty('--radiant-drag', `${Math.max(-56, Math.min(16, dy))}px`);
@@ -95,7 +99,8 @@ export function bindRadiantPortraitGestures(host: HTMLElement, options: {
     if (!drag || event.pointerId !== drag.pointer) return;
     const prior = drag, dx = event.clientX - prior.x, dy = event.clientY - prior.y;
     const moved = Math.hypot(dx, dy) >= gestureThreshold;
-    const held = prior.held || performance.now() - prior.started >= radiantHoldMilliseconds;
+    const held = prior.held || performance.now() - prior.started >= radiantHoldMilliseconds ||
+      dy <= -gestureThreshold && Math.abs(dy) > Math.abs(dx);
     const deliberate = moved || held;
     if (deliberate) { suppressed = prior.button; event.preventDefault(); }
     reset();
@@ -104,7 +109,7 @@ export function bindRadiantPortraitGestures(host: HTMLElement, options: {
     if (held && dy <= -gestureThreshold && Math.abs(dy) > Math.abs(dx) && tier && !prior.button.disabled)
       options.cast(prior.id);
     else options.notice(!tier ? 'Flare is not ready; no action spent.' :
-      'Charged gesture cancelled. Hold the portrait, then drag upward and release.');
+      'Charged gesture cancelled. Press and drag the portrait upward, then release.');
   };
   const lost = (event: PointerEvent) => { if (drag?.pointer === event.pointerId) cancel(); };
   const key = (event: KeyboardEvent) => {

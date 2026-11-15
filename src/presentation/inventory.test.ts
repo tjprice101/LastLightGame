@@ -11,6 +11,9 @@ import { radiantMasterEffect } from './master-text';
 import { bindInformation } from './information';
 import { bracketReferences } from './reference-text';
 import { referencedEffect } from './effect-copy';
+import { elementalMaterials } from '../content/activities';
+import { bindMenuPagination } from './menu-pagination';
+import { materialName } from '../content/dungeon-art';
 
 afterEach(() => document.body.replaceChildren());
 
@@ -83,8 +86,8 @@ describe('reference Inventory layout', () => {
     for (const id of ['fractalis', 'lycalis']) expect(html).toContain(`currencies/${id}.png`);
     expect(html.match(/role="tab"/g)).toHaveLength(2);
     expect(html).toContain('id="inventory-tab-materials" class="inventory-tab" data-inventory-tab="materials" aria-controls="inventory-panel-materials" aria-selected="true"');
-    expect(html).toContain('data-inventory-section="materials" >');
-    expect(html).toContain('data-inventory-section="conduits" hidden');
+    expect(html).toContain('data-inventory-section="materials" data-menu-page-size="24"');
+    expect(html).toContain('data-inventory-section="conduits" data-menu-page-size="24" hidden');
     expect(html.indexOf('inventory-tabs')).toBeGreaterThan(html.indexOf('inventory-filters'));
     expect(html).not.toContain('data-inventory-resource="mechanical-components"');
     expect(html.match(/<i><\/i>/g)).toHaveLength(28);
@@ -117,6 +120,24 @@ describe('reference Inventory layout', () => {
     expect(html).not.toContain('No resources yet');
     expect(html).not.toContain('inventory-empty-slots');
     expect(account).toEqual(before);
+  });
+  it('paginates large holdings grids and resets the page after filtering', () => {
+    const account = emptyAccount();
+    account.materials = Object.fromEntries(elementalMaterials.slice(0, 25).map(material => [material.id, 1]));
+    const host = document.createElement('main');
+    host.innerHTML = inventoryView(account);
+    bindMenuPagination(host);
+    bindInventory(host, vi.fn());
+    const panel = host.querySelector<HTMLElement>('[data-inventory-section="materials"]')!;
+    const visible = () => Array.from(panel.querySelectorAll<HTMLElement>('[data-menu-page-item]')).filter(item => !item.hidden).length;
+    expect(visible()).toBe(24);
+    panel.querySelector<HTMLButtonElement>('[data-menu-page="1"]')!.click();
+    expect(visible()).toBe(1);
+    const search = host.querySelector<HTMLInputElement>('[data-inventory-query]')!;
+    search.value = materialName(elementalMaterials[0].id);
+    search.dispatchEvent(new Event('input'));
+    expect(panel.dataset.menuCurrentPage).toBe('0');
+    expect(visible()).toBe(1);
   });
   it('distinguishes unavailable saves from empty holdings without displaying fake zero balances', () => {
     const html = inventoryView(null);

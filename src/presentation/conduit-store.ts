@@ -13,6 +13,7 @@ import { conduitElement, omnicTheme } from './conduit-element';
 import { shopHost } from './shop-host';
 import './rarity-feedback.css';
 import { catalogInformation, offerInformation } from './information-layout';
+import { menuPager, setMenuPage } from './menu-pagination';
 
 export function conduitLore(...paragraphs: string[]): string {
   return `<details class="conduit-lore-disclosure"><summary>Lore</summary>${paragraphs.map(text => `<p class="conduit-lore">${escapeDialogText(text)}</p>`).join('')}</details>`;
@@ -50,13 +51,16 @@ export function conduitStore(account: Account | null, selected?: string, rarity 
   if (calamitic && !calamiticStoreUnlocked(account)) return `<section class="conduit-store ref-screen ref-conduit-store" data-store-mode="locked">${navigation}${shopHost('sarev', 'locked')}<div class="calamitic-store-lock" role="region" aria-label="Calamitic Conduits locked"><span class="calamitic-lock-symbol" aria-hidden="true"></span><p>${calamiticLockMessage}</p></div></section>`;
   const catalog = conduits.filter(entry => calamitic ? entry.rarity === 'Calamitic' : entry.price !== null && (!rarity || entry.rarity === rarity));
   const choice = catalog.find(entry => entry.id === selected) ?? catalog[0];
+  const pageSize = 6;
+  const currentPage = Math.max(0, Math.floor(catalog.indexOf(choice!) / pageSize));
   const cost = calamitic ? calamiticTokenPrice : choice?.price;
   const currency = calamitic ? 'Calamitic Tokens' : 'Prismatica';
   const balance = calamitic ? account?.calamiticTokens ?? 0 : account?.fractalis ?? 0;
   const owned = !!choice && (account?.conduits?.[choice.id] ?? 0) > 0;
   return `<section class="conduit-store ref-screen ref-conduit-store" data-store-mode="${calamitic ? 'calamitic' : 'ordinary'}">${navigation}
     <aside class="ref-panel"><h3>${calamitic ? 'Calamitic' : 'Rarity'}</h3>${calamitic ? `<p>Any element</p><p>${currencyIcon('calamitic-tokens')}<strong>${balance.toLocaleString('en-US')}</strong> Calamitic Tokens</p><p>One copy lets all your squad members equip this Conduit.</p>` : `<nav class="ref-rarity-filter">${['', ...new Set(conduits.filter(entry => entry.price !== null).map(entry => entry.rarity))].map(value => `<button data-store-rarity="${value}" aria-pressed="${value === rarity}">${value || 'All'}<small>${conduits.filter(entry => entry.price !== null && (!value || entry.rarity === value)).length}</small></button>`).join('')}</nav>`}</aside>
-    <section class="ref-panel ref-store-catalog"><header class="ref-panel-heading">${calamitic ? "Calamitic Conduits" : 'Available Conduits'} &middot; ${catalog.length}</header><div class="ref-scroll"><div class="info-catalog-grid">${catalog.map(conduit => `<button class="info-catalog-choice" data-store-conduit="${conduit.id}" aria-pressed="${conduit.id === choice?.id}">${catalogInformation({ name: conduit.name, art: conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id]), metadata: `${conduit.rarity}${calamitic ? ' · Universal' : ''}`, effects: [readableEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]))], owned: account?.conduits?.[conduit.id] ?? 0, cost: `${currencyIcon(calamitic ? 'calamitic-tokens' : 'fractalis')}<strong>${calamitic ? calamiticTokenPrice : conduit.price} ${currency}</strong>` })}</button>`).join('')}</div></div></section>
+    <section class="ref-panel ref-store-catalog" data-menu-page-size="${pageSize}" data-menu-current-page="${currentPage}"><header class="ref-panel-heading">${calamitic ? "Calamitic Conduits" : 'Available Conduits'} &middot; ${catalog.length}</header><div class="ref-scroll"><div class="info-catalog-grid">${catalog.map(conduit => `<button class="info-catalog-choice" data-menu-page-item data-store-conduit="${conduit.id}" aria-pressed="${conduit.id === choice?.id}">${catalogInformation({ name: conduit.name, art: conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id]), metadata: `${conduit.rarity}${calamitic ? ' · Universal' : ''}`, effects: [readableEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]))], owned: account?.conduits?.[conduit.id] ?? 0, cost: `${currencyIcon(calamitic ? 'calamitic-tokens' : 'fractalis')}<strong>${calamitic ? calamiticTokenPrice : conduit.price} ${currency}</strong>` })}</button>`).join('')}</div></div></section>
+    ${menuPager('Conduits')}
     <aside class="ref-panel ref-store-detail">${shopHost(calamitic ? 'sarev' : 'torven')}${choice ? `<header class="ref-panel-heading">Details</header><div class="ref-store-hero">${conduitIcon(choice.id, account?.conduitUpgrades?.[choice.id])}</div>${conduitDetails(choice.id, account?.conduitUpgrades?.[choice.id])}
       ${offerInformation({ name: choice.name, art: conduitIcon(choice.id, account?.conduitUpgrades?.[choice.id]), summary: '<p>Unlock one copy for your collection; no automatic equip.</p>', owned: account?.conduits?.[choice.id] ?? 0, price: `${currencyIcon(calamitic ? 'calamitic-tokens' : 'fractalis')}<strong>${cost} ${currency}</strong>`,
         action: `<button class="primary-button" data-buy-conduit="${choice.id}" ${!account || cost === null || cost === undefined || balance < cost || (calamitic && owned) ? 'disabled' : ''}>${calamitic && owned ? 'Owned' : 'Buy one'}</button>`,
@@ -101,6 +105,7 @@ export function updateConduitStore(host: HTMLElement, account: Account | null, s
       count.textContent = nextCount.textContent;
     });
   }
+  setMenuPage(catalog, Number(nextCatalog.dataset.menuCurrentPage ?? 0));
   current.querySelectorAll<HTMLButtonElement>('[data-store-rarity]').forEach(button =>
     button.setAttribute('aria-pressed', String(button.dataset.storeRarity === rarity)));
   const scroll = detail.scrollTop;

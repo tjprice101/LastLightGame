@@ -48,6 +48,15 @@ describe('saved loadout controls', () => {
     }
     expect(document.querySelectorAll('.saved-loadout-slots li')).toHaveLength(96);
   });
+  it('omits empty member cards while retaining every ordinary slot for the shown member', () => {
+    const saved = account();
+    document.body.innerHTML = squadLoadoutsPanel(saved);
+    const current = document.querySelector('[data-saved-id=""]')!;
+    expect(current.querySelectorAll('.saved-loadout-member')).toHaveLength(1);
+    expect(current.querySelectorAll('.saved-loadout-slots li')).toHaveLength(8);
+    expect(current.querySelector('.saved-loadout-member.is-vacant')).toBeNull();
+    expect(current.querySelector('.saved-loadout-card-heading')?.textContent).toContain('1 / 6 members');
+  });
   it('provides a Team destination, named current squad, saved equipment and unlimited list semantics without HTML injection', () => {
     document.body.innerHTML = referenceTeam(account(), { view: 'loadouts', selected: 'ember', element: '', sort: 'name' });
     expect(document.querySelector('[data-team-view="loadouts"]')?.getAttribute('aria-pressed')).toBe('true');

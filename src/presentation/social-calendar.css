@@ -1,50 +1,615 @@
-.social-calendar-dialog {
-  width: min(850px, calc(100vw - 2 * var(--space-3)));
-  max-height: calc(100dvh - 2 * var(--space-3));
-  overflow-y: auto;
+.social-calendar-dialog[open] {
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  gap: 10px;
+  width: min(1120px, calc(100vw - 32px));
+  height: min(820px, calc(100dvh - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: hidden;
+  padding: clamp(16px, 2vw, 26px);
+  border: 1px solid #44454c;
+  border-radius: 18px;
+  color: #f0f0f2;
+  background:
+    radial-gradient(ellipse at 85% 0%, rgb(116 128 150 / 12%), transparent 42%),
+    linear-gradient(145deg, #202126, #131417 70%);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 55%);
 }
-.social-calendar-dialog nav,
-.social-calendar-dialog .game-dialog-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
+
+.social-calendar-dialog > h2 {
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #3b3d43;
+  font-size: clamp(20px, 1.8vw, 26px);
+  letter-spacing: 0.015em;
 }
+
+.social-calendar-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.social-calendar-tabs button,
 .social-calendar-dialog button,
-.social-calendar-dialog fieldset label {
-  min-height: 44px;
+.social-calendar-dialog select {
+  min-height: 40px;
+  border: 1px solid #50525a;
+  border-radius: 9px;
+  color: #f5f5f6;
+  background: linear-gradient(180deg, #34363c, #25262b);
+  font: inherit;
 }
-.social-calendar-dialog nav [aria-pressed="true"] {
-  border-bottom: 3px solid currentColor;
+
+.social-calendar-tabs button {
+  font-weight: 700;
 }
-.social-server-time { font-size: .9em; }
-.social-calendar-feedback { position: relative; isolation: isolate; }
+
+.social-calendar-tabs button[aria-pressed="true"] {
+  border-color: #b6bdcc;
+  color: #fff;
+  background: linear-gradient(180deg, #515663, #353943);
+  box-shadow: inset 0 1px rgb(255 255 255 / 13%), 0 0 0 1px rgb(202 209 222 / 10%);
+}
+
+.social-calendar-dialog button:not(:disabled) {
+  cursor: pointer;
+}
+
+.social-calendar-dialog button:disabled {
+  opacity: 0.48;
+}
+
+.social-calendar-dialog button:focus-visible,
+.social-calendar-dialog select:focus-visible {
+  outline: 2px solid #d6deef;
+  outline-offset: 2px;
+}
+
+.social-calendar-feedback {
+  display: flex;
+  min-height: 26px;
+  align-items: center;
+  gap: 10px;
+  color: #c1c3c9;
+  font-size: 12px;
+}
+
+.social-calendar-feedback p {
+  margin: 0;
+}
+
+.social-calendar-feedback [data-calendar-error]:not(:empty) {
+  color: #ffb6b6;
+}
+
+.social-calendar-feedback [data-calendar-retry] {
+  min-height: 30px;
+  margin-left: auto;
+  padding: 3px 12px;
+  font-size: 12px;
+}
+
+.social-calendar-content {
+  display: grid;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 8px;
+  overflow: hidden;
+}
+
+.social-calendar-content.is-mail-reader,
+.social-calendar-content.is-gift-confirmation {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.social-server-time {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  color: #aeb1b9;
+  font-size: 12px;
+}
+
+.social-calendar-panel {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  padding: clamp(12px, 1.5vw, 18px);
+  border: 1px solid #3f4148;
+  border-radius: 13px;
+  background: linear-gradient(150deg, rgb(42 44 50 / 96%), rgb(26 27 31 / 98%));
+  box-shadow: inset 0 1px rgb(255 255 255 / 4%);
+}
+
+.social-pane-heading,
+.social-calendar-action,
+.social-mail-toolbar,
+.social-mail-pages,
+.social-gift-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.social-pane-heading h3,
+.social-gift-heading h3,
+.gift-confirmation h3 {
+  margin: 3px 0 0;
+  font-size: clamp(16px, 1.35vw, 20px);
+}
+
+.social-eyebrow {
+  color: #b5bbc9;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.attendance-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.attendance-metrics article {
+  display: grid;
+  min-height: 58px;
+  align-content: center;
+  gap: 3px;
+  padding: 7px 10px;
+  border: 1px solid #45474f;
+  border-radius: 9px;
+  background: rgb(14 15 18 / 45%);
+}
+
+.attendance-metrics span {
+  color: #aeb1b9;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.attendance-metrics strong {
+  font-size: 15px;
+}
+
 .attendance-ladder {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
-  gap: var(--space-2);
-  list-style: none;
+  min-height: 0;
+  flex: 1;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
   padding: 0;
+  list-style: none;
 }
+
 .attendance-ladder li {
-  padding: var(--card-padding);
-  border: 1px solid var(--panel-border);
-  border-radius: var(--panel-radius);
+  display: grid;
+  min-width: 0;
+  align-content: center;
+  gap: 5px;
+  padding: 7px;
+  border: 1px solid #464850;
+  border-radius: 9px;
+  background: rgb(15 16 19 / 55%);
 }
-.attendance-ladder li[data-saved] { background: #8882; }
-.attendance-ladder b,
-.attendance-ladder span,
-.social-mail-list span,
-.social-mail-list small { display: block; }
-.social-mail-list { list-style: none; padding: 0; }
-.social-mail-list li { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-3) 0; }
-.social-mail-list [data-calendar-mail] { flex: 1 1 250px; min-width: 0; text-align: left; padding: var(--card-padding); }
-.social-calendar-dialog fieldset { display: grid; grid-template-columns: minmax(0, 1fr); min-inline-size: 0; gap: var(--space-2); margin: var(--space-4) 0; padding: var(--space-3); border: 1px solid var(--panel-border); border-radius: var(--panel-radius); }
-.social-calendar-dialog fieldset legend { padding-inline: var(--space-1); }
-.social-calendar-dialog fieldset label { display: flex; align-items: center; min-width: 0; gap: var(--space-2); padding: var(--space-2); }
-.social-calendar-dialog fieldset label > input[type="radio"] { flex: 0 0 20px; width: 20px; height: 20px; min-width: 0; min-height: 0; margin: 0; padding: 0; }
-.social-calendar-dialog fieldset label span { min-width: 0; overflow-wrap: anywhere; }
-.social-gift-attachment { display: flex; align-items: center; gap: var(--space-2); }
-.social-gift-attachment .currency-icon { flex: 0 0 auto; }
-.social-mail-body { white-space: pre-wrap; overflow-wrap: anywhere; }
-.social-reward-art { display: flex; justify-content: center; gap: var(--space-4); }
-.social-reward-art .currency-icon { width: 80px; height: 80px; }
+
+.attendance-ladder li.is-current {
+  border-color: #c4cbd9;
+  background: linear-gradient(145deg, rgb(95 103 120 / 34%), rgb(22 23 27 / 80%));
+}
+
+.attendance-ladder li.is-claimed {
+  border-color: #65796d;
+}
+
+.attendance-ladder b {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.attendance-ladder small {
+  color: #bac0ca;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.attendance-ladder span {
+  overflow-wrap: anywhere;
+  color: #e6e7ea;
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.social-policy {
+  margin: 0;
+  color: #b5b7bf;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.social-calendar-action {
+  justify-content: flex-start;
+  margin-top: auto;
+}
+
+.social-calendar-action button,
+.social-pane-heading button,
+.social-mail-claim,
+.social-mail-toolbar button {
+  padding: 0 14px;
+  font-weight: 700;
+}
+
+.social-mail-toolbar {
+  min-height: 40px;
+  color: #c0c2c9;
+  font-size: 12px;
+}
+
+.social-mail-list {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.social-mail-list > li {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
+  gap: 7px;
+  padding: 8px;
+  border: 1px solid #44464d;
+  border-radius: 9px;
+  background: rgb(15 16 19 / 50%);
+}
+
+.social-mail-open {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: repeat(4, auto);
+  align-content: center;
+  gap: 3px;
+  padding: 0;
+  border: 0 !important;
+  background: transparent !important;
+  text-align: left;
+}
+
+.social-mail-meta {
+  display: flex;
+  min-width: 0;
+  grid-column: 1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.social-mail-meta strong {
+  overflow: hidden;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.social-mail-meta time {
+  flex: none;
+}
+
+.social-mail-open > b {
+  overflow: hidden;
+  grid-column: 1;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.social-mail-open .social-mail-state,
+.social-mail-open .info-number {
+  grid-column: 1;
+  color: #b9bbc2;
+  font-size: 10px;
+}
+
+.social-mail-open .social-mail-state,
+.social-mail-open .info-number {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.social-mail-pages {
+  justify-content: center;
+  min-height: 34px;
+  color: #d0d1d6;
+  font-size: 12px;
+}
+
+.social-mail-pages button,
+.social-mail-pages button:disabled {
+  min-height: 32px;
+  padding: 0 12px;
+}
+
+.social-mail-empty {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  place-content: center;
+  color: #c4c6cc;
+  text-align: center;
+}
+
+.social-calendar-panel > .social-mail-claim {
+  align-self: flex-start;
+}
+
+.mailbox-counts {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  color: #bfc1c8;
+  font-size: 11px;
+}
+
+.mailbox-counts strong {
+  color: #f2f2f4;
+  font-size: 17px;
+}
+
+.mailbox-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mailbox-toolbar > p {
+  max-width: 62ch;
+}
+
+.mailbox-toolbar > button {
+  flex: none;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.social-mail-body {
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  padding: 12px 14px;
+  border: 1px solid #42444b;
+  border-radius: 9px;
+  background: rgb(14 15 18 / 48%);
+  color: #e0e1e4;
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.social-mail-attachment {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px;
+  border: 1px solid #4b4d55;
+  border-radius: 9px;
+  background: rgb(15 16 19 / 45%);
+}
+
+.social-mail-attachment div {
+  display: grid;
+  gap: 4px;
+}
+
+.social-mail-attachment > span {
+  color: #c0c2c8;
+  font-size: 11px;
+  text-align: right;
+}
+
+.mailbox-empty,
+.social-gift-sent {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  align-content: center;
+  justify-items: center;
+  margin: 0;
+  color: #c4c6cc;
+  text-align: center;
+}
+
+.social-gift-sent {
+  padding: 16px;
+  border: 1px dashed #555861;
+  border-radius: 10px;
+}
+
+.social-gift-panel {
+  gap: 12px;
+}
+
+.social-gift-heading {
+  align-items: flex-start;
+}
+
+.social-gift-form {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 10px 14px;
+}
+
+.social-gift-recipient {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  color: #c4c6cc;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.social-gift-recipient select {
+  width: 100%;
+  padding: 0 10px;
+}
+
+.social-gift-form fieldset {
+  display: grid;
+  min-width: 0;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 9px;
+  border: 1px solid #45474f;
+  border-radius: 10px;
+}
+
+.social-gift-form legend {
+  padding: 0 6px;
+  color: #bec2cc;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.social-gift-form fieldset label {
+  display: grid;
+  min-width: 0;
+  align-content: center;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid #494b53;
+  border-radius: 8px;
+  background: rgb(15 16 19 / 48%);
+  font-size: 12px;
+}
+
+.social-gift-form fieldset label:has(input:checked) {
+  border-color: #b8c0d0;
+  background: rgb(105 112 129 / 20%);
+}
+
+.social-gift-form fieldset label > span {
+  overflow-wrap: anywhere;
+}
+
+.social-gift-attachment {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.social-gift-attachment .currency-icon {
+  width: 28px;
+  height: 28px;
+  flex: none;
+}
+
+.social-gift-form fieldset input {
+  accent-color: #cbd4e6;
+}
+
+.social-gift-form > .social-calendar-action {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  align-items: center;
+}
+
+.gift-confirmation {
+  justify-content: center;
+}
+
+.gift-confirmation h3 {
+  max-width: 48ch;
+}
+
+.social-calendar-dialog > .game-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 0;
+  padding-top: 8px;
+  border-top: 1px solid #3b3d43;
+}
+
+.social-calendar-dialog > .game-dialog-actions button {
+  min-width: 112px;
+  padding: 0 14px;
+}
+
+@media (max-width: 760px) {
+  .social-calendar-dialog[open] {
+    width: calc(100vw - 20px);
+    height: calc(100dvh - 20px);
+    max-height: calc(100dvh - 20px);
+  }
+
+  .attendance-ladder {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .social-gift-form {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .social-gift-form fieldset {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .social-gift-form fieldset,
+  .social-gift-form > .social-calendar-action {
+    grid-column: 1;
+  }
+
+  .social-gift-form fieldset {
+    grid-row: 2;
+  }
+
+  .social-gift-form > .social-calendar-action {
+    grid-row: 3;
+  }
+
+  .social-mail-list {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .social-calendar-dialog *,
+  .social-calendar-dialog *::before,
+  .social-calendar-dialog *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

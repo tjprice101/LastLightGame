@@ -25,6 +25,7 @@ import { calamityChest, parseCalamityChestId } from '../content/calamity';
 import { calamityLoot, calamityChestIcon } from './calamity';
 import { conduitGlossary } from '../content/conduit-glossary';
 import { catalogInformation } from './information-layout';
+import { menuPager } from './menu-pagination';
 
 export type InventoryTab = 'materials' | 'conduits';
 export type InventorySection = InventoryTab;
@@ -34,7 +35,7 @@ export interface InventoryFilters { query: string; type: string; rarity: string;
 export const defaultInventoryFilters: Readonly<InventoryFilters> = { query: '', type: '', rarity: '', element: '' };
 
 function itemMetadata(name: string, type: string, rarity = '', element = ''): string {
-  return `data-inventory-entry data-item-name="${escapeDialogText(name)}" data-item-type="${type}" data-item-rarity="${rarity}"${rarity ? ` data-rarity="${rarity}"` : ''} data-item-elements="${element}"`;
+  return `data-inventory-entry data-menu-page-item data-item-name="${escapeDialogText(name)}" data-item-type="${type}" data-item-rarity="${rarity}"${rarity ? ` data-rarity="${rarity}"` : ''} data-item-elements="${element}"`;
 }
 
 function materialMetadata(id: string): string {
@@ -131,19 +132,20 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
       ['materials', 'Resources &amp; Items', account ? resourceCount : 'Unavailable'],
       ['conduits', 'Conduits', account ? ownedConduits.length + ownedMasters.length : 'Unavailable'],
     ] as const).map(([tab, label, count]) => `<button type="button" role="tab" id="inventory-tab-${tab}" class="inventory-tab" data-inventory-tab="${tab}" aria-controls="inventory-panel-${tab}" aria-selected="${selected === tab}" tabindex="${selected === tab ? 0 : -1}">${label} · ${count}</button>`).join('')}</div>
-    <section class="inventory-panel ref-panel" id="inventory-panel-materials" role="tabpanel" aria-labelledby="inventory-tab-materials" data-inventory-section="materials" ${selected === 'materials' ? '' : 'hidden'}>
+    <section class="inventory-panel ref-panel" id="inventory-panel-materials" role="tabpanel" aria-labelledby="inventory-tab-materials" data-inventory-section="materials" data-menu-page-size="24" ${selected === 'materials' ? '' : 'hidden'}>
     <div class="ref-scroll">
     ${!account ? '<p role="alert">Resource inventory unavailable. Check the save error.</p>' : resourceCount
       ? `<ul class="inventory-item-grid">${chestItems}${components > 0 ? `<li class="inventory-item" data-inventory-resource="${mechanicalComponents.id}" ${itemMetadata(mechanicalComponents.name, 'components')}>
         ${catalogInformation({ name: mechanicalComponents.name, art: `<div class="inventory-item-art">${mechanicalComponentIcon()}</div>`, owned: components, effects: ["Upgrades ordinary Conduits up to +5; Conduit Upgrade shows costs. Masters can't be upgraded."] })}
-        ${information('inventory-components-details', mechanicalComponents.name, catalogInformation({ name: mechanicalComponents.name, art: mechanicalComponentIcon(), owned: components, effects: ["Upgrades ordinary Conduits up to +5; Conduit Upgrade shows costs. Masters can't be upgraded."], acquisition: machineComponentRulesText }), 'Details')}</li>` : ''}${ordinaryMaterials.length ? `<li class="inventory-group-heading" aria-hidden="true">Materials</li>${renderMaterials(ordinaryMaterials)}` : ''}${calamiticMaterialItems.length ? `<li class="inventory-group-heading calamitic-material-group" data-rarity="Calamitic">Calamitic Materials</li>${renderMaterials(calamiticMaterialItems)}` : ''}</ul>` : empty('materials')}</div></section>
-    <section class="inventory-panel ref-panel" id="inventory-panel-conduits" role="tabpanel" aria-labelledby="inventory-tab-conduits" data-inventory-section="conduits" ${selected === 'conduits' ? '' : 'hidden'}>
+        ${information('inventory-components-details', mechanicalComponents.name, catalogInformation({ name: mechanicalComponents.name, art: mechanicalComponentIcon(), owned: components, effects: ["Upgrades ordinary Conduits up to +5; Conduit Upgrade shows costs. Masters can't be upgraded."], acquisition: machineComponentRulesText }), 'Details')}</li>` : ''}${ordinaryMaterials.length ? `<li class="inventory-group-heading" aria-hidden="true">Materials</li>${renderMaterials(ordinaryMaterials)}` : ''}${calamiticMaterialItems.length ? `<li class="inventory-group-heading calamitic-material-group" data-rarity="Calamitic">Calamitic Materials</li>${renderMaterials(calamiticMaterialItems)}` : ''}</ul>` : empty('materials')}</div>
+    ${account && resourceCount ? menuPager('Inventory resources') : ''}</section>
+    <section class="inventory-panel ref-panel" id="inventory-panel-conduits" role="tabpanel" aria-labelledby="inventory-tab-conduits" data-inventory-section="conduits" data-menu-page-size="24" ${selected === 'conduits' ? '' : 'hidden'}>
     <div class="ref-scroll">
     ${!account ? '<p role="alert">Conduit inventory unavailable. Check the save error.</p>' : ownedConduits.length + ownedMasters.length
       ? `<ul class="inventory-item-grid">${ownedConduits.map((conduit) => `<li class="inventory-item" ${omnicTheme(conduit.id)} data-inventory-conduit="${conduit.id}" ${itemMetadata(conduit.name, 'conduits', conduit.rarity, conduit.element ?? '')}>
         ${catalogInformation({ name: conduit.name, art: `<div class="inventory-item-art">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div>`, metadata: `<span class="conduit-identity-badges">${conduitRarity(conduit.id)}</span>${conduitElement(conduit.id)}`, owned: account?.conduits?.[conduit.id], effects: [referencedEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]))] })}
         ${information(`inventory-${conduit.id}-details`, conduit.name, catalogInformation({ name: conduit.name, art: conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id]), metadata: `${conduitRarity(conduit.id)} · +${account?.conduitUpgrades?.[conduit.id] ?? 0} / 5`, effects: [referencedEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]))], owned: account?.conduits?.[conduit.id] ?? 0, lore: conduit.lore, acquisition: 'Equip in Team; equipping does not consume a copy.' }), 'Details')}</li>`).join('')}${masterItems}</ul>`
-      : empty('conduits')}</div></section>
+      : empty('conduits')}</div>${account && ownedConduits.length + ownedMasters.length ? menuPager('Owned Conduits') : ''}</section>
   </section>`;
 }
 
@@ -194,11 +196,15 @@ export function bindInventory(host: HTMLElement, onSelect: (tab: InventoryTab) =
     const items = Array.from(host.querySelectorAll<HTMLElement>('[data-inventory-entry]'));
     for (const item of items) {
       const data = item.dataset;
-      item.hidden = !(data.itemName?.toLowerCase().includes(query)
+      const hidden = !(data.itemName?.toLowerCase().includes(query)
         && (!state.type || data.itemType === state.type || (state.type === 'conduits' && data.itemType === 'masters'))
         && (!state.rarity || (state.rarity === 'none' ? !data.itemRarity : data.itemRarity === state.rarity))
         && (!state.element || (state.element === 'none' ? !data.itemElements : data.itemElements?.split(' ').includes(state.element))));
+      item.dataset.menuFiltered = String(hidden);
+      item.hidden = hidden;
     }
+    host.querySelectorAll<HTMLElement>('[data-inventory-section][data-menu-page-size]')
+      .forEach(panel => panel.dispatchEvent(new Event('menu-list-filtered')));
     const visibleIn = (tab: InventoryTab): number => Array.from(host.querySelectorAll<HTMLElement>(`[data-inventory-section="${tab}"] [data-inventory-entry]`)).filter(item => !item.hidden).length;
     const wanted: InventoryTab | null = state.type === 'conduits' || state.type === 'masters' ? 'conduits' : state.type ? 'materials' : null;
     if (wanted && wanted !== current()) select(wanted);

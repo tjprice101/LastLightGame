@@ -207,6 +207,25 @@ describe('saved six-member Radiant battle surface', () => {
     expect(action(host, 'ember').disabled).toBe(false);
     expect(action(host, 'tide').disabled).toBe(false);
   });
+  it('queues rapid portrait actions in order while saves and visual receipts are still resolving', async () => {
+    const ids = releasedRadiantIds.slice(0, 6);
+    let releaseWindup!: () => void;
+    const effects = {
+      windup: vi.fn(() => new Promise<void>(resolve => { releaseWindup = resolve; })),
+      impact: vi.fn(async () => {}),
+      cancel: vi.fn(),
+    };
+    const { view, host, session, transport } = fixture(ids, 6, effects, 120);
+    applyMotion('reduced'); await view.finishEntrance(); applyMotion('system');
+    for (const id of ids) action(host, id).click();
+    await vi.waitFor(() => expect(effects.windup).toHaveBeenCalledOnce());
+    await vi.waitFor(() => expect(transport.execute).toHaveBeenCalledTimes(ids.length));
+    expect(transport.execute.mock.calls.map(([request]) =>
+      request.operation.kind === 'action' ? request.operation.action.bearerId : 'not-action')).toEqual(ids);
+    expect(session.view().saved.revision).toBe(1 + ids.length);
+    expect(session.view().saved.run?.state.gauge.members.every(member => member.charge > 0)).toBe(true);
+    releaseWindup();
+  });
 
   it.each([
     [0, '0%', '0%', false],

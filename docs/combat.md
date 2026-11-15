@@ -1,6 +1,6 @@
 # Combat specification
 
-## Convergent Light ranks and personal Luminosity (2026-11-12; implementation in progress)
+## Convergent Light ranks and personal Luminosity (2026-11-12; Max Level follow-up not deployed)
 
 The live replacement supersedes earlier shared Shattering Light charging.
 Each Element-Bearer has a saved **Convergent Light** rank from 1 to 20; missing
@@ -8,8 +8,11 @@ legacy ranks read as Rank 1 without a load-time write. A rank requires five
 character levels. Ranks 1–5 are Sparkling, 6–10 are Glimmering (Evo.4+), and
 11–20 are Ultimate (Evo.6+). The level/evolution cap is enforced by local and
 online transactions. Rank-ups use the existing level-cost schedule at that
-rank's level milestone and save the rank and payment atomically. Each rank
-above Rank 1 increases Convergent Light effect magnitudes by 1%.
+rank's level milestone and save the rank and payment atomically. Character
+growth also offers Max Level: it previews the total cost for the highest
+consecutive affordable ranks within the character's rank and evolution caps,
+then applies that plan in one validated transaction. Each rank above Rank 1
+increases Convergent Light effect magnitudes by 1%.
 
 Luminosity is personal. A bearer holds up to its kit's 100 Luminosity capacity,
 doubled to 200 from form 4. A damaging Normal hit grants 10 to its living

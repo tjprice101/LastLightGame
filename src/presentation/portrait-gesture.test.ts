@@ -28,19 +28,29 @@ describe('Radiant charged portrait gestures', () => {
     expect(options.cast).not.toHaveBeenCalled(); expect(binding.consumeClick(button)).toBe(false);
     expect(vi.getTimerCount()).toBe(0);
   });
-  it.each([['early', 349, -32, false], ['short', 350, -31, false], ['exact', 350, -32, true],
-    ['downward', 350, 32, false], ['diagonal', 350, -32, false]] as const)(
-    '%s: casts only at the exact held/upward threshold, never from a cancelled gesture', (_, hold, dy, casts) => {
+  it.each([['below upward threshold', 0, -31, false], ['immediate upward drag', 0, -32, true],
+    ['held upward drag', radiantHoldMilliseconds, -32, true], ['downward', radiantHoldMilliseconds, 32, false],
+    ['diagonal', radiantHoldMilliseconds, -32, false]] as const)(
+    '%s: casts only for an upward, vertically dominant gesture', (_, hold, dy, casts) => {
       const { button, binding, options } = fixture();
       pointer(button, 'pointerdown'); vi.advanceTimersByTime(hold);
       const x = _ === 'diagonal' ? 50 + Math.abs(dy) : 50;
       pointer(button, 'pointermove', x, 100 + dy); pointer(button, 'pointerup', x, 100 + dy);
       expect(options.cast).toHaveBeenCalledTimes(casts ? 1 : 0);
       if (casts) expect(options.cast).toHaveBeenCalledWith('tide');
-      expect(binding.consumeClick(button)).toBe(true);
+      expect(binding.consumeClick(button)).toBe(_ !== 'below upward threshold');
       expect(binding.consumeClick(button)).toBe(false);
       expect(button.classList.contains('is-held')).toBe(false); expect(vi.getTimerCount()).toBe(0);
     });
+  it('arms on a deliberate upward drag without waiting for the hold timer', () => {
+    const { button, options } = fixture();
+    pointer(button, 'pointerdown');
+    pointer(button, 'pointermove', 50, 100 - gestureThreshold);
+    expect(options.ready).toHaveBeenCalledTimes(1);
+    expect(vi.getTimerCount()).toBe(0);
+    pointer(button, 'pointerup', 50, 100 - gestureThreshold);
+    expect(options.cast).toHaveBeenCalledWith('tide');
+  });
   it('never silently converts an unavailable charged attack into a Normal Attack', () => {
     const { button, binding, options } = fixture(); options.ready.mockReturnValue(null);
     pointer(button, 'pointerdown'); vi.advanceTimersByTime(radiantHoldMilliseconds);

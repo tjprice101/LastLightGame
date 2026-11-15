@@ -3,7 +3,7 @@ import { getCreature } from '../content/creatures';
 import { infusionEncounter, legacyInfusionEnemyLevel } from '../content/infusions';
 import { enemyAbilityMultiplier, enemySkills } from '../content/enemy-skills';
 import { describe, expect, it } from 'vitest';
-import { ACCOUNT_KEY, emptyAccount, loadAccount, ownedProgress, saveAccount, saveAccountRewards, unlockedStage, upgradeCharacter, validateAccount } from './account';
+import { ACCOUNT_KEY, convergentLightMaxPlan, emptyAccount, loadAccount, ownedProgress, saveAccount, saveAccountRewards, unlockedStage, upgradeCharacter, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { act, createDungeonBattle, endTurn } from './battle';
 import { characterLevelCap, convergentLightRankCost, evolutionCost, levelCost } from '../content/progression';
@@ -205,6 +205,26 @@ describe('persistent progression transactions', () => {
     const committed = saved.getItem(ACCOUNT_KEY);
     expect(() => upgradeCharacter(saved, 'ember', 'convergence', expected)).toThrow('changed');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(committed);
+    expect(writes).toBe(1);
+  });
+  it('raises Convergent Light to the highest affordable unlocked rank in one atomic save', () => {
+    const saved = storage();
+    const account = funded(saved);
+    account.characters.ember = { level: 30, evolution: 4, convergenceRank: 1 };
+    saveAccount(saved, account);
+    const expected = ownedProgress(account, 'ember');
+    const plan = convergentLightMaxPlan(account, 'ember', expected);
+    expect(plan.targetRank).toBeGreaterThan(plan.currentRank);
+    let writes = 0;
+    const write = saved.setItem;
+    saved.setItem = (key, value) => { writes++; write(key, value); };
+    const upgraded = upgradeCharacter(saved, 'ember', 'convergence-max', expected);
+    expect(writes).toBe(1);
+    expect(upgraded.characters.ember).toMatchObject({ level: 30, evolution: 4, convergenceRank: plan.targetRank });
+    expect(upgraded.fractalis).toBe(account.fractalis - plan.cost.fractalis);
+    for (const [material, amount] of Object.entries(plan.cost.materials))
+      expect(upgraded.materials[material]).toBe(account.materials[material] - amount);
+    expect(() => upgradeCharacter(saved, 'ember', 'convergence-max', expected)).toThrow('changed');
     expect(writes).toBe(1);
   });
   it('handles all six forms, retained levels, exact materials and a one-time first Fracture reward', () => {

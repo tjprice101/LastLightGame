@@ -44,7 +44,7 @@ import { formatMenuWorkspace } from './menu-workspace';
 
 const radiantTabLabels: Partial<Record<string, string>> = {
   'upgrade-3': 'Passive & Leader Skills', 'upgrade-4': 'Sparkling Convergent Light',
-  'upgrade-5': 'Glimmering Convergent Light', 'upgrade-6': 'Ultimate Convergence Light',
+  'upgrade-5': 'Glimmering Convergent Light', 'upgrade-6': 'Ultimate Convergence of Light',
 };
 
 export const characterTabs = [

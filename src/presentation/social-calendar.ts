@@ -32,53 +32,91 @@ function rewardArt(reward: SocialReward): string {
 }
 export function attendanceMarkup(view: SocialCalendarView): string {
   const canClaim = !view.attendedToday && view.attendance < view.daysInMonth;
-  return `<section><h3>Monthly attendance · ${escape(view.month)}</h3>
-    <p>${view.attendance} / ${view.daysInMonth} attendance rewards saved · Consecutive streak: ${view.streak}</p>
-    <p>One manual claim per New York reset day (8:00 PM). Missed days keep monthly progress but break your streak. Streaks carry across months. No catch-up.</p>
-    <p>${canClaim ? `Next attendance (${view.attendance + 1}): ${escape(socialRewardText(view.nextReward))}` : 'Attendance saved for this reset day. Come back after the next reset.'}</p>
-    ${view.nextReward.streakPremium && canClaim ? `<p>Includes ${view.nextReward.streakPremium} Null-Prismatica for the next consecutive streak milestone.</p>` : ''}
-    <button type="button" data-calendar-action="attend" ${canClaim ? '' : 'disabled'}>Claim next attendance</button>
+  return `<section class="social-calendar-panel attendance-panel">
+    <header class="social-pane-heading"><div><span class="social-eyebrow">MONTHLY REWARDS</span><h3>${escape(view.month)}</h3></div>
+      <p>${canClaim ? `Next · Day ${view.attendance + 1}` : 'Today saved'}</p></header>
+    <div class="attendance-metrics">
+      <article><span>Rewards saved</span><strong>${view.attendance} <small>/ ${view.daysInMonth}</small></strong></article>
+      <article><span>Consecutive streak</span><strong>${view.streak}</strong></article>
+      <article><span>${canClaim ? 'Next reward' : 'Today'}</span><strong>${escape(canClaim ? socialRewardText(view.nextReward) : 'Attendance saved')}</strong></article>
+      ${view.nextReward.streakPremium && canClaim ? `<article><span>Streak milestone</span><strong>${view.nextReward.streakPremium} Null-Prismatica</strong></article>` : ''}
+    </div>
+    <p class="social-calendar-policy">Claim once per New York reset day at 8:00 PM. Missed days keep monthly progress but break the consecutive streak. Streaks carry across months; there is no catch-up.</p>
     <ol class="attendance-ladder" aria-label="Monthly ordinal attendance rewards">${Array.from({ length: view.daysInMonth }, (_, index) => {
       const ordinal = index + 1;
-      return `<li ${ordinal <= view.attendance ? 'data-saved="true"' : ''}><b>Attendance ${ordinal}${ordinal <= view.attendance ? ' · Saved' : ''}</b><span>${escape(socialRewardText(attendanceReward(ordinal, 1)))}</span></li>`;
-    }).join('')}</ol></section>`;
+      return `<li class="${ordinal === view.attendance + 1 && canClaim ? 'is-current' : ordinal <= view.attendance ? 'is-claimed' : ''}"><b><span>Day ${String(ordinal).padStart(2, '0')}</span>${ordinal <= view.attendance ? '<small>Saved</small>' : ''}</b><span>${escape(socialRewardText(attendanceReward(ordinal, 1)))}</span></li>`;
+    }).join('')}</ol>
+    <footer class="social-calendar-action">${canClaim
+      ? '<button type="button" data-calendar-action="attend">Save today’s attendance</button>'
+      : '<span role="status">Today’s attendance is saved.</span>'}
+      <span>Rewards are claimed only when you choose to save attendance.</span></footer></section>`;
 }
-function mailboxMarkup(view: SocialCalendarView): string {
+const mailPageSize = 4;
+const mailBodyPageSize = 1200;
+function mailDate(createdAt: string): string {
+  return new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', year: 'numeric' })
+    .format(Date.parse(createdAt));
+}
+function mailboxMarkup(view: SocialCalendarView, requestedPage = 0): string {
   const unclaimed = view.mail.filter(mail => !mail.informational && !mail.claimed).length;
-  return `<section><h3>Mailbox · ${view.mail.filter(mail => !mail.read).length} unread</h3>
-    <p>Patch notes and gifts never expire. Receiving legitimate friend gifts has no daily cap. Reading does not claim attachments.</p>
-    <button type="button" data-calendar-action="claimAll" ${unclaimed ? '' : 'disabled'}>Claim all attachments (${unclaimed})</button>
-    <ul class="social-mail-list">${view.mail.map(mail => `<li>
-      <button type="button" data-calendar-mail="${escape(mail.id)}"><b>${escape(mail.title)}</b>
-      <span>${escape(mail.sender)} · ${mail.read ? 'Read' : 'Unread'} · ${mail.informational ? 'Patch notes' : mail.claimed ? 'Claimed' : 'Unclaimed attachment'}</span>
-      <span class="info-number">${escape(socialRewardText(mail.attachment))}</span></button>
-      ${!mail.informational && !mail.claimed ? `<button type="button" data-calendar-claim="${escape(mail.id)}">Claim attachment</button>` : ''}
-    </li>`).join('')}</ul>${view.mail.length ? '' : '<p>Your mailbox is empty.</p>'}</section>`;
+  const pages = Math.max(1, Math.ceil(view.mail.length / mailPageSize));
+  const page = Math.max(0, Math.min(pages - 1, requestedPage));
+  const visible = view.mail.slice(page * mailPageSize, (page + 1) * mailPageSize);
+  return `<section class="social-calendar-panel mailbox-panel">
+    <header class="social-pane-heading"><div><span class="social-eyebrow">PLAYER MESSAGES</span><h3>Mailbox</h3></div>
+      <div class="mailbox-counts"><strong>${view.mail.filter(mail => !mail.read).length}</strong><span>unread</span><span>${view.mail.length} total</span></div></header>
+    <div class="mailbox-toolbar"><p class="social-calendar-policy">Messages and attachments never expire. Reading does not claim an attachment. Receiving friend gifts has no daily cap.</p>
+      <button type="button" data-calendar-action="claimAll" ${unclaimed ? '' : 'disabled'}>Claim all attachments · ${unclaimed}</button></div>
+    ${visible.length ? `<ul class="social-mail-list">${visible.map(mail => `<li class="social-mail-card" ${mail.read ? '' : 'data-unread="true"'}>
+      <button type="button" class="social-mail-open" data-calendar-mail="${escape(mail.id)}" aria-label="Open ${escape(mail.title)} from ${escape(mail.sender)}">
+        <span class="social-mail-meta"><strong>${escape(mail.sender)}</strong><time datetime="${escape(mail.createdAt)}">${escape(mailDate(mail.createdAt))}</time></span>
+        <b>${escape(mail.title)}</b>
+        <span class="social-mail-state">${mail.read ? 'Read' : 'Unread'} · ${mail.informational ? 'Patch notes' : mail.claimed ? 'Claimed attachment' : 'Unclaimed attachment'}</span>
+        <span class="info-number">${escape(socialRewardText(mail.attachment))}</span>
+      </button>
+      ${!mail.informational && !mail.claimed ? `<button type="button" class="social-mail-claim" data-calendar-claim="${escape(mail.id)}">Claim</button>` : ''}</li>`).join('')}</ul>`
+      : '<p class="mailbox-empty">Your mailbox is empty.</p>'}
+    ${view.mail.length > mailPageSize ? `<nav class="social-mail-pages" aria-label="Mailbox pages"><button type="button" data-calendar-mail-page="-1" aria-label="Previous mailbox page" ${page === 0 ? 'disabled' : ''}>Previous</button><span>Page ${page + 1} of ${pages}</span><button type="button" data-calendar-mail-page="1" aria-label="Next mailbox page" ${page === pages - 1 ? 'disabled' : ''}>Next</button></nav>` : ''}
+  </section>`;
 }
 function giftsMarkup(view: SocialCalendarView, friends: readonly SocialPeerDisplay[]): string {
-  return `<section><h3>Send a free daily gift</h3>
-    <p>One send per account per New York reset day, to one accepted friend. Nothing is deducted from your inventory. Unlaunched Moon/Sunshade Seeds are not eligible.</p>
-    ${view.giftSentToday ? '<p role="status">Your free gift is already sent for this reset day.</p>' : friends.length ? `<form data-calendar-gift>
-    <fieldset><legend>Accepted friend</legend>${friends.map(friend => `<label><input type="radio" name="friend" value="${escape(friend.userId)}" required><span>${escape(friend.displayName)} (@${escape(friend.username)})</span></label>`).join('')}</fieldset>
-    <fieldset><legend>Gift attachment (choose one)</legend>
-      <label><input type="radio" name="gift" value="fractalis" checked><span class="social-gift-attachment">${currencyIcon('fractalis')}<span class="info-number">1,000 Prismatica</span></span></label>
-      <label><input type="radio" name="gift" value="lycalis"><span class="social-gift-attachment">${currencyIcon('lycalis')}<span class="info-number">10 Null-Prismatica</span></span></label>
-      ${view.seedChoices.map(id => `<label><input type="radio" name="gift" value="${escape(id)}"><span class="info-number">10 ${escape(materialName(id))}</span></label>`).join('')}
-    </fieldset><button type="submit">Send free gift</button></form>` : '<p>No accepted friends yet. Add and accept a friend first.</p>'}</section>`;
+  return `<section class="social-calendar-panel gifts-panel">
+    <header class="social-pane-heading"><div><span class="social-eyebrow">DAILY FRIEND BENEFIT</span><h3>Send a free gift</h3></div>
+      <p>${view.giftSentToday ? 'Sent today' : 'One send available'}</p></header>
+    <p class="social-calendar-policy">Send once per account each New York reset day to one accepted friend. Nothing is deducted from your inventory. Unlaunched Moon/Sunshade Seeds are not eligible.</p>
+    ${view.giftSentToday ? '<p class="social-gift-sent" role="status">Your free gift is already sent for this reset day.</p>' : friends.length ? `<form data-calendar-gift class="social-gift-form">
+      <label class="social-gift-recipient"><span>Accepted friend</span><select name="friend" required aria-label="Choose an accepted friend">
+        <option value="" selected disabled>Choose a friend</option>${friends.map(friend => `<option value="${escape(friend.userId)}">${escape(friend.displayName)} (@${escape(friend.username)})</option>`).join('')}
+      </select></label>
+      <fieldset class="social-gift-options"><legend>Gift attachment · Choose one</legend>
+        <label><input type="radio" name="gift" value="fractalis" checked><span class="social-gift-attachment">${currencyIcon('fractalis')}<span class="info-number">1,000 Prismatica</span></span></label>
+        <label><input type="radio" name="gift" value="lycalis"><span class="social-gift-attachment">${currencyIcon('lycalis')}<span class="info-number">10 Null-Prismatica</span></span></label>
+        ${view.seedChoices.map(id => `<label><input type="radio" name="gift" value="${escape(id)}"><span class="info-number">10 ${escape(materialName(id))}</span></label>`).join('')}
+      </fieldset>
+      <footer class="social-calendar-action"><button type="submit">Review free gift</button><span>One recipient · No inventory cost · Saved to their mailbox</span></footer>
+    </form>` : '<p class="social-gift-sent">No accepted friends yet. Add and accept a friend first.</p>'}</section>`;
 }
-export function socialCalendarMarkup(view: SocialCalendarView, tab: string, friends: readonly SocialPeerDisplay[]): string {
-  return `<p class="social-server-time">Server reset day: <time>${escape(view.resetDay)}</time> · Next reset: <time datetime="${escape(view.nextResetAt)}">${escape(new Intl.DateTimeFormat('en-US', {
+export function socialCalendarMarkup(view: SocialCalendarView, tab: string, friends: readonly SocialPeerDisplay[], mailPage = 0): string {
+  return `<p class="social-server-time">Server reset day: <time>${escape(view.resetDay)}</time><span>Next reset</span><time datetime="${escape(view.nextResetAt)}">${escape(new Intl.DateTimeFormat('en-US', {
     timeZone: 'America/New_York', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
   }).format(Date.parse(view.nextResetAt)))}</time></p>
-    ${tab === 'attendance' ? attendanceMarkup(view) : tab === 'gifts' ? giftsMarkup(view, friends) : mailboxMarkup(view)}`;
+    ${tab === 'attendance' ? attendanceMarkup(view) : tab === 'gifts' ? giftsMarkup(view, friends) : mailboxMarkup(view, mailPage)}`;
 }
 
-function readMailMarkup(mail: PlayerMail): string {
-  return `<section><h3>${escape(mail.title)}</h3><p>From ${escape(mail.sender)}</p>
-    <div class="social-mail-body">${escape(mail.body)}</div><p>${escape(socialRewardText(mail.attachment))}</p>
-    <p>${mail.informational ? 'Informational patch notes' : mail.claimed ? 'Attachment already saved' : 'Unclaimed attachment'} · No expiry</p>
+function readMailMarkup(mail: PlayerMail, requestedPage = 0): string {
+  const bodyCharacters = Array.from(mail.body);
+  const pages = Math.max(1, Math.ceil(bodyCharacters.length / mailBodyPageSize));
+  const page = Math.max(0, Math.min(pages - 1, requestedPage));
+  const body = bodyCharacters.slice(page * mailBodyPageSize, (page + 1) * mailBodyPageSize).join('');
+  return `<section class="social-calendar-panel mail-reader">
+    <header class="social-pane-heading"><div><span class="social-eyebrow">${escape(mail.sender)} · ${escape(mailDate(mail.createdAt))}</span><h3>${escape(mail.title)}</h3></div>
+      <button type="button" data-calendar-back>Back to mailbox</button></header>
+    <div class="social-mail-body">${escape(body)}</div>
+    ${pages > 1 ? `<nav class="social-mail-pages" aria-label="Message pages"><button type="button" data-calendar-body-page="-1" ${page === 0 ? 'disabled' : ''}>Previous</button><span>Message page ${page + 1} of ${pages}</span><button type="button" data-calendar-body-page="1" ${page === pages - 1 ? 'disabled' : ''}>Next</button></nav>` : ''}
+    <div class="social-mail-attachment"><div><span class="social-eyebrow">ATTACHMENT · NO EXPIRY</span><strong>${escape(socialRewardText(mail.attachment))}</strong></div>
+      <span>${mail.informational ? 'Informational patch notes' : mail.claimed ? 'Attachment already saved' : 'Unclaimed attachment'}</span></div>
     ${!mail.informational && !mail.claimed ? `<button type="button" data-calendar-claim="${escape(mail.id)}">Claim attachment</button>` : ''}
-    <button type="button" data-calendar-back>Back to mailbox</button></section>`;
+  </section>`;
 }
 
 export async function openSocialCalendar(tab: string, options: SocialCalendarOptions): Promise<void> {
@@ -88,9 +126,9 @@ export async function openSocialCalendar(tab: string, options: SocialCalendarOpt
   }
   const { dialog, dispose } = createGameDialog('Attendance & mail');
   dialog.classList.add('social-calendar-dialog');
-  dialog.innerHTML = `<h2>Attendance & mail</h2><nav aria-label="Social and calendar"><button data-calendar-tab="attendance">Attendance</button><button data-calendar-tab="mail">Mailbox</button><button data-calendar-tab="gifts">Free gift</button></nav>
-    <div class="social-calendar-feedback"><p data-calendar-status role="status">Loading from the server…</p></div><p data-calendar-error role="alert"></p>
-    <button type="button" data-calendar-retry hidden>Retry pending action</button><div data-calendar-content></div>
+  dialog.innerHTML = `<h2>Attendance &amp; mail</h2><nav class="social-calendar-tabs" aria-label="Social and calendar"><button type="button" data-calendar-tab="attendance">Attendance</button><button type="button" data-calendar-tab="mail">Mailbox</button><button type="button" data-calendar-tab="gifts">Free gift</button></nav>
+    <div class="social-calendar-feedback"><p data-calendar-status role="status">Loading from the server…</p><p data-calendar-error role="alert"></p>
+      <button type="button" data-calendar-retry hidden>Retry pending action</button></div><div class="social-calendar-content" data-calendar-content></div>
     <div class="game-dialog-actions"><button type="button" data-calendar-refresh>Refresh from server</button><button type="button" data-calendar-close>Close</button></div>`;
   const content = dialog.querySelector<HTMLElement>('[data-calendar-content]')!;
   const status = dialog.querySelector<HTMLElement>('[data-calendar-status]')!;
@@ -101,6 +139,8 @@ export async function openSocialCalendar(tab: string, options: SocialCalendarOpt
   let view: SocialCalendarView | undefined;
   let busy = false;
   let selectedMail: string | undefined;
+  let mailPage = 0;
+  let mailBodyPage = 0;
   let proposedGift: Extract<SocialCalendarCommand, { kind: 'sendGift' }> | undefined;
   let disposed = false;
   let resolveClosed: (() => void) | undefined;
@@ -115,18 +155,21 @@ export async function openSocialCalendar(tab: string, options: SocialCalendarOpt
     if (!dialog.isConnected || !dialog.open) return;
     dialog.querySelectorAll<HTMLButtonElement>('[data-calendar-tab]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.calendarTab === currentTab)));
     const mail = view?.mail.find(item => item.id === selectedMail);
+    content.classList.toggle('is-mail-reader', !!mail);
+    content.classList.toggle('is-gift-confirmation', !!proposedGift);
     if (proposedGift) {
-      content.innerHTML = `<section><h3>Confirm free gift</h3><p data-calendar-gift-confirmation></p>
-        <p>This uses your one free send for this reset day. Nothing is deducted from your inventory.</p>
-        <button type="button" data-calendar-send-confirm>Send gift</button><button type="button" data-calendar-send-cancel>Cancel</button></section>`;
+      content.innerHTML = `<section class="social-calendar-panel gift-confirmation"><span class="social-eyebrow">CONFIRM FREE GIFT</span>
+        <h3 data-calendar-gift-confirmation></h3><p>This uses your one free send for this reset day. Nothing is deducted from your inventory.</p>
+        <div class="social-calendar-action"><button type="button" data-calendar-send-confirm>Send gift</button><button type="button" data-calendar-send-cancel>Cancel</button></div></section>`;
       const recipient = options.friends().find(item => item.userId === proposedGift!.userId);
       const gift = proposedGift.gift === 'seed' ? `10 ${materialName(proposedGift.materialId)}` :
         proposedGift.gift === 'fractalis' ? '1,000 Prismatica' : '10 Null-Prismatica';
       content.querySelector('[data-calendar-gift-confirmation]')!.textContent = `Send ${gift} to ${recipient?.displayName ?? 'your friend'}?`;
-    } else content.innerHTML = mail ? readMailMarkup(mail) : view ? socialCalendarMarkup(view, currentTab, options.friends()) : '';
+    } else content.innerHTML = mail ? readMailMarkup(mail, mailBodyPage) :
+      view ? socialCalendarMarkup(view, currentTab, options.friends(), mailPage) : '';
     retry.hidden = !options.state.pending;
     dialog.setAttribute('aria-busy', String(busy));
-    content.querySelectorAll<HTMLButtonElement | HTMLInputElement>('button,input').forEach(control => {
+    content.querySelectorAll<HTMLButtonElement | HTMLInputElement | HTMLSelectElement>('button,input,select').forEach(control => {
       if (busy || options.state.pending) control.disabled = true;
     });
   };
@@ -148,6 +191,7 @@ export async function openSocialCalendar(tab: string, options: SocialCalendarOpt
         command.kind === 'readMail' ? 'Mail marked as read.' : command.kind === 'read' ? 'Server state loaded.' : 'Saved.';
       if (command.kind === 'readMail') {
         selectedMail = command.id;
+        mailBodyPage = 0;
       } else if (saved && view.reward && (view.reward.fractalis || view.reward.lycalis || Object.values(view.reward.materials).some(n => n))) {
         if (dialog.open && !disposed) {
           // The shared dialog foundation permits one modal at a time.
@@ -175,9 +219,27 @@ export async function openSocialCalendar(tab: string, options: SocialCalendarOpt
     if (!(event.target instanceof Element)) return;
     if (event.target.closest('[data-calendar-close]')) { cleanup(); return; }
     const tabButton = event.target.closest<HTMLButtonElement>('[data-calendar-tab]');
-    if (tabButton) { currentTab = tabButton.dataset.calendarTab!; selectedMail = undefined; proposedGift = undefined; paint(); return; }
+    if (tabButton) {
+      currentTab = tabButton.dataset.calendarTab!;
+      selectedMail = undefined; mailPage = 0; mailBodyPage = 0; proposedGift = undefined; paint(); return;
+    }
+    const mailboxPage = event.target.closest<HTMLButtonElement>('[data-calendar-mail-page]');
+    if (mailboxPage && view) {
+      mailPage = Math.max(0, Math.min(Math.ceil(view.mail.length / mailPageSize) - 1,
+        mailPage + Number(mailboxPage.dataset.calendarMailPage)));
+      paint();
+      content.querySelector<HTMLButtonElement>(`[data-calendar-mail-page="${mailboxPage.dataset.calendarMailPage}"]`)?.focus();
+      return;
+    }
+    const bodyPage = event.target.closest<HTMLButtonElement>('[data-calendar-body-page]');
+    if (bodyPage && selectedMail) {
+      mailBodyPage += Number(bodyPage.dataset.calendarBodyPage);
+      paint();
+      content.querySelector<HTMLButtonElement>(`[data-calendar-body-page="${bodyPage.dataset.calendarBodyPage}"]`)?.focus();
+      return;
+    }
     if (event.target.closest('[data-calendar-back]')) {
-      selectedMail = undefined; paint(); content.querySelector<HTMLButtonElement>('[data-calendar-mail]')?.focus(); return;
+      selectedMail = undefined; mailBodyPage = 0; paint(); content.querySelector<HTMLButtonElement>('[data-calendar-mail]')?.focus(); return;
     }
     if (event.target.closest('[data-calendar-send-cancel]')) {
       proposedGift = undefined; paint(); content.querySelector<HTMLButtonElement>('[data-calendar-gift] button')?.focus(); return;

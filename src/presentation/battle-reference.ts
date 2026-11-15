@@ -21,7 +21,7 @@ export function radiantLeaderReference(state: RadiantCombatState, living = state
 export function radiantBattleReference(loadout: RadiantLoadout, baseCost: number): string {
   return `<section class="radiant-reference info-surface">${radiantCharacterSheet(loadout, true, 'Frozen battle loadout')}
     <details class="info-lore"><summary>Frozen loadout interactions</summary>
-    <p>Sparkling Convergent Light costs ${baseCost} Luminosity. Glimmering and Ultimate Convergent Light cost ${baseCost * 2}; their ranks unlock at Evo.4 and Evo.6, respectively.</p>
+    <p>Sparkling Convergent Light costs ${baseCost} Luminosity. Glimmering Convergent Light and Ultimate Convergence of Light cost ${baseCost * 2}; they unlock at Evo.4 and Evo.6, respectively.</p>
     <p>Stat ascension ${loadout.ascension.stats ? '×1.5 active' : 'inactive'}; weapon rank ${loadout.weaponRank}
     (${percent(.02 * loadout.weaponRank)} grown Attack). Frozen four-stat values include equipped stat Conduits;
     living squad passives, Weaken and Attack boosts apply dynamically in combat.</p>

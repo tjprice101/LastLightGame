@@ -10,17 +10,18 @@ export function radiantFlareNeedsTarget(loadout: RadiantLoadout, tier: Convergen
 export function radiantFlareDescription(offer: RadiantFlareOffer, element = ''): string[] {
   const lines: string[] = [];
   const enemies = offer.target === 'all-enemies' ? 'All living enemies' : 'Selected living enemy';
-  const grade = offer.comboHits === 4 ? 'Sparkling' : offer.comboHits === 8 ? 'Glimmering' : 'Ultimate';
-  if (offer.damage) lines.push(`${grade} Convergent Light: ${offer.comboHits} ${element ? `${element} ` : ''}hits on ${offer.target === 'all-enemies' ? 'all enemies' : 'one enemy'} for ${percent(offer.damage)} Attack total.`);
-  if (offer.burn) lines.push(`${enemies} surviving impact: Burn at ${percent(offer.burn)} caster Attack per enemy phase for ${offer.burnPhases} phases.`);
-  if (offer.weaken) lines.push(`${enemies} surviving impact: ${percent(offer.weaken)} Weaken for ${offer.weakenPhases} enemy phases.`);
-  if (offer.exposure) lines.push(`${enemies} surviving impact: ${percent(offer.exposure)} Exposure (increased direct damage taken) for ${offer.exposurePhases} enemy phases.`);
+  const tier = offer.comboHits === 4 ? 'Sparkling Convergent Light' :
+    offer.comboHits === 8 ? 'Glimmering Convergent Light' : 'Ultimate Convergence of Light';
+  if (offer.damage) lines.push(`${tier}: ${offer.comboHits}-hit ${element ? `${element}-type ` : ''}damage to ${offer.target === 'all-enemies' ? 'all enemies' : 'one enemy'} (${percent(offer.damage)} Attack total).`);
+  if (offer.burn) lines.push(`${enemies} surviving impact: Burn for ${offer.burnPhases} enemy phases (${percent(offer.burn)} caster Attack each phase).`);
+  if (offer.weaken) lines.push(`${enemies} surviving impact: Weaken by ${percent(offer.weaken)} for ${offer.weakenPhases} enemy phases.`);
+  if (offer.exposure) lines.push(`${enemies} surviving impact: Exposure, increasing direct damage taken by ${percent(offer.exposure)} for ${offer.exposurePhases} enemy phases.`);
   if (offer.shieldDefense || offer.shieldHP)
-    lines.push(`All allies gain a Shield equal to ${percent(offer.shieldDefense)} caster Defense + ${percent(offer.shieldHP)} recipient maximum Health, until broken.`);
-  if (offer.reduction) lines.push(`All living allies: ${percent(offer.reduction)} direct enemy damage reduction for ${offer.reductionPhases} enemy phases.`);
-  if (offer.heal) lines.push(`Restore all living allies' Health by ${percent(offer.heal)} caster Recovery; no revival.`);
-  if (offer.renewal) lines.push(`All living allies: Renewal at ${percent(offer.renewal)} caster Recovery at each of the next ${offer.renewalRounds} round starts.`);
-  if (offer.attackBuff) lines.push(`All living allies: ${percent(offer.attackBuff)} Attack boost for ${offer.attackBuffRounds} rounds.`);
+    lines.push(`All living allies gain a Shield equal to ${percent(offer.shieldDefense)} caster Defense + ${percent(offer.shieldHP)} recipient maximum Health, until broken.`);
+  if (offer.reduction) lines.push(`All living allies take ${percent(offer.reduction)} less direct enemy damage for ${offer.reductionPhases} enemy phases.`);
+  if (offer.heal) lines.push(`Restore ${percent(offer.heal)} caster Recovery as Health to all living allies; no revival.`);
+  if (offer.renewal) lines.push(`All living allies restore ${percent(offer.renewal)} caster Recovery as Health at each of the next ${offer.renewalRounds} round starts.`);
+  if (offer.attackBuff) lines.push(`All living allies gain ${percent(offer.attackBuff)} Attack for ${offer.attackBuffRounds} rounds.`);
   return lines;
 }
 export function radiantPassiveEnhancements(loadout: RadiantLoadout): string[] {

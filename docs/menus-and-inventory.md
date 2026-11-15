@@ -141,7 +141,7 @@ render, invents a claim or bypasses uncertain-action retry. Local accounts see
 an explicit online requirement instead of sample rewards. Daily opens the
 same attendance dialog online; Loadouts opens the actual Loadouts workspace.
 
-## Remaining social-dialog audit (2026-11-11)
+## Social-dialog layout audit (2026-11-11)
 
 Measured the actual Attendance/Mailbox/Free gift dialog implementation with
 isolated transport fixtures, without account or authority mutations, at
@@ -683,7 +683,8 @@ Team Loadouts uses a contained desktop scroll surface so long squads and saved
 lists cannot clip the name or action controls. The new-loadout editor precedes
 the current squad. Responsive member cards show the full portrait, leader/member
 position, element and level, eight numbered ordinary slots with artwork/names,
-and a separate Master row. Empty slots remain explicit. Cards widen or stack
+and a separate Master row. Ordinary slot and owned-list Conduit artwork is
+80px square; the Master artwork remains 112px. Empty slots remain explicit. Cards widen or stack
 instead of squeezing long Conduit names into the previous dense inline list.
 Saved entries retain clear matching/unavailable states and all existing actions.
 The list retains its scroll position after a saved operation; mobile uses normal

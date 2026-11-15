@@ -5,8 +5,8 @@ import { radiantChargeRules } from '../game/combat-gauge';
 import { getMasterConduit } from '../content/master-conduits';
 import { formatStat } from '../content/combat';
 import { convergentLightRankCap, convergentLightRankCost, convergentLightTier, displayEvolution,
-  type CharacterProgress, type ConvergentLightTier } from '../content/progression';
-import { ownedProgress, type Account } from '../game/account';
+  type CharacterProgress, type ConvergentLightTier, type UpgradeCost } from '../content/progression';
+import { convergentLightMaxPlan, ownedProgress, type Account } from '../game/account';
 import { radiantFlareDescription } from './combat-description';
 import { abilityIcon } from './ability-icon';
 import { assetUrl, portrait } from './portrait';
@@ -33,7 +33,7 @@ export const radiantAttunementNames: Record<RadiantAttunement, string> = {
 };
 export const radiantFlareTierNames: Record<ConvergentLightTier, string> = {
   sparkling: 'Sparkling Convergent Light', glimmering: 'Glimmering Convergent Light',
-  ultimate: 'Ultimate Convergence Light',
+  ultimate: 'Ultimate Convergence of Light',
 };
 const tierForm: Record<ConvergentLightTier, number> = { sparkling: 1, glimmering: 4, ultimate: 6 };
 const tierRank: Record<ConvergentLightTier, number> = { sparkling: 1, glimmering: 6, ultimate: 11 };
@@ -137,29 +137,43 @@ export function radiantConvergenceRankPanel(loadout: RadiantLoadout, account: Ac
   const rank = loadout.convergenceRank;
   const progress = { level: loadout.level, evolution: loadout.form, convergenceRank: rank, ascension: loadout.ascension };
   const cap = convergentLightRankCap(progress, loadout.starter);
+  const owned = account.characters[loadout.starter] !== undefined;
+  const maximum = owned ? convergentLightMaxPlan(account, loadout.starter, ownedProgress(account, loadout.starter)) : null;
   const tier = convergentLightTier(rank);
   const canRank = rank < 20 && rank < cap;
   const cost = canRank ? convergentLightRankCost(loadout.starter, progress) : null;
-  const resources = cost ? [
-    { id: 'fractalis', name: 'Prismatica', needed: cost.fractalis, owned: account.fractalis, icon: currencyIcon('fractalis') },
-    ...Object.entries(cost.materials).map(([id, needed]) => {
+  const resourcesFor = (upgradeCost: UpgradeCost) => [
+    { id: 'fractalis', name: 'Prismatica', needed: upgradeCost.fractalis, owned: account.fractalis, icon: currencyIcon('fractalis') },
+    ...Object.entries(upgradeCost.materials).map(([id, needed]) => {
       const art = materialArt(id);
       return { id, name: materialName(id), needed, owned: account.materials[id] ?? 0,
         icon: art ? `<img draggable="false" src="${assetUrl(`materials/${art}.png`)}" alt="" width="40" height="40">` : '' };
     }),
-  ] : [];
+  ];
+  const resources = cost ? resourcesFor(cost) : [];
+  const maximumResources = maximum ? resourcesFor(maximum.cost) : [];
   const enough = resources.every(resource => resource.owned >= resource.needed);
   const requiredEvolution = rank + 1 > 10 ? 6 : rank + 1 > 5 ? 4 : 1;
   const requiredLevel = rank * 5;
-  const blocked = rank >= 20 ? 'Maximum Convergent Light rank reached.'
+  const blocked = !owned ? 'Upgrade an owned Element-Bearer.'
+    : rank >= 20 ? 'Maximum Convergent Light rank reached.'
     : rank >= cap ? `Reach Lv.${requiredLevel} and Evo.${displayEvolution(loadout.starter, requiredEvolution)} to unlock Rank ${rank + 1}.`
       : enough ? '' : 'Insufficient resources.';
+  const maximumBlocked = !owned ? 'Upgrade an owned Element-Bearer.'
+    : maximum && maximum.targetRank > rank ? '' : rank >= 20
+    ? 'Maximum Convergent Light rank reached.'
+    : rank >= cap ? `Reach Lv.${requiredLevel} and Evo.${displayEvolution(loadout.starter, requiredEvolution)} to unlock Rank ${rank + 1}.`
+      : 'Not enough resources to raise Convergent Light rank.';
   return `<section class="character-category convergent-rank-panel" data-convergent-rank="${rank}">
     <h3>Convergent Light · Rank ${rank} of 20</h3>
-    <p>${radiantFlareTierNames[tier]}. Each rank above Rank 1 increases its effect magnitudes by 1%. Higher bands unlock at Rank 6 / Evo.4 and Rank 11 / Evo.6.</p>
+    <p>${radiantFlareTierNames[tier]}. Ranks 1–5 are Sparkling, 6–10 are Glimmering, and 11–20 are Ultimate. Each rank above Rank 1 increases effect magnitudes by 1%.</p>
     ${resources.length ? `<ul class="upgrade-resources">${resources.map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${escape(resource.name)}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>` : ''}
     <button class="primary-button" data-upgrade="convergence" data-upgrade-blocked="${!!blocked}" ${blocked ? 'disabled' : ''}>${rank < 20 ? `Raise to Rank ${rank + 1}` : 'Maximum Rank'}</button>
-    <p class="quiet">${escape(blocked)}</p>
+    <h4>Max Level · Rank ${maximum?.targetRank ?? rank}</h4>
+    <p class="info-label">Total cost to raise from Rank ${rank} to Rank ${maximum?.targetRank ?? rank}:</p>
+    ${maximum && maximum.targetRank > rank ? `<ul class="upgrade-resources">${maximumResources.map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${escape(resource.name)}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>` : ''}
+    <button class="primary-button" data-upgrade="convergence-max" data-upgrade-blocked="${!!maximumBlocked}" ${maximumBlocked ? 'disabled' : ''}>Max Level</button>
+    <p class="quiet">${escape(maximumBlocked || blocked)}</p>
   </section>`;
 }
 
