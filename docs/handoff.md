@@ -17,6 +17,9 @@ chunk advisory. `git diff --check` passed. A full-suite run initially had 10
 failures in one War test file because its expectations still named the previous
 Evo.6 titles; those expectations were updated, and the affected test file
 passed in the focused rerun. The full suite was not rerun after that correction.
+Commit `6db0a545` was pushed to `main` and `overhaul/radiant-foundation`.
+Pages run `43681474522` succeeded, and the hosted `version.json` reported the
+same commit. No authority/server behavior changed.
 
 ## Desktop menu and Convergent Light Max Level follow-through (2026-11-12)
 
