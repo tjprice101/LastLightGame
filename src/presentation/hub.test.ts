@@ -184,8 +184,8 @@ describe('game-specific hub layouts', () => {
     const overview = characterDetail(starter, 'overview');
     for (const label of ['HP', 'Attack', 'Defense', 'Recovery']) expect(overview).toContain(`<small>${label}</small>`);
     for (const label of ['Critical Rate', 'Skill Power', 'Elemental Gauge Capacity']) expect(overview).not.toContain(label);
-    expect(overview).toContain('Prism-base · Equinox');
-    expect(overview).toContain('Balanced: all four stats ×1. No personal Master equipped.');
+    expect(overview).toContain('Attunement · Equinox');
+    expect(overview).toContain('Health, Attack, Defense and Recovery are unchanged. No personal Master equipped.');
   });
 
   it('renders tab details independently without replacing the character or navigation', () => {

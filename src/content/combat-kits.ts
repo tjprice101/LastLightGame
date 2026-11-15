@@ -311,11 +311,11 @@ export const radiantMasters: Record<RadiantMasterId, RadiantMasterDefinition> = 
       magnitude: enhancement === 'passive' ? .15 : enhancement === 'leader' ? .05 : .15,
       effect: enhancement === 'passive'
         ? kit.passive.magnitude === 1
-          ? `${kit.passive.name} also heals each cleansed recipient for 15% of its bearer’s Recovery.`
-          : `Strengthens ${kit.passive.name} by 15% while its bearer is alive.`
+          ? `When ${kit.passive.name} cleanses an ally, that ally also heals for 15% of this bearer's Recovery.`
+          : `Increases this bearer's ${kit.passive.name} passive effect by 15% while they are alive.`
         : enhancement === 'leader'
-          ? `Strengthens ${kit.leader} by 5 percentage points while this bearer is first and alive.`
-          : `Strengthens ${kit.signatureFamily} by 15%.`,
+          ? `While this bearer is alive and leads the squad, their Leader Skill bonus increases by 5 percentage points.`
+          : `Increases this bearer's Convergent Light damage, healing, Shields and status effects by 15%.`,
     }];
   }),
 ) as Record<RadiantMasterId, RadiantMasterDefinition>;

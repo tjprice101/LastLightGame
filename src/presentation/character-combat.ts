@@ -1,5 +1,5 @@
-import { radiantAttunement, radiantAttunements, radiantBearerKits, radiantFinalFlare, radiantLeaderBonus, radiantPassiveAmount, radiantMasters, resolveRadiantStarterStats,
-  type RadiantAttunement, type RadiantBearerId, type RadiantLoadout, type RadiantStats } from '../content/combat-kits';
+import { radiantAttunement, radiantBearerKits, radiantFinalFlare, radiantLeaderBonus, radiantPassiveAmount, radiantMasters, resolveRadiantStarterStats,
+  type RadiantBearerId, type RadiantLoadout, type RadiantStats } from '../content/combat-kits';
 import { adaptRadiantLoadouts } from '../game/combat-loadout';
 import { radiantChargeRules } from '../game/combat-gauge';
 import { getMasterConduit } from '../content/master-conduits';
@@ -25,12 +25,10 @@ import { radiantConduitDescription } from '../content/conduit-effect-text';
 import { bracketReferences } from './reference-text';
 import { radiantConduitPrimitives } from '../content/conduit-effects';
 import { information } from './information';
+import { radiantAttunementNames, radiantAttunementProfile as radiantAttunementStatText } from './master-text';
 
 export const radiantStatKeys = ['hp', 'attack', 'defense', 'recovery'] as const;
 export const radiantStatLabels: Record<keyof RadiantStats, string> = { hp: 'HP', attack: 'Attack', defense: 'Defense', recovery: 'Recovery' };
-export const radiantAttunementNames: Record<RadiantAttunement, string> = {
-  equinox: 'Equinox', corona: 'Corona', aegis: 'Aegis', solstice: 'Solstice', prism: 'Prism',
-};
 export const radiantFlareTierNames: Record<ConvergentLightTier, string> = {
   sparkling: 'Sparkling Convergent Light', glimmering: 'Glimmering Convergent Light',
   ultimate: 'Ultimate Convergence of Light',
@@ -38,7 +36,6 @@ export const radiantFlareTierNames: Record<ConvergentLightTier, string> = {
 const tierForm: Record<ConvergentLightTier, number> = { sparkling: 1, glimmering: 4, ultimate: 6 };
 const tierRank: Record<ConvergentLightTier, number> = { sparkling: 1, glimmering: 6, ultimate: 11 };
 const percent = (value: number): string => `${Number((value * 100).toPrecision(12))}%`;
-const multiplier = (value: number): string => String(Number(value.toPrecision(12)));
 
 export interface RadiantCharacterLoadout { loadout: RadiantLoadout; issue: string }
 
@@ -73,10 +70,8 @@ export function radiantAttunementName(loadout: RadiantLoadout): string {
 
 export function radiantAttunementProfile(loadout: RadiantLoadout): string {
   const attunement = radiantAttunement(loadout);
-  const profile = radiantAttunements[attunement];
-  const changes = radiantStatKeys.filter(key => profile[key] !== 1).map(key => `${radiantStatLabels[key]} ×${multiplier(profile[key])}`);
-  const source = loadout.masterId === null ? 'No personal Master equipped' : `Personal Master: ${getMasterConduit(loadout.masterId).name}`;
-  return `${changes.length ? changes.join(' · ') : 'Balanced: all four stats ×1'}. ${source}.`;
+  const source = loadout.masterId === null ? 'No personal Master equipped' : `Set by ${getMasterConduit(loadout.masterId).name}`;
+  return `${radiantAttunementStatText(attunement)} ${source}.`;
 }
 
 export function radiantAttunementChip(loadout: RadiantLoadout): string {
@@ -202,7 +197,7 @@ export function radiantMasterLine(loadout: RadiantLoadout): string {
 }
 
 export function radiantAttunementSection(loadout: RadiantLoadout): string {
-  return `<section class="character-category radiant-attunement" data-radiant-attunement="${radiantAttunement(loadout)}"><h3>Prism-base · ${radiantAttunementName(loadout)}</h3>
+  return `<section class="character-category radiant-attunement" data-radiant-attunement="${radiantAttunement(loadout)}"><h3>Attunement · ${radiantAttunementName(loadout)}</h3>
     <p>${escape(radiantAttunementProfile(loadout))}</p>${radiantMasterLine(loadout)}</section>`;
 }
 
@@ -217,7 +212,7 @@ export function radiantKitSections(loadout: RadiantLoadout): string {
 export function radiantPortraitStats(loadout: RadiantLoadout): string {
   const values = resolveRadiantStarterStats(loadout);
   return `<dl class="ref-portrait-stats" aria-label="Current combat stats">
-    <div><dt>Prism-base</dt><dd>${radiantAttunementChip(loadout)}</dd></div>
+    <div><dt>Attunement</dt><dd>${radiantAttunementChip(loadout)}</dd></div>
     <div><dt>Level</dt><dd>${formatStat(loadout.level)}</dd></div>
     ${radiantStatKeys.map(key => `<div><dt>${key === 'hp' ? 'Health' : radiantStatLabels[key]}</dt><dd>${formatStat(values[key])}</dd></div>`).join('')}</dl>`;
 }

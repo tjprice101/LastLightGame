@@ -8,7 +8,7 @@ import { starters, getStarter, type StarterId } from '../content/starters';
 import type { Account } from '../game/account';
 import { Button, Dialog, Status } from './components';
 import { masterArtUrl } from '../presentation/master-conduits';
-import { referencedEffect } from '../presentation/effect-copy';
+import { readableEffect } from '../presentation/effect-copy';
 import { radiantMasterEffect } from '../presentation/master-text';
 import '../styles/ui.css';
 import { getElement } from '../content/activities';
@@ -55,7 +55,7 @@ export function MasterChoiceDialog({ account, onChoose, onClose }: {
         }}>
         <img className="ll-master-art master-element-art" draggable={false} src={masterArtUrl(entry.id)} alt="" width={256} height={256} /><strong>{entry.name}</strong>
         <strong className="conduit-element-label" data-conduit-element={element}>{getElement(element).name}</strong>
-        <small>Omnic Master{account.masterConduits?.[entry.id] === 1 ? ' · Owned' : selected.includes(entry.id) ? ' · Selected' : ''}</small><span>{referencedEffect(radiantMasterEffect(entry.id), false)}</span>
+        <small>Omnic Master{account.masterConduits?.[entry.id] === 1 ? ' · Owned' : selected.includes(entry.id) ? ' · Selected' : ''}</small><span>{readableEffect(radiantMasterEffect(entry.id))}</span>
       </Button>)}
     </div>
     <section className="ll-master-selected" aria-label="Selected Masters">

@@ -52,10 +52,10 @@ describe('complete frozen Radiant battle reference', () => {
         expect(description).not.toContain('undefined'); expect(description).not.toContain('NaN');
       }
     }
-    expect(radiantConduitDescription({ kind: 'normal-charge', amount: 270 })).toContain('additional personal charge');
+    expect(radiantConduitDescription({ kind: 'normal-charge', amount: 270 })).toContain('270 extra Luminosity');
     expect(radiantConduitDescription({ kind: 'normal-weaken', amount: 1.2 })).toContain('80%');
     const member = loadout('ember'); member.gear = [{ id: 'vigil-core', rank: 5 }, ...Array.from({ length: 7 }, () => null)];
-    expect(radiantBattleReference(member, 30)).toContain('Maximum Health +30%');
+    expect(radiantBattleReference(member, 30)).toContain('Maximum Health increases by 30%.');
   });
   it('leader bonus reflects frozen ascension/Master/gear and displayed life state, never promotes another member', () => {
     const member = loadout('rosetta', 'master-rosetta-3'); member.ascension.skill2 = true;

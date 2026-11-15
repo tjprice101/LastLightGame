@@ -1,5 +1,26 @@
 # Current state and handoff
 
+## Radiant team pressure audit and Conduit wording (2026-11-15)
+
+The bounded audit compared authored-control with experimental
+`radiant-pressure-v2` across 284 encounter anchors, 44 families, 245 enemy
+identities and 4,002 measurements. The cohort results and limitations are in
+[the benchmark report](enemy-benchmark-calibration.md#radiant-combat-team-pressure-audit-2026-11-15).
+Ordinary late-wall controls and the optimized Calamitic team show distinct
+clear/defeat/timeout/stalemate outcomes. `radiant-pressure-v2` remains
+experimental; this work did not change combat values, enemy calibration or
+access gates.
+
+Radiant ordinary and Master Conduit effects now read as concise, plain-English
+sentences. Display paths suppress automatic brackets around those effects;
+brackets remain available when a named mechanic needs the extra distinction.
+Trigger, target, duration, cap and exception details remain explicit. This is
+presentation and documentation only.
+
+**Verified:** the focused 16-file Vitest run passed **461 tests**;
+`npx tsc --noEmit`, `npm run build` and `git diff --check` passed. The build
+retains the existing large-chunk advisory. No server behavior changed.
+
 ## Global six-form Element-Bearer display names (D-453; 2026-11-15)
 
 Implemented the owner-approved naming slate across the live roster and shared

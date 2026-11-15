@@ -4,7 +4,7 @@ import { characterName } from '../content/character-art';
 import { characterRarity, displayEvolution } from '../content/progression';
 import { elements, materialRarities } from '../content/activities';
 import { conduits, conduitEffect } from '../content/conduits';
-import { referencedEffect as readableEffect } from './effect-copy';
+import { plainEffect, readableEffect } from './effect-copy';
 import { ownedProgress, type Account } from '../game/account';
 import { portrait, assetUrl } from './portrait';
 import { creatures } from '../content/creatures';
@@ -103,7 +103,7 @@ function conduitArchive(account: Account | null): string {
       <div class="archive-mechanism">${masterConduitIcon(entry.id)}</div><h3>${entry.name}</h3>
       <p>Omnic Master · ${getStarter(entry.character).name}</p>${conduitElementLabel(getStarter(entry.character).elementId)}<p class="archive-ownership">${account ? account.masterConduits?.[entry.id] === 1 ? 'Owned' : 'Not owned' : 'Ownership unavailable'}</p>
       <p class="archive-effect">${readableEffect(escapeDialogText(radiantMasterEffect(entry.id)))}</p><p>Choose from a ${masterChest.name}. Final Machines boss: ${masterChest.chance * 100}% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Character-specific; cannot be upgraded.</p>
-      ${information(`archive-master-${entry.id}`, entry.name, `${conduitElementLabel(getStarter(entry.character).elementId)}${conduitLore(entry.lore)}<p>${readableEffect(escapeDialogText(radiantMasterEffect(entry.id)))}</p>`, 'Details')}
+      ${information(`archive-master-${entry.id}`, entry.name, `${conduitElementLabel(getStarter(entry.character).elementId)}${conduitLore(entry.lore)}<p>${plainEffect(escapeDialogText(radiantMasterEffect(entry.id)))}</p>`, 'Details')}
     </article>`).join('')}</div>`;
 }
 

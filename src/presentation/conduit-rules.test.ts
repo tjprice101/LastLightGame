@@ -8,7 +8,7 @@ import { masterReference } from './master-conduits';
 import { radiantMasterEffect } from './master-text';
 import { escapeDialogText } from './game-dialog';
 import { createSession, BattleView } from './battle-view';
-import { referencedEffect as readableEffect } from './effect-copy';
+import { readableEffect } from './effect-copy';
 
 describe('Conduit rules stay on Conduit screens', () => {
   it('keeps equipped Conduit and Master rules out of the battle ability reference and Character ability views', () => {

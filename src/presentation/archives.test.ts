@@ -17,7 +17,7 @@ import { elementAssetIds } from '../content/element-migration';
 import { formatStat } from '../content/combat';
 import { radiantFlares, resolveRadiantStarterStats } from '../content/combat-kits';
 import { radiantAttunementName, radiantCharacterLoadout } from './character-combat';
-import { referencedEffect as readableEffect } from './effect-copy';
+import { readableEffect } from './effect-copy';
 
 describe('unified Archives', () => {
   it('keeps Collections Information focused on rules without a character biography list', () => {

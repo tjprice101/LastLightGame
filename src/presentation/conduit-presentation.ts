@@ -3,7 +3,7 @@ import { getConduit, conduitEffect, type ConduitId } from '../content/conduits';
 import { conduitIcon, conduitRarity } from './conduit-store';
 import { escapeDialogText } from './game-dialog';
 import { type RewardPresentation } from './reward-screen';
-import { referencedEffect } from './effect-copy';
+import { plainEffect } from './effect-copy';
 import { elementAccents } from '../content/dungeon-art';
 import { imageSource, rarityPalette, rarityTier } from './bubble-ui';
 import { conduitElement } from './conduit-element';
@@ -14,7 +14,7 @@ export function conduitReward(id: ConduitId, account: Account, title: string, re
   if (owned < 1) throw new Error('Saved Conduit reward is not owned.');
   const level = account.conduitUpgrades?.[id] ?? 0;
   const art = conduitIcon(id, level);
-  const effect = referencedEffect(escapeDialogText(conduitEffect(conduit, level)));
+  const effect = plainEffect(escapeDialogText(conduitEffect(conduit, level)));
   return {
     cinematic: { kind: 'conduit', eyebrow: `${conduit.rarity} Conduit`, title: conduit.name, subtitle: title, art: imageSource(art), tier: rarityTier(conduit.rarity),
       palette: conduit.rarity === 'Omnic' && conduit.element ? { accent: elementAccents[conduit.element], theme: 'prismatic' } : rarityPalette(conduit.rarity) },

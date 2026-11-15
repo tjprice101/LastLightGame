@@ -8,7 +8,7 @@ import { starters } from '../content/starters';
 import { characterReleased } from '../content/release-visibility';
 import { getElement } from '../content/activities';
 import { elementAccents } from '../content/dungeon-art';
-import { referencedEffect } from '../presentation/effect-copy';
+import { readableEffect } from '../presentation/effect-copy';
 import { radiantMasterEffect } from '../presentation/master-text';
 
 beforeEach(() => {
@@ -48,7 +48,7 @@ describe('React Master chest choice', () => {
         expect(card.querySelector('strong.conduit-element-label')?.textContent).toBe(getElement(starter.elementId).name);
         expect(card.textContent).toContain('Omnic Master');
         const entry = masterConduits.filter(entry => entry.character === starter.id)[index];
-        expect(card.querySelector('span')?.textContent).toBe(referencedEffect(radiantMasterEffect(entry.id), false));
+        expect(card.querySelector('span')?.textContent).toBe(readableEffect(radiantMasterEffect(entry.id)));
         expect(card.querySelector('span')?.textContent).not.toMatch(/\bHP\b|\[\[/);
       });
     }

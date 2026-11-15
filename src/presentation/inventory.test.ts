@@ -10,7 +10,7 @@ import { conduits, conduitEffect, getConduit } from '../content/conduits';
 import { radiantMasterEffect } from './master-text';
 import { bindInformation } from './information';
 import { bracketReferences } from './reference-text';
-import { referencedEffect } from './effect-copy';
+import { readableEffect } from './effect-copy';
 import { elementalMaterials } from '../content/activities';
 import { bindMenuPagination } from './menu-pagination';
 import { materialName } from '../content/dungeon-art';
@@ -111,7 +111,7 @@ describe('reference Inventory layout', () => {
     expect(html).toContain('Seed of Infernic');
     expect(html).toContain('Soul of Rosethorn');
     expect(html).toContain('Vigil Core');
-    expect(html).toContain(referencedEffect(conduitEffect(getConduit('vigil-core'), 0)));
+    expect(html).toContain(readableEffect(conduitEffect(getConduit('vigil-core'), 0)));
     expect(html).toContain('Owned 3');
     expect(html).not.toContain('Shard of Aquatic');
     expect(html).not.toContain('Bastion Lock');
@@ -193,7 +193,7 @@ describe('reference Inventory layout', () => {
       const dialog = card.querySelector('dialog')!;
       const effect = ordinary ? conduitEffect(entry, 5) : radiantMasterEffect(entry.id);
       const expected = document.createElement('div');
-      expected.innerHTML = referencedEffect(effect);
+      expected.textContent = readableEffect(effect);
       expect(dialog.textContent).toContain(expected.textContent);
       if (ordinary) expect(dialog.textContent?.replace(/[[\]]/g, '')).toContain(bracketReferences(entry.lore, false).replace(/[[\]]/g, ''));
       expect(card.querySelector('[data-information]')?.textContent).toBe('Details');

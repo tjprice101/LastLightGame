@@ -1,5 +1,36 @@
 # Global character benchmarks and enemy calibration (D-404)
 
+## Radiant combat team pressure audit (2026-11-15)
+
+The bounded study compared the authored-control calibration with experimental
+`radiant-pressure-v2` using the same 284 encounter anchors, 44 families and
+245 enemy identities: 2,001 measurements per calibration, 4,002 total. The
+study source was `c9688053a7cd1610b4f0b97fd88b2c03746ea484`.
+
+| Conditional team cohort | Authored-control | Experimental `radiant-pressure-v2` |
+|---|---:|---:|
+| Each free starter, opening encounter | 3/3 clears | Not used as a comparative result |
+| Progression solo | 60/614 wins | 260/614 wins |
+| Common-gear trio | 183/614 wins | 407/614 wins |
+| Developed six-member team | 301/614 wins | 569/614 wins |
+| Common-gear six-member late-wall control | 0/39 wins | 2/39 wins |
+| Separately optimized Calamitic six | 11/108 wins; 77 defeats, 8 timeouts, 12 stalemates | 102/108 wins; 6 timeouts |
+
+These are conditional team experiments, not ordinary-account averages, a full
+roster/team-combination sweep or proof of real-player clear rates. Some study
+encounters report access errors, so the results are diagnostic rather than
+playable-access evidence. They show strong performance differences between
+team cohorts and severe late-wall pressure for the common-gear control; the
+experimental calibration improves results but does not resolve that control.
+`radiant-pressure-v2` remains experimental and is not approved for deployment.
+No combat values, enemy calibration, rewards or access gates were changed.
+
+Radiant ordinary and Master Conduit effects now use plain-English sentences
+rather than stat-page shorthand. Brackets are reserved for named mechanics
+when they materially improve clarity. Exact triggers, targets, durations,
+caps and exceptions remain in the displayed effect; this is a copy change,
+not a combat rebalance.
+
 ## Core consolidation cadence checks (2026-11-12; local, not released)
 
 Bounded comparisons use the published `20d9cc45` source as the before-contract

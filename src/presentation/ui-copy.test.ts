@@ -182,7 +182,7 @@ describe('visible UI copy', () => {
     const store = primary(conduitStore(account));
     expect(store).not.toContain('Purchase requires confirmation.');
     expect(store).not.toContain('Mechanical drive');
-    expect(store).toContain(referencedEffect(conduitEffect(getConduit('vigil-core'))));
+    expect(store).toContain(readableEffect(conduitEffect(getConduit('vigil-core'))));
     expect(store).toContain('data-buy-conduit="vigil-core"');
     expect(store).toContain('Prismatica');
     const upgrades = primary(conduitUpgradeMenu(account));

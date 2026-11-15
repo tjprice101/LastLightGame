@@ -1,4 +1,4 @@
-import { referencedEffect } from './effect-copy';
+import { plainEffect } from './effect-copy';
 import { getMasterConduit, masterChest, masterConduits, type MasterConduitId } from '../content/master-conduits';
 import { assetUrl } from './portrait';
 import { getStarter, isStarterId } from '../content/starters';
@@ -31,7 +31,7 @@ export function masterChestIcon(): string {
 export function masterReference(id?: MasterConduitId | null): string {
   if (!id) return '';
   const entry = getMasterConduit(id);
-  return `<section class="master-reference" data-acquisition-master="${entry.id}">${catalogInformation({ name: `Master · ${entry.name}`, art: masterConduitIcon(entry.id), metadata: conduitElementLabel(getStarter(entry.character).elementId), effects: [referencedEffect(escapeDialogText(radiantMasterEffect(entry.id)))], state: `${getStarter(entry.character).name} only · Cannot be upgraded`, lore: entry.lore })}</section>`;
+  return `<section class="master-reference" data-acquisition-master="${entry.id}">${catalogInformation({ name: `Master · ${entry.name}`, art: masterConduitIcon(entry.id), metadata: conduitElementLabel(getStarter(entry.character).elementId), effects: [plainEffect(escapeDialogText(radiantMasterEffect(entry.id)))], state: `${getStarter(entry.character).name} only · Cannot be upgraded`, lore: entry.lore })}</section>`;
 }
 export function masterEquipment(character: string, account: Account | null): string {
   if (!isStarterId(character)) return '<div class="ref-master-slot"><strong>Master slot</strong><p>Character Masters are for their named Element-Bearer only.</p></div>';
@@ -50,7 +50,7 @@ export function masterReward(id: MasterConduitId, account: Account): RewardPrese
     palette: { accent: getStarter(entry.character).color, theme: 'prismatic' } },
     celebration: 'Master Conduit unlocked',
     title: 'Master Conduit unlocked', name: entry.name, rarity: 'Omnic', art: `<div class="master-reward-art">${masterConduitIcon(id)}</div>`,
-    details: `${conduitElementLabel(getStarter(entry.character).elementId)}<p>Omnic Master · ${getStarter(entry.character).name}</p><p>${referencedEffect(escapeDialogText(radiantMasterEffect(entry.id)))}</p><p>One chest opened. Not auto-equipped. Equip in Team.</p>`,
+    details: `${conduitElementLabel(getStarter(entry.character).elementId)}<p>Omnic Master · ${getStarter(entry.character).name}</p><p>${plainEffect(escapeDialogText(radiantMasterEffect(entry.id)))}</p><p>One chest opened. Not auto-equipped. Equip in Team.</p>`,
     accent: getStarter(entry.character).color,
     animationLabel: "Revealing your Master Conduit",
     savedLabel: "Master Conduit saved. Equip it in Team." };
@@ -65,7 +65,7 @@ export function masterRewards(ids: readonly MasterConduitId[], account: Account)
     return `<article class="summon-ten-result master-bulk-reward" data-rarity="Omnic">
       <div class="summon-ten-art">${masterConduitIcon(entry.id)}</div><b>${escapeDialogText(entry.name)}</b>
       <small>${escapeDialogText(character.name)} · ${conduitElementLabel(character.elementId)} · Omnic Master</small>
-      <details><summary>Inspect Master details</summary><p>${referencedEffect(escapeDialogText(radiantMasterEffect(entry.id)))}</p></details></article>`;
+      <details><summary>Inspect Master details</summary><p>${plainEffect(escapeDialogText(radiantMasterEffect(entry.id)))}</p></details></article>`;
   }).join('')}</section><p>${entries.length} Master Conduit${entries.length === 1 ? '' : 's'} saved. None were auto-equipped.</p>`;
   return {
     cinematic: { kind: 'chest', eyebrow: "Machine's Master Chest", title: `${entries.length} Masters unlocked`,

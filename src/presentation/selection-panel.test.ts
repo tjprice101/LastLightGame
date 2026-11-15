@@ -89,7 +89,7 @@ describe('scrollable selection panels', () => {
     expect(details.getAttribute('aria-expanded')).toBe('true');
     expect(dialog.querySelector('.master-selection-details')?.textContent).toContain('Master for Infernis');
     expect(dialog.querySelector('.master-selection-details')?.textContent).toContain('Cannot be upgraded');
-    expect(dialog.querySelector('.master-selection-details')?.textContent).toContain('Corona Prism-base: Attack ×1.25');
+    expect(dialog.querySelector('.master-selection-details')?.textContent).toContain('Corona attunement. Health is 10% lower and Attack is 25% higher');
     secondDetails.click();
     expect(details.getAttribute('aria-expanded')).toBe('false');
     expect(secondDetails.getAttribute('aria-expanded')).toBe('true');

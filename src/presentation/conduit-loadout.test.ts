@@ -9,7 +9,7 @@ import { conduits, getConduit, conduitEffect } from '../content/conduits';
 import { referenceTeam } from './reference-team';
 import { updateCharacterTab } from './hub';
 import { getStarter } from '../content/starters';
-import { readableEffect, referencedEffect } from './effect-copy';
+import { readableEffect } from './effect-copy';
 
 function account(): Account {
   return { ...emptyAccount(), characters: { ember: { level: 12, evolution: 1 }, tide: { level: 20, evolution: 1 } }, squad: ['ember', 'tide'],
@@ -63,7 +63,7 @@ describe('Conduit loadout (D-229)', () => {
     expect(html).toContain('conduit-icon-frame');
     expect(html).toContain('data-conduit-upgrade="2"');
     expect(html).toContain('data-loadout-rule="siegebound-drive" data-loadout-detail-level="2"');
-    expect(html).toContain(`Level 2 of 5 · next level ${referencedEffect(conduitEffect(getConduit('siegebound-drive'), 3))}`);
+    expect(html).toContain(`Level 2 of 5 · next level ${readableEffect(conduitEffect(getConduit('siegebound-drive'), 3))}`);
     expect(html).toContain('data-page="conduit-upgrade" data-upgrade-target="siegebound-drive"');
     expect(html).toContain('data-loadout-unequip="0" data-loadout-owner="ember"');
     expect(html).toContain('data-master-equipment="ember"');
@@ -91,7 +91,7 @@ describe('Conduit loadout (D-229)', () => {
     const dom = document.createElement('div');
     dom.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
     expect(dom.querySelector('.loadout-bonus-heading')?.textContent).toBe('Combined effects');
-    expect(dom.querySelector('[data-radiant-effect="hp"]')?.textContent).toBe('Maximum [Health] +20%.');
+    expect(dom.querySelector('[data-radiant-effect="hp"]')?.textContent).toBe('Maximum Health increases by 20%.');
     expect(conduitLoadout('tide', 'Tizu', 'oceanic', account())).toContain('No combined modifiers yet');
     wallet.conduitEquipment = { ember: ['wardglass-transformer', 'bastion-lock', null, null, null, null, null, null] };
     wallet.conduitUpgrades = { 'bastion-lock': 5 };
@@ -166,7 +166,7 @@ describe('Conduit loadout (D-229)', () => {
 
   it('formats compact buff lines and counts filled slots', () => {
     expect(conduitBuffLine(getConduit('parallax-relay'))).toBe(radiantConduitEffectLines('parallax-relay').map(line => line.replace(/\.$/, '')).join(' · '));
-    expect(conduitBuffLine(getConduit('vigil-core'), 2)).toBe('Maximum Health +24%');
+    expect(conduitBuffLine(getConduit('vigil-core'), 2)).toBe('Maximum Health increases by 24%');
     expect(filledConduitSlots('ember', account())).toBe(1);
     expect(filledConduitSlots('tide', account())).toBe(0);
   });
@@ -411,7 +411,7 @@ describe('Conduit loadout (D-229)', () => {
     const html = conduitLoadout('ember', 'Infernis', kit!.element ?? 'infernic', wallet);
     expect(html).toContain(`data-loadout-rule="${kit!.id}"`);
     expect(html).not.toContain(conduitRuleText(kit!)!);
-    expect(conduitRuleText(getConduit('siegebound-drive'))).toBe(referencedEffect(conduitEffect(getConduit('siegebound-drive'))));
+    expect(conduitRuleText(getConduit('siegebound-drive'))).toBe(readableEffect(conduitEffect(getConduit('siegebound-drive'))));
   });
 
   it('opens complete upgraded Omnic stats and mechanics in a Details dialog', async () => {
@@ -438,14 +438,14 @@ describe('Conduit loadout (D-229)', () => {
       const dialog = document.querySelector<HTMLDialogElement>('.game-dialog')!;
       expect(dialog.open).toBe(true);
       expect(dialog.textContent).toContain('Level 5 of 5');
-      expect(dialog.textContent).toContain(referencedEffect(conduitEffect(conduit, 5)));
+      expect(dialog.textContent).toContain(readableEffect(conduitEffect(conduit, 5)));
       expect(dialog.textContent).toContain('Maximum 4 Omnic');
       const lore = dialog.querySelector<HTMLDetailsElement>('.conduit-lore-disclosure')!;
       expect(lore.open).toBe(false);
       expect(lore.querySelector('summary')?.textContent).toBe('Lore');
       expect(lore.querySelector('.conduit-lore')?.textContent).toBe(conduit.lore);
       expect(dialog.querySelector('.info-item-header h3')?.textContent).toBe(conduit.name);
-      expect(dialog.querySelector('.info-effects')?.textContent).toContain(referencedEffect(conduitEffect(conduit, 5)));
+      expect(dialog.querySelector('.info-effects')?.textContent).toContain(readableEffect(conduitEffect(conduit, 5)));
       lore.open = true;
       expect(lore.open).toBe(true);
       dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));

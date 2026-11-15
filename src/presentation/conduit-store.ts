@@ -6,7 +6,7 @@ import './conduit-store.css';
 import { information } from './information';
 import { conduitUpgradeMeter } from './conduit-upgrade-meter';
 import { isBannerConduitEligible } from '../content/machines';
-import { referencedEffect as readableEffect } from './effect-copy';
+import { plainEffect, readableEffect } from './effect-copy';
 import { escapeDialogText } from './game-dialog';
 import { calamiticLockMessage, calamiticStoreUnlocked, calamiticTokenPrice, isCalamiticConduitId } from '../content/calamitic-conduits';
 import { conduitElement, omnicTheme } from './conduit-element';
@@ -22,7 +22,7 @@ export function conduitLore(...paragraphs: string[]): string {
 export function conduitDetails(id: ConduitId, level = 0, revealArt = true): string {
   const conduit = getConduit(id);
   return catalogInformation({ name: conduit.name, art: `<div class="conduit-details-art${revealArt ? '' : ' unreached-character-art'}">${conduitIcon(id, level)}</div>`,
-    metadata: conduitRarity(id), effects: [`Current effect (+${level}): ${readableEffect(conduitEffect(conduit, level))}`, `At +5: ${readableEffect(conduitEffect(conduit, 5))}`],
+    metadata: conduitRarity(id), effects: [`Current effect (+${level}): ${plainEffect(escapeDialogText(conduitEffect(conduit, level)))}`, `At +5: ${plainEffect(escapeDialogText(conduitEffect(conduit, 5)))}`],
     lore: `${conduit.lore} ${conduit.power}`, acquisition: `${isCalamiticConduitId(id) ? `${calamiticTokenPrice} Calamitic Tokens in Rise's Conduit Store · Universal` : conduit.price !== null ? `${conduit.price.toLocaleString('en-US')} Prismatica in the Conduit Store` : 'Awaken the Machines drop'}${isBannerConduitEligible(id) ? ' · Part of the 0.5% Legendary banner bonus pool' : ''}` });
 }
 

@@ -10,3 +10,7 @@ export function readableEffect(text: string): string {
 export function referencedEffect(text: string, elementMedals = true): string {
   return bracketReferences(readableEffect(text), elementMedals);
 }
+
+export function plainEffect(text: string): string {
+  return `<span class="plain-effect-copy">${readableEffect(text)}</span>`;
+}

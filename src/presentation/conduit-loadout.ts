@@ -14,7 +14,7 @@ import { conduitIcon, conduitLore } from './conduit-store';
 import { conduitElement, conduitElementLabel, omnicTheme } from './conduit-element';
 import { masterConduitIcon, masterEquipment } from './master-conduits';
 import { escapeDialogText, gameChoose } from './game-dialog';
-import { referencedEffect } from './effect-copy';
+import { plainEffect, readableEffect } from './effect-copy';
 import { rarityFeedback } from './rarity-feedback';
 import { isRarity } from '../content/rarity';
 import { catalogInformation } from './information-layout';
@@ -54,7 +54,7 @@ export function conduitBuffLine(conduit: Conduit, level = 0): string {
 }
 /** Full Conduit Ability text at the displayed upgrade level, including conditional mechanics. */
 export function conduitRuleText(conduit: Conduit, level = 0): string {
-  return referencedEffect(conduitEffect(conduit, level));
+  return readableEffect(conduitEffect(conduit, level));
 }
 
 export function conduitMatchesSearch(conduit: Conduit, query: string): boolean {
@@ -184,7 +184,7 @@ export function bindConduitLoadout(host: HTMLElement): void {
           conduit.rarity === 'Calamitic' ? 'Maximum 5 Calamitic Conduits per character.' : ''].filter(Boolean).join(' ');
         void gameChoose(`${detail} ${rule ?? ''} ${restrictions}`, [{ value: 'close', label: 'Close', primary: true }], 'close', {
           title: conduit.name,
-          messageHtml: `<div class="loadout-detail">${catalogInformation({ name: conduit.name, art: conduitIcon(conduit.id, level), metadata: `${conduit.rarity} · +${level} / ${conduitUpgradeCap} ${conduitElement(conduit.id)}`, effects: [escapeDialogText(detail), escapeDialogText(rule)], state: restrictions || undefined, lore: conduit.lore })}</div>`,
+          messageHtml: `<div class="loadout-detail">${catalogInformation({ name: conduit.name, art: conduitIcon(conduit.id, level), metadata: `${conduit.rarity} · +${level} / ${conduitUpgradeCap} ${conduitElement(conduit.id)}`, effects: [escapeDialogText(detail), plainEffect(escapeDialogText(rule))], state: restrictions || undefined, lore: conduit.lore })}</div>`,
         });
       } else if (isMasterConduitId(id)) {
         const master = getMasterConduit(id);
@@ -238,7 +238,7 @@ function totalBonuses(id: string, account: Account | null): string {
   const gear: RadiantGear = slots.map(entry => entry === null ? null : { id: entry, rank: account?.conduitUpgrades?.[entry] ?? 0 });
   const rows = radiantSummedConduitEffects.flatMap(kind => {
     const amount = radiantGearAmount(gear, kind);
-    return amount ? [`<div class="loadout-bonus-row" data-radiant-effect="${kind}"><span>${referencedEffect(escapeDialogText(radiantConduitDescription({ kind, amount })))}</span></div>`] : [];
+    return amount ? [`<div class="loadout-bonus-row" data-radiant-effect="${kind}">${plainEffect(escapeDialogText(radiantConduitDescription({ kind, amount })))}</div>`] : [];
   });
   return information(`conduit-totals-${id}`, 'Combined Conduit effects', `<section class="loadout-bonuses" aria-label="Combined Conduit effects"><h4 class="loadout-bonus-heading">Combined effects</h4>
     <div class="loadout-bonus-strip">${rows.length ? rows.join('') : '<p class="quiet">No combined modifiers yet. Equip a Conduit to see them here.</p>'}</div>
@@ -282,7 +282,7 @@ function slotCard(owner: string, captured: boolean, element: ElementId, slots: C
     return `<article class="ref-equipment-slot loadout-slot is-empty" data-loadout-slot="${index}" aria-label="Slot ${index + 1} · Empty">${target}
       <span class="loadout-slot-plus">${select}</span><small class="loadout-empty-label">Empty</small></article>`;
   }
-  const next = level < conduitUpgradeCap ? `next level ${referencedEffect(conduitEffect(conduit, level + 1))}` : 'Maximum';
+  const next = level < conduitUpgradeCap ? `next level ${readableEffect(conduitEffect(conduit, level + 1))}` : 'Maximum';
   return `<article class="ref-equipment-slot loadout-slot" data-loadout-slot="${index}" data-loadout-slot-name="${conduit.name}" style="--loadout-accent:${conduitColor(conduit)}">
     <div class="loadout-slot-main"><span class="loadout-slot-art">${conduitIcon(conduit.id, level)}</span><div class="loadout-slot-controls">${target}<button type="button" class="loadout-rule-button" data-loadout-rule="${conduit.id}" data-loadout-detail-level="${level}" aria-label="${conduit.name} details">Details</button></div></div>
     <span class="loadout-slot-body"><b class="loadout-slot-name">${conduit.name}</b>${conduitElement(conduit.id)}

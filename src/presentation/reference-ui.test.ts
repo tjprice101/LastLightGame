@@ -232,7 +232,7 @@ describe('replacement reference screen structures', () => {
     expect(html.match(/class="is-filled"/g)).toHaveLength(1);
     for (const heading of ['Stats', 'Leader Skill', 'Convergent Light', 'Passive Skill', 'Personal Master / Conduits']) expect(html).toContain(`>${heading}</h3>`);
     expect(html).not.toContain('>Skills</h3>');
-    expect(html).toContain('Prism-base · Equinox');
+    expect(html).toContain('Attunement · Equinox');
     for (const tab of ['overview', 'upgrade-1', 'upgrade-0', 'equipment']) expect(html).toContain(`data-character-tab="${tab}"`);
     expect(html).not.toContain('data-information="bearer-lore-');
     expect(html.match(/class="hub-ability radiant-flare/g)).toHaveLength(6);

@@ -10,7 +10,7 @@ import { machineComponentRulesText } from '../content/mechanical-components';
 import { gameConfirm } from './game-dialog';
 import { presentReward } from './reward-screen';
 import { conduitReward } from './conduit-presentation';
-import { referencedEffect as readableEffect } from './effect-copy';
+import { readableEffect } from './effect-copy';
 import { setShopHostLine, shopHost } from './shop-host';
 import { catalogInformation } from './information-layout';
 
@@ -124,7 +124,7 @@ export function bindConduitUpgrades(host: HTMLElement, storage: ProfileStorage,
         const cost = maximum ? Number(button.dataset.totalCost) : conduitUpgradeCost(conduit, level);
         if (cost === null) throw new Error('This Conduit is already fully upgraded.');
         if (!Number.isSafeInteger(cost) || cost <= 0 || !Number.isInteger(targetLevel) || targetLevel <= level || targetLevel > conduitUpgradeCap) throw new Error('Invalid Conduit upgrade preview.');
-        if (!await gameConfirm(`Spend ${cost} Broken Mechanical Components to upgrade ${conduit.name} from +${level} to +${targetLevel} account-wide? Current: ${readableEffect(conduitEffect(conduit, level), false).replace(/\.$/, '')}. ${maximum ? 'Target' : 'Next'}: ${readableEffect(conduitEffect(conduit, targetLevel), false).replace(/\.$/, '')}. No copies or other currency are spent.${maximum ? ' This is the highest affordable level, up to +5.' : ''}`, { title: maximum ? 'Max Level Conduit' : 'Upgrade Conduit', confirmLabel: maximum ? 'Max Level' : 'Upgrade' })) {
+        if (!await gameConfirm(`Spend ${cost} Broken Mechanical Components to upgrade ${conduit.name} from +${level} to +${targetLevel} account-wide? Current: ${readableEffect(conduitEffect(conduit, level)).replace(/\.$/, '')}. ${maximum ? 'Target' : 'Next'}: ${readableEffect(conduitEffect(conduit, targetLevel)).replace(/\.$/, '')}. No copies or other currency are spent.${maximum ? ' This is the highest affordable level, up to +5.' : ''}`, { title: maximum ? 'Max Level Conduit' : 'Upgrade Conduit', confirmLabel: maximum ? 'Max Level' : 'Upgrade' })) {
           setShopHostLine(host, 'edda', 'cancel');
           return;
         }

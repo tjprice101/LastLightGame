@@ -661,6 +661,12 @@ wording cleanup does not silently rebalance existing applications.
 Shield absorption/lasting-until-broken/skill stacking is explained centrally.
 Character and battle views share the same current kit descriptions.
 
+Conduit and Master effects use complete, plain-English sentences instead of
+stat-page shorthand, multiplication symbols or slash-separated labels. State
+the source, trigger, target, duration and caps when they affect the result.
+Do not automatically bracket ordinary stat or action names; reserve `[]` for
+a named mechanic only when the brackets materially improve clarity.
+
 Conduit-generated effects have no implicit Skill Power multiplier. Stat
 bonuses and native ability modifications are not separate generated effects.
 Owner allows existing explicit Master-specific scaling, including Vaelor's

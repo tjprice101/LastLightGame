@@ -9,7 +9,7 @@ import { creatureReleased } from '../content/release-visibility';
 const creatures = allCreatures.filter(creature => creatureReleased(creature.id));
 import { conduits, getConduit, conduitEffect, isConduitId } from '../content/conduits';
 import { formatStat } from '../content/combat';
-import { referencedEffect as readableEffect } from './effect-copy';
+import { readableEffect } from './effect-copy';
 import { bracketReferences } from './reference-text';
 import { machineConduitChance } from '../content/machines';
 
