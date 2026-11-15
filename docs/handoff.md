@@ -36,8 +36,14 @@ items per page.
 could not be opened offline. Store purchase controls were inspected, but
 online purchase transactions were not executed.
 
-**Publication:** the owner subsequently authorized deployment. Release
-verification is pending.
+**Publication:** the owner subsequently authorized deployment. Client build
+`b7b693f3ab58f8dcffa707e19c3f41442cf2fa42` is live: GitHub Actions run
+`43748757105` passed tests, build and Pages deployment, the hosted
+`version.json` reports that build, and the hosted title screen loaded.
+The matching `game-operation` authority is active at version 107 and rejected
+an anonymous POST with HTTP 401. Authenticated online gameplay and purchases
+were not exercised during release verification. Older in-flight Radiant runs
+retire with saved rewards retained.
 
 ## Reference menus and distinct Radiant equipment (2026-11-15; local-only)
 
