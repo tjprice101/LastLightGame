@@ -20,6 +20,9 @@ repeated acquisition/rounding text. See the [menu contract](menus-and-inventory.
   from Archive details. The Archive regression is fixed; only Store details
   use the compact wording.
 - `npx vitest run src\presentation\conduit-keywords.test.ts src\presentation\creature-loot-dialog.test.ts src\presentation\ui-copy.test.ts src\online\event-lifecycle.test.ts src\presentation\conduit-store.test.ts --maxWorkers=2 --reporter=dot`: **260 passed**, 0 failed.
+- Release workflow [43754083391](https://github.com/tjprice101/LastLightGame/actions/runs/43754083391):
+  `npm test` passed **10,457 tests in 293 files**; configured client build
+  and Pages deployment passed.
 - Isolated Chrome/CDP: Thornia Level at actual 1280x720, 1600x900 and
   1920x1080 had loaded, fully contained art, no overflowing exact stat values
   and no page overflow. Overview/Evolve and the refined equipment/stores were
@@ -38,8 +41,12 @@ Unrelated Future Plans drafts and the local HTML mock-up remain excluded.
 **Publication:** matching authority is ACTIVE at version 108 and anonymous
 POSTs return HTTP 401. Its bundle SHA-256 is
 `066AC8ECF436B1A4C6071968C2AD4E27CAFD51E9A41C36D19F3A085F27895464`.
-The initial client CI run was blocked by the checks described above; the
-corrected client release and hosted version verification are pending.
+The initial client CI run was blocked by the checks described above. The
+corrected client release `3925e9502c4e1753a5bab2d5547794a541848023`
+is deployed; hosted `version.json` reports that exact revision. The hosted
+title screen loaded with Sign-in / Create Account and Play Offline controls.
+Both branches contain the release. The follow-up fixes affect presentation
+and tests only; the authority bundle is unchanged and needed no redeployment.
 
 ## Game-wide reference theme rollout (2026-11-15; local-only)
 
