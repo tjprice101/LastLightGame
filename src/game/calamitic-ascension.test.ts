@@ -165,8 +165,8 @@ describe('D-435 Calamitic Ascension', () => {
     expect(validateRequest(base).operation.kind).toBe('ascendCharacter');
     expect(() => validateRequest({ ...base, operation: { ...base.operation, step: 'ultimate' } })).toThrow();
     expect(() => validateRequest({ ...base, operation: { ...base.operation, expected: { ...base.operation.expected, ascension: { stats: true, extra: true } } } })).toThrow();
-    expect(characterName('ember', 6, true)).toBe('Eternal Heavenflame Sovereign, Infernis, Rise-blessed');
-    expect(characterName('ember', 6)).toBe('Eternal Heavenflame Sovereign, Infernis');
+    expect(characterName('ember', 6, true)).toBe('Ignis Aeternus Infernis, Rise-blessed');
+    expect(characterName('ember', 6)).toBe('Ignis Aeternus Infernis');
     expect(validateAccount({ ...emptyAccount(), characters: { ember: { level: 105, evolution: 6, ascension: { stats: true } } } })).toBeDefined();
     expect(() => validateAccount({ ...emptyAccount(), characters: { ember: { level: 105, evolution: 6, ascension: { stats: true, extra: true } } } })).toThrow('Ascension');
     const reward = { kind: 'reward', source: 'calamity-heavens', target: 'calamity-heavens', amount: 0,

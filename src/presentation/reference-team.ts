@@ -2,7 +2,7 @@ import { squadMemberLimit } from '../content/squad-rules';
 import { isRadiantBearer, radiantAttunementChip, radiantCharacterLoadout, radiantPortraitStats } from './character-combat';
 import { elements, isCurrencyMode } from '../content/activities';
 import { getStarter, isStarterId, starterVow, type StarterId } from '../content/starters';
-import { characterName } from '../content/character-art';
+import { characterArt, characterName } from '../content/character-art';
 import { characterLevelCap, characterRarity, displayEvolution, evolutionRarity } from '../content/progression';
 import { formatStat, shatterGauge } from '../content/combat';
 import { ownedCharacters, ownedProgress, equippedSquad, characterProtection, creatureSaleOffer, isSellableCreatureMode, type Account } from '../game/account';
@@ -239,7 +239,7 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
     const starter = getStarter(state.selected);
     const progress = ownedProgress(account, state.selected);
     const squad = equippedSquad(account);
-    const title = characterName(state.selected, progress.evolution).split(', ')[0];
+    const title = characterArt(state.selected, progress.evolution).title;
     const cap = characterLevelCap(progress.evolution, state.selected);
     const radiant = radiantCharacterLoadout(account, starter.id);
     content = `<section class="ref-team-detail ref-bearer-detail" data-acquisition-character="${starter.id}" data-character-view="${state.tab ?? 'overview'}" style="--unit-accent:${starter.color}">

@@ -10,20 +10,34 @@ import { portrait } from '../presentation/portrait';
 import { createBattle } from '../game/battle';
 
 describe('six-form character artwork', () => {
-  it('uses identity-only base names without changing evolved titles or stable art IDs', () => {
+  it('uses the element-led slate and unique Latin-inspired final epithets without changing art IDs', () => {
     expect(characterName('rosetta', 1)).toBe('Rosetta');
     expect(characterName('thornia', 1)).toBe('Thornia');
     expect(characterArt('rosetta', 1).art).toBe('rosetta');
     expect(characterArt('thornia', 1).art).toBe('thornia');
-    expect(characterName('rosetta', 2)).toBe('Gilded Vow, Rosetta');
-    expect(characterName('thornia', 2)).toBe('Gilded Squire, Thornia');
+    expect(characterName('rosetta', 2)).toBe('Tranquilitic Rosetta');
+    expect(characterName('thornia', 2)).toBe('Chaotic Thornia');
+    expect(characterName('thornia', 3)).toBe('Chaotic Queen Thornia');
+    expect(characterName('thornia', 4)).toBe('Chaotic Goddess Thornia');
+    expect(characterName('thornia', 5)).toBe('Chaotic Legend Thornia');
+    expect(characterName('ember', 6)).toBe('Ignis Aeternus Infernis');
     expect(characterName('crinso', 1)).toBe('Crinso');
+    const finalEpithets = starters.map((starter) => evolutionTitles[starter.id][5]);
+    expect(new Set(finalEpithets).size).toBe(starters.length);
   });
   it.each(starters)('$name maps shipped forms and keeps pending art neutral across portraits, Home, Character and battle state', (starter) => {
     expect(evolutionTitles[starter.id]).toHaveLength(characterGrowth.forms);
+    expect(evolutionTitles[starter.id].slice(0, 5)).toEqual([
+      starter.name,
+      starter.element,
+      `${starter.element} Queen`,
+      `${starter.element} Goddess`,
+      `${starter.element} Legend`,
+    ]);
+    expect(characterName(starter.id, 6)).toBe(`${evolutionTitles[starter.id][5]} ${starter.name}`);
     for (let evolution = 1; evolution <= characterGrowth.forms; evolution++) {
       const form = characterArt(starter.id, evolution);
-      const name = evolution === 1 ? starter.name : `${form.title}, ${starter.name}`;
+      const name = evolution === 1 ? starter.name : `${form.title} ${starter.name}`;
       expect(characterName(starter.id, evolution)).toBe(name);
       if (!form.available) {
         expect(existsSync(resolve('public', 'assets', 'characters', `${form.art}.png`))).toBe(false);

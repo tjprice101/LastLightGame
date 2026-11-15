@@ -355,7 +355,7 @@ describe('Passion of Crimson Roses integration', () => {
     state.enemies.forEach((enemy) => { enemy.hp = 0; });
     state.allies[0].shatter = 70;
     const next = nextStage(state, progress).state;
-    expect(next.allies[0].name).toBe('The Rose Beyond the Sun, Rosetta');
+    expect(next.allies[0].name).toBe('Pax Seraphine Rosetta');
     expect(next.allies[0].shatter).toBe(70);
     expect(next.allies[0].conduits).toEqual(gear.rosetta);
     expect(next.allies[1].captured).toEqual(copy);
@@ -453,7 +453,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     for (let evolution = 1; evolution <= 6; evolution++) {
       const cap = characterLevelCap(evolution);
       expect(characterName(character.id, evolution)).toBe(evolution === 1
-        ? character.name : `${characterArt(character.id, evolution).title}, ${character.name}`);
+        ? character.name : `${characterArt(character.id, evolution).title} ${character.name}`);
       expect(characterArt(character.id, evolution).available).toBe(true);
       for (let level = 0; level <= cap; level++) {
         const progress = { level, evolution };

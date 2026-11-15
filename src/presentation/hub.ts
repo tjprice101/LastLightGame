@@ -13,7 +13,7 @@ import { getElement, type ElementId } from '../content/activities';
 import { uiIcon } from './ui-icon';
 import { materialArt, materialName } from '../content/dungeon-art';
 import { emptyAccount, ownedProgress, equippedSquad, ownedCharacters, evolutionFodderOptions, fodderSelectionStatus, type Account } from '../game/account';
-import { characterName } from '../content/character-art';
+import { characterArt, characterName } from '../content/character-art';
 import { characterRole } from './character-role';
 import { currencyIcon } from './currency-icon';
 import { inventoryView, type InventoryTab, type InventorySections, type InventoryFilters } from './inventory';
@@ -128,8 +128,9 @@ export function homeHub(starter: Starter, firstArrival: boolean, account: Accoun
   const capturedLeader = account && !firstArrival && !isStarterId(squad[0]) ? ownedCompanion(account, squad[0]) : null;
   const capturedCopy = capturedLeader ? account?.capturedCharacters?.find((copy) => copy.instanceId === squad[0]) : undefined;
   const displayName = capturedLeader?.name ?? characterName(starter.id, progress?.evolution, progress?.ascension?.stats === true);
-  const nameParts = displayName.split(', ');
-  const identity = nameParts.length > 1 ? `<small class="form-prefix">${nameParts.slice(0, -1).join(', ')}</small><span>${nameParts.at(-1)}</span>` : displayName;
+  const identity = capturedLeader ? displayName : progress && progress.evolution > 1
+    ? `<small class="form-prefix">${characterArt(starter.id, progress.evolution).title}</small><span>${starter.name}</span>${progress.ascension?.stats ? '<small class="form-prefix">Rise-blessed</small>' : ''}`
+    : `${starter.name}${progress?.ascension?.stats ? '<small class="form-prefix">Rise-blessed</small>' : ''}`;
   const banner = getSummonBanner('standard');
   const specialBanner = getSummonBanner('roses');
   const completed = account?.storyCompleted ?? 0;
@@ -379,7 +380,7 @@ export function updateCharacterTab(host: HTMLElement, starter: Starter, selected
     const level = host.querySelector('[data-reference-level]');
     const evolution = host.querySelector('[data-reference-evolution]');
     const bar = host.querySelector<HTMLElement>('.ref-bar i');
-    if (prefix) prefix.textContent = `${characterName(starter.id, progress.evolution, progress.ascension?.stats === true).split(', ')[0]} · ${starter.weapon}`;
+    if (prefix) prefix.textContent = `${characterArt(starter.id, progress.evolution).title} · ${starter.weapon}`;
     if (name) name.textContent = characterName(starter.id, progress.evolution, progress.ascension?.stats === true);
     if (rarity) rarity.textContent = characterRarity(starter.id, progress.evolution);
     if (level) level.textContent = `${progress.level} / ${cap}`;

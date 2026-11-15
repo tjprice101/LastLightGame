@@ -40,15 +40,6 @@ export function isCalamiticCharacter(value: unknown): value is CalamiticCharacte
 export const calamiticCharacterByTier = { 1: 'ozriel', 2: 'ilvaris', 3: 'kaelith' } as const satisfies Record<1 | 2 | 3, CalamiticCharacterId>;
 export const calamiticCharacterChance = .1;
 
-export const calamiticEvolutionTitles: Record<CalamiticCharacterId, readonly string[]> = {
-  ozriel: ['Unbroken Pane', 'Warden of the Glass Nave', 'Bastion of Refused Endings',
-    'Seraph of the Shattered Cathedral', 'Sovereign of the Unfallen Wall', 'The Ending That Was Denied'],
-  ilvaris: ['First Unsung Note', 'Cantor of Cracked Heavens', 'Choir-Seraph of the Glass Vault',
-    'Herald of the Unwritten Hymn', 'Sovereign of the Severed Prophecy', 'The Song That Defied Fate'],
-  kaelith: ['Hairline Fracture', 'Glass-Edged Herald', 'Reaper of Written Endings',
-    'Seraph of the Broken Thread', 'Sovereign of Shattered Fate', 'The Fate That Was Never Written'],
-};
-
 export const calamiticActionNames: Record<CalamiticCharacterId, { light: string }> = {
   ozriel: { light: 'Halberd Verdict' },
   ilvaris: { light: 'Struck Chord' },

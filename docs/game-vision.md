@@ -64,10 +64,13 @@ pending. [Current phase status](six-element-rework.md).
 
 ## Character terminology
 
-Character form display names use **Prefix, Character name**, with each
-evolution's existing title as its prefix (D-098). For example **Gale Wayfarer,
-Atmoso** then **Crosswind Adept, Atmoso**. Short names remain identity references
-in prose/lore; creature names and stable save IDs are unchanged.
+Character form display names follow the six-form slate (D-453): name; element
+and name; element Queen and name; element Goddess and name; element Legend and
+name; then a unique Latin-inspired epithet and name. For example **Infernis**,
+**Infernic Infernis**, **Infernic Queen Infernis**, **Infernic Goddess
+Infernis**, **Infernic Legend Infernis**, then **Ignis Aeternus Infernis**.
+Short names remain identity references in prose/lore; Elemental-Devourer names
+and stable save IDs are unchanged.
 
 Characters are **Element-Bearers**, not companions. Use **Owned Element-Bearers**
 for the player's character collection and **starter Element-Bearer** for the initial

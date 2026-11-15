@@ -67,23 +67,23 @@ function defeat(character: WarCharacterId = 'orvella', stage = 10, burn = false,
 
 describe('Elemental War', () => {
   it.each([
-    ['nerithe', 'Lament of the Spiral Sea', 'The Sea Without a Shore'],
-    ['orvella', 'Rise of the Buried Citadel', 'The Throne Beneath the World'],
-    ['vaelor', 'Overture of the Broken Sky', "The Sky's Final Chord"],
-    ['caldrex', 'Siege of the Unbroken Furnace', 'The Last Kiln'],
-    ['solenne', 'Requiem of the Silent Moon', 'The Bell That Stayed'],
-    ['myrthen', 'The Orchard Beyond Autumn', 'When All Seasons Meet'],
-    ['neralis', 'Passage of the Returning River', 'The River Keeps Its Promise'],
-    ['varkhel', 'Trial of the Suspended Chain', 'The Chain Refuses to Break'],
-    ['seravelle', 'March of the Ember Convoy', 'The Last Wagon Sees the Dawn'],
-    ['velmira', 'Dance of the Unfastened Court', 'What Remains Beyond the Cut'],
-  ] as const)('keeps %s trial names separate from preserved Omnic titles', (character, name, title) => {
+    ['nerithe', 'Lament of the Spiral Sea', 'Aequor Oraculum'],
+    ['orvella', 'Rise of the Buried Citadel', 'Fundamentum Vitae'],
+    ['vaelor', 'Overture of the Broken Sky', 'Tonitrus Quietus'],
+    ['caldrex', 'Siege of the Unbroken Furnace', 'Ignis Vigilans'],
+    ['solenne', 'Requiem of the Silent Moon', 'Silentium Sacrum'],
+    ['myrthen', 'The Orchard Beyond Autumn', 'Tempus Florens'],
+    ['neralis', 'Passage of the Returning River', 'Reditus Fidus'],
+    ['varkhel', 'Trial of the Suspended Chain', 'Pons Invictus'],
+    ['seravelle', 'March of the Ember Convoy', 'Signum Flammae'],
+    ['velmira', 'Dance of the Unfastened Court', 'Vita Post Finem'],
+  ] as const)('keeps %s trial names separate from Evo.6 epithets', (character, name, epithet) => {
     expect(elementalWars.find(mode => mode.character === character)?.name).toBe(name);
     const encounter = warEncounter(character, 10);
     expect(encounter.name).toBe(name);
     expect(encounter.enemyName).toBe(characterName(character, 6));
-    expect(encounter.enemyName).toBe(`${title}, ${getStarter(character).name}`);
-    expect(encounter.name).not.toBe(title);
+    expect(encounter.enemyName).toBe(`${epithet} ${getStarter(character).name}`);
+    expect(encounter.name).not.toBe(epithet);
     const html = gameplayHub(emptyAccount());
     expect(html).toContain(`<h3>${name}</h3>`);
     expect(html).toContain(`aria-label="${name} stage"`);

@@ -355,7 +355,7 @@ The seven unrelated flagship lines below remain generation-only.
 D-113 promotes both former5-star rose EBs via content metadata only; existing
 IDs/progress/gear/caps/costs remain. No load write or retroactive rewards.
 
-## Global character display names (D-098)
+## Global character display names (D-453 supersedes D-098)
 
 Owner reaffirmed that evolving requires the current form's maximum level.
 Both the menu and atomic upgrade transaction enforce this: Evo.1-5 require
@@ -364,15 +364,20 @@ Resources/fodder remain additional requirements, never a bypass. Regression
 tests cover one level below and exactly at each cap; rejection leaves the save
 unchanged, successful evolution retains level.
 
-Every Element-Bearer form is named **Prefix, Character name**. The owner chose
-each evolution's existing form title as the prefix, not a permanent title:
-Beginner, Infernis -> Embersteel Knight, Infernis; Gale Wayfarer, Atmoso ->
-Crosswind Adept, Atmoso. `content/character-art.ts` exports `characterName` for
-the live starters. Use it in menus, portraits/accessibility, roster/Squad,
-Archives, banner outcomes, confirmations, upgrade results and battle snapshots.
-Evolution refreshes the displayed name without replacing portrait DOM.
-Unreached evolution silhouettes refer to the current named character, preserving
-their existing unrevealed-title behavior.
+Every Element-Bearer follows the new six-form slate: Evo.1 uses the character's
+name; Evo.2 is `[Element] [Name]`; Evo.3 is `[Element] Queen [Name]`; Evo.4 is
+`[Element] Goddess [Name]`; Evo.5 is `[Element] Legend [Name]`; Evo.6 is a
+unique Latin-inspired epithet followed by the name. For example, Infernis
+progresses through **Infernis**, **Infernic Infernis**, **Infernic Queen
+Infernis**, **Infernic Goddess Infernis**, **Infernic Legend Infernis**, and
+**Ignis Aeternus Infernis**. Elements use each bearer's canonical element name;
+Evo.6 epithets are individually authored and unique across the current roster.
+`content/character-art.ts` owns the shared `characterName` resolver and form
+titles. Use it in menus, portraits/accessibility, roster/Squad, Archives, banner
+outcomes, confirmations, upgrade results and battle snapshots. Evolution
+refreshes the displayed name without replacing portrait DOM. Unreached evolution
+silhouettes refer to the current named character, preserving their existing
+unrevealed-title behavior.
 
 Keep stable IDs, `Starter.name` identity strings, assets, saves, prose/lore and
 creature names unchanged. Captured creatures are not Element-Bearers and retain
@@ -382,9 +387,9 @@ Archives use the indexed form, battles use snapshotted progression.
 Display naming itself makes no save migration or combat/odds change.
 Flagship forms are now integrated under D-121/D-122.
 
-Validate all78 live EB form names against their evolution titles, invalid evolution
-rejection, menu/portrait/battle consistency,42 flagship headings, save invariance
-and responsive long-name wrapping. Retain short identity references in prose.
+Validate all228 live Element-Bearer form names and unique Evo.6 epithets,
+invalid evolution rejection, menu/portrait/battle consistency, save invariance
+and long-name wrapping. Retain short identity references in prose.
 
 ## Playable flagship identities (D-094/D-121/D-122)
 

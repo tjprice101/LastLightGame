@@ -1,5 +1,23 @@
 # Current state and handoff
 
+## Global six-form Element-Bearer display names (D-453; 2026-11-15)
+
+Implemented the owner-approved naming slate across the live roster and shared
+display surfaces: name; canonical element + name; element Queen + name; element
+Goddess + name; element Legend + name; then a unique Latin-inspired Evo.6
+epithet + name. All 38 Element-Bearers have individually authored, unique
+final epithets. `characterName` remains the shared resolver; form-title UI now
+reads the form title directly rather than parsing the former comma-separated
+display string. Stable IDs, base identity names, art, saves, lore and captured
+Elemental-Devourer names are unchanged.
+
+**Verified:** the eight-file focused Vitest run passed **283 tests**;
+`npx tsc --noEmit` and `npm run build` passed, retaining the existing large
+chunk advisory. `git diff --check` passed. A full-suite run initially had 10
+failures in one War test file because its expectations still named the previous
+Evo.6 titles; those expectations were updated, and the affected test file
+passed in the focused rerun. The full suite was not rerun after that correction.
+
 ## Desktop menu and Convergent Light Max Level follow-through (2026-11-12)
 
 **Published and verified.** Character

@@ -100,26 +100,6 @@ export function isWarCharacter(value: unknown): value is WarCharacterId {
   return warCharacters.some((character) => character.id === value);
 }
 
-export const warEvolutionTitles: Record<WarCharacterId, readonly string[]> = {
-  nerithe: ['Uncharted Tide', 'Current Surveyor', 'Keeper of the Spiral Sea',
-    'Admiral of the Folded Ocean', 'Sovereign of the Abyssal Meridian', 'The Sea Without a Shore'],
-  orvella: ['First Foundation', 'Mason of the Faultline', 'Keeper of the Buried Vault',
-    'Architect of the Moving Citadel', 'Sovereign of the Deep Foundations', 'The Throne Beneath the World'],
-  vaelor: ['Quiet Voltage', 'Keeper of the Stormbeat', 'Marshal of the Thunder Choir',
-    'Conductor of the Broken Sky', 'Sovereign of the Final Frequency', 'The Sky\'s Final Chord'],
-  caldrex: ['Kiln Warden', 'Banked Fire', 'The Furnace Holds', 'Bearer of the Closed Gate', 'No Flame Passes', 'The Last Kiln'],
-  solenne: ['Moonbell Keeper', 'Between Two Chimes', 'The Patient Circle', 'Keeper of the Unstruck Bell', 'A Silence Held', 'The Bell That Stayed'],
-  myrthen: ['Season Reaper', 'First Turning', 'Bough and Blade', 'Harvest in Motion', 'The Orchard Remembers', 'When All Seasons Meet'],
-  neralis: ['Weirline Guide', 'Keeper of the Amber Stations', 'A Crossing Remembered',
-    'Wings Above the Broken Weir', 'Return Against the Current', 'The River Keeps Its Promise'],
-  varkhel: ['Chainwork Holdfast', 'The Warning Cloth', 'Weight Against the Breach',
-    'A Span Held Open', 'Wrath Within the Hinge', 'The Chain Refuses to Break'],
-  seravelle: ['Ashroad Courier', 'The Braided Route', 'Signal Above the Convoy',
-    'Marshal of the Open Road', 'A Standard Without a Throne', 'The Last Wagon Sees the Dawn'],
-  velmira: ['Atelier Defector', 'A Knot Unfastened', 'The Measured Cut',
-    'Keeper of the Open Threshold', 'An Ending Chosen Carefully', 'What Remains Beyond the Cut'],
-};
-
 export const warActionNames: Record<WarCharacterId, { light: string }> = {
   nerithe: { light: 'Surveyor\'s Thrust' },
   orvella: { light: 'Plumbline Strike' },

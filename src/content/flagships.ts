@@ -56,16 +56,6 @@ export const flagshipCharacters = [
 
 export type FlagshipId = (typeof flagshipCharacters)[number]['id'];
 
-export const flagshipEvolutionTitles: Record<FlagshipId, readonly string[]> = {
-  atmoso: ['Gale Wayfarer', 'Crosswind Adept', 'Skyspoke Invoker', 'Tempest Loom', 'Crown of the High Gale', 'The Sky Without End'],
-  aurora: ['Daybreak Arbiter', 'Gleamveil Adjudicator', 'Solar Verdict Oracle', 'Prismseal Seraph', 'Dawncourt Sovereign', 'The Dawn Beyond Judgment'],
-  bliss: ['Featherstep Duelist', 'Stillplume Dancer', 'Quietwing Fencer', 'Prismplume Arbiter', 'Serene Tempest Empress', 'The Thousandfeather Stillness'],
-  bruno: ['Quarry Sentinel', 'Faultline Bulwark', 'Bedrock Citadel', 'Worldforge Bastion', 'Prismatic Mountain Regent', 'The Living Worldwall'],
-  disciple: ['Mindflame Initiate', 'Thoughtforge Adept', 'Ascendant Mindbinder', 'Prismthought Hierophant', 'Mindflame Exarch', 'The Unbound Mindcrown'],
-  elise: ['Sparkstep Shinobi', 'Voltweave Skirmisher', 'Stormwheel Striker', 'Thunderlace Executioner', 'Prismatic Storm Empress', 'The Infinite Thunderwheel'],
-  razor: ['Nightwatch Bastion', 'Duskplate Sentinel', 'Eclipse Rampart', 'Nightglass Bulwark', 'Prismatic Eclipse Regent', 'The Unbroken Midnight'],
-};
-
 export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
   atmoso: {
     pilot: 'tempest',

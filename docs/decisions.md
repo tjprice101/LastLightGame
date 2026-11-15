@@ -1,5 +1,25 @@
 # Decision log
 
+## Global six-form Element-Bearer name slate (D-453, 2026-11-15)
+
+The owner replaces D-098's comma-separated, evolution-title naming with one
+shared six-form display slate for every Element-Bearer:
+
+1. Evo.1: character name.
+2. Evo.2: canonical element + character name.
+3. Evo.3: canonical element + "Queen" + character name.
+4. Evo.4: canonical element + "Goddess" + character name.
+5. Evo.5: canonical element + "Legend" + character name.
+6. Evo.6: a unique, individually authored Latin-inspired epithet + character name.
+
+The Selena example's "Ice" is adapted to each bearer's canonical element. Evo.6
+epithets are unique across the current roster. The shared `characterName`
+resolver applies these names to all existing display surfaces. Preserve
+`Starter.name` identities, IDs, assets, saves, lore/prose identity references,
+and captured Elemental-Devourer names; this is presentation-only and requires
+no migration. This supersedes D-098's prefix-comma format and existing-title
+selection.
+
 ## Convergent Light rank and personal Luminosity approval (2026-11-12)
 
 The owner approved replacing the shared Shattering Light meter with a
@@ -1426,7 +1446,7 @@ unchanged. [Current prompts](../Art/ui/Native%20Identity%20Status%20Icons.md).
 | D-101 | Correct character prompts one reviewed character at a time | Owner reported renderer drift, similar-looking evolved forms, missing contrasting backdrops and unwanted image lettering. Use original Infernis/Tizu/Flora rendering plus Wraththorn/Dawnthorn structural progression. Owner explicitly chose finish Atmoso first and pause for review. Revised only its13 prompts with distinct gear/poses/silhouettes, solid orange key in every block, no proper names in image prose, explicit lettering exclusions and actual approved-reference instructions. Other six flagship and three event EB packs remain pending correction; tests are not visual approval. [Phase contract](art-workflow.md#character-by-character-correction-d-101) |
 | D-100 | Playable crimson-rose event and special banner | Owner requested Roses Under Sunny Skies,6-star Rosetta/Luminous bow,5-star Thornia/Ominous greatsword and Crinso/Chaotic dual-edged sword, six forms, full art/icons, and35-stage80-140 Passion of Crimson Roses with six female Luminous Roselius. Owner selected six material tiers; approved10 cost,0.1% Rosetta/1% shared5-star/98.9% first-three Roselius, independent200/500 pity, continuous availability pending schedule, and mode-tied Omnic Roselius Lv.80 duplicates. Captures only at enemy levels<=120; existing progression caps unchanged. Approved first-pass roles, rose-replacement materials and1/2/3 Roselius late fodder. [Full contract](crimson-roses.md) distinguishes implemented behavior/developer tuning/pending art. |
 | D-099 | Strong structural flagship evolution escalation | Owner requested simple starter-style bases progressing into full-body radiant-looking prismatic armor, elemental prism wings, swirling powers and more ornate signature weapons, with late Heaven/Abyss slime impact and starter renderer. Actual42 portrait/7 final equipment prompts now specify staged armor coverage, element-specific wings and equipment structures;6-star bases remain simple and finales more elaborate. Saturated painted facets preserve no-glow cutouts. No supplied assets/runtime changes. [Workflow](art-workflow.md#full-body-prism-and-elemental-wing-escalation-d-099) |
-| D-098 | Evolution-specific Prefix, Character name globally | Owner requested prefix-comma-name everywhere and explicitly chose each evolution's existing form title. Gale Wayfarer, Atmoso becomes Crosswind Adept, Atmoso; live starters likewise use Beginner, Infernis then Embersteel Knight, Infernis. Apply to menus, art form headings, accessibility, banner base-form outcomes and battle snapshots. Preserve short identity/prose, IDs, saves, creature names and unreached-title gating. [Contract](units-and-progression.md#global-character-display-names-d-098) |
+| D-098 | Evolution-specific Prefix, Character name globally | Historical decision: owner chose existing-form-title prefixes with comma-separated names. Superseded by D-453's six-form element-led slate; stable identities, IDs, saves and Elemental-Devourer names remain unchanged. [Current contract](units-and-progression.md#global-character-display-names-d-453-supersedes-d-098) |
 | D-097 | Use semantic green/red stat and affordability emphasis | Owner requested dynamic green/red stat screens and approved colors that emphasize meaningful information. Green increases/sufficient resources, red decreases/missing resources, neutral unchanged values; apply to level/evolution/Max Level and Conduit stat differences with exact values and non-color cues. Preserve neutral navigation and element identity; no stat math or economy changes. [Contract](menus-and-inventory.md#semantic-stat-and-resource-colors-d-097) |
 | D-096 | Remove redundant rendering/status suffixes | Owner requested removing "/ Silhouette" and similarly obvious or unclear wording throughout menus. Remove Art locked/revealed and Loot locked/revealed suffixes, redundant undiscovered status and repeated Fixed form copy labels; retain ownership/reached states, current level, concise preview distinctions, copy identity, errors and gameplay rules in Information. No changes to reveal gates, stats, saves or gameplay. [Contract](menus-and-inventory.md#concise-status-wording-d-096) |
 | D-095 | Screen-specific patterned animated backgrounds | Owner requested more dynamic, unique backgrounds with visual pop across screens. Shared decorative layers use distinct neutral geometry, slowly rotating rings/drifting particles, static modal textures and sparse battle motes over preserved scenery. Honor both reduced-motion settings, reading contrast, pointer/focus safety, bounded layers and unchanged gameplay. [Background contract](menus-and-inventory.md#dynamic-screen-backgrounds-d-095) |

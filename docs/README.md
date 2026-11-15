@@ -1725,9 +1725,10 @@ prompts: simple bases, full-body prism armor, layered elemental wings, swirling
 powers and ornate equipment. See the
 [escalation workflow](art-workflow.md#full-body-prism-and-elemental-wing-escalation-d-099).
 
-D-098 establishes evolution-specific **Prefix, Character name** across character
-displays and art form headings; stable identities/IDs and creature names remain.
-See [character naming](units-and-progression.md#global-character-display-names-d-098).
+D-453 establishes the six-form element-led character-name slate, including
+unique Latin-inspired Evo.6 epithets; stable identities/IDs and
+Elemental-Devourer names remain. See
+[character naming](units-and-progression.md#global-character-display-names-d-453-supersedes-d-098).
 
 | Document | Use it for |
 | --- | --- |

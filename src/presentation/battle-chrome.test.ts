@@ -66,7 +66,7 @@ describe('shared battle chrome', () => {
         const intel = html.slice(html.indexOf('class="battle-utilities"'));
         expect(intel).toContain(elementLabel(enemy.element));
       }
-      expect(html).toContain('<span class="unit-name">Eternal Heavenflame Sovereign, Infernis · Lv. 105');
+      expect(html).toContain('<span class="unit-name">Ignis Aeternus Infernis · Lv. 105');
       expect(html).not.toContain('Lv. null');
     }
   });
