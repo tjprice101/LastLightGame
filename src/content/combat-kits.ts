@@ -314,8 +314,8 @@ export const radiantMasters: Record<RadiantMasterId, RadiantMasterDefinition> = 
           ? `When ${kit.passive.name} cleanses an ally, that ally also heals for 15% of this bearer's Recovery.`
           : `Increases this bearer's ${kit.passive.name} passive effect by 15% while they are alive.`
         : enhancement === 'leader'
-          ? `While this bearer is alive and leads the squad, their Leader Skill bonus increases by 5 percentage points.`
-          : `Increases this bearer's Convergent Light damage, healing, Shields and status effects by 15%.`,
+          ? `While this bearer is alive and leads the squad, their ${kit.leader} adds 5 percentage points to the Leader Skill bonus.`
+          : `This bearer's ${kit.signatureFamily} Convergent Light effects (damage, healing, Shields and status effects) are 15% stronger.`,
     }];
   }),
 ) as Record<RadiantMasterId, RadiantMasterDefinition>;
