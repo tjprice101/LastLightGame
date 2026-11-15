@@ -1,5 +1,55 @@
 # Global character benchmarks and enemy calibration (D-404)
 
+## Distinct equipment follow-up (2026-11-15; local-only)
+
+After D-456's Leader/ordinary/Master redesign, the same runner completed
+**4,002 measurements**, 284 anchors, 44 families and 245 enemy identities.
+The working tree is based on `ab648b2fffb643cf1f1c83255b46085867d064cb`;
+the measured bundle SHA-256 is
+`84a0994b8cee9011557b0490e57d18cffab0635c2aff86033620fd173867f016`.
+Reproduce with `node tools\run_pressure_study.mjs <new-report.jsonl>`.
+
+| Conditional cohort | Authored-control wins | Experimental `radiant-pressure-v2` wins |
+|---|---:|---:|
+| Each free starter, opening encounter | 3/3 each | 3/3 each |
+| Progression solo | 54/614 | 233/614 |
+| Common +0 trio | 177/614 | 387/614 |
+| Developed six | 299/614 | 579/614 |
+| Common six late-wall control | 0/39 | 2/39 |
+| Separately screened Calamitic six | 8/108 | 108/108 |
+| Support-only control | 0/3; three defeats | 0/3; three stalemates |
+
+Authored-control Calamitic outcomes are eight victories, 86 defeats, three
+timeouts and 11 stalemates. Its prior comparable run had 11/77/8/12.
+Ordinary solo/trio/developed-six wins previously numbered 60/183/301.
+This is not proof of universal balance: late-wall failures remain. Only one
+starter is free; every larger team, gear set and progression gate is a
+conditional laboratory assumption. The cohorts use **Convergent Light Rank 1**,
+not fully ranked endgame builds. Some encounters have explicit access errors.
+The three seeds and fixed policy are not population rates or exhaustive
+optimization. Farmed teams now select personal Master slot 2 explicitly;
+Calamitic teams use bounded greedy personal-Master screening.
+
+Six separate neutral paper controls use Common +0 gear, level 105, Rank 1,
+seed 1729, zero enemy Defense, no incoming attacks and the balanced policy.
+The trio is Infernis/Tizu/Flora; the six adds Rosetta/Thornia/Disciple.
+
+| Team | Rounds | Health damage | Offered healing | Shield creation | Flare casts |
+|---|---:|---:|---:|---:|---:|
+| Infernis | 6 | 17,088 | 0 | 0 | 0 |
+| Infernis | 20 | 74,036 | 0 | 0 | 1 |
+| Starter trio | 6 | 35,388 | 0 | 0 | 0 |
+| Starter trio | 20 | 133,429 | 0 | 5,608 | 2 |
+| Six members | 6 | 71,880 | 0 | 0 | 0 |
+| Six members | 20 | 273,987 | 0 | 38,409 | 7 |
+
+These paper totals are not DPR, effective healing, packet survival or clear
+rates. Full-Health/no-incoming conditions do not exercise incoming-damage and
+most wounded-ally triggers. Individual runtime regressions separately exercise
+those conditions and equipment provenance. No hostile statistics, gates,
+rewards or event schedules changed. Authored-control remains selected;
+`radiant-pressure-v2` is diagnostic and remains unauthorized for release.
+
 ## Radiant combat team pressure audit (2026-11-15)
 
 The bounded study compared the authored-control calibration with experimental

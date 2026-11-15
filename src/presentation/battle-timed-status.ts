@@ -74,6 +74,7 @@ export function radiantSourceLabel(source: RadiantSource, run: FrozenRadiantRun)
   if (!bearer) throw new Error('Status bearer source is missing.');
   const name = characterName(bearer.loadout.starter, bearer.loadout.form);
   if (source.kind === 'gear') return `${name} · ${getConduit(source.conduitId).name}`;
+  if (source.kind === 'leader') return `${name} · Leader Skill`;
   if (source.kind === 'master') {
     const id = bearer.loadout.masterId;
     if (id === null || !Object.hasOwn(radiantMasters, id)) throw new Error('Status Master source is missing.');

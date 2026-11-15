@@ -1,5 +1,5 @@
 import {
-  radiantFinalFlare, radiantLeaderBonus, radiantPassiveAmount, radiantMasters, radiantStarterKits, resolveRadiantStarterStats,
+  radiantFinalFlare, radiantLeaderEffects, radiantEquipmentAmount, radiantPassiveAmount, radiantMasters, radiantStarterKits, resolveRadiantStarterStats,
   validateRadiantLoadout, validateRadiantStats,
   type RadiantLoadout, type RadiantStats,
 } from '../content/combat-kits';
@@ -9,12 +9,14 @@ import {
 } from './combat-gauge';
 import { squadMemberLimit } from '../content/squad-rules';
 import { type ConduitId } from '../content/conduits';
-import { radiantConduitPrimitives, radiantGearAmount } from '../content/conduit-effects';
+import { radiantConduitPrimitives, type RadiantConduitEffect, type RadiantConduitDesign } from '../content/conduit-effects';
 import type { ElementId } from '../content/activities';
 import { elementDamageMultiplier, isCombatElement } from '../content/element-matchups';
 
 export type RadiantSource =
-  | { kind: 'normal' | 'flare' | 'passive' | 'master'; bearerId: string }
+  | { kind: 'normal' | 'flare' | 'passive'; bearerId: string }
+  | { kind: 'master'; bearerId: string }
+  | { kind: 'leader'; bearerId: string }
   | { kind: 'gear'; bearerId: string; conduitId: ConduitId }
   | { kind: 'enemy'; enemyId: string };
 export interface RadiantShield { id: number; source: RadiantSource; remaining: number }
@@ -53,7 +55,7 @@ export interface RadiantEnemy {
   currency: RadiantCurrencyLedger;
 }
 export interface RadiantCombatState {
-  version: 5;
+  version: 6;
   bearers: RadiantBearer[];
   enemies: RadiantEnemy[];
   gauge: RadiantGaugeState;
@@ -88,7 +90,7 @@ export type RadiantCombatEvent =
   | { type: 'gauge-drop'; enemyId: string; bearerId: string; trigger: 'hit' | 'defeat'; amount: number }
   | { type: 'flare'; bearerId: string; tier: FlareTier; name: string }
   | { type: 'charge'; bearerId: string; personal: number; bonusRolls: number; bonusOffered: number;
-      gearSource?: Extract<RadiantSource, { kind: 'gear' }> }
+      gearSource?: Extract<RadiantSource, { kind: 'gear' | 'master' | 'leader' }> }
   | { type: 'round'; round: number }
   | { type: 'guard'; targetId: string; guarding: boolean }
   | { type: 'status'; targetId: string;
@@ -191,22 +193,38 @@ export function effectiveRadiantStats(state: RadiantCombatState, id: string): Ra
       radiantStarterKits[source.loadout.starter].passive.stat === key)
       .reduce((sum, source) => sum + radiantPassiveAmount(source.loadout), 0);
     stats[key] *= 1 + bonus;
+    stats[key] *= 1 + leaderEffects(state, member).filter(entry => entry.kind === key)
+      .reduce((sum, entry) => sum + entry.amount, 0);
   }
   stats.attack *= 1 - Math.max(0, ...member.weaken.map(effect => effect.magnitude)) *
-    (1 - Math.min(.8, radiantGearAmount(member.loadout.gear, 'resilience')));
+    (1 - Math.min(.8, combatAmount(state, member, 'resilience')));
   stats.attack *= 1 + Math.max(0, ...member.attackBuffs.map(effect => effect.magnitude));
   validateRadiantStats(stats);
   return stats;
 }
-function outgoingDamageMultiplier(state: RadiantCombatState, actor: RadiantBearer, target: RadiantEnemy): number {
-  const element = radiantStarterKits[actor.loadout.starter].elementId;
+function leaderEffects(state: RadiantCombatState, recipient: RadiantBearer): RadiantConduitDesign {
   const leader = state.bearers[0];
-  const bonus = leader.hp > 0 && radiantStarterKits[leader.loadout.starter].elementId === element
-    ? radiantLeaderBonus(leader.loadout) : 0;
+  return leader.hp > 0 && radiantStarterKits[leader.loadout.starter].elementId ===
+    radiantStarterKits[recipient.loadout.starter].elementId ? radiantLeaderEffects(leader.loadout) : [];
+}
+function combatAmount(state: RadiantCombatState, actor: RadiantBearer, kind: RadiantConduitEffect): number {
+  return radiantEquipmentAmount(actor.loadout, kind) +
+    leaderEffects(state, actor).filter(entry => entry.kind === kind).reduce((sum, entry) => sum + entry.amount, 0);
+}
+function outgoingDamageMultiplier(state: RadiantCombatState, actor: RadiantBearer, target: RadiantEnemy, periodic = false): number {
+  const element = radiantStarterKits[actor.loadout.starter].elementId;
+  if (periodic) return (1 + combatAmount(state, actor, 'burn-power')) * elementDamageMultiplier(element, target.elementId);
+  const conditions: readonly [RadiantConduitEffect, boolean][] = [
+    ['opening', target.hp === Math.round(target.stats.hp)], ['execution', target.hp <= target.stats.hp * .25],
+    ['burning', target.burns.length > 0], ['exposed', target.exposures.length > 0], ['weakened', target.weaken.length > 0],
+    ['shielded', actor.shields.length > 0], ['wounded', actor.hp <= actor.stats.hp / 2],
+    ['solo', state.enemies.filter(member => member.hp > 0).length === 1], ['first-action', state.acted.length === 0],
+  ];
+  const bonus = conditions.reduce((sum, [kind, active]) => sum + (active ? combatAmount(state, actor, kind) : 0), 0);
   return (1 + bonus) * elementDamageMultiplier(element, target.elementId);
 }
 function validateSource(state: RadiantCombatState, source: RadiantSource): void {
-  if (!source || !['normal', 'flare', 'passive', 'master', 'gear', 'enemy'].includes(source.kind))
+  if (!source || !['normal', 'flare', 'passive', 'master', 'leader', 'gear', 'enemy'].includes(source.kind))
     throw new Error('Invalid radiant effect source.');
   if (source.kind === 'enemy') enemy(state, source.enemyId);
   else {
@@ -228,7 +246,7 @@ function validateEffects(state: RadiantCombatState, effects: RadiantTimedEffect[
   }
 }
 export function validateRadiantCombat(state: RadiantCombatState): void {
-  if (!state || state.version !== 5 || !Array.isArray(state.bearers) || !state.bearers.length ||
+  if (!state || state.version !== 6 || !Array.isArray(state.bearers) || !state.bearers.length ||
       state.bearers.length > squadMemberLimit || !Array.isArray(state.enemies) || !state.enemies.length ||
       !['player', 'enemy', 'victory', 'defeat'].includes(state.phase))
     throw new Error('Invalid radiant combat roster or version.');
@@ -297,7 +315,8 @@ export function validateRadiantCombat(state: RadiantCombatState): void {
   }
   if (paid !== state.currencyEarned) throw new Error('Radiant paid currency total mismatch.');
   const gearKeys = state.bearers.flatMap(member => (member.loadout.gear ?? [])
-    .flatMap(slot => slot === null ? [] : [`${member.loadout.id}:${slot.id}`]));
+    .flatMap(slot => slot === null ? [] : [`${member.loadout.id}:${slot.id}`])
+    .concat(member.loadout.masterId ? [`${member.loadout.id}:${member.loadout.masterId}`] : [], [`${member.loadout.id}:leader`]));
   if (!Array.isArray(state.gearTriggered) || new Set(state.gearTriggered).size !== state.gearTriggered.length ||
       state.gearTriggered.some(key => !gearKeys.includes(key)))
     throw new Error('Invalid radiant gear trigger ledger.');
@@ -333,7 +352,7 @@ export function createRadiantCombat(
   loadouts: RadiantLoadout[], enemies: { id: string; elementId: ElementId | null; stats: RadiantStats; currencyBudget: number }[], chargeSeed: number,
 ): RadiantCombatState {
   const state: RadiantCombatState = {
-    version: 5,
+    version: 6,
     bearers: loadouts.map(loadout => {
       const stats = resolveRadiantStarterStats(loadout);
       return { loadout: structuredClone(loadout), stats, hp: rounded(stats.hp), shields: [],
@@ -353,6 +372,9 @@ export function createRadiantCombat(
     phase: 'player', round: 1, acted: [], enemyActed: [], tideReturns: [], passiveTriggered: [], gearTriggered: [],
     chargeSeed, nextShieldId: 1, currencyEarned: 0,
   };
+  for (const member of state.gauge.members) {
+    addRadiantPersonalCharge(member, rounded(combatAmount(state, bearer(state, member.id), 'start-charge')));
+  }
   validateRadiantCombat(state);
   return state;
 }
@@ -416,8 +438,8 @@ function heal(
   state: RadiantCombatState, events: RadiantCombatEvent[], target: RadiantBearer | RadiantEnemy,
   source: RadiantSource, snapshot: number,
 ): number {
-  if (source.kind !== 'enemy' && source.kind !== 'gear')
-    snapshot *= 1 + radiantGearAmount(bearer(state, source.bearerId).loadout.gear, 'healing');
+  if (source.kind === 'normal' || source.kind === 'flare' || source.kind === 'passive')
+    snapshot *= 1 + combatAmount(state, bearer(state, source.bearerId), 'healing');
   finite(snapshot, 'healing snapshot');
   if (target.hp === 0) return 0;
   const offered = rounded(snapshot), effective = Math.min(offered, rounded(target.stats.hp) - target.hp);
@@ -430,8 +452,8 @@ function shield(
   state: RadiantCombatState, events: RadiantCombatEvent[], target: RadiantBearer,
   source: RadiantSource, magnitude: number,
 ): void {
-  const amount = rounded(magnitude * (source.kind === 'enemy' || source.kind === 'gear' ? 1 :
-    1 + radiantGearAmount(bearer(state, source.bearerId).loadout.gear, 'shielding')));
+  const amount = rounded(magnitude * (source.kind === 'normal' || source.kind === 'flare' || source.kind === 'passive'
+    ? 1 + combatAmount(state, bearer(state, source.bearerId), 'shielding') : 1));
   if (amount === 0 || target.hp === 0) return;
   const shieldId = state.nextShieldId++;
   safe(state.nextShieldId, 'shield serial', 1);
@@ -461,9 +483,9 @@ function passivePower(actor: RadiantBearer): number {
   return 1 + (master?.rule === 'standard' && master.enhancement === 'passive' ? master.magnitude : 0) +
     (actor.loadout.ascension.skill1 ? .5 : 0);
 }
-function woundedAlly(state: RadiantCombatState): RadiantBearer | undefined {
+function woundedAlly(state: RadiantCombatState, exclude?: string): RadiantBearer | undefined {
   let selected: RadiantBearer | undefined, largest = 0;
-  for (const ally of state.bearers.filter(member => member.hp > 0)) {
+  for (const ally of state.bearers.filter(member => member.hp > 0 && member.loadout.id !== exclude)) {
     const missing = (rounded(ally.stats.hp) - ally.hp) / rounded(ally.stats.hp);
     if (selected === undefined || missing > largest) { selected = ally; largest = missing; }
   }
@@ -544,8 +566,8 @@ function normal(
   const stats = effectiveRadiantStats(state, actor.loadout.id);
   const source: RadiantSource = { kind: 'normal', bearerId: actor.loadout.id };
   const impact = packet(state, events, target, source, 'direct',
-    radiantDirectDamage(stats.attack, gearDefense(actor, target.stats.defense),
-      1 + radiantGearAmount(actor.loadout.gear, 'normal') + cooperation(state, actor),
+    radiantDirectDamage(stats.attack, gearDefense(state, actor, target.stats.defense),
+      1 + combatAmount(state, actor, 'normal') + cooperation(state, actor),
       (1 + exposure(target)) * outgoingDamageMultiplier(state, actor, target)), hitCharge);
   return impact.healthLoss + impact.absorbed > 0 ? 1 : 0;
 }
@@ -573,8 +595,8 @@ function flare(
   for (const target of enemyTargets) {
     if (target.hp === 0) continue;
     const total = Math.max(offer.comboHits, radiantDirectDamage(stats.attack,
-      gearDefense(actor, target.stats.defense), offer.damage * signaturePower *
-      (1 + radiantGearAmount(actor.loadout.gear, 'flare') + cooperation(state, actor)) *
+      gearDefense(state, actor, target.stats.defense), offer.damage * signaturePower *
+      (1 + combatAmount(state, actor, 'flare') + cooperation(state, actor)) *
       (master?.rule === 'flare-damage' ? 1.15 : 1),
       (1 + exposure(target)) * outgoingDamageMultiplier(state, actor, target)));
     for (let hit = 0; hit < offer.comboHits && target.hp > 0; hit++) {
@@ -583,7 +605,7 @@ function flare(
       if (impact.healthLoss + impact.absorbed > 0) hits++;
     }
     if (target.hp > 0 && offer.burn > 0) {
-      const magnitude = offer.burn * stats.attack * signaturePower * outgoingDamageMultiplier(state, actor, target);
+      const magnitude = offer.burn * stats.attack * signaturePower * outgoingDamageMultiplier(state, actor, target, true);
       const remaining = offer.burnPhases + (master?.rule === 'longer-burn' ? 1 : 0);
       refresh(target.burns, source, magnitude, remaining);
       events.push({ type: 'status', targetId: target.id, status: 'burn', source, magnitude, remaining });
@@ -679,9 +701,13 @@ function enemyAttack(
     const stats = effectiveRadiantStats(state, target.loadout.id);
     const reduction = Math.max(0, ...target.reductions.map(effect => effect.magnitude));
     const weakening = Math.max(0, ...actor.weaken.map(effect => effect.magnitude));
+    const element = elementDamageMultiplier(actor.elementId, radiantStarterKits[target.loadout.starter].elementId);
+    const output = Math.max(.2, (target.guarding ? .5 * (1 - Math.min(.6, combatAmount(state, target, 'guard'))) : 1) * (1 - reduction));
+    const beforeProtection = radiantDirectDamage(actor.stats.attack * (1 - weakening), stats.defense, action.coefficient, output * element);
+    const protection = (target.hp > target.stats.hp * .75 ? combatAmount(state, target, 'shelter') : 0) +
+      (beforeProtection > target.stats.hp * .2 ? combatAmount(state, target, 'brace') : 0);
     const total = radiantDirectDamage(actor.stats.attack * (1 - weakening), stats.defense, action.coefficient,
-        Math.max(.2, (target.guarding ? .5 * (1 - Math.min(.6, radiantGearAmount(target.loadout.gear, 'guard'))) : 1) *
-          (1 - reduction)) * elementDamageMultiplier(actor.elementId, radiantStarterKits[target.loadout.starter].elementId));
+      Math.max(.2, output * (1 - Math.min(.8, protection))) * element);
     const impact: ReturnType<typeof packet> = { healthLoss: 0, absorbed: 0, shields: [] };
     for (let hit = 0; hit < hits && target.hp > 0; hit++) {
       const amount = Math.floor(total / hits) + (hit === hits - 1 ? total % hits : 0);
@@ -794,12 +820,12 @@ function finishRound(state: RadiantCombatState, events: RadiantCombatEvent[]): v
     events.push({ type: 'charge', bearerId: member.id, personal: member.charge,
       bonusRolls: 0, bonusOffered: 0 });
 }
-function gearDefense(actor: RadiantBearer, defense: number): number {
-  return defense * (1 - Math.min(.8, radiantGearAmount(actor.loadout.gear, 'pierce')));
+function gearDefense(state: RadiantCombatState, actor: RadiantBearer, defense: number): number {
+  return defense * (1 - Math.min(.8, combatAmount(state, actor, 'pierce')));
 }
 function cooperation(state: RadiantCombatState, actor: RadiantBearer): number {
   return state.acted.some(id => id !== actor.loadout.id)
-    ? radiantGearAmount(actor.loadout.gear, 'cooperation') : 0;
+    ? combatAmount(state, actor, 'cooperation') : 0;
 }
 
 /** Process a fixed native ledger once. Gear output is never an input to another
@@ -808,7 +834,9 @@ function processRadiantGear(
   state: RadiantCombatState, events: RadiantCombatEvent[], action: RadiantCombatAction,
 ): void {
   const native = events.filter(event =>
-    'source' in event && event.source.kind !== 'gear');
+    'source' in event && !['gear', 'master', 'leader'].includes(event.source.kind));
+  const defeated = new Set(events.filter(event => event.type === 'defeated').map(event => event.targetId));
+  const shielded = new Set(state.bearers.filter(owner => owner.shields.length > 0).map(owner => owner.loadout.id));
   const snapshots = new Map(state.bearers.filter(owner => owner.hp > 0)
     .map(owner => [owner.loadout.id, effectiveRadiantStats(state, owner.loadout.id)]));
   for (const owner of state.bearers) {
@@ -823,7 +851,7 @@ function processRadiantGear(
     const incoming = native.filter((event): event is Extract<RadiantCombatEvent, { type: 'damage' }> =>
       event.type === 'damage' && event.origin === 'direct' && event.source.kind === 'enemy');
     const absorbed = incoming.flatMap(event => event.shields.filter(entry =>
-      entry.source.kind !== 'enemy' && entry.source.kind !== 'gear' && entry.source.bearerId === id)
+      (entry.source.kind === 'normal' || entry.source.kind === 'flare' || entry.source.kind === 'passive') && entry.source.bearerId === id)
       .map(entry => ({ event, amount: entry.amount })));
     const ownAction = 'bearerId' in action && action.bearerId === id;
     const normalHit = ownAction && action.type === 'normal' && direct.some(event => event.healthLoss > 0);
@@ -831,12 +859,18 @@ function processRadiantGear(
     const cast = ownAction && action.type === 'flare';
     const guarding = ownAction && action.type === 'defense';
     const round = action.type === 'finish-enemy-phase' && events.some(event => event.type === 'round');
-    for (const slot of owner.loadout.gear ?? []) {
-      if (slot === null) continue;
-      const source: RadiantSource = { kind: 'gear', bearerId: id, conduitId: slot.id };
-      const key = `${id}:${slot.id}`;
+    const bundles: { source: Extract<RadiantSource, { kind: 'gear' | 'master' | 'leader' }>;
+      key: string; effects: RadiantConduitDesign }[] = (owner.loadout.gear ?? []).flatMap(slot => slot === null ? [] : [{
+        source: { kind: 'gear', bearerId: id, conduitId: slot.id }, key: `${id}:${slot.id}`,
+        effects: radiantConduitPrimitives(slot),
+      }]);
+    if (owner.loadout.masterId) bundles.push({ source: { kind: 'master', bearerId: id },
+      key: `${id}:${owner.loadout.masterId}`, effects: radiantMasters[owner.loadout.masterId].effects });
+    bundles.push({ source: { kind: 'leader', bearerId: state.bearers[0].loadout.id },
+      key: `${id}:leader`, effects: leaderEffects(state, owner) });
+    for (const { source, key, effects } of bundles) {
       let triggered = false;
-      for (const primitive of radiantConduitPrimitives(slot)) {
+      for (const primitive of effects) {
         const amount = primitive.amount;
         const grant = (recipient: RadiantBearer, value: number): void => {
           if (recipient.hp > 0) {
@@ -849,6 +883,8 @@ function processRadiantGear(
         const primary = direct.find(event => event.healthLoss > 0);
         const target = primary ? state.enemies.find(member => member.id === primary.targetId && member.hp > 0) : undefined;
         const boundedIncoming = !state.gearTriggered.includes(key);
+        const hurt = incoming.some(event => event.targetId === id && event.healthLoss > 0);
+        const killed = direct.some(event => defeated.has(event.targetId) && event.healthLoss > 0);
         switch (primitive.kind) {
           case 'normal-charge': if (normalDirect) grant(owner, amount); break;
           case 'guard-charge': if (guarding) grant(owner, amount); break;
@@ -907,8 +943,65 @@ function processRadiantGear(
             }
             break;
           case 'status-shield':
-            if (owned.some(event => event.type === 'status' && ['weaken', 'burn', 'exposure'].includes(event.status)) && wounded)
+            if (owned.some(event => event.type === 'status' && !event.clockOnly && event.remaining > 0 &&
+              ['weaken', 'burn', 'exposure'].includes(event.status)) && wounded)
               shield(state, events, wounded, source, amount * stats.defense);
+            break;
+          case 'guard-heal': if (guarding) heal(state, events, owner, source, amount * stats.recovery); break;
+          case 'flare-heal': if (cast && wounded) heal(state, events, wounded, source, amount * stats.recovery); break;
+          case 'normal-shield': if (normalHit) shield(state, events, owner, source, amount * stats.defense); break;
+          case 'heal-shield':
+            for (const targetId of new Set(restored.map(event => event.targetId)))
+              shield(state, events, bearer(state, targetId), source, amount * stats.defense);
+            break;
+          case 'hurt-heal':
+            if (boundedIncoming && hurt) {
+              const ally = woundedAlly(state, id);
+              if (ally) heal(state, events, ally, source, amount * stats.recovery);
+              triggered = true;
+            }
+            break;
+          case 'break-heal':
+            if (boundedIncoming && !shielded.has(id) && incoming.some(event => event.targetId === id && event.absorbed > 0)) {
+              heal(state, events, owner, source, amount * stats.recovery); triggered = true;
+            }
+            break;
+          case 'burn-heal': {
+            const damage = owned.filter((event): event is Extract<RadiantCombatEvent, { type: 'damage' }> =>
+              event.type === 'damage' && event.origin === 'periodic').reduce((sum, event) => sum + event.healthLoss, 0);
+            if (damage > 0) heal(state, events, owner, source, amount * damage);
+            break;
+          }
+          case 'kill-heal': if (killed && wounded) heal(state, events, wounded, source, amount * owner.stats.hp); break;
+          case 'kill-charge': if (killed) grant(owner, amount); break;
+          case 'normal-splash':
+            if (normalHit && primary) {
+              const other = state.enemies.filter(enemy => enemy.hp > 0 && enemy.id !== primary.targetId)
+                .reduce<RadiantEnemy | undefined>((best, enemy) => !best || enemy.hp > best.hp ? enemy : best, undefined);
+              if (other) packet(state, events, other, source, 'generated', Math.max(1, rounded(amount * primary.healthLoss)));
+            }
+            break;
+          case 'flare-team-charge':
+          case 'heal-team-charge':
+            if (primitive.kind === 'flare-team-charge' ? cast : restored.length > 0)
+              for (const ally of state.bearers) if (ally !== owner) grant(ally, amount);
+            break;
+          case 'hurt-charge':
+            if (boundedIncoming && hurt) { grant(owner, amount); triggered = true; }
+            break;
+          case 'guard-team-shield':
+            if (guarding) for (const ally of state.bearers) shield(state, events, ally, source, amount * stats.defense);
+            break;
+          case 'flare-weaken':
+            if (cast) for (const target of state.enemies.filter(enemy => enemy.hp > 0))
+              applyStatus(events, target.id, target.weaken, source, 'weaken', Math.min(.8, amount), 1);
+            break;
+          case 'normal-reduction':
+            if (normalHit) applyStatus(events, id, owner.reductions, source, 'reduction', Math.min(.8, amount), 1);
+            break;
+          case 'round-charge': if (round) grant(owner, amount); break;
+          case 'round-team-heal':
+            if (round) for (const ally of state.bearers) heal(state, events, ally, source, amount * stats.recovery);
             break;
         }
       }

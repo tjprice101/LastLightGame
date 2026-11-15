@@ -124,9 +124,13 @@ describe('visible UI copy', () => {
     account.characters = Object.fromEntries(starters.map(starter => [starter.id, { level: 0, evolution: 1 }]));
     account.squad = ['ember'];
     const team = referenceTeam(account, { view: 'bearers', selected: 'ember', element: '', sort: 'level' });
+    const teamRoot = document.createElement('div');
+    teamRoot.innerHTML = team;
     const archive = archives(account);
     for (const element of elements) {
-      expect(team).toContain(`data-team-element="${element.id}" aria-pressed="false">${element.name}</button>`);
+      const filter = teamRoot.querySelector(`[data-team-element="${element.id}"]`);
+      expect(filter?.textContent).toBe(element.name);
+      expect(filter?.getAttribute('aria-pressed')).toBe('false');
       expect(archive).toContain(`<option value="${element.id}">${element.name}</option>`);
       expect(onlineStores(account, null, 'materials', element.id)).toContain(`Common ${element.name} upgrade material.`);
     }

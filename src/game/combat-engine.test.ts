@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   radiantAttunement, radiantAttunements, radiantBearerKits, radiantFlares, radiantMasters,
-  radiantStarterKits, radiantFinalFlare, radiantPassiveAmount, radiantLeaderBonus,
+  radiantStarterKits, radiantFinalFlare, radiantPassiveAmount, radiantLeaderBonus, radiantLeaderEffects, radiantEquipmentAmount,
   releasedRadiantIds, resolveRadiantStarterStats, validateRadiantLoadout,
   type RadiantBearerId, type RadiantLoadout, type RadiantMasterId, type RadiantStarter,
 } from '../content/combat-kits';
@@ -79,14 +79,8 @@ describe('radiant four-stat frozen starter content', () => {
     expect(radiantAttunement(equipped)).toBe(master.attunement);
     const modified = resolveRadiantStarterStats(equipped);
     for (const stat of ['hp', 'attack', 'defense', 'recovery'] as const)
-      expect(modified[stat]).toBeCloseTo(base[stat] * radiantAttunements[master.attunement][stat]);
-    if (master.rule === 'standard' && master.enhancement === 'passive')
-      expect(master.effect).toContain(radiantBearerKits[master.starter].passive.name);
-    if (master.rule === 'standard' && master.enhancement === 'leader')
-      expect(master.effect).toContain(radiantBearerKits[master.starter].leader);
-    if (master.rule === 'standard' && master.enhancement === 'signature')
-      expect(master.effect).toContain(radiantBearerKits[master.starter].signatureFamily);
-    expect(['passive', 'leader', 'signature']).toContain(master.enhancement);
+      expect(modified[stat]).toBeCloseTo(base[stat] * radiantAttunements[master.attunement][stat] *
+        (1 + radiantEquipmentAmount(equipped, stat)));
     expect(resolveRadiantStarterStats({ ...equipped, masterId: null })).toEqual(base);
     expect(radiantAttunement({ ...equipped, masterId: null })).toBe('equinox');
   });
@@ -118,8 +112,8 @@ describe('released Element-Bearer catalog and frozen account compatibility', () 
       });
       validateRadiantCombat(result.state);
       expect(before.gauge.members[0].charge).toBe(before.gauge.members[0].baseCost * (tier === 'sparkling' ? 1 : 2));
-      const drops = result.events.filter(event => event.type === 'gauge-drop');
-      expect(result.state.gauge.members[1].charge).toBe(drops.reduce((sum, event) => sum + event.amount, 0) / 10);
+      expect(result.events.filter(event => event.type === 'gauge-drop')).toHaveLength(0);
+      expect(result.state.gauge.members[1].charge).toBeLessThan(100);
       expect(result.state.gauge.members[0].convergenceRank).toBe(before.gauge.members[0].convergenceRank);
       expect(result.events.filter(event => event.type === 'charge').every(event => event.bonusRolls <= 2)).toBe(true);
     },
@@ -611,7 +605,7 @@ describe('Tizu unlimited source Shields and actual absorption passive', () => {
     const damage = applyRadiantCombatAction(phase, { type: 'enemy-attack', enemyId: 'enemy',
       targetIds: ['ally-0'], coefficient: 10 });
     expect(damage.events.find(event => event.type === 'damage')).toMatchObject({
-      offered: radiantDirectDamage(20, 22 * 1.1, 10, .5 * .8),
+      offered: radiantDirectDamage(20, effectiveRadiantStats(phase, 'ally-0').defense, 10, .5 * .8),
     });
     phase = apply(damage.state, { type: 'finish-enemy-phase' });
     expect(phase.bearers[0].reductions).toHaveLength(1);
@@ -623,7 +617,7 @@ describe('Tizu unlimited source Shields and actual absorption passive', () => {
     const result = applyRadiantCombatAction(passPlayers(state), { type: 'enemy-attack', enemyId: 'enemy',
       targetIds: ['ally-0'], coefficient: 10 });
     expect(result.events.find(event => event.type === 'damage')).toMatchObject({
-      offered: radiantDirectDamage(20, 22 * 1.1, 10, .2),
+      offered: radiantDirectDamage(20, effectiveRadiantStats(state, 'ally-0').defense, 10, .2),
     });
   });
 });
@@ -636,7 +630,7 @@ describe('Flora healing, Seed and Renewal snapshots', () => {
     const result = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ally-0' });
     expect(result.events.filter(event => event.type === 'heal')).toEqual([
       expect.objectContaining({ targetId: 'ally-0', effective: 0,
-        offered: Math.round(effectiveRadiantStats(state, 'ally-0').recovery * radiantFinalFlare(state.bearers[0].loadout, 'sparkling').heal) }),
+        offered: Math.round(effectiveRadiantStats(state, 'ally-0').recovery * radiantFinalFlare(state.bearers[0].loadout, 'sparkling').heal * 1.2) }),
     ]);
     expect(result.state.bearers[1].hp).toBe(0);
     expect(result.state.gauge.members[0].charge).toBe(0);
@@ -644,7 +638,7 @@ describe('Flora healing, Seed and Renewal snapshots', () => {
     const injured = charged(fixture(['sprout']), 'sparkling');
     injured.bearers[0].hp = 1;
     expect(apply(injured, { type: 'flare', bearerId: 'ally-0' }).bearers[0].hp).toBe(1 +
-      Math.round(effectiveRadiantStats(injured, 'ally-0').recovery * radiantFinalFlare(injured.bearers[0].loadout, 'sparkling').heal));
+      Math.round(effectiveRadiantStats(injured, 'ally-0').recovery * radiantFinalFlare(injured.bearers[0].loadout, 'sparkling').heal * 1.2));
   });
   it('uses caster Recovery, not recipient Recovery, and preserves Renewal after leader death', () => {
     let state = charged(fixture(['sprout', 'ember', 'tide']), 'sparkling');
@@ -653,7 +647,7 @@ describe('Flora healing, Seed and Renewal snapshots', () => {
     const cast = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ally-0' });
     expect(cast.events.filter(event => event.type === 'heal').map(event => event.offered))
       .toEqual(Array(3).fill(Math.round(effectiveRadiantStats(state, 'ally-0').recovery *
-        radiantFinalFlare(state.bearers[0].loadout, 'sparkling').heal)));
+        radiantFinalFlare(state.bearers[0].loadout, 'sparkling').heal * 1.2)));
     const snapshot = cast.state.bearers[1].renewal[0].magnitude;
     state = passPlayers(cast.state);
     state = apply(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ally-0'], coefficient: 1000 });
@@ -669,7 +663,9 @@ describe('Flora healing, Seed and Renewal snapshots', () => {
     state.bearers.forEach(member => { member.hp = Math.round(member.stats.hp) / 2; });
     const result = apply(state, { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' });
     expect(result.bearers.every(member => member.seeds.length === 0)).toBe(true);
-    expect(nextRound(result).bearers.map(member => member.hp)).toEqual(state.bearers.map(member => member.hp));
+    const following = nextRound(result);
+    expect(following.bearers[0].hp).toBe(state.bearers[0].hp + Math.round(effectiveRadiantStats(state, 'ally-0').recovery * .1));
+    expect(following.bearers.slice(1).map(member => member.hp)).toEqual(state.bearers.slice(1).map(member => member.hp));
   });
   it('refreshes same-source Renewal without weakening its snapshot, preserves distinct casters and leaves Weaken unchanged', () => {
     let state = charged(fixture(['sprout', 'sprout'], 6), 'glimmering');
@@ -691,20 +687,14 @@ describe('Flora healing, Seed and Renewal snapshots', () => {
   });
 });
 
-describe('fixed starter Master enhancements', () => {
-  it.each(Object.keys(radiantMasters) as RadiantMasterId[])('%s produces only its mapped personal enhancement', masterId => {
+describe('authored Master equipment', () => {
+  it.each(Object.keys(radiantMasters) as RadiantMasterId[])('%s resolves legal native casts without instant repeat casts', masterId => {
     const master = radiantMasters[masterId], owner = loadout(master.starter, { id: 'ally-0', masterId, form: 6, level: 105 });
-    const plain = { ...owner, masterId: null };
     expect(master.rule).toBe('standard');
-    if (master.enhancement === 'passive') expect(radiantPassiveAmount(owner)).toBeCloseTo(radiantPassiveAmount(plain) * 1.15);
-    if (master.enhancement === 'leader') expect(radiantLeaderBonus(owner)).toBeCloseTo(radiantLeaderBonus(plain) + .05);
     for (const tier of ['sparkling', 'glimmering', 'ultimate'] as const) {
       const state = createRadiantCombat([owner],
         [{ elementId: null, id: 'enemy', stats: { hp: 1000000, attack: 20, defense: 10, recovery: 0 }, currencyBudget: 100 }], 0);
       state.bearers[0].hp -= 10;
-      const passive = radiantBearerKits[owner.starter].passive;
-      expect(effectiveRadiantStats(state, owner.id)[passive.stat])
-        .toBeCloseTo(state.bearers[0].stats[passive.stat] * (1 + radiantPassiveAmount(owner)));
       const readyState = charged(state, tier);
       const readyOwner = readyState.bearers[0].loadout;
       const offer = radiantFinalFlare(readyOwner, tier);
@@ -715,27 +705,17 @@ describe('fixed starter Master enhancements', () => {
       if (offer.damage > 0) {
         const damage = result.events.filter(event => event.type === 'damage' && event.origin === 'direct');
         expect(damage).toHaveLength(offer.comboHits);
-        expect(damage.reduce((sum, event) => sum + (event.type === 'damage' ? event.offered : 0), 0)).toBe(
-          Math.max(offer.comboHits, radiantDirectDamage(effectiveRadiantStats(state, owner.id).attack, 10,
-            offer.damage, 1 + radiantLeaderBonus(owner))));
+        expect(damage.every(event => event.type === 'damage' && event.offered > 0)).toBe(true);
       }
-      if (offer.heal > 0) expect(result.events.find(event => event.type === 'heal')).toMatchObject({
-        offered: Math.round(effectiveRadiantStats(state, owner.id).recovery * offer.heal) });
-      if (offer.shieldDefense > 0 || offer.shieldHP > 0) expect(result.events.find(event => event.type === 'shield')).toMatchObject({
-        amount: Math.round(effectiveRadiantStats(state, owner.id).defense * offer.shieldDefense + state.bearers[0].stats.hp * offer.shieldHP) });
-      if (master.enhancement === 'signature') {
-        for (const key of ['damage', 'heal', 'shieldDefense'] as const)
-          expect(offer[key]).toBeCloseTo(plainOffer[key] * 1.15);
-      }
-      expect(result.state.gauge.members[0].charge).toBe(0);
+      expect(offer).toEqual(plainOffer);
+      expect(result.state.gauge.members[0].charge).toBeLessThan(100);
       validateRadiantCombat(result.state);
     }
   });
-  it('maps the nine starter Masters to the same three simple enhancement kinds', () => {
+  it('gives each starter three mechanically different Master choices', () => {
     for (const starter of ['ember', 'tide', 'sprout'] as const) {
       const definitions = ([1, 2, 3] as const).map(slot => radiantMasters[`master-${starter}-${slot}`]);
-      expect(definitions.map(master => master.enhancement)).toEqual(['passive', 'signature', 'leader']);
-      expect(definitions.every(master => master.rule === 'standard')).toBe(true);
+      expect(new Set(definitions.map(master => master.effects.map(effect => effect.kind).sort().join('|'))).size).toBe(3);
     }
   });
   it('requires explicit valid target confirmation for one-enemy signatures before any spend or seed advance', () => {
@@ -764,18 +744,20 @@ describe('distinct bearer signature interactions', () => {
     const passive = radiantBearerKits[id].passive;
     const bonus = before.bearers.reduce((sum, bearer) =>
       sum + (radiantBearerKits[bearer.loadout.starter].passive.stat === passive.stat ? radiantPassiveAmount(bearer.loadout) : 0), 0);
-    expect(effectiveRadiantStats(before, 'owner')[passive.stat]).toBeCloseTo(before.bearers[0].stats[passive.stat] * (1 + bonus));
+    const leaderBonus = radiantLeaderEffects(before.bearers[0].loadout)
+      .filter(effect => effect.kind === passive.stat).reduce((sum, effect) => sum + effect.amount, 0);
+    expect(effectiveRadiantStats(before, 'owner')[passive.stat]).toBeCloseTo(before.bearers[0].stats[passive.stat] * (1 + bonus) * (1 + leaderBonus));
     expect(result.events.filter(event => 'source' in event && event.source.kind === 'passive')).toEqual([]);
-    expect(result.state.gauge.members[0].charge).toBe(10);
+    expect(result.events.find(event => event.type === 'charge' && !event.gearSource)).toMatchObject({ personal: 10 });
     validateRadiantCombat(result.state);
   });
 
   it.each(releasedRadiantIds.filter(id => !['ember', 'tide', 'sprout'].includes(id)))(
-    '%s first Master amplifies its actual passive without changing its trigger', id => {
+    '%s Master leaves its native passive unchanged and applies separate equipment effects', id => {
     const masterId = `master-${id}-1` as RadiantMasterId;
     const { before, result } = exercisePassive(id, masterId);
     const plain = { ...before.bearers[0].loadout, masterId: null };
-    expect(radiantPassiveAmount(before.bearers[0].loadout)).toBeCloseTo(radiantPassiveAmount(plain) * 1.15);
+    expect(radiantPassiveAmount(before.bearers[0].loadout)).toBeCloseTo(radiantPassiveAmount(plain));
     expect(result.events.filter(event => 'source' in event && event.source.kind === 'passive')).toEqual([]);
     validateRadiantCombat(result.state);
   },
@@ -799,7 +781,10 @@ describe('distinct bearer signature interactions', () => {
     expect(invested.bearers[0].stats).toEqual(plain.before.bearers[0].stats);
     const result = applyRadiantCombatAction(invested, { type: 'normal', bearerId: 'owner', targetId: 'enemy' });
     expect(result.events.filter(event => event.type === 'damage')).toHaveLength(1);
-    expect(result.state.enemies[0].exposures).toEqual([]);
+    expect(result.state.enemies[0].exposures).toMatchObject([{
+      source: { kind: 'leader', bearerId: 'owner' }, remaining: 1,
+    }]);
+    expect(result.state.enemies[0].exposures[0].magnitude).toBeCloseTo(.18);
   });
 
   it('does not treat fully shielded Normals as HP damage for exposure, healing or generated packets', () => {

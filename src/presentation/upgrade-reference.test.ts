@@ -314,7 +314,7 @@ describe('reference Team upgrade presentation', () => {
       ] as const) {
         const host = document.createElement('div');
         host.innerHTML = referenceTeam(account, { view: 'detail', selected: starter.id, element: '', sort: 'level', tab });
-        const resources = host.querySelector('.upgrade-resources')!;
+        const resources = host.querySelector('.upgrade-payment .upgrade-resources')!;
         expect(resources.textContent).toContain(`${Number.MAX_SAFE_INTEGER} / ${cost.fractalis}`);
         for (const [id, amount] of Object.entries(cost.materials)) {
           const row = Array.from(resources.querySelectorAll('li')).find(row => row.querySelector('strong')?.textContent === materialName(id));

@@ -1,4 +1,4 @@
-import { radiantLeaderBonus, radiantStarterKits, type RadiantLoadout } from '../content/combat-kits';
+import { radiantLeaderDescription, radiantStarterKits, type RadiantLoadout } from '../content/combat-kits';
 import { characterName } from '../content/character-art';
 import type { RadiantCombatState } from '../game/combat-engine';
 import { radiantCharacterSheet } from './character-combat';
@@ -11,11 +11,10 @@ const percent = (value: number): string => `${Number((value * 100).toPrecision(1
 
 export function radiantLeaderReference(state: RadiantCombatState, living = state.bearers[0].hp > 0): string {
   const leader = state.bearers[0], loadout = leader.loadout, kit = radiantStarterKits[loadout.starter];
-  const amount = radiantLeaderBonus(loadout);
-  return `<strong>${escape(kit.leader)} · +${percent(amount)} ${kit.element} attack damage</strong>
+  return `<strong>${escape(kit.leader)}</strong><p>${escape(radiantLeaderDescription(loadout))}</p>
     <p>${escape(characterName(loadout.starter, loadout.form))} is the frozen first member.
     ${living ? 'Active while this leader lives.' : 'Inactive: leader defeated.'}
-    No replacement leader is promoted. Only matching-element squad attacks receive this bonus.</p>`;
+    No replacement leader is promoted.</p>`;
 }
 
 export function radiantBattleReference(loadout: RadiantLoadout, baseCost: number): string {
@@ -27,7 +26,7 @@ export function radiantBattleReference(loadout: RadiantLoadout, baseCost: number
     living squad passives, Weaken and Attack boosts apply dynamically in combat.</p>
     <p>Displayed Convergent Light coefficients include evolution, rank, saved Imbues and personal Master enhancements.
     Defense, elemental matchups, the living leader and equipped Conduits determine actual attack damage.</p>
-    <p>Burn snapshots elemental matchups and the living leader's damage bonus when applied; later leader defeats do not change that snapshot.</p>
+    <p>Ability-applied Burn snapshots elemental matchups and applicable Burn bonuses when applied; later leader defeats do not change that snapshot.</p>
     <p>    Effects use this frozen run's gear/ranks, not current menu equipment. Gear-generated output never triggers native or further gear effects.
     Luminosity is personal to each Element-Bearer; there is no shared meter.
     Independent timed sources are retained; strongest Weaken/Exposure/Attack boost/reduction applies, rather than summing those statuses.

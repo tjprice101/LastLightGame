@@ -49,10 +49,10 @@ describe('unified Archives', () => {
     expect(html.match(/data-archive-gallery=/g)).toHaveLength(4);
     expect(html).not.toContain('class="archive-banner ');
     expect(html.match(/class="ref-sr-only" id="archive-/g)).toHaveLength(4);
-    expect(html).toContain('id="archive-characters" class="archive-panel" aria-labelledby="archive-characters-heading" >');
-    expect(html).toContain('id="archive-conduits" class="archive-panel" aria-labelledby="archive-conduits-heading" hidden');
-    expect(html).toContain('id="archive-creatures" class="archive-panel" aria-labelledby="archive-creatures-heading" hidden');
-    expect(archives(emptyAccount(), 'creatures')).toContain('id="archive-creatures" class="archive-panel" aria-labelledby="archive-creatures-heading" >');
+    expect(html).toContain('id="archive-characters" class="archive-panel" aria-labelledby="archive-characters-heading"  data-menu-page-size="8">');
+    expect(html).toContain('id="archive-conduits" class="archive-panel" aria-labelledby="archive-conduits-heading" hidden data-menu-page-size="8">');
+    expect(html).toContain('id="archive-creatures" class="archive-panel" aria-labelledby="archive-creatures-heading" hidden data-menu-page-size="8">');
+    expect(archives(emptyAccount(), 'creatures')).toContain('id="archive-creatures" class="archive-panel" aria-labelledby="archive-creatures-heading"  data-menu-page-size="8">');
   });
 
   it('previews all characters without granting ownership and shows real owned forms and effective stats', () => {

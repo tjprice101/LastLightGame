@@ -1,5 +1,76 @@
 # Menus and inventory
 
+## Game-wide reference theme (D-457; local-only)
+
+`src/presentation/menu-reference-rollout.css` extends the D-456 reference
+theme to every other menu. It is imported after `menu-reference.css`, and all
+its rules sit inside `@layer menu-reference` with `!important` declarations.
+Every rule is scoped to `html[data-menu-workspace] .sanctuary-shell`.
+
+- **Shared tokens:** panels, raised surfaces, lines, text and muted colours
+  come from the `--reference-*` variables. The radius is 24px. The active
+  state is a peach border on a translucent peach fill.
+- **Fit rule:** each screen fills the content area with no page scrollbar.
+  At 1280x720 and 1600x900, the audited Gameplay rail, Store catalogs/details
+  and Summon pity fit without internal scrolling. Longer Store catalogs
+  paginate; other long lists and detail panels may use contained scrolling
+  where pagination would disrupt their task.
+- **Gameplay:** the activity card fills the panel. Story keeps a real chapter
+  title row, and its stage and boss rows size to their content. Dungeon
+  Normal and Calamity panels scroll internally. Calamity details stack into
+  a single column.
+- **Stores:** Conduit, Calamitic, Cosmetic, Material Exchange and Event
+  stores use pill tabs, product grids and a fixed detail column. The Conduit
+  catalog shows two entries per page across five pages; Event Elemental-
+  Devourer purchases show two per page across six pages. Compact desktop
+  layouts keep product and Information/purchase controls within the panel.
+- **Covered screens:** Collections, Inventory, Summon, Events, the Captured
+  gallery, View Unit, Loadouts, Squad and the squad picker use the same
+  panels and grid formatting.
+- **Unchanged:** artwork-backed buttons, element accents, `[hidden]`, 44px
+  targets, focus, Reduce motion and portrait DOM.
+- **Overrides must respect `[hidden]`:** any rule that sets `display` with
+  `!important` must also exclude `[hidden]`, or hidden sibling cards render
+  stacked on top of each other.
+
+## Reference-based desktop menus (D-456; local-only)
+
+The eight owner-supplied references replace the selected live Home, Units,
+browse/Level/Evolve bearer selection, equipment, Level and Evolve layouts.
+`src/presentation/menu-reference.css` owns their shared navy/plum surfaces,
+peach actions, large rounded panels and typography. Existing game artwork,
+accessible controls, native dialogs and actual account handlers are retained;
+there is no alternate demo renderer.
+
+- Home has the saved six-slot squad and seven shortcuts on the left, four
+  featured destinations and a separate attendance card on the right.
+- Units has the actual saved squad strip and grouped growth/collection links.
+- Bearer selection has nine desktop columns, six element filters, search and
+  sorting, with intentional contained gallery scrolling instead of pagination.
+  Filtering preserves the selection's Level/Evolve/equipment intent.
+  Captured copies keep their existing pagination.
+- Growth uses a portrait-led identity panel, four-stat summary, exact costs,
+  rank tiers, current caps and real Level/Max Level/Evolve transactions.
+  Redundant disabled Rank-20 actions are hidden. Uncapped costs and fodder
+  remain accessible in the contained detail panel, not clipped to fit.
+- Equipment uses a dedicated two-panel composition with large artwork, all
+  eight slots, the personal Master selector and the four-item owned-list pager.
+  Configurations and combined effects remain native dialogs. Captured
+  equipment's explanatory notice occupies its own grid row.
+
+All eight views were measured at actual CSS viewports **1280x720 and
+1920x1080**, with explicit in-game Reduce motion: no document, main-content or
+outer-panel overflow, and no completed broken images. Earlier 1440x900 checks
+covered gallery access, capped growth, a real Max Rank transaction and portrait
+DOM preservation. Uncapped growth at 1280x720 still intentionally scrolls
+inside its detail panel.
+
+Browser checks use the existing Map-backed isolated account and real handlers,
+never real-player grants. The integrated browser is hidden and its screenshots
+can be stale/cropped: these are geometry/handler checks, not final pixel,
+normal-motion cadence or pointer-hit-testing acceptance. Online attendance is
+honestly unavailable in this offline workspace. Nothing is published.
+
 ## Compact desktop menus and battle charge presentation (2026-11-12)
 
 Desktop scaling is the current design scope; no mobile redesign is included.

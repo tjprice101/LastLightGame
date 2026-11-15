@@ -19,7 +19,7 @@ export function isMenuPage(value: unknown): value is MenuPage {
 
 const headings: Record<MenuPage, readonly [string, string]> = {
   home: ['SANCTUARY', 'Home'], character: ['OWNED CHARACTERS', 'Character'],
-  team: ['FORMATION AND GROWTH', 'Team'],
+  team: ['FORMATION AND GROWTH', 'Elemental-Bearers'],
   gameplay: ['ACTIVITIES', 'Gameplay'], events: ['EVENTS', 'Events'],
   inventory: ['OWNED ITEMS', 'Inventory'], stores: ['STORES', 'Stores'], collections: ['CATALOGS', 'Collections'], squad: ['FORMATION', 'Squad'],
   summon: ['SUMMONING', 'Summon'], story: ['SIX BEACONS', 'Story'],
@@ -57,7 +57,7 @@ export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycali
 
 const primaryDestinations = [
   ['home', 'Home', 'home', 'Sanctuary'],
-  ['team', 'Team', 'squad', 'Squad and Element-Bearers'],
+  ['team', 'Elemental-Bearers', 'squad', 'Squad and Element-Bearers'],
   ['gameplay', 'Play', 'gameplay', 'Activities and events'],
   ['stores', 'Shop', 'weapon', 'Materials and Conduits'],
   ['summon', 'Summon', 'summon', 'Banners and rates'],
@@ -66,9 +66,9 @@ const primaryDestinations = [
 
 function primaryDestination(page: MenuPage): MenuPage | null {
   if (page === 'home') return 'home';
-  if (page === 'team' || page === 'character' || page === 'squad' || page === 'conduit-store' || page === 'conduit-upgrade') return 'team';
+  if (page === 'team' || page === 'character' || page === 'squad' || page === 'conduit-upgrade') return 'team';
   if (page === 'summon' || page === 'special-banner-archive') return 'summon';
-  if (page === 'stores' || page === 'inventory') return 'stores';
+  if (page === 'stores' || page === 'conduit-store' || page === 'inventory') return 'stores';
   if (page === 'profile') return 'profile';
   if (page === 'gameplay' || page === 'events' || page === 'story' || page === 'battle') return 'gameplay';
   return null;

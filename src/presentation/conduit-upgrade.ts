@@ -72,7 +72,7 @@ function renderConduitUpgradeMenu(account: Account | null, selected: string | un
     `<p>${rarity}: ${conduitUpgradeCosts.map((cost) => cost * multiplier).join(' / ')} components for +1 through +5.</p>`).join('')
     + '<p>Max Level previews the highest affordable upgrade and its total cost.</p>';
   return `<section class="conduit-upgrade-menu ref-screen ref-conduit-upgrade" data-upgrade-owned="${escapeAttribute(JSON.stringify(entries))}" data-upgrade-components="${account?.mechanicalComponents ?? 0}">
-    <nav class="ref-market-tabs"><button aria-current="page">Conduit Upgrade</button><button data-page="conduit-store">Conduit Store →</button></nav>
+    <nav class="ref-market-tabs" aria-label="Elemental-Bearers"><button aria-current="page">Conduit Upgrade</button></nav>
     <aside class="ref-panel ref-upgrade-owned">${shopHost('edda')}<header class="ref-panel-heading">Owned · ${owned.length}</header>
       <div class="ref-upgrade-tools"><label class="ref-upgrade-search"><span class="ref-sr-only">Search owned Conduits</span><input type="search" data-upgrade-search placeholder="Search Conduits…" value="${escapeAttribute(state.query)}"></label>
       <label class="ref-upgrade-sort"><span class="ref-sr-only">Sort owned Conduits</span><select data-upgrade-sort>${[['name', 'Name A–Z'], ['rarity', 'Rarity highest'], ['level', 'Upgrade highest']].map(([value, label]) => `<option value="${value}" ${state.sort === value ? 'selected' : ''}>${label}</option>`).join('')}</select></label></div>

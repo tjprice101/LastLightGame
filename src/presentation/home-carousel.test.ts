@@ -29,13 +29,15 @@ describe('live Home carousel', () => {
     const visible = () => Array.from(host.querySelectorAll<HTMLElement>('[data-home-slide]')).filter(slide => !slide.hidden);
     expect(visible().map(slide => slide.dataset.homeSlide)).toEqual(['0']);
     host.querySelector<HTMLButtonElement>('[data-home-carousel-step="-1"]')!.click();
-    expect(visible().map(slide => slide.dataset.homeSlide)).toEqual(['4']);
+    expect(visible().map(slide => slide.dataset.homeSlide)).toEqual(['3']);
     host.querySelector<HTMLButtonElement>('[data-home-carousel-step="1"]')!.click();
     expect(visible().map(slide => slide.dataset.homeSlide)).toEqual(['0']);
     host.querySelector<HTMLButtonElement>('[data-home-carousel-index="1"]')!.click();
     expect(visible().map(slide => slide.dataset.homeSlide)).toEqual(['1']);
     expect(host.querySelector('[data-home-carousel-index="1"]')?.getAttribute('aria-pressed')).toBe('true');
     expect(host.querySelector('[data-home-loadouts]')?.getAttribute('data-page')).toBe('team');
+    expect(host.querySelector('[data-home-attendance]')?.closest('[data-home-slide]')).toBeNull();
+    expect(host.querySelector('.home-attendance-panel')?.hasAttribute('hidden')).toBe(false);
   });
 
   it('uses the monthly authority state and next streak reward, with review rather than an invented claim', () => {

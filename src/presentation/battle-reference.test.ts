@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { radiantBattleReference, radiantConduitDescription, radiantFlareDescription,
   radiantFlareNeedsTarget, radiantLeaderReference } from './battle-reference';
-import { radiantFlares, radiantFinalFlare, radiantLeaderBonus, radiantPassiveAmount, radiantMasters, radiantStarterKits, releasedRadiantIds,
+import { radiantFlares, radiantFinalFlare, radiantLeaderDescription, radiantPassiveAmount, radiantMasters, radiantStarterKits, releasedRadiantIds,
   type RadiantLoadout, type RadiantMasterId } from '../content/combat-kits';
 import { radiantConduits, radiantConduitPrimitives } from '../content/conduit-effects';
 import { type ConduitId } from '../content/conduits';
@@ -60,8 +60,7 @@ describe('complete frozen Radiant battle reference', () => {
   it('leader bonus reflects frozen ascension/Master/gear and displayed life state, never promotes another member', () => {
     const member = loadout('rosetta', 'master-rosetta-3'); member.ascension.skill2 = true;
     const state = createRadiantCombat([member, loadout('tide')], [{ elementId: null, id: 'enemy', stats: { hp: 1000, attack: 1, defense: 1, recovery: 1 }, currencyBudget: 1 }], 1);
-    const bonus = radiantLeaderBonus(member);
-    expect(radiantLeaderReference(state)).toContain(`${Number((bonus * 100).toPrecision(12))}%`);
+    expect(radiantLeaderReference(state)).toContain(escapeDialogText(radiantLeaderDescription(member)));
     expect(radiantLeaderReference(state, false)).toContain('Inactive: leader defeated');
     expect(radiantLeaderReference(state, false)).not.toContain('Tizu');
     expect(state.bearers[0].hp).toBeGreaterThan(0);

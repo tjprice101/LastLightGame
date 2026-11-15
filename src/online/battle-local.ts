@@ -29,7 +29,8 @@ export class LocalRadiantTransport {
       const value = JSON.parse(raw) as LocalRadiantRecord;
       if (!Number.isSafeInteger(value.revision) || value.revision < 0) throw new Error();
       const version: unknown = value.run?.version;
-      if (version === 3) return { revision: value.revision, run: null, notice: retiredRadiantRunNotice };
+      if (version === 3 || version === 4 || version === 5)
+        return { revision: value.revision, run: null, notice: retiredRadiantRunNotice };
       return { revision: value.revision, run: value.run === null ? null : validateFrozenRadiantRun(value.run) };
     } catch {
       throw new RadiantRunError('unavailable', 'Invalid saved Radiant encounter; all saved rewards are kept.');

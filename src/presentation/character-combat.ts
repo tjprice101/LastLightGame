@@ -1,4 +1,4 @@
-import { radiantAttunement, radiantBearerKits, radiantFinalFlare, radiantLeaderBonus, radiantPassiveAmount, radiantMasters, resolveRadiantStarterStats,
+import { radiantAttunement, radiantBearerKits, radiantFinalFlare, radiantLeaderBonus, radiantLeaderDescription, radiantPassiveAmount, radiantMasters, resolveRadiantStarterStats,
   type RadiantBearerId, type RadiantLoadout, type RadiantStats } from '../content/combat-kits';
 import { adaptRadiantLoadouts } from '../game/combat-loadout';
 import { radiantChargeRules } from '../game/combat-gauge';
@@ -104,8 +104,7 @@ export function radiantLeaderAmount(loadout: RadiantLoadout): number {
 }
 
 export function radiantLeaderText(loadout: RadiantLoadout): string {
-  const kit = radiantBearerKits[loadout.starter];
-  return `${kit.element} squad members deal ${percent(radiantLeaderAmount(loadout))} more attack damage while this bearer is the living squad leader.`;
+  return radiantLeaderDescription(loadout);
 }
 
 export function radiantFlareTierUnlocked(loadout: RadiantLoadout, tier: ConvergentLightTier): boolean {
@@ -160,14 +159,18 @@ export function radiantConvergenceRankPanel(loadout: RadiantLoadout, account: Ac
     : rank >= cap ? `Reach Lv.${requiredLevel} and Evo.${displayEvolution(loadout.starter, requiredEvolution)} to unlock Rank ${rank + 1}.`
       : 'Not enough resources to raise Convergent Light rank.';
   return `<section class="character-category convergent-rank-panel" data-convergent-rank="${rank}">
-    <h3>Convergent Light · Rank ${rank} of 20</h3>
-    <p>${radiantFlareTierNames[tier]}. Ranks 1–5 are Sparkling, 6–10 are Glimmering, and 11–20 are Ultimate. Each rank above Rank 1 increases effect magnitudes by 1%.</p>
+    <header><h3>Convergent Light</h3><strong>Rank ${rank} / 20 · +${rank - 1}% effect</strong></header>
+    <p>Each rank above Rank 1 adds 1% to effect magnitudes. Higher tiers unlock as you rank up.</p>
+    <div class="convergent-rank-tiers" aria-label="${radiantFlareTierNames[tier]}"><span class="is-sparkling"><i style="--rank-fill:${Math.min(rank, 5) / 5 * 100}%"></i>Sparkling · 1–5</span><span class="is-glimmering"><i style="--rank-fill:${Math.max(0, Math.min(rank - 5, 5)) / 5 * 100}%"></i>Glimmering · 6–10</span><span class="is-ultimate"><i style="--rank-fill:${Math.max(0, rank - 10) / 10 * 100}%"></i>Ultimate · 11–20</span></div>
+    <div class="convergent-rank-actions"><div>
+    ${resources.length ? `<h4>Rank ${rank + 1} <small>Owned / Required</small></h4>` : ''}
     ${resources.length ? `<ul class="upgrade-resources">${resources.map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${escape(resource.name)}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>` : ''}
     <button class="primary-button" data-upgrade="convergence" data-upgrade-blocked="${!!blocked}" ${blocked ? 'disabled' : ''}>${rank < 20 ? `Raise to Rank ${rank + 1}` : 'Maximum Rank'}</button>
-    <h4>Max Level · Rank ${maximum?.targetRank ?? rank}</h4>
-    <p class="info-label">Total cost to raise from Rank ${rank} to Rank ${maximum?.targetRank ?? rank}:</p>
+    </div><div>
+    ${maximum && maximum.targetRank > rank ? `<h4>Max Level · Rank ${maximum.targetRank}</h4><p class="info-label">Total cost from Rank ${rank} to ${maximum.targetRank}:</p>` : ''}
     ${maximum && maximum.targetRank > rank ? `<ul class="upgrade-resources">${maximumResources.map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${escape(resource.name)}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>` : ''}
     <button class="primary-button" data-upgrade="convergence-max" data-upgrade-blocked="${!!maximumBlocked}" ${maximumBlocked ? 'disabled' : ''}>Max Level</button>
+    </div></div>
     <p class="quiet">${escape(maximumBlocked || blocked)}</p>
   </section>`;
 }

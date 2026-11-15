@@ -86,8 +86,8 @@ describe('reference Inventory layout', () => {
     for (const id of ['fractalis', 'lycalis']) expect(html).toContain(`currencies/${id}.png`);
     expect(html.match(/role="tab"/g)).toHaveLength(2);
     expect(html).toContain('id="inventory-tab-materials" class="inventory-tab" data-inventory-tab="materials" aria-controls="inventory-panel-materials" aria-selected="true"');
-    expect(html).toContain('data-inventory-section="materials" data-menu-page-size="24"');
-    expect(html).toContain('data-inventory-section="conduits" data-menu-page-size="24" hidden');
+    expect(html).toContain('data-inventory-section="materials" data-menu-page-size="4"');
+    expect(html).toContain('data-inventory-section="conduits" data-menu-page-size="4" hidden');
     expect(html.indexOf('inventory-tabs')).toBeGreaterThan(html.indexOf('inventory-filters'));
     expect(html).not.toContain('data-inventory-resource="mechanical-components"');
     expect(html.match(/<i><\/i>/g)).toHaveLength(28);
@@ -130,9 +130,9 @@ describe('reference Inventory layout', () => {
     bindInventory(host, vi.fn());
     const panel = host.querySelector<HTMLElement>('[data-inventory-section="materials"]')!;
     const visible = () => Array.from(panel.querySelectorAll<HTMLElement>('[data-menu-page-item]')).filter(item => !item.hidden).length;
-    expect(visible()).toBe(24);
+    expect(visible()).toBe(4);
     panel.querySelector<HTMLButtonElement>('[data-menu-page="1"]')!.click();
-    expect(visible()).toBe(1);
+    expect(visible()).toBe(4);
     const search = host.querySelector<HTMLInputElement>('[data-inventory-query]')!;
     search.value = materialName(elementalMaterials[0].id);
     search.dispatchEvent(new Event('input'));

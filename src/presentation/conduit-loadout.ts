@@ -20,7 +20,7 @@ import { isRarity } from '../content/rarity';
 import { catalogInformation } from './information-layout';
 import { information } from './information';
 
-export const conduitLoadoutPageSize = 4;
+export const conduitLoadoutPageSize = 2;
 const rarityOrder = ['Common', 'Rare', 'Legendary', 'Omnic', 'Calamitic'] as const;
 type RarityFilter = '' | (typeof rarityOrder)[number];
 type EquipmentFilter = 'all' | 'equipped' | 'unequipped';

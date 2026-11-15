@@ -3,7 +3,7 @@ import { elements } from '../content/activities';
 import { elementDamageMultiplier, elementWeaknesses } from '../content/element-matchups';
 import { characterName } from '../content/character-art';
 import { getStarter } from '../content/starters';
-import { radiantBearerKits, radiantFinalFlare, radiantLeaderBonus, radiantMasters, radiantPassiveAmount,
+import { radiantBearerKits, radiantFinalFlare, radiantLeaderBonus, radiantLeaderEffects, radiantMasters, radiantPassiveAmount,
   releasedRadiantIds, type RadiantBearerId, type RadiantLoadout, type RadiantMasterId } from '../content/combat-kits';
 import { radiantConduits } from '../content/conduit-effects';
 import { applyRadiantCombatAction, createRadiantCombat, effectiveRadiantStats, radiantDirectDamage,
@@ -88,8 +88,7 @@ describe('consolidated live combat contract', () => {
       }], 1);
       state.gauge.members[0].charge = charge;
       const offer = radiantFinalFlare(state.bearers[0].loadout, tier);
-      const expected = radiantDirectDamage(effectiveRadiantStats(state, 'ember').attack, 0, offer.damage,
-        1 + radiantLeaderBonus(state.bearers[0].loadout));
+      const expected = radiantDirectDamage(effectiveRadiantStats(state, 'ember').attack, 0, offer.damage);
       const next = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ember' });
       const packets = next.events.filter(event => event.type === 'damage' && event.source.kind === 'flare' && event.origin === 'direct');
       expect(packets).toHaveLength(hits);
@@ -120,6 +119,34 @@ describe('consolidated live combat contract', () => {
     const afterDeath = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'tide', targetId: 'enemy' });
     const damage = afterDeath.events.find(event => event.type === 'damage');
     expect(damage?.type === 'damage' && damage.offered).toBe(radiantDirectDamage(effectiveRadiantStats(state, 'tide').attack, 0, 1));
+  });
+  it('Tizu leads with Defense and guarded Shields, not the shared attack template', () => {
+    const state = fixture(['tide', 'nerithe', 'ember']);
+    const otherLeader = fixture(['ember', 'tide', 'nerithe']);
+    expect(effectiveRadiantStats(state, 'nerithe').defense)
+      .toBeCloseTo(effectiveRadiantStats(otherLeader, 'nerithe').defense * 1.3);
+    expect(effectiveRadiantStats(state, 'ember').defense).toBeCloseTo(effectiveRadiantStats(otherLeader, 'ember').defense);
+    const guarded = applyRadiantCombatAction(state, { type: 'defense', bearerId: 'nerithe' });
+    expect(guarded.events).toContainEqual(expect.objectContaining({
+      type: 'shield', targetId: 'nerithe', source: { kind: 'leader', bearerId: 'tide' },
+    }));
+    const offElement = applyRadiantCombatAction(state, { type: 'defense', bearerId: 'ember' });
+    expect(offElement.events.filter(event => event.type === 'shield')).toHaveLength(0);
+    state.bearers[0].hp = 0;
+    state.gauge.members[0].living = false;
+    const inactive = applyRadiantCombatAction(state, { type: 'defense', bearerId: 'nerithe' });
+    expect(inactive.events.filter(event => event.type === 'shield')).toHaveLength(0);
+  });
+  it('an equipped Elise Master creates its authored splash without another Luminosity drop', () => {
+    const state = createRadiantCombat([{ ...loadout('elise'), masterId: 'master-elise-2' }],
+      ['enemy', 'other'].map(id => ({ id, elementId: null,
+        stats: { hp: 100000, attack: 100, defense: 0, recovery: 0 }, currencyBudget: 10 })), 1);
+    const result = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'elise', targetId: 'enemy' });
+    expect(result.events).toContainEqual(expect.objectContaining({
+      type: 'damage', origin: 'generated', targetId: 'other', source: { kind: 'master', bearerId: 'elise' },
+    }));
+    expect(result.events.filter(event => event.type === 'gauge-drop')).toHaveLength(1);
+    expect(result.state.gauge.members[0].charge).toBe(10);
   });
 
   it.each(elements)('$name arrows mean weak to, including the mutual light/dark pair', element => {
@@ -164,7 +191,7 @@ describe('consolidated live combat contract', () => {
     const offer = radiantFinalFlare(state.bearers[0].loadout, 'sparkling');
     const cast = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ember' });
     const magnitude = offer.burn * effectiveRadiantStats(state, 'ember').attack *
-      (1 + radiantLeaderBonus(state.bearers[0].loadout)) * .75;
+      (1 + radiantLeaderEffects(state.bearers[0].loadout).find(effect => effect.kind === 'burn-power')!.amount) * .75;
     expect(cast.state.enemies[0].burns[0].magnitude).toBeCloseTo(magnitude);
     cast.state.bearers[0].hp = 0;
     cast.state.gauge.members[0].living = false;
@@ -207,12 +234,14 @@ describe('consolidated live combat contract', () => {
     }
   });
 
-  it('uses only one or two simple effects per ordinary Conduit and a single enhancement per Master', () => {
-    const allowed = ['hp', 'attack', 'defense', 'recovery', 'normal', 'flare', 'pierce', 'healing', 'shielding', 'resilience', 'guard', 'leader', 'cooperation'];
-    for (const design of Object.values(radiantConduits)) {
+  it('gives every Conduit and Master a mechanically distinct one-or-two-effect design, ignoring numeric differences', () => {
+    const designs = [...Object.values(radiantConduits), ...Object.values(radiantMasters).map(master => master.effects)];
+    for (const design of designs) {
       expect(design.length).toBeLessThanOrEqual(2);
-      for (const effect of design) expect(allowed).toContain(effect.kind);
+      expect(design.length).toBeGreaterThan(0);
     }
-    for (const master of Object.values(radiantMasters)) expect(master.rule).toBe('standard');
+    expect(new Set(designs.map(design => design.map(effect => effect.kind).sort().join('|'))).size).toBe(designs.length);
+    const leaders = releasedRadiantIds.map(id => radiantLeaderEffects(loadout(id)).map(effect => effect.kind).sort().join('|'));
+    expect(new Set(leaders).size).toBe(leaders.length);
   });
 });

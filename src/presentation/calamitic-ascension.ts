@@ -32,7 +32,7 @@ function stepDescription(starter: Starter, step: CalamiticAscensionStep): string
   if (!isRadiantBearer(starter.id)) throw new Error('This Element-Bearer has no available Radiant combat kit.');
   if (step === 'skill1') return 'Add 50% of the evolution-enhanced Passive Skill bonus.';
   return step === 'skill2'
-    ? 'Add 50% of the native Leader Skill damage bonus while leading and alive.'
+    ? 'Increase native Leader Skill effects by 50% while leading and alive.'
     : 'Add 50% of evolution- and rank-enhanced Convergent Light effect magnitudes; durations do not change.';
 }
 

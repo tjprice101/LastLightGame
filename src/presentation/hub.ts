@@ -226,6 +226,10 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
   const current = ownedProgress(account, starter.id);
   const cap = characterLevelCap(current.evolution, starter.id, current.ascension?.stats === true);
   const finished = evolve ? current.evolution === characterGrowth.forms : current.level === cap;
+  if (finished && organized) return `<section class="character-category upgrade-payment workspace-growth-complete"><div><h3>${evolve ? 'Required resources' : 'To level up'}</h3>
+    <p>${evolve ? 'Final evolution reached. No further evolution materials are needed.' : current.evolution === characterGrowth.forms ? 'Maximum level reached. No leveling materials are needed.' : 'Level cap reached. Evolve to raise the cap.'}</p></div>
+    ${evolve ? '<button class="primary-button" disabled>Final evolution</button>' : `<button class="text-button" type="button" data-max-level="${starter.id}" disabled>Max Level</button>`}
+    ${result ? '<p id="upgrade-result" role="status"></p>' : ''}</section>`;
   if (finished) return `<p class="upgrade-progress">Lv.${current.level} / ${cap} &middot; Evo.${displayEvolution(starter.id, current.evolution)} / ${displayEvolution(starter.id, characterGrowth.forms)}</p>
     <p>${evolve ? 'Final evolution reached.' : current.evolution === characterGrowth.forms ? 'Maximum level reached.' : 'Level cap reached. Evolution required.'}</p>
     ${!evolve ? `<button class="text-button" type="button" data-max-level="${starter.id}">Max Level</button>` : ''}${result ? '<p id="upgrade-result" role="status"></p>' : ''}`;
@@ -334,9 +338,20 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
   } else if (selectedTab === 'equipment') {
     detail = organized ? `<div class="ref-equipment-workspace">${referenceEquipment(starter.id, characterName(starter.id, progress?.evolution, progress?.ascension?.stats === true), starter.elementId, account)}</div>` : equipment(starter, account);
   } else if (selectedTab === 'upgrade-0' || selectedTab === 'upgrade-1') {
-    detail = upgradePanel(starter, selectedTab === 'upgrade-0', account, true, false, organized) +
-      (selectedTab === 'upgrade-0' ? ascensionEntry(starter, account, progress) :
-        radiant && account ? radiantConvergenceRankPanel(radiant.loadout, account) : '');
+    const evolve = selectedTab === 'upgrade-0';
+    const upgrade = upgradePanel(starter, evolve, account, true, false, organized);
+    const specialty = evolve ? ascensionEntry(starter, account, progress) :
+      radiant && account ? radiantConvergenceRankPanel(radiant.loadout, account) : '';
+    if (organized && progress) {
+      const cap = characterLevelCap(progress.evolution, starter.id, progress.ascension?.stats === true);
+      const value = evolve ? displayEvolution(starter.id, progress.evolution) : progress.level;
+      const maximum = evolve ? displayEvolution(starter.id, characterGrowth.forms) : cap;
+      const complete = value === maximum;
+      detail = `<section class="workspace-growth-summary character-category"><header><div><h3>${evolve ? 'Evolution' : 'Level'}</h3><strong>${value}<small> / ${maximum}</small></strong></div>
+        ${complete ? `<span class="workspace-complete-label">${evolve ? 'Final evolution reached' : 'Maximum level reached'}</span>` : ''}</header>
+        ${evolve ? `<div class="workspace-evolution-steps" role="meter" aria-label="Evolution progress" aria-valuemin="${displayEvolution(starter.id, 1)}" aria-valuemax="${maximum}" aria-valuenow="${value}">${Array.from({ length: characterGrowth.forms }, (_, index) => `<span class="${index < progress.evolution ? 'is-filled' : ''}"><i></i>${displayEvolution(starter.id, index + 1)}</span>`).join('')}</div>` : `<meter class="workspace-growth-meter" min="0" max="${cap}" value="${progress.level}" aria-label="Level progress"></meter>${radiant ? radiantStatsPanel(radiant.loadout) : radiantUnavailable()}`}</section>
+        ${specialty}${upgrade}`;
+    } else detail = upgrade + specialty;
   } else {
     if (!upgradePaths.some((path) => path.id === selectedTab)) throw new Error('Unknown upgrade definition.');
     const specific = !radiant ? radiantUnavailable() : selectedTab === 'upgrade-3' ? radiantPassiveArticle(radiant.loadout) + radiantLeaderArticle(radiant.loadout)
@@ -373,7 +388,7 @@ export function updateCharacterTab(host: HTMLElement, starter: Starter, selected
   if (formLabel) formLabel.textContent = characterName(starter.id, account ? ownedProgress(account, starter.id).evolution : 1, account ? ownedProgress(account, starter.id).ascension?.stats === true : false);
   if (account && host.querySelector('[data-reference-name]')) {
     const progress = ownedProgress(account, starter.id);
-    const cap = characterLevelCap(progress.evolution, starter.id);
+    const cap = characterLevelCap(progress.evolution, starter.id, progress.ascension?.stats === true);
     const prefix = host.querySelector('[data-reference-prefix]');
     const name = host.querySelector('[data-reference-name]');
     const rarity = host.querySelector('[data-reference-rarity]');

@@ -138,7 +138,12 @@ describe('Conduit loadout (D-229)', () => {
     expect(host.querySelector('[data-loadout-search-status]')?.textContent).toBe('Showing 0 of 3 Conduits');
     expect(host.querySelector('not-a-conduit')).toBeNull();
     applyConduitSearch(host, '');
-    expect(Array.from(host.querySelectorAll<HTMLElement>('[data-loadout-conduit]')).every(row => !row.hidden)).toBe(true);
+    bindConduitLoadout(host);
+    expect(host.querySelectorAll('[data-loadout-conduit]:not([hidden])')).toHaveLength(2);
+    const visible = new Set(Array.from(host.querySelectorAll<HTMLElement>('[data-loadout-conduit]:not([hidden])'), row => row.dataset.loadoutConduit));
+    host.querySelector<HTMLButtonElement>('[data-loadout-page="next"]')!.click();
+    host.querySelectorAll<HTMLElement>('[data-loadout-conduit]:not([hidden])').forEach(row => visible.add(row.dataset.loadoutConduit));
+    expect(visible.size).toBe(3);
     expect(host.querySelector<HTMLElement>('[data-loadout-search-empty]')?.hidden).toBe(true);
     expect(equip.disabled).toBe(false);
     expect(wallet).toEqual(before);

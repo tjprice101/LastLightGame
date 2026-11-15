@@ -9,6 +9,7 @@ import { machineComponentDrop } from '../content/mechanical-components';
 import { conduits, getConduit } from '../content/conduits';
 import { masterConduits as allMasters } from '../content/master-conduits';
 import { characterReleased } from '../content/release-visibility';
+import { bindMenuPagination } from './menu-pagination';
 const masterConduits = allMasters.filter(master => characterReleased(master.character));
 
 let disposeSelection: (() => void) | undefined;
@@ -52,6 +53,28 @@ function fixture(prepare?: (account: ReturnType<typeof emptyAccount>) => void) {
 }
 
 describe('Collections controls', { timeout: 30_000 }, () => {
+  it('pages all three galleries and resets the page when filters change', () => {
+    const host = document.createElement('main');
+    host.innerHTML = archives(emptyAccount());
+    bindMenuPagination(host);
+    bindArchives(host);
+    bindCreatureGlossary(host);
+    for (const id of ['characters', 'conduits', 'creatures']) {
+      const panel = host.querySelector<HTMLElement>(`#archive-${id}`)!;
+      const visible = () => panel.querySelectorAll('[data-menu-page-item]:not([hidden])').length;
+      expect(visible()).toBe(8);
+      panel.querySelector<HTMLButtonElement>('[data-menu-page="1"]')!.click();
+      expect(panel.dataset.menuCurrentPage).toBe('1');
+      expect(visible()).toBe(8);
+      const filter = panel.querySelector<HTMLSelectElement>(id === 'characters' ? '[data-character-filter="element"]'
+        : id === 'conduits' ? '[data-conduit-filter="rarity"]' : '#glossary-area')!;
+      filter.value = id === 'characters' ? 'infernic' : id === 'conduits' ? 'Master' : 'Awaken the Machines';
+      filter.dispatchEvent(new Event('change'));
+      expect(panel.dataset.menuCurrentPage).toBe('0');
+      expect(visible()).toBeGreaterThan(0);
+      expect(visible()).toBeLessThanOrEqual(8);
+    }
+  });
   it('combines all five filters, reports empty matches and resets the visible selection labels', () => {
     const f = fixture();
     f.select('element', 'infernic');

@@ -140,6 +140,8 @@ import { BackgroundMusic, battleMusic, defaultMusicPreferences, loadMusicPrefere
 import { createMenuWorkspaceStorage, menuWorkspace } from './game/menu-workspace';
 import { formatMenuWorkspace, workspaceUnitsMenu } from './presentation/menu-workspace';
 import './presentation/menu-workspace.css';
+import './presentation/menu-reference.css';
+import './presentation/menu-reference-rollout.css';
 
 const gameStorage = menuWorkspace ? createMenuWorkspaceStorage() : new DebugProfileStorage(window.localStorage, import.meta.env.DEV);
 const preferencesStorage = menuWorkspace ? gameStorage : window.localStorage;
@@ -1130,6 +1132,7 @@ function renderMenu(firstArrival = false): void {
         await transitionActivity(async () => {
           if (page === 'profile' && playMode === 'online') await performOnline({ kind: 'read' });
           if (page === 'stores' && button.hasAttribute('data-market-cosmetics')) storeTab = 'cosmetics';
+          if (page === 'stores' && button.hasAttribute('data-market-materials')) storeTab = 'materials';
           if (page === 'battle' && menuPage !== 'battle') {
             if (!account) throw new Error('Progression save unavailable. Resolve the save error before battling.');
             await enterBattle({ kind: 'training' });
@@ -1628,7 +1631,7 @@ function renderMenu(firstArrival = false): void {
 }
 
 function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
-  if ((page === 'team' || page === 'character' || page === 'squad') && teamView === 'menu') return workspaceUnitsMenu();
+  if ((page === 'team' || page === 'character' || page === 'squad') && teamView === 'menu') return workspaceUnitsMenu(account);
   if (!journey.profile) throw new Error('A saved Element-Bearer is required.');
   const starter = getStarter(journey.profile.starterId);
   if (page === 'battle') return '<div id="battle-root"></div>';
@@ -1845,6 +1848,7 @@ app.addEventListener('click', async event => {
       if (button.hasAttribute('data-team-element')) {
         teamElement = button.dataset.teamElement ?? '';
         teamView = button.closest('[data-team-collection="creatures"]') ? 'creatures' : 'bearers';
+        if (teamView === 'bearers') characterTab = selectionTab;
       } else if (button.dataset.teamDetail) {
         const id = button.dataset.teamDetail;
         if (!isStarterId(id) || !account?.characters[id]) throw new Error('Choose an owned Element-Bearer.');

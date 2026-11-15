@@ -3,7 +3,9 @@ import { masterConduits, type MasterConduitId } from './master-conduits';
 import { starters, type StarterId } from './starters';
 import { characterLevelCap, convergentLightRankCap, convergentLightTier, weaponRules,
   type CharacterAscension, type ConvergentLightTier } from './progression';
-import { radiantGearAmount, validateRadiantGear, type RadiantGear } from './conduit-effects';
+import { radiantGearAmount, validateRadiantGear, pair, type RadiantGear,
+  type RadiantConduitDesign, type RadiantConduitEffect, type RadiantConduitPrimitive } from './conduit-effects';
+import { radiantConduitDescription } from './conduit-effect-text';
 import type { ElementId } from './activities';
 
 export type RadiantBearerId = StarterId & (
@@ -273,13 +275,14 @@ export const radiantFlares: Record<RadiantBearerId, Record<ConvergentLightTier, 
   })) as Record<RadiantBearerId, Record<ConvergentLightTier, RadiantFlareOffer>>;
 
 export type RadiantMasterId = `master-${RadiantBearerId}-${1 | 2 | 3}` & MasterConduitId;
-export type RadiantMasterEnhancement = 'passive' | 'leader' | 'signature';
+export type RadiantMasterEnhancement = 'passive' | 'leader' | 'signature' | 'none';
 export interface RadiantMasterDefinition {
   starter: RadiantBearerId;
   attunement: Exclude<RadiantAttunement, 'equinox'>;
   enhancement: RadiantMasterEnhancement;
   magnitude: number;
   effect: string;
+  effects: RadiantConduitDesign;
   rule: 'standard' | 'longer-burn' | 'flare-damage' | 'self-shield' | 'flare-shield'
     | 'deep-shield' | 'tide-strike' | 'flare-heal' | 'sprout-strike' | 'longer-renewal';
 }
@@ -298,24 +301,84 @@ const masterAttunements: Record<RadiantBearerId, readonly [
   seravelle: ['prism', 'corona', 'solstice'], velmira: ['corona', 'corona', 'aegis'], ozriel: ['solstice', 'aegis', 'corona'],
   ilvaris: ['prism', 'solstice', 'corona'], kaelith: ['corona', 'corona', 'aegis'],
 };
+const leaderDesigns: Record<RadiantBearerId, RadiantConduitDesign> = {
+  ember: pair('normal', .2, 'burn-power', .15),
+  tide: pair('defense', .2, 'guard-shield', .4),
+  sprout: pair('healing', .2, 'round-heal', .1),
+  rosetta: pair('exposed', .25, 'normal-expose', .08),
+  thornia: pair('shielding', .2, 'reflect', .2),
+  crinso: pair('burning', .25, 'leech', .04),
+  atmoso: pair('cooperation', .2, 'normal-charge', 2),
+  aurora: pair('weakened', .2, 'resilience', .2),
+  bliss: pair('next-buff', .1, 'normal-heal', .12),
+  bruno: pair('guard', .12, 'guard-team-shield', .2),
+  disciple: pair('flare', .2, 'flare-team-charge', 3),
+  elise: pair('first-action', .25, 'pierce', .1),
+  razor: pair('shielded', .25, 'normal-reduction', .08),
+  maerion: pair('recovery', .2, 'heal-charge', 2),
+  caevren: pair('brace', .1, 'absorbed-charge', 3),
+  vespera: pair('burn-power', .2, 'next-buff', .1),
+  ilyss: pair('resilience', .25, 'heal-shield', .2),
+  asteriel: pair('round-team-heal', .06, 'heal-buff', .08),
+  serapha: pair('shelter', .1, 'guard-heal', .2),
+  nerithe: pair('normal-expose', .1, 'team-charge', 1),
+  orvella: pair('guard-shield', .35, 'hurt-heal', .12),
+  vaelor: pair('cooperation', .2, 'normal-splash', .12),
+  caldrex: pair('burn-heal', .1, 'hurt-shield', .025),
+  solenne: pair('guard', .1, 'break-heal', .2),
+  myrthen: pair('execution', .3, 'kill-heal', .03),
+  neralis: pair('heal-team-charge', 2, 'shielding', .15),
+  varkhel: pair('wounded', .25, 'normal-shield', .25),
+  seravelle: pair('normal-heal', .15, 'flare-team-charge', 3),
+  velmira: pair('weakened', .2, 'normal-weaken', .08),
+  ozriel: pair('shelter', .12, 'hurt-shield', .03),
+  ilvaris: pair('heal-buff', .1, 'round-charge', 2),
+  kaelith: pair('opening', .25, 'exposed', .2),
+};
+const masterDesigns: Record<RadiantBearerId, readonly [RadiantConduitDesign, RadiantConduitDesign, RadiantConduitDesign]> = {
+  ember: [pair('burn-power', .4, 'leech', .08), pair('flare', .3, 'normal-burn', .15), pair('burning', .35, 'flare-heal', .3)],
+  tide: [pair('break-heal', .4, 'defense', .25), pair('shielding', .4, 'guard-heal', .3), pair('normal-weaken', .18, 'guard-shield', .6)],
+  sprout: [pair('round-team-heal', .12, 'healing', .25), pair('normal-weaken', .15, 'normal-heal', .4), pair('heal-shield', .5, 'flare-team-charge', 6)],
+  atmoso: [pair('normal-splash', .4, 'normal-charge', 4), pair('hurt-charge', 8, 'cooperation', .3), pair('first-action', .35, 'pierce', .2)],
+  aurora: [pair('normal-expose', .18, 'weakened', .3), pair('flare-weaken', .2, 'shelter', .15), pair('hurt-heal', .4, 'normal-weaken', .15)],
+  bliss: [pair('flare-heal', .5, 'heal-buff', .15), pair('normal', .3, 'normal-heal', .25), pair('flare-team-charge', 10, 'next-buff', .15)],
+  bruno: [pair('normal-reduction', .15, 'defense', .3), pair('guard-shield', 1, 'flare-shield', .05), pair('normal-expose', .18, 'guard-team-shield', .4)],
+  disciple: [pair('next-buff', .25, 'cooperation', .2), pair('team-charge', 3, 'flare-team-charge', 8), pair('heal-buff', .2, 'normal-splash', .25)],
+  elise: [pair('pierce', .3, 'normal-charge', 3), pair('flare', .35, 'normal-splash', .25), pair('kill-charge', 15, 'first-action', .3)],
+  razor: [pair('reflect', .4, 'normal-reduction', .15), pair('shielded', .4, 'flare', .25), pair('normal-weaken', .2, 'solo', .3)],
+  rosetta: [pair('status-shield', .6, 'cooperation', .25), pair('exposed', .35, 'normal-splash', .3), pair('normal-expose', .2, 'next-buff', .2)],
+  thornia: [pair('reflect', .5, 'normal-burn', .1), pair('flare-weaken', .2, 'guard-shield', .6), pair('guard-team-shield', .6, 'shelter', .12)],
+  crinso: [pair('burn-power', .3, 'execution', .4), pair('shielded', .35, 'normal-splash', .3), pair('flare', .25, 'leech', .12)],
+  nerithe: [pair('normal-expose', .18, 'team-charge', 3), pair('flare-team-charge', 8, 'normal-reduction', .15), pair('flare', .3, 'kill-charge', 12)],
+  orvella: [pair('normal-shield', .6, 'guard-team-shield', .4), pair('guard-heal', .4, 'hurt-heal', .3), pair('defense', .35, 'shielded', .25)],
+  vaelor: [pair('hurt-charge', 8, 'flare', .3), pair('cooperation', .3, 'flare-weaken', .18), pair('team-charge', 4, 'next-buff', .15)],
+  caldrex: [pair('defense', .35, 'burning', .25), pair('reflect', .6, 'hurt-charge', 5), pair('burn-heal', .25, 'round-team-heal', .1)],
+  solenne: [pair('guard', .2, 'shelter', .15), pair('flare-shield', .08, 'round-shield', .5), pair('absorbed-charge', 8, 'flare-team-charge', 6)],
+  myrthen: [pair('execution', .45, 'normal', .25), pair('normal-charge', 5, 'wounded', .3), pair('kill-heal', .08, 'kill-charge', 12)],
+  neralis: [pair('heal-shield', .6, 'recovery', .25), pair('guard-team-shield', .5, 'heal-charge', 5), pair('heal-team-charge', 4, 'hurt-heal', .3)],
+  varkhel: [pair('hurt-shield', .08, 'burn-power', .3), pair('reflect', .5, 'shielded', .3), pair('guard-team-shield', .5, 'wounded', .3)],
+  seravelle: [pair('normal-heal', .45, 'flare-team-charge', 6), pair('heal-buff', .2, 'round-charge', 4), pair('heal-team-charge', 4, 'shelter', .12)],
+  velmira: [pair('weakened', .4, 'normal-charge', 4), pair('normal-splash', .3, 'normal-weaken', .18), pair('kill-charge', 12, 'leech', .1)],
+  maerion: [pair('absorbed-charge', 8, 'healing', .25), pair('heal-shield', .6, 'flare-heal', .35), pair('heal-charge', 6, 'normal-heal', .25)],
+  caevren: [pair('defense', .4, 'hurt-charge', 6), pair('shielding', .4, 'brace', .15), pair('reflect', .6, 'normal-shield', .5)],
+  vespera: [pair('next-buff', .2, 'flare', .25), pair('burn-power', .4, 'pierce', .15), pair('team-charge', 3, 'burning', .3)],
+  ilyss: [pair('healing', .35, 'flare-team-charge', 6), pair('heal-shield', .6, 'resilience', .3), pair('heal-buff', .2, 'guard-heal', .3)],
+  asteriel: [pair('healing', .3, 'heal-buff', .18), pair('guard-heal', .4, 'round-shield', .5), pair('heal-team-charge', 4, 'normal-charge', 3)],
+  serapha: [pair('flare-heal', .4, 'guard-team-shield', .4), pair('shelter', .15, 'hurt-heal', .4), pair('normal-weaken', .18, 'round-charge', 4)],
+  ozriel: [pair('hurt-shield', .1, 'brace', .15), pair('flare-weaken', .25, 'shielding', .3), pair('break-heal', .5, 'round-charge', 5)],
+  ilvaris: [pair('heal-buff', .25, 'flare-weaken', .15), pair('flare-team-charge', 10, 'round-team-heal', .1), pair('normal-expose', .18, 'heal-charge', 5)],
+  kaelith: [pair('exposed', .4, 'pierce', .25), pair('normal-expose', .2, 'kill-charge', 12), pair('execution', .4, 'normal-weaken', .2)],
+};
 export const radiantMasters: Record<RadiantMasterId, RadiantMasterDefinition> = Object.fromEntries(
   masterConduits.filter(master => characterReleased(master.character)).map(master => {
     const slot = Number(master.id.slice(-1));
-    const enhancement: RadiantMasterEnhancement = slot === 1 ? 'passive' : slot === 2 ? 'signature' : 'leader';
-    const kit = radiantBearerKits[master.character as RadiantBearerId];
+    const effects = masterDesigns[master.character as RadiantBearerId][slot - 1];
     return [master.id, {
       starter: master.character as RadiantBearerId,
       attunement: masterAttunements[master.character as RadiantBearerId][slot - 1],
       rule: 'standard',
-      enhancement,
-      magnitude: enhancement === 'passive' ? .15 : enhancement === 'leader' ? .05 : .15,
-      effect: enhancement === 'passive'
-        ? kit.passive.magnitude === 1
-          ? `When ${kit.passive.name} cleanses an ally, that ally also heals for 15% of this bearer's Recovery.`
-          : `Increases this bearer's ${kit.passive.name} passive effect by 15% while they are alive.`
-        : enhancement === 'leader'
-          ? `While this bearer is alive and leads the squad, their ${kit.leader} adds 5 percentage points to the Leader Skill bonus.`
-          : `This bearer's ${kit.signatureFamily} Convergent Light effects (damage, healing, Shields and status effects) are 15% stronger.`,
+      enhancement: 'none', magnitude: 0, effects,
+      effect: effects.map(radiantConduitDescription).join(' '),
     }];
   }),
 ) as Record<RadiantMasterId, RadiantMasterDefinition>;
@@ -329,10 +392,23 @@ export function radiantPassiveAmount(loadout: RadiantLoadout): number {
 }
 
 export function radiantLeaderBonus(loadout: RadiantLoadout): number {
-  const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
   return (radiantBearerKits[loadout.starter].leaderBonus + .02 * (loadout.form - 1)) *
-    (loadout.ascension.skill2 ? 1.5 : 1) + (master?.enhancement === 'leader' ? master.magnitude : 0) +
-    radiantGearAmount(loadout.gear, 'leader');
+    (loadout.ascension.skill2 ? 1.5 : 1) * (1 + radiantEquipmentAmount(loadout, 'leader'));
+}
+export function radiantLeaderEffects(loadout: RadiantLoadout): RadiantConduitPrimitive[] {
+  return leaderDesigns[loadout.starter].map(entry => ({
+    kind: entry.kind, amount: entry.amount * radiantLeaderBonus(loadout) / .2,
+  }));
+}
+export function radiantLeaderDescription(loadout: RadiantLoadout): string {
+  const effects = radiantLeaderEffects(loadout).map(radiantConduitDescription).join(' ')
+    .replace(/This bearer/g, 'The recipient').replace(/this bearer/g, 'the recipient');
+  return `While this bearer is the living leader, ${radiantBearerKits[loadout.starter].element} squad members receive these effects: ${effects}`;
+}
+export function radiantEquipmentAmount(loadout: RadiantLoadout, kind: RadiantConduitEffect): number {
+  const master = loadout.masterId === null ? undefined : radiantMasters[loadout.masterId];
+  return radiantGearAmount(loadout.gear, kind) +
+    (master?.effects.filter(entry => entry.kind === kind).reduce((sum, entry) => sum + entry.amount, 0) ?? 0);
 }
 
 export function radiantFinalFlare(loadout: RadiantLoadout, tier: ConvergentLightTier): RadiantFlareOffer {
@@ -396,7 +472,7 @@ export function resolveRadiantStarterStats(loadout: RadiantLoadout): RadiantStat
     recovery: base.recovery * growth * profile.recovery * ascension,
   };
   for (const key of ['hp', 'attack', 'defense', 'recovery'] as const)
-    stats[key] *= 1 + radiantGearAmount(loadout.gear, key);
+    stats[key] *= 1 + radiantEquipmentAmount(loadout, key);
   validateRadiantStats(stats);
   return stats;
 }

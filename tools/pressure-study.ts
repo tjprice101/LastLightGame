@@ -6,7 +6,8 @@ import { emptyAccount } from '../src/game/account';
 import { adaptRadiantLoadouts } from '../src/game/combat-loadout';
 import { radiantPressureAnchors, adaptRadiantPressureEncounter, assertRadiantPressureAccess,
   type RadiantPressureAnchor } from '../src/game/enemy-pressure-encounters';
-import { runRadiantPressure, type RadiantPressurePolicy } from '../src/game/enemy-pressure';
+import { chooseRadiantPressureAction, runRadiantPressure, type RadiantPressurePolicy } from '../src/game/enemy-pressure';
+import { applyRadiantCombatAction, createRadiantCombat, type RadiantCombatEvent } from '../src/game/combat-engine';
 
 export const pressureStudySeeds = [1, 1729, 104729] as const;
 export const pressureStudyNow = Date.parse('2026-11-08T19:13:07.317Z');
@@ -30,9 +31,8 @@ export function pressureStudyLoadouts(ids: RadiantBearerId[], level: number, pro
   account.conduitUpgrades = Object.fromEntries(slots.map(id => [id, profile === 'calamitic' ? 5 : 0]));
   account.conduitEquipment = Object.fromEntries(ids.map(id => [id, [...slots, ...Array<null>(8 - slots.length).fill(null)]]));
   if (profile === 'farmed' || profile === 'calamitic') for (const member of members) {
-    const [masterId] = Object.entries(radiantMasters).find(([, master]) =>
-      master.starter === member.starter && master.enhancement === 'signature')!;
-    member.masterId = masterId as RadiantMasterId;
+    const masterId: RadiantMasterId = `master-${member.starter}-2`;
+    member.masterId = masterId;
     account.masterConduits = { ...account.masterConduits, [masterId]: 1 };
   }
   if (profile !== 'calamitic' && (ids.some(id => ['ozriel', 'ilvaris', 'kaelith'].includes(id)) ||
@@ -56,6 +56,38 @@ function prerequisites(anchor: RadiantPressureAnchor, account: ReturnType<typeof
     account.normalFinalClears = { [a.activity]: true }; account.calamityClears = { [a.activity]: a.tier - 1 };
   }
 }
+function paperControls(emit: (row: unknown) => void): void {
+  const teams: RadiantBearerId[][] = [
+    ['ember'], ['ember', 'tide', 'sprout'], ['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'disciple'],
+  ];
+  for (const ids of teams) for (const rounds of [6, 20]) {
+    const loadouts = pressureStudyLoadouts(ids, 105, 'common').loadouts;
+    let state = createRadiantCombat(loadouts, [{
+      id: 'paper', elementId: null, stats: { hp: 1_000_000_000, attack: 1, defense: 0, recovery: 0 }, currencyBudget: 0,
+    }], 1729);
+    const totals = { damage: 0, offeredHealing: 0, shieldCreation: 0, casts: 0 };
+    const collect = (events: RadiantCombatEvent[]): void => {
+      for (const event of events) {
+        if (event.type === 'damage' && event.targetId === 'paper') totals.damage += event.healthLoss;
+        if (event.type === 'heal') totals.offeredHealing += event.offered;
+        if (event.type === 'shield') totals.shieldCreation += event.amount;
+        if (event.type === 'flare') totals.casts++;
+      }
+    };
+    for (let round = 0; round < rounds; round++) {
+      while (state.phase === 'player') {
+        const actor = state.bearers.find(member => member.hp > 0 && !state.acted.includes(member.loadout.id))!;
+        const result = applyRadiantCombatAction(state, chooseRadiantPressureAction(state, actor.loadout.id, 'balanced'));
+        state = result.state; collect(result.events);
+      }
+      const idle = applyRadiantCombatAction(state, { type: 'enemy-heal', enemyId: 'paper', amount: 0 });
+      const finished = applyRadiantCombatAction(idle.state, { type: 'finish-enemy-phase' });
+      state = finished.state; collect(finished.events);
+    }
+    emit({ paper: { ids, level: 105, profile: 'common', rounds, seed: 1729,
+      defense: 0, incomingDamage: false, ...totals } });
+  }
+}
 export function executeRadiantPressureStudy(emit: (row: unknown) => void, tunedOnly = false): void {
   const anchors = radiantPressureAnchors();
   const calibrations = tunedOnly ? [pressureRadiantCalibration] : [authoredRadiantCalibration, pressureRadiantCalibration];
@@ -73,6 +105,7 @@ export function executeRadiantPressureStudy(emit: (row: unknown) => void, tunedO
       'All authored species/forms are exercised; anchors do not cover every floor or every acquired roster/gear permutation.',
       'Species-completion anchors use one seed; early/mid/final/boss and controls use three.',
       'Calamitic six uses bounded greedy personal-Master screening against Machines EX+3, seed1; not a global optimum.'] } });
+  paperControls(emit);
   const screeningAnchor = anchors.find(anchor => anchor.id === 'calamity:machines:3')!;
   const screeningEnemies = adaptRadiantPressureEncounter(screeningAnchor, 1, pressureRadiantCalibration);
   const measure = (loadouts: RadiantLoadout[]) => runRadiantPressure(loadouts, screeningEnemies,

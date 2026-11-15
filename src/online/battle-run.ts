@@ -40,7 +40,7 @@ export interface RadiantContinuation {
   state: RadiantCombatState;
 }
 export interface FrozenRadiantRun {
-  version: 5;
+  version: 6;
   id: string;
   encounter: number;
   anchor: RadiantPressureAnchor;
@@ -92,7 +92,7 @@ export function validateRadiantCheckpoint(value: unknown): RadiantCheckpoint {
       !Number.isSafeInteger(value.revision) || value.revision < 0) throw new Error();
     validateAccount(value.account);
     if (value.notice !== undefined && typeof value.notice !== 'string') throw new Error();
-    const retired = value.run !== null && record(value.run) && (value.run.version === 3 || value.run.version === 4);
+    const retired = value.run !== null && record(value.run) && (value.run.version === 3 || value.run.version === 4 || value.run.version === 5);
     if (value.run !== null && !retired) validateFrozenRadiantRun(value.run);
     return { ...structuredClone(value), ...(retired ? { run: null, notice: retiredRadiantRunNotice } : {}) } as unknown as RadiantCheckpoint;
   } catch {
@@ -173,7 +173,7 @@ function initialize(anchor: RadiantPressureAnchor, calibration: FrozenRadiantRun
     }
     validateRadiantCombat(initial);
   }
-  return { version: 5, id: entropy.runId, encounter, anchor, calibration,
+  return { version: 6, id: entropy.runId, encounter, anchor, calibration,
     encounterSeed: entropy.encounterSeed, initialChargeSeed: entropy.chargeSeed,
     initialTargetSeed: entropy.targetSeed, targetSeed: entropy.targetSeed, enemies,
     initial: structuredClone(initial), state: initial,
@@ -302,7 +302,7 @@ export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: Radiant
     discover = true;
   } else {
     const run = game.radiantStudy;
-    if (!run || run.version !== 5 || run.id !== request.runId || run.encounter !== request.encounter)
+    if (!run || run.version !== 6 || run.id !== request.runId || run.encounter !== request.encounter)
       throw new RadiantRunError('stale-run', 'The saved Radiant encounter does not match.');
     validateFrozenRadiantRun(run);
     if (run.enemies.length !== run.state.enemies.length ||
@@ -378,7 +378,7 @@ function canonical(value: unknown): string {
 }
 export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
   try {
-    if (!record(value) || value.version !== 5 || typeof value.id !== 'string' || !uuid.test(value.id) ||
+    if (!record(value) || value.version !== 6 || typeof value.id !== 'string' || !uuid.test(value.id) ||
       typeof value.encounter !== 'number' || !Number.isSafeInteger(value.encounter) || value.encounter < 1 ||
       typeof value.quit !== 'boolean' || !record(value.anchor) ||
       !['authored-control', 'radiant-pressure-v2'].includes(String(value.calibration)) ||
@@ -456,7 +456,7 @@ export function validateRadiantRunSnapshot(value: unknown): RadiantRunSnapshot {
       throw new Error();
     validateAccount(value.state.account);
     const state = structuredClone(value.state);
-    const retired = record(state.radiantStudy) && (state.radiantStudy.version === 3 || state.radiantStudy.version === 4);
+    const retired = record(state.radiantStudy) && (state.radiantStudy.version === 3 || state.radiantStudy.version === 4 || state.radiantStudy.version === 5);
     if (retired) delete state.radiantStudy;
     else if (state.radiantStudy !== undefined) validateFrozenRadiantRun(state.radiantStudy);
     return { ...structuredClone(value), state, ...(retired ? { notice: retiredRadiantRunNotice } : {}) } as unknown as RadiantRunSnapshot;
@@ -479,7 +479,7 @@ const eventFields = {
 };
 function validSource(value: unknown): boolean {
   return record(value) && (value.kind === 'enemy' ? validId(value.enemyId) :
-    ['normal', 'flare', 'passive', 'master'].includes(String(value.kind)) ? validId(value.bearerId) :
+    ['normal', 'flare', 'passive', 'master', 'leader'].includes(String(value.kind)) ? validId(value.bearerId) :
     value.kind === 'gear' && validId(value.bearerId) && validId(value.conduitId));
 }
 function validEvent(value: unknown): boolean {

@@ -162,12 +162,13 @@ describe('replacement reference screen structures', () => {
     expect(html).toContain(`25 / ${storyRules.stages} cleared`);
     expect(html.match(/class="home-squad-member is-empty"/g)).toHaveLength(4);
     for (const page of ['events', 'stores', 'inventory', 'collections', 'team', 'story', 'summon', 'gameplay']) expect(html).toContain(`data-page="${page}"`);
-    expect(html.match(/class="home-feature-slide(?: is-active)?"/g)).toHaveLength(5);
-    for (const index of [0, 1, 2, 3, 4]) expect(html).toContain(`data-home-slide="${index}"`);
+    expect(html.match(/class="home-feature-slide(?: is-active)?"/g)).toHaveLength(4);
+    for (const index of [0, 1, 2, 3]) expect(html).toContain(`data-home-slide="${index}"`);
+    expect(html).toContain('class="home-attendance-panel"');
     expect(html).toContain('class="home-quick-action"');
     expect(html).toContain('Attendance and mailbox');
     expect(html).toContain('data-home-carousel-step="-1"');
-    expect(html).toContain('data-home-carousel-index="4"');
+    expect(html).toContain('data-home-carousel-index="3"');
     expect(wallet).toEqual(before);
   });
 
@@ -275,7 +276,7 @@ describe('replacement reference screen structures', () => {
     expect(grid.indexOf('data-team-detail="tide"')).toBeLessThan(grid.indexOf('data-team-detail="ember"'));
     expect(html).toContain('data-team-sort data-native-select');
     const filtered = referenceTeam(wallet, { ...state, element: 'infernic' });
-    expect(filtered).toContain('data-collection-total="1">1 owned</span>');
+    expect(filtered).toContain('data-collection-total="1">1 shown</span>');
     expect(filtered.slice(filtered.indexOf('class="ref-bearer-grid"'))).not.toContain('data-team-detail="tide"');
     expect(filtered).not.toContain('data-reference-member="tide"');
     expect(wallet.squad).toEqual(['tide', 'ember']);
@@ -307,7 +308,7 @@ describe('replacement reference screen structures', () => {
     const html = referenceTeam(wallet, { view: 'creatures', selected: 'ember', element: '', sort: 'level' });
     for (const copy of [first, second]) expect(html).toContain(`data-team-capture-detail="${copy.instanceId}"`);
     expect(html).toContain('data-team-collection="creatures"');
-    expect(html).toContain('data-menu-page-size="8"');
+    expect(html).toContain('data-menu-page-size="4"');
     expect(html).toContain('class="ref-collection-card ref-capture-card"');
     expect(html).toContain('aria-label="Captured Elemental-Devourers pages"');
     expect(html).toContain('Search captured Elemental-Devourers');

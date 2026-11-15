@@ -10,8 +10,26 @@ import { inventoryHub, characterHub } from './hub';
 import { starters } from '../content/starters';
 import { isMenuPage, sanctuaryContext, sanctuaryHeader } from './sanctuary';
 import { readableEffect } from './effect-copy';
+import { bindMenuPagination } from './menu-pagination';
 
 describe('Conduit Store and discovery routes', () => {
+  it('keeps upgrade navigation outside the Store and pages the complete catalog', () => {
+    const host = document.createElement('div');
+    host.innerHTML = conduitStore(emptyAccount());
+    bindMenuPagination(host);
+    expect(host.querySelector('[data-page="conduit-upgrade"]')).toBeNull();
+    const panel = host.querySelector<HTMLElement>('.ref-store-catalog')!;
+    const seen = new Set<string>();
+    for (let page = 1; page <= 5; page++) {
+      expect(panel.querySelector('[data-menu-page-status]')?.textContent).toBe(`${page} / 5`);
+      const cards = Array.from(panel.querySelectorAll<HTMLElement>('[data-store-conduit]:not([hidden])'));
+      expect(cards).toHaveLength(2);
+      cards.forEach(card => seen.add(card.dataset.storeConduit!));
+      if (page < 5) panel.querySelector<HTMLButtonElement>('[data-menu-page="1"]')!.click();
+    }
+    expect(seen.size).toBe(10);
+    expect(panel.querySelector<HTMLButtonElement>('[data-menu-page="1"]')!.disabled).toBe(true);
+  });
   it('keeps all Conduit lore collapsed while effects remain outside the disclosure', () => {
     const host = document.createElement('div');
     for (const entry of [...allConduits, ...masterConduits]) {

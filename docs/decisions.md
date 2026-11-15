@@ -1,5 +1,43 @@
 # Decision log
 
+## Game-wide reference theme rollout (D-457, 2026-11-15)
+
+The owner asks for the D-456 navy/plum/peach theme, colour scheme and
+formatting to cover every remaining screen: Gameplay activities, Story,
+View Unit, Collections, Inventory, Stores/Market, Summon, Events, Captured
+Elemental-Devourers, Loadouts, Squad and dialogs. The work stays inside the
+live game (no demo or preview gate). Initial work was local-only; the owner
+subsequently authorized deployment. Presentation only: transactions, numbers, art, IDs, saves, RNG
+and accessibility hooks are unchanged.
+
+## Reference menus and distinct Radiant equipment (D-456, 2026-11-15)
+
+The owner requests the eight supplied Home/Units/selection/equipment/growth
+references be applied directly to the existing game with its own artwork.
+The navy/plum/peach reference composition supersedes the earlier composition
+on those selected screens, not their ownership, transactions or navigation.
+Initial work was local-only; the owner subsequently authorized deployment.
+
+The owner rejects repeated Leader bonuses and numerically varied Conduit
+templates. Approval combines pre-Radiant identities where possible with new
+simple, powerful, bounded mechanics. The 32 released Leaders, 99 ordinary-slot
+Conduits and 96 Masters now use individually authored effect combinations,
+not slot-number templates. Existing IDs, ownership, artwork, acquisition,
+upgrade ranks, frozen loadouts and saved rewards remain intact.
+
+Baseline Luminosity rules remain unchanged; explicitly authored equipment and
+Leader grants are now exceptions. Generated effects cannot recursively trigger
+other equipment effects, produce another damage-reward drop or revive a
+defeated member. The fixed first member remains the only possible Leader.
+Combat and frozen-run schema 6 retire versions 3/4/5 read-only, retaining saved
+account rewards. No hostile calibration or event activation is approved.
+
+The [combat](combat.md#distinct-leader-and-equipment-mechanics-d-456-local-only),
+[equipment](conduits.md#current-radiant-equipment-d-456-local-only),
+[menu](menus-and-inventory.md#reference-based-desktop-menus-d-456-local-only)
+and [benchmark](enemy-benchmark-calibration.md#distinct-equipment-follow-up-2026-11-15-local-only)
+contracts describe the implementation and its validation limits.
+
 ## Global six-form Element-Bearer name slate (D-453, 2026-11-15)
 
 The owner replaces D-098's comma-separated, evolution-title naming with one

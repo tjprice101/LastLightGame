@@ -1,5 +1,46 @@
 # Combat specification
 
+## Distinct Leader and equipment mechanics (D-456; local-only)
+
+The current working tree replaces the generic Leader damage bonus and repeated
+Master templates with 32 authored Leader effect pairs and 195 distinct
+ordinary/Master combinations. Shared definitions and complete descriptions
+live in `src/content/combat-kits.ts` and `src/content/conduit-effects.ts`.
+This changes the actual local/online engine, not just the displayed text.
+
+Only the fixed first member supplies a Leader Skill while alive. Its effects
+are granted to living matching-element recipients; an explicitly described
+ally-support effect may then benefit other elements too. Evolution, Leader
+Imbue and Leader-enhancing equipment scale authored magnitudes. Examples:
+Infernis improves Normals and native Burn, Tizu improves Defense and defending
+Shields, Flora improves healing and heals the most wounded ally each round,
+and Elise improves the first allied action and Defense piercing.
+
+Conditional direct-damage bonuses never amplify generated or periodic packets.
+Native Burn separately snapshots its Burn-power bonus and elemental matchup.
+Native healing/Shield amplification does not amplify equipment-generated
+healing/Shields. Total incoming reduction retains its existing 20% damage-taken
+floor. Shields still last until broken.
+
+The processor uses one native-event ledger and distinct gear/Master/Leader
+provenance. Generated output cannot trigger another equipment effect. Incoming
+triggers are once per round per owner and effect bundle, not per hit. Positive
+effective native healing is required for healing triggers. Generated splash
+cannot grant a second damage-reward drop or become a native direct-kill
+trigger. Shield-break detection precedes generated replacement Shields, so
+slot order cannot hide a break. No trigger revives defeated members.
+
+The baseline Luminosity sources below are unchanged. Authored entry, Defense,
+Flare, healing, direct-kill, incoming-damage and round grants are explicit
+bonuses, with the same personal capacity limits. They are not new baseline
+charge for all characters.
+
+Combat-state and frozen-run schemas are now **6**. Versions 3/4/5 retire
+without load-time writes, preserving account data, revision and saved rewards.
+New battles freeze current equipment; reload/Continue retain it, and changing
+menu equipment never modifies an existing run. The matching authority bundle
+is generated locally; these changes have not been published or deployed.
+
 ## Convergent Light ranks and personal Luminosity (2026-11-12; Max Level follow-up deployed)
 
 The live replacement supersedes earlier shared Shattering Light charging.
@@ -19,7 +60,8 @@ doubled to 200 from form 4. A damaging Normal hit grants 10 to its living
 attacker and a separate 1 to each other living same-element ally. Each
 surviving direct incoming hit, including one fully absorbed by a Shield, grants
 10 to its recipient. Flares, defeats, Defense, round starts, Conduit-generated
-damage and periodic damage grant no Luminosity. Sparkling activations cost 100;
+damage and periodic damage grant no baseline Luminosity; explicitly authored
+Leader/equipment grants are exceptions under D-456. Sparkling activations cost 100;
 Glimmering and Ultimate activations cost 200. The active tier is determined by
 the bearer's saved rank; no shared Shattering Light meter remains.
 
@@ -34,13 +76,13 @@ damage per hit and no post-defeat hits. Enhancement is automatic with
 evolution, without new spending. Existing saved investments remain applied.
 
 Living squad passives add rather than multiply. The fixed first member's
-Leader Skill increases matching-element attack damage only while that
+authored Leader effects apply to matching-element recipients only while that
 leader lives; another member is never promoted after defeat.
 
 Infernic is weak to Oceanic, Oceanic to Botanic, Botanic to Atmospheric,
 and Atmospheric to Infernic. Advantage is x1.5, reverse disadvantage x0.75,
 other pairings x1. Tranquilitic and Chaotic deal x1.5 to each other.
-Burn snapshots that matchup and the living leader's damage bonus when applied,
+Burn snapshots that matchup and applicable native Burn-power bonuses when applied,
 without Defense mitigation or personal charge. Later leader defeats do not
 alter an existing Burn snapshot.
 Ordinary Conduits retain their IDs/ranks/eligibility and use one/two simple
@@ -60,9 +102,9 @@ Staged encounters restore squad Health, revive defeated members and clear
 encounter effects. Training instead carries forward Health, defeated members,
 Shields, statuses, guard and Shield ordering. Retry restores the encounter's
 frozen initial state without paying an already-rewarded kill or damage prefix
-again. Quitting or exiting never removes saved rewards. Legacy version-3
-snapshots remain readable, and an incompatible older online client is asked to
-refresh before a continuation can be committed.
+again. Quitting or exiting never removes saved rewards. Under D-456, older
+version-3/4/5 runs retire read-only rather than continuing under changed
+equipment rules; incompatible clients must refresh.
 
 ## Encounter rules 19 and Radiant presentation proposal (2026-11-09)
 

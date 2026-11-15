@@ -128,7 +128,7 @@ export function materialExchange(account: Account | null, selected: string, navi
   const funds = account?.fractalis ?? 0;
   const unlocked = exchangeProductUnlocked(product, account);
   const restricted = product.restrictedTo ? product.restrictedTo.join(', ') : '';
-  return `<section class="online-market ref-screen ref-market ref-exchange" data-exchange-category="${category}" data-menu-page-size="8" data-menu-current-page="${Math.floor(products.indexOf(product) / 8)}">${navigation}
+  return `<section class="online-market ref-screen ref-market ref-exchange" data-exchange-category="${category}" data-menu-page-size="4" data-menu-current-page="${Math.floor(products.indexOf(product) / 4)}">${navigation}
     <section class="ref-panel exchange-catalog"><header class="ref-panel-heading">Materials</header>
     <nav class="ref-exchange-categories" aria-label="Material categories">
       <button data-market-category="normal" aria-pressed="${category === 'normal'}">Normal Game Materials</button>
@@ -163,13 +163,13 @@ export function onlineStores(account: Account | null, profile: OnlineProfileDisp
     <button data-page="conduit-store">Conduit Store</button><button data-page="conduit-store" data-market-calamitic>Calamitic Conduits</button></nav>`;
   if (tab === 'materials') return materialExchange(account, selectedMaterial, navigation);
   if (tab === 'event-devourers') {
-    return `<section class="online-market ref-screen ref-market ref-event-devourer-store">${navigation}<section class="ref-panel">
+    return `<section class="online-market ref-screen ref-market ref-event-devourer-store">${navigation}<section class="ref-panel" data-menu-page-size="2" data-menu-current-page="0">
       ${shopHost('nimra', access.online ? 'welcome' : 'offline')}
       <header class="ref-panel-heading">Event Elemental-Devourers · Event-family copies</header>
       <div class="event-devourer-rules"><p role="status">Copies are available only after their event has actually completed a scheduled window, and never during an active rerun. Launches remain subject to authoritative event schedules.</p>
       ${access.online ? '' : '<p>Sign in online to purchase event copies. Browsing is available offline.</p>'}
       <p>Each purchase gives one unlocked, unequipped copy with its authored skills at the listed level. No automatic squad changes. Event-family materials are sold permanently in Material Exchange.</p></div>
-      <div class="event-devourer-grid" data-menu-page-size="6" data-menu-current-page="0">${eventDevourers.map(product => {
+      <div class="event-devourer-grid">${eventDevourers.map(product => {
         const available = eventDevourerAvailable(product.eventId, access.now);
         const active = product.eventId === 'roses' ? roseEventActive(access.now) : newEventWindowActive(product.eventId, access.now);
         const status = product.eventId === 'roses'

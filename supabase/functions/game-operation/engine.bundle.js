@@ -3274,104 +3274,104 @@ var effect = (kind, amount) => ({ kind, amount });
 var pair = (kind, amount, related, extra) => [effect(kind, amount), effect(related, extra)];
 var radiantConduits = {
   "vigil-core": [effect("hp", 0.2)],
-  "siegebound-drive": pair("normal", 0.12, "attack", 0.04),
-  "bastion-lock": pair("defense", 0.15, "guard", 0.03),
-  "parallax-relay": pair("hp", 0.12, "flare", 0.05),
-  "fracture-reservoir": [effect("attack", 0.08)],
-  "prism-splinter-socket": pair("recovery", 0.08, "defense", 0.04),
-  "precision-escapement": [effect("normal", 0.1)],
-  "fieldbrace-coupler": [effect("resilience", 0.1)],
-  "reserve-torque-crank": pair("defense", 0.08, "attack", 0.04),
+  "siegebound-drive": [effect("normal", 0.15)],
+  "bastion-lock": [effect("defense", 0.2)],
+  "parallax-relay": [effect("normal-expose", 0.08)],
+  "fracture-reservoir": [effect("start-charge", 10)],
+  "prism-splinter-socket": [effect("opening", 0.2)],
+  "precision-escapement": [effect("first-action", 0.2)],
+  "fieldbrace-coupler": [effect("break-heal", 0.15)],
+  "reserve-torque-crank": [effect("normal-charge", 2)],
   "crosspin-governor": [effect("flare", 0.12)],
-  "aegis-capacitor": pair("defense", 0.25, "hp", 0.18),
-  "duplex-heart": pair("healing", 0.15, "recovery", 0.15),
-  "falcon-sight": pair("normal", 0.18, "hp", 0.12),
-  "spearwheel-engine": pair("pierce", 0.12, "flare", 0.08),
-  "springwell-pump": pair("healing", 0.2, "shielding", 0.2),
-  "twinpulse-bellows": pair("normal", 0.2, "recovery", 0.1),
-  "glassroot-gimbal": pair("hp", 0.22, "flare", 0.16),
-  "lifeline-flywheel": [effect("recovery", 0.25)],
-  "sentinel-aperture": [effect("flare", 0.24)],
-  "wardglass-transformer": pair("shielding", 0.25, "resilience", 0.12),
-  "hammerbalance-link": pair("normal", 0.25, "attack", 0.08),
-  "breach-pendulum": [effect("pierce", 0.12)],
-  "coilfeed-ratchet": pair("attack", 0.15, "flare", 0.1),
-  "opal-indexer": pair("resilience", 0.15, "flare", 0.16),
-  "resonance-crucible": pair("defense", 0.25, "hp", 0.2),
-  "astral-prism": pair("flare", 0.35, "attack", 0.2),
-  "citadel-spine": pair("hp", 0.25, "defense", 0.35),
-  "execution-orrery": pair("normal", 0.4, "pierce", 0.16),
-  "immortal-vessel": pair("hp", 0.4, "recovery", 0.2),
-  "judgment-lens": pair("flare", 0.4, "normal", 0.2),
-  "worldbreaker-drive": pair("normal", 0.45, "attack", 0.15),
-  "siege-cantilever": pair("flare", 0.45, "pierce", 0.12),
-  "nullsong-transmission": pair("normal", 0.35, "resilience", 0.2),
-  "horizon-heartcase": pair("hp", 0.45, "defense", 0.15),
-  "stasis-reliquary": pair("guard", 0.12, "recovery", 0.25),
-  "granite-hourglass": pair("defense", 0.4, "guard", 0.08),
-  "pale-bulwark-diadem": pair("shielding", 0.4, "defense", 0.25),
-  "starvein-conductor": pair("attack", 0.2, "cooperation", 0.2),
-  "meridian-inverter": pair("recovery", 0.4, "healing", 0.25),
-  "verdict-caliper": pair("recovery", 0.3, "normal", 0.25),
-  "infernic-phoenix-reactor": pair("hp", 0.55, "recovery", 0.3),
-  "aquatic-leviathan-pump": pair("hp", 0.4, "defense", 0.4),
-  "tectonic-atlas-bastion": pair("guard", 0.15, "defense", 0.5),
-  "efflorescent-worldtree-heart": pair("healing", 0.5, "shielding", 0.3),
-  "voltaic-thunderbird-coil": pair("normal", 0.55, "pierce", 0.25),
-  "atmospheric-griffin-turbine": pair("attack", 0.3, "normal", 0.4),
-  "luminous-seraph-mirror": pair("recovery", 0.4, "healing", 0.35),
-  "ominous-eclipse-mantle": pair("pierce", 0.3, "flare", 0.45),
-  "tranquilitic-kirin-cradle": pair("healing", 0.5, "recovery", 0.4),
-  "chaotic-ouroboros-core": pair("shielding", 0.4, "attack", 0.3),
-  "infernic-cinder-testament": pair("attack", 0.35, "cooperation", 0.25),
-  "aquatic-undertide-chronometer": pair("resilience", 0.3, "recovery", 0.4),
-  "tectonic-faultkeeper-loom": pair("leader", 0.12, "defense", 0.45),
-  "efflorescent-verdant-covenant": pair("recovery", 0.3, "healing", 0.4),
-  "voltaic-stormstep-dynamo": pair("attack", 0.3, "flare", 0.45),
-  "atmospheric-skythread-rudder": pair("normal", 0.35, "cooperation", 0.3),
-  "luminous-dawn-witness-array": pair("attack", 0.3, "normal", 0.4),
-  "ominous-nightglass-archive": pair("pierce", 0.22, "cooperation", 0.3),
-  "tranquilitic-stillhour-carillon": pair("healing", 0.45, "recovery", 0.4),
-  "chaotic-paradox-spindle": pair("attack", 0.35, "flare", 0.4),
-  "clearwater-manifold": pair("cooperation", 0.35, "healing", 0.35),
-  "tranquilitic-accord-bastion": pair("recovery", 0.35, "shielding", 0.45),
-  "aegis-return-spring": pair("guard", 0.15, "shielding", 0.4),
-  "flare-focusing-iris": pair("attack", 0.3, "flare", 0.4),
-  "cinder-metering-nozzle": pair("attack", 0.35, "normal", 0.35),
-  "firstlight-cam": pair("attack", 0.3, "leader", 0.1),
-  "tension-governor": pair("shielding", 0.45, "resilience", 0.3),
-  "tidebound-reflector": pair("guard", 0.2, "defense", 0.35),
-  "ward-stitch-spool": pair("shielding", 0.55, "healing", 0.35),
-  "emberlife-kiln": pair("attack", 0.3, "healing", 0.4),
-  "tempered-strike-link": pair("recovery", 0.4, "normal", 0.35),
-  "infernic-pyre-census": pair("cooperation", 0.4, "flare", 0.4),
-  "chaotic-fault-verdict": pair("normal", 0.6, "defense", 0.35),
-  "ruinselect-prism": pair("hp", 0.5, "flare", 0.5),
-  "secondbeat-rack": pair("cooperation", 0.45, "flare", 0.4),
-  "oceanic-shared-tide-pump": pair("hp", 0.35, "shielding", 0.4),
-  "pulse-trigger-pawl": pair("attack", 0.35, "normal", 0.35),
-  "solace-anchor": pair("recovery", 0.4, "leader", 0.1),
-  "sootwake-crucible": pair("pierce", 0.25, "attack", 0.35),
-  "atmospheric-storm-clock": pair("normal", 0.45, "attack", 0.3),
-  "pressurecrest-governor": pair("recovery", 0.4, "attack", 0.25),
-  "covercharge-drum": pair("attack", 0.4, "flare", 0.4),
-  "botanic-graft-covenant": pair("healing", 0.6, "recovery", 0.35),
-  "mending-valve": pair("healing", 0.35, "recovery", 0.4),
-  "rootbound-triage-vault": pair("shielding", 0.5, "healing", 0.3),
-  "calamitic-world-eater-orrery": pair("flare", 0.8, "pierce", 0.4),
-  "calamitic-causality-funeral-engine": pair("attack", 0.6, "flare", 0.6),
-  "calamitic-horizon-cleaving-godpress": pair("normal", 0.9, "pierce", 0.4),
-  "calamitic-throne-borrowed-tomorrows": pair("normal", 0.7, "flare", 0.5),
-  "calamitic-cathedral-final-equation": pair("flare", 0.85, "cooperation", 0.5),
-  "calamitic-bulwark-of-the-last-horizon": pair("hp", 0.8, "shielding", 0.6),
-  "calamitic-reliquary-of-unending-mercy": pair("healing", 0.9, "recovery", 0.6),
-  "calamitic-aegis-engine-of-severed-fate": pair("shielding", 0.9, "guard", 0.25),
-  "calamitic-monolith-of-the-unmoved-star": pair("defense", 0.8, "shielding", 0.6),
-  "calamitic-heartforge-of-the-sunless-dawn": pair("hp", 0.8, "defense", 0.45),
-  "calamitic-ruinmark-censer": pair("attack", 0.65, "pierce", 0.3),
-  "calamitic-choir-array-of-branded-stars": pair("leader", 0.2, "attack", 0.6),
-  "calamitic-throne-of-the-lone-apostate": pair("attack", 0.6, "normal", 0.7),
-  "calamitic-worldbreaker-cannonade": pair("normal", 1, "flare", 0.6)
+  "aegis-capacitor": [effect("absorbed-charge", 6)],
+  "duplex-heart": [effect("hurt-heal", 0.25)],
+  "falcon-sight": pair("exposed", 0.25, "normal-expose", 0.1),
+  "spearwheel-engine": [effect("pierce", 0.18)],
+  "springwell-pump": [effect("healing", 0.3)],
+  "twinpulse-bellows": pair("start-charge", 15, "guard-charge", 3),
+  "glassroot-gimbal": pair("shielded", 0.25, "normal-shield", 0.3),
+  "lifeline-flywheel": [effect("leech", 0.12)],
+  "sentinel-aperture": [effect("brace", 0.15)],
+  "wardglass-transformer": [effect("shielding", 0.3)],
+  "hammerbalance-link": pair("attack", 0.18, "wounded", 0.15),
+  "breach-pendulum": pair("opening", 0.25, "pierce", 0.08),
+  "coilfeed-ratchet": pair("normal-charge", 3, "guard-charge", 3),
+  "opal-indexer": pair("normal-weaken", 0.12, "resilience", 0.15),
+  "resonance-crucible": [effect("normal-splash", 0.2)],
+  "astral-prism": pair("first-action", 0.35, "normal-expose", 0.15),
+  "citadel-spine": pair("defense", 0.35, "guard-shield", 0.6),
+  "execution-orrery": [effect("execution", 0.6)],
+  "immortal-vessel": pair("hp", 0.4, "guard-heal", 0.25),
+  "judgment-lens": pair("flare", 0.35, "exposed", 0.25),
+  "worldbreaker-drive": pair("flare", 0.4, "wounded", 0.3),
+  "siege-cantilever": [effect("solo", 0.5)],
+  "nullsong-transmission": pair("normal", 0.35, "normal-charge", 4),
+  "horizon-heartcase": pair("hurt-shield", 0.08, "hurt-charge", 5),
+  "stasis-reliquary": pair("brace", 0.25, "guard", 0.12),
+  "granite-hourglass": pair("hurt-shield", 0.06, "round-shield", 0.5),
+  "pale-bulwark-diadem": pair("shelter", 0.15, "shielding", 0.3),
+  "starvein-conductor": pair("burn-power", 0.4, "burning", 0.25),
+  "meridian-inverter": pair("flare-heal", 0.4, "shielding", 0.25),
+  "verdict-caliper": pair("normal", 0.3, "solo", 0.25),
+  "infernic-phoenix-reactor": pair("break-heal", 0.4, "hurt-shield", 0.08),
+  "aquatic-leviathan-pump": pair("absorbed-charge", 8, "hurt-heal", 0.35),
+  "tectonic-atlas-bastion": pair("normal-reduction", 0.15, "guard-team-shield", 0.4),
+  "efflorescent-worldtree-heart": pair("heal-shield", 0.5, "round-heal", 0.25),
+  "voltaic-thunderbird-coil": pair("normal-splash", 0.4, "opening", 0.25),
+  "atmospheric-griffin-turbine": pair("team-charge", 3, "normal", 0.25),
+  "luminous-seraph-mirror": pair("normal-heal", 0.4, "normal-splash", 0.2),
+  "ominous-eclipse-mantle": pair("weakened", 0.4, "pierce", 0.2),
+  "tranquilitic-kirin-cradle": pair("normal-heal", 0.5, "recovery", 0.25),
+  "chaotic-ouroboros-core": pair("flare-shield", 0.06, "shielded", 0.3),
+  "infernic-cinder-testament": pair("burn-power", 0.45, "normal-burn", 0.12),
+  "aquatic-undertide-chronometer": pair("normal-weaken", 0.2, "guard-charge", 6),
+  "tectonic-faultkeeper-loom": pair("guard-team-shield", 0.6, "defense", 0.25),
+  "efflorescent-verdant-covenant": pair("heal-buff", 0.2, "heal-charge", 5),
+  "voltaic-stormstep-dynamo": pair("cooperation", 0.4, "flare-team-charge", 8),
+  "atmospheric-skythread-rudder": pair("normal-charge", 5, "next-buff", 0.15),
+  "luminous-dawn-witness-array": pair("opening", 0.35, "normal-shield", 0.5),
+  "ominous-nightglass-archive": pair("normal-expose", 0.18, "cooperation", 0.35),
+  "tranquilitic-stillhour-carillon": pair("flare-team-charge", 10, "round-charge", 3),
+  "chaotic-paradox-spindle": pair("normal", 0.3, "flare-team-charge", 8),
+  "clearwater-manifold": pair("team-charge", 3, "heal-team-charge", 4),
+  "tranquilitic-accord-bastion": pair("heal-shield", 0.6, "hurt-heal", 0.3),
+  "aegis-return-spring": pair("shielding", 0.35, "break-heal", 0.3),
+  "flare-focusing-iris": pair("burn-power", 0.35, "flare", 0.3),
+  "cinder-metering-nozzle": pair("normal-burn", 0.15, "normal-splash", 0.25),
+  "firstlight-cam": pair("start-charge", 20, "shelter", 0.15),
+  "tension-governor": pair("normal-weaken", 0.2, "status-shield", 0.5),
+  "tidebound-reflector": pair("reflect", 0.5, "defense", 0.3),
+  "ward-stitch-spool": pair("healing", 0.3, "heal-shield", 0.5),
+  "emberlife-kiln": pair("burn-heal", 0.25, "burn-power", 0.25),
+  "tempered-strike-link": pair("burning", 0.4, "normal", 0.2),
+  "infernic-pyre-census": pair("burning", 0.35, "cooperation", 0.3),
+  "chaotic-fault-verdict": pair("shielded", 0.4, "pierce", 0.2),
+  "ruinselect-prism": pair("wounded", 0.45, "leech", 0.12),
+  "secondbeat-rack": pair("weakened", 0.3, "kill-charge", 12),
+  "oceanic-shared-tide-pump": pair("guard-team-shield", 0.5, "absorbed-charge", 6),
+  "pulse-trigger-pawl": pair("normal-charge", 4, "exposed", 0.3),
+  "solace-anchor": pair("round-charge", 4, "normal-heal", 0.3),
+  "sootwake-crucible": pair("burning", 0.3, "next-buff", 0.2),
+  "atmospheric-storm-clock": pair("normal-charge", 4, "cooperation", 0.3),
+  "pressurecrest-governor": pair("normal-reduction", 0.18, "first-action", 0.25),
+  "covercharge-drum": pair("hurt-heal", 0.3, "hurt-charge", 8),
+  "botanic-graft-covenant": pair("healing", 0.35, "round-heal", 0.3),
+  "mending-valve": pair("kill-heal", 0.1, "recovery", 0.25),
+  "rootbound-triage-vault": pair("heal-charge", 6, "heal-shield", 0.5),
+  "calamitic-world-eater-orrery": pair("solo", 0.65, "flare", 0.5),
+  "calamitic-causality-funeral-engine": pair("kill-charge", 20, "execution", 0.6),
+  "calamitic-horizon-cleaving-godpress": pair("opening", 0.6, "normal", 0.5),
+  "calamitic-throne-borrowed-tomorrows": pair("first-action", 0.6, "round-charge", 6),
+  "calamitic-cathedral-final-equation": pair("exposed", 0.6, "flare-weaken", 0.25),
+  "calamitic-bulwark-of-the-last-horizon": pair("hurt-shield", 0.12, "guard-team-shield", 0.9),
+  "calamitic-reliquary-of-unending-mercy": pair("round-team-heal", 0.2, "heal-buff", 0.3),
+  "calamitic-aegis-engine-of-severed-fate": pair("break-heal", 0.5, "flare-shield", 0.1),
+  "calamitic-monolith-of-the-unmoved-star": pair("shelter", 0.25, "guard-shield", 1.2),
+  "calamitic-heartforge-of-the-sunless-dawn": pair("hurt-heal", 0.6, "hp", 0.5),
+  "calamitic-ruinmark-censer": pair("normal-expose", 0.3, "burn-power", 0.5),
+  "calamitic-choir-array-of-branded-stars": pair("leader", 0.3, "team-charge", 5),
+  "calamitic-throne-of-the-lone-apostate": pair("wounded", 0.6, "normal-reduction", 0.25),
+  "calamitic-worldbreaker-cannonade": pair("normal-splash", 0.6, "execution", 0.5)
 };
 function validateRadiantGear(value2, element) {
   if (!Array.isArray(value2)) throw new Error("Invalid radiant gear.");
@@ -3395,6 +3395,79 @@ function radiantConduitPrimitives(slot) {
 }
 function radiantGearAmount(gear2, kind) {
   return (gear2 ?? []).flatMap((slot) => slot === null ? [] : radiantConduitPrimitives(slot)).filter((entry) => entry.kind === kind).reduce((total, entry) => total + entry.amount, 0);
+}
+
+// src/content/conduit-effect-text.ts
+var percent = (value2) => `${Number((value2 * 100).toPrecision(12))}%`;
+var number = (value2) => String(Number(value2.toPrecision(12)));
+var conditionalDamage = (amount, condition) => `Normal Attacks and Convergent Light deal ${percent(amount)} more direct damage ${condition}.`;
+var conduitDescriptions = {
+  hp: (a) => `Maximum Health increases by ${percent(a)}.`,
+  attack: (a) => `Attack increases by ${percent(a)}.`,
+  defense: (a) => `Defense increases by ${percent(a)}.`,
+  recovery: (a) => `Recovery increases by ${percent(a)}.`,
+  normal: (a) => `Normal Attacks deal ${percent(a)} more damage.`,
+  flare: (a) => `Convergent Light deals ${percent(a)} more damage.`,
+  pierce: (a) => `Normal Attacks and Convergent Light ignore ${percent(a)} of enemy Defense, up to 80% total.`,
+  healing: (a) => `Healing from this bearer's abilities is ${percent(a)} stronger. Conduit-generated healing is unchanged.`,
+  shielding: (a) => `Shields from this bearer's abilities are ${percent(a)} stronger. Conduit-generated Shields are unchanged.`,
+  resilience: (a) => `Reduces the strength of the strongest Weaken on this bearer by ${percent(a)}, up to 80% total.`,
+  guard: (a) => `While defending, this bearer takes 50% less direct damage. This Conduit further reduces the damage left by ${percent(a)}, up to a 60% combined bonus; damage taken cannot fall below 20%.`,
+  leader: (a) => `This bearer's Leader Skill effects are ${percent(a)} stronger while they are the living leader.`,
+  "normal-charge": (a) => `A Normal Attack that hits Health or a Shield grants the attacker ${number(a)} extra Luminosity. Any fraction is rounded once.`,
+  "guard-charge": (a) => `Defending grants this bearer ${number(a)} extra Luminosity. Any fraction is rounded once.`,
+  "team-charge": (a) => `When a Normal Attack hits Health or a Shield, each other living ally gains ${number(a)} Luminosity. Any fraction is rounded once.`,
+  "guard-shield": (a) => `When this bearer Defends, they gain a Shield equal to ${percent(a)} of their current Defense.`,
+  "normal-heal": (a) => `When this bearer's Normal Attack damages Health, it heals the most-wounded living ally for ${percent(a)} of this bearer's current Recovery.`,
+  leech: (a) => `This bearer's Normal Attacks and Convergent Light restore their Health by ${percent(a)} of the direct Health damage they deal.`,
+  "heal-charge": (a) => `Once per action, actual healing from this bearer's abilities grants them ${number(a)} Luminosity. Any fraction is rounded once.`,
+  "heal-buff": (a) => `Each living ally actually healed by this bearer's abilities gains ${percent(Math.min(0.8, a))} Attack for the rest of the round, up to 80%.`,
+  "absorbed-charge": (a) => `Once per round, when an enemy's direct attack damages a Shield from this bearer's abilities, gain ${number(a)} Luminosity, rounded once.`,
+  reflect: (a) => `Once per round, reflect ${percent(a)} of the damage an enemy's direct attack deals to this bearer's ability-applied Shields, up to this bearer's current Attack.`,
+  "hurt-shield": (a) => `Each equipped copy can trigger once per round: when an enemy's direct attack damages this bearer's Health, they gain a Shield equal to ${percent(a)} of their maximum Health.`,
+  "flare-shield": (a) => `When this bearer uses Convergent Light, each living ally, including the bearer, gains a Shield equal to ${percent(a)} of their own maximum Health.`,
+  "round-heal": (a) => `At the start of each new round, heal the most-wounded living ally for ${percent(a)} of this bearer's current Recovery.`,
+  "round-shield": (a) => `At the start of each new round, the most-wounded living ally gains a Shield equal to ${percent(a)} of this bearer's current Defense.`,
+  "normal-burn": (a) => `When a Normal Attack damages Health, the surviving target burns through the next enemy phase, taking damage equal to ${percent(a)} of this bearer's current Attack.`,
+  "normal-expose": (a) => `When a Normal Attack damages Health, the surviving target takes ${percent(Math.min(0.8, a))} more direct damage for the rest of the round, up to 80%.`,
+  "normal-weaken": (a) => `When a Normal Attack damages Health, the surviving target deals ${percent(Math.min(0.8, a))} less damage during the next enemy phase, up to 80%.`,
+  cooperation: (a) => `After another squad member acts this round, this bearer's Normal Attacks and Convergent Light deal ${percent(a)} more damage.`,
+  "next-buff": (a) => `When a Normal Attack damages Health, the next living ally who has not acted gains ${percent(Math.min(0.8, a))} Attack for the rest of the round, up to 80%.`,
+  "status-shield": (a) => `When one of this bearer's abilities applies Burn, Weaken or Exposure, the most-wounded living ally gains a Shield equal to ${percent(a)} of this bearer's current Defense, once per action.`,
+  opening: (a) => conditionalDamage(a, "against enemies at full Health"),
+  execution: (a) => conditionalDamage(a, "against enemies at or below 25% Health"),
+  burning: (a) => conditionalDamage(a, "against burning enemies"),
+  exposed: (a) => conditionalDamage(a, "against enemies with Exposure"),
+  weakened: (a) => conditionalDamage(a, "against weakened enemies"),
+  shielded: (a) => conditionalDamage(a, "while this bearer has a Shield"),
+  wounded: (a) => conditionalDamage(a, "while this bearer is at or below half Health"),
+  solo: (a) => conditionalDamage(a, "while only one enemy remains"),
+  "first-action": (a) => conditionalDamage(a, "when this bearer acts before every other ally this round"),
+  "burn-power": (a) => `Burn applied by this bearer's abilities deals ${percent(a)} more damage. Conduit-generated Burn is unchanged.`,
+  shelter: (a) => `Above 75% Health, this bearer takes ${percent(a)} less direct enemy damage.`,
+  brace: (a) => `Enemy attacks exceeding 20% of this bearer's maximum Health deal ${percent(a)} less direct damage.`,
+  "start-charge": (a) => `Begin each encounter with ${number(a)} Luminosity, rounded once and limited by capacity.`,
+  "guard-heal": (a) => `Defending heals this bearer for ${percent(a)} of their current Recovery.`,
+  "flare-heal": (a) => `Convergent Light heals the most-wounded living ally for ${percent(a)} of this bearer's current Recovery.`,
+  "normal-shield": (a) => `A Normal Attack that damages Health gives this bearer a Shield worth ${percent(a)} of their current Defense.`,
+  "heal-shield": (a) => `Each ally actually healed by this bearer's abilities gains a Shield worth ${percent(a)} of this bearer's current Defense, once per action.`,
+  "hurt-heal": (a) => `Once per round, surviving direct enemy Health damage heals the most-wounded other living ally for ${percent(a)} of this bearer's current Recovery.`,
+  "break-heal": (a) => `Once per round, when an enemy breaks this bearer's last Shield, heal them for ${percent(a)} of their current Recovery. Cannot revive.`,
+  "burn-heal": (a) => `This bearer heals for ${percent(a)} of the Health damage dealt by their ability-applied Burn.`,
+  "kill-heal": (a) => `Once per action, directly defeating an enemy heals the most-wounded living ally for ${percent(a)} of this bearer's maximum Health.`,
+  "kill-charge": (a) => `Once per action, directly defeating an enemy grants this bearer ${number(a)} Luminosity, rounded once.`,
+  "normal-splash": (a) => `A Normal Attack that damages Health strikes the healthiest other enemy for ${percent(a)} of that Health damage. This extra strike cannot trigger other effects.`,
+  "flare-team-charge": (a) => `Convergent Light grants each other living ally ${number(a)} Luminosity, rounded once.`,
+  "hurt-charge": (a) => `Once per round, surviving direct enemy Health damage grants this bearer ${number(a)} Luminosity, rounded once.`,
+  "heal-team-charge": (a) => `Once per action, actual healing from this bearer's abilities grants each other living ally ${number(a)} Luminosity, rounded once.`,
+  "guard-team-shield": (a) => `Defending gives every living ally a Shield worth ${percent(a)} of this bearer's current Defense.`,
+  "flare-weaken": (a) => `Convergent Light weakens all surviving enemies by ${percent(Math.min(0.8, a))} through the next enemy phase.`,
+  "normal-reduction": (a) => `After a Normal Attack damages Health, this bearer takes ${percent(Math.min(0.8, a))} less direct enemy damage through the next enemy phase.`,
+  "round-charge": (a) => `At each new round, this bearer gains ${number(a)} Luminosity, rounded once.`,
+  "round-team-heal": (a) => `At each new round, heal every living ally for ${percent(a)} of this bearer's current Recovery.`
+};
+function radiantConduitDescription(primitive) {
+  return conduitDescriptions[primitive.kind](primitive.amount);
 }
 
 // src/content/conduits.ts
@@ -4669,15 +4742,6 @@ var flagshipCharacters = [
     lore: { origin: "The nightwatch and abandoned gates of Valley of Solitude", story: "Razor kept watch after the Valley of Solitude gates were abandoned. He shaped the darkness around them into a bastion with one night sword, so frightened travelers could pass safely. Chaotic reflects Death and Destruction; Razor knows a guard must face both without turning protection into domination. Let created Element-Bearers in his image, and Rise created Elemental-Devourers in hers, breaking convention to steal the same elements. Both factions seek their creators\u2019 souls, but neither has reunited one and no side has won. Razor tracks signs of Let\u2019s scattered soul between watches, never leaving the gate unguarded for a promised ending.", vow: "The night will find me standing.", awakening: "A silent sentinel answers your call, not the call of a found soul." }
   }
 ];
-var flagshipEvolutionTitles = {
-  atmoso: ["Gale Wayfarer", "Crosswind Adept", "Skyspoke Invoker", "Tempest Loom", "Crown of the High Gale", "The Sky Without End"],
-  aurora: ["Daybreak Arbiter", "Gleamveil Adjudicator", "Solar Verdict Oracle", "Prismseal Seraph", "Dawncourt Sovereign", "The Dawn Beyond Judgment"],
-  bliss: ["Featherstep Duelist", "Stillplume Dancer", "Quietwing Fencer", "Prismplume Arbiter", "Serene Tempest Empress", "The Thousandfeather Stillness"],
-  bruno: ["Quarry Sentinel", "Faultline Bulwark", "Bedrock Citadel", "Worldforge Bastion", "Prismatic Mountain Regent", "The Living Worldwall"],
-  disciple: ["Mindflame Initiate", "Thoughtforge Adept", "Ascendant Mindbinder", "Prismthought Hierophant", "Mindflame Exarch", "The Unbound Mindcrown"],
-  elise: ["Sparkstep Shinobi", "Voltweave Skirmisher", "Stormwheel Striker", "Thunderlace Executioner", "Prismatic Storm Empress", "The Infinite Thunderwheel"],
-  razor: ["Nightwatch Bastion", "Duskplate Sentinel", "Eclipse Rampart", "Nightglass Bulwark", "Prismatic Eclipse Regent", "The Unbroken Midnight"]
-};
 var flagshipFighters = {
   atmoso: {
     pilot: "tempest",
@@ -4950,67 +5014,6 @@ var warCharacters = [
 function isWarCharacter(value2) {
   return warCharacters.some((character) => character.id === value2);
 }
-var warEvolutionTitles = {
-  nerithe: [
-    "Uncharted Tide",
-    "Current Surveyor",
-    "Keeper of the Spiral Sea",
-    "Admiral of the Folded Ocean",
-    "Sovereign of the Abyssal Meridian",
-    "The Sea Without a Shore"
-  ],
-  orvella: [
-    "First Foundation",
-    "Mason of the Faultline",
-    "Keeper of the Buried Vault",
-    "Architect of the Moving Citadel",
-    "Sovereign of the Deep Foundations",
-    "The Throne Beneath the World"
-  ],
-  vaelor: [
-    "Quiet Voltage",
-    "Keeper of the Stormbeat",
-    "Marshal of the Thunder Choir",
-    "Conductor of the Broken Sky",
-    "Sovereign of the Final Frequency",
-    "The Sky's Final Chord"
-  ],
-  caldrex: ["Kiln Warden", "Banked Fire", "The Furnace Holds", "Bearer of the Closed Gate", "No Flame Passes", "The Last Kiln"],
-  solenne: ["Moonbell Keeper", "Between Two Chimes", "The Patient Circle", "Keeper of the Unstruck Bell", "A Silence Held", "The Bell That Stayed"],
-  myrthen: ["Season Reaper", "First Turning", "Bough and Blade", "Harvest in Motion", "The Orchard Remembers", "When All Seasons Meet"],
-  neralis: [
-    "Weirline Guide",
-    "Keeper of the Amber Stations",
-    "A Crossing Remembered",
-    "Wings Above the Broken Weir",
-    "Return Against the Current",
-    "The River Keeps Its Promise"
-  ],
-  varkhel: [
-    "Chainwork Holdfast",
-    "The Warning Cloth",
-    "Weight Against the Breach",
-    "A Span Held Open",
-    "Wrath Within the Hinge",
-    "The Chain Refuses to Break"
-  ],
-  seravelle: [
-    "Ashroad Courier",
-    "The Braided Route",
-    "Signal Above the Convoy",
-    "Marshal of the Open Road",
-    "A Standard Without a Throne",
-    "The Last Wagon Sees the Dawn"
-  ],
-  velmira: [
-    "Atelier Defector",
-    "A Knot Unfastened",
-    "The Measured Cut",
-    "Keeper of the Open Threshold",
-    "An Ending Chosen Carefully",
-    "What Remains Beyond the Cut"
-  ]
-};
 var warActionNames = {
   nerithe: { light: "Surveyor's Thrust" },
   orvella: { light: "Plumbline Strike" },
@@ -5186,32 +5189,6 @@ function isCalamiticCharacter(value2) {
 }
 var calamiticCharacterByTier = { 1: "ozriel", 2: "ilvaris", 3: "kaelith" };
 var calamiticCharacterChance = 0.1;
-var calamiticEvolutionTitles = {
-  ozriel: [
-    "Unbroken Pane",
-    "Warden of the Glass Nave",
-    "Bastion of Refused Endings",
-    "Seraph of the Shattered Cathedral",
-    "Sovereign of the Unfallen Wall",
-    "The Ending That Was Denied"
-  ],
-  ilvaris: [
-    "First Unsung Note",
-    "Cantor of Cracked Heavens",
-    "Choir-Seraph of the Glass Vault",
-    "Herald of the Unwritten Hymn",
-    "Sovereign of the Severed Prophecy",
-    "The Song That Defied Fate"
-  ],
-  kaelith: [
-    "Hairline Fracture",
-    "Glass-Edged Herald",
-    "Reaper of Written Endings",
-    "Seraph of the Broken Thread",
-    "Sovereign of Shattered Fate",
-    "The Fate That Was Never Written"
-  ]
-};
 var calamiticActionNames = {
   ozriel: { light: "Halberd Verdict" },
   ilvaris: { light: "Struck Chord" },
@@ -6447,8 +6424,8 @@ function applyPhaseZeroStaticBonuses(base, slots, upgrades = {}, master2, intrin
       throw new Error(`Invalid Phase 0 base stat: ${key}.`);
     }
   }
-  const percent = { ...intrinsic };
-  delete percent.skillPower;
+  const percent2 = { ...intrinsic };
+  delete percent2.skillPower;
   const skillPower = intrinsic.skillPower;
   const additive = { skillPower: skillPower ?? 0 };
   for (const id of equipment) {
@@ -6456,17 +6433,17 @@ function applyPhaseZeroStaticBonuses(base, slots, upgrades = {}, master2, intrin
     const bonuses = id in phaseZeroStaticBonuses ? phaseZeroStaticBonuses[id] : [];
     for (const bonus of bonuses) {
       const amount = id === "calamitic-causality-funeral-engine" && bonus.stat === "skillEfficiency" ? 0.5 + 0.02 * (levels[id] ?? 0) : bonus.stat === "skillDuration" ? bonus.amount : phaseZeroUpgradeMagnitude(bonus.amount, levels[id] ?? 0);
-      const pool = bonus.additive ? additive : percent;
+      const pool = bonus.additive ? additive : percent2;
       pool[bonus.stat] = (pool[bonus.stat] ?? 0) + amount;
     }
   }
   if (master2) for (const bonus of omnicBonuses(master2)) {
-    const pool = bonus.additive ? additive : percent;
+    const pool = bonus.additive ? additive : percent2;
     pool[bonus.stat] = (pool[bonus.stat] ?? 0) + bonus.amount;
   }
   const result = { ...base };
   for (const key of statKeys) {
-    const amount = base[key] * (1 + (percent[key] ?? 0)) + (additive[key] ?? 0);
+    const amount = base[key] * (1 + (percent2[key] ?? 0)) + (additive[key] ?? 0);
     result[key] = key === "skillEfficiency" ? amount : Math.max(0, amount);
   }
   result.skillDuration = Math.floor(result.skillDuration);
@@ -8614,29 +8591,58 @@ function createCreatureCopy(creatureId, stage, level, acquisition, instanceId = 
 }
 
 // src/content/character-art.ts
-var evolutionTitles = {
-  ...flagshipEvolutionTitles,
-  ...warEvolutionTitles,
-  ...calamiticEvolutionTitles,
-  ember: ["Beginner", "Embersteel Knight", "Phoenixflame Templar", "Prismatic Dawn Ascendant", "Seraph of the Heavenly Pyre", "Eternal Heavenflame Sovereign"],
-  tide: ["Beginner", "Pearlcurrent Guard", "Tidalcrest Paladin", "Prismatic Wave Ascendant", "Seraph of the Celestial Tide", "Eternal Heavenwater Sovereign"],
-  sprout: ["Beginner", "Leaflight Warden", "Bloomcrest Paladin", "Prismatic Garden Ascendant", "Seraph of the Heavenly Bloom", "Eternal Heavenbloom Sovereign"],
-  rosetta: ["Gilded Rose", "Gilded Vow", "Daybreak Archer", "Seraph of Virtue", "Sovereign of Passion", "The Rose Beyond the Sun"],
-  thornia: ["Burdened by Thorns", "Gilded Squire", "Forbidden Rose Knight", "Warden of the Shadow Garden", "Queen of Golden Shadows", "The Thousand-Rose Empress"],
-  crinso: ["Rosebound Page", "Duality Initiate", "Crimson-Gold Knight", "Storm of the Twin Rose", "Sovereign of Beautiful Ruin", "The Rose Beyond Duality"],
-  maerion: ["Ferry-Token Keeper", "Crescent Field Medic", "Ribs of the Returning Tide", "Steward of Unfinished Voyages", "Harbor for the Unreturned", "Every Name Carried Home"],
-  caevren: ["Observatory Sentinel", "Keeper of the Counterweight", "The Meridian Holds", "Brace Beneath the Falling Sky", "Anchor of the Unfinished Night", "No Star Falls Unheld"],
-  vespera: ["Last-Beacon Watch", "Whitefire Messenger", "Standard of the Night Road", "Marshal of Unextinguished Signals", "Procession Beyond the Walls", "None Left in the Dark"],
-  ilyss: ["Memorial Restorer", "Tender of the Broken Link", "Crescent Unbinder", "Mercy Between the Severed Threads", "Release Without Oblivion", "What Harm Cannot Hold"],
-  asteriel: ["Night-Seed Librarian", "Lender of Moonflowers", "Cultivator of Quiet Orbits", "Keeper of the Open Conservatory", "Garden of Unhoarded Stars", "Every Orbit Bears a Future"],
-  serapha: ["Ceasefire Escort", "****** the Unstruck Verdict", "Adjudicator of Open Arcs", "Mantle of the Merciful Passage", "Sanctuary Without Surrender", "Let Them Leave Alive"],
-  rhaziel: ["Field-Forge Mender", "Keeper of Remembered Dents", "Seams That Hold", "Armorer Beyond the Court", "Return Through the Fire", "A Defense Worth Returning To"],
-  oryn: ["****** the Unstruck Seal", "Mediator at the Open Gate", "An Exit in the Accord", "Keeper of Unforced Terms", "Authority Without a Sentence", "No Victory Requires This"],
-  thessara: ["Reservoir Route Captain", "Keeper of the Empty Channel", "Water Delivered in Full", "Promises Beyond the Procession", "The Unomitted Reservoir", "No Village Omitted"],
-  elaris: ["Outrider at the Firebreak", "Seedpod Pathfinder", "A Branch Through the Walls", "Rider of the Open Grove", "Spear-Grove Passage", "A Grove Beyond the Burning Walls"],
-  veyr: ["Refuge-Sparing Dismantler", "Reader of the Load Path", "The Fault Laid Bare", "Unmaker of Occupied Engines", "Precision Beyond Conquest", "What Remains Standing"],
-  aureth: ["Corridor Rescue Captain", "****** the Keystone", "A Route Beneath the Ashwind", "Command of the Moving Shelter", "Walking Eclipse Guardian", "Hold the Burning Sky Open"]
+var finalEvolutionEpithets = {
+  ember: "Ignis Aeternus",
+  tide: "Mare Serenum",
+  sprout: "Vita Florens",
+  rosetta: "Pax Seraphine",
+  thornia: "Nox Imperatrix",
+  crinso: "Fatum Geminus",
+  maerion: "Aequor Memoria",
+  caevren: "Caelum Vigilis",
+  vespera: "Vespera Incensa",
+  ilyss: "Noctis Liberum",
+  asteriel: "Astra Virentis",
+  serapha: "Concordia Aeterna",
+  rhaziel: "Ferrum Ardens",
+  oryn: "Pax Concordis",
+  thessara: "Mare Perennis",
+  elaris: "Silva Aurea",
+  veyr: "Umbra Ferrata",
+  aureth: "Caelum Fulgent",
+  atmoso: "Aura Perennis",
+  aurora: "Lux Clementia",
+  bliss: "Pluma Serena",
+  bruno: "Saxum Vivens",
+  disciple: "Mens Solutus",
+  elise: "Fulmen Duplex",
+  razor: "Nox Custodia",
+  nerithe: "Aequor Oraculum",
+  orvella: "Fundamentum Vitae",
+  vaelor: "Tonitrus Quietus",
+  caldrex: "Ignis Vigilans",
+  solenne: "Silentium Sacrum",
+  myrthen: "Tempus Florens",
+  neralis: "Reditus Fidus",
+  varkhel: "Pons Invictus",
+  seravelle: "Signum Flammae",
+  velmira: "Vita Post Finem",
+  ozriel: "Murus Aeternus",
+  ilvaris: "Cantus Novus",
+  kaelith: "Fatum Ruptum"
 };
+var titlesByStarter = {};
+for (const starter of starters) {
+  titlesByStarter[starter.id] = [
+    starter.name,
+    starter.element,
+    `${starter.element} Queen`,
+    `${starter.element} Goddess`,
+    `${starter.element} Legend`,
+    finalEvolutionEpithets[starter.id]
+  ];
+}
+var evolutionTitles = titlesByStarter;
 var artworkPending = /* @__PURE__ */ new Set([
   "rhaziel",
   "oryn",
@@ -8655,7 +8661,9 @@ function characterArt(id, evolution = 1) {
   };
 }
 function characterName(id, evolution = 1, riseBlessed = false) {
-  return `${evolution === 1 ? "" : `${characterArt(id, evolution).title}, `}${getStarter(id).name}${riseBlessed ? ", Rise-blessed" : ""}`;
+  const starter = getStarter(id);
+  const title = evolution === 1 ? "" : `${characterArt(id, evolution).title} `;
+  return `${title}${starter.name}${riseBlessed ? ", Rise-blessed" : ""}`;
 }
 
 // src/content/elemental-war.ts
@@ -13636,9 +13644,9 @@ function periodicDamage(state, target, amount, source, events, critical = false,
   hit.shieldAbsorbed = absorbed;
   if (absorbed) hit.message += ` ${formatStat(absorbed)} Shield absorbed.`;
 }
-function healTeam(state, source, amount, events, percent = false, ctx) {
+function healTeam(state, source, amount, events, percent2 = false, ctx) {
   for (const ally of state.allies.filter((unit) => unit.hp > 0)) {
-    nativeHeal(state, source, ally, percent ? Math.max(1, Math.round(ally.stats.health * amount)) : amount, events, !percent, ctx);
+    nativeHeal(state, source, ally, percent2 ? Math.max(1, Math.round(ally.stats.health * amount)) : amount, events, !percent2, ctx);
   }
 }
 function shieldTeam(state, source, amount, events, authored = true, activation) {
@@ -17048,18 +17056,86 @@ var masterAttunements = {
   ilvaris: ["prism", "solstice", "corona"],
   kaelith: ["corona", "corona", "aegis"]
 };
+var leaderDesigns = {
+  ember: pair("normal", 0.2, "burn-power", 0.15),
+  tide: pair("defense", 0.2, "guard-shield", 0.4),
+  sprout: pair("healing", 0.2, "round-heal", 0.1),
+  rosetta: pair("exposed", 0.25, "normal-expose", 0.08),
+  thornia: pair("shielding", 0.2, "reflect", 0.2),
+  crinso: pair("burning", 0.25, "leech", 0.04),
+  atmoso: pair("cooperation", 0.2, "normal-charge", 2),
+  aurora: pair("weakened", 0.2, "resilience", 0.2),
+  bliss: pair("next-buff", 0.1, "normal-heal", 0.12),
+  bruno: pair("guard", 0.12, "guard-team-shield", 0.2),
+  disciple: pair("flare", 0.2, "flare-team-charge", 3),
+  elise: pair("first-action", 0.25, "pierce", 0.1),
+  razor: pair("shielded", 0.25, "normal-reduction", 0.08),
+  maerion: pair("recovery", 0.2, "heal-charge", 2),
+  caevren: pair("brace", 0.1, "absorbed-charge", 3),
+  vespera: pair("burn-power", 0.2, "next-buff", 0.1),
+  ilyss: pair("resilience", 0.25, "heal-shield", 0.2),
+  asteriel: pair("round-team-heal", 0.06, "heal-buff", 0.08),
+  serapha: pair("shelter", 0.1, "guard-heal", 0.2),
+  nerithe: pair("normal-expose", 0.1, "team-charge", 1),
+  orvella: pair("guard-shield", 0.35, "hurt-heal", 0.12),
+  vaelor: pair("cooperation", 0.2, "normal-splash", 0.12),
+  caldrex: pair("burn-heal", 0.1, "hurt-shield", 0.025),
+  solenne: pair("guard", 0.1, "break-heal", 0.2),
+  myrthen: pair("execution", 0.3, "kill-heal", 0.03),
+  neralis: pair("heal-team-charge", 2, "shielding", 0.15),
+  varkhel: pair("wounded", 0.25, "normal-shield", 0.25),
+  seravelle: pair("normal-heal", 0.15, "flare-team-charge", 3),
+  velmira: pair("weakened", 0.2, "normal-weaken", 0.08),
+  ozriel: pair("shelter", 0.12, "hurt-shield", 0.03),
+  ilvaris: pair("heal-buff", 0.1, "round-charge", 2),
+  kaelith: pair("opening", 0.25, "exposed", 0.2)
+};
+var masterDesigns = {
+  ember: [pair("burn-power", 0.4, "leech", 0.08), pair("flare", 0.3, "normal-burn", 0.15), pair("burning", 0.35, "flare-heal", 0.3)],
+  tide: [pair("break-heal", 0.4, "defense", 0.25), pair("shielding", 0.4, "guard-heal", 0.3), pair("normal-weaken", 0.18, "guard-shield", 0.6)],
+  sprout: [pair("round-team-heal", 0.12, "healing", 0.25), pair("normal-weaken", 0.15, "normal-heal", 0.4), pair("heal-shield", 0.5, "flare-team-charge", 6)],
+  atmoso: [pair("normal-splash", 0.4, "normal-charge", 4), pair("hurt-charge", 8, "cooperation", 0.3), pair("first-action", 0.35, "pierce", 0.2)],
+  aurora: [pair("normal-expose", 0.18, "weakened", 0.3), pair("flare-weaken", 0.2, "shelter", 0.15), pair("hurt-heal", 0.4, "normal-weaken", 0.15)],
+  bliss: [pair("flare-heal", 0.5, "heal-buff", 0.15), pair("normal", 0.3, "normal-heal", 0.25), pair("flare-team-charge", 10, "next-buff", 0.15)],
+  bruno: [pair("normal-reduction", 0.15, "defense", 0.3), pair("guard-shield", 1, "flare-shield", 0.05), pair("normal-expose", 0.18, "guard-team-shield", 0.4)],
+  disciple: [pair("next-buff", 0.25, "cooperation", 0.2), pair("team-charge", 3, "flare-team-charge", 8), pair("heal-buff", 0.2, "normal-splash", 0.25)],
+  elise: [pair("pierce", 0.3, "normal-charge", 3), pair("flare", 0.35, "normal-splash", 0.25), pair("kill-charge", 15, "first-action", 0.3)],
+  razor: [pair("reflect", 0.4, "normal-reduction", 0.15), pair("shielded", 0.4, "flare", 0.25), pair("normal-weaken", 0.2, "solo", 0.3)],
+  rosetta: [pair("status-shield", 0.6, "cooperation", 0.25), pair("exposed", 0.35, "normal-splash", 0.3), pair("normal-expose", 0.2, "next-buff", 0.2)],
+  thornia: [pair("reflect", 0.5, "normal-burn", 0.1), pair("flare-weaken", 0.2, "guard-shield", 0.6), pair("guard-team-shield", 0.6, "shelter", 0.12)],
+  crinso: [pair("burn-power", 0.3, "execution", 0.4), pair("shielded", 0.35, "normal-splash", 0.3), pair("flare", 0.25, "leech", 0.12)],
+  nerithe: [pair("normal-expose", 0.18, "team-charge", 3), pair("flare-team-charge", 8, "normal-reduction", 0.15), pair("flare", 0.3, "kill-charge", 12)],
+  orvella: [pair("normal-shield", 0.6, "guard-team-shield", 0.4), pair("guard-heal", 0.4, "hurt-heal", 0.3), pair("defense", 0.35, "shielded", 0.25)],
+  vaelor: [pair("hurt-charge", 8, "flare", 0.3), pair("cooperation", 0.3, "flare-weaken", 0.18), pair("team-charge", 4, "next-buff", 0.15)],
+  caldrex: [pair("defense", 0.35, "burning", 0.25), pair("reflect", 0.6, "hurt-charge", 5), pair("burn-heal", 0.25, "round-team-heal", 0.1)],
+  solenne: [pair("guard", 0.2, "shelter", 0.15), pair("flare-shield", 0.08, "round-shield", 0.5), pair("absorbed-charge", 8, "flare-team-charge", 6)],
+  myrthen: [pair("execution", 0.45, "normal", 0.25), pair("normal-charge", 5, "wounded", 0.3), pair("kill-heal", 0.08, "kill-charge", 12)],
+  neralis: [pair("heal-shield", 0.6, "recovery", 0.25), pair("guard-team-shield", 0.5, "heal-charge", 5), pair("heal-team-charge", 4, "hurt-heal", 0.3)],
+  varkhel: [pair("hurt-shield", 0.08, "burn-power", 0.3), pair("reflect", 0.5, "shielded", 0.3), pair("guard-team-shield", 0.5, "wounded", 0.3)],
+  seravelle: [pair("normal-heal", 0.45, "flare-team-charge", 6), pair("heal-buff", 0.2, "round-charge", 4), pair("heal-team-charge", 4, "shelter", 0.12)],
+  velmira: [pair("weakened", 0.4, "normal-charge", 4), pair("normal-splash", 0.3, "normal-weaken", 0.18), pair("kill-charge", 12, "leech", 0.1)],
+  maerion: [pair("absorbed-charge", 8, "healing", 0.25), pair("heal-shield", 0.6, "flare-heal", 0.35), pair("heal-charge", 6, "normal-heal", 0.25)],
+  caevren: [pair("defense", 0.4, "hurt-charge", 6), pair("shielding", 0.4, "brace", 0.15), pair("reflect", 0.6, "normal-shield", 0.5)],
+  vespera: [pair("next-buff", 0.2, "flare", 0.25), pair("burn-power", 0.4, "pierce", 0.15), pair("team-charge", 3, "burning", 0.3)],
+  ilyss: [pair("healing", 0.35, "flare-team-charge", 6), pair("heal-shield", 0.6, "resilience", 0.3), pair("heal-buff", 0.2, "guard-heal", 0.3)],
+  asteriel: [pair("healing", 0.3, "heal-buff", 0.18), pair("guard-heal", 0.4, "round-shield", 0.5), pair("heal-team-charge", 4, "normal-charge", 3)],
+  serapha: [pair("flare-heal", 0.4, "guard-team-shield", 0.4), pair("shelter", 0.15, "hurt-heal", 0.4), pair("normal-weaken", 0.18, "round-charge", 4)],
+  ozriel: [pair("hurt-shield", 0.1, "brace", 0.15), pair("flare-weaken", 0.25, "shielding", 0.3), pair("break-heal", 0.5, "round-charge", 5)],
+  ilvaris: [pair("heal-buff", 0.25, "flare-weaken", 0.15), pair("flare-team-charge", 10, "round-team-heal", 0.1), pair("normal-expose", 0.18, "heal-charge", 5)],
+  kaelith: [pair("exposed", 0.4, "pierce", 0.25), pair("normal-expose", 0.2, "kill-charge", 12), pair("execution", 0.4, "normal-weaken", 0.2)]
+};
 var radiantMasters = Object.fromEntries(
   masterConduits.filter((master2) => characterReleased(master2.character)).map((master2) => {
     const slot = Number(master2.id.slice(-1));
-    const enhancement = slot === 1 ? "passive" : slot === 2 ? "signature" : "leader";
-    const kit = radiantBearerKits[master2.character];
+    const effects = masterDesigns[master2.character][slot - 1];
     return [master2.id, {
       starter: master2.character,
       attunement: masterAttunements[master2.character][slot - 1],
       rule: "standard",
-      enhancement,
-      magnitude: enhancement === "passive" ? 0.15 : enhancement === "leader" ? 0.05 : 0.15,
-      effect: enhancement === "passive" ? kit.passive.magnitude === 1 ? `${kit.passive.name} also heals each cleansed recipient for 15% of its bearer\u2019s Recovery.` : `Strengthens ${kit.passive.name} by 15% while its bearer is alive.` : enhancement === "leader" ? `Strengthens ${kit.leader} by 5 percentage points while this bearer is first and alive.` : `Strengthens ${kit.signatureFamily} by 15%.`
+      enhancement: "none",
+      magnitude: 0,
+      effects,
+      effect: effects.map(radiantConduitDescription).join(" ")
     }];
   })
 );
@@ -17069,8 +17145,17 @@ function radiantPassiveAmount(loadout) {
   return (radiantBearerKits[loadout.starter].passive.magnitude + 0.01 * (loadout.form - 1)) * (1 + (master2?.enhancement === "passive" ? master2.magnitude : 0) + (loadout.ascension.skill1 ? 0.5 : 0));
 }
 function radiantLeaderBonus(loadout) {
-  const master2 = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
-  return (radiantBearerKits[loadout.starter].leaderBonus + 0.02 * (loadout.form - 1)) * (loadout.ascension.skill2 ? 1.5 : 1) + (master2?.enhancement === "leader" ? master2.magnitude : 0) + radiantGearAmount(loadout.gear, "leader");
+  return (radiantBearerKits[loadout.starter].leaderBonus + 0.02 * (loadout.form - 1)) * (loadout.ascension.skill2 ? 1.5 : 1) * (1 + radiantEquipmentAmount(loadout, "leader"));
+}
+function radiantLeaderEffects(loadout) {
+  return leaderDesigns[loadout.starter].map((entry) => ({
+    kind: entry.kind,
+    amount: entry.amount * radiantLeaderBonus(loadout) / 0.2
+  }));
+}
+function radiantEquipmentAmount(loadout, kind) {
+  const master2 = loadout.masterId === null ? void 0 : radiantMasters[loadout.masterId];
+  return radiantGearAmount(loadout.gear, kind) + (master2?.effects.filter((entry) => entry.kind === kind).reduce((sum, entry) => sum + entry.amount, 0) ?? 0);
 }
 function radiantFinalFlare(loadout, tier) {
   const master2 = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
@@ -17117,7 +17202,7 @@ function resolveRadiantStarterStats(loadout) {
     recovery: base.recovery * growth * profile.recovery * ascension
   };
   for (const key of ["hp", "attack", "defense", "recovery"])
-    stats[key] *= 1 + radiantGearAmount(loadout.gear, key);
+    stats[key] *= 1 + radiantEquipmentAmount(loadout, key);
   validateRadiantStats(stats);
   return stats;
 }
@@ -17364,20 +17449,39 @@ function effectiveRadiantStats(state, id) {
   for (const key of ["hp", "attack", "defense", "recovery"]) {
     const bonus = state.bearers.filter((source) => source.hp > 0 && radiantStarterKits[source.loadout.starter].passive.stat === key).reduce((sum, source) => sum + radiantPassiveAmount(source.loadout), 0);
     stats[key] *= 1 + bonus;
+    stats[key] *= 1 + leaderEffects(state, member).filter((entry) => entry.kind === key).reduce((sum, entry) => sum + entry.amount, 0);
   }
-  stats.attack *= 1 - Math.max(0, ...member.weaken.map((effect2) => effect2.magnitude)) * (1 - Math.min(0.8, radiantGearAmount(member.loadout.gear, "resilience")));
+  stats.attack *= 1 - Math.max(0, ...member.weaken.map((effect2) => effect2.magnitude)) * (1 - Math.min(0.8, combatAmount(state, member, "resilience")));
   stats.attack *= 1 + Math.max(0, ...member.attackBuffs.map((effect2) => effect2.magnitude));
   validateRadiantStats(stats);
   return stats;
 }
-function outgoingDamageMultiplier(state, actor2, target) {
-  const element = radiantStarterKits[actor2.loadout.starter].elementId;
+function leaderEffects(state, recipient) {
   const leader = state.bearers[0];
-  const bonus = leader.hp > 0 && radiantStarterKits[leader.loadout.starter].elementId === element ? radiantLeaderBonus(leader.loadout) : 0;
+  return leader.hp > 0 && radiantStarterKits[leader.loadout.starter].elementId === radiantStarterKits[recipient.loadout.starter].elementId ? radiantLeaderEffects(leader.loadout) : [];
+}
+function combatAmount(state, actor2, kind) {
+  return radiantEquipmentAmount(actor2.loadout, kind) + leaderEffects(state, actor2).filter((entry) => entry.kind === kind).reduce((sum, entry) => sum + entry.amount, 0);
+}
+function outgoingDamageMultiplier(state, actor2, target, periodic = false) {
+  const element = radiantStarterKits[actor2.loadout.starter].elementId;
+  if (periodic) return (1 + combatAmount(state, actor2, "burn-power")) * elementDamageMultiplier(element, target.elementId);
+  const conditions = [
+    ["opening", target.hp === Math.round(target.stats.hp)],
+    ["execution", target.hp <= target.stats.hp * 0.25],
+    ["burning", target.burns.length > 0],
+    ["exposed", target.exposures.length > 0],
+    ["weakened", target.weaken.length > 0],
+    ["shielded", actor2.shields.length > 0],
+    ["wounded", actor2.hp <= actor2.stats.hp / 2],
+    ["solo", state.enemies.filter((member) => member.hp > 0).length === 1],
+    ["first-action", state.acted.length === 0]
+  ];
+  const bonus = conditions.reduce((sum, [kind, active]) => sum + (active ? combatAmount(state, actor2, kind) : 0), 0);
   return (1 + bonus) * elementDamageMultiplier(element, target.elementId);
 }
 function validateSource(state, source) {
-  if (!source || !["normal", "flare", "passive", "master", "gear", "enemy"].includes(source.kind))
+  if (!source || !["normal", "flare", "passive", "master", "leader", "gear", "enemy"].includes(source.kind))
     throw new Error("Invalid radiant effect source.");
   if (source.kind === "enemy") enemy(state, source.enemyId);
   else {
@@ -17399,7 +17503,7 @@ function validateEffects(state, effects, fractional = false) {
   }
 }
 function validateRadiantCombat(state) {
-  if (!state || state.version !== 5 || !Array.isArray(state.bearers) || !state.bearers.length || state.bearers.length > squadMemberLimit || !Array.isArray(state.enemies) || !state.enemies.length || !["player", "enemy", "victory", "defeat"].includes(state.phase))
+  if (!state || state.version !== 6 || !Array.isArray(state.bearers) || !state.bearers.length || state.bearers.length > squadMemberLimit || !Array.isArray(state.enemies) || !state.enemies.length || !["player", "enemy", "victory", "defeat"].includes(state.phase))
     throw new Error("Invalid radiant combat roster or version.");
   safe(state.round, "round", 1);
   safe(state.chargeSeed, "charge seed");
@@ -17462,7 +17566,7 @@ function validateRadiantCombat(state) {
     safe(budget, "total currency budget");
   }
   if (paid !== state.currencyEarned) throw new Error("Radiant paid currency total mismatch.");
-  const gearKeys = state.bearers.flatMap((member) => (member.loadout.gear ?? []).flatMap((slot) => slot === null ? [] : [`${member.loadout.id}:${slot.id}`]));
+  const gearKeys = state.bearers.flatMap((member) => (member.loadout.gear ?? []).flatMap((slot) => slot === null ? [] : [`${member.loadout.id}:${slot.id}`]).concat(member.loadout.masterId ? [`${member.loadout.id}:${member.loadout.masterId}`] : [], [`${member.loadout.id}:leader`]));
   if (!Array.isArray(state.gearTriggered) || new Set(state.gearTriggered).size !== state.gearTriggered.length || state.gearTriggered.some((key) => !gearKeys.includes(key)))
     throw new Error("Invalid radiant gear trigger ledger.");
   for (const [list, valid] of [
@@ -17496,7 +17600,7 @@ function validateRadiantParty(loadouts) {
 }
 function createRadiantCombat(loadouts, enemies2, chargeSeed) {
   const state = {
-    version: 5,
+    version: 6,
     bearers: loadouts.map((loadout) => {
       const stats = resolveRadiantStarterStats(loadout);
       return {
@@ -17547,6 +17651,9 @@ function createRadiantCombat(loadouts, enemies2, chargeSeed) {
     nextShieldId: 1,
     currencyEarned: 0
   };
+  for (const member of state.gauge.members) {
+    addRadiantPersonalCharge(member, rounded(combatAmount(state, bearer(state, member.id), "start-charge")));
+  }
   validateRadiantCombat(state);
   return state;
 }
@@ -17603,8 +17710,8 @@ function packet(state, events, target, source, origin, offered, hitCharge) {
   return { healthLoss, absorbed, shields };
 }
 function heal(state, events, target, source, snapshot) {
-  if (source.kind !== "enemy" && source.kind !== "gear")
-    snapshot *= 1 + radiantGearAmount(bearer(state, source.bearerId).loadout.gear, "healing");
+  if (source.kind === "normal" || source.kind === "flare" || source.kind === "passive")
+    snapshot *= 1 + combatAmount(state, bearer(state, source.bearerId), "healing");
   finite(snapshot, "healing snapshot");
   if (target.hp === 0) return 0;
   const offered = rounded(snapshot), effective = Math.min(offered, rounded(target.stats.hp) - target.hp);
@@ -17620,7 +17727,7 @@ function heal(state, events, target, source, snapshot) {
   return effective;
 }
 function shield(state, events, target, source, magnitude2) {
-  const amount = rounded(magnitude2 * (source.kind === "enemy" || source.kind === "gear" ? 1 : 1 + radiantGearAmount(bearer(state, source.bearerId).loadout.gear, "shielding")));
+  const amount = rounded(magnitude2 * (source.kind === "normal" || source.kind === "flare" || source.kind === "passive" ? 1 + combatAmount(state, bearer(state, source.bearerId), "shielding") : 1));
   if (amount === 0 || target.hp === 0) return;
   const shieldId = state.nextShieldId++;
   safe(state.nextShieldId, "shield serial", 1);
@@ -17654,9 +17761,9 @@ function passivePower(actor2) {
   const master2 = actor2.loadout.masterId === null ? null : radiantMasters[actor2.loadout.masterId];
   return 1 + (master2?.rule === "standard" && master2.enhancement === "passive" ? master2.magnitude : 0) + (actor2.loadout.ascension.skill1 ? 0.5 : 0);
 }
-function woundedAlly(state) {
+function woundedAlly(state, exclude) {
   let selected, largest = 0;
-  for (const ally of state.bearers.filter((member) => member.hp > 0)) {
+  for (const ally of state.bearers.filter((member) => member.hp > 0 && member.loadout.id !== exclude)) {
     const missing = (rounded(ally.stats.hp) - ally.hp) / rounded(ally.stats.hp);
     if (selected === void 0 || missing > largest) {
       selected = ally;
@@ -17741,8 +17848,8 @@ function normal(state, events, actor2, targetId, hitCharge) {
     "direct",
     radiantDirectDamage(
       stats.attack,
-      gearDefense(actor2, target.stats.defense),
-      1 + radiantGearAmount(actor2.loadout.gear, "normal") + cooperation(state, actor2),
+      gearDefense(state, actor2, target.stats.defense),
+      1 + combatAmount(state, actor2, "normal") + cooperation(state, actor2),
       (1 + exposure(target)) * outgoingDamageMultiplier(state, actor2, target)
     ),
     hitCharge
@@ -17769,8 +17876,8 @@ function flare(state, events, actor2, targetId, hitCharge) {
     if (target.hp === 0) continue;
     const total = Math.max(offer.comboHits, radiantDirectDamage(
       stats.attack,
-      gearDefense(actor2, target.stats.defense),
-      offer.damage * signaturePower * (1 + radiantGearAmount(actor2.loadout.gear, "flare") + cooperation(state, actor2)) * (master2?.rule === "flare-damage" ? 1.15 : 1),
+      gearDefense(state, actor2, target.stats.defense),
+      offer.damage * signaturePower * (1 + combatAmount(state, actor2, "flare") + cooperation(state, actor2)) * (master2?.rule === "flare-damage" ? 1.15 : 1),
       (1 + exposure(target)) * outgoingDamageMultiplier(state, actor2, target)
     ));
     for (let hit = 0; hit < offer.comboHits && target.hp > 0; hit++) {
@@ -17779,7 +17886,7 @@ function flare(state, events, actor2, targetId, hitCharge) {
       if (impact.healthLoss + impact.absorbed > 0) hits++;
     }
     if (target.hp > 0 && offer.burn > 0) {
-      const magnitude2 = offer.burn * stats.attack * signaturePower * outgoingDamageMultiplier(state, actor2, target);
+      const magnitude2 = offer.burn * stats.attack * signaturePower * outgoingDamageMultiplier(state, actor2, target, true);
       const remaining = offer.burnPhases + (master2?.rule === "longer-burn" ? 1 : 0);
       refresh(target.burns, source, magnitude2, remaining);
       events.push({ type: "status", targetId: target.id, status: "burn", source, magnitude: magnitude2, remaining });
@@ -17909,11 +18016,15 @@ function enemyAttack(state, events, action) {
     const stats = effectiveRadiantStats(state, target.loadout.id);
     const reduction = Math.max(0, ...target.reductions.map((effect2) => effect2.magnitude));
     const weakening = Math.max(0, ...actor2.weaken.map((effect2) => effect2.magnitude));
+    const element = elementDamageMultiplier(actor2.elementId, radiantStarterKits[target.loadout.starter].elementId);
+    const output = Math.max(0.2, (target.guarding ? 0.5 * (1 - Math.min(0.6, combatAmount(state, target, "guard"))) : 1) * (1 - reduction));
+    const beforeProtection = radiantDirectDamage(actor2.stats.attack * (1 - weakening), stats.defense, action.coefficient, output * element);
+    const protection = (target.hp > target.stats.hp * 0.75 ? combatAmount(state, target, "shelter") : 0) + (beforeProtection > target.stats.hp * 0.2 ? combatAmount(state, target, "brace") : 0);
     const total = radiantDirectDamage(
       actor2.stats.attack * (1 - weakening),
       stats.defense,
       action.coefficient,
-      Math.max(0.2, (target.guarding ? 0.5 * (1 - Math.min(0.6, radiantGearAmount(target.loadout.gear, "guard"))) : 1) * (1 - reduction)) * elementDamageMultiplier(actor2.elementId, radiantStarterKits[target.loadout.starter].elementId)
+      Math.max(0.2, output * (1 - Math.min(0.8, protection))) * element
     );
     const impact = { healthLoss: 0, absorbed: 0, shields: [] };
     for (let hit = 0; hit < hits && target.hp > 0; hit++) {
@@ -18069,14 +18180,16 @@ function finishRound(state, events) {
       bonusOffered: 0
     });
 }
-function gearDefense(actor2, defense) {
-  return defense * (1 - Math.min(0.8, radiantGearAmount(actor2.loadout.gear, "pierce")));
+function gearDefense(state, actor2, defense) {
+  return defense * (1 - Math.min(0.8, combatAmount(state, actor2, "pierce")));
 }
 function cooperation(state, actor2) {
-  return state.acted.some((id) => id !== actor2.loadout.id) ? radiantGearAmount(actor2.loadout.gear, "cooperation") : 0;
+  return state.acted.some((id) => id !== actor2.loadout.id) ? combatAmount(state, actor2, "cooperation") : 0;
 }
 function processRadiantGear(state, events, action) {
-  const native = events.filter((event2) => "source" in event2 && event2.source.kind !== "gear");
+  const native = events.filter((event2) => "source" in event2 && !["gear", "master", "leader"].includes(event2.source.kind));
+  const defeated = new Set(events.filter((event2) => event2.type === "defeated").map((event2) => event2.targetId));
+  const shielded = new Set(state.bearers.filter((owner) => owner.shields.length > 0).map((owner) => owner.loadout.id));
   const snapshots = new Map(state.bearers.filter((owner) => owner.hp > 0).map((owner) => [owner.loadout.id, effectiveRadiantStats(state, owner.loadout.id)]));
   for (const owner of state.bearers) {
     if (owner.hp === 0) continue;
@@ -18085,19 +18198,31 @@ function processRadiantGear(state, events, action) {
     const direct = owned.filter((event2) => event2.type === "damage" && event2.origin === "direct" && (event2.source.kind === "normal" || event2.source.kind === "flare"));
     const restored = owned.filter((event2) => event2.type === "heal" && event2.effective > 0);
     const incoming = native.filter((event2) => event2.type === "damage" && event2.origin === "direct" && event2.source.kind === "enemy");
-    const absorbed = incoming.flatMap((event2) => event2.shields.filter((entry) => entry.source.kind !== "enemy" && entry.source.kind !== "gear" && entry.source.bearerId === id).map((entry) => ({ event: event2, amount: entry.amount })));
+    const absorbed = incoming.flatMap((event2) => event2.shields.filter((entry) => (entry.source.kind === "normal" || entry.source.kind === "flare" || entry.source.kind === "passive") && entry.source.bearerId === id).map((entry) => ({ event: event2, amount: entry.amount })));
     const ownAction = "bearerId" in action && action.bearerId === id;
     const normalHit = ownAction && action.type === "normal" && direct.some((event2) => event2.healthLoss > 0);
     const normalDirect = ownAction && action.type === "normal" && direct.some((event2) => event2.healthLoss + event2.absorbed > 0);
     const cast = ownAction && action.type === "flare";
     const guarding = ownAction && action.type === "defense";
     const round = action.type === "finish-enemy-phase" && events.some((event2) => event2.type === "round");
-    for (const slot of owner.loadout.gear ?? []) {
-      if (slot === null) continue;
-      const source = { kind: "gear", bearerId: id, conduitId: slot.id };
-      const key = `${id}:${slot.id}`;
+    const bundles = (owner.loadout.gear ?? []).flatMap((slot) => slot === null ? [] : [{
+      source: { kind: "gear", bearerId: id, conduitId: slot.id },
+      key: `${id}:${slot.id}`,
+      effects: radiantConduitPrimitives(slot)
+    }]);
+    if (owner.loadout.masterId) bundles.push({
+      source: { kind: "master", bearerId: id },
+      key: `${id}:${owner.loadout.masterId}`,
+      effects: radiantMasters[owner.loadout.masterId].effects
+    });
+    bundles.push({
+      source: { kind: "leader", bearerId: state.bearers[0].loadout.id },
+      key: `${id}:leader`,
+      effects: leaderEffects(state, owner)
+    });
+    for (const { source, key, effects } of bundles) {
       let triggered = false;
-      for (const primitive of radiantConduitPrimitives(slot)) {
+      for (const primitive of effects) {
         const amount = primitive.amount;
         const grant = (recipient, value2) => {
           if (recipient.hp > 0) {
@@ -18110,6 +18235,8 @@ function processRadiantGear(state, events, action) {
         const primary = direct.find((event2) => event2.healthLoss > 0);
         const target = primary ? state.enemies.find((member) => member.id === primary.targetId && member.hp > 0) : void 0;
         const boundedIncoming = !state.gearTriggered.includes(key);
+        const hurt2 = incoming.some((event2) => event2.targetId === id && event2.healthLoss > 0);
+        const killed = direct.some((event2) => defeated.has(event2.targetId) && event2.healthLoss > 0);
         switch (primitive.kind) {
           case "normal-charge":
             if (normalDirect) grant(owner, amount);
@@ -18192,8 +18319,79 @@ function processRadiantGear(state, events, action) {
             }
             break;
           case "status-shield":
-            if (owned.some((event2) => event2.type === "status" && ["weaken", "burn", "exposure"].includes(event2.status)) && wounded)
+            if (owned.some((event2) => event2.type === "status" && !event2.clockOnly && event2.remaining > 0 && ["weaken", "burn", "exposure"].includes(event2.status)) && wounded)
               shield(state, events, wounded, source, amount * stats.defense);
+            break;
+          case "guard-heal":
+            if (guarding) heal(state, events, owner, source, amount * stats.recovery);
+            break;
+          case "flare-heal":
+            if (cast && wounded) heal(state, events, wounded, source, amount * stats.recovery);
+            break;
+          case "normal-shield":
+            if (normalHit) shield(state, events, owner, source, amount * stats.defense);
+            break;
+          case "heal-shield":
+            for (const targetId of new Set(restored.map((event2) => event2.targetId)))
+              shield(state, events, bearer(state, targetId), source, amount * stats.defense);
+            break;
+          case "hurt-heal":
+            if (boundedIncoming && hurt2) {
+              const ally = woundedAlly(state, id);
+              if (ally) heal(state, events, ally, source, amount * stats.recovery);
+              triggered = true;
+            }
+            break;
+          case "break-heal":
+            if (boundedIncoming && !shielded.has(id) && incoming.some((event2) => event2.targetId === id && event2.absorbed > 0)) {
+              heal(state, events, owner, source, amount * stats.recovery);
+              triggered = true;
+            }
+            break;
+          case "burn-heal": {
+            const damage = owned.filter((event2) => event2.type === "damage" && event2.origin === "periodic").reduce((sum, event2) => sum + event2.healthLoss, 0);
+            if (damage > 0) heal(state, events, owner, source, amount * damage);
+            break;
+          }
+          case "kill-heal":
+            if (killed && wounded) heal(state, events, wounded, source, amount * owner.stats.hp);
+            break;
+          case "kill-charge":
+            if (killed) grant(owner, amount);
+            break;
+          case "normal-splash":
+            if (normalHit && primary) {
+              const other = state.enemies.filter((enemy2) => enemy2.hp > 0 && enemy2.id !== primary.targetId).reduce((best, enemy2) => !best || enemy2.hp > best.hp ? enemy2 : best, void 0);
+              if (other) packet(state, events, other, source, "generated", Math.max(1, rounded(amount * primary.healthLoss)));
+            }
+            break;
+          case "flare-team-charge":
+          case "heal-team-charge":
+            if (primitive.kind === "flare-team-charge" ? cast : restored.length > 0) {
+              for (const ally of state.bearers) if (ally !== owner) grant(ally, amount);
+            }
+            break;
+          case "hurt-charge":
+            if (boundedIncoming && hurt2) {
+              grant(owner, amount);
+              triggered = true;
+            }
+            break;
+          case "guard-team-shield":
+            if (guarding) for (const ally of state.bearers) shield(state, events, ally, source, amount * stats.defense);
+            break;
+          case "flare-weaken":
+            if (cast) for (const target2 of state.enemies.filter((enemy2) => enemy2.hp > 0))
+              applyStatus(events, target2.id, target2.weaken, source, "weaken", Math.min(0.8, amount), 1);
+            break;
+          case "normal-reduction":
+            if (normalHit) applyStatus(events, id, owner.reductions, source, "reduction", Math.min(0.8, amount), 1);
+            break;
+          case "round-charge":
+            if (round) grant(owner, amount);
+            break;
+          case "round-team-heal":
+            if (round) for (const ally of state.bearers) heal(state, events, ally, source, amount * stats.recovery);
             break;
         }
       }
@@ -18336,7 +18534,7 @@ function validateRadiantCheckpoint(value2) {
     if (!record4(value2) || typeof value2.revision !== "number" || !Number.isSafeInteger(value2.revision) || value2.revision < 0) throw new Error();
     validateAccount(value2.account);
     if (value2.notice !== void 0 && typeof value2.notice !== "string") throw new Error();
-    const retired = value2.run !== null && record4(value2.run) && (value2.run.version === 3 || value2.run.version === 4);
+    const retired = value2.run !== null && record4(value2.run) && (value2.run.version === 3 || value2.run.version === 4 || value2.run.version === 5);
     if (value2.run !== null && !retired) validateFrozenRadiantRun(value2.run);
     return { ...structuredClone(value2), ...retired ? { run: null, notice: retiredRadiantRunNotice } : {} };
   } catch {
@@ -18410,7 +18608,7 @@ function initialize(anchor, calibration, loadouts, entropy, encounter2 = 1, cont
     validateRadiantCombat(initial);
   }
   return {
-    version: 5,
+    version: 6,
     id: entropy.runId,
     encounter: encounter2,
     anchor,
@@ -18570,7 +18768,7 @@ function resolveRadiantRun(snapshot, request, authority) {
     discover = true;
   } else {
     const run2 = game.radiantStudy;
-    if (!run2 || run2.version !== 5 || run2.id !== request.runId || run2.encounter !== request.encounter)
+    if (!run2 || run2.version !== 6 || run2.id !== request.runId || run2.encounter !== request.encounter)
       throw new RadiantRunError("stale-run", "The saved Radiant encounter does not match.");
     validateFrozenRadiantRun(run2);
     if (run2.enemies.length !== run2.state.enemies.length || run2.enemies.some((enemy2, i) => enemy2.id !== run2.state.enemies[i].id || enemy2.currencyBudget !== run2.state.enemies[i].currency.budget || enemy2.currencyBudget !== run2.initial.enemies[i]?.currency.budget))
@@ -18675,7 +18873,7 @@ function canonical(value2) {
 }
 function validateFrozenRadiantRun(value2) {
   try {
-    if (!record4(value2) || value2.version !== 5 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !["authored-control", "radiant-pressure-v2"].includes(String(value2.calibration)) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
+    if (!record4(value2) || value2.version !== 6 || typeof value2.id !== "string" || !uuid2.test(value2.id) || typeof value2.encounter !== "number" || !Number.isSafeInteger(value2.encounter) || value2.encounter < 1 || typeof value2.quit !== "boolean" || !record4(value2.anchor) || !["authored-control", "radiant-pressure-v2"].includes(String(value2.calibration)) || !Array.isArray(value2.enemies) || !record4(value2.initial) || !record4(value2.state))
       throw new Error();
     for (const key of ["encounterSeed", "initialChargeSeed", "initialTargetSeed"])
       seed2(value2[key]);
@@ -18734,7 +18932,7 @@ function validateRadiantRunSnapshot(value2) {
       throw new Error();
     validateAccount(value2.state.account);
     const state = structuredClone(value2.state);
-    const retired = record4(state.radiantStudy) && (state.radiantStudy.version === 3 || state.radiantStudy.version === 4);
+    const retired = record4(state.radiantStudy) && (state.radiantStudy.version === 3 || state.radiantStudy.version === 4 || state.radiantStudy.version === 5);
     if (retired) delete state.radiantStudy;
     else if (state.radiantStudy !== void 0) validateFrozenRadiantRun(state.radiantStudy);
     return { ...structuredClone(value2), state, ...retired ? { notice: retiredRadiantRunNotice } : {} };
@@ -18756,7 +18954,7 @@ var eventFields = {
   status: { text: ["targetId", "status"], number: ["magnitude", "remaining"] }
 };
 function validSource(value2) {
-  return record4(value2) && (value2.kind === "enemy" ? validId(value2.enemyId) : ["normal", "flare", "passive", "master"].includes(String(value2.kind)) ? validId(value2.bearerId) : value2.kind === "gear" && validId(value2.bearerId) && validId(value2.conduitId));
+  return record4(value2) && (value2.kind === "enemy" ? validId(value2.enemyId) : ["normal", "flare", "passive", "master", "leader"].includes(String(value2.kind)) ? validId(value2.bearerId) : value2.kind === "gear" && validId(value2.bearerId) && validId(value2.conduitId));
 }
 function validEvent(value2) {
   if (!record4(value2) || typeof value2.type !== "string" || !Object.hasOwn(eventFields, value2.type)) return false;

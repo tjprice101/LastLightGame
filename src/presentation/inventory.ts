@@ -132,14 +132,14 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
       ['materials', 'Resources &amp; Items', account ? resourceCount : 'Unavailable'],
       ['conduits', 'Conduits', account ? ownedConduits.length + ownedMasters.length : 'Unavailable'],
     ] as const).map(([tab, label, count]) => `<button type="button" role="tab" id="inventory-tab-${tab}" class="inventory-tab" data-inventory-tab="${tab}" aria-controls="inventory-panel-${tab}" aria-selected="${selected === tab}" tabindex="${selected === tab ? 0 : -1}">${label} · ${count}</button>`).join('')}</div>
-    <section class="inventory-panel ref-panel" id="inventory-panel-materials" role="tabpanel" aria-labelledby="inventory-tab-materials" data-inventory-section="materials" data-menu-page-size="24" ${selected === 'materials' ? '' : 'hidden'}>
+    <section class="inventory-panel ref-panel" id="inventory-panel-materials" role="tabpanel" aria-labelledby="inventory-tab-materials" data-inventory-section="materials" data-menu-page-size="4" ${selected === 'materials' ? '' : 'hidden'}>
     <div class="ref-scroll">
     ${!account ? '<p role="alert">Resource inventory unavailable. Check the save error.</p>' : resourceCount
       ? `<ul class="inventory-item-grid">${chestItems}${components > 0 ? `<li class="inventory-item" data-inventory-resource="${mechanicalComponents.id}" ${itemMetadata(mechanicalComponents.name, 'components')}>
         ${catalogInformation({ name: mechanicalComponents.name, art: `<div class="inventory-item-art">${mechanicalComponentIcon()}</div>`, owned: components, effects: ["Upgrades ordinary Conduits up to +5; Conduit Upgrade shows costs. Masters can't be upgraded."] })}
-        ${information('inventory-components-details', mechanicalComponents.name, catalogInformation({ name: mechanicalComponents.name, art: mechanicalComponentIcon(), owned: components, effects: ["Upgrades ordinary Conduits up to +5; Conduit Upgrade shows costs. Masters can't be upgraded."], acquisition: machineComponentRulesText }), 'Details')}</li>` : ''}${ordinaryMaterials.length ? `<li class="inventory-group-heading" aria-hidden="true">Materials</li>${renderMaterials(ordinaryMaterials)}` : ''}${calamiticMaterialItems.length ? `<li class="inventory-group-heading calamitic-material-group" data-rarity="Calamitic">Calamitic Materials</li>${renderMaterials(calamiticMaterialItems)}` : ''}</ul>` : empty('materials')}</div>
+        ${information('inventory-components-details', mechanicalComponents.name, catalogInformation({ name: mechanicalComponents.name, art: mechanicalComponentIcon(), owned: components, effects: ["Upgrades ordinary Conduits up to +5; Conduit Upgrade shows costs. Masters can't be upgraded."], acquisition: machineComponentRulesText }), 'Details')}</li>` : ''}${renderMaterials(ordinaryMaterials)}${renderMaterials(calamiticMaterialItems)}</ul>` : empty('materials')}</div>
     ${account && resourceCount ? menuPager('Inventory resources') : ''}</section>
-    <section class="inventory-panel ref-panel" id="inventory-panel-conduits" role="tabpanel" aria-labelledby="inventory-tab-conduits" data-inventory-section="conduits" data-menu-page-size="24" ${selected === 'conduits' ? '' : 'hidden'}>
+    <section class="inventory-panel ref-panel" id="inventory-panel-conduits" role="tabpanel" aria-labelledby="inventory-tab-conduits" data-inventory-section="conduits" data-menu-page-size="4" ${selected === 'conduits' ? '' : 'hidden'}>
     <div class="ref-scroll">
     ${!account ? '<p role="alert">Conduit inventory unavailable. Check the save error.</p>' : ownedConduits.length + ownedMasters.length
       ? `<ul class="inventory-item-grid">${ownedConduits.map((conduit) => `<li class="inventory-item" ${omnicTheme(conduit.id)} data-inventory-conduit="${conduit.id}" ${itemMetadata(conduit.name, 'conduits', conduit.rarity, conduit.element ?? '')}>
@@ -212,7 +212,7 @@ export function bindInventory(host: HTMLElement, onSelect: (tab: InventoryTab) =
       const other: InventoryTab = current() === 'materials' ? 'conduits' : 'materials';
       if (visibleIn(other)) select(other);
     }
-    const count = items.filter(item => !item.hidden).length;
+    const count = items.filter(item => item.dataset.menuFiltered !== 'true').length;
     const result = host.querySelector<HTMLElement>('[data-inventory-results]');
     if (!result) throw new Error('Inventory results status is missing.');
     result.textContent = count ? `${count} of ${items.length} owned item types${active ? ' match' : ''}.`

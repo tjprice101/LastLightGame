@@ -36,6 +36,9 @@ describe('full sanctuary UI', () => {
       expect(sanctuaryDock(page)).toMatch(new RegExp(`data-page="${page}"[^>]+aria-current="page"`));
     }
     expect(sanctuaryDock('events')).toMatch(/data-page="gameplay"[^>]+aria-current="page"/);
+    expect(sanctuaryDock('conduit-store')).toMatch(/data-page="stores"[^>]+aria-current="page"/);
+    expect(sanctuaryDock('conduit-upgrade')).toMatch(/data-page="team"[^>]+aria-current="page"/);
+    expect(sanctuaryDock('team')).toContain('Elemental-Bearers');
     expect(sanctuaryDestination('character')).toBe('team');
     expect(sanctuaryDestination('squad')).toBe('team');
     expect(sanctuaryDestination('conduit-upgrade')).toBe('conduit-upgrade');
@@ -47,7 +50,7 @@ describe('full sanctuary UI', () => {
       expect(context).toContain(`data-character-category="${area}" aria-pressed="true"`);
     }
     const header = sanctuaryHeader('team', Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
-    expect(header).toContain('Help for Team');
+    expect(header).toContain('Help for Elemental-Bearers');
     expect(header).toContain('id="sanctuary-help"');
     expect(header.match(/data-page="inventory"/g)).toHaveLength(2);
     expect(header).toContain('id="fractalis-balance">9007199254740991');

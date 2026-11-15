@@ -16,6 +16,7 @@ import type { SocialCalendarView } from '../online/social-calendar';
 import { socialRewardText } from './social-calendar';
 import { currencyIcon } from './currency-icon';
 import { chapterOneTitle } from '../content/story-codex';
+import { information } from './information';
 
 type HubIcon = Parameters<typeof uiIcon>[0];
 
@@ -25,8 +26,8 @@ function squadCard(account: Account, loadout: RadiantLoadout, index: number): st
   const name = characterName(loadout.starter, loadout.form, loadout.ascension.stats === true);
   return `<button type="button" class="home-squad-member${leader ? ' is-leader' : ''}" style="--member-accent:${member.color}"
       data-page="team" data-team-area="bearers" data-team-character="${loadout.starter}" aria-label="Open ${escape(member.name)} in Team, ${leader ? 'squad leader' : `squad member ${index + 1}`}">
-      <span class="home-element-light" aria-hidden="true"></span><span class="home-squad-art">${radiantAllyArt(loadout)}</span>
-      <span class="home-squad-caption"><b>${escape(getStarter(loadout.starter).name)}</b><small>${leader ? 'Leader · ' : ''}Lv.${loadout.level}</small></span>
+      ${leader ? '<span class="home-leader-badge">Leader</span>' : ''}<span class="home-element-light" aria-hidden="true"></span><span class="home-squad-art">${radiantAllyArt(loadout)}</span>
+      <span class="home-squad-caption"><b>${escape(getStarter(loadout.starter).name)}</b><small>Lv.${loadout.level}</small></span>
       <span class="ref-sr-only">${escape(name)}</span>
     </button>`;
 }
@@ -38,12 +39,11 @@ function emptySquadSlot(index: number): string {
 
 function quickAccess(online: boolean): string {
   const actions: readonly (readonly [string, string, string, HubIcon, string?])[] = [
-    ['help', 'Menu', 'Open the game guide', 'settings', 'sanctuary-help'],
-    ['collections', 'Archive', 'Collections and discoveries', 'overview'],
-    ['team', 'Loadouts', 'Saved squad configurations', 'squad'],
     ['team', 'Squad', 'Manage your six-slot formation', 'squad'],
-    ['stores', 'Exchange', 'Material Exchange and shops', 'weapon'],
+    ['team', 'Loadouts', 'Saved squad configurations', 'squad'],
     ['inventory', 'Items', 'Inventory and currencies', 'inventory'],
+    ['collections', 'Archive', 'Collections and discoveries', 'overview'],
+    ['stores', 'Exchange', 'Material Exchange and shops', 'weapon'],
     ['profile', 'Friends', 'Friends and messages', 'squad'],
     ['profile', 'Daily', 'Attendance and mailbox', 'story'],
   ];
@@ -82,7 +82,7 @@ export function referenceHomeProfile(starter: Starter, account: Account | null):
       data-page="team" data-team-area="bearers" data-team-character="${leader.starter}" aria-label="Open squad leader ${escape(name)} in Team">
     <span class="home-profile-art">${radiantAllyArt(leader)}</span>
     <span class="home-profile-copy"><small>Leader · ${bearer.element}</small><b>${escape(bearer.name)}</b>
-      <small>Lv.${leader.level}</small>
+      <small>Lv.${leader.level} · ${bearer.element}</small>
       <span class="home-profile-attunement">${radiantAttunementChip(leader)}${radiantAttunementName(leader)}</span></span></button>`;
 }
 
@@ -107,7 +107,7 @@ export function referenceHome(starter: Starter, account: Account | null, online 
         <span class="home-feature-cta">Play <span aria-hidden="true">&rarr;</span></span></span>
     </button>
   </article>`;
-  const attendanceFeature = `<article class="home-feature-slide" data-home-slide="1" hidden>
+  const attendanceFeature = `<article class="home-attendance-panel">
     <div class="home-feature-link home-feature-attendance">
       <div class="home-feature-copy" data-home-attendance>
         <small class="home-feature-eyebrow">Daily rewards</small><strong>Attendance</strong>
@@ -116,7 +116,7 @@ export function referenceHome(starter: Starter, account: Account | null, online 
       </div>
     </div>
   </article>`;
-  const summonFeature = `<article class="home-feature-slide" data-home-slide="2" hidden>
+  const summonFeature = `<article class="home-feature-slide" data-home-slide="1" hidden>
     <button type="button" class="home-feature-link home-feature-summon" data-page="summon" ${banner.artwork.path ? `style="--home-feature-image:url('${assetUrl(banner.artwork.path)}')"` : ''}>
       ${banner.artwork.path ? `<img class="home-feature-art" src="${assetUrl(banner.artwork.path)}" alt="" draggable="false" />` : '<span class="home-feature-pending">Banner artwork pending</span>'}
       <span class="home-feature-scrim" aria-hidden="true"></span>
@@ -125,14 +125,14 @@ export function referenceHome(starter: Starter, account: Account | null, online 
         <span class="home-feature-cta">Summon <span aria-hidden="true">&rarr;</span></span></span>
     </button>
   </article>`;
-  const warFeature = `<article class="home-feature-slide" data-home-slide="3" hidden>
+  const warFeature = `<article class="home-feature-slide" data-home-slide="2" hidden>
     <button type="button" class="home-feature-link home-feature-war" data-page="gameplay">
       <span class="home-feature-glyph" aria-hidden="true">${uiIcon('gameplay')}</span>
       <span class="home-feature-copy"><small class="home-feature-eyebrow">Endgame activity</small><strong>Elemental War</strong>
         <span class="home-feature-cta">Choose a trial <span aria-hidden="true">&rarr;</span></span></span>
     </button>
   </article>`;
-  const eventsFeature = `<article class="home-feature-slide" data-home-slide="4" hidden>
+  const eventsFeature = `<article class="home-feature-slide" data-home-slide="3" hidden>
     <button type="button" class="home-feature-link home-feature-events" data-page="events">
       <span class="home-feature-glyph" aria-hidden="true">${uiIcon('story')}</span>
       <span class="home-feature-copy"><small class="home-feature-eyebrow">Limited activities</small><strong>Events</strong>
@@ -146,16 +146,17 @@ export function referenceHome(starter: Starter, account: Account | null, online 
       <header class="home-section-heading"><div><p class="home-feature-eyebrow">Your formation</p><h2 id="home-squad-heading">Squad</h2></div>
         <span class="ref-sr-only">${loadouts.length} / ${squadMemberLimit} Element-Bearers</span></header>
       ${squad.length > eligible.length ? `<p class="home-squad-note" role="note">${squad.length - eligible.length === 1 ? 'One saved member is' : `${squad.length - eligible.length} saved members are`} not an acquired Element-Bearer and cannot fight. Replace them in Manage squad.</p>` : ''}
-      <div class="home-squad-grid" aria-label="Your squad">${squadCards}</div>${leaderSkill}
+      <div class="home-squad-grid" aria-label="Your squad">${squadCards}</div>
+      ${leaderSkill ? `<div class="home-leader-reference">${information('home-leader-information', 'Leader Skill', leaderSkill, 'Leader Skill')}</div>` : ''}
     </section>
     ${quickAccess(online)}
     <section class="home-featured" aria-label="Featured destinations">
-      <div class="home-feature-carousel" data-home-carousel>${storyFeature}${attendanceFeature}${summonFeature}${warFeature}${eventsFeature}
+      <div class="home-feature-carousel" data-home-carousel>${storyFeature}${summonFeature}${warFeature}${eventsFeature}
         <button type="button" class="home-feature-arrow is-previous" data-home-carousel-step="-1" aria-label="Previous featured destination">&lsaquo;</button>
         <button type="button" class="home-feature-arrow is-next" data-home-carousel-step="1" aria-label="Next featured destination">&rsaquo;</button></div>
-      <div class="home-feature-indicators" aria-label="Choose a featured destination">${[0, 1, 2, 3, 4].map(index =>
+      <div class="home-feature-indicators" aria-label="Choose a featured destination">${[0, 1, 2, 3].map(index =>
         `<button type="button" data-home-carousel-index="${index}" aria-label="Show featured destination ${index + 1}" aria-pressed="${index === 0}"></button>`).join('')}</div>
-    </section>
+    </section>${attendanceFeature}
   </div>`;
 }
 

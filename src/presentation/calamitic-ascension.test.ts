@@ -71,7 +71,7 @@ describe('Calamitic Ascension presentation', () => {
     expect(html).toContain(radiantBearerKits.ember.leader);
     expect(html).toContain('Convergent Light');
     expect(html).toContain('50% of the evolution-enhanced Passive Skill bonus');
-    expect(html).toContain('50% of the native Leader Skill damage bonus');
+    expect(html).toContain('Increase native Leader Skill effects by 50%');
     expect(html).toContain('50% of evolution- and rank-enhanced Convergent Light effect magnitudes');
     expect(html).not.toContain('Cinder Cleave');
     expect(html).not.toContain('Skill Efficiency');

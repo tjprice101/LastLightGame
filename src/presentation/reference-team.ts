@@ -13,7 +13,7 @@ import { assetUrl, portrait } from './portrait';
 import { ownedCompanion } from './owned-companion';
 import { characterDetail, stats, referenceEquipment } from './hub';
 import { squadHub } from './roster';
-import { materialArt, materialName } from '../content/dungeon-art';
+import { elementAccents, materialArt, materialName } from '../content/dungeon-art';
 import { information } from './information';
 import { currencyIcon } from './currency-icon';
 import { elementLabel } from './element-label';
@@ -46,7 +46,7 @@ export function filterTeamCollection(host: HTMLElement, query: string): void {
     if (matches) visible++;
   });
   const count = host.querySelector<HTMLElement>('[data-collection-count]');
-  if (count) count.textContent = `${visible} shown · ${count.dataset.collectionTotal ?? items.length} match current filters`;
+  if (count) count.textContent = host.querySelector('.ref-bearer-collection') ? `${visible} shown` : `${visible} shown · ${count.dataset.collectionTotal ?? items.length} match current filters`;
   const empty = host.querySelector<HTMLElement>('[data-collection-empty]');
   if (empty) empty.hidden = visible > 0;
   host.querySelectorAll('.ref-team-collection[data-menu-page-size]').forEach(panel => panel.dispatchEvent(new Event('menu-list-filtered')));
@@ -84,8 +84,9 @@ function bearerGrid(account: Account, state: ReferenceTeamState): string {
     state.sort === 'level' ? ownedProgress(account, b).level - ownedProgress(account, a).level || getStarter(a).name.localeCompare(getStarter(b).name)
       : state.sort === 'element' ? getStarter(a).elementId.localeCompare(getStarter(b).elementId) || getStarter(a).name.localeCompare(getStarter(b).name)
         : getStarter(a).name.localeCompare(getStarter(b).name));
-  return `<section class="ref-panel ref-team-collection" data-menu-page-size="24"><header class="ref-panel-heading">Element-Bearers <span data-collection-count data-collection-total="${list.length}">${list.length} owned</span></header>
-    <div class="ref-roster-toolbar"><nav class="ref-segment" aria-label="Filter owned Element-Bearers"><button data-team-element="" aria-pressed="${!state.element}">All</button>${elements.filter(element => ids.some(id => getStarter(id).elementId === element.id)).map(element => `<button data-team-element="${element.id}" aria-pressed="${state.element === element.id}">${element.name}</button>`).join('')}</nav>
+  const title = state.tab === 'upgrade-1' ? 'Choose a Bearer to level up' : state.tab === 'upgrade-0' ? 'Choose a Bearer to evolve' : state.tab === 'equipment' ? 'Choose a Bearer for Conduits' : 'Element-Bearers';
+  return `<section class="ref-panel ref-team-collection ref-bearer-collection"><header class="ref-panel-heading"><h2>${title}</h2><span data-collection-count data-collection-total="${list.length}">${list.length} shown</span></header>
+    <div class="ref-roster-toolbar"><nav class="ref-segment" aria-label="Filter owned Element-Bearers"><button data-team-element="" aria-pressed="${!state.element}">All</button>${elements.map(element => `<button data-team-element="${element.id}" style="--filter-accent:${elementAccents[element.id]}" aria-pressed="${state.element === element.id}">${element.name}</button>`).join('')}</nav>
     <label class="ref-collection-search">Search <input type="search" data-team-search value="${escapeDialogText(state.query ?? '')}" placeholder="Name, element or level" aria-label="Search owned Element-Bearers"></label>
     <label>Sort by <select data-team-sort data-native-select aria-label="Sort owned Element-Bearers"><option value="level" ${state.sort === 'level' ? 'selected' : ''}>Level</option><option value="name" ${state.sort === 'name' ? 'selected' : ''}>Name</option><option value="element" ${state.sort === 'element' ? 'selected' : ''}>Element</option></select></label></div>
     <div class="ref-scroll"><div class="ref-bearer-grid">${list.map(id => {
@@ -94,7 +95,7 @@ function bearerGrid(account: Account, state: ReferenceTeamState): string {
       const search = `${characterName(id, progress.evolution)} ${starter.name} ${starter.element} ${starter.elementId} ${progress.level} ${starter.stars}`.toLowerCase();
       return `<button class="ref-collection-card ref-bearer-card" data-collection-item data-menu-page-item data-collection-search="${escapeDialogText(search)}" data-team-detail="${id}" style="--member-accent:${starter.color}" aria-label="${escapeDialogText(characterName(id, progress.evolution))}, level ${progress.level}" title="${escapeDialogText(characterName(id, progress.evolution))}"><span class="ref-card-art">${ownedCompanion(account, id).compactArt}</span><span class="ref-card-caption"><small>Lv.${progress.level}</small></span></button>`;
     }).join('')}<button class="ref-collection-card ref-add-card" data-page="summon">+ Summon more</button>
-    <p class="ref-empty" data-collection-empty ${list.length ? 'hidden' : ''}>No matches.</p></div></div>${menuPager('Element-Bearers')}</section>`;
+    <p class="ref-empty" data-collection-empty ${list.length ? 'hidden' : ''}>No matches.</p></div></div></section>`;
 }
 
 function captureGrid(account: Account, state: ReferenceTeamState): string {
@@ -110,7 +111,7 @@ function captureGrid(account: Account, state: ReferenceTeamState): string {
     return aCreature.name.localeCompare(bCreature.name);
   });
   const filters = elements.filter((element) => copies.some((copy) => getCreature(copy.creatureId).element === element.id));
-  return `<section class="ref-panel ref-team-collection" data-team-collection="creatures" data-menu-page-size="8"><header class="ref-panel-heading">Captured Elemental-Devourers <span data-collection-count data-collection-total="${list.length}">${list.length} shown · ${list.length} match current filters</span><span>Lock the ones you want to keep. Storage has no limit.</span></header>
+  return `<section class="ref-panel ref-team-collection" data-team-collection="creatures" data-menu-page-size="4"><header class="ref-panel-heading">Captured Elemental-Devourers <span data-collection-count data-collection-total="${list.length}">${list.length} shown · ${list.length} match current filters</span><span>Lock the ones you want to keep. Storage has no limit.</span></header>
     ${copies.length ? `<div class="ref-roster-toolbar"><nav class="ref-segment" aria-label="Filter captured Elemental-Devourers"><button data-team-element="" aria-pressed="${!state.element}">All</button>${filters.map((element) => `<button data-team-element="${element.id}" aria-pressed="${state.element === element.id}">${element.name}</button>`).join('')}</nav>
     <label class="ref-collection-search">Search <input type="search" data-team-search value="${escapeDialogText(state.query ?? '')}" placeholder="Name, element, form or level" aria-label="Search captured Elemental-Devourers"></label>
     <label>Sort by <select data-team-sort data-native-select aria-label="Sort captured Elemental-Devourers"><option value="level" ${state.sort === 'level' ? 'selected' : ''}>Level</option><option value="name" ${state.sort === 'name' ? 'selected' : ''}>Name</option><option value="element" ${state.sort === 'element' ? 'selected' : ''}>Element</option></select></label></div>
@@ -240,10 +241,10 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
     const progress = ownedProgress(account, state.selected);
     const squad = equippedSquad(account);
     const title = characterArt(state.selected, progress.evolution).title;
-    const cap = characterLevelCap(progress.evolution, state.selected);
+    const cap = characterLevelCap(progress.evolution, state.selected, progress.ascension?.stats === true);
     const radiant = radiantCharacterLoadout(account, starter.id);
     content = `<section class="ref-team-detail ref-bearer-detail" data-acquisition-character="${starter.id}" data-character-view="${state.tab ?? 'overview'}" style="--unit-accent:${starter.color}">
-      <header class="ref-panel ref-character-header hub-showcase"><div class="ref-character-portrait hub-portrait">${portrait(starter, progress.evolution)}
+      <header class="ref-panel ref-character-header hub-showcase"><div class="ref-character-portrait hub-portrait">${portrait(starter, progress.evolution, progress.ascension?.stats === true)}
         <div class="ref-portrait-stat-overlay">${radiant ? radiantPortraitStats(radiant.loadout) : ''}</div>
         <div class="ref-portrait-caption">${elementLabel(starter.elementId)}<span>${starter.weapon}</span></div></div>
         <div class="ref-character-identity"><p data-reference-prefix>${title} · ${starter.weapon}</p><h2 data-reference-name>${characterName(starter.id, progress.evolution, progress.ascension?.stats === true)}</h2>

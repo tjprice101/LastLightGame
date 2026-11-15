@@ -1,5 +1,39 @@
 # Conduits and Conduit Store
 
+## Current Radiant equipment (D-456; local-only)
+
+The current working tree has **99 ordinary-slot Conduits and 96 personal
+Masters**. Each has one or two concise effects; no two share the same
+effect-kind combination even when numeric values are ignored. They combine
+recognizable pre-Radiant themes with simple new Radiant mechanics instead of
+repeating a stat template. Examples include conditional attacks, native Burn
+power, defending Shields, direct-kill recovery, support charge, splash and
+bounded incoming-hit responses.
+
+The executable definitions are `src/content/conduit-effects.ts` and
+`src/content/combat-kits.ts`; `src/content/conduit-effect-text.ts` supplies
+plain-English effects to equipment, shops, inventory and battle references.
+Exact values, targets, triggers and meaningful limits remain visible.
+Automatic stat brackets are not reintroduced. Historical catalogs and
+pre-Radiant rules below are provenance, not current Radiant effect authority.
+
+Ordinary ranks remain +0 through +5, scaling authored magnitudes by
+`1 + 0.1 * rank`; Masters retain fixed magnitudes and personal attunements.
+There are still eight ordinary slots, at most four matching-element Omnics
+and at most five universal Calamitic Conduits. IDs, ownership, acquisition,
+artwork, upgrade spending and Master eligibility are unchanged.
+
+Effects apply through the real engine, including Master stat effects and
+explicit triggers, not only equipment previews. An authority-path regression
+verifies Vigil Core's increased maximum Health, Reserve Torque Crank's bonus
+Luminosity and frozen equipment across reload/menu changes. The isolated live
+UI also verified Elise's Health changes from 5,577.5 to 6,693 with Vigil Core +0.
+
+See the [combat contract](combat.md#distinct-leader-and-equipment-mechanics-d-456-local-only)
+for anti-recursion, native/generated boundaries, clocks and schema-6 run
+retirement. This is a mechanical redesign, not the earlier copy-only audit,
+and is **not published or deployed**.
+
 ## Description and scaling clarification (2026-11-03)
 
 Use the [global in-game tooltip standard](menus-and-inventory.md#in-game-description-standard-2026-11-03):

@@ -35,12 +35,12 @@ async function send(transport: LocalRadiantTransport, operation: RadiantRunOpera
 }
 
 describe('local Radiant authority', () => {
-  it('retires old rules without changing storage, revision, holdings or saved rewards on read', async () => {
+  it.each([3, 4, 5])('retires rules %s without changing storage, revision, holdings or saved rewards on read', async version => {
     const storage = seeded();
     const transport = new LocalRadiantTransport(storage, () => 'ember');
     const started = await send(transport, { kind: 'start', activity: { kind: 'training' }, calibration: 'authored-control' });
     const record = JSON.parse(storage.getItem(LOCAL_RADIANT_KEY)!);
-    record.run.version = 3;
+    record.run.version = version;
     storage.setItem(LOCAL_RADIANT_KEY, JSON.stringify(record));
     const before = new Map(storage.values);
     const checkpoint = await transport.read();
@@ -49,7 +49,7 @@ describe('local Radiant authority', () => {
     expect(storage.values).toEqual(before);
     const fresh = await send(transport, { kind: 'start', activity: { kind: 'training' }, calibration: 'authored-control' });
     expect(fresh.revision).toBe(started.revision + 1);
-    expect(fresh.run.version).toBe(5);
+    expect(fresh.run.version).toBe(6);
     expect((await transport.read()).notice).toBeUndefined();
   });
 
@@ -65,7 +65,7 @@ describe('local Radiant authority', () => {
     expect(result.state.radiantStudy).toBeUndefined();
     expect(result.state.account).toEqual(started.account);
     expect(snapshot).toEqual(before);
-    snapshot.state.radiantStudy.version = 5;
+    snapshot.state.radiantStudy.version = 6;
     snapshot.state.radiantStudy.state.enemies[0].elementId = null;
     expect(() => validateRadiantRunSnapshot(snapshot)).toThrow('Invalid saved Radiant account');
   });
@@ -89,6 +89,29 @@ describe('local Radiant authority', () => {
     const reloaded = await new LocalRadiantTransport(storage, () => 'ember').read();
     expect(reloaded.run?.id).toBe(started.run.id);
     expect(reloaded.run?.state.bearers).toHaveLength(2);
+  });
+  it('applies owned Conduits in a new battle and keeps their frozen effects after menu equipment changes', async () => {
+    const storage = seeded();
+    const account = loadAccount(storage);
+    account.squad = ['ember', 'tide'];
+    account.conduits = { 'vigil-core': 1, 'reserve-torque-crank': 1 };
+    account.conduitEquipment = { ember: ['vigil-core', 'reserve-torque-crank', null, null, null, null, null, null] };
+    saveAccount(storage, account);
+    const transport = new LocalRadiantTransport(storage, () => 'ember');
+    const started = await send(transport, { kind: 'start', activity: { kind: 'training' }, calibration: 'authored-control' });
+    expect(started.run.state.bearers[0].stats.hp).toBe(288);
+    const unequipped = loadAccount(storage);
+    unequipped.conduitEquipment = {};
+    saveAccount(storage, unequipped);
+    const reloaded = new LocalRadiantTransport(storage, () => 'ember');
+    expect((await reloaded.read()).run!.state.bearers[0].stats.hp).toBe(288);
+    const result = await send(reloaded, { kind: 'action', action: {
+      type: 'normal', bearerId: 'ember', targetId: started.run.state.enemies[0].id,
+    } });
+    expect(result.run.state.gauge.members[0].charge).toBe(12);
+    expect(result.events).toContainEqual(expect.objectContaining({
+      type: 'charge', gearSource: { kind: 'gear', bearerId: 'ember', conduitId: 'reserve-torque-crank' },
+    }));
   });
 
   it('commits actions and exits while keeping the saved account', async () => {

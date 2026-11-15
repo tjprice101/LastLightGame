@@ -54,15 +54,29 @@ describe('live redesigned menus', () => {
     expect(root.querySelector('[data-workspace-tab="upgrade-0"]')?.getAttribute('data-team-view')).toBe('bearers');
     expect(root.querySelector('[data-team-view="creatures"]')).not.toBeNull();
     expect(root.querySelector('[data-team-view="loadouts"]')).not.toBeNull();
+    expect(root.querySelector('[data-page="conduit-upgrade"]')?.textContent).toContain('Upgrade Conduits');
+    expect(root.querySelector('h2')?.textContent).toBe('Elemental-Bearers');
   });
-  it('moves original controls without replacing them and separates utility groups', () => {
+  it('preserves the single shortcut row and original controls during repeated formatting', () => {
     const root = document.createElement('div');
     root.innerHTML = `<div class="home-dashboard"><div class="home-leader-skill">Leader</div><nav class="home-shortcuts">${Array.from({ length: 8 }, (_, i) => `<button>${i}</button>`).join('')}</nav></div>`;
     const button = root.querySelector('button');
     formatMenuWorkspace(root);
     expect(root.querySelector('button')).toBe(button);
-    expect(Array.from(root.querySelectorAll('.workspace-command-group')).map(group => group.children.length)).toEqual([4, 4]);
-    expect(root.querySelector('.home-dashboard')?.lastElementChild?.className).toBe('home-leader-skill');
+    expect(root.querySelectorAll('.workspace-command-group')).toHaveLength(0);
+    expect(root.querySelector('.home-shortcuts')?.children).toHaveLength(8);
+    expect(root.querySelector('.home-dashboard')?.firstElementChild?.className).toBe('home-leader-skill');
+  });
+  it('renders only saved squad members and keeps growth separate from collection navigation', () => {
+    const account = { ...emptyAccount(), characters: { tide: { level: 15, evolution: 2 } }, squad: ['tide'] };
+    const before = structuredClone(account);
+    const root = document.createElement('div');
+    root.innerHTML = workspaceUnitsMenu(account);
+    expect(root.querySelectorAll('.workspace-squad-members button')).toHaveLength(1);
+    expect(root.querySelector('.workspace-squad-members img')?.getAttribute('alt')).toContain('Tizu');
+    expect(root.querySelectorAll('.workspace-unit-actions > section')).toHaveLength(2);
+    expect(root.querySelector('[data-workspace-tab="equipment"]')?.getAttribute('data-team-view')).toBe('bearers');
+    expect(account).toEqual(before);
   });
   it('keeps the actual Leader Skill visible alongside upgrade controls without duplication', () => {
     const root = document.createElement('div');
@@ -71,7 +85,8 @@ describe('live redesigned menus', () => {
     formatMenuWorkspace(root, emptyAccount());
     expect(root.querySelectorAll('.workspace-leader-skill')).toHaveLength(1);
     expect(root.textContent).toContain('Hearthbound Oath');
-    expect(root.textContent).toContain('20% more attack damage');
+    expect(root.textContent).toContain('Normal Attacks deal 20% more damage');
+    expect(root.textContent).toContain('Burn applied by the recipient');
   });
   it('keeps level and attunement together without repeating the subtype', () => {
     const root = document.createElement('div');

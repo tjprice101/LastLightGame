@@ -24,6 +24,7 @@ import { radiantMasterEffect } from './master-text';
 import { escapeDialogText } from './game-dialog';
 import { getStarter } from '../content/starters';
 import { characterReleased } from '../content/release-visibility';
+import { menuPager } from './menu-pagination';
 
 const starters = allStarters.filter(character => characterReleased(character.id));
 const masterConduits = allMasters.filter(master => characterReleased(master.character));
@@ -56,7 +57,7 @@ function characterArchive(account: Account | null): string {
       const current = progress?.evolution === evolution;
       const radiant = current ? radiantCharacterLoadout(account, starter.id)
         : radiantCharacterLoadout(null, starter.id, { level: 0, evolution, weaponRank: 0 });
-      return `<article class="archive-card ${revealed ? 'archive-form-revealed' : 'archive-form-locked'}" data-archive-character="${starter.id}" data-form="${evolution}" data-filter-element="${starter.elementId}" data-filter-rarity="${characterRarity(starter.id, evolution)}" data-filter-ownership="${!account ? 'unavailable' : owned ? 'owned' : 'unowned'}" data-filter-discovery="${!account ? 'unavailable' : revealed ? 'revealed' : 'locked'}" data-filter-stars="${starter.stars}">
+      return `<article class="archive-card ${revealed ? 'archive-form-revealed' : 'archive-form-locked'}" data-archive-character="${starter.id}" data-form="${evolution}" data-filter-element="${starter.elementId}" data-filter-rarity="${characterRarity(starter.id, evolution)}" data-filter-ownership="${!account ? 'unavailable' : owned ? 'owned' : 'unowned'}" data-filter-discovery="${!account ? 'unavailable' : revealed ? 'revealed' : 'locked'}" data-filter-stars="${starter.stars}" data-menu-page-item>
         <div class="archive-portrait${revealed ? '' : ' unreached-character-art'}">${portrait(starter, evolution, current && progress?.ascension?.stats === true)}</div>
         <h3>${starter.name}</h3><span class="archive-form-label">Evo.${displayEvolution(starter.id, evolution)}</span>
         ${elementLabel(starter.elementId)}${characterRating(starter.id, evolution, current && progress?.ascension?.stats === true)}
@@ -93,13 +94,13 @@ function conduitArchive(account: Account | null): string {
       <button class="text-button" data-reset-conduit-filters>Reset filters</button>
     </div><div class="archive-results-toolbar"><p data-conduit-filter-result role="status">${total} / ${total} Conduits shown</p>
     <div class="ref-archive-manage"><button class="text-button" data-page="conduit-store">Conduit Store &rarr;</button><button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button></div></div>
-    <div class="archive-grid">${shown.map((conduit) => `<article class="archive-card ${(account?.conduits?.[conduit.id] ?? 0) > 0 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-conduit="${conduit.id}" data-filter-rarity="${conduit.rarity}" data-filter-ownership="${ownership((account?.conduits?.[conduit.id] ?? 0) > 0)}" ${omnicTheme(conduit.id)}>
+    <div class="archive-grid">${shown.map((conduit) => `<article class="archive-card ${(account?.conduits?.[conduit.id] ?? 0) > 0 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-conduit="${conduit.id}" data-filter-rarity="${conduit.rarity}" data-filter-ownership="${ownership((account?.conduits?.[conduit.id] ?? 0) > 0)}" data-menu-page-item ${omnicTheme(conduit.id)}>
       <div class="archive-mechanism">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div>
       <h3>${conduit.name}</h3>${conduitRarity(conduit.id)}
       <p class="archive-ownership">${account ? `Owned ${account.conduits?.[conduit.id] ?? 0}` : 'Ownership unavailable'}</p>
       <p class="archive-effect">${readableEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]))}</p>
       ${information(`archive-conduit-${conduit.id}`, conduit.name, conduitDetails(conduit.id, account?.conduitUpgrades?.[conduit.id], (account?.conduits?.[conduit.id] ?? 0) > 0), 'Details')}
-    </article>`).join('')}${masterConduits.map(entry => `<article class="archive-card ${account?.masterConduits?.[entry.id] === 1 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" ${conduitElementTheme(getStarter(entry.character).elementId)} data-archive-master="${entry.id}" data-filter-rarity="Master" data-filter-ownership="${ownership(account?.masterConduits?.[entry.id] === 1)}">
+    </article>`).join('')}${masterConduits.map(entry => `<article class="archive-card ${account?.masterConduits?.[entry.id] === 1 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" ${conduitElementTheme(getStarter(entry.character).elementId)} data-archive-master="${entry.id}" data-filter-rarity="Master" data-filter-ownership="${ownership(account?.masterConduits?.[entry.id] === 1)}" data-menu-page-item>
       <div class="archive-mechanism">${masterConduitIcon(entry.id)}</div><h3>${entry.name}</h3>
       <p>Omnic Master · ${getStarter(entry.character).name}</p>${conduitElementLabel(getStarter(entry.character).elementId)}<p class="archive-ownership">${account ? account.masterConduits?.[entry.id] === 1 ? 'Owned' : 'Not owned' : 'Ownership unavailable'}</p>
       <p class="archive-effect">${readableEffect(escapeDialogText(radiantMasterEffect(entry.id)))}</p><p>Choose from a ${masterChest.name}. Final Machines boss: ${masterChest.chance * 100}% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Character-specific; cannot be upgraded.</p>
@@ -115,9 +116,10 @@ export function archives(account: Account | null, selected: ArchiveGallery = 'ch
     <nav class="archive-navigation" aria-label="Archive galleries">${galleries.map((gallery) =>
       `<button class="archive-gallery-button" data-archive-gallery="${gallery.id}" aria-label="${gallery.name}" aria-controls="archive-${gallery.id}" aria-pressed="${selected === gallery.id}"><strong>${gallery.tab}</strong><small class="ref-sr-only">${gallery.subtitle}</small></button>`).join('')}</nav>
     ${!account ? '<p role="alert">Ownership and discoveries unavailable. Check the save error. You can still browse the catalog.</p>' : ''}
-    ${galleries.map((gallery) => `<section id="archive-${gallery.id}" class="archive-panel" aria-labelledby="archive-${gallery.id}-heading" ${selected === gallery.id ? '' : 'hidden'}>
+    ${galleries.map((gallery) => `<section id="archive-${gallery.id}" class="archive-panel" aria-labelledby="archive-${gallery.id}-heading" ${selected === gallery.id ? '' : 'hidden'}${gallery.id === 'story' ? '' : ' data-menu-page-size="8"'}>
       <h2 class="ref-sr-only" id="archive-${gallery.id}-heading" tabindex="-1">${gallery.name}</h2>
       ${gallery.id === 'characters' ? characterArchive(account) : gallery.id === 'conduits' ? conduitArchive(account) : gallery.id === 'story' ? storyCodex(account) : creatureGlossary(account)}
+      ${gallery.id !== 'story' && (gallery.id !== 'creatures' || account) ? menuPager(gallery.name) : ''}
     </section>`).join('')}</section>`;
 }
 
@@ -131,11 +133,13 @@ export function bindArchives(host: HTMLElement): void {
     for (const card of cards) {
       card.hidden = !filters.every((filter) => !filter.value ||
         card.getAttribute(`data-filter-${filter.dataset.characterFilter}`) === filter.value);
+      card.dataset.menuFiltered = String(card.hidden);
       if (!card.hidden) shown++;
     }
     const result = host.querySelector<HTMLElement>('[data-character-filter-result]');
     if (!result) throw new Error('Character archive filter status is missing.');
     result.textContent = shown ? `${shown} / ${cards.length} forms shown` : 'No forms match these filters.';
+    host.querySelector('#archive-characters')?.dispatchEvent(new Event('menu-list-filtered'));
   };
   filters.forEach((filter) => filter.addEventListener('change', filterCards));
   host.querySelector('[data-reset-character-filters]')?.addEventListener('click', () => {
@@ -191,9 +195,11 @@ function bindConduitFilters(host: HTMLElement): void {
     for (const { card, index } of cards) {
       card.hidden = !filters.every(filter => !filter.value || card.getAttribute(`data-filter-${filter.dataset.conduitFilter}`) === filter.value)
         || !terms.every(term => index[field].includes(term));
+      card.dataset.menuFiltered = String(card.hidden);
       if (!card.hidden) shown++;
     }
     result.textContent = shown ? `${shown} / ${cards.length} Conduits shown` : 'No Conduits match these filters.';
+    host.querySelector('#archive-conduits')?.dispatchEvent(new Event('menu-list-filtered'));
   };
   search.addEventListener('input', apply);
   scope.addEventListener('change', apply);

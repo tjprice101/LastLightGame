@@ -10,6 +10,7 @@ const starters = allStarters.filter(character => characterReleased(character.id)
 const creatures = allCreatures.filter(creature => creatureReleased(creature.id));
 import { profilePictures } from '../content/profile-pictures';
 import { eventDevourers, eventDevourerAvailable } from '../content/event-devourers';
+import { bindMenuPagination } from './menu-pagination';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -21,6 +22,23 @@ const profile: OnlineProfileDisplay = {
 };
 
 describe('online Material Exchange and Cosmetic Store', () => {
+  it('paginates every event Devourer without losing its purchase control', () => {
+    document.body.innerHTML = onlineStores(emptyAccount(), null, 'event-devourers');
+    bindMenuPagination(document.body);
+    const seen = new Set<string>();
+    for (let page = 1; page <= 6; page++) {
+      expect(document.querySelector('[data-menu-page-status]')?.textContent).toBe(`${page} / 6`);
+      const cards = Array.from(document.querySelectorAll<HTMLElement>('.event-devourer-card:not([hidden])'));
+      expect(cards).toHaveLength(2);
+      for (const card of cards) {
+        expect(card.querySelector('[data-buy-event-devourer]')).not.toBeNull();
+        seen.add(card.dataset.creature!);
+      }
+      if (page < 6) document.querySelector<HTMLButtonElement>('[data-menu-page="1"]')!.click();
+    }
+    expect(seen.size).toBe(12);
+    expect(document.querySelector<HTMLButtonElement>('[data-menu-page="1"]')!.disabled).toBe(true);
+  });
   it('lists released event copies with delivered Moon art and hides Sunshade', () => {
     document.body.innerHTML = onlineStores(emptyAccount(), null, 'event-devourers');
     const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-buy-event-devourer]'));

@@ -1,5 +1,105 @@
 # Current state and handoff
 
+## Game-wide reference theme rollout (2026-11-15; local-only)
+
+**Implemented (D-457):** `src/presentation/menu-reference-rollout.css`
+applies the reference navy/plum/peach theme to every remaining menu, per the
+[menu contract](menus-and-inventory.md#game-wide-reference-theme-d-457-local-only).
+Covered screens are Gameplay (Story, Training, dungeons Normal and Calamity,
+infusions, War, Oblivion, Machines, currency modes, Events), Summon, all five
+stores, Collections, Inventory, the Captured gallery and its tabs, View Unit,
+Loadouts, Squad and the squad picker.
+
+The final sweep fixed three issues:
+
+- Activity detail spilled past its card.
+- Story stage rows collapsed under the entry footer.
+- An unscoped `display` override showed every hidden dungeon card at once.
+
+**Verified:** the isolated menu workspace at 1200x750 showed zero
+content/activity-group overflow and no broken images across all Gameplay
+activities and stores. The compact desktop audit at 1280x720 and 1600x900
+confirmed that the Gameplay category rail, Store panels/details and Summon
+pity fit without overflow. At 1280x720, all six Event Store pages and five
+Conduit Store pages kept their product and action controls inside the panel;
+all ten Conduit details, the Calamitic lock panel and the Summon pity card fit.
+At 1600x900, all ten Conduit details and the same audited store and Summon
+surfaces fit. Conduits and Event Elemental-Devourer purchases paginate two
+items per page.
+
+- `npx vitest run src/presentation/reference-ui.test.ts src/presentation/conduit-store.test.ts src/presentation/online-store-profile.test.ts src/presentation/menu-workspace.test.ts --reporter=dot`: **72 passed**.
+- `npx vitest run --maxWorkers=2`: **10,450 passed**, 0 failed.
+- `npm run build`: passed, with the existing large-chunk advisory.
+- `git diff --check`: passed.
+
+**Not viewed:** Social, Mailbox and Attendance need an online account and
+could not be opened offline. Store purchase controls were inspected, but
+online purchase transactions were not executed.
+
+**Publication:** the owner subsequently authorized deployment. Release
+verification is pending.
+
+## Reference menus and distinct Radiant equipment (2026-11-15; local-only)
+
+**Implemented:** the eight supplied reference views now use the live
+navy/plum/peach menu composition, existing art and actual handlers. Home,
+Units, the three bearer-selection intents, equipment and portrait-led
+Level/Evolve panels share the new reference stylesheet. Selection filtering
+retains growth intent; caps, exact costs, Max Level, fodder, saved loadouts
+and portrait DOM remain intact. See the [menu contract](menus-and-inventory.md#reference-based-desktop-menus-d-456-local-only).
+
+**Combat:** D-456 implements distinct effect combinations for 32 released
+Leader Skills, 99 ordinary-slot Conduits and 96 Masters, preserving stable
+IDs, acquisition, ranks and art. There was no general missing-equipment
+transport bug: Vigil Core's +20% Health was verified in the real isolated UI
+(5,577.5 -> 6,693), with numerical authority-path Health/charge/frozen-loadout
+regressions. The old repetition was real and is replaced with authored
+conditional attacks, support, Shields, healing and charge triggers.
+Descriptions remain concise English. Native/generated boundaries prevent
+recursive effects, replacement-Shield ordering errors and splash-kill
+duplicate rewards. Schema 6 retires old runs read-only with saved rewards kept.
+
+**Verified commands:**
+
+- `npx vitest run --maxWorkers=2 --reporter=json --outputFile="<session-files>\reference-combat-full-tests.json"`:
+  **10,447 passed, zero failed or pending**. The three stale assertions from
+  the earlier full run were corrected before this clean rerun.
+- `npm run build`: passed TypeScript and production Vite build; existing
+  large-chunk advisory remains. The newly added paper helper's missing actor
+  argument was corrected before the passing build and audit.
+- `node tools\bundle_server_game.mjs`: passed; matching authority generated
+  locally, not deployed.
+- `node tools\run_pressure_study.mjs "<session-files>\radiant-distinct-equipment-final.jsonl"`:
+  six paper controls plus **4,002** pressure measurements completed.
+- `git diff --check`: passed.
+
+The [benchmark report](enemy-benchmark-calibration.md#distinct-equipment-follow-up-2026-11-15-local-only)
+records exact paper and pressured results. Authored-control still has severe
+late-wall failures in these conditional Rank-1 cohorts; this does not establish
+fully ranked endgame performance. No enemy retuning or experimental
+calibration release was authorized.
+
+**Desktop verification:** all eight selected views fit actual 1280x720 and
+1920x1080 CSS viewports with Reduce motion, without document/main-content/outer
+panel overflow or completed broken images. Earlier 1440x900 checks verified
+gallery access, Max Rank saving and portrait preservation. Uncapped costs and
+fodder intentionally scroll inside their detail panel. Browser navigation
+exercised real handlers, not synthetic replacement state or real-player saves.
+
+**Remaining:** final visible-browser pixel review, pointer testing and
+normal-motion cadence could not be certified because the integrated browser
+is hidden and screenshots may be stale/cropped. Online social claims were
+not tested offline. Fully ranked/optimized endgame balance needs a separate
+follow-up; do not label these measurements universal balance approval.
+
+**Publication:** initially paused by the owner and subsequently authorized.
+Do not include the unrelated existing edits in `docs/Future Plans/README.md`,
+`docs/Future Plans/character-combat-refresh-audit.md`,
+`docs/Future Plans/living-world-ui-audit-plan.md`, or the untracked
+`last-light-menu-mockup.html` in this change. The local helper is stopped after
+browser validation; restart with `npm run dev -- --port 5177 --strictPort` and
+the existing isolated `?workspace=menu` option when resuming.
+
 ## Radiant team pressure audit and Conduit wording (2026-11-15)
 
 The bounded audit compared authored-control with experimental

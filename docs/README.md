@@ -1,5 +1,23 @@
 # Documentation hub
 
+## Game-wide reference theme rollout (2026-11-15; local-only)
+
+D-457 extends the reference theme to every remaining menu. See the
+[handoff](handoff.md#game-wide-reference-theme-rollout-2026-11-15-local-only)
+and the [menu contract](menus-and-inventory.md#game-wide-reference-theme-d-457-local-only).
+
+## Reference menus and distinct Radiant equipment (2026-11-15; local-only)
+
+The [current handoff](handoff.md#reference-menus-and-distinct-radiant-equipment-2026-11-15-local-only),
+[menu contract](menus-and-inventory.md#reference-based-desktop-menus-d-456-local-only),
+[combat rules](combat.md#distinct-leader-and-equipment-mechanics-d-456-local-only)
+and [equipment contract](conduits.md#current-radiant-equipment-d-456-local-only)
+cover the eight reference-based views and 32 Leaders/195 equipment designs.
+The [new benchmark](enemy-benchmark-calibration.md#distinct-equipment-follow-up-2026-11-15-local-only)
+separates paper output from conditional pressured encounters and records
+remaining late-game failures. Initial validation was local-only; deployment
+was subsequently authorized. See the handoff for release status.
+
 ## Convergent Light ranks and personal Luminosity (2026-11-12; in progress)
 
 The [combat contract](combat.md#convergent-light-ranks-and-personal-luminosity-2026-11-12-implementation-in-progress)

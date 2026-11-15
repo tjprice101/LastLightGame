@@ -77,19 +77,6 @@ describe('exhaustive stable-ID radiant conversion', () => {
     expect(() => radiantConduitPrimitives({ id, rank: 6 })).toThrow();
     expect(() => radiantConduitPrimitives({ id, rank: -.1 })).toThrow();
   });
-  it.each([
-    ['precision-escapement', 'falcon-sight', 'execution-orrery', 'chaotic-fault-verdict', 'calamitic-worldbreaker-cannonade'],
-    ['crosspin-governor', 'sentinel-aperture', 'siege-cantilever', 'ruinselect-prism', 'calamitic-world-eater-orrery'],
-    ['bastion-lock', 'aegis-capacitor', 'granite-hourglass', 'tectonic-atlas-bastion', 'calamitic-monolith-of-the-unmoved-star'],
-    ['fracture-reservoir', 'coilfeed-ratchet', 'astral-prism', 'voltaic-stormstep-dynamo', 'calamitic-causality-funeral-engine'],
-  ] as ConduitId[][])('comparable purpose ladder %s is stronger at every equal rank', (...ladder) => {
-    for (let rank = 0; rank <= 5; rank++) {
-      const kind = radiantConduitPrimitives({ id: ladder[0], rank })[0].kind;
-      const amounts = ladder.map(id => radiantConduitPrimitives({ id, rank }).find(entry => entry.kind === kind)!.amount);
-      expect(amounts).toEqual([...amounts].sort((a, b) => a - b));
-      expect(new Set(amounts).size).toBe(ladder.length);
-    }
-  });
   it.each(ids)('%s is usable in a real frozen encounter at every rank', id => {
     const conduit = conduits.find(entry => entry.id === id)!;
     const starter = (Object.keys(radiantBearerKits) as RadiantBearerId[])
@@ -119,8 +106,10 @@ describe('exhaustive stable-ID radiant conversion', () => {
 describe('real four-stat and action modifiers', () => {
   it.each(['hp', 'attack', 'defense', 'recovery'] as const)('%s modifies only its frozen stat', kind => {
     const id = ids.find(id => radiantConduitPrimitives({ id, rank: 0 }).some(effect => effect.kind === kind))!;
-    const loadout = member('ember', gear(id));
-    const base = resolveRadiantStarterStats(member());
+    const element = conduits.find(entry => entry.id === id)!.element;
+    const starter = (Object.keys(radiantBearerKits) as RadiantBearerId[]).find(id => !element || radiantBearerKits[id].elementId === element)!;
+    const loadout = member(starter, gear(id));
+    const base = resolveRadiantStarterStats(member(starter));
     const actual = resolveRadiantStarterStats(loadout);
     expect(actual[kind]).toBeCloseTo(base[kind] * (1 + radiantGearAmount(loadout.gear, kind)));
     expect(Object.keys(actual)).toEqual(['hp', 'attack', 'defense', 'recovery']);
@@ -155,59 +144,74 @@ describe('real four-stat and action modifiers', () => {
       state = defend(state);
       return { attack, result: act(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ember'], coefficient: 2 }) };
     };
-    expect(test('fieldbrace-coupler').attack).toBeGreaterThan(test().attack);
+    expect(test('opal-indexer').attack).toBeGreaterThan(test().attack);
     expect(test('stasis-reliquary').result.state.bearers[0].hp).toBeGreaterThan(test().result.state.bearers[0].hp);
-    expect(test('fieldbrace-coupler').result.state.bearers[0].weaken).toHaveLength(1);
+    expect(test('opal-indexer').result.state.bearers[0].weaken).toHaveLength(1);
   });
   it('leader gear only applies while first and alive; cooperation requires a previous ally action', () => {
     let state = fixture(['calamitic-choir-array-of-branded-stars'], 'ember', ['rosetta']);
     const controlLeader = fixture([], 'ember', ['rosetta']);
     expect(radiantLeaderBonus(state.bearers[0].loadout))
-      .toBeCloseTo(radiantLeaderBonus(controlLeader.bearers[0].loadout) + .2);
+      .toBeCloseTo(radiantLeaderBonus(controlLeader.bearers[0].loadout) * 1.3);
     expect(effectiveRadiantStats(state, 'rosetta').attack)
       .toBe(effectiveRadiantStats(controlLeader, 'rosetta').attack);
     expect(normal(state).state.enemies[0].hp).toBeLessThan(normal(controlLeader).state.enemies[0].hp);
     state.bearers[0].hp = 0; state.gauge.members[0].living = false;
     expect(effectiveRadiantStats(state, 'rosetta').attack)
       .toBeCloseTo(state.bearers[1].stats.attack * (1 + radiantPassiveAmount(state.bearers[1].loadout)));
-    const control = normal(fixture(['clearwater-manifold'], 'tide', ['ember']));
-    let after = fixture(['clearwater-manifold'], 'tide', ['ember']);
+    const control = normal(fixture(['atmospheric-storm-clock'], 'atmoso', ['ember']));
+    let after = fixture(['atmospheric-storm-clock'], 'atmoso', ['ember']);
     after = normal(after, 'ember').state;
-    expect(normal(after, 'tide').state.enemies[0].hp).toBeLessThan(
-      normal(fixture([], 'tide', ['ember']), 'ember').state.enemies[0].hp - (100000 - control.state.enemies[0].hp));
+    expect(normal(after, 'atmoso').state.enemies[0].hp).toBeLessThan(
+      normal(fixture([], 'atmoso', ['ember']), 'ember').state.enemies[0].hp - (100000 - control.state.enemies[0].hp));
   });
 });
 
-describe('simple modifiers without incidental triggered effects', () => {
-  it.each(ids)('%s preserves exact charge and never creates resource, sustain or retaliation chains', id => {
-    const conduit = conduits.find(item => item.id === id)!;
-    const starter = (Object.keys(radiantBearerKits) as RadiantBearerId[])
-      .find(key => !conduit.element || radiantBearerKits[key].elementId === conduit.element)!;
-    const partner = starter === 'tide' ? 'ember' : 'tide';
-    let state = fixture([id], starter, [partner]);
-    state.bearers.forEach(member => { member.hp = Math.floor(member.hp / 2); });
-    const normalResult = normal(state);
-    state = normalResult.state;
-    expect(state.gauge.members[0].charge).toBe(10);
-    expect(state.gauge.members[1].charge).toBe(radiantBearerKits[starter].elementId === radiantBearerKits[partner].elementId ? 1 : 0);
-    expect(normalResult.events.filter(event => event.type === 'damage').map(event => event.origin)).toEqual(['direct']);
-    expect(state.bearers.map(member => member.hp)).toEqual(fixture([id], starter, [partner]).bearers.map(member => Math.floor(member.hp / 2)));
-    state.bearers.forEach((_, index) => sourceShield(state, index, { kind: 'flare', bearerId: starter }, 100000));
-    state = defend(state);
-    const incoming = act(state, { type: 'enemy-attack', enemyId: 'enemy',
-      targetIds: [starter, partner], coefficient: 1, hits: 3 });
-    expect(incoming.state.gauge.members[0].charge).toBe(40);
-    const finished = round(incoming.state);
-    state = ready(finished.state);
-    const flare = act(state, { type: 'flare', bearerId: starter,
-      ...(radiantBearerKits[starter].signature.target === 'one-enemy' ? { targetId: 'enemy' } : {}) });
-    expect(flare.state.gauge.members[0].charge).toBe(0);
-    const events = [...normalResult.events, ...incoming.events, ...finished.events, ...flare.events];
-    expect(events.filter(event => 'source' in event && event.source.kind === 'gear')).toEqual([]);
-    expect(events.filter(event => event.type === 'charge' && event.gearSource?.kind === 'gear')).toEqual([]);
-    expect(flare.state.gearTriggered).toEqual([]);
-    expect(flare.state.chargeSeed).toBe(0);
-    validateRadiantCombat(flare.state);
+describe('bounded, sourced Conduit triggers', () => {
+  it('rounds upgraded charge once, caps it, and does not change combat RNG', () => {
+    const state = fixture(['reserve-torque-crank']);
+    state.bearers[0].loadout.gear![0]!.rank = 3;
+    const result = normal(state);
+    expect(result.state.gauge.members[0].charge).toBe(13);
+    expect(result.state.chargeSeed).toBe(state.chargeSeed);
+    state.gauge.members[0].charge = 199;
+    expect(normal(state).state.gauge.members[0].charge).toBe(200);
+  });
+  it('resolves native Shield breaks before generated replacement Shields, independent of slot order', () => {
+    for (const ids of [['horizon-heartcase', 'fieldbrace-coupler'], ['fieldbrace-coupler', 'horizon-heartcase']] as ConduitId[][]) {
+      let state = fixture(ids);
+      state.bearers[0].hp = 500;
+      sourceShield(state, 0, { kind: 'flare', bearerId: 'ember' }, 1);
+      state = defend(state);
+      const first = act(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ember'], coefficient: 2, hits: 3 });
+      expect(first.events.filter(event => event.type === 'heal' && event.source.kind === 'gear')).toHaveLength(1);
+      expect(first.state.bearers[0].shields.length).toBeGreaterThan(0);
+      const second = act(first.state, { type: 'enemy-attack', enemyId: 'enemy2', targetIds: ['ember'], coefficient: 2 });
+      expect(second.events.filter(event => event.type === 'heal' && event.source.kind === 'gear')).toHaveLength(0);
+    }
+  });
+  it('splash cannot generate another splash, charge drop or direct-kill reward', () => {
+    const state = createRadiantCombat([member('ember', gear('resonance-crucible', 'calamitic-causality-funeral-engine'))],
+      ['enemy', 'other'].map((id, index) => ({ id, elementId: null,
+        stats: { hp: index === 0 ? 100000 : 1, attack: 60, defense: 50, recovery: 0 }, currencyBudget: 1000 })), 0);
+    const result = normal(state);
+    expect(result.events.filter(event => event.type === 'damage').map(event => event.origin)).toEqual(['direct', 'generated']);
+    expect(result.events.filter(event => event.type === 'gauge-drop')).toHaveLength(1);
+    expect(result.state.gauge.members[0].charge).toBe(10);
+    expect(result.state.chargeSeed).toBe(state.chargeSeed);
+  });
+  it('native healing grants charge once per action, but generated healing and overhealing cannot', () => {
+    const state = ready(fixture(['rootbound-triage-vault', 'botanic-graft-covenant'], 'sprout', ['ember', 'tide']));
+    state.bearers.forEach(owner => { owner.hp = 1; });
+    const result = act(state, { type: 'flare', bearerId: 'sprout' });
+    expect(result.state.gauge.members[0].charge).toBe(6);
+    expect(result.events.filter(event => event.type === 'shield' && event.source.kind === 'gear')).toHaveLength(3);
+    const full = ready(fixture(['rootbound-triage-vault'], 'sprout'));
+    expect(act(full, { type: 'flare', bearerId: 'sprout' }).state.gauge.members[0].charge).toBe(0);
+    let generated = fixture(['lifeline-flywheel', 'rootbound-triage-vault'], 'sprout');
+    generated.bearers[0].hp = 1;
+    generated = normal(generated).state;
+    expect(generated.gauge.members[0].charge).toBe(10);
   });
   it('does not revive a lethal recipient through former sustain Conduits', () => {
     let state = fixture(['horizon-heartcase', 'immortal-vessel']);

@@ -1,0 +1,1158 @@
+/*
+ * Game-wide rollout of the menu-reference theme (D-457).
+ * Same layer as menu-reference.css, imported after it. Zero-specificity :where() foundations
+ * cover every menu page and dialog; screen-specific sections below add layout and contained scrolling.
+ * Artwork-backed buttons ([data-button-surface="art"]) are never restyled.
+ */
+@layer menu-reference {
+  html[data-menu-workspace] .sanctuary-shell .sanctuary-dock {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr) repeat(4, minmax(0, 1fr)) !important;
+  }
+  html[data-menu-workspace] :is(.game-dialog, .information-modal, .settings-drawer, .online-account) {
+    --reference-bg: #0b0c1c;
+    --reference-panel: #ffffff07;
+    --reference-raised: #ffffff09;
+    --reference-line: #ffffff1c;
+    --reference-text: #f5f0f1;
+    --reference-muted: #bab4c9;
+    --reference-peach: #ffa15d;
+    --reference-mint: #8be1b1;
+    --reference-radius: 24px;
+    --reference-font: 'Sora', system-ui, sans-serif;
+  }
+
+  /* Foundations: type, panels and controls. */
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .game-dialog, .information-modal, .settings-drawer, .online-account) {
+    font-family: var(--reference-font) !important;
+    color: var(--reference-text) !important;
+  }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .game-dialog, .information-modal, .settings-drawer, .online-account) :where(*:not(h1, h2, svg, svg *)) {
+    font-family: var(--reference-font) !important;
+    text-shadow: none !important;
+  }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .game-dialog, .information-modal, .settings-drawer, .online-account) :where(h1, h2):where(:not(.ref-sr-only)) {
+    font-family: Georgia, serif !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    text-shadow: none !important;
+    background: none !important;
+    -webkit-text-fill-color: currentColor !important;
+    color: var(--reference-text) !important;
+    filter: none !important;
+  }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .information-modal, .game-dialog) :where(.ref-panel-heading, .eyebrow, .activity-eyebrow, .calamity-loot-eyebrow, .archive-filters > h3, .ref-activity-sidebar h3) {
+    font-family: var(--reference-font) !important;
+    font-variant: normal !important;
+    font-size: 12px !important;
+    letter-spacing: .12em !important;
+    text-transform: uppercase !important;
+    color: var(--reference-muted) !important;
+  }
+
+  :where(html[data-menu-workspace]) :where(.sanctuary-content) :where(.ref-panel, .archive-panel, .archive-filters, .inventory-panel, .inventory-currencies > *, .calamity-loot-panel, .summon-featured, .ref-store-detail, .exchange-catalog, .activity-panel, .ref-summon-draw, .ref-summon-left > *, .ref-summon-main > *) {
+    border: 1px solid var(--reference-line) !important;
+    border-radius: var(--reference-radius) !important;
+    background: var(--reference-panel) !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content) :where(.ref-panel, .archive-panel, .inventory-panel)::before { display: none !important; }
+
+  :where(html[data-menu-workspace]) :where(.game-dialog, .information-modal, .settings-drawer) {
+    border: 1px solid var(--reference-line) !important;
+    border-radius: var(--reference-radius) !important;
+    background: linear-gradient(180deg, #17152c, #221a30) !important;
+    box-shadow: 0 32px 80px #0009 !important;
+  }
+
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .game-dialog, .information-modal, .settings-drawer, .online-account) :where(button, select, input:not([type="checkbox"], [type="radio"], [type="range"]), textarea):where(:not([data-button-surface="art"], [data-button-surface="tile"], .archive-card, .inventory-item, .glossary-card, .ref-collection-card, .ref-member-row, .ref-conduit-slot, .selection-option, .home-squad-member, .profile-picture-option, .ref-map-node, .story-stage, .stage-node, [data-gallery-card])) {
+    min-height: 44px !important;
+    border: 1px solid var(--reference-line) !important;
+    border-radius: 999px !important;
+    background: var(--reference-raised) !important;
+    color: var(--reference-text) !important;
+    box-shadow: none !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 1.35 !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    clip-path: none !important;
+    transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 120ms ease !important;
+  }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .game-dialog, .information-modal, .settings-drawer, .online-account) :where(input, textarea) { text-align: left !important; padding-inline: 16px !important; }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .game-dialog, .information-modal, .settings-drawer, .online-account) :where(button:not([data-button-surface="art"]))::before { display: none !important; }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .game-dialog, .information-modal, .settings-drawer, .online-account) :where(button:not([data-button-surface="art"], [data-button-surface="tile"]):not(:disabled):hover) {
+    background-color: #ffffff16 !important;
+    border-color: #ffffff50 !important;
+  }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .game-dialog, .information-modal, .settings-drawer, .online-account) :where(button:not([data-button-surface="art"]):not(:disabled):active) {
+    box-shadow: inset 0 0 0 2px var(--reference-peach) !important;
+    transform: scale(.97) !important;
+  }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .game-dialog, .information-modal, .settings-drawer, .online-account) :where(button:not([data-button-surface="art"]):is([aria-pressed="true"], [aria-selected="true"], [aria-current]:not([aria-current="false"]))) {
+    border-color: var(--reference-peach) !important;
+    background: #ffa15d22 !important;
+    color: var(--reference-peach) !important;
+  }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .game-dialog, .information-modal, .settings-drawer, .online-account) :where(.primary-button, .ref-go, .enter-button, .game-confirm-button, .summon-primary, [data-summon-draw]):where(:not(:disabled, [aria-disabled="true"], [data-button-surface="art"])) {
+    border-color: transparent !important;
+    background: var(--reference-peach) !important;
+    color: #261912 !important;
+  }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .game-dialog, .information-modal, .settings-drawer, .online-account) :where(.primary-button, .ref-go, .enter-button, .game-confirm-button):where(:not(:disabled)):hover { background: #ffb37d !important; }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .game-dialog, .information-modal, .settings-drawer, .online-account) :where(button:disabled, [aria-disabled="true"]) {
+    opacity: .48 !important;
+    cursor: not-allowed !important;
+  }
+
+  /* Image-led cards share the bearer-gallery treatment. */
+  :where(html[data-menu-workspace]) :where(.sanctuary-content) :where([data-button-surface="tile"], .archive-card, .inventory-item, .glossary-card, .ref-product) {
+    border: 1px solid var(--reference-line) !important;
+    border-radius: 18px !important;
+    background: linear-gradient(150deg, #ffffff0e, #ffffff03) !important;
+    box-shadow: none !important;
+    color: var(--reference-text) !important;
+  }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content) :where([data-button-surface="tile"], .archive-card, .inventory-item, .glossary-card, .ref-product):where(:not(:disabled)):hover {
+    border-color: #ffffff50 !important;
+    background: linear-gradient(150deg, #ffffff16, #ffffff05) !important;
+  }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content) :where([data-button-surface="tile"], .archive-card, .inventory-item, .glossary-card, .ref-product):where([aria-pressed="true"], [aria-selected="true"], [aria-current]:not([aria-current="false"]), .is-selected) {
+    border-color: var(--reference-peach) !important;
+    background: linear-gradient(150deg, #ffa15d26, #ffffff05) !important;
+  }
+
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .information-modal) :where(.ref-bar, meter, progress) { border-radius: 999px !important; }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .information-modal) :where(.ref-bar) { background: #ffffff18 !important; border: 0 !important; }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .information-modal) :where(.ref-bar i, .ref-pips .is-filled) { background: var(--reference-mint) !important; }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .information-modal) :where(.ref-chip, .rarity-badge, .ref-count, .info-label) { border-radius: 999px !important; }
+  :where(html[data-menu-workspace]) :where(.sanctuary-content, .information-modal, .game-dialog, .settings-drawer) :where(*) { scrollbar-width: thin; scrollbar-color: #bfa6ba55 transparent; }
+
+  /* ---- Screen layouts: whole screen fits the content area; long lists scroll inside their own panel. ---- */
+  html[data-menu-workspace] .sanctuary-content:has(> :is(.gameplay-hub, .archives, .ref-inventory, .ref-summon, .ref-market)) { overflow: hidden !important; }
+
+  /* Gameplay */
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play { height: 100% !important; min-height: 0 !important; grid-template-rows: minmax(0, 1fr) !important; align-items: stretch !important; gap: 24px !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play > .ref-activity-sidebar { height: 100% !important; min-height: 0 !important; border-radius: var(--reference-radius) !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play > .activity-group:not([hidden]) { min-height: 0 !important; height: 100% !important; overflow: auto !important; padding-right: 6px !important; }
+
+  /* Collections */
+  html[data-menu-workspace] .sanctuary-shell .archives:not(#_) { height: 100% !important; min-height: 0 !important; grid-template-rows: auto auto minmax(0, 1fr) !important; align-items: stretch !important; gap: 16px 24px !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-toolbar { align-self: center !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-navigation { grid-column: 1 / -1 !important; gap: 8px !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-gallery-button { border: 1px solid var(--reference-line) !important; border-radius: 999px !important; background: var(--reference-raised) !important; color: var(--reference-text) !important; padding: 10px 20px !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-gallery-button[aria-pressed="true"] { border-color: var(--reference-peach) !important; background: #ffa15d22 !important; color: var(--reference-peach) !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives > .archive-panel:not([hidden]):not(#_) { height: 100% !important; min-height: 0 !important; grid-template-columns: 240px minmax(0, 1fr) !important; grid-template-rows: minmax(0, 1fr) auto !important; align-items: stretch !important; gap: 16px 24px !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-panel > :is(.archive-filters, .glossary-heading) { grid-row: 1 !important; min-height: 0 !important; overflow: auto !important; align-content: start !important; border: 1px solid var(--reference-line) !important; border-radius: 22px !important; background: var(--reference-panel) !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-filters::before { color: var(--reference-muted) !important; font-size: 11px !important; letter-spacing: .14em !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-filters label { color: var(--reference-muted) !important; font-size: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-filters, .glossary-heading) .selection-trigger { border-radius: 999px !important; border-color: var(--reference-line) !important; background: var(--reference-raised) !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-results-toolbar { grid-row: 2 !important; padding: 12px 16px !important; border: 1px solid var(--reference-line) !important; border-radius: 18px !important; background: var(--reference-panel) !important; color: var(--reference-muted) !important; font-size: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-panel > :is(.archive-grid, .glossary-grid) { grid-row: 1 / -1 !important; height: 100% !important; min-height: 0 !important; overflow: auto !important; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)) !important; grid-auto-rows: max-content !important; gap: 14px !important; padding: 4px 8px 8px 4px !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives #archive-conduits > .archive-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important; }
+
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card, .glossary-card) { --card-accent: #ffffff; }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card[data-filter-element="infernic"], .glossary-card:has(.element-label[data-element="infernic"])) { --card-accent: var(--element-infernic); }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card[data-filter-element="oceanic"], .glossary-card:has(.element-label[data-element="oceanic"])) { --card-accent: var(--element-oceanic); }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card[data-filter-element="atmospheric"], .glossary-card:has(.element-label[data-element="atmospheric"])) { --card-accent: var(--element-atmospheric); }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card[data-filter-element="botanic"], .glossary-card:has(.element-label[data-element="botanic"])) { --card-accent: var(--element-botanic); }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card[data-filter-element="tranquilitic"], .glossary-card:has(.element-label[data-element="tranquilitic"])) { --card-accent: var(--element-tranquilitic); }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card[data-filter-element="chaotic"], .glossary-card:has(.element-label[data-element="chaotic"])) { --card-accent: var(--element-chaotic); }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-grid > .archive-card, .glossary-grid > .glossary-card):not(#_) {
+    position: relative !important; display: block !important; aspect-ratio: auto !important; height: auto !important; min-height: 0 !important; padding: 0 !important; overflow: hidden !important;
+    border-radius: 18px !important; border: 1px solid color-mix(in srgb, var(--card-accent) 55%, transparent) !important;
+    background: linear-gradient(140deg, color-mix(in srgb, var(--card-accent) 22%, transparent), #ffffff04) !important;
+  }
+  /* Width-relative padding keeps tiles square inside the scrolling grid, where aspect-ratio rows collapse. */
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-grid > .archive-card, .glossary-grid > .glossary-card)::before { content: '' !important; display: block !important; padding-top: 100% !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card, .glossary-card)[hidden] { display: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card, .glossary-card):hover { border-color: var(--card-accent) !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card, .glossary-card):focus-within { outline: 2px solid var(--reference-peach) !important; outline-offset: 2px !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-portrait, .archive-mechanism, .glossary-art):not(#_) { position: absolute !important; inset: 8px 8px 40px !important; width: auto !important; height: auto !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-portrait, .archive-mechanism, .glossary-art):not(#_) :is(img, .character-idle, .conduit-icon-frame, .conduit-icon, .master-art, svg) { width: 100% !important; height: 100% !important; max-height: 100% !important; object-fit: contain !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-portrait, .archive-mechanism, .glossary-art) :is(.character-idle, .conduit-icon-frame) { display: block !important; position: relative !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card > h3, .glossary-card > h2) {
+    position: absolute !important; left: 8px !important; right: 8px !important; bottom: 8px !important; width: fit-content !important; max-width: calc(100% - 16px) !important;
+    padding: 4px 10px !important; border-radius: 999px !important; background: #111021dc !important; color: var(--reference-text) !important;
+    font: 600 12px/1.35 Sora, system-ui, sans-serif !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; overflow-wrap: normal !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-form-label { position: absolute !important; top: 8px !important; right: 8px !important; padding: 2px 8px !important; border-radius: 999px !important; background: #111021dc !important; color: var(--reference-muted) !important; font-size: 11px !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card, .glossary-card)::after { content: '' !important; position: absolute !important; top: 10px !important; left: 10px !important; width: 9px !important; height: 9px !important; border-radius: 50% !important; background: var(--card-accent) !important; box-shadow: 0 0 0 3px #15142499 !important; pointer-events: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-card[data-archive-conduit]::after, html[data-menu-workspace] .sanctuary-shell .archives .archive-card[data-archive-master]::after { display: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card, .glossary-card) > :is(p, strong, .quiet, .element-label, .character-rating, .rarity-badge, .archive-effect, .archive-ownership) { display: none !important; }
+  /* The kit/lore button covers the whole tile so the entire card opens its details. */
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card, .glossary-card) > button.text-button:not(#_) { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; margin: 0 !important; padding: 0 !important; border: 0 !important; border-radius: inherit !important; background: transparent !important; color: transparent !important; font-size: 0 !important; transform: none !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-card, .glossary-card) > button.text-button:focus-visible { outline: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .archives #archive-story:not([hidden]) { display: block !important; grid-column: 1 / -1 !important; height: 100% !important; min-height: 0 !important; overflow: auto !important; }
+
+  /* Inventory */
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory:not(#_) {
+    display: grid !important; height: 100% !important; min-height: 0 !important; gap: 16px !important;
+    grid-template-columns: 240px auto minmax(0, 1fr) auto !important; grid-template-rows: auto auto minmax(0, 1fr) !important;
+    grid-template-areas: "tabs tabs results info" "currencies panel panel panel" "tools panel panel panel" !important; align-items: center !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory > .inventory-currencies { grid-area: currencies !important; display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 8px !important; align-self: start !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-currency strong { font-size: 15px !important; font-variant-numeric: tabular-nums !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-currency :is(span, small) { font-size: 12px !important; color: var(--reference-muted) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-currency { padding: 8px 14px !important; border-radius: 18px !important; min-height: 0 !important; gap: 10px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-currency > .currency-icon { flex-basis: 32px !important; width: 32px !important; height: 32px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory > .inventory-introduction { grid-area: info !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory > .inventory-introduction button { white-space: nowrap !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory > .inventory-tabs { grid-area: tabs !important; margin: 0 !important; display: flex !important; flex-wrap: nowrap !important; gap: 8px !important; width: max-content !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory > .inventory-tabs button { white-space: nowrap !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory > .inventory-results { grid-area: results !important; margin: 0 !important; color: var(--reference-muted) !important; font-size: 13px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory > .inventory-tools { grid-area: tools !important; align-self: stretch !important; display: flex !important; flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 10px !important; min-height: 0 !important; overflow: auto !important; padding: 14px 16px !important; border: 1px solid var(--reference-line) !important; border-radius: 22px !important; background: var(--reference-panel) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory > .inventory-tools > * { width: 100% !important; min-width: 0 !important; margin: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item-art img { max-width: 96px !important; max-height: 96px !important; width: auto !important; height: auto !important; object-fit: contain !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory > .inventory-panel:not([hidden]) { grid-area: panel !important; align-self: stretch !important; display: flex !important; flex-direction: column !important; min-height: 0 !important; height: 100% !important; overflow: hidden !important; padding: 16px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory > .inventory-panel > .ref-scroll { flex: 1 1 auto !important; min-height: 0 !important; overflow: auto !important; padding: 4px 8px 8px 4px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important; gap: 14px !important; align-items: stretch !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: auto auto auto !important; align-content: start !important; gap: 4px !important; padding: 10px !important; text-align: left !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item[hidden] { display: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item-grid { grid-auto-rows: max-content !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item-grid > li:not(.inventory-item) { grid-column: 1 / -1 !important; margin: 8px 0 0 !important; color: var(--reference-muted) !important; font-size: 11px !important; letter-spacing: .14em !important; text-transform: uppercase !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item .info-catalog { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 4px !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item .info-item-header { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 8px !important; margin: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item .info-item-art { width: 100% !important; height: auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item .info-item-header h3 { margin: 0 !important; font: 600 13px/1.35 Sora, system-ui, sans-serif !important; overflow-wrap: normal !important; word-break: normal !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item .info-effects { display: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item .inventory-quantity { margin: 0 !important; font-size: 12px !important; text-align: left !important; justify-self: start !important; overflow-wrap: anywhere !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item-actions { display: flex !important; gap: 6px !important; margin-top: 6px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item-actions button { flex: 1 1 0 !important; min-width: 0 !important; min-height: 44px !important; padding: 6px 4px !important; font-size: 12px !important; white-space: nowrap !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item-art { width: 100% !important; height: 104px !important; aspect-ratio: auto !important; display: grid !important; place-items: center !important; border-radius: 14px !important; background: radial-gradient(circle at 50% 45%, #ffffff10, transparent 70%) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item :is(strong, small, span) { overflow-wrap: normal !important; word-break: normal !important; hyphens: auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item strong { font-size: 13px !important; line-height: 1.35 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-quantity { color: var(--reference-peach) !important; font-variant-numeric: tabular-nums !important; }
+
+  /* Summon */
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) { height: 100% !important; min-height: 0 !important; grid-template-rows: minmax(0, 1fr) !important; align-items: stretch !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon > :is(.ref-summon-left, .ref-summon-main, .ref-summon-draw) { min-height: 0 !important; height: 100% !important; overflow: auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon .summon-command :is(button, [data-summon-draw]) { white-space: nowrap !important; }
+
+  /* Stores */
+  html[data-menu-workspace] .sanctuary-shell .ref-market:not(#_) {
+    height: 100% !important; min-height: 0 !important; align-items: stretch !important; gap: 16px 24px !important;
+    grid-template-rows: auto minmax(0, 1fr) auto !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-market > :is(.online-store-tabs, .ref-market-tabs) { grid-row: 1 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market > :is(.online-store-tabs, .ref-market-tabs) button { border-radius: 999px !important; border-color: var(--reference-line) !important; background: var(--reference-raised) !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market > :is(.online-store-tabs, .ref-market-tabs) button:is([aria-current], [aria-pressed="true"]) { border-color: var(--reference-peach) !important; background: #ffa15d22 !important; color: var(--reference-peach) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market > :is(.exchange-catalog, .ref-product-catalog, section.ref-panel:not(.ref-store-detail)) { grid-column: 1 !important; grid-row: 2 !important; min-height: 0 !important; height: 100% !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market .ref-scroll { flex: 1 1 auto !important; min-height: 0 !important; overflow: auto !important; padding: 4px 8px 8px 4px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market > .menu-pager { grid-column: 1 !important; grid-row: 3 !important; position: static !important; margin: 0 !important; justify-content: center !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market > .ref-store-detail { grid-column: 2 !important; grid-row: 2 / 4 !important; min-height: 0 !important; height: 100% !important; overflow: auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market :is(.ref-exchange-categories, .ref-rarity-filter) button { border-radius: 999px !important; border-color: var(--reference-line) !important; background: var(--reference-raised) !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market :is(.ref-exchange-categories, .ref-rarity-filter) button[aria-pressed="true"] { border-color: var(--reference-peach) !important; background: #ffa15d22 !important; color: var(--reference-peach) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market .ref-product[aria-pressed="true"] { border-color: var(--reference-peach) !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market :is(.ref-product, .ref-store-detail) :is(small, p) { color: var(--reference-muted) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-hero { border-radius: 22px !important; background: radial-gradient(circle at 50% 45%, #ffa15d18, transparent 70%), var(--reference-raised) !important; }
+
+  /* Events */
+  html[data-menu-workspace] .sanctuary-shell .sanctuary-content:has(> .rose-event-card) { position: relative !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; }
+  html[data-menu-workspace] .sanctuary-shell .sanctuary-content:has(> .rose-event-card) > .text-button { position: absolute !important; top: 28px !important; right: 52px !important; z-index: 2 !important; }
+  html[data-menu-workspace] .sanctuary-shell .sanctuary-content > .rose-event-card { flex: 1 1 auto !important; min-height: 0 !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; padding: 16px 20px !important; border: 1px solid var(--reference-line) !important; border-radius: var(--reference-radius) !important; background: var(--reference-panel) !important; }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card > .activity-difficulty { flex: 1 1 auto !important; min-height: 0 !important; display: flex !important; flex-direction: column !important; gap: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card .activity-difficulty-tabs { display: flex !important; gap: 8px !important; padding: 0 !important; border: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card .activity-difficulty > div:not(.activity-difficulty-tabs):not([hidden]) { flex: 1 1 auto !important; min-height: 0 !important; overflow: hidden !important; }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card .activity-layout { height: 100% !important; min-height: 0 !important; display: grid !important; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr) !important; gap: 20px !important; align-items: stretch !important; }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card :is(.activity-layout-media, .activity-layout-details) { min-height: 0 !important; overflow: auto !important; padding-right: 4px !important; display: flex !important; flex-direction: column !important; gap: 10px !important; }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card .activity-banner { flex: 0 0 auto !important; border-radius: 20px !important; overflow: hidden !important; border: 1px solid var(--reference-line) !important; }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card .activity-layout-media > p { margin: 0 !important; color: var(--reference-muted) !important; font-size: 13px !important; line-height: 1.5 !important; }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card .activity-layout-media > p.eyebrow { color: var(--reference-peach) !important; font-size: 11px !important; }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card .item-showcase { flex: 0 0 auto !important; padding: 14px !important; border: 1px solid var(--reference-line) !important; border-radius: 20px !important; background: var(--reference-raised) !important; }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card .item-showcase ul { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)) !important; gap: 10px !important; }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card .activity-layout-details > p { margin: 0 !important; color: var(--reference-muted) !important; font-size: 13px !important; }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card .activity-layout-details > button { flex: 0 0 auto !important; }  html[data-menu-workspace] .sanctuary-shell .rose-event-card .calamity-section { height: 100% !important; min-height: 0 !important; overflow: auto !important; margin: 0 !important; padding: 16px !important; border: 1px solid var(--reference-line) !important; border-radius: 20px !important; background: var(--reference-raised) !important; }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card .calamity-tier-scene { border-radius: 18px !important; overflow: hidden !important; }  html[data-menu-workspace] .sanctuary-shell .calamity-section :is(.calamity-tier-details section, .calamity-tier-details [role="region"], .calamity-tier-details > div > section) { border: 1px solid var(--reference-line) !important; border-radius: 18px !important; background: var(--reference-panel) !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .calamity-section .calamity-tier-scene { background: #ffffff06 !important; border: 1px solid var(--reference-line) !important; }
+  html[data-menu-workspace] .sanctuary-shell .calamity-section :is(dt, small) { color: var(--reference-muted) !important; }
+  html[data-menu-workspace] .sanctuary-shell .calamity-section dd { font-variant-numeric: tabular-nums !important; }
+  /* Captured Elemental-Devourers: gallery layout matching the bearer grid */
+  html[data-menu-workspace] .sanctuary-shell .sanctuary-content:has(> .ref-team-focused) { overflow: hidden !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-focused { height: 100% !important; min-height: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection:not(#_) {
+    height: 100% !important; min-height: 0 !important; display: grid !important; gap: 12px 20px !important; padding: 18px 20px !important; overflow: hidden !important;
+    grid-template-columns: 240px minmax(0, 1fr) !important; grid-template-rows: auto auto auto minmax(0, 1fr) !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection > .ref-panel-heading { grid-column: 1 / -1 !important; display: flex !important; flex-wrap: wrap !important; gap: 6px 16px !important; align-items: baseline !important; margin: 0 !important; padding: 0 0 10px !important; border-bottom: 1px solid var(--reference-line) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection > .ref-panel-heading > span:not(:first-child) { color: var(--reference-muted) !important; font-size: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection > .ref-roster-toolbar { grid-column: 1 !important; grid-row: 2 !important; align-self: start !important; height: auto !important; display: flex !important; flex-direction: column !important; align-items: stretch !important; gap: 12px !important; margin: 0 !important; padding: 14px !important; border: 1px solid var(--reference-line) !important; border-radius: 20px !important; background: var(--reference-panel) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection > .ref-roster-toolbar > * { width: 100% !important; min-width: 0 !important; margin: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection .ref-segment { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 6px !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection .ref-roster-toolbar label { flex: 0 0 auto !important; display: flex !important; flex-direction: column !important; align-items: stretch !important; height: auto !important; min-height: 0 !important; gap: 6px !important; color: var(--reference-muted) !important; font-size: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection .ref-roster-toolbar :is(input, select) { width: 100% !important; flex: 0 0 auto !important; height: 44px !important; min-height: 44px !important; margin: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection > .creature-bulk-sale { grid-column: 1 !important; grid-row: 3 !important; align-self: start !important; height: auto !important; margin: 0 !important; padding: 14px !important; border: 1px solid var(--reference-line) !important; border-radius: 20px !important; background: var(--reference-panel) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection .ref-segment > button { min-width: 0 !important; padding: 0 8px !important; justify-content: center !important; text-align: center !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection .creature-bulk-actions { display: flex !important; flex-wrap: wrap !important; gap: 8px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection .creature-bulk-actions > button { flex: 1 1 100% !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection > .ref-capture-pages { grid-column: 2 !important; grid-row: 2 / 5 !important; min-height: 0 !important; contain: size !important; height: 100% !important; display: flex !important; flex-direction: column !important; gap: 10px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection .ref-capture-pages > .ref-scroll { flex: 1 1 auto !important; min-height: 0 !important; height: auto !important; max-height: none !important; overflow: auto !important; padding: 4px 8px 8px 4px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-team-collection .ref-capture-grid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important; grid-auto-rows: max-content !important; gap: 14px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-card { display: flex !important; flex-direction: column !important; gap: 0 !important; min-height: 0 !important; padding: 0 !important; overflow: hidden !important; border: 1px solid var(--reference-line) !important; border-radius: 20px !important; background: linear-gradient(180deg, #ffffff10, #ffffff04) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-card > .ref-card-art { width: 100% !important; height: auto !important; aspect-ratio: 1 !important; min-height: 0 !important; padding: 10px !important; border: 0 !important; border-radius: 0 !important; background: radial-gradient(circle at 50% 45%, #ffffff14, transparent 70%) !important; display: grid !important; place-items: center !important; color: var(--reference-muted) !important; font-size: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-card > .ref-card-art img { width: 100% !important; height: 100% !important; object-fit: contain !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-card > .ref-card-caption { display: grid !important; grid-template-columns: auto minmax(0, 1fr) !important; gap: 4px 6px !important; padding: 8px 10px 10px !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-card > .ref-card-caption > :is(b, small) { grid-column: 1 / -1 !important; min-width: 0 !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-card > .ref-card-caption > small { white-space: normal !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-card > .ref-card-caption > b { font: 600 13px/1.3 Sora, system-ui, sans-serif !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-card > .ref-card-caption > small { color: var(--reference-muted) !important; font-size: 11px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-card > .ref-card-caption > button { min-width: 0 !important; min-height: 44px !important; padding: 4px 6px !important; font-size: 12px !important; white-space: nowrap !important; }
+  /* Units hub: fit the available height */
+  html[data-menu-workspace] .sanctuary-shell .workspace-units:not(#_) { gap: 12px !important; margin: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .workspace-units > * { margin-block: 0 !important; }
+
+  /* View Unit overview: same portrait-left / panels-right composition as Level and Evolve */
+  html[data-menu-workspace] .sanctuary-shell .ref-team:has(> .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail)) { height: 100% !important; min-height: 0 !important; width: 100% !important; grid-template-rows: minmax(0, 1fr) !important; align-items: stretch !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail):not(#_) { display: grid !important; grid-template-columns: minmax(280px, 34%) minmax(0, 1fr) !important; grid-template-rows: 48px minmax(0, 1fr) !important; gap: 16px 32px !important; height: 100% !important; min-height: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-header { grid-column: 1 !important; grid-row: 1 / 3 !important; display: grid !important; grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: minmax(140px, 1fr) auto !important; width: auto !important; height: 100% !important; min-height: 0 !important; overflow: hidden !important; padding: 0 !important; gap: 14px !important; border: 0 !important; background: transparent !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-portrait { grid-column: 1 !important; grid-row: 1 !important; position: relative !important; display: block !important; width: 100% !important; height: 100% !important; min-height: 140px !important; max-height: none !important; margin: 0 !important; overflow: hidden !important; border-radius: var(--reference-radius) !important; border: 1px solid color-mix(in srgb, var(--unit-accent, #ffffff) 35%, transparent) !important; background: radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--unit-accent, #ffffff) 18%, transparent), transparent 70%), #ffffff06 !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-portrait::before, html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-portrait::after { display: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-portrait > .character-idle { position: absolute !important; inset: 12px 12px 64px !important; display: block !important; width: auto !important; height: auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-portrait > .character-idle img { width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100% !important; object-fit: contain !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-portrait-caption, html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) [data-reference-prefix], html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-header-actions { display: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-portrait-stat-overlay { position: absolute !important; inset: auto 10px 10px !important; left: 10px !important; right: 10px !important; width: auto !important; max-width: none !important; min-width: 0 !important; height: auto !important; transform: none !important; background: transparent !important; border: 0 !important; padding: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-portrait-stats { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 6px !important; width: 100% !important; max-width: none !important; height: auto !important; margin: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-portrait-stats > div { display: flex !important; flex-direction: column !important; align-items: flex-start !important; justify-content: center !important; gap: 0 !important; min-width: 0 !important; height: auto !important; padding: 5px 10px !important; border: 1px solid var(--reference-line) !important; border-radius: 12px !important; background: #140f22cc !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-portrait-stats :is(dt, dd) { margin: 0 !important; min-width: 0 !important; max-width: 100% !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; font-family: Sora, system-ui, sans-serif !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-portrait-stats dt { color: var(--reference-muted) !important; font-size: 10px !important; font-weight: 600 !important; text-transform: uppercase !important; letter-spacing: .06em !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-portrait-stats dd { color: var(--reference-text) !important; font-size: 13px !important; font-weight: 700 !important; font-variant-numeric: tabular-nums !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-identity { grid-column: 1 !important; grid-row: 2 !important; display: grid !important; grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: none !important; gap: 10px !important; width: auto !important; padding: 0 2px !important; min-width: 0 !important; border: 0 !important; background: transparent !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-identity > * { grid-column: 1 !important; grid-row: auto !important; min-width: 0 !important; width: auto !important; max-width: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-identity h2 { margin: 0 !important; font: 700 clamp(22px, 1.9vw, 32px)/1.15 Georgia, serif !important; text-transform: none !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-tags { display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 8px !important; margin: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-tags :is(span, strong) { font-size: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-progress { display: grid !important; grid-template-columns: 1fr !important; gap: 8px !important; width: 100% !important; margin: 0 !important; font-size: 11px !important; color: var(--reference-muted) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-progress :is(.ref-bar, .ref-pips) { height: 8px !important; margin-top: 6px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) :is(.ref-bar i, .ref-pips i.is-filled) { background: var(--reference-mint) !important; border: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-submenus { grid-column: 2 !important; grid-row: 1 !important; display: flex !important; gap: 10px !important; width: auto !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-submenus button { flex: 1 !important; min-height: 44px !important; padding: 10px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-submenus [aria-pressed="true"] { border-color: var(--reference-peach) !important; background: #ffa15d22 !important; color: var(--reference-peach) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-character-panels { grid-column: 2 !important; grid-row: 2 !important; width: auto !important; min-height: 0 !important; height: 100% !important; overflow: auto !important; margin: 0 !important; padding: 0 6px 0 0 !important; border: 0 !important; background: transparent !important; box-shadow: none !important; scrollbar-width: thin !important; scrollbar-color: #bfa6ba55 transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) :is(.character-detail-content, .ref-character-overview) { height: auto !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; box-shadow: none !important; overflow: visible !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-compact-kit { display: flex !important; flex-direction: column !important; gap: 12px !important; height: auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-compact-kit > :is(article, section) { flex-shrink: 0 !important; margin: 0 !important; padding: 16px 20px !important; border: 1px solid var(--reference-line) !important; border-radius: 22px !important; background: var(--reference-panel) !important; box-shadow: none !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-compact-kit > .radiant-leader { background: linear-gradient(110deg, #ffa15d16, #ffffff05) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-compact-kit :is(h3, header) { display: flex !important; align-items: center !important; gap: 10px !important; margin: 0 0 8px !important; padding: 0 !important; border: 0 !important; background: transparent !important; font: 700 14px/1.35 Sora, system-ui, sans-serif !important; color: var(--reference-text) !important; text-transform: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-compact-kit .ref-flare-heading { justify-content: space-between !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-compact-kit .ref-flare-heading h3 { margin: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-compact-kit .radiant-leader-mark { color: var(--reference-peach) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-compact-kit .ability-icon { width: 32px !important; height: 32px !important; object-fit: contain !important; flex: 0 0 auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-compact-kit :is(p, li) { max-width: none !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; color: var(--reference-muted) !important; font: 500 13px/1.6 Sora, system-ui, sans-serif !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-compact-kit ul { margin: 0 !important; padding-left: 18px !important; display: grid !important; gap: 4px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-compact-kit [aria-label="Convergent Light rank bands"] { position: static !important; display: flex !important; flex-wrap: wrap !important; gap: 8px !important; margin: 12px 0 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail:is([data-character-view="overview"], .ref-capture-detail) .ref-compact-kit [aria-label="Convergent Light rank bands"] > button { flex: 1 1 0 !important; min-height: 44px !important; }
+
+  /* Captured Elemental-Devourer detail panels */
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-character-portrait > span:not(.character-idle) { position: absolute !important; inset: 0 !important; display: grid !important; place-items: center !important; color: var(--reference-muted) !important; font-size: 13px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-character-portrait > img { position: absolute !important; inset: 12px !important; width: calc(100% - 24px) !important; height: calc(100% - 24px) !important; object-fit: contain !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-character-identity > p { margin: 0 !important; color: var(--reference-peach) !important; font-size: 11px !important; font-weight: 700 !important; letter-spacing: .08em !important; text-transform: uppercase !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-character-progress > div { margin: 0 !important; padding: 0 !important; text-indent: 0 !important; color: var(--reference-muted) !important; font-size: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-character-submenus button { font-size: 13px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-character-submenus button:first-child { flex: 1.6 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-character-submenus [aria-pressed="true"] { border-color: var(--reference-peach) !important; background: #ffa15d22 !important; color: var(--reference-peach) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-capture-panel:not([hidden]) { display: flex !important; flex-direction: column !important; gap: 12px !important; height: auto !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-capture-panel > p { max-width: none !important; margin: 0 !important; padding: 12px 16px !important; border: 1px solid var(--reference-line) !important; border-radius: 16px !important; background: #ffa15d10 !important; color: var(--reference-muted) !important; font-size: 12px !important; line-height: 1.55 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-character-panels .character-category { flex-shrink: 0 !important; margin: 0 !important; padding: 16px 20px !important; border: 1px solid var(--reference-line) !important; border-radius: 22px !important; background: var(--reference-panel) !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-character-panels .character-category > h3 { margin: 0 0 12px !important; font: 700 14px/1.3 Sora, system-ui, sans-serif !important; color: var(--reference-text) !important; text-transform: none !important; letter-spacing: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-character-panels [aria-label="Current combat stats"] { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important; gap: 8px !important; margin: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-character-panels [aria-label="Current combat stats"] > * { display: flex !important; flex-direction: column !important; justify-content: space-between !important; align-items: flex-start !important; text-align: left !important; gap: 2px !important; min-width: 0 !important; padding: 8px 12px !important; border: 1px solid var(--reference-line) !important; border-radius: 14px !important; background: var(--reference-raised) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-character-panels [aria-label="Current combat stats"] > * > :is(span, small, strong) { margin: 0 !important; padding: 0 !important; width: auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-character-panels [aria-label="Current combat stats"] > * > :is(span, small) { color: var(--reference-muted) !important; font-size: 11px !important; font-weight: 600 !important; text-transform: none !important; letter-spacing: 0 !important; text-align: left !important; overflow-wrap: anywhere !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .ref-character-panels [aria-label="Current combat stats"] > * > strong { color: var(--reference-text) !important; font-size: 15px !important; font-variant-numeric: tabular-nums !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .character-combat > div { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important; gap: 10px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .character-combat button { display: block !important; width: 100% !important; height: auto !important; min-height: 44px !important; padding: 12px 14px !important; text-align: left !important; border: 1px solid var(--reference-line) !important; border-radius: 16px !important; background: var(--reference-raised) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .character-combat button > span { display: flex !important; flex-direction: column !important; gap: 3px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .character-combat button :is(span span, small) { color: var(--reference-muted) !important; font-size: 11px !important; white-space: normal !important; }
+
+  /* Saved squad loadouts */
+  html[data-menu-workspace] .sanctuary-shell .ref-saved-loadouts-page .saved-loadout-page-navigation { display: flex !important; gap: 10px !important; margin: 0 0 8px !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-saved-loadouts-page .saved-loadout-page-navigation [aria-pressed="true"] { border-color: var(--reference-peach) !important; background: #ffa15d22 !important; color: var(--reference-peach) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts:not(#_) { padding: 14px 20px !important; border: 1px solid var(--reference-line) !important; border-radius: var(--reference-radius) !important; background: var(--reference-panel) !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts > .ref-panel-heading { display: flex !important; align-items: baseline !important; justify-content: space-between !important; margin: 0 0 12px !important; padding: 0 0 8px !important; border-bottom: 1px solid var(--reference-line) !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts > .ref-panel-heading h2 { margin: 0 !important; font: 700 24px/1.2 Georgia, serif !important; text-transform: none !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts > .ref-panel-heading > span { color: var(--reference-muted) !important; font-size: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-scroll { display: grid !important; grid-template-columns: 220px minmax(0, 1fr) !important; gap: 20px !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-sidebar { display: flex !important; flex-direction: column !important; gap: 10px !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-choice { display: grid !important; gap: 8px !important; justify-items: start !important; width: 100% !important; height: auto !important; padding: 14px !important; text-align: left !important; border: 1px solid var(--reference-line) !important; border-radius: 18px !important; background: var(--reference-raised) !important; box-shadow: none !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-choice:is(.is-current, [aria-pressed="true"]) { border-color: var(--reference-peach) !important; background: linear-gradient(140deg, #ffa15d1f, #ffffff05) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-choice > b { font: 700 14px/1.3 Sora, system-ui, sans-serif !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-choice > span:not(.saved-loadout-summary-art) { color: var(--reference-muted) !important; font-size: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-choice > strong { padding: 4px 12px !important; border: 0 !important; border-radius: 999px !important; background: var(--reference-peach) !important; color: #261912 !important; font-size: 12px !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-summary-art { display: flex !important; gap: 4px !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-summary-art .ref-thumb { width: 36px !important; height: 36px !important; overflow: hidden !important; border: 1px solid var(--reference-line) !important; border-radius: 50% !important; background: #ffffff0d !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-empty-library { margin: 0 !important; padding: 14px !important; border: 1px dashed var(--reference-line) !important; border-radius: 18px !important; background: transparent !important; color: var(--reference-muted) !important; font-size: 12px !important; line-height: 1.55 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-detail { display: flex !important; flex-direction: column !important; gap: 12px !important; min-width: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-card { margin: 0 !important; padding: 18px 20px !important; border: 1px solid var(--reference-line) !important; border-radius: 22px !important; background: var(--reference-raised) !important; box-shadow: none !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-card-heading { display: flex !important; align-items: baseline !important; justify-content: space-between !important; gap: 12px !important; margin: 0 0 6px !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-card-heading h3 { margin: 0 !important; font: 700 17px/1.3 Sora, system-ui, sans-serif !important; color: var(--reference-text) !important; text-transform: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-card-heading > span { color: var(--reference-peach) !important; font-size: 13px !important; font-weight: 700 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-intro { margin: 0 0 10px !important; color: var(--reference-muted) !important; font-size: 13px !important; font-weight: 500 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-editor { display: grid !important; grid-template-columns: minmax(0, 1fr) auto !important; align-items: end !important; gap: 12px !important; margin: 0 0 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-name { display: grid !important; gap: 6px !important; margin: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-name > span { color: var(--reference-muted) !important; font-size: 12px !important; font-weight: 600 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-actions { display: flex !important; gap: 8px !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-actions button:not(:disabled) { border-color: var(--reference-peach) !important; color: var(--reference-peach) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-members { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important; gap: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member { display: flex !important; flex-direction: column !important; gap: 8px !important; min-width: 0 !important; margin: 0 !important; padding: 14px !important; border: 1px solid var(--reference-line) !important; border-radius: 18px !important; background: #ffffff06 !important; box-shadow: none !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member-heading { display: flex !important; align-items: center !important; gap: 10px !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member-heading :is(span, small) { font-size: 11px !important; color: var(--reference-muted) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member-heading :is(b, strong) { font: 700 14px/1.3 Sora, system-ui, sans-serif !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member > p { margin: 0 !important; color: var(--reference-muted) !important; font-size: 12px !important; font-weight: 500 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member > p.saved-loadout-equipment-count { color: var(--reference-text) !important; font-weight: 700 !important; font-size: 13px !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-gear { margin-top: auto !important; padding-top: 8px !important; border-top: 1px solid var(--reference-line) !important; color: var(--reference-muted) !important; font-size: 11px !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-master { display: flex !important; align-items: center !important; gap: 10px !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-master > .saved-loadout-slot-art { position: relative !important; display: grid !important; place-items: center !important; flex: 0 0 36px !important; width: 36px !important; height: 36px !important; margin: 0 !important; border: 1px dashed var(--reference-line) !important; border-radius: 12px !important; background: #ffffff05 !important; color: var(--reference-muted) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-master > .saved-loadout-slot-copy { display: grid !important; gap: 0 !important; min-width: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-master > .saved-loadout-slot-copy small { color: var(--reference-text) !important; font-size: 12px !important; font-weight: 700 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-master .saved-loadout-slot-name { color: var(--reference-muted) !important; font-size: 11px !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member { padding: 12px 14px !important; gap: 6px !important; }
+  /* Squad formation */
+  html[data-menu-workspace] .sanctuary-shell .ref-formation:not(#_) { padding: 16px 20px !important; border: 1px solid var(--reference-line) !important; border-radius: var(--reference-radius) !important; background: var(--reference-panel) !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-formation { display: grid !important; gap: 12px !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-heading:not(#_) { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 16px !important; margin: 0 !important; padding: 0 0 10px !important; border-bottom: 1px solid var(--reference-line) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-heading > div:first-child { display: flex !important; flex-wrap: wrap !important; align-items: baseline !important; column-gap: 14px !important; row-gap: 2px !important; min-width: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-heading h2 { margin: 0 !important; color: var(--reference-text) !important; font-family: Georgia, serif !important; font-size: 26px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-heading p { order: 3 !important; flex-basis: 100% !important; margin: 0 !important; color: var(--reference-muted) !important; font-size: 13px !important; font-weight: 500 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-heading [data-information] { min-height: 32px !important; padding: 0 14px !important; border: 1px solid var(--reference-line) !important; border-radius: 999px !important; background: var(--reference-raised) !important; color: var(--reference-muted) !important; font-size: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-save:not(#_) { display: flex !important; align-items: center !important; gap: 10px !important; flex: 0 0 auto !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-save > span { width: auto !important; color: var(--reference-peach) !important; font-size: 13px !important; font-weight: 700 !important; white-space: nowrap !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-save > button { width: auto !important; min-height: 44px !important; padding: 0 18px !important; border-radius: 999px !important; white-space: nowrap !important; justify-content: center !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-save > .text-button { border: 1px solid var(--reference-line) !important; background: var(--reference-raised) !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-save > .primary-button { border: 1px solid var(--reference-peach) !important; background: linear-gradient(135deg, #ffb57a, var(--reference-peach)) !important; color: #2a1622 !important; font-weight: 800 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-save > button:disabled { opacity: .45 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-slots:not(#_) { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 12px !important; margin: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-slot:not(#_) { display: grid !important; grid-template-rows: auto 1fr auto !important; gap: 8px !important; min-width: 0 !important; margin: 0 !important; padding: 12px !important; border: 1px solid var(--reference-line) !important; border-radius: 20px !important; background: var(--reference-raised) !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-slot-leader:not(#_) { border-color: color-mix(in srgb, var(--reference-peach) 60%, transparent) !important; background: linear-gradient(160deg, #ffa15d1f, var(--reference-raised) 60%) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-slot h3 { margin: 0 !important; color: var(--reference-muted) !important; font-family: Sora, system-ui, sans-serif !important; font-size: 11px !important; font-weight: 700 !important; letter-spacing: .12em !important; text-align: left !important; text-transform: uppercase !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-slot-leader h3 { color: var(--reference-peach) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-member-preview:not(#_) { display: flex !important; flex-direction: row !important; justify-content: flex-start !important; height: auto !important; overflow: hidden !important; align-items: center !important; gap: 12px !important; min-width: 0 !important; min-height: 0 !important; margin: 0 !important; padding: 6px !important; border: 1px solid transparent !important; border-radius: 16px !important; background: #ffffff05 !important; box-shadow: none !important; text-align: left !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-member-preview::before, html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-member-preview::after { display: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-member-preview:hover { border-color: var(--reference-line) !important; background: #ffffff0c !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-card-art:not(#_) { position: relative !important; display: grid !important; place-items: center !important; flex: 0 0 88px !important; width: 88px !important; height: 88px !important; margin: 0 !important; overflow: hidden !important; border: 1px solid color-mix(in srgb, var(--member-accent, #ffffff) 45%, transparent) !important; border-radius: 16px !important; background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--member-accent, #ffffff) 26%, transparent), #0d0a1a 75%) !important; color: var(--reference-muted) !important; font-size: 28px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-card-art > .character-idle { display: block !important; width: 100% !important; height: 100% !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-card-art img { display: block !important; width: 100% !important; height: 100% !important; object-fit: contain !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-card-copy:not(#_) { display: grid !important; gap: 3px !important; min-width: 0 !important; justify-items: start !important; text-align: left !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-card-copy strong { max-width: 100% !important; overflow: hidden !important; color: var(--reference-text) !important; font-size: 15px !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-card-copy > span:not(.character-rating) { color: var(--reference-muted) !important; font-size: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-card-copy .character-rating { display: flex !important; flex-wrap: nowrap !important; align-items: center !important; gap: 4px !important; zoom: .5 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-slot-actions:not(#_) { display: flex !important; gap: 8px !important; margin: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-slot-actions > button:not([hidden]) { flex: 1 1 0 !important; justify-content: center !important; min-height: 40px !important; padding: 0 12px !important; border: 1px solid var(--reference-line) !important; border-radius: 999px !important; background: #ffffff08 !important; color: var(--reference-text) !important; font-size: 13px !important; text-align: center !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation [role="status"], html[data-menu-workspace] .sanctuary-shell .ref-formation output { margin: 0 !important; color: var(--reference-muted) !important; font-size: 12px !important; font-weight: 600 !important; }
+  /* Squad member picker */
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker:not(#_) { border: 1px solid var(--reference-line) !important; border-radius: var(--reference-radius) !important; background: linear-gradient(160deg, #1d1630, #120e20 70%) !important; box-shadow: 0 30px 80px #00000099 !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker > .drawer-heading { padding: 16px 22px !important; border-bottom: 1px solid var(--reference-line) !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker > .drawer-heading h2 { font-family: Georgia, serif !important; font-size: 24px !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-picker-tools { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 12px !important; padding: 12px 22px 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-picker-search { width: min(320px, 40%) !important; min-height: 40px !important; padding: 0 16px !important; border: 1px solid var(--reference-line) !important; border-radius: 999px !important; background: #ffffff08 !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker > p:not(.squad-picker-error) { margin: 8px 22px 0 !important; color: var(--reference-muted) !important; font-size: 13px !important; font-weight: 500 !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-picker-error:empty { display: none !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-picker-grid:not(#_) { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important; grid-auto-rows: max-content !important; gap: 12px !important; padding: 14px 22px 22px !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-pick-entry:not(#_) { display: grid !important; grid-template-rows: 1fr auto !important; gap: 0 !important; min-width: 0 !important; padding: 0 !important; overflow: hidden !important; border: 1px solid var(--reference-line) !important; border-radius: 18px !important; background: var(--reference-raised) !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-pick-entry:hover { border-color: color-mix(in srgb, var(--reference-peach) 55%, transparent) !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-pick-card:not(#_) { position: relative !important; display: grid !important; gap: 8px !important; min-height: 0 !important; margin: 0 !important; padding: 10px 10px 8px !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; text-align: center !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-pick-card[aria-pressed="true"] { background: linear-gradient(180deg, #ffa15d26, transparent) !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-pick-art:not(#_) { display: block !important; width: 100% !important; aspect-ratio: 1 !important; overflow: hidden !important; border: 1px solid color-mix(in srgb, var(--member-accent, #ffffff) 45%, transparent) !important; border-radius: 14px !important; background: #0d0a1a !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-pick-art img { display: block !important; width: 100% !important; height: 100% !important; object-fit: cover !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-pick-copy { display: grid !important; gap: 2px !important; min-width: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-pick-copy strong { color: var(--reference-text) !important; font-size: 13px !important; line-height: 1.25 !important; white-space: normal !important; overflow-wrap: anywhere !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-pick-copy small { color: var(--reference-muted) !important; font-size: 11px !important; line-height: 1.3 !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-pick-tag:not(:empty) { position: absolute !important; top: 16px !important; left: 16px !important; padding: 3px 9px !important; border: 0 !important; border-radius: 999px !important; background: var(--reference-peach) !important; color: #2a1622 !important; font-size: 11px !important; font-weight: 800 !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-pick-entry > [data-squad-details] { min-height: 36px !important; margin: 0 !important; padding: 0 10px !important; border: 0 !important; border-top: 1px solid var(--reference-line) !important; border-radius: 0 !important; background: #ffffff05 !important; color: var(--reference-muted) !important; font-size: 12px !important; text-align: center !important; justify-content: center !important; }
+  html[data-menu-workspace] .sanctuary-shell dialog.squad-picker .squad-pick-entry > [data-squad-details]:hover { color: var(--reference-peach) !important; }
+
+  /* Conduit loadout slots (bearer and captured) */
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slots:not(#_) { display: flex !important; flex-direction: column !important; min-height: 0 !important; overflow: hidden !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slots:not(#_) > :not(.loadout-grid) { flex-shrink: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-grid:not(#_):not(#_) { flex: 1 1 0 !important; min-height: 0 !important; height: auto !important; grid-template-rows: repeat(2, minmax(0, 1fr)) !important; grid-auto-rows: minmax(0, 1fr) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slot:not(#_) { min-height: 0 !important; gap: 4px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slot.is-empty:not(#_) { justify-content: center !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slot:not(#_) .loadout-slot-plus { flex: 0 0 auto !important; width: auto !important; height: auto !important; display: grid !important; place-items: center !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slot:not(#_) .loadout-slot-plus .selection-trigger { position: relative !important; display: grid !important; place-items: center !important; width: 48px !important; height: 48px !important; min-height: 44px !important; padding: 0 !important; border: 1px dashed #ffa15d99 !important; border-radius: 50% !important; background: #ffa15d12 !important; color: transparent !important; font-size: 0 !important; overflow: hidden !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slot:not(#_) .loadout-slot-plus .selection-trigger::before { content: '+' !important; display: flex !important; align-items: center !important; justify-content: center !important; position: absolute !important; opacity: 1 !important; inset: 0 !important; width: auto !important; height: auto !important; transform: none !important; margin: 0 !important; background: none !important; border: 0 !important; color: var(--reference-peach) !important; font-size: 22px !important; line-height: 1 !important; font-weight: 600 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slot:not(#_) .loadout-slot-plus .selection-trigger::after { display: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slot:not(#_) .loadout-slot-plus .selection-trigger:hover { border-color: var(--reference-peach) !important; background: #ffa15d24 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-slot:not(#_) .loadout-slot-art { width: clamp(44px, 9vh, 72px) !important; height: clamp(44px, 9vh, 72px) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-filters:not(#_) { flex-direction: row !important; flex-wrap: wrap !important; gap: 6px 14px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-filter-group:not(#_) { gap: 4px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-filter-group:not(#_) button { min-height: 44px !important; padding: 4px 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-owned:not(#_) { gap: 8px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-owned-row:not(#_) { padding: 6px 10px !important; grid-template-columns: 64px minmax(0, 1fr) auto auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .loadout-owned-art:not(#_) { width: 64px !important; height: 64px !important; }
+  /* Captured Conduits tab: compact heading so slots and owned list keep their space */
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .ref-organized-detail:not(#_) > p { margin: 0 0 6px !important; font-size: 12px !important; line-height: 1.35 !important; color: var(--reference-muted) !important; font-weight: 600 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .ref-organized-detail .loadout-header:not(#_) { display: flex !important; flex-wrap: nowrap !important; align-items: center !important; gap: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .ref-organized-detail .loadout-back:not(#_) { flex: 0 1 auto !important; max-width: 220px !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .ref-organized-detail .loadout-title:not(#_) { flex: 1 1 0 !important; min-width: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .ref-organized-detail .loadout-title:not(#_) h3 { font-size: 22px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .ref-organized-detail .loadout-member-tabs:not(#_) { flex: 0 0 auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .ref-organized-detail .ref-master-slot:not(#_) { display: flex !important; align-items: center !important; gap: 10px !important; padding: 8px 12px !important; min-height: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .ref-organized-detail .ref-master-slot:not(#_) :is(strong, p) { margin: 0 !important; font-size: 12px !important; line-height: 1.3 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-page .ref-organized-detail .ref-master-slot:not(#_) p { color: var(--reference-muted) !important; font-weight: 600 !important; }
+
+  /* Conduit Store and Calamitic Conduits */
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_) { display: grid !important; height: 100% !important; min-height: 0 !important; overflow: hidden !important; grid-template-columns: minmax(170px, 15%) minmax(0, 1fr) minmax(280px, 26%) !important; grid-template-rows: auto minmax(0, 1fr) auto !important; gap: 16px 20px !important; align-items: stretch !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) > .ref-market-tabs { grid-column: 1 / -1 !important; grid-row: 1 !important; display: flex !important; flex-wrap: wrap !important; gap: 8px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) > .ref-market-tabs button { width: auto !important; min-height: 44px !important; padding: 8px 18px !important; white-space: nowrap !important; border-radius: 999px !important; border-color: var(--reference-line) !important; background: var(--reference-raised) !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) > .ref-market-tabs button[aria-current] { border-color: var(--reference-peach) !important; background: #ffa15d22 !important; color: var(--reference-peach) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) > aside.ref-panel:not(.ref-store-detail) { grid-column: 1 !important; grid-row: 2 / 4 !important; min-height: 0 !important; height: auto !important; overflow: auto !important; display: flex !important; flex-direction: column !important; gap: 10px !important; padding: 16px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) > aside.ref-panel:not(.ref-store-detail) h3 { margin: 0 !important; font-size: 12px !important; letter-spacing: .12em !important; text-transform: uppercase !important; color: var(--reference-muted) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) .ref-rarity-filter { display: flex !important; flex-direction: column !important; gap: 6px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) .ref-rarity-filter button { display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; min-height: 44px !important; padding: 8px 14px !important; border-radius: 999px !important; border-color: var(--reference-line) !important; background: var(--reference-raised) !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) .ref-rarity-filter button[aria-pressed="true"] { border-color: var(--reference-peach) !important; background: #ffa15d22 !important; color: var(--reference-peach) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) > .ref-store-catalog { grid-column: 2 !important; grid-row: 2 !important; min-height: 0 !important; height: auto !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; padding: 16px !important; gap: 10px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) > .ref-store-catalog .ref-scroll { flex: 1 1 0 !important; min-height: 0 !important; overflow: auto !important; padding: 2px 6px 6px 2px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) .info-catalog-grid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important; gap: 10px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) .info-catalog-choice { min-height: 0 !important; height: auto !important; padding: 12px !important; border-radius: 18px !important; border-color: var(--reference-line) !important; background: var(--reference-raised) !important; text-align: left !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) .info-catalog-choice[aria-pressed="true"] { border-color: var(--reference-peach) !important; background: #ffa15d12 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) > .menu-pager { grid-column: 2 !important; grid-row: 3 !important; position: static !important; margin: 0 !important; justify-content: center !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) > .ref-store-detail { grid-column: 3 !important; grid-row: 2 / 4 !important; min-height: 0 !important; height: auto !important; overflow: auto !important; padding: 16px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store[data-store-mode="locked"]:not(#_):not(#_) { grid-template-columns: minmax(260px, 26%) minmax(0, 1fr) !important; grid-template-rows: auto minmax(0, 1fr) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store[data-store-mode="locked"]:not(#_) > .shop-host { grid-column: 1 !important; grid-row: 2 !important; align-self: start !important; width: auto !important; min-width: 0 !important; height: auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store[data-store-mode="locked"]:not(#_) > .calamitic-store-lock { grid-column: 2 !important; grid-row: 2 !important; min-height: 0 !important; height: auto !important; border-radius: var(--reference-radius) !important; }
+  /* Cosmetic Store: explicit catalog/detail columns */
+  html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_):not(#_) { grid-template-columns: minmax(0, 1fr) minmax(280px, 30%) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_) > .online-store-tabs { grid-column: 1 / -1 !important; display: flex !important; flex-wrap: wrap !important; gap: 8px !important; width: auto !important; height: auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market:not(#_) > .online-store-tabs button { width: auto !important; min-height: 44px !important; padding: 8px 18px !important; white-space: nowrap !important; writing-mode: horizontal-tb !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_) .ref-product-grid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important; gap: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_) .info-catalog-choice { min-height: 0 !important; height: auto !important; padding: 14px !important; border-radius: 18px !important; border-color: var(--reference-line) !important; background: var(--reference-raised) !important; text-align: left !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_) .info-catalog-choice[aria-pressed="true"] { border-color: var(--reference-peach) !important; background: #ffa15d12 !important; }  html[data-menu-workspace] .sanctuary-shell :is(.ref-market, .ref-conduit-store):not(#_) > .ref-store-detail { display: flex !important; flex-direction: column !important; gap: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell :is(.ref-market, .ref-conduit-store):not(#_) > .ref-store-detail > * { flex: 0 0 auto !important; min-height: auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_) .ref-store-detail .info-offer { display: grid !important; grid-template-columns: 1fr !important; justify-items: stretch !important; gap: 12px !important; height: auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_) .ref-store-detail .info-offer > * { grid-column: 1 !important; grid-row: auto !important; width: auto !important; height: auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_) .ref-store-detail .info-offer .info-item-art { justify-self: center !important; width: 120px !important; height: 120px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_) .ref-product-grid .info-item-header { display: grid !important; grid-template-columns: 72px minmax(0, 1fr) !important; align-items: center !important; gap: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_) .ref-product-grid .info-item-art { width: 72px !important; height: 72px !important; min-width: 0 !important; overflow: hidden !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_) .profile-frame-preview { width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100% !important; font-size: 16px !important; }
+  /* Gameplay activity cards: fill the panel; long detail columns scroll inside the card instead of spilling past it. */
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play > .activity-group:not([hidden]) .activity-card:not([hidden]):not(#_) { height: 100% !important; min-height: 0 !important; max-height: none !important; grid-template-rows: minmax(0, 1fr) !important; overflow: hidden !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play > .activity-group:not([hidden]) .activity-card:not(.dungeon-card):not(#_) > * { min-height: 0 !important; max-height: 100% !important; overflow-y: auto !important; overflow-x: hidden !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .activity-card :is(dl, .activity-stats):not(#_) { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)) !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .activity-card :is(dl, .activity-stats) :is(dt, dd):not(#_) { overflow-wrap: normal !important; word-break: normal !important; hyphens: none !important; }
+
+  /* Story campaign: the chapter title gets a real row; the stage/boss row sizes to content inside the scrolling main panel. */
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .mono-story-campaign:not(#_) { height: 100% !important; grid-template-rows: auto minmax(0, 1fr) !important; row-gap: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .mono-story-campaign > .story-chapter-title:not(#_) { margin: 0 !important; font-size: 13px !important; letter-spacing: .14em !important; text-transform: uppercase !important; color: var(--reference-muted) !important; font-family: var(--ui-font) !important; line-height: 1.4 !important; overflow-wrap: normal !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .mono-story-campaign > :is(.ref-story-region-sidebar, .ref-story-main):not(#_) { min-height: 0 !important; height: 100% !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .mono-story-campaign .story-world-map button:not(#_) { height: auto !important; min-height: 54px !important; flex: 0 0 auto !important; overflow: visible !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .mono-story-campaign .story-region-panel:not([hidden]):not(#_) { flex: 0 0 auto !important; grid-template-rows: auto auto !important; min-height: auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .mono-story-campaign .story-region-panel > *:not(#_) { min-height: auto !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .activity-card.dungeon-card:not([hidden]):not(#_) { display: flex !important; flex-direction: column !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .activity-card.dungeon-card > .activity-difficulty:not(#_) { display: flex !important; flex-direction: column !important; flex: 1 1 auto !important; min-height: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .activity-card.dungeon-card > .activity-difficulty > :not(.activity-difficulty-tabs):not([hidden]):not(#_) { flex: 1 1 auto !important; min-height: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .activity-card .activity-layout:not(#_) { height: 100% !important; min-height: 0 !important; grid-template-rows: minmax(0, 1fr) !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .activity-card .activity-layout > *:not(#_) { min-height: 0 !important; overflow-y: auto !important; overflow-x: hidden !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .mono-story-campaign > .story-chapter-title:not(#_) { padding-left: 4px !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .mono-story-campaign .story-stage :is(small, span):not(#_) { max-width: 100% !important; font-size: 10px !important; letter-spacing: 0 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .activity-card .activity-difficulty > [role="tabpanel"]:not([hidden]):not(#_) { overflow-y: auto !important; overflow-x: hidden !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .activity-card .calamity-tier:not([hidden]):not(#_) { grid-template-columns: minmax(150px, 32%) minmax(0, 1fr) !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .activity-card .calamity-tier-details:not(#_) { grid-template-columns: minmax(0, 1fr) !important; align-content: start !important; gap: 12px !important; }
+  html[data-menu-workspace] .sanctuary-shell .gameplay-hub.ref-play .activity-card .calamity-tier-details :is(li, p, h5, span, strong):not(#_) { overflow-wrap: normal !important; word-break: normal !important; }
+
+  /* Paged catalogs keep every item reachable without scrolling the gallery. */
+  html[data-menu-workspace] .sanctuary-shell [data-menu-page-item][hidden]:not(#_):not(#_) {
+    display: none !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .archives > .archive-panel:not([hidden]):not(#_) {
+    grid-template-rows: minmax(0, 1fr) auto !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-panel > :is(.archive-grid, .glossary-grid) {
+    grid-row: 1 !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .archives :is(.archive-grid > .archive-card, .glossary-grid > .glossary-card)[hidden]:not(#_):not(#_) {
+    display: none !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-panel > .menu-pager {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    justify-self: end !important;
+    z-index: 1 !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-results-toolbar {
+    grid-column: 1 / -1 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 6px 160px 6px 12px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .archives .ref-archive-manage {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .archives .archive-filters {
+    gap: 4px !important;
+    padding: 10px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .archives .glossary-card .glossary-art:not(#_) {
+    bottom: 82px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .archives .glossary-card > h2 {
+    bottom: 52px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .archives .glossary-card > button.text-button:not(#_):not(#_) {
+    inset: auto auto 4px 4px !important;
+    width: calc(50% - 6px) !important;
+    height: 44px !important;
+    padding: 4px !important;
+    color: var(--reference-text) !important;
+    background: var(--reference-raised) !important;
+    font-size: 11px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .archives .glossary-card > button.text-button:last-of-type:not(#_):not(#_) {
+    left: auto !important;
+    right: 4px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .archives .glossary-card > button.text-button:only-of-type:not(#_):not(#_) {
+    left: 4px !important;
+    width: calc(100% - 8px) !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory .inventory-item-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-inventory > .inventory-tools {
+    gap: 4px !important;
+    padding: 8px 12px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) > .ref-store-catalog {
+    grid-row: 2 / 4 !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-catalog > .menu-pager {
+    position: static !important;
+    margin: 0 !important;
+    justify-content: center !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-play .activity-categories a {
+    min-height: 44px !important;
+    padding: 3px 8px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-play .activity-categories strong {
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-play .activity-categories small {
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-play .activity-categories h3 {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_) > .ref-store-detail {
+    gap: 6px !important;
+    padding: 8px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail > .ref-panel-heading {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail :is(.info-catalog, .info-offer) {
+    gap: 4px !important;
+    padding: 8px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail :is(.info-catalog, .info-offer) :is(p, li, summary, small, strong) {
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_) > .ref-store-detail {
+    gap: 3px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card .activity-layout-details:not(#_) {
+    gap: 4px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card .item-showcase {
+    padding: 8px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .rose-event-card .item-showcase ul {
+    gap: 4px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-slot:not(#_) {
+    padding: 8px !important;
+    gap: 6px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon-main {
+    gap: 8px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon-main > .summon-featured {
+    padding: 10px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail {
+    gap: 6px !important;
+    padding: 10px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail .info-offer {
+    gap: 4px !important;
+    padding: 8px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail :is(p, li, small, strong) {
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-grid:not(#_) {
+    grid-template-rows: minmax(0, 1fr) !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail:not(#_) {
+    display: grid !important;
+    grid-template-columns: minmax(0, .8fr) minmax(0, 1fr) minmax(0, 1.2fr) !important;
+    grid-template-rows: auto !important;
+    align-content: start !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .workspace-growth-summary {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .convergent-rank-panel {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .character-upgrade-grid {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .character-upgrade-grid > .character-category {
+    padding: 10px 12px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-evolution-detail .character-upgrade-grid:not(#_) {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) !important;
+    align-items: start !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .workspace-growth-summary {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 20px !important;
+    padding: 8px 14px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .workspace-growth-summary > header {
+    margin: 0 !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-growth-preview .upgrade-stat-preview {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-content: start !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-evolution-detail .character-upgrade-grid > .character-category {
+    padding: 10px 12px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-evolution-detail .character-upgrade-grid > .evolution-fodder {
+    grid-column: 2 !important;
+    grid-row: 1 / 3 !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon-main {
+    overflow: hidden !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon-main > .summon-featured {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-items: start !important;
+    gap: 8px !important;
+    padding: 8px 10px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .summon-featured-tier {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    align-items: start !important;
+    gap: 8px !important;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .summon-featured-tier + .summon-featured-tier {
+    padding-left: 8px !important;
+    border-left: 1px solid var(--reference-line) !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .summon-featured-tier ul {
+    display: grid !important;
+    grid-template-columns: repeat(3, 56px) !important;
+    gap: 6px !important;
+    justify-content: start !important;
+    min-width: 0 !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .summon-featured-tier li {
+    width: 56px !important;
+    gap: 3px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .summon-featured-art {
+    width: 56px !important;
+    height: 56px !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .summon-featured-name {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  @media (min-width: 1200px) and (max-height: 760px) {
+    html[data-menu-workspace] .sanctuary-shell .ref-play .activity-categories:not(#_) {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      align-content: start !important;
+      gap: 4px !important;
+      overflow: hidden !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-play .ref-activity-section { display: contents !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-play .activity-categories a {
+      min-height: 64px !important;
+      height: auto !important;
+      padding: 4px 6px !important;
+      align-items: flex-start !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-play .activity-categories strong { font-size: 11px !important; line-height: 1.15 !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-play .activity-categories small { font-size: 10px !important; line-height: 1.15 !important; }
+
+    html[data-menu-workspace] .sanctuary-shell .ref-market:not(#_) > .ref-store-detail:not(#_) {
+      gap: 4px !important;
+      padding: 8px !important;
+      overflow: hidden !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail > .ref-panel-heading { display: none !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail > .shop-host {
+      flex: 0 0 44px !important;
+      min-height: 44px !important;
+      height: 44px !important;
+      padding: 0 6px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail .info-catalog { gap: 2px !important; padding: 6px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail .info-item-header {
+      grid-template-columns: 40px minmax(0, 1fr) !important;
+      gap: 6px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail .info-item-art {
+      width: 40px !important;
+      height: 40px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail > p {
+      margin: 0 !important;
+      font-size: 12px !important;
+      line-height: 1.25 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail > footer {
+      margin: 0 !important;
+      gap: 4px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail > footer > p {
+      margin: 0 !important;
+      font-size: 11px !important;
+      line-height: 1.2 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-exchange-buy button { min-height: 40px !important; }
+
+    html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]) .ref-product-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      gap: 8px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]) .ref-scroll {
+      overflow: hidden !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]) .info-catalog-choice {
+      min-height: 0 !important;
+      height: auto !important;
+      padding: 6px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail .ref-frame-hero {
+      width: 64px !important;
+      height: 64px !important;
+      max-width: 64px !important;
+      max-height: 64px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail > .info-offer {
+      display: grid !important;
+      grid-template-columns: 56px minmax(0, 1fr) auto !important;
+      grid-template-rows: auto auto !important;
+      align-items: center !important;
+      gap: 4px !important;
+      padding: 6px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail > .info-offer > .info-item-art {
+      grid-column: 1 !important;
+      grid-row: 1 / 3 !important;
+      width: 56px !important;
+      height: 56px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail > .info-offer > .info-offer-description { grid-column: 2 / 4 !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail > .info-offer > .info-offer-owned { grid-column: 2 !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail > .info-offer > .info-price { grid-column: 2 !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-market .ref-store-detail > .info-offer > .info-offer-action { grid-column: 3 !important; grid-row: 2 !important; }
+
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-grid:not(#_) {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 8px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-card .info-offer {
+      display: grid !important;
+      grid-template-columns: 56px minmax(0, 1fr) auto !important;
+      grid-template-rows: minmax(0, 1fr) auto !important;
+      align-items: center !important;
+      gap: 4px !important;
+      height: 100% !important;
+      padding: 6px !important;
+      overflow: hidden !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-card .info-item-art {
+      grid-column: 1 !important;
+      grid-row: 1 / 3 !important;
+      width: 56px !important;
+      height: 56px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-card .info-offer-description {
+      grid-column: 2 / 4 !important;
+      grid-row: 1 !important;
+      min-width: 0 !important;
+      overflow: hidden !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-card .info-offer-description h3 {
+      font-size: 12px !important;
+      line-height: 1.2 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-card .info-effects {
+      font-size: 10px !important;
+      line-height: 1.2 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-card .info-offer-owned {
+      grid-column: 1 !important;
+      grid-row: 2 !important;
+      font-size: 10px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-card .info-price {
+      grid-column: 2 !important;
+      grid-row: 2 !important;
+      font-size: 11px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-card .info-offer-action {
+      grid-column: 3 !important;
+      grid-row: 2 !important;
+    }
+
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_) > .ref-store-detail:not(#_):not(#_) {
+      gap: 4px !important;
+      padding: 8px !important;
+      overflow: hidden !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail > .shop-host {
+      flex: 0 0 44px !important;
+      min-height: 44px !important;
+      height: 44px !important;
+      padding: 0 6px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail > .info-catalog {
+      gap: 4px !important;
+      min-height: 0 !important;
+      padding: 6px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail .conduit-details-art {
+      height: 48px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail .conduit-details-art .conduit-icon-frame {
+      width: 48px !important;
+      height: 48px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail .info-effects {
+      font-size: 11px !important;
+      line-height: 1.2 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail .info-effects p { margin: 2px 0 !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail .info-catalog > .info-acquisition {
+      font-size: 11px !important;
+      line-height: 1.2 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail > .info-offer {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) auto !important;
+      grid-template-rows: auto auto !important;
+      gap: 4px !important;
+      padding: 6px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail > .info-offer > .info-item-art { display: none !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail > .info-offer > .info-offer-description {
+      grid-column: 1 / -1 !important;
+      grid-row: 1 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail > .info-offer > .info-offer-description h3 { display: none !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail > .info-offer > .info-offer-owned { grid-column: 1 !important; grid-row: 2 !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail > .info-offer > .info-price { grid-column: 1 !important; grid-row: 3 !important; font-size: 11px !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store .ref-store-detail > .info-offer > .info-offer-action { grid-column: 2 !important; grid-row: 2 / 4 !important; }
+
+    html[data-menu-workspace] .sanctuary-shell .ref-summon-left .banner-pity {
+      flex: 0 0 auto !important;
+      gap: 4px !important;
+      padding: 8px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-summon-left .banner-pity > h3 {
+      margin: 0 !important;
+      font-size: 11px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-summon-left .summon-pity-progress { margin: 0 !important; gap: 0 !important; }
+    html[data-menu-workspace] .sanctuary-shell .ref-summon-left .summon-pity-progress > div {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) auto !important;
+      gap: 4px !important;
+      padding: 8px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-summon-left .summon-pity-progress dt {
+      font-size: 10px !important;
+      line-height: 1.2 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-summon-left .summon-pity-progress dd {
+      margin: 0 !important;
+      font-size: 12px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-summon-left .summon-pity-progress meter {
+      grid-column: 1 / -1 !important;
+      height: 8px !important;
+    }
+
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) {
+      grid-template-columns: minmax(120px, .12fr) minmax(0, .35fr) minmax(480px, .53fr) !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail > .info-catalog {
+      gap: 2px !important;
+      padding: 4px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail .info-item-header {
+      grid-template-columns: 40px minmax(0, 1fr) !important;
+      gap: 4px !important;
+      margin: 0 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail .info-item-header h3 {
+      margin: 0 !important;
+      font-size: 12px !important;
+      line-height: 1.15 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail .info-item-header .info-item-art,
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail .conduit-details-art,
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail .conduit-details-art .conduit-icon-frame {
+      width: 40px !important;
+      height: 40px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail .info-catalog .info-effects {
+      margin: 0 !important;
+      padding-inline-start: 14px !important;
+      max-width: none !important;
+      font-size: 11px !important;
+      line-height: 1.2 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail .info-catalog .info-effects li + li {
+      margin-top: 2px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail .info-catalog > .info-acquisition {
+      padding: 0 !important;
+      max-width: none !important;
+      font-size: 11px !important;
+      line-height: 1.15 !important;
+      gap: 2px !important;
+      border-top: 0 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail .info-catalog :is(p, li) {
+      max-width: none !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail .info-catalog > :is(.info-number, .info-lore) {
+      margin: 0 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail > .info-offer {
+      grid-template-columns: minmax(0, 1fr) auto !important;
+      grid-template-rows: auto auto auto !important;
+      gap: 3px !important;
+      padding: 4px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail > .info-offer > .info-offer-owned {
+      display: flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      grid-column: 1 !important;
+      grid-row: 2 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail > .info-offer > .info-price {
+      grid-column: 2 !important;
+      grid-row: 2 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-detail > .info-offer > .info-offer-action {
+      grid-column: 1 / -1 !important;
+      grid-row: 3 !important;
+    }
+
+    html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_):not(#_):not(#_) .ref-store-detail > .info-offer {
+      grid-template-columns: 56px minmax(0, 1fr) !important;
+      grid-template-rows: auto auto auto !important;
+      gap: 4px !important;
+      padding: 6px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_):not(#_):not(#_) .ref-store-detail > .info-offer > .info-item-art {
+      grid-column: 1 !important;
+      grid-row: 1 / 4 !important;
+      width: 56px !important;
+      height: 56px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_):not(#_):not(#_) .ref-store-detail > .info-offer > .info-offer-description {
+      grid-column: 2 !important;
+      grid-row: 1 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_):not(#_):not(#_) .ref-store-detail > .info-offer > .info-offer-owned {
+      display: flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+      grid-column: 2 !important;
+      grid-row: 2 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_):not(#_):not(#_) .ref-store-detail > .info-offer > .info-price {
+      grid-column: 2 !important;
+      grid-row: 3 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_):not(#_):not(#_) .ref-store-detail > .info-offer > .info-offer-action {
+      grid-column: 1 / -1 !important;
+      grid-row: 4 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_):not(#_):not(#_) .ref-store-detail > .info-offer .info-offer-action p {
+      margin: 2px 0 0 !important;
+      font-size: 10px !important;
+      line-height: 1.15 !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-market:has(> .online-store-tabs [data-store-tab="cosmetics"][aria-pressed="true"]):not(#_):not(#_):not(#_) .ref-product-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-catalog .info-catalog-choice .info-item-header {
+      grid-template-columns: 64px minmax(0, 1fr) !important;
+      gap: 4px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-catalog .info-catalog-choice .info-item-art,
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_):not(#_) .ref-store-catalog .info-catalog-choice .conduit-icon-frame {
+      width: 64px !important;
+      height: 64px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-summon-left .banner-pity {
+      box-sizing: border-box !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) > .ref-summon-left {
+      overflow-x: hidden !important;
+    }
+  }
+
+  @media (min-width: 1200px) and (min-height: 761px) and (max-height: 1000px) {
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_) .ref-store-detail > .info-catalog {
+      padding: 4px !important;
+    }
+    html[data-menu-workspace] .sanctuary-shell .ref-conduit-store:not(#_):not(#_) .ref-store-detail .info-lore {
+      padding: 8px 12px !important;
+    }
+  }
+
+  html[data-menu-workspace] .sanctuary-shell .ref-summon-left .banner-pity {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
