@@ -1,6 +1,6 @@
 # Combat specification
 
-## Convergent Light ranks and personal Luminosity (2026-11-12; Max Level follow-up not deployed)
+## Convergent Light ranks and personal Luminosity (2026-11-12; Max Level follow-up deployed)
 
 The live replacement supersedes earlier shared Shattering Light charging.
 Each Element-Bearer has a saved **Convergent Light** rank from 1 to 20; missing
