@@ -20,8 +20,9 @@
   price/Buy cards per page, without combat stat or skill panels. Availability
   and copy restrictions remain in accessible reasons and Purchase rules.
 - Conduit Store shows current and maximum effects without repeating identical
-  text. Acquisition instructions remain in non-store detail views; rounding
-  and purchase rules are shared instead of repeated in every effect.
+  text. Acquisition and complete rounding instructions remain in non-store
+  detail views; Store rounding and purchase rules are shared instead of
+  repeated in every effect.
 - Shared saved-success effects remain finite and nonblocking. No artwork,
   battle mechanics, prices or event schedules change.
 

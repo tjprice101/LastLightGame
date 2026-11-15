@@ -31,7 +31,7 @@ describe('Conduit effect wording', () => {
 
       const details = document.createElement('div');
       details.innerHTML = conduitDetails(conduit.id, level);
-      expect(Array.from(details.querySelectorAll('.info-effects li'), entry => entry.textContent)).toContain(`Current effect (+${level}): ${effect}`);
+      expect(Array.from(details.querySelectorAll('.info-effects li'), entry => entry.textContent)).toContain(`${level === 5 ? 'Maximum' : 'Current'}: ${effect}`);
     }
   });
 

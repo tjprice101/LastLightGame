@@ -19,14 +19,17 @@ export function conduitLore(...paragraphs: string[]): string {
   return `<details class="conduit-lore-disclosure"><summary>Lore</summary>${paragraphs.map(text => `<p class="conduit-lore">${escapeDialogText(text)}</p>`).join('')}</details>`;
 }
 
-export function conduitDetails(id: ConduitId, level = 0, revealArt = true, showAcquisition = true): string {
+export function conduitDetails(id: ConduitId, level = 0, revealArt = true, storeView = false): string {
   const conduit = getConduit(id);
-  const effect = (rank: number) => plainEffect(escapeDialogText(conduitEffect(conduit, rank))).replace(/ Any fraction is rounded once\./g, '');
+  const effect = (rank: number) => {
+    const text = plainEffect(escapeDialogText(conduitEffect(conduit, rank)));
+    return storeView ? text.replace(/ Any fraction is rounded once\./g, '') : text;
+  };
   const current = effect(level);
   const maximum = effect(5);
   return catalogInformation({ name: conduit.name, art: `<div class="conduit-details-art${revealArt ? '' : ' unreached-character-art'}">${conduitIcon(id, level)}</div>`,
     metadata: `${conduitRarity(id)} · +${level}`, effects: [`${level === 5 ? 'Maximum' : 'Current'}: ${current}`, ...(current === maximum ? [] : [`At +5: ${maximum}`])],
-    lore: `${conduit.lore} ${conduit.power}`, acquisition: showAcquisition ? `${isCalamiticConduitId(id) ? `${calamiticTokenPrice} Calamitic Tokens in Rise's Conduit Store · Universal` : conduit.price !== null ? `${conduit.price.toLocaleString('en-US')} Prismatica in the Conduit Store` : 'Awaken the Machines drop'}${isBannerConduitEligible(id) ? ' · Part of the 0.5% Legendary banner bonus pool' : ''}` : undefined });
+    lore: `${conduit.lore} ${conduit.power}`, acquisition: !storeView ? `${isCalamiticConduitId(id) ? `${calamiticTokenPrice} Calamitic Tokens in Rise's Conduit Store · Universal` : conduit.price !== null ? `${conduit.price.toLocaleString('en-US')} Prismatica in the Conduit Store` : 'Awaken the Machines drop'}${isBannerConduitEligible(id) ? ' · Part of the 0.5% Legendary banner bonus pool' : ''}` : undefined });
 }
 
 export function conduitIcon(id: ConduitId, level = 0): string {
@@ -63,7 +66,7 @@ export function conduitStore(account: Account | null, selected?: string, rarity 
   return `<section class="conduit-store ref-screen ref-conduit-store" data-store-mode="${calamitic ? 'calamitic' : 'ordinary'}">${navigation}
     <aside class="ref-panel"><h3>${calamitic ? 'Calamitic' : 'Rarity'}</h3>${calamitic ? `<p>Any element</p><p>${currencyIcon('calamitic-tokens')}<strong>${balance.toLocaleString('en-US')}</strong> Calamitic Tokens</p><p>One copy lets all your squad members equip this Conduit.</p>` : `<nav class="ref-rarity-filter">${['', ...new Set(conduits.filter(entry => entry.price !== null).map(entry => entry.rarity))].map(value => `<button data-store-rarity="${value}" aria-pressed="${value === rarity}">${value || 'All'}<small>${conduits.filter(entry => entry.price !== null && (!value || entry.rarity === value)).length}</small></button>`).join('')}</nav>`}</aside>
     <section class="ref-panel ref-store-catalog" data-menu-page-size="${pageSize}" data-menu-current-page="${currentPage}"><header class="ref-panel-heading">${calamitic ? "Calamitic Conduits" : 'Available Conduits'} &middot; ${catalog.length}</header><div class="ref-scroll"><div class="info-catalog-grid">${catalog.map(conduit => `<button class="info-catalog-choice" data-menu-page-item data-store-conduit="${conduit.id}" aria-pressed="${conduit.id === choice?.id}">${catalogInformation({ name: conduit.name, art: conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id]), metadata: `${conduit.rarity}${calamitic ? ' · Universal' : ''}`, effects: [readableEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]))], owned: account?.conduits?.[conduit.id] ?? 0, cost: `${currencyIcon(calamitic ? 'calamitic-tokens' : 'fractalis')}<strong>${calamitic ? calamiticTokenPrice : conduit.price} ${currency}</strong>` })}</button>`).join('')}</div></div>${menuPager('Conduits')}</section>
-    <aside class="ref-panel ref-store-detail">${shopHost(calamitic ? 'sarev' : 'torven')}${choice ? `<header class="ref-panel-heading">Details</header><div class="ref-store-hero">${conduitIcon(choice.id, account?.conduitUpgrades?.[choice.id])}</div>${conduitDetails(choice.id, account?.conduitUpgrades?.[choice.id], true, false)}
+    <aside class="ref-panel ref-store-detail">${shopHost(calamitic ? 'sarev' : 'torven')}${choice ? `<header class="ref-panel-heading">Details</header><div class="ref-store-hero">${conduitIcon(choice.id, account?.conduitUpgrades?.[choice.id])}</div>${conduitDetails(choice.id, account?.conduitUpgrades?.[choice.id], true, true)}
       ${offerInformation({ name: choice.name, art: conduitIcon(choice.id, account?.conduitUpgrades?.[choice.id]), summary: '<p>Add to your collection.</p>', owned: account?.conduits?.[choice.id] ?? 0, price: `${currencyIcon(calamitic ? 'calamitic-tokens' : 'fractalis')}<strong>${cost?.toLocaleString('en-US')} ${currency}</strong>`,
         action: `<button class="primary-button" data-buy-conduit="${choice.id}" ${!account || cost === null || cost === undefined || balance < cost || (calamitic && owned) ? 'disabled' : ''}>${calamitic && owned ? 'Owned' : 'Buy one'}</button>`,
         reason: !account ? 'Account unavailable.' : calamitic && owned ? 'Already owned.' : cost != null && balance < cost ? `Not enough ${currency}.` : undefined })}` : '<p>No Conduits match this filter.</p>'}

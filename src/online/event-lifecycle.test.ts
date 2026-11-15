@@ -214,23 +214,23 @@ describe('archive and event availability presentation', () => {
     const account = fixture().account;
     for (const access of [{ online: false, now: after }, { online: true, now: before }]) {
       const html = onlineStores(account, null, 'event-devourers', undefined, undefined, access);
-      expect(html.match(/data-buy-event-devourer="[^"]+" disabled/g)).toHaveLength(12);
+      expect(html.match(/data-buy-event-devourer="[^"]+"[^>]*\bdisabled/g)).toHaveLength(12);
     }
     const html = onlineStores(account, null, 'event-devourers', undefined, undefined, { online: true, now: after });
     expect(html.match(/data-buy-event-devourer=/g)).toHaveLength(12);
-    expect(html.match(/data-buy-event-devourer="infusion:roses:[^"]+" disabled/g)).toBeNull();
-    expect(html.match(/data-buy-event-devourer="infusion:moon:[^"]+" disabled/g)).toBeNull();
+    expect(html.match(/data-buy-event-devourer="infusion:roses:[^"]+"[^>]*\bdisabled/g)).toBeNull();
+    expect(html.match(/data-buy-event-devourer="infusion:moon:[^"]+"[^>]*\bdisabled/g)).toBeNull();
     expect(html).not.toContain('sunshade');
   });
   it.each(['moon'] as const)('unlocks %s copies only after a completed window and closes during reruns', id => {
     withCompletedEventWindow(id, () => {
       const account = fixture().account;
       const active = onlineStores(account, null, 'event-devourers', undefined, undefined, { online: true, now: before });
-      expect(active.match(new RegExp(`data-buy-event-devourer="infusion:${id}:[^"]+" disabled`, 'g'))).toHaveLength(6);
+      expect(active.match(new RegExp(`data-buy-event-devourer="infusion:${id}:[^"]+"[^>]*\\bdisabled`, 'g'))).toHaveLength(6);
       const afterWindow = onlineStores(account, null, 'event-devourers', undefined, undefined, { online: true, now: after });
-      expect(afterWindow.match(new RegExp(`data-buy-event-devourer="infusion:${id}:[^"]+"(?! disabled)`, 'g'))).toHaveLength(6);
+      expect(afterWindow.match(new RegExp(`data-buy-event-devourer="infusion:${id}:[^"]+"(?![^>]*\\bdisabled)`, 'g'))).toHaveLength(6);
       const rerun = onlineStores(account, null, 'event-devourers', undefined, undefined, { online: true, now: before });
-      expect(rerun.match(new RegExp(`data-buy-event-devourer="infusion:${id}:[^"]+" disabled`, 'g'))).toHaveLength(6);
+      expect(rerun.match(new RegExp(`data-buy-event-devourer="infusion:${id}:[^"]+"[^>]*\\bdisabled`, 'g'))).toHaveLength(6);
     });
   });
 });

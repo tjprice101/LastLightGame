@@ -132,7 +132,7 @@ describe('visible UI copy', () => {
       expect(filter?.textContent).toBe(element.name);
       expect(filter?.getAttribute('aria-pressed')).toBe('false');
       expect(archive).toContain(`<option value="${element.id}">${element.name}</option>`);
-      expect(onlineStores(account, null, 'materials', element.id)).toContain(`Common ${element.name} upgrade material.`);
+      expect(onlineStores(account, null, 'materials', element.id)).toContain(`${element.name} leveling and evolution material.`);
     }
     function check(directory: string): void {
       for (const entry of readdirSync(directory, { withFileTypes: true })) {

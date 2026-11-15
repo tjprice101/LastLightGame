@@ -16,6 +16,10 @@ repeated acquisition/rounding text. See the [menu contract](menus-and-inventory.
 - `npx vitest run src\game\conduit-equipment.test.ts src\online\server-game.test.ts src\online\battle-preparation.test.ts src\presentation\conduit-loadout.test.ts src\presentation\conduit-store.test.ts src\presentation\online-store-profile.test.ts src\presentation\menu-workspace.test.ts src\presentation\upgrade-reference.test.ts src\presentation\reference-ui.test.ts --maxWorkers=2 --reporter=dot`: **334 passed**, 0 failed.
 - `npm run build`: passed, with the existing large-chunk advisory.
 - `node tools\bundle_server_game.mjs`: passed.
+- Release CI exposed old label/attribute assertions and rounding text removed
+  from Archive details. The Archive regression is fixed; only Store details
+  use the compact wording.
+- `npx vitest run src\presentation\conduit-keywords.test.ts src\presentation\creature-loot-dialog.test.ts src\presentation\ui-copy.test.ts src\online\event-lifecycle.test.ts src\presentation\conduit-store.test.ts --maxWorkers=2 --reporter=dot`: **260 passed**, 0 failed.
 - Isolated Chrome/CDP: Thornia Level at actual 1280x720, 1600x900 and
   1920x1080 had loaded, fully contained art, no overflowing exact stat values
   and no page overflow. Overview/Evolve and the refined equipment/stores were
@@ -31,8 +35,11 @@ or event launch. Authenticated production purchases and online dragging were
 not executed; shared authority transactions have focused regression coverage.
 Unrelated Future Plans drafts and the local HTML mock-up remain excluded.
 
-**Publication:** pending matching client/authority deployment and hosted
-version verification.
+**Publication:** matching authority is ACTIVE at version 108 and anonymous
+POSTs return HTTP 401. Its bundle SHA-256 is
+`066AC8ECF436B1A4C6071968C2AD4E27CAFD51E9A41C36D19F3A085F27895464`.
+The initial client CI run was blocked by the checks described above; the
+corrected client release and hosted version verification are pending.
 
 ## Game-wide reference theme rollout (2026-11-15; local-only)
 
