@@ -25,6 +25,10 @@ server change.
   glints when a different Conduit is picked in the Store or Upgrade screen.
   Static under Reduce motion. Existing level-up/evolution/ascension
   celebrations are unchanged.
+- **Owned Conduit paging (owner request):** the owner disliked seeing only
+  two owned Conduits at a time. The page size now fits the visible list
+  height (minimum 2) and recalculates on resize; paging, filters, sort and
+  equip behavior are unchanged.
 - **Copy/format:** Conduit Store tiles show prices with thousands separators
   (`1,000 Prismatica`, matching the detail panel). The Ascension header
   separator was a literal `?` and is now `·`. No other copy changed.

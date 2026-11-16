@@ -17,11 +17,17 @@
   Calamitic Ascension crown is a badge again, not a stretched lens; Squad
   formation Change/Remove/Choose and Information meet 44px; the Master slot
   trigger no longer clips "No Master equipped"; the selected Conduit slot is
-  gold, not white; the equip-target cue and search count share one line so a
-  full owned-Conduit page shows at 720px; Conduit Store detail has padding
+  gold, not white; Conduit Store detail has padding
   and a 72px centered artwork; Conduit Upgrade columns scroll independently
   instead of scrolling the whole page; the Elemental-Bearers menu actions no
   longer cut off their descriptions; Event shop Buy labels are centered.
+- Owned Conduits (owner request, same day): the list shows as many compact
+  rows as fit the panel instead of a fixed two (3 at 1280x720, 4 at 1366x768,
+  5 at 1600x900, 8 at 1920x1080), re-fitting on window resize and keeping the
+  first Conduit of the current page in view. Two is the minimum. Sort sits in
+  the heading row and the equipment filter beside Search; narrow panels move
+  that filter below Search. The owned panel is wider at 1200px+, and the
+  search placeholder is "Name, element or effect".
 - Upgrade result: "Upgrade saved" reads as a gold status caption instead of a
   button-like box; the level pill is gold-framed.
 

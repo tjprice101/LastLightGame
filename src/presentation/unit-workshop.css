@@ -92,6 +92,8 @@
   .sanctuary-shell .squad-slot.squad-slot-leader:not(#_):not(#_):not(#_):not(#_) { box-shadow: var(--glow-gild), var(--shadow-panel) !important; }
 
   /* Conduit loadout. */
+  .sanctuary-shell .conduit-loadout .loadout-master .loadout-master-select:not(#_):not(#_):not(#_):not(#_) { flex: none !important; }
+  .sanctuary-shell .conduit-loadout .loadout-master .loadout-master-text:not(#_):not(#_):not(#_):not(#_) { flex: 1 1 auto !important; min-width: 0 !important; }
   .sanctuary-shell .conduit-loadout .loadout-master .selection-trigger:not(#_):not(#_):not(#_):not(#_) {
     width: max-content !important;
     max-width: none !important;
@@ -102,23 +104,67 @@
     box-shadow: var(--glow-gild) !important;
     outline-color: var(--gild-light) !important;
   }
-  /* Equip target and search count share one line so the owned list shows a full page at 720px. */
+  /* Owned Conduits: the list filled with as many rows as fit (fittedPageSize in conduit-loadout.ts) instead of
+     two. Header, tools and filters unwrap into one grid so Sort sits in the heading row and the equipment
+     filter beside Search, giving the list the height of a whole filter row. Rows are compact; wide panels
+     show two columns. */
   .sanctuary-shell .conduit-loadout .loadout-owned:not(#_):not(#_):not(#_):not(#_) {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    grid-template-rows: auto auto auto auto minmax(0, 1fr) auto !important;
-    gap: 6px 10px !important;
+    grid-template-columns: minmax(0, 1fr) auto auto !important;
+    grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 6px 8px !important;
+    container: loadout-owned / inline-size;
   }
-  .sanctuary-shell .conduit-loadout .loadout-owned > :not(.loadout-target-cue, .loadout-search-status):not(#_):not(#_):not(#_):not(#_) { grid-column: 1 / -1 !important; }
-  .sanctuary-shell .conduit-loadout .loadout-owned > :is(.loadout-target-cue, .loadout-search-status):not(#_):not(#_):not(#_):not(#_) {
-    grid-row: 4 !important;
-    align-self: center !important;
-    margin: 0 !important;
-  }
-  .sanctuary-shell .conduit-loadout .loadout-owned > .loadout-search-status:not(#_):not(#_):not(#_):not(#_) { grid-column: 2 !important; text-align: right !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned > :is(.ref-panel-heading, .loadout-tools, .loadout-filters):not(#_):not(#_):not(#_):not(#_) { display: contents !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned > .ref-panel-heading > span:not(#_):not(#_):not(#_):not(#_) { grid-row: 1 !important; grid-column: 1 !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned .loadout-sort:not(#_):not(#_):not(#_):not(#_) { grid-row: 1 !important; grid-column: 2 !important; width: 100% !important; max-width: none !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned > .ref-panel-heading > [data-page="conduit-store"]:not(#_):not(#_):not(#_):not(#_) { grid-row: 1 !important; grid-column: 3 !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned .loadout-search:not(#_):not(#_):not(#_):not(#_) { grid-row: 2 !important; grid-column: 1 !important; min-width: 0 !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned .loadout-filter-group:last-child:not(#_):not(#_):not(#_):not(#_) { grid-row: 2 !important; grid-column: 2 / -1 !important; justify-self: end !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned .loadout-filter-group:first-child:not(#_):not(#_):not(#_):not(#_) { grid-row: 3 !important; grid-column: 1 / -1 !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned .loadout-filter-group:not(#_):not(#_):not(#_):not(#_) { display: flex !important; flex-wrap: nowrap !important; gap: 4px !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned .loadout-search input:not(#_):not(#_):not(#_):not(#_) { padding-inline: 12px !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned > :is(.loadout-target-cue, .loadout-search-status):not(#_):not(#_):not(#_):not(#_) { grid-row: 5 !important; align-self: center !important; margin: 0 !important; }
   .sanctuary-shell .conduit-loadout .loadout-owned > .loadout-target-cue:not(#_):not(#_):not(#_):not(#_) { grid-column: 1 !important; border-left-color: var(--gild-mid) !important; }
-  .sanctuary-shell .conduit-loadout .loadout-owned > .loadout-owned-list:not(#_):not(#_):not(#_):not(#_) { grid-row: 5 !important; }
-  .sanctuary-shell .conduit-loadout .loadout-owned > .loadout-pager:not(#_):not(#_):not(#_):not(#_) { grid-row: 6 !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned > .loadout-search-status:not(#_):not(#_):not(#_):not(#_) { grid-column: 2 / -1 !important; text-align: right !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned > .loadout-owned-list:not(#_):not(#_):not(#_):not(#_) {
+    grid-row: 6 !important;
+    grid-column: 1 / -1 !important;
+    align-self: stretch !important;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)) !important;
+    grid-auto-rows: max-content !important;
+    align-content: start !important;
+    gap: 6px !important;
+    overflow: hidden !important;
+  }
+  .sanctuary-shell .conduit-loadout .loadout-owned > .loadout-pager:not(#_):not(#_):not(#_):not(#_) { grid-row: 7 !important; grid-column: 1 / -1 !important; }
+  /* Narrow panels: Search takes the whole row and the equipment filter moves below it. */
+  @container loadout-owned (max-width: 515px) {
+    .sanctuary-shell .conduit-loadout .loadout-owned .loadout-search:not(#_):not(#_):not(#_):not(#_) { grid-column: 1 / -1 !important; }
+    .sanctuary-shell .conduit-loadout .loadout-owned .loadout-filter-group:last-child:not(#_):not(#_):not(#_):not(#_) { grid-row: 3 !important; grid-column: 1 / -1 !important; justify-self: start !important; }
+    .sanctuary-shell .conduit-loadout .loadout-owned .loadout-filter-group:first-child:not(#_):not(#_):not(#_):not(#_) { grid-row: 4 !important; }
+  }
+  @media (min-width: 1200px) {
+    /* Wider owned panel so Search keeps its full placeholder beside the equipment filter. */
+    .sanctuary-shell .ref-conduit-page .loadout-layout:not(#_):not(#_):not(#_):not(#_) { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) !important; }
+  }
+  .sanctuary-shell .conduit-loadout .loadout-owned .loadout-owned-row:not(#_):not(#_):not(#_):not(#_) {
+    grid-template-columns: 44px minmax(0, 1fr) auto auto !important;
+    gap: 8px !important;
+    min-height: 0 !important;
+    padding: 4px 8px !important;
+  }
+  .sanctuary-shell .conduit-loadout .loadout-owned .loadout-owned-art:not(#_):not(#_):not(#_):not(#_) { width: 44px !important; height: 44px !important; grid-row: auto !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned .loadout-owned-text:not(#_):not(#_):not(#_):not(#_) {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 0 6px !important;
+  }
+  .sanctuary-shell .conduit-loadout .loadout-owned .loadout-owned-text b:not(#_):not(#_):not(#_):not(#_) { flex-basis: 100% !important; line-height: 1.25 !important; overflow-wrap: normal !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned .loadout-owned-text small:not(#_):not(#_):not(#_):not(#_) { line-height: 1.3 !important; }
 
   /* Conduit Store detail: content sat on the panel edge with a 40px artwork. */
   .sanctuary-shell .ref-conduit-store .ref-store-detail:not(#_):not(#_):not(#_):not(#_) { padding: 14px !important; gap: 10px !important; }

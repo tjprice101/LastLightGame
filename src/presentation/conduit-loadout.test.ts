@@ -324,6 +324,28 @@ describe('Conduit loadout (D-229)', () => {
     expect(host.querySelector('[data-loadout-target-cue]')?.textContent).toBe('Equipping to Slot 2');
   });
 
+  it('fills the owned list with as many rows as fit and keeps the first Conduit of the page in view', () => {
+    const host = document.createElement('div');
+    host.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', fullAccount());
+    document.body.append(host);
+    const list = host.querySelector<HTMLElement>('.loadout-owned-list')!;
+    Object.defineProperty(list, 'clientHeight', { configurable: true, value: 300 });
+    host.querySelectorAll<HTMLElement>('[data-loadout-conduit]').forEach(row => Object.defineProperty(row, 'offsetHeight', { configurable: true, value: 60 }));
+    bindConduitLoadout(host);
+    expect(visibleIds(host)).toHaveLength(5);
+    expect(host.querySelector('[data-loadout-page-status]')?.textContent).toBe(`Page 1 of ${Math.ceil(conduits.length / 5)}`);
+    click(host, '[data-loadout-page="next"]');
+    const sixth = visibleIds(host)[0];
+    Object.defineProperty(list, 'clientHeight', { configurable: true, value: 120 });
+    applyConduitSearch(host, '');
+    expect(visibleIds(host)).toHaveLength(2);
+    expect(visibleIds(host)).toContain(sixth);
+    Object.defineProperty(list, 'clientHeight', { configurable: true, value: 20 });
+    applyConduitSearch(host, '');
+    expect(visibleIds(host)).toHaveLength(conduitLoadoutPageSize);
+    host.remove();
+  });
+
   it('pages, filters and sorts through the binder, survives re-renders and never writes the account', () => {
     const wallet = fullAccount();
     const before = structuredClone(wallet);

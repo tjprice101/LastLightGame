@@ -13,7 +13,9 @@ pick). Fixed defects present before this session: Level/Evolve stat previews
 broke words and numbers one character per line at 1280px; evolution copies
 were unreadable; the Ascension crown was stretched and its header showed a
 literal `?`; formation buttons were 40px; the Master trigger clipped; the
-selected slot outline was white; only about one owned Conduit showed at 720px;
+selected slot outline was white; the owned-Conduit list showed a fixed two
+per page (now fills the panel: 3 at 1280x720 up to 8 at 1920x1080, re-fitting
+on resize);
 the Store detail had no padding and a 40px off-center artwork; Conduit Upgrade
 scrolled the whole page; Elemental-Bearers menu actions cut off their
 descriptions. Store tile prices now use thousands separators. Growth progress

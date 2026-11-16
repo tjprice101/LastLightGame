@@ -20,7 +20,25 @@ import { isRarity } from '../content/rarity';
 import { catalogInformation } from './information-layout';
 import { information } from './information';
 
+/** Minimum Conduits per page; the live page grows to fill the owned list's height (fittedPageSize). */
 export const conduitLoadoutPageSize = 2;
+let pageSize = conduitLoadoutPageSize;
+
+/**
+ * How many owned-Conduit rows fit the visible list without scrolling: rows that fit the list height times
+ * the list's grid columns, never fewer than the minimum. Unmeasurable layouts keep the last fitted size.
+ */
+function fittedPageSize(list: HTMLElement | null): number {
+  if (!list || !list.clientHeight) return pageSize;
+  const shown = Array.from(list.querySelectorAll<HTMLElement>('[data-loadout-conduit]:not([hidden])'));
+  const tallest = Math.max(0, ...shown.map(row => row.offsetHeight));
+  if (!tallest) return pageSize;
+  const style = getComputedStyle(list);
+  const gap = parseFloat(style.rowGap) || 0;
+  const columns = style.display === 'grid' ? Math.max(1, style.gridTemplateColumns.split(' ').filter(Boolean).length) : 1;
+  const rows = Math.max(1, Math.floor((list.clientHeight + gap) / (tallest + gap)));
+  return Math.max(conduitLoadoutPageSize, rows * columns);
+}
 const rarityOrder = ['Common', 'Rare', 'Legendary', 'Omnic', 'Calamitic'] as const;
 type RarityFilter = '' | (typeof rarityOrder)[number];
 type EquipmentFilter = 'all' | 'equipped' | 'unequipped';
@@ -47,6 +65,7 @@ export function conduitLoadoutView(): Readonly<ConduitLoadoutView> {
 /** Clears transient filter/sort/page/target state, e.g. when returning to the title screen. */
 export function resetConduitLoadoutView(): void {
   view = initialView();
+  pageSize = conduitLoadoutPageSize;
 }
 
 /** Concise Radiant summary of a Conduit at an upgrade rank: each exact combat effect, separated by " · ". */
@@ -130,9 +149,15 @@ function applyLoadoutView(host: HTMLElement): void {
       return conduitMatchesSearch(getConduit(id), view.query) && (!view.rarity || row.dataset.loadoutRarity === view.rarity)
         && (view.equipment === 'all' || (view.equipment === 'equipped') === equipped);
     }).sort((a, b) => compareRows(view.sort, a, b));
-    const pages = Math.max(1, Math.ceil(matches.length / conduitLoadoutPageSize));
+    const fitted = fittedPageSize(list);
+    if (fitted !== pageSize) {
+      // Keep the first Conduit of the current page in view when the page grows or shrinks.
+      view.page = Math.floor((view.page * pageSize) / fitted);
+      pageSize = fitted;
+    }
+    const pages = Math.max(1, Math.ceil(matches.length / pageSize));
     view.page = Math.min(Math.max(0, view.page), pages - 1);
-    const shown = new Set(matches.slice(view.page * conduitLoadoutPageSize, (view.page + 1) * conduitLoadoutPageSize));
+    const shown = new Set(matches.slice(view.page * pageSize, (view.page + 1) * pageSize));
     const empty = panel.querySelector<HTMLElement>('[data-loadout-search-empty]');
     if (list) [...matches, ...rows.filter(row => !matches.includes(row))].forEach(row => list.insertBefore(row, empty && empty.parentElement === list ? empty : null));
     rows.forEach(row => { row.hidden = !shown.has(row); });
@@ -170,6 +195,11 @@ export function bindConduitLoadout(host: HTMLElement, change?: (request: Conduit
   applyLoadoutView(host);
   if (boundHosts.has(host)) return;
   boundHosts.add(host);
+  let resizeFrame = 0;
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(resizeFrame);
+    resizeFrame = requestAnimationFrame(() => { if (host.isConnected && host.querySelector('.loadout-owned')) applyLoadoutView(host); });
+  });
   host.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return;
     const control = event.target.closest<HTMLButtonElement>('button[data-loadout-rarity], [data-loadout-equipment-filter], [data-loadout-page], [data-loadout-select-slot], [data-loadout-rule], [data-loadout-master-rule], [data-loadout-move]');
@@ -368,9 +398,9 @@ function slotCard(owner: string, captured: boolean, element: ElementId, slots: C
 function ownedList(owner: string, element: ElementId, slots: ConduitSlots, account: Account | null): string {
   const owned = conduits.filter((entry) => (account?.conduits?.[entry.id] ?? 0) > 0);
   const firstEmpty = slots.indexOf(null);
-  const pages = Math.max(1, Math.ceil(owned.length / conduitLoadoutPageSize));
+  const pages = Math.max(1, Math.ceil(owned.length / pageSize));
   return `<section class="ref-panel loadout-owned" aria-label="Your Conduits"><header class="ref-panel-heading"><span>Your Conduits · ${owned.length}</span><button class="ref-link" data-page="conduit-store">Store</button></header>
-    <div class="loadout-tools"><label class="loadout-search"><span class="ref-sr-only">Search your Conduits</span><input type="search" data-loadout-search placeholder="Search name, element or effect" aria-label="Search your Conduits" autocomplete="off"></label>
+    <div class="loadout-tools"><label class="loadout-search"><span class="ref-sr-only">Search your Conduits</span><input type="search" data-loadout-search placeholder="Name, element or effect" aria-label="Search your Conduits" autocomplete="off"></label>
       <label class="loadout-sort"><span class="ref-sr-only">Sort Conduits</span><select data-loadout-sort aria-label="Sort Conduits">${(Object.keys(sortLabels) as ConduitLoadoutSort[]).map(key => `<option value="${key}" ${key === view.sort ? 'selected' : ''}>${sortLabels[key]}</option>`).join('')}</select></label></div>
     <div class="loadout-filters"><div class="loadout-filter-group" role="group" aria-label="Filter by rarity">${(['', ...rarityOrder] as RarityFilter[]).map(rarity => `<button type="button" data-loadout-rarity="${rarity}" aria-pressed="false">${rarity || 'All'}</button>`).join('')}</div>
       <div class="loadout-filter-group" role="group" aria-label="Filter by equipment">${([['all', 'All'], ['equipped', 'Equipped'], ['unequipped', 'Unequipped']] as const).map(([value, label]) => `<button type="button" data-loadout-equipment-filter="${value}" aria-pressed="false">${label}</button>`).join('')}</div></div>
@@ -381,7 +411,7 @@ function ownedList(owner: string, element: ElementId, slots: ConduitSlots, accou
       const equipped = slots.includes(conduit.id);
       const reasons = artifactSlots.map((_, index) => equipReason(conduit, element, slots, index) ?? '');
       const reason = equipped ? null : firstEmpty < 0 ? 'All slots full' : reasons[firstEmpty] || null;
-      return `<article class="loadout-owned-row${equipped ? ' is-equipped' : ''}" ${omnicTheme(conduit.id)} data-loadout-conduit="${conduit.id}" data-conduit-drag="${conduit.id}" draggable="${!!account && !equipped}" data-loadout-name="${conduit.name}" data-loadout-rarity="${conduit.rarity}" data-loadout-level="${level}" data-loadout-order="${order}" data-loadout-reasons="${reasons.join('|')}"${order >= conduitLoadoutPageSize ? ' hidden' : ''}><span class="loadout-owned-art">${conduitIcon(conduit.id, level)}</span>
+      return `<article class="loadout-owned-row${equipped ? ' is-equipped' : ''}" ${omnicTheme(conduit.id)} data-loadout-conduit="${conduit.id}" data-conduit-drag="${conduit.id}" draggable="${!!account && !equipped}" data-loadout-name="${conduit.name}" data-loadout-rarity="${conduit.rarity}" data-loadout-level="${level}" data-loadout-order="${order}" data-loadout-reasons="${reasons.join('|')}"${order >= pageSize ? ' hidden' : ''}><span class="loadout-owned-art">${conduitIcon(conduit.id, level)}</span>
         <span class="loadout-owned-text"><b>${conduit.name}</b><small>${conduit.rarity} · +${level}</small>${conduitElement(conduit.id)}${equipped ? '<small>Equipped on this character</small>' : `<small class="loadout-reason" data-loadout-reason${reason ? '' : ' hidden'}>${reason ?? ''}</small>`}</span>
         <button type="button" class="loadout-rule-button" data-loadout-rule="${conduit.id}" data-loadout-detail-level="${level}" aria-label="${conduit.name} details">Details</button>
         ${equipped ? '<span class="ref-chip ref-white">Equipped</span>'
