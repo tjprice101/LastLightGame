@@ -1,5 +1,68 @@
 # Current state and handoff
 
+## Battle HUD and Attendance & mail, UI audit session 8 (2026-11-16)
+
+**Implemented (D-469):** the live Radiant battle HUD (all activities) is
+re-themed in place in `battle-screen.css`: jewel frame, gold hairlines on the
+field, target strip, squad cards, portraits and Health tracks, jewel HUD title
+and tools; the Exit button lost its leader-colour bar. Element accents, red
+enemy Health and the Convergent Light gauge are unchanged. Attendance & mail:
+completed days are gold; fixed (present before this session) the Save today's
+attendance button sitting below the scroll area at 1280x720 and 1600x900, "12 /
+30" wrapping, the cut-off policy text, a 0.2em-tracked footer and the server
+time wrapping "EST". Cards cascade once per tab arrival. Cut-in labels use the
+font token. Legacy battle CSS is not re-themed (Future Plans legacy row).
+Presentation only; server bundle unchanged, so no deploy.
+
+**Verified:**
+
+- Full `npx vitest run`: 10,504 passed, 1 failed (`battle-art.test.ts` pinned
+  the old `#9a9ea9` label colour); assertion updated to the token, then the
+  battle-art/screen/hud/chrome files: 83 passed. Earlier full run (Session 7
+  code): 10,504 passed in 299 files.
+- `npx tsc --noEmit`: passed. `vite build`: passed (existing chunk advisory).
+  `node tools/bundle_server_game.mjs`: output unchanged.
+- Headless Chrome, `?workspace=menu`: Training battle idle, mid-attack frames
+  (250ms to 2.6s), Battle reference open, Settings drawer, Exit confirm; the
+  real Attendance & mail dialog through its own code with a fixture transport
+  (Attendance, Mailbox, mail reader, Free gift) at 1280x720 and 1600x900: no
+  dialog scroll on Attendance, claim on screen, footer one line.
+- **Not verified:** a signed-in Attendance/mail session and a real claim;
+  battle at 1600x900 (the 1280x720 HUD was checked); a Convergent Light cut-in
+  frame; 390px portrait.
+
+**Next:** owner checks a battle, Attendance and Mailbox in game. The audit
+plan's screen sessions are complete; the optional session 9 (fold duplicated
+`!important` layers into owners) needs owner approval first (Opus, Plan mode).
+
+## Play hub, dialogs and typography, UI audit session 7 (2026-11-16)
+
+**Implemented (D-467, D-468):** at the owner's request the game font is now
+Lora (reading text and numbers) with Cinzel titles; Sora is removed and every
+hardcoded family uses `--ui-font`/`--display-font`. Lora faces live in
+`src/fonts.css` without the space glyph, because Lora's tabular figures widen
+spaces. Play hub, Story and the dungeon Location list are jewel glass with
+gold selection (no more peach leader fill on the rail, stages or beacons);
+facts read label then value. Fixed (present before this session): activity
+panels stopped 64px short and clipped Enter buttons at 1280x720; the Training
+art had collapsed to 0px; Story medallions cut "Cleared"; Information and
+region rows changed shape by line count; the floor/stage picker was a fixed
+640px sheet; the War note lacked spaces. Shared confirm dialogs: centered
+pill Cancel, red destructive action, no stray sheen streak. Online account and
+Master Chest dialogs and sale controls use Jewel & Gold tokens. New
+`play-luster.ts` (once-per-arrival cascade and banner glint) and an
+Information topic cascade. Presentation only; no deploy.
+
+**Verified:** full `npx vitest run` 10,504 passed (299 files, includes new
+`play-luster.test.ts`, 5); `tsc` passed. Headless Chrome 1280x720 and 1600x900:
+every Play activity, Story stages/map, Calamity tier, Events, Information,
+floor picker, confirm/danger/choice dialogs, Online account, Master Chest,
+Home, Bearers, Summon, Shop and the Level tab (still fits). Motion: cascade at
+80ms, clean by 1.5s, none on same-view clicks, zero nodes under Reduce motion.
+
+**Not verified:** sale controls with real captures (the workspace save has
+none); signed-in account flows.
+
 ## Element-Bearer and Conduit workshop, UI audit session 6 (2026-11-16)
 
 **Implemented (D-466):** Jewel & Gold for the Session 6 screens (Upgrade

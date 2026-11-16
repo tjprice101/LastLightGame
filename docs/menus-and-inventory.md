@@ -1,5 +1,48 @@
 # Menus and inventory
 
+## Battle HUD and Attendance & mail (D-469, 2026-11-16)
+
+- Battle HUD (`battle-screen.css`): jewel frame and gold hairlines around the
+  field, target strip, squad cards and portraits; gold-edged Health tracks; the
+  HUD title eyebrow is gold and the tools (Skip, Settings, Exit) are jewel glass
+  with gold hover. Squad cards keep their element accents; enemy Health stays
+  red; the Convergent Light gauge is unchanged. Gesture help is 11px muted text.
+- Attendance & mail: completed days and the saved Today card are gold; the
+  monthly count never wraps; policy and Save today's attendance share one row
+  so the claim is on screen at 1280x720; footer status and server time are 13px
+  captions on one line. Cards cascade once per tab arrival.
+
+## Play hub, Story and shared dialogs (D-468, 2026-11-16)
+
+- Skin: the activity rail, every activity panel, the dungeon Location list,
+  Story regions/stages/world map and the activity banners use jewel glass with
+  gold hairlines. Selection is gold everywhere here: the selected rail item
+  (gold frame with a gold edge), the selected Story stage and restored beacons
+  (gold fill), the selected region and the selected stage/floor choice. Owner:
+  `activity-hub.css`.
+- Facts tiles read label then value: a small uppercase label (Stages, Enemy
+  levels, Drops) above the exact value. Banner and Training titles use Cinzel.
+- Fixes (all pre-existing): activity panels reach the bottom of the rail (a
+  leftover 64px pad clipped Enter buttons and facts at 1280x720); the Training
+  Grassy Field art shows as a full-height poster (it had collapsed to 0px);
+  Story stage medallions show "Cleared" in full; Information and Story region
+  rows keep one card shape whether or not their text wraps; the stage/floor
+  picker sizes to its choices instead of a fixed 640px sheet.
+- Dialogs: confirm/choice dialogs are jewel glass; Cancel and other secondary
+  choices are centered pills; a destructive confirm is red; the button sheen no
+  longer shows as a streak beside unclipped buttons. Online account and Master
+  Chest dialogs are jewel glass with gold-framed selected tabs/options and
+  inset fields. Sale choices and bulk-sale panels use the same tokens.
+- Motion (`play-luster.ts`): panels cascade and the banner glints once per
+  arrival at an activity view; Information topics cascade once per opening.
+  Static under Reduce motion.
+
+## Typography (D-467, 2026-11-16)
+
+- Lora for reading text and numbers, Cinzel for titles (`--ui-font`,
+  `--display-font` in `interface.css`); Lora faces in `src/fonts.css` leave the
+  space to Georgia/serif so `tabular-nums` labels keep normal word gaps.
+
 ## Element-Bearer and Conduit workshop (D-466, 2026-11-16)
 
 - Skin: Upgrade result, Calamitic Ascension, Calamity section, Event shop host,

@@ -20,7 +20,7 @@ describe('canonical Radiant battlefield artwork', () => {
   });
   it('keeps compact squad stat labels and values on one line, never breaking mid-word', () => {
     const css = readFileSync(new URL('./battle-screen.css', import.meta.url), 'utf8');
-    expect(css).toContain('.radiant-squad .radiant-frozen-stats dt { font-size: 9px; letter-spacing: .04em; white-space: nowrap; color: #9a9ea9; }');
+    expect(css).toContain('.radiant-squad .radiant-frozen-stats dt { font-size: 9px; letter-spacing: .04em; white-space: nowrap; color: var(--text-muted); }');
     expect(css).toContain('.radiant-squad .radiant-frozen-stats dd { font-size: 10px; white-space: nowrap; }');
     expect(css).not.toMatch(/\.radiant-frozen-stats dt \{[^}]*overflow-wrap: anywhere/);
   });

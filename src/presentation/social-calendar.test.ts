@@ -28,6 +28,18 @@ afterEach(async () => {
   document.body.innerHTML = '';
 });
 describe('real social/calendar dialogs', () => {
+  it('cascades the loaded tab once and never replays on a refresh (D-469)', async () => {
+    const transport = vi.fn(async () => fixture());
+    opened = openSocialCalendar('attendance', { identity: 'self', state: {}, friends: () => friends, transport, onError: vi.fn() });
+    await flush();
+    expect(document.querySelectorAll('.attendance-ladder > li.luster-stagger-item')).toHaveLength(30);
+    document.querySelector<HTMLButtonElement>('[data-calendar-refresh]')!.click();
+    await flush();
+    expect(document.querySelectorAll('.luster-stagger-item')).toHaveLength(0);
+    document.querySelector<HTMLButtonElement>('[data-calendar-tab="gifts"]')!.click();
+    await flush();
+    expect(document.querySelectorAll('.social-gift-options > label.luster-stagger-item').length).toBeGreaterThan(0);
+  });
   it('shows ordinal rewards only for the real month length and no automatic claims', async () => {
     const host = document.createElement('div');
     host.innerHTML = attendanceMarkup(fixture());

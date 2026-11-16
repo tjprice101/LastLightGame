@@ -1,11 +1,11 @@
 .radiant-battle {
   position: relative;
   isolation: isolate;
-  font-family: var(--ui-font, Georgia, serif);
-  color: #f2f2f2;
-  background: radial-gradient(ellipse at 50% 70%, #32343a, #111216 75%);
+  font-family: var(--ui-font);
+  color: var(--text-primary);
+  background: radial-gradient(ellipse at 50% 70%, var(--surface-raised), var(--surface-inset) 75%);
   padding: clamp(12px, 2vw, 28px);
-  border: 1px solid #72747a;
+  border: 1px solid var(--gild-line);
   border-radius: 20px;
 }
 .radiant-arena { position: absolute; inset: 0; z-index: -1; overflow: hidden; border-radius: inherit; pointer-events: none; }
@@ -59,7 +59,7 @@ html[data-motion="reduced"] .radiant-face .compact-portrait { transition: none; 
 .radiant-status-list li strong, .radiant-shield-layers li strong, .radiant-status-list small, .radiant-shield-layers small { display: block; }
 .radiant-battle .status-icon { width: 26px; height: 26px; object-fit: contain; float: left; margin-right: 6px; }
 .radiant-status-timing { font-size: 11px; color: #d8d8de; }
-.radiant-preview-heading { color: #eee; font-family: var(--ui-font, Georgia, serif); max-width: 1100px; margin: 20px auto; padding: 12px; }
+.radiant-preview-heading { color: #eee; font-family: var(--ui-font); max-width: 1100px; margin: 20px auto; padding: 12px; }
 .radiant-preview-heading p { line-height: 1.5; }
 .radiant-preview-heading label { display: inline-block; padding: 12px; }
 .radiant-preview-heading button, .radiant-preview-heading select { min-height: 44px; font: inherit; }
@@ -81,9 +81,9 @@ body:has(#radiant-preview) { margin: 0; background: #0c0d11; }
   min-height: 44px;
   cursor: pointer;
 }
-.radiant-battle button { color: inherit; background: #25262c; border: 1px solid #898b92; border-radius: 12px; padding: 10px; }
+.radiant-battle button { color: inherit; background: var(--glass-raised); border: 1px solid var(--gild-line); border-radius: 12px; padding: 10px; }
 .radiant-battle button:disabled { opacity: .55; cursor: default; }
-.radiant-battle button:focus-visible, .radiant-battle summary:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.radiant-battle button:focus-visible, .radiant-battle summary:focus-visible { outline: 3px solid var(--gild-light); outline-offset: 3px; }
 .radiant-enemies { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px; margin: 20px 0; }
 .radiant-enemy { text-align: left; position: relative; }
 .radiant-enemy > span, .radiant-enemy > strong { display: block; }
@@ -323,44 +323,44 @@ html[data-motion="reduced"] .radiant-fx-layer { display: none; }
 html[data-motion="reduced"] .radiant-member[data-radiant-card] { transform: none; transition: none; }
 html[data-motion="reduced"] .radiant-member .radiant-face .compact-portrait { transform: none; }
 
-/* Original metallic framing keeps the field and the saved portrait readouts distinct. */
+/* Jewel & Gold framing (D-469): gold hairlines keep the field and the saved portrait readouts distinct. */
 .radiant-battle {
-  border-color: #bac5d68a;
+  border-color: #e0b45a66;
   border-radius: 14px;
-  background: linear-gradient(155deg, #323945, #10141cf5 38%, #0b0e15);
-  box-shadow: inset 0 1px #ffffff55, inset 0 0 0 3px #ffffff0b, 0 18px 42px #0008;
+  background: linear-gradient(155deg, var(--surface-raised), #0d1030f5 38%, var(--surface-inset));
+  box-shadow: var(--gild-inner), inset 0 0 0 3px #e0b45a0d, 0 18px 42px #0008;
 }
 .radiant-battle-heading { align-items: center; gap: 10px; }
 .radiant-heading-title h2 { margin: 1px 0 3px; }
 .radiant-field {
   margin: 12px 0;
-  border: 2px solid #b9c9d78c;
+  border: 2px solid #e0b45a73;
   border-radius: 10px;
-  box-shadow: inset 0 0 0 2px #111722a6, inset 0 -45px 70px -38px #05060ab0, 0 10px 24px #0007;
+  box-shadow: inset 0 0 0 2px #080a20a6, inset 0 -45px 70px -38px #05060ab0, 0 10px 24px #0007;
 }
 .radiant-target-strip {
-  border: 1px solid #e0e9f2a6;
+  border: 1px solid #e0b45a8c;
   border-radius: 8px;
-  background: linear-gradient(165deg, #303949f2, #0b1019ed);
-  box-shadow: inset 0 1px #ffffff55, 0 7px 18px #0008;
+  background: linear-gradient(165deg, #241d5cf2, #0d1030ed);
+  box-shadow: var(--gild-inner), 0 7px 18px #0008;
 }
 .radiant-squad { margin-block: 12px; }
 .radiant-member {
   padding: 8px;
-  border: 1px solid color-mix(in srgb, var(--accent) 58%, #e3eaf3);
+  border: 1px solid color-mix(in srgb, var(--accent) 58%, var(--gild-light));
   border-top: 3px solid var(--accent);
   border-radius: 10px;
-  background: linear-gradient(165deg, color-mix(in srgb, var(--accent) 18%, #303743), #0c1018 58%);
-  box-shadow: inset 0 1px #ffffff44, inset 0 0 0 2px #10141c, 0 7px 18px #0007;
+  background: linear-gradient(165deg, color-mix(in srgb, var(--accent) 18%, var(--surface-raised)), var(--surface-base) 58%);
+  box-shadow: var(--gild-inner), inset 0 0 0 2px #0d1030, 0 7px 18px #0007;
 }
 .radiant-face {
   grid-template-columns: 58px minmax(0, 1fr);
   grid-template-rows: auto auto;
   gap: 4px 8px;
   align-items: center;
-  border-color: color-mix(in srgb, var(--accent) 48%, #d7dfea);
+  border-color: color-mix(in srgb, var(--accent) 48%, var(--gild-light));
   border-radius: 7px;
-  background: linear-gradient(130deg, color-mix(in srgb, var(--accent) 18%, #202632), #0d1119 72%);
+  background: linear-gradient(130deg, color-mix(in srgb, var(--accent) 18%, var(--surface-raised)), var(--surface-base) 72%);
   box-shadow: inset 0 1px #ffffff35;
 }
 .radiant-face .compact-portrait {
@@ -384,9 +384,9 @@ html[data-motion="reduced"] .radiant-member .radiant-face .compact-portrait { tr
   display: block;
   min-width: 0;
   padding: 4px 3px;
-  border: 1px solid #ffffff18;
+  border: 1px solid var(--gild-hairline);
   border-radius: 4px;
-  background: #080b12c9;
+  background: #080a20c9;
   text-align: center;
 }
 .radiant-frozen-stats dd { font-size: 12px; }
@@ -398,9 +398,9 @@ html[data-motion="reduced"] .radiant-member .radiant-face .compact-portrait { tr
 .radiant-member .radiant-health meter::-webkit-meter-bar {
   height: 100%;
   box-sizing: border-box;
-  border: 1px solid #a8b7c773;
+  border: 1px solid #e0b45a4d;
   border-radius: 999px;
-  background: #080d15;
+  background: var(--surface-inset);
 }
 .radiant-member .radiant-health meter::-webkit-meter-optimum-value {
   border-radius: 999px;
@@ -442,19 +442,21 @@ html body .battle-screen #battle-root:has(.radiant-battle) { display: block; hei
 .radiant-field .radiant-allies, .radiant-field .radiant-enemies { top: 40px; bottom: 6px; }
 .radiant-hud { position: absolute; z-index: 8; inset: 5px 5px auto; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; pointer-events: none; }
 .radiant-hud > * { pointer-events: auto; }
-.radiant-hud-title { min-width: 0; padding: 3px 10px; border: 1px solid #ffffff24; border-radius: 7px; background: #0a0d14b3; backdrop-filter: blur(3px); }
+.radiant-hud-title { min-width: 0; padding: 3px 10px; border: 1px solid var(--gild-line); border-radius: 7px; background: #0d1030b8; backdrop-filter: blur(3px); box-shadow: var(--gild-inner); }
 .radiant-hud-title h2 { margin: 0; font-size: 12px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.radiant-hud-title .radiant-eyebrow { display: inline; font-size: 10px; letter-spacing: .08em; color: #a9adb8; }
-.radiant-hud-progress { display: block; font-size: 11px; line-height: 1.25; color: #c9ccd4; white-space: nowrap; }
+.radiant-hud-title .radiant-eyebrow { display: inline; font-size: 10px; letter-spacing: .08em; color: var(--gild-light); }
+.radiant-hud-progress { display: block; font-size: 11px; line-height: 1.25; color: var(--text-secondary); white-space: nowrap; }
 .radiant-hud-tools { display: flex; gap: 6px; flex: none; }
 .radiant-battle .radiant-hud-tools button { position: relative; box-sizing: border-box; flex: none; width: 40px; height: 32px; min-height: 32px; min-width: 40px; padding: 4px 12px; font-size: 12px; line-height: 1; white-space: nowrap; overflow-wrap: normal;
-  border-radius: 7px; border-color: #ffffff40; background: #0a0d14c2; backdrop-filter: blur(3px); }
+  border-radius: 7px; border-color: var(--gild-line); background: #0d1030c7; backdrop-filter: blur(3px); }
+/* The shared text-button marker painted a leader-colour bar on Exit; HUD tools carry no marker. */
+.radiant-battle .radiant-hud-tools button[data-button-surface] { background-image: none !important; }
 /* Keeps a 44px touch target around the visually small controls. */
 .radiant-battle .radiant-hud-tools button::after { content: ""; position: absolute; inset: -6px -2px; }
 .radiant-battle .radiant-hud-tools [data-radiant-settings] { font-size: 16px; padding-inline: 10px; }
 .radiant-battle .radiant-hud-tools [data-radiant-skip] { display: grid; place-items: center; padding-inline: 10px; }
 .radiant-battle .radiant-hud-tools [data-radiant-leave] { width: 64px; }
-.radiant-battle .radiant-hud-tools button:not(:disabled):hover { background: #1c2230e6; border-color: #ffffff80; }
+.radiant-battle .radiant-hud-tools button:not(:disabled):hover { background: #1a1440eb; border-color: var(--gild-mid); }
 
 .radiant-enemy-banner { display: flex; gap: 5px; align-items: stretch; min-width: 0; }
 .radiant-target-strip { flex: 1 1 auto; width: auto; max-width: none; height: auto; max-height: none; min-width: 0; overflow: visible;
@@ -465,7 +467,7 @@ html body .battle-screen #battle-root:has(.radiant-battle) { display: block; hei
 .radiant-target-state { font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: #ffd0a8; }
 .radiant-target-detail > .radiant-health { grid-column: 2; grid-row: 1; align-self: center; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 8px; }
 .radiant-battle .radiant-health meter { grid-area: 1 / 1; display: block; appearance: none; height: 12px; }
-.radiant-battle .radiant-health meter::-webkit-meter-bar { height: 100%; box-sizing: border-box; border: 1px solid #a8b7c773; border-radius: 999px; background: #080d15; }
+.radiant-battle .radiant-health meter::-webkit-meter-bar { height: 100%; box-sizing: border-box; border: 1px solid #e0b45a4d; border-radius: 999px; background: var(--surface-inset); }
 .radiant-target-strip .radiant-health meter { height: 14px; }
 .radiant-target-strip .radiant-health meter::-webkit-meter-optimum-value, .radiant-target-strip .radiant-health meter::-webkit-meter-suboptimum-value { border-radius: 999px; background: linear-gradient(#ffe2d6, #f0605a 45%, #9b1f2a); }
 .radiant-target-strip .radiant-health meter::-moz-meter-bar { border-radius: 999px; background: linear-gradient(#ffe2d6, #f0605a 45%, #9b1f2a); }
@@ -477,10 +479,10 @@ html body .battle-screen #battle-root:has(.radiant-battle) { display: block; hei
 .radiant-battle .radiant-health .radiant-status-list, .radiant-battle .radiant-health .radiant-shield-layers {
   grid-column: 1 / -1; display: flex; gap: 4px; margin: 2px 0 0; max-height: none; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
 .radiant-battle .radiant-health li { flex: none; display: flex; align-items: center; gap: 4px; margin: 0; padding: 1px 7px 1px 2px; border: 1px solid #ffffff2a;
-  border-radius: 999px; background: #0a0d14d0; font-size: 10px; line-height: 1.3; white-space: nowrap; }
+  border-radius: 999px; background: #0d1030d9; font-size: 10px; line-height: 1.3; white-space: nowrap; }
 .radiant-battle .radiant-health li .status-icon { float: none; width: 16px; height: 16px; margin: 0; }
 .radiant-battle .radiant-health li strong, .radiant-battle .radiant-health li small, .radiant-battle .radiant-health li span { display: inline; color: inherit; }
-.radiant-battle .radiant-health li small { color: #b8bbc4; }
+.radiant-battle .radiant-health li small { color: var(--text-muted); }
 
 .radiant-squad { display: grid; grid-template-columns: repeat(var(--squad-columns, 3), minmax(0, 1fr)); width: min(100%, calc(var(--squad-columns, 3) * 380px));
   margin: 0 auto; padding: 0; gap: 5px; overflow: visible; align-items: stretch; }
@@ -493,7 +495,7 @@ html body .battle-screen #battle-root:has(.radiant-battle) { display: block; hei
 .radiant-member-head strong { display: flex; gap: .3em; min-width: 0; overflow: hidden; white-space: nowrap; font-size: 12px; }
 .radiant-name-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .radiant-name-own { flex: none; }
-.radiant-squad .radiant-identity { flex: none; margin: 0; font-size: 10px; white-space: nowrap; color: #c9ccd4; }
+.radiant-squad .radiant-identity { flex: none; margin: 0; font-size: 10px; white-space: nowrap; color: var(--text-secondary); }
 .radiant-squad .radiant-member .radiant-health { grid-area: hp; position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 0; height: 30px; }
 .radiant-squad .radiant-member .radiant-health [data-hp] { font-size: 12px; line-height: 14px; }
 .radiant-squad .radiant-member .radiant-health [data-shield] { position: absolute; top: 16px; right: 2px; font-size: 11px; line-height: 12px; }
@@ -513,14 +515,14 @@ html body .battle-screen #battle-root:has(.radiant-battle) { display: block; hei
 .radiant-squad .radiant-member[data-ready-tier]:not([data-ready-tier=""]) [data-radiant-readiness] { color: color-mix(in srgb, var(--accent) 55%, #fff); font-weight: 700; }
 .radiant-squad .radiant-frozen-stats { display: flex; flex-wrap: wrap; gap: 0 8px; margin: 0; }
 .radiant-squad .radiant-frozen-stats div { display: flex; gap: 3px; padding: 0; border: 0; background: none; }
-.radiant-squad .radiant-frozen-stats dt { font-size: 9px; letter-spacing: .04em; white-space: nowrap; color: #9a9ea9; }
+.radiant-squad .radiant-frozen-stats dt { font-size: 9px; letter-spacing: .04em; white-space: nowrap; color: var(--text-muted); }
 .radiant-squad .radiant-frozen-stats dd { font-size: 10px; white-space: nowrap; }
 
 .radiant-battle-footer { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 12px; min-width: 0; }
-.radiant-battle-footer #radiant-gesture-help { margin: 0; text-align: left; font-size: 10px; }
+.radiant-battle-footer #radiant-gesture-help { margin: 0; text-align: left; font-size: 11px; color: var(--text-muted); }
 .radiant-battle-footer .radiant-team-reference { grid-column: 2; grid-row: 1 / span 4; max-width: 240px; border: 0; }
 .radiant-battle-footer .radiant-team-reference[open] { grid-column: 1 / -1; grid-row: auto; max-width: none; }
-.radiant-battle-footer .radiant-team-reference summary { min-height: 32px; font-size: 11px; }
+.radiant-battle-footer .radiant-team-reference summary { min-height: 32px; font-size: 11px; color: var(--gild-light); }
 .radiant-battle-footer > p { margin: 1px 0; font-size: 11px; }
 .radiant-battle-footer > p:empty { display: none; }
 .radiant-battle-footer .radiant-actions { justify-content: flex-start; }
@@ -617,7 +619,7 @@ html body .battle-screen #battle-root:has(.radiant-battle) { display: block; hei
 [data-radiant-results].is-result-intro > .radiant-results { opacity: 0; pointer-events: none; animation: none; }
 [data-radiant-results].is-result-intro .radiant-result-aura * { animation: none; }
 .radiant-result-intro { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; cursor: pointer; overflow: hidden; }
-.radiant-result-intro-word { display: flex; align-items: baseline; font-family: var(--ui-font); font-weight: 700; font-size: clamp(48px, 15vw, 176px); line-height: 1; white-space: nowrap; }
+.radiant-result-intro-word { display: flex; align-items: baseline; font-family: var(--display-font); font-weight: 700; font-size: clamp(48px, 15vw, 176px); line-height: 1; white-space: nowrap; }
 .radiant-result-intro i { position: relative; display: inline-block; font-style: normal; }
 .radiant-result-intro[data-outcome="victory"]::before {
   content: ''; position: absolute; width: min(90vw, 760px); aspect-ratio: 1; border-radius: 50%;

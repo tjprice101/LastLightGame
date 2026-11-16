@@ -71,8 +71,9 @@ Per-decision history lives in docs/decisions.md (see D-460), the system docs and
 - Kit/ability/Conduit descriptions are in-game tooltips: name, exact effect, target,
   value, duration, meaningful limits. No vague summaries, no padding, shared rules
   (Burn/Weaken/Shield) explained once in the glossary. Use "Health" in prose.
-- All game text uses the Georgia stack via `interface.css --ui-font` (600 body,
-  700 headings). UI text neutral white/gray on jewel surfaces; gold (`--gild-*`) is the frame/luster
+- Game text uses Lora via `interface.css --ui-font` (600 body, 700 headings);
+  titles use Cinzel via `--display-font` (D-467). Never hardcode a font family.
+  UI text neutral white/gray on jewel surfaces; gold (`--gild-*`) is the frame/luster
   metal; accents follow element (D-461 Jewel & Gold; tokens in `interface.css`).
   Green/red only for semantic gains/losses and sufficient/missing resources.
 

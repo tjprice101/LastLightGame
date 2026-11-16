@@ -6,6 +6,7 @@ import { assetUrl } from './portrait';
 import { uiIcon } from './ui-icon';
 import { presentReward } from './reward-screen';
 import { rarityFeedback, clearRarityFeedback } from './rarity-feedback';
+import { staggerIn } from './luster';
 import { SocialCalendarRejected, type SocialCalendarCommand, type SocialCalendarView, type PlayerMail } from '../online/social-calendar';
 import type { SocialPeerDisplay } from './online-store-profile';
 import './social-calendar.css';
@@ -161,6 +162,7 @@ export async function openSocialCalendar(tab: string, options: SocialCalendarOpt
   let proposedGift: Extract<SocialCalendarCommand, { kind: 'sendGift' }> | undefined;
   let disposed = false;
   let resolveClosed: (() => void) | undefined;
+  let shownTab: string | undefined;
   const cleanup = () => {
     if (disposed) return;
     disposed = true;
@@ -185,6 +187,13 @@ export async function openSocialCalendar(tab: string, options: SocialCalendarOpt
     } else content.innerHTML = mail ? readMailMarkup(mail, mailBodyPage) :
       view ? socialCalendarMarkup(view, currentTab, options.friends(), mailPage) : '';
     clock.innerHTML = view ? serverTimeMarkup(view) : '';
+    // Cards cascade once per tab arrival after the server view loads (D-469); refreshes, busy states and
+    // the mail reader never replay it. Static under Reduce motion.
+    if (view && !mail && !proposedGift && shownTab !== currentTab) {
+      shownTab = currentTab;
+      const panel = content.querySelector<HTMLElement>('.social-calendar-panel');
+      if (panel) staggerIn(panel, '.attendance-metrics > article, .attendance-ladder > li, .social-mail-card, .social-gift-options > label', { stepMs: 18, maxSteps: 16, durationMs: 300 });
+    }
     feedback.dataset.state = busy ? 'loading' : error.textContent ? 'error' : 'ready';
     retry.hidden = !options.state.pending;
     dialog.setAttribute('aria-busy', String(busy));

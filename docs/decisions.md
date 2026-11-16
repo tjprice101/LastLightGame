@@ -1,5 +1,91 @@
 # Decision log
 
+## Battle HUD and Attendance & mail re-theme (D-469, 2026-11-16)
+
+UI audit session 8, the last screen session of the audit plan, applies D-461 to
+the live Radiant battle HUD (all activities, online and local) and to the
+Attendance & mail dialog (Attendance, Mailbox, mail reader, Free gift).
+Presentation only; combat, timing, rewards, receipts, claims and authority are
+unchanged. No server change.
+
+- **Selected rule:** the HUD keeps its owner, `battle-screen.css` (values edited
+  in place, no new override layer): jewel surfaces and gold hairlines replace
+  the steel/gray frame, target strip, squad cards, portrait frames, meters,
+  status chips, HUD title and tools. Element accents on squad cards, red enemy
+  Health and the Convergent Light gauge are unchanged. The shared text-button
+  marker no longer paints a leader-colour bar on Exit.
+- **Legacy battle CSS** (`battle-mono.css`, `bubble-battle.css`,
+  `battle-ui.css`, `battle-focus.css`) styles the rejected legacy engine and is
+  not restyled beyond font tokens and the shared battle backdrop; it stays under
+  legacy code in Future Plans.
+- **Attendance & mail:** completed attendance is gold (saved days, "Saved"
+  marks, the saved Today card), matching D-466's gold progress; green stays for
+  availability ("One send available") and status dots. Fixes present before
+  this session: the Save today's attendance button sat below the scroll area at
+  1280x720 and 1600x900 (now policy and action share one row and the panel fits);
+  "12 / 30" wrapped its total; the policy text was cut off; the footer status and
+  server time used a 0.2em-tracked 16px style and the time wrapped "EST".
+- **Motion:** the dialog's cards cascade once per tab arrival after the server
+  view loads (never on Refresh, busy repaints or the mail reader). Existing
+  battle motion and claim feedback are unchanged. Static under Reduce motion.
+- **Not verified live:** a signed-in Attendance/mail session (the dialog was
+  driven through its real code with a fixture transport, as in its unit tests).
+
+## Play hub, Story and shared dialogs re-theme (D-468, 2026-11-16)
+
+UI audit session 7 applies D-461 to the Play hub (activity rail, every activity
+panel, the dungeon Location list), Story (regions, stages, world map), the
+shared Information, selection (stage/floor picker) and confirm/choice dialogs,
+the Online account and Machine's Master Chest dialogs, and the Elemental-
+Devourer sale controls. Presentation only; no save, transaction, price, reward,
+battle or server change.
+
+- **Selected rule:** layout and skin fixes live in one new owner file,
+  `activity-hub.css` (`@layer menu-reference`, four-id guard, imported after
+  `unit-workshop.css`). The React dialogs keep their owners (`bubble-ui.css`,
+  `styles/ui.css`, `master-choice-dialog.css`); sale controls keep theirs.
+- **Selection is gold, not the leader colour:** the selected rail item, the
+  selected Story stage and restored map beacons were filled with the leader's
+  element colour (peach for an Infernic leader). They now wear the gold frame
+  or gold fill like every other re-themed screen. Elements stay accents.
+- **Destructive confirms are red:** a destructive game confirm (for example a
+  sale) was indistinguishable from an ordinary gold primary. It now uses the
+  reserved loss red; Cancel is a secondary pill, not an underlined link.
+- **Motion:** new `play-luster.ts` cascades the visible activity's panels and
+  glints its banner once per arrival (opening Play, another rail activity,
+  location, mode, Normal/Calamity, Story region or Stages/World map); re-renders
+  never replay it. Information topic rows cascade once per opening. Static
+  under Reduce motion.
+- **Copy:** the Elemental War note gained its missing spaces and full stops
+  ("Final boss: 5% base-form recruitment chance. Already-owned successful
+  recruitment: 100 Null-Prismatica."). No other copy changed.
+- **Kept:** D-224 gray for unavailable buttons (for example Master options when
+  no chest is owned).
+
+## Game typography: Lora and Cinzel (D-467, 2026-11-16)
+
+The owner asked for whichever font best matches the game ("Use whatever font
+you think matches this game the best"), resolving the D-465 open item (menus
+in Sora although AGENTS.md said Georgia).
+
+- **Selected rule:** Lora (self-hosted, OFL) for all reading text and numbers;
+  Cinzel (self-hosted, OFL), an engraved Roman display capital, for screen,
+  panel and dialog titles, the LAST LIGHT wordmark, Bearer names, cut-in skill
+  names and the battle outcome word. Tokens in `interface.css`: `--ui-font`
+  (`"Lora", Georgia, "Times New Roman", serif`) and `--display-font`
+  (`"Cinzel", "Lora", Georgia, serif`); `--menu-font` and `--reference-font`
+  alias `--ui-font`. Every hardcoded Sora/Georgia family now uses a token.
+- **Why these:** Lora is a sturdy screen serif close to Georgia's width, so the
+  fitted layouts (D-466 Level/Evolve, Conduit paging) hold; Cinzel matches the
+  Jewel & Gold engraved-metal frame language. Body weights stay 600/700.
+- **Space glyph:** Lora's tabular-figure feature also widens the space, and
+  about sixty rules request `tabular-nums` (a no-op under Georgia). The Lora
+  faces are declared in `src/fonts.css` without U+0020/U+00A0, so spaces come
+  from Georgia/serif (same width within 0.1px) while digits stay tabular.
+- **Consequences:** `@fontsource/sora` is removed; `@fontsource/lora` (files
+  only) and `@fontsource/cinzel` are added. No paid service. AGENTS.md's type
+  rule is updated. Canvas/Phaser text is unaffected (none uses a font family).
+
 ## Element-Bearer and Conduit workshop re-theme (D-466, 2026-11-16)
 
 UI audit session 6 applies D-461 to the Upgrade result, Calamitic Ascension,
@@ -40,7 +126,7 @@ server change.
 - **Open (not changed):** the Play hub shell around the Calamity section
   (activity rail, location list, activity card) is still near-black with a
   peach selected state from D-457; it belongs to a later audit session. The
-  D-465 Georgia/Sora menu-font question remains open.
+  D-465 Georgia/Sora menu-font question remains open (resolved by D-467).
 
 ## Settings and Social re-theme (D-465, 2026-11-16)
 
