@@ -1,5 +1,27 @@
 # Decision log
 
+## Battle Flurry overhaul direction (D-470, 2026-11-16)
+
+The owner finds the Radiant battle loop clunky (stutter, breakage, slow
+attacks, invisible Conduits, little spectacle) and prefers the old Skill 1 /
+Skill 2 system. Target feel: rapid-tap flurry turns with overlapping attacks,
+damage streams and drops pouring from enemies. Full plan and diagnosis:
+[Battle Flurry overhaul](Future%20Plans/battle-flurry-overhaul.md).
+
+- **Approved:** flashy drops with a Haul. Gauge orbs charge bearers
+  immediately; Prismatica/materials fill a visible Haul saved atomically with
+  a receipt at encounter end, then celebrated. Quitting mid-encounter forfeits
+  only that encounter's unsaved Haul; saved rewards are never removed.
+- **Approved:** squads capped at 3 everywhere. Stored 4-6 member squads and
+  loadouts are read-only-normalized to their first 3 and trimmed only on the
+  player's next save (no load-time writes).
+- **Approved:** Skill 1 / Skill 2 return for every bearer, simplified into one
+  consistent genre-style phrasing with Last Light terms; Claude drafts in
+  batches for owner approval; old kits may be reworked.
+- **Open:** device-run encounters with end-of-encounter authority replay;
+  Flare next-turn recovery; Health motes; approval of the skill phrasing and
+  sample batch. Nothing is implemented yet.
+
 ## Battle HUD and Attendance & mail re-theme (D-469, 2026-11-16)
 
 UI audit session 8, the last screen session of the audit plan, applies D-461 to

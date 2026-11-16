@@ -1,5 +1,20 @@
 # Current state and handoff
 
+## Battle Flurry overhaul plan (2026-11-16)
+
+**Planned, not implemented (D-470):** owner feedback that battles stutter,
+break, attack slowly and lack spectacle led to a code-verified diagnosis (every
+online tap waits on the `game-operation` round trip; ~2.6 s attacks; canvas
+VFX unused by Radiant; Conduit effects unattributed) and a four-phase plan in
+[Battle Flurry overhaul](Future%20Plans/battle-flurry-overhaul.md). Approved:
+Haul drops, squad cap 3, simplified Skill 1/2 for every bearer. Reference
+catalogs of the pre-Radiant kits and Conduits (commit `d82015ba`) are in
+`docs/Future Plans/battle-flurry-reference/`. No code, authority or deploy
+change.
+
+**Next:** owner answers the plan's open questions and reviews the sample skill
+batch; then Phase 1 (device-run encounters, squad cap 3) on Opus in Plan mode.
+
 ## Battle HUD and Attendance & mail, UI audit session 8 (2026-11-16)
 
 **Implemented (D-469):** the live Radiant battle HUD (all activities) is
