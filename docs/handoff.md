@@ -28,8 +28,11 @@ Presentation only; no server deploy needed.
 **Owner check (2026-11-15):** re-theme looks good; header Prismatica /
 Null-Prismatica pills were clipped at 1400px wide and narrower (pre-existing:
 the wallet column was fixed at 510px). Fixed: the wallet column is now
-`minmax(max-content, 1fr)` and the pills no longer shrink. Awaiting the
-owner's recheck before push.
+`minmax(max-content, 1fr)`, pills keep their content width with left-aligned
+balance/name and even padding, and the round header buttons are pinned at
+48px (they had been flex-stretched to 56-72px). Headless Chrome on the
+`?workspace=menu` save at 1280x720 (Team) and 1600x900 (Home): no document
+overflow, no clipped balance/name. Awaiting the owner's recheck before push.
 
 **Next:** then session 2 (Battle
 results + stage loot, Opus) using `luster.ts` and `reward-screen.ts`.

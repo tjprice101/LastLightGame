@@ -91,14 +91,14 @@
     border: 0 !important;
     box-shadow: none !important;
   }
-  .sanctuary-header .sanctuary-wallet { gap: 8px !important; min-width: 0 !important; }
+  .sanctuary-header .sanctuary-wallet { gap: 8px !important; min-width: 0 !important; justify-content: flex-end !important; }
   .sanctuary-header .currency-strip { gap: 8px !important; min-width: 0 !important; }
   /* The wallet column sizes to its content so exact balances and currency names are never clipped. */
-  .sanctuary-header .currency-strip > button { padding: 6px 12px !important; min-width: 140px !important; gap: 8px !important; flex: 0 0 auto !important; }
-  .sanctuary-header .currency-strip strong { text-align: right !important; font-size: 16px !important; min-width: 0 !important; }
-  .sanctuary-header .currency-strip small { font-size: 11px !important; color: var(--reference-muted) !important; }
+  .sanctuary-header .currency-strip > button { padding: 6px 18px 6px 8px !important; min-width: 0 !important; gap: 10px !important; flex: 0 0 auto !important; justify-content: flex-start !important; }
+  .sanctuary-header .currency-strip strong { display: grid !important; justify-items: start !important; text-align: left !important; font-size: 16px !important; line-height: 1.2 !important; min-width: 0 !important; }
+  .sanctuary-header .currency-strip small { font-size: 11px !important; text-align: left !important; color: var(--reference-muted) !important; }
   .sanctuary-header .currency-strip img { width: 28px !important; height: 28px !important; object-fit: contain !important; }
-  .sanctuary-header .sanctuary-wallet > button { width: 48px !important; height: 48px !important; min-width: 48px !important; padding: 12px !important; }
+  .sanctuary-header .sanctuary-wallet > button { flex: 0 0 48px !important; width: 48px !important; height: 48px !important; min-width: 48px !important; padding: 12px !important; }
   .sanctuary-header .bubble-back { width: max-content !important; min-width: 112px !important; gap: 12px !important; padding: 6px 18px 6px 6px !important; }
   .sanctuary-header .bubble-back-orb { width: 36px !important; height: 36px !important; background: linear-gradient(145deg, #97e7bb, #286550) !important; color: #10382b !important; box-shadow: none !important; }
   .sanctuary-header .home-profile-card { max-width: 300px !important; width: max-content !important; height: 56px !important; padding: 4px 16px 4px 6px !important; border-radius: 999px !important; }
@@ -392,7 +392,7 @@
     html[data-menu-workspace] .sanctuary-shell { --menu-header-height: 72px !important; --menu-dock-height: 76px !important; }
     .sanctuary-shell .sanctuary-content { padding: 12px 3vw !important; }
     .sanctuary-header { grid-template-columns: minmax(150px, 1fr) auto minmax(max-content, 1fr) !important; gap: 12px !important; }
-    .sanctuary-header .currency-strip > button { min-width: 128px !important; padding-inline: 8px !important; }
+    .sanctuary-header .currency-strip > button { padding: 6px 14px 6px 8px !important; }
     .sanctuary-header .currency-strip strong { font-size: 13px !important; }
     .sanctuary-shell .sanctuary-dock { height: 60px !important; }
     .workspace-units { gap: 16px !important; }
