@@ -29,6 +29,11 @@ server change.
   two owned Conduits at a time. The page size now fits the visible list
   height (minimum 2) and recalculates on resize; paging, filters, sort and
   equip behavior are unchanged.
+- **Growth costs on screen (owner request):** Level and Evolve costs and
+  actions went below the panel and needed an inner scroll. At 1200px+ the
+  tabs are re-laid out to fit; while the level-up preview is shown, the
+  summary's duplicate current-stat tiles are hidden. No values or actions
+  changed.
 - **Copy/format:** Conduit Store tiles show prices with thousands separators
   (`1,000 Prismatica`, matching the detail panel). The Ascension header
   separator was a literal `?` and is now `·`. No other copy changed.

@@ -275,4 +275,95 @@
     height: 40px !important;
     flex-basis: 40px !important;
   }
+
+  /* Level and Evolve costs must be visible without scrolling the panel (owner request). Desktop widths:
+     Level uses two columns, summary and level-up costs on the left, Convergent Light full height on the
+     right. While the level-up preview is shown it already lists every current stat beside its next
+     value, so the summary's four stat tiles step aside. Evolve tightens its preview and lays the
+     required resources in one row. */
+  @media (min-width: 1200px) {
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail:not(#_):not(#_):not(#_):not(#_) {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+      grid-template-rows: auto minmax(0, 1fr) !important;
+      align-content: start !important;
+      align-items: start !important;
+      gap: 8px 12px !important;
+    }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail > .workspace-growth-summary:not(#_):not(#_):not(#_):not(#_) { grid-column: 1 !important; grid-row: 1 !important; padding: 12px 14px !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail > .upgrade-payment:not(#_):not(#_):not(#_):not(#_) { grid-column: 1 !important; grid-row: 2 !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail > .character-upgrade-grid:not(#_):not(#_):not(#_):not(#_) {
+      grid-column: 1 !important;
+      grid-row: 2 !important;
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) !important;
+      gap: 10px !important;
+    }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail > .convergent-rank-panel:not(#_):not(#_):not(#_):not(#_) { grid-column: 2 !important; grid-row: 1 / 3 !important; }
+    /* Convergent Light: the two rank actions stack; each has its button beside the heading and a compact
+       multi-column cost grid, so a long Rank 20 bill (up to eight materials) stays inside the panel. */
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail .convergent-rank-actions:not(#_):not(#_):not(#_):not(#_) { grid-template-columns: minmax(0, 1fr) !important; gap: 8px !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail > :is(.convergent-rank-panel, .workspace-growth-summary, .upgrade-payment, .character-upgrade-grid > *):not(#_):not(#_):not(#_):not(#_) { padding: 10px 14px !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail > .workspace-growth-summary > header:not(#_):not(#_):not(#_):not(#_) { margin-bottom: 4px !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail .convergent-rank-actions > div:not(#_):not(#_):not(#_):not(#_) {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) auto !important;
+      grid-auto-rows: auto !important;
+      align-items: center !important;
+      gap: 2px 10px !important;
+    }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail .convergent-rank-actions > div > :is(h4, .info-label):not(#_):not(#_):not(#_):not(#_) { grid-column: 1 !important; margin: 0 !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail .convergent-rank-actions > div > button:not(#_):not(#_):not(#_):not(#_) { grid-column: 2 !important; grid-row: 1 / span 2 !important; margin: 0 !important; align-self: center !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail .convergent-rank-actions > div > .upgrade-resources:not(#_):not(#_):not(#_):not(#_) {
+      grid-column: 1 / -1 !important;
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+      gap: 4px !important;
+      margin: 2px 0 0 !important;
+    }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail .convergent-rank-actions .upgrade-resources li:not(#_):not(#_):not(#_):not(#_) {
+      grid-template-columns: 24px minmax(0, 1fr) !important;
+      gap: 0 8px !important;
+      padding: 3px 8px !important;
+      min-height: 0 !important;
+    }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail .convergent-rank-actions .upgrade-resources li > :is(img, .currency-icon):not(#_):not(#_):not(#_):not(#_) { width: 24px !important; height: 24px !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail:has(.upgrade-stat-preview) > .workspace-growth-summary .radiant-stats:not(#_):not(#_):not(#_):not(#_) { display: none !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail > .workspace-growth-summary .radiant-stats:not(#_):not(#_):not(#_):not(#_) {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 6px !important;
+      margin-top: 10px !important;
+    }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-1"] .ref-growth-detail > .workspace-growth-summary .radiant-stats > div:not(#_):not(#_):not(#_):not(#_) {
+      display: flex !important;
+      align-items: baseline !important;
+      justify-content: space-between !important;
+      gap: 8px !important;
+      padding: 6px 10px !important;
+    }
+
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-evolution-detail > .workspace-growth-summary:not(#_):not(#_):not(#_):not(#_) { padding-block: 6px !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-evolution-detail .hub-comparison .evolution-silhouette:not(#_):not(#_):not(#_):not(#_) { width: 44px !important; height: 44px !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-evolution-detail .upgrade-payment .upgrade-resources:not(#_):not(#_):not(#_):not(#_) {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)) !important;
+      gap: 6px !important;
+    }
+    /* With copies to choose: preview and costs own the left column; the step bar tops the copies picker. */
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-evolution-detail:has(.evolution-fodder):not(#_):not(#_):not(#_):not(#_) {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) !important;
+      grid-template-rows: auto auto minmax(0, 1fr) !important;
+      align-content: start !important;
+      align-items: start !important;
+      gap: 8px 12px !important;
+    }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-evolution-detail:has(.evolution-fodder) > .character-upgrade-grid:not(#_):not(#_):not(#_):not(#_) { display: contents !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-evolution-detail:has(.evolution-fodder) > .workspace-growth-summary:not(#_):not(#_):not(#_):not(#_) { grid-column: 2 !important; grid-row: 1 !important; margin: 0 !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-evolution-detail:has(.evolution-fodder) .upgrade-benefits:not(#_):not(#_):not(#_):not(#_) { grid-column: 1 !important; grid-row: 1 / 3 !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-evolution-detail:has(.evolution-fodder) .upgrade-payment:not(#_):not(#_):not(#_):not(#_) { grid-column: 1 !important; grid-row: 3 !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-evolution-detail:has(.evolution-fodder) .evolution-fodder:not(#_):not(#_):not(#_):not(#_) { grid-column: 2 !important; grid-row: 2 / 4 !important; margin: 0 !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-evolution-detail:has(.evolution-fodder) > .workspace-growth-summary:not(#_):not(#_):not(#_):not(#_) { grid-template-columns: auto minmax(0, 1fr) !important; gap: 12px !important; }
+    .sanctuary-shell .ref-bearer-detail[data-character-view="upgrade-0"] .ref-evolution-detail .ref-evolution-action:not(#_):not(#_):not(#_):not(#_) { min-height: 44px !important; padding-block: 0 !important; }
+  }
 }

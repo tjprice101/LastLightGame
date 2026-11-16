@@ -28,6 +28,14 @@
   the heading row and the equipment filter beside Search; narrow panels move
   that filter below Search. The owned panel is wider at 1200px+, and the
   search placeholder is "Name, element or effect".
+- Level and Evolve fit without scrolling at 1200px+ wide (owner request,
+  same day; verified 1280x720 to 1920x1080, including a Rank 20 bill of eight
+  materials). Level: summary and level-up costs on the left, Convergent Light
+  full height on the right with each rank button beside its heading and costs
+  in a compact grid; while the level-up preview shows, the summary's four stat
+  tiles step aside (the preview lists every current and next value). Evolve
+  with copies to choose: preview and costs on the left, the step bar above the
+  copies picker on the right; costs sit in one grid.
 - Upgrade result: "Upgrade saved" reads as a gold status caption instead of a
   button-like box; the level pill is gold-framed.
 

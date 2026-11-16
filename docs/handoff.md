@@ -15,7 +15,8 @@ were unreadable; the Ascension crown was stretched and its header showed a
 literal `?`; formation buttons were 40px; the Master trigger clipped; the
 selected slot outline was white; the owned-Conduit list showed a fixed two
 per page (now fills the panel: 3 at 1280x720 up to 8 at 1920x1080, re-fitting
-on resize);
+on resize); Level and Evolve costs and actions fell below the panel (both
+tabs now fit at 1200px+ up to a full Rank 20 bill);
 the Store detail had no padding and a 40px off-center artwork; Conduit Upgrade
 scrolled the whole page; Elemental-Bearers menu actions cut off their
 descriptions. Store tile prices now use thousands separators. Growth progress
