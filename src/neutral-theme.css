@@ -1,6 +1,6 @@
-/* Shared neutral chrome; artwork and element scopes supply the only color accents. */
-:root { color-scheme: dark; color: #f5f5f5; background: #090909; --gold: #f5f5f5; --muted: #bdbdbd; }
-.sanctuary-shell { --gold: #f5f5f5; --muted: #bdbdbd; --line: #454545; --ink: #090909; --panel: #181818ed; color: #f5f5f5; background: radial-gradient(ellipse at 50% 65%, #ffffff09, transparent 60%), #0b0b0bf5; }
+/* Shared base chrome. Gold frame/luster metal comes from interface.css --gild-* (D-461); elements and artwork supply accents. */
+:root { color-scheme: dark; color: #f5f5f5; background: #090909; --muted: #bdbdbd; }
+.sanctuary-shell { --muted: #bdbdbd; --line: #454545; --ink: #090909; --panel: #181818ed; color: #f5f5f5; background: radial-gradient(ellipse at 50% 65%, #ffffff09, transparent 60%), #0b0b0bf5; }
 .brand-mark, .masthead, footer, .eyebrow, .game-title span, .enter-button, .text-button { color: #f5f5f5; }
 .brand-mark { border-color: #ffffff66; }
 .ornament { background: linear-gradient(90deg, transparent, #fff, transparent); }

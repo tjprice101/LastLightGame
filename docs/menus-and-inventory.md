@@ -1,5 +1,35 @@
 # Menus and inventory
 
+## Jewel & Gold visual language (D-461, 2026-11-15)
+
+Supersedes the D-457 palette; D-457 layout, fit and pagination rules stay.
+
+- **Tokens (`src/interface.css`):** surfaces `--surface-base/raised/inset`
+  and `--surface-backdrop` (sapphire → amethyst), glass `--glass-panel/raised`,
+  gold `--gild-light/mid/core/deep`, `--gild-frame` (border gradient),
+  `--gild-fill` (light gold fill; dark `--gild-ink` text), `--gild-line`,
+  `--gild-inner`; radius `--radius-sm/md/lg/pill` (8/12/24/999px);
+  `--shadow-panel`, `--glow-gild`, `--glow-rarity-<rarity>`; motion
+  `--motion-press` 120ms, `--motion-nav` 240ms, `--motion-reveal` 600ms,
+  `--ease-out`, `--ease-out-back`. New screen CSS uses these instead of hex.
+- **Reference aliases:** `menu-reference.css` declares every `--reference-*`
+  alias once on `html[data-menu-workspace]` (shell and dialogs). Active and
+  selected states use `--reference-gild` borders on a translucent gold fill;
+  primary CTAs use `--reference-gild-fill`.
+- **Colour roles:** text white/gray (≥ 4.5:1 on jewel panels), gold frames
+  (≥ 3:1), element and rarity accents unchanged, green/red only for
+  gains/losses and sufficient/missing resources.
+- **Luster motion (`src/presentation/luster.ts`):** `lusterSheen(target)` one
+  gold sweep; `staggerIn(container, selector?)` cascades items (40ms step,
+  capped at 12); `countUp(element)` counts a positive integer up and lands on
+  the exact original text. Each returns a cleanup, removes itself, is
+  pointer-transparent and does nothing under `html[data-motion="reduced"]`.
+  Call reward effects only after the save succeeds. Shared buttons scale to
+  0.97 on press (static under Reduce motion).
+- **Screen order (audit plan §6.6):** where am I → selected → next action →
+  cost → lock reason → exact details; one gilded header pattern; primary
+  action bottom-right; costs show the currency icon and exact number.
+
 ## Inventory holdings and item inspection (D-459, 2026-11-15; local-only)
 
 Inventory uses a compact holdings view with three currency balances, Resources

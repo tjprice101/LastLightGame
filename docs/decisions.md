@@ -1,5 +1,36 @@
 # Decision log
 
+## Jewel & Gold shared visual language (D-461, 2026-11-15)
+
+The owner chose a richer jewel/gold palette and "foundation first, then
+screens" for the UI audit (plan: `audit-every-ui-screen-idempotent-hearth`,
+executing [living-world audit plan](Future%20Plans/living-world-ui-audit-plan.md)
+§6). This supersedes D-457's navy/plum/peach palette (its layout, fit and
+pagination rules stay) and amends the AGENTS.md rule "UI primaries neutral
+black/white/gray".
+
+- **Selected rule:** text stays neutral white/gray on deep sapphire/amethyst
+  jewel surfaces; gold (`--gild-*`) is the frame and luster metal for panel
+  lines, selected states and primary fills; elements and rarity remain the
+  only accents (precedence art → element → banner → rarity → leader accent).
+  Green/red stay reserved for gains/losses and sufficient/missing resources.
+- **Token owners:** `src/interface.css` holds the core tokens (surfaces,
+  glass, gild, radius, shadow/glow, motion durations and easings);
+  `src/presentation/menu-reference.css` is the single owner of the
+  `--reference-*` aliases, now declared on `html[data-menu-workspace]` and
+  mapped to core tokens. `--reference-peach` became `--reference-gild`
+  (plus `--reference-gild-fill`); the duplicate block in
+  `menu-reference-rollout.css` and the neutral-theme `--gold` override are
+  removed; `--gold` and `--accent-warm` now resolve to `--gild-light`.
+- **Motion:** new `src/presentation/luster.ts` provides `lusterSheen`,
+  `staggerIn` and `countUp` (finite, pointer-transparent, disposable, no
+  randomness, nothing under Reduce motion; count-up lands on the exact
+  original text). Shared buttons get a 120ms press scale.
+- **Consequences:** every menu and dialog re-themes through tokens in one
+  pass. Hardcoded hex values in individual screens (for example plum panel
+  fills) remain until each screen session converts them. Presentation only;
+  no gameplay, economy, save or server change.
+
 ## Slim AGENTS.md (D-460, 2026-11-15)
 
 The owner asks for AGENTS.md to keep only current rules, with history in this log.
@@ -33,6 +64,8 @@ equipment restrictions and frozen battle loadouts. No price, stat, reward,
 event scheduling or artwork changes are authorized by this presentation work.
 
 ## Game-wide reference theme rollout (D-457, 2026-11-15)
+
+**Palette superseded by D-461 (Jewel & Gold); layout, fit and pagination rules stay.**
 
 The owner asks for the D-456 navy/plum/peach theme, colour scheme and
 formatting to cover every remaining screen: Gameplay activities, Story,

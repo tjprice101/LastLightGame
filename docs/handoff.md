@@ -1,5 +1,36 @@
 # Current state and handoff
 
+## Jewel & Gold foundation, UI audit session 1 (2026-11-15)
+
+**Implemented (D-461):** core jewel/gold tokens in `src/interface.css`
+(surfaces, glass, `--gild-*`, radius, shadow/glow incl. per-rarity glows,
+motion durations/easings); `menu-reference.css` is now the single owner of
+the `--reference-*` aliases (on `html[data-menu-workspace]`, mapped to core
+tokens), `--reference-peach` → `--reference-gild` / `--reference-gild-fill`,
+hardcoded peach retinted to gold in the menu, rollout and social-calendar
+CSS, plum/peach backdrop replaced by `--surface-backdrop`. Removed the
+duplicate rollout token block and the neutral-theme `--gold` override.
+New `src/presentation/luster.ts` (+ CSS/tests): `lusterSheen`, `staggerIn`,
+`countUp`. Shared buttons press-scale (120ms). AGENTS.md colour rule
+amended; [menu contract](menus-and-inventory.md#jewel--gold-visual-language-d-461-2026-11-15).
+Presentation only; no server deploy needed.
+
+**Verified:**
+
+- `npx vitest run` (full): 10,472 passed, 2 timed out while `npm run build`
+  ran concurrently; rerun alone (`acquisition-surfaces`, `creature-loot-dialog`):
+  9 passed.
+- `npx tsc --noEmit`: passed. `npm run build`: passed (existing large-chunk advisory).
+- **Not verified:** no browser was available in this session, so Home,
+  Units and Inventory at 1280x720/1600x900, motion over time and contrast
+  were not checked visually.
+
+**Next:** owner visual check in `npm run dev`; then session 2 (Battle
+results + stage loot, Opus) using `luster.ts` and `reward-screen.ts`.
+Screen-level hex (e.g. plum `#302537`, `#1d1630` fills) is converted per
+screen session. The audit plan progress note is left for the owner's local
+copy because that file carries unpublished mock-up notes.
+
 ## Inventory holdings and item inspection (2026-11-15; local-only)
 
 **Implemented (D-459):** Inventory now presents currency balances, separate

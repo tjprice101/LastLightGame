@@ -1,0 +1,28 @@
+/* Jewel & Gold luster motion (D-461): finite, pointer-transparent, static under Reduce motion. */
+:where(.luster-host) { position: relative; }
+.luster-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 4;
+  pointer-events: none;
+  overflow: clip;
+  contain: layout paint;
+}
+.luster-sheen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 22%, #f7e3a133 38%, #fff3cc99 50%, #c9953b40 60%, transparent 78%);
+  transform: translateX(-120%);
+  animation: luster-sweep var(--luster-duration, 900ms) var(--ease-out, ease-out) both;
+}
+.luster-stagger > .luster-stagger-item,
+.luster-stagger .luster-stagger-item {
+  animation: luster-stagger-in var(--luster-duration, 320ms) var(--ease-out, ease-out) both;
+  animation-delay: calc(var(--luster-index, 0) * var(--luster-step, 40ms));
+}
+@keyframes luster-sweep { to { transform: translateX(120%); } }
+@keyframes luster-stagger-in { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
+html[data-motion="reduced"] .luster-sheen { display: none; }
+html[data-motion="reduced"] :is(.luster-stagger > .luster-stagger-item, .luster-stagger .luster-stagger-item) { animation: none; }

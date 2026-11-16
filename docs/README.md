@@ -1,5 +1,12 @@
 # Documentation hub
 
+## Jewel & Gold visual language (D-461, 2026-11-15)
+
+The [menu contract](menus-and-inventory.md#jewel--gold-visual-language-d-461-2026-11-15)
+and [decision](decisions.md) record the shared jewel/gold tokens, the single
+`--reference-*` owner and the `luster.ts` motion helper. Screens adopt it one
+session at a time (see the [handoff](handoff.md)).
+
 ## Inventory holdings and item inspection (2026-11-15; local-only)
 
 The [handoff](handoff.md#inventory-holdings-and-item-inspection-2026-11-15-local-only)

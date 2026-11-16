@@ -77,9 +77,9 @@
     padding: 8px 12px !important;
   }
   html body .social-calendar-dialog .social-calendar-tabs button[aria-pressed="true"] {
-    border-color: var(--reference-peach, #ffa15d) !important;
-    background: #ffa15d2b !important;
-    color: var(--reference-peach, #ffa15d) !important;
+    border-color: var(--reference-gild) !important;
+    background: #e0b45a2b !important;
+    color: var(--reference-gild) !important;
   }
   html body .social-calendar-dialog .social-calendar-content {
     min-height: 0 !important;
@@ -155,10 +155,10 @@
     overflow: hidden !important;
     border: 0 !important;
     border-radius: 99px !important;
-    accent-color: var(--reference-peach, #ffa15d) !important;
+    accent-color: var(--reference-gild) !important;
   }
   html body .social-calendar-dialog .attendance-progress progress::-webkit-progress-bar { background: #ffffff20; border-radius: 99px; }
-  html body .social-calendar-dialog .attendance-progress progress::-webkit-progress-value { background: var(--reference-peach, #ffa15d); border-radius: 99px; }
+  html body .social-calendar-dialog .attendance-progress progress::-webkit-progress-value { background: var(--reference-gild); border-radius: 99px; }
   html body .social-calendar-dialog .attendance-ladder {
     display: grid !important;
     grid-template-columns: repeat(10, minmax(0, 1fr)) !important;
@@ -184,9 +184,9 @@
   }
   html body .social-calendar-dialog .attendance-ladder li.is-claimed { background: #52d19d14 !important; }
   html body .social-calendar-dialog .attendance-ladder li.is-current {
-    border-color: var(--reference-peach, #ffa15d) !important;
-    background: #ffa15d22 !important;
-    box-shadow: inset 0 0 0 1px #ffa15d66 !important;
+    border-color: var(--reference-gild) !important;
+    background: #e0b45a22 !important;
+    box-shadow: inset 0 0 0 1px #e0b45a66 !important;
   }
   html body .social-calendar-dialog .attendance-day {
     display: flex !important;
@@ -197,10 +197,10 @@
     line-height: 1.2 !important;
   }
   html body .social-calendar-dialog .attendance-day b { color: #83e7b0 !important; font-size: 9px !important; text-transform: uppercase !important; }
-  html body .social-calendar-dialog .is-current .attendance-day b { color: var(--reference-peach, #ffa15d) !important; }
+  html body .social-calendar-dialog .is-current .attendance-day b { color: var(--reference-gild) !important; }
   html body .social-calendar-dialog .attendance-ladder li > strong { font-size: 13px !important; line-height: 1.2 !important; font-variant-numeric: tabular-nums !important; }
   html body .social-calendar-dialog .attendance-ladder li > strong span { font-size: 9px !important; color: var(--reference-muted, #bab4c9) !important; }
-  html body .social-calendar-dialog .attendance-ladder li > small { color: var(--reference-peach, #ffa15d) !important; font-size: 9px !important; line-height: 1.15 !important; }
+  html body .social-calendar-dialog .attendance-ladder li > small { color: var(--reference-gild) !important; font-size: 9px !important; line-height: 1.15 !important; }
   html body .social-calendar-dialog .social-calendar-action {
     display: flex !important;
     align-items: center !important;
@@ -212,8 +212,8 @@
   html body .social-calendar-dialog .social-calendar-action > button:not(:disabled) {
     flex-shrink: 0 !important;
     padding: 0 22px !important;
-    border-color: var(--reference-peach, #ffa15d) !important;
-    background: var(--reference-peach, #ffa15d) !important;
+    border-color: var(--reference-gild) !important;
+    background: var(--reference-gild) !important;
     color: #261922 !important;
   }
   html body .social-calendar-dialog .social-mail-list {
@@ -234,7 +234,7 @@
     border-radius: 18px !important;
     background: var(--reference-raised, #ffffff09) !important;
   }
-  html body .social-calendar-dialog .social-mail-card[data-unread="true"] { border-color: #ffa15d80 !important; }
+  html body .social-calendar-dialog .social-mail-card[data-unread="true"] { border-color: #e0b45a80 !important; }
   html body .social-calendar-dialog button.social-mail-open {
     display: grid !important;
     grid-template-columns: 48px minmax(0, 1fr) auto !important;
@@ -255,8 +255,8 @@
     width: 48px !important;
     height: 48px !important;
     border-radius: 50% !important;
-    background: #ffa15d24 !important;
-    color: var(--reference-peach, #ffa15d) !important;
+    background: #e0b45a24 !important;
+    color: var(--reference-gild) !important;
   }
   html body .social-calendar-dialog .social-mail-icon svg { width: 22px !important; height: 22px !important; }
   html body .social-calendar-dialog .social-mail-copy { display: grid !important; gap: 3px !important; min-width: 0 !important; }
@@ -360,7 +360,7 @@
     background: var(--reference-raised, #ffffff09) !important;
     cursor: pointer !important;
   }
-  html body .social-calendar-dialog .social-gift-options label:has(input:checked) { border-color: var(--reference-peach, #ffa15d) !important; background: #ffa15d20 !important; box-shadow: inset 0 0 0 1px #ffa15d66 !important; }
+  html body .social-calendar-dialog .social-gift-options label:has(input:checked) { border-color: var(--reference-gild) !important; background: #e0b45a20 !important; box-shadow: inset 0 0 0 1px #e0b45a66 !important; }
   html body .social-calendar-dialog .social-gift-options input {
     position: absolute !important;
     top: 14px !important;
@@ -368,7 +368,7 @@
     width: 22px !important;
     height: 22px !important;
     margin: 0 !important;
-    accent-color: var(--reference-peach, #ffa15d) !important;
+    accent-color: var(--reference-gild) !important;
   }
   html body .social-calendar-dialog .social-gift-attachment { display: flex !important; flex-direction: column !important; justify-content: space-between !important; gap: 8px !important; height: 100% !important; }
   html body .social-calendar-dialog .social-gift-art { display: grid !important; place-items: center !important; width: 42px !important; height: 42px !important; color: var(--reference-muted, #bab4c9) !important; font-size: 9px !important; }
@@ -392,7 +392,7 @@
   html body .social-calendar-dialog .social-server-time { margin: 0 !important; overflow-wrap: anywhere !important; }
   html body .social-calendar-dialog .social-calendar-feedback p:empty { display: none !important; }
   html body .social-calendar-dialog .social-calendar-feedback [data-calendar-status]::before { content: '• ' !important; color: #83e7b0 !important; }
-  html body .social-calendar-dialog .social-calendar-feedback[data-state="loading"] [data-calendar-status]::before { color: var(--reference-peach, #ffa15d) !important; }
+  html body .social-calendar-dialog .social-calendar-feedback[data-state="loading"] [data-calendar-status]::before { color: var(--reference-gild) !important; }
   html body .social-calendar-dialog .social-calendar-feedback [data-calendar-error] { color: #ffb6b6 !important; }
   html body .social-calendar-dialog .social-calendar-feedback [data-calendar-retry]:not([hidden]) { min-height: 44px !important; padding: 0 12px !important; }
   html body .social-calendar-dialog .social-calendar-feedback [hidden] { display: none !important; }

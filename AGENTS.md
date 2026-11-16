@@ -72,7 +72,8 @@ Per-decision history lives in docs/decisions.md (see D-460), the system docs and
   value, duration, meaningful limits. No vague summaries, no padding, shared rules
   (Burn/Weaken/Shield) explained once in the glossary. Use "Health" in prose.
 - All game text uses the Georgia stack via `interface.css --ui-font` (600 body,
-  700 headings). UI primaries neutral black/white/gray; accents follow element.
+  700 headings). UI text neutral white/gray on jewel surfaces; gold (`--gild-*`) is the frame/luster
+  metal; accents follow element (D-461 Jewel & Gold; tokens in `interface.css`).
   Green/red only for semantic gains/losses and sufficient/missing resources.
 
 ## Gameplay and economy contracts (details in system docs)
@@ -109,7 +110,7 @@ Per-decision history lives in docs/decisions.md (see D-460), the system docs and
 - Every screen/action must feel alive, elegant and unique to Last Light: light, bloom,
   motion and reward choreography are acceptance criteria. Reuse shared reward/
   rarity-feedback/upgrade foundations (`reward-screen.ts`, `summon-presentation.ts`,
-  `conduit-presentation.ts`). Effects are finite, pointer-transparent, disposable, with
+  `conduit-presentation.ts`, `luster.ts` sheen/stagger/count-up). Effects are finite, pointer-transparent, disposable, with
   static feedback under Reduce motion; keep Skip/dismiss/focus/immediate controls. Never
   celebrate failed/cancelled actions; no artificial delays or gameplay RNG. Validate
   motion over time, not only a still frame.

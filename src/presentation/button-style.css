@@ -4,12 +4,12 @@
    at the leading edge beside an accent marker instead of dead center. */
 :root {
   --control-target: 44px;
-  --control-border: #555b68;
+  --control-border: var(--panel-border, #555b68);
   --control-focus: #f4f4f5;
   --control-selected-border: color-mix(in srgb, var(--ui-accent, #f4f4f5) 65%, #fff);
   --control-disabled-text: #b4b6bf;
   --control-danger: #ffc3b8;
-  --control-duration: 160ms;
+  --control-duration: var(--motion-press, 120ms);
   --button-glow: linear-gradient(135deg, color-mix(in srgb, var(--ui-accent, #f4f4f5) 20%, transparent) 0%, color-mix(in srgb, var(--ui-accent, #f4f4f5) 5%, transparent) 42%, transparent 72%);
   --button-shade: linear-gradient(180deg, rgb(255 255 255 / .05), rgb(0 0 0 / .2));
   --button-marker: linear-gradient(var(--ui-accent, #f4f4f5), var(--ui-accent, #f4f4f5));
@@ -25,6 +25,13 @@ html body [data-button-surface]:not([data-button-surface="art"]):not(#battle-roo
   outline: 2px solid var(--control-focus);
   outline-offset: 3px;
 }
+
+/* D-461 press feedback: a finite scale-down on activation using the independent scale
+   property (never clobbers transforms). Zero-specificity transition yields to screen rules.
+   Static under Reduce motion. */
+:where(html body [data-button-surface]:not([data-button-surface="art"])) { transition: scale var(--control-duration) var(--ease-out, ease-out); }
+html body [data-button-surface]:not([data-button-surface="art"]):not(#battle-root *):not(:disabled, [aria-disabled="true"]):active { scale: .97; }
+html[data-motion="reduced"] body [data-button-surface]:not(#battle-root *):active { scale: none; }
 
 [data-button-surface="icon"],
 [data-button-surface="tile"] {
