@@ -31,11 +31,37 @@ export type InventoryTab = 'materials' | 'conduits';
 export type InventorySection = InventoryTab;
 export type InventorySections = Record<InventorySection, boolean>;
 export const defaultInventorySections: Readonly<InventorySections> = { materials: true, conduits: true };
-export interface InventoryFilters { query: string; type: string; rarity: string; element: string }
-export const defaultInventoryFilters: Readonly<InventoryFilters> = { query: '', type: '', rarity: '', element: '' };
+export interface InventoryFilters { query: string; type: string; rarity: string; element: string; sort: 'rarity' | 'level' | 'name' }
+export const defaultInventoryFilters: Readonly<InventoryFilters> = { query: '', type: '', rarity: '', element: '', sort: 'rarity' };
 
-function itemMetadata(name: string, type: string, rarity = '', element = ''): string {
-  return `data-inventory-entry data-menu-page-item data-item-name="${escapeDialogText(name)}" data-item-type="${type}" data-item-rarity="${rarity}"${rarity ? ` data-rarity="${rarity}"` : ''} data-item-elements="${element}"`;
+function itemMetadata(name: string, type: string, rarity = '', element = '', level = 0): string {
+  return `data-inventory-entry data-menu-page-item data-item-name="${escapeDialogText(name)}" data-item-type="${type}" data-item-rarity="${rarity}" data-item-level="${level}"${rarity ? ` data-rarity="${rarity}"` : ''} data-item-elements="${element}"`;
+}
+
+function inventoryInspectionTemplate(id: string, name: string, art: string, badge: string, rows: readonly [string, string][], description: string, extra = '', descriptionHtml = false): string {
+  const safeName = escapeDialogText(name);
+  return `<button type="button" class="inventory-inspect-trigger" data-inventory-inspect="${escapeDialogText(id)}" aria-label="Inspect ${safeName}"></button>
+    <template data-inventory-inspection-template="${escapeDialogText(id)}" data-inspection-name="${safeName}">
+      <div class="inventory-inspection-art">${art}</div><div class="inventory-inspection-details">
+        ${badge ? `<span class="inventory-inspection-badge">${escapeDialogText(badge)}</span>` : ''}
+        ${rows.some(([label]) => label === 'Level') ? `<p class="inventory-inspection-level">${escapeDialogText(rows.find(([label]) => label === 'Level')?.[1] ?? '')}<span>level</span></p>` : ''}
+        <dl>${rows.map(([label, value]) => `<div><dt>${escapeDialogText(label)}</dt><dd>${escapeDialogText(value)}</dd></div>`).join('')}</dl>
+        <p class="inventory-inspection-description">${descriptionHtml ? description : escapeDialogText(description)}</p>
+        ${extra ? `<p class="inventory-inspection-extra">${escapeDialogText(extra)}</p>` : ''}
+      </div>
+    </template>`;
+}
+
+function inventoryInspectionDialog(): string {
+  return `<dialog class="information-modal inventory-inspection" id="inventory-item-inspection" aria-labelledby="inventory-inspection-heading">
+    <header class="drawer-heading"><h2 id="inventory-inspection-heading" tabindex="-1"></h2><button type="button" class="drawer-close" data-close-information aria-label="Close item details">&times;</button></header>
+    <div class="inventory-inspection-content" aria-live="polite"></div>
+    <nav class="inventory-inspection-nav" aria-label="Owned item details">
+      <button type="button" data-inventory-inspection-step="-1" aria-label="Previous item">&lsaquo;</button>
+      <span data-inventory-inspection-count aria-live="polite"></span>
+      <button type="button" data-inventory-inspection-step="1" aria-label="Next item">&rsaquo;</button>
+    </nav>
+  </dialog>`;
 }
 
 function materialMetadata(id: string): string {
@@ -103,14 +129,37 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
   const calamiticMaterialItems = materials.filter(([id]) => isCalamiticMaterialId(id));
   const renderMaterials = (items: typeof materials) => items.map(([id, amount]) => {
     const art = materialArt(id);
-    return `<li class="inventory-item" data-inventory-material="${id}" ${materialMetadata(id)}>${catalogInformation({ name: materialName(id), art: `<div class="inventory-item-art">${art ? `<img src="${assetUrl(`materials/${art}.png`)}" alt="" aria-hidden="true" width="256" height="256" loading="lazy">` : '<span>Artwork pending</span>'}</div>`, owned: amount, effects: [escapeDialogText(materialDescription(id))] })}
-      ${information(`inventory-${id}-details`, materialName(id), catalogInformation({ name: materialName(id), art: materialArt(id) ? `<img src="${assetUrl(`materials/${materialArt(id)}.png`)}" alt="">` : '<span>Artwork pending</span>', owned: amount, effects: [escapeDialogText(materialDescription(id))] }), 'Details')}</li>`;
+    const name = materialName(id);
+    const rarity = materialRarities.find(value => id.includes(value.toLowerCase())) ?? '';
+    const element = elements.find(value => id.startsWith(`${value.infusion}-`));
+    const inspectionRows: [string, string][] = [['Type', isCalamiticMaterialId(id) ? 'Calamitic material' : 'Material'], ['Owned', amount.toLocaleString('en-US')]];
+    if (rarity) inspectionRows.splice(1, 0, ['Rarity', rarity]);
+    if (element) inspectionRows.splice(1, 0, ['Element', element.name]);
+    return `<li class="inventory-item" data-inventory-material="${id}" ${materialMetadata(id)}>${catalogInformation({ name, art: `<div class="inventory-item-art">${art ? `<img src="${assetUrl(`materials/${art}.png`)}" alt="" aria-hidden="true" width="256" height="256" loading="lazy">` : '<span>Artwork pending</span>'}</div>`, owned: amount })}
+      ${inventoryInspectionTemplate(`material:${id}`, name, art ? `<img src="${assetUrl(`materials/${art}.png`)}" alt="">` : '<span>Artwork pending</span>', rarity || 'Material', inspectionRows, materialDescription(id))}</li>`;
   }).join('');
-  const masterItems = ownedMasters.map(entry => `<li class="inventory-item" ${conduitElementTheme(getStarter(entry.character).elementId)} data-inventory-master="${entry.id}" ${itemMetadata(`${entry.name} ${getStarter(entry.character).name}`, 'masters', entry.rarity, getStarter(entry.character).elementId)}>${catalogInformation({ name: entry.name, art: `<div class="inventory-item-art">${masterConduitIcon(entry.id)}</div>`, metadata: `<span class="conduit-identity-badges"><small>Omnic Master · ${getStarter(entry.character).name}</small>${conduitElementLabel(getStarter(entry.character).elementId)}</span>`, owned: 1, effects: [plainEffect(escapeDialogText(radiantMasterEffect(entry.id)))] })}
-    ${information(`inventory-${entry.id}-details`, entry.name, catalogInformation({ name: entry.name, art: masterConduitIcon(entry.id), metadata: `Omnic Master · ${getStarter(entry.character).name}${conduitElementLabel(getStarter(entry.character).elementId)}`, effects: [plainEffect(escapeDialogText(radiantMasterEffect(entry.id)))], owned: 1, state: 'Named bearer only · Cannot be upgraded', lore: entry.lore }), 'Details')}</li>`).join('');
+  const componentDescription = "Upgrades ordinary Conduits up to +5; Conduit Upgrade shows costs. Masters can't be upgraded.";
+  const masterItems = ownedMasters.map(entry => {
+    const bearer = getStarter(entry.character);
+    const equipped = account?.masterEquipment?.[entry.character] === entry.id;
+    const effect = plainEffect(escapeDialogText(radiantMasterEffect(entry.id)));
+    return `<li class="inventory-item" ${conduitElementTheme(bearer.elementId)} data-inventory-master="${entry.id}" ${itemMetadata(`${entry.name} ${bearer.name}`, 'masters', entry.rarity, bearer.elementId)}>${equipped ? '<span class="inventory-equipped-badge">Equipped</span>' : ''}${catalogInformation({ name: entry.name, art: `<div class="inventory-item-art">${masterConduitIcon(entry.id)}</div>`, metadata: `<span class="conduit-identity-badges"><small>Omnic Master · ${bearer.name}</small>${conduitElementLabel(bearer.elementId)}</span>`, owned: 1 })}
+      ${inventoryInspectionTemplate(`master:${entry.id}`, entry.name, masterConduitIcon(entry.id), 'Omnic Master', [['Rarity', entry.rarity], ['Equipped', equipped ? `Equipped by ${bearer.name}` : 'Not equipped'], ['Owned', '1']], effect, `${bearer.name} only · Cannot be upgraded. ${entry.lore}`, true)}</li>`;
+  }).join('');
+  const conduitItems = ownedConduits.map(conduit => {
+    const level = account?.conduitUpgrades?.[conduit.id] ?? 0;
+    const amount = account?.conduits?.[conduit.id] ?? 0;
+    const equipped = Object.values(account?.conduitEquipment ?? {}).some(slots => slots?.includes(conduit.id));
+    const effect = plainEffect(escapeDialogText(conduitEffect(conduit, level)));
+    return `<li class="inventory-item" ${omnicTheme(conduit.id)} data-inventory-conduit="${conduit.id}" ${itemMetadata(conduit.name, 'conduits', conduit.rarity, conduit.element ?? '', level)}>${equipped ? '<span class="inventory-equipped-badge">Equipped</span>' : ''}
+      ${catalogInformation({ name: conduit.name, art: `<div class="inventory-item-art">${conduitIcon(conduit.id, level)}</div>`, metadata: `<span class="conduit-identity-badges">${conduitRarity(conduit.id)}</span>${conduitElement(conduit.id)}`, owned: amount })}
+      ${inventoryInspectionTemplate(`conduit:${conduit.id}`, conduit.name, conduitIcon(conduit.id, level), conduit.rarity,
+        [['Rarity', conduit.rarity], ['Level', `${level} / 5`], ['Equipped', equipped ? 'Equipped' : 'Not equipped'], ['Owned', amount.toLocaleString('en-US')]],
+        effect, `${conduit.lore} Equip in Team; equipping does not consume a copy.`, true)}</li>`;
+  }).join('');
   const empty = (tab: InventoryTab) => `<div class="inventory-empty-slots" aria-hidden="true">${'<i></i>'.repeat(14)}</div>
     <div class="inventory-empty"><h3>${tab === 'materials' ? 'No resources yet' : 'No Conduits owned yet'}</h3></div>`;
-  return `<section class="inventory-hub ref-screen ref-inventory" aria-label="Inventory holdings">
+  return `<section class="inventory-hub ref-screen ref-inventory" aria-label="Inventory holdings" data-inventory-active-tab="${selected}">
     <div class="inventory-introduction">
     ${inventoryInformation()}</div>
     <div class="inventory-currencies">${(['fractalis', 'lycalis'] as const).map((id) => `<article class="inventory-currency ref-panel" aria-label="${id === 'fractalis' ? 'Prismatica' : 'Null-Prismatica'} balance">
@@ -120,32 +169,42 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
     ${!account ? '<p role="alert">Currency inventory unavailable. Check the save error.</p>' : ''}
     <div class="inventory-tools" role="search" aria-label="Find owned items">
       <label class="inventory-search">Search items<input type="search" data-inventory-query placeholder="Search item names" value="${escapeDialogText(filters.query)}" ${!account ? 'disabled' : ''}></label>
+      <label class="inventory-type-filter">Item type<select data-inventory-filter="type" ${!account ? 'disabled' : ''}>${[
+        ['', 'All types'], ['materials', 'Materials'], ['calamitic', 'Calamitic materials'], ['conduits', 'Conduits'], ['masters', 'Master Conduits'], ['chests', 'Chests'], ['components', 'Components'],
+      ].map(([value, text]) => `<option value="${value}" ${filters.type === value ? 'selected' : ''}>${text}</option>`).join('')}</select></label>
+      <label class="inventory-sort-filter">Sort by<select data-inventory-sort ${!account ? 'disabled' : ''}>${[
+        ['rarity', 'Rarity (highest first)'], ['level', 'Upgrade level (highest first)'], ['name', 'Name (A–Z)'],
+      ].map(([value, text]) => `<option value="${value}" ${filters.sort === value ? 'selected' : ''}>${text}</option>`).join('')}</select></label>
       ${([
-        ['type', 'Item type', [['', 'All types'], ['materials', 'Materials'], ['calamitic', 'Calamitic materials'], ['conduits', 'Conduits'], ['masters', 'Master Conduits'], ['chests', 'Chests'], ['components', 'Components']]],
         ['rarity', 'Rarity', [['', 'All rarities'], ...materialRarities.map(rarity => [rarity, rarity]), ['Calamitic', 'Calamitic'], ['none', 'No rarity']]],
         ['element', 'Element', [['', 'All elements'], ...elements.map(element => [element.id, element.name]), ['none', 'No element']]],
-      ] as const).map(([key, label, options]) => `<label>${label}<select data-inventory-filter="${key}" ${!account ? 'disabled' : ''}>${options.map(([value, text]) => `<option value="${value}" ${filters[key] === value ? 'selected' : ''}>${text}</option>`).join('')}</select></label>`).join('')}
+      ] as const).map(([key, label, options]) => `<label class="inventory-filter-source inventory-${key}-select">${label}<select data-inventory-filter="${key}" aria-label="${label}" ${!account ? 'disabled' : ''}>${options.map(([value, text]) => `<option value="${value}" ${filters[key] === value ? 'selected' : ''}>${text}</option>`).join('')}</select></label>`).join('')}
       <button type="button" class="text-button" data-inventory-clear ${!account ? 'disabled' : ''}>Clear</button>
     </div>
+    <nav class="inventory-filter-chips inventory-element-filters" data-inventory-chip-set="element" aria-label="Filter by element">${([
+      ['', 'All', 'all'], ...elements.map(element => [element.id, element.name, element.id] as const), ['none', 'Shared', 'shared'] as const,
+    ] as const).map(([value, label, icon]) => `<button type="button" data-inventory-chip="element" data-inventory-value="${value}" aria-pressed="${filters.element === value || (!filters.element && value === '')}">${icon === 'all' ? '<span aria-hidden="true">•</span>' : icon === 'shared' ? '<span aria-hidden="true">◇</span>' : `<span class="inventory-element-dot" data-element="${icon}" aria-hidden="true"></span>`}${label}</button>`).join('')}</nav>
+    <nav class="inventory-filter-chips inventory-rarity-filters" data-inventory-chip-set="rarity" aria-label="Filter by rarity">${([
+      ['', 'All'], ...materialRarities.map(value => [value, value] as const), ['Calamitic', 'Calamitic'] as const,
+    ] as const).map(([value, label]) => `<button type="button" data-inventory-chip="rarity" data-inventory-value="${value}" aria-pressed="${filters.rarity === value || (!filters.rarity && value === '')}"><span class="rarity-chip-dot" data-rarity="${label}" aria-hidden="true"></span>${label}</button>`).join('')}</nav>
     <p class="inventory-results" data-inventory-results role="status" ${!account ? 'hidden' : ''}></p>
     <div class="inventory-tabs" role="tablist" aria-label="Inventory sections">${([
       ['materials', 'Resources &amp; Items', account ? resourceCount : 'Unavailable'],
       ['conduits', 'Conduits', account ? ownedConduits.length + ownedMasters.length : 'Unavailable'],
     ] as const).map(([tab, label, count]) => `<button type="button" role="tab" id="inventory-tab-${tab}" class="inventory-tab" data-inventory-tab="${tab}" aria-controls="inventory-panel-${tab}" aria-selected="${selected === tab}" tabindex="${selected === tab ? 0 : -1}">${label} · ${count}</button>`).join('')}</div>
-    <section class="inventory-panel ref-panel" id="inventory-panel-materials" role="tabpanel" aria-labelledby="inventory-tab-materials" data-inventory-section="materials" data-menu-page-size="4" ${selected === 'materials' ? '' : 'hidden'}>
+    <section class="inventory-panel ref-panel" id="inventory-panel-materials" role="tabpanel" aria-labelledby="inventory-tab-materials" data-inventory-section="materials" data-menu-page-size="24" ${selected === 'materials' ? '' : 'hidden'}>
     <div class="ref-scroll">
     ${!account ? '<p role="alert">Resource inventory unavailable. Check the save error.</p>' : resourceCount
       ? `<ul class="inventory-item-grid">${chestItems}${components > 0 ? `<li class="inventory-item" data-inventory-resource="${mechanicalComponents.id}" ${itemMetadata(mechanicalComponents.name, 'components')}>
-        ${catalogInformation({ name: mechanicalComponents.name, art: `<div class="inventory-item-art">${mechanicalComponentIcon()}</div>`, owned: components, effects: ["Upgrades ordinary Conduits up to +5; Conduit Upgrade shows costs. Masters can't be upgraded."] })}
-        ${information('inventory-components-details', mechanicalComponents.name, catalogInformation({ name: mechanicalComponents.name, art: mechanicalComponentIcon(), owned: components, effects: ["Upgrades ordinary Conduits up to +5; Conduit Upgrade shows costs. Masters can't be upgraded."], acquisition: machineComponentRulesText }), 'Details')}</li>` : ''}${renderMaterials(ordinaryMaterials)}${renderMaterials(calamiticMaterialItems)}</ul>` : empty('materials')}</div>
+        ${catalogInformation({ name: mechanicalComponents.name, art: `<div class="inventory-item-art">${mechanicalComponentIcon()}</div>`, owned: components })}
+        ${inventoryInspectionTemplate('resource:mechanical-components', mechanicalComponents.name, mechanicalComponentIcon(), 'Resource', [['Type', 'Component'], ['Owned', components.toLocaleString('en-US')]], componentDescription, machineComponentRulesText)}</li>` : ''}${renderMaterials(ordinaryMaterials)}${renderMaterials(calamiticMaterialItems)}</ul>` : empty('materials')}</div>
     ${account && resourceCount ? menuPager('Inventory resources') : ''}</section>
-    <section class="inventory-panel ref-panel" id="inventory-panel-conduits" role="tabpanel" aria-labelledby="inventory-tab-conduits" data-inventory-section="conduits" data-menu-page-size="4" ${selected === 'conduits' ? '' : 'hidden'}>
+    <section class="inventory-panel ref-panel" id="inventory-panel-conduits" role="tabpanel" aria-labelledby="inventory-tab-conduits" data-inventory-section="conduits" data-menu-page-size="32" ${selected === 'conduits' ? '' : 'hidden'}>
     <div class="ref-scroll">
     ${!account ? '<p role="alert">Conduit inventory unavailable. Check the save error.</p>' : ownedConduits.length + ownedMasters.length
-      ? `<ul class="inventory-item-grid">${ownedConduits.map((conduit) => `<li class="inventory-item" ${omnicTheme(conduit.id)} data-inventory-conduit="${conduit.id}" ${itemMetadata(conduit.name, 'conduits', conduit.rarity, conduit.element ?? '')}>
-        ${catalogInformation({ name: conduit.name, art: `<div class="inventory-item-art">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div>`, metadata: `<span class="conduit-identity-badges">${conduitRarity(conduit.id)}</span>${conduitElement(conduit.id)}`, owned: account?.conduits?.[conduit.id], effects: [plainEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]))] })}
-        ${information(`inventory-${conduit.id}-details`, conduit.name, catalogInformation({ name: conduit.name, art: conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id]), metadata: `${conduitRarity(conduit.id)} · +${account?.conduitUpgrades?.[conduit.id] ?? 0} / 5`, effects: [plainEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]))], owned: account?.conduits?.[conduit.id] ?? 0, lore: conduit.lore, acquisition: 'Equip in Team; equipping does not consume a copy.' }), 'Details')}</li>`).join('')}${masterItems}</ul>`
-      : empty('conduits')}</div>${account && ownedConduits.length + ownedMasters.length ? menuPager('Owned Conduits') : ''}</section>
+      ? `<ul class="inventory-item-grid">${conduitItems}${masterItems}</ul>`
+      : empty('conduits')}</div>      ${account && ownedConduits.length + ownedMasters.length ? menuPager('Owned Conduits') : ''}</section>
+      ${inventoryInspectionDialog()}
   </section>`;
 }
 
@@ -168,11 +227,30 @@ export function inventoryFilters(host: HTMLElement): InventoryFilters {
     if (!control) throw new Error('Inventory filter is missing.');
     state[key] = control.value;
   }
+  const sort = host.querySelector<HTMLSelectElement>('[data-inventory-sort]');
+  if (!sort || (sort.value !== 'rarity' && sort.value !== 'level' && sort.value !== 'name')) throw new Error('Inventory sort is missing or invalid.');
+  state.sort = sort.value;
   return state;
+}
+
+function sortInventoryItems(host: HTMLElement, sort: InventoryFilters['sort']): void {
+  const rarityRank: Record<string, number> = Object.fromEntries([...materialRarities, 'Calamitic'].map((rarity, index) => [rarity, index]));
+  const groups = new Set(Array.from(host.querySelectorAll<HTMLElement>('[data-inventory-entry]'), item => item.parentElement).filter((parent): parent is HTMLElement => parent !== null));
+  for (const group of groups) {
+    const items = Array.from(group.querySelectorAll<HTMLElement>(':scope > [data-inventory-entry]'));
+    items.sort((a, b) => {
+      const byRarity = (rarityRank[b.dataset.itemRarity ?? ''] ?? -1) - (rarityRank[a.dataset.itemRarity ?? ''] ?? -1);
+      const byLevel = Number(b.dataset.itemLevel ?? 0) - Number(a.dataset.itemLevel ?? 0);
+      const byName = (a.dataset.itemName ?? '').localeCompare(b.dataset.itemName ?? '');
+      return sort === 'name' ? byName : sort === 'level' ? byLevel || byRarity || byName : byRarity || byLevel || byName;
+    });
+    items.forEach(item => group.append(item));
+  }
 }
 
 export function bindInventory(host: HTMLElement, onSelect: (tab: InventoryTab) => void, onToggle?: (state: InventorySections) => void, onFilter?: (state: InventoryFilters) => void): void {
   if (!host.querySelector('.inventory-hub')) return;
+  const inventory = host.querySelector<HTMLElement>('.inventory-hub')!;
   const tabs = Array.from(host.querySelectorAll<HTMLButtonElement>('[data-inventory-tab]'));
   const select = (tab: InventoryTab, focus = false): void => {
     for (const button of tabs) {
@@ -182,6 +260,10 @@ export function bindInventory(host: HTMLElement, onSelect: (tab: InventoryTab) =
       if (active && focus) button.focus({ preventScroll: true });
     }
     host.querySelectorAll<HTMLElement>('[data-inventory-section]').forEach(panel => { panel.hidden = panel.dataset.inventorySection !== tab; });
+    inventory.dataset.inventoryActiveTab = tab;
+    host.querySelectorAll<HTMLElement>('[data-inventory-chip-set]').forEach(set => {
+      set.hidden = set.dataset.inventoryChipSet !== (tab === 'materials' ? 'element' : 'rarity');
+    });
     onSelect(tab);
     onToggle?.(inventorySections(host));
   };
@@ -189,6 +271,50 @@ export function bindInventory(host: HTMLElement, onSelect: (tab: InventoryTab) =
     const tab = tabs.find(button => button.getAttribute('aria-selected') === 'true')?.dataset.inventoryTab;
     return isInventoryTab(tab) ? tab : 'materials';
   };
+  const inspectionDialog = host.querySelector<HTMLDialogElement>('#inventory-item-inspection');
+  if (!inspectionDialog) throw new Error('Inventory item inspection is missing.');
+  const inspectionContent = inspectionDialog.querySelector<HTMLElement>('.inventory-inspection-content');
+  const inspectionTitle = inspectionDialog.querySelector<HTMLElement>('#inventory-inspection-heading');
+  const inspectionCount = inspectionDialog.querySelector<HTMLElement>('[data-inventory-inspection-count]');
+  const inspectionSteps = Array.from(inspectionDialog.querySelectorAll<HTMLButtonElement>('[data-inventory-inspection-step]'));
+  if (!inspectionContent || !inspectionTitle || !inspectionCount || inspectionSteps.length !== 2) throw new Error('Inventory item inspection controls are missing.');
+  let inspectionItems: HTMLElement[] = [];
+  let inspectionIndex = -1;
+  const showInspection = (index: number, open: boolean): void => {
+    const item = inspectionItems[index];
+    if (!item) throw new Error('Inventory item selection is unavailable.');
+    const template = item.querySelector<HTMLTemplateElement>('template[data-inventory-inspection-template]');
+    if (!template) throw new Error('Inventory item details are missing.');
+    inspectionIndex = index;
+    inspectionTitle.textContent = template.dataset.inspectionName ?? '';
+    inspectionContent.replaceChildren(template.content.cloneNode(true));
+    inspectionCount.textContent = `${index + 1} / ${inspectionItems.length}`;
+    inspectionSteps.forEach(button => { button.disabled = inspectionItems.length < 2; });
+    if (open && !inspectionDialog.open) {
+      inspectionDialog.showModal();
+      inspectionTitle.focus({ preventScroll: true });
+    }
+  };
+  host.addEventListener('click', event => {
+    if (!(event.target instanceof Element)) return;
+    const trigger = event.target.closest<HTMLButtonElement>('[data-inventory-inspect]');
+    if (trigger) {
+      const panel = trigger.closest<HTMLElement>('[data-inventory-section]');
+      const selectedItem = trigger.closest<HTMLElement>('[data-inventory-entry]');
+      if (!panel || !selectedItem) throw new Error('Inventory item location is missing.');
+      inspectionItems = Array.from(panel.querySelectorAll<HTMLElement>('[data-inventory-entry]'))
+        .filter(item => item.dataset.menuFiltered !== 'true' && item.querySelector('[data-inventory-inspect]'));
+      const index = inspectionItems.indexOf(selectedItem);
+      if (index < 0) throw new Error('Inventory item is not in the current results.');
+      showInspection(index, true);
+      return;
+    }
+    const step = event.target.closest<HTMLButtonElement>('[data-inventory-inspection-step]');
+    if (!step || !inspectionDialog.open || inspectionItems.length < 2) return;
+    const direction = Number(step.dataset.inventoryInspectionStep);
+    if (direction !== -1 && direction !== 1) throw new Error('Invalid inventory inspection direction.');
+    showInspection((inspectionIndex + direction + inspectionItems.length) % inspectionItems.length, false);
+  });
   const update = (): void => {
     const state = inventoryFilters(host);
     const query = state.query.trim().toLowerCase();
@@ -203,6 +329,7 @@ export function bindInventory(host: HTMLElement, onSelect: (tab: InventoryTab) =
       item.dataset.menuFiltered = String(hidden);
       item.hidden = hidden;
     }
+    sortInventoryItems(host, state.sort);
     host.querySelectorAll<HTMLElement>('[data-inventory-section][data-menu-page-size]')
       .forEach(panel => panel.dispatchEvent(new Event('menu-list-filtered')));
     const visibleIn = (tab: InventoryTab): number => Array.from(host.querySelectorAll<HTMLElement>(`[data-inventory-section="${tab}"] [data-inventory-entry]`)).filter(item => !item.hidden).length;
@@ -217,6 +344,16 @@ export function bindInventory(host: HTMLElement, onSelect: (tab: InventoryTab) =
     if (!result) throw new Error('Inventory results status is missing.');
     result.textContent = count ? `${count} of ${items.length} owned item types${active ? ' match' : ''}.`
       : active ? 'No owned items match. Change your search or filters.' : '';
+    inventory.dataset.inventoryActiveTab = current();
+    host.querySelectorAll<HTMLButtonElement>('[data-inventory-chip]').forEach(button => {
+      const key = button.dataset.inventoryChip;
+      if (key !== 'element' && key !== 'rarity') throw new Error('Unknown Inventory filter chip.');
+      const value = state[key];
+      button.setAttribute('aria-pressed', String(button.dataset.inventoryValue === value || (!value && !button.dataset.inventoryValue)));
+    });
+    host.querySelectorAll<HTMLElement>('[data-inventory-chip-set]').forEach(set => {
+      set.hidden = set.dataset.inventoryChipSet !== (current() === 'materials' ? 'element' : 'rarity');
+    });
     // With nothing owned, the panel's own empty heading already says so; an unavailable save shows its alert instead.
     const unavailable = host.querySelector<HTMLInputElement>('[data-inventory-query]')?.disabled ?? false;
     result.hidden = unavailable || (!count && !active);
@@ -224,10 +361,24 @@ export function bindInventory(host: HTMLElement, onSelect: (tab: InventoryTab) =
   };
   host.querySelector('[data-inventory-query]')?.addEventListener('input', update);
   host.querySelectorAll('[data-inventory-filter]').forEach(control => control.addEventListener('change', update));
+  host.querySelector('[data-inventory-sort]')?.addEventListener('change', update);
+  host.querySelectorAll<HTMLButtonElement>('[data-inventory-chip]').forEach(button => {
+    button.addEventListener('click', () => {
+      const key = button.dataset.inventoryChip;
+      if (key !== 'element' && key !== 'rarity') throw new Error('Unknown Inventory filter chip.');
+      const control = host.querySelector<HTMLSelectElement>(`[data-inventory-filter="${key}"]`);
+      if (!control) throw new Error('Inventory filter is missing.');
+      control.value = button.dataset.inventoryValue ?? '';
+      control.dispatchEvent(new Event('change'));
+    });
+  });
   host.querySelector('[data-inventory-clear]')?.addEventListener('click', () => {
     const query = host.querySelector<HTMLInputElement>('[data-inventory-query]')!;
     query.value = '';
     host.querySelectorAll<HTMLSelectElement>('[data-inventory-filter]').forEach(control => { control.value = ''; });
+    const sort = host.querySelector<HTMLSelectElement>('[data-inventory-sort]');
+    if (!sort) throw new Error('Inventory sort is missing.');
+    sort.value = 'rarity';
     update();
     query.focus({ preventScroll: true });
   });

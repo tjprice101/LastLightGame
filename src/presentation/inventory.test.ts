@@ -9,9 +9,8 @@ const masterConduits = allMasters.filter(master => characterReleased(master.char
 import { conduits, conduitEffect, getConduit } from '../content/conduits';
 import { radiantMasterEffect } from './master-text';
 import { bindInformation } from './information';
-import { bracketReferences } from './reference-text';
 import { readableEffect } from './effect-copy';
-import { elementalMaterials } from '../content/activities';
+import { elementalMaterials, materialRarities } from '../content/activities';
 import { bindMenuPagination } from './menu-pagination';
 import { materialName } from '../content/dungeon-art';
 
@@ -86,8 +85,8 @@ describe('reference Inventory layout', () => {
     for (const id of ['fractalis', 'lycalis']) expect(html).toContain(`currencies/${id}.png`);
     expect(html.match(/role="tab"/g)).toHaveLength(2);
     expect(html).toContain('id="inventory-tab-materials" class="inventory-tab" data-inventory-tab="materials" aria-controls="inventory-panel-materials" aria-selected="true"');
-    expect(html).toContain('data-inventory-section="materials" data-menu-page-size="4"');
-    expect(html).toContain('data-inventory-section="conduits" data-menu-page-size="4" hidden');
+    expect(html).toContain('data-inventory-section="materials" data-menu-page-size="24"');
+    expect(html).toContain('data-inventory-section="conduits" data-menu-page-size="32" hidden');
     expect(html.indexOf('inventory-tabs')).toBeGreaterThan(html.indexOf('inventory-filters'));
     expect(html).not.toContain('data-inventory-resource="mechanical-components"');
     expect(html.match(/<i><\/i>/g)).toHaveLength(28);
@@ -115,7 +114,7 @@ describe('reference Inventory layout', () => {
     expect(html).toContain('Owned 3');
     expect(html).not.toContain('Shard of Aquatic');
     expect(html).not.toContain('Bastion Lock');
-    expect(html.match(/9007199254740991/g)).toHaveLength(4);
+    expect(html.match(/9007199254740991/g)).toHaveLength(3);
     expect(html).not.toContain('id="inventory-panel-materials" aria-label="Owned materials" hidden');
     expect(html).not.toContain('No resources yet');
     expect(html).not.toContain('inventory-empty-slots');
@@ -130,9 +129,9 @@ describe('reference Inventory layout', () => {
     bindInventory(host, vi.fn());
     const panel = host.querySelector<HTMLElement>('[data-inventory-section="materials"]')!;
     const visible = () => Array.from(panel.querySelectorAll<HTMLElement>('[data-menu-page-item]')).filter(item => !item.hidden).length;
-    expect(visible()).toBe(4);
+    expect(visible()).toBe(24);
     panel.querySelector<HTMLButtonElement>('[data-menu-page="1"]')!.click();
-    expect(visible()).toBe(4);
+    expect(visible()).toBe(1);
     const search = host.querySelector<HTMLInputElement>('[data-inventory-query]')!;
     search.value = materialName(elementalMaterials[0].id);
     search.dispatchEvent(new Event('input'));
@@ -190,16 +189,16 @@ describe('reference Inventory layout', () => {
     for (const entry of [...conduits, ...masterConduits]) {
       const ordinary = 'power' in entry;
       const card = host.querySelector(`[data-inventory-${ordinary ? 'conduit' : 'master'}="${entry.id}"]`)!;
-      const dialog = card.querySelector('dialog')!;
+      const details = card.querySelector<HTMLTemplateElement>('template[data-inventory-inspection-template]')!;
       const effect = ordinary ? conduitEffect(entry, 5) : radiantMasterEffect(entry.id);
       const expected = document.createElement('div');
       expected.textContent = readableEffect(effect);
-      expect(dialog.textContent).toContain(expected.textContent);
-      if (ordinary) expect(dialog.textContent?.replace(/[[\]]/g, '')).toContain(bracketReferences(entry.lore, false).replace(/[[\]]/g, ''));
-      expect(card.querySelector('[data-information]')?.textContent).toBe('Details');
+      expect(details.content.textContent).toContain(expected.textContent);
+      if (ordinary) expect(details.content.textContent).toContain(entry.lore);
+      expect(card.querySelector('[data-inventory-inspect]')?.getAttribute('aria-label')).toBe(`Inspect ${entry.name}`);
       const compact = card.cloneNode(true) as HTMLElement;
-      compact.querySelector('dialog')!.remove();
-      expect(compact.querySelector('.info-effects')?.textContent).toContain(expected.textContent);
+      compact.querySelector('template')!.remove();
+      expect(compact.querySelector('.info-effects')).toBeNull();
       expect(compact.textContent).toContain(entry.name);
       expect(compact.textContent).toContain('Owned 1');
     }
@@ -214,17 +213,71 @@ describe('reference Inventory layout', () => {
     host.innerHTML = inventoryView(account);
     document.body.append(host);
     bindInformation(host);
-    const dialog = host.querySelector<HTMLDialogElement>('#inventory-heavens-weapon-details')!;
+    bindInventory(host, vi.fn());
+    const dialog = host.querySelector<HTMLDialogElement>('#inventory-item-inspection')!;
     dialog.showModal = vi.fn(() => dialog.setAttribute('open', ''));
     dialog.close = vi.fn(() => dialog.removeAttribute('open'));
-    host.querySelector<HTMLButtonElement>('[data-information="inventory-heavens-weapon-details"]')!.click();
+    host.querySelector<HTMLButtonElement>('[data-inventory-inspect="material:heavens-weapon"]')!.click();
     expect(dialog.showModal).toHaveBeenCalledOnce();
     expect(dialog.textContent).toContain('Weapon material. No current use.');
-    expect(dialog.textContent).toContain('Owned 2');
-    host.querySelector<HTMLButtonElement>('#inventory-heavens-weapon-details [data-close-information]')!.click();
+    expect(dialog.textContent).toContain('Owned2');
+    host.querySelector<HTMLButtonElement>('#inventory-item-inspection [data-close-information]')!.click();
     expect(dialog.close).toHaveBeenCalledOnce();
-    expect(host.querySelectorAll('[data-inventory-material] > [data-information]')).toHaveLength(5);
+    expect(host.querySelectorAll('[data-inventory-material] > [data-inventory-inspect]')).toHaveLength(5);
     expect(account).toEqual(before);
+  });
+
+  it('filters with element and rarity chips and browses item details without changing holdings', () => {
+    const account = emptyAccount();
+    account.materials = { 'infernic-common': 2, 'oceanic-rare': 4 };
+    account.conduits = { 'vigil-core': 1, 'bastion-lock': 1, 'execution-orrery': 1 };
+    account.conduitEquipment = { ember: ['vigil-core', null, null, null, null, null, null, null] };
+    const before = structuredClone(account);
+    const host = document.createElement('main');
+    host.innerHTML = inventoryView(account);
+    bindMenuPagination(host);
+    bindInventory(host, vi.fn());
+    host.querySelector<HTMLButtonElement>('[data-inventory-chip="element"][data-inventory-value="oceanic"]')!.click();
+    expect(inventoryFilters(host).element).toBe('oceanic');
+    expect(host.querySelector<HTMLElement>('[data-inventory-material="infernic-common"]')!.hidden).toBe(true);
+    expect(host.querySelector<HTMLElement>('[data-inventory-material="oceanic-rare"]')!.hidden).toBe(false);
+    host.querySelector<HTMLButtonElement>('[data-inventory-chip="element"][data-inventory-value=""]')!.click();
+    host.querySelector<HTMLButtonElement>('[data-inventory-tab="conduits"]')!.click();
+    expect(host.querySelector<HTMLElement>('[data-inventory-chip-set="rarity"]')!.hidden).toBe(false);
+    expect(host.querySelector<HTMLElement>('[data-inventory-chip-set="element"]')!.hidden).toBe(true);
+    host.querySelector<HTMLButtonElement>('[data-inventory-chip="rarity"][data-inventory-value="Legendary"]')!.click();
+    expect(inventoryFilters(host).rarity).toBe('Legendary');
+    expect(host.querySelector<HTMLElement>('[data-inventory-conduit="execution-orrery"]')!.hidden).toBe(false);
+    expect(host.querySelector<HTMLElement>('[data-inventory-conduit="vigil-core"]')!.hidden).toBe(true);
+
+    host.querySelector<HTMLButtonElement>('[data-inventory-chip="rarity"][data-inventory-value=""]')!.click();
+    const equipped = host.querySelector<HTMLElement>('[data-inventory-conduit="vigil-core"]')!;
+    expect(equipped.querySelector('.inventory-equipped-badge')?.textContent).toBe('Equipped');
+    const dialog = host.querySelector<HTMLDialogElement>('#inventory-item-inspection')!;
+    dialog.showModal = vi.fn(() => dialog.setAttribute('open', ''));
+    host.querySelector<HTMLButtonElement>('[data-inventory-inspect="conduit:vigil-core"]')!.click();
+    expect(dialog.querySelector('#inventory-inspection-heading')?.textContent).toBe('Vigil Core');
+    expect(dialog.textContent).toContain('EquippedEquipped');
+    expect(dialog.querySelector('[data-inventory-inspection-count]')?.textContent).toBe('3 / 3');
+    dialog.querySelector<HTMLButtonElement>('[data-inventory-inspection-step="1"]')!.click();
+    expect(dialog.querySelector('#inventory-inspection-heading')?.textContent).toBe('Execution Orrery');
+    expect(dialog.querySelector('[data-inventory-inspection-count]')?.textContent).toBe('1 / 3');
+    expect(account).toEqual(before);
+  });
+
+  it('offers every material rarity and sorts them in catalog order', () => {
+    const materials = elementalMaterials.filter(material => material.elementId === 'infernic');
+    const account = emptyAccount();
+    account.materials = Object.fromEntries(materials.map(material => [material.id, 1]));
+    const host = document.createElement('main');
+    host.innerHTML = inventoryView(account);
+    bindInventory(host, vi.fn());
+    const chips = Array.from(host.querySelectorAll<HTMLButtonElement>('[data-inventory-chip="rarity"]'))
+      .map(button => button.dataset.inventoryValue);
+    expect(chips).toEqual(['', ...materialRarities, 'Calamitic']);
+    const sortedRarities = () => Array.from(host.querySelectorAll<HTMLElement>('[data-inventory-material]'))
+      .map(item => item.dataset.itemRarity);
+    expect(sortedRarities()).toEqual([...materialRarities].reverse());
   });
 
   it('combines live search, item type, rarity and real elemental metadata without replacing cards', () => {
@@ -264,7 +317,7 @@ describe('reference Inventory layout', () => {
     expect(visible()).toHaveLength(9);
     expect(host.querySelector('[data-inventory-material="infernic-common"]')).toBe(card);
     setFilter('element', 'none');
-    expect(visible().map(item => item.dataset.itemType)).toEqual(['chests', 'components', 'materials', 'conduits']);
+    expect(visible().map(item => item.dataset.itemType)).toEqual(['materials', 'components', 'chests', 'conduits']);
     setFilter('type', 'components');
     expect(visible()).toHaveLength(1);
     expect(changed).toHaveBeenLastCalledWith(inventoryFilters(host));
@@ -274,7 +327,7 @@ describe('reference Inventory layout', () => {
   it('restores escaped queries and filters while retaining collapsed sections and unavailable errors', () => {
     const account = emptyAccount();
     account.materials = { 'infernic-common': 5 };
-    const filters = { query: '"><img src=x>', type: 'materials', rarity: 'Common', element: 'infernic' };
+    const filters = { query: '"><img src=x>', type: 'materials', rarity: 'Common', element: 'infernic', sort: 'rarity' as const };
     const host = document.createElement('main');
     host.innerHTML = inventoryView(account, 'materials', { materials: false, conduits: true }, filters);
     bindInventory(host, vi.fn());
@@ -331,7 +384,7 @@ describe('reference Inventory layout', () => {
     expect(card.closest('.inventory-item-grid')).not.toBeNull();
     expect(card.querySelector('.inventory-item-art > img')?.getAttribute('src')).toContain('currencies/mechanical-components.png');
     expect(card.querySelector('.inventory-quantity')!.textContent).toBe(`Owned ${Number.MAX_SAFE_INTEGER}`);
-    expect(card.querySelector('dialog')!.textContent).toContain('Masters can\'t be upgraded');
+    expect(card.querySelector<HTMLTemplateElement>('template[data-inventory-inspection-template]')!.content.textContent).toContain('Masters can\'t be upgraded');
     expect(host.querySelector('#inventory-panel-conduits')!.textContent).not.toContain('Broken Mechanical Components');
     expect(host.querySelector('.ref-component-count')).toBeNull();
     expect(resources.querySelector('.inventory-empty-slots')).toBeNull();

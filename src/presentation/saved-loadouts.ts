@@ -17,11 +17,11 @@ export type SavedLoadoutOperation = Extract<GameOperation, { kind:
 
 function equipmentPreview(equipment: SavedEquipment, account: Account): string {
   return `<div class="saved-loadout-gear"><ol class="saved-loadout-slots" aria-label="Ordinary Conduit slots">${equipment.conduits.map((id, index) =>
-    `<li${id ? '' : ' class="is-empty"'} aria-label="Slot ${index + 1}: ${id ? escape(getConduit(id).name) : 'Empty'}"><span class="saved-loadout-slot-art" aria-hidden="true">${id ? conduitIcon(id, account.conduitUpgrades?.[id]) : '<span class="saved-loadout-empty">—</span>'}<span class="saved-loadout-slot-number">${index + 1}</span></span><span class="saved-loadout-slot-copy"><small>Slot ${index + 1}</small><span class="saved-loadout-slot-name" title="${id ? escape(getConduit(id).name) : 'Empty'}">${id ? escape(getConduit(id).name) : 'Empty'}</span></span></li>`).join('')}</ol>
+    `<li${id ? '' : ' class="is-empty"'} aria-label="Slot ${index + 1}: ${id ? escape(getConduit(id).name) : 'Empty'}" title="Slot ${index + 1}: ${id ? escape(getConduit(id).name) : 'Empty'}"><span class="saved-loadout-slot-art" aria-hidden="true">${id ? conduitIcon(id, account.conduitUpgrades?.[id]) : '<span class="saved-loadout-empty">—</span>'}<span class="saved-loadout-slot-number">${index + 1}</span></span><span class="saved-loadout-slot-copy"><small>Slot ${index + 1}</small><span class="saved-loadout-slot-name" title="${id ? escape(getConduit(id).name) : 'Empty'}">${id ? escape(getConduit(id).name) : 'Empty'}</span></span></li>`).join('')}</ol>
     <div class="saved-loadout-master"><span class="saved-loadout-slot-art" aria-hidden="true">${equipment.master ? masterConduitIcon(equipment.master) : '<span class="saved-loadout-empty">—</span>'}</span><span class="saved-loadout-slot-copy"><small>Master</small><span class="saved-loadout-slot-name" title="${equipment.master ? escape(getMasterConduit(equipment.master).name) : 'None equipped'}">${equipment.master ? escape(getMasterConduit(equipment.master).name) : 'None equipped'}</span></span></div></div>`;
 }
-function nameInput(name: string, label: string): string {
-  return `<label class="saved-loadout-name"><span>${escape(label)}</span><input data-saved-name type="text" maxlength="${loadoutNameLimit}" value="${escape(name)}" required autocomplete="off"></label>`;
+function nameInput(name: string, label: string, placeholder = ''): string {
+  return `<label class="saved-loadout-name"><span>${escape(label)}</span><input data-saved-name type="text" maxlength="${loadoutNameLimit}" value="${escape(name)}"${placeholder ? ` placeholder="${escape(placeholder)}"` : ''} required autocomplete="off"></label>`;
 }
 function button(action: SavedLoadoutOperation['kind'], label: string, disabled = false): string {
   return `<button type="button" data-saved-loadout-action="${action}"${disabled ? ' disabled' : ''}>${label}</button>`;
@@ -32,7 +32,7 @@ export function squadLoadoutsPanel(account: Account): string {
   const currentIssue = squadEligibilityIssue(account, current);
   const memberPreview = (id: string, index: number, equipment: SavedEquipment): string => {
     const member = ownedCompanion(account, id);
-    return `<article class="saved-loadout-member"><header class="saved-loadout-member-heading"><span class="ref-thumb">${member.compactArt}</span><div><small>${index ? `Member ${index + 1}` : 'Leader'}</small><b>${escape(member.name)}</b><small>${escape(member.element)} · Lv.${member.level}</small></div></header><p class="saved-loadout-equipment-count">Conduits · ${equipment.conduits.filter(Boolean).length} of 8</p>${equipment.conduits.some(Boolean) ? '' : '<p>No ordinary Conduits saved.</p>'}${equipmentPreview(equipment, account)}</article>`;
+    return `<article class="saved-loadout-member"><header class="saved-loadout-member-heading"><span class="ref-thumb">${member.compactArt}</span><div><small>${index ? `Member ${index + 1}` : 'Leader'}</small><b>${escape(member.name)}</b><small>${escape(member.element)} · Lv.${member.level}</small></div></header>${equipmentPreview(equipment, account)}<p class="saved-loadout-equipment-count">Conduits · ${equipment.conduits.filter(Boolean).length} of 8</p></article>`;
   };
   const entries = account.squadLoadouts ?? [];
   const matchesCurrent = (members: readonly { character: string; conduits: SavedEquipment['conduits']; master: SavedEquipment['master'] }[]) =>
@@ -43,27 +43,28 @@ export function squadLoadoutsPanel(account: Account): string {
   const summary = (ids: readonly string[]) => `<span class="saved-loadout-summary-art" aria-hidden="true">${ids.map(id =>
     `<span class="ref-thumb">${owned.has(id) ? ownedCompanion(account, id).compactArt : '—'}</span>`).join('')}</span>`;
   return `<section class="ref-panel saved-loadouts" data-saved-loadouts aria-labelledby="saved-loadouts-title">
-    <header class="ref-panel-heading"><h2 id="saved-loadouts-title">Loadouts</h2><span>${account.squadLoadouts?.length ?? 0} saved</span></header>
+    <header class="ref-panel-heading"><span>${entries.length} saved</span></header>
     <div class="ref-scroll saved-loadout-scroll">
     <nav class="saved-loadout-sidebar" aria-label="Squad loadouts">
-      <button type="button" class="saved-loadout-choice is-current" data-loadout-select="" aria-controls="loadout-current" aria-pressed="${selected === ''}">
+      <h2 id="saved-loadouts-title">Loadouts</h2><p class="saved-loadout-library-intro">A loadout saves your whole squad and every member's Conduits, so you can swap setups in one tap.</p>
+      ${entries.length ? `<button type="button" class="saved-loadout-choice is-current" data-loadout-select="" aria-controls="loadout-current" aria-pressed="${selected === ''}">
         <b>Current setup</b>${summary(current)}<span>${current.length} / ${squadMemberLimit} members</span><strong>+ New loadout</strong>
-      </button>
+      </button>` : ''}
       ${entries.map(entry => `<button type="button" class="saved-loadout-choice" data-loadout-select="${entry.id}" aria-controls="loadout-${entry.id}" aria-pressed="${selected === entry.id}">
         <b>${escape(entry.name)}</b>${matchesCurrent(entry.members) ? '<span class="saved-loadout-match">Equipped</span>' : ''}
         ${summary(entry.members.map(member => member.character))}
         <span>${entry.members.length} members · ${entry.members.reduce((count, member) => count + member.conduits.filter(Boolean).length + Number(!!member.master), 0)} Conduits</span>
       </button>`).join('')}
-      ${entries.length ? '' : '<p class="saved-loadout-empty-library">No saved loadouts yet. Save your current setup to get started.</p>'}
+      ${entries.length ? '' : '<p class="saved-loadout-empty-library"><strong>No saved loadouts yet</strong><span>Name your current setup and press Save to get started.</span></p>'}
     </nav><div class="saved-loadout-detail">
     <section id="loadout-current" class="saved-loadout-card" data-saved-entry data-saved-id="" aria-label="Save a new squad loadout"${selected === '' ? '' : ' hidden'}>
       <header class="saved-loadout-card-heading"><h3>Current squad</h3><span>${current.length} / ${squadMemberLimit} members</span></header>
       <p class="saved-loadout-intro">Save your squad and every member's equipped Conduits together.</p>
-      <div class="saved-loadout-editor">${nameInput('', 'New loadout name')}<div class="saved-loadout-actions">${button('saveSquadLoadout', 'Save new loadout', !!currentIssue)}</div></div>
+      <div class="saved-loadout-editor">${nameInput('', 'New loadout name', 'Name this loadout (required)')}<div class="saved-loadout-actions">${button('saveSquadLoadout', 'Save new loadout', !!currentIssue)}</div></div>
       ${currentIssue ? `<p role="note">Cannot save: ${escape(currentIssue)} Update your current squad first.</p>` : ''}
       <div class="saved-loadout-members">${current.map((id, index) => memberPreview(id, index, currentEquipment(account, id))).join('')}</div>
     </section>
-    <div class="saved-loadout-list">${entries.map(entry => {
+    ${entries.map(entry => {
       const issue = squadEligibilityIssue(account, entry.members.map(member => member.character));
       const available = !issue;
       const equipped = available && current.join('|') === entry.members.map(member => member.character).join('|') &&
@@ -78,7 +79,7 @@ export function squadLoadoutsPanel(account: Account): string {
           ${button('saveSquadLoadout', 'Update with current setup', !!currentIssue)}${button('renameSquadLoadout', 'Rename')}${button('deleteSquadLoadout', 'Delete')}</div></footer>
         ${issue ? `<p role="note">Cannot equip: ${escape(issue)} ${currentIssue ? 'Update your current squad before overwriting.' : 'Overwrite with your current squad, or delete it.'}</p>` : ''}
       </article>`;
-    }).join('')}</div></div></div>
+    }).join('')}</div></div>
     <p data-saved-loadout-status role="status" aria-live="polite"></p></section>`;
 }
 

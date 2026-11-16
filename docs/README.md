@@ -1,5 +1,12 @@
 # Documentation hub
 
+## Inventory holdings and item inspection (2026-11-15; local-only)
+
+The [handoff](handoff.md#inventory-holdings-and-item-inspection-2026-11-15-local-only)
+and [menu contract](menus-and-inventory.md#inventory-holdings-and-item-inspection-d-459-2026-11-15-local-only)
+record the Inventory grid, filters and shared item-inspection dialog. No
+account or gameplay behavior changes; publication was not requested.
+
 ## Game-wide reference theme rollout (2026-11-15; local-only)
 
 D-457 extends the reference theme to every remaining menu. See the

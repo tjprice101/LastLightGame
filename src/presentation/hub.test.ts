@@ -110,7 +110,7 @@ describe('game-specific hub layouts', () => {
     const overview = characterDetail(starters[0], 'overview', account);
     for (const key of ['hp', 'attack', 'defense', 'recovery'] as const) expect(overview).toContain(`<strong>${formatStat(radiant[key])}</strong>`);
     expect(overview).not.toContain('e+');
-    expect(inventoryHub(account).match(/9007199254740991/g)).toHaveLength(4);
+    expect(inventoryHub(account).match(/9007199254740991/g)).toHaveLength(3);
   });
   it.each(starters)('$name uses its real art, stats, passive, and ability costs', (starter) => {
     const home = homeHub(starter, false);

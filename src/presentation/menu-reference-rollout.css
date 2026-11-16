@@ -367,47 +367,68 @@
   html[data-menu-workspace] .sanctuary-shell .ref-capture-detail .character-combat button :is(span span, small) { color: var(--reference-muted) !important; font-size: 11px !important; white-space: normal !important; }
 
   /* Saved squad loadouts */
+  html[data-menu-workspace] .sanctuary-shell .sanctuary-content:has(> .ref-saved-loadouts-page) { overflow: hidden !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-saved-loadouts-page { grid-template-rows: auto minmax(0, 1fr) !important; gap: 8px !important; box-sizing: border-box !important; min-height: 0 !important; height: 100% !important; overflow: hidden !important; }
   html[data-menu-workspace] .sanctuary-shell .ref-saved-loadouts-page .saved-loadout-page-navigation { display: flex !important; gap: 10px !important; margin: 0 0 8px !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
   html[data-menu-workspace] .sanctuary-shell .ref-saved-loadouts-page .saved-loadout-page-navigation [aria-pressed="true"] { border-color: var(--reference-peach) !important; background: #ffa15d22 !important; color: var(--reference-peach) !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadouts:not(#_) { padding: 14px 20px !important; border: 1px solid var(--reference-line) !important; border-radius: var(--reference-radius) !important; background: var(--reference-panel) !important; box-shadow: none !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadouts > .ref-panel-heading { display: flex !important; align-items: baseline !important; justify-content: space-between !important; margin: 0 0 12px !important; padding: 0 0 8px !important; border-bottom: 1px solid var(--reference-line) !important; background: transparent !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadouts > .ref-panel-heading h2 { margin: 0 !important; font: 700 24px/1.2 Georgia, serif !important; text-transform: none !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts:not(#_) { position: relative !important; display: flex !important; flex-direction: column !important; min-height: 0 !important; height: 100% !important; padding: 0 !important; border: 0 !important; background: transparent !important; box-shadow: none !important; overflow: visible !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts > .ref-panel-heading { position: absolute !important; top: -38px !important; right: 0 !important; display: block !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
   html[data-menu-workspace] .sanctuary-shell .saved-loadouts > .ref-panel-heading > span { color: var(--reference-muted) !important; font-size: 12px !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-scroll { display: grid !important; grid-template-columns: 220px minmax(0, 1fr) !important; gap: 20px !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-sidebar { display: flex !important; flex-direction: column !important; gap: 10px !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; box-shadow: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts > .saved-loadout-scroll:not(#_) { display: grid !important; grid-template-columns: minmax(210px, 25%) minmax(0, 1fr) !important; align-items: stretch !important; flex: 1 1 auto !important; gap: 18px !important; min-height: 0 !important; height: 100% !important; padding: 0 !important; border: 0 !important; background: transparent !important; overflow: hidden !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-sidebar { display: flex !important; flex-direction: column !important; gap: 10px !important; box-sizing: border-box !important; min-height: 0 !important; height: 100% !important; margin: 0 !important; padding: 18px !important; border: 1px solid var(--reference-line) !important; border-radius: 20px !important; background: var(--reference-panel) !important; box-shadow: none !important; overflow-y: auto !important; scrollbar-width: thin !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-sidebar h2 { margin: 0 !important; font: 700 23px/1.2 Georgia, serif !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-library-intro { margin: 0 0 2px !important; color: var(--reference-muted) !important; font-size: 12px !important; line-height: 1.5 !important; }
   html[data-menu-workspace] .sanctuary-shell .saved-loadout-choice { display: grid !important; gap: 8px !important; justify-items: start !important; width: 100% !important; height: auto !important; padding: 14px !important; text-align: left !important; border: 1px solid var(--reference-line) !important; border-radius: 18px !important; background: var(--reference-raised) !important; box-shadow: none !important; color: var(--reference-text) !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-choice:is(.is-current, [aria-pressed="true"]) { border-color: var(--reference-peach) !important; background: linear-gradient(140deg, #ffa15d1f, #ffffff05) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-choice[aria-pressed="true"] { border-color: var(--reference-peach) !important; background: linear-gradient(140deg, #ffa15d1f, #ffffff05) !important; }
   html[data-menu-workspace] .sanctuary-shell .saved-loadout-choice > b { font: 700 14px/1.3 Sora, system-ui, sans-serif !important; }
   html[data-menu-workspace] .sanctuary-shell .saved-loadout-choice > span:not(.saved-loadout-summary-art) { color: var(--reference-muted) !important; font-size: 12px !important; }
   html[data-menu-workspace] .sanctuary-shell .saved-loadout-choice > strong { padding: 4px 12px !important; border: 0 !important; border-radius: 999px !important; background: var(--reference-peach) !important; color: #261912 !important; font-size: 12px !important; box-shadow: none !important; }
   html[data-menu-workspace] .sanctuary-shell .saved-loadout-summary-art { display: flex !important; gap: 4px !important; }
   html[data-menu-workspace] .sanctuary-shell .saved-loadout-summary-art .ref-thumb { width: 36px !important; height: 36px !important; overflow: hidden !important; border: 1px solid var(--reference-line) !important; border-radius: 50% !important; background: #ffffff0d !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-empty-library { margin: 0 !important; padding: 14px !important; border: 1px dashed var(--reference-line) !important; border-radius: 18px !important; background: transparent !important; color: var(--reference-muted) !important; font-size: 12px !important; line-height: 1.55 !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-detail { display: flex !important; flex-direction: column !important; gap: 12px !important; min-width: 0 !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-card { margin: 0 !important; padding: 18px 20px !important; border: 1px solid var(--reference-line) !important; border-radius: 22px !important; background: var(--reference-raised) !important; box-shadow: none !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-empty-library { display: grid !important; gap: 4px !important; margin: 0 !important; padding: 18px 14px !important; border: 1px dashed var(--reference-line) !important; border-radius: 18px !important; background: transparent !important; color: var(--reference-muted) !important; font-size: 12px !important; line-height: 1.5 !important; text-align: center !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-empty-library strong { color: var(--reference-text) !important; font-size: 13px !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-detail { display: block !important; min-width: 0 !important; min-height: 0 !important; height: 100% !important; overflow: auto !important; scrollbar-width: thin !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-detail > .saved-loadout-card:not([hidden]) { display: flex !important; flex-direction: column !important; box-sizing: border-box !important; min-height: 100% !important; margin: 0 !important; padding: 16px 18px !important; border: 1px solid var(--reference-line) !important; border-radius: 20px !important; background: var(--reference-panel) !important; box-shadow: none !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-detail > .saved-loadout-card[hidden] { display: none !important; }
   html[data-menu-workspace] .sanctuary-shell .saved-loadout-card-heading { display: flex !important; align-items: baseline !important; justify-content: space-between !important; gap: 12px !important; margin: 0 0 6px !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-card-heading h3 { margin: 0 !important; font: 700 17px/1.3 Sora, system-ui, sans-serif !important; color: var(--reference-text) !important; text-transform: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-card-heading h3 { margin: 0 !important; font: 700 22px/1.2 Georgia, serif !important; color: var(--reference-text) !important; text-transform: none !important; }
   html[data-menu-workspace] .sanctuary-shell .saved-loadout-card-heading > span { color: var(--reference-peach) !important; font-size: 13px !important; font-weight: 700 !important; }
   html[data-menu-workspace] .sanctuary-shell .saved-loadout-intro { margin: 0 0 10px !important; color: var(--reference-muted) !important; font-size: 13px !important; font-weight: 500 !important; }
   html[data-menu-workspace] .sanctuary-shell .saved-loadout-editor { display: grid !important; grid-template-columns: minmax(0, 1fr) auto !important; align-items: end !important; gap: 12px !important; margin: 0 0 12px !important; }
   html[data-menu-workspace] .sanctuary-shell .saved-loadout-name { display: grid !important; gap: 6px !important; margin: 0 !important; }
   html[data-menu-workspace] .sanctuary-shell .saved-loadout-name > span { color: var(--reference-muted) !important; font-size: 12px !important; font-weight: 600 !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-actions { display: flex !important; gap: 8px !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-editor .saved-loadout-name > span,
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-slots .saved-loadout-slot-copy { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-name input { min-height: 44px !important; border: 1px solid var(--reference-line) !important; border-radius: 999px !important; background: var(--reference-raised) !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-actions { display: flex !important; flex-wrap: wrap !important; gap: 8px !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-actions button { min-height: 44px !important; padding: 6px 14px !important; }
   html[data-menu-workspace] .sanctuary-shell .saved-loadout-actions button:not(:disabled) { border-color: var(--reference-peach) !important; color: var(--reference-peach) !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-members { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important; gap: 12px !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member { display: flex !important; flex-direction: column !important; gap: 8px !important; min-width: 0 !important; margin: 0 !important; padding: 14px !important; border: 1px solid var(--reference-line) !important; border-radius: 18px !important; background: #ffffff06 !important; box-shadow: none !important; color: var(--reference-text) !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member-heading { display: flex !important; align-items: center !important; gap: 10px !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member-heading :is(span, small) { font-size: 11px !important; color: var(--reference-muted) !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member-heading :is(b, strong) { font: 700 14px/1.3 Sora, system-ui, sans-serif !important; color: var(--reference-text) !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member > p { margin: 0 !important; color: var(--reference-muted) !important; font-size: 12px !important; font-weight: 500 !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member > p.saved-loadout-equipment-count { color: var(--reference-text) !important; font-weight: 700 !important; font-size: 13px !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-gear { margin-top: auto !important; padding-top: 8px !important; border-top: 1px solid var(--reference-line) !important; color: var(--reference-muted) !important; font-size: 11px !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-master { display: flex !important; align-items: center !important; gap: 10px !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-master > .saved-loadout-slot-art { position: relative !important; display: grid !important; place-items: center !important; flex: 0 0 36px !important; width: 36px !important; height: 36px !important; margin: 0 !important; border: 1px dashed var(--reference-line) !important; border-radius: 12px !important; background: #ffffff05 !important; color: var(--reference-muted) !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-master > .saved-loadout-slot-copy { display: grid !important; gap: 0 !important; min-width: 0 !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-master > .saved-loadout-slot-copy small { color: var(--reference-text) !important; font-size: 12px !important; font-weight: 700 !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-master .saved-loadout-slot-name { color: var(--reference-muted) !important; font-size: 11px !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
-  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member { padding: 12px 14px !important; gap: 6px !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-editor .saved-loadout-actions button:not(:disabled) { border-color: var(--reference-peach) !important; background: var(--reference-peach) !important; color: #261912 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-members { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; grid-auto-flow: row !important; grid-auto-columns: auto !important; gap: 8px !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member { display: flex !important; flex-direction: column !important; gap: 5px !important; min-width: 0 !important; margin: 0 !important; padding: 10px !important; border: 1px solid var(--reference-line) !important; border-radius: 16px !important; background: var(--reference-raised) !important; box-shadow: none !important; color: var(--reference-text) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member-heading { display: flex !important; align-items: center !important; gap: 8px !important; min-height: 44px !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member-heading .ref-thumb { flex: 0 0 42px !important; width: 42px !important; height: 42px !important; overflow: hidden !important; border: 1px solid var(--reference-line) !important; border-radius: 50% !important; background: #ffffff0d !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member-heading > div { min-width: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member-heading small { margin: 1px 0 !important; font-size: 10px !important; line-height: 1.2 !important; color: var(--reference-muted) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member-heading :is(b, strong) { font: 700 12px/1.2 Sora, system-ui, sans-serif !important; color: var(--reference-text) !important; overflow-wrap: anywhere !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-member > p { margin: 0 !important; color: var(--reference-muted) !important; font-size: 11px !important; line-height: 1.25 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-gear { min-width: 0 !important; margin: 0 !important; padding: 0 !important; border: 0 !important; color: var(--reference-muted) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-slots { display: grid !important; grid-template-columns: repeat(8, minmax(0, 1fr)) !important; gap: 3px !important; margin: 0 !important; padding: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-slots li { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; place-items: center !important; box-sizing: border-box !important; aspect-ratio: 1 !important; min-width: 0 !important; min-height: 0 !important; padding: 2px !important; border: 1px solid #ffffff27 !important; border-radius: 6px !important; background: #ffffff0e !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-slots li.is-empty { display: grid !important; border-style: dashed !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-slots .saved-loadout-slot-art { width: 100% !important; height: 100% !important; min-width: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-slots .saved-loadout-slot-art :is(.conduit-icon-frame, .conduit-icon) { width: 100% !important; height: 100% !important; max-width: 100% !important; object-fit: contain !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-slots .saved-loadout-slot-number { display: none !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-slots .saved-loadout-empty { width: 100% !important; height: 100% !important; border: 0 !important; font-size: 11px !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-master { display: flex !important; align-items: center !important; gap: 6px !important; margin: 5px 0 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-master > .saved-loadout-slot-art { position: relative !important; display: grid !important; place-items: center !important; flex: 0 0 24px !important; width: 24px !important; height: 24px !important; margin: 0 !important; border: 1px dashed var(--reference-line) !important; border-radius: 6px !important; background: #ffffff05 !important; color: var(--reference-muted) !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-master .saved-loadout-slot-art :is(.master-art, .saved-loadout-empty) { width: 100% !important; height: 100% !important; border: 0 !important; object-fit: contain !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-master > .saved-loadout-slot-copy { display: flex !important; gap: 5px !important; min-width: 0 !important; align-items: baseline !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-master > .saved-loadout-slot-copy small { color: var(--reference-text) !important; font-size: 10px !important; font-weight: 700 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts .saved-loadout-master .saved-loadout-slot-name { color: var(--reference-muted) !important; font-size: 10px !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-footer { display: grid !important; grid-template-columns: minmax(150px, .7fr) minmax(0, 1.3fr) !important; align-items: end !important; gap: 8px !important; margin-top: 10px !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadout-footer .saved-loadout-actions { margin: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .saved-loadouts > [data-saved-loadout-status]:empty { display: none !important; }
   /* Squad formation */
   html[data-menu-workspace] .sanctuary-shell .ref-formation:not(#_) { padding: 16px 20px !important; border: 1px solid var(--reference-line) !important; border-radius: var(--reference-radius) !important; background: var(--reference-panel) !important; box-shadow: none !important; }
   html[data-menu-workspace] .sanctuary-shell .ref-formation .squad-formation { display: grid !important; gap: 12px !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: transparent !important; }
@@ -1219,5 +1240,515 @@
     html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-card-price { display: flex !important; align-items: center !important; gap: 6px !important; font-size: 13px !important; font-variant-numeric: tabular-nums !important; }
     html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-card-price .currency-icon { width: 24px !important; height: 24px !important; }
     html[data-menu-workspace] .sanctuary-shell .ref-event-devourer-store .event-devourer-card > button { flex-shrink: 0 !important; width: 100% !important; min-height: 44px !important; margin-top: auto !important; }
+
+    /* Inventory: compact holdings controls, broad item grid and focused inspection. */
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory:not(#_):not(#_) {
+      display: grid !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      grid-template-columns: minmax(0, 1fr) auto auto !important;
+      grid-template-rows: auto auto auto auto minmax(0, 1fr) !important;
+      grid-template-areas: "tabs results info" "currencies currencies currencies" "tools tools tools" "chips chips chips" "panel panel panel" !important;
+      align-items: center !important;
+      gap: 10px 16px !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory > .inventory-tabs:not(#_) {
+      grid-area: tabs !important;
+      display: flex !important;
+      width: max-content !important;
+      max-width: 100% !important;
+      flex-wrap: nowrap !important;
+      gap: 8px !important;
+      margin: 0 !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory > .inventory-tabs button {
+      min-height: 50px !important;
+      padding: 8px 24px !important;
+      white-space: nowrap !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory > .inventory-results:not(#_) {
+      grid-area: results !important;
+      margin: 0 !important;
+      color: var(--reference-muted) !important;
+      white-space: nowrap !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory > .inventory-introduction {
+      grid-area: info !important;
+      justify-self: end !important;
+      margin: 0 !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory > .inventory-currencies:not(#_) {
+      grid-area: currencies !important;
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      gap: 10px !important;
+      margin: 0 !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-currency:not(#_) {
+      min-height: 56px !important;
+      padding: 8px 14px !important;
+      border-radius: 999px !important;
+      gap: 12px !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-currency > .currency-icon {
+      flex: 0 0 36px !important;
+      width: 36px !important;
+      height: 36px !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-currency strong {
+      font-size: 15px !important;
+      font-variant-numeric: tabular-nums !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-currency span {
+      margin-top: 2px !important;
+      color: var(--reference-muted) !important;
+      font-size: 11px !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory > .inventory-tools:not(#_) {
+      grid-area: tools !important;
+      display: grid !important;
+      grid-template-columns: minmax(0, 2fr) minmax(150px, .7fr) minmax(205px, 1fr) auto !important;
+      align-items: end !important;
+      gap: 10px !important;
+      min-height: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      overflow: visible !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-tools > label {
+      min-width: 0 !important;
+      margin: 0 !important;
+      color: var(--reference-muted) !important;
+      font-size: 11px !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-tools > label.inventory-search { grid-column: 1 !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-tools :is(input, select) {
+      box-sizing: border-box !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      min-height: 48px !important;
+      margin-top: 4px !important;
+      padding: 0 18px !important;
+      border: 1px solid var(--reference-line) !important;
+      border-radius: 999px !important;
+      background: #ffffff0a !important;
+      color: var(--reference-text) !important;
+      font-size: 13px !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-tools .inventory-sort-filter,
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-tools .inventory-rarity-select { grid-column: 3 !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory[data-inventory-active-tab="materials"] .inventory-sort-filter,
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory[data-inventory-active-tab="conduits"] .inventory-rarity-select,
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-element-select { display: none !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-tools > [data-inventory-clear] {
+      grid-column: 4 !important;
+      min-height: 48px !important;
+      margin: 0 !important;
+      padding-inline: 16px !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-filter-chips:not([hidden]) {
+      grid-area: chips !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      min-width: 0 !important;
+      margin: 0 !important;
+      overflow-x: auto !important;
+      scrollbar-width: thin !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-filter-chips[hidden] { display: none !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-filter-chips button {
+      display: inline-flex !important;
+      flex: 0 0 auto !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 8px !important;
+      min-height: 42px !important;
+      padding: 6px 14px !important;
+      border: 1px solid var(--reference-line) !important;
+      border-radius: 999px !important;
+      background: #ffffff08 !important;
+      color: var(--reference-text) !important;
+      font-size: 12px !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-filter-chips button[aria-pressed="true"] {
+      border-color: var(--reference-peach) !important;
+      background: #ffa15d22 !important;
+      color: var(--reference-peach) !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-element-dot,
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .rarity-chip-dot {
+      display: inline-block !important;
+      width: 9px !important;
+      height: 9px !important;
+      border-radius: 50% !important;
+      background: var(--reference-muted) !important;
+      box-shadow: 0 0 0 2px #ffffff18 !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-element-dot[data-element="infernic"] { background: #ff744b !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-element-dot[data-element="oceanic"] { background: #51cce6 !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-element-dot[data-element="atmospheric"] { background: #e2d45c !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-element-dot[data-element="botanic"] { background: #53d39b !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-element-dot[data-element="tranquilitic"] { background: #d2c8f6 !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-element-dot[data-element="chaotic"] { background: #ad7aff !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .rarity-chip-dot[data-rarity="Common"] { background: #a9a9b5 !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .rarity-chip-dot[data-rarity="Uncommon"] { background: #c7cbd1 !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .rarity-chip-dot[data-rarity="Rare"] { background: #57a9ff !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .rarity-chip-dot[data-rarity="Epic"] { background: #c8a2f0 !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .rarity-chip-dot[data-rarity="Legendary"] { background: #ffc044 !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .rarity-chip-dot[data-rarity="Omnic"] { background: #d7cdf8 !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .rarity-chip-dot[data-rarity="Calamitic"] { background: #ff4d73 !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory > .inventory-panel:not([hidden]) {
+      grid-area: panel !important;
+      align-self: stretch !important;
+      display: flex !important;
+      flex-direction: column !important;
+      min-height: 0 !important;
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 10px !important;
+      overflow: hidden !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory > .inventory-panel > .ref-scroll {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      padding: 4px 6px 8px 4px !important;
+      overflow: auto !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item-grid:not(#_) {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)) !important;
+      grid-auto-rows: max-content !important;
+      align-items: stretch !important;
+      gap: 10px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      list-style: none !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item-grid > .inventory-item:not(#_) {
+      position: relative !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 6px !important;
+      min-width: 0 !important;
+      min-height: 144px !important;
+      height: auto !important;
+      padding: 10px 8px !important;
+      border: 1px solid var(--reference-line) !important;
+      border-radius: 18px !important;
+      background: linear-gradient(155deg, #ffffff0a, #a18ab812 52%, #ff9a5c08) !important;
+      text-align: center !important;
+      overflow: hidden !important;
+      transition: border-color 160ms ease, background 160ms ease, transform 160ms ease !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item-grid > .inventory-item[hidden] { display: none !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item-grid > .inventory-item:hover {
+      border-color: #ffa15d88 !important;
+      background: linear-gradient(155deg, #ffffff12, #a18ab81c 52%, #ff9a5c12) !important;
+      transform: translateY(-2px) !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item .info-catalog,
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item .info-item-header { display: contents !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item .info-item-header > div { display: contents !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item .info-item-art {
+      display: grid !important;
+      place-items: center !important;
+      width: 100% !important;
+      height: 76px !important;
+      margin: 0 !important;
+      border-radius: 14px !important;
+      background: radial-gradient(circle at 50% 45%, #ffffff12, transparent 72%) !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item-art :is(img, .conduit-icon-frame, .mechanical-component-icon) {
+      width: 70px !important;
+      height: 70px !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
+      object-fit: contain !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item .info-item-header h3 {
+      display: -webkit-box !important;
+      width: 100% !important;
+      max-height: 2.7em !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+      color: var(--reference-text) !important;
+      font: 600 12px/1.35 var(--reference-font) !important;
+      text-align: center !important;
+      overflow-wrap: anywhere !important;
+      -webkit-box-orient: vertical !important;
+      -webkit-line-clamp: 2 !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item .info-item-header .info-label {
+      display: block !important;
+      margin: 0 !important;
+      color: var(--reference-muted) !important;
+      font-size: 10px !important;
+      line-height: 1.2 !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item .info-effects { display: none !important; }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item .inventory-quantity {
+      margin: auto 0 0 !important;
+      color: var(--reference-peach) !important;
+      font-size: 12px !important;
+      font-variant-numeric: tabular-nums !important;
+      text-align: center !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-inspect-trigger {
+      position: absolute !important;
+      z-index: 2 !important;
+      inset: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: inherit !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      color: transparent !important;
+      font-size: 0 !important;
+      cursor: pointer !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-inspect-trigger:focus-visible {
+      outline: 3px solid var(--reference-peach) !important;
+      outline-offset: -4px !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-equipped-badge {
+      position: absolute !important;
+      z-index: 1 !important;
+      top: 6px !important;
+      right: 6px !important;
+      padding: 3px 7px !important;
+      border: 1px solid #ffa15d66 !important;
+      border-radius: 999px !important;
+      background: #ffa15d22 !important;
+      color: var(--reference-peach) !important;
+      font-size: 9px !important;
+      font-weight: 700 !important;
+      line-height: 1.1 !important;
+      text-transform: uppercase !important;
+      pointer-events: none !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item-actions {
+      position: relative !important;
+      z-index: 3 !important;
+      display: flex !important;
+      width: 100% !important;
+      gap: 6px !important;
+      margin-top: 4px !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item-actions button {
+      min-width: 0 !important;
+      min-height: 40px !important;
+      padding: 4px 8px !important;
+      font-size: 11px !important;
+    }
+    html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-panel > .menu-pager {
+      flex: 0 0 auto !important;
+      min-height: 42px !important;
+      margin: 4px 0 0 !important;
+      padding: 0 !important;
+      justify-content: center !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection[open] {
+      display: grid !important;
+      width: min(1000px, calc(100vw - 32px)) !important;
+      max-width: calc(100vw - 32px) !important;
+      height: min(600px, calc(100dvh - 40px)) !important;
+      max-height: calc(100dvh - 40px) !important;
+      grid-template-columns: minmax(260px, .9fr) minmax(0, 1.1fr) !important;
+      grid-template-rows: minmax(0, 1fr) auto !important;
+      gap: 0 !important;
+      padding: 20px !important;
+      overflow: hidden !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection > .drawer-heading {
+      position: absolute !important;
+      z-index: 2 !important;
+      top: 22px !important;
+      right: 22px !important;
+      left: calc(45% + 32px) !important;
+      display: flex !important;
+      align-items: flex-start !important;
+      justify-content: space-between !important;
+      gap: 16px !important;
+      padding: 0 !important;
+      border: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .drawer-heading h2 {
+      min-width: 0 !important;
+      margin: 0 !important;
+      font: 700 clamp(22px, 2.2vw, 32px)/1.2 Georgia, serif !important;
+      overflow-wrap: anywhere !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-content { display: contents !important; }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-art {
+      grid-column: 1 !important;
+      grid-row: 1 !important;
+      display: grid !important;
+      place-items: center !important;
+      min-width: 0 !important;
+      min-height: 0 !important;
+      margin: 36px 12px 12px 0 !important;
+      border-right: 1px solid var(--reference-line) !important;
+      background: radial-gradient(ellipse at 50% 48%, #c3a9df19, #0d0b1c00 72%) !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-art :is(img, .conduit-icon-frame, .master-conduit-icon, .mechanical-component-icon) {
+      display: block !important;
+      width: min(78%, 300px) !important;
+      height: min(78%, 300px) !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
+      object-fit: contain !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-details {
+      grid-column: 2 !important;
+      grid-row: 1 / 3 !important;
+      min-width: 0 !important;
+      max-height: 100% !important;
+      padding: 82px 8px 8px 20px !important;
+      overflow: auto !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-badge {
+      display: inline-flex !important;
+      align-items: center !important;
+      min-height: 32px !important;
+      padding: 4px 12px !important;
+      border: 1px solid var(--reference-line) !important;
+      border-radius: 999px !important;
+      background: #ffffff08 !important;
+      color: var(--reference-text) !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-level {
+      display: flex !important;
+      align-items: baseline !important;
+      gap: 10px !important;
+      margin: 16px 0 !important;
+      font: 400 clamp(38px, 5vw, 60px)/1 Georgia, serif !important;
+      font-variant-numeric: tabular-nums !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-level span {
+      color: var(--reference-muted) !important;
+      font: 500 14px/1 var(--reference-font) !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-details dl {
+      display: grid !important;
+      gap: 0 !important;
+      margin: 12px 0 18px !important;
+      padding: 0 16px !important;
+      border: 1px solid var(--reference-line) !important;
+      border-radius: 18px !important;
+      background: #ffffff08 !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-details dl > div {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 16px !important;
+      min-height: 44px !important;
+      border-bottom: 1px solid #ffffff0c !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-details dl > div:last-child { border-bottom: 0 !important; }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-details dt { color: var(--reference-muted) !important; }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-details dd {
+      margin: 0 !important;
+      font-weight: 700 !important;
+      text-align: right !important;
+      font-variant-numeric: tabular-nums !important;
+      overflow-wrap: anywhere !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-description {
+      margin: 0 !important;
+      color: var(--reference-text) !important;
+      font-size: 14px !important;
+      line-height: 1.6 !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-extra {
+      margin: 14px 0 0 !important;
+      color: var(--reference-muted) !important;
+      font-size: 12px !important;
+      line-height: 1.5 !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-nav {
+      grid-column: 1 !important;
+      grid-row: 2 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 16px !important;
+      min-height: 56px !important;
+      margin-right: 12px !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-nav button {
+      width: 48px !important;
+      height: 48px !important;
+      min-height: 48px !important;
+      padding: 0 !important;
+      border-radius: 50% !important;
+      font-size: 22px !important;
+    }
+    html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-nav span {
+      min-width: 56px !important;
+      color: var(--reference-muted) !important;
+      font-size: 12px !important;
+      text-align: center !important;
+      font-variant-numeric: tabular-nums !important;
+    }
+    @media (max-width: 1100px) {
+      html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory:not(#_):not(#_) {
+        grid-template-columns: minmax(0, 1fr) auto !important;
+        grid-template-rows: auto auto auto auto auto minmax(0, 1fr) !important;
+        grid-template-areas: "tabs info" "results results" "currencies currencies" "tools tools" "chips chips" "panel panel" !important;
+      }
+      html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory > .inventory-results:not(#_) { justify-self: start !important; }
+      html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-item-grid:not(#_) { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)) !important; }
+    }
+    @media (max-width: 720px) {
+      html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory > .inventory-currencies:not(#_) { grid-template-columns: minmax(0, 1fr) !important; }
+      html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory > .inventory-tools:not(#_) { grid-template-columns: minmax(0, 1fr) minmax(120px, .8fr) !important; }
+      html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-tools > label.inventory-search { grid-column: 1 / -1 !important; }
+      html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-tools .inventory-sort-filter { grid-column: 2 !important; }
+      html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-tools > [data-inventory-clear] { grid-column: 1 / -1 !important; }
+      html[data-menu-workspace] body #app .sanctuary-shell .ref-inventory .inventory-tabs button { padding-inline: 10px !important; font-size: 11px !important; }
+      html[data-menu-workspace] body dialog.information-modal.inventory-inspection[open] {
+        height: min(720px, calc(100dvh - 24px)) !important;
+        max-height: calc(100dvh - 24px) !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-rows: minmax(150px, .7fr) minmax(0, 1fr) auto !important;
+        padding: 12px !important;
+      }
+      html[data-menu-workspace] body dialog.information-modal.inventory-inspection > .drawer-heading { left: 16px !important; top: 12px !important; }
+      html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-art {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+        margin: 50px 0 8px !important;
+        border-right: 0 !important;
+        border-bottom: 1px solid var(--reference-line) !important;
+      }
+      html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-art :is(img, .conduit-icon-frame, .master-conduit-icon, .mechanical-component-icon) {
+        width: min(100%, 150px) !important;
+        height: min(100%, 150px) !important;
+      }
+      html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-details {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
+        padding: 8px 4px !important;
+      }
+      html[data-menu-workspace] body dialog.information-modal.inventory-inspection .inventory-inspection-nav {
+        grid-column: 1 !important;
+        grid-row: 3 !important;
+        margin: 0 !important;
+      }
+    }
   }
 }

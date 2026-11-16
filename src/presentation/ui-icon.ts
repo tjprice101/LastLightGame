@@ -2,6 +2,8 @@ const shapes = {
   menu: '<path d="M4 8h16M4 16h16"/>',
   settings: '<path d="M3 6h6M13 6h8M3 12h10M17 12h4M3 18h3M10 18h11"/><circle cx="11" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="8" cy="18" r="2"/>',
   close: '<path d="m6 6 12 12M18 6 6 18"/>',
+  refresh: '<path d="M20 6v5h-5M20 11a8 8 0 1 0 1 4"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/>',
   back: '<path d="m10 5-7 7 7 7M3 12h18"/>',
   home: '<path d="m3 11 9-8 9 8M6 9v12h12V9M10 21v-7h4v7"/>',
   character: '<circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3"/>',

@@ -8,3 +8,6 @@ __pycache__/
 .env.*
 !.env.example
 .ui-check/
+
+# Local-only UI mock-ups (never publish)
+last-light-menu-mockup.html

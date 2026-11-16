@@ -1,5 +1,35 @@
 # Current state and handoff
 
+## Inventory holdings and item inspection (2026-11-15; local-only)
+
+**Implemented (D-459):** Inventory now presents currency balances, separate
+Resources & Items / Conduits tabs, search, type/rarity/element filters, sorting
+and paginated holdings grids. Cards retain artwork and exact counts, show
+equipped Conduits and preserve chest actions. Inspectable items open a shared
+two-column dialog with their art, exact details, concise effect/usage text and
+previous/next browsing through the active tab's filtered results. No account
+or gameplay state changes. See the [menu contract](menus-and-inventory.md#inventory-holdings-and-item-inspection-d-459-2026-11-15-local-only).
+
+**Verified:**
+
+- `npx vitest run src/presentation/inventory.test.ts src/presentation/hub.test.ts src/presentation/menu-pagination.test.ts`: **64 passed**.
+- `npx tsc --noEmit`: passed.
+- `npm run build`: passed; Vite reported the existing large-chunk advisory.
+- Isolated browser workspace at 1600x900: no document overflow; item detail
+  navigation advanced from `1 / 65` to `2 / 65`; all six material rarity
+  filters were present. The browser stayed at 1600x900, so 1280x720 was not
+  verified. The workspace's audio request was aborted during navigation.
+
+**Also included:** monthly rewards/mailbox panel polish (progress bar, Today
+marker, clearer reward cells, new `refresh`/`mail` UI icons) and Loadouts
+library polish (intro text, empty state, name placeholder, preserved sidebar
+scroll). Presentation only; no account, reward or economy changes.
+
+**Publication:** owner approved commit and push on 2026-11-15 (client-only;
+no authority deploy needed). The standalone `last-light-menu-mockup.html` is
+git-ignored and the uncommitted mock-up notes in
+`docs/Future Plans/living-world-ui-audit-plan.md` remain local, unstaged.
+
 ## Viewer, Conduit dragging and Market refinements (2026-11-15)
 
 **Implemented (D-458):** contained Level/Evolve portraits, full-width exact

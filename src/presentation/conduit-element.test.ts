@@ -108,7 +108,8 @@ describe('Omnic element presentation (D-403)', () => {
         expect(card.querySelector(':scope strong.conduit-element-label')).not.toBeNull();
         if (card.hasAttribute('data-inventory-conduit')) {
           expect(card.querySelector(':scope > .info-catalog')).not.toBeNull();
-          expect(card.querySelector(':scope > .info-catalog .info-effects')).not.toBeNull();
+          const inspection = card.querySelector<HTMLTemplateElement>(':scope > template[data-inventory-inspection-template]');
+          expect(inspection?.content.querySelector('.inventory-inspection-description')?.textContent?.trim()).toBeTruthy();
           expect(card.querySelector('.conduit-identity-badges .conduit-rarity')).not.toBeNull();
         }
       }

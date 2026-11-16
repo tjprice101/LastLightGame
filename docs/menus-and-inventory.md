@@ -1,5 +1,25 @@
 # Menus and inventory
 
+## Inventory holdings and item inspection (D-459, 2026-11-15; local-only)
+
+Inventory uses a compact holdings view with three currency balances, Resources
+& Items and Conduits tabs, searchable holdings, type/rarity/element filters,
+sorting, and paginated item grids. Resource pages show 24 entries and Conduit
+pages show 32. Item cards retain exact owned counts and artwork; equipped
+Conduits are marked. Chest-opening actions remain available on chest cards.
+
+Inspecting a material, component, Conduit or Master opens one two-column
+in-game dialog with its artwork, exact holdings and applicable rarity, level
+and equipment details, plain-English usage/effects, and previous/next browsing
+within the active tab's filtered results. Browsing does not modify holdings.
+Missing art remains an honest pending label; no art, account data, economy or
+combat rules change.
+
+Validation covers Inventory, pagination and related hub tests, type-checking
+and the production build. The isolated browser check at 1600x900 verified
+zero page overflow, item navigation and all six material rarity filters.
+1280x720 was not available in that browser session.
+
 ## Viewer, equipment and Market refinements (D-458)
 
 - Level/Evolve portraits contain the complete installed image in a bounded

@@ -90,7 +90,9 @@ describe('Conduit Upgrade and account-aware icons', () => {
       expect(html).toContain('data-conduit-upgrade="5"');
       const host = document.createElement('div');
       host.innerHTML = html;
-      expect(host.textContent?.replace(/[[\]]/g, '')).toContain(effectText(getConduit('worldbreaker-drive'), 5));
+      // Inventory keeps effects in its item-inspection templates (D-459), so include template content.
+      const text = [host.textContent, ...Array.from(host.querySelectorAll('template'), template => template.content.textContent)].join(' ');
+      expect(text.replace(/[[\]]/g, '')).toContain(effectText(getConduit('worldbreaker-drive'), 5));
     }
     expect(conduitStore(equipped)).toContain(readableEffect(conduitEffect(getConduit('vigil-core'), 3)));
     expect(homeHub(getStarter('ember'), false, equipped)).toContain(formatStat(resolveFighter('ember',

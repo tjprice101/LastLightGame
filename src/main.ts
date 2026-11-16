@@ -2428,6 +2428,7 @@ app.addEventListener('click', async event => {
     if (journey.screen === 'menu' && menuPage === previousPage && teamView === previousView) {
       const scroll = window.scrollY;
       const loadoutScroll = app.querySelector('.saved-loadout-scroll')?.scrollTop ?? 0;
+      const loadoutLibraryScroll = app.querySelector('.saved-loadout-sidebar')?.scrollTop ?? 0;
       if ('character' in operation) refreshLoadout(operation.character);
       else renderMenu();
       if (!('character' in operation) && app.querySelector('[data-saved-loadouts]')) {
@@ -2436,6 +2437,8 @@ app.addEventListener('click', async event => {
       window.scrollTo({ top: scroll });
       const loadoutList = app.querySelector('.saved-loadout-scroll');
       if (loadoutList) loadoutList.scrollTop = loadoutScroll;
+      const loadoutLibrary = app.querySelector('.saved-loadout-sidebar');
+      if (loadoutLibrary) loadoutLibrary.scrollTop = loadoutLibraryScroll;
       const entry = 'character' in operation
         ? app.querySelector<HTMLElement>(`[data-config-character="${operation.character}"][data-config-index="${operation.index}"]`)
         : app.querySelector<HTMLElement>(`[data-saved-id="${operation.kind === 'deleteSquadLoadout' ? '' : operation.id}"]`);

@@ -1,5 +1,14 @@
 # Decision log
 
+## Inventory holdings and item inspection (D-459, 2026-11-15)
+
+The owner requests a redesign of Inventory and its item-inspection view.
+Use compact holdings cards with actual artwork and counts, preserve current
+balances and chest actions, and provide item details in a shared navigable
+in-game dialog. Search, filters and sorting are presentation-only; browsing
+must not change account data, mechanics, prices or rewards. The owner did not
+request publication or deployment.
+
 ## Viewer, drag-and-drop equipment and Market cleanup (D-458, 2026-11-15)
 
 The owner requests better character artwork containment and wording, stable
