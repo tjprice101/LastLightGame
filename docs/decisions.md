@@ -1,5 +1,14 @@
 # Decision log
 
+## Slim AGENTS.md (D-460, 2026-11-15)
+
+The owner asks for AGENTS.md to keep only current rules, with history in this log.
+Per-decision detail (D-0xx to D-4xx) was already moved out earlier on 2026-11-15.
+This pass compressed the owner-guidance section without dropping any behavior, and
+moved the "Open work" list to the Future Plans register (new row "Radiant
+follow-through leftovers"; vendor portraits and economy review keep their rows).
+No rule, contract or terminology changed. No publication or deployment was requested.
+
 ## Inventory holdings and item inspection (D-459, 2026-11-15)
 
 The owner requests a redesign of Inventory and its item-inspection view.

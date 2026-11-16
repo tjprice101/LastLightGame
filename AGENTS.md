@@ -1,20 +1,16 @@
 # Last Light: AI agent entry point
 
-## Mandatory: guide the owner for efficient Claude Code use (2026-11-15)
+## Mandatory: cost-aware guidance for the owner
 
-The owner is new to Claude Code and wants active, cost-aware guidance in
-every session. This is a required step, not optional advice:
-- Before starting substantial work, briefly recommend the model (Sonnet for
-  routine UI/docs/git/small fixes; Opus for combat/balance/server authority,
-  large refactors or stubborn bugs) and Plan mode for big or risky changes.
-- Flag anything costly before doing it (multi-agent workflows, ultra/max
-  reviews, very broad searches) and offer a cheaper path.
-- Before risky or outward-facing steps, explain the choices in plain language
-  with a recommendation and let the owner decide.
-- End each completed task with a short "next steps" note: what to verify in
-  game, whether to `/clear` before the next task, which model fits the next
-  likely task, and suggested next work from the handoff.
-- Keep this guidance concise; do not repeat basics the owner already uses.
+The owner is new to Claude Code. Every session:
+- Before substantial work, recommend the model (Sonnet: UI/docs/git/small fixes;
+  Opus: combat/balance/server authority, large refactors, stubborn bugs) and Plan mode
+  for big or risky changes.
+- Flag costly steps (multi-agent workflows, ultra/max reviews, broad searches) and offer
+  a cheaper path. Before risky or outward-facing steps, explain the options in plain
+  language with a recommendation and let the owner decide.
+- End each completed task with a short next-steps note: what to verify in game, whether
+  to `/clear`, which model fits next, suggested next work from the handoff. Stay concise.
 
 Original browser gacha game (TypeScript, Phaser 3, Vite, Vitest; accessible HTML
 menus over the canvas). Inspired by Brave Frontier; never copy its content.
@@ -24,8 +20,7 @@ Read first: [docs index](docs/README.md), [handoff](docs/handoff.md) (top entrie
 current state), [game vision](docs/game-vision.md), [decisions](docs/decisions.md),
 then the system doc for the task. For art: [art workflow](docs/art-workflow.md) and
 [prompt guide](Art/guides/midjourney-character-style-prompt.md).
-Older per-decision detail (D-0xx to D-4xx) was trimmed from this file on 2026-11-15;
-it lives in docs/decisions.md, the system docs and git history of this file.
+Per-decision history lives in docs/decisions.md (see D-460), the system docs and git.
 
 ## Standing rules
 
@@ -39,10 +34,6 @@ it lives in docs/decisions.md, the system docs and git history of this file.
   battle ops are rejected server-side. Never reintroduce a preview/demo gate or route
   battles to the legacy engine. `VITE_RADIANT_STUDY_UI` and `RADIANT_STUDY_ENABLED` are
   obsolete; dispatch still needs `RADIANT_STUDY_SECRET` (never print/commit it).
-- **Open work:** economy review, desktop GPU/cadence check, pending icon art, removing
-  dead legacy battle code, six vendor portraits (prompts ready; neutral tiles meanwhile;
-  see Art/ui/Combat Overhaul.md: three women/three men aged 18-25, glamorous hard-light
-  couture, tasteful refined hand-drawn anime).
 - **Deploy.** Server changes: `node tools\bundle_server_game.mjs` then
   `npx --yes supabase@3.0.0 functions deploy game-operation --use-api
   --remote=ohtfgwomdfteaxubndww --yes` (`--yes` only after owner approval), matching the
@@ -55,7 +46,8 @@ it lives in docs/decisions.md, the system docs and git history of this file.
   `ui-design-lab*`, `src/radiant-ui.test.ts`) or the uncommitted mock-up notes in
   `docs/Future Plans/living-world-ui-audit-plan.md` and lower docs sections.
 - **Unfinished work** lives only in [Future Plans](docs/Future%20Plans/README.md)
-  (plans, deferred ideas, resume gates, art/Midjourney budget). Never recreate
+  (plans, deferred ideas, resume gates, art/Midjourney budget, and the open Radiant
+  follow-through: economy review, GPU check, icon art, legacy code, vendor portraits). Never recreate
   competing documents. Filing does not authorize paused Story, event launch or spending.
 - Separate confirmed requirements, proposed designs, open questions and implemented
   behavior; a proposal is not owner approval. Never invent commands, results,
