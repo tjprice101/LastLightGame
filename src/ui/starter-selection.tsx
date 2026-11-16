@@ -1,9 +1,10 @@
-import { useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { availableStarters, type StarterId } from '../content/starters';
 import { characterName } from '../content/character-art';
 import { portraitAttributes, characterFacing } from '../presentation/portrait';
 import { characterRating } from '../presentation/character-rating';
 import { elementalReveal } from '../presentation/reveal';
+import { lusterSheen, staggerIn } from '../presentation/luster';
 import { Button, Icon } from './components';
 import '../styles/starter-selection.css';
 
@@ -19,6 +20,13 @@ export function StarterSelection({ initialSelected, onSelect, onBegin, onPlayerI
   const [selected, setSelected] = useState(() => availableStarters.find(starter => starter.id === initialSelected));
   const [busy, setBusy] = useState(false);
   const [revealed, setRevealed] = useState(false);
+  const grid = useRef<HTMLDivElement>(null);
+  const detail = useRef<HTMLElement>(null);
+
+  // Cards cascade in once on mount (D-463); a no-op under Reduce motion.
+  useEffect(() => (grid.current ? staggerIn(grid.current, '.ll-starter-card', { stepMs: 90, durationMs: 460 }) : undefined), []);
+  // One gold sheen over the detail panel when the player picks a starter (never on restore, busy or failure).
+  useEffect(() => (revealed && detail.current ? lusterSheen(detail.current, 900) : undefined), [revealed, selected?.id]);
 
   return <section className="ll-ui ll-starter-selection" aria-busy={busy}>
     <header className="ll-starter-heading">
@@ -30,7 +38,7 @@ export function StarterSelection({ initialSelected, onSelect, onBegin, onPlayerI
     <div className="ll-starter-layout">
       <div className="ll-starter-choices">
         <div className="ll-starter-shared-rating" dangerouslySetInnerHTML={{ __html: characterRating('ember') }} />
-        <div className="ll-starter-grid" role="group" aria-label="Starter Element-Bearers">
+        <div ref={grid} className="ll-starter-grid" role="group" aria-label="Starter Element-Bearers">
           {availableStarters.map(starter => {
             const active = selected?.id === starter.id;
             const facing = characterFacing(starter.id);
@@ -59,7 +67,7 @@ export function StarterSelection({ initialSelected, onSelect, onBegin, onPlayerI
         </div>
         <p className="ll-starter-note">Lv.0 starters. Your choice becomes your squad leader.</p>
       </div>
-      <aside className="ll-starter-detail" style={{ '--element': selected?.color ?? '#c9c9ce' } as CSSProperties}>
+      <aside ref={detail} className="ll-starter-detail" style={{ '--element': selected?.color ?? 'var(--text-muted)' } as CSSProperties}>
         <div aria-live="polite" aria-atomic="true">
           <p className="ll-kicker">{selected ? `${selected.element} · ${selected.role}` : 'Your first light'}</p>
           <h2>{selected ? characterName(selected.id) : 'Select a starter'}</h2>

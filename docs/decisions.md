@@ -1,5 +1,24 @@
 # Decision log
 
+## Title and opening pick re-theme (D-463, 2026-11-16)
+
+UI audit session 3 (audit plan §7.1 / §7.2) applies D-461 to the title and the
+opening Element-Bearer pick. Presentation only; no behavior, copy, save or
+server change.
+
+- **Selected rule:** `bubble-ui.css` (live, `!important`) owned the silver-pearl
+  primary buttons and starter cards, so the gold treatment lives there: every
+  `.ll-button--primary` is `--gild-fill` on `--gild-ink`; starter cards/detail
+  use `--glass-*`, `--gild-line` borders and `--radius-lg`, with element colour
+  kept as the accent. Selected stays shape + text ("Selected" pill, gold frame).
+- **Motion:** title identity and controls stagger in once, wordmark gets one
+  sheen; starter cards cascade once on mount and the detail panel sheens when
+  the player picks a starter (not on restore, busy or failure). All via
+  `luster.ts`, static under Reduce motion. The existing ambient card bob stays.
+- **Open (pre-existing, not changed):** `menu-workspace.css` sets
+  `body { min-width: 960px }` on every screen, so these screens do not reflow at
+  390px portrait (the layout scales). Needs an owner decision before any fix.
+
 ## Saved battle results hierarchy and choreography (D-462, 2026-11-16)
 
 UI audit session 2 (owner-approved plan, audit plan §7.18 / Phase 7) applies

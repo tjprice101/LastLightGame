@@ -1,5 +1,17 @@
 # Menus and inventory
 
+## Title and opening pick (D-463, 2026-11-16)
+
+- Title: gold emblem/rule, white "LAST" and gold "LIGHT", one soft glow behind
+  the wordmark; primary Sign-in is gold, Play Offline is a glass button with a
+  gold line. Identity and controls stagger in once; the wordmark sheens once.
+- Starter pick: jewel glass cards with gold frames; selected card gets a gold
+  frame, element glow and a gold "Selected" pill; "Begin your journey" is gold.
+  Cards cascade in once; the detail panel sheens on a player pick only.
+- Reduce motion: static composed state, no stagger/sheen/bob. All ids, focus
+  behavior, 44px targets and portrait DOM preservation are unchanged.
+
+
 ## Saved battle results and Detailed Loot (D-462, 2026-11-16)
 
 - **Results sheet (`battle-outcome.ts` `radiantResultsMarkup`):** eyebrow

@@ -93,6 +93,11 @@ describe('React opening screens', () => {
     expect(host.textContent).not.toContain('save data');
     expect(host.querySelector('input[type=file]')).toBeNull();
   });
+  it('plays one finite title entrance and none under Reduce motion (D-463)', async () => {
+    await render(<TitleScreen onOffline={vi.fn()} onOnline={vi.fn()} />);
+    expect(host.querySelectorAll('.luster-stagger-item').length).toBeGreaterThan(2);
+    expect(host.querySelector('.ll-title-name .luster-sheen')).not.toBeNull();
+  });
   it('saves and exports current progress, with explicit error reporting before a starter exists', async () => {
     await render(<OfflineSavePanel onChanged={vi.fn()} />);
     await click('Save');

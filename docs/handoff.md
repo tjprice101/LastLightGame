@@ -1,5 +1,30 @@
 # Current state and handoff
 
+## Title and opening pick, UI audit session 3 (2026-11-16)
+
+**Implemented (D-463; owner approved push 2026-11-16):** title and starter
+pick re-themed with Jewel & Gold tokens; shared primary buttons and starter
+cards restyled in `bubble-ui.css` (which had overridden `ui.css` with silver
+pearl); `staggerIn`/`lusterSheen` entrances in `title-screen.tsx` and
+`starter-selection.tsx`. Presentation only; no server deploy.
+See the [menu contract](menus-and-inventory.md#title-and-opening-pick-d-463-2026-11-16).
+
+**Verified:**
+
+- `npx vitest run src/ui src/presentation/luster.test.ts src/presentation/reference-ui.test.ts`: 100 passed (2 new tests).
+- Full `npx vitest run`: 10,474 passed; one first-run file failure was a Vite module-resolve error, and the rerun reported no failures.
+- `npx tsc --noEmit`: passed. `npm run build`: passed (existing chunk advisory).
+- Headless Chrome (dev server, no account) at 1280x720, 1600x900: title and
+  starter frames at several times, no overflow, picks keep the same portrait
+  `<img>`, Begin visible, 44px+ targets, no leftover effect nodes.
+- **Not verified:** the sign-in dialog; Reduce motion was applied after mount,
+  so only jsdom covers the true no-motion mount; 390px portrait is limited by
+  the pre-existing 960px `body` min-width (identical before this change).
+
+**Next:** Session 4:
+Summon hub, banner showcase and reveal (Opus).
+
+
 ## Battle results and Detailed Loot, UI audit session 2 (2026-11-16)
 
 **Implemented (D-462):** the live Radiant results sheet is reorganized as

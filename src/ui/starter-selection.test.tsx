@@ -57,6 +57,24 @@ describe('Organized opening starter selection', () => {
     expect(host.querySelectorAll('.element-reveal')).toHaveLength(1);
   });
 
+  it('cascades the cards on mount, sheens only on a player pick, and stays static under Reduce motion (D-463)', async () => {
+    const callbacks = props();
+    await act(async () => root.render(<StarterSelection {...callbacks} initialSelected="ember" />));
+    expect(host.querySelectorAll('.ll-starter-card.luster-stagger-item')).toHaveLength(3);
+    expect(host.querySelector('.luster-sheen')).toBeNull();
+    await act(async () => host.querySelector<HTMLButtonElement>('[data-starter="tide"]')!.click());
+    expect(host.querySelector('.ll-starter-detail .luster-sheen')?.getAttribute('aria-hidden')).toBe('true');
+    await act(async () => root.unmount());
+    root = createRoot(host);
+    document.documentElement.dataset.motion = 'reduced';
+    try {
+      await act(async () => root.render(<StarterSelection {...callbacks} />));
+      await act(async () => host.querySelector<HTMLButtonElement>('[data-starter="tide"]')!.click());
+      expect(host.querySelector('.luster-stagger-item')).toBeNull();
+      expect(host.querySelector('.luster-sheen')).toBeNull();
+    } finally { delete document.documentElement.dataset.motion; }
+  });
+
   it('restores the selected starter after Player info and invokes its navigation callback', async () => {
     const callbacks = props();
     await act(async () => root.render(<StarterSelection {...callbacks} initialSelected="ember" />));
