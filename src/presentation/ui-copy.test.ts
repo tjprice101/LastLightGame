@@ -206,7 +206,7 @@ describe('visible UI copy', () => {
     expect(summon).not.toContain('Drop rates');
     expect(summon).toContain('Rates & Information');
     expect(summon).toContain('Pity guarantees');
-    expect(summon).toContain('Cost 10');
+    expect(summon).toContain('<dt>Per draw</dt><dd><span><strong>10</strong> Null-Prismatica');
     expect(primary(sanctuaryHeader('inventory', 10000, 100))).not.toContain('Prelude 0.1');
     expect(primary(sanctuaryHeader('inventory', 10000, 100))).not.toContain('Each Adventure entry starts a new run.');
     expect(account).toEqual(before);

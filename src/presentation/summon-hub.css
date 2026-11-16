@@ -1,0 +1,132 @@
+/*
+ * Summon hub, Jewel & Gold (UI audit session 4, D-464). Skin only: the column layout,
+ * breakpoints and scroll containment stay owned by reference-layout.css and
+ * menu-reference-rollout.css. `!important` rules sit in the same menu-reference layer
+ * (layered `!important` beats unlayered) and `:not(#_)` raises specificity above the
+ * rollout's skin rules without touching their geometry.
+ */
+@layer menu-reference {
+  /* Working surfaces: jewel glass with a thin gilded edge. */
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) :is(.ref-summon-left > .ref-panel, .ref-summon-hero, .summon-featured, .ref-summon-draw) {
+    border-color: var(--gild-line) !important;
+    background: var(--glass-panel) !important;
+    box-shadow: var(--shadow-panel) !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) :is(.ref-summon-left h3, .summon-command h3) {
+    color: var(--text-primary) !important;
+    letter-spacing: .04em;
+  }
+  /* Banner list: the selected banner wears the gold frame; text stays neutral. */
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) .summon-banner-navigation button[aria-current="page"] {
+    border-color: var(--gild-mid) !important;
+    background: linear-gradient(180deg, #e0b45a2e, #8a5a1f1f) !important;
+    color: var(--text-primary) !important;
+    box-shadow: var(--glow-gild), var(--gild-inner) !important;
+  }
+  /* Pity: gold fill on a deep inset track; the count is tabular. */
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) .summon-pity-progress dd {
+    color: var(--text-primary) !important;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Banner hero: the authored artwork owns the colour; gold only frames it. */
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) .ref-summon-hero {
+    border: 1px solid transparent !important;
+    background: linear-gradient(var(--surface-inset), var(--surface-inset)) padding-box, var(--gild-frame) border-box !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) .summon-banner-art { border-radius: inherit !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) .ref-summon-overlay {
+    background: linear-gradient(transparent, #080a20e6 52%) !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) .ref-summon-overlay h2 {
+    color: var(--text-primary) !important;
+    text-shadow: 0 2px 12px #04051499;
+  }
+  /* Featured tiers: 6-star prismatic and 5-star gold edges; the star is the tier mark. */
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) .summon-featured-tier h3 { color: var(--gild-light) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) [data-featured-tier="6"] h3 {
+    background: var(--summon-prism) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) [data-featured-tier="6"] h3 > * { color: inherit !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) .summon-featured-art {
+    border: 1px solid transparent !important;
+    border-radius: var(--radius-sm) !important;
+    background: linear-gradient(var(--surface-inset), var(--surface-inset)) padding-box, var(--gild-frame) border-box !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) [data-featured-tier="6"] .summon-featured-art {
+    background: linear-gradient(var(--surface-inset), var(--surface-inset)) padding-box, var(--summon-prism) border-box !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) .summon-featured-name { color: var(--text-secondary) !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) .summon-featured-owned {
+    background: var(--gild-fill) !important;
+    color: var(--gild-ink) !important;
+    box-shadow: 0 0 0 1px var(--gild-deep);
+  }
+  /* Draw panel: owned balance and per-draw cost as a short list, then the actions. */
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) .summon-command {
+    gap: 12px !important;
+    padding: 16px !important;
+    border: 1px solid var(--gild-line) !important;
+    border-radius: var(--radius-md) !important;
+    background: var(--glass-raised) !important;
+    box-shadow: var(--gild-inner) !important;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) .summon-command h3 { margin: 0 !important; }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) .summon-command :is(#summon-character, #summon-ten) {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: 56px !important;
+    padding: 8px 14px !important;
+    white-space: normal !important;
+    line-height: 1.2 !important;
+    text-align: center;
+  }
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) #banner-cost-note:not([hidden]) {
+    margin: 0 !important;
+    font-size: .85rem !important;
+    line-height: 1.4 !important;
+    color: var(--text-secondary) !important;
+  }
+  /* Timed-event status in the banner column (informational only; draw blockers sit by the action). */
+  html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) .summon-event-status {
+    margin: 4px 0 0 !important;
+    font-size: var(--ui-caption, 12px) !important;
+    line-height: 1.4 !important;
+    color: var(--text-secondary) !important;
+  }
+}
+
+/* Unlayered: plain rules beat layered menu-reference normals. */html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) {
+  --summon-prism: conic-gradient(from 210deg, #ff9ad8, #ffe69a, #9effc4, #9ee9ff, #c9a8ff, #ff9ad8);
+}
+html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) :is(.summon-pity-progress meter, .summon-affordability) {
+  accent-color: var(--gild-mid);
+}
+html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) :is(.summon-pity-progress meter, .summon-affordability)::-webkit-meter-bar {
+  background: var(--surface-inset);
+  border: 1px solid var(--gild-line);
+  border-radius: var(--radius-pill);
+}
+html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) :is(.summon-pity-progress meter, .summon-affordability)::-webkit-meter-optimum-value {
+  background: var(--gild-fill);
+  border-radius: var(--radius-pill);
+}
+html[data-menu-workspace] .sanctuary-shell .ref-summon:not(#_) :is(.summon-pity-progress meter, .summon-affordability)::-moz-meter-bar {
+  background: var(--gild-fill);
+}
+.summon-wallet { display: grid; gap: 6px; margin: 0; }
+.summon-wallet > div { display: grid; gap: 2px; min-width: 0; }
+.summon-wallet dt { color: var(--text-secondary); font-size: var(--ui-caption, 12px); letter-spacing: .04em; text-transform: uppercase; }
+.summon-wallet dd { display: flex; align-items: center; gap: 6px; min-width: 0; margin: 0; color: var(--text-primary); }
+.summon-wallet dd > span { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: .35em; min-width: 0; }
+.summon-wallet strong { font-size: 1.05rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.summon-wallet dd > span { font-size: .85rem; color: var(--text-secondary); }
+.summon-wallet dd > span > strong { color: var(--text-primary); }
+.summon-wallet .currency-icon { width: 28px; height: 28px; flex: 0 0 28px; }
+.summon-action-label { font-size: 1rem; font-weight: 700; }
+.summon-action-cost { font-size: .8rem; font-weight: 600; opacity: .85; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }

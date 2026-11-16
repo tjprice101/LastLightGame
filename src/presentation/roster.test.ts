@@ -66,6 +66,26 @@ describe('roster, squad and summon screens', () => {
       .toContain('Summon · 10 Null-Prismatica');
     expect(html).not.toContain('NEW ELEMENT-BEARER · SAVED');
   });
+  it('lists the owned balance and per-draw cost and explains a blocked 10-Pull beside the action (D-464)', () => {
+    const html = summonHub({ ...account, lycalis: 1234567 });
+    expect(html).toContain('<dl class="summon-wallet">');
+    expect(html).toContain('<dt>Owned</dt>');
+    expect(html).toContain('<strong>1234567</strong> Null-Prismatica');
+    expect(html).toContain('<dt>Per draw</dt><dd><span><strong>10</strong> Null-Prismatica');
+    expect(html).toContain('aria-label="Summon 10-Pull · 100 Null-Prismatica"');
+    expect(html).toMatch(/id="banner-cost-note" class="quiet" hidden>/);
+    const short = summonHub({ ...account, lycalis: 50 });
+    expect(short).not.toMatch(/id="summon-character"[^>]*disabled/);
+    expect(short).toMatch(/id="summon-ten"[^>]*disabled/);
+    expect(short).toContain('A 10-Pull needs 100 Null-Prismatica.');
+    expect(short).not.toMatch(/id="banner-cost-note" class="quiet" hidden/);
+  });
+  it('keeps a draw blocker beside the action instead of repeating it in the banner column (D-464)', () => {
+    const html = summonHub(account, 'roses', { online: false, now: Date.UTC(2026, 10, 16) });
+    const left = html.slice(html.indexOf('<aside class="ref-summon-left">'), html.indexOf('<div class="ref-summon-main">'));
+    expect(left).not.toContain('summon-event-status');
+    expect(html).toMatch(/id="banner-cost-note" class="quiet" >Sign in online/);
+  });
   it('places one summon action beside its cost and gives the artwork and real rates their own main panel', () => {
     const html = summonHub(account);
     expect(html.match(/id="summon-character"/g)).toHaveLength(1);

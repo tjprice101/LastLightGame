@@ -1,5 +1,26 @@
 # Decision log
 
+## Summon hub and reveal re-theme (D-464, 2026-11-16)
+
+UI audit session 4 (audit plan §7.15 / §7.16, Phase 7) applies D-461 to the
+Summon hub and to summon reveals. Presentation only; costs, odds, pity, rolls,
+receipts and save ordering are unchanged. No server change.
+
+- **Scope (owner choice):** the reveal re-theme and wave apply to summon
+  receipts only. Other reward screens keep their treatment until their own
+  sessions.
+- **Selected rule:** one controlled effect budget for a 10-pull. Cards land in
+  order and only star-tier hits (anticipation) and bonus Conduits burst, in
+  their awarded rarity. Skip and Reduce motion show the final grid at once.
+- **Hierarchy:** the draw panel reads Owned → Per draw → actions with exact
+  costs. The reason a draw is unavailable sits beside the actions, not repeated
+  in the banner column.
+- **Cascade note:** `menu-reference-rollout.css` is in `@layer menu-reference`,
+  and layered `!important` beats unlayered `!important`. New `!important` skin
+  rules therefore go in that layer.
+- **Found:** the Banner Showcase dialog is unreachable (only the unused
+  `homeHub` renders it). Filed under legacy code; not restyled.
+
 ## Title and opening pick re-theme (D-463, 2026-11-16)
 
 UI audit session 3 (audit plan §7.1 / §7.2) applies D-461 to the title and the

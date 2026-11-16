@@ -96,6 +96,7 @@ import { rarities, type Rarity } from './content/rarity';
 import { exchangeCategory, exchangeProduct, exchangeProducts, isExchangeQuantity, eventMaterialWarning, eventMaterialWarningHidden, eventMaterialWarningRequired, hideEventMaterialWarning } from './content/material-exchange';
 import { presentReward } from './presentation/reward-screen';
 import { summonReward, summonTenReward } from './presentation/summon-presentation';
+import { animateSummonHub } from './presentation/summon-hub';
 import { conduitReward } from './presentation/conduit-presentation';
 import { openOnlineAccount as showOnlineAccount } from './presentation/online-account';
 import { onlineStores, onlineProfile, friendProfileScreen, bindProfileEditor, refreshProfileTracking, refreshFriendPresence, type StoreTab, type OnlineProfileDisplay, type SocialDisplay } from './presentation/online-store-profile';
@@ -1090,6 +1091,7 @@ function renderMenu(firstArrival = false): void {
   bindSquadPreview(app, account);
   filterTeamCollection(app, teamQuery);
   bindSummonRates(app);
+  animateSummonHub(app);
   bindConduitUpgrades(app, gameStorage, (updated) => { account = updated; refreshConduitMenu(); }, showError,
     playMode === 'online' ? async (id, expectedLevel) => (await performOnline({ kind: 'upgradeConduit', id, expectedLevel })).account : undefined,
     playMode === 'online' ? async expected => (await performOnline({ kind: 'maxConduit', expected })).account : undefined);

@@ -1,0 +1,80 @@
+/*
+ * Summon reveal, Jewel & Gold (UI audit session 4, D-464). Scoped to summon receipts
+ * (`data-reward-kind="summon"`); Conduit, Master, chest and Calamity reward screens keep
+ * their current treatment. 5-star/6-star tier backdrops (anticipation) are restated in
+ * jewel + light. Gold frames; text stays neutral; each card's edge follows its actual
+ * awarded rarity. `!important` rules live in the menu-reference layer because layered
+ * `!important` (menu-reference-rollout.css) otherwise beats unlayered `!important`.
+ */
+@layer menu-reference {
+  html body dialog.reward-screen[data-reward-kind="summon"] {
+    --summon-prism: conic-gradient(from 210deg, #ff9ad8, #ffe69a, #9effc4, #9ee9ff, #c9a8ff, #ff9ad8);
+    border: 1px solid var(--gild-line) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-panel), var(--glow-gild) !important;
+  }
+  html body dialog.reward-screen[data-reward-kind="summon"]:not([data-reward-tier]) {
+    background: radial-gradient(ellipse at 50% 28%, #2b2470 0%, var(--surface-raised) 42%, var(--surface-base) 100%) !important;
+  }
+  /* Tier backdrops in jewel + light (the leader-theme background-image otherwise hides them). */
+  html body dialog.reward-screen[data-reward-kind="summon"][data-reward-tier="five-star"] {
+    background: radial-gradient(ellipse at 50% 30%, #e0b45a47, transparent 58%), radial-gradient(ellipse at 50% 28%, #2b2470 0%, var(--surface-raised) 45%, var(--surface-base) 100%) !important;
+    border-color: var(--gild-mid) !important;
+  }
+  html body dialog.reward-screen[data-reward-kind="summon"][data-reward-tier="six-star"] {
+    background: radial-gradient(ellipse at 35% 26%, #ff9ad833, transparent 50%), radial-gradient(ellipse at 66% 30%, #9ee9ff2e, transparent 50%), radial-gradient(ellipse at 50% 28%, #2d1450 0%, var(--surface-raised) 48%, var(--surface-base) 100%) !important;
+  }
+}
+
+/* Unlayered: plain rules beat layered menu-reference normals. */
+html body dialog.reward-screen[data-reward-kind="summon"] h2 {
+  margin: 0 0 8px;
+  color: var(--text-primary);
+  letter-spacing: .02em;
+}
+html body dialog.reward-screen[data-reward-kind="summon"] .reward-animation-label {
+  display: inline-block;
+  margin: 10px auto;
+  padding: 4px 14px;
+  border: 1px solid var(--gild-line);
+  border-radius: var(--radius-pill);
+  background: var(--glass-panel);
+  color: var(--text-primary);
+}
+html body dialog.reward-screen[data-reward-kind="summon"] .reward-details {
+  border-color: var(--gild-line);
+  border-radius: var(--radius-md);
+  background: var(--glass-panel);
+}
+html body dialog.reward-screen[data-reward-kind="summon"] .game-dialog-actions { border-top-color: var(--gild-line); }
+
+/* 10-pull grid: compact enough that the receipt and Continue stay in view at 720px. */
+html body dialog.reward-screen[data-reward-kind="summon"][data-reward-revealed]:has(.summon-ten-grid) .reward-stage { min-height: 0; }
+html body dialog.reward-screen[data-reward-kind="summon"] .summon-ten-grid { gap: 8px; }
+html body dialog.reward-screen[data-reward-kind="summon"] .summon-ten-result {
+  position: relative;
+  gap: 2px;
+  padding: 6px;
+  border: 1px solid color-mix(in srgb, var(--rarity-color, var(--gild-mid)) 55%, transparent);
+  border-radius: var(--radius-md);
+  background: var(--glass-panel);
+  box-shadow: var(--gild-inner);
+}
+html body dialog.reward-screen[data-reward-kind="summon"] .summon-ten-art { height: clamp(52px, 10dvh, 104px); }
+html body dialog.reward-screen[data-reward-kind="summon"] .summon-ten-result b { color: var(--text-primary); }
+html body dialog.reward-screen[data-reward-kind="summon"] .summon-ten-result small { color: var(--text-secondary); opacity: 1; }
+html body dialog.reward-screen[data-reward-kind="summon"] .summon-ten-result[data-rarity="Rare"] { box-shadow: var(--gild-inner), var(--glow-rarity-rare); }
+html body dialog.reward-screen[data-reward-kind="summon"] .summon-ten-result[data-rarity="Epic"] { box-shadow: var(--gild-inner), var(--glow-rarity-epic); }
+html body dialog.reward-screen[data-reward-kind="summon"] .summon-ten-result[data-rarity="Legendary"] { box-shadow: var(--gild-inner), var(--glow-rarity-legendary); }
+
+/* Star-tier hits (anticipation) get the brightest frames; bonus Conduits a gold one. */
+html body dialog.reward-screen[data-reward-kind="summon"] .summon-ten-result:is(.is-five-star, .has-bonus) {
+  border-color: transparent;
+  background: linear-gradient(#2b2470e6, #1a1440e6) padding-box, var(--gild-frame) border-box;
+  box-shadow: var(--gild-inner), 0 0 18px #f7e3a14d;
+}
+html body dialog.reward-screen[data-reward-kind="summon"] .summon-ten-result.is-six-star {
+  border-color: transparent;
+  background: linear-gradient(#2b2470e6, #1a1440e6) padding-box, var(--summon-prism) border-box;
+  box-shadow: var(--gild-inner), 0 0 22px #c9a8ff59;
+}

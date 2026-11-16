@@ -17,6 +17,7 @@ import { authoredBannerDuplicateMaterialAmount, bannerMaterialDefinition, banner
 import { rarities, type Rarity } from '../content/rarity';
 import { type CinematicTier } from './bubble-ui';
 import { isNewEventId } from '../content/moon-sunshade-events';
+import './summon-reveal.css';
 
 function summonTier(stars: number): CinematicTier {
   return stars >= 6 ? 'prismatic' : stars === 5 ? 'gold' : 'normal';
@@ -34,10 +35,10 @@ export function summonTenReward(account: SummonResult['account'], draws: readonl
   const rarity = rewards.reduce<Rarity>((best, { reward }) =>
     reward.rarity && rarities.indexOf(reward.rarity) > rarities.indexOf(best) ? reward.rarity : best, 'Common');
   return {
-    tier, rarity,
+    kind: 'summon', tier, rarity,
     cinematic: { kind: 'summon', eyebrow: banner.name, title: '10-Pull', subtitle: `${multiSummonCount} draws`, tier: summonTier(Math.max(...draws.map(drawStars))) },
     title: '10-Pull summoned', name: `${multiSummonCount} results`,
-    art: `<ol class="summon-ten-grid">${rewards.map(({ draw, reward }) => `<li data-rarity="${reward.rarity ?? 'Common'}" class="summon-ten-result${draw.entry.kind === 'character' && !draw.duplicate ? ' is-character' : ''}${summonRevealTier(drawStars(draw)) ? ` is-${summonRevealTier(drawStars(draw))}` : ''}">
+    art: `<ol class="summon-ten-grid">${rewards.map(({ draw, reward }) => `<li data-rarity="${reward.rarity ?? 'Common'}" class="summon-ten-result${draw.entry.kind === 'character' && !draw.duplicate ? ' is-character' : ''}${summonRevealTier(drawStars(draw)) ? ` is-${summonRevealTier(drawStars(draw))}` : ''}${draw.bonusConduit ? ' has-bonus' : ''}">
       <div class="summon-ten-art">${reward.art}</div><b>${escapeDialogText(reward.name)}</b><small>${escapeDialogText(reward.title)}${draw.guarantee !== 'none' ? ' · Pity' : ''}${draw.bonusConduit ? ' · Bonus Conduit' : ''}</small></li>`).join('')}</ol>`,
     accent: '#f4f4f5', animationLabel: 'Revealing your summon results',
     details: `<p>${characters ? `${characters} new Element-Bearer${characters === 1 ? '' : 's'}` : 'No new Element-Bearers'}${bonuses ? ` · ${bonuses} bonus Conduit${bonuses === 1 ? '' : 's'} (not auto-equipped)` : ''}</p>
@@ -91,6 +92,7 @@ export function summonReward(result: SummonResult, bannerId: SummonBannerId): Re
       art: portrait(character, 1), rarity: 'Common', accent: character.color, animationLabel: 'Revealing your summon results',
       details: `${characterRating(character.id, 1)}${elementLabel(character.elementId)}<p>New Element-Bearer · Lv.0 · Evo.1</p>` };
   }
+  reward.kind = 'summon';
   reward.tier = summonRevealTier(drawStars(result));
   reward.cinematic = { kind: 'summon', eyebrow: banner.name, title: 'Summon', subtitle: '1 draw', tier: summonTier(drawStars(result)) };
   reward.details += `<p>${escapeDialogText(banner.name)} · ${banner.cost} Null-Prismatica spent</p>`;

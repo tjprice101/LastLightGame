@@ -1,5 +1,33 @@
 # Menus and inventory
 
+## Summon hub and reveal (D-464, 2026-11-16)
+
+- Hub: jewel glass columns with gold edges (`summon-hub.css`, skin only; layout
+  stays in the reference/rollout CSS). The selected banner wears the gold frame
+  with white text; the hero art has a gold frame; featured tiers use a 6-star
+  prismatic / 5-star gold edge and star mark; pity and affordability meters are
+  gold on a deep track.
+- Draw panel: an Owned / Per draw list with exact Null-Prismatica amounts, then
+  two-line Summon and Summon 10-Pull buttons (action, then exact cost; full
+  label in `aria-label`). They no longer clip at 1280px. When one draw is
+  affordable but a 10-Pull is not, the note says "A 10-Pull needs N
+  Null-Prismatica." Draw blockers (e.g. sign in for a timed event) show only
+  beside the actions; the banner column shows event status only when it is
+  informational (event live, or Archive).
+- Entrance: the banner art sheens and the featured Element-Bearers cascade once
+  per arrival at a banner (entering Summon or the Archive, switching banners).
+  Re-renders of the same banner (after a saved draw, Settings) never replay it.
+- Reveal (summon receipts only, `data-reward-kind="summon"`): Jewel & Gold
+  frame, 5-/6-star tier backdrops restated in jewel + light, cards edged by
+  awarded rarity, gold frame for 5-star hits and bonus Conduits, prismatic for
+  6-star. The 10-pull wave lands cards in order and bursts only star-tier hits
+  and bonus Conduits; the grid is compact so the receipt and Continue fit at
+  720px without scrolling. A 5-star+ single pull gets one sheen on its art.
+- Reduce motion (in-game setting): static final hub and receipt, no effects.
+  Conduit, Master, chest and Calamity reward screens are unchanged.
+- The legacy `bannerShowcase` dialog is reachable only from the unused
+  `homeHub`; it was not restyled (filed as legacy code in Future Plans).
+
 ## Title and opening pick (D-463, 2026-11-16)
 
 - Title: gold emblem/rule, white "LAST" and gold "LIGHT", one soft glow behind

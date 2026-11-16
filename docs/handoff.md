@@ -1,5 +1,43 @@
 # Current state and handoff
 
+## Summon hub and reveal, UI audit session 4 (2026-11-16)
+
+**Implemented (D-464):** Summon hub re-themed with Jewel & Gold (`summon-hub.css`,
+skin only). The draw panel shows an Owned / Per draw list and two-line Summon
+buttons; before this they clipped their text at 1280px. Draw blockers now sit
+only beside the actions; before, the duplicated message spilled over the pity
+panel. Banner art sheens and featured Element-Bearers cascade once per banner
+arrival. Summon reveals only (owner choice) get a Jewel & Gold frame with
+5-/6-star backdrops restored (the leader theme had hidden them) and a 10-pull
+wave: cards land in order, and only star-tier hits and bonus Conduits burst. The
+grid is compact so the receipt fits at 720px. Presentation only; the server
+bundle is unchanged, so no deploy. See the
+[menu contract](menus-and-inventory.md#summon-hub-and-reveal-d-464-2026-11-16).
+
+**Verified:**
+
+- `npx vitest run` (full): 10,485 passed, 1 failed (`ui-copy` expected the old
+  "Cost 10" copy); assertion updated, `ui-copy.test.ts`: 10 passed.
+- Summon groups (`summon-reveal`, `summon-hub`, `roster`, `summon-layout`,
+  `summon-presentation`, `reward-screen`, `rarity-feedback`, `luster`,
+  `banner-showcase`, `reference-ui`, `event-lifecycle`): 152 passed.
+- `npx tsc --noEmit`: passed. `vite build`: passed (existing chunk advisory).
+  `node toolsundle_server_game.mjs`: output unchanged.
+- Headless Chrome, isolated `?workspace=menu` save, 1280x720 and 1600x900: no
+  document overflow, buttons 204x56 with no clipping; entrance plays on arrival
+  and banner switch, not after a saved draw; focus returns to Summon. Real
+  single and 10-pull draws were captured over time. A presentation-only injected
+  10-pull with 6-star, 5-star and bonus cards showed at most 3 overlapping bursts
+  and was clean by 7.5s. In-game Reduce motion: immediate final grid, zero effects.
+- **Not verified:** a real 5-/6-star draw (the injected fixture covered the
+  look); signed-in online draws; 390px portrait (the pre-existing 960px body
+  min-width, D-463 open item).
+
+**Found:** the Banner Showcase dialog is unreachable (only the unused `homeHub`
+renders it); filed under legacy code in Future Plans.
+
+**Next:** owner checks Summon and a 10-pull in game. Session 5 per the audit plan.
+
 ## Title and opening pick, UI audit session 3 (2026-11-16)
 
 **Implemented (D-463; owner approved push 2026-11-16):** title and starter

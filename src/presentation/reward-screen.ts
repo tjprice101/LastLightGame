@@ -3,6 +3,7 @@ import { rarityFeedback, clearRarityFeedback, rarityMotionReduced } from './rari
 import { type Rarity, rarityColors, isRarity } from '../content/rarity';
 import { bubbleMotionAllowed, celebrate, cinematic, rarityPalette, type CinematicSpec } from './bubble-ui';
 import { catalogInformation, type CatalogInformation } from './information-layout';
+import { lusterSheen, staggerIn } from './luster';
 
 export interface RewardPresentation {
   title: string;
@@ -21,7 +22,13 @@ export interface RewardPresentation {
   cinematic?: CinematicSpec;
   /** D-433 celebratory pop-up shown after the receipt is dismissed. */
   celebration?: string;
+  /** D-464: summon receipts use the Jewel & Gold frame and the 10-pull reveal wave. */
+  kind?: 'summon';
 }
+
+/** D-464 10-pull wave: delay between cards landing, and when a highlighted card's burst fires. */
+export const summonWaveStepMs = 110;
+const summonWaveImpactMs = 320;
 
 export type SummonRevealTier = 'five-star' | 'six-star';
 
@@ -66,6 +73,7 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
     if (!reward.tier) dialog.style.setProperty('--reward-accent', rarityColors[reward.rarity]);
   }
   if (reward.tier) dialog.setAttribute('data-reward-tier', reward.tier);
+  if (reward.kind) dialog.setAttribute('data-reward-kind', reward.kind);
   dialog.innerHTML = rewardScreenMarkup(reward);
   const portal = dialog.querySelector<HTMLElement>('.reward-portal');
   const art = dialog.querySelector<HTMLElement>('.reward-art');
@@ -81,6 +89,8 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
   let animation: Animation | undefined;
   let artAnimation: Animation | undefined;
   let flashAnimation: Animation | undefined;
+  const waveTimers: number[] = [];
+  const effectStops: (() => void)[] = [];
   let revealed = false;
   const reveal = (animateArt = false): void => {
     if (revealed) return;
@@ -98,11 +108,24 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
     dialog.setAttribute('data-reward-revealed', 'true');
     if (animateArt && !rarityMotionReduced()) {
       const cards = dialog.querySelectorAll<HTMLElement>('.summon-ten-result[data-rarity], .master-bulk-reward[data-rarity]');
-      if (cards.length) cards.forEach(card => {
+      const grid = dialog.querySelector<HTMLElement>('.summon-ten-grid');
+      if (reward.kind === 'summon' && grid && cards.length) {
+        // One controlled wave: cards land in order; only star-tier hits and bonus Conduits burst, as they land.
+        effectStops.push(staggerIn(grid, ':scope > .summon-ten-result', { stepMs: summonWaveStepMs, maxSteps: cards.length, durationMs: 420 }));
+        cards.forEach((card, index) => {
+          const rarity = card.dataset.rarity;
+          if (!isRarity(rarity) || !card.matches('.is-five-star, .is-six-star, .has-bonus')) return;
+          waveTimers.push(window.setTimeout(() => {
+            effectStops.push(rarityFeedback(card, rarity));
+            effectStops.push(lusterSheen(card, 800));
+          }, index * summonWaveStepMs + summonWaveImpactMs));
+        });
+      } else if (cards.length) cards.forEach(card => {
         const rarity = card.dataset.rarity;
         if (isRarity(rarity)) rarityFeedback(card, rarity);
       });
       else if (reward.rarity) rarityFeedback(art, reward.rarity);
+      if (reward.kind === 'summon' && reward.tier && !grid) effectStops.push(lusterSheen(art, reward.tier === 'six-star' ? 1300 : 1000));
       artAnimation = reward.tier
         ? art.animate([{ opacity: 0, transform: 'scale(.96)', filter: 'brightness(1.15)' },
           { opacity: 1, transform: 'scale(1)', filter: 'brightness(1)', offset: .55 },
@@ -121,7 +144,11 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
     artError.textContent = 'Reward artwork could not load. Your reward is saved; reload to retry the artwork.';
   }, true);
   let motionQuery: MediaQueryList | undefined;
-  const motionChanged = (): void => { if (rarityMotionReduced()) { reveal(); artAnimation?.cancel(); flashAnimation?.cancel(); } };
+  const stopWave = (): void => {
+    waveTimers.splice(0).forEach(timer => clearTimeout(timer));
+    effectStops.splice(0).forEach(stop => stop());
+  };
+  const motionChanged = (): void => { if (rarityMotionReduced()) { reveal(); artAnimation?.cancel(); flashAnimation?.cancel(); stopWave(); } };
   try {
     motionQuery = matchMedia('(prefers-reduced-motion: reduce)');
     motionQuery.addEventListener('change', motionChanged);
@@ -175,6 +202,7 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
     animation?.cancel();
     artAnimation?.cancel();
     flashAnimation?.cancel();
+    stopWave();
     clearRarityFeedback(dialog);
     dispose();
   }

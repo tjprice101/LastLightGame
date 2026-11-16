@@ -214,6 +214,13 @@ the grid's highest rarity. Skip and explicit in-game reduced motion reveal
 immediately without an additional burst/delay. Costs, odds, pity, receipt
 contents, duplicate conversions and atomic save ordering are unchanged.
 
+**Summon 10-pull wave (D-464):** summon receipts no longer burst every card at
+once. Cards land in order (110ms apart); only five-/six-star pulls (including
+converted duplicates) and draws with a bonus Conduit burst, each as it lands,
+in its awarded rarity. Other cards arrive calmly. Skip and Reduce motion show
+the final grid immediately with no burst. Chest, Calamity and bulk Master grids
+keep the D-417 behavior. See the [menu contract](menus-and-inventory.md#summon-hub-and-reveal-d-464-2026-11-16).
+
 ## Duplicate-safe per-banner pity (D-419)
 
 Each banner has its own independent80-pull counter. A draw updates only that
