@@ -1,5 +1,5 @@
 html { font-size: 100%; }
-html body { --ui-font: Georgia, "Times New Roman", serif; font-family: var(--ui-font); }
+html body { font-family: var(--ui-font); }
 html body :is(button, input, select, textarea, h1, h2, h3, h4, p, small, span, strong, b, label, table) { font-family: var(--ui-font); }
 html body :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) :is(button, input, select, textarea) { font: 500 .8rem/1.4 var(--ui-font); border: 1px solid #2d2d31; border-radius: .6rem; background: #1a1a1c; color: #f4f4f5; padding: var(--space-2) var(--space-3); min-height: 44px; }
 html body :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) :is(input, select, textarea) { width: 100%; min-width: 0; }

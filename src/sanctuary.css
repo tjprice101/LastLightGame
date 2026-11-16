@@ -27,7 +27,7 @@ body:has(.sanctuary-shell) { min-width: 0; }
 .sanctuary-wallet { display: flex; justify-content: flex-end; align-items: center; gap: 8px; min-width: 0; }
 .sanctuary-header .currency-strip { position: static !important; display: flex; flex-wrap: nowrap; gap: 8px; margin: 0; }
 .sanctuary-header .currency-strip > span { border: 1px solid var(--line); border-radius: 14px; padding: 7px 10px; background: #0a0f1fcc; }
-.sanctuary-header .currency-strip strong { font: bold 18px Georgia, serif; }
+.sanctuary-header .currency-strip strong { font: bold 18px var(--ui-font); }
 .sanctuary-header .currency-strip small { font-size: 10px; margin-top: 3px; max-width: 155px; }
 .sanctuary-header .settings-trigger { padding: 10px; border-radius: 12px; background: #0a0f1fcc; color: var(--gold); border-color: var(--line); }
 .sanctuary-shell .menu-screen.sanctuary-content { padding: var(--space-2) var(--space-6) var(--space-4); margin: 0; width: 100%; }
@@ -128,7 +128,7 @@ body:has(.sanctuary-shell) { min-width: 0; }
 .sanctuary-placeholder h2 { font-size: 36px; margin: 10px 0; }
 .sanctuary-placeholder p { color: #c9d0e3; line-height: 1.7; }
 .owned-companion img { display: block; width: min(220px, 100%); height: auto; margin: auto; }
-.owned-companion strong { display: block; font: 26px Georgia, serif; }
+.owned-companion strong { display: block; font: 26px var(--ui-font); }
 .sealed-portal { display: grid; place-items: center; width: min(220px, 100%); aspect-ratio: 1; border: 1px solid #aa5eaf; border-radius: 50%; background: radial-gradient(#73348255, #0a0f1f); box-shadow: 0 0 45px #c44ad833; color: #ce95d1; font-size: 70px; margin: auto; }
 .sanctuary-shell .settings-drawer { color: #f4ecd9; border-radius: 18px 0 0 18px; background: #0e1630; border-color: var(--gold); }
 .sanctuary-shell > .status { position: sticky; bottom: 92px; background: #111a33; border-radius: 12px; padding: 8px 16px; z-index: 6; }

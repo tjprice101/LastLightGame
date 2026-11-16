@@ -13,6 +13,6 @@
   border-radius: 10px;
   background: #171717;
   color: #fff;
-  font: 600 14px Georgia, serif;
+  font: 600 14px var(--ui-font);
 }
 .debug-profile-banner button { min-height: 44px; }

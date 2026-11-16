@@ -13,7 +13,7 @@
     --reference-gild-fill: var(--gild-fill);
     --reference-mint: #8be1b1;
     --reference-radius: var(--radius-lg);
-    --reference-font: 'Sora', system-ui, sans-serif;
+    --reference-font: var(--ui-font);
   }
   html[data-menu-workspace] .sanctuary-shell {
     --menu-header-height: 80px !important;
@@ -80,7 +80,7 @@
     padding: 12px 64px 8px 2vw !important;
   }
   .sanctuary-header .sanctuary-wordmark {
-    font: 700 18px/1.2 Georgia, serif !important;
+    font: 700 18px/1.2 var(--display-font) !important;
     letter-spacing: .32em !important;
     color: var(--reference-text) !important;
     padding: 0 !important;
@@ -164,7 +164,7 @@
   .home-dashboard .home-feature-art { opacity: .2 !important; }
   .home-dashboard .home-feature-copy { position: relative !important; inset: auto !important; width: 100% !important; padding: 0 !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: stretch !important; text-align: left !important; gap: 8px !important; z-index: 1 !important; }
   .home-dashboard .home-feature-copy > * { text-transform: none !important; }
-  .home-dashboard .home-feature-copy > strong { font: 700 clamp(24px, 2vw, 34px)/1.15 Georgia, serif !important; letter-spacing: 0 !important; color: var(--reference-text) !important; text-shadow: none !important; }
+  .home-dashboard .home-feature-copy > strong { font: 700 clamp(24px, 2vw, 34px)/1.15 var(--display-font) !important; letter-spacing: 0 !important; color: var(--reference-text) !important; text-shadow: none !important; }
   .home-dashboard .home-feature-copy > :is(span, p, small) { font-size: 12px !important; line-height: 1.45 !important; margin: 0 !important; color: var(--reference-muted) !important; }
   .home-dashboard .home-feature-copy > .home-feature-eyebrow { text-transform: uppercase !important; color: var(--reference-gild) !important; font-size: 12px !important; letter-spacing: .12em !important; }
   .home-dashboard .home-feature-cta { min-height: 48px !important; display: flex !important; justify-content: center !important; align-items: center !important; width: 100% !important; padding: 12px 20px !important; border: 0 !important; border-radius: 999px !important; background: var(--reference-gild-fill) !important; color: #261912 !important; font-size: 15px !important; font-weight: 700 !important; }
@@ -191,7 +191,7 @@
   .home-dashboard .home-leader-skill { width: 100% !important; padding: 16px !important; border: 1px solid var(--reference-line) !important; border-radius: 16px !important; background: #302537 !important; font-size: 13px !important; }
 
   .workspace-units { display: grid !important; grid-template-rows: auto auto minmax(0, 1fr) !important; width: 100% !important; max-width: none !important; height: 100% !important; gap: 24px !important; margin: 0 !important; }
-  .workspace-units > header h2, .ref-bearer-collection > header h2 { font: 700 36px/1.2 Georgia, serif !important; margin: 0 !important; color: var(--reference-text) !important; }
+  .workspace-units > header h2, .ref-bearer-collection > header h2 { font: 700 36px/1.2 var(--display-font) !important; margin: 0 !important; color: var(--reference-text) !important; }
   .ref-bearer-collection h2, .ref-bearer-detail[data-character-view^="upgrade-"] h2 { text-transform: none !important; }
   .workspace-units > header p { font-size: 14px !important; color: var(--reference-muted) !important; margin: 8px 0 0 !important; }
   .workspace-squad-strip { display: flex !important; align-items: center !important; gap: 20px !important; border: 1px solid var(--reference-line) !important; border-radius: var(--reference-radius) !important; background: var(--reference-panel) !important; padding: 16px 24px !important; }
@@ -246,7 +246,7 @@
   .ref-bearer-detail[data-character-view^="upgrade-"] :is(.ref-portrait-stat-overlay, .ref-portrait-caption, [data-reference-prefix]) { display: none !important; }
   .ref-bearer-detail[data-character-view^="upgrade-"] .ref-character-identity { grid-column: 1 !important; grid-row: 2 !important; display: grid !important; grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: none !important; gap: 12px !important; padding: 0 !important; min-width: 0 !important; border: 0 !important; background: transparent !important; box-shadow: none !important; }
   .ref-bearer-detail[data-character-view^="upgrade-"] .ref-character-identity > * { grid-column: 1 !important; grid-row: auto !important; min-width: 0 !important; width: auto !important; max-width: none !important; }
-  .ref-bearer-detail[data-character-view^="upgrade-"] [data-reference-name] { font: 700 clamp(24px, 2vw, 34px)/1.15 Georgia, serif !important; margin: 0 !important; }
+  .ref-bearer-detail[data-character-view^="upgrade-"] [data-reference-name] { font: 700 clamp(24px, 2vw, 34px)/1.15 var(--display-font) !important; margin: 0 !important; }
   .ref-bearer-detail[data-character-view^="upgrade-"] .ref-tags { display: flex !important; gap: 8px !important; flex-wrap: wrap !important; margin: 0 !important; }
   .ref-bearer-detail[data-character-view^="upgrade-"] .ref-tags :is(span, strong) { font-size: 12px !important; }
   .ref-bearer-detail[data-character-view^="upgrade-"] .ref-character-progress { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 16px !important; width: 100% !important; margin: 0 !important; }
@@ -264,8 +264,8 @@
   .ref-bearer-detail[data-character-view^="upgrade-"] :is(.character-category, .calamitic-ascension-entry) { flex-shrink: 0 !important; border: 1px solid var(--reference-line) !important; border-radius: 22px !important; background: var(--reference-panel) !important; padding: 18px 22px !important; margin: 0 !important; }
   .ref-bearer-detail[data-character-view^="upgrade-"] .workspace-growth-summary > header { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 16px !important; margin-bottom: 12px !important; }
   .workspace-growth-summary h3 { font-size: 12px !important; color: var(--reference-muted) !important; text-transform: uppercase !important; letter-spacing: .12em !important; margin: 0 !important; }
-  .workspace-growth-summary header strong { font: 700 36px/1.15 Georgia, serif !important; }
-  .workspace-growth-summary header strong small { font: 700 24px/1.15 Georgia, serif !important; color: var(--reference-muted) !important; }
+  .workspace-growth-summary header strong { font: 700 36px/1.15 var(--ui-font) !important; }
+  .workspace-growth-summary header strong small { font: 700 24px/1.15 var(--ui-font) !important; color: var(--reference-muted) !important; }
   .workspace-complete-label { display: inline-block !important; padding: 8px 14px !important; border: 1px solid #8be1b177 !important; border-radius: 999px !important; color: var(--reference-mint) !important; background: #8be1b112 !important; font-size: 12px !important; }
   .workspace-growth-meter { display: block !important; appearance: none !important; height: 8px !important; width: 100% !important; border: 0 !important; background: #ffffff18 !important; border-radius: 999px !important; margin-bottom: 14px !important; }
   .workspace-growth-meter::-webkit-meter-bar { background: #ffffff18 !important; border: 0 !important; border-radius: 999px !important; }
@@ -325,7 +325,7 @@
   .ref-conduit-page .character-detail-content:has(> p) { display: grid !important; grid-template-rows: auto minmax(0, 1fr) !important; gap: 12px !important; }
   .ref-conduit-page .conduit-loadout { display: grid !important; grid-template-columns: minmax(0, 1fr) auto !important; grid-template-rows: auto minmax(0, 1fr) !important; gap: 16px !important; height: 100% !important; min-height: 0 !important; align-items: stretch !important; }
   .ref-conduit-page .loadout-header { display: flex !important; grid-column: 1 !important; grid-row: 1 !important; gap: 20px !important; align-items: center !important; flex-wrap: wrap !important; }
-  .ref-conduit-page .loadout-title h3 { font: 700 26px/1.2 Georgia, serif !important; }
+  .ref-conduit-page .loadout-title h3 { font: 700 26px/1.2 var(--display-font) !important; }
   .ref-conduit-page .loadout-title p { font-size: 12px !important; color: var(--reference-muted) !important; margin-top: 4px !important; }
   .ref-conduit-page .loadout-back { padding: 8px 12px !important; font-size: 12px !important; }
   .ref-conduit-page .loadout-member-tabs { flex: 1 !important; justify-content: flex-end !important; gap: 6px !important; }

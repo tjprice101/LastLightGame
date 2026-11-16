@@ -1,0 +1,199 @@
+/*
+ * Play hub, Story and shared selection/information dialogs, Jewel & Gold (UI audit session 7, D-468).
+ * Same cascade layer as menu-reference.css and its rollout, imported after unit-workshop.css. The rollout's
+ * layered !important rules stack up to three :not(#_) guards, so rules here use four (as in unit-workshop.css).
+ * The leader-element accent (leader-theme.css) no longer paints selected rail items, Story stages or restored
+ * map beacons: selection is gold, matching every other re-themed screen. Presentation only.
+ */
+@layer menu-reference {
+  /* The activity column kept a 64px bottom pad from an older scrolling layout, so every activity panel
+     stopped short of the rail and clipped its Enter controls at 1280x720. */
+  .sanctuary-shell .gameplay-hub.ref-play > .activity-group:not([hidden]):not(#_):not(#_):not(#_):not(#_) {
+    padding-bottom: 0 !important;
+  }
+
+  /* Jewel glass panels (were near-black #131314 with white hairlines). */
+  .sanctuary-shell .gameplay-hub.ref-play .activity-card:not(#_):not(#_):not(#_):not(#_),
+  .sanctuary-shell .gameplay-hub.ref-play .activity-picker:not(#_):not(#_):not(#_):not(#_),
+  .sanctuary-shell .gameplay-hub.ref-play .mono-story-campaign > :is(.ref-story-region-sidebar, .ref-story-main):not(#_):not(#_):not(#_):not(#_) {
+    border: 1px solid var(--gild-line) !important;
+    border-radius: var(--radius-lg) !important;
+    background: radial-gradient(ellipse at 100% 0%, #f7e3a10d, transparent 55%), var(--glass-panel) !important;
+    box-shadow: var(--shadow-panel) !important;
+  }
+  .sanctuary-shell .gameplay-hub.ref-play .activity-banner:not(#_):not(#_):not(#_):not(#_),
+  .sanctuary-shell .gameplay-hub.ref-play :is(.story-map-art, .ref-world-map):not(#_):not(#_):not(#_):not(#_) {
+    border: 1px solid var(--gild-line) !important;
+    border-radius: var(--radius-md) !important;
+    background: var(--surface-inset) !important;
+  }
+  .sanctuary-shell .gameplay-hub.ref-play .activity-banner > h3:not(#_):not(#_):not(#_):not(#_) {
+    font-family: var(--display-font) !important;
+    letter-spacing: .02em !important;
+    background: linear-gradient(transparent, #080a20e6 62%) !important;
+  }
+
+  /* Activity facts: the label read larger than its value. Small caps label, then the exact value. */
+  .sanctuary-shell .gameplay-hub.ref-play .activity-facts > div:not(#_):not(#_):not(#_):not(#_) {
+    padding: 8px 10px !important;
+    border: 1px solid var(--gild-hairline) !important;
+    border-radius: var(--radius-sm) !important;
+    background: var(--glass-raised) !important;
+  }
+  .sanctuary-shell .gameplay-hub.ref-play .activity-facts dt:not(#_):not(#_):not(#_):not(#_) {
+    margin: 0 !important;
+    font: 700 11px/1.3 var(--ui-font) !important;
+    letter-spacing: .1em !important;
+    text-transform: uppercase !important;
+    color: var(--text-muted) !important;
+  }
+  .sanctuary-shell .gameplay-hub.ref-play .activity-facts dd:not(#_):not(#_):not(#_):not(#_) {
+    margin: 4px 0 0 !important;
+    font: 700 13px/1.35 var(--ui-font) !important;
+    color: var(--text-primary) !important;
+  }
+
+  /* Selected activity rail item: gold frame instead of a solid leader-colour fill. */
+  .sanctuary-shell .ref-play .activity-categories a[aria-current]:not(#_):not(#_):not(#_):not(#_) {
+    border-color: var(--gild-mid) !important;
+    background: linear-gradient(135deg, #e0b45a33, #e0b45a10 70%) !important;
+    color: var(--text-primary) !important;
+    box-shadow: var(--gild-inner), inset 3px 0 0 var(--gild-mid) !important;
+  }
+  .sanctuary-shell .ref-play .activity-categories a[aria-current] strong:not(#_):not(#_):not(#_):not(#_) { color: var(--gild-light) !important; }
+  .sanctuary-shell .ref-play .activity-categories a[aria-current] small:not(#_):not(#_):not(#_):not(#_) { color: var(--text-secondary) !important; }
+
+  /* Story: restored beacons and the selected stage are gold; locked and open beacons keep their states. */
+  .sanctuary-shell .ref-map-node.is-restored > span:not(#_):not(#_):not(#_):not(#_) {
+    border-color: var(--gild-light) !important;
+    background: var(--gild-fill) !important;
+    color: var(--gild-ink) !important;
+    box-shadow: 0 0 0 3px #261912b3, 0 0 18px #f7e3a159 !important;
+  }
+  .sanctuary-shell .ref-map-node[aria-pressed="true"] > span:not(#_):not(#_):not(#_):not(#_) {
+    outline: 2px solid var(--gild-light) !important;
+    outline-offset: 3px !important;
+  }
+  .sanctuary-shell .ref-map-roads line.is-restored:not(#_):not(#_):not(#_):not(#_) { stroke: var(--gild-light) !important; }
+  .sanctuary-shell .mono-story-campaign .story-stage[aria-pressed="true"]:not(#_):not(#_):not(#_):not(#_) {
+    border-color: var(--gild-light) !important;
+    background: radial-gradient(circle at 50% 30%, #f7e3a140, #e0b45a1a 70%) !important;
+    color: var(--text-primary) !important;
+    box-shadow: var(--glow-gild) !important;
+  }
+  .sanctuary-shell .mono-story-campaign .story-stage[aria-current="step"]:not(#_):not(#_):not(#_):not(#_) {
+    border-color: var(--gild-mid) !important;
+    box-shadow: 0 0 0 1px #e0b45a66 !important;
+  }
+  /* Stage medallions cut "Cleared" to "Clear…"; give the status word the full medallion width. */
+  .sanctuary-shell .gameplay-hub.ref-play .mono-story-campaign .story-stage small:not(#_):not(#_):not(#_):not(#_) {
+    padding: 0 !important;
+    font-size: 9px !important;
+    letter-spacing: 0 !important;
+    text-overflow: clip !important;
+  }
+
+  /* List rows keep one shape whether their copy wraps to two lines or not (the shared button classifier
+     tags rows taller than 72px as tiles and shorter ones as pills). */
+  .sanctuary-shell .mono-story-campaign .story-world-map > button:not(#_):not(#_):not(#_):not(#_),
+  dialog.information-modal .information-topic-list > button:not(#_):not(#_):not(#_):not(#_) {
+    border: 1px solid var(--gild-line) !important;
+    border-radius: var(--radius-md) !important;
+    background: linear-gradient(150deg, #ffffff0e, #ffffff04) !important;
+    box-shadow: var(--gild-inner) !important;
+  }
+  .sanctuary-shell .mono-story-campaign .story-world-map > button[aria-current]:not(#_):not(#_):not(#_):not(#_),
+  .sanctuary-shell .mono-story-campaign .story-world-map > button[aria-pressed="true"]:not(#_):not(#_):not(#_):not(#_) {
+    border-color: var(--gild-mid) !important;
+    background: linear-gradient(135deg, #e0b45a2e, #e0b45a0d 70%) !important;
+  }
+
+  /* Training: the hero's children are all absolutely positioned, so the header collapsed to 0px and the
+     Grassy Field art never showed. It now fills the left column as a poster. */
+  .sanctuary-shell .gameplay-hub.ref-play .training-card > .training-hero:not(#_):not(#_):not(#_):not(#_) {
+    position: relative !important;
+    align-self: stretch !important;
+    height: auto !important;
+    min-height: 220px !important;
+    max-height: none !important;
+    overflow: hidden !important;
+    border: 1px solid var(--gild-line) !important;
+    border-radius: var(--radius-md) !important;
+  }
+  .sanctuary-shell .gameplay-hub.ref-play .training-card > .training-hero > img:not(#_):not(#_):not(#_):not(#_) {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+  .sanctuary-shell .gameplay-hub.ref-play .training-card > .training-hero > div:not(#_):not(#_):not(#_):not(#_) {
+    position: absolute !important;
+    inset: auto 0 0 !important;
+    display: block !important;
+    padding: 40px 16px 14px !important;
+    background: linear-gradient(transparent, #080a20eb 58%) !important;
+  }
+  .sanctuary-shell .gameplay-hub.ref-play .training-card > .training-hero h3:not(#_):not(#_):not(#_):not(#_) {
+    margin: 2px 0 0 !important;
+    font: 700 22px/1.2 var(--display-font) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .sanctuary-shell .gameplay-hub.ref-play .war-recruit-note:not(#_):not(#_):not(#_):not(#_) {
+    margin: 0 !important;
+    padding: 8px 12px !important;
+    border-left: 3px solid var(--gild-mid) !important;
+    border-radius: var(--radius-sm) !important;
+    background: #e0b45a12 !important;
+    color: var(--text-secondary) !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Selection dialog (stage/floor pickers): sized to its choices instead of a fixed 640px sheet. */
+  html body dialog.selection-modal[open]:not(#_):not(#_):not(#_):not(#_) {
+    height: fit-content !important;
+    max-height: calc(100dvh - 32px) !important;
+  }
+  html body dialog.selection-modal .selection-options:not(#_):not(#_):not(#_):not(#_) {
+    height: auto !important;
+    max-height: calc(100dvh - 180px) !important;
+    align-content: start !important;
+  }
+  html body dialog.selection-modal .selection-options .selection-option[aria-pressed="true"]:not(#_):not(#_):not(#_):not(#_) {
+    border-color: var(--gild-light) !important;
+    background: #e0b45a2e !important;
+    color: var(--gild-light) !important;
+    box-shadow: var(--gild-inner) !important;
+  }
+
+  /* Shared confirm/choice dialogs (game-dialog.ts). The buttons' resting sheen sat outside unclipped
+     buttons as a diagonal streak; Cancel read as an underlined link; a destructive confirm looked like
+     any gold primary. Destructive actions are a loss, so they carry the reserved red, not gold. */
+  html body dialog.game-dialog .game-dialog-actions button:not(#_):not(#_):not(#_):not(#_) {
+    overflow: hidden !important;
+    min-width: 112px !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+  /* Text buttons in drawers and dialogs (for example Settings > Information in battle) are pills, never links. */
+  html body :is(.settings-drawer, .information-modal, .game-dialog) .text-button:not(#_):not(#_):not(#_):not(#_) { text-decoration: none !important; }
+  html body dialog.game-dialog .game-dialog-actions .text-button:not(#_):not(#_):not(#_):not(#_) {
+    text-decoration: none !important;
+    border-color: var(--gild-line) !important;
+    background: var(--glass-raised) !important;
+    color: var(--text-primary) !important;
+  }
+  html body dialog.game-dialog .game-dialog-actions .game-destructive:not(:disabled):not(#_):not(#_):not(#_):not(#_) {
+    border: 1px solid #ff9a8a !important;
+    background: linear-gradient(180deg, #c8504a, #8f2a2e) !important;
+    color: #fff4f1 !important;
+    box-shadow: inset 0 1px 0 #ffd2c933, 0 6px 18px #5a0f1a66 !important;
+  }
+  html body dialog.game-dialog:not(#_):not(#_):not(#_):not(#_) {
+    border-color: var(--gild-line) !important;
+    background: radial-gradient(ellipse at 100% 0%, #f7e3a112, transparent 55%), linear-gradient(170deg, var(--surface-raised), var(--surface-base) 75%) !important;
+    box-shadow: var(--gild-inner), 0 32px 80px #0009 !important;
+  }
+}

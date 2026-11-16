@@ -17,8 +17,8 @@
 .battle-screen .battle-menu .battle-utilities > details { width: 100%; }
 .battle-screen .battle-menu .battle-utilities > details[open] { max-width: none; padding: 14px; }
 .battle-screen .battle-menu .battle-utilities > details > summary { width: 100%; justify-content: space-between; }
-.battle-menu h3 { margin: 0 0 10px; font: 600 18px Georgia, serif; }
-.battle-menu .quiet { font: 13px/1.6 "Segoe UI", sans-serif; color: #bebec8; }
+.battle-menu h3 { margin: 0 0 10px; font: 600 18px var(--ui-font); }
+.battle-menu .quiet { font: 13px/1.6 var(--ui-font); color: #bebec8; }
 .battle-screen .battle-menu .battle-context-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .battle-menu #end-battle-turn { margin-top: 12px; }
 .battle-actor-picker { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }

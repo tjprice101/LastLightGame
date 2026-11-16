@@ -1,6 +1,9 @@
 :root {
-  --ui-font: Georgia, "Times New Roman", serif;
-  --menu-font: "Sora", Arial, sans-serif;
+  /* Type (D-467): Lora for all reading text and numbers (Georgia-like width, so fitted layouts hold);
+     Cinzel, an engraved display capital, for screen and dialog titles only. Both self-hosted. */
+  --ui-font: "Lora", Georgia, "Times New Roman", serif;
+  --display-font: "Cinzel", "Lora", Georgia, serif;
+  --menu-font: var(--ui-font);
   /* Jewel & Gold (D-461): gold is the frame/luster metal; text stays white/gray; elements stay accents. */
   --gild-light: #f7e3a1;
   --gild-mid: #e0b45a;
@@ -68,7 +71,8 @@
 @media (max-width: 480px) {
   :root { --ui-display: 26px; --ui-title: 21px; --ui-section: 17px; --ui-body: 15px; --card-padding: var(--space-3); }
 }
-body, button, input, select, textarea { font-family: var(--ui-font); font-weight: 600; }
+body, button, input, select, textarea { font-family: var(--ui-font); font-weight: 600; font-variant-numeric: lining-nums; }
+:is(.game-dialog, .information-modal, .selection-modal, .reward-screen, .ll-dialog) h2 { font-family: var(--display-font); letter-spacing: .02em; }
 
 .info-sheet, .info-catalog, .info-offer-list { display: grid; min-width: 0; gap: var(--space-4); }
 .info-catalog { text-align: left; }

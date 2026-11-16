@@ -23,10 +23,10 @@
 .sanctuary-shell .character-hub .hub-showcase h2 { font-size: var(--ui-title); margin: var(--space-2) 0; text-shadow: 0 2px 12px #0009; }
 .sanctuary-shell .character-hub .hub-showcase .character-role { display: flex; justify-content: center; margin-top: var(--space-2); }
 .sanctuary-shell .character-hub .hub-showcase p { font-size: var(--ui-body); margin: var(--space-1) 0; }
-.sanctuary-shell .character-hub .hub-showcase .character-form-title { font: 600 15px/1.4 Georgia, serif; color: var(--element); letter-spacing: .06em; }
+.sanctuary-shell .character-hub .hub-showcase .character-form-title { font: 600 15px/1.4 var(--ui-font); color: var(--element); letter-spacing: .06em; }
 .sanctuary-shell .character-hub .hub-rail { grid-area: navigation; display: grid; gap: var(--space-4); align-self: center; }
 .character-nav-group { min-width: 0; }
-.character-nav-group h3 { margin: 0 0 var(--space-1); color: #ccc; font: 600 10px/1.4 Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+.character-nav-group h3 { margin: 0 0 var(--space-1); color: #ccc; font: 600 10px/1.4 var(--ui-font); letter-spacing: .12em; text-transform: uppercase; }
 .character-nav-group > div { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
 .sanctuary-shell .character-hub .hub-rail-button {
   min-width: 0;
@@ -48,7 +48,7 @@
 .character-stat-groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2); }
 .character-stat-groups > :last-child { grid-column: 1 / -1; }
 .character-category { min-width: 0; padding: var(--space-3); border: 1px solid var(--gild-line); border-radius: 10px; background: #ffffff03; }
-.sanctuary-shell .character-hub .character-category > h3 { margin: 0 0 var(--space-2); font: 600 12px/1.4 Arial, sans-serif; color: var(--element); letter-spacing: .04em; }
+.sanctuary-shell .character-hub .character-category > h3 { margin: 0 0 var(--space-2); font: 600 12px/1.4 var(--ui-font); color: var(--element); letter-spacing: .04em; }
 .sanctuary-shell .character-hub .hub-stats { grid-template-columns: repeat(auto-fit, minmax(min(100%, 110px), 1fr)); margin: 0; }
 .character-stat-groups > :last-child .hub-stats { grid-template-columns: minmax(0, 1fr); }
 .sanctuary-shell .character-hub .hub-stats > div { padding: var(--space-2) var(--space-1); background: transparent; border: 0; }
@@ -89,7 +89,7 @@
 .upgrade-spark { position: absolute; left: 50%; top: 50%; width: 5px; height: 12px; border-radius: 50%; background: var(--element); box-shadow: 0 0 8px var(--element); opacity: 0; animation: upgrade-spark 900ms ease-out var(--delay) both; }
 .celebration-evolve .upgrade-spark { width: 6px; height: 16px; animation-duration: 1600ms; }
 .upgrade-celebration-label { position: absolute; left: 50%; bottom: 4%; translate: -50% 0; display: grid; gap: 3px; width: max-content; max-width: 95%; text-align: center; font: 600 11px/1.3 var(--ui-font); text-shadow: 0 1px 4px #000b, 0 0 12px #0009; animation: upgrade-label 1800ms ease-out both; }
-.upgrade-celebration-label strong { color: var(--element); font: 600 20px/1.2 Georgia, serif; }
+.upgrade-celebration-label strong { color: var(--element); font: 600 20px/1.2 var(--ui-font); }
 .celebration-evolve .upgrade-celebration-label { animation-duration: 2400ms; }
 .sanctuary-shell .hub-showcase .hub-portrait.celebrating-level > .character-idle > img { animation: upgrade-portrait-level 900ms ease-out; }
 .sanctuary-shell .hub-showcase .hub-portrait.celebrating-evolve > .character-idle > img { animation: upgrade-portrait-evolve 1600ms ease-in-out; }

@@ -8,7 +8,7 @@
   border-radius: 20px;
   background: linear-gradient(145deg, #252525, #101010);
   color: #f1f0e9;
-  font-family: Georgia, serif;
+  font-family: var(--ui-font);
   box-shadow: 0 24px 100px #000b;
 }
 .game-dialog::backdrop { background: #000c; }

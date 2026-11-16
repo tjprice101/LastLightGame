@@ -33,7 +33,7 @@ html:root body .battle-screen > #status:not(:empty) { bottom: 5rem; }
   position: fixed; right: 1rem; bottom: 1rem; z-index: 70; pointer-events: none;
   max-width: calc(100vw - 2rem); padding: .65rem .9rem; border: 1px solid #555;
   border-radius: .6rem; background: #17171bef; color: #eee;
-  font: 600 .9rem/1.4 var(--ui-font, Georgia, serif);
+  font: 600 .9rem/1.4 var(--ui-font);
   animation: autosave-notice 1800ms ease both;
 }
 @keyframes autosave-notice {

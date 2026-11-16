@@ -199,7 +199,7 @@ export function gameplayHub(account: Account | null = emptyAccount(), eventAcces
           <p>${getStarter(mode.character).description}</p><p>${warLore}</p>
           ${activityFacts('10 stages · One boss each', '90-140', 'Prismatica · Null-Prismatica · Final-boss recruitment')}`, `
           ${itemShowcase([{ id: 'fractalis' }, { id: 'lycalis' }], 'Currency rewards')}
-          <p>Final boss:5% base-form recruitment chance · Already-owned successful recruitment:100 Null-Prismatica</p>
+          <p class="war-recruit-note">Final boss: 5% base-form recruitment chance. Already-owned successful recruitment: 100 Null-Prismatica.</p>
           ${account ? `${enemyStrength(warEncounter(mode.character, unlocked))}<footer class="activity-entry"><label class="dungeon-stage-label">Stage
             <select data-war-stage="${mode.character}" aria-label="${mode.name} stage" ${account ? '' : 'disabled'}>${Array.from({ length: unlocked }, (_, index) =>
               `<option value="${index + 1}" ${index + 1 === unlocked ? 'selected' : ''}>${index + 1} · Lv.${warEncounter(mode.character, index + 1).level}</option>`).join('')}</select></label>

@@ -11,7 +11,7 @@
 .calamitic-ascension-entry small { color: #efd1d8; }
 .ascension-crown { display: grid; place-items: center; flex: none; width: 48px; height: 48px; font-size: 34px; color: #fff; background: repeating-conic-gradient(from 0deg, #a5163c66 0 12deg, transparent 12deg 30deg); border-radius: 50%; text-shadow: 0 2px 6px #000; }
 .game-dialog.calamitic-ascension-modal { position: fixed; width: min(790px, calc(100vw - 24px)); padding: clamp(16px, 3vw, 28px); border-color: #ba607b88; background: radial-gradient(ellipse at 15% 0, #6d173340, transparent 65%), var(--surface-inset); overflow-x: hidden; }
-.calamitic-ascension-modal .ascension-close { position: absolute; top: 10px; right: 10px; z-index: 3; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid var(--gild-line); border-radius: 50%; background: var(--surface-raised); color: #fff; font: 28px/1 Georgia, serif; cursor: pointer; }
+.calamitic-ascension-modal .ascension-close { position: absolute; top: 10px; right: 10px; z-index: 3; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid var(--gild-line); border-radius: 50%; background: var(--surface-raised); color: #fff; font: 28px/1 var(--ui-font); cursor: pointer; }
 .ascension-hero { display: grid; grid-template-columns: minmax(110px, 190px) minmax(0, 1fr); align-items: center; gap: 18px; padding-right: 36px; }
 .ascension-hero .hub-portrait { position: relative; width: 100%; height: auto; aspect-ratio: 1; min-height: 0; overflow: visible; }
 .ascension-hero .hub-portrait > .character-idle { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); }
@@ -31,7 +31,7 @@
 .ascension-step p { margin: 0 0 7px; color: #ede3e6; font-size: 13px; }
 .ascension-step small { color: #bdb1b7; font-size: 12px; }
 .calamitic-ascension-modal .ascension-action { background: linear-gradient(120deg, #72182f, #230b15); border: 1px solid #bd7085; color: #fff; padding: 10px 18px; border-radius: 999px; box-shadow: inset 0 1px var(--gild-line), 0 4px 14px #0005; }
-.calamitic-ascension-modal button { min-height: 44px; font-family: var(--ui-font, Georgia, serif); cursor: pointer; }
+.calamitic-ascension-modal button { min-height: 44px; font-family: var(--ui-font); cursor: pointer; }
 .calamitic-ascension-modal button:disabled { opacity: .6; cursor: default; }
 .calamitic-ascension-modal button:focus-visible, .calamitic-ascension-entry:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 .ascension-done { color: #f3ced9; font-size: 14px; }

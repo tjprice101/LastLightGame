@@ -1,5 +1,6 @@
 import { escapeDialogText } from './game-dialog';
 import { bracketReferences } from './reference-text';
+import { staggerIn } from './luster';
 
 export function information(id: string, title: string, content: string, label = 'Information', triggerContent = label): string {
   return `<button type="button" class="text-button" data-information="${id}" aria-haspopup="dialog">${triggerContent}</button>
@@ -51,6 +52,9 @@ export function bindInformation(host: HTMLElement): void {
       button.focus({ preventScroll: true });
       showInformationTopic(dialog, null);
       dialog.showModal();
+      // Topic rows cascade in once per opening (D-468); static under Reduce motion.
+      const topics = dialog.querySelector<HTMLElement>('.information-topic-list');
+      if (topics) staggerIn(topics, undefined, { stepMs: 30, maxSteps: 10, durationMs: 300 });
     }
     const topic = event.target.closest<HTMLButtonElement>('[data-info-topic]');
     if (topic) {

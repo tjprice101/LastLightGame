@@ -27,7 +27,7 @@ html body :is(#app, dialog) :is(.inventory-item, .archive-card, .loadout-owned-r
   .ref-member-row, .ll-master-option, .stage-loot-item, .machine-focus-grid > li,
   .conduit-owned-list > li, .battle-result-rewards li)[data-conduit-element] {
   border-color: var(--conduit-element-accent);
-  background-image: linear-gradient(120deg, color-mix(in srgb, var(--conduit-element-accent) 16%, transparent), #101014d9);
+  background-image: linear-gradient(120deg, color-mix(in srgb, var(--conduit-element-accent) 16%, transparent), #0d1030d9);
 }
 
 .loot-drop > .conduit-element-label { position: absolute; top: -1.25rem; left: 50%; transform: translateX(-50%); max-width: none; white-space: nowrap; }

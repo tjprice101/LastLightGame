@@ -207,7 +207,7 @@ html[data-menu-workspace] body #app .home-squad-caption:not(#_) { z-index: 2; pa
 html[data-menu-workspace]:not([data-motion="reduced"]) .home-element-light { animation: elemental-sway 5s ease-in-out 4 alternate; }
 @keyframes elemental-sway { from { transform: skewX(-12deg) translateX(-6%); opacity: .45; } to { transform: skewX(12deg) translateX(6%); opacity: .85; } }
 html[data-menu-workspace] body #app .home-shortcuts:not(#_):not(#_) { padding: 6px 0 !important; }
-html[data-menu-workspace] body #app .home-feature-copy > strong:not(#_) { font-family: Georgia, serif !important; letter-spacing: .04em; font-size: clamp(26px, 2.5vw, 38px) !important; text-shadow: 0 2px 12px #000; }
+html[data-menu-workspace] body #app .home-feature-copy > strong:not(#_) { font-family: var(--display-font) !important; letter-spacing: .04em; font-size: clamp(26px, 2.5vw, 38px) !important; text-shadow: 0 2px 12px #000; }
 html[data-menu-workspace] body #app .home-feature-copy { gap: 5px !important; }
 html[data-menu-workspace] body #app .home-feature-eyebrow { letter-spacing: .12em !important; font-size: 12px !important; }
 html[data-menu-workspace] body #app .home-leader-skill:not(#_) { font-size: 13px !important; line-height: 1.4; }

@@ -1,4 +1,3 @@
-:root { --ui-font: Georgia, "Times New Roman", serif; }
 html body .sanctuary-shell {
   --mono-bg: #0b0b0c; --mono-panel: #131314; --mono-raised: #1a1a1c; --mono-line: #2d2d31;
   --mono-text: #f4f4f5; --mono-muted: #a9a9ae; --mono-quiet: #b5b5bc;

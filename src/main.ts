@@ -1,6 +1,7 @@
 import './style.css';
-import '@fontsource/sora/600.css';
-import '@fontsource/sora/700.css';
+import './fonts.css';
+import '@fontsource/cinzel/600.css';
+import '@fontsource/cinzel/700.css';
 import { bindSquadLoadouts, selectSquadLoadout, savedLoadoutOperation, type SavedLoadoutOperation } from './presentation/saved-loadouts';
 import { saveSquadLoadout, renameSquadLoadout, equipSquadLoadout, deleteSquadLoadout,
   saveConduitConfiguration, renameConduitConfiguration, equipConduitConfiguration } from './game/account';
@@ -99,6 +100,7 @@ import { summonReward, summonTenReward } from './presentation/summon-presentatio
 import { animateSummonHub } from './presentation/summon-hub';
 import { animateSocial } from './presentation/social-luster';
 import { animateUnitWorkshop } from './presentation/unit-luster';
+import { animatePlayHub } from './presentation/play-luster';
 import { conduitReward } from './presentation/conduit-presentation';
 import { openOnlineAccount as showOnlineAccount } from './presentation/online-account';
 import { onlineStores, onlineProfile, friendProfileScreen, bindProfileEditor, refreshProfileTracking, refreshFriendPresence, type StoreTab, type OnlineProfileDisplay, type SocialDisplay } from './presentation/online-store-profile';
@@ -146,6 +148,7 @@ import './presentation/menu-workspace.css';
 import './presentation/menu-reference.css';
 import './presentation/menu-reference-rollout.css';
 import './presentation/unit-workshop.css';
+import './presentation/activity-hub.css';
 
 const gameStorage = menuWorkspace ? createMenuWorkspaceStorage() : new DebugProfileStorage(window.localStorage, import.meta.env.DEV);
 const preferencesStorage = menuWorkspace ? gameStorage : window.localStorage;
@@ -1097,6 +1100,7 @@ function renderMenu(firstArrival = false): void {
   animateSummonHub(app);
   animateSocial(app);
   animateUnitWorkshop(app);
+  animatePlayHub(app);
   bindConduitUpgrades(app, gameStorage, (updated) => { account = updated; refreshConduitMenu(); }, showError,
     playMode === 'online' ? async (id, expectedLevel) => (await performOnline({ kind: 'upgradeConduit', id, expectedLevel })).account : undefined,
     playMode === 'online' ? async expected => (await performOnline({ kind: 'maxConduit', expected })).account : undefined);
