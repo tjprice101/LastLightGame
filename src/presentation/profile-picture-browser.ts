@@ -3,6 +3,7 @@ import type { Account } from '../game/account';
 import { getStarter } from '../content/starters';
 import { profilePicture } from './profile-picture';
 import { createGameDialog, escapeDialogText } from './game-dialog';
+import { animatePictureBrowser, glintPicturePreview } from './social-luster';
 import './profile-picture-browser.css';
 
 function lockedPicture(id: string): string {
@@ -35,6 +36,7 @@ export async function chooseProfilePicture(account: Account, current: string): P
   try {
       let filter = 'all';
       let category = 'all';
+      let previewed = selected;
       const refresh = () => {
         const query = dialog.querySelector<HTMLInputElement>('[data-picture-search]')!.value.trim().toLowerCase();
         dialog.querySelectorAll<HTMLElement>('[data-picture]').forEach(button => {
@@ -52,12 +54,16 @@ export async function chooseProfilePicture(account: Account, current: string): P
         const picture = profilePictures.find(entry => entry.id === selected);
         const available = selected === 'neutral' || isProfilePictureId(selected) && profilePictureUnlocked(account, selected);
         const character = picture ? getStarter(picture.characterId).name : '';
-        dialog.querySelector('.picture-preview-content')!.innerHTML = `<div class="picture-preview-hero"><div class="picture-preview-navigation"><button type="button" data-picture-step="-1" aria-label="Previous picture" ${visible < 2 ? 'disabled' : ''}>‹</button><div class="picture-preview-art">${available ? profilePicture(selected) : lockedPicture(selected)}</div><button type="button" data-picture-step="1" aria-label="Next picture" ${visible < 2 ? 'disabled' : ''}>›</button></div><h3>${escapeDialogText(picture ? title(picture.name, character) : 'Last Light')}</h3>${character ? `<p>${escapeDialogText(character)}</p>` : ''}<div class="picture-badges"><span>${picture?.form === 'omnic' ? 'Omnic' : picture ? 'Common' : 'Default'}</span>${picture ? `<span>${picture.form === 'base' ? 'Acquisition' : 'Final evolution'}</span>` : ''}${selected === inUse ? '<span class="picture-in-use">In use</span>' : ''}</div></div>
+        dialog.querySelector('.picture-preview-content')!.innerHTML = `<div class="picture-preview-hero"><div class="picture-preview-navigation"><button type="button" data-picture-step="-1" aria-label="Previous picture" ${visible < 2 ? 'disabled' : ''}>‹</button><div class="picture-preview-art">${available ? profilePicture(selected) : lockedPicture(selected)}</div><button type="button" data-picture-step="1" aria-label="Next picture" ${visible < 2 ? 'disabled' : ''}>›</button></div><h3>${escapeDialogText(picture ? title(picture.name, character) : 'Last Light')}</h3>${character && title(picture!.name, character) !== character ? `<p>${escapeDialogText(character)}</p>` : ''}<div class="picture-badges"><span>${picture?.form === 'omnic' ? 'Omnic' : picture ? 'Common' : 'Default'}</span>${picture ? `<span>${picture.form === 'base' ? 'Acquisition' : 'Final evolution'}</span>` : ''}${selected === inUse ? '<span class="picture-in-use">In use</span>' : ''}</div></div>
           <div class="picture-preview-detail"><div class="picture-requirement"><small>${available ? '✓ Unlocked' : 'Locked'}</small><p>${escapeDialogText(picture?.requirement ?? 'Available to every player.')}</p></div><div class="picture-use-previews">${['Profile', 'Chat', 'Friends'].map(label => `<div><small>${label}</small><span class="picture-use-example"><span class="picture-use-avatar">${available ? profilePicture(selected) : lockedPicture(selected)}</span><span><b>${label === 'Chat' ? 'Your messages' : label === 'Friends' ? 'Your friend card' : 'Your profile'}</b><small>${label === 'Chat' ? 'Message appearance' : 'Picture appearance'}</small></span></span></div>`).join('')}</div></div>`;
         const use = dialog.querySelector<HTMLButtonElement>('[data-dialog-value="use"]')!;
         use.disabled = !available || selected === inUse;
         use.textContent = selected === inUse ? 'Currently in use' : !available ? 'Picture locked' : 'Use this picture';
         dialog.querySelector<HTMLElement>('[data-picture-empty]')!.hidden = visible > 0;
+        if (selected !== previewed) {
+          previewed = selected;
+          glintPicturePreview(dialog);
+        }
       };
       dialog.addEventListener('input', refresh);
       dialog.addEventListener('click', event => {
@@ -108,7 +114,8 @@ export async function chooseProfilePicture(account: Account, current: string): P
           resolve(null);
           dialog.close();
         });
-        try { dialog.showModal(); } catch (error) { reject(error); }
+        try { dialog.showModal(); } catch (error) { reject(error); return; }
+        animatePictureBrowser(dialog);
       });
   } finally { dispose(); }
 }

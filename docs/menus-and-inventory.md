@@ -1,5 +1,33 @@
 # Menus and inventory
 
+## Settings and Social (D-465, 2026-11-16)
+
+- Settings drawer: jewel glass sections with gold hairlines and a gold gem
+  beside each heading, gold slider and checkbox, gilded Save buttons. The
+  existing once-per-open section rise stays (static under Reduce motion).
+  Owners: `bubble-ui.css` (live skin) and `settings-panel.css` (battle and
+  fallback). No setting, label, saved key or behavior changed.
+- Social (Player info, Friends, Chats, friend profile): jewel glass panels,
+  gold-framed edit panel and picture, gold progress fills, gold "new requests"
+  badge (also on the Chats tab), the current Story region in gold and online
+  friends edged in gold. Panels cascade in once per arrival at a Social view
+  (`social-luster.ts`); presence refreshes and saved edits never replay it.
+- Fixes: the edit panel scrolls instead of pushing Frame and Sign out under
+  the dock; the display name has room at 1280x720; the Friends metric shows
+  its request count as a text link under the number (no overlap); summon and
+  progress numbers never wrap mid-number; at 1200px+ wide and 820px or less
+  tall the statistics column scrolls so Account & summons stays reachable.
+  The duplicate "Auto-saves" label is gone ("Edits save when you finish a
+  field." remains).
+- Chats: the visually hidden composer label no longer takes a grid column, so
+  the message box and Send sit on one row; the group avatar fits; your own
+  messages carry a gold edge.
+- Profile picture browser: tiles are cards (the rollout pill radius clipped
+  captions); the selected tile wears the gold frame and check mark; gold
+  progress ring and preview frame. Tiles cascade in on open and the preview
+  glints when a different picture is picked (not on filters). The preview no
+  longer repeats the character name when it matches the picture title.
+
 ## Summon hub and reveal (D-464, 2026-11-16)
 
 - Hub: jewel glass columns with gold edges (`summon-hub.css`, skin only; layout

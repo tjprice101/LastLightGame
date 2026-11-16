@@ -4,16 +4,16 @@
 #app .friend-chat-layout { display: grid; grid-template-columns: minmax(230px, 23%) minmax(0, 1fr) minmax(230px, 22%); grid-template-rows: minmax(0, 1fr); gap: 12px; height: 100%; min-height: 0; }
 #app .friend-chat-layout [hidden] { display: none !important; }
 #app .friend-chat-layout > nav { grid-column: 1 / -1; display: flex; gap: 6px; }
-#app .friend-chat-layout > section, #app .friend-chat-layout > aside { min-width: 0; min-height: 0; border: 1px solid #303034; border-radius: 12px; background: #131314; padding: 12px; }
+#app .friend-chat-layout > section, #app .friend-chat-layout > aside { min-width: 0; min-height: 0; border: 1px solid var(--gild-line); border-radius: var(--radius-md); background: var(--glass-panel); box-shadow: var(--shadow-panel); padding: 12px; }
 #app .chat-list-panel { display: flex; flex-direction: column; gap: 8px; }
-#app .friend-chat-layout input, #app .friend-chat-layout textarea, #app .chat-dialog input, #app .chat-dialog select { min-height: 44px; width: 100%; padding: 8px; font: inherit; background: #1a1a1c; color: #eee; border: 1px solid #505055; border-radius: 8px; }
+#app .friend-chat-layout input, #app .friend-chat-layout textarea, #app .chat-dialog input, #app .chat-dialog select { min-height: 44px; width: 100%; padding: 8px; font: inherit; background: var(--surface-inset); color: var(--text-primary); border: 1px solid var(--gild-line); border-radius: var(--radius-sm); }
 #app .friend-chat-layout button { min-height: 44px; padding: 6px 10px; font-size: 13px; }
 #app .chat-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 #app .chat-conversations { overflow-y: auto; min-height: 0; flex: 1; display: flex; flex-direction: column; gap: 6px; }
 #app .chat-conversation { display: flex; text-align: left; align-items: center; gap: 8px; width: 100%; }
 #app .chat-conversation > span:last-child { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-#app .chat-conversation small { display: block; font-size: 11px; color: #b5b5bc; }
-#app .chat-avatar { width: 38px; height: 38px; flex: none; display: grid; place-items: center; border-radius: 50%; background: #29292c; }
+#app .chat-conversation small { display: block; font-size: 11px; color: var(--text-muted); }
+#app .chat-avatar { width: 38px; height: 38px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--surface-inset); box-shadow: inset 0 0 0 1px var(--gild-line); }
 #app .chat-avatar .character-idle, #app .chat-avatar img { width: 100%; height: 100%; display: block; object-fit: contain; }
 #app .chat-thread { display: flex; flex-direction: column; gap: 8px; }
 #app .chat-thread header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -22,8 +22,8 @@
 #app .chat-message { display: flex; align-items: start; gap: 8px; max-width: 90%; }
 #app .chat-message.is-self { margin-left: auto; flex-direction: row-reverse; }
 #app .chat-message-content { min-width: 0; }
-#app .chat-message p { margin: 3px 0; padding: 8px 12px; background: #202023; border: 1px solid #35353a; border-radius: 10px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; }
-#app .chat-message small { font-size: 11px; color: #b5b5bc; }
+#app .chat-message p { margin: 3px 0; padding: 8px 12px; background: var(--glass-raised); border: 1px solid var(--gild-hairline); border-radius: var(--radius-md); white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; }
+#app .chat-message small { font-size: 11px; color: var(--text-muted); }
 #app .chat-composer { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
 #app .chat-composer textarea { min-height: 44px; max-height: 88px; resize: vertical; }
 #app .chat-composer small { grid-column: 1 / -1; font-size: 11px; }
@@ -55,3 +55,10 @@
   #app .chat-detail-panel { grid-column: 1; }
   #app .chat-conversations { max-height: 200px; }
 }
+/* UI audit session 5 (D-465): Jewel & Gold accents. */
+#app .chat-composer > label { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+#app .chat-composer { align-items: end; }
+#app .chat-avatar[aria-hidden="true"] { font-size: 9px; letter-spacing: .04em; color: var(--gild-light); text-transform: uppercase; }
+#app .chat-thread h2, #app .chat-detail-panel h2 { color: var(--text-primary); }
+#app .chat-message.is-self p { background: linear-gradient(180deg, #e0b45a24, #8a5a1f1a), var(--glass-raised); border-color: var(--gild-line); }
+#app .chat-conversation[aria-pressed="true"] small { color: var(--text-secondary); }

@@ -10,6 +10,7 @@
   --gild-fill: linear-gradient(180deg, var(--gild-light), var(--gild-mid) 55%, var(--gild-core));
   --gild-ink: #261912;
   --gild-line: #e0b45a4d;
+  --gild-hairline: #e0b45a26;
   --gild-inner: inset 0 1px 0 #fff3cc33;
   --accent-warm: var(--gild-light);
   --gold: var(--gild-light);

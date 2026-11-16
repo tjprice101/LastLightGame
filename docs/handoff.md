@@ -1,5 +1,41 @@
 # Current state and handoff
 
+## Settings and Social, UI audit session 5 (2026-11-16)
+
+**Implemented (D-465):** Settings drawer, Social (Player info, Friends,
+Chats, friend profile) and the profile picture browser re-themed with Jewel &
+Gold tokens; new `social-luster.ts` entrance (once per Social view arrival;
+picture browser tile cascade and preview glint). Fixed several defects present
+before this session: the edit panel pushed Frame/Sign out under the dock at
+1600x900, the display name was clipped and the Friends metric overlapped at
+1280x720, "1,240" wrapped mid-number, Account & summons was clipped at 720px
+tall, the chat composer label took a grid column, picture tiles clipped
+captions. Presentation only; server bundle unchanged, so no deploy. See the
+[menu contract](menus-and-inventory.md#settings-and-social-d-465-2026-11-16).
+
+**Verified:**
+
+- `npx vitest run` (full): 10,491 passed (297 files), including the new
+  `social-luster.test.ts` (5).
+- `npx tsc --noEmit`: passed. `npm run build`: passed (existing chunk
+  advisory). `node toolsundle_server_game.mjs`: output unchanged.
+- Headless Chrome on the `?workspace=menu` save, 1280x720 and 1600x900:
+  Settings live; Social views rendered from the real markup with fixture
+  profile/friends/chat data (the workspace has no online account); picture
+  browser opened via `chooseProfilePicture`. No document overflow, no clipped
+  labels; entrance effects present at 100ms and fully removed by 1.2s;
+  statistics column scrolls (591px content in 462px). Reduce motion: zero
+  effect nodes, final layout immediately.
+- **Not verified:** a signed-in online Social session (real friends, chat
+  transport, attendance/mail dialogs); 390px portrait (960px body
+  min-width, D-463 open item).
+
+**Open:** menus render mostly in Sora although AGENTS.md specifies Georgia
+(D-465 open item).
+
+**Next:** owner checks Settings and, signed in, Social/Chats/picture browser.
+Session 6: Upgrade result, Ascension, Calamity, Event shop (Sonnet).
+
 ## Summon hub and reveal, UI audit session 4 (2026-11-16)
 
 **Implemented (D-464):** Summon hub re-themed with Jewel & Gold (`summon-hub.css`,

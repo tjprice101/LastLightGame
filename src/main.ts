@@ -97,6 +97,7 @@ import { exchangeCategory, exchangeProduct, exchangeProducts, isExchangeQuantity
 import { presentReward } from './presentation/reward-screen';
 import { summonReward, summonTenReward } from './presentation/summon-presentation';
 import { animateSummonHub } from './presentation/summon-hub';
+import { animateSocial } from './presentation/social-luster';
 import { conduitReward } from './presentation/conduit-presentation';
 import { openOnlineAccount as showOnlineAccount } from './presentation/online-account';
 import { onlineStores, onlineProfile, friendProfileScreen, bindProfileEditor, refreshProfileTracking, refreshFriendPresence, type StoreTab, type OnlineProfileDisplay, type SocialDisplay } from './presentation/online-store-profile';
@@ -1092,6 +1093,7 @@ function renderMenu(firstArrival = false): void {
   filterTeamCollection(app, teamQuery);
   bindSummonRates(app);
   animateSummonHub(app);
+  animateSocial(app);
   bindConduitUpgrades(app, gameStorage, (updated) => { account = updated; refreshConduitMenu(); }, showError,
     playMode === 'online' ? async (id, expectedLevel) => (await performOnline({ kind: 'upgradeConduit', id, expectedLevel })).account : undefined,
     playMode === 'online' ? async expected => (await performOnline({ kind: 'maxConduit', expected })).account : undefined);

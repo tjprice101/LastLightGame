@@ -1,5 +1,27 @@
 # Decision log
 
+## Settings and Social re-theme (D-465, 2026-11-16)
+
+UI audit session 5 applies D-461 to Settings, Social/Profile, Friend chat and
+the profile picture browser. Presentation only; no save, setting, social
+transport or server change.
+
+- **Selected rule:** owner stylesheets (`settings-panel.css`,
+  `profile-layout.css`, `friend-chat.css`, `profile-picture-browser.css`) now
+  use core tokens instead of mono-gray hex; one new core token,
+  `--gild-hairline`, for row dividers. Where the rollout's layered
+  `!important` rules break a component (pill radius on picture tiles and the
+  Friends metric link), overrides sit in `@layer menu-reference` (D-464 note).
+- **Motion:** Social panels cascade once per view arrival; the profile picture
+  glints on Player info arrival and when a different picture is previewed.
+  Settings keeps its existing section rise. All static under Reduce motion.
+- **Information:** the redundant "Auto-saves" label is removed from the
+  profile ID row; the picture preview omits a character line identical to the
+  title. No other copy changed.
+- **Open (pre-existing, not changed):** most menu controls render in Sora
+  (`--menu-font` and rollout rules), while AGENTS.md says all game text uses
+  Georgia. Aligning the menus is a cross-screen owner decision.
+
 ## Summon hub and reveal re-theme (D-464, 2026-11-16)
 
 UI audit session 4 (audit plan §7.15 / §7.16, Phase 7) applies D-461 to the
