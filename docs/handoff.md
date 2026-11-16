@@ -12,8 +12,11 @@ catalogs of the pre-Radiant kits and Conduits (commit `d82015ba`) are in
 `docs/Future Plans/battle-flurry-reference/`. No code, authority or deploy
 change.
 
-**Next:** owner answers the plan's open questions and reviews the sample skill
-batch; then Phase 1 (device-run encounters, squad cap 3) on Opus in Plan mode.
+Follow-up approvals: device-run encounters with authority replay, Flare
+recovery removed, Health motes, and the skill phrasing/sample as the standard.
+
+**Next:** Phase 1 (device-run encounters with `settle` replay, squad cap 3,
+tap-order player phase, per-encounter Haul) on Opus in Plan mode.
 
 ## Battle HUD and Attendance & mail, UI audit session 8 (2026-11-16)
 

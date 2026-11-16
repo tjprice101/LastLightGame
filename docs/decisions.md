@@ -18,9 +18,13 @@ damage streams and drops pouring from enemies. Full plan and diagnosis:
 - **Approved:** Skill 1 / Skill 2 return for every bearer, simplified into one
   consistent genre-style phrasing with Last Light terms; Claude drafts in
   batches for owner approval; old kits may be reworked.
-- **Open:** device-run encounters with end-of-encounter authority replay;
-  Flare next-turn recovery; Health motes; approval of the skill phrasing and
-  sample batch. Nothing is implemented yet.
+- **Approved (follow-up):** device-run encounters with end-of-encounter
+  authority replay, accepting that the client can know the encounter seed;
+  Flare next-turn recovery removed; Health motes added as a fourth drop
+  (combat state); the skill phrasing and sample batch are the style standard,
+  provided kits stay clear and consistent.
+- **Open:** exact numbers, each kit batch, the Conduit remap and later depth
+  systems. Nothing is implemented yet.
 
 ## Battle HUD and Attendance & mail re-theme (D-469, 2026-11-16)
 

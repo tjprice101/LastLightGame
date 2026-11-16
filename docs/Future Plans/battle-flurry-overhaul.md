@@ -1,8 +1,8 @@
 # Battle Flurry overhaul: specification and phased plan (2026-11-16)
 
-**Status:** owner-reviewed direction with three approved decisions (D-470).
-Everything else here is a **proposal awaiting owner approval** per phase. No
-code has changed. Filing this plan does not authorize implementation, deploys
+**Status:** owner-approved direction (D-470, seven decisions below). Exact
+numbers, kit batches, the Conduit remap and later depth systems still need
+per-phase approval. No code has changed. Filing this plan does not authorize implementation, deploys
 or balance changes beyond each approved phase.
 
 ## Why (owner feedback, 2026-11-16)
@@ -63,7 +63,14 @@ overrode base fighter kits; no Leader effects existed then.
 3. **Skill 1 / Skill 2 return for every bearer**, rewritten simply in one
    consistent genre-style phrasing with Last Light terminology (section
    "Skill language"). Claude drafts in batches; the owner approves each batch.
-   Old kits may be reworked too.
+   Old kits may be reworked too. The phrasing and sample batch below are
+   approved as the style standard, provided every kit stays clear and
+   consistent.
+4. **Device-run encounters with end-of-encounter authority replay**
+   (section A), including the seed-visibility trade-off.
+5. **Flare next-turn recovery is removed**; Luminosity cost alone gates Flares.
+6. **Health motes** are added as a fourth drop (heal the collecting bearer;
+   combat state, not a reward).
 
 ## Proposed design (needs per-phase approval)
 
@@ -82,9 +89,8 @@ overrode base fighter kits; no Leader effects existed then.
   only after that acknowledgement. Retries reuse the request ID.
 - A local in-progress action log (combat state only, no rewards) lets a page
   refresh resume the encounter; it never grants anything by itself.
-- Security note: the client can know the seed, so it could preview rolls. This
-  is acceptable for a single-player game; replay still blocks fabricated
-  results. Owner should confirm this trade-off.
+- Security note: the client can know the seed, so it could preview rolls.
+  Accepted by the owner (D-470); replay still blocks fabricated results.
 - Combat-rules/run-schema version bump with the existing read-only retirement
   of older runs; client and authority ship together.
 
@@ -114,7 +120,8 @@ overrode base fighter kits; no Leader effects existed then.
   finite, pointer-transparent and disposable.
 - Lively HUD: crackling gauge fills, ready-state pulses for Skill/Flare,
   attunement accents.
-- Optional, owner choice: Health motes (heal the collector) as a fourth drop.
+- Health motes (approved): heal the collecting bearer; exact amount tuned in
+  Phase 2/3.
 
 ### D. Skill 1 / Skill 2 merged with Radiant (Phase 3)
 
@@ -130,8 +137,7 @@ overrode base fighter kits; no Leader effects existed then.
   turns on timed effects), Skill Efficiency (cost discount, cap 50%, Flare
   floor 70%) and Gauge Gain. Role perks, Resonance, Convergent Light ranks
   and attunement subtypes stay.
-- **Open owner question:** keep "Flare caster skips next turn"? It slows the
-  flurry; recommendation is to remove it and let cost gate Flares.
+- Flare next-turn recovery is removed (approved); cost gates Flares.
 - **Buff categories.** Timed effects use a fixed category list: Attack Up,
   Defense Up, Critical Up, Damage Reduction, Luminosity Gain Up, Drop Up,
   Element Infusion, Health Over Time, plus enemy Weaken and Burn. Same category
@@ -181,7 +187,7 @@ Health always name their base; no adjectives or lore in effect text; shared
 rules (Burn, Weaken, Shield, categories) live once in the glossary; ally
 skills auto-target; one signature mechanic per bearer at most.
 
-### Sample batch for style review (draft numbers, Phase 3 tuning)
+### Approved style sample (draft numbers, Phase 3 tuning)
 
 **Infernis** (Infernic Attacker). Signature: Burn detonation.
 - Passive, Unbroken Ember: boosts Burn damage of all allies (+30%).
@@ -228,8 +234,5 @@ and the handoff, and follows the Publication standing rule.
 
 ## Open owner questions
 
-1. Confirm device-run encounters with end-of-encounter replay (section A),
-   including the seed-visibility trade-off.
-2. Keep or remove Flare next-turn recovery (recommend remove).
-3. Add Health motes as a fourth drop?
-4. Approve the skill phrasing and the sample batch, or give edits.
+None for Phase 1 beyond approving its implementation plan. Later: each kit
+batch, Phase 3 numbers, the Conduit remap and any depth system.
