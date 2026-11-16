@@ -70,7 +70,7 @@ describe('Conduit Store and discovery routes', () => {
       expect(conduit.rarity).toBe('Common');
       expect(html).toContain(conduit.name);
       expect(html).toContain(readableEffect(radiantConduitEffectText(conduit.id)));
-      expect(html).toContain(`${conduit.price} Prismatica`);
+      expect(html).toContain(`${conduit.price?.toLocaleString('en-US')} Prismatica`);
     }
     expect(html).not.toContain('Elemental Light core');
     expect(html).not.toContain('Mechanical drive');
@@ -80,7 +80,7 @@ describe('Conduit Store and discovery routes', () => {
     for (const conduit of conduits) expect(html).toContain(`assets/conduits/${conduit.id}.png`);
     for (const conduit of additionalCommonConduits) {
       expect(html).toContain(conduit.name);
-      expect(html).toContain(`${conduit.price} Prismatica`);
+      expect(html).toContain(`${conduit.price?.toLocaleString('en-US')} Prismatica`);
       expect(html).toContain(`assets/conduits/${conduit.id}.png`);
     }
     expect(html).toContain('ref-store-detail');

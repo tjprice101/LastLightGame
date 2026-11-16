@@ -1,0 +1,232 @@
+/*
+ * Element-Bearer and Conduit workshop, Jewel & Gold (UI audit session 6, D-466).
+ * Same cascade layer as menu-reference.css and its rollout, imported after both. The rollout's
+ * layered !important rules outrank unlayered stylesheets and stack up to three :not(#_) guards, so
+ * fixes here use the same layer with a four-id :not(#_) guard. Presentation only: no save, transaction or mechanic changes.
+ */
+@layer menu-reference {
+  /* Growth progress is luster, not a gain: gold fills replace mint (D-461 keeps green for gains). */
+  .sanctuary-shell .ref-bearer-detail :is(.ref-bar i, .ref-pips i.is-filled):not(#_):not(#_):not(#_):not(#_),
+  .sanctuary-shell .workspace-evolution-steps .is-filled i:not(#_):not(#_):not(#_):not(#_) {
+    background: var(--gild-fill) !important;
+    box-shadow: 0 0 10px #f7e3a140;
+  }
+  .sanctuary-shell .workspace-growth-meter:not(#_):not(#_):not(#_):not(#_)::-webkit-meter-optimum-value { background: var(--gild-fill) !important; }
+  .sanctuary-shell .workspace-growth-meter:not(#_):not(#_):not(#_):not(#_)::-moz-meter-bar { background: var(--gild-fill) !important; }
+  .sanctuary-shell .workspace-complete-label:not(#_):not(#_):not(#_):not(#_) {
+    border-color: var(--gild-line) !important;
+    color: var(--gild-light) !important;
+    background: #e0b45a14 !important;
+  }
+
+  /* Level and Evolve preview: the stat column was squeezed beside the comparison, breaking words and
+     numbers one character per line at 1280px. Comparison on top, stats in two readable columns. */
+  .sanctuary-shell .ref-bearer-detail[data-character-view^="upgrade-"] .ref-growth-preview:not(#_):not(#_):not(#_):not(#_) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+  .sanctuary-shell .ref-bearer-detail[data-character-view^="upgrade-"] .ref-growth-preview .hub-comparison:not(#_):not(#_):not(#_):not(#_) {
+    min-width: 0 !important;
+    gap: 8px !important;
+  }
+  .sanctuary-shell .ref-bearer-detail[data-character-view^="upgrade-"] .ref-growth-preview .upgrade-stat-preview:not(#_):not(#_):not(#_):not(#_) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+  .sanctuary-shell .ref-bearer-detail[data-character-view^="upgrade-"] .upgrade-stat-preview > span:not(#_):not(#_):not(#_):not(#_) {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: baseline !important;
+    justify-content: space-between !important;
+    gap: 2px 8px !important;
+    padding: 6px 10px !important;
+    border: 1px solid var(--gild-hairline) !important;
+    border-radius: var(--radius-sm) !important;
+    background: var(--glass-panel) !important;
+    overflow-wrap: normal !important;
+  }
+  .sanctuary-shell .ref-bearer-detail[data-character-view^="upgrade-"] .upgrade-stat-preview :is(small, strong):not(#_):not(#_):not(#_):not(#_) {
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+  .sanctuary-shell .ref-bearer-detail[data-character-view^="upgrade-"] .upgrade-stat-preview strong:not(#_):not(#_):not(#_):not(#_) {
+    white-space: nowrap !important;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Evolve fodder: the pager sat beside a two-column list, leaving each copy about 30px of text width. */
+  .sanctuary-shell .ref-evolution-detail .evolution-fodder-pages:not(#_):not(#_):not(#_):not(#_) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 6px !important;
+  }
+  .sanctuary-shell .ref-evolution-detail .evolution-fodder-pages > .menu-pager:not(#_):not(#_):not(#_):not(#_) { justify-self: center !important; }
+  .sanctuary-shell .ref-evolution-detail .evolution-fodder-copy:not(#_):not(#_):not(#_):not(#_) {
+    grid-template-columns: 24px 36px minmax(0, 1fr) !important;
+    align-items: center !important;
+    padding: 6px 8px !important;
+    border: 1px solid var(--gild-hairline) !important;
+    border-radius: var(--radius-sm) !important;
+  }
+  .sanctuary-shell .ref-evolution-detail .evolution-fodder-copy:has(input:checked):not(#_):not(#_):not(#_):not(#_) {
+    border-color: var(--gild-mid) !important;
+    box-shadow: var(--glow-gild) !important;
+  }
+  .sanctuary-shell .ref-evolution-detail .evolution-fodder-copy > img:not(#_):not(#_):not(#_):not(#_) { width: 36px !important; height: 36px !important; }
+  .sanctuary-shell .ref-evolution-detail .evolution-fodder-copy :is(.evolution-fodder-info, strong, small):not(#_):not(#_):not(#_):not(#_) {
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    min-width: 0 !important;
+  }
+
+  /* Calamitic Ascension entry: the rollout's flex:1 on every child span stretched the crown into a lens. */
+  .sanctuary-shell .calamitic-ascension-entry > .ascension-crown:not(#_):not(#_):not(#_):not(#_) {
+    flex: none !important;
+    width: 52px !important;
+    height: 52px !important;
+  }
+
+  /* Squad formation: Change / Remove / Choose were 40px tall, under the 44px target. */
+  .sanctuary-shell .squad-slot-actions :is(button, .text-button):not(#_):not(#_):not(#_):not(#_),
+  .sanctuary-shell .squad-slot :is(.squad-change, .squad-remove):not(#_):not(#_):not(#_):not(#_) { min-height: 44px !important; }
+  .sanctuary-shell .squad-slot.squad-slot-leader:not(#_):not(#_):not(#_):not(#_) { box-shadow: var(--glow-gild), var(--shadow-panel) !important; }
+
+  /* Conduit loadout. */
+  .sanctuary-shell .conduit-loadout .loadout-master .selection-trigger:not(#_):not(#_):not(#_):not(#_) {
+    width: max-content !important;
+    max-width: none !important;
+    white-space: nowrap !important;
+  }
+  .sanctuary-shell .conduit-loadout .loadout-slot.is-target:not(#_):not(#_):not(#_):not(#_) {
+    border-color: var(--gild-mid) !important;
+    box-shadow: var(--glow-gild) !important;
+    outline-color: var(--gild-light) !important;
+  }
+  /* Equip target and search count share one line so the owned list shows a full page at 720px. */
+  .sanctuary-shell .conduit-loadout .loadout-owned:not(#_):not(#_):not(#_):not(#_) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-rows: auto auto auto auto minmax(0, 1fr) auto !important;
+    gap: 6px 10px !important;
+  }
+  .sanctuary-shell .conduit-loadout .loadout-owned > :not(.loadout-target-cue, .loadout-search-status):not(#_):not(#_):not(#_):not(#_) { grid-column: 1 / -1 !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned > :is(.loadout-target-cue, .loadout-search-status):not(#_):not(#_):not(#_):not(#_) {
+    grid-row: 4 !important;
+    align-self: center !important;
+    margin: 0 !important;
+  }
+  .sanctuary-shell .conduit-loadout .loadout-owned > .loadout-search-status:not(#_):not(#_):not(#_):not(#_) { grid-column: 2 !important; text-align: right !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned > .loadout-target-cue:not(#_):not(#_):not(#_):not(#_) { grid-column: 1 !important; border-left-color: var(--gild-mid) !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned > .loadout-owned-list:not(#_):not(#_):not(#_):not(#_) { grid-row: 5 !important; }
+  .sanctuary-shell .conduit-loadout .loadout-owned > .loadout-pager:not(#_):not(#_):not(#_):not(#_) { grid-row: 6 !important; }
+
+  /* Conduit Store detail: content sat on the panel edge with a 40px artwork. */
+  .sanctuary-shell .ref-conduit-store .ref-store-detail:not(#_):not(#_):not(#_):not(#_) { padding: 14px !important; gap: 10px !important; }
+  .sanctuary-shell .ref-conduit-store .ref-store-detail :is(.info-catalog, .info-offer):not(#_):not(#_):not(#_):not(#_) {
+    padding: 12px 14px !important;
+    border: 1px solid var(--gild-hairline) !important;
+    border-radius: var(--radius-md) !important;
+    background: var(--glass-panel) !important;
+  }
+  .sanctuary-shell .ref-conduit-store .ref-store-detail .info-catalog .info-item-header:not(#_):not(#_):not(#_):not(#_) {
+    grid-template-columns: 72px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+  .sanctuary-shell .ref-conduit-store .ref-store-detail .info-catalog .info-item-art:not(#_):not(#_):not(#_):not(#_) {
+    width: 72px !important;
+    height: 72px !important;
+    border: 1px solid var(--gild-line) !important;
+    border-radius: var(--radius-sm) !important;
+    background: radial-gradient(circle at 50% 40%, #f7e3a11f, transparent 70%), var(--surface-inset) !important;
+  }
+  .sanctuary-shell .ref-conduit-store .ref-store-detail .info-catalog .info-item-art:not(#_):not(#_):not(#_):not(#_) { display: grid !important; place-items: center !important; overflow: hidden !important; }
+  .sanctuary-shell .ref-conduit-store .ref-store-detail .info-catalog .info-item-art :is(.conduit-details-art, .conduit-icon-frame):not(#_):not(#_):not(#_):not(#_) {
+    width: 64px !important;
+    height: 64px !important;
+    margin: 0 !important;
+    border: 0 !important;
+    background: none !important;
+  }
+  .sanctuary-shell .ref-conduit-store .ref-store-detail .info-catalog .info-item-art img:not(#_):not(#_):not(#_):not(#_) { width: 64px !important; height: 64px !important; object-fit: contain !important; }
+  .sanctuary-shell .ref-conduit-store .info-catalog-choice[aria-pressed="true"]:not(#_):not(#_):not(#_):not(#_) { box-shadow: var(--glow-gild) !important; }
+
+  /* Conduit Upgrade: the whole page scrolled at 720px and pushed the Upgrade action below the dock.
+     Both columns now fill the work area and scroll on their own. */
+  @media (min-width: 1000px) {
+    .sanctuary-shell .ref-conduit-upgrade:not(#_):not(#_):not(#_):not(#_) {
+      height: 100% !important;
+      min-height: 0 !important;
+      grid-template-rows: auto minmax(0, 1fr) !important;
+      align-items: stretch !important;
+    }
+    .sanctuary-shell .ref-conduit-upgrade > :is(.ref-upgrade-owned, .ref-upgrade-detail, .ref-empty):not(#_):not(#_):not(#_):not(#_) {
+      min-height: 0 !important;
+      max-height: 100% !important;
+      overflow-y: auto !important;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: var(--gild-line) transparent;
+    }
+    .sanctuary-shell .ref-conduit-upgrade > .ref-upgrade-information:not(#_):not(#_):not(#_):not(#_) { grid-row: 1 !important; }
+  }
+  .sanctuary-shell .ref-conduit-upgrade .conduit-upgrade-values:not(#_):not(#_):not(#_):not(#_) {
+    border: 1px solid var(--gild-line) !important;
+    background: linear-gradient(110deg, var(--glass-raised), var(--glass-panel)) !important;
+  }
+  .sanctuary-shell .ref-conduit-upgrade .ref-effect-progression > .is-current:not(#_):not(#_):not(#_):not(#_) {
+    border-color: var(--gild-mid) !important;
+    box-shadow: var(--glow-gild) !important;
+  }
+  .sanctuary-shell .ref-conduit-upgrade [data-select-upgrade-conduit][aria-pressed="true"]:not(#_):not(#_):not(#_):not(#_) { box-shadow: var(--glow-gild) !important; }
+
+  /* Event Elemental-Devourer shop: the disabled Buy label sat left-aligned. */
+  .sanctuary-shell .ref-event-devourer-store .event-devourer-card > button:not(#_):not(#_):not(#_):not(#_) { justify-content: center !important; text-align: center !important; }
+
+  /* Shop host card (Store, Upgrade and Event shop keepers): gilded portrait slot. */
+  .sanctuary-shell .shop-host-mark:not(#_):not(#_):not(#_):not(#_) {
+    border-color: var(--gild-line) !important;
+    color: var(--gild-light) !important;
+    font-family: var(--ui-font) !important;
+  }
+
+  /* Current / Next comparison boxes were near-black slabs; jewel glass with a gold hairline. */
+  .sanctuary-shell .ref-bearer-detail[data-character-view^="upgrade-"] .hub-comparison > div:not(#_):not(#_):not(#_):not(#_) {
+    border: 1px solid var(--gild-hairline) !important;
+    background: var(--glass-panel) !important;
+  }
+  .sanctuary-shell .ref-bearer-detail[data-character-view^="upgrade-"] .hub-comparison > div:last-child:not(#_):not(#_):not(#_):not(#_) {
+    border-style: dashed !important;
+    border-color: var(--gild-line) !important;
+  }
+
+  /* Formation Information button was 32px tall. */
+  .sanctuary-shell .squad-formation .squad-heading [data-information]:not(#_):not(#_):not(#_):not(#_) { min-height: 44px !important; }
+
+  /* Lore disclosures in Conduit detail panels: collapsed boxes were black slabs taller than their label. */
+  .sanctuary-shell :is(.ref-conduit-store, .ref-conduit-upgrade) .info-lore:not(#_):not(#_):not(#_):not(#_) {
+    min-height: 0 !important;
+    padding: 4px 14px !important;
+    border-color: var(--gild-hairline) !important;
+    background: var(--surface-inset) !important;
+  }
+
+  /* Elemental-Bearers menu: the rollout's flex: 1 1 0% squeezed the four "Make them stronger" actions
+     below their content at 720px, cutting off each description. Content-sized rows, contained scroll. */
+  .sanctuary-shell .workspace-unit-actions > section:not(#_):not(#_):not(#_):not(#_) {
+    gap: 8px !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gild-line) transparent;
+  }
+  .sanctuary-shell .workspace-unit-actions button:not(#_):not(#_):not(#_):not(#_) {
+    flex: 0 0 auto !important;
+    padding-block: 8px !important;
+  }
+  .sanctuary-shell .workspace-unit-actions .workspace-action-icon:not(#_):not(#_):not(#_):not(#_) {
+    width: 40px !important;
+    height: 40px !important;
+    flex-basis: 40px !important;
+  }
+}

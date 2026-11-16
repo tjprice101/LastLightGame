@@ -29,7 +29,7 @@ html body .selection-modal .master-selection-view-details {
   min-width: 112px;
   min-height: 44px;
   padding: 8px 12px;
-  border: 1px solid color-mix(in srgb, var(--ui-accent, #aaa) 45%, #ffffff24);
+  border: 1px solid color-mix(in srgb, var(--ui-accent, #aaa) 45%, var(--gild-line));
   border-radius: 10px;
   background: #ffffff09;
   color: inherit;
@@ -46,7 +46,7 @@ html body .selection-modal .master-selection-details {
   grid-column: 1 / -1;
   margin-top: 6px;
   padding: var(--card-padding);
-  border: 1px solid #ffffff24;
+  border: 1px solid var(--gild-line);
   border-radius: 12px;
   background: linear-gradient(145deg, #ffffff0c, #ffffff04);
 }

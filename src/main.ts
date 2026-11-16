@@ -98,6 +98,7 @@ import { presentReward } from './presentation/reward-screen';
 import { summonReward, summonTenReward } from './presentation/summon-presentation';
 import { animateSummonHub } from './presentation/summon-hub';
 import { animateSocial } from './presentation/social-luster';
+import { animateUnitWorkshop } from './presentation/unit-luster';
 import { conduitReward } from './presentation/conduit-presentation';
 import { openOnlineAccount as showOnlineAccount } from './presentation/online-account';
 import { onlineStores, onlineProfile, friendProfileScreen, bindProfileEditor, refreshProfileTracking, refreshFriendPresence, type StoreTab, type OnlineProfileDisplay, type SocialDisplay } from './presentation/online-store-profile';
@@ -144,6 +145,7 @@ import { formatMenuWorkspace, workspaceUnitsMenu } from './presentation/menu-wor
 import './presentation/menu-workspace.css';
 import './presentation/menu-reference.css';
 import './presentation/menu-reference-rollout.css';
+import './presentation/unit-workshop.css';
 
 const gameStorage = menuWorkspace ? createMenuWorkspaceStorage() : new DebugProfileStorage(window.localStorage, import.meta.env.DEV);
 const preferencesStorage = menuWorkspace ? gameStorage : window.localStorage;
@@ -1094,6 +1096,7 @@ function renderMenu(firstArrival = false): void {
   bindSummonRates(app);
   animateSummonHub(app);
   animateSocial(app);
+  animateUnitWorkshop(app);
   bindConduitUpgrades(app, gameStorage, (updated) => { account = updated; refreshConduitMenu(); }, showError,
     playMode === 'online' ? async (id, expectedLevel) => (await performOnline({ kind: 'upgradeConduit', id, expectedLevel })).account : undefined,
     playMode === 'online' ? async expected => (await performOnline({ kind: 'maxConduit', expected })).account : undefined);
@@ -1303,6 +1306,7 @@ function renderMenu(firstArrival = false): void {
         if (app.querySelector('.ref-character-submenus')) {
           characterTab = tab;
           updateCharacterTab(app, getStarter(selectedCharacter ?? starter.id), tab, account);
+          animateUnitWorkshop(app);
           if (matchMedia('(max-width: 1100px)').matches) {
             app.querySelector('#upgrade-heading')?.scrollIntoView({ block: 'start', behavior: reducedMotion() ? 'auto' : 'smooth' });
           }
@@ -1719,6 +1723,7 @@ function refreshConduitMenu(): void {
       playMode === 'online' ? async (id, expectedLevel) => (await performOnline({ kind: 'upgradeConduit', id, expectedLevel })).account : undefined,
       playMode === 'online' ? async expected => (await performOnline({ kind: 'maxConduit', expected })).account : undefined);
   } else throw new Error('No active Conduit menu to update.');
+  animateUnitWorkshop(app);
   if (account) {
     const main = app.querySelector('#fractalis-balance');
     const premium = app.querySelector('#lycalis-balance');

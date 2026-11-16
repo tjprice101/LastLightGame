@@ -1,5 +1,30 @@
 # Menus and inventory
 
+## Element-Bearer and Conduit workshop (D-466, 2026-11-16)
+
+- Skin: Upgrade result, Calamitic Ascension, Calamity section, Event shop host,
+  roster, Bearer detail, Squad formation, Loadouts, Conduit loadout, Conduit
+  Store and Conduit Upgrade use Jewel & Gold tokens. Level and Evolution
+  progress is gold. The selected Conduit slot, Store tile, Upgrade tile,
+  current upgrade step and chosen evolution copies wear the gold frame.
+- Motion (`unit-luster.ts`): cards cascade in once per arrival at a workshop
+  view; re-renders (filters, pager, saved equips, wallet refresh) never replay
+  it. Picking a different Conduit in the Store or Upgrade screen glints its
+  artwork. Static under Reduce motion.
+- Fixes (all pre-existing): Level and Evolve stat previews no longer break
+  words and numbers one character per line at 1280px (comparison on top, two
+  stat columns); evolution copies are readable (pager below the list); the
+  Calamitic Ascension crown is a badge again, not a stretched lens; Squad
+  formation Change/Remove/Choose and Information meet 44px; the Master slot
+  trigger no longer clips "No Master equipped"; the selected Conduit slot is
+  gold, not white; the equip-target cue and search count share one line so a
+  full owned-Conduit page shows at 720px; Conduit Store detail has padding
+  and a 72px centered artwork; Conduit Upgrade columns scroll independently
+  instead of scrolling the whole page; the Elemental-Bearers menu actions no
+  longer cut off their descriptions; Event shop Buy labels are centered.
+- Upgrade result: "Upgrade saved" reads as a gold status caption instead of a
+  button-like box; the level pill is gold-framed.
+
 ## Settings and Social (D-465, 2026-11-16)
 
 - Settings drawer: jewel glass sections with gold hairlines and a gold gem

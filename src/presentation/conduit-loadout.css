@@ -45,12 +45,12 @@ html body .sanctuary-shell .ref-loadout-page .character-detail-content { padding
 html body .sanctuary-shell .loadout-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-4); }
 html body .sanctuary-shell .ref-loadout-page .loadout-header { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; }
 html body .sanctuary-shell .loadout-header h3 { margin: 0; font-size: var(--ui-section); font-weight: 700; line-height: 1.2; }
-html body .sanctuary-shell .loadout-header p { margin: var(--space-1) 0 0; color: var(--menu-muted, #a9a9ae); font-size: var(--ui-body); }
-html body .sanctuary-shell .ref-loadout-page .loadout-back { display: inline-flex; align-items: center; min-height: 40px; padding: var(--space-2) var(--space-4); border: 1px solid #3a3a3f; border-radius: .6rem; background: transparent; color: #f4f4f5; font-weight: 700; white-space: nowrap; cursor: pointer; }
-html body .sanctuary-shell .ref-loadout-page .loadout-back:hover { border-color: #8a8a90; background: #1a1a1c; }
+html body .sanctuary-shell .loadout-header p { margin: var(--space-1) 0 0; color: var(--menu-muted, var(--text-muted)); font-size: var(--ui-body); }
+html body .sanctuary-shell .ref-loadout-page .loadout-back { display: inline-flex; align-items: center; min-height: 40px; padding: var(--space-2) var(--space-4); border: 1px solid var(--gild-hairline); border-radius: .6rem; background: transparent; color: var(--text-primary); font-weight: 700; white-space: nowrap; cursor: pointer; }
+html body .sanctuary-shell .ref-loadout-page .loadout-back:hover { border-color: #8a8a90; background: var(--surface-raised); }
 html body .sanctuary-shell .conduit-loadout .loadout-member-tabs { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: flex-end; padding: 0; border: 0; background: none; }
-html body .sanctuary-shell .conduit-loadout .loadout-member-tabs button { min-height: 36px; padding: var(--space-1) var(--space-4); border: 1px solid #3a3a3f; border-radius: 999px; background: transparent; color: #d4d4d8; }
-html body .sanctuary-shell .conduit-loadout .loadout-member-tabs button[aria-pressed=true] { border-color: #f4f4f5; background: #f4f4f5; color: #0b0b0c; }
+html body .sanctuary-shell .conduit-loadout .loadout-member-tabs button { min-height: 36px; padding: var(--space-1) var(--space-4); border: 1px solid var(--gild-hairline); border-radius: 999px; background: transparent; color: var(--text-secondary); }
+html body .sanctuary-shell .conduit-loadout .loadout-member-tabs button[aria-pressed=true] { border-color: var(--text-primary); background: var(--text-primary); color: var(--surface-inset); }
 
 /* Shared button surfaces use important gradients; keep this page flat without overriding disabled gray. */
 html body .sanctuary-shell .conduit-loadout :is(button, .ref-chip, .ref-link):not(:disabled):not([aria-disabled=true]) { background-image: none !important; box-shadow: none; }
@@ -58,78 +58,78 @@ html body .sanctuary-shell .conduit-loadout :is(.loadout-member-tabs button, .lo
 
 /* Two-panel layout. */
 html body .sanctuary-shell .loadout-layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(20rem, 1fr); gap: var(--space-3); align-items: stretch; }
-html body .sanctuary-shell .conduit-loadout .ref-panel { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3); min-width: 0; border: 1px solid var(--menu-border, #2d2d31); border-radius: .8rem; background: #131314; }
-html body .sanctuary-shell .conduit-loadout .ref-panel-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-2); margin: 0; font-size: var(--ui-label); letter-spacing: .1em; text-transform: uppercase; color: var(--menu-muted, #a9a9ae); }
+html body .sanctuary-shell .conduit-loadout .ref-panel { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-3); min-width: 0; border: 1px solid var(--menu-border, var(--gild-hairline)); border-radius: .8rem; background: var(--surface-inset); }
+html body .sanctuary-shell .conduit-loadout .ref-panel-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-2); margin: 0; font-size: var(--ui-label); letter-spacing: .1em; text-transform: uppercase; color: var(--menu-muted, var(--text-muted)); }
 html body .sanctuary-shell .conduit-loadout .loadout-clear { min-height: 44px; text-transform: none; letter-spacing: 0; }
-html body .sanctuary-shell .conduit-loadout .ref-panel-heading .ref-link { min-height: 28px; padding: 0 var(--space-1); border: 0; background: none; color: #f4f4f5; text-decoration: underline; text-underline-offset: 3px; text-transform: none; letter-spacing: 0; font-size: var(--ui-label); }
+html body .sanctuary-shell .conduit-loadout .ref-panel-heading .ref-link { min-height: 28px; padding: 0 var(--space-1); border: 0; background: none; color: var(--text-primary); text-decoration: underline; text-underline-offset: 3px; text-transform: none; letter-spacing: 0; font-size: var(--ui-label); }
 html body .sanctuary-shell .conduit-loadout .loadout-heading-links { display: inline-flex; gap: var(--space-2); }
 
 /* Compact horizontal Master row. */
-html body .sanctuary-shell .conduit-loadout .ref-master-slot { display: grid; grid-template-columns: 112px minmax(0, 1fr) minmax(9rem, 14rem) auto; align-items: center; gap: var(--space-2); margin: 0; padding: var(--space-2) var(--space-2); border: 1px dashed #3a3a3f; border-radius: .7rem; background: transparent; }
+html body .sanctuary-shell .conduit-loadout .ref-master-slot { display: grid; grid-template-columns: 112px minmax(0, 1fr) minmax(9rem, 14rem) auto; align-items: center; gap: var(--space-2); margin: 0; padding: var(--space-2) var(--space-2); border: 1px dashed var(--gild-hairline); border-radius: .7rem; background: transparent; }
 html body .sanctuary-shell .conduit-loadout .ref-master-slot:not(.loadout-master) { grid-template-columns: auto minmax(0, 1fr); }
-html body .sanctuary-shell .conduit-loadout .ref-master-slot:not(.loadout-master) > p { margin: 0; color: var(--menu-muted, #a9a9ae); font-size: var(--ui-body); }
+html body .sanctuary-shell .conduit-loadout .ref-master-slot:not(.loadout-master) > p { margin: 0; color: var(--menu-muted, var(--text-muted)); font-size: var(--ui-body); }
 html body .sanctuary-shell .conduit-loadout .loadout-master-art { display: grid; place-items: center; width: 112px; height: 112px; overflow: hidden; }
 html body .sanctuary-shell .conduit-loadout .loadout-master-art .master-art { width: 112px; height: 112px; max-width: 100%; max-height: 100%; object-fit: contain; }
-html body .sanctuary-shell .conduit-loadout .loadout-master-empty { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #3a3a3f; border-radius: .5rem; color: #8a8a90; font-weight: 700; }
+html body .sanctuary-shell .conduit-loadout .loadout-master-empty { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--gild-hairline); border-radius: .5rem; color: var(--text-muted); font-weight: 700; }
 html body .sanctuary-shell .conduit-loadout .loadout-master-text { display: grid; min-width: 0; line-height: 1.25; }
 html body .sanctuary-shell .conduit-loadout .loadout-master-text b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-html body .sanctuary-shell .conduit-loadout .loadout-master-text small:last-child { color: var(--menu-muted, #a9a9ae); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+html body .sanctuary-shell .conduit-loadout .loadout-master-text small:last-child { color: var(--menu-muted, var(--text-muted)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 html body .sanctuary-shell .conduit-loadout .loadout-master-select .selection-trigger { width: 100%; min-height: 36px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-html body .sanctuary-shell .conduit-loadout .loadout-eyebrow { font-size: var(--ui-caption); text-transform: uppercase; letter-spacing: .08em; color: var(--menu-muted, #a9a9ae); }
+html body .sanctuary-shell .conduit-loadout .loadout-eyebrow { font-size: var(--ui-caption); text-transform: uppercase; letter-spacing: .08em; color: var(--menu-muted, var(--text-muted)); }
 
 /* Four-by-two slot grid. */
 html body .sanctuary-shell .conduit-loadout .loadout-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(10.25rem, auto); gap: var(--space-2); margin: 0; }
 html body .sanctuary-shell .conduit-loadout .loadout-slot { position: relative; display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; padding: var(--space-2); overflow: hidden; text-align: left;
-  border: 1px solid #2d2d31; border-top: 2px solid var(--loadout-accent, #2d2d31); border-radius: .7rem; background: #161618; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot.is-target { outline: 2px solid #f4f4f5; outline-offset: -1px; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot-target { align-self: flex-start; min-height: 28px; padding: var(--space-1) var(--space-2); border: 1px solid #3a3a3f; border-radius: 999px; background: transparent; color: #a9a9ae; font-size: var(--ui-label); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot-target[aria-pressed=true] { border-color: #f4f4f5; background: #f4f4f5 !important; color: #0b0b0c; }
+  border: 1px solid var(--gild-hairline); border-top: 2px solid var(--loadout-accent, var(--gild-hairline)); border-radius: .7rem; background: #161618; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot.is-target { outline: 2px solid var(--gild-light); outline-offset: -1px; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-target { align-self: flex-start; min-height: 28px; padding: var(--space-1) var(--space-2); border: 1px solid var(--gild-hairline); border-radius: 999px; background: transparent; color: var(--text-muted); font-size: var(--ui-label); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-target[aria-pressed=true] { border-color: var(--text-primary); background: var(--text-primary) !important; color: var(--surface-inset); }
 html body .sanctuary-shell .conduit-loadout .loadout-slot-main { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: var(--space-2); align-items: center; min-width: 0; }
 html body .sanctuary-shell .conduit-loadout .loadout-slot-art { display: block; width: 48px; height: 48px; overflow: hidden; }
 html body .sanctuary-shell .conduit-loadout :is(.loadout-slot-art, .loadout-owned-art) .conduit-icon-frame { box-sizing: border-box; width: 100%; height: 100%; min-width: 0; min-height: 0; max-width: 100%; max-height: 100%; flex: none; }
 html body .sanctuary-shell .conduit-loadout :is(.loadout-slot-art, .loadout-owned-art) .conduit-icon { width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; }
 html body .sanctuary-shell .conduit-loadout .loadout-slot-body { display: grid; gap: var(--space-1); min-width: 0; }
 html body .sanctuary-shell .conduit-loadout .loadout-slot-name { font-size: var(--ui-label); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
-html body .sanctuary-shell .conduit-loadout .loadout-level { font-size: var(--ui-label); line-height: 1.3; color: var(--menu-muted, #a9a9ae); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-html body .sanctuary-shell .conduit-loadout .loadout-effect { margin: 0; font-size: var(--ui-body); font-weight: 700; line-height: 1.25; color: #f4f4f5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+html body .sanctuary-shell .conduit-loadout .loadout-level { font-size: var(--ui-label); line-height: 1.3; color: var(--menu-muted, var(--text-muted)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html body .sanctuary-shell .conduit-loadout .loadout-effect { margin: 0; font-size: var(--ui-body); font-weight: 700; line-height: 1.25; color: var(--text-primary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 html body .sanctuary-shell .conduit-loadout .loadout-actions { display: flex; gap: var(--space-1); margin-top: auto; width: 100%; }
-html body .sanctuary-shell .conduit-loadout .loadout-actions > button { flex: 1 1 0; min-width: 0; min-height: 32px; padding: var(--space-1) var(--space-1); border: 1px solid #3a3a3f; border-radius: .5rem; background: transparent; color: #f4f4f5; font-size: var(--ui-label); }
+html body .sanctuary-shell .conduit-loadout .loadout-actions > button { flex: 1 1 0; min-width: 0; min-height: 32px; padding: var(--space-1) var(--space-1); border: 1px solid var(--gild-hairline); border-radius: .5rem; background: transparent; color: var(--text-primary); font-size: var(--ui-label); }
 html body .sanctuary-shell .conduit-loadout .loadout-actions > .loadout-rule-button { flex: 0 0 auto; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty { align-items: center; justify-content: space-between; border: 1px dashed #3a3a3f; background: transparent; text-align: center; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty { align-items: center; justify-content: space-between; border: 1px dashed var(--gild-hairline); background: transparent; text-align: center; }
 html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty .loadout-slot-target { align-self: flex-start; }
 html body .sanctuary-shell .conduit-loadout .loadout-slot-plus { display: grid; place-items: center; flex: 1; width: 100%; }
 html body #app .sanctuary-shell .conduit-loadout .loadout-slot-plus .selection-trigger { display: grid; place-items: center; width: 52px; height: 52px; min-height: 44px; padding: 0; border: 1px dashed #5a5a60; border-radius: 50%; background: transparent; color: transparent; font-size: 0 !important; overflow: hidden; cursor: pointer; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot-plus .selection-trigger::before { content: '+'; color: #d4d4d8; font-size: var(--ui-label); line-height: 1; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot-plus .selection-trigger:hover:not(:disabled) { border-color: #f4f4f5; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-plus .selection-trigger::before { content: '+'; color: var(--text-secondary); font-size: var(--ui-label); line-height: 1; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-plus .selection-trigger:hover:not(:disabled) { border-color: var(--gild-light); }
 html body .sanctuary-shell .conduit-loadout .loadout-slot-plus select:not([hidden]) { max-width: 100%; }
-html body .sanctuary-shell .conduit-loadout .loadout-empty-label { color: var(--menu-muted, #a9a9ae); font-size: var(--ui-label); }
+html body .sanctuary-shell .conduit-loadout .loadout-empty-label { color: var(--menu-muted, var(--text-muted)); font-size: var(--ui-label); }
 html body .sanctuary-shell .conduit-loadout .loadout-swap[hidden] { display: none; }
 
 /* Total bonuses strip inside the loadout panel. */
 html body .sanctuary-shell .conduit-loadout .loadout-bonuses { display: grid; gap: var(--space-1); margin-top: auto; padding-top: var(--space-2); border-top: 1px solid #242427; }
-html body .sanctuary-shell .conduit-loadout .loadout-bonus-heading { margin: 0; font-size: var(--ui-label); letter-spacing: .1em; text-transform: uppercase; color: var(--menu-muted, #a9a9ae); }
+html body .sanctuary-shell .conduit-loadout .loadout-bonus-heading { margin: 0; font-size: var(--ui-label); letter-spacing: .1em; text-transform: uppercase; color: var(--menu-muted, var(--text-muted)); }
 html body .sanctuary-shell .conduit-loadout .loadout-bonus-strip { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-2); }
 html body .sanctuary-shell .conduit-loadout .loadout-bonus-strip > p { margin: 0; font-size: var(--ui-body); }
 html body .sanctuary-shell .loadout-bonus-row { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-2); padding: var(--space-1) var(--space-2); border: 1px solid #242427; border-radius: .5rem; font-size: var(--ui-label); }
-html body .sanctuary-shell .loadout-bonus-row > span { color: #d4d4d8; }
+html body .sanctuary-shell .loadout-bonus-row > span { color: var(--text-secondary); }
 html body .sanctuary-shell .loadout-bonus-row strong { font-weight: 700; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-html body .sanctuary-shell .loadout-bonus-row .loadout-base-stat { color: #f4f4f5; }
-html body .sanctuary-shell .conduit-loadout .ref-equipment-note { margin: 0; color: var(--menu-muted, #a9a9ae); font-size: var(--ui-label); }
+html body .sanctuary-shell .loadout-bonus-row .loadout-base-stat { color: var(--text-primary); }
+html body .sanctuary-shell .conduit-loadout .ref-equipment-note { margin: 0; color: var(--menu-muted, var(--text-muted)); font-size: var(--ui-label); }
 
 /* Your Conduits: search/sort, filters, cue, paginated rows (no scroll region). */
 html body .sanctuary-shell .conduit-loadout .loadout-tools { display: grid; grid-template-columns: minmax(0, 1fr) minmax(8rem, 11rem); gap: var(--space-2); }
 html body .sanctuary-shell .loadout-search { display: block; min-width: 0; }
-html body .sanctuary-shell .loadout-search input { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; border: 1px solid #3a3a3f; border-radius: .5rem; padding: var(--space-1) var(--space-2); background: #1a1a1c; color: #f4f4f5; font: inherit; }
-html body .sanctuary-shell .loadout-search input::placeholder { color: #a9a9ae; }
-html body .sanctuary-shell .loadout-search input:focus-visible { outline: 2px solid #f4f4f5; outline-offset: 2px; }
+html body .sanctuary-shell .loadout-search input { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; border: 1px solid var(--gild-hairline); border-radius: .5rem; padding: var(--space-1) var(--space-2); background: var(--surface-raised); color: var(--text-primary); font: inherit; }
+html body .sanctuary-shell .loadout-search input::placeholder { color: var(--text-muted); }
+html body .sanctuary-shell .loadout-search input:focus-visible { outline: 2px solid var(--gild-light); outline-offset: 2px; }
 html body .sanctuary-shell .conduit-loadout .loadout-sort { min-width: 0; }
 html body .sanctuary-shell .conduit-loadout .loadout-sort .selection-trigger { width: 100%; min-height: 44px; overflow: visible; text-overflow: clip; white-space: normal; font-size: var(--ui-label); }
 html body .sanctuary-shell .conduit-loadout .loadout-filters { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-2); }
 html body .sanctuary-shell .conduit-loadout .loadout-filter-group { display: inline-flex; flex-wrap: wrap; gap: var(--space-1); }
-html body .sanctuary-shell .conduit-loadout .loadout-filter-group button { min-height: 28px; padding: var(--space-1) var(--space-2); border: 1px solid #3a3a3f; border-radius: 999px; background: transparent; color: #d4d4d8; font-size: var(--ui-label); }
-html body .sanctuary-shell .conduit-loadout .loadout-filter-group button[aria-pressed=true] { border-color: #f4f4f5; background: #f4f4f5 !important; color: #0b0b0c; }
-html body .sanctuary-shell .conduit-loadout .loadout-target-cue { margin: 0; padding: var(--space-1) var(--space-2); border-left: 2px solid #f4f4f5; color: #f4f4f5; font-size: var(--ui-label); font-weight: 700; }
-html body .sanctuary-shell .loadout-search-status { margin: 0; font-size: var(--ui-label); color: var(--menu-muted, #a9a9ae); }
+html body .sanctuary-shell .conduit-loadout .loadout-filter-group button { min-height: 28px; padding: var(--space-1) var(--space-2); border: 1px solid var(--gild-hairline); border-radius: 999px; background: transparent; color: var(--text-secondary); font-size: var(--ui-label); }
+html body .sanctuary-shell .conduit-loadout .loadout-filter-group button[aria-pressed=true] { border-color: var(--text-primary); background: var(--text-primary) !important; color: var(--surface-inset); }
+html body .sanctuary-shell .conduit-loadout .loadout-target-cue { margin: 0; padding: var(--space-1) var(--space-2); border-left: 2px solid var(--text-primary); color: var(--text-primary); font-size: var(--ui-label); font-weight: 700; }
+html body .sanctuary-shell .loadout-search-status { margin: 0; font-size: var(--ui-label); color: var(--menu-muted, var(--text-muted)); }
 html body .sanctuary-shell .loadout-owned [hidden] { display: none !important; }
 html body .sanctuary-shell .loadout-owned-list { display: grid; align-content: start; gap: 0; flex: 1; min-height: 0; overflow: visible; }
 html body .sanctuary-shell .loadout-owned-list > p { margin: var(--space-2) 0; font-size: var(--ui-body); }
@@ -140,15 +140,15 @@ html body .sanctuary-shell .loadout-owned-text { display: grid; gap: 0; min-widt
 html body .sanctuary-shell .loadout-owned-text b { font-size: var(--ui-label); overflow-wrap: anywhere; }
 html body .sanctuary-shell .loadout-owned-text small { font-size: var(--ui-caption); color: var(--text-secondary); overflow-wrap: anywhere; }
 html body .sanctuary-shell .loadout-owned-row [data-loadout-equip] { grid-column: 2 / -1; }
-html body .sanctuary-shell .loadout-owned-text .loadout-reason { color: #c9c9ce; }
-html body .sanctuary-shell .conduit-loadout .loadout-owned-row > button { min-height: 44px; padding: var(--space-1) var(--space-3); border: 1px solid #3a3a3f; border-radius: .5rem; background: transparent; color: #f4f4f5; font-size: var(--ui-label); white-space: nowrap; }
-html body .sanctuary-shell .conduit-loadout .loadout-owned-row > .ref-white { display: inline-flex; align-items: center; min-height: 28px; padding: var(--space-1) var(--space-3); border: 1px solid #f4f4f5; border-radius: 999px; background: #f4f4f5; color: #0b0b0c; font-size: var(--ui-label); white-space: nowrap; }
+html body .sanctuary-shell .loadout-owned-text .loadout-reason { color: var(--text-secondary); }
+html body .sanctuary-shell .conduit-loadout .loadout-owned-row > button { min-height: 44px; padding: var(--space-1) var(--space-3); border: 1px solid var(--gild-hairline); border-radius: .5rem; background: transparent; color: var(--text-primary); font-size: var(--ui-label); white-space: nowrap; }
+html body .sanctuary-shell .conduit-loadout .loadout-owned-row > .ref-white { display: inline-flex; align-items: center; min-height: 28px; padding: var(--space-1) var(--space-3); border: 1px solid var(--text-primary); border-radius: 999px; background: var(--text-primary); color: var(--surface-inset); font-size: var(--ui-label); white-space: nowrap; }
 html body .sanctuary-shell .conduit-loadout :is(.loadout-actions, .loadout-owned-row) > button:hover:not(:disabled),
 html body .sanctuary-shell .conduit-loadout .loadout-rule-button:hover:not(:disabled) { border-color: #8a8a90; background: #1f1f22; }
-html body .sanctuary-shell .conduit-loadout .loadout-rule-button { min-height: 44px; padding: var(--space-1) var(--space-2); border: 1px solid #3a3a3f; border-radius: .5rem; background: transparent; color: #d4d4d8; font-size: var(--ui-label); }
+html body .sanctuary-shell .conduit-loadout .loadout-rule-button { min-height: 44px; padding: var(--space-1) var(--space-2); border: 1px solid var(--gild-hairline); border-radius: .5rem; background: transparent; color: var(--text-secondary); font-size: var(--ui-label); }
 html body .sanctuary-shell .conduit-loadout .loadout-pager { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); margin-top: auto; padding-top: var(--space-2); border-top: 1px solid #242427; font-size: var(--ui-label); }
-html body .sanctuary-shell .conduit-loadout .loadout-pager button { min-height: 32px; padding: var(--space-1) var(--space-3); border: 1px solid #3a3a3f; border-radius: .5rem; background: transparent; color: #f4f4f5; font-size: var(--ui-label); }
-html body .sanctuary-shell .conduit-loadout .loadout-pager [data-loadout-page-status] { color: #d4d4d8; font-variant-numeric: tabular-nums; }
+html body .sanctuary-shell .conduit-loadout .loadout-pager button { min-height: 32px; padding: var(--space-1) var(--space-3); border: 1px solid var(--gild-hairline); border-radius: .5rem; background: transparent; color: var(--text-primary); font-size: var(--ui-label); }
+html body .sanctuary-shell .conduit-loadout .loadout-pager [data-loadout-page-status] { color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 
 /* Touch devices keep full 44px targets. */
 @media (pointer: coarse) {
@@ -191,7 +191,7 @@ html body .sanctuary-shell .ref-organized-detail .ref-character-overview > .load
 #app .sanctuary-shell .conduit-loadout .loadout-owned-art { width: 80px; height: 80px; }
 #app .sanctuary-shell .conduit-loadout .loadout-slot-controls { display: grid; gap: var(--space-1); justify-items: start; }
 #app .sanctuary-shell .conduit-loadout .loadout-slot-name { font-size: var(--ui-label); line-height: 1.2; overflow-wrap: normal; }
-#app .sanctuary-shell .conduit-loadout .loadout-level { font-size: var(--ui-label); background: none; color: #c9c9ce; }
+#app .sanctuary-shell .conduit-loadout .loadout-level { font-size: var(--ui-label); background: none; color: var(--text-secondary); }
 #app .sanctuary-shell .conduit-loadout .loadout-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-1); }
 #app .sanctuary-shell .conduit-loadout .loadout-actions > button { font-size: var(--ui-label); padding: var(--space-1) var(--space-1); white-space: nowrap; overflow-wrap: normal; word-break: normal; }
 #app .sanctuary-shell .conduit-loadout .loadout-owned-row { grid-template-columns: 80px minmax(0, 1fr) auto; column-gap: var(--space-2); }

@@ -7,7 +7,7 @@
   padding: .75rem;
   border: 1px solid #ffffff2e;
   border-radius: .85rem;
-  background: linear-gradient(120deg, #ffffff10, #ffffff03 70%), #15171c;
+  background: linear-gradient(120deg, #ffffff10, #ffffff03 70%), var(--surface-raised);
   overflow: hidden;
 }
 .shop-host::after {
@@ -24,9 +24,9 @@
   place-items: center;
   width: 3.5rem;
   aspect-ratio: 2 / 3;
-  border: 1px solid #ffffff50;
+  border: 1px solid var(--gild-line);
   border-radius: .6rem;
-  background: radial-gradient(ellipse at 50% 35%, #ffffff24, transparent 62%), #272b33;
+  background: radial-gradient(ellipse at 50% 35%, #ffffff24, transparent 62%), var(--surface-raised);
   color: #f6f7fa;
   font-size: 1.25rem;
   font-weight: 700;
@@ -41,7 +41,7 @@ html body .sanctuary-shell .shop-host .shop-host-talk {
   min-width: 3.5rem;
   min-height: 44px;
   padding: var(--space-1) var(--space-3);
-  border: 1px solid #ffffff59;
+  border: 1px solid var(--gild-line);
   border-radius: .55rem;
   color: #fff;
   background: #ffffff10;

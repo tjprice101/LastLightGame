@@ -1,5 +1,56 @@
 # Current state and handoff
 
+## Element-Bearer and Conduit workshop, UI audit session 6 (2026-11-16)
+
+**Implemented (D-466):** Jewel & Gold for the Session 6 screens (Upgrade
+result, Calamitic Ascension, Calamity section, Event Elemental-Devourer shop)
+plus, at the owner's request, the Element-Bearer screens (menu, roster, detail
+Overview/Level/Evolve, Squad formation, Loadouts) and the Conduit screens
+(Bearer loadout/selection, Conduit Store, Conduit Upgrade). New
+`unit-workshop.css` (layout fixes in `@layer menu-reference`) and
+`unit-luster.ts` (once-per-arrival card cascade; Conduit art glint on a new
+pick). Fixed defects present before this session: Level/Evolve stat previews
+broke words and numbers one character per line at 1280px; evolution copies
+were unreadable; the Ascension crown was stretched and its header showed a
+literal `?`; formation buttons were 40px; the Master trigger clipped; the
+selected slot outline was white; only about one owned Conduit showed at 720px;
+the Store detail had no padding and a 40px off-center artwork; Conduit Upgrade
+scrolled the whole page; Elemental-Bearers menu actions cut off their
+descriptions. Store tile prices now use thousands separators. Growth progress
+is gold instead of mint. Presentation only; server bundle unchanged, so no
+deploy. See the
+[menu contract](menus-and-inventory.md#element-bearer-and-conduit-workshop-d-466-2026-11-16).
+
+**Verified:**
+
+- `npx vitest run` (full): 10,422 passed in 297 of 298 files; one worker
+  failed to start for `src/vfx/battle-effects.test.ts`, which then passed on
+  its own run together with `unit-luster.test.ts` (7, new),
+  `conduit-store.test.ts` (price assertion updated to `1,000`) and
+  `calamitic-ascension.test.ts`: 101 passed.
+- `npx tsc --noEmit`: passed. `npm run build`: passed (existing chunk
+  advisory). `node toolsundle_server_game.mjs`: output unchanged.
+- Headless Chrome, `?workspace=menu` save, 1280x720 and 1600x900: menu,
+  roster, detail tabs, formation, loadouts, Conduit loadout, Store, Upgrade,
+  Event shop, Calamity, Ascension modal and a real level-up result (in-memory
+  save). No document overflow, no clipped text, no sub-44px controls except
+  the evolution checkboxes, whose full-card labels are the 44px targets.
+  Cascades present at 80ms and removed by 1.5s; filters and saved equips do
+  not replay; Store/Upgrade picks glint; Reduce motion: zero effect nodes.
+- **Not verified:** an evolution or ascension saved through to its result
+  screen, a Conduit upgrade/purchase result, online/signed-in transactions,
+  390px portrait.
+
+**Open:** the Play hub shell around Calamity (activity rail, location list,
+activity card) is still near-black with a peach selected state from D-457.
+At 720px the fourth Elemental-Bearers menu action sits partly inside a
+contained scroll, and Conduit Upgrade's action buttons sit low in the scrolling
+detail column. Georgia/Sora menu font (D-465) still open.
+
+**Next:** owner checks Level, Evolve, Conduits and the Store in game. Next
+session: Play hub (activity rail, dungeons, War modes) re-theme (Sonnet is
+enough for skin-only work; Opus if layouts fight back).
+
 ## Settings and Social, UI audit session 5 (2026-11-16)
 
 **Implemented (D-465):** Settings drawer, Social (Player info, Friends,

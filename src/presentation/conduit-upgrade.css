@@ -15,13 +15,13 @@ html body .sanctuary-shell .ref-conduit-upgrade :is(input, select, button) { fon
 .ref-upgrade-chips { display: flex; gap: var(--space-1); flex-wrap: wrap; }
 html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-upgrade-chips button {
   min-height: 44px; padding: var(--space-1) var(--space-3); border-radius: 99px; font-size: var(--ui-label); line-height: 1.2;
-  background: #202024; color: #bdbdc4; border: 1px solid #414148; box-shadow: none;
+  background: #202024; color: var(--text-muted); border: 1px solid var(--gild-hairline); box-shadow: none;
 }
 html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-upgrade-chips button[aria-pressed="true"],
 html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-member-row.is-selected,
 html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-market-tabs button[aria-current],
 html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .primary-button:not(:disabled) {
-  background: #f4f4f5; background-image: none; color: #151518; border-color: #f4f4f5; box-shadow: none;
+  background: var(--text-primary); background-image: none; color: #151518; border-color: var(--text-primary); box-shadow: none;
 }
 html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-member-row.is-selected small { color: #414148; }
 html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade button::before,
@@ -37,12 +37,12 @@ html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-market
 .ref-upgrade-catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; gap: var(--space-2); }
 html body .sanctuary-shell .ref-conduit-upgrade .ref-member-row {
   display: flex; align-items: center; gap: var(--space-2); min-width: 0; min-height: 76px;
-  padding: var(--space-2); text-align: left; border: 1px solid #38383e; border-radius: .6rem;
+  padding: var(--space-2); text-align: left; border: 1px solid var(--gild-hairline); border-radius: .6rem;
 }
-html body .sanctuary-shell .ref-conduit-upgrade .ref-member-row.is-selected { border-color: #e5e5eb; background: #303035; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-member-row.is-selected { border-color: #e5e5eb; background: var(--gild-hairline); }
 html body .sanctuary-shell .ref-conduit-upgrade .ref-member-row > span:last-child { min-width: 0; }
 html body .sanctuary-shell .ref-conduit-upgrade .ref-member-row b { font-size: var(--ui-label); line-height: 1.25; display: block; }
-html body .sanctuary-shell .ref-conduit-upgrade .ref-member-row small { display: block; color: #bdbdc4; font-size: var(--ui-caption); }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-member-row small { display: block; color: var(--text-muted); font-size: var(--ui-caption); }
 html body .sanctuary-shell .ref-conduit-upgrade .ref-thumb { width: 46px; height: 46px; flex: 0 0 46px; }
 html body .sanctuary-shell .ref-conduit-upgrade .ref-thumb .conduit-icon-frame {
   display: block; width: 100%; height: 100%; min-width: 0; min-height: 0; max-height: 100%; flex: none;
@@ -70,7 +70,7 @@ html body .sanctuary-shell .ref-conduit-upgrade .conduit-upgrade-values {
   display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: var(--space-3); align-items: center;
   flex: none; padding: var(--space-3); border: 1px solid #3d3d45; border-radius: .6rem; background: #202024;
 }
-html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .conduit-upgrade-values h4 { font-size: var(--ui-section); margin-bottom: var(--space-2); color: #bdbdc4; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .conduit-upgrade-values h4 { font-size: var(--ui-section); margin-bottom: var(--space-2); color: var(--text-muted); }
 html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .conduit-upgrade-values p { font-size: var(--ui-body); line-height: 1.35; font-weight: 700; }
 html body .sanctuary-shell .ref-conduit-upgrade .ref-effect-progression {
   display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--space-2); overflow: visible; flex: none;
@@ -78,12 +78,12 @@ html body .sanctuary-shell .ref-conduit-upgrade .ref-effect-progression {
 html body .sanctuary-shell .ref-conduit-upgrade .ref-effect-progression article {
   min-width: 0; padding: var(--space-2) var(--space-2); border: 1px solid #37373d; border-radius: .5rem; background: #1a1a1e;
 }
-html body .sanctuary-shell .ref-conduit-upgrade .ref-effect-progression article.is-current { border-color: #e5e5eb; background: #303035; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-effect-progression article.is-current { border-color: #e5e5eb; background: var(--gild-hairline); }
 html body .sanctuary-shell .ref-conduit-upgrade .ref-effect-progression small { display: block; margin-bottom: var(--space-2); font-size: var(--ui-body); font-weight: 700; }
 html body .sanctuary-shell .ref-conduit-upgrade .ref-effect-progression p { font-size: var(--ui-body); }
 html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-resources {
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-1) var(--space-4);
-  padding: var(--space-3) 0 0; margin-top: auto; border: 0; border-top: 1px solid #38383e; border-radius: 0; background: none;
+  padding: var(--space-3) 0 0; margin-top: auto; border: 0; border-top: 1px solid var(--gild-hairline); border-radius: 0; background: none;
 }
 .ref-upgrade-resources > .ref-panel-heading { grid-column: 1; }
 html body .sanctuary-shell .ref-conduit-upgrade .component-balance {

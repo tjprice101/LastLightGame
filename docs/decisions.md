@@ -1,5 +1,38 @@
 # Decision log
 
+## Element-Bearer and Conduit workshop re-theme (D-466, 2026-11-16)
+
+UI audit session 6 applies D-461 to the Upgrade result, Calamitic Ascension,
+the Calamity difficulty section and the Event Elemental-Devourer shop, and, at
+the owner's request, to the Element-Bearer screens (Elemental-Bearers menu,
+roster, Bearer detail Overview/Level/Evolve, Squad formation, Loadouts) and
+the Conduit screens (Bearer Conduit loadout and selection, Conduit Store,
+Conduit Upgrade). Presentation only; no save, transaction, price, reward or
+server change.
+
+- **Selected rule:** owner stylesheets swap mono-gray text, surface and border
+  hex for core tokens. Layout fixes live in one new owner file,
+  `unit-workshop.css`, inside `@layer menu-reference` and imported after the
+  rollout; because the rollout already stacks up to three `:not(#_)` guards,
+  this file uses four (documented in its header).
+- **Growth progress is gold:** Level bars, Evolution pips/steps, growth meters
+  and the "complete" label use `--gild-fill`; mint stays only for drag-drop
+  feedback and green stays only for stat gains and sufficient resources.
+- **Motion:** new `unit-luster.ts` cascades cards once per arrival at each
+  workshop view (roster, formation, loadouts, Bearer detail tab, a Bearer's
+  Conduit loadout, Conduit Store, Conduit Upgrade, Event shop); filters,
+  pager turns and saved equips never replay it. The selected Conduit's art
+  glints when a different Conduit is picked in the Store or Upgrade screen.
+  Static under Reduce motion. Existing level-up/evolution/ascension
+  celebrations are unchanged.
+- **Copy/format:** Conduit Store tiles show prices with thousands separators
+  (`1,000 Prismatica`, matching the detail panel). The Ascension header
+  separator was a literal `?` and is now `·`. No other copy changed.
+- **Open (not changed):** the Play hub shell around the Calamity section
+  (activity rail, location list, activity card) is still near-black with a
+  peach selected state from D-457; it belongs to a later audit session. The
+  D-465 Georgia/Sora menu-font question remains open.
+
 ## Settings and Social re-theme (D-465, 2026-11-16)
 
 UI audit session 5 applies D-461 to Settings, Social/Profile, Friend chat and
