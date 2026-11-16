@@ -75,7 +75,7 @@
     position: relative !important;
     background: transparent !important;
     border: 0 !important;
-    grid-template-columns: minmax(180px, 1fr) auto minmax(540px, 1fr) !important;
+    grid-template-columns: minmax(180px, 1fr) auto minmax(max-content, 1fr) !important;
     gap: 16px !important;
     padding: 12px 64px 8px 2vw !important;
   }
@@ -93,7 +93,8 @@
   }
   .sanctuary-header .sanctuary-wallet { gap: 8px !important; min-width: 0 !important; }
   .sanctuary-header .currency-strip { gap: 8px !important; min-width: 0 !important; }
-  .sanctuary-header .currency-strip > button { padding: 6px 12px !important; min-width: 140px !important; gap: 8px !important; }
+  /* The wallet column sizes to its content so exact balances and currency names are never clipped. */
+  .sanctuary-header .currency-strip > button { padding: 6px 12px !important; min-width: 140px !important; gap: 8px !important; flex: 0 0 auto !important; }
   .sanctuary-header .currency-strip strong { text-align: right !important; font-size: 16px !important; min-width: 0 !important; }
   .sanctuary-header .currency-strip small { font-size: 11px !important; color: var(--reference-muted) !important; }
   .sanctuary-header .currency-strip img { width: 28px !important; height: 28px !important; object-fit: contain !important; }
@@ -390,7 +391,7 @@
   @media (max-width: 1400px), (max-height: 800px) {
     html[data-menu-workspace] .sanctuary-shell { --menu-header-height: 72px !important; --menu-dock-height: 76px !important; }
     .sanctuary-shell .sanctuary-content { padding: 12px 3vw !important; }
-    .sanctuary-header { grid-template-columns: minmax(150px, 1fr) auto minmax(510px, 1fr) !important; gap: 12px !important; }
+    .sanctuary-header { grid-template-columns: minmax(150px, 1fr) auto minmax(max-content, 1fr) !important; gap: 12px !important; }
     .sanctuary-header .currency-strip > button { min-width: 128px !important; padding-inline: 8px !important; }
     .sanctuary-header .currency-strip strong { font-size: 13px !important; }
     .sanctuary-shell .sanctuary-dock { height: 60px !important; }

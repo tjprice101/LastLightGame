@@ -25,7 +25,13 @@ Presentation only; no server deploy needed.
   Units and Inventory at 1280x720/1600x900, motion over time and contrast
   were not checked visually.
 
-**Next:** owner visual check in `npm run dev`; then session 2 (Battle
+**Owner check (2026-11-15):** re-theme looks good; header Prismatica /
+Null-Prismatica pills were clipped at 1400px wide and narrower (pre-existing:
+the wallet column was fixed at 510px). Fixed: the wallet column is now
+`minmax(max-content, 1fr)` and the pills no longer shrink. Awaiting the
+owner's recheck before push.
+
+**Next:** then session 2 (Battle
 results + stage loot, Opus) using `luster.ts` and `reward-screen.ts`.
 Screen-level hex (e.g. plum `#302537`, `#1d1630` fills) is converted per
 screen session. The audit plan progress note is left for the owner's local
