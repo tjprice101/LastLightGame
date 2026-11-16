@@ -66,6 +66,9 @@ describe('stage loot previews', () => {
     expect(story.entries.filter((entry) => entry.group === 'first').map((entry) => entry.id)).toEqual(['fractalis', 'lycalis']);
     expect(stageLoot({ kind: 'story' }, 1, null).entries.filter((entry) => entry.group === 'first').map((entry) => entry.id)).toEqual(['lycalis']);
     expect(() => parseStageLootSource('infusion:nowhere')).toThrow('Unknown stage loot source');
+    const markup = stageLootContent({ kind: 'story' }, storyRules.regionStages, null);
+    expect(markup).toContain('data-loot-group="clear"');
+    expect(markup).toContain('data-loot-group="first"');
   });
 
   it('opens Detailed Loot from each stage in the picker', () => {

@@ -1,5 +1,28 @@
 # Decision log
 
+## Saved battle results hierarchy and choreography (D-462, 2026-11-16)
+
+UI audit session 2 (owner-approved plan, audit plan §7.18 / Phase 7) applies
+D-461 to the live Radiant results sheet and the Detailed Loot dialog.
+
+- **Selected rule:** the results sheet reads outcome → encounter identity →
+  saved rewards → Continue/Retry/Exit → optional Battle summary. Victory is
+  radiant (gold title, sheen, staggered cards, count-up to the exact saved
+  amounts, bursts only for Legendary/Omnic/Calamitic). Defeat and paused
+  are calm (cards stagger in; no sheen, count-up or bursts).
+- **Outcome word (owner request):** before the sheet appears, victory shows
+  "Win!!" in bold gold letters that pop in and fade (1.3s); defeat shows
+  "Defeat..." in gray stone letters that thud in, crack and crumble (1.7s).
+  Click, Enter, Space or Escape skips it; paused results and Reduce motion
+  show the sheet immediately. The heading keeps focus throughout.
+- **Trigger:** the outcome word and choreography run once per saved result, only after a live
+  presentation settles (or Skip). It never replays on dismiss/reopen, on
+  Settings close or for a restored terminal checkpoint, and is static under
+  Reduce motion.
+- **Consequences:** presentation only. Receipts, reward totals, transitions
+  and authority are unchanged; no server deploy. The legacy `battleResults()`
+  in `battle-results.ts` (legacy engine) is untouched.
+
 ## Jewel & Gold shared visual language (D-461, 2026-11-15)
 
 The owner chose a richer jewel/gold palette and "foundation first, then

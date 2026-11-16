@@ -8,7 +8,6 @@ import { RadiantSession } from '../online/battle-session';
 import { type RadiantPlayerAction, type RadiantRunResponse, type FrozenRadiantRun } from '../online/battle-run';
 import { compactPortrait } from './compact-portrait';
 import { escapeDialogText as escape, gameConfirm } from './game-dialog';
-import { rarityFeedback } from './rarity-feedback';
 import { reducedMotion } from './settings';
 import { battleSpeed } from './battle-speed';
 import { radiantImpactFrames, radiantReadout, type RadiantImpactFrame, type RadiantReadout } from './battle-impact-frames';
@@ -16,7 +15,7 @@ import './battle-screen.css';
 import { radiantArenaArt, radiantEnemyArt, radiantAllyArt } from './battle-art';
 import { radiantStatusSnapshot, radiantStatusRows, radiantShieldRows } from './battle-timed-status';
 import { bindArtworkLoading } from './artwork-loading';
-import { radiantResultsMarkup, radiantEncounterLabel } from './battle-outcome';
+import { radiantResultsMarkup, radiantEncounterLabel, radiantActivityTitle, radiantOutcome, celebrateRadiantResults, radiantResultIntro } from './battle-outcome';
 import { radiantLeaderReference, radiantFlareNeedsTarget } from './battle-reference';
 import { bindRadiantPortraitGestures, radiantGestureActor } from './portrait-gesture';
 import { characterChoreography } from './battle-effects';
@@ -24,18 +23,7 @@ import { formatStat } from '../content/combat';
 import { lootArt, lootItems } from './battle-loot';
 import { radiantFormation, radiantFormationStyle } from './battle-formation';
 
-const titleCase = (value: string) => value.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
-export function radiantActivityTitle(activity: FrozenRadiantRun['anchor']['activity']): { eyebrow: string; title: string } {
-  switch (activity.kind) {
-    case 'training': return { eyebrow: 'Squad Training', title: 'Training' };
-    case 'story': return { eyebrow: 'Story Campaign', title: 'Story' };
-    case 'dungeon': return { eyebrow: 'Elemental Dungeon', title: `${titleCase(activity.element)} Dungeon` };
-    case 'infusion': return { eyebrow: activity.mode === 'roses' ? 'Event' : 'Trial', title: titleCase(activity.mode) };
-    case 'war': return { eyebrow: 'Elemental War', title: titleCase(activity.character) };
-    case 'oblivion': return { eyebrow: 'Calamity', title: 'Gates of Oblivion' };
-    case 'calamity': return { eyebrow: 'Calamity', title: titleCase(activity.activity) };
-  }
-}
+export { radiantActivityTitle };
 
 export interface RadiantBattleEffects {
   windup(action: RadiantPlayerAction, state: RadiantCombatState): Promise<void>;
@@ -120,6 +108,7 @@ export class RadiantBattleView {
   private shieldMarkup = new Map<string, string>();
   private resultKey: string | null = null;
   private resultCelebration: (() => void) | null = null;
+  private celebratedKey: string | null = null;
   private leaderMarkup: string | null = null;
   private gestures: ReturnType<typeof bindRadiantPortraitGestures>;
   constructor(private readonly host: HTMLElement, private readonly session: RadiantSession,
@@ -264,6 +253,7 @@ export class RadiantBattleView {
     if (button.hasAttribute('data-radiant-skip')) { this.skip(); return; }
     if (button.hasAttribute('data-radiant-leave')) { void this.confirmExit().catch(error => this.report(error)); return; }
     if (button.hasAttribute('data-radiant-result-dismiss') || button.hasAttribute('data-radiant-results-show')) {
+      if (button.hasAttribute('data-radiant-result-dismiss')) { this.resultCelebration?.(); this.resultCelebration = null; }
       this.session.dismissResults(button.hasAttribute('data-radiant-result-dismiss')); this.render();
       if (button.hasAttribute('data-radiant-result-dismiss')) this.element<HTMLElement>('[data-radiant-results-show]').focus();
       else this.element<HTMLElement>('[data-radiant-result-heading]').focus();
@@ -298,6 +288,10 @@ export class RadiantBattleView {
     if (this.disposed || event.altKey || event.ctrlKey || event.metaKey || !(event.target instanceof HTMLElement)) return;
     const results = this.element<HTMLElement>('[data-radiant-results]');
     if (!results.hidden) {
+      const intro = results.querySelector<HTMLElement>('.radiant-result-intro');
+      if (intro && (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ')) {
+        event.preventDefault(); event.stopPropagation(); intro.click(); return;
+      }
       if (event.key === 'Escape') {
         event.preventDefault(); event.stopPropagation();
         this.element<HTMLButtonElement>('[data-radiant-result-dismiss]').click();
@@ -726,8 +720,16 @@ export class RadiantBattleView {
     if (!results.hidden) {
       const heading = this.element<HTMLElement>('[data-radiant-result-heading]');
       heading.focus();
-      if (!run.quit && run.state.phase === 'victory') {
-        this.resultCelebration?.(); this.resultCelebration = rarityFeedback(heading, 'Omnic');
+      // Once per saved result, and only after a live presentation settles: never on
+      // dismiss/reopen, Settings close or a restored terminal checkpoint.
+      const sheet = results.querySelector<HTMLElement>('.radiant-results');
+      if (sheet && this.resultKey && this.celebratedKey !== this.resultKey) {
+        this.celebratedKey = this.resultKey;
+        this.resultCelebration?.();
+        const outcome = radiantOutcome(run);
+        let celebration: (() => void) | null = null;
+        const stopIntro = radiantResultIntro(results, outcome, () => { celebration = celebrateRadiantResults(sheet, outcome); });
+        this.resultCelebration = () => { stopIntro(); celebration?.(); };
       }
     }
   }

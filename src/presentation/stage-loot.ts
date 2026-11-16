@@ -18,6 +18,7 @@ import { escapeDialogText } from './game-dialog';
 import './stage-loot.css';
 import { conduitIcon } from './conduit-store';
 import { conduitElement, omnicTheme } from './conduit-element';
+import { staggerIn } from './luster';
 
 export type StageLootSource =
   | { kind: 'story' }
@@ -167,7 +168,7 @@ export function stageLootContent(source: StageLootSource, stage: number, account
   const loot = stageLoot(source, stage, account);
   const groups = (Object.keys(groupTitles) as LootGroup[]).filter((group) => loot.entries.some((entry) => entry.group === group));
   return `<p class="stage-loot-meta">Enemy Lv.${loot.level}${loot.boss ? ' · Boss stage' : ''}</p>
-    ${groups.map((group) => `<section class="stage-loot-group" aria-label="${groupTitles[group]}"><h3>${groupTitles[group]}</h3>
+    ${groups.map((group) => `<section class="stage-loot-group" data-loot-group="${group}" aria-label="${groupTitles[group]}"><h3>${groupTitles[group]}</h3>
       <ul class="stage-loot-grid">${loot.entries.filter((entry) => entry.group === group).map(entryCard).join('')}</ul></section>`).join('')}`;
 }
 export function stageLootButton(source: string, stage?: number, label?: string): string {
@@ -213,6 +214,7 @@ export function bindStageLoot(host: HTMLElement, getAccount: () => Account | nul
     opener = button;
     dialog.showModal();
     close.focus({ preventScroll: true });
+    staggerIn(content, '.stage-loot-item', { stepMs: 25, maxSteps: 16 });
   };
   const click = (event: Event): void => {
     const button = (event.target as Element | null)?.closest<HTMLElement>('[data-stage-loot]');

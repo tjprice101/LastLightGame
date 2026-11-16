@@ -1,5 +1,48 @@
 # Current state and handoff
 
+## Battle results and Detailed Loot, UI audit session 2 (2026-11-16)
+
+**Implemented (D-462):** the live Radiant results sheet is reorganized as
+outcome → encounter identity → saved rewards → actions → collapsible Battle
+summary, re-themed with Jewel & Gold tokens, with once-per-result luster
+choreography for victories (calm stagger for defeat/paused). Fixed a
+pre-existing sizing bug: the sheet was `content-box`, so it ran 58px past its
+800px cap and clipped at 390px portrait. Detailed Loot uses gilded cards,
+`data-loot-group` rarity edges and a stagger on open. See the
+[menu contract](menus-and-inventory.md#saved-battle-results-and-detailed-loot-d-462-2026-11-16).
+Presentation only; `node tools\bundle_server_game.mjs` output is unchanged,
+so no authority deploy.
+
+**Verified:**
+
+- `npx vitest run src/presentation/battle-outcome.test.ts src/presentation/battle-screen.test.ts src/presentation/stage-loot.test.ts src/presentation/luster.test.ts`: 76 passed; `stage-loot.test.ts` after its new assertion: 4 passed.
+- `npx tsc --noEmit`: passed. `npm run build`: passed (existing large-chunk advisory).
+- Full `npx vitest run`: 10,473 passed; 2 timed out at 20s
+  (`acquisition-surfaces`, `creature-loot-dialog`, same as session 1);
+  rerun alone: 9 passed.
+- Headless Chrome on `battle-preview.html` (in-memory, no account): won
+  Story Stage 25 at 1280x720, 1600x900 and 390x844 with frames at 0 /
+  500 / 1800ms. No document or sheet overflow, exact amounts (+2, +2,
+  +466, +2) present after the count-up, no leftover effects, Battle summary
+  opens. Reduce motion: static final state at the first frame.
+- **Not visually verified:** defeat and paused sheets (covered by jsdom
+  tests only); a real signed-in battle.
+
+**Session 1 publication:** pushed `6b29f71b` to both branches; release
+workflow 43805889744 passed; hosted `version.json` reports `6b29f71b`.
+
+**Owner follow-up (2026-11-16):** the owner approved the sheet and asked
+for an outcome word first. Added gold "Win!!" (pops in, fades, 1.3s) and
+stone "Defeat..." (thuds in, cracks, crumbles, 1.7s) before the sheet; it is
+skippable and absent for paused results and under Reduce motion. Headless
+Chrome frames at 150/450/950/1700ms showed the Win word and its fade with the
+sheet revealed afterwards. The Defeat frames at 600/1150/1450ms come from the
+same markup injected into the preview, because the preview cannot lose a
+battle on demand. `battle-outcome` + `battle-screen` tests: 57 passed.
+
+**Next:** owner checks the outcome words in a real battle. Session 3 per the
+audit plan.
+
 ## Jewel & Gold foundation, UI audit session 1 (2026-11-15)
 
 **Implemented (D-461):** core jewel/gold tokens in `src/interface.css`

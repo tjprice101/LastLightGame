@@ -13,9 +13,15 @@ html body .stage-loot-modal[open] {
   overflow-y: auto;
 }
 html body .stage-loot-modal[open] .stage-loot-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-.stage-loot-meta { margin: 0 0 12px; color: #cfcdc6; }
+.stage-loot-meta { margin: 0 0 12px; color: var(--text-muted); }
 .stage-loot-group { margin: 0 0 16px; }
-.stage-loot-group h3 { margin: 0 0 8px; font-size: 1rem; }
+.stage-loot-group h3 {
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--gild-line);
+  color: var(--gild-light);
+  font-size: 1rem;
+}
 .stage-loot-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -30,12 +36,18 @@ html body .stage-loot-modal[open] .stage-loot-grid { grid-template-columns: repe
   align-content: start;
   gap: 6px;
   padding: 10px 8px;
-  border: 1px solid #ffffff2b;
-  border-radius: 10px;
-  background: #ffffff08;
+  border: 1px solid var(--gild-line);
+  border-radius: var(--radius-md);
+  background: var(--glass-panel);
+  box-shadow: var(--gild-inner);
+  color: var(--text-primary);
   text-align: center;
   min-width: 0;
 }
+.stage-loot-group[data-loot-group="conduit-rare"] .stage-loot-item { box-shadow: var(--gild-inner), var(--glow-rarity-rare); }
+.stage-loot-group[data-loot-group="conduit-legendary"] .stage-loot-item { box-shadow: var(--gild-inner), var(--glow-rarity-legendary); }
+.stage-loot-group[data-loot-group="conduit-omnic"] .stage-loot-item { box-shadow: var(--gild-inner), var(--glow-rarity-omnic); }
+.stage-loot-group:is([data-loot-group="clear"], [data-loot-group="first"], [data-loot-group="recruit"]) .stage-loot-item { border-color: var(--gild-mid); }
 .stage-loot-art { display: grid; place-items: center; width: 80px; height: 80px; overflow: hidden; }
 .stage-loot-art img, .stage-loot-art svg { max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain; }
 .stage-loot-art > * { max-width: 100%; max-height: 100%; }

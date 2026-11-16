@@ -1,5 +1,28 @@
 # Menus and inventory
 
+## Saved battle results and Detailed Loot (D-462, 2026-11-16)
+
+- **Results sheet (`battle-outcome.ts` `radiantResultsMarkup`):** eyebrow
+  (activity family) and outcome heading (Victory! / Defeat / Encounter
+  paused); identity line `{activity} · {Stage n | EX+n | Wave n}` plus
+  `· Activity complete` on the final encounter; one status sentence;
+  "Saved encounter rewards" (includes earlier retries) with exact amounts;
+  sticky actions (Continue primary on a non-final victory, Retry primary on
+  defeat, Exit primary on a completed activity); a collapsed Battle summary
+  holds the damage/healing/shield totals and the retry note.
+- **Outcome word (`radiantResultIntro`):** gold "Win!!" / crumbling stone
+  "Defeat..." over the hidden sheet (`is-result-intro`), aria-hidden, then the
+  sheet rises in; skippable by click, Enter, Space or Escape; none for paused
+  or under Reduce motion.
+- **Choreography (`celebrateRadiantResults`):** runs after the outcome word; see D-462. Count-up exposes
+  the final value through `aria-label` and always lands on the exact text.
+- **Styling:** tokens only (`battle-screen.css` results block); the sheet is
+  `border-box`, capped at 800px, and fits 390px portrait without overflow;
+  reward cards carry static `--glow-rarity-*` edges for Rare and above.
+- **Detailed Loot (`stage-loot.ts`):** gilded glass cards and group
+  headings; sections carry `data-loot-group` for static Conduit rarity
+  edges; items stagger in on open (preview only: no sheen or count-up).
+
 ## Jewel & Gold visual language (D-461, 2026-11-15)
 
 Supersedes the D-457 palette; D-457 layout, fit and pagination rules stay.

@@ -145,14 +145,6 @@ html[data-motion="reduced"] .radiant-charge-layers.is-flowing .radiant-energy-li
 .radiant-member dl div { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
 .radiant-member dd { margin: 0; overflow-wrap: anywhere; }
 .radiant-actions { justify-content: center; }
-.radiant-results { margin-top: 24px; padding: clamp(12px, 3vw, 28px); border: 1px solid #a2a9b7; border-radius: 16px; background: #171921f5; overflow-wrap: anywhere; }
-.radiant-results header, .radiant-result-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
-.radiant-results [data-radiant-result-heading]:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
-.radiant-results ul { list-style: none; padding: 0; display: grid; gap: 12px; }
-.radiant-results li { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; min-height: 48px; border-bottom: 1px solid #60636c; padding: 8px 0; }
-.radiant-results li > span { flex: 1 1 140px; min-width: 0; }
-.radiant-results li strong { overflow-wrap: anywhere; }
-.radiant-results li img { width: 48px; height: 48px; object-fit: contain; }
 [data-radiant-error] { color: #ffd4d4; }
 .radiant-impact-ring { position: absolute; opacity: 0; width: 60px; height: 60px; border: 2px solid #fff; border-radius: 50%; left: calc(50% - 30px); top: calc(50% - 30px); pointer-events: none; box-shadow: 0 0 12px #fff8, inset 0 0 10px #fff5; }
 .radiant-squad:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
@@ -553,32 +545,134 @@ html body .battle-screen #battle-root:has(.radiant-battle) { display: block; hei
 }
 
 .radiant-battle [data-radiant-results] {
-  position: fixed; inset: 0; z-index: 20; display: grid; place-items: center;
+  position: fixed; inset: 0; z-index: 20; display: grid; grid-template-columns: minmax(0, 1fr); place-items: center;
   padding: 12px; overflow-y: auto; background: #070a12b8; backdrop-filter: blur(6px);
 }
+/* Saved battle results (Jewel & Gold, D-462): outcome, encounter, saved rewards, actions, details. */
 .radiant-results {
-  --outcome-color: #efadbb;
-  position: relative; isolation: isolate; width: min(800px, 100%); max-height: calc(100dvh - 24px);
-  margin: auto; overflow: auto; padding: clamp(16px, 3vw, 28px);
-  border-color: color-mix(in srgb, var(--outcome-color) 60%, #75839b);
-  background: radial-gradient(ellipse at 50% 0, color-mix(in srgb, var(--outcome-color) 16%, transparent), transparent 60%), #10141cf5;
-  box-shadow: 0 20px 70px #000b, 0 0 36px color-mix(in srgb, var(--outcome-color) 18%, transparent);
-  animation: radiant-result-arrival 480ms cubic-bezier(.2, .8, .2, 1) both;
+  --outcome-color: #c3cbd9;
+  --outcome-glow: 0 0 32px #8fa3c426;
+  --result-pad: clamp(16px, 3vw, 28px);
+  box-sizing: border-box; position: relative; isolation: isolate; width: min(800px, 100%); max-height: calc(100dvh - 24px);
+  margin: auto; overflow: auto; overflow-wrap: anywhere; padding: var(--result-pad);
+  border: 1px solid color-mix(in srgb, var(--outcome-color) 45%, var(--gild-line));
+  border-radius: var(--radius-lg); color: var(--text-primary);
+  background: radial-gradient(ellipse at 50% 0, color-mix(in srgb, var(--outcome-color) 14%, transparent), transparent 62%),
+    linear-gradient(180deg, var(--surface-raised), var(--surface-base));
+  box-shadow: var(--shadow-panel), var(--outcome-glow);
+  animation: radiant-result-arrival var(--motion-reveal) var(--ease-out) both;
 }
-.radiant-results[data-outcome="victory"] { --outcome-color: #ffe6aa; }
-.radiant-results[data-outcome="paused"] { --outcome-color: #c9d4e5; }
-.radiant-results h2 { position: relative; margin: 0; color: var(--outcome-color); font-size: clamp(30px, 5vw, 48px); }
-.radiant-results > p { font-size: 13px; line-height: 1.5; }
-.radiant-results .battle-result-rewards ul { max-height: none; overflow: visible; }
-.radiant-result-actions { position: sticky; bottom: -28px; margin-top: 12px; padding: 12px 0; background: #10141cf5; }
-.radiant-result-actions button { flex: 1 1 150px; }
+.radiant-results[data-outcome="victory"] { --outcome-color: var(--gild-light); --outcome-glow: var(--glow-gild), 0 0 48px #f7e3a124; border-color: var(--gild-mid); }
+.radiant-results[data-outcome="paused"] { --outcome-color: var(--text-secondary); --outcome-glow: 0 0 0 transparent; }
+.radiant-results header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.radiant-result-eyebrow { margin: 0 0 2px; color: var(--text-muted); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+.radiant-results h2 { position: relative; margin: 0; color: var(--outcome-color); font-size: clamp(30px, 5vw, 48px); line-height: 1.1; }
+.radiant-results[data-outcome="victory"] h2 { background: var(--gild-fill); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 2px 10px #f7e3a140); }
+.radiant-results [data-radiant-result-heading]:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
+.radiant-results header > button { color: var(--text-secondary); background: var(--glass-panel); border-color: var(--gild-line); font-size: 13px; }
+.radiant-result-identity { margin: 14px 0 2px; color: var(--text-primary); font-size: 16px; }
+.radiant-result-note { margin: 0 0 16px; color: var(--text-secondary); font-size: 13px; line-height: 1.5; }
+.radiant-result-muted { margin: 0 0 8px; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
+.radiant-results .battle-result-rewards { padding-top: 12px; border-top: 1px solid var(--gild-line); }
+.radiant-results .battle-result-rewards h3 { margin: 0 0 2px; font-size: 15px; color: var(--text-primary); }
+.radiant-results .battle-result-rewards ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); max-height: none; overflow: visible; }
+.radiant-results .battle-result-rewards li {
+  position: relative; display: flex; align-items: center; gap: 12px; min-width: 0; min-height: 56px; padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, var(--reward-color, #fff) 32%, transparent); border-radius: var(--radius-md);
+  background: var(--glass-panel); font-size: 13px;
+}
+.radiant-results .battle-result-rewards li > span:not(.result-reward-token) { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.radiant-results .battle-result-rewards li > strong { margin-left: auto; flex: 0 0 auto; color: var(--reward-color, var(--text-primary)); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.radiant-results .battle-result-rewards :is(img, .result-reward-token, .conduit-icon-frame, .component-art-pending) { width: 48px; height: 48px; flex: 0 0 48px; object-fit: contain; }
+.radiant-results .battle-result-rewards li[data-rarity="Rare"] { box-shadow: var(--glow-rarity-rare); }
+.radiant-results .battle-result-rewards li[data-rarity="Epic"] { box-shadow: var(--glow-rarity-epic); }
+.radiant-results .battle-result-rewards li[data-rarity="Legendary"] { box-shadow: var(--glow-rarity-legendary); }
+.radiant-results .battle-result-rewards li[data-rarity="Omnic"] { box-shadow: var(--glow-rarity-omnic); }
+.radiant-results .battle-result-rewards li[data-rarity="Calamitic"] { box-shadow: var(--glow-rarity-calamitic); }
+.radiant-results .battle-result-rewards .quiet { color: var(--text-muted); font-size: 13px; }
+.radiant-result-details { margin-top: 14px; border-top: 1px solid var(--gild-line); color: var(--text-secondary); font-size: 13px; line-height: 1.5; }
+.radiant-result-details summary { display: flex; align-items: center; gap: 8px; min-height: 44px; color: var(--text-primary); list-style: none; }
+.radiant-result-details summary::-webkit-details-marker { display: none; }
+.radiant-result-details summary::before { content: ''; width: 7px; height: 7px; border-right: 2px solid var(--gild-mid); border-bottom: 2px solid var(--gild-mid); transform: rotate(-45deg); transition: transform var(--motion-press) var(--ease-out); }
+.radiant-result-details[open] summary::before { transform: rotate(45deg); }
+.radiant-result-details p { margin: 0 0 8px; }
+.radiant-result-actions {
+  position: sticky; bottom: calc(-1 * var(--result-pad)); z-index: 2; display: flex; flex-wrap: wrap; gap: 12px;
+  margin: 12px calc(-1 * var(--result-pad)) calc(-1 * var(--result-pad)); padding: 12px var(--result-pad);
+  border-top: 1px solid var(--gild-line); background: var(--surface-base);
+}
+.radiant-result-actions button { flex: 1 1 150px; background: var(--glass-raised); border-color: var(--gild-line); color: var(--text-primary); }
+.radiant-result-actions button.radiant-result-primary { background: var(--gild-fill); border-color: var(--gild-light); color: var(--gild-ink); box-shadow: var(--gild-inner); }
+.radiant-result-actions button:not(:disabled):active { transform: scale(.97); transition: transform var(--motion-press) var(--ease-out); }
 .radiant-result-aura { position: absolute; inset: 0; z-index: -1; overflow: hidden; border-radius: inherit; pointer-events: none; }
 .radiant-result-aura span { position: absolute; top: 42px; left: calc(50% - 120px); width: 240px; height: 240px; border: 1px solid var(--outcome-color); border-radius: 50%; opacity: 0; animation: radiant-result-ring 1000ms ease-out both; }
-.radiant-result-aura i { position: absolute; top: 0; left: calc(10% + var(--ray) * 11%); width: 2px; height: 64px; background: linear-gradient(transparent, var(--outcome-color), transparent); opacity: 0; animation: radiant-result-fall 1200ms calc(var(--ray) * 45ms) ease-out both; }
-.radiant-results[data-outcome="victory"] .radiant-result-aura i { animation-name: radiant-result-rise; }
+.radiant-result-aura i { position: absolute; top: 0; left: calc(10% + var(--ray) * 11%); width: 2px; height: 48px; background: linear-gradient(transparent, var(--outcome-color), transparent); opacity: 0; animation: radiant-result-fall 1800ms calc(var(--ray) * 70ms) ease-out both; }
+.radiant-results[data-outcome="defeat"] .radiant-result-aura span { animation-duration: 1600ms; }
+.radiant-results[data-outcome="victory"] .radiant-result-aura i { width: 3px; height: 64px; background: linear-gradient(transparent, var(--gild-light), var(--gild-core), transparent); animation: radiant-result-rise 1200ms calc(var(--ray) * 45ms) ease-out both; }
 @keyframes radiant-result-arrival { from { opacity: 0; transform: translateY(18px) scale(.98); } to { opacity: 1; transform: none; } }
 @keyframes radiant-result-ring { 0% { opacity: 0; transform: scale(.2); } 30% { opacity: .5; } 100% { opacity: 0; transform: scale(2.4); } }
-@keyframes radiant-result-fall { 0% { opacity: 0; transform: translateY(-30px); } 25% { opacity: .6; } 100% { opacity: 0; transform: translateY(200px); } }
+@keyframes radiant-result-fall { 0% { opacity: 0; transform: translateY(-30px); } 25% { opacity: .35; } 100% { opacity: 0; transform: translateY(200px); } }
 @keyframes radiant-result-rise { 0% { opacity: 0; transform: translateY(180px) scaleY(.5); } 25% { opacity: .8; } 100% { opacity: 0; transform: translateY(-80px) scaleY(1.4); } }
+/* Outcome word before the sheet (D-462): gold "Win!!" fades; stone "Defeat..." cracks and crumbles. */
+[data-radiant-results].is-result-intro > .radiant-results { opacity: 0; pointer-events: none; animation: none; }
+[data-radiant-results].is-result-intro .radiant-result-aura * { animation: none; }
+.radiant-result-intro { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; cursor: pointer; overflow: hidden; }
+.radiant-result-intro-word { display: flex; align-items: baseline; font-family: var(--ui-font); font-weight: 700; font-size: clamp(48px, 15vw, 176px); line-height: 1; white-space: nowrap; }
+.radiant-result-intro i { position: relative; display: inline-block; font-style: normal; }
+.radiant-result-intro[data-outcome="victory"]::before {
+  content: ''; position: absolute; width: min(90vw, 760px); aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle, #f7e3a155, #c9953b22 40%, transparent 68%);
+  animation: intro-win-halo 1300ms var(--ease-out) both;
+}
+.radiant-result-intro[data-outcome="victory"] i {
+  background: linear-gradient(180deg, #fff6d6, var(--gild-light) 30%, var(--gild-mid) 60%, var(--gild-core) 82%, var(--gild-deep));
+  -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: 1px #8a5a1f88;
+  filter: drop-shadow(0 4px 0 #5a3a12) drop-shadow(0 0 22px #f7e3a170);
+  animation: intro-win 1300ms var(--ease-out-back) calc(var(--i) * 45ms) both;
+}
+.radiant-result-intro[data-outcome="defeat"] { background: radial-gradient(ellipse at center, #05060c99, transparent 70%); }
+.radiant-result-intro[data-outcome="defeat"] i { color: transparent; }
+.radiant-result-intro[data-outcome="defeat"] i::before, .radiant-result-intro[data-outcome="defeat"] i::after {
+  content: attr(data-ch); position: absolute; inset: 0;
+  background: linear-gradient(170deg, #d4d6db, #9a9da5 35%, #6d7078 62%, #44464d);
+  -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: 1px #2b2c31;
+  filter: drop-shadow(0 4px 0 #1d1e22);
+  animation: 1700ms ease-in calc(var(--i) * 55ms) both;
+}
+.radiant-result-intro[data-outcome="defeat"] i::before { clip-path: polygon(0 0, 100% 0, 100% 38%, 58% 52%, 30% 44%, 0 60%); animation-name: intro-crumble-top; }
+.radiant-result-intro[data-outcome="defeat"] i::after { clip-path: polygon(0 60%, 30% 44%, 58% 52%, 100% 38%, 100% 100%, 0 100%); animation-name: intro-crumble-bottom; }
+.radiant-result-intro[data-outcome="defeat"] i:nth-child(even)::before { --tilt: -1; }
+.radiant-result-intro[data-outcome="defeat"] i:nth-child(odd)::before { --tilt: 1; }
+.radiant-result-intro[data-outcome="defeat"] i:nth-child(even)::after { --tilt: 1; }
+.radiant-result-intro[data-outcome="defeat"] i:nth-child(odd)::after { --tilt: -1; }
+@keyframes intro-win {
+  0% { opacity: 0; transform: translateY(24px) scale(.4); }
+  22% { opacity: 1; transform: translateY(0) scale(1.12); }
+  36% { transform: scale(1); }
+  72% { opacity: 1; transform: scale(1.02); filter: drop-shadow(0 4px 0 #5a3a12) drop-shadow(0 0 30px #f7e3a1aa); }
+  100% { opacity: 0; transform: scale(1.14); filter: drop-shadow(0 4px 0 #5a3a1200) drop-shadow(0 0 40px #f7e3a100) blur(3px); }
+}
+@keyframes intro-win-halo { 0% { opacity: 0; transform: scale(.3); } 30% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+@keyframes intro-crumble-top {
+  0% { opacity: 0; transform: translateY(-60px); }
+  14% { opacity: 1; transform: translateY(0); }
+  18% { transform: translateY(-4px); }
+  22%, 52% { opacity: 1; transform: translateY(0); }
+  56% { transform: translate(calc(var(--tilt) * 2px), -2px) rotate(calc(var(--tilt) * 3deg)); }
+  100% { opacity: 0; transform: translate(calc(var(--tilt) * 26px), 150px) rotate(calc(var(--tilt) * 28deg)); }
+}
+@keyframes intro-crumble-bottom {
+  0% { opacity: 0; transform: translateY(-60px); }
+  14% { opacity: 1; transform: translateY(0); }
+  18% { transform: translateY(-4px); }
+  22%, 58% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translate(calc(var(--tilt) * 14px), 190px) rotate(calc(var(--tilt) * 14deg)); }
+}
+html[data-motion="reduced"] .radiant-result-intro { display: none; }
+html[data-motion="reduced"] [data-radiant-results].is-result-intro > .radiant-results { opacity: 1; pointer-events: auto; }
 html[data-motion="reduced"] .radiant-results, html[data-motion="reduced"] .radiant-result-aura * { animation: none; }
 html[data-motion="reduced"] .radiant-result-aura { display: none; }
+@media (max-width: 700px) {
+  .radiant-result-actions { flex-direction: column; gap: 8px; }
+  .radiant-result-actions button { flex: 0 0 auto; width: 100%; }
+}

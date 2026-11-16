@@ -30,6 +30,12 @@ describe('saved Radiant result receipts', () => {
     expect(radiantResultsMarkup(saved, true)).toContain('data-outcome="victory"');
     expect(radiantResultsMarkup(saved, true)).toContain('class="radiant-result-aura" aria-hidden="true"');
     expect(radiantResultsMarkup(saved, true)).toContain('data-radiant-transition="exit"');
+    const markup = radiantResultsMarkup(saved, true);
+    expect(markup).toContain('<p class="radiant-result-eyebrow">Squad Training</p>');
+    expect(markup).toContain('Training · Wave 1');
+    expect(markup).toContain('<details class="radiant-result-details"><summary>Battle summary</summary>');
+    expect(markup.indexOf('Saved encounter rewards')).toBeLessThan(markup.indexOf('radiant-result-actions'));
+    expect(markup).toMatch(/class="radiant-result-primary" data-radiant-transition="continue"/);
     saved.state.phase = before.state.phase;
     expect(saved).toEqual(before);
   });
@@ -45,12 +51,15 @@ describe('saved Radiant result receipts', () => {
     expect(radiantHasNextEncounter(saved)).toBe(false);
     expect(radiantResultsMarkup(saved, false)).not.toContain('data-radiant-transition="continue"');
     expect(radiantResultsMarkup(saved, false)).not.toContain('data-radiant-transition="exit"');
+    expect(radiantResultsMarkup(saved, false)).toContain('Activity complete');
+    expect(radiantResultsMarkup(saved, false)).toContain('Every encounter in this activity is cleared.');
   });
   it('defeat and paused runs retain receipts but never offer Continue or victory copy', () => {
     const saved = run(); saved.state.phase = 'defeat';
     expect(radiantResultsMarkup(saved, true)).toContain('data-outcome="defeat"');
     expect(radiantResultsMarkup(saved, true)).not.toContain('Victory');
     expect(radiantResultsMarkup(saved, true)).not.toContain('data-radiant-transition="continue"');
+    expect(radiantResultsMarkup(saved, true)).toMatch(/class="radiant-result-primary" data-radiant-transition="retry"/);
     saved.quit = true; saved.state.phase = 'player';
     expect(radiantResultsMarkup(saved, true)).toContain('Encounter paused');
     expect(radiantResultsMarkup(saved, true)).not.toContain('data-radiant-transition="continue"');
