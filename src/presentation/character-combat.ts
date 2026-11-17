@@ -1,4 +1,4 @@
-import { radiantAttunement, radiantBearerKits, radiantFinalFlare, radiantLeaderBonus, radiantLeaderDescription, radiantPassiveAmount, radiantMasters, resolveRadiantStarterStats,
+import { radiantAttunement, radiantBearerKits, radiantFinalFlare, radiantLeaderBonus, radiantLeaderDescription, radiantMasters, resolveRadiantStarterStats,
   type RadiantBearerId, type RadiantLoadout, type RadiantStats } from '../content/combat-kits';
 import { adaptRadiantLoadouts } from '../game/combat-loadout';
 import { radiantChargeRules } from '../game/combat-gauge';
@@ -120,7 +120,7 @@ export function radiantFlareArticle(loadout: RadiantLoadout, tier: ConvergentLig
   const offer = radiantFinalFlare({ ...loadout, convergenceRank: Math.max(loadout.convergenceRank, tierRank[tier]) }, tier);
   const icon = abilityIcon(loadout.starter, tier === 'sparkling' ? 'skill1' : tier === 'glimmering' ? 'skill2' : 'ultimate');
   const unlocked = radiantFlareTierUnlocked(loadout, tier);
-  return `<article class="hub-ability radiant-flare info-ability${unlocked ? '' : ' is-locked'}" data-radiant-flare="${tier}" data-radiant-reference-tier="${tier}"><h4 class="ability-heading">${icon}<span>${radiantFlareTierNames[tier]}</span></h4>
+  return `<article class="hub-ability radiant-flare info-ability${unlocked ? '' : ' is-locked'}" data-radiant-flare="${tier}" data-radiant-reference-tier="${tier}"><h4 class="ability-heading">${icon}<span>${radiantFlareTierNames[tier]} · ${escape(offer.name)}</span></h4>
     <p class="info-label">${unlocked ? 'Unlocked' : 'Locked'} · Rank ${tierRank[tier]}+ and Evo.${displayEvolution(loadout.starter, tierForm[tier])}.</p>
     <p class="info-label">Target: ${offer.target === 'all-enemies' ? 'all living enemies' : offer.target === 'one-enemy' ? 'selected living enemy' : 'all living allies'}.</p>
     <ul class="info-effects">${radiantFlareDescription(offer, radiantBearerKits[loadout.starter].element).map(line => `<li>${escape(line)}</li>`).join('')}</ul>
@@ -178,7 +178,7 @@ export function radiantConvergenceRankPanel(loadout: RadiantLoadout, account: Ac
 export function radiantPassiveArticle(loadout: RadiantLoadout): string {
   const passive = radiantBearerKits[loadout.starter].passive;
   return `<article class="hub-ability radiant-passive"><h3 class="ability-heading">${abilityIcon(loadout.starter, 'passive')}<span>${escape(passive.name)} · Passive Skill</span></h3>
-    <p>All squad members gain ${percent(radiantPassiveAmount(loadout))} ${radiantStatLabels[passive.stat]} while this bearer is alive. Stacks additively.</p></article>`;
+    <p>${escape(passive.description)}</p></article>`;
 }
 
 export function radiantLeaderArticle(loadout: RadiantLoadout): string {

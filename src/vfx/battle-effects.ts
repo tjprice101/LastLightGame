@@ -7,7 +7,7 @@ import type { RadiantImpactFrame } from '../presentation/battle-impact-frames';
 import type { RadiantPlayerAction } from '../online/battle-run';
 import type { RadiantCombatState, RadiantCombatEvent } from '../game/combat-engine';
 import { readyFlare } from '../game/combat-gauge';
-import { radiantBearerKits, radiantFlares, type RadiantBearerId } from '../content/combat-kits';
+import { radiantBearerKits, radiantFlareName, type RadiantBearerId } from '../content/combat-kits';
 import { starters } from '../content/starters';
 import { battleSpeed } from '../presentation/battle-speed';
 import { reducedMotion } from '../presentation/settings';
@@ -48,7 +48,7 @@ export function radiantVisualDefinition(id: RadiantBearerId, tier: AbilityTier):
   const authored = radiantArchetypes[id], character = starters.find(character => character.id === id);
   if (!authored || !character) throw new Error(`Radiant visual profile is missing for ${id}.`);
   const flare = tier === 'skill1' ? 'sparkling' : tier === 'skill2' ? 'glimmering' : tier === 'ultimate' ? 'ultimate' : null;
-  const signature = flare ? radiantFlares[id][flare].name : 'Normal Attack';
+  const signature = flare ? radiantFlareName(id) : 'Normal Attack';
   return { name: character.name, tier, archetype: authored[tier],
     description: `${signature}: ${radiantBearerKits[id].signatureFamily} signature choreography.`,
     palette: radiantPalette(id, signaturePalette(id, character.name, character.color)),
@@ -173,7 +173,8 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
     const tier: AbilityTier = flare === 'ultimate' ? 'ultimate' : flare === 'glimmering' ? 'skill2' : flare === 'sparkling' ? 'skill1' : 'light';
     const original = radiantVisualDefinition(bearer.loadout.starter, tier);
     return { action, state: structuredClone(state), ability: { ...original,
-      name: flare ? radiantFlares[bearer.loadout.starter][flare].name : action?.type === 'defense' ? 'Defense' : 'Normal Attack' } };
+      name: flare ? radiantFlareName(bearer.loadout.starter) : action?.type === 'skill'
+        ? radiantBearerKits[bearer.loadout.starter].kit[action.slot === 1 ? 'skill1' : 'skill2'].name : 'Normal Attack' } };
   }
   async windup(action: RadiantPlayerAction, state: RadiantCombatState): Promise<void> {
     const saved = this.actionContext(action, state); this.latest = saved;

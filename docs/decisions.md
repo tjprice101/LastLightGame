@@ -1,5 +1,44 @@
 # Decision log
 
+## Battle Flurry Phase 3 Step 2a: engine framework (D-474, 2026-11-17)
+
+Implements the D-473 framework on branch `battle-flurry-phase3`. **Not
+released.** Spec: [combat spec](combat.md#skill-1--skill-2-engine-framework-d-474-battle-flurry-phase-3-step-2a).
+
+- **Owner choices (2026-11-17):**
+  - Phase 3 work goes on branch `battle-flurry-phase3`, pushed only as a
+    backup. `main` and `overhaul/radiant-foundation` stay unchanged until the
+    single Phase 3 release, because a pushed client would not match the
+    deployed authority.
+  - Step 2 is split into 2a (framework) and 2b (signature mechanics, in the
+    four approved batches).
+- **Implemented:**
+  - Kit data for all 32 bearers.
+  - The `skill` action with N2 costs and Efficiency floors, plus the N1 +15
+    Normal drop and Gauge Gain.
+  - Skill stats (N4) and O3 ascension.
+  - N6 categories with caps.
+  - N7 heal and Shield basis.
+  - Role traits (O5), including Tank 1.25 targeting on the existing stream.
+  - Health motes (N5).
+  - Defend removed with the O1 interim; O2.
+  - Schema 8 and `radiant-continuation-v4`.
+  - Pressure-lab skill policy.
+- **Plan-approved rules (2026-11-17), not specified before:**
+  - Skill damage multiplies three buckets: Skill and Flare power (Flare
+    Conduit, cooperation, kit bonuses); conditional damage Conduits/Leaders;
+    damage taken (Expose).
+  - Kit ignore-Defense adds to pierce, capped at 80%.
+  - A cost floor only limits a discount.
+  - Heals and Shields resolve before ally buffs; no rule depends on that order.
+- **Open:**
+  - Step 2b signature mechanics.
+  - Step 3 UI and kit text.
+  - Step 4 retune numbers (owner approves).
+  - The release deploy (owner approves).
+  - Nothing applies Weaken to bearers yet, so Ilyss's cleanse and the
+    Weaken-reduction Leaders have no effect.
+
 ## Battle Flurry Phase 3 kits and rules approved (D-473, 2026-11-16)
 
 Owner-approved design for Phase 3. **Not implemented.** Full text:

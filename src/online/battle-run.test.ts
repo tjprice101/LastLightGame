@@ -4,6 +4,7 @@ import { emptyAccount, type Account } from '../game/account';
 import { createCreatureCopy } from '../game/character-instances';
 import { createRadiantCombat, depleteRadiantCurrency, validateRadiantCombat } from '../game/combat-engine';
 import { adaptRadiantPressureEncounter } from '../game/enemy-pressure-encounters';
+import { chooseRadiantPressureAction } from '../game/enemy-pressure';
 import { pressureRadiantCalibration } from '../content/enemy-calibration';
 import { releasedRadiantIds } from '../content/combat-kits';
 import { squadMemberLimit } from '../content/squad-rules';
@@ -192,7 +193,7 @@ describe('actual saved Account to frozen radiant loadouts', () => {
 describe('authority-ready frozen run and settled encounter Haul', () => {
   it('uses actual authored enemies, explicit shared calibration and minimum currency table', () => {
     const value = entered(), run = value.state.radiantStudy!;
-    expect(run.version).toBe(7);
+    expect(run.version).toBe(8);
     expect(run.enemies).toEqual(adaptRadiantPressureEncounter(run.anchor, 1729, pressureRadiantCalibration));
     expect(run.state.chargeSeed).toBe(104729);
     expect(run.targetSeed).toBe(7);
@@ -274,6 +275,26 @@ describe('authority-ready frozen run and settled encounter Haul', () => {
     expect(result.response.run.targetSeed).toBe(local.run.targetSeed);
     expect(result.response.account.fractalis - before.state.account.fractalis).toBe(local.run.state.currencyEarned);
     expect(result.response.account.receipts.filter(receipt => receipt.startsWith('radiant-study:v2:'))).toHaveLength(1);
+  });
+  it('settle replays device Skill 1 / Skill 2 / Flare choices exactly and rejects the retired Defend choice (D-473)', () => {
+    const before = entered(3), run = structuredClone(before.state.radiantStudy!), actions: RadiantTurnAction[] = [];
+    while (run.state.phase === 'player' && actions.length < 1000) {
+      const actor = run.state.bearers.find(unit => unit.hp > 0 && !run.state.acted.includes(unit.loadout.id))!;
+      const action = chooseRadiantPressureAction(run.state, actor.loadout.id, 'balanced') as RadiantTurnAction;
+      run.journal.events.push(...applyRadiantTurn(run, action));
+      actions.push(action);
+    }
+    expect(actions.some(action => action.type === 'skill')).toBe(true);
+    expect(['victory', 'defeat']).toContain(run.state.phase);
+    const result = resolveRadiantRun(before, request(before, { kind: 'settle', actions }), authority());
+    expect(result.response.run.state).toEqual(run.state);
+    expect(result.response.run.targetSeed).toBe(run.targetSeed);
+    const defend = [{ type: 'defense', bearerId: run.state.bearers[0].loadout.id }] as unknown as RadiantTurnAction[];
+    expect(() => resolveRadiantRun(before, request(before, { kind: 'settle', actions: defend }), authority()))
+      .toThrow('Only player choices');
+    const badSlot = [{ type: 'skill', bearerId: run.state.bearers[0].loadout.id, slot: 3 }] as unknown as RadiantTurnAction[];
+    expect(() => resolveRadiantRun(before, request(before, { kind: 'settle', actions: badSlot }), authority()))
+      .toThrow('skill slot');
   });
   it('device turns bank nothing; shields block currency; settle pays floor(B*lowest legitimate HP loss/M)', () => {
     const before = entered(), run = structuredClone(before.state.radiantStudy!);
@@ -364,7 +385,8 @@ describe('authority-ready frozen run and settled encounter Haul', () => {
   it('retires a saved v6 run read-only with the rules notice', () => {
     const value = entered();
     expect(retiredRunVersion(6)).toBe(true);
-    expect(retiredRunVersion(7)).toBe(false);
+    expect(retiredRunVersion(7)).toBe(true);
+    expect(retiredRunVersion(8)).toBe(false);
     value.state.radiantStudy!.version = 6 as never;
     const raw = structuredClone(value);
     const checked = validateRadiantRunSnapshot(value);
@@ -439,7 +461,7 @@ describe('authority-ready frozen run and settled encounter Haul', () => {
     const budget = structuredClone(value);
     budget.state.radiantStudy!.enemies[0].currencyBudget++;
     expect(() => resolveRadiantRun(budget, req, authority())).toThrow();
-    expect(value.state.radiantStudy!.version).toBe(7);
+    expect(value.state.radiantStudy!.version).toBe(8);
   });
   it('explicit client outcome, HP, budget, enemy-action and seed injection are rejected', () => {
     const value = entered(), req = request(value, settleOp(value));
@@ -561,7 +583,7 @@ describe('existing aggregate+revision+request RPC atomicity', () => {
     expect(rpc.current.state.radiantStudy!.state.gauge).toEqual(saved.run.state.gauge);
     for (const change of [
       { enemyId: 'missing' }, { bearerId: 'missing' },
-      { trigger: 'other' }, { amount: .5 }, { amount: -1 }, { amount: 999 },
+      { trigger: 'other' }, { amount: .5 }, { amount: -1 }, { amount: 0 },
     ]) {
       const corrupt = structuredClone(saved);
       const invalid = corrupt.run.journal.events.find(event => event.type === 'gauge-drop')!;

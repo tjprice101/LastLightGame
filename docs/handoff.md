@@ -1,5 +1,61 @@
 # Current state and handoff
 
+## Battle Flurry Phase 3 Step 2a: engine framework (2026-11-17)
+
+**Implemented on branch `battle-flurry-phase3`, not released (D-474).**
+`main` and `overhaul/radiant-foundation` are unchanged (owner choice). Spec:
+[combat spec](combat.md#skill-1--skill-2-engine-framework-d-474-battle-flurry-phase-3-step-2a).
+- Kit data for all 32 bearers: `src/content/radiant-kits.ts`.
+- The `skill` action: costs 25/40, Efficiency cap and floors, no Gauge orbs.
+- Normal hits give +15; Gauge Gain multiplies every gain.
+- Skill Power, Skill Efficiency and Skill Duration; the `skill1`/`skill2`
+  Imbues now boost their own skill.
+- Categories: one per holder, the strongest applies, N6 caps.
+- Heals and Shields are a % of the recipient's max Health.
+- Role traits: Tank +50% Defense and 1.25 target weight; Support +50% Health
+  and a 4% squad heal; Skill Power by role.
+- Health motes.
+- Defend removed. Its Conduits fire on skill use; right-click and D do nothing
+  until the Step 3 grid.
+- Schema 8 (v3-v7 retire read-only); media type `radiant-continuation-v4`.
+- The pressure lab uses skills.
+- Signature clauses (Seeds, Cover, Quarry and the rest) are in the data but
+  have no effect until Step 2b.
+
+**Verified:**
+- `npx tsc --noEmit`: passed with 0 errors.
+- Full `npx vitest run`: 300 files, 10,538 tests passed.
+- New `src/game/combat-skills.test.ts` covers:
+  - costs, Imbues and target rules;
+  - Skill Power on damage, heals, Shields and buffs (not on Normal);
+  - category refresh and caps;
+  - role traits and the Tank weighting distribution;
+  - Health motes, including Burn routing and no revive;
+  - O1 guard and O2 Execution;
+  - Gauge Gain.
+- Gauge, engine, consolidation, conduit, presentation, run, session and local
+  suites were updated to the new rules. A settle-replay test plays Skill and
+  Flare choices and rejects `defense`.
+- `npx vite build`: passed (existing chunk advisory).
+- `node tools/bundle_server_game.mjs`: the bundle changed. It is **not
+  deployed**; the deploy waits for the Phase 3 release.
+- Pressure smoke (temporary test, deleted): 4 trios at level 60 against 5
+  anchors, `balanced` policy. All 20 encounters finished as victories, and
+  skills fired in every encounter longer than one round. Numbers are untuned
+  (Step 4).
+- **Not verified:**
+  - in-game play (there is no skill UI yet);
+  - a hosted or online battle.
+
+**Next:**
+- Step 2b batch 1 (Opening and Flagships signatures) on Opus, after `/clear`,
+  on branch `battle-flurry-phase3`.
+- Then batches 2-4, Step 3 (UI grid, kit text, Skill stats display), Step 4
+  (retune; the owner approves numbers) and one release with the authority
+  deploy (owner approval).
+- Open: nothing applies Weaken to bearers yet, so Ilyss's cleanse and the
+  Weaken-reduction Leaders have no effect.
+
 ## Battle Flurry Phase 3 Step 1: kits and rules approved (2026-11-16)
 
 **Approved design, docs only (D-473).** No code has changed. Full text:

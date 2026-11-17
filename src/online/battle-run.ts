@@ -21,8 +21,8 @@ import { radiantPressureEnemyAction } from '../game/enemy-pressure';
 import { applyRadiantCombatAction, createRadiantCombat, validateRadiantCombat, validateRadiantDropEvents,
   type RadiantCombatAction, type RadiantCombatEvent, type RadiantCombatState } from '../game/combat-engine';
 
-/** v3: device-run encounters settled by one authority replay per encounter (D-471). */
-export const radiantContinuationMediaType = 'application/vnd.lastlight.radiant-continuation-v3+json';
+/** v4: Phase 3 kits and rules (D-473); v3 introduced device-run encounters with one settle replay (D-471). */
+export const radiantContinuationMediaType = 'application/vnd.lastlight.radiant-continuation-v4+json';
 export const radiantClientAccept = `application/json, ${radiantContinuationMediaType}`;
 
 export type RadiantRunErrorCode = 'manual-squad' | 'invalid-input' | 'stale-revision' |
@@ -41,7 +41,7 @@ export interface RadiantContinuation {
   state: RadiantCombatState;
 }
 export interface FrozenRadiantRun {
-  version: 7;
+  version: 8;
   id: string;
   encounter: number;
   anchor: RadiantPressureAnchor;
@@ -60,7 +60,7 @@ export interface FrozenRadiantRun {
 }
 /** The existing commit_game_operation RPC locks and commits this account/run aggregate. */
 export type RadiantStudyGame = DurableGame & { radiantStudy?: FrozenRadiantRun };
-export type RadiantPlayerAction = Extract<RadiantCombatAction, { type: 'normal' | 'defense' | 'flare' }>;
+export type RadiantPlayerAction = Extract<RadiantCombatAction, { type: 'normal' | 'skill' | 'flare' }>;
 /** One player input in an encounter's action log: a bearer action or End Turn. */
 export type RadiantTurnAction = RadiantPlayerAction | { type: 'end-turn' };
 /** Largest action log one settle may replay. */
@@ -127,7 +127,7 @@ export interface RadiantRunAuthority {
 }
 /** Frozen runs from earlier combat rules end read-only; their saved rewards were already kept. */
 export function retiredRunVersion(version: unknown): boolean {
-  return version === 3 || version === 4 || version === 5 || version === 6;
+  return version === 3 || version === 4 || version === 5 || version === 6 || version === 7;
 }
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 function invalid(message: string): never { throw new RadiantRunError('invalid-input', message); }
@@ -186,7 +186,7 @@ function initialize(anchor: RadiantPressureAnchor, calibration: FrozenRadiantRun
     }
     validateRadiantCombat(initial);
   }
-  return { version: 7, id: entropy.runId, encounter, anchor, calibration,
+  return { version: 8, id: entropy.runId, encounter, anchor, calibration,
     encounterSeed: entropy.encounterSeed, initialChargeSeed: entropy.chargeSeed,
     initialTargetSeed: entropy.targetSeed, targetSeed: entropy.targetSeed, enemies,
     initial: structuredClone(initial), state: initial,
@@ -268,10 +268,12 @@ export function validateRadiantRunRequest(request: unknown): RadiantRunRequest {
   return structuredClone(request) as unknown as RadiantRunRequest;
 }
 function validateTurnAction(action: unknown): void {
+  // Defend was removed in Phase 3 (D-473); a `defense` choice is rejected like any unknown action.
   if (!record(action) || typeof action.type !== 'string' ||
-    !['normal', 'defense', 'flare', 'end-turn'].includes(action.type)) invalid('Only player choices are accepted.');
+    !['normal', 'skill', 'flare', 'end-turn'].includes(action.type)) invalid('Only player choices are accepted.');
   if (action.type === 'end-turn') { exactKeys(action, ['type']); return; }
-  exactKeys(action, action.type === 'defense' ? ['type', 'bearerId'] : ['type', 'bearerId', 'targetId']);
+  exactKeys(action, action.type === 'skill' ? ['type', 'bearerId', 'slot', 'targetId'] : ['type', 'bearerId', 'targetId']);
+  if (action.type === 'skill' && action.slot !== 1 && action.slot !== 2) invalid('Invalid skill slot.');
   if (!validId(action.bearerId) || action.type === 'normal' && !validId(action.targetId) ||
     'targetId' in action && !validId(action.targetId))
     invalid('Invalid player choice.');
@@ -347,7 +349,7 @@ export function resolveRadiantRun(snapshot: RadiantRunSnapshot, request: Radiant
     discover = true;
   } else {
     const run = game.radiantStudy;
-    if (!run || run.version !== 7 || run.id !== request.runId || run.encounter !== request.encounter)
+    if (!run || run.version !== 8 || run.id !== request.runId || run.encounter !== request.encounter)
       throw new RadiantRunError('stale-run', 'The saved Radiant encounter does not match.');
     validateFrozenRadiantRun(run);
     if (run.enemies.length !== run.state.enemies.length ||
@@ -421,7 +423,7 @@ function canonical(value: unknown): string {
 }
 export function validateFrozenRadiantRun(value: unknown): FrozenRadiantRun {
   try {
-    if (!record(value) || value.version !== 7 || typeof value.id !== 'string' || !uuid.test(value.id) ||
+    if (!record(value) || value.version !== 8 || typeof value.id !== 'string' || !uuid.test(value.id) ||
       typeof value.encounter !== 'number' || !Number.isSafeInteger(value.encounter) || value.encounter < 1 ||
       typeof value.quit !== 'boolean' || !record(value.anchor) ||
       !['authored-control', 'radiant-pressure-v2'].includes(String(value.calibration)) ||
@@ -517,12 +519,13 @@ const eventFields = {
   flare: { text: ['bearerId', 'tier', 'name'], number: [] },
   charge: { text: ['bearerId'], number: ['personal', 'bonusRolls', 'bonusOffered'] },
   round: { text: [], number: ['round'] },
-  guard: { text: ['targetId'], number: [] },
+  skill: { text: ['bearerId', 'name'], number: ['slot', 'cost'] },
+  'health-mote': { text: ['enemyId', 'bearerId'], number: ['offered', 'effective'] },
   status: { text: ['targetId', 'status'], number: ['magnitude', 'remaining'] },
 };
 function validSource(value: unknown): boolean {
   return record(value) && (value.kind === 'enemy' ? validId(value.enemyId) :
-    ['normal', 'flare', 'passive', 'master', 'leader'].includes(String(value.kind)) ? validId(value.bearerId) :
+    ['normal', 'skill', 'flare', 'passive', 'role', 'master', 'leader'].includes(String(value.kind)) ? validId(value.bearerId) :
     value.kind === 'gear' && validId(value.bearerId) && validId(value.conduitId));
 }
 function validEvent(value: unknown): boolean {
@@ -539,10 +542,10 @@ function validEvent(value: unknown): boolean {
   if (value.type === 'gauge-drop' && (!['hit', 'defeat'].includes(String(value.trigger)) ||
     !Number.isSafeInteger(value.amount) || Number(value.amount) < 1 ||
     !Number.isSafeInteger(Number(value.amount) * 10))) return false;
-  if (value.type === 'status' && !['burn', 'seed', 'renewal', 'reduction', 'weaken', 'attack-buff',
-    'exposure', 'weaken-removed'].includes(String(value.status))) return false;
+  if (value.type === 'status' && !['attack-up', 'defense-up', 'reduction', 'gain-up', 'hot', 'weaken', 'expose', 'burn',
+    'weaken-removed'].includes(String(value.status))) return false;
   if (value.type === 'status' && value.clockOnly !== undefined && value.clockOnly !== true) return false;
-  if (value.type === 'guard' && typeof value.guarding !== 'boolean') return false;
+  if (value.type === 'skill' && value.slot !== 1 && value.slot !== 2) return false;
   return value.gearSource === undefined || validSource(value.gearSource);
 }
 export function validateRadiantRunResponse(value: unknown): RadiantRunResponse {

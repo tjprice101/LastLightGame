@@ -298,7 +298,7 @@ describe('saved Radiant signature choreography', () => {
     const pending = effects.windup({ type: 'normal', bearerId: 'ember', targetId: 'enemy' }, state);
     window.dispatchEvent(new Event('resize')); await pending; expect(callbacks.size).toBe(0);
     document.documentElement.dataset.motion = 'reduced';
-    await effects.windup({ type: 'defense', bearerId: 'ember' }, state);
+    await effects.windup({ type: 'normal', bearerId: 'ember', targetId: 'enemy' }, state);
     expect(callbacks.size).toBe(0);
     delete document.documentElement.dataset.motion;
   });
@@ -309,9 +309,9 @@ describe('saved Radiant signature choreography', () => {
     await pending; expect(callbacks.size).toBe(0);
   });
   it('renders actual buff-only Flare status packets as small source-owned cues after charge, not offensive impacts', async () => {
-    const { effects, state } = fixture('seravelle');
+    const { effects, state } = fixture('disciple');
     state.gauge.members[0].charge = state.gauge.members[0].baseCost;
-    const action: RadiantPlayerAction = { type: 'flare', bearerId: 'seravelle' };
+    const action: RadiantPlayerAction = { type: 'flare', bearerId: 'disciple' };
     const owners: string[] = [], original = RadiantSignatureVFX.prototype.render;
     const render = vi.spyOn(RadiantSignatureVFX.prototype, 'render').mockImplementation(function (this: RadiantSignatureVFX, context, frame) {
       owners.push(this.bearer); original.call(this, context, frame);
@@ -320,13 +320,13 @@ describe('saved Radiant signature choreography', () => {
     render.mockClear(); owners.length = 0;
     const result = applyRadiantCombatAction(state, action);
     const statuses = result.events.filter(event => event.type === 'status');
-    expect(statuses.some(event => event.status === 'attack-buff' && event.source.kind === 'flare')).toBe(true);
+    expect(statuses.some(event => event.status === 'attack-up' && event.source.kind === 'flare')).toBe(true);
     for (const frame of radiantImpactFrames(state, result.state, result.events)) {
       const pending = effects.impact(frame); finish(); await pending;
     }
     expect(render).toHaveBeenCalled();
     expect(render.mock.calls.every(call => call[1].phase === 'status')).toBe(true);
-    expect(owners.every(owner => owner === 'seravelle')).toBe(true);
+    expect(owners.every(owner => owner === 'disciple')).toBe(true);
     expect(render.mock.calls.every(call => call[1].radius <= 27)).toBe(true);
     expect(callbacks.size).toBe(0);
   });
@@ -382,10 +382,10 @@ describe('saved Radiant signature choreography', () => {
     expect(callbacks.size).toBe(0);
   });
   it('plays three effective heals with their attached saved statuses in one target-bounded frame', async () => {
-    const { effects, state } = fixture('seravelle', ['seravelle', 'ember', 'tide']);
+    const { effects, state } = fixture('sprout', ['sprout', 'ember', 'tide']);
     state.gauge.members[0].charge = state.gauge.members[0].baseCost;
     for (const bearer of state.bearers) bearer.hp = Math.round(bearer.hp / 2);
-    const before = structuredClone(state), action: RadiantPlayerAction = { type: 'flare', bearerId: 'seravelle' };
+    const before = structuredClone(state), action: RadiantPlayerAction = { type: 'flare', bearerId: 'sprout' };
     const windup = effects.windup(action, state); finish(); await windup;
     const result = applyRadiantCombatAction(state, action), frames = radiantImpactFrames(state, result.state, result.events);
     expect(frames.some(frame => frame.events.filter(event => event.type === 'heal' || event.type === 'status').length > 3)).toBe(true);
@@ -393,10 +393,10 @@ describe('saved Radiant signature choreography', () => {
     expect(callbacks.size).toBe(0); expect(state).toEqual(before);
   });
   it('stops rendering expired status cues while longer saved impact effects continue', async () => {
-    const { effects, state } = fixture('seravelle', ['seravelle', 'ember', 'tide']);
+    const { effects, state } = fixture('sprout', ['sprout', 'ember', 'tide']);
     state.gauge.members[0].charge = state.gauge.members[0].baseCost;
     for (const bearer of state.bearers) bearer.hp = Math.round(bearer.hp / 2);
-    const action: RadiantPlayerAction = { type: 'flare', bearerId: 'seravelle' };
+    const action: RadiantPlayerAction = { type: 'flare', bearerId: 'sprout' };
     const windup = effects.windup(action, state); finish(); await windup;
     const result = applyRadiantCombatAction(state, action);
     const frame = radiantImpactFrames(state, result.state, result.events).find(value =>
@@ -436,7 +436,7 @@ describe('saved Radiant signature choreography', () => {
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(() => output);
     output.createRadialGradient = () => { throw new Error('Emission failed'); };
     const broken = new RadiantCanvasEffects(host); active.push(broken);
-    const pending = broken.windup({ type: 'defense', bearerId: 'ember' }, state);
+    const pending = broken.windup({ type: 'normal', bearerId: 'ember', targetId: 'enemy' }, state);
     tick();
     await expect(pending).rejects.toThrow('Emission failed');
     expect(callbacks.size).toBe(0);

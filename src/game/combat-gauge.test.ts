@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { addRadiantPersonalCharge, grantRadiantAction, grantRadiantDrop, grantRadiantRound, personalChargeMaximum,
-  radiantHitDrop, readyFlare, spendReadyFlare, validateRadiantGauge,
+  radiantFlareCost, radiantGain, radiantHitDrop, radiantSkillCost, readyFlare, readySkill, spendReadyFlare, spendSkill,
+  validateRadiantGauge,
   type RadiantGaugeState } from './combat-gauge';
 
 function fixture(form = 6, size = 1, convergenceRank = 1): RadiantGaugeState {
@@ -82,7 +83,8 @@ describe('isolated radiant charge foundation', () => {
   });
   it('does not invoke unused RNG and leaves input untouched', () => {
     const state = fixture(), before = structuredClone(state);
-    expect(radiantHitDrop('normal', 0, () => 1).amount).toBe(10);
+    expect(radiantHitDrop('normal', 0, () => 1).amount).toBe(15);
+    expect(radiantHitDrop('normal', 0, () => 1, 1.3).amount).toBe(20);
     expect(() => radiantHitDrop('normal', 1, () => 0)).toThrow('roll');
     expect(state).toEqual(before);
   });
@@ -138,5 +140,33 @@ describe('isolated radiant charge foundation', () => {
     expect(() => readyFlare(state, 'member-0')).toThrow('defeated');
     state.members[0].charge = 61;
     expect(() => validateRadiantGauge(state)).toThrow('unlocked layers');
+  });
+  it('prices Skill 1 / Skill 2 at 25 / 40 with a 50% Efficiency cap and floors that only limit discounts (D-473 N2)', () => {
+    expect([radiantSkillCost(1), radiantSkillCost(2)]).toEqual([25, 40]);
+    expect([radiantSkillCost(1, .05), radiantSkillCost(2, .05)]).toEqual([24, 38]);
+    expect([radiantSkillCost(1, .9), radiantSkillCost(2, .9)]).toEqual([13, 20]);
+    expect(() => radiantSkillCost(3 as 1)).toThrow('slot');
+    expect(() => radiantSkillCost(1, -0.1)).toThrow('Efficiency');
+    const member = { ...fixture().members[0], baseCost: 100, convergenceRank: 11 };
+    expect(radiantFlareCost(member)).toBe(200);
+    expect(radiantFlareCost(member, .9)).toBe(100);
+    expect(radiantFlareCost({ ...member, convergenceRank: 1 }, .5)).toBe(70);
+  });
+  it('spends skill Luminosity exactly, keeps fractional remainders and rejects an unaffordable skill', () => {
+    const state = fixture(6);
+    state.members[0].charge = 40.5;
+    expect(readySkill(state, 'member-0', 2)).toBe(true);
+    const spent = spendSkill(state, 'member-0', 2);
+    expect(spent).toMatchObject({ cost: 40 });
+    expect(spent.state.members[0].charge).toBe(.5);
+    expect(state.members[0].charge).toBe(40.5);
+    expect(readySkill(spent.state, 'member-0', 1)).toBe(false);
+    expect(() => spendSkill(spent.state, 'member-0', 1)).toThrow('Luminosity');
+  });
+  it('multiplies a gain by Gauge Gain and rounds once (D-473 N1)', () => {
+    expect(radiantGain(15, 1)).toBe(15);
+    expect(radiantGain(15, 1.3)).toBe(20);
+    expect(radiantGain(10, 1.25)).toBe(13);
+    expect(() => radiantGain(10, 0)).toThrow('Gauge Gain');
   });
 });

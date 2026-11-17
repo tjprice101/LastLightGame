@@ -1,8 +1,9 @@
-import { radiantFlares, radiantMasters, type RadiantLoadout } from '../content/combat-kits';
+import { radiantBearerKits, radiantTankTargetWeight, type RadiantLoadout } from '../content/combat-kits';
+import type { RadiantSkillDef, RadiantSkillSlot } from '../content/radiant-kits';
 import { scheduledEnemySkill } from '../content/enemy-skills';
-import { applyRadiantCombatAction, createRadiantCombat, type RadiantCombatState,
+import { applyRadiantCombatAction, createRadiantCombat, radiantSkillStats, type RadiantBearer, type RadiantCombatState,
   type RadiantCombatEvent, type RadiantCombatAction } from './combat-engine';
-import { personalChargeUnit, readyFlare } from './combat-gauge';
+import { personalChargeUnit, radiantFlareCost, readyFlare, readySkill } from './combat-gauge';
 import type { RadiantPressureEnemy } from './enemy-pressure-encounters';
 
 export type RadiantPressurePolicy = 'balanced' | 'normal-only' | 'support-only';
@@ -10,7 +11,7 @@ export interface RadiantPressureMetrics {
   outgoingHPDamage: number; outgoingAbsorbed: number; incomingHPDamage: number; incomingAbsorbed: number;
   effectiveHealing: number; enemyHealing: number; shieldCreated: number; enemyShieldCreated: number;
   personalGranted: number; personalSpent: number;
-  normals: number; defenses: number; flares: number; ultimateFlares: number; statuses: number;
+  normals: number; skills: number; flares: number; ultimateFlares: number; statuses: number;
   currency: number;
 }
 export interface RadiantPressureResult {
@@ -26,21 +27,38 @@ export function chooseRadiantPressureAction(
 ): RadiantCombatAction {
   const actor = state.bearers.find(member => member.loadout.id === id)!;
   const target = state.enemies.filter(member => member.hp > 0).sort((a, b) => a.hp - b.hp || a.id.localeCompare(b.id))[0];
-  const tier = readyFlare(state.gauge, id);
-  const offer = tier ? radiantFlares[actor.loadout.starter][tier] : undefined;
-  const masterRule = actor.loadout.masterId === null ? undefined : radiantMasters[actor.loadout.masterId].rule;
-  const masterStrike = masterRule === 'tide-strike' || masterRule === 'sprout-strike';
+  const normal: RadiantCombatAction = { type: 'normal', bearerId: id, targetId: target.id };
+  if (policy === 'normal-only') return normal;
+  const kit = radiantBearerKits[actor.loadout.starter].kit;
   const wounded = state.bearers.some(member => member.hp > 0 && member.hp < member.stats.hp * .8);
+  const unshielded = state.bearers.some(member => member.hp > 0 && !member.shields.length);
   const endangered = actor.hp < actor.stats.hp * .25 && actor.shields.length === 0;
-  if (policy !== 'normal-only' && offer && (policy !== 'support-only' || !masterStrike && offer.damage === 0 && offer.burn === 0)) {
-    const useful = masterStrike || offer.damage > 0 || offer.burn > 0 || wounded ||
-      (offer.shieldDefense > 0 || offer.shieldHP > 0) && state.bearers.some(member => member.hp > 0 && !member.shields.length) ||
-      offer.attackBuff > 0 || offer.reduction > 0;
-    if (useful)
-      return { type: 'flare', bearerId: id, ...(offer.target === 'one-enemy' || masterStrike ? { targetId: target.id } : {}) };
+  const supportive = (def: RadiantSkillDef) => def.target === 'none';
+  const useful = (def: RadiantSkillDef) => !supportive(def) || def.effects.some(effect =>
+    effect.kind === 'heal' ? wounded : effect.kind === 'shield' ? unshielded :
+      ['attack-up', 'defense-up', 'reduction', 'gain-up', 'fill', 'signature'].includes(effect.kind));
+  const allowed = (def: RadiantSkillDef) => (policy !== 'support-only' || supportive(def)) && useful(def);
+  const targeted = (def: RadiantSkillDef) => def.target === 'one-enemy' ? { targetId: target.id } : {};
+  if (readyFlare(state.gauge, id) && allowed(kit.flare)) return { type: 'flare', bearerId: id, ...targeted(kit.flare) };
+  const options = ([2, 1] as const).filter(slot => readySkill(state.gauge, id, slot,
+    radiantSkillStats(state, id, slot).skillEfficiency) && allowed(slotDef(kit, slot)));
+  const slot = endangered ? options.find(choice => supportive(slotDef(kit, choice))) ?? options[0] : options[0];
+  if (slot !== undefined) return { type: 'skill', bearerId: id, slot, ...targeted(slotDef(kit, slot)) };
+  // Support-only control passes instead of attacking; the other policies attack.
+  return policy === 'support-only' ? { type: 'end-turn' } : normal;
+}
+function slotDef(kit: { skill1: RadiantSkillDef; skill2: RadiantSkillDef }, slot: RadiantSkillSlot): RadiantSkillDef {
+  return slot === 1 ? kit.skill1 : kit.skill2;
+}
+/** D-473 O5: Tanks are picked with weight 1.25 against 1 on the same single target roll (no extra draw). */
+function weightedTarget(targets: readonly RadiantBearer[], roll: number): RadiantBearer {
+  const weight = (unit: RadiantBearer) => radiantBearerKits[unit.loadout.starter].role === 'Tank' ? radiantTankTargetWeight : 1;
+  let remaining = roll * targets.reduce((sum, unit) => sum + weight(unit), 0);
+  for (const unit of targets) {
+    remaining -= weight(unit);
+    if (remaining < 0) return unit;
   }
-  return policy === 'support-only' || policy === 'balanced' && endangered
-    ? { type: 'defense', bearerId: id } : { type: 'normal', bearerId: id, targetId: target.id };
+  return targets[targets.length - 1];
 }
 export function radiantPressureEnemyAction(
   state: RadiantCombatState, enemy: RadiantPressureEnemy, targetRandom: () => number,
@@ -51,7 +69,7 @@ export function radiantPressureEnemyAction(
     (a.hp / a.stats.hp - b.hp / b.stats.hp) || a.loadout.id.localeCompare(b.loadout.id));
   const random = targetRandom();
   if (!Number.isFinite(random) || random < 0 || random >= 1) throw new Error('Invalid target seed output.');
-  const target = targeting ? targets[0] : targets[Math.floor(random * targets.length)];
+  const target = targeting ? targets[0] : weightedTarget(targets, random);
   const pattern = enemy.pattern;
   const actor = state.enemies.find(member => member.id === enemy.id)!;
   return { type: 'enemy-attack', enemyId: enemy.id, targetIds: [target.loadout.id],
@@ -82,7 +100,7 @@ export function runRadiantPressure(
     outgoingHPDamage: 0, outgoingAbsorbed: 0, incomingHPDamage: 0, incomingAbsorbed: 0,
     effectiveHealing: 0, enemyHealing: 0, shieldCreated: 0, enemyShieldCreated: 0,
     personalGranted: 0, personalSpent: 0,
-    normals: 0, defenses: 0, flares: 0, ultimateFlares: 0, statuses: 0, currency: 0,
+    normals: 0, skills: 0, flares: 0, ultimateFlares: 0, statuses: 0, currency: 0,
   };
   const hp = () => state.bearers.reduce((sum, member) => sum + member.hp, 0);
   const shield = () => state.bearers.reduce((sum, member) => sum + member.shields.reduce((s, layer) => s + layer.remaining, 0), 0);
@@ -109,16 +127,18 @@ export function runRadiantPressure(
     let spent = 0;
     if (action.type === 'flare') {
       const member = state.gauge.members.find(member => member.id === action.bearerId)!;
-      const tier = readyFlare(state.gauge, member.id)!;
-      spent = member.baseCost * (tier === 'sparkling' ? 1 : 2);
+
+      if (!readyFlare(state.gauge, member.id)) throw new Error('Pressure Flare is not ready.');
+      spent = radiantFlareCost(member);
     }
     const result = applyRadiantCombatAction(state, action);
     state = result.state; result.events.forEach(record);
+    for (const event of result.events) if (event.type === 'skill') spent += event.cost;
     metrics.personalSpent += spent;
     metrics.personalGranted = Math.round((metrics.personalGranted + personal() - beforePersonal + spent) *
       personalChargeUnit) / personalChargeUnit;
     if (action.type === 'normal') metrics.normals++;
-    if (action.type === 'defense') metrics.defenses++;
+    if (action.type === 'skill') metrics.skills++;
     minimumTeamHP = Math.min(minimumTeamHP, hp()); maximumShield = Math.max(maximumShield, shield());
     actions++;
   };

@@ -1,6 +1,6 @@
 import { freshGame } from '../supabase/functions/game-operation/engine';
 import { chooseRadiantPressureAction, type RadiantPressurePolicy } from '../src/game/enemy-pressure';
-import { applyRadiantTurn, resolveRadiantRun, type RadiantPlayerAction, type RadiantRunAuthority,
+import { applyRadiantTurn, resolveRadiantRun, type RadiantTurnAction, type RadiantRunAuthority,
   type RadiantRunOperation, type RadiantRunSnapshot } from '../src/online/battle-run';
 import { pressureStudyLoadouts, pressureStudyNow, pressureStudySeeds } from './pressure-study';
 import { radiantPressureAnchors, assertRadiantPressureAccess, isRadiantAccessError,
@@ -79,7 +79,7 @@ export function measureRadiantEconomyCycle(account: Account, anchor: RadiantPres
   };
   let actions = 0, bestPartial: EconomyPoint | null = null, bestSnapshot: RadiantRunSnapshot | null = null;
   let stagnation = 0, lowestHP = Infinity, halted: 'timeout' | 'stalemate' | null = null;
-  const actionLog: RadiantPlayerAction[] = [];
+  const actionLog: RadiantTurnAction[] = [];
   // Device play mutates a working copy; the authority replays the log from the saved start.
   const start = structuredClone(snapshot);
   while (snapshot.state.radiantStudy!.state.phase === 'player') {
@@ -89,7 +89,7 @@ export function measureRadiantEconomyCycle(account: Account, anchor: RadiantPres
     const actor = state.bearers.find(unit => unit.hp > 0 && !state.acted.includes(unit.loadout.id));
     if (!actor) throw new Error('Economy player phase lacks an actionable bearer.');
     const action = chooseRadiantPressureAction(state, actor.loadout.id, policy);
-    if (action.type !== 'normal' && action.type !== 'defense' && action.type !== 'flare')
+    if (action.type !== 'normal' && action.type !== 'skill' && action.type !== 'flare' && action.type !== 'end-turn')
       throw new Error('Economy selected a nonplayer action.');
     const choice = action;
     actionLog.push(choice);

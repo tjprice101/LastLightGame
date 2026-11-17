@@ -45,7 +45,7 @@ interface ActivePresentation {
   cancel(): void;
 }
 interface QueuedRadiantAction {
-  kind: 'normal' | 'defense' | 'flare';
+  kind: 'normal' | 'flare';
   bearerId: string;
 }
 
@@ -322,7 +322,7 @@ export class RadiantBattleView {
     event.preventDefault();
     this.gestures?.cancel();
     if (actor.disabled || !actor.dataset.radiantActor) return;
-    this.enqueueAction('defense', actor.dataset.radiantActor);
+    // Defend was removed (D-473); Phase 3 Step 3 opens the Skill 1 / Skill 2 / Flare grid here.
   };
   private keyDown = (event: KeyboardEvent): void => {
     if (this.disposed || event.altKey || event.ctrlKey || event.metaKey || !(event.target instanceof HTMLElement)) return;
@@ -354,7 +354,7 @@ export class RadiantBattleView {
     const id = event.target.dataset.radiantActor;
     if (!id || event.target.hasAttribute('disabled')) return;
     const key = event.key.toLowerCase();
-    const kind = key === 'd' ? 'defense' : key === 'f' || event.key === 'ArrowUp' ? 'flare' : null;
+    const kind = key === 'f' || event.key === 'ArrowUp' ? 'flare' : null;
     if (!kind) return;
     event.preventDefault();
     this.enqueueAction(kind, id);
@@ -559,7 +559,7 @@ export class RadiantBattleView {
     if (!this.target || !run.state.enemies.some(enemy => enemy.id === this.target && enemy.hp > 0))
       this.target = run.state.enemies.find(enemy => enemy.hp > 0)?.id ?? null;
   }
-  async act(kind: 'normal' | 'defense' | 'flare', bearerId?: string): Promise<void> {
+  async act(kind: 'normal' | 'flare', bearerId?: string): Promise<void> {
     this.presentationError = null;
     this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = '';
     const before = this.session.view().run;
@@ -569,15 +569,15 @@ export class RadiantBattleView {
       ?? before.state.bearers[0]).loadout.id;
     const member = before.state.bearers.find(unit => unit.loadout.id === actor)!;
     const tier = member.hp > 0 ? readyFlare(before.state.gauge, actor) : null;
-    const focusedTarget = kind === 'defense' ? null : this.target;
-    const action: RadiantPlayerAction = kind === 'defense' ? { type: kind, bearerId: actor } :
+    const focusedTarget = this.target;
+    const action: RadiantPlayerAction =
       kind === 'normal' ? { type: kind, bearerId: actor, targetId: focusedTarget ?? '' } :
       { type: kind, bearerId: actor, ...(tier && radiantFlareNeedsTarget(member.loadout, tier)
         ? { targetId: focusedTarget ?? '' } : {}) };
     try {
       // Resolved instantly on the device; presentation follows without waiting for the network.
       const turn = this.session.act(action);
-      if (kind !== 'defense') this.cardFeedback(action.bearerId, kind === 'flare' ? 'flare' : 'strike');
+      this.cardFeedback(action.bearerId, kind === 'flare' ? 'flare' : 'strike');
       const presentation = this.queuePresentation(turn.before, turn.response, action,
         affectedEnemyTarget(turn.response, focusedTarget), false);
       if (this.session.view().settleDue) void this.settleEncounter();
@@ -614,7 +614,7 @@ export class RadiantBattleView {
       this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = 'Convergent Light is not ready.';
       return;
     }
-    if (kind !== 'defense' && !run.state.enemies.some(enemy => enemy.hp > 0)) return;
+    if (!run.state.enemies.some(enemy => enemy.hp > 0)) return;
     this.queuedActionActors.add(bearerId);
     this.actionQueue.push({ kind, bearerId });
     this.gestures.cancel();
@@ -783,7 +783,7 @@ export class RadiantBattleView {
       }
       if (!reducedMotion() && player) {
         const member = before.bearers.find(unit => unit.loadout.id === player.bearerId)!;
-        const motion = player.type === 'defense' ? 'guard' : characterChoreography[member.loadout.starter].motion;
+        const motion = characterChoreography[member.loadout.starter].motion;
         const poised = motion === 'cast' ? 'translateY(-4px)' : motion === 'bow' ? 'translateX(5px)' :
           motion === 'hammer' ? 'translate(-5px, -4px) rotate(3deg)' : motion === 'guard' ? 'translateX(-3px)' :
             motion === 'twin' ? 'translateX(-8px) rotate(-2deg)' : 'translateX(-12px)';

@@ -19,8 +19,10 @@ batches, plus a number sheet, in
 [phase3-kit-drafts.md](battle-flurry-reference/phase3-kit-drafts.md). Owner
 choices: one release after all batches are approved; Defend removed; Health
 motes drop once per enemy defeat. The owner approved the number sheet, O1-O5 and
-all four batches plus restored role traits (D-473, 2026-11-16). Next: Step 2
-(engine), planned in Plan mode on Opus.
+all four batches plus restored role traits (D-473, 2026-11-16). Step 2a, the
+engine framework, is implemented on branch `battle-flurry-phase3` (D-474,
+2026-11-17; not released). Next: Step 2b signature mechanics in four batches,
+then Step 3 (UI), Step 4 (retune) and one release.
 
 **Status:** owner-approved direction (D-470, seven decisions below). Exact
 numbers, kit batches, the Conduit remap and later depth systems still need

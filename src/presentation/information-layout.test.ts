@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { catalogInformation, informationSheet, offerInformation } from './information-layout';
 import { radiantCharacterLoadout, radiantCharacterSheet } from './character-combat';
-import { radiantBearerKits } from '../content/combat-kits';
+import { radiantBearerKits, radiantFlares, type RadiantBearerId } from '../content/combat-kits';
 import { emptyAccount } from '../game/account';
 
 describe('shared information templates', () => {
@@ -54,7 +54,10 @@ describe('shared information templates', () => {
       expect(document.querySelectorAll('[data-radiant-flare]')).toHaveLength(3);
       expect(document.querySelectorAll('[data-radiant-flare].is-locked')).toHaveLength(2);
       for (const tier of Array.from(document.querySelectorAll('[data-radiant-flare]'))) {
-        expect(tier.querySelector('.info-effects li')).not.toBeNull();
+        // Flares made only of signature or conditional clauses get their text in Phase 3 Step 3.
+        const offer = radiantFlares[starter as RadiantBearerId][tier.getAttribute('data-radiant-flare') as 'sparkling'];
+        if (offer.damage || offer.heal || offer.shieldHP || offer.attackBuff || offer.reduction || offer.weaken || offer.exposure || offer.burn)
+          expect(tier.querySelector('.info-effects li')).not.toBeNull();
         expect(tier.textContent).toContain('Target:');
         expect(tier.textContent).toContain('Costs');
         expect(tier.textContent).toMatch(/(?:Locked|Unlocked) · Rank \d+\+ and Evo\.\d+/);

@@ -5,7 +5,7 @@ import {
   type RadiantGear,
 } from '../content/conduit-effects';
 import {
-  radiantBearerKits, radiantLeaderBonus, radiantPassiveAmount, resolveRadiantStarterStats, type RadiantBearerId, type RadiantLoadout,
+  radiantBearerKits, radiantLeaderBonus, resolveRadiantStarterStats, type RadiantBearerId, type RadiantLoadout,
 } from '../content/combat-kits';
 import {
   createRadiantCombat, applyRadiantCombatAction, effectiveRadiantStats, validateRadiantCombat,
@@ -30,11 +30,14 @@ function ready(state: RadiantCombatState): RadiantCombatState {
   for (const gauge of state.gauge.members) gauge.charge = gauge.baseCost;
   return state;
 }
+/** Passes the rest of the player phase (Defend was removed in D-473). */
 function defend(state: RadiantCombatState): RadiantCombatState {
-  for (const ally of state.bearers)
-    if (ally.hp > 0 && !state.acted.includes(ally.loadout.id))
-      state = act(state, { type: 'defense', bearerId: ally.loadout.id }).state;
-  return state;
+  return state.phase === 'player' ? act(state, { type: 'end-turn' }).state : state;
+}
+/** Uses Skill 2 (D-473 O1: Defend-triggered effects fire on skill use). Ember's Flame Arc needs no target. */
+function skillUse(state: RadiantCombatState, id: string): RadiantCombatState {
+  state.gauge.members.find(member => member.id === id)!.charge = 40;
+  return act(state, { type: 'skill', bearerId: id, slot: 2 }).state;
 }
 function round(state: RadiantCombatState) {
   state = defend(state);
@@ -91,7 +94,7 @@ describe('exhaustive stable-ID radiant conversion', () => {
       expect(before.acted).toEqual([]);
       state = round(state).state;
       state = ready(state);
-      const offerTarget = radiantBearerKits[starter].signature.target;
+      const offerTarget = radiantBearerKits[starter].kit.flare.target;
       state = act(state, { type: 'flare', bearerId: starter,
         ...(offerTarget === 'one-enemy' ? { targetId: 'enemy' } : {}) }).state;
       state = defend(state);
@@ -136,17 +139,17 @@ describe('real four-stat and action modifiers', () => {
     expect(cast('wardglass-transformer', 'tide').state.bearers[0].shields[0].remaining)
       .toBeGreaterThan(cast(undefined, 'tide').state.bearers[0].shields[0].remaining);
   });
-  it('guard and resilience improve a real hostile phase and do not cleanse statuses', () => {
+  it('guard (after a skill) and resilience improve a real hostile phase and do not cleanse statuses', () => {
     const test = (id?: ConduitId) => {
       let state = fixture(id ? [id] : []);
-      state.bearers[0].weaken.push({ source: { kind: 'enemy', enemyId: 'enemy' }, magnitude: .5, remaining: 2 });
+      state.bearers[0].buffs.push({ category: 'weaken', source: { kind: 'enemy', enemyId: 'enemy' }, magnitude: .5, remaining: 2 });
       const attack = effectiveRadiantStats(state, 'ember').attack;
-      state = defend(state);
+      state = skillUse(state, 'ember');
       return { attack, result: act(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ember'], coefficient: 2 }) };
     };
     expect(test('opal-indexer').attack).toBeGreaterThan(test().attack);
     expect(test('stasis-reliquary').result.state.bearers[0].hp).toBeGreaterThan(test().result.state.bearers[0].hp);
-    expect(test('opal-indexer').result.state.bearers[0].weaken).toHaveLength(1);
+    expect(test('opal-indexer').result.state.bearers[0].buffs.filter(effect => effect.category === 'weaken')).toHaveLength(1);
   });
   it('leader gear only applies while first and alive; cooperation requires a previous ally action', () => {
     let state = fixture(['calamitic-choir-array-of-branded-stars'], 'ember', ['rosetta']);
@@ -158,7 +161,7 @@ describe('real four-stat and action modifiers', () => {
     expect(normal(state).state.enemies[0].hp).toBeLessThan(normal(controlLeader).state.enemies[0].hp);
     state.bearers[0].hp = 0; state.gauge.members[0].living = false;
     expect(effectiveRadiantStats(state, 'rosetta').attack)
-      .toBeCloseTo(state.bearers[1].stats.attack * (1 + radiantPassiveAmount(state.bearers[1].loadout)));
+      .toBeCloseTo(state.bearers[1].stats.attack);
     const control = normal(fixture(['atmospheric-storm-clock'], 'atmoso', ['ember']));
     let after = fixture(['atmospheric-storm-clock'], 'atmoso', ['ember']);
     after = normal(after, 'ember').state;
@@ -172,7 +175,7 @@ describe('bounded, sourced Conduit triggers', () => {
     const state = fixture(['reserve-torque-crank']);
     state.bearers[0].loadout.gear![0]!.rank = 3;
     const result = normal(state);
-    expect(result.state.gauge.members[0].charge).toBe(13);
+    expect(result.state.gauge.members[0].charge).toBe(18);
     expect(result.state.chargeSeed).toBe(state.chargeSeed);
     state.gauge.members[0].charge = 199;
     expect(normal(state).state.gauge.members[0].charge).toBe(200);
@@ -197,21 +200,22 @@ describe('bounded, sourced Conduit triggers', () => {
     const result = normal(state);
     expect(result.events.filter(event => event.type === 'damage').map(event => event.origin)).toEqual(['direct', 'generated']);
     expect(result.events.filter(event => event.type === 'gauge-drop')).toHaveLength(1);
-    expect(result.state.gauge.members[0].charge).toBe(10);
+    expect(result.state.gauge.members[0].charge).toBe(15);
     expect(result.state.chargeSeed).toBe(state.chargeSeed);
   });
   it('native healing grants charge once per action, but generated healing and overhealing cannot', () => {
     const state = ready(fixture(['rootbound-triage-vault', 'botanic-graft-covenant'], 'sprout', ['ember', 'tide']));
     state.bearers.forEach(owner => { owner.hp = 1; });
     const result = act(state, { type: 'flare', bearerId: 'sprout' });
-    expect(result.state.gauge.members[0].charge).toBe(6);
+    // Worldseed's Luminosity Gain Up (+30%) multiplies the heal-charge grant: round(6 x 1.3) = 8.
+    expect(result.state.gauge.members[0].charge).toBe(8);
     expect(result.events.filter(event => event.type === 'shield' && event.source.kind === 'gear')).toHaveLength(3);
     const full = ready(fixture(['rootbound-triage-vault'], 'sprout'));
     expect(act(full, { type: 'flare', bearerId: 'sprout' }).state.gauge.members[0].charge).toBe(0);
     let generated = fixture(['lifeline-flywheel', 'rootbound-triage-vault'], 'sprout');
     generated.bearers[0].hp = 1;
     generated = normal(generated).state;
-    expect(generated.gauge.members[0].charge).toBe(10);
+    expect(generated.gauge.members[0].charge).toBe(15);
   });
   it('does not revive a lethal recipient through former sustain Conduits', () => {
     let state = fixture(['horizon-heartcase', 'immortal-vessel']);

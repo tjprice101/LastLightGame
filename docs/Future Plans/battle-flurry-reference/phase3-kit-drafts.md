@@ -1,9 +1,11 @@
 # Battle Flurry Phase 3: kit drafts and number sheet (2026-11-16)
 
-**Status (2026-11-16):**
-- **Owner-approved, not implemented:** the number sheet, O1-O5 as recommended,
+**Status (2026-11-17):**
+- **Owner-approved, not yet released:** the number sheet, O1-O5 as recommended,
   revised O5 role traits (Attacker +50% Skill Power only), and batches 1-4.
-- Recorded as D-473. Next: Step 2, the engine (plan first).
+- Recorded as D-473. Step 2a (engine framework) implemented on branch
+  `battle-flurry-phase3` (D-474, not released); signature clauses below run
+  from Step 2b. Next: Step 2b batch 1.
 
 Plan: [battle-flurry-overhaul.md](../battle-flurry-overhaul.md), section D and
 "Skill language".

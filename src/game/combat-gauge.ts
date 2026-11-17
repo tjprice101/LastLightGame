@@ -2,6 +2,7 @@ import { squadMemberLimit } from '../content/squad-rules';
 import type { ElementId } from '../content/activities';
 import { isCombatElement } from '../content/element-matchups';
 import { convergentLightRules, convergentLightTier, type ConvergentLightTier } from '../content/progression';
+import { radiantSkillCosts, type RadiantSkillSlot } from '../content/radiant-kits';
 
 export type FlareTier = ConvergentLightTier;
 export interface RadiantGaugeMember {
@@ -18,8 +19,9 @@ export interface RadiantGaugeState {
 }
 
 export const personalChargeUnit = 10;
+/** D-473 N1: Normal Attack hit +15, being hit +10; skills, Flares and defeats +0. */
 export const radiantChargeRules = {
-  normal: 10,
+  normal: 15,
   flareHit: 0,
   defeatedEnemy: 0,
   otherMemberPercent: 10,
@@ -72,22 +74,54 @@ function actor(state: RadiantGaugeState, id: string): RadiantGaugeMember {
   if (!member.living) throw new Error('A defeated bearer cannot receive or spend action charge.');
   return member;
 }
-function flareCost(member: RadiantGaugeMember): number {
-  return member.baseCost * (convergentLightTier(member.convergenceRank) === 'sparkling' ? 1 : 2);
+/** D-473 N2: Skill Efficiency discount cap and cost floors. */
+export const radiantCostRules = { efficiencyCap: .5, skillFloor: 1, flareFloor: 70 } as const;
+function discounted(base: number, efficiency: number, floor: number): number {
+  if (!Number.isFinite(efficiency) || efficiency < 0) throw new Error('Invalid radiant Skill Efficiency.');
+  // A floor limits the discount; it never raises a cost above its base.
+  return Math.max(Math.min(base, floor), Math.round(base * (1 - Math.min(radiantCostRules.efficiencyCap, efficiency))));
+}
+export function radiantFlareCost(member: RadiantGaugeMember, efficiency = 0): number {
+  return discounted(member.baseCost * (convergentLightTier(member.convergenceRank) === 'sparkling' ? 1 : 2),
+    efficiency, radiantCostRules.flareFloor);
+}
+export function radiantSkillCost(slot: RadiantSkillSlot, efficiency = 0): number {
+  if (slot !== 1 && slot !== 2) throw new Error('Invalid radiant skill slot.');
+  return discounted(radiantSkillCosts[slot], efficiency, radiantCostRules.skillFloor);
 }
 export function readyFlare(state: RadiantGaugeState, id: string): FlareTier | null {
   validateRadiantGauge(state);
   const member = actor(state, id);
-  return member.charge >= flareCost(member) ? convergentLightTier(member.convergenceRank) : null;
+  return member.charge >= radiantFlareCost(member) ? convergentLightTier(member.convergenceRank) : null;
 }
 export function spendReadyFlare(state: RadiantGaugeState, id: string): { state: RadiantGaugeState; tier: FlareTier } {
   const tier = readyFlare(state, id);
   if (!tier) throw new Error('This bearer has no ready Convergent Light.');
   const next = structuredClone(state);
   const member = actor(next, id);
-  member.charge = (personalUnits(member.charge) - flareCost(member) * personalChargeUnit) / personalChargeUnit;
+  member.charge = (personalUnits(member.charge) - radiantFlareCost(member) * personalChargeUnit) / personalChargeUnit;
   validateRadiantGauge(next);
   return { state: next, tier };
+}
+export function readySkill(state: RadiantGaugeState, id: string, slot: RadiantSkillSlot, efficiency = 0): boolean {
+  validateRadiantGauge(state);
+  return actor(state, id).charge >= radiantSkillCost(slot, efficiency);
+}
+export function spendSkill(
+  state: RadiantGaugeState, id: string, slot: RadiantSkillSlot, efficiency = 0,
+): { state: RadiantGaugeState; cost: number } {
+  if (!readySkill(state, id, slot, efficiency)) throw new Error('This bearer lacks the Luminosity for that skill.');
+  const next = structuredClone(state);
+  const member = actor(next, id), cost = radiantSkillCost(slot, efficiency);
+  member.charge = (personalUnits(member.charge) - cost * personalChargeUnit) / personalChargeUnit;
+  validateRadiantGauge(next);
+  return { state: next, cost };
+}
+/** Gauge Gain multiplies every Luminosity gain, rounded once to a whole amount. */
+export function radiantGain(amount: number, gaugeGain: number): number {
+  integer(amount, 0, 'charge grant');
+  if (!Number.isFinite(gaugeGain) || gaugeGain <= 0) throw new Error('Invalid radiant Gauge Gain.');
+  return Math.round(amount * gaugeGain);
 }
 function addPersonalUnits(member: RadiantGaugeMember, units: number): void {
   integer(units, 0, 'charge grant units');
@@ -119,7 +153,7 @@ export function grantRadiantDrop(state: RadiantGaugeState, id: string, amount: n
   return next;
 }
 export function radiantHitDrop(
-  action: 'normal' | 'flare', previousRolls: number, roll: () => number,
+  action: 'normal' | 'flare', previousRolls: number, roll: () => number, gaugeGain = 1,
 ): { amount: number; bonusRolls: number; bonusOffered: number } {
   if (action !== 'normal' && action !== 'flare') throw new Error('Invalid radiant drop action.');
   integer(previousRolls, 0, 'bonus roll count');
@@ -131,24 +165,23 @@ export function radiantHitDrop(
     if (!Number.isFinite(value) || value < 0 || value >= 1) throw new Error('Invalid radiant bonus-charge roll.');
     if (value < radiantChargeRules.bonusChance) bonusOffered = radiantChargeRules.bonusAmount;
   }
-  return { amount: (action === 'normal' ? radiantChargeRules.normal : radiantChargeRules.flareHit) + bonusOffered,
-    bonusRolls, bonusOffered };
+  return { amount: radiantGain((action === 'normal' ? radiantChargeRules.normal : radiantChargeRules.flareHit) + bonusOffered,
+    gaugeGain), bonusRolls, bonusOffered };
 }
 export function grantRadiantAction(
-  state: RadiantGaugeState, id: string, action: 'normal' | 'defense' | 'flare', qualifyingDirectHits: number,
+  state: RadiantGaugeState, id: string, action: 'normal' | 'skill' | 'flare', qualifyingDirectHits: number,
 ): { state: RadiantGaugeState } {
   validateRadiantGauge(state);
   actor(state, id);
   integer(qualifyingDirectHits, 0, 'direct hit count');
-  if (!['normal', 'defense', 'flare'].includes(action)) throw new Error('Invalid radiant charge action.');
+  if (!['normal', 'skill', 'flare'].includes(action)) throw new Error('Invalid radiant charge action.');
   if (action === 'normal' && qualifyingDirectHits > 1) throw new Error('Normal Attack has one mechanical charge hit.');
-  if (action === 'defense' && qualifyingDirectHits !== 0) throw new Error('Defense cannot generate attack-hit motes.');
   return { state: structuredClone(state) };
 }
-export function grantRadiantIncomingAttack(state: RadiantGaugeState, id: string): RadiantGaugeState {
+export function grantRadiantIncomingAttack(state: RadiantGaugeState, id: string, gaugeGain = 1): RadiantGaugeState {
   validateRadiantGauge(state);
   const next = structuredClone(state);
-  addRadiantPersonalCharge(actor(next, id), radiantChargeRules.incomingAttack);
+  addRadiantPersonalCharge(actor(next, id), radiantGain(radiantChargeRules.incomingAttack, gaugeGain));
   validateRadiantGauge(next);
   return next;
 }

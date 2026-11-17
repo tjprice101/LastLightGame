@@ -207,7 +207,7 @@ describe('saved-only Radiant client run controller', () => {
   });
   it('Settings blocks device choices and preserves the live run, events and dismissal without operations', async () => {
     const { session, transport } = fixture(); await enter(session);
-    session.act({ type: 'defense', bearerId: 'ember' });
+    session.act({ type: 'end-turn' });
     session.dismissResults(true);
     const before = session.view(), calls = transport.execute.mock.calls.length;
     for (let i = 0; i < 3; i++) { session.setSettings(true);
@@ -256,10 +256,10 @@ describe('saved-only Radiant client run controller', () => {
   it('a combat-only resume log replays device play after reconstruction and never grants anything', async () => {
     const storage = memoryStorage();
     const { session, transport } = fixture(storage); await enter(session);
-    session.act({ type: 'defense', bearerId: 'ember' });
+    session.act({ type: 'end-turn' });
     const live = session.view(), raw = storage.getItem(RADIANT_ACTION_LOG_KEY)!;
     expect(JSON.parse(raw)).toMatchObject({ runId: live.saved.run!.id, encounter: 1, revision: live.saved.revision,
-      actions: [{ type: 'defense', bearerId: 'ember' }] });
+      actions: [{ type: 'end-turn' }] });
     const resumed = new RadiantSession(live.saved, transport, uuid, storage);
     expect(resumed.view().run).toEqual(live.run);
     expect(resumed.view().haul).toBe(live.haul);
@@ -274,7 +274,7 @@ describe('saved-only Radiant client run controller', () => {
     await replayed.settle();
     expect(storage.getItem(RADIANT_ACTION_LOG_KEY)).toBeNull();
     const actions = (transport.execute.mock.calls.at(-1)![0].operation as { actions: unknown[] }).actions;
-    expect(actions[0]).toEqual({ type: 'defense', bearerId: 'ember' });
+    expect(actions[0]).toEqual({ type: 'end-turn' });
   });
   it('a settle whose saved replay differs from device playback adopts the saved result', async () => {
     const { session, snapshot } = fixture(); await enter(session);

@@ -1,4 +1,4 @@
-import type { RadiantCombatEvent, RadiantCombatState, RadiantShield, RadiantSource, RadiantTimedEffect } from '../game/combat-engine';
+import type { RadiantCategory, RadiantCombatEvent, RadiantCombatState, RadiantShield, RadiantSource } from '../game/combat-engine';
 import { characterName } from '../content/character-art';
 import { formatStat } from '../content/combat';
 import { getConduit } from '../content/conduits';
@@ -10,7 +10,7 @@ import { statusIcon } from './status-icon';
 import type { StatusArtId } from '../content/status-art';
 
 export interface RadiantStatusRow {
-  kind: 'burn' | 'exposure' | 'weaken' | 'seed' | 'renewal' | 'reduction' | 'attack-buff' | 'guard';
+  kind: RadiantCategory;
   magnitude: number;
   remaining: number | null;
   source: RadiantSource | null;
@@ -19,16 +19,9 @@ export type RadiantStatusSnapshot = Record<string, RadiantStatusRow[]>;
 export function radiantStatusSnapshot(state: RadiantCombatState): RadiantStatusSnapshot {
   const result: Record<string, RadiantStatusRow[]> = {};
   for (const unit of [...state.bearers, ...state.enemies]) {
-    const rows: RadiantStatusRow[] = [];
-    const add = (kind: RadiantStatusRow['kind'], effects: RadiantTimedEffect[]) => {
-      for (const effect of effects) rows.push({ kind, ...structuredClone(effect) });
-    };
-    if ('loadout' in unit) {
-      add('seed', unit.seeds); add('renewal', unit.renewal); add('reduction', unit.reductions);
-      add('attack-buff', unit.attackBuffs);
-      if (unit.guarding) rows.push({ kind: 'guard', magnitude: .5, remaining: null, source: null });
-    } else { add('burn', unit.burns); add('exposure', unit.exposures); }
-    add('weaken', unit.weaken);
+    const effects = 'loadout' in unit ? unit.buffs : unit.debuffs;
+    const rows: RadiantStatusRow[] = effects.map(effect => ({ kind: effect.category, magnitude: effect.magnitude,
+      remaining: effect.remaining, source: structuredClone(effect.source) }));
     result['loadout' in unit ? unit.loadout.id : unit.id] = unit.hp > 0 ? rows : [];
   }
   return result;
@@ -40,17 +33,10 @@ function sameSource(a: RadiantSource, b: RadiantSource): boolean {
       (a.kind !== 'gear' || b.kind === 'gear' && a.conduitId === b.conduitId);
 }
 export function applyRadiantStatusEvent(
-  snapshot: RadiantStatusSnapshot, event: Extract<RadiantCombatEvent, { type: 'status' | 'guard' }>,
+  snapshot: RadiantStatusSnapshot, event: Extract<RadiantCombatEvent, { type: 'status' }>,
 ): void {
   const rows = snapshot[event.targetId];
   if (!rows) throw new Error('Saved status target is missing.');
-  if (event.type === 'guard') {
-    snapshot[event.targetId] = event.guarding
-      ? [...rows.filter(row => row.kind !== 'guard'), { kind: 'guard', magnitude: .5,
-        remaining: null, source: null }]
-      : rows.filter(row => row.kind !== 'guard');
-    return;
-  }
   if (event.status === 'weaken-removed') {
     if (!event.source) throw new Error('Saved removed status has no source.');
     snapshot[event.targetId] = rows.filter(row => row.kind !== 'weaken' || !row.source ||
@@ -58,8 +44,9 @@ export function applyRadiantStatusEvent(
     return;
   }
   if (!event.source) throw new Error('Saved timed status has no source.');
+  // D-473 N6: one entry per category, so a newer status event replaces that category's row.
   const kind = event.status;
-  const retained = rows.filter(row => row.kind !== kind || !row.source || !sameSource(row.source, event.source!));
+  const retained = rows.filter(row => row.kind !== kind);
   if (event.remaining > 0)
     retained.push({ kind, magnitude: event.magnitude, remaining: event.remaining, source: structuredClone(event.source) });
   snapshot[event.targetId] = retained;
@@ -80,17 +67,19 @@ export function radiantSourceLabel(source: RadiantSource, run: FrozenRadiantRun)
     if (id === null || !Object.hasOwn(radiantMasters, id)) throw new Error('Status Master source is missing.');
     return `${name} · ${getMasterConduit(id).name}`;
   }
-  return `${name} · ${source.kind === 'normal' ? 'Normal Attack' : source.kind === 'flare' ? 'Flare' : 'Passive'}`;
+  const kinds: Record<typeof source.kind, string> = { normal: 'Normal Attack', skill: 'Skill', flare: 'Flare',
+    passive: 'Passive', role: 'Role trait' };
+  return `${name} · ${kinds[source.kind]}`;
 }
 const descriptions: Record<RadiantStatusRow['kind'], { label: string; clock: string; icon?: StatusArtId; percent: boolean }> = {
-  burn: { label: 'Burn', clock: 'enemy phase', icon: 'burn', percent: false },
-  exposure: { label: 'Exposure', clock: 'enemy phase', percent: true },
-  weaken: { label: 'Weaken', clock: 'enemy phase', percent: true },
-  seed: { label: 'Seed', clock: 'round start', percent: false },
-  renewal: { label: 'Renewal', clock: 'round start', percent: false },
-  reduction: { label: 'Direct damage reduction', clock: 'enemy phase', percent: true },
-  'attack-buff': { label: 'Attack boost', clock: 'round', percent: true },
-  guard: { label: 'Guard', clock: 'until next round', percent: true },
+  burn: { label: 'Burn', clock: 'turn', icon: 'burn', percent: false },
+  expose: { label: 'Expose', clock: 'turn', percent: true },
+  weaken: { label: 'Weaken', clock: 'turn', percent: true },
+  'attack-up': { label: 'Attack Up', clock: 'turn', percent: true },
+  'defense-up': { label: 'Defense Up', clock: 'turn', percent: true },
+  reduction: { label: 'Damage Reduction', clock: 'turn', percent: true },
+  'gain-up': { label: 'Luminosity Gain Up', clock: 'turn', percent: true },
+  hot: { label: 'Health Over Time', clock: 'turn', percent: true },
 };
 export function radiantStatusRows(rows: readonly RadiantStatusRow[], run: FrozenRadiantRun): string {
   return rows.map(row => {
@@ -99,7 +88,7 @@ export function radiantStatusRows(rows: readonly RadiantStatusRow[], run: Frozen
     const clock = row.remaining === null ? definition.clock :
       `${row.remaining} ${definition.clock}${row.remaining === 1 ? '' : 's'} remaining`;
     return `<li data-radiant-effect="${row.kind}">${definition.icon ? statusIcon(definition.icon) : ''}
-      <strong>${definition.label}${row.kind === 'guard' ? '' : ` · ${amount}`}</strong><span>${clock}</span>
+      <strong>${definition.label} · ${amount}</strong><span>${clock}</span>
       ${row.source ? `<small>${escape(radiantSourceLabel(row.source, run))}</small>` : ''}</li>`;
   }).join('');
 }

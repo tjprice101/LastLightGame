@@ -203,12 +203,13 @@ describe('device-run three-member Radiant battle surface', () => {
     applyMotion('reduced'); await view.finishEntrance();
     const ember = action(host, 'ember').closest('.radiant-member')!;
     const tide = action(host, 'tide').closest('.radiant-member')!;
-    await view.act('defense', 'ember');
+    await view.act('normal', 'ember');
     expect(ember.classList.contains('has-acted')).toBe(true);
     expect(tide.classList.contains('has-acted')).toBe(false);
     expect(action(host, 'ember').disabled).toBe(true);
     expect(action(host, 'tide').disabled).toBe(false);
-    await view.act('defense', 'tide');
+    controls(host, '[data-radiant-end-turn]').click();
+    await vi.waitFor(() => expect(host.querySelector('[data-radiant-round]')!.textContent).toBe('Round 2'));
     expect(ember.classList.contains('has-acted')).toBe(false);
     expect(tide.classList.contains('has-acted')).toBe(false);
     expect(action(host, 'ember').disabled).toBe(false);
@@ -405,15 +406,6 @@ describe('device-run three-member Radiant battle surface', () => {
     expect(acts).toHaveBeenCalledTimes(1); expect(session.view().run!.state.acted).toEqual(['ember']);
     expect(session.view().run!.state.gauge.members[1].charge).toBeGreaterThan(0);
     expect(host.querySelector('[data-radiant-error]')!.textContent).toContain('Gauge-drop recipient is missing');
-  });
-  it('keeps Guard in the optional reference and updates it through round expiry without filling the card', async () => {
-    const { view, host } = fixture(2); applyMotion('reduced'); await view.finishEntrance();
-    await view.act('defense');
-    expect(host.querySelector('[data-radiant-health="ember"] [data-radiant-effect="guard"]')).toBeNull();
-    expect(host.querySelector('[data-radiant-member-reference="ember"] [data-radiant-effect="guard"]')).not.toBeNull();
-    expect(host.querySelector('[data-radiant-member-reference="ember"] [data-radiant-no-effects]')!.hasAttribute('hidden')).toBe(true);
-    await view.act('normal');
-    expect(host.querySelector('[data-radiant-member-reference="ember"] [data-radiant-effect="guard"]')).toBeNull();
   });
   it('clicking anywhere on a member card resolves its Normal Attack', async () => {
     const { view, session, host, transport, acts } = fixture(); applyMotion('reduced'); await view.finishEntrance();
@@ -814,7 +806,7 @@ describe('device-run three-member Radiant battle surface', () => {
   });
   it('End Turn skips members who have not acted and plays the enemy phase without a request', async () => {
     const { view, host, session, transport, acts } = fixture(); applyMotion('reduced'); await view.finishEntrance();
-    await view.act('defense', 'ember');
+    await view.act('normal', 'ember');
     const round = session.view().run!.state.round;
     controls(host, '[data-radiant-end-turn]').click();
     expect(acts.mock.calls.at(-1)![0]).toEqual({ type: 'end-turn' });
@@ -831,7 +823,8 @@ describe('device-run three-member Radiant battle surface', () => {
       setItem: (key: string, value: string) => { items.set(key, value); }, removeItem: (key: string) => { items.delete(key); } };
     const { session, transport } = fixture(); applyMotion('reduced');
     const logged = new RadiantSession(session.view().saved, transport, uuid, storage);
-    logged.finishEntrance(); logged.act({ type: 'defense', bearerId: 'ember' });
+    logged.finishEntrance();
+    logged.act({ type: 'normal', bearerId: 'ember', targetId: logged.view().run!.state.enemies[0].id });
     const resumed = new RadiantSession(logged.view().saved, transport, uuid, storage);
     const host = document.createElement('div'); document.body.append(host);
     const view = new RadiantBattleView(host, resumed, vi.fn()); disposed.push(view);
@@ -1032,27 +1025,24 @@ describe('device-run three-member Radiant battle surface', () => {
     expect(transport.execute.mock.calls[0][0].operation.kind).toBe('exit');
     expect(session.view().run).toBeNull();
   });
-  it('right click defends; D and F/Up Arrow are keyboard Defense and Flare alternatives', async () => {
+  it('right click and D no longer Defend (D-473); the browser menu stays suppressed until the skill grid', async () => {
     const { view, session, host, transport, acts } = fixture(); applyMotion('reduced'); await view.finishEntrance();
     const card = host.querySelector<HTMLElement>('[data-radiant-card][data-radiant-unit="ember"] .radiant-frozen-stats dd')!;
     const menu = new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2 });
     card.dispatchEvent(menu);
     expect(menu.defaultPrevented).toBe(true);
-    await vi.waitFor(() => expect(session.view().run!.state.acted).toEqual(['ember']));
-    expect(acts).toHaveBeenCalledTimes(1);
-    expect(acts.mock.calls[0][0]).toEqual({ type: 'defense', bearerId: 'ember' });
-    const acted = new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2 });
-    card.dispatchEvent(acted);
-    expect(acted.defaultPrevented).toBe(true);
     await Promise.resolve();
-    expect(acts).toHaveBeenCalledTimes(1);
+    expect(acts).not.toHaveBeenCalled();
+    expect(session.view().run!.state.acted).toEqual([]);
     expect(transport.execute).not.toHaveBeenCalled();
     const keyboard = fixture(); await keyboard.view.finishEntrance();
     const tide = action(keyboard.host, 'tide');
     expect(tide.disabled).toBe(false);
-    tide.dispatchEvent(new KeyboardEvent('keydown', { key: 'd', bubbles: true, cancelable: true }));
-    await vi.waitFor(() => expect(keyboard.acts).toHaveBeenCalledTimes(1));
-    expect(keyboard.acts.mock.calls[0][0]).toEqual({ type: 'defense', bearerId: 'tide' });
+    const press = new KeyboardEvent('keydown', { key: 'd', bubbles: true, cancelable: true });
+    tide.dispatchEvent(press);
+    await Promise.resolve();
+    expect(press.defaultPrevented).toBe(false);
+    expect(keyboard.acts).not.toHaveBeenCalled();
     expect(host.querySelector('.radiant-actions [data-radiant-action], [data-radiant-menu]')).toBeNull();
     expect(host.querySelector('[data-radiant-reference]')).toBeNull();
   });

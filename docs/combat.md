@@ -1,5 +1,127 @@
 # Combat specification
 
+## Skill 1 / Skill 2 engine framework (D-474, Battle Flurry Phase 3 Step 2a)
+
+**Status:** implemented on branch `battle-flurry-phase3`. Not released: the
+UI grid (Step 3), the signature mechanics (Step 2b) and the 3-member retune
+(Step 4) ship with it in one release and one authority deploy. Approved rules:
+D-473 and [phase3-kit-drafts.md](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md).
+
+**Kit data.** `src/content/radiant-kits.ts` holds Skill 1, Skill 2, Flare
+(Ultimate values) and the Passive for all 32 released bearers. Generic clauses
+already run in the engine: damage, Burn, Weaken, Expose, Attack Up, Defense Up,
+Damage Reduction, Luminosity Gain Up, Health Over Time, heals, Shields, fills,
+cleanse, ignore-Defense and damage bonuses. Bearer-specific clauses have no
+effect until their Step 2b batch: `signature` effects, `when` conditions,
+`perStack` adds and `alt` powers. The old generic Flares and squad-stat Passives
+are removed.
+
+**Skill action.** `{ type: 'skill', bearerId, slot: 1 | 2, targetId? }`:
+- Costs 25 and 40 Luminosity (N2). Skill Efficiency discounts are capped at
+  50%, with cost floors of 1 for skills and 70 for Flares. A floor only limits
+  a discount; it never raises a cost above its base.
+- A target is required exactly when the skill has a one-enemy part.
+- Skills and Flares drop no Gauge orbs (N1).
+- The `skill` event records the slot, name and cost paid.
+- The bearer is added to the turn's `skilled` ledger.
+
+**Resolution order** (skills and Flares share one resolver):
+1. Spend the cost.
+2. Damage: one total per target split across the hits, last hit takes the
+   remainder (N8).
+3. Enemy debuffs.
+4. Heals and Shields.
+5. Ally buffs and cleanse.
+6. Fills.
+7. Support squad heal.
+8. Conduit processing.
+
+Heals and Shields resolve before buffs so that a recipient's heal and its
+statuses present as one impact. No rule depends on that order.
+
+**Damage.** `power x Skill Power x (1 + Flare Conduit (Flares only) +
+cooperation + kit damage bonus)`, times `(1 + Expose) x conditional damage
+Conduits/Leaders x element`. Defense is multiplied by
+`1 - min(80%, pierce + kit ignore)`. D-473 O2: the conditional Conduits now
+boost skills too.
+
+**Skill stats (N4).**
+- Skill Power = 1 + role (Attacker +0.5, Support +0.25) + the slot's
+  ascension Imbue (+0.5, O3).
+- Skill Power scales skill and Flare damage, Burn, heals, Shields and
+  buff/debuff strength. It does not scale Normal Attack, fills or
+  Conduit-generated effects.
+- Skill Efficiency = the slot's Imbue (+5%).
+- Skill Duration = 0, with a 6-turn maximum.
+- Gauge Gain = 1 + Luminosity Gain Up. It multiplies every Luminosity gain,
+  rounded once: Normal drop, incoming hit, fills and Conduit grants.
+- Flares keep their form, rank (+1%) and `lastFlare` power, plus tier scaling:
+  Glimmering 75% damage, 85% effects, 8 hits; Sparkling 50%, 70%, 4 hits.
+
+**Heals and Shields (N7).** Kit heals and Shields are a % of the
+**recipient's** max Health x the caster's Skill Power, then the existing
+`healing`/`shielding` Conduit bonuses apply. Conduit heals and Shields keep
+their Recovery/Defense basis until Phase 4.
+
+**Categories (N6).**
+- Bearers hold Attack Up, Defense Up, Damage Reduction, Luminosity Gain Up,
+  Health Over Time and Weaken. Enemies hold Weaken, Expose and Burn.
+- Each holder has at most one entry per category. The stronger effect replaces
+  the magnitude and the source; the duration becomes the longer of the two.
+- Caps are applied when an effect lands and enforced by state validation:
+  Attack Up and Defense Up +100%, Reduction 75%, Gain Up +100%, HoT 30% of max
+  Health, Weaken 50%, Expose +80%. Burn has no cap.
+- Conduit-generated statuses use the same categories and caps.
+- Clocks tick at the end of the enemy phase: Burn deals damage first, then
+  every category ticks, and HoT heals before it ticks.
+- The status presenter shows one row per category with a turn clock.
+
+**Role traits (O5).**
+- Tank: +50% Defense. Support: +50% Health. Both are baked into the frozen
+  stats.
+- Each Support skill and Flare heals all allies 4% of max Health (source
+  `role`). This heal is not scaled by Skill Power or Conduit bonuses and never
+  comes from a Normal Attack.
+- Enemy single-target picks weight Tanks 1.25 against 1 on the same single
+  `targetSeed` roll. There is no extra draw and no new stream. Scripted
+  lowest/highest patterns still override the weighting.
+- Resonance remains unapplied in Radiant (D-473: unchanged until the retune).
+
+**Health motes (N5).** An enemy defeat drops one Health mote. It heals the
+bearer whose damage defeated the enemy 10% of max Health; for a Burn defeat,
+that is the Burn's caster. No mote drops if that bearer is defeated, so motes
+never revive. The `health-mote` event follows `defeated`. It is not a `heal`
+event, so it triggers no Conduits. The mote is deterministic and uses no RNG.
+
+**Defend removed (O1 interim).**
+- The `defense` action, `guarding` and the `guard` event are gone. Settle logs
+  that contain `defense` are rejected.
+- `guard-charge`, `guard-shield`, `guard-heal` and `guard-team-shield` fire on
+  the bearer's own skill.
+- `guard` reduces incoming damage while the bearer is in `skilled` (its own
+  amount only, with no 50% base).
+- Right-click and D do nothing until the Step 3 skill grid. F and Up Arrow
+  still cast the Flare.
+
+**Versions.**
+- Combat-state and frozen-run schemas are **8**. Versions 3-7 retire read-only
+  with the standard notice.
+- The media type is `radiant-continuation-v4`.
+- Saved Normal drops accept any positive whole amount, because Gauge Gain
+  varies it.
+
+**Pressure lab.**
+- `balanced` plays a ready useful Flare first, then Skill 2, then Skill 1,
+  then a Normal. An endangered bearer prefers a non-damaging skill.
+- `support-only` uses only non-damaging skills and otherwise ends the turn.
+- The `defenses` metric is now `skills`.
+
+**Open items.**
+- Nothing applies Weaken to bearers yet, so Ilyss's cleanse and the "reduces
+  Weaken on allies" Leaders have no effect until enemies gain debuffs.
+- Kit, Passive and Leader text, Skill stat display and the skill grid are Step 3.
+- Flare display summaries cover only generic clauses.
+
 ## Flurry presentation (D-472, Battle Flurry Phase 2)
 
 Presentation only: combat rules, events, rewards, receipts, the `settle`

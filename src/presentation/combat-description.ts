@@ -17,9 +17,9 @@ export function radiantFlareDescription(offer: RadiantFlareOffer, element = ''):
   if (offer.weaken) lines.push(`${enemies} surviving impact: Weaken by ${percent(offer.weaken)} for ${offer.weakenPhases} enemy phases.`);
   if (offer.exposure) lines.push(`${enemies} surviving impact: Exposure, increasing direct damage taken by ${percent(offer.exposure)} for ${offer.exposurePhases} enemy phases.`);
   if (offer.shieldDefense || offer.shieldHP)
-    lines.push(`All living allies gain a Shield equal to ${percent(offer.shieldDefense)} caster Defense + ${percent(offer.shieldHP)} recipient maximum Health, until broken.`);
+    lines.push(`All living allies gain a Shield equal to ${percent(offer.shieldHP)} recipient maximum Health, until broken.`);
   if (offer.reduction) lines.push(`All living allies take ${percent(offer.reduction)} less direct enemy damage for ${offer.reductionPhases} enemy phases.`);
-  if (offer.heal) lines.push(`Restore ${percent(offer.heal)} caster Recovery as Health to all living allies; no revival.`);
+  if (offer.heal) lines.push(`Restore ${percent(offer.heal)} of each recipient's maximum Health to all living allies; no revival.`);
   if (offer.renewal) lines.push(`All living allies restore ${percent(offer.renewal)} caster Recovery as Health at each of the next ${offer.renewalRounds} round starts.`);
   if (offer.attackBuff) lines.push(`All living allies gain ${percent(offer.attackBuff)} Attack for ${offer.attackBuffRounds} rounds.`);
   return lines;
@@ -27,6 +27,7 @@ export function radiantFlareDescription(offer: RadiantFlareOffer, element = ''):
 export function radiantPassiveEnhancements(loadout: RadiantLoadout): string[] {
   const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
   const passiveMaster = master?.rule === 'standard' && master.enhancement === 'passive';
-  const power = 1 + (passiveMaster ? master.magnitude : 0) + (loadout.ascension.skill1 ? .5 : 0);
+  // D-473 O3: the skill1 Imbue now boosts Skill 1, not the Passive.
+  const power = 1 + (passiveMaster ? master.magnitude : 0);
   return power === 1 ? [] : [`Passive effect magnitude ×${number(power)} from the saved Passive Imbue and Master; durations do not change.`];
 }

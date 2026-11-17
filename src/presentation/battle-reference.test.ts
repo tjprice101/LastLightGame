@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { radiantBattleReference, radiantConduitDescription, radiantFlareDescription,
   radiantFlareNeedsTarget, radiantLeaderReference } from './battle-reference';
-import { radiantFlares, radiantFinalFlare, radiantLeaderDescription, radiantPassiveAmount, radiantMasters, radiantStarterKits, releasedRadiantIds,
+import { radiantFlares, radiantFinalFlare, radiantLeaderDescription, radiantMasters, radiantStarterKits, releasedRadiantIds,
   type RadiantLoadout, type RadiantMasterId } from '../content/combat-kits';
 import { radiantConduits, radiantConduitPrimitives } from '../content/conduit-effects';
 import { type ConduitId } from '../content/conduits';
@@ -19,7 +19,9 @@ describe('complete frozen Radiant battle reference', () => {
     for (const tier of ['sparkling', 'glimmering', 'ultimate'] as const) {
       expect(html).toContain(radiantFlares[id][tier].name);
       const lines = radiantFlareDescription(radiantFlares[id][tier]);
-      expect(lines.length).toBeGreaterThan(0);
+      // Flares made only of signature or conditional clauses (Step 2b) have no generic summary lines yet.
+      const generic = Object.entries(radiantFlares[id][tier]).some(([key, value]) => key !== 'comboHits' && typeof value === 'number' && value > 0);
+      expect(lines.length > 0).toBe(generic);
       expect(html).toContain(`data-radiant-reference-tier="${tier}"`);
       if (radiantFlares[id][tier].damage) expect(lines.join(' ')).toContain('Attack total');
       if (radiantFlares[id][tier].heal) expect(lines.join(' ')).toContain('no revival');
@@ -70,17 +72,18 @@ describe('complete frozen Radiant battle reference', () => {
     member.form = 1; member.level = 30; member.ascension.lastFlare = true;
     const html = radiantBattleReference(member, 20);
     expect(html.match(/Locked · Rank/g)).toHaveLength(2);
-    expect(html).toContain('240% caster Recovery');
-    expect(radiantFinalFlare(member, 'sparkling').heal).toBeCloseTo(2.4);
+    // Worldseed Sparkling: 60% x 70% x the saved lastFlare Imbue (x1.5) = 63% of each recipient's max Health.
+    expect(html).toContain('63% of each recipient');
+    expect(radiantFinalFlare(member, 'sparkling').heal).toBeCloseTo(.63);
     expect(html).toContain('coefficients include evolution, rank, saved Imbues and personal Master enhancements');
     expect(html).not.toContain('Saved signature magnitude');
   });
-  it.each(['aurora', 'ilyss'] as const)('shows %s actual enhanced squad passive, not retired cleanse effects', id => {
+  it.each(['aurora', 'ilyss'] as const)('shows %s Phase 3 Passive, not the retired squad-stat Passive', id => {
     const member = loadout(id);
     member.ascension.skill1 = true;
     for (const html of [radiantPassiveArticle(member), radiantBattleReference(member, radiantStarterKits[id].baseCost)]) {
-      expect(html).toContain(`${Number((radiantPassiveAmount(member) * 100).toPrecision(12))}%`);
-      expect(html).toContain('while this bearer is alive');
+      expect(html).toContain(escapeDialogText(radiantStarterKits[id].passive.description));
+      expect(html).not.toContain('while this bearer is alive');
       expect(html).not.toContain('Weaken this passive removes');
     }
   });

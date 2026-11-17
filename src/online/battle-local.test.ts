@@ -45,7 +45,7 @@ async function send(transport: LocalRadiantTransport, operation: RadiantRunOpera
 }
 
 describe('local Radiant authority', () => {
-  it.each([3, 4, 5, 6])('retires rules %s without changing storage, revision, holdings or saved rewards on read', async version => {
+  it.each([3, 4, 5, 6, 7])('retires rules %s without changing storage, revision, holdings or saved rewards on read', async version => {
     const storage = seeded();
     const transport = new LocalRadiantTransport(storage, () => 'ember');
     const started = await send(transport, { kind: 'start', activity: { kind: 'training' }, calibration: 'authored-control' });
@@ -59,7 +59,7 @@ describe('local Radiant authority', () => {
     expect(storage.values).toEqual(before);
     const fresh = await send(transport, { kind: 'start', activity: { kind: 'training' }, calibration: 'authored-control' });
     expect(fresh.revision).toBe(started.revision + 1);
-    expect(fresh.run.version).toBe(7);
+    expect(fresh.run.version).toBe(8);
     expect((await transport.read()).notice).toBeUndefined();
   });
 
@@ -75,7 +75,7 @@ describe('local Radiant authority', () => {
     expect(result.state.radiantStudy).toBeUndefined();
     expect(result.state.account).toEqual(started.account);
     expect(snapshot).toEqual(before);
-    snapshot.state.radiantStudy.version = 7;
+    snapshot.state.radiantStudy.version = 8;
     snapshot.state.radiantStudy.state.enemies[0].elementId = null;
     expect(() => validateRadiantRunSnapshot(snapshot)).toThrow('Invalid saved Radiant account');
   });
@@ -117,7 +117,7 @@ describe('local Radiant authority', () => {
     expect((await reloaded.read()).run!.state.bearers[0].stats.hp).toBe(288);
     const device = structuredClone((await reloaded.read()).run!);
     const events = applyRadiantTurn(device, { type: 'normal', bearerId: 'ember', targetId: started.run.state.enemies[0].id });
-    expect(device.state.gauge.members[0].charge).toBe(12);
+    expect(device.state.gauge.members[0].charge).toBe(17);
     expect(events).toContainEqual(expect.objectContaining({
       type: 'charge', gearSource: { kind: 'gear', bearerId: 'ember', conduitId: 'reserve-torque-crank' },
     }));

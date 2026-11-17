@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   radiantAttunement, radiantAttunements, radiantBearerKits, radiantFlares, radiantMasters,
-  radiantStarterKits, radiantFinalFlare, radiantPassiveAmount, radiantLeaderBonus, radiantLeaderEffects, radiantEquipmentAmount,
+  radiantStarterKits, radiantFinalFlare, radiantLeaderBonus, radiantLeaderEffects, radiantEquipmentAmount,
   releasedRadiantIds, resolveRadiantStarterStats, validateRadiantLoadout,
   type RadiantBearerId, type RadiantLoadout, type RadiantMasterId, type RadiantStarter,
 } from '../content/combat-kits';
@@ -41,7 +41,7 @@ function charged(state: RadiantCombatState, tier: 'sparkling' | 'glimmering' | '
 }
 function passPlayers(state: RadiantCombatState): RadiantCombatState {
   for (const member of state.bearers.filter(member => member.hp > 0)) {
-    if (!state.acted.includes(member.loadout.id)) state = apply(state, { type: 'defense', bearerId: member.loadout.id });
+    if (!state.acted.includes(member.loadout.id)) return apply(state, { type: 'end-turn' });
   }
   return state;
 }
@@ -54,7 +54,7 @@ function nextRound(state: RadiantCombatState): RadiantCombatState {
   return apply(state, { type: 'finish-enemy-phase' });
 }
 function weaken(state: RadiantCombatState, index: number, magnitude: number, remaining = 2): void {
-  state.bearers[index].weaken.push({ source: { kind: 'enemy', enemyId: 'enemy' }, magnitude, remaining });
+  state.bearers[index].buffs.push({ category: 'weaken', source: { kind: 'enemy', enemyId: 'enemy' }, magnitude, remaining });
 }
 function sourceShield(state: RadiantCombatState, index: number, source: RadiantSource, remaining: number): void {
   state.bearers[index].shields.push({ id: state.nextShieldId++, source, remaining });
@@ -64,10 +64,11 @@ describe('radiant four-stat frozen starter content', () => {
   it.each(['ember', 'tide', 'sprout'] as const)('resolves %s with fractional Defense and source Recovery', starter => {
     const stats = resolveRadiantStarterStats(loadout(starter, { level: 30 }));
     const base = radiantStarterKits[starter].base;
-    expect(stats.hp).toBe(base.hp * 5.5);
+    const role = radiantStarterKits[starter].role;
+    expect(stats.hp).toBe(base.hp * 5.5 * (role === 'Support' ? 1.5 : 1));
     expect(stats.attack).toBe(base.attack * 5.5);
     expect(stats.recovery).toBe(base.recovery * 5.5);
-    expect(stats.defense).toBeCloseTo(base.defense * 5.5 ** .7);
+    expect(stats.defense).toBeCloseTo(base.defense * 5.5 ** .7 * (role === 'Tank' ? 1.5 : 1));
     expect(Object.keys(stats)).toEqual(['hp', 'attack', 'defense', 'recovery']);
   });
   it.each(Object.keys(radiantMasters) as RadiantMasterId[])('attunes %s and restores Equinox on removal', masterId => {
@@ -142,7 +143,7 @@ describe('released Element-Bearer catalog and frozen account compatibility', () 
     expect(Object.keys(offers).sort()).toEqual(['glimmering', 'sparkling', 'ultimate']);
     expect(new Set(Object.values(offers).map(offer => offer.target)).size).toBe(1);
     for (const offer of Object.values(offers)) {
-      expect(offer.name).toBe('Convergent Light');
+      expect(offer.name).toBe(radiantBearerKits[id].kit.flare.name);
       expect(Object.values(offer).filter(value => typeof value === 'number').every(value =>
         Number.isFinite(value) && value >= 0)).toBe(true);
       expect(offer.burn > 0).toBe(offer.burnPhases > 0);
@@ -153,22 +154,17 @@ describe('released Element-Bearer catalog and frozen account compatibility', () 
       expect(offer.attackBuff > 0).toBe(offer.attackBuffRounds > 0);
     }
   });
-  it('preserves starter signature identities with progressive combo and support magnitudes', () => {
-    expect(radiantFlares.ember).toMatchObject({
-      sparkling: { name: 'Convergent Light', damage: 5.6, comboHits: 4 },
-      glimmering: { name: 'Convergent Light', damage: 11.2, comboHits: 8 },
-      ultimate: { name: 'Convergent Light', damage: 1.4 * 12, comboHits: 12 },
-    });
-    expect(radiantFlares.tide).toMatchObject({
-      sparkling: { name: 'Convergent Light', shieldDefense: .9 * 2 },
-      glimmering: { name: 'Convergent Light', shieldDefense: .9 * 3 },
-      ultimate: { name: 'Convergent Light', shieldDefense: .9 * 4 },
-    });
-    expect(radiantFlares.sprout).toMatchObject({
-      sparkling: { name: 'Convergent Light', heal: .8 * 2, renewalRounds: 2 },
-      glimmering: { name: 'Convergent Light', heal: .8 * 3, renewalRounds: 2 },
-      ultimate: { name: 'Convergent Light', heal: .8 * 4, renewalRounds: 2 },
-    });
+  it('scales kit Flares by tier: Glimmering 75% damage / 85% effects / 8 hits, Sparkling 50% / 70% / 4 (D-473 N3)', () => {
+    expect(radiantFlares.ember.sparkling).toMatchObject({ name: 'Dawnfire', comboHits: 4, burnPhases: 3, attackBuffRounds: 3 });
+    expect(radiantFlares.ember.sparkling.damage).toBeCloseTo(9 * .5);
+    expect(radiantFlares.ember.glimmering.damage).toBeCloseTo(9 * .75);
+    expect(radiantFlares.ember.ultimate).toMatchObject({ damage: 9, comboHits: 12, burn: 1, attackBuff: .5 });
+    expect(radiantFlares.ember.glimmering.burn).toBeCloseTo(.85);
+    expect(radiantFlares.tide.sparkling).toMatchObject({ name: 'Ocean Memory', target: 'all-allies', damage: 0, reductionPhases: 2 });
+    expect(radiantFlares.tide.sparkling.shieldHP).toBeCloseTo(.35);
+    expect(radiantFlares.tide.ultimate.shieldHP).toBeCloseTo(.5);
+    expect(radiantFlares.sprout.glimmering.heal).toBeCloseTo(.6 * .85);
+    expect(radiantFlares.elise.ultimate).toMatchObject({ name: 'Infinite Thunderwheel', target: 'one-enemy', damage: 13 });
   });
   it('maps all 96 released personal Masters exactly and rejects hidden or cross-owner IDs', () => {
     const expected = masterConduits.filter(master => characterReleased(master.character)).map(master => master.id).sort();
@@ -228,7 +224,7 @@ describe('deterministic diminishing direct damage', () => {
     expect(a.state.chargeSeed).not.toBe(b.state.chargeSeed);
     expect(a.state.chargeSeed).toBe(0);
     expect(b.state.chargeSeed).toBe(999);
-    expect(a.state.gauge.members[0].charge).toBe(10);
+    expect(a.state.gauge.members[0].charge).toBe(15);
     expect(first.chargeSeed).toBe(0);
   });
 });
@@ -239,9 +235,9 @@ describe('saved enemy Gauge drops', () => {
     const state = fixture([...squad], 6), before = structuredClone(state);
     const result = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' });
     expect(result.events.filter(event => event.type === 'gauge-drop')).toEqual([
-      { type: 'gauge-drop', enemyId: 'enemy', bearerId: 'ally-0', trigger: 'hit', amount: 10 },
+      { type: 'gauge-drop', enemyId: 'enemy', bearerId: 'ally-0', trigger: 'hit', amount: 15 },
     ]);
-    expect(result.state.gauge.members.map(member => member.charge)).toEqual([10, 0, 0]);
+    expect(result.state.gauge.members.map(member => member.charge)).toEqual([15, 0, 0]);
     expect(Object.keys(result.state.gauge)).toEqual(['members']);
     expect(result.state.chargeSeed).toBe(0);
     expect(state).toEqual(before);
@@ -252,16 +248,16 @@ describe('saved enemy Gauge drops', () => {
     const result = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' });
     expect(result.state.enemies[0].hp).toBe(state.enemies[0].hp);
     expect(result.state.currencyEarned).toBe(0);
-    expect(result.state.gauge.members.map(member => member.charge)).toEqual([10, 0]);
+    expect(result.state.gauge.members.map(member => member.charge)).toEqual([15, 0]);
     expect(result.events.filter(event => event.type === 'gauge-drop')).toHaveLength(1);
   });
   it('does not add defeat Luminosity or duplicate currency', () => {
     const result = applyRadiantCombatAction(fixture([...squad], 6, 1),
       { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' });
     expect(result.events.filter(event => event.type === 'gauge-drop')).toEqual([
-      { type: 'gauge-drop', enemyId: 'enemy', bearerId: 'ally-0', trigger: 'hit', amount: 10 },
+      { type: 'gauge-drop', enemyId: 'enemy', bearerId: 'ally-0', trigger: 'hit', amount: 15 },
     ]);
-    expect(result.state.gauge.members.map(member => member.charge)).toEqual([10, 0, 0]);
+    expect(result.state.gauge.members.map(member => member.charge)).toEqual([15, 0, 0]);
     expect(result.state.chargeSeed).toBe(0);
     expect(result.state.currencyEarned).toBe(101);
   });
@@ -293,7 +289,7 @@ describe('saved enemy Gauge drops', () => {
     const state = fixture(['ember', 'tide', 'sprout'], 6, 1);
     state.bearers[0].hp = 0; state.gauge.members[0].living = false;
     state.phase = 'enemy'; state.acted = ['ally-1', 'ally-2']; state.enemyActed = ['enemy'];
-    state.enemies[0].burns.push({ source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: 1, remaining: 1 });
+    state.enemies[0].debuffs.push({ category: 'burn', source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: 1, remaining: 1 });
     const result = applyRadiantCombatAction(state, { type: 'finish-enemy-phase' });
     expect(result.events.filter(event => event.type === 'gauge-drop')).toEqual([]);
     expect(result.state.gauge.members.map(member => member.charge)).toEqual([0, 0, 0]);
@@ -318,8 +314,8 @@ describe('three-member action rounds, fixed leader and state isolation', () => {
     state.bearers[0].hp = 0;
     state.gauge.members[0].living = false;
     validateRadiantCombat(state);
-    expect(effectiveRadiantStats(state, loadouts[1].id).attack)
-      .toBeCloseTo(before - state.bearers[1].stats.attack * radiantPassiveAmount(loadouts[0]));
+    // D-473: Passives no longer add squad stats, so a defeated leader leaves Attack unchanged.
+    expect(effectiveRadiantStats(state, loadouts[1].id).attack).toBeCloseTo(before);
     expect(readyFlare(state.gauge, loadouts[1].id)).toBe('sparkling');
     expect(state.gauge.members.slice(2).every(member => readyFlare(state.gauge, member.id) === null)).toBe(true);
     expect(() => validateRadiantParty([loadouts[0], { ...loadouts[1], starter: 'ember' }])).toThrow('distinct');
@@ -330,7 +326,7 @@ describe('three-member action rounds, fixed leader and state isolation', () => {
   });
   it('End Turn skips members who have not acted and starts the enemy phase', () => {
     let state = fixture(['ember', 'tide', 'sprout'], 6);
-    state = apply(state, { type: 'defense', bearerId: 'ally-1' });
+    state = apply(state, { type: 'normal', bearerId: 'ally-1', targetId: 'enemy' });
     const ended = applyRadiantCombatAction(state, { type: 'end-turn' });
     expect(ended.events).toEqual([]);
     expect(ended.state.phase).toBe('enemy');
@@ -346,7 +342,8 @@ describe('three-member action rounds, fixed leader and state isolation', () => {
   it.each([1, 2, 3])('requires each of %i members to act once and preserves normalized round charge', size => {
     let state = fixture(Array.from({ length: size }, () => 'ember'), 6);
     for (let index = 0; index < size; index++) {
-      state = apply(state, { type: 'defense', bearerId: `ally-${index}` });
+      state.gauge.members[index].charge = 25;
+      state = apply(state, { type: 'skill', bearerId: `ally-${index}`, slot: 1, targetId: 'enemy' });
       expect(state.phase).toBe(index === size - 1 ? 'enemy' : 'player');
     }
     expect(() => apply(state, { type: 'finish-enemy-phase' })).toThrow('Every living enemy');
@@ -356,23 +353,23 @@ describe('three-member action rounds, fixed leader and state isolation', () => {
     state = apply(state, { type: 'finish-enemy-phase' });
     expect(state.round).toBe(2);
     expect(state.acted).toEqual([]);
-    expect(state.bearers.every(member => !member.guarding)).toBe(true);
+    expect(state.skilled).toEqual([]);
     expect(state.gauge.members.every(member => member.charge === 0)).toBe(true);
     expect(Object.keys(state.gauge)).toEqual(['members']);
   });
   it('does not promote a surviving leader when first member dies and lets all survivors act next round', () => {
     let state = fixture(['ember', 'tide', 'sprout']);
     const leaderAttack = effectiveRadiantStats(state, 'ally-1').attack;
-    expect(leaderAttack).toBeCloseTo(44 * 1.075);
-    expect(effectiveRadiantStats(state, 'ally-2').recovery).toBeCloseTo(65 * 1.075);
+    expect(leaderAttack).toBeCloseTo(44);
+    expect(effectiveRadiantStats(state, 'ally-2').recovery).toBeCloseTo(65);
     state = passPlayers(state);
     state = apply(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ally-0'], coefficient: 1000 });
     expect(state.bearers[0].hp).toBe(0);
     expect(effectiveRadiantStats(state, 'ally-1').attack).toBeCloseTo(44);
-    expect(effectiveRadiantStats(state, 'ally-1').defense).toBeCloseTo(22 * 1.1);
+    expect(effectiveRadiantStats(state, 'ally-1').defense).toBeCloseTo(22 * 1.5);
     state = apply(state, { type: 'finish-enemy-phase' });
     expect(state.gauge.members[0].charge).toBe(0);
-    expect(() => apply(state, { type: 'defense', bearerId: 'ally-0' })).toThrow('Defeated');
+    expect(() => apply(state, { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' })).toThrow('Defeated');
     state = passPlayers(state);
     expect(state.phase).toBe('enemy');
     expect(state.acted).toEqual(['ally-1', 'ally-2']);
@@ -418,10 +415,12 @@ describe('three-member action rounds, fixed leader and state isolation', () => {
     expect(applyRadiantCombatAction(restored, action)).toEqual(applyRadiantCombatAction(state, action));
   });
   it('rejects a repeated player action, wrong phase and malformed inputs without mutation', () => {
-    const state = apply(fixture(['ember', 'sprout']), { type: 'defense', bearerId: 'ally-0' });
+    const state = apply(fixture(['ember', 'sprout']), { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' });
     const before = structuredClone(state);
     for (const action of [
-      { type: 'defense', bearerId: 'ally-0' },
+      { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' },
+      { type: 'defense', bearerId: 'ally-1' },
+      { type: 'skill', bearerId: 'ally-1', slot: 1 },
       { type: 'normal', bearerId: 'ally-1', targetId: 'missing' },
       { type: 'flare', bearerId: 'ally-1' },
       { type: 'enemy-heal', enemyId: 'enemy', amount: 5 },
@@ -436,7 +435,7 @@ describe('three-member action rounds, fixed leader and state isolation', () => {
     const result = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' });
     expect(result.state.phase).toBe('victory');
     expect(result.events.filter(event => event.type === 'defeated')).toHaveLength(1);
-    expect(result.state.gauge.members[0].charge).toBe(10);
+    expect(result.state.gauge.members[0].charge).toBe(15);
     expect(() => apply(result.state, { type: 'finish-enemy-phase' })).toThrow('finished');
     state = passPlayers(fixture());
     state = apply(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ally-0'], coefficient: 1000 });
@@ -457,7 +456,8 @@ describe('progressive signatures and layered shared readiness', () => {
         expect(damage).toMatchObject({ targetId: 'enemy', origin: 'direct' });
         return result.events.reduce((sum, event) => sum + (event.type === 'damage' ? event.offered : 0), 0);
       }
-      const events = result.events.filter(event => event.type === (starter === 'tide' ? 'shield' : 'heal'));
+      const events = result.events.filter(event => event.type === (starter === 'tide' ? 'shield' : 'heal') &&
+        'source' in event && event.source.kind === 'flare');
       expect(events.map(event => 'targetId' in event ? event.targetId : '')).toEqual(['ally-0', 'ally-1']);
       const first = events[0];
       return first.type === 'shield' ? first.amount : first.type === 'heal' ? first.offered : 0;
@@ -501,13 +501,13 @@ describe('progressive signatures and layered shared readiness', () => {
       enemies, 0), 'glimmering', 'disciple');
     const supported = applyRadiantCombatAction(support, { type: 'flare', bearerId: 'disciple' });
     expect(supported.events.some(event => event.type === 'damage')).toBe(false);
-    expect(supported.events.find(event => event.type === 'status' && event.status === 'attack-buff')).toBeDefined();
+    expect(supported.events.find(event => event.type === 'status' && event.status === 'attack-up')).toBeDefined();
     expect(supported.state.gauge.members[0].charge).toBe(0);
     expect(supported.state.chargeSeed).toBe(0);
   });
   it('does not detonate existing Burn before an Ultimate Convergent Light combo', () => {
     const state = charged(fixture(['ember'], 6, 100), 'ultimate');
-    state.enemies[0].burns.push({ source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: 1000, remaining: 1 });
+    state.enemies[0].debuffs.push({ category: 'burn', source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: 1000, remaining: 1 });
     const result = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ally-0' });
     expect(result.events.filter(event => event.type === 'damage').every(event => event.origin === 'direct')).toBe(true);
     expect(result.events.find(event => event.type === 'charge')).toMatchObject({ bonusRolls: 0 });
@@ -517,33 +517,39 @@ describe('progressive signatures and layered shared readiness', () => {
   });
 });
 
-describe('Infernis sourced Burn signature', () => {
-  it('refreshes only same-owner Burn without detonation or charge refunds', () => {
-    let state = charged(fixture(['ember', 'ember'], 6, 1000000), 'sparkling');
+describe('Burn as one category (D-473 N6)', () => {
+  it('keeps one Burn per enemy: a stronger Burn takes over its source, a weaker one only extends the duration', () => {
+    let state = charged(fixture(['ember', 'tide'], 6, 1000000), 'sparkling');
     state = apply(state, { type: 'flare', bearerId: 'ally-0' });
-    const old = structuredClone(state.enemies[0].burns[0]);
-    state.enemies[0].burns.push({ source: { kind: 'flare', bearerId: 'ally-1' }, magnitude: 10, remaining: 2 });
+    const first = structuredClone(state.enemies[0].debuffs.find(effect => effect.category === 'burn')!);
+    expect(first).toMatchObject({ source: { kind: 'flare', bearerId: 'ally-0' }, remaining: 3 });
     state = charged(nextRound(state), 'ultimate');
     const result = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ally-0' });
     expect(result.events.filter(event => event.type === 'damage')).toHaveLength(12);
     expect(result.events.filter(event => event.type === 'damage').every(event => event.origin === 'direct')).toBe(true);
-    expect(result.state.enemies[0].burns.find(burn => 'bearerId' in burn.source && burn.source.bearerId === 'ally-1'))
-      .toMatchObject({ magnitude: 10, remaining: 1 });
-    expect(result.state.enemies[0].burns.find(burn => 'bearerId' in burn.source && burn.source.bearerId === 'ally-0')!.magnitude)
-      .toBeGreaterThan(old.magnitude);
-    expect(result.state.gauge.members.map(member => member.charge)).toEqual([0, 0]);
+    const burns = result.state.enemies[0].debuffs.filter(effect => effect.category === 'burn');
+    expect(burns).toHaveLength(1);
+    expect(burns[0].magnitude).toBeGreaterThan(first.magnitude);
+    expect(burns[0].remaining).toBe(3);
+    // A weaker Burn from another caster leaves the stronger entry and its source in place.
+    const weaker = structuredClone(result.state);
+    weaker.phase = 'player'; weaker.acted = []; weaker.gauge.members[1].charge = 25;
+    weaker.enemies[0].debuffs = [{ ...burns[0], remaining: 1 }];
+    const cleave = applyRadiantCombatAction(charged(weaker, 'sparkling'), { type: 'skill', bearerId: 'ally-0', slot: 1, targetId: 'enemy' });
+    expect(cleave.state.enemies[0].debuffs.find(effect => effect.category === 'burn')).toMatchObject({
+      magnitude: burns[0].magnitude, remaining: 3, source: burns[0].source });
   });
   it('does not add retired passive packets to a Burning target', () => {
     const state = fixture();
-    state.enemies[0].burns.push({ source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: 1, remaining: 2 });
+    state.enemies[0].debuffs.push({ category: 'burn', source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: 1, remaining: 2 });
     const result = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' });
     expect(result.events.filter(event => event.type === 'damage').map(event => event.origin)).toEqual(['direct']);
-    expect(result.state.enemies[0].burns).toEqual(state.enemies[0].burns);
-    expect(result.state.gauge.members[0].charge).toBe(10);
+    expect(result.state.enemies[0].debuffs).toEqual(state.enemies[0].debuffs);
+    expect(result.state.gauge.members[0].charge).toBe(15);
   });
   it('does not grant a new round when a scheduled Burn finishes the encounter', () => {
     let state = passPlayers(fixture());
-    state.enemies[0].burns.push({ source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: 10000, remaining: 1 });
+    state.enemies[0].debuffs.push({ category: 'burn', source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: 10000, remaining: 1 });
     state = apply(state, { type: 'enemy-heal', enemyId: 'enemy', amount: 0 });
     const result = applyRadiantCombatAction(state, { type: 'finish-enemy-phase' });
     expect(result.state.phase).toBe('victory');
@@ -553,7 +559,7 @@ describe('Infernis sourced Burn signature', () => {
   });
 });
 
-describe('Tizu unlimited source Shields and actual absorption passive', () => {
+describe('kit Shields, Damage Reduction and incoming Luminosity', () => {
   it('adds repeat native layers indefinitely until broken with stable source and no expiry/cap', () => {
     let state = charged(fixture(['tide']), 'sparkling');
     state = apply(state, { type: 'flare', bearerId: 'ally-0' });
@@ -568,14 +574,20 @@ describe('Tizu unlimited source Shields and actual absorption passive', () => {
     expect(state.bearers[0].shields.every(shield => !Object.hasOwn(shield, 'remainingPhases'))).toBe(true);
     expect(state.bearers[0].shields.map(shield => shield.id)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
   });
+  it('sizes kit Shields from the recipient\'s max Health (D-473 N7)', () => {
+    const state = charged(fixture(['tide', 'sprout']), 'sparkling');
+    const result = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ally-0' });
+    // Ocean Memory Sparkling: 50% x 70% of each recipient's max Health; Tizu (Tank) has Skill Power 1.
+    expect(result.events.filter(event => event.type === 'shield').map(event => event.type === 'shield' && event.amount))
+      .toEqual(state.bearers.map(member => Math.round(.35 * member.stats.hp)));
+  });
   it('grants incoming charge to each blocked target without extra Shield-owner charge', () => {
     let state = apply(charged(fixture(['tide', 'sprout']), 'sparkling'), { type: 'flare', bearerId: 'ally-0' });
     state = passPlayers(state);
     const result = applyRadiantCombatAction(state, { type: 'enemy-attack', enemyId: 'enemy',
       targetIds: ['ally-0', 'ally-1'], coefficient: .1 });
-    expect(result.state.bearers.map(member => member.hp)).toEqual([300, 220]);
+    expect(result.state.bearers.map(member => member.hp)).toEqual(state.bearers.map(member => member.hp));
     expect(result.state.gauge.members.map(member => member.charge)).toEqual([10, 10]);
-    expect(result.state.tideReturns).toEqual([]);
     expect(result.events.filter(event => event.type === 'damage').every(event => event.healthLoss === 0)).toBe(true);
   });
   it('grants each direct incoming hit without funding a different Shield owner', () => {
@@ -589,116 +601,73 @@ describe('Tizu unlimited source Shields and actual absorption passive', () => {
     state = apply(state, { type: 'enemy-attack', enemyId: 'second', targetIds: ['ally-1'], coefficient: 1 });
     expect(state.gauge.members.map(member => member.charge)).toEqual([0, 20]);
     state = apply(state, { type: 'finish-enemy-phase' });
-    expect(state.tideReturns).toEqual([]);
     expect(state.gauge.members.map(member => member.charge)).toEqual([0, 20]);
   });
-  it('does not count generation, mixed owners, partial Health loss or a defeated Shield owner as full native blocks', () => {
-    const state = fixture(['tide', 'tide']);
-    sourceShield(state, 1, { kind: 'flare', bearerId: 'ally-0' }, 1);
-    sourceShield(state, 1, { kind: 'flare', bearerId: 'ally-1' }, 100);
-    const phase = passPlayers(state);
-    const mixed = apply(phase, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ally-1'], coefficient: 1 });
-    expect(mixed.tideReturns).toEqual([]);
-    const partial = passPlayers(fixture(['tide', 'sprout']));
-    sourceShield(partial, 1, { kind: 'flare', bearerId: 'ally-0' }, 1);
-    expect(apply(partial, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ally-1'], coefficient: 1 }).tideReturns)
-      .toEqual([]);
-    const deadOwner = structuredClone(phase);
-    deadOwner.bearers[0].hp = 0;
-    deadOwner.gauge.members[0].living = false;
-    deadOwner.bearers[1].shields = deadOwner.bearers[1].shields.slice(0, 1);
-    deadOwner.bearers[1].shields[0].remaining = 100;
-    expect(apply(deadOwner, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ally-1'], coefficient: 1 }).tideReturns)
-      .toEqual([]);
-  });
-  it('uses strongest reduction with separate guard and does not age permanent Shields', () => {
+  it('applies Damage Reduction without a Defend base and expires it on its clock', () => {
     const state = fixture(['tide']);
-    state.bearers[0].reductions.push(
-      { source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: .2, remaining: 1 },
-      { source: { kind: 'enemy', enemyId: 'enemy' }, magnitude: .1, remaining: 2 });
+    state.bearers[0].buffs.push({ category: 'reduction', source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: .2, remaining: 1 });
     let phase = passPlayers(state);
     const damage = applyRadiantCombatAction(phase, { type: 'enemy-attack', enemyId: 'enemy',
       targetIds: ['ally-0'], coefficient: 10 });
     expect(damage.events.find(event => event.type === 'damage')).toMatchObject({
-      offered: radiantDirectDamage(20, effectiveRadiantStats(phase, 'ally-0').defense, 10, .5 * .8),
+      offered: radiantDirectDamage(20, effectiveRadiantStats(phase, 'ally-0').defense, 10, .8),
     });
     phase = apply(damage.state, { type: 'finish-enemy-phase' });
-    expect(phase.bearers[0].reductions).toHaveLength(1);
-    expect(phase.bearers[0].reductions[0].magnitude).toBe(.1);
+    expect(phase.bearers[0].buffs).toEqual([]);
   });
-  it('caps combined guard and named mitigation at eighty percent rather than multiplying beyond the cap', () => {
+  it('caps Damage Reduction at 75% and keeps the 20% damage floor', () => {
     const state = fixture(['tide']);
-    state.bearers[0].reductions.push({ source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: .9, remaining: 1 });
+    state.bearers[0].buffs.push({ category: 'reduction', source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: .76, remaining: 1 });
+    expect(() => validateRadiantCombat(state)).toThrow('cap');
+    state.bearers[0].buffs[0].magnitude = .75;
     const result = applyRadiantCombatAction(passPlayers(state), { type: 'enemy-attack', enemyId: 'enemy',
       targetIds: ['ally-0'], coefficient: 10 });
     expect(result.events.find(event => event.type === 'damage')).toMatchObject({
-      offered: radiantDirectDamage(20, effectiveRadiantStats(state, 'ally-0').defense, 10, .2),
+      offered: radiantDirectDamage(20, effectiveRadiantStats(state, 'ally-0').defense, 10, .25),
     });
   });
 });
 
-describe('Flora healing, Seed and Renewal snapshots', () => {
-  it('supports solo healing, full-HP casts with effective zero, no fake charge and no revive', () => {
+describe('kit healing and Health Over Time (D-473 N7)', () => {
+  it('heals a % of the recipient\'s max Health x the caster\'s Skill Power, with no revive and no fake charge', () => {
     const state = charged(fixture(['sprout', 'ember']), 'sparkling');
     state.bearers[1].hp = 0;
     state.gauge.members[1].living = false;
     const result = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ally-0' });
-    expect(result.events.filter(event => event.type === 'heal')).toEqual([
-      expect.objectContaining({ targetId: 'ally-0', effective: 0,
-        offered: Math.round(effectiveRadiantStats(state, 'ally-0').recovery * radiantFinalFlare(state.bearers[0].loadout, 'sparkling').heal * 1.2) }),
+    // Worldseed Sparkling: 60% x 70% x Support Skill Power 1.25 of Flora's max Health, x1.2 from her own Leader (healing +20%).
+    expect(result.events.filter(event => event.type === 'heal' && event.source.kind === 'flare')).toEqual([
+      expect.objectContaining({ targetId: 'ally-0', effective: 0, offered: Math.round(.6 * .7 * 1.25 * state.bearers[0].stats.hp * 1.2) }),
     ]);
     expect(result.state.bearers[1].hp).toBe(0);
     expect(result.state.gauge.members[0].charge).toBe(0);
     expect(result.state.chargeSeed).toBe(0);
-    const injured = charged(fixture(['sprout']), 'sparkling');
-    injured.bearers[0].hp = 1;
-    expect(apply(injured, { type: 'flare', bearerId: 'ally-0' }).bearers[0].hp).toBe(1 +
-      Math.round(effectiveRadiantStats(injured, 'ally-0').recovery * radiantFinalFlare(injured.bearers[0].loadout, 'sparkling').heal * 1.2));
   });
-  it('uses caster Recovery, not recipient Recovery, and preserves Renewal after leader death', () => {
-    let state = charged(fixture(['sprout', 'ember', 'tide']), 'sparkling');
-    state.bearers[1].hp -= 100;
-    state.bearers[2].hp -= 100;
+  it('sizes each kit heal from its own recipient, not the caster', () => {
+    const state = charged(fixture(['sprout', 'ember', 'tide']), 'sparkling');
+    state.bearers.forEach(member => { member.hp = 1; });
     const cast = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ally-0' });
-    expect(cast.events.filter(event => event.type === 'heal').map(event => event.offered))
-      .toEqual(Array(3).fill(Math.round(effectiveRadiantStats(state, 'ally-0').recovery *
-        radiantFinalFlare(state.bearers[0].loadout, 'sparkling').heal * 1.2)));
-    const snapshot = cast.state.bearers[1].renewal[0].magnitude;
-    state = passPlayers(cast.state);
-    state = apply(state, { type: 'enemy-attack', enemyId: 'enemy', targetIds: ['ally-0'], coefficient: 1000 });
-    state.bearers[1].hp = 1;
-    const renew = applyRadiantCombatAction(state, { type: 'finish-enemy-phase' });
-    expect(renew.events.find(event => event.type === 'heal' && event.targetId === 'ally-1'))
-      .toMatchObject({ snapshot, offered: Math.round(snapshot), effective: Math.round(snapshot) });
-    expect(renew.state.bearers[0].hp).toBe(0);
-    expect(renew.state.bearers[1].renewal[0].remaining).toBe(1);
+    expect(cast.events.filter(event => event.type === 'heal' && event.source.kind === 'flare').map(event => event.type === 'heal' && event.offered))
+      .toEqual(state.bearers.map(member => Math.round(.6 * .7 * 1.25 * member.stats.hp * 1.2)));
   });
-  it('does not create retired passive Seeds after Normal damage', () => {
+  it('heals Health Over Time at the end of the enemy phase and expires it on its clock', () => {
+    const state = fixture(['sprout', 'ember']);
+    state.bearers[1].hp = 1;
+    state.bearers[1].buffs.push({ category: 'hot', source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: .1, remaining: 1 });
+    const result = applyRadiantCombatAction(apply(passPlayers(state), { type: 'enemy-heal', enemyId: 'enemy', amount: 0 }),
+      { type: 'finish-enemy-phase' });
+    expect(result.events.find(event => event.type === 'heal' && event.targetId === 'ally-1')).toMatchObject({
+      offered: Math.round(.1 * state.bearers[1].stats.hp * 1.2) });
+    expect(result.state.bearers[1].buffs).toEqual([]);
+  });
+  it('does not create retired Seeds or Renewal after Normal damage', () => {
     const state = fixture(['sprout', 'ember', 'tide']);
     state.bearers.forEach(member => { member.hp = Math.round(member.stats.hp) / 2; });
     const result = apply(state, { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' });
-    expect(result.bearers.every(member => member.seeds.length === 0)).toBe(true);
+    expect(result.bearers.every(member => member.buffs.length === 0)).toBe(true);
     const following = nextRound(result);
+    // Only Flora's Leader round heal (10% of her Recovery) lands, on the first most-wounded ally.
     expect(following.bearers[0].hp).toBe(state.bearers[0].hp + Math.round(effectiveRadiantStats(state, 'ally-0').recovery * .1));
     expect(following.bearers.slice(1).map(member => member.hp)).toEqual(state.bearers.slice(1).map(member => member.hp));
-  });
-  it('refreshes same-source Renewal without weakening its snapshot, preserves distinct casters and leaves Weaken unchanged', () => {
-    let state = charged(fixture(['sprout', 'sprout'], 6), 'glimmering');
-    state = apply(state, { type: 'flare', bearerId: 'ally-0' });
-    const strongest = state.bearers[0].renewal[0].magnitude;
-    state = nextRound(state);
-    state = charged(state, 'sparkling');
-    state = apply(state, { type: 'flare', bearerId: 'ally-0' });
-    expect(state.bearers[0].renewal).toHaveLength(1);
-    expect(state.bearers[0].renewal[0]).toMatchObject({ magnitude: strongest, remaining: 2 });
-    state = charged(state, 'ultimate', 'ally-1');
-    weaken(state, 0, .1);
-    state.bearers[0].weaken.push({ source: { kind: 'passive', bearerId: 'ally-1' }, magnitude: .3, remaining: 3 });
-    const result = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ally-1' });
-    expect(result.state.bearers[0].renewal).toHaveLength(2);
-    expect(result.state.bearers[0].weaken).toHaveLength(2);
-    expect(result.state.bearers[0].weaken[0].magnitude).toBe(.1);
-    expect(result.events.some(event => event.type === 'status' && event.status === 'weaken-removed')).toBe(false);
   });
 });
 
@@ -745,7 +714,7 @@ describe('authored Master equipment', () => {
   });
 });
 
-describe('distinct bearer signature interactions', () => {
+describe('Passives, Masters and Leaders under the Phase 3 kits', () => {
   function exercisePassive(id: RadiantBearerId, masterId: RadiantMasterId | null = null) {
     const state = createRadiantCombat([loadout(id, { id: 'owner', form: 6, masterId }),
       loadout(id === 'ember' ? 'tide' : 'ember', { id: 'partner', form: 6 })],
@@ -754,25 +723,19 @@ describe('distinct bearer signature interactions', () => {
     return { before: state, result: applyRadiantCombatAction(state, { type: 'normal', bearerId: 'owner', targetId: 'enemy' }) };
   }
 
-  it.each(releasedRadiantIds)('%s has an executed passive payoff, not an unwired native tooltip', id => {
+  it.each(releasedRadiantIds)('%s has no squad-stat Passive: a Normal changes no stats and grants the N1 15 Luminosity', id => {
     const { before, result } = exercisePassive(id);
-    const passive = radiantBearerKits[id].passive;
-    const bonus = before.bearers.reduce((sum, bearer) =>
-      sum + (radiantBearerKits[bearer.loadout.starter].passive.stat === passive.stat ? radiantPassiveAmount(bearer.loadout) : 0), 0);
-    const leaderBonus = radiantLeaderEffects(before.bearers[0].loadout)
-      .filter(effect => effect.kind === passive.stat).reduce((sum, effect) => sum + effect.amount, 0);
-    expect(effectiveRadiantStats(before, 'owner')[passive.stat]).toBeCloseTo(before.bearers[0].stats[passive.stat] * (1 + bonus) * (1 + leaderBonus));
+    expect(effectiveRadiantStats(before, 'owner').attack).toBe(before.bearers[0].stats.attack);
     expect(result.events.filter(event => 'source' in event && event.source.kind === 'passive')).toEqual([]);
-    expect(result.events.find(event => event.type === 'charge' && !event.gearSource)).toMatchObject({ personal: 10 });
+    expect(result.events.find(event => event.type === 'charge' && !event.gearSource)).toMatchObject({ personal: 15 });
     validateRadiantCombat(result.state);
   });
 
   it.each(releasedRadiantIds.filter(id => !['ember', 'tide', 'sprout'].includes(id)))(
-    '%s Master leaves its native passive unchanged and applies separate equipment effects', id => {
+    '%s Master leaves its kit Passive unchanged and applies separate equipment effects', id => {
     const masterId = `master-${id}-1` as RadiantMasterId;
-    const { before, result } = exercisePassive(id, masterId);
-    const plain = { ...before.bearers[0].loadout, masterId: null };
-    expect(radiantPassiveAmount(before.bearers[0].loadout)).toBeCloseTo(radiantPassiveAmount(plain));
+    const { result } = exercisePassive(id, masterId);
+    expect(radiantBearerKits[id].passive).toEqual(radiantStarterKits[id].passive);
     expect(result.events.filter(event => 'source' in event && event.source.kind === 'passive')).toEqual([]);
     validateRadiantCombat(result.state);
   },
@@ -783,23 +746,21 @@ describe('distinct bearer signature interactions', () => {
       const { result } = exercisePassive(id);
       expect(result.events.filter(event => event.type === 'damage').map(event => event.origin)).toEqual(['direct']);
       expect(result.events.filter(event => event.type === 'charge').map(event => event.bonusRolls)).toEqual([0]);
-      expect(result.state.enemies[0].burns).toEqual([]);
+      expect(result.state.enemies[0].debuffs.filter(effect => effect.category === 'burn')).toEqual([]);
     }
   });
 
-  it('folds saved skill1 and skill2 Imbues into passive magnitude and leader potency without a fifth stat', () => {
+  it('no longer folds skill1/skill2 Imbues into the Leader (D-473 O3)', () => {
     const plain = exercisePassive('rosetta'), invested = structuredClone(plain.before);
     invested.bearers[0].loadout.ascension.skill1 = true;
     invested.bearers[0].loadout.ascension.skill2 = true;
-    expect(radiantPassiveAmount(invested.bearers[0].loadout)).toBeCloseTo(radiantPassiveAmount(plain.before.bearers[0].loadout) * 1.5);
-    expect(radiantLeaderBonus(invested.bearers[0].loadout)).toBeCloseTo(radiantLeaderBonus(plain.before.bearers[0].loadout) * 1.5);
+    expect(radiantLeaderBonus(invested.bearers[0].loadout)).toBeCloseTo(radiantLeaderBonus(plain.before.bearers[0].loadout));
     expect(invested.bearers[0].stats).toEqual(plain.before.bearers[0].stats);
     const result = applyRadiantCombatAction(invested, { type: 'normal', bearerId: 'owner', targetId: 'enemy' });
     expect(result.events.filter(event => event.type === 'damage')).toHaveLength(1);
-    expect(result.state.enemies[0].exposures).toMatchObject([{
-      source: { kind: 'leader', bearerId: 'owner' }, remaining: 1,
-    }]);
-    expect(result.state.enemies[0].exposures[0].magnitude).toBeCloseTo(.18);
+    const expose = result.state.enemies[0].debuffs.find(effect => effect.category === 'expose')!;
+    expect(expose).toMatchObject({ source: { kind: 'leader', bearerId: 'owner' }, remaining: 1 });
+    expect(expose.magnitude).toBeCloseTo(.12);
   });
 
   it('does not treat fully shielded Normals as HP damage for exposure, healing or generated packets', () => {
@@ -813,45 +774,48 @@ describe('distinct bearer signature interactions', () => {
     }
   });
 
-  it('uses the common ten-point Normal Luminosity rule for Nerithe', () => {
+  it('uses the common 15-point Normal Luminosity rule for Nerithe until her Passive lands', () => {
     const state = createRadiantCombat([
       loadout('nerithe', { id: 'nerithe', masterId: 'master-nerithe-1' }),
     ], [{ elementId: null, id: 'enemy', stats: { hp: 1000, attack: 10, defense: 10, recovery: 0 }, currencyBudget: 100 }], 0);
     const result = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'nerithe', targetId: 'enemy' });
-    expect(result.state.gauge.members[0].charge).toBe(10);
-    expect(result.state).not.toHaveProperty('personalMode');
-    expect(result.state).not.toHaveProperty('passiveTimer');
+    expect(result.state.gauge.members[0].charge).toBe(15);
     expect(state.gauge.members[0].charge).toBe(0);
   });
-  it('lets Rosetta establish a source-owned Quarry that empowers a later squad strike', () => {
+
+  it('lets Rosetta\'s Flare Expose its target for a later squad strike (Skill Power scales Expose)', () => {
     let state = charged(createRadiantCombat([
       loadout('rosetta', { id: 'rosetta' }), loadout('ember', { id: 'ember' }),
     ], [{ elementId: null, id: 'enemy', stats: { hp: 10000, attack: 10, defense: 10, recovery: 0 }, currencyBudget: 100 }], 0), 'sparkling', 'rosetta');
     const marked = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'rosetta', targetId: 'enemy' });
-    expect(marked.state.enemies[0].exposures).toMatchObject([
-      { source: { kind: 'flare', bearerId: 'rosetta' }, magnitude: .36, remaining: 2 },
-    ]);
+    // Sparkling 70% x Attacker Skill Power 1.5 x 30% = 31.5% Expose for 3 turns.
+    const expose = marked.state.enemies[0].debuffs.find(effect => effect.category === 'expose')!;
+    expect(expose).toMatchObject({ source: { kind: 'flare', bearerId: 'rosetta' }, remaining: 3 });
+    expect(expose.magnitude).toBeCloseTo(.315);
     state = nextRound(marked.state);
     const attack = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'ember', targetId: 'enemy' });
     expect(attack.events.find(event => event.type === 'damage')).toMatchObject({
-      offered: radiantDirectDamage(effectiveRadiantStats(state, 'ember').attack, 10, 1, 1.36),
+      offered: radiantDirectDamage(effectiveRadiantStats(state, 'ember').attack, 10, 1, 1 + expose.magnitude),
     });
-    expect(marked.state.enemies[0].exposures[0].remaining).toBe(2);
+    expect(state.enemies[0].debuffs.find(effect => effect.category === 'expose')!.remaining).toBe(2);
   });
-  it('lets Disciple grant a bounded squad attack instruction that strengthens the next action', () => {
+
+  it('lets Disciple grant squad Attack Up that strengthens the next action', () => {
     const initial = createRadiantCombat([
       loadout('disciple', { id: 'disciple' }), loadout('ember', { id: 'ember' }),
     ], [{ elementId: null, id: 'enemy', stats: { hp: 10000, attack: 10, defense: 10, recovery: 0 }, currencyBudget: 100 }], 0);
     const instructed = applyRadiantCombatAction(charged(initial, 'sparkling', 'disciple'),
       { type: 'flare', bearerId: 'disciple' });
-    expect(instructed.state.bearers.every(member =>
-      member.attackBuffs.some(effect => effect.source.kind === 'flare' && effect.magnitude === .44))).toBe(true);
+    // Sparkling 70% x Support Skill Power 1.25 x 60% = 52.5% Attack Up.
+    expect(instructed.state.bearers.every(member => member.buffs.some(effect =>
+      effect.category === 'attack-up' && effect.source.kind === 'flare' && Math.abs(effect.magnitude - .525) < 1e-9))).toBe(true);
     const strike = applyRadiantCombatAction(instructed.state,
       { type: 'normal', bearerId: 'ember', targetId: 'enemy' });
     expect(strike.events.find(event => event.type === 'damage')).toMatchObject({
       offered: radiantDirectDamage(effectiveRadiantStats(instructed.state, 'ember').attack, 10, 1),
     });
-    expect(initial.bearers.every(member => member.attackBuffs.length === 0)).toBe(true);
+    expect(effectiveRadiantStats(instructed.state, 'ember').attack).toBeCloseTo(instructed.state.bearers[1].stats.attack * 1.525);
+    expect(initial.bearers.every(member => member.buffs.length === 0)).toBe(true);
   });
 });
 
@@ -878,7 +842,7 @@ describe('exact persistable lowest-health currency ledger', () => {
     expect(repeated.state.enemies[0].hp).toBe(firstHP);
     expect(repeated.events.some(event => event.type === 'currency')).toBe(false);
     state = nextRound(repeated.state);
-    state.enemies[0].burns.push({ source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: 100000, remaining: 1 });
+    state.enemies[0].debuffs.push({ category: 'burn', source: { kind: 'flare', bearerId: 'ally-0' }, magnitude: 100000, remaining: 1 });
     state = nextRound(state);
     expect(state.phase).toBe('victory');
     expect(state.currencyEarned).toBe(101);
@@ -889,7 +853,7 @@ describe('exact persistable lowest-health currency ledger', () => {
     state.enemies[0].shields.push({ id: state.nextShieldId++, source: { kind: 'enemy', enemyId: 'enemy' }, remaining: 10000 });
     const blocked = apply(state, { type: 'normal', bearerId: 'ally-0', targetId: 'enemy' });
     expect(blocked.currencyEarned).toBe(0);
-    expect(blocked.gauge.members[0].charge).toBe(10);
+    expect(blocked.gauge.members[0].charge).toBe(15);
     const generated = charged(createRadiantCombat([loadout('rosetta', { id: 'ally-0', masterId: 'master-rosetta-3' })],
       [{ elementId: null, id: 'enemy', stats: { hp: 100, attack: 1, defense: 0, recovery: 0 }, currencyBudget: 100 }], 0), 'sparkling');
     const result = applyRadiantCombatAction(generated, { type: 'flare', bearerId: 'ally-0', targetId: 'enemy' });

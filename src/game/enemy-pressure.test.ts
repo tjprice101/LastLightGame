@@ -186,7 +186,7 @@ describe('actual bounded action-driven radiant pressure', () => {
 describe('Calamity atomic preattack and split packets', () => {
   function attack(hits: number) {
     let state = createRadiantCombat(solo(), [{ elementId: null, id: 'foe', stats: { hp: 10000, attack: 30, defense: 0, recovery: 0 }, currencyBudget: 0 }], 1);
-    state = applyRadiantCombatAction(state, { type: 'defense', bearerId: 'ember' }).state;
+    state = applyRadiantCombatAction(state, { type: 'end-turn' }).state;
     return { before: state, result: applyRadiantCombatAction(state, {
       type: 'enemy-attack', enemyId: 'foe', targetIds: ['ember'], coefficient: 1, hits,
     }) };

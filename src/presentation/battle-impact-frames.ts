@@ -1,6 +1,6 @@
 import { validateRadiantCombat, validateRadiantDropEvents, type RadiantCombatEvent, type RadiantCombatState,
   type RadiantShield, type RadiantSource } from '../game/combat-engine';
-import { grantRadiantDrop, spendReadyFlare, type RadiantGaugeState } from '../game/combat-gauge';
+import { grantRadiantDrop, personalChargeUnit, spendReadyFlare, type RadiantGaugeState } from '../game/combat-gauge';
 import { applyRadiantStatusEvent, radiantStatusSnapshot, type RadiantStatusSnapshot } from './battle-timed-status';
 
 export interface RadiantReadout {
@@ -70,6 +70,16 @@ function apply(readout: RadiantReadout, event: RadiantCombatEvent): void {
     const spent = spendReadyFlare(readout.gauge, event.bearerId);
     if (spent.tier !== event.tier) throw new Error('Saved Convergent Light rank does not match displayed charge.');
     readout.gauge = spent.state;
+  } else if (event.type === 'skill') {
+    const member = readout.gauge.members.find(member => member.id === event.bearerId);
+    if (!member || member.charge < event.cost) throw new Error('Saved skill cost exceeds displayed charge.');
+    member.charge = (Math.round(member.charge * personalChargeUnit) - event.cost * personalChargeUnit) / personalChargeUnit;
+  } else if (event.type === 'health-mote') {
+    // N5: the defeated enemy's Health mote heals the bearer who defeated it.
+    const unit = readout.units[event.bearerId];
+    if (!unit || !readout.units[event.enemyId]) throw new Error('Saved Health mote target is missing.');
+    unit.hp += event.effective;
+    if (unit.hp > unit.maximum) throw new Error('Saved healing exceeds displayed maximum HP.');
   } else if (event.type === 'gauge-drop') {
     if (!readout.units[event.enemyId]) throw new Error('Saved Gauge-drop enemy is missing.');
     readout.gauge = grantRadiantDrop(readout.gauge, event.bearerId, event.amount);
@@ -95,7 +105,7 @@ export function radiantImpactFrames(before: RadiantCombatState, after: RadiantCo
     do {
       const event = events[index++];
       batch.push(structuredClone(event)); apply(displayed, event);
-      if (event.type === 'status' || event.type === 'guard') applyRadiantStatusEvent(statuses, event);
+      if (event.type === 'status') applyRadiantStatusEvent(statuses, event);
       else if (event.type === 'defeated') statuses[event.targetId] = [];
       if ('targetId' in event && sourceKey(event) !== null) targets.add(event.targetId);
       const next = events[index];

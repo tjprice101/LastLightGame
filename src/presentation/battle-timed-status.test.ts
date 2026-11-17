@@ -15,20 +15,19 @@ function run() {
     entry: () => ({ runId: id, encounterSeed: 1729, chargeSeed: 7, targetSeed: 104729 }) }).response.run;
 }
 describe('source-owned Radiant status reference', () => {
-  it('keeps independent owners/origins, amounts and clocks without merging same-family statuses', () => {
+  it('shows one row per category with its strongest source, amount and turn clock (D-473 N6)', () => {
     const frozen = run(), enemy = frozen.state.enemies[0];
-    enemy.burns = [
-      { source: { kind: 'flare', bearerId: 'ember' }, magnitude: 51, remaining: 2 },
-      { source: { kind: 'gear', bearerId: 'tide', conduitId: 'vigil-core' }, magnitude: 17, remaining: 1 },
+    enemy.debuffs = [
+      { category: 'burn', source: { kind: 'flare', bearerId: 'ember' }, magnitude: 51, remaining: 2 },
+      { category: 'weaken', source: { kind: 'gear', bearerId: 'tide', conduitId: 'vigil-core' }, magnitude: .12, remaining: 1 },
     ];
-    enemy.weaken = [{ source: { kind: 'normal', bearerId: 'tide' }, magnitude: .12, remaining: 2 }];
     const before = structuredClone(frozen);
     const rows = radiantStatusSnapshot(frozen.state)[enemy.id];
-    expect(rows).toHaveLength(3);
+    expect(rows).toHaveLength(2);
     const html = radiantStatusRows(rows, frozen);
-    expect(html.match(/data-radiant-effect="burn"/g)).toHaveLength(2);
-    expect(html).toContain('Burn · 51'); expect(html).toContain('Burn · 17');
-    expect(html).toContain('2 enemy phases remaining'); expect(html).toContain('1 enemy phase remaining');
+    expect(html.match(/data-radiant-effect="burn"/g)).toHaveLength(1);
+    expect(html).toContain('Burn · 51');
+    expect(html).toContain('2 turns remaining'); expect(html).toContain('1 turn remaining');
     expect(html).toContain('Infernis'); expect(html).toContain('Tizu'); expect(html).toContain('Vigil Core');
     expect(html).toContain('Weaken · 12%'); expect(html).not.toContain('status-native');
     expect(frozen).toEqual(before);
@@ -42,20 +41,23 @@ describe('source-owned Radiant status reference', () => {
     expect(html.match(/Until broken/g)).toHaveLength(2); expect(html).not.toContain('phase');
     expect(html).toContain('Shield · 78'); expect(html).toContain('Shield · 91');
   });
-  it('formats fractional healing amounts at the presentation boundary without changing stored effects', () => {
+  it('formats fractional amounts at the presentation boundary without changing stored effects', () => {
     const frozen = run(), unit = frozen.state.bearers[0];
-    unit.renewal = [{ source: { kind: 'flare', bearerId: 'sprout' }, magnitude: 359.38500000000005, remaining: 1 }];
-    unit.seeds = [{ source: { kind: 'flare', bearerId: 'sprout' }, magnitude: 1.2361, remaining: 2 }];
+    unit.buffs = [
+      { category: 'attack-up', source: { kind: 'flare', bearerId: 'sprout' }, magnitude: .35000000000000003, remaining: 1 },
+      { category: 'hot', source: { kind: 'skill', bearerId: 'sprout' }, magnitude: .12345, remaining: 2 },
+    ];
     const before = structuredClone(frozen);
     const html = radiantStatusRows(radiantStatusSnapshot(frozen.state).ember, frozen);
-    expect(html).toContain('Renewal · 359.39');
-    expect(html).toContain('Seed · 1.24');
-    expect(html).not.toContain('00000000000005');
+    expect(html).toContain('Attack Up · 35%');
+    expect(html).toContain('Health Over Time · 12.345%');
+    expect(html).toContain('Flora · Skill');
+    expect(html).not.toContain('00000000000003');
     expect(frozen).toEqual(before);
   });
   it('round expiration and defeated units use actual settled state, not parsed messages or guessed clocks', () => {
     const frozen = run(), unit = frozen.state.bearers[0];
-    unit.weaken = [{ source: { kind: 'enemy', enemyId: frozen.enemies[0].id }, magnitude: .1, remaining: 1 }];
+    unit.buffs = [{ category: 'weaken', source: { kind: 'enemy', enemyId: frozen.enemies[0].id }, magnitude: .1, remaining: 1 }];
     for (const member of frozen.state.bearers) frozen.state.acted.push(member.loadout.id);
     frozen.state.phase = 'enemy'; frozen.state.enemyActed = frozen.state.enemies.map(enemy => enemy.id);
     const result = applyRadiantCombatAction(frozen.state, { type: 'finish-enemy-phase' });

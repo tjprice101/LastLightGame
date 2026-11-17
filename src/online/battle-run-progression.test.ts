@@ -55,11 +55,11 @@ function variedVictory(activity: 'story' | 'training'): RadiantRunSnapshot {
     { id: 3, source: { kind: 'passive', bearerId: 'ember' }, remaining: 34 },
   ];
   state.bearers[1].shields = [{ id: 2, source: { kind: 'flare', bearerId: 'tide' }, remaining: 55 }];
-  state.bearers[0].renewal = [{ source: { kind: 'flare', bearerId: 'sprout' }, magnitude: 25, remaining: 2 }];
-  state.bearers[0].seeds = [{ source: { kind: 'passive', bearerId: 'sprout' }, magnitude: 8, remaining: 1 }];
-  state.bearers[0].reductions = [{ source: { kind: 'flare', bearerId: 'tide' }, magnitude: .2, remaining: 2 }];
-  state.bearers[0].attackBuffs = [{ source: { kind: 'passive', bearerId: 'ember' }, magnitude: .1, remaining: 1 }];
-  state.bearers[0].guarding = true;
+  state.bearers[0].buffs = [
+    { category: 'hot', source: { kind: 'flare', bearerId: 'sprout' }, magnitude: .1, remaining: 2 },
+    { category: 'reduction', source: { kind: 'flare', bearerId: 'tide' }, magnitude: .2, remaining: 2 },
+    { category: 'attack-up', source: { kind: 'passive', bearerId: 'ember' }, magnitude: .1, remaining: 1 },
+  ];
   state.bearers[2].hp = 0;
   state.gauge.members[2].living = false;
   state.gauge.members[0].charge = 20.3;
@@ -121,8 +121,7 @@ describe('actual Radiant action-to-reward and progression authority', () => {
     expect(next.state.bearers.map(member => member.hp)).toEqual(next.state.bearers.map(member => Math.round(member.stats.hp)));
     for (const member of next.state.bearers) {
       expect(member.shields).toEqual([]);
-      expect([member.renewal, member.seeds, member.weaken, member.reductions, member.attackBuffs]).toEqual([[], [], [], [], []]);
-      expect(member.guarding).toBe(false);
+      expect(member.buffs).toEqual([]);
     }
     expect(next.state.nextShieldId).toBe(1);
     expect(next.state.round).toBe(1);

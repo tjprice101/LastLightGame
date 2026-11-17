@@ -3,7 +3,7 @@ import { elements } from '../content/activities';
 import { elementDamageMultiplier, elementWeaknesses } from '../content/element-matchups';
 import { characterName } from '../content/character-art';
 import { getStarter } from '../content/starters';
-import { radiantBearerKits, radiantFinalFlare, radiantLeaderBonus, radiantLeaderEffects, radiantMasters, radiantPassiveAmount,
+import { radiantBearerKits, radiantFinalFlare, radiantLeaderBonus, radiantLeaderEffects, radiantMasters,
   releasedRadiantIds, type RadiantBearerId, type RadiantLoadout, type RadiantMasterId } from '../content/combat-kits';
 import { radiantConduits } from '../content/conduit-effects';
 import { applyRadiantCombatAction, createRadiantCombat, effectiveRadiantStats, radiantDirectDamage,
@@ -21,11 +21,12 @@ function fixture(ids: RadiantBearerId[] = ['ember'], form = 6, enemyHP = 100000)
 }
 
 describe('consolidated live combat contract', () => {
-  it.each(releasedRadiantIds)('%s retains its identity and uses a simple squad passive with 100/200 capacity', id => {
+  it.each(releasedRadiantIds)('%s retains its identity, carries its Phase 3 kit and keeps 100/200 capacity', id => {
     const kit = radiantBearerKits[id];
     expect(kit.baseCost).toBe(100);
-    expect(kit.passive.rule).toBe('squad-stat');
-    expect(['attack', 'defense', 'recovery']).toContain(kit.passive.stat);
+    expect(kit.passive.name && kit.passive.description).toBeTruthy();
+    expect([kit.kit.skill1.name, kit.kit.skill2.name, kit.kit.flare.name].every(Boolean)).toBe(true);
+    expect(['Tank', 'Attacker', 'Support']).toContain(kit.role);
     expect(characterName(id)).toBe(getStarter(id).name);
     const names = Array.from({ length: 6 }, (_, index) => characterName(id, index + 1));
     expect(new Set(names).size).toBe(6);
@@ -41,29 +42,31 @@ describe('consolidated live combat contract', () => {
     }
   });
 
-  it('gives 10 Normal Luminosity and a separate 1 only to living same-element allies', () => {
+  it('gives 15 Normal Luminosity and a separate 1.5 only to living same-element allies (D-473 N1)', () => {
     const sameElement = releasedRadiantIds.find(id => id !== 'ember' && radiantBearerKits[id].elementId === 'infernic')!;
     const state = fixture(['ember', sameElement, 'tide']);
     const next = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'ember', targetId: 'enemy' });
-    expect(next.state.gauge.members.map(member => member.charge)).toEqual([10, 1, 0]);
+    expect(next.state.gauge.members.map(member => member.charge)).toEqual([15, 1.5, 0]);
     expect(next.events.filter(event => event.type === 'gauge-drop')).toHaveLength(1);
     expect(next.state.chargeSeed).toBe(state.chargeSeed);
     next.state.gauge.members[1].living = false;
-    expect(grantRadiantDrop(next.state.gauge, 'ember', 10).members.map(member => member.charge)).toEqual([20, 1, 0]);
+    expect(grantRadiantDrop(next.state.gauge, 'ember', 10).members.map(member => member.charge)).toEqual([25, 1.5, 0]);
     expect(state.gauge.members.every(member => member.charge === 0)).toBe(true);
   });
 
-  it('does not roll random bonuses or grant Flare, defeat, Defense or personal round charge', () => {
+  it('does not roll random bonuses or grant skill, Flare, defeat or personal round charge', () => {
     const roll = vi.fn(() => 0);
-    expect(radiantHitDrop('normal', 0, roll)).toEqual({ amount: 10, bonusRolls: 0, bonusOffered: 0 });
+    expect(radiantHitDrop('normal', 0, roll)).toEqual({ amount: 15, bonusRolls: 0, bonusOffered: 0 });
     expect(radiantHitDrop('flare', 0, roll).amount).toBe(0);
     expect(roll).not.toHaveBeenCalled();
     const state = fixture();
-    const guarded = applyRadiantCombatAction(state, { type: 'defense', bearerId: 'ember' });
-    expect(guarded.state.gauge.members[0].charge).toBe(0);
-    expect(grantRadiantRound(state.gauge).members[0].charge).toBe(0);
+    state.gauge.members[0].charge = 25;
+    const skill = applyRadiantCombatAction(state, { type: 'skill', bearerId: 'ember', slot: 1, targetId: 'enemy' });
+    expect(skill.state.gauge.members[0].charge).toBe(0);
+    expect(skill.events.some(event => event.type === 'gauge-drop')).toBe(false);
+    expect(grantRadiantRound(state.gauge).members[0].charge).toBe(25);
     const result = applyRadiantCombatAction(fixture(['ember'], 6, 1), { type: 'normal', bearerId: 'ember', targetId: 'enemy' });
-    expect(result.state.gauge.members[0].charge).toBe(10);
+    expect(result.state.gauge.members[0].charge).toBe(15);
     expect(result.events.filter(event => event.type === 'gauge-drop')).toHaveLength(1);
   });
 
@@ -88,7 +91,8 @@ describe('consolidated live combat contract', () => {
       }], 1);
       state.gauge.members[0].charge = charge;
       const offer = radiantFinalFlare(state.bearers[0].loadout, tier);
-      const expected = radiantDirectDamage(effectiveRadiantStats(state, 'ember').attack, 0, offer.damage);
+      // Infernis is an Attacker: Skill Power 1.5 scales the Flare (D-473 N4, O5).
+      const expected = radiantDirectDamage(effectiveRadiantStats(state, 'ember').attack, 0, offer.damage * 1.5);
       const next = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ember' });
       const packets = next.events.filter(event => event.type === 'damage' && event.source.kind === 'flare' && event.origin === 'direct');
       expect(packets).toHaveLength(hits);
@@ -97,14 +101,12 @@ describe('consolidated live combat contract', () => {
       expect(next.events.some(event => event.type === 'gauge-drop')).toBe(false);
     });
 
-  it('adds living squad passives rather than multiplying them, and removes only a defeated source', () => {
+  it('no longer adds squad-stat Passives: effective Attack is the frozen stat without timed effects', () => {
     const state = fixture(['ember', 'crinso']);
-    const base = state.bearers[0].stats.attack;
-    const bonuses = state.bearers.map(member => radiantPassiveAmount(member.loadout));
-    expect(effectiveRadiantStats(state, 'ember').attack).toBeCloseTo(base * (1 + bonuses[0] + bonuses[1]));
+    expect(effectiveRadiantStats(state, 'ember').attack).toBe(state.bearers[0].stats.attack);
     state.bearers[1].hp = 0;
     state.gauge.members[1].living = false;
-    expect(effectiveRadiantStats(state, 'ember').attack).toBeCloseTo(base * (1 + bonuses[0]));
+    expect(effectiveRadiantStats(state, 'ember').attack).toBe(state.bearers[0].stats.attack);
     validateRadiantCombat(state);
   });
 
@@ -120,21 +122,24 @@ describe('consolidated live combat contract', () => {
     const damage = afterDeath.events.find(event => event.type === 'damage');
     expect(damage?.type === 'damage' && damage.offered).toBe(radiantDirectDamage(effectiveRadiantStats(state, 'tide').attack, 0, 1));
   });
-  it('Tizu leads with Defense and guarded Shields, not the shared attack template', () => {
+  it('Tizu leads with Defense and skill-triggered Shields (D-473 O1), not the shared attack template', () => {
     const state = fixture(['tide', 'nerithe', 'ember']);
+    state.gauge.members.forEach(member => { member.charge = 40; });
     const otherLeader = fixture(['ember', 'tide', 'nerithe']);
     expect(effectiveRadiantStats(state, 'nerithe').defense)
       .toBeCloseTo(effectiveRadiantStats(otherLeader, 'nerithe').defense * 1.3);
     expect(effectiveRadiantStats(state, 'ember').defense).toBeCloseTo(effectiveRadiantStats(otherLeader, 'ember').defense);
-    const guarded = applyRadiantCombatAction(state, { type: 'defense', bearerId: 'nerithe' });
-    expect(guarded.events).toContainEqual(expect.objectContaining({
+    const skill = applyRadiantCombatAction(state, { type: 'skill', bearerId: 'nerithe', slot: 2 });
+    expect(skill.events).toContainEqual(expect.objectContaining({
       type: 'shield', targetId: 'nerithe', source: { kind: 'leader', bearerId: 'tide' },
     }));
-    const offElement = applyRadiantCombatAction(state, { type: 'defense', bearerId: 'ember' });
+    const normal = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'nerithe', targetId: 'enemy' });
+    expect(normal.events.filter(event => event.type === 'shield')).toHaveLength(0);
+    const offElement = applyRadiantCombatAction(state, { type: 'skill', bearerId: 'ember', slot: 2 });
     expect(offElement.events.filter(event => event.type === 'shield')).toHaveLength(0);
     state.bearers[0].hp = 0;
     state.gauge.members[0].living = false;
-    const inactive = applyRadiantCombatAction(state, { type: 'defense', bearerId: 'nerithe' });
+    const inactive = applyRadiantCombatAction(state, { type: 'skill', bearerId: 'nerithe', slot: 2 });
     expect(inactive.events.filter(event => event.type === 'shield')).toHaveLength(0);
   });
   it('an equipped Elise Master creates its authored splash without another Luminosity drop', () => {
@@ -146,7 +151,7 @@ describe('consolidated live combat contract', () => {
       type: 'damage', origin: 'generated', targetId: 'other', source: { kind: 'master', bearerId: 'elise' },
     }));
     expect(result.events.filter(event => event.type === 'gauge-drop')).toHaveLength(1);
-    expect(result.state.gauge.members[0].charge).toBe(10);
+    expect(result.state.gauge.members[0].charge).toBe(15);
   });
 
   it.each(elements)('$name arrows mean weak to, including the mutual light/dark pair', element => {
@@ -190,9 +195,10 @@ describe('consolidated live combat contract', () => {
     state.gauge.members[0].charge = 100;
     const offer = radiantFinalFlare(state.bearers[0].loadout, 'sparkling');
     const cast = applyRadiantCombatAction(state, { type: 'flare', bearerId: 'ember' });
-    const magnitude = offer.burn * effectiveRadiantStats(state, 'ember').attack *
+    // Burn = value x tier/form scale x Skill Power (Attacker 1.5) x caster Attack x Burn power x element.
+    const magnitude = offer.burn * 1.5 * effectiveRadiantStats(state, 'ember').attack *
       (1 + radiantLeaderEffects(state.bearers[0].loadout).find(effect => effect.kind === 'burn-power')!.amount) * .75;
-    expect(cast.state.enemies[0].burns[0].magnitude).toBeCloseTo(magnitude);
+    expect(cast.state.enemies[0].debuffs.find(effect => effect.category === 'burn')!.magnitude).toBeCloseTo(magnitude);
     cast.state.bearers[0].hp = 0;
     cast.state.gauge.members[0].living = false;
     cast.state.phase = 'enemy';
@@ -215,10 +221,8 @@ describe('consolidated live combat contract', () => {
         const owner = { ...loadout(id, form, rank), masterId,
           ascension: { stats: true, skill1: true, skill2: true, lastFlare: true } };
         const offer = radiantFinalFlare(owner, tier);
-        for (const key of ['reduction', 'weaken', 'exposure', 'attackBuff'] as const) {
+        for (const key of ['reduction', 'weaken', 'exposure', 'attackBuff'] as const)
           expect(offer[key]).toBeGreaterThanOrEqual(0);
-          expect(offer[key]).toBeLessThanOrEqual(.8);
-        }
         if ((tier === 'glimmering' && form < 4) || (tier === 'ultimate' && form < 6)) continue;
         const state = createRadiantCombat([owner], [{
           id: 'enemy', elementId: 'botanic', stats: { hp: 1000000, attack: 10, defense: 100, recovery: 0 },
@@ -228,7 +232,11 @@ describe('consolidated live combat contract', () => {
         const result = applyRadiantCombatAction(state, {
           type: 'flare', bearerId: id, ...(offer.target === 'one-enemy' ? { targetId: 'enemy' } : {}),
         });
-        expect(result.state.gauge.members[0].charge).toBe(0);
+        // A Flare that fills "all allies" refills its own caster; every other Flare spends to zero.
+        const selfFill = radiantBearerKits[id].kit.flare.effects.some(effect => effect.kind === 'fill' && effect.to === 'all-allies');
+        if (selfFill) expect(result.state.gauge.members[0].charge).toBeGreaterThan(0);
+        else expect(result.state.gauge.members[0].charge).toBe(0);
+        // State validation enforces the N6 category caps on every applied effect.
         validateRadiantCombat(result.state);
       }
     }

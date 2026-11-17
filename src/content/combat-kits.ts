@@ -7,6 +7,8 @@ import { radiantGearAmount, validateRadiantGear, pair, type RadiantGear,
   type RadiantConduitDesign, type RadiantConduitEffect, type RadiantConduitPrimitive } from './conduit-effects';
 import { radiantConduitDescription } from './conduit-effect-text';
 import type { ElementId } from './activities';
+import { intrinsicRole } from './role-perks';
+import { radiantFlareTierScale, radiantKits, type RadiantKitDef, type RadiantKitId } from './radiant-kits';
 
 export type RadiantBearerId = StarterId & (
   | 'ember' | 'tide' | 'sprout' | 'rosetta' | 'thornia' | 'crinso'
@@ -39,6 +41,7 @@ export const radiantAttunements: Record<RadiantAttunement, RadiantStats> = {
 };
 
 type SignatureTarget = 'all-enemies' | 'one-enemy' | 'all-allies';
+/** Display summary of a kit Flare at one tier (presentation compatibility; the engine reads `radiantKits`). */
 export interface RadiantFlareOffer {
   name: string;
   comboHits: number;
@@ -68,24 +71,17 @@ export interface RadiantBearerKit {
   weapon: string;
   base: RadiantStats;
   baseCost: number;
+  role: RadiantRole;
   passive: RadiantPassive;
+  kit: RadiantKitDef;
   leader: string;
   leaderStat: keyof RadiantStats;
   leaderBonus: number;
   signatureFamily: string;
-  signature: Omit<RadiantFlareOffer, 'name'>;
 }
-
-export type RadiantPassiveRule =
-  | 'squad-stat' | 'banked-cinder' | 'tide-return' | 'dawn-seed'
-  | 'normal-expose' | 'guard-shelter' | 'burning-strike' | 'next-ally-focus'
-  | 'flare-cleanse' | 'late-heal' | 'hurt-bulwark' | 'guard-focus'
-  | 'exposed-strike' | 'guard-weaken' | 'heal-charge' | 'absorbed-heal'
-  | 'normal-burn' | 'guard-cleanse' | 'long-seed' | 'hurt-shelter'
-  | 'charted-charge' | 'guard-foundation' | 'exposed-charge' | 'absorbed-burn'
-  | 'guard-stillness' | 'burning-heal' | 'heal-shelter' | 'next-ally-shield'
-  | 'guard-convoy' | 'weakened-expose' | 'wounded-refusal' | 'normal-renewal' | 'opening-incision';
-export interface RadiantPassive { name: string; description: string; rule: RadiantPassiveRule; magnitude: number; stat: keyof RadiantStats }
+export type RadiantRole = 'Tank' | 'Attacker' | 'Support';
+/** Phase 3 Passive (D-473); its rules run in the signature handlers. */
+export interface RadiantPassive { name: string; description: string }
 
 
 const bearerTuning: Record<RadiantBearerId, {
@@ -95,184 +91,125 @@ const bearerTuning: Record<RadiantBearerId, {
   leaderStat: keyof RadiantStats;
   leaderBonus: number;
   family: string;
-  target: SignatureTarget;
-  damage?: number;
-  burn?: number;
-  burnPhases?: number;
-  shieldDefense?: number;
-  shieldHP?: number;
-  reduction?: number;
-  reductionPhases?: number;
-  weaken?: number;
-  weakenPhases?: number;
-  exposure?: number;
-  exposurePhases?: number;
-  heal?: number;
-  renewal?: number;
-  renewalRounds?: number;
-  attackBuff?: number;
-  attackBuffRounds?: number;
 }> = {
   ember: { base: { hp: 240, attack: 60, defense: 16, recovery: 28 }, baseCost: 30,
-    leader: 'Hearthbound Oath', leaderStat: 'attack', leaderBonus: .15, family: 'Cinderwake',
-    target: 'all-enemies', damage: 1.4, burn: .12, burnPhases: 2 },
+    leader: 'Hearthbound Oath', leaderStat: 'attack', leaderBonus: .15, family: 'Cinderwake' },
   tide: { base: { hp: 300, attack: 44, defense: 22, recovery: 34 }, baseCost: 25,
-    leader: 'Harbor Covenant', leaderStat: 'defense', leaderBonus: .2, family: 'Tideglass',
-    target: 'all-allies', shieldDefense: .9, shieldHP: .05 },
+    leader: 'Harbor Covenant', leaderStat: 'defense', leaderBonus: .2, family: 'Tideglass' },
   sprout: { base: { hp: 220, attack: 46, defense: 14, recovery: 65 }, baseCost: 20,
-    leader: 'Garden Covenant', leaderStat: 'recovery', leaderBonus: .15, family: 'Dawnseed',
-    target: 'all-allies', heal: .8, renewal: .15, renewalRounds: 2 },
+    leader: 'Garden Covenant', leaderStat: 'recovery', leaderBonus: .15, family: 'Dawnseed' },
   rosetta: { base: { hp: 245, attack: 58, defense: 15, recovery: 38 }, baseCost: 32,
-    leader: 'Quarry Oath', leaderStat: 'attack', leaderBonus: .12, family: 'Rose Meridian',
-    target: 'one-enemy', damage: 1.65, exposure: .18, exposurePhases: 2 },
+    leader: 'Quarry Oath', leaderStat: 'attack', leaderBonus: .12, family: 'Rose Meridian' },
   thornia: { base: { hp: 315, attack: 45, defense: 24, recovery: 32 }, baseCost: 34,
-    leader: 'Garden Gate', leaderStat: 'defense', leaderBonus: .18, family: 'Thorn Aegis',
-    target: 'all-allies', shieldDefense: .8, shieldHP: .06, reduction: .12, reductionPhases: 1 },
+    leader: 'Garden Gate', leaderStat: 'defense', leaderBonus: .18, family: 'Thorn Aegis' },
   crinso: { base: { hp: 235, attack: 64, defense: 14, recovery: 30 }, baseCost: 34,
-    leader: 'Twin-Rose Accord', leaderStat: 'attack', leaderBonus: .1, family: 'Blossoming Edge',
-    target: 'one-enemy', damage: 2.05, burn: .08, burnPhases: 2 },
+    leader: 'Twin-Rose Accord', leaderStat: 'attack', leaderBonus: .1, family: 'Blossoming Edge' },
   atmoso: { base: { hp: 245, attack: 56, defense: 16, recovery: 35 }, baseCost: 30,
-    leader: 'Open-Sky Route', leaderStat: 'attack', leaderBonus: .12, family: 'Sky Without End',
-    target: 'all-enemies', damage: 1.3, weaken: .1, weakenPhases: 1 },
+    leader: 'Open-Sky Route', leaderStat: 'attack', leaderBonus: .12, family: 'Sky Without End' },
   aurora: { base: { hp: 265, attack: 43, defense: 19, recovery: 58 }, baseCost: 34,
-    leader: 'Merciful Verdict', leaderStat: 'recovery', leaderBonus: .12, family: 'Final Dawn',
-    target: 'all-enemies', damage: .65, weaken: .2, weakenPhases: 2, reduction: .12, reductionPhases: 1 },
+    leader: 'Merciful Verdict', leaderStat: 'recovery', leaderBonus: .12, family: 'Final Dawn' },
   bliss: { base: { hp: 235, attack: 55, defense: 15, recovery: 48 }, baseCost: 34,
-    leader: 'Quietstorm Measure', leaderStat: 'attack', leaderBonus: .1, family: 'Thousandfeather',
-    target: 'all-allies', heal: .18, attackBuff: .12, attackBuffRounds: 1 },
+    leader: 'Quietstorm Measure', leaderStat: 'attack', leaderBonus: .1, family: 'Thousandfeather' },
   bruno: { base: { hp: 320, attack: 43, defense: 25, recovery: 27 }, baseCost: 30,
-    leader: 'Worldwall Stand', leaderStat: 'defense', leaderBonus: .18, family: 'Worldwall Mantle',
-    target: 'all-allies', shieldDefense: 1.1, shieldHP: .04 },
+    leader: 'Worldwall Stand', leaderStat: 'defense', leaderBonus: .18, family: 'Worldwall Mantle' },
   disciple: { base: { hp: 250, attack: 45, defense: 17, recovery: 54 }, baseCost: 34,
-    leader: 'Unbound Concord', leaderStat: 'recovery', leaderBonus: .1, family: 'Mindcrown Resolve',
-    target: 'all-allies', attackBuff: .22, attackBuffRounds: 1 },
+    leader: 'Unbound Concord', leaderStat: 'recovery', leaderBonus: .1, family: 'Mindcrown Resolve' },
   elise: { base: { hp: 230, attack: 62, defense: 14, recovery: 34 }, baseCost: 30,
-    leader: 'Crosswind Opening', leaderStat: 'attack', leaderBonus: .13, family: 'Thunderwheel Recall',
-    target: 'one-enemy', damage: 2.2, weaken: .08, weakenPhases: 1 },
+    leader: 'Crosswind Opening', leaderStat: 'attack', leaderBonus: .13, family: 'Thunderwheel Recall' },
   razor: { base: { hp: 310, attack: 52, defense: 24, recovery: 25 }, baseCost: 34,
-    leader: 'Midnight Bastion', leaderStat: 'defense', leaderBonus: .15, family: 'Unbroken Midnight',
-    target: 'one-enemy', damage: 1.65, shieldDefense: .55, shieldHP: .03 },
+    leader: 'Midnight Bastion', leaderStat: 'defense', leaderBonus: .15, family: 'Unbroken Midnight' },
   maerion: { base: { hp: 285, attack: 40, defense: 20, recovery: 70 }, baseCost: 34,
-    leader: 'Open Ferry', leaderStat: 'recovery', leaderBonus: .14, family: 'Unreturned Voyage',
-    target: 'all-allies', heal: .55, renewal: .1, renewalRounds: 1 },
+    leader: 'Open Ferry', leaderStat: 'recovery', leaderBonus: .14, family: 'Unreturned Voyage' },
   caevren: { base: { hp: 325, attack: 40, defense: 28, recovery: 28 }, baseCost: 34,
-    leader: 'Bridgeweight Vow', leaderStat: 'defense', leaderBonus: .2, family: 'Meridian Counterweight',
-    target: 'all-allies', shieldDefense: 1.25, shieldHP: .03, reduction: .1, reductionPhases: 1 },
+    leader: 'Bridgeweight Vow', leaderStat: 'defense', leaderBonus: .2, family: 'Meridian Counterweight' },
   vespera: { base: { hp: 250, attack: 48, defense: 18, recovery: 52 }, baseCost: 34,
-    leader: 'Last Beacon', leaderStat: 'recovery', leaderBonus: .12, family: 'Beacon Signal',
-    target: 'all-enemies', damage: .9, burn: .1, burnPhases: 2, attackBuff: .08, attackBuffRounds: 1 },
+    leader: 'Last Beacon', leaderStat: 'recovery', leaderBonus: .12, family: 'Beacon Signal' },
   ilyss: { base: { hp: 265, attack: 42, defense: 19, recovery: 68 }, baseCost: 34,
-    leader: 'Living Thread', leaderStat: 'recovery', leaderBonus: .14, family: 'Severance Mercy',
-    target: 'all-allies', heal: .38, reduction: .1, reductionPhases: 1 },
+    leader: 'Living Thread', leaderStat: 'recovery', leaderBonus: .14, family: 'Severance Mercy' },
   asteriel: { base: { hp: 245, attack: 42, defense: 17, recovery: 66 }, baseCost: 34,
-    leader: 'Shared Orbit', leaderStat: 'recovery', leaderBonus: .12, family: 'Moonflower Promise',
-    target: 'all-allies', heal: .22, renewal: .22, renewalRounds: 2 },
+    leader: 'Shared Orbit', leaderStat: 'recovery', leaderBonus: .12, family: 'Moonflower Promise' },
   serapha: { base: { hp: 290, attack: 41, defense: 23, recovery: 62 }, baseCost: 34,
-    leader: 'Ceasefire Interval', leaderStat: 'defense', leaderBonus: .12, family: 'Sanctuary Interval',
-    target: 'all-allies', shieldDefense: .75, shieldHP: .05, reduction: .2, reductionPhases: 1 },
+    leader: 'Ceasefire Interval', leaderStat: 'defense', leaderBonus: .12, family: 'Sanctuary Interval' },
   nerithe: { base: { hp: 245, attack: 59, defense: 15, recovery: 38 }, baseCost: 34,
-    leader: 'Uncharted Meridian', leaderStat: 'attack', leaderBonus: .12, family: 'Ocean Beyond the Map',
-    target: 'one-enemy', damage: 1.8, weaken: .18, weakenPhases: 2 },
+    leader: 'Uncharted Meridian', leaderStat: 'attack', leaderBonus: .12, family: 'Ocean Beyond the Map' },
   orvella: { base: { hp: 320, attack: 42, defense: 27, recovery: 36 }, baseCost: 34,
-    leader: 'Load-Bearing Will', leaderStat: 'defense', leaderBonus: .14, family: 'Faultline Foundation',
-    target: 'all-allies', shieldDefense: 1.15, shieldHP: .04 },
+    leader: 'Load-Bearing Will', leaderStat: 'defense', leaderBonus: .14, family: 'Faultline Foundation' },
   vaelor: { base: { hp: 235, attack: 61, defense: 14, recovery: 34 }, baseCost: 34,
-    leader: 'Standing Thunder', leaderStat: 'attack', leaderBonus: .14, family: 'Final Chord',
-    target: 'all-enemies', damage: 1.35, weaken: .12, weakenPhases: 1 },
+    leader: 'Standing Thunder', leaderStat: 'attack', leaderBonus: .14, family: 'Final Chord' },
   caldrex: { base: { hp: 330, attack: 46, defense: 27, recovery: 28 }, baseCost: 34,
-    leader: 'Banked Heat', leaderStat: 'defense', leaderBonus: .12, family: 'Closed Kiln',
-    target: 'all-enemies', damage: .7, shieldDefense: 1, shieldHP: .05, burn: .06, burnPhases: 2 },
+    leader: 'Banked Heat', leaderStat: 'defense', leaderBonus: .12, family: 'Closed Kiln' },
   solenne: { base: { hp: 315, attack: 42, defense: 28, recovery: 39 }, baseCost: 34,
-    leader: 'Held Stillness', leaderStat: 'defense', leaderBonus: .16, family: 'Last Reverberation',
-    target: 'all-allies', shieldDefense: .8, shieldHP: .04, reduction: .16, reductionPhases: 2 },
+    leader: 'Held Stillness', leaderStat: 'defense', leaderBonus: .16, family: 'Last Reverberation' },
   myrthen: { base: { hp: 245, attack: 60, defense: 15, recovery: 40 }, baseCost: 34,
-    leader: 'Turning Season', leaderStat: 'attack', leaderBonus: .12, family: 'All That Ripens',
-    target: 'all-enemies', damage: 1.65, burn: .08, burnPhases: 2 },
+    leader: 'Turning Season', leaderStat: 'attack', leaderBonus: .12, family: 'All That Ripens' },
   neralis: { base: { hp: 285, attack: 43, defense: 20, recovery: 72 }, baseCost: 34,
-    leader: 'Returning Current', leaderStat: 'recovery', leaderBonus: .14, family: 'No Crossing Left Empty',
-    target: 'all-allies', heal: .42, renewal: .12, renewalRounds: 1 },
+    leader: 'Returning Current', leaderStat: 'recovery', leaderBonus: .14, family: 'No Crossing Left Empty' },
   varkhel: { base: { hp: 330, attack: 45, defense: 27, recovery: 31 }, baseCost: 34,
-    leader: 'Tension Held', leaderStat: 'defense', leaderBonus: .14, family: 'Bridge Holds',
-    target: 'all-allies', shieldDefense: .95, shieldHP: .06, attackBuff: .08, attackBuffRounds: 1 },
+    leader: 'Tension Held', leaderStat: 'defense', leaderBonus: .14, family: 'Bridge Holds' },
   seravelle: { base: { hp: 270, attack: 52, defense: 20, recovery: 47 }, baseCost: 34,
-    leader: 'Convoy Cadence', leaderStat: 'attack', leaderBonus: .1, family: 'Road Belongs to Everyone',
-    target: 'all-allies', attackBuff: .18, attackBuffRounds: 1, heal: .08 },
+    leader: 'Convoy Cadence', leaderStat: 'attack', leaderBonus: .1, family: 'Road Belongs to Everyone' },
   velmira: { base: { hp: 240, attack: 63, defense: 15, recovery: 34 }, baseCost: 34,
-    leader: 'Alternating Edge', leaderStat: 'attack', leaderBonus: .12, family: 'Leave the Doorway Standing',
-    target: 'one-enemy', damage: 2.05, weaken: .14, weakenPhases: 2 },
+    leader: 'Alternating Edge', leaderStat: 'attack', leaderBonus: .12, family: 'Leave the Doorway Standing' },
   ozriel: { base: { hp: 360, attack: 40, defense: 31, recovery: 40 }, baseCost: 34,
-    leader: 'Refusal', leaderStat: 'defense', leaderBonus: .2, family: 'Unbroken Refusal',
-    target: 'all-allies', shieldDefense: 1.1, shieldHP: .06, reduction: .12, reductionPhases: 1 },
+    leader: 'Refusal', leaderStat: 'defense', leaderBonus: .2, family: 'Unbroken Refusal' },
   ilvaris: { base: { hp: 320, attack: 45, defense: 24, recovery: 70 }, baseCost: 34,
-    leader: 'Hymn of Broken Glass', leaderStat: 'recovery', leaderBonus: .12, family: 'Fate-seared Hymn',
-    target: 'all-allies', heal: .38, renewal: .12, renewalRounds: 2 },
+    leader: 'Hymn of Broken Glass', leaderStat: 'recovery', leaderBonus: .12, family: 'Fate-seared Hymn' },
   kaelith: { base: { hp: 250, attack: 70, defense: 17, recovery: 32 }, baseCost: 34,
-    leader: 'Fractalized Incision', leaderStat: 'attack', leaderBonus: .14, family: 'Glass Meridian',
-    target: 'one-enemy', damage: 2.35, weaken: .15, weakenPhases: 1 },
+    leader: 'Fractalized Incision', leaderStat: 'attack', leaderBonus: .14, family: 'Glass Meridian' },
 };
 
-const flareTiers: Record<ConvergentLightTier, { damage: number; support: number; comboHits: number }> = {
-  sparkling: { damage: 4, support: 2, comboHits: 4 },
-  glimmering: { damage: 8, support: 3, comboHits: 8 },
-  ultimate: { damage: 12, support: 4, comboHits: 12 },
-};
-function baseSignature(tuning: typeof bearerTuning[RadiantBearerId]): Omit<RadiantFlareOffer, 'name'> {
-  return {
-    comboHits: 4,
-    target: tuning.target, damage: tuning.damage ?? 0, burn: tuning.burn ?? 0,
-    burnPhases: tuning.burnPhases ?? 0, shieldDefense: tuning.shieldDefense ?? 0,
-    shieldHP: tuning.shieldHP ?? 0, reduction: tuning.reduction ?? 0,
-    reductionPhases: tuning.reductionPhases ?? 0, weaken: tuning.weaken ?? 0,
-    weakenPhases: tuning.weakenPhases ?? 0, exposure: tuning.exposure ?? 0,
-    exposurePhases: tuning.exposurePhases ?? 0, heal: tuning.heal ?? 0,
-    renewal: tuning.renewal ?? 0, renewalRounds: tuning.renewalRounds ?? 0,
-    attackBuff: tuning.attackBuff ?? 0, attackBuffRounds: tuning.attackBuffRounds ?? 0,
-  };
-}
 export const releasedRadiantIds = starters.filter(entry => characterReleased(entry.id)).map(entry => entry.id) as RadiantBearerId[];
-export const radiantPassives = Object.fromEntries(releasedRadiantIds.map(id => {
-  const tuning = bearerTuning[id], magnitude = tuning.leaderBonus / 2;
-  const stat = tuning.leaderStat;
-  return [id, {
-    name: `${tuning.family} Accord`, rule: 'squad-stat', stat, magnitude,
-    description: `All squad members gain ${Number((magnitude * 100).toPrecision(12))}% ${stat === 'hp' ? 'Health' : stat[0].toUpperCase() + stat.slice(1)} while this bearer is alive.`,
-  } satisfies RadiantPassive];
-})) as Record<RadiantBearerId, RadiantPassive>;
+function kitFor(id: RadiantBearerId): RadiantKitDef {
+  if (!Object.hasOwn(radiantKits, id)) throw new Error(`Missing radiant kit for released Element-Bearer: ${id}`);
+  return radiantKits[id as RadiantKitId];
+}
+export const radiantPassives = Object.fromEntries(releasedRadiantIds.map(id =>
+  [id, { ...kitFor(id).passive } satisfies RadiantPassive])) as Record<RadiantBearerId, RadiantPassive>;
 export const radiantBearerKits: Record<RadiantBearerId, RadiantBearerKit> = Object.fromEntries(
   releasedRadiantIds.map(id => {
     const character = starters.find(entry => entry.id === id)!;
     const tuning = bearerTuning[id];
-    if (!tuning) throw new Error(`Missing radiant kit for released Element-Bearer: ${id}`);
+    const role = intrinsicRole(id);
+    if (!tuning || !role) throw new Error(`Missing radiant kit for released Element-Bearer: ${id}`);
     return [id, {
       id, name: character.name, element: character.element, elementId: character.elementId, weapon: character.weapon,
-      base: tuning.base, baseCost: 100,
-      passive: radiantPassives[id],
+      base: tuning.base, baseCost: 100, role,
+      passive: radiantPassives[id], kit: kitFor(id),
       leader: tuning.leader, leaderStat: tuning.leaderStat, leaderBonus: .2,
-      signatureFamily: tuning.family, signature: baseSignature(tuning),
+      signatureFamily: tuning.family,
     }];
   }),
 ) as Record<RadiantBearerId, RadiantBearerKit>;
 
+/** Display summary of the unconditional generic clauses of a kit Flare (Step 3 replaces this with kit text). */
+function flareSummary(id: RadiantBearerId, tier: ConvergentLightTier, power = 1): RadiantFlareOffer {
+  const def = kitFor(id).flare, scale = radiantFlareTierScale[tier];
+  const offer: RadiantFlareOffer = { name: def.name, comboHits: def.target === 'none' ? 0 : scale.hits,
+    target: def.target === 'none' ? 'all-allies' : def.target, damage: def.power * scale.damage * power,
+    burn: 0, burnPhases: 0, shieldDefense: 0, shieldHP: 0, reduction: 0, reductionPhases: 0, weaken: 0, weakenPhases: 0,
+    exposure: 0, exposurePhases: 0, heal: 0, renewal: 0, renewalRounds: 0, attackBuff: 0, attackBuffRounds: 0 };
+  for (const effect of def.effects) {
+    if (effect.when !== undefined || effect.kind === 'signature' || !('value' in effect)) continue;
+    const value = effect.value * scale.effect * power, turns = 'turns' in effect ? effect.turns ?? 0 : 0;
+    switch (effect.kind) {
+      case 'burn': offer.burn = value; offer.burnPhases = turns; break;
+      case 'weaken': offer.weaken = value; offer.weakenPhases = turns; break;
+      case 'expose': offer.exposure = value; offer.exposurePhases = turns; break;
+      case 'reduction': offer.reduction = value; offer.reductionPhases = turns; break;
+      case 'attack-up': offer.attackBuff = value; offer.attackBuffRounds = turns; break;
+      case 'heal': offer.heal = value; break;
+      case 'shield': offer.shieldHP = value; break;
+    }
+  }
+  return offer;
+}
 export const radiantFlares: Record<RadiantBearerId, Record<ConvergentLightTier, RadiantFlareOffer>> =
-  Object.fromEntries(releasedRadiantIds.map(id => {
-    const kit = radiantBearerKits[id];
-    return [id, Object.fromEntries((Object.entries(flareTiers) as [ConvergentLightTier, typeof flareTiers.sparkling][]).map(([tier, scale]) =>
-      [tier, {
-        name: 'Convergent Light',
-        ...kit.signature,
-        comboHits: scale.comboHits,
-        damage: kit.signature.damage * scale.damage,
-        burn: kit.signature.burn * scale.support,
-        shieldDefense: kit.signature.shieldDefense * scale.support,
-        shieldHP: kit.signature.shieldHP * scale.support,
-        reduction: kit.signature.reduction * scale.support,
-        weaken: kit.signature.weaken * scale.support,
-        exposure: kit.signature.exposure * scale.support,
-        heal: kit.signature.heal * scale.support,
-        renewal: kit.signature.renewal * scale.support,
-        attackBuff: kit.signature.attackBuff * scale.support,
-      }]))];
-  })) as Record<RadiantBearerId, Record<ConvergentLightTier, RadiantFlareOffer>>;
+  Object.fromEntries(releasedRadiantIds.map(id => [id, Object.fromEntries(
+    (Object.keys(radiantFlareTierScale) as ConvergentLightTier[]).map(tier => [tier, flareSummary(id, tier)]))])) as
+    Record<RadiantBearerId, Record<ConvergentLightTier, RadiantFlareOffer>>;
+export function radiantFlareName(id: RadiantBearerId): string {
+  return kitFor(id).flare.name;
+}
 
 export type RadiantMasterId = `master-${RadiantBearerId}-${1 | 2 | 3}` & MasterConduitId;
 export type RadiantMasterEnhancement = 'passive' | 'leader' | 'signature' | 'none';
@@ -385,15 +322,19 @@ export const radiantMasters: Record<RadiantMasterId, RadiantMasterDefinition> = 
 
 export const radiantStarterKits = radiantBearerKits;
 
-export function radiantPassiveAmount(loadout: RadiantLoadout): number {
-  const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
-  return (radiantBearerKits[loadout.starter].passive.magnitude + .01 * (loadout.form - 1)) *
-    (1 + (master?.enhancement === 'passive' ? master.magnitude : 0) + (loadout.ascension.skill1 ? .5 : 0));
-}
+/** D-473 O5 role traits: built-in Skill Power by role (Tank Defense and Support Health are in the frozen stats). */
+export const radiantRoleSkillPower: Record<RadiantRole, number> = { Tank: 0, Attacker: .5, Support: .25 };
+/** Support role: each skill and Flare heals all allies this fraction of max Health (not scaled by Skill Power). */
+export const radiantSupportSquadHeal = .04;
+/** Tank role: enemy single-target weight against 1 for other roles. */
+export const radiantTankTargetWeight = 1.25;
+/** D-473 O3: the `skill1`/`skill2` ascension flags boost their own skill. */
+export const radiantSkillAscension = { skillPower: .5, efficiency: .05 } as const;
 
+/** D-473 O3: Leaders no longer take the `skill2` ascension boost. */
 export function radiantLeaderBonus(loadout: RadiantLoadout): number {
   return (radiantBearerKits[loadout.starter].leaderBonus + .02 * (loadout.form - 1)) *
-    (loadout.ascension.skill2 ? 1.5 : 1) * (1 + radiantEquipmentAmount(loadout, 'leader'));
+    (1 + radiantEquipmentAmount(loadout, 'leader'));
 }
 export function radiantLeaderEffects(loadout: RadiantLoadout): RadiantConduitPrimitive[] {
   return leaderDesigns[loadout.starter].map(entry => ({
@@ -411,17 +352,16 @@ export function radiantEquipmentAmount(loadout: RadiantLoadout, kind: RadiantCon
     (master?.effects.filter(entry => entry.kind === kind).reduce((sum, entry) => sum + entry.amount, 0) ?? 0);
 }
 
-export function radiantFinalFlare(loadout: RadiantLoadout, tier: ConvergentLightTier): RadiantFlareOffer {
+/** Flare power from form, Convergent Light rank (+1% per rank), Master signature scaling and the `lastFlare` ascension. */
+export function radiantFlarePower(loadout: RadiantLoadout): number {
   const master = loadout.masterId === null ? null : radiantMasters[loadout.masterId];
   const rankPower = 1 + .01 * (loadout.convergenceRank - 1);
-  const power = (1 + .1 * (loadout.form - 1)) * rankPower *
+  return (1 + .1 * (loadout.form - 1)) * rankPower *
     (1 + (master?.enhancement === 'signature' ? master.magnitude : 0) + (loadout.ascension.lastFlare ? .5 : 0));
-  const offer = { ...radiantFlares[loadout.starter][tier] };
-  for (const key of ['damage', 'burn', 'shieldDefense', 'shieldHP', 'reduction', 'weaken', 'exposure', 'heal', 'renewal', 'attackBuff'] as const)
-    offer[key] *= power;
-  for (const key of ['reduction', 'weaken', 'exposure', 'attackBuff'] as const)
-    offer[key] = Math.min(.8, offer[key]);
-  return offer;
+}
+/** Display summary of this loadout's Flare at a tier (before Skill Power and category caps). */
+export function radiantFinalFlare(loadout: RadiantLoadout, tier: ConvergentLightTier): RadiantFlareOffer {
+  return flareSummary(loadout.starter, tier, radiantFlarePower(loadout));
 }
 
 export function validateRadiantStats(stats: RadiantStats): void {
@@ -473,6 +413,10 @@ export function resolveRadiantStarterStats(loadout: RadiantLoadout): RadiantStat
   };
   for (const key of ['hp', 'attack', 'defense', 'recovery'] as const)
     stats[key] *= 1 + radiantEquipmentAmount(loadout, key);
+  // D-473 O5 role traits: Tank +50% Defense, Support +50% Health.
+  const role = radiantBearerKits[loadout.starter].role;
+  if (role === 'Tank') stats.defense *= 1.5;
+  if (role === 'Support') stats.hp *= 1.5;
   validateRadiantStats(stats);
   return stats;
 }
