@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { radiantBattleReference, radiantConduitDescription, radiantFlareDescription,
+import { radiantBattleReference, radiantConduitDescription,
   radiantFlareNeedsTarget, radiantLeaderReference } from './battle-reference';
-import { radiantFlares, radiantFinalFlare, radiantLeaderDescription, radiantMasters, radiantStarterKits, releasedRadiantIds,
+import { radiantFlares, radiantFinalFlare, radiantMasters, radiantStarterKits, releasedRadiantIds,
   type RadiantLoadout, type RadiantMasterId } from '../content/combat-kits';
 import { radiantConduits, radiantConduitPrimitives } from '../content/conduit-effects';
 import { type ConduitId } from '../content/conduits';
 import { createRadiantCombat, applyRadiantCombatAction } from '../game/combat-engine';
 import { escapeDialogText } from './game-dialog';
-import { radiantPassiveArticle } from './character-combat';
+import { radiantLeaderText, radiantPassiveArticle } from './character-combat';
+import { radiantFlareText } from './kit-text';
 
 function loadout(starter: RadiantLoadout['starter'], masterId: RadiantMasterId | null = null): RadiantLoadout {
   return { id: starter, starter, masterId, form: 6, level: 105, convergenceRank: 1, weaponRank: 0, ascension: {} };
@@ -18,14 +19,9 @@ describe('complete frozen Radiant battle reference', () => {
     const html = radiantBattleReference(member, radiantStarterKits[id].baseCost);
     for (const tier of ['sparkling', 'glimmering', 'ultimate'] as const) {
       expect(html).toContain(radiantFlares[id][tier].name);
-      const lines = radiantFlareDescription(radiantFlares[id][tier]);
-      // Flares made only of signature or conditional clauses (Step 2b) have no generic summary lines yet.
-      const generic = Object.entries(radiantFlares[id][tier]).some(([key, value]) => key !== 'comboHits' && typeof value === 'number' && value > 0);
-      expect(lines.length > 0).toBe(generic);
+      // D-479: every tier shows its approved kit text, including signature clauses.
+      expect(html).toContain(escapeDialogText(radiantFlareText(id, tier)));
       expect(html).toContain(`data-radiant-reference-tier="${tier}"`);
-      if (radiantFlares[id][tier].damage) expect(lines.join(' ')).toContain('Attack total');
-      if (radiantFlares[id][tier].heal) expect(lines.join(' ')).toContain('no revival');
-      if (radiantFlares[id][tier].shieldHP) expect(lines.join(' ')).toContain('recipient maximum Health');
     }
     expect(radiantFlares[id]).toEqual(before);
     expect(html).not.toContain('undefined'); expect(html).not.toContain('NaN');
@@ -62,7 +58,7 @@ describe('complete frozen Radiant battle reference', () => {
   it('leader bonus reflects frozen ascension/Master/gear and displayed life state, never promotes another member', () => {
     const member = loadout('rosetta', 'master-rosetta-3'); member.ascension.skill2 = true;
     const state = createRadiantCombat([member, loadout('tide')], [{ elementId: null, id: 'enemy', stats: { hp: 1000, attack: 1, defense: 1, recovery: 1 }, currencyBudget: 1 }], 1);
-    expect(radiantLeaderReference(state)).toContain(escapeDialogText(radiantLeaderDescription(member)));
+    expect(radiantLeaderReference(state)).toContain(escapeDialogText(radiantLeaderText(member)));
     expect(radiantLeaderReference(state, false)).toContain('Inactive: leader defeated');
     expect(radiantLeaderReference(state, false)).not.toContain('Tizu');
     expect(state.bearers[0].hp).toBeGreaterThan(0);
@@ -72,10 +68,11 @@ describe('complete frozen Radiant battle reference', () => {
     member.form = 1; member.level = 30; member.ascension.lastFlare = true;
     const html = radiantBattleReference(member, 20);
     expect(html.match(/Locked · Rank/g)).toHaveLength(2);
-    // Worldseed Sparkling: 60% x 70% x the saved lastFlare Imbue (x1.5) = 63% of each recipient's max Health.
-    expect(html).toContain('63% of each recipient');
+    // Kit text shows base values: Worldseed Sparkling heals 60% x 70% = 42%; the lastFlare Imbue (x1.5) is the Flare power.
+    expect(html).toContain('Heals all allies (42% of max Health)');
+    expect(html).toContain('Flare power ×1.5');
     expect(radiantFinalFlare(member, 'sparkling').heal).toBeCloseTo(.63);
-    expect(html).toContain('coefficients include evolution, rank, saved Imbues and personal Master enhancements');
+    expect(html).toContain('Kit text shows base values.');
     expect(html).not.toContain('Saved signature magnitude');
   });
   it.each(['aurora', 'ilyss'] as const)('shows %s Phase 3 Passive, not the retired squad-stat Passive', id => {

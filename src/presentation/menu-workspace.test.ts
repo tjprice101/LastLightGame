@@ -87,8 +87,8 @@ describe('live redesigned menus', () => {
     expect(root.textContent).toContain('Hearthbound Oath');
     expect(root.querySelector('[data-information]')?.textContent).toBe('Effects');
     const effects = root.querySelector('.information-content')!.textContent!.replace(/[[\]]/g, '');
-    expect(effects).toContain('Normal Attack deal 20% more damage');
-    expect(effects).toContain('Burn applied by the recipient');
+    expect(effects).toContain('Boosts Normal Attack damage of Infernic allies (+20%)');
+    expect(effects).toContain('boosts Burn damage of Infernic allies (+15%)');
   });
   it('keeps level and attunement together without repeating the subtype', () => {
     const root = document.createElement('div');

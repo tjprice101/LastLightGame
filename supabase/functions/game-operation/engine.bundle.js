@@ -17645,15 +17645,18 @@ function effectiveRadiantStats(state, id) {
   validateRadiantStats(stats);
   return stats;
 }
-function radiantSkillStats(state, id, slot) {
-  const member = bearer(state, id);
-  const ascended = slot === 1 ? member.loadout.ascension.skill1 === true : slot === 2 && member.loadout.ascension.skill2 === true;
+function radiantLoadoutSkillStats(loadout, slot) {
+  const ascended = slot === 1 ? loadout.ascension.skill1 === true : slot === 2 && loadout.ascension.skill2 === true;
   return {
-    skillPower: 1 + radiantRoleSkillPower[radiantStarterKits[member.loadout.starter].role] + (ascended ? radiantSkillAscension.skillPower : 0),
+    skillPower: 1 + radiantRoleSkillPower[radiantStarterKits[loadout.starter].role] + (ascended ? radiantSkillAscension.skillPower : 0),
     skillDuration: 0,
     skillEfficiency: ascended ? radiantSkillAscension.efficiency : 0,
-    gaugeGain: gaugeGain(member)
+    gaugeGain: 1
   };
+}
+function radiantSkillStats(state, id, slot) {
+  const member = bearer(state, id);
+  return { ...radiantLoadoutSkillStats(member.loadout, slot), gaugeGain: gaugeGain(member) };
 }
 function gaugeGain(member) {
   return 1 + category(member.buffs, "gain-up");

@@ -124,7 +124,7 @@ describe('game-specific hub layouts', () => {
     expect(home).toContain('data-page="summon"');
     const overview = characterDetail(starter, 'overview');
     const kit = radiantBearerKits[starter.id as keyof typeof radiantBearerKits];
-    expect(overview).toContain(`Costs ${kit.baseCost} Luminosity to activate.`);
+    expect(overview).toContain(`Costs ${kit.baseCost} Luminosity.`);
     expect(overview).toContain(kit.passive.name);
     expect(overview).toContain(kit.leader);
     for (const tier of ['Sparkling Convergent Light', 'Glimmering Convergent Light', 'Ultimate Convergence of Light'])
@@ -183,7 +183,8 @@ describe('game-specific hub layouts', () => {
     }
     const overview = characterDetail(starter, 'overview');
     for (const label of ['HP', 'Attack', 'Defense', 'Recovery']) expect(overview).toContain(`<small>${label}</small>`);
-    for (const label of ['Critical Rate', 'Skill Power', 'Elemental Gauge Capacity']) expect(overview).not.toContain(label);
+    for (const label of ['Critical Rate', 'Elemental Gauge Capacity']) expect(overview).not.toContain(label);
+    expect(overview).toContain('Skill Power');
     expect(overview).toContain('Attunement · Equinox');
     expect(overview).toContain('Health, Attack, Defense and Recovery are unchanged. No personal Master equipped.');
   });
@@ -228,12 +229,11 @@ describe('game-specific hub layouts', () => {
     expect(hub.indexOf('class="character-control-panel"')).toBeLessThan(hub.indexOf('class="hub-rail"'));
     expect(hub).toContain(`<span data-owned-title>${characterName(starter.id)}</span>`);
     const overview = characterDetail(starter, 'overview');
-    for (const heading of ['Stats', 'Leader Skill', 'Convergent Light', 'Passive Skill', 'Personal Master / Conduits']) {
+    for (const heading of ['Stats', 'Skill stats', 'Leader Skill', 'Skills', 'Convergent Light', 'Passive Skill', 'Personal Master / Conduits']) {
       expect(overview).toContain(`>${heading}</h3>`);
     }
-    expect(overview).not.toContain('>Skills</h3>');
     expect(overview).not.toContain('Last Flare');
-    expect(overview.match(/class="hub-ability /g)).toHaveLength(7);
+    expect(overview.match(/class="hub-ability /g)).toHaveLength(8);
     for (const id of ['upgrade-0', 'upgrade-1']) {
       const detail = characterDetail(starter, id);
       expect(detail).toContain('class="character-upgrade-grid"');

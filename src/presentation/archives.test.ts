@@ -92,7 +92,7 @@ describe('unified Archives', () => {
     expect(current).toContain(radiantAttunementName(loadout));
     expect(preview).toContain('Equinox');
     expect(current).toContain(radiantFlares.ember.sparkling.name);
-    expect(current).not.toContain('Cinder Cleave');
+    expect(current).toContain('Cinder Cleave');
     expect(html).toContain('Current combat kit');
     expect(account).toEqual(before);
   });

@@ -1,13 +1,16 @@
-import { radiantAttunement, radiantBearerKits, radiantFinalFlare, radiantLeaderBonus, radiantLeaderDescription, radiantMasters, resolveRadiantStarterStats,
+import { radiantAttunement, radiantBearerKits, radiantFlarePower, radiantLeaderBonus, radiantMasters, resolveRadiantStarterStats,
+  radiantRoleSkillPower, radiantSupportSquadHeal, radiantTankTargetWeight,
   type RadiantBearerId, type RadiantLoadout, type RadiantStats } from '../content/combat-kits';
+import type { RadiantSkillSlot } from '../content/radiant-kits';
 import { adaptRadiantLoadouts } from '../game/combat-loadout';
-import { radiantChargeRules } from '../game/combat-gauge';
+import { radiantChargeRules, radiantSkillCost } from '../game/combat-gauge';
+import { radiantHealthMote, radiantLoadoutSkillStats, radiantMaximumDuration } from '../game/combat-engine';
+import { radiantFlareText, radiantLeaderSkillText, radiantSkillName, radiantSkillText } from './kit-text';
 import { getMasterConduit } from '../content/master-conduits';
 import { formatStat } from '../content/combat';
 import { convergentLightRankCap, convergentLightRankCost, convergentLightTier, displayEvolution,
   type CharacterProgress, type ConvergentLightTier, type UpgradeCost } from '../content/progression';
 import { convergentLightMaxPlan, ownedProgress, type Account } from '../game/account';
-import { radiantFlareDescription } from './combat-description';
 import { abilityIcon } from './ability-icon';
 import { assetUrl, portrait } from './portrait';
 import { currencyIcon } from './currency-icon';
@@ -35,7 +38,8 @@ export const radiantFlareTierNames: Record<ConvergentLightTier, string> = {
 };
 const tierForm: Record<ConvergentLightTier, number> = { sparkling: 1, glimmering: 4, ultimate: 6 };
 const tierRank: Record<ConvergentLightTier, number> = { sparkling: 1, glimmering: 6, ultimate: 11 };
-const percent = (value: number): string => `${Number((value * 100).toPrecision(12))}%`;
+const percent = (value: number): string => `${Number((value * 100).toFixed(2))}%`;
+const number = (value: number): string => String(Number(value.toFixed(4)));
 
 export interface RadiantCharacterLoadout { loadout: RadiantLoadout; issue: string }
 
@@ -103,8 +107,9 @@ export function radiantLeaderAmount(loadout: RadiantLoadout): number {
   return radiantLeaderBonus(loadout);
 }
 
+/** Leader text in the approved Phase 3 phrasing, scaled by form and Leader equipment (D-479). Plain text. */
 export function radiantLeaderText(loadout: RadiantLoadout): string {
-  return radiantLeaderDescription(loadout);
+  return radiantLeaderSkillText(loadout);
 }
 
 export function radiantFlareTierUnlocked(loadout: RadiantLoadout, tier: ConvergentLightTier): boolean {
@@ -117,14 +122,45 @@ function flareCost(loadout: RadiantLoadout, tier: ConvergentLightTier): string {
 }
 
 export function radiantFlareArticle(loadout: RadiantLoadout, tier: ConvergentLightTier): string {
-  const offer = radiantFinalFlare({ ...loadout, convergenceRank: Math.max(loadout.convergenceRank, tierRank[tier]) }, tier);
-  const icon = abilityIcon(loadout.starter, tier === 'sparkling' ? 'skill1' : tier === 'glimmering' ? 'skill2' : 'ultimate');
   const unlocked = radiantFlareTierUnlocked(loadout, tier);
-  return `<article class="hub-ability radiant-flare info-ability${unlocked ? '' : ' is-locked'}" data-radiant-flare="${tier}" data-radiant-reference-tier="${tier}"><h4 class="ability-heading">${icon}<span>${radiantFlareTierNames[tier]} · ${escape(offer.name)}</span></h4>
+  return `<article class="hub-ability radiant-flare info-ability${unlocked ? '' : ' is-locked'}" data-radiant-flare="${tier}" data-radiant-reference-tier="${tier}"><h4 class="ability-heading">${abilityIcon(loadout.starter, 'ultimate')}<span>${radiantFlareTierNames[tier]} · ${escape(radiantSkillName(loadout.starter, 'flare'))}</span></h4>
     <p class="info-label">${unlocked ? 'Unlocked' : 'Locked'} · Rank ${tierRank[tier]}+ and Evo.${displayEvolution(loadout.starter, tierForm[tier])}.</p>
-    <p class="info-label">Target: ${offer.target === 'all-enemies' ? 'all living enemies' : offer.target === 'one-enemy' ? 'selected living enemy' : 'all living allies'}.</p>
-    <ul class="info-effects">${radiantFlareDescription(offer, radiantBearerKits[loadout.starter].element).map(line => `<li>${escape(line)}</li>`).join('')}</ul>
-    <p class="info-price">Costs ${flareCost(loadout, tier)} to activate. Rank ${loadout.convergenceRank} of 20; potency rises 1% per rank above Rank 1.</p></article>`;
+    <p data-radiant-kit-text="flare">${escape(radiantFlareText(loadout.starter, tier))}</p>
+    <p class="info-price">Costs ${flareCost(loadout, tier)}. Rank ${loadout.convergenceRank} of 20. Flare power ×${number(radiantFlarePower(loadout))} from form, rank (+1% per rank above Rank 1) and Imbues.</p></article>`;
+}
+
+/** Effective Luminosity cost of Skill 1 or Skill 2 after this loadout's Skill Efficiency (N2). */
+export function radiantSkillCostFor(loadout: RadiantLoadout, slot: RadiantSkillSlot): number {
+  return radiantSkillCost(slot, radiantLoadoutSkillStats(loadout, slot).skillEfficiency);
+}
+
+export function radiantSkillArticle(loadout: RadiantLoadout, slot: RadiantSkillSlot): string {
+  return `<article class="hub-ability radiant-skill" data-radiant-skill-slot="${slot}"><h3 class="ability-heading">${abilityIcon(loadout.starter, slot === 1 ? 'skill1' : 'skill2')}<span>${escape(radiantSkillName(loadout.starter, slot))} · Skill ${slot}</span></h3>
+    <p data-radiant-kit-text="skill${slot}">${escape(radiantSkillText(loadout.starter, slot))}</p>
+    <p class="info-price">Costs ${radiantSkillCostFor(loadout, slot)} Luminosity.</p></article>`;
+}
+
+/** D-473 O5 role trait, shown beside the Passive. */
+export function radiantRoleTrait(id: RadiantBearerId): string {
+  const role = radiantBearerKits[id].role;
+  if (role === 'Tank') return `Tank: enemies target this Element-Bearer more often (weight ${radiantTankTargetWeight} against 1 for single-target attacks); +50% Defense.`;
+  if (role === 'Attacker') return `Attacker: +${percent(radiantRoleSkillPower.Attacker)} Skill Power.`;
+  return `Support: +50% Health, +${percent(radiantRoleSkillPower.Support)} Skill Power. Each skill and Flare also heals all allies (${percent(radiantSupportSquadHeal)} of max Health; not scaled by Skill Power).`;
+}
+
+/** N4 Skill stats for this loadout: per-slot Skill Power, Efficiency and cost, plus Duration and Gauge Gain. */
+export function radiantSkillStatsPanel(loadout: RadiantLoadout): string {
+  const rows = ([1, 2, 'flare'] as const).map(slot => {
+    const stats = radiantLoadoutSkillStats(loadout, slot);
+    const label = slot === 'flare' ? 'Flare' : `Skill ${slot}`;
+    const cost = slot === 'flare' ? flareCost(loadout, convergentLightTier(loadout.convergenceRank)) : `${radiantSkillCostFor(loadout, slot)} Luminosity`;
+    return `<div data-radiant-skill-stat="${slot}"><dt>${label}</dt><dd><strong>${percent(stats.skillPower)}</strong> Skill Power · ${percent(stats.skillEfficiency)} Skill Efficiency · ${cost}</dd></div>`;
+  }).join('');
+  const shared = radiantLoadoutSkillStats(loadout, 1);
+  return `<dl class="info-stat-table radiant-skill-stats" aria-label="Skill stats">${rows}
+    <div data-radiant-skill-stat="duration"><dt>Skill Duration</dt><dd><strong>+${shared.skillDuration} turns</strong> on timed skill effects (max ${radiantMaximumDuration} turns)</dd></div>
+    <div data-radiant-skill-stat="gauge"><dt>Gauge Gain</dt><dd><strong>${percent(shared.gaugeGain)}</strong> of every Luminosity gain</dd></div></dl>
+    <p class="info-label">Skill Power scales skill and Flare damage, Burn, heals, Shields and buff and debuff strength. It does not scale Normal Attack, fills or Conduit-generated effects. Skill Efficiency discounts costs (max 50%; Flares cost at least 70).</p>`;
 }
 
 export function radiantConvergenceRankPanel(loadout: RadiantLoadout, account: Account): string {
@@ -178,20 +214,34 @@ export function radiantConvergenceRankPanel(loadout: RadiantLoadout, account: Ac
 export function radiantPassiveArticle(loadout: RadiantLoadout): string {
   const passive = radiantBearerKits[loadout.starter].passive;
   return `<article class="hub-ability radiant-passive"><h3 class="ability-heading">${abilityIcon(loadout.starter, 'passive')}<span>${escape(passive.name)} · Passive Skill</span></h3>
-    <p>${escape(passive.description)}</p></article>`;
+    <p>${escape(passive.description)}</p><p class="info-label" data-radiant-role-trait>${escape(radiantRoleTrait(loadout.starter))}</p></article>`;
 }
 
 export function radiantLeaderArticle(loadout: RadiantLoadout): string {
   const kit = radiantBearerKits[loadout.starter];
   return `<article class="hub-ability radiant-leader"><h3 class="ability-heading"><span class="radiant-leader-mark" aria-hidden="true">★</span><span>${escape(kit.leader)} · Leader Skill</span></h3>
-    <p>${radiantLeaderText(loadout)}</p></article>`;
+    <p>${escape(radiantLeaderText(loadout))}</p></article>`;
 }
 
 export function radiantBasicArticles(loadout: RadiantLoadout): string {
+  const element = radiantBearerKits[loadout.starter].element;
   return `<article class="hub-ability radiant-normal"><h3 class="ability-heading">${abilityIcon(loadout.starter, 'light')}<span>Normal Attack</span></h3>
-      <p>100% Attack damage to one enemy. Generates ${radiantChargeRules.normal} Luminosity on a damaging hit; each other living same-element ally receives 1.</p></article>
-    <article class="hub-ability radiant-defense"><h3 class="ability-heading"><img class="ability-icon" draggable="false" src="${assetUrl('abilities/universal-defense.png')}" alt="" width="48" height="48"><span>Defense</span></h3>
-      <p>Halves direct enemy damage taken until the next round (combined reduction floor: 20% damage taken).</p></article>`;
+      <p>1-hit ${escape(element)} attack on one enemy (100%). A damaging hit fills ${radiantChargeRules.normal} Luminosity; each other living ${escape(element)} ally gains ${radiantChargeRules.otherMemberPercent}% of it. Skill Power does not apply.</p></article>`;
+}
+
+/** Shared rules, written once (AGENTS tooltip rule): kit text refers to these terms. */
+export function radiantKitGlossary(): string {
+  return `<dl class="info-glossary radiant-glossary">
+    <div><dt>Turns</dt><dd>Durations count player turns. A timed effect cast this turn counts its first turn at the end of this turn's enemy phase.</dd></div>
+    <div><dt>Categories</dt><dd>Allies hold Attack Up, Defense Up, Damage Reduction, Luminosity Gain Up and Health Over Time; enemies hold Weaken, Expose and Burn. The same category does not stack: the strongest applies and the duration becomes the longer one. Different categories combine. Caps: Attack Up and Defense Up +100%, Damage Reduction 75%, Luminosity Gain Up +100%, Health Over Time 30% of max Health per turn, Weaken 50%, Expose +80%.</dd></div>
+    <div><dt>Burn</dt><dd>Deals damage based on the caster's Attack at the end of each enemy phase, ignoring Defense. No cap.</dd></div>
+    <div><dt>Weaken</dt><dd>Lowers the holder's Attack.</dd></div>
+    <div><dt>Expose</dt><dd>Raises the direct damage the enemy takes.</dd></div>
+    <div><dt>Shield</dt><dd>Absorbs damage until broken. Shields from skills and Flares stack. Kit heals and Shields are a percentage of the recipient's max Health.</dd></div>
+    <div><dt>Targets</dt><dd>One-enemy skills hit the current target. Ally skills reach all allies, the other allies, the caster, or the ally with the lowest Health.</dd></div>
+    <div><dt>Luminosity</dt><dd>Normal Attack hits fill ${radiantChargeRules.normal}; each enemy hit taken fills ${radiantChargeRules.incomingAttack}. Skill 1 costs 25, Skill 2 costs 40, a Flare costs 100 (Sparkling) or 200 (Glimmering and Ultimate). Skills and Flares fill none.</dd></div>
+    <div><dt>Health mote</dt><dd>Each defeated enemy heals the Element-Bearer who defeated it (${percent(radiantHealthMote)} of max Health; the Burn's caster for a Burn defeat). Motes never revive.</dd></div>
+  </dl>`;
 }
 
 export function radiantMasterLine(loadout: RadiantLoadout): string {
@@ -207,6 +257,7 @@ export function radiantAttunementSection(loadout: RadiantLoadout): string {
 export function radiantKitSections(loadout: RadiantLoadout): string {
   return informationSheet([
     { title: 'Leader Skill', kind: 'leader', content: radiantLeaderArticle(loadout) },
+    { title: 'Skills', kind: 'skills', content: `${radiantSkillArticle(loadout, 1)}${radiantSkillArticle(loadout, 2)}` },
     { title: 'Convergent Light', kind: 'flares', content: `<div class="info-flare-grid">${(['sparkling', 'glimmering', 'ultimate'] as const).map(tier => radiantFlareArticle(loadout, tier)).join('')}</div>` },
     { title: 'Passive Skill', kind: 'passive', content: radiantPassiveArticle(loadout) },
   ]);
@@ -221,15 +272,13 @@ export function radiantPortraitStats(loadout: RadiantLoadout): string {
 }
 
 export function radiantCompactOverview(loadout: RadiantLoadout): string {
-  const kit = radiantBearerKits[loadout.starter];
   const activeTier = convergentLightTier(loadout.convergenceRank);
-  const offer = radiantFinalFlare(loadout, activeTier);
   return `<div class="ref-compact-kit">
-    ${radiantLeaderArticle(loadout)}${radiantPassiveArticle(loadout)}
-    <section class="ref-flare-summary"><header class="ref-flare-heading"><h3>${radiantFlareTierNames[activeTier]} · Rank ${loadout.convergenceRank}</h3>
+    ${radiantLeaderArticle(loadout)}${radiantSkillArticle(loadout, 1)}${radiantSkillArticle(loadout, 2)}${radiantPassiveArticle(loadout)}
+    <section class="ref-flare-summary"><header class="ref-flare-heading"><h3>${radiantFlareTierNames[activeTier]} · ${escape(radiantSkillName(loadout.starter, 'flare'))} · Rank ${loadout.convergenceRank}</h3>
       ${information(`unit-reference-${loadout.id}`, characterName(loadout.starter, loadout.form),
         radiantCharacterSheet(loadout, false), 'Full character information', 'Details')}</header>
-      <ul>${radiantFlareDescription(offer, kit.element).map(line => `<li>${escape(line)}</li>`).join('')}</ul>
+      <p data-radiant-kit-text="flare">${escape(radiantFlareText(loadout.starter, activeTier))}</p>
       <div class="ref-flare-actions" aria-label="Convergent Light rank bands">${(['sparkling', 'glimmering', 'ultimate'] as const).map(tier =>
         information(`unit-flare-${loadout.id}-${tier}`, radiantFlareTierNames[tier], radiantFlareArticle(loadout, tier),
           radiantFlareTierNames[tier], tier === 'sparkling' ? 'Sparkling' : tier === 'glimmering' ? 'Glimmering' : 'Ultimate')).join('')}</div>
@@ -242,7 +291,8 @@ export function radiantCharacterSheet(loadout: RadiantLoadout, includeProfile = 
   const gear = loadout.gear ?? [];
   return `<div class="info-character" data-info-element="${starter.elementId}">${includeProfile ? informationSheet([{ title: characterName(loadout.starter, loadout.form), kind: 'profile', content:
     `<div class="info-core"><div class="info-profile-art">${portrait(starter, loadout.form)}</div><div class="info-profile">${elementLabel(starter.elementId)}<p class="info-label">${starter.stars} stars · ${characterRarity(starter.id, loadout.form)} · ${radiantAttunementName(loadout)}</p><p class="info-label">Level ${loadout.level} / ${characterLevelCap(loadout.form, starter.id)} · Evolution ${displayEvolution(starter.id, loadout.form)} · ${escape(squadState)}</p></div></div>` }]) : ''}
-    ${informationSheet([{ title: 'Stats', kind: 'stats', content: radiantStatsPanel(loadout) }])}
+    ${informationSheet([{ title: 'Stats', kind: 'stats', content: radiantStatsPanel(loadout) },
+      { title: 'Skill stats', kind: 'skill-stats', content: radiantSkillStatsPanel(loadout) }])}
     ${radiantKitSections(loadout)}
     ${informationSheet([{ title: 'Personal Master / Conduits', kind: 'equipment', content:
       `${radiantAttunementSection(loadout)}
@@ -250,7 +300,7 @@ export function radiantCharacterSheet(loadout: RadiantLoadout, includeProfile = 
       ${gear.some(Boolean) ? `<ul class="info-effects">${gear.flatMap(entry => entry ? [`<li><strong>${escape(getConduit(entry.id).name)} +${entry.rank}</strong><ul>${radiantConduitPrimitives(entry).map(rule => `<li>${escape(radiantConduitDescription(rule))}</li>`).join('')}</ul></li>`] : []).join('')}</ul>` : ''}
     ` }])}
     <details class="info-lore"><summary>Lore</summary><p>${bracketReferences(escape(`${starter.description} ${starter.lore.story}`))}</p></details>
-    <details class="info-lore"><summary>Shared combat rules</summary>${radiantBasicArticles(loadout)}<p>Each surviving direct incoming hit, including Shield absorption, grants its recipient 10 Luminosity. Convergent Light rank is saved per Element-Bearer: ranks 1–5 are Sparkling, 6–10 are Glimmering (Evo.4+), and 11–20 are Ultimate (Evo.6+). Each rank requires five character levels; potency increases by 1% per rank above Rank 1.</p></details></div>`;
+    <details class="info-lore"><summary>Shared combat rules</summary>${radiantBasicArticles(loadout)}${radiantKitGlossary()}<p>Convergent Light rank is saved per Element-Bearer: ranks 1–5 are Sparkling, 6–10 are Glimmering (Evo.4+), and 11–20 are Ultimate (Evo.6+). Each rank requires five character levels; potency increases by 1% per rank above Rank 1.</p></details></div>`;
 }
 
 export function radiantUnavailable(): string {

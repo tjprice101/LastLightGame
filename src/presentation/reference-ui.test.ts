@@ -234,8 +234,7 @@ describe('replacement reference screen structures', () => {
     expect(html).toContain('ref-character-header');
     expect(html).toContain('data-reference-level>12 / 30');
     expect(html.match(/class="is-filled"/g)).toHaveLength(1);
-    for (const heading of ['Stats', 'Leader Skill', 'Convergent Light', 'Passive Skill', 'Personal Master / Conduits']) expect(html).toContain(`>${heading}</h3>`);
-    expect(html).not.toContain('>Skills</h3>');
+    for (const heading of ['Stats', 'Skill stats', 'Leader Skill', 'Skills', 'Convergent Light', 'Passive Skill', 'Personal Master / Conduits']) expect(html).toContain(`>${heading}</h3>`);
     expect(html).toContain('Attunement · Equinox');
     for (const tab of ['overview', 'upgrade-1', 'upgrade-0', 'equipment']) expect(html).toContain(`data-character-tab="${tab}"`);
     expect(html).not.toContain('data-information="bearer-lore-');

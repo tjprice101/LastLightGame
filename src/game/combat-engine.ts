@@ -280,17 +280,21 @@ export interface RadiantSkillStats {
   /** N1: multiplies every Luminosity gain. */
   gaugeGain: number;
 }
-/** Skill stats for one bearer's Skill 1, Skill 2 or Flare (D-473 N4, O3, O5). */
-export function radiantSkillStats(state: RadiantCombatState, id: string, slot: RadiantSkillSlot | 'flare'): RadiantSkillStats {
-  const member = bearer(state, id);
-  const ascended = slot === 1 ? member.loadout.ascension.skill1 === true : slot === 2 && member.loadout.ascension.skill2 === true;
+/** Loadout Skill stats outside combat (role, slot Imbue; Gauge Gain before Luminosity Gain Up). Shared with the UI. */
+export function radiantLoadoutSkillStats(loadout: RadiantLoadout, slot: RadiantSkillSlot | 'flare'): RadiantSkillStats {
+  const ascended = slot === 1 ? loadout.ascension.skill1 === true : slot === 2 && loadout.ascension.skill2 === true;
   return {
-    skillPower: 1 + radiantRoleSkillPower[radiantStarterKits[member.loadout.starter].role] +
+    skillPower: 1 + radiantRoleSkillPower[radiantStarterKits[loadout.starter].role] +
       (ascended ? radiantSkillAscension.skillPower : 0),
     skillDuration: 0,
     skillEfficiency: ascended ? radiantSkillAscension.efficiency : 0,
-    gaugeGain: gaugeGain(member),
+    gaugeGain: 1,
   };
+}
+/** Skill stats for one bearer's Skill 1, Skill 2 or Flare (D-473 N4, O3, O5). */
+export function radiantSkillStats(state: RadiantCombatState, id: string, slot: RadiantSkillSlot | 'flare'): RadiantSkillStats {
+  const member = bearer(state, id);
+  return { ...radiantLoadoutSkillStats(member.loadout, slot), gaugeGain: gaugeGain(member) };
 }
 function gaugeGain(member: RadiantBearer): number {
   return 1 + category(member.buffs, 'gain-up');

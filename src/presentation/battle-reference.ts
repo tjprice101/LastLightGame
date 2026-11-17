@@ -1,17 +1,17 @@
-import { radiantLeaderDescription, radiantStarterKits, type RadiantLoadout } from '../content/combat-kits';
+import { radiantStarterKits, type RadiantLoadout } from '../content/combat-kits';
 import { characterName } from '../content/character-art';
 import type { RadiantCombatState } from '../game/combat-engine';
-import { radiantCharacterSheet } from './character-combat';
+import { radiantCharacterSheet, radiantLeaderText } from './character-combat';
 import { escapeDialogText as escape } from './game-dialog';
 
 export { radiantConduitDescription } from '../content/conduit-effect-text';
-export { radiantFlareDescription, radiantFlareNeedsTarget, radiantPassiveEnhancements } from './combat-description';
+export { radiantFlareNeedsTarget, radiantPassiveEnhancements } from './combat-description';
 
 const percent = (value: number): string => `${Number((value * 100).toPrecision(12))}%`;
 
 export function radiantLeaderReference(state: RadiantCombatState, living = state.bearers[0].hp > 0): string {
   const leader = state.bearers[0], loadout = leader.loadout, kit = radiantStarterKits[loadout.starter];
-  return `<strong>${escape(kit.leader)}</strong><p>${escape(radiantLeaderDescription(loadout))}</p>
+  return `<strong>${escape(kit.leader)}</strong><p>${escape(radiantLeaderText(loadout))}</p>
     <p>${escape(characterName(loadout.starter, loadout.form))} is the frozen first member.
     ${living ? 'Active while this leader lives.' : 'Inactive: leader defeated.'}
     No replacement leader is promoted.</p>`;
@@ -24,12 +24,12 @@ export function radiantBattleReference(loadout: RadiantLoadout, baseCost: number
     <p>Stat ascension ${loadout.ascension.stats ? '×1.5 active' : 'inactive'}; weapon rank ${loadout.weaponRank}
     (${percent(.02 * loadout.weaponRank)} grown Attack). Frozen four-stat values include equipped stat Conduits;
     living squad passives, Weaken and Attack boosts apply dynamically in combat.</p>
-    <p>Displayed Convergent Light coefficients include evolution, rank, saved Imbues and personal Master enhancements.
-    Defense, elemental matchups, the living leader and equipped Conduits determine actual attack damage.</p>
+    <p>Kit text shows base values. In combat, Skill Power scales skills and Flares, and Flare power (form, rank, Imbues and
+    personal Master enhancements) scales Flares. Defense, elemental matchups, the living leader and equipped Conduits determine actual damage.</p>
     <p>Ability-applied Burn snapshots elemental matchups and applicable Burn bonuses when applied; later leader defeats do not change that snapshot.</p>
     <p>    Effects use this frozen run's gear/ranks, not current menu equipment. Gear-generated output never triggers native or further gear effects.
     Luminosity is personal to each Element-Bearer; there is no shared meter.
-    Independent timed sources are retained; strongest Weaken/Exposure/Attack boost/reduction applies, rather than summing those statuses.
+    Each unit holds one entry per category: the strongest applies and the duration becomes the longer one.
     Shields stack in creation order until broken. Healing and Shields round at the combat packet boundary.</p>
     </details></section>`;
 }

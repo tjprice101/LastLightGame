@@ -139,7 +139,7 @@ export function referenceHome(starter: Starter, account: Account | null, online 
         <span class="home-feature-cta">Explore <span aria-hidden="true">&rarr;</span></span></span>
     </button>
   </article>`;
-  const leaderSkill = leader ? `<p class="home-leader-skill"><strong>Leader Skill · ${escape(radiantBearerKits[leader.starter].leader)}</strong> ${radiantLeaderText(leader)}</p>` : '';
+  const leaderSkill = leader ? `<p class="home-leader-skill"><strong>Leader Skill · ${escape(radiantBearerKits[leader.starter].leader)}</strong> ${escape(radiantLeaderText(leader))}</p>` : '';
 
   return `<div class="ref-screen ref-home home-dashboard">
     <section class="home-squad-panel" aria-labelledby="home-squad-heading">
