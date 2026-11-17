@@ -33,6 +33,10 @@ device.
   - the speed button.
 - `vite build`: passed (existing chunk advisory).
 - `node tools/bundle_server_game.mjs`: output unchanged, so no deploy.
+- **Released:** `103bcbfa` pushed to `main` and `overhaul/radiant-foundation`;
+  Deploy Last Light run 44013368305 succeeded; the hosted `version.json` reports
+  `103bcbfa` and the hosted battle chunk contains the Phase 2 code. No Supabase
+  deploy (authority unchanged).
 - Headless Chrome, development battle preview (in-memory authority) at
   1280x720 and 390x844:
   - three-tap flurry over time: two simultaneous hits, sparks, Weakness
