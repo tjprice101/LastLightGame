@@ -1,5 +1,5 @@
 import { radiantBearerKits, radiantTankTargetWeight, type RadiantLoadout } from '../content/combat-kits';
-import type { RadiantSkillDef, RadiantSkillSlot } from '../content/radiant-kits';
+import { radiantSkillAcceptsTarget, type RadiantSkillDef, type RadiantSkillSlot } from '../content/radiant-kits';
 import { scheduledEnemySkill } from '../content/enemy-skills';
 import { applyRadiantCombatAction, createRadiantCombat, radiantSkillStats, type RadiantBearer, type RadiantCombatState,
   type RadiantCombatEvent, type RadiantCombatAction } from './combat-engine';
@@ -38,7 +38,7 @@ export function chooseRadiantPressureAction(
     effect.kind === 'heal' ? wounded : effect.kind === 'shield' ? unshielded :
       ['attack-up', 'defense-up', 'reduction', 'gain-up', 'fill', 'signature'].includes(effect.kind));
   const allowed = (def: RadiantSkillDef) => (policy !== 'support-only' || supportive(def)) && useful(def);
-  const targeted = (def: RadiantSkillDef) => def.target === 'one-enemy' ? { targetId: target.id } : {};
+  const targeted = (def: RadiantSkillDef) => radiantSkillAcceptsTarget(def) ? { targetId: target.id } : {};
   if (readyFlare(state.gauge, id) && allowed(kit.flare)) return { type: 'flare', bearerId: id, ...targeted(kit.flare) };
   const options = ([2, 1] as const).filter(slot => readySkill(state.gauge, id, slot,
     radiantSkillStats(state, id, slot).skillEfficiency) && allowed(slotDef(kit, slot)));

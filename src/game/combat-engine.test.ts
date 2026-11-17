@@ -725,7 +725,8 @@ describe('Passives, Masters and Leaders under the Phase 3 kits', () => {
     return { before: state, result: applyRadiantCombatAction(state, { type: 'normal', bearerId: 'owner', targetId: 'enemy' }) };
   }
 
-  it.each(releasedRadiantIds)('%s has no squad-stat Passive: a Normal changes no stats and grants the N1 15 Luminosity', id => {
+  // Nerithe's Uncharted Current adds 5 Luminosity to her Normal hit (covered in combat-signatures-batch3.test.ts).
+  it.each(releasedRadiantIds.filter(id => id !== 'nerithe'))('%s has no squad-stat Passive: a Normal changes no stats and grants the N1 15 Luminosity', id => {
     const { before, result } = exercisePassive(id);
     expect(effectiveRadiantStats(before, 'owner').attack).toBe(before.bearers[0].stats.attack);
     expect(result.events.filter(event => 'source' in event && event.source.kind === 'passive')).toEqual([]);
@@ -776,12 +777,12 @@ describe('Passives, Masters and Leaders under the Phase 3 kits', () => {
     }
   });
 
-  it('uses the common 15-point Normal Luminosity rule for Nerithe until her Passive lands', () => {
+  it('adds Uncharted Current\'s 5 Luminosity to the common 15-point Normal hit for Nerithe', () => {
     const state = createRadiantCombat([
       loadout('nerithe', { id: 'nerithe', masterId: 'master-nerithe-1' }),
     ], [{ elementId: null, id: 'enemy', stats: { hp: 1000, attack: 10, defense: 10, recovery: 0 }, currencyBudget: 100 }], 0);
     const result = applyRadiantCombatAction(state, { type: 'normal', bearerId: 'nerithe', targetId: 'enemy' });
-    expect(result.state.gauge.members[0].charge).toBe(15);
+    expect(result.state.gauge.members[0].charge).toBe(20);
     expect(state.gauge.members[0].charge).toBe(0);
   });
 

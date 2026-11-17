@@ -236,10 +236,10 @@ describe('Razor: Wounds', () => {
 });
 
 describe('Later batches stay inert', () => {
-  it('gives no signature state or conditional bonus to bearers outside batches 1-2', () => {
-    const state = battle(['nerithe', 'velmira']);
+  it('gives no signature state or conditional bonus to bearers outside batches 1-3', () => {
+    const state = battle(['maerion', 'vespera']);
     expect(state.bearers.map(entry => entry.signature)).toEqual([null, null]);
-    const result = act(charge(state, 'nerithe', 25), { type: 'skill', bearerId: 'nerithe', slot: 1, targetId: 'enemy-0' });
+    const result = act(charge(state, 'maerion', 25), { type: 'skill', bearerId: 'maerion', slot: 1, targetId: 'enemy-0' });
     expect(of(result.events, 'signature')).toEqual([]);
   });
   it('rejects a Shuriken ledger that does not hold exactly 2', () => {

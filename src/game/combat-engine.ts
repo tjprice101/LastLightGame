@@ -4,7 +4,9 @@ import {
   validateRadiantLoadout, validateRadiantStats,
   type RadiantLoadout, type RadiantStats,
 } from '../content/combat-kits';
-import { radiantFlareTierScale, type RadiantKitEffect, type RadiantSkillDef, type RadiantSkillSlot } from '../content/radiant-kits';
+import {
+  radiantFlareTierScale, radiantSkillAcceptsTarget, type RadiantKitEffect, type RadiantSkillDef, type RadiantSkillSlot,
+} from '../content/radiant-kits';
 import type { RadiantBearerId } from '../content/combat-kits';
 import {
   addRadiantPersonalCharge, grantRadiantAction, grantRadiantDrop, grantRadiantIncomingAttack, grantRadiantRound,
@@ -65,7 +67,19 @@ export type RadiantOwnSignature =
   /** Ilvaris: Fate-seared Mark stacks (1-5) and clocks per living enemy. */
   | { kind: 'marks'; marks: { enemyId: string; stacks: number; remaining: number }[] }
   /** Kaelith: Incisions (1-3) per living enemy, kept until consumed. */
-  | { kind: 'incisions'; incisions: { enemyId: string; stacks: number }[] };
+  | { kind: 'incisions'; incisions: { enemyId: string; stacks: number }[] }
+  /** Batch 3 counters: `count` within its cap; `latch` marks a once-per-enemy-phase or once-per-turn gain already taken. */
+  | { kind: RadiantCounterKind; count: number; latch: boolean }
+  /** Caldrex: Heat, its once-per-enemy-phase latch and the Burn boost from his Flare. */
+  | { kind: 'heat'; count: number; latch: boolean; burnUp: { value: number; remaining: number } | null }
+  /** Nerithe: the one enemy holding Survey (or none) and its points. */
+  | { kind: 'survey'; targetId: string | null; count: number }
+  /** Orvella: her single Foundation, or none. */
+  | { kind: 'foundation'; foundation: RadiantFoundation | null };
+/** Batch 3 counters with no extra state. Myrthen's `season` counts Sprout 0, Bloom 1, Harvest 2. */
+export type RadiantCounterKind = 'stillness' | 'season' | 'current' | 'tension' | 'cadence' | 'crosscut';
+/** Orvella's Foundation: whole-number durability, the durability it was created with, and its clock. */
+export interface RadiantFoundation { durability: number; max: number; remaining: number }
 /** Thornia's trap on one enemy; `value` is the strike coefficient, already scaled by Skill Power and Flare tier. */
 export interface RadiantThornTrap { enemyId: string; charges: number; remaining: number; value: number }
 export interface RadiantBearer {
@@ -112,7 +126,9 @@ export interface RadiantCombatState {
 export type RadiantTimedStatus = RadiantCategory | 'weaken-removed';
 export type RadiantSignatureOp = 'seed' | 'seed-wither' | 'cover' | 'cyclone' | 'gust' | 'cyclone-release' |
   'lodge' | 'recall' | 'return' | 'wounds' | 'detonate' | 'refund' |
-  'quarry' | 'contributor' | 'trap' | 'trap-strike' | 'combo' | 'refusal' | 'mark' | 'incision';
+  'quarry' | 'contributor' | 'trap' | 'trap-strike' | 'combo' | 'refusal' | 'mark' | 'incision' |
+  'survey' | 'foundation' | 'foundation-absorb' | 'beat' | 'heat' | 'burn-up' | 'stillness' | 'season' | 'current' |
+  'tension' | 'cadence' | 'crosscut';
 export type RadiantCombatAction =
   | { type: 'normal'; bearerId: string; targetId: string }
   | { type: 'skill'; bearerId: string; slot: RadiantSkillSlot; targetId?: string }
@@ -323,18 +339,28 @@ function validateCategories(
 export const radiantSignatureBearers: ReadonlySet<RadiantBearerId> = new Set<RadiantBearerId>([
   'ember', 'tide', 'sprout', 'atmoso', 'aurora', 'bliss', 'bruno', 'disciple', 'elise', 'razor',
   'rosetta', 'thornia', 'crinso', 'ozriel', 'ilvaris', 'kaelith',
+  'nerithe', 'orvella', 'vaelor', 'caldrex', 'solenne',
 ]);
 /** Elise's Shuriken count (Stormwheel Rhythm). */
 export const radiantShurikenCount = 2;
 /** Atmoso's Cyclone holds at most this many Gusts (Gale Cadence). */
 export const radiantGustCap = 5;
-/** Signature caps for batch 2 (D-473). */
-export const radiantSignatureCaps = { combo: 5, marks: 5, incisions: 3 } as const;
-/** Passive values for batches 1 and 2 (D-473). */
+/** Signature caps for batches 2 and 3 (D-473). */
+export const radiantSignatureCaps = {
+  combo: 5, marks: 5, incisions: 3,
+  survey: 3, heat: 3, stillness: 4, season: 2, current: 3, tension: 4, cadence: 3, crosscut: 3,
+} as const;
+/** Passive values for batches 1-3 (D-473). */
 export const radiantPassiveValues = {
   emberBurn: .3, tideRefund: 8, brunoRedirect: .25, discipleFill: 5, auroraWeakenTurns: 1,
   markTaken: .1, markTurns: 2, incisionTaken: .1,
+  surveyFill: 5, foundationShare: .2, stillnessReduction: .2,
 } as const;
+/** Vaelor's Beat for a round: 0 Tune, 1 Rise, 2 Crescendo; one step per player turn, starting on Tune. */
+export function radiantBeat(round: number): 0 | 1 | 2 {
+  return ((round - 1) % 3) as 0 | 1 | 2;
+}
+const counterKinds: readonly RadiantCounterKind[] = ['stillness', 'season', 'current', 'tension', 'cadence', 'crosscut'];
 function startingSignature(starter: RadiantBearerId): RadiantOwnSignature | null {
   if (!radiantSignatureBearers.has(starter)) return null;
   if (starter === 'atmoso') return { kind: 'cyclone', gusts: 0, cyclone: null };
@@ -346,6 +372,10 @@ function startingSignature(starter: RadiantBearerId): RadiantOwnSignature | null
   if (starter === 'ozriel') return { kind: 'refusal', spent: [] };
   if (starter === 'ilvaris') return { kind: 'marks', marks: [] };
   if (starter === 'kaelith') return { kind: 'incisions', incisions: [] };
+  if (starter === 'nerithe') return { kind: 'survey', targetId: null, count: 0 };
+  if (starter === 'orvella') return { kind: 'foundation', foundation: null };
+  if (starter === 'caldrex') return { kind: 'heat', count: 0, latch: false, burnUp: null };
+  if (starter === 'solenne') return { kind: 'stillness', count: 0, latch: false };
   return null;
 }
 function validateSignatures(state: RadiantCombatState, member: RadiantBearer): void {
@@ -388,7 +418,50 @@ function validateSignatures(state: RadiantCombatState, member: RadiantBearer): v
   } else if (own?.kind === 'wounds') {
     safe(own.wounds, 'Wounds');
     if (Object.keys(own).length !== 2) throw new Error('Invalid radiant Wounds.');
-  } else if (own) validateEnemyLedger(state, member, own);
+  } else if (own && !validateCounters(state, own)) validateEnemyLedger(state, member, own);
+}
+/** Batch 3 state: counters within their caps, Survey on one living enemy, a bounded Foundation. */
+function validateCounters(state: RadiantCombatState, own: RadiantOwnSignature): boolean {
+  const capped = (value: number, cap: number, name: string) => {
+    safe(value, name);
+    if (value > cap) throw new Error(`Invalid radiant ${name}.`);
+  };
+  const clock = (value: number, name: string) => {
+    safe(value, name, 1);
+    if (value > radiantMaximumDuration) throw new Error('Radiant effect exceeds its maximum duration.');
+  };
+  if (own.kind === 'survey') {
+    if (Object.keys(own).length !== 3 || (own.targetId === null) !== (own.count === 0)) throw new Error('Invalid radiant Survey.');
+    capped(own.count, radiantSignatureCaps.survey, 'Survey');
+    if (own.targetId !== null && (typeof own.targetId !== 'string' || enemy(state, own.targetId).hp === 0))
+      throw new Error('Invalid radiant Survey.');
+    return true;
+  }
+  if (own.kind === 'foundation') {
+    if (Object.keys(own).length !== 2) throw new Error('Invalid radiant Foundation.');
+    const foundation = own.foundation;
+    if (foundation === null) return true;
+    if (!foundation || typeof foundation !== 'object' || Object.keys(foundation).length !== 3) throw new Error('Invalid radiant Foundation.');
+    safe(foundation.durability, 'Foundation durability', 1);
+    safe(foundation.max, 'Foundation durability', 1);
+    if (foundation.durability > foundation.max) throw new Error('Invalid radiant Foundation durability.');
+    clock(foundation.remaining, 'Foundation clock');
+    return true;
+  }
+  if (own.kind === 'heat' || counterKinds.includes(own.kind as RadiantCounterKind)) {
+    const counter = own as Extract<RadiantOwnSignature, { latch: boolean }>;
+    if (Object.keys(counter).length !== (counter.kind === 'heat' ? 4 : 3) || typeof counter.latch !== 'boolean')
+      throw new Error(`Invalid radiant ${counter.kind}.`);
+    capped(counter.count, radiantSignatureCaps[counter.kind], counter.kind);
+    if (counter.kind === 'heat' && counter.burnUp !== null) {
+      if (!counter.burnUp || typeof counter.burnUp !== 'object' || Object.keys(counter.burnUp).length !== 2)
+        throw new Error('Invalid radiant Burn boost.');
+      finite(counter.burnUp.value, 'Burn boost', Number.MIN_VALUE);
+      clock(counter.burnUp.remaining, 'Burn boost clock');
+    }
+    return true;
+  }
+  return false;
 }
 /** Batch 2 ledgers: every enemy reference is a distinct living enemy; counts and clocks stay within their caps. */
 function validateEnemyLedger(state: RadiantCombatState, member: RadiantBearer, own: RadiantOwnSignature): void {
@@ -642,6 +715,7 @@ function packet(
   if (target.hp === 0) {
     events.push({ type: 'defeated', targetId });
     if ('currency' in target) { healthMote(state, events, target, source); releaseEnemySignatures(state, events, targetId); }
+    else if (target.signature?.kind === 'foundation') target.signature.foundation = null;
   }
   sync(state);
   return { healthLoss, absorbed, shields };
@@ -746,6 +820,10 @@ function condition(state: RadiantCombatState, actor: RadiantBearer, when: string
     case 'after-edge': return actor.signature?.kind === 'combo' && actor.signature.last === 1;
     case 'after-rupture': return actor.signature?.kind === 'combo' && actor.signature.last === 2;
     case 'combo-3': return actor.signature?.kind === 'combo' && actor.signature.combo >= 3;
+    case 'no-foundation': return actor.signature?.kind === 'foundation' && actor.signature.foundation === null;
+    case 'tune': return radiantBeat(state.round) === 0;
+    case 'rise': return radiantBeat(state.round) === 1;
+    case 'crescendo': return radiantBeat(state.round) === 2;
     default: return false;
   }
 }
@@ -778,6 +856,7 @@ function releaseEnemySignatures(state: RadiantCombatState, events: RadiantCombat
     else if (own?.kind === 'thorns') own.traps = own.traps.filter(trap => trap.enemyId !== enemyId);
     else if (own?.kind === 'marks') own.marks = own.marks.filter(mark => mark.enemyId !== enemyId);
     else if (own?.kind === 'incisions') own.incisions = own.incisions.filter(entry => entry.enemyId !== enemyId);
+    else if (own?.kind === 'survey' && own.targetId === enemyId) { own.targetId = null; own.count = 0; }
   }
 }
 /** The living Ozriel whose Refusal still covers `target` this encounter. */
@@ -804,7 +883,7 @@ function signatureStacks(actor: RadiantBearer, primary: RadiantEnemy | undefined
   if (own?.kind === 'quarry') return own.contributors.length;
   if (own?.kind === 'combo') return own.combo;
   if (own?.kind === 'incisions') return own.incisions.find(entry => entry.enemyId === primary?.id)?.stacks ?? 0;
-  return 0;
+  return counterOf(own)?.count ?? 0;
 }
 /** Spend one Thorn Trap charge; an empty trap is removed. */
 function spendTrap(events: RadiantCombatEvent[], owner: RadiantBearer, trap: RadiantThornTrap): void {
@@ -856,6 +935,77 @@ function releaseCyclone(
   events.push({ type: 'signature', bearerId: actor.loadout.id, op: 'cyclone-release', amount: 0 });
   if (actor.hp === 0) return;
   for (const target of state.enemies.filter(member => member.hp > 0)) strike(state, events, actor, target, source, coefficient);
+}
+/** A batch 3 counter signature (Heat, Stillness, Season, Current, Tension, Cadence, Crosscut), if any. */
+function counterOf(own: RadiantOwnSignature | null): Extract<RadiantOwnSignature, { latch: boolean }> | undefined {
+  return own && (own.kind === 'heat' || counterKinds.includes(own.kind as RadiantCounterKind))
+    ? own as Extract<RadiantOwnSignature, { latch: boolean }> : undefined;
+}
+/** Pre-damage signature modifiers: Survey that Nerithe's skill will spend ignores part of its enemy's Defense. */
+function signatureSurge(
+  actor: RadiantBearer, clauses: readonly Extract<RadiantKitEffect, { kind: 'signature' }>[], primary: RadiantEnemy | undefined,
+): { ignore: number; bonus: number } {
+  const own = actor.signature;
+  let ignore = 0;
+  if (own?.kind === 'survey' && own.count > 0 && primary && own.targetId === primary.id)
+    for (const clause of clauses) {
+      if (clause.op === 'spend-survey') ignore += clause.value ?? 0;
+      else if (clause.op === 'spend-all-survey') ignore += (clause.value ?? 0) * own.count;
+    }
+  return { ignore, bonus: 0 };
+}
+/** Load-Bearing Will: a living Orvella's Foundation absorbs 20% of each direct enemy hit on an ally (Orvella included),
+ * before Cover and Shields, and loses that much durability. Returns the absorbed amount. */
+function foundationAbsorb(state: RadiantCombatState, events: RadiantCombatEvent[], target: RadiantBearer, amount: number): number {
+  const orvella = state.bearers.find(member => member.hp > 0 && member.signature?.kind === 'foundation' &&
+    member.signature.foundation !== null);
+  const own = orvella?.signature;
+  if (!orvella || own?.kind !== 'foundation' || !own.foundation) return 0;
+  // Math.round(20% of a whole hit) is always less than the hit, so at least 1 damage passes on.
+  const absorbed = Math.min(own.foundation.durability, Math.round(amount * radiantPassiveValues.foundationShare));
+  if (absorbed <= 0) return 0;
+  own.foundation.durability -= absorbed;
+  events.push({ type: 'signature', bearerId: orvella.loadout.id, op: 'foundation-absorb', holderId: target.loadout.id,
+    amount: own.foundation.durability });
+  if (own.foundation.durability === 0) own.foundation = null;
+  return absorbed;
+}
+/** Held Stillness: each enemy hit on Solenne spends 1 Stillness to reduce that hit by 20% before Shields. */
+function holdStillness(events: RadiantCombatEvent[], target: RadiantBearer, amount: number): number {
+  const own = target.signature;
+  if (own?.kind !== 'stillness' || own.count === 0) return amount;
+  own.count--;
+  events.push({ type: 'signature', bearerId: target.loadout.id, op: 'stillness', amount: own.count });
+  return amount - Math.round(amount * radiantPassiveValues.stillnessReduction);
+}
+/** Banked Heat / Tension Held: +1 the first time each enemy phase an enemy hit damages the holder's Health or Shield. */
+function hitGain(events: RadiantCombatEvent[], holder: RadiantBearer): void {
+  const own = holder.signature;
+  if ((own?.kind !== 'heat' && own?.kind !== 'tension') || own.latch) return;
+  own.latch = true;
+  own.count = Math.min(radiantSignatureCaps[own.kind], own.count + 1);
+  events.push({ type: 'signature', bearerId: holder.loadout.id, op: own.kind, amount: own.count });
+}
+/** Nothing Beyond These Gates: active Burn boosts add to Burn ticks from allies. */
+function burnBoost(state: RadiantCombatState, source: RadiantSource): number {
+  if (source.kind === 'enemy') return 0;
+  return state.bearers.reduce((sum, member) =>
+    sum + (member.signature?.kind === 'heat' ? member.signature.burnUp?.value ?? 0 : 0), 0);
+}
+/** Normal Attack Passives that need a landed hit: Nerithe's Uncharted Current. */
+function normalPassives(
+  state: RadiantCombatState, events: RadiantCombatEvent[], actor: RadiantBearer, targetId: string, hits: number,
+): void {
+  const own = actor.signature, id = actor.loadout.id;
+  if (hits === 0) return;
+  if (own?.kind === 'survey') {
+    addPassiveCharge(state, events, id, rounded(radiantPassiveValues.surveyFill * gaugeGain(actor)));
+    if (enemy(state, targetId).hp > 0) {
+      own.count = own.targetId === targetId ? Math.min(radiantSignatureCaps.survey, own.count + 1) : 1;
+      own.targetId = targetId;
+      events.push({ type: 'signature', bearerId: id, op: 'survey', holderId: targetId, amount: own.count });
+    }
+  }
 }
 /** Signature clauses of one skill or Flare, resolved right after its damage (Step 2b batch 1). */
 function signatureClauses(
@@ -971,12 +1121,78 @@ function signatureClauses(
         strike(state, events, actor, primary, source, value * input.damageScale * input.skill.skillPower);
         break;
       }
-      case 'spend':
-        // Blossoming Cataclysm spends all Combo.
-        if (own?.kind !== 'combo' || own.combo === 0) break;
-        own.combo = 0;
-        events.push({ type: 'signature', bearerId: id, op: 'combo', amount: 0 });
+      case 'spend': {
+        // Blossoming Cataclysm spends all Combo; batch 3 skills spend all of their counter after `perStack` read it.
+        if (own?.kind === 'combo' && own.combo > 0) {
+          own.combo = 0;
+          events.push({ type: 'signature', bearerId: id, op: 'combo', amount: 0 });
+        }
+        const counter = counterOf(own);
+        if (!counter || counter.count === 0) break;
+        counter.count = 0;
+        events.push({ type: 'signature', bearerId: id, op: counter.kind, amount: 0 });
         break;
+      }
+      case 'gain': {
+        // Circle of Repose: Solenne gains Stillness.
+        const counter = counterOf(own);
+        if (!counter) break;
+        counter.count = Math.min(radiantSignatureCaps[counter.kind], counter.count + value);
+        events.push({ type: 'signature', bearerId: id, op: counter.kind, amount: counter.count });
+        break;
+      }
+      case 'spend-survey':
+      case 'spend-all-survey':
+        // Meridian Break spends 1 Survey, Ocean Beyond the Map all of it; their Defense ignore applied before the damage.
+        if (own?.kind !== 'survey' || own.count === 0 || !primary || own.targetId !== primary.id) break;
+        own.count = clause.op === 'spend-survey' ? own.count - 1 : 0;
+        if (own.count === 0) own.targetId = null;
+        events.push({ type: 'signature', bearerId: id, op: 'survey', holderId: primary.id, amount: own.count });
+        break;
+      case 'move-survey':
+        // Fold the Sea moves all Survey to the current target.
+        if (own?.kind !== 'survey' || own.count === 0 || !primary || primary.hp === 0 || own.targetId === primary.id) break;
+        own.targetId = primary.id;
+        events.push({ type: 'signature', bearerId: id, op: 'survey', holderId: primary.id, amount: own.count });
+        break;
+      case 'foundation': {
+        // Raise the Faultline / Worldweight Citadel: a new Foundation replaces the old one at full durability.
+        if (own?.kind !== 'foundation') break;
+        const durability = rounded(value * input.effectScale * input.skill.skillPower * actor.stats.hp);
+        if (durability < 1) break;
+        own.foundation = { durability, max: durability,
+          remaining: Math.min(radiantMaximumDuration, (clause.turns ?? 1) + input.skill.skillDuration) };
+        events.push({ type: 'signature', bearerId: id, op: 'foundation', amount: durability });
+        break;
+      }
+      case 'repair-foundation': {
+        // Keystone Reversal repairs the Foundation, up to the durability it was created with.
+        if (own?.kind !== 'foundation' || !own.foundation) break;
+        const foundation = own.foundation;
+        foundation.durability = Math.min(foundation.max,
+          foundation.durability + rounded(value * input.effectScale * input.skill.skillPower * actor.stats.hp));
+        events.push({ type: 'signature', bearerId: id, op: 'foundation', amount: foundation.durability });
+        break;
+      }
+      case 'spend-foundation': {
+        // Worldweight Citadel spends the Foundation: an exact strike on each enemy of `value` x its remaining durability.
+        if (own?.kind !== 'foundation' || !own.foundation) break;
+        const amount = rounded(own.foundation.durability * value * input.damageScale);
+        own.foundation = null;
+        events.push({ type: 'signature', bearerId: id, op: 'foundation', amount: 0 });
+        if (amount > 0) for (const target of enemyTargets.filter(entry => entry.hp > 0))
+          packet(state, events, target, source, 'direct', amount, hitCharge);
+        break;
+      }
+      case 'burn-up': {
+        // Nothing Beyond These Gates: Burn ticks from all allies deal +value; the stronger value and longer clock are kept.
+        if (own?.kind !== 'heat') break;
+        const boost = value * input.effectScale * input.skill.skillPower;
+        const remaining = Math.min(radiantMaximumDuration, (clause.turns ?? 1) + input.skill.skillDuration);
+        own.burnUp = { value: Math.max(boost, own.burnUp?.value ?? 0), remaining: Math.max(remaining, own.burnUp?.remaining ?? 0) };
+        events.push({ type: 'signature', bearerId: id, op: 'burn-up', amount: own.burnUp.value });
+        break;
+      }
       case 'fate-mark': {
         // Severed Prophecy: stacks add up to 5; a new stack refreshes the 2-turn clock.
         if (own?.kind !== 'marks') break;
@@ -1028,6 +1244,8 @@ function tickSignatures(state: RadiantCombatState, events: RadiantCombatEvent[])
     const own = member.signature;
     if (own?.kind === 'thorns') own.traps = own.traps.filter(trap => --trap.remaining > 0);
     if (own?.kind === 'marks') own.marks = own.marks.filter(mark => --mark.remaining > 0);
+    if (own?.kind === 'foundation' && own.foundation && --own.foundation.remaining <= 0) own.foundation = null;
+    if (own?.kind === 'heat' && own.burnUp && --own.burnUp.remaining <= 0) own.burnUp = null;
     if (own?.kind === 'cyclone' && own.cyclone && --own.cyclone.remaining <= 0)
       releaseCyclone(state, events, member, 1, { kind: 'skill', bearerId: member.loadout.id });
   }
@@ -1063,7 +1281,10 @@ function cast(
   if (def.target === 'one-enemy') {
     if (input.targetId === undefined) throw new Error('This skill requires a selected living enemy.');
     living(enemy(state, input.targetId).hp);
-  } else if (input.targetId !== undefined) throw new Error('This skill uses its authored target set.');
+  } else if (input.targetId !== undefined) {
+    if (!radiantSkillAcceptsTarget(def)) throw new Error('This skill uses its authored target set.');
+    living(enemy(state, input.targetId).hp);
+  }
   const id = actor.loadout.id;
   const source: RadiantSource = { kind: input.kind, bearerId: id };
   const stats = effectiveRadiantStats(state, id);
@@ -1072,15 +1293,19 @@ function cast(
   const effects = def.effects.filter(effect => effect.kind !== 'signature' && holds(effect.when));
   const clauses = signed(actor) ? def.effects.filter((effect): effect is Extract<RadiantKitEffect, { kind: 'signature' }> =>
     effect.kind === 'signature' && holds(effect.when)) : [];
-  // Rosetta's Quarry: Crimson Skyfall and Rose Beyond the Sun strike the living Quarry instead of the current target.
+  // Rosetta's Quarry and Nerithe's Survey: marked skills strike the living marked enemy instead of the current target.
   const own = actor.signature;
-  const quarry = own?.kind === 'quarry' && own.targetId !== null && clauses.some(clause => clause.op === 'quarry-target')
-    ? enemy(state, own.targetId) : undefined;
-  const primary = quarry ?? (input.targetId === undefined ? undefined : enemy(state, input.targetId));
-  const power = (def.alt && holds(def.alt.when) ? def.alt.power : def.power) +
-    (signed(actor) ? (def.perStack ?? 0) * signatureStacks(actor, primary) : 0);
-  const ignore = effects.reduce((sum, effect) => sum + (effect.kind === 'ignore-defense' ? effect.value : 0), 0);
-  const bonus = effects.reduce((sum, effect) => sum + (effect.kind === 'damage-bonus' ? effect.value : 0), 0);
+  const redirects = (op: string) => clauses.some(clause => clause.op === op);
+  const marked = own?.kind === 'quarry' && redirects('quarry-target') ? own.targetId
+    : own?.kind === 'survey' && redirects('survey-target') ? own.targetId : null;
+  const primary = marked !== null ? enemy(state, marked) : input.targetId === undefined ? undefined : enemy(state, input.targetId);
+  // Signature stacks are read once, before `spend` clauses clear them; they add to `perStack` powers and effect values.
+  const stacks = signed(actor) ? signatureStacks(actor, primary) : 0;
+  const valueOf = (effect: { value: number; perStack?: number }) => effect.value + (effect.perStack ?? 0) * stacks;
+  const power = (def.alt && holds(def.alt.when) ? def.alt.power : def.power) + (def.perStack ?? 0) * stacks;
+  const surge = signed(actor) ? signatureSurge(actor, clauses, primary) : { ignore: 0, bonus: 0 };
+  const ignore = surge.ignore + effects.reduce((sum, effect) => sum + (effect.kind === 'ignore-defense' ? effect.value : 0), 0);
+  const bonus = surge.bonus + effects.reduce((sum, effect) => sum + (effect.kind === 'damage-bonus' ? effect.value : 0), 0);
   const enemyTargets = def.target === 'all-enemies' ? state.enemies.filter(member => member.hp > 0) : primary ? [primary] : [];
   const struck = new Set<RadiantEnemy>();
   let hits = 0;
@@ -1111,7 +1336,7 @@ function cast(
   for (const effect of effects) {
     if (effect.kind !== 'burn' && effect.kind !== 'weaken' && effect.kind !== 'expose') continue;
     for (const target of enemiesFor(effect.to)) {
-      const strength = effect.value * input.effectScale * skill.skillPower;
+      const strength = valueOf(effect) * input.effectScale * skill.skillPower;
       // Unbroken Ember: Burn from all allies' skills and Flares deals +30% while Infernis lives.
       const ember = effect.kind === 'burn' && livingStarter(state, 'ember') ? 1 + radiantPassiveValues.emberBurn : 1;
       const magnitude = effect.kind === 'burn'
@@ -1128,7 +1353,7 @@ function cast(
     if (effect.kind !== 'heal' && effect.kind !== 'shield') continue;
     // N7: kit heals and Shields are a % of the recipient's max Health x the caster's Skill Power.
     for (const ally of alliesFor(effect.to)) {
-      const magnitude = effect.value * input.effectScale * skill.skillPower * ally.stats.hp;
+      const magnitude = valueOf(effect) * input.effectScale * skill.skillPower * ally.stats.hp;
       if (effect.kind === 'heal') heal(state, events, ally, source, magnitude);
       else shield(state, events, ally, source, magnitude);
     }
@@ -1139,7 +1364,7 @@ function cast(
       effect.kind !== 'gain-up' && effect.kind !== 'hot') continue;
     for (const ally of alliesFor(effect.to)) {
       applyCategory(events, ally.loadout.id, ally.buffs, effect.kind, source,
-        effect.value * input.effectScale * skill.skillPower, duration(effect.turns));
+        valueOf(effect) * input.effectScale * skill.skillPower, duration(effect.turns));
       // Shared Mindflame: Attack Up from Disciple also fills each ally it reaches.
       if (effect.kind === 'attack-up' && actor.loadout.starter === 'disciple' && signed(actor))
         addPassiveCharge(state, events, ally.loadout.id, rounded(radiantPassiveValues.discipleFill * gaugeGain(ally)));
@@ -1148,7 +1373,7 @@ function cast(
   for (const effect of effects) {
     if (effect.kind !== 'fill') continue;
     for (const ally of alliesFor(effect.to))
-      addPassiveCharge(state, events, ally.loadout.id, Math.round(effect.value * input.effectScale * gaugeGain(ally)));
+      addPassiveCharge(state, events, ally.loadout.id, Math.round(valueOf(effect) * input.effectScale * gaugeGain(ally)));
   }
   if (radiantStarterKits[actor.loadout.starter].role === 'Support')
     for (const ally of state.bearers.filter(member => member.hp > 0))
@@ -1162,7 +1387,7 @@ function skillAction(
   if (action.slot !== 1 && action.slot !== 2) throw new Error('Invalid radiant skill slot.');
   const id = actor.loadout.id;
   const def = radiantStarterKits[actor.loadout.starter].kit[action.slot === 1 ? 'skill1' : 'skill2'];
-  if (def.target !== 'one-enemy' && action.targetId !== undefined) throw new Error('This skill uses its authored target set.');
+  if (!radiantSkillAcceptsTarget(def) && action.targetId !== undefined) throw new Error('This skill uses its authored target set.');
   if (def.target === 'one-enemy' && (action.targetId === undefined || enemy(state, action.targetId).hp <= 0))
     throw new Error('This skill requires a selected living enemy.');
   const skill = radiantSkillStats(state, id, action.slot);
@@ -1185,7 +1410,7 @@ function flare(
   hitCharge: RadiantHitCharge,
 ): { tier: FlareTier; hits: number } {
   const def = radiantStarterKits[actor.loadout.starter].kit.flare;
-  if (def.target !== 'one-enemy' && targetId !== undefined) throw new Error('This signature uses its authored target set.');
+  if (!radiantSkillAcceptsTarget(def) && targetId !== undefined) throw new Error('This signature uses its authored target set.');
   if (def.target === 'one-enemy' && (targetId === undefined || enemy(state, targetId).hp <= 0))
     throw new Error('This signature requires a selected living enemy.');
   const spent = spendReadyFlare(state.gauge, actor.loadout.id);
@@ -1236,8 +1461,9 @@ function enemyAttack(
     const total = radiantDirectDamage(actor.stats.attack * (1 - weakening), stats.defense, action.coefficient,
       Math.max(.2, output * (1 - Math.min(.8, protection))) * element);
     for (let hit = 0; hit < hits && target.hp > 0; hit++) {
-      const amount = Math.floor(total / hits) + (hit === hits - 1 ? total % hits : 0);
+      let amount = Math.floor(total / hits) + (hit === hits - 1 ? total % hits : 0);
       if (!amount) continue;
+      amount -= foundationAbsorb(state, events, target, amount);
       // Bruno's Cover: the caster takes its share of this hit (Faultbound Resolve reduces that share by 25%).
       const cover = target.cover, coverer = cover ? bearer(state, cover.casterId) : undefined;
       const moved = cover && coverer && coverer.hp > 0 ? Math.round(amount * cover.share) : 0;
@@ -1250,16 +1476,18 @@ function enemyAttack(
         }
       }
       if (amount - moved <= 0) continue;
-      const part = packet(state, events, target, source, 'direct', amount - moved);
+      const taken = holdStillness(events, target, amount - moved);
+      const part = packet(state, events, target, source, 'direct', taken);
       // Every landed hit counts as damage for Thorn Traps, including a lethal hit Ozriel's Refusal turned to 0 loss.
       damaged = true;
-      refundFullBlock(state, events, target, part, amount - moved);
+      refundFullBlock(state, events, target, part, taken);
       if (target.signature?.kind === 'wounds' && part.healthLoss > 0 && target.hp > 0) {
         target.signature.wounds += part.healthLoss;
         safe(target.signature.wounds, 'Wounds');
         events.push({ type: 'signature', bearerId: target.loadout.id, op: 'wounds', amount: target.signature.wounds });
       }
       if (target.hp > 0 && part.healthLoss + part.absorbed > 0) {
+        hitGain(events, target);
         state.gauge = grantRadiantIncomingAttack(state.gauge, target.loadout.id, gaugeGain(target));
         events.push({ type: 'charge', bearerId: target.loadout.id,
           personal: state.gauge.members.find(m => m.id === target.loadout.id)!.charge,
@@ -1284,7 +1512,8 @@ function finishRound(state: RadiantCombatState, events: RadiantCombatEvent[]): v
     throw new Error('Every living enemy must act before completing its phase.');
   for (const target of state.enemies.filter(m => m.hp > 0)) {
     const burn = target.debuffs.find(effect => effect.category === 'burn');
-    if (burn) packet(state, events, target, burn.source, 'periodic', Math.max(1, rounded(burn.magnitude)));
+    if (burn) packet(state, events, target, burn.source, 'periodic',
+      Math.max(1, rounded(burn.magnitude * (1 + burnBoost(state, burn.source)))));
   }
   if (state.phase !== 'victory') tickSignatures(state, events);
   for (const target of state.enemies)
@@ -1305,7 +1534,12 @@ function finishRound(state: RadiantCombatState, events: RadiantCombatEvent[]): v
   state.phase = 'player';
   // Virtuous Bloom: contributors count for one turn.
   for (const member of state.bearers) if (member.signature?.kind === 'quarry') member.signature.contributors = [];
+  // Once-per-enemy-phase and once-per-turn gains open again.
+  for (const member of state.bearers) { const counter = counterOf(member.signature); if (counter) counter.latch = false; }
   events.push({ type: 'round', round: state.round });
+  // Standing Thunder: the Beat moves one step each player turn.
+  const vaelor = livingStarter(state, 'vaelor');
+  if (vaelor) events.push({ type: 'signature', bearerId: vaelor.loadout.id, op: 'beat', amount: radiantBeat(state.round) });
   bloomSeeds(state, events);
   for (const member of state.gauge.members.filter(m => m.living))
     events.push({ type: 'charge', bearerId: member.id, personal: member.charge,
@@ -1540,6 +1774,7 @@ export function applyRadiantCombatAction(
     const quarries = state.bearers.map(member => member.signature?.kind === 'quarry' ? member.signature.targetId : null);
     if (action.type === 'normal') {
       hits = normal(state, events, actor, action.targetId, hitCharge);
+      normalPassives(state, events, actor, action.targetId, hits);
       // Gale Cadence: another ally's Normal Attack adds 1 Gust to each living Atmoso's Cyclone.
       for (const member of state.bearers) {
         const own = member.signature;

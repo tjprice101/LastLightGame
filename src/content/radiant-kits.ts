@@ -43,6 +43,10 @@ export interface RadiantKitDef {
   flare: RadiantSkillDef;
 }
 export type RadiantSkillSlot = 1 | 2;
+/** Skills that take a selected enemy: single-enemy skills, and Fold the Sea, which moves Survey to the current target. */
+export function radiantSkillAcceptsTarget(def: RadiantSkillDef): boolean {
+  return def.target === 'one-enemy' || def.effects.some(effect => effect.kind === 'signature' && effect.op === 'move-survey');
+}
 /** N2 base Luminosity costs. */
 export const radiantSkillCosts: Record<RadiantSkillSlot, number> = { 1: 25, 2: 40 };
 
