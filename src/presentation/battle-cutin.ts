@@ -36,3 +36,34 @@ export function portraitCutin(unit: Combatant, cue: NonNullable<ReturnType<typeo
   ability.textContent = cue.name;
   return panel;
 }
+
+export interface RadiantFlareCutinInput {
+  /** Display name, "Prefix, Character name". */
+  name: string;
+  /** Saved Convergent Light offer name. */
+  flare: string;
+  tier: 'sparkling' | 'glimmering' | 'ultimate';
+  tierLabel: string;
+  /** Trusted portrait markup from `radiantAllyArt` (escaped at its source). */
+  art: string;
+  color: string;
+}
+const radiantCutinPower = { sparkling: .35, glimmering: .65, ultimate: 1 } as const;
+/** Radiant Flare cut-in: the shared portrait panel, presentation only and pointer-transparent. */
+export function radiantFlareCutin(input: RadiantFlareCutinInput): HTMLElement {
+  const panel = document.createElement('div');
+  const ultimate = input.tier === 'ultimate';
+  panel.className = `portrait-cutin cutin-ally cutin-radiant${ultimate ? ' cutin-ultimate' : ''}`;
+  panel.dataset.tier = input.tier;
+  panel.setAttribute('aria-hidden', 'true');
+  panel.style.setProperty('--element', input.color);
+  panel.style.setProperty('--cutin-power', String(radiantCutinPower[input.tier]));
+  panel.innerHTML = `<span class="cutin-streaks"></span><span class="cutin-sigil"></span>
+    <span class="cutin-crest"><span></span></span><span class="cutin-edge cutin-edge-top"></span><span class="cutin-edge cutin-edge-bottom"></span>
+    <span class="cutin-portrait">${input.art}</span>
+    <span class="cutin-copy"><small></small><strong></strong><span></span><i class="cutin-divider"></i></span>`;
+  panel.querySelector('.cutin-copy small')!.textContent = input.tierLabel.toUpperCase();
+  panel.querySelector('.cutin-copy strong')!.textContent = input.name;
+  panel.querySelector('.cutin-copy > span')!.textContent = input.flare;
+  return panel;
+}

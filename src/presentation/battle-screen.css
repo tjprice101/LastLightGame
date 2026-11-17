@@ -686,3 +686,56 @@ html[data-motion="reduced"] .radiant-result-aura { display: none; }
 .radiant-haul-state { color: var(--text-muted); font-size: 10px; }
 .radiant-haul-state:empty { display: none; }
 .radiant-actions .radiant-end-turn { min-height: 44px; border-color: var(--gild-line); }
+
+/* D-472 Battle Flurry presentation: overlapping hits, number stream, drop pour, electrified gauges.
+   Every effect is finite, pointer-transparent (inside .radiant-fx-layer) and absent under Reduce motion. */
+.radiant-number { position: absolute; display: grid; justify-items: center; gap: 0; white-space: nowrap; opacity: 0;
+  transform: translate(-50%, 0); will-change: transform, opacity; font-family: var(--ui-font); font-variant-numeric: tabular-nums;
+  color: #fff; text-shadow: 0 2px 2px #000, 0 0 8px #000c; }
+.radiant-number b { font-weight: 700; font-size: clamp(18px, 2vw, 26px); line-height: 1; letter-spacing: .01em; }
+.radiant-number small { font-weight: 700; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--gild-light); }
+.radiant-number.is-weak b { font-size: clamp(24px, 2.8vw, 34px); color: #fff8e6;
+  text-shadow: 0 2px 2px #000, 0 0 10px color-mix(in srgb, var(--gild-light) 70%, transparent), 0 0 22px color-mix(in srgb, var(--gild-mid) 50%, transparent); }
+.radiant-number.is-periodic b { font-size: clamp(15px, 1.6vw, 20px); color: #ffd2b8; }
+.radiant-number.is-hurt b { color: #ff9a9a; }
+.radiant-number.is-heal b { color: #9be7a4; }
+.radiant-number.is-shield b, .radiant-number.is-absorb b { font-size: clamp(14px, 1.5vw, 19px); color: #d6e6ff; }
+
+/* Prismatica motes flying to the Haul: prismatic white, distinct from element-coloured Gauge orbs. */
+.radiant-prism-mote { width: 12px; height: 12px; margin: -6px 0 0 -6px;
+  background: conic-gradient(from 30deg, #fff, #ffd6f2, #c9e6ff, #fff4c4, #fff);
+  box-shadow: 0 0 8px 2px #ffffffb0, 0 0 20px 5px #e6d6ff55; }
+.radiant-prism-mote::after { border-color: #ffffff70; }
+.radiant-haul-amount { transition: color 200ms ease; }
+
+/* Electrified gauge: a finite crackle whenever Luminosity is gained. */
+.radiant-charge-layers.is-surging { animation: radiant-gauge-surge calc(560ms / var(--battle-speed, 1)) steps(7, end) 1; }
+.radiant-charge-layers.is-surging::after { content: ""; position: absolute; left: -4px; right: -4px; bottom: -7px; height: 30px; pointer-events: none; z-index: 2;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='30' viewBox='0 0 96 30'%3E%3Cpath d='M0 16 L9 9 L15 19 L24 6 L31 21 L40 11 L47 17 L56 4 L62 20 L71 10 L79 22 L87 8 L96 15' fill='none' stroke='white' stroke-width='1.6' stroke-linejoin='bevel'/%3E%3C/svg%3E") repeat-x 0 50% / 96px 30px;
+  filter: drop-shadow(0 0 3px var(--accent)) drop-shadow(0 0 6px var(--accent));
+  animation: radiant-gauge-crackle calc(560ms / var(--battle-speed, 1)) steps(5, end) 1 both; }
+@keyframes radiant-gauge-surge { 0%, 100% { filter: none; } 15%, 45% { filter: brightness(1.9) saturate(1.4); } 30%, 60% { filter: brightness(1.2); } 75% { filter: brightness(1.6); } }
+@keyframes radiant-gauge-crackle { 0% { opacity: 1; background-position: 0 50%; transform: scaleY(1); }
+  40% { opacity: .9; background-position: -37px 50%; transform: scaleY(-1); }
+  70% { opacity: .8; background-position: -71px 50%; transform: scaleY(1.2); }
+  100% { opacity: 0; background-position: -96px 50%; transform: scaleY(-.8); } }
+
+/* Ready Convergent Light: a slow arc crackle on the card frame that escalates with tier. */
+.radiant-member[data-ready-tier]:not([data-ready-tier=""])::after { content: ""; position: absolute; inset: -2px; border-radius: inherit; pointer-events: none; z-index: 3;
+  border: 1px solid color-mix(in srgb, var(--accent) 70%, #fff);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 55%, transparent), inset 0 0 8px color-mix(in srgb, var(--accent) 30%, transparent);
+  animation: radiant-ready-arc 2.2s steps(1, end) infinite; }
+.radiant-member[data-ready-tier="glimmering"]::after { animation-duration: 1.6s; border-width: 2px; }
+.radiant-member[data-ready-tier="ultimate"]::after { animation-duration: 1.1s; border-width: 2px; border-color: #fff;
+  box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 80%, #fff), inset 0 0 12px color-mix(in srgb, var(--accent) 40%, transparent); }
+@keyframes radiant-ready-arc { 0%, 62%, 74%, 100% { opacity: .55; filter: none; } 64% { opacity: 1; filter: brightness(1.8); } 67% { opacity: .35; } 70% { opacity: 1; filter: brightness(1.5); } }
+html[data-motion="reduced"] .radiant-charge-layers.is-surging, html[data-motion="reduced"] .radiant-charge-layers.is-surging::after { animation: none; }
+html[data-motion="reduced"] .radiant-charge-layers.is-surging::after { display: none; }
+html[data-motion="reduced"] .radiant-member[data-ready-tier]:not([data-ready-tier=""])::after { animation: none; opacity: .8; }
+
+/* Flare cut-in reuses the shared portrait panel; Radiant ally art fills its portrait slot. */
+.radiant-fx-layer .cutin-radiant .cutin-portrait .radiant-ally-art { width: 100%; height: 100%; object-fit: contain; object-position: center 15%; }
+
+/* In-battle speed: one cycling text control in the HUD tools. */
+.radiant-battle .radiant-hud-tools [data-radiant-speed] { font-variant-numeric: tabular-nums; font-weight: 700; padding-inline: 6px; }
+.radiant-battle.is-settings-open .radiant-member::after { animation-play-state: paused; }

@@ -1,5 +1,61 @@
 # Current state and handoff
 
+## Battle Flurry Phase 2: flurry presentation (2026-11-16)
+
+**Implemented (D-472):** presentation only, with no rule, reward or authority
+change.
+- **Overlapping taps.** Members attack at once. The enemy phase waits until
+  the whole flurry and its drops have finished, and the readout never rewinds.
+- **Canvas effects** play concurrently, with hit-sparks.
+- **Damage numbers** show exact damage, heal and Shield amounts, with
+  Weakness flair.
+- **Prismatica motes** fly into the Haul and count it up as they land.
+- **Materials** pour from defeated enemies after the `settle` save, before
+  results.
+- **Gauges** crackle on each gain, and a ready Flare shows a tiered arc.
+- **Flare cut-in.**
+- **Speed:** a 1x/2x/3x HUD button.
+
+Owner choices: Health motes are in Phase 3; materials are not predicted on the
+device.
+
+**Verified:**
+- `npx tsc --noEmit`: passed.
+- Full `npx vitest run`: 299 files, 10,519 tests passed. After the later
+  easing fix, the battle screen, effects, cut-in and client files: 182 passed.
+- New or updated tests cover:
+  - overlapping windups;
+  - the enemy-phase barrier;
+  - out-of-order completion not rewinding HP;
+  - Skip mid-overlap;
+  - exact damage numbers;
+  - the Haul reaching its exact value through motes;
+  - the speed button.
+- `vite build`: passed (existing chunk advisory).
+- `node tools/bundle_server_game.mjs`: output unchanged, so no deploy.
+- Headless Chrome, development battle preview (in-memory authority) at
+  1280x720 and 390x844:
+  - three-tap flurry over time: two simultaneous hits, sparks, Weakness
+    number, orbs and motes in flight;
+  - flurry plus pour finished in about 1.8 s at 1x;
+  - the post-save material pour played, then the Win intro;
+  - a frozen Flare cut-in frame;
+  - Reduce motion: no effects, results shown at once.
+- Fixed during that review: the cut-in and numbers used whole-animation easing,
+  which faded the cut-in to 22% at mid-hold. They now use per-keyframe easing.
+- **Not verified:**
+  - a signed-in online battle;
+  - the enemy phase on screen (the preview fixtures win within one round;
+    a unit test covers the barrier);
+  - GPU cost on a physical phone;
+  - 2x/3x frames by eye.
+
+**Next:**
+- Owner feel review in game: flurry speed, number readability, Haul pour, cut-in
+  length, gauge crackle. Polish rounds fit Sonnet.
+- Then Phase 3 (Skill 1/2, kit batches, Health motes, 3-bearer retune) on Opus
+  in Plan mode.
+
 ## Battle Flurry Phase 1: device-run encounters and squad cap 3 (2026-11-16)
 
 **Implemented (D-471):** encounter taps resolve instantly on the device with the

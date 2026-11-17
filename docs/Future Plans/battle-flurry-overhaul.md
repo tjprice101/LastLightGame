@@ -3,8 +3,16 @@
 **Phase 1 implemented (D-471, 2026-11-16):** device-run encounters with
 `settle` replay, End Turn, per-encounter Haul and squad cap 3 are live in code;
 see [combat spec](../combat.md#device-run-encounters-settle-replay-and-squad-cap-3-d-471-battle-flurry-phase-1).
-Owner chose to keep current enemy tuning until Phase 3. Phases 2-4 remain
-planned below.
+Owner chose to keep current enemy tuning until Phase 3.
+
+**Phase 2 implemented (D-472, 2026-11-16):** overlapping presentations,
+canvas hit-sparks, damage numbers with Weakness flair, Prismatica motes into
+the Haul, material pour after the save, electrified gauges, Flare cut-in and a
+HUD speed control. Presentation only, no deploy; see
+[combat spec](../combat.md#flurry-presentation-d-472-battle-flurry-phase-2).
+Owner choices: Health motes move to Phase 3 (engine rule, needs a deploy), and
+materials pour after the save rather than being predicted on the device.
+Phases 3-4 remain planned below.
 
 **Status:** owner-approved direction (D-470, seven decisions below). Exact
 numbers, kit batches, the Conduit remap and later depth systems still need
@@ -126,8 +134,9 @@ overrode base fighter kits; no Leader effects existed then.
   finite, pointer-transparent and disposable.
 - Lively HUD: crackling gauge fills, ready-state pulses for Skill/Flare,
   attunement accents.
-- Health motes (approved): heal the collecting bearer; exact amount tuned in
-  Phase 2/3.
+- Health motes (approved): heal the collecting bearer. **Moved to Phase 3**
+  (owner, D-472): they change combat state, so they ship with the Phase 3
+  rules change and its deploy.
 
 ### D. Skill 1 / Skill 2 merged with Radiant (Phase 3)
 

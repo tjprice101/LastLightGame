@@ -10,7 +10,7 @@ import { lusterSheen } from './luster';
 import { compactPortrait } from './compact-portrait';
 import { escapeDialogText as escape, gameConfirm } from './game-dialog';
 import { reducedMotion } from './settings';
-import { battleSpeed } from './battle-speed';
+import { applyBattleSpeed, battleSpeed, battleSpeeds } from './battle-speed';
 import { radiantImpactFrames, radiantReadout, type RadiantImpactFrame, type RadiantReadout } from './battle-impact-frames';
 import './battle-screen.css';
 import { radiantArenaArt, radiantEnemyArt, radiantAllyArt } from './battle-art';
@@ -23,23 +23,26 @@ import { characterChoreography } from './battle-effects';
 import { formatStat } from '../content/combat';
 import { lootArt, lootItems } from './battle-loot';
 import { radiantFormation, radiantFormationStyle } from './battle-formation';
+import { radiantFlareCutin } from './battle-cutin';
+import './battle-cutin.css';
+import { radiantBearerKits, radiantFlares } from '../content/combat-kits';
+import { elementDamageMultiplier } from '../content/element-matchups';
 
 export { radiantActivityTitle };
 
 export interface RadiantBattleEffects {
   windup(action: RadiantPlayerAction, state: RadiantCombatState): Promise<void>;
-  impact(frame: RadiantImpactFrame): Promise<void>;
+  /** `action` is the presented player action, or null for enemy-phase frames (no caster). */
+  impact(frame: RadiantImpactFrame, action?: RadiantPlayerAction | null, state?: RadiantCombatState): Promise<void>;
   pause?(paused: boolean): void;
   cancel(): void;
   dispose?(): void;
 }
-interface QueuedRadiantPresentation {
-  before: RadiantCombatState;
-  response: RadiantRunResponse;
-  action: RadiantTurnAction;
-  focusedTarget: string | null;
-  resolve(): void;
-  reject(error: unknown): void;
+/** One action's presentation; player actions overlap (Battle Flurry, D-472). */
+interface ActivePresentation {
+  index: number;
+  done: Promise<void>;
+  cancel(): void;
 }
 interface QueuedRadiantAction {
   kind: 'normal' | 'defense' | 'flare';
@@ -63,6 +66,17 @@ function enemyActor(frame: RadiantImpactFrame): string | null {
     if ((event.type === 'damage' && event.origin === 'direct' || event.type === 'heal' || event.type === 'shield') &&
       event.source.kind === 'enemy') return event.source.enemyId;
   return null;
+}
+/** First frame of the enemy phase in a round-completing response: it waits for the whole flurry. */
+function enemyPhaseFrame(frame: RadiantImpactFrame): boolean {
+  return frame.events.some(event => event.type === 'round' ||
+    'source' in event && event.source.kind === 'enemy' ||
+    event.type === 'damage' && event.origin === 'periodic' ||
+    event.type === 'status' && event.clockOnly);
+}
+/** Exact presentation amount: whole numbers grouped, fractional values unrounded beyond 2 places. */
+function amountText(value: number): string {
+  return Number.isInteger(value) ? value.toLocaleString('en-US') : formatStat(value);
 }
 const tierNames = { sparkling: 'Sparkling Convergent Light', glimmering: 'Glimmering Convergent Light',
   ultimate: 'Ultimate Convergence of Light' };
@@ -97,12 +111,20 @@ export class RadiantBattleView {
   private activeReceipt: RadiantRunResponse | null = null;
   private impactTarget: string | null = null;
   private presentationGeneration = 0;
-  private presentationQueue: QueuedRadiantPresentation[] = [];
-  private presentationRunning = false;
+  private activePresentations = new Set<ActivePresentation>();
+  private presentationIndex = 0;
+  /** Newest (action, frame) readout shown; an older overlapping frame never rewinds it. */
+  private appliedFrame: [number, number] = [0, Number.MAX_SAFE_INTEGER];
+  /** Bumped whenever effects are cancelled, so late mote landings cannot change the Haul. */
+  private effectsEpoch = 0;
+  private numberStacks = new Map<string, number>();
+  private shownCharge = new Map<string, number>();
+  /** Saved settle response whose materials pour before the results celebrate. */
+  private settleLoot: RadiantRunResponse | null = null;
+  private lootPouring = false;
   private actionQueue: QueuedRadiantAction[] = [];
   private queuedActionActors = new Set<string>();
   private actionQueueRunning = false;
-  private cancelActivePresentation: (() => void) | null = null;
   private statuses: ReturnType<typeof radiantStatusSnapshot>;
   private artworkCleanup!: () => void;
   private statusMarkup = new Map<string, string>();
@@ -160,7 +182,8 @@ export class RadiantBattleView {
             <span class="radiant-haul" data-radiant-haul title="Prismatica gathered this encounter. It is saved when the encounter ends; leaving early forfeits it.">
               <span class="radiant-haul-label">Haul</span> <strong class="radiant-haul-amount" data-radiant-haul-amount>0</strong> <span>Prismatica</span>
               <span class="radiant-haul-state" data-radiant-haul-state></span></span></div>
-          <div class="radiant-hud-tools"><button type="button" data-radiant-skip aria-label="Skip presentation" title="Skip presentation" disabled><svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4 5v14l11-7zM17 5h3v14h-3z"/></svg></button>
+          <div class="radiant-hud-tools"><button type="button" class="radiant-speed" data-radiant-speed title="Battle speed">1x</button>
+          <button type="button" data-radiant-skip aria-label="Skip presentation" title="Skip presentation" disabled><svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4 5v14l11-7zM17 5h3v14h-3z"/></svg></button>
           <button type="button" data-radiant-settings aria-label="Settings"><span aria-hidden="true">⚙</span></button>
           ${this.onExit ? '<button type="button" data-radiant-leave aria-label="Exit battle, keeping saved rewards">Exit</button>' : ''}</div>
         </div>
@@ -266,6 +289,7 @@ export class RadiantBattleView {
     if (!button || !this.host.contains(button) || button.disabled) return;
     if (button.hasAttribute('data-radiant-settings')) { this.session.setSettings(true); this.render(); this.openSettings(); return; }
     if (button.hasAttribute('data-radiant-skip')) { this.skip(); return; }
+    if (button.hasAttribute('data-radiant-speed')) { this.cycleSpeed(); return; }
     if (button.hasAttribute('data-radiant-end-turn')) { this.endTurn(); return; }
     if (button.hasAttribute('data-radiant-leave')) { void this.confirmExit().catch(error => this.report(error)); return; }
     if (button.hasAttribute('data-radiant-result-dismiss') || button.hasAttribute('data-radiant-results-show')) {
@@ -434,6 +458,9 @@ export class RadiantBattleView {
       }
       this.element<HTMLElement>(`[data-radiant-charge-text="${member.id}"]`).textContent =
         `${member.charge} / ${personalChargeMaximum(member)} Luminosity`;
+      const shown = this.shownCharge.get(member.id);
+      if (shown !== undefined && member.charge > shown && this.displayed.units[member.id].hp > 0) this.surge(energy);
+      this.shownCharge.set(member.id, member.charge);
     }
     this.element<HTMLElement>('[data-radiant-round]').textContent = `Round ${this.displayed.round}`;
     const endTurn = this.element<HTMLButtonElement>('[data-radiant-end-turn]');
@@ -444,8 +471,9 @@ export class RadiantBattleView {
     const leaderMarkup = radiantLeaderReference(run.state, this.displayed.units[run.state.bearers[0].loadout.id].hp > 0);
     if (this.leaderMarkup !== leaderMarkup) { leader.innerHTML = leaderMarkup; this.leaderMarkup = leaderMarkup; }
     this.element<HTMLButtonElement>('[data-radiant-retry]').hidden = !view.pending || view.busy;
-    this.element<HTMLButtonElement>('[data-radiant-skip]').disabled = !this.presenting || view.settingsOpen;
-    const resultBlocked = operationBlocked || interactionBlocked || this.actionQueueRunning || this.presenting;
+    this.element<HTMLButtonElement>('[data-radiant-skip]').disabled = !(this.presenting || this.lootPouring) || view.settingsOpen;
+    this.renderSpeed();
+    const resultBlocked = operationBlocked || interactionBlocked || this.actionQueueRunning || this.presenting || this.lootPouring;
     // Results follow the saved (settled) run only: rewards are celebrated after the authority save.
     const terminal = saved.quit || saved.state.phase === 'victory' || saved.state.phase === 'defeat';
     const leave = this.host.querySelector<HTMLButtonElement>('[data-radiant-leave]');
@@ -518,11 +546,13 @@ export class RadiantBattleView {
     if (this.disposed) return;
     const receipt = this.session.view().presentation;
     if (receipt?.response.revision === response.revision) this.session.finishPresentation(receipt.requestId);
+    this.settleLoot = response;
     if (!this.presenting) {
       this.displayed = radiantReadout(response.run.state);
       this.statuses = radiantStatusSnapshot(response.run.state);
+      this.appliedFrame = [this.presentationIndex, Number.MAX_SAFE_INTEGER];
       this.render();
-      this.focusTerminalResult();
+      void this.revealSavedResult();
     } else this.render();
   }
   private syncTarget(run: FrozenRadiantRun): void {
@@ -668,43 +698,29 @@ export class RadiantBattleView {
     }
     this.skipped = false;
     this.presenting = true;
-    const promise = new Promise<void>((resolve, reject) => {
-      this.presentationQueue.push({ before: structuredClone(before), response: structuredClone(response),
-        action: structuredClone(action), focusedTarget, resolve, reject });
-    });
+    // Player actions start at once and overlap; an enemy phase waits for every earlier one.
+    const index = ++this.presentationIndex;
+    const earlier = [...this.activePresentations].map(entry => entry.done);
+    const generation = this.presentationGeneration;
+    let cancel!: () => void;
+    const cancelled = new Promise<false>(resolve => { cancel = () => resolve(false); });
+    const entry: ActivePresentation = { index, cancel, done: Promise.resolve() };
+    this.activePresentations.add(entry);
+    const run = (async () => {
+      let failure: unknown = null, completed = false;
+      try {
+        completed = await Promise.race([this.present(structuredClone(before), structuredClone(response),
+          structuredClone(action), focusedTarget, index, earlier).then(() => true), cancelled]);
+      } catch (error) { failure = error ?? new Error('Battle presentation failed.'); }
+      this.activePresentations.delete(entry);
+      if (this.disposed) return;
+      if (failure !== null || completed && generation === this.presentationGeneration) this.settle(response, index);
+      else if (!this.activePresentations.size) { this.presenting = false; this.activeReceipt = null; this.render(); }
+      if (failure !== null) { this.report(failure); throw failure; }
+    })();
+    entry.done = run.catch(() => {});
     this.render();
-    void this.drainPresentations();
-    return promise;
-  }
-  private async drainPresentations(): Promise<void> {
-    if (this.presentationRunning || this.disposed) return;
-    this.presentationRunning = true;
-    try {
-      while (!this.disposed && this.presentationQueue.length) {
-        const queued = this.presentationQueue.shift()!;
-        let cancel!: () => void;
-        const cancelled = new Promise<void>(resolve => { cancel = resolve; });
-        this.cancelActivePresentation = cancel;
-        try {
-          await Promise.race([this.present(queued.before, queued.response, queued.action, queued.focusedTarget), cancelled]);
-          queued.resolve();
-        } catch (error) {
-          this.settle(queued.response);
-          this.report(error);
-          queued.reject(error);
-        } finally {
-          if (this.cancelActivePresentation === cancel) this.cancelActivePresentation = null;
-        }
-      }
-    } finally {
-      this.presentationRunning = false;
-      this.cancelActivePresentation = null;
-      if (!this.disposed) {
-        this.presenting = this.presentationQueue.length > 0;
-        if (!this.presenting) this.activeReceipt = null;
-        this.render();
-      }
-    }
+    return run;
   }
   private async confirmExit(): Promise<void> {
     this.session.setSettings(true); this.render();
@@ -744,93 +760,145 @@ export class RadiantBattleView {
     this.statusMarkup.clear(); this.shieldMarkup.clear(); this.resultKey = null; this.leaderMarkup = null;
     this.target = run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
     this.impactTarget = null; this.finalHaul = null; this.shownHaul = this.session.view().haul;
+    this.shownCharge.clear(); this.settleLoot = null; this.lootPouring = false;
+    this.appliedFrame = [this.presentationIndex, Number.MAX_SAFE_INTEGER];
     this.mount(run); this.render();
     await this.finishEntrance();
     const first = run.state.bearers.find(unit => unit.hp > 0)?.loadout.id ?? run.state.bearers[0].loadout.id;
     if (!this.disposed) this.element<HTMLElement>(`[data-radiant-actor="${first}"]`).focus();
   }
   private async present(before: RadiantCombatState, response: RadiantRunResponse, action: RadiantTurnAction,
-    focusedTarget: string | null): Promise<void> {
+    focusedTarget: string | null, index: number, earlier: Promise<void>[]): Promise<void> {
     if (this.disposed) return;
-    const generation = ++this.presentationGeneration;
+    const generation = this.presentationGeneration;
+    const current = () => !this.disposed && !this.skipped && generation === this.presentationGeneration;
     const restoreScroll = this.revealBattlefield();
     this.presenting = true; this.skipped = false; this.activeReceipt = response; this.impactTarget = focusedTarget; this.render();
+    const player = action.type === 'end-turn' ? null : action;
     try {
       const frames = radiantImpactFrames(before, response.run.state, response.events);
       if (restoreScroll) {
         await this.nextPresentationFrame();
-        if (this.disposed || this.skipped || generation !== this.presentationGeneration) return;
+        if (!current()) return;
       }
-      if (!reducedMotion() && action.type !== 'end-turn') {
-        const member = before.bearers.find(unit => unit.loadout.id === action.bearerId)!;
-        const motion = action.type === 'defense' ? 'guard' : characterChoreography[member.loadout.starter].motion;
+      if (!reducedMotion() && player) {
+        const member = before.bearers.find(unit => unit.loadout.id === player.bearerId)!;
+        const motion = player.type === 'defense' ? 'guard' : characterChoreography[member.loadout.starter].motion;
         const poised = motion === 'cast' ? 'translateY(-4px)' : motion === 'bow' ? 'translateX(5px)' :
           motion === 'hammer' ? 'translate(-5px, -4px) rotate(3deg)' : motion === 'guard' ? 'translateX(-3px)' :
             motion === 'twin' ? 'translateX(-8px) rotate(-2deg)' : 'translateX(-12px)';
         await Promise.all([
-          this.animate(this.element(`[data-radiant-art="${action.bearerId}"]`),
-            [{ transform: 'none' }, { transform: poised }, { transform: 'none' }], 180),
-          this.effects ? this.effects.windup(action, structuredClone(before)) :
-            this.animate(this.element(`[data-radiant-art="${action.bearerId}"]`),
-              [{ filter: 'brightness(1)' }, { filter: 'brightness(1.8)' }, { filter: 'brightness(1)' }], 260),
+          this.animate(this.element(`[data-radiant-art="${player.bearerId}"]`),
+            [{ transform: 'none' }, { transform: poised }, { transform: 'none' }], 120),
+          this.effects ? this.effects.windup(player, structuredClone(before)) :
+            this.animate(this.element(`[data-radiant-art="${player.bearerId}"]`),
+              [{ filter: 'brightness(1)' }, { filter: 'brightness(1.8)' }, { filter: 'brightness(1)' }], 200),
+          this.flareCutin(player, before),
         ]);
       }
       const fx: Promise<void>[] = [], failures: unknown[] = [], played = new Set<number>();
       const track = (effect: Promise<void>) => { fx.push(effect.catch(error => { failures.push(error); })); };
-      let shaken = action.type !== 'flare';
+      let shaken = false, enemyPhase = false;
       let previousActor: string | null = null;
       for (const [frameIndex, frame] of frames.entries()) {
-        if (this.disposed || this.skipped || generation !== this.presentationGeneration) break;
+        if (!current()) break;
+        if (!enemyPhase && enemyPhaseFrame(frame)) {
+          enemyPhase = true;
+          // The enemy phase plays once the whole flurry and its drops have settled.
+          await Promise.all([...earlier, ...fx]);
+          if (!current()) break;
+        }
         const actor = enemyActor(frame);
         if (actor && !reducedMotion()) {
           await this.enemyWindup(actor, actor !== previousActor);
-          if (this.disposed || this.skipped || generation !== this.presentationGeneration) break;
+          if (!current()) break;
         }
         previousActor = actor;
-        const previous = this.displayed;
-        this.shownHaul += frame.events.reduce((sum, event) => sum + (event.type === 'currency' ? event.amount : 0), 0);
-        this.displayed = structuredClone(frame.readout); this.statuses = structuredClone(frame.statuses); this.render();
+        const previous = frameIndex ? frames[frameIndex - 1].readout : radiantReadout(before);
+        if (this.newer(index, frameIndex)) {
+          this.displayed = structuredClone(frame.readout); this.statuses = structuredClone(frame.statuses);
+        }
+        // With motion, Prismatica reaches the Haul when its motes land.
+        if (reducedMotion()) this.shownHaul += frame.events.reduce((sum, event) => sum + (event.type === 'currency' ? event.amount : 0), 0);
+        this.render();
         if (!reducedMotion()) {
-          const random = presentationRandom(`${response.revision}:${frameIndex}`);
+          const random = presentationRandom(`${response.revision}:${index}:${frameIndex}`);
           track(this.chargeOrbs(frame, previous, random));
+          track(this.haulMotes(frame, random));
+          track(this.damageNumbers(frame, before, random));
           for (const event of frame.events) if (event.type === 'defeated')
             track(this.lootDrops(response, played, event.targetId, random));
-          if (!shaken && frame.events.some(event => event.type === 'damage' && event.healthLoss + event.absorbed > 0)) {
-            shaken = true; track(this.shakeField(frame));
+          const hit = frame.events.some(event => event.type === 'damage' && event.healthLoss + event.absorbed > 0);
+          const defeat = frame.events.some(event => event.type === 'defeated');
+          const flareHit = !enemyPhase && player?.type === 'flare';
+          if (!shaken && hit && (flareHit || defeat || actor)) {
+            shaken = true; track(this.shakeField(flareHit ? 10 : defeat ? 7 : 4));
           }
-          await Promise.all([this.fieldImpact(frame), this.effects ? this.effects.impact(structuredClone(frame)) : this.impact(frame)]);
+          await Promise.all([this.fieldImpact(frame), this.effects
+            ? this.effects.impact(structuredClone(frame), enemyPhase ? null : player, structuredClone(before)) : this.impact(frame)]);
           if (actor) await this.pause(enemyRecoveryMs);
         }
       }
-      if (!reducedMotion() && !this.disposed && !this.skipped && generation === this.presentationGeneration) {
-        track(this.lootDrops(response, played, null, presentationRandom(`${response.revision}:end`)));
+      if (!reducedMotion() && current()) {
+        track(this.lootDrops(response, played, null, presentationRandom(`${response.revision}:${index}:end`)));
         await Promise.all(fx);
         if (failures.length) throw failures[0];
       }
-      if (!this.disposed && generation === this.presentationGeneration) this.settle(response);
     } catch (error) {
       if (this.disposed || generation !== this.presentationGeneration) return;
-      this.report(error);
       throw error;
     } finally {
       restoreScroll?.();
     }
   }
-  private settle(response: RadiantRunResponse): void {
+  /** Marks the newest shown (action, frame); false if an overlapping newer frame is already shown. */
+  private newer(index: number, frame: number): boolean {
+    const [shownIndex, shownFrame] = this.appliedFrame;
+    if (index < shownIndex || index === shownIndex && frame <= shownFrame) return false;
+    this.appliedFrame = [index, frame];
+    return true;
+  }
+  private settle(response: RadiantRunResponse, index = this.presentationIndex): void {
     const view = this.session.view();
-    // Once nothing else is queued, show the live run (the saved run after a settle) exactly.
-    const shown = !this.presentationQueue.length && view.run ? view.run : response.run;
-    this.displayed = radiantReadout(shown.state);
-    this.statuses = radiantStatusSnapshot(shown.state);
-    if (!this.presentationQueue.length) this.shownHaul = this.targetHaul();
-    this.presenting = this.presentationQueue.length > 0; this.activeReceipt = null; this.impactTarget = null;
+    const idle = this.activePresentations.size === 0;
+    if (idle) {
+      // Once nothing else is presenting, show the live run (the saved run after a settle) exactly.
+      const shown = view.run ?? response.run;
+      this.displayed = radiantReadout(shown.state);
+      this.statuses = radiantStatusSnapshot(shown.state);
+      this.appliedFrame = [this.presentationIndex, Number.MAX_SAFE_INTEGER];
+      this.shownHaul = this.targetHaul();
+      this.activeReceipt = null; this.impactTarget = null;
+    } else if (this.newer(index, Number.MAX_SAFE_INTEGER)) {
+      this.displayed = radiantReadout(response.run.state);
+      this.statuses = radiantStatusSnapshot(response.run.state);
+    }
+    this.presenting = !idle;
     this.presentationError = null;
     const receipt = view.presentation;
     if (receipt?.response.revision === response.revision) this.session.finishPresentation(receipt.requestId);
     const latest = this.session.view().run;
     if (latest) this.syncTarget(latest);
     this.render();
-    this.focusTerminalResult();
+    if (idle) void this.revealSavedResult();
+  }
+  /** After the authority save only: the saved materials pour from the defeated enemies,
+   * then the results celebrate. Skippable; static (no pour) under Reduce motion. */
+  private async revealSavedResult(): Promise<void> {
+    const loot = this.settleLoot, saved = this.session.view().saved.run;
+    const terminal = !!saved && (saved.quit || saved.state.phase === 'victory' || saved.state.phase === 'defeat');
+    if (loot && terminal && !this.lootPouring && !this.disposed) {
+      this.settleLoot = null;
+      if (!reducedMotion() && loot.rewards.some(reward => reward.kind === 'reward')) {
+        this.lootPouring = true; this.skipped = false; this.render();
+        try { await this.lootDrops(loot, new Set(), null, presentationRandom(`${loot.revision}:settle`)); }
+        catch (error) { this.report(error); }
+        finally { this.lootPouring = false; }
+        if (this.disposed) return;
+        this.render();
+      }
+    }
+    if (!this.disposed) this.focusTerminalResult();
   }
   private focusTerminalResult(): void {
     const run = this.session.view().saved.run;
@@ -852,19 +920,23 @@ export class RadiantBattleView {
     }
   }
   skip(): void {
+    if (this.lootPouring) { this.cancelEffects(); return; }
     if (!this.presenting) return;
     this.skipped = true; this.presentationGeneration++; this.cancelEffects();
-    this.cancelActivePresentation?.();
-    for (const queued of this.presentationQueue.splice(0)) queued.resolve();
+    for (const entry of [...this.activePresentations]) entry.cancel();
+    this.activePresentations.clear();
     const view = this.session.view(), latest = view.run;
     if (latest) {
       this.displayed = radiantReadout(latest.state);
       this.statuses = radiantStatusSnapshot(latest.state);
+      this.appliedFrame = [this.presentationIndex, Number.MAX_SAFE_INTEGER];
       this.shownHaul = this.targetHaul();
       this.presenting = false; this.activeReceipt = null; this.impactTarget = null; this.presentationError = null;
       this.syncTarget(latest);
+      // Skip goes straight to the saved results: no material pour.
+      this.settleLoot = null;
       this.render();
-      this.focusTerminalResult();
+      void this.revealSavedResult();
     }
   }
   private motion = (): void => { if (reducedMotion()) this.skip(); };
@@ -910,8 +982,41 @@ export class RadiantBattleView {
   private pause(duration: number): Promise<void> {
     return this.animate(this.element('.radiant-field'), [], duration);
   }
-  private speed = (): void => { for (const animation of this.animations) animation.playbackRate = battleSpeed(); };
+  private speed = (): void => {
+    for (const animation of this.animations) animation.playbackRate = battleSpeed();
+    this.renderSpeed();
+  };
+  /** Cycles 1x → 2x → 3x. The Settings control owns persistence when it is mounted (main.ts). */
+  private cycleSpeed(): void {
+    const next = battleSpeeds[(battleSpeeds.indexOf(battleSpeed()) + 1) % battleSpeeds.length];
+    const control = this.host.ownerDocument.querySelector<HTMLSelectElement>('#battle-speed');
+    if (control) { control.value = String(next); control.dispatchEvent(new Event('change', { bubbles: true })); }
+    else applyBattleSpeed(next);
+    this.renderSpeed();
+  }
+  private renderSpeed(): void {
+    const button = this.host.querySelector<HTMLButtonElement>('[data-radiant-speed]');
+    if (!button) return;
+    const speed = battleSpeed(), next = battleSpeeds[(battleSpeeds.indexOf(speed) + 1) % battleSpeeds.length];
+    const label = `${speed}x`;
+    if (button.textContent !== label) button.textContent = label;
+    button.setAttribute('aria-label', `Battle speed ${speed}x. Activate for ${next}x.`);
+  }
+  /** Finite electrified crackle on a gauge that just gained Luminosity; static under Reduce motion. */
+  private surge(energy: HTMLElement): void {
+    if (reducedMotion()) return;
+    energy.classList.remove('is-surging');
+    void energy.offsetWidth;
+    energy.classList.add('is-surging');
+    const end = (event: AnimationEvent) => {
+      if (event.target !== energy || event.animationName !== 'radiant-gauge-surge') return;
+      energy.classList.remove('is-surging'); energy.removeEventListener('animationend', end);
+    };
+    energy.addEventListener('animationend', end);
+  }
   private cancelEffects(): void {
+    this.effectsEpoch++;
+    this.numberStacks.clear();
     this.effects?.cancel();
     this.selectionCleanup?.(); this.selectionCleanup = null;
     for (const animation of this.animations) animation.cancel();
@@ -991,6 +1096,28 @@ export class RadiantBattleView {
     node.addEventListener('radiant-fx-done', () => { cleanup(); this.effectsCleanup.delete(cleanup); }, { once: true });
     return node;
   }
+  /** A finite mote that pops from `start`, then arcs into `end` (screen coordinates). */
+  private arcFlight(className: string, start: { x: number; y: number }, end: { x: number; y: number },
+    color: string, duration: number, delay: number, random: () => number): Promise<void> {
+    const orb = this.spawn(className, start.x, start.y);
+    orb.style.setProperty('--orb', color);
+    const pop = { x: (random() - .5) * 120, y: -40 - random() * 70 };
+    const dx = end.x - start.x, dy = end.y - start.y;
+    const lift = Math.min(-80, dy * .25 - 110 - random() * 60);
+    const at = (t: number) => {
+      const cx = (pop.x + dx) / 2, cy = lift, u = 1 - t;
+      return { x: u * u * pop.x + 2 * u * t * cx + t * t * dx, y: u * u * pop.y + 2 * u * t * cy + t * t * dy };
+    };
+    const point = (t: number, scale: number) => { const p = at(t); return `translate(${p.x}px, ${p.y}px) scale(${scale})`; };
+    return this.animate(orb, [
+      { offset: 0, opacity: 0, transform: 'translate(0, 0) scale(.2)', easing: 'cubic-bezier(.2,.9,.3,1)' },
+      { offset: .2, opacity: 1, transform: `translate(${pop.x}px, ${pop.y}px) scale(1.2)`, easing: 'ease-in-out' },
+      { offset: .3, opacity: 1, transform: `translate(${pop.x}px, ${pop.y + 6}px) scale(1)`, easing: 'cubic-bezier(.55,0,.85,.4)' },
+      { offset: .6, opacity: 1, transform: point(.35, .95), easing: 'linear' },
+      { offset: .8, opacity: 1, transform: point(.72, .8), easing: 'linear' },
+      { offset: 1, opacity: .2, transform: point(1, .45) },
+    ], duration, { easing: 'linear', delay }).finally(() => orb.dispatchEvent(new Event('radiant-fx-done')));
+  }
   /** Presentation-only orbs follow the saved enemy drop and charge deltas. */
   private async chargeOrbs(frame: RadiantImpactFrame, previous: RadiantReadout, random: () => number): Promise<void> {
     const run = this.session.view().run!;
@@ -998,31 +1125,13 @@ export class RadiantBattleView {
     const sources = [...new Set(frame.events.flatMap(event =>
       event.type === 'damage' && enemies.has(event.targetId) && event.healthLoss + event.absorbed > 0 ? [event.targetId] : []))];
     const flights: Promise<void>[] = [];
+    const flight = 720, step = 50;
     const fly = (from: Element, to: Element, color: string, count: number, pulse: Element) => {
       const end = centre(to);
-      for (let index = 0; index < count; index++) {
-        const start = centre(from, random);
-        const orb = this.spawn('radiant-orb', start.x, start.y);
-        orb.style.setProperty('--orb', color);
-        const pop = { x: (random() - .5) * 120, y: -40 - random() * 70 };
-        const dx = end.x - start.x, dy = end.y - start.y;
-        const lift = Math.min(-80, dy * .25 - 110 - random() * 60);
-        const at = (t: number) => {
-          const cx = (pop.x + dx) / 2, cy = lift, u = 1 - t;
-          return { x: u * u * pop.x + 2 * u * t * cx + t * t * dx, y: u * u * pop.y + 2 * u * t * cy + t * t * dy };
-        };
-        const point = (t: number, scale: number) => { const p = at(t); return `translate(${p.x}px, ${p.y}px) scale(${scale})`; };
-        flights.push(this.animate(orb, [
-          { offset: 0, opacity: 0, transform: 'translate(0, 0) scale(.2)', easing: 'cubic-bezier(.2,.9,.3,1)' },
-          { offset: .22, opacity: 1, transform: `translate(${pop.x}px, ${pop.y}px) scale(1.2)`, easing: 'ease-in-out' },
-          { offset: .34, opacity: 1, transform: `translate(${pop.x}px, ${pop.y + 6}px) scale(1)`, easing: 'cubic-bezier(.55,0,.85,.4)' },
-          { offset: .6, opacity: 1, transform: point(.35, .95), easing: 'linear' },
-          { offset: .8, opacity: 1, transform: point(.72, .8), easing: 'linear' },
-          { offset: 1, opacity: .2, transform: point(1, .45) },
-        ], 980, { easing: 'linear', delay: index * 70 + random() * 60 }).finally(() => orb.dispatchEvent(new Event('radiant-fx-done'))));
-      }
+      for (let index = 0; index < count; index++)
+        flights.push(this.arcFlight('radiant-orb', centre(from, random), end, color, flight, index * step + random() * 40, random));
       flights.push(this.animate(pulse, [{ filter: 'brightness(1)' }, { filter: 'brightness(2.1) saturate(1.4)', offset: .3 }, { filter: 'brightness(1)' }],
-        420, { delay: 820 + count * 70 }));
+        420, { delay: flight * .85 + count * step }));
     };
     const flyToMember = (id: string, units: number, source: Element) => {
       if (units <= 0) return;
@@ -1092,9 +1201,97 @@ export class RadiantBattleView {
     });
     await Promise.all(drops);
   }
-  private shakeField(frame: RadiantImpactFrame): Promise<void> {
-    const heavy = frame.events.some(event => event.type === 'damage' && frame.readout.units[event.targetId]?.hp === 0);
-    const a = heavy ? 9 : 6;
+  /** Prismatica motes arc from the struck enemy into the Haul; each landing adds its exact share. */
+  private haulMotes(frame: RadiantImpactFrame, random: () => number): Promise<void> {
+    const target = this.host.querySelector('[data-radiant-haul-amount]');
+    const flights: Promise<void>[] = [], epoch = this.effectsEpoch;
+    for (const event of frame.events) {
+      if (event.type !== 'currency' || event.amount <= 0) continue;
+      const source = this.host.querySelector(`[data-radiant-art="${event.enemyId}"]`);
+      if (!target || !source) { this.shownHaul += event.amount; continue; }
+      const count = Math.min(6, Math.max(2, Math.ceil(Math.log10(event.amount + 1) * 2)));
+      const share = Math.floor(event.amount / count), end = centre(target);
+      for (let mote = 0; mote < count; mote++) {
+        const part = mote === count - 1 ? event.amount - share * (count - 1) : share;
+        flights.push(this.arcFlight('radiant-orb radiant-prism-mote', centre(source, random), end, '#ffffff', 760,
+          mote * 45 + random() * 40, random).finally(() => {
+          if (this.disposed || epoch !== this.effectsEpoch) return;
+          this.shownHaul += part; this.render();
+        }));
+      }
+    }
+    return Promise.all(flights).then(() => {});
+  }
+  /** Stacking damage/heal/Shield numbers with Weakness flair; exact values, finite, aria-hidden. */
+  private damageNumbers(frame: RadiantImpactFrame, state: RadiantCombatState, random: () => number): Promise<void> {
+    const floats: Promise<void>[] = [];
+    const bearerElement = (id: string) => {
+      const unit = state.bearers.find(member => member.loadout.id === id);
+      return unit ? radiantBearerKits[unit.loadout.starter].elementId : null;
+    };
+    const enemyElement = (id: string) => state.enemies.find(enemy => enemy.id === id)?.elementId ?? null;
+    const enemies = new Set(state.enemies.map(enemy => enemy.id));
+    const show = (targetId: string, text: string, kind: string, tag?: string) => {
+      const anchor = this.host.querySelector(`[data-radiant-art="${targetId}"]`);
+      if (!anchor) return;
+      const box = anchor.getBoundingClientRect();
+      const stack = this.numberStacks.get(targetId) ?? 0;
+      this.numberStacks.set(targetId, stack + 1);
+      const node = this.spawn(`radiant-number is-${kind}`, box.left + box.width / 2 + (random() - .5) * box.width * .3,
+        box.top + box.height * .32 - (stack % 5) * 22);
+      node.innerHTML = `${tag ? `<small>${escape(tag)}</small>` : ''}<b>${escape(text)}</b>`;
+      floats.push(this.animate(node, [
+        { opacity: 0, transform: 'translate(-50%, 8px) scale(.6)', easing: 'cubic-bezier(.2,.9,.3,1.3)' },
+        { opacity: 1, transform: 'translate(-50%, -10px) scale(1.2)', offset: .14, easing: 'ease-out' },
+        { opacity: 1, transform: 'translate(-50%, -16px) scale(1)', offset: .3, easing: 'linear' },
+        { opacity: 1, transform: 'translate(-50%, -30px) scale(1)', offset: .78, easing: 'ease-in' },
+        { opacity: 0, transform: 'translate(-50%, -44px) scale(.92)' },
+      ], kind === 'weak' ? 1000 : 860, { easing: 'linear' }).finally(() => {
+        const left = (this.numberStacks.get(targetId) ?? 1) - 1;
+        if (left > 0) this.numberStacks.set(targetId, left); else this.numberStacks.delete(targetId);
+        node.dispatchEvent(new Event('radiant-fx-done'));
+      }));
+    };
+    for (const event of frame.events) {
+      if (event.type === 'damage') {
+        const attacker = event.source.kind === 'enemy' ? enemyElement(event.source.enemyId) : bearerElement(event.source.bearerId);
+        const defender = enemies.has(event.targetId) ? enemyElement(event.targetId) : bearerElement(event.targetId);
+        const weak = event.origin === 'direct' && elementDamageMultiplier(attacker, defender) > 1;
+        if (event.healthLoss > 0) show(event.targetId, amountText(event.healthLoss),
+          !enemies.has(event.targetId) ? 'hurt' : event.origin === 'periodic' ? 'periodic' : weak ? 'weak' : 'damage',
+          weak ? 'Weakness' : undefined);
+        if (event.absorbed > 0) show(event.targetId, `Shield −${amountText(event.absorbed)}`, 'absorb');
+      } else if (event.type === 'heal' && event.effective > 0) show(event.targetId, `+${amountText(event.effective)}`, 'heal');
+      else if (event.type === 'shield' && event.amount > 0) show(event.targetId, `Shield +${amountText(event.amount)}`, 'shield');
+    }
+    return Promise.all(floats).then(() => {});
+  }
+  /** Flare cut-in during the windup: the bearer's portrait, tier and Flare name. */
+  private async flareCutin(action: RadiantPlayerAction, before: RadiantCombatState): Promise<void> {
+    if (action.type !== 'flare' || reducedMotion() || this.disposed) return;
+    const tier = readyFlare(before.gauge, action.bearerId);
+    const member = before.bearers.find(unit => unit.loadout.id === action.bearerId);
+    if (!tier || !member) return;
+    const card = this.host.querySelector<HTMLElement>(`[data-radiant-unit="${action.bearerId}"]`);
+    const color = (card && getComputedStyle(card).getPropertyValue('--accent').trim()) || '#ffffff';
+    const panel = radiantFlareCutin({ name: characterName(member.loadout.starter, member.loadout.form),
+      flare: radiantFlares[member.loadout.starter][tier].name, tier, tierLabel: tierNames[tier],
+      art: radiantAllyArt(member.loadout), color });
+    this.fxLayer().append(panel);
+    const cleanup = () => panel.remove();
+    this.effectsCleanup.add(cleanup);
+    try {
+      await this.animate(panel, [
+        // Linear overall timing; each segment eases itself so the hold stays fully opaque.
+        { opacity: 0, transform: 'translateX(-14%) skewX(-8deg)', easing: 'cubic-bezier(.2,.8,.2,1)' },
+        { opacity: 1, transform: 'translateX(0) skewX(0deg)', offset: .16, easing: 'linear' },
+        { opacity: 1, transform: 'translateX(2%) skewX(0deg)', offset: .82, easing: 'cubic-bezier(.6,0,.9,.4)' },
+        { opacity: 0, transform: 'translateX(12%) skewX(6deg)' },
+      ], tier === 'ultimate' ? 1100 : 820, { easing: 'linear' });
+    } finally { cleanup(); this.effectsCleanup.delete(cleanup); }
+  }
+  private shakeField(amplitude: number): Promise<void> {
+    const a = amplitude;
     return this.animate(this.element('.radiant-field'), [
       { transform: 'translate(0, 0)' }, { transform: `translate(${-a}px, ${a * .5}px)` }, { transform: `translate(${a * .8}px, ${-a * .4}px)` },
       { transform: `translate(${-a * .5}px, ${a * .3}px)` }, { transform: `translate(${a * .25}px, 0)` }, { transform: 'translate(0, 0)' },
@@ -1126,8 +1323,8 @@ export class RadiantBattleView {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true; this.actionQueue.length = 0; this.queuedActionActors.clear(); this.cancelEffects();
-    this.cancelActivePresentation?.();
-    for (const queued of this.presentationQueue.splice(0)) queued.resolve();
+    for (const entry of [...this.activePresentations]) entry.cancel();
+    this.activePresentations.clear();
     this.effects?.dispose?.();
     this.gestures.dispose();
     this.resultCelebration?.(); this.resultCelebration = null;

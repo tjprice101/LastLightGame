@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { freshGame } from '../../supabase/functions/game-operation/engine';
 import { resolveRadiantRun, type RadiantRunRequest, type RadiantRunResponse, type RadiantRunSnapshot } from '../online/battle-run';
 import { RadiantSession } from '../online/battle-session';
+import type { RadiantPlayerAction } from '../online/battle-run';
 import { releasedRadiantIds, type RadiantBearerId } from '../content/combat-kits';
 import { characterArt } from '../content/character-art';
 import { compactPortraitRevisions } from '../content/compact-portrait-revisions';
@@ -476,7 +477,7 @@ describe('device-run three-member Radiant battle surface', () => {
     impact(); await pending;
     expect(session.view().presentation).toBeNull(); expect(host.getAttribute('aria-busy')).toBe('false');
   });
-  it('resolves another member action while the previous member is still winding up', async () => {
+  it('starts another member presentation while the previous member is still winding up (flurry)', async () => {
     const windups: (() => void)[] = [];
     const effects = { windup: vi.fn(() => new Promise<void>(resolve => { windups.push(resolve); })),
       impact: vi.fn(async () => {}), cancel: vi.fn() };
@@ -494,15 +495,78 @@ describe('device-run three-member Radiant battle surface', () => {
     // Only an encounter-ending action sends a request: the one settle.
     expect(transport.execute.mock.calls.every(([request]) => request.operation.kind === 'settle')).toBe(true);
     expect(session.view().run!.state.acted).toEqual(['ember', 'tide']);
-    expect(windups).toHaveLength(1);
-
-    windups[0]();
+    // Overlapping presentations: the second windup starts without waiting for the first.
     await vi.waitFor(() => expect(windups).toHaveLength(2));
+
+    // The newer action finishes first; the older one's late frame must not rewind the readout.
     windups[1]();
-    await Promise.all([first, second]);
+    await second;
+    const latest = session.view().run!;
+    const target = latest.state.enemies[0];
+    const expected = radiantReadout(latest.state).units[target.id];
+    const hp = host.querySelector(`[data-radiant-health="${target.id}"] [data-hp]`)!;
+    windups[0]();
+    await first;
+    expect(hp.textContent).toBe(`HP ${expected.hp} / ${expected.maximum}`);
     expect(session.view().presentation).toBeNull();
     await vi.waitFor(() => expect(session.view().busy).toBe(false));
     expect(session.view().saved.revision).toBe(1 + transport.execute.mock.calls.length);
+  });
+  it('holds the enemy phase until every overlapping member presentation has finished', async () => {
+    const windups: (() => void)[] = [];
+    const impacts: (RadiantPlayerAction | null | undefined)[] = [];
+    const effects = { windup: vi.fn(() => new Promise<void>(resolve => { windups.push(resolve); })),
+      impact: vi.fn(async (_frame: RadiantImpactFrame, action?: RadiantPlayerAction | null) => { impacts.push(action); }),
+      cancel: vi.fn() };
+    const { view, session } = fixture(2, 1, effects); await view.finishEntrance();
+    const first = view.act('normal');
+    await vi.waitFor(() => expect(windups).toHaveLength(1));
+    const second = view.act('normal');
+    await vi.waitFor(() => expect(windups).toHaveLength(2));
+    expect(session.view().run!.state.round).toBe(2);
+    // The round-completing member's own hit plays at once; the enemy phase waits for the first member.
+    windups[1]();
+    await vi.waitFor(() => expect(impacts.length).toBeGreaterThan(0));
+    await new Promise(resolve => setTimeout(resolve, 20));
+    expect(impacts.every(action => action)).toBe(true);
+    windups[0]();
+    await Promise.all([first, second]);
+    expect(impacts.some(action => action === null)).toBe(true);
+    expect(impacts.findIndex(action => action === null)).toBeGreaterThan(impacts.findIndex(action => action?.bearerId === 'ember'));
+  });
+  it('streams exact damage numbers, pours Prismatica into the Haul and cycles battle speed', async () => {
+    const original = Object.getOwnPropertyDescriptor(Element.prototype, 'animate');
+    const numbers: string[] = [], motes: string[] = [];
+    Object.defineProperty(Element.prototype, 'animate', { configurable: true, value: function (this: Element): Animation {
+      if (this instanceof HTMLElement && this.classList.contains('radiant-number')) numbers.push(this.textContent ?? '');
+      if (this instanceof HTMLElement && this.classList.contains('radiant-prism-mote')) motes.push(this.className);
+      const animation: Partial<Animation> = { playbackRate: 1, playState: 'finished',
+        finished: Promise.resolve().then(() => animation as Animation), cancel() {}, pause() {}, play() {} };
+      return animation as Animation;
+    } });
+    try {
+      const { view, session, host } = fixture(); await view.finishEntrance();
+      const enemy = session.view().run!.state.enemies[0];
+      const before = enemy.hp;
+      await view.act('normal');
+      const after = session.view().run!.state.enemies.find(unit => unit.id === enemy.id)!.hp;
+      expect(numbers.some(text => text.endsWith((before - after).toLocaleString('en-US')))).toBe(true);
+      const haul = session.view().haul;
+      if (haul > 0) expect(motes.length).toBeGreaterThan(0);
+      expect(host.querySelector('[data-radiant-haul-amount]')!.textContent).toBe(haul.toLocaleString('en-US'));
+      expect(host.querySelector('.radiant-number')).toBeNull();
+      const speed = controls(host, '[data-radiant-speed]');
+      expect(speed.textContent).toBe('1x');
+      speed.click();
+      expect(document.documentElement.dataset.battleSpeed).toBe('2');
+      expect(speed.textContent).toBe('2x');
+      expect(speed.getAttribute('aria-label')).toBe('Battle speed 2x. Activate for 3x.');
+      speed.click(); speed.click();
+      expect(speed.textContent).toBe('1x');
+    } finally {
+      if (original) Object.defineProperty(Element.prototype, 'animate', original);
+      else Reflect.deleteProperty(Element.prototype, 'animate');
+    }
   });
   it('allows a teammate to cast newly shared charge during the previous windup', async () => {
     const windups: (() => void)[] = [];
@@ -556,10 +620,12 @@ describe('device-run three-member Radiant battle surface', () => {
     expect(latest.state.acted).toEqual(['ember', 'tide']);
 
     await Promise.all([first, second]);
-    windups[0]();
+    windups.forEach(release => release());
     await Promise.resolve();
     expect(hp.textContent).toBe(`HP ${expected.hp} / ${expected.maximum}`);
-    expect(effects.windup).toHaveBeenCalledTimes(1);
+    // Both overlapping windups had started; Skip cancelled them without replaying impacts.
+    expect(effects.windup).toHaveBeenCalledTimes(2);
+    expect(effects.impact).not.toHaveBeenCalled();
   });
   it('reveals an offscreen battlefield for saved action effects and restores the portrait scroll position', async () => {
     const scroller = document.createElement('div');
@@ -623,7 +689,8 @@ describe('device-run three-member Radiant battle surface', () => {
     callbacks[0](performance.now());
     await Promise.resolve();
     expect(scroller.scrollTop).toBe(520);
-    expect(effects.windup).not.toHaveBeenCalled();
+    // Only the second (already revealed) overlapping action reached its windup before Skip.
+    expect(effects.windup).toHaveBeenCalledTimes(1);
     expect(effects.impact).not.toHaveBeenCalled();
     expect(session.view().presentation).toBeNull();
     expect(session.view().run!.state.acted).toEqual(['ember', 'tide']);

@@ -1,5 +1,58 @@
 # Combat specification
 
+## Flurry presentation (D-472, Battle Flurry Phase 2)
+
+Presentation only: combat rules, events, rewards, receipts, the `settle`
+replay and the authority are unchanged, so no server deploy.
+
+- **Overlapping actions.** Each tap starts its presentation at once
+  (`RadiantBattleView.queuePresentation`), so the members of a squad attack
+  together. When a tap completes the round, its response also carries the
+  enemy phase. That enemy phase starts only after every earlier presentation
+  and this action's own drops have finished. The first enemy-phase frame is
+  any frame with an enemy-sourced event, periodic damage, a clock tick or the
+  round event.
+- **Readout never rewinds.** Each frame has a key (action order, frame order).
+  HP, Shields, statuses and Luminosity update only from a newer key, so an
+  older action that finishes late cannot show stale values. When nothing is
+  playing, the screen shows the live run exactly.
+- **Canvas.** `RadiantCanvasEffects` (`src/vfx/battle-effects.ts`) draws every
+  active effect in one frame loop, each with its own clock.
+  `impact(frame, action, state)` takes the presented action, or `null` for
+  enemy frames, so effects that overlap never share context. A direct hit
+  adds deterministic hit-spark rays in the attacker's palette. A normal
+  windup lasts 0.14 s.
+- **Damage numbers.** One floater per damage (Health lost; Shield absorption
+  shown as "Shield −N"), heal ("+N") and Shield ("Shield +N") event, with
+  exact values. Numbers on the same target stack upward. An elemental
+  advantage hit (`elementDamageMultiplier` > 1, direct only) is larger and
+  tagged "Weakness". Radiant has no critical hits, so there is no critical
+  flair.
+- **Drop pour.** Prismatica motes fly from the struck enemy into the Haul,
+  and each landing adds its exact share, so the Haul counts up as motes
+  arrive. Gauge orbs fly to the bearer's card in about 0.72 s. Materials
+  are known only after the save, so once `settle` is acknowledged they pour
+  from the defeated enemies. Then the results open (save before celebration
+  still holds). Skip goes straight to the saved results.
+- **Electrified gauges.** A gain in Luminosity plays a short crackle on that
+  bearer's gauge (`is-surging`). A ready Flare adds a looping arc on the card
+  frame that gets faster and brighter by tier.
+- **Flare cut-in.** `radiantFlareCutin` (`battle-cutin.ts`) reuses the shared
+  portrait panel: bearer portrait, tier, display name and Flare name. It
+  lasts 0.82 s (1.1 s for Ultimate) during the Flare windup.
+- **Shake.** At most one field shake per action: strong on a Flare hit,
+  medium on a defeat, light on an enemy hit.
+- **Speed.** A HUD text button cycles through 1x, 2x and 3x. When the
+  Settings control is mounted it saves the choice (`last-light.battle-speed`).
+  Every DOM animation, canvas clock and CSS crackle scales with it.
+- **Reduce motion and Skip.** Under Reduce motion there are no numbers,
+  motes, cut-in, crackle or pour, and the saved values show immediately. Skip
+  cancels every active presentation and shows the live run and Haul.
+- **Measured** (headless Chrome, development preview, three-member squad,
+  1x): the three-tap flurry with its Prismatica and Gauge pour finished in
+  about 1.8 s. That is under the 3 s target, and the material pour adds
+  about 1.7 s after a victory save.
+
 ## Device-run encounters, settle replay and squad cap 3 (D-471, Battle Flurry Phase 1)
 
 **Encounter flow.** `start`, `continue` and `retry` still go to the authority,
