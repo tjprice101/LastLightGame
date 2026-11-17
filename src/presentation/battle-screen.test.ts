@@ -1025,26 +1025,67 @@ describe('device-run three-member Radiant battle surface', () => {
     expect(transport.execute.mock.calls[0][0].operation.kind).toBe('exit');
     expect(session.view().run).toBeNull();
   });
-  it('right click and D no longer Defend (D-473); the browser menu stays suppressed until the skill grid', async () => {
+  it('right click opens the skill fan (D-479) without spending an action; Escape closes it and returns focus', async () => {
     const { view, session, host, transport, acts } = fixture(); applyMotion('reduced'); await view.finishEntrance();
     const card = host.querySelector<HTMLElement>('[data-radiant-card][data-radiant-unit="ember"] .radiant-frozen-stats dd')!;
     const menu = new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2 });
     card.dispatchEvent(menu);
     expect(menu.defaultPrevented).toBe(true);
+    const fan = host.querySelector<HTMLElement>('[data-radiant-fan="ember"]')!;
+    expect(fan.hidden).toBe(false);
+    expect(Array.from(fan.querySelectorAll<HTMLElement>('[data-radiant-skill]')).map(choice => choice.dataset.radiantSkill))
+      .toEqual(['1', '2', 'flare']);
+    expect(fan.textContent).toContain('Cinder Cleave');
+    expect(fan.querySelector('[data-radiant-skill="1"] [data-radiant-skill-text]')!.textContent).toBe(
+      '4-hit Infernic attack on one enemy (260%), adds Burn (25% Attack per turn, 3 turns).');
+    expect(document.activeElement?.closest('[data-radiant-fan]')).toBe(fan);
+    (document.activeElement as HTMLElement).dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+    expect(fan.hidden).toBe(true);
+    expect(document.activeElement).toBe(action(host, 'ember'));
     await Promise.resolve();
     expect(acts).not.toHaveBeenCalled();
     expect(session.view().run!.state.acted).toEqual([]);
     expect(transport.execute).not.toHaveBeenCalled();
-    const keyboard = fixture(); await keyboard.view.finishEntrance();
-    const tide = action(keyboard.host, 'tide');
-    expect(tide.disabled).toBe(false);
-    const press = new KeyboardEvent('keydown', { key: 'd', bubbles: true, cancelable: true });
-    tide.dispatchEvent(press);
+  });
+  it('D opens the fan and a ready Skill 1 casts on the current target from the device', async () => {
+    const { view, session, host, transport, acts } = fixture(3, 6, undefined, 25, undefined, undefined, true);
+    applyMotion('reduced'); await view.finishEntrance();
+    const ember = action(host, 'ember');
+    ember.dispatchEvent(new KeyboardEvent('keydown', { key: 'd', bubbles: true, cancelable: true }));
+    const skill = host.querySelector<HTMLButtonElement>('[data-radiant-fan="ember"] [data-radiant-skill="1"]')!;
+    expect(skill.getAttribute('aria-disabled')).toBe('false');
+    expect(skill.querySelector('[data-radiant-skill-cost]')!.textContent).toBe('25');
+    skill.click();
+    await vi.waitFor(() => expect(session.view().run!.state.acted).toContain('ember'));
+    expect(acts.mock.calls[0][0]).toEqual({ type: 'skill', bearerId: 'ember', slot: 1, targetId: 'story-25-0' });
+    expect(host.querySelector<HTMLElement>('[data-radiant-fan="ember"]')!.hidden).toBe(true);
+    expect(transport.execute).not.toHaveBeenCalled();
+  });
+  it('an ally-only skill sends no target, and an unaffordable skill is explained and never sent', async () => {
+    const charged = fixture(3, 6, undefined, 25, undefined, undefined, true);
+    applyMotion('reduced'); await charged.view.finishEntrance();
+    await charged.view.act('skill', 'tide', 2);
+    expect(charged.acts.mock.calls[0][0]).toEqual({ type: 'skill', bearerId: 'tide', slot: 2 });
+    const empty = fixture(); await empty.view.finishEntrance();
+    empty.host.querySelector<HTMLElement>('[data-radiant-card][data-radiant-unit="ember"] .radiant-frozen-stats dd')!
+      .dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2 }));
+    const skill = empty.host.querySelector<HTMLButtonElement>('[data-radiant-fan="ember"] [data-radiant-skill="2"]')!;
+    expect(skill.getAttribute('aria-disabled')).toBe('true');
+    skill.click();
     await Promise.resolve();
-    expect(press.defaultPrevented).toBe(false);
-    expect(keyboard.acts).not.toHaveBeenCalled();
-    expect(host.querySelector('.radiant-actions [data-radiant-action], [data-radiant-menu]')).toBeNull();
-    expect(host.querySelector('[data-radiant-reference]')).toBeNull();
+    expect(empty.acts).not.toHaveBeenCalled();
+    expect(empty.host.querySelector('[data-radiant-gesture-status]')!.textContent).toBe('Skill 2 needs 40 Luminosity; no action spent.');
+  });
+  it('shows signature counters on the owner card and marks on the enemy that holds them', async () => {
+    // Form 1 keeps Gilded Thorn Guard below the Stage 25 enemy's Health, so the trap stays on a living enemy.
+    const { view, host } = fixture(['thornia', 'razor', 'tide'], 1, undefined, 25, undefined, undefined, true);
+    applyMotion('reduced'); await view.finishEntrance();
+    expect(host.querySelector('[data-radiant-signatures="razor"]')!.textContent).toBe('Wounds 0');
+    expect(host.querySelector('[data-radiant-signatures="thornia"]')!.textContent).toBe('Thorn Traps 0');
+    await view.act('skill', 'thornia', 1);
+    await vi.waitFor(() => expect(host.querySelector('[data-radiant-signatures="thornia"]')!.textContent).toBe('Thorn Traps 1'));
+    expect(host.querySelector('[data-radiant-target-detail="story-25-0"] [data-radiant-effects]')!.textContent)
+      .toContain('Thorn Trap · 3 charges · 3 turns');
   });
   it.each(['master-tide-3', 'master-sprout-2'] as const)('keeps %s support Flare ally-targeted without a retired generated strike', async masterId => {
     const { view, host, acts } = fixture(3, 6, undefined, 25, undefined, masterId, true);

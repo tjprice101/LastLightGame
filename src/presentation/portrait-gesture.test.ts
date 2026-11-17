@@ -15,7 +15,7 @@ function fixture() {
   host.innerHTML = '<button data-radiant-actor="tide">Tizu</button>';
   document.body.append(host);
   const button = host.querySelector('button')!;
-  const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Lustrous Flare'), notice: vi.fn() };
+  const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Lustrous Flare'), open: vi.fn(), close: vi.fn(), notice: vi.fn() };
   const binding = bindRadiantPortraitGestures(host, options); bindings.push(binding);
   return { host, button, binding, options };
 }
@@ -37,7 +37,7 @@ describe('Radiant charged portrait gestures', () => {
       const x = _ === 'diagonal' ? 50 + Math.abs(dy) : 50;
       pointer(button, 'pointermove', x, 100 + dy); pointer(button, 'pointerup', x, 100 + dy);
       expect(options.cast).toHaveBeenCalledTimes(casts ? 1 : 0);
-      if (casts) expect(options.cast).toHaveBeenCalledWith('tide');
+      if (casts) expect(options.cast).toHaveBeenCalledWith('tide', 'flare');
       expect(binding.consumeClick(button)).toBe(_ !== 'below upward threshold');
       expect(binding.consumeClick(button)).toBe(false);
       expect(button.classList.contains('is-held')).toBe(false); expect(vi.getTimerCount()).toBe(0);
@@ -49,7 +49,7 @@ describe('Radiant charged portrait gestures', () => {
     expect(options.ready).toHaveBeenCalledTimes(1);
     expect(vi.getTimerCount()).toBe(0);
     pointer(button, 'pointerup', 50, 100 - gestureThreshold);
-    expect(options.cast).toHaveBeenCalledWith('tide');
+    expect(options.cast).toHaveBeenCalledWith('tide', 'flare');
   });
   it('never silently converts an unavailable charged attack into a Normal Attack', () => {
     const { button, binding, options } = fixture(); options.ready.mockReturnValue(null);
@@ -88,7 +88,7 @@ describe('Radiant charged portrait gestures', () => {
     document.body.append(host);
     const card = host.querySelector<HTMLElement>('[data-radiant-card]')!;
     const actor = host.querySelector<HTMLButtonElement>('[data-radiant-actor]')!;
-    const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Glowing Flare'), notice: vi.fn() };
+    const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Glowing Flare'), open: vi.fn(), close: vi.fn(), notice: vi.fn() };
     const binding = bindRadiantPortraitGestures(host, options); bindings.push(binding);
     const stats = host.querySelector<HTMLElement>('[data-stats] dd')!;
     pointer(stats, 'pointerdown');
@@ -98,7 +98,7 @@ describe('Radiant charged portrait gestures', () => {
     pointer(stats, 'pointermove', 50, 100 - gestureThreshold);
     expect(card.classList.contains('is-primed')).toBe(true);
     pointer(stats, 'pointerup', 50, 100 - gestureThreshold);
-    expect(options.cast).toHaveBeenCalledWith('tide');
+    expect(options.cast).toHaveBeenCalledWith('tide', 'flare');
     expect(binding.consumeClick(actor)).toBe(true);
     expect(card.classList.contains('is-held') || card.classList.contains('is-primed')).toBe(false);
     expect(card.style.getPropertyValue('--radiant-drag')).toBe('');
@@ -110,7 +110,7 @@ describe('Radiant charged portrait gestures', () => {
     const host = document.createElement('div');
     host.innerHTML = '<article data-radiant-card><button data-radiant-actor="tide">Tizu</button><p>Body</p></article>';
     document.body.append(host);
-    const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Glowing Flare'), notice: vi.fn() };
+    const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Glowing Flare'), open: vi.fn(), close: vi.fn(), notice: vi.fn() };
     bindings.push(bindRadiantPortraitGestures(host, options));
     const body = host.querySelector<HTMLElement>('p')!, card = host.querySelector<HTMLElement>('article')!;
     pointer(body, 'pointerdown'); vi.advanceTimersByTime(radiantHoldMilliseconds);
@@ -127,13 +127,69 @@ describe('Radiant charged portrait gestures', () => {
     const host = document.createElement('div');
     host.innerHTML = '<article data-radiant-card><button data-radiant-actor="tide">Tizu</button><p>Body</p></article>';
     document.body.append(host);
-    const options = { cast: vi.fn(), ready: vi.fn((): string | null => null), notice: vi.fn() };
+    const options = { cast: vi.fn(), ready: vi.fn((): string | null => null), open: vi.fn(), close: vi.fn(), notice: vi.fn() };
     bindings.push(bindRadiantPortraitGestures(host, options));
     const body = host.querySelector<HTMLElement>('p')!, card = host.querySelector<HTMLElement>('article')!;
     pointer(body, 'pointerdown'); vi.advanceTimersByTime(radiantHoldMilliseconds);
     pointer(body, 'pointermove', 50, 40);
     expect(card.classList.contains('is-unready')).toBe(true); expect(card.classList.contains('is-primed')).toBe(false);
     pointer(body, 'pointerup', 50, 40); expect(options.cast).not.toHaveBeenCalled();
+  });
+  describe('skill fan (D-479)', () => {
+    function fanFixture() {
+      vi.useFakeTimers();
+      const host = document.createElement('div');
+      host.innerHTML = `<article data-radiant-card><div data-radiant-fan><button data-radiant-skill="1">One</button>
+        <button data-radiant-skill="2">Two</button><button data-radiant-skill="flare">Flare</button></div>
+        <button data-radiant-actor="tide">Tizu</button><p>Body</p></article>`;
+      document.body.append(host);
+      const options = { cast: vi.fn(), ready: vi.fn((): string | null => 'Glowing Flare'), open: vi.fn(), close: vi.fn(), notice: vi.fn() };
+      const binding = bindRadiantPortraitGestures(host, options); bindings.push(binding);
+      const at = vi.fn((): Element | null => null);
+      Object.defineProperty(document, 'elementFromPoint', { configurable: true, value: at });
+      return { host, options, binding, at, body: host.querySelector<HTMLElement>('p')!,
+        actor: host.querySelector<HTMLButtonElement>('[data-radiant-actor]')!,
+        choice: (slot: string) => host.querySelector<HTMLElement>(`[data-radiant-skill="${slot}"]`)! };
+    }
+    afterEach(() => { Reflect.deleteProperty(document, 'elementFromPoint'); });
+    it('opens on hold and stays open for a tap after a release in place', () => {
+      const { body, options, binding, actor } = fanFixture();
+      pointer(body, 'pointerdown'); vi.advanceTimersByTime(radiantHoldMilliseconds);
+      expect(options.open).toHaveBeenCalledWith('tide');
+      pointer(body, 'pointerup');
+      expect(options.cast).not.toHaveBeenCalled(); expect(options.close).not.toHaveBeenCalled();
+      expect(binding.consumeClick(actor)).toBe(true);
+    });
+    it.each([['1', 1], ['2', 2], ['flare', 'flare']] as const)('releasing on choice %s casts that slot', (slot, expected) => {
+      const { body, options, at, choice, host } = fanFixture();
+      pointer(body, 'pointerdown'); vi.advanceTimersByTime(radiantHoldMilliseconds);
+      at.mockReturnValue(choice(slot));
+      pointer(body, 'pointermove', 50, 60);
+      expect(choice(slot).classList.contains('is-selected')).toBe(true);
+      expect(host.querySelector('[data-radiant-card]')!.classList.contains('is-primed')).toBe(false);
+      pointer(body, 'pointerup', 50, 60);
+      expect(options.cast).toHaveBeenCalledWith('tide', expected);
+      expect(choice(slot).classList.contains('is-selected')).toBe(false);
+    });
+    it('a held drag released away from every choice closes the fan without an action', () => {
+      const { body, options } = fanFixture();
+      pointer(body, 'pointerdown'); vi.advanceTimersByTime(radiantHoldMilliseconds);
+      pointer(body, 'pointermove', 120, 100); pointer(body, 'pointerup', 120, 100);
+      expect(options.cast).not.toHaveBeenCalled(); expect(options.close).toHaveBeenCalled();
+      expect(options.notice).toHaveBeenLastCalledWith('Skills closed; no action spent.');
+    });
+    it('Escape during a hold closes the fan', () => {
+      const { body, options } = fanFixture();
+      pointer(body, 'pointerdown'); vi.advanceTimersByTime(radiantHoldMilliseconds);
+      body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      expect(options.close).toHaveBeenCalled(); expect(options.cast).not.toHaveBeenCalled();
+    });
+    it('a press on a fan choice never starts a portrait gesture', () => {
+      const { options, choice, host } = fanFixture();
+      pointer(choice('2'), 'pointerdown');
+      expect(host.querySelector('[data-radiant-card]')!.classList.contains('is-arming')).toBe(false);
+      expect(options.open).not.toHaveBeenCalled();
+    });
   });
   it('keeps keyboard activation usable immediately after an Escape-cancelled hold', () => {
     const { button, binding } = fixture();

@@ -1,5 +1,100 @@
 # Combat specification
 
+## Skill UI and kit text (D-479, Battle Flurry Phase 3 Step 3)
+
+**Status:** implemented on branch `battle-flurry-phase3`, not released (ships
+with the rest of Phase 3). Client presentation only; the engine rules are
+unchanged. The server bundle changed only because `radiantSkillStats` was split
+into a shared loadout helper (`radiantLoadoutSkillStats`) with identical results.
+
+**Kit text.**
+- `src/content/radiant-kit-text.ts` holds the approved Skill 1, Skill 2, Flare
+  (Ultimate) and Leader text for all 32 bearers. Passives keep their
+  `radiantKits` description.
+- Text shows base values (form 1, rank 1, no Master or Conduits). Skill Power,
+  Imbues and Flare power appear in the Skill stats panel and the Flare price
+  line, not inside the text (owner choice).
+- Each number that scales is a token with the engine's scaling class:
+  - `{h}`: tier hits.
+  - `{d:…}` and `{m:…}`: damage-scaled.
+  - `{e:…}` and `{f:…}`: effect-scaled; fills round like the engine.
+  - `{l:…}` and `{ln:…}`: Leader amounts (form and Leader equipment).
+
+  Durations, charges, counts, thresholds, ignore-Defense and Opening bonuses
+  are literal.
+- `src/presentation/kit-text.ts` renders the text:
+  - `radiantSkillText` for Skill 1 and Skill 2.
+  - `radiantFlareText` at each tier (N3 scaling).
+  - `radiantLeaderSkillText`, scaled by `radiantLeaderBonus / 0.2`.
+- `kit-text.test.ts` compares every bearer's rendered text word for word with
+  phase3-kit-drafts.md, and checks that every number in the kit data appears
+  in the text.
+
+**Character sheet** (`character-combat.ts`; Team, Home, Archives, roster and the
+battle reference):
+- Sections, in order: Stats, Skill stats, Leader Skill, Skills (Skill 1 and
+  Skill 2 with their effective costs), Convergent Light (three tiers with tier
+  text and the Ultimate icon), Passive (plus the role trait line), Personal
+  Master / Conduits.
+- Skill stats: per-slot Skill Power, Skill Efficiency and cost; Skill Duration
+  (max 6 turns); Gauge Gain.
+- The Defense article is removed. Normal Attack text: +15 Luminosity, with 10%
+  shared to each other living ally of the same element.
+- "Shared combat rules" holds the glossary, written once: turns, categories and
+  caps, Burn, Weaken, Expose, Shield, targets, Luminosity and Health motes.
+- The legacy `radiantFlareDescription` is removed. Flare targeting and the
+  cut-in name read `radiantKits`.
+
+**Skill fan** (`portrait-gesture.ts`, `battle-screen.ts`):
+- Each squad card has a hidden fan of three text buttons: Skill 1, Skill 2 and
+  Flare. Each shows its icon, name, live cost and readiness, with the kit text
+  as hover text and screen-reader text.
+- **Hold** (120 ms) opens the fan:
+  - Releasing on a choice casts it.
+  - Releasing in place leaves the fan open for a tap.
+  - A quick upward swipe still casts a ready Flare.
+  - Any other release, Escape, blur or a press outside the card closes it
+    without spending an action.
+- **Right click**, the context-menu key and **D** on a focused card open the fan
+  with focus on Skill 1. Arrows move between choices, Enter casts, and Escape
+  closes it and returns focus to the card. Tap/Enter (Normal), F/Up Arrow
+  (Flare) and E (End Turn) are unchanged.
+- Skill actions send `{ type: 'skill', bearerId, slot }`, plus the current
+  target when `radiantSkillAcceptsTarget` allows one. An unaffordable choice
+  shows "Skill N needs X Luminosity; no action spent." and is never sent.
+- Presentation:
+  - A skill-name callout over the card during the windup.
+  - Per-character Skill 1 / Skill 2 canvas visuals; skill hits use the authored
+    impact choreography.
+  - Tick marks at 25 and 40 on each energy track.
+  - Under Reduce motion: no callout or sheen, static highlights.
+
+**Signature counters** (`battle-signatures.ts`):
+- **Owner chips** on the card, for example: Combo 4/5, Wounds 240, Gusts 3/5,
+  Cyclone release clock, Shuriken held, Quarry, Thorn Traps, Marks, Incisions,
+  Survey, Foundation durability, Season, Beat, Tempo (Opening/Closing),
+  Unreturned, Signals, Promise and path, counters with caps, and Burn boosts.
+- **Holder tags** on the unit holding a mark:
+  - On enemies, in the target's status list: Thorn Trap, Fate-seared Mark,
+    Incision, Survey, Quarry, lodged Shuriken.
+  - On the ally's card: Seed, Cover, Signal, Refusal used.
+- Chips and tags sync with the status snapshot at presentation boundaries, so
+  they never run ahead of the animation. Numbers are exact.
+
+**Validation:**
+- `kit-text.test.ts`: fidelity to the drafts, data numbers, tier and form
+  scaling.
+- `battle-signatures.test.ts`: every bearer's starting chip, caps, holder tags.
+- `portrait-gesture.test.ts`: fan open/stay/cast/cancel, Escape, presses on a
+  choice.
+- `battle-screen.test.ts`: right click, D, a target sent only when accepted, an
+  unaffordable skill never sent, counters after a cast.
+- In-game check: debug profile, local battle, hold, right click, D, phone width
+  and Reduce motion.
+
+**Draft inconsistency:** the drafts give Aurora's Flare 8 hits, but every
+Ultimate Flare resolves 12 hits (N3), so the tooltip shows 12.
+
 ## Signature mechanics, batch 4 (D-478, Battle Flurry Phase 3 Step 2b)
 
 **Status:** implemented on branch `battle-flurry-phase3`, not released (ships
@@ -408,8 +503,8 @@ event, so it triggers no Conduits. The mote is deterministic and uses no RNG.
   the bearer's own skill.
 - `guard` reduces incoming damage while the bearer is in `skilled` (its own
   amount only, with no 50% base).
-- Right-click and D do nothing until the Step 3 skill grid. F and Up Arrow
-  still cast the Flare.
+- Right-click and D open the skill fan (D-479). F and Up Arrow still cast the
+  Flare.
 
 **Versions.**
 - Combat-state and frozen-run schemas are **8**. Versions 3-7 retire read-only
@@ -427,8 +522,7 @@ event, so it triggers no Conduits. The mote is deterministic and uses no RNG.
 **Open items.**
 - Nothing applies Weaken to bearers yet, so Ilyss's cleanse and the "reduces
   Weaken on allies" Leaders have no effect until enemies gain debuffs.
-- Kit, Passive and Leader text, Skill stat display and the skill grid are Step 3.
-- Flare display summaries cover only generic clauses.
+- Kit text, Skill stats and the skill fan: implemented in D-479.
 
 ## Flurry presentation (D-472, Battle Flurry Phase 2)
 

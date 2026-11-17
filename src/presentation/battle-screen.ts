@@ -1,9 +1,13 @@
 import { characterName } from '../content/character-art';
 import { getStarter } from '../content/starters';
 import { radiantAttunement } from '../content/combat-kits';
-import { grantRadiantDrop, personalChargeMaximum, personalChargeUnit, radiantChargeRules,
-  readyFlare } from '../game/combat-gauge';
-import type { RadiantCombatState } from '../game/combat-engine';
+import { grantRadiantDrop, personalChargeMaximum, personalChargeUnit, radiantChargeRules, radiantFlareCost, radiantSkillCost,
+  readyFlare, readySkill } from '../game/combat-gauge';
+import { radiantSkillStats, type RadiantCombatState } from '../game/combat-engine';
+import { radiantKits, radiantSkillAcceptsTarget, radiantSkillCosts, type RadiantKitId, type RadiantSkillSlot } from '../content/radiant-kits';
+import { abilityIcon } from './ability-icon';
+import { radiantSkillName, radiantSkillText, radiantFlareText } from './kit-text';
+import { radiantSignatureChips, radiantSignatureTags, radiantSignatureView, type RadiantSignatureView } from './battle-signatures';
 import { RadiantSession } from '../online/battle-session';
 import { type RadiantPlayerAction, type RadiantRunResponse, type FrozenRadiantRun, type RadiantTurnAction } from '../online/battle-run';
 import { lusterSheen } from './luster';
@@ -18,14 +22,14 @@ import { radiantStatusSnapshot, radiantStatusRows, radiantShieldRows } from './b
 import { bindArtworkLoading } from './artwork-loading';
 import { radiantResultsMarkup, radiantEncounterLabel, radiantActivityTitle, radiantOutcome, celebrateRadiantResults, radiantResultIntro } from './battle-outcome';
 import { radiantLeaderReference, radiantFlareNeedsTarget } from './battle-reference';
-import { bindRadiantPortraitGestures, radiantGestureActor } from './portrait-gesture';
+import { bindRadiantPortraitGestures, radiantGestureActor, type RadiantFanSlot } from './portrait-gesture';
 import { characterChoreography } from './battle-effects';
 import { formatStat } from '../content/combat';
 import { lootArt, lootItems } from './battle-loot';
 import { radiantFormation, radiantFormationStyle } from './battle-formation';
 import { radiantFlareCutin } from './battle-cutin';
 import './battle-cutin.css';
-import { radiantBearerKits, radiantFlares } from '../content/combat-kits';
+import { radiantBearerKits, radiantFlareName } from '../content/combat-kits';
 import { elementDamageMultiplier } from '../content/element-matchups';
 
 export { radiantActivityTitle };
@@ -45,9 +49,11 @@ interface ActivePresentation {
   cancel(): void;
 }
 interface QueuedRadiantAction {
-  kind: 'normal' | 'flare';
+  kind: 'normal' | 'flare' | 'skill';
   bearerId: string;
+  slot?: RadiantSkillSlot;
 }
+const fanSlots: readonly RadiantFanSlot[] = [1, 2, 'flare'];
 
 /** Compact card name: the evolution title truncates first so the bearer's own name always stays visible. */
 function radiantCardName(full: string): string {
@@ -134,6 +140,11 @@ export class RadiantBattleView {
   private celebratedKey: string | null = null;
   private leaderMarkup: string | null = null;
   private gestures: ReturnType<typeof bindRadiantPortraitGestures>;
+  /** Signature counters shown so far (synced with the status snapshot at presentation boundaries). */
+  private signatures: RadiantSignatureView;
+  private signatureMarkup = new Map<string, string>();
+  /** The card whose Skill 1 / Skill 2 / Flare fan is open (D-479). */
+  private openFan: string | null = null;
   /** Haul shown so far: follows presented frames, never ahead of what the player has seen. */
   private shownHaul = 0;
   private haulSheen: (() => void) | null = null;
@@ -148,6 +159,7 @@ export class RadiantBattleView {
     this.shownHaul = session.view().haul;
     this.displayed = radiantReadout(run.state);
     this.statuses = radiantStatusSnapshot(run.state);
+    this.signatures = radiantSignatureView(run.state);
     this.target = run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
     this.mount(run);
     this.gestures = bindRadiantPortraitGestures(host, {
@@ -158,12 +170,15 @@ export class RadiantBattleView {
         const tier = member?.living && button && !button.disabled && gauge ? readyFlare(gauge, id) : null;
         return tier ? tierNames[tier] : null;
       },
-      cast: id => { this.enqueueAction('flare', id); },
+      cast: (id, slot) => { this.castFanSlot(id, slot); },
+      open: id => { this.showFan(id, false); },
+      close: () => { this.closeFan(false); },
       notice: text => { this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = text; },
     });
     host.addEventListener('click', this.click);
     host.addEventListener('contextmenu', this.contextMenu);
     host.addEventListener('keydown', this.keyDown);
+    document.addEventListener('pointerdown', this.outsideFan, true);
     window.addEventListener('last-light-motion-change', this.motion);
     window.addEventListener('last-light-battle-speed-change', this.speed);
     this.render();
@@ -214,10 +229,11 @@ export class RadiantBattleView {
         style="--squad-size:${run.state.bearers.length};--squad-columns:${Math.min(3, run.state.bearers.length)};--squad-phone-columns:${Math.min(2, run.state.bearers.length)}">${run.state.bearers.map((unit, index) => {
         const member = unit.loadout, starter = getStarter(member.starter);
         return `<article class="radiant-member" data-radiant-card data-radiant-unit="${escape(member.id)}" data-element="${starter.elementId}">
+          ${this.fanMarkup(member)}
           <span class="radiant-card-burst" aria-hidden="true"></span>
           <span class="radiant-card-hint" aria-hidden="true"></span>
           <button type="button" class="radiant-face" data-radiant-actor="${escape(member.id)}"
-            aria-describedby="radiant-gesture-help" aria-label="${escape(characterName(member.starter, member.form))} · Normal Attack; right click to defend; hold the card and drag upward for ready Convergent Light">
+            aria-describedby="radiant-gesture-help" aria-label="${escape(characterName(member.starter, member.form))} · Normal Attack; hold, right click or press D for Skill 1, Skill 2 and Convergent Light">
             ${compactPortrait(starter, member.form)}<span class="radiant-visually-hidden">${index ? `Member ${index + 1}` : 'Leader'}</span></button>
           <div class="radiant-member-head radiant-visually-hidden">${radiantCardName(characterName(member.starter, member.form))}
             <span class="radiant-identity">Lv.${member.level} · ${escape(radiantAttunement(member).replace(/^./, letter => letter.toUpperCase()))}</span></div>
@@ -227,18 +243,20 @@ export class RadiantBattleView {
             ${[1, ...(member.form >= 4 ? [2] : [])].map(layer =>
               `<meter class="radiant-visually-hidden" data-radiant-charge="${escape(member.id)}" data-layer="${layer}" min="0" max="${run.state.gauge.members[index].baseCost}" aria-label="Convergent Light Luminosity ${layer}"></meter>`).join('')}
             <span class="radiant-energy-track" aria-hidden="true">${[1, ...(member.form >= 4 ? [2] : [])].map(layer =>
-              `<span class="radiant-energy-liquid" data-energy-layer="${layer}"></span>`).join('')}</span>
+              `<span class="radiant-energy-liquid" data-energy-layer="${layer}"></span>`).join('')}${([1, 2] as const).map(slot =>
+              `<span class="radiant-energy-tick" data-energy-tick="${slot}" style="--tick:${radiantSkillCosts[slot] / run.state.gauge.members[index].baseCost * 100}%"></span>`).join('')}</span>
           </div>
           <span class="radiant-visually-hidden" data-radiant-charge-text="${escape(member.id)}"></span>
           </div>
+          <div class="radiant-signature-chips" data-radiant-signatures="${escape(member.id)}" aria-label="Signature counters"></div>
           <div class="radiant-member-foot radiant-visually-hidden"><span data-radiant-readiness="${escape(member.id)}"></span>
           <dl class="radiant-frozen-stats" aria-label="Combat stats">${Object.entries(unit.stats).filter(([stat]) => stat !== 'hp').map(([stat, value]) =>
             `<div><dt><span aria-hidden="true">${escape(stat.slice(0, 3).toUpperCase())}</span><span class="radiant-visually-hidden">${escape(stat[0].toUpperCase() + stat.slice(1))}</span></dt><dd>${formatStat(value)}</dd></div>`).join('')}</dl></div>
         </article>`;
       }).join('')}</div>
       <div class="radiant-battle-footer">
-      <p id="radiant-gesture-help">Left click a card to attack · Right click to defend · Hold, then swipe up to release Convergent Light.
-        <span class="radiant-visually-hidden">Hold for 350ms and drag upward 32px. Keyboard: Enter attacks, D or the context-menu key defends, F or Up Arrow releases ready Convergent Light.</span></p>
+      <p id="radiant-gesture-help">Tap a card to attack · Hold or right click for skills · Swipe up for Convergent Light.
+        <span class="radiant-visually-hidden">Hold a card, then release on Skill 1, Skill 2 or Flare; releasing in place keeps the choices open for a tap. Keyboard: Enter attacks, D or the context-menu key opens the skills (arrows move, Enter casts, Escape closes), F or Up Arrow releases ready Convergent Light.</span></p>
       <p class="radiant-visually-hidden" data-radiant-gesture-status role="status" aria-live="polite"></p>
       <div class="radiant-actions"><button type="button" class="radiant-end-turn" data-radiant-end-turn
         aria-keyshortcuts="E" title="End Turn: members who have not acted skip this round (E)">End Turn</button>
@@ -303,8 +321,13 @@ export class RadiantBattleView {
     if (transition === 'continue' || transition === 'retry' || transition === 'exit') {
       void this.transition(transition).catch(error => this.report(error)); return;
     }
+    if (button.dataset.radiantSkill && button.dataset.radiantSkillActor) {
+      const slot = button.dataset.radiantSkill;
+      this.castFanSlot(button.dataset.radiantSkillActor, slot === 'flare' ? 'flare' : slot === '2' ? 2 : 1); return;
+    }
     if (button.dataset.radiantActor) {
       if (this.gestures.consumeClick(button)) return;
+      this.closeFan(false);
       this.enqueueAction('normal', button.dataset.radiantActor); return;
     }
     if (button.dataset.radiantTarget) {
@@ -322,8 +345,99 @@ export class RadiantBattleView {
     event.preventDefault();
     this.gestures?.cancel();
     if (actor.disabled || !actor.dataset.radiantActor) return;
-    // Defend was removed (D-473); Phase 3 Step 3 opens the Skill 1 / Skill 2 / Flare grid here.
+    // D-473 removed Defend; right click opens the Skill 1 / Skill 2 / Flare fan (D-479).
+    this.showFan(actor.dataset.radiantActor, true);
   };
+  /** A press outside the open fan closes it (the press itself still acts normally). */
+  private outsideFan = (event: PointerEvent): void => {
+    if (!this.openFan || !(event.target instanceof Element)) return;
+    const card = this.host.querySelector(`[data-radiant-card][data-radiant-unit="${this.openFan}"]`);
+    if (card?.contains(event.target)) return;
+    this.closeFan(false);
+  };
+  private fanMarkup(member: RadiantCombatState['bearers'][number]['loadout']): string {
+    const id = escape(member.id), kit = member.starter as RadiantKitId;
+    const choice = (slot: RadiantFanSlot) => {
+      const name = radiantSkillName(member.starter, slot);
+      const text = slot === 'flare' ? radiantFlareText(member.starter, 'ultimate') : radiantSkillText(member.starter, slot);
+      const icon = abilityIcon(member.starter, slot === 'flare' ? 'ultimate' : slot === 1 ? 'skill1' : 'skill2');
+      return `<button type="button" class="radiant-skill-choice" data-radiant-skill="${slot}" data-radiant-skill-actor="${id}"
+        title="${escape(`${name}: ${text}`)}">${icon}<span class="radiant-skill-label"><small>${slot === 'flare' ? 'Flare' : `Skill ${slot}`}</small><strong>${escape(name)}</strong></span>
+        <span class="radiant-skill-cost" data-radiant-skill-cost></span><span class="radiant-visually-hidden" data-radiant-skill-text>${escape(text)}</span></button>`;
+    };
+    if (!Object.hasOwn(radiantKits, kit)) return '';
+    return `<div class="radiant-skill-fan" data-radiant-fan="${id}" role="group" aria-label="${escape(characterName(member.starter, member.form))} skills" hidden>
+      ${fanSlots.map(choice).join('')}</div>`;
+  }
+  /** Opens one card's fan (closing any other); focus moves into it for keyboard and right-click opens. */
+  private showFan(id: string, focus: boolean): void {
+    const run = this.session.view().run;
+    const actor = this.host.querySelector<HTMLButtonElement>(`[data-radiant-actor="${id}"]`);
+    if (!run || !actor || actor.disabled) return;
+    if (this.openFan && this.openFan !== id) this.closeFan(false);
+    const fan = this.host.querySelector<HTMLElement>(`[data-radiant-fan="${id}"]`);
+    if (!fan) return;
+    this.openFan = id;
+    fan.hidden = false;
+    fan.closest('.radiant-member')?.classList.add('has-fan');
+    this.renderFan(run, id);
+    if (!reducedMotion() && fan.animate) {
+      const animation = fan.animate([{ opacity: 0, transform: 'translate(-50%, 8px) scale(.94)' },
+        { opacity: 1, transform: 'translate(-50%, 0) scale(1)' }], { duration: 160, easing: 'cubic-bezier(.2,.8,.2,1)' });
+      this.animations.add(animation);
+      void animation.finished.catch(() => {}).finally(() => this.animations.delete(animation));
+    }
+    if (focus) fan.querySelector<HTMLButtonElement>('[data-radiant-skill]:not([aria-disabled="true"])')?.focus()
+      ?? fan.querySelector<HTMLButtonElement>('[data-radiant-skill]')?.focus();
+  }
+  private closeFan(returnFocus: boolean): void {
+    const id = this.openFan;
+    if (!id) return;
+    this.openFan = null;
+    const fan = this.host.querySelector<HTMLElement>(`[data-radiant-fan="${id}"]`);
+    const hadFocus = !!fan?.contains(document.activeElement);
+    if (fan) { fan.hidden = true; fan.closest('.radiant-member')?.classList.remove('has-fan'); }
+    if (returnFocus || hadFocus) this.host.querySelector<HTMLButtonElement>(`[data-radiant-actor="${id}"]`)?.focus();
+  }
+  /** Cost, readiness and Flare tier for one card's fan, from the device-run state. */
+  private renderFan(run: FrozenRadiantRun, id: string): void {
+    const fan = this.host.querySelector<HTMLElement>(`[data-radiant-fan="${id}"]`);
+    const member = run.state.gauge.members.find(entry => entry.id === id);
+    if (!fan || !member) return;
+    for (const choice of Array.from(fan.querySelectorAll<HTMLButtonElement>('[data-radiant-skill]'))) {
+      const slot = choice.dataset.radiantSkill;
+      let ready: boolean, cost: string;
+      if (slot === 'flare') {
+        const tier = readyFlare(run.state.gauge, id);
+        ready = tier !== null;
+        cost = tier ? tierNames[tier] : `${radiantFlareCost(member)}`;
+      } else {
+        const skillSlot = slot === '2' ? 2 : 1, efficiency = radiantSkillStats(run.state, id, skillSlot).skillEfficiency;
+        ready = readySkill(run.state.gauge, id, skillSlot, efficiency);
+        cost = `${radiantSkillCost(skillSlot, efficiency)}`;
+      }
+      choice.setAttribute('aria-disabled', String(!ready));
+      choice.classList.toggle('is-ready', ready);
+      choice.querySelector<HTMLElement>('[data-radiant-skill-cost]')!.textContent = cost;
+    }
+  }
+  /** Casts a fan choice: unaffordable choices only explain the cost and never reach the engine. */
+  private castFanSlot(id: string, slot: RadiantFanSlot): void {
+    const run = this.session.view().run;
+    const status = this.element<HTMLElement>('[data-radiant-gesture-status]');
+    if (!run) return;
+    if (slot === 'flare') {
+      if (!readyFlare(run.state.gauge, id)) { status.textContent = 'Convergent Light is not ready; no action spent.'; return; }
+      this.closeFan(false);
+      this.enqueueAction('flare', id); return;
+    }
+    const efficiency = radiantSkillStats(run.state, id, slot).skillEfficiency;
+    if (!readySkill(run.state.gauge, id, slot, efficiency)) {
+      status.textContent = `Skill ${slot} needs ${radiantSkillCost(slot, efficiency)} Luminosity; no action spent.`; return;
+    }
+    this.closeFan(false);
+    this.enqueueAction('skill', id, slot);
+  }
   private keyDown = (event: KeyboardEvent): void => {
     if (this.disposed || event.altKey || event.ctrlKey || event.metaKey || !(event.target instanceof HTMLElement)) return;
     const results = this.element<HTMLElement>('[data-radiant-results]');
@@ -351,12 +465,23 @@ export class RadiantBattleView {
       if (end && !end.disabled) { event.preventDefault(); this.endTurn(); }
       return;
     }
+    const fan = event.target.closest<HTMLElement>('[data-radiant-fan]');
+    if (fan) {
+      const choices = Array.from(fan.querySelectorAll<HTMLButtonElement>('[data-radiant-skill]'));
+      const at = choices.indexOf(event.target as HTMLButtonElement);
+      if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); this.closeFan(true); return; }
+      const step = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? -1 : 0;
+      if (step && at >= 0) { event.preventDefault(); choices[(at + step + choices.length) % choices.length].focus(); }
+      return;
+    }
     const id = event.target.dataset.radiantActor;
     if (!id || event.target.hasAttribute('disabled')) return;
     const key = event.key.toLowerCase();
+    if (key === 'd' && !event.shiftKey) { event.preventDefault(); this.showFan(id, true); return; }
     const kind = key === 'f' || event.key === 'ArrowUp' ? 'flare' : null;
     if (!kind) return;
     event.preventDefault();
+    this.closeFan(false);
     this.enqueueAction(kind, id);
   };
   private selection(button: HTMLElement): void {
@@ -409,7 +534,8 @@ export class RadiantBattleView {
         layers.innerHTML = shieldMarkup; this.shieldMarkup.set(id, shieldMarkup);
       }
       const statuses = effectHost.querySelector<HTMLElement>('[data-radiant-effects]')!;
-      const statusMarkup = radiantStatusRows(value.hp > 0 ? this.statuses[unit.dataset.radiantHealth!] : [], run);
+      const statusMarkup = radiantStatusRows(value.hp > 0 ? this.statuses[unit.dataset.radiantHealth!] : [], run) +
+        (value.hp > 0 && run.enemies.some(enemy => enemy.id === id) ? radiantSignatureTags(this.signatures.holders[id] ?? []) : '');
       if (this.statusMarkup.get(id) !== statusMarkup) {
         statuses.innerHTML = statusMarkup; this.statusMarkup.set(id, statusMarkup);
       }
@@ -424,6 +550,13 @@ export class RadiantBattleView {
       button.closest('.radiant-member')!.classList.toggle('is-defeated', !savedMember || savedMember.hp === 0);
       button.closest('.radiant-member')!.classList.toggle('has-acted', run.state.acted.includes(id));
       const tier = savedMember && savedMember.hp > 0 ? readyFlare(run.state.gauge, id) : null;
+      if (this.openFan === id) { if (button.disabled) this.closeFan(false); else this.renderFan(run, id); }
+      const chips = this.displayed.units[id]?.hp > 0
+        ? radiantSignatureChips(this.signatures.owners[id] ?? []) + radiantSignatureTags(this.signatures.holders[id] ?? []) : '';
+      if (this.signatureMarkup.get(id) !== chips) {
+        const host = this.element<HTMLElement>(`[data-radiant-signatures="${id}"]`);
+        host.innerHTML = chips; host.hidden = !chips; this.signatureMarkup.set(id, chips);
+      }
       button.dataset.readyTier = !button.disabled && tier ? tier : '';
       button.closest<HTMLElement>('.radiant-member')!.dataset.readyTier = button.dataset.readyTier;
       this.element<HTMLElement>(`[data-radiant-readiness="${id}"]`).textContent =
@@ -549,7 +682,7 @@ export class RadiantBattleView {
     this.settleLoot = response;
     if (!this.presenting) {
       this.displayed = radiantReadout(response.run.state);
-      this.statuses = radiantStatusSnapshot(response.run.state);
+      this.statuses = radiantStatusSnapshot(response.run.state); this.signatures = radiantSignatureView(response.run.state);
       this.appliedFrame = [this.presentationIndex, Number.MAX_SAFE_INTEGER];
       this.render();
       void this.revealSavedResult();
@@ -559,7 +692,7 @@ export class RadiantBattleView {
     if (!this.target || !run.state.enemies.some(enemy => enemy.id === this.target && enemy.hp > 0))
       this.target = run.state.enemies.find(enemy => enemy.hp > 0)?.id ?? null;
   }
-  async act(kind: 'normal' | 'flare', bearerId?: string): Promise<void> {
+  async act(kind: 'normal' | 'flare' | 'skill', bearerId?: string, slot: RadiantSkillSlot = 1): Promise<void> {
     this.presentationError = null;
     this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = '';
     const before = this.session.view().run;
@@ -570,8 +703,11 @@ export class RadiantBattleView {
     const member = before.state.bearers.find(unit => unit.loadout.id === actor)!;
     const tier = member.hp > 0 ? readyFlare(before.state.gauge, actor) : null;
     const focusedTarget = this.target;
+    const skill = radiantKits[member.loadout.starter as RadiantKitId]?.[slot === 1 ? 'skill1' : 'skill2'];
     const action: RadiantPlayerAction =
       kind === 'normal' ? { type: kind, bearerId: actor, targetId: focusedTarget ?? '' } :
+      kind === 'skill' ? { type: kind, bearerId: actor, slot,
+        ...(skill && radiantSkillAcceptsTarget(skill) && focusedTarget ? { targetId: focusedTarget } : {}) } :
       { type: kind, bearerId: actor, ...(tier && radiantFlareNeedsTarget(member.loadout, tier)
         ? { targetId: focusedTarget ?? '' } : {}) };
     try {
@@ -600,7 +736,7 @@ export class RadiantBattleView {
     } catch (error) { this.report(error); }
     finally { this.render(); }
   }
-  private enqueueAction(kind: QueuedRadiantAction['kind'], bearerId: string | undefined): void {
+  private enqueueAction(kind: QueuedRadiantAction['kind'], bearerId: string | undefined, slot?: RadiantSkillSlot): void {
     if (!bearerId || this.disposed || this.queuedActionActors.has(bearerId)) return;
     const view = this.session.view(), run = view.run;
     // Taps are accepted while earlier actions are still being presented (flurry); the next
@@ -614,9 +750,13 @@ export class RadiantBattleView {
       this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = 'Convergent Light is not ready.';
       return;
     }
+    if (kind === 'skill' && (!slot || !readySkill(run.state.gauge, bearerId, slot, radiantSkillStats(run.state, bearerId, slot).skillEfficiency))) {
+      this.element<HTMLElement>('[data-radiant-gesture-status]').textContent = 'Not enough Luminosity for that skill; no action spent.';
+      return;
+    }
     if (!run.state.enemies.some(enemy => enemy.hp > 0)) return;
     this.queuedActionActors.add(bearerId);
-    this.actionQueue.push({ kind, bearerId });
+    this.actionQueue.push({ kind, bearerId, slot });
     this.gestures.cancel();
     this.render();
     void this.drainActionQueue();
@@ -640,7 +780,7 @@ export class RadiantBattleView {
           continue;
         }
         try {
-          await this.act(queued.kind, queued.bearerId);
+          await this.act(queued.kind, queued.bearerId, queued.slot);
         } catch (error) {
           this.actionQueue.length = 0;
           this.report(error);
@@ -756,8 +896,8 @@ export class RadiantBattleView {
   /** Rebuilds the battle surface for a new or restarted encounter attempt. */
   private async remount(run: FrozenRadiantRun): Promise<void> {
     this.gestures.cancel(); this.cancelEffects(); this.artworkCleanup(); this.resultCelebration?.(); this.resultCelebration = null;
-    this.displayed = radiantReadout(run.state); this.statuses = radiantStatusSnapshot(run.state);
-    this.statusMarkup.clear(); this.shieldMarkup.clear(); this.resultKey = null; this.leaderMarkup = null;
+    this.displayed = radiantReadout(run.state); this.statuses = radiantStatusSnapshot(run.state); this.signatures = radiantSignatureView(run.state);
+    this.statusMarkup.clear(); this.shieldMarkup.clear(); this.signatureMarkup.clear(); this.openFan = null; this.resultKey = null; this.leaderMarkup = null;
     this.target = run.state.enemies.find(unit => unit.hp > 0)?.id ?? null;
     this.impactTarget = null; this.finalHaul = null; this.shownHaul = this.session.view().haul;
     this.shownCharge.clear(); this.settleLoot = null; this.lootPouring = false;
@@ -794,6 +934,7 @@ export class RadiantBattleView {
             this.animate(this.element(`[data-radiant-art="${player.bearerId}"]`),
               [{ filter: 'brightness(1)' }, { filter: 'brightness(1.8)' }, { filter: 'brightness(1)' }], 200),
           this.flareCutin(player, before),
+          this.skillCallout(player, before),
         ]);
       }
       const fx: Promise<void>[] = [], failures: unknown[] = [], played = new Set<number>();
@@ -865,13 +1006,13 @@ export class RadiantBattleView {
       // Once nothing else is presenting, show the live run (the saved run after a settle) exactly.
       const shown = view.run ?? response.run;
       this.displayed = radiantReadout(shown.state);
-      this.statuses = radiantStatusSnapshot(shown.state);
+      this.statuses = radiantStatusSnapshot(shown.state); this.signatures = radiantSignatureView(shown.state);
       this.appliedFrame = [this.presentationIndex, Number.MAX_SAFE_INTEGER];
       this.shownHaul = this.targetHaul();
       this.activeReceipt = null; this.impactTarget = null;
     } else if (this.newer(index, Number.MAX_SAFE_INTEGER)) {
       this.displayed = radiantReadout(response.run.state);
-      this.statuses = radiantStatusSnapshot(response.run.state);
+      this.statuses = radiantStatusSnapshot(response.run.state); this.signatures = radiantSignatureView(response.run.state);
     }
     this.presenting = !idle;
     this.presentationError = null;
@@ -928,7 +1069,7 @@ export class RadiantBattleView {
     const view = this.session.view(), latest = view.run;
     if (latest) {
       this.displayed = radiantReadout(latest.state);
-      this.statuses = radiantStatusSnapshot(latest.state);
+      this.statuses = radiantStatusSnapshot(latest.state); this.signatures = radiantSignatureView(latest.state);
       this.appliedFrame = [this.presentationIndex, Number.MAX_SAFE_INTEGER];
       this.shownHaul = this.targetHaul();
       this.presenting = false; this.activeReceipt = null; this.impactTarget = null; this.presentationError = null;
@@ -1275,7 +1416,7 @@ export class RadiantBattleView {
     const card = this.host.querySelector<HTMLElement>(`[data-radiant-unit="${action.bearerId}"]`);
     const color = (card && getComputedStyle(card).getPropertyValue('--accent').trim()) || '#ffffff';
     const panel = radiantFlareCutin({ name: characterName(member.loadout.starter, member.loadout.form),
-      flare: radiantFlares[member.loadout.starter][tier].name, tier, tierLabel: tierNames[tier],
+      flare: radiantFlareName(member.loadout.starter), tier, tierLabel: tierNames[tier],
       art: radiantAllyArt(member.loadout), color });
     this.fxLayer().append(panel);
     const cleanup = () => panel.remove();
@@ -1288,6 +1429,28 @@ export class RadiantBattleView {
         { opacity: 1, transform: 'translateX(2%) skewX(0deg)', offset: .82, easing: 'cubic-bezier(.6,0,.9,.4)' },
         { opacity: 0, transform: 'translateX(12%) skewX(6deg)' },
       ], tier === 'ultimate' ? 1100 : 820, { easing: 'linear' });
+    } finally { cleanup(); this.effectsCleanup.delete(cleanup); }
+  }
+  /** Skill name callout over the caster's card during the windup (finite, pointer-transparent; none under Reduce motion). */
+  private async skillCallout(action: RadiantPlayerAction, before: RadiantCombatState): Promise<void> {
+    if (action.type !== 'skill' || reducedMotion() || this.disposed) return;
+    const member = before.bearers.find(unit => unit.loadout.id === action.bearerId);
+    const card = this.host.querySelector<HTMLElement>(`[data-radiant-card][data-radiant-unit="${action.bearerId}"]`);
+    if (!member || !card) return;
+    const callout = document.createElement('span');
+    callout.className = 'radiant-skill-callout'; callout.setAttribute('aria-hidden', 'true');
+    callout.dataset.slot = String(action.slot);
+    callout.textContent = radiantSkillName(member.loadout.starter, action.slot);
+    card.append(callout);
+    const cleanup = () => callout.remove();
+    this.effectsCleanup.add(cleanup);
+    try {
+      await this.animate(callout, [
+        { opacity: 0, transform: 'translate(-50%, 6px) scale(.9)' },
+        { opacity: 1, transform: 'translate(-50%, -4px) scale(1)', offset: .2 },
+        { opacity: 1, transform: 'translate(-50%, -10px) scale(1)', offset: .75 },
+        { opacity: 0, transform: 'translate(-50%, -18px) scale(1.02)' },
+      ], 640);
     } finally { cleanup(); this.effectsCleanup.delete(cleanup); }
   }
   private shakeField(amplitude: number): Promise<void> {
@@ -1332,6 +1495,7 @@ export class RadiantBattleView {
     this.host.removeEventListener('click', this.click);
     this.host.removeEventListener('contextmenu', this.contextMenu);
     this.host.removeEventListener('keydown', this.keyDown);
+    document.removeEventListener('pointerdown', this.outsideFan, true);
     window.removeEventListener('last-light-motion-change', this.motion);
     window.removeEventListener('last-light-battle-speed-change', this.speed);
     this.host.replaceChildren();

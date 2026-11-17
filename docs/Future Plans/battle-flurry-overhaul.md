@@ -22,7 +22,8 @@ motes drop once per enemy defeat. The owner approved the number sheet, O1-O5 and
 all four batches plus restored role traits (D-473, 2026-11-16). Step 2a, the
 engine framework, is implemented on branch `battle-flurry-phase3` (D-474,
 2026-11-17; not released), and Step 2b signatures for all 32 bearers too
-(D-475 to D-478). Next: Step 3 (UI), Step 4 (retune) and one release.
+(D-475 to D-478), and Step 3, the skill fan, kit text, Skill stats and counters
+(D-479). Next: Step 4 (retune) and one release.
 
 **Status:** owner-approved direction (D-470, seven decisions below). Exact
 numbers, kit batches, the Conduit remap and later depth systems still need

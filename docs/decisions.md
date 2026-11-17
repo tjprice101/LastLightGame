@@ -1,5 +1,36 @@
 # Decision log
 
+## Battle Flurry Phase 3 Step 3: skill fan, kit text, Skill stats, counters (D-479, 2026-11-17)
+
+Implements Step 3 on branch `battle-flurry-phase3`. **Not released.** Spec:
+[combat spec](combat.md#skill-ui-and-kit-text-d-479-battle-flurry-phase-3-step-3).
+
+- **Owner choices (2026-11-17):**
+  - Tooltips show the approved base numbers, with a separate Skill stats panel.
+    Flare tiers show their own tier-scaled numbers.
+  - Hold opens a three-button fan (Skill 1, Skill 2, Flare). Right click and D
+    open it too.
+  - Signature counters appear as chips on the owner's card, plus tags on the
+    enemies or allies that hold them.
+- **Implemented:** the approved kit text as authored templates (the drafts'
+  wording, not a data generator), Leader text in the approved phrasing, the
+  Skill stats panel, role trait lines, the shared glossary, the fan with
+  keyboard and pointer paths, skill callouts and visuals, gauge ticks at 25 and
+  40, and the counter chips and tags.
+- **Implementation rules chosen (owner may revise):**
+  - Releasing a hold in place keeps the fan open for a tap. Releasing elsewhere
+    after a drag closes it.
+  - An unaffordable choice stays visible (dimmed), explains its cost and
+    spends nothing.
+  - Counters update when each action's presentation finishes, not per hit.
+  - Every Flare tier uses the Ultimate ability icon. Skill 1 and Skill 2 use
+    their own icons.
+  - Aurora's Flare tooltip says 12 hits, matching the engine (the draft said 8).
+- **Engine:** no rule change. `radiantSkillStats` now wraps a shared
+  `radiantLoadoutSkillStats(loadout, slot)`, so the server bundle text changed.
+- **Open:** Step 4 retune (owner approves numbers) and the single Phase 3
+  release with the authority deploy (owner approval).
+
 ## Battle Flurry Phase 3 Step 2b batch 4: signature mechanics (D-478, 2026-11-17)
 
 Implements the approved batch 4 kits (D-473) on branch `battle-flurry-phase3`.

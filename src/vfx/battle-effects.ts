@@ -170,7 +170,9 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
     const bearer = action ? state.bearers.find(unit => unit.loadout.id === action.bearerId) : state.bearers[0];
     if (!bearer) throw new Error('Radiant visual caster is missing.');
     const flare = action?.type === 'flare' ? readyFlare(state.gauge, action.bearerId) : null;
-    const tier: AbilityTier = flare === 'ultimate' ? 'ultimate' : flare === 'glimmering' ? 'skill2' : flare === 'sparkling' ? 'skill1' : 'light';
+    // D-479: skills use their own Skill 1 / Skill 2 visuals (shared with the Sparkling and Glimmering Flare tiers).
+    const tier: AbilityTier = flare === 'ultimate' ? 'ultimate' : flare === 'glimmering' ? 'skill2' : flare === 'sparkling' ? 'skill1' :
+      action?.type === 'skill' ? (action.slot === 1 ? 'skill1' : 'skill2') : 'light';
     const original = radiantVisualDefinition(bearer.loadout.starter, tier);
     return { action, state: structuredClone(state), ability: { ...original,
       name: flare ? radiantFlareName(bearer.loadout.starter) : action?.type === 'skill'
@@ -185,7 +187,7 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
     const size = this.size(), signature = this.signature(bearer.loadout.starter);
     const rect = this.anchor(action.bearerId);
     const x = rect.left + rect.width / 2, y = rect.top + rect.height / 2;
-    const duration = flare === 'ultimate' ? .6 : flare ? .4 : .14;
+    const duration = flare === 'ultimate' ? .6 : flare ? .4 : action.type === 'skill' ? .26 : .14;
     const color = original.palette.mid;
     await this.play(duration, time => {
       const p = time / duration, extent = Math.min(rect.width, rect.height);
@@ -227,7 +229,7 @@ export class RadiantCanvasEffects implements RadiantBattleEffects {
       const own = !!caster && packet.source.kind !== 'enemy' && packet.source.bearerId === caster.bearerId;
       // Support and periodic packets never borrow offensive projectile choreography.
       const support = packet.type !== 'damage';
-      const authored = own && ['normal', 'flare', 'master'].includes(packet.source.kind);
+      const authored = own && ['normal', 'skill', 'flare', 'master'].includes(packet.source.kind);
       const simple = !authored || packet.type === 'damage' && packet.origin !== 'direct';
       const duration = packet.type === 'status' ? .35 : simple ? .45 : ability.tier === 'ultimate' ? 1.2 : ability.tier === 'light' ? .5 : .85;
       const ownerId = packet.source.kind !== 'enemy' ? packet.source.bearerId : null;

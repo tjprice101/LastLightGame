@@ -6,7 +6,8 @@
 - Recorded as D-473. Step 2a (engine framework) implemented on branch
   `battle-flurry-phase3` (D-474, not released); signature clauses below run
   from Step 2b. All four batches implemented (D-475 to D-478; not released).
-  Next: Step 3 (UI).
+  Step 3 UI and kit text implemented (D-479); this text is now the tooltip
+  source and `kit-text.test.ts` checks it word for word. Next: Step 4 (retune).
 
 Plan: [battle-flurry-overhaul.md](../battle-flurry-overhaul.md), section D and
 "Skill language".

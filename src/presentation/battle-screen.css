@@ -739,3 +739,52 @@ html[data-motion="reduced"] .radiant-member[data-ready-tier]:not([data-ready-tie
 /* In-battle speed: one cycling text control in the HUD tools. */
 .radiant-battle .radiant-hud-tools [data-radiant-speed] { font-variant-numeric: tabular-nums; font-weight: 700; padding-inline: 6px; }
 .radiant-battle.is-settings-open .radiant-member::after { animation-play-state: paused; }
+
+/* Phase 3 Step 3 (D-479): Skill 1 / Skill 2 / Flare fan, gauge skill thresholds, signature counters and skill callouts. */
+.radiant-skill-fan { position: absolute; z-index: 6; left: 0; right: 0; bottom: calc(100% + 6px); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px; padding: 5px; border: 1px solid var(--gild-line); border-radius: 12px; transform: translateX(0);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 16%, #14151cf2), #0e0f15f5);
+  box-shadow: 0 0 0 1px #0008, 0 14px 30px -12px color-mix(in srgb, var(--accent) 70%, transparent); }
+.radiant-skill-fan[hidden] { display: none; }
+.radiant-battle .radiant-skill-choice { position: relative; display: grid; grid-template-columns: 28px minmax(0, 1fr); grid-template-rows: auto auto; align-items: center;
+  gap: 0 5px; min-width: 0; min-height: 44px; padding: 4px 6px; border-radius: 9px; text-align: left; font-size: 11px; line-height: 1.2;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, #3a3d48); background: #1a1c25; color: var(--text-secondary, #c9ccd4); cursor: pointer; }
+.radiant-skill-choice .ability-icon { grid-row: 1 / 3; width: 28px; height: 28px; border-radius: 6px; filter: grayscale(.7) brightness(.75); }
+.radiant-skill-label { min-width: 0; display: flex; flex-direction: column; }
+.radiant-skill-label small { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted, #9a9daa); }
+.radiant-skill-label strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; color: inherit; }
+.radiant-skill-cost { grid-column: 2; font-size: 10px; font-variant-numeric: tabular-nums; color: var(--text-muted, #9a9daa); }
+.radiant-skill-cost:not(:empty)::after { content: " Luminosity"; }
+.radiant-skill-choice[data-radiant-skill="flare"].is-ready .radiant-skill-cost::after { content: ""; }
+.radiant-battle .radiant-skill-choice.is-ready { color: #f4f4f7; border-color: color-mix(in srgb, var(--accent) 70%, var(--gild-light));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 26%, #1d1f2a), #15161e);
+  box-shadow: inset 0 0 0 1px #fff2, 0 0 14px -4px var(--accent); }
+.radiant-skill-choice.is-ready .ability-icon { filter: none; }
+.radiant-skill-choice.is-ready .radiant-skill-cost { color: color-mix(in srgb, var(--accent) 45%, #fff); }
+.radiant-skill-choice.is-ready::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, #ffffff30 50%, transparent 65%) 200% 0 / 250% 100% no-repeat; animation: radiant-skill-sheen 2.6s ease-in-out infinite; }
+.radiant-battle .radiant-skill-choice.is-selected, .radiant-battle .radiant-skill-choice:hover { transform: translateY(-2px); border-color: var(--gild-light); }
+.radiant-battle .radiant-skill-choice[aria-disabled="true"] { cursor: not-allowed; }
+@keyframes radiant-skill-sheen { 0%, 55% { background-position: 200% 0; } 100% { background-position: -100% 0; } }
+html[data-motion="reduced"] .radiant-skill-choice.is-ready::after { animation: none; background: none; }
+html[data-motion="reduced"] .radiant-battle .radiant-skill-choice.is-selected, html[data-motion="reduced"] .radiant-battle .radiant-skill-choice:hover { transform: none; }
+.radiant-member.has-fan { z-index: 5; box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 60%, transparent); }
+
+.radiant-energy-tick { position: absolute; z-index: 2; top: 1px; bottom: 1px; left: var(--tick); width: 2px; margin-left: -1px; border-radius: 1px;
+  background: #ffffffa6; box-shadow: 0 0 3px #0009; pointer-events: none; }
+
+.radiant-signature-chips { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; min-width: 0; }
+.radiant-signature-chips[hidden], .radiant-signature-chips:empty { display: none; }
+.radiant-squad .radiant-member { grid-template-areas: "face hp" "face charge" "chips chips"; }
+.radiant-squad .radiant-signature-chips { grid-area: chips; margin-top: 1px; }
+.radiant-signature-chip, .radiant-signature-tag { display: inline-flex; align-items: center; max-width: 100%; padding: 1px 7px; border-radius: 999px;
+  font-size: 10px; line-height: 1.4; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.radiant-signature-chip { color: #f4f4f7; border: 1px solid color-mix(in srgb, var(--accent, #c9ccd4) 55%, var(--gild-line));
+  background: color-mix(in srgb, var(--accent, #c9ccd4) 18%, #12131a); }
+.radiant-signature-tag { color: var(--text-secondary, #c9ccd4); border: 1px dashed #ffffff40; background: #0d0f18d9; }
+.radiant-battle .radiant-status-list .radiant-signature-tag { display: inline-flex; margin: 2px 3px 2px 0; border-left: 1px dashed #ffffff40; }
+
+.radiant-skill-callout { position: absolute; z-index: 7; left: 50%; bottom: calc(100% + 4px); padding: 3px 12px; border-radius: 999px; pointer-events: none; white-space: nowrap;
+  font-family: var(--display-font); font-weight: 700; font-size: 13px; letter-spacing: .04em; color: #fff; transform: translate(-50%, 0);
+  border: 1px solid var(--gild-light); background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 45%, #1b1c24), #14151c);
+  box-shadow: 0 0 18px -4px var(--accent); text-shadow: 0 1px 2px #000a; }

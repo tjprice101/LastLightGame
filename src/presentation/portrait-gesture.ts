@@ -1,6 +1,8 @@
 import { gestureThreshold } from './battle-gesture';
 
 export const radiantHoldMilliseconds = 120;
+/** A skill fan choice (Phase 3 Step 3, D-479). */
+export type RadiantFanSlot = 1 | 2 | 'flare';
 const otherControl = 'button, a, input, select, textarea, summary, details, [data-radiant-gesture-ignore]';
 interface Drag {
   button: HTMLButtonElement;
@@ -26,11 +28,25 @@ export function radiantGestureActor(target: Element, host: HTMLElement): HTMLBut
   return button;
 }
 
+/** The fan choice under a viewport point, if it belongs to this card. */
+function fanSlotAt(surface: HTMLElement, x: number, y: number): RadiantFanSlot | null {
+  const hit = typeof document.elementFromPoint === 'function' ? document.elementFromPoint(x, y) : null;
+  const choice = hit?.closest<HTMLElement>('[data-radiant-skill]');
+  if (!choice || !surface.contains(choice)) return null;
+  const slot = choice.dataset.radiantSkill;
+  return slot === '1' ? 1 : slot === '2' ? 2 : slot === 'flare' ? 'flare' : null;
+}
+
 /** Pointer capture keeps a charged release on its original card. A tap
- * remains a native button click; all deliberate/cancelled drags suppress it. */
+ * remains a native button click; all deliberate/cancelled drags suppress it.
+ * Holding opens the card's Skill 1 / Skill 2 / Flare fan (D-479): releasing on a
+ * choice casts it, a held release in place leaves the fan open for a tap, a quick
+ * upward swipe still casts a ready Flare, and any other release cancels. */
 export function bindRadiantPortraitGestures(host: HTMLElement, options: {
-  cast(id: string): void;
+  cast(id: string, slot: RadiantFanSlot): void;
   ready(id: string): string | null;
+  open(id: string): void;
+  close(): void;
   notice(text: string): void;
 }): { cancel(): void; dispose(): void; consumeClick(button: HTMLButtonElement): boolean } {
   let drag: Drag | null = null, timer: ReturnType<typeof setTimeout> | null = null;
@@ -40,6 +56,8 @@ export function bindRadiantPortraitGestures(host: HTMLElement, options: {
     timer = null;
     const prior = drag; drag = null;
     if (prior) {
+      for (const choice of Array.from(prior.surface.querySelectorAll('[data-radiant-skill].is-selected')))
+        choice.classList.remove('is-selected');
       for (const element of new Set([prior.button, prior.surface])) {
         element.classList.remove('is-arming', 'is-held', 'is-dragging', 'is-primed', 'is-unready');
         element.style.removeProperty('--radiant-drag');
@@ -49,7 +67,7 @@ export function bindRadiantPortraitGestures(host: HTMLElement, options: {
     }
   };
   const cancel = () => {
-    if (drag) suppressed = drag.button;
+    if (drag) { suppressed = drag.button; options.close(); }
     reset();
   };
   const activateHold = (notify: boolean) => {
@@ -62,8 +80,8 @@ export function bindRadiantPortraitGestures(host: HTMLElement, options: {
     drag.surface.classList.add('is-held');
     drag.surface.classList.toggle('is-unready', !tier);
     if (drag.surface !== drag.button) drag.button.classList.add('is-held');
-    if (notify) options.notice(tier ? `${tier} ready. Drag upward and release to cast; Escape cancels.` :
-      'Flare is not ready. Release to cancel; no action will be spent.');
+    options.open(drag.id);
+    if (notify) options.notice(`Skills open. Release on Skill 1, Skill 2 or Flare to cast${tier ? `; swipe up for ${tier}` : ''}. Escape cancels.`);
   };
   const down = (event: PointerEvent) => {
     if (event.button !== 0 || event.isPrimary === false || !(event.target instanceof Element)) return;
@@ -89,10 +107,13 @@ export function bindRadiantPortraitGestures(host: HTMLElement, options: {
     if (!drag.held && dy <= -gestureThreshold && Math.abs(dy) > Math.abs(dx)) activateHold(false);
     if (drag.held) {
       event.preventDefault();
-      drag.surface.style.setProperty('--radiant-drag', `${Math.max(-56, Math.min(16, dy))}px`);
-      drag.surface.style.setProperty('--radiant-lift', String(Math.max(0, Math.min(1, -dy / gestureThreshold))));
+      const slot = fanSlotAt(drag.surface, event.clientX, event.clientY);
+      for (const choice of Array.from(drag.surface.querySelectorAll<HTMLElement>('[data-radiant-skill]')))
+        choice.classList.toggle('is-selected', choice.dataset.radiantSkill === String(slot));
+      drag.surface.style.setProperty('--radiant-drag', `${Math.max(-56, Math.min(16, slot ? 0 : dy))}px`);
+      drag.surface.style.setProperty('--radiant-lift', String(slot ? 0 : Math.max(0, Math.min(1, -dy / gestureThreshold))));
       drag.surface.classList.toggle('is-primed',
-        Boolean(drag.tier) && dy <= -gestureThreshold && Math.abs(dy) > Math.abs(dx));
+        !slot && Boolean(drag.tier) && dy <= -gestureThreshold && Math.abs(dy) > Math.abs(dx));
     }
   };
   const up = (event: PointerEvent) => {
@@ -103,17 +124,23 @@ export function bindRadiantPortraitGestures(host: HTMLElement, options: {
       dy <= -gestureThreshold && Math.abs(dy) > Math.abs(dx);
     const deliberate = moved || held;
     if (deliberate) { suppressed = prior.button; event.preventDefault(); }
+    const slot = held ? fanSlotAt(prior.surface, event.clientX, event.clientY) : null;
     reset();
     if (!deliberate) return;
     const tier = options.ready(prior.id);
-    if (held && dy <= -gestureThreshold && Math.abs(dy) > Math.abs(dx) && tier && !prior.button.disabled)
-      options.cast(prior.id);
-    else options.notice(!tier ? 'Flare is not ready; no action spent.' :
-      'Charged gesture cancelled. Press and drag the portrait upward, then release.');
+    const swipe = held && dy <= -gestureThreshold && Math.abs(dy) > Math.abs(dx);
+    if (prior.button.disabled) { options.close(); return; }
+    if (slot) options.cast(prior.id, slot);
+    else if (swipe && tier) options.cast(prior.id, 'flare');
+    else if (held && !moved) return; // The fan stays open for a tap.
+    else {
+      options.close();
+      options.notice(swipe && !tier ? 'Flare is not ready; no action spent.' : 'Skills closed; no action spent.');
+    }
   };
   const lost = (event: PointerEvent) => { if (drag?.pointer === event.pointerId) cancel(); };
   const key = (event: KeyboardEvent) => {
-    if (event.key === 'Escape' && drag) { event.preventDefault(); cancel(); options.notice('Charged gesture cancelled.'); }
+    if (event.key === 'Escape' && drag) { event.preventDefault(); cancel(); options.notice('Skills closed; no action spent.'); }
     else if (!drag && (event.key === 'Enter' || event.key === ' ')) suppressed = null;
   };
   host.addEventListener('pointerdown', down);

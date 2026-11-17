@@ -1,5 +1,45 @@
 # Current state and handoff
 
+## Battle Flurry Phase 3 Step 3: skill fan, kit text, counters (2026-11-17)
+
+**Implemented on branch `battle-flurry-phase3`, not released (D-479).**
+`main` and `overhaul/radiant-foundation` are unchanged. Spec:
+[combat spec](combat.md#skill-ui-and-kit-text-d-479-battle-flurry-phase-3-step-3).
+- Character sheets now show Skill 1, Skill 2 and Flare tiers in the approved
+  wording, Leader text in the new phrasing, a Skill stats panel, role traits
+  and a shared glossary. The stale Defense article is gone.
+- In battle, holding a card, right clicking or pressing D opens the Skill 1 /
+  Skill 2 / Flare fan. Skills cast from the device and show a name callout.
+- Signature counters appear on cards, and marks appear on the units holding
+  them.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- Full `npx vitest run`: 306 files, 10,732 tests passed.
+- New tests:
+  - `kit-text.test.ts` (68): all 32 kits word for word against the drafts.
+  - `battle-signatures.test.ts` (35).
+  - Fan cases in `portrait-gesture.test.ts`.
+  - Fan and counter cases in `battle-screen.test.ts`.
+
+  Older sheet tests were updated for the new sections.
+- `npx vite build`: passed (existing chunk advisory).
+- `node tools/bundle_server_game.mjs`: bundle changed only by the Skill stats
+  helper split (same results); **not deployed**.
+- **Not verified:** in-game play in a browser (no browser driver in this
+  environment); hosted or online battle.
+
+**Next:**
+- Owner in-game check:
+  1. Open the debug profile (isolated, in memory) and start a local battle.
+  2. Hold a card, then release on Skill 1 or Skill 2. Also try releasing in
+     place and tapping a choice.
+  3. Right click a card. Press D, use the arrow keys, then Escape.
+  4. Watch the counters with a Crinso, Thornia or Ilvaris trio.
+  5. Repeat at phone width and with Reduce motion.
+- Then Step 4 (retune on Opus; the owner approves numbers) and one release
+  with the authority deploy (owner approval).
+
 ## Battle Flurry Phase 3 Step 2b batch 4: signatures (2026-11-17)
 
 **Implemented on branch `battle-flurry-phase3`, not released (D-478).**
