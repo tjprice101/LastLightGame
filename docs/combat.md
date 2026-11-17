@@ -1,5 +1,70 @@
 # Combat specification
 
+## Signature mechanics, batch 2 (D-476, Battle Flurry Phase 3 Step 2b)
+
+**Status:** implemented on branch `battle-flurry-phase3`, not released (ships
+with the rest of Phase 3). Kit text: [phase3-kit-drafts.md](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#batch-2-rose-and-calamitic-6-owner-approved-2026-11-16).
+Batch 1 shared rules apply (conditions read once before the cast; signature
+clauses right after the cast's damage; a Passive works only while its bearer
+lives; signature strikes use normal mitigation and damage multipliers).
+
+**Scope.** `radiantSignatureBearers` now also lists Rosetta, Thornia, Crinso,
+Ozriel, Ilvaris and Kaelith. Batch 3-4 signature data stays inert. Batch 2
+Leaders already ran as Conduit pairs (D-456) and are unchanged.
+
+**State (schema stays 8; unreleased).** New `signature` kinds, each validated
+(enemy references must be distinct living enemies; counts and clocks capped):
+- `quarry` (Rosetta): `targetId` (living enemy or `null`), `contributors`.
+- `thorns` (Thornia): `traps`, one per enemy: `enemyId`, `charges`,
+  `remaining`, `value` (strike coefficient, already x Skill Power and tier).
+- `combo` (Crinso): `combo` 0-5 and `last` skill slot (`1`, `2` or `null`).
+- `refusal` (Ozriel): `spent`, the allies whose save is used.
+- `marks` (Ilvaris): `enemyId`, `stacks` 1-5, `remaining`.
+- `incisions` (Kaelith): `enemyId`, `stacks` 1-3.
+- New `signature` event ops: `quarry`, `contributor`, `trap`, `trap-strike`,
+  `combo`, `refusal`, `mark`, `incision`.
+- A defeated enemy leaves every ledger (Quarry clears; traps, Marks and
+  Incisions on it vanish), alongside the batch 1 Shuriken return.
+
+**Damage taken.** Fate-seared Marks (+10% per stack) and Incisions (+10% per
+Incision) add to Expose in the same direct-damage factor (Normal, skills,
+Flares, signature strikes), while their owner lives. Like Expose, they do not
+affect Burn, generated damage or exact strikes (Wounds).
+
+**Per bearer.**
+- **Rosetta.** Golden Thorn Volley marks its surviving target as the Quarry
+  (kept until replaced or defeated). Another living ally whose Normal, skill
+  or Flare lands a hit on the Quarry becomes a contributor; contributors reset
+  at the start of each player turn. Crimson Skyfall and Rose Beyond the Sun
+  strike the living Quarry instead of the selected target; Skyfall adds +40%
+  power per contributor. The Flare's Expose lands on the Quarry, and it heals
+  each living contributor 20% of max Health (N7 basis, x tier effect scale).
+- **Thornia.** A Thorn Trap (3 charges, 3 turns) strikes for 60% (Skill 1) or
+  200% (Flare, x tier damage scale), both x Skill Power. A new trap on the same
+  enemy keeps the stronger strike, more charges and the longer clock. When the
+  trapped enemy's attack lands any hit on an ally (redirected and refused hits
+  count), the trap spends 1 charge and strikes once, after the attack, while
+  Thornia lives (source: her Passive). Shadow Rose Cleave spends 1 charge of
+  its target's trap for a 100% strike. Trap clocks tick at the end of the
+  enemy phase; an empty trap is removed.
+- **Crinso.** After each Skill 1 or 2: a different slot than the last adds 1
+  Combo (max 5); the same slot resets it to 0; the first skill only records
+  the slot. Golden Edge ignores 20% Defense when the last skill was Crimson
+  Rupture; Crimson Rupture uses 370% when the last was Golden Edge. Blossoming
+  Cataclysm adds +200% power per Combo, ignores 45% Defense at 3+ Combo, then
+  sets Combo to 0 (the last slot is kept). Normal Attack changes nothing.
+- **Ozriel.** While Ozriel lives, the first enemy hit per encounter that would
+  defeat an ally (Ozriel included) leaves them at 1 Health instead. A later
+  lethal hit, even in the same attack, defeats them.
+- **Ilvaris.** Unwritten Verse adds 1 Mark to its target; Tomorrow, Unwritten
+  adds 2 to each enemy (not scaled by tier). Max 5 stacks; each new stack
+  sets the clock to 2 turns (+ Skill Duration). Clocks tick at the end of the
+  enemy phase.
+- **Kaelith.** Each skill or Flare adds 1 Incision (max 3) to every enemy it
+  landed a hit on and that survived, right after its damage. Glass Meridian
+  reads the target's Incisions before the cast (+20% power each), then removes
+  all of them from the target. Incisions have no clock.
+
 ## Signature mechanics, batch 1 (D-475, Battle Flurry Phase 3 Step 2b)
 
 **Status:** implemented on branch `battle-flurry-phase3`, not released (ships

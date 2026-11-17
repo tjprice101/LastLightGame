@@ -53,7 +53,21 @@ export interface RadiantCover { casterId: string; share: number; remaining: numb
 export type RadiantOwnSignature =
   | { kind: 'cyclone'; gusts: number; cyclone: { coefficient: number; perGust: number; remaining: number } | null }
   | { kind: 'shuriken'; held: number; lodged: string[] }
-  | { kind: 'wounds'; wounds: number };
+  | { kind: 'wounds'; wounds: number }
+  /** Rosetta: her Quarry (a living enemy or none) and the other allies who hit it this turn. */
+  | { kind: 'quarry'; targetId: string | null; contributors: string[] }
+  /** Thornia: at most one Thorn Trap per living enemy. */
+  | { kind: 'thorns'; traps: RadiantThornTrap[] }
+  /** Crinso: Combo 0-5 and the last skill slot used (Rose Duality). */
+  | { kind: 'combo'; combo: number; last: RadiantSkillSlot | null }
+  /** Ozriel: allies who already survived their one lethal hit this encounter. */
+  | { kind: 'refusal'; spent: string[] }
+  /** Ilvaris: Fate-seared Mark stacks (1-5) and clocks per living enemy. */
+  | { kind: 'marks'; marks: { enemyId: string; stacks: number; remaining: number }[] }
+  /** Kaelith: Incisions (1-3) per living enemy, kept until consumed. */
+  | { kind: 'incisions'; incisions: { enemyId: string; stacks: number }[] };
+/** Thornia's trap on one enemy; `value` is the strike coefficient, already scaled by Skill Power and Flare tier. */
+export interface RadiantThornTrap { enemyId: string; charges: number; remaining: number; value: number }
 export interface RadiantBearer {
   loadout: RadiantLoadout;
   stats: RadiantStats;
@@ -97,7 +111,8 @@ export interface RadiantCombatState {
 }
 export type RadiantTimedStatus = RadiantCategory | 'weaken-removed';
 export type RadiantSignatureOp = 'seed' | 'seed-wither' | 'cover' | 'cyclone' | 'gust' | 'cyclone-release' |
-  'lodge' | 'recall' | 'return' | 'wounds' | 'detonate' | 'refund';
+  'lodge' | 'recall' | 'return' | 'wounds' | 'detonate' | 'refund' |
+  'quarry' | 'contributor' | 'trap' | 'trap-strike' | 'combo' | 'refusal' | 'mark' | 'incision';
 export type RadiantCombatAction =
   | { type: 'normal'; bearerId: string; targetId: string }
   | { type: 'skill'; bearerId: string; slot: RadiantSkillSlot; targetId?: string }
@@ -307,20 +322,30 @@ function validateCategories(
 /** Bearers whose signature clauses, `when` conditions, `alt` powers and Passive rules run (Step 2b batches). */
 export const radiantSignatureBearers: ReadonlySet<RadiantBearerId> = new Set<RadiantBearerId>([
   'ember', 'tide', 'sprout', 'atmoso', 'aurora', 'bliss', 'bruno', 'disciple', 'elise', 'razor',
+  'rosetta', 'thornia', 'crinso', 'ozriel', 'ilvaris', 'kaelith',
 ]);
 /** Elise's Shuriken count (Stormwheel Rhythm). */
 export const radiantShurikenCount = 2;
 /** Atmoso's Cyclone holds at most this many Gusts (Gale Cadence). */
 export const radiantGustCap = 5;
-/** Passive values for batch 1 (D-473). */
+/** Signature caps for batch 2 (D-473). */
+export const radiantSignatureCaps = { combo: 5, marks: 5, incisions: 3 } as const;
+/** Passive values for batches 1 and 2 (D-473). */
 export const radiantPassiveValues = {
   emberBurn: .3, tideRefund: 8, brunoRedirect: .25, discipleFill: 5, auroraWeakenTurns: 1,
+  markTaken: .1, markTurns: 2, incisionTaken: .1,
 } as const;
 function startingSignature(starter: RadiantBearerId): RadiantOwnSignature | null {
   if (!radiantSignatureBearers.has(starter)) return null;
   if (starter === 'atmoso') return { kind: 'cyclone', gusts: 0, cyclone: null };
   if (starter === 'elise') return { kind: 'shuriken', held: radiantShurikenCount, lodged: [] };
   if (starter === 'razor') return { kind: 'wounds', wounds: 0 };
+  if (starter === 'rosetta') return { kind: 'quarry', targetId: null, contributors: [] };
+  if (starter === 'thornia') return { kind: 'thorns', traps: [] };
+  if (starter === 'crinso') return { kind: 'combo', combo: 0, last: null };
+  if (starter === 'ozriel') return { kind: 'refusal', spent: [] };
+  if (starter === 'ilvaris') return { kind: 'marks', marks: [] };
+  if (starter === 'kaelith') return { kind: 'incisions', incisions: [] };
   return null;
 }
 function validateSignatures(state: RadiantCombatState, member: RadiantBearer): void {
@@ -363,6 +388,58 @@ function validateSignatures(state: RadiantCombatState, member: RadiantBearer): v
   } else if (own?.kind === 'wounds') {
     safe(own.wounds, 'Wounds');
     if (Object.keys(own).length !== 2) throw new Error('Invalid radiant Wounds.');
+  } else if (own) validateEnemyLedger(state, member, own);
+}
+/** Batch 2 ledgers: every enemy reference is a distinct living enemy; counts and clocks stay within their caps. */
+function validateEnemyLedger(state: RadiantCombatState, member: RadiantBearer, own: RadiantOwnSignature): void {
+  const livingEnemies = (ids: readonly string[], name: string) => {
+    if (new Set(ids).size !== ids.length || ids.some(id => typeof id !== 'string' || enemy(state, id).hp === 0))
+      throw new Error(`Invalid radiant ${name}.`);
+  };
+  const clock = (value: number, name: string) => {
+    safe(value, name, 1);
+    if (value > radiantMaximumDuration) throw new Error('Radiant effect exceeds its maximum duration.');
+  };
+  const count = (value: number, cap: number, name: string, minimum = 1) => {
+    safe(value, name, minimum);
+    if (value > cap) throw new Error(`Invalid radiant ${name}.`);
+  };
+  const shaped = (entries: unknown, keys: number, name: string): boolean => {
+    if (!Array.isArray(entries) || entries.some(entry => !entry || typeof entry !== 'object' || Object.keys(entry).length !== keys))
+      throw new Error(`Invalid radiant ${name}.`);
+    return true;
+  };
+  if (own.kind === 'quarry') {
+    if (Object.keys(own).length !== 3 || !Array.isArray(own.contributors)) throw new Error('Invalid radiant Quarry.');
+    if (own.targetId !== null) livingEnemies([own.targetId], 'Quarry');
+    if (new Set(own.contributors).size !== own.contributors.length || own.contributors.some(id =>
+      id === member.loadout.id || !state.bearers.some(entry => entry.loadout.id === id)))
+      throw new Error('Invalid radiant Quarry contributors.');
+  } else if (own.kind === 'thorns') {
+    if (Object.keys(own).length !== 2 || !shaped(own.traps, 4, 'Thorn Trap')) throw new Error('Invalid radiant Thorn Trap.');
+    livingEnemies(own.traps.map(trap => trap.enemyId), 'Thorn Trap');
+    for (const trap of own.traps) {
+      safe(trap.charges, 'Thorn Trap charges', 1);
+      clock(trap.remaining, 'Thorn Trap clock');
+      finite(trap.value, 'Thorn Trap strike', Number.MIN_VALUE);
+    }
+  } else if (own.kind === 'combo') {
+    if (Object.keys(own).length !== 3 || ![null, 1, 2].includes(own.last)) throw new Error('Invalid radiant Combo.');
+    count(own.combo, radiantSignatureCaps.combo, 'Combo', 0);
+  } else if (own.kind === 'refusal') {
+    if (Object.keys(own).length !== 2 || !Array.isArray(own.spent) || new Set(own.spent).size !== own.spent.length ||
+      own.spent.some(id => !state.bearers.some(entry => entry.loadout.id === id))) throw new Error('Invalid radiant Refusal.');
+  } else if (own.kind === 'marks') {
+    if (Object.keys(own).length !== 2 || !shaped(own.marks, 3, 'Fate-seared Mark')) throw new Error('Invalid radiant Fate-seared Mark.');
+    livingEnemies(own.marks.map(mark => mark.enemyId), 'Fate-seared Mark');
+    for (const mark of own.marks) {
+      count(mark.stacks, radiantSignatureCaps.marks, 'Fate-seared Mark');
+      clock(mark.remaining, 'Fate-seared Mark clock');
+    }
+  } else if (own.kind === 'incisions') {
+    if (Object.keys(own).length !== 2 || !shaped(own.incisions, 2, 'Incision')) throw new Error('Invalid radiant Incision.');
+    livingEnemies(own.incisions.map(entry => entry.enemyId), 'Incision');
+    for (const entry of own.incisions) count(entry.stacks, radiantSignatureCaps.incisions, 'Incision');
   }
 }
 export function validateRadiantCombat(state: RadiantCombatState): void {
@@ -532,11 +609,20 @@ function packet(
     remaining -= amount;
   }
   target.shields = target.shields.filter(shield => shield.remaining > 0);
-  const healthLoss = Math.min(target.hp, remaining), absorbed = offered - remaining;
+  let healthLoss = Math.min(target.hp, remaining);
+  const absorbed = offered - remaining;
+  // Ozriel's Refusal: while he lives, each ally survives one lethal enemy hit per encounter with 1 Health.
+  const refusal = 'loadout' in target && source.kind === 'enemy' && healthLoss > 0 && healthLoss === target.hp
+    ? refuser(state, target) : undefined;
+  if (refusal) healthLoss = target.hp - 1;
   target.hp -= healthLoss;
   const targetId = 'loadout' in target ? target.loadout.id : target.id;
   events.push({ type: 'damage', source, targetId, origin, offered, absorbed, healthLoss, shields,
     ...(redirected ? { redirected: true as const } : {}) });
+  if (refusal?.signature?.kind === 'refusal') {
+    refusal.signature.spent.push(targetId);
+    events.push({ type: 'signature', bearerId: refusal.loadout.id, op: 'refusal', holderId: targetId, amount: target.hp });
+  }
   if ('currency' in target) {
     const payout = depleteRadiantCurrency(target.currency, target.hp);
     target.currency = payout.ledger;
@@ -555,7 +641,7 @@ function packet(
   }
   if (target.hp === 0) {
     events.push({ type: 'defeated', targetId });
-    if ('currency' in target) { healthMote(state, events, target, source); returnShuriken(state, events, targetId); }
+    if ('currency' in target) { healthMote(state, events, target, source); releaseEnemySignatures(state, events, targetId); }
   }
   sync(state);
   return { healthLoss, absorbed, shields };
@@ -657,6 +743,9 @@ function condition(state: RadiantCombatState, actor: RadiantBearer, when: string
     // When alone every action is Opening, so Closing needs another living ally, all of whom have acted.
     case 'closing': return others.length > 0 && others.every(member => state.acted.includes(member.loadout.id));
     case 'no-shuriken-held': return actor.signature?.kind === 'shuriken' && actor.signature.held === 0;
+    case 'after-edge': return actor.signature?.kind === 'combo' && actor.signature.last === 1;
+    case 'after-rupture': return actor.signature?.kind === 'combo' && actor.signature.last === 2;
+    case 'combo-3': return actor.signature?.kind === 'combo' && actor.signature.combo >= 3;
     default: return false;
   }
 }
@@ -675,15 +764,65 @@ function refundFullBlock(
   addPassiveCharge(state, events, holder.loadout.id, amount);
   events.push({ type: 'signature', bearerId: caster.loadout.id, op: 'refund', holderId: holder.loadout.id, amount });
 }
-/** Stormwheel Rhythm: Shuriken lodged in a defeated enemy return to Elise without damage. */
-function returnShuriken(state: RadiantCombatState, events: RadiantCombatEvent[], enemyId: string): void {
+/** A defeated enemy leaves every signature ledger: lodged Shuriken return to Elise without damage, Rosetta's
+ * Quarry clears, and Thorn Traps, Fate-seared Marks and Incisions on it disappear. */
+function releaseEnemySignatures(state: RadiantCombatState, events: RadiantCombatEvent[], enemyId: string): void {
   for (const member of state.bearers) {
     const own = member.signature;
-    if (own?.kind !== 'shuriken' || !own.lodged.includes(enemyId)) continue;
-    const count = own.lodged.filter(id => id === enemyId).length;
-    own.lodged = own.lodged.filter(id => id !== enemyId);
-    own.held += count;
-    events.push({ type: 'signature', bearerId: member.loadout.id, op: 'return', holderId: enemyId, amount: own.held });
+    if (own?.kind === 'shuriken' && own.lodged.includes(enemyId)) {
+      const count = own.lodged.filter(id => id === enemyId).length;
+      own.lodged = own.lodged.filter(id => id !== enemyId);
+      own.held += count;
+      events.push({ type: 'signature', bearerId: member.loadout.id, op: 'return', holderId: enemyId, amount: own.held });
+    } else if (own?.kind === 'quarry' && own.targetId === enemyId) own.targetId = null;
+    else if (own?.kind === 'thorns') own.traps = own.traps.filter(trap => trap.enemyId !== enemyId);
+    else if (own?.kind === 'marks') own.marks = own.marks.filter(mark => mark.enemyId !== enemyId);
+    else if (own?.kind === 'incisions') own.incisions = own.incisions.filter(entry => entry.enemyId !== enemyId);
+  }
+}
+/** The living Ozriel whose Refusal still covers `target` this encounter. */
+function refuser(state: RadiantCombatState, target: RadiantBearer): RadiantBearer | undefined {
+  return state.bearers.find(member => member.hp > 0 && member.signature?.kind === 'refusal' &&
+    !member.signature.spent.includes(target.loadout.id));
+}
+/** Damage taken from allies' direct hits: Expose, plus Fate-seared Marks and Incisions while their owner lives. */
+function vulnerability(state: RadiantCombatState, target: RadiantEnemy): number {
+  let taken = exposure(target);
+  for (const member of state.bearers) {
+    const own = member.signature;
+    if (member.hp === 0) continue;
+    if (own?.kind === 'marks')
+      taken += (own.marks.find(mark => mark.enemyId === target.id)?.stacks ?? 0) * radiantPassiveValues.markTaken;
+    else if (own?.kind === 'incisions')
+      taken += (own.incisions.find(entry => entry.enemyId === target.id)?.stacks ?? 0) * radiantPassiveValues.incisionTaken;
+  }
+  return taken;
+}
+/** Signature stacks that `perStack` powers add: Rosetta's contributors, Crinso's Combo, Kaelith's Incisions on the target. */
+function signatureStacks(actor: RadiantBearer, primary: RadiantEnemy | undefined): number {
+  const own = actor.signature;
+  if (own?.kind === 'quarry') return own.contributors.length;
+  if (own?.kind === 'combo') return own.combo;
+  if (own?.kind === 'incisions') return own.incisions.find(entry => entry.enemyId === primary?.id)?.stacks ?? 0;
+  return 0;
+}
+/** Spend one Thorn Trap charge; an empty trap is removed. */
+function spendTrap(events: RadiantCombatEvent[], owner: RadiantBearer, trap: RadiantThornTrap): void {
+  const own = owner.signature;
+  if (own?.kind !== 'thorns') return;
+  trap.charges--;
+  if (trap.charges === 0) own.traps = own.traps.filter(entry => entry !== trap);
+  events.push({ type: 'signature', bearerId: owner.loadout.id, op: 'trap-strike', holderId: trap.enemyId, amount: trap.charges });
+}
+/** Forbidden Garden: an enemy action that damaged an ally triggers its Thorn Trap once, while Thornia lives. */
+function springThornTraps(state: RadiantCombatState, events: RadiantCombatEvent[], attacker: RadiantEnemy): void {
+  for (const member of state.bearers) {
+    const own = member.signature;
+    if (own?.kind !== 'thorns' || member.hp === 0 || attacker.hp === 0) continue;
+    const trap = own.traps.find(entry => entry.enemyId === attacker.id);
+    if (!trap) continue;
+    spendTrap(events, member, trap);
+    strike(state, events, member, attacker, { kind: 'passive', bearerId: member.loadout.id }, trap.value);
   }
 }
 /** Ally-applied enemy debuffs: Aurora's Lens of Diminishment adds 1 turn to Weaken while she lives. */
@@ -703,7 +842,7 @@ function strike(
   if (target.hp === 0 || coefficient <= 0) return;
   const stats = effectiveRadiantStats(state, actor.loadout.id);
   packet(state, events, target, source, 'direct', radiantDirectDamage(stats.attack, gearDefense(state, actor, target.stats.defense),
-    coefficient, (1 + exposure(target)) * outgoingDamageMultiplier(state, actor, target)));
+    coefficient, (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor, target)));
 }
 /** Gale Cadence: release Atmoso's Cyclone on all enemies (`multiplier` x its stored coefficient), then clear it. */
 function releaseCyclone(
@@ -796,6 +935,67 @@ function signatureClauses(
           strike(state, events, actor, enemy(state, enemyId), source, value * input.damageScale * input.skill.skillPower);
         break;
       }
+      case 'quarry':
+        // Golden Thorn Volley marks its surviving target as Rosetta's Quarry.
+        if (own?.kind !== 'quarry' || !primary || primary.hp === 0) break;
+        own.targetId = primary.id;
+        events.push({ type: 'signature', bearerId: id, op: 'quarry', holderId: primary.id, amount: own.contributors.length });
+        break;
+      case 'heal-contributors':
+        // Rose Beyond the Sun heals each contributor this turn (N7 basis).
+        if (own?.kind !== 'quarry') break;
+        for (const ally of own.contributors.map(entry => bearer(state, entry)).filter(entry => entry.hp > 0))
+          heal(state, events, ally, source, value * input.effectScale * input.skill.skillPower * ally.stats.hp);
+        break;
+      case 'thorn-trap': {
+        // One trap per enemy: a new trap keeps the stronger strike, the larger charge count and the longer clock.
+        if (own?.kind !== 'thorns') break;
+        const remaining = Math.min(radiantMaximumDuration, (clause.turns ?? 1) + input.skill.skillDuration);
+        const strength = value * input.damageScale * input.skill.skillPower, charges = clause.charges ?? 1;
+        for (const target of (clause.to === 'all-enemies' ? state.enemies : primary ? [primary] : []).filter(entry => entry.hp > 0)) {
+          const trap = own.traps.find(entry => entry.enemyId === target.id);
+          if (trap) Object.assign(trap, { charges: Math.max(trap.charges, charges),
+            remaining: Math.max(trap.remaining, remaining), value: Math.max(trap.value, strength) });
+          else own.traps.push({ enemyId: target.id, charges, remaining, value: strength });
+          events.push({ type: 'signature', bearerId: id, op: 'trap', holderId: target.id,
+            amount: own.traps.find(entry => entry.enemyId === target.id)!.charges });
+        }
+        break;
+      }
+      case 'spend-trap': {
+        // Shadow Rose Cleave spends 1 charge of the target's trap for an extra strike.
+        if (own?.kind !== 'thorns' || !primary || primary.hp === 0) break;
+        const trap = own.traps.find(entry => entry.enemyId === primary.id);
+        if (!trap) break;
+        spendTrap(events, actor, trap);
+        strike(state, events, actor, primary, source, value * input.damageScale * input.skill.skillPower);
+        break;
+      }
+      case 'spend':
+        // Blossoming Cataclysm spends all Combo.
+        if (own?.kind !== 'combo' || own.combo === 0) break;
+        own.combo = 0;
+        events.push({ type: 'signature', bearerId: id, op: 'combo', amount: 0 });
+        break;
+      case 'fate-mark': {
+        // Severed Prophecy: stacks add up to 5; a new stack refreshes the 2-turn clock.
+        if (own?.kind !== 'marks') break;
+        const remaining = Math.min(radiantMaximumDuration, radiantPassiveValues.markTurns + input.skill.skillDuration);
+        for (const target of (clause.to === 'all-enemies' ? state.enemies : primary ? [primary] : []).filter(entry => entry.hp > 0)) {
+          let mark = own.marks.find(entry => entry.enemyId === target.id);
+          if (!mark) own.marks.push(mark = { enemyId: target.id, stacks: 0, remaining });
+          mark.stacks = Math.min(radiantSignatureCaps.marks, mark.stacks + value);
+          mark.remaining = Math.max(mark.remaining, remaining);
+          events.push({ type: 'signature', bearerId: id, op: 'mark', holderId: target.id, amount: mark.stacks });
+        }
+        break;
+      }
+      case 'consume-incisions':
+        // Glass Meridian consumes the Incisions on its target after its damage.
+        if (own?.kind !== 'incisions' || !primary || !own.incisions.some(entry => entry.enemyId === primary.id)) break;
+        own.incisions = own.incisions.filter(entry => entry.enemyId !== primary.id);
+        events.push({ type: 'signature', bearerId: id, op: 'incision', holderId: primary.id, amount: 0 });
+        break;
       case 'spend-wounds': {
         // Nightcleave / Unbroken Midnight: an extra strike equal to `value` x the Wounds spent (no mitigation).
         if (own?.kind !== 'wounds' || own.wounds === 0 || !primary || primary.hp === 0) break;
@@ -821,11 +1021,13 @@ function bloomSeeds(state: RadiantCombatState, events: RadiantCombatEvent[]): vo
     heal(state, events, holder, { kind: 'passive', bearerId: seed.casterId }, seed.value * holder.stats.hp);
   }
 }
-/** End of the enemy phase: Cover clocks tick; Cyclones count down and release at 0. */
+/** End of the enemy phase: Cover, Thorn Trap and Fate-seared Mark clocks tick; Cyclones count down and release at 0. */
 function tickSignatures(state: RadiantCombatState, events: RadiantCombatEvent[]): void {
   for (const member of state.bearers) {
     if (member.cover && --member.cover.remaining <= 0) member.cover = null;
     const own = member.signature;
+    if (own?.kind === 'thorns') own.traps = own.traps.filter(trap => --trap.remaining > 0);
+    if (own?.kind === 'marks') own.marks = own.marks.filter(mark => --mark.remaining > 0);
     if (own?.kind === 'cyclone' && own.cyclone && --own.cyclone.remaining <= 0)
       releaseCyclone(state, events, member, 1, { kind: 'skill', bearerId: member.loadout.id });
   }
@@ -840,7 +1042,7 @@ function normal(
   const impact = packet(state, events, target, source, 'direct',
     radiantDirectDamage(stats.attack, gearDefense(state, actor, target.stats.defense),
       1 + combatAmount(state, actor, 'normal') + cooperation(state, actor),
-      (1 + exposure(target)) * outgoingDamageMultiplier(state, actor, target)), hitCharge);
+      (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor, target)), hitCharge);
   return impact.healthLoss + impact.absorbed > 0 ? 1 : 0;
 }
 interface RadiantCast {
@@ -870,24 +1072,38 @@ function cast(
   const effects = def.effects.filter(effect => effect.kind !== 'signature' && holds(effect.when));
   const clauses = signed(actor) ? def.effects.filter((effect): effect is Extract<RadiantKitEffect, { kind: 'signature' }> =>
     effect.kind === 'signature' && holds(effect.when)) : [];
-  const power = def.alt && holds(def.alt.when) ? def.alt.power : def.power;
+  // Rosetta's Quarry: Crimson Skyfall and Rose Beyond the Sun strike the living Quarry instead of the current target.
+  const own = actor.signature;
+  const quarry = own?.kind === 'quarry' && own.targetId !== null && clauses.some(clause => clause.op === 'quarry-target')
+    ? enemy(state, own.targetId) : undefined;
+  const primary = quarry ?? (input.targetId === undefined ? undefined : enemy(state, input.targetId));
+  const power = (def.alt && holds(def.alt.when) ? def.alt.power : def.power) +
+    (signed(actor) ? (def.perStack ?? 0) * signatureStacks(actor, primary) : 0);
   const ignore = effects.reduce((sum, effect) => sum + (effect.kind === 'ignore-defense' ? effect.value : 0), 0);
   const bonus = effects.reduce((sum, effect) => sum + (effect.kind === 'damage-bonus' ? effect.value : 0), 0);
-  const primary = input.targetId === undefined ? undefined : enemy(state, input.targetId);
   const enemyTargets = def.target === 'all-enemies' ? state.enemies.filter(member => member.hp > 0) : primary ? [primary] : [];
+  const struck = new Set<RadiantEnemy>();
   let hits = 0;
   if (def.target !== 'none') for (const target of enemyTargets) {
     if (target.hp === 0) continue;
     const coefficient = power * input.damageScale * skill.skillPower *
       (1 + (input.kind === 'flare' ? combatAmount(state, actor, 'flare') : 0) + cooperation(state, actor) + bonus);
     const total = Math.max(input.hits, radiantDirectDamage(stats.attack, gearDefense(state, actor, target.stats.defense, ignore),
-      coefficient, (1 + exposure(target)) * outgoingDamageMultiplier(state, actor, target)));
+      coefficient, (1 + vulnerability(state, target)) * outgoingDamageMultiplier(state, actor, target)));
     for (let hit = 0; hit < input.hits && target.hp > 0; hit++) {
       const amount = Math.floor(total / input.hits) + (hit === input.hits - 1 ? total % input.hits : 0);
       if (!amount) continue;
       const impact = packet(state, events, target, source, 'direct', amount, hitCharge);
-      if (impact.healthLoss + impact.absorbed > 0) hits++;
+      if (impact.healthLoss + impact.absorbed > 0) { hits++; struck.add(target); }
     }
+  }
+  // Reality Fault: each skill or Flare from Kaelith adds 1 Incision to every enemy it hit (max 3).
+  if (own?.kind === 'incisions') for (const target of struck) {
+    if (target.hp === 0) continue;
+    let entry = own.incisions.find(item => item.enemyId === target.id);
+    if (!entry) own.incisions.push(entry = { enemyId: target.id, stacks: 0 });
+    entry.stacks = Math.min(radiantSignatureCaps.incisions, entry.stacks + 1);
+    events.push({ type: 'signature', bearerId: id, op: 'incision', holderId: target.id, amount: entry.stacks });
   }
   signatureClauses(state, events, actor, input, clauses, primary, enemyTargets, hitCharge);
   const duration = (turns: number) => Math.min(radiantMaximumDuration, turns + skill.skillDuration);
@@ -953,8 +1169,16 @@ function skillAction(
   const spent = spendSkill(state.gauge, id, action.slot, skill.skillEfficiency);
   state.gauge = spent.state;
   events.push({ type: 'skill', bearerId: id, slot: action.slot, name: def.name, cost: spent.cost });
-  return cast(state, events, actor, { kind: 'skill', def, targetId: action.targetId, damageScale: 1, effectScale: 1,
+  const hits = cast(state, events, actor, { kind: 'skill', def, targetId: action.targetId, damageScale: 1, effectScale: 1,
     hits: def.hits, skill }, hitCharge);
+  // Rose Duality: alternating skills add 1 Combo (max 5); repeating a skill resets it. The first skill only sets the slot.
+  const own = actor.signature;
+  if (own?.kind === 'combo') {
+    if (own.last !== null) own.combo = own.last === action.slot ? 0 : Math.min(radiantSignatureCaps.combo, own.combo + 1);
+    own.last = action.slot;
+    events.push({ type: 'signature', bearerId: id, op: 'combo', amount: own.combo });
+  }
+  return hits;
 }
 function flare(
   state: RadiantCombatState, events: RadiantCombatEvent[], actor: RadiantBearer, targetId: string | undefined,
@@ -985,6 +1209,7 @@ function enemyAttack(
   if (hits > 16) throw new Error('Radiant enemy attack exceeds bounded packet count.');
   const targets = action.targetIds.map(id => { const target = bearer(state, id); living(target.hp); return target; });
   const source: RadiantSource = { kind: 'enemy', enemyId: actor.id };
+  let damaged = false;
   if (action.healBefore !== undefined) heal(state, events, actor, source, action.healBefore);
   if (action.refreshShieldBefore !== undefined) {
     const amount = rounded(action.refreshShieldBefore);
@@ -1021,10 +1246,13 @@ function enemyAttack(
         if (taken > 0) {
           const redirected = packet(state, events, coverer, source, 'direct', taken, undefined, true);
           refundFullBlock(state, events, coverer, redirected, taken);
+          damaged = true;
         }
       }
       if (amount - moved <= 0) continue;
       const part = packet(state, events, target, source, 'direct', amount - moved);
+      // Every landed hit counts as damage for Thorn Traps, including a lethal hit Ozriel's Refusal turned to 0 loss.
+      damaged = true;
       refundFullBlock(state, events, target, part, amount - moved);
       if (target.signature?.kind === 'wounds' && part.healthLoss > 0 && target.hp > 0) {
         target.signature.wounds += part.healthLoss;
@@ -1039,6 +1267,7 @@ function enemyAttack(
       }
     }
   }
+  if (damaged) springThornTraps(state, events, actor);
 }
 function tick<C extends RadiantCategory>(events: RadiantCombatEvent[], targetId: string, alive: boolean,
   effects: RadiantCategoryEffect<C>[], kinds: readonly C[]): RadiantCategoryEffect<C>[] {
@@ -1074,6 +1303,8 @@ function finishRound(state: RadiantCombatState, events: RadiantCombatEvent[]): v
   state.enemyActed = [];
   state.gearTriggered = [];
   state.phase = 'player';
+  // Virtuous Bloom: contributors count for one turn.
+  for (const member of state.bearers) if (member.signature?.kind === 'quarry') member.signature.contributors = [];
   events.push({ type: 'round', round: state.round });
   bloomSeeds(state, events);
   for (const member of state.gauge.members.filter(m => m.living))
@@ -1088,6 +1319,21 @@ function cooperation(state: RadiantCombatState, actor: RadiantBearer): number {
     ? combatAmount(state, actor, 'cooperation') : 0;
 }
 
+/** Virtuous Bloom: another ally whose Normal, skill or Flare hit Rosetta's Quarry this action becomes a contributor. */
+function recordContributors(
+  state: RadiantCombatState, events: RadiantCombatEvent[], actor: RadiantBearer, quarries: readonly (string | null)[],
+): void {
+  const id = actor.loadout.id;
+  state.bearers.forEach((member, index) => {
+    const own = member.signature, quarry = quarries[index];
+    if (own?.kind !== 'quarry' || member === actor || member.hp === 0 || quarry === null || own.contributors.includes(id)) return;
+    if (!events.some(event => event.type === 'damage' && event.targetId === quarry && event.origin === 'direct' &&
+      event.healthLoss + event.absorbed > 0 && event.source.kind !== 'enemy' && event.source.bearerId === id &&
+      (event.source.kind === 'normal' || event.source.kind === 'skill' || event.source.kind === 'flare'))) return;
+    own.contributors.push(id);
+    events.push({ type: 'signature', bearerId: member.loadout.id, op: 'contributor', holderId: id, amount: own.contributors.length });
+  });
+}
 /** Process a fixed native ledger once. Gear output is never an input to another
  * native/gear trigger, and multi-target packets cannot multiply action grants. */
 function processRadiantGear(
@@ -1291,6 +1537,7 @@ export function applyRadiantCombatAction(
     if (state.acted.includes(action.bearerId)) throw new Error('This bearer already acted this round.');
     let hits = 0;
     const hitCharge: RadiantHitCharge = { bonusRolls: 0, bonusOffered: 0 };
+    const quarries = state.bearers.map(member => member.signature?.kind === 'quarry' ? member.signature.targetId : null);
     if (action.type === 'normal') {
       hits = normal(state, events, actor, action.targetId, hitCharge);
       // Gale Cadence: another ally's Normal Attack adds 1 Gust to each living Atmoso's Cyclone.
@@ -1303,6 +1550,7 @@ export function applyRadiantCombatAction(
     }
     else if (action.type === 'skill') hits = skillAction(state, events, actor, action, hitCharge);
     else hits = flare(state, events, actor, action.targetId, hitCharge).hits;
+    recordContributors(state, events, actor, quarries);
     const charge = grantRadiantAction(state.gauge, action.bearerId, action.type, action.type === 'normal' ? hits : 0);
     state.gauge = charge.state;
     events.push({ type: 'charge', bearerId: action.bearerId,

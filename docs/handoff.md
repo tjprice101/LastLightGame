@@ -1,5 +1,39 @@
 # Current state and handoff
 
+## Battle Flurry Phase 3 Step 2b batch 2: signatures (2026-11-17)
+
+**Implemented on branch `battle-flurry-phase3`, not released (D-476).**
+`main` and `overhaul/radiant-foundation` are unchanged. Spec:
+[combat spec](combat.md#signature-mechanics-batch-2-d-476-battle-flurry-phase-3-step-2b).
+- Signatures and Passives now run for Rosetta (Quarry, contributors), Thornia
+  (Thorn Traps), Crinso (Combo), Ozriel (Refusal), Ilvaris (Fate-seared Marks)
+  and Kaelith (Incisions).
+- Six new per-bearer `signature` kinds and eight event ops; schema stays 8.
+- Implementation rules for points the approved text left open are listed in
+  D-476 for owner review.
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- Full `npx vitest run`: 302 files, 10,572 tests passed.
+- New `src/game/combat-signatures-batch2.test.ts` (15 tests) covers each
+  mechanic, caps, fallen-owner cases, validation and presentation replay of
+  every new event op. The batch 1 "inert" test now uses batch 3 bearers.
+- `npx vite build`: passed (existing chunk advisory).
+- `node tools/bundle_server_game.mjs`: bundle changed; **not deployed**.
+- Pressure smoke (temporary test, deleted): 5 batch 2 trios at level 60
+  (Calamitic trios on the `calamitic` profile), 6 anchors, 2 seeds: all 60
+  encounters ran to an outcome with valid state at every step. Win rates are
+  untuned (Step 4). No Flare fired in any of them: the `balanced` policy
+  spends Luminosity on skills first. Check this during the retune.
+- **Not verified:** in-game play (no skill UI yet); hosted or online battle.
+
+**Next:**
+- Step 2b batch 3 (Elemental War: Nerithe, Orvella, Vaelor, Caldrex, Solenne,
+  Myrthen, Neralis, Varkhel, Seravelle, Velmira) on Opus, after `/clear`, on
+  branch `battle-flurry-phase3`.
+- Then batch 4, Step 3, Step 4 and one release with the authority deploy
+  (owner approval).
+
 ## Battle Flurry Phase 3 Step 2b batch 1: signatures (2026-11-17)
 
 **Implemented on branch `battle-flurry-phase3`, not released (D-475).**

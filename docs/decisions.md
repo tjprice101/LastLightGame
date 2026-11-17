@@ -1,5 +1,33 @@
 # Decision log
 
+## Battle Flurry Phase 3 Step 2b batch 2: signature mechanics (D-476, 2026-11-17)
+
+Implements the approved batch 2 kits (D-473) on branch `battle-flurry-phase3`.
+**Not released.** Spec: [combat spec](combat.md#signature-mechanics-batch-2-d-476-battle-flurry-phase-3-step-2b).
+
+- **Implemented:** Quarry and contributors (Rosetta), Thorn Traps (Thornia),
+  Combo (Crinso), Refusal (Ozriel), Fate-seared Marks (Ilvaris) and Incisions
+  (Kaelith), with their Passives. Batches 3-4 stay inert.
+- **Implementation rules, chosen where the approved text was silent (owner
+  may revise during the retune):**
+  - The Quarry lasts until replaced or defeated; contributors reset each
+    player turn, not when the Quarry changes. Only Normal, skill and Flare hits
+    count.
+  - A repeated Thorn Trap keeps the stronger strike, more charges and the
+    longer clock. Any landed hit triggers it, including redirected and
+    Refusal-saved hits. Trap strikes are mitigated and scale with Skill Power.
+  - Crinso's first skill sets no Combo; the Flare keeps the last slot.
+  - Refusal covers Ozriel himself; a second lethal hit in the same attack
+    defeats.
+  - Mark and Incision bonuses act like Expose (direct damage only) and stop
+    while their owner is fallen. Flare Mark counts do not scale by tier.
+  - Kaelith's Incisions land only on enemies that survive the hit; Glass
+    Meridian's own Incision is consumed with the rest.
+- **State:** schema stays 8 (unreleased) with six new `signature` kinds and
+  eight new `signature` event ops.
+- **Open:** batches 3-4, Step 3 (UI and kit text, including the new counters),
+  Step 4 retune, the release deploy (owner approves).
+
 ## Battle Flurry Phase 3 Step 2b batch 1: signature mechanics (D-475, 2026-11-17)
 
 Implements the approved batch 1 kits (D-473) on branch `battle-flurry-phase3`.
