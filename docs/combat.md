@@ -1,5 +1,101 @@
 # Combat specification
 
+## Signature mechanics, batch 3 (D-477, Battle Flurry Phase 3 Step 2b)
+
+**Status:** implemented on branch `battle-flurry-phase3`, not released (ships
+with the rest of Phase 3). Kit text: [phase3-kit-drafts.md](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md#batch-3-elemental-war-10-owner-approved-2026-11-16).
+Batch 1 and 2 shared rules apply (conditions read once before the cast;
+signature clauses right after the cast's damage; a Passive works only while
+its bearer lives; signature strikes use normal mitigation unless stated).
+
+**Scope.** `radiantSignatureBearers` now also lists Nerithe, Orvella, Vaelor,
+Caldrex, Solenne, Myrthen, Neralis, Varkhel, Seravelle and Velmira. Batch 4
+signature data stays inert. Batch 3 Leaders already ran as Conduit pairs
+(D-456) and are unchanged.
+
+**State (schema stays 8; unreleased).** New `signature` kinds, each validated:
+- Counters `{ kind, count, latch }`: `stillness` (Solenne, 0-4), `season`
+  (Myrthen: 0 Sprout, 1 Bloom, 2 Harvest), `current` (Neralis, 0-3),
+  `tension` (Varkhel, 0-4), `cadence` (Seravelle, 0-3), `crosscut` (Velmira,
+  0-3). `latch` records a once-per-enemy-phase (Tension) or once-per-turn
+  (Cadence) gain; every latch reopens at the start of the player turn.
+- `heat` (Caldrex): a counter (0-3) plus `burnUp` (`value`, `remaining`) or
+  `null`.
+- `survey` (Nerithe): `targetId` (a living enemy or `null`) and `count` 0-3;
+  `count` is 0 exactly when `targetId` is `null`.
+- `foundation` (Orvella): `null` or `durability`, `max` (the created
+  durability, whole numbers) and `remaining` (turns, max 6).
+- Vaelor has no state: his Beat is derived from the round
+  (`radiantBeat(round)`: round 1 Tune, 2 Rise, 3 Crescendo, 4 Tune...).
+- New `signature` event ops: `survey`, `foundation`, `foundation-absorb`,
+  `beat`, `heat`, `burn-up`, `stillness`, `season`, `current`, `tension`,
+  `cadence`, `crosscut`.
+- A defeated enemy clears Nerithe's Survey on it.
+
+**Shared kit rules.**
+- **Signature stacks** are read once before the cast. They add to the skill's
+  `perStack` power and to `perStack` effect values (Shields, heals, Attack Up),
+  then `spend` clauses set the counter to 0.
+- **Fold the Sea** is the only all-enemies skill that accepts a `targetId` (the
+  current target); every other all-enemies or ally skill still rejects one.
+  `radiantSkillAcceptsTarget` (in `radiant-kits.ts`) decides this for the
+  engine and the pressure lab.
+
+**Per bearer.**
+- **Nerithe.** Her Normal hit fills 5 extra Luminosity (x Gauge Gain) and adds
+  1 Survey to its target if it survives (max 3); a different enemy restarts at
+  1 and the old enemy loses its Survey. Meridian Break and Ocean Beyond the Map
+  strike the Surveyed enemy instead of the selected target. Meridian Break
+  spends 1 Survey to ignore 25% of its Defense; the Flare ignores 20% per
+  Survey and spends all of it (total ignore still capped at 80%; not scaled by
+  tier). Fold the Sea moves all Survey to its selected living target; without
+  a target, Survey stays.
+- **Orvella.** Raise the Faultline creates a Foundation with durability 35% of
+  Orvella's max Health (x Skill Power) for 3 turns; Worldweight Citadel creates
+  one at 50% (x tier effect scale). A new Foundation replaces the old one.
+  While Orvella lives, each enemy hit on an ally (Orvella included) loses
+  `round(20%)` of its amount to the Foundation, up to its durability, before
+  Cover and Shields; the Foundation is removed at 0 durability, at the end of
+  its clock, or when Orvella falls. Keystone Reversal deals 270% with no
+  Foundation; with one, 210% and it repairs 8% of her max Health (x Skill
+  Power), up to the created durability. Worldweight Citadel first spends the
+  Foundation for an exact strike on each enemy of 3 x its remaining durability
+  (x tier damage scale), then creates the new one.
+- **Vaelor.** Forked Cadence deals +30% on Tune; Resonance Cascade gives Vaelor
+  Attack Up (+25% x Skill Power, 2 turns) on Rise; Last Chord of the Sky uses
+  1500% on Crescendo. A living Vaelor announces each new step (`beat`) at the
+  start of the player turn.
+- **Caldrex.** The first enemy hit each enemy phase that damages his Health or
+  Shield adds 1 Heat (max 3). Cinder Discharge adds +25% power per Heat; the
+  Flare's Shields add +5% of max Health per Heat; both spend all Heat. The
+  Flare's Burn boost (+25% x Skill Power x tier effect scale, 2 turns) makes
+  every Burn tick from an ally deal that much more, even if Caldrex falls; a
+  recast keeps the stronger value and longer clock. Detonations are not
+  boosted.
+- **Solenne.** Starts at 0 Stillness. Circle of Repose adds 2 (max 4). Each
+  enemy hit on her spends 1 Stillness and loses `round(20%)` of its amount
+  before Shields. The Flare adds +45% power and +5% Shield per Stillness, then
+  spends all.
+- **Myrthen.** Skill 1 or 2 advances the Season (Sprout, Bloom, Harvest). A
+  skill or Flare cast in Harvest deals +35% and ignores 20% Defense, then the
+  Season returns to Sprout. A Flare outside Harvest leaves the Season as is.
+- **Neralis.** Gains 1 Current (max 3) when his Normal lands a hit, or when a
+  heal from his skill or Flare restores Health (once per action; the Support
+  squad heal, Health motes and Conduits do not count). Carry Them Back (+6%)
+  and the Flare (+5%) add heal per Current, spend all, and their own heal can
+  then earn 1 back.
+- **Varkhel.** Gains 1 Tension (max 4) when his Normal lands a hit, and from the
+  first enemy hit each enemy phase that damages his Health or Shield. Return
+  the Strain (+45%) and the Flare (+55%) add power per Tension and spend all.
+- **Seravelle.** While she lives, the first Normal hit by any ally each turn
+  (hers included) adds 1 Cadence (max 3). Move as One adds +10% Attack Up per
+  Cadence (x Skill Power) and spends all.
+- **Velmira.** A Skill 1 or 2 that lands a hit on at least one enemy that was
+  Weakened before the hit adds 1 Crosscut (max 3; once per skill), so Open the
+  Seam's own Weaken does not count for that cast. Turn the Other Edge ignores
+  20% Defense at 2+ Crosscut and keeps it. The Flare adds +90% power per
+  Crosscut, ignores 30% Defense and spends all.
+
 ## Signature mechanics, batch 2 (D-476, Battle Flurry Phase 3 Step 2b)
 
 **Status:** implemented on branch `battle-flurry-phase3`, not released (ships

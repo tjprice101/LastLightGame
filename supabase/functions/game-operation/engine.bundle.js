@@ -17728,7 +17728,12 @@ var radiantSignatureBearers = /* @__PURE__ */ new Set([
   "orvella",
   "vaelor",
   "caldrex",
-  "solenne"
+  "solenne",
+  "myrthen",
+  "neralis",
+  "varkhel",
+  "seravelle",
+  "velmira"
 ]);
 var radiantShurikenCount = 2;
 var radiantGustCap = 5;
@@ -17756,7 +17761,9 @@ var radiantPassiveValues = {
   incisionTaken: 0.1,
   surveyFill: 5,
   foundationShare: 0.2,
-  stillnessReduction: 0.2
+  stillnessReduction: 0.2,
+  harvestBonus: 0.35,
+  harvestIgnore: 0.2
 };
 function radiantBeat(round) {
   return (round - 1) % 3;
@@ -17777,6 +17784,11 @@ function startingSignature(starter) {
   if (starter === "orvella") return { kind: "foundation", foundation: null };
   if (starter === "caldrex") return { kind: "heat", count: 0, latch: false, burnUp: null };
   if (starter === "solenne") return { kind: "stillness", count: 0, latch: false };
+  if (starter === "myrthen") return { kind: "season", count: 0, latch: false };
+  if (starter === "neralis") return { kind: "current", count: 0, latch: false };
+  if (starter === "varkhel") return { kind: "tension", count: 0, latch: false };
+  if (starter === "seravelle") return { kind: "cadence", count: 0, latch: false };
+  if (starter === "velmira") return { kind: "crosscut", count: 0, latch: false };
   return null;
 }
 function validateSignatures(state, member) {
@@ -18267,6 +18279,8 @@ function condition(state, actor2, when) {
       return radiantBeat(state.round) === 1;
     case "crescendo":
       return radiantBeat(state.round) === 2;
+    case "crosscut-2":
+      return actor2.signature?.kind === "crosscut" && actor2.signature.count >= 2;
     default:
       return false;
   }
@@ -18373,6 +18387,8 @@ function signatureSurge(actor2, clauses, primary) {
       if (clause.op === "spend-survey") ignore2 += clause.value ?? 0;
       else if (clause.op === "spend-all-survey") ignore2 += (clause.value ?? 0) * own.count;
     }
+  if (own?.kind === "season" && own.count === 2)
+    return { ignore: ignore2 + radiantPassiveValues.harvestIgnore, bonus: radiantPassiveValues.harvestBonus };
   return { ignore: ignore2, bonus: 0 };
 }
 function foundationAbsorb(state, events, target, amount) {
@@ -18410,9 +18426,21 @@ function burnBoost(state, source) {
   if (source.kind === "enemy") return 0;
   return state.bearers.reduce((sum, member) => sum + (member.signature?.kind === "heat" ? member.signature.burnUp?.value ?? 0 : 0), 0);
 }
+function gainCounter(events, holder) {
+  const counter = counterOf(holder.signature);
+  if (!counter) return;
+  counter.count = Math.min(radiantSignatureCaps[counter.kind], counter.count + 1);
+  events.push({ type: "signature", bearerId: holder.loadout.id, op: counter.kind, amount: counter.count });
+}
 function normalPassives(state, events, actor2, targetId, hits) {
   const own = actor2.signature, id = actor2.loadout.id;
   if (hits === 0) return;
+  if (own?.kind === "current" || own?.kind === "tension") gainCounter(events, actor2);
+  const seravelle = state.bearers.find((member) => member.hp > 0 && member.signature?.kind === "cadence" && !member.signature.latch);
+  if (seravelle?.signature?.kind === "cadence") {
+    seravelle.signature.latch = true;
+    gainCounter(events, seravelle);
+  }
   if (own?.kind === "survey") {
     addPassiveCharge(state, events, id, rounded(radiantPassiveValues.surveyFill * gaugeGain(actor2)));
     if (enemy(state, targetId).hp > 0) {
@@ -18708,6 +18736,7 @@ function cast(state, events, actor2, input, hitCharge) {
   const bonus2 = surge.bonus + effects.reduce((sum, effect2) => sum + (effect2.kind === "damage-bonus" ? effect2.value : 0), 0);
   const enemyTargets = def.target === "all-enemies" ? state.enemies.filter((member) => member.hp > 0) : primary ? [primary] : [];
   const struck = /* @__PURE__ */ new Set();
+  const weakened = new Set(enemyTargets.filter((target) => target.debuffs.some((effect2) => effect2.category === "weaken")));
   let hits = 0;
   if (def.target !== "none") for (const target of enemyTargets) {
     if (target.hp === 0) continue;
@@ -18735,6 +18764,7 @@ function cast(state, events, actor2, input, hitCharge) {
     entry.stacks = Math.min(radiantSignatureCaps.incisions, entry.stacks + 1);
     events.push({ type: "signature", bearerId: id, op: "incision", holderId: target.id, amount: entry.stacks });
   }
+  if (own?.kind === "crosscut" && input.kind === "skill" && [...struck].some((target) => weakened.has(target))) gainCounter(events, actor2);
   signatureClauses(state, events, actor2, input, clauses, primary, enemyTargets, hitCharge);
   const duration = (turns) => Math.min(radiantMaximumDuration, turns + skill2.skillDuration);
   const enemiesFor = (to) => (to === "all-enemies" ? state.enemies : primary ? [primary] : []).filter((member) => member.hp > 0);
@@ -18749,14 +18779,16 @@ function cast(state, events, actor2, input, hitCharge) {
   }
   const lowest = woundedAlly(state);
   const alliesFor = (to) => (to === "self" ? [actor2] : to === "lowest" ? lowest ? [lowest] : [] : state.bearers.filter((member) => to === "all-allies" || member !== actor2)).filter((member) => member.hp > 0);
+  let restored = false;
   for (const effect2 of effects) {
     if (effect2.kind !== "heal" && effect2.kind !== "shield") continue;
     for (const ally of alliesFor(effect2.to)) {
       const magnitude2 = valueOf(effect2) * input.effectScale * skill2.skillPower * ally.stats.hp;
-      if (effect2.kind === "heal") heal2(state, events, ally, source, magnitude2);
+      if (effect2.kind === "heal") restored = heal2(state, events, ally, source, magnitude2) > 0 || restored;
       else shield2(state, events, ally, source, magnitude2);
     }
   }
+  if (restored && own?.kind === "current") gainCounter(events, actor2);
   for (const effect2 of effects) {
     if (effect2.kind === "cleanse") {
       for (const ally of alliesFor(effect2.to)) cleanse2(events, ally);
@@ -18785,6 +18817,10 @@ function cast(state, events, actor2, input, hitCharge) {
   if (radiantStarterKits[actor2.loadout.starter].role === "Support")
     for (const ally of state.bearers.filter((member) => member.hp > 0))
       heal2(state, events, ally, { kind: "role", bearerId: id }, radiantSupportSquadHeal * ally.stats.hp);
+  if (own?.kind === "season" && (own.count === 2 || input.kind === "skill")) {
+    own.count = own.count === 2 ? 0 : own.count + 1;
+    events.push({ type: "signature", bearerId: id, op: "season", amount: own.count });
+  }
   return hits;
 }
 function skillAction(state, events, actor2, action, hitCharge) {

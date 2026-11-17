@@ -1,5 +1,43 @@
 # Current state and handoff
 
+## Battle Flurry Phase 3 Step 2b batch 3: signatures (2026-11-17)
+
+**Implemented on branch `battle-flurry-phase3`, not released (D-477).**
+`main` and `overhaul/radiant-foundation` are unchanged. Spec:
+[combat spec](combat.md#signature-mechanics-batch-3-d-477-battle-flurry-phase-3-step-2b).
+- Signatures and Passives now run for Nerithe (Survey), Orvella (Foundation),
+  Vaelor (Beat), Caldrex (Heat, Burn boost), Solenne (Stillness), Myrthen
+  (Season), Neralis (Current), Varkhel (Tension), Seravelle (Cadence) and
+  Velmira (Crosscut).
+- Effect `perStack` values now work (batch 4 needs them too). Fold the Sea
+  accepts an optional current target. Schema stays 8.
+- Implementation rules for points the approved text left open are listed in
+  D-477 for owner review.
+- Two commits: part A (first five bearers and shared plumbing), part B (the
+  other five, docs).
+
+**Verified:**
+- `npx tsc --noEmit`: 0 errors.
+- Full `npx vitest run`: 303 files, 10,599 tests passed.
+- New `src/game/combat-signatures-batch3.test.ts` (28 tests) covers each
+  mechanic, caps, fallen-owner cases, Fold the Sea's target rule, validation
+  and presentation replay of every new event op. Two older Nerithe tests now
+  expect her +5 Luminosity; the "inert" test uses batch 4 bearers.
+- `npx vite build`: passed (existing chunk advisory).
+- `node tools/bundle_server_game.mjs`: bundle changed; **not deployed**.
+- Pressure smoke (temporary test, deleted): 5 batch 3 trios at level 60, 6
+  anchors, 2 seeds, `authored-control`: all 60 encounters ran to an outcome
+  with valid state at every step (27 victories, 33 defeats; untuned, Step 4).
+- **Not verified:** in-game play (no skill UI yet); hosted or online battle.
+
+**Next:**
+- Step 2b batch 4 (Moon: Maerion, Caevren, Vespera, Ilyss, Asteriel, Serapha)
+  on Opus, after `/clear`, on branch `battle-flurry-phase3`. Caevren reuses
+  Cover; Vespera reuses `burn-up` (currently stored on Caldrex's `heat` state,
+  so it needs a shared home).
+- Then Step 3, Step 4 and one release with the authority deploy (owner
+  approval).
+
 ## Battle Flurry Phase 3 Step 2b batch 2: signatures (2026-11-17)
 
 **Implemented on branch `battle-flurry-phase3`, not released (D-476).**

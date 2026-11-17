@@ -339,7 +339,7 @@ function validateCategories(
 export const radiantSignatureBearers: ReadonlySet<RadiantBearerId> = new Set<RadiantBearerId>([
   'ember', 'tide', 'sprout', 'atmoso', 'aurora', 'bliss', 'bruno', 'disciple', 'elise', 'razor',
   'rosetta', 'thornia', 'crinso', 'ozriel', 'ilvaris', 'kaelith',
-  'nerithe', 'orvella', 'vaelor', 'caldrex', 'solenne',
+  'nerithe', 'orvella', 'vaelor', 'caldrex', 'solenne', 'myrthen', 'neralis', 'varkhel', 'seravelle', 'velmira',
 ]);
 /** Elise's Shuriken count (Stormwheel Rhythm). */
 export const radiantShurikenCount = 2;
@@ -354,7 +354,7 @@ export const radiantSignatureCaps = {
 export const radiantPassiveValues = {
   emberBurn: .3, tideRefund: 8, brunoRedirect: .25, discipleFill: 5, auroraWeakenTurns: 1,
   markTaken: .1, markTurns: 2, incisionTaken: .1,
-  surveyFill: 5, foundationShare: .2, stillnessReduction: .2,
+  surveyFill: 5, foundationShare: .2, stillnessReduction: .2, harvestBonus: .35, harvestIgnore: .2,
 } as const;
 /** Vaelor's Beat for a round: 0 Tune, 1 Rise, 2 Crescendo; one step per player turn, starting on Tune. */
 export function radiantBeat(round: number): 0 | 1 | 2 {
@@ -376,6 +376,11 @@ function startingSignature(starter: RadiantBearerId): RadiantOwnSignature | null
   if (starter === 'orvella') return { kind: 'foundation', foundation: null };
   if (starter === 'caldrex') return { kind: 'heat', count: 0, latch: false, burnUp: null };
   if (starter === 'solenne') return { kind: 'stillness', count: 0, latch: false };
+  if (starter === 'myrthen') return { kind: 'season', count: 0, latch: false };
+  if (starter === 'neralis') return { kind: 'current', count: 0, latch: false };
+  if (starter === 'varkhel') return { kind: 'tension', count: 0, latch: false };
+  if (starter === 'seravelle') return { kind: 'cadence', count: 0, latch: false };
+  if (starter === 'velmira') return { kind: 'crosscut', count: 0, latch: false };
   return null;
 }
 function validateSignatures(state: RadiantCombatState, member: RadiantBearer): void {
@@ -824,6 +829,7 @@ function condition(state: RadiantCombatState, actor: RadiantBearer, when: string
     case 'tune': return radiantBeat(state.round) === 0;
     case 'rise': return radiantBeat(state.round) === 1;
     case 'crescendo': return radiantBeat(state.round) === 2;
+    case 'crosscut-2': return actor.signature?.kind === 'crosscut' && actor.signature.count >= 2;
     default: return false;
   }
 }
@@ -941,7 +947,8 @@ function counterOf(own: RadiantOwnSignature | null): Extract<RadiantOwnSignature
   return own && (own.kind === 'heat' || counterKinds.includes(own.kind as RadiantCounterKind))
     ? own as Extract<RadiantOwnSignature, { latch: boolean }> : undefined;
 }
-/** Pre-damage signature modifiers: Survey that Nerithe's skill will spend ignores part of its enemy's Defense. */
+/** Pre-damage signature modifiers: Survey that Nerithe's skill will spend ignores part of its enemy's Defense;
+ * Myrthen's Harvest adds +35% damage and 20% Defense ignore. */
 function signatureSurge(
   actor: RadiantBearer, clauses: readonly Extract<RadiantKitEffect, { kind: 'signature' }>[], primary: RadiantEnemy | undefined,
 ): { ignore: number; bonus: number } {
@@ -952,6 +959,8 @@ function signatureSurge(
       if (clause.op === 'spend-survey') ignore += clause.value ?? 0;
       else if (clause.op === 'spend-all-survey') ignore += (clause.value ?? 0) * own.count;
     }
+  if (own?.kind === 'season' && own.count === 2)
+    return { ignore: ignore + radiantPassiveValues.harvestIgnore, bonus: radiantPassiveValues.harvestBonus };
   return { ignore, bonus: 0 };
 }
 /** Load-Bearing Will: a living Orvella's Foundation absorbs 20% of each direct enemy hit on an ally (Orvella included),
@@ -992,12 +1001,26 @@ function burnBoost(state: RadiantCombatState, source: RadiantSource): number {
   return state.bearers.reduce((sum, member) =>
     sum + (member.signature?.kind === 'heat' ? member.signature.burnUp?.value ?? 0 : 0), 0);
 }
-/** Normal Attack Passives that need a landed hit: Nerithe's Uncharted Current. */
+/** +1 to a bearer's counter, within its cap. */
+function gainCounter(events: RadiantCombatEvent[], holder: RadiantBearer): void {
+  const counter = counterOf(holder.signature);
+  if (!counter) return;
+  counter.count = Math.min(radiantSignatureCaps[counter.kind], counter.count + 1);
+  events.push({ type: 'signature', bearerId: holder.loadout.id, op: counter.kind, amount: counter.count });
+}
+/** Normal Attack Passives that need a landed hit: Nerithe's Uncharted Current, Neralis's Returning Current,
+ * Varkhel's Tension Held and Seravelle's Convoy Cadence (the first ally Normal hit each turn). */
 function normalPassives(
   state: RadiantCombatState, events: RadiantCombatEvent[], actor: RadiantBearer, targetId: string, hits: number,
 ): void {
   const own = actor.signature, id = actor.loadout.id;
   if (hits === 0) return;
+  if (own?.kind === 'current' || own?.kind === 'tension') gainCounter(events, actor);
+  const seravelle = state.bearers.find(member => member.hp > 0 && member.signature?.kind === 'cadence' && !member.signature.latch);
+  if (seravelle?.signature?.kind === 'cadence') {
+    seravelle.signature.latch = true;
+    gainCounter(events, seravelle);
+  }
   if (own?.kind === 'survey') {
     addPassiveCharge(state, events, id, rounded(radiantPassiveValues.surveyFill * gaugeGain(actor)));
     if (enemy(state, targetId).hp > 0) {
@@ -1308,6 +1331,8 @@ function cast(
   const bonus = surge.bonus + effects.reduce((sum, effect) => sum + (effect.kind === 'damage-bonus' ? effect.value : 0), 0);
   const enemyTargets = def.target === 'all-enemies' ? state.enemies.filter(member => member.hp > 0) : primary ? [primary] : [];
   const struck = new Set<RadiantEnemy>();
+  // Alternating Edge reads Weaken before the hit, so a skill's own Weaken never counts for that cast.
+  const weakened = new Set(enemyTargets.filter(target => target.debuffs.some(effect => effect.category === 'weaken')));
   let hits = 0;
   if (def.target !== 'none') for (const target of enemyTargets) {
     if (target.hp === 0) continue;
@@ -1330,6 +1355,8 @@ function cast(
     entry.stacks = Math.min(radiantSignatureCaps.incisions, entry.stacks + 1);
     events.push({ type: 'signature', bearerId: id, op: 'incision', holderId: target.id, amount: entry.stacks });
   }
+  // Alternating Edge: a Skill 1/2 that hits at least one Weakened enemy adds 1 Crosscut (max 3).
+  if (own?.kind === 'crosscut' && input.kind === 'skill' && [...struck].some(target => weakened.has(target))) gainCounter(events, actor);
   signatureClauses(state, events, actor, input, clauses, primary, enemyTargets, hitCharge);
   const duration = (turns: number) => Math.min(radiantMaximumDuration, turns + skill.skillDuration);
   const enemiesFor = (to: string) => (to === 'all-enemies' ? state.enemies : primary ? [primary] : []).filter(member => member.hp > 0);
@@ -1349,15 +1376,18 @@ function cast(
     state.bearers.filter(member => to === 'all-allies' || member !== actor)).filter(member => member.hp > 0);
   // Heals and Shields resolve before ally buffs (no rule depends on the order), so each recipient's
   // heal and its attached statuses present as one impact.
+  let restored = false;
   for (const effect of effects) {
     if (effect.kind !== 'heal' && effect.kind !== 'shield') continue;
     // N7: kit heals and Shields are a % of the recipient's max Health x the caster's Skill Power.
     for (const ally of alliesFor(effect.to)) {
       const magnitude = valueOf(effect) * input.effectScale * skill.skillPower * ally.stats.hp;
-      if (effect.kind === 'heal') heal(state, events, ally, source, magnitude);
+      if (effect.kind === 'heal') restored = heal(state, events, ally, source, magnitude) > 0 || restored;
       else shield(state, events, ally, source, magnitude);
     }
   }
+  // Returning Current: a skill or Flare heal that restores Health adds 1 Current, once per action (after any spend).
+  if (restored && own?.kind === 'current') gainCounter(events, actor);
   for (const effect of effects) {
     if (effect.kind === 'cleanse') { for (const ally of alliesFor(effect.to)) cleanse(events, ally); continue; }
     if (effect.kind !== 'attack-up' && effect.kind !== 'defense-up' && effect.kind !== 'reduction' &&
@@ -1378,6 +1408,11 @@ function cast(
   if (radiantStarterKits[actor.loadout.starter].role === 'Support')
     for (const ally of state.bearers.filter(member => member.hp > 0))
       heal(state, events, ally, { kind: 'role', bearerId: id }, radiantSupportSquadHeal * ally.stats.hp);
+  // Turning Season: a skill advances Sprout -> Bloom -> Harvest; a skill or Flare cast in Harvest returns it to Sprout.
+  if (own?.kind === 'season' && (own.count === 2 || input.kind === 'skill')) {
+    own.count = own.count === 2 ? 0 : own.count + 1;
+    events.push({ type: 'signature', bearerId: id, op: 'season', amount: own.count });
+  }
   return hits;
 }
 function skillAction(

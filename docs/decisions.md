@@ -1,5 +1,39 @@
 # Decision log
 
+## Battle Flurry Phase 3 Step 2b batch 3: signature mechanics (D-477, 2026-11-17)
+
+Implements the approved batch 3 kits (D-473) on branch `battle-flurry-phase3`.
+**Not released.** Spec: [combat spec](combat.md#signature-mechanics-batch-3-d-477-battle-flurry-phase-3-step-2b).
+
+- **Implemented:** Survey (Nerithe), Foundation (Orvella), Beat (Vaelor), Heat
+  and the Burn boost (Caldrex), Stillness (Solenne), Season (Myrthen), Current
+  (Neralis), Tension (Varkhel), Cadence (Seravelle) and Crosscut (Velmira),
+  with their Passives. Batch 4 stays inert.
+- **Implementation rules, chosen where the approved text was silent (owner
+  may revise during the retune):**
+  - Every counter starts at 0 each encounter, Stillness included.
+  - Nerithe's extra 5 Luminosity needs a landed Normal hit. Fold the Sea takes
+    an optional current target (the only all-enemies skill that does).
+    Survey Defense ignore does not scale by Flare tier.
+  - Orvella's Foundation covers her too, takes 20% before Cover and Shields,
+    collapses when she falls, and repairs only up to its created durability.
+    The Flare's spend strike is exact (like Wounds), x tier damage scale.
+  - Vaelor's Beat is derived from the round, so it needs no saved state.
+  - Caldrex's Burn boost applies to Burn ticks (not detonations) from any
+    ally and lasts its 2 turns even if he falls.
+  - Stillness and Foundation reductions round once and always let at least 1
+    damage through.
+  - Myrthen's Flare in Harvest uses Harvest and resets it; outside Harvest it
+    leaves the Season unchanged.
+  - Neralis counts heals from his skills and Flares; a Flare spends first, so
+    its heal can earn 1 Current back.
+  - Seravelle's own Normal counts for Cadence.
+  - Velmira's Weaken check happens before the hit, once per skill.
+- **State:** schema stays 8 (unreleased) with new `signature` kinds (counters
+  with a `latch`, `heat`, `survey`, `foundation`) and twelve new event ops.
+- **Open:** batch 4, Step 3 (UI and kit text, including the new counters and
+  Fold the Sea's target), Step 4 retune, the release deploy (owner approves).
+
 ## Battle Flurry Phase 3 Step 2b batch 2: signature mechanics (D-476, 2026-11-17)
 
 Implements the approved batch 2 kits (D-473) on branch `battle-flurry-phase3`.

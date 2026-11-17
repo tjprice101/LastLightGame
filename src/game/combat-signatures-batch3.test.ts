@@ -259,6 +259,127 @@ describe('Solenne: Stillness', () => {
   });
 });
 
+describe('Myrthen: Season', () => {
+  it('advances Sprout, Bloom, Harvest with skills; Harvest adds +35% and 20% Defense ignore, then returns to Sprout', () => {
+    let state = charge(battle(['tide', 'myrthen'], 2, 400), 'myrthen', 25);
+    const attack = member(state, 'myrthen').stats.attack;
+    state = act(state, { type: 'skill', bearerId: 'myrthen', slot: 1, targetId: 'enemy-0' }).state;
+    expect(member(state, 'myrthen').signature).toMatchObject({ kind: 'season', count: 1 });
+    state = act(charge(nextTurn(state).state, 'myrthen', 40), { type: 'skill', bearerId: 'myrthen', slot: 2 }).state;
+    expect(member(state, 'myrthen').signature).toMatchObject({ count: 2 });
+    const harvest = act(charge(nextTurn(state).state, 'myrthen', 25), { type: 'skill', bearerId: 'myrthen', slot: 1, targetId: 'enemy-1' });
+    expect(total(harvest.events, 'skill', 'enemy-1')).toBe(radiantDirectDamage(attack, 400 * .8, 2.5 * 1.5 * 1.35));
+    expect(member(harvest.state, 'myrthen').signature).toMatchObject({ count: 0 });
+  });
+  it('keeps the Season through a Flare outside Harvest and resets it after a Flare in Harvest', () => {
+    const state = charge(battle(['tide', 'myrthen']), 'myrthen', 100);
+    member(state, 'myrthen').signature = { kind: 'season', count: 1, latch: false };
+    expect(member(act(state, { type: 'flare', bearerId: 'myrthen', targetId: 'enemy-0' }).state, 'myrthen').signature)
+      .toMatchObject({ count: 1 });
+    member(state, 'myrthen').signature = { kind: 'season', count: 2, latch: false };
+    const attack = member(state, 'myrthen').stats.attack;
+    const ripe = act(state, { type: 'flare', bearerId: 'myrthen', targetId: 'enemy-0' });
+    const scale = radiantFlareTierScale[of(ripe.events, 'flare')[0].tier].damage;
+    expect(total(ripe.events, 'flare')).toBe(radiantDirectDamage(attack, 0, 12.5 * scale * 1.5 * 1.35));
+    expect(member(ripe.state, 'myrthen').signature).toMatchObject({ count: 0 });
+  });
+});
+
+describe('Neralis: Current', () => {
+  it('gains 1 Current from a Normal hit and from a skill heal that restores Health, but not from a full-Health heal', () => {
+    let state = charge(battle(['bruno', 'neralis']), 'neralis', 25);
+    expect(member(act(state, { type: 'normal', bearerId: 'neralis', targetId: 'enemy-0' }).state, 'neralis').signature)
+      .toMatchObject({ kind: 'current', count: 1 });
+    expect(member(act(state, { type: 'skill', bearerId: 'neralis', slot: 1 }).state, 'neralis').signature).toMatchObject({ count: 0 });
+    member(state, 'bruno').hp = 1;
+    state = act(state, { type: 'skill', bearerId: 'neralis', slot: 1 }).state;
+    expect(member(state, 'neralis').signature).toMatchObject({ count: 1 });
+  });
+  it('spends all Current on Carry Them Back (+6% heal each) and earns 1 back when that heal restores Health', () => {
+    const state = charge(battle(['bruno', 'neralis']), 'neralis', 40);
+    member(state, 'neralis').signature = { kind: 'current', count: 2, latch: false };
+    member(state, 'bruno').hp = 1;
+    const result = act(state, { type: 'skill', bearerId: 'neralis', slot: 2 });
+    const healed = of(result.events, 'heal').find(event => event.targetId === 'bruno' && event.source.kind === 'skill')!;
+    expect(healed.offered).toBe(Math.round((.18 + .12) * 1.25 * member(state, 'bruno').stats.hp));
+    expect(ops(result.events)).toEqual(['current', 'current']);
+    expect(member(result.state, 'neralis').signature).toMatchObject({ count: 1 });
+  });
+});
+
+describe('Varkhel: Tension', () => {
+  it('gains Tension from his Normal hits and once per enemy phase from enemy hits, up to 4', () => {
+    let state = battle(['tide', 'varkhel'], 2);
+    state = act(state, { type: 'normal', bearerId: 'varkhel', targetId: 'enemy-0' }).state;
+    const phase = enemyPhase(state, ['varkhel'], 2, 2);
+    expect(member(phase.state, 'varkhel').signature).toEqual({ kind: 'tension', count: 2, latch: true });
+    state = act(phase.state, { type: 'finish-enemy-phase' }).state;
+    for (let turn = 0; turn < 3; turn++)
+      state = nextTurn(act(state, { type: 'normal', bearerId: 'varkhel', targetId: 'enemy-0' }).state).state;
+    expect(member(state, 'varkhel').signature).toMatchObject({ count: 4 });
+  });
+  it('spends all Tension on Return the Strain (+45% each, 20% Defense ignored)', () => {
+    const state = charge(battle(['tide', 'varkhel'], 1, 400), 'varkhel', 40);
+    member(state, 'varkhel').signature = { kind: 'tension', count: 3, latch: false };
+    const attack = member(state, 'varkhel').stats.attack;
+    const result = act(state, { type: 'skill', bearerId: 'varkhel', slot: 2, targetId: 'enemy-0' });
+    expect(total(result.events, 'skill')).toBe(radiantDirectDamage(attack, 400 * .8, 2.6 + 3 * .45));
+    expect(member(result.state, 'varkhel').signature).toMatchObject({ count: 0 });
+  });
+});
+
+describe('Seravelle: Cadence', () => {
+  it('adds 1 Cadence for the first ally Normal hit each turn while Seravelle lives', () => {
+    let state = battle(['tide', 'seravelle', 'bruno']);
+    state = act(state, { type: 'normal', bearerId: 'tide', targetId: 'enemy-0' }).state;
+    state = act(state, { type: 'normal', bearerId: 'seravelle', targetId: 'enemy-0' }).state;
+    expect(member(state, 'seravelle').signature).toEqual({ kind: 'cadence', count: 1, latch: true });
+    state = nextTurn(state).state;
+    state = act(state, { type: 'normal', bearerId: 'bruno', targetId: 'enemy-0' }).state;
+    expect(member(state, 'seravelle').signature).toMatchObject({ count: 2 });
+    state = nextTurn(state).state;
+    member(state, 'seravelle').hp = 0;
+    member(state, 'seravelle').shields = [];
+    state.gauge.members[1].living = false;
+    expect(member(act(state, { type: 'normal', bearerId: 'tide', targetId: 'enemy-0' }).state, 'seravelle').signature)
+      .toMatchObject({ count: 2 });
+  });
+  it('spends all Cadence on Move as One (+10% Attack Up each)', () => {
+    const state = charge(battle(['tide', 'seravelle']), 'seravelle', 40);
+    member(state, 'seravelle').signature = { kind: 'cadence', count: 3, latch: false };
+    const result = act(state, { type: 'skill', bearerId: 'seravelle', slot: 2 });
+    expect(of(result.events, 'status').filter(event => event.status === 'attack-up').map(event => event.magnitude))
+      .toEqual([(.3 + .1 * 3) * 1.25, (.3 + .1 * 3) * 1.25]);
+    expect(member(result.state, 'seravelle').signature).toMatchObject({ count: 0 });
+  });
+});
+
+describe('Velmira: Crosscut', () => {
+  it('adds 1 Crosscut per skill that hits an enemy Weakened before the hit, so Open the Seam\'s own Weaken does not count', () => {
+    let state = charge(battle(['tide', 'velmira'], 2), 'velmira', 25);
+    state = act(state, { type: 'skill', bearerId: 'velmira', slot: 1, targetId: 'enemy-0' }).state;
+    expect(member(state, 'velmira').signature).toMatchObject({ kind: 'crosscut', count: 0 });
+    state = act(charge(nextTurn(state).state, 'velmira', 40), { type: 'skill', bearerId: 'velmira', slot: 2 }).state;
+    expect(member(state, 'velmira').signature).toMatchObject({ count: 1 });
+  });
+  it('ignores 20% Defense with Turn the Other Edge at 2+ Crosscut and spends all on its Flare (+90% each)', () => {
+    const state = charge(battle(['tide', 'velmira'], 1, 400), 'velmira', 100);
+    const attack = member(state, 'velmira').stats.attack;
+    member(state, 'velmira').signature = { kind: 'crosscut', count: 1, latch: false };
+    expect(total(act(state, { type: 'skill', bearerId: 'velmira', slot: 2 }).events, 'skill'))
+      .toBe(radiantDirectDamage(attack, 400, 1.8 * 1.5));
+    member(state, 'velmira').signature = { kind: 'crosscut', count: 2, latch: false };
+    const edge = act(state, { type: 'skill', bearerId: 'velmira', slot: 2 });
+    expect(total(edge.events, 'skill')).toBe(radiantDirectDamage(attack, 400 * .8, 1.8 * 1.5));
+    expect(member(edge.state, 'velmira').signature).toMatchObject({ count: 2 });
+    member(state, 'velmira').signature = { kind: 'crosscut', count: 3, latch: false };
+    const door = act(state, { type: 'flare', bearerId: 'velmira', targetId: 'enemy-0' });
+    const scale = radiantFlareTierScale[of(door.events, 'flare')[0].tier].damage;
+    expect(total(door.events, 'flare')).toBe(radiantDirectDamage(attack, 400 * .7, (10 + 2.7) * scale * 1.5));
+    expect(member(door.state, 'velmira').signature).toMatchObject({ count: 0 });
+  });
+});
+
 describe('Batch 3 state and presentation', () => {
   it('rejects counters above their caps and malformed Survey or Foundation state', () => {
     const cases: [RadiantBearerId, unknown, string][] = [
@@ -267,6 +388,9 @@ describe('Batch 3 state and presentation', () => {
       ['orvella', { kind: 'foundation', foundation: { durability: 11, max: 10, remaining: 2 } }, 'Foundation'],
       ['caldrex', { kind: 'heat', count: 1, latch: 'no', burnUp: null }, 'heat'],
       ['solenne', { kind: 'stillness', count: 5, latch: false }, 'stillness'],
+      ['myrthen', { kind: 'season', count: 3, latch: false }, 'season'],
+      ['seravelle', { kind: 'cadence', count: 4, latch: false }, 'cadence'],
+      ['velmira', { kind: 'season', count: 0, latch: false }, 'signature state'],
     ];
     for (const [starter, signature, message] of cases) {
       const state = battle(['tide', starter]);
@@ -295,8 +419,19 @@ describe('Batch 3 state and presentation', () => {
     bell = step(bell, { type: 'end-turn' });
     bell = step(bell, { type: 'enemy-attack', enemyId: 'enemy-0', targetIds: ['solenne'], coefficient: 20 });
     step(bell, { type: 'finish-enemy-phase' });
+    let war = battle(['varkhel', 'neralis', 'seravelle'], 1);
+    war.gauge.members.forEach(entry => { entry.charge = 100; });
+    war = step(war, { type: 'normal', bearerId: 'varkhel', targetId: 'enemy-0' });
+    war = step(war, { type: 'normal', bearerId: 'neralis', targetId: 'enemy-0' });
+    step(war, { type: 'skill', bearerId: 'seravelle', slot: 2 });
+    let edge = battle(['myrthen', 'velmira'], 1);
+    edge.gauge.members.forEach(entry => { entry.charge = 100; });
+    edge = step(edge, { type: 'skill', bearerId: 'velmira', slot: 1, targetId: 'enemy-0' });
+    edge = step(edge, { type: 'skill', bearerId: 'myrthen', slot: 2 });
+    edge = step(nextTurn(edge).state, { type: 'skill', bearerId: 'velmira', slot: 2 });
     const seen = new Set(steps.flatMap(({ result }) => ops(result.events)));
-    expect([...seen].sort()).toEqual(['beat', 'burn-up', 'foundation', 'foundation-absorb', 'heat', 'stillness', 'survey']);
+    expect([...seen].sort()).toEqual(['beat', 'burn-up', 'cadence', 'crosscut', 'current', 'foundation', 'foundation-absorb',
+      'heat', 'season', 'stillness', 'survey', 'tension']);
     for (const { before, result } of steps) expect(() => radiantImpactFrames(before, result.state, result.events)).not.toThrow();
   });
 });
