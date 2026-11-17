@@ -1,5 +1,26 @@
 # Current state and handoff
 
+## Battle Flurry Phase 3 Step 1: kits and rules approved (2026-11-16)
+
+**Approved design, docs only (D-473).** No code has changed. Full text:
+[phase3-kit-drafts.md](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md).
+- Skill 1 / Skill 2 / Flare / Passive / Leader for all 32 released bearers, in
+  4 approved batches.
+- Number sheet N1-N8: Luminosity +15 per Normal hit, costs 25/40, Flare tier
+  scaling, Skill stats, Health mote 10%, category caps, heals as % of max Health.
+- Defend removed; Defend-triggered Conduits trigger on skill use until Phase 4.
+- Role traits restored: Tank targeted more often, +50% Defense; Attacker +50%
+  Skill Power; Support +50% Health, +25% Skill Power, 4% squad heal on skills.
+
+**Verified:** docs only; no tests run (none affected).
+
+**Next:**
+- Step 2, the engine, on Opus in Plan mode (`/clear` first): kit data, `skill`
+  action, removing `defense`, categories, Skill stats, role traits, Health motes,
+  schema 8 / `radiant-continuation-v4`.
+- Then Step 3 (UI hold grid, kit text), Step 4 (3-bearer retune; owner approves
+  numbers) and one release with an authority deploy (owner approval).
+
 ## Battle Flurry Phase 2: flurry presentation (2026-11-16)
 
 **Implemented (D-472):** presentation only, with no rule, reward or authority

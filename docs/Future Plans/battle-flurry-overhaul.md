@@ -14,6 +14,14 @@ Owner choices: Health motes move to Phase 3 (engine rule, needs a deploy), and
 materials pour after the save rather than being predicted on the device.
 Phases 3-4 remain planned below.
 
+**Phase 3 in progress (2026-11-16):** Step 1 (docs only) drafts every kit in
+batches, plus a number sheet, in
+[phase3-kit-drafts.md](battle-flurry-reference/phase3-kit-drafts.md). Owner
+choices: one release after all batches are approved; Defend removed; Health
+motes drop once per enemy defeat. The owner approved the number sheet, O1-O5 and
+all four batches plus restored role traits (D-473, 2026-11-16). Next: Step 2
+(engine), planned in Plan mode on Opus.
+
 **Status:** owner-approved direction (D-470, seven decisions below). Exact
 numbers, kit batches, the Conduit remap and later depth systems still need
 per-phase approval. No code has changed. Filing this plan does not authorize implementation, deploys

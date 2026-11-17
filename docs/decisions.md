@@ -1,5 +1,44 @@
 # Decision log
 
+## Battle Flurry Phase 3 kits and rules approved (D-473, 2026-11-16)
+
+Owner-approved design for Phase 3. **Not implemented.** Full text:
+[phase3-kit-drafts.md](Future%20Plans/battle-flurry-reference/phase3-kit-drafts.md).
+
+- **Approved, release shape:** every kit batch is drafted and approved first;
+  then the engine, all kits, Health motes and the 3-member-squad retune ship in
+  one release with one authority deploy.
+- **Approved, Defend removed:** right-click, D and hold open the Skill 1 /
+  Skill 2 / Flare grid.
+- **Approved, Health motes:** one per enemy defeat; heals the defeating bearer
+  10% of max Health; deterministic, so no new random stream.
+- **Approved, number sheet N1-N8:**
+  - Luminosity: Normal Attack hit +15, being hit +10.
+  - Costs: Skill 1 = 25, Skill 2 = 40.
+  - Kits show the Ultimate Flare; Glimmering and Sparkling use reduced damage
+    and effect values.
+  - Skill-stat family and category caps.
+  - Kit heals and Shields are a % of the recipient's max Health x Skill Power.
+- **Approved, O1-O4 as recommended:**
+  - Defend-triggered Conduit and Leader effects trigger when the bearer uses
+    Skill 1 or 2 that turn (interim, until Phase 4).
+  - Conditional damage Conduits also boost skills.
+  - The `skill1`/`skill2` ascension flags boost their own skill (save keys
+    unchanged).
+  - Critical Up is replaced by Expose; Drop Up is removed; Element Infusion is
+    deferred.
+- **Owner revision, O5 role traits restored** (D-437 values) beside each Passive:
+  - Tank: targeted more often (weight 1.25), +50% Defense.
+  - Attacker: +50% Skill Power only.
+  - Support: +50% Health, +25% Skill Power, and skills/Flares heal the squad
+    4%.
+  - Resonance is unchanged; it is re-checked during the retune.
+- **Approved, kits:** all four batches (32 released bearers: Opening and
+  Flagships, Rose and Calamitic, Elemental War, Moon). Sunshade kits wait for
+  the Sunshade launch.
+- **Open:** engine implementation plan (Step 2, Plan mode); retune numbers
+  (owner approves before release); deploy approval.
+
 ## Battle Flurry Phase 2: flurry presentation (D-472, 2026-11-16)
 
 Implements the D-470 Phase 2 scope. Details:
