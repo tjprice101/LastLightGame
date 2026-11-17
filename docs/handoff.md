@@ -36,17 +36,19 @@ celebration. The per-action `action` op is retired. Also added:
   - stored six-member squads stay unwritten until saved.
 - `vite build`: passed (existing chunk advisory).
 - `node tools/bundle_server_game.mjs`: bundle regenerated.
+- **Released (owner-approved):**
+  - `game-operation` deployed to production ("Deployed Functions.").
+  - `5633c1e5` pushed to `main` and `overhaul/radiant-foundation`.
+  - Deploy Last Light run 44002295951 succeeded.
+  - The hosted site serves a bundle containing `radiant-continuation-v3`.
 - **Not verified:**
   - headless/visual battle play;
-  - SQL smoke scripts (need a database);
-  - hosted release;
-  - authority deploy (needs owner approval).
+  - a signed-in online battle against the deployed authority;
+  - SQL smoke scripts (need a database).
 
 **Next:**
-- Deploy the authority together with the client push. Each half refuses the
-  other's old version, so they must ship together.
-- Owner then play-tests an online battle: instant taps, Haul saved on victory
-  and defeat, an old 4-6 squad shown as 3.
+- Owner play-tests an online battle: instant taps, Haul saved on victory and
+  defeat, End Turn, an old 4-6 squad shown as 3.
 - After that, Phase 2 presentation (Opus, Plan mode).
 
 ## Battle Flurry overhaul plan (2026-11-16)
